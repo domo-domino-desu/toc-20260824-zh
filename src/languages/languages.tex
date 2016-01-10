@@ -1,0 +1,1210 @@
+% \begin{flushright}
+% \includegraphics[width=1.5in]{colossus.jpg} \\
+% \textit{The Coluosus, first used in January 1944, helped crack the German submarine
+% code and thwart a submarine warfare initiative, and so to solidify Allied control
+% of the Atlantic.}
+% \end{flushright}
+
+% http://en.wikipedia.org/wiki/One_instruction_set_computer
+\chapteropen[\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing Pythagorean triples.}]{languages/plimpton322.png}{Languages} % ©Kevin Twomey http://kevintwomey.com/lowtech.html; permission granted November 23, 2014 2:14 
+
+Turing machines read characters from tapes and write characters to tapes.
+So to solve a problem we must express it as a string of characters,
+and also express the solution as a string.
+
+The digital computers that we use everyday work the same way.
+To find, say, the shortest driving distance between two places,
+we must encode the map data and the start and end points 
+into strings, and the algorithm manipulates those strings. 
+
+
+\section{Alphabets and strings}
+
+\subsection{Definition}
+The terminology here borrows from linguistics, so the words we use 
+can have related,  but sometimes perhaps surprising meanings.
+Consequently, we will define all our terms, despite that they are familiar.
+
+\begin{definition}
+An \definend{alphabet} is a set.
+A \definend{string} over the alphabet is a finite sequence of elements
+from that alphabet.
+The string of zero length is 
+the \definend{empty string}~$\emptystring=\sequence{}$.
+A \definend{language} is a set of strings drawn from a common alphabet.
+\end{definition}
+
+To denote strings we often use the lower case Greek letters 
+$\sigma$ or $\tau$,
+and use the upper case Greek letter $\Sigma$ for the alphabet.
+We will use $\lang{L}$ for languages, except that
+for the language that is the set of all strings from $\Sigma$ we write 
+$\kleenestar{\Sigma}$.
+
+Note that the definition's term
+``alphabet'' is potentially misleading in that some
+elements of $\Sigma$ may require more than one character to type.
+
+% \begin{example}
+% In many web programs the majority of the effort
+% lies in string-pushing, in constructing and then    
+% sending HTML-formatted text strings. 
+% An example such string is
+% \str{<p>The total cost is \$123.45.</p>}. % $
+% The receiving browser parses this string into
+% two kinds of components: individual
+% characters such as the \str{T} in `The',
+% and  the substrings \str{<p>} and \str{</p>} that are instructions
+% telling the browser to make a paragraph.
+% So the alphabet for HTML contains 
+% not just individual letters, but also \str{<p>} and \str{</p>}
+% (in the context of parsing these are called lexemes, or tokens). 
+% \end{example}
+
+\begin{example}
+The Scheme language contains
+the string $\sigma=\str{(or a ready)}$.
+That string has the five alphabet elements:
+\str{(}, \str{or}, \str{a}, \str{ready}, \str{)}.
+Some of these take more than one character to type.
+Scheme writes the sequence by separating its elements with spaces
+rather than using diamond brackets and commas, for convenience.
+\end{example}
+
+In many of our examples and exercises
+the alphabet consists of single characters and we will make strings by
+omitting the punctuation, that is, 
+dropping the diamond brackets and commas so that we
+concatenate the characters 
+together.\footnote{This
+  would be a problem for an alphabet such as 
+  $\Sigma=\set{\str{a}, \str{aa}}$ because 
+  for this alphabet the
+  string \str{aaa} is ambiguous, since it could
+  parse as $\sequence{\str{a},\str{aa}}$ or as
+  $\sequence{\str{aa},\str{a}}$ or as
+  $\sequence{\str{a},\str{a}, \str{a}}$.
+  We will avoid these alphabets.} 
+The main disadvantage of concatenation is that 
+the empty string disappears, which is why 
+we reserve the symbol~$\emptystring$. 
+
+\begin{example}
+For \definend{bit strings} the alphabet is
+$\Sigma=\set{\str{0},\str{1}}$.
+One language over that alphabet is 
+$\lang{L}=\set{\str{1000001},\str{1100001}}$.
+\end{example}
+
+The prior example may seem arbitrary or artifical\footnote{It is not 
+entirely without sense though, since \str{1000001} represents capital A in the 
+\citetext{ASCII encoding}{The American Standard Code for Information Interchange is a widely used character encoding scheme.  The most common modern character encoding is UTF-8, which is a superset of ASCII.} while \str{1100001}
+is lower case a.}
+but strictly speaking that set is a language because any set of strings 
+is a language.
+We will use some arbitrary languages for examples or exercises, 
+but most languages in practice have some reason behind them.
+
+\begin{example}
+A bit string has \definend{even parity} if it has an even number of \str{1}'s
+and \definend{odd parity} otherwise.
+The language of even parity bit strings is 
+$\lang{L}=\set{\emptystring, \str{0}, \str{00}, \str{11}, 
+               \str{011}, \str{101}, \ldots}$.
+\end{example}
+
+% \begin{example}
+% We can call a message safe text if it consists soley of characters
+% represented in   
+% For example, \str{1000001} represents capital A in 
+% the 
+% \citetext{ASCII encoding}{The American Standard Code for Information Interchange is a widely used character encoding scheme.  The most common modern character encoding is UTF-8, which is a superset of ASCII.}, and
+% lower case a is represented by \str{1100001}.  
+% \end{example}
+
+\begin{example}
+Let $\Sigma=\set{\str{a}, \str{b}}$.
+The language consisting of strings where the number of \str{a}'s is twice 
+the number of \str{b}'s is
+$\lang{L}=\set{\emptystring,\str{aab},\str{aba},\str{baa},
+               \str{aaaabb}, \ldots}$.  
+\end{example}
+
+\begin{example}
+This is the language of sorted length-three strings over 
+$\Sigma=\set{\str{a}, \str{b}, \str{c}}$.
+\begin{equation*}
+  \set{\str{aaa}, \str{aab}, \str{aac}, \str{abb}, \str{abc},
+    \str{acc},\str{bbb},\str{bbc}, \str{bcc}, \str{ccc}}
+\end{equation*}
+\end{example}
+
+
+\begin{example}
+Let $\Sigma=\set{\str{a}, \str{b}, \str{c}}$.
+One way to describe Pythaorean triples is with the language
+$\lang{L}=\set{\str{a}^i\str{b}^j\str{c}^k \suchthat \text{$i,j,k\in\N$ and $i^2+j^2=k^2$}}$.  
+\end{example}
+
+
+\subsection{Representations}
+To solve problems on a computer we first represent the problem, then 
+apply an algorithm, and finally interpret the solution,
+that is, we de-represent the solution.
+
+We have already seen this on a Turing machine when
+we represented natural numbers in unary,
+where the number $n$ is represented by $n$-many \str{1}'s.
+
+\begin{example}
+The set of numbers represented in unary is
+$\lang{L}_\text{unary}=\set{\str{1}^n\suchthat n\in\N}$.
+The notation $\str{1}^n$ means a sequence of $n$-many \str{1}'s,
+including that $\str{1}^0=\emptystring$.
+\end{example}
+
+There is nothing sacred about that representation; sometimes
+representing $n$ with $n+1$~many \str{1}'s is more convenient,
+since representing zero with the empty string can be awkward.
+Another obvious representation for natural numbers is binary notation.
+
+To represent a sequence of numbers we could use a bit string of unary
+representations separated by \str{0}'s, so that 
+the sequence $\sequence{2,1,3}$ becomes
+$\str{11010111}$. 
+Another possiblity is to put the numbers as 
+powers of primes, so that $\sequence{2,1,3}$ is represented by 
+the number $2^23^15^3=1500$, in whatever way we have chosen to represent that 
+number.
+
+\begin{example}
+The \definend{Shortest Path Problem} is to find the cheapest path through a
+graph where each edge has a cost.
+For instance, we could start with this graph and the nodes $a$ and~$f$,
+\begin{center}
+  \includegraphics{languages/asy/dijkstra.pdf}
+\end{center}
+and look for the path between those nodes of smallest total cost. 
+An algorithm that solves this problem could take as input a member 
+this set of pairs.
+\begin{equation*}
+  \lang{L}_\text{SP}=\set{\sequence{\mathcal{G},p}\suchthat
+                \text{$\mathcal{G}$ is a graph, $p=\sequence{n_\text{start},n_\text{end}}$ where $n_\text{start}$, $n_\text{end}$ are nodes}}
+\end{equation*}
+To be compete we should also specify 
+the representation of the graph and of the nodes.
+The nodes could be integers, and the graph could be an ordered pair of a 
+set of nodes and a set of edges, where each edge is a set of two nodes. 
+In short, languages can be complicated.
+
+The above does not satisfy the definition of
+a language, since $\lang{L}_\text{SP}$ is not a set of strings but
+is instead a set of pairs.
+We could satisfy the definition by recasting each 
+$\sequence{\mathcal{G},p}\in\lang{L}_\text{SP}$ 
+as the string with character
+`\str{<}', followed by the string representation of $\mathcal{G}$, then a 
+comma `\str{,}', then the representation of~$p$,
+and finally closing with `\str{>}'.
+However we won't bother; when communicating with people instead of
+machines we often choose conceptual clarity over syntactic purity.
+\end{example}
+
+When we solve a problem the algorithm is tied to the 
+representation of the input and output, as well as the representation of 
+whatever data structures tht we use for intermediate work.
+For example, a person used to programming may have the reaction that unary
+notation is wasteful. 
+If we, say, want a routine that adds one to a number and if the input
+is the number $1000$, then representing it in unary would require the 
+Turing machine to take a thousand steps just to read the input, 
+while in binary notation the input is $\str{1111101000}$, which 
+takes only ten steps to read.
+But in this chapter we are not concerned with efficiency, 
+we are instead focussed on giving a convincing argument
+for what can in principle be computed.
+Numbers can be represented in binary but representing them in unary
+makes the example of the successor function easier, so we did that.
+(We will consider issues of efficiency, of what is the best possible 
+representation, when we study Complexity.)
+
+In fact, we will just use Church's Thesis.
+We note that numbers and sequences, as well as other data structures such
+as character strings and arrays of numbers, can be done
+in Scheme, so it can be done on a computer, and hence it can be done
+on a Turing machine.
+Church's Thesis gets us out of this thicket.
+
+
+
+\section{Grammars}
+
+To a native English speaker the noun phrase ``the big red barn'' sounds fine
+but \citetext{``the red big barn'' sounds wrong, somehow.}{Experts 
+vary on the exact rules but one source gives 
+(article) + number + judgement/attitude + size, length, height + age + 
+color + origin + material + purpose + (noun), so that
+``big red barn'' is size + color + noun.
+This is called the Royal Order of Adjectives; 
+see \protect\url{http://english.stackexchange.com/a/1159}.}
+That is, sentences in natural languages are constructed 
+by following a set of rules, a grammar.
+Artificial languages can have a grammar also.
+For instance, programming languages have very strict syntax rules, 
+and the languages we use to express problems will also follow patterns.
+In a phrase, 
+\citetext{grammars are the language of languages.}{Matt Swift \protect\url{http://matt.might.net/articles/grammars-bnf-ebnf/}} 
+
+
+\subsection{Productions and derivations}
+\begin{example}
+Here is a subset of the rules for for English.
+\begin{parenum} 
+\item A sentence can be made with a noun phrase followed by a verb phrase.
+\item A noun phrase can be made from an article followed by a noun.
+\item A noun phrase can also be made from an article, then an adjective, then a 
+  noun.
+\item A verb phrase can be made with a verb followed by a noun phrase.
+\item One article is `the'.
+\item An adjective is `young'.
+\item A verb is `caught'.
+\item Two nouns are `man' and `ball'.
+\end{parenum}
+
+We can restate those rules in a convenient notation.
+\begin{grammar}
+<sentence> \produces{} <noun phrase> <verb phrase>
+
+<noun phrase> \produces{} <article> <noun>
+
+<noun phrase> \produces{} <article> <adjective><noun>
+
+<verb phrase> \produces{} <verb> <noun phrase>
+
+<article> \produces{} "the"
+
+<adjective> \produces{} "young"
+
+<verb> \produces{} "caught"
+
+<noun> \produces{} "man"|"ball"
+\end{grammar}
+That is a set of \definend{productions} or \definend{rewrite rules}.
+Each rule has a \definend{head} on the left, then an arrow, 
+then a \definend{body} on the right.
+Read the arrow as ``may produce,'' or ``may expand to,'' 
+or ``may be constructed as.''
+
+We refer to a rule by its head, so we may say ``sentence's rule.'' 
+There are two rules with the head \syntax{<noun phrase>} 
+but this won't cause trouble as we won't see any grammars with so many rules
+that we need a better naming scheme.
+There are also two rules with the head \syntax{<noun>} but 
+we have combined 
+the two bodies with the `\syntax{|}'~pipe symbol, read aloud as ``or.''
+
+Heads and bodies have two kinds of components.
+The kind written in typewriter type, such as `\syntax{the}', 
+are elements of the alphabet of the language, meaning that they are what
+will appear in strings in the language.
+In the setting of grammars they are called \definend{terminals}.  
+Components of the form \syntax{<\,\ldots>}, with angle brackets and in italics, 
+are \definend{nonterminals}.
+They are category names, or variables, and are
+used for intermediate steps in string construction.
+
+{\setlength{\productionpadding}{0em} %temp drop extra padding around symbols
+The two symbols \mbox{`\produces'} and \mbox{`\syntax{|}'} are neither 
+terminals nor nonterminals,
+but are instead part of the syntax of the rules.
+We call these \definend{metacharacters}.
+In place of \mbox{`\produces'}, some authors use  
+\mbox{`\syntax{::=}'} or \mbox{`\syntax{:=}'}, particularly in a setting where
+plain text is convenient such as in a file used as input to
+a parser generator.}
+
+The rules specify how to derive a string in the language
+from the starting nonterminal, here \syntax{<sentence>}.
+Below is an example of this process.
+{\setlength{\productionpadding}{0em} %temp drop extra padding around symbols
+(Note that \mbox{`$\produces$'} is used in rules 
+while \mbox{`$\derives$'} is used in derivations.
+Read \mbox{`\derives'} aloud as ``derives'' or ``expands to.'')} 
+\begin{center}
+  \begin{tabular}{r@{}l}
+  \syntax{<sentence>} &\derives \syntax{<noun phrase> <verb phrase>}  \\
+    &\derives \syntax{<article> <adjective> <noun> <verb phrase>}  \\
+    &\derives \syntax{"the" <adjective> <noun> <verb phrase>}  \\
+    &\derives \syntax{"the" "young" <noun> <verb phrase>}  \\
+    &\derives \syntax{"the" "young" "man" <verb phrase>}  \\
+    &\derives \syntax{"the" "young" "man" <verb> <noun phrase>}  \\
+    &\derives \syntax{"the" "young" "man" "caught" <noun phrase>}  \\
+    &\derives \syntax{"the" "young" "man" "caught" <article> <noun>}  \\
+    &\derives \syntax{"the" "young" "man" "caught" "the" <noun>}  \\
+    &\derives \syntax{"the" "young" "man" "caught" "the" "ball"}  
+  \end{tabular}
+\end{center}
+Every derivation from this grammar starts with the same
+nonterminal, \syntax{<sentence>}.
+Each step yields a string that is a collection of nonterminals and 
+terminals.
+In the grammar given above,
+all the rules have a head that is a single nonterminal, so to derive the 
+next string
+we pick a nonterminal in the present string
+and substitute the associated rule body; sometimes we say that
+we ``rewrite'' the head as the body, or ``expand'' the head to the body.
+
+The derivation above always substitutes for the leftmost nonterminal, giving
+a \definend{leftmost derivation},
+but in general we could take any nonterminal.
+
+In general, we can also have that a rule's head contains more than just
+a single nonterminal. 
+We discuss this kind of substitution at the end of the subsection.
+
+We can represent the derivation with a \definend{parse tree}.\footnote{It is from where the components lie in the parse tree that we get the words `terminal' and `nonterminal'.}
+\begin{center}
+  \includegraphics{languages/asy/parsetree/parsetree000.pdf}
+\end{center}
+\end{example}
+
+
+\begin{definition}
+A \definend{grammar} is a four-tuple $\mathcal{G}=\sequence{\Sigma,N,S,P}$.
+First, $\Sigma$ is an alphabet, a set of \definend{terminal symbols}.
+% which are the elements of the strings generated by the grammar.
+Second, $N$ is a set of \definend{nonterminals} 
+or \definend{syntactic categories} (the sets $\Sigma$ and $N$ must be 
+disjoint, and neither set can contain the symbols 
+{\setlength{\productionpadding}{0em} %temp drop extra padding around symbols
+\mbox{`\produces'} or \mbox{`\derives'}}).
+Third, $S$ is a \definend{start symbol}, 
+a nonterminal that appears first in every derivation from this grammar. 
+Fourth, $P$ is a set of \definend{productions} or \definend{rewrite rules}, 
+which describe allowed replacments of nonterminal symbols on the left side 
+of a production with other nonterminal or terminal symbols on the right side 
+of the production in the course of a derivation. 
+The \definend{language derived from a grammar} 
+is the set of strings having derivations
+beginning with the start symbol and that are
+allowed by the grammar's rules.
+\end{definition}
+
+The complete definition of the derivations allowed under a grammar is below, 
+after some more examples.
+
+\begin{example}
+This is a grammar for natural numbers.
+Note that the rule for \syntax{<natural>} is recursive.
+\begin{grammar}
+  <natural> ::= <digit>  
+        \alt <digit><natural>   
+  
+  <digit> ::= "0" | \ldots{} | "9"
+\end{grammar}
+That rule is recursive but it doesn't mean that we get stuck 
+in infinite regress.
+There is a terminating derivation for
+each integer. 
+This one derives \syntax{321}.
+\begin{center}
+  \begin{tabular}{r@{}l}
+    \syntax{<natural>}
+       &\derives\syntax{<digit><natural>}  \\
+       &\derives\syntax{3<natural>}         \\
+       &\derives\syntax{3<digit><natural>}  \\
+       &\derives\syntax{32<natural>}  \\
+       &\derives\syntax{32<digit>}  \\
+       &\derives\syntax{321}
+  \end{tabular}
+\end{center}
+Here is the parse tree.
+\begin{center}
+  \includegraphics{languages/asy/parsetree/parsetree001.pdf}
+\end{center}
+\end{example}
+
+\begin{example}
+This is a grammar for real numbers, positive or negative, 
+having a finite decimal part.
+The rules for \syntax{<natural>} are as in the prior example.
+\begin{grammar}
+  <start> \produces{}  "-"<fraction>
+        \alt "+"<fraction> 
+        \alt <fraction>                
+
+  <fraction> 
+     \produces{} <natural> 
+        \alt <natural>.<natural>     
+\end{grammar}
+Here is a derivation for \syntax{"2.718"} (it is a
+rightmost derivation).
+\begin{center}
+\hspace{1em}\begin{tabular}{l}
+  \syntax{<start>}\derives\syntax{<fraction>}
+  \derives\syntax{<natural>.<natural>}            \\ \quad
+  \derives{<natural>.<digit><natural>}
+  \derives\syntax{<natural>.<digit><digit><natural>}  \\ \quad
+  \derives\syntax{<natural>.<digit><digit><digit>}
+  \derives\syntax{<natural>.<digit><digit>"8"}  \\ \quad
+  \derives\syntax{<natural>.<digit>"18"}
+  \derives\syntax{<natural>."718"} 
+  \derives\syntax{"2"."718"}
+\end{tabular}
+\end{center}
+\end{example}
+
+A common problem with the grammars relates to 
+the following bit of C-like pseudocode that shows nested if statements. 
+\begin{lstlisting}
+  if ... then ... if ... then ... else ...
+\end{lstlisting}
+This is a ``dangling else.''
+As written, we cannot tell if the \lstinline!else! is associated
+with the first \lstinline!if! or the second.
+\begin{center}
+  \begin{minipage}{0.4\linewidth}
+    \begin{lstlisting}
+      if ... 
+      then ...
+          if ...
+          then ... 
+      else ...
+    \end{lstlisting}
+  \end{minipage}
+  \quad
+  \begin{minipage}{0.4\linewidth}
+    \begin{lstlisting}
+      if ... 
+      then ...
+          if ...
+          then ... 
+          else ...
+    \end{lstlisting}
+  \end{minipage}
+\end{center}
+An \definend{ambiguous grammar}
+is one where some strings in the language 
+have two different leftmost derivations. 
+
+\begin{example}
+This grammar for expressions of elementary algebra
+\begin{grammar}
+<expr> \produces{} <expr> "+" <expr>
+        \alt  <expr> "*" <expr>
+        \alt  ( <expr> ) |  "a"  |  "b"  | \ldots{} | "z"
+\end{grammar}
+is ambiguous. 
+The expression \syntax{a+b*c} has this 
+leftmost derivation
+\begin{center}
+\hspace{1em}\begin{tabular}{l}
+  \syntax{<expr>}\derives\syntax{<expr>"+"<expr>}
+  \derives\syntax{"a" "+" <expr>}                 \\ \quad
+  \derives\syntax{"a" "+" <expr> "*" <expr>}          
+  \derives\syntax{"a" "+" "b" "*" <expr>}          
+  \derives\syntax{"a" "+" "b" "*" "c"}          
+\end{tabular}
+\end{center}
+and this one also.
+\begin{center}
+\hspace{1em}\begin{tabular}{l}
+  \syntax{<expr>}\derives\syntax{<expr> "*" <expr>}
+  \derives\syntax{<expr> "+" <expr> "*" <expr>}    \\ \quad 
+  \derives\syntax{"a" "+" <expr> "*" <expr>}  
+  \derives\syntax{"a" "+" "b" "*" <expr>}  
+  \derives\syntax{"a" "+" "b" "*" "c"}          
+\end{tabular}
+\end{center}
+The two give different parse trees.
+\begin{center}
+  \includegraphics{languages/asy/parsetree/parsetree002.pdf}
+  \hspace{2.5em}
+  \includegraphics{languages/asy/parsetree/parsetree003.pdf}
+\end{center}
+Here is an unambiguous grammar.
+With it we can derive \syntax{a+(b*c)} but not
+\syntax{a+b*c}.
+\begin{grammar}
+<expr> \produces{} <expr> "+" <term>  |  <term> | 
+
+<term> \produces{} <term> "*" <factor>  |  <factor>  
+
+<factor> \produces{} ( <expr> ) |  "a"  | "b" | \ldots{} | "z"
+\end{grammar}
+\end{example}
+
+When we do examples and exercises, we often use small grammars whose 
+terminals and nonterminals do not have any particular meaning.
+In that case, we drop the notation used above in favor of 
+writing nonterminals as upper case letters and terminals
+as lower case letters.
+
+\begin{example}
+The simple grammar \syntax{S \produces{} "a"S"b" | \emptystring}
+% \begin{grammar}
+%   S \produces{} "a"S"b" | \emptystring
+% \end{grammar}
+describes the language 
+with strings of \str{a}'s followed by \str{b}'s, with the 
+same number of each,
+$\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
+(the language includes the empty string as the $n=0$ case).
+For instance, this derives two \str{a}'s followed by two \str{b}'s:
+\syntax{S}\derives \syntax{"a"S"b"}\derives\syntax{"aa"S"bb"}
+\derives\syntax{"aa"\,\emptystring\,"bb"}, which is the string
+\str{aabb}. 
+\end{example}
+
+Finally, here is the complete description of the derivations allowed under a 
+production rule.
+A production rule has the form \mbox{`head\produces{}body'}.
+The head has three components, that is, 
+$\text{head}=\sigma_0S\sigma_1$.
+The middle component~$S$ is a nonterminal. 
+The prefix~$\sigma_0$ and suffix~$\sigma_1$ 
+are concatenations of terminals and nonterminals, or they may be 
+empty, as in all the examples we have seen above.
+In a derivation, each step allowed by the rule goes like this.
+\begin{equation*}
+  \tau_0\,\sigma_0S\sigma_1\,\tau_1
+  \derives
+  \tau_0\,\text{body}\,\tau_1
+\end{equation*}
+In words, if in a derivation a string has a substring that matches the head
+then we can expand that substring to the rule's body, retaining the context 
+of material surrounding the head.
+
+\begin{example} \label{ex:anbncnGrammar}
+In \citetext{this grammar}{Taken from \protect\url{https://en.wikipedia.org/wiki/Formal_grammar}.}
+the second and third rules differ from the ones we have seen above in that the 
+head is more than just a single nonterminal.
+\begin{clip}
+  \syntax{S \produces{} "a"BS"c" | "abc"}
+ 
+  \syntax{B"a" \produces{} "a"B}
+
+  \syntax{B"b" \produces{} "bb"}
+\end{clip}
+In the derivation
+\begin{center}
+  \syntax{S} 
+  \derives\syntax{"a"BS"c"}
+  \derives\syntax{"a"B"abcc"}
+  \derives\syntax{"aa"B"bcc"}
+  \derives\syntax{"aabbcc"}
+\end{center}
+the third step \syntax{"a"B"abcc"}\derives\syntax{"aa"B"bcc"} 
+uses the second rule,
+taking \syntax{"a"B"abcc"} to be of the form 
+$\tau_0\,\text{\syntax{Ba}}\,\tau_1$, so
+that $\tau_0=\text{\syntax{a}}$ and $\tau_1=\text{\syntax{bbc}}$,
+and it rewrites \syntax{B"a"} as \syntax{"a"B}. 
+
+Similarly, the fourth derivation step applies the third rule to 
+find \syntax{Bb} in the context
+of $\tau_0=\text{\syntax{aa}}$ and $\tau_1=\text{\syntax{cc}}$,
+and rewrite it as \syntax{bb}. 
+\end{example}
+
+\begin{exercises}
+\begin{exercise}
+% https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form
+This is a grammar for \citetext{postal addresses.}{Adapted from \protect\url{https://en.wikipedia.org/wiki/BackusNaur_Form}.}
+Note the use of the empty string~$\emptystring$.
+\begin{grammar}
+<postal address> \produces{} <name> <street address> <town>
+
+      <name> \produces{} <personal part> <last name> <opt suffix> <EOL> 
+                    \alt <personal part> <name part>
+
+  <personal part> \produces{} <initial> "." | <first name>
+
+ <street address> \produces{} <house num> <street name> <apt num> <EOL>
+
+       <town> \produces{} <town name> "," <state or region> <EOL>
+
+<opt suffix> \produces{} "Sr." | "Jr." | <roman numeral> | \emptystring 
+
+    <apt num> \produces{} <natural> | \emptystring
+
+    <initial> \produces{} <character>
+
+    <house num> \produces{} <char string>
+\end{grammar}
+Here, \syntax{<initial>} is a character (that is, a rule not shown
+is \syntax{<initial>\produces <char>} where 
+\syntax{<char>\produces "A" | \ldots{} | "9"}).
+The nonterminal \syntax{<EOL>}  expands to whatever marks an end of line.
+Other unspecified nonterminals such as \syntax{<street name>} and 
+\syntax{<house num>} are character strings.
+\begin{exparts}
+  \item Give a derivation for for this address.
+    \begin{clip}
+      \begin{tabular}{l}
+        Sherlock Holmes   \\
+        221B Baker Street \\
+        London, UK
+      \end{tabular}
+    \end{clip}
+  \item Show that there is no derivation for this address.
+    \begin{clip}
+      \begin{tabular}{l}
+        President                \\
+        1600 Pensylvania Avenue  \\
+        Washiington, DC
+      \end{tabular}
+    \end{clip}
+    Suggest a modification of the grammar to include this address.
+  \item Give three reasons why this grammar is inadequate for general use.
+  (Probably no reasonable-sized grammar would suffice that is less general than 
+  one that just 
+  accepts any character string; the other obvious possibilility is the 
+  grammar that lists as spearate rules every addresses in the world.)
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Here is a grammar for LISP.
+\begin{grammar}
+  <s expression> \produces{} <atomic symbol> 
+       \alt "(" <s expression> "." <s expression> ")"  
+      \alt <list>
+ 
+  <list> \produces{} "(" <s expression> \{ <s expression> \} ")"
+
+  <atomic symbol> \produces{} <letter> <atom part> 
+
+  <atom part> \produces{} <empty>
+              \alt <letter> <atom part>
+              \alt <number> <atom part>  
+
+  <letter> \produces{} "a" | \ldots{} | "z"  
+
+  <number> \produces{} "0" | \ldots{} | "9"  
+
+  <empty> \produces{} "\ "
+\end{grammar}
+The symbol \syntax{"\ "} means a space character.
+\end{exercise}
+
+\begin{exercise}
+What is the language generated by this grammar?  
+\begin{answer}
+  Not much, really.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}  % https://en.wikipedia.org/wiki/Formal_grammar
+Using the grammar of \cref{ex:anbncnGrammar} derive the 
+string \syntax{aaabbbccc}.
+\begin{answer}
+  \syntax{S} 
+  \derives\syntax{"a"BS"c"}
+  \derives\syntax{"a"B"a"BS"cc"}
+  \derives\syntax{"a"B"aB"abccc"}
+  \derives\syntax{"aa"BB"abccc"}
+  \derives\syntax{"aa"B"a"B"bccc"}
+  \derives\syntax{"aaa"BB"bccc"}
+  \derives\syntax{"aaa"B"bbccc"}
+  \derives\syntax{"aaabbbccc"} 
+\end{answer}
+\end{exercise}
+\end{exercises}
+
+
+\section{Regular languages}
+
+\section{Context free languages}
+
+% \begin{wrapfigure}{R}{0.4\textwidth}
+% \centering
+% \includegraphics[width=0.35\textwidth]{prologue/plimpton322.jpg} % http://en.wikipedia.org/wiki/Plimpton_322#/media/File:Plimpton_322.jpg
+% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing pythagorean triples}}
+% \end{wrapfigure}
+
+
+
+% =================================================================
+
+\extra{Backus-Naur form}
+
+Many authors use an extensions of BNF.
+Optional items are enclosed in metasymbols \syntax{[} and {]}.
+For example:
+\begin{grammar}
+    <if_statement> ::=  if <boolean_expression> then
+                             <statement_sequence>
+                        [ else
+                             <statement_sequence> ]
+                        end if ;
+\end{grammar}
+Repetitive items (zero or more times) are enclosed in themetasymbols 
+\syntax{\{} and \syntax{\}}.
+For example:
+\begin{grammar}
+    <identifier> ::= <letter> { <letter> | <digit> }
+\end{grammar}
+This rule is equivalent to the recursive rule
+\syntax{<identifier> ::= <letter> |
+                     <identifier> [ <letter> | <digit> ]}.
+
+Terminals of only one character are surrounded by quotes (") to distinguish them from meta-symbols.
+\begin{grammar}
+    <statement_sequence> ::= <statement> { ";" <statement> }
+\end{grammar}
+There is a grammar for EBNF written in BNF.
+\begin{clip}
+\syntax{syntax     ::=  { rule }}
+
+\syntax{rule       ::=  identifier  "::="  expression}
+
+\syntax{expression ::=  term { "|" term }}
+
+\syntax{term       ::=  factor { factor }}
+
+\syntax{factor     ::=  identifier |}
+
+\syntax{                quoted_symbol |}
+
+\syntax{                "("  expression  ")" |}
+
+\syntax{                "["  expression  "]" |}
+
+\syntax{                "{"  expression  "}"}
+
+\syntax{identifier ::=  letter { letter | digit }}
+
+\syntax{quoted_symbol ::= """ { any_character } """}
+\end{clip}
+
+
+
+% ===============================================================
+
+\extra{Lambda Calculus and Scheme}
+% See http://matt.might.net/articles/compiling-up-to-lambda-calculus/
+
+% Jim Larson
+% 1996-07-26
+% This talk was given at the JPL Section 312 Programming Lunchtime Seminar.
+
+A function accepts input and produces an output. 
+Suppose we have a ``chocolate-covering'' function that produces the 
+following outputs for the corresponding inputs:
+% \begin{grammar}
+%   \str{peanuts} &\produces  \str{chocolate-covered peanuts} \\
+%   \str{rasins}  &\produces  \str{chocolate-covered rasins} \\
+%   \str{ants}    &\produces \str{chocolate-covered ants}
+% \end{grammar}
+We can use Lambda-calculus to describe such a function.
+\begin{equation*}
+	\lambda x.\str{chocolate-covered $x$}
+\end{equation*}
+This is a \definend{lambda-expression}.
+
+To apply the function to an argument, use the following syntax.
+% \begin{equation*}
+%   (\lambda x.\str{chocolate-covered $x$})\,\str{peanuts} 
+%     \produces \str{chocolate-covered peanuts}
+% \end{equation*}
+Functions can also be the result of applying a lambda-expression, as with this ``covering function maker.''
+\begin{equation*}
+  \lambda y.\lambda x.\str{$y$-covered $x$}
+\end{equation*}
+Use this to create a caramel-covering function.
+% \begin{align*}
+%   (\lambda y.\lambda x.\str{$y$-covered $x$})\,\str{caramel} 
+%     &\produces \lambda x.\str{caramel-covered $x$}   \\
+%   (\lambda x.\str{caramel-covered $x$})\,\str{peanuts} 
+%     &\produces \str{caramel-covered peanuts}
+% \end{align*}
+Functions can also be the inputs to other functions, as with this 
+``apply-to-ants'' function.
+\begin{equation*}
+	\lambda f.(f)\,\str{ants}
+\end{equation*}
+We can feed the chocolate-covering function to the "apply-to-ants" function:
+% \begin{multline*}
+% 	(\lambda f.\str{$(f)$ants})\lambda x.\str{chocolate-covered $x$}  \\
+%       \begin{split}
+%         \hspace*{3em}
+% 	&\produces (\lambda x.\str{chocolate-covered $x$})\str{ants}  \\
+% 	&\produces \str{chocolate-covered ants}
+%       \end{split}
+% \end{multline*}
+
+Lambda-expressions have the following syntax.
+\begin{lstlisting}
+	lambda-expression ::=	variable
+				| constant
+				| application
+				| abstraction
+	application ::= (lambda-expression)lambda-expression
+	abstraction ::= Lvariable.lambda-expression
+\end{lstlisting}
+The evaluation of lambda-expression is from the application of two reduction 
+rules. 
+The \definend{alpha-reduction} rule says that 
+we can consistantly rename bindings of variables
+% \begin{equation*}
+% 	\lambda x.E \produces \text{$\lambda z.\{z/x\}E$ 
+%                         for any $z$ which is neither free nor bound in $E$}
+% \end{equation*}
+where $\{z/x\}E$ means the substitution of $z$ for $x$ for any free occurance 
+of $x$ in $E$. 
+The \definend{beta reduction} rule says that application of a 
+lambda-expression to an argument is the consistent replacement of the 
+argument for the lambda-expression's bound variable in its body:
+\begin{equation*}
+	(\lambda x.P)Q -> [Q/x]P
+\end{equation*}
+where $[Q/x]P$ means the substitution of $Q$ for $x$ for any free occurrance 
+of $x$ in $P$.
+
+The Church-Rosser Theorem states that the final result of a chain of 
+substitutions does not depend on the order in which the substitutions are 
+performed.
+
+\extrasubsection{Universality of Lambda-calculus}
+The Lambda-calculus is a universal model of computation, that is, 
+any computation that can be expressed in a Turing machine can also be 
+expressed in the lambda calculus.
+
+To show this, here is the translation of a conditional control structure 
+into lambda-calculus.
+\begin{align*}
+	\str{true} &= \lambda x.\lambda y.x  \\
+	\str{false} &= \lambda x.\lambda y.y        \\
+	\str{if-then-else} &= \lambda a.\lambda b.\lambda c.((a)b)c 
+\end{align*}
+Here is an application of those rules.
+% \begin{multline*}
+% 	(((\str{if-then-else})\str{false})\str{apple})\str{banana}  \\
+%       \begin{split}
+%         \qquad 
+% 	&\produces (((\lambda a.\lambda b.\lambda c.((a)b)c)\lambda x.\lambda y.y)\str{apple})\str{banana}       \\
+% 	&\produces ((\lambda b.\lambda c.((\lambda x.\lambda y.y)b)c)\str{apple})\str{banana}          \\
+% 	&\produces (\lambda c.((\lambda x.\lambda y.y)\str{apple})c)\str{banana}  \\
+% 	&\produces ((\lambda x.\lambda y.y)\str{apple})\str{banana}   \\
+% 	&\produces (\lambda y.y)\str{banana}    \\
+% 	&\produces \str{banana}
+%      \end{split}
+% \end{multline*}
+Here is the translation of some data structure operations.
+\begin{align*}
+	\str{cons} &= \lambda a.\lambda b.\lambda c.((c)a)b   \\
+	\str{head} &= \lambda x.(x)\str{true}                  \\
+	\str{tail} &= \lambda x.(x)\str{false}               \\
+          \\
+	0 &= \lambda f.\lambda x.x    \\
+	1 &= \lambda f.\lambda x.(f)x  \\
+	2 &= \lambda f.\lambda x.(f)(f)x   \\
+	3 &= \lambda f.\lambda x.(f)(f)(f)x    \\
+        \\
+	\str{succ} &= \lambda n.\lambda f.\lambda x.(f)((n)f)x  \\
+	+ &= \lambda m.\lambda n.\lambda f.\lambda x.((m)f)((n)f)x   \\
+	* &= \lambda m.\lambda n.\lambda f.(m)(n)f           \\
+	\str{zero?} &= \lambda n.((n)(\str{true})\str{false})\str{true} \\
+	\str{pred} &= \lambda n.(((n)\lambda p.\lambda z.((z)(\str{succ})(p)\str{true})(p)\str{true})Lz.((z)0)0)\str{false}
+\end{align*}
+
+Lastly, you can create recursive functions with the \definend{$Y$ combinator}.
+\begin{gather*}
+	Y = \lambda y.(\lambda x.(y)(x)x)\lambda x.(y)(x)x        \\
+	(Y)E -> (E)(Y)E -> \cdots -> (E)\ldots (E)(Y)E
+\end{gather*}
+We need this to create recursive functions, such as the factorial funtion:
+\begin{equation*}
+	\str{fact} = \lambda n.(((\str{if-then-else})(\str{zero?})n)1)((*)n)(\str{fact})(\str{pred})n
+\end{equation*}
+As written, this doesn't work since \str{fact} is a free variable in its 
+own definition! We need some way to bind \str{fact} to ``this function,'' 
+which can be done with Y.
+\begin{equation*}
+	\str{fact} = (Y)\lambda f.\lambda n.(((\str{if-then-else})(\str{zero?})n)1)((*)n)(f)(\str{pred})n
+\end{equation*}
+
+\extrasubsection{From theory to programming language}
+Although the lambda-calculus is powerful enough to express any program, 
+this doesn't mean that you'd actually want to do so. 
+After all, the Turing Machine offers an equally powerful computational basis.
+
+The strength of the lambda-calculus is that it is easily used as a ``glue'' 
+on top of a richer world of primitives. 
+Its advantages as a glue are that it has a natural correspondence with the way 
+that people program, and natural compilation techniques yield 
+high-performance code. 
+The latter comes through optimizations know as tail-call and 
+continuation-passing, which are more advanced topics not covered here.
+
+There are software engineering advantages to a language glued together 
+with lambda-calculus. 
+Lambda expressions can be understood locally\Dash their dependence on 
+their environment is entirely through their free variables. 
+Lambda expressions tend to have fewer free variables and more bound 
+variables than comparable imperative code, since they do not rely as heavily 
+on assignment to express the computation. 
+An imperative program proceeds by altering some globally-accessible 
+store of values. 
+By contrast, a functional program proceeds by function application and 
+the return of values. 
+This eliminates large classes of errors associated with maintinaing a global store of values.
+
+\extrasubsection{Scheme}
+The Scheme programming language is essentially the lambda-calculus outlined 
+above, plus these
+\begin{itemize}
+\item
+    The ability for a lambda-expression to bind several arguments at once.
+\item
+    A rich set of constants, so numbers, arithmetic, data structures, etc., don't have to be built out of thin air.
+\item
+    Primitive control constructs, so control operations don't have to be built out of thin air.
+\item
+    An assignment operation, should it be necessary.
+\item
+    An environment of defined names, to allow for interactive use, redefinition, and recursive definitions without using the $Y$ combinator.
+\item
+    A library with I/O operations to connect programs to the outside world. 
+\end{itemize}
+
+In Scheme, programs look like data structures - both are built of lists. A list looks like:
+\begin{equation*}
+	(\str{elt1}\ \str{elt2}\ ...\ \str{eltn})
+\end{equation*}
+where each element is either an atom (number or symbol), or another list.
+
+Expressions from the lambda-calculus are translated as follows:
+% \begin{align*}
+% 	\lambda x.M  &\becomes  \text{\codeinline!(lambda (x) M)!} \\
+% 	(M)N  &\becomes  \text{\codeinline!(M N)!}
+% \end{align*}
+In addition, Scheme allows lambda expressions and function applications of 
+more than one argument.
+\begin{lstlisting}
+(lambda (a b c) (+ a (* b c)))
+\end{lstlisting}
+The define syntax binds names to values within the local environment:
+\begin{lstlisting}
+(define pi 3.14159265)
+(define fact
+    (lambda (n)
+        (if (zero? n)
+        1
+        (* n (fact (- n 1))))))
+(define alpha (sin (/ pi 180)))
+\end{lstlisting}
+Some Scheme constructs are `syntactic sugar', that is, 
+expressions that can be translated into expressions in terms of more 
+primitive operators. 
+The \codeinline!let! construct allows initialization and binding of 
+local variables so that this
+\begin{lstlisting}
+(let ((x1 E1)
+      (x2 E2)
+      (x3 E3))
+      ...body... )
+\end{lstlisting}
+is equivalent to this.
+\begin{lstlisting}
+((lambda (x1 x2 x3) ...body... )
+E1
+E2
+E3)
+\end{lstlisting}
+% Definition of a function can be done without an explicit lambda-expression
+% \begin{lstlisting}
+% 	(define (f x y z)	=>	(define f
+% 	  ...body...)			  (lambda (x y z)
+% 					    ...body...))
+% \end{lstlisting}
+
+\extrasubsection{Standard idioms in Scheme}
+Where a conventional block-structured imperative language like C or Pascal 
+would write
+\begin{lstlisting}
+begin
+    x := 1;
+    y := 2 * some_global_var;
+    z := some_function();
+    ...body using x, y, and z...
+end
+\end{lstlisting}
+Scheme would instead use the let syntax to bind local variables.
+\begin{lstlisting}
+(let ((x 1)
+    (y (* 2 some-global-var))
+    (z (some-function)))
+    ..body using x, y, and z...)
+\end{lstlisting}
+As we see above, the \codeinline!let! construct is just the stylized use of 
+lambda and a function application to create an environment for the body 
+where the local variables are bound to their values. 
+Note that this style of programming requires the local variables to be 
+initialized before use.
+
+Scheme downplays iterative constructs such as \codeinline!do!, preferring 
+recursive function calls. 
+A special optimization called tail-recursion produces compiled code 
+that is equivalent to a loop.
+\begin{lstlisting}
+(define (new-fact n)
+    (define (iter n a)
+    (if (zero? n)
+        a
+        (iter (- n 1) (* n a))))
+    (iter n 1))
+\end{lstlisting}
+Compare this to the equivalent C function:
+\begin{lstlisting}
+int
+new_fact(int n)
+{
+    int a = 1;
+    while (n != 0)
+        a *= n--;
+    return a;
+}
+\end{lstlisting}
+Note that the loop in the C version cannot be understood on its own\Dash in 
+order to see what \codeinline!n! and \codeinline!a! are we have to 
+see the entire function, while in the Scheme version, the 
+\codeinline!iter! function can be lifted out of the \codeinline!new-fact! 
+function and understood on its own\Dash it has no free variables! 
+This may not seem too important for a toy example like this, but as the 
+size of the function and the complexity of the loop scales up, 
+this kind of modularity can be important.
+
+Although it may seem unnecessary and clumsy to define a new function every 
+time you need a loop, some common uses can be turned into functions 
+themselves. 
+For instance, a common operation in Scheme is the act of taking a 
+list and applying a function to each of the elements, forming a new list of 
+the results.
+\begin{lstlisting}
+(define (list-of-squares l)
+    (define (iter l)
+        (if (null? l)
+            (quote ())
+            (cons ((lambda (x) (* x x)) (car l)) (iter (cdr l)))))
+    (iter l))
+\end{lstlisting}
+This kind of iteration is idiomatic, so we can capture it in a function:
+\begin{lstlisting}
+(define (map f l)
+    (define (iter l)
+        (if (null? l)
+            (quote ())
+            (cons (f (car l)) (iter (cdr l)))))
+        (iter l))
+
+(define (list-of-squares l)
+    (map (lambda (x) (* x x)) l))
+\end{lstlisting}
+We could produce this program in C as well, using the technique of passing 
+pointers to functions as arguments to other functions. 
+However, there are some features of C that make this difficult. 
+Suppose we want a function to do an affine transformation $Ax + B$ on a 
+list of numbers, with A and B as parameters to the function. 
+In C we have to write this.
+\begin{lstlisting}
+double A, B;	/* global variables */
+static double
+affine(double x)
+{
+    return A * x + B;
+}
+
+List *
+affinelist(double a, double b, List *l)
+{
+    A = a;
+    B = b;
+    return map(&affine, l);
+}
+\end{lstlisting}
+Since in C, the map function accepts only a function pointer, 
+the transformation parameters have to be held in some static location for 
+the affine function to find them. This prevents the code from being 
+reentrant\Dash only one call to affinelist can be active at a time.
+
+Pascal allows functions to be declared within a block, and to have access 
+to all the variables visible within that block. 
+In a `block-structured' variation of C would could do the following:
+\begin{lstlisting}
+List *
+affinelist(double a, double b, List *l)
+{
+    double
+    affine(double x)
+    {
+        return a * x + b;
+    }
+    return map(&affine, l);
+}
+\end{lstlisting}
+This allows the function to be re-entrant. 
+But Scheme allows us even more freedom in the use of these local 
+functions\Dash they can persist even after the return of the parent function! 
+The variables bound by the parent function are still accessible to the local 
+functions, and only by them, in effect creating an opaque object with the 
+local functions as the methods for accessing its state. 
+This gives us a way to do object-oriented programming with higher-order 
+functions in Scheme.
+
+Suppose we want to create an object with state variables svN and methods 
+methodN.
+\begin{lstlisting}
+(define (make-object sv1 sv2 ... svN)
+    (lambda (mesg)
+        (cond ((eq? mesg (quote method1)) (lambda args1 body1))
+               ((eq? mesg (quote method2)) (lambda args2 body2))
+                 ...
+               ((eq? mesg (quote methodM)) (lambda argsM bodyM))
+               (else (error "Unknown method for object")))))
+
+(define (method1 obj args1) ((obj (quote method1)) args1))
+    ...
+\end{lstlisting}
+So an object is a procedure which accepts a message and dynamically 
+returns a procedure which will handle that message. 
+Each procedure has access to the state variables which were used to create 
+the object. 
+Multiple instances are created through multiple invocations of the 
+\codeinline!make-object! function. 
+Class structure and inheritance can be accomplished through delegation. 
+So use of higher-order functions can implement object-oriented code in a 
+natural way.
+
+Here are some advantages of a lambda-calculus-based programming language.
+\begin{itemize}
+\item
+    A clean mathematical basis. The formal specification of the language doesn't need to refer to a machine or compiler.
+\item
+    Many common programming idioms have a natural representation.
+\item
+    Advanced programming through higher-order functions.
+\item
+    Direct correspondence with advanced mathematical objects such as functionals.
+\item
+    Efficient machine implementation.
+\item
+    Programs are more modular\Dash they can be understood and analyzed locally. 
+\end{itemize}
+
+There are some disadvantages too.
+\begin{itemize}
+\item
+    Real-world implementations are not as good as they could be.
+\item
+    The model of computation provided by the language is far removed from the realities of the underlying machine. This can be both good and bad.
+\item
+    Things that are simple in other languages tend to be hard in Scheme, yet some simple Scheme tricks are hard to do in other languages.
+\item
+    Programming with full lambda-calculus requires a garbage collector in the runtime system. This entails
+        a more complicated runtime system than Fortran or C, 
+        difficulty in linking with code compiled from another language, and 
+        complications for real-time or interactive use. 
+\end{itemize}

@@ -1,0 +1,1366 @@
+% \begin{flushright}
+% \includegraphics[width=1.5in]{colossus.jpg} \\
+% \textit{The Coluosus, first used in January 1944, helped crack the German submarine
+% code and thwart a submarine warfare initiative, and so to solidify Allied control
+% of the Atlantic.}
+% \end{flushright}
+
+
+% TODO
+% http://en.wikipedia.org/wiki/One_instruction_set_computer
+\chapteropen[copyright Kevin Twomey, \protect\url{kevintwomey.com/lowtech.html}]{prologue/mechanical.jpg}{Mechanical Computation} % ©Kevin Twomey http://kevintwomey.com/lowtech.html; permission granted November 23, 2014 2:14 
+
+What can be mechanically computed, at least in principle?
+For instance, the function that doubles its input, that
+takes in~$x$ and outputs~$2x$, is intuitively mechanically computable.
+We shall call such things \definend{effective}.
+
+The question asks for the things that can be computed more than  
+it asks for how to compute them. 
+So in this chapter
+we tend to be more interested in the function,
+in the input-output behavior,
+than we are in
+the details of coding it.
+
+
+% Scholars have approached this in a number of ways.
+% We will go through one approach in detail,
+% adopting it as our touchstone.
+% Later we will also sketch two others. 
+
+
+
+
+\section{Turing machines}
+Despite that general tendency to downplay implementation details, 
+we follow the approach of Alan Turing so that 
+our 
+first step toward 
+defining the set of computable 
+\margingraphic{0.23\textwidth}{prologue/turing.jpg}{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing 1912--1954}}
+functions 
+is to reflect on the details of doing things with a mechanism.
+
+% \begin{wrapfigure}{R}{0.3\textwidth}
+% \centering
+% \includegraphics[width=0.25\textwidth]{prologue/turing.jpg}
+% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing 1912--1954}}
+% \end{wrapfigure}
+Turing was considering the kind of symbol-manipulating computation that
+we use in mathematics when we factor polynomials 
+or when we verify a step in a plane geometry proof.
+The context of his thinking was the 
+\textit{Entscheidungsproblem},\footnote{German for ``decision problem.''} 
+proposed in 1928 by 
+David Hilbert and Wilhelm Ackermann, which 
+asks for an algorithm that decides the truth or falsity of
+mathematical statements.
+This algorithm should take 
+as input a statement in an appropriate formal language 
+and output `Yes' or `No', giving 
+\citetext{whether the statement is true}{Hilbert was a very prominent 
+mathematician and Ackermann was his student so they made an impression when 
+they wrote, ``[This] must be considered the
+main problem of mathematical logic'' \autocite{HilbertAckermann}, p 73.}.
+
+One day 
+\citetext{after a run}{\autocite{Hodges}, p 96.},\footnote{He was a 
+serious candidate for the 
+1948 British Olympic marathon team.} Turing laid down in the grass and
+imagined a person computing, a
+clerk doing by-hand multiplication with a 
+sheet of paper that gradually becomes covered with columns of numbers.
+With this simple case of symbol-pushing as a model, 
+Turing posited conditions for the computing agent. 
+First, it (or he, or she) has a memory facility, like the 
+clerk's paper, 
+for storage and retrieval of information.
+% (That the clerk's paper is two-dimensional is  
+% is not essential, since we could stretch out the work 
+% into a one-dimensional strip.)
+
+The second point is  
+that the computing agent follows a definite procedure, 
+with no room for creative leaps.
+Part of what makes the procedure definite is that 
+the instructions don't involve 
+random methods such as counting clicks from radioactive decay
+to determine which of two branches to take in a conditional statement.
+But another part is that the agent works in a discrete fashion, stepwise, 
+without continuous methods or analog devices such as a slide rule.
+If a time comes for a break then the agent could pause, noting where they are
+in the procedure (``about to carry a $1$''), so that they could
+resume later.
+We say that the clerk has a finite set of possible \definend{states},
+which we denote $q_0$, $q_1$, etc.
+
+Turing wanted what is in principle computable, 
+so he imposed
+\citetext{no upper bound}{This explication is derived 
+  from \autocite{Rogers},  p 1--5.} 
+on the size of the 
+inputs\Dash more precisely, he imposed no finite upper bound, so that 
+if a calculation needs more room on the tape then an operator could 
+attach more.
+He similarly put no upper bound on the size of the instruction set.
+He put no upper bound on the amount of extra 
+storage, scratch memory, needed in addition to the memory for the inputs and
+instructions.
+And he put no upper bound on the number of steps that a 
+computation performs before it finishes.\footnote{Some authors
+  describe the availablity of resources such as
+  the amount of memory as `infinite'.
+  Turing himself does this.
+  A reader may object that this violates the goal of the definition, to 
+  model physically-realizable computations, and
+  so the development here instead says that 
+  the resources have no finite upper bound.
+  In either case,
+  the point is that if we show that something cannot be computed
+  when there are no bounds then we have shown that 
+  it cannot be computed on any physical device.}
+
+How smart should the computing agent be?
+For instance, should we require that it can multiply?
+We don't need multiplication because we can do
+that with repeated addition.
+We don't even need addition because we can do that by 
+repeating the successor operation, the add-one operation.
+In this way we can boil the computing agent down until it is  
+quite basic, quite easy to understand,
+until the operations \citetext{are so elementary that it is not easy
+to imagine them further divided}{\autocite{Turing}},
+while still keeping the agent powerful enough to do anything that can, 
+in principle, be done. 
+
+
+\subsection{Definition}
+Based on these reflections, Turing imagines a box containing a
+mechanism 
+and fitted with a tape.
+\begin{center}
+   \includegraphics{asy/share/tm.pdf}
+\end{center}
+
+The tape is the memory.
+The box can read from and write to this tape, one character at a time,
+as well as move it in either direction.
+For instance, to do the multiplication problem, 
+the computing agent can get the two input multiplicands from the tape 
+(the picture above shows 
+$72$ and~$74$ in binary), 
+can use the tape for scratch work, and can write the
+output to the tape.
+
+The box is the computing agent, the CPU.
+The \texttt{Start} button sets the computation going and 
+the \texttt{Halt} light flags when it is finished.
+How the mechanism inside the box is engineered is not 
+important\Dash perhaps it has gears and levers,
+or perhaps integrated circuits\Dash what
+matters is that each of its finitely many parts 
+can be in only finitely many states.
+For instance, if it is made with gears then each gear settles in only 
+a finite number of possible positions
+and if it has chips then each 
+register has a finite number of possible values.
+Thus, however it is engineered, 
+in total the box has only finitely many states.
+
+While executing a calculation, the mechanism passes stepwise 
+from state to state.
+For instance, 
+an agent doing multiplication may find, because
+of what state it is in now and because of what it is now reading on the tape,
+that it needs to next carry a~$1$.
+The agent then passes to a new state, one whose intuitive meaning
+is that carries take place there, possibly at the same time
+also shifting the tape or writing to it.
+
+Consequently, machine steps involve four pieces of information,
+We denote the present state as $q_p$ and the next state as $q_n$.
+The other two, $T_p$ and~$T_n$, 
+describe what is presently being read on the tape
+and what happens next with the tape.
+The things that can happen next to the tape 
+includes moving the tape left or right without writing to it,
+which we denote by setting $T_n=\str{L}$ or~$T_N=\str{R}$,
+or writing a character to the tape without moving it.
+As to the set of characters that we can read from or write to the tape, 
+we can choose whatever is convenient
+but for the moment we restrict ourselves to 
+$\str{1}$ and~blank (which we write as $\str{B}$ when just leaving an empty
+space could cause confusion).
+
+The four-tuple $q_pT_pT_nq_n$ is an \definend{instruction}.
+For example, the instruction
+$\texttt{q}_3%
+ \texttt{1}%
+ \texttt{B}%
+  \texttt{q}_5$
+is executed only if the machine is now in state~$q_3$
+and is reading a \str{1} on the tape.
+If so then the machine
+writes a blank to the tape, replacing the \str{1},
+and passes into state~$q_5$.
+
+A Turing machine is a set of instructions (the full definition is below).
+We use the symbol $\TM$, because a Turing machine is like a program.
+
+\begin{example} \label{ex:MPred}
+This Turing machine has six instructions. 
+\begin{equation*}
+ \TM_{\text{pred}}=
+  \set{ \tminstruction{0}{B}{L}{1},\,
+        \tminstruction{0}{1}{R}{0},\,
+        \tminstruction{1}{B}{L}{2},\,
+        \tminstruction{1}{1}{B}{1},\,
+        \tminstruction{2}{B}{R}{3},\,
+        \tminstruction{2}{1}{L}{2} 
+      }
+\end{equation*}
+We can trace its execution.
+The diagram below represents the machine just before it starts, 
+showing a stretch of the tape that includes its non-blank contents, along with 
+the machine's state and the position of its read-write head.
+\begin{center}
+  \tapegraphic{asy/share/tapedecrement0.pdf}
+\end{center}
+When we press \texttt{Start}, the machine 
+is in state~$q_0$ and is reading~$\str{1}$ so 
+instruction $\tminstruction{0}{1}{R}{0}$ applies.
+Thus, the first step is to
+move the tape head right and go back into state~$q_0$.
+The first line  below
+shows the result, and
+later lines show the machine's configuration after later steps.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    1 &\tapegraphic{asy/share/tapedecrement1.pdf} \\
+    2 &\tapegraphic{asy/share/tapedecrement2.pdf} \\
+    3 &\tapegraphic{asy/share/tapedecrement3.pdf} \\
+    4 &\tapegraphic{asy/share/tapedecrement4.pdf} \\
+    5 &\tapegraphic{asy/share/tapedecrement5.pdf} 
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    6 &\tapegraphic{asy/share/tapedecrement6.pdf} \\
+    7 &\tapegraphic{asy/share/tapedecrement7.pdf} \\
+    8 &\tapegraphic{asy/share/tapedecrement8.pdf} \\
+    9 &\tapegraphic{asy/share/tapedecrement9.pdf} 
+  \end{tapesequencetable}
+\end{tapesequence}
+In step~$9$ 
+the instruction 
+$\tminstruction{2}{B}{R}{3}$ sends the machine to~$q_3$,
+for which there is no instruction, so the machine halts.
+\end{example}
+
+The beginning of this chapter notes that we tend to be more 
+interested in which things are computed, rather than in the details of how
+they are computed.
+We will begin by taking the things computed 
+to be functions, input-output behaviors.
+If we start a machine $\TM$ with $n$-many
+$\texttt{1}$'s under and to the right of the head
+and when the machine halts there are $m$-many consecutive $\texttt{1}$'s 
+under and to the right of the head, then we will say that
+the function associated with the machine 
+$\Phi_{\TM}:\N\mapsto\N$
+has 
+% $n\overset{\Phi_{\TM}}{\longmapsto} m$
+$n\mapsto m$.
+This illustrates with input~$n=3$ and output~$m=5$.
+\begin{equation*}
+ \vcenteredhbox{\includegraphics{prologue/asy/tapefcn0.pdf}} 
+  \quad\mapsto\quad
+ \vcenteredhbox{\includegraphics{prologue/asy/tapefcn1.pdf}} 
+\end{equation*}
+
+Thus, Example~\ref{ex:MPred} has
+$\TM_{\text{pred}}$ start in a configuration such that
+above and to the right of its 
+read-write head are three consecutive $\str{1}$'s.
+We will interpret that as input~$3$.
+At the end, above and to the right of the head are
+two consecutive~$\str{1}$'s, which we interpret as output~$2$.
+Under that convention,
+$\TM_{\text{pred}}$'s input-output behavior is that
+it computes the predecessor function $\map{\text{pred}}{\N}{\N}$.
+\begin{equation*}
+  \text{pred}(x)= \begin{cases}
+                    x-1  &\case{if $x>0$}  \\
+                    0    &\case{else}
+                  \end{cases}
+\end{equation*} 
+(We could fix a different convention, such as taking 
+the tape contents as a number written in
+binary so that  
+the example shows the machine taking input~$7$ to output~$3$.
+Under the new convention the predecessor function is computed by a
+different, somewhat more complicated, machine.
+There are still other possible conventions; for instance, we could take
+the input to be text in ASCII.  
+For the moment we will stick with interpreting the tape information
+as integers written in unary.)
+
+
+% We can also describe this Turing machine with a table.
+% \begin{center}
+%     \begin{tabular}{r|cc} 
+%             &$\text{\texttt{B}}$    &$\text{\texttt{1}}$    \\
+%       \hline
+%       $q_0$ &$\text{\texttt{1}}q_0$ &$\text{\texttt{R}}q_1$  \\
+%       $q_1$ &$\text{\texttt{1}}q_1$ &$\text{\texttt{R}}q_2$  \\
+%       $q_2$ &$\text{\texttt{1}}q_2$ &$\text{\texttt{1}}q_3$  \\
+%       $q_3$ &--                     &--
+%    \end{tabular}
+% \end{center}
+
+\begin{example} \label{ex:MAdd}
+This machine adds two integers.
+\begin{equation*}
+ \TM_{\text{add}}=
+  \set{ \tminstruction{0}{B}{1}{1},\,
+        \tminstruction{0}{1}{R}{0},\,
+        \tminstruction{1}{B}{L}{2},\,
+        \tminstruction{1}{1}{R}{1},\,
+        \tminstruction{2}{B}{R}{3},\,
+        \tminstruction{2}{1}{L}{2},\, 
+        \tminstruction{3}{B}{R}{3},\,
+        \tminstruction{3}{1}{B}{4} 
+      }
+\end{equation*}
+We represent the integers
+with a string of \str{1}'s and separate them with a
+blank. %~\str{B}.  
+\begin{center}
+  \tapegraphic{asy/share/tapeadd00.pdf}
+\end{center}
+The computation fills in the blank separator with a \str{1} and then
+trims a \str{1} off of an end.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    1 &\tapegraphic{asy/share/tapeadd01.pdf} \\
+    2 &\tapegraphic{asy/share/tapeadd02.pdf} \\
+    3 &\tapegraphic{asy/share/tapeadd03.pdf} \\
+    4 &\tapegraphic{asy/share/tapeadd04.pdf} \\
+    5 &\tapegraphic{asy/share/tapeadd05.pdf} \\
+    6 &\tapegraphic{asy/share/tapeadd06.pdf} \\
+    7 &\tapegraphic{asy/share/tapeadd07.pdf} \\
+    8 &\tapegraphic{asy/share/tapeadd08.pdf} \\
+    9 &\tapegraphic{asy/share/tapeadd09.pdf} 
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    10 &\tapegraphic{asy/share/tapeadd10.pdf} \\
+    11 &\tapegraphic{asy/share/tapeadd11.pdf} \\
+    12 &\tapegraphic{asy/share/tapeadd12.pdf} \\
+    13 &\tapegraphic{asy/share/tapeadd13.pdf} \\
+    14 &\tapegraphic{asy/share/tapeadd14.pdf} \\
+    15 &\tapegraphic{asy/share/tapeadd15.pdf} \\
+    16 &\tapegraphic{asy/share/tapeadd16.pdf} \\
+    17 &\tapegraphic{asy/share/tapeadd17.pdf} 
+  \end{tapesequencetable}
+\end{tapesequence}
+\end{example}
+
+\begin{definition} \label{def:TuringMachine}
+A \definend{Turing machine}~$\TM$ is a finite set of four-tuple 
+\definend{instructions} $q_pT_pT_nq_n$,
+where $q_p$ and~$q_n$ are elements of the set of \definend{states},
+where $T_p$ is an element of the \definend{tape alphabet} set
+(which must contain a blank symbol),
+and where the \definend{tape action}~$T_j$ 
+is either of the symbols $\texttt{L}$ or~$\texttt{R}$,
+or an element of the tape alphabet (which cannot contain
+$\texttt{L}$ or~$\texttt{R}$).
+The set~$\TM$ is subject to the restriction of being 
+\definend{deterministic}: no distinct four-tuples can begin with 
+the same $q_pT_p$.
+\end{definition}
+
+Here is a formal description of the action of Turing machine.
+For a Turing machine $\TM$, a \definend{configuration}
+is a four-tuple
+$\sequence{q,s,\tau_L,\tau_R}$
+where $q$ is a state, 
+where $s$ is a single character from the tape alphabet,
+and where $\tau_L$ and~$\tau_R$ are strings of elements from the tape alphabet
+(or possibly the empty string~$\emptystring$).
+The idea is that, for instance, each line in the
+trace table of \cref{ex:MAdd} shows a configuration, and 
+the configuration associated with line~$2$ has 
+the state $q=q_0$, 
+and $s$ is the blank character,
+and the tape to the left of the head is $\tau_L=\str{11}$,
+and the tape to the right of the head is $\tau_R=\str{111}$.
+
+What remains is to describe a \definend{step},
+the movement of $\TM$ from a configuration to its next configuration.
+Suppose that at step~$i$ the machine $\TM$ is in configuration
+$\mathcal{C}_i=\sequence{q,s,\tau_L,\tau_R}$.
+We look for an instruction $q_pT_pT_nq_n\in\TM$ with
+$q_p=q$ and~$T_p=s$.
+If there is no such instruction then we say that $\TM$ halts at 
+step~$i+1$.
+Otherwise, because of nondeterminism, there is one such instruction.
+
+What happens next depends on~$T_n$.
+(1)~If $T_n$ is a symbol in the tape alphabet set then we write that
+symbol to the tape, so that the 
+next configuration is 
+$\mathcal{C}_{i+1}=\sequence{q_n,T_n,\tau_L,\tau_R}$.
+(2)~If $T_n$ is the symbol~\str{L} then we move the tape head one to the left.
+That is, the next configuration is  
+$\mathcal{C}_{i+1}=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$,
+where $\hat{s}$ is the rightmost character of the string~$\tau_L$ (if
+$\tau_L=\emptystring$ then $\hat{s}$ is the blank character),
+where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
+(if $\tau_L=\emptystring$ then $\hat{\tau}_L=\emptystring$ also),
+and where $\hat{\tau}_R$ is the concatenation of $s$ and $\tau_R$.
+(3)~If $T_N$ is the symbol~\str{R} then we move the tape to the right.
+This is so similar to~(2) that we will omit the details.
+
+If two configuration are related in this way then we write
+$\mathcal{C}_i \yields \mathcal{C}_{i+1}$, read ``yields in 
+one step.''
+A \definend{computation} is a sequence of steps.
+\begin{equation*}
+  \mathcal{C}_0 \yields \mathcal{C}_1 \yields \mathcal{C}_2
+   \yields \cdots \yields \mathcal{C}_n 
+\end{equation*}
+where $\mathcal{C}_o$ is the machine's initial configuration
+and $\mathcal{C}_n$ is a halting configuration.
+We abbreviate such a sequence with 
+$\mathcal{C}_0\kleenestar{\yields}\mathcal{C}_n$, where 
+$\kleenestar{\yields}$ is read ``yields.'' 
+
+\medskip
+We close this section with two points.
+
+The first is that some Turing machines, for at least some
+starting configurations, will fail to halt.
+
+\begin{example}
+The machine
+$
+  \TM_{\text{inf loop}}=\set{
+        \tminstruction{0}{B}{B}{0},\,
+        \tminstruction{0}{1}{1}{0}
+      }
+$
+never halts, regardless of the input.
+\end{example}
+
+If a machine~$\TM$ fails to halt on an input~$n$ then we 
+say that the associated function \definend{diverges}, written
+$\Phi_{\TM}(n)\mathord{\uparrow}$.
+We then call this a \definend{partial function}, emphasizing
+that for some inputs there is no associated output.
+In contrast, a function that has an output for each input is a 
+\definend{total function}.
+
+% The second point is that 
+% the example machines above cannot be made to do arbitrary things, 
+% they each do just one thing.
+% The right first take is not that a Turing machine is what 
+% we today call a computer,
+% a general-purpose device. 
+% Instead, the right first take is that a Turing machine is a program.
+
+The second point brings up back to the \textit{Entscheidungsproblem}.
+At the end of the paper in which he introduced his definition of 
+machine models, Turing showed that there is no algorithm that 
+satisfies the conditions of the 
+\textit{Entscheidungsproblem}.
+In the next chapter we will discuss more on the significance of this, 
+and related results,
+for our work today, but briefly, it speaks to what even today
+we can do, and cannot do, through 
+mechanical computation.
+
+
+
+\begin{exercises}
+\begin{exercise}
+Trace the execution of the machine $\TM_{\text{pred}}$ from 
+Example~\ref{ex:MPred} when starting on a blank tape.
+\begin{answer}
+  Here is the trace.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Trace the execution of $\TM_{\text{add}}$ from 
+Example~\ref{ex:MAdd} when the first addend is $0$ and the second is~$2$.
+\end{exercise}
+
+\begin{exercise}
+The empty set is a finite set of instructions.  
+What does it do?
+\begin{answer}
+It halts at the first step, because there is no instruction matching
+the current state and what's being read on the tape, because there 
+is no instruction.  
+\end{answer}
+\end{exercise}
+
+
+\begin{exercise}
+Trace the execution of the machine $\TM_{\text{inf loop}}$ 
+for twenty steps, starting on a blank tape.
+\begin{answer}
+  Here is the trace.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that the steps in the execution of a Turing machine are not 
+necessarily invertible.
+That is, produce a Turing machine and a configuration such that
+if you are told the machine was brought to that configuration after some
+number of steps, and you were asked what wsa the prior configuration,
+you couldn't tell.    
+\end{exercise}
+
+\begin{exercise}
+Produce a Turing machine that performs the successor operation, that
+takes as input a number written in
+unary, so that $n$ is represented as $n$-many $1$'s, 
+and gives as output the number~$n+1$ written in unary. 
+\end{exercise}
+
+\begin{exercise}
+Give a Turing machine that
+takes as input a bit string, a sequence of \str{0}'s and \str{1}'s,
+and flips all of the bits, so each \str{0} becomes a \str{1}
+and each \str{1} becomes a \str{0}. 
+You can assume that at the start the machine's head is under the first bit, 
+and you must arrange that at the end the head should again be under the 
+first bit.
+\end{exercise}
+
+
+\begin{exercise}
+Produce a Turing machine that doubles, that
+takes as input a number written in
+unary, so that $n$ is represented as $n$-many $1$'s, 
+and gives as output the number~$2n$ written in unary. 
+\end{exercise}
+
+
+\begin{exercise}
+Write a Turing machine that, when started on a blank tape,
+will run forever and produce a tape containing the string
+$0101101110\ldots$\,.  
+\end{exercise}
+
+
+\begin{exercise}
+Produce a Turing machine that fails to halt on exactly one input.
+Produce a machine that halts on infinitely many inputs, and 
+does not halt on infinitely many.
+\end{exercise}
+\end{exercises}
+
+
+
+
+
+\section{Church's Thesis}
+
+% \begin{wrapfigure}{R}{0.4\textwidth}
+% \centering
+% \includegraphics[width=0.35\textwidth]{prologue/plimpton322.jpg} % http://en.wikipedia.org/wiki/Plimpton_322#/media/File:Plimpton_322.jpg
+% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing pythagorean triples}}
+% \end{wrapfigure}
+\subsection{History}
+From the start of mathematics, algorithms have played a central part.
+The most familiar example is a formula such as 
+the one for the height of a body falling from the Leaning Tower, 
+$h(t)=4.9t^2+56$.
+A formula is a compact list of instructions:
+given an input time, square it, then multiply
+by~$4.9$, and finally add~$56$ to get the 
+output that is the distance above the ground.
+Another example is 
+Euclid's Algorithm for finding the
+greatest common divisor of two numbers; 
+because it is iterative,
+it fits well with the sense that a programmer has of what 
+constitutes an algorithm.
+
+\margingraphic{0.35\textwidth}{prologue/steppedreckoner.jpg}{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Stepped_Reckoner}{Replica of Leibnitz's computer, the Stepped Reckoner}}
+% \begin{wrapfigure}{L}{0.4\textwidth}
+% \centering
+% \includegraphics[width=0.35\textwidth]{prologue/steppedreckoner.jpg} % http://www.computerhistory.org/revolution/calculators/1/49/198
+% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Stepped_Reckoner}{Replica of Leibnitz's computer, the Stepped Reckoner}}
+% \end{wrapfigure}
+In the 1670's 
+Gottfried Wilhelm von Leibniz, the co-creator of Calculus, 
+constructed the first machine
+that could do addition, subtraction, multiplication, division, 
+and square roots as well.
+This led him to speculate on the possibility of
+a machine that could manipulate
+symbols, not just numbers, and could
+determine the truth of scientific statements. 
+% (stated in some appropriate language).
+To settle any dispute, Leibnitz wrote, 
+two scholars could just say,
+``Calculemus!'' (Latin for ``Let us calculate!''). 
+
+The need for a fuller understanding of what
+things are mechanically computable was made pressing by
+the appearance in 1927 of the Incompleteness Theorem by Kurt G\"odel.
+This result says that for any (sufficiently powerful) axiom system there
+are statements that, while they are true, are not provable from those axioms. 
+G\"odel's proof is, at its heart, an algorithm that takes as input
+the statements that are the axioms, 
+and produces as output the statement that is undecidable.
+So understanding what can be done with the techniques in G\"odel's proof 
+involves understanding what can be done with algorithms.
+
+A number of mathematicians proposed formalizations 
+of `intuitively mechanically computable'.
+One was 
+Alonzo Church\footnote{After producing his machine model, 
+  Turing became a PhD student of Church at Princeton.}, 
+who defined the $\lambda$-calculus, 
+which, like Turing's scheme, also produces a set of functions.
+Work with the $\lambda$-calculus showed that it can compute
+large numbers of functions that
+are intuitively computable, and also
+found no intuitively computable function that could not be
+computed under this system.  
+\citetext{Church privately suggested}{\autocite{Soare99}} 
+to G\"odel, the most prominent expert in the area,
+that the set of $\lambda$-computable functions is the same
+as the set of intuitively-computable functions.
+But G\"odel was unconvinced.
+
+That changed when G\"odel read 
+Turing masterful analysis outlined in the prior section.
+He subsequently wrote,
+``That this really is the correct definition of mechanical computability  
+was  \citetext{established  beyond  any  doubt}{\autocite{Godel95}}  
+by  Turing.''
+
+\begin{churchsthesis}
+The set of things that are intuitively 
+computable by a discrete deterministic mechanism 
+is the same as the set of things that are computable by
+a Turing machine.\footnotemark
+\end{churchsthesis}
+\footnotetext{Many authors
+call this the Church-Turing Thesis.  
+In this book, because Turing gets the 
+machine, we give Church the thesis.}
+
+Neither Church nor Turing stated anything as strong as
+is given here; they proposed that the set of things 
+that can be done by a Turing machine is the same as the set of things
+that are intuitively computable by a
+human computer, that is, they addresses the set of things called for in the
+Entscheidungsproblem. 
+The thesis given here, that what can be done by a Turing machine
+is what can be done by any physical mechanism 
+that is discrete and deterministic, is the thesis as it is 
+taken in the field today, based both on the 
+work of these two and on the work done since.
+As developed at the start of this chapter, 
+we take ``physical mechanism'' 
+to go beyond people and to require only that the machine conforms to
+the laws of the universe, somewhat idealized 
+in that, for instance, we put no bound on the
+number of steps in a computation.
+
+Of course,
+one reason for our interest in Church's Thesis is that it addresses
+the kind of computation done by the devices that we have on our
+desks and in our pockets.
+
+
+
+\subsection{Evidence}
+% \begin{wrapfigure}{R}{0.23\textwidth}
+% \centering
+% \includegraphics[width=0.23\textwidth]{prologue/church.jpg} % http://upload.wikimedia.org/wikipedia/en/a/a6/Alonzo_Church.jpg
+% \caption{\label{fig:church}\href{http://en.wikipedia.org/wiki/Alonzo_Church}{Alonzo Church 1903--1995}}
+% \end{wrapfigure}
+\margingraphic{0.23\textwidth}{prologue/church.jpg}{\label{fig:church}\href{http://en.wikipedia.org/wiki/Alonzo_Church}{Alonzo Church 1903--1995}}
+We cannot prove Church's Thesis.
+As \citetext{Turing noted}{\autocite{Turing}}, 
+``All arguments which can be given are bound to be, 
+fundamentally, appeals to intuition, and for this reason rather 
+unsatisfactory mathematically. 
+The real question at issue is, `What are the possible processes which can 
+be carried out in computing \ldots{}\,?' ''
+Nonetheless, Church's Thesis is widely accepted. 
+We will outline the arguments in its favor.
+
+The first argument is coverage:~everything that people think of as 
+intuitively computable has, on close analysis, proved to be
+computable by a Turing machine.
+This includes not just the number theory functions investigated by 
+researchers in the 1930's but also all of the things computed by
+all of the programs in all
+of the computer languages written since, for they can all be 
+compiled to run on a Turing machine.
+
+Despite this weight of evidence, 
+this argument would collapse with one 
+counterexample, one operation that can be done in finite time 
+on a physically-realizable discrete device but that cannot be done on a 
+Turing machine.
+So this argument is strong but at least conceivably not decisive.
+
+The second argument is convergence:~all of the models of computation that 
+were proposed, by all of the researchers then and since,
+yield the same set of computable functions.
+For instance, Turing showed that the set of functions computable with
+his machine model is equal to the set of functions computable
+with Church's $\lambda$-calculus.
+
+Now, everyone could be wrong. 
+There could be some
+\citetext{systematic error}{\autocite{DershowitzGurevich} p 304.} 
+in the thinking around this point.
+Before the advent of non-Euclidean geometry, researchers
+seem not to have imagined the possibility that the Parallel Postulate
+is neither true nor false, and perhaps some similar 
+cultural blindness is happening here.
+Nonetheless, when you have a question and you ask a group of very smart people
+who go off and work independently,
+and when they come back they all give you the
+same answer,
+then you think it is likely the right answer.
+At the very least, convergence says that there is something natural 
+and compelling about this set of functions.
+
+An argument not available to G\"odel and others in the 1930's, 
+since it depends on work done since, 
+is consistency:~the details of the definition of a 
+Turing machine are not essential to what can be computed.
+For any way in which the Turing machine definition given above seems to 
+take an arbitrary choice, 
+altering that way will still lead to
+the same set of computable functions.
+% (of course, it is this set that we want).
+
+For example,   
+the number of tapes does not matter:
+a machine with only one tape can compute the same functions as a machine 
+with two or more.
+(One way to simulate a two-tape machine~$\TM_2$ on
+a one-tape machine~$\TM_1$ is
+by having~$\TM_1$ use its
+even-numbered tape positions for~$\TM_2$'s first tape and
+using its odd tape positions for~$\TM_2$'s second tape.)
+Thus, the fact that \cref{def:TuringMachine}'s machines have one tape
+is not an essential point.
+
+Similarly, machines whose tape is unbounded in one direction only can 
+compute all the functions that can be computed by
+machines with a tape unbounded in both directions.
+Machines with more than one read/write head compute the same
+functions as those with only one head.
+
+Although restricting to machines having only one state does not suffice
+to compute all intuitively computable functions, allowing
+two does\Dash
+two-state machines are equipowerful with 
+the unboundedly-many-states machines given in \cref{def:TuringMachine}.
+
+Two symbols, such as blank and stroke, are enough
+to compute any Turing-computable function.
+Likewise, 
+restricting to write-only machines, ones that cannot change marks once they 
+have been put on the tape, suffices to compute the same set of functions.
+
+There is one more condition that does not change the set of computable 
+functions, determinism.
+Recall that 
+the definition of Turing machine given above does not allow, say, 
+$\tminstruction{5}{1}{R}{6}$
+and 
+$\tminstruction{5}{1}{L}{4}$
+in the same machine because they both begin with $q_5\texttt{1}$.
+If we drop this restriction then the class of machines that we get are called
+nondeterministic.
+We will have much more to say on this later but 
+the collection of nondeterministic Turing machines computes the same 
+set of functions as does the collection of deterministic machines.
+
+The fact that the details of the Turing machine definition are not essential 
+is persuasive in that any proper definition of what is 
+computable should posses this property.
+% If two-tape machines computed more functions than one-tape machines, 
+% and three-tape machines more than those, then identifying 
+% the set of computable functions with those computable by single-tape machines
+% would be foolish. 
+But as with the prior argument, while
+this means that the Turing machine notion is natural and wide-ranging, 
+it still
+seems to leave open a small crack of a possibility that the notion is not 
+exhaustive.
+
+The most persuasive single argument for Church's Thesis\Dash
+what caused G\"odel to change his mind and what convinces scholars
+still today\Dash
+is clarity:~Turing's analysis itself is compelling.
+G\"odel said exactly this in the quote given at the end of the prior 
+subsection and 
+Church felt the same way, writing that Turing machines have, 
+``the advantage of making the
+identification with effectiveness \ldots{} 
+%in the ordinary (not explicitly defined) sense 
+\citetext{evident immediately}{\autocite{Church36}}.''
+% That is, when you read Turing's analysis you say to yourself, 
+% ``Yes, this is exactly what can be done operating without limits
+% by a discrete, deterministic, Newtonian mechanism.''
+
+
+\subsection{What Church's Thesis does not say}
+Turing's analysis, and that of Church and others, 
+aims to understand 
+what can and cannot be done in the course of a particular type of 
+computation,
+namely, a discrete and deterministic manipulation of symbols carried out 
+without creative leaps.   
+
+Church's Thesis does not say that in all circumstances the best way to
+understand a computation is via the Turing machine model.
+% While a security researcher studying 
+% how operating systems could be more resilient to attacks 
+% could conceivably model them as bit streams coming into a Turing machine,
+% because including interactivity in the model would require  
+% varying the bit streams, which is ungainly, they may 
+% make more progress with some other model.
+A numerical analyst investigating a floating point algorithm 
+will want to use a computer model that has registers. 
+Church's Thesis asserts  
+that the discrete logic in the register machine 
+model could in principle be done by a Turing machine, but for this
+application the most felicitous thing is
+a model with registers.
+
+\citetext{Church's Thesis also does not assert that a Turing machine is 
+every possible computing device}{One point that may confuse a person reading other souces on Church's Thesis concerns processes with unbounded extent.  we look for our Turing machines to halt but an operating system, for instance, is designed to not stop.  Does that mean the Turing machine model is inadequate?  The correct answer is given by Lance Fortnow \autocite{Fortnow10}. ``Computation is about process, about the transitions made from one state of the machine to another. Computation is not about the input and the output, point A and point B, but the journey. \ldots{} You can feed a Turing machine an infinite digits of a real number (Siegelmann), have computers interact with each other (Wegner-Goldin), or have a computer that perform an infinite series of tasks (Denning) but in all these cases the process remains the same, each step following Turing's model.''}, 
+in the sense that, say, if you are
+using an automobile antilock braking system that includes a computer
+but also includes input from various sensors then the Turing machine
+only contains the logical and arithmetic computations, not
+the entire system. 
+\citetext{Scott Aaronson has made this point}{From his blog \textit{Shtetl-Optimized}.  \autocite{Aaronson12}}, ``Suppose I \ldots{}
+[argued] that \ldots{} [Church's] Thesis fails to capture all 
+of computation, because Turing machines can't toast bread. 
+\ldots{}
+% Therefore, you need my revolutionary new model, the 
+% Toaster-Enhanced Turing Machine (TETM), which allows bread as a possible input and includes toasting it as a primitive operation.
+You might say: sure, I have a ``point'', but it's a totally uninteresting one. 
+No one ever claimed that a Turing machine could handle every possible 
+interaction with the external world, without first hooking it up to 
+suitable peripherals. 
+If you want a Turing machine to toast bread, you need to connect it 
+to a toaster; then the TM can easily handle the toaster's internal logic 
+\ldots\,.
+% (unless this particular toaster requires solving the halting problem or something like that to determine how brown the bread should be!). 
+In exactly the same way, if you want a TM to handle interactive communication, 
+then you need to hook it up to suitable communication devices.''
+
+In the same vein, we can get physical devices, for instance that plug into a 
+laptop's USB port, that supply a stream of random bits.
+These are not pseudorandom bits that are computed by a method that 
+is deterministic but which causes them to pass statistical tests.
+These devices provide a stream of bits that well-established 
+physics tells us are truly random.  
+We will later discuss this case at greater length but its relevance here is
+that Church's Thesis 
+only asserts that Turing machines model the discrete, deterministic,
+computations that we can do when given as input bits from that device.
+
+
+\subsection{An empirical question}
+We have described that Turings's analysis of what can be done by a human 
+computer was widely accepted.
+We have also described that in the community of researchers,
+the assertion known as Church's Thesis has strengthened over time from the
+claim that what can be done by a human is what can be done by 
+a Turing machine, to the claim that what can be done by
+any mechanism that is discrete and deterministic can be done by a 
+Turing machine.
+
+That brings us to the biggest question:
+are Turing machines an ultimate in physically-possible computation?
+For instance, are there things that we can compute 
+with analog methods, passing lasers through
+some gas, say, or with some kind of quantum magic, that no Turing 
+machine can do?
+Or did Turing, on that day, lying on that grassy river bank, 
+delimit everything that 
+experiments with reality would ever find to be possible?
+
+This big question is open\Dash we have no satisfactory answer.
+For a taste of the issues: 
+in a \citetext{pail of water}{This is \protect\textit{Hinck's pail}, after Ian Hinckfuss, described in \autocite{Lycan}} left for a time
+there are a fantistically large number of molecules having 
+an unbelievably large number of interactions, and those large numbers
+essentually ensure that there is in the pail a configuration
+of molecules that we can view as going through the steps
+we gave as \cref{ex:MPred}, our first example of a computation; 
+can this bucket be said to compute?
+In a more mathematical example,
+we can produce a case involving the familiar wave equation,
+with computable initial
+conditions (that is, Turing machine computable real numbers), 
+for which the unique solution is not computable. % Pour-El M. B., Richards I.
+% The wave equation with computable initial data such that its unique solution is not computable. Adv. in Math 1981;39:215-239.
+So does the experimental setup modelled by this equation 
+compute something that Turing machines cannot?
+Stated dramatically, 
+do the planets in their orbits compute a solution to Kepler's laws?
+
+Again, the question remains open:~there 
+is as yet no analysis of this 
+with the general support among researchers
+that Turing's analysis has in its area.
+Consequently,
+\citetext{we will not consider the question further}{If you are interested, a small sample of readings: \autocite{Copeland96}, \autocite{Copeland99}, and \autocite{Copeland02} argue that computations can be done that are beyond the capabilities of Turing machines are possible, while \autocite{Davis04}, \autocite{Davis06}, and \autocite{Gandy80} represent what is prehaps the more common view among Theory of Computing researchers.}.
+
+In the rest of this book, ``computation'' will refer to the
+kind of work that Turing analyzed, and to which Church's Thesis applies.
+And in particular, inside of the class of models that give the set of 
+effective functions 
+we will use 
+Turing machines as our touchstone, because
+we want to think about symbol-pushing computations, not numerical 
+analysis, and not toast.
+
+
+
+
+\subsection{How we use Church's Thesis} 
+We are interested in what can and cannot be computed,
+at least in the first part of this book, and we will
+not focus on the details of exactly how those things are computed.
+For instance, we may discuss sorting a list but not discuss whether
+it is via a bubble sort or a shell sort.
+
+In addition, doing sophisticated tasks with Turing machines is hard and 
+handling the needed details can blind us to larger points. 
+
+Consequently, when we are showing that a certain
+behavior is computable, if we can be clear and
+rigorous without actually having to implement it on a Turing machine
+then we will be delighted.
+
+Church's Thesis helps us get away with this.
+Many of our arguments will start with 
+a sketch that something is intuitively computable.
+We will then invoke
+Church's Thesis to assert that it is therefore
+computable with a Turing machine, 
+and the argument proceeds with, ``Letting $\TM$ be a machine that \ldots{}\,.''
+This
+is just a question of wanting to move through the material,
+to get things done.
+
+In particular, Church's Thesis implies that we can show
+that something is computable by producing a program for it; 
+for this we use the language Scheme.
+
+
+
+
+\begin{exercises}
+\begin{exercise}
+Write a two-tape Turing machine to add two numbers,
+taking them in unary on tape zero and producing the output in unary 
+on tape~one.    
+\end{exercise}
+
+\begin{exercise}
+A three-tape Turing machine is often convenient, where tape zero holds the 
+inputs, tape one is for scratch work, and tape two is for the output.
+Write a three-tape Turing machine to multiply a pair of inputs, given in 
+unary and separated by a blank.
+\end{exercise}
+
+\end{exercises}
+
+
+
+
+
+% ==================================
+\extra{Turing machine simulator}
+
+Writing code to simulate a Turing Machine is a reasonable 
+programming project.
+Here we will detail one implementation.
+
+We have seen this Turing machine whose input-output behavior is
+the predecessor function.
+\begin{equation*}
+ \TM_{\text{pred}}=
+  \set{ \tminstruction{0}{B}{L}{1},\,
+        \tminstruction{0}{1}{R}{0},\,
+        \tminstruction{1}{B}{L}{2},\,
+        \tminstruction{1}{1}{B}{1},\,
+        \tminstruction{2}{B}{R}{3},\,
+        \tminstruction{2}{1}{L}{2} 
+      }
+\end{equation*}
+Our implementation's version of the machine
+\lstinputlisting[firstline=148,lastline=153]{scheme/prologue/tm.scm}
+uses some constants for convenience.
+\lstinputlisting[firstline=5,lastline=9]{scheme/prologue/tm.scm}
+Entering an initial tape works the same way.
+\lstinputlisting[firstline=154,lastline=156]{scheme/prologue/tm.scm}
+
+Turing machines work step-by-step.
+So there needs to be a routine that moves the machine through a step.
+That routine translates a starting machine configuration to
+another.
+Here are appropriate getters and setters.
+\lstinputlisting[firstline=98,lastline=105]{scheme/prologue/tm.scm}
+The translation has three cases: moving left on the tape, moving right,
+and writing a symbol to the tape.
+They are here as the three clauses in the \codeinline!cond!.
+\lstinputlisting[firstline=119,lastline=137]{scheme/prologue/tm.scm}
+Each of those three clauses returns a configuration.
+In the first two clauses, this output configuration just reflects the change in
+position of the read/write tape head.
+In the third the new configuration reflects that the 
+machine has written the \codeinline!nextaction! character to the tape,
+at the current position. 
+
+The \codeinline!step! routine chooses the \codeinline!cond! clause based 
+on the pair \codeinline!next!, 
+that is returned by the \codeinline!delta! function.
+This function matches a person's experience tracing through the 
+execution of a Turing machine such as~$\TM_{\text{pred}}$:
+you run your finger along the four-tuples looking at each one
+to see if it has the right current state and symbol, 
+until you find one that does and then you note the action to take,
+and the next state.
+\lstinputlisting[firstline=88,lastline=95]{scheme/prologue/tm.scm}
+If none of the four-tuples has the right first two entries then
+the machine halts.
+
+Finally, we tie these routines together with one that keeps taking steps
+until the machine halts.
+\lstinputlisting[firstline=139,lastline=146]{scheme/prologue/tm.scm}
+The \codeinline!max-steps! parameter puts an upper limit on the number
+of steps the machine will walk through. 
+Recall that there are Turing machines that never halt and so it is 
+there to prevent the code from running away.
+
+That \codeinline!tm-run! routine relies on one to display a configuration.
+\lstinputlisting[firstline=106,lastline=115]{scheme/prologue/tm.scm}
+(Code to make the string representation is, 
+unfortunately, ugly.)
+
+Here is the result of running \codeinline!M-pred! with the 
+initial tape \codeinline!tape-three!
+by having Scheme execute \codeinline!(tm-run M-pred tape-three 100)!.
+\begin{lstlisting}
+$ csi -s tm.scm
+step 0 state 0, pos 0, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
+step 1 state 0, pos 1, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
+step 2 state 0, pos 2, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
+step 3 state 0, pos 3, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
+step 4 state 1, pos 2, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
+step 5 state 1, pos 2, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
+step 6 state 2, pos 1, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
+step 7 state 2, pos 0, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
+step 8 state 2, pos -1, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
+step 9 state 3, pos 0, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
+halt  
+\end{lstlisting} % $
+This is the step-by-step evolution.
+The view includes the configuration information of the tape, the current state,
+and the red/write head position.
+(The choice to show the tape on the range of positions $\leftclosed{-10}{10}$
+is just arbitrary, to get something as output.)
+
+
+\extrasubsection{Tape work}
+The routines to manipulate the tape data structure are less interesting.
+A person can understand the simulator without going into them.
+But to run the above code yourself you need to be able to 
+write your own machines and tapes.
+And for completeness, and as examples of Scheme code, here are the
+other routines.
+
+In our definition of a Turing machine the tape is unbounded at both ends.
+So we represent the tape as a list of pairs 
+$\sequence{\text{position},\text{symbol}}$.
+We call each such pair an \textit{info}.
+The setters and getters are easy.
+\lstinputlisting[firstline=14,lastline=19]{scheme/prologue/tm.scm}
+
+To write a symbol \codeinline!sym! to the tape at position \codeinline!pos! 
+\lstinputlisting[firstline=31,lastline=33]{scheme/prologue/tm.scm}
+we need to be able to first erase any symbol at that location. 
+\lstinputlisting[firstline=22,lastline=28]{scheme/prologue/tm.scm}
+
+Reading from the tape should return a blank if there is nothing
+on the tape at that position.
+\lstinputlisting[firstline=52,lastline=56]{scheme/prologue/tm.scm}
+This uses a helper routine that returns False~\codeinline!#f!
+if it finds nothing at that position. 
+\lstinputlisting[firstline=36,lastline=40]{scheme/prologue/tm.scm}
+
+Finally, \codeinline!configuration-get-string! uses this routine
+to get a string showing the current tape between the two limits.
+\lstinputlisting[firstline=59,lastline=64]{scheme/prologue/tm.scm}
+
+\begin{exercises}
+\begin{extraexercise}
+Run the simulator on \codeinline!M-pred!.    
+\end{extraexercise}
+
+\begin{extraexercise}
+Run the simulator on Example~\ref{ex:MAdd}'s $\TM_{\text{add}}$ to add
+$2+3$.    
+\end{extraexercise}
+\end{exercises}
+
+
+% ==================================
+% \extra{Turing machine patterns}
+
+% Use colors on tapes instead of states, line successive tapes up vertically.
+
+% \url{https://en.wikipedia.org/wiki/Turmite}
+
+
+% ==============================
+\extra{Game of Life}
+
+\margingraphic{0.23\textwidth}{prologue/vonneumann.jpg}{\label{fig:vonneumann}\href{https://en.wikipedia.org/wiki/John_von_Neumann}{John von Neumann 1903-1957}}
+% \begin{wrapfigure}{R}{0.28\textwidth}
+% \centering
+% \includegraphics[width=0.25\textwidth]{prologue/vonneumann.jpg}
+% \caption{\label{fig:vonneumann}\href{https://en.wikipedia.org/wiki/John_von_Neumann}{John von Neumann 1903-1957}}
+% \end{wrapfigure}
+% "JohnvonNeumann-LosAlamos" by LANL - http://www.lanl.gov/history/atomicbomb/images/NeumannL.GIF (Archive copy at the Wayback Machine (archived 11 March 2010)). Licensed under Public Domain via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:JohnvonNeumann-LosAlamos.gif#/media/File:JohnvonNeumann-LosAlamos.gif
+John von Neumann was one of the twentieth century's 
+most influential mathematicians.
+He was interested
+in the \citetext{problem of humans travelling in space}{The
+plan was to take a rocket ship powered by dropping a sequence of atom bombs
+out the bottom;
+the energy would let the ship move rapidly around the solar system. 
+This sounds like a crank plan but it is perfectly feasible~\autocite{Brower}.
+Having been a key person in the development of the atomic bomb, 
+von Neumann was keenly aware of their capabilities.}.
+He thought that to colonize Mars we should first send robots.
+Mars is red because it is full of iron oxide, rust.
+Robots could mine the rust, breaking it into iron and oxygen, which 
+puts oxygen in the atmosphere, which is what we want. 
+With all the iron, von Neumann thought,
+the robots could make more robots to mine even more iron.
+So he was thinking about making machines that are capable of self-reproduction.
+(We will study self-reproduction later.)
+
+He benefitted from a suggestion from Stanis\l{}aw Ulam, who was studying
+crystal growth, to use a cell-based approach.
+So von Neumann laid out some computational devices in a grid of 
+interconnections, making a \definend{cellular automaton}.
+
+% A very interesting aspect of the nature of computation is that of understanding
+% \citetext{how our brains work}{The field got a brilliant early start with 
+% includes \autocite{McCollochPitts} (see also the fascinating story
+% of the second author \autocite{Gefter}).  
+% This work has led to neural nets.
+% We shall follow a related, but independent, thread.}. 
+% A reasonable model is to take neurons to be simple computational 
+% devices, and to connect them in a grid.
+% This is a \definend{cellular automaton}. 
+
+\margingraphic[l]{0.23\textwidth}{prologue/conway.jpg}{\label{fig:conway}\href{https://en.wikipedia.org/wiki/John_Horton_Conway}{John Conway b~1937}}
+% \begin{wrapfigure}{L}{0.3\textwidth}
+% \centering
+% \includegraphics[width=0.25\textwidth]{prologue/conway.jpg}
+% \caption{\label{fig:conway}\href{https://en.wikipedia.org/wiki/John_Horton_Conway}{John Conway b~1937}} % https://upload.wikimedia.org/wikipedia/commons/0/04/John_H_Conway_2005_%28cropped%29.jpg
+% \end{wrapfigure}
+Interest in cellular automata greatly increased  when John Conway invented 
+one called Life.
+It was featured in an 
+October~1970 magazine column
+in the popular magazine \textit{Scientific American}.
+The rules of the game 
+are simple enough that a person could immediately take out a pencil
+and start experimenting.
+Lots of people did.
+Then, when personal computers came out, 
+Life became one of the \citetext{earliest computer crazes}{\autocite{Bellos}},
+since it is easy for a beginner to program.
+
+To start, draw a two-dimensional grid of square cells, like
+graph paper or a big chess board.
+The game proceeds in stages, or generations.
+At each generation each cell is either alive or dead. 
+Each cell has eight neighbours, the ones that are 
+horizontally, vertically, or diagonally adjacent. 
+The state of a cell in the next generation is determined by: 
+(i)~a live cell with two or three live neighbours will again be live at
+the next generation but any other live cell dies,
+(ii)~a dead cell with exactly three live neighbours becomes alive at the
+next generation but other dead cells stay dead.
+(The backstory goes that live cells will die if they are either isolated 
+or overcrowded, while if the environment is just right then life can spread.)
+To begin, we seed the board with some initial pattern.
+
+As Gardner noted, Conway, with help from others, developed the rules
+of the game to balance tedious simplicity against 
+inpenetrable complexity.
+
+\begin{quotation}  % Gardner; Topsep issue because of the wrapfigure?
+ The basic idea is to start with a simple configuration of counters 
+(organisms), one to a cell, then observe how it changes as you apply 
+Conway's ``genetic laws'' for births, deaths, and survivals. 
+Conway chose his rules carefully, after a long period of experimentation, 
+to meet three desiderata:
+\begin{enumerate}[topsep=0ex,noitemsep]
+\item
+    There should be no initial pattern for which there is a simple proof that 
+  the population can grow without limit.
+\item
+    There should be initial patterns that apparently do grow without limit.
+\item
+    There should be simple initial patterns that grow and change for a 
+considerable period of time before coming to end in three possible 
+ways:~fading away completely (from overcrowding or becoming too sparse), 
+settling into a stable configuration that remains unchanged thereafter, 
+or entering an oscillating phase in which they repeat an endless cycle of 
+two or more periods. 
+\end{enumerate}
+In brief, the rules should be such as to make the behavior of the 
+population unpredictable. 
+\end{quotation}
+
+The result is, as Conway says, a ``zero-player game.''
+It is a  mathematical recreation in which patterns evolve in 
+fascinating ways. 
+
+Many starting patterns do not result in any interesting behavior at all.
+The simplest nontrivial pattern, a single cell, immediately dies.
+\begin{center}
+  \begin{tabular}{c}\small
+    \includegraphics{prologue/asy/lonely00.pdf} \\
+    Generation $0$
+  \end{tabular}
+  \qquad
+  \begin{tabular}{c}\small
+    \includegraphics{prologue/asy/lonely01.pdf} \\
+    Generation $1$
+  \end{tabular}
+\end{center}
+The pictures show a part of the gameboard,
+the part containing the cells that are alive.
+The two generations suffice to show everything that happens, which isn't
+much.
+
+Some other patterns don't die, but don't do much of anything, either.
+This is a \definend{block}.
+It is stable from generation to generation.
+\begin{center}
+  \begin{tabular}{c}\small
+    \includegraphics{prologue/asy/block00.pdf} \\
+    Generation $0$
+  \end{tabular}
+  \qquad
+  \begin{tabular}{c}\small
+    \includegraphics{prologue/asy/block01.pdf} \\
+    Generation $1$
+  \end{tabular}
+\end{center}
+Because it doesn't change, Conway calls this a ``still life.''
+Another, bigger, still life is the \definend{beehive}.
+\begin{center}
+  \begin{tabular}{c} \small
+    \includegraphics{prologue/asy/beehive00.pdf} \\
+    Generation~$0$
+  \end{tabular}
+  \qquad
+  \begin{tabular}{c} \small
+    \includegraphics{prologue/asy/beehive01.pdf} \\
+    Generation~$1$
+  \end{tabular}
+\end{center}
+
+But many patterns are not still.
+This three-cell pattern, the \definend{blinker}, does a
+simple oscillation.
+\begin{center}
+  \begin{tabular}{c} \small
+    \includegraphics{prologue/asy/blinker00.pdf} \\
+    Generation~$0$
+  \end{tabular}
+  \qquad
+  \begin{tabular}{c} \small
+    \includegraphics{prologue/asy/blinker01.pdf} \\
+    Generation~$1$
+  \end{tabular}
+  \qquad
+  \begin{tabular}{c} \small
+    \includegraphics{prologue/asy/blinker02.pdf} \\
+    Generation~$2$
+  \end{tabular}
+\end{center}
+
+Other patterns move.
+This is a \definend{glider}, the most famous pattern in 
+Life. 
+\begin{center}
+  \includegraphics{prologue/asy/glider00.pdf}  
+\end{center}
+It moves one cell vertically and one horizontally every four 
+generations, crawling across the screen.
+\begin{animatedfigure}{Gliding, left and right.} 
+  \animategraphics{3}{prologue/asy/glideranim}{00}{16}
+  \qquad
+  \animategraphics{3}{prologue/asy/glideranimr}{00}{16}
+\end{animatedfigure}
+
+When Conway came up with the Life rules, he was not sure whether there
+is a pattern where the total number of live cells keeps on growing.
+Bill Gosper showed that there is, by building 
+the \definend{glider gun} which produces 
+a new glider every thirty generations.
+
+The glider pattern an example of a \definend{spaceship},
+a pattern that reappears, displaced, after a number of generations. 
+Here is another, the \definend{medium weight spaceship}. 
+\begin{center}
+  \includegraphics{prologue/asy/mwss00.pdf}  
+\end{center}
+It also crawls across the screen.
+\begin{animatedfigure}{Moving across space.} 
+\animategraphics{3}{prologue/asy/mwssanim}{00}{28}
+\end{animatedfigure}
+
+Another important pattern is the \definend{eater}, which eats gliders 
+and other spaceships.
+\begin{center}
+  \includegraphics{prologue/asy/eater00.pdf}  
+\end{center}
+Here it eats a medium weight spaceship.
+\begin{animatedfigure}{Eating a spaceship.} 
+\animategraphics{3}{prologue/asy/eateranim}{00}{35}
+\end{animatedfigure}
+
+% Numberphile interview John Conway
+% https://www.youtube.com/watch?feature=player_embedded&v=R9Plq-D1gEk
+
+How powerful is the game, as a computational system?
+Although it is beyond our scope, you can run Turing machines in the game
+and
+so it is able to compute anything that can be mechanically computed
+\autocite{Rendell}.

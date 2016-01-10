@@ -1,0 +1,125 @@
+// correspondences.asy
+//  Animate correspondences between countable sets 
+
+import settings;
+settings.outformat="pdf";
+settings.render=0;
+
+unitsize(1cm);
+
+// Get stuff common to all .asy files
+// cd junk is needed for relative import
+cd("../../../asy/");
+import settexpreamble;
+cd("");
+settexpreamble();
+
+cd("../../../asy/");
+import jh;
+cd("");
+// import node;
+
+// Parameters
+real horiz_gap = 1;
+real vert_gap = 1*horiz_gap; // how far to raise numbers in row above
+
+nodestyle ns_noborder=nodestyle(drawfn=None);
+defaultnodestyle=ns_noborder;
+defaultdrawstyle=drawstyle(p=red+fontsize(9pt), arrow=Arrow(DefaultHead, filltype=Fill(red)));  // seems to have no effect?
+
+int num_pics = 7;
+int col_hgt = 4;   // how far up to show? 
+for (int picnum=0; picnum <= num_pics; ++picnum) {
+   // debugging: write(stdout,"Here.");
+   picture pic;
+   // unitsize(pic,1cm);
+   // dot(pic,(-.5,0),invisible);
+   // dot(pic,(1.5*horiz_gap,0)+(.5,col_hgt*vert_gap),invisible);
+   // define nodes
+   node[] n = ncircles( "$\sequence{0,0}$",
+     "$\sequence{1,0}$",
+     "$\sequence{0,1}$",
+     "$\sequence{1,1}$",
+     "$\sequence{0,2}$",
+     "$\sequence{1,2}$",
+     "$\sequence{0,3}$",
+     "$\sequence{1,3}$",
+     "\raisebox{0.75ex}{$\vdots$}",
+     "\raisebox{0.75ex}{$\vdots$}" );
+   // layout
+   defaultlayoutrel = false;
+   gridlayout((5,2), (1.5cm, -0.5cm), n);
+   // draw nodes
+   draw(pic, n[0], n[1], n[2], n[3], n[4],
+	   n[5], n[6], n[7], n[8], n[9] );
+   // draw any edges
+   if (picnum > 0) {
+     draw(pic, n[picnum-1] -- n[picnum], DARKPEN+light_color, arrow=Arrow(DefaultHead, filltype=Fill(DARKPEN+light_color), size=4));
+   }
+  shipout(format("correspondences1%03d",picnum),pic,format="pdf");
+}
+
+
+// N x N
+int num_pics = 9;
+int col_hgt = 4;   // how far up to show? 
+for (int picnum=0; picnum <= num_pics; ++picnum) {
+   // debugging: write(stdout,"Here.");
+   picture pic;
+   // unitsize(pic,1cm);
+   // dot(pic,(-.5,0),invisible);
+   // dot(pic,(1.5*horiz_gap,0)+(.5,col_hgt*vert_gap),invisible);
+   // define nodes
+   node[] n = ncircles(
+		       "$\sequence{0,0}$",  // node 0
+		       "$\sequence{1,0}$",  // 1
+		       "$\sequence{2,0}$",  // 2
+		       "$\sequence{3,0}$",  // 3
+		       "$\sequence{0,1}$",  // 4
+		       "$\sequence{1,1}$",  // 5
+		       "$\sequence{2,1}$",  // 6
+		       "$\sequence{3,1}$",  // 7
+		       "$\sequence{0,2}$",  // 8
+		       "$\sequence{1,2}$",  // 9
+		       "$\sequence{2,2}$",  // 10
+		       "$\sequence{3,2}$",  // 11
+		       "$\sequence{0,3}$",  // 12
+		       "$\sequence{1,3}$",  // 13
+		       "$\sequence{2,3}$",  // 14
+		       "$\sequence{3,3}$" ); // 15
+   node[] m = ncircles(
+		       "$\ldots$", 
+		       "$\ldots$", 
+		       "$\ldots$", 
+		       "\raisebox{0.75ex}{$\vdots$}",
+		       "\raisebox{0.75ex}{$\vdots$}",
+		       "\raisebox{0.75ex}{$\vdots$}" 
+		       );   
+     // "\raisebox{0.75ex}{$\vdots$}",
+     // "\raisebox{0.75ex}{$\vdots$}" );
+   int[] node_list_order = {0,
+			    4, 1,
+			    8, 5, 2,
+			    12, 9, 6, 3
+   };
+   // layout
+   defaultlayoutrel = false;
+   gridlayout((4,4), (1.5cm, -0.5cm), n);
+   hlayout(1cm, n[3], m[0]);
+   vlayout(-0.5cm, m[0], m[1], m[2] );
+   vlayout(-0.5cm, n[12], m[3]);
+   vlayout(-0.5cm, n[13], m[4]);
+   vlayout(-0.5cm, n[14], m[5]);
+   // draw nodes
+   draw(pic, n[0], n[1], n[2], n[3], n[4],
+	n[5], n[6], n[7], n[8], n[9],
+	n[10], n[11], n[12], n[13], n[14],
+	n[15]);
+   draw(pic, m[0], m[1], m[2], m[3], m[4], m[5] );
+   // draw any edges
+   if (picnum > 0) {
+     draw(pic, n[node_list_order[picnum-1]] -- n[node_list_order[picnum]],
+	  DARKPEN+light_color, arrow=Arrow(DefaultHead, filltype=Fill(DARKPEN+light_color), size=4));
+   }
+  shipout(format("correspondences2%03d",picnum),pic,format="pdf");
+}

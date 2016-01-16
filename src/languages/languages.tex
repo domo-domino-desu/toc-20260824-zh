@@ -405,8 +405,9 @@ Note that the rule for \syntax{<natural>} is recursive.
 \end{grammar}
 That rule is recursive but it doesn't mean that we get stuck 
 in infinite regress.
-There is a terminating derivation for
-each integer. 
+The question is not whether you could perversely 
+keep expanding \syntax{<natural>} forever,
+the question is whether a string has a terminating derivation 
 This one derives \syntax{321}.
 \begin{center}
   \begin{tabular}{r@{}l}
@@ -428,7 +429,7 @@ Here is the parse tree.
 \begin{example}
 This is a grammar for real numbers, positive or negative, 
 having a finite decimal part.
-The rules for \syntax{<natural>} are as in the prior example.
+Take the rules for \syntax{<natural>} from the prior example.
 \begin{grammar}
   <start> \produces{}  "-"<fraction>
         \alt "+"<fraction> 
@@ -438,21 +439,50 @@ The rules for \syntax{<natural>} are as in the prior example.
      \produces{} <natural> 
         \alt <natural>.<natural>     
 \end{grammar}
-Here is a derivation for \syntax{"2.718"} (it is a
-rightmost derivation).
-\begin{center}
-\hspace{1em}\begin{tabular}{l}
-  \syntax{<start>}\derives\syntax{<fraction>}
-  \derives\syntax{<natural>.<natural>}            \\ \quad
-  \derives{<natural>.<digit><natural>}
-  \derives\syntax{<natural>.<digit><digit><natural>}  \\ \quad
+Here is a derivation for \syntax{"2.718"}. 
+It is a rightmost derivation.
+\begin{displayedsteps}
+  \initialstep\syntax{<start>}
+  \derives\syntax{<fraction>}
+  \derives\syntax{<natural>.<natural>}            
+  \derives\syntax{<natural>.<digit><natural>}
+  \derives\syntax{<natural>.<digit><digit><natural>}  
   \derives\syntax{<natural>.<digit><digit><digit>}
-  \derives\syntax{<natural>.<digit><digit>"8"}  \\ \quad
+  \derives\syntax{<natural>.<digit><digit>"8"}  
   \derives\syntax{<natural>.<digit>"18"}
   \derives\syntax{<natural>."718"} 
   \derives\syntax{"2"."718"}
-\end{tabular}
-\end{center}
+\end{displayedsteps}
+Here is a derivation for \syntax{"0.577"} that is neither 
+leftmost nor rightmost, just willy-nilly.
+\begin{displayedsteps}
+  \initialstep\syntax{<start>}
+  \derives\syntax{<fraction>}
+  \derives\syntax{<natural>.<natural>}            
+  \derives\syntax{<natural>.<digit><natural>}
+  \derives\syntax{<natural>."5"<natural>}  
+  \derives\syntax{<natural>."5"<digit><natural>}
+  \derives\syntax{<digit>."5"<digit><natural>} 
+  \derives\syntax{<digit>."5"<digit><digit>}  
+  \derives\syntax{<digit>."5"<digit>"7"}
+  \derives\syntax{"0"."5"<digit>"7"} 
+  \derives\syntax{"0"."577"}
+\end{displayedsteps}
+% \begin{displayedsteps}
+% \hspace{1em}\begin{tabular}{l}
+%   \syntax{<start>}
+%   \derives\syntax{<fraction>}
+%   \derives\syntax{<natural>.<natural>}            \\ \quad
+%   \derives\syntax{<natural>.<digit><natural>}
+%   \derives\syntax{<natural>."5"<natural>}  \\ \quad
+%   \derives\syntax{<natural>."5"<digit><natural>}
+%   \derives\syntax{<digit>."5"<digit><natural>} \\ \quad
+%   \derives\syntax{<digit>."5"<digit><digit>}  
+%   \derives\syntax{<digit>."5"<digit>"7"}
+%   \derives\syntax{"0".5<digit>"7"} 
+%   \derives\syntax{"0"."577"}
+% \end{tabular}
+% \end{center}
 \end{example}
 
 A common problem with the grammars relates to 
@@ -461,7 +491,7 @@ the following bit of C-like pseudocode that shows nested if statements.
   if ... then ... if ... then ... else ...
 \end{lstlisting}
 This is a ``dangling else.''
-As written, we cannot tell if the \lstinline!else! is associated
+As written, we cannot tell whether the \lstinline!else! is associated
 with the first \lstinline!if! or the second.
 \begin{center}
   \begin{minipage}{0.4\linewidth}
@@ -542,22 +572,21 @@ writing nonterminals as upper case letters and terminals
 as lower case letters.
 
 \begin{example}
-The simple grammar \syntax{S \produces{} "a"S"b" | \emptystring}
+The grammar \syntax{S \produces{} "a"S"b" | \emptystring}
 % \begin{grammar}
 %   S \produces{} "a"S"b" | \emptystring
 % \end{grammar}
 describes the language 
-with strings of \str{a}'s followed by \str{b}'s, with the 
-same number of each,
 $\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
-(the language includes the empty string as the $n=0$ case).
+of strings of \str{a}'s followed by \str{b}'s, with the 
+same number of each.
 For instance, this derives two \str{a}'s followed by two \str{b}'s:
 \syntax{S}\derives \syntax{"a"S"b"}\derives\syntax{"aa"S"bb"}
 \derives\syntax{"aa"\,\emptystring\,"bb"}, which is the string
 \str{aabb}. 
 \end{example}
 
-Finally, here is the complete description of the derivations allowed under a 
+Here is the complete description of the derivations allowed under a 
 production rule.
 A production rule has the form \mbox{`head\produces{}body'}.
 The head has three components, that is, 
@@ -609,6 +638,27 @@ and rewrite it as \syntax{bb}.
 \end{example}
 
 \begin{exercises}
+\begin{exercise}
+From this grammar derive `\str{the car hit a wall}'.
+\begin{grammar}
+<sentence> \produces{} <subject> <predicate>
+
+<subject> \produces{} <article> <noun>
+
+<predicate> \produces{} <verb> <direct object>
+
+<direct object> \produces{} <article> <noun>
+
+<article> \produces{} "the" | "a"
+
+<noun> \produces{} "car" | "wall"
+
+<verb> \produces{} "hit"
+\end{grammar}
+Also derive `\str{the car hit the wall}' and
+`\str{the wall hit a car}'.
+\end{exercise}
+
 \begin{exercise}
 % https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form
 This is a grammar for \citetext{postal addresses.}{Adapted from \protect\url{https://en.wikipedia.org/wiki/BackusNaur_Form}.}

@@ -730,6 +730,7 @@ of the two.}
   indention=1em,
 }
 
+\RequirePackage{suffix}
 % \margingraphic -- graphic that sticks out into margin
 % Note placement: i or I, o or O, l or L, r or R (capitals are floats)
 % #1 number of affected lines
@@ -742,6 +743,12 @@ of the two.}
     \centering
     \includegraphics[width=#2]{#3}
     \caption{#4}
+  \end{wrapfigure}}
+\WithSuffix\newcommand\margingraphic*[3][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics[width=#2]{#3}
   \end{wrapfigure}}
 
 % % Figures sticking into the margin.

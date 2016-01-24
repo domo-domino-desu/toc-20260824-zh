@@ -744,6 +744,7 @@ of the two.}
     \includegraphics[width=#2]{#3}
     \caption{#4}
   \end{wrapfigure}}
+% For graphic without a caption
 \WithSuffix\newcommand\margingraphic*[3][r]{%  'r' is right side, no floating
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
   \begin{wrapfigure}{#1}[3em]{#2}
@@ -1036,6 +1037,15 @@ of the two.}
 \renewcommand{\proofname}{{\scshape\small Proof}}
 % End of \begin{proof} ... \end{proof}
 \renewcommand{\qedsymbol}{{\scshape\small QED}}
+
+% Problem statements
+\declaretheorem[name=Problem,
+                style=shadedtext,
+                refname={Problem,Problems},
+                Refname={Problem,Problems},
+                sibling=theorem]{problem} 
+\newcommand{\probleminput}{\textit{Input:}}
+\newcommand{\problemoutput}{\textit{Output:}}
 
 % In the Extra sections we want the numbering of
 % theorem environments to be different, more informal.

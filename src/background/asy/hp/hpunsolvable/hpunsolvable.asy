@@ -25,10 +25,11 @@ size(0,0);  // units are big points: 72 is 1inch
 // defaultdrawstyle=drawstyle(p=fontsize(8pt)+fontcommand("\ttfamily"),
 // 			   arrow=Arrow(6));
 
+
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $e$");
-node test=ndiamond("$\TM_e(e)$ halts?");
+node test=nrounddiamond("$\TM_e(e)$ halts?");
 node printout=nbox("Output 0");
 node loop=nbox("Infinite loop");
 node ending=nroundbox("End");

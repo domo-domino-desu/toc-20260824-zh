@@ -189,3 +189,76 @@ defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(FILLC
 nodestyle ns_accepting=nodestyle(textpen=NODEPEN, drawfn=Filler(FILLCOLOR)+DoubleDrawer(black));
 // // nodes without any boxing
 nodestyle ns_noborder=nodestyle(xmargin=1pt, drawfn=None);
+
+
+// nrounddiamond; shape like ndiamond, but with rounded corners
+path rounddiamond(pair center=(0,0), real rx=1, real ry=rx)
+{
+  pair rightcorner = center+(rx,0);
+  pair leftcorner = center-(rx,0);
+  pair topcorner = center+(0,ry);
+  pair botcorner = center-(0,ry);
+  path diamondpath = rightcorner--topcorner--leftcorner--botcorner--cycle;
+  // real d=roundratio*min(DD.x,DD.y);
+  real roundratio = 0.05; // additional parameter
+  path rightcircle = circle(rightcorner,roundratio*rx);
+  path leftcircle = circle(leftcorner,roundratio*rx);
+  path topcircle = circle(topcorner,roundratio*ry);
+  path botcircle = circle(botcorner,roundratio*ry);
+
+  // straight from rightcorner to topcorner
+  path firststraight = subpath(diamondpath,0,1);
+  firststraight = firstcut(firststraight,rightcircle).after;
+  firststraight = firstcut(firststraight,topcircle).before;
+  // straight from topcorner to leftcorner
+  path secondstraight = subpath(diamondpath,1,2);
+  secondstraight = firstcut(secondstraight,topcircle).after;
+  secondstraight = firstcut(secondstraight,leftcircle).before;
+  // straight from leftcorner to botcorner
+  path thirdstraight = subpath(diamondpath,2,3);
+  thirdstraight = firstcut(thirdstraight,leftcircle).after;
+  thirdstraight = firstcut(thirdstraight,botcircle).before;
+  // straight from botcorner to rightcorner
+  path fourthstraight = subpath(diamondpath,3,4);
+  fourthstraight = firstcut(fourthstraight,botcircle).after;
+  fourthstraight = firstcut(fourthstraight,rightcircle).before;
+
+  return firststraight::secondstraight::thirdstraight::fourthstraight::cycle;
+}
+
+
+node nrounddiamond(Label L, nodestyle ns=defaultnodestyle) {
+    real xmargin = ns.xmargin;
+    real ymargin = ns.ymargin;
+    pen textpen = ns.textpen;
+    draw_t drawfn = ns.drawfn;
+    real mag = ns.mag;
+
+    node nd;
+    label(nd.stuff, L, textpen);
+    pair M=max(nd.stuff),
+         m=min(nd.stuff),
+         D=M-m,
+         c=0.5*(M+m);
+    pair DD=mag*(D+2*(xmargin,ymargin));
+    real ra, rb;
+    ra=0.5*DD.x*2;rb=0.5*DD.y*2;
+    nd.outline=rounddiamond(c, ra, rb);
+    drawfn(nd.stuff, nd.outline);
+    return nd;
+}
+
+node[] nrounddiamonds(nodestyle ns=defaultnodestyle ... Label[] Ls) {
+    node[] nds;
+    for (Label L : Ls) {
+        nds.push(nrounddiamond(L, ns));
+    }
+    return nds;
+}
+
+// circle centered at c, radius r
+path circle(pair c, real r)
+{
+return shift(c)*scale(r)*unitcircle;
+}
+

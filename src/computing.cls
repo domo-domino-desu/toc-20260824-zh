@@ -505,7 +505,8 @@ of the two.}
 % \newcommand{\produces}{$\longrightarrow$}
 
 %============= listings =============================
-\definecolor{listingsbackgroundcolor}{RGB}{244,245,213}
+% \definecolor{listingsbackgroundcolor}{RGB}{244,245,213}
+\colorlet{listingsbackgroundcolor}{lightcolor}
 \usepackage{listings}
 % from: http://en.wikibooks.org/wiki/LaTeX/Packages/Listings
 \lstset{ %

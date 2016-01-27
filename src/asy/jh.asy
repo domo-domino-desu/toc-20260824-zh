@@ -48,7 +48,8 @@ pen lightcolor=lightgrey_color;
 pen verylightcolor=white_color;
 
 // ==================== General pens ===================
-pen FILLCOLOR=background_color;  // rgb("fff0ca");
+// pen FILLCOLOR=background_color;  // rgb("fff0ca");
+pen FILLCOLOR=lightcolor;  // like listings backgrounds
 
 pen MAINPEN=linecap(0)
             +linewidth(0.4pt);

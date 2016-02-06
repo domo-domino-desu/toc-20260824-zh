@@ -12,7 +12,7 @@
       ))
 
 ;; Constant of all characters in the alphabet
-(define ALLCHARS '(#\a #\b #\c #\space #\( #\)))
+(define ALLCHARS '(#\a #\b #\space #\( #\)))
 
 ;; Display a list of all strings of characters from ALLCHARS
 (define (allstrings n lst)
@@ -22,7 +22,7 @@
   (if (= n 0)
       (begin
 	(display (list->string lst))
-	(newline))
+	(display #\,))
       (begin
 	(map do-one ALLCHARS)
 	'())))

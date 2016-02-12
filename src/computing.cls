@@ -567,13 +567,36 @@ of the two.}
 % Figures and captions
 \usepackage{float}
 \newfloat{animatefigure}{H}{lof}
+\newfloat{tablehere}{H}{lof}
 \usepackage{caption} 
+\captionsetup{font=small,
+              format=hang,
+              indention=2em,
+              labelformat=simple,
+              labelsep=space,
+              labelfont=sc,
+              textformat=simple,
+              position=bottom,
+              justification=RaggedRight
+              }
 \newenvironment{animatedfigure}[1]{%
   \begin{animatefigure}[H]
-  \caption{\small \textsc{Click to animate.} #1}
+  \refstepcounter{theorem}
+  \caption{\textsc{\thetheorem~Animation:} #1}
+  % \caption{\small \textsc{Click to animate.} #1}
   \centering
 }{%
   \end{animatefigure}
+}
+\captionsetup[tablefigure]{name={Table}}
+\newenvironment{tablefigure}[1]{%
+  \renewcommand{\thefigure}{KKK \arabic{section}.\arabic{figure}}
+  \begin{tablehere}[H]
+  \refstepcounter{theorem}
+  \caption{\textsc{\thetheorem~Table:} #1}
+  \centering
+}{%
+  \end{tablehere}
 }
 
 

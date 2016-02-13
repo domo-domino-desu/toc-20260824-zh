@@ -188,34 +188,31 @@ longdiag[3]=extension(yaxispts[0],yaxispts[1],n[12].pos,n[3].pos)--extension(xax
 // 0-th diagonal needs another point
 pair diagzpt = n[0].pos+(n[4].pos-n[1].pos); // make slope so it is parallel
 longdiag[0]=extension(yaxispts[0],yaxispts[1],n[0].pos,diagzpt)--extension(xaxispts[0],xaxispts[1],n[0].pos,diagzpt);
-
+// Now draw them, then crop
 pen diagpen = linecap(0)+lightcolor+linewidth(1.5pt);
 draw(pic,longdiag[0],diagpen);
 draw(pic,longdiag[1],diagpen);
 draw(pic,longdiag[2],diagpen);
 draw(pic,longdiag[3],diagpen);
 pair cropcorners[];
-cropcorners[0] = (-u,-.45u);
-cropcorners[1] = (-u,4.5u);
+cropcorners[0] = (-0.8u,-.28u);
+cropcorners[1] = (-0.8u,4.5u);
 cropcorners[2] = (11.75u,4.5u);
-cropcorners[3] = (11.75u,-.45u);
+cropcorners[3] = (11.75u,-.28u);
 clip(pic,cropcorners[0]--cropcorners[1]--cropcorners[2]--cropcorners[3]--cycle);
 draw(pic, n[0], n[1], n[2], n[3], n[4],
 	n[5], n[6], n[7], n[8], n[9],
 	n[10], n[11], n[12], n[13], n[14],
 	n[15]);
 draw(pic, m[0], m[1], m[2], m[3], m[4], m[5] );
-// x and y axes
-draw(pic,cropcorners[0]--cropcorners[3]); // x axis
-label(pic,"$0$",(n[0].pos.x,cropcorners[0].y),S);
-label(pic,"$1$",(n[1].pos.x,cropcorners[0].y),S);
-label(pic,"$2$",(n[2].pos.x,cropcorners[0].y),S);
-label(pic,"$3$",(n[3].pos.x,cropcorners[0].y),S);
-draw(pic,cropcorners[0]--cropcorners[1]); // y axis
-label(pic,"$0$",(cropcorners[0].x,n[0].pos.y),W);
-label(pic,"$1$",(cropcorners[0].x,n[4].pos.y),W);
-label(pic,"$2$",(cropcorners[0].x,n[8].pos.y),W);
-label(pic,"$3$",(cropcorners[0].x,n[12].pos.y),W);
-
-
+// horizontal line, labelling the diagonals
+path cropline = cropcorners[0]--cropcorners[3];
+path xaxis = shift(0u,-.2u)*cropline;
+draw(pic,xaxis); // horizontal axis
+real shrinklabeloffset = 0.8;  // bring labels closer to cropline
+label(pic,"{\strut \tabulartext{Diagonal}\hspace*{2em}}",point(cropline,0.0),shrinklabeloffset*S);
+label(pic,"\strut $0$",intersectionpoint(longdiag[0],cropline),shrinklabeloffset*S);
+label(pic,"\strut $1$",intersectionpoint(longdiag[1],cropline),shrinklabeloffset*S);
+label(pic,"\strut $2$",intersectionpoint(longdiag[2],cropline),shrinklabeloffset*S);
+label(pic,"\strut $3$",intersectionpoint(longdiag[3],cropline),shrinklabeloffset*S);
 shipout(format("correspondences3%03d",picnum),pic,format="pdf");

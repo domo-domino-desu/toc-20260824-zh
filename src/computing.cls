@@ -563,43 +563,6 @@ of the two.}
 }
 
 
-% ====================== figures ===========================
-% Figures and captions
-\usepackage{float}
-\newfloat{animatefigure}{H}{lof}
-\newfloat{tablehere}{H}{lof}
-\usepackage{caption} 
-\captionsetup{font=small,
-              format=hang,
-              indention=2em,
-              labelformat=simple,
-              labelsep=space,
-              labelfont=sc,
-              textformat=simple,
-              position=bottom,
-              justification=RaggedRight
-              }
-\newenvironment{animatedfigure}[1]{%
-  \begin{animatefigure}[H]
-  \refstepcounter{theorem}
-  \caption{\textsc{\thetheorem~Animation:} #1}
-  % \caption{\small \textsc{Click to animate.} #1}
-  \centering
-}{%
-  \end{animatefigure}
-}
-\captionsetup[tablefigure]{name={Table}}
-\newenvironment{tablefigure}[1]{%
-  \renewcommand{\thefigure}{KKK \arabic{section}.\arabic{figure}}
-  \begin{tablehere}[H]
-  \refstepcounter{theorem}
-  \caption{\textsc{\thetheorem~Table:} #1}
-  \centering
-}{%
-  \end{tablehere}
-}
-
-
 
 % ====================== other styles ===========================
 % Make single quotes correct in verbatim 
@@ -750,8 +713,9 @@ of the two.}
 \captionsetup{%
   labelformat=empty,
   format=hang,
-  justification=raggedright,
+  justification=RaggedRight,
   indention=1em,
+  skip=8pt
 }
 
 \RequirePackage{suffix}
@@ -761,11 +725,17 @@ of the two.}
 % #1 width of graphic
 % #2 graphic filename
 % #3 caption
+\captionsetup[wrapfigure]{labelformat=empty,
+                          format=hang,              
+                          justification=RaggedRight,
+                          indention=0.8em,
+                          skip=8pt
+}
 \newcommand{\margingraphic}[4][r]{%  'r' is right side, no floating
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
   \begin{wrapfigure}{#1}[3em]{#2}
     \centering
-    \includegraphics[width=#2]{#3}
+    \includegraphics[width=#2]{#3}% 
     \caption{#4}
   \end{wrapfigure}}
 % For graphic without a caption
@@ -838,12 +808,6 @@ of the two.}
 %       \end{wrapfigure}
 %     \fi}%
 % }
-
-
-% Tables
-% Border text, column heads, etc.
-% \newcommand{\tabulartext}[1]{{\textsc{\MakeLowercase{#1}}}}
-\newcommand{\tabulartext}[1]{{\textit{#1}}}
 
 %======================== hyperref ===========
 \usepackage{hyperref}
@@ -1402,3 +1366,53 @@ of the two.}
   \end{list}
 }
 \newcommand{\initialstep}{\hspace*{-1em}}
+
+
+
+
+% ====================== figures ===========================
+% Figures and captions
+\usepackage{float}
+\newfloat{animatefigure}{H}{lof}
+\newfloat{tablehere}{H}{lof}
+\usepackage{caption} 
+\captionsetup{font=small,
+              format=hang,
+              indention=2em,
+              labelformat=simple,
+              labelsep=space,
+              labelfont=sc,
+              textformat=simple,
+              position=bottom,
+              justification=RaggedRight
+              }
+\captionsetup[animatefigure]{labelformat=empty}
+\renewcommand{\theanimatefigure}{\arabic{section}.\arabic{animatefigure}}
+\newenvironment{animatedfigure}[1]{%
+  \begin{animatefigure}[H]
+  \setcounter{animatefigure}{\value{theorem}}  % for \cref
+  \refstepcounter{theorem}
+  \caption{\textsc{\thetheorem~Animation:} #1}
+  % \caption{\small \textsc{Click to animate.} #1}
+  \centering
+}{%
+  \end{animatefigure}
+}
+\crefname{animatefigure}{Animation}{Animations}
+\Crefname{animatefigure}{Animation}{Animations}
+
+
+\captionsetup[tablehere]{labelformat=empty}
+% \newcounter{tablehere}
+\renewcommand{\thetablehere}{\arabic{section}.\arabic{tablehere}}
+\newenvironment{tablefigure}[1]{%
+  \begin{tablehere}[H]
+  \setcounter{tablehere}{\value{theorem}}
+  \refstepcounter{theorem}
+  \caption{\thetheorem~\textsc{Table:} #1}
+  \centering
+}{%
+  \end{tablehere}
+}
+\crefname{tablehere}{Table}{Tables}
+\Crefname{tablehere}{Table}{Tables}

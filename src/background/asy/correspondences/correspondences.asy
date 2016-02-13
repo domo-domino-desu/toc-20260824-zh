@@ -27,6 +27,11 @@ nodestyle ns_noborder=nodestyle(drawfn=None);
 defaultnodestyle=ns_noborder;
 defaultdrawstyle=drawstyle(p=red+fontsize(9pt), arrow=Arrow(DefaultHead, filltype=Fill(red)));  // seems to have no effect?
 
+defaultlayoutrel = false;
+defaultlayoutskip = 0.5cm;
+real u = defaultlayoutskip;  // usual unit
+
+// Correspondence between {0,1}xN and N
 int num_pics = 7;
 int col_hgt = 4;   // how far up to show? 
 for (int picnum=0; picnum <= num_pics; ++picnum) {
@@ -48,7 +53,8 @@ for (int picnum=0; picnum <= num_pics; ++picnum) {
      "\raisebox{0.75ex}{$\vdots$}" );
    // layout
    defaultlayoutrel = false;
-   gridlayout((5,2), (1.5cm, -0.5cm), n);
+   // gridlayout((5,2), (1.5cm, -0.5cm), n);
+   gridlayout((5,2), (3u, -u), n);
    // draw nodes
    draw(pic, n[0], n[1], n[2], n[3], n[4],
 	   n[5], n[6], n[7], n[8], n[9] );
@@ -60,56 +66,92 @@ for (int picnum=0; picnum <= num_pics; ++picnum) {
 }
 
 
-// N x N
+// Correspondence between NxN and N
+node[] n = ncircles(
+		    "$\sequence{0,0}$",  // node 0
+		    "$\sequence{1,0}$",  // 1
+		    "$\sequence{2,0}$",  // 2
+		    "$\sequence{3,0}$",  // 3
+		    "$\sequence{0,1}$",  // 4
+		    "$\sequence{1,1}$",  // 5
+		    "$\sequence{2,1}$",  // 6
+		    "$\sequence{3,1}$",  // 7
+		    "$\sequence{0,2}$",  // 8
+		    "$\sequence{1,2}$",  // 9
+		    "$\sequence{2,2}$",  // 10
+		    "$\sequence{3,2}$",  // 11
+		    "$\sequence{0,3}$",  // 12
+		    "$\sequence{1,3}$",  // 13
+		    "$\sequence{2,3}$",  // 14
+		    "$\sequence{3,3}$" ); // 15
+node[] m = ncircles(
+		    "$\ldots$", 
+		    "$\ldots$", 
+		    "$\ldots$", 
+		    "\raisebox{0.75ex}{$\vdots$}",
+		    "\raisebox{0.75ex}{$\vdots$}",
+		    "\raisebox{0.75ex}{$\vdots$}" 
+		    );   
+int[] node_list_order = {0,
+			 4, 1,
+			 8, 5, 2,
+			 12, 9, 6, 3};
+// layout
+defaultlayoutrel = false;
+gridlayout((4,4), (3u, -u), n);
+hlayout(2u, n[3], m[0]);
+vlayout(-u, m[0], m[1], m[2] );
+vlayout(-u, n[12], m[3]);
+vlayout(-u, n[13], m[4]);
+vlayout(-u, n[14], m[5]);
+
+// Animate the correspondence
 int num_pics = 9;
 int col_hgt = 4;   // how far up to show? 
 for (int picnum=0; picnum <= num_pics; ++picnum) {
+  picture pic;
    // debugging: write(stdout,"Here.");
-   picture pic;
-   // unitsize(pic,1cm);
-   // dot(pic,(-.5,0),invisible);
-   // dot(pic,(1.5*horiz_gap,0)+(.5,col_hgt*vert_gap),invisible);
-   // define nodes
-   node[] n = ncircles(
-		       "$\sequence{0,0}$",  // node 0
-		       "$\sequence{1,0}$",  // 1
-		       "$\sequence{2,0}$",  // 2
-		       "$\sequence{3,0}$",  // 3
-		       "$\sequence{0,1}$",  // 4
-		       "$\sequence{1,1}$",  // 5
-		       "$\sequence{2,1}$",  // 6
-		       "$\sequence{3,1}$",  // 7
-		       "$\sequence{0,2}$",  // 8
-		       "$\sequence{1,2}$",  // 9
-		       "$\sequence{2,2}$",  // 10
-		       "$\sequence{3,2}$",  // 11
-		       "$\sequence{0,3}$",  // 12
-		       "$\sequence{1,3}$",  // 13
-		       "$\sequence{2,3}$",  // 14
-		       "$\sequence{3,3}$" ); // 15
-   node[] m = ncircles(
-		       "$\ldots$", 
-		       "$\ldots$", 
-		       "$\ldots$", 
-		       "\raisebox{0.75ex}{$\vdots$}",
-		       "\raisebox{0.75ex}{$\vdots$}",
-		       "\raisebox{0.75ex}{$\vdots$}" 
-		       );   
-     // "\raisebox{0.75ex}{$\vdots$}",
-     // "\raisebox{0.75ex}{$\vdots$}" );
-   int[] node_list_order = {0,
-			    4, 1,
-			    8, 5, 2,
-			    12, 9, 6, 3
-   };
-   // layout
-   defaultlayoutrel = false;
-   gridlayout((4,4), (1.5cm, -0.5cm), n);
-   hlayout(1cm, n[3], m[0]);
-   vlayout(-0.5cm, m[0], m[1], m[2] );
-   vlayout(-0.5cm, n[12], m[3]);
-   vlayout(-0.5cm, n[13], m[4]);
-   vlayout(-0.5cm, n[14], m[5]);
+   // picture pic;
+   // node[] n = ncircles(
+   // 		       "$\sequence{0,0}$",  // node 0
+   // 		       "$\sequence{1,0}$",  // 1
+   // 		       "$\sequence{2,0}$",  // 2
+   // 		       "$\sequence{3,0}$",  // 3
+   // 		       "$\sequence{0,1}$",  // 4
+   // 		       "$\sequence{1,1}$",  // 5
+   // 		       "$\sequence{2,1}$",  // 6
+   // 		       "$\sequence{3,1}$",  // 7
+   // 		       "$\sequence{0,2}$",  // 8
+   // 		       "$\sequence{1,2}$",  // 9
+   // 		       "$\sequence{2,2}$",  // 10
+   // 		       "$\sequence{3,2}$",  // 11
+   // 		       "$\sequence{0,3}$",  // 12
+   // 		       "$\sequence{1,3}$",  // 13
+   // 		       "$\sequence{2,3}$",  // 14
+   // 		       "$\sequence{3,3}$" ); // 15
+   // node[] m = ncircles(
+   // 		       "$\ldots$", 
+   // 		       "$\ldots$", 
+   // 		       "$\ldots$", 
+   // 		       "\raisebox{0.75ex}{$\vdots$}",
+   // 		       "\raisebox{0.75ex}{$\vdots$}",
+   // 		       "\raisebox{0.75ex}{$\vdots$}" 
+   // 		       );   
+   //   // "\raisebox{0.75ex}{$\vdots$}",
+   //   // "\raisebox{0.75ex}{$\vdots$}" );
+   // int[] node_list_order = {0,
+   // 			    4, 1,
+   // 			    8, 5, 2,
+   // 			    12, 9, 6, 3
+   // };
+   // // layout
+   // defaultlayoutrel = false;
+   // gridlayout((4,4), (1.5cm, -0.5cm), n);
+   // hlayout(1cm, n[3], m[0]);
+   // vlayout(-0.5cm, m[0], m[1], m[2] );
+   // vlayout(-0.5cm, n[12], m[3]);
+   // vlayout(-0.5cm, n[13], m[4]);
+   // vlayout(-0.5cm, n[14], m[5]);
    // draw nodes
    draw(pic, n[0], n[1], n[2], n[3], n[4],
 	n[5], n[6], n[7], n[8], n[9],
@@ -123,3 +165,57 @@ for (int picnum=0; picnum <= num_pics; ++picnum) {
    }
   shipout(format("correspondences2%03d",picnum),pic,format="pdf");
 }
+
+
+// Bring out diagonals
+picture pic;
+int picnum = 0;
+path diag[];  // diagonals
+diag[1] = n[4].pos--n[1].pos;
+diag[2] = n[8].pos--n[2].pos;
+diag[3] = n[12].pos--n[3].pos;
+// extend the diagonals until they meet the boundary
+pair yaxispts[], xaxispts[];
+yaxispts[0]=(-2u,0);
+yaxispts[1]=(-2u,5u);
+xaxispts[0]=(0,-2u);
+xaxispts[1]=(12u,-2u);
+// Long diagonals by extending diagonals on either end, drawing, then cropping
+path longdiag[];  // extend the diagonals on either end
+longdiag[1]=extension(yaxispts[0],yaxispts[1],n[4].pos,n[1].pos)--extension(xaxispts[0],xaxispts[1],n[4].pos,n[1].pos);
+longdiag[2]=extension(yaxispts[0],yaxispts[1],n[8].pos,n[2].pos)--extension(xaxispts[0],xaxispts[1],n[8].pos,n[2].pos);
+longdiag[3]=extension(yaxispts[0],yaxispts[1],n[12].pos,n[3].pos)--extension(xaxispts[0],xaxispts[1],n[12].pos,n[3].pos);
+// 0-th diagonal needs another point
+pair diagzpt = n[0].pos+(n[4].pos-n[1].pos); // make slope so it is parallel
+longdiag[0]=extension(yaxispts[0],yaxispts[1],n[0].pos,diagzpt)--extension(xaxispts[0],xaxispts[1],n[0].pos,diagzpt);
+
+pen diagpen = linecap(0)+lightcolor+linewidth(1.5pt);
+draw(pic,longdiag[0],diagpen);
+draw(pic,longdiag[1],diagpen);
+draw(pic,longdiag[2],diagpen);
+draw(pic,longdiag[3],diagpen);
+pair cropcorners[];
+cropcorners[0] = (-u,-.45u);
+cropcorners[1] = (-u,4.5u);
+cropcorners[2] = (11.75u,4.5u);
+cropcorners[3] = (11.75u,-.45u);
+clip(pic,cropcorners[0]--cropcorners[1]--cropcorners[2]--cropcorners[3]--cycle);
+draw(pic, n[0], n[1], n[2], n[3], n[4],
+	n[5], n[6], n[7], n[8], n[9],
+	n[10], n[11], n[12], n[13], n[14],
+	n[15]);
+draw(pic, m[0], m[1], m[2], m[3], m[4], m[5] );
+// x and y axes
+draw(pic,cropcorners[0]--cropcorners[3]); // x axis
+label(pic,"$0$",(n[0].pos.x,cropcorners[0].y),S);
+label(pic,"$1$",(n[1].pos.x,cropcorners[0].y),S);
+label(pic,"$2$",(n[2].pos.x,cropcorners[0].y),S);
+label(pic,"$3$",(n[3].pos.x,cropcorners[0].y),S);
+draw(pic,cropcorners[0]--cropcorners[1]); // y axis
+label(pic,"$0$",(cropcorners[0].x,n[0].pos.y),W);
+label(pic,"$1$",(cropcorners[0].x,n[4].pos.y),W);
+label(pic,"$2$",(cropcorners[0].x,n[8].pos.y),W);
+label(pic,"$3$",(cropcorners[0].x,n[12].pos.y),W);
+
+
+shipout(format("correspondences3%03d",picnum),pic,format="pdf");

@@ -209,7 +209,7 @@ draw(pic, m[0], m[1], m[2], m[3], m[4], m[5] );
 path cropline = cropcorners[0]--cropcorners[3];
 path xaxis = shift(0u,-.2u)*cropline;
 draw(pic,xaxis); // horizontal axis
-real shrinklabeloffset = 0.8;  // bring labels closer to cropline
+real shrinklabeloffset = 1.0;  // bring labels closer to cropline? make 0.8
 label(pic,"{\strut \tabulartext{Diagonal}\hspace*{2em}}",point(cropline,0.0),shrinklabeloffset*S);
 label(pic,"\strut $0$",intersectionpoint(longdiag[0],cropline),shrinklabeloffset*S);
 label(pic,"\strut $1$",intersectionpoint(longdiag[1],cropline),shrinklabeloffset*S);

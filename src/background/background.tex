@@ -583,7 +583,8 @@ But this happens only if one of the two
 decimal representations ends in $0$'s and the other ends in~$9$'s.
 For just this reason, our~$z$ avoids $0$'s and $9$'s.)
 
-This technique is called \definend{diagonalization}.
+\citetext{This technique}{The argument just sketched is often called Cantor's diagonal proof, although it was not Cantor's original argument for the result, and although the argument style is not due to Cantor but instead to Paul du~Bois-Reymond.  The fact that scientific results are often not attributed to their inventor is ``Stigler's law of eponymy'' (Stigler attributes it to Merton). In mathematics this effect is called ``Boyer's Law'' and was proposed by Hubert Kennedy. \autocite{wiki:StiglersLaw}}
+is called \definend{diagonalization}.
 It is critical for our work.
 
 \begin{proof}
@@ -1167,8 +1168,8 @@ showing how we compute pairs.
     \tabulartext{Associated integer}  &$0$    &$1$   &$2$ &$3$  &$4$  &$5$  &$6$ &\ldots   
   \end{tabular}
 \end{center}
-That correspondence arises from \cref{af:EnumerateNxN},
-counting down the diagonals.
+It is based on \cref{af:EnumerateNxN}, on doing a breadth-first coverage
+of the array by counting down the diagonals.
 \begin{center}
   \includegraphics{background/asy/correspondences/correspondences3000.pdf}
 \end{center}
@@ -1179,29 +1180,51 @@ so on $\sequence{1,2}$'s diagonal the first pair is
 corresponds to~$6$
 (our counting starts at~$0$ so the seventh thing is assigned number~$6$).
 Thus $\sequence{1,2}$ corresponds to~$7$.
-In general, to find the number corresponding to~$\sequence{x,y}$ 
-we will first find how many pairs have been enumerated 
-before its diagonal, and then add the place this pair holds in its diagonal.
 
-For that, consider~$\sequence{x,y}$ on diagonal $x+y$.
+In general, to find the number corresponding to~$\sequence{x,y}$ 
+note that it lies on diagonal $x+y$.
 Observe that diagonal~$0$ has one entry, diagonal~$1$ has
 two entries, diagonal~$2$ has three entries, etc.
-So the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+(x+y)$.
-That's a geometric series, with total $(x+y+1)(x+y)/2$.
+So the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+(x+y)$,
+which is a geometric series with total $(x+y+1)(x+y)/2$ 
+(this is called the $n$-th \definend{triangle number}).
 Further, the starting pair on diagonal~$x+y$ is $\sequence{0,x+y}$,
 the next is~$\sequence{1,x+y-1}$, etc., and so
 so the pair $\sequence{x,y}$ is~$x$-th from the start.
 
 \begin{definition}
-The \definend{breadth-first} enumeration of $\N\times\N$ is the function
-that associates $\sequence{x,y}$ with $(1/2)(x+y+1)(x+y)+x$.
-We write $\godelnum{\sequence{x,y}}$ for that natural number.
+The \definend{diagonal} enumeration of $\N\times\N$ is the function
+that 
+\citetext{associates $\sequence{x,y}$ with $(1/2)(x+y+1)(x+y)+x$}{The 
+Fueter-P\'olya Theorem says that there is only one quadratic function
+that serves as a pairing; see \autocite{Smorynski}.}.
+We write $g(x,y)$ for that natural number.
 \end{definition}
+\noindent
+(Some authors write $\sequence{x,y}$ for that number, or $\godelnum{\sequence{x,y}}$.)
+For example, $g(2,0)=5$.
 
-This correspondence is the inverse of \cref{exam:NCrossN}'s $f$.
-For example, $\godelnum{\sequence{2,0}}=5$.
-Its name comes from the approach to counting the infinite array by
-avoiding trying to first do the full depth of a column or row.
+This correspondence is the inverse of \cref{exam:NCrossN}'s function, which 
+goes from the G\"odel number to the pair.
+To get the formula for that function, let the diagonal be $d(x,y)=x+y$ and
+let the associated triangle number be $t(x,y)=d(d+1)/2$, so the 
+G\"odel number is $g(x,y)=t(x,y)+x$.
+Compute the diagonal number from the triangle number with
+the quadratic formula $(-b\pm\sqrt{b^2-4ac})/(2a)$ applied to 
+the equation for~$t$.
+\begin{equation*}
+  d=\frac{-1\pm\sqrt{1-4\cdot 1\cdot (-2t)}}{2\cdot 1}
+\end{equation*}
+Of the `$\pm$', we keep only the `$+$' because the other root is negative.
+Also, not every pair $\sequence{x,y}$ lies at the end of a diagonal,
+so not every pair is associated with a triangle number, 
+so to find the diagonal number we take the floor
+$d=(-1+\sqrt{1+8t})/2$.
+Here is the Scheme code.
+\lstinputlisting[firstline=1,lastline=25]{background/scheme/godelnumbering.scm}
+\noindent
+(The \codeinline{*} variant \codeinline{let*} allows us to 
+compute the \codeinline{t} by using the \codeinline{d} from the prior line.)
 
 
 % Thus, the number assocated with $\sequence{x,y}$ is $(1/2)(x+y+1)(x+y)+x$.

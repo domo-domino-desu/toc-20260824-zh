@@ -23,3 +23,20 @@
 	 (t (triangle-num d)))
     (list (- g t)
 	  (- d (- g t)))))
+
+;; g3 number triples
+(define (g3 x0 x1 x2)
+  (g x0 (g x1 x2)))
+
+;; g4 number quads
+(define (g4 x0 x1 x2 x3)
+  (g x0 (g3 x1 x2 x3)))
+
+;; g-omega number any tuples
+(define (g-omega  arglist)
+  ;;(display (map number->string args))
+  (cond ((null? arglist) '())
+	((= 1 (length arglist)) (car arglist))
+	((= 2 (length arglist)) (g (car arglist) (cadr arglist)))
+	(else 
+	 (g (car arglist) (g-omega (cdr arglist))))))

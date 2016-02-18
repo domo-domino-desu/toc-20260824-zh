@@ -729,7 +729,8 @@ of the two.}
                           format=hang,              
                           justification=RaggedRight,
                           indention=0.8em,
-                          skip=8pt
+                          skip=8pt,
+                          font=small
 }
 \newcommand{\margingraphic}[4][r]{%  'r' is right side, no floating
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom

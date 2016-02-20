@@ -1148,92 +1148,109 @@ With uncountably many functions, that means there are things that you
 cannot do.
 \end{remark}
 
-We will produce a Scheme function \codeinline!Godel! that takes in one
+We will produce a Scheme function \codeinline!godel! that takes in one
 natural number argument~\codeinline!n! and produces as output a 
 Turing machine.
 Every machine will be the output for some~\codeinline!n!, and we will
 refer to this as the $n$-th Turing machine or as $\TM_n$.
 And we will refer to the function it computes as $\phi_n$. 
 
-A Turing machine is a set of four-tuples so we need to enumerate
+\subsection{Cantor's correspondence}
+A Turing machine is a set of four-tuples so we need to count
 tuples.
 Recall \cref{tf:CorrespondenceNNToN}, reproduced here, 
-listing the first few entries of a correspondence~$\map{f}{\N^2}{\N}$, 
-showing how we compute pairs.
-\begin{center}
-  \begin{tabular}{r|cccccccc}
-    $n\in\N\times\N$  
-               &$\sequence{0,0}$  
-               &$\sequence{0,1}$ 
-               &$\sequence{1,0}$ 
-               &$\sequence{0,2}$  
-               &$\sequence{1,1}$ 
-               &$\sequence{2,0}$ 
-               &$\sequence{0,3}$ 
+listing a few entries of a correspondence between~$\N^2$ and~$\N$.
+\begin{equation*}
+  \begin{array}{r|cccccccc}
+    \text{\tabulartext{Pair}} 
+               &\sequence{0,0}  
+               &\sequence{0,1} 
+               &\sequence{1,0} 
+               &\sequence{0,2}  
+               &\sequence{1,1} 
+               &\sequence{2,0} 
+               &\sequence{0,3} 
                &\ldots 
    \\ \cline{2-9}
-    \tabulartext{Associated integer}  &$0$    &$1$   &$2$ &$3$  &$4$  &$5$  &$6$ &\ldots   
-  \end{tabular}
-\end{center}
-It is based on \cref{af:EnumerateNxN}, on doing a breadth-first coverage
-of the array by counting down the diagonals.
+    \text{\tabulartext{Integer}}  
+       &0    &1   &2 &3  &4  &5  &6  &\ldots   
+  \end{array}
+  \tag{$*$}
+\end{equation*}
+It is based on \cref{af:EnumerateNxN}, which does a breadth-first coverage
+of the array by
+\citetext{counting down the diagonals}{Some authors call this an anti-diagonal, 
+taking the diagonal to be composed of the pairs $\sequence{n,n}$.}.
 \begin{center}
   \includegraphics{background/asy/correspondences/correspondences3000.pdf}
 \end{center}
-Consider the pair~$\sequence{1,2}$.
-Its two entries add to~$3$, the number of its diagonal.
-Before diagonal~$3$ there are a total of six pairs, 
-so on this diagonal the initial pair~$\sequence{0,3}$ corresponds to~$6$
-(we start counting at~$0$ so the seventh thing is assigned number~$6$).
+Consider~$\sequence{1,2}$.
+It is in diagonal~$3$, which is the sum of its entries.
+Before diagonal~$3$ there are six pairs, 
+so on diagonal~$3$ the initial pair~$\sequence{0,3}$ corresponds to~$6$,
+as shown above in~$*$.
 So $\sequence{1,2}$ corresponds to~$7$.
 
 Following that model, to get the number corresponding to~$\sequence{x,y}$
-note that it lies on diagonal $x+y$.
+note that it lies on diagonal $d=x+y$.
 Diagonal~$0$ has one entry, diagonal~$1$ has
 two entries, diagonal~$2$ has three entries, etc.,
-so the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+(x+y)$.
-This is an arithmetic series with total $(x+y+1)(x+y)/2$, 
-called the $x+y$-th \definend{triangle number}.
-Then, inside diagonal~$x+y$, the initial pair is $\sequence{0,x+y}$,
-the next is~$\sequence{1,x+y-1}$, etc., and so
-$\sequence{x,y}$ is the~$x$-th pair from the start.
+so the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+d$.
+This is an arithmetic series with total $d(d+1)/2$, 
+called the $d$-th \definend{triangle number}.
+Then, inside that diagonal, right at the start is $\sequence{0,x+y}$,
+next is~$\sequence{1,x+y-1}$, etc., and so
+$\sequence{x,y}$ is the~$x$-th pair from the diagonal's start.
 
 \begin{definition}
-The \definend{diagonal} enumeration of $\N\times\N$ is the function
-that 
-\citetext{associates $\sequence{x,y}$ with $(1/2)(x+y+1)(x+y)+x$}{The 
-Fueter-P\'olya Theorem says that there is only one quadratic function
-that serves as a pairing; see \autocite{Smorynski}.}.
-We write $g(x,y)$ for that natural number.
+\definend{Cantor's correspondence}, or 
+the \definend{diagonal} enumeration of $\N\times\N$, is
+the function $\map{\cantor}{\N^2}{\N}$ given by
+\citetext{$\cantor(x,y)=(1/2)(x+y)(x+y+1)+x$}{The 
+Fueter-P\'olya Theorem says that this is essentially the only 
+quadratic function that serves as a pairing; see \autocite{Smorynski}.
+No one knows whether there are pairing functions 
+that are any other kind of polynomial.}.
 \end{definition}
 \noindent
-(Some authors write $\sequence{x,y}$ for that number, or 
-$\godelnum{\sequence{x,y}}$.)
-For example, $g(2,0)=5$.
+(Some authors denote this with diamond brackets, 
+writing $\sequence{x,y}$ for our
+$\cantor(x,y)=(1/2)(x+y)(x+y+1)+x$).
+% , or $\godelnum{\sequence{x,y}}$.)
+For example, $\cantor(1,2)=7$ and~$\cantor(2,0)=5$.
 
-This correspondence is the inverse of \cref{exam:NCrossN}'s function, which 
-goes from the G\"odel number to the pair.
-To get the formula for that function, let the diagonal be $d(x,y)=x+y$ and
-let the associated triangle number be $t(x,y)=d(d+1)/2=(d^2+d)/2$. 
-(so the G\"odel number is $g(x,y)=t(x,y)+x$).
-Apply
-the formula for quadratics $(-b\pm\sqrt{b^2-4ac})/(2a)$ to 
-the equation for~$t$ to 
-compute the diagonal number from the triangle number.
+The inverse function goes from the number to the pair 
+(as in \cref{exam:NCrossN}).
+To get that formula, where the diagonal is $d(x,y)=x+y$, 
+let the associated triangle number be $t(x,y)=d(d+1)/2=(d^2+d)/2$, 
+so that $\cantor(x,y)=t(x,y)+x$.
+Then $0=d^2+d-2t$. 
+Apply the familiar formula for quadratics 
+$(-b\pm\sqrt{b^2-4ac})/(2a)$ to 
+compute the diagonal number from the triangle number
 \begin{equation*}
   d=\frac{-1\pm\sqrt{1-4\cdot 1\cdot (-2t)}}{2\cdot 1}
    =\frac{-1+\sqrt{1+8t}}{2}
 \end{equation*}
-(Of the `$\pm$', we keep only the `$+$' because the other root is negative.)
-Also, not every pair $\sequence{x,y}$ lies at the end of a diagonal,
+(of the `$\pm$', we keep only the `$+$' because the other root is negative).
+Now, not every pair $\sequence{x,y}$ lies at the end of a diagonal,
 so not every pair is associated with a triangle number, 
 and so to find the diagonal number we take the floor.
-Here is the Scheme code.
-\lstinputlisting[firstline=1,lastline=25]{background/scheme/godelnumbering.scm}
-\noindent
-(The \codeinline{*} variant \codeinline{let*} allows us to 
-compute the \codeinline{t} by using the \codeinline{d} from the prior line.)
 
+Here is the code.
+(The \codeinline{*} variant \codeinline{let*} allows us to 
+compute \codeinline{t} by using the \codeinline{d} from the prior line.)
+\lstinputlisting[firstline=1,lastline=26]{background/scheme/godelnumbering.scm}
+\noindent
+Use this code in the natural way.
+\begin{lstlisting}
+#;1> (include "godelnumbering.scm")
+; including godelnumbering.scm ...
+#;2> (cantor 1 2)
+7
+#;3> (xy 7)
+(1 2)  
+\end{lstlisting}
 
 % Thus, the number assocated with $\sequence{x,y}$ is $(1/2)(x+y+1)(x+y)+x$.
 

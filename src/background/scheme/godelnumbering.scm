@@ -11,7 +11,6 @@
        x)))
 
 ;; diag-num  given Cantor number, find the number of the diagonal
-;; todo: get numerical errors if c is too large, change this to (use numbers)
 (define (diag-num c)
   (inexact->exact (floor (/
 			  (- (sqrt (+ (* 8 c) 1))
@@ -28,6 +27,22 @@
 ;; cantor-3 number triples
 (define (cantor-3 x0 x1 x2)
   (cantor x0 (cantor x1 x2)))
+
+;; (use numbers)
+;; diag-num  given Cantor number, find the number of the diagonal
+;; The other version of this returns numerical issues if c is too large
+;; but this version requires "(use numbers)" at the top of the file.
+;;   The idea here is that exact-integer-sqrt x returns s and k so that
+;; s is the largest integer with s^2<x and s^2+k = x.  If taking s gives
+;; a number that is an exact integer then the floor will be the sam eas using
+;; the s, while if it give a number ending in .5 then to bump it up to where
+;; the entire expression floors to one higher would require s+1, but we 
+;; know s+1 is too big.
+;; (define (diag-num c)
+;;   (let ((s (exact-integer-sqrt (+ 1 (* 8 c)))))
+;;     (floor-quotient (- s 1)
+;; 		    2)))
+
 
 (define (xy-3 c)
   (cons (car (xy c))

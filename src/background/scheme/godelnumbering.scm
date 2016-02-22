@@ -31,10 +31,10 @@
 ;; (use numbers)
 ;; diag-num  given Cantor number, find the number of the diagonal
 ;; The other version of this returns numerical issues if c is too large
-;; but this version requires "(use numbers)" at the top of the file.
+;; but this version requires "(use numbers)" to use bignums.
 ;;   The idea here is that exact-integer-sqrt x returns s and k so that
 ;; s is the largest integer with s^2<x and s^2+k = x.  If taking s gives
-;; a number that is an exact integer then the floor will be the sam eas using
+;; a number that is an exact integer then the floor will be the same as using
 ;; the s, while if it give a number ending in .5 then to bump it up to where
 ;; the entire expression floors to one higher would require s+1, but we 
 ;; know s+1 is too big.
@@ -43,18 +43,24 @@
 ;;     (floor-quotient (- s 1)
 ;; 		    2)))
 
-
+; xy-3  Return the triple that gave (cantor-3 x0 x1 x2) => c
 (define (xy-3 c)
   (cons (car (xy c))
 	(xy (cadr (xy c)))))
 
-;; cantor-4 number quads
+;; cantor-4  Number quads
 (define (cantor-4 x0 x1 x2 x3)
   (cantor x0 (cantor-3 x1 x2 x3)))
 
+; xy-4  Un-number quasd: give (x0 x1 x2 x3) so that (cantor-4 x0 x1 x2 x3) => c
+(define (xy-4 c)
+  (let ((pr (xy c)))
+    (cons (car pr)
+	  (xy-3 (cadr pr)))))
+
 ;; cantor-n number any-sized tuple
 (define (cantor-n . args)
-  (cond ((null? args) (display "ERROR: cantor-omega requires an input"))
+  (cond ((null? args) (display "ERROR: cantor-n requires an input"))
 	((= 1 (length args)) (car args))
 	((= 2 (length args)) (cantor (car args) (cadr args)))
 	(else 
@@ -82,3 +88,49 @@
 	 (arity (car pair))
 	 (cantor-number (cadr pair)))
     (xy-arity arity cantor-number)))
+
+
+;; ========
+;; Machine counting
+;; A machine is a list of instructions.
+;; An instruction is a 4-tuple.
+;;    (current-state, current-tape-char, next-op, next-state)
+;; Here, current-tape-char is interpreted as:
+;;   blank <-> 0, c0 <-> 1, c1 <-> 2, ..
+;; Also, next-op is interpreted as (the first two are tape head operations):
+;;   L <-> 0, R <-> 1, blank <-> 2, c0 <-> 3, c1 <-> 4, ..  
+;; TODO add conversions that use the instructions from the Turing simulation
+;; in the prologue.
+
+;; instruction->integer  Convert length-4 list ilist to corresponging nat number
+(define (instruction->integer ilist)
+  (apply cantor-4 ilist))
+
+;; integer->instruction Return the instruction corresponding to i
+(define (integer->instruction i)
+  (xy-4 i))
+
+;; machine->numlist convert list of 4-tuples m to list of corresponding
+;;   natural numbers
+(define (machine->numlist m)
+  (if (null? m)
+      '()
+      (cons (instruction->integer (car m)) 
+	    (machine->numlist (cdr m)))))
+
+;; numlist->machine  Return the machine represented by nlist
+(define (numlist->machine nlist)
+  (map integer->instruction nlist))
+  ;; (if (null? nlist)
+  ;;     '()
+  ;;     (cons (integer->instruction (car nlist)) 
+  ;; 	    (numlist->machine (cdr nlist)))))
+
+;; godel  Return godel number of Turing machine m
+(define (godel m)
+  (apply cantor-omega (machine->numlist m)))
+
+;; machine Return the list of 4-tuples represtented by the godel number g
+(define (machine g)
+  (let ((numlist (xy-omega g)))
+    (numlist->machine numlist)))

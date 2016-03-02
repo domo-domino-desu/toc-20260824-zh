@@ -400,7 +400,7 @@ shows $\map{f}{\N^2}{\N}$ but of course it is also a correspondence
 in the other direction~$\map{f^{-1}}{\N}{\N^2}$.
 \begin{tablefigure}{Correspondence between $\N^2$ and $\N$.}
   \begin{tabular}{r|cccccccc}
-    $n\in\N\times\N$  
+    \tabulartext{Pair} 
                &$\sequence{0,0}$  
                &$\sequence{0,1}$ 
                &$\sequence{1,0}$ 
@@ -410,15 +410,13 @@ in the other direction~$\map{f^{-1}}{\N}{\N^2}$.
                &$\sequence{0,3}$ 
                &\ldots 
    \\ \cline{2-9}
-    $f(n)\in\N$  &$0$    &$1$   &$2$ &$3$  &$4$  &$5$  &$6$ &\ldots   
+    \tabulartext{Number}  
+       &$0$    &$1$   &$2$  &$3$  &$4$  &$5$  &$6$  &\ldots   
   \end{tabular}
   \label{tf:CorrespondenceNNToN}
 \end{tablefigure}
 \end{example}
-That there is such a correspondence
-is all we need in this subsection, since the existence of $f^{-1}$
-shows that $\N^2$ is countable.
-In the next subsection we will give more details, including a formula.
+The next subsection will give more details, formulas, and code.
 
 \begin{example}  \label{ex:RationalsAreCountable}
 The set of rationals $\Q$ is countable.
@@ -501,10 +499,107 @@ The guest in room~$0$
 said that the guest from room~$1$ was covering both of their bills.
 The guest in room~$1$ said yes, but in addition
 the guest in room~$2$ had agreed 
-to pay for all three rooms $0$--$2$.
+to pay for all three rooms, $0$--$2$.
 Room~$2$ said that room~$3$ would pay, etc.
-So this hotel made no money despite having infinitely many rooms,
+So this fabled hotel made no money despite having infinitely many rooms,
 or perhaps because of it.}
+
+
+
+
+\subsection{Cantor's correspondence}
+\cref{tf:CorrespondenceNNToN} lists 
+a few entries of a correspondence between~$\N^2$ and~$\N$.
+It is based on \cref{af:EnumerateNxN}, which does a breadth-first coverage
+of the array by
+\citetext{counting diagonally}{Some authors call this an anti-diagonal, 
+taking the diagonal to be composed of the pairs $\sequence{n,n}$.}.
+\begin{center}
+  \includegraphics{background/asy/correspondences/correspondences3000.pdf}
+\end{center}
+For the idea behind the formula consider the pair~$\sequence{1,2}$.
+Its diagonal number, $3$, is the sum of its entries.
+Before diagonal~$3$ there are six pairs, 
+so on diagonal~$3$ the initial pair~$\sequence{0,3}$ corresponds to~$6$.
+Then $\sequence{1,2}$ corresponds to~$7$.
+
+Following that pattern, to get the number corresponding to~$\sequence{x,y}$
+note that it lies on diagonal $d=x+y$.
+Diagonal~$0$ has one entry, diagonal~$1$ has
+two entries, diagonal~$2$ has three entries, etc.,
+so the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+d$.
+This is an arithmetic series with total $d(d+1)/2$, 
+called the $d$-th \definend{triangle number}.
+Then, inside diagonal~$d$, the pair at the start is $\sequence{0,x+y}$,
+next is~$\sequence{1,x+y-1}$, etc., and so
+$\sequence{x,y}$ is the~$x$-th pair from $d$'s start.
+
+\begin{definition}
+\definend{Cantor's correspondence}, or 
+the \definend{diagonal} enumeration of $\N\times\N$, is
+the function $\map{\cantor}{\N^2}{\N}$ given by
+\citetext{$\cantor(x,y)=(1/2)(x+y)(x+y+1)+x$}{The 
+Fueter-P\'olya Theorem says that this is essentially the only 
+quadratic function that serves as a pairing; see \autocite{Smorynski}.
+No one knows whether there are pairing functions 
+that are any other kind of polynomial.}.
+\end{definition}
+\noindent
+(Some authors use diamond brackets, 
+writing $\sequence{x,y}$ where we write
+$\cantor(x,y)$.)
+% , or $\godelnum{\sequence{x,y}}$.)
+For example, $\cantor(1,2)=7$ and~$\cantor(2,0)=5$.
+
+The inverse function goes from the number to the pair, 
+as in \cref{exam:NCrossN}.
+To get that formula, where the diagonal is $d(x,y)=x+y$, 
+let the associated triangle number be $t(x,y)=d(d+1)/2=(d^2+d)/2$.
+Then $0=d^2+d-2t$. 
+Applying the familiar formula for quadratics 
+$(-b\pm\sqrt{b^2-4ac})/(2a)$ gives 
+\begin{equation*}
+  d=\frac{-1+\sqrt{1-4\cdot 1\cdot (-2t)}}{2\cdot 1}
+   =\frac{-1+\sqrt{1+8t}}{2}
+\end{equation*}
+(of the `$\pm$', we keep only the `$+$' because the other root is negative).
+Not every pair corresponds with a triangle number, 
+and so to find the number of the diagonal lying before the 
+pair~$\sequence{x,y}$ with $\cantor(x,y)=c$, 
+\citetext{take the floor}{Let the $n$-th triangle number be
+$t(n)=0+1+\cdots+n=n(n+1)/2$.  
+The function~$t$ is monotonicly increasing and there are infinitely many 
+triangle numbers.
+Thus for every natural number~$c$ there is a unique triangle number $t(n)$ 
+that is maximal so that $c=t(n)+k$ for some~$k\in\N$.
+Because $t(n+1)=t(n)+n+1$, we see that $k<n+1$, that is, $k\leq n$.
+Thus, to compute the diagonal number~$d$ from the Cantor number~$c$ of a pair,
+we have $(1/2)d(d+1)\leq c< (1/2)(d+1)(d+2)$.
+Applying the quadratic formula to the left half and right halves gives
+$(1/2)(-3+\sqrt{1+8c})<d\leq (1/2)(-1+\sqrt{1+8c})$.
+Taking $(1/2)(-1+\sqrt{1+8c})$ to be $\alpha$ gives that 
+$c\in\rightclosed{\alpha-1}{\alpha}$ so that $d=\floor{\alpha}$. 
+\autocite{222835}}
+$d=\floor{(-1+\sqrt{1+8c})/2}$.
+
+Here is the code.
+(The \codeinline{*} variant \codeinline{let*} allows us to 
+compute \codeinline{t} by using the \codeinline{d} from the prior line.)
+\lstinputlisting[firstline=1,lastline=26]{background/scheme/godelnumbering.scm}
+\noindent
+Use this code in the natural way.
+\begin{lstlisting}
+#;1> (include "godelnumbering.scm")
+; including godelnumbering.scm ...
+#;2> (cantor 1 2)
+7
+#;3> (xy 7)
+(1 2)  
+\end{lstlisting}
+
+
+
+
 
 
 \subsection{Diagonalization}
@@ -1116,7 +1211,7 @@ That is, verify each of these.
 
 
 %================================================
-\section{Numbering}
+\section{G\"odel numbering}
 
 NOT DONE.
 
@@ -1155,116 +1250,14 @@ Every machine will be the output for some~\codeinline!n!, and we will
 refer to this as the $n$-th Turing machine or as $\TM_n$.
 And we will refer to the function it computes as $\phi_n$. 
 
-\subsection{Cantor's correspondence}
+\subsection{The number of the beast}
 A Turing machine is a set of four-tuples so we need to count
 tuples.
-Recall \cref{tf:CorrespondenceNNToN}, reproduced here, 
-listing a few entries of a correspondence between~$\N^2$ and~$\N$.
-\begin{equation*}
-  \begin{array}{r|cccccccc}
-    \text{\tabulartext{Pair}} 
-               &\sequence{0,0}  
-               &\sequence{0,1} 
-               &\sequence{1,0} 
-               &\sequence{0,2}  
-               &\sequence{1,1} 
-               &\sequence{2,0} 
-               &\sequence{0,3} 
-               &\ldots 
-   \\ \cline{2-9}
-    \text{\tabulartext{Number}}  
-       &0    &1   &2 &3  &4  &5  &6  &\ldots   
-  \end{array}
-  \tag{$*$}
-\end{equation*}
-It is based on \cref{af:EnumerateNxN}, which does a breadth-first coverage
-of the array by
-\citetext{counting down the diagonals}{Some authors call this an anti-diagonal, 
-taking the diagonal to be composed of the pairs $\sequence{n,n}$.}.
-\begin{center}
-  \includegraphics{background/asy/correspondences/correspondences3000.pdf}
-\end{center}
-Consider the pair~$\sequence{1,2}$.
-It is in diagonal~$3$, which is the sum of its entries.
-Before diagonal~$3$ there are six pairs, 
-so on diagonal~$3$ the initial pair~$\sequence{0,3}$ corresponds to~$6$,
-as shown in table~$(*)$ above.
-So $\sequence{1,2}$ corresponds to~$7$.
-
-Following that pattern, to get the number corresponding to~$\sequence{x,y}$
-note that it lies on diagonal $d=x+y$.
-Diagonal~$0$ has one entry, diagonal~$1$ has
-two entries, diagonal~$2$ has three entries, etc.,
-so the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+d$.
-This is an arithmetic series with total $d(d+1)/2$, 
-called the $d$-th \definend{triangle number}.
-Then, inside diagonal~$d$, the pair at the start is $\sequence{0,x+y}$,
-next is~$\sequence{1,x+y-1}$, etc., and so
-$\sequence{x,y}$ is the~$x$-th pair from $d$'s start.
-
-\begin{definition}
-\definend{Cantor's correspondence}, or 
-the \definend{diagonal} enumeration of $\N\times\N$, is
-the function $\map{\cantor}{\N^2}{\N}$ given by
-\citetext{$\cantor(x,y)=(1/2)(x+y)(x+y+1)+x$}{The 
-Fueter-P\'olya Theorem says that this is essentially the only 
-quadratic function that serves as a pairing; see \autocite{Smorynski}.
-No one knows whether there are pairing functions 
-that are any other kind of polynomial.}.
-\end{definition}
-\noindent
-(Some authors use diamond brackets, 
-writing $\sequence{x,y}$ where we write
-$\cantor(x,y)$.)
-% , or $\godelnum{\sequence{x,y}}$.)
-For example, $\cantor(1,2)=7$ and~$\cantor(2,0)=5$.
-
-The inverse function goes from the number to the pair, 
-as in \cref{exam:NCrossN}.
-To get that formula, where the diagonal is $d(x,y)=x+y$, 
-let the associated triangle number be $t(x,y)=d(d+1)/2=(d^2+d)/2$.
-Then $0=d^2+d-2t$. 
-To compute~$d$ from~$t$ 
-apply the familiar formula for quadratics 
-$(-b\pm\sqrt{b^2-4ac})/(2a)$
-\begin{equation*}
-  d=\frac{-1+\sqrt{1-4\cdot 1\cdot (-2t)}}{2\cdot 1}
-   =\frac{-1+\sqrt{1+8t}}{2}
-\end{equation*}
-(of the `$\pm$', we keep only the `$+$' because the other root is negative).
-Because not every pair $\sequence{x,y}$ lies at the end of a diagonal,
-not every pair corresponds with a triangle number, 
-so to find the integer diagonal number 
-\citetext{we take the floor}{Let the $n$-th triangle number be
-$t(n)=0+1+\cdots+n=n(n+1)/2$.  
-The function~$t$ is monotonicly increasing and there are infinitely many 
-triangle numbers.
-Thus for every natural number~$c$ there is a unique triangle number $t(n)$ 
-that is maximal so that $c=t(n)+k$ for some~$k\in\N$.
-Because $t(n+1)=t(n)+n+1$, we see that $k<n+1$, that is, $k\leq n$.
-Thus, to compute the diagonal number~$d$ from the Cantor number~$c$ of a pair,
-we have $(1/2)d(d+1)\leq c< (1/2)(d+1)(d+2)$.
-Applying the quadratic formula to the left half and right halves gives
-$(1/2)(-3+\sqrt{1+8c})<d\leq (1/2)(-1+\sqrt{1+8c})$.
-Taking $(1/2)(-1+\sqrt{1+8c})$ to be $\alpha$ gives that 
-$c\in\rightclosed{\alpha-1}{\alpha}$ so that $d=\floor{\alpha}$. 
-\autocite{222835}}:
-$d=\floor{(-1+\sqrt{1+8t})/2}$.
 
 Here is the code.
 (The \codeinline{*} variant \codeinline{let*} allows us to 
 compute \codeinline{t} by using the \codeinline{d} from the prior line.)
-\lstinputlisting[firstline=1,lastline=26]{background/scheme/godelnumbering.scm}
-\noindent
-Use this code in the natural way.
-\begin{lstlisting}
-#;1> (include "godelnumbering.scm")
-; including godelnumbering.scm ...
-#;2> (cantor 1 2)
-7
-#;3> (xy 7)
-(1 2)  
-\end{lstlisting}
+\lstinputlisting[firstline=105,lastline=136]{background/scheme/godelnumbering.scm}
 
 % Thus, the number assocated with $\sequence{x,y}$ is $(1/2)(x+y+1)(x+y)+x$.
 

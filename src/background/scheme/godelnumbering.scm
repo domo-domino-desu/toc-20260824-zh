@@ -96,9 +96,9 @@
 ;; An instruction is a 4-tuple.
 ;;    (current-state, current-tape-char, next-op, next-state)
 ;; Here, current-tape-char is interpreted as:
-;;   blank <-> 0, c0 <-> 1, c1 <-> 2, ..
+;;   blank <-> 0, a <-> 1, b <-> 2, ..
 ;; Also, next-op is interpreted as (the first two are tape head operations):
-;;   L <-> 0, R <-> 1, blank <-> 2, c0 <-> 3, c1 <-> 4, ..  
+;;   L <-> 0, R <-> 1, blank <-> 2, a <-> 3, b <-> 4, ..  
 ;; TODO add conversions that use the instructions from the Turing simulation
 ;; in the prologue.
 
@@ -109,6 +109,77 @@
 ;; integer->instruction Return the instruction corresponding to i
 (define (integer->instruction i)
   (xy-4 i))
+
+;; Convert a four-tuple of integers to TM instruction
+;;  The TM instructions are more readable and can be run by the TM code.
+(define (instruction-integer->tm-four i)
+  i)
+(define (tm->instruction-integer-four i)
+  i)
+
+(define (instruction-integer->tm-three i)
+  (cond
+      ((= i 0) #\L)
+      ((= i 1) #\R)
+      ((= i 2) #\B)
+      ((and (> i 2)
+	    (<= i 28)) (integer->char (+ i (- (char->integer #\a) 3))))
+      (else (- i 29))))
+(define (tm->instruction-integer-three i)
+  (cond
+      ((equal? i #\L) 0)
+      ((equal? i #\R) 1)
+      ((equal? i #\B) 2)
+      ((char? i) 
+       (if (char-lower-case? i)
+	   (+ 3 (- (char->integer i) (char->integer #\a)))
+	   (display (string-append "expected lower-case character: " i))))
+      (else (+ i 29))))
+
+(define (instruction-integer->tm-two i)
+  (cond
+      ((= i 0) #\B)
+      ((and (> i 0)
+	    (<= i 26)) (integer->char (+ i (- (char->integer #\a) 1))))
+      (else (- i 27))))
+(define (tm->instruction-integer-two i)
+  (cond
+      ((equal? i #\B) 0)
+      ((char? i) 
+       (if (char-lower-case? i)
+	   (+ 1 (- (char->integer i) (char->integer #\a)))
+	   (display (string-append "expected lower-case character: " 
+				   i))))
+      (else (+ i 27))))
+
+(define (instruction-integer->tm-one i)
+  i)
+(define (tm->instruction-integer-one i)
+  i)
+
+;; instruction->tminstruction  Convert a 4-tuple of ints to a readable 4-tuple
+(define (instruction->tminstruction fourtuple)
+  (let ((tminst '())
+	(one (car fourtuple))
+	(two (cadr fourtuple))
+	(three (caddr fourtuple))
+	(four (cadddr fourtuple)))
+    (cons (tminteger->instruction-four four) tminst)
+    (cons (tminteger->instruction-three three) tminst)
+    (cons (tminteger->instruction-two two) tminst)
+    (cons (tminteger->instruction-one one) tminst)
+    tminst))
+(define (tminstruction->instruction fourtuple)
+  (let ((inst '())
+	(one (car fourtuple))
+	(two (cadr fourtuple))
+	(three (caddr fourtuple))
+	(four (cadddr fourtuple)))
+    (cons (tm->instruction-integer-four four) inst)
+    (cons (tm->instruction-integer-three three) inst)
+    (cons (tm->instruction-integer-two two) inst)
+    (cons (tm->instruction-integer-one one) inst)
+    inst))
 
 ;; machine->numlist convert list of 4-tuples m to list of corresponding
 ;;   natural numbers

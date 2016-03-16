@@ -1,14 +1,18 @@
 ;; Generate all bit strings of length n
 
 ;; Display all bitstrings of the given length
-(define (bitstrings n lst)
+(define (bitstrings n)
+  (bitstrings-helper n '()))
+
+(define (bitstrings-helper n lst)
   (if (= n 0)
+      lst
+      ;; (begin
+      ;; 	(display (list->string (reverse lst)))
+      ;; 	(newline))
       (begin
-	(display (list->string (reverse lst)))
-	(newline))
-      (begin
-	(bitstrings (- n 1) (cons #\0 lst))
-	(bitstrings (- n 1) (cons #\1 lst)))
+	(bitstrings-helper (- n 1) (cons #\0 lst))
+	(bitstrings-helper (- n 1) (cons #\1 lst)))
       ))
 
 ;; Constant of all characters in the alphabet

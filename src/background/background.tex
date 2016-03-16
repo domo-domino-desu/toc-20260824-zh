@@ -416,7 +416,128 @@ in the other direction~$\map{f^{-1}}{\N}{\N^2}$.
   \label{tf:CorrespondenceNNToN}
 \end{tablefigure}
 \end{example}
-The next subsection will give more details, formulas, and code.
+The next subsection gives formulas and code.
+
+
+
+\subsection{Cantor's correspondence}
+\Cref{af:EnumerateNxN} does a breadth-first coverage
+of the array by
+\citetext{counting diagonally}{Some authors call this an anti-diagonal, 
+taking the diagonal to be composed of the pairs $\sequence{n,n}$.}.
+\begin{center}
+  \includegraphics{background/asy/correspondences/correspondences3000.pdf}
+\end{center}
+For the idea behind the formula, consider the pair~$\sequence{1,2}$.
+It is on diagonal $3$ and $3$ is the sum of its entries.
+Note also that before diagonal~$3$ there are six pairs, 
+so that on diagonal~$3$ the initial pair~$\sequence{0,3}$ corresponds to~$6$.
+Then $\sequence{1,2}$ corresponds to~$7$.
+
+Following that pattern, to get the number corresponding to~$\sequence{x,y}$
+first observe that it lies on diagonal $d=x+y$.
+Diagonal~$0$ has one entry, diagonal~$1$ has
+two entries, diagonal~$2$ has three entries, etc.,
+so the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+d$.
+This is an arithmetic series with total $d(d+1)/2$, 
+called the $d$-th \definend{triangle number}.
+Then, inside diagonal~$d$, the pair at the start is $\sequence{0,x+y}$,
+next is~$\sequence{1,x+y-1}$, etc., and so
+$\sequence{x,y}$ is the~$x$-th pair from $d$'s start.
+
+\begin{definition}
+\definend{Cantor's correspondence} $\map{\cantor}{\N^2}{\N}$
+(or 
+the \definend{diagonal} enumeration) is
+given by
+\citetext{$\cantor(x,y)=(1/2)(x+y)(x+y+1)+x$}{The 
+Fueter-P\'olya Theorem says that this is essentially the only 
+quadratic function that serves as a pairing; see \autocite{Smorynski}.
+No one knows whether there are pairing functions 
+that are any other kind of polynomial.}.
+\end{definition}
+\noindent
+(Some authors use diamond brackets, 
+writing $\sequence{x,y}$ where we write
+$\cantor(x,y)$.)
+% , or $\godelnum{\sequence{x,y}}$.)
+For example, $\cantor(1,2)=7$ and~$\cantor(2,0)=5$.
+Here is the code.
+(The \codeinline{let} creates a local variable \codeinline{d}.)
+% (The \codeinline{*} variant \codeinline{let*} allows us to 
+% compute \codeinline{t} by using the \codeinline{d} from the prior line.)
+\lstinputlisting[firstline=1,lastline=14]{background/scheme/godelnumbering.scm}
+\noindent
+Use this code in the natural way.
+\begin{lstlisting}
+#;1> (include "godelnumbering.scm")
+; including godelnumbering.scm ...
+#;2> (cantor 1 2)
+7
+\end{lstlisting}
+
+We will need both the map and its inverse.
+The inverse function goes from the number to the pair, that is,
+from \cref{tf:CorrespondenceNNToN}'s bottom row to its top row.
+
+Here is the routine that inverts \codeinline{cantor}.
+(The \codeinline{*} variant \codeinline{let*} allows us to 
+compute the local variable \codeinline{t} by using the 
+local variable \codeinline{d} computed before it, in the prior line.)
+\lstinputlisting[firstline=37,lastline=42]{background/scheme/godelnumbering.scm}
+This shows a sample use.
+\begin{lstlisting}
+#;1> (include "godelnumbering.scm")
+; including godelnumbering.scm ...
+#;2> (xy 7)
+(1 2)
+\end{lstlisting}
+
+The \codeinline{xy} routine depends on a \codeinline{diag-num}
+to compute the number of the diagonal.
+For that, where the diagonal is $d(x,y)=x+y$, 
+let the associated triangle number be $t(x,y)=d(d+1)/2=(d^2+d)/2$.
+Then $0=d^2+d-2t$. 
+Applying the familiar formula 
+$(-b\pm\sqrt{b^2-4ac})/(2a)$ gives 
+\begin{equation*}
+  d=\frac{-1+\sqrt{1-4\cdot 1\cdot (-2t)}}{2\cdot 1}
+   =\frac{-1+\sqrt{1+8t}}{2}
+\end{equation*}
+(of the `$\pm$', we keep only the `$+$' because the other root is negative).
+Not every pair corresponds to a triangle number 
+so to find the number of the diagonal lying before the 
+pair~$\sequence{x,y}$ with $\cantor(x,y)=c$, 
+\citetext{take the floor}{Let the $n$-th triangle number be
+$t(n)=0+1+\cdots+n=n(n+1)/2$.  
+The function~$t$ is monotonicly increasing and there are infinitely many 
+triangle numbers.
+Thus for every natural number~$c$ there is a unique triangle number $t(n)$ 
+that is maximal so that $c=t(n)+k$ for some~$k\in\N$.
+Because $t(n+1)=t(n)+n+1$, we see that $k<n+1$, that is, $k\leq n$.
+Thus, to compute the diagonal number~$d$ from the Cantor number~$c$ of a pair,
+we have $(1/2)d(d+1)\leq c< (1/2)(d+1)(d+2)$.
+Applying the quadratic formula to the left half and right halves gives
+$(1/2)(-3+\sqrt{1+8c})<d\leq (1/2)(-1+\sqrt{1+8c})$.
+Taking $(1/2)(-1+\sqrt{1+8c})$ to be $\alpha$ gives that 
+$c\in\rightclosed{\alpha-1}{\alpha}$ so that $d=\floor{\alpha}$. 
+\autocite{222835}}
+$d=\floor{(-1+\sqrt{1+8c})/2}$.
+
+That code for \codeinline{diag-num} has a couple of technicalities.
+The first is minor, that in Scheme the \codeinline{floor} function returns
+a floating point number and 
+since we want \codeinline{xy} to be the inverse of \codeinline{cantor},
+which inputs integers, we want \codeinline{diag-num} to output an integer.
+That explains the \codeinline{inexact->exact} conversion.
+The second technicality is that experience with the code for 
+Cantor's correspondence shows that it leads to 
+inputs~$c$ that can give floating point overflows.
+So we've commented out the naive implementation of \codeinline{diag-num}
+and instead used Chicken Scheme's access to bignums to get an equivalent
+routine that returns the correct results no matter how large the inputs are
+(within the physical limits of the computer running the code).
+\lstinputlisting[firstline=16,lastline=35]{background/scheme/godelnumbering.scm}
 
 \begin{example}  \label{ex:RationalsAreCountable}
 The set of rationals $\Q$ is countable.
@@ -434,6 +555,11 @@ rationals, and as we list the pairs
 we check each against these cached rationals, and only enumerate 
 it if it is not a repeat.
 \end{example}
+
+
+
+
+
 
 
 \subsection{Hilbert's Hotel}
@@ -479,20 +605,20 @@ each with infinitely many people.
   \quad
   \ldots
 \end{equation*}
-But the clerk had the spirit of the thing now.
-As before, 
-move each guest to a new room with twice the number.
-The new people go into the odd-numbered rooms, in the breadth-first order
+But the spirit of the thing is clear now:
+move each guest to a new room with twice the number, and 
+the new people go into the odd-numbered rooms, in the breadth-first order
 $p_{0,0}$, $p_{1,0}$, $p_{0,1}$, $p_{2,0}$ \ldots{}
 from \cref{exam:NCrossN}'s table~($*$).  
 
 The clerk could be forgiven, after this experience, for thinking that
-there is always room in the infinite hotel,
-that with a sufficiently clever method,  
-the hotel can fit any number of people.
-The above examples make natural the guess 
+there is always room in the infinite hotel\Dash
+that with a sufficiently clever method  
+the hotel can fit any set of new guests.
+That is, the above examples make natural the guess 
 that all infinite sets have the same cardinality. 
-That guess is wrong.
+
+However, this guess is wrong.
 We will next see a set with so many members that they cannot
 all be counted.\footnote{Sadly, the infinite hotel does not now exist. 
 The guest in room~$0$ 
@@ -503,100 +629,6 @@ to pay for all three rooms, $0$--$2$.
 Room~$2$ said that room~$3$ would pay, etc.
 So this fabled hotel made no money despite having infinitely many rooms,
 or perhaps because of it.}
-
-
-
-
-\subsection{Cantor's correspondence}
-\cref{tf:CorrespondenceNNToN} lists 
-a few entries of a correspondence between~$\N^2$ and~$\N$.
-It is based on \cref{af:EnumerateNxN}, which does a breadth-first coverage
-of the array by
-\citetext{counting diagonally}{Some authors call this an anti-diagonal, 
-taking the diagonal to be composed of the pairs $\sequence{n,n}$.}.
-\begin{center}
-  \includegraphics{background/asy/correspondences/correspondences3000.pdf}
-\end{center}
-For the idea behind the formula consider the pair~$\sequence{1,2}$.
-Its diagonal number, $3$, is the sum of its entries.
-Before diagonal~$3$ there are six pairs, 
-so on diagonal~$3$ the initial pair~$\sequence{0,3}$ corresponds to~$6$.
-Then $\sequence{1,2}$ corresponds to~$7$.
-
-Following that pattern, to get the number corresponding to~$\sequence{x,y}$
-note that it lies on diagonal $d=x+y$.
-Diagonal~$0$ has one entry, diagonal~$1$ has
-two entries, diagonal~$2$ has three entries, etc.,
-so the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+d$.
-This is an arithmetic series with total $d(d+1)/2$, 
-called the $d$-th \definend{triangle number}.
-Then, inside diagonal~$d$, the pair at the start is $\sequence{0,x+y}$,
-next is~$\sequence{1,x+y-1}$, etc., and so
-$\sequence{x,y}$ is the~$x$-th pair from $d$'s start.
-
-\begin{definition}
-\definend{Cantor's correspondence}, or 
-the \definend{diagonal} enumeration of $\N\times\N$, is
-the function $\map{\cantor}{\N^2}{\N}$ given by
-\citetext{$\cantor(x,y)=(1/2)(x+y)(x+y+1)+x$}{The 
-Fueter-P\'olya Theorem says that this is essentially the only 
-quadratic function that serves as a pairing; see \autocite{Smorynski}.
-No one knows whether there are pairing functions 
-that are any other kind of polynomial.}.
-\end{definition}
-\noindent
-(Some authors use diamond brackets, 
-writing $\sequence{x,y}$ where we write
-$\cantor(x,y)$.)
-% , or $\godelnum{\sequence{x,y}}$.)
-For example, $\cantor(1,2)=7$ and~$\cantor(2,0)=5$.
-
-The inverse function goes from the number to the pair, 
-as in \cref{exam:NCrossN}.
-To get that formula, where the diagonal is $d(x,y)=x+y$, 
-let the associated triangle number be $t(x,y)=d(d+1)/2=(d^2+d)/2$.
-Then $0=d^2+d-2t$. 
-Applying the familiar formula for quadratics 
-$(-b\pm\sqrt{b^2-4ac})/(2a)$ gives 
-\begin{equation*}
-  d=\frac{-1+\sqrt{1-4\cdot 1\cdot (-2t)}}{2\cdot 1}
-   =\frac{-1+\sqrt{1+8t}}{2}
-\end{equation*}
-(of the `$\pm$', we keep only the `$+$' because the other root is negative).
-Not every pair corresponds with a triangle number, 
-and so to find the number of the diagonal lying before the 
-pair~$\sequence{x,y}$ with $\cantor(x,y)=c$, 
-\citetext{take the floor}{Let the $n$-th triangle number be
-$t(n)=0+1+\cdots+n=n(n+1)/2$.  
-The function~$t$ is monotonicly increasing and there are infinitely many 
-triangle numbers.
-Thus for every natural number~$c$ there is a unique triangle number $t(n)$ 
-that is maximal so that $c=t(n)+k$ for some~$k\in\N$.
-Because $t(n+1)=t(n)+n+1$, we see that $k<n+1$, that is, $k\leq n$.
-Thus, to compute the diagonal number~$d$ from the Cantor number~$c$ of a pair,
-we have $(1/2)d(d+1)\leq c< (1/2)(d+1)(d+2)$.
-Applying the quadratic formula to the left half and right halves gives
-$(1/2)(-3+\sqrt{1+8c})<d\leq (1/2)(-1+\sqrt{1+8c})$.
-Taking $(1/2)(-1+\sqrt{1+8c})$ to be $\alpha$ gives that 
-$c\in\rightclosed{\alpha-1}{\alpha}$ so that $d=\floor{\alpha}$. 
-\autocite{222835}}
-$d=\floor{(-1+\sqrt{1+8c})/2}$.
-
-Here is the code.
-(The \codeinline{*} variant \codeinline{let*} allows us to 
-compute \codeinline{t} by using the \codeinline{d} from the prior line.)
-\lstinputlisting[firstline=1,lastline=26]{background/scheme/godelnumbering.scm}
-\noindent
-Use this code in the natural way.
-\begin{lstlisting}
-#;1> (include "godelnumbering.scm")
-; including godelnumbering.scm ...
-#;2> (cantor 1 2)
-7
-#;3> (xy 7)
-(1 2)  
-\end{lstlisting}
-
 
 
 
@@ -701,8 +733,7 @@ The set of real numbers is not countable.
 \end{theorem}
 
 \begin{proof}
-If $\R$ were countable then there would be a correspondence $\map{f}{\N}{\R}$.
-We will show that the existence of such a map leads to a contradiction.
+Suppose, to get a contradiction, that a correspondence $\map{f}{\N}{\R}$ exists.
 
 The tangent function is a correspondence from $\open{-\pi/2}{\pi/2}$ to~$\R$
 so its inverse, arctangent, is a correspondence in the other direction.
@@ -711,15 +742,26 @@ $\open{0}{1}$.
 \begin{center}
   \includegraphics{background/asy/arctan/arctan.pdf}
 \end{center}
-If $f$ exists then
-composing would give an onto map $\map{g\circ f}{\N}{\open{0}{1}}$. 
-Producing from that a map $\map{h}{\N}{\leftclosed{0}{1}}$ that is onto the
-half-closed interval is easy:
-as in the Infinite Hotel, move all the existing output values up by one so that
-$h(i)=g\circ f(i-1)$ if $i$ is not~$0$, and slip the new value in so that 
-$h(0)=0$.  
-However \cref{lem:UnitIntUncountable} says that no such $h$ exists, 
-and so no such~$f$ exists.
+If $f$ exists then composing gives an onto map 
+$\map{g\circ f}{\N}{\open{0}{1}}$.
+\Cref{lem:UnitIntUncountable} says there is no onto map to the half-closed 
+interval $\leftclosed{0}{1}$ so we will have the 
+contradiction if we can cover the single additional point,~$0$. 
+But we've been here before, when
+we saw the Infinite Hotel staff accommodating 
+a new guest in a full hotel.
+We slide the output values of $g\circ f$ up by one,
+to make room for one more.
+\begin{equation*}
+  h(i) = 
+  \begin{cases}
+    g\circ f\,(i-1) &\case{if $i> 0$} \\
+    0               &\case{if $i=0$}
+  \end{cases}
+\end{equation*}
+No such
+onto $\map{h}{\R}{\leftclosed{0}{1}}$ exists, 
+so we conclude that no such~$f$ exists.
 \end{proof}
 
 \begin{definition}
@@ -747,7 +789,7 @@ namely the inclusion map that sends $n\in\N$ to itself~$n\in\R$.
 What \cref{th:RealsNotCountable} says 
 is that no function from $\N$ to~$\R$ is onto.
 
-The preceeding defintion allows us to show that, given a set, 
+The preceding defintion allows us to show that, given a set, 
 we can produce another set of larger cardinality\Dash there's always a
 bigger set.
 For that, recall that a set's \definend{characteristic function} $\charfcn{S}$ 
@@ -868,7 +910,7 @@ $\hat{s}\not\in f(\hat{s})$, so $\hat{s}\in R$, which is also a contradiction.
 \end{proof}
 
 \begin{theorem} \label{th:FcnsNNGreaterFcnsN}
-The cardinality of the set of functions $\map{f}{\N}{\N}$ is 
+The cardinality of the set of natural number functions $\map{f}{\N}{\N}$ is 
 strictly greater than the cardinality of the set~$\N$.  
 \end{theorem}
 
@@ -1743,7 +1785,7 @@ Here are two values.
   \hyperoperation_4(2,3)=2^{2^2}=2^4=16
 \end{equation*}
 Similarly, $\hyperoperation_4(2,4)$ has four $2$'s stacked up.
-This is sometimes called a power tower.
+This is called a power tower.
 Recall that the order in which we perform exponentiations is significant.
 \begin{equation*}
   (3^3)^3=27^3=3^9

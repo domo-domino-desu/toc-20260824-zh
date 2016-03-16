@@ -1,3 +1,6 @@
+(use numbers)
+;; see diag-num for why this is here
+
 ;; triangle-num  return 1+2+3+..+n
 (define (triangle-num n)
   (/ (* (+ n 1)
@@ -11,11 +14,25 @@
        x)))
 
 ;; diag-num  given Cantor number, find the number of the diagonal
+;; (define (diag-num c)
+;;   (inexact->exact (floor (/
+;; 			  (- (sqrt (+ (* 8 c) 1))
+;; 			     1)
+;; 			  2))))
+
+;; diag-num  given Cantor number, find the number of the diagonal
+;; The other version of this, above, returns numerical issues if c is too large
+;; but this version requires "(use numbers)" to use bignums.
+;;   The idea here is that exact-integer-sqrt x returns s and k so that
+;; s is the largest integer with s^2<x and s^2+k = x.  If taking s gives
+;; a number that is an exact integer then the floor will be the same as using
+;; the s, while if it give a number ending in .5 then to bump it up to where
+;; the entire expression floors to one higher would require s+1, but we 
+;; know s+1 is too big.
 (define (diag-num c)
-  (inexact->exact (floor (/
-			  (- (sqrt (+ (* 8 c) 1))
-			     1)
-			  2))))
+  (let ((s (exact-integer-sqrt (+ 1 (* 8 c)))))
+    (floor-quotient (- s 1)
+		    2)))
 
 ;; xy  given the cantor number, return (x y) 
 (define (xy c)
@@ -28,21 +45,6 @@
 (define (cantor-3 x0 x1 x2)
   (cantor x0 (cantor x1 x2)))
 
-;; (use numbers)
-;; diag-num  given Cantor number, find the number of the diagonal
-;; The other version of this returns numerical issues if c is too large
-;; but this version requires "(use numbers)" to use bignums.
-;;   The idea here is that exact-integer-sqrt x returns s and k so that
-;; s is the largest integer with s^2<x and s^2+k = x.  If taking s gives
-;; a number that is an exact integer then the floor will be the same as using
-;; the s, while if it give a number ending in .5 then to bump it up to where
-;; the entire expression floors to one higher would require s+1, but we 
-;; know s+1 is too big.
-;; (define (diag-num c)
-;;   (let ((s (exact-integer-sqrt (+ 1 (* 8 c)))))
-;;     (floor-quotient (- s 1)
-;; 		    2)))
-
 ; xy-3  Return the triple that gave (cantor-3 x0 x1 x2) => c
 (define (xy-3 c)
   (cons (car (xy c))
@@ -52,7 +54,7 @@
 (define (cantor-4 x0 x1 x2 x3)
   (cantor x0 (cantor-3 x1 x2 x3)))
 
-; xy-4  Un-number quasd: give (x0 x1 x2 x3) so that (cantor-4 x0 x1 x2 x3) => c
+; xy-4  Un-number quads: give (x0 x1 x2 x3) so that (cantor-4 x0 x1 x2 x3) => c
 (define (xy-4 c)
   (let ((pr (xy c)))
     (cons (car pr)
@@ -70,7 +72,7 @@
 (define (cantor-omega . tuple)
   (if (null? tuple)
       (display "ERROR: cantor-omega requires a nonempty tuple")
-      (let ((newtuple (cons (length tuple) 
+      (let ((newtuple (list (length tuple) 
 			    (apply cantor-n tuple))))
 	(apply cantor newtuple))))
 
@@ -92,21 +94,23 @@
 
 ;; ========
 ;; Machine counting
-;; A machine is a list of instructions.
-;; An instruction is a 4-tuple.
+;; A Turing machine is a *set* of 4-tuples, subject to determinism.
+;; A quad or instruction is a 4-tuple of natural numbers 
 ;;    (current-state, current-tape-char, next-op, next-state)
-;; Here, current-tape-char is interpreted as:
+;; A quadlist is a list of instructions, maybe not a set or nondeterministic.
+;; Below we give a routine to interpret the numbers in a readable way:
+;; current-tape-char is interpreted as:
 ;;   blank <-> 0, a <-> 1, b <-> 2, ..
-;; Also, next-op is interpreted as (the first two are tape head operations):
+;; next-op is interpreted as (the first two are tape head operations):
 ;;   L <-> 0, R <-> 1, blank <-> 2, a <-> 3, b <-> 4, ..  
 ;; TODO add conversions that use the instructions from the Turing simulation
 ;; in the prologue.
 
-;; instruction->integer  Convert length-4 list ilist to corresponging nat number
+;; instruction->integer  Convert length-4 list to corresponging nat number
 (define (instruction->integer ilist)
   (apply cantor-4 ilist))
 
-;; integer->instruction Return the instruction corresponding to i
+;; integer->instruction Return the instruction corresponding to the input
 (define (integer->instruction i)
   (xy-4 i))
 
@@ -159,35 +163,32 @@
 
 ;; instruction->tminstruction  Convert a 4-tuple of ints to a readable 4-tuple
 (define (instruction->tminstruction fourtuple)
-  (let ((tminst '())
-	(one (car fourtuple))
+  (let ((one (car fourtuple))
 	(two (cadr fourtuple))
 	(three (caddr fourtuple))
 	(four (cadddr fourtuple)))
-    (cons (tminteger->instruction-four four) tminst)
-    (cons (tminteger->instruction-three three) tminst)
-    (cons (tminteger->instruction-two two) tminst)
-    (cons (tminteger->instruction-one one) tminst)
-    tminst))
+    (list (instruction-integer->tm-one one) 
+	  (instruction-integer->tm-two two)
+	  (instruction-integer->tm-three three)
+	  (instruction-integer->tm-four four))))
 (define (tminstruction->instruction fourtuple)
-  (let ((inst '())
-	(one (car fourtuple))
+  (let ((one (car fourtuple))
 	(two (cadr fourtuple))
 	(three (caddr fourtuple))
 	(four (cadddr fourtuple)))
-    (cons (tm->instruction-integer-four four) inst)
-    (cons (tm->instruction-integer-three three) inst)
-    (cons (tm->instruction-integer-two two) inst)
-    (cons (tm->instruction-integer-one one) inst)
-    inst))
+    (list (tm->instruction-integer-one one) 
+	  (tm->instruction-integer-two two) 
+	  (tm->instruction-integer-three three)
+	  (tm->instruction-integer-four four))))
 
 ;; machine->numlist convert list of 4-tuples m to list of corresponding
 ;;   natural numbers
 (define (machine->numlist m)
-  (if (null? m)
-      '()
-      (cons (instruction->integer (car m)) 
-	    (machine->numlist (cdr m)))))
+  (map instruction->integer m))
+  ;; (if (null? m)
+  ;;     '()
+  ;;     (cons (instruction->integer (car m)) 
+  ;; 	    (machine->numlist (cdr m)))))
 
 ;; numlist->machine  Return the machine represented by nlist
 (define (numlist->machine nlist)

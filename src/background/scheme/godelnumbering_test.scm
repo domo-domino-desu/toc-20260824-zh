@@ -161,6 +161,32 @@
 
 
 
+
+;; ============== cantor-omega and xy-omega
+(test-begin "cantor-omega xy-omega")
+(let ((lst '(1 2 3)))
+  (test-assert (equal? lst
+		       (xy-omega (apply cantor-omega lst)))))
+(do ((x 0 (+ x 1)))
+    ((>= x 4) x)
+  (do ((y 0 (+ y 1)))
+      ((>= y 4) y)
+    (do ((z 0 (+ z 1)))
+	((>= z 4) '())
+      (let ((lst (list x y z)))
+	(test-assert (equal? lst
+			     (xy-omega (apply cantor-omega lst))))))))
+(let ((lst '(1 2 3 4 5 6)))
+  (test-assert (equal? lst
+		       (xy-omega (apply cantor-omega lst)))))
+(let ((lst '(1 2)))
+  (test-assert (equal? lst
+		       (xy-omega (apply cantor-omega lst)))))
+
+(test-end "cantor-omega xy-omega")
+
+
+
 ;; ======= Machine counting ===========
 
 ;; ======= instruction to integer and back again 
@@ -261,10 +287,71 @@
   (test-assert (string-append "i=" (number->string i))
 	       (equal? i
 		       (tm->instruction-integer-three (instruction-integer->tm-three i))))) 
+;; Now we test the two function of which the above are components
+(test-assert (= 4
+		(length (instruction->tminstruction '(0 0 0 0)))))
+(test-assert (= 4
+		(length (instruction->tminstruction '(0 1 2 3)))))
+(do ((x 0 (+ x 1)))
+    ((>= x 5) x)
+  (do ((y 0 (+ y 1)))
+      ((>= y 4) y)
+    (do ((z 0 (+ z 1)))
+	((>= z 3) '())
+      (do ((w 0 (+ w 1)))
+	  ((>= w 2) '())
+	(test-assert (string-append "case: x=" (number->string x)
+			     " y=" (number->string y)
+			     " z=" (number->string z)
+			     " w=" (number->string w))
+		     (let ((lst (list x y z w)))
+	      (equal? lst 
+		      (tminstruction->instruction (instruction->tminstruction lst)))))))))
 (test-end "tminstruction")
 
 
-(display (string-append "Total number of failures, over all tests: "
+
+;; ======= 
+(test-begin "godel")
+(test-assert (equal? 2
+		     (length (machine->numlist '((1 2 3 4) (5 6 7 8))))))
+(do ((i 1 (+ i 1)))
+    ((> i 10) '())
+  (test-assert (equal? i
+		       (length (machine->numlist (makelist-seed i '(1 2 3 4)))))))
+(do ((i 1 (+ i 1)))
+    ((> i 10) '())
+  (let ((m (makelist-seed i '(1 2 3 4)))
+	(n (makelist-seed i 5)))
+    (test-assert (equal? (length (numlist->machine n))
+			 (length (machine->numlist m))))))
+;; Are they inverse?
+(let ((n '(1 2 3 4)))
+  (test-assert (equal? n 
+		       (machine->numlist (numlist->machine n)))))
+(do ((x 0 (+ x 1)))
+    ((>= x 5) x)
+  (do ((y 0 (+ y 1)))
+      ((>= y 4) y)
+    (do ((z 0 (+ z 1)))
+	((>= z 3) '())
+      (test-assert (string-append "case: x=" (number->string x)
+			     " y=" (number->string y)
+			     " z=" (number->string z))
+		   (equal? (list x y z) 
+			   (machine->numlist (numlist->machine (list x y z))))))))
+; godel
+;; (let ((m '(1 2 3 4)))
+;;   (test-assert (equal? m
+;; 		       (machine (godel m)))))
+(test-end "godel")
+
+
+
+
+;; --------------------------- required footer
+
+(display (string-append "TOTAL NUMBER OF FAILURES OVER ALL TESTS: "
 			(number->string (test-failure-count))))
 (newline)
 

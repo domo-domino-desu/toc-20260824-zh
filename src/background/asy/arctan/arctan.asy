@@ -38,4 +38,25 @@ label("$\scriptstyle 1$", (0,1), NW);
 
 path g = graph(f,xmin,xmax);
 draw(g,FCNPEN+highlightcolor);
-label("\makebox[0em][c]{$\scriptstyle (\arctan(x)+(\pi/2))/\pi$}", (2.15,0.8), S);
+
+//label("\makebox[0em][l]{$\scriptstyle (\arctan(x)+(\pi/2))/\pi$}", (2.15,0.8), S);
+label("$\scriptstyle (\arctan(x)+(\pi/2))/\pi$", (xmax,0.8), S);
+
+// from http://tex.stackexchange.com/a/299327/339
+void centerAtOrigin()
+{
+    pair origMinPoint = min(currentpicture)/72*2.54;
+    pair origMaxPoint = max(currentpicture)/72*2.54;
+    pair origSize = size(currentpicture)/72*2.54;
+    real xmin = origMinPoint.x;
+    real xmax = origMaxPoint.x;
+    real ymin = origMinPoint.y;
+    if (xmax > fabs(xmin)) { xmin = -xmax; }
+    if (fabs(xmin) > xmax) { xmax = -xmin; }
+    fill(shift(xmin,ymin)*scale(xmax-xmin,origSize.y)*
+    	 unitsquare, opacity(0)+red);
+    // draw(shift(xmin,ymin)*scale(xmax-xmin,origSize.y)*
+    // 	 unitsquare,red);
+}
+
+centerAtOrigin();

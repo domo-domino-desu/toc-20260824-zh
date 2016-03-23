@@ -311,35 +311,70 @@
 
 
 
+
+
+;; ======= quadlist, numlist
+(test-begin "quadlist numlist")
+(test-assert (equal?
+	      '(0 0)
+	      (quadlist->numlist (numlist->quadlist '(0 0)))))
+(test-assert (equal?
+	      '(1 2)
+	      (quadlist->numlist (numlist->quadlist '(1 2)))))
+(test-assert (equal?
+	      '(0 0 0)
+	      (quadlist->numlist (numlist->quadlist '(0 0 0)))))
+(test-assert (equal?
+	      '(1 2 3)
+	      (quadlist->numlist (numlist->quadlist '(1 2 3)))))
+(test-assert (equal?
+	      '(0 0 0 0)
+	      (quadlist->numlist (numlist->quadlist '(0 0 0 0)))))
+(test-assert (equal?
+	      '(1 2 3 4)
+	      (quadlist->numlist (numlist->quadlist '(1 2 3 4)))))
+(test-assert (equal?
+	      '((0 0 0 0))
+	      (numlist->quadlist (quadlist->numlist '((0 0 0 0))))))
+(test-assert (equal?
+	      '((1 2 3 4))
+	      (numlist->quadlist (quadlist->numlist '((1 2 3 4))))))
+(test-assert (equal?
+	      '((0 0 0 0) (1 2 3 4))
+	      (numlist->quadlist (quadlist->numlist '((0 0 0 0) (1 2 3 4))))))
+(test-end "quadlist numlist")
+
+
+
 ;; ======= 
-(test-begin "godel")
-(test-assert (equal? 2
-		     (length (machine->numlist '((1 2 3 4) (5 6 7 8))))))
-(do ((i 1 (+ i 1)))
-    ((> i 10) '())
-  (test-assert (equal? i
-		       (length (machine->numlist (makelist-seed i '(1 2 3 4)))))))
-(do ((i 1 (+ i 1)))
-    ((> i 10) '())
-  (let ((m (makelist-seed i '(1 2 3 4)))
-	(n (makelist-seed i 5)))
-    (test-assert (equal? (length (numlist->machine n))
-			 (length (machine->numlist m))))))
-;; Are they inverse?
-(let ((n '(1 2 3 4)))
-  (test-assert (equal? n 
-		       (machine->numlist (numlist->machine n)))))
-(do ((x 0 (+ x 1)))
-    ((>= x 5) x)
-  (do ((y 0 (+ y 1)))
-      ((>= y 4) y)
-    (do ((z 0 (+ z 1)))
-	((>= z 3) '())
-      (test-assert (string-append "case: x=" (number->string x)
-			     " y=" (number->string y)
-			     " z=" (number->string z))
-		   (equal? (list x y z) 
-			   (machine->numlist (numlist->machine (list x y z))))))))
+;; (test-begin "godel")
+;; (test-assert (equal? 2
+;; 		     (length (machine->numlist '((1 2 3 4) (5 6 7 8))))))
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 10) '())
+;;   (test-assert (equal? i
+;; 		       (length (machine->numlist (makelist-seed i '(1 2 3 4)))))))
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 10) '())
+;;   (let ((m (makelist-seed i '(1 2 3 4)))
+;; 	(n (makelist-seed i 5)))
+;;     (test-assert (equal? (length (numlist->machine n))
+;; 			 (length (machine->numlist m))))))
+;; ;; Are they inverse?
+;; (let ((n '(1 2 3 4)))
+;;   (test-assert (equal? n 
+;; 		       (machine->numlist (numlist->machine n)))))
+;; (do ((x 0 (+ x 1)))
+;;     ((>= x 5) x)
+;;   (do ((y 0 (+ y 1)))
+;;       ((>= y 4) y)
+;;     (do ((z 0 (+ z 1)))
+;; 	((>= z 3) '())
+;;       (test-assert (string-append "case: x=" (number->string x)
+;; 			     " y=" (number->string y)
+;; 			     " z=" (number->string z))
+;; 		   (equal? (list x y z) 
+;; 			   (machine->numlist (numlist->machine (list x y z))))))))
 ; godel
 ;; (let ((m '(1 2 3 4)))
 ;;   (test-assert (equal? m

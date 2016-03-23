@@ -1,5 +1,5 @@
+;; see the diag-num routine for why this is here
 (use numbers)
-;; see diag-num for why this is here
 
 ;; triangle-num  return 1+2+3+..+n
 (define (triangle-num n)
@@ -20,9 +20,9 @@
 ;; 			     1)
 ;; 			  2))))
 
-;; diag-num  given Cantor number, find the number of the diagonal
-;; The other version of this, above, returns numerical issues if c is too large
-;; but this version requires "(use numbers)" to use bignums.
+;; The other version of this, commented above, has numerical issues if 
+;; c is too large but this version requires "(use numbers)" at the top
+;; of this file, to use bignums.
 ;;   The idea here is that exact-integer-sqrt x returns s and k so that
 ;; s is the largest integer with s^2<x and s^2+k = x.  If taking s gives
 ;; a number that is an exact integer then the floor will be the same as using
@@ -68,7 +68,7 @@
 	(else 
 	 (cantor (car args) (apply cantor-n (cdr args))))))
 
-;; cantor-omega encode the arity of the first component, so xy-omega can get it
+;; cantor-omega encode the arity of the first component, so xy-omega ca
 (define (cantor-omega . tuple)
   (if (null? tuple)
       (display "ERROR: cantor-omega requires a nonempty tuple")
@@ -84,7 +84,7 @@
 	    (xy-arity (- arity 1) (cadr (xy c))))))
 
 ;; xy-omega  interpret c as a pair (arity cantor-number) and return the tuple
-;;  of that arity with that cantor number
+;;  of that arity and having that cantor number
 (define (xy-omega c)
   (let* ((pair (xy c))
 	 (arity (car pair))
@@ -94,8 +94,8 @@
 
 ;; ========
 ;; Machine counting
-;; A Turing machine is a *set* of 4-tuples, subject to determinism.
-;; A quad or instruction is a 4-tuple of natural numbers 
+;; A Turing machine is a set of 4-tuples, subject to determinism.
+;; A quad or instruction is a 4-tuple of natural numbers. 
 ;;    (current-state, current-tape-char, next-op, next-state)
 ;; A quadlist is a list of instructions, maybe not a set or nondeterministic.
 ;; Below we give a routine to interpret the numbers in a readable way:
@@ -181,28 +181,70 @@
 	  (tm->instruction-integer-three three)
 	  (tm->instruction-integer-four four))))
 
-;; machine->numlist convert list of 4-tuples m to list of corresponding
+;; quadlist->numlist convert list of 4-tuples m to list of corresponding
 ;;   natural numbers
-(define (machine->numlist m)
-  (map instruction->integer m))
-  ;; (if (null? m)
-  ;;     '()
-  ;;     (cons (instruction->integer (car m)) 
-  ;; 	    (machine->numlist (cdr m)))))
+(define (quadlist->numlist qlist)
+  (map instruction->integer qlist))
 
-;; numlist->machine  Return the machine represented by nlist
-(define (numlist->machine nlist)
+;; numlist->quadlist  Return the list of quads represented by nlist
+(define (numlist->quadlist nlist)
   (map integer->instruction nlist))
-  ;; (if (null? nlist)
-  ;;     '()
-  ;;     (cons (integer->instruction (car nlist)) 
-  ;; 	    (numlist->machine (cdr nlist)))))
+
+;; quad-less Lex ordering of two quads of numbers
+;;  q1, q2  length 4 lists of numbers
+(define (quad-less? q1 q2)
+  (if (< (car q1) (car q2))
+      #t
+      (< (cadr q1) (cadr q2))))
+
+;; first-two-equal?  are the first two elets of the two args equal?
+;; q1, q2  length 4 lists of numbers
+(define (first-two-equal? q1 q1)
+  (and (= (car q1) (car q2))
+       (= (cadr q1) (cadr q2))))
+
+;; quadlist-is-set?  Is the list of quads a set?
+;;  qlist  list of length 4 lists of numbers
+(define (quadlist-is-set? qlist)
+  (let ((sorted-qlist (sort qlist quad-less?)))
+    (quadlist-is-set-helper sorted-qlist)))
+
+;; quadlist-is-set-helper  walk list looking for adjacent quads that differ 
+;; sq sorted list of quads
+(define (quadlist-is-set-helper sq)
+  (cond
+   ((null? sq) #t)
+   ((= 1 (length sq)) #t)
+   ((equal? (car sq) (cadr sq)) #f)
+   (else (quadlist-is-set-helper (cdr sq)))))
+
+;; quadlist-is-deterministic?  Is the list of quads deterministic?
+;;  qlist  list of length 4 lists of numbers
+(define (quadlist-is-deterministic? qlist)
+  (let ((sorted-qlist (sort qlist quad-less?)))
+    (quadlist-is-deterministic-helper sorted-qlist)))
+
+;; quadlist-is-set-helper  walk list looking for adjacent quads that differ 
+;; sq sorted list of quads
+(define (quadlist-is-deterministic-helper sq)
+  (cond
+   ((null? sq) #t)
+   ((= 1 (length sq)) #t)
+   ((first-two-equal? (car sq) (cadr sq)) #f)
+   (else (quadlist-is-set-helper (cdr sq)))))
+
+;; quadlist-is-tm  Decide if a quadlist is a Turing machine
+;;  qlist  list of length 4 lists of numbers
+;; Observe that if a quadlist is not a set then it is automatically not
+;; deterministic so we need only check the one.
+(define (quadlist-is-tm? qlist)
+  (quadlist-is-deterministic? qlist))
 
 ;; godel  Return godel number of Turing machine m
 (define (godel m)
-  (apply cantor-omega (machine->numlist m)))
+  (apply cantor-omega (quadlist->numlist m)))
 
 ;; machine Return the list of 4-tuples represtented by the godel number g
 (define (machine g)
   (let ((numlist (xy-omega g)))
-    (numlist->machine numlist)))
+    (numlist->quadlist numlist)))

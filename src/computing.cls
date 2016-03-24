@@ -534,7 +534,8 @@ of the two.}
 }
 
 % Don't want \lstinline!..! because it comes out too small.
-\newcommand\codeinline{\lstinline[basicstyle=\small\ttfamily]}
+\usepackage{relsize}
+\newcommand\codeinline{\lstinline[basicstyle=\smaller\ttfamily]}
 
 % Note: you can refine the choices with something like:
 % \lstset{language=C,caption={Descriptive Caption Text},label=DescriptiveLabel}

@@ -263,3 +263,21 @@ path circle(pair c, real r)
 return shift(c)*scale(r)*unitcircle;
 }
 
+// Center a drawing using graph at the origin of the graph; see
+// http://tex.stackexchange.com/questions/299297/asymptote-have-stuff-outside-the-box
+// Call with centerAtOrigin() at the end
+// void centerAtOrigin(picture p=currentpicture)
+// {
+//     pair origMinPoint = min(p)/72*2.54;
+//     pair origMaxPoint = max(p)/72*2.54;
+//     pair origSize = size(p)/72*2.54;
+//     real xmin = origMinPoint.x;
+//     real xmax = origMaxPoint.x;
+//     real ymin = origMinPoint.y;
+//     if (xmax > fabs(xmin)) { xmin = -xmax; }
+//     if (fabs(xmin) > xmax) { xmax = -xmin; }
+//     fill(shift(xmin,ymin)*scale(xmax-xmin,origSize.y)*
+//         unitsquare, opacity(0)+white);
+// }
+
+

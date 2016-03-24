@@ -215,4 +215,5 @@ label(pic,"\strut $0$",intersectionpoint(longdiag[0],cropline),shrinklabeloffset
 label(pic,"\strut $1$",intersectionpoint(longdiag[1],cropline),shrinklabeloffset*S);
 label(pic,"\strut $2$",intersectionpoint(longdiag[2],cropline),shrinklabeloffset*S);
 label(pic,"\strut $3$",intersectionpoint(longdiag[3],cropline),shrinklabeloffset*S);
+// centerAtOrigin(pic);
 shipout(format("correspondences3%03d",picnum),pic,format="pdf");

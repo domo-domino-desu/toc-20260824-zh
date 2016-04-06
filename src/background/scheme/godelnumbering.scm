@@ -196,13 +196,6 @@
   (if (< (car q1) (car q2))
       #t
       (< (cadr q1) (cadr q2))))
-
-;; first-two-equal?  are the first two elets of the two args equal?
-;; q1, q2  length 4 lists of numbers
-(define (first-two-equal? q1 q1)
-  (and (= (car q1) (car q2))
-       (= (cadr q1) (cadr q2))))
-
 ;; quadlist-is-set?  Is the list of quads a set?
 ;;  qlist  list of length 4 lists of numbers
 (define (quadlist-is-set? qlist)
@@ -223,6 +216,12 @@
 (define (quadlist-is-deterministic? qlist)
   (let ((sorted-qlist (sort qlist quad-less?)))
     (quadlist-is-deterministic-helper sorted-qlist)))
+
+;; first-two-equal?  are the first two elets of the two args equal?
+;; q1, q2  length 4 lists of numbers
+(define (first-two-equal? q1 q1)
+  (and (= (car q1) (car q2))
+       (= (cadr q1) (cadr q2))))
 
 ;; quadlist-is-set-helper  walk list looking for adjacent quads that differ 
 ;; sq sorted list of quads

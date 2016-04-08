@@ -60,31 +60,42 @@
     (cons (car pr)
 	  (xy-3 (cadr pr)))))
 
+;; These routines generalize: number any tuple, or find the tuple corresponging
+;; to a number.
+;;   The only ugliness is that the empty tuple is unique, so there is only
+;; one tupe of that arity.
+
 ;; cantor-n number any-sized tuple
 (define (cantor-n . args)
-  (cond ((null? args) (display "ERROR: cantor-n requires an input"))
+  (cond ((null? args) 0)
 	((= 1 (length args)) (car args))
 	((= 2 (length args)) (cantor (car args) (cadr args)))
 	(else 
 	 (cantor (car args) (apply cantor-n (cdr args))))))
 
-;; cantor-omega encode the arity of the first component, so xy-omega ca
+;; cantor-omega encode the arity of the first component
 (define (cantor-omega . tuple)
-  (if (null? tuple)
-      (display "ERROR: cantor-omega requires a nonempty tuple")
-      (let ((newtuple (list (length tuple) 
-			    (apply cantor-n tuple))))
-	(apply cantor newtuple))))
+  (let ((newtuple (list (length tuple) 
+			(apply cantor-n tuple))))
+    (apply cantor newtuple)))
 
-;; xy-arity  return the tuple of the given arity making the cantor number c
+;; xy-arity  return the list of the given arity making the cantor number c
+;;  If arity=0 then only c=0 is valid (others return #f)
 (define (xy-arity arity c)
-  (if (= 1 arity)
-      (list c)
-      (cons (car (xy c))
-	    (xy-arity (- arity 1) (cadr (xy c))))))
+  (cond ((= 0 arity) 
+	 (if (= 0 c ) 
+	     '()
+	     (begin
+	       (display "ERROR: xy-arity with arity=0 requires c=0")
+	       (newline)
+	       #f)))
+	((= 1 arity) (list c))
+	(else (cons (car (xy c))
+		    (xy-arity (- arity 1) (cadr (xy c)))))))
 
 ;; xy-omega  interpret c as a pair (arity cantor-number) and return the tuple
-;;  of that arity and having that cantor number
+;;  of that arity and having that cantor number.  Note that if c=(0,i) then
+;;  only i=0 is valid input (returning the null list).
 (define (xy-omega c)
   (let* ((pair (xy c))
 	 (arity (car pair))
@@ -97,7 +108,7 @@
 ;; A Turing machine is a set of 4-tuples, subject to determinism.
 ;; A quad or instruction is a 4-tuple of natural numbers. 
 ;;    (current-state, current-tape-char, next-op, next-state)
-;; A quadlist is a list of instructions, maybe not a set or nondeterministic.
+;; A quadlist is a list of instructions, maybe not a set or not deterministic.
 ;; Below we give a routine to interpret the numbers in a readable way:
 ;; current-tape-char is interpreted as:
 ;;   blank <-> 0, a <-> 1, b <-> 2, ..
@@ -190,12 +201,19 @@
 (define (numlist->quadlist nlist)
   (map integer->instruction nlist))
 
-;; quad-less Lex ordering of two quads of numbers
+;; quadlist-get n  Return the n-th quadlist 
+(define (quadlist-get dex)
+  (numlist->quadlist (xy-omega dex)))
+
+;; quad-less Is first quad of numbers lex less (strictly less) than second?
 ;;  q1, q2  length 4 lists of numbers
 (define (quad-less? q1 q2)
-  (if (< (car q1) (car q2))
-      #t
-      (< (cadr q1) (cadr q2))))
+  (cond 
+   ((< (car q1) (car q2)) #t)
+   ((< (cadr q1) (cadr q2)) #t)
+   ((< (caddr q1) (caddr q2)) #t)
+   ((< (cadddr q1) (cadddr q2)) #t)
+   (else #f)))
 ;; quadlist-is-set?  Is the list of quads a set?
 ;;  qlist  list of length 4 lists of numbers
 (define (quadlist-is-set? qlist)
@@ -211,17 +229,17 @@
    ((equal? (car sq) (cadr sq)) #f)
    (else (quadlist-is-set-helper (cdr sq)))))
 
+;; first-two-equal?  are the first two elets of the two args equal?
+;; q1, q2  length 4 lists of numbers
+(define (first-two-equal? q1 q2)
+  (and (= (car q1) (car q2))
+       (= (cadr q1) (cadr q2))))
+
 ;; quadlist-is-deterministic?  Is the list of quads deterministic?
 ;;  qlist  list of length 4 lists of numbers
 (define (quadlist-is-deterministic? qlist)
   (let ((sorted-qlist (sort qlist quad-less?)))
     (quadlist-is-deterministic-helper sorted-qlist)))
-
-;; first-two-equal?  are the first two elets of the two args equal?
-;; q1, q2  length 4 lists of numbers
-(define (first-two-equal? q1 q1)
-  (and (= (car q1) (car q2))
-       (= (cadr q1) (cadr q2))))
 
 ;; quadlist-is-set-helper  walk list looking for adjacent quads that differ 
 ;; sq sorted list of quads
@@ -243,7 +261,18 @@
 (define (godel m)
   (apply cantor-omega (quadlist->numlist m)))
 
-;; machine Return the list of 4-tuples represtented by the godel number g
-(define (machine g)
-  (let ((numlist (xy-omega g)))
-    (numlist->quadlist numlist)))
+;; machine Return the list of 4-tuples represented by the godel number g
+;; (define (machine g)
+;;   (let ((numlist (xy-omega g)))
+;;     (numlist->quadlist numlist)))
+;; (define (machine g)
+;;   (let ((tm-no 0)
+;; 	(tm-list '()))
+;;     (do ((quad-no 0 (+ quad-no 1)))
+;; 	(let ((qlist (quadlist-get quad-no)))
+
+;; )	
+;; )
+;; )
+;; )
+;; 

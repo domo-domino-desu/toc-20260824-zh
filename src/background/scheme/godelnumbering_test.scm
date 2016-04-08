@@ -51,6 +51,9 @@
      (y 0 (+ y 1)))
     ((= (+ x y) 10) '())
   (test #t (equal? (list x y) (xy (cantor x y)))))
+(do ((n 0 (+ n 1)))  ;; is xy one-to-one?
+    ((> n 100) '())
+  (test-assert (equal? n (apply cantor (xy n)))))
 (test-end "xy from enumeration")
 
 
@@ -152,6 +155,8 @@
 (test #t (equal? '(1 2 3 4) (xy-arity 4 (cantor-n 1 2 3 4))))  
 (test #t (equal? '(1 0 0 0 5) (xy-arity 5 (cantor-n 1 0 0 0 5))))  
 (test #t (equal? '(1 2) (xy-arity 2 (cantor-n 1 2))))  
+(test #t (equal? 0 (cantor-n)))  
+(test #t (equal? '() (xy-arity 0 0)))  
 (do ((n 2 (+ n 1)))
     ((> n 5) n)  ;; 7 or more fails for numerical issues
   (let ((lst (makelist-seed n n)))
@@ -342,11 +347,44 @@
 (test-assert (equal?
 	      '((0 0 0 0) (1 2 3 4))
 	      (numlist->quadlist (quadlist->numlist '((0 0 0 0) (1 2 3 4))))))
+(test-assert (quadlist-get 0)) ;; return anything?
+(test "there is an encoding of the empty list" 
+      '() 
+      (quadlist-get (cantor-omega)))
+(test 
+      '((1 2 3 4)) 
+      (quadlist-get (apply cantor-omega (quadlist->numlist '((1 2 3 4))))))
 (test-end "quadlist numlist")
 
 
 
-;; ======= 
+
+;; ======= quadlist tests
+(test-begin "quadlist tests")
+(test-assert (quad-less? '(0 0 0 0) '(0 0 0 1)))
+(test #f (quad-less? '(0 0 0 1) '(0 0 0 0)))
+(test-assert (quad-less? '(0 0 0 0) '(1 2 3 4)))
+(test-assert (quad-less? '(1 2 3 4) '(1 3 2 4)))
+(test-assert (quad-less? '(1 1 1 1) '(1 1 1 200)))
+(test-assert (quadlist-is-set? '((1 1 1 1) (1 1 1 2))))
+(test #f (quadlist-is-set? '((1 1 1 1) (1 1 1 1))))
+(test-assert (quadlist-is-set? '((1 1 1 1) (1 1 1 2) (0 0 0 0))))
+(test #f (quadlist-is-set? '((1 1 1 1) (0 0 0 0) (1 1 1 1))))
+(test-assert (quadlist-is-deterministic? '((1 1 1 1) (1 2 1 1))))
+(test #f (quadlist-is-deterministic? '((1 1 1 1) (1 1 1 1))))
+(test-assert (quadlist-is-deterministic? '((1 1 1 1) (0 0 0 0) (1 2 1 1))))
+(test #f (quadlist-is-deterministic? '((1 1 1 1) (0 0 0 0) (1 1 1 1))))
+(test-assert (quadlist-is-tm? '((1 1 1 1) (1 2 1 1))))
+(test #f (quadlist-is-tm? '((1 1 1 1) (1 1 1 1))))
+(test-assert (quadlist-is-tm? '((1 1 1 1) (0 0 0 0) (1 2 1 1))))
+(test #f (quadlist-is-tm? '((1 1 1 1) (1 1 1 1) (0 0 0 0))))
+(test-assert (quadlist-is-tm? '((1 1 1 1) (0 0 0 0) (1 2 1 1) (1 3 2 4))))
+(test-assert (quadlist-is-tm? '((0 0 0 0) (0 1 0 0) (1 0 0 0) (1 1 0 0))))
+(test-end "quadlist tests")
+
+
+
+;; ======= godel
 ;; (test-begin "godel")
 ;; (test-assert (equal? 2
 ;; 		     (length (machine->numlist '((1 2 3 4) (5 6 7 8))))))

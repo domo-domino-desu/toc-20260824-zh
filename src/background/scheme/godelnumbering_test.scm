@@ -162,6 +162,9 @@
   (let ((lst (makelist-seed n n)))
     (test (string-append "case: n=" (number->string n))
 	  #t (equal? lst (xy-arity n (apply cantor-n lst))))))
+(do ((n 0 (+ n 1)))  ;; is xy one-to-one?
+    ((> n 100) '())
+  (test-assert (equal? n (apply cantor (xy n)))))
 (test-end "cantor-n and xy-arity")
 
 

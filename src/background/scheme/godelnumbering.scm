@@ -73,12 +73,6 @@
 	(else 
 	 (cantor (car args) (apply cantor-n (cdr args))))))
 
-;; cantor-omega encode the arity of the first component
-(define (cantor-omega . tuple)
-  (let ((newtuple (list (length tuple) 
-			(apply cantor-n tuple))))
-    (apply cantor newtuple)))
-
 ;; xy-arity  return the list of the given arity making the cantor number c
 ;;  If arity=0 then only c=0 is valid (others return #f)
 (define (xy-arity arity c)
@@ -93,14 +87,41 @@
 	(else (cons (car (xy c))
 		    (xy-arity (- arity 1) (cadr (xy c)))))))
 
-;; xy-omega  interpret c as a pair (arity cantor-number) and return the tuple
-;;  of that arity and having that cantor number.  Note that if c=(0,i) then
-;;  only i=0 is valid input (returning the null list).
+;; The next two routines give correspondences between the natural numbers
+;; and the set of sequences of natural numbers.  They are inverse.
+;; The null sequence is the issue; there is only one.  So we code like this:
+;;   null sequence <--> (0,0)
+;;   (i)           <--> (0,i+1)
+;;   (a_0,.. a_n)  <--> (n-1,number of (a_0,.. a_n))
+
+;; cantor-omega encode the arity of the first component
+;; (define (cantor-omega . tuple)
+;;   (let ((newtuple (list (length tuple) 
+;; 			(apply cantor-n tuple))))
+;;     (apply cantor newtuple)))
+(define (cantor-omega . tuple)
+  (let ((arity (length tuple)))
+    (cond (((= arity 0) (cantor 0 0))
+	   ((= arity 1) (cantor 0 (+ 1 (car tuple))))
+	   (else 
+	    (let ((newtuple (list (- arity 1) 
+				  (apply cantor-n tuple))))
+	      (apply cantor newtuple)))))))
+
+;; xy-omega  interpret c as a pair (arity cantor-number) and return something 
+;;  like the tuple of that arity and having that cantor number.  
+;;  "Something like" means that if c=(0,i) then if i=0 we get the null list, 
+;;  while if i is not 0 then we get the length 1 list (i-1); finally,
+;;  we get the pair (a-1 c) is valid input (returning the null list).
 (define (xy-omega c)
   (let* ((pair (xy c))
-	 (arity (car pair))
+	 (a (car pair))
 	 (cantor-number (cadr pair)))
-    (xy-arity arity cantor-number)))
+    (case 
+	(((and (= a 0)
+	       (= cantor-number 0)) '())
+	 ((= a 0) (list (- cantor-number 1)))
+	 (else (xy-arity (+ 1 a) cantor-number))))))
 
 
 ;; ========

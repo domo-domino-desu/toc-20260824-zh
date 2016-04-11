@@ -80,8 +80,7 @@
 	 (if (= 0 c ) 
 	     '()
 	     (begin
-	       (display "ERROR: xy-arity with arity=0 requires c=0")
-	       (newline)
+	       (display "ERROR: xy-arity with arity=0 requires c=0") (newline)
 	       #f)))
 	((= 1 arity) (list c))
 	(else (cons (car (xy c))
@@ -94,34 +93,26 @@
 ;;   (i)           <--> (0,i+1)
 ;;   (a_0,.. a_n)  <--> (n-1,number of (a_0,.. a_n))
 
-;; cantor-omega encode the arity of the first component
-;; (define (cantor-omega . tuple)
-;;   (let ((newtuple (list (length tuple) 
-;; 			(apply cantor-n tuple))))
-;;     (apply cantor newtuple)))
+;; cantor-omega encode the arity in the first component
 (define (cantor-omega . tuple)
   (let ((arity (length tuple)))
-    (cond (((= arity 0) (cantor 0 0))
-	   ((= arity 1) (cantor 0 (+ 1 (car tuple))))
-	   (else 
-	    (let ((newtuple (list (- arity 1) 
-				  (apply cantor-n tuple))))
-	      (apply cantor newtuple)))))))
+    (cond ((= arity 0) (cantor 0 0))
+	  ((= arity 1) (cantor 0 (+ 1 (car tuple))))
+	  (else 
+	   (let ((newtuple (list (- arity 1) 
+				 (apply cantor-n tuple))))
+	     (apply cantor newtuple))))))
 
-;; xy-omega  interpret c as a pair (arity cantor-number) and return something 
-;;  like the tuple of that arity and having that cantor number.  
-;;  "Something like" means that if c=(0,i) then if i=0 we get the null list, 
-;;  while if i is not 0 then we get the length 1 list (i-1); finally,
-;;  we get the pair (a-1 c) is valid input (returning the null list).
+;; xy-omega  Inverse of cantor-omega  
 (define (xy-omega c)
-  (let* ((pair (xy c))
-	 (a (car pair))
-	 (cantor-number (cadr pair)))
-    (case 
-	(((and (= a 0)
-	       (= cantor-number 0)) '())
-	 ((= a 0) (list (- cantor-number 1)))
-	 (else (xy-arity (+ 1 a) cantor-number))))))
+  (let* ((pr (xy c))
+	 (a (car pr))
+	 (cantor-number (cadr pr)))
+    (cond
+     ((and (= a 0)
+	   (= cantor-number 0)) '())
+     ((= a 0) (list (- cantor-number 1)))
+     (else (xy-arity (+ 1 a) cantor-number)))))
 
 
 ;; ========

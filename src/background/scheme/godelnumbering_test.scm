@@ -173,8 +173,9 @@
 ;; ============== cantor-omega and xy-omega
 (test-begin "cantor-omega xy-omega")
 (let ((lst '(1 2 3)))
-  (test-assert (equal? lst
-		       (xy-omega (apply cantor-omega lst)))))
+  (test #t
+	(equal? lst
+		(xy-omega (apply cantor-omega lst)))))
 (do ((x 0 (+ x 1)))
     ((>= x 4) x)
   (do ((y 0 (+ y 1)))
@@ -190,7 +191,10 @@
 (let ((lst '(1 2)))
   (test-assert (equal? lst
 		       (xy-omega (apply cantor-omega lst)))))
-
+;; is the domain of xy-omega all of N?
+(do ((c 0 (+ 1 c)))  
+    ((>= c 50) #t)
+  (test-assert (list? (xy-omega c))))
 (test-end "cantor-omega xy-omega")
 
 

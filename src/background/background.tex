@@ -565,19 +565,20 @@ Taking $(1/2)(-1+\sqrt{1+8c})$ to be $\alpha$ gives that
 $c\in\rightclosed{\alpha-1}{\alpha}$ so that $d=\floor{\alpha}$. 
 \autocite{222835}}
 $d=\floor{(-1+\sqrt{1+8c})/2}$.\footnote{
-The code for \codeinline{diag-num} has a couple of technicalities.
-The first is minor, that in Scheme the \codeinline{floor} function returns
-a floating point number and 
-since we want \codeinline{xy} to be the inverse of \codeinline{cantor},
-which inputs integers, we want \codeinline{diag-num} to output an integer.
+The code for \codeinline{diag-num} has two implementation details of interest.
+One is that in Scheme the \codeinline{floor} function returns
+a floating point number.  
+We want \codeinline{xy} to be the inverse of \codeinline{cantor},
+which inputs integers, so we want \codeinline{diag-num} to return an integer.
 That explains the \codeinline{inexact->exact} conversion.
-The second technicality is that experience with the code for 
-Cantor's correspondence shows that it leads to 
-inputs~$c$ that can give floating point overflows.
-So we've commented out the naive implementation of \codeinline{diag-num}
-and instead used Chicken Scheme's access to bignums to get an equivalent
-routine that returns the correct results no matter how large the inputs are
-(within the physical limits of the computer running the code).}
+The second detail is that the code leads to numbers large enough to
+give floating point overflows.
+For instance, \protect\codeinline{(cantor-n 1 2 3 4 5 6 7)} returns
+\protect\codeinline{1.05590697087673e+55}.
+So the code shown has the naive version of \codeinline{diag-num}
+commented out
+and instead uses a library for bignums, integers of
+unbounded size.}
 \lstinputlisting[firstline=16,lastline=35]{background/scheme/godelnumbering.scm}
 
 Extending to triples is straightforward. 
@@ -601,32 +602,48 @@ interested in those.
 What the hell, let's extend to tuples of any size.
 The \codeinline{cantor-n} routine takes a tuple of any length and
 outputs the Cantor number of that tuple.
-Its inverse \codeinline{xy-arity} that takes two inputs, the length
-of the tuple it will produce and the Cantor number, and produces the
+Also there is \codeinline{xy-arity} that takes two inputs, the length
+of a tuple and its Cantor number, and produces the
 tuple.
 
 \lstinputlisting[firstline=63,lastline=87]{background/scheme/godelnumbering.scm}
 
 The \codeinline{xy-arity} routine is not uniform in that 
-it cover only one arity at a time.
+it covers only one arity at a time.
+Said another way, \codeinline{xy-arity} is not the inverse of 
+\codeinline{cantor-n} in that we have to tell it the tuple's arity.
+
 To cover tuples of all lengths we define two matched routines, 
-\codeinline{cantor-omega} and \codeinline{xy-omega}.
-Each is a correspondence between the natural numbers and 
+\codeinline{cantor-omega} and \codeinline{xy-omega} that 
+communicate using a simple data structure, a pair where the first element
+is the length of the tuple and the second is the tuple's cantor number.
+These two are
+correspondences between the natural numbers and 
 the set of sequences of natural numbers.
 They are inverse.
 
-They use a simple data structure, a pair where the first element
-is the length of the tuple and the second is the tuple's cantor number,
-computed by the routines above.
-
 \lstinputlisting[firstline=96,lastline=115]{background/scheme/godelnumbering.scm}
 
+This shows their use.
+
 \begin{lstlisting}
-#;4> (cantor-omega 1 2 3 4)
+#;4> (xy-omega 0) 
+()
+#;5> (xy-omega 1) 
+(0)
+#;6> (xy-omega 2) 
+(0 0)
+#;7> (xy-omega 3) 
+(1)
+#;8> (xy-omega 4) 
+(0 1)
+#;9> (xy-omega 5) 
+(0 0 0)
+#;10> (cantor-omega 1 2 3 4)
 12693900784
-#;5> (xy (cantor-omega 1 2 3 4))
+#;11> (xy (cantor-omega 1 2 3 4))
 (4 159331)
-#;6> (xy-omega (cantor-omega 1 2 3 4))
+#;12> (xy-omega (cantor-omega 1 2 3 4))
 (1 2 3 4)
 \end{lstlisting}
 
@@ -634,11 +651,10 @@ computed by the routines above.
 that the set of prime numbers and the set of strings over a finite
 alphabet are countable.
 But they used constructions that were hand-wavy.
-With this subsection's explicit definitions we can 
-sharpen such arguments.
+We can now make such arguments more precisely.
 
 \begin{example}  \label{ex:RationalsAreCountable}
-The set of rational numbers $\Q$ is countable.
+We will show that the set of rational numbers $\Q$ is countable.
 We already know how to alternate between positives and negatives, 
 so that reduces the problem of finding a correspondence 
 to that of just doing the nonnegatives $\map{f}{\N}{\Q\cup\set{0}}$.
@@ -979,9 +995,9 @@ Write the code to make precise the hand-wavy methods give in these examples.
 Cantor's definition of cardinality led us to produce functions, 
 correspondences.
 This section introduces a powerful technique to show 
-when no such function exists.
-We begin with an evocative framing of the question that we will
-address first with this new technique.
+when no function exists.
+We start with an evocative framing of the first question that we will
+address with this new technique.
 
 
 \subsection{Hilbert's Hotel} \label{subsection:HilbertsHotel}
@@ -1061,14 +1077,11 @@ or perhaps because of it.}
 \subsection{Diagonalization}
 The close of the prior subsection promises a set with so many members that 
 it cannot be counted.
-One such set is the real numbers~$\R$.
+One such set is the real numbers~$R$.
 
 Recall again that we do not mean that $\R$ has more members than $\N$ 
-because $\R$ is a superset;
-the set of integers is a superset of the set of natural numbers but it is 
-countable.
-Rather we mean that $\R$ has more members in the sense of cardinality, of
-one-to-one and onto functions.
+because $\R$ is a superset.
+Rather we mean that $\R$ has more members in the sense of cardinality.
 We will now both explain what we mean by that, and prove it.
 
 \begin{theorem}  \label{th:UnitIntUncountable}
@@ -1176,17 +1189,17 @@ The set of real numbers is uncountable.
 \end{corollary}
 
 \begin{proof}
-If there were a map $\map{f}{\N}{\R}$ that is onto then
+If there were a $\map{f}{\N}{\R}$ that is onto then
 we could modify it to get this $\map{\hat{f}}{\N}{\leftclosed{0}{1}}$
 that is also onto.
 \begin{equation*}
-  \hat{f}(x)
+  \hat{f}(x)=
   \begin{cases}
      f(x) &\case{if $x\in\leftclosed{0}{1}$} \\
       0   &\case{otherwise}
   \end{cases}
 \end{equation*}
-\Cref{th:UnitIntUncountable} says that no such~$\hat{f}$ exists. 
+But  no such~$\hat{f}$ exists, by \cref{th:UnitIntUncountable}. 
 \end{proof}
 
 % \margingraphic*{.25\textwidth}{background/asy/maps/maps02.pdf}
@@ -1194,14 +1207,14 @@ We next define when one set has fewer members than another.
 For the intuition, consider trying 
 to make a correspondence 
 between $\set{0,1,2}$ and $\set{0,1,2,3}$. 
-We can try to stretch the domain to make it cover as much 
-of the codomain as possible, 
-say with $0\mapsto 0$, $1\mapsto 1$, and~$2\mapsto 2$.
+We find that there are just too few domain elements to cover all of 
+the codomain, and instead the best we can do is something like
+$0\mapsto 0$, $1\mapsto 1$, and~$2\mapsto 2$.
 \begin{center}
     \includegraphics{background/asy/maps/maps02.pdf}
 \end{center}
-This map is one-to-one but 
-it is not a correspondence because it is not onto. 
+This is not a correspondence because it is not onto, but
+it is a one-to-one function. 
 
 \begin{definition}
 The set $S$ has \definend{cardinality less than or equal to}
@@ -1212,19 +1225,17 @@ if there is a one-to-one function from $S$ to~$T$.
 
 For example, there is a one-to-one function from $\N$ to $\R$,
 namely the inclusion map that sends $n\in\N$ to itself~$n\in\R$,
-but the proof of \cref{cor:RealsNotCountable} shows 
-that no function from $\N$ to~$\R$ is onto.
+but because the set of real numbers is uncountable, 
+% (\cref{exer:RealsNotCountable}), 
+no function from $\N$ to~$\R$ is onto.
 
 For the next result, 
 recall that a set's \definend{characteristic function} $\charfcn{S}$ 
 is the boolean function determining membership:
 $\charfcn{S}(s)=1$ if $s\in S$, and $\charfcn{S}(s)=0$ if $s\notin S$.
-
-Recall also that the \definend{power set}~$\powerset(S)$ 
-is the collection of subsets of $S$.
 Thus, for the set $S=\set{\str{a},\str{b},\str{c}}$ of three letters,
 the characteristic function 
-(with domain $\Sigma=\set{\str{a},\ldots, \str{z}}$) 
+with domain $\Sigma=\set{\str{a},\ldots, \str{z}}$ 
 is
 \begin{equation*}
   \charfcn{S}(\str{a})=1
@@ -1237,7 +1248,8 @@ is
   \quad
   \ldots
 \end{equation*}
-and its power set is
+Recall also that the \definend{power set}~$\powerset(S)$ 
+is the collection of subsets of $S$ and so
 $
   \powerset(S)=\set{\emptyset, \set{\str{a}}, \set{\str{b}}, \set{\str{c}},
                           \set{\str{a},\str{b}}, 
@@ -1263,20 +1275,20 @@ $.
 Every set has cardinality strictly less than that of its power set.    
 \end{theorem}
 
-Thus, given a set, 
-we can produce another one whose cardinality is strictly 
-greater\Dash there's always a
-bigger set.
+% Thus, given a set, 
+% we can produce another one whose cardinality is strictly 
+% greater\Dash there's always a
+% bigger set.
 
 We first illustrate the proof.
-% The easy part is 
-% producing a one-to-one function from $S$ to $\powerset(S)$.
-% Just map $s\in S$ to the singleton set $\set{s}$.
-% That is clearly one-to-one.
+The easy half is 
+producing a function from a set $S$ to $\powerset(S)$ that is one-to-one:
+just map $s\in S$ to the singleton set $\set{s}$.
+
 The hard half is
 showing that no map from $S$ to $\powerset(S)$ is onto.
-Consider the set $S=\set{\str{a},\str{b},\str{c}}$ 
-and the example function $\map{f}{S}{\powerset(S)}$.
+Consider the example set $S=\set{\str{a},\str{b},\str{c}}$ 
+and this function $\map{f}{S}{\powerset(S)}$.
 \begin{equation*}
   \str{a}\mapsunder{f}\set{\str{b},\str{c}} 
   \qquad
@@ -1300,15 +1312,16 @@ three output sets $f(\str{a})$, $f(\str{b})$, $f(\str{c})$.
     $\str{c}$ &$\set{\str{a},\str{b},\str{c}}$  &$1$ &$1$ &$1$  
   \end{tabular}
 \end{center}
-Diagonalize.  
-That is, go down the diagonal on the right and flip the bits from $0$ to~$1$
-and from $1$ to~$0$.
-The result is the characteristic function of a set, 
-$R=\set{\str{a}}$,
-which is not one of the mapped-to sets in the second column.
-It is not the first mapped-to set because it differs on~$\str{a}$, 
-it is not the second mapped-to set because it differs on~$\str{b}$,
-and it is not the third mapped-to set because it differs on~$\str{c}$.
+Diagonalize:  
+go down the diagonal and flip the bits from $0$ to~$1$, and
+from $1$ to~$0$.
+That switches \str{011} to \str{100},
+which is the characteristic function of the set 
+$R=\set{\str{a}}$.
+This set is not any of the outputs from $f$ listed in the second column.
+It is not $f(a)$ because it differs on the input~$\str{a}$, 
+it is not $f(b)$ because it differs on~$\str{b}$,
+and it is not $f(c)$ because it differs on~$\str{c}$.
 
 \begin{proof}
 One half is easy:
@@ -1317,32 +1330,32 @@ given by $\iota(s)=\{s\}$
 is one-to-one, so the cardinality of $S$
 is less than or equal to the cardinality of $\powerset(S)$.
 
-For the other direction,
+For the other half,
 to show that no map from a set to its power set is onto, 
 fix any~$\map{f}{S}{\powerset(S)}$ and consider 
-this element of $\powerset(S)$.
+this element of $\powerset(S)$ (this is where we flip the bits).
 \begin{equation*}
-  R=\set{s \suchthat s\not\in f(s)}
+  R=\set{s \suchthat s\notin f(s)}
   % \tag{$*$}
 \end{equation*}
-(This is where we flip the bits.)
-We will show that $f$ is not onto because no member of the domain maps to~$R$.
+We will show that no member of the domain maps to~$R$,
+and thus $f$ is not onto.
 
-For that, suppose that $\hat{s}\in S$ is such that $f(\hat{s})=R$.
-We will show that both $\hat{s}\in R$ and $\hat{s}\not\in R$ give 
-contradictions.
-First, assuming that $\hat{s}\in R$ leads, by
-the definition of $R$, to the conclusion that $\hat{s}\not\in f(\hat{s})$, 
-but in this case $f(\hat{s})=R$ so $\hat{s}\not\in R$, which is a contradiction.
-Alternatively, assuming that $\hat{s}\not\in R$ leads, because
-$R=f(\hat{s})$, to
-$\hat{s}\not\in f(\hat{s})$, so $\hat{s}\in R$, which is also a contradiction.
+Suppose that there exists $\hat{s}\in S$ such that $f(\hat{s})=R$.
+Consider whether $\hat{s}$ is an element of~$R$.
+We have that $\hat{s}\in R$ holds if and only if 
+$\hat{s}\in\set{s\suchthat s\notin f(s)}$.
+By definition of membership, that holds if and only if
+$\hat{s}\notin f(\hat{s})$, which 
+holds if and only if $\hat{s}\notin R$.
+This contradiction means that no such $\hat{s}$ exists.
 \end{proof}
 
-\begin{theorem} \label{th:FcnsNNGreaterFcnsN}
-The cardinality of the set of natural number functions $\map{f}{\N}{\N}$ is 
+\begin{corollary} \label{cor:FcnsNNGreaterFcnsN}
+The set of natural number functions $\map{f}{\N}{\N}$ 
+has cardinality  
 strictly greater than the cardinality of the set~$\N$.  
-\end{theorem}
+\end{corollary}
 
 \begin{proof}
 Let~$F$ be the set
@@ -1356,8 +1369,8 @@ Therefore~$\sizeof{\N}<\sizeof{\powerset(\N)}\leq\sizeof{F}$.
 Imagine a game of Musical Chairs, 
 only with countably many places, 
 $P_0,P_1,\ldots$\,.
-This result says that there are just too many functions $\map{f}{\N}{\N}$\Dash
-there must be some functions that don't get a place. 
+This result says that there are just too many functions $\map{f}{\N}{\N}$
+to fit in the places, so there must be some function without a place.
 % This is a Pigeonhole Principle argument.
 
 In the next section we will show that there are countably many 
@@ -1401,8 +1414,8 @@ Give the formula, or code, for the number of the room into which
 the clerk puts the new guest~$p_{i,j}$.      
 \end{exercise}
 
-\begin{exercise}
-Show that sets $\leftclosed{0}{1}$ and $\R$ have the same cardinality.
+\begin{exercise} \label{exer:RealsNotCountable}
+Prove that the sets $\leftclosed{0}{1}$ and $\R$ have the same cardinality.
 \begin{answer}
 The tangent function is a correspondence from $\open{-\pi/2}{\pi/2}$ to~$\R$
 so its inverse, arctangent, is a correspondence in the other direction.
@@ -1494,12 +1507,13 @@ fact that $f$ lists all rationals.
 \section{G\"odel numbering}
 
 NOT DONE.
+\definend{Description number} or \definend{G\"odel number}.
 
 We have promised to show that there are more functions $\map{f}{\N}{\N}$ than
 there are Turing machines to compute those functions.
 That will show that there are functions not computed by any Turing machines.
 
-We are half done; \cref{th:FcnsNNGreaterFcnsN} shows that 
+We are half done; \cref{cor:FcnsNNGreaterFcnsN} shows that 
 the cardinality of the set of functions from $\N$ to~$\N$ 
 is greater than the cardinality of the set~$\N$.
 We now show that the set of Turing machines 

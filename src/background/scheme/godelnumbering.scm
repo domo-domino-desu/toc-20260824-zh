@@ -204,6 +204,13 @@
 	  (tm->instruction-integer-three three)
 	  (tm->instruction-integer-four four))))
 
+;; quadlist->tminstructionlist ql  convert a list of quads to a list of TM 
+;;  instructions
+(define (quadlist->tminstructionlist ql)
+  (map instruction->tminstruction ql))
+(define (tminstructionlist->quadlist tmilist)
+  (map tminstruction->instruction tmilist))
+
 ;; quadlist->numlist convert list of 4-tuples m to list of corresponding
 ;;   natural numbers
 (define (quadlist->numlist qlist)
@@ -214,8 +221,8 @@
   (map integer->instruction nlist))
 
 ;; quadlist-get n  Return the n-th quadlist 
-(define (quadlist-get dex)
-  (numlist->quadlist (xy-omega dex)))
+(define (quadlist-get n)
+  (numlist->quadlist (xy-omega n)))
 
 ;; quad-less Is first quad of numbers lex less (strictly less) than second?
 ;;  q1, q2  length 4 lists of numbers
@@ -226,12 +233,12 @@
    ((< (caddr q1) (caddr q2)) #t)
    ((< (cadddr q1) (cadddr q2)) #t)
    (else #f)))
+
 ;; quadlist-is-set?  Is the list of quads a set?
 ;;  qlist  list of length 4 lists of numbers
 (define (quadlist-is-set? qlist)
   (let ((sorted-qlist (sort qlist quad-less?)))
     (quadlist-is-set-helper sorted-qlist)))
-
 ;; quadlist-is-set-helper  walk list looking for adjacent quads that differ 
 ;; sq sorted list of quads
 (define (quadlist-is-set-helper sq)
@@ -252,15 +259,15 @@
 (define (quadlist-is-deterministic? qlist)
   (let ((sorted-qlist (sort qlist quad-less?)))
     (quadlist-is-deterministic-helper sorted-qlist)))
-
-;; quadlist-is-set-helper  walk list looking for adjacent quads that differ 
+;; quadlist-is-deterministic-helper  walk list looking for adjacent quads 
+;;   that differ 
 ;; sq sorted list of quads
 (define (quadlist-is-deterministic-helper sq)
   (cond
    ((null? sq) #t)
    ((= 1 (length sq)) #t)
    ((first-two-equal? (car sq) (cadr sq)) #f)
-   (else (quadlist-is-set-helper (cdr sq)))))
+   (else (quadlist-is-deterministic-helper (cdr sq)))))
 
 ;; quadlist-is-tm  Decide if a quadlist is a Turing machine
 ;;  qlist  list of length 4 lists of numbers
@@ -269,22 +276,43 @@
 (define (quadlist-is-tm? qlist)
   (quadlist-is-deterministic? qlist))
 
-;; godel  Return godel number of Turing machine m
-(define (godel m)
-  (apply cantor-omega (quadlist->numlist m)))
+;; numlist-equal n1 n2  Determine if two numlists are equal as multisets
+(define (numlist-equal? n1 n2)
+  (let ((sorted-n1 (sort n1 <))
+	(sorted-n2 (sort n2 <)))
+    (eq? sorted-n1 sorted-n2)))
+
+;; quadlist-equal q1 q2 Determine if two quadlists are equal as multisets
+(define (quadlist-equal? q1 q2)
+  (numlist-equal? (map quadlist->numlist q1)
+		  (map quadlist->numlist q2)))
+
+;; godel  Return godel number of Turing machine tm
+(define (godel tm)
+  (let ((qlist (tminstructionlist->quadlist tm)))
+    (if (not (quadlist-is-tm? qlist))
+	(begin
+	  (display "ERROR: godel: input is not a Turing machine")
+	  '())
+	(begin
+	  (let ((tm-num 0)  ; keep track of how many tm's generated
+		(tm-list '()))
+	    (do ((i 0 (+ i 1)))
+		((> tm-num g) (car tm-list))
+	      (let ((qlist (quadlist-get i)))
+		(if (quadlist-is-tm? qlist)
+		    (begin
+		      (set! tm-num (+ 1 tm-num))
+		      (set! tm-list (cons qlist tm-list)))))))))))
 
 ;; machine Return the list of 4-tuples represented by the godel number g
-;; (define (machine g)
-;;   (let ((numlist (xy-omega g)))
-;;     (numlist->quadlist numlist)))
-;; (define (machine g)
-;;   (let ((tm-no 0)
-;; 	(tm-list '()))
-;;     (do ((quad-no 0 (+ quad-no 1)))
-;; 	(let ((qlist (quadlist-get quad-no)))
-
-;; )	
-;; )
-;; )
-;; )
-;; 
+(define (machine g)
+  (let ((tm-num 0)  ; keep track of how many tm's generated
+	(tm-list '()))
+    (do ((i 0 (+ i 1)))
+	((> tm-num g) (car tm-list))
+	(let ((qlist (quadlist-get i)))
+	  (if (quadlist-is-tm? qlist)
+	      (begin
+		(set! tm-num (+ 1 tm-num))
+		(set! tm-list (cons qlist tm-list))))))))

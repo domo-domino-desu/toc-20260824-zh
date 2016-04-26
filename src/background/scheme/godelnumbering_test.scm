@@ -201,127 +201,147 @@
 
 ;; ======= Machine counting ===========
 
-;; ======= instruction to integer and back again 
-(test-begin "instruction->integer integer->instruction")
-(test-assert "instructions are length 4 lists" 
-	     (= 4 (length (integer->instruction 0)))) 
-(do ((n 1 (+ n 1)))
-    ((> n 10) '())
-  (test-assert 
-	     (= 4 (length (integer->instruction n)))))  
-(test-assert "length 4 lists are instructions" 
-	     (= 0 (instruction->integer (integer->instruction 0)))) 
-(do ((n 1 (+ n 1)))
-    ((> n 20) '())
-  (test-assert 
-	     (= n (instruction->integer (integer->instruction n))))) 
-(do ((x 0 (+ x 1)))
-    ((>= x 5) x)
-  (do ((y 0 (+ y 1)))
-      ((>= y 5) y)
-    (do ((z 0 (+ z 1)))
-	((>= z 5) '())
-      (do ((w 0 (+ w 1)))
-	  ((>= w 5) '())
-	(test (string-append "case: x=" (number->string x)
-			     " y=" (number->string y)
-			     " z=" (number->string z)
-			     " w=" (number->string w))
-	      #t (integer? (instruction->integer (list x y z w))))))))
-(test-end "instruction->integer integer->instruction")
+;; ;; ======= instruction to integer and back again 
+;; (test-begin "instruction->integer integer->instruction")
+;; (test-assert "instructions are length 4 lists" 
+;; 	     (= 4 (length (integer->instruction 0)))) 
+;; (do ((n 1 (+ n 1)))
+;;     ((> n 10) '())
+;;   (test-assert 
+;; 	     (= 4 (length (integer->instruction n)))))  
+;; (test-assert "length 4 lists are instructions" 
+;; 	     (= 0 (instruction->integer (integer->instruction 0)))) 
+;; (do ((n 1 (+ n 1)))
+;;     ((> n 20) '())
+;;   (test-assert 
+;; 	     (= n (instruction->integer (integer->instruction n))))) 
+;; (do ((x 0 (+ x 1)))
+;;     ((>= x 5) x)
+;;   (do ((y 0 (+ y 1)))
+;;       ((>= y 5) y)
+;;     (do ((z 0 (+ z 1)))
+;; 	((>= z 5) '())
+;;       (do ((w 0 (+ w 1)))
+;; 	  ((>= w 5) '())
+;; 	(test (string-append "case: x=" (number->string x)
+;; 			     " y=" (number->string y)
+;; 			     " z=" (number->string z)
+;; 			     " w=" (number->string w))
+;; 	      #t (integer? (instruction->integer (list x y z w))))))))
+;; (test-end "instruction->integer integer->instruction")
 
 
 
-;; ======= show instructions in some readable format
-(test-begin "tminstruction")
-;; first we test the four component functions and their inverses
-;; one
-(test-assert "initially is a state" 
-	     (integer? (instruction-integer->tm-one 0))) 
-(do ((i 1 (+ i 1)))
-    ((> i 10) '())
-  (test-assert 
-	       (integer? (instruction-integer->tm-one i)))) 
-(do ((i 1 (+ i 1)))
-    ((> i 10) '())
-  (test-assert (equal? i
-		       (tm->instruction-integer-one (instruction-integer->tm-one i))))) 
-;; four
-(test-assert "finally is a state" 
-	     (integer? (instruction-integer->tm-four 0))) 
-(do ((i 1 (+ i 1)))
-    ((> i 10) '())
-  (test-assert 
-	       (integer? (instruction-integer->tm-four i)))) 
-(let ((inst (instruction-integer->tm-two 0)))
-  (test-assert "second entry is a char or blank" 
-	       (or (integer? inst)
-		   (equal? #\B inst)
-		   (char-lower-case? inst)))) 
-(do ((i 1 (+ i 1)))
-    ((> i 10) '())
-  (test-assert (equal? i
-		       (tm->instruction-integer-four (instruction-integer->tm-four i))))) 
-; two
-(do ((i 1 (+ i 1)))
-    ((> i 40) '())
-  (let ((inst (instruction-integer->tm-two i)))
-    (test-assert (string-append "second entry is a char or blank i=" 
-				(number->string i)) 
-		 (or (integer? inst)
-		     (equal? #\B inst)
-		     (char-lower-case? inst)))))
-(do ((i 1 (+ i 1)))
-    ((> i 40) '())
-  (test-assert (string-append "i=" (number->string i))
-	       (equal? i
-		       (tm->instruction-integer-two (instruction-integer->tm-two i))))) 
-; three
-(let ((inst (instruction-integer->tm-three 0)))
-  (test-assert "third entry is a char or blank or L or R" 
-	       (or (integer? inst)
-		   (equal? #\L inst)
-		   (equal? #\R inst)
-		   (equal? #\B inst)
-		   (char-lower-case? inst)))) 
-(do ((i 1 (+ i 1)))
-    ((> i 40) '())
-  (let ((inst (instruction-integer->tm-three i)))
-    (test-assert (string-append "third entry is a char or blank or L or R i=" 
-				(number->string i)) 
-		 (or (integer? inst)
-		     (equal? #\B inst)
-		     (equal? #\L inst)
-		     (equal? #\R inst)
-		     (char-lower-case? inst)))))
-(do ((i 1 (+ i 1)))
-    ((> i 40) '())
-  (test-assert (string-append "i=" (number->string i))
-	       (equal? i
-		       (tm->instruction-integer-three (instruction-integer->tm-three i))))) 
-;; Now we test the two function of which the above are components
-(test-assert (= 4
-		(length (instruction->tminstruction '(0 0 0 0)))))
-(test-assert (= 4
-		(length (instruction->tminstruction '(0 1 2 3)))))
-(do ((x 0 (+ x 1)))
-    ((>= x 5) x)
-  (do ((y 0 (+ y 1)))
-      ((>= y 4) y)
-    (do ((z 0 (+ z 1)))
-	((>= z 3) '())
-      (do ((w 0 (+ w 1)))
-	  ((>= w 2) '())
-	(test-assert (string-append "case: x=" (number->string x)
-			     " y=" (number->string y)
-			     " z=" (number->string z)
-			     " w=" (number->string w))
-		     (let ((lst (list x y z w)))
-	      (equal? lst 
-		      (tminstruction->instruction (instruction->tminstruction lst)))))))))
-(test-end "tminstruction")
+;; ;; ======= show instructions in some readable format
+;; (test-begin "tminstruction")
+;; ;; first we test the four component functions and their inverses
+;; ;; one
+;; (test-assert "initially is a state" 
+;; 	     (integer? (instruction-integer->tm-one 0))) 
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 10) '())
+;;   (test-assert 
+;; 	       (integer? (instruction-integer->tm-one i)))) 
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 10) '())
+;;   (test-assert (equal? i
+;; 		       (tm->instruction-integer-one (instruction-integer->tm-one i))))) 
+;; ;; four
+;; (test-assert "finally is a state" 
+;; 	     (integer? (instruction-integer->tm-four 0))) 
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 10) '())
+;;   (test-assert 
+;; 	       (integer? (instruction-integer->tm-four i)))) 
+;; (let ((inst (instruction-integer->tm-two 0)))
+;;   (test-assert "second entry is a char or blank" 
+;; 	       (or (integer? inst)
+;; 		   (equal? #\B inst)
+;; 		   (char-lower-case? inst)))) 
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 10) '())
+;;   (test-assert (equal? i
+;; 		       (tm->instruction-integer-four (instruction-integer->tm-four i))))) 
+;; ; two
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 40) '())
+;;   (let ((inst (instruction-integer->tm-two i)))
+;;     (test-assert (string-append "second entry is a char or blank i=" 
+;; 				(number->string i)) 
+;; 		 (or (integer? inst)
+;; 		     (equal? #\B inst)
+;; 		     (char-lower-case? inst)))))
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 40) '())
+;;   (test-assert (string-append "i=" (number->string i))
+;; 	       (equal? i
+;; 		       (tm->instruction-integer-two (instruction-integer->tm-two i))))) 
+;; ; three
+;; (let ((inst (instruction-integer->tm-three 0)))
+;;   (test-assert "third entry is a char or blank or L or R" 
+;; 	       (or (integer? inst)
+;; 		   (equal? #\L inst)
+;; 		   (equal? #\R inst)
+;; 		   (equal? #\B inst)
+;; 		   (char-lower-case? inst)))) 
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 40) '())
+;;   (let ((inst (instruction-integer->tm-three i)))
+;;     (test-assert (string-append "third entry is a char or blank or L or R i=" 
+;; 				(number->string i)) 
+;; 		 (or (integer? inst)
+;; 		     (equal? #\B inst)
+;; 		     (equal? #\L inst)
+;; 		     (equal? #\R inst)
+;; 		     (char-lower-case? inst)))))
+;; (do ((i 1 (+ i 1)))
+;;     ((> i 40) '())
+;;   (test-assert (string-append "i=" (number->string i))
+;; 	       (equal? i
+;; 		       (tm->instruction-integer-three (instruction-integer->tm-three i))))) 
+;; ;; Now we test the two function of which the above are components
+;; (test-assert (= 4
+;; 		(length (instruction->tminstruction '(0 0 0 0)))))
+;; (test-assert (= 4
+;; 		(length (instruction->tminstruction '(0 1 2 3)))))
+;; (do ((x 0 (+ x 1)))
+;;     ((>= x 5) x)
+;;   (do ((y 0 (+ y 1)))
+;;       ((>= y 4) y)
+;;     (do ((z 0 (+ z 1)))
+;; 	((>= z 3) '())
+;;       (do ((w 0 (+ w 1)))
+;; 	  ((>= w 2) '())
+;; 	(test-assert (string-append "case: x=" (number->string x)
+;; 			     " y=" (number->string y)
+;; 			     " z=" (number->string z)
+;; 			     " w=" (number->string w))
+;; 		     (let ((lst (list x y z w)))
+;; 	      (equal? lst 
+;; 		      (tminstruction->instruction (instruction->tminstruction lst)))))))))
+;; (test-end "tminstruction")
 
 
+
+;; ======= quad and natural interconversion
+(test-begin "quad")
+(test-assert (=
+	      0
+	      (quad->natural (natural->quad 0))))
+(test-assert (equal?
+	      '(0 0 0 0)
+	      (natural->quad (quad->natural '(0 0 0 0)))))
+(do ((i 0 (+ 1 i)))
+    ((>= i 10) '())
+  (test-assert (=
+		i
+		(quad->natural (natural->quad i)))))
+(do ((i 0 (+ 1 i)))
+    ((>= i 10) '())
+  (test-assert (equal?
+		(list i i i i)
+		(natural->quad (quad->natural (list i i i i))))))
+(test-end "quad")
 
 
 
@@ -354,13 +374,13 @@
 (test-assert (equal?
 	      '((0 0 0 0) (1 2 3 4))
 	      (numlist->quadlist (quadlist->numlist '((0 0 0 0) (1 2 3 4))))))
-(test-assert (quadlist-get 0)) ;; return anything?
+(test-assert (get-nth-quadlist 0)) ;; return anything?
 (test "there is an encoding of the empty list" 
       '() 
-      (quadlist-get (cantor-omega)))
+      (get-nth-quadlist (cantor-omega)))
 (test 
       '((1 2 3 4)) 
-      (quadlist-get (apply cantor-omega (quadlist->numlist '((1 2 3 4))))))
+      (get-nth-quadlist (apply cantor-omega (quadlist->numlist '((1 2 3 4))))))
 (test-end "quadlist numlist")
 
 
@@ -388,6 +408,16 @@
 (test-assert (quadlist-is-tm? '((1 1 1 1) (0 0 0 0) (1 2 1 1) (1 3 2 4))))
 (test-assert (quadlist-is-tm? '((0 0 0 0) (0 1 0 0) (1 0 0 0) (1 1 0 0))))
 (test-end "quadlist tests")
+
+
+
+
+;; ======= tm-next 
+(test-begin "tm-next")
+(test-assert "return anything at all?" (tm-next 0))  
+(test-assert (quadlist-is-tm? (car (tm-next 11))))
+;; (test #f (quad-less? '(0 0 0 1) '(0 0 0 0)))
+(test-end "tm-next")
 
 
 
@@ -424,7 +454,7 @@
 ;; (let ((m '(1 2 3 4)))
 ;;   (test-assert (equal? m
 ;; 		       (machine (godel m)))))
-(test-end "godel")
+;; (test-end "godel")
 
 
 

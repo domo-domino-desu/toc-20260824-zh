@@ -117,115 +117,39 @@
 
 ;; ========
 ;; Machine counting
-;; A Turing machine is a set of 4-tuples, subject to determinism.
-;; A quad or instruction is a 4-tuple of natural numbers. 
+;; A numlist is a list of natural numbers.
+;; A quad is a 4-tuple of natural numbers. 
 ;;    (current-state, current-tape-char, next-op, next-state)
-;; A quadlist is a list of instructions, maybe not a set or not deterministic.
-;; Below we give a routine to interpret the numbers in a readable way:
-;; current-tape-char is interpreted as:
-;;   blank <-> 0, a <-> 1, b <-> 2, ..
-;; next-op is interpreted as (the first two are tape head operations):
-;;   L <-> 0, R <-> 1, blank <-> 2, a <-> 3, b <-> 4, ..  
+;; A quadlist is a list of quads, maybe not a set or not deterministic.
+;; A Turing machine is a set of quads (set, not list), subject to determinism.
+;; An instruction is a quad that has been interpreted in a readable way:
+;;   state numbers are interpreted as themselves
+;;   current-tape-char is interpreted as:
+;;     blank <-> 0, a <-> 1, b <-> 2, ..
+;;   next-op is interpreted as (the first two are tape head operations):
+;;     L <-> 0, R <-> 1, blank <-> 2, a <-> 3, b <-> 4, ..  
 ;; TODO add conversions that use the instructions from the Turing simulation
 ;; in the prologue.
 
-;; instruction->integer  Convert length-4 list to corresponging nat number
-(define (instruction->integer ilist)
-  (apply cantor-4 ilist))
+;; natural->quad  Return the quad corresponding to the natural number
+;; quad->natural  Return the natural matching the quad
+(define (natural->quad n)
+  (xy-4 n))
+(define (quad->natural q)
+  (apply cantor-4 q))
 
-;; integer->instruction Return the instruction corresponding to the input
-(define (integer->instruction i)
-  (xy-4 i))
-
-;; Convert a four-tuple of integers to TM instruction
-;;  The TM instructions are more readable and can be run by the TM code.
-(define (instruction-integer->tm-four i)
-  i)
-(define (tm->instruction-integer-four i)
-  i)
-
-(define (instruction-integer->tm-three i)
-  (cond
-      ((= i 0) #\L)
-      ((= i 1) #\R)
-      ((= i 2) #\B)
-      ((and (> i 2)
-	    (<= i 28)) (integer->char (+ i (- (char->integer #\a) 3))))
-      (else (- i 29))))
-(define (tm->instruction-integer-three i)
-  (cond
-      ((equal? i #\L) 0)
-      ((equal? i #\R) 1)
-      ((equal? i #\B) 2)
-      ((char? i) 
-       (if (char-lower-case? i)
-	   (+ 3 (- (char->integer i) (char->integer #\a)))
-	   (display (string-append "expected lower-case character: " i))))
-      (else (+ i 29))))
-
-(define (instruction-integer->tm-two i)
-  (cond
-      ((= i 0) #\B)
-      ((and (> i 0)
-	    (<= i 26)) (integer->char (+ i (- (char->integer #\a) 1))))
-      (else (- i 27))))
-(define (tm->instruction-integer-two i)
-  (cond
-      ((equal? i #\B) 0)
-      ((char? i) 
-       (if (char-lower-case? i)
-	   (+ 1 (- (char->integer i) (char->integer #\a)))
-	   (display (string-append "expected lower-case character: " 
-				   i))))
-      (else (+ i 27))))
-
-(define (instruction-integer->tm-one i)
-  i)
-(define (tm->instruction-integer-one i)
-  i)
-
-;; instruction->tminstruction  Convert a 4-tuple of ints to a readable 4-tuple
-(define (instruction->tminstruction fourtuple)
-  (let ((one (car fourtuple))
-	(two (cadr fourtuple))
-	(three (caddr fourtuple))
-	(four (cadddr fourtuple)))
-    (list (instruction-integer->tm-one one) 
-	  (instruction-integer->tm-two two)
-	  (instruction-integer->tm-three three)
-	  (instruction-integer->tm-four four))))
-(define (tminstruction->instruction fourtuple)
-  (let ((one (car fourtuple))
-	(two (cadr fourtuple))
-	(three (caddr fourtuple))
-	(four (cadddr fourtuple)))
-    (list (tm->instruction-integer-one one) 
-	  (tm->instruction-integer-two two) 
-	  (tm->instruction-integer-three three)
-	  (tm->instruction-integer-four four))))
-
-;; quadlist->tminstructionlist ql  convert a list of quads to a list of TM 
-;;  instructions
-(define (quadlist->tminstructionlist ql)
-  (map instruction->tminstruction ql))
-(define (tminstructionlist->quadlist tmilist)
-  (map tminstruction->instruction tmilist))
-
-;; quadlist->numlist convert list of 4-tuples m to list of corresponding
-;;   natural numbers
-(define (quadlist->numlist qlist)
-  (map instruction->integer qlist))
-
-;; numlist->quadlist  Return the list of quads represented by nlist
+;; numlist->quadlist  Convert list of naturals to list of corresponding quads
+;; quadlist->numlist  Convert list of quads to list of corresponding naturals
 (define (numlist->quadlist nlist)
-  (map integer->instruction nlist))
+  (map natural->quad nlist))
+(define (quadlist->numlist qlist)
+  (map quad->natural qlist))
 
-;; quadlist-get n  Return the n-th quadlist 
-(define (quadlist-get n)
+;; get-nth-quadlist  Get the quadlist with the given cantor number
+(define (get-nth-quadlist n)
   (numlist->quadlist (xy-omega n)))
 
-;; quad-less Is first quad of numbers lex less (strictly less) than second?
-;;  q1, q2  length 4 lists of numbers
+;; quad-less Is first quad lex less, strictly, than second?
 (define (quad-less? q1 q2)
   (cond 
    ((< (car q1) (car q2)) #t)
@@ -235,12 +159,11 @@
    (else #f)))
 
 ;; quadlist-is-set?  Is the list of quads a set?
-;;  qlist  list of length 4 lists of numbers
 (define (quadlist-is-set? qlist)
   (let ((sorted-qlist (sort qlist quad-less?)))
     (quadlist-is-set-helper sorted-qlist)))
 ;; quadlist-is-set-helper  walk list looking for adjacent quads that differ 
-;; sq sorted list of quads
+;;  sq list of quads, sorted
 (define (quadlist-is-set-helper sq)
   (cond
    ((null? sq) #t)
@@ -248,8 +171,7 @@
    ((equal? (car sq) (cadr sq)) #f)
    (else (quadlist-is-set-helper (cdr sq)))))
 
-;; first-two-equal?  are the first two elets of the two args equal?
-;; q1, q2  length 4 lists of numbers
+;; first-two-equal?  are the first two elets of the two list args equal?
 (define (first-two-equal? q1 q2)
   (and (= (car q1) (car q2))
        (= (cadr q1) (cadr q2))))
@@ -259,9 +181,8 @@
 (define (quadlist-is-deterministic? qlist)
   (let ((sorted-qlist (sort qlist quad-less?)))
     (quadlist-is-deterministic-helper sorted-qlist)))
-;; quadlist-is-deterministic-helper  walk list looking for adjacent quads 
-;;   that differ 
-;; sq sorted list of quads
+;; quadlist-is-deterministic-helper  look for adjacent quads that differ 
+;;  sq sorted list of quads
 (define (quadlist-is-deterministic-helper sq)
   (cond
    ((null? sq) #t)
@@ -271,48 +192,123 @@
 
 ;; quadlist-is-tm  Decide if a quadlist is a Turing machine
 ;;  qlist  list of length 4 lists of numbers
-;; Observe that if a quadlist is not a set then it is automatically not
-;; deterministic so we need only check the one.
+;; For a quadlist, not deterministic => not set, so we only check one.
 (define (quadlist-is-tm? qlist)
   (quadlist-is-deterministic? qlist))
 
-;; numlist-equal n1 n2  Determine if two numlists are equal as multisets
+;; numlist-equal? n1 n2  Determine if two numlists are equal, as multisets
 (define (numlist-equal? n1 n2)
   (let ((sorted-n1 (sort n1 <))
 	(sorted-n2 (sort n2 <)))
     (eq? sorted-n1 sorted-n2)))
 
-;; quadlist-equal q1 q2 Determine if two quadlists are equal as multisets
+;; quadlist-equal? q1 q2 Determine if two quadlists are equal, as multisets
 (define (quadlist-equal? q1 q2)
   (numlist-equal? (map quadlist->numlist q1)
 		  (map quadlist->numlist q2)))
 
-;; godel  Return godel number of Turing machine tm
-(define (godel tm)
-  (let ((qlist (tminstructionlist->quadlist tm)))
-    (if (not (quadlist-is-tm? qlist))
-	(begin
-	  (display "ERROR: godel: input is not a Turing machine")
-	  '())
-	(begin
-	  (let ((tm-num 0)  ; keep track of how many tm's generated
-		(tm-list '()))
-	    (do ((i 0 (+ i 1)))
-		((> tm-num g) (car tm-list))
-	      (let ((qlist (quadlist-get i)))
-		(if (quadlist-is-tm? qlist)
-		    (begin
-		      (set! tm-num (+ 1 tm-num))
-		      (set! tm-list (cons qlist tm-list)))))))))))
+;; tm-next Return the TM whose numlist is the first greater than or equal to n
+(define (tm-next n)
+  (do ((c n (+ c 1)))
+      ((quadlist-is-tm? (get-nth-quadlist c)) (list (get-nth-quadlist c) c))
+    ; (display (string-append "cantor number=" (number->string c)))
+    ; (newline)
+    ))
 
-;; machine Return the list of 4-tuples represented by the godel number g
+;; godel  Return the index number of Turing machine tm
+(define (godel tm)
+  (let ((tm-sorted (sort tm quad-less?)))
+    (do ((dex 0 (+ 1 dex))
+	 (pr (tm-next 0)
+	     (tm-next (+ 1 (cadr pr)))))
+	((equal? tm-sorted (car pr)) dex))))
+
+;; machine  Return the Turing machine with index g 
 (define (machine g)
-  (let ((tm-num 0)  ; keep track of how many tm's generated
-	(tm-list '()))
-    (do ((i 0 (+ i 1)))
-	((> tm-num g) (car tm-list))
-	(let ((qlist (quadlist-get i)))
-	  (if (quadlist-is-tm? qlist)
-	      (begin
-		(set! tm-num (+ 1 tm-num))
-		(set! tm-list (cons qlist tm-list))))))))
+  (do ((dex 0 (+ 1 dex))
+       (pr (tm-next 0)
+	   (tm-next (+ 1 (cadr pr)))))
+	((= dex g) (car pr))))
+
+
+;; ;; instruction->integer  Convert length-4 list to corresponging nat number
+;; (define (instruction->integer ilist)
+;;   (apply cantor-4 ilist))
+
+;; ;; integer->instruction Return the instruction corresponding to the input
+;; (define (integer->instruction i)
+;;   (xy-4 i))
+
+;; ;; Convert a four-tuple of integers to TM instruction
+;; ;;  The TM instructions are more readable and can be run by the TM code.
+;; (define (instruction-integer->tm-four i)
+;;   i)
+;; (define (tm->instruction-integer-four i)
+;;   i)
+
+;; (define (instruction-integer->tm-three i)
+;;   (cond
+;;       ((= i 0) #\L)
+;;       ((= i 1) #\R)
+;;       ((= i 2) #\B)
+;;       ((and (> i 2)
+;; 	    (<= i 28)) (integer->char (+ i (- (char->integer #\a) 3))))
+;;       (else (- i 29))))
+;; (define (tm->instruction-integer-three i)
+;;   (cond
+;;       ((equal? i #\L) 0)
+;;       ((equal? i #\R) 1)
+;;       ((equal? i #\B) 2)
+;;       ((char? i) 
+;;        (if (char-lower-case? i)
+;; 	   (+ 3 (- (char->integer i) (char->integer #\a)))
+;; 	   (display (string-append "expected lower-case character: " i))))
+;;       (else (+ i 29))))
+
+;; (define (instruction-integer->tm-two i)
+;;   (cond
+;;       ((= i 0) #\B)
+;;       ((and (> i 0)
+;; 	    (<= i 26)) (integer->char (+ i (- (char->integer #\a) 1))))
+;;       (else (- i 27))))
+;; (define (tm->instruction-integer-two i)
+;;   (cond
+;;       ((equal? i #\B) 0)
+;;       ((char? i) 
+;;        (if (char-lower-case? i)
+;; 	   (+ 1 (- (char->integer i) (char->integer #\a)))
+;; 	   (display (string-append "expected lower-case character: " 
+;; 				   i))))
+;;       (else (+ i 27))))
+
+;; (define (instruction-integer->tm-one i)
+;;   i)
+;; (define (tm->instruction-integer-one i)
+;;   i)
+
+;; ;; instruction->tminstruction  Convert a 4-tuple of ints to a readable 4-tuple
+;; (define (instruction->tminstruction fourtuple)
+;;   (let ((one (car fourtuple))
+;; 	(two (cadr fourtuple))
+;; 	(three (caddr fourtuple))
+;; 	(four (cadddr fourtuple)))
+;;     (list (instruction-integer->tm-one one) 
+;; 	  (instruction-integer->tm-two two)
+;; 	  (instruction-integer->tm-three three)
+;; 	  (instruction-integer->tm-four four))))
+;; (define (tminstruction->instruction fourtuple)
+;;   (let ((one (car fourtuple))
+;; 	(two (cadr fourtuple))
+;; 	(three (caddr fourtuple))
+;; 	(four (cadddr fourtuple)))
+;;     (list (tm->instruction-integer-one one) 
+;; 	  (tm->instruction-integer-two two) 
+;; 	  (tm->instruction-integer-three three)
+;; 	  (tm->instruction-integer-four four))))
+
+;; ;; quadlist->tminstructionlist ql  convert a list of quads to a list of TM 
+;; ;;  instructions
+;; (define (quadlist->tminstructionlist ql)
+;;   (map instruction->tminstruction ql))
+;; (define (tminstructionlist->quadlist tmilist)
+;;   (map tminstruction->instruction tmilist))

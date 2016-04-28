@@ -191,7 +191,6 @@
    (else (quadlist-is-deterministic-helper (cdr sq)))))
 
 ;; quadlist-is-tm  Decide if a quadlist is a Turing machine
-;;  qlist  list of length 4 lists of numbers
 ;; For a quadlist, not deterministic => not set, so we only check one.
 (define (quadlist-is-tm? qlist)
   (quadlist-is-deterministic? qlist))
@@ -211,8 +210,6 @@
 (define (tm-next n)
   (do ((c n (+ c 1)))
       ((quadlist-is-tm? (get-nth-quadlist c)) (list (get-nth-quadlist c) c))
-    ; (display (string-append "cantor number=" (number->string c)))
-    ; (newline)
     ))
 
 ;; godel  Return the index number of Turing machine tm
@@ -229,7 +226,6 @@
        (pr (tm-next 0)
 	   (tm-next (+ 1 (cadr pr)))))
 	((= dex g) (car pr))))
-
 
 ;; ;; instruction->integer  Convert length-4 list to corresponging nat number
 ;; (define (instruction->integer ilist)

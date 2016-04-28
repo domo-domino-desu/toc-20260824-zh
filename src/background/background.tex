@@ -169,7 +169,7 @@ the conclusion in the final sentence is clear from those
 two statements.
 \end{proof}
 
-\margingraphic{.28\textwidth}{background/GeorgCantor.jpg}{\label{fig:cantor}\href{http://en.wikipedia.org/wiki/Georg_Cantor}{Georg Cantor 1845--\-1918, discoverer of the transfinite numbers}} % https://upload.wikimedia.org/wikipedia/commons/6/67/Georg_Cantor3.jpg
+\margingraphic[l]{.28\textwidth}{background/GeorgCantor.jpg}{\label{fig:cantor}\href{http://en.wikipedia.org/wiki/Georg_Cantor}{Georg Cantor 1845--\-1918, discoverer of the transfinite numbers}} % https://upload.wikimedia.org/wikipedia/commons/6/67/Georg_Cantor3.jpg
 % \begin{wrapfigure}{R}{0.3\textwidth}
 % \centering
 % \includegraphics[width=0.25\textwidth]{background/cantor.jpg} % % http://upload.wikimedia.org/wikipedia/commons/e/e7/Georg_Cantor2.jpg
@@ -1585,7 +1585,7 @@ Let the correspondence from the prior part
 be~$f$.
 Write the elements of $\Q\cap\leftclosed{0}{1}$ 
 in their decimal representation, 
-getting a table like the one illustrating \cref{th:UnitIntUncountable}. 
+getting a table like the one illustrating \cref{th:RealsNotCountable}. 
 Let the the diagonal $d$ be the number whose $i$-th decimal digit
 is the $i$-th digit of $f(i)$
 (as in the lemma, where a number has two decimal representations, take
@@ -1614,61 +1614,83 @@ fact that $f$ lists all rationals.
 \section{G\"odel numbering}
 We have promised to show that there are more functions $\map{f}{\N}{\N}$ than
 there are Turing machines to compute those functions.
-That will show that there are functions not computed by any Turing machine.
-
-We are half done; \cref{cor:FcnsNNGreaterFcnsN} shows that 
-the cardinality of the set of functions from $\N$ to~$\N$ 
-is greater than the cardinality of the set~$\N$.
-This section shows that the set of Turing machines is countable,  
+We are halfway; \cref{cor:FcnsNNGreaterFcnsN} shows that 
+the set of functions from $\N$ to~$\N$ has a
+cardinality strictly greater than the cardinality of~$\N$.
+We will now give a correspondence between the natural numbers 
+and the Turing machines, and so show that the set of Turing machines 
 has the same cardinality as~$\N$.
+That will show there are functions not computed by any Turing machine.
 
-We will give code
-that associates each number with a Turing machine.
-That is, where $T$ is the set of Turing machines,
-we define via Scheme code a function $\map{\text{godel}}{\N}{T}$.
-We say that a natural number~$n$ such that
-$\text{\codeinline{godel}}(n)=\TM$ is a 
-\definend{description number} or \definend{G\"odel number} for that machine.
-
-Every machine will be described by some~\codeinline!n!, and we will
-refer to this as the $n$-th Turing machine, $\TM_n$.
-And we will refer to the function computed by that machine as $\phi_n$. 
-
-
-% \begin{remark}
-% Comparing sizes of infinite sets may seem to be an abstraction far 
-% distant from the goal of understanding what computers can do.
-% For some assurance that we are still on track, and some intuition, 
-% fix a general purpose programming language such as Scheme or~C.
-% Every program in that language is a text string. 
-% We can list the text strings, in ascending order: first list the
-% empty string, then the strings of length one 
-% (in alphabetical order), then those of length~two, etc.
-% Thus the set of strings is countable.
-% Perhaps Some of those strings are not valid programs, but certainly 
-% the set of programs is a subset of the set of strings.
-% So the set of programs in your language\Dash
-% the set of things you can do with your computer\Dash is countable.
-% With uncountably many functions, that means there are things that you
-% cannot do.
-% \end{remark}
+For any Turing machine, the corresponding~$n\in\N$ is its
+\definend{description number}, 
+or \definend{index}, or \definend{G\"odel number}.
+We will say
+``the $n$-th Turing machine,'' or write 
+\definend{$\TM_n$},
+for the machine described by~$n$.
+And, we use~\definend{$\phi_n$} for the function computed by $\TM_n$. 
 
 
 \subsection{The number of the beast}
-The idea is to use \codeinline{xy-omega}.
-It turns a number into a sequence of numbers
-$\sequence{a_0, a_1,\ldots a_{n-1}}$.
-If we turn that into a sequence of four-tuples
-$a_i=\sequence{n_{i,0}, n_{i,1},n_{i,2},n_{i,3}}$
-then we have only to interpret the four tuple as a Turing machine instruction.
+We will define the correspondence, the function mapping natural
+number inputs to Turing machine outputs,
+via Scheme code. 
 
-A Turing machine is a set of four-tuples so we need to count
-tuples.
+To represent a Turing machine instruction we use a
+four-tuple of natural numbers.
+In the code below this is called a \codeinline{quad}.
+A Turing machine is a set of such sequences, represented as
+a list, a \codeinline{quadlist}.
 
-Here is the code.
-(The \codeinline{*} variant \codeinline{let*} allows us to 
-compute \codeinline{t} by using the \codeinline{d} from the prior line.)
-\lstinputlisting[firstline=105,lastline=136]{background/scheme/godelnumbering.scm}
+To enumerate all the \codeinline{quadlist}'s we use
+the Cantor correspondence's \codeinline{xy-omega} to 
+turn each number into a sequence of numbers, 
+below called a \codeinline{numlist}.
+We then convert that into a \codeinline{quadlist}
+by converting each of its numbers into a \codeinline{quad}. 
+
+\lstinputlisting[firstline=134,lastline=150]{background/scheme/godelnumbering.scm}
+
+This listing illustrates.
+\begin{lstlisting}
+#;1> (natural->quad 1)
+(0 0 0 1)
+#;2> (natural->quad 2)
+(1 0 0 0)
+#;3> (natural->quad 3)
+(0 1 0 0)  
+#;4> (cantor-omega 3 2 1)
+2558
+#;5> (get-nth-quadlist 2558)
+((0 1 0 0) (1 0 0 0) (0 0 0 1))
+\end{lstlisting}
+
+A Turing machine is a set, so to check if a \codeinline{quadlist}
+is a Turing machine we must 
+we must check that it is a set, 
+that no two quads are the same. 
+We might think to check every pair of \codeinline{quad}'s in the list, 
+first and second, first and third, etc.
+But instead this routine first sorts the \codeinline{quadlist}, alphabetically
+Then, two equal \codeinline{quad}'s will then be next to each
+other, and checking adjacent \codeinline{quad}'s for equality
+only requires walking down the list once.
+
+\lstinputlisting[firstline=152,lastline=172]{background/scheme/godelnumbering.scm}
+
+In a Turing machine the set of instructions is
+deterministic.
+So we must check that in a \codeinline{quadlist}  
+no two quads begin with the same two numbers. 
+
+\lstinputlisting[firstline=179,lastline=196]{background/scheme/godelnumbering.scm}
+
+We count the Turing machines by enumerating the \codeinline{numlist}'s,
+and checking whether each is a Turing machine, that is, whether the list
+of instructions is a set and is deterministic.
+
+\lstinputlisting[firstline=209,lastline=228]{background/scheme/godelnumbering.scm}
 
 % Thus, the number assocated with $\sequence{x,y}$ is $(1/2)(x+y+1)(x+y)+x$.
 
@@ -1781,6 +1803,41 @@ the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which
 evaluates to the one-input function 
 \lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
 adds~$3$ to its argument.
+
+
+
+
+\begin{exercises}
+\begin{exercise}
+The code for \codeinline{machine}, the routine that inputs a natural number and
+produces the Turing machine corresponding to that number, is slow.
+Find how long it takes to produce~$\TM_{n}$ for $n=0, 100, \ldots, 700$.
+(You can use, e.g., \codeinline{(time (machine 100))}.)
+Graph~$n$ against the time.      
+\begin{answer}
+I got these.
+\begin{tabular}{r|rrrrrrrr}
+   &$0$     &$100$   &$200$   &$300$   
+              &$400$    &$500$     &$600$    &$700$  \\ \cline{1-8}
+   &$0.000$ &$0.566$   &$3.185$   &$9.355$
+              &$19.652$ &$36.121$  &$59.473$ &$91.826$
+\end{tabular}
+(If you get different numbers because your machine is much faster than mine, 
+don't email me.  
+I don't give a damn.)
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+What does Turing machine number $666$ do?
+Does it halt on input~$0$? 
+On input~$666$?
+\begin{answer}
+Turing machine number~$666$ proves to be 
+\codeinline{((0 0 1 0) (2 0 1 0))}. 
+\end{answer}
+\end{exercise}
+\end{exercises}
 
 
 

@@ -415,46 +415,39 @@
 ;; ======= tm-next 
 (test-begin "tm-next")
 (test-assert "return anything at all?" (tm-next 0))  
-(test-assert (quadlist-is-tm? (car (tm-next 11))))
-;; (test #f (quad-less? '(0 0 0 1) '(0 0 0 0)))
+(test-assert (quadlist-is-tm? (car (tm-next 0))))
+(do ((i 0 (+ i 1)))
+    ((> i 10) '())
+  (test-assert (quadlist-is-tm? (car (tm-next i)))))
 (test-end "tm-next")
 
 
 
-;; ======= godel
-;; (test-begin "godel")
-;; (test-assert (equal? 2
-;; 		     (length (machine->numlist '((1 2 3 4) (5 6 7 8))))))
-;; (do ((i 1 (+ i 1)))
+;; ======= godel and machine
+(test-begin "godel")
+(test-assert "return anything at all?" (machine 0))
+(test-assert "return anything at all?" (machine 1))
+(test-assert "return anything at all?" (godel '((0 0 0 0))))
+;; (test-assert (equal?
+;; 	      '((0 0 0 0))
+;; 	      (machine (godel '((0 0 0 0))))))
+;; (test-assert (equal?
+;; 	      '((0 0 0 1))
+;; 	      (machine (godel '((0 0 0 1))))))
+;; (test-assert (=
+;; 	      0
+;; 	      (godel (machine 0))))
+;; (test-assert (=
+;; 	      8
+;; 	      (godel (machine 8))))
+;; (do ((i 0 (+ i 1)))
 ;;     ((> i 10) '())
-;;   (test-assert (equal? i
-;; 		       (length (machine->numlist (makelist-seed i '(1 2 3 4)))))))
-;; (do ((i 1 (+ i 1)))
-;;     ((> i 10) '())
-;;   (let ((m (makelist-seed i '(1 2 3 4)))
-;; 	(n (makelist-seed i 5)))
-;;     (test-assert (equal? (length (numlist->machine n))
-;; 			 (length (machine->numlist m))))))
-;; ;; Are they inverse?
-;; (let ((n '(1 2 3 4)))
-;;   (test-assert (equal? n 
-;; 		       (machine->numlist (numlist->machine n)))))
-;; (do ((x 0 (+ x 1)))
-;;     ((>= x 5) x)
-;;   (do ((y 0 (+ y 1)))
-;;       ((>= y 4) y)
-;;     (do ((z 0 (+ z 1)))
-;; 	((>= z 3) '())
-;;       (test-assert (string-append "case: x=" (number->string x)
-;; 			     " y=" (number->string y)
-;; 			     " z=" (number->string z))
-;; 		   (equal? (list x y z) 
-;; 			   (machine->numlist (numlist->machine (list x y z))))))))
-; godel
-;; (let ((m '(1 2 3 4)))
-;;   (test-assert (equal? m
-;; 		       (machine (godel m)))))
-;; (test-end "godel")
+;;   (test-assert (string-append "godel inverse to machine on value: " 
+;; 			      (number->string i))
+;; 	       (=
+;; 		i
+;; 		(godel (machine i)))))
+(test-end "godel")
 
 
 

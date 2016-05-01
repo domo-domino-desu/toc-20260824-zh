@@ -210,22 +210,42 @@
 (define (tm-next n)
   (do ((c n (+ c 1)))
       ((quadlist-is-tm? (get-nth-quadlist c)) (list (get-nth-quadlist c) c))
+    (display "  tm-next:") (write c) (newline)
     ))
 
 ;; godel  Return the index number of Turing machine tm
 (define (godel tm)
-  (let ((tm-sorted (sort tm quad-less?)))
-    (do ((dex 0 (+ 1 dex))
-	 (pr (tm-next 0)
-	     (tm-next (+ 1 (cadr pr)))))
-	((equal? tm-sorted (car pr)) dex))))
+  (do ((dex 0 (+ 1 dex)))
+      ((equal? tm (car (tm-next dex))) (car (tm-next dex)))
+    (display "godel tm-next=") (write (tm-next dex)) (newline)
+    ))
 
 ;; machine  Return the Turing machine with index g 
 (define (machine g)
-  (do ((dex 0 (+ 1 dex))
-       (pr (tm-next 0)
-	   (tm-next (+ 1 (cadr pr)))))
-	((= dex g) (car pr))))
+  (let ((c 0))
+    (do ((dex 0 (+ 1 dex)))
+	((= dex g) (car (tm-next c)))
+      (set! c (cadr (tm-next c)))
+      ;; (display "machine pr=") (write pr) (newline)
+)))
+
+;; trace-tm-generation  trace the tuples gone thru to get n-th TM
+(define (trace-tm-generation n)
+  (let ((pr '())
+	(t 0)
+	(dex 0))
+    (do ((i 0 (+ 1 i)))
+	((>= i n) (begin (display "done") (newline)))
+      (display "i=") (write i) (newline)
+      (set! t (xy-omega i))
+      (display "  tuple is ") (write t) (newline)
+      (set! t (numlist->quadlist t))
+      (display "  quadlist is ") (write t) (newline)
+      (display "  is it a Turing machine? ") (write (quadlist-is-tm? t)) (newline)
+      (if (quadlist-is-tm? t)
+	  (begin
+	    (set! dex (+ dex 1))
+	    (display " dex=") (write dex) (newline))))))
 
 ;; ;; instruction->integer  Convert length-4 list to corresponging nat number
 ;; (define (instruction->integer ilist)

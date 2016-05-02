@@ -209,25 +209,27 @@
 ;; tm-next Return the TM whose numlist is the first greater than or equal to n
 (define (tm-next n)
   (do ((c n (+ c 1)))
-      ((quadlist-is-tm? (get-nth-quadlist c)) (list (get-nth-quadlist c) c))
-    (display "  tm-next:") (write c) (newline)
-    ))
+      ((quadlist-is-tm? (get-nth-quadlist c)) (list (get-nth-quadlist c) c))))
+; Here to reuse if a bug appears
+    ;; (display "  tm-next:") (write c) (newline)
 
 ;; godel  Return the index number of Turing machine tm
 (define (godel tm)
-  (do ((dex 0 (+ 1 dex)))
-      ((equal? tm (car (tm-next dex))) (car (tm-next dex)))
-    (display "godel tm-next=") (write (tm-next dex)) (newline)
-    ))
+  (let ((c 0))
+    (do ((dex 0 (+ 1 dex)))
+	((equal? tm (car (tm-next c))) dex)
+      (set! c (+ 1 (cadr (tm-next c)))))))
+; Here to reuse if a bug appears
+      ; (display "godel tm-next=") (write (tm-next dex)) (newline)
 
 ;; machine  Return the Turing machine with index g 
 (define (machine g)
   (let ((c 0))
     (do ((dex 0 (+ 1 dex)))
 	((= dex g) (car (tm-next c)))
-      (set! c (cadr (tm-next c)))
+      (set! c (+ 1 (cadr (tm-next c)))))))
+; Here to reuse if a bug appears
       ;; (display "machine pr=") (write pr) (newline)
-)))
 
 ;; trace-tm-generation  trace the tuples gone thru to get n-th TM
 (define (trace-tm-generation n)

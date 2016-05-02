@@ -428,25 +428,25 @@
 (test-assert "return anything at all?" (machine 0))
 (test-assert "return anything at all?" (machine 1))
 (test-assert "return anything at all?" (godel '((0 0 0 0))))
-;; (test-assert (equal?
-;; 	      '((0 0 0 0))
-;; 	      (machine (godel '((0 0 0 0))))))
-;; (test-assert (equal?
-;; 	      '((0 0 0 1))
-;; 	      (machine (godel '((0 0 0 1))))))
-;; (test-assert (=
-;; 	      0
-;; 	      (godel (machine 0))))
-;; (test-assert (=
-;; 	      8
-;; 	      (godel (machine 8))))
-;; (do ((i 0 (+ i 1)))
-;;     ((> i 10) '())
-;;   (test-assert (string-append "godel inverse to machine on value: " 
-;; 			      (number->string i))
-;; 	       (=
-;; 		i
-;; 		(godel (machine i)))))
+(test-assert (equal?
+	      '((0 0 0 0))
+	      (machine (godel '((0 0 0 0))))))
+(test-assert (equal?
+	      '((0 0 0 1))
+	      (machine (godel '((0 0 0 1))))))
+(test-assert (equal?
+	      '((0 1 1 1))
+	      (machine (godel '((0 1 1 1))))))
+(test-assert (=
+	      0
+	      (godel (machine 0))))
+(do ((i 0 (+ i 1)))
+    ((> i 25) '())
+  (test-assert (string-append "godel inverse to machine on value: " 
+			      (number->string i))
+	       (=
+		i
+		(godel (machine i)))))
 (test-end "godel")
 
 

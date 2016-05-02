@@ -1281,7 +1281,7 @@ of the two.}
   \begin{enumerate}[topsep=0ex,
                     itemsep=0ex, parsep=0ex,
                     leftmargin=2em,labelwidth=0.5em,labelsep=.16667em plus .08333em,
-                    label={(\scshape\alph*)\nobreak\hspace{.16667em plus .08333em}}] 
+                    label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
 }{%
   \end{enumerate}
 }

@@ -722,7 +722,7 @@ and so $x_0=x_1$.
 
 
 \begin{exercise}
-Verify \cref{ex:OddNumbersCountable}, that the map 
+Verify \cref{ex:OddNumbersCountable}, that 
 $\map{g}{\N}{\set{2n+1\suchthat n\in\N}}$ is
 both one-to-one and onto.
 \begin{answer}
@@ -944,7 +944,7 @@ Besides the Cantor's correspondence formula given in the
 section there are other formulas. 
 \begin{exparts}
 \item
-Show that the map $\map{g}{\N^2}{\N}$ given by 
+Show that $\map{g}{\N^2}{\N}$ given by 
 $\sequence{n,m}\mapsto 2^{n}(2m+1)-1$ is a correspondence.
 \item
 Express $g$ in code and use that code to find the 
@@ -1577,13 +1577,30 @@ items only requires walking down the list once.
 
 \lstinputlisting[firstline=179,lastline=196]{background/scheme/godelnumbering.scm}
 
-We count the Turing machines by enumerating the \codeinline{numlist}'s,
-and checking whether each is a Turing machine, that is, whether the list
-of instructions is a set and is deterministic.
+The strategy to count Turing machines is brute force: we 
+get the \codeinline{numlist}'s in ascending order\Dash the one whose
+Cantor number is $0$, the one whose number is~$1$, etc.\Dash and we convert
+each to a \codeinline{quad list}.
+We test each to see if it is a Turing machine, and if so assign it
+the next index.
+This routine picks out the \codeinline{quadlist} that is a Turing machine,
+and that corresponds to a \codeinline{numlist} greater than or equal to
+the input argument.
 
-\lstinputlisting[firstline=209,lastline=228]{background/scheme/godelnumbering.scm}
+\lstinputlisting[firstline=209,lastline=212]{background/scheme/godelnumbering.scm}
 
-This illustrates.
+With that, this is the function that takes in a Turing machine as a list of
+quads, and finds a natural number index for that Turing machine.
+
+\lstinputlisting[firstline=216,lastline=221]{background/scheme/godelnumbering.scm}
+
+Inverse to the prior routine, this inputs a natural number and returns
+the Turing machine with that natural number index.
+
+\lstinputlisting[firstline=225,lastline=230]{background/scheme/godelnumbering.scm}
+
+Using those routines is straightforward.
+The last one takes a few seconds.
 
 \begin{lstlisting}
 #;2> (machine 0)
@@ -1594,45 +1611,45 @@ This illustrates.
 ((0 0 0 1))
 #;5> (machine 3)
 ((1 0 0 0))
-#;6> (godel '((0 1 1 1)))
+#;6> (godel '((0 0 0 0)))
+1
+#;7> (godel '((0 1 1 1)))
 298
 \end{lstlisting}
 
 
-Consider a two-input program $\TM_e(x,y)$.
-If we freeze the first argument, that is, if we lock $x=a$ for some $a\in\N$,
-then we get a one-input program $TM{Q}_a(y)=\TM_e(a,y)$.
-For example, in this program
-\begin{lstlisting}
-  P(x,y)
-\end{lstlisting}
-fixing the first imput to $a=7$ gives a one-input program.
-\begin{lstlisting}
-  Q_a(y)  
-\end{lstlisting}
-This is known as partial evaluation.
+% Consider a two-input program $\TM_e(x,y)$.
+% If we freeze the first argument, that is, if we lock $x=a$ for some $a\in\N$,
+% then we get a one-input program $TM{Q}_a(y)=\TM_e(a,y)$.
+% For example, in this program
+% \begin{lstlisting}
+%   P(x,y)
+% \end{lstlisting}
+% fixing the first imput to $a=7$ gives a one-input program.
+% \begin{lstlisting}
+%   Q_a(y)  
+% \end{lstlisting}
+% This is known as partial evaluation.
 
-Obviously the second program is related to the first.
-The next result is that the index of the second program is computable from the
-first.
+% Obviously the second program is related to the first.
+% The next result is that the index of the second program is computable from the
+% first.
 
-Parameter ($s$-$m$-$n$)~theorem.
-The following Lisp code implements $s_1^1$ for Lisp.
-(Explain gensym.)
-% https://en.wikipedia.org/wiki/Smn_theorem
-\begin{lstlisting}
- (defun s11 (f x)
-   (let ((y (gensym)))
-     (list 'lambda (list y) (list f x y))))
-\end{lstlisting}
-For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
-we can fix the first variable~\lstinline!x! to have the value~$3$ with 
-the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
-evaluates to the one-input function 
-\lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
-adds~$3$ to its argument.
-
-
+% Parameter ($s$-$m$-$n$)~theorem.
+% The following Lisp code implements $s_1^1$ for Lisp.
+% (Explain gensym.)
+% % https://en.wikipedia.org/wiki/Smn_theorem
+% \begin{lstlisting}
+%  (defun s11 (f x)
+%    (let ((y (gensym)))
+%      (list 'lambda (list y) (list f x y))))
+% \end{lstlisting}
+% For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
+% we can fix the first variable~\lstinline!x! to have the value~$3$ with 
+% the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
+% evaluates to the one-input function 
+% \lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
+% adds~$3$ to its argument.
 
 
 \begin{exercises}

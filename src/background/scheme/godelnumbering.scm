@@ -249,84 +249,71 @@
 	    (set! dex (+ dex 1))
 	    (display " dex=") (write dex) (newline))))))
 
-;; ;; instruction->integer  Convert length-4 list to corresponging nat number
-;; (define (instruction->integer ilist)
-;;   (apply cantor-4 ilist))
 
-;; ;; integer->instruction Return the instruction corresponding to the input
-;; (define (integer->instruction i)
-;;   (xy-4 i))
+;; Convert a four-tuple of integers to TM instruction
+;;  The TM instructions are more readable and can be run by the TM code.
+(define ASCII-a (char->integer #\a))
 
-;; ;; Convert a four-tuple of integers to TM instruction
-;; ;;  The TM instructions are more readable and can be run by the TM code.
-;; (define (instruction-integer->tm-four i)
-;;   i)
-;; (define (tm->instruction-integer-four i)
-;;   i)
+(define (nat->inst-zero i)
+  i)
+(define (inst->nat-zero i)
+  i)
 
-;; (define (instruction-integer->tm-three i)
-;;   (cond
-;;       ((= i 0) #\L)
-;;       ((= i 1) #\R)
-;;       ((= i 2) #\B)
-;;       ((and (> i 2)
-;; 	    (<= i 28)) (integer->char (+ i (- (char->integer #\a) 3))))
-;;       (else (- i 29))))
-;; (define (tm->instruction-integer-three i)
-;;   (cond
-;;       ((equal? i #\L) 0)
-;;       ((equal? i #\R) 1)
-;;       ((equal? i #\B) 2)
-;;       ((char? i) 
-;;        (if (char-lower-case? i)
-;; 	   (+ 3 (- (char->integer i) (char->integer #\a)))
-;; 	   (display (string-append "expected lower-case character: " i))))
-;;       (else (+ i 29))))
+(define (nat->inst-one i)
+  (cond
+      ((= i 0) #\B)
+      ((and (> i 0) (<= i 26))
+       (integer->char (+ (- i 1) ASCII-a)))
+      (else (- i 27))))
+(define (inst->nat-one i)
+  (cond
+      ((equal? i #\B) 0)
+      ((char? i) (+ 1 (- (char->integer i) ASCII-a)))
+      (else (+ i 27))))
 
-;; (define (instruction-integer->tm-two i)
-;;   (cond
-;;       ((= i 0) #\B)
-;;       ((and (> i 0)
-;; 	    (<= i 26)) (integer->char (+ i (- (char->integer #\a) 1))))
-;;       (else (- i 27))))
-;; (define (tm->instruction-integer-two i)
-;;   (cond
-;;       ((equal? i #\B) 0)
-;;       ((char? i) 
-;;        (if (char-lower-case? i)
-;; 	   (+ 1 (- (char->integer i) (char->integer #\a)))
-;; 	   (display (string-append "expected lower-case character: " 
-;; 				   i))))
-;;       (else (+ i 27))))
+(define (nat->inst-two i)
+  (cond
+      ((= i 0) #\L)
+      ((= i 1) #\R)
+      ((= i 2) #\B)
+      ((and (> i 2) (<= i 28))
+       (integer->char (+ (- i 3) ASCII-a)))
+      (else (- i 29))))
+(define (inst->nat-two i)
+  (cond
+      ((equal? i #\L) 0)
+      ((equal? i #\R) 1)
+      ((equal? i #\B) 2)
+      ((char? i) (+ 3 (- (char->integer i) ASCII-a)))      
+      (else (+ i 29))))
 
-;; (define (instruction-integer->tm-one i)
-;;   i)
-;; (define (tm->instruction-integer-one i)
-;;   i)
+(define (nat->inst-three i)
+  i)
+(define (inst->nat-three i)
+  i)
 
-;; ;; instruction->tminstruction  Convert a 4-tuple of ints to a readable 4-tuple
-;; (define (instruction->tminstruction fourtuple)
-;;   (let ((one (car fourtuple))
-;; 	(two (cadr fourtuple))
-;; 	(three (caddr fourtuple))
-;; 	(four (cadddr fourtuple)))
-;;     (list (instruction-integer->tm-one one) 
-;; 	  (instruction-integer->tm-two two)
-;; 	  (instruction-integer->tm-three three)
-;; 	  (instruction-integer->tm-four four))))
-;; (define (tminstruction->instruction fourtuple)
-;;   (let ((one (car fourtuple))
-;; 	(two (cadr fourtuple))
-;; 	(three (caddr fourtuple))
-;; 	(four (cadddr fourtuple)))
-;;     (list (tm->instruction-integer-one one) 
-;; 	  (tm->instruction-integer-two two) 
-;; 	  (tm->instruction-integer-three three)
-;; 	  (tm->instruction-integer-four four))))
+;; quad->tminstruction  Convert a quad to a TM instruction
+(define (quad->tminstruction q)
+  (let ((zero (car q))
+	(one (cadr q))
+	(two (caddr q))
+	(three (cadddr q)))
+    (list (nat->inst-zero zero) 
+	  (nat->inst-one one)
+	  (nat->inst-two two)
+	  (nat->inst-three three))))
+(define (tminstruction->quad i)
+  (let ((zero (car i))
+	(one (cadr i))
+	(two (caddr i))
+	(three (cadddr i)))
+    (list (inst->nat-zero zero) 
+	  (inst->nat-one one) 
+	  (inst->nat-two two)
+	  (inst->nat-three three))))
 
-;; ;; quadlist->tminstructionlist ql  convert a list of quads to a list of TM 
-;; ;;  instructions
-;; (define (quadlist->tminstructionlist ql)
-;;   (map instruction->tminstruction ql))
-;; (define (tminstructionlist->quadlist tmilist)
-;;   (map tminstruction->instruction tmilist))
+;; quadlist->instructionlist ql  convert a quadlist to a list of instructions
+(define (quadlist->instructionlist ql)
+  (map quad->tminstruction ql))
+(define (instructionlist->quadlist tm)
+  (map tminstruction->quad tm))

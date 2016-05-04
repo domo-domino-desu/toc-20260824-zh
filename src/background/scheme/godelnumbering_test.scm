@@ -434,9 +434,10 @@
 (test-assert (equal?
 	      '((0 0 0 1))
 	      (machine (godel '((0 0 0 1))))))
-(test-assert (equal?
-	      '((0 1 1 1))
-	      (machine (godel '((0 1 1 1))))))
+;; takes a half-minute:
+;; (test-assert (equal?
+;; 	      '((0 1 1 1))
+;; 	      (machine (godel '((0 1 1 1))))))
 (test-assert (=
 	      0
 	      (godel (machine 0))))
@@ -448,6 +449,99 @@
 		i
 		(godel (machine i)))))
 (test-end "godel")
+
+
+
+
+
+;; ======= TM instructions
+(test-begin "instructions")
+;; nat->inst-zero and inst->nat-zero
+(test  0 (inst->nat-zero (nat->inst-zero 0)))
+(do ((i 0 (+ i 1)))
+    ((> i 10) '())
+  (test-assert (string-append "inst->nat-zero inverse to nat->inst-zero i=" 
+			      (number->string i))
+	       (=
+		i
+		(inst->nat-zero (nat->inst-zero i))))
+  (test-assert (string-append "nat->inst-zero inverse to inst->nat-zero i=" 
+			      (number->string i))
+	       (=
+		i
+		(nat->inst-zero (inst->nat-zero i)))))
+;; nat->inst-one and inst->nat-one
+(do ((i 0 (+ i 1)))
+    ((> i 30) '())
+  (test-assert (string-append "inst->nat-one inverse to nat->inst-one i=" 
+			      (number->string i))
+	       (=
+		i
+		(inst->nat-one (nat->inst-one i)))))
+(test-assert "nat->inst-one inverse to inst->nat-one inst=B"
+	     (equal?
+	      #\B
+	      (nat->inst-one (inst->nat-one #\B))))
+(do ((i 0 (+ i 1)))
+    ((>= i 26) '())
+  (let ((c (integer->char (+ i (char->integer #\a)))))
+    (test-assert 
+     (string-append "nat->inst-one inverse to inst->nat-one inst=" (string c))
+     (equal?
+      c
+      (nat->inst-one (inst->nat-one c))))))
+(test-assert "nat->inst-one inverse to inst->nat-one inst=27"
+	     (=
+	      27
+	      (nat->inst-one (inst->nat-one 27))))
+;; nat->inst-two and inst->nat-two
+(do ((i 0 (+ i 1)))
+    ((> i 30) '())
+  (test-assert (string-append "inst->nat-two inverse to nat->inst-two i=" 
+			      (number->string i))
+	       (=
+		i
+		(inst->nat-two (nat->inst-two i)))))
+(test-assert "nat->inst-two inverse to inst->nat-two inst=L"
+	     (equal?
+	      #\L
+	      (nat->inst-two (inst->nat-two #\L))))
+(test-assert "nat->inst-two inverse to inst->nat-two inst=R"
+	     (equal?
+	      #\R
+	      (nat->inst-two (inst->nat-two #\R))))
+(test-assert "nat->inst-two inverse to inst->nat-two inst=B"
+	     (equal?
+	      #\B
+	      (nat->inst-two (inst->nat-two #\B))))
+(do ((i 0 (+ i 1)))
+    ((>= i 26) '())
+  (let ((c (integer->char (+ i (char->integer #\a)))))
+    (test-assert 
+     (string-append "nat->inst-two inverse to inst->nat-two inst=" (string c))
+     (equal?
+      c
+      (nat->inst-two (inst->nat-two c))))))
+(test-assert "nat->inst-two inverse to inst->nat-two inst=29"
+	     (=
+	      29
+	      (nat->inst-two (inst->nat-two 29))))
+;; nat->inst-three and inst->nat-three
+(do ((i 0 (+ i 1)))
+    ((> i 10) '())
+  (test-assert (string-append "inst->nat-three inverse to nat->inst-three i=" 
+			      (number->string i))
+	       (=
+		i
+		(inst->nat-three (nat->inst-three i))))
+  (test-assert (string-append "nat->inst-three inverse to inst->nat-three i=" 
+			      (number->string i))
+	       (=
+		i
+		(nat->inst-three (inst->nat-three i)))))
+;; quadlist->instructionlist
+(test-assert "return anything?" (quadlist->instructionlist '((0 0 0 0))))
+(test-end "instructions")
 
 
 

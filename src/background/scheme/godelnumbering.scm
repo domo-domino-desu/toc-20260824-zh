@@ -292,7 +292,8 @@
 (define (inst->nat-three i)
   i)
 
-;; quad->tminstruction  Convert a quad to a TM instruction
+;; quad->tminstruction  Convert a quad to an instruction for a TM
+;; tminstruction->quad  Inverse to the prior
 (define (quad->tminstruction q)
   (let ((zero (car q))
 	(one (cadr q))

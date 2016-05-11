@@ -711,13 +711,15 @@ of the two.}
 
 % Captions
 \usepackage{caption}[2013/02/03]
-\captionsetup{%
-  labelformat=empty,
-  format=hang,
-  justification=RaggedRight,
-  indention=1em,
-  skip=8pt
-}
+% \captionsetup{%
+%   labelformat=empty,
+%   labelsep=quad,
+%   labelfont=bf,
+%   format=hang,
+%   justification=RaggedRight,
+%   indention=1em,
+%   skip=8pt
+% }
 
 \RequirePackage{suffix}
 % \margingraphic -- graphic that sticks out into margin
@@ -1377,12 +1379,14 @@ of the two.}
 \usepackage{float}
 \newfloat{animatefigure}{H}{lof}
 \newfloat{tablehere}{H}{lof}
+
+\DeclareCaptionLabelSeparator{jhcaptionspace}{\hspace{0.6em}}
 \usepackage{caption} 
 \captionsetup{font=small,
               format=hang,
               indention=2em,
               labelformat=simple,
-              labelsep=space,
+              labelsep=jhcaptionspace,
               labelfont=sc,
               textformat=simple,
               position=bottom,

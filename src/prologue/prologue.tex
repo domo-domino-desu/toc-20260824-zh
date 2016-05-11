@@ -688,6 +688,744 @@ because the decimal expansion never repeats and never terminates.)
 
 
 
+
+
+%================================================
+\section{Recursion}
+At the time that Turing developed his definition, many researchers
+also saw the need to make precise the intuitive idea of mechanically
+computable objects.
+They produced a number of competing approaches.
+We will discuss further why we take Turing's tack but we will here outline
+another approach, in part because it introduces useful concepts and
+in part to give a sense of how other approaches are perfectly 
+possible. 
+ 
+Turing started with machines and defined the mechanically computable
+functions as those that
+are the input-output behavior of the machines.
+Another historical thread started directly with functions,
+which are objects of central mathematical interest.
+  
+
+
+
+% \begin{wrapfigure}{R}{0.2\textwidth}
+% \centering
+% \includegraphics[width=0.2\textwidth]{background/grassmann.jpg} % 
+% \caption{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}
+% \end{wrapfigure}
+\margingraphic{.2\textwidth}{background/grassmann.jpg}{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}
+\subsection{Primitive recursion}
+Grade school students learn the operations of addition and 
+multiplication as mildly complicated algorithms (``carry the one'').
+In 1861 \citetext{Grassman produced}{In 1888 Dedekind used this definition 
+to give the first rigorous 
+proof of the laws of elementary school arithmetic}
+a prettier definition.
+Here is the definition of addition, $\map{\plus}{\N^2}{\N}$, which takes as given the
+successor map, $\successor(n)=n+1$.
+\begin{equation*}
+  \plus (x,y) =\begin{cases}
+                x                 &\case{if $y=0$}  \\
+                \successor(\plus(x,z)) &\case{if $y=\successor(z)$ for $z\in\N$}
+               \end{cases}
+\end{equation*}
+This is \definend{recursive} since `$\plus$' recurs within
+its own definition.\footnote{That is, recursion is a discrete form of feedback.}
+
+A natural first reaction to a recursive definition is to question 
+whether it is logically problematic\Dash isn't defining
+something in terms of itself a fallacy?
+But, for instance, 
+$\plus(3,2)$ is not defined in terms of itself,
+it is defined in terms of $\plus(3,1)$.
+In turn, $\plus(3,1)$ is defined in terms of $\plus(3,0)$, 
+whose definition is clearly not a problem.
+
+\begin{example}
+We can trace the expansion of $\plus(3,2)$.
+\begin{align*}
+  \plus(3,2) &= \successor(\plus(3,1)) \\
+             &= \successor(\successor(\plus(3,0))) \\
+             &= \successor(\successor(3))=5 
+\end{align*}
+The second equality comes from expanding $\plus(3,1)$ 
+to $\successor(\plus(3,0))$, so the left-hand $\successor$ is just 
+carried down from the prior line.
+\end{example}
+
+One of the reasons that this approach is beautiful 
+is that multiplication follows the same form.
+\begin{equation*}
+  \product (x,y) =\begin{cases}
+                0                 &\case{if $y=0$}  \\
+                \plus(\product(x,z),x) &\case{if $y=\successor(z)$}
+               \end{cases}
+\end{equation*}
+\begin{example}
+The expansion of $\product(2,3)$
+reduces to a sum of three $2$'s.
+\begin{align*}
+  \product(2,3) &=\plus(\product(2,2),2)     \\
+                &=\plus(\plus(\product(2,1),2),2)  \\
+                &=\plus(\plus(\plus(\product(2,0),2),2),2) \\
+                &=\plus(\plus(\plus(0,2),2),2)
+\end{align*}
+\end{example}
+
+Why not? we can do exponentiation the same way.
+\begin{equation*}
+  \power (x,y) =\begin{cases}
+                1                 &\case{if $y=0$}  \\
+                \product(\power(x,z),x) &\case{if $y=\successor(z)$}
+               \end{cases}
+\end{equation*}
+
+Another beautiful thing about
+Grassmann's definition is that it is effective:~it 
+translates immediately into a mechanical computation.
+For example, here is 
+Scheme code based on the definition of $\plus$.\footnote{Obviously
+Scheme comes with an addition operator, 
+as in \protect\codeinline!(+ 3 2)!, with a multiplication operator, 
+as in \protect\codeinline!(* 3 2)!, and with exponentiation, 
+\protect\codeinline!(expt 3 2)!.}
+We start with successor. 
+\begin{lstlisting}
+(define (successor x)
+  (+ x 1))
+\end{lstlisting}
+With that, 
+the highlighted part of this code fits the definition exactly.
+\begin{center}
+\begin{minipage}[]{0.5\linewidth}
+\begin{equation*}    
+  \plus (x,y) =\begin{cases}
+                x                 &\case{if $y=0$}  \\
+                \successor(\plus(x,z)) &\case{if $y=\successor(z)$}
+               \end{cases}
+\end{equation*}
+\end{minipage}
+\hspace*{1em}
+\begin{minipage}[c]{.4\textwidth}\leavevmode % reason for the \leavevmode http://tex.stackexchange.com/q/22071/339
+\begin{lstlisting}
+(define (plus x y)
+  (let ((z (- y 1)))
+    <@\color{highlightcolor}(if (= y 0)@>
+    <@\color{highlightcolor}x@>
+    <@\color{highlightcolor}(successor (plus x z)))@>))  
+\end{lstlisting}
+\end{minipage}
+\end{center}
+(The \codeinline!(let ..)! creates the local variable
+\codeinline!z!.)
+The same is true for $\product$
+\begin{lstlisting}
+(define (product x y)
+  (let ((z (- y 1)))
+    <@\color{highlightcolor}(if (= y 0)@>
+	<@\color{highlightcolor}0@>
+	<@\color{highlightcolor}(plus (product x z) x))@>))
+\end{lstlisting}
+and $\power$.
+\begin{lstlisting}
+(define (power x y)
+  (let ((z (- y 1)))
+    <@\color{highlightcolor}(if (= y 0)@>
+	<@\color{highlightcolor}1@>
+	<@\color{highlightcolor}(product (power x z) x))@>))
+\end{lstlisting}
+% Again, the highlighted portion exactly matches the definition.
+
+\begin{definition}  \label{def:PrimitiveRecursion}
+A function~$f$ is defined by the schema\footnotemark[2] 
+of \definend{primitive recursion}
+from the functions $g$ and~$h$ if it has this form.
+\begin{equation*}
+  f(x_0,\ldots,x_{n-1},y)=
+  \begin{cases}
+    g(x_0,\ldots,x_{n-1}) &\case{if $y=0$}   \\
+    h(f(x_0,\ldots,x_{n-1},z),\,x_0,\,\ldots,\,x_{n-1},\,z)
+      &\case{if $y=\successor(z)$}
+  \end{cases}
+\end{equation*}
+\end{definition}
+\footnotetext[2]{A schema is an underlying organizational pattern or structure.}
+
+% The bookkeeping is that the number of inputs to~$f$ is 
+% one more than the number of 
+% inputs to~$g$, and one less than the number of inputs to~$h$.
+
+\begin{example}
+The function $\plus$ is defined by primitive recursion from 
+$g(a)=a$ and $h(a,b,c)=\successor(a)$.
+The function~$\product$ is defined by primitive recursion from
+$g(a)=0$ and $h(a,b,c)=\plus(a,b)$.   
+The function~$\power$ is defined by primitive recursion from
+$g(a)=1$ and $h(a,b,c)=\product(a,b)$.   
+\end{example}
+
+Primitive recursion suffices to define many familiar functions. 
+
+\begin{example}
+The predecessor function on the natural numbers is:
+$\pred(y)$ equals
+$y-1$ if $y$ is positive, and equals~$0$ if $y$ is zero.
+Here is a derivation.  
+\begin{equation*}
+  \pred(y)=\begin{cases}
+              0  &\case{if $y=0$}  \\
+              z  &\case{if $y=\successor(z)$}
+            \end{cases}
+\end{equation*}
+In the notation of \cref{def:PrimitiveRecursion},
+$\pred$ has no $x$'s. 
+So, $g$ is a function of no inputs 
+(and must therefore be a constant function) $g(\,)=0$,
+while $h$ has two inputs~$h(a,b)=b$. 
+\end{example}
+
+\begin{example}
+We can use primitive recursion to 
+produce \definend{proper subtraction}, often denoted $x\dotminus y$,
+which gives $x-y$ if that value is nonnegative, and gives $0$ otherwise.   
+\begin{equation*}
+  \operatorname{propersub}(x,y)
+               =\begin{cases}
+                 x    &\case{if $y=0$}  \\
+                 \pred(\operatorname{propersub}(x,z))  &\case{if $x\geq y$}
+               \end{cases}
+\end{equation*}
+This fits the schema with $g(a)=a$ 
+and $h(a,b,c)=\pred(a)$.
+\end{example}
+
+% \begin{example}
+% The factorial function $\factorial(y)=y\cdot(y-1)\cdots 1$ is defined
+% by primitive recursion as here.
+% \begin{equation*}
+%   \factorial(y)=\begin{cases}
+%                    1                         &\case{if $y=0$}  \\
+%                   \product(\factorial(z),y)) &\case{if $y=\successor(z)$}
+%                  \end{cases}
+% \end{equation*}
+% Here, in terms of \cref{def:PrimitiveRecursion},
+% $\factorial$ has no $x$'s. 
+% So, $g$ is a function of no arguments 
+% (and must therefore be a constant function) $g()=1$,
+% while $h$ has two~$h(a,b)=\product(a,\successor(b))$. 
+% \end{example}
+
+These examples underline that 
+% the function~$f$ is produced from, or
+% comes after, the functions~$g$ and~$h$.
+% The code examples also dramatize that 
+if $g$ 
+and~$h$ are intuitively mechanically computable then so is~$f$.
+So if we start with 
+some suitable list of effective initial functions
+and combine them in an effective way, which includes via primitive recursion,
+then all the derived functions will also be computable.
+
+\begin{definition} \label{def:PrimitiveRecursive}
+A function is 
+\definend{primitive recursive}\footnotemark[1]
+if it can be derived by a finite number of applications of 
+function composition and primitive recursion
+from the initial operations of 
+the \definend{zero} function~$\zero(x)=0$,
+the \definend{successor} function~$\successor(x)=x+1$,
+and the \definend{projection} 
+functions~$\projection_i(x_0,\ldots,x_i\ldots,x_{n-1})=x_i$ 
+\end{definition}
+\footnotetext[1]{`Primitive'  
+distinguishes these from another set of functions that we will see soon.}
+\noindent 
+Observe that there are infinitely many projections, one for each 
+$n,i\in\N$.
+Projection is a generalization of the identity function, which 
+explains the use the symbol $\projection$.
+
+%Dedekind conjecured that all functions are primitive recursive.
+Are all intuitively mechanically computable functions primitive recursive?
+We have already seen that some mechanically computable functions 
+are partial, they fail to have an output for some inputs.
+But all primitive recursive functions are total.
+So we have seen some functions not derivable in this way.
+
+We could speculate that perhaps 
+this is a matter of making an adjustment 
+like:~for any $f$ that is intuitively mechanically
+computable there is this primitive recursive~$g$.
+\begin{equation*}
+  g(x)=
+  \begin{cases}
+    0      &\case{if $f$ does not give an output on input~$x$}  \\
+    f(x)+1 &\case{if $f(x)$ exists}
+  \end{cases}
+\end{equation*}
+However, this speculation is wrong;
+the next subsection gives a function that is intuitively mechanically 
+computable but that is not primitive recursive.
+
+
+
+
+
+
+
+\subsection{Ackermann functions}
+Addition is repeated successor.
+\begin{equation*}
+  x+y=\underbrace{\successor(\,\successor(\,\cdots \successor(x)))}_{\text{$y$ many}}
+  \qquad
+  \text{e.g., $x+2=\successor(\successor(x))$}
+\end{equation*}
+Multiplication is repeated addition.
+\begin{equation*}
+  x\cdot y=\underbrace{x+x+\,\cdots\, +x}_{\text{$y$ many}}
+  \qquad
+  \text{e.g., $x\cdot 2=x+x$}
+\end{equation*}
+Exponentiation is repeated multiplication.
+\begin{equation*}
+  x^y=\underbrace{x\cdot x\cdot \,\cdots\, \cdot x}_{\text{$y$ many}}
+  \qquad
+  \text{e.g., $x^2=x\cdot x$}
+\end{equation*}
+This is a compelling pattern.
+We can, for instance, ask what operation comes next.
+
+We start with successor.
+Using that operation, 
+addition has the recursive definition $\plus(x,y)=\successor(\plus(x,y-1))$.
+Multiplication's recursion is $\product(x,y)=\plus(x,\product(x,y-1))$.
+Exponentiation's is $\power(x,y)=\product(x,\power(x,y-1))$. 
+We have this sequence of operations, where $\hyperoperation_0=\successor$. 
+\begin{align*}
+  \plus(x,y)=
+  \hyperoperation_1(x,y)&=\begin{cases}
+             x                             &\case{if $y=0$}  \\
+             \hyperoperation_0(x,\hyperoperation_1(x,y-1))    &\case{otherwise}
+           \end{cases}                                                \\[1ex]
+  \product(x,y)=
+  \hyperoperation_2(x,y)&=\begin{cases}
+             0                                  &\case{if $y=0$}  \\
+             \hyperoperation_1(x,\hyperoperation_2(x,y-1))    &\case{otherwise}
+           \end{cases}                                               \\[1ex]
+  \power(x,y)=
+  \hyperoperation_3(x,y)&=\begin{cases}
+             1   &\case{if $y=0$}  \\
+             \hyperoperation_2(x,\hyperoperation_3(x,y-1))    &\case{otherwise}
+           \end{cases}
+\end{align*}
+
+\begin{definition}
+The \definend{hyperoperation} $\map{\hyperoperation}{\N^3}{\N}$ is given
+by this.
+\begin{equation*}
+  \hyperoperation(n,x,y)=
+  \begin{cases}
+    y+1  &\case{if $n=0$}             \\
+    x    &\case{if $n=1$ and $y=0$}   \\
+    0    &\case{if $n=2$ and $y=0$}   \\
+    1    &\case{if $n>2$ and $y=0$}   \\
+    \hyperoperation(n-1, x, \hyperoperation(n, x, y-1)) &\case{otherwise}
+  \end{cases}
+\end{equation*}
+In place of $\hyperoperation(n,x,y)$
+we often write $\hyperoperation_n(x,y)$, 
+and describe this two-input function as \definend{level~$n$} 
+of~$\hyperoperation$. 
+\end{definition}
+
+\begin{lemma}
+$\hyperoperation_0(x,y)=y+1$,
+$\hyperoperation_1(x,y)=x+y$,
+$\hyperoperation_2(x,y)=x\cdot y$,
+$\hyperoperation_3(x,y)=x^y$.
+\end{lemma}
+
+\begin{proof}
+The level~$0$ statement $\hyperoperation_0(x,y)=y+1$ is in the definition of
+$\hyperoperation$.
+
+With that, we prove the level~$1$ statement $\hyperoperation_1(x,y)=x+y$ by 
+induction on the second variable,~$y$.
+For the $y=0$ base step, the definition 
+gives that $\hyperoperation(1,x,0)=x$, which equals $x+0=x+y$.
+For the inductive step, assume the statement holds for $y=0$, \ldots, $y=k$
+and consider the $y=k+1$ case.
+The definition is
+$\hyperoperation_1(x,k+1)=\hyperoperation_0(x,\hyperoperation_1(x,k))$.
+Apply the inductive hypothesis to get
+$\hyperoperation_0(x,x+k)$.
+By the prior paragraph this equals the successor of the second argument
+$x+k+1=x+y$, as required.
+
+The other two, $\hyperoperation_2$ and~$\hyperoperation_3$, are similar, 
+and are left for the exercises.
+\end{proof}
+
+\begin{remark}
+The next level, \definend{tetration} $\hyperoperation_4$,
+is the natural answer to the question of what comes after the
+elementary school operations of addition, multiplication, and exponentiation.
+Here are two values.
+\begin{equation*}
+  \hyperoperation_4(2,2)=2^2=4
+  \quad
+  \hyperoperation_4(2,3)=2^{2^2}=2^4=16
+\end{equation*}
+Similarly, $\hyperoperation_4(2,4)$ has four $2$'s stacked up.
+This is called a power tower.
+Recall that the order in which we perform exponentiations is significant.
+\begin{equation*}
+  (3^3)^3=27^3=3^9
+  \quad\text{does not equal}\quad
+  3^{(3^3)}=3^{27}
+\end{equation*}
+Tetration associates the powers in the second way, 
+so the one on the right is $\hyperoperation_4(3,3)$.
+Incidentally, $\hyperoperation_4(3,3)=7\,625\,597\,484\,987$.
+The rapid growth of the output values is a striking aspect of tetration, and
+of the hyperoperation in general.
+\end{remark}
+
+Observe that $\hyperoperation$ is intuitively mechanically computable.
+From the definition, producing the Scheme code
+hardly needs any adaptation at all.
+\begin{lstlisting}
+(define (H n x y)
+  (cond
+   ((= n 0) (+ y 1))
+   ((and (= n 1) (= y 0)) x)
+   ((and (= n 2) (= y 0)) 0)
+   ((= y 0) 1)
+   (else (H (- n 1) x (H n x (- y 1))))))  
+\end{lstlisting}
+
+\begin{wrapfigure}{L}{0.2\textwidth}
+\centering
+\includegraphics[width=0.2\textwidth]{background/ackermann.jpg} % http://upload.wikimedia.org/wikipedia/commons/4/48/Galilee.jpg
+\caption{\label{fig:ackermann}\href{https://en.wikipedia.org/wiki/Wilhelm_Ackermann}{Wilhelm Ackermann 1896--1962}}
+\end{wrapfigure}
+Hyperoperation is one of a family of functions with the same recursion,
+the same last line in the above code.
+We refer to them all as \definend{Ackermann functions} after 
+the mathematician who first showed that a member of the family, while
+intuitively mechanically computable, is not primitive recursive.
+
+For that argument, note that the recursion 
+$
+  \hyperoperation(n,x,y)=
+  \hyperoperation(n-1, x, \hyperoperation(n, x, y-1))
+$
+is not in the form for the definition of a primitive recursive function,
+\cref{def:PrimitiveRecursive},  
+$f(x_0,\ldots,x_{n-1},y)= h(f(x_0,\ldots,x_{n-1},y-1),x_0,\ldots,x_{n-1},y-1)$.
+The problem is not that $\hyperoperation$'s 
+arguments are stated in a different order; 
+that is cosmetic.
+The problem is that the definition requires that
+$h$ be a function for which we already have a derivation as 
+primitive recursive.
+
+Of course, just because~$\hyperoperation$'s definition is not stated in the 
+form for \cref{def:PrimitiveRecursive} doesn't mean that
+it cannot be put into that form.
+The proof that it cannot is an
+\hyperref[sec:ComputableFunctionNotPrimitiveRecursive]{Extra Section}
+but briefly: 
+we have already observed that $\hyperoperation_1$
+grows arithmetically, that $\hyperoperation_2$ grows geometrically, 
+and that $\hyperoperation_3$ grows exponentially.
+Each primitive recursive function~$f$ 
+has a derivation from initial functions via a sequence of 
+compositions and primitive recursions.
+The proof
+shows that
+each initial function grows slower some level~$\hyperoperation_k$, that
+each composition bumps the level of the resulting function up by~$2$,
+and that each primitive recursion bumps the level up by~$3$.
+Then, as the function~$\hyperoperation$ as a whole grows faster 
+than any of its levels, it cannot be primitive recursive.
+
+Finally, a comment: not only is the hyperoperation an
+example of an intuitively computable function that is not
+primitive recursive, but also
+it is particularly interesting since it arises in the wild\Dash it is not
+a contrived example but a quite natural one.
+
+Question of uniformity.
+
+
+
+
+\subsection{\protect\(\ \mathbf{\mu} \protect\) recursion}
+Using the schema of primitive recursion is a productive step towards  
+defining the functions that are mechanically computable because it is
+natural and because many 
+familiar functions are primitive recursive.
+But the prior subsection shows that the class is not wide enough
+to contain all of the mechanically computable functions.
+So we wiill define a broader class. 
+
+The proof that hyperoperation is not primitive recursive shows that 
+all primitive recursive functions fall into a level.
+To expand expand to a class larger than that of primitive recursive functions 
+we look for a way that cuts
+across levels: if what we want isn't on level~$i$ then
+move to level~$i+1$.
+Consequently, to the combining operations of composition and
+primitive recusion we add unbounded search.
+% As witnessed by the result that
+% a function is primitive recursive if and only if it can be computed 
+% using for loops alone, we think to add the ability to 
+% do \codeinline!while! loops\Dash unbounded searches.  
+
+\begin{definition} \label{def:MuRecursion}
+Where $\map{g}{\N^2}{\N}$, we say 
+$\map{f}{\N}{\N}$ is 
+defined by \definend{unbounded minimization} from $g$
+if $f(x)=y$ where~$y$ is the least number such that $g(x,y)$  equals~$0$
+(and is defined).
+We write $\mu$ for `the least', giving this notation.
+\begin{equation*}
+  f(x)=\mu y\,\big[ g(x,y)=0 \big] % =(\mu g)(x)
+\end{equation*}
+\end{definition}
+
+Intuitively, we've added the capacity to do unbounded search: to 
+look at $g(x,0)$, then $g(x,1)$, etc., until we get the output of~$0$.
+
+\begin{example}
+Let $g(x,y)=\ceiling{(x+1)/(y+1)-1}$, and let $f(x)=\mu\,y[g(x,y)=0]$.
+In general, $f(x)=x$.
+For instance, the first few values of $g(5,y)$ show that $f(5)=5$.
+\begin{equation*}
+  \begin{tabular}{r|rrrrrr}
+    \tabulartext{input $y$} 
+      &\multicolumn{1}{c}{$0$}
+      &\multicolumn{1}{c}{$1$}
+      &\multicolumn{1}{c}{$2$}
+      &\multicolumn{1}{c}{$3$}
+      &\multicolumn{1}{c}{$4$}
+      &\multicolumn{1}{c}{$5$} \\ \hline
+   \tabulartext{$g(5,y)$}
+      &$5$ &$2$ &$1$ &$1$ &$1$ &$0$
+  \end{tabular}
+\end{equation*}
+\end{example}
+
+In the definition, the parenthetical comment  ``and is defined'' is there
+because using the minimization operator  we can get functions whose output 
+value is undefined for some inputs.
+
+\begin{example}
+Let $g(x,y)=1$ for all~$x,y\in\N$.  
+Then $f(x)=\mu\,y[g(x,y)=0]$ is undefined for all~$x$.
+\end{example}
+
+That some functions are undefined for some inputs is an awkward aspect of 
+this definition.
+Of course, on a computer we do see that for some programs there are inputs
+with no associated output, so it just is part of the landscape. 
+
+\begin{definition} \label{def:Recursive}
+A function is 
+\definend{recursive} (or \definend{general recursive})
+if it can be derived from the initial operations of 
+the \definend{zero} function~$\zero(x)=0$,
+the \definend{successor} function~$\successor(x)=x+1$,
+and the \definend{projection} 
+functions~$\projection_i(x_0,\ldots,x_i\ldots,x_{n-1})=x_i$ 
+by a finite number of applications of 
+function composition, the schema of primitive recursion,
+and minimization.
+\end{definition}
+
+Kleene showed that the set of functions satisfying this definition is
+the same as the set of 
+functions that can be computed by a Turing machine, 
+or by Church's $\lambda$-calculus.
+
+
+% Kleene T predicate.
+
+
+\begin{exercises}
+\begin{exercise}
+Implement in Scheme \definend{McCarthy's $91$ function}, defined recursively
+below.
+\begin{equation*}
+  \operatorname{M}(x)=
+  \begin{cases}
+    \operatorname{M}(\operatorname{M}(x+11)) &\case{$x\leq 100$} \\
+    x-10                                     &\case{$x>100$}
+  \end{cases}
+\end{equation*}
+What is the output for inputs $x\in\leftclosed{0}{101}$?
+For inputs greater than or equal to $101$?
+\begin{answer}
+This is an implementation.
+\begin{lstlistings}
+(define (M x)
+   (cond ((<= x 100) (M (M (+ x 11))))
+         (else (- x 10))))  
+\end{lstlistings}
+It outputs $91$ for all inputs $x\in\leftclosed{0}{101}$, and also for
+$x=101$.
+For larger inputs it outputs $x-10$.
+\end{answer}
+\end{exercise}
+
+
+\begin{exercise}
+Define the factorial function $\factorial(y)=y\cdot(y-1)\cdots 1$
+by primitive recursion, using product and a constant function.
+\begin{answer}
+The derivation for factorial is this.
+\begin{equation*}
+  \factorial(y)=\begin{cases}
+              1                  &\text{if $y=0$}  \\
+              \product(\factorial(z),\successor(z))) &\text{if $y=\successor(z)$}
+            \end{cases}
+\end{equation*}
+Here $g$ is a function of no inputs~$g(\,)=1$ and 
+$h(a,b)=\product(a,\successor(b))$.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that the minimum function $\min(x,y)$ can be derived, using composition
+alone, from proper subtraction.
+\begin{answer}
+$\min(x,y)=x\dotminus(x\dotminus y)$  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that these functions are primitive recursive.
+\begin{exparts}
+\item  Constant function: $\mathcal{C}_k(x_0,\dots,x_{n-1})=k$ for
+  any~$k\in\N$.
+
+% \item \textit{proper subtraction function:}
+% $\operatorname{propersub}(x,y)=x\dotminus y$ that yields
+% $x-y$ unless it would be negative, in which case it 
+% yields $0$
+% % \begin{equation*}
+% %   x\dotminus y=\begin{cases}
+% %                  0    &\text{if $x<y$}  \\
+% %                  x-y  &\text{if $x\geq y$}
+% %                \end{cases}
+% % \end{equation*}
+
+\item  Absolute difference function:
+$\operatorname{absdiff}(x,y)=\sizeof{x-y}$, the absolute value of $x-y$.
+% \begin{equation*}
+%   |x-y|=\begin{cases}
+%           0    &\text{if $x<y$}  \\
+%           x-y  &\text{if $x\geq y$}
+%         \end{cases}
+% \end{equation*}
+
+\item Sign predicate:
+$\operatorname{sign}(y)$, which gives~$1$ if $y$ is greater than zero
+(we can interpret that as `true'; recall that a predicate is a boolean-valued
+function),
+and yields~$0$ otherwise. 
+% \begin{equation*}
+%   \operatorname{sign}(x)=\begin{cases}
+%                            0    &\text{if $y=0$}  \\
+%                            1    &\text{if $y>0$}
+%                          \end{cases}
+% \end{equation*}
+
+\item Equality predicate:
+  $\operatorname{equal}(x,y)=1$ if the two inputs are
+  equal, and~$0$ otherwise. 
+% \begin{equation*}
+%   \operatorname{equal}(x,y)=\begin{cases}
+%                           1    &\text{if $x=y$}  \\
+%                           0    &\text{otherwise}
+%                         \end{cases}
+% \end{equation*}
+
+\item Less-than predicate:
+$\operatorname{lessthan}(x,y)=1$ if $x$ is less than $y$,
+and~$0$ otherwise.
+% \begin{equation*}
+%   \operatorname{less}(x,y)=\begin{cases}
+%                          1    &\text{if $x<y$}  \\
+%                          0    &\text{otherwise}
+%                        \end{cases}
+% \end{equation*}
+
+\item Functions defined by cases: a function given as a 
+finite and fixed number of cases, as with this one.
+\begin{equation*}
+  m(x,y)=\begin{cases}
+          7    &\text{if $x=1$ and $y=2$}  \\
+          9    &\text{if $x=5$ and $y=0$}  \\
+          0    &\text{otherwise}
+        \end{cases}
+\end{equation*}
+
+\item Bounded sum functions:
+the partial sums of a series
+$f(y)=\sum_{i=0}^{y} g(i)=g(0)+g(1)+\dots+g(y-1)$
+(the sum of zero-many terms is $f(0)=0$).
+\end{exparts}  
+\end{exercise}
+
+
+\begin{exercise}
+Let $g,h$ be natural number functions (that are total).
+Where $f$ is defined by primitive recursion from $g$ and~$h$,
+show that $f$ is well-defined.
+That is, show that if two functions both    
+satisfy \cref{def:PrimitiveRecursion} then
+they are equal, meaning that 
+with the same inputs they will yield the same outputs.
+\begin{answer}
+\autocite{Davis}  
+Suppose that if two functions $\map{f,\hat{f}}{\N^{n+1}}{\N}$ both    
+satisfy \cref{def:PrimitiveRecursion}.
+We will show that for all $\sequence{x_0,\ldots,x_{n-1},y}\in\N^{n+1}$
+the two are equal $f(x_0,\ldots,x_{n-1},y)=\hat{f}(x_0,\ldots,x_{n-1},y)$,
+by induction on~$y$.
+
+For the base step,
+they are equal when $y=0$ because they both equal $g(x_0,\ldots,x_{n-1})$.
+For the inductive step,
+suppose that they are equal for $y=0$, \ldots, $y=k$ and consider 
+the $y=k+1$ case. 
+\begin{align*}
+  f(x_0,\ldots,x_{n-1},k+1)
+  &=g(f(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)
+  &=g(\hat{f}(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)
+   =\hat{f}(x_0,\ldots,x_{n-1},k+1)
+\end{align*}
+The second equality follows from the induction hypothesis.
+\end{answer}
+\end{exercise}
+\end{exercises}
+
+% \begin{explorations}
+% The class of primitive recursive functions can be extended into the 
+% transfinite, giving the \href{https://en.wikipedia.org/wiki/Grzegorczyk_hierarchy}{Grzegorczyk hierarchy}. 
+% \end{explorations}
+
+
+
+
+
+
+
+
 \section{Church's Thesis}
 
 % \begin{wrapfigure}{R}{0.4\textwidth}
@@ -1383,6 +2121,407 @@ Run the simulator on Example~\ref{ex:MAdd}'s $\TM_{\text{add}}$ to add
 $2+3$.    
 \end{extraexercise}
 \end{exercises}
+
+
+
+
+%================================================
+\extra{A computable function that is not primitive recursive}
+\label{sec:ComputableFunctionNotPrimitiveRecursive}
+
+We have see that the hyperoperation, whose definition is
+repeated below, is the natural generalization of 
+successor, addition, multiplication, etc. 
+\begin{equation*}
+  \hyperoperation(n,x,y)=
+  \begin{cases}
+    y+1  &\case{if $n=0$}             \\
+    x    &\case{if $n=1$ and $y=0$}   \\
+    0    &\case{if $n=2$ and $y=0$}   \\
+    1    &\case{if $n>2$ and $y=0$}   \\
+    \hyperoperation(n-1, x, \hyperoperation(n, x, y-1)) &\case{otherwise}
+  \end{cases}
+\end{equation*}
+% In place of $\hyperoperation(n,x,y)$ we often write $\hyperoperation_n(x,y)$  
+% and describe this as \definend{level~$n$} of the function~$\hyperoperation$.
+
+\begin{wrapfigure}{R}{0.2\textwidth}
+\centering
+\includegraphics[width=0.2\textwidth]{background/peter.jpg} % http://www.agnesscott.edu/lriddle/women/peter.htm
+\caption{\label{fig:peter}\href{http://www.agnesscott.edu/lriddle/women/peter.htm}{R\'ozsa P\'eter 1905--1977}}
+\end{wrapfigure}
+We have quoted a result that~$\hyperoperation$, while intuitively
+mechanically computable, is not primitive recursive.
+The details of that result's proof are awkward.
+\citetext{For technical convenience}{This presentation is 
+based on that of \autocite{Hennie}, \autocite{Smorynski}, 
+and~\autocite{Robinson}.} 
+we will instead show here that a closely related function, which is 
+also intuitively mechanically computable,
+is not primitive recursive.
+
+On $\hyperoperation$'s `otherwise' line, while 
+the level is~$n$ and the recursion is on~$y$, 
+the variable~$x$ does not play an active role.
+This was noted by P\'eter, who
+got a function with a simpler defintion, 
+lowering the number of variables by one,
+by considering $\hyperoperation(n,y,y)$. 
+That, and tweaking the initial value of each level, gives this. 
+\begin{equation*}
+  \ackermann(k,y)=
+  \begin{cases}
+    y+1                &\case{if $k=0$}    \\
+    \ackermann(k-1,1)  &\case{if $y=0$ and $k>0$}  \\
+    \ackermann(k-1, \ackermann(k,y-1)) &\case{otherwise}
+  \end{cases}
+\end{equation*}
+Any function based on the recursion in the bottom line is 
+called an \definend{Ackermann function}.\footnote{There are many different
+Ackermann functions in the literature.
+A common one is the function of one variable $\ackermann(k,k)$.}
+We will prove that this function is not primitive recursive. 
+
+With only two variables a table of a few initial values is easy to show.
+\begin{center} 
+% \newsavebox{\rightbox}
+% \newcommand{\rightboxit}[1]{\makebox[2em][r]{#1}}
+%  \begin{array}{r|>{\begin{lrbox}{\rightbox}}c<{\end{lrbox}\rightboxit{\unhbox\rightbox}}rrrrrc}
+  \begin{tabular}{r|BEBBCCc}
+    \multicolumn{1}{c}{\relax}
+      &\multicolumn{1}{c}{y=0}
+      &\multicolumn{1}{c}{y=1}
+      &\multicolumn{1}{c}{y=2}
+      &\multicolumn{1}{c}{y=3}
+      &\multicolumn{1}{c}{y=4}
+      &\multicolumn{1}{c}{y=5}  \\ \cline{2-8}
+    k=0   &1   &2   &3   &4   &5   &6  &\ldots \\
+    k=1   &2   &3   &4   &5   &6   &7  &\ldots \\
+    k=2   &3   &5   &7   &9   &11   &13 &\ldots  \\
+    k=3   &5   &13   &29   &61   &125   &253 &\ldots  \\
+    k=4   &13   &65533  % &2^{65536}-3 &2^(2^{65536})-3   
+            &\multicolumn{1}{c}{\ldots}    
+  \end{tabular}
+\end{center}
+The next two entries give a sense of the growth rate of this function.
+\begin{equation*}
+  \ackermann(4,2)=2^{65536}-3
+  \qquad
+  \ackermann(4,3)=2^{(2^{65536})}-3
+\end{equation*}
+Those are big numbers.
+
+% We have already discussed the core idea: level~$1$ grows arithmetically, 
+% level~$2$ grows geometrically, 
+% level~$3$ grows exponentially, etc., and 
+% each primitive recursive function
+% grows slower than some level $\hyperoperation_n$.
+% Specifically, given the derivation of a 
+% primitive recursive function, each step in that derivation increases
+% the level by some maximum amount.
+% For example, composition bumps the level up by~$2$
+% and primitive recursion bumps the level up by~$3$.
+
+
+% \crefalias{enumi}{extratheorem}
+\begin{extralemma} \label{lem:GrowthOfAckermann}
+\begin{thmparts}
+  \item \label{lem:AckermannLargerThanSecondArg}
+    $\ackermann(k,y)>y$
+  \item  \label{lem:AckermannMonotoneInSecondArg}
+     $\ackermann(k,y+1)>\ackermann(k,y)$, and in general
+     if $\hat{y}>y$ then $\ackermann(k,\hat{y})>\ackermann(k,y)$
+  \item \label{lem:AckermannCrossArg}
+    $\ackermann(k+1,y)\geq\ackermann(k,y+1)$  
+  \item \label{lem:AckermannLargerThanFirstArg}
+    $\ackermann(k,y)>k$ 
+  \item \label{lem:AckermannMonotoneInFirstArg}
+    $\ackermann(k+1,y)>\ackermann(k,y)$ and in general
+    if $\hat{k}> k$ then $\ackermann(\hat{k},y)>\ackermann(k,y)$ 
+  \item  \label{lem:AckermannFirstArgMoreImportant}
+    $\ackermann(k+2,y)>\ackermann(k,2y)$
+\end{thmparts}
+\end{extralemma}
+
+\begin{proof}
+We will verify the first item here and leave the 
+the others as exercises.
+They all proceed the same way, with 
+an induction inside of an induction.
+
+Formally stated, this is the first item.
+\begin{equation*}
+  \forall k\,\forall y\,\big[\ackermann(k,y)>y\big]
+  \tag{$*$}
+\end{equation*}
+We will prove it by induction on~$k$.
+The $k=0$ base step is $\ackermann(0,y)=y+1>y$.
+For the inductive step, assume that statement~($*$) 
+holds for $k=0$, \ldots, $k=n$ and consider the $k=n+1$ case.
+
+We now must verify this statement, 
+\begin{equation*}
+  \forall\,y\,\big[\ackermann(n+1,y)>y\big]
+  \tag{$**$} 
+\end{equation*}
+which we will do by induction on~$y$.
+In the $y=0$ base step of this inside induction, the definition gives 
+$\ackermann(n+1,0)=\ackermann(n,1)$ and by the inductive hypothesis that 
+statement~($*$) is true when $k=n$ we have that
+$\ackermann(n,1)>1>y=0$.
+
+Finally, in the inductive step of the inside induction, assume that
+statement~($**$) holds for $y=0$, \ldots, $y=m$ and consider $y=m+1$.
+The definition gives
+$\ackermann(n+1,m+1)=\ackermann(n,\ackermann(n+1,m))$.
+By ($**$)'s inductive hypothesis, $\ackermann(n+1,m)>m$.
+By ($*$)'s inductive hypothesis, when $\ackermann(n,\ackermann(n+1,m))$ 
+has a second argument greater than~$m$ then it's result is greater than~$m$, 
+as required.
+\end{proof}
+
+Some notation will help these arguments: 
+we will abbreviate the function input list $x_0,\ldots,x_{n-1}$ 
+by the vector~$\vec{x}$.
+And we will write the maximum of the vector $\max(\vec{x})$ to mean the
+maximum of its components 
+$\max(\set{x_0,\ldots,x_{n-1}})$.
+
+\begin{extradefinition}
+A function~$s$ is \definend{level}~$k$, where $k\in\N$, if 
+$\ackermann(k,\max(\vec{x}))>s(\vec{x})$ for all~$\vec{x}$.
+\end{extradefinition}
+
+By \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg}, if 
+a function is level~$k$ then it is also level~$\hat{k}$ for any $\hat{k}>k$.
+% define dominated?
+
+\begin{extralemma} \label{lem:CompositionLevelKIsLevelKPlusTwo}
+If for some $k\in\N$ each function $g_0,\ldots,g_{m-1},h$ is level~$k$,  
+and if the function~$f$ is obtained by composition as
+$f(\vec{x})=h(g_0(\vec{x}),\ldots,g_{m-1}(\vec{x}))$,
+then $f$ is level~$k+2$.
+\end{extralemma}
+
+\begin{proof}
+Apply \cref{lem:GrowthOfAckermann}'s \cref{lem:AckermannCrossArg}, 
+and then the definition of~$\ackermann$.
+\begin{equation*}
+  \ackermann(k+2,\max(\vec{x})) 
+    \geq \ackermann(k+1,\max(\vec{x})+1)             
+    = \ackermann(k,\ackermann(k+1,\max(\vec{x})))
+  \tag{$*$}
+\end{equation*}
+Focusing on the second argument of the right-hand expression,
+use \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg} 
+and the assumption that each function $g_0,\ldots,g_{m-1}$ is level~$k$ to get
+that for each index $i\in\set{1,\ldots,m-1}$
+we have $
+  \ackermann(k+1,\max(\vec{x})) 
+    > \ackermann(k,\max(\vec{x}))  
+    > g_i(\vec{x})
+$.
+Thus
+$
+  \ackermann(k+1,\max(\vec{x})) 
+    > \max(\set{\,g_1(\vec{x}),\ldots,\,g_{m-1}(\vec{x})\,})
+$.
+
+\Cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInSecondArg} 
+says that $\ackermann$ is monotone in the
+second argument, so returning to equation~($*$) and swapping out
+$\ackermann(k+1,\max(\vec{x}))$ gives the first inequality here
+\begin{align*}
+  \ackermann(k+2,\max(\vec{x}))
+  &> \ackermann(k,\max(\,\set{ g_1(\vec{x}), \ldots, g_{m-1}(\vec{x})}\,))  \\
+  &> h(g_0({\vec{x}}),\ldots,g_{m-1}(\vec{x}))
+  = f(\vec{x})
+\end{align*}
+and the second holds because
+the function~$h$ is level~$k$.
+\end{proof}
+
+\begin{extralemma}  \label{lem:PrimRecOfLevelKIsLevelKPlusThree}
+If for some $k\in\N$ the functions $g$ and~$h$ are level~$k$,  
+and if the function~$f$ is obtained by the schema of primitive recursion as
+\begin{equation*}
+  f(\vec{x},y)=
+  \begin{cases}
+    g(\vec{x})  &\case{if $y=0$}  \\
+    h(f(\vec{x},z),\,\vec{x},\,z)  &\case{if $y=\successor(z)$}
+  \end{cases}
+\end{equation*}
+then $f$ is level~$k+3$.
+\end{extralemma}
+
+\begin{proof}
+Let $n$ be such that $\map{f}{\N^{n+1}}{\N}$, so that
+$\map{g}{\N^{n}}{\N}$ and $\map{h}{\N^{n+2}}{\N}$.
+The core of the argument is to show that this statement holds.
+\begin{equation*}
+  \forall k\,\big[ \ackermann(k,\max(\vec{x})+y)>f(\vec{x},y)\big]
+  \tag{$*$}
+\end{equation*}
+% (for any first argument~$k$).
+We show this by induction on~$y$.
+The $y=0$ base step is that 
+$\ackermann(k,\max(\vec{x})+0)=\ackermann(k,\max(\vec{x}))$ is 
+greater than
+$f(\vec{x},0)=g(\vec{x})$ because $g$ is level~$k$.
+
+For the inductive step assume that~($*$) holds for 
+$y=0$, \ldots, $y=z$ and consider the $y=z+1$ case.
+The definition is that
+$\ackermann(k+1,\max(\vec{x})+z+1)
+  =\ackermann(k,\,\ackermann(k+1,\max(\vec{x})+z))$.
+The second argument
+$\ackermann(k+1,\,\max(\vec{x})+z)$ is larger than $\max(\vec{x})+z$ 
+by \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannLargerThanSecondArg},
+and so
+is larger than any~$x_i$ and larger than~$z$,
+and is larger than $f(\vec{x},z)$ by the inductive hypothesis. 
+\begin{equation*}
+  \ackermann(k+1,\max(\vec{x})+z)
+  > \max(\set{f(\vec{x},z),\,x_0,\ldots,x_{n-1},\,z})
+\end{equation*}
+Use 
+\cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInSecondArg},
+monotonicity of~$\ackermann$ in the second argument,
+and the fact that~$h$ is a level~$k$ function.
+\begin{align*}
+  \ackermann(k+1,\max(\vec{x})+z+1)
+    &=\ackermann(k,\,\ackermann(k+1,\max(\vec{x})+z))  \\
+    &> \ackermann(k,\,\max(\set{f(\vec{x},z),\,x_0,\ldots,x_{n-1},\,z})) \\
+    &> h(f(\vec{x},z),\vec{x},z)  
+    = f(\vec{x},z+1) 
+\end{align*}
+That finishes the inductive verification of statement~($*$).
+
+To finish the argument, 
+\cref{lem:GrowthOfAckermann}.\ref{lem:AckermannFirstArgMoreImportant}
+gives that for all $x_0,\ldots,x_{n-1},y$
+\begin{align*}
+  \ackermann(k+3,\,\max(\set{x_0,\ldots,y}))
+    &> \ackermann(k+1,\,2\cdot\max(\set{x_0,\ldots,y}))  \\
+    &\geq \ackermann(k+1,\,\max(\vec{x})+y)    
+\end{align*}
+(the latter holds because $2\cdot\max(\vec{x},y)\geq \max(\vec{x})+y$
+and because of 
+\cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInSecondArg}).
+In turn, by the first part of this proof, that is greater than
+$f(\vec{x},y)$.
+\end{proof}
+
+\begin{extratheorem}[Ackermann, 1925]
+For each primitive recursive function~$f$ there is a~$k\in\N$ 
+such that $f$ is level~$k$.  
+\end{extratheorem}
+
+\begin{proof}
+The definition of primitive recursive functions \cref{def:PrimitiveRecursive}
+specifies that each~$f$ is
+built from a set of initial function by the operations of
+composition and primitive recursion.
+With \cref{lem:CompositionLevelKIsLevelKPlusTwo} 
+and \cref{lem:PrimRecOfLevelKIsLevelKPlusThree} we need only show that
+each initial operation is of some level.
+
+The zero function $\zero(x)=0$ is level~$0$ since $\ackermann(0,x)=x+1>0$.
+The successor function $\successor(x)=x+1$ is level~$1$
+since $\ackermann(1,x)>\ackermann(0,x)=x+1$ by 
+\cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg}.
+Each projection function $\projection_i(x_0,\ldots,x_i\ldots,x_{n-1})=x_i$ is
+level~$0$ since $\ackermann(0,\max(\vec{x}))=\max(\vec{x})+1$ is greater than
+$\max(\vec{x})$, which is greater than or equal to~$x_i$.
+\end{proof}
+
+\begin{extracorollary}
+The function~$\ackermann$ is not primitive recursive.  
+\end{extracorollary}
+
+\begin{proof}
+If $\ackermann$ were primitive recursive then it would be of some level,~$k_0$,
+so $\ackermann(k_0,\max(\set{x,y}))>\ackermann(x,y)$ for all~$x,y$.
+Taking $x$ and~$y$ to be $k_0$ gives a contradiction.  
+\end{proof}
+
+\begin{exercises}
+\begin{extraexercise}
+ If expressed in base~$10$, how many digits are in 
+$\ackermann(4,2)=2^{65536}-3$?
+\end{extraexercise}
+
+\begin{extraexercise}
+Show that for any $k,y$ the evaluation of $\ackermann(k,y)$ terminates.
+\begin{answer}
+From two arguments~$k$ and~$y$, either $k$ decreases or 
+$k$ is fixed and~$y$ decreases. 
+When $y$ reaches zero 
+then $k$ decreases, so it eventually reaches zero as well, and
+$\ackermann(0,y)$ obviously terminates.  
+\end{answer}
+\end{extraexercise}
+
+\begin{extraexercise}
+Prove these parts of \cref{lem:GrowthOfAckermann}.
+\begin{exparts*}
+  \item \Cref{lem:AckermannMonotoneInSecondArg} 
+  \item \Cref{lem:AckermannCrossArg}
+  \item \Cref{lem:AckermannLargerThanFirstArg}
+  \item \Cref{lem:AckermannMonotoneInFirstArg}
+  \item \Cref{lem:AckermannFirstArgMoreImportant}
+\end{exparts*}
+\end{extraexercise}
+
+\begin{extraexercise} % http://www-users.cs.york.ac.uk/~susan/cyc/a/ackermnn.htm
+Prove each.
+\begin{exparts}
+  \item $\ackermann(0,y)=y+1$
+  \item $\ackermann(1,y)=2+(y+3)-3$
+  \item $\ackermann(2,y)=2\cdot(y+3)-3$
+  \item $\ackermann(3,y)=2y+3-3$
+  \item $\ackermann(4,y)=2\uparrow\uparrow(n+3)-3$
+\end{exparts}
+In the last one, the up-arrow
+notation (due to D~Knuth) means that there is a power tower containing $n+3$ 
+many $2$'s. 
+Recall that powers do not associate, so $2^{(2^2)}\neq (2^2)^2$; 
+the notation means the first type of association, from the top down.
+\end{extraexercise}
+
+\begin{extraexercise}
+The prior exercise shows that at least the initial levels of $\ackermann$
+are primitive recursive.
+In fact, all levels are.
+But how does that work: all the parts of $\ackermann$ are primitive 
+recursive but as a whole it is not?
+\begin{answer}
+\textit{All the parts of $\ackermann$ are primitive 
+recursive but as a whole it is not?}
+Yes.  It is a question of uniformity.
+Imagine that we have an enumeration of the primitive recursive functions
+$f_0$, $f_1$, \ldots\,.
+Perhaps $\ackermann_0=f_9$, and $\ackermann_1=f_{121}$, 
+and~$\ackermann_2=f_{800}$.
+But the function associating the subscript on the~$\ackermann$ with the 
+subscript on the~$f$ is not primitive recursive.  
+\end{answer}
+\end{extraexercise}
+
+\begin{extraexercise}
+$\ackermann(k+1,x)=\ackermann(k,\,\ackermann(k,\,\ldots\,\ackermann(k,1)\ldots))$ where there are $x+1$-many $\ackermann$'s.  
+\end{extraexercise}
+
+\begin{extraexercise}
+Prove that $\ackermann(k,y)=\hyperoperation(k,2,n+3)-3$.
+Conclude that $\hyperoperation$ is not primitive recursive.
+\end{extraexercise}
+
+\end{exercises}
+
+
+
+
 
 
 % ==================================

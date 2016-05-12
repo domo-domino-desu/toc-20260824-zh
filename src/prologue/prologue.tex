@@ -675,11 +675,10 @@ you couldn't tell.
 Write a Turing machine that, when started on a blank tape,
 will run forever and produce a tape containing the string
 $0101101110\ldots$\,.  
-(\textit{Remark.} The number $0.010\,110\,111\,0\ldots $, 
-\textit{Turing's number}, provides an easy example of a number that is
-irrational but computable.
-It is irrational 
-because the decimal expansion never repeats and never terminates.)
+(\textit{Remark:} $0.010\,110\,111\,0\ldots$ is 
+\textit{Turing's number}, an easy example of a computable number that is
+irrational, 
+because its decimal expansion never repeats and never terminates.)
 
 \end{exercise}
 \end{exercises}
@@ -692,39 +691,35 @@ because the decimal expansion never repeats and never terminates.)
 
 %================================================
 \section{Recursion}
-At the time that Turing developed his definition, many researchers
-also saw the need to make precise the intuitive idea of mechanically
-computable objects.
+When Turing was doing his work, other researchers
+also saw the need to make precise the notion of mechanical
+computability.
 They produced a number of competing approaches.
-We will discuss further why we take Turing's tack but we will here outline
-another approach, in part because it introduces useful concepts and
-in part to give a sense of how other approaches are perfectly 
-possible. 
+We will discuss further why we take Turing's tack in the next section
+but here we will outline
+another approach, in part because it introduces some things that we need and
+in part also to give a sense of how these other approaches look,
+at least on the surface, to be quite different.
  
-Turing started with machines and defined the mechanically computable
-functions as those that
+Turing started by defining machines and got from that a definition of the
+functions that are computable, namely those functions that
 are the input-output behavior of the machines.
-Another historical thread started directly with functions,
+A different historical thread focused directly on functions,
 which are objects of central mathematical interest.
   
 
 
 
-% \begin{wrapfigure}{R}{0.2\textwidth}
-% \centering
-% \includegraphics[width=0.2\textwidth]{background/grassmann.jpg} % 
-% \caption{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}
-% \end{wrapfigure}
 \margingraphic{.2\textwidth}{background/grassmann.jpg}{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}
 \subsection{Primitive recursion}
-Grade school students learn the operations of addition and 
+Grade school students learn how to calculate addition and 
 multiplication as mildly complicated algorithms (``carry the one'').
-In 1861 \citetext{Grassman produced}{In 1888 Dedekind used this definition 
-to give the first rigorous 
-proof of the laws of elementary school arithmetic}
-a prettier definition.
-Here is the definition of addition, $\map{\plus}{\N^2}{\N}$, which takes as given the
-successor map, $\successor(n)=n+1$.
+% In 1861 
+\citetext{Grassman produced a more elegant, more beautiful, definition}{% In 1888
+Dedekind used this defintion to give the first rigorous 
+proof of the laws of elementary school arithmetic}.
+Here is the formula for addition, $\map{\plus}{\N^2}{\N}$, 
+which takes as given the successor map, $\successor(n)=n+1$.
 \begin{equation*}
   \plus (x,y) =\begin{cases}
                 x                 &\case{if $y=0$}  \\
@@ -734,29 +729,23 @@ successor map, $\successor(n)=n+1$.
 This is \definend{recursive} since `$\plus$' recurs within
 its own definition.\footnote{That is, recursion is a discrete form of feedback.}
 
-A natural first reaction to a recursive definition is to question 
+A common reaction on first seeing recursion is to wonder 
 whether it is logically problematic\Dash isn't defining
 something in terms of itself a fallacy?
-But, for instance, 
+But notice that in the expansion below, 
 $\plus(3,2)$ is not defined in terms of itself,
 it is defined in terms of $\plus(3,1)$.
-In turn, $\plus(3,1)$ is defined in terms of $\plus(3,0)$, 
+And in turn, $\plus(3,1)$ is defined in terms of $\plus(3,0)$, 
 whose definition is clearly not a problem.
+\begin{equation*}
+  \plus(3,2) = \successor(\plus(3,1)) 
+             = \successor(\successor(\plus(3,0))) 
+             = \successor(\successor(3))=5 
+\end{equation*}
 
-\begin{example}
-We can trace the expansion of $\plus(3,2)$.
-\begin{align*}
-  \plus(3,2) &= \successor(\plus(3,1)) \\
-             &= \successor(\successor(\plus(3,0))) \\
-             &= \successor(\successor(3))=5 
-\end{align*}
-The second equality comes from expanding $\plus(3,1)$ 
-to $\successor(\plus(3,0))$, so the left-hand $\successor$ is just 
-carried down from the prior line.
-\end{example}
-
-One of the reasons that this approach is beautiful 
-is that multiplication follows the same form.
+One of the ways that Grassmannn's approach is beautiful is that we can extend
+it to other operations. 
+For example, multiplication follows the same form.
 \begin{equation*}
   \product (x,y) =\begin{cases}
                 0                 &\case{if $y=0$}  \\
@@ -774,7 +763,7 @@ reduces to a sum of three $2$'s.
 \end{align*}
 \end{example}
 
-Why not? we can do exponentiation the same way.
+And exponentiation also works that way.
 \begin{equation*}
   \power (x,y) =\begin{cases}
                 1                 &\case{if $y=0$}  \\
@@ -820,7 +809,7 @@ the highlighted part of this code fits the definition exactly.
 \end{center}
 (The \codeinline!(let ..)! creates the local variable
 \codeinline!z!.)
-The same is true for $\product$
+The same is true for $\product$ and $\power$.
 \begin{lstlisting}
 (define (product x y)
   (let ((z (- y 1)))
@@ -828,7 +817,6 @@ The same is true for $\product$
 	<@\color{highlightcolor}0@>
 	<@\color{highlightcolor}(plus (product x z) x))@>))
 \end{lstlisting}
-and $\power$.
 \begin{lstlisting}
 (define (power x y)
   (let ((z (- y 1)))
@@ -853,9 +841,10 @@ from the functions $g$ and~$h$ if it has this form.
 \end{definition}
 \footnotetext[2]{A schema is an underlying organizational pattern or structure.}
 
-% The bookkeeping is that the number of inputs to~$f$ is 
-% one more than the number of 
-% inputs to~$g$, and one less than the number of inputs to~$h$.
+The bookkeeping is that the number of inputs to~$f$ is 
+one more than the number of 
+inputs to~$g$ and one less than the number of inputs to~$h$.
+We sometimes abbreviate $x_0,\ldots,x_{n-1}$ as $\vec{x}$.
 
 \begin{example}
 The function $\plus$ is defined by primitive recursion from 
@@ -866,67 +855,57 @@ The function~$\power$ is defined by primitive recursion from
 $g(a)=1$ and $h(a,b,c)=\product(a,b)$.   
 \end{example}
 
-Primitive recursion suffices to define many familiar functions. 
+% Primitive recursion suffices to define many familiar functions. 
 
 \begin{example}
-The predecessor function on the natural numbers is:
+Since we are working with functions on the natural numbers we take 
+the predecessor function $\map{\pred}{\N}{\N}$ to be:
 $\pred(y)$ equals
-$y-1$ if $y$ is positive, and equals~$0$ if $y$ is zero.
-Here is a derivation.  
+$y-1$ if $y>0$ and equals~$0$ if $y=0$.
+That easily fits the form of \cref{def:PrimitiveRecursion}.  
 \begin{equation*}
   \pred(y)=\begin{cases}
               0  &\case{if $y=0$}  \\
               z  &\case{if $y=\successor(z)$}
             \end{cases}
 \end{equation*}
-In the notation of \cref{def:PrimitiveRecursion},
-$\pred$ has no $x$'s. 
-So, $g$ is a function of no inputs 
-(and must therefore be a constant function) $g(\,)=0$,
+The bookkeeping here is that
+$\pred$ has no $x_i$'s. 
+So $g$ is a function of no inputs 
+and must therefore be a constant, $g(\,)=0$,
 while $h$ has two inputs~$h(a,b)=b$. 
 \end{example}
 
 \begin{example}
-We can use primitive recursion to 
-produce \definend{proper subtraction}, often denoted $x\dotminus y$,
-which gives $x-y$ if that value is nonnegative, and gives $0$ otherwise.   
+As with the prior example, subtraction $x-y$ is a problem
+for a function on the natural numbers so in its place we define  
+\definend{proper subtraction}, often denoted $x\dotminus y$,
+to yield $x-y$ if $x\geq y$ and~$0$ otherwise.  
+Putting this into the form for \cref{def:PrimitiveRecursion} is 
+straightforward, with $g(a)=a$ and $h(a,b,c)=\pred(a)$.
 \begin{equation*}
   \operatorname{propersub}(x,y)
                =\begin{cases}
                  x    &\case{if $y=0$}  \\
-                 \pred(\operatorname{propersub}(x,z))  &\case{if $x\geq y$}
+                 \pred(\operatorname{propersub}(x,z))  &\case{if $y=\successor(z)$}
                \end{cases}
 \end{equation*}
-This fits the schema with $g(a)=a$ 
-and $h(a,b,c)=\pred(a)$.
 \end{example}
 
-% \begin{example}
-% The factorial function $\factorial(y)=y\cdot(y-1)\cdots 1$ is defined
-% by primitive recursion as here.
-% \begin{equation*}
-%   \factorial(y)=\begin{cases}
-%                    1                         &\case{if $y=0$}  \\
-%                   \product(\factorial(z),y)) &\case{if $y=\successor(z)$}
-%                  \end{cases}
-% \end{equation*}
-% Here, in terms of \cref{def:PrimitiveRecursion},
-% $\factorial$ has no $x$'s. 
-% So, $g$ is a function of no arguments 
-% (and must therefore be a constant function) $g()=1$,
-% while $h$ has two~$h(a,b)=\product(a,\successor(b))$. 
-% \end{example}
+We can show that many natural number functions can be defined 
+by primitive recursion.
+The exercises contain a sample.
+In each case we start with a function, possibly modified from
+its integer form to fit the natural numbers, described in words
+and we state it so fit \cref{def:PrimitiveRecursion}.
 
-These examples underline that 
-% the function~$f$ is produced from, or
-% comes after, the functions~$g$ and~$h$.
-% The code examples also dramatize that 
-if $g$ 
-and~$h$ are intuitively mechanically computable then so is~$f$.
-So if we start with 
-some suitable list of effective initial functions
-and combine them in an effective way, which includes via primitive recursion,
-then all the derived functions will also be computable.
+The examples above that include the Scheme code make clear that 
+if $g$ and~$h$ are effective then so is~$f$\!.
+Thus, our plan is to start with 
+some clearly effective functions,
+and combine them in effective ways, including primitive recursion,
+to get derived functions that are also effective.
+Can we in this way build a suite of all effective functions?
 
 \begin{definition} \label{def:PrimitiveRecursive}
 A function is 
@@ -936,40 +915,44 @@ function composition and primitive recursion
 from the initial operations of 
 the \definend{zero} function~$\zero(x)=0$,
 the \definend{successor} function~$\successor(x)=x+1$,
-and the \definend{projection} 
+and the \definend{projection}\footnotemark[2] 
 functions~$\projection_i(x_0,\ldots,x_i\ldots,x_{n-1})=x_i$ 
 \end{definition}
 \footnotetext[1]{`Primitive'  
 distinguishes these from another set of functions that we will see soon.}
-\noindent 
-Observe that there are infinitely many projections, one for each 
-$n,i\in\N$.
+\footnotetext[2]{There are infinitely many projections, one for each 
+pair of natural numbers $n,i$.
 Projection is a generalization of the identity function, which 
-explains the use the symbol $\projection$.
+is why we use the use the letter~$\projection$.}
 
-%Dedekind conjecured that all functions are primitive recursive.
-Are all intuitively mechanically computable functions primitive recursive?
-We have already seen that some mechanically computable functions 
-are partial, they fail to have an output for some inputs.
-But all primitive recursive functions are total.
-So we have seen some functions not derivable in this way.
+% We have already seen that some mechanically computable functions 
+% are partial, that they fail to have an output for some inputs.
+% But all primitive recursive functions are total.
+% So we have seen some functions not derivable in this way.
+% We could speculate that perhaps 
+% this is a matter of making an adjustment 
+% like:~for any $f$ that is intuitively mechanically
+% computable we consider this function.
+% \begin{equation*}
+%   \hat{f}(x)=
+%   \begin{cases}
+%     0      &\case{if $f$ does not give an output on input~$x$}  \\
+%     f(x)+1 &\case{if $f(x)$ exists}
+%   \end{cases}
+% \end{equation*}
+% This fills the holes in $f$'s domain with~$0$ values,
+% and translates $f$'s values up by~$1$ so that those~$0$ values are unambiguous. 
+% Were we able to show that $\hat{f}$ is primitive recursive then we would have
+% simulated~$f$ with a p.r.{} function.
 
-We could speculate that perhaps 
-this is a matter of making an adjustment 
-like:~for any $f$ that is intuitively mechanically
-computable there is this primitive recursive~$g$.
-\begin{equation*}
-  g(x)=
-  \begin{cases}
-    0      &\case{if $f$ does not give an output on input~$x$}  \\
-    f(x)+1 &\case{if $f(x)$ exists}
-  \end{cases}
-\end{equation*}
-However, this speculation is wrong;
-the next subsection gives a function that is intuitively mechanically 
-computable but that is not primitive recursive.
-
-
+However,
+the next subsection gives a function 
+that is intuitively mechanically 
+computable, but that is not primitive recursive.
+So no plot like the one in the prior paragraph can work.
+We need to add a new way of getting derived functions, beyond those in
+\cref{def:PrimitiveRecursive}.
+That we will see in the section after.
 
 
 
@@ -979,30 +962,29 @@ computable but that is not primitive recursive.
 Addition is repeated successor.
 \begin{equation*}
   x+y=\underbrace{\successor(\,\successor(\,\cdots \successor(x)))}_{\text{$y$ many}}
-  \qquad
-  \text{e.g., $x+2=\successor(\successor(x))$}
+  % \qquad
+  % \text{e.g., $x+2=\successor(\successor(x))$}
 \end{equation*}
 Multiplication is repeated addition.
 \begin{equation*}
   x\cdot y=\underbrace{x+x+\,\cdots\, +x}_{\text{$y$ many}}
-  \qquad
-  \text{e.g., $x\cdot 2=x+x$}
+  % \qquad
+  % \text{e.g., $x\cdot 2=x+x$}
 \end{equation*}
 Exponentiation is repeated multiplication.
 \begin{equation*}
   x^y=\underbrace{x\cdot x\cdot \,\cdots\, \cdot x}_{\text{$y$ many}}
-  \qquad
-  \text{e.g., $x^2=x\cdot x$}
+  % \qquad
+  % \text{e.g., $x^2=x\cdot x$}
 \end{equation*}
 This is a compelling pattern.
-We can, for instance, ask what operation comes next.
-
-We start with successor.
-Using that operation, 
-addition has the recursive definition $\plus(x,y)=\successor(\plus(x,y-1))$.
-Multiplication's recursion is $\product(x,y)=\plus(x,\product(x,y-1))$.
-Exponentiation's is $\power(x,y)=\product(x,\power(x,y-1))$. 
-We have this sequence of operations, where $\hyperoperation_0=\successor$. 
+% We start with successor.
+% Using that operation, 
+% addition has the recursive definition $\plus(x,y)=\successor(\plus(x,y-1))$.
+% Multiplication's recursion is $\product(x,y)=\plus(x,\product(x,y-1))$.
+% Exponentiation's is $\power(x,y)=\product(x,\power(x,y-1))$. 
+That is,
+we have this sequence of operations 
 \begin{align*}
   \plus(x,y)=
   \hyperoperation_1(x,y)&=\begin{cases}
@@ -1020,6 +1002,9 @@ We have this sequence of operations, where $\hyperoperation_0=\successor$.
              \hyperoperation_2(x,\hyperoperation_3(x,y-1))    &\case{otherwise}
            \end{cases}
 \end{align*}
+(where $\hyperoperation_0$ is the 
+successor operation $\hyperoperation_0=\successor$).
+What comes next?
 
 \begin{definition}
 The \definend{hyperoperation} $\map{\hyperoperation}{\N^3}{\N}$ is given
@@ -1051,27 +1036,26 @@ $\hyperoperation_3(x,y)=x^y$.
 The level~$0$ statement $\hyperoperation_0(x,y)=y+1$ is in the definition of
 $\hyperoperation$.
 
-With that, we prove the level~$1$ statement $\hyperoperation_1(x,y)=x+y$ by 
-induction on the second variable,~$y$.
+We prove the level~$1$ statement $\hyperoperation_1(x,y)=x+y$ by 
+induction on~$y$.
 For the $y=0$ base step, the definition 
-gives that $\hyperoperation(1,x,0)=x$, which equals $x+0=x+y$.
-For the inductive step, assume the statement holds for $y=0$, \ldots, $y=k$
+is that $\hyperoperation(1,x,0)=x$, which equals $x+0=x+y$.
+For the inductive step, assume that the statement holds for $y=0$, \ldots, $y=k$
 and consider the $y=k+1$ case.
 The definition is
 $\hyperoperation_1(x,k+1)=\hyperoperation_0(x,\hyperoperation_1(x,k))$.
 Apply the inductive hypothesis to get
 $\hyperoperation_0(x,x+k)$.
-By the prior paragraph this equals the successor of the second argument
-$x+k+1=x+y$, as required.
+By the prior paragraph this equals
+$x+k+1=x+y$.
 
 The other two, $\hyperoperation_2$ and~$\hyperoperation_3$, are similar, 
 and are left for the exercises.
 \end{proof}
 
 \begin{remark}
-The next level, \definend{tetration} $\hyperoperation_4$,
-is the natural answer to the question of what comes after the
-elementary school operations of addition, multiplication, and exponentiation.
+The level after exponentiation 
+is \definend{tetration}~$\hyperoperation_4$,
 Here are two values.
 \begin{equation*}
   \hyperoperation_4(2,2)=2^2=4
@@ -1080,22 +1064,22 @@ Here are two values.
 \end{equation*}
 Similarly, $\hyperoperation_4(2,4)$ has four $2$'s stacked up.
 This is called a power tower.
-Recall that the order in which we perform exponentiations is significant.
+Notice that how we parenthesize exponentiations is significant; 
+these two are unequal.
 \begin{equation*}
   (3^3)^3=27^3=3^9
-  \quad\text{does not equal}\quad
+  \qquad
   3^{(3^3)}=3^{27}
 \end{equation*}
-Tetration associates the powers in the second way, 
-so the one on the right is $\hyperoperation_4(3,3)$.
-Incidentally, $\hyperoperation_4(3,3)=7\,625\,597\,484\,987$.
+Tetration parenthesizes in the second way, 
+so $\hyperoperation_4(3,3)=3^{27}$.
+Incidentally, that equals $\hyperoperation_4(3,3)=7\,625\,597\,484\,987$.
 The rapid growth of the output values is a striking aspect of tetration, and
 of the hyperoperation in general.
 \end{remark}
 
 Observe that $\hyperoperation$ is intuitively mechanically computable.
-From the definition, producing the Scheme code
-hardly needs any adaptation at all.
+The Scheme code falls right out of the definition.
 \begin{lstlisting}
 (define (H n x y)
   (cond
@@ -1285,6 +1269,7 @@ For larger inputs it outputs $x-10$.
 \begin{exercise}
 Define the factorial function $\factorial(y)=y\cdot(y-1)\cdots 1$
 by primitive recursion, using product and a constant function.
+Translate your definition into Scheme code.
 \begin{answer}
 The derivation for factorial is this.
 \begin{equation*}
@@ -1308,6 +1293,8 @@ $\min(x,y)=x\dotminus(x\dotminus y)$
 
 \begin{exercise}
 Show that these functions are primitive recursive.
+(A predicate is a truth-valued function and here we take an output 
+of~$1$ to mean `true' while~$0$ is `false'.)
 \begin{exparts}
 \item  Constant function: $\mathcal{C}_k(x_0,\dots,x_{n-1})=k$ for
   any~$k\in\N$.

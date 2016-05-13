@@ -905,7 +905,6 @@ Thus, our plan is to start with
 some clearly effective functions,
 and combine them in effective ways, including primitive recursion,
 to get derived functions that are also effective.
-Can we in this way build a suite of all effective functions?
 
 \begin{definition} \label{def:PrimitiveRecursive}
 A function is 
@@ -945,12 +944,13 @@ is why we use the use the letter~$\projection$.}
 % Were we able to show that $\hat{f}$ is primitive recursive then we would have
 % simulated~$f$ with a p.r.{} function.
 
-However,
-the next subsection gives a function 
+Can we in this way build all effective functions?
+The next subsection gives a function 
 that is intuitively mechanically 
 computable, but that is not primitive recursive.
-So no plot like the one in the prior paragraph can work.
-We need to add a new way of getting derived functions, beyond those in
+So the prior paragraph does not suffice.
+To describe all effective functions 
+we need to add a new way of getting derived functions, beyond those in
 \cref{def:PrimitiveRecursive}.
 That we will see in the section after.
 
@@ -1006,9 +1006,10 @@ we have this sequence of operations
 successor operation $\hyperoperation_0=\successor$).
 What comes next?
 
-\begin{definition}
-The \definend{hyperoperation} $\map{\hyperoperation}{\N^3}{\N}$ is given
-by this.
+\begin{definition}  \label{def:Hyperoperation}
+The 
+\citetext{\definend{hyperoperation}}{\autocite{Goodstein}} 
+$\map{\hyperoperation}{\N^3}{\N}$ is given by this.
 \begin{equation*}
   \hyperoperation(n,x,y)=
   \begin{cases}
@@ -1019,11 +1020,12 @@ by this.
     \hyperoperation(n-1, x, \hyperoperation(n, x, y-1)) &\case{otherwise}
   \end{cases}
 \end{equation*}
-In place of $\hyperoperation(n,x,y)$
-we often write $\hyperoperation_n(x,y)$, 
-and describe this two-input function as \definend{level~$n$} 
-of~$\hyperoperation$. 
 \end{definition}
+
+Because of the next result
+we often take~$n$ as a parameter, written it in a subscript, and  
+describe the two-input function $\hyperoperation_n(x,y)$ as 
+$\hyperoperation$'s \definend{level~$n$}. 
 
 \begin{lemma}
 $\hyperoperation_0(x,y)=y+1$,
@@ -1050,36 +1052,44 @@ By the prior paragraph this equals
 $x+k+1=x+y$.
 
 The other two, $\hyperoperation_2$ and~$\hyperoperation_3$, are similar, 
-and are left for the exercises.
+and are left for \cref{exer:HTwoHThree}.
 \end{proof}
 
 \begin{remark}
 The level after exponentiation 
 is \definend{tetration}~$\hyperoperation_4$,
-Here are two values.
+The values for the first five $y$'s are 
+$\hyperoperation_4(x,0)=\hyperoperation_3(x,1)=x^1=x$,
+and 
+$\hyperoperation_4(x,1)=\hyperoperation_3(x,\hyperoperation_4(x,0))=x^1=x$,
+and
+$\hyperoperation_4(x,2)=\hyperoperation_3(x,\hyperoperation_4(x,1))=x^{x}$
+as well as these two.
 \begin{equation*}
-  \hyperoperation_4(2,2)=2^2=4
+  \hyperoperation_4(x,3)=\hyperoperation_3(x,\hyperoperation_4(x,2))=x^{x^x} 
   \quad
-  \hyperoperation_4(2,3)=2^{2^2}=2^4=16
+  \hyperoperation_4(x,4)=x^{x^{x^x}}
 \end{equation*}
-Similarly, $\hyperoperation_4(2,4)$ has four $2$'s stacked up.
 This is called a power tower.
-Notice that how we parenthesize exponentiations is significant; 
+To evaluate these expressions, 
+recall that parentheses are significant in exponentiation, so for instance
 these two are unequal.
 \begin{equation*}
   (3^3)^3=27^3=3^9
   \qquad
   3^{(3^3)}=3^{27}
 \end{equation*}
-Tetration parenthesizes in the second way, 
-so $\hyperoperation_4(3,3)=3^{27}$.
+Tetration parenthesizes in the second way, $\hyperoperation_4(3,3)=3^{27}$.
 Incidentally, that equals $\hyperoperation_4(3,3)=7\,625\,597\,484\,987$.
 The rapid growth of the output values is a striking aspect of tetration, and
 of the hyperoperation in general.
 \end{remark}
 
-Observe that $\hyperoperation$ is intuitively mechanically computable.
-The Scheme code falls right out of the definition.
+The prior lemma makes the point that one reason $\hyperoperation$ 
+is interesting to us is that it arises in the wild\Dash it is not
+a contrived example but a quite natural one.
+Another reason is that it is mechanically computable.
+The Scheme code falls right out of its definition.
 \begin{lstlisting}
 (define (H n x y)
   (cond
@@ -1090,59 +1100,52 @@ The Scheme code falls right out of the definition.
    (else (H (- n 1) x (H n x (- y 1))))))  
 \end{lstlisting}
 
-\begin{wrapfigure}{L}{0.2\textwidth}
-\centering
-\includegraphics[width=0.2\textwidth]{background/ackermann.jpg} % http://upload.wikimedia.org/wikipedia/commons/4/48/Galilee.jpg
-\caption{\label{fig:ackermann}\href{https://en.wikipedia.org/wiki/Wilhelm_Ackermann}{Wilhelm Ackermann 1896--1962}}
-\end{wrapfigure}
+\margingraphic{0.18\textwidth}{background/ackermann.jpg}{\label{fig:ackermann}\href{https://en.wikipedia.org/wiki/Wilhelm_Ackermann}{Wilhelm Ackermann 1896--1962}}
 Hyperoperation is one of a family of functions with the same recursion,
-the same last line in the above code.
-We refer to them all as \definend{Ackermann functions} after 
-the mathematician who first showed that a member of the family, while
-intuitively mechanically computable, is not primitive recursive.
+the same last line in \cref{def:Hyperoperation} called
+\definend{Ackermann functions} after 
+the mathematician who brought them attention.
 
-For that argument, note that the recursion 
+We are now in a situation like that
+of \cref{exer:ShowFcnsPrimRec}.
+We've described a function.
+But we've not shown that it is primitive recursive because 
+our 
 $
   \hyperoperation(n,x,y)=
   \hyperoperation(n-1, x, \hyperoperation(n, x, y-1))
 $
-is not in the form for the definition of a primitive recursive function,
-\cref{def:PrimitiveRecursive},  
-$f(x_0,\ldots,x_{n-1},y)= h(f(x_0,\ldots,x_{n-1},y-1),x_0,\ldots,x_{n-1},y-1)$.
+is not in the form of \cref{def:PrimitiveRecursion}.
+\begin{equation*}  
+f(x_0,\ldots,x_{n-1},y)= h(f(x_0,\ldots,x_{n-1},y-1),x_0,\ldots,x_{n-1},y-1)
+\end{equation*}
 The problem is not that $\hyperoperation$'s 
 arguments are stated in a different order; 
 that is cosmetic.
-The problem is that the definition requires that
-$h$ be a function for which we already have a derivation as 
-primitive recursive.
+The problem is that the $\hyperoperation$ following the equal sign
+in our description does not work as $h$ because 
+the definition of primitive recursion requires that
+$h$ be a function for which we already have a primitive recursive
+derivation.
 
-Of course, just because~$\hyperoperation$'s definition is not stated in the 
-form for \cref{def:PrimitiveRecursive} doesn't mean that
-it cannot be put into that form.
-The proof that it cannot is an
+Of course, just because the definition that we gave has the wrong
+form doesn't mean that
+there is no definition with the right form.
+The proof that it is not primitive recursive is a detour for us
+so it is in an
 \hyperref[sec:ComputableFunctionNotPrimitiveRecursive]{Extra Section}
-but briefly: 
-we have already observed that $\hyperoperation_1$
-grows arithmetically, that $\hyperoperation_2$ grows geometrically, 
-and that $\hyperoperation_3$ grows exponentially.
-Each primitive recursive function~$f$ 
-has a derivation from initial functions via a sequence of 
-compositions and primitive recursions.
-The proof
-shows that
-each initial function grows slower some level~$\hyperoperation_k$, that
-each composition bumps the level of the resulting function up by~$2$,
-and that each primitive recursion bumps the level up by~$3$.
-Then, as the function~$\hyperoperation$ as a whole grows faster 
-than any of its levels, it cannot be primitive recursive.
-
-Finally, a comment: not only is the hyperoperation an
-example of an intuitively computable function that is not
-primitive recursive, but also
-it is particularly interesting since it arises in the wild\Dash it is not
-a contrived example but a quite natural one.
-
-Question of uniformity.
+but briefly:~$\hyperoperation$ grows faster 
+than any primitive recursive function.
+That is, for any primitive recursive function~$f$ of three inputs,
+there is a sufficiently large $N\in\N$ such that for all 
+$n,x,y\in\N$, if $n,x,y> N$ then $\hyperoperation(n,x,y)>f(n,x,y)$. 
+Thus $\hyperoperation$ is not primitive recursive.
+ 
+This is a question of uniformity.
+Every level $\hyperoperation_n$ is primitive recursive.
+But no primitive recursive function can do all levels at once.
+There is no single, uniform, way to compute them all, within the limits
+of \cref{def:PrimitiveRecursive}.
 
 
 
@@ -1250,8 +1253,8 @@ below.
     x-10                                     &\case{$x>100$}
   \end{cases}
 \end{equation*}
-What is the output for inputs $x\in\leftclosed{0}{101}$?
-For inputs greater than or equal to $101$?
+What is the output for inputs $x\in\set{0, \ldots 100}$?
+For larger inputs?
 \begin{answer}
 This is an implementation.
 \begin{lstlistings}
@@ -1259,7 +1262,7 @@ This is an implementation.
    (cond ((<= x 100) (M (M (+ x 11))))
          (else (- x 10))))  
 \end{lstlistings}
-It outputs $91$ for all inputs $x\in\leftclosed{0}{101}$, and also for
+It outputs $91$ for all inputs $x\in\set{0, \ldots 101}$, and also for
 $x=101$.
 For larger inputs it outputs $x-10$.
 \end{answer}
@@ -1291,7 +1294,7 @@ $\min(x,y)=x\dotminus(x\dotminus y)$
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
+\begin{exercise}  \label{exer:ShowFcnsPrimRec}
 Show that these functions are primitive recursive.
 (A predicate is a truth-valued function and here we take an output 
 of~$1$ to mean `true' while~$0$ is `false'.)
@@ -1398,6 +1401,27 @@ the $y=k+1$ case.
 \end{align*}
 The second equality follows from the induction hypothesis.
 \end{answer}
+\end{exercise}
+
+\begin{exercise}
+Find the value of 
+$\hyperoperation_4(2,2)$, 
+$\hyperoperation_4(2,3)$,
+and
+$\hyperoperation_4(2,4)$.
+\begin{answer}
+We have $\hyperoperation_4(2,2)=2^2=4$, 
+and $\hyperoperation_4(2,3)=2^{2^2}=2^4=16$.
+The third is this.
+\begin{equation*}
+  \hyperoperation_4(2,4)=2^{2^{2^2}}=2^{16}=65536
+\end{equation*}
+\end{answer}
+\end{exercise}
+
+\begin{exercise} \label{exer:HTwoHThree}
+Prove that $\hyperoperation_2(x,y)=x\cdot y$ and
+$\hyperoperation_3(x,y)=x^y$.
 \end{exercise}
 \end{exercises}
 

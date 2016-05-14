@@ -35,7 +35,134 @@ $h(a,b)=\product(a,\successor(b))$.
 \begin{ans}{3.7}
 $\min(x,y)=x\dotminus(x\dotminus y)$
 \end{ans}
+\begin{ans}{3.8}
+\begin{exparts}
+\item The constant function that always returns zero
+$\mathcal{C}_0(\vec{x})$
+is included the definition of primitive
+recursion, \cref{def:PrimitiveRecursive}, as $\zero(\vec{x})=0$.
+The function that always returns~$1$ is then
+$\mathcal{C}_1(\vec{x})=\succ(\mathcal{C}_0(\vec{x}))$,
+the function that returns~$2$ is
+$\mathcal{C}_2(\vec{x})=\succ(\succ(\mathcal{C}_0(\vec{x})))$, etc.
+
+\item For any $x,y\in\N$ either $x-y\geq 0$ or $y-x\geq 0$.
+Thus
+$\operatorname{absdiff}(x,y)=\operatorname{propersub}(x,y)+\operatorname{propersub}(y,x)$ and since addition is primitive recursive,
+$\operatorname{absdiff}(x,y)$ is therefore primitive recursive.
+
+\item This primitive recursion defines $\operatorname{sign}$.
+\begin{equation*}
+  \operatorname{sign}(y)=
+    \begin{cases}
+      0   &\case{\text{if $y=0$}}  \\
+      1   &\case{\text{if $y=\succ(z)$}}
+    \end{cases}
+\end{equation*}
+
+\item A primitive recursion will do
+\begin{equation*}
+  \operatorname{negsign}(y)=
+    \begin{cases}
+      1   &\case{\text{if $y=0$}}  \\
+      0   &\case{\text{if $y=\succ(z)$}}
+    \end{cases}
+\end{equation*}
+but we can also observe that
+$\operatorname{negsign}(y)=1-\operatorname{sign}(y)$, that is,
+$\operatorname{negsign}(y)=\operatorname{propersub}(1,\operatorname{sign}(y))$.
+
+\item The one is
+$\operatorname{lessthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(y,x))$
+while the other is
+$\operatorname{greaterthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(x,y))$.
+
+\item
+$\operatorname{equal}(x,y)=\operatorname{negsign}(\operatorname{lessthan}(x,y)+\operatorname{greaterthan}(x,y))$
+
+\item
+The first is
+$m(x)=7\cdot\operatorname{equal}(x,1)
+      +9\cdot\operatorname{equal}(x,5)$
+(note the use of addition and multiplication, which were shown to be
+primitive recursive in the subsection body).
+The second is similar
+$n(x,y)=7\cdot\operatorname{equal}(x,1)\cdot\operatorname{equal}(y,2)
+        +9\cdot\operatorname{equal}(x,5)\cdot\operatorname{equal}(y,5)$.
+
+\item Since $g$ is given as primitive recursive,
+this function is also primitive recursive
+$h(a,b)=\plus(a,g(b))$ because it uses composition.
+With that, this primitive recursion will do the bounded sum.
+\begin{equation*}
+  f(y)=
+    \begin{cases}
+      0          &\case{\text{if $y=0$}}  \\
+      h(f(z),z)  &\case{\text{if $y=\succ(z)$}}
+    \end{cases}
+\end{equation*}
+\end{exparts}
+\end{ans}
 \begin{ans}{3.9}
+\begin{exparts}
+\item
+We have $\operatorname{not}(x)=1-x=\operatorname{propersub}(1,x)$.
+For the two-input ones,
+$\operatorname{and}(x,y)=x\cdot y=\product(x,y)$
+and
+$\operatorname{or}(x,y)=\operatorname{sign}(x+y)$
+(an alternative is $\operatorname{or}(x,y)=1-((1-x)\cdot (1-y))$).
+
+\item This is the idea.
+\begin{equation*}
+  U(\vec{x},m)=
+  \begin{cases}
+    1    &\case{\text{if $m=0$}}   \\
+    p(\vec{x},m)\cdot U(\vec{x},z)  &\case{\text{if $m=\succ(z)$}}
+  \end{cases}
+\end{equation*}
+To be formal we have to do some more work such as
+expressing the multiplication
+$p(\vec{x},m)\cdot U(\vec{x},z)$ as $\product(p(\vec{x},m), U(\vec{x},z))$.
+
+\item Take $E(\vec{x},m)=1\dotminus \hat{E}(\vec{x},m)$, where the latter
+function is below.
+\begin{equation*}
+  \hat{E}(\vec{x},m)=
+  \begin{cases}
+    0    &\case{\text{if $m=0$}}   \\
+    (1\dotminus p(\vec{x},m))\cdot \hat{E}(\vec{x},z)
+        &\case{\text{if $m=\succ(z)$}}
+  \end{cases}
+\end{equation*}
+
+\item We have already shown that the functions used here primitive recursive.
+
+Consider the bounded product function.
+\begin{equation*}
+  P_p(\vec{x},m)=\prod_{0\leq i<m} p(\vec{x},i)
+\end{equation*}
+Note that (i)~if $P_p(\vec{x},m)=1$ then $P_p(\vec{x},i)=1$ for all $i<m$,
+and (ii)~if $P_p(\vec{x},m)=0$ then $P_p(\vec{x},i)=0$ for all~$i\geq m$.
+
+Next consider the bounded sum function.
+\begin{equation*}
+  S_{P_p}(\vec{x},m)=\sum_{0\leq i<m} P_p(\vec{x},m)
+\end{equation*}
+Because of (i) and~(ii), $S_{P_p}(\vec{x},m)$ is the least number~$i$ such that
+$p(\vec{x},i)=0$, as desired.
+
+Now just define $M(\vec{x},m)$ by cases.
+\begin{equation*}
+  M(\vec{x},m)=
+  \begin{cases}
+    m     &\case{\text{if $S_{P_p}(\vec{x},m)=0$}} \\
+    S_{P_p}(\vec{x},m)  &\case{\text{otherwise}}
+  \end{cases}
+\end{equation*}
+\end{exparts}
+\end{ans}
+\begin{ans}{3.10}
 \autocite{Davis}
 Suppose that if two functions $\map{f,\hat{f}}{\N^{n+1}}{\N}$ both
 satisfy \cref{def:PrimitiveRecursion}.
@@ -56,7 +183,7 @@ the $y=k+1$ case.
 \end{align*}
 The second equality follows from the induction hypothesis.
 \end{ans}
-\begin{ans}{3.10}
+\begin{ans}{3.11}
 We have $\hyperoperation_4(2,2)=2^2=4$,
 and $\hyperoperation_4(2,3)=2^{2^2}=2^4=16$.
 The third is this.

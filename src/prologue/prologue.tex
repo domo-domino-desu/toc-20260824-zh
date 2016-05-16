@@ -1286,14 +1286,14 @@ $h(a,b)=\product(a,\successor(b))$.
 \end{exercise}
 
 
-\begin{exercise}
-Show that the minimum function $\min(x,y)$ can be derived, using composition
-alone, from proper subtraction.
-% Bounded minimization?
-\begin{answer}
-$\min(x,y)=x\dotminus(x\dotminus y)$  
-\end{answer}
-\end{exercise}
+% \begin{exercise}
+% Show that the minimum function $\min(x,y)$ can be derived, using composition
+% alone, from proper subtraction.
+% % Bounded minimization?
+% \begin{answer}
+% $\min(x,y)=x\dotminus(x\dotminus y)$  
+% \end{answer}
+% \end{exercise}
 
 
 \begin{exercise}  \label{exer:ShowFcnsPrimRec}
@@ -1308,6 +1308,9 @@ or those from prior items.
 \item  Constant function: 
   $\mathcal{C}_k(\vec{x})=\mathcal{C}_k(x_0,\dots,x_{n-1})=k$ for
   any~$k\in\N$.
+
+\item Maximum and minimum of a set having two numbers:
+  $\max(\set{x,y})$ and $\min(\set{x,y})$.
 
 \item  Absolute difference function:
 $\operatorname{absdiff}(x,y)=\sizeof{x-y}$, the absolute value of $x-y$.
@@ -1324,6 +1327,31 @@ and~$1$ otherwise.
 $\operatorname{lessthan}(x,y)=1$ if $x$ is less than $y$,
 and~$0$ otherwise.
 (The greater-than predicate is similar.)
+
+\item
+Boolean functions: where $x,y$ are inputs with values $0$ or~$1$ 
+there is the standard one-input function
+\begin{equation*}
+  \operatorname{not}(x)=
+  \begin{cases}
+    1  &\case{\text{if $x=0$}} \\
+    0  &\case{\text{otherwise}}
+  \end{cases}
+\end{equation*}
+and two-input functions.
+\begin{equation*}
+  \operatorname{and}(x,y)=
+  \begin{cases}
+    1  &\case{\text{if $x=y=1$}} \\
+    0  &\case{\text{otherwise}}
+  \end{cases}
+  \qquad
+  \operatorname{or}(x,y)=
+  \begin{cases}
+    0  &\case{\text{if $x=y=0$}} \\
+    1  &\case{\text{otherwise}}
+  \end{cases}
+\end{equation*}
 
 \item Equality predicate:
 $\operatorname{equal}(x,y)=1$ if $x=y$
@@ -1358,6 +1386,16 @@ the partial products of a series whose terms $g(i)$ are given by
 a primitive recursive function,
 $P_g(y)=\prod_{0\leq i<y} g(i)=g(0)\cdot g(1)\cdots g(y-1)$
 (the product of zero-many terms is $P_g(0)=1$).
+
+
+\item Bounded minimization:
+let $m\in\N$ and let $p(\vec{x},i)$ be a predicate.
+Then the minimization operator $M(\vec{x},i)$, 
+typically written $\mu^{m}i[p(\vec{x},i)]$,
+returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
+or else returns~$m$.
+\hint{} Consider the bounded sum of the bounded products of the
+predicates.
 \end{exparts}  
 \begin{answer}
 \begin{exparts}
@@ -1369,6 +1407,11 @@ The function that always returns~$1$ is then
 $\mathcal{C}_1(\vec{x})=\succ(\mathcal{C}_0(\vec{x}))$,
 the function that returns~$2$ is
 $\mathcal{C}_2(\vec{x})=\succ(\succ(\mathcal{C}_0(\vec{x})))$, etc.
+
+\item Since the parts of the right-hand side of
+  $\max(\set{x,y})=y+(x\propersub y)$ are all primitive recursive, 
+  then the $\max$ function is also primitive recursive.
+  Similarly for $\min(\set{x,y})=x+y\propersum\max(\set{x,y})$.
 
 \item For any $x,y\in\N$ either $x-y\geq 0$ or $y-x\geq 0$.
 Thus
@@ -1401,6 +1444,14 @@ $\operatorname{lessthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(y,x))
 while the other is 
 $\operatorname{greaterthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(x,y))$.
 
+\item
+We have $\operatorname{not}(x)=1-x=\operatorname{propersub}(1,x)$.
+For the two-input ones,
+$\operatorname{and}(x,y)=x\cdot y=\product(x,y)$
+and
+$\operatorname{or}(x,y)=\operatorname{sign}(x+y)$
+(an alternative is $\operatorname{or}(x,y)=1-((1-x)\cdot (1-y))$).
+
 \item 
 $\operatorname{equal}(x,y)=\operatorname{negsign}(\operatorname{lessthan}(x,y)+\operatorname{greaterthan}(x,y))$
 
@@ -1425,6 +1476,30 @@ With that, this primitive recursion will do the bounded sum.
       h(f(z),z)  &\case{\text{if $y=\succ(z)$}}
     \end{cases}
 \end{equation*}
+
+\item 
+Consider the bounded product function.
+\begin{equation*}
+  P_p(\vec{x},m)=\prod_{0\leq i<m} p(\vec{x},i)
+\end{equation*}
+Note that (i)~if $P_p(\vec{x},m)=1$ then $P_p(\vec{x},i)=1$ for all $i<m$,
+and (ii)~if $P_p(\vec{x},m)=0$ then $P_p(\vec{x},i)=0$ for all~$i\geq m$.
+
+Next consider the bounded sum function.
+\begin{equation*}
+  S_{P_p}(\vec{x},m)=\sum_{0\leq i<m} P_p(\vec{x},m)  
+\end{equation*}
+Because of (i) and~(ii), $S_{P_p}(\vec{x},m)$ is the least number~$i$ such that
+$p(\vec{x},i)=0$, as desired.
+
+Now just define $M(\vec{x},m)$ by cases.
+\begin{equation*}
+  M(\vec{x},m)=
+  \begin{cases}
+    m     &\case{\text{if $S_{P_p}(\vec{x},m)=0$}} \\
+    S_{P_p}(\vec{x},m)  &\case{\text{otherwise}}
+  \end{cases}
+\end{equation*}
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -1435,31 +1510,6 @@ Show that each of these is primitive recursive.
 You may use any function shown to be primitive recursive in
 the section text or in the prior exercise.
 \begin{exparts}
-\item
-Boolean functions: where $x,y$ are inputs with values $0$ or~$1$ 
-there is the standard one-input function
-\begin{equation*}
-  \operatorname{not}(x)=
-  \begin{cases}
-    1  &\case{\text{if $x=0$}} \\
-    0  &\case{\text{otherwise}}
-  \end{cases}
-\end{equation*}
-and two-input functions.
-\begin{equation*}
-  \operatorname{and}(x,y)=
-  \begin{cases}
-    1  &\case{\text{if $x=y=1$}} \\
-    0  &\case{\text{otherwise}}
-  \end{cases}
-  \qquad
-  \operatorname{or}(x,y)=
-  \begin{cases}
-    0  &\case{\text{if $x=y=0$}} \\
-    1  &\case{\text{otherwise}}
-  \end{cases}
-\end{equation*}
-
 \item
 Bounded universal quantification: suppose that~$m\in\N$ and 
 that $p(\vec{x},i)$ is a predicate. 
@@ -1485,23 +1535,15 @@ $\exists_{i\leq m}\,p(\vec{x},i)$, has value~$1$ if
 $p(\vec{x},0)=0, \ldots, p(\vec{x},m)=0$ is not true,
 and has value~$0$ otherwise.
 
-\item Bounded minimization:
-let $m\in\N$ and let $p(\vec{x},i)$ be a predicate.
-Then the minimization operator $M(\vec{x},i)$, 
-typically written $\mu^{m}i[p(\vec{x},i)]$,
-returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
-or else returns~$m$.
+\item Divides predicate: where $x,y\in\N$ we have
+$\operatorname{divides}(x,y)$ if there is some~$k\in\N$ with $y=x\cdot k$.
+
+\item Primality predicate:
+$\operatorname{prime}(y)$ if
+$y$ has no nontrivial divisor~$x$.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item
-We have $\operatorname{not}(x)=1-x=\operatorname{propersub}(1,x)$.
-For the two-input ones,
-$\operatorname{and}(x,y)=x\cdot y=\product(x,y)$
-and
-$\operatorname{or}(x,y)=\operatorname{sign}(x+y)$
-(an alternative is $\operatorname{or}(x,y)=1-((1-x)\cdot (1-y))$).
-
 \item This is the idea.
 \begin{equation*}
   U(\vec{x},m)=
@@ -1525,30 +1567,16 @@ function is below.
   \end{cases}
 \end{equation*}
 
-\item We have already shown that the functions used here primitive recursive.
+\item This follows straight from the definition on noting that one suitable 
+bound on the quotient~$k$ is the dividend~$y$, that is,
+$\operatorname{divides}(x,y)=
+\exists k\leq y[y=x\cdot k]$.
 
-Consider the bounded product function.
-\begin{equation*}
-  P_p(\vec{x},m)=\prod_{0\leq i<m} p(\vec{x},i)
-\end{equation*}
-Note that (i)~if $P_p(\vec{x},m)=1$ then $P_p(\vec{x},i)=1$ for all $i<m$,
-and (ii)~if $P_p(\vec{x},m)=0$ then $P_p(\vec{x},i)=0$ for all~$i\geq m$.
-
-Next consider the bounded sum function.
-\begin{equation*}
-  S_{P_p}(\vec{x},m)=\sum_{0\leq i<m} P_p(\vec{x},m)  
-\end{equation*}
-Because of (i) and~(ii), $S_{P_p}(\vec{x},m)$ is the least number~$i$ such that
-$p(\vec{x},i)=0$, as desired.
-
-Now just define $M(\vec{x},m)$ by cases.
-\begin{equation*}
-  M(\vec{x},m)=
-  \begin{cases}
-    m     &\case{\text{if $S_{P_p}(\vec{x},m)=0$}} \\
-    S_{P_p}(\vec{x},m)  &\case{\text{otherwise}}
-  \end{cases}
-\end{equation*}
+\item As in the prior item, we need only find a suitable bound.
+Here, $\operatorname{prime}(y)=1$ if and only if
+both $1<y$ and
+there is no $x< y$ with $x>1$ and $\operatorname{divides}(x,y)$,
+All of those components are primitive recursive.
 \end{exparts}
 \end{answer}
 \end{exercise}

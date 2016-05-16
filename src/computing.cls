@@ -1297,6 +1297,9 @@ of the two.}
   \end{enumerate*}
 }
 
+% For an exercise hint
+\newcommand{\hint}{\textit{Hint.}}
+
 
 % Grammars
 \usepackage{syntax}

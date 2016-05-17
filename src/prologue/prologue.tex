@@ -1069,7 +1069,7 @@ as well as these two.
   \quad
   \hyperoperation_4(x,4)=x^{x^{x^x}}
 \end{equation*}
-This is called a power tower.
+This is a power tower.
 To evaluate these expressions, 
 recall that parentheses are significant in exponentiation, so for instance
 these two are unequal.
@@ -1150,41 +1150,81 @@ of \cref{def:PrimitiveRecursive}.
 
 
 \subsection{\protect\(\ \mathbf{\mu} \protect\) recursion}
-Using the schema of primitive recursion is a productive step towards  
-defining the functions that are mechanically computable because it is
-natural and because many 
+The schema of primitive recursion is a productive step towards  
+a definition of all functions that are mechanically computable because it is
+natural, and because many 
 familiar functions are primitive recursive.
-But the prior subsection shows that the class is not wide enough
+But the prior subsection shows that this class is not wide enough
 to contain all of the mechanically computable functions.
-So we wiill define a broader class. 
+So we will define a broader class. 
 
-The proof that hyperoperation is not primitive recursive shows that 
-all primitive recursive functions fall into a level.
-To expand expand to a class larger than that of primitive recursive functions 
-we look for a way that cuts
-across levels: if what we want isn't on level~$i$ then
-move to level~$i+1$.
+For a hint of the right direction, 
+we will mention two results 
+(giving their proofs would take us too far afield).
+% The first is part of  
+% \cref{sec:ComputableFunctionNotPrimitiveRecursive}:
+% primitive recursives function falls into levels determined by 
+% how many combinations of composition and 
+% primitive recursion are in its derivation.
+% The hyperoperation is not primitive recursive because it cuts across levels.
+% So we want a way to make functions that, 
+% if what we want isn't on level~$i$, then it can move to level~$i+1$.
+
+The first is \Cref{exer:PrimRecBoundedOps}.
+It describes that primitive recursion suffices to do bounded operations. 
+For instance, it describes bounded minimization $\mu^{m}i[p(\vec{x},i)]$:
+where $m\in\N$ and where $p(\vec{x},i)$ is a predicate, a function
+that returns only values of $0$ or~$1$, then
+the minimization operator
+returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
+or else returns~$m$.
+
+The second hint fits with the first.
+Contrast these two program constructs,
+expressed here in a C-like language.
+\begin{center}
+  \begin{minipage}[t]{0.4\linewidth}
+    \begin{lstlisting}
+for(i=1,i<10;i++){
+  ...
+}      
+    \end{lstlisting}
+  \end{minipage}
+  \quad
+  \begin{minipage}[t]{0.4\linewidth}
+    \begin{lstlisting}
+while(flag==True){
+  ...
+}      
+    \end{lstlisting}
+  \end{minipage}
+\end{center}
+On the left the iteration is a bounded, so we know from the start
+that we will iterate ten times (disallowing 
+changing \codeinline{i} inside the loop).
+On the right the iteration is unbounded.
+\citetext{We can show}{\protect\autocite{MeyerRitchie}} 
+that a programming language having only
+bounded loops computes the primitive recursive functions. 
+Adding unbounded loops allows the language to compute anything that 
+is computable by a Turing machine.  
+
 Consequently, to the combining operations of composition and
-primitive recusion we add unbounded search.
-% As witnessed by the result that
-% a function is primitive recursive if and only if it can be computed 
-% using for loops alone, we think to add the ability to 
-% do \codeinline!while! loops\Dash unbounded searches.  
+primitive recursion we add unbounded search.
 
 \begin{definition} \label{def:MuRecursion}
-Where $\map{g}{\N^2}{\N}$, we say 
-$\map{f}{\N}{\N}$ is 
-defined by \definend{unbounded minimization} from $g$
-if $f(x)=y$ where~$y$ is the least number such that $g(x,y)$  equals~$0$
-(and is defined).
-We write $\mu$ for `the least', giving this notation.
-\begin{equation*}
-  f(x)=\mu y\,\big[ g(x,y)=0 \big] % =(\mu g)(x)
-\end{equation*}
+Suppose that $\map{g}{\N^2}{\N}$.
+We say $\map{f}{\N}{\N}$ is 
+defined from $g$ by \definend{unbounded minimization}, 
+written $f(x)=\mu y\,\big[ g(x,y)=0 \big]$,
+if $f(x)=y$ where~$y$ is the least number such that $g(x,y)$ equals~$0$.
+% (and is defined).
 \end{definition}
 
-Intuitively, we've added the capacity to do unbounded search: to 
-look at $g(x,0)$, then $g(x,1)$, etc., until we get the output of~$0$.
+Intuitively, we've added the capacity to 
+look at $g(x,0)$, then at $g(x,1)$, etc., until one of them
+gives the output of~$0$.
+This is like the \codeinline{while(flag==True)} construct.
 
 \begin{example}
 Let $g(x,y)=\ceiling{(x+1)/(y+1)-1}$, and let $f(x)=\mu\,y[g(x,y)=0]$.
@@ -1205,8 +1245,7 @@ For instance, the first few values of $g(5,y)$ show that $f(5)=5$.
 \end{equation*}
 \end{example}
 
-In the definition, the parenthetical comment  ``and is defined'' is there
-because using the minimization operator  we can get functions whose output 
+Using the minimization operator  we can get functions whose output 
 value is undefined for some inputs.
 
 \begin{example}
@@ -1372,30 +1411,6 @@ finite and fixed number of cases, as with these.
           0    &\text{otherwise}
         \end{cases}
 \end{equation*}
-
-\item Bounded sum function:
-the partial sums of a series whose terms $g(i)$ are given by 
-a primitive recursive function,
-$S_g(y)=\sum_{0\leq i<y} g(i)=g(0)+g(1)+\cdots+g(y-1)$
-(the sum of zero-many terms is $S_g(0)=0$).
-Contrast this with the prior item; here the number of summands
-is finite but not fixed.
-
-\item Bounded product function:
-the partial products of a series whose terms $g(i)$ are given by 
-a primitive recursive function,
-$P_g(y)=\prod_{0\leq i<y} g(i)=g(0)\cdot g(1)\cdots g(y-1)$
-(the product of zero-many terms is $P_g(0)=1$).
-
-
-\item Bounded minimization:
-let $m\in\N$ and let $p(\vec{x},i)$ be a predicate.
-Then the minimization operator $M(\vec{x},i)$, 
-typically written $\mu^{m}i[p(\vec{x},i)]$,
-returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
-or else returns~$m$.
-\hint{} Consider the bounded sum of the bounded products of the
-predicates.
 \end{exparts}  
 \begin{answer}
 \begin{exparts}
@@ -1465,51 +1480,40 @@ The second is similar
 $n(x,y)=7\cdot\operatorname{equal}(x,1)\cdot\operatorname{equal}(y,2)
         +9\cdot\operatorname{equal}(x,5)\cdot\operatorname{equal}(y,5)$.
 
-\item Since $g$ is given as primitive recursive,
-this function is also primitive recursive 
-$h(a,b)=\plus(a,g(b))$ because it uses composition.
-With that, this primitive recursion will do the bounded sum.
-\begin{equation*}
-  f(y)=
-    \begin{cases}
-      0          &\case{\text{if $y=0$}}  \\
-      h(f(z),z)  &\case{\text{if $y=\succ(z)$}}
-    \end{cases}
-\end{equation*}
-
-\item 
-Consider the bounded product function.
-\begin{equation*}
-  P_p(\vec{x},m)=\prod_{0\leq i<m} p(\vec{x},i)
-\end{equation*}
-Note that (i)~if $P_p(\vec{x},m)=1$ then $P_p(\vec{x},i)=1$ for all $i<m$,
-and (ii)~if $P_p(\vec{x},m)=0$ then $P_p(\vec{x},i)=0$ for all~$i\geq m$.
-
-Next consider the bounded sum function.
-\begin{equation*}
-  S_{P_p}(\vec{x},m)=\sum_{0\leq i<m} P_p(\vec{x},m)  
-\end{equation*}
-Because of (i) and~(ii), $S_{P_p}(\vec{x},m)$ is the least number~$i$ such that
-$p(\vec{x},i)=0$, as desired.
-
-Now just define $M(\vec{x},m)$ by cases.
-\begin{equation*}
-  M(\vec{x},m)=
-  \begin{cases}
-    m     &\case{\text{if $S_{P_p}(\vec{x},m)=0$}} \\
-    S_{P_p}(\vec{x},m)  &\case{\text{otherwise}}
-  \end{cases}
-\end{equation*}
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 
-\begin{exercise}
+\begin{exercise}  \label{exer:PrimRecBoundedOps}
 Show that each of these is primitive recursive.
 You may use any function shown to be primitive recursive in
 the section text or in the prior exercise.
 \begin{exparts}
+
+\item Bounded sum function:
+the partial sums of a series whose terms $g(i)$ are given by 
+a primitive recursive function,
+$S_g(y)=\sum_{0\leq i<y} g(i)=g(0)+g(1)+\cdots+g(y-1)$
+(the sum of zero-many terms is $S_g(0)=0$).
+Contrast this with the prior item; here the number of summands
+is finite but not fixed.
+
+\item Bounded product function:
+the partial products of a series whose terms $g(i)$ are given by 
+a primitive recursive function,
+$P_g(y)=\prod_{0\leq i<y} g(i)=g(0)\cdot g(1)\cdots g(y-1)$
+(the product of zero-many terms is $P_g(0)=1$).
+
+\item Bounded minimization:
+let $m\in\N$ and let $p(\vec{x},i)$ be a predicate.
+Then the minimization operator $M(\vec{x},i)$, 
+typically written $\mu^{m}i[p(\vec{x},i)]$,
+returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
+or else returns~$m$.
+\hint{} Consider the bounded sum of the bounded products of the
+predicates.
+
 \item
 Bounded universal quantification: suppose that~$m\in\N$ and 
 that $p(\vec{x},i)$ is a predicate. 
@@ -1544,6 +1548,45 @@ $y$ has no nontrivial divisor~$x$.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
+\item Since $g$ is given as primitive recursive,
+this function is also primitive recursive 
+$h(a,b)=\plus(a,g(b))$ because it uses composition.
+With that, this primitive recursion will do the bounded sum.
+\begin{equation*}
+  f(y)=
+    \begin{cases}
+      0          &\case{\text{if $y=0$}}  \\
+      h(f(z),z)  &\case{\text{if $y=\succ(z)$}}
+    \end{cases}
+\end{equation*}
+
+\item 
+This is similar to bounded sum.
+
+\item 
+Consider the bounded product function.
+\begin{equation*}
+  P_p(\vec{x},m)=\prod_{0\leq i<m} p(\vec{x},i)
+\end{equation*}
+Note that (i)~if $P_p(\vec{x},m)=1$ then $P_p(\vec{x},i)=1$ for all $i<m$,
+and (ii)~if $P_p(\vec{x},m)=0$ then $P_p(\vec{x},i)=0$ for all~$i\geq m$.
+
+Next consider the bounded sum function.
+\begin{equation*}
+  S_{P_p}(\vec{x},m)=\sum_{0\leq i<m} P_p(\vec{x},m)  
+\end{equation*}
+Because of (i) and~(ii), $S_{P_p}(\vec{x},m)$ is the least number~$i$ such that
+$p(\vec{x},i)=0$, as desired.
+
+Now just define $M(\vec{x},m)$ by cases.
+\begin{equation*}
+  M(\vec{x},m)=
+  \begin{cases}
+    m     &\case{\text{if $S_{P_p}(\vec{x},m)=0$}} \\
+    S_{P_p}(\vec{x},m)  &\case{\text{otherwise}}
+  \end{cases}
+\end{equation*}
+
 \item This is the idea.
 \begin{equation*}
   U(\vec{x},m)=

@@ -57,11 +57,3 @@
 (define propersub
   (prim-rec-2 i1_1
 	      (lambda (w x0 z) (pred w))))
-
-
-;; (define (propersub_reverse x y)
-;;   (prim-rec-1 i1_1
-;; 	      (lambda (z x y)
-;; 		(pred (i3_1 z x y)))))
-;; (define (propersub x y)
-;;   (propersub_reverse (i2_2 x y) (i2_1 x y)))

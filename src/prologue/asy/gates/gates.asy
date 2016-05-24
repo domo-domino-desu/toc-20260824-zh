@@ -101,9 +101,9 @@ shipout(format("gates%02d",picnum),pic,format="pdf");
 picture pic;
 int picnum = 2;
 unitsize(pic,1cm);
-draw(pic,(-1,0)--(-0.15*or_gate_size,0),circuitpen);
-draw(pic,(0.15*or_gate_size,0)--(1,0),circuitpen);
-draw(pic,notgate(not_gate_size),circuitpen); 
+draw(pic,(-1,0)--(-0.5*or_gate_size,0),circuitpen);
+draw(pic,(0.5*or_gate_size,0)--(1,0),circuitpen);
+draw(pic,notgate((0.5/0.2)*not_gate_size),circuitpen); 
 
 shipout(format("gates%02d",picnum),pic,format="pdf");
 
@@ -272,6 +272,6 @@ draw(pic,Label("$V_\text{out}$",highlightcolor),vo,E,lightcolor,
 label(pic,"\tiny\textsf{D}",(0,tran_ht+tran_rad),NW);
 label(pic,"\tiny\textsf{S}",(0,tran_ht-tran_rad),SW);
 label(pic,"\tiny\textsf{G}",(0-tran_rad,tran_ht),NW);
-label(pic,"\scriptsize\textsf{$5$ volt}",(circuit_wd,bat_ht),SE);
+label(pic,"\scriptsize\textsf{$5$ volts}",(circuit_wd,bat_ht),SE);
 
 shipout(format("gates%02d",picnum),pic,format="pdf");

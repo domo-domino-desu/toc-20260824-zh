@@ -57,3 +57,20 @@
 (define propersub
   (prim-rec-2 i1_1
 	      (lambda (w x0 z) (pred w))))
+
+;; ==================== LOOP programs ======
+
+;; A register is a pair (name contents)
+;; These are getters and setters for the list of registers
+(define REGLIST '())
+
+(define (get-reg r) 
+  (assq r REGLIST)) 
+(define (get-reg-value r) 
+  (cdr (get-reg r))) 
+(define (set-reg-value! r v) 
+  (set-cdr! (get-reg r) v))
+(define (inc-reg r)
+  (let ((reg (get-reg r)))
+    (set-cdr! reg (+ 1 (cdr reg))))) 
+

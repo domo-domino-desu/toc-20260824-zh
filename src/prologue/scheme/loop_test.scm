@@ -81,6 +81,62 @@
 (test-end "propersub")
 
 
+;;;; ==================== LOOP programs ======
+(define REGLIST '())
+(define (initialize-REGLIST)
+  (set! REGLIST (list (cons #\A 0) (cons #\B 1))))
+
+
+;; ======= getters and setters
+(test-begin "register getters and setters")
+(initialize-REGLIST)
+(test-assert (equal? (cons #\A 0) 
+		     (get-reg #\A)))
+(test-assert (equal? (cons #\B 1) 
+		     (get-reg #\B)))
+(test-assert (= 0 (get-reg-value #\A)))
+(test-assert (= 1 (get-reg-value #\B)))
+(test-assert (= 4 (begin 
+		    (set-reg-value! #\A 4)
+		    (get-reg-value #\A))))
+(test-assert "update existing register" 
+	     (= 4 (begin 
+		    (set-reg-value! #\A 4)
+		    (get-reg-value #\A))))
+(test-assert "create new register"
+	     (= 4 (begin 
+		    (set-reg-value! #\C 4)
+		    (get-reg-value #\C))))
+(test-end "register getters and setters")
+
+
+
+
+;; ======= simulate the instructions, except LOOP
+(test-begin "register manipulations")
+(initialize-REGLIST)
+(test-assert "increment register" 
+	     (= 4 (begin 
+		    (set-reg-value! #\A 3)
+		    (increment-reg! #\A)
+		    (get-reg-value #\A))))
+(test-assert "copy register" 
+	     (= 5 (begin 
+		    (set-reg-value! #\A 5)
+		    (set-reg-value! #\B 3)
+		    (copy-reg! #\A #\B)
+		    (get-reg-value #\B))))
+(test-end "register manipulations")
+
+
+;; ======= parse functions
+(test-begin "parse functions")
+(test-assert (equal? '("a b c" "d e f") 
+		     ((split-program-into-lines (string-append "a b c" "#\newline" "d e f")))))
+
+(test-end "parse functions")
+
+
 
 
 

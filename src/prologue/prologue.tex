@@ -387,33 +387,18 @@ trims a \str{1} off of an end.
 \end{tapesequence}
 \end{example}
 
-\begin{definition} \label{def:TuringMachine}
-A \definend{Turing machine}~$\TM$ is a finite set of four-tuple 
-\definend{instructions} $q_pT_pT_nq_n$,
-where $q_p$ and~$q_n$ are elements of the set of \definend{states},
-where $T_p$ is an element of the \definend{tape alphabet} set
-(which must contain a symbol for blank),
-and where the \definend{tape action}~$T_j$ 
-is either of the symbols $\texttt{L}$ or~$\texttt{R}$,
-or an element of the tape alphabet (which cannot contain
-$\texttt{L}$ or~$\texttt{R}$).
-The set of instructions~$\TM$ is subject to the restriction of being 
-\definend{deterministic}: no two four-tuples can begin with 
-the same $q_pT_p$.
-\end{definition}
-
-Here is a formal description of the action of Turing machine.
-For a Turing machine $\TM$, a \definend{configuration}
-is a four-tuple
+Here is a complete description of the action of Turing machine.
+A \definend{configuration} a Turing machine $\TM$
+is a snapshot of a computation at a particular moment,
+a four-tuple
 $\sequence{q,s,\tau_L,\tau_R}$
 where $q$ is a state, 
 where $s$ is a character from the tape alphabet,
 and where $\tau_L$ and~$\tau_R$ are strings of elements from the tape alphabet,
 or possibly the empty string~$\emptystring$.
-Using \cref{ex:MAdd} for illustration, each line in the
-trace table pictures a configuration.
-Thus, 
-on line~$2$ 
+For instance, each line in the
+trace table of \cref{ex:MAdd} shows a configuration. 
+On line~$2$ 
 the configuration has 
 the state $q=q_0$, 
 the character under the head $s$ is the blank,
@@ -421,7 +406,7 @@ the tape to the left of the head is $\tau_L=\str{11}$,
 and the tape to the right of the head is $\tau_R=\str{111}$.
 
 What remains is to describe a \definend{step},
-the movement of $\TM$ from a configuration to its next configuration.
+the transition of $\TM$ from a configuration to a next configuration.
 Suppose that after step~$i$ the machine $\TM$ is in configuration
 $\mathcal{C}_i=\sequence{q,s,\tau_L,\tau_R}$.
 We look for an instruction $q_pT_pT_nq_n\in\TM$ with
@@ -429,7 +414,9 @@ $q_p=q$ and~$T_p=s$.
 If there is no such instruction then we say that $\TM$ \definend{halts} at 
 step~$i+1$.
 
-Otherwise, because of nondeterminism, there is one such instruction.
+Otherwise there will be one such instruction
+(the definition of a Turing machine below 
+imposes this condition of uniqueness, called `determinism').
 What happens next depends on~$T_n$.
 (1)~If $T_n$ is a symbol in the tape alphabet set then we write that
 symbol to the tape, so that the 
@@ -444,7 +431,7 @@ where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
 (if $\tau_L=\emptystring$ then $\hat{\tau}_L=\emptystring$ also),
 and where $\hat{\tau}_R$ is the concatenation of $s$ and $\tau_R$.
 (3)~If $T_N$ is the symbol~\str{R} then we move the tape head to the right.
-This is so similar to~(2) that we omit the details.
+This is just like~(2) so we omit the details.
 
 If two configuration are related in this way then we write
 $\mathcal{C}_i \yields \mathcal{C}_{i+1}$ 
@@ -456,23 +443,48 @@ $
 $
 where $\mathcal{C}_o$ is the machine's initial configuration.
 If the computation halts then the sequence has a final 
-configuration~$\mathcal{C}_n$.
-We abbreviate such a sequence of steps with~$\kleenestar{\yields}$; for 
-instance we could abbreviate a halting comptuation with
-$\mathcal{C}_0\kleenestar{\yields}\mathcal{C}_n$ 
-(read that aloud as ``yields star'' or simply as ``yields''). 
+configuration~$\mathcal{C}_h$.
+We abbreviate such a sequence of steps 
+with~$\kleenestar{\yields}$ 
+(read that aloud as ``yields star'' or simply as ``yields'').
+Thus we could abbreviate a halting comptuation with
+$\mathcal{C}_0\kleenestar{\yields}\mathcal{C}_h$. 
 
-That description highlights that
+That description brings to the forefront that
 Turing machine computation is about the transitions.
-Each instruction~$q_pT_pT_nq_n$
-tells us how to transition from the current state and tape symbol $q_pT_p$,
-to the next tape action and state~$T_nq_n$.
-Determinism says that for each listed $q_pT_p$ there is 
-exactly one associated~$T_nq_n$ so this
+Exactly what an instruction~$q_pT_pT_nq_n$ does
+is to specify how the machine moves from any current configuration 
+with the present state and tape symbol $q_pT_p$ to the
+next configuration.
+
+\begin{definition} \label{def:TuringMachine}
+A \definend{Turing machine}~$\TM$ is a finite set of four-tuple 
+\definend{instructions} $q_pT_pT_nq_n$.
+Here, $q_p$ and~$q_n$ are \definend{states}, elements of some set~$Q$. 
+The word $T_p$ is an element of the \definend{tape alphabet} set~$\Sigma$,
+which must contain a symbol for `blank'.
+The \definend{tape action}~$T_n$ 
+is either one of the symbols $\str{L}$ or~$\str{R}$,
+or an element of the tape alphabet.
+
+The set of instructions~$\TM$ is subject to the restriction of being 
+\definend{deterministic}: no two four-tuples can begin with 
+the same $q_pT_p$.
+That is, for each $q_pT_p$ there is 
+exactly one associated~$T_nq_n$, so the next-configuation
 action is a function, the \definend{transition function} 
-$\map{\delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times \hat{Q}}$
-(the set~$\hat{Q}$ differs from $Q$ in that it may have a few extra states used
-as halting states). 
+$\map{\delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}$. 
+\end{definition}
+
+To avoid confusion, we take the convention 
+that any Turing machine that we shall see
+has some states set aside as halting states, so that
+with $q_p\in Q$ we shall have
+$q_n\in\hat{Q}$ for some set $\hat{Q}\supset Q$.
+Similarly, 
+we shall take the convention that the set of states and the tape alphabet 
+and tape action sets are disjoint,
+$\emptyset=\hat{Q}\cap (\Sigma\cup\set{\str{L},\str{R}})$.
 
 \begin{example}
 Recall the Turing machine of \cref{ex:MAdd}. 
@@ -600,6 +612,12 @@ a contiguous sequence of \str{1}'s, and with the head under the leftmost
 \end{exercise}
 
 \begin{exercise}
+Produce a Turing machine takes as input a number written in
+unary, so that $n$ is represented as $n$-many $1$'s, 
+and gives as output the number~$3$ written in unary. 
+\end{exercise}
+
+\begin{exercise}
 Produce a Turing machine that performs the successor operation, that
 takes as input a number written in
 unary, so that $n$ is represented as $n$-many $1$'s, 
@@ -689,23 +707,612 @@ because its decimal expansion never repeats and never terminates.)
 
 
 
+
+\section{Church's Thesis}
+
+% \begin{wrapfigure}{R}{0.4\textwidth}
+% \centering
+% \includegraphics[width=0.35\textwidth]{prologue/plimpton322.jpg} % http://en.wikipedia.org/wiki/Plimpton_322#/media/File:Plimpton_322.jpg
+% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing pythagorean triples}}
+% \end{wrapfigure}
+\subsection{History}
+Algorithms have always played a central part in mathematics.
+The simplest example is a formula such as 
+the one for the height of a ball dropped from the Leaning Tower of Pisa, 
+$h(t)=-4.9t^2+56$.
+This is a compact instruction list:
+compute the output by starting with
+an input time, squaring it, multiplying
+by~$-4.9$, and adding~$56$.
+The result is the distance in meters 
+of that object above the ground at the given time.
+
+Another example is
+Euclid's Algorithm for finding the
+greatest common divisor of two numbers.
+Because it is iterative,
+it meshes well with a programmer's sense of what 
+constitutes an algorithm.
+
+\margingraphic{0.35\textwidth}{prologue/steppedreckoner.jpg}{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Stepped_Reckoner}{Replica of Leibnitz's computer, the Stepped Reckoner}}
+% \begin{wrapfigure}{L}{0.4\textwidth}
+% \centering
+% \includegraphics[width=0.35\textwidth]{prologue/steppedreckoner.jpg} % http://www.computerhistory.org/revolution/calculators/1/49/198
+% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Stepped_Reckoner}{Replica of Leibnitz's computer, the Stepped Reckoner}}
+% \end{wrapfigure}
+In the 1670's 
+Gottfried Wilhelm von Leibniz, the co-creator of Calculus, 
+constructed the first machine
+that could do addition, subtraction, multiplication, division, 
+and square roots as well.
+This led him to speculate on the possibility of
+a machine that could manipulate
+symbols, not just numbers, and could
+determine the truth of scientific statements. 
+% (stated in some appropriate language).
+To settle any dispute, Leibnitz wrote, 
+two scholars could just say,
+``Calculemus!'' (Latin for ``Let us calculate!''). 
+This is an early version of the 
+\textit{Entscheidungsproblem}.
+
+% \margingraphic[l]{0.23\textwidth}{prologue/godel.jpg}{\label{fig:church}\href{http://en.wikipedia.org/wiki/Kurt_Gödel}{Kurt G\"odel 1906--1978}}
+% https://en.wikipedia.org/wiki/File:Kurt_g%C3%B6del.jpg
+The need for a fuller understanding of which
+things are mechanically computable was made pressing by
+the appearance in 1927 of the Incompleteness Theorem by Kurt G\"odel.
+This result says that for any (sufficiently powerful) axiom system there
+are statements that, while they are true, are not provable from those axioms. 
+The idea behind G\"odel's proof is that it gives an algorithm, an intuitively
+mechanically computable procedure, that takes as input
+the axioms 
+and produces as output the statement that is undecidable.
+So understanding what can be done with the techniques in G\"odel's proof 
+involves understanding what is intuitively mechanically computable.
+
+
+\margingraphic{0.23\textwidth}{prologue/church.jpg}{\label{fig:church}\href{http://en.wikipedia.org/wiki/Alonzo_Church}{Alonzo Church 1903--1995}}
+A number of mathematicians proposed formalizations 
+of `intuitively mechanically computable'.
+One was 
+Alonzo Church,\footnote{After producing his machine model, 
+  Turing became a PhD student of Church at Princeton.}
+whose system is called the \definend{$\lambda$-calculus}. 
+Church and his students showed that this system can compute
+large numbers of functions that
+are intuitively computable, and also were unable to 
+produce any intuitively computable function that 
+the $\lambda$-calculus  could not do.  
+\citetext{Church privately suggested}{\autocite{Soare99}} 
+to G\"odel, the most prominent expert in the area,
+that the set of functions that are intuitively computable 
+could be rigorously defined as the set of 
+$\lambda$-computable functions.
+But G\"odel was unconvinced.
+
+That changed when G\"odel read Turing's masterful analysis
+outlined in the prior section.
+He subsequently wrote,
+``That this really is the correct definition of mechanical computability  
+was  \citetext{established  beyond  any  doubt}{\autocite{Godel95}}  
+by  Turing.''
+
+\begin{churchsthesis}
+The set of things that are intuitively 
+computable by a discrete deterministic mechanism 
+is the same as the set of things that are computable by
+a Turing machine.\footnotemark
+\end{churchsthesis}
+\footnotetext{Many authors
+call this the Church-Turing Thesis.  
+In this book, because Turing has his 
+machine we give Church the thesis.}
+
+\citetext{Church's Thesis is central to the 
+Theory of Computation}{Some authors have claimed that 
+neither Church nor Turing stated anything as strong as
+is given here but instead that they proposed that the set of things 
+that can be done by a Turing machine is the same as the set of things
+that are intuitively computable by a
+human computer; see for instance \autocite{CopelandProudfoot99}. 
+But the thesis as stated here, that what can be done by a Turing machine
+is what can be done by any physical mechanism 
+that is discrete and deterministic, is certainly the thesis as it is 
+taken in the field today.
+And besides,  
+Church and Turing did not in fact distinguish between the two cases; 
+\autocite{HodgesChurchsThesis} points to
+Church's review of Turings paper in the \textit{Journal of Symbolic Logic}:
+``The author [i.e. Turing] proposes as a criterion that an infinite sequence 
+of digits $0$ and $1$ be `computable' that it shall be possible to devise 
+a computing machine, occupying a finite space and with working parts of 
+finite size, which will write down the sequence to any desired number of 
+terms if allowed to run for a sufficiently long time. 
+As a matter of convenience, certain further restrictions are imposed on the 
+character of the machine, but these are of such a nature as obviously to 
+cause no loss of generality\Dash in particular, a human calculator, 
+provided with pencil and paper and explicit instructions, 
+can be regarded as a kind of Turing machine.''
+This has Church referring to the human calculator not as the 
+prototype but instead as a 
+special case  of the class of defined machines.}.
+It says that the technical definitions and theorems in this book
+have a larger importance:
+they are about
+the devices that are all around us, on our desks, and in our pockets.
+So we will pause briefly to expand on some points,
+including ones that experience has shown can lead to  
+misunderstandings.
+
+
+\subsection{Evidence}
+We cannot prove Church's Thesis.
+As \citetext{Turing noted}{\autocite{Turing}}, 
+``All arguments which can be given are bound to be, 
+fundamentally, appeals to intuition, and for this reason rather 
+unsatisfactory mathematically.''
+% The real question at issue is, `What are the possible processes which can 
+% be carried out in computing \ldots{}\,?' ''
+Nonetheless, Church's Thesis is very widely accepted. 
+We will outline the arguments in its favor.
+
+The first argument is coverage:~everything that people have though of as 
+intuitively computable has, on close analysis, proved to be
+computable by a Turing machine.
+This includes not just the functions investigated by 
+researchers in the 1930's but also everything computed by
+all of the programs in all
+of the computer languages written since, for they can all be 
+compiled to run on a Turing machine.
+
+Despite the weight of evidence, 
+this argument would collapse with one 
+counterexample, one operation that can be done in finite time 
+on a physically-realizable discrete and deterministic 
+device but that cannot be done on a 
+Turing machine.
+So this argument is strong but at least conceivably not decisive.
+
+The second argument is convergence:~all of the models of computation that 
+were proposed, by all of the researchers then and since,
+yield the same set of computable functions.
+For instance, Turing showed that the set of functions computable with
+his machine model is equal to the set of functions computable
+with Church's $\lambda$-calculus.
+
+Now, everyone could be wrong. 
+There could be some
+\citetext{systematic error}{\autocite{DershowitzGurevich} p 304.} 
+in the thinking around this point.
+Before the advent of non-Euclidean geometry, researchers
+seem not to have imagined the possibility that the Parallel Postulate
+is neither true nor false, and perhaps some similar 
+cultural blindness is happening here.
+Nonetheless, when you have a question and you ask a group of very smart people
+who go off and work independently,
+and when they come back they all give you the
+same answer,
+then you think it is likely the right answer.
+At the very least, convergence says that there is something natural 
+and compelling about this set of functions.
+
+An argument not available to G\"odel and others in the 1930's, 
+since it depends on work done since, 
+is consistency:~the details of the definition of a 
+Turing machine are not essential to what can be computed.
+For any way in which the Turing machine definition given above seems to 
+take an arbitrary choice, 
+altering that way will still lead to
+the same set of computable functions.
+% (of course, it is this set that we want).
+
+For example,   
+the number of tapes does not matter:
+a machine with only one tape can compute the same functions as a machine 
+with two or more.
+(One way to simulate a two-tape machine~$\TM_2$ on
+a one-tape machine~$\TM_1$ is
+by having~$\TM_1$ use its
+even-numbered tape positions for~$\TM_2$'s first tape and
+using its odd tape positions for~$\TM_2$'s second tape.)
+Thus, the fact that \cref{def:TuringMachine}'s machines have only one tape
+is not an essential point.
+
+Similarly, machines whose tape is unbounded in one direction only can 
+compute all the functions that can be computed by
+machines with a tape unbounded in both directions.
+Machines with more than one read/write head compute the same
+functions as those with only one head.
+
+Although restricting to machines having only one state does not suffice
+to compute all intuitively computable functions,
+two-state machines are equipowerful with 
+the unboundedly-many-states machines given in \cref{def:TuringMachine}.
+
+Two symbols, such as blank and stroke, are enough
+to compute any Turing-computable function.
+Likewise, 
+restricting to write-only machines, ones that cannot change marks once they 
+have been put on the tape, suffices to compute the same set of functions.
+
+There is one more condition that does not change the set of computable 
+functions, determinism.
+Recall that 
+the definition of Turing machine given above does not allow, say, 
+$\tminstruction{5}{1}{R}{6}$
+and 
+$\tminstruction{5}{1}{L}{4}$
+in the same machine because they both begin with $q_5\texttt{1}$.
+If we drop this restriction then the class of machines that we get are called
+nondeterministic.
+We will have much more to say on this later but 
+the collection of nondeterministic Turing machines computes the same 
+set of functions as does the collection of deterministic machines.
+
+The fact that the details of the Turing machine definition are not essential 
+is persuasive in that any proper definition of what is 
+computable should posses this property.
+% If two-tape machines computed more functions than one-tape machines, 
+% and three-tape machines more than those, then identifying 
+% the set of computable functions with those computable by single-tape machines
+% would be foolish. 
+But as with the prior argument, while
+this means that the class of Turing machine-computable functions 
+is natural and wide-ranging, 
+it still
+seems to leave open a small crack of a possibility that the class does not 
+exhaust the list of functions that are mechanically computable.
+
+The most persuasive single argument for Church's Thesis\Dash
+what caused G\"odel to change his mind and what convinces scholars
+still today\Dash
+is clarity:~Turing's analysis itself is compelling.
+G\"odel said this in the quote given earlier and 
+Church felt the same way, writing that Turing machines have, 
+``the advantage of making the
+identification with effectiveness \ldots{} 
+%in the ordinary (not explicitly defined) sense 
+\citetext{evident immediately}{\autocite{Church36}}.''
+% That is, when you read Turing's analysis you say to yourself, 
+% ``Yes, this is exactly what can be done operating without limits
+% by a discrete, deterministic, Newtonian mechanism.''
+
+
+\subsection{What it does not say}
+% Turing's analysis, and that of Church and others, 
+% aims to understand 
+% what can and cannot be done in the course of a particular type of 
+% computation,
+% a discrete and deterministic manipulation of symbols that is 
+% without creative leaps.   
+%
+Church's Thesis does not say that in all circumstances the best way to
+understand a discrete and deterministic 
+computation is via the Turing machine model.
+% While a security researcher studying 
+% how operating systems could be more resilient to attacks 
+% could conceivably model them as bit streams coming into a Turing machine,
+% because including interactivity in the model would require  
+% varying the bit streams, which is ungainly, they may 
+% make more progress with some other model.
+For example, a numerical analyst studying a floating point algorithm 
+should use a computer model that has registers. 
+Church's Thesis says  
+that the algorithm
+could in principle be done by a Turing machine, but for this
+use registers are most felicitous thing.\footnote{Brain scientists, 
+too, find Turing machines to be not the best model.}
+
+Church's Thesis also does not assert that a Turing machine is 
+every possible computing device 
+in the sense that if, say, you are
+studying an automobile antilock braking system then the Turing machine
+model accounts for the logical and arithmetic computations but not
+the entire system, with all its sensor inputs and actuator outputs. 
+\citetext{Scott Aaronson has made this point}{From his blog \textit{Shtetl-Optimized},  \autocite{Aaronson12}.}, ``Suppose I \ldots{}
+[argued] that \ldots{} [Church's] Thesis fails to capture all 
+of computation, because Turing machines can't toast bread. 
+\ldots{}
+% Therefore, you need my revolutionary new model, the 
+% Toaster-Enhanced Turing Machine (TETM), which allows bread as a possible input and includes toasting it as a primitive operation.
+% You might say: sure, I have a `point', but it's a totally uninteresting one. 
+No one ever claimed that a Turing machine could handle every possible 
+interaction with the external world, without first hooking it up to 
+suitable peripherals. 
+If you want a Turing machine to toast bread, you need to connect it 
+to a toaster; then the TM can easily handle the toaster's internal logic.''
+% (unless this particular toaster requires solving the halting problem or something like that to determine how brown the bread should be!). 
+% In exactly the same way, if you want a TM to handle interactive 
+% communication, 
+% then you need to hook it up to suitable communication devices.''
+
+In the same vein, we can get physical devices that
+\citetext{supply a stream of random bits}{Some CPU's come with that 
+capability built in; see for instance 
+\protect\url{https://en.wikipedia.org/wiki/RdRand}.}.
+These are not pseudorandom bits that are computed by a method that 
+is deterministic but under which they pass statistical tests.
+Instead these devices provide a stream of bits that well-established 
+physics tells us are truly random.
+We will later discuss this case at length but its relevance here is
+that Church's Thesis 
+only asserts that Turing machines model the discrete and deterministic
+computations that we can do after we are given input bits from such a device.
+
+
+\subsection{An empirical question}
+Church's Thesis says that Turing machines can do any  
+computation that is discrete and deterministic.
+% 
+That raises a big question: even taking Church's Thesis to be right, 
+can we nontheless do more by
+going beyond discrete and deterministic?
+For instance,
+would analog methods\Dash passing lasers through
+a gas, say, or some kind of quantum magic\Dash allow us to 
+compute things that no Turing 
+machine can compute?
+Or are Turing machines an ultimate in physically-possible machines; 
+did Turing, on that day, lying on that grassy river bank, 
+delimit 
+\citetext{everything that 
+experiments with reality would ever find to be possible}{There is 
+some historical reason for supposing that physics could 
+have left something out.
+The physicists 
+von Helmholtz in 1856, and Newcomb 
+in 1892, calculated that the Sun would take about $20$ million years to 
+condense from the nebula of gas and dust to its current diameter and brightness
+(they assumed that the Sun glowed from the energy provided by 
+its gravitational contraction).
+Consistently with that, in 1862
+one of the world's most reputable physicists, Kelvin, calculated 
+that the Earth was between 20 million and 400 million years old 
+(he assumed that Earth had formed as a completely molten object and found 
+how long it would take to cool to its present temperature).
+The last estimate Kelvin gave, in 1897, was, ``it was more than $20$ and 
+less than $40$ million year old, and probably much nearer $20$ than $40$.''
+He said, ``unless sources now unknown to us
+are prepared in the great storehouse of creation''
+then there was just not enough energy in the system to justify a long estimate.
+One person very troubled by this calculation was Darwin, having himself 
+calculated that a valley in Englind took $300$ million years to erode,
+and consequently that there was enough time, called ``deep time,''
+for slow but steady evolution to happen. 
+Then, in 1896. Becquerel discovered radiation.
+All of the calculations did not account for it, and the apparent discrepancy 
+was gone.
+\autocite{wiki:Kelvin}}?
+
+% \margingraphic{0.23\textwidth}{prologue/katherinejohnson.jpg}{\label{fig:johnson}\href{https://bitchmedia.org/article/african-american-women-worked-some-nasas-first-computers}{Katherine Johnson, b~1918}}
+% % NASA photo; no permission
+% (The computations done by Turing machines can be done by a person
+% so a `yes' answer means that anything 
+% that can be done, can be done by a person.
+% There is historical support for this:~before 
+% capable machines were widely available, 
+% much of what we would today think of as
+% computer work was done by people, then called ``computers.''
+% For instance, the trajectory for US astronaut 
+% John Glenn's pioneering orbit of Earth was computed by Katherine Johnson.
+% Another example is that this book's cover 
+% shows computers at work.)
+
+% That raises a big question: even taking Church's Thesis to be right, 
+% can we nontheless do more by
+% going beyond discrete and deterministic?
+% For instance,
+% would analog methods\Dash passing lasers through
+% some gas, say, or some kind of quantum magic\Dash allow us to 
+% compute things that no Turing 
+% machine can compute?
+% Or are Turing machines an ultimate in all physically-possible computations; 
+% did Turing, on that day, lying on that grassy river bank, 
+% delimit everything that 
+% experiments with reality would ever find to be possible?
+
+This big question is open\Dash we have no final answer.
+For a taste of the conversation:
+% ~in 
+% a \citetext{pail of water}{This is \protect\textit{Hinck's pail}, after Ian Hinckfuss, described in \autocite{Lycan}.} left for a time
+% there are a fantastically large number of molecules having 
+% an unbelievably large number of interactions, and those large numbers
+% essentially ensure that there is in the pail a configuration
+% of molecules that we can view as having gone a computation, say,
+% having gone through the steps
+% from our first example of a computation, \cref{ex:MPred}; 
+% can this bucket be said to compute?
+% In a perhaps more satisfactorily mathematical example,
+we can prove that there is a case where the wave equation\footnote{
+A partial differential equation that describes the 
+propagation of waves.}
+has computable initial
+conditions (for the initial real numbers~$x$ there is a program that 
+inputs~$i\in\N$ and outputs the $i$-th decimal place of~$x$), 
+but 
+\citetext{the unique solution is not computable}{See \autocite{PourEl}.}.
+So does the experimental setup modelled by this equation 
+compute something that Turing machines cannot?\footnote{A number of 
+authors have 
+speculated along lines that are analogous to this formal result that
+conscious beings can do more than Turing machines can do.}
+Stated for dramatic effect: 
+do the planets in their orbits 
+\citetext{compute a solution}{See
+\url{http://www.smbc-comics.com/?id=3054}.}
+to the Three-Body Problem?
+
+Again,
+\citetext{the question remains open}{A sample of readings: \autocite{Copeland96}, \autocite{Copeland99}, and \autocite{Copeland02} argue that computations can be done that are beyond the capabilities of Turing machines, while \autocite{Davis04}, \autocite{Davis06}, and \autocite{Gandy80} represent what is the more common view among Theory of Computing researchers.}. 
+As yet no analysis of this wider notion of computation 
+has the support that Turing's analysis has garnered in its 
+more narrow case.
+In particular, no one has yet produced a generally accepted case of a 
+physically possible mechanism that computes a function that no
+Turing machine computes.
+
+We will not pursue this question, instead only 
+observing that 
+the community of researchers in the Theory of Computation has weighed in by
+taking Church's Thesis as the basis for their work.
+In this book we stick to mechanisms that
+are discrete and deterministic and `computation' will refer to the
+kind of work that Turing analyzed.
+
+Specifically, inside of the class of models that give the set of 
+effective functions 
+we will take Turing machines as our touchstone, because
+we want to think about symbol-pushing computations, not numerical 
+analysis, and not toast.
+
+
+
+
+\subsection{How we will use Church's Thesis} 
+As described above, our main interest in the thesis is that
+it imbues our technical definitions and theorems about machine models
+with a larger importance\Dash if, for instance,
+we show that something cannot be computed by a Turing machine then 
+in the light of Church's Thesis we have shown that it cannot be computed
+by any discrete and deterministic device.
+
+However we will also leverage Church's Thesis in another way.
+Programming Turing machines is hard, and the
+the necessary details can obscure larger points. 
+So when we are proving things about computability, if we can be clear and
+rigorous without actually having to implement a Turing machine
+then we will be delighted.
+
+Church's Thesis helps with this.
+Often in later arguments we will not produce Turing machine instructions.
+Instead we will sketch that something is intuitively computable, and follow that
+by citing Church's Thesis to assert that it is therefore
+computable by some Turing machine. 
+After that, the argument proceeds with, 
+``Let $\TM$ be that machine. \ldots{}\,.''
+We skip exhibiting Turing machines just as a way to move through the 
+material, to get things done.
+
+In particular, often we will show
+that something is intuitively computable by producing a program for it.
+For this we use the language Scheme.
+
+
+
+
+\begin{exercises}
+\begin{exercise}
+Why is Church's Thesis, instead of Church's Theorem?    
+\end{exercise}
+
+\begin{exercise}
+Each of these is frequently voiced on the interwebs as a counterargument
+to Church's Thesis.
+Explain why each is bogus, made by clueless noobs.
+\citetext{Plonk!}{See \autocite{wiki:Plonk}.}
+\begin{exparts}
+\item Turing machines have an infinite tape so it is not a realistic model.
+\item The total size of the universe is finite, so there are in fact only
+finitely many configurations possible for any computing device, whereas a 
+Turing machine can use more than that many configurations,
+so it is not a realistic model.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item The tape, as given in the definition, is not infinite.
+It is unbounded.
+
+For an analogy, consider the dictionary definition of a book. 
+In that definition there is no upper limit on the number of pages.
+But no book, no actual bound collection of pages, has infiniteyl many.
+So also, no halting Turing machine computation uses infinitely much tape
+(the number of tape squares used is less than or equal to the number of
+steps in the computation).
+
+While it is true that you can easily write a Turing machine that does not
+halt and that just keeps using more and more tape, at no step of the 
+calculation is the amount of tape infinite.
+It never runs out\Dash it is unbounded\Dash but it is never infinite.
+
+\item It is a model.
+A model necessarily discards some aspects of the situation it models.
+See \autocite{wiki:MapStory}.
+(Besides, just to be argumentative for the sheer pleasure of it, 
+whether the universe is finite\Dash either just currently
+finite, or finite into any unbounded future\Dash is not clear.
+In any event it is not a mathematical question.)
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+
+\begin{exercise}
+Refute this objection to Church's Thesis:
+``Some computations have unbounded extent.  
+That is, sometimes we look for our programs to halt  
+but some computations, such as an operating system, are designed to never 
+halt.  
+The Turing machine is an inadequate model for these.''
+\begin{answer}
+Lance Fortnow says it perfectly,
+``Computation is about process, about the transitions made from one state 
+of the machine to another. Computation is not about the input and the output, 
+point A and point B, but the journey. \ldots{} 
+You can feed a Turing machine an infinite digits of a real number 
+(Siegelmann), have computers interact with each other (Wegner-Goldin), 
+or have a computer that perform an infinite series of tasks (Denning) but 
+in all these cases the process remains the same, each step following 
+Turing's model.''
+\autocite{Fortnow10}.  
+\end{answer}
+\end{exercise}
+
+
+\begin{exercise}
+Write a two-tape Turing machine to add two numbers,
+taking them in unary on tape zero and producing the output in unary 
+on tape~one.    
+\end{exercise}
+
+\begin{exercise}
+A three-tape Turing machine is often convenient, where tape zero holds the 
+inputs, tape one is for scratch work, and tape two is for the output.
+Write a three-tape Turing machine to multiply a pair of inputs, given in 
+unary and separated by a blank.
+\end{exercise}
+
+\begin{exercise}
+Write a three-tape Turing machine to multiply a pair of inputs, which are given
+on the first two tapes.  
+\end{exercise}
+
+% \begin{exercise}
+% Write a two-state Turing machine with a single tape that adds two inputs.
+% You may use as many symbols in your alphabet as is convenient.   
+% \end{exercise}
+\end{exercises}
+
+
+
+
+
+
 %================================================
 \section{Recursion}
-When Turing was doing his work, other researchers
-also saw the need to make precise the notion of mechanical
+In the 1930's, in the time frame when Turing was doing his work, 
+other researchers also saw the need to make precise the notion of mechanical
 computability.
-They produced a number of competing approaches.
-We will discuss further why we take Turing's tack in the next section
-but here we will outline
-another approach, in part because it introduces some things that we need and
-in part also to give a sense of how these other approaches look,
-at least on the surface, to be quite different.
+They took a number of approaches.
+The next section discusses further why we take Turing's tack 
+but here we will outline another approach, 
+to give a sense of how these other approaches look,
+at least on the surface, quite different.
  
-Turing started by defining machines and got from that a definition of the
+Functions are of central importance in mathematics.
+Turing defined machines and derived from that a definition of the
 functions that are computable, namely those functions that
 are the input-output behavior of the machines.
-A different historical thread focused directly on functions,
-which are objects of central mathematical interest.
+A different historical thread focused directly on functions.
   
 
 
@@ -892,12 +1499,11 @@ straightforward, with $g(x_0)=x_0$ and $h(w,x_0,z)=\pred(w)$.
 \end{equation*}
 \end{example}
 
-A large number of natural number functions can be defined 
-by primitive recursion.
-See for instance \cref{exer:ShowFcnsPrimRec}, where
-in each item we take an existing natural number function
-and state it in a form that fits \cref{def:PrimitiveRecursion}.
+Primitive recursion suffices to define
+most everyday natural number functions.
+See for instance \cref{exer:ShowFcnsPrimRec}.
 
+Of course, we are interested in functions that are effective.
 The examples above that include the Scheme code make clear that 
 if $g$ and~$h$ are effective then so is~$f$\!.
 Thus, our plan is to start with 
@@ -1296,11 +1902,11 @@ For larger inputs?
 This is an implementation.
 \begin{lstlistings}
 (define (M x)
-   (cond ((<= x 100) (M (M (+ x 11))))
-         (else (- x 10))))  
+   (if (<= x 100) 
+       (M (M (+ x 11)))
+       (- x 10)))  
 \end{lstlistings}
-It outputs $91$ for all inputs $x\in\set{0, \ldots 101}$, and also for
-$x=101$.
+It outputs $91$ for all inputs $x\in\set{0, \ldots 101}$.
 For larger inputs it outputs $x-10$.
 \end{answer}
 \end{exercise}
@@ -1687,568 +2293,6 @@ $\hyperoperation_3(x,y)=x^y$.
 
 
 
-
-
-\section{Church's Thesis}
-
-% \begin{wrapfigure}{R}{0.4\textwidth}
-% \centering
-% \includegraphics[width=0.35\textwidth]{prologue/plimpton322.jpg} % http://en.wikipedia.org/wiki/Plimpton_322#/media/File:Plimpton_322.jpg
-% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing pythagorean triples}}
-% \end{wrapfigure}
-\subsection{History}
-Algorithms have always played a central part in mathematics.
-The simplest example is a formula such as 
-the one for the height of a ball dropped from the Leaning Tower of Pisa, 
-$h(t)=-4.9t^2+56$.
-This is a compact instruction list:
-compute the output by starting with
-an input time, squaring it, multiplying
-by~$-4.9$, and adding~$56$.
-The result is the distance in meters 
-of that object above the ground at the given time.
-
-Another example is
-Euclid's Algorithm for finding the
-greatest common divisor of two numbers.
-Because it is iterative,
-it meshes well with a programmer's sense of what 
-constitutes an algorithm.
-
-\margingraphic{0.35\textwidth}{prologue/steppedreckoner.jpg}{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Stepped_Reckoner}{Replica of Leibnitz's computer, the Stepped Reckoner}}
-% \begin{wrapfigure}{L}{0.4\textwidth}
-% \centering
-% \includegraphics[width=0.35\textwidth]{prologue/steppedreckoner.jpg} % http://www.computerhistory.org/revolution/calculators/1/49/198
-% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Stepped_Reckoner}{Replica of Leibnitz's computer, the Stepped Reckoner}}
-% \end{wrapfigure}
-In the 1670's 
-Gottfried Wilhelm von Leibniz, the co-creator of Calculus, 
-constructed the first machine
-that could do addition, subtraction, multiplication, division, 
-and square roots as well.
-This led him to speculate on the possibility of
-a machine that could manipulate
-symbols, not just numbers, and could
-determine the truth of scientific statements. 
-% (stated in some appropriate language).
-To settle any dispute, Leibnitz wrote, 
-two scholars could just say,
-``Calculemus!'' (Latin for ``Let us calculate!''). 
-This is an early version of the 
-\textit{Entscheidungsproblem}.
-
-% \margingraphic[l]{0.23\textwidth}{prologue/godel.jpg}{\label{fig:church}\href{http://en.wikipedia.org/wiki/Kurt_Gödel}{Kurt G\"odel 1906--1978}}
-% https://en.wikipedia.org/wiki/File:Kurt_g%C3%B6del.jpg
-The need for a fuller understanding of which
-things are mechanically computable was made pressing by
-the appearance in 1927 of the Incompleteness Theorem by Kurt G\"odel.
-This result says that for any (sufficiently powerful) axiom system there
-are statements that, while they are true, are not provable from those axioms. 
-The idea behind G\"odel's proof is that it gives an algorithm, an intuitively
-mechanically computable procedure, that takes as input
-the axioms 
-and produces as output the statement that is undecidable.
-So understanding what can be done with the techniques in G\"odel's proof 
-involves understanding what is intuitively mechanically computable.
-
-\margingraphic{0.23\textwidth}{prologue/church.jpg}{\label{fig:church}\href{http://en.wikipedia.org/wiki/Alonzo_Church}{Alonzo Church 1903--1995}}
-A number of mathematicians proposed formalizations 
-of `intuitively mechanically computable'.
-One was 
-Alonzo Church,\footnote{After producing his machine model, 
-  Turing became a PhD student of Church at Princeton.}
-whose system is called the \definend{$\lambda$-calculus}. 
-Church and his students showed that this system can compute
-large numbers of functions that
-are intuitively computable, and also were unable to 
-produce any intuitively computable function that 
-the $\lambda$-calculus  could not do.  
-\citetext{Church privately suggested}{\autocite{Soare99}} 
-to G\"odel, the most prominent expert in the area,
-that the set the set of functions that are intuitively computable 
-could be rigorously defined as the set of 
-$\lambda$-computable functions.
-But G\"odel was unconvinced.
-
-That changed when G\"odel read Turing's masterful analysis
-outlined in the prior section.
-He subsequently wrote,
-``That this really is the correct definition of mechanical computability  
-was  \citetext{established  beyond  any  doubt}{\autocite{Godel95}}  
-by  Turing.''
-
-\begin{churchsthesis}
-The set of things that are intuitively 
-computable by a discrete deterministic mechanism 
-is the same as the set of things that are computable by
-a Turing machine.\footnotemark
-\end{churchsthesis}
-\footnotetext{Many authors
-call this the Church-Turing Thesis.  
-In this book, because Turing has his 
-machine we give Church the thesis.}
-
-\citetext{Church's Thesis is central to the 
-Theory of Computation}{Some authors have claimed that 
-neither Church nor Turing stated anything as strong as
-is given here but instead that they proposed that the set of things 
-that can be done by a Turing machine is the same as the set of things
-that are intuitively computable by a
-human computer; see for instance \autocite{CopelandProudfoot99}. 
-But the thesis as stated here, that what can be done by a Turing machine
-is what can be done by any physical mechanism 
-that is discrete and deterministic, is certainly the thesis as it is 
-taken in the field today.
-And besides,  
-Church and Turing did not in fact distinguish between the two cases; 
-\autocite{HodgesChurchsThesis} points to
-Church's review of Turings paper in the \textit{Journal of Symbolic Logic}:
-``The author [i.e. Turing] proposes as a criterion that an infinite sequence 
-of digits $0$ and $1$ be `computable' that it shall be possible to devise 
-a computing machine, occupying a finite space and with working parts of 
-finite size, which will write down the sequence to any desired number of 
-terms if allowed to run for a sufficiently long time. 
-As a matter of convenience, certain further restrictions are imposed on the 
-character of the machine, but these are of such a nature as obviously to 
-cause no loss of generality\Dash in particular, a human calculator, 
-provided with pencil and paper and explicit instructions, 
-can be regarded as a kind of Turing machine.''
-This has Church referring to the human calculator not as the 
-prototype but instead as a 
-special case  of the class of defined machines.}.
-It says that the technical definitions and theorems in this book
-have a larger importance:
-they are about
-the devices that are all around us, on our desks, and in our pockets.
-So we will pause briefly to expand on some points,
-including ones that experience has shown can lead to  
-misunderstandings.
-
-
-\subsection{Evidence}
-We cannot prove Church's Thesis.
-As \citetext{Turing noted}{\autocite{Turing}}, 
-``All arguments which can be given are bound to be, 
-fundamentally, appeals to intuition, and for this reason rather 
-unsatisfactory mathematically.''
-% The real question at issue is, `What are the possible processes which can 
-% be carried out in computing \ldots{}\,?' ''
-Nonetheless, Church's Thesis is very widely accepted. 
-We will outline the arguments in its favor.
-
-The first argument is coverage:~everything that people have though of as 
-intuitively computable has, on close analysis, proved to be
-computable by a Turing machine.
-This includes not just the functions investigated by 
-researchers in the 1930's but also everything computed by
-all of the programs in all
-of the computer languages written since, for they can all be 
-compiled to run on a Turing machine.
-
-Despite the weight of evidence, 
-this argument would collapse with one 
-counterexample, one operation that can be done in finite time 
-on a physically-realizable discrete and deterministic 
-device but that cannot be done on a 
-Turing machine.
-So this argument is strong but at least conceivably not decisive.
-
-The second argument is convergence:~all of the models of computation that 
-were proposed, by all of the researchers then and since,
-yield the same set of computable functions.
-For instance, Turing showed that the set of functions computable with
-his machine model is equal to the set of functions computable
-with Church's $\lambda$-calculus.
-
-Now, everyone could be wrong. 
-There could be some
-\citetext{systematic error}{\autocite{DershowitzGurevich} p 304.} 
-in the thinking around this point.
-Before the advent of non-Euclidean geometry, researchers
-seem not to have imagined the possibility that the Parallel Postulate
-is neither true nor false, and perhaps some similar 
-cultural blindness is happening here.
-Nonetheless, when you have a question and you ask a group of very smart people
-who go off and work independently,
-and when they come back they all give you the
-same answer,
-then you think it is likely the right answer.
-At the very least, convergence says that there is something natural 
-and compelling about this set of functions.
-
-An argument not available to G\"odel and others in the 1930's, 
-since it depends on work done since, 
-is consistency:~the details of the definition of a 
-Turing machine are not essential to what can be computed.
-For any way in which the Turing machine definition given above seems to 
-take an arbitrary choice, 
-altering that way will still lead to
-the same set of computable functions.
-% (of course, it is this set that we want).
-
-For example,   
-the number of tapes does not matter:
-a machine with only one tape can compute the same functions as a machine 
-with two or more.
-(One way to simulate a two-tape machine~$\TM_2$ on
-a one-tape machine~$\TM_1$ is
-by having~$\TM_1$ use its
-even-numbered tape positions for~$\TM_2$'s first tape and
-using its odd tape positions for~$\TM_2$'s second tape.)
-Thus, the fact that \cref{def:TuringMachine}'s machines have only one tape
-is not an essential point.
-
-Similarly, machines whose tape is unbounded in one direction only can 
-compute all the functions that can be computed by
-machines with a tape unbounded in both directions.
-Machines with more than one read/write head compute the same
-functions as those with only one head.
-
-Although restricting to machines having only one state does not suffice
-to compute all intuitively computable functions,
-two-state machines are equipowerful with 
-the unboundedly-many-states machines given in \cref{def:TuringMachine}.
-
-Two symbols, such as blank and stroke, are enough
-to compute any Turing-computable function.
-Likewise, 
-restricting to write-only machines, ones that cannot change marks once they 
-have been put on the tape, suffices to compute the same set of functions.
-
-There is one more condition that does not change the set of computable 
-functions, determinism.
-Recall that 
-the definition of Turing machine given above does not allow, say, 
-$\tminstruction{5}{1}{R}{6}$
-and 
-$\tminstruction{5}{1}{L}{4}$
-in the same machine because they both begin with $q_5\texttt{1}$.
-If we drop this restriction then the class of machines that we get are called
-nondeterministic.
-We will have much more to say on this later but 
-the collection of nondeterministic Turing machines computes the same 
-set of functions as does the collection of deterministic machines.
-
-The fact that the details of the Turing machine definition are not essential 
-is persuasive in that any proper definition of what is 
-computable should posses this property.
-% If two-tape machines computed more functions than one-tape machines, 
-% and three-tape machines more than those, then identifying 
-% the set of computable functions with those computable by single-tape machines
-% would be foolish. 
-But as with the prior argument, while
-this means that the class of Turing machine-computable functions 
-is natural and wide-ranging, 
-it still
-seems to leave open a small crack of a possibility that the class does not 
-exhaust the list of functions that are mechanically computable.
-
-The most persuasive single argument for Church's Thesis\Dash
-what caused G\"odel to change his mind and what convinces scholars
-still today\Dash
-is clarity:~Turing's analysis itself is compelling.
-G\"odel said this in the quote given earlier and 
-Church felt the same way, writing that Turing machines have, 
-``the advantage of making the
-identification with effectiveness \ldots{} 
-%in the ordinary (not explicitly defined) sense 
-\citetext{evident immediately}{\autocite{Church36}}.''
-% That is, when you read Turing's analysis you say to yourself, 
-% ``Yes, this is exactly what can be done operating without limits
-% by a discrete, deterministic, Newtonian mechanism.''
-
-
-\subsection{What it does not say}
-% Turing's analysis, and that of Church and others, 
-% aims to understand 
-% what can and cannot be done in the course of a particular type of 
-% computation,
-% a discrete and deterministic manipulation of symbols that is 
-% without creative leaps.   
-%
-Church's Thesis does not say that in all circumstances the best way to
-understand a discrete and deterministic 
-computation is via the Turing machine model.
-% While a security researcher studying 
-% how operating systems could be more resilient to attacks 
-% could conceivably model them as bit streams coming into a Turing machine,
-% because including interactivity in the model would require  
-% varying the bit streams, which is ungainly, they may 
-% make more progress with some other model.
-For example, a numerical analyst studying a floating point algorithm 
-should use a computer model that has registers. 
-Church's Thesis says  
-that the algorithm
-could in principle be done by a Turing machine, but for this
-use registers are most felicitous thing.\footnote{Brain scientists, 
-too, find Turing machines to be not the best model.}
-
-Church's Thesis also does not assert that a Turing machine is 
-every possible computing device 
-in the sense that if, say, you are
-studying an automobile antilock braking system then the Turing machine
-model accounts for the logical and arithmetic computations but not
-the entire system, with all its sensor inputs and actuator outputs. 
-\citetext{Scott Aaronson has made this point}{From his blog \textit{Shtetl-Optimized},  \autocite{Aaronson12}.}, ``Suppose I \ldots{}
-[argued] that \ldots{} [Church's] Thesis fails to capture all 
-of computation, because Turing machines can't toast bread. 
-\ldots{}
-% Therefore, you need my revolutionary new model, the 
-% Toaster-Enhanced Turing Machine (TETM), which allows bread as a possible input and includes toasting it as a primitive operation.
-% You might say: sure, I have a `point', but it's a totally uninteresting one. 
-No one ever claimed that a Turing machine could handle every possible 
-interaction with the external world, without first hooking it up to 
-suitable peripherals. 
-If you want a Turing machine to toast bread, you need to connect it 
-to a toaster; then the TM can easily handle the toaster's internal logic.''
-% (unless this particular toaster requires solving the halting problem or something like that to determine how brown the bread should be!). 
-% In exactly the same way, if you want a TM to handle interactive 
-% communication, 
-% then you need to hook it up to suitable communication devices.''
-
-In the same vein, we can get physical devices that
-\citetext{supply a stream of random bits}{Some CPU's come with that 
-capability built in; see for instance 
-\protect\url{https://en.wikipedia.org/wiki/RdRand}.}.
-These are not pseudorandom bits that are computed by a method that 
-is deterministic but under which they pass statistical tests.
-Instead these devices provide a stream of bits that well-established 
-physics tells us are truly random.
-We will later discuss this case at length but its relevance here is
-that Church's Thesis 
-only asserts that Turing machines model the discrete and deterministic
-computations that we can do after we are given input bits from such a device.
-
-
-\subsection{An empirical question}
-Church's Thesis says that Turing machines can do any  
-computation that is discrete and deterministic.
-% 
-That raises a big question: even taking Church's Thesis to be right, 
-can we nontheless do more by
-going beyond discrete and deterministic?
-For instance,
-would analog methods\Dash passing lasers through
-a gas, say, or some kind of quantum magic\Dash allow us to 
-compute things that no Turing 
-machine can compute?
-Or are Turing machines an ultimate in physically-possible machines; 
-did Turing, on that day, lying on that grassy river bank, 
-delimit everything that 
-experiments with reality would ever find to be possible?
-
-% \margingraphic{0.23\textwidth}{prologue/katherinejohnson.jpg}{\label{fig:johnson}\href{https://bitchmedia.org/article/african-american-women-worked-some-nasas-first-computers}{Katherine Johnson, b~1918}}
-% % NASA photo; no permission
-% (The computations done by Turing machines can be done by a person
-% so a `yes' answer means that anything 
-% that can be done, can be done by a person.
-% There is historical support for this:~before 
-% capable machines were widely available, 
-% much of what we would today think of as
-% computer work was done by people, then called ``computers.''
-% For instance, the trajectory for US astronaut 
-% John Glenn's pioneering orbit of Earth was computed by Katherine Johnson.
-% Another example is that this book's cover 
-% shows computers at work.)
-
-% That raises a big question: even taking Church's Thesis to be right, 
-% can we nontheless do more by
-% going beyond discrete and deterministic?
-% For instance,
-% would analog methods\Dash passing lasers through
-% some gas, say, or some kind of quantum magic\Dash allow us to 
-% compute things that no Turing 
-% machine can compute?
-% Or are Turing machines an ultimate in all physically-possible computations; 
-% did Turing, on that day, lying on that grassy river bank, 
-% delimit everything that 
-% experiments with reality would ever find to be possible?
-
-This big question is open\Dash we have no final answer.
-For a taste of the conversation:
-% ~in 
-% a \citetext{pail of water}{This is \protect\textit{Hinck's pail}, after Ian Hinckfuss, described in \autocite{Lycan}.} left for a time
-% there are a fantastically large number of molecules having 
-% an unbelievably large number of interactions, and those large numbers
-% essentially ensure that there is in the pail a configuration
-% of molecules that we can view as having gone a computation, say,
-% having gone through the steps
-% from our first example of a computation, \cref{ex:MPred}; 
-% can this bucket be said to compute?
-% In a perhaps more satisfactorily mathematical example,
-we can prove that there is a case where the wave equation\footnote{
-A partial differential equation that describes the 
-propagation of waves.}
-has computable initial
-conditions (for the initial real numbers~$x$ there is a program that 
-inputs~$i\in\N$ and outputs the $i$-th decimal place of~$x$), 
-but 
-\citetext{the unique solution is not computable}{See \autocite{PourEl}.}.
-So does the experimental setup modelled by this equation 
-compute something that Turing machines cannot?\footnote{A number of 
-authors have 
-speculated along lines that are analogous to this formal result that
-conscious beings can do more than Turing machines can do.}
-Stated for dramatic effect: 
-do the planets in their orbits 
-\citetext{compute a solution}{See
-\url{http://www.smbc-comics.com/?id=3054}.}
-to the Three-Body Problem?
-
-Again,
-\citetext{the question remains open}{A sample of readings: \autocite{Copeland96}, \autocite{Copeland99}, and \autocite{Copeland02} argue that computations can be done that are beyond the capabilities of Turing machines, while \autocite{Davis04}, \autocite{Davis06}, and \autocite{Gandy80} represent what is the more common view among Theory of Computing researchers.}. 
-As yet no analysis of this wider notion of computation 
-has the support that Turing's analysis has garnered in its 
-more narrow case.
-In particular, no one has yet produced a generally accepted case of a 
-physically possible mechanism that computes a function that no
-Turing machine computes.
-
-We will not pursue this question, instead only 
-observing that 
-the community of researchers in the Theory of Computation has weighed in by
-taking Church's Thesis as the basis for their work.
-In this book we stick to mechanisms that
-are discrete and deterministic and `computation' will refer to the
-kind of work that Turing analyzed.
-
-Specifically, inside of the class of models that give the set of 
-effective functions 
-we will take Turing machines as our touchstone, because
-we want to think about symbol-pushing computations, not numerical 
-analysis, and not toast.
-
-
-
-
-\subsection{How we will use Church's Thesis} 
-As described above, our main interest in the thesis is that
-it imbues our technical definitions and theorems about machine models
-with a larger importance\Dash if, for instance,
-we show that something cannot be computed by a Turing machine then 
-in the light of Church's Thesis we have shown that it cannot be computed
-by any discrete and deterministic device.
-
-However we will also leverage Church's Thesis in another way.
-Programming Turing machines is hard, and the
-the necessary details can obscure larger points. 
-So when we are proving things about computability, if we can be clear and
-rigorous without actually having to implement a Turing machine
-then we will be delighted.
-
-Church's Thesis helps with this.
-Often in later arguments we will not produce Turing machine instructions.
-Instead we will sketch that something is intuitively computable, and follow that
-by citing Church's Thesis to assert that it is therefore
-computable by some Turing machine. 
-After that, the argument proceeds with, 
-``Let $\TM$ be that machine. \ldots{}\,.''
-We skip exhibiting Turing machines just as a way to move through the 
-material, to get things done.
-
-In particular, often we will show
-that something is intuitively computable by producing a program for it.
-For this we use the language Scheme.
-
-
-
-
-\begin{exercises}
-\begin{exercise}
-Why is Church's Thesis, instead of Church's Theorem?    
-\end{exercise}
-
-\begin{exercise}
-Each of these is frequently voiced on the interwebs as a counterargument
-to Church's Thesis.
-Explain why each is bogus, made by clueless noobs.
-\citetext{Plonk!}{See \autocite{wiki:Plonk}.}
-\begin{exparts}
-\item Turing machines have an infinite tape so it is not a realistic model.
-\item The total size of the universe is finite, so there are in fact only
-finitely many configurations possible for any computing device, whereas a 
-Turing machine can use more than that many configurations,
-so it is not a realistic model.
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item The tape, as given in the definition, is not infinite.
-It is unbounded.
-
-For an analogy, consider the dictionary definition of a book. 
-In that definition there is no upper limit on the number of pages.
-But no book, no actual bound collection of pages, has infiniteyl many.
-So also, no halting Turing machine computation uses infinitely much tape
-(the number of tape squares used is less than or equal to the number of
-steps in the computation).
-
-While it is true that you can easily write a Turing machine that does not
-halt and that just keeps using more and more tape, at no step of the 
-calculation is the amount of tape infinite.
-It never runs out\Dash it is unbounded\Dash but it is never infinite.
-
-\item It is a model.
-A model necessarily discards some aspects of the situation it models.
-See \autocite{wiki:MapStory}.
-(Besides, just to be argumentative for the sheer pleasure of it, 
-whether the universe is finite\Dash either just currently
-finite, or finite into any unbounded future\Dash is not clear.
-In any event it is not a mathematical question.)
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-
-\begin{exercise}
-Refute this objection to Church's Thesis:
-``Some computations have unbounded extent.  
-That is, sometimes we look for our programs to halt  
-but some computations, such as an operating system, are designed to never 
-halt.  
-The Turing machine is an inadequate model for these.''
-\begin{answer}
-Lance Fortnow says it perfectly,
-``Computation is about process, about the transitions made from one state 
-of the machine to another. Computation is not about the input and the output, 
-point A and point B, but the journey. \ldots{} 
-You can feed a Turing machine an infinite digits of a real number 
-(Siegelmann), have computers interact with each other (Wegner-Goldin), 
-or have a computer that perform an infinite series of tasks (Denning) but 
-in all these cases the process remains the same, each step following 
-Turing's model.''
-\autocite{Fortnow10}.  
-\end{answer}
-\end{exercise}
-
-
-\begin{exercise}
-Write a two-tape Turing machine to add two numbers,
-taking them in unary on tape zero and producing the output in unary 
-on tape~one.    
-\end{exercise}
-
-\begin{exercise}
-A three-tape Turing machine is often convenient, where tape zero holds the 
-inputs, tape one is for scratch work, and tape two is for the output.
-Write a three-tape Turing machine to multiply a pair of inputs, given in 
-unary and separated by a blank.
-\end{exercise}
-
-\begin{exercise}
-Write a three-tape Turing machine to multiply a pair of inputs, which are given
-on the first two tapes.  
-\end{exercise}
-
-% \begin{exercise}
-% Write a two-state Turing machine with a single tape that adds two inputs.
-% You may use as many symbols in your alphabet as is convenient.   
-% \end{exercise}
-\end{exercises}
-
-
-
-
-
 % ==================================
 \extra{Turing machine simulator}
 
@@ -2401,7 +2445,7 @@ We will sketch how to do this.
 We will work with machines that take as inputs $0$'s and $1$'s 
 (actually, sequences of $0$'s and $1$'s) and give as outputs
 $0$'s and $1$'s.
-Extending this to arbitrary integers by expressing those
+Extend this to integers by expressing those
 integers in binary.
 
 The easiest approach is via mathematical statements.
@@ -2409,11 +2453,12 @@ A \definend{proposition} is a statement that has a boolean value,
 either $T$ or $F$.
 For instance, `$7$ is odd' and `$8$ is prime' are propositions,
 with values $T$ and~$F$. 
-In contrast, `$x$ is a perfect square' is not a proposition.
+In contrast, `$x$ is a perfect square' is not a proposition because for some 
+$x$ it is~$T$ while for others it is not.
 
 Mathematical statements often combine propositions.
 For instance, we might cojoin two by saying, `$5$ is prime and $7$ is prime'.
-Or we might negate with, `it is not the case that $8$ is prime'.
+Or we might negate with `it is not the case that $8$ is prime'.
 
 This \definend{truth table} defines the behavior of some logical operators.
 It shows $F$ as~$0$ and $T$ as~$1$, as is the practice in
@@ -2450,12 +2495,12 @@ outputs are on the right.
 \end{center}
 Thus, where `$7$ is odd' is $P$, and `$8$ is prime' is $Q$,
 get the value of the conjunction  `$7$ is odd and $8$ is prime' from the
-second line of the right-hand table: $0$.
-The value of `$7$ is odd or $8$ is prime' is $1$.
+third line of the right-hand table: $0$.
+The value of the disjunction `$7$ is odd or $8$ is prime' is $1$.
 
 Truth tables help us work out the behavior of complex 
 propositional logic statements,
-by buildign them up from their components.
+by building them up from their components.
 This shows the input/output behavior of the statement 
 $(P\vee Q)\wedge \neg (P\vee (R\wedge Q))$.
 \begin{center}
@@ -2480,7 +2525,7 @@ $(P\vee Q)\wedge \neg (P\vee (R\wedge Q))$.
 \end{center}
 
 There are operators other than `not', `and', and `or'
-(we'll see one below) but an advantage of these three is that
+but an advantage of these three is that
 with them we can reverse the activity of the prior paragraph:~we 
 can go from a table to a statement with that table, that is, 
 from a desired behavior to
@@ -2531,7 +2576,7 @@ To finish, put these parts together with $\vee$'s to get the overall statement.
   \vee(P\wedge\neg Q\wedge\neg R)
 \tag{$*$}
 \end{equation*}
-We say this statement is in \definend{conjunctive normal form}.
+% We say that this statement is in \definend{conjunctive normal form}.
 
 So we can produce statements with any desired behavior.
 Now we translate those statements into physical devices.
@@ -2540,13 +2585,13 @@ We can use electronic devices, called \definend{gates},
 that perform logical operations on signals
 (for this discussion we will take a signal to be the presence of $5$~volts).
 On the left below is the schematic symbol for an 
-`and' gate
+and gate
 with two input wires and one output wire, whose behavior is that 
 a signal only appears
 on the output if there is a signal on both inputs.
-Symbolized in the middle is an `or' gate, where there is signal out 
+Symbolized in the middle is an or gate, where there is signal out 
 if either input has a signal.
-On the right is a `not' gate.
+On the right is a not gate.
 \begin{center}
   \vcenteredhbox{\includegraphics{prologue/asy/gates/gates00.pdf}}
   \qquad
@@ -2555,60 +2600,62 @@ On the right is a `not' gate.
   \vcenteredhbox{\includegraphics{prologue/asy/gates/gates02.pdf}}
 \end{center}
 
-A schematic of a circuit that implements the statement in
-equation~($*$) shows three input signals on the
-three wires on the left.
-The signals from those three go into the `and' gates, in some cases after  
-we've fed them through `not' gates.
+A schematic of a circuit that implements statement~($*$), given below, 
+shows three input signals on the
+three wires at left.
+For instance, to implement the first clause,
+the top and gate is fed the not~$P$, the not~$Q$,
+and the~$R$ signals.
+The second and third clauses are implemented in the other two and gates.
+Then the output of the and gates goes through the or gates.
 \begin{center}
   \includegraphics{prologue/asy/gates/gates03.pdf}
 \end{center}
-For instance, the top `and' gate is fed the `not'~$P$, the `not'~$Q$,
-and the~$R$ signals, as called for in the first clause in~($*$).
-Then the output of the `and' gates goes through the `or' gates,
-again as called for in~($*$).
 
 Finally a remark.
-A person can wonder how a `not' gate is possible; doesn't having
-voltage out when there is no voltage in create energy out of nothing?
-The answer is that the schematics above abstract out that point.
-Below is a drawing of the internal structure of a 
-\citetext{`not' gate}{This shows an N-type
+A person can wonder how these gates are constructed internally,
+and in particular can wonder how a `not' gate is possible; doesn't having
+voltage come out when there is no voltage going in create energy out of nothing?
+
+The answer is that descriptions above abstract out that point.
+Here is a schematic of a 
+\citetext{kind of not gate}{This shows an N-type
 Metal Oxide Semiconductor Transistor.
 There are many other types, with many other behaviors.}.
 \begin{center}
   \includegraphics{prologue/asy/gates/gates04.pdf}
 \end{center}
-On the right is a battery, which we shall see provides the puzzling extra 
+On the right is a battery, which we shall see provides the extra 
 voltage.
 On the top left is a resistor. 
 If current flows out of the battery and around the 
-circuit then this provides a voltage drop, 
+circuit then this resistor supplies a voltage drop, 
 using up the energy of the battery.
 
 On the bottom left, with the circle, is a transistor. 
-It has the property that if there is enough voltage between 
-wires~\textsf{G} and~\textsf{S} then the component that looks like a
-switch is closes and current from the battery will flow
+This is an electronic component, a semiconductor,
+with the property that if there is enough voltage between 
+wires~\textsf{G} and~\textsf{S} then the component drawn like a
+switch closes, so that current from the battery will flow
 through the \textsf{D}-\textsf{S} line.
-This particular transistor is constructed such that an 
+This transistor is manufactured such that an 
 input voltage~$V_{\text{in}}$
-of $5$~volts will trigger the switch-like component to close.
+of $5$~volts will trigger this event.
 
-To check that this circuit inverts the signal, 
+To verify that this circuit inverts the signal, 
 assume first that $V_{\text{in}}=0$. 
 Then there is is a gap between
 \textsf{D} and~\textsf{S} so no current flows.
 With no current the resistor provides no voltage drop.
 Consequently the output voltage~$V_{\text{out}}$ across the gap
 is all of the voltage supplied by the battery, $5$~volts.
-So $V_{\text{in}}=0$ produces~$V_{\text{out}}=5$.
+So $V_{\text{in}}=0$ results in~$V_{\text{out}}=5$.
 
 Conversely, take $V_{\text{in}}=5$. 
 Then the gap disappears,
 the current flows between \textsf{D} and~\textsf{S}, 
 the resistor drops the voltage, 
-and the output voltage is~$V_{\text{out}}=0$.
+and the output is~$V_{\text{out}}=0$.
 
 \begin{exercises}
 \begin{extraexercise}

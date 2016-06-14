@@ -61,16 +61,44 @@
 ;; ==================== LOOP programs ======
 
 ;; A register is a pair (name contents)
-;; These are getters and setters for the list of registers
 (define REGLIST '())
 
+;; Getters and setters for the list of registers
 (define (get-reg r) 
   (assq r REGLIST)) 
 (define (get-reg-value r) 
   (cdr (get-reg r))) 
+;; set-reg-value! Set the value of an existing register or initialize a new one
 (define (set-reg-value! r v) 
-  (set-cdr! (get-reg r) v))
-(define (inc-reg r)
-  (let ((reg (get-reg r)))
-    (set-cdr! reg (+ 1 (cdr reg))))) 
+  (let ((newval (cons r v)))
+    (if (assq r REGLIST)
+	(alist-update! r v REGLIST)
+	(set! REGLIST (append REGLIST (list newval))))))
 
+;; increment-reg!  Increment the register
+(define (increment-reg! r)
+  (set-reg-value! r (+ 1 (get-reg-value r))))
+;; copy-reg! Copy value from r0 to r1, leave r0 unchanged 
+(define (copy-reg! r0 r1)
+  (set-reg-value! r1 (get-reg-value r0))) 
+
+
+;; parse functions
+
+;; split-program-into-lines  split the string by newlines
+(define (split-program-into-lines p)
+  (string-split p "#\newline"))
+
+;; split-line-into-toks  return the tokens, with comments and whitespace removed
+(define (split-line-into-toks ln)
+  (let ((without-comment (car (string-split ln "#"))))
+    (string-split without-comment)))
+
+;; decide-instruction-type  from a list of strings decide the instruction
+(define (decide-instruction-type inst-list)
+  (cond 
+   ((null? inst-list) "none")
+   ((string-ci=? "loop" (car inst-list)) "loop")
+   ((number? (caddr inst-list)) "initialize")
+   ((= 3 (length inst-list)) "copy")
+   (else "increment")))

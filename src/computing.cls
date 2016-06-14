@@ -692,15 +692,25 @@ of the two.}
 %     \end{tapesequencetable}
 %   \end{tapesequence}
 \newenvironment{tapesequence}{%
-  \begin{center} \vspace{-3ex}\renewcommand{\arraystretch}{2.25}
+  % \vspace{1.5ex plus 0.25ex minus 0.15ex}%
+  \begin{center} % \vspace{-3ex}
+    \renewcommand{\arraystretch}{2.25}
 }{%
   \end{center}
+  % \vspace{-1.5ex plus 0.25ex minus 0.15ex}% arraystretch leaves extra?
 }
 \newenvironment{tapesequencetable}{%
+  % \vspace{2.5ex plus 0.25ex minus 0.15ex}%
   \begin{tabular}[t]{r|c} 
-    \multicolumn{1}{r}{\textsc{step}} &\textsc{configuration}       \\[-1ex] \hline
+    \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
+                         % \rule{0em}{2ex}
+                         \begin{tabular}[b]{@{}c@{}}
+                           \textsc{after} \\[-0.425ex] 
+                           \textsc{step} 
+                         \end{tabular}} 
+     &\textsc{configuration}                        \\[-1ex] \hline
 }{%
-  \end{tabular}
+  \end{tabular}%
 }
 \newcommand{\tapegraphic}[1]{%
   \vcenteredhbox{\includegraphics{#1}}%

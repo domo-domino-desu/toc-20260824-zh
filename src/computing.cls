@@ -716,8 +716,15 @@ of the two.}
   \vcenteredhbox{\includegraphics{#1}}%
 }
 
+% ====== margin graphic =====
+% put graphics in the pargin
+
 % Wrapping around a figure
 \usepackage{wrapfig}
+% Set space around wrapfig figures
+% see http://tex.stackexchange.com/a/111397/339
+\setlength{\intextsep}{6pt plus 1pt minus 0.25 pt}% vertical padding; default: 12.0pt plus 2.0pt minus 2.0pt
+\setlength{\columnsep}{10pt}% horizontal padding; default: 10pt
 
 % Captions
 \usepackage{caption}[2013/02/03]

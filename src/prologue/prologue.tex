@@ -1087,8 +1087,8 @@ calculated that a valley in Englind took $300$ million years to erode,
 and consequently that there was enough time, called ``deep time,''
 for slow but steady evolution to happen. 
 Then, in 1896, Becquerel discovered radiation.
-All of the calculations did not account for it, and the apparent discrepancy 
-was gone.
+All of the prior calculations did not account for it, 
+and the apparent discrepancy was gone.
 \autocite{wiki:Kelvin}}?
 
 % \margingraphic{0.23\textwidth}{prologue/katherinejohnson.jpg}{\label{fig:johnson}\href{https://bitchmedia.org/article/african-american-women-worked-some-nasas-first-computers}{Katherine Johnson, b~1918}}
@@ -1455,10 +1455,10 @@ A function~$f$ is defined by the schema\footnotemark[2]
 of \definend{primitive recursion}
 from the functions $g$ and~$h$ if it has this form.
 \begin{equation*}
-  f(x_0,\ldots,x_{n-1},y)=
+  f(x_0,\ldots,x_{k-1},y)=
   \begin{cases}
-    g(x_0,\ldots,x_{n-1}) &\case{if $y=0$}   \\
-    h(f(x_0,\ldots,x_{n-1},z),\,x_0,\,\ldots,\,x_{n-1},\,z)
+    g(x_0,\ldots,x_{k-1}) &\case{if $y=0$}   \\
+    h(f(x_0,\ldots,x_{k-1},z),\,x_0,\,\ldots,\,x_{k-1},\,z)
       &\case{if $y=\successor(z)$}
   \end{cases}
 \end{equation*}
@@ -1468,7 +1468,7 @@ from the functions $g$ and~$h$ if it has this form.
 The bookkeeping is that the number of inputs to~$f$ is 
 one more than the number of 
 inputs to~$g$ and one less than the number of inputs to~$h$.
-We sometimes abbreviate $x_0,\ldots,x_{n-1}$ as $\vec{x}$.
+We sometimes abbreviate $x_0,\ldots,x_{k-1}$ as $\vec{x}$.
 
 \begin{example}
 The function $\plus$ is defined by primitive recursion from 
@@ -1494,8 +1494,8 @@ That easily fits the form of \cref{def:PrimitiveRecursion}.
             \end{cases}
 \end{equation*}
 The bookkeeping here is that
-$\pred$ has no $x_i$'s. 
-So $g$ is a function of no inputs 
+$\pred$ has no $x_i$'s
+so $g$ is a function of no inputs 
 and must therefore be a constant, $g(\,)=0$,
 while $h$ has two inputs~$h(a,b)=b$. 
 \end{example}
@@ -1516,10 +1516,6 @@ straightforward, with $g(x_0)=x_0$ and $h(w,x_0,z)=\pred(w)$.
 \end{equation*}
 \end{example}
 
-Primitive recursion suffices to define
-most everyday natural number functions.
-See for instance \cref{exer:ShowFcnsPrimRec}.
-
 The Scheme code above make clear that 
 primitive recursion fits into the plan of 
 specifying combiners that preserve the property of effectiveness:
@@ -1527,41 +1523,56 @@ if $g$ and~$h$ are effective then so is~$f$\!.
 
 \begin{definition} \label{def:PrimitiveRecursive}
 A function is 
-\definend{primitive recursive}\footnotemark[1]
+\definend{primitive recursive} % \footnotemark[1]
 if it can be derived by a finite number of applications of 
 function composition and primitive recursion
 from the initial operations of 
 the \definend{zero} function~$\zero(\vec{x})=\zero(x_0,\ldots,x_{n-1})=0$,
 the \definend{successor} function~$\successor(\vec{x})=x+1$,
-and the \definend{projection}\footnotemark[2] 
+and the \definend{projection}\footnotemark[1] 
 functions~$\projection_i(\vec{x})=x_i$. 
 \end{definition}
-\footnotetext[1]{`Primitive'  
-distinguishes these from another set of functions that we will see soon.}
-\footnotetext[2]{There are infinitely many projections, one for each 
+% \footnotetext[1]{`Primitive'  
+% distinguishes these from another set of functions that we will see soon.}
+\footnotetext[1]{There are infinitely many projections, one for each 
 pair of natural numbers $n,i$.
 Projection is a generalization of the identity function, which 
 is why we use the use the letter~$\projection$.}
 
-% We have already seen that some mechanically computable functions 
-% are partial, that they fail to have an output for some inputs.
-% But all primitive recursive functions are total.
-% So we have seen some functions not derivable in this way.
-% We could speculate that perhaps 
-% this is a matter of making an adjustment 
-% like:~for any $f$ that is intuitively mechanically
-% computable we consider this function.
-% \begin{equation*}
-%   \hat{f}(x)=
-%   \begin{cases}
-%     0      &\case{if $f$ does not give an output on input~$x$}  \\
-%     f(x)+1 &\case{if $f(x)$ exists}
-%   \end{cases}
-% \end{equation*}
-% This fills the holes in $f$'s domain with~$0$ values,
-% and translates $f$'s values up by~$1$ so that those~$0$ values are unambiguous. 
-% Were we able to show that $\hat{f}$ is primitive recursive then we would have
-% simulated~$f$ with a p.r.{} function.
+Primitive recursion suffices to define
+the everyday natural number functions.
+The examples before the definition give some sense of this and
+see also \cref{exer:ShowFcnsPrimRec} and~\ref{exer:PrimRecBoundedOps}.
+
+One reason to think that not every intuitively computable function
+is primitive recursive is that, as 
+we have already seen, some mechanically computable functions 
+are partial, meaning that they do not have an output for some inputs.
+In contrast, all primitive recursive functions are total.
+However, we could try to patch this up
+by making an adjustment 
+like:~for any $f$ that is intuitively mechanically
+computable consider this function.
+\begin{equation*}
+  \hat{f}(x)=
+  \begin{cases}
+    0      &\case{if $f$ does not give an output on input~$x$}  \\
+    f(x)+1 &\case{if $f(x)$ exists}
+  \end{cases}
+\end{equation*}
+This fills the holes in $f$'s domain with~$0$ values and so~$\hat{f}$ 
+is a total function that contains the same computational content as $f$. 
+Were we able to show that any such  $\hat{f}$ is primitive recursive 
+then we would have
+simulated~$f$ with a p.r.{} function.
+
+However we see in the next subsection that no such patch plan suffices.
+The diminutive adjective `primitive' is in the name of 
+\cref{def:PrimitiveRecursive}'s class because
+not every intuitively computable function is in that class.
+
+
+
 
 
 
@@ -1580,7 +1591,7 @@ computable but that is not primitive recursive.
 % \cref{def:PrimitiveRecursive}.
 % That we will see in the section after.
 
-We have seen that addition is repeated successor, 
+We have noted that addition is repeated successor, 
 that multiplication is repeated addition, and that
 exponentiation is repeated multiplication.
 \begin{equation*}
@@ -1589,28 +1600,10 @@ exponentiation is repeated multiplication.
   x\cdot y=\underbrace{x+x+\,\cdots\, +x}_{\text{$y$ many}}
   \qquad
   x^y=\underbrace{x\cdot x\cdot \,\cdots\, \cdot x}_{\text{$y$ many}}
-  % \qquad
-  % \text{e.g., $x+2=\successor(\successor(x))$}
 \end{equation*}
-% Multiplication is repeated addition.
-% \begin{equation*}
-%   x\cdot y=\underbrace{x+x+\,\cdots\, +x}_{\text{$y$ many}}
-%   % \qquad
-%   % \text{e.g., $x\cdot 2=x+x$}
-% \end{equation*}
-% Exponentiation is repeated multiplication.
-% \begin{equation*}
-%   x^y=\underbrace{x\cdot x\cdot \,\cdots\, \cdot x}_{\text{$y$ many}}
-%   % \qquad
-%   % \text{e.g., $x^2=x\cdot x$}
-% \end{equation*}
-% We start with successor.
-% Using that operation, 
-% addition has the recursive definition $\plus(x,y)=\successor(\plus(x,y-1))$.
-% Multiplication's recursion is $\product(x,y)=\plus(x,\product(x,y-1))$.
-% Exponentiation's is $\power(x,y)=\product(x,\power(x,y-1))$. 
-That is,
-we have this sequence of operations 
+This is a compelling pattern.
+It comes out strongly when we define these functions under the 
+schema of primitive recursion. 
 \begin{align*}
   \plus(x,y)=
   \hyperoperation_1(x,y)&=\begin{cases}
@@ -1629,9 +1622,12 @@ we have this sequence of operations
            \end{cases}
 \end{align*}
 (where $\hyperoperation_0$ is 
-successor~$\hyperoperation_0=\successor$).
-This is a compelling pattern.
-What's next?
+successor~$\hyperoperation_0=\successor$). 
+The second lines, the otherwise's, follow 
+$\hyperoperation_n(x,y)=\hyperoperation_{n-1}(x,\hyperoperation_n(x,y-1))$.
+We call each $\hyperoperation_n$ the \definend{level~$n$} function
+and these second lines step us up from level to level.
+The next definition takes $n$ as a parameter, to get all levels at once.
 
 \begin{definition}  \label{def:Hyperoperation}
 This is the 
@@ -1649,10 +1645,14 @@ $\map{\hyperoperation}{\N^3}{\N}$.
 \end{equation*}
 \end{definition}
 
-Because of the next result
-we often take~$n$ as a parameter, write it in a subscript, and  
-describe the two-input function $\hyperoperation_n(x,y)$ as 
-$\hyperoperation$'s \definend{level~$n$}. 
+% Note that this is not written in the schema of primitive recursion, since
+% it does not have the two cases.
+% It looks awful close, though.
+
+% Because of the next result
+% we often take~$n$ as a parameter, write it in a subscript, and  
+% describe the two-input function $\hyperoperation_n(x,y)$ as 
+% $\hyperoperation$'s \definend{level~$n$}. 
 
 \begin{lemma}
 $\hyperoperation_0(x,y)=y+1$,
@@ -1683,9 +1683,10 @@ and are left for \cref{exer:HTwoHThree}.
 \end{proof}
 
 \begin{remark}
-The level after exponentiation 
-is \definend{tetration}~$\hyperoperation_4$,
-The values for the first five $y$'s are 
+Level~$4$,
+the level above exponentiation, 
+is \definend{tetration}.
+The first few values are
 $\hyperoperation_4(x,0)=\hyperoperation_3(x,1)=x^1=x$,
 and 
 $\hyperoperation_4(x,1)=\hyperoperation_3(x,\hyperoperation_4(x,0))=x^1=x$,
@@ -1707,15 +1708,16 @@ these two are unequal.
   3^{(3^3)}=3^{27}
 \end{equation*}
 Tetration parenthesizes in the second way, $\hyperoperation_4(3,3)=3^{27}$.
-Incidentally, that equals $\hyperoperation_4(3,3)=7\,625\,597\,484\,987$.
+Incidentally, $3^{27}=7\,625\,597\,484\,987$.
 The rapid growth of the output values is a striking aspect of tetration, and
 of the hyperoperation in general.
 \end{remark}
 
-The prior lemma makes the point that one reason $\hyperoperation$ 
-is interesting to us is that it arises in the wild\Dash it is not
-a contrived example but a quite natural one.
-Another reason is that it is mechanically computable.
+One reason hyperoperation 
+is interesting is that it is not
+a contrived example, it arises in the wild.
+Another
+is that it is mechanically computable.
 The Scheme code falls right out of its definition.
 \begin{lstlisting}
 (define (H n x y)
@@ -1729,24 +1731,25 @@ The Scheme code falls right out of its definition.
 
 \margingraphic{0.18\textwidth}{background/ackermann.jpg}{\label{fig:ackermann}\href{https://en.wikipedia.org/wiki/Wilhelm_Ackermann}{Wilhelm Ackermann 1896--1962}}
 Hyperoperation is one of a family of functions with the same recursion,
-the same last line in \cref{def:Hyperoperation} called
+the same last line in \cref{def:Hyperoperation}. 
+These are called
 \definend{Ackermann functions} after 
-the mathematician who brought them attention.
+the mathematician who brought them attention.\footnote{Ackermann 
+came up earlier, as one of the authors of the 
+\protect\textit{Entscheidungsproblem}.}
 
-We are now in a situation like that
-of \cref{exer:ShowFcnsPrimRec}.
-We've described a function.
-But we've not shown that it is primitive recursive because 
-our 
+We have described hyperoperation
+but we have not shown that it is primitive recursive.
+The recursion
 $
   \hyperoperation(n,x,y)=
   \hyperoperation(n-1, x, \hyperoperation(n, x, y-1))
 $
-is not in the form of \cref{def:PrimitiveRecursion}.
+does not fit the form of \cref{def:PrimitiveRecursion}.
 \begin{equation*}  
-f(x_0,\ldots,x_{n-1},y)= h(f(x_0,\ldots,x_{n-1},y-1),x_0,\ldots,x_{n-1},y-1)
+f(x_0,\ldots,x_{k-1},y)= h(f(x_0,\ldots,x_{k-1},y-1),x_0,\ldots,x_{k-1},y-1)
 \end{equation*}
-The problem is not that $\hyperoperation$'s 
+The problem is not that its
 arguments are stated in a different order; 
 that is cosmetic.
 The problem is that the $\hyperoperation$ following the equal sign
@@ -1755,13 +1758,15 @@ the definition of primitive recursion requires that
 $h$ be a function for which we already have a primitive recursive
 derivation.
 
-Of course, just because the definition that we gave has the wrong
+Of course, just because the definition that we saw has the wrong
 form doesn't mean that
 there is no definition with the right form.
-The proof that it is not primitive recursive is a detour for us
-so it is in an
+However, Ackermann proved that there isn't, 
+that $\hyperoperation$ is not primitive recursive.
+
+The proof is a detour for us so it is in an
 \hyperref[sec:ComputableFunctionNotPrimitiveRecursive]{Extra Section}
-but briefly:~$\hyperoperation$ grows faster 
+but in summary:~$\hyperoperation$ grows faster 
 than any primitive recursive function.
 That is, for any primitive recursive function~$f$ of three inputs,
 there is a sufficiently large $N\in\N$ such that for all 
@@ -1769,9 +1774,9 @@ $n,x,y\in\N$, if $n,x,y> N$ then $\hyperoperation(n,x,y)>f(n,x,y)$.
 Thus $\hyperoperation$ is not primitive recursive.
  
 This is a question of uniformity.
-Every level $\hyperoperation_n$ is primitive recursive.
-But no primitive recursive function can do all levels at once.
-There is no single, uniform, way to compute them all, within the limits
+At every level the function $\hyperoperation_n$ is primitive recursive.
+But no primitive recursive function encompasses all levels at once\Dash
+there is no single, uniform, way to compute them all, within the limits
 of \cref{def:PrimitiveRecursive}.
 
 
@@ -1780,36 +1785,37 @@ of \cref{def:PrimitiveRecursive}.
 \subsection{\protect\(\ \mathbf{\mu} \protect\) recursion}
 The schema of primitive recursion is a productive step towards  
 a definition of all functions that are mechanically computable because it is
-natural, and because many 
+natural and because many 
 familiar functions are primitive recursive.
-But the prior subsection shows that this class is not wide enough
+But the prior subsection shows that this class is not big enough
 to contain all of the mechanically computable functions.
-So we will define a broader class. 
+So we will define a bigger class. 
+% For a hint of the right direction, 
+% we will mention two facts about primitive recursive functions. 
 
-For a hint of the right direction, 
-we will mention two results 
-(giving their proofs would take us too far afield).
-% The first is part of  
-% \cref{sec:ComputableFunctionNotPrimitiveRecursive}:
-% primitive recursives function falls into levels determined by 
-% how many combinations of composition and 
-% primitive recursion are in its derivation.
+% The first is that, as mentioned in the prior subsection and
+% developed in
+% \cref{sec:ComputableFunctionNotPrimitiveRecursive},
+% primitive recursive functions fall into levels 
+% (determined by 
+% the number of compositions and 
+% primitive recursion in their derivation).
 % The hyperoperation is not primitive recursive because it cuts across levels.
-% So we want a way to make functions that, 
-% if what we want isn't on level~$i$, then it can move to level~$i+1$.
+% So we want a way to make functions that cut across levels.
 
-The first is \Cref{exer:PrimRecBoundedOps}.
-It describes that primitive recursion suffices to do bounded operations. 
-For instance, it describes bounded minimization $\mu^{m}i[p(\vec{x},i)]$:
+For a hint of the right direction consider \Cref{exer:PrimRecBoundedOps}.
+It shows that primitive recursion does bounded operations. 
+For instance, it describes bounded minimization $\mu^{m}i[p(\vec{x},i)]$
+defined by:
 where $m\in\N$ and where $p(\vec{x},i)$ is a predicate, a function
 that returns only values of $0$ or~$1$, then
 the minimization operator
-returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
-or else returns~$m$.
+returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$.
+If there is no such~$i$ then it returns~$m$.
+Interpreting $p$'s output values of~$0$ and~$1$ as `false' and~`true',
+this is like a C-like language's \codeinline{while (i==True)} loop.
 
-The second hint fits with the first.
-Contrast these two program constructs,
-expressed here in a C-like language.
+That is, contrast these two C-like program segments.
 \begin{center}
   \begin{minipage}[t]{0.4\linewidth}
     \begin{lstlisting}
@@ -1827,32 +1833,37 @@ while(flag==True){
     \end{lstlisting}
   \end{minipage}
 \end{center}
-On the left the iteration is a bounded, so we know from the start
-that we will iterate ten times (disallowing 
-changing \codeinline{i} inside the loop).
-On the right the iteration is unbounded.
-\citetext{We can show}{\protect\autocite{MeyerRitchie}} 
-that a programming language having only
-bounded loops computes the primitive recursive functions. 
-Adding unbounded loops allows the language to compute anything that 
-is computable by a Turing machine.  
+On the left the iteration is bounded so 
+we know from the start
+that we will go through the loop ten times (assuming \codeinline{i} doesn't
+change inside the loop).
+On the right we have no such guarantee about running time 
+because the iteration is unbounded.
+Indeed, the right might never halt at all.
 
-Consequently, to the combining operations of composition and
-primitive recursion we add unbounded search.
+\citetext{We can prove that an operation is primitive recursive if and only if it is bounded}{\protect\autocite{MeyerRitchie}} 
+by proving that a programming language having only
+bounded loops computes all of the primitive recursive functions
+(see the Extra section). 
+To compute every function that 
+is computable by a Turing machine we must add  
+unbounded operations. 
 
 \begin{definition} \label{def:MuRecursion}
 Suppose that $\map{g}{\N^2}{\N}$.
 We say $\map{f}{\N}{\N}$ is 
-defined from $g$ by \definend{unbounded minimization}, 
+defined from $g$ by \definend{unbounded minimization}
+or \definend{$\mu$-recursion}, 
 written $f(x)=\mu y\,\big[ g(x,y)=0 \big]$,
 if $f(x)=y$ where~$y$ is the least number such that $g(x,y)$ equals~$0$.
 % (and is defined).
 \end{definition}
-
-Intuitively, we've added the capacity to 
+\noindent (Here $g$ is total, for every input pair there is a defined 
+output pair.)
+Intuitively, we  
 look at $g(x,0)$, then at $g(x,1)$, etc., until one of them
 gives the output of~$0$.
-This is like the \codeinline{while(flag==True)} construct.
+Possibly none every do, in which case $f(x)$ is undefined.
 
 \begin{example}
 Let $g(x,y)=\ceiling{(x+1)/(y+1)-1}$, and let $f(x)=\mu\,y[g(x,y)=0]$.
@@ -1873,6 +1884,22 @@ For instance, the first few values of $g(5,y)$ show that $f(5)=5$.
 \end{equation*}
 \end{example}
 
+This Scheme code for unbounded minimization of a two-input function
+explains in what way $\mu$-recursion is recursive.
+\lstinputlisting[firstline=4,lastline=10]{prologue/scheme/mu.scm}
+Observe that here the recursion goes up instead of down, 
+with \codeinline{(+ y 1)}.
+To see it in action, we define the function of the prior example
+\lstinputlisting[firstline=12,lastline=14]{prologue/scheme/mu.scm}
+and get this Scheme interpreter session.
+\begin{lstlisting}
+#;1> (load "mu.scm")
+; loading mu.scm ...
+#;2> (g 5 0)
+5  
+\end{lstlisting}
+
+
 Using the minimization operator  we can get functions whose output 
 value is undefined for some inputs.
 
@@ -1888,7 +1915,8 @@ with no associated output, so it just is part of the landscape.
 
 \begin{definition} \label{def:Recursive}
 A function is 
-\definend{recursive} (or \definend{general recursive})
+\definend{recursive} (or \definend{partial recursive},
+or \definend{general recursive} or \definend{$\mu$-recursive})
 if it can be derived from the initial operations of 
 the \definend{zero} function~$\zero(x)=0$,
 the \definend{successor} function~$\successor(x)=x+1$,

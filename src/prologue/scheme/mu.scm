@@ -17,8 +17,9 @@
 (define (mu g . xs)
   (apply mu-helper (cons g (append xs '(0)))))
 (define (mu-helper g . xs-and-y)
-  (let ((xs (reverse (cdr (reverse xs-and-y))))
-	(value (apply g y-and-xs)))
+  (let ((y (car (reverse xs-and-y)))
+	(xs (reverse (cdr (reverse xs-and-y))))
+	(value (apply g xs-and-y)))
     (if (= 0 value)
 	value
 	(apply mu-helper g (append xs (+ y 1))))))

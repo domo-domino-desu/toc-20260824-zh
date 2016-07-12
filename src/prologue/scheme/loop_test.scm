@@ -82,59 +82,231 @@
 
 
 ;;;; ==================== LOOP programs ======
-(define REGLIST '())
-(define (initialize-REGLIST)
-  (set! REGLIST (list (cons #\A 0) (cons #\B 1))))
 
 
 ;; ======= getters and setters
 (test-begin "register getters and setters")
+(test-assert "make-reg-name: return a symbol?"
+	     (symbol? (make-reg-name 0)))
+(test-assert "  generic case"
+	     (equal? "r0" (symbol->string (make-reg-name 0))))
+
+(define (initialize-REGLIST)
+  (set! REGLIST (list (cons (make-reg-name 0) 0) (cons (make-reg-name 1) 1))))
+
 (initialize-REGLIST)
-(test-assert (equal? (cons #\A 0) 
-		     (get-reg #\A)))
-(test-assert (equal? (cons #\B 1) 
-		     (get-reg #\B)))
-(test-assert (= 0 (get-reg-value #\A)))
-(test-assert (= 1 (get-reg-value #\B)))
+(test-assert "get-reg: generic"
+	     (equal? (cons (make-reg-name 0) 0) 
+		     (get-reg (make-reg-name 0))))
+(test-assert "  generic"
+	     (equal? (cons (make-reg-name 1) 1) 
+		     (get-reg (make-reg-name 1))))
+(test-assert (= 0 (get-reg-value (make-reg-name 0))))
+(test-assert (= 1 (get-reg-value (make-reg-name 1))))
+(test-assert "register getters and setters: no such register"
+	     (= 0 (get-reg-value (make-reg-name 3))))
 (test-assert (= 4 (begin 
-		    (set-reg-value! #\A 4)
-		    (get-reg-value #\A))))
+		    (set-reg-value! (make-reg-name 0) 4)
+		    (get-reg-value (make-reg-name 0)))))
 (test-assert "update existing register" 
 	     (= 4 (begin 
-		    (set-reg-value! #\A 4)
-		    (get-reg-value #\A))))
+		    (set-reg-value! (make-reg-name 0) 4)
+		    (get-reg-value (make-reg-name 0)))))
 (test-assert "create new register"
 	     (= 4 (begin 
-		    (set-reg-value! #\C 4)
-		    (get-reg-value #\C))))
+		    (set-reg-value! (make-reg-name 2) 4)
+		    (get-reg-value (make-reg-name 2)))))
 (test-end "register getters and setters")
 
 
+;; ======= initialize registers
+(test-begin "register initialize")
+(init-regs '(1 2 3))
+;; (show-regs)
+(test-assert "register initialize: generic initialization" 
+	     (= 1 (get-reg-value (make-reg-name 0))))
+(test-assert "  generic initialization" 
+	     (= 2 (get-reg-value (make-reg-name 1))))
+(test-assert "  generic initialization" 
+	     (= 3 (get-reg-value (make-reg-name 2))))
+(init-regs '())
+(test-assert "  empty initialization" 
+	     (= 0 (get-reg-value (make-reg-name 0))))
+(test-assert "  empty initialization" 
+	     (= 0 (get-reg-value (make-reg-name 1))))
+(init-regs '(1 2 3))
+(init-regs '(4 5 6))
+;; (show-regs)
+(test-assert "  redo initialization" 
+	     (= 4 (get-reg-value (make-reg-name 0))))
+(test-assert "  generic initialization" 
+	     (= 5 (get-reg-value (make-reg-name 1))))
+(test-assert "  generic initialization" 
+	     (= 6 (get-reg-value (make-reg-name 2))))
+(test-end "register initialize")
 
 
-;; ======= simulate the instructions, except LOOP
-(test-begin "register manipulations")
-(initialize-REGLIST)
-(test-assert "increment register" 
-	     (= 4 (begin 
-		    (set-reg-value! #\A 3)
-		    (increment-reg! #\A)
-		    (get-reg-value #\A))))
-(test-assert "copy register" 
-	     (= 5 (begin 
-		    (set-reg-value! #\A 5)
-		    (set-reg-value! #\B 3)
-		    (copy-reg! #\A #\B)
-		    (get-reg-value #\B))))
-(test-end "register manipulations")
+;; ======= simple operation implementations
+(test-begin "simple operation implementations")
+(init-regs '(1 2 3))
+(intr-zero (list (make-reg-name 0)))
+(test-assert "intr-zero: generic test"
+	     (= 0 (get-reg-value (make-reg-name 0))))
+(test-assert "  generic test"
+	     (= 2 (get-reg-value (make-reg-name 1))))
+(test-assert " generic test"
+	     (= 0 (get-reg-value (make-reg-name 5))))
+(init-regs '(1 2 3))
+(intr-incr (list (make-reg-name 0)))
+(test-assert "intr-incr: generic test"
+	     (= 2 (get-reg-value (make-reg-name 0))))
+(test-assert "  generic test"
+	     (= 2 (get-reg-value (make-reg-name 1))))
+(init-regs '(1 2 3))
+(intr-copy (list (make-reg-name 0) (make-reg-name 1)))
+; (show-regs)
+(test-assert "intr-copy: generic test"
+	     (= 2 (get-reg-value (make-reg-name 0))))
+(test-assert "  generic test"
+	     (= 2 (get-reg-value (make-reg-name 1))))
+(test-assert "  generic test"
+	     (= 3 (get-reg-value (make-reg-name 2))))
+(test-end "simple operation implementations")
 
 
-;; ======= parse functions
-(test-begin "parse functions")
-(test-assert (equal? '("a b c" "d e f") 
-		     ((split-program-into-lines (string-append "a b c" "#\newline" "d e f")))))
 
-(test-end "parse functions")
+
+;; ======= loop and body
+(test-begin "loop and body")
+(init-regs '(1 2 3))
+(define bd '((zero r0)))
+; (show-regs)
+(intr-body bd)
+(test-assert "intr-body: simple test"
+	     (= 0 (get-reg-value (make-reg-name 0))))
+(test-assert "  simple test"
+	     (= 2 (get-reg-value (make-reg-name 1))))
+(init-regs '(1 2 3))
+(define bd '((zero r0) (incr r1)))
+(intr-body bd)
+(test-assert "intr-body: two steps"
+	     (= 0 (get-reg-value (make-reg-name 0))))
+(test-assert "  two steps"
+	     (= 3 (get-reg-value (make-reg-name 1))))
+(init-regs '(1 2 3))
+(define bd '((zero r1) (incr r2)))
+(intr-body bd)
+(test-assert "intr-body: other two steps"
+	     (= 1 (get-reg-value (make-reg-name 0))))
+(test-assert "  other two steps"
+	     (= 0 (get-reg-value (make-reg-name 1))))
+(test-assert "  other two steps"
+	     (= 4 (get-reg-value (make-reg-name 2))))
+(init-regs '(1 2 3))
+(define bd '((incr r0) (copy r1 r2)))
+(intr-body bd)
+(test-assert "intr-body: include copy"
+	     (= 2 (get-reg-value (make-reg-name 0))))
+(test-assert "  include copy"
+	     (= 3 (get-reg-value (make-reg-name 1))))
+(test-assert "  include copy"
+	     (= 3 (get-reg-value (make-reg-name 2))))
+(define bd '((zero r0) (loop r2 (incr r0))))
+(init-regs '(1 2 3))
+(intr-body bd)
+(test-assert "intr-body: include loop"
+	     (= 3 (get-reg-value (make-reg-name 0))))
+(test-assert "  include loop"
+	     (= 2 (get-reg-value (make-reg-name 1))))
+(test-assert "  include loop"
+	     (= 3 (get-reg-value (make-reg-name 2))))
+(define bd '((zero r0) (loop r2 (incr r0))))
+(init-regs '(1 2 3))
+(interpret bd '(1 2 3))
+(test-assert "interpret: generic"
+	     (= 3 (get-reg-value (make-reg-name 0))))
+(test-assert "  generic"
+	     (= 2 (get-reg-value (make-reg-name 1))))
+(test-assert "  generic"
+	     (= 3 (get-reg-value (make-reg-name 2))))
+(define bd '((zero r0) (loop r1 (loop r2 (incr r0)))))
+(init-regs '(10 20 30))
+(interpret bd '(1 2 3))
+(test-assert "interpret: nested loop"
+	     (= 6 (get-reg-value (make-reg-name 0))))
+(test-assert "  nested loop"
+	     (= 2 (get-reg-value (make-reg-name 1))))
+(test-assert "  nested loop"
+	     (= 3 (get-reg-value (make-reg-name 2))))
+(test-end "loop and body")
+
+
+;; ;; ======= simulate the instructions, except LOOP
+;; (test-begin "register manipulations")
+;; (initialize-REGLIST)
+;; (test-assert "increment register" 
+;; 	     (= 4 (begin 
+;; 		    (set-reg-value! #\A 3)
+;; 		    (increment-reg! #\A)
+;; 		    (get-reg-value #\A))))
+;; (test-assert "copy register" 
+;; 	     (= 5 (begin 
+;; 		    (set-reg-value! #\A 5)
+;; 		    (set-reg-value! #\B 3)
+;; 		    (copy-reg! #\A #\B)
+;; 		    (get-reg-value #\B))))
+;; (test-end "register manipulations")
+
+
+;; ;; ======= parse functions
+;; (test-begin "parse functions")
+;; ; Cut the string by newlines
+;; (test-assert (equal? '("a b c" "d e f") 
+;; 		     (split-program-into-lines (string-append "a b c" "\n" "d e f"))))
+;; (test-assert (equal? '("a b c") 
+;; 		     (split-program-into-lines "a b c")))
+;; ; omit anything after the comment character
+;; (test "drop-comment: no comment character to drop"
+;;       "abc def"
+;;       (drop-comment "abc def"))
+;; (test "  generic comment"
+;;       "abc"
+;;       (drop-comment "abc# def"))
+;; (test "  space before comment char"
+;;       "abc "
+;;       (drop-comment "abc # def"))
+;; (test "  two comment chars"
+;;       "abc"
+;;       (drop-comment "abc# def # ghi"))
+;; (test "  comment char starts line"
+;;       ""
+;;       (drop-comment "# abc def"))
+;; ; split-line-into-toks
+;; (test "split-line-into-toks: generic split"
+;;       '("abc" "def")
+;;       (split-line-into-toks "abc def"))
+;; (test "  return three toks"
+;;       '("abc" "def" "g")
+;;       (split-line-into-toks "abc def g"))
+;; (test "  return one tok"
+;;       '("abc")
+;;       (split-line-into-toks "abc "))
+;; (test "  include comment"
+;;       '("abc" "def")
+;;       (split-line-into-toks "abc def# comment"))
+;; (test "  empty line"
+;;       '("")
+;;       (split-line-into-toks ""))
+;; (test "  extra whitespace"
+;;       '("abc" "def")
+;;       (split-line-into-toks "abc    def"))
+;; (test "  extra whitespace"
+;;       '("abc" "def")
+;;       (split-line-into-toks "     abc def"))
+;; (test "  extra whitespace"
+;;       '("abc" "def")
+;;       (split-line-into-toks "abc def    "))
+;; (test-end "parse functions")
 
 
 

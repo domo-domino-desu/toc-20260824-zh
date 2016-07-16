@@ -241,73 +241,152 @@
 (test-end "loop and body")
 
 
-;; ;; ======= simulate the instructions, except LOOP
-;; (test-begin "register manipulations")
-;; (initialize-REGLIST)
-;; (test-assert "increment register" 
-;; 	     (= 4 (begin 
-;; 		    (set-reg-value! #\A 3)
-;; 		    (increment-reg! #\A)
-;; 		    (get-reg-value #\A))))
-;; (test-assert "copy register" 
-;; 	     (= 5 (begin 
-;; 		    (set-reg-value! #\A 5)
-;; 		    (set-reg-value! #\B 3)
-;; 		    (copy-reg! #\A #\B)
-;; 		    (get-reg-value #\B))))
-;; (test-end "register manipulations")
+
+;; ======= parse functions
+(test-begin "parse functions")
+; Cut the string by newlines
+(test-assert (equal? '("a b c" "d e f") 
+		     (split-program-into-lines (string-append "a b c" "\n" "d e f"))))
+(test-assert (equal? '("a b c") 
+		     (split-program-into-lines "a b c")))
+; omit anything after the comment character
+(test "drop-comment: no comment character to drop"
+      "abc def"
+      (drop-comment "abc def"))
+(test "  generic comment"
+      "abc"
+      (drop-comment "abc# def"))
+(test "  space before comment char"
+      "abc "
+      (drop-comment "abc # def"))
+(test "  two comment chars"
+      "abc"
+      (drop-comment "abc# def # ghi"))
+(test "  comment char starts line"
+      ""
+      (drop-comment "# abc def"))
+; split-line-into-toks
+(test "split-line-into-toks: generic split"
+      '("abc" "def")
+      (split-line-into-toks "abc def"))
+(test "  return three toks"
+      '("abc" "def" "g")
+      (split-line-into-toks "abc def g"))
+(test "  return one tok"
+      '("abc")
+      (split-line-into-toks "abc "))
+(test "  include comment"
+      '("abc" "def")
+      (split-line-into-toks "abc def# comment"))
+(test "  empty line"
+      '("")
+      (split-line-into-toks ""))
+(test "  extra whitespace"
+      '("abc" "def")
+      (split-line-into-toks "abc    def"))
+(test "  extra whitespace"
+      '("abc" "def")
+      (split-line-into-toks "     abc def"))
+(test "  extra whitespace"
+      '("abc" "def")
+      (split-line-into-toks "abc def    "))
+(test-end "parse functions")
 
 
-;; ;; ======= parse functions
-;; (test-begin "parse functions")
-;; ; Cut the string by newlines
-;; (test-assert (equal? '("a b c" "d e f") 
-;; 		     (split-program-into-lines (string-append "a b c" "\n" "d e f"))))
-;; (test-assert (equal? '("a b c") 
-;; 		     (split-program-into-lines "a b c")))
-;; ; omit anything after the comment character
-;; (test "drop-comment: no comment character to drop"
-;;       "abc def"
-;;       (drop-comment "abc def"))
-;; (test "  generic comment"
-;;       "abc"
-;;       (drop-comment "abc# def"))
-;; (test "  space before comment char"
-;;       "abc "
-;;       (drop-comment "abc # def"))
-;; (test "  two comment chars"
-;;       "abc"
-;;       (drop-comment "abc# def # ghi"))
-;; (test "  comment char starts line"
-;;       ""
-;;       (drop-comment "# abc def"))
-;; ; split-line-into-toks
-;; (test "split-line-into-toks: generic split"
-;;       '("abc" "def")
-;;       (split-line-into-toks "abc def"))
-;; (test "  return three toks"
-;;       '("abc" "def" "g")
-;;       (split-line-into-toks "abc def g"))
-;; (test "  return one tok"
-;;       '("abc")
-;;       (split-line-into-toks "abc "))
-;; (test "  include comment"
-;;       '("abc" "def")
-;;       (split-line-into-toks "abc def# comment"))
-;; (test "  empty line"
-;;       '("")
-;;       (split-line-into-toks ""))
-;; (test "  extra whitespace"
-;;       '("abc" "def")
-;;       (split-line-into-toks "abc    def"))
-;; (test "  extra whitespace"
-;;       '("abc" "def")
-;;       (split-line-into-toks "     abc def"))
-;; (test "  extra whitespace"
-;;       '("abc" "def")
-;;       (split-line-into-toks "abc def    "))
-;; (test-end "parse functions")
+;; ======= one-line
+(test-begin "one-line")
+(test "one-line: empty string"
+      ""
+      (one-line '("")))
+(test "one-line: empty list"
+      ""
+      (one-line '()))
+(test "one-line: end generic"
+      ")"
+      (one-line '("end")))
+(test "one-line: loop generic"
+      "(loop r0 "
+      (one-line '("loop" "r0")))
+(test "  loop non-r0"
+      "(loop r5 "
+      (one-line '("loop" "r5")))
+(test "one-line: increment generic"
+      "(incr r0)"
+      (one-line '("r0" "=" "r0" "+" "1")))
+(test " increment non-r0"
+      "(incr r5)"
+      (one-line '("r5" "=" "r5" "+" "1")))
+(test "one-line: copy generic"
+      "(copy r0 r1)"
+      (one-line '("r0" "=" "r1")))
+(test "one-line: zero generic"
+      "(zero r5)"
+      (one-line '("r5" "=" "0")))
+(test "  zero r0"
+      "(zero r0)"
+      (one-line '("r0" "=" "0")))
+(test-end "one-line")
 
+
+
+
+;; ======= parse-loop
+(test-begin "parse-loop")
+(define p "r0 = 0")
+(test "parse-loop: simple program, zero"
+      "((zero r0))"
+      (parse-loop p))
+(define p "r0 = r0 + 1")
+(test "  simple program, increment"
+      "((incr r0))"
+      (parse-loop p))
+(define p "r0 = r1")
+(test "  simple program, copy"
+      "((copy r0 r1))"
+      (parse-loop p))
+(define p "r0 = r1\nr0 = 0")
+(test "two-line program"
+      "((copy r0 r1)(zero r0))"
+      (parse-loop p))
+(define p "loop r0\n r1 = 0\nend")
+(test "loop-involved program"
+      "((loop r0 (zero r1)))"
+      (parse-loop p))
+(define p "loop r0\n r1 = 0\nloop r1\nr2 = r2 + 1\nend\nend")
+(test "loop-involved program"
+      "((loop r0 (zero r1)(loop r1 (incr r2))))"
+      (parse-loop p))
+;; (define pgm "r1 = r1 + 1\nloop r1\nr0 = r0 + 1\nend")
+;; (define pl (string-append "(define pe '" (parse-loop pgm) ")"))
+;; (write pl) (newline)
+;; (rw pl)
+;; (write (list? pe)) (newline)
+(test-end "parse-loop")
+
+
+
+
+
+
+;; ======= ALGOL syntax
+(test-begin "loop-without-parens")
+(define p "r0 = r0 + 1")
+(test "loop in ALGOL syntax: generic case"
+      1
+      (loop-without-parens p '()))
+(define p "r1 = r1 + 1\nr0 = r1")
+(test "  simple copy"
+      1
+      (loop-without-parens p '()))
+(define p "r1 = r1 + 1\nr1 = r1 + 1\nr0 = r1")
+(test "  two-step simple copy"
+      2
+      (loop-without-parens p '()))
+(define p "r1 = r1 + 1\nr1 = r1 + 1\nloop r1\nr0 = r0 + 1\nend")
+(test "  loop"
+      2
+      (loop-without-parens p '()))
+(test-end "loop-without-parens")
 
 
 

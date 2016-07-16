@@ -199,37 +199,76 @@
 
 
 
-;; ;; parse functions
+;; parse functions
 
-;; ;; split-program-into-lines  split the string by newlines
-;; (define (split-program-into-lines p)
-;;   (string-split p "\n"))
+;; split-program-into-lines  split the string by newlines
+(define (split-program-into-lines p)
+  (string-split p "\n"))
 
-;; ;; A loop-program is a vector of strings, one per program line
-;; (define (make-loop-program p)
-;;   (apply vector (split-program-into-lines p))) 
+;; A loop-program is a vector of strings, one per program line
+(define (make-loop-program p)
+  (apply vector (split-program-into-lines p))) 
 
-;; ;; drop-comment  omit anything in the line from COMMENT-CHARACTER on out
-;; (define COMMENT-CHARACTER #\#)
-;; (define (drop-comment ln)
-;;   (if (or (= (string-length ln) 0)
-;; 	  (char=? (string-ref ln 0) COMMENT-CHARACTER))
-;;       ""
-;;       (let ((split-ln (string-split ln (make-string 1 COMMENT-CHARACTER))))
-;; 	(if (= (length split-ln) 1)
-;; 	    ln
-;; 	    (car split-ln)))))
+;; drop-comment  omit anything in the line from COMMENT-CHARACTER on out
+(define COMMENT-CHARACTER #\#)
+(define (drop-comment ln)
+  (if (or (= (string-length ln) 0)
+	  (char=? (string-ref ln 0) COMMENT-CHARACTER))
+      ""  ; return empty string
+      (let ((split-ln (string-split ln (make-string 1 COMMENT-CHARACTER))))
+	(if (= (length split-ln) 1)   ; no comment char there
+	    ln
+	    (car split-ln)))))
 
-;; ;; split-line-into-toks  return the tokens, with comments and whitespace removed
-;; (define (split-line-into-toks ln)
-;;   (let* ((without-comment (drop-comment ln))
-;; 	 (csi-split (string-split without-comment " \n\t")))
-;; 	(if (null? csi-split)
-;; 	    '("")
-;; 	    csi-split)))
+;; split-line-into-toks  return the tokens, with comments and whitespace removed
+(define (split-line-into-toks ln)
+  (let* ((without-comment (drop-comment ln))
+	 (csi-split (string-split without-comment " \n\t")))
+	(if (null? csi-split)
+	    '("")
+	    csi-split)))
 
+;; one-line  Return a string translation of the one line, already in tokens
+(define (one-line tok-list)
+  (cond
+   ((or (null? tok-list) (equal? "" (car tok-list)))
+    "")
+   ((equal? "loop" (car tok-list)) 
+    (string-append "(loop " (cadr tok-list) " "))
+   ((equal? "end" (car tok-list)) 
+    ")")
+   ((= (length tok-list) 5) 
+    (string-append "(incr " (car tok-list) ")"))
+   ((eq? (string->number (caddr tok-list)) #f) 
+    (string-append "(copy " (car tok-list) " " (caddr tok-list) ")"))
+   (else 
+    (string-append "(zero " (car tok-list) ")"))
+    ))
 
+;; parse-loop
+(define (parse-loop pgm)
+  (define (parse-loop-helper v i)  ; i=index of line in vector, t=string so far
+    (if (>= i (vector-length v))
+	""
+	(string-append (one-line (split-line-into-toks (vector-ref v i)))
+		       (parse-loop-helper v (+ i 1)))))
 
+  (let ((lines (make-loop-program pgm)))
+    (string-append "(" (parse-loop-helper lines 0) ")")))
+
+;; rw
+(define FN "fn.scm")
+;; (define my-file )
+(define (rw s)
+  (define myfile (open-output-file FN))
+  (display s myfile)
+  (close-output-port myfile)
+  (load FN))
+
+(define (loop-without-parens pgm data)
+  (let ((pl (string-append "(define pe '" (parse-loop pgm) ")")))
+    (rw pl)
+    (interpret pe data)))
 
 
 

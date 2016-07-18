@@ -64,8 +64,7 @@
 ;; A register is a pair (name:symbol contents:natural number)
 (define REGLIST '())
 (define (show-regs)  ; debugging
-  (write REGLIST)
-  (newline))
+  (write REGLIST) (newline))
 
 (define (clear-regs!)
   (set! REGLIST '()))
@@ -256,15 +255,15 @@
   (let ((lines (make-loop-program pgm)))
     (string-append "(" (parse-loop-helper lines 0) ")")))
 
-;; rw
+;; interpret-string;  interpret a string as Scheme code
 (define FN "fn.scm")
-;; (define my-file )
-(define (rw s)
+(define (interpret-string s)
   (define myfile (open-output-file FN))
   (display s myfile)
   (close-output-port myfile)
   (load FN))
 
+;; loop-without-parens  Write loop programs in ALGOL-like syntax
 (define (loop-without-parens pgm data)
   (let ((pl (string-append "(define pe '" (parse-loop pgm) ")")))
     (rw pl)

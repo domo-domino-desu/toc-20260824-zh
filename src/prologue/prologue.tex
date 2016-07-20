@@ -3672,11 +3672,26 @@ The other combiner operation is primitive recursion.
       &\case{if $y=\successor(z)$}
   \end{cases}
 \end{equation*}
-Suppose $f()$
+Suppose that we have LOOP programs $P_g$ and~$P_h$.
+The register swapping needed is similar to what happens for compostion
+so we won't discuss it. 
+The program $P_f$ starts by running $P_g$. 
+Then it sets a fresh register to $0$; call that register~\codeinline{t}.
+Now it enters a loop based on the register~\codeinline{y}
+(that is, successive times through the loop count down as $y$,
+$y-1$, etc.).
+The body of the loop computes 
+$f(x_0,\ldots,x_{k-1},t+1)=h(f(x_0,\ldots,x_{k-1},t),\,x_0,\,\ldots,\,x_{k-1},\,t)$
+by running~$P_h$, and then it increments \codeinline{t}. 
 
+Thus if a function is primitive recursive then it is computed by a LOOP
+program.
+The converse holds also, but proving it is beyond our scope.
 
-To make an interpreter, we start with one for a different syntax.
-Replace the \textsc{C}-like syntax with a \textsc{LISP}-like one.
+We have an interpreter for the LOOP language with two interesting
+aspects.
+The first is that we start with a different syntax:
+we replace the \textsc{C}-like syntax with a \textsc{LISP}-like one.
 For instance, replace the syntax on the left with that on the right.
 \begin{center}
   \begin{minipage}[t]{0.45\linewidth}
@@ -3694,9 +3709,9 @@ end
     \end{lstlisting}
   \end{minipage}
 \end{center}
-The advantage is that the parentheses
-automatically match the begining of a construct with its end, and we
-shall not need a stack to keep track of the nested loops.  
+The advantage of making the switch in syntax is that the parentheses
+automatically match the begining of a construct with its end, and 
+to parse we shall not need a stack to keep track of the nested loops.  
 
 This interpreter has registers \codeinline{r0}, \codeinline{r1}, \ldots\,,
 that hold natural numbers.
@@ -3706,18 +3721,91 @@ There are an unlimited number of registers; when
 \codeinline{set-reg-value!} is asked to act on a  
 register that is not on the list, it puts it on the list. 
 
-Besides this initialization done by \codeinline{set-reg-value!}, 
-two more the four LOOP operations are straightforward.
-\lstinputlisting[firstline=91, lastline=96]{prologue/scheme/loop.scm}
+Besides the initialization done by \codeinline{set-reg-value!}, 
+two of the remaining three LOOP operations are straightforward.
+\lstinputlisting[firstline=91, lastline=104]{prologue/scheme/loop.scm}
 
+The last LOOP operation is \codeinline{loop} itself.
+Such an instruction can have inside it the body of an entire LOOP program.
+\lstinputlisting[firstline=105, lastline=128]{prologue/scheme/loop.scm}
+
+Finally, there is the code to interpret a program, including initializing
+the the registers so we can view the input-output behavior as computing
+a function. 
+\lstinputlisting[firstline=132, lastline=149]{prologue/scheme/loop.scm}
+As given, this prints only the value of~\codeinline{r0}, 
+which is all we shall need here.
+
+Here is a sample usage.
+The LOOP program, in LISP syntax, is \codeinline{pe}.
+\begin{lstlisting}
+#;1> (load "loop.scm")
+#;2> (define pe '((incr r0) (incr r0) (loop r0 (incr r0))))
+#;3> (interpret pe '(5))
+14  
+\end{lstlisting}
+With an initial value of~$5$, after being incremented twice then 
+\codeinline{r0} will have a value of~$7$.
+So the \codeinline{loop} runs seven times, 
+each time incrementing~\codeinline{r0},
+resulting in an output value of~$14$.
+
+We can now make an interpreter for the C-like syntax shown earlier.
+We first do some bookkeeping such as splitting the
+program into lines and dropping comments.
+Then we convert the instructions as a purely string operation.
+Thus \str{r0 = 0} becomes \str{(zero r0)}.
+Similarly,
+\str{r0 = r0 + 1} becomes \str{(incr r0)}
+and \str{r0 = r1} becomes \str{(copy r0 r1)}.
+Finally, \str{loop r0} becomes \str{(loop r0} (note the missing closing paren),
+and \str{end} becomes \str{)}.
+
+Here is the second interesting thing about the interpreter.
+Now that the C-like syntax has been converted to a string in LISP-like syntax,
+we just need to interpret the string as a list.
+We write it to a file and then \codeinline{load} that
+file.
+That is, unlike in many programming languages, in Scheme we can create code
+on the fly.
+
+Here is an example of running the interpreter.
+The program in C-like syntax is this.
+\begin{lstlisting}
+r1 = r1 + 1
+r1 = r1 + 1
+loop r1
+  r0 = r0 + 1
+end  
+\end{lstlisting}
+And here we run that in the Scheme interpreter.
+\begin{lstlisting}
+#;4> (define p "r1 = r1 + 1\nr1 = r1 + 1\nloop r1\nr0 = r0 + 1\nend")
+#;5> (loop-without-parens p '())
+; loading fn.scm ...
+2
+\end{lstlisting}
 
 
 \begin{exercise}
+\begin{extraexercise}
+Write a LOOP program that triples the input.    
+\end{extraexercise}
+
+\begin{extraexercise}
+Write a LOOP program that adds two inputs.    
+\end{extraexercise}
+
 \begin{extraexercise}
 Change the interpreter to allow statements like \codeinline{r0 = r0 + 2}.    
 \end{extraexercise}
 \begin{extraexercise}
 Modify the interpreter to allow statements like \codeinline{r0 = 1}.    
+\end{extraexercise}
+\begin{extraexercise}
+Modify the definition of \codeinline{interpret}
+to take in one more argument, a natural number~$m$,
+and return a list of the contents of the first~$m$ registers.
 \end{extraexercise}
 \end{exercise}
 

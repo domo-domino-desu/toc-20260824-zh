@@ -95,19 +95,7 @@
 (define (copy-reg! r0 r1)
   (set-reg-value! r1 (get-reg-value r0))) 
 
-;; init-regs  Initialize the registers r0, r1, r2, .. to the values in data 
-(define (init-regs data)
-  (define (init-regs-helper i data)
-    (if (null? data) 
-	'()
-	(begin
-	  (set-reg-value! (make-reg-name i) (car data))
-	  (init-regs-helper (+ i 1) (cdr data)))))
-  (clear-regs!)
-  (set-reg-value! (make-reg-name 0) 0)
-  (init-regs-helper 0 data))
-
-;; intr-zero, intr-incr, intr-copy, intr-loop:  implement each operation
+;; Implement each operation
 (define (intr-zero pars)
   (set-reg-value! (car pars) 0))
 (define (intr-incr pars)
@@ -148,57 +136,22 @@
   (intr-body progr)
   (get-reg-value (make-reg-name 0)))
 
-
-  
-
-;; COMPUTER is a global variable storing the information
-;; (define COMPUTER (make-vector 3))
-;; (define IP-INDEX 0)
-;; (define LOOPCOUNT-INDEX 1)
-;; (define REGISTERS-INDEX 2)
-
-;; (define (initialize-computer)
-;;   (set! COMPUTER (vector 0 '() REGLIST)))
-;; (define (get-IP)
-;;   (vector-ref COMPUTER IP-INDEX))
-;; (define (set-IP i)
-;;   (vector-set! COMPUTER IP-INDEX i))
-;; ;; a loopcount is a list of pairs (dex:natural lineno:natural)
-;; ;; the dex is counted down each time through the loop; lineno is where LOOP is
-;; (define (get-LOOPCOUNT)
-;;   (vector-ref COMPUTER LOOPCOUNT-INDEX))
-;; (define (set-LOOPCOUNT! list-of-pairs)
-;;   (vector-set! COMPUTER LOOPCOUNT-INDEX list-of-pairs))
-;; (define (get-LOOPCOUNT-pair)
-;;   (car (get-LOOPCOUNT)))
-;; (define (set-LOOPCOUNT-pair! pr)
-;;   (cons pr (cdr (get-LOOPCOUNT))))
-
-;; (define (get-LOOPCOUNT-pair-dex)
-;;   (car (get-LOOPCOUNT-pair)))
-;; (define (get-LOOPCOUNT-pair-lineno)
-;;   (cadr (get-LOOPCOUNT-pair)))
-;; (define (set-LOOPCOUNT-pair-dex! newdex)
-;;   (set-LOOPCOUNT-pair!) (list newdex (get-LOOPCOUNT-pair-lineno)))
-;; (define (set-LOOPCOUNT-pair-lineno! newlineno)
-;;   (set-LOOPCOUNT-pair!) (list (get-LOOPCOUNT-pair-dex) newlineno))
-
-;; (define (push-LOOPCOUNT-pair pr)
-;;   (set-LOOPCOUNT! (cons pr (get-LOOPCOUNT))))
-;; (define (pop-LOOPCOUNT-pair)
-;;   (set-LOOPCOUNT! (cdr (get-LOOPCOUNT))))
-;; (define (decrement-LOOPCOUNT-dex)
-;;   (let ((d (get-LOOPCOUNT-dex)))
-;;     (if (= d 0)
-;; 	(pop-LOOPCOUNT-pair)
-;; 	(set-LOOPCOUNT-pair-dex! (- d 1)))
+;; init-regs  Initialize the registers r0, r1, r2, .. to the values in data 
+(define (init-regs data)
+  (define (init-regs-helper i data)
+    (if (null? data) 
+	'()
+	(begin
+	  (set-reg-value! (make-reg-name i) (car data))
+	  (init-regs-helper (+ i 1) (cdr data)))))
+  (clear-regs!)
+  (set-reg-value! (make-reg-name 0) 0)
+  (init-regs-helper 0 data))
 
 
 
-
-
-
-;; parse functions
+;; ===============================================
+;; parse functions; go from ALGOL syntax to LISP syntax
 
 ;; split-program-into-lines  split the string by newlines
 (define (split-program-into-lines p)
@@ -266,7 +219,7 @@
 ;; loop-without-parens  Write loop programs in ALGOL-like syntax
 (define (loop-without-parens pgm data)
   (let ((pl (string-append "(define pe '" (parse-loop pgm) ")")))
-    (rw pl)
+    (interpret-string pl)
     (interpret pe data)))
 
 

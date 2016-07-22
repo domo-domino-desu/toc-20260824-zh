@@ -1533,7 +1533,7 @@ and must therefore be a constant, $g(\,)=0$,
 while $h$ has two inputs~$h(a,b)=b$. 
 \end{example}
 
-\begin{example}
+\begin{example}  \label{ex:ProperSub}
 As with the prior example, subtraction $x-y$ is a problem
 so in its place we use  
 \definend{proper subtraction}, often denoted $x\dotminus y$,
@@ -2513,13 +2513,29 @@ to get a string showing the current tape between the two limits.
 
 \begin{exercises}
 \begin{extraexercise}
-Run the simulator on \codeinline!M-pred!.    
+Run the simulator on the code for \codeinline!P-pred! given earlier.    
 \end{extraexercise}
 
 \begin{extraexercise}
 Run the simulator on Example~\ref{ex:MAdd}'s $\TM_{\text{add}}$ to add
 $2+3$.    
 \end{extraexercise}
+
+\begin{extraexercise}
+Write a Turing machine to perform the operation of adding~$3$,
+so that given as input a tape containing only a string of $n$ consecutive
+\str{1}'s, it returns a tape with a string of $n+3$ consecutive \str{1}'s.
+Follow our convention that when the program starts and ends
+the head is under the first \str{1}.
+\end{extraexercise}
+
+\begin{extraexercise}
+Write a Turing machine to perform the proper subtraction
+operation on two inputs, often denoted $x\dotminus y$,
+that yields $x-y$ if $x\geq y$ and~$0$ otherwise. 
+Run it on the simulator to compute $5\dotminus 3$ and $3\dotminus 5$.
+\end{extraexercise}
+
 \end{exercises}
 
 
@@ -2743,7 +2759,23 @@ the current flows between \textsf{D} and~\textsf{S},
 the resistor drops the voltage, 
 and the output is~$V_{\text{out}}=0$.
 
+Thus, for this device
+the voltage out $V_{\text{out}}=0$ is the opposite of the voltage in~$V_{\text{in}}$.
+Of course, when $V_{\text{in}}=0$ the output voltage of~$5$ doesn't come from 
+thing air; it is supplied by the battery.
+
+
 \begin{exercises}
+\begin{extraexercise}
+Make a truth table for each of these propositions.
+\begin{exparts*}
+\item $(P\wedge Q)\wedge R$
+\item $P\wedge (Q\wedge R)$
+\item $P\wedge (Q\vee R)$
+\item $(P\wedge Q)\vee (P\wedge R)$
+\end{exparts*}
+\end{extraexercise}
+
 \begin{extraexercise}
 \begin{exparts*}
 \item Make a three-input table for the behavior: the output is~$1$ 
@@ -2792,17 +2824,18 @@ Construct a circuit with the behavior specified in the tables below:
 \end{extraexercise}
 
 \begin{extraexercise}
-When we add two binary numbers, just as when we add two decimal numbers,
-we start at the right in the one's column.  
-We add those two, and record the result and possibly carry a~$1$ to the
+The most natural way to add two binary numbers 
+works like the grade school algorithm to add two decimal numbers.
+Start at the right with the one's column.  
+Add those two, record the result, and possibly carry a~$1$ to the
 next column.
-Then we add down the next column, but we must remember to include any carry.
-We repeat the process from right to left.
+Then add down the next column, remembering to include any carry.
+Repeat the process from right to left.
 \begin{exparts}
 \item Use this method to add the two binary numbers $1011$ and $1101$.
-\item Devise a table giving the desired behavior in adding 
-  the numbers in a column; note that 
-  it must have three inputs because of the possibility of a carry.
+\item Make a truth table giving the desired behavior in adding 
+  the numbers in a column.
+  It must have three inputs because of the possibility of a carry.
   It must also have two output columns, one for the total and one for 
   the carry. 
 \item Draw the circuits. 
@@ -3107,11 +3140,12 @@ successor, addition, multiplication, etc.
 % In place of $\hyperoperation(n,x,y)$ we often write $\hyperoperation_n(x,y)$  
 % and describe this as \definend{level~$n$} of the function~$\hyperoperation$.
 
-\begin{wrapfigure}{R}{0.2\textwidth}
-\centering
-\includegraphics[width=0.2\textwidth]{background/peter.jpg} % http://www.agnesscott.edu/lriddle/women/peter.htm
-\caption{\label{fig:peter}\href{http://www.agnesscott.edu/lriddle/women/peter.htm}{R\'ozsa P\'eter 1905--1977}}
-\end{wrapfigure}
+\margingraphic{0.2\textwidth}{prologue/peter.jpg}{\label{fig:peter}\href{http://www.agnesscott.edu/lriddle/women/peter.htm}{R\'ozsa P\'eter 1905--1977}}
+% \begin{wrapfigure}{R}{0.2\textwidth}
+% \centering
+% \includegraphics[width=0.2\textwidth]{background/peter.jpg} % http://www.agnesscott.edu/lriddle/women/peter.htm
+% \caption{\label{fig:peter}\href{http://www.agnesscott.edu/lriddle/women/peter.htm}{R\'ozsa P\'eter 1905--1977}}
+% \end{wrapfigure}
 We have quoted a result that~$\hyperoperation$, while intuitively
 mechanically computable, is not primitive recursive.
 The details of that result's proof are awkward.
@@ -3497,42 +3531,20 @@ computational behavior is easy to analyze.
 We will support this contention by giving a programming language
 that computes primitive recursive functions and that is easy.
 
-In everyday programming the most familiar looping constructs are 
+The most familiar looping constructs are 
 \codeinline!for! and \codeinline!while!.
 The difference is that 
 in a \codeinline!for! loop you know in advance the number of times 
 that the code will pass through the loop but a \codeinline!while! loop can go 
 an unbounded number of times.
 
-% %\begin{verbatim}
-% %for (i=0; i<=10; i++) {      while (--) {
-% %   :                           : 
-% %};                           };
-% %\end{verbatim}
-
-% \begin{center}
-%   \begin{minipage}{0.4\linewidth}
-%     \begin{lstlisting}
-%       for (i=0; i<=10; i++) {
-%         ...
-%       }
-%     \end{lstlisting}
-%   \end{minipage}
-%   \hspace{2em}
-%   \begin{minipage}{0.4\linewidth}
-%     \begin{lstlisting}
-%       while not(flag) {
-%         ...
-%       }
-%     \end{lstlisting}    
-%   \end{minipage}
-% \end{center}
-
 \begin{extratheorem}[Meyer and Ritchie, 1967]
 A function is primitive recursive if and only if it can be computed 
 without using unbounded loops.  
 \end{extratheorem}
 
+% Picture: http://www.zdnet.com/article/without-dennis-ritchie-there-would-be-no-jobs/
+\margingraphic{0.2\textwidth}{prologue/ritchie.jpg}{\label{fig:ritchie}\href{https://en.wikipedia.org/wiki/Dennis_Ritchie}{Dennis Ritchie 1941--2011 Inventor of the C language}}
 We will show this by computing primitive recursive functions 
 in a language that lacks unbounded loops.
 Programs in this language execute on a machine model that has registers
@@ -3690,11 +3702,11 @@ The converse holds also, but proving it is beyond our scope.
 
 We have an interpreter for the LOOP language with two interesting
 aspects.
-The first is that we start with a different syntax:
-we replace the \textsc{C}-like syntax with a \textsc{LISP}-like one.
-For instance, replace the syntax on the left with that on the right.
+The first is that we change the syntax,
+replacing the \textsc{C}-looking syntax above with a \textsc{LISP}-ish one.
+For instance, we swap the syntax on the left for that on the right.
 \begin{center}
-  \begin{minipage}[t]{0.45\linewidth}
+  \begin{minipage}[t]{0.4\linewidth}
     \begin{lstlisting}
 r1 = r1 + 1
 loop r1
@@ -3703,15 +3715,16 @@ end
     \end{lstlisting}
   \end{minipage}
   \qquad
-  \begin{minipage}[t]{0.45\linewidth}
+  \begin{minipage}[t]{0.4\linewidth}
     \begin{lstlisting}
 ((incr r1) (loop r1 (incr r0)))      
     \end{lstlisting}
   \end{minipage}
 \end{center}
-The advantage of making the switch in syntax is that the parentheses
-automatically match the begining of a construct with its end, and 
-to parse we shall not need a stack to keep track of the nested loops.  
+The advantage of this switch is that the parentheses
+automatically match the begining of a \codeinline{loop} with the matching end 
+and so the interpreter that we write will not need a stack to keep track of 
+loop nesting.  
 
 This interpreter has registers \codeinline{r0}, \codeinline{r1}, \ldots\,,
 that hold natural numbers.
@@ -3789,7 +3802,7 @@ And here we run that in the Scheme interpreter.
 
 \begin{exercise}
 \begin{extraexercise}
-Write a LOOP program that triples the input.    
+Write a LOOP program that triples its input.    
 \end{extraexercise}
 
 \begin{extraexercise}
@@ -3797,15 +3810,15 @@ Write a LOOP program that adds two inputs.
 \end{extraexercise}
 
 \begin{extraexercise}
-Change the interpreter to allow statements like \codeinline{r0 = r0 + 2}.    
+Modify the interpreter to allow statements like \codeinline{r0 = r0 + 2}.    
 \end{extraexercise}
 \begin{extraexercise}
 Modify the interpreter to allow statements like \codeinline{r0 = 1}.    
 \end{extraexercise}
 \begin{extraexercise}
 Modify the definition of \codeinline{interpret}
-to take in one more argument, a natural number~$m$,
-and return a list of the contents of the first~$m$ registers.
+so that it takes one more argument, a natural number~$m$,
+and returns the contents of the first~$m$ registers.
 \end{extraexercise}
 \end{exercise}
 

@@ -6,6 +6,9 @@
 \ProcessOptions \relax
 \LoadClass[oneside]{book}
 
+% Use UTF-8
+\usepackage[utf8]{inputenc}
+
 % Make PDF offer better copy and paste
 \usepackage{cmap}  
 

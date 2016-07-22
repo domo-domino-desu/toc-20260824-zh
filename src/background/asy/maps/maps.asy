@@ -171,6 +171,68 @@ shipout(format("maps%02d",picnum),pic,format="pdf");
 
 
 
+// ......................................
+// One to one maps for Schroder-Bernstein
+picture pic;
+int picnum = 3;
+unitsize(pic,1cm);
+
+// Establish all the stuff to draw
+path domain, codomain;
+domain = setbean(h,v);
+codomain = shift(DOMAINTOCODOMAIN,0)*setbean(h,v);
+pair[] domainpoint, codomainpoint;
+for (int i; i<3; ++i) {
+  domainpoint[i] = (0.5*h,((-2/3)+0.1)*v+(2i/3)*(1)*v);
+  dot(pic,domainpoint[i],DARKPEN+black);
+}
+for (int i; i<3; ++i) {
+  codomainpoint[i] = shift(DOMAINTOCODOMAIN,0)*domainpoint[i];
+  dot(pic,codomainpoint[i],DARKPEN+black);
+}
+path[] farrow, garrow;
+farrow[2] = domainpoint[2]{dir(10)}..{dir(-30)}codomainpoint[0];
+farrow[1] = domainpoint[1]{dir(25)}..{dir(-10)}codomainpoint[2];
+farrow[0] = domainpoint[0]{dir(25)}..{dir(-10)}codomainpoint[1];
+garrow[2] = codomainpoint[2]{dir(180+20)}..domainpoint[2];
+garrow[1] = codomainpoint[1]{dir(180+20)}..domainpoint[1];
+garrow[0] = codomainpoint[0]{dir(180+20)}..domainpoint[0];
+// now draw; want white area around map arrow thru the border
+// First the outlines
+draw(pic,domain,LIGHTPEN);
+draw(pic,codomain,LIGHTPEN);
+// Next the arrow, wider, in white
+for (int i; i<3; ++i) {  // garrows in white
+  draw(pic,subpath(garrow[i],0.04,0.96),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
+}
+for (int i; i<3; ++i) {  // farrows in white
+  draw(pic,subpath(farrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
+}
+// Now fill, draw dots, and draw arrows narrow
+fill(pic,domain,lightcolor);
+fill(pic,codomain,lightcolor);
+for (int i; i<3; ++i) {
+  dot(pic,domainpoint[i],DARKPEN+black);
+  label(pic,format("\tiny $%d$",i),domainpoint[i],W);
+}
+for (int i; i<3; ++i) {
+  dot(pic,codomainpoint[i],DARKPEN+black);
+  // label(pic,format("\tiny \str{%s}",i+97),codomainpoint[i],E);
+}
+// don't know how to get ASCII
+label(pic,"\tiny \str{c}",codomainpoint[2],E);
+label(pic,"\tiny \str{b}",codomainpoint[1],E);
+label(pic,"\tiny \str{a}",codomainpoint[0],E);
+for (int i; i<3; ++i) {  // garrows
+  draw(pic,subpath(garrow[i],0.04,0.96),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+boldcolor);
+}
+for (int i; i<3; ++i) { // farrows
+  draw(pic,subpath(farrow[i],0.08,0.94),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+highlightcolor);
+}
+shipout(format("maps%02d",picnum),pic,format="pdf");
+
+
+
 
 // // Parameters
 // real horiz_gap = 1;

@@ -15,16 +15,6 @@ settings.outformat="pdf";
 import node;
 size(0,0);  // units are big points: 72 is 1inch
 
-// defaultnodestyle=nodestyle(xmargin=3pt, ymargin=0,
-// 			   drawfn=None); // FillDrawer(lightgray,black));
-
-// defaultnodestyle=nodestyle(xmargin=3pt, ymargin=0,
-// 			   drawfn=FillDrawer(lightgray,black));
-// nodestyle ns2=nodestyle(xmargin=0, ymargin=3pt,
-// 			drawfn=FillDrawer(lightgray,black));
-// defaultdrawstyle=drawstyle(p=fontsize(8pt)+fontcommand("\ttfamily"),
-// 			   arrow=Arrow(6));
-
 
 // define nodes
 node start=nroundbox("Start");

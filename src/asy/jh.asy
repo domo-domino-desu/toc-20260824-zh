@@ -185,7 +185,7 @@ pen EDGEPEN=fontsize(7pt); // +fontcommand("\ttfamily");
 // // define edge style
 defaultdrawstyle=drawstyle(p=EDGEPEN, arrow=Arrow(DefaultHead,size=3));
 // // Standard node is single-circle border
-defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(FILLCOLOR,black));
+defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(backgroundcolor,black));
 // // Double circle nodes
 nodestyle ns_accepting=nodestyle(textpen=NODEPEN, drawfn=Filler(FILLCOLOR)+DoubleDrawer(black));
 // // nodes without any boxing

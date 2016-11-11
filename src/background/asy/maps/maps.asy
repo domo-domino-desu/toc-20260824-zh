@@ -22,6 +22,8 @@ path setbean(real h=1, real v=1) {
   p = (0,0)..(0,v)..(h,v)..tension(1.2)..(h,-v)..(0,-v)..cycle;
   return p;
 }
+pen BEANCOLOR = backgroundcolor;
+pen ARROWCOLOR = highlightcolor;
 
 real h, v;  // horizontal and vertical units for beans
 h = 0.70; v = h; 
@@ -56,8 +58,8 @@ draw(pic,codomain,LIGHTPEN);
 for (int i; i<4; ++i) {
   draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
 }
-fill(pic,domain,lightcolor);
-fill(pic,codomain,lightcolor);
+fill(pic,domain,BEANCOLOR);
+fill(pic,codomain,BEANCOLOR);
 for (int i; i<4; ++i) {
   dot(pic,domainpoint[i],DARKPEN+black);
 }
@@ -66,7 +68,7 @@ for (int i; i<3; ++i) {
 }
 // now arrows narrower
 for (int i; i<4; ++i) {
-  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+highlightcolor);
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
 }
 shipout(format("maps%02d",picnum),pic,format="pdf");
 
@@ -105,8 +107,8 @@ for (int i; i<3; ++i) {
   draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
 }
 // Now fill, draw dots, and draw arrows narrow
-fill(pic,domain,lightcolor);
-fill(pic,codomain,lightcolor);
+fill(pic,domain,BEANCOLOR);
+fill(pic,codomain,BEANCOLOR);
 for (int i; i<3; ++i) {
   dot(pic,domainpoint[i],DARKPEN+black);
 }
@@ -114,7 +116,7 @@ for (int i; i<4; ++i) {
   dot(pic,codomainpoint[i],DARKPEN+black);
 }
 for (int i; i<3; ++i) {
-  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+highlightcolor);
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
 }
 shipout(format("maps%02d",picnum),pic,format="pdf");
 
@@ -154,8 +156,8 @@ for (int i; i<3; ++i) {
   draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
 }
 // Now fill, draw dots, and draw arrows narrow
-fill(pic,domain,lightcolor);
-fill(pic,codomain,lightcolor);
+fill(pic,domain,BEANCOLOR);
+fill(pic,codomain,BEANCOLOR);
 for (int i; i<3; ++i) {
   dot(pic,domainpoint[i],DARKPEN+black);
   label(pic,format("\tiny $%d$",i),domainpoint[i],W);
@@ -165,7 +167,7 @@ for (int i; i<4; ++i) {
   label(pic,format("\tiny $%d$",i),codomainpoint[i],E);
 }
 for (int i; i<3; ++i) {
-  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+highlightcolor);
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
 }
 shipout(format("maps%02d",picnum),pic,format="pdf");
 
@@ -209,8 +211,8 @@ for (int i; i<3; ++i) {  // farrows in white
   draw(pic,subpath(farrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
 }
 // Now fill, draw dots, and draw arrows narrow
-fill(pic,domain,lightcolor);
-fill(pic,codomain,lightcolor);
+fill(pic,domain,BEANCOLOR);
+fill(pic,codomain,BEANCOLOR);
 for (int i; i<3; ++i) {
   dot(pic,domainpoint[i],DARKPEN+black);
   label(pic,format("\tiny $%d$",i),domainpoint[i],W);
@@ -227,7 +229,7 @@ for (int i; i<3; ++i) {  // garrows
   draw(pic,subpath(garrow[i],0.04,0.96),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+boldcolor);
 }
 for (int i; i<3; ++i) { // farrows
-  draw(pic,subpath(farrow[i],0.08,0.94),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+highlightcolor);
+  draw(pic,subpath(farrow[i],0.08,0.94),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
 }
 shipout(format("maps%02d",picnum),pic,format="pdf");
 

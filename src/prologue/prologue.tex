@@ -414,6 +414,8 @@ either the equivalent table or diagram description.
   \hspace{3em}
   \vcenteredhbox{\includegraphics{prologue/asy/circlediagram/circlediagram01.pdf}}
 \end{center}
+The table highlights that a Turing machine is essentially a function, 
+which takes two inputs $q_p,T_p$ and gives two outputs $T_n,q_n$. 
 \end{example}
 
 \begin{definition} \label{def:TuringMachine}
@@ -445,47 +447,45 @@ We denote Turing machines with the symbol $\TM$ because the thing from
 our present-day experience that a Turing machine is most like is  
 a computer program.
 
-Often our Turing machines
-have some states set aside as \definend{halting states}.  
-In this case we have the present states~$q_p$ 
-as members of a set~$Q$, while the next states~$q_n$ 
-are members of some $\hat{Q}$, with $\hat{Q}\supset Q$.
+Often we use some states as \definend{halting states},  
+so we have the present states~$q_p$ 
+as members of some~$\hat{Q}$ while the next states~$q_n$ 
+are members of $Q$, with $Q\supset \hat{Q}$.
 For instance, \cref{ex:MPred} uses $q_3$ as a halting state and
-so has $Q=\set{q_0,q_1,q_2}$ and $\hat{Q}=Q\cup\set{q_3}$.
+so has $\hat{Q}=\set{q_0,q_1,q_2}$ and $Q=\hat{Q}\cup\set{q_3}$.
 Similarly, \cref{ex:MAdd} uses $q_4$ as a halting state. 
 
-To avoid confusion we take the convention that
-$Q$ and~$\hat{Q}$ are disjoint from the  
+To avoid confusion we shall have that the sets of states
+$\hat{Q}$ and~$Q$ are disjoint from 
 the tape alphabet set~$\Sigma$ and the 
 tape action set~$\Sigma\cup\set{\str{L},\str{R}}$.
 
 Of course, the point of a Turing machine is what it does.
 A Turing machine is a blueprint for a computation\Dash it is a program\Dash 
 and so
-to finish the formalization started by the definition we must
+to finish the formalization started by the definition we
 give a complete description of how these machines act.
 
 A \definend{configuration} of a Turing machine $\TM$ is 
 \citetext{a snapshot of a point in a computation}{That is,
 the configuration, along with the Turing machine, encapsulates
 the future history of the computation.},
-a four-tuple
-$\sequence{q,s,\tau_L,\tau_R}$
-where $q$ is a state, 
-where $s$ is a character from the tape alphabet,
-and where $\tau_L$ and~$\tau_R$ are strings of elements from the tape alphabet,
+a four-tuple $\sequence{q,s,\tau_L,\tau_R}$.
+Here $q$ is a state, 
+$s$ is a character from the tape alphabet,
+and $\tau_L$ and~$\tau_R$ are strings of elements from the tape alphabet,
 including possibly the empty string~$\emptystring$.
 For instance, each line in the
-trace table of \cref{ex:MAdd} shows a configuration. 
-On line~$2$ 
-the configuration has 
+trace table of \cref{ex:MAdd} shows a configuration
+(although graphically, not as a four-tuple). 
+On line~$2$ the configuration has 
 the state $q=q_0$, 
 the character under the head $s$ is the blank,
 the tape to the left of the head is $\tau_L=\str{11}$,
 and the tape to the right of the head is $\tau_R=\str{111}$.
 
 What remains is to describe a \definend{step},
-the transition of $\TM$ from a configuration to a next configuration.
+the transition of $\TM$ from one configuration to the next.
 Suppose that after step~$i$ the machine $\TM$ is in configuration
 $\mathcal{C}_i=\sequence{q,s,\tau_L,\tau_R}$.
 We look for an instruction $q_pT_pT_nq_n\in\TM$ with
@@ -493,13 +493,14 @@ $q_p=q$ and~$T_p=s$.
 If there is no such instruction then we say that $\TM$ \definend{halts} at 
 step~$i+1$.
 
-Otherwise there will be one such instruction, by the condition of determinism.
-What happens next depends on~$T_n$.
+Otherwise there will be only one such instruction, 
+by the condition of determinism.
+% What happens next depends on~$T_n$.
 (1)~If $T_n$ is a symbol in the tape alphabet set then we write that
 symbol to the tape, so that the 
 next configuration is 
 $\mathcal{C}_{i+1}=\sequence{q_n,T_n,\tau_L,\tau_R}$.
-(2)~If $T_n$ is the symbol~\str{L} then we move the tape head one to the left.
+(2)~If $T_n=\str{L}$ then we move the tape head to the left.
 That is, the next configuration is  
 $\mathcal{C}_{i+1}=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$,
 where $\hat{s}$ is the rightmost character of the string~$\tau_L$ (if
@@ -507,8 +508,8 @@ $\tau_L=\emptystring$ then $\hat{s}$ is the blank character),
 where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
 (if $\tau_L=\emptystring$ then $\hat{\tau}_L=\emptystring$ also),
 and where $\hat{\tau}_R$ is the concatenation of $s$ and $\tau_R$.
-(3)~If $T_N$ is the symbol~\str{R} then we move the tape head to the right.
-This is just like~(2) so we omit the details.
+(3)~If $T_n=\str{R}$ then we move the tape head to the right.
+This is like~(2) so we skip the details.
 
 If two configuration are related in this way then we write
 $\mathcal{C}_i \yields \mathcal{C}_{i+1}$ 
@@ -572,14 +573,12 @@ if it does halt.
 The set of computed functions would then be string to 
 string functions.
 But we are especially interested in number theoretic functions
-$\map{f}{\N}{\N}$.\footnote{We are interested in these because 
-Turing and others studied which mathematical functions could be 
-effectively computed, so it is the history of the subject's development. 
-In part because of that history, and because it has proven to be
-a sound approach, the language in which the subject is currently 
-discussed starts with number theoretic functions.
-In keeping with that, our development and examples proceed in the
-same way.}
+$\map{f}{\N}{\N}$.\footnote{Our exposition starts with these because 
+Turing and others began the subject by studying 
+which mathematical functions could be effectively computed. 
+Because of this history, and because this has proven to be
+a fruitful approach, the language in which the subject is currently 
+discussed is also based on number theoretic functions.}
 
 We have seen machines that we think of as taking in and putting out 
 numbers. 
@@ -631,7 +630,7 @@ interpretation.
 Thus, later results will show that adopting a one-input and one-output
 approach will not keep us from getting functions with other arities. 
 
-\begin{definition}
+\begin{definition} \label{def:FcnComputedByTM}
 Let $\TM$ be a Turing machine with tape alphabet $\Sigma=\set{\str{B},\str{1}}$.
 Suppose that the initial tape consists of a number~$n$ 
 represented in unary, and the machine is started with with the 
@@ -772,7 +771,7 @@ first bit.
 
 \begin{exercise}
 Produce a Turing machine whose tape alphabet is 
-$\Sigma=\set{\str{0},\str{1}}$, and which will, when given a binary
+$\Sigma=\set{\str{B},\str{0},\str{1}}$, and which will, when given a binary
 number as input, decide if the number is divisible by~$2$.
 That is, the machine 
 starts with the head under the most significant bit and it ends
@@ -781,27 +780,28 @@ and \str{0} if it was not, and with the head under that output.
 \end{exercise}
 
 \begin{exercise}
-Produce a Turing machine that doubles, that
-takes as input a number written in
-unary, so that $n$ is represented as $n$-many $1$'s, 
-and gives as output the number~$2n$ written in unary. 
-\end{exercise}
-
-\begin{exercise}
-Produce a Turing machine that doubles an input
-written in binary.
-Thus, the tape alphabet is $\Sigma=\set{\str{0}, \str{1}}$ 
-and following the convention about input and output given earlier,
-where the input is~$n$ then the output is~$2n$. 
+Produce a doubler, a Turing machine that computes $f(x)=2x$.
+\begin{exparts}
+\item
+  Follow the convention of \cref{def:FcnComputedByTM}, so the
+  machine takes as input a number~$n$ written in unary, and with the 
+  initial position of the head under the leftmost \str{1},  
+  and halts with $2n$-many \str{1}'s on the tape. 
+\item
+  Follow the convention that the input is written in binary.
+  Thus the tape alphabet is $\Sigma=\set{\str{B},\str{0}, \str{1}}$
+  and the initial position of the head is under the leftmost bit of $n$,
+  while at the end the tape contains the binary representation of $2n$.
+\end{exparts}
 \end{exercise}
 
 
 \begin{exercise}
 Produce a Turing machine that replicates the input:~if 
 it is started with the tape blank except for 
-a contiguous sequence of $n$-many \str{1}'s, and with the head under the \
-first~\str{1}, will eventually halt with two sequences of $n$-many \str{1}'s
-separated by a single blank.   
+a contiguous sequence of $n$-many \str{1}'s, and with the head under the
+first~\str{1}, it will eventually halt with the tape containing 
+two sequences of $n$-many \str{1}'s separated by a single blank.   
 \end{exercise}
 
 
@@ -830,10 +830,10 @@ you couldn't tell.
 \begin{exercise}
 Write a Turing machine that, when started on a blank tape,
 will run forever and produce a tape containing the string
-$0101101110\ldots$\,.  
+$010\,110\,111\,0\ldots$\,.  
 (\textit{Remark:} $0.010\,110\,111\,0\ldots$ is 
-\textit{Turing's number}, an easy example of a computable number that is
-irrational, 
+\textit{Turing's number}, a computable number that is
+irrational
 because its decimal expansion never repeats and never terminates.)
 
 \end{exercise}

@@ -208,18 +208,6 @@ The verification is \cref{exer:VerifyAsParadox}.
 \end{example}
 
 
-% \begin{example}  \label{ex:NAndTwoNCorrespond}
-% The set of natural numbers $\N$ and set of even natural numbers
-% $\mathcal{E}=\set{0,2,4,\ldots}$ have the same cardinality.
-% The natural correspondence is $n\mapsto 2n$.
-% \end{example}
-
-% \begin{example} 
-% The set of real numbers in the interval $\leftclosed{0}{1}$ 
-% and set of real numbers in the interval $\leftclosed{3}{7}$
-% have the same cardinality because $x\mapsto 3x+4$ is a correspondence.
-% \end{example}
-
 \begin{definition}
 A set $S$ is \definend{finite} if $|S|=n$ 
 for some $n\in\N$. 
@@ -263,10 +251,9 @@ We shall call exhibiting a correspondence $\map{f}{\N}{S}$
 \definend{counting} or \definend{enumerating} that set.
 \end{definition}
 
-\begin{example} \label{ex:OddNumbersCountable}
-The set of odd natural numbers is countable. 
-One correspondence between
-the natural numbers and the odd numbers is $g(n)=2n+1$. 
+\begin{example} \label{ex:MultiplesOfThreeCountable}
+The set of multiples of three $\set{3k\suchthat k\in\N}$ is countable. 
+The natural correspondence is $g(n)=3n$. 
 \end{example}
 
 \begin{example}
@@ -696,10 +683,15 @@ We will show that the set of rational numbers $\Q$ is countable.
 We already know how to alternate between positives and negatives, 
 so that reduces the problem of finding a correspondence 
 to that of just doing the nonnegatives $\map{f}{\N}{\Q^+\cup\set{0}}$.
-A nonnegative rational is an ordered pair 
+A nonnegative rational is a pair 
 $\sequence{\text{numerator},\text{denominator}}$,
-with the denominator not zero, except
+with the numerator a member of $\N$ and the denominator a member
+of $\N+$, except
 that some pairs collapse; for instance, $4/2$ equals~$2/1$.
+
+As we did when counting the prime numbers, we will count the nonnegative 
+rationals not with a formula but instead with a program, with a 
+function that is computable.
 To avoid counting both~$4/2$ and~$2/1$, we 
 \citetext{memoize}{A memoized routine for computing a function
 saves the results of computing 
@@ -748,21 +740,67 @@ producing a one-to-one and onto function.
 \end{exercise}
 
 \begin{exercise}
-Verify \cref{ex:OddNumbersCountable}, that 
-$\map{g}{\N}{\set{2n+1\suchthat n\in\N}}$ is
+Verify \cref{ex:MultiplesOfThreeCountable}, that the function 
+$\map{g}{\N}{\set{3k\suchthat k\in\N}}$ given by $n\mapsto 3n$ is
 both one-to-one and onto.
 \begin{answer}
-To verify that $g$ is one-to-one, assume $g(n_0)=g(n_1)$, 
+To show that the map is one-to-one we will show that $g(n)=g(\hat{n})$ can only
+happen if $n=\hat{n}$.
+So let $g(n)=g(\hat{n})$, giving $3n=3\hat{n}$, and dividing by three 
+yields $n=\hat{n}$, as required.
+
+To show the map is onto we will show that every member of the codomain
+$y\in\set{3k\suchthat k\in\N}$ is mapped-to by some member of the domain.
+Because $y$ is a multiple of three, $y/3$ is a natural number.
+Of course, $y=g(y/3)$, so $y$ is indeed the image of some member of the
+domain.   
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+For each pair of sets, show that the two have the same cardinality.
+In addition to giving a suitable function, you must verify
+that it is one-to-one and onto.   
+\begin{exparts}
+\item $\N$ and the even numbers $\set{2n\suchthat n\in\N}$
+\item $\N$ and the odd numbers
+\item the even numbers and the odd numbers
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item Consider the function $\map{f}{\N}{\set{2n\suchthat n\in\N}}$
+defined by $f(n)=2n$.
+To verify that $f$ is one-to-one, assume that two inputs yield the same
+output $f(n)=f(\hat{n})$, giving $2n=2\hat{n}$, and divide by~$2$ to
+get that the two inputs are the same $n=\hat{n}$.
+
+To verify that $f$ is onto, consider a member of the codomain $y$,
+use the definition of the codomain to rewrite it as $y=2n$,
+and solve for $n$ to get that there is an input associated with
+this output, namely $n=y/2$ (dividing the output by two will yield a
+natural number because $y$ is an even natural number).
+\item We use the map $\map{g}{\N}{\set{2n+1\suchthat n\in\N}}$ 
+given by $n\mapsto 2n+1$.
+To verify that $g$ is one-to-one, assume that $g(n_0)=g(n_1)$, 
 so that $2n_0+1=2n_1+1$.  
 Subtract~$1$ and divide by~$2$ to conclude that  
-$n_0=n_1$, and thus that~$g$ is one-to-one.
+$n_0=n_1$.
 
-To verify that $g$ is onto we need to start with an element of the codomain
-$y\in\set{2n+1\suchthat n\in\N}$, the odd natural numbers.
-Observe that because $y$ is odd, $y$ has the form $y=2n+1$ for some
+To verify that $g$ is onto we start with an element of the codomain
+$y\in\set{2n+1\suchthat n\in\N}$.
+Observe that because $y$ is odd, it has the form $y=2n+1$ for some
 natural number~$n$.
 Thus there is a natural number that maps under~$g$ to~$y$, 
-namely~$n$, and so~$g$ is onto.  
+namely~$n=(y-1)/2$, and thus~$g$ is onto.  
+\item ONe answer involves using the two prior exercise parts, 
+and knowing that the inverse of a correspondence is also a correspondence,
+to get that the composition $\composed{f}{g^{-1}}$ is a correspondence from
+the even numbers to the odds.
+
+But a simpler answer is to consider the map $p$ from the evens to the odds 
+given by $p(n)=n+1$.
+Verification that $p$ is one-to-one and onto is easy.
+\end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -827,7 +865,14 @@ have the same cardinality.
 \begin{exparts}
 \item Verify it, using $\map{g}{I_0}{I_1}$ 
   given by $g(x)=x\cdot(2\pi r_1/2\pi r_0)$.
-\item Generalize it to show that any two real intervals  
+  You must verify that $g$ is a correspondence. 
+\item Show that the intervals of reals $\leftclosed{0}{1}$
+  and $\leftclosed{2}{3}$ have the same cardinality.
+\item Show that the intervals $\leftclosed{0}{1}$
+  and $\leftclosed{2}{4}$ have the same cardinality.
+\item Show that the cardinality of $\leftclosed{0}{1}$ equals that
+  of $\leftclosed{a}{b}$, where $a<b$.
+\item Generalize Aristotle's Paradox by showing that any two real intervals  
   $\leftclosed{a}{b}$ and
   $\leftclosed{c}{d}$ have the same cardinality (with $a<b$ and $c<d$).
 \item Also show that the open unit interval of reals $\open{0}{1}$

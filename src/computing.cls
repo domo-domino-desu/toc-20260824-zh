@@ -1318,7 +1318,7 @@ of the two.}
 }
 
 % For an exercise hint
-\newcommand{\hint}{\textit{Hint.}}
+\newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
 
 
 % Grammars
@@ -1402,6 +1402,7 @@ of the two.}
 \usepackage{float}
 \newfloat{animatefigure}{H}{lof}
 \newfloat{tablehere}{H}{lof}
+\newfloat{figurehere}{H}{lof}
 
 \DeclareCaptionLabelSeparator{jhcaptionspace}{\hspace{0.6em}}
 \usepackage{caption} 
@@ -1445,3 +1446,17 @@ of the two.}
 }
 \crefname{tablehere}{Table}{Tables}
 \Crefname{tablehere}{Table}{Tables}
+
+\captionsetup[figurehere]{labelformat=empty}
+\renewcommand{\thefigurehere}{\arabic{section}.\arabic{figurehere}}
+\newenvironment{fig}[1]{%
+  \begin{figurehere}[H]
+  \setcounter{figurehere}{\value{theorem}}
+  \refstepcounter{theorem}
+  \caption{\thetheorem~\textsc{Figure:} #1}
+  \centering
+}{%
+  \end{figurehere}
+}
+\crefname{figurehere}{Figure}{Figures}
+\Crefname{figurehere}{Figure}{Figures}

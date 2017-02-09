@@ -33,7 +33,7 @@ the details of implementing that behavior.
 
 \section{Turing machines}
 Despite this desire to downplay internal details, 
-we follow the approach of Alan Turing that a necessary 
+we follow the approach of Alan Turing, that a necessary 
 first step toward defining the set of computable functions
 \margingraphic{0.23\textwidth}{prologue/turing.jpg}{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing 1912--1954}}
 is to reflect on the details of doing things with a mechanism.
@@ -127,7 +127,7 @@ is that the agent does not use continuous methods or
 \autocite{wiki:Nomogram} about nomograms, 
 and \autocite{navyreviewer} about a naval firing computer.}.
 So there is no question about the precision of operations as there
-might be, say, with \citetext{reading results off of a slide rule}{%
+might be, say, when \citetext{reading results off of a slide rule}{%
 Suppose that an intermediate result of a calculation is $1.23$.
 If we read it off the slide rule 
 with the convention that the resolution accuracy is only one decimal place 
@@ -142,15 +142,16 @@ We say that at each moment the clerk is in one of a finite set of
 possible \definend{states},
 which we denote $q_0$, $q_1$, \ldots{}
 
-Turing's third condition is that he wanted to investigate what is computable 
-in principle.
+Turing's third condition arises because 
+he wanted to investigate what is computable in principle.
 He therefore imposed
 \citetext{no upper bound}{This explication is derived 
   from \autocite{Rogers},  p 1--5.} 
 on the amount of memory available.
-More precisely, he imposed no finite upper bound. 
-Should a calculation run out of storage space then more is 
-provided, perhaps by an operator.
+More precisely, he imposed no finite upper bound\Dash 
+should a calculation threaten to run out of storage space then 
+\citetext{more is provided}{Perhaps the clerk has a helper, or the
+mechanism has a tender.}.
 This includes imposing no upper bound on the amount of memory available for 
 inputs or for outputs, and no bound on the amount of extra 
 storage, scratch memory, needed in addition to that for inputs and outputs.
@@ -223,15 +224,23 @@ an agent doing multiplication may determine, because
 of what state it is in now and because of what it is now reading on the tape,
 that it next needs to carry a~$1$.
 The agent then passes to a new state, one whose intuitive meaning
-is that carries take place there, possibly
-also shifting the tape or writing to it.
+is that carries take place there.
 
 Consequently, machine steps involve four pieces of information,
 We denote the present state as $q_p$ and the next state as $q_n$.
 The other two, $T_p$ and~$T_n$, 
 describe what is presently being read on the tape
 and what happens next with the tape.
+What is happening presently with the tape is that the read/write head 
+is located over some character.
+As to the set of characters that can go on the tape,
+we will choose whatever is convenient.
+For the moment we restrict ourselves to 
+$\str{1}$ and~blank (we denote this with $\str{B}$ when leaving an empty
+space could cause confusion).
 The things that can happen next to the tape are:
+writing a character to the tape without moving the head, 
+which we denote for instance with $T_n=\str{1}$, or
 moving the tape head left or right without writing,
 which we denote with $T_n=\str{L}$ or~$T_n=\str{R}$,\footnote{Whether we
 move the tape head or the tape doesn't matter, what matters is their
@@ -240,13 +249,6 @@ Thus $T_n=\str{L}$ means that one or the other moves such that
 the head now points to the location one place to the left. 
 In drawings we keep the tape steady and move the head because
 then comparing graphics step by step is easier.}
-or writing a character to the tape without moving the head, 
-which we denote for instance with $T_n=\str{1}$.
-As to the set of characters that we read from or write to the tape, 
-we can choose whatever is convenient.
-For the moment we restrict ourselves to 
-$\str{1}$ and~blank (we denote this with $\str{B}$ when leaving an empty
-space could cause confusion).
 
 The four-tuple $q_pT_pT_nq_n$ is an \definend{instruction}.
 For example, the instruction
@@ -275,17 +277,18 @@ This Turing machine has six instructions.
 \end{equation*}
 To trace its execution, below
 we've represented this machine in an initial configuration. 
-We see a stretch of the tape, including all its non-blank contents, 
+This shows a stretch of the tape, including all its non-blank contents, 
 along with the machine's state and the position of its read-write head.
 \begin{center}
   \tapegraphic{asy/share/tapedecrement0.pdf}
 \end{center}
-We shall suppose, unless stated otherwise, that the initial state is $q_0$.
-When we press \texttt{Start}, this machine 
-is reading~$\str{1}$, so 
+We shall suppose, unless stated otherwise, that a machine's 
+initial state is $q_0$.
+We've initialized this machine so that
+when we press \texttt{Start} it is reading~$\str{1}$, and thus 
 instruction $\tminstruction{0}{1}{R}{0}$ applies.
 Therefore the first step is to
-move the tape head right and go back into state~$q_0$.
+move the tape head right and stay in state~$q_0$.
 The first line  below
 shows the result, and
 later lines show the machine's configuration after later steps.
@@ -307,10 +310,10 @@ later lines show the machine's configuration after later steps.
 \end{tapesequence}
 In step~$9$ 
 the instruction 
-$\tminstruction{2}{B}{R}{3}$ sends the machine to~$q_3$,
-for which there is no instruction, so the machine halts.
+$\tminstruction{2}{B}{R}{3}$ sends the machine to state~$q_3$
+and then no instruction applies so the machine halts.
 
-Instead of describing by listing the set of instructions, 
+Instead of describing a machine by listing the set of instructions, 
 we can use a table or a diagram.
 Here is the table description for $\TM_{\text{pred}}$, and the diagram.
 \begin{center}
@@ -393,9 +396,9 @@ trims a \str{1} off of an end.
     17 &\tapegraphic{asy/share/tapeadd17.pdf} 
   \end{tapesequencetable}
 \end{tapesequence}
-As with the prior example, we may choose to represent the 
-machine~$\TM_{\text{add}}$ using
-either the equivalent table or diagram description.
+As with the prior example, we may choose instead to represent the 
+machine using
+a table or a diagram.
 \begin{center}
   \begin{tabular}{r|cc}
     \multicolumn{1}{r}{} % $\Delta$}
@@ -416,10 +419,10 @@ which takes two inputs $q_p,T_p$ and gives two outputs $T_n,q_n$.
 \begin{definition} \label{def:TuringMachine}
 A \definend{Turing machine}~$\TM$ is a finite set of four-tuple 
 \definend{instructions} $q_pT_pT_nq_n$.
-The \definend{present state} and 
+In an instruction the \definend{present state} and 
 \definend{next state}, $q_p$ and~$q_n$, are elements of a
 \definend{set of states}~$Q$. 
-The \definend{input symbol} (or \definend{present tape symbol}) 
+The \definend{input symbol} or \definend{present tape symbol} 
 $T_p$ is an element of the \definend{tape alphabet} set~$\Sigma$.
 Elements of this set, called \definend{symbols}, are objects that can 
 be written and read, such as characters. 
@@ -432,7 +435,7 @@ is an element of~$\Sigma\cup\set{\str{L},\str{R}}$, the
 The set of four-tuples $\TM$ must be
 \definend{deterministic}:~no two members can begin with 
 the same $q_pT_p$.
-Thus for any machine~$\TM$, over the set of instructions $q_pT_pT_nq_n\in\TM$
+Thus, over the set of instructions $q_pT_pT_nq_n\in\TM$,
 the association of present pair $q_pT_p$ with next pair~$T_nq_n$,
 defines a function, the \definend{transition function}
 $\map{\Delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}$. 
@@ -443,17 +446,17 @@ our present-day experience that a Turing machine is most like is
 a computer program.
 
 Typically we reserve some states as \definend{halting states},  
-so we have the present states~$q_p$ 
-as members of some~$\hat{Q}$ while the next states~$q_n$ 
-are members of $Q$, where $Q\supset \hat{Q}$.
+so that the $q_p$'s 
+are members of some~$\hat{Q}$ while the $q_n$'s 
+are members of $Q$, where 
+\citetext{$Q\supset \hat{Q}$}{To avoid confusion 
+we shall have that the sets of states
+$\hat{Q}$ and~$Q$ are disjoint from 
+the tape alphabet set~$\Sigma$ and the 
+tape action set~$\Sigma\cup\set{\str{L},\str{R}}$.}.
 For instance, \cref{ex:MPred} uses $q_3$ as a halting state and
 so has $Q=\hat{Q}\cup\set{q_3}$ where $\hat{Q}=\set{q_0,q_1,q_2}$.
 Similarly, \cref{ex:MAdd} uses $q_4$ as a halting state. 
-
-To avoid confusion we shall have that the sets of states
-$\hat{Q}$ and~$Q$ are disjoint from 
-the tape alphabet set~$\Sigma$ and the 
-tape action set~$\Sigma\cup\set{\str{L},\str{R}}$.
 
 Of course, the point of a Turing machine is what it does.
 A Turing machine is a blueprint for a computation\Dash it is a program\Dash 
@@ -462,21 +465,22 @@ to finish the formalization started by the definition we
 give a complete description of how these machines act.
 
 A \definend{configuration} of a Turing machine $\TM$ is 
-\citetext{a snapshot of a point in a computation}{That is,
+\citetext{a snapshot, an instant in a computation}{That is,
 the configuration, along with the Turing machine, encapsulates
-the future history of the computation.},
-a four-tuple $\sequence{q,s,\tau_L,\tau_R}$.
-Here $q$ is a state, 
+the future history of the computation.}
+It is a four-tuple $\sequence{q,s,\tau_L,\tau_R}$, where
+$q$ is a state, 
 $s$ is a character from the tape alphabet,
-and $\tau_L$ and~$\tau_R$ are strings of elements from the tape alphabet,
+and $\tau_L$ and~$\tau_R$ are strings of elements 
+from the tape alphabet~$\Sigma$,
 including possibly the empty string~$\emptystring$.
 Thus, each line in the
 trace table of \cref{ex:MAdd} graphically pictures a configuration. 
 For instance, on line~$2$ the configuration $\sequence{q,s,\tau_L,\tau_R}$ has 
 the state $q=q_0$, 
 the character under the head $s$ is the blank,
-the tape to the left of the head is $\tau_L=\str{11}$,
-and the tape to the right of the head is $\tau_R=\str{111}$.
+to the left of the head is $\tau_L=\str{11}$,
+and to the right is $\tau_R=\str{111}$.
 
 What remains is to describe a \definend{step},
 the transition of $\TM$ from one configuration to the next.
@@ -489,8 +493,8 @@ step~$i+1$.
 
 Otherwise there will be only one such instruction, 
 by the condition of determinism.
-% What happens next depends on~$T_n$.
-(1)~If $T_n$ is a symbol in the tape alphabet set then we write that
+There are three possibilities.
+(1)~If $T_n$ is a symbol in the tape alphabet set~$\Sigma$ then we write that
 symbol to the tape, so that the 
 next configuration is 
 $\mathcal{C}_{i+1}=\sequence{q_n,T_n,\tau_L,\tau_R}$.
@@ -529,7 +533,7 @@ emphasizes that it is a
 Turing machine computation is about the transitions, the discrete steps.
 What an instruction~$q_pT_pT_nq_n$ does
 is to specify the transition from the current configuration 
-with the present state and tape symbol $q_pT_p$ to the
+with the present state and present tape symbol, to the
 next configuration.
 
 We now make a crucial observation.
@@ -595,7 +599,7 @@ in unary notation, so that $n$-many \str{1}'s represents the number~$n\in\N$.
 
 That is, what function a machine computes
 depends on what convention we adopt for interpreting 
-the staring and ending tape.
+the starting and ending tape.
 For example, our definition of which functions $\map{f}{\N}{\N}$
 are mechanically computable could adopt the unary convention for input
 and output.
@@ -603,7 +607,8 @@ Or, because representing $0$ with a string of $0$-many \str{1}'ss
 can be awkward, we could instead take the convention 
 of representing~$n$ with a string of $n+1$-many \str{1}'s.
 And there are other conventions;
-actual computers represent numbers using a form of binary.
+the computers around us everyday represent numbers using a form of binary.
+
 
 However, we can choose the convention by convenience in that,
 for instance, if we use unary but 
@@ -613,7 +618,7 @@ by that author we can give one of our machines computing the same function,
 and vice versa.
 So here we will adopt the simplest convention, unary.  
 
-Before the defininition, a comment: we think of the machine 
+Before the definition, a comment: we think of the machine 
 of \cref{ex:MAdd} as computing the function $\map{\text{add}}{\N^2}{\N}$
 given by $\text{add}(x,y)= x+y$.
 How will our convention address 
@@ -1192,18 +1197,17 @@ we could doubt that anything large has been overlooked.
 And yet there is historical reason for supposing that such a thing is
 possible.
 The physicists 
-von Helmholtz in 1856, and Newcomb 
+H~von Helmholtz in 1856, and S~Newcomb 
 in 1892, calculated that the Sun is about $20$ million years old 
 (they assumed that the Sun glowed from the energy provided by 
 its gravitational contraction in condensing from a nebula of gas and dust 
 to its current state).
 Consistently with that, in 1862
-one of the world's most reputable physicists, Kelvin, calculated 
-that the Earth was between 20 million and 400 million years old 
+one of the world's most reputable physicists, W~Kelvin, estimated in 1897 
+that the Earth was, ``more than $20$ and 
+less than $40$ million year old, and probably much nearer $20$ than $40$'' 
 (he calculated how long it would take the Earth to cool from 
 a completely molten object to its present temperature).
-The final estimate Kelvin gave, in 1897, was, ``more than $20$ and 
-less than $40$ million year old, and probably much nearer $20$ than $40$.''
 He said, ``unless sources now unknown to us
 are prepared in the great storehouse of creation''
 then there was not enough energy in the system to justify a 
@@ -1211,10 +1215,10 @@ longer estimate.
 One person very troubled by this was Darwin, having himself 
 found that a valley in Englind took $300$ million years to erode,
 and consequently that there was enough time, called ``deep time,''
-for slow but steady evolution to happen. 
+for the slow but steady process of evolution of species to happen. 
 Then, in 1896, everything changed.
-Becquerel discovered radiation.
-All of the prior calculations did not account for it, 
+A~Becquerel discovered radiation.
+All of the prior calculations did not account for it 
 and the apparent discrepancy vanished.
 \autocite{wiki:Kelvin}}?
 
@@ -2948,7 +2952,7 @@ and the output is~$V_{\text{out}}=0$.
 Thus, for this device
 the voltage out $V_{\text{out}}=0$ is the opposite of the voltage in~$V_{\text{in}}$.
 Of course, when $V_{\text{in}}=0$ the output voltage of~$5$ doesn't come from 
-thing air; it is supplied by the battery.
+thin air; it is supplied by the battery.
 
 
 \begin{exercises}
@@ -3710,8 +3714,8 @@ Conclude that $\hyperoperation$ is not primitive recursive.
 \extra{LOOP programs}
 \label{sec:LOOPPrograms}
 
-Primitive recursive functions have the advantage, compared to general 
-recursive functions, that their 
+Compared to general recursive functions,
+primitive recursive functions have the advantage that their 
 computational behavior is easy to analyze.
 We will support this contention by giving a programming language
 that computes primitive recursive functions and that is easy.

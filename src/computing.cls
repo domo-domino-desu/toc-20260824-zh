@@ -34,6 +34,7 @@
 \RequirePackage[dvipsnames]{xcolor}
 \include{colorscheme}  % change the color scheme
 \RequirePackage{graphicx}
+\usepackage{adjustbox} % for clipping pictures
 
 \usepackage{etoolbox}
 
@@ -467,7 +468,7 @@ of the two.}
 \setlength{\cftsecindent}{1em}
 \setlength{\cftsecnumwidth}{4.25em}
 \setlength{\cftsubsecindent}{2em}
-\setlength{\cftsubsecnumwidth}{4.5em}
+\setlength{\cftsubsecnumwidth}{5em}
 
 
 

@@ -69,17 +69,17 @@ That is, we take it as an axiom.}
 into one using marks that our mechanism's read/write head can handle with 
 a tape, such as \protect\str{l} and \protect\str{r}.
 So the restriction to readability and writeability is not essential.
-It is in the definition of symbols because our mechanisms will need to 
-work with them, and for this purpose elephants, while imagineable,
-are inconvenient.}
+We include it in the definition of symbols because our mechanisms will need to 
+read and write them, and for this purpose elephants
+would be inconvenient.}
 
 We put symbols in a special typeface, as in \str{1} or \str{c},
 because quoting them would be ugly.
 The term ``symbol'' is potentially misleading in that some
 symbols may contain more than one character.
 For instance, a programming language
-may have the symbol \str{if} that is indecomposable, that 
-does not break into two separate letters.
+may have  \str{if} as a symbol, as indecomposable
+into two separate letters.
 
 Traditionally we denote an alphabet with $\Sigma$.
 An alphabet can be finite $\Sigma_0=\set{\str{a},\dots, \str{z}}$ 
@@ -89,14 +89,14 @@ the machines we use will run for at most countably many steps,
 and so use at most countably many symbols.}.
 
 \begin{definition}
-A \definend{string} over an alphabet is a finite sequence of elements
+A \definend{string} (or \definend{word})
+over an alphabet is a finite sequence of elements
 $\sequence{a_0,a_1,\ldots,a_n}$ from that alphabet.
-The string of zero length is 
+The string with no elements is 
 the \citetext{\definend{empty string}~$\emptystring=\sequence{}$}{Possibly 
   $\emptystring$ was chosen as an abbreviation for `empty'.   
   Some authors use $\lambda$, possibly from the German word for 
   `empty', \textit{leer}.  \autocite{csse:Siren}}.
-A \definend{language} is a set of strings drawn from a common alphabet.
 \end{definition}
 
 We denote strings with lower case Greek letters 
@@ -106,31 +106,32 @@ sequence elements with the associate lower case roman letter,
 $\sigma=\sequence{s_0,\ldots,s_{i-1}}$ 
 and $\tau=\sequence{t_0,\ldots,t_{j-1}}$.
 
-We will write many strings and the diamond brackets and commas are clunky. 
-In many of our examples we will have
-the alphabet consist of single characters, and there we will make strings by
-by dropping the diamond brackets and commas, 
-concatenating the characters 
-together.
+We will write many strings. 
+Sticking with diamond brackets and commas would be clunky. 
+In many of our examples we will follow the common convention of having
+the alphabet consist of single characters and making strings
+by dropping the diamond brackets and commas.
 Thus, instead of $\sequence{\str{a},\str{b},\str{c}}$
-we will write \str{abc}.\footnote{The point about the
+we will write \str{abc}.\footnote{The significance of the
   alphabets having single-character symbols is that omitting commas  
   would be a problem for an alphabet such as 
   $\Sigma=\set{\str{a}, \str{aa}}$, because 
-  \str{aaa} would be ambiguous, since it could
+  \str{aaa} would be ambiguous.
+  It could
   parse as $\sequence{\str{a},\str{aa}}$ or as
   $\sequence{\str{aa},\str{a}}$ or as
-  $\sequence{\str{a},\str{a}, \str{a}}$.
-  In the examples and small exercises We will just avoid these alphabets.} 
+  $\sequence{\str{a},\str{a}, \str{a}}$}. 
 However, this convenience 
 has the disadvantage that without the diamond brackets  
 the empty string is just nothing, which is why 
 we reserve the symbol~$\emptystring$. 
 
-We denote languages with $\lang{L}$.
-The only exception is
-the language that is the set of all strings over the alphabet~$\Sigma$,
-which we denote with a star~$\kleenestar{\Sigma}$.
+Note that omitting the diamond brackets and commas 
+blurs the distinction between a symbol such as \str{c} 
+and the one-symbol string $\sigma=\sequence{\str{c}}$, 
+since they both show as \str{c}.
+However, this distinction won't matter to us so we are OK with 
+blurring that distinction.
 
 % \begin{example}
 % In many web programs the majority of the effort
@@ -165,17 +166,21 @@ One language over that alphabet is the finite set
 $\lang{L}=\set{\str{1000001},\str{1100001}}$.
 \end{example}
 
-The prior example may seem \citetext{arbitrary or senseless}{It is not 
-entirely without sense though, since \str{1000001} represents capital A in the 
+The prior example's language $\lang{L}$ may seem senseless
+in that it may appear to contain some 
+\citetext{bit strings that were plucked out of the air, without rule or sense}{%
+The language is not 
+without sense though, since \str{1000001} represents capital A in the 
 ASCII encoding, while \str{1100001} is lower case a.
 The American Standard Code for Information Interchange, ASCII,
 is a widely used character encoding scheme.  
 The most common modern character encoding is UTF-8, 
-which is a superset of ASCII.},
-but strictly speaking that set is a language because any set of strings 
-is a language.
-We will use some arbitrary languages for examples or exercises, 
-but most languages in practice have some reason behind them.
+which is a superset of ASCII.}.
+This underlines that the definition takes 
+a language to be any set of strings, no matter how arbitrary.
+In practice though, most languages do have some reason or rule 
+determining them.
+We will study such rules later in this chapter.
 
 \begin{example}
 A bit string has \definend{even parity} if it has an even number of \str{1}'s
@@ -251,6 +256,45 @@ One way to describe Pythaorean triples is with the language
 $\lang{L}=\set{\str{a}^i\str{b}^j\str{c}^k \suchthat \text{$i,j,k\in\N$ and $i^2+j^2=k^2$}}$.  
 \end{example}
 
+\begin{definition}
+A \definend{language} over an alphabet
+is a set of strings drawn from a that alphabet.  
+\end{definition}
+
+We usually denote languages with $\lang{L}$.
+
+\begin{definition}[Operations on languages]
+As sets, languages are subject to the operations of union, intersection, etc.
+
+The \definend{reversal} of a language~$\lang{L}$ is the language 
+$\reversal{\lang{L}}=\set{\reversal{\sigma}\suchthat \sigma\in\lang{L}}$.
+
+The \definend{concatenation} of languages is
+$\lang{L}_0\concat\lang{L}_1=\set{\sigma_0\concat\sigma_1\suchthat \text{$\sigma_0\in\lang{L}_0$ and $\sigma_1\in\lang{L}_1$}}$.
+We often write $\lang{L}_0\concat\lang{L}_1$ as $\lang{L}_0\lang{L}_1$.
+
+The \definend{$k$-th power} of a language is the concatenation of $k$-many
+copies of the language
+$\lang{L}^k=\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \sigma_i\in\lang{L}}$.
+The \definend{Kleene star} of a language $\kleenestar{\lang{L}}$ is the 
+concatenation of any number of strings of the language.
+\begin{equation*}
+\kleenestar{\lang{L}}=\set{\sigma_0\concat\cdots\concat\sigma_{i-1}\suchthat \text{$i\in\N$ and $\sigma_0,\ldots,\sigma_{i-1}\in\lang{L}$}}
+\end{equation*}
+This includes zero-many strings, so $\emptystring\in\kleenestar{\lang{L}}$. 
+\end{definition}
+
+Consistent with blurring the distinction between symbols and one-symbol
+strings, we reuse the notation from languages for alphabets, as we have
+already seen. 
+
+\begin{definition}
+Fix an alphabet~$\Sigma$.
+The set of strings over that alphabet of length~$k$ is $\Sigma^k$.
+The set of all strings over $\Sigma$, of any length, is $\kleenestar{\Sigma}$
+\end{definition}
+
+
 
 \begin{exercises}
 \begin{exercise}
@@ -277,6 +321,23 @@ Do so now.
 \hint{} use induction on the number of substrings, $n$.  
 \end{exercise}
 
+
+\begin{exercise}
+The operation of concatenation follows a simple algebra.
+For each of these, decide if it is true.
+If so, prove it. 
+If not, give a counterexample.
+\begin{exparts*}
+  \item $\alpha\concat\emptystring=\alpha$
+    and $\emptystring\concat\alpha=\alpha$
+  \item $\alpha\concat\beta=\beta\concat\alpha$
+  \item $\reversal{\alpha\concat\beta}=\reversal{\beta}\concat\reversal{\alpha}$
+  \item $\reversal{\reversal{\alpha}}=\alpha$
+  \item $\reversal{\alpha^i}=\alpha^i$ 
+\end{exparts*}
+\end{exercise}
+
+
 \begin{exercise}
 Prove that this constructive definition of replication is equivalent
 to the one we gave.
@@ -290,42 +351,56 @@ to the one we gave.
 Use this definition to produce a Scheme function.  
 \end{exercise}
 
-\begin{exercise}
-What is the difference between these two languages?
-\begin{equation*}
-   \lang{L} 
-      =\set{\sigma\in\kleenestar{\Sigma}\suchthat \sigma=\reversal{\sigma}} 
-    \qquad
-   \hat{\lang{L}} 
-    =\set{\sigma\concat\reversal{\sigma}\suchthat \sigma\in\kleenestar{\Sigma}}
-\end{equation*}
+
+\begin{exercise}[Levi's lemma] \index{Levi's lemma}
+Prove that for all strings $\alpha$, $\beta$, $\gamma$ and $\delta$, 
+if the contatenations are equal $\alpha\concat\beta=\gamma\concat\delta$
+then there exists a string $\sigma$ such that either
+(1)~$\alpha\concat\sigma=\gamma$ 
+or (2)~$\alpha=\gamma\concat\sigma$.
+That is, there is a string w that is in the middle 
+that can be grouped to one side or the other.
+\hint{} the first is the $\lh{\alpha}\leq\lh{\gamma}$ case and the 
+second is the other case.
 \end{exercise}
 
-
-
-
+\begin{exercise}
+What is the difference between the languages
+   $\lang{L} 
+      =\set{\sigma\in\kleenestar{\Sigma}\suchthat \sigma=\reversal{\sigma}}$ 
+and
+ $\hat{\lang{L}} 
+  =\set{\sigma\concat\reversal{\sigma}\suchthat \sigma\in\kleenestar{\Sigma}}$?
+\end{exercise}
 
 \begin{exercise}
-    
-Let $\sigma$ and  $\tau$ be strings.
-Then $\sigma$ is a \definend{prefix} of $\tau$ if 
-it is a subsequence.
-That is, where $\sigma=\sequence{s_0,\ldots,s_{i-1}}$ 
-and $\tau=\sequence{t_0,\ldots,t_{j-1}}$, we have
-$j\geq i$ and
-$s_0=t_0$, \ldots, $s_{i-1}=t_{i-1}$.
-(The empty string is a prefix of any string.)
-It is a \definend{proper prefix} if in addition $\lh{\sigma}<\lh{\tau}$.
+For any language $\lang{L}\subseteq\kleenestar{\Sigma}$ we can form the
+set of prefixes.
+\begin{equation*} 
+  \operatorname{Pref}(\lang{L})
+   =\set{\tau\in\kleenestar{\Sigma}
+         \suchthat\text{$\sigma\in\lang{L}$ and $\tau$ is a prefix of $\sigma$}}
+\end{equation*} 
+Where $\Sigma=\set{\str{a},\str{b}}$ and 
+$\lang{L}=\set{\str{abaaba},\str{bba}}$,
+find $\operatorname{Pref}(\lang{L})$.
+\end{exercise}
 
-The string $\sigma$ is a \definend{suffix} of $\tau$ if it occurs at the
-end of $\tau$ instead of at the start, that is,
-if $\reversal{\sigma}$ is a prefix of $\reversal{\tau}$.
-
-The string $\sigma$ is a \definend{substring} of $\tau$ if it occurs anywhere
-in $\tau$,
-that is, 
-if there are strings $\alpha,\beta$ so that 
-$\alpha\concat\sigma\concat\\beta=\tau$. 
+\begin{exercise}
+The operations of languages give rise to an algebra.
+\begin{exparts}
+\item
+Show that the empty language is the identity element with respect to language 
+concatenation, so $\lang{L}\concat\emptyset=\lang{L}$
+and $\emptyset\concat\lang{L}=\lang{L}$.  
+\item
+Show that language concatenation is associative:
+$(\lang{L}_0\concat\lang{L}_1)\concat\lang{L}_2
+  =\lang{L}_0\concat(\lang{L}_1\concat\lang{L}_2)$.
+\item 
+Show that $\reversal{\lang{L}_0\concat\lang{L}_1}
+    =\reversal{\lang{L}_1}\concat\reversal{\lang{L_0}}$.
+\end{exparts}
 \end{exercise}
 \end{exercises}
 

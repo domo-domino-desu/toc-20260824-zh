@@ -1299,6 +1299,8 @@ of the two.}
   \vspace{-4ex}% 
 }
 
+% \expartsname for naming a part of an exercise, as in \item \expartsname{Commutativity}
+\newcommand{\expartsname}[1]{\textsc{(#1)}} 
 
 \newenvironment{exparts}{%
   \begin{enumerate}[topsep=0ex,

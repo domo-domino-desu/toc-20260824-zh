@@ -29,16 +29,17 @@ and a next state function $\map{\Delta}{Q}{Q}$.
 
 Turing machines input strings and output strings.
 So to compute the solution to a problem, 
-we must express it as a string of characters
-and also express the solution as a string.
+we must represent the problem as a string
+and also represent the solution as a string.
 
-The digital computers that we use everyday work the same way.
+Our everyday computers work the same way.
 For example, to find the shortest driving distance between two places
 we must encode the map data and the start and end points 
-into strings and then the algorithm manipulates those strings. 
+into strings and then present those strings to an algorithm
+that manipulates them. 
 
 
-\section{Alphabets and strings}
+\section{Strings}
 
 \subsection{Definition}
 Languages are made of strings and strings are made of symbols.
@@ -74,7 +75,12 @@ read and write them, and for this purpose elephants
 would be inconvenient.}
 
 We put symbols in a special typeface, as in \str{1} or \str{c},
-because quoting them would be ugly.
+because quoting them would be 
+ugly.\footnote[2]{We need to do something because
+in traditional mathematical notation a phrase such as
+``let $S=\protect\set{a,b}$'' the $a$ and $b$ are variables.
+But symbols are not variables, they do not take on values.
+They are values.}
 The term ``symbol'' is potentially misleading in that some
 symbols may contain more than one character.
 For instance, a programming language
@@ -91,7 +97,7 @@ and so use at most countably many symbols.}.
 \begin{definition}
 A \definend{string} (or \definend{word})
 over an alphabet is a finite sequence of elements
-$\sequence{a_0,a_1,\ldots,a_n}$ from that alphabet.
+$\sequence{a_0,a_1,\ldots,a_{n-1}}$ from that alphabet.
 The string with no elements is 
 the \citetext{\definend{empty string}~$\emptystring=\sequence{}$}{Possibly 
   $\emptystring$ was chosen as an abbreviation for `empty'.   
@@ -101,30 +107,30 @@ the \citetext{\definend{empty string}~$\emptystring=\sequence{}$}{Possibly
 
 We denote strings with lower case Greek letters 
 such as $\sigma$ or~$\tau$.
-We use the convention of denoting the 
-sequence elements with the associate lower case roman letter,
-$\sigma=\sequence{s_0,\ldots,s_{i-1}}$ 
+We often denote the string's 
+elements with the associated lower case roman letter,
+so that $\sigma=\sequence{s_0,\ldots,s_{i-1}}$ 
 and $\tau=\sequence{t_0,\ldots,t_{j-1}}$.
 
-We will write many strings. 
-Sticking with diamond brackets and commas would be clunky. 
-In many of our examples we will follow the common convention of having
-the alphabet consist of single characters and making strings
+We use strings so much that 
+sticking with diamond brackets and commas would be clunky. 
+In many of our examples we will take the shortcut of having
+the alphabet consist of single character  symbols and making strings
 by dropping the diamond brackets and commas.
 Thus, instead of $\sequence{\str{a},\str{b},\str{c}}$
 we will write \str{abc}.\footnote{The significance of the
   alphabets having single-character symbols is that omitting commas  
   would be a problem for an alphabet such as 
-  $\Sigma=\set{\str{a}, \str{aa}}$, because 
+  $\Sigma=\set{\str{a}, \str{aa}}$, because the string
   \str{aaa} would be ambiguous.
   It could
   parse as $\sequence{\str{a},\str{aa}}$ or as
   $\sequence{\str{aa},\str{a}}$ or as
-  $\sequence{\str{a},\str{a}, \str{a}}$}. 
+  $\sequence{\str{a},\str{a}, \str{a}}$} 
 However, this convenience 
 has the disadvantage that without the diamond brackets  
 the empty string is just nothing, which is why 
-we reserve the symbol~$\emptystring$. 
+we have the empty string symbol~$\emptystring$. 
 
 Note that omitting the diamond brackets and commas 
 blurs the distinction between a symbol such as \str{c} 
@@ -150,48 +156,44 @@ blurring that distinction.
 % \end{example}
 
 \begin{example}
-The Scheme alphabet contains the symbols \str{or} and \str{car}.
-It also allows variable names such as \str{a}, \str{x}, or \str{lastname}.
-An example of a string over this alphabet is $\sigma=\str{(or a ready)}$.
-This string is a sequence of the five alphabet elements
+The Scheme alphabet contains the symbols \str{or} and \str{car}, and
+allows variable names such as \str{a}, \str{x}, or \str{lastname}.
+An example of a string is $\str{(or a ready)}$.
+This is a sequence of the five alphabet elements
 \str{(}, \str{or}, \str{a}, \str{ready}, and~\str{)}.
-Scheme writes the sequence by separating its elements with spaces
-rather than using diamond brackets and commas, for convenience.
+% Scheme writes the sequence by separating its elements with spaces
+% rather than using diamond brackets and commas, for convenience.
 \end{example}
 
-\begin{example}
-For \definend{bit strings} the alphabet is
-$\Sigma=\set{\str{0},\str{1}}$.
-One language over that alphabet is the finite set
-$\lang{L}=\set{\str{1000001},\str{1100001}}$.
-\end{example}
-
-The prior example's language $\lang{L}$ may seem senseless
-in that it may appear to contain some 
-\citetext{bit strings that were plucked out of the air, without rule or sense}{%
-The language is not 
-without sense though, since \str{1000001} represents capital A in the 
-ASCII encoding, while \str{1100001} is lower case a.
-The American Standard Code for Information Interchange, ASCII,
-is a widely used character encoding scheme.  
-The most common modern character encoding is UTF-8, 
-which is a superset of ASCII.}.
-This underlines that the definition takes 
-a language to be any set of strings, no matter how arbitrary.
-In practice though, most languages do have some reason or rule 
-determining them.
-We will study such rules later in this chapter.
+Strings over alphabet
+$\set{\str{0},\str{1}}$
+are \definend{bit strings}.
+This alphabet occurs so frequently that we shall give it a name 
+$\B=\set{\str{0},\str{1}}$.\footnote{We also use $\protect\B$ for the
+set $\protect\set{\protect\true,\protect\false}$ but of course never
+at the same time.}
 
 \begin{example}
 A bit string has \definend{even parity} if it has an even number of \str{1}'s
 and \definend{odd parity} otherwise.
-The language of even parity bit strings is 
-$\lang{L}=\set{\emptystring, \str{0}, \str{00}, \str{11}, 
-               \str{011}, \str{101}, \ldots}$.
+Some even parity bit strings are 
+$\str{11}$, $\str{011}$, $\str{00}$, and $\emptystring$.
 \end{example}
 
+We have used the following notation already,
+but we 
+formally state it here because it fits with the rest of the material.
 
-\begin{definition}[String operations]
+\begin{definition}
+Let~$\Sigma$ be an alphabet.
+We denote the set of length~$k$ strings over that alphabet, where $k\in\N$,
+by~\definend{$\Sigma^k$}.  
+We denote
+the set of all strings over $\Sigma$, of any length, as 
+\definend{$\kleenestar{\Sigma}$}.
+\end{definition}
+
+\begin{definition}[String operations] \label{def:StringOps}
 Let $\sigma$ and  $\tau$ be strings.
 The \definend{length} of a string $\lh{\sigma}$,
 is the number of symbols in that string, 
@@ -232,6 +234,13 @@ and the last, $\tau_{n-1}$, is the \definend{suffix}.
 % lower case a is represented by \str{1100001}.  
 % \end{example}
 
+
+\begin{definition}
+A \definend{language}~$\lang{L}$ over an alphabet~$\Sigma$
+is a set of strings drawn from that 
+alphabet, $\lang{L}\subseteq\kleenestar{\Sigma}$.  
+\end{definition}
+
 \begin{example}
 Let $\Sigma=\set{\str{a}, \str{b}}$.
 The language consisting of strings where the number of \str{a}'s is twice 
@@ -241,27 +250,53 @@ $\lang{L}=\set{\emptystring,\str{aab},\str{aba},\str{baa},
 \end{example}
 
 \begin{example}
-This is the language of sorted length-three strings over 
-$\Sigma=\set{\str{a}, \str{b}, \str{c}}$.
+Let $\Sigma=\set{\str{a}, \str{b}, \str{c}}$.
+This is the language of length-two strings over that alphabet is
+$\Sigma^2=\set{\str{aa},\str{ab},\dots,\str{cc}}$.
+This is the language of sorted length-three strings over that alphabet.
 \begin{equation*}
   \set{\str{aaa}, \str{aab}, \str{aac}, \str{abb}, \str{abc},
     \str{acc},\str{bbb},\str{bbc}, \str{bcc}, \str{ccc}}
 \end{equation*}
 \end{example}
 
+An explanation of the term `language' is that we could take 
+the English language to consist of sentences, where
+each sentence is a string of elements of $\Sigma$,
+a dictionary.
+
+\begin{example}
+One language over the alphabet $\B=\set{\str{0},\str{1}}$
+is the finite set
+$\lang{L}=\set{\str{1000001},\str{1100001}}$.
+This language at least at first glance may seem without rule or sense,
+just containing a couple of
+\citetext{bit strings that were plucked out of the air}{%
+The language is not 
+without sense though, since \str{1000001} represents capital A in the 
+ASCII encoding, while \str{1100001} is lower case a.
+The American Standard Code for Information Interchange, ASCII,
+is a widely used character encoding scheme.  
+The most common modern character encoding is UTF-8, 
+which is a superset of ASCII.}.
+This underlines that the definition takes 
+a language to be any set of strings at all.
+However, most of the languages that we 
+will see are determined from some reason or rule set.
+We will study such rule sets, grammars, later in this chapter.
+\end{example}
+
+\begin{example}
+The set of bit strings that begin with \str{1} is 
+$\set{\str{1},\str{10},\str{11},\str{100},\ldots}$.   
+\end{example}
 
 \begin{example}
 Let $\Sigma=\set{\str{a}, \str{b}, \str{c}}$.
 One way to describe Pythaorean triples is with the language
-$\lang{L}=\set{\str{a}^i\str{b}^j\str{c}^k \suchthat \text{$i,j,k\in\N$ and $i^2+j^2=k^2$}}$.  
+$\lang{L}=\set{\str{a}^i\str{b}^j\str{c}^k 
+   \suchthat \text{$i,j,k\in\N$ and $i^2+j^2=k^2$}}$.  
 \end{example}
-
-\begin{definition}
-A \definend{language} over an alphabet
-is a set of strings drawn from a that alphabet.  
-\end{definition}
-
-We usually denote languages with $\lang{L}$.
 
 \begin{definition}[Operations on languages]
 As sets, languages are subject to the operations of union, intersection, etc.
@@ -284,16 +319,6 @@ concatenation of any number of strings of the language.
 This includes zero-many strings, so $\emptystring\in\kleenestar{\lang{L}}$. 
 \end{definition}
 
-Consistent with blurring the distinction between symbols and one-symbol
-strings, we reuse the notation from languages for alphabets, as we have
-already seen. 
-
-\begin{definition}
-Fix an alphabet~$\Sigma$.
-The set of strings over that alphabet of length~$k$ is $\Sigma^k$.
-The set of all strings over $\Sigma$, of any length, is $\kleenestar{\Sigma}$
-\end{definition}
-
 
 
 \begin{exercises}
@@ -312,12 +337,11 @@ Find each.
 \begin{exercise}
 \Cref{def:substring} starts with 
 `$\sigma=\tau_0\concat \cdots \concat\tau_{n-1}$'.
-We wrote that without parentheses so we are
+We wrote that concatenation without parentheses so we are
 supposing that 
-concatenation is associative, that no matter how we parenthesize it we
+this operation is associative, that no matter how we parenthesize it we
 get the same string.
-We should have proved that.
-Do so now.
+Prove that.
 \hint{} use induction on the number of substrings, $n$.  
 \end{exercise}
 
@@ -340,7 +364,7 @@ If not, give a counterexample.
 
 \begin{exercise}
 Prove that this constructive definition of replication is equivalent
-to the one we gave.
+to the one from \cref{def:StringOps}.
 \begin{equation*}
   \sigma^n =
     \begin{cases}
@@ -353,15 +377,14 @@ Use this definition to produce a Scheme function.
 
 
 \begin{exercise}[Levi's lemma] \index{Levi's lemma}
-Prove that for all strings $\alpha$, $\beta$, $\gamma$ and $\delta$, 
-if the contatenations are equal $\alpha\concat\beta=\gamma\concat\delta$
+Prove that for all strings $\alpha,\beta,\gamma,\delta\in\kleenestar{\Sigma}$, 
+if $\alpha\concat\beta=\gamma\concat\delta$
 then there exists a string $\sigma$ such that either
 (1)~$\alpha\concat\sigma=\gamma$ 
 or (2)~$\alpha=\gamma\concat\sigma$.
-That is, there is a string w that is in the middle 
+That is, there is a string in the middle 
 that can be grouped to one side or the other.
-\hint{} the first is the $\lh{\alpha}\leq\lh{\gamma}$ case and the 
-second is the other case.
+\hint{} case~(1) applies when $\lh{\alpha}\leq\lh{\gamma}$.
 \end{exercise}
 
 \begin{exercise}
@@ -387,19 +410,40 @@ find $\operatorname{Pref}(\lang{L})$.
 \end{exercise}
 
 \begin{exercise}
-The operations of languages give rise to an algebra.
+The operations of languages form an algebraic system.
 \begin{exparts}
+\item Show that language union and intersection are commmutative:
+  $\lang{L}_0\cup\lang{L}_1=\lang{L}_1\cup\lang{L}_0$ and
+  $\lang{L}_0\cap\lang{L}_1=\lang{L}_1\cap\lang{L}_0$.
 \item
-Show that the empty language is the identity element with respect to language 
-concatenation, so $\lang{L}\concat\emptyset=\lang{L}$
-and $\emptyset\concat\lang{L}=\lang{L}$.  
+Show that the language consisting of the empty string
+is the identity element with respect to language 
+concatenation, so $\lang{L}\concat\lang{\set{\emptystring}}=\lang{L}$
+and $\lang{\set{\emptystring}}\concat\lang{L}=\lang{L}$.  
+\item
+Give an example showing that language concatenation is not commutative,
+that there are lanaguages such that 
+$\lang{L}_0\concat\lang{L}_1\neq\lang{L}_1\concat\lang{L}_0$.
 \item
 Show that language concatenation is associative:
 $(\lang{L}_0\concat\lang{L}_1)\concat\lang{L}_2
   =\lang{L}_0\concat(\lang{L}_1\concat\lang{L}_2)$.
 \item 
-Show that $\reversal{\lang{L}_0\concat\lang{L}_1}
+Show that $\reversal{(\lang{L}_0\concat\lang{L}_1)}
     =\reversal{\lang{L}_1}\concat\reversal{\lang{L_0}}$.
+\item 
+Show that concatenation is left distributive over union:
+$(\lang{L}_0\cup\lang{L}_1)\concat\lang{L}_3
+ =(\lang{L}_0\concat\lang{L}_3)\cup(\lang{L}_2\concat\lang{L}_3)$.
+Show that it is also right distributive.
+\item
+Show that the empty language is an annihilator for 
+concatenation $\emptyset\concat\lang{L}=\lang{L}\concat\emptyset=\emptyset$.
+\item
+Show that $\kleenestar{\emptyset}=\set{\emptystring}$
+and that $\kleenestar{\set{\emptystring}}=\set{\emptystring}$.
+\item
+Show that $\kleenestar{(\kleenestar{\lang{L}})}=\kleenestar{\lang{L}}$.
 \end{exparts}
 \end{exercise}
 \end{exercises}
@@ -407,21 +451,24 @@ Show that $\reversal{\lang{L}_0\concat\lang{L}_1}
 
 
 
-\subsection{Representations}
-To solve problems on a computer we first represent the problem, then 
+\subsection{Representation}
+To solve problems with a mechanism we must first represent it
+in a form the mechanism can handle, then 
 apply an algorithm, and finally interpret the solution,
-that is, we de-represent the solution.
+that is, de-represent it.
 
-We have already seen this on a Turing machine when
-we represented natural numbers in unary,
-where the number $n$ is represented by $n$-many \str{1}'s.
+We saw this with addition on a Turing machine. 
+We represented the input as two natural numbers in unary,
+where the number $n$ is represented by $n$-many \str{1}'s,
+separated by a blank.
+The output was a single natural number, represented in unary.
 
-\begin{example}
-The set of numbers represented in unary is
-$\lang{L}_\text{unary}=\set{\str{1}^n\suchthat n\in\N}$.
-The notation $\str{1}^n$ means a sequence of $n$-many \str{1}'s,
-including that $\str{1}^0=\emptystring$.
-\end{example}
+% \begin{example}
+% The set of numbers represented in unary is
+% $\lang{L}_\text{unary}=\set{\str{1}^n\suchthat n\in\N}$.
+% The notation $\str{1}^n$ means a sequence of $n$-many \str{1}'s,
+% including that $\str{1}^0=\emptystring$.
+% \end{example}
 
 There is nothing sacred about that representation; sometimes
 representing $n$ with $n+1$~many \str{1}'s is more convenient,
@@ -433,28 +480,30 @@ representations separated by \str{0}'s, so that
 the sequence $\sequence{2,1,3}$ becomes
 $\str{11010111}$. 
 Another possiblity is to put the numbers as 
-powers of primes, so that $\sequence{2,1,3}$ is represented by 
-the number $2^23^15^3=1500$, in whatever way we have chosen to represent that 
-number.
+powers of primes, so that the sequence $\sequence{2,1,3}$ is represented by 
+the single number $2^23^15^3=1500$, in whatever way we have chosen to 
+represent that number.
 
 \begin{example}
 The \definend{Shortest Path Problem} is to find the cheapest path through a
 graph where each edge has a cost.
-For instance, we could start with this graph and the nodes $a$ and~$f$,
+For instance, we could start with this graph and look for 
+the path between $a$ and~$f$ of smallest total cost.
 \begin{center}
   \includegraphics{languages/asy/dijkstra.pdf}
-\end{center}
-and look for the path between those nodes of smallest total cost. 
-An algorithm that solves this problem could take as input a member 
-this set of pairs.
+\end{center} 
+An algorithm that solves this problem inputs a member of 
+this set.
 \begin{equation*}
   \lang{L}_\text{SP}=\set{\sequence{\mathcal{G},p}\suchthat
-                \text{$\mathcal{G}$ is a graph, $p=\sequence{n_\text{start},n_\text{end}}$ where $n_\text{start}$, $n_\text{end}$ are nodes}}
+                \text{$\mathcal{G}$ is a graph and $p=\sequence{n_\text{start},n_\text{end}}$, where $n_\text{start}$, $n_\text{end}$ are nodes}}
 \end{equation*}
-To be compete we should also specify 
+To make a complete analysis we must also specify 
 the representation of the graph and of the nodes.
-The nodes could be integers, and the graph could be an ordered pair of a 
-set of nodes and a set of edges, where each edge is a set of two nodes. 
+The nodes might be integers, represented in binary, 
+then inputted as bit strings. 
+The graph could be an ordered pair, $\sequence{\mathcal{N},\mathcal{E}}$,
+of a set of nodes and a set of edges, where each edge is a set of two nodes. 
 In short, languages can be complicated.
 
 The above does not satisfy the definition of
@@ -497,7 +546,18 @@ Church's Thesis gets us out of this thicket.
 
 
 
+
+\subsection{Doing vs~deciding}
+Compare ``find shortest path'' to ``decide whether this path is in 
+the set of shortest paths.'' 
+
+
+
+
 \section{Grammars}
+Our formal definition of a language is that it is a set of strings.
+But often in practice a language is given by rules,
+by a grammar.
 
 To a native English speaker the noun phrase ``the big red barn'' sounds fine
 but \citetext{``the red big barn'' sounds wrong, somehow.}{Experts 
@@ -645,8 +705,9 @@ Fourth, $P$ is a set of \definend{productions} or \definend{rewrite rules},
 which describe allowed replacments of nonterminal symbols on the left side 
 of a production with other nonterminal or terminal symbols on the right side 
 of the production in the course of a derivation. 
+
 The \definend{language derived from a grammar} 
-is the set of strings having derivations
+is the set of strings of terminals having derivations
 beginning with the start symbol and that are
 allowed by the grammar's rules.
 \end{definition}
@@ -1042,7 +1103,7 @@ string \syntax{aaabbbccc}.
 
 % =================================================================
 
-\extra{Backus-Naur form}
+\extra{Extended Backus-Naur form}
 
 Many authors use an extensions of BNF.
 Optional items are enclosed in metasymbols \syntax{[} and {]}.
@@ -1092,6 +1153,18 @@ There is a grammar for EBNF written in BNF.
 
 \syntax{quoted_symbol ::= """ { any_character } """}
 \end{clip}
+
+
+
+
+
+
+% ===============================================================
+
+\extra{Regexes}
+
+
+
 
 
 

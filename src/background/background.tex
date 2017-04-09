@@ -2394,68 +2394,39 @@ which basically runs \codeinline!eval! on it, so the first entry in the
 list is now a routine, which acts on the argument, producing the correct output.
 
 
-\subsection{Parametrization}
-% \subsection{$\mathbf{s}$-$\mathbf{m}$-$\mathbf{n}$ theorem}
-Consider a two-input program $\TM_e(x,y)$.
-Freezing the first argument, that is, locking $x=a$ for some $a\in\N$,
-gives a one-input program $\TM{Q}_a(y)=\TM_e(a,y)$.
-For example, starting with the program
-\begin{lstlisting}
-  P(x,y)
-\end{lstlisting}
-and fixing the first imput at $a=7$ gives a one-input program.
-\begin{lstlisting}
-  Q_7(y)  
-\end{lstlisting}
-This is \definend{partial evaluation}.
-
-Obviously the second program is related to the first.
-The next result is that the index of the second program is computable from the
-first.
-
-\begin{theorem}[Parameter theorem, or $s$-$m$-$n$~theorem]
-There is a computable function $s$ such that
-for any recursive function of two variables $f(x,y)$ computed by
-$\TM_e$, freezing the first input at $a\in\N$ gives a function
-computed by $\TM_{s(e,a)}$.
-\end{theorem}
-
-The following Lisp code implements $s_1^1$ for Lisp.
-(Explain gensym.)
-% https://en.wikipedia.org/wiki/Smn_theorem
-\begin{lstlisting}
- (defun s11 (f x)
-   (let ((y (gensym)))
-     (list 'lambda (list y) (list f x y))))
-\end{lstlisting}
-For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
-we can fix the first variable~\lstinline!x! to have the value~$3$ with 
-the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
-evaluates to the one-input function 
-\lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
-adds~$3$ to its argument.
-
-
-
 
 
 %================================================
 \section{Halting Problem}
-We've shown that there are problems that no computer program can solve, that
+We've shown that
 there are functions that are not computable.
 Our proof was that there are countably many programs but 
 uncountably many functions, so there are functions with no 
 associated program.
-This argument does not construct a specific unsolvable problem.
+However, this argument does not construct a specific unsolvable problem.
 While we certainly are glad to know what is true,
-our taste in this subject is to prefer an argument that constructsthe answer.
+our taste in this subject is to prefer an argument that constructs the answer.
+
 We will now give a problem, the Halting Problem,
 that cannot be solved mechanically.
+The Halting Problem is to determine, given a program's source and input,
+whether that program halts on that input.\footnote{We will see the 
+official definition on page~\protect\pageref{prob:HaltingProblem},
+but this description captures the spirit.}
+Of course, as in the prior paragraph, we want to determine this
+with a computer program. 
+In summary, we want this behavior and we want it to be computable.
+\begin{equation*}
+  \operatorname{halt\_checker}(e,x)=
+  \begin{cases}
+    1 &\case{if $\phi_e(x)\downarrow$}  \\
+    0 &\case{otherwise}
+  \end{cases}
+\end{equation*}
 
-\subsection{Significance of the Halting Problem}
-The Halting Problem is to determine, given a program's source and an input,
-whether that program halts on that input.
 
+
+\subsection{Significance}
 In an Introduction to Programming class, we get the 
 impression that if a program fails to halt then
 that is just a bug, and 
@@ -2464,10 +2435,37 @@ That is, we can leave the Intro thinking that for
 programs a failure to halt is an abberation, something to patch up. 
 
 This impression is wrong.
-We will demonstrate that the Halting Problem is of first interest 
-in two ways.
+The Halting Problem is of first interest. 
+We will illustrate this in two ways.
+
+First, there is a wide class of problems that we could solve
+if we had a computable function that solves the Halting Problem. 
+For example, natural number is \textit{perfect} if it is the 
+sum of its proper positive divisors.
+The number $6$ is perfect because it is $1+2+3$,
+as is $28 = 1 + 2 + 4 + 7 + 14$,
+and after that come $496$ and~$8128$.
+Perfect numbers were studied by Euclid and
+today we 
+\citetext{understand the form of all even perfect numbers}{A 
+number is an even perfect number if and only if it has the form 
+$(2^p-1)\cdot 2^{p-1}$ where $2^p-1$ is prime.}.
+But we do not know if there are any odd perfect numbers.
+
+With a solution to the Halting Problem we could settle that question.
+\margingraphic*[l]{.5\textwidth}{background/asy/hp/perfect/perfect.pdf}
+This program searches for an odd perfect number.\footnote{It takes an
+input $x$ but ignores it; in this book we like the convention that 
+all programs take an input and give an output.}
+If it finds one, it halts.
+If not, it does not halt.
+With a solution to the Halting Problem,
+we could settle the question of the existence of an odd perfect number
+by running it on this source. 
+There are many similar open question, those involve a simple unbounded search, 
+that would fall to such an approach.
  
-For a first take on why halting is an interesting property, 
+For our second illustration that the Halting Problem is of interest,
 imagine that we could debug all programs\Dash arrange all Turing machines 
 so they produce output on all inputs.
 We'd have this table.
@@ -2475,25 +2473,25 @@ We'd have this table.
   \begin{array}{r|ccccccc@{\hspace*{1em}\ldots\;}}
     \multicolumn{1}{r}{\ } 
     &\multicolumn{7}{c}{\text{\small\tabulartext{Input}\ }}  \\
-     \multicolumn{1}{c}{\text{\small\tabulartext{Turing machine}}}
+     \multicolumn{1}{c}{\text{\small\tabulartext{Computable function}}}
      % \multicolumn{1}{c}{\ }
     &0 &1 &2 &3 &4 &5 &6 \\ 
    \cline{1-8}
    \rule{0em}{2.15ex}% bit more vertical room 
-   \TM_0  &3  &1  &2  &7  &7  &0  &4  \\  
-   \TM_1  &0  &5  &0  &0  &0  &0  &0  \\  
-   \TM_2  &1  &4  &1  &5  &9  &2  &6  \\  
-   \TM_3  &9  &1  &9  &1  &9  &1  &9  \\  
-   \TM_4  &1  &0  &1  &0  &0  &1  &0  \\
-   \TM_5  &6  &2  &5  &5  &4  &1  &8  \\[-.5ex]
+   \phi_0  &3  &1  &2  &7  &7  &0  &4  \\  
+   \phi_1  &0  &5  &0  &0  &0  &0  &0  \\  
+   \phi_2  &1  &4  &1  &5  &9  &2  &6  \\  
+   \phi_3  &9  &1  &9  &1  &9  &1  &9  \\  
+   \phi_4  &1  &0  &1  &0  &0  &1  &0  \\
+   \phi_5  &6  &2  &5  &5  &4  &1  &8  \\
    \multicolumn{1}{r}{\vdotswithin{\TM_0}} 
     &\multicolumn{6}{c}{\vdotswithin{1}}  
   \end{array}
 \end{equation*}
 
 \margingraphic*{.2\textwidth}{background/asy/hp/naivediag/naivediag.pdf}
-Of course, diagonalize.
-That is, consider the program sketched by this flowchart.
+Of course, we diagonalize.
+That is, consider this program.
 Its output is not any of the outputs in the table,
 but the table shows the output of every program.
 Why is this not a contradiction?
@@ -2511,36 +2509,84 @@ for some~$e$'s, machine~$\TM_e$ on input~$e$ does not halt.
 For such numbers
 the flowchart's program also does not halt, and the two do not differ.
 
-Now for our second take on why being able to detect if a program halts would
-be useful. 
-We shall use as an example a simple number-theoretic question.
-A natural number is \textit{perfect} if it is the 
-sum of its proper positive divisors.
-Thus, $6$ is perfect because it is $1+2+3$.
-The next largest perfect number is $28 = 1 + 2 + 4 + 7 + 14$
-and after that comes $496$ and~$8128$.
-The study of perfect numbers was initiated by Euclid, and
-we today we \citetext{completely understand the form of all even perfect numbers}{A number is an even perfect number if and only if it has the form 
-$(2^p-1)\cdot 2^{p-1}$ where $2^p-1$ is prime.}.
-But no one knows if there are any odd perfect numbers.
-
-\margingraphic*{.5\textwidth}{background/asy/hp/perfect/perfect.pdf}
-Consider the program in the margin.
-It reads a single input~$x$ and tests if the $x$-th odd number is perfect.
-If so, it halts.
-If not, it does not halt.
-With a solution to the Halting Problem, with a program that can 
-read a source and tell if it will halt for any input,
-we could settle the question of the existence of an odd perfect number
-by running it on this source. 
-There are many similar open question that would fall to such an approach.
-
-
 So, while in our everyday experience with computers
 we think of a failure to halt as a glitch, 
 the argument 
 given here shows that it is essential to the nature of computation. 
-Otherwise there is a contradiction. 
+Otherwise we have a contradiction. 
+
+
+
+
+
+
+\subsection{Effectivization}
+We would like to produce a specific function that cannot be computed.
+The natural thing to do is to go through 
+Cantor's Theorem and effectivize it,
+that is, to see how much of the proof we can express 
+computationally.
+
+We start by considering a table like the one on 
+\cpageref{ex:DiagonalizationTable}.
+These are the computed total functions.
+By `computed total functions' we mean that there is a computable~$F$ 
+giving $F(e,x)=f_e(x)$.   
+\begin{center} \small
+  \begin{tabular}{r|ccccc}
+    \multicolumn{1}{c}{\ }  
+      &\multicolumn{5}{c}{\tabulartext{Input}}  \\[-.2ex]
+    \multicolumn{1}{r}{\tabulartext{Computed~function}}
+      &$0$  &$1$  &$2$  &$3$  &$4$          \\ 
+    \hline
+     $f_0$     &$f_0(0)$ &$f_0(1)$ &$f_0(2)$ &$f_0(3)$ &$f_0(4)$ \\
+     $f_1$     &$f_1(0)$ &$f_1(1)$ &$f_1(2)$ &$f_1(3)$ &$\ldots$ \\
+     $f_2$     &$f_2(0)$ &$f_2(1)$ &$f_2(2)$ &$f_2(3)$ &\ldots  \\[-.5ex]
+     % \MTFlushSpaceAbove
+     $\vdotswithin{f_0}$  &$\vdotswithin{=}$  &$\vdotswithin{=}$
+  \end{tabular}
+\end{center}
+Diagonalization shows that for any table of
+computed total functions there is a computable function
+that is not in the table, since 
+$d(n)=f_n(n)+1$ is computable and is not in the table.
+Note that this is effective:
+we can write a program that takes in $n$, computes
+the value of $F(n,n)$,
+and outputs that value plus~$1$.
+
+Therefore, because there is a computable function~$F$ giving the primitive
+recursive functions,
+there are intuitively mechanically computable functions 
+that are not primitive recursive.
+
+But now we seems to yield a paradox.
+We have been working with intuitively computable functions, which we
+have defined as those computed by Turing machines.
+We can enumerate the Turing machines by first listing all machines
+with one instruction, then all the ones with two, etc., so we 
+have a $F$.  
+Won't the above process, applied to a list of all of 
+the intuitively computable functions,
+yield an intuitively computable function not on that list?
+
+
+The resolution of the paradox 
+is that there are numbers~$n$ for which the computation
+$\TM_n$ on input~$n$ never halts, that is,
+$f_n(n)\diverges$.
+
+There are Turing machines that halt on all inputs, 
+Turing machines that halt on no inputs, 
+and ones that halt on some inputs but not others.
+
+At that core of the notion of computability is that there are
+some indices and some inputs for which the computation never halts. 
+
+
+
+
+
 
 \subsection{Definition}
 That motivation shows that 
@@ -2554,15 +2600,11 @@ we are interested in these two sets.
 Finding the characteristic function of the first is our touchstone
 unsolvable problem.
 
-\begin{problem}[Halting Problem]
+\begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
 Determine if a Turing machine halts.
 \probleminput~integer $e$.
 \problemoutput~$0$ if $\TM_e(e)$ does not halt and $1$ if it does.
 \end{problem}
-
-There are Turing machines that halt on all inputs, 
-Turing machines that halt on no inputs, 
-and ones that halt on some inputs but not others.
 
 The statement of the problem may seem unnatural.
 Surely the more natural question is whether $\TM_e$ halts on input~$x$?
@@ -2583,7 +2625,7 @@ Observe that the machine either halts on all inputs, or fails to halt on
 all inputs, depending on wheyter
 
 \begin{theorem}[Unsolvability of the Halting Problem]
-There is no machine that solves the Halting Problem.
+There is no computable function that solves the Halting Problem.
 \end{theorem}
 
 \begin{proof}
@@ -2593,7 +2635,7 @@ Consider the program charted here.
 \begin{center}
   \includegraphics{background/asy/hp/hpunsolvable/hpunsolvable.pdf}
 \end{center}
-Suppose that it has index~$e_0$, so it is~$\TM_{e_0}$.
+Let it have index~$e_0$, so it is~$\TM_{e_0}$.
 Give it~$e_0$ as input.
 % We are feeding $e_0$ to $\TM_{e_0}$ so the test applies.
 
@@ -2726,67 +2768,48 @@ or rather, the impossibility of uniformity.
 
 
 
-\subsection{Effectivization}
-In the Infinity section we showed that there are functions
-not computed by any program.
-That is an important result but
-we would like to produce a specific function that cannot be computed.
-The natural way thing to do is to go through 
-Cantor's Theorem and effectivize it,
-that is, to see how much of the proof we can express 
-computationally.
-
-We start by considering a table like the one on 
-\cpageref{ex:DiagonalizationTable}.
-These are the computed total functions.
-By `computed total functions' we mean that there is a computable~$F$ 
-giving $F(e,x)=f_e(x)$.   
-\begin{center} \small
-  \begin{tabular}{r|ccccc}
-    \multicolumn{1}{c}{\ }  
-      &\multicolumn{5}{c}{\tabulartext{Input}}  \\[-.2ex]
-    \multicolumn{1}{r}{\tabulartext{Computed~function}}
-      &$0$  &$1$  &$2$  &$3$  &$4$          \\ 
-    \hline
-     $f_0$     &$f_0(0)$ &$f_0(1)$ &$f_0(2)$ &$f_0(3)$ &$f_0(4)$ \\
-     $f_1$     &$f_1(0)$ &$f_1(1)$ &$f_1(2)$ &$f_1(3)$ &$\ldots$ \\
-     $f_2$     &$f_2(0)$ &$f_2(1)$ &$f_2(2)$ &$f_2(3)$ &\ldots  \\[-.5ex]
-     % \MTFlushSpaceAbove
-     $\vdotswithin{f_0}$  &$\vdotswithin{=}$  &$\vdotswithin{=}$
-  \end{tabular}
-\end{center}
-Diagonalization shows that for any table of
-computed total functions there is a computable function
-that is not in the table, since 
-$d(n)=f_n(n)+1$ is computable and is not in the table.
-Note that this is effective:
-we can write a program that takes in $n$, computes
-the value of $F(n,n)$,
-and outputs that value plus~$1$.
-
-Therefore, because there is a computable function~$F$ giving the primitive
-recursive functions,
-there are intuitively mechanically computable functions 
-that are not primitive recursive.
-
-But now we seems to yield a paradox.
-We have been working with intuitively computable functions, which we
-have defined as those computed by Turing machines.
-We can enumerate the Turing machines by first listing all machines
-with one instruction, then all the ones with two, etc., so we 
-have a $F$.  
-Won't the above process, applied to a list of all of 
-the intuitively computable functions,
-yield an intuitively computable function not on that list?
 
 
-The resolution of the paradox 
-is that there are numbers~$n$ for which the computation
-$\TM_n$ on input~$n$ never halts, that is,
-$f_n(n)\diverges$.
+\subsection{Parametrization}
+% \subsection{$\mathbf{s}$-$\mathbf{m}$-$\mathbf{n}$ theorem}
+Consider a two-input program $\TM_e(x,y)$.
+Freezing the first argument, that is, locking $x=a$ for some $a\in\N$,
+gives a one-input program $\TM{Q}_a(y)=\TM_e(a,y)$.
+For example, starting with the program
+\begin{lstlisting}
+  P(x,y)
+\end{lstlisting}
+and fixing the first input at $a=7$ gives a one-input program.
+\begin{lstlisting}
+  Q_7(y)  
+\end{lstlisting}
+This is \definend{partial application}.
+Obviously the second program is related to the first.
+The next result is that the index of the second program is computable from the
+first.
 
-At that core of the notion of computability is that there are
-some indices and some inputs for which the computation never halts. 
+\begin{theorem}[Parameter theorem, or $s$-$m$-$n$~theorem]
+There is a computable function $s$ such that
+for any recursive function of two variables $f(x,y)$ computed by
+$\TM_e$, freezing the first input at $a\in\N$ gives a function
+computed by $\TM_{s(e,a)}$.
+\end{theorem}
+
+The following Lisp code implements $s_1^1$.
+(Explain gensym.)
+% https://en.wikipedia.org/wiki/Smn_theorem
+\begin{lstlisting}
+ (defun s11 (f x)
+   (let ((y (gensym)))
+     (list 'lambda (list y) (list f x y))))
+\end{lstlisting}
+For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
+we can fix the first variable~\lstinline!x! to have the value~$3$ with 
+the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
+evaluates to the one-input function 
+\lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
+adds~$3$ to its argument.
+
 
 
 

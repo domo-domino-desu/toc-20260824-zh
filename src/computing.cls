@@ -770,6 +770,21 @@ of the two.}
     \centering
     \includegraphics[width=#2]{#3}
   \end{wrapfigure}}
+% margingraphicnomag Same as margin graphic, but the graphic is not magnified
+\newcommand{\margingraphicnomag}[4][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics{#3}% 
+    \caption{#4}
+  \end{wrapfigure}}
+% For graphic without a caption
+\WithSuffix\newcommand\margingraphicnomag*[3][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics{#3}
+  \end{wrapfigure}}
 
 % % Figures sticking into the margin.
 % \newlength{\margingraphic@size}  % default width of graphic

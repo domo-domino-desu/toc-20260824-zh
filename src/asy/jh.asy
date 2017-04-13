@@ -29,7 +29,7 @@ import texcolors;
 
 // colors Tech Office
 pen darkgrey_color=rgb("595241");  // hex string
-pen lightgrey_color=rgb("B8AE9C");
+pen lightgrey_color=rgb("E0D4BE");  // rgb("B8AE9C");
 pen white_color=rgb("FFFFFF");
 pen lightblue_color=rgb("ACCFCC");
 pen red_color=rgb("8A0917");
@@ -201,7 +201,7 @@ path rounddiamond(pair center=(0,0), real rx=1, real ry=rx)
   pair botcorner = center-(0,ry);
   path diamondpath = rightcorner--topcorner--leftcorner--botcorner--cycle;
   // real d=roundratio*min(DD.x,DD.y);
-  real roundratio = 0.05; // additional parameter
+  real roundratio = 0.15; // additional parameter
   path rightcircle = circle(rightcorner,roundratio*rx);
   path leftcircle = circle(leftcorner,roundratio*rx);
   path topcircle = circle(topcorner,roundratio*ry);

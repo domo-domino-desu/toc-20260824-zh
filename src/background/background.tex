@@ -2395,6 +2395,59 @@ list is now a routine, which acts on the argument, producing the correct output.
 
 
 
+% ====== S-m-n, uniformity
+\begin{TODO}
+  In universality we have $F(e,x)=\phi_e(x)$ so the letter~$e$ goes from
+the a function argument to an index.
+Now generalize.
+Comment on uniformity
+\end{TODO}
+
+
+
+\subsection{Parametrization}
+% \subsection{$\mathbf{s}$-$\mathbf{m}$-$\mathbf{n}$ theorem}
+Consider a two-input program $\TM_e(x,y)$.
+Freezing the first argument, that is, locking $x=a$ for some $a\in\N$,
+gives a one-input program $\TM{Q}_a(y)=\TM_e(a,y)$.
+For example, starting with the program
+\begin{lstlisting}
+  P(x,y)
+\end{lstlisting}
+and fixing the first input at $a=7$ gives a one-input program.
+\begin{lstlisting}
+  Q_7(y)  
+\end{lstlisting}
+This is \definend{partial application}.
+Obviously the second program is related to the first.
+The next result is that the index of the second program is computable from the
+first.
+
+\begin{theorem}[Parameter theorem, or $s$-$m$-$n$~theorem]
+There is a computable function $s$ such that
+for any recursive function of two variables $f(x,y)$ computed by
+$\TM_e$, freezing the first input at $a\in\N$ gives a function
+computed by $\TM_{s(e,a)}$.
+\end{theorem}
+
+The following Lisp code implements $s_1^1$.
+(Explain gensym.)
+% https://en.wikipedia.org/wiki/Smn_theorem
+\begin{lstlisting}
+ (defun s11 (f x)
+   (let ((y (gensym)))
+     (list 'lambda (list y) (list f x y))))
+\end{lstlisting}
+For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
+we can fix the first variable~\lstinline!x! to have the value~$3$ with 
+the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
+evaluates to the one-input function 
+\lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
+adds~$3$ to its argument.
+
+
+
+
 
 %================================================
 \section{Halting Problem}
@@ -2403,51 +2456,21 @@ there are functions that are not mechanically computable.
 Our proof was that there are countably many Turing machines but 
 uncountably many functions and so there are functions with no 
 associated machine.
-
-This argument does not give us a specific unsolvable problem.
 While we certainly are glad to know what is true,
-our taste in this subject is to prefer an argument that constructs the answer.
-
-We will now provide an unsolvable problem.
-The Halting Problem is to determine, 
-\citetext{given a program's source and input,
-whether that program halts on that input}{A program or Turing machine
-could fail to halt because it has an infinite loop.
-The Turing machine
-$\TM_0=\set{\tminstruction{0}{B}{B}{0},
-        \tminstruction{0}{1}{1}{0}}$
-never halts, cycling forever in state $q_0$.
-However, there are machines that fail to halt but
-do not have loops, in the sense that they never repeat a configuration.
-One is $\TM_1=\set{\tminstruction{0}{B}{1}{1},
-        \tminstruction{1}{1}{R}{0}}$
-which when started on a blank tape will endlessly move to the right,
-writing \str{1}'s.}.\footnote{The 
-official definition on page~\protect\pageref{prob:HaltingProblem} is slightly 
-different but this description captures its spirit.}
-When we say that this problem is unsolvable we mean that it is unsolvable
-by a mechanism: there is no computer program with the following behavior. 
-\begin{equation*}
-  \computablefunction{halt\_checker}(e,x)=
-  \begin{cases}
-    1 &\case{if $\phi_e(x)\downarrow$}  \\
-    0 &\case{otherwise}
-  \end{cases}
-\end{equation*}
+our taste in this subject is to prefer an argument that produces an answer.
+We will now provide a specific unsolvable problem,
+a function for which there is no associated Turing machine.
 
 
 
-\subsection{Significance}
-An Introduction to Programming class can give the 
-impression that halting isn't very interesting, that 
-if a program doesn not halt then
-it just has a bug, something fixable. 
-That impression is wrong.
-
-Imagine, as in the Intro class, that we 
-can fix up all programs so that they halt, 
-that we can make all computable functions converge on all inputs.
-That leaves us with a table like this. 
+\subsection{Definition}
+The natural thing to do is to go through 
+Cantor's Theorem and effectivize it,
+see how much of the proof we can express constructively.
+For a first try, consider a table adapted from the one on 
+\cpageref{ex:DiagonalizationTable}.
+Here the rows are computable functions and the columns are inputs.
+For instance, this table imagines that $\phi_1(3)=0$.
 \begin{center} \small \setlength{\arraycolsep}{0.75\arraycolsep}
   \begin{tabular}{r|ccccccc@{\hspace*{1em}$\ldots$}}
     \multicolumn{1}{r}{\ } 
@@ -2469,38 +2492,122 @@ That leaves us with a table like this.
   \hspace*{2em plus 0.75fil}
   \vcenteredhbox{\includegraphics{background/asy/hp/perfect/perfect02.pdf}}
 \end{center}
-Of course, we diagonalize.
-That is, the program's output is not any row of the table. 
-That contradicts
-the presumption that the table's rows constitute all computable functions.
+Diagonalize.
+That is, note that the program's output is not any row of the table,
+which would contradict our presumption
+that the table's rows constitute all computable functions.
 
-The problem with this argument sketch is that it is not perfectly clear where
-the error lies.
-Possibly the error is in the flowchart's middle box, where 
-we simulate machine~$e$ on input~$e$, so that there must 
-be some values~$e$ for which this fails to halt, for which 
-the program never leaves the box.
-Or possibly the error is that we cannot patch up the functions uniformly,
-so that we cannot with a single program generate the table. 
+So what's happening?
+In the table of computable functions, 
+there must be a function that on some input does not halt.
+In particular this must happen on the diagonal of that table: there must be
+some $e\in\N$ so that $\phi_e(e)\diverges$.
+In the flowchart, for those input~$e$'s the program will never leave 
+the middle box and so will never get to the contradiction of the 
+`$\text{result}+1$'.
 
-\margingraphicnomag*{.3\textwidth}{background/asy/hp/perfect/perfect01.pdf}
-So here is a precise version that captures the essence of that sketch:~if 
-$\computablefunction{halt\_check}$ were computable then we could  
-write the program shown here, that behaves 
-like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$
-this program outputs the nominal value~$0$.
-With this program we get an input-output relationship like that imagined
-in the earlier table, containing only computable functions that are total.
-Continuing to suppose that $\computablefunction{halt\_check}$ is computable,
-this list is also computable and every total function is one of its rows,
-since if a function $\phi_e$ is total then the flowchart just never 
-takes the `\texttt{No}' branch.
-Now we can diagonalize as above, giving a contradiction.
 
-So, in contrast to our everyday experience with computers
-we think of a failure to halt as a glitch, 
-rather the fact that some computable functions fail to halt on some inputs
-is essential to the nature of computability.
+\begin{definition}
+  $\definend{K}=\set{e \suchthat \text{$\TM_e(e)$ halts}}$, 
+  $\definend{K_0}=\set{\sequence{e,x} \suchthat \text{$\TM_e(x)$ halts}}$.
+\end{definition}
+
+Out touchstone unsolvable problem is that the 
+characteristic function of $K$ is not computable.
+When we say that this problem is unsolvable we mean that it is unsolvable
+by a mechanism: there is no computer program with the following behavior. 
+\begin{equation*}
+  \computablefunction{halt\_checker}(e)=
+  \begin{cases}
+    1 &\case{if $\phi_e(e)\downarrow$}  \\
+    0 &\case{otherwise}
+  \end{cases}
+\end{equation*}
+
+\begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
+Determine if a Turing machine halts.
+\probleminput~$e\in\N$.
+\problemoutput~$1$ if $\TM_e(e)$ halts, $0$ if it does not.
+\end{problem}
+
+The statement of the problem may seem odd.
+Surely the more natural question is whether $\TM_e$ halts on input~$x$?
+We will argue that the two problems are computationally equivalent, 
+are inter-solvable, meaning that if you can solve the one then
+you can solve the other, and so the choice of definition is a 
+question of convenience.\footnote{%  
+For the definition we go with the above statement 
+because it is the standard usage and because it has some technical advantages,
+including that it falls out of the diagonalization development done
+at the start of this subsection.}
+
+If we can solve the $K_0$~problem of determining whether any $\TM_e$ halts on
+any input~$x$ then clearly we can answer the $K$~question of 
+whether $\TM_e$ halts on~$e$.
+The other half must be the harder half.
+So now suppose that we can answer the $K$~question of whether 
+a Turing machine halts 
+when given as input its own number, of whether $\TM_e$ halts on input~$e$.
+Consider these programs.
+\begin{center}
+  \includegraphics{background/asy/hp/perfect/perfect03.pdf}
+  \hspace{2em plus 0.5fil}
+  \includegraphics{background/asy/hp/perfect/perfect04.pdf}
+\end{center}
+By Church's Thesis there is a Turing machine implementing the flowchart
+on the left; let it be machine~$\TM_{\hat{e}}$.
+Apply the \smn{} theorem, parametrizing $e$ and~$x$, to get the 
+flowchart on the right.
+Note that the chart on the right 
+actually represents a family of programs with infinitely many
+members, one for each pair $\protect\sequence{e,x}$.
+This right-side chart, $\TM_{s(\hat{e},e,x)}$, either halts on all inputs~$y$, 
+or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
+In particular, $\TM_{s(\hat{e},e,x)}$ either halts on $s(\hat{e},e,x)$, 
+or fails to halt on $s(\hat{e},e,x)$, depending on whether 
+$\phi_e(x)\converges$.
+So if we can solve the $K$~problem of whether a Turing machine halts
+when given as input its own number, then we can solve the $K_0$~problem.  
+
+
+
+\subsection{Significance}  \label{subsec:Significance}
+An Introduction to Programming class can give the 
+impression that halting isn't very interesting, that 
+if a program doesn't halt then
+it just has a bug, something fixable. 
+That impression is wrong.
+
+Imagine, as a person might think after an Intro class, that we 
+can fix up all programs so that they halt, producing a  
+a program to do the fixing.
+Then we'd have a table of total functions like the one in the prior subsection,
+and diagonalization gives a contradiction.
+
+That is, at the core of the notion of computability is that there are
+some indices and some inputs for which the computation never halts. 
+There must be Turing machines that halt on all inputs, 
+Turing machines that halt on no inputs, 
+and Turing machines that \citetext{halt on some inputs but not on others}{A 
+Turing machine could fail to halt because it has an infinite loop.
+The Turing machine
+$\TM_0=\set{\tminstruction{0}{B}{B}{0},
+        \tminstruction{0}{1}{1}{0}}$
+never halts, cycling forever in state $q_0$.
+We could fix this problem; we could write a program checker that at each
+step checks whether the machine has ever before in this computation
+had the same configuration as it has now.
+This program checker will detect infinite loops like the prior one.
+However, note that there are machines that fail to halt but
+do not have loops, in the sense that they never repeat a configuration.
+One is $\TM_1=\set{\tminstruction{0}{B}{1}{1},
+        \tminstruction{1}{1}{R}{0}}$
+which when started on a blank tape will endlessly move to the right,
+writing \str{1}'s.}.
+In contrast to our everyday experience of
+thinking of a failure to halt as a glitch, 
+failure to halt 
+is an essential aspect of the nature of computability.
 
 That is certainly enough to justify its study but we will give a 
 second reason for our interest in the Halting Problem.
@@ -2536,118 +2643,19 @@ So this might not be a feasible way to settle this question.
 But at the moment we are studying what can be done in principle.} 
 that would fall to this approach.
  
-% \margingraphicnomag*{.425\textwidth}{background/asy/hp/perfect/perfect01.pdf}
+Before moving on, note that we see here again the theme of unbounded search.
+The obvious way to try and settle the question of whether $\TM_e$ halts on
+input~$e$ is to run a brute force computataion, which is an unbounded
+search for a stage at which $\phi_e(e)\converges$.    
 
 
 
 
 
 
-
-
-\subsection{Effectivization}
-We would like to produce a specific function that cannot be computed.
-The natural thing to do is to go through 
-Cantor's Theorem and effectivize it,
-that is, to see how much of the proof we can express 
-computationally.
-
-We start by considering a table like the one on 
-\cpageref{ex:DiagonalizationTable}.
-These are the computed total functions.
-By `computed total functions' we mean that there is a computable~$F$ 
-giving $F(e,x)=f_e(x)$.   
-\begin{center} \small
-  \begin{tabular}{r|ccccc}
-    \multicolumn{1}{c}{\ }  
-      &\multicolumn{5}{c}{\tabulartext{Input}}  \\[-.2ex]
-    \multicolumn{1}{r}{\tabulartext{Computed~function}}
-      &$0$  &$1$  &$2$  &$3$  &$4$          \\ 
-    \hline
-     $f_0$     &$f_0(0)$ &$f_0(1)$ &$f_0(2)$ &$f_0(3)$ &$f_0(4)$ \\
-     $f_1$     &$f_1(0)$ &$f_1(1)$ &$f_1(2)$ &$f_1(3)$ &$\ldots$ \\
-     $f_2$     &$f_2(0)$ &$f_2(1)$ &$f_2(2)$ &$f_2(3)$ &\ldots  \\[-.5ex]
-     % \MTFlushSpaceAbove
-     $\vdotswithin{f_0}$  &$\vdotswithin{=}$  &$\vdotswithin{=}$
-  \end{tabular}
-\end{center}
-Diagonalization shows that for any table of
-computed total functions there is a computable function
-that is not in the table, since 
-$d(n)=f_n(n)+1$ is computable and is not in the table.
-Note that this is effective:
-we can write a program that takes in $n$, computes
-the value of $F(n,n)$,
-and outputs that value plus~$1$.
-
-Therefore, because there is a computable function~$F$ giving the primitive
-recursive functions,
-there are intuitively mechanically computable functions 
-that are not primitive recursive.
-
-But now we seems to yield a paradox.
-We have been working with intuitively computable functions, which we
-have defined as those computed by Turing machines.
-We can enumerate the Turing machines by first listing all machines
-with one instruction, then all the ones with two, etc., so we 
-have a $F$.  
-Won't the above process, applied to a list of all of 
-the intuitively computable functions,
-yield an intuitively computable function not on that list?
-
-
-The resolution of the paradox 
-is that there are numbers~$n$ for which the computation
-$\TM_n$ on input~$n$ never halts, that is,
-$f_n(n)\diverges$.
-
-There are Turing machines that halt on all inputs, 
-Turing machines that halt on no inputs, 
-and ones that halt on some inputs but not others.
-
-At that core of the notion of computability is that there are
-some indices and some inputs for which the computation never halts. 
-
-
-
-
-
-
-\subsection{Definition}
-That motivation shows that 
-we are interested in these two sets.
-
-\begin{definition}
-  $\definend{K}=\set{e \suchthat \text{$\TM_e(e)$ halts}}$, 
-  $\definend{K_0}=\set{\sequence{e,x} \suchthat \text{$\TM_e(x)$ halts}}$.
-\end{definition}
-
-Finding the characteristic function of the first is our touchstone
-unsolvable problem.
-
-\begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
-Determine if a Turing machine halts.
-\probleminput~integer $e$.
-\problemoutput~$0$ if $\TM_e(e)$ does not halt and $1$ if it does.
-\end{problem}
-
-The statement of the problem may seem unnatural.
-Surely the more natural question is whether $\TM_e$ halts on input~$x$?
-
-We will observe that the two problems are essentially the same problem 
-(we go with the above statement because it has some technical advantages).
-For, if we can solve the problem of determining whether any $\TM_e$ halts on
-any input~$x$ then clearly we can answer whether $\TM_e$ halts on~$e$.
-Conversely, suppose that we can answer the question of whether $\TM_e$ halts on
-input~$e$.
-Consider this program.
-\begin{center}
-  \includegraphics{background/asy/hp/k0reducestok/k0reducestok.pdf}
-\end{center}
-By Church's Thesis there is a Turing machine implementing that chart.
-Let it be machine~$\TM_{f(\hat{e},x)}$. 
-Observe that the machine either halts on all inputs, or fails to halt on
-all inputs, depending on wheyter
+\subsection{Unsolvability}
+We are ready to produce a specific function that is not computable
+by any Turing machine.
 
 \begin{theorem}[Unsolvability of the Halting Problem]
 There is no computable function that solves the Halting Problem.
@@ -2656,22 +2664,25 @@ There is no computable function that solves the Halting Problem.
 \begin{proof}
 Suppose that a Turing Machine exists that solves the Halting Problem,
 that enables us to test for any~$e$ whether $\TM_e$ halts on input~$e$.
-Consider the program charted here.
+Consider this program, which uses that test.
 \begin{center}
-  \includegraphics{background/asy/hp/hpunsolvable/hpunsolvable.pdf}
+  \includegraphics{background/asy/hp/perfect/perfect05.pdf}
 \end{center}
-Let it have index~$e_0$, so it is~$\TM_{e_0}$.
-Give it~$e_0$ as input.
-% We are feeding $e_0$ to $\TM_{e_0}$ so the test applies.
+Let this Turing machine have index~$\hat{e}$, so it is~$\TM_{\hat{e}}$.
 
-If $\TM_{e_0}$ halts on $e_0$ then the test would 
-take the right-hand branch, which results in $\TM_{e_0}$ not halting
-on~$e_0$.
-If $\TM_{e_0}$ fails to halt on $e_0$ then the test would 
-go left, which leads to $\TM_{e_0}$ halting on~$e_0$.
-This contradiction means that
-no Turing Machine exists that solves the Halting Problem.
+Give it the input of~$\hat{e}$.
+If $\TM_{\hat{e}}$ halts on $\hat{e}$ then the test takes
+the right hand branch, which results in the machine not halting, 
+so that cannot be.
+If instead $\TM_{\hat{e}}$ fails to halt on $\hat{e}$ then the test
+goes left, which leads to the machine halting,
+so that also cannot be.
+Thus,
+no Turing machine solves the Halting Problem.
 \end{proof}
+
+
+
 
 
 
@@ -2791,49 +2802,36 @@ of a single program that works across all
 indices~$e$ and inputs~$x$\Dash this results speaks about uniformity,
 or rather, the impossibility of uniformity.
 
+\begin{exercises}
+\begin{exercise}  \label{ex:HPByGetTotFcns}
+Give a precise version of the table argument in \cref{subsec:Significance} 
+by showing that if $\computablefunction{halt\_check}$ were computable 
+then we could write a program that behaves 
+like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$,
+this program outputs the nominal value~$0$.
+Diagonalize to get a contradiction.
+\begin{answer}
+If 
+$\computablefunction{halt\_check}$ were computable then we could  
+write the program shown below.
+\begin{center}
+  \includegraphics{background/asy/hp/perfect/perfect01.pdf}
+\end{center}
+It behaves 
+like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$
+this program outputs~$0$.
+With this program we get an input-output relationship like that imagined
+in the \cref{subsec:Significance}'s table, 
+containing only computable functions that are total.
+If $\computablefunction{halt\_check}$ is computable then
+this list is also computable and every total function is one of its rows,
+since if a function $\phi_e$ is total then the flowchart just never 
+takes the `\texttt{No}' branch.
+Now we can diagonalize, giving a contradiction.
+\end{answer}
+\end{exercise}
+\end{exercises}
 
-
-
-
-\subsection{Parametrization}
-% \subsection{$\mathbf{s}$-$\mathbf{m}$-$\mathbf{n}$ theorem}
-Consider a two-input program $\TM_e(x,y)$.
-Freezing the first argument, that is, locking $x=a$ for some $a\in\N$,
-gives a one-input program $\TM{Q}_a(y)=\TM_e(a,y)$.
-For example, starting with the program
-\begin{lstlisting}
-  P(x,y)
-\end{lstlisting}
-and fixing the first input at $a=7$ gives a one-input program.
-\begin{lstlisting}
-  Q_7(y)  
-\end{lstlisting}
-This is \definend{partial application}.
-Obviously the second program is related to the first.
-The next result is that the index of the second program is computable from the
-first.
-
-\begin{theorem}[Parameter theorem, or $s$-$m$-$n$~theorem]
-There is a computable function $s$ such that
-for any recursive function of two variables $f(x,y)$ computed by
-$\TM_e$, freezing the first input at $a\in\N$ gives a function
-computed by $\TM_{s(e,a)}$.
-\end{theorem}
-
-The following Lisp code implements $s_1^1$.
-(Explain gensym.)
-% https://en.wikipedia.org/wiki/Smn_theorem
-\begin{lstlisting}
- (defun s11 (f x)
-   (let ((y (gensym)))
-     (list 'lambda (list y) (list f x y))))
-\end{lstlisting}
-For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
-we can fix the first variable~\lstinline!x! to have the value~$3$ with 
-the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
-evaluates to the one-input function 
-\lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
-adds~$3$ to its argument.
 
 
 

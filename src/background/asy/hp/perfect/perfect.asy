@@ -136,7 +136,7 @@ int picnum = 2;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $e$");
-node simulate=nbox(minipage2("Compute table entry\\for index~$e$, input~$e$"));
+node simulate=nbox(minipage3("Compute table entry\\for index~$e$, input~$e$"));
 node printout=nbox("Print $\text{result}+1$");
 node ending=nroundbox("End");
 
@@ -167,5 +167,135 @@ draw(pic,
      (printout--ending)
 );
 
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+
+
+
+
+// ---- K0 reduces to K, before s-m-n thm
+picture pic;
+int picnum = 3;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $e,x,y$");
+node simulate=nbox(minipage2("Simulate $\TM_{e}$\\ on input~$x$"));
+node printout=nbox("Output 0");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(start,read);
+vlayout(1.25u,read,simulate);
+vlayout(1.25u,simulate,printout);
+vlayout(printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     simulate,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--simulate),
+     (simulate--printout),
+     (printout--ending)
+);
 
 shipout(format("perfect%02d",picnum),pic,format="pdf");
+
+
+// ---- K0 reduces to K, after s-m-n thm
+picture pic;
+int picnum = 4;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node simulate=nbox(minipage2("Simulate $\TM_{e}$\\ on input~$x$"));
+node printout=nbox("Output 0");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(start,read);
+vlayout(1.25u,read,simulate);
+vlayout(1.25u,simulate,printout);
+vlayout(printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     simulate,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--simulate),
+     (simulate--printout),
+     (printout--ending)
+);
+
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+
+
+
+// ---- the Halting Problem is unsolvable
+picture pic;
+int picnum = 5;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $e$");
+node test=nrounddiamond("$\TM_e(e)$ halts?");
+node printout=nbox("Print 0");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(1.2u,read,test);
+hlayout(-3.5u,test,printout);
+hlayout(3.85u,test,loop);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     loop, 
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout).l("No"),
+     (test--loop).l("Yes").style("leftside"),
+     (printout--ending)
+);
+
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+

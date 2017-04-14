@@ -1478,3 +1478,13 @@ of the two.}
 }
 \crefname{figurehere}{Figure}{Figures}
 \Crefname{figurehere}{Figure}{Figures}
+
+
+% =================
+% Add notes for me to put something in
+\newenvironment{TODO}{%
+\par\noindent \makebox[0em][l]{\makebox[-1em][r]{\color{red}TO DO:}}\centering
+\begin{minipage}{0.8\textwidth}\itshape
+}{%
+\end{minipage}
+}

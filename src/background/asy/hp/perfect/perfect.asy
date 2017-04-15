@@ -381,5 +381,170 @@ draw(pic,
      (printout--ending)
 );
 
+
+// ---- outputs seven is unsolvable, before s-m-n
+picture pic;
+picnum = picnum+1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x,y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print 7");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+
+
+
+// ---- outputs seven is unsolvable, after s-m-n
+picture pic;
+picnum = picnum+1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print 7");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+
+
+
+// ---- doubler is unsolvable, before s-m-n
+picture pic;
+picnum = picnum+1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x,y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print 2y");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+
+
+
+// ---- doubler is unsolvable, after s-m-n
+picture pic;
+picnum = picnum+1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print 2y");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
 shipout(format("perfect%02d",picnum),pic,format="pdf");
 

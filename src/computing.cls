@@ -496,7 +496,8 @@ of the two.}
 \setfnsymbol{hefferon}
 \newlength{\footmarktotextglue}
 \global\footmarktotextglue=.1em %
-\global\footglue=1.25em plus.3em minus.3em % space between footnotes
+% was: \global\footglue=1.25em plus.3em minus.3em % space between footnotes
+\global\footglue=1em plus.4em minus.2em % space between footnotes
 \long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
 \@makefnmark\nobreak
 \hskip\footmarktotextglue\relax#1% was .5em

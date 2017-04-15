@@ -2445,301 +2445,7 @@ evaluates to the one-input function
 \lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
 adds~$3$ to its argument.
 
-
-
-
-
-%================================================
-\section{Halting Problem}
-We've shown that
-there are functions that are not mechanically computable.
-Our proof was that there are countably many Turing machines but 
-uncountably many functions and so there are functions with no 
-associated machine.
-While we certainly are glad to know what is true,
-our taste in this subject is to prefer an argument that produces an answer.
-We will now provide a specific unsolvable problem,
-a function for which there is no associated Turing machine.
-
-
-
-\subsection{Definition}
-The natural thing to do is to go through 
-Cantor's Theorem and effectivize it,
-see how much of the proof we can express constructively.
-For a first try, consider a table adapted from the one on 
-\cpageref{ex:DiagonalizationTable}.
-Here the rows are computable functions and the columns are inputs.
-For instance, this table imagines that $\phi_1(3)=0$.
-\begin{center} \small \setlength{\arraycolsep}{0.75\arraycolsep}
-  \begin{tabular}{r|ccccccc@{\hspace*{1em}$\ldots$}}
-    \multicolumn{1}{r}{\ } 
-    &\multicolumn{7}{c}{\text{\tabulartext{Input~$x$}}}  \\
-     % \multicolumn{1}{c}{\text{\tabulartext{Function}}}
-     \multicolumn{1}{c}{\ }
-    &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$ \\ 
-   \cline{2-8}
-   \rule{0em}{2.15ex}% bit more vertical room 
-   $\phi_0$  &$3$  &$1$  &$2$  &$7$  &$7$  &$0$  &$4$  \\  
-   $\phi_1$  &$0$  &$5$  &$0$  &$0$  &$0$  &$0$  &$0$  \\  
-   $\phi_2$  &$1$  &$4$  &$1$  &$5$  &$9$  &$2$  &$6$  \\  
-   $\phi_3$  &$9$  &$1$  &$9$  &$1$  &$9$  &$1$  &$9$  \\  
-   $\phi_4$  &$1$  &$0$  &$1$  &$0$  &$0$  &$1$  &$0$  \\
-   $\phi_5$  &$6$  &$2$  &$5$  &$5$  &$4$  &$1$  &$8$  \\
-   \multicolumn{1}{r}{$\vdotswithin{0}$} 
-    &\multicolumn{6}{c}{$\vdotswithin{0}$}  
-  \end{tabular}
-  \hspace*{2em plus 0.75fil}
-  \vcenteredhbox{\includegraphics{background/asy/hp/perfect/perfect02.pdf}}
-\end{center}
-Diagonalize.
-That is, note that the program's output is not any row of the table,
-which would contradict our presumption
-that the table's rows constitute all computable functions.
-
-So what's happening?
-In the table of computable functions, 
-there must be a function that on some input does not halt.
-In particular this must happen on the diagonal of that table: there must be
-some $e\in\N$ so that $\phi_e(e)\diverges$.
-In the flowchart, for those input~$e$'s the program will never leave 
-the middle box and so will never get to the contradiction of the 
-`$\text{result}+1$'.
-
-
-\begin{definition}
-  $\definend{K}=\set{e \suchthat \text{$\TM_e(e)$ halts}}$, 
-  $\definend{K_0}=\set{\sequence{e,x} \suchthat \text{$\TM_e(x)$ halts}}$.
-\end{definition}
-
-Out touchstone unsolvable problem is that the 
-characteristic function of $K$ is not computable.
-When we say that this problem is unsolvable we mean that it is unsolvable
-by a mechanism: there is no computer program with the following behavior. 
-\begin{equation*}
-  \computablefunction{halt\_checker}(e)=
-  \begin{cases}
-    1 &\case{if $\phi_e(e)\downarrow$}  \\
-    0 &\case{otherwise}
-  \end{cases}
-\end{equation*}
-
-\begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
-Determine if a Turing machine halts.
-\probleminput~$e\in\N$.
-\problemoutput~$1$ if $\TM_e(e)$ halts, $0$ if it does not.
-\end{problem}
-
-The statement of the problem may seem odd.
-Surely the more natural question is whether $\TM_e$ halts on input~$x$?
-We will argue that the two problems are computationally equivalent, 
-are inter-solvable, meaning that if you can solve the one then
-you can solve the other, and so the choice of definition is a 
-question of convenience.\footnote{%  
-For the definition we go with the above statement 
-because it is the standard usage and because it has some technical advantages,
-including that it falls out of the diagonalization development done
-at the start of this subsection.}
-
-If we can solve the $K_0$~problem of determining whether any $\TM_e$ halts on
-any input~$x$ then clearly we can answer the $K$~question of 
-whether $\TM_e$ halts on~$e$.
-The other half must be the harder half.
-So now suppose that we can answer the $K$~question of whether 
-a Turing machine halts 
-when given as input its own number, of whether $\TM_e$ halts on input~$e$.
-Consider these programs.
-\begin{center}
-  \includegraphics{background/asy/hp/perfect/perfect03.pdf}
-  \hspace{2em plus 0.5fil}
-  \includegraphics{background/asy/hp/perfect/perfect04.pdf}
-\end{center}
-By Church's Thesis there is a Turing machine implementing the flowchart
-on the left; let it be machine~$\TM_{\hat{e}}$.
-Apply the \smn{} theorem, parametrizing $e$ and~$x$, to get the 
-flowchart on the right.
-Note that the chart on the right 
-actually represents a family of programs with infinitely many
-members, one for each pair $\protect\sequence{e,x}$.
-This right-side chart, $\TM_{s(\hat{e},e,x)}$, either halts on all inputs~$y$, 
-or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
-In particular, $\TM_{s(\hat{e},e,x)}$ either halts on $s(\hat{e},e,x)$, 
-or fails to halt on $s(\hat{e},e,x)$, depending on whether 
-$\phi_e(x)\converges$.
-So if we can solve the $K$~problem of whether a Turing machine halts
-when given as input its own number, then we can solve the $K_0$~problem.  
-
-
-
-\subsection{Significance}  \label{subsec:Significance}
-An Introduction to Programming class can give the 
-impression that halting isn't very interesting, that 
-if a program doesn't halt then
-it just has a bug, something fixable. 
-That impression is wrong.
-
-Imagine, as a person might think after an Intro class, that we 
-can fix up all programs so that they halt, producing a  
-a program to do the fixing.
-Then we'd have a table of total functions like the one in the prior subsection,
-and diagonalization gives a contradiction.
-
-That is, at the core of the notion of computability is that there are
-some indices and some inputs for which the computation never halts. 
-There must be Turing machines that halt on all inputs, 
-Turing machines that halt on no inputs, 
-and Turing machines that \citetext{halt on some inputs but not on others}{A 
-Turing machine could fail to halt because it has an infinite loop.
-The Turing machine
-$\TM_0=\set{\tminstruction{0}{B}{B}{0},
-        \tminstruction{0}{1}{1}{0}}$
-never halts, cycling forever in state $q_0$.
-We could fix this problem; we could write a program checker that at each
-step checks whether the machine has ever before in this computation
-had the same configuration as it has now.
-This program checker will detect infinite loops like the prior one.
-However, note that there are machines that fail to halt but
-do not have loops, in the sense that they never repeat a configuration.
-One is $\TM_1=\set{\tminstruction{0}{B}{1}{1},
-        \tminstruction{1}{1}{R}{0}}$
-which when started on a blank tape will endlessly move to the right,
-writing \str{1}'s.}.
-In contrast to our everyday experience of
-thinking of a failure to halt as a glitch, 
-failure to halt 
-is an essential aspect of the nature of computability.
-
-That is certainly enough to justify its study but we will give a 
-second reason for our interest in the Halting Problem.
-If $\computablefunction{halt\_checker}$ were a computable function
-then we could solve many problems that we currently don't know how to solve. 
-For instance, a natural number is \textit{perfect} if it is the 
-sum of its proper positive divisors.
-\margingraphicnomag*[l]{.425\textwidth}{background/asy/hp/perfect/perfect00.pdf}
-Thus $6$ is perfect because $6=1+2+3$.
-Similarly, $28 = 1 + 2 + 4 + 7 + 14$ is perfect.
-% and after that comes $496$ and~$8128$.
-These were studied as far back as Euclid and
-today we 
-\citetext{understand the form of all even perfect numbers}{A 
-number is an even perfect number if and only if it has the form 
-$(2^p-1)\cdot 2^{p-1}$ where $2^p-1$ is prime.}.
-But we do not know if there are any odd perfect numbers.
-
-With a solution to the Halting Problem we could settle that question.
-This program show here searches for an odd perfect number.\footnote{It takes an
-input $x$ but ignores it; in this book we have a convention that 
-all programs take an input, and all give an output.}
-If it finds one then it halts.
-If not then it does not halt.
-So $\computablefunction{halt\_check}$, when run against the source coude of this
-program,
-would settle whether there exists an odd perfect number.
-There are many open question, 
-\citetext{involving an unbounded search}{%
-A computer program that solved 
-the Halting Problem, if one existed, could be very slow. 
-So this might not be a feasible way to settle this question.  
-But at the moment we are studying what can be done in principle.} 
-that would fall to this approach.
- 
-Before moving on, note that we see here again the theme of unbounded search.
-The obvious way to try and settle the question of whether $\TM_e$ halts on
-input~$e$ is to run a brute force computataion, which is an unbounded
-search for a stage at which $\phi_e(e)\converges$.    
-
-
-
-
-
-
-\subsection{Unsolvability}
-We are ready to produce a specific function that is not computable
-by any Turing machine.
-
-\begin{theorem}[Unsolvability of the Halting Problem]
-There is no computable function that solves the Halting Problem.
-\end{theorem}
-
-\begin{proof}
-Suppose that a Turing Machine exists that solves the Halting Problem,
-that enables us to test for any~$e$ whether $\TM_e$ halts on input~$e$.
-Consider this program, which uses that test.
-\begin{center}
-  \includegraphics{background/asy/hp/perfect/perfect05.pdf}
-\end{center}
-Let this Turing machine have index~$\hat{e}$, so it is~$\TM_{\hat{e}}$.
-
-Give it the input of~$\hat{e}$.
-If $\TM_{\hat{e}}$ halts on $\hat{e}$ then the test takes
-the right hand branch, which results in the machine not halting, 
-so that cannot be.
-If instead $\TM_{\hat{e}}$ fails to halt on $\hat{e}$ then the test
-goes left, which leads to the machine halting,
-so that also cannot be.
-Thus,
-no Turing machine solves the Halting Problem.
-\end{proof}
-
-
-
-
-
-
-\subsection{Discussion}
-The unsolvability of the Halting Problem does not say that 
-for every program we cannot tell if it halts. 
-Here is a program that obviously halts for every input.
-\begin{lstlisting}
-#;1> (define (prompt/read prompt)
---->     (display prompt)
---->     (read-line))
-#;2> 
-#;2> (+ 1
---->    (string->number (prompt/read "Enter n")))
-Enter n---> 4
-5  
-\end{lstlisting}
-There are also programs that we can tell do not halt. 
-\begin{lstlisting}
-#;1> (define (f x)
---->   (+ 1 (f x)))
-#;2> (f 0)
-^C
-	Call history:
-
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	readline.scm:392: print-call-chain	  	<--
-
-*** user interrupt ***
-\end{lstlisting}
-
-The unsolvability of the Halting Problem says that there is no
-single program that, for all given $e$ and~$x$, correctly computes 
-in a finite time whether $\TM_e$ halts on input~$x$.
-
-The ``finite time'' qualifier is there because we could just use a universal
-Turing machine to simulate $\TM_e$ on~$x$, but if it failed to halt we 
-would not find that out in a finite time. 
-
-The ``single program'' qualifier is there because of the subtlety 
-illuminiated by the next example.
-
-\begin{example}
+\begin{example} \label{ex:NineInPi}
 Consider this problem: given a number $n$, 
 decide whether somewhere in the decimal expansion of~$\pi=3.14159\ldots{}$ 
 there is a sequence of 
@@ -2795,11 +2501,332 @@ then we'd see which one of the two is the answer, but as it stands
 we just don't know.
 Nevertheless, the problem is solvable.
 \end{example}
-Thus, ``single program'' is there because for any $e$ and~$x$ there is a 
-determination, and trivially we can write a program to give it.
-But the unsolvability of the Halting Problem describes the non-existence
-of a single program that works across all
-indices~$e$ and inputs~$x$\Dash this results speaks about uniformity,
+
+
+
+
+
+%================================================
+\section{Halting Problem}
+We've shown that
+there are functions that are not mechanically computable.
+Our proof used the machinery of Cantor's Theorem to show
+that there are countably many Turing machines but 
+uncountably many functions and so there are functions without an
+associated machine.
+While we certainly are glad to know what is true,
+our taste in this subject is to prefer an argument that produces an answer.
+We now provide a specific unsolvable problem,
+a function for which there is no associated Turing machine.
+
+
+
+\subsection{Definition}
+The natural thing to do is to go through 
+Cantor's Theorem and effectivize it,
+see how much of the proof we can express constructively.
+For a first try, consider an illustrative table adapted from the one on 
+\cpageref{ex:DiagonalizationTable}.
+Here the rows are computable functions and the columns are inputs.
+For instance, this table imagines that $\phi_1(3)=0$.
+\begin{center} \small \setlength{\arraycolsep}{0.75\arraycolsep}
+  \begin{tabular}{r|ccccccc@{\hspace*{1em}$\ldots$}}
+    \multicolumn{1}{r}{\ } 
+    &\multicolumn{7}{c}{\text{\tabulartext{Input~$x$}}}  \\
+     % \multicolumn{1}{c}{\text{\tabulartext{Function}}}
+     \multicolumn{1}{c}{\ }
+    &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$ \\ 
+   \cline{2-8}
+   \rule{0em}{2.15ex}% bit more vertical room 
+   $\phi_0$  &$3$  &$1$  &$2$  &$7$  &$7$  &$0$  &$4$  \\  
+   $\phi_1$  &$0$  &$5$  &$0$  &$0$  &$0$  &$0$  &$0$  \\  
+   $\phi_2$  &$1$  &$4$  &$1$  &$5$  &$9$  &$2$  &$6$  \\  
+   $\phi_3$  &$9$  &$1$  &$9$  &$1$  &$9$  &$1$  &$9$  \\  
+   $\phi_4$  &$1$  &$0$  &$1$  &$0$  &$0$  &$1$  &$0$  \\
+   $\phi_5$  &$6$  &$2$  &$5$  &$5$  &$4$  &$1$  &$8$  \\
+   \multicolumn{1}{r}{$\vdotswithin{0}$} 
+    &\multicolumn{6}{c}{$\vdotswithin{0}$}  
+  \end{tabular}
+  \hspace*{2em plus 0.75fil}
+  \vcenteredhbox{\includegraphics{background/asy/hp/perfect/perfect02.pdf}}
+\end{center}
+Diagonalize.
+That is, note that the program's output is not any row of the table,
+which would contradict our presumption
+that the table's rows constitute all computable functions.
+
+So what's happening?
+In the table of computable functions, 
+there must be a function that on some input does not halt.
+In particular this must happen on the diagonal of that table: there must be
+some $e\in\N$ so that $\phi_e(e)\diverges$.
+In the flowchart, for those input~$e$'s the program will never leave 
+the middle box and so will never get to the contradiction of the 
+`$\text{result}+1$'.
+
+\begin{definition}
+  $\definend{K}=\set{e \suchthat \text{$\TM_e(e)$ halts}}$, 
+  $\definend{K_0}=\set{\sequence{e,x} \suchthat \text{$\TM_e(x)$ halts}}$.
+\end{definition}
+
+Out touchstone unsolvable problem is that the 
+characteristic function of $K$ is not computable.
+When we say that this problem is unsolvable we mean that it is unsolvable
+by a mechanism\Dash there is no computer program with the following behavior. 
+\begin{equation*}
+  \computablefunction{halt\_checker}(e)=
+  \begin{cases}
+    1 &\case{if $\phi_e(e)\downarrow$}  \\
+    0 &\case{otherwise}
+  \end{cases}
+\end{equation*}
+
+\begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
+Determine if a Turing machine halts.
+\probleminput~$e\in\N$.
+\problemoutput~$1$ if $\TM_e$ halts on input~$e$, and $0$ if it does not.
+\end{problem}
+
+The statement of the problem may seem odd.
+Surely the more natural question is whether $\TM_e$ halts on input~$x$?
+We will argue that the two problems are computationally equivalent, 
+are inter-solvable, meaning that if you can solve the one then
+you can solve the other, and so the choice of definition is a 
+matter of convenience.\footnote{%  
+For the definition we go with the above statement 
+because it is the standard usage and because it has some technical advantages,
+including that it falls out of the diagonalization development done
+at the start of this subsection.}
+
+If we can solve the $K_0$~problem of determining whether $\TM_e$ halts on
+input~$x$ then clearly we can answer the $K$~question of 
+whether $\TM_e$ halts on~$e$.
+The other half must be the harder half.
+So now suppose that we can answer the $K$~question of whether 
+a Turing machine halts 
+when given as input its own number, 
+the question of whether $\TM_e$ halts on input~$e$.
+Consider these programs.
+\begin{center}
+  \includegraphics{background/asy/hp/perfect/perfect03.pdf}
+  \hspace{2em plus 0.5fil}
+  \includegraphics{background/asy/hp/perfect/perfect04.pdf}
+\end{center}
+By Church's Thesis there is a Turing machine implementing the flowchart
+on the left; let it be machine~$\TM_{\hat{e}}$.
+Apply the \smn{} theorem, parametrizing $e$ and~$x$, to get the 
+flowchart on the right.
+(Note that the chart on the right 
+actually represents a family of programs.
+This family has infinitely many
+members, one for each pair $\protect\sequence{e,x}$.)
+This right-side chart, $\TM_{s(\hat{e},e,x)}$, either halts on all inputs~$y$, 
+or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
+In particular, $\TM_{s(\hat{e},e,x)}$ either halts on $s(\hat{e},e,x)$ 
+or fails to halt on $s(\hat{e},e,x)$, if and only if
+$\phi_e(x)\converges$.
+So if we can solve the $K$~problem of whether a Turing machine halts
+when given as input its own number, then we can solve the $K_0$~problem
+of whether~$\phi_e(x)\converges$.  
+
+
+
+\subsection{Significance}  \label{subsec:Significance}
+An Introduction to Programming class can give the 
+impression that halting isn't very interesting, that 
+if a program doesn't halt then
+it just has a bug, something fixable. 
+That impression is wrong.
+
+Imagine, as a person might think after an Intro class, that we 
+can produce 
+a program to fix up all programs so that they halt on each input.
+Then we'd have a table of total functions like the one in the prior subsection,
+and diagonalization gives a contradiction.
+
+That is, 
+it is essential to the nature of computation is that there are
+some indices and some inputs for which the computation never halts. 
+There must be Turing machines that halt on all inputs, 
+Turing machines that halt on no inputs, 
+and Turing machines that \citetext{halt on some inputs but not on others}{A 
+Turing machine could fail to halt because it has an infinite loop.
+The Turing machine
+$\TM_0=\set{\tminstruction{0}{B}{B}{0},
+        \tminstruction{0}{1}{1}{0}}$
+never halts, cycling forever in state $q_0$.
+We could fix this problem; we could write a program checker that at each
+step checks whether the machine has ever before in this computation
+had the same configuration as it has now.
+This program checker will detect infinite loops like the prior one.
+However, note that there are machines that fail to halt but
+do not have loops, in the sense that they never repeat a configuration.
+One is $\TM_1=\set{\tminstruction{0}{B}{1}{1},
+        \tminstruction{1}{1}{R}{0}}$
+which when started on a blank tape will endlessly move to the right,
+writing \str{1}'s.}.
+
+That is certainly enough to justify its study but we will give a 
+second reason for our interest in the Halting Problem.
+If $\computablefunction{halt\_checker}$ were a computable function
+then we could solve many problems that we currently don't know how to solve. 
+For instance, a natural number is \textit{perfect} if it is the 
+sum of its proper positive divisors.
+\margingraphicnomag*[l]{.425\textwidth}{background/asy/hp/perfect/perfect00.pdf}
+Thus $6$ is perfect because $6=1+2+3$.
+Similarly, $28 = 1 + 2 + 4 + 7 + 14$ is perfect.
+% and after that comes $496$ and~$8128$.
+These were studied as far back as Euclid and
+today we 
+\citetext{understand the form of all even perfect numbers}{A 
+number is an even perfect number if and only if it has the form 
+$(2^p-1)\cdot 2^{p-1}$ where $2^p-1$ is prime.}.
+But we do not know if there are any odd perfect numbers.
+
+With a solution to the Halting Problem we could settle that question.
+The program shown here searches for an odd perfect number.\footnote{It takes an
+input $x$ but ignores it; in this book we have a convention that 
+all programs take an input, and all give an output.}
+If it finds one then it halts.
+If not then it does not halt.
+So giving $\computablefunction{halt\_check}$ the index of this program
+would settle whether there exists an odd perfect number.
+There are many open question, 
+\citetext{involving an unbounded search}{%
+A computer program that solved 
+the Halting Problem, if one existed, could be very slow. 
+So this might not be a feasible way to settle this question.  
+But at the moment we are studying what can be done in principle.} 
+that would fall to this approach.
+ 
+Before moving on, we note the appearance here of the theme of unbounded search.
+It is not just in looking for perfect numbers.
+The obvious way to try and settle the question of whether $\TM_e$ halts on
+input~$e$ is to run a brute force computation, which is an unbounded
+search for a stage at which $\phi_e(e)\converges$.    
+
+
+
+
+
+
+\subsection{Unsolvability of the Halting problem}
+We are ready to verify that the specific candidate function
+that we have produced is indeed unsolvable, that 
+it cannot be mechanically computed.
+
+\begin{theorem}[Unsolvability of the Halting Problem]
+There is no computable function that solves the Halting Problem.
+\end{theorem}
+
+\begin{proof}
+Suppose that a Turing Machine exists that solves the Halting Problem,
+that enables us to test for an arbitrary~$e$ whether $\TM_e$ halts on input~$e$.
+Consider this program, which builds on that test.
+\begin{center}
+  \includegraphics{background/asy/hp/perfect/perfect05.pdf}
+\end{center}
+Let this Turing machine have index~$\hat{e}$, so it is~$\TM_{\hat{e}}$.
+
+Give it the input of~$\hat{e}$.
+If $\TM_{\hat{e}}$ halts on $\hat{e}$ then the test takes
+the right hand branch, which results in the machine not halting, 
+so that cannot be the case.
+If instead $\TM_{\hat{e}}$ fails to halt on $\hat{e}$ then the test
+goes left, which leads to the machine halting,
+so that also cannot be.
+Thus,
+no Turing machine solves the Halting Problem.
+\end{proof}
+
+
+
+
+
+
+\subsection{Discussion}
+The unsolvability of the Halting Problem does not say that 
+for every program we cannot tell if it halts. 
+Here is a program that obviously halts for every input.
+\begin{lstlisting}
+#;1> (define (prompt/read prompt)
+--->     (display prompt)
+--->     (read-line))
+#;2> 
+#;2> (+ 1
+--->    (string->number (prompt/read "Enter n")))
+Enter n---> 4
+5  
+\end{lstlisting}
+There are also programs that we can tell do not halt. 
+\begin{lstlisting}
+#;1> (define (f x)
+--->   (+ 1 (f x)))
+#;2> (f 0)
+^C
+	Call history:
+
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	readline.scm:392: print-call-chain	  	<--
+
+*** user interrupt ***
+\end{lstlisting}
+
+This is a question of uniformity:~the unsolvability of the Halting Problem 
+says that there is no single program that, 
+given $e$ and~$x$, correctly computes 
+in a finite time whether $\TM_e$ halts on input~$x$.
+
+The ``finite time'' qualifier is there because we could just use a universal
+Turing machine to simulate $\TM_e$ on~$x$, but if it failed to halt we 
+would not find that out in a finite time. 
+
+The ``single program'' qualifier is there because of the next example.
+
+\begin{example} \label{ex:OneOfTwo}
+Fix an index~$e$.
+Either $\phi_e(e)\converges$ or $\phi_e(e)\diverges$.
+That is, for any one~$e$ the question of halting
+is solved by one of these two programs.
+\begin{center}
+% \vspace*{-4ex}
+\vspace*{-\ht\strutbox}
+\begin{minipage}[t]{0.4\linewidth}%
+\begin{lstlisting}
+read e
+print 0
+\end{lstlisting}%
+\end{minipage}%
+\hspace*{2em plus 0.5fil}
+\begin{minipage}[t]{0.4\linewidth}%
+\begin{lstlisting}
+read e
+print 1
+\end{lstlisting}%
+\end{minipage}%
+% \vspace*{-2ex}
+\end{center}
+\end{example}
+So, for any single~$e$ the problem of determining halting is 
+mechanically solvable.
+Nonetheless the Halting problem is not solvable.
+That's because the unsolvability of the Halting Problem is about 
+the non-existence of a single program that works across all
+$e\in\N$\Dash this result speaks to uniformity,
 or rather, the impossibility of uniformity.
 
 \begin{exercises}
@@ -2836,21 +2863,83 @@ Now we can diagonalize, giving a contradiction.
 
 
 
-%================================================
-\section{Recursive Enumerability}
-
-Sets are decidable.
-RE sets are semi-decidable sets.
-
-In some sense the limit of what we can know.
-
-
-
-
 
 
 %================================================
-\section{Unsolvabilty}
+\subsection{General unsolvabilty}
+We have described the Halting problem as a touchstone.
+What that means is that we will show many other problems are unsolvable
+by showing that their solution would lead to a solution
+to the Halting problem.
+
+\begin{example} \label{ex:HaltOnThree}
+Consider the problem of determining halting not on an arbitrary input~$x$,
+but just on the input~$x=3$.
+\begin{equation*}
+  \computablefunction{halts\_on\_three}(e)=
+  \begin{cases}
+    1 &\case{if $\TM_e$ halts on input~$3$}  \\
+    0 &\case{otherwise} 
+  \end{cases}
+\end{equation*}
+We will show that this problem is also unsolvable, that there is no
+Turing machine whose input-output behavior is as above.
+
+We will show that if $\computablefunction{halts\_on\_three}$ were a computable
+function then we could solve the \HP.
+% \margingraphicnomag*[r]{.3\textwidth}{background/asy/hp/perfect/perfect06.pdf}
+Consider the program on the left below.
+The middle box
+uses a universal Turing machine to simulate running $\TM_x$ on input~$x$.
+If that simulation halts then this program as a whole halts,
+simply reading the input, ignoring it, and printing some nominal output.
+If that simulation does not halt then this program as a whole
+never halts, regardless of the input.
+In particular, this program halts on input~$y=3$ if and only if 
+$\TM_x$ halts on~$x$.
+This flowchart shows how to use being able to answer questions about 
+halting on~$3$ to answer
+questions about whether $\TM_x$ halts on~$x$.
+\begin{center}
+  \includegraphics{background/asy/hp/perfect/perfect06.pdf}
+  \hspace*{2em plus 0.5fil}
+  \includegraphics{background/asy/hp/perfect/perfect07.pdf}
+\end{center}
+But we don't want to determine whether $\TM_x$ halts on~$x$ for a single~$x$.
+We next bring in uniformity.
+
+Assume that $\computablefunction{halts\_on\_three}$ is a computable
+function and consider this.
+\begin{equation*}
+  \psi(x,y)=
+  \begin{cases}
+    0 &\case{if $\phi_x(x)\converges$} \\
+    \,\diverges &\case{otherwise}
+  \end{cases}
+\end{equation*}
+It is computed by the flowchart on the left above so by Church's Thesis
+there is a Turing machine whose input-output behavior is $\psi$.
+That Turing machine has some index~$e$, so $\psi=\phi_e$.
+
+Apply the \smn{} theorem to parametrize~$x$, giving $\phi_{s(e,x)}$.
+This is a family of functions, parametrized by $x$,
+illustrated by the flowchart on the right above.
+Then $\phi_x(x)\converges$ if and only if
+$\computablefunction{halts\_on\_three}(s(e,x))=1$.
+The supposition that $\computablefunction{halts\_on\_three}$ is 
+computable gives that the composition
+$\composed{\computablefunction{halts\_on\_three}}{s}$
+is computable, which gives that the \HP{} is computably solvable, 
+which is a contradiction.
+\end{example}
+
+This idea of turning one question into another is very powerful and
+we will have much more to say about it.
+But for the moment we focus on the halts-on-$3$ problem. 
+
+
+
+\section{Philosophical and intellectual impact}
 
 G\"odel's Thm,
 Hilbert's Tenth problem, 
@@ -2858,9 +2947,6 @@ other unsolvable problems,
 unsolvability by means of given instruments.
 
 
-
-
-\section{Social impact}
 Around the year 1800,
 Europe was embroiled in the tumult of the French Revolution
 and its aftermath.
@@ -2871,7 +2957,21 @@ and many people in England saw this as an extensive period of prosperity,
 peace, refined responsiveness and great national self-possession
 both for England and for other countries.
 
-For example, in science, \citetext{in 1899, A~A~Michelson's wrote ``The more important fundamental laws and facts of physical science have all been discovered, and these are now so firmly established that the possibility of their ever being supplanted in consequence of new discoveries is exceedingly remote.''}{Michaelson was not a fringe figure.  From 1901 to 1903 he was president of the American Physical Society. In 1910--1911 he was president of the American Association for the Advancement of Science and from 1923--1927 he was president of the National Academy of Sciences. In 1907 he received the Copley Medal from the Royal Society in London, and the Nobel Prize.  Of course, the discovery of radiation changed everything.  That discovery came in 1896.}
+For example, in science, \citetext{in 1899, A~A~Michelson's wrote, 
+``The more important fundamental laws and facts of physical science have 
+all been discovered, and these are now so firmly established that the 
+possibility of their ever being supplanted in consequence of new 
+discoveries is exceedingly remote.''}{Michaelson was a major figure,
+still well-known today for the Michelson–Morley experiment, which
+tried to find the presence of aether, the hypothesized medium through with 
+light waves travel.  
+From 1901 to~1903 he was president of the American Physical Society. 
+In 1910--1911 he was president of the American Association for the 
+Advancement of Science and from 1923--1927 he was president of the 
+National Academy of Sciences. In 1907 he received the Copley Medal from 
+the Royal Society in London, and the Nobel Prize.  
+Of course, the discovery of radiation changed everything.  
+That discovery came in 1896.}
 There was a sense that all was understood and what remained was only some 
 working out of the details.
 
@@ -2900,6 +3000,8 @@ The general sense became that Pandora's box had opened,
 that it had all escaped our control, that we did not live in
 an ordered world. 
 
+
+
 % =======================================================
 \extra{Computer viruses}
 
@@ -2910,6 +3012,19 @@ an ordered world.
 
 % =======================================================
 \extra{A Universal Turing machine}
+
+
+
+
+
+
+%================================================
+\extra{Recursive Enumerability}
+
+Sets are decidable.
+RE sets are semi-decidable sets.
+
+In some sense the limit of what we can know.
 
 
 

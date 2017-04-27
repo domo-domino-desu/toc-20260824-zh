@@ -1866,7 +1866,7 @@ $\,\cdots\,0\mapsto\str{b}\mapsto 1\mapsto\str{c}\mapsto 2\mapsto\str{a}\mapsto 
 
 
 %================================================
-\section{G\"odel numbering}
+\section{Numbering}
 \cref{cor:FcnsNNGreaterFcnsN} shows that 
 the set of functions from $\N$ to~$\N$ has
 cardinality strictly greater than the cardinality of~$\N$.
@@ -2041,75 +2041,82 @@ patience to let it finish).
 #;2> (godel (instructionlist->quadlist '((0 #\B #\a 0) (0 #\a #\a 1))))
 \end{lstlisting}
 
-This is a \definend{numbering} of the Turing machines
-because \codeinline{(machine 0)}, \codeinline{(machine 1)}, is a list
-that contains all the Turing machines.
-Note that it is inverse to \codeinline{godel}.
+Note that \codeinline{(machine 0)}, \codeinline{(machine 1)}, \ldots{} 
+is a list that contains all the Turing machines.
+Note also that it is inverse to \codeinline{godel}.
 % This numbering is effective in that both \codeinline{machine} and
 % \codeinline{godel} are computable.  
-
-To develop this numbering we just 
+To develop this listing, this numbering, we just 
 used whatever mathematical and programming tools came
 to hand. 
-There are other numberings; see \cref{exer:OtherNumberings}).
-We can wonder if there might be numberings that have some advantages over
+Different numbering are possible, see \cref{exer:OtherNumberings}, and
+we can wonder if some might have advantages over
 others.
 
-Observe that our numbering satisfies:
-(1)~there is a routine that takes as input
-the source code of a Turing machine, the list of instructions,
-and gives as output
-an associated number (in the numbering above, it is \codeinline{godel});
-(2)~the set of numbers for which there is an associated machine is computable
-(above, it is the set of all natural numbers);
-(3)~there is a routine that takes as input
-a number and gives as output an associated source 
-(above this is \codeinline{machine}), 
-Any numbering satisfying these three 
-is an \definend{acceptable numbering}. 
-It turns out that for us
-the exact numbering we use 
-\citetext{doesn't matter much}{For the exact meaning of ``much'' 
-see \autocite{Rogers58}.}, so 
-for the rest of the book 
-we will just fix some acceptable numbering.
-
 \begin{remark}
-Here's a way to think of numbering that is easy to picture.
-For the map from a program source and an integer do this:
-on your computer, every program is a list of bits.
-If you disassamble it then you have it's source.
-If you interpret the list of bits as a number expressed in binary then
-you have a map taking a source to a number.
-The other direction is similar: given a number, express it in binary.
-Interpret that as a list of bits, which you can disassemble 
-into a source code.
-(The disadvantage of this way of thinking about numbering
-is that it depends on what computer you have.
-For instance, 
-suppose that your computer uses $8$~bit words.
-If the input number is $9$ then
-that's $1001$ in binary, and you need to pad the bit string out to the 
-right word length, getting $00001001$, in order to disassemble it into a 
-single-instruction source code.)
+Here iss 
+\citetext{an alternative numbering scheme that we won't make precise}{%
+One problem with this scheme
+is that it depends on the underlying computer.
+Imagine that your computer uses eight~bit words.
+If we want the map from a natural number to a source code 
+and the input number is $9$ then
+in binary that's $1001$, which is not eight bits
+and to disassemble it you need to pad the 
+it out to the machine's word length, as \str{00001001}.
+Another issue is the ambiguity caused by leading \str{0}'s,
+e.g.\ the bit string \str{00000000\,00001001} also represent~$9$
+but disassembles to a two-operation source.
+We could address this by imagining 
+that the operation with instruction code \str{00000000}
+is \texttt{NOP} and then disallow source code that starts with such an
+instruction (reasoning that starting a serial program with fewer 
+\texttt{NOP}'s won't change its input-output behavior), except for the
+source consisting of a single~\texttt{NOP}.
+But we are getting into the weeds of computer architecture
+here, which is not where we want to be, so we take this numbering scheme
+only informally.} but which is conceptually simple.
+On your computer, programs are bit strings. 
+You can
+interpret these as binary numbers and 
+you can also disassemble them into an assembly language source code,
+a sequence of machine instructions.
+So we have an association between binary numbers and source code.
 \end{remark}
 
 \begin{definition}
-For any Turing machine, the corresponding~$e\in\N$ is its
+A \definend{numbering} is a function that assigns to each Turing machine
+a natural number.  
+For any Turing machine, the corresponding number is its
 \definend{index number}, or \definend{G\"odel number}, 
 or \definend{description number}.
-For the machine with index~$e$ we will write \definend{$\TM_e$}.
-And,  for the function computed by $\TM_e$ we write~\definend{$\phi_e$}. 
+For the machine with index~$e\in\N$ we write \definend{$\TM_e$}.
+For the function computed by $\TM_e$ we write~\definend{$\phi_e$}. 
+
+A numbering is \definend{acceptable} if
+(1)~it is effective: there is a program that takes as input
+the source of the Turing machine, the set of instructions,
+and gives as output the associated number,
+(2)~the set of numbers for which there is an associated machine is computable,
+and (3)~there is an effective inverse that takes as input
+a natural number and gives as output the associated Turing machine source. 
 \end{definition}
 
-Because we have fixed an acceptable numbering, 
-the index $e$ is source-equivalent, 
-meaning that giving a machine's index amounts to the same as giving its
-source.
-
 Think of the machine's index as its designator, or name.
-We will refer to it frequently, for instance calling something
+We will refer to it frequently, for instance as
 ``the $e$-th Turing machine.''
+
+The exact numbering that we use 
+\citetext{doesn't matter much}{For the precise meaning of ``much'' 
+see \autocite{Rogers58}.} as long as it is acceptable, so 
+for the rest of the book we will just fix one.
+That is, we can take the numbering to be \codeinline{godel} and its
+inverse to be \codeinline{machine},
+although we won't ever need the details of those. 
+The point is that because the numbering is acceptable, 
+by conditions~(1) and~(3) the index is source-equivalent\Dash 
+we can go effectively from the index to the machine source or
+from the source to the machine index.
 
 \begin{exercises}
 \begin{exercise}
@@ -2243,11 +2250,11 @@ given the input $\sequence{e,x}$ will have the same
 output behavior as does $\TM_e$ on input~$x$.
 \end{theorem}
 
-When we introduced Turing machines we simulated them
-with a Scheme program so that we could practice working with them.
+We simulate Turing machines
+with a Scheme program to practice working with them.
 Thus, we know that Scheme can simulate Turing machines. 
-This result asserts that Turing machines can simulate Turing machines\Dash
-that there is a single 
+This theorem asserts that Turing machines can simulate Turing machines\Dash
+there is a single 
 Turing machine that can act like any Turing machine at all.
 This is a \definend{Universal Turing Machine}.
 We denote such a machine with~$\UTM$.
@@ -2421,18 +2428,19 @@ list is now a routine, which acts on the argument, producing the correct output.
 
 
 
-% ====== S-m-n, uniformity
-\begin{TODO}
-  In universality we have $F(e,x)=\phi_e(x)$ so the letter~$e$ goes from
-the a function argument to an index.
-Now generalize.
-Comment on uniformity
-\end{TODO}
 
 
 
 \subsection{Parametrization}
 % \subsection{$\mathbf{s}$-$\mathbf{m}$-$\mathbf{n}$ theorem}
+% ====== S-m-n, uniformity
+\begin{TODO}
+In universality we have $F(e,x)=\phi_e(x)$ so the letter~$e$ goes from
+the a function argument to an index.
+Now generalize.
+Comment on uniformity
+\end{TODO}
+
 We claim that there are functions no program can do.
 Can't we just put out the numbers $0$ and $1$?  
 What's to stop us?
@@ -2440,44 +2448,6 @@ What's to stop us?
 Of course, being able to print out the digits does not make a program
 able to print the digits of $\pi$.
 Willy-nilly versus uniform is the difference between scissors and surgery.
-
-Consider a two-input program $\TM_e(x,y)$.
-Freezing the first argument, that is, locking $x=a$ for some $a\in\N$,
-gives a one-input program $\TM{Q}_a(y)=\TM_e(a,y)$.
-For example, starting with the program
-\begin{lstlisting}
-  P(x,y)
-\end{lstlisting}
-and fixing the first input at $a=7$ gives a one-input program.
-\begin{lstlisting}
-  Q_7(y)  
-\end{lstlisting}
-This is \definend{partial application}.
-Obviously the second program is related to the first.
-The next result is that the index of the second program is computable from the
-first.
-
-\begin{theorem}[Parameter theorem, or $s$-$m$-$n$~theorem]
-There is a computable function $s$ such that
-for any recursive function of two variables $f(x,y)$ computed by
-$\TM_e$, freezing the first input at $a\in\N$ gives a function
-computed by $\TM_{s(e,a)}$.
-\end{theorem}
-
-The following Lisp code implements $s_1^1$.
-(Explain gensym.)
-% https://en.wikipedia.org/wiki/Smn_theorem
-\begin{lstlisting}
- (defun s11 (f x)
-   (let ((y (gensym)))
-     (list 'lambda (list y) (list f x y))))
-\end{lstlisting}
-For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
-we can fix the first variable~\lstinline!x! to have the value~$3$ with 
-the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
-evaluates to the one-input function 
-\lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
-adds~$3$ to its argument.
 
 \begin{example} \label{ex:NineInPi}
 Consider this problem: given a number $n$, 
@@ -2538,6 +2508,46 @@ Nevertheless, the problem is solvable.
 
 
 
+Consider a two-input program $\TM_e(x,y)$.
+Freezing the first argument, that is, locking $x=a$ for some $a\in\N$,
+gives a one-input program $\TM{Q}_a(y)=\TM_e(a,y)$.
+For example, starting with the program
+\begin{lstlisting}
+  P(x,y)
+\end{lstlisting}
+and fixing the first input at $a=7$ gives a one-input program.
+\begin{lstlisting}
+  Q_7(y)  
+\end{lstlisting}
+This is \definend{partial application}.
+Obviously the second program is related to the first.
+The next result is that the index of the second program is computable from the
+first.
+
+\begin{theorem}[Parameter theorem, $s$-$m$-$n$~theorem]
+There is a computable function $s$ such that
+for any recursive function of two variables $f(x,y)$ computed by
+$\TM_e$, freezing the first input at $a\in\N$ gives the function
+computed by $\TM_{s(e,a)}$.
+\end{theorem}
+
+The following Lisp code implements $s_1^1$.
+(Explain gensym.)
+% https://en.wikipedia.org/wiki/Smn_theorem
+\begin{lstlisting}
+ (defun s11 (f x)
+   (let ((y (gensym)))
+     (list 'lambda (list y) (list f x y))))
+\end{lstlisting}
+For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
+we can fix the first variable~\lstinline!x! to have the value~$3$ with 
+the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
+evaluates to the one-input function 
+\lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
+adds~$3$ to its argument.
+
+
+
 
 
 %================================================
@@ -2558,10 +2568,10 @@ a function for which there is no associated Turing machine.
 \subsection{Definition}
 The natural thing to do is to go through 
 Cantor's Theorem and effectivize it,
-see how much of the proof we can express constructively.
+to see how much of the proof we can express constructively.
 For a first try, consider an illustrative table adapted from the one on 
 \cpageref{ex:DiagonalizationTable}.
-Here the rows are computable functions and the columns are inputs.
+The rows are the computable functions and the columns are inputs.
 For instance, this table imagines that $\phi_1(3)=0$.
 \begin{center} \small \setlength{\arraycolsep}{0.75\arraycolsep}
   \begin{tabular}{r|ccccccc@{\hspace*{1em}$\ldots$}}
@@ -2585,9 +2595,11 @@ For instance, this table imagines that $\phi_1(3)=0$.
   \vcenteredhbox{\includegraphics{background/asy/hp/perfect/perfect02.pdf}}
 \end{center}
 Diagonalize.
-That is, note that the program's output is not any row of the table,
-which would contradict our presumption
-that the table's rows constitute all computable functions.
+That is, note that the program's output is not any row of the table.
+This would seem to be a contradiction since the illustrative
+table presumes 
+that the rows constitute all computable functions,
+but the program on the right gives a function that is not any row.
 
 So what's happening?
 In the table of computable functions, 
@@ -2901,45 +2913,53 @@ Now we can diagonalize, giving a contradiction.
 
 %================================================
 \subsection{General unsolvabilty}
-We have described the Halting problem as a touchstone.
-What that means is that we will show many other problems are unsolvable
-by showing that their solution would lead to a solution
-to the Halting problem.
+We have described the \HP{} as a touchstone.
+What this means is that for many other problems,
+their unsolvability is a consequence of the unsolvability of
+the \HP.
+
+Specifically, in this subsection we develop a general strategy.
+We will, given a problem, show that if we could solve that problem then we
+could solve \HP.
+We will conclude that the problem is unsolvable.
 
 \begin{example} \label{ex:HaltOnThree}
-Consider the problem of determining halting not on an arbitrary input~$x$,
-but just on the input~$x=3$.
+Consider the problem of determining halting not on an arbitrary input,
+but just on the input~$3$.
 \begin{equation*}
-  \computablefunction{halts\_on\_three\_checker}(e)=
+  \computablefunction{halts\_on\_three\_checker}(x)=
   \begin{cases}
-    1 &\case{if $\TM_e$ halts on input~$3$}  \\
+    1 &\case{if $\TM_x$ halts on input~$3$}  \\
     0 &\case{otherwise} 
   \end{cases}
 \end{equation*}
-We will show that this problem is also unsolvable, that there is no
+We will show that this problem is unsolvable, that there is no
 Turing machine whose input-output behavior is as above.
-
-We will show that if $\computablefunction{halts\_on\_three\_checker}$ 
+We will do that by showing 
+that if $\computablefunction{halts\_on\_three\_checker}$ 
 were a computable function then we could solve the \HP.
 % \margingraphicnomag*[r]{.3\textwidth}{background/asy/hp/perfect/perfect06.pdf}
+
+Here is the idea.
 Consider the program on the right below.
 The middle box
-uses a universal Turing machine to simulate running $\TM_x$ on input~$x$.
-If that simulation halts then this program as a whole halts,
-simply reading the input, ignoring it, and printing some nominal output.
+simulates running $\TM_x$ on input~$x$.
+If that simulation halts then the program as a whole halts
+(it reads the input, ignores it, and prints a nominal output).
 If that simulation does not halt then this program as a whole
-never halts, regardless of the input.
-In particular, this program halts on input~$y=3$ if and only if 
+does not halt, regardless of the input.
+Thus, this program halts on input~$y=3$ if and only if 
 $\TM_x$ halts on~$x$.
-So this flowchart shows how we can use being able to answer questions about 
-halting on~$3$ to answer
-questions about whether $\TM_x$ halts on~$x$, for some~$x$.
+So this flowchart shows that if we were able to answer questions about 
+halting on~$3$ then we could use that ability to answer
+questions about whether $\TM_x$ halts on~$x$.
 \begin{center}
   \includegraphics{background/asy/hp/perfect/perfect06.pdf}
   \hspace*{2em plus 0.5fil}
   \includegraphics{background/asy/hp/perfect/perfect07.pdf}
 \end{center}
-But we don't want to determine whether $\TM_x$ halts on~$x$ for a single~$x$.
+But we don't want to only determine whether $\TM_x$ 
+halts on~$x$ for a single~$x$.
 We next bring in uniformity.
 
 Assume that $\computablefunction{halts\_on\_three\_checker}$ is a computable
@@ -2958,16 +2978,15 @@ That Turing machine has some index~$e$, so that $\psi=\phi_e$.
 Apply the \smn{} theorem to parametrize~$x$, giving $\phi_{s(e,x)}$.
 This is a family of functions, parametrized by $x$,
 illustrated by the flowchart on the right above.
-Then $\phi_x(x)\converges$ if and only if
+As discussed, $\phi_x(x)\converges$ if and only if
 $\computablefunction{halts\_on\_three\_checker}(s(e,x))=1$.
-The supposition that $\computablefunction{halts\_on\_three\_checker}$ is 
+Therefore, 
+the supposition that $\computablefunction{halts\_on\_three\_checker}$ is 
 computable gives that the composition
 $\composed{\computablefunction{halts\_on\_three\_checker}}{s}$
 is computable, which gives that the \HP{} is computably solvable, 
 which is a contradiction.
 \end{example}
-
-This idea of turning one question into another is very powerful.
 
 \begin{example} \label{ex:OutputsSeven}
 We next show that this function is not mechanically computable.
@@ -2989,7 +3008,7 @@ function and consider this.
   \end{cases}
 \end{equation*}
 It is computed by the flowchart on the left below.
-Hence, by Church's Thesis
+Church's Thesis shows that
 there is a Turing machine whose input-output behavior is $\psi$.
 That Turing machine has some index~$e$, so that $\psi=\phi_e$.
 \begin{center}
@@ -3016,7 +3035,7 @@ function is not mechanically computable.
 \begin{equation*}
   \computablefunction{doubler\_checker}(e)=
   \begin{cases}
-    1 &\case{if $\TM_e$ outputs $2x$ on input~$x$}  \\
+    1 &\case{if for all $x$ input, $\TM_e$ outputs $2x$}  \\
     0 &\case{otherwise} 
   \end{cases}
 \end{equation*}
@@ -3030,9 +3049,10 @@ This function
   \end{cases}
 \end{equation*}
 is computed by the flowchart on the left below.
-Church's Thesis says that if we can write a program to do it then there
-a Turing machine that can do it.
-That Turing machine has some index~$e$, so that $\psi=\phi_e$.
+This flowchart convinces us that $\psi$ is intutitively computable so
+Church's Thesis says that there
+a Turing machine that can compute it.
+This Turing machine has some index~$e$, so that $\psi=\phi_e$.
 \begin{center}
   \includegraphics{background/asy/hp/perfect/perfect10.pdf}
   \hspace*{2em plus 0.5fil}
@@ -3049,7 +3069,9 @@ which is wrong.
 
 
 \begin{TODO}
-  Rice's Theorem
+The intuition from those problems is that
+given a program $\TM_e$, we cannot mechanically analyze its behavior.
+  Reduction to the \HP.
 \end{TODO}
 
 \begin{exercises}
@@ -3073,8 +3095,202 @@ fails to converge on some input.
 Repeat the prior exercise but instead show that the problems are
 unsolvable by using Rice's Theorem.  
 \end{exercise}
-
 \end{exercises}
+
+
+
+\subsection{Rice's Theorem}
+We have shown a number of problems to be unsolvable.
+The intuition from those problems is that
+we cannot, given $e$, mechanically analyze the behavior of $\TM_e$.
+We now that intuition precise.
+This formalizes ``behavior.''
+
+\begin{lemma}
+The relation $\simeq$ between natural numbers 
+given by $e\mathbin{\simeq}\hat{e}$ 
+if $\phi_e\samebehavior\phi_{\hat{e}}$ 
+is an equivalence.
+\end{lemma}
+\begin{proof}
+It is reflexive because a Turing machine $\TM_e$ 
+has the same behavior as itself:~$\phi_e\samebehavior\phi_e$.
+It is symmetric because if $\TM_e$ has the same 
+behavior as $\TM_{\hat{e}}$ then the converse also holds.
+Transitivity is just as clear.
+\end{proof}
+
+Each equivalence class~$\mathcal{C}$ is a set of program indices,
+where $e,\hat{e}\in\mathcal{C}$ if, while the programs may differ
+$\TM_e\neq\TM_{\hat{e}}$, nontheless the 
+input-ouptut behaviors are the same~$\phi_e\samebehavior\phi_{\hat{e}}$.
+For instance, one class contains the indices of all TM's that double 
+their input, 
+$\mathcal{C}=\set{e\in\N\suchthat \text{$\phi_e(x)=2x$ for all $x$}}$.
+
+\begin{definition}
+A set $\mathcal{I}$ is an \definend{index set} if for all 
+indices~$e,\hat{e}\in\N$,
+if $e\in\mathcal{I}$ and $\phi_e\samebehavior\phi_{\hat{e}}$ 
+then also~$\hat{e}\in\mathcal{I}$. 
+\end{definition}
+
+The picture below shows the universe of all indices, $\N$, partitioned into
+the infinitely many $\simeq$-equivalence classes. 
+An index set is a union of some of these classes.
+Shown here are three of those classes; their union
+makes a single index set
+$\mathcal{I}=\mathcal{C}_{e_0}\cup\mathcal{C}_{e_1}\cup\mathcal{C}_{e_2}$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{background/hp/asy/indexsets.pdf}}     
+\end{center}
+
+\begin{theorem}[Rice's Theorem]  
+Every index set that is nontrivial, that is not empty and not 
+all of $\N$, is not computable.
+\end{theorem}
+
+\begin{proof}
+Choose an index~$e_0$ so that $\forall y[\phi_{e_0}(y)\uparrow]$.
+Suppose that $e_0\notin\mathcal{I}$ (the other case is similar).
+Since $\mathcal{I}$ is not empty there is an index~$e_1\in\mathcal{I}$.
+Then $\phi_{e_0}\not\simeq\phi_{e_1}$, meaning that 
+$\exists y[\phi_{e_1}(y)\downarrow]$.
+
+Consider this $\phi_{s(e,x)}$.
+If $\phi_e(x)\uparrow$ then $\phi_{s(e,x)}\simeq\phi_{e_0}$
+and so $s(e,x)\notin\mathcal{I}$.
+On the other hand,   
+if $\phi_e(x)\downarrow$ then $\phi_{s(e,x)}\simeq\phi_{e_1}$
+and so $s(e,x)\in\mathcal{I}$.
+\begin{center}
+  \includegraphics{background/hp/asy/rice.pdf}
+\end{center}
+Thus being able to check whether an index is an element of~$\mathcal{I}$
+allows us to check if $s(e,x)\in\mathcal{I}$,
+and we could solve the Halting Problem.
+\end{proof}
+
+% Therefore we cannot with a program decide 
+% whether an index is an element of~$\mathcal{I}$. 
+
+% \pause\smallskip
+% \begin{graphicbytext}{.2}{asy/rice.pdf}
+% Consider this $\phi_{s(e,x)}$.
+% If $\phi_e(x)\uparrow$ then $\phi_{s(e,x)}\simeq\phi_{e_0}$
+% and so $s(e,x)\notin\mathcal{I}$.
+% On the other hand,   
+% if $\phi_e(x)\downarrow$ then $\phi_{s(e,x)}\simeq\phi_{e_1}$
+% and so $s(e,x)\in\mathcal{I}$.
+
+% \pause\smallskip
+% Thus the ability to check whether an index is an element of~$\mathcal{I}$
+% would allow us to check if $s(e,x)\in\mathcal{I}$,
+% which would give us the ability to solve the Halting Problem.
+% Therefore we cannot with a program decide 
+% whether an index is an element of~$\mathcal{I}$. 
+% \end{graphicbytext}
+
+
+
+\begin{example}
+Show that this problem is unsolvable by using Rice's Theorem:
+given $e$, decide if $\phi_e(x)=7$ for some~$x$.    
+
+We shall show that this is a nontrivial index set.
+\begin{equation*}
+  \mathcal{I}=\set{e\in\N \suchthat \text{$\phi_e(x)=7$ for some $x$}}
+\end{equation*}
+First, it is not empty because where $e_0$ is the index of a 
+Turing Machine that immediately halts, and so acts as the identity function,
+then $e_0\in\mathcal{I}$.
+This set is not all of $\N$ because, 
+where $e_1$ is the index of a Turing Machine that never halts, 
+$e_i\notin\mathcal{I}$.
+So this set is nontrivial.
+
+This set is an index set because if $e\in\mathcal{I}$ then $\phi_e(x_0)=7$ for 
+some $x_0\in\N$.
+If $\hat{e}\in\N$ is such that $\phi_e\simeq\phi_{\hat{e}}$ then
+$\phi_{\hat{e}}(x_0)=7$, and consequently $\hat{e}\in\mathcal{I}$.
+\end{example}
+
+\begin{example}
+Show that this problem is unsolvable using Rice's Theorem: 
+given $e$, decide if $\phi_e(3)\downarrow$.    
+
+Consider this set.
+\begin{equation*}
+  \mathcal{I}=\set{e\in\N \suchthat \phi_e(3)\downarrow}
+\end{equation*}
+It is not empty because where $e_0$ is the index of a 
+Turing Machine that immediately halts, and so acts as the identity function,
+then $e_0\in\mathcal{I}$.
+It is not all of $\N$ because, 
+where $e_1$ is the index of a Turing Machine that never halts, 
+$e_i\notin\mathcal{I}$.
+So this set is nontrivial.
+
+This set~$\mathcal{I}$ is an index set because if 
+$e\in\mathcal{I}$ then $\phi_e(3)\downarrow$ and 
+if $\hat{e}\in\N$ is such that $\phi_e\simeq\phi_{\hat{e}}$ then
+$\phi_{\hat{e}}(3)\downarrow$ also, implying that 
+$\hat{e}\in\mathcal{I}$.  
+\end{example}
+
+
+What is not an index set?
+This is not an index set.
+\begin{equation*}
+  \set{e\suchthat \text{$\TM_e$ runs for at least $100$ steps on input~$5$}}
+\end{equation*}
+Here are two programs with the same input-output behavior but
+the second takes more than a hundred ticks for $x=5$.
+\begin{center}
+\vspace*{-4ex}
+\begin{minipage}[t]{0.4\linewidth}%
+\begin{lstlisting}
+read x
+print "1" 
+\end{lstlisting}%
+\end{minipage}%
+\hspace*{2em}
+\begin{minipage}[t]{0.4\linewidth}%
+\begin{lstlisting}
+read x
+n = 0
+while (n < 100):
+    n = n+1
+print "1"
+\end{lstlisting}%
+\end{minipage}%
+\vspace*{-2ex}
+\end{center}
+
+Similarly, this is not an index set.
+\begin{equation*}
+  \set{e\suchthat \text{$\TM_e$ has exactly $10$ states}}
+\end{equation*}
+
+Rice's Theorem addresses the properties of the functions
+associated with the machines, rather than the properties of the machines
+themselves.
+It is extensional.
+
+We saw by a counting argument that there are unsolvable problems.
+The Halting Problem shows us that there some interesting problems 
+that are unsolvable.
+
+Rice's Theorem tells us that in some sense \textit{every} interesting problem
+is unsolvable,
+where we take `interesting' to mean encapsulating some behavior\Dash being 
+a nontrivial index set.
+
+
+
+
+
+
 
 \section{Philosophical and intellectual impact}
 

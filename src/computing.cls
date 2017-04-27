@@ -495,7 +495,7 @@ of the two.}
 }%
 \setfnsymbol{hefferon}
 \newlength{\footmarktotextglue}
-\global\footmarktotextglue=.1em %
+\global\footmarktotextglue=.1em plus .1em minus .02em %
 % was: \global\footglue=1.25em plus.3em minus.3em % space between footnotes
 \global\footglue=1em plus.4em minus.2em % space between footnotes
 \long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
@@ -1485,7 +1485,7 @@ of the two.}
 % Add notes for me to put something in
 \newenvironment{TODO}{%
 \par\noindent \makebox[0em][l]{\makebox[-1em][r]{\color{red}TO DO:}}\centering
-\begin{minipage}{0.8\textwidth}\itshape
+\begin{minipage}[t]{0.9\textwidth}\itshape
 }{%
 \end{minipage}
 }

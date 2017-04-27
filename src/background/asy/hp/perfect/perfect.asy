@@ -548,3 +548,87 @@ draw(pic,
 
 shipout(format("perfect%02d",picnum),pic,format="pdf");
 
+
+
+// ---- Rice's Thm, before s-m-n
+picture pic;
+picnum = picnum+1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x,y$");
+node sim1=nbox("Run $\TM_x$ on~$x$");
+node sim2=nbox("Run $\TM_{e_1}$ on~$y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,sim1);
+vlayout(0.85u,sim1,sim2);
+vlayout(0.85u,sim2,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     sim1,
+     sim2,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--sim1),
+     (sim1--sim2),
+     (sim2--ending)
+);
+
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+
+
+
+// ---- Rice's Thm, after s-m-n
+picture pic;
+picnum = picnum+1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node sim1=nbox("Run $\TM_x$ on~$x$");
+node sim2=nbox("Run $\TM_{e_1}$ on~$y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,sim1);
+vlayout(0.85u,sim1,sim2);
+vlayout(0.85u,sim2,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     sim1,
+     sim2,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--sim1),
+     (sim1--sim2),
+     (sim2--ending)
+);
+
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+

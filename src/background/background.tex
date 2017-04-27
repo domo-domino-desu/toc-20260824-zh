@@ -3104,29 +3104,7 @@ We have shown a number of problems to be unsolvable.
 The intuition from those problems is that
 we cannot, given $e$, mechanically analyze the behavior of $\TM_e$.
 We now that intuition precise.
-This formalizes ``behavior.''
-
-\begin{lemma}
-The relation $\simeq$ between natural numbers 
-given by $e\mathbin{\simeq}\hat{e}$ 
-if $\phi_e\samebehavior\phi_{\hat{e}}$ 
-is an equivalence.
-\end{lemma}
-\begin{proof}
-It is reflexive because a Turing machine $\TM_e$ 
-has the same behavior as itself:~$\phi_e\samebehavior\phi_e$.
-It is symmetric because if $\TM_e$ has the same 
-behavior as $\TM_{\hat{e}}$ then the converse also holds.
-Transitivity is just as clear.
-\end{proof}
-
-Each equivalence class~$\mathcal{C}$ is a set of program indices,
-where $e,\hat{e}\in\mathcal{C}$ if, while the programs may differ
-$\TM_e\neq\TM_{\hat{e}}$, nontheless the 
-input-ouptut behaviors are the same~$\phi_e\samebehavior\phi_{\hat{e}}$.
-For instance, one class contains the indices of all TM's that double 
-their input, 
-$\mathcal{C}=\set{e\in\N\suchthat \text{$\phi_e(x)=2x$ for all $x$}}$.
+This is how we formalize ``behavior.''
 
 \begin{definition}
 A set $\mathcal{I}$ is an \definend{index set} if for all 
@@ -3135,6 +3113,213 @@ if $e\in\mathcal{I}$ and $\phi_e\samebehavior\phi_{\hat{e}}$
 then also~$\hat{e}\in\mathcal{I}$. 
 \end{definition}
 
+\begin{example}
+This set of indices
+$\mathcal{I}=\set{e\in\N\suchthat \text{$\phi_e(x)=2x$ for all $x$}}$
+is an index set. 
+Suppose that $e\in\mathcal{I}$ and that $\hat{e}\in\N$ is such that 
+$\phi_e\samebehavior \phi_{\hat{e}}$. 
+Then the behavior of $\phi_{\hat{e}}$ is also to double its input: 
+$\phi_{\hat{e}}(x)=2x$ for all~$x$.
+Thus $\hat{e}\in\mathcal{I}$ also.
+\end{example}
+
+\begin{example}
+The set
+$\mathcal{J}=\set{e\in\N\suchthat
+      \text{$\phi_e(x)=3x$ for all $x$, or $\phi_e(x)=x^3$ for all~$x$}}
+$
+is an index set.
+For, suppose that $e\in\mathcal{J}$ and that  
+$\phi_e\samebehavior \phi_{\hat{e}}$  where $\hat{e}\in\N$.
+Because $e\in\mathcal{J}$, either 
+$\phi_e(x)=3x$ for all $x$ or $\phi_e(x)=x^3$ for all~$x$.
+Because $\phi_e\samebehavior \phi_{\hat{e}}$ we know that
+either $\phi_e(x)=3x$ for all $x$ or $\phi_e(x)=x^3$ for all~$x$, and  
+thus $\hat{e}\in\mathcal{J}$.
+\end{example}
+
+\begin{example} \label{ex:NotIndexSet}
+The set $\set{e\in\N\suchthat
+      \text{$\TM_e$ contains an instruction starting with $q_1$}}$ 
+is not an index set.
+We can easily produce two Turing machines with the same behavior,
+such as giving a constant output of $0$,
+and one machine contains such an instruction while the other does not.
+\end{example}
+
+
+\begin{theorem}[Rice's Theorem]   \label{thm:RicesThm}
+Every index set that is nontrivial, that is not empty and not 
+all of $\N$, is not computable.
+\end{theorem}
+
+\begin{proof}
+Let $\mathcal{I}$ be an index set.
+Choose some~$e_0$ so that $\phi_{e_0}(y)\uparrow$ for all~$y$;
+either $e_0\in\mathcal{I}$ or $e_0\notin\mathcal{I}$.
+We shall show that in the second case $\mathcal{I}$ is not computable. 
+The other case is similar and is \cref{exer:OtherHalfRicesThm}.
+
+So assume $e_0\notin\mathcal{I}$.
+Since $\mathcal{I}$ is not empty there is an index~$e_1\in\mathcal{I}$.
+Because $\mathcal{I}$ is an index set $\phi_{e_0}\not\simeq\phi_{e_1}$, 
+so there is an input~$y$ such that $\phi_{e_1}(y)\downarrow$.
+
+Consider the flowchart on the left.
+(Note that $e_1$ is not an input, it is hard-coded into the source.)
+By Church's Thesis there is a Turing machine with that behavior,
+let that be $\TM_e$.
+Apply the \smn{} theorem to paramatrize~$x$,
+resulting in the uniformily computable 
+family of functions $\phi_{s(e,x)}$ whose behavior is 
+charted on the right.
+\begin{center}
+  \vcenteredhbox{\includegraphics{background/asy/hp/perfect/perfect12.pdf}}
+  \hspace{2em plus 0.5fil}
+  \vcenteredhbox{\includegraphics{background/asy/hp/perfect/perfect13.pdf}}
+\end{center}
+We've constructed the functions on the right so that if 
+$\phi_x(x)\uparrow$ then $\phi_{s(e,x)}\simeq\phi_{e_0}$
+and thus $s(e,x)\notin\mathcal{I}$, and so that
+if $\phi_x(x)\downarrow$ then $\phi_{s(e,x)}\simeq\phi_{e_1}$
+and thus $s(e,x)\in\mathcal{I}$.
+Therefore being able to check whether an index $s(e,x)$
+is an element of~$\mathcal{I}$
+would allow us to solve the Halting Problem.
+\end{proof}
+
+
+\begin{example}
+Show using Rice's Theorem that this problem is unsolvable: 
+given $e$, decide if $\phi_e(3)\downarrow$.    
+
+Consider the set
+$
+  \mathcal{I}=\set{e\in\N \suchthat \phi_e(3)\downarrow}
+$.
+To apply Rice's Theorem we must show that it is not empty, that 
+it is not all of~$\N$, and that it is an index set.
+This set is not empty because we can write a Turing machine that 
+acts as the identity function $\phi(x)=x$, and where $e_0$ is the index of that 
+Turing Machine then $e_0\in\mathcal{I}$.
+The set is not all of $\N$ because, 
+where $e_1$ is the index of a Turing Machine that never halts then
+$e_1\notin\mathcal{I}$.
+
+To show that~$\mathcal{I}$ is an index set, assume that
+$e\in\mathcal{I}$ and 
+that $\hat{e}\in\N$ is such that $\phi_e\simeq\phi_{\hat{e}}$.
+Then $e\in\mathcal{I}$ gives that  $\phi_e(3)\downarrow$ and 
+$\phi_e\simeq\phi_{\hat{e}}$ gives that
+$\phi_{\hat{e}}(3)\downarrow$ also.
+Hence $\hat{e}\in\mathcal{I}$, and it is an index set.  
+\end{example}
+
+\begin{example}
+Show that this problem is unsolvable:
+given $e$, decide if $\phi_e(x)=7$ for some~$x$.    
+
+We will show that
+$\mathcal{I}=\set{e\in\N \suchthat \text{$\phi_e(x)=7$ for some $x$}}$
+is a nontrivial index set.
+It is not empty because where $e_0$ is the index of a 
+Turing Machine that acts as the identity function $\phi_{e_0}(x)=x$
+then the input $x=7$ produces the output~$7$
+so $e_0\in\mathcal{I}$.
+It is not all of $\N$ because, 
+where $e_1$ is the index of a Turing Machine that never halts, 
+$e_i\notin\mathcal{I}$.
+So this set is nontrivial.
+
+Showing that $\mathcal{I}$ is an index set is straightforward.
+Assume that $e\in\mathcal{I}$ and that $\hat{e}\in\N$ is such that
+$\phi_e\samebehavior\phi_{\hat{e}}$.
+Byt the first assumption, $\phi_e(x_0)=7$ for some input~$x_0$.
+By the second,
+$\phi_{\hat{e}}(x_0)=7$ also. 
+Consequently, $\hat{e}\in\mathcal{I}$.
+\end{example}
+
+To recap, 
+Rice's Theorem speaks to the behavior of the machines.
+It addresses the properties of the functions
+associated with the machines, rather than the properties of the machines
+themselves.
+The set of functions computed by programs written in C whose $100$-th character
+is a `k' would not be an index set. 
+
+We saw by a counting argument that there are unsolvable problems.
+The Halting Problem shows us that there some interesting problems 
+that are unsolvable.
+Rice's Theorem in a sense tells us that \emph{every} interesting problem
+is unsolvable.
+That sense is that a problem is `interesting' if it encapsulates some behavior,
+if it gives rise to 
+a nontrivial index set.
+Which letter you choose to use for a variable name
+in the source code is not interesting.
+
+\begin{exercises}
+\begin{exercise}
+Show that each of these is an unsolvable problem by applying
+Rice's Theorem.
+\begin{exparts}
+\item The problem of deciding if a function is the squaring function
+$x\mapsto x^2$.
+\item The problem of determining if a function returns the same value
+on two consecutive inputs, so $f(x)=f(x+1)$ for some~$x\in\N$.
+\item The problem of determining if a function is total, that is,
+converges on every input.
+\item The problem of determining if a function is partial, that is,
+fails to converge on some input.
+\item The problem of deciding if the function ever converges, on any input.  
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Is 
+$\set{e\suchthat \text{$\TM_e$ runs for at least $100$ steps on input~$5$}}$
+an index set?
+\end{exercise}
+
+\begin{exercise}
+As described in \cref{ex:NotIndexSet}, 
+produce two Turing machines 
+giving an output of $0$ for all inputs, and such that
+and one machine contains an instruction starting with
+$q_1$ while the other does not.    
+\end{exercise}
+
+\begin{exercise}
+Consider the relation $\simeq$ between natural numbers 
+given by $e\mathbin{\simeq}\hat{e}$ 
+if $\phi_e\samebehavior\phi_{\hat{e}}$.
+\begin{exparts} 
+\item
+Show that it is an equivalence.
+\item 
+Describe the equivalence classes.
+\item
+Show that each index set is the union of some of the equivalence class.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+It is reflexive because a Turing machine $\TM_e$ 
+has the same behavior as itself:~$\phi_e\samebehavior\phi_e$.
+It is symmetric because if $\TM_e$ has the same 
+behavior as $\TM_{\hat{e}}$ then the converse also holds.
+Transitivity is just as clear.
+\item
+Each equivalence class~$\mathcal{C}$ is a set of program indices,
+where $e,\hat{e}\in\mathcal{C}$ if, while the programs may differ
+$\TM_e\neq\TM_{\hat{e}}$, nontheless the 
+input-ouptut behaviors are the same~$\phi_e\samebehavior\phi_{\hat{e}}$.
+For instance, one class contains the indices of all TM's that double 
+their input, 
+$\mathcal{C}=\set{e\in\N\suchthat \text{$\phi_e(x)=2x$ for all $x$}}$.
+\item
 The picture below shows the universe of all indices, $\N$, partitioned into
 the infinitely many $\simeq$-equivalence classes. 
 An index set is a union of some of these classes.
@@ -3144,150 +3329,15 @@ $\mathcal{I}=\mathcal{C}_{e_0}\cup\mathcal{C}_{e_1}\cup\mathcal{C}_{e_2}$.
 \begin{center}
   \vcenteredhbox{\includegraphics{background/hp/asy/indexsets.pdf}}     
 \end{center}
+\end{exparts}
+\end{answer}
+\end{exercise}
 
-\begin{theorem}[Rice's Theorem]  
-Every index set that is nontrivial, that is not empty and not 
-all of $\N$, is not computable.
-\end{theorem}
-
-\begin{proof}
-Choose an index~$e_0$ so that $\forall y[\phi_{e_0}(y)\uparrow]$.
-Suppose that $e_0\notin\mathcal{I}$ (the other case is similar).
-Since $\mathcal{I}$ is not empty there is an index~$e_1\in\mathcal{I}$.
-Then $\phi_{e_0}\not\simeq\phi_{e_1}$, meaning that 
-$\exists y[\phi_{e_1}(y)\downarrow]$.
-
-Consider this $\phi_{s(e,x)}$.
-If $\phi_e(x)\uparrow$ then $\phi_{s(e,x)}\simeq\phi_{e_0}$
-and so $s(e,x)\notin\mathcal{I}$.
-On the other hand,   
-if $\phi_e(x)\downarrow$ then $\phi_{s(e,x)}\simeq\phi_{e_1}$
-and so $s(e,x)\in\mathcal{I}$.
-\begin{center}
-  \includegraphics{background/hp/asy/rice.pdf}
-\end{center}
-Thus being able to check whether an index is an element of~$\mathcal{I}$
-allows us to check if $s(e,x)\in\mathcal{I}$,
-and we could solve the Halting Problem.
-\end{proof}
-
-% Therefore we cannot with a program decide 
-% whether an index is an element of~$\mathcal{I}$. 
-
-% \pause\smallskip
-% \begin{graphicbytext}{.2}{asy/rice.pdf}
-% Consider this $\phi_{s(e,x)}$.
-% If $\phi_e(x)\uparrow$ then $\phi_{s(e,x)}\simeq\phi_{e_0}$
-% and so $s(e,x)\notin\mathcal{I}$.
-% On the other hand,   
-% if $\phi_e(x)\downarrow$ then $\phi_{s(e,x)}\simeq\phi_{e_1}$
-% and so $s(e,x)\in\mathcal{I}$.
-
-% \pause\smallskip
-% Thus the ability to check whether an index is an element of~$\mathcal{I}$
-% would allow us to check if $s(e,x)\in\mathcal{I}$,
-% which would give us the ability to solve the Halting Problem.
-% Therefore we cannot with a program decide 
-% whether an index is an element of~$\mathcal{I}$. 
-% \end{graphicbytext}
-
-
-
-\begin{example}
-Show that this problem is unsolvable by using Rice's Theorem:
-given $e$, decide if $\phi_e(x)=7$ for some~$x$.    
-
-We shall show that this is a nontrivial index set.
-\begin{equation*}
-  \mathcal{I}=\set{e\in\N \suchthat \text{$\phi_e(x)=7$ for some $x$}}
-\end{equation*}
-First, it is not empty because where $e_0$ is the index of a 
-Turing Machine that immediately halts, and so acts as the identity function,
-then $e_0\in\mathcal{I}$.
-This set is not all of $\N$ because, 
-where $e_1$ is the index of a Turing Machine that never halts, 
-$e_i\notin\mathcal{I}$.
-So this set is nontrivial.
-
-This set is an index set because if $e\in\mathcal{I}$ then $\phi_e(x_0)=7$ for 
-some $x_0\in\N$.
-If $\hat{e}\in\N$ is such that $\phi_e\simeq\phi_{\hat{e}}$ then
-$\phi_{\hat{e}}(x_0)=7$, and consequently $\hat{e}\in\mathcal{I}$.
-\end{example}
-
-\begin{example}
-Show that this problem is unsolvable using Rice's Theorem: 
-given $e$, decide if $\phi_e(3)\downarrow$.    
-
-Consider this set.
-\begin{equation*}
-  \mathcal{I}=\set{e\in\N \suchthat \phi_e(3)\downarrow}
-\end{equation*}
-It is not empty because where $e_0$ is the index of a 
-Turing Machine that immediately halts, and so acts as the identity function,
-then $e_0\in\mathcal{I}$.
-It is not all of $\N$ because, 
-where $e_1$ is the index of a Turing Machine that never halts, 
-$e_i\notin\mathcal{I}$.
-So this set is nontrivial.
-
-This set~$\mathcal{I}$ is an index set because if 
-$e\in\mathcal{I}$ then $\phi_e(3)\downarrow$ and 
-if $\hat{e}\in\N$ is such that $\phi_e\simeq\phi_{\hat{e}}$ then
-$\phi_{\hat{e}}(3)\downarrow$ also, implying that 
-$\hat{e}\in\mathcal{I}$.  
-\end{example}
-
-
-What is not an index set?
-This is not an index set.
-\begin{equation*}
-  \set{e\suchthat \text{$\TM_e$ runs for at least $100$ steps on input~$5$}}
-\end{equation*}
-Here are two programs with the same input-output behavior but
-the second takes more than a hundred ticks for $x=5$.
-\begin{center}
-\vspace*{-4ex}
-\begin{minipage}[t]{0.4\linewidth}%
-\begin{lstlisting}
-read x
-print "1" 
-\end{lstlisting}%
-\end{minipage}%
-\hspace*{2em}
-\begin{minipage}[t]{0.4\linewidth}%
-\begin{lstlisting}
-read x
-n = 0
-while (n < 100):
-    n = n+1
-print "1"
-\end{lstlisting}%
-\end{minipage}%
-\vspace*{-2ex}
-\end{center}
-
-Similarly, this is not an index set.
-\begin{equation*}
-  \set{e\suchthat \text{$\TM_e$ has exactly $10$ states}}
-\end{equation*}
-
-Rice's Theorem addresses the properties of the functions
-associated with the machines, rather than the properties of the machines
-themselves.
-It is extensional.
-
-We saw by a counting argument that there are unsolvable problems.
-The Halting Problem shows us that there some interesting problems 
-that are unsolvable.
-
-Rice's Theorem tells us that in some sense \textit{every} interesting problem
-is unsolvable,
-where we take `interesting' to mean encapsulating some behavior\Dash being 
-a nontrivial index set.
-
-
-
+\begin{exercise}  \label{exer:OtherHalfRicesThm}
+Do the $e_0\in\mathcal{I}$ case in the proof of Rice's Theorem, 
+\cref{thm:RicesThm}.
+\end{exercise}
+\end{exercises}
 
 
 

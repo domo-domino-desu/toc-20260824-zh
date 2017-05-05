@@ -7,53 +7,47 @@
 
 % \section{State machines}
 \thispagestyle{empty}
-A Turing machine is a state machine\Dash at its heart it 
-consists of states and the transitions between them.
-
-We will study other state machines.
-For example, we can try to better understand the capabilities of the 
-Turing machine's box, its CPU, 
-by studying a machine just like it but without scratch memory.
-Below, we will define a machine where the
-tape head can read but not write; this is a finite state automata,.
-
-\begin{definition}
-A \definend{state machine} consists of a set of \definend{states} $Q$,
-a set of \definend{initial states} $I\subseteq Q$,
-and a next state function $\map{\Delta}{Q}{Q}$.   
-\end{definition}
 
 
 % http://en.wikipedia.org/wiki/One_instruction_set_computer
 \chapteropen[\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing Pythagorean triples.}]{languages/plimpton322.png}{Languages}
 
-Turing machines input strings and output strings.
-So to compute the solution to a problem, 
-we must represent the problem as a string
-and also represent the solution as a string.
+Turing machines input strings and output strings, sequences of tape symbols.
+So a natural way to work is to represent problems as strings,
+put them on the tape, run a Turing machine on them, and end with
+solutions as strings.
 
-% Our everyday computers work the same way.
-% For example, to find the shortest driving distance between two places
-% we must encode the map data and the start and end points 
-% into strings and then present those strings to an algorithm
-% that manipulates them. 
+Everyday computers work the same way.
+We might imagine a program that finds  the shortest driving distance
+between cities that  
+works with a map of the country idalized as a graph,
+a collection of nodes and edges, intersections and the roads joining them.
+The program's input would be that
+we encode that graph as a strings of symbols,
+and likewise for the output. 
+
 
 
 \section{Strings}
+An algorithm must accept a variety of inputs.
+For instance, a shortest-path algorithm might accept any
+graph that is formatted in a certain way (perhaps an ordered pair of nodes
+first, represented as integers, 
+and then edges represented as pairs of nodes).
+Thus inputs come from a set of strings, which satisfy some conditions.
 
 \subsection{Definition}
-Languages are made of strings and strings are made of symbols.
-In the terminology of this section each word is familiar and its
-definition is related to its informal meaning,
-but its technical meaning have aspects that are surprising.
+This section uses familiar terms, and the definition of
+each is related to its informal meaning,
+but the technical meanings have aspects that may be surprising.
 
 \begin{definition}
 A \definend{symbol} (or \definend{token}) is something that 
-we can read and write.\footnotemark{}  %
+a machine can read and write.\footnotemark{}  %
 An \definend{alphabet} is a set of symbols.
 \end{definition}
 \footnotetext{We can imagine Turing's clerk 
-doing a calculation that keeps track of information by 
+doing a calculation without symbols, keeping track of information by 
 \protect\citetext{requiring elephants to move 
 to the left side of a road or to the right}{Or, using an abacus.}.
 But 
@@ -73,14 +67,14 @@ We include it in the definition of symbols because our mechanisms will need to
 read and write them, and for this purpose elephants
 would be inconvenient.}
 
-We write symbols in a distinct typeface, as in \str{1} or \str{c},
+We write symbols in a distinct typeface, as in \str{1} or \str{a},
 because the alternative of quoting them would be 
-ugly and clunky.\footnote[2]{We need to do something because
+clunky.\footnote[2]{We need to do something because
 in traditional mathematical work, in an expression such as
 ``let $S=\protect\set{a,b}$'' the $a$ and $b$ are variables,
 taking on values from some domain.
-But symbols are not variables.
-They are themselves the values.}
+But symbols are not variables, they don't hold a value.
+They are themselves the value.}
 The term ``symbol'' is potentially misleading in that some 
 symbols contain more than one character.
 For instance, a programming language
@@ -96,49 +90,43 @@ and so use at most countably many symbols.}.
 
 \begin{definition}
 A \definend{string} (or \definend{word})
-over an alphabet is a finite sequence of elements
-$\sequence{a_0,a_1,\ldots,a_{n-1}}$ from that alphabet.
+over an alphabet is a finite sequence of elements from that alphabet.
 The string with no elements is 
-the \citetext{\definend{empty string}~$\emptystring=\sequence{}$}{Possibly 
+the \citetext{\definend{empty string}, deonted ~$\emptystring$}{Possibly 
   $\emptystring$ was chosen as an abbreviation for `empty'.   
   Some authors use $\lambda$, possibly from the German word for 
   `empty', \textit{leer}.  \autocite{csse:Siren}}.
 \end{definition}
 
 We denote strings with lower case Greek letters 
-such as $\sigma$ or~$\tau$.
-We often denote the string's 
-elements with the associated lower case roman letter,
-so that $\sigma=\sequence{s_0,\ldots,s_{i-1}}$ 
-and $\tau=\sequence{t_0,\ldots,t_{j-1}}$.
+and often denote the string's 
+elements with the associated lower case roman letter, as in
+$\sigma=\sequence{s_0,\ldots,s_{i-1}}$
+or $\tau=\sequence{t_0,\ldots,t_{j-1}}$.\footnote{If $i=0$ or 
+$j=0$ then this gives the empty string, so $i,j\in\N$.}
 
-We use strings so much that 
-sticking with diamond brackets and commas would be clunky. 
-In many of our examples we will take the shortcut of having
-the alphabet consist of single-character  symbols, and writing strings
-by dropping the diamond brackets and commas.
+We use strings a lot. 
+Sticking with diamond brackets and commas would be clunky. 
+We will often take the shortcut of having
+the alphabet consist of single-character symbols and then write strings
+by omitting the brackets and commas.
 Thus, instead of $\sequence{\str{a},\str{b},\str{c}}$
-we will write \str{abc}.\footnote{The significance of the
-  alphabets having single-character symbols is that omitting commas  
-  would be a problem for an alphabet such as 
-  $\Sigma=\set{\str{a}, \str{aa}}$, because the string
-  \str{aaa} would be ambiguous.
-  It could
-  parse as $\sequence{\str{a},\str{aa}}$ or as
-  $\sequence{\str{aa},\str{a}}$ or as
-  $\sequence{\str{a},\str{a}, \str{a}}$} 
+we may write \str{abc}.\footnote{We want these alphabets to have 
+  single-character symbols because for some alphabets with 
+  multiple character symbols such as  
+  $\Sigma=\set{\str{a}, \str{aa}}$, omitting commas makes some
+  strings ambiguous.
+  For example, the string \str{aaa} could
+  mean $\sequence{\str{a},\str{aa}}$, or 
+  $\sequence{\str{aa},\str{a}}$, or
+  $\sequence{\str{a},\str{a}, \str{a}}$.} 
 However, this convenience 
-has the disadvantage that without the diamond brackets  
+comes with the disadvantage that without the diamond brackets  
 the empty string is just nothing, which is why 
-we have the empty string symbol~$\emptystring$. 
-
-Omitting the diamond brackets and commas 
-blurs the distinction between a symbol such as \str{c} 
-and the one-symbol string $\sigma=\sequence{\str{c}}$, 
-since they both show as \str{c}.
-However, this distinction won't matter to us, and writing strings
-in this way is awfully convenient, so we accept
-that blurring.
+we have the separate symbol~$\emptystring$.\footnote{Omitting the 
+diamond brackets and commas blurs the distinction between a symbol 
+and a one-symbol string, between \str{c} and $\sequence{\str{c}}$.
+However, this is convenient so we accept this disadvantage.}
 
 % \begin{example}
 % In many web programs the majority of the effort
@@ -160,19 +148,19 @@ that blurring.
 The Scheme alphabet contains the symbols \str{or} and \str{car}, and
 allows variable names such as \str{a}, \str{x}, or \str{lastname}.
 An example of a string is $\str{(or a ready)}$.
-This is a sequence of the five alphabet elements
-\str{(}, \str{or}, \str{a}, \str{ready}, and~\str{)}.
+This is a sequence of the five alphabet elements:
+\str{(}, \str{or}, \str{a}, \str{ready},~\str{)}.
 % Scheme writes the sequence by separating its elements with spaces
 % rather than using diamond brackets and commas, for convenience.
 \end{example}
 
-Strings over alphabet
+Strings over the alphabet
 $\set{\str{0},\str{1}}$
 are \definend{bit strings}.
-This alphabet occurs so frequently that we shall give it a name 
-$\B=\set{\str{0},\str{1}}$.\footnote{We also use $\protect\B$ for the
-set $\protect\set{\protect\true,\protect\false}$ but of course never
-at the same time.}
+This alphabet occurs so frequently that we shall set aside a name 
+$\B=\set{\str{0},\str{1}}$.% \footnote{We also use $\protect\B$ for the
+% set $\protect\set{\protect\true,\protect\false}$, but of course never
+% at the same time.}
 
 \begin{example}
 A bit string has \definend{even parity} if it has an even number of \str{1}'s
@@ -193,7 +181,7 @@ the set of all strings over $\Sigma$, of any length, as
 \begin{definition}[Operations on strings] \label{def:StringOps}
 Let $\sigma=\sequence{s_0\ldots,s_{i-1}}$ and 
 $\tau=\sequence{t_0,\ldots,t_{j-1}}$ be strings.
-The \definend{length $\lh{\sigma}$} of a string 
+The \definend{length of a string $\lh{\sigma}$} 
 is the number of symbols in that string, 
 so that $\lh{\sequence{s_0,\ldots,s_{n-1}}}=n$ 
 and the length of the empty string is $\lh{\emptystring}=0$.
@@ -204,9 +192,17 @@ by abutting the two $\sigma\tau$)
 appends the second to the first
 $\sigma\concat\tau=\sequence{s_0\ldots,s_{i-1},t_0,\ldots,t_{j-1}}$.
 
+\label{def:substring}
+If multiple strings are involved
+$\sigma=\tau_0\concat \cdots \concat\tau_{k-1}$ then we may instead say
+that $\sigma$ \definend{decomposes} into the others.
+Each $\tau_i$ is a \definend{substring} of $\sigma$.
+The first, $\tau_0$, is a \definend{prefix} of~$\sigma$,
+and the last, $\tau_{k-1}$, is a \definend{suffix}. 
+
 The \definend{replication $\sigma^n$} of a string is the 
-iterated concatenation with itself, so that $\sigma^2=\sigma\concat\sigma$, 
-$\sigma^3=\sigma^2\concat\sigma$, etc.
+iterated concatenation with itself, so that $\sigma^2=\sigma\concat\sigma$ 
+and $\sigma^3=\sigma\concat\sigma\concat\sigma$, etc.
 We write $\sigma^1=\sigma$ and $\sigma^0=\emptystring$.
 
 The \definend{reversal $\reversal{\sigma}$} of a string takes the symbols 
@@ -216,32 +212,22 @@ The reversal of the empty string is itself
 $\reversal{\emptystring}=\emptystring$.
 \end{definition}
 
-(We have used some of that notation already,
-but we state it formally here, to give a reference definition.)
+(We have used some of that notation already
+but we state it formally here, as a reference definition.)
 
-\begin{definition}[Substring relation] \label{def:substring}
-If $\sigma=\tau_0\concat \cdots \concat\tau_{n-1}$ then we say
-$\sigma$ is the concatenation of the others,
-or that $\sigma$ \definend{decomposes} into the others.
-Each $\tau_i$ is a \definend{substring} of $\sigma$.
-The first, $\tau_0$, is the \definend{prefix} of~$\sigma$,
-and the last, $\tau_{n-1}$, is the \definend{suffix}. 
-\end{definition}
-
-% \begin{example}
-% We can call a message safe text if it consists soley of characters
-% represented in   
-% For example, \str{1000001} represents capital A in 
-% the 
-% \citetext{ASCII encoding}{The American Standard Code for Information Interchange is a widely used character encoding scheme.  The most common modern character encoding is UTF-8, which is a superset of ASCII.}, and
-% lower case a is represented by \str{1100001}.  
-% \end{example}
-
+% \begin{definition}[Substring relation] 
+% If $\sigma=\tau_0\concat \cdots \concat\tau_{n-1}$ then we say
+% $\sigma$ is the concatenation of the other strings,
+% or that $\sigma$ \definend{decomposes} into the others.
+% Each $\tau_i$ is a \definend{substring} of $\sigma$.
+% The first, $\tau_0$, is a \definend{prefix} of~$\sigma$,
+% and the last, $\tau_{n-1}$, is a \definend{suffix}. 
+% \end{definition}
 
 \begin{definition}
-A \definend{language}~$\lang{L}$ over an alphabet~$\Sigma$
-is a set of strings drawn from that 
-alphabet, $\lang{L}\subseteq\kleenestar{\Sigma}$.  
+A \definend{language~$\lang{L}$ over an alphabet~$\Sigma$}
+is a set of strings drawn from that alphabet, 
+$\lang{L}\subseteq\kleenestar{\Sigma}$.  
 \end{definition}
 
 \begin{example}
@@ -249,84 +235,150 @@ Let $\Sigma=\set{\str{a}, \str{b}}$.
 The language consisting of strings where the number of \str{a}'s is twice 
 the number of \str{b}'s is
 $\lang{L}=\set{\emptystring,\str{aab},\str{aba},\str{baa},
-               \str{aaaabb}, \ldots}$.  
+               \str{aaaabb}, \,\ldots}$.  
+\end{example}
+
+\begin{example}
+Let $\Sigma=\set{\str{a},\, \str{b},\, \str{c}}$.
+The language of length-two strings over that alphabet is
+$\lang=\Sigma^2=\set{\str{aa},\,\str{ab},\,\dots,\,\str{cc}}$.
+Over the same alphabet 
+this is the language of length-three strings that are sorted.
+\begin{equation*}
+  \set{\str{aaa},\, \str{aab},\, \str{aac},\, \str{abb},\, \str{abc},
+    \str{acc},\,\str{bbb},\,\str{bbc},\, \str{bcc},\, \str{ccc}}
+\end{equation*}
+\end{example}
+
+\begin{example}
+The set of bit strings, 
+strings over the alphabet~$\B=\set{\str{0},\str{1}}$, 
+that begin with \str{1} is 
+$\set{\str{1},\,\str{10},\,\str{11},\,\str{100},\,\ldots}$.   
+\end{example}
+
+\begin{example}
+Another language over $\B$
+is the \citetext{finite set
+$\set{\str{1000001},\str{1100001}}$}{%
+The language is not 
+without sense since \str{1000001} represents capital A in the 
+ASCII encoding, while \str{1100001} is lower case a.
+The American Standard Code for Information Interchange, ASCII,
+is a widely used way of encoding character information in computers.  
+The most common modern character encoding is UTF-8, 
+which is a superset of ASCII.}.
 \end{example}
 
 \begin{example}
 Let $\Sigma=\set{\str{a}, \str{b}, \str{c}}$.
-This is the language of length-two strings over that alphabet is
-$\Sigma^2=\set{\str{aa},\str{ab},\dots,\str{cc}}$.
-This is the language of sorted length-three strings over that alphabet.
-\begin{equation*}
-  \set{\str{aaa}, \str{aab}, \str{aac}, \str{abb}, \str{abc},
-    \str{acc},\str{bbb},\str{bbc}, \str{bcc}, \str{ccc}}
-\end{equation*}
+Recall that the Pythagorean triples $\sequence{i,j,k}\in\N^3$ 
+are those where $i^2+j^2=k^2$.
+A few such triples are $\sequence{3,4,5}$, $\sequence{5,12,13}$,
+and $\sequence{8,15,17}$.
+One way to describe Pythaorean triples that we will later find convenient
+is with this language.
+\begin{align*}
+  \lang{L}
+   &= \set{\str{a}^i\str{b}^j\str{c}^k\in\kleenestar{\Sigma} 
+            \suchthat \text{$i,j,k\in\N$ and $i^2+j^2=k^2$}}  \\
+   &=\set{\str{aaabbbbccccc}=\str{a}^3\str{b}^4\str{c}^5,\,
+            \str{a}^5\str{b}^{12}\str{c}^{13},\,
+            \str{a}^8\str{b}^{15}\str{c}^{17},\,\ldots}
+\end{align*}
 \end{example}
 
 An explanation of the term `language' is that we could take 
-the English language to consist of sentences, where
-each sentence is a string of elements of $\Sigma$,
-a dictionary.
+the English language to be strings made by concatenating words 
+from a dictionary for English.
+Here the dictionary is~$\Sigma$, 
+and the set of strings over it is
+$\lang\subseteq\kleenestar{\Sigma}$.
+This highlights that the definition of language takes 
+it to be any set of strings at all.
+But most of the languages that we 
+use are determined by some rule set.
+We will study such sets, grammars, later in this chapter.
 
-\begin{example}
-One language over the alphabet $\B=\set{\str{0},\str{1}}$
-is the finite set
-$\lang{L}=\set{\str{1000001},\str{1100001}}$.
-This language at least at first glance may seem without rule or sense,
-just containing a couple of
-\citetext{bit strings that were plucked out of the air}{%
-The language is not 
-without sense though, since \str{1000001} represents capital A in the 
-ASCII encoding, while \str{1100001} is lower case a.
-The American Standard Code for Information Interchange, ASCII,
-is a widely used character encoding scheme.  
-The most common modern character encoding is UTF-8, 
-which is a superset of ASCII.}.
-This underlines that the definition takes 
-a language to be any set of strings at all.
-However, most of the languages that we 
-will see are determined from some reason or rule set.
-We will study such rule sets, grammars, later in this chapter.
-\end{example}
+Having defined languages, we naturally next consider 
+their operations.
+Because they are sets, the operations of union, intersection, etc., work
+for languages.
+However, for instance the union of a 
+language over~$\kleenestar{\set{\str{a}}}$ with
+a language over~$\kleenestar{\set{\str{b}}}$ 
+will be an awkward marriage, a combination of strings of \str{a}'s and 
+strings of \str{b}'s.
+That is, the union of a language over $\Sigma_0$ with 
+a language over $\Sigma_1$ is a language over $\Sigma_0\cup\Sigma_1$.
+Of course, if the two alphabets are the same then this accounting
+tedium vanishes.
+A similar thing happens for intersection; see 
+\cref{exer:LanguageUnionIntersection}.
 
-\begin{example}
-The set of bit strings that begin with \str{1} is 
-$\set{\str{1},\str{10},\str{11},\str{100},\ldots}$.   
-\end{example}
-
-\begin{example}
-Let $\Sigma=\set{\str{a}, \str{b}, \str{c}}$.
-One way to describe Pythaorean triples is with the language
-$\lang{L}=\set{\str{a}^i\str{b}^j\str{c}^k 
-   \suchthat \text{$i,j,k\in\N$ and $i^2+j^2=k^2$}}$.  
-\end{example}
+Other operations on languages are extensions of operations on strings.
+We define the concatenation of languages 
+to be the language of concatenations, etc.
 
 \begin{definition}[Operations on languages]
-As sets, languages are subject to the operations of union, intersection, etc.
+The \definend{concatenation $\lang{L}_0\concat\lang{L}_1$} of languages is
+the set of concatenations
+$\set{\sigma_0\concat\sigma_1\suchthat \text{$\sigma_0\in\lang{L}_0$ and $\sigma_1\in\lang{L}_1$}}$.
+Sometime in place of $\lang{L}_0\concat\lang{L}_1$ 
+we write $\lang{L}_0\lang{L}_1$.
 
-The \definend{reversal} of a language~$\lang{L}$ is the language 
-$\reversal{\lang{L}}=\set{\reversal{\sigma}\suchthat \sigma\in\lang{L}}$.
-
-The \definend{concatenation} of languages is
-$\lang{L}_0\concat\lang{L}_1=\set{\sigma_0\concat\sigma_1\suchthat \text{$\sigma_0\in\lang{L}_0$ and $\sigma_1\in\lang{L}_1$}}$.
-We often write $\lang{L}_0\concat\lang{L}_1$ as $\lang{L}_0\lang{L}_1$.
-
-The \definend{$k$-th power} of a language is the concatenation of $k$-many
-copies of the language
-$\lang{L}^k=\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \sigma_i\in\lang{L}}$.
-The \definend{Kleene star} of a language $\kleenestar{\lang{L}}$ is the 
-concatenation of any number of strings of the language.
+The \definend{$k$-th power of a language $\lang{L}^k$} 
+is the language consisting of the
+concatenation of $k$-many strings
+$\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \sigma_i\in\lang{L}}$.
+The \definend{Kleene star of a language $\kleenestar{\lang{L}}$} is the 
+language consisting of the concatenation of any number of strings.
 \begin{equation*}
 \kleenestar{\lang{L}}=\set{\sigma_0\concat\cdots\concat\sigma_{i-1}\suchthat \text{$i\in\N$ and $\sigma_0,\ldots,\sigma_{i-1}\in\lang{L}$}}
 \end{equation*}
-This includes zero-many strings, so $\emptystring\in\kleenestar{\lang{L}}$. 
+This includes the concatenation of $i=0$-many strings, 
+so that $\emptystring\in\kleenestar{\lang{L}}$. 
+
+The \definend{reversal $\reversal{\lang{L}}$} of a language~$\lang{L}$ is 
+the language 
+$\set{\reversal{\sigma}\suchthat \sigma\in\lang{L}}$.
 \end{definition}
 
+\begin{example}
+Where the language 
+is the set of bit strings $\lang{L}=\set{\str{1000001},\str{1100001}}$ 
+then the reversal is $\reversal{\lang{L}}=\set{\str{1000001},\str{10000011}}$.
+\end{example}
+
+\begin{example}
+If the language $\lang{L}$ consists of two strings $\set{\str{a},\,\str{bc}}$
+then $\lang{L}^2=\set{\str{aa},\,\str{abc},\,\str{bca},\,\str{bcbc}}$.
+The Kleene star is this.
+\begin{equation*}
+  \kleenestar{\lang{L}}=\set{\emptystring,\,\str{a},\,\str{bc},\,\str{aa},\,\str{abc},\,\str{bca},\,\str{bcbc},\,\str{aaa},\,\ldots}  
+\end{equation*}
+\end{example}
+
+Earlier in this subsection we defined 
+that the Kleene star of an alphabet~$\Sigma$ is the set of strings
+over that alphabet, of any length.
+If we consider each character in the alphabet as a length-one string
+then we get that this is the Kleene star of the the language. 
+
+One final note, about Kleene star.
+This operation is to repeat choosing strings from the language.
+We have two ways to go:
+we could choose a string~$\sigma$ from the language and then replicate,
+getting the set of $\sigma^k$''s.
+Or we could repeat choosing strings from the language, getting
+$\sigma_0\concat\sigma_i\concat\cdots\concat\sigma_{i-1}$'s.
+This second case is more useful and so that's what the definition of
+$\kleenestar{\lang{L}}$ calls for.
 
 
 \begin{exercises}
 \begin{exercise}
-Let $\sigma=\str{10110}$ and $\tau=\str{110111}$.
+Let $\sigma=\str{10110}$ and $\tau=\str{110111}$ be bit strings.
 Find each.
 \begin{exparts*}
 \item $\sigma\concat \tau$
@@ -344,6 +396,56 @@ Find each.
 \item $\sigma^3=\str{10110}\concat\str{10110}\concat\str{10110}
                =\str{101101011010110}$
 \item $\str{0}^3\concat\sigma=\str{000}\concat\str{10110}=\str{00010110}$ 
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Let the alphabet be $\Sigma=\set{\str{a},\,\str{b},\,\str{c}}$.
+Suppose that $\sigma=\str{ab}$ and $\tau=\str{bca}$.
+Find each.
+\begin{exparts*}
+\item $\sigma\concat\tau$
+\item $\sigma^2\concat\tau^2$
+\item $\reversal{\sigma}\concat\reversal{\tau}$  
+\item $\sigma^3$
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item \str{abbca}    
+\item \str{ababbcabca}
+\item \str{baacb}
+\item \str{ababab}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Consider the language
+$\lang{L}=\set{\sigma\in\kleenestar{\B}\suchthat 
+   \text{$\lh{\sigma}=4$ and $\sigma$ starts with \str{0}}}$.
+How many elements are in that language?
+\begin{answer}
+There are $2^4=16$ bit strings of length~$4$ and half of them
+start with \str{0}, so the answer is $8$.   
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Suppose that $\Sigma=\set{\str{a},\,\str{b}}$
+and that $\sigma=\str{abcbccbba}$.
+\begin{exparts*}
+\item Is \str{abcb} a prefix of $\sigma$?
+\item Is \str{ba} a suffix?
+\item Is \str{bcb} a substring?
+\item Is \emptystring{} a suffix?
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item Yes.
+\item Yes.
+\item No.
+\item Yes.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -389,7 +491,15 @@ The relation is that $\lh{\sigma\concat\tau}=
 \end{exercise}
 
 \begin{exercise}
-The operation of concatenation follows a simple algebra.
+Where $\lang{L}$ is a language, what is $\lang{L}^0$?
+\begin{answer}
+It is the empty set.
+\end{answer}
+\end{exercise}
+
+
+\begin{exercise}
+The operation of string concatenation follows a simple algebra.
 For each of these, decide if it is true.
 If so, prove it. 
 If not, give a counterexample.
@@ -415,8 +525,19 @@ Prove this.
 \end{exercise}
 
 
+\begin{exercise} \label{exer:LanguageUnionIntersection}
+We've observed that the union of a language over~$\Sigma_0$ with a
+language over~$\Sigma_1$ is a language over~$\Sigma_0\cup\Sigma_1$.
+\begin{exparts}
+\item Prove this.
+\item Formulate and prove the equivalent statement for intersection.    
+\end{exparts}
+\end{exercise}
+
+
+
 \begin{exercise}
-Prove that this constructive definition of replication is equivalent
+Prove that this constructive definition of string replication is equivalent
 to the one from \cref{def:StringOps}.
 \begin{equation*}
   \sigma^n =
@@ -604,6 +725,8 @@ Church's Thesis gets us out of this thicket.
 Compare ``find shortest path'' to ``decide whether this path is in 
 the set of shortest paths.'' 
 
+Accepting.
+
 
 
 
@@ -772,14 +895,14 @@ allowed by the grammar's rules.
 \end{definition}
 
 \begin{example}
-This is a grammar for natural numbers.
-Note that the rule for \syntax{<natural>} is recursive.
+This is a grammar for strings that denote natural numbers.
 \begin{grammar}
   <natural> ::= <digit>  
         \alt <digit><natural>   
   
   <digit> ::= "0" | \ldots{} | "9"
 \end{grammar}
+Note that the rule for \syntax{<natural>} is recursive.
 That rule is recursive but it doesn't mean that we get stuck 
 in infinite regress.
 The question is not whether you could perversely 

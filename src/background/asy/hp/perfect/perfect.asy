@@ -632,3 +632,45 @@ draw(pic,
 
 shipout(format("perfect%02d",picnum),pic,format="pdf");
 
+
+
+// ---- operating systems
+picture pic;
+picnum = picnum+1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $e,x$");
+node sim=nbox(minipage("\centering Simulate $\TM_e$ on input~$x$",1.85cm));
+node print=nbox("Print result");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(1.15u,read,sim);
+vlayout(1.15u,sim,print);
+vlayout(0.85u,print,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     sim,
+     print,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--sim),
+     (sim--print),
+     (print--ending)
+);
+
+shipout(format("perfect%02d",picnum),pic,format="pdf");
+

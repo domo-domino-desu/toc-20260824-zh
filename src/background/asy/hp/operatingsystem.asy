@@ -28,7 +28,7 @@ size(0,0);  // units are big points: 72 is 1inch
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $e,x$");
-node simulate=nbox(minipage("Simulate $\TM_e$ on input~$x$",1.85cm));
+node simulate=nbox(minipage("\centering Simulate $\TM_e$ on input~$x$",1.85cm));
 node printout=nbox("Print result");
 node ending=nroundbox("End");
 

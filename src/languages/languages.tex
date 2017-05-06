@@ -49,7 +49,10 @@ An \definend{alphabet} is a set of symbols.
 \footnotetext{We can imagine Turing's clerk 
 doing a calculation without symbols, keeping track of information by 
 \protect\citetext{requiring elephants to move 
-to the left side of a road or to the right}{Or, using an abacus.}.
+to the left side of a road or to the right}{Less fancifully, we could be making
+a Turing machine out of Legos and want to keep track by sliding a block
+from one side of a column to the other.
+Or, we could be using an abacus.}.
 But 
 \protect\citetext{we could translate any such procedure}{While a 
 person may quite sensibly worry that elephants could be not just on
@@ -171,11 +174,11 @@ $\str{11}$, $\str{011}$, $\str{00}$, and $\emptystring$.
 
 \begin{definition}
 Let~$\Sigma$ be an alphabet.
-We denote the set of length~$k$ strings over that alphabet, where $k\in\N$,
-by~\definend{$\Sigma^k$}.  
-We denote
-the set of all strings over $\Sigma$, of any length, as 
-\definend{$\kleenestar{\Sigma}$}.
+Then where $k\in\N$, \definend{$\Sigma^k$}
+is the set of length~$k$ strings over that alphabet.  
+The \definend{Kleene star $\kleenestar{\Sigma}$}
+is the set of all strings over $\Sigma$, of any length,
+so $\kleenestar{\Sigma}=\cup_{k\in\N}\Sigma^k$.
 \end{definition}
 
 \begin{definition}[Operations on strings] \label{def:StringOps}
@@ -187,14 +190,15 @@ so that $\lh{\sequence{s_0,\ldots,s_{n-1}}}=n$
 and the length of the empty string is $\lh{\emptystring}=0$.
 
 The 
-\definend{concatenation $\sigma\concat\tau$} of two strings (often denoted 
+\definend{concatenation $\sigma\concat\tau$} of two strings (sometimes
+instead denoted 
 by abutting the two $\sigma\tau$) 
-appends the second to the first
+appends the second sequence to the first
 $\sigma\concat\tau=\sequence{s_0\ldots,s_{i-1},t_0,\ldots,t_{j-1}}$.
 
 \label{def:substring}
-If multiple strings are involved
-$\sigma=\tau_0\concat \cdots \concat\tau_{k-1}$ then we may instead say
+If 
+$\sigma=\tau_0\concat \cdots \concat\tau_{k-1}$ then we may say
 that $\sigma$ \definend{decomposes} into the others.
 Each $\tau_i$ is a \definend{substring} of $\sigma$.
 The first, $\tau_0$, is a \definend{prefix} of~$\sigma$,
@@ -241,9 +245,9 @@ $\lang{L}=\set{\emptystring,\str{aab},\str{aba},\str{baa},
 \begin{example}
 Let $\Sigma=\set{\str{a},\, \str{b},\, \str{c}}$.
 The language of length-two strings over that alphabet is
-$\lang=\Sigma^2=\set{\str{aa},\,\str{ab},\,\dots,\,\str{cc}}$.
+$\lang{L}=\Sigma^2=\set{\str{aa},\,\str{ab},\,\dots,\,\str{cc}}$.
 Over the same alphabet 
-this is the language of length-three strings that are sorted.
+this is the language of length-three strings that are sorted in ascending order.
 \begin{equation*}
   \set{\str{aaa},\, \str{aab},\, \str{aac},\, \str{abb},\, \str{abc},
     \str{acc},\,\str{bbb},\,\str{bbc},\, \str{bcc},\, \str{ccc}}
@@ -272,7 +276,7 @@ which is a superset of ASCII.}.
 
 \begin{example}
 Let $\Sigma=\set{\str{a}, \str{b}, \str{c}}$.
-Recall that the Pythagorean triples $\sequence{i,j,k}\in\N^3$ 
+Recall that Pythagorean triples $\sequence{i,j,k}\in\N^3$ 
 are those where $i^2+j^2=k^2$.
 A few such triples are $\sequence{3,4,5}$, $\sequence{5,12,13}$,
 and $\sequence{8,15,17}$.
@@ -293,12 +297,12 @@ the English language to be strings made by concatenating words
 from a dictionary for English.
 Here the dictionary is~$\Sigma$, 
 and the set of strings over it is
-$\lang\subseteq\kleenestar{\Sigma}$.
-This highlights that the definition of language takes 
-it to be any set of strings at all.
+$\lang{L}\subseteq\kleenestar{\Sigma}$.
+This highlights that according to the definition, a language can be 
+any set of strings at all.
 But most of the languages that we 
-use are determined by some rule set.
-We will study such sets, grammars, later in this chapter.
+use are determined by some rules.
+We will study such rule sets, grammars, later in this chapter.
 
 Having defined languages, we naturally next consider 
 their operations.
@@ -421,7 +425,7 @@ Find each.
 \end{exercise}
 
 \begin{exercise}
-Consider the language
+Let
 $\lang{L}=\set{\sigma\in\kleenestar{\B}\suchthat 
    \text{$\lh{\sigma}=4$ and $\sigma$ starts with \str{0}}}$.
 How many elements are in that language?
@@ -514,10 +518,11 @@ If not, give a counterexample.
 \end{exercise}
 
 \begin{exercise}
-\Cref{def:substring} starts with 
-`$\sigma=\tau_0\concat \cdots \concat\tau_{n-1}$'.
-We wrote that without parentheses on the right side 
-so we are taking for granted that 
+In defining decomposes, 
+\cref{def:substring} has 
+`$\sigma=\tau_0\concat \cdots \concat\tau_{n-1}$',
+without parentheses on the right side.
+This takes for granted that 
 the concatenation operation is associative, 
 that no matter how we parenthesize it we get the same string.
 Prove this.
@@ -732,16 +737,20 @@ Accepting.
 
 \section{Grammars}
 Our formal definition of a language is that it is a set of strings.
+This allows for any willy-nilly set.
+
 But often in practice a language is given by rules,
 by a grammar.
+A grammar is an analysis of the structure of a language.
 
+Here is an example.
 To a native English speaker the noun phrase ``the big red barn'' sounds fine
-but \citetext{``the red big barn'' sounds wrong, somehow.}{Experts 
+but \citetext{``the red big barn'' sounds wrong.}{Experts 
 vary on the exact rules but one source gives 
 (article) + number + judgement/attitude + size, length, height + age + 
 color + origin + material + purpose + (noun), so that
 ``big red barn'' is size + color + noun.
-This is called the Royal Order of Adjectives; 
+This is the Royal Order of Adjectives; 
 see \protect\url{http://english.stackexchange.com/a/1159}.}
 That is, sentences in natural languages are constructed 
 by following a set of rules, a grammar.
@@ -1158,6 +1167,39 @@ From this grammar derive `\str{the car hit a wall}'.
 Also derive `\str{the car hit the wall}' and
 `\str{the wall hit a car}'.
 \end{exercise}
+
+% \begin{exercise}http://matt.might.net/articles/grammars-bnf-ebnf/
+% \begin{grammar}
+% date-time       \produces{}   [ day-of-week "," ] date time [CFWS]
+
+%    day-of-week     \produces{}   ([FWS] day-name) / obs-day-of-week
+
+%    day-name        \produces{}   "Mon" / "Tue" / "Wed" / "Thu" /
+%                        "Fri" / "Sat" / "Sun"
+
+%    date            \produces{}   day month year
+
+%    day             \produces{}   ([FWS] 1*2DIGIT FWS) / obs-day
+
+%    month           \produces{}   "Jan" / "Feb" / "Mar" / "Apr" /
+%                        "May" / "Jun" / "Jul" / "Aug" /
+%                        "Sep" / "Oct" / "Nov" / "Dec"
+
+%    year            \produces{}   (FWS 4*DIGIT FWS) / obs-year
+
+%    time            \produces{}   time-of-day zone
+
+%    time-of-day     \produces{}   hour ":" minute [ ":" second ]
+
+%    hour            \produces{}   2DIGIT / obs-hour
+
+%    minute          \produces{}   2DIGIT / obs-minute
+
+%    second          \produces{}   2DIGIT / obs-second
+
+%    zone            \produces{}   (FWS ( "+" / "-" ) 4DIGIT) / obs-zone
+% \end{grammar}
+% \end{exercise}
 
 \begin{exercise}
 % https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form

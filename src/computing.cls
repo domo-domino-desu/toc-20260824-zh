@@ -1352,6 +1352,7 @@ of the two.}
     \itemindent\z@%
     \listparindent\z@%
     \parsep\grammarparsep%
+    \small
   }%
   \let\\\@normalcr
   \syntaxShortcuts\relax\relax%
@@ -1380,7 +1381,7 @@ of the two.}
   \everypar{}%
   \endlist%
 }
-\setlength{\grammarparsep}{0pt plus 0.25pt} % vert space between prods
+\setlength{\grammarparsep}{0pt plus 0.15ex} % vert space between prods
 \setlength{\grammarindent}{5em} %
 \renewcommand{\grammarlabel}[2]{%
   \hspace*{1.25em}\synt{#1} \hfill#2%

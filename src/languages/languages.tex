@@ -820,6 +820,12 @@ we can derive the string $\str{a}^2\str{b}^2$.
   \derives\syntax{"aa"\emptystring"bb"}
   \derives\syntax{"aabb"}  
 \end{displayedsteps}
+Observe that the rule for \syntax{S} is recursive.
+That doesn't mean that we get stuck 
+in infinite regress.
+The question is not whether you could perversely 
+keep expanding \syntax{<natural>} forever,
+the question is whether a string has a terminating derivation. 
 \end{example}
 
 Here is the complete description of the allowed production rules and the
@@ -898,6 +904,86 @@ computer languages widely used today such as C, Java, and Scheme.
 Because of this combination of convenience and power, it is widely used.
 \end{remark}
 
+\begin{remark}
+A common problem with the grammars relates to 
+the following bit of C-like pseudocode that shows nested if statements. 
+\begin{lstlisting}
+  if ... then ... if ... then ... else ...
+\end{lstlisting}
+This is a ``dangling else.''
+As written, we cannot tell whether the \lstinline!else! is associated
+with the first \lstinline!if! or the second.
+\begin{center}
+  \begin{minipage}{0.4\linewidth}
+    \begin{lstlisting}
+      if ... 
+      then ...
+          if ...
+          then ... 
+      else ...
+    \end{lstlisting}
+  \end{minipage}
+  \quad
+  \begin{minipage}{0.4\linewidth}
+    \begin{lstlisting}
+      if ... 
+      then ...
+          if ...
+          then ... 
+          else ...
+    \end{lstlisting}
+  \end{minipage}
+\end{center}
+An \definend{ambiguous grammar}
+is one where some strings in the language 
+have two different leftmost derivations. 
+
+This grammar for expressions of elementary algebra
+\begin{grammar}
+<expr> \produces{} <expr> "+" <expr>
+        \alt  <expr> "*" <expr>
+        \alt  ( <expr> ) |  "a"  |  "b"  | \ldots{} | "z"
+\end{grammar}
+is ambiguous. 
+The expression \str{a+b*c} has this 
+leftmost derivation
+\begin{center}
+\hspace{1em}\begin{tabular}{l}
+  \syntax{<expr>}\derives\syntax{<expr>"+"<expr>}
+  \derives\syntax{"a" "+" <expr>}                 \\ \quad
+  \derives\syntax{"a" "+" <expr> "*" <expr>}          
+  \derives\syntax{"a" "+" "b" "*" <expr>}          
+  \derives\syntax{"a" "+" "b" "*" "c"}          
+\end{tabular}
+\end{center}
+and this one also.
+\begin{center}
+\hspace{1em}\begin{tabular}{l}
+  \syntax{<expr>}\derives\syntax{<expr> "*" <expr>}
+  \derives\syntax{<expr> "+" <expr> "*" <expr>}    \\ \quad 
+  \derives\syntax{"a" "+" <expr> "*" <expr>}  
+  \derives\syntax{"a" "+" "b" "*" <expr>}  
+  \derives\syntax{"a" "+" "b" "*" "c"}          
+\end{tabular}
+\end{center}
+The two give different parse trees.
+\begin{center}
+  \includegraphics{languages/asy/parsetree/parsetree002.pdf}
+  \hspace{2.5em}
+  \includegraphics{languages/asy/parsetree/parsetree003.pdf}
+\end{center}
+Here is an unambiguous grammar.
+With it we can derive \str{a+(b*c)} but not
+\str{a+b*c}.
+\begin{grammar}
+<expr> \produces{} <expr> "+" <term>  |  <term> | 
+
+<term> \produces{} <term> "*" <factor>  |  <factor>  
+
+<factor> \produces{} ( <expr> ) |  "a"  | "b" | \ldots{} | "z"
+\end{grammar}
+\end{remark}
+
 \begin{definition}
 The \definend{language derived from a grammar} 
 is the set of strings of terminals having derivations
@@ -905,20 +991,241 @@ beginning with the start symbol.
 \end{definition}
 
 \begin{example}
-This grammar % \syntax{S \produces{} "a"S"b" | \emptystring}
+Any finite language is derived from a grammar.
+This one gives the language of all length~$2$ bit strings.
+\begin{clip}
+  \syntax{S \produces{} "00" | "01" | "10" | "11"}
+\end{clip}
+This slightly more sophisticated approach gives the length~$3$ bit strings.
+\begin{clip}
+  \syntax{A \produces{} "0"B | "1"B}
+
+  \syntax{B \produces{} "0"C | "1"C}
+
+  \syntax{C \produces{} "0" | "1"}
+\end{clip}
+\end{example}
+
+\begin{example}
+This grammar
 \begin{clip}
   \syntax{S \produces{} "a"S"b" | \emptystring}
 \end{clip}
-describes the language 
-$\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
+describes the set
 of strings of \str{a}'s followed by \str{b}'s, with the 
-same number of each.
-For instance, this derives two \str{a}'s followed by two \str{b}'s:
+same number of each letter $\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$.
+Here is the derivation of \str{aabb}:
 \syntax{S}\derives \syntax{"a"S"b"}\derives\syntax{"aa"S"bb"}
-\derives\syntax{"aa"\,\emptystring\,"bb"}, which is the string
-\str{aabb}. 
+\derives\syntax{"aa"\,\emptystring\,"bb"}. 
 \end{example}
 
+
+
+\begin{exercises}
+\begin{exercise}
+From this grammar 
+\begin{grammar}
+<sentence> \produces{} <subject> <predicate>
+
+<subject> \produces{} <article> <noun>
+
+<predicate> \produces{} <verb> <direct object>
+
+<direct object> \produces{} <article> <noun>
+
+<article> \produces{} "the" | "a"
+
+<noun> \produces{} "car" | "wall"
+
+<verb> \produces{} "hit"
+\end{grammar}%
+derive each of these:
+\begin{exparts*}
+\item \str{the car hit a wall}
+\item \str{the car hit the wall}
+\item \str{the wall hit a car}.
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise} % http://www.cs.utsa.edu/~wagner/CS3723/grammar/examples.html
+In the language generated by this grammar.  
+\begin{grammar}
+<sentence> \produces{} <subject> <predicate>
+
+<subject> \produces{} <article> <noun>
+
+<predicate> \produces{} <verb> <direct-object>
+
+<direct-object> \produces{} <article> <noun>
+
+<article> \produces{} "the" | "a"
+
+<noun> \produces{} "man" | "dog"
+
+<verb> \produces{} "bites" | "pets"  
+\end{grammar}
+\begin{exparts}
+\item Give a derivation for \syntax{"the man bites a dog"}.  
+\item Show that this has no derivation: \syntax{"man bites dog"}.  
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item xxx
+\item xxx   
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+
+\begin{exercise}
+Create a grammar for $\lang{L}=\set{\str{a}^{2n}\suchthat n\in\N}$.  
+\end{exercise}
+
+\begin{exercise}
+What is the language generated by this grammar?
+\begin{clip}
+  \syntax{A \produces{} aA | B}
+
+  \syntax{B \produces{} bB | cA}  
+\end{clip}
+\begin{answer}
+This grammar has no terminating derivations.
+So $\lang{L}=\emptyset$.
+\end{answer}
+\end{exercise}
+
+% \begin{exercise}https://tools.ietf.org/html/rfc7159
+% Grammar for JSON  
+% \end{exercise}
+
+\begin{exercise}  \label{exer:GrammarsForSmallLangs}
+Create a grammar for each of these languages.
+\begin{exparts}
+\item the language of all character strings 
+$\lang{L}=\kleenestar{\set{\str{a},\ldots,\str{z}}}$   
+\item 
+the language of strings of at least one digit  
+$\set{{\sigma\in\kleenestar{\set{\str{0},\ldots,\str{9}}}
+   \suchthat \lh{\sigma}\geq 1}}$.
+\end{exparts}
+\end{exercise}
+
+
+\begin{exercise}
+% https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form
+This is a grammar for \citetext{postal addresses.}{Adapted from \protect\url{https://en.wikipedia.org/wiki/BackusNaur_Form}.}
+Note the use of the empty string~$\emptystring$ to make
+\syntax{<opt suffix>} optional.
+\begin{grammar}
+<postal address> \produces{} <name> <street address> <town>
+
+      <name> \produces{} <personal part> <last name> <opt suffix> <EOL> 
+                    \alt <personal part> <name part>
+
+  <personal part> \produces{} <initial> "." | <first name>
+
+ <street address> \produces{} <house num> <street name> <apt num> <EOL>
+
+       <town> \produces{} <town name> "," <state or region> <EOL>
+
+<opt suffix> \produces{} "Sr." | "Jr." | <roman numeral> | \emptystring 
+
+    <apt num> \produces{} <natural> | \emptystring
+
+    <initial> \produces{} <char>
+
+    <house num> \produces{} <char string>
+
+    <street name> \produces{} <char string>
+
+    <char> \produces{} "A" | "B" | ... | "z" | "0" | ... | "9" | <white space>
+
+    <char string> \produces{} \emptystring | <char> | <char> <char string>
+
+    <white space> \produces{} "\ "
+\end{grammar}
+The nonterminal \syntax{<EOL>}  expands to whatever marks an end of line.
+\begin{exparts}
+  \item Give a derivation for for this address.
+    \begin{clip}
+      \begin{tabular}{l}
+        Sherlock Holmes   \\
+        221B Baker Street \\
+        London, UK
+      \end{tabular}
+    \end{clip}
+  \item Show that there is no derivation for this address.
+    \begin{clip}
+      \begin{tabular}{l}
+        President                \\
+        1600 Pensylvania Avenue  \\
+        Washington, DC
+      \end{tabular}
+    \end{clip}
+    Suggest a modification of the grammar to include this address.
+  \item Give three reasons why this grammar is inadequate for general use.
+  (Probably no reasonable-sized grammar would suffice that is less general than 
+  one that just 
+  accepts any character string; the other obvious possibilility is the 
+  grammar that lists as spearate rules every addresses in the world.)
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Here is a grammar for LISP.
+\begin{grammar}
+  <s expression> \produces{} <atomic symbol> 
+       \alt "(" <s expression> "." <s expression> ")"  
+      \alt <list>
+ 
+  <list> \produces{} "(" <s expression> \{ <s expression> \} ")"
+
+  <atomic symbol> \produces{} <letter> <atom part> 
+
+  <atom part> \produces{} <empty>
+              \alt <letter> <atom part>
+              \alt <number> <atom part>  
+
+  <letter> \produces{} "a" | \ldots{} | "z"  
+
+  <number> \produces{} "0" | \ldots{} | "9"  
+
+  <empty> \produces{} "\ "
+\end{grammar}
+The symbol \syntax{"\ "} means a space character.
+\end{exercise}
+
+\begin{exercise} % http://www.cs.utsa.edu/~wagner/CS3723/grammar/examples.html
+Both of these are grammars for bit strings $\kleenestar{\B}$.
+\begin{exparts}
+\item Show that this is ambiguous.
+\begin{grammar}
+<bit-string> \produces{} "0" | "1" | <bit-string> <bit-string>    
+\end{grammar}
+\item Show that this is unambiguous.
+\begin{grammar}
+<bit-string> \produces{} <bit-string> "0" | <bit-string> "1" | "0" | "1"    
+\end{grammar}
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}  % https://en.wikipedia.org/wiki/Formal_grammar
+Using the grammar of \cref{ex:anbncnGrammar} derive the 
+string \syntax{aaabbbccc}.
+\begin{answer}
+  \syntax{S} 
+  \derives\syntax{"a"BS"c"}
+  \derives\syntax{"a"B"a"BS"cc"}
+  \derives\syntax{"a"B"aB"abccc"}
+  \derives\syntax{"aa"BB"abccc"}
+  \derives\syntax{"aa"B"a"B"bccc"}
+  \derives\syntax{"aaa"BB"bccc"}
+  \derives\syntax{"aaa"B"bbccc"}
+  \derives\syntax{"aaabbbccc"} 
+\end{answer}
+\end{exercise}
+  
+\end{exercises}
 
 
 
@@ -958,13 +1265,9 @@ Here is the parse tree.
 \begin{center}
   \includegraphics{languages/asy/parsetree/parsetree001.pdf}
 \end{center}
-The rule for \syntax{<natural>} is recursive.
-That doesn't mean that we get stuck 
-in infinite regress.
-The question is not whether you could perversely 
-keep expanding \syntax{<natural>} forever,
-the question is whether a string has a terminating derivation. 
 \end{example}
+
+EBNF
 
 \begin{example}
 This is a grammar for real numbers, positive or negative, 
@@ -1025,250 +1328,301 @@ leftmost nor rightmost, just willy-nilly.
 % \end{center}
 \end{example}
 
-A common problem with the grammars relates to 
-the following bit of C-like pseudocode that shows nested if statements. 
-\begin{lstlisting}
-  if ... then ... if ... then ... else ...
-\end{lstlisting}
-This is a ``dangling else.''
-As written, we cannot tell whether the \lstinline!else! is associated
-with the first \lstinline!if! or the second.
-\begin{center}
-  \begin{minipage}{0.4\linewidth}
-    \begin{lstlisting}
-      if ... 
-      then ...
-          if ...
-          then ... 
-      else ...
-    \end{lstlisting}
-  \end{minipage}
-  \quad
-  \begin{minipage}{0.4\linewidth}
-    \begin{lstlisting}
-      if ... 
-      then ...
-          if ...
-          then ... 
-          else ...
-    \end{lstlisting}
-  \end{minipage}
-\end{center}
-An \definend{ambiguous grammar}
-is one where some strings in the language 
-have two different leftmost derivations. 
 
 \begin{example}
-This grammar for expressions of elementary algebra
-\begin{grammar}
-<expr> \produces{} <expr> "+" <expr>
-        \alt  <expr> "*" <expr>
-        \alt  ( <expr> ) |  "a"  |  "b"  | \ldots{} | "z"
-\end{grammar}
-is ambiguous. 
-The expression \syntax{a+b*c} has this 
-leftmost derivation
-\begin{center}
-\hspace{1em}\begin{tabular}{l}
-  \syntax{<expr>}\derives\syntax{<expr>"+"<expr>}
-  \derives\syntax{"a" "+" <expr>}                 \\ \quad
-  \derives\syntax{"a" "+" <expr> "*" <expr>}          
-  \derives\syntax{"a" "+" "b" "*" <expr>}          
-  \derives\syntax{"a" "+" "b" "*" "c"}          
-\end{tabular}
-\end{center}
-and this one also.
-\begin{center}
-\hspace{1em}\begin{tabular}{l}
-  \syntax{<expr>}\derives\syntax{<expr> "*" <expr>}
-  \derives\syntax{<expr> "+" <expr> "*" <expr>}    \\ \quad 
-  \derives\syntax{"a" "+" <expr> "*" <expr>}  
-  \derives\syntax{"a" "+" "b" "*" <expr>}  
-  \derives\syntax{"a" "+" "b" "*" "c"}          
-\end{tabular}
-\end{center}
-The two give different parse trees.
-\begin{center}
-  \includegraphics{languages/asy/parsetree/parsetree002.pdf}
-  \hspace{2.5em}
-  \includegraphics{languages/asy/parsetree/parsetree003.pdf}
-\end{center}
-Here is an unambiguous grammar.
-With it we can derive \syntax{a+(b*c)} but not
-\syntax{a+b*c}.
-\begin{grammar}
-<expr> \produces{} <expr> "+" <term>  |  <term> | 
+Here is a more life-sized example.
+Representing \citetext{time is a complicated engineering problem}{%
+One example of a complication, among many, is leap seconds.
+The Earth is constantly undergoing a deceleration caused by the 
+braking action of the tides. 
+The average deceleration of the Earth is roughly $1.4$ milliseconds per day 
+per century, although the exact number varies from year to year. 
+To ensure that 
+atomic clocks and the Earth's rotational time do not differ  
+by more than $0.9$ seconds,
+occasionally an extra second is added to civil time. 
+This leap second can be either positive or negative depending on the Earth's 
+rotation\Dash on occasion there are minutes with only $58$ seconds, and on
+occasion minutes with~$60$.
+Adding to the confusion is that the changes in rotation are uneven and
+leap seconds cannot be predicted far into the future.  
+The International Earth Rotation Service publishes bulletins that
+announce leap seconds with a few weeks warning. 
+Thus, there is no way to determine how many seconds there will be between 
+the current instant and ten years from now.
+Since the first leap second in 1972, all leap seconds have been positive and 
+there were 23 leap seconds in the 34 years to January, 2006.
+\autocite{web:USNO}}.
+One solution, specified in \citetext{RFC~3339}{\autocite{rfc3339}},
+\textit{Date and Time on the Internet: Timestamps}, 
+is to require strings such as
+\citetext{\str{1985-04-12T23:20:50.52Z} 
+and \str{1996-12-19T16:39:57-08:00}}{%
+This format has a number of advantages including human readability,
+that they sort reasonably (earlier times sort earlier),
+simplicity (there is one basic format),
+and that they include the time zone information.}.
+Here is the \citetext{the grammar for timestamps}{%
+Some notes: 
+(1)~Coordinated Universal Time, the basis for civil time, is
+often called UTC, but is sometimes abbreviated Z,
+(2)~years are four digits to prevent the Y2K problem \autocite{y2k},
+(3)~the only month numbers allowed are $01$--$12$ and in each month
+only some day numbers are allowed,
+and (4)~the only time hours allowed are $00$--$23$, minutes must 
+be in the range $00$--$59$, etc. \autocite{rfc3339}}
+(some nonterminals are from \cref{exer:GrammarsForSmallLangs}).
+% % https://www.ietf.org/rfc/rfc3339.txt
+   % date-month      = 2DIGIT  ; 01-12
+   % date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on
+   %                           ; month/year
+   % time-hour       = 2DIGIT  ; 00-23
+   % time-minute     = 2DIGIT  ; 00-59
+   % time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second
+   %                           ; rules
+   % time-secfrac    = "." 1*DIGIT
+   % time-numoffset  = ("+" / "-") time-hour ":" time-minute
+   % time-offset     = "Z" / time-numoffset
 
-<term> \produces{} <term> "*" <factor>  |  <factor>  
+   % partial-time    = time-hour ":" time-minute ":" time-second
+   %                   [time-secfrac]
+   % full-date       = date-fullyear "-" date-month "-" date-mday
+   % full-time       = partial-time time-offset
 
-<factor> \produces{} ( <expr> ) |  "a"  | "b" | \ldots{} | "z"
+   % date-time       = full-date "T" full-time
+\begin{grammar}
+<date-fullyear> ::= <4 digits>
+
+<date-month> ::= <2 digits>
+
+<date-mday> ::= <2 digits> 
+
+<time-hour> ::= <2 digits>
+
+<time-minute> :: <2 digits>  
+
+<time-second> ::= <2 digits> 
+
+<time-secfrac> ::= "." <1 or more digits>
+
+<time-numoffset> ::= ("+" | "-") <time-hour> ":" <time-minute>
+
+<time-offset> ::= "Z" | <time-numoffset>
+
+<partial-time> ::= <time-hour> ":" <time-minute> ":" <time-second> [<time-secfrac>]
+
+<full-date> ::= <date-fullyear> "-" <date-month. "-" <date-mday>
+
+<full-time> ::= <partial-time> <time-offset>
+
+<date-time> ::= <full-date> "T" <full-time>
 \end{grammar}
 \end{example}
 
 
 \begin{exercises}
 \begin{exercise}
-From this grammar derive `\str{the car hit a wall}'.
+A palindrome is a string that reads the same forwards as backwards, so
+$\sigma=\reversal{\sigma}$.
+Some English word plaindromes are 
+`kayak', `noon', and~`racecar'.
+Write a grammar in BNF for the language of palindromes.
+\begin{answer}
+Here we stick to lower-case ASCII letters.
 \begin{grammar}
-<sentence> \produces{} <subject> <predicate>
-
-<subject> \produces{} <article> <noun>
-
-<predicate> \produces{} <verb> <direct object>
-
-<direct object> \produces{} <article> <noun>
-
-<article> \produces{} "the" | "a"
-
-<noun> \produces{} "car" | "wall"
-
-<verb> \produces{} "hit"
+<palindrome> ::= "a" <palindrome> "a" | "b" <palindrome> "b" |
+                  | ...
+                  | "z" <palindrome> "z" | <letter> | \emptystring
+<letter>     ::= "a" | "b" | "c" | ... | "z"    
 \end{grammar}
-Also derive `\str{the car hit the wall}' and
-`\str{the wall hit a car}'.
+You could omit \emptystring{} if you don't think it is a palindrome.
+\end{answer}
 \end{exercise}
 
-% \begin{exercise}http://matt.might.net/articles/grammars-bnf-ebnf/
-% https://www.ietf.org/rfc/rfc3339.txt
-% \begin{grammar}
-% date-time       \produces{}   [ day-of-week "," ] date time [CFWS]
+\begin{exercise}
+US ZIP codes have five digits, and may have a dash and four more digits
+at the end.
+Give a BNF grammar.
+\begin{answer}
+\begin{grammar}
+<zip> ::= <digit><digit><digit><digit><digit>[-<digit><digit><digit><digit>]
 
-%    day-of-week     \produces{}   ([FWS] day-name) / obs-day-of-week
-
-%    day-name        \produces{}   "Mon" / "Tue" / "Wed" / "Thu" /
-%                        "Fri" / "Sat" / "Sun"
-
-%    date            \produces{}   day month year
-
-%    day             \produces{}   ([FWS] 1*2DIGIT FWS) / obs-day
-
-%    month           \produces{}   "Jan" / "Feb" / "Mar" / "Apr" /
-%                        "May" / "Jun" / "Jul" / "Aug" /
-%                        "Sep" / "Oct" / "Nov" / "Dec"
-
-%    year            \produces{}   (FWS 4*DIGIT FWS) / obs-year
-
-%    time            \produces{}   time-of-day zone
-
-%    time-of-day     \produces{}   hour ":" minute [ ":" second ]
-
-%    hour            \produces{}   2DIGIT / obs-hour
-
-%    minute          \produces{}   2DIGIT / obs-minute
-
-%    second          \produces{}   2DIGIT / obs-second
-
-%    zone            \produces{}   (FWS ( "+" / "-" ) 4DIGIT) / obs-zone
-% \end{grammar}
-% \end{exercise}
-
-% \begin{exercise}https://tools.ietf.org/html/rfc7159
-% Grammar for JSON  
-% \end{exercise}
+<digit> ::= "0" | "1" | ... | "9"    
+\end{grammar}
+\end{answer}
+\end{exercise}
 
 \begin{exercise}
-% https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form
-This is a grammar for \citetext{postal addresses.}{Adapted from \protect\url{https://en.wikipedia.org/wiki/BackusNaur_Form}.}
-Note the use of the empty string~$\emptystring$.
+At this college course designations have the form `MA 208' or `PSY 101',
+where the department is two or three capital letters and the course 
+is three digits.
+Give a BNF grammar.
+\begin{answer}
+Here is one way to do it.
 \begin{grammar}
-<postal address> \produces{} <name> <street address> <town>
+<course code> ::= <dept> " " <course-number>
 
-      <name> \produces{} <personal part> <last name> <opt suffix> <EOL> 
-                    \alt <personal part> <name part>
+<dept> ::= <two-letter> | <three-letter> 
 
-  <personal part> \produces{} <initial> "." | <first name>
+<two-letter> ::= <letter><letter>
 
- <street address> \produces{} <house num> <street name> <apt num> <EOL>
+<three-letter> ::= <two-letter><letter>
 
-       <town> \produces{} <town name> "," <state or region> <EOL>
+<course-number> ::= <digit><digit><digit>
 
-<opt suffix> \produces{} "Sr." | "Jr." | <roman numeral> | \emptystring 
-
-    <apt num> \produces{} <natural> | \emptystring
-
-    <initial> \produces{} <character>
-
-    <house num> \produces{} <char string>
+<digit> ::= "0" | "1" | ... | "9"       
 \end{grammar}
-Here, \syntax{<initial>} is a character (that is, a rule not shown
-is \syntax{<initial>\produces <char>} where 
-\syntax{<char>\produces "A" | \ldots{} | "9"}).
-The nonterminal \syntax{<EOL>}  expands to whatever marks an end of line.
-Other unspecified nonterminals such as \syntax{<street name>} and 
-\syntax{<house num>} are character strings.
+You could also, for instance, put the department names in on a case-by-case
+basis, as in \syntax{<dept> ::= "MA" | "PSY" | ...}.
+This has the disadvantage that if the department codes change then this 
+part of the description also changes.
+It has the advantage of being more correct, of not allowing department
+names that are nonsensical.
+\end{answer}
+\end{exercise}
+
+
+
+\begin{exercise}
+In Roman numerals 
+the letters I, V, X, L, C, D, and~M stand for the
+values $1$, $5$, $10$, $50$, $100$, $500$, and $1\,000$.
+We write the letters from left to right in descending order of value,
+so that XVI represents the number that we would ordinarily
+write as $16$, and M{}D{}C{}C{}C{}C{}L{}V{}I{}I{}I represents $1958$. 
+We always write the shortest possible string,
+so we do not write I{}I{}I{}I{}I because
+we can instead write~V.
+However, as we don't have a symbol whose value is larger than 1,000 we
+must represent large numbers with lots of M's. 
 \begin{exparts}
-  \item Give a derivation for for this address.
-    \begin{clip}
-      \begin{tabular}{l}
-        Sherlock Holmes   \\
-        221B Baker Street \\
-        London, UK
-      \end{tabular}
-    \end{clip}
-  \item Show that there is no derivation for this address.
-    \begin{clip}
-      \begin{tabular}{l}
-        President                \\
-        1600 Pensylvania Avenue  \\
-        Washiington, DC
-      \end{tabular}
-    \end{clip}
-    Suggest a modification of the grammar to include this address.
-  \item Give three reasons why this grammar is inadequate for general use.
-  (Probably no reasonable-sized grammar would suffice that is less general than 
-  one that just 
-  accepts any character string; the other obvious possibilility is the 
-  grammar that lists as spearate rules every addresses in the world.)
+\item Give a grammar for the strings that can appear as
+  Roman numerals.
+\item Often Roman numerals are written in
+  subtractive notation:~for instance, $4$ is represented as~I{}V,
+  because four~I's are hard to distinguish from three of them
+  in a setting such as a watch face.
+  In this notation $9$ is represented as~I{}X,
+  $40$ is~X{}L,
+  $90$ is~X{}C,
+  $400$ is~C{}D,
+  and $900$ is C{}M.
+  Give a grammar for the strings that can appear in this notation.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item Here it is.
+\item
+\begin{grammar}
+S ::= T H K U
+
+T ::= M | MM | MMM | MMMM | \emptystring     
+
+H ::= CM | CD | (D|\emptystring)(\emptystring|C|CC|CCC)   
+
+K ::= XC | XL | (L|\emptystring)(\emptystring|X|XX|XXX)  
+
+U ::= IX | IV | (V|\emptystring)(\emptystring|I|II|III)            
+\end{grammar}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise} % http://people.cs.ksu.edu/~schmidt/300s05/Lectures/GrammarNotes/bnf.html
+Here is an EBNF grammar for a small C-like programming language.
+\begin{grammar}
+<program> ::= "{" <statement-list> "}"
+
+<statement-list> ::= [ <statement> ";" ]*
+
+<statement> :: = <data-type> <identifier>
+               | <identifier> "=" <expression>
+	       | "print" <identifier>
+	       | "while" <expression> "{" <statement-list> "}"
+
+<data-type> ::= "int" | "boolean"
+
+<expression> ::= <identifier> | <number> | "(" <expression> <operator> <expression> ")"
+
+<identifier> ::=  <letter> [ <letter> ]*
+
+<number> ::=  <digit> [ <digit> ]*
+
+<operator> ::= "+" | "=="
+
+<letter> ::= "A" | "B" | ... | "Z"
+
+<digit> ::= "0" | "1" | ... | "9"    
+\end{grammar}
+\begin{exparts}
+\item Give a derivation and parse tree for this program.
+\begin{lstlisting}
+{ int A ;
+  A = 1 ;  
+  print A ;
+}
+\end{lstlisting}
+\item Give a parse tree for this program.
+\begin{lstlisting}
+{ int A ;
+  A = 5 ;
+  while  ( A == 5 )  { int B ; B = 6 ;  A = ( B + A ) ;
+                       print A ; } ;
+  boolean C ;  print C ;
+}
+\end{lstlisting}
+\item Must all programs be surrounded by curly braces?  
 \end{exparts}
 \end{exercise}
 
 \begin{exercise}
-Here is a grammar for LISP.
+Here is an EBNF for LISP.
 \begin{grammar}
-  <s expression> \produces{} <atomic symbol> 
-       \alt "(" <s expression> "." <s expression> ")"  
-      \alt <list>
- 
-  <list> \produces{} "(" <s expression> \{ <s expression> \} ")"
+<s_expression> ::= <atomic_symbol>
+                   | "(" <s_expression> "." <s_expression> ")"
+                   | <list>
 
-  <atomic symbol> \produces{} <letter> <atom part> 
+<list> ::= "(" <s_expression>* ")"
 
-  <atom part> \produces{} <empty>
-              \alt <letter> <atom part>
-              \alt <number> <atom part>  
+<atomic_symbol> ::= <letter> <atom_part>
 
-  <letter> \produces{} "a" | \ldots{} | "z"  
+<atom_part> ::= <empty>
+                | <letter> <atom_part>
+                | <number> <atom_part>
 
-  <number> \produces{} "0" | \ldots{} | "9"  
+<letter> ::= "a" | "b" | " ..." | "z"
 
-  <empty> \produces{} "\ "
+<number> ::= "1" | "2" | " ..." | "9"   
 \end{grammar}
-The symbol \syntax{"\ "} means a space character.
+Derive this s-expression.
 \end{exercise}
 
 \begin{exercise}
-What is the language generated by this grammar?  
-\begin{answer}
-  Not much, really.
-\end{answer}
-\end{exercise}
+Python 3's Format Specification Mini-Language is used to describe string
+substitution.
+\begin{grammar}
+<format_spec> ::=  [[<fill>]<align>][<sign>]["#"]["0"][<width>][<grouping_option>]["."<precision>][<type>]
 
-\begin{exercise}  % https://en.wikipedia.org/wiki/Formal_grammar
-Using the grammar of \cref{ex:anbncnGrammar} derive the 
-string \syntax{aaabbbccc}.
-\begin{answer}
-  \syntax{S} 
-  \derives\syntax{"a"BS"c"}
-  \derives\syntax{"a"B"a"BS"cc"}
-  \derives\syntax{"a"B"aB"abccc"}
-  \derives\syntax{"aa"BB"abccc"}
-  \derives\syntax{"aa"B"a"B"bccc"}
-  \derives\syntax{"aaa"BB"bccc"}
-  \derives\syntax{"aaa"B"bbccc"}
-  \derives\syntax{"aaabbbccc"} 
-\end{answer}
-\end{exercise}
+<fill>            ::=  <any character>
 
+<align>           ::=  "<" | ">" | "=" | "^"
+
+<sign>            ::=  "+" | "-" | " "
+
+<width>           ::=  <integer>
+
+<grouping_option> ::=  "_" | ","
+
+<precision>       ::=  <integer>
+
+<type>            ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "\%"  
+\end{grammar}
+Give a derivation of these strings.
+\begin{exparts*}
+\item \str{03f}
+\item \str{+\#02X} 
+\end{exparts*}
+\end{exercise}
 
 \begin{exercise}
 This is the grammar of BNF, written in BNF.
@@ -1287,7 +1641,7 @@ This is the grammar of BNF, written in BNF.
 
  <term>           ::= <literal> | "<" <rule-name> ">"
 
- <literal>        ::= '"' <text1> '"' | "'" <text2> "'"
+ <literal>        ::= \textdoublequote{} <text1> \textdoublequote{} | \textsinglequote{} <text2> \textsinglequote{}
 
  <text1>          ::= "" | <character1> <text1>
 
@@ -1299,11 +1653,11 @@ This is the grammar of BNF, written in BNF.
 
  <digit>          ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
- <symbol>         ::=  "|" | " " | "-" | "!" | "#" | "\$" | "\%" | "\&" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" | "\textbackslash" | "]" | "\^{}" | "_" | "`" | "{" | "|" | "}" | "\textasciitilde"
+ <symbol>         ::=  "|" | " " | "-" | "!" | "#" | "\$" | "\%" | "\&" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" | "\textbackslash" | "]" | "\textasciicircum" | "_" | "`" | "{" | "|" | "}" | "\textasciitilde"
 
  <character1>     ::= <character> | "'"
 
- <character2>     ::= <character> | '\"'
+ <character2>     ::= <character> | \textdoublequote
 
  <rule-name>      ::= <letter> | <rule-name> <rule-char>
 
@@ -1426,7 +1780,8 @@ Accepting.
 
 
 \section{Regular languages}
-
+% regex for Roman numerals: https://phvu.wordpress.com/2009/05/19/an-cfg-for-roman-numerals/
+% '^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'
 \subsection{Regular expressions}
 
 \subsection{Derivatives}

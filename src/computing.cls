@@ -23,6 +23,7 @@
 % \linespread{1.04}
 \usepackage{computingfonts}
 
+
 \usepackage{calc}
 \RequirePackage[papersize={7.5in,9.25in},
                 textwidth=345pt, % textheight=550pt,  % LaTeX defaults
@@ -1490,3 +1491,4 @@ of the two.}
 }{%
 \end{minipage}
 }
+

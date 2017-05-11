@@ -779,26 +779,6 @@ is from where the components lie in the parse tree that we get the words
 \end{center}
 \end{example}
 
-\begin{definition}
-A \definend{grammar} is a four-tuple $\mathcal{G}=\sequence{\Sigma,N,S,P}$.
-First, $\Sigma$ is an alphabet, the elements of which are
-\definend{terminal symbols}.
-Second, $N$ is a set of \definend{nonterminals} 
-(or \definend{syntactic categories}), none of which are elements of $\Sigma$. 
-Third, $S\in N$ is the \definend{start symbol}. 
-Fourth, $P$ is a set of \definend{productions} or \definend{rewrite rules}.
-\end{definition}
-
-Neither of the sets $\Sigma$ or $N$ can contain the symbols 
-{\setlength{\productionpadding}{0em} %temp drop extra padding around symbols
-\mbox{`\produces'} or \mbox{`\derives'}}.
-The start symbol~$S$ appears first in every derivation from this grammar. 
-The productions in the set~$P$
-describe allowed replacments of nonterminal symbols on the left side 
-of a production with other nonterminal or terminal symbols on the right side 
-of the production, in the course of a derivation. 
-The complete description of the derivation operation is below.
-
 In examples and exercises we often use small grammars whose 
 terminals and nonterminals do not have any particular meaning.
 In that case, we drop the verbose notation like
@@ -828,10 +808,100 @@ keep expanding \syntax{<natural>} forever,
 the question is whether a string has a terminating derivation. 
 \end{example}
 
-Here is the complete description of the allowed production rules and the
-associated derivations.
-Each rule has the form \mbox{`head\produces{}body'}. 
-The head has consists of a single nonteminal. 
+\begin{definition}
+A \definend{grammar} is a four-tuple $\mathcal{G}=\sequence{\Sigma,N,S,P}$.
+First, $\Sigma$ is an alphabet, the elements of which are
+\definend{terminal symbols}.
+Second, $N$ is a set of \definend{nonterminals} 
+(or \definend{syntactic categories}), none of which are elements of $\Sigma$. 
+Third, $S\in N$ is the \definend{start symbol}. 
+Fourth, $P$ is a set of \definend{productions} or \definend{rewrite rules}.
+\end{definition}
+
+Neither of the sets $\Sigma$ or $N$ can contain the symbols 
+{\setlength{\productionpadding}{0em} %temp drop extra padding around symbols
+\mbox{`\produces'} or \mbox{`\derives'}}.
+Every derivation begins with the start symbol~$S$;
+we use the convention that it is the one that appears 
+first in every rule set. 
+
+As we saw with the preliminary examples,
+the production rules are somethng like instructions in a program
+in that they guide the evolution of
+a derivation.
+Here is the complete description of how they
+give rise to the associated derivations.
+
+% Each rule
+% describes allowed replacments, in the course of a derivation, 
+% of nonterminal symbols on the left side 
+% with the strings of the rule's right side. 
+Each rule has the form \mbox{`head\produces{}body'}, where
+the head has consists of a single nonteminal.\footnote{%
+More general definitions are possible.
+One is that we could allow nonterminals in the head,
+as with the rule \str{a}S\str{b}\produces\str{c}, 
+%\syntax{"a"S"b"\produces{"c"}}, 
+so that as one step in a derivation we could get
+%\protect\syntax{"bb"T"a"S"ba"}\protect\derives\protect\syntax{"bb"T"ca"}.
+\str{bb}T\str{a}S\str{ba}\derives\str{bb}T\str{ca}.
+This definition allows rule heads of the form 
+$\sigma_0S\sigma_1$ where $\sigma_0$ and~$\sigma_1$ are 
+strings of terminals  
+that provide a context
+for the nonterminal~$S$, and substitutions for $S$ are only allowed in context.
+(The $\sigma_i$'s could be empty.)
+% Then, in each step of a derivation 
+% looks like 
+% \begin{equation*}
+%   \tau_0\concat\sigma_0S\sigma_1\concat\tau_1
+%   \derives
+%   \tau_0\concat\text{body}\concat\tau_1
+% \end{equation*}
+% where $\tau_0$ and $\tau_1$ are concatenations of terminals and 
+% nonterminals, so that
+% if a substring matches the rule's head
+% then we can replace it with the body, retaining the context 
+% of material that surrounds the head, the $\sigma_i$'s.
+\protect\label{ex:anbncnGrammar}
+For example, consider
+\citetext{this three-rule grammar}{Taken from \protect\url{https://en.wikipedia.org/wiki/Formal_grammar}.}:  
+% in the second and third rules, the 
+% head is more than just a single nonterminal.
+% \begin{clip}
+% \protect\syntax{S \protect\produces{} "a"BS"c" | "abc"},
+S\produces{} \str{a}BS\str{c} | \str{abc},
+and 
+% \protect\syntax{B"a" \protect\produces{} "a"B},
+B\str{a}\produces{}\str{a}B,
+and
+% \protect\syntax{B"b" \protect\produces{} "bb"}.
+B\str{b}\produces{}\str{bb}.
+% \end{clip}
+In the derivation
+  S 
+  \derives\str{a}BS\str{c}
+  \derives\str{a}B\str{abcc}
+  \derives\str{aa}B\str{bcc}
+  \derives\str{aabbcc}
+the third step uses the second rule,
+and the fourth step used the third rule.
+% taking \protect\syntax{"a"B"abcc"} to be of the form 
+% $\tau_0\,\text{\syntax{Ba}}\,\tau_1$, so
+% that $\tau_0=\text{\syntax{a}}$ and $\tau_1=\text{\syntax{bbc}}$,
+% and it rewrites \syntax{B"a"} as \syntax{"a"B}. 
+% Similarly, the fourth step applies the third rule to 
+% find \syntax{Bb} in the context
+% of $\tau_0=\text{\syntax{aa}}$ and $\tau_1=\text{\syntax{cc}}$,
+% and rewrite it as \syntax{bb}.
+Grammars of this kind, called \protect\definend{context sensitive}, 
+can describe more languages than the definition that
+we are using.
+But our definition meets our main goal, which is to convey how we can describe
+languages that are constructed following rules, and besides,
+our definition appears often in practice 
+because it is a good blend of convenience with power. 
+} 
 The body is a concatenation of terminals and nonterminals (it may be empty).
 Each derivation has this form,
 where $\tau_0$ and $\tau_1$ are concatenations of terminals and non-terminals.
@@ -843,66 +913,6 @@ where $\tau_0$ and $\tau_1$ are concatenations of terminals and non-terminals.
 In words: if we find a match for the rule's head
 then we can replace it with the body, retaining the context 
 of material surrounding the head.
-
-\begin{remark}
-More general definitions are possible.
-For example, we could allow nonterminals in the head,
-as with the rule \syntax{"a"S"b"\produces{"c"}}, so that  
-as one step in a derivation we get   
-\syntax{"bb"T"a"S"ba"}\derives\syntax{"bb"T"ca"}.
-
-That is, we could allow rule heads of the form 
-$\sigma_0S\sigma_1$ where $\sigma_0$ and~$\sigma_1$ are 
-concatenations of terminals and nonterminals.
-Then each step of a derivation looks like 
-\begin{equation*}
-  \tau_0\concat\sigma_0S\sigma_1\concat\tau_1
-  \derives
-  \tau_0\concat\text{body}\concat\tau_1
-\end{equation*}
-where $\tau_0$ and $\tau_1$ are concatenations of terminals and 
-nonterminals, so that
-if a substring matches the rule's head
-then we can replace it with the body, retaining the context 
-of material that surrounds the head.
-
- \label{ex:anbncnGrammar}
-For example in
-\citetext{this grammar}{Taken from \protect\url{https://en.wikipedia.org/wiki/Formal_grammar}.},  
-in the second and third rules, the 
-head is more than just a single nonterminal.
-\begin{clip}
-  \syntax{S \produces{} "a"BS"c" | "abc"}
- 
-  \syntax{B"a" \produces{} "a"B}
-
-  \syntax{B"b" \produces{} "bb"}
-\end{clip}
-In the derivation
-\begin{center}
-  \syntax{S} 
-  \derives\syntax{"a"BS"c"}
-  \derives\syntax{"a"B"abcc"}
-  \derives\syntax{"aa"B"bcc"}
-  \derives\syntax{"aabbcc"}
-\end{center}
-the third step \syntax{"a"B"abcc"}\derives\syntax{"aa"B"bcc"} 
-uses the second rule,
-taking \syntax{"a"B"abcc"} to be of the form 
-$\tau_0\,\text{\syntax{Ba}}\,\tau_1$, so
-that $\tau_0=\text{\syntax{a}}$ and $\tau_1=\text{\syntax{bbc}}$,
-and it rewrites \syntax{B"a"} as \syntax{"a"B}. 
-Similarly, the fourth step applies the third rule to 
-find \syntax{Bb} in the context
-of $\tau_0=\text{\syntax{aa}}$ and $\tau_1=\text{\syntax{cc}}$,
-and rewrite it as \syntax{bb}.
-
-Grammars of this kind can describe more languages than the format that
-we are using.
-But our format is very convenient and is powerful enough to describe the 
-computer languages widely used today such as C, Java, and Scheme. 
-Because of this combination of convenience and power, it is widely used.
-\end{remark}
 
 \begin{remark}
 A common problem with the grammars relates to 
@@ -1013,7 +1023,7 @@ This grammar
 \end{clip}
 describes the set
 of strings of \str{a}'s followed by \str{b}'s, with the 
-same number of each letter $\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$.
+same number of each, $\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$.
 Here is the derivation of \str{aabb}:
 \syntax{S}\derives \syntax{"a"S"b"}\derives\syntax{"aa"S"bb"}
 \derives\syntax{"aa"\,\emptystring\,"bb"}. 
@@ -1052,21 +1062,23 @@ In the language generated by this grammar.
 \begin{grammar}
 <sentence> \produces{} <subject> <predicate>
 
-<subject> \produces{} <article> <noun>
+<subject> \produces{} <article> <noun1>
 
 <predicate> \produces{} <verb> <direct-object>
 
-<direct-object> \produces{} <article> <noun>
+<direct-object> \produces{} <article> <noun2>
 
-<article> \produces{} "the" | "a"
+<article> \produces{} "the" | "a" | \emptystring
 
-<noun> \produces{} "man" | "dog"
+<noun1> \produces{} "dog" | "flea"
 
-<verb> \produces{} "bites" | "pets"  
+<noun2> \produces{} "man" | "dog"
+
+<verb> \produces{} "bites" | "licks"  
 \end{grammar}
 \begin{exparts}
-\item Give a derivation for \syntax{"the man bites a dog"}.  
-\item Show that this has no derivation: \syntax{"man bites dog"}.  
+\item Give a derivation for `\syntax{"dog bites man"}'.  
+\item Show that `\syntax{"man bites dog"}' has no derivation.  
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -1075,7 +1087,6 @@ In the language generated by this grammar.
 \end{exparts}
 \end{answer}
 \end{exercise}
-
 
 \begin{exercise}
 Create a grammar for $\lang{L}=\set{\str{a}^{2n}\suchthat n\in\N}$.  
@@ -1090,9 +1101,19 @@ What is the language generated by this grammar?
 \end{clip}
 \begin{answer}
 This grammar has no terminating derivations.
-So $\lang{L}=\emptyset$.
+So it is the empty language $\lang{L}=\emptyset$.
 \end{answer}
 \end{exercise}
+
+
+\begin{exercise}
+What is the languages generated by a grammar with a set of production
+rules that is empty?
+\begin{answer}
+It is the empty language.  
+\end{answer}
+\end{exercise}
+
 
 % \begin{exercise}https://tools.ietf.org/html/rfc7159
 % Grammar for JSON  
@@ -1106,7 +1127,7 @@ $\lang{L}=\kleenestar{\set{\str{a},\ldots,\str{z}}}$
 \item 
 the language of strings of at least one digit  
 $\set{{\sigma\in\kleenestar{\set{\str{0},\ldots,\str{9}}}
-   \suchthat \lh{\sigma}\geq 1}}$.
+   \suchthat \lh{\sigma}\geq 1}}$
 \end{exparts}
 \end{exercise}
 
@@ -1120,7 +1141,7 @@ Note the use of the empty string~$\emptystring$ to make
 <postal address> \produces{} <name> <street address> <town>
 
       <name> \produces{} <personal part> <last name> <opt suffix> <EOL> 
-                    \alt <personal part> <name part>
+                    \alt <personal part> <name part> <EOL>
 
   <personal part> \produces{} <initial> "." | <first name>
 
@@ -1140,7 +1161,7 @@ Note the use of the empty string~$\emptystring$ to make
 
     <char> \produces{} "A" | "B" | ... | "z" | "0" | ... | "9" | <white space>
 
-    <char string> \produces{} \emptystring | <char> | <char> <char string>
+    <char string> \produces{} <char> | <char> <char string> | \emptystring 
 
     <white space> \produces{} "\ "
 \end{grammar}
@@ -1196,7 +1217,8 @@ The symbol \syntax{"\ "} means a space character.
 \end{exercise}
 
 \begin{exercise} % http://www.cs.utsa.edu/~wagner/CS3723/grammar/examples.html
-Both of these are grammars for bit strings $\kleenestar{\B}$.
+Both of these are grammars for the language of bit strings 
+$\lang{L}=\kleenestar{\B}$.
 \begin{exparts}
 \item Show that this is ambiguous.
 \begin{grammar}
@@ -1210,8 +1232,8 @@ Both of these are grammars for bit strings $\kleenestar{\B}$.
 \end{exercise}
 
 \begin{exercise}  % https://en.wikipedia.org/wiki/Formal_grammar
-Using the grammar of \cref{ex:anbncnGrammar} derive the 
-string \syntax{aaabbbccc}.
+Use the grammar from the footnote on \pageref{ex:anbncnGrammar} to
+derive the string \syntax{aaabbbccc}.
 \begin{answer}
   \syntax{S} 
   \derives\syntax{"a"BS"c"}
@@ -1224,7 +1246,6 @@ string \syntax{aaabbbccc}.
   \derives\syntax{"aaabbbccc"} 
 \end{answer}
 \end{exercise}
-  
 \end{exercises}
 
 
@@ -1768,6 +1789,10 @@ Church's Thesis gets us out of this thicket.
 
 
 \subsection{JSON}
+\begin{TODO}
+Grammar for JSON  
+\url{https://tools.ietf.org/html/rfc7159}
+\end{TODO}
 
 \subsection{Doing vs~deciding}
 Compare ``find shortest path'' to ``decide whether this path is in 

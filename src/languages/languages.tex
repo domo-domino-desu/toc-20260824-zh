@@ -768,8 +768,6 @@ we ``rewrite'' the head as the body, or ``expand'' the head to the body.
 The derivation given here always substituted for the leftmost nonterminal, 
 so it is a \definend{leftmost derivation},
 but in general we could substitute for any nonterminal.
-Further, in general, we can have that a rule's head contains more than just
-a single nonterminal; we will see examples at the end of this subsection.
 
 We can represent the derivation with a \definend{parse tree}.\footnote{It 
 is from where the components lie in the parse tree that we get the words 
@@ -832,12 +830,18 @@ a derivation.
 Here is the complete description of how they
 give rise to the associated derivations.
 
-% Each rule
-% describes allowed replacments, in the course of a derivation, 
-% of nonterminal symbols on the left side 
-% with the strings of the rule's right side. 
 Each rule has the form \mbox{`head\produces{}body'}, where
-the head has consists of a single nonteminal.\footnote{%
+the head consists of a single nonterminal.
+The body is a concatenation of terminals and nonterminals.
+Each step of a derivation has this form,
+where $\tau_0$ and $\tau_1$ are concatenations of terminals and non-terminals.
+\begin{displayedsteps}
+  $\tau_0\concat\text{head}\concat\tau_1$
+  \derives
+  $\tau_0\concat\text{body}\concat\tau_1$
+\end{displayedsteps}
+In words: if we find a match for the rule's head
+then we can replace it with the body.\footnote{%
 More general definitions are possible.
 One is that we could allow nonterminals in the head,
 as with the rule \str{a}S\str{b}\produces\str{c}, 
@@ -897,22 +901,18 @@ and the fourth step used the third rule.
 Grammars of this kind, called \protect\definend{context sensitive}, 
 can describe more languages than the definition that
 we are using.
-But our definition meets our main goal, which is to convey how we can describe
-languages that are constructed following rules, and besides,
-our definition appears often in practice 
-because it is a good blend of convenience with power. 
+But our definition satisfies our goal, to convey how to describe
+languages that are constructed following rules. 
+Besides,
+our definition appears most often in practice, 
+because it is a good mix of convenience and power. 
 } 
-The body is a concatenation of terminals and nonterminals (it may be empty).
-Each derivation has this form,
-where $\tau_0$ and $\tau_1$ are concatenations of terminals and non-terminals.
-\begin{displayedsteps}
-  $\tau_0\concat\text{head}\concat\tau_1$
-  \derives
-  $\tau_0\concat\text{body}\concat\tau_1$
-\end{displayedsteps}
-In words: if we find a match for the rule's head
-then we can replace it with the body, retaining the context 
-of material surrounding the head.
+Where $\sigma_0,\sigma_1$ are concatenations of terminals and nonterminals,
+if they are related by a sequence of derivation steps then
+we could write $\sigma_0\kleenestar{\derives\!\!}\;\sigma_1$.
+If we start with the start symbol $\sigma_0=S$ and finish with 
+a string of terminals $\sigma_1\in\kleenestar{\Sigma}$ then we say
+that $\sigma_1$ \definend{has a derivation} from the grammar.
 
 \begin{remark}
 A common problem with the grammars relates to 
@@ -1000,6 +1000,32 @@ is the set of strings of terminals having derivations
 beginning with the start symbol.
 \end{definition}
 
+\begin{example} \label{ex:grammarForNaturals}
+The language for grammar is the set of strings that denote natural numbers.
+\begin{grammar}
+  <natural> \produces{} <digit>  
+        | <digit><natural>   
+  
+  <digit> \produces{} \str{0} | \ldots{} | \str{9}
+\end{grammar}
+For example, for the string \str{321} here is the derivation 
+\begin{center}
+  \begin{tabular}{l}
+    \syntax{<natural>}
+       \derives\syntax{<digit><natural>}  
+       \derives\syntax{3<natural>}         
+       \derives\syntax{3<digit><natural>}    \\ \qquad 
+       \derives\syntax{32<natural>}          
+       \derives\syntax{32<digit>}  
+       \derives\syntax{321}
+  \end{tabular}
+\end{center}
+and the parse tree.
+\begin{center}
+  \includegraphics{languages/asy/parsetree/parsetree001.pdf}
+\end{center}
+\end{example}
+
 \begin{example}
 Any finite language is derived from a grammar.
 This one gives the language of all length~$2$ bit strings.
@@ -1024,7 +1050,7 @@ This grammar
 describes the set
 of strings of \str{a}'s followed by \str{b}'s, with the 
 same number of each, $\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$.
-Here is the derivation of \str{aabb}:
+Here is a derivation of \str{aabb}:
 \syntax{S}\derives \syntax{"a"S"b"}\derives\syntax{"aa"S"bb"}
 \derives\syntax{"aa"\,\emptystring\,"bb"}. 
 \end{example}
@@ -1251,56 +1277,38 @@ derive the string \syntax{aaabbbccc}.
 
 
 \subsection{BNF}
-% \begin{TODO}
-%   BNF, EBNF, ABNF(?)
-% \end{TODO}
-Our purposes are best served by a variant of the above grammars,
-called \definend{Backus-Naur form, BNF}.
-BNFis not able to describe as many languages as the grammars
-described in the prior subsection.
-But it is very convenient and is powerful enough to describe the 
-computer languages widely used today such as C, Java, and Scheme. 
-Because of this combination of convenience and power, it is widely used.
+We shall consider more grammars like the ones above, but we shall
+introduce some additinal convienences to write them.
+We shall express the grammars in \definend{Backus-Naur form, BNF}.\footnote{%
+There is no standard for BNF.
+There is a standard for Extended BNF, which has some advantages and some
+disadvantages for our purposes.
+Here we see a BNF variant that is close to what 
+a person finds in the wild.}
 
-\begin{example}
-This is a BNF description for strings that denote natural numbers.
-\begin{grammar}
-  <natural> ::= <digit>  
-        \alt <digit><natural>   
-  
-  <digit> ::= \str{0} | \ldots{} | \str{9}
-\end{grammar}
-Here is the derivation of \syntax{321}.
-\begin{center}
-  \begin{tabular}{r@{}l}
-    \syntax{<natural>}
-       &\derives\syntax{<digit><natural>}  \\
-       &\derives\syntax{3<natural>}         \\
-       &\derives\syntax{3<digit><natural>}  \\
-       &\derives\syntax{32<natural>}  \\
-       &\derives\syntax{32<digit>}  \\
-       &\derives\syntax{321}
-  \end{tabular}
-\end{center}
-Here is the parse tree.
-\begin{center}
-  \includegraphics{languages/asy/parsetree/parsetree001.pdf}
-\end{center}
-\end{example}
-
-EBNF
+The first difference from the prior subsection is typographical: for 
+the arrow symbol \produces{} we make a substitution that is 
+easier to type, \str{::=}\,. 
+(Another typographical difference is that while many authors write 
+nonterminals with diamond brackets, as we do,
+some use another convention such as a different font.
+Extended BNF writes nonterminals in ordinary type and encloses all
+terminals in double quotes: 
+\syntax{digit ::= "0" | ... | "9"}.)
+We shall refer to the style of the next two examples,
+like the earlie grammars but with \str{::=}\,, as ``plain BNF.''
 
 \begin{example}
 This is a grammar for real numbers, positive or negative, 
 having a finite decimal part.
-Take the rules for \syntax{<natural>} from the prior example.
+(Take the rules for \syntax{<natural>} from \cref{ex:grammarForNaturals}.)
 \begin{grammar}
-  <start> \produces{}  "-"<fraction>
+  <start> ::=  "-"<fraction>
         \alt "+"<fraction> 
         \alt <fraction>                
 
   <fraction> 
-     \produces{} <natural> 
+     ::= <natural> 
         \alt <natural>.<natural>     
 \end{grammar}
 Here is a derivation for \syntax{"2.718"}. 
@@ -1374,16 +1382,15 @@ the current instant and ten years from now.
 Since the first leap second in 1972, all leap seconds have been positive and 
 there were 23 leap seconds in the 34 years to January, 2006.
 \autocite{web:USNO}}.
-One solution, specified in \citetext{RFC~3339}{\autocite{rfc3339}},
+One solution, \citetext{RFC~3339}{\autocite{rfc3339}},
 \textit{Date and Time on the Internet: Timestamps}, 
-is to require strings such as
-\citetext{\str{1985-04-12T23:20:50.52Z} 
-and \str{1996-12-19T16:39:57-08:00}}{%
+requires 
+\citetext{strings such as \str{1958-10-12T23:20:50.52Z}}{%
 This format has a number of advantages including human readability,
 that they sort reasonably (earlier times sort earlier),
 simplicity (there is one basic format),
 and that they include the time zone information.}.
-Here is the \citetext{the grammar for timestamps}{%
+This is \citetext{a BNF grammar}{%
 Some notes: 
 (1)~Coordinated Universal Time, the basis for civil time, is
 often called UTC, but is sometimes abbreviated Z,
@@ -1440,6 +1447,44 @@ be in the range $00$--$59$, etc. \autocite{rfc3339}}
 \end{grammar}
 \end{example}
 
+In practice we may expand plain BNF some abbreviation notation.
+Square brackets can indicate an optional substring.
+For example, the rule \syntax{<term> ::= [ "-" ] <factor>}
+shows the negation sign as optional.
+Parentheses can show grouping. 
+To show repetition we can use a Kleene star $\kleenestar{}$ to mean `zero or more', 
+or a $+$ to mean `one or more'.
+ 
+\begin{example} \label{ex:PythonFloatingPoint}
+Python's description of floating point numbers shows all three 
+abbreviations.
+\begin{grammar}
+<floatnumber>   ::=  <pointfloat> | <exponentfloat>
+
+<pointfloat>    ::=  [<intpart>] <fraction> | <intpart> "."
+
+<exponentfloat> ::=  (<intpart> | <pointfloat>) <exponent>
+
+<intpart>       ::=  <digit>+
+
+<fraction>      ::=  "." <digit>+
+
+<exponent>      ::=  ("e" | "E") ["+" | "-"] <digit>+
+\end{grammar}
+As part of the \syntax{<pointfloat>} rule, the first \syntax{<intpart>}
+is optional.
+An \syntax{<intpart>}, what we have earlier called a \syntax{<natural>},
+consists of one or more digits.
+And an expansion of \syntax{<exponent>} must start with a choice between 
+\str{e} or \str{E}.
+\end{example}
+
+Each of these constructs is unnecessary, since we can express them in 
+regular BNF without abbreviations.
+For instance, we could replace the \syntax{<pointfloat>} rule's right side with
+\syntax{<intpart> <fraction> | <fraction> | <intpart> "."}.
+But these abbreviations come up often enough, and are convenient enough,
+that the additional complexity is worth the effort.
 
 \begin{exercises}
 \begin{exercise}
@@ -1594,6 +1639,15 @@ Here is an EBNF grammar for a small C-like programming language.
 \end{lstlisting}
 \item Must all programs be surrounded by curly braces?  
 \end{exparts}
+\end{exercise}
+
+
+\begin{exercise}
+The paragraph after \cref{ex:PythonFloatingPoint} shows how the square 
+bracket construct is an abbreviation; it could be replaced with 
+a longer string of plain BNF.
+Do the same for the repetition operator in \syntax{<intpart>}'s rule,
+and for the grouping in \syntax{<exponent>}'s rule.
 \end{exercise}
 
 \begin{exercise}

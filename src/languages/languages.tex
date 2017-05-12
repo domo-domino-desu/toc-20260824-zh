@@ -72,12 +72,12 @@ would be inconvenient.}
 
 We write symbols in a distinct typeface, as in \str{1} or \str{a},
 because the alternative of quoting them would be 
-clunky.\footnote[2]{We need to do something because
-in traditional mathematical work, in an expression such as
+clunky.\footnote[2]{We need to give them a distinct typographic 
+treatment because in traditional mathematical work, in an expression such as
 ``let $S=\protect\set{a,b}$'' the $a$ and $b$ are variables,
 taking on values from some domain.
-But symbols are not variables, they don't hold a value.
-They are themselves the value.}
+But symbols are not variables\Dash they don't hold a value,
+they are themselves the value.}
 The term ``symbol'' is potentially misleading in that some 
 symbols contain more than one character.
 For instance, a programming language
@@ -202,7 +202,7 @@ $\sigma=\tau_0\concat \cdots \concat\tau_{k-1}$ then we may say
 that $\sigma$ \definend{decomposes} into the others.
 Each $\tau_i$ is a \definend{substring} of $\sigma$.
 The first, $\tau_0$, is a \definend{prefix} of~$\sigma$,
-and the last, $\tau_{k-1}$, is a \definend{suffix}. 
+while the last, $\tau_{k-1}$, is a \definend{suffix}. 
 
 The \definend{replication $\sigma^n$} of a string is the 
 iterated concatenation with itself, so that $\sigma^2=\sigma\concat\sigma$ 
@@ -292,7 +292,7 @@ is with this language.
 \end{align*}
 \end{example}
 
-An explanation of the term `language' is that we could take 
+An explanation of the term ``language'' is that we could take 
 the English language to be strings made by concatenating words 
 from a dictionary for English.
 Here the dictionary is~$\Sigma$, 
@@ -1286,6 +1286,10 @@ disadvantages for our purposes.
 Here we see a BNF variant that is close to what 
 a person finds in the wild.}
 
+\begin{TODO}
+  Add pictures of Backus and Naur.
+\end{TODO}
+
 The first difference from the prior subsection is typographical: for 
 the arrow symbol \produces{} we make a substitution that is 
 easier to type, \str{::=}\,. 
@@ -1447,16 +1451,32 @@ be in the range $00$--$59$, etc. \autocite{rfc3339}}
 \end{grammar}
 \end{example}
 
-In practice we may expand plain BNF some abbreviation notation.
-Square brackets can indicate an optional substring.
-For example, the rule \syntax{<term> ::= [ "-" ] <factor>}
-shows the negation sign as optional.
-Parentheses can show grouping. 
-To show repetition we can use a Kleene star $\kleenestar{}$ to mean `zero or more', 
+In practice we often expand plain BNF with some abbreviations.
+First, square brackets indicate an optional addition.
+For example, we can show a negation sign as optional as in 
+the rule \syntax{<term> ::= [ "-" ] <factor>}.
+Another example is the syntax of \str{if ... then ...} with an optional
+\str{else ...}.
+\begin{grammar}
+    <if_stmt> ::=  "if" <boolean_expr> "then"
+                             <stmt_sequence>
+                        [ "else"
+                             <stmt_sequence> ]
+                        end if ";"
+\end{grammar}
+Another notation extension is to use parentheses for grouping,
+which we saw above in the \syntax{<time-numoffset> rule}.
+To show repetition we may use a Kleene star \syntax{*} 
+to mean `zero or more', 
 or a $+$ to mean `one or more'.
+This shows parentheses and repetition:
+\syntax{<identifier> ::= <letter> ( <letter> | <digit> )*}
+and is equivalent to the recursive rule
+\syntax{<identifier> ::= <letter> |
+                     <identifier> [ <letter> | <digit> ]}.
  
 \begin{example} \label{ex:PythonFloatingPoint}
-Python's description of floating point numbers shows all three 
+This grammar for floating point numbers shows all three 
 abbreviations.
 \begin{grammar}
 <floatnumber>   ::=  <pointfloat> | <exponentfloat>
@@ -1853,90 +1873,17 @@ Compare ``find shortest path'' to ``decide whether this path is in
 the set of shortest paths.'' 
 
 Accepting.
+For simplicity, I'll begin by only considering "decision" problems, which have a yes/no answer. Function problems work roughly the same way, except instead of yes/no, there is a specific output word associated with each input word.
+Search problems also.
 
+Problem: A problem is some question about some input we'd like answered. Specifically, a decision problem is a question which asks, "Does our given input fulfill property $X$?
 
+A language is the formal realization of a problem. When we want to reason theoretically about a decision problem, we often examine the corresponding language. For a problem $X$, the corresponding language is:
+$L=\set{w\in\kleenestar{\Sigma}\suchthat \text{$w$ is the encoding of an input $y$ to problem $X$, and the answer to input $y$ for problem XX is ``Yes''} }$
+Determining if the answer for an input to a decision problem is ``yes'' is equivalent to determining whether an encoding of that input over an alphabet is in the corresponding language.
 
+Algorithm: An algorithm is a step-by-step way to solve a problem. Note that there an algorithm can be expressed in many ways and many languages, and that there are many different algorithms solving any given problem. % https://cs.stackexchange.com/a/13670/67754
 
-
-\section{Regular languages}
-% regex for Roman numerals: https://phvu.wordpress.com/2009/05/19/an-cfg-for-roman-numerals/
-% '^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'
-\subsection{Regular expressions}
-
-\subsection{Derivatives}
-
-\section{Context free languages}
-
-% \begin{wrapfigure}{R}{0.4\textwidth}
-% \centering
-% \includegraphics[width=0.35\textwidth]{prologue/plimpton322.jpg} % http://en.wikipedia.org/wiki/Plimpton_322#/media/File:Plimpton_322.jpg
-% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing pythagorean triples}}
-% \end{wrapfigure}
-\begin{exercises}
-\begin{exercise}
-Write a context-free grammar for $\set{\str{a}^n\str{b}\str{c}^n\suchthat n\in\N}$.
-\begin{answer}
-\begin{grammar}
-X \produces{} aXc
-              \alt b
-\end{grammar}
-\end{answer}
-\end{exercise}
-\end{exercises}
-
-
-% =================================================================
-
-\extra{Extended Backus-Naur form}
-
-Many authors use an extensions of BNF.
-Optional items are enclosed in metasymbols \syntax{[} and {]}.
-For example:
-\begin{grammar}
-    <if_statement> ::=  if <boolean_expression> then
-                             <statement_sequence>
-                        [ else
-                             <statement_sequence> ]
-                        end if ;
-\end{grammar}
-Repetitive items (zero or more times) are enclosed in themetasymbols 
-\syntax{\{} and \syntax{\}}.
-For example:
-\begin{grammar}
-    <identifier> ::= <letter> { <letter> | <digit> }
-\end{grammar}
-This rule is equivalent to the recursive rule
-\syntax{<identifier> ::= <letter> |
-                     <identifier> [ <letter> | <digit> ]}.
-
-Terminals of only one character are surrounded by quotes (") to distinguish them from meta-symbols.
-\begin{grammar}
-    <statement_sequence> ::= <statement> { ";" <statement> }
-\end{grammar}
-There is a grammar for EBNF written in BNF.
-\begin{clip}
-\syntax{syntax     ::=  { rule }}
-
-\syntax{rule       ::=  identifier  "::="  expression}
-
-\syntax{expression ::=  term { "|" term }}
-
-\syntax{term       ::=  factor { factor }}
-
-\syntax{factor     ::=  identifier |}
-
-\syntax{                quoted_symbol |}
-
-\syntax{                "("  expression  ")" |}
-
-\syntax{                "["  expression  "]" |}
-
-\syntax{                "{"  expression  "}"}
-
-\syntax{identifier ::=  letter { letter | digit }}
-
-\syntax{quoted_symbol ::= """ { any_character } """}
-\end{clip}
 
 
 
@@ -1945,7 +1892,7 @@ There is a grammar for EBNF written in BNF.
 
 % ===============================================================
 
-\extra{Regexes}
+\extra{Extended regexes}
 
 
 

@@ -114,12 +114,11 @@ We will often take the shortcut of having
 the alphabet consist of single-character symbols and then write strings
 by omitting the brackets and commas.
 Thus, instead of $\sequence{\str{a},\str{b},\str{c}}$
-we may write \str{abc}.\footnote{We want these alphabets to have 
-  single-character symbols because for some alphabets with 
-  multiple character symbols such as  
-  $\Sigma=\set{\str{a}, \str{aa}}$, omitting commas makes some
-  strings ambiguous.
-  For example, the string \str{aaa} could
+we may write \str{abc}.\footnote{To see why we want these alphabets to have 
+  single-character symbols, consider the alphabet 
+  $\Sigma=\set{\str{a}, \str{aa}}$ 
+  and the string $\str{aaa}\in\kleenestar{\Sigma}$.
+  Without the commas this string is ambiguous: it could
   mean $\sequence{\str{a},\str{aa}}$, or 
   $\sequence{\str{aa},\str{a}}$, or
   $\sequence{\str{a},\str{a}, \str{a}}$.} 
@@ -128,8 +127,8 @@ comes with the disadvantage that without the diamond brackets
 the empty string is just nothing, which is why 
 we have the separate symbol~$\emptystring$.\footnote{Omitting the 
 diamond brackets and commas blurs the distinction between a symbol 
-and a one-symbol string, between \str{c} and $\sequence{\str{c}}$.
-However, this is convenient so we accept this disadvantage.}
+and a one-symbol string, between \str{a} and $\sequence{\str{a}}$.
+However, it is so convenient that we accept this disadvantage.}
 
 % \begin{example}
 % In many web programs the majority of the effort
@@ -486,6 +485,20 @@ cannot be decomposed as $\gamma=\beta\concat\reversal{\beta}$.
 \end{exercise}
 
 \begin{exercise}
+Is the $k$-th power of a language the same as the language of $k$-th powers?   
+\begin{answer}
+No.
+Let $\lang{L}=\set{\str{a}, \str{b}}$ and let $k=2$.
+Then the $k$-th power of the language is
+$\lang{L}^k=\set{\str{aa},\,\str{ab},\,\str{ba},\,\str{bb}}$.  
+The language of $k$-th powers is
+$\set{\sigma^2\suchthat \sigma\in\lang{L}}=\set{\str{aa},\,\str{bb}}$.
+So the language of $k$-th powers does not contain \str{ab}, while
+$\lang{L}^k$ does.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 What is the relation between $\lh{\sigma}$, $\lh{\tau}$, 
 and $\lh{\sigma\concat\tau}$?
 \begin{answer}
@@ -777,6 +790,42 @@ is from where the components lie in the parse tree that we get the words
 \end{center}
 \end{example}
 
+\begin{example} \label{ex:GrammarOfTerms}
+This is a grammar for algebraic expressions involving only addition,
+multiplication, and parentheses.
+\begin{grammar}
+<expr> \produces{} <term> "+" <expr> | <term>
+
+<term> \produces{} <term> "*" <factor> | <factor>
+
+<factor> \produces "(" <expr> ")" | "x" | "y" | "z"
+\end{grammar}
+Here is a derivation of the string \str{x*(y+z)}. 
+\begin{center}
+  \begin{tabular}{r@{}l}
+    \syntax{<expr>}
+    &\derives\syntax{<term>}              \\
+    &\derives\syntax{<term> "*" <factor>} \\           
+    &\derives\syntax{<factor> "*" <factor>}  \\
+    &\derives\syntax{"x" "*" <factor>}       \\
+    &\derives\syntax{"x" "*" "(" <expr> ")"}  \\  
+    &\derives\syntax{"x" "*" "(" <term> "+" <expr> ")"}  \\  
+    &\derives\syntax{"x" "*" "(" <term> "+" <term> ")"}  \\
+    &\derives\syntax{"x" "*" "(" <factor> "+" <term> ")"} \\ 
+    &\derives\syntax{"x" "*" "(" <factor> "+" <factor> ")"} \\ 
+    &\derives\syntax{"x" "*" "(" "y" "+" <factor> ")"}  \\
+    &\derives\syntax{"x" "*" "(" "y" "+" "z" ")"} 
+  \end{tabular} 
+\end{center}
+\end{example}
+
+Observe that the rules for \syntax{<expr>} and \syntax{<term>} are recursive.
+That doesn't mean that we get stuck in infinite regress.
+The question is not whether you could perversely 
+keep expanding \syntax{<expr>} forever,
+the question is whether a string, such as \str{x*(y+z)}, 
+has a terminating derivation. 
+
 In examples and exercises we often use small grammars whose 
 terminals and nonterminals do not have any particular meaning.
 In that case, we drop the verbose notation like
@@ -786,11 +835,14 @@ writing nonterminals as upper case letters and terminals
 as lower case letters.
 
 \begin{example}
-With this two-rule grammar 
+We can simplify this two-rule grammar
+`\syntax{<expr>\produces "a"<expr>"b" | \emptystring}'
+to this.
 \begin{clip}
   \syntax{S \produces{} "a"S"b" | \emptystring}
 \end{clip}
-we can derive the string $\str{a}^2\str{b}^2$.
+Derivations work as you'd think; here is the derivation of
+$\str{a}^2\str{b}^2$.
 \begin{displayedsteps}
   \initialstep\syntax{S}
   \derives\syntax{"a"S"b"}
@@ -798,12 +850,6 @@ we can derive the string $\str{a}^2\str{b}^2$.
   \derives\syntax{"aa"\emptystring"bb"}
   \derives\syntax{"aabb"}  
 \end{displayedsteps}
-Observe that the rule for \syntax{S} is recursive.
-That doesn't mean that we get stuck 
-in infinite regress.
-The question is not whether you could perversely 
-keep expanding \syntax{<natural>} forever,
-the question is whether a string has a terminating derivation. 
 \end{example}
 
 \begin{definition}
@@ -1116,6 +1162,10 @@ In the language generated by this grammar.
 
 \begin{exercise}
 Create a grammar for $\lang{L}=\set{\str{a}^{2n}\suchthat n\in\N}$.  
+\end{exercise}
+
+\begin{exercise}
+Give the parse tree for the derivation of \cref{ex:GrammarOfTerms}.  
 \end{exercise}
 
 \begin{exercise}
@@ -1582,13 +1632,13 @@ we can instead write~V.
 However, as we don't have a symbol whose value is larger than 1,000 we
 must represent large numbers with lots of M's. 
 \begin{exparts}
-\item Give a grammar for the strings that can appear as
+\item Give a grammar for the strings that make sense as
   Roman numerals.
 \item Often Roman numerals are written in
   subtractive notation:~for instance, $4$ is represented as~I{}V,
   because four~I's are hard to distinguish from three of them
   in a setting such as a watch face.
-  In this notation $9$ is represented as~I{}X,
+  In this notation $9$ is~I{}X,
   $40$ is~X{}L,
   $90$ is~X{}C,
   $400$ is~C{}D,
@@ -1767,6 +1817,8 @@ This is the grammar of BNF, written in BNF.
 
 
 
+\subsection{Graphs}
+
 
 \subsection{Representation}
 To solve problems with a mechanism we must first represent it
@@ -1886,13 +1938,6 @@ Algorithm: An algorithm is a step-by-step way to solve a problem. Note that ther
 
 
 
-
-
-
-
-% ===============================================================
-
-\extra{Extended regexes}
 
 
 

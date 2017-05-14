@@ -2808,9 +2808,9 @@ no Turing machine solves the Halting Problem.
 
 
 \subsection{Discussion}
-The unsolvability of the Halting Problem does not say that 
-for every program we cannot tell if it halts. 
-Here is a program that obviously halts for every input.
+The fact that the Halting Problem is unsolvable does not mean that 
+we cannot tell if any program halts. 
+This program obviously halts for every input.
 \begin{lstlisting}
 #;1> (define (prompt/read prompt)
 --->     (display prompt)
@@ -2821,12 +2821,13 @@ Here is a program that obviously halts for every input.
 Enter n---> 4
 5  
 \end{lstlisting}
-There are also programs that we can see do not halt. 
+Nor does the unsolvability of \HP{} mean we cannot tell if a program 
+does not halt. 
 \begin{lstlisting}
 #;1> (define (f x)
 --->   (+ 1 (f x)))
 \end{lstlisting}
-When run this will just keep going until it is interrupted.
+We have to interrupt it, or it would just keep going.
 \begin{lstlisting}
 #;2> (f 0)
 ^C
@@ -2852,20 +2853,18 @@ When run this will just keep going until it is interrupted.
 *** user interrupt ***
 \end{lstlisting}
 
-The unsolvability of the Halting Problem 
-says that there is no single program that, 
-given~$e$, correctly computes 
+Instead, the unsolvability of the Halting Problem 
+says that there is no single program that 
+takes in~$e$ and correctly computes 
 in a finite time whether $\TM_e$ halts on input~$e$.
 The ``finite time'' qualifier is there because we could just use a universal
 Turing machine to simulate $\TM_e$ on~$e$, but if that machine failed to halt
 then we would not find out in a finite time. 
-The ``single program'' qualifier is there because of the next example.
 
-\begin{example} \label{ex:OneOfTwo}
-Fix an index~$e$.
-Either $\phi_e(e)\converges$ or $\phi_e(e)\diverges$.
-That is, for any one~$e$ the question of halting
-is solved by one of these two programs.
+The ``single program'' qualifier is there because for any single index~$e$,
+either $\TM_e$ halts on~$e$ or it does not.
+That is, for any single~$e$ one of these two programs
+gives the right answer.
 \begin{center}
 % \vspace*{-4ex}
 \vspace*{-\ht\strutbox}
@@ -2884,14 +2883,9 @@ print 1
 \end{minipage}%
 % \vspace*{-2ex}
 \end{center}
-\end{example}
-So, for any single~$e$ the problem of determining halting is 
-mechanically solvable.
-Nonetheless the Halting problem is not solvable.
-That's because the unsolvability of the Halting Problem is about 
+The lesson is that the unsolvability of the Halting Problem is about 
 the non-existence of a single program that works across all
-$e\in\N$.
-This is a very important point:~the \HP{} speaks to uniformity,
+$e\in\N$:~the \HP{} speaks to uniformity,
 or rather, the impossibility of uniformity.
 
 \begin{exercises}
@@ -2909,7 +2903,7 @@ that function.
 \end{exercise}
 
 \begin{exercise}  \label{ex:HPByGetTotFcns}
-Give a precise version of the table argument in \cref{subsec:Significance} 
+Make precise the table argument in \cref{subsec:Significance} 
 by showing that if $\computablefunction{halt\_check}$ were computable 
 then we could write a program that behaves 
 like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$,
@@ -2950,7 +2944,7 @@ What this means is that for many other problems,
 their unsolvability is a consequence of the unsolvability of
 the \HP.
 
-Specifically, in this subsection we develop a strategy.
+In this subsection we will develop a strategy.
 Given a problem, we will show that if we could solve it then we
 could solve \HP, and so
 conclude that the given problem is unsolvable.
@@ -2977,13 +2971,13 @@ Consider the program on the right below.
 The middle box
 simulates running $\TM_x$ on input~$x$.
 If that simulation halts then the program as a whole halts
-(it reads the input, ignores it, and prints a nominal output).
+(it reads the input~$y$, ignores it, and gives a nominal output).
 If that simulation does not halt then this program as a whole
 does not halt, regardless of the input.
 Thus, this program halts on input~$y=3$ if and only if 
 $\TM_x$ halts on~$x$.
 So this flowchart shows that if we were able to answer questions about 
-halting on~$3$ then we could use that ability to answer
+halting on~$3$ then we could use that to answer
 questions about whether $\TM_x$ halts on~$x$.
 \begin{center}
   \includegraphics{background/asy/hp/perfect/perfect06.pdf}
@@ -2992,7 +2986,7 @@ questions about whether $\TM_x$ halts on~$x$.
 \end{center}
 But we don't want to only determine whether $\TM_x$ 
 halts on~$x$ for a single~$x$.
-We next bring in uniformity.
+We next bring in uniformity, using the program on the left.
 
 Assume that $\computablefunction{halts\_on\_three\_checker}$ is a computable
 function and consider this.
@@ -3104,45 +3098,51 @@ the given problem is at least as hard
 as \HP,
 because if we could solve the given problem 
 then we could use it to solve the \HP.
-We say that the \HP{} \definend{reduces to} the given problem
-and \citetext{write $\text{\HP}\leq_{T}\text{Given Problem}$}{%
+We say that the \HP{} \definend{reduces to} 
+(or \definend{Turing reduces to})
+the given problem
+\begin{center}\citetext{$\text{\HP}\leq_{T}\text{Given Problem}$}{%
 This is called \definend{Turing reducibility} and 
 the $T$ stands for Turing.
 We have seen this earlier; 
 in the paragraphs following \cref{prob:HaltingProblem}
-we argued first that $K\leq_TK_0$ and then that $K_0\leq_T K$.},
+we argued first that $K\leq_TK_0$ and then that $K_0\leq_T K$.}
+\end{center}
 or that using the given problem as an \definend{oracle} we 
 could compute the solution to the \HP.
 
-Another point is that again we note that ``unsolvable'' 
+We closes with two points.
+The first is to reiterate that `unsolvable' 
 means unsolvable by mechanical means.
 There is no Turing machine that can compute the solution to the problem.
-There may well be a function that solves it, but there is no computable
+There may well be a \citetext{function that solves it}{\autocite{wiki:ouija}}
+but there is no computable
 function that solves it.
 
-We close with some intuition.
+Out second point is some intuition.
 There certainly are problems that start with ``Given~$e$'' that we can solve.
 One is: given~$e$ decide if one instruction in $\TM_e$ is 
 $\tminstruction{0}{B}{L}{1}$.
-But that idffers from the feel of the problems in this subsection.
-Here, each of the examples is about the behavior of the computed function,
+But that differs from the problems above.
+Each of those examples is about the behavior of the computed function\Dash
 each is about $\phi_e$, rather than about the details of the computation.
+
 This echos the opening of the first chapter, where we said we were more
 interested in the input-output behavior of the machines than in the
 implementation details of exactly how the computation proceeds. 
-In the next subsection we will expand on what `behavior' is. 
+In the next subsection we will expand on what `behavior' means. 
 
 
 \begin{exercises}
-\begin{exercise}
-True or false: there is no function that, given as input an index~$e$,
-gives~$1$ as output if $\phi_e(e)\converges$ and gives~$0$
-otherwise.
-\begin{answer}
-False.
-There is such a function, but it is not computable.  
-\end{answer}
-\end{exercise}
+% \begin{exercise}
+% True or false: there is no function that, given as input an index~$e$,
+% gives~$1$ as output if $\phi_e(e)\converges$ and gives~$0$
+% otherwise.
+% \begin{answer}
+% False.
+% There is such a function, but it is not computable.  
+% \end{answer}
+% \end{exercise}
 
 \begin{exercise}
 Show that each of these is an unsolvable problem by showing that solving it 
@@ -3223,13 +3223,13 @@ or not.
 
 \subsection{Rice's Theorem}
 We have shown a number of problems to be unsolvable.
-The intuition from those examples is that
+Our intuition from those examples is that
 we cannot, given $e$, mechanically analyze the behavior of $\TM_e$.
-We now that intuition precise.
+We now make that intuition precise.
 This is how we formalize `behavior'.
 
 \begin{definition}
-A set $\mathcal{I}$ is an \definend{index set} if for all 
+A set $\mathcal{I}$ of natural numbers is an \definend{index set} if for all 
 indices~$e,\hat{e}\in\N$,
 if $e\in\mathcal{I}$ and $\phi_e\samebehavior\phi_{\hat{e}}$ 
 then also~$\hat{e}\in\mathcal{I}$. 
@@ -3379,8 +3379,8 @@ is unsolvable.
 That sense is that a problem is `interesting' if it encapsulates some behavior,
 if it gives rise to 
 a nontrivial index set.
-Which letter you choose to use for a variable name
-in the source code is not interesting.
+% Which letter you choose to use for a variable name
+% in the source code is not interesting.
 
 \begin{exercises}
 \begin{exercise}
@@ -3482,8 +3482,8 @@ which is the context in which early Theory of Computation results
 appeared and is the context in which this book is written.
 A broader view is outside our scope.}
 For example, in England, Queen Victoria's reign from 1837 to~1901
-seemed to many commentators to be an extented period of prosperity and
-peace.
+seemed to many commentators to be an extented 
+\citetext{period of prosperity and peace}{See \autocite{wiki:PaxBritannica}.}.
 Across wider Europe, people perceived that the natural world 
 was being tamed with science and
 engineering:~witness the introduction of steam railways in 1825, 
@@ -3519,8 +3519,7 @@ and what remained was only to work out the messier details.
 
 \margingraphic[l]{0.2\textwidth}{background/hp/hilbert1932.jpg}{\label{fig:hilbert1932}\href{https://en.wikipedia.org/wiki/Ignoramus_et_ignorabimus}{D~Hilbert 1862--1943}}
 In Mathematics, the view from the 1800's was typified in Hilbert's 1930 
-address,\footnote{Hilbert grew up in the 1800's but lived into
-the 1900's; this was his retirement address.}
+address,\footnote{Hilbert grew up in the 1800's and here is speaking in reaciton to the changes; this is from his retirement address.}
 ``We must not believe those, who today, with philosophical bearing and 
 deliberative tone, prophesy the fall of culture and accept the 
 \textit{ignorabimus}. 
@@ -3537,10 +3536,10 @@ no doubt any question could be settled, with enough brainpower.
 
 But with the new century, with the 1900's, that sense changed.
 
-\margingraphic[l]{0.3\textwidth}{background/wwi.jpg}{\label{fig:crystalpalace}\href{https://upload.wikimedia.org/wikipedia/commons/6/61/Crystal_Palace_-_Queen_Victoria_opens_the_Great_Exhibition.jpg}{World War I German dead in a trench}}
+\margingraphic{0.3\textwidth}{background/wwi.jpg}{\label{fig:crystalpalace}\href{https://upload.wikimedia.org/wikipedia/commons/6/61/Crystal_Palace_-_Queen_Victoria_opens_the_Great_Exhibition.jpg}{World War I German dead in a trench}}
 Exhibit~A is this picture.
 Although the terrible effects of the modern mastery 
-of mechanisms in conflict was apparent by the US Civil War,
+of mechanisms on warfare was apparent by the US Civil War,
 it was not generally understood until World War~I, 1914-1918.
 % \begin{center}
 % \adjustbox{trim={0\width} {.4\height} {0\width} {0\height},clip}%
@@ -3549,8 +3548,8 @@ it was not generally understood until World War~I, 1914-1918.
 % \end{center}
 With universal conscription, probably the guys in this picture 
 did not want to be here.
-hey were killed by a guy who probably also did not want to be here, 
-who entered coordinates in a firing mechanism.
+They were killed by a guy who probably also did not want to be here, 
+who entered coordinates into a firing mechanism.
 If you were at those coordinates 
 then it didn't matter how brave you were, or how strong, or 
 the rightness of your cause\Dash you died. 
@@ -3568,12 +3567,11 @@ This changed everything, notably by bringing in quantum theory,
 which places at the
 heart of its approach that there are events that are completely random,
 that included Heisenberg’s uncertainty principle, and that
-of course eventually brought with it the atomic bomb.  
-
+of course eventually brought with it the atom bomb.  
 
 With Albert Einstein we see most 
-directly the increasing change in intellectual culture,
-away from unbounded optimism.
+directly the change in intellectual culture,
+away from a sense of unlimited progress.
 After experiments during a solar eclipse in 1919 provided strong support for
 his theories, Einstein became an overnight celebrity 
 (``Einstein Theory Triumphs'' was the headline in The New York Times).
@@ -3605,13 +3603,13 @@ became known as the  Lost Generation,
 and in literature expressed their experience through themes of alienation, 
 isolation, and dismay at the corruption they saw around them.
 As for art, the painting here dramatically shows that visual artists 
-also thought about these themes.
+also picked up on these themes.
 
 \margingraphic[l]{0.3\textwidth}{background/hp/einsteingodel.jpg}{\label{fig:einsteingodel}\href{http://www.newyorker.com/magazine/2005/02/28/time-bandits-2}{Einstein said he went to his office at the Institute for Advanced Study to have the privilege of walking home with G\"odel.}}
 Much the same inversion of the standing order as Einstein represented
 happened in mathematics in 1930 with K~G\"odel's announcement of the
 First Incompleteness Theorem.\footnote{This happened at the same meeting
-as the one where Hilbert gave the address quoted above.} 
+as the one where Hilbert gave his retirement address.} 
 The Incompleteness Theorem says that
 in any (sufficiently strong) formal system there are  
 straightforward statements that, while true in that system, 

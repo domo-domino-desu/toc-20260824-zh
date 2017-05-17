@@ -733,7 +733,7 @@ of the two.}
 \setlength{\columnsep}{10pt}% horizontal padding; default: 10pt
 
 % Captions
-\usepackage{caption}[2013/02/03]
+\usepackage{caption}[2013/02/03] % \usepackage{subcaption}
 % \captionsetup{%
 %   labelformat=empty,
 %   labelsep=quad,
@@ -743,6 +743,13 @@ of the two.}
 %   indention=1em,
 %   skip=8pt
 % }
+\captionsetup[figure]{labelformat=empty,
+  format=hang,              
+  justification=RaggedRight,
+  indention=0.8em,
+  skip=8pt,
+  font=small
+}
 
 \RequirePackage{suffix}
 % \margingraphic -- graphic that sticks out into margin

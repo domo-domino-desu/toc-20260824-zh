@@ -72,12 +72,14 @@ would be inconvenient.}
 
 We write symbols in a distinct typeface, as in \str{1} or \str{a},
 because the alternative of quoting them would be 
-clunky.\footnote[2]{We need to give them a distinct typographic 
-treatment because in traditional mathematical work, in an expression such as
-``let $S=\protect\set{a,b}$,'' the $a$ and $b$ are variables,
-which take on values.
-But symbols are not variables\Dash they don't hold a value,
-they are themselves the value.}
+clunky.\footnote[2]{We must give them a distinct typographic 
+treatment because we must distinguish the symbol \protect\str{a}
+from the variable $a$, 
+so we can tell ``let $S=\protect\set{\protect\str{a}}$'' 
+from 
+``let $S=\protect\set{a}$.'' 
+Symbols are not variables\Dash they don't hold a value,
+they are themselves a value.}
 The term ``symbol'' is potentially misleading in that some 
 symbols contain more than one character.
 For instance, a programming language
@@ -715,11 +717,11 @@ We can restate those rules in a convenient notation.
 \end{grammar}
 That is a set of \definend{productions} or \definend{rewrite rules}.
 Each rule has a \definend{head} on the left, then an arrow, 
-then a \definend{body} on the right.
-Read the arrow as ``may produce,'' or ``may expand to,'' 
+then a \definend{body}, or \definend{expansion}, on the right.
+Read the arrow aloud as ``may produce,'' or ``may expand to,'' 
 or ``may be constructed as.''
 
-We refer to a rule by its head, so we may say ``sentence's rule.'' 
+We refer to a rule by its head, so we may say ``\syntax{<sentence>}'s rule.'' 
 There are two rules with the head \syntax{<noun phrase>} 
 but this won't cause trouble as we won't see any grammars with so many rules
 that we need a better naming scheme.
@@ -787,7 +789,7 @@ We can represent the derivation with a \definend{parse tree}.\footnote{It
 is from where the components lie in the parse tree that we get the words 
 `terminal' and `nonterminal'.}
 \begin{center}
-  \includegraphics{languages/asy/parsetree/parsetree000.pdf}
+  \includegraphics{languages/asy/parsetree/parsetree001.pdf}
 \end{center}
 \end{example}
 
@@ -817,6 +819,8 @@ Here is a derivation of the string \str{x*(y+z)}.
     &\derives\syntax{"x" "*" "(" "y" "+" <factor> ")"}  \\
     &\derives\syntax{"x" "*" "(" "y" "+" "z" ")"} 
   \end{tabular} 
+  \qquad
+  \vcenteredhbox{\includegraphics{languages/asy/parsetree/parsetree004.pdf}}
 \end{center}
 \end{example}
 
@@ -877,23 +881,11 @@ Here is the complete description of how they
 give rise to the associated derivations.
 
 Each rule has the form \mbox{`head\produces{}body'}, where
-the head consists of a single nonterminal.
-The body is a concatenation of terminals and nonterminals.
-Each step of a derivation has this form,
-where $\tau_0$ and $\tau_1$ are concatenations of terminals and non-terminals.
-\begin{displayedsteps}
-  $\tau_0\concat\text{head}\concat\tau_1$
-  \derives
-  $\tau_0\concat\text{body}\concat\tau_1$
-\end{displayedsteps}
-In words: if we find a match for the rule's head
-then we can replace it with the body.\footnote{%
+the head consists of a single nonterminal.\footnote{%
 More general definitions are possible.
 One is that we could allow nonterminals in the head,
 as with the rule \str{a}S\str{b}\produces\str{c}, 
-%\syntax{"a"S"b"\produces{"c"}}, 
 so that as one step in a derivation we could get
-%\protect\syntax{"bb"T"a"S"ba"}\protect\derives\protect\syntax{"bb"T"ca"}.
 \str{bb}T\str{a}S\str{ba}\derives\str{bb}T\str{ca}.
 This definition allows rule heads of the form 
 $\sigma_0S\sigma_1$ where $\sigma_0$ and~$\sigma_1$ are 
@@ -901,33 +893,14 @@ strings of terminals
 that provide a context
 for the nonterminal~$S$, and substitutions for $S$ are only allowed in context.
 (The $\sigma_i$'s could be empty.)
-% Then, in each step of a derivation 
-% looks like 
-% \begin{equation*}
-%   \tau_0\concat\sigma_0S\sigma_1\concat\tau_1
-%   \derives
-%   \tau_0\concat\text{body}\concat\tau_1
-% \end{equation*}
-% where $\tau_0$ and $\tau_1$ are concatenations of terminals and 
-% nonterminals, so that
-% if a substring matches the rule's head
-% then we can replace it with the body, retaining the context 
-% of material that surrounds the head, the $\sigma_i$'s.
 \protect\label{ex:anbncnGrammar}
 For example, consider
 \citetext{this three-rule grammar}{Taken from \protect\url{https://en.wikipedia.org/wiki/Formal_grammar}.}:  
-% in the second and third rules, the 
-% head is more than just a single nonterminal.
-% \begin{clip}
-% \protect\syntax{S \protect\produces{} "a"BS"c" | "abc"},
 S\produces{} \str{a}BS\str{c} | \str{abc},
 and 
-% \protect\syntax{B"a" \protect\produces{} "a"B},
 B\str{a}\produces{}\str{a}B,
 and
-% \protect\syntax{B"b" \protect\produces{} "bb"}.
 B\str{b}\produces{}\str{bb}.
-% \end{clip}
 In the derivation
   S 
   \derives\str{a}BS\str{c}
@@ -936,14 +909,6 @@ In the derivation
   \derives\str{aabbcc}
 the third step uses the second rule,
 and the fourth step used the third rule.
-% taking \protect\syntax{"a"B"abcc"} to be of the form 
-% $\tau_0\,\text{\syntax{Ba}}\,\tau_1$, so
-% that $\tau_0=\text{\syntax{a}}$ and $\tau_1=\text{\syntax{bbc}}$,
-% and it rewrites \syntax{B"a"} as \syntax{"a"B}. 
-% Similarly, the fourth step applies the third rule to 
-% find \syntax{Bb} in the context
-% of $\tau_0=\text{\syntax{aa}}$ and $\tau_1=\text{\syntax{cc}}$,
-% and rewrite it as \syntax{bb}.
 Grammars of this kind, called \protect\definend{context sensitive}, 
 can describe more languages than the definition that
 we are using.
@@ -953,6 +918,16 @@ Besides,
 our definition is of the class of grammars that appear most often in practice, 
 because this class is a good mix of convenience and power. 
 } 
+The body is a concatenation of terminals and nonterminals.
+Each step of a derivation has this form,
+where $\tau_0$ and $\tau_1$ are concatenations of terminals and non-terminals.
+\begin{displayedsteps}
+  $\tau_0\concat\text{head}\concat\tau_1$
+  \derives
+  $\tau_0\concat\text{body}\concat\tau_1$
+\end{displayedsteps}
+In words: if we find a match for the rule's head
+then we can replace it with the body.
 Where $\sigma_0,\sigma_1$ are concatenations of terminals and nonterminals,
 if they are related by a sequence of derivation steps then
 we could write $\sigma_0\kleenestar{\derives\!\!}\;\sigma_1$.
@@ -1089,6 +1064,63 @@ This slightly more sophisticated approach gives the length~$3$ bit strings.
 \end{example}
 
 \begin{example}
+For this grammar 
+\begin{clip}
+  \syntax{S \produces{} "a"S"b" | T | U}
+ 
+  \syntax{T \produces "a"S | "a"}
+
+  \syntax{U \produces S"b" | "b"} 
+\end{clip}
+the generated language is 
+$\lang{L}=\set{\str{a}^i\str{b}^j\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+   \text{not both of $i,j$ are zero}}$.
+% https://cs.stackexchange.com/a/75423/67754
+One way to see that is to replace 
+\syntax{T} and \syntax{U} by their
+expansions to get
+\padsyntax\syntax{S \produces{} "a"S"b" | "a"S | "a" | S"b" | "b"}.
+
+This is the first example where the generated language is not clear
+so we will do a verification. 
+We will show mutual containment, that the generated language is a 
+subset of~$\lang{L}$ and that it is also a superset.
+The rule that eliminates \syntax{T} and~\syntax{U} 
+shows that any derivation step $\tau_0\concat\text{head}\concat\tau_1$
+\derives~$\tau_0\concat\text{body}\concat\tau_1$
+only adds \str{a}'s on the left and 
+\str{b}'s on the right, so every string in the language has the form
+$\str{a}^i\str{b}^j$.
+That same rule shows that in any terminating derivation \syntax{S} 
+must eventually be replaced by either \str{a} or \str{b}.
+Together these two give that the generated language is a subset of~$\lang{L}$.
+
+For containment the other way, we will prove that every $\sigma\in\lang{L}$ 
+has a derivation by induction on the length $\lh{\sigma}$.
+The smallest case, the base case, is $\lh{\sigma}=1$
+by the definition of~$\lang{L}$.
+In this case either $\sigma=\str{a}$ or~$\sigma=\str{b}$,
+each of which obviously has a derivation.
+
+For the inductive step, 
+suppose that every string from $\lang{L}$ of length $k=1$, \ldots, $k=n$ 
+has a derivation (where $n\geq 1$)
+and let $\sigma$ have length $n+1$.
+Write $\sigma =\str{a}^i\str{b}^j$.
+There are three cases: either $i>1$, or $j>1$, or~$i=j=1$.
+If $i>1$ then $\hat{\sigma} =\str{a}^{i-1}\str{b}^{j}$ is a string of
+length~$n$, so by the inductive hypothesis it has a derivation
+\syntax{S}\derives$\cdots$\derives{}~$\hat{\sigma}$.
+Prefixing that derivation with
+a \syntax{S}\derives{}\syntax{"a"S} step will put an
+addional \str{a} on the left,
+as required: 
+\syntax{S}\derives\syntax{aS}\derives$\cdots$\derives{}~$\sigma$.
+The $j>1$~case is similar,
+and the case of $\sigma=\str{a}^1\str{b}^1$ is easy.
+\end{example}
+
+\begin{example}  \label{ex:GrammarOfanbn}
 This grammar
 \begin{clip}
   \syntax{S \produces{} "a"S"b" | \emptystring}
@@ -1096,6 +1128,7 @@ This grammar
 describes the set
 of strings of \str{a}'s followed by \str{b}'s, with the 
 same number of each, $\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$.
+\Cref{exer:VerifyAnbn} asks for a verification of this.
 Here is a derivation of \str{aabb}:
 \syntax{S}\derives \syntax{"a"S"b"}\derives\syntax{"aa"S"bb"}
 \derives\syntax{"aa"\,\emptystring\,"bb"}. 
@@ -1168,6 +1201,12 @@ Create a grammar for $\lang{L}=\set{\str{a}^{2n}\suchthat n\in\N}$.
 Give the parse tree for the derivation of \cref{ex:GrammarOfTerms}.  
 \end{exercise}
 
+\begin{exercise}  \label{exer:VerifyAnbn}
+Verify that the language derived from the 
+grammar in \cref{ex:GrammarOfanbn}
+is $\lang{L}=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$.
+\end{exercise}
+
 \begin{exercise}
 What is the language generated by this grammar?
 \begin{clip}
@@ -1183,7 +1222,7 @@ So it is the empty language $\lang{L}=\emptyset$.
 
 
 \begin{exercise}
-What is the languages generated by a grammar with a set of production
+What is the language generated by a grammar with a set of production
 rules that is empty?
 \begin{answer}
 It is the empty language.  
@@ -1327,38 +1366,62 @@ derive the string \syntax{aaabbbccc}.
 
 
 \subsection{BNF}
-We shall see examples of additional grammars like the ones above, 
-but we shall introduce some additional convienences to write them.
-We shall express the grammars in \definend{Backus-Naur form, BNF}.\footnote{%
+% \margingraphic{0.15\textwidth}{languages/backus.jpg}{\label{fig:backus}\href{https://en.wikipedia.org/wiki/John_Backus}{John Backus 1924--2007}}
+Besides seeing more examples of grammars like the ones above, 
+here we shall introduce some convienences of notation.
+We shall express the grammars in \definend{Backus-Naur form, BNF}.
+
+BNF was invented by J~Backus in the late 1950's 
+and P~Naur made several improvements.
+Since then it has become the most-often used way to express grammars.
+Some of its advantages are that it gives a description of syntax that
+is both clear and concise, it can express the range of languages that
+we ordinarily want to express, and it smoothly translates to 
+a parser.
+That is, BNF is an impedance match:~it fits with what
+we typically want to do.
+We will use a BNF variant that incorporates some extenstions for
+grouping and replication that is like what you will see 
+in the wild.\footnote{%
 There is no standard for BNF.
-There is a standard for Extended BNF, which has some advantages and some
-disadvantages for our purposes.
-Here we see some variants BNF variant that appear often 
-in the wild, in one form or another.}
+Several variants do have standards, including Extended BNF, but 
+these are by no means the most commonly used.}
 
-\begin{TODO}
-  Add pictures of Backus and Naur.
-  Mention Knuth's summary of advantages of BNF.
-\end{TODO}
+\begin{center}	
+  \newlength{\bnfpichgt} \setlength{\bnfpichgt}{0.75in}
+  \begin{minipage}[t]{0.15\textwidth}
+		\centering
+		\href{https://en.wikipedia.org/wiki/John_Backus}{\includegraphics[height=\bnfpichgt]{languages/backus.jpg}} \\
+		\captionof{figure}{John Backus 1924--2007}\label{fig:backus}		    
+  \end{minipage}
+  \qquad
+  \begin{minipage}[t]{0.15\textwidth}
+		\centering
+		\href{https://en.wikipedia.org/wiki/Peter_Naur}{\includegraphics[height=\bnfpichgt]{languages/naur.jpg}} \\
+		\captionof{figure}{Peter Naur 1928--2016}\label{fig:naur}		    
+  \end{minipage}
+\end{center}
 
-The first difference from the prior subsection is typographical: for 
+% \margingraphic[l]{0.15\textwidth}{languages/naur.jpg}{\label{fig:naur}\href{https://en.wikipedia.org/wiki/Peter_Naur}{Peter naur 1928--2016}}
+The first difference from the prior subsection is a minor matter, a
+typographical change: for 
 the arrow symbol \produces{} we make a substitution that is 
-easier to type, \str{::=}\,. 
-(Another typographical difference is that while many authors write 
+easier to type, \syntax{\bnfproduces{}}\,. 
+Another typographical difference is that while many authors write 
 nonterminals with diamond brackets, as we do,
-some use another convention such as a different font.)
+you may see other conventions such as italic type, or a different color.
 
 \begin{example}
 This is a grammar for real numbers, positive or negative, 
 having a finite decimal part.
 (Take the rules for \syntax{<natural>} from \cref{ex:grammarForNaturals}.)
 \begin{grammar}
-  <start> ::=  "-"<fraction>
+  <start> \bnfproduces{}  "-"<fraction>
         \alt "+"<fraction> 
         \alt <fraction>                
 
   <fraction> 
-     ::= <natural> 
+     \bnfproduces{} <natural> 
         \alt <natural>.<natural>     
 \end{grammar}
 Here is a derivation for \syntax{"2.718"}. 
@@ -1409,7 +1472,7 @@ leftmost nor rightmost, just willy-nilly.
 
 
 \begin{example}
-Here is a more life-sized example.
+This is a life-sized example.
 Representing \citetext{time is a complicated engineering problem}{%
 One example of a complication, among many, is leap seconds.
 The Earth is constantly undergoing a deceleration caused by the 
@@ -1434,11 +1497,12 @@ there were 23 leap seconds in the 34 years to January, 2006.
 \autocite{web:USNO}}.
 One solution, \citetext{RFC~3339}{\autocite{rfc3339}},
 \textit{Date and Time on the Internet: Timestamps}, 
-requires 
+uses 
 \citetext{strings such as \str{1958-10-12T23:20:50.52Z}}{%
 This format has a number of advantages including human readability,
-that they sort reasonably (earlier times sort earlier),
-simplicity (there is one basic format),
+that if you sort a collection of these strings then earlier times will come
+earlier,
+simplicity (there is only one format),
 and that they include the time zone information.}.
 This is \citetext{a BNF grammar}{%
 Some notes: 
@@ -1469,42 +1533,42 @@ be in the range $00$--$59$, etc. \autocite{rfc3339}}
 
    % date-time       = full-date "T" full-time
 \begin{grammar}
-<date-fullyear> ::= <4 digits>
+<date-fullyear> \bnfproduces{} <4-digits>
 
-<date-month> ::= <2 digits>
+<date-month> \bnfproduces{} <2-digits>
 
-<date-mday> ::= <2 digits> 
+<date-mday> \bnfproduces{} <2-digits> 
 
-<time-hour> ::= <2 digits>
+<time-hour> \bnfproduces{} <2-digits>
 
-<time-minute> :: <2 digits>  
+<time-minute> \bnfproduces{} <2-digits>  
 
-<time-second> ::= <2 digits> 
+<time-second> \bnfproduces{} <2-digits> 
 
-<time-secfrac> ::= "." <1 or more digits>
+<time-secfrac> \bnfproduces{} "." <1-or-more-digits>
 
-<time-numoffset> ::= ("+" | "-") <time-hour> ":" <time-minute>
+<time-numoffset> \bnfproduces{} ("+" | "-") <time-hour> ":" <time-minute>
 
-<time-offset> ::= "Z" | <time-numoffset>
+<time-offset> \bnfproduces{} "Z" | <time-numoffset>
 
-<partial-time> ::= <time-hour> ":" <time-minute> ":" <time-second> [<time-secfrac>]
+<partial-time> \bnfproduces{} <time-hour> ":" <time-minute> ":" <time-second> [<time-secfrac>]
 
-<full-date> ::= <date-fullyear> "-" <date-month. "-" <date-mday>
+<full-date> \bnfproduces{} <date-fullyear> "-" <date-month> "-" <date-mday>
 
-<full-time> ::= <partial-time> <time-offset>
+<full-time> \bnfproduces{} <partial-time> <time-offset>
 
-<date-time> ::= <full-date> "T" <full-time>
+<date-time> \bnfproduces{} <full-date> "T" <full-time>
 \end{grammar}
 \end{example}
 
 In practice we often see some abbreviations.
 First, square brackets indicate an optional addition.
 For example, we can show a negation sign as optional as in 
-the rule \syntax{<term> ::= [ "-" ] <factor>}.
+the rule \syntax{<term> \bnfproduces{} [ "-" ] <factor>}.
 Another example is the syntax of \str{if ... then ...} with an optional
 \str{else ...}.
 \begin{grammar}
-    <if_stmt> ::=  "if" <boolean_expr> "then"
+    <if_stmt> \bnfproduces{}  "if" <boolean_expr> "then"
                              <stmt_sequence>
                         [ "else"
                              <stmt_sequence> ]
@@ -1516,26 +1580,26 @@ To show repetition we may use a Kleene star \syntax{*}
 to mean `zero or more', 
 or a $+$ to mean `one or more'.
 This shows parentheses and repetition:
-\syntax{<identifier> ::= <letter> ( <letter> | <digit> )*}
+\syntax{<identifier> \bnfproduces{} <letter> ( <letter> | <digit> )*}
 and is equivalent to the recursive rule
-\syntax{<identifier> ::= <letter> |
+\syntax{<identifier> \bnfproduces{} <letter> |
                      <identifier> [ <letter> | <digit> ]}.
  
 \begin{example} \label{ex:PythonFloatingPoint}
 This grammar for floating point numbers shows all three 
 abbreviations.
 \begin{grammar}
-<floatnumber>   ::=  <pointfloat> | <exponentfloat>
+<floatnumber>   \bnfproduces{}  <pointfloat> | <exponentfloat>
 
-<pointfloat>    ::=  [<intpart>] <fraction> | <intpart> "."
+<pointfloat>    \bnfproduces{}  [<intpart>] <fraction> | <intpart> "."
 
-<exponentfloat> ::=  (<intpart> | <pointfloat>) <exponent>
+<exponentfloat> \bnfproduces{}  (<intpart> | <pointfloat>) <exponent>
 
-<intpart>       ::=  <digit>+
+<intpart>       \bnfproduces{}  <digit>+
 
-<fraction>      ::=  "." <digit>+
+<fraction>      \bnfproduces{}  "." <digit>+
 
-<exponent>      ::=  ("e" | "E") ["+" | "-"] <digit>+
+<exponent>      \bnfproduces{}  ("e" | "E") ["+" | "-"] <digit>+
 \end{grammar}
 As part of the \syntax{<pointfloat>} rule, the first \syntax{<intpart>}
 is optional.
@@ -1562,10 +1626,10 @@ Write a grammar in BNF for the language of palindromes.
 \begin{answer}
 Here we stick to lower-case ASCII letters.
 \begin{grammar}
-<palindrome> ::= "a" <palindrome> "a" | "b" <palindrome> "b" |
+<palindrome> \bnfproduces{} "a" <palindrome> "a" | "b" <palindrome> "b" |
                   | ...
                   | "z" <palindrome> "z" | <letter> | \emptystring
-<letter>     ::= "a" | "b" | "c" | ... | "z"    
+<letter>     \bnfproduces{} "a" | "b" | "c" | ... | "z"    
 \end{grammar}
 You could omit \emptystring{} if you don't think it is a palindrome.
 \end{answer}
@@ -1577,9 +1641,9 @@ at the end.
 Give a BNF grammar.
 \begin{answer}
 \begin{grammar}
-<zip> ::= <digit><digit><digit><digit><digit>[-<digit><digit><digit><digit>]
+<zip> \bnfproduces{} <digit><digit><digit><digit><digit>[-<digit><digit><digit><digit>]
 
-<digit> ::= "0" | "1" | ... | "9"    
+<digit> \bnfproduces{} "0" | "1" | ... | "9"    
 \end{grammar}
 \end{answer}
 \end{exercise}
@@ -1592,20 +1656,20 @@ Give a BNF grammar.
 \begin{answer}
 Here is one way to do it.
 \begin{grammar}
-<course code> ::= <dept> " " <course-number>
+<course code> \bnfproduces{} <dept> " " <course-number>
 
-<dept> ::= <two-letter> | <three-letter> 
+<dept> \bnfproduces{} <two-letter> | <three-letter> 
 
-<two-letter> ::= <letter><letter>
+<two-letter> \bnfproduces{} <letter><letter>
 
-<three-letter> ::= <two-letter><letter>
+<three-letter> \bnfproduces{} <two-letter><letter>
 
-<course-number> ::= <digit><digit><digit>
+<course-number> \bnfproduces{} <digit><digit><digit>
 
-<digit> ::= "0" | "1" | ... | "9"       
+<digit> \bnfproduces{} "0" | "1" | ... | "9"       
 \end{grammar}
 You could also, for instance, put the department names in on a case-by-case
-basis, as in \syntax{<dept> ::= "MA" | "PSY" | ...}.
+basis, as in \syntax{<dept> \bnfproduces{} "MA" | "PSY" | ...}.
 This has the disadvantage that if the department codes change then this 
 part of the description also changes.
 It has the advantage of being more correct, of not allowing department
@@ -1646,15 +1710,15 @@ must represent large numbers with lots of M's.
 \item Here it is.
 \item
 \begin{grammar}
-S ::= T H K U
+S \bnfproduces{} T H K U
 
-T ::= M | MM | MMM | MMMM | \emptystring     
+T \bnfproduces{} M | MM | MMM | MMMM | \emptystring     
 
-H ::= CM | CD | (D|\emptystring)(\emptystring|C|CC|CCC)   
+H \bnfproduces{} CM | CD | (D|\emptystring)(\emptystring|C|CC|CCC)   
 
-K ::= XC | XL | (L|\emptystring)(\emptystring|X|XX|XXX)  
+K \bnfproduces{} XC | XL | (L|\emptystring)(\emptystring|X|XX|XXX)  
 
-U ::= IX | IV | (V|\emptystring)(\emptystring|I|II|III)            
+U \bnfproduces{} IX | IV | (V|\emptystring)(\emptystring|I|II|III)            
 \end{grammar}
 \end{exparts}
 \end{answer}
@@ -1663,28 +1727,28 @@ U ::= IX | IV | (V|\emptystring)(\emptystring|I|II|III)
 \begin{exercise} % http://people.cs.ksu.edu/~schmidt/300s05/Lectures/GrammarNotes/bnf.html
 Here is an EBNF grammar for a small C-like programming language.
 \begin{grammar}
-<program> ::= "{" <statement-list> "}"
+<program> \bnfproduces{} "{" <statement-list> "}"
 
-<statement-list> ::= [ <statement> ";" ]*
+<statement-list> \bnfproduces{} [ <statement> ";" ]*
 
 <statement> :: = <data-type> <identifier>
                | <identifier> "=" <expression>
 	       | "print" <identifier>
 	       | "while" <expression> "{" <statement-list> "}"
 
-<data-type> ::= "int" | "boolean"
+<data-type> \bnfproduces{} "int" | "boolean"
 
-<expression> ::= <identifier> | <number> | "(" <expression> <operator> <expression> ")"
+<expression> \bnfproduces{} <identifier> | <number> | "(" <expression> <operator> <expression> ")"
 
-<identifier> ::=  <letter> [ <letter> ]*
+<identifier> \bnfproduces{}  <letter> [ <letter> ]*
 
-<number> ::=  <digit> [ <digit> ]*
+<number> \bnfproduces{}  <digit> [ <digit> ]*
 
-<operator> ::= "+" | "=="
+<operator> \bnfproduces{} "+" | "=="
 
-<letter> ::= "A" | "B" | ... | "Z"
+<letter> \bnfproduces{} "A" | "B" | ... | "Z"
 
-<digit> ::= "0" | "1" | ... | "9"    
+<digit> \bnfproduces{} "0" | "1" | ... | "9"    
 \end{grammar}
 \begin{exparts}
 \item Give a derivation and parse tree for this program.
@@ -1719,21 +1783,21 @@ and for the grouping in \syntax{<exponent>}'s rule.
 \begin{exercise}
 Here is an EBNF for LISP.
 \begin{grammar}
-<s_expression> ::= <atomic_symbol>
+<s_expression> \bnfproduces{} <atomic_symbol>
                    | "(" <s_expression> "." <s_expression> ")"
                    | <list>
 
-<list> ::= "(" <s_expression>* ")"
+<list> \bnfproduces{} "(" <s_expression>* ")"
 
-<atomic_symbol> ::= <letter> <atom_part>
+<atomic_symbol> \bnfproduces{} <letter> <atom_part>
 
-<atom_part> ::= <empty>
+<atom_part> \bnfproduces{} <empty>
                 | <letter> <atom_part>
                 | <number> <atom_part>
 
-<letter> ::= "a" | "b" | " ..." | "z"
+<letter> \bnfproduces{} "a" | "b" | " ..." | "z"
 
-<number> ::= "1" | "2" | " ..." | "9"   
+<number> \bnfproduces{} "1" | "2" | " ..." | "9"   
 \end{grammar}
 Derive this s-expression.
 \end{exercise}
@@ -1742,21 +1806,21 @@ Derive this s-expression.
 Python 3's Format Specification Mini-Language is used to describe string
 substitution.
 \begin{grammar}
-<format_spec> ::=  [[<fill>]<align>][<sign>]["#"]["0"][<width>][<grouping_option>]["."<precision>][<type>]
+<format_spec> \bnfproduces{}  [[<fill>]<align>][<sign>]["#"]["0"][<width>][<grouping_option>]["."<precision>][<type>]
 
-<fill>            ::=  <any character>
+<fill>            \bnfproduces{}  <any character>
 
-<align>           ::=  "<" | ">" | "=" | "^"
+<align>           \bnfproduces{}  "<" | ">" | "=" | "^"
 
-<sign>            ::=  "+" | "-" | " "
+<sign>            \bnfproduces{}  "+" | "-" | " "
 
-<width>           ::=  <integer>
+<width>           \bnfproduces{}  <integer>
 
-<grouping_option> ::=  "_" | ","
+<grouping_option> \bnfproduces{}  "_" | ","
 
-<precision>       ::=  <integer>
+<precision>       \bnfproduces{}  <integer>
 
-<type>            ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "\%"  
+<type>            \bnfproduces{}  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "\%"  
 \end{grammar}
 Give a derivation of these strings.
 \begin{exparts*}
@@ -1768,45 +1832,45 @@ Give a derivation of these strings.
 \begin{exercise}
 This is the grammar of BNF, written in BNF.
 \begin{grammar}
-<syntax>         ::= <rule> | <rule> <syntax>
+<syntax>         \bnfproduces{} <rule> | <rule> <syntax>
 
- <rule>           ::= <opt-whitespace> "<" <rule-name> ">" <opt-whitespace> "::=" <opt-whitespace> <expression> <line-end>
+ <rule>           \bnfproduces{} <opt-whitespace> "<" <rule-name> ">" <opt-whitespace> "::=" <opt-whitespace> <expression> <line-end>
 
- <opt-whitespace> ::= " " <opt-whitespace> | ""
+ <opt-whitespace> \bnfproduces{} " " <opt-whitespace> | ""
 
- <expression>     ::= <list> | <list> <opt-whitespace> "|" <opt-whitespace> <expression>
+ <expression>     \bnfproduces{} <list> | <list> <opt-whitespace> "|" <opt-whitespace> <expression>
 
- <line-end>       ::= <opt-whitespace> <EOL> | <line-end> <line-end>
+ <line-end>       \bnfproduces{} <opt-whitespace> <EOL> | <line-end> <line-end>
 
- <list>           ::= <term> | <term> <opt-whitespace> <list>
+ <list>           \bnfproduces{} <term> | <term> <opt-whitespace> <list>
 
- <term>           ::= <literal> | "<" <rule-name> ">"
+ <term>           \bnfproduces{} <literal> | "<" <rule-name> ">"
 
- <literal>        ::= \textdoublequote{} <text1> \textdoublequote{} | \textsinglequote{} <text2> \textsinglequote{}
+ <literal>        \bnfproduces{} \textdoublequote{} <text1> \textdoublequote{} | \textsinglequote{} <text2> \textsinglequote{}
 
- <text1>          ::= "" | <character1> <text1>
+ <text1>          \bnfproduces{} \emptystring | <character1> <text1>
 
- <text2>          ::= "" | <character2> <text2>
+ <text2>          \bnfproduces{} \emptystring | <character2> <text2>
 
- <character>      ::= <letter> | <digit> | <symbol>
+ <character>      \bnfproduces{} <letter> | <digit> | <symbol>
 
- <letter>         ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+ <letter>         \bnfproduces{} "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
 
- <digit>          ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+ <digit>          \bnfproduces{} "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
- <symbol>         ::=  "|" | " " | "-" | "!" | "#" | "\$" | "\%" | "\&" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" | "\textbackslash" | "]" | "\textasciicircum" | "_" | "`" | "{" | "|" | "}" | "\textasciitilde"
+ <symbol>         \bnfproduces{}  "|" | " " | "-" | "!" | "#" | "\$" | "\%" | "\&" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" | "\textbackslash" | "]" | "\textasciicircum" | "_" | "`" | "{" | "|" | "}" | "\textasciitilde"
 
- <character1>     ::= <character> | "'"
+ <character1>     \bnfproduces{} <character> | "'"
 
- <character2>     ::= <character> | \textdoublequote
+ <character2>     \bnfproduces{} <character> | \textdoublequote
 
- <rule-name>      ::= <letter> | <rule-name> <rule-char>
+ <rule-name>      \bnfproduces{} <letter> | <rule-name> <rule-char>
 
- <rule-char>      ::= <letter> | <digit> | "-"
+ <rule-char>      \bnfproduces{} <letter> | <digit> | "-"
 \end{grammar}
 \begin{exparts}
-\item Give a derivation of the rule: \syntax{<ab> ::= <cd> e}.  
-\item Give a derivation of the rule: \syntax{<ab> ::= e <cd>}.  
+\item Give a derivation of the rule: \syntax{<ab> \bnfproduces{} <cd> e}.  
+\item Give a derivation of the rule: \syntax{<ab> \bnfproduces{} e <cd>}.  
 \end{exparts}
 \end{exercise}
 \end{exercises}
@@ -1814,6 +1878,57 @@ This is the grammar of BNF, written in BNF.
 
 
 \subsection{Graphs}
+A glance at the \citetext{blogfeed for Theoretical Computer Science}{%
+\autocite{blog:TOC}} shows that 
+researchers in this field often express results in terms of 
+graphs.
+We have done this ourselves, earlier in this book. 
+\begin{center}
+  \vcenteredhbox{\includegraphics{prologue/asy/circlediagram/circlediagram00.pdf}}
+  \hspace*{3em}
+  \vcenteredhbox{\includegraphics{languages/asy/parsetree/parsetree004.pdf}}
+\end{center}
+In both cases the nodes, the circles and the symbols, are connected by edges.
+Those connections express relationships between the nodes.
+
+\begin{definition}
+A \definend{simple graph} is an ordered pair
+$\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$.
+Here $\mathcal{V}$ is a set whose elements are
+\definend{vertices} or \definend{nodes}, 
+and $\mathcal{E}$ is a set, whose elements are \definend{edges},
+of sets of two distinct vertices.    
+\end{definition}
+
+\begin{example}
+This simple graph has five vertices $\mathcal{V}=\set{v_0,\ldots,v_4}$ 
+and eight edges.
+\begin{center}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs00.pdf}}
+  \qquad
+  $\mathcal{E}=\set{\set{v_0,v_1},\set{v_0,v_2},\,\ldots\,\set{v_3,v_4}}$
+\end{center}
+The most important thing to note is that the graph is not its picture.
+A graph is about how the vertices are connected.
+Both of these show the same graph because they show the same connections 
+between the vertices.
+\begin{center}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs01.pdf}}
+  \hspace*{3em}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs02.pdf}}
+\end{center}
+\end{example}
+
+Instead of writing a edge as a set we often write it as a string,
+for instance instead of $e=\set{v_0,v_1}$ we write $e=v_0v_1$. 
+
+There are many variations on that definition.
+Often what is being modelled will require that a vertex could be 
+connected to itself, forming a \definend{loop}.
+Or we may have two vertices with more than one connection between
+them. 
+
+
 
 \begin{example}
 The \definend{Shortest Path Problem} is to find the cheapest path through a
@@ -1828,22 +1943,28 @@ the path between $a$ and~$f$ of smallest total cost.
 \subsection{Representation} 
 %http://www.cse.msu.edu/~torng/360Book/Problems/
 To solve problems with a mechanism we must first represent it
-in a form the mechanism can handle, then 
+in a form that a mechanism can manipulate, then 
 apply an algorithm, and finally interpret the solution,
 that is, de-represent it.
 
-We saw this with addition on a Turing machine. 
-We represented the input as two natural numbers in unary,
+\begin{example}
+Consider the problem of 
+addition on a Turing machine. 
+We may choose to define it as:
+the input is two natural numbers represented in unary,
 where the number $n$ is represented by $n$-many \str{1}'s,
-separated by a blank.
-The output was a single natural number, represented in unary.
+separated by a blank, and the 
+output is a single natural number, also represented in unary,
+that is the sum of the two inputs.
 
-% \begin{example}
-% The set of numbers represented in unary is
-% $\lang{L}_\text{unary}=\set{\str{1}^n\suchthat n\in\N}$.
-% The notation $\str{1}^n$ means a sequence of $n$-many \str{1}'s,
-% including that $\str{1}^0=\emptystring$.
-% \end{example}
+We could study this problem in a number of ways.
+We could examine a particular Turing machine, for instance, 
+and prove that it correctly solves the problem.
+Or we could analyze how quickly that machine works, or 
+how much space it uses on the tape.
+Or we could propose other Turing machines to solve the problem
+faster.
+\end{example}
 
 There is nothing sacred about that representation; sometimes
 representing $n$ with $n+1$~many \str{1}'s is more convenient,
@@ -1858,6 +1979,34 @@ Another possiblity is to put the numbers as
 powers of primes, so that the sequence $\sequence{2,1,3}$ is represented by 
 the single number $2^23^15^3=1500$, in whatever way we have chosen to 
 represent that number.
+
+Family of related tasks: infinitely many instances: add (1,2), etc.
+A problem is a task that we will try to accomplish with a mechanism.
+Typically the problem is parametrized, for instance as when we want to
+input a natural number~$i$ in binary and output $2^i$, also in binary.
+
+\begin{example}
+Sort a list of numbers.
+Input is a list of numbers represented in binary and separated by
+a single space.
+Output is a sorted list list of space-separated binary numbers.  
+\end{example}
+
+\begin{example}
+Recognize when a list of binary-represented inputs is in ascending order.  
+\end{example}
+
+Problems whose answer is `Yes' or `No' 
+are \definend{decision problems}.\footnote{%
+The first problem described in this book, the 
+\protect\textit{Entscheidingsproblem}, is a decision problem.}
+Function problem,
+search problem.
+
+\begin{example}
+Contrast these two problems: given a polynomial, find all integer roots with
+given a polynomial, decide if this integer is a root.   
+\end{example}
 
 \begin{example}
 The \definend{Shortest Path Problem} is to find the cheapest path through a
@@ -2006,12 +2155,12 @@ We can feed the chocolate-covering function to the "apply-to-ants" function:
 
 Lambda-expressions have the following syntax.
 \begin{lstlisting}
-	lambda-expression ::=	variable
+	lambda-expression \bnfproduces{}	variable
 				| constant
 				| application
 				| abstraction
-	application ::= (lambda-expression)lambda-expression
-	abstraction ::= Lvariable.lambda-expression
+	application \bnfproduces{} (lambda-expression)lambda-expression
+	abstraction \bnfproduces{} Lvariable.lambda-expression
 \end{lstlisting}
 The evaluation of lambda-expression is from the application of two reduction 
 rules. 

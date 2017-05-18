@@ -24,6 +24,8 @@ import node;
 defaultnodestyle=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(white,black));
 defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor);
 
+// Pen for edges when Labelled
+pen edge_text_pen = fontsize(7pt) + fontcommand("\ttfamily") + black;
 // color edges in walk
 pen walk_pen = linewidth(0.75bp) + highlight_color;
 
@@ -333,6 +335,100 @@ draw(p,
      v2,v3,
      v4,v5,
      v6,v7);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+// ======================== shortest path =============
+int picnum = 7;
+picture p;
+
+// define nodes
+node a=ncircle("\strut$a$"),
+     b=ncircle("\strut$b$"),
+     c=ncircle("\strut$c$"),
+     d=ncircle("\strut$d$"),
+     e=ncircle("\strut$e$"),
+     f=ncircle("\strut$f$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(v, a, b);
+layout(-22.5, a, c);
+hlayout(2*u, a, d);
+hlayout(2*u, b, e);
+layout(-22.5, d, f);
+
+// draw edges
+draw(p,
+     (a--b).l(Label("\scriptsize $7$",edge_text_pen)), 
+     (a--c).l(Label("\scriptsize $9$",edge_text_pen)),
+     (a--d).l(Label("\scriptsize $14$",edge_text_pen)).style("leftside"),
+     (b--c).l(Label("\scriptsize $10$",position=Relative(0.7),edge_text_pen)),
+     (b--e).l(Label("\scriptsize $15$",edge_text_pen)),
+     (c--d).l(Label("\scriptsize $2$",edge_text_pen)),
+     (c--e).l(Label("\scriptsize $11$",position=Relative(0.3),edge_text_pen)),
+     (e--f).l(Label("\scriptsize $6$",edge_text_pen)),
+     (f--d).l(Label("\scriptsize $9$",edge_text_pen))
+    );
+
+// draw nodes
+draw(p, a, b, c, d, e, f);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+
+// ======================== shortest path, with path shown =============
+int picnum = 8;
+picture p;
+
+// define nodes
+// node a=ncircle("\strut$a$"),
+//      b=ncircle("\strut$b$"),
+//      c=ncircle("\strut$c$"),
+//      d=ncircle("\strut$d$"),
+//      e=ncircle("\strut$e$"),
+//      f=ncircle("\strut$f$");
+
+// // layout
+// defaultlayoutrel = false;
+// defaultlayoutskip = 1.5cm;
+// real u = defaultlayoutskip;
+// real v = 0.85*u;
+
+// vlayout(v, a, b);
+// layout(-22.5, a, c);
+// hlayout(2*u, a, d);
+// hlayout(2*u, b, e);
+// layout(-22.5, d, f);
+
+// draw edges, again
+draw(p,
+     (a--b).l(Label("\scriptsize $7$",edge_text_pen)), 
+     (a--c).l(Label("\scriptsize $9$",edge_text_pen)),
+     (a--d).l(Label("\scriptsize $14$",edge_text_pen)).style("leftside"),
+     (b--c).l(Label("\scriptsize $10$",position=Relative(0.7),edge_text_pen)),
+     (b--e).l(Label("\scriptsize $15$",edge_text_pen)),
+     (c--d).l(Label("\scriptsize $2$",edge_text_pen)),
+     (c--e).l(Label("\scriptsize $11$",position=Relative(0.3),edge_text_pen)),
+     (e--f).l(Label("\scriptsize $6$",edge_text_pen)),
+     (f--d).l(Label("\scriptsize $9$",edge_text_pen))
+    );
+
+// draw highlighted edges
+draw(p,(a.pos--c.pos), walk_pen);
+draw(p,(c.pos--d.pos), walk_pen);
+draw(p,(f.pos--d.pos), walk_pen);
+
+// draw nodes
+draw(p, a, b, c, d, e, f);
 
 shipout(format("graphs%02d",picnum),p,format="pdf");
 

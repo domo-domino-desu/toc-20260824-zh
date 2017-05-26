@@ -47,6 +47,11 @@ pen boldcolor=darkgrey_color;
 pen lightcolor=lightgrey_color;
 pen verylightcolor=white_color;
 
+// for places where the highlight color is too bold or dark, as with a colored node
+pen highlight_light = rgb(248/255, 145/255, 157/255); // from: http://hslpicker.com/#f67987
+pen bold_light = rgb(165/255, 155/255, 131/255); 
+
+
 // ==================== General pens ===================
 // pen FILLCOLOR=background_color;  // rgb("fff0ca");
 pen FILLCOLOR=lightcolor;  // like listings backgrounds

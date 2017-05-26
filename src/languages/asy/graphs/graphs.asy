@@ -345,12 +345,12 @@ int picnum = 7;
 picture p;
 
 // define nodes
-node a=ncircle("\strut$a$"),
-     b=ncircle("\strut$b$"),
-     c=ncircle("\strut$c$"),
-     d=ncircle("\strut$d$"),
-     e=ncircle("\strut$e$"),
-     f=ncircle("\strut$f$");
+node a=ncircle("\strut$A$"),
+     b=ncircle("\strut$B$"),
+     c=ncircle("\strut$C$"),
+     d=ncircle("\strut$D$"),
+     e=ncircle("\strut$E$"),
+     f=ncircle("\strut$F$");
 
 // layout
 defaultlayoutrel = false;
@@ -432,3 +432,222 @@ draw(p, a, b, c, d, e, f);
 
 shipout(format("graphs%02d",picnum),p,format="pdf");
 
+
+// http://web.math.princeton.edu/math_alive/5/Notes2.pdf
+// ======================== schedule problem =============
+int picnum = 9;
+picture p;
+
+// define nodes
+node a=ncircle("\strut$A$"),
+     b=ncircle("\strut$B$"),
+     c=ncircle("\strut$C$"),
+     d=ncircle("\strut$D$"),
+     e=ncircle("\strut$E$"),
+     f=ncircle("\strut$F$"),
+     g=ncircle("\strut$G$"),
+     h=ncircle("\strut$H$"),
+     i=ncircle("\strut$I$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.60*u;
+
+hlayout(2*u, a, b);
+layout(30.0, a, d);
+vlayout(-2*v, a, c);
+hlayout(2*u, c, i);
+hlayout(1*u, c, f);
+// layout(-45.0, c, f);
+vlayout(-2*v, c, g);
+hlayout(2*u, g, h);
+hlayout(1*u, g, e);
+// layout(-20.0, g, e);
+
+// draw edges
+draw(p,
+     (a--b), 
+     (a--c), 
+     (a--d), 
+     (b--i), 
+     (c--d), 
+     (c--f), 
+     (c--g), 
+     (c--h), 
+     (d--f), 
+     (d--i), 
+     (e--f), 
+     (e--g), 
+     (e--i), 
+     (f--g), 
+     (f--h), 
+     (f--i) 
+    );
+
+// draw nodes
+draw(p, a, b, c, d, e, f, g, h, i);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+// nodestyle ns1=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(lightred,black));
+// nodestyle ns2=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(lightgreen,black));
+// nodestyle ns3=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(lightblue,black));
+// nodestyle ns4=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(lightyellow,black));
+// In HSL, highlight _color is
+// Hex: #8A0917
+// HSL: 353° 88% 29%
+// RGB: 138 9 23
+// HSL hsl=HSL(153.0,0.88,0.29);
+// pen highlight_light=hsl.rgb();
+// pen highlight_light = rgb(250, 183, 191); // from: http://hslpicker.com/#f67987
+nodestyle ns1=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(backgroundcolor+white,black));
+nodestyle ns2=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(backgroundcolor,black));
+nodestyle ns3=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(bold_light,black));
+nodestyle ns4=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(lightcolor,black));
+// ======================== schedule problem, nodes colored =============
+int picnum = 10;
+picture p;
+
+// define nodes
+node a=ncircle("\strut$A$",ns4),
+     b=ncircle("\strut$B$", ns3),
+     c=ncircle("\strut$C$",ns3),
+     d=ncircle("\strut$D$", ns2),
+     e=ncircle("\strut$E$",ns3),
+     f=ncircle("\strut$F$", ns4),
+     g=ncircle("\strut$G$", ns2),
+     h=ncircle("\strut$H$", ns2),
+     i=ncircle("\strut$I$",ns1);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.40*u;
+
+hlayout(2*u, a, b);
+layout(20.0, a, d);
+vlayout(-2*v, a, c);
+hlayout(2*u, c, i);
+hlayout(1*u, c, f);
+// layout(-45.0, c, f);
+vlayout(-2*v, c, g);
+hlayout(2*u, g, h);
+hlayout(1*u, g, e);
+// layout(-20.0, g, e);
+
+// draw edges
+draw(p,
+     (a--b), 
+     (a--c), 
+     (a--d), 
+     (b--i), 
+     (c--d), 
+     (c--f), 
+     (c--g), 
+     (c--h), 
+     (d--f), 
+     (d--i), 
+     (e--f), 
+     (e--g), 
+     (e--i), 
+     (f--g), 
+     (f--h), 
+     (f--i) 
+    );
+
+// draw nodes
+draw(p, a, b, c, d, e, f, g, h, i);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+// ======================== isomorphic graphs V =============
+int picnum = 11;
+picture p;
+
+// define nodes
+node v0=ncircle("\strut$v_0$"),
+     v1=ncircle("\strut$v_1$"),
+     v2=ncircle("\strut$v_2$"),
+     v3=ncircle("\strut$v_3$"),
+     v4=ncircle("\strut$v_4$"),
+     v5=ncircle("\strut$v_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+hlayout(1*u, v0, v1);
+hlayout(1*u, v1, v2);
+vlayout(-1*v, v0, v3);
+hlayout(1*u, v3, v4);
+hlayout(1*u, v4, v5);
+
+// draw edges
+draw(p,
+     (v0--v3), 
+     (v0--v4), 
+     (v0--v5), 
+     (v1--v3), 
+     (v1--v4), 
+     (v1--v5), 
+     (v2--v3), 
+     (v2--v4), 
+     (v2--v5) 
+    );
+
+// draw nodes
+draw(p, v0, v1, v2, v3, v4, v5);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+// ======================== isomorphic graphs W =============
+int picnum = 12;
+picture p;
+
+// define nodes
+node w0=ncircle("\strut$w_0$"),
+     w1=ncircle("\strut$w_1$"),
+     w2=ncircle("\strut$w_2$"),
+     w3=ncircle("\strut$w_3$"),
+     w4=ncircle("\strut$w_4$"),
+     w5=ncircle("\strut$w_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+real horiz_offset = -0.5*u;
+hlayout(1*u, w0, w1);
+vlayout(1.5*v, w1, w3);
+hlayout(-1*u, w3, w4);
+w2.pos = (w1.pos.x-horiz_offset,(w0.pos.y+w4.pos.y)/2);
+w5.pos = (w0.pos.x+horiz_offset,w2.pos.y);
+
+// draw edges
+draw(p,
+     (w0--w1),
+     (w0--w3),
+     (w1--w2),
+     (w1--w4),
+     (w2--w3),
+     (w2--w5),
+     (w3--w4), 
+     (w4--w5), 
+     (w5--w0)
+    );
+
+// draw nodes
+draw(p, w0, w1, w2, w3, w4, w5);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");

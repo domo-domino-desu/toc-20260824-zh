@@ -46,6 +46,25 @@
   \end{enumerate*}
 }
 
+% hangingpar  Hanging paragraph
+%  #1  length of hanging
+\newenvironment{hangingpar}[1][1em]
+  {\begin{list}
+          {}
+          {\setlength{\itemindent}{-#1}%%'
+           \setlength{\leftmargin}{#1}%%'
+           \setlength{\itemsep}{0pt}%%'
+           \setlength{\parsep}{\parskip}%%'
+           \setlength{\topsep}{\parskip}%%'
+           }
+    \setlength{\parindent}{-#1}%%
+    \item[]
+  }
+  {\end{list}}
+
+% == blkarray: extended array features, such as labelled rows and columns
+\usepackage{blkarray} 
+
 
 %=========== answers to exercises ===================================
 %  The file answerbody.tex holds the answers, and in input by the file 
@@ -1477,11 +1496,11 @@ of the two.}
 
 \captionsetup[figurehere]{labelformat=empty}
 \renewcommand{\thefigurehere}{\arabic{section}.\arabic{figurehere}}
-\newenvironment{fig}[1]{%
+\newenvironment{fig}[2][figlabel]{%
   \begin{figurehere}[H]
   \setcounter{figurehere}{\value{theorem}}
   \refstepcounter{theorem}
-  \caption{\thetheorem~\textsc{Figure:} #1}
+  \caption{\thetheorem~\textsc{Figure:} #2} \label{#1}
   \centering
 }{%
   \end{figurehere}

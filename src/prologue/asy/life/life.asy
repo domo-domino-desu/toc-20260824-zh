@@ -2,7 +2,7 @@
 // Conway's game of Life
 // 2015-Jul-14 JH
 
-cd("../../asy/");  // set to path to common asy dir
+cd("../../../asy/");  // set to path to common asy dir
 import jh;
 cd("");
 
@@ -29,7 +29,7 @@ void closegameboard(file f) {
 picture one_gameboard(string subdir, string fn, int dex, real usize) {
   picture p;
   unitsize(p, usize);
-  file f = gameboard("life",fn,dex);
+  file f = gameboard(subdir,fn,dex);
 
   int cols = 0;   // maximum column number
   int rows = 0;   // max row number
@@ -55,7 +55,7 @@ picture one_gameboard(string subdir, string fn, int dex, real usize) {
     } else {
       color = DEADCOLOR;
     }
-    write(stdout, format("cur_row=%d",cur_row)+format(' cur_col=%d\n',cur_col));
+    // write(stdout, format("cur_row=%d",cur_row)+format(' cur_col=%d\n',cur_col));
     fill(p, shift(cur_col,cur_row)*cell, color);
   }
   closegameboard(f);

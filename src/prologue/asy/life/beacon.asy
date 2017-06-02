@@ -9,12 +9,12 @@ settings.render=0;
 
 // Get stuff common to all .asy files
 // cd junk is needed for relative import
-cd("../../asy/");  // set to path to common asy dir
+cd("../../../asy/");  // set to path to common asy dir
 import settexpreamble;
 cd("");
 settexpreamble();
 
-cd("../../asy/");  // set to path to common asy dir
+cd("../../../asy/");  // set to path to common asy dir
 import jh;
 cd("");
 // import node;
@@ -24,6 +24,6 @@ string fn = "beacon";
 
 int dex = 0;
 for (int dex=0; dex<=10; ++dex) {
-  picture p = one_gameboard("life",fn,dex,0.25cm);
+  picture p = one_gameboard("out",fn,dex,0.25cm);
   shipout(fn+format("%02d",dex), p);
 }

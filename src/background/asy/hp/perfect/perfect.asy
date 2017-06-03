@@ -1,5 +1,5 @@
-// pad.asy
-//  Flow chart showing how \TM_e(x) is coded as \TM_{f(e)}
+// perfect.asy
+//  Flow charts showing Halting Problem args
 cd("../../../../asy");
 import settexpreamble;
 cd("");

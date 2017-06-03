@@ -1,11 +1,11 @@
 // perfect.asy
 //  Flow charts showing Halting Problem args
-cd("../../../../asy");
+cd("../../../asy");
 import settexpreamble;
 cd("");
 settexpreamble();
 
-cd("../../../../asy");
+cd("../../../asy");
 import jh;
 import flowchart;
 cd("");
@@ -13,7 +13,9 @@ cd("");
 import settings;
 settings.outformat="pdf";
 
+cd("../../../asy/asy-graphtheory-master/modules");
 import node;
+cd("");
 // size(0.5cm);  // units are big points: 72 is 1inch
 
 // pen NODEPEN=fontsize(8pt);
@@ -76,7 +78,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -124,7 +126,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -136,7 +138,7 @@ int picnum = 2;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $e$");
-node simulate=nbox(minipage3("Compute table entry\\for index~$e$, input~$e$"));
+node simulate=nbox(minipage_snug("Compute table entry\\for index~$e$, input~$e$")); // was minipage3
 node printout=nbox("Print $\text{result}+1$");
 node ending=nroundbox("End");
 
@@ -167,7 +169,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -210,7 +212,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 // ---- K0 reduces to K, after s-m-n thm
@@ -251,7 +253,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -297,7 +299,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -339,7 +341,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -420,7 +422,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -462,7 +464,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -504,7 +506,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -546,7 +548,7 @@ draw(pic,
      (printout--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -588,7 +590,7 @@ draw(pic,
      (sim2--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -630,7 +632,7 @@ draw(pic,
      (sim2--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 
 
 
@@ -672,5 +674,5 @@ draw(pic,
      (print--ending)
 );
 
-shipout(format("perfect%02d",picnum),pic,format="pdf");
+shipout(format("hp%02d",picnum),pic,format="pdf");
 

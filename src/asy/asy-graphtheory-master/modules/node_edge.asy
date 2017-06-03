@@ -11,7 +11,7 @@ struct edge{
   void draw(picture pic=currentpicture) 
   // { draw(pic, L, g, style.align, style.p, style.arrow, style.bar,
       // style.margin, style.legend, style.marker); } 
-  { sdraw(L, g, style); }
+  { sdraw(pic, L, g, style); }  // JH add pic variable 
   edge label(Label L) { this.L=L; return this; }
   edge l(Label L)=label;
   edge style(drawstyle sty) 
@@ -66,9 +66,28 @@ void draw(edge[] ea)
     e.draw();
 }
 
-void draw(... edge[] ea)
+// JH draw to a picture
+void draw(picture pic=currentpicture, edge[] ea)
 {
-  draw(ea);
+  for (edge e: ea) {
+    // write("Drawing to pic");
+    e.draw(pic=pic);
+  }
+}
+
+// void draw(... edge[] ea)
+// {
+//   draw(ea);
+// }
+
+// JH draw to a picture
+void draw(picture pic=currentpicture ... edge[] ea)
+{
+  for (edge e: ea) {
+    // write("Drawing edge to pic");
+    e.draw(pic);
+  }
+  // draw(pic, ea);
 }
 
 // edges

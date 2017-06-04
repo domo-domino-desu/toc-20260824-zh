@@ -1,1 +1,656 @@
 \protect \chapter {Mechanical Computation}
+\begin{ans}{1.7}
+  Here is the trace.
+\end{ans}
+\begin{ans}{1.9}
+It halts at the first step, because there is no instruction matching
+the current state and what's being read on the tape, because there
+is no instruction.
+\end{ans}
+\begin{ans}{1.10}
+  Here is the trace.
+\end{ans}
+\begin{ans}{5.2}
+\begin{exparts}
+\item As with a program, a Turing Machine can implement an algorithm.
+But an algorithm may be implemented by more than one Turing Machine.
+For instance, we can do a shell sort of a list of five numbers
+with two different Turing Machines, if only by renaming some of the states.
+In the words of M~Davis \autocite{Davis16}, ``[Church's Thesis] says
+nothing about what algorithms ARE.
+It is about what algorithms can and can not DO.''
+\textit{Comment:}~there is no widely agreed-upon definition of algorithm,
+which is odd as algorithms are a central study in Computer Science.
+\item A Turing Machine is a single-purpose device.
+For instance, we may write a Turing Machine to multiply two of its inputs.
+But today we use ``computer'' to mean a general-purpose, that is, programmable,
+device.
+\textit{Comment:} we will later see that there are general-purpose
+Turing Machines, so the distinction is blurry, one of connotation rather
+than of precise definition.
+\end{exparts}
+\end{ans}
+\begin{ans}{5.3}
+\begin{exparts}
+\item The tape, as given in the definition, is not infinite.
+It is unbounded.
+
+For an analogy, consider the dictionary definition of a book.
+In that definition there is no upper limit on the number of pages.
+But no book, no actual bound collection of pages, has infiniteyl many.
+So also, no halting Turing machine computation uses infinitely much tape
+(the number of tape squares used is less than or equal to the number of
+steps in the computation).
+
+While it is true that you can easily write a Turing machine that does not
+halt and that just keeps using more and more tape, at no step of the
+calculation is the amount of tape infinite.
+It never runs out\Dash it is unbounded\Dash but it is never infinite.
+
+\item It is a model.
+A model necessarily discards some aspects of the situation it models.
+See \autocite{wiki:MapStory}.
+(Besides, just to be argumentative for the sheer pleasure of it,
+whether the universe is finite\Dash either just currently
+finite, or finite into any unbounded future\Dash is not clear.
+In any event it is not a mathematical question.)
+\end{exparts}
+\end{ans}
+\begin{ans}{5.4}
+(From \autocite{blass}.)
+The first benefit that we get from this thesis is that it lets us
+connect formal mathematical theorems to real-world issues of computability.
+For example, the theorem that the word problem for groups is Turing-undecidable
+has the real-world interpretation that no algorithm can solve all instance of
+the word problem.
+
+The second benefit is in mathematics itself, specifically in computability
+theory.
+Published proofs that something is Turing-computable almost never proceed by
+exhibiting a Turing-machine program, or indeed a program in any actual
+computing language.
+Sometimes, if the matter is simple enough, they provide some sort of
+pseudo-code.
+Most often, though, they merely give an informal description of an algorithm.
+It is left to the reader to see that this actually does give an algorithm
+(in the intuitive sense) and therefore, by the Church-Turing thesis, could be
+simulated by a Turing machine.
+The usual situation is that, although experts in Turing-machine programming
+would (if they existed) be able to routinely convert the intuitive algorithm
+into a Turing machine program, the program would be too large and
+complicated to be worth writing down.
+\end{ans}
+\begin{ans}{5.5}
+Lance Fortnow says it perfectly,
+``Computation is about process, about the transitions made from one state
+of the machine to another. Computation is not about the input and the output,
+point A and point B, but the journey. \ldots{}
+You can feed a Turing machine an infinite digits of a real number
+(Siegelmann), have computers interact with each other (Wegner-Goldin),
+or have a computer that perform an infinite series of tasks (Denning) but
+in all these cases the process remains the same, each step following
+Turing's model.''
+\autocite{Fortnow10}.
+\end{ans}
+\begin{ans}{3.5}
+This is an implementation.
+\begin{lstlistings}
+(define (M x)
+   (if (<= x 100)
+       (M (M (+ x 11)))
+       (- x 10)))
+\end{lstlistings}
+It outputs $91$ for all inputs $x\in\set{0, \ldots 101}$.
+For larger inputs it outputs $x-10$.
+\end{ans}
+\begin{ans}{3.6}
+The derivation for factorial is this.
+\begin{equation*}
+  \factorial(y)=\begin{cases}
+              1                  &\text{if $y=0$}  \\
+              \product(\factorial(z),\successor(z))) &\text{if $y=\successor(z)$}
+            \end{cases}
+\end{equation*}
+Here $g$ is a function of no inputs~$g(\,)=1$ and
+$h(a,b)=\product(a,\successor(b))$.
+\end{ans}
+\begin{ans}{3.7}
+\begin{exparts}
+\item The constant function that always returns zero
+$\mathcal{C}_0(\vec{x})$
+is included the definition of primitive
+recursion, \cref{def:PrimitiveRecursive}, as $\zero(\vec{x})=0$.
+The function that always returns~$1$ is then
+$\mathcal{C}_1(\vec{x})=\succ(\mathcal{C}_0(\vec{x}))$,
+the function that returns~$2$ is
+$\mathcal{C}_2(\vec{x})=\succ(\succ(\mathcal{C}_0(\vec{x})))$, etc.
+
+\item Since the parts of the right-hand side of
+  $\max(\set{x,y})=y+(x\propersub y)$ are all primitive recursive,
+  then the $\max$ function is also primitive recursive.
+  Similarly for $\min(\set{x,y})=x+y\propersum\max(\set{x,y})$.
+
+\item For any $x,y\in\N$ either $x-y\geq 0$ or $y-x\geq 0$.
+Thus
+$\operatorname{absdiff}(x,y)=\operatorname{propersub}(x,y)+\operatorname{propersub}(y,x)$ and since addition is primitive recursive,
+$\operatorname{absdiff}(x,y)$ is therefore primitive recursive.
+
+\item This primitive recursion defines $\operatorname{sign}$.
+\begin{equation*}
+  \operatorname{sign}(y)=
+    \begin{cases}
+      0   &\case{\text{if $y=0$}}  \\
+      1   &\case{\text{if $y=\succ(z)$}}
+    \end{cases}
+\end{equation*}
+
+\item A primitive recursion will do
+\begin{equation*}
+  \operatorname{negsign}(y)=
+    \begin{cases}
+      1   &\case{\text{if $y=0$}}  \\
+      0   &\case{\text{if $y=\succ(z)$}}
+    \end{cases}
+\end{equation*}
+but we can also observe that
+$\operatorname{negsign}(y)=1-\operatorname{sign}(y)$, that is,
+$\operatorname{negsign}(y)=\operatorname{propersub}(1,\operatorname{sign}(y))$.
+
+\item The one is
+$\operatorname{lessthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(y,x))$
+while the other is
+$\operatorname{greaterthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(x,y))$.
+
+\item
+We have $\operatorname{not}(x)=1-x=\operatorname{propersub}(1,x)$.
+For the two-input ones,
+$\operatorname{and}(x,y)=x\cdot y=\product(x,y)$
+and
+$\operatorname{or}(x,y)=\operatorname{sign}(x+y)$
+(an alternative is $\operatorname{or}(x,y)=1-((1-x)\cdot (1-y))$).
+
+\item
+$\operatorname{equal}(x,y)=\operatorname{negsign}(\operatorname{lessthan}(x,y)+\operatorname{greaterthan}(x,y))$
+
+\item
+The first is
+$m(x)=7\cdot\operatorname{equal}(x,1)
+      +9\cdot\operatorname{equal}(x,5)$
+(note the use of addition and multiplication, which were shown to be
+primitive recursive in the subsection body).
+The second is similar
+$n(x,y)=7\cdot\operatorname{equal}(x,1)\cdot\operatorname{equal}(y,2)
+        +9\cdot\operatorname{equal}(x,5)\cdot\operatorname{equal}(y,5)$.
+
+\end{exparts}
+\end{ans}
+\begin{ans}{3.8}
+\begin{exparts}
+\item Since $g$ is given as primitive recursive,
+this function is also primitive recursive
+$h(a,b)=\plus(a,g(b))$ because it uses composition.
+With that, this primitive recursion will do the bounded sum.
+\begin{equation*}
+  f(y)=
+    \begin{cases}
+      0          &\case{\text{if $y=0$}}  \\
+      h(f(z),z)  &\case{\text{if $y=\succ(z)$}}
+    \end{cases}
+\end{equation*}
+
+\item
+This is similar to bounded sum.
+
+\item
+Consider the bounded product function.
+\begin{equation*}
+  P_p(\vec{x},m)=\prod_{0\leq i<m} p(\vec{x},i)
+\end{equation*}
+Note that (i)~if $P_p(\vec{x},m)=1$ then $P_p(\vec{x},i)=1$ for all $i<m$,
+and (ii)~if $P_p(\vec{x},m)=0$ then $P_p(\vec{x},i)=0$ for all~$i\geq m$.
+
+Next consider the bounded sum function.
+\begin{equation*}
+  S_{P_p}(\vec{x},m)=\sum_{0\leq i<m} P_p(\vec{x},m)
+\end{equation*}
+Because of (i) and~(ii), $S_{P_p}(\vec{x},m)$ is the least number~$i$ such that
+$p(\vec{x},i)=0$, as desired.
+
+Now just define $M(\vec{x},m)$ by cases.
+\begin{equation*}
+  M(\vec{x},m)=
+  \begin{cases}
+    m     &\case{\text{if $S_{P_p}(\vec{x},m)=0$}} \\
+    S_{P_p}(\vec{x},m)  &\case{\text{otherwise}}
+  \end{cases}
+\end{equation*}
+
+\item This is the idea.
+\begin{equation*}
+  U(\vec{x},m)=
+  \begin{cases}
+    1    &\case{\text{if $m=0$}}   \\
+    p(\vec{x},m)\cdot U(\vec{x},z)  &\case{\text{if $m=\succ(z)$}}
+  \end{cases}
+\end{equation*}
+To be formal we have to do some more work such as
+expressing the multiplication
+$p(\vec{x},m)\cdot U(\vec{x},z)$ as $\product(p(\vec{x},m), U(\vec{x},z))$.
+
+\item Take $E(\vec{x},m)=1\dotminus \hat{E}(\vec{x},m)$, where the latter
+function is below.
+\begin{equation*}
+  \hat{E}(\vec{x},m)=
+  \begin{cases}
+    0    &\case{\text{if $m=0$}}   \\
+    (1\dotminus p(\vec{x},m))\cdot \hat{E}(\vec{x},z)
+        &\case{\text{if $m=\succ(z)$}}
+  \end{cases}
+\end{equation*}
+
+\item This follows straight from the definition on noting that one suitable
+bound on the quotient~$k$ is the dividend~$y$, that is,
+$\operatorname{divides}(x,y)=
+\exists k\leq y[y=x\cdot k]$.
+
+\item As in the prior item, we need only find a suitable bound.
+Here, $\operatorname{prime}(y)=1$ if and only if
+both $1<y$ and
+there is no $x< y$ with $x>1$ and $\operatorname{divides}(x,y)$,
+All of those components are primitive recursive.
+\end{exparts}
+\end{ans}
+\begin{ans}{3.9}
+\autocite{Davis}
+Suppose that if two functions $\map{f,\hat{f}}{\N^{n+1}}{\N}$ both
+satisfy \cref{def:PrimitiveRecursion}.
+We will show that for all $\sequence{x_0,\ldots,x_{n-1},y}\in\N^{n+1}$
+the two are equal $f(x_0,\ldots,x_{n-1},y)=\hat{f}(x_0,\ldots,x_{n-1},y)$,
+by induction on~$y$.
+
+For the base step,
+they are equal when $y=0$ because they both equal $g(x_0,\ldots,x_{n-1})$.
+For the inductive step,
+suppose that they are equal for $y=0$, \ldots, $y=k$ and consider
+the $y=k+1$ case.
+\begin{align*}
+  f(x_0,\ldots,x_{n-1},k+1)
+  &=g(f(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)
+  &=g(\hat{f}(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)
+   =\hat{f}(x_0,\ldots,x_{n-1},k+1)
+\end{align*}
+The second equality follows from the induction hypothesis.
+\end{ans}
+\begin{ans}{3.10}
+We have $\hyperoperation_4(2,2)=2^2=4$,
+and $\hyperoperation_4(2,3)=2^{2^2}=2^4=16$.
+The third is this.
+\begin{equation*}
+  \hyperoperation_4(2,4)=2^{2^{2^2}}=2^{16}=65536
+\end{equation*}
+\end{ans}
+\begin{ans}{10}
+It takes $17331$ turns to stabilize.
+\end{ans}
+\begin{ans}{21}
+From two arguments~$k$ and~$y$, either $k$ decreases or
+$k$ is fixed and~$y$ decreases.
+When $y$ reaches zero
+then $k$ decreases, so it eventually reaches zero as well, and
+$\ackermann(0,y)$ obviously terminates.
+\end{ans}
+\begin{ans}{24}
+\textit{All the parts of $\ackermann$ are primitive
+recursive but as a whole it is not?}
+Yes.  It is a question of uniformity.
+Imagine that we have an enumeration of the primitive recursive functions
+$f_0$, $f_1$, \ldots\,.
+Perhaps $\ackermann_0=f_9$, and $\ackermann_1=f_{121}$,
+and~$\ackermann_2=f_{800}$.
+But the function associating the subscript on the~$\ackermann$ with the
+subscript on the~$f$ is not primitive recursive.
+\end{ans}
+\protect \chapter {Background}
+\begin{ans}{2.3}
+To show that the map is one-to-one we will show that $g(n)=g(\hat{n})$ can only
+happen if $n=\hat{n}$.
+So let $g(n)=g(\hat{n})$, giving $3n=3\hat{n}$, and dividing by three
+yields $n=\hat{n}$, as required.
+
+To show the map is onto we will show that every member of the codomain
+$y\in\set{3k\suchthat k\in\N}$ is mapped-to by some member of the domain.
+Because $y$ is a multiple of three, $y/3$ is a natural number.
+Of course, $y=g(y/3)$, so $y$ is indeed the image of some member of the
+domain.
+\end{ans}
+\begin{ans}{2.4}
+\begin{exparts}
+\item The map $f$ given by $f(0)=3$, $f(1)=4$, and $f(2)=5$,
+  that is, $f(x)=x+3$, is onto and one-to-one because by inspection
+  we see that every element of the codomain has one and only one
+  associated element of the domain.
+\item The function $f(x)=x^3$ is a correspondence between these sets.
+  It is one-to-one because for each cube there is only one associated
+  cube root.
+  It is onto because each perfect cube has an integer cube root.
+\end{exparts}
+\end{ans}
+\begin{ans}{2.5}
+Let $P_2=\set{2^k\suchthat k\in\N}$ and $P_3=\set{3^k\suchthat k\in\N}$.
+The natural correspondence $\map{g}{P_2}{P_3}$ associates elements with
+the same exponent $g(2^k)=3^k$.
+This function is one-to-one because if the function yields two equal
+outputs~$g(2^{k_0})=g(2^{k_1})$ then
+$3^{k_0}=3^{k_1}$ and taking the logarithm base~$3$ of both sides shows
+that the inputs were the same~$k_0=k_1$.
+The function is onto because if $y\in P_3$ then it has the form $y=3^k$,
+and is the image of~$2^k\in P_2$.
+
+The natural generalization is that for any two natural numbers
+$a,b>1$, the sets $P_a=\set{a^k\suchthat k\in\N}$ and
+$P_b=\set{b^k\suchthat k\in\N}$ have the same cardinality.
+The argument is just as in the prior paragraph.
+\end{ans}
+\begin{ans}{2.6}
+\begin{exparts}
+\item Consider the function $\map{f}{\N}{\set{2n\suchthat n\in\N}}$
+defined by $f(n)=2n$.
+To verify that $f$ is one-to-one, assume that two inputs yield the same
+output $f(n)=f(\hat{n})$, giving $2n=2\hat{n}$, and divide by~$2$ to
+get that the two inputs are the same $n=\hat{n}$.
+
+To verify that $f$ is onto, consider a member of the codomain $y$,
+use the definition of the codomain to rewrite it as $y=2n$,
+and solve for $n$ to get that there is an input associated with
+this output, namely $n=y/2$ (dividing the output by two will yield a
+natural number because $y$ is an even natural number).
+\item We use the map $\map{g}{\N}{\set{2n+1\suchthat n\in\N}}$
+given by $n\mapsto 2n+1$.
+To verify that $g$ is one-to-one, assume that $g(n_0)=g(n_1)$,
+so that $2n_0+1=2n_1+1$.
+Subtract~$1$ and divide by~$2$ to conclude that
+$n_0=n_1$.
+
+To verify that $g$ is onto we start with an element of the codomain
+$y\in\set{2n+1\suchthat n\in\N}$.
+Observe that because $y$ is odd, it has the form $y=2n+1$ for some
+natural number~$n$.
+Thus there is a natural number that maps under~$g$ to~$y$,
+namely~$n=(y-1)/2$, and thus~$g$ is onto.
+\item ONe answer involves using the two prior exercise parts,
+and knowing that the inverse of a correspondence is also a correspondence,
+to get that the composition $\composed{f}{g^{-1}}$ is a correspondence from
+the even numbers to the odds.
+
+But a simpler answer is to consider the map $p$ from the evens to the odds
+given by $p(n)=n+1$.
+Verification that $p$ is one-to-one and onto is easy.
+\end{exparts}
+\end{ans}
+\begin{ans}{2.7}
+The function $f$ is one-to-one because if $f(n_0)=f(n_1)$ then
+$n_0+1=n_1+1$ and so~$n_0=n_1$.
+It is onto because if $y$ is an element of the
+codomain~$\N-\set{0}=\set{1,2,\ldots}$ then $y$ is the image of $y-1$,
+that is, $y=f(y-1)$,
+and clearly $y-1$ is an element of the domain~$\N$.
+\end{ans}
+\begin{ans}{2.8}
+The function
+\begin{equation*}
+  \hat{f}(n)=
+  \begin{cases}
+    1  \case{if $n=0$}  \\
+    0  \case{if $n=1$}  \\
+    n^2  \case{if $n>1$}
+  \end{cases}
+\end{equation*}
+is different than the function~$f$
+of the example.
+It is clearly onto, as every perfect square is the output associated
+with some input.
+That it is one-to-one is clear if the output is $0$ or~$1$, and
+for other squares holds for the same reason as it holds for~$f$.
+\end{ans}
+\begin{ans}{2.9}
+Call the set $T=\set{10k\suchthat k\in\N}$.
+The function $\map{f}{\N}{T}$ given by $f(n)=10n$ is a correspondence.
+It is one-to-one because $f(n)=f(\hat{n})$ implies that $10n=10\hat{n}$,
+and so $n=\hat{n}$.
+It is onto because by definition any member of $T$ has the form $10k$
+for some~$k\in\N$, and so is the image under~$f$ of~$k$.
+\end{ans}
+\begin{ans}{2.10}
+To get a contradiction suppose that $f$ is not one-to-one.
+Then there are $x,\hat{x}\in E$ such that
+$f(x)=f(\hat{x})$ but $x\neq\hat{x}$.
+With $x\neq\hat{x}$, one or the other is smaller; without loss of generality
+suppose $x<\hat{x}$.
+That gives $x<\hat{x}$ but $f(x)=f(\hat{x})$, which is the desired
+contradiction.
+
+Yes, the same argument works for $E\subseteq\N$.
+\end{ans}
+\begin{ans}{2.11}
+\begin{exparts}
+\item
+The map  $\map{g}{I_0}{I_1}$ given by $g(x)=x\cdot(2\pi r_1/2\pi r_0)$
+is clearly onto.
+To show that it is one-to-one suppose $g(x)=g(\hat{s})$.
+Then  $x\cdot(2\pi r_1/2\pi r_0)=\hat{x}\cdot(2\pi r_1/2\pi r_0)$ and so
+$x=\hat{x}$.
+\item The map $g(x)=a+x\cdot(b-a)$ is a correspondence.
+\item Consider the map
+  $\map{f}{\leftclosed{a}{b}}{\leftclosed{c}{d}}$ given by
+  $f(x)=c+(x-a)\cdot(d-c)/(b-a)$.
+% \item Consider the map $\map{t}{\open{0}{1}}{\R}$ given by
+%   $t(x)=\tan(\pi(x-(1/2)))$.
+\end{exparts}
+\end{ans}
+\begin{ans}{2.14}
+\begin{exparts}
+\item Let $\mathcal{E}=\set{2n\suchthat n\in\N}$.
+The natural correspondence is $\map{f}{\N}{\mathcal{E}}$
+given by $n\mapsto 2n$.
+This map is one-to-one because if $f(n_0)=f(n_1)$ then $2n_0=2n_1$
+and so $n_0=n_1$.
+This map is onto because if $k\in \mathcal{E}$ then $k=2n$~for some~$n\in\N$
+and then $k=f(n)$.
+\item Let $T=\set{n\in\N\suchthat n>4}$.
+Consider $\map{f}{\N}{T}$ given by $n\mapsto n+5$.
+This is one-to-one because if $f(n_0)=f(n_1)$ then $n_0+5=n_1+5$
+and $n_0=n_1$.
+This is onto because if $t\in T$ then $t=f(t-5)$ (observe that
+$t\in T$ implies that $t-5\in\N$).
+So it is a correspondence.
+\end{exparts}
+\end{ans}
+\begin{ans}{2.15}
+\begin{exparts}
+\item The tangent function $\map{\tan}{\open{-\pi/2}{\pi/2}}{\R}$
+  is a correspondence because it is strictly increasing.
+\item The map $\map{f}{\open{0}{1}}{\open{-\pi/2}{\pi/2}}$ given by
+  $f(x)=\pi\cdot x-(\pi/2)$ is a correspondence.
+  (For one thing, its graph is a line with positive slope and so
+  the function is strictly increasing.)
+\end{exparts}
+\end{ans}
+\begin{ans}{2.19}
+\begin{exparts}
+\item   Assume that $\map{f}{D}{C}$ is one-to-one.
+  We will do induction on the number of elements in~$D$.
+  The base step is that~$\sizeof{D}=0$.
+  The codomain cannot have fewer elements than this
+  so~$\sizeof{C} \geq \sizeof{D}$ holds in this case.
+
+  For the inductive step assume that the statement is true when
+  $\sizeof{D}=0$,
+  \ldots, $\sizeof{D}=k$ and let~$D$ be a set with~$\sizeof{D}=k+1$.
+  Pick some $d\in D$ and consider
+  $\hat{D}=D-\set{d}$ (because this is the $k+1$ case, there is at least
+  one such element).
+  The inductive hypothesis applies to $\hat{D}$ so that
+  the number of elements in the range of the restriction map
+  $\map{\hat{f}}{\hat{D}}{\range(\hat{f})}$
+  is at least as great as the number of elements in the domain of that map
+  $\sizeof{\range(\hat{f})} \geq \sizeof{\hat{D}}$.
+
+  Now extend to~$D$ and the map~$\map{f}{D}{C}$.
+  The set~$D$ has one element more than the set~$\hat{D}$.
+  Because~$f$ is one-to-one, the value~$f(d)$ is not in
+  the range of the restriction map~$\range(\hat{f})$.
+  Thus $\range(f)$ is one element larger than
+  $\sizeof{\range(\hat{f})}$.
+  Therefore $\sizeof{C} \geq \sizeof{D}$.
+
+\item   Assume that $\map{f}{D}{C}$ is onto.
+  We do induction on the number of elements in
+  the domain~$D$.
+  The base step is that~$D$ has no elements, so $D=\emptyset$.
+  The only function with an empty domain is the function whose graph is
+  empty.
+  This function is onto so the codomain~$C$ is also empty
+  (otherwise there would be an element of the codomain with no inverse
+  image).
+
+  For the inductive step assume that the statement is true when $\sizeof{D}=0$,
+  $\sizeof{D}=1$, \ldots, $\sizeof{D}=k$ and consider
+  the~$\sizeof{D}=k+1$ case.
+  Pick some $d_0\in D$ and consider
+  $\hat{D}=D-\set{d_0}$ (because this is the $k+1$ case there is at least
+  one such element in~$D$).
+
+  There are two cases:
+  whether the codomain element $f(d_0)$ is also the image of another domain
+  element, some $d\in\hat{D}$, or else it is not.
+  In the first case the restriction $\hat{f}$ is onto
+  and so the inductive hypothesis applies, giving that
+  $\sizeof{C}\leq \sizeof{\hat{D}}<\sizeof{D}$.
+
+  In the other case, that $d_0$ is the only element of~$D$ associated
+  by~$f$ with the codomain element~$f(d_0)$, let $\hat{C}=C-\set{f(d_0)}$.
+  The restriction map~$\map{\hat{f}}{\hat{D}}{\hat{C}}$ is clearly onto,
+  so the inductive hypothesis applies: $\sizeof{\hat{C}}\leq \sizeof{\hat{D}}$.
+  Therefore $\sizeof{\hat{C}}+1=\sizeof{C}\leq \sizeof{D}=\sizeof{\hat{D}}+1$.
+\end{exparts}
+\end{ans}
+\begin{ans}{2.20}
+\begin{exparts}
+\item
+Every natural number greater than zero can be written uniquely
+as a product of primes $2^{e_2}3^{e_3}\cdots p^{e_p}$.
+So every such number can be written uniquely as
+a product of a power of two~$2^{n}$ and an odd number~$2m+1$.
+Thus every natural number greater than zero corresponds in this
+way to the pair~$\sequence{n,m}$.
+And therefore for every natural number~$k\in\N$ the association of
+$k$ with $\sequence{n,m}$, where $k-1=2^{n}(2m+1)$ is a correspondence.
+
+\item
+\end{exparts}
+\end{ans}
+\begin{ans}{2.6}
+\begin{exparts}
+\item The function $\map{f}{S}{\hat{S}}$ given by $f(1)=11$, $f(2)=12$,
+and~$f(3)=13$ is one-to-one, by inspection.
+\item The function $\map{f}{T}{\hat{T}}$ given by $f(1)=11$, $f(2)=12$,
+and~$f(3)=13$ is one-to-one, by inspection.
+\item The function $\map{f}{S}{\hat{S}}$ given by $f(1)=1$, $f(2)=3$,
+and~$f(3)=5$ is one-to-one, by inspection.
+\item
+The function  $\map{f}{\mathcal{E}}{\mathcal{O}}$ given by
+$f(x)=x+1$ is a one-to-one function.
+The verification is easy: $f(x_0)=f(x_1)$ implies that $x_0+1=x_1+1$,
+and so $x_0=x_1$.
+\end{exparts}
+\end{ans}
+\begin{ans}{2.7}
+Let $S$ and~$T$ be sets such that $S\subseteq T$.
+Then the identity function, the map $\map{f}{S}{T}$ given by $f(s)=s$,
+is clearly one to one.
+\end{ans}
+\begin{ans}{2.9}
+The tangent function is a correspondence from $\open{-\pi/2}{\pi/2}$ to~$\R$
+so its inverse, arctangent, is a correspondence in the other direction.
+Thus, $g(x)=(\arctan(x)+(\pi/2))/\pi$ gives a correspondence from $\R$ to
+$\open{0}{1}$.
+\begin{center}
+  \includegraphics{background/asy/arctan/arctan.pdf}
+\end{center}
+% So we only need to cover
+% the single additional point,~$0$.
+% But we've been here before when
+% we saw the Infinite Hotel staff accommodating
+% a single new guest in a full hotel:
+% we slide the output values of $g\circ f$ up,
+% to make room for one more.
+% \begin{equation*}
+%   h(i) =
+%   \begin{cases}
+%     g\circ f\,(i-1) &\case{if $i> 0$} \\
+%     0               &\case{if $i=0$}
+%   \end{cases}
+% \end{equation*}
+% No such
+% onto $\map{h}{\R}{\leftclosed{0}{1}}$ exists,
+% so we conclude that no such~$f$ exists.
+\end{ans}
+\begin{ans}{2.10}
+One way is to take the diagonal bits two at a time, and
+for instance to change $01$ to $10$, and change any other two-bit
+sequence to $01$.
+\end{ans}
+\begin{ans}{1.2}
+I got these.
+\begin{tabular}{r|rrrrrrrr}
+   &$0$     &$100$   &$200$   &$300$
+              &$400$    &$500$     &$600$    &$700$  \\ \cline{1-8}
+   &$0.000$ &$0.577$   &$3.178$   &$9.366$
+              &$19.569$ &$36.004$  &$59.118$ &$91.427$
+\end{tabular}
+(If you get different numbers because your machine is much faster than mine,
+don't email me.
+I don't give a damn.)
+\end{ans}
+\begin{ans}{1.3}
+Turing machine number~$666$ proves to be
+\codeinline{((0 0 1 0) (2 0 1 0))}.
+\end{ans}
+\begin{ans}{1.4}
+\begin{exparts}
+\item The new way gives an index without having to enumerate all
+Turing machines with intermediate Cantor numbers.
+The new way has the disadvantage that there are natural numbers for which there
+is no associated Turing machine (such as the number $2^1$).
+\item \textit{Sage} gives this.
+\begin{lstlisting}
+sage: 2*3*5^5*7*11*13^4*17*5*19^2
+1265294248968750
+\end{lstlisting}
+\end{exparts}
+\end{ans}
+\begin{ans}{4.1}
+False.
+There is such a function.
+But it is not computable; there is no Turing machine whose behavior is
+that function.
+\end{ans}
+\begin{ans}{4.2}
+If
+$\computablefunction{halt\_check}$ were computable then we could
+write the program shown below.
+\begin{center}
+  \includegraphics{background/asy/hp/hp01.pdf}
+\end{center}
+It behaves
+like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$
+this program outputs~$0$.
+With this program we get an input-output relationship like that imagined
+in the \cref{subsec:Significance}'s table,
+containing only computable functions that are total.
+If $\computablefunction{halt\_check}$ is computable then
+this list is also computable and every total function is one of its rows,
+since if a function $\phi_e$ is total then the flowchart just never
+takes the `\texttt{No}' branch.
+Now we can diagonalize, giving a contradiction.
+\end{ans}

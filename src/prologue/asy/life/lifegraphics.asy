@@ -98,6 +98,17 @@ for (int dex=0; dex<=16; ++dex) {
 }
 
 
+
+// ======== glideranimr ========
+string fn = "glideranimr";
+
+int dex = 0;
+for (int dex=0; dex<=16; ++dex) {
+  picture p = one_gameboard("out",fn,dex,0.25cm);
+  shipout(fn+format("%02d",dex), p);
+}
+
+
 // ======== lonely ========
 string fn = "lonely";
 

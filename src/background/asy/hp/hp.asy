@@ -305,7 +305,7 @@ shipout(format("hp%02d",picnum),pic,format="pdf");
 
 // ---- halts on three is unsolvable, before s-m-n
 picture pic;
-picnum = picnum+1;
+picnum = 6;
 
 // define nodes
 node start=nroundbox("Start");
@@ -347,7 +347,7 @@ shipout(format("hp%02d",picnum),pic,format="pdf");
 
 // ---- halts on three is unsolvable, after s-m-n
 picture pic;
-picnum = picnum+1;
+picnum = 7;
 
 // define nodes
 node start=nroundbox("Start");
@@ -383,10 +383,12 @@ draw(pic,
      (printout--ending)
 );
 
+shipout(format("hp%02d",picnum),pic,format="pdf");
+
 
 // ---- outputs seven is unsolvable, before s-m-n
 picture pic;
-picnum = picnum+1;
+picnum = 8;
 
 // define nodes
 node start=nroundbox("Start");

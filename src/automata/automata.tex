@@ -5,64 +5,113 @@
 
 % Maybe use this photo? https://www.hodinkee.com/articles/patek-philippe-caliber-89-easter-problem
 
-A Turing machine is a state machine\Dash at its heart it 
-consists of states and the transitions between them.
+% A Turing machine is a state machine\Dash at its heart it 
+% consists of states and the transitions between them.
 
-We will study other state machines.
-For example, we can try to better understand the capabilities of the 
-Turing machine's box, its CPU, 
-by studying a machine just like it but without scratch memory.
-Below, we will define a machine where the
-tape head can read but not write; this is a finite state automata,.
+% We will study other state machines.
+% For example, we can try to better understand the capabilities of the 
+% Turing machine's box, its CPU, 
+% by studying a machine just like it but without scratch memory.
+% Below, we will define a machine where the
+% tape head can read but not write; this is a finite state automata,.
 
-\begin{definition}
-A \definend{state machine} consists of a set of \definend{states} $Q$,
-a set of \definend{initial states} $I\subseteq Q$,
-and a next state function $\map{\Delta}{Q}{Q}$.   
-\end{definition}
-
-
-
-\section{Finite state automata}
-Our core object of study is the Turing machine.
-To better understand a Turing machine we may isolate its components.
+% \begin{definition}
+% A \definend{state machine} consists of a set of \definend{states} $Q$,
+% a set of \definend{initial states} $I\subseteq Q$,
+% and a next state function $\map{\Delta}{Q}{Q}$.   
+% \end{definition}
+In the Theory of Computation our touchstone is the Turing machine.
+To better understand it we may break it down.
 Turing machines have only two components, a CPU and a tape.
-In this section we study the CPU alone, without a writeable tape.
+Consequently, in this section we take the tape away and
+study the CPU alone.
 
 Alternatively stated, 
-Turing machines use an infinite tape. 
-The devices that we use do not have unbounded memory.
+the devices that we use every day do not have unbounded memory.
 We can ask \citetext{what jobs can be done by a machine with bounded memory}{%
 From Rabin, Scott, Finite Automata and Their Decision Problems, 1959:
 Turing machines are widely considered to be the abstract prototype of digital computers; workers in the field, however, have felt more and more that the notion of a Turing machine is too general to serve as an accurate model of actual computers. It is well known that even for simple calculations it is impossible to give an a priori upper bound on the amount of tape a Turing machine will need for any given computation. It is precisely this feature that renders Turing's concept unrealistic.
 % 
 In the last few years the idea of a finite automaton has appeared in the literature. These are machines having only a finite number of internal states that can be used for memory and computation. The restriction on finiteness appears to give a better approximation to the idea of a physical machine. Of course, such machines cannot do as much as Turing machines, but the advantage of being able to compute an arbitrary general recursive function is questionable, since very few of these functions come up in practical applications.http://cstheory.stackexchange.com/a/14816}.
 
-\subsection{Definition}
 
-% Exercise http://djm.cc/fsquad/firing.html
-%  Myhill posed the firing squad synchronization problem in 1957. In this problem, you are given a row of soldiers, each of which can be in a finite number of states. A clock provides a sequence of time steps, 0, 1, 2, and so on; at each positive time step, the state of each soldier is set to a function, the transition function, of its previous state and the adjacent soldiers' previous states. This function is identical for all soldiers not at the ends of the row; the end soldiers, however, may have different transition functions. (Nowadays this would be called a `cellular automaton'.)
 
-% Three of the soldiers' states are called the quiescent, excited, and firing states. At time 0, all soldiers are in their quiescent states, except for one soldier at an end, who is in his excited state. The problem is to arrange the soldiers' state sets and transition functions such that for this starting position, no matter how many soldiers you start with, all soldiers will, at some future time, enter their firing states simultaneously. 
+\section{Finite state automata}
+To be more precise, we will change the tape head from read/write to read-only.
+So these machines will not have unbounded scratch memory.
 
-% Ans
-%  One way to solve the problem is to have the excited state shoot out two projectiles, one of which moves at speed 1 and one of which moves at speed 1/3. If the speed 1 projectile is made to bounce off the row's end, these projectiles will meet in the middle of the row. The row can then be bisected, and this bisection step can be repeated to quadrisect, 8-sect, etc., the row. When all these segments vanish (which will happen simultaneously), the soldiers should enter their firing state.
+Without the ability to write, these machines only can consume input,
+so we will start with the definition of a Turing machine, and modify it
+by omitting the tape actions \str{L} and \str{R}. 
+Instead, at each step the machine will just read a new input symbol.
 
-% Here is such a solution, with 13 states, and here is an illustration of the solution running for 20, 40, 80, and 160 soldiers. (In these pictures, and all succeeding pictures, the quiescent state is black, the excited state is yellow, and the firing state is white.) Bisecting a row of length N by this method will take around 3N/2 time steps, so the whole solution will take about 3N/2+3N/4+...=3N time steps.
+This gives us a feel for what can and cannot be done with states alone.
 
-% How little time can a solution take? It takes 2N-2 time steps just for a signal to pass from one end of the row to the other and back, so any solution must take at least this much time. In fact there are solutions that take just 2N-2 time steps. Here is a minimal-time solution by Abraham Waksman (Information and Control 9 (1966), 66-78), and here are runs of it for 48, 96, 192, 384, and 768 soldiers.
+\subsection{Examples}
+We will describe these machies with the same types of diagrams and tables
+that we introduced for Turing machines.
 
-% Waksman's solution uses 16 states. Here is a minimal-time solution with 11 states (David Karr, 1999) and runs of it for 20, 40, 80, and 160 soldiers; and here is a minimal-time solution by Robert Balzer with 8 states (Information and Control 10 (1967), 22-42) and runs of it for 20, 40, 80, and 160 soldiers. Finally, here is a minimal-time solution with just six states by Jacques Mazoyer (Theoretical Computer Science 50 (1987), 183-238), and runs of it for 40, 200, 500, and 1000 soldiers.
+\begin{example}
+A power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$.
+Its input alphabet has one symbol, \str{toggle}.
+\begin{center}
+  \newlength{\scratchheight}
+  % \newsavebox{\scratchbox}
+  \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa00.pdf}}
+  \settoheight{\scratchheight}{\usebox{\scratchbox}}
+  \vcenteredhbox{\usebox{\scratchbox}}
+  \hspace{4em}
+  \vcenteredhbox{\includegraphics[height=0.85\scratchheight]{automata/powerbutton.png}}  % Free, from: http://www.clker.com/clipart-9978.html
+\end{center}
+\end{example}
 
-Definition of FSA, motivated by CPU of a Turing machine.
+\begin{example}
+Operate this turnstile by puting in two tokens and then pushing thrugh
+It has three states and
+its input alphabet is $\Sigma=\set{\str{token},\str{push}}$.
+\begin{center}
+  % \newlength{\scratchheight}
+  % \newsavebox{\scratchbox}
+  \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa01.pdf}}
+  \settoheight{\scratchheight}{\usebox{\scratchbox}}
+  \vcenteredhbox{\usebox{\scratchbox}}
+  \hspace{4em}
+  \vcenteredhbox{\includegraphics[height=0.85\scratchheight]{automata/turnstile.jpg}} % http://upload.wikimedia.org/wikipedia/commons/2/2c/Turnstile.alewife.agr.jpg
+\end{center}
+Note how the states ``remember'' the history, to a limited extent.
+\end{example}
 
-Examples.
+\begin{example}
+This vending machine dispenses items costing $35$~cents
+(US coin denominations are: one cent coins which are not used here,
+nickles for $5$~cents, dimes for $10$~cents, and quarters for $25$~cents.)
+The picture is complex so we will show it in three layers.
+Here are the arrows involving nickels.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa02.pdf}
+\end{center}
+We don't show the unproductive loops involving \str{push}.
+For instance we don't show the loop from $q_0$ to itself; this 
+convention just reduces the complexity of the drawing.
+Here are the arrows involving dimes.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa03.pdf}
+\end{center}
+Again we've not bothered to show what to do when the machine is in
+state~$q_{25}$ and it receives a dime; in practice
+for such cases a machine must
+have additional states to give change.
+Here are the arrows for quarters.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa04.pdf}
+\end{center}
+\end{example}
+
 
 https://en.wikipedia.org/wiki/Almon_Brown_Strowger
 Invented Telephone switch because other undertaker's wife was the 
 phone operator, and sent all business the other way.
 
-Exercise: make a machine that plays tic-tac-toe.
 
 \begin{exercises}
 \begin{exercise}
@@ -74,6 +123,46 @@ because $n$ is infinite''.
 \begin{exercise}
 The language accepted by a DFA M with $n$ states is 
 infinite if and only if M accepts a string of length $k$, where $n\leq k <2n$.  
+\end{exercise}
+
+\begin{exercise}
+Make a machine that plays tic-tac-toe.  
+\end{exercise}
+
+\begin{exercise}
+% Exercise http://djm.cc/fsquad/firing.html
+Myhill posed the firing squad synchronization problem in 1957.
+You are given a row of soldiers, each of which can be in a finite number
+of states.
+A clock provides a sequence of time steps, $0$, $1$, $2$, \ldots\,.
+At each positive time step, the state of each soldier is set to a function,
+the \textit{transition function},
+of its previous state and the state of each adjacent soldier.
+This function is identical for all soldiers not at the ends of the row;
+the end soldiers, however, may have different transition functions.
+(This is a \textit{cellular automaton}.)
+
+Three of the soldiers' states are called the
+\textit{quiescent},
+\textit{excited},
+and \textit{firing} states.
+At time $0$, all soldiers are in their quiescent states,
+except for one soldier at an end, who is in his excited state.
+The problem is to arrange the state sets of the soldiers and
+the transition functions such that for this starting position,
+no matter how many soldiers you start with, all soldiers will,
+at some future time, enter their firing states simultaneously. 
+
+\begin{answer}  
+% Ans
+One way to solve the problem is to have the excited state shoot out two projectiles, one of which moves at speed 1 and one of which moves at speed 1/3. If the speed 1 projectile is made to bounce off the row's end, these projectiles will meet in the middle of the row. The row can then be bisected, and this bisection step can be repeated to quadrisect, 8-sect, etc., the row. When all these segments vanish (which will happen simultaneously), the soldiers should enter their firing state.
+
+Here is such a solution, with 13 states, and here is an illustration of the solution running for 20, 40, 80, and 160 soldiers. (In these pictures, and all succeeding pictures, the quiescent state is black, the excited state is yellow, and the firing state is white.) Bisecting a row of length N by this method will take around 3N/2 time steps, so the whole solution will take about 3N/2+3N/4+...=3N time steps.
+
+How little time can a solution take? It takes 2N-2 time steps just for a signal to pass from one end of the row to the other and back, so any solution must take at least this much time. In fact there are solutions that take just 2N-2 time steps. Here is a minimal-time solution by Abraham Waksman (Information and Control 9 (1966), 66-78), and here are runs of it for 48, 96, 192, 384, and 768 soldiers.
+
+Waksman's solution uses 16 states. Here is a minimal-time solution with 11 states (David Karr, 1999) and runs of it for 20, 40, 80, and 160 soldiers; and here is a minimal-time solution by Robert Balzer with 8 states (Information and Control 10 (1967), 22-42) and runs of it for 20, 40, 80, and 160 soldiers. Finally, here is a minimal-time solution with just six states by Jacques Mazoyer (Theoretical Computer Science 50 (1987), 183-238), and runs of it for 40, 200, 500, and 1000 soldiers.
+\end{answer}
 \end{exercise}
 \end{exercises}
 

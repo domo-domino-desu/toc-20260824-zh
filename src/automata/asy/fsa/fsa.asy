@@ -485,9 +485,9 @@ setdefaultstatediagramstyles() ;
 node q0=ncircle("$q_0$"); 
 node q1=ncircle("$q_1$"); 
 node q2=ncircle("$q_2$",ns_accepting); 
-node q3=ncircle("$q_0$"); 
-node q4=ncircle("$q_1$"); 
-node q5=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$"); 
 
 // calculate nodes position
 // layout
@@ -519,6 +519,169 @@ draw(pic,
 // draw nodes
 draw(pic,
      q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== multiple of three ================
+picture pic;
+int picnum = 12;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1);
+layout(-60.0, 1*u, q0, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{1},\str{4},\str{7}"),
+     (q0..bend(15)..q2).l(Label("\str{2},\str{5},\str{8}",Relative(0.35))).style("leftside"),
+     (q0..loop(W)).l("\str{0},\str{3},\str{6},\str{9}"),
+     (q1..bend..q0).l("\str{2},\str{5},\str{8}"),
+     (q1..bend(-15)..q2).l(Label("\str{1},\str{4},\str{7}",Relative(0.65))),
+     (q1..loop(E)).l("\str{0},\str{3},\str{6},\str{9}"),
+     (q2..bend(-50)..q0).l("\str{1},\str{4},\str{7}").style("leftside"),
+     (q2..bend(50)..q1).l("\str{2},\str{5},\str{8}"),
+     (q2..loop(S)).l("\str{0},\str{3},\str{6},\str{9}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== North American Phone Numbering Plan ================
+picture pic;
+int picnum = 13;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node opr=ncircle("op",ns_accepting); 
+node t1=ncircle("$\text{int}_1$"); 
+node tn=ncircle("$\text{int}_n$",ns_accepting); 
+node ll1=ncircle("$\text{LL}_1$"); 
+node ll2=ncircle("$\text{LL}_2$"); 
+node ll3=ncircle("$\text{LL}_3$"); 
+node x1=ncircle("$\text{X}_1$"); 
+node x2=ncircle("$\text{X}_2$"); 
+node x3=ncircle("$\text{X}_3$"); 
+node l1=ncircle("$\text{L}_1$"); 
+node l2=ncircle("$\text{L}_2$"); 
+node l3=ncircle("$\text{L}_3$"); 
+node l4=ncircle("$\text{L}_4$"); 
+node con=ncircle("Con",ns_accepting); 
+node h2=ncircle("$\text{H}_2$"); 
+node h3=ncircle("$\text{H}_3$"); 
+node help=ncircle("Info",ns_accepting); 
+node r2=ncircle("$\text{R}_2$"); 
+node r3=ncircle("$\text{R}_3$"); 
+node rep=ncircle("Rep",ns_accepting); 
+node e2=ncircle("$\text{E}_2$"); 
+node e3=ncircle("$\text{E}_3$"); 
+node emr=ncircle("Emr",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = 0.9*defaultlayoutskip;
+real v = 0.9*u;
+
+real theta=aTan(2*v/u);
+layout(theta,(1/Cos(theta))*u, q0, opr);
+hlayout(1*u, opr, t1, tn);
+real theta=aTan(v/u);
+layout(theta,(1/Cos(theta))*u, q0, ll1);
+hlayout(1*u, ll1, ll2);
+real alpha=aTan(-0.4*v/u);
+layout(alpha, (1/Cos(alpha))*u, ll2, ll3);
+hlayout(1*u, ll3, x1);
+hlayout(5*u, q0, x2);
+hlayout(u, x2, x3, l1);
+vlayout(1*v, l1, l2, l3, l4, con);
+real theta=aTan(-v/u);
+layout(theta, (1/Cos(theta))*u, q0, h2);
+layout(alpha, (1/Cos(alpha))*u, h2, h3);
+hlayout(1*u, h3, help);
+real theta=aTan(-2*v/u);
+layout(theta, (1/Cos(theta))*u, q0, r2);
+layout(alpha, (1/Cos(alpha))*u, r2, r3);
+hlayout(1*u, r3, rep);
+real theta=aTan(-3*v/u);
+layout(theta, (1/Cos(theta))*u, q0, e2);
+layout(alpha, (1/Cos(alpha))*u, e2, e3);
+hlayout(1*u, e3, emr);
+
+// draw edges
+draw(pic,
+     (q0--opr).l("\str{0}"),
+     (opr--t1).l("\str{1}"),
+     (t1--tn).l("$x$"),
+     (tn..loop(E)).l("$x$"),
+     (q0--ll1).l("\str{1}"),
+     (ll1--ll2).l("$n$"),
+     (ll2--HV--x3).l("$n$"),
+     (ll2--VH--ll3).l("$p$"),
+     (ll3--x1).l("$n$"),
+     (x1--HV--x2).l("$n$"),
+     (q0--x2).l("\str{2},\str{3},\str{5},\str{7},\str{8}"),
+     (x2--x3).l("$n$"),
+     (x3--l1).l("$x$"),
+     (l1--l2).l("$x$"),
+     (l2--l3).l("$x$"),
+     (l3--l4).l("$x$"),
+     (l4--con).l("$x$"),
+     (q0--h2).l("4").style("leftside"),
+     (h2--HV--x3).l("$n$"),
+     (h2--VH--h3).l("\str{1}"),
+     (h3--help).l("\str{1}"),
+     (q0--r2).l("6").style("leftside"),
+     (r2--HV--x3).l("$n$"),
+     (r2--VH--r3).l("\str{1}"),
+     (r3--rep).l("\str{1}"),
+     (q0--e2).l("9").style("leftside"),
+     (e2--HV--x3).l("$n$"),
+     (e2--VH--e3).l("\str{1}"),
+     (e3--emr).l("\str{1}")
+);
+
+// draw nodes
+draw(pic,
+     q0, opr, t1, tn,
+     ll1, ll2, ll3, x1,
+     x2, x3, l1, l2, l3, l4, con,
+     h2, h3, help,
+     r2, r3, rep,
+     e2, e3, emr);
+
+// draw legend
+label(pic,
+      "\renewcommand*{\arraystretch}{0.9}
+       \begin{tabular}{rl}
+         \multicolumn{2}{l}{Legend:} \\ 
+         \hspace{2em}$x$  &\str{0},\,\ldots \str{9} \\
+                     $n$  &\str{2},\,\ldots \str{9} \\
+                     $p$  &\str{0},\str{1} 
+         \end{tabular}",(7*u,1.45*v));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

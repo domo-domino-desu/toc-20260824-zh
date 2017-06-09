@@ -20,7 +20,7 @@
 % a set of \definend{initial states} $I\subseteq Q$,
 % and a next state function $\map{\Delta}{Q}{Q}$.   
 % \end{definition}
-In the Theory of Computation our touchstone is the Turing machine.
+Our touchstone is the Turing machine.
 To better understand it we may break it down.
 Turing machines have only two components, a CPU and a tape.
 Consequently, in this section we take the tape away and
@@ -37,21 +37,15 @@ In the last few years the idea of a finite automaton has appeared in the literat
 
 
 \section{Finite state automata}
-To be more precise, we will change the tape head from read/write to read-only.
-So these machines will not have unbounded scratch memory.
+We will modify the definition of Turing Machine by changing the
+tape head from read/write to read-only.
+This gives us insight into what can be done with states alone.
 
-Without the ability to write, these machines only can consume input,
-so we will start with the definition of a Turing machine, and modify it
-by omitting the tape actions \str{L} and \str{R}. 
-Instead, at each step the machine will just read a new input symbol.
+\subsection{Definition}
+We will use the same type of diagrams and tables
+as with Turing machines.
 
-This gives us a feel for what can and cannot be done with states alone.
-
-\subsection{Examples}
-We will describe these machies with the same types of diagrams and tables
-that we introduced for Turing machines.
-
-\begin{example}
+\begin{example}  \label{ex:PowerSwitch}
 A power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$.
 Its input alphabet has one symbol, \str{toggle}.
 \begin{center}
@@ -65,7 +59,7 @@ Its input alphabet has one symbol, \str{toggle}.
 \end{center}
 \end{example}
 
-\begin{example}
+\begin{example} \label{ex:Turnstile}
 Operate this turnstile by puting in two tokens and then pushing thrugh
 It has three states and
 its input alphabet is $\Sigma=\set{\str{token},\str{push}}$.
@@ -78,32 +72,181 @@ its input alphabet is $\Sigma=\set{\str{token},\str{push}}$.
   \hspace{4em}
   \vcenteredhbox{\includegraphics[height=0.85\scratchheight]{automata/turnstile.jpg}} % http://upload.wikimedia.org/wikipedia/commons/2/2c/Turnstile.alewife.agr.jpg
 \end{center}
-Note how the states ``remember'' the history, to a limited extent.
 \end{example}
 
-\begin{example}
-This vending machine dispenses items costing $35$~cents
-(US coin denominations are: one cent coins which are not used here,
-nickles for $5$~cents, dimes for $10$~cents, and quarters for $25$~cents.)
+As we saw with Turing machines, the states are a limited form of memory.
+For instance, $q_{\text{one}}$ is how the turnstile ``remembers'' that it
+has so far received one token.
+
+\begin{example} \label{ex:VendingMachine}
+This vending machine dispenses items that cost $30$~cents.
+(US coin denominations are: one cent coins that are not used here,
+nickles are $5$~cents, dimes are $10$~cents, and quarters are $25$~cents.)
 The picture is complex so we will show it in three layers.
-Here are the arrows involving nickels.
+First are the arrows for nickels and pushing the dispense button.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa02.pdf}
 \end{center}
-We don't show the unproductive loops involving \str{push}.
-For instance we don't show the loop from $q_0$ to itself; this 
-convention just reduces the complexity of the drawing.
-Here are the arrows involving dimes.
+After receiving $30$~cents and getting another nickle,
+this machine does something not very sensible: it just stays in $q_{30}$.
+In practice we would have further states to keep track of
+overages so that we could give change but here we ignore that.
+Next are the arrows for dimes
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa03.pdf}
 \end{center}
-Again we've not bothered to show what to do when the machine is in
-state~$q_{25}$ and it receives a dime; in practice
-for such cases a machine must
-have additional states to give change.
-Here are the arrows for quarters.
+and for quarters.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa04.pdf}
+\end{center}
+\end{example}
+
+\begin{example}
+This machine, when started in state~$q_0$ and fed bit strings,
+will keep track of the remainder modulo~$4$ of the number of
+\str{1}'s.
+\begin{center}    
+  \includegraphics{automata/asy/fsa/fsa06.pdf}
+\end{center}
+\end{example}
+
+\begin{definition} \label{def:FiniteStateMachine}
+A \definend{Finite State Machine}
+(or
+\definend{Finite State Automata}) is composed of five things
+$\FSM=\sequence{Q,q_{\text{start}},F,\Sigma,\Delta}$.
+They consist of a finite \definend{set of states}~$Q$,
+one of which is the \definend{start state}~$q_{\text{start}}$,
+and a subset $F\subseteq Q$ of \definend{final states}.
+They also consist of a finite \definend{input alphabet} set~$\Sigma$
+and a \definend{transition function} $\map{\Delta}{Q\times\Sigma}{Q}$.
+\end{definition}
+
+This definition may appear different than the one for 
+a Turing Machine, \cref{def:TuringMachine} from Chapter~One,
+but a lot of that is because here we don't need to expand on
+an alphabet or a transition function since we already have seen them.
+
+The two definitions are alike in that at the heart of each is
+the transition function~$\Delta$.
+It makes machines move step-by-step
+in response to the input.
+% It also, as with the Turing Machines we saw earler,
+% makes these machines deterministic:~at
+% each step it is in one and only one state.
+% This is a because $\Delta$ is a function, so for
+% every input pair $\sequence{\text{present~state},\text{symbol}}$ there is
+% one and only one associated next state output.
+% (Later in this chapter we will see a modification of this definition that
+% permits a machine to be in more than one state at a time.)
+\begin{center}
+  \includegraphics{automata/asy/machine/machine.pdf}
+\end{center}
+
+Of course, 
+the point of this definition is that the two types of machines differ in that
+Finite State Machines cannot write.
+All other differences in the definitions follow from that.
+For one thing,
+because Finite State Machines cannot write they don't need
+to move the tape for scratch work,
+so we've dropped the tape action symbols \str{L} and~\str{R}.
+These machines just consume the input, at each step reading in the next
+tape character.
+Consequently there is no \HP{} for Finite State Machines\Dash they always halt,
+after a number of steps equal to the length of the input.
+
+The other main difference is the 
+presence of the set of final states.
+Consider, in the vending machine of \cref{ex:VendingMachine},
+the state $q_{30}$.
+It is a success state or goal state, meaning
+that the machine has seen in the input what it is looking for.
+The same goes for \cref{ex:Turnstile}'s turnstile state~$q_{\text{ready}}$
+and \cref{ex:PowerSwitch}'s power switch state~$q_{\text{on}}$.
+While we can design a Turing machine to indicate a choice by arranging so
+that for each input
+the machine will end and the only thing on the tape will be either a \str{1}
+or \str{0},
+we cannot do this for Finite State Machines because they cannot write.
+Instead, 
+to indicate a decision they will end one of these designated states,
+one of the final states.
+Imagine that these are connected to a light or bell so that
+we can spot a computation that was successful.
+In the diagrams below we show the final states with double circles.
+
+The reason to have a start state is more straightforward, since
+the machine has to start somewhere.
+In our examples typically which state is the start is clear;
+usually we name it~$q_0$.
+
+\begin{example}
+This machine, shown with the
+transition function~$\Delta$ written out,
+accepts strings that are valid as integers.
+Thus, it accepts `\str{21}' and `\str{-707}' but does not accept
+`\str{501-}'.
+Both the diagram and the table group some inputs together when
+they result in the same action.
+For instance, when in state~$q_0$ this machine does the same thing
+whether the input is \str{+} or \str{-}, namely it passes into
+$q_1$.
+\begin{center}  \small
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa07.pdf}}
+  \hspace{3em}
+  \begin{tabular}{c|ccc}
+    \multicolumn{1}{c}{$\Delta$}
+      &\str{+}, \str{-} &\str{0}, \ldots{} \str{9} &\tabulartext{else}   \\
+    \cline{2-4}
+    $q_0$ &$q_1$ &$q_2$ &$e$   \\
+    $q_1$ &$e$   &$q_2$ &$e$   \\
+    $q_2$ &$e$   &$q_2$ &$e$   \\
+    $e$   &$e$   &$e$   &$e$   \\
+  \end{tabular}
+\end{center}
+We can take its alphabet to be all visible ASCII characters,
+that is, beyond the digits and the signs \str{+} and~\str{-},
+to include letters such as \str{a} and~\str{A}, and a few
+more characters such as \str{!}.
+\end{example}
+
+
+\begin{example}  \label{ex:FSATwoAsEvenBs}
+This machine accepts a string if and only if it is a member of this language.
+\begin{equation*}  
+  \lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+               \suchthat \text{$\sigma$ contains at least two \str{a}'s
+                 and an even number of \str{b}'s}}
+\end{equation*}
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa11.pdf}               
+\end{center}
+\end{example}
+
+The language description above is meant to imply that the machine's alphabet is
+$\Sigma=\set{\str{a},\str{b}}$.
+We often don't specify the alphabet.
+For instance, in the next example the most sensible alphabet is
+all of Unicode, but that detail is not relevant to the point of the example,
+so we pass it over. 
+
+\begin{example}
+For any finite set of strings there is a Finite State Machine that
+will accept a string if and only if it is in that language.
+This machine accepts strings that are members of the set
+$\set{\str{jpg},\str{png},\str{pdf}}$ of some filename extensions.
+Notice that it has more than one final state.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa09.pdf}}
+\end{center}
+That drawing omits a lot of edges, involving the error state~$e$.
+For instance, from state~$q_0$ any input character other than \str{j}
+or~\str{p} is an error.
+This shows the extra edges for the top branch; putting them all in
+would make a mess.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa10.pdf}}
 \end{center}
 \end{example}
 
@@ -115,6 +258,10 @@ phone operator, and sent all business the other way.
 
 \begin{exercises}
 \begin{exercise}
+Produce the transition function table for \cref{ex:FSATwoAsEvenBs}.    
+\end{exercise}
+
+  \begin{exercise}
 Rebut this incorrect statement: ``no FSM will accept 
 $\set{\str{a}^n\str{b}\suchthat n\in\N}$
 because $n$ is infinite''.     
@@ -127,6 +274,16 @@ infinite if and only if M accepts a string of length $k$, where $n\leq k <2n$.
 
 \begin{exercise}
 Make a machine that plays tic-tac-toe.  
+\end{exercise}
+
+\begin{exercise}
+Variants: Moore machine, Mealy machine
+\end{exercise}
+
+\begin{exercise}
+  Following the definition of a Turing Machine we gave a complete description
+  of its action, on page~\pageref{text:DescriptionOfTMAction}.
+  Do that for the action of a Finite State Machine.
 \end{exercise}
 
 \begin{exercise}

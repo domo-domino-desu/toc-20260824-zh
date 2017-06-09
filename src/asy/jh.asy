@@ -184,17 +184,19 @@ path cut_off_ends(path p, real epsilon) {
 // node.asy parameters
 import node;
 // define node style
-pen NODEPEN=fontsize(9pt);
+pen NODEPEN=fontsize(7pt)+blue;
 pen EDGEPEN=fontsize(7pt); // +fontcommand("\ttfamily");
+pen  EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
 // //? doesn't do anything defaultlabelstyle=labelstyle(p=fontsize(6pt)+fontcommand("\ttfamily")+red);
 // // define edge style
 defaultdrawstyle=drawstyle(p=EDGEPEN, arrow=Arrow(DefaultHead,size=3));
 // // Standard node is single-circle border
 defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(backgroundcolor,black));
 // // Double circle nodes
-nodestyle ns_accepting=nodestyle(textpen=NODEPEN, drawfn=Filler(FILLCOLOR)+DoubleDrawer(black));
+nodestyle ns_accepting=nodestyle(textpen=NODEPEN+red, drawfn=Filler(FILLCOLOR)+DoubleDrawer(black));
 // // nodes without any boxing
 nodestyle ns_noborder=nodestyle(xmargin=1pt, drawfn=None);
+
 
 
 // nrounddiamond; shape like ndiamond, but with rounded corners
@@ -261,6 +263,34 @@ node[] nrounddiamonds(nodestyle ns=defaultnodestyle ... Label[] Ls) {
     }
     return nds;
 }
+
+// Set defaults for circle and arrow stats diagrams
+void setdefaultstatediagramstyles() {
+  // If you declare structures then you won't see the changes outside the fcn
+  NODEPEN=fontsize(7pt);
+  EDGEPEN=linewidth(0.75bp)+fontsize(7pt)+black; 
+  EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
+  defaultnodestyle=nodestyle(xmargin=1pt,
+			     textpen=NODEPEN,
+			     drawfn=FillDrawer(backgroundcolor,boldcolor));
+  // Nodes with double circle 
+  ns_accepting=nodestyle(xmargin=1pt,
+			 textpen=NODEPEN,
+			 drawfn=Filler(backgroundcolor)+DoubleDrawer(black));
+  // Nodes without any boxing
+  ns_noborder=nodestyle(xmargin=1pt,
+			textpen=NODEPEN,
+			drawfn=None);
+  // edge style
+  defaultdrawstyle=drawstyle(p=EDGEPEN,
+			     arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
+
+  // Pen for edges when Labelled
+  // pen edge_text_pen = fontsize(7pt) + fontcommand("\ttfamily") + black;
+  // color edges in walk
+  //  pen walk_pen = linewidth(0.75bp) + highlight_color;
+}
+
 
 // circle centered at c, radius r
 path circle(pair c, real r)

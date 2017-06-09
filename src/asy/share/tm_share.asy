@@ -13,12 +13,12 @@ picture turingmachine;
 pen TM_DOVETAILPEN=gray(0.3)+linewidth(0.1); // draw edges of box and stack
 
 real tm_lh=3, tm_wd=4, tm_ht=1.3;  // dimensions of CPU box
-// pen beige_color=rgb("E2CBB3");
-// pen green_color=rgb("4B6635");
+pen beige_color=rgb("E2CBB3");
+pen green_color=rgb("4B6635");
 // pen purple_color=rgb("4D455D");
-// pen red_color=rgb("F54E2A");
+// Use the one from jh.sty pen red_color=rgb("F54E2A");
 // pen blue_color=rgb("47C0B8");
-pen cpu_color=beige_color;
+// pen cpu_color=beige_color;
 pen button_color=green_color;
 pen halt_light_color=red_color;
 
@@ -61,7 +61,7 @@ material tm_box_outside=material(ambientpen=gray(0.19225),  // background color;
 				 emissivepen=gray(0.7),
 				   shininess=.4*128);
 
-render render=render(compression=0,merge=true);
+// render render=render(compression=0,merge=true);
 
 // tm_draw  Draw the body of the Turing machine
 void tm_draw(pen p=TM_DOVETAILPEN) {

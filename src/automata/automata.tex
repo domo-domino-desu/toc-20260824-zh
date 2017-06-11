@@ -37,7 +37,8 @@ the devices that we use every day do not.\footnote{It is true that,
   process is irrelevant, or even a hindrance, rather than illuminating.
   So often the best thing to do when modelling existing
   devices is to use devices without arbitrary bounds.
-  Nevertheless, the machines of this chapter are useful also, as we shall see.}
+  All that aside though, we shall see that
+  the machines of this chapter are also useful.}
 We can ask \citetext{what jobs can be done by a machine with bounded memory}{%
 From Rabin, Scott, Finite Automata and Their Decision Problems, 1959:
 Turing machines are widely considered to be the abstract prototype of digital computers; workers in the field, however, have felt more and more that the notion of a Turing machine is too general to serve as an accurate model of actual computers. It is well known that even for simple calculations it is impossible to give an a priori upper bound on the amount of tape a Turing machine will need for any given computation. It is precisely this feature that renders Turing's concept unrealistic.
@@ -90,18 +91,18 @@ has so far received one token.
 
 \begin{example} \label{ex:VendingMachine}
 This vending machine dispenses items that cost $30$~cents.
-(US coin denominations are: one cent coins that are not used here,
+(US coin denominations are: $1$~cent coins that are not used here,
 nickles are $5$~cents, dimes are $10$~cents, and quarters are $25$~cents.)
 The picture is complex so we will show it in three layers.
 First are the arrows for nickels and pushing the dispense button.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa02.pdf}
 \end{center}
-After receiving $30$~cents and getting another nickle,
+After receiving $30$~cents and getting another nickel,
 this machine does something not very sensible: it just stays in $q_{30}$.
 In practice we would have further states to keep track of
 overages so that we could give change but here we ignore that.
-Next are the arrows for dimes
+Next comes the arrows for dimes
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa03.pdf}
 \end{center}
@@ -128,7 +129,7 @@ $\FSM=\sequence{Q,q_{\text{start}},F,\Sigma,\Delta}$.
 They consist of a finite \definend{set of states}~$Q$,
 one of which is the \definend{start state}~$q_{\text{start}}$,
 and a subset $F\subseteq Q$ of \definend{final states} or
-\definend{accepting sates}.
+\definend{accepting states}.
 They also consist of a finite \definend{input alphabet} set~$\Sigma$
 and a \definend{transition function} $\map{\Delta}{Q\times\Sigma}{Q}$.
 \end{definition}
@@ -150,9 +151,6 @@ in response to the input.
 % one and only one associated next state output.
 % (Later in this chapter we will see a modification of this definition that
 % permits a machine to be in more than one state at a time.)
-\begin{center}
-  \includegraphics{automata/asy/machine/machine.pdf}
-\end{center}
 
 Of course, 
 the point of this definition is that the two types of machines differ in that
@@ -162,13 +160,17 @@ For one thing,
 because Finite State Machines cannot write they don't need
 to move the tape for scratch work,
 so we've dropped the tape action symbols \str{L} and~\str{R}.
-These machines just consume the input, at each step reading in the next
+We put some input onthe tape, press the start button,
+and the machine just consumes the input, at each step reading in the next
 tape character.
+\begin{center}
+  \includegraphics{automata/asy/machine/machine.pdf}
+\end{center}
 Consequently there is no \HP{} for Finite State Machines\Dash they always halt,
 after a number of steps equal to the length of the input.
 
 The other main difference is the 
-presence of the set of final states.
+presence in this definition of the set of final states.
 Consider, in the vending machine of \cref{ex:VendingMachine},
 the state $q_{30}$.
 It is a success state or goal state, meaning
@@ -351,41 +353,47 @@ Since $q_0$ is an accepting state, the machine accepts \str{5013}.
 
 \begin{example}
 Finite State Machines are easy to translate to code.
-Here is a Python version of the multiple of three machine.
-\begin{lstlisting}
-def multiple_of_three_fsm(s):
-    state = 0
-    for ch in s:
-        if state == 0:
-            if ch in set([0,3,6,9]):
-                state = 0
-            elif ch in set([1,4,7]):
-                state = 1
-            else:
-                state = 2
-        elif state == 1:
-            if ch in set([0,3,6,9]):
-                state = 1
-            elif ch in set([1,4,7]):
-                state = 2
-            else:
-                state = 0
-        else:
-            if ch in set([0,3,6,9]):
-                state = 2
-            elif ch in set([1,4,7]):
-                state = 0
-            else:
-                state = 1
-    if state == 0:
-        return True
-    else:
-        return False    
-\end{lstlisting}
+Here is a Scehem version of the multiple of three machine.  
+\lstinputlisting{automata/scheme/mod3fsm.scm}
+(Because the last thing called in \lstinline!multiple-of-three-fsm-helper!
+is itself, the compiler converts the recursion to iteration.
+So we get the expressiveness of recursion with the space conservation
+of interation.)
+% Here is a Python version of the multiple of three machine.
+% \begin{lstlisting}
+% def multiple_of_three_fsm(s):
+%     state = 0
+%     for ch in s:
+%         if state == 0:
+%             if ch in set([0,3,6,9]):
+%                 state = 0
+%             elif ch in set([1,4,7]):
+%                 state = 1
+%             else:
+%                 state = 2
+%         elif state == 1:
+%             if ch in set([0,3,6,9]):
+%                 state = 1
+%             elif ch in set([1,4,7]):
+%                 state = 2
+%             else:
+%                 state = 0
+%         else:
+%             if ch in set([0,3,6,9]):
+%                 state = 2
+%             elif ch in set([1,4,7]):
+%                 state = 0
+%             else:
+%                 state = 1
+%     if state == 0:
+%         return True
+%     else:
+%         return False    
+% \end{lstlisting}
 \end{example}
 
 
-We close with a historically important Finite State Automata.
+We close with a historically important example.
 
 \begin{example}
 This is a simplification of
@@ -393,7 +401,7 @@ This is a simplification of
 See the description of the North America Numbering Plan
 \autocite{wiki:NANumbering}.}
 (one way it is a simplification is that
-it leaves our error states).
+it leaves out error states).
 Consider the number \str{1-802-555-0101}.
 The diagram shows that the initial \str{1} takes us along the second line,
 which means the call will leave the central office\Dash it will
@@ -401,7 +409,7 @@ go out of town.
 The \str{0} between the \str{8} and the~\str{2} determines that the call
 is to a different area code, not just to a different central office inside
 the same area code.
-Then the machine process the central office exchange number of \str{555},
+Finally the machine processes the central office exchange number of \str{555},
 and the line number of \str{0101}, and makes the connection.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa13.pdf}
@@ -465,7 +473,8 @@ Use $\Sigma=\set{\str{a}, \str{b}}$.
 \begin{exercise}
 Produce a Finite State Machine over the alphabet
 $\Sigma=\set{\str{a},\,\ldots \str{z}}$ that accepts only the
-string \str{rachelriley}.
+string \str{rachelriley},
+and one that fails to accept only \str{susiedent}. 
 \end{exercise}
 
 \begin{exercise}
@@ -536,7 +545,7 @@ has a sequence of elements consisting of the ordered vowels.
 \begin{exercise}
 Produce the circle and arrow diagram picturing this transition
 function.
-There is only one accepting state, $F=\set{$q_1$}$.
+There is only one accepting state, $F=\set{q_1}$.
 \begin{center}
   \small
   \begin{tabular}{r|cc}
@@ -571,6 +580,13 @@ gives rise to a language.
 \end{exercise}
 
 \begin{exercise}
+What language is accepted by this machine?
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa14.pdf}
+\end{center}
+\end{exercise}
+
+\begin{exercise}
 Produce a Finite State Machine to accept each language.
 \begin{exparts}
 \item   
@@ -601,6 +617,20 @@ Produce a Finite State Machine to accept each language.
 \begin{exercise}
 Make a machine that accepts a tic-tac-toe game that is a win for
 the \str{X}'s.  
+\end{exercise}
+
+\begin{exercise}
+Can a Finite State Machine have no states?
+Does the definition allow $Q=\emptyset$?  
+\begin{answer}
+No, it must have a start state.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+How many Finite State Machines are there with $Q=\set{q_0}$?
+With $Q=\set{q_0,q_1}$, where $q_0$ is the start state?
+How many with $n$ states, where $q_0$ is the start?
 \end{exercise}
 
 \begin{exercise}

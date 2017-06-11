@@ -687,6 +687,45 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ============== exercise of a*ba* ================
+picture pic;
+int picnum = 14;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+// layout(-45.0, 1*u, q0, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(S)).l("\str{a}"),
+     (q0--q1).l("\str{b}"),
+     (q1..loop(S)).l("\str{a}"),
+     (q1--q2).l("\str{b}"),
+     (q2..loop(S)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 // // ............................ P_add
 // picture pic;
 // int picnum = 1;

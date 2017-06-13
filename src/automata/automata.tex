@@ -355,7 +355,7 @@ Since $q_0$ is an accepting state, the machine accepts \str{5013}.
 Finite State Machines are easy to translate to code.
 Here is a Scehem version of the multiple of three machine.  
 \lstinputlisting{automata/scheme/mod3fsm.scm}
-(Because the last thing called in \lstinline!multiple-of-three-fsm-helper!
+(Because the last thing called in \codeinline{multiple-of-three-fsm-helper}
 is itself, the compiler converts the recursion to iteration.
 So we get the expressiveness of recursion with the space conservation
 of interation.)
@@ -396,14 +396,14 @@ of interation.)
 We close with a historically important example.
 
 \begin{example}
-This is a simplification of
+The diagram below is a simplification of
 \citetext{how phone numbers were done in North America for many years}{%
 See the description of the North America Numbering Plan
 \autocite{wiki:NANumbering}.}
 (one way it is a simplification is that
 it leaves out error states).
 Consider the number \str{1-802-555-0101}.
-The diagram shows that the initial \str{1} takes us along the second line,
+The initial \str{1} takes us along the second line,
 which means the call will leave the central office\Dash it will
 go out of town.
 The \str{0} between the \str{8} and the~\str{2} determines that the call
@@ -416,11 +416,10 @@ and the line number of \str{0101}, and makes the connection.
 \end{center}
 Today's picture is much more complicated.
 For one thing, area codes no longer are required to
-have a middle digit of either \str{0} or~\str{1}; we  
+have a middle digit of \str{0} or~\str{1}; we  
 just need too many area codes to forgo the ones with a middle digit from
 \str{2} to \str{9}.
-This additional complication is possible because
-instead
+This additional complication is possible because instead
 citetext{switching with physical devices}{%
 The devices to do the switching were invented in 1889 by an undertaker whose
 competiter's wife was the local telephone operator and routed calls to
@@ -663,8 +662,172 @@ where $n\leq k <2n$.
 % \begin{exercise}
 % Variants: Moore machine, Mealy machine
 % \end{exercise}
+\end{exercises}
+
+
+% ==================================================
+\subsection{Regular expressions}
+This machine
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa14.pdf}
+\end{center}
+accepts strings that
+have some number of \str{a}'s, followed by a \str{b},
+followed by some number of \str{a}'s.
+In this subsection we give a way to describe the language of a
+Finite State Machine.
+It conveniently expressing constructs such 
+as ``any number of'' and ``followed by.''
+
+A few preliminary examples will make the definition clearer.
+These use the alphabet $\Sigma=\set{\str{a},\ldots,\str{z}}$.
+
+\begin{example}
+The regular expression 
+\re{h(a|e|i|o|u)t} describes the language where each word starts with~\str{h},
+\citetext{has a vowel in the middle}{%
+Most speakers of American English cite the vowels as `a', `e', `i',
+`o', and~`u'.  
+See \autocite{Bigham}.}, and ends with~\str{t}.
+This language consists of five words of three letters
+$\lang{L}=\set{\str{hat}, \str{het}, \str{hit},\str{hot}, \str{hut}}$.
+\end{example}
+
+\begin{example}
+The regular expression \re{ab*c} describes the language 
+whose words begin with $\str{a}$, followed by any number of $\str{b}$'s
+(including possibly zero-many $\str{b}$'s), followed by 
+a single~$\str{c}$ at the end
+$\lang=\set{\str{ac}, \str{abc}, \str{abbc},\, \ldots}$.
+\end{example}
+
+\begin{example}  \label{ex:RegexABOrCStar}
+The language described by 
+the regular expression \re{a(b|c)*} consists of 
+words starting with $\str{a}$, and ending with any number of
+$\str{b}$'s or $\str{c}$'s.
+This does not mean `any number of \str{b}'s or any number of \str{c}'s'.  
+Rather, the two letters are mixed
+$\lang{L}=\set{\str{a}, \str{ab}, \str{ac}, 
+             \str{abb}, \str{abc}, \str{acb}, \str{acc},\, \ldots}$.
+\end{example}
+           
+\begin{example}
+In contrast, \re{a(b*|c*)} describes the language 
+whose words begin with \str{a} and end with any number of \str{b}'s
+or any number of \str{c}'s, but there is no mixing 
+$\lang{L}=\set{\str{a},
+            \str{ab}, \str{abb},\,\ldots\,,\str{ac},\str{acc},\,\ldots}$. 
+\end{example}
+
+\begin{example}
+The language of the machine that opened this subsection is described by
+the regular expression \re{a*ba*}.
+\end{example}
+
+A regular expression, then, is a short string that describes a language
+by describing 
+the pattern of the strings in that language.
+
+The syntax of a regular expression is straightforward.
+For instance, to apply regular expressions to
+languages over $\Sigma=\set{\str{a},\,\ldots \str{z}}$ use
+this grammar.
+\begin{grammar}
+<regex> \produces{} <concat>
+                    \alt <regex> `|' <concat>
+
+<concat> \produces{} <simple>
+                         \alt <concat> <simple>
+
+<simple> \produces{} <char>
+                       \alt  <simple> "*"
+                       \alt "(" <regex> ")"
+                       
+<char> \produces{} "a" | ... | "z"
+                    \alt $\emptystring$ | $\emptyset$
+\end{grammar}
+Our grammars use the pipe character | as a metacharacter, to collapse rules
+with the same left side.
+But pipe also appears in regular expressions, so for that occurence
+on the second line we have wrapped it in single quotes.
+
+As to the semantics of regular expressions\Dash what they mean\Dash
+we will define that recursively.
+The language represented by the single-character
+regular expression \re{$\emptyset$} is
+the empty set, so that $\lang{L}(\re{$\emptyset$})=\emptyset$.
+The language represented by the regular expression consisting
+of only the empty string character \re{$\emptystring$}
+is the one-element language consisting of only the empty string 
+$\lang{L}(\re{$\emptystring$})=\set{\emptystring}$.
+If a regular expression consists of just one character from the alphabet,
+such as \re{\str{a}}, then the language represented by that
+expression contains only one string, which has only that
+one character $\lang{L}(\re{\str{a}})=\set{\str{a}}$.
+
+For the operations, suppose that
+$\sigma$ and $\hat{\sigma}$ are regular expressions,
+representing the languages $\lang{L}$ and $\hat{\lang{L}}$.
+Then the regular expression combining the two
+with the pipe \re{$\sigma$|$\hat{\sigma}$}
+represents the union of the two languages $\lang{L}\cup\hat{\lang{L}}$.
+The regular expression concatenating the two \re{$\sigma$$\hat{\sigma}$}
+represents the concatenation of the two languages $\lang{L}\hat{\lang{L}}$.
+And the star regular expression \re{$\kleenestar{\sigma}$}
+represents the Kleene star of the language $\kleenestar{\lang{L}}$.
+
+\begin{example}
+The language consisting of words starting with $\str{b}$ 
+and then ending with between three and five $\str{a}$'s
+$\lang{L}=\set{\str{baaa}, \str{baaaa}, \str{baaaaa}}$
+is described by \re{baaa(\emptystring|a|aa)}.
+\end{example}
+
+\begin{example}
+The language
+$\set{\str{b},\str{bc},\str{bcc},
+             \str{ab},\str{abc},\str{abcc},
+             \str{aab},\,\ldots}$
+consisting of words starting with any number of $\str{a}$'s
+(including possibly zero-many \str{a}'s),
+followed by a single~$\str{b}$, and then ending in less than three
+$\str{c}$'s is described by 
+\re{a*b(\emptystring|c|cc)}. 
+\end{example}
+
+\begin{example}
+Consider 
+the regular expression \re{a(b|c)d}. 
+Start with the initials \re{b} and~\re{c}, 
+and then taking the join to get \re{(b|c)}.
+Concatenation gives \re{(a(b|c))}, which 
+we write as \re{a(b|c)}.
+Finally, concatenating again gives \re{((a(b|c))d)}, which we
+write as \re{a(b|c)d}.    
+\end{example}
+
+
+
+
+\begin{exercises}
+\begin{exercise}
+Construct the parse tree for \cref{ex:RegexABOrCStar}'s \re{a(b|c)*}.
+\begin{answer}
+Here is is.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/regex/regex00.pdf}}
+\end{center}
+\end{answer}
+\end{exercise}
 
 \end{exercises}
+
+
+\subsection{Kleene's Theorem}
+
+
+
 
 \section{Regular languages}
 % regex for Roman numerals: https://phvu.wordpress.com/2009/05/19/an-cfg-for-roman-numerals/
@@ -673,12 +836,7 @@ where $n\leq k <2n$.
 \subsection{Closure properties}
 
 
-\subsection{Regular expressions}
-
-\subsection{Kleene's Theorem}
-
-
-\subsection{Nondeterministic FSA's}
+\subsection{NondeterminismXS}
 
 \subsection{Minimization}
 

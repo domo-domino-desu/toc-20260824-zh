@@ -52,7 +52,1425 @@ We will modify the definition of Turing Machine by changing the
 tape head from read/write to read-only.
 This gives us insight into what can be done with states alone.
 
+\subsection{Definition}  
+We will use the same type of diagrams and tables
+as with Turing machines.
+
+\begin{example}  \label{ex:PowerSwitch}
+A power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$.
+Its input alphabet has one symbol, \str{toggle}.
+\begin{center}
+  \newlength{\jhscratchheight}
+  % \newsavebox{\scratchbox}
+  \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa00.pdf}}
+  \settoheight{\jhscratchheight}{\usebox{\scratchbox}}
+  \vcenteredhbox{\usebox{\scratchbox}}
+  \hspace{4em}
+  \vcenteredhbox{\includegraphics[height=0.85\jhscratchheight]{automata/powerbutton.png}}  % Free, from: http://www.clker.com/clipart-9978.html
+\end{center}
+\end{example}
+
+\begin{example} \label{ex:Turnstile}
+Operate this turnstile by puting in two tokens and then pushing thrugh
+It has three states and
+its input alphabet is $\Sigma=\set{\str{token},\str{push}}$.
+\begin{center}
+  % \newlength{\scratchheight}
+  % \newsavebox{\scratchbox}
+  \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa01.pdf}}
+  \settoheight{\jhscratchheight}{\usebox{\scratchbox}}
+  \vcenteredhbox{\usebox{\scratchbox}}
+  \hspace{4em}
+  \vcenteredhbox{\includegraphics[height=0.85\jhscratchheight]{automata/turnstile.jpg}} % http://upload.wikimedia.org/wikipedia/commons/2/2c/Turnstile.alewife.agr.jpg
+\end{center}
+\end{example}
+
+As we saw with Turing machines, the states are a limited form of memory.
+For instance, $q_{\text{one}}$ is how the turnstile ``remembers'' that it
+has so far received one token.
+
+\begin{example} \label{ex:VendingMachine}
+This vending machine dispenses items that cost $30$~cents.
+(US coin denominations are: $1$~cent coins that are not used here,
+nickles are $5$~cents, dimes are $10$~cents, and quarters are $25$~cents.)
+The picture is complex so we will show it in three layers.
+First are the arrows for nickels and pushing the dispense button.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa02.pdf}
+\end{center}
+After receiving $30$~cents and getting another nickel,
+this machine does something not very sensible: it just stays in $q_{30}$.
+In practice we would have further states to keep track of
+overages so that we could give change but here we ignore that.
+Next comes the arrows for dimes
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa03.pdf}
+\end{center}
+and for quarters.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa04.pdf}
+\end{center}
+\end{example}
+
+\begin{example}
+This machine, when started in state~$q_0$ and fed bit strings,
+will keep track of the remainder modulo~$4$ of the number of
+\str{1}'s.
+\begin{center}    
+  \includegraphics{automata/asy/fsa/fsa06.pdf}
+\end{center}
+\end{example}
+
+\begin{definition} \label{def:FiniteStateMachine}
+A \definend{Finite State Machine}
+(or
+\definend{Finite State Automata}) is composed of five things
+$\FSM=\sequence{Q,q_{\text{start}},F,\Sigma,\Delta}$.
+They consist of a finite \definend{set of states}~$Q$,
+one of which is the \definend{start state}~$q_{\text{start}}$,
+and a subset $F\subseteq Q$ of \definend{final states} or
+\definend{accepting states}.
+They also consist of a finite \definend{input alphabet} set~$\Sigma$
+and a \definend{transition function} $\map{\Delta}{Q\times\Sigma}{Q}$.
+\end{definition}
+
+This definition may appear different than the one for 
+a Turing Machine, \cref{def:TuringMachine} from Chapter~One,
+but a lot of that is because here we don't need to expand on
+an alphabet or a transition function since we already have seen them.
+
+The two definitions are alike in that at the heart of each is
+the transition function~$\Delta$.
+It makes machines move step-by-step
+in response to the input.
+% It also, as with the Turing Machines we saw earler,
+% makes these machines deterministic:~at
+% each step it is in one and only one state.
+% This is a because $\Delta$ is a function, so for
+% every input pair $\sequence{\text{present~state},\text{symbol}}$ there is
+% one and only one associated next state output.
+% (Later in this chapter we will see a modification of this definition that
+% permits a machine to be in more than one state at a time.)
+
+Of course, 
+the point of this definition is that the two types of machines differ in that
+Finite State Machines cannot write.
+All other differences in the definitions follow from that.
+For one thing,
+because Finite State Machines cannot write they don't need
+to move the tape for scratch work,
+so we've dropped the tape action symbols \str{L} and~\str{R}.
+We put some input onthe tape, press the start button,
+and the machine just consumes the input, at each step reading in the next
+tape character.
+\begin{center}
+  \includegraphics{automata/asy/machine/machine.pdf}
+\end{center}
+Consequently there is no \HP{} for Finite State Machines\Dash they always halt,
+after a number of steps equal to the length of the input.
+
+The other main difference is the 
+presence in this definition of the set of final states.
+Consider, in the vending machine of \cref{ex:VendingMachine},
+the state $q_{30}$.
+It is a success state or goal state, meaning
+that the machine has seen in the input what it is looking for.
+The same goes for \cref{ex:Turnstile}'s turnstile state~$q_{\text{ready}}$
+and \cref{ex:PowerSwitch}'s power switch state~$q_{\text{on}}$.
+While we can design a Turing machine to indicate a choice by arranging so
+that for each input
+the machine will halt and the only thing on the tape will be either a \str{1}
+or \str{0},
+we cannot do this for Finite State Machines because they cannot write.
+Instead, 
+to indicate a decision they will end one of these designated states,
+one of the final states.
+Imagine that these are connected to a light or bell so that
+we can spot a computation that was successful.
+In the diagrams below we show the final states with double circles.
+
+The reason to have a start state is more straightforward, since
+the machine has to start somewhere.
+In our examples typically which state is the start is clear;
+usually we name it~$q_0$.
+
+\begin{example}  \label{ex:FSAValidIntegers}
+This machine, shown with the
+transition function~$\Delta$ written out,
+accepts strings that are valid as integers.
+Thus, it accepts `\str{21}' and `\str{-707}' but does not accept
+`\str{501-}'.
+Both the diagram and the table group some inputs together when
+they result in the same action.
+For instance, when in state~$q_0$ this machine does the same thing
+whether the input is \str{+} or \str{-}, namely it passes into
+$q_1$.
+\begin{center}  \small
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa07.pdf}}
+  \hspace{3em}
+  \begin{tabular}{c|ccc}
+    \multicolumn{1}{c}{$\Delta$}
+      &\str{+}, \str{-} &\str{0}, \ldots{} \str{9} &\tabulartext{else}   \\
+    \cline{2-4}
+    $q_0$ &$q_1$ &$q_2$ &$e$   \\
+    $q_1$ &$e$   &$q_2$ &$e$   \\
+    $q_2$ &$e$   &$q_2$ &$e$   \\
+    $e$   &$e$   &$e$   &$e$   \\
+  \end{tabular}
+\end{center}
+We can take its alphabet to be all visible ASCII characters,
+that is, beyond the digits and the signs \str{+} and~\str{-},
+to include letters such as \str{a} and~\str{A}, and a few
+more characters such as \str{!}.
+\end{example}
+
+
+\begin{example}  \label{ex:FSATwoAsEvenBs}
+This machine accepts a string if and only if it is a member of this language.
+\begin{equation*}  
+  \lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+               \suchthat \text{$\sigma$ contains at least two \str{a}'s
+                 and an even number of \str{b}'s}}
+\end{equation*}
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa11.pdf}               
+\end{center}
+Many people find,
+when designing machines,
+that having a meaning for each state is helpful.
+For instance here the meaning of $q_4$ is, ``so far have seen one~$a$ and an
+odd number of $b$'s.''
+\end{example}
+
+The description above of the language~$\lang{L}$
+connotes that the machine's alphabet is
+$\Sigma=\set{\str{a},\str{b}}$.
+Our Finite State Machine descriptions often don't specify the alphabet.
+For instance, in the next example the most sensible alphabet is
+all of \citetext{Unicode}{While in the early days of computers
+characters could be encoded with standards such as ASCII, which includes only
+upper and lower case unaccented letters, digits,
+a few punctuation marks, and a few
+control characters, in only 128 places,
+today's global interconnected world needs more.
+The Unicode standard assigns (to a fair approximation) every character in
+every language a unique number called a code point.
+See \autocite{wiki:Unicode}},
+but that detail is not relevant to the point of the example
+so we pass over it. 
+
+\begin{example}  \label{ex:FSAGraphicalFileExtensions}
+For any finite set of strings there is a Finite State Machine that
+will accept a string if and only if it is in that language.
+This machine accepts strings that are members of the set
+$\set{\str{jpg},\str{png},\str{pdf}}$ of some filename extensions.
+Notice that it has more than one final state.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa09.pdf}}
+\end{center}
+That drawing omits a lot of edges, all involving the error state~$e$.
+For instance, from state~$q_0$ any input character other than \str{j}
+or~\str{p} is an error.
+This shows the extra edges for the top branch; putting them all in
+would make a mess.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa10.pdf}}
+\end{center}
+\end{example}
+
+\begin{example} \label{ex:FSAMultOfThree}
+Although they have no scratch memory, Finite State Machines can
+accomplish useful work.
+This machine accepts strings representing a natural number
+that is a multiple of three, such as \str{15} and~\str{5013}.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa12.pdf}}
+\end{center}
+Notice that it accepts the empty string.
+\Cref{exer:FSAModifyMultOFThreeMachine} asks for a modification of
+this machine to accept only non-empty strings.
+\end{example}
+
+After the definition of Turing Machine we gave a formal
+description of the action of such a machine,
+on \cpageref{text:DescriptionOfTMAction}.
+We can do the same for a Finite State Machine.
+
+A \definend{configuration} of a Finite State Machine $\FSM$ is 
+a pair $\mathcal{C}=\sequence{q,\tau}$, where
+$q$ is a state and $\tau$ is a (possibly empty) string of elements 
+from the tape alphabet~$\tau\in\kleenestar{\Sigma}$.
+In the \definend{initial configuration}
+the state is the initial state, so ~$\mathcal{C}_0=\sequence{q_0,\tau}$
+and we say $\tau$ is the \definend{input}.
+
+A \definend{step} of the computation
+is a transition of $\FSM$ from one configuration
+to the next.
+Assume that after step~$i$ the machine $\FSM$ is in the configuration
+$\mathcal{C}_i=\sequence{q,\tau_i}$.
+
+The first case is that $\tau_i$ is not the empty string.
+In this case pop the leading character and call it $c$.
+That is,
+$c=\tau_i[0]$ and $\tau_{i+1}=\sequence{\tau_i[1],\ldots \tau_i[\,\lh{\tau_i}\,]}$.
+The machine's next state is $\hat{q}=\Delta(q,c)$ and its next
+configuration is $\mathcal{C}_{i+1}=\sequence{\hat{q},\tau_{i+1}}$.
+The other case is $\tau_i=\emptystring$.
+In this case the machine halts,
+this configuration is the \definend{last configutation}
+$\mathcal{C}_i=\mathcal{C}_h$,
+and the input~$\tau$ is \definend{accepted} by the machine if the ending state
+is a final state $q\in F$.
+
+If two configurations are related in this way, by being a step apart, 
+then we write
+$\mathcal{C}_i \yields \mathcal{C}_{i+1}$ 
+(read aloud as ``yields in one step'').
+A \definend{computation} is a sequence of steps
+$
+  \mathcal{C}_0 \yields \mathcal{C}_1 \yields \mathcal{C}_2
+   \yields \cdots \mathcal{C}_h
+$
+where $\mathcal{C}_o$ is the initial configuration.
+We abbreviate a sequence of steps 
+with~$\kleenestar{\yields}$ 
+(read as ``yields eventually,'' or ``yields star,'' or simply ``yields'').
+Thus we may write
+$\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
+
+\begin{example}
+The multiple of three machine of the prior exercise gives this computation.
+\begin{equation*}
+  \sequence{q_0,\str{5013}}
+  \yields\sequence{q_2,013}
+  \yields\sequence{q_2,13}
+  \yields\sequence{q_0,3}
+  \yields\sequence{q_0,\emptystring}
+\end{equation*}
+Since $q_0$ is an accepting state, the machine accepts \str{5013}.
+\end{example}
+
+\begin{example}
+Finite State Machines are easy to translate to code.
+Here is a Scehem version of the multiple of three machine.  
+\lstinputlisting{automata/scheme/mod3fsm.scm}
+(Because the last thing called in \codeinline{multiple-of-three-fsm-helper}
+is itself, the compiler converts the recursion to iteration.
+So we get the expressiveness of recursion with the space conservation
+of interation.)
+% Here is a Python version of the multiple of three machine.
+% \begin{lstlisting}
+% def multiple_of_three_fsm(s):
+%     state = 0
+%     for ch in s:
+%         if state == 0:
+%             if ch in set([0,3,6,9]):
+%                 state = 0
+%             elif ch in set([1,4,7]):
+%                 state = 1
+%             else:
+%                 state = 2
+%         elif state == 1:
+%             if ch in set([0,3,6,9]):
+%                 state = 1
+%             elif ch in set([1,4,7]):
+%                 state = 2
+%             else:
+%                 state = 0
+%         else:
+%             if ch in set([0,3,6,9]):
+%                 state = 2
+%             elif ch in set([1,4,7]):
+%                 state = 0
+%             else:
+%                 state = 1
+%     if state == 0:
+%         return True
+%     else:
+%         return False    
+% \end{lstlisting}
+\end{example}
+
+
+We close with a historically important example.
+
+\begin{example}
+The diagram below is a simplification of
+\citetext{how phone numbers were done in North America for many years}{%
+See the description of the North America Numbering Plan
+\autocite{wiki:NANumbering}.}
+(one way it is a simplification is that
+it leaves out error states).
+Consider the number \str{1-802-555-0101}.
+The initial \str{1} takes us along the second line,
+which means the call will leave the central office\Dash it will
+go out of town.
+The \str{0} between the \str{8} and the~\str{2} determines that the call
+is to a different area code, not just to a different central office inside
+the same area code.
+Finally the machine processes the central office exchange number of \str{555},
+and the line number of \str{0101}, and makes the connection.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa13.pdf}
+\end{center}
+Today's picture is much more complicated.
+For one thing, area codes no longer are required to
+have a middle digit of \str{0} or~\str{1}; we  
+just need too many area codes to forgo the ones with a middle digit from
+\str{2} to \str{9}.
+This additional complication is possible because instead
+citetext{switching with physical devices}{%
+The devices to do the switching were invented in 1889 by an undertaker whose
+competiter's wife was the local telephone operator and routed calls to
+her husband's business.
+\autocite{wiki:Strowger}},
+we now do it in software.
+\end{example}
+
+
+
+\begin{exercises}
+\begin{exercise}
+Produce the transition function table for \cref{ex:FSATwoAsEvenBs}.
+(You should indicate accepting states with a check mark next to the
+state row.)  
+\end{exercise}
+
+\begin{exercise} \label{exer:FSAModifyMultOFThreeMachine}
+Modify the machine of \cref{ex:FSAMultOfThree} 
+so that it accepts only string representations of multiples of three
+that are non-empty.
+\end{exercise}
+
+\begin{exercise} % Models of Computation, Taylor p 509
+For the machines of \cref{ex:FSAValidIntegers}, \cref{ex:FSATwoAsEvenBs},
+\cref{ex:FSAGraphicalFileExtensions}, and \cref{ex:FSAMultOfThree},
+answer these.
+\begin{exparts*}
+\item What are the accepting states?  
+\item Does it accept the empty string~$\emptystring$?
+\item What is the shortest string that it accepts?
+\item Is the language of accepted strings infinite?
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+Give a 
+circle diagram and the table for the transition function
+for a Finite State machine accepting each described set of strings.
+Use $\Sigma=\set{\str{a}, \str{b}}$. 
+\begin{exparts}
+\item any string with at least two \str{a}'s
+\item any string with exactly two \str{a}'s
+\item any string with less than three \str{a}'s
+\item any string where at least one \str{a} is followed by at least
+  one \str{b}
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Produce a Finite State Machine over the alphabet
+$\Sigma=\set{\str{a},\,\ldots \str{z}}$ that accepts only the
+string \str{rachelriley},
+and one that fails to accept only \str{susiedent}. 
+\end{exercise}
+
+\begin{exercise}
+Give a Finite State Machine
+over $\Sigma=\set{\str{a},\str{b},\str{c}}$ that accepts
+any string containing the substring \str{abc}.
+\end{exercise}
+
+\begin{exercise}
+Give a Finite State Machine over $\Sigma=\set{\str{a},\str{b}}$ that accepts
+any string containing at least two \str{a}'s and at least two \str{b}'s.
+\end{exercise}
+
+\begin{exercise}
+Give a Finite State Machine that accepts the language.
+\begin{exparts}
+\item
+  $\lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma$ ends in \str{aa}}}$
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma=\emptystring$}}$
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma=\str{a}^3\str{b}$ or $\sigma=\str{b}\str{a}^3$}}$
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma=\str{a}^n$ or $\sigma=\str{b}^n$ for some $n\in\N$}}$
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Recall that in the child's game of Rock-Paper-Scissors,
+each player simultaneously
+produces one of the three \str{R}, \str{P}, or~\str{S}.  
+A player producing \str{R} beats a player producing~\str{S},
+and similarly \str{S} beats~\str{P}, and \str{P} beats~\str{R}.
+Encode a game instance with the two-character string
+$\sigma=\sequence{\text{player one's play, player two's play}}$.
+Make a machine that recognizes a win for player one.
+\end{exercise}
+
+\begin{exercise}
+Produce a Finite State Machine that accepts the given language.
+\begin{exparts}
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{0},\str{1}}}
+    \suchthat \text{the number of \str{1}'s is a multiple of $5$}}$
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{0},\str{1},\str{2}}}
+    \suchthat \text{$\sigma$ has either no \str{0}'s or no \str{2}'s}}$
+\item
+  $\set{\sigma\in\kleenestar{\B}
+    \suchthat \text{$\sigma=\str{a}^{3n}\str{b}^{2m}$ where $n,m\in\N$}}$
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Give a Finite State Machine over the alphabet
+$\Sigma=\set{\str{A},\,\ldots{} \str{Z}}$ that accepts only
+strings in which the vowels occur in ascending order.
+(The vowels are \str{A}, \str{E}, \str{I}, \str{O}, and~\str{U}.
+Ascending order means the order just named.)
+Note that the machine should accept the string \str{AEAIAOAUA} because it
+has a sequence of elements consisting of the ordered vowels.
+\end{exercise}
+
+\begin{exercise}
+Produce the circle and arrow diagram picturing this transition
+function.
+There is only one accepting state, $F=\set{q_1}$.
+\begin{center}
+  \small
+  \begin{tabular}{r|cc}
+    \multicolumn{1}{c}{$\Delta$}
+           &\str{a} &\str{b}    \\
+    \cline{2-3}
+    $q_0$  &$q_2$   &$q_1$       \\
+    $q_1$  &$q_0$   &$q_2$       \\
+    $q_2$  &$q_2$   &$q_2$           
+  \end{tabular}
+\end{center}
+What is the associated language of accepted strings?
+\end{exercise}
+
+\begin{exercise}
+This grammar   
+\begin{grammar}
+<real> \produces{} <posreal> | "+" <posreal> | "-" <posreal>
+
+<posreal> \produces{} <natural> | <natural> "." | <natural> "." <natural>
+
+<natural> \produces{} <digit> | <digit> <natural>
+
+<digit> \produces{} "0" | \ldots | "9"
+\end{grammar}
+gives rise to a language.
+\begin{exparts*}
+\item Give five strings that are in the language and five that are not.
+\item Briefly describe the language.
+\item Give a Finite State Machine that accepts the language.
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+What language is accepted by this machine?
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa14.pdf}
+\end{center}
+\end{exercise}
+
+\begin{exercise}
+Produce a Finite State Machine to accept each language.
+\begin{exparts}
+\item   
+  $\set{\sigma\in\kleenestar{\B}
+    \suchthat \text{every \str{1} in $\sigma$ is both preceeded and followed by a \str{0}}}$
+\item   
+  $\set{\sigma\in\kleenestar{\B}
+    \suchthat \text{$\sigma$ is the binary representation of a number divisible by $4$}}$
+\item 
+  $\set{\sigma\in\kleenestar{\set{\str{0},\,\ldots \str{9}}}
+    \suchthat \text{$\sigma$ is the decimal representation of a number that is even}}$
+\item 
+  $\set{\sigma\in\kleenestar{\set{\str{0},\,\ldots \str{9}}}
+    \suchthat \text{$\sigma$ represents a number divisible by $100$}}$
+\item 
+  $\set{\sigma\in\kleenestar{\set{\str{0},\,\ldots \str{9}}}
+    \suchthat \text{$\sigma$ represents a multiple of $4$}}$
+\end{exparts}
+\end{exercise}
+
+\begin{exercise} % Intro to Languages, Martin, 4ed p 77
+  Produce a Finite State Machine that accepts the language over
+  $\Sigma=\set{\str{a},\str{b}}$
+  containing no more than one occurrence of \str{aa}.
+  Note that the string \str{aaa} contains two occurrences.
+\end{exercise}
+
+\begin{exercise}
+Make a machine that accepts a tic-tac-toe game that is a win for
+the \str{X}'s.  
+\end{exercise}
+
+\begin{exercise}
+Can a Finite State Machine have no states?
+Does the definition allow $Q=\emptyset$?  
+\begin{answer}
+No, it must have a start state.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+How many Finite State Machines are there with $Q=\set{q_0}$?
+With $Q=\set{q_0,q_1}$, where $q_0$ is the start state?
+How many with $n$ states, where $q_0$ is the start?
+\end{exercise}
+
+\begin{exercise}
+Consider a Finite State Machine $\FSM$, its set of accepting states~$F$,
+and the associated language of accepted strings.
+If we flip every accepting state to non-accepting and every non-accepting
+state to accepting, what happens to the language?
+\end{exercise}
+
+\begin{exercise}
+Rebut: ``no FSM will accept the language
+$\set{\str{a}^n\str{b}\suchthat n\in\N}$
+because $n$ is infinite.''    
+\end{exercise}
+
+\begin{exercise}
+For each language $\lang{L}$ accepted by some Finite State Machine, let
+$\operatorname{rank}(\lang{L})$ be the smallest number~$n\in\N$
+such that $\lang{L}$ is
+accepted by a Finite State Machine with $n$ states.
+Prove that for every~$n$ there is a language with that rank.
+\end{exercise}
+
+\begin{exercise}
+Prove that the language accepted by a Finite State Machine with $n$ states is 
+infinite if and only if that machine accepts at least one string of length $k$,
+where $n\leq k <2n$.  
+\end{exercise}
+
+% \begin{exercise}
+% Variants: Moore machine, Mealy machine
+% \end{exercise}
+\end{exercises}
+
+
+
+
+% ==================================================
+\section{Nondeterminism}
+The definition of Finite State Machine inherits from the
+definition of Turing Machine
+that it is based on a
+transition function, a next-state function, $\Delta$.
+This inputs a current machine configuration and
+outputs the machine's next state.
+Consequently, both kinds of machine are deterministic\Dash
+at each step the machine's behavior is determined.
+
+For instance, from the definition of Turing Machine
+no machine can contain both of the instructions
+\tminstruction{4}{1}{B}{1}
+and~\tminstruction{4}{1}{1}{5} because both begin with
+$q_4\str{1}$. 
+
+We will now drop that condition.
+We will consider machines
+where from any configuration there could be one next state, 
+more than one, or none at all.
+(A key reason for introducing FSM's is to introduce nondeterminism.) 
+
+\subsection{Two views}
+Consider the Travelling Salesman Problem,
+\cref{ex:TravellingSalesman} of Chapter Three.
+It starts with a graph whose
+edges have costs and looks at cycles, paths that visit every vertex
+and then come back to the start.
+We might for instance start with a map of the
+forty eight contiguous US~states
+and look trips that visit every state capitol.
+We could ask if there is a cycle of less than $16,000$ kilometers.
+
+There are two natural appproaches.
+We could try every possible path or we could guess.
+
+\margingraphic{0.15\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
+The philosopher and Hall of Fame baseball catcher Y~Berra said, ``If you
+come to a fork in the road, take it.''
+That's how you could try the problem: when you come to make a choice,
+fork a process for each one.
+Thus, if you start at Montpelier then you have forty seven capitals you could
+visit, so you fork forty seven child processes.
+The process assigned Albany, for instance, would know that the trip so far is
+$126.19$~kilometers and would then fork forty six children to explore the
+rest of the possible trips.
+At the end you have a whole lot of child processes but if there is
+a trip of less than $16,000$ kilometers then one of the children knows it.
+
+This is a nondeterministic approach in that during this computation
+the machine has many process, each in a different state.
+So in that sense the machine is in many states at once.
+Of course, we have the intuition, gained from often working with machines
+that run many processes, that we could do this by time-slicing.
+The machine's CPU works with the first process for a bit, then turns to the
+second process, and then to the third, etc., and eventually returns to the
+first process again.
+When we are working on a computer, writing an email in one window 
+while watching a video in another, the machine appears to be
+in multiple states at once.\footnote{With multicore CPU's this time-slicing
+description becomes muddled, but that doesn't matter for the point
+we are mkaing.}
+So this description of how nondeterminism could work fits
+our experience.
+
+In contrast, the appeal of guessing is that if you happen to get a short cycle
+then you have saved a lot of work.
+For instance, the child processes that start by going from Montpelier on
+the US east cost to Sacremento on the west are just not going to be an answer,
+so you don't guess such a path.
+The disadvantage of guessing  
+\citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}},
+at least according to the intuition
+a person is likely to have after having just taken introduction to
+programming.
+
+We shall describe nondterminism in both ways: as a machine being in multiple
+states at once, and as a machine guessing.
+To use both, we must reconcile them, must show that they describe the
+same-powered machine.
+
+We start that by in this section giving a definition of nondeterminstic
+Finite State Machine.
+We will show that these machines accept exactly the same set of languages
+as deterministic machines.
+(We will cover the question for Turing Machines later.)
+
+
 \subsection{Definition}
+
+A nondeterministic Finite State Machine differs in only one way from a
+deterministic machine.
+It can have multiple next states.
+So mast of this definition is the same as that of {def:FSM}
+We will use the same type of diagrams and tables
+as with Turing machines.
+
+\begin{example}  \label{ex:PowerSwitch}
+A power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$.
+Its input alphabet has one symbol, \str{toggle}.
+\begin{center}
+  % \newlength{\jhscratchheight}
+  % \newsavebox{\scratchbox}
+  \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa00.pdf}}
+  \settoheight{\jhscratchheight}{\usebox{\scratchbox}}
+  \vcenteredhbox{\usebox{\scratchbox}}
+  \hspace{4em}
+  \vcenteredhbox{\includegraphics[height=0.85\jhscratchheight]{automata/powerbutton.png}}  % Free, from: http://www.clker.com/clipart-9978.html
+\end{center}
+\end{example}
+
+\begin{example} \label{ex:Turnstile}
+Operate this turnstile by puting in two tokens and then pushing thrugh
+It has three states and
+its input alphabet is $\Sigma=\set{\str{token},\str{push}}$.
+\begin{center}
+  % \newlength{\scratchheight}
+  % \newsavebox{\scratchbox}
+  \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa01.pdf}}
+  \settoheight{\jhscratchheight}{\usebox{\scratchbox}}
+  \vcenteredhbox{\usebox{\scratchbox}}
+  \hspace{4em}
+  \vcenteredhbox{\includegraphics[height=0.85\jhscratchheight]{automata/turnstile.jpg}} % http://upload.wikimedia.org/wikipedia/commons/2/2c/Turnstile.alewife.agr.jpg
+\end{center}
+\end{example}
+
+As we saw with Turing machines, the states are a limited form of memory.
+For instance, $q_{\text{one}}$ is how the turnstile ``remembers'' that it
+has so far received one token.
+
+\begin{example} \label{ex:VendingMachine}
+This vending machine dispenses items that cost $30$~cents.
+(US coin denominations are: $1$~cent coins that are not used here,
+nickles are $5$~cents, dimes are $10$~cents, and quarters are $25$~cents.)
+The picture is complex so we will show it in three layers.
+First are the arrows for nickels and pushing the dispense button.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa02.pdf}
+\end{center}
+After receiving $30$~cents and getting another nickel,
+this machine does something not very sensible: it just stays in $q_{30}$.
+In practice we would have further states to keep track of
+overages so that we could give change but here we ignore that.
+Next comes the arrows for dimes
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa03.pdf}
+\end{center}
+and for quarters.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa04.pdf}
+\end{center}
+\end{example}
+
+\begin{example}
+This machine, when started in state~$q_0$ and fed bit strings,
+will keep track of the remainder modulo~$4$ of the number of
+\str{1}'s.
+\begin{center}    
+  \includegraphics{automata/asy/fsa/fsa06.pdf}
+\end{center}
+\end{example}
+
+\begin{definition} \label{def:FiniteStateMachine}
+A \definend{Finite State Machine}
+(or
+\definend{Finite State Automata}) is composed of five things
+$\FSM=\sequence{Q,q_{\text{start}},F,\Sigma,\Delta}$.
+They consist of a finite \definend{set of states}~$Q$,
+one of which is the \definend{start state}~$q_{\text{start}}$,
+and a subset $F\subseteq Q$ of \definend{final states} or
+\definend{accepting states}.
+They also consist of a finite \definend{input alphabet} set~$\Sigma$
+and a \definend{transition function} $\map{\Delta}{Q\times\Sigma}{Q}$.
+\end{definition}
+
+This definition may appear different than the one for 
+a Turing Machine, \cref{def:TuringMachine} from Chapter~One,
+but a lot of that is because here we don't need to expand on
+an alphabet or a transition function since we already have seen them.
+
+The two definitions are alike in that at the heart of each is
+the transition function~$\Delta$.
+It makes machines move step-by-step
+in response to the input.
+% It also, as with the Turing Machines we saw earler,
+% makes these machines deterministic:~at
+% each step it is in one and only one state.
+% This is a because $\Delta$ is a function, so for
+% every input pair $\sequence{\text{present~state},\text{symbol}}$ there is
+% one and only one associated next state output.
+% (Later in this chapter we will see a modification of this definition that
+% permits a machine to be in more than one state at a time.)
+
+Of course, 
+the point of this definition is that the two types of machines differ in that
+Finite State Machines cannot write.
+All other differences in the definitions follow from that.
+For one thing,
+because Finite State Machines cannot write they don't need
+to move the tape for scratch work,
+so we've dropped the tape action symbols \str{L} and~\str{R}.
+We put some input onthe tape, press the start button,
+and the machine just consumes the input, at each step reading in the next
+tape character.
+\begin{center}
+  \includegraphics{automata/asy/machine/machine.pdf}
+\end{center}
+Consequently there is no \HP{} for Finite State Machines\Dash they always halt,
+after a number of steps equal to the length of the input.
+
+The other main difference is the 
+presence in this definition of the set of final states.
+Consider, in the vending machine of \cref{ex:VendingMachine},
+the state $q_{30}$.
+It is a success state or goal state, meaning
+that the machine has seen in the input what it is looking for.
+The same goes for \cref{ex:Turnstile}'s turnstile state~$q_{\text{ready}}$
+and \cref{ex:PowerSwitch}'s power switch state~$q_{\text{on}}$.
+While we can design a Turing machine to indicate a choice by arranging so
+that for each input
+the machine will halt and the only thing on the tape will be either a \str{1}
+or \str{0},
+we cannot do this for Finite State Machines because they cannot write.
+Instead, 
+to indicate a decision they will end one of these designated states,
+one of the final states.
+Imagine that these are connected to a light or bell so that
+we can spot a computation that was successful.
+In the diagrams below we show the final states with double circles.
+
+The reason to have a start state is more straightforward, since
+the machine has to start somewhere.
+In our examples typically which state is the start is clear;
+usually we name it~$q_0$.
+
+\begin{example}  \label{ex:FSAValidIntegers}
+This machine, shown with the
+transition function~$\Delta$ written out,
+accepts strings that are valid as integers.
+Thus, it accepts `\str{21}' and `\str{-707}' but does not accept
+`\str{501-}'.
+Both the diagram and the table group some inputs together when
+they result in the same action.
+For instance, when in state~$q_0$ this machine does the same thing
+whether the input is \str{+} or \str{-}, namely it passes into
+$q_1$.
+\begin{center}  \small
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa07.pdf}}
+  \hspace{3em}
+  \begin{tabular}{c|ccc}
+    \multicolumn{1}{c}{$\Delta$}
+      &\str{+}, \str{-} &\str{0}, \ldots{} \str{9} &\tabulartext{else}   \\
+    \cline{2-4}
+    $q_0$ &$q_1$ &$q_2$ &$e$   \\
+    $q_1$ &$e$   &$q_2$ &$e$   \\
+    $q_2$ &$e$   &$q_2$ &$e$   \\
+    $e$   &$e$   &$e$   &$e$   \\
+  \end{tabular}
+\end{center}
+We can take its alphabet to be all visible ASCII characters,
+that is, beyond the digits and the signs \str{+} and~\str{-},
+to include letters such as \str{a} and~\str{A}, and a few
+more characters such as \str{!}.
+\end{example}
+
+
+\begin{example}  \label{ex:FSATwoAsEvenBs}
+This machine accepts a string if and only if it is a member of this language.
+\begin{equation*}  
+  \lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+               \suchthat \text{$\sigma$ contains at least two \str{a}'s
+                 and an even number of \str{b}'s}}
+\end{equation*}
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa11.pdf}               
+\end{center}
+Many people find,
+when designing machines,
+that having a meaning for each state is helpful.
+For instance here the meaning of $q_4$ is, ``so far have seen one~$a$ and an
+odd number of $b$'s.''
+\end{example}
+
+The description above of the language~$\lang{L}$
+connotes that the machine's alphabet is
+$\Sigma=\set{\str{a},\str{b}}$.
+Our Finite State Machine descriptions often don't specify the alphabet.
+For instance, in the next example the most sensible alphabet is
+all of \citetext{Unicode}{While in the early days of computers
+characters could be encoded with standards such as ASCII, which includes only
+upper and lower case unaccented letters, digits,
+a few punctuation marks, and a few
+control characters, in only 128 places,
+today's global interconnected world needs more.
+The Unicode standard assigns (to a fair approximation) every character in
+every language a unique number called a code point.
+See \autocite{wiki:Unicode}},
+but that detail is not relevant to the point of the example
+so we pass over it. 
+
+\begin{example}  \label{ex:FSAGraphicalFileExtensions}
+For any finite set of strings there is a Finite State Machine that
+will accept a string if and only if it is in that language.
+This machine accepts strings that are members of the set
+$\set{\str{jpg},\str{png},\str{pdf}}$ of some filename extensions.
+Notice that it has more than one final state.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa09.pdf}}
+\end{center}
+That drawing omits a lot of edges, all involving the error state~$e$.
+For instance, from state~$q_0$ any input character other than \str{j}
+or~\str{p} is an error.
+This shows the extra edges for the top branch; putting them all in
+would make a mess.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa10.pdf}}
+\end{center}
+\end{example}
+
+\begin{example} \label{ex:FSAMultOfThree}
+Although they have no scratch memory, Finite State Machines can
+accomplish useful work.
+This machine accepts strings representing a natural number
+that is a multiple of three, such as \str{15} and~\str{5013}.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa12.pdf}}
+\end{center}
+Notice that it accepts the empty string.
+\Cref{exer:FSAModifyMultOFThreeMachine} asks for a modification of
+this machine to accept only non-empty strings.
+\end{example}
+
+After the definition of Turing Machine we gave a formal
+description of the action of such a machine,
+on \cpageref{text:DescriptionOfTMAction}.
+We can do the same for a Finite State Machine.
+
+A \definend{configuration} of a Finite State Machine $\FSM$ is 
+a pair $\mathcal{C}=\sequence{q,\tau}$, where
+$q$ is a state and $\tau$ is a (possibly empty) string of elements 
+from the tape alphabet~$\tau\in\kleenestar{\Sigma}$.
+In the \definend{initial configuration}
+the state is the initial state, so ~$\mathcal{C}_0=\sequence{q_0,\tau}$
+and we say $\tau$ is the \definend{input}.
+
+A \definend{step} of the computation
+is a transition of $\FSM$ from one configuration
+to the next.
+Assume that after step~$i$ the machine $\FSM$ is in the configuration
+$\mathcal{C}_i=\sequence{q,\tau_i}$.
+
+The first case is that $\tau_i$ is not the empty string.
+In this case pop the leading character and call it $c$.
+That is,
+$c=\tau_i[0]$ and $\tau_{i+1}=\sequence{\tau_i[1],\ldots \tau_i[\,\lh{\tau_i}\,]}$.
+The machine's next state is $\hat{q}=\Delta(q,c)$ and its next
+configuration is $\mathcal{C}_{i+1}=\sequence{\hat{q},\tau_{i+1}}$.
+The other case is $\tau_i=\emptystring$.
+In this case the machine halts,
+this configuration is the \definend{last configutation}
+$\mathcal{C}_i=\mathcal{C}_h$,
+and the input~$\tau$ is \definend{accepted} by the machine if the ending state
+is a final state $q\in F$.
+
+If two configurations are related in this way, by being a step apart, 
+then we write
+$\mathcal{C}_i \yields \mathcal{C}_{i+1}$ 
+(read aloud as ``yields in one step'').
+A \definend{computation} is a sequence of steps
+$
+  \mathcal{C}_0 \yields \mathcal{C}_1 \yields \mathcal{C}_2
+   \yields \cdots \mathcal{C}_h
+$
+where $\mathcal{C}_o$ is the initial configuration.
+We abbreviate a sequence of steps 
+with~$\kleenestar{\yields}$ 
+(read as ``yields eventually,'' or ``yields star,'' or simply ``yields'').
+Thus we may write
+$\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
+
+\begin{example}
+The multiple of three machine of the prior exercise gives this computation.
+\begin{equation*}
+  \sequence{q_0,\str{5013}}
+  \yields\sequence{q_2,013}
+  \yields\sequence{q_2,13}
+  \yields\sequence{q_0,3}
+  \yields\sequence{q_0,\emptystring}
+\end{equation*}
+Since $q_0$ is an accepting state, the machine accepts \str{5013}.
+\end{example}
+
+\begin{example}
+Finite State Machines are easy to translate to code.
+Here is a Scehem version of the multiple of three machine.  
+\lstinputlisting{automata/scheme/mod3fsm.scm}
+(Because the last thing called in \codeinline{multiple-of-three-fsm-helper}
+is itself, the compiler converts the recursion to iteration.
+So we get the expressiveness of recursion with the space conservation
+of interation.)
+% Here is a Python version of the multiple of three machine.
+% \begin{lstlisting}
+% def multiple_of_three_fsm(s):
+%     state = 0
+%     for ch in s:
+%         if state == 0:
+%             if ch in set([0,3,6,9]):
+%                 state = 0
+%             elif ch in set([1,4,7]):
+%                 state = 1
+%             else:
+%                 state = 2
+%         elif state == 1:
+%             if ch in set([0,3,6,9]):
+%                 state = 1
+%             elif ch in set([1,4,7]):
+%                 state = 2
+%             else:
+%                 state = 0
+%         else:
+%             if ch in set([0,3,6,9]):
+%                 state = 2
+%             elif ch in set([1,4,7]):
+%                 state = 0
+%             else:
+%                 state = 1
+%     if state == 0:
+%         return True
+%     else:
+%         return False    
+% \end{lstlisting}
+\end{example}
+
+
+We close with a historically important example.
+
+\begin{example}
+The diagram below is a simplification of
+\citetext{how phone numbers were done in North America for many years}{%
+See the description of the North America Numbering Plan
+\autocite{wiki:NANumbering}.}
+(one way it is a simplification is that
+it leaves out error states).
+Consider the number \str{1-802-555-0101}.
+The initial \str{1} takes us along the second line,
+which means the call will leave the central office\Dash it will
+go out of town.
+The \str{0} between the \str{8} and the~\str{2} determines that the call
+is to a different area code, not just to a different central office inside
+the same area code.
+Finally the machine processes the central office exchange number of \str{555},
+and the line number of \str{0101}, and makes the connection.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa13.pdf}
+\end{center}
+Today's picture is much more complicated.
+For one thing, area codes no longer are required to
+have a middle digit of \str{0} or~\str{1}; we  
+just need too many area codes to forgo the ones with a middle digit from
+\str{2} to \str{9}.
+This additional complication is possible because instead
+citetext{switching with physical devices}{%
+The devices to do the switching were invented in 1889 by an undertaker whose
+competiter's wife was the local telephone operator and routed calls to
+her husband's business.
+\autocite{wiki:Strowger}},
+we now do it in software.
+\end{example}
+
+
+
+\begin{exercises}
+\begin{exercise}
+Produce the transition function table for \cref{ex:FSATwoAsEvenBs}.
+(You should indicate accepting states with a check mark next to the
+state row.)  
+\end{exercise}
+
+\begin{exercise} \label{exer:FSAModifyMultOFThreeMachine}
+Modify the machine of \cref{ex:FSAMultOfThree} 
+so that it accepts only string representations of multiples of three
+that are non-empty.
+\end{exercise}
+
+\begin{exercise} % Models of Computation, Taylor p 509
+For the machines of \cref{ex:FSAValidIntegers}, \cref{ex:FSATwoAsEvenBs},
+\cref{ex:FSAGraphicalFileExtensions}, and \cref{ex:FSAMultOfThree},
+answer these.
+\begin{exparts*}
+\item What are the accepting states?  
+\item Does it accept the empty string~$\emptystring$?
+\item What is the shortest string that it accepts?
+\item Is the language of accepted strings infinite?
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+Give a 
+circle diagram and the table for the transition function
+for a Finite State machine accepting each described set of strings.
+Use $\Sigma=\set{\str{a}, \str{b}}$. 
+\begin{exparts}
+\item any string with at least two \str{a}'s
+\item any string with exactly two \str{a}'s
+\item any string with less than three \str{a}'s
+\item any string where at least one \str{a} is followed by at least
+  one \str{b}
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Produce a Finite State Machine over the alphabet
+$\Sigma=\set{\str{a},\,\ldots \str{z}}$ that accepts only the
+string \str{rachelriley},
+and one that fails to accept only \str{susiedent}. 
+\end{exercise}
+
+\begin{exercise}
+Give a Finite State Machine
+over $\Sigma=\set{\str{a},\str{b},\str{c}}$ that accepts
+any string containing the substring \str{abc}.
+\end{exercise}
+
+\begin{exercise}
+Give a Finite State Machine over $\Sigma=\set{\str{a},\str{b}}$ that accepts
+any string containing at least two \str{a}'s and at least two \str{b}'s.
+\end{exercise}
+
+\begin{exercise}
+Give a Finite State Machine that accepts the language.
+\begin{exparts}
+\item
+  $\lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma$ ends in \str{aa}}}$
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma=\emptystring$}}$
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma=\str{a}^3\str{b}$ or $\sigma=\str{b}\str{a}^3$}}$
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma=\str{a}^n$ or $\sigma=\str{b}^n$ for some $n\in\N$}}$
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Recall that in the child's game of Rock-Paper-Scissors,
+each player simultaneously
+produces one of the three \str{R}, \str{P}, or~\str{S}.  
+A player producing \str{R} beats a player producing~\str{S},
+and similarly \str{S} beats~\str{P}, and \str{P} beats~\str{R}.
+Encode a game instance with the two-character string
+$\sigma=\sequence{\text{player one's play, player two's play}}$.
+Make a machine that recognizes a win for player one.
+\end{exercise}
+
+\begin{exercise}
+Produce a Finite State Machine that accepts the given language.
+\begin{exparts}
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{0},\str{1}}}
+    \suchthat \text{the number of \str{1}'s is a multiple of $5$}}$
+\item
+  $\set{\sigma\in\kleenestar{\set{\str{0},\str{1},\str{2}}}
+    \suchthat \text{$\sigma$ has either no \str{0}'s or no \str{2}'s}}$
+\item
+  $\set{\sigma\in\kleenestar{\B}
+    \suchthat \text{$\sigma=\str{a}^{3n}\str{b}^{2m}$ where $n,m\in\N$}}$
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Give a Finite State Machine over the alphabet
+$\Sigma=\set{\str{A},\,\ldots{} \str{Z}}$ that accepts only
+strings in which the vowels occur in ascending order.
+(The vowels are \str{A}, \str{E}, \str{I}, \str{O}, and~\str{U}.
+Ascending order means the order just named.)
+Note that the machine should accept the string \str{AEAIAOAUA} because it
+has a sequence of elements consisting of the ordered vowels.
+\end{exercise}
+
+\begin{exercise}
+Produce the circle and arrow diagram picturing this transition
+function.
+There is only one accepting state, $F=\set{q_1}$.
+\begin{center}
+  \small
+  \begin{tabular}{r|cc}
+    \multicolumn{1}{c}{$\Delta$}
+           &\str{a} &\str{b}    \\
+    \cline{2-3}
+    $q_0$  &$q_2$   &$q_1$       \\
+    $q_1$  &$q_0$   &$q_2$       \\
+    $q_2$  &$q_2$   &$q_2$           
+  \end{tabular}
+\end{center}
+What is the associated language of accepted strings?
+\end{exercise}
+
+\begin{exercise}
+This grammar   
+\begin{grammar}
+<real> \produces{} <posreal> | "+" <posreal> | "-" <posreal>
+
+<posreal> \produces{} <natural> | <natural> "." | <natural> "." <natural>
+
+<natural> \produces{} <digit> | <digit> <natural>
+
+<digit> \produces{} "0" | \ldots | "9"
+\end{grammar}
+gives rise to a language.
+\begin{exparts*}
+\item Give five strings that are in the language and five that are not.
+\item Briefly describe the language.
+\item Give a Finite State Machine that accepts the language.
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+What language is accepted by this machine?
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa14.pdf}
+\end{center}
+\end{exercise}
+
+\begin{exercise}
+Produce a Finite State Machine to accept each language.
+\begin{exparts}
+\item   
+  $\set{\sigma\in\kleenestar{\B}
+    \suchthat \text{every \str{1} in $\sigma$ is both preceeded and followed by a \str{0}}}$
+\item   
+  $\set{\sigma\in\kleenestar{\B}
+    \suchthat \text{$\sigma$ is the binary representation of a number divisible by $4$}}$
+\item 
+  $\set{\sigma\in\kleenestar{\set{\str{0},\,\ldots \str{9}}}
+    \suchthat \text{$\sigma$ is the decimal representation of a number that is even}}$
+\item 
+  $\set{\sigma\in\kleenestar{\set{\str{0},\,\ldots \str{9}}}
+    \suchthat \text{$\sigma$ represents a number divisible by $100$}}$
+\item 
+  $\set{\sigma\in\kleenestar{\set{\str{0},\,\ldots \str{9}}}
+    \suchthat \text{$\sigma$ represents a multiple of $4$}}$
+\end{exparts}
+\end{exercise}
+
+\begin{exercise} % Intro to Languages, Martin, 4ed p 77
+  Produce a Finite State Machine that accepts the language over
+  $\Sigma=\set{\str{a},\str{b}}$
+  containing no more than one occurrence of \str{aa}.
+  Note that the string \str{aaa} contains two occurrences.
+\end{exercise}
+
+\begin{exercise}
+Make a machine that accepts a tic-tac-toe game that is a win for
+the \str{X}'s.  
+\end{exercise}
+
+\begin{exercise}
+Can a Finite State Machine have no states?
+Does the definition allow $Q=\emptyset$?  
+\begin{answer}
+No, it must have a start state.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+How many Finite State Machines are there with $Q=\set{q_0}$?
+With $Q=\set{q_0,q_1}$, where $q_0$ is the start state?
+How many with $n$ states, where $q_0$ is the start?
+\end{exercise}
+
+\begin{exercise}
+Consider a Finite State Machine $\FSM$, its set of accepting states~$F$,
+and the associated language of accepted strings.
+If we flip every accepting state to non-accepting and every non-accepting
+state to accepting, what happens to the language?
+\end{exercise}
+
+\begin{exercise}
+Rebut: ``no FSM will accept the language
+$\set{\str{a}^n\str{b}\suchthat n\in\N}$
+because $n$ is infinite.''    
+\end{exercise}
+
+\begin{exercise}
+For each language $\lang{L}$ accepted by some Finite State Machine, let
+$\operatorname{rank}(\lang{L})$ be the smallest number~$n\in\N$
+such that $\lang{L}$ is
+accepted by a Finite State Machine with $n$ states.
+Prove that for every~$n$ there is a language with that rank.
+\end{exercise}
+
+\begin{exercise}
+Prove that the language accepted by a Finite State Machine with $n$ states is 
+infinite if and only if that machine accepts at least one string of length $k$,
+where $n\leq k <2n$.  
+\end{exercise}
+
+% \begin{exercise}
+% Variants: Moore machine, Mealy machine
+% \end{exercise}
+\end{exercises}
+
+
+
+
+% ==================================================
+\section{Nondeterminism}
+The definition of Finite State Machine inherits from the
+definition of Turing Machine
+that it is based on a
+transition function, a next-state function, $\Delta$.
+This inputs a current machine configuration and
+outputs the machine's next state.
+Consequently, both kinds of machine are deterministic\Dash
+at each step the machine's behavior is determined.
+
+For instance, from the definition of Turing Machine
+no machine can contain both of the instructions
+\tminstruction{4}{1}{B}{1}
+and~\tminstruction{4}{1}{1}{5} because both begin with
+$q_4\str{1}$. 
+
+We will now drop that condition.
+We will consider machines
+where from any configuration there could be one next state, 
+more than one, or none at all.
+(A key reason for introducing FSM's is to introduce nondeterminism.) 
+
+\subsection{Two views}
+Consider the Travelling Salesman Problem,
+\cref{ex:TravellingSalesman} of Chapter Three.
+It starts with a graph whose
+edges have costs and looks at cycles, paths that visit every vertex
+and then come back to the start.
+We might for instance start with a map of the
+forty eight contiguous US~states
+and look trips that visit every state capitol.
+We could ask if there is a cycle of less than $16,000$ kilometers.
+
+There are two natural appproaches.
+We could try every possible path or we could guess.
+
+\margingraphic{0.15\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
+The philosopher and Hall of Fame baseball catcher Y~Berra said, ``If you
+come to a fork in the road, take it.''
+That's how you could try the problem: when you come to make a choice,
+fork a process for each one.
+Thus, if you start at Montpelier then you have forty seven capitals you could
+visit, so you fork forty seven child processes.
+The process assigned Albany, for instance, would know that the trip so far is
+$126.19$~kilometers and would then fork forty six children to explore the
+rest of the possible trips.
+At the end you have a whole lot of child processes but if there is
+a trip of less than $16,000$ kilometers then one of the children knows it.
+
+This is a nondeterministic approach in that during this computation
+the machine has many process, each in a different state.
+So in that sense the machine is in many states at once.
+Of course, we have the intuition, gained from often working with machines
+that run many processes, that we could do this by time-slicing.
+The machine's CPU works with the first process for a bit, then turns to the
+second process, and then to the third, etc., and eventually returns to the
+first process again.
+When we are working on a computer, writing an email in one window 
+while watching a video in another, the machine appears to be
+in multiple states at once.\footnote{With multicore CPU's this time-slicing
+description becomes muddled, but that doesn't matter for the point
+we are mkaing.}
+So this description of how nondeterminism could work fits
+our experience.
+
+In contrast, the appeal of guessing is that if you happen to get a short cycle
+then you have saved a lot of work.
+For instance, the child processes that start by going from Montpelier on
+the US east cost to Sacremento on the west are just not going to be an answer,
+so you don't guess such a path.
+The disadvantage of guessing  
+\citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}},
+at least according to the intuition
+a person is likely to have after having just taken introduction to
+programming.
+
+We shall describe nondterminism in both ways: as a machine being in multiple
+states at once, and as a machine guessing.
+To use both, we must reconcile them, must show that they describe the
+same-powered machine.
+
+We start that by in this section giving a definition of nondeterminstic
+Finite State Machine.
+We will show that these machines accept exactly the same set of languages
+as deterministic machines.
+(We will cover the question for Turing Machines later.)
+
+
+\subsection{Definition}
+
+A nondeterministic Finite State Machine differs in only one way from a
+deterministic machine.
+It can have multiple next states.
+So mast of this definition is the same as that of {def:FSM}
 We will use the same type of diagrams and tables
 as with Turing machines.
 
@@ -665,8 +2083,125 @@ where $n\leq k <2n$.
 \end{exercises}
 
 
+
+
 % ==================================================
-\subsection{Regular expressions}
+\section{Nondeterminism}
+The definition of Finite State Machine inherits from the
+definition of Turing Machine
+that it is based on a
+transition function, a next-state function, $\Delta$.
+This inputs a current machine configuration and
+outputs the machine's next state.
+Consequently, both kinds of machine are deterministic\Dash
+at each step the machine's behavior is determined.
+
+For instance, from the definition of Turing Machine
+no machine can contain both of the instructions
+\tminstruction{4}{1}{B}{1}
+and~\tminstruction{4}{1}{1}{5} because both begin with
+$q_4\str{1}$. 
+
+We will now drop that condition.
+We will consider machines
+where from any configuration there could be one next state, 
+more than one, or none at all.
+(A key reason for introducing FSM's is to introduce nondeterminism.) 
+
+\subsection{Two views}
+Consider the Travelling Salesman Problem,
+\cref{ex:TravellingSalesman} of Chapter Three.
+It starts with a graph whose
+edges have costs and looks at cycles, paths that visit every vertex
+and then come back to the start.
+We might for instance start with a map of the
+forty eight contiguous US~states
+and look trips that visit every state capitol.
+We could ask if there is a cycle of less than $16,000$ kilometers.
+
+There are two natural appproaches.
+We could try every possible path or we could guess.
+
+\margingraphic{0.15\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
+The philosopher and Hall of Fame baseball catcher Y~Berra said, ``If you
+come to a fork in the road, take it.''
+That's how you could try the problem: when you come to make a choice,
+fork a process for each one.
+Thus, if you start at Montpelier then you have forty seven capitals you could
+visit, so you fork forty seven child processes.
+The process assigned Albany, for instance, would know that the trip so far is
+$126.19$~kilometers and would then fork forty six children to explore the
+rest of the possible trips.
+At the end you have a whole lot of child processes but if there is
+a trip of less than $16,000$ kilometers then one of the children knows it.
+
+This is a nondeterministic approach in that during this computation
+the machine has many process, each in a different state.
+So in that sense the machine is in many states at once.
+Of course, we have the intuition, gained from often working with machines
+that run many processes, that we could do this by time-slicing.
+The machine's CPU works with the first process for a bit, then turns to the
+second process, and then to the third, etc., and eventually returns to the
+first process again.
+When we are working on a computer, writing an email in one window 
+while watching a video in another, the machine appears to be
+in multiple states at once.\footnote{With multicore CPU's this time-slicing
+description becomes muddled, but that doesn't matter for the point
+we are mkaing.}
+So this description of how nondeterminism could work fits
+our experience.
+
+In contrast, the appeal of guessing is that if you happen to get a short cycle
+then you have saved a lot of work.
+For instance, the child processes that start by going from Montpelier on
+the US east cost to Sacremento on the west are just not going to be an answer,
+so you don't guess such a path.
+The disadvantage of guessing  
+\citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}},
+at least according to the intuition
+a person is likely to have after having just taken introduction to
+programming.
+
+We shall describe nondterminism in both ways: as a machine being in multiple
+states at once, and as a machine guessing.
+To use both, we must reconcile them, must show that they describe the
+same-powered machine.
+
+We start that by in this section giving a definition of nondeterminstic
+Finite State Machine.
+We will show that these machines accept exactly the same set of languages
+as deterministic machines.
+(We will cover the question for Turing Machines later.)
+
+
+\subsection{Definition}
+
+A nondeterministic Finite State Machine differs in only one way from a
+deterministic machine.
+It can have multiple next states.
+So mast of this definition is the same as that of \cref{def:FiniteStateMachine},
+except that the transition function does not output single states,
+it outputs a set of states.
+
+
+\begin{definition} \label{def:FiniteStateMachine}
+A \definend{Nondeterministic Finite State Machine}
+$\FSM=\sequence{Q,q_{\text{start}},F,\Sigma,\Delta}$ 
+consistts of a finite \definend{set of states}~$Q$,
+one of which is the \definend{start state}~$q_{\text{start}}$,
+a subset $F\subseteq Q$ of \definend{final states} or
+\definend{accepting states},
+a finite \definend{input alphabet} set~$\Sigma$,
+and a \definend{transition function}
+$\map{\Delta}{Q\times\Sigma}{\powerset (Q)}$.
+\end{definition}
+
+
+
+
+
+% ==================================================
+\section{Regular expressions}
 This machine
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa14.pdf}
@@ -674,34 +2209,50 @@ This machine
 accepts strings that
 have some number of \str{a}'s, followed by a \str{b},
 followed by some number of \str{a}'s.
-In this subsection we give a way to describe the language of a
-Finite State Machine.
-It conveniently expressing constructs such 
-as ``any number of'' and ``followed by.''
+In this subsection we give a convenient way to
+expressing constructs such as ``any number of'' and ``followed by.''
+We will see strings, called Regular Expressions, that
+describe languages like this one,
+languages that are accepted by some Finite State Machine.
 
-A few preliminary examples will make the definition clearer.
-These use the alphabet $\Sigma=\set{\str{a},\ldots,\str{z}}$.
+A few preliminary examples will make the definition clearer when it comes.
+These use the alphabet $\Sigma=\set{\str{a},\,\ldots\, \str{z}}$.
 
 \begin{example}
-The regular expression 
-\re{h(a|e|i|o|u)t} describes the language where each word starts with~\str{h},
+The string \re{h(a|e|i|o|u)t}
+is a regular expression that 
+describes the language where each word starts with~\str{h},
 \citetext{has a vowel in the middle}{%
 Most speakers of American English cite the vowels as `a', `e', `i',
 `o', and~`u'.  
 See \autocite{Bigham}.}, and ends with~\str{t}.
-This language consists of five words of three letters
-$\lang{L}=\set{\str{hat}, \str{het}, \str{hit},\str{hot}, \str{hut}}$.
+The pipe operator `|' provides alternatives.
+Hence this regular expression
+describes the language consisting of five words of three letters
+each: $\lang{L}=\set{\str{hat}, \str{het}, \str{hit},\str{hot}, \str{hut}}$.
+
+There are two subtleties with this regular expression.
+First, the parentheses are not there to be matched, they
+provide grouping.
+Second, besides the vertical bar operation,
+the regular expression also uses concatenation since
+the initial \str{h} is concatenated with the choice expression,
+which in turn is concatenated with the final \str{t}.
 \end{example}
 
 \begin{example}
 The regular expression \re{ab*c} describes the language 
 whose words begin with $\str{a}$, followed by any number of $\str{b}$'s
 (including possibly zero-many $\str{b}$'s), followed by 
-a single~$\str{c}$ at the end
-$\lang=\set{\str{ac}, \str{abc}, \str{abbc},\, \ldots}$.
+a single~$\str{c}$ at the end.
+So the star operator~`$*$'  %`$\kleenestar{}$'
+means `repeat the prior thing any number of times'.
+The language described by this regular expression is
+$\lang{L}=\set{\str{ac}, \str{abc}, \str{abbc},\, \ldots}$.
 \end{example}
 
 \begin{example}  \label{ex:RegexABOrCStar}
+There is an interaction between pipe and star.
 The language described by 
 the regular expression \re{a(b|c)*} consists of 
 words starting with $\str{a}$, and ending with any number of
@@ -710,14 +2261,13 @@ This does not mean `any number of \str{b}'s or any number of \str{c}'s'.
 Rather, the two letters are mixed
 $\lang{L}=\set{\str{a}, \str{ab}, \str{ac}, 
              \str{abb}, \str{abc}, \str{acb}, \str{acc},\, \ldots}$.
-\end{example}
-           
-\begin{example}
-In contrast, \re{a(b*|c*)} describes the language 
+
+In contrast, to describe the language 
 whose words begin with \str{a} and end with any number of \str{b}'s
-or any number of \str{c}'s, but there is no mixing 
-$\lang{L}=\set{\str{a},
-            \str{ab}, \str{abb},\,\ldots\,,\str{ac},\str{acc},\,\ldots}$. 
+or any number of \str{c}'s but there is no mixing 
+$\hat{\lang{L}}=\set{\str{a},
+  \str{ab}, \str{abb},\,\ldots\,,\str{ac},\str{acc},\,\ldots}$,
+use the regular expression \re{a(b*|c*)}. 
 \end{example}
 
 \begin{example}
@@ -725,14 +2275,19 @@ The language of the machine that opened this subsection is described by
 the regular expression \re{a*ba*}.
 \end{example}
 
-A regular expression, then, is a short string that describes a language
+So, a regular expression is a short string that describes a language
 by describing 
 the pattern of the strings in that language.
 
-The syntax of a regular expression is straightforward.
-For instance, to apply regular expressions to
-languages over $\Sigma=\set{\str{a},\,\ldots \str{z}}$ use
-this grammar.
+The syntax of regular expressions is straightforward.
+Start with characters of an alphabet~$\Sigma$ (and the special characters
+$\emptystring$ and $\emptyset$ that we will describe further in the next
+paragraph).
+Combine them using the operations of concatenation,
+vertical bar and star, using parentheses in their usual role
+of disambiguation.
+For instance, if $\Sigma=\set{\str{a},\,\ldots \str{z}}$ then this is
+the grammar of suitable regular expressions.
 \begin{grammar}
 <regex> \produces{} <concat>
                     \alt <regex> `|' <concat>
@@ -747,24 +2302,27 @@ this grammar.
 <char> \produces{} "a" | ... | "z"
                     \alt $\emptystring$ | $\emptyset$
 \end{grammar}
-Our grammars use the pipe character | as a metacharacter, to collapse rules
+In grammars we use
+the pipe as a metacharacter, to collapse rules
 with the same left side.
-But pipe also appears in regular expressions, so for that occurence
-on the second line we have wrapped it in single quotes.
+We do that again here.
+But pipe also appears in regular expressions so for that usage
+we have wrapped it in single quotes,
+in \nonterminal{regex}'s second rule.
 
 As to the semantics of regular expressions\Dash what they mean\Dash
 we will define that recursively.
 The language represented by the single-character
 regular expression \re{$\emptyset$} is
-the empty set, so that $\lang{L}(\re{$\emptyset$})=\emptyset$.
+the empty set, so that $\lang{L}=\emptyset$.
 The language represented by the regular expression consisting
 of only the empty string character \re{$\emptystring$}
 is the one-element language consisting of only the empty string 
-$\lang{L}(\re{$\emptystring$})=\set{\emptystring}$.
+$\set{\emptystring}$.
 If a regular expression consists of just one character from the alphabet,
 such as \re{\str{a}}, then the language represented by that
 expression contains only one string, which has only that
-one character $\lang{L}(\re{\str{a}})=\set{\str{a}}$.
+one character $\set{\str{a}}$.
 
 For the operations, suppose that
 $\sigma$ and $\hat{\sigma}$ are regular expressions,
@@ -774,14 +2332,43 @@ with the pipe \re{$\sigma$|$\hat{\sigma}$}
 represents the union of the two languages $\lang{L}\cup\hat{\lang{L}}$.
 The regular expression concatenating the two \re{$\sigma$$\hat{\sigma}$}
 represents the concatenation of the two languages $\lang{L}\hat{\lang{L}}$.
-And the star regular expression \re{$\kleenestar{\sigma}$}
+And the star regular expression \re{$\sigma$*}
 represents the Kleene star of the language $\kleenestar{\lang{L}}$.
 
+There are constructs that often appear in constructing regular 
+expressions.
+These examples all use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
+
 \begin{example}
-The language consisting of words starting with $\str{b}$ 
-and then ending with between three and five $\str{a}$'s
-$\lang{L}=\set{\str{baaa}, \str{baaaa}, \str{baaaaa}}$
-is described by \re{baaa(\emptystring|a|aa)}.
+The language consisting of strings of \str{a}'s that are a multiple of
+three long
+$\lang{L}=\set{a^{3k}\suchthat k\in\N}=\set{\emptystring,\str{aaa},\str{aaaaaa},\,\ldots}$ is described by the
+regular expression \re{(aaa)*}.
+\end{example}
+
+Note the empty string in that set.
+A common gotcha is to think of star as a repetition operator and forget that
+it includes zero-many copies.
+
+\begin{example}
+The language where strings have any number
+of \str{a}'s and optionally ending in a \str{b}
+is described by
+the regular expression \re{a*($\emptystring$|b)}.
+ 
+Similarly, to describe the language consisting of words with 
+between three and five $\str{a}$'s,
+$\lang{L}=\set{\str{aaa}, \str{aaaa}, \str{aaaaa}}$,
+use \re{aaa(\emptystring|a|aa)}.
+\end{example}
+
+\begin{example}
+To match any character we list them all.
+The language consisting of three-letter words ending in \str{bc} is
+$\set{\str{abc}, \str{bbc}, \str{cbc}}$.
+The regular expression \re{(a|b|c)bc} describes it.
+(Of course, if the alphabet is large then listing all characters soon becomes
+impractical; see the Extra section on Extended Regular Expressions.)
 \end{example}
 
 \begin{example}
@@ -796,17 +2383,9 @@ $\str{c}$'s is described by
 \re{a*b(\emptystring|c|cc)}. 
 \end{example}
 
-\begin{example}
-Consider 
-the regular expression \re{a(b|c)d}. 
-Start with the initials \re{b} and~\re{c}, 
-and then taking the join to get \re{(b|c)}.
-Concatenation gives \re{(a(b|c))}, which 
-we write as \re{a(b|c)}.
-Finally, concatenating again gives \re{((a(b|c))d)}, which we
-write as \re{a(b|c)d}.    
-\end{example}
 
+
+\subsection{Kleene's Theorem}
 
 
 
@@ -824,10 +2403,6 @@ Here is is.
 \end{exercises}
 
 
-\subsection{Kleene's Theorem}
-
-
-
 
 \section{Regular languages}
 % regex for Roman numerals: https://phvu.wordpress.com/2009/05/19/an-cfg-for-roman-numerals/
@@ -835,8 +2410,6 @@ Here is is.
 
 \subsection{Closure properties}
 
-
-\subsection{NondeterminismXS}
 
 \subsection{Minimization}
 
@@ -859,7 +2432,7 @@ extension.
 
 \begin{definition}
 Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$ are 
-definend{$\lang{L}$-related}, written $\sigma\sim_{\lang{L}}\hat{\sigma}$,
+\definend{$\lang{L}$-related}, written $\sigma\sim_{\lang{L}}\hat{\sigma}$,
 if they have no distinguishing extension.  
 \end{definition}
 
@@ -898,14 +2471,29 @@ $\sim_{\lang{L}}$.
 Since the number of parts is less than or equal to the number of states
 in $\mathcal{A}$, the number of equivalence classes is finite.
 
-If L is a regular language, then by definition there is a DFA A that recognizes it, with only finitely many states. If there are n states, then partition the set of all finite strings into n subsets, where subset Si is the set of strings that, when given as input to automaton A, cause it to end in state i. For every two strings x and y that belong to the same state, and for every choice of a third string z, automaton A reaches the same state on input xz as it reaches on input yz, and therefore must either accept both of the inputs xz and yz or reject both of them. Therefore, no string z can be a distinguishing extension for x and y, so they must be related by RL. Thus, Si is a subset of an equivalence class of RL. Combining this fact with the fact that every member of one of these equivalence classes belongs to one of the sets Si, this gives a many-to-one relation from states of A to equivalence classes, implying that the number of equivalence classes is finite and at most n.
-
-
+If L is a regular language, then by definition there is a DFA A that
+recognizes it, with only finitely many states.
+If there are n states, then partition the set of all finite strings into
+n subsets, where subset Si is the set of strings that, when given as input
+to automaton A, cause it to end in state i. For every two strings x and y
+that belong to the same state, and for every choice of a third string z,
+automaton A reaches the same state on input xz as it reaches on input yz,
+and therefore must either accept both of the inputs xz and yz or reject both
+of them.
+Therefore, no string z can be a distinguishing extension for x and y,
+so they must be related by RL.
+Thus, Si is a subset of an equivalence class of RL.
+Combining this fact with the fact that every member of one of these
+equivalence classes belongs to one of the sets Si,
+this gives a many-to-one relation from states of A to equivalence classes,
+implying that the number of equivalence classes is finite and at most n.
 \end{proof}
 
 \subsection{Derivatives}
 
 
+
+% =============================================
 \section{Pushdown automata}
 
 \subsection{Definition}
@@ -930,7 +2518,366 @@ X \produces{} aXc
 \end{exercise}
 \end{exercises}
 
+
+
+
+
+% ========================================
 \extra{Extended Regular Expressions}
+Regular expressions are widely used for text operations.
+Imagine, for instance, searching through a large file for
+all of its email addresses.
+Doing this by hand would be stupid; instead it seems like a
+natural application of regular expressions.\footnote{Here we will
+describe some aspects of extended regular expressions as
+implemented in the Python~3 language.
+But your mileage may vary: we will not cover all of the extensions,
+and also many other languages do similar things but with some small variations.
+Read the tool's documentation.}
+
+But there are many issues that come up in practice, which were not
+a big deal in the examples we saw in the theory section.
+For instance, for an email address we 
+want all the strings in the file that match the pattern
+of being a prefix, then \url{@}, then a suffix,
+all surrounded by whitespace.
+For the prefix we might
+specifying at least one instance of
+any non-whitespace character except \url{@}.
+
+While in our theoretical
+examples the alphabet was two or three characters, in practice
+at the very least $\Sigma$
+includes \str{a}, \ldots,~\str{z}, \str{A}, \ldots,~\str{Z},
+\str{0}, \ldots,~\str{9},
+space, tab, period, dash, exclamation point, percent sign, dollar sign, 
+open and closed parenthesis, and open and closed curly braces.
+(Often in practice $\Sigma$ is all of unicode.) 
+Writing \re{(a|b|c|...)*} just isn't practical.
+So we must extend regular expressions
+with convenient constructs giving us ways to write things like
+``any character,'' or ``any digit,'' or ``any whitespace character,'' or
+``any non-whitespace character.''
+
+For instance, for ``any digit'' we could write
+\re{(0|1|2|3|4|5|6|7|8|9)}.
+But that is too verbose for an often-used construct.
+So regular expressions in practice have been extended
+to allow us to instead write that set of characters as \re{[0123456789]},
+with square brackets but without the pipes.
+And if the characters are contiguous in the character set,
+as digits are in ASCII and Unicode,
+we can use a dash \re{[0-9]}.
+Another example of this is that for any single English letter,
+upper or lower case, we can use \re{[a-z,A-Z]}.
+
+\begin{example}
+To specify the set of strings inside a pair of parentheses
+we can use
+\re{\textbackslash ([\textasciicircum ()]*\textbackslash )}.
+(Note that this does not correctly handle nested parentheses.)
+\end{example}
+
+We can also invert the set of characters using a caret at the start of
+the bracket expressions, so
+that we can specify a non-digit with \re{\textasciicircum[ 0-9]}
+and a non-letter with \re{[\textasciicircum 0-9]}.  
+
+We need convienences for the common lists.
+The most frequently-used one is a period \re{.} for any member of the
+alphabet.
+This is an abbreviation in the sense that we could in theory type
+\re{(a|b|...)}, but that would be very impractical.
+Other often used abbreviations are \re{\textbackslash d} for the digits,
+\re{\textbackslash D} for the non-digits,
+\re{\textbackslash s} for the whitespace characters space, tab and newline,
+and \re{\textbackslash S} for the non-whitespace,
+The abbreviation \re{\textbackslash w} covers
+the alphanumeric characters of upper and lower case letters, digits,
+and underscore,
+and \re{\textbackslash W} covers the non-alphanumeric characters.
+
+\begin{example}
+This
+matches time strings
+in a common American twelve hour format.
+\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}.
+You might allow for capital letters on the \str{am} and \str{pm},
+and allow more than one space.
+\begin{center}
+  \re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s\textbackslash s*((a|A)|(p|P)(m|M))}
+\end{center}
+\end{example}
+
+
+
+
+\extrasubsection{Flexible quantifiers}
+As the strict syntax was defined earlier, 
+we can express ``at least one \str{a}'' with
+\re{aa*}.
+In that same syntax we can express ``between two and five \str{a}'s'' with 
+\re{aa|aaa|aaaa|aaaaa}.
+Both are often-used constructs, and awkward.
+
+For the first we have the extension of using a plus sign, as in
+\re{0+}.
+For the second we specify the quantity in curly braces \re{0\{2,5\}}.
+
+Another often-needed construct is ``at most one.''
+In the strict syntax we can write ``at most one \str{a}'' with
+\re{\emptystring|a}.
+The extension uses a question mark \re{a?}.
+
+In the expression \re{a(b|c)a} we do not intend to match the 
+open or closed parentheses, or the pipe character.
+These are metacharacters, part of the
+syntax of the regular expression.
+To match a metacharacter, prefix it with a backslash.
+Thus, to look for the string ``(Note'' you would put a backslash
+before the open parentheses
+\re{\textbackslash (Note:}.
+We say here that the parentheses has been \definend{escaped}.
+
+All the extra metacharacters used by extended regular expressions\Dash period 
+\str{.}, plus \str{+}, curly braces 
+\str{\{} and~\str{\}}, and question mark \str{?}, for instance\Dash 
+are convenient but if you want to match that character then you must
+escape it with a backslash.
+And, to match a backslash you must use a double backslash.
+You can end up with  regular expressions that ar very hard to understand.
+
+Here is a sampler of extended regular expressions used for
+some common jobs.
+
+\begin{example}
+Naively match an email address:
+\re{.*@.*}.
+\end{example}
+
+\begin{example}
+Match a number given in hexadecimal:
+\re{[a-fA-F0-9]+}.
+\end{example}
+
+\begin{example}
+Match lines starting with ``Theorem'' using
+\re{\^{}Theorem}.
+\end{example}
+
+\begin{example}
+Match a graphic file name:
+\re{.*(jpg|gif|png)}.
+\end{example}
+
+\begin{example}
+Match a number given in hexadecimal with between two and four characters.
+\re{[a-fA-F0-9]\{2,4\}}.
+\end{example}
+
+\begin{example}
+Match a number given in hexadecimal with five or more characters.
+\re{[a-fA-F0-9]\{5,\}}
+\end{example}
+
+
+% You can spend a lot of time perusing, say, the
+% \href{https://docs.python.org/3/library/re.html}{Python documentation}.
+
+\begin{remark}
+Some of these affect Kleene's Theorem, that is, they 
+go beyond what a regular expression as define earlier
+can do.
+\end{remark}
+
+\extrasubsection{But wait!  There's more!}
+Many implementations of extended regular expressions allow
+additional speicifiers, such as to do a case-insensitive search.
+Here the two slashes to mark the start and end of the regex, and the
+closing \verb!i! marks it as a case-insensitive one.
+
+\begin{example}
+Find repeated punctuation.
+\re{/\.+/i}
+\end{example}  
+
+\begin{example}
+Find images in an HTML document.
+\re{/(img|src)=("|')[\textasciicircum "'>]+/i}
+\end{example}
+
+\begin{example}
+Match a valid domain name from a URL.
+(Broken into two lines because it wouldn't fit on one.)
+\re{/\textasciicircum (http|https|ftp)://([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?/?/i}
+\end{example}
+
+% \begin{frame}{Regexes can do amazing things}
+% \centergraphic[height=0.8\textheight]{regular_expressions.png}  
+% \end{frame}
+
+
+% \begin{example}
+% The web location \url{joshua.smcvt.edu/linearalgebra} serves
+% copies of a downloadable book \textit{Linear Algebra}.  
+% We want to know  how many copies of the book's answer manual has been
+% downloaded in the past week.
+% The web server's access log has the information.
+% It has one line per request, and in each line one field is the name
+% of the accessed resource.
+% We will produce a set of strings, a language, 
+% consisting of those lines from the file that contain the string \str{jhanswer}.
+% Then we will count those strings.
+
+% We will use \citetext{the program \lstinline!grep!}{Its
+% name comes from the command g/re/p
+% (globally search a regular expression and print) for the ed editor.}.
+% This command line program searches plain text file's lines, returing all
+% the ones that match the given regular expression.
+% The example below then sends that set of lines to a program 
+% program that counts the lines.
+% \begin{lstlisting}
+% jim@joshua:~$ grep jhanswer /var/log/apache2/access.log.1 | wc -l
+% 3493
+% \end{lstlisting}  %$
+% Note that \lstinline!grep! assumes I meant to look anywhere in the
+% line for the substring
+% (it does not require me to say \re{.*jhanswer.*}).
+% This is just engineering the program so that the most common
+% case is the easiest thing to do.
+% \end{example}
+
+
+\extrasubsection{Downsides}
+Sometimes a regular expression is just what you need for a quick one-off job.
+Sometimes they are good for more complex tasks also.
+
+But we've seen that they often come with costs.
+One is complexity.
+Consider this expression to match times
+\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s\textbackslash s*((a|A)|(p|P)(m|M))}.
+It will match \str{13:00 am}.
+You can patch it up to avoid that error, but at the cost of introducting
+complexity.
+
+The canonical extreme example is the regex for
+valid email addresses, according to the 
+RFC~822 standard.
+(It falls off the bottom of the page but the point about its complexity
+is clear.
+Of course, even if you have an address that is well-formed according
+to the standard,
+whether someone responds to an email is an entirely different matter.)
+
+\begin{lstlisting}
+(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
+)+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:
+\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(
+?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ 
+\t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\0
+31]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\
+](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+
+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:
+(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z
+|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)
+?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\
+r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[
+ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)
+?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t]
+)*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[
+ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*
+)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
+)+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)
+*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+
+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r
+\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:
+\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t
+]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031
+]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](
+?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?
+:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?
+:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?
+:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?
+[ \t]))*"(?:(?:\r\n)?[ \t])*)*:(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] 
+\000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|
+\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>
+@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"
+(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t]
+)*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\
+".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?
+:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[
+\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-
+\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(
+?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;
+:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([
+^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\"
+.\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\
+]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\
+[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\
+r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] 
+\000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]
+|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \0
+00-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\
+.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,
+;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?
+:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*
+(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".
+\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[
+^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]
+]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)(?:,\s*(
+?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\
+".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(
+?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[
+\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t
+])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t
+])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?
+:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|
+\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:
+[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\
+]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)
+?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["
+()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)
+?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>
+@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[
+ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,
+;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t]
+)*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\
+".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?
+(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".
+\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:
+\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\[
+"()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])
+*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])
++|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\
+.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z
+|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(
+?:\r\n)?[ \t])*))*)?;\s*)  
+\end{lstlisting}
+
+This sense that, at least some of the time, the cost of complexity
+outweighs the gain in expressiveness is often expressed by
+citing
+Jamie Zawinski (an early Netscape engineer and a well known programmer), who 
+wrote the following
+% \href{https://groups.google.com/forum/?hl=en#!msg/alt.religion.emacs/DR057Srw5-c/Co-2L2BKn7UJ}{on the Usenet group \texttt{alt.religion.emacs}}.
+on the Usenet group \texttt{alt.religion.emacs}.
+
+\begin{quotation}\small
+\noindent The notion that regexps are the solution to all
+problems is equally braindead.
+\ldots\ 
+Some people, when confronted with a problem, think "I know,
+I'll use regular expressions."  Now they have two problems.
+\end{quotation}
+
+% \centergraphic[height=0.3\textheight]{perl_problems.png}
+
+% \pause
+% You have to judge for yourself, but many people find them useful.
+% \end{frame}
+
+
+
 
 \extra{Neural nets}
 % \begin{exercise}

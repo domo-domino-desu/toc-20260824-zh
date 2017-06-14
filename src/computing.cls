@@ -773,10 +773,10 @@ of the two.}
 \RequirePackage{suffix}
 % \margingraphic -- graphic that sticks out into margin
 % Note placement: i or I, o or O, l or L, r or R (capitals are floats)
-% #1 number of affected lines
-% #1 width of graphic
-% #2 graphic filename
-% #3 caption
+% #1 l or r  which margin; r is default
+% #2 width of graphic
+% #3 graphic filename
+% #4 caption
 \captionsetup[wrapfigure]{labelformat=empty,
                           format=hang,              
                           justification=RaggedRight,

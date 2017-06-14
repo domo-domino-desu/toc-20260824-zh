@@ -264,7 +264,7 @@ node[] nrounddiamonds(nodestyle ns=defaultnodestyle ... Label[] Ls) {
     return nds;
 }
 
-// Set defaults for circle and arrow stats diagrams
+// Set defaults for circle and arrow states diagrams
 void setdefaultstatediagramstyles() {
   // If you declare structures then you won't see the changes outside the fcn
   NODEPEN=fontsize(7pt);
@@ -291,6 +291,33 @@ void setdefaultstatediagramstyles() {
   //  pen walk_pen = linewidth(0.75bp) + highlight_color;
 }
 
+
+// Set defaults for parsetrees
+void setdefaultparsetreestyles() {
+  defaultnodestyle=nodestyle(drawfn=FillDrawer(white,white));
+  defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+backgroundcolor);
+}
+
+// When drawing parse trees you want to position according to the
+// node above.  For example, 
+//    simple1.pos=new_node_pos(concat1, -30, -1*v);
+// puts the node simple1 at the position below concat1 of -30 degrees,
+// so that it is 1v lower than concat1.
+
+// Given the angle and the desired vert dist, return the horiz dist
+real find_horiz(real theta, real vert) {
+  return vert/Tan(theta);
+}
+
+// Given the angle and the desired horiz dist, return the vert dist
+real find_vert(real theta, real horiz) {
+  return horiz*Tan(theta);
+}
+
+// From starting point, angle, and desired vert dist, return new pos
+pair new_node_pos(node starting_pos, real theta, real vert) {
+  return (starting_pos.pos.x+find_horiz(theta,vert), starting_pos.pos.y+vert);
+}
 
 // circle centered at c, radius r
 path circle(pair c, real r)

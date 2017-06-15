@@ -575,9 +575,9 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 node q0=ncircle("$q_0$"); 
-node opr=ncircle("op",ns_accepting); 
-node t1=ncircle("$\text{int}_1$"); 
-node tn=ncircle("$\text{int}_n$",ns_accepting); 
+node opr=ncircle("Op",ns_accepting); 
+node t1=ncircle("$\text{Int}_1$"); 
+node tn=ncircle("$\text{Int}_n$",ns_accepting); 
 node ll1=ncircle("$\text{LL}_1$"); 
 node ll2=ncircle("$\text{LL}_2$"); 
 node ll3=ncircle("$\text{LL}_3$"); 

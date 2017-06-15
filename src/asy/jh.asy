@@ -294,6 +294,7 @@ void setdefaultstatediagramstyles() {
 
 // Set defaults for parsetrees
 void setdefaultparsetreestyles() {
+  currentpen=MAINPEN+fontsize(9.24994pt);
   defaultnodestyle=nodestyle(drawfn=FillDrawer(white,white));
   defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+backgroundcolor);
 }

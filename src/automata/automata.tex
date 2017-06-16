@@ -265,7 +265,8 @@ That drawing omits many edges, the ones involving the error state~$e$.
 For instance, from state~$q_0$ any input character other than \str{j}
 or~\str{p} is an error.
 The drawing below shows the extra edges for the top branch; putting in all the
-edges would make a mess.
+edges would make a mess and it would be harder to see the edges that are
+the point of the example.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa10.pdf}}
 \end{center}
@@ -672,11 +673,9 @@ where $n\leq k <2n$.
 \section{Nondeterminism}
 The definition of Finite State Machine inherits from the
 definition of Turing Machine
-the condition that the next state is determined by a function,
-the transition function $\Delta$.
-This inputs a current machine configuration and
-outputs the machine's next state.
-Because $\Delta$ is a function the output is determined by the input,
+the condition that the next state is a function
+of the current configuration.
+Because it is a function its output is determined by its input
 so both kinds of machine are deterministic\Dash
 at each step the machine's behavior is fixed.
 
@@ -686,15 +685,21 @@ can contain both of the instructions
 and~\tminstruction{4}{1}{1}{5} because both begin with
 $q_4\str{1}$. 
 Another example is that in the earlier diagrams of Finite State Machines that
-had omitted edges, we commented that they were only left out because
+had omitted edges, we commented that they they belong in there but
+were left out only for the graphic design reason that
 showing them would make a mess.
 
 We will now drop that condition.
-We consider machines
-where from any configuration there could be one next state, 
+We will consider machines
+where from any configuration the machine could move to one next state, 
 more than one, or none at all.
 
-\subsection{Two views}
+This proves to be a very important concept in the Theory of Computation.
+A key reason for introducing Finite State Machines at all is to
+introduce nondeterminism.
+
+
+\subsection{Motivation}
 Consider the Travelling Salesman Problem,
 \cref{ex:TravellingSalesman} of Chapter Three.
 It starts with a graph whose
@@ -705,9 +710,9 @@ forty eight contiguous US~states
 and look at trips that visit every state capitol.
 We could ask if there is a cycle of less than $16,000$ kilometers.
 
-Let us start in Monteplier VT.
-There are forty seven capitols to choose from.
-Imagine \citetext{invoking a function}{The name \textit{amb}
+Imagine we are solving this on a computer
+(that is, on a Turing Machine) and let's start in Monteplier VT.
+We want \citetext{a function}{The name \textit{amb}
 abbreviates `ambiguous function'.
 These were described by John McCarthy in \autocite{McCarthy}.
 ``Ambiguous functions are not really functions.
@@ -723,62 +728,101 @@ whose possible
 values are $x$ and~$y$ when both are defined: otherwise, whichever is defined.
 Now we can define $\operatorname{less}(n)$ by
 $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''}
-$\operatorname{amb}(\text{Albany}, \text{Annapolis}, ... , \text{Trenton})$.
-There are two natural appproaches to making this function.
-We could try every possible path or we could guess.
+$\operatorname{amb}(\text{Albany}, \text{Annapolis},\, ...\,)$
+that returns a next city.
 
-
-\margingraphic{0.15\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
+\margingraphic{0.175\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
 The philosopher and Hall of Fame baseball catcher Y~Berra said, ``If you
 come to a fork in the road, take it.''
-That's how you could try the problem: when you come to make a choice,
-fork a process for each one.
+That's how you could try the problem: when you come up against a choice,
+fork a process for each possibility.
 Thus, if you start at Montpelier then you have forty seven capitals you could
-visit, so you fork forty seven child processes.
+visit, so you split the machine into forty seven machines\Dash you
+fork forty seven child processes.
 The process assigned Albany, for instance, would know that the trip so far is
 $126.19$~kilometers and would then fork forty six children to explore the
-rest of the possible trips.
+rest of possible trips.
 At the end you have a whole lot of child processes but if there is
 a trip of less than $16,000$ kilometers then one of the children knows it.
 
-This is a nondeterministic approach in that during this computation
+We could work this way with an unboundedly-parallel machine
+because we could keep allocating processes,
+as many as we need.\footnote{Or, if we only have a single CPU then we could simulate
+that with time-slicing, where the CPU works with the first process for a bit,
+then turns to the second, and then to the third, etc.,
+eventually returning around to the first process again.} 
+This is nondeterministic in the sense that during this computation
 the machine has many process, each in a different state.
-So in that sense the machine is in many states at once.
-Of course, we have the intuition, gained from often working with machines
-that run many processes, that we could do this serially
-For instance, in time-slicing.
-the machine's CPU works with the first process for a bit, then turns to the
-second process, and then to the third, etc., and eventually returns to the
-first process again.
-When we are working on a computer, writing an email in one window 
-while watching a video in another, the machine appears to be
-in multiple states at once.\footnote{With multicore CPU's this time-slicing
-description becomes less clear but that doesn't matter for the point
-we are mkaing.}
-So this description of how nondeterminism could work fits
-our experience.
 
-In contrast, the appeal of guessing is that if you happen to get a short cycle
-then you have saved a lot of work.
-For instance, the child processes that start by going from Montpelier on
-the US east cost to Sacremento on the west are just not going to be an answer,
-so you don't guess such a path.
-The disadvantage of the guessing approach is that  
-\citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}},
-or at least it doesnt fit with the intuition
-a person who has just taken introduction to
-programming is likely to have.
+This presentation of nondeterminism is familiar from our experience
+working with machines running many processes.
+When we are writing an email in one window 
+while watching a video in another, the machine appears, to the user, to be
+in multiple states at once.
+
+We will carry this over to a Finite State Machine context.
+\begin{example}  \label{ex:NFSMInDiscussion}
+Consider this machine diagram.
+Observe that leaving $q_0$ are two arrows labelled~\str{0},
+and that leaving $q_1$ is no arrow labelled~\str{1}.
+This is a nondeterministic machine.
+\begin{center}\small
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm00.pdf}}
+\end{center}
+Give it the input \str{00001}.
+As with the parallel approach to the Travelling Salesman
+Problem, when we have two next states then we will split
+the machine split in two.
+Here is the computation tree.
+\begin{animatedfigure}{Steps in the nondeterministic computation.} 
+  \animategraphics[poster=last]{3}{automata/asy/nfsm/nfsm}{02}{08}
+\end{animatedfigure}
+When we considered the parallel approach to the Travelling Salesman
+we observed that if a solution exists then some child process would find it.
+The same happens here: there is a branch of the comptuation tree that
+accepts the input string.
+Note that while there is a branch that is successful, there are also
+branches that are not.
+The branch pictured at the bottom as $q_0\yields q_1\yields q_2$ dies out
+because it is in state~$q_2$ and the input is~\str{0}, and there is
+in the machine no next state for that configuration.
+The branch pictured at the top never dies but
+is also not in the end successful in accepting the input string.
+However, as with the Travelling Salesman approach, we don't care about
+unsuccessful branches.
+We only care that there is a successful one.
+So we shall define that a nondeterministic machine accepts the input
+if there is at least one branch in the computation tree that accepts the
+input.
+% \begin{center}
+%   \includegraphics{automata/asy/nfsm/nfsm08.pdf}
+% \end{center}
+\end{example}
+
+One more point in this informal discussion of nondeterminism.
+The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
+When we feed it the input \str{00001} the problem the machine faces is
+when to stop going around $q_0$'s loop and start to the
+right.
+Our definition has the machine accepting this input
+so we can imagine that the machine has solved this problem, that the
+machine has correctly guessed.
+
+The disadvantage of speaking of the machine as ``guessing'' is that  
+\citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}}.
+Nonetheless, researchers in this area often speak in these terms.
+A perhaps less disconcerting way to put it is to imagine that someone, some
+oracle, furnishes the answer (``go around twice, then off to the right'') and
+we just have to check that the answer computes.
 
 In this book we shall describe nondeterminism in both ways: as a
-machine being in multiple states at once, and as a machine guessing.
-To use paradigms, we must reconcile them, showing that they describe the
+machine being in multiple states at once, and as guessing.
+To use both paradigms we must reconcile them by showing that they describe the
 same-powered machine.
-
-We start that by in this section giving a definition of nondeterminstic
-Finite State Machine.
-We will show that these machines accept exactly the same set of languages
+We start that by, after giving a definition of Nondeterminstic
+Finite State Machine,
+showing that these machines accept exactly the same set of languages
 as deterministic machines.
-(We will cover the question for Turing Machines later.)
 
 
 
@@ -791,7 +835,7 @@ the transition function does not output single states,
 it outputs a set of states.
 
 
-\begin{definition} \label{def:FiniteStateMachine}
+\begin{definition} \label{def:NondeterministicFiniteStateMachine}
 A \definend{Nondeterministic Finite State Machine}
 $\FSM=\sequence{Q,q_{\text{start}},F,\Sigma,\Delta}$ 
 consistts of a finite \definend{set of states}~$Q$,
@@ -803,8 +847,9 @@ and a \definend{transition function}
 $\map{\Delta}{Q\times\Sigma}{\powerset (Q)}$.
 \end{definition}
 
-\begin{example}
-This is a Nondeterministic Finite State Machine.
+\begin{example}  \label{ex:NDFMFromDiscussion}
+This is the Nondeterministic Finite State Machine from the discussion,
+along with its transition function.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm00.pdf}}
   \hspace*{3em}
@@ -817,22 +862,48 @@ This is a Nondeterministic Finite State Machine.
     \acceptingstate{} $q_3$  &$\set{}$     &$\set{}$   \\    
   \end{transitionfunction}
 \end{center}
-% Here is the computation tree.
-% \begin{center}
-%   \includegraphics{automata/asy/nfsm/nfsm02.pdf}
-% \end{center}
-\begin{animatedfigure}{Steps in the nondeterministic computation.} 
-  \animategraphics{3}{automata/asy/nfsm/nfsm}{02}{08}
-\end{animatedfigure}
 \end{example}
 
+\begin{definition} \label{def:NFSMAccepted}
+A Nondeterministic Finite State Machine $\FSM$ \definend{accepts} the input
+string $\tau$ if there is some sequence of transitions allowed by
+the machine that ends in an accepting state.
+The \definend{language of the machine~$\lang{L}(\FSM)$} is the set
+of strings accepted by the machine.
+\end{definition}
 
 
-A key reason for introducing Finite State Machines is to
-introduce nondeterminism.
+
 \begin{exercises}
 \begin{exercise}
-xxx    
+\Cref{def:NFSMAccepted} defines when an input~$\tau$ is accepted by a
+Nondeterministic Finite State Machine~$\FSM$.
+Here is a definition that is constructive, that you could follow to
+write a program to compute whether the string is accepted.
+We define a function
+$\map{\Gamma}{Q\times \sigma}{\powerset(Q)}$.
+For the case where the input string is empty
+$\sigma=\emptystring$,
+for each state $q\in\FSM$ let $\Gamma(q,\emptystring)=q$.
+Next, for the case where the input string is not empty,
+peel off the final character, $\sigma=\hat{\sigma}\concat x$ where $x\in\Sigma$,
+and for each $q\in Q$ define $\Gamma(q,\sigma)$ by:
+\begin{equation*}
+  \Gamma(q,\sigma)=
+    \Gamma(p_0,x)\cup\Gamma(p_1,x)\cup \,\cdots\,\Gamma(p_k,x)
+\end{equation*}
+where $\Gamma(q,\hat{\sigma})=\set{p_0,p_1,\, \ldots\,p_k}$.
+Then
+$\lang{L}(\FSM)=\set{\tau\in\kleenestar{\Sigma}\suchthat \Gamma(q_0,\tau)\cap\neq\emptyset}$
+\begin{exparts}
+\item For the machine of \cref{ex:NDFMFromDiscussion},
+  find $\Gamma(q,\emptystring)$ for each $q\in Q$.
+\item Find $\Gamma(q,\str{0})$ and $\Gamma(q,\str{1})$ for each $q\in Q$.
+\item Find $\Gamma(q,x)$ for each $q\in Q$ and $x\in\B^2$.
+\item Continue until you find
+  $\Gamma(q,x)$ for each $q\in Q$ and $x\in\B^5$.
+\end{exparts}
+
 \end{exercise}
 \end{exercises}
 
@@ -1023,7 +1094,15 @@ $\str{c}$'s is described by
 
 
 \subsection{Kleene's Theorem}
-
+\begin{center}
+  \includegraphics[width=0.3\textwidth]{automata/mcculloch.jpg}
+  \includegraphics[width=0.3\textwidth]{automata/pitts.jpg}
+\end{center}
+% http://nautil.us/issue/21/information/the-man-who-tried-to-redeem-the-world-with-logic
+\begin{center}
+  \includegraphics[width=0.3\textwidth]{automata/kleene.jpg}
+\end{center}
+Pronounced KLAY-nee.
 
 
 \begin{exercises}

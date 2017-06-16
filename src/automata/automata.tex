@@ -872,9 +872,126 @@ The \definend{language of the machine~$\lang{L}(\FSM)$} is the set
 of strings accepted by the machine.
 \end{definition}
 
+\begin{example} \label{ex:NFSMSubstringAAOrBB}
+The language accepted by this machine
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm09.pdf}
+\end{center}
+is the set of strings containing the substring \str{aa} or \str{bb}.
+Note that the machine accepts both \str{010010} and \str{1010110},
+even though the matching substring starts at index~$2$ in the first
+string and at index~$4$ in the second.
+\end{example}
+
+
+\begin{example} \label{ex:NFSMSubstringAAOrBB}
+This machine, with $\Sigma=\set{\str{a},\str{b},\str{c}}$,
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm10.pdf}
+\end{center}
+accepts $\set{(\str{ac})^n\suchthat n\in\N}
+  =\set{\emptystring,\str{ac},\str{acac},\,\ldots\,}$.
+The symbol~\str{b} isn't attached to any arrow
+so it won't play a part in any accepting string.
+\end{example}
+
+\begin{example}
+This garage door opener listener waits to hear the remote control send
+the signal \str{0101110}.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm11.pdf}
+\end{center}
+That is, it accepts the language
+$\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$
+of strings with that suffix.
+
+Note again that something here is strange.
+Suppose that the listener is in state~$q_0$ and hears some noise 
+that happens to be a \str{0} signal, 
+and just after that the owner presses
+the remote to send the \str{0101110}.
+How does the machine know which of the two \str{0}'s was the correct one 
+to start it down the right-hand path?
+The same holds for a \str{01}: this machine will end in an accepting 
+state if it hears a string \str{010101110}; how does 
+this mechanism guess correctly, ignoring
+the first \str{01} but paying attention to the second?
+
+This ``guessing'' may at first encounter seem to be not a 
+mechanically-accomplishable task.
+However, we will soon show how a deterministic Finite State Machine
+can do it.
+\end{example}
+
+\subsection{$\epsilon$ transitions}
+We can also allow machines to transition on empty input.
+The only change in the definition is that the definition of the
+transition function goes from $\map{\delta}{Q\times\Sigma}{\powerset(Q)}$
+to
+$\map{\delta}{Q\times(\Sigma\union\set{\emptystring})}{\powerset(Q)}$.
+where $\varepsilon$ is not an element of the alphabet~$\Sigma$.
+The semantics, the associated behavior,
+is that the machine may change state spontaneously, 
+without any input.
+
+\begin{example}
+This Nondeterministic Finite State Machine accepts valid integers.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm12.pdf}
+\end{center}
+The $\varepsilon$-transition between $q_0$ and~$q_1$ 
+allows the machine to accept strings without a leading sign
+such as \str{123} and \str{0}.
+\end{example}
+
+\begin{example} 
+This machine accepts strings that have two parts: 
+first comes some number of \str{aab}'s,
+and then comes some number of: either \str{a}'s or \str{aba}'s.  
+\begin{align*}
+  \mathcal{L}&=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+                \suchthat \sigma=(\str{aab})^n(\str{a}|\str{aba})^n} \\
+             &=\set{\str{{\color{blue}aab}aab{\color{blue}aba}aba}, 
+                    \str{{\color{blue}aab}}, 
+                    \str{{\color{blue}a}aba{\color{blue}a}aba}, 
+                    \str{{\color{blue}aab}a{\color{blue}aba}a{\color{blue}aba}},
+                    \str{{\color{blue}a}a{\color{blue}a}a}, \ldots}
+\end{align*}
+(They are colored to help your eye parse the string.)
+Note that in the second part of a string 
+the \str{a}'s can be interwoven with the \str{aba}'s.
+
+This NFSM machine accepts that language.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm13.pdf}
+\end{center}
+\end{example}
+
+
+
+% \begin{frame}\vspace*{-1ex}
+% \exm 
+% This accepts the union of
+% $\lang_0=\set{\sigma\in\Sigma^*\suchthat \text{$\sigma$ ends in \ch{ab}}}$
+% and
+% $\lang_1=\set{\sigma\in\Sigma^*\suchthat \text{$\sigma=(ac)^n$ for some $n\in\N$}}$, where $\Sigma=\set{\ch{a},\ch{b}}$.
+% \begin{center}
+%   \includegraphics{asy/join_fsms2.pdf}
+% \end{center}
+% \pause
+% We can clean up the plethora of accepting states.
+% \begin{center}
+%   \includegraphics{asy/nfsm_one_final_state.pdf}
+% \end{center}
+
+
 
 
 \begin{exercises}
+\begin{exercise}
+Give the transition function for the machine of \cref{ex:NFSMSubstringAAOrBB}.
+\end{exercise}
+  
 \begin{exercise}
 \Cref{def:NFSMAccepted} defines when an input~$\tau$ is accepted by a
 Nondeterministic Finite State Machine~$\FSM$.

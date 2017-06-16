@@ -659,3 +659,203 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ============== Second NFSM; substring of aa or bb ================
+picture pic;
+int picnum = 9;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1);
+vlayout(v, q0, q2);
+hlayout(u, q2, q3);
+
+// edges
+draw(pic,
+     (q0..loop(W)).l("\str{a},\str{b}"),
+     (q0--q1).l("\str{a}"), 
+     (q0--q2).l("\str{b}"), 
+     (q1--q3).l("\str{a}"), 
+     (q2--q3).l("\str{b}"),
+     (q3..loop(E)).l("\str{a},\str{b}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Second NFSM; substring of aa or bb ================
+picture pic;
+int picnum = 10;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting),
+  q1=ncircle("$q_1$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1);
+
+// edges
+draw(pic,
+     (q0..bend..q1).l("\str{a}"), 
+     (q1..bend..q0).l("\str{c}") 
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Garage door listener ================
+picture pic;
+int picnum = 11;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$"),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$"),
+  q6=ncircle("$q_6$"),
+q7=ncircle("$q_7$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2, q3, q4, q5, q6, q7);
+
+// edges
+draw(pic,
+     (q0..loop(W)).l("\str{0},\str{1}"), 
+     (q0--q1).l("\str{0}"), 
+     (q1--q2).l("\str{1}"), 
+     (q2--q3).l("\str{0}"), 
+     (q3--q4).l("\str{1}"), 
+     (q4--q5).l("\str{1}"), 
+     (q5--q6).l("\str{1}"), 
+     (q6--q7).l("\str{0}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, q3, q4, q5, q6, q7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== epsilon-transitions, NFSM of valid integers ================
+picture pic;
+int picnum = 12;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2, q3, q4, q5, q6, q7);
+
+// edges
+draw(pic, 
+     (q0--q1).l("\str{+},\str{-},$\varepsilon$"), 
+     (q1--q2).l("\str{1},...,\str{9}"), 
+     (q2..loop(E)).l("\str{0},...\str{9}") 
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== epsilon-transitions, join of two machines ================
+picture pic;
+int picnum = 13;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$", ns_accepting),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(3*u, q0, q3);
+q1.pos = new_node_pos(q0, 45, 1*v);
+q2.pos = new_node_pos(q0, 135, 1*v);
+q4.pos = new_node_pos(q3, -45, 1*v);
+q5.pos = new_node_pos(q3, -135, 1*v);
+
+
+// edges
+draw(pic, 
+     (q0--q1).l("\str{a}"), 
+     (q1--q2).l("\str{a}"), 
+     (q2--q0).l("\str{b}"), 
+     (q0--q3).l("$\varepsilon$"), 
+     (q3..loop(S)).l("\str{a}"), 
+     (q3--q4).l("\str{a}"), 
+     (q4--q5).l("\str{b}"), 
+     (q5--q3).l("\str{a}") 
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

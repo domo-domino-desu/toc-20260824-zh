@@ -56,7 +56,7 @@ hlayout(u, q0, q1, q2, q3);
 // edges
 draw(pic,
      (q0--q1).l("\str{0}"), 
-     (q0..loop(N)).l("\str{0},\str{1}"),
+     (q0..loop(W)).l("\str{0},\str{1}"),
      (q1--q2).l("\str{0}"), 
      (q2--q3).l("\str{1}") 
     );
@@ -791,7 +791,7 @@ node q0=ncircle("$q_0$"),
 
 // layout
 defaultlayoutrel = false;
-defaultlayoutskip = 1.25cm;
+defaultlayoutskip = 1.75cm;
 real u = defaultlayoutskip;
 real v = .9u;
 
@@ -820,7 +820,7 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$q_0$"),
+node q0=ncircle("$q_0$", ns_accepting),
   q1=ncircle("$q_1$"),
   q2=ncircle("$q_2$"),
   q3=ncircle("$q_3$", ns_accepting),
@@ -856,6 +856,86 @@ draw(pic,
 draw(pic, q0, q1, q2, q3, q4, q5);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== epsilon-transitions, or of two machines ================
+picture pic;
+int picnum = 14;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting);  
+node r0=ncircle("$r_0$",ns_accepting); 
+node r1=ncircle("$r_1$");
+node s0=ncircle("$s_0$");
+node t=ncircle("$t$",ns_accepting);  
+
+// calculate nodes position
+real u=2.25cm;
+q0.pos = new_node_pos(s0, 30, 0.75*v);
+r0.pos = new_node_pos(s0, -30, -0.75*v);
+hlayout(1*u, q0, q1, q2);
+hlayout(1*u, r0, r1);
+
+// draw edges
+draw(pic,
+     (s0--q0).l("$\varepsilon$"),
+     (s0--r0).l("$\varepsilon$"),
+     (q0--q1).l("\str{a}"),
+     (q0..loop(N)).l("\str{a},\str{b}"),
+     (q1--q2).l("\str{b}"),
+     (r0..bend..r1).l("\str{a}"),
+     (r1..bend..r0).l("\str{c}")
+     // (s0--q0).l("$\varepsilon$"),
+     // (s0--r0).l("$\varepsilon$"),
+     // (q2--t).l("$\varepsilon$"),
+     // (r0..bend(40)..t).l("$\varepsilon$")
+);
+
+// draw nodes after edges
+draw(pic, s0, q0,q1,q2, r0,r1);
+
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== epsilon-transitions, star of two machines ================
+picture pic;
+int picnum = 15;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=2.25cm;
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1--q2).l("\str{b}"),
+     (q2..bend(20)..q0).l("$\varepsilon$")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

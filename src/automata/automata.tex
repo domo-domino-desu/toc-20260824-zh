@@ -675,17 +675,17 @@ The definition of Finite State Machine inherits from the
 definition of Turing Machine
 the condition that the next state is a function
 of the current configuration.
-Because it is a function its output is determined by its input
+Because it is a function its output is determined by its input,
 so both kinds of machine are deterministic\Dash
 at each step the machine's behavior is fixed.
 
-For instance, no Turing Machine
+We've seen that as a consequence no Turing Machine
 can contain both of the instructions
 \tminstruction{4}{1}{B}{1}
 and~\tminstruction{4}{1}{1}{5} because both begin with
 $q_4\str{1}$. 
 Another example is that in the earlier diagrams of Finite State Machines that
-had omitted edges, we commented that they they belong in there but
+had omitted edges, we commented that the edges belong there but
 were left out only for the graphic design reason that
 showing them would make a mess.
 
@@ -710,7 +710,8 @@ forty eight contiguous US~states
 and look at trips that visit every state capitol.
 We could ask if there is a cycle of less than $16,000$ kilometers.
 
-Imagine we are solving this on a computer
+\margingraphic{0.175\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
+Imagine that we are solving this on a computer
 (that is, on a Turing Machine) and let's start in Monteplier VT.
 We want \citetext{a function}{The name \textit{amb}
 abbreviates `ambiguous function'.
@@ -730,24 +731,23 @@ Now we can define $\operatorname{less}(n)$ by
 $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''}
 $\operatorname{amb}(\text{Albany}, \text{Annapolis},\, ...\,)$
 that returns a next city.
-
-\margingraphic{0.175\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
 The philosopher and Hall of Fame baseball catcher Y~Berra said, ``If you
 come to a fork in the road, take it.''
 That's how you could try the problem: when you come up against a choice,
+as with this function,
 fork a process for each possibility.
-Thus, if you start at Montpelier then you have forty seven capitals you could
-visit, so you split the machine into forty seven machines\Dash you
-fork forty seven child processes.
+Thus, if you start at Montpelier then you
+split the machine into forty seven machines\Dash you
+fork forty seven child processes, one for each potential next capital.
 The process assigned Albany, for instance, would know that the trip so far is
-$126.19$~kilometers and would then fork forty six children to explore the
-rest of possible trips.
+$126.19$~kilometers and would then fork its own
+forty six children.
 At the end you have a whole lot of child processes but if there is
 a trip of less than $16,000$ kilometers then one of the children knows it.
 
-We could work this way with an unboundedly-parallel machine
-because we could keep allocating processes,
-as many as we need.\footnote{Or, if we only have a single CPU then we could simulate
+We could work this way if we had an unboundedly-parallel machine,
+because we could keep allocating as many processes
+as we need.\footnote{Or, if we only have a single CPU then we could simulate
 that with time-slicing, where the CPU works with the first process for a bit,
 then turns to the second, and then to the third, etc.,
 eventually returning around to the first process again.} 
@@ -755,12 +755,13 @@ This is nondeterministic in the sense that during this computation
 the machine has many process, each in a different state.
 
 This presentation of nondeterminism is familiar from our experience
-working with machines running many processes.
+with everyday computers.
 When we are writing an email in one window 
-while watching a video in another, the machine appears, to the user, to be
-in multiple states at once.
+and watching a video in another the machine seems, to the user, to be
+in multiple states.
 
-We will carry this over to a Finite State Machine context.
+This section carries this over to a Finite State Machine context.
+
 \begin{example}  \label{ex:NFSMInDiscussion}
 Consider this machine diagram.
 Observe that leaving $q_0$ are two arrows labelled~\str{0},
@@ -779,15 +780,15 @@ Here is the computation tree.
 \end{animatedfigure}
 When we considered the parallel approach to the Travelling Salesman
 we observed that if a solution exists then some child process would find it.
-The same happens here: there is a branch of the comptuation tree that
+The same happens here; there is a branch of the comptuation tree that
 accepts the input string.
 Note that while there is a branch that is successful, there are also
 branches that are not.
-The branch pictured at the bottom as $q_0\yields q_1\yields q_2$ dies out
-because it is in state~$q_2$ and the input is~\str{0}, and there is
-in the machine no next state for that configuration.
+The branch pictured at the bottom dies out after step~$2$
+because this machine has no next state for that configuration of
+state~$q_2$ and input~\str{0}.
 The branch pictured at the top never dies but
-is also not in the end successful in accepting the input string.
+is also not successful in accepting the input.
 However, as with the Travelling Salesman approach, we don't care about
 unsuccessful branches.
 We only care that there is a successful one.
@@ -802,18 +803,17 @@ input.
 One more point in this informal discussion of nondeterminism.
 The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
 When we feed it the input \str{00001} the problem the machine faces is
-when to stop going around $q_0$'s loop and start to the
-right.
+when to stop going around $q_0$'s loop and start to the right.
 Our definition has the machine accepting this input
-so we can imagine that the machine has solved this problem, that the
+so the machine has solved this problem\Dash the
 machine has correctly guessed.
 
-The disadvantage of speaking of the machine as ``guessing'' is that  
+Saying that the machine is ``guessing'' is jarring since  
 \citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}}.
-Nonetheless, researchers in this area often speak in these terms.
+Nonetheless, researchers in this area often say this.
 A perhaps less disconcerting way to put it is to imagine that someone, some
 oracle, furnishes the answer (``go around twice, then off to the right'') and
-we just have to check that the answer computes.
+we just have to check that answer on this machine.
 
 In this book we shall describe nondeterminism in both ways: as a
 machine being in multiple states at once, and as guessing.
@@ -830,7 +830,7 @@ as deterministic machines.
 \subsection{Definition}
 
 The definition of a Nondeterministic Finite State Machine
-differs in only one way from that of a deterministic machine:
+differs from that of a deterministic machine only in that
 the transition function does not output single states,
 it outputs a set of states.
 
@@ -840,8 +840,8 @@ A \definend{Nondeterministic Finite State Machine}
 $\FSM=\sequence{Q,q_{\text{start}},F,\Sigma,\Delta}$ 
 consistts of a finite \definend{set of states}~$Q$,
 one of which is the \definend{start state}~$q_{\text{start}}$,
-a subset $F\subseteq Q$ of \definend{final states} or
-\definend{accepting states},
+a subset $F\subseteq Q$ of \definend{accepting states}
+(or \definend{final states}),
 a finite \definend{input alphabet} set~$\Sigma$,
 and a \definend{transition function}
 $\map{\Delta}{Q\times\Sigma}{\powerset (Q)}$.
@@ -849,7 +849,7 @@ $\map{\Delta}{Q\times\Sigma}{\powerset (Q)}$.
 
 \begin{example}  \label{ex:NDFMFromDiscussion}
 This is the Nondeterministic Finite State Machine from the discussion,
-along with its transition function.
+shown with its transition function.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm00.pdf}}
   \hspace*{3em}
@@ -878,13 +878,13 @@ The language accepted by this machine
   \includegraphics{automata/asy/nfsm/nfsm09.pdf}
 \end{center}
 is the set of strings containing the substring \str{aa} or \str{bb}.
-Note that the machine accepts both \str{010010} and \str{1010110},
+Note that the machine accepts both \str{010010} and \str{010110},
 even though the matching substring starts at index~$2$ in the first
-string and at index~$4$ in the second.
+string and at index~$3$ in the second.
 \end{example}
 
 
-\begin{example} \label{ex:NFSMSubstringAAOrBB}
+\begin{example} \label{ex:NFSMRepeatsofAC}
 This machine, with $\Sigma=\set{\str{a},\str{b},\str{c}}$,
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm10.pdf}
@@ -905,7 +905,7 @@ That is, it accepts the language
 $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$
 of strings with that suffix.
 
-Note again that something here is strange.
+Note again that something here is jarring.
 Suppose that the listener is in state~$q_0$ and hears some noise 
 that happens to be a \str{0} signal, 
 and just after that the owner presses
@@ -917,19 +917,20 @@ state if it hears a string \str{010101110}; how does
 this mechanism guess correctly, ignoring
 the first \str{01} but paying attention to the second?
 
-This ``guessing'' may at first encounter seem to be not a 
+This ``guessing'' may at first seem to be not a 
 mechanically-accomplishable task.
 However, we will soon show how a deterministic Finite State Machine
 can do it.
 \end{example}
 
-\subsection{$\epsilon$ transitions}
+\subsection{$\varepsilon$ transitions}
 We can also allow machines to transition on empty input.
-The only change in the definition is that the definition of the
-transition function goes from $\map{\delta}{Q\times\Sigma}{\powerset(Q)}$
+The only change in the definition is that the
+transition function's signature
+goes from $\map{\Delta}{Q\times\Sigma}{\powerset(Q)}$
 to
-$\map{\delta}{Q\times(\Sigma\union\set{\emptystring})}{\powerset(Q)}$.
-where $\varepsilon$ is not an element of the alphabet~$\Sigma$.
+$\map{\Delta}{Q\times(\Sigma\union\set{\emptystring})}{\powerset(Q)}$
+(we assume that $\varepsilon$ is not an element of the alphabet~$\Sigma$).
 The semantics, the associated behavior,
 is that the machine may change state spontaneously, 
 without any input.
@@ -939,32 +940,43 @@ This Nondeterministic Finite State Machine accepts valid integers.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm12.pdf}
 \end{center}
-The $\varepsilon$-transition between $q_0$ and~$q_1$ 
-allows the machine to accept strings without a leading sign
-such as \str{123} and \str{0}.
+The $\varepsilon$-transition  
+allows the machine to spontaneously go from
+from $q_0$ to~$q_1$.
+This allows the machine to accept strings that do not start with a sign.
+For instance, given \str{123} and started in $q_0$,
+the machine can transition to state~$q_1$, then read the \str{1} and transition
+to $q_2$, staying there while processing the \str{2} and \str{3},
+and so accepting this input string.
 \end{example}
 
 \begin{example} 
-This machine accepts strings that have two parts: 
-first comes some number of \str{aab}'s,
-and then comes some number of: either \str{a}'s or \str{aba}'s.  
-\begin{align*}
-  \mathcal{L}&=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
-                \suchthat \sigma=(\str{aab})^n(\str{a}|\str{aba})^n} \\
-             &=\set{\str{{\color{blue}aab}aab{\color{blue}aba}aba}, 
-                    \str{{\color{blue}aab}}, 
-                    \str{{\color{blue}a}aba{\color{blue}a}aba}, 
-                    \str{{\color{blue}aab}a{\color{blue}aba}a{\color{blue}aba}},
-                    \str{{\color{blue}a}a{\color{blue}a}a}, \ldots}
-\end{align*}
-(They are colored to help your eye parse the string.)
-Note that in the second part of a string 
-the \str{a}'s can be interwoven with the \str{aba}'s.
-
-This NFSM machine accepts that language.
+An $\varepsilon$ transition can tie together two machines serially.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm13.pdf}
 \end{center}
+The left side is a nondeterministic machine that accepts strings in the language
+$\set{(\str{aab})^m\suchthat m\in\N}$ and the right side 
+accepts strings in $\set{(\str{a}|\str{aba})^n\suchthat n\in\N}$.
+Overall, the machine accepts strings in the concatenation of the languages
+\begin{equation*}
+  \mathcal{L}(\FSM)=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat \text{$\sigma=(\str{aab})^m(\str{a}|\str{aba})^n$ for $m,n\in\N$}}
+\end{equation*}
+That is, a string is accepted by the overall machine
+if first comes some number of \str{aab}'s,
+and then comes some number of: either \str{a}'s or \str{aba}'s.
+For example, the machine
+accepts these two strings; the brackets help
+a person's eye pick out the parts.
+\begin{equation*}
+  \newlength{\jhscratchlength} \setlength{\jhscratchlength}{0.25pt}
+  \underbracket[\jhscratchlength]{\str{aab}}\overbracket[\jhscratchlength]{\str{aab}}\underbracket[\jhscratchlength]{\str{aba}}\overbracket[\jhscratchlength]{\str{aba}}
+  \qquad
+  \underbracket[\jhscratchlength]{\str{aab}}\overbracket[\jhscratchlength]{\str{a}}\underbracket[\jhscratchlength]{\str{aba}}\overbracket[\jhscratchlength]{\str{a}}\underbracket[\jhscratchlength]{\str{aba}}
+\end{equation*}
+% Note that in the second part of a string 
+% the \str{a}'s can be interwoven with the \str{aba}'s.
 \end{example}
 
 
@@ -989,7 +1001,8 @@ This NFSM machine accepts that language.
 
 \begin{exercises}
 \begin{exercise}
-Give the transition function for the machine of \cref{ex:NFSMSubstringAAOrBB}.
+Give the transition function for the machines of
+\cref{ex:NFSMSubstringAAOrBB} and \cref{ex:NFSMRepeatsofAC}.
 \end{exercise}
   
 \begin{exercise}
@@ -1011,7 +1024,7 @@ and for each $q\in Q$ define $\Gamma(q,\sigma)$ by:
 \end{equation*}
 where $\Gamma(q,\hat{\sigma})=\set{p_0,p_1,\, \ldots\,p_k}$.
 Then
-$\lang{L}(\FSM)=\set{\tau\in\kleenestar{\Sigma}\suchthat \Gamma(q_0,\tau)\cap\neq\emptyset}$
+$\lang{L}(\FSM)=\set{\tau\in\kleenestar{\Sigma}\suchthat \Gamma(q_0,\tau)\cap\neq\emptyset}$.
 \begin{exparts}
 \item For the machine of \cref{ex:NDFMFromDiscussion},
   find $\Gamma(q,\emptystring)$ for each $q\in Q$.

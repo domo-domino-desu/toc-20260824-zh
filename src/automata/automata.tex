@@ -764,8 +764,9 @@ This section carries this over to a Finite State Machine context.
 
 \begin{example}  \label{ex:NFSMInDiscussion}
 Consider this machine diagram.
-Observe that leaving $q_0$ are two arrows labelled~\str{0},
-and that leaving $q_1$ is no arrow labelled~\str{1}.
+Observe that leaving $q_0$ are two arrows labelled~\str{0}.
+It also has states with a deficit of edges; for instance,
+leaving $q_1$ is no arrow labelled~\str{1}.
 This is a nondeterministic machine.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm00.pdf}}
@@ -780,15 +781,16 @@ Here is the computation tree.
 \end{animatedfigure}
 When we considered the parallel approach to the Travelling Salesman
 we observed that if a solution exists then some child process would find it.
-The same happens here; there is a branch of the comptuation tree that
+The same happens here; there is a
+branch of the comptuation tree that
 accepts the input string.
-Note that while there is a branch that is successful, there are also
-branches that are not.
-The branch pictured at the bottom dies out after step~$2$
-because this machine has no next state for that configuration of
-state~$q_2$ and input~\str{0}.
-The branch pictured at the top never dies but
-is also not successful in accepting the input.
+There are also
+branches that are not successful:
+the one at the bottom dies out after step~$2$
+because this machine has no next state when the present
+state~$q_2$ and the input is~\str{0}, and 
+while the branch at the top never dies, it
+also does not accept the input.
 However, as with the Travelling Salesman approach, we don't care about
 unsuccessful branches.
 We only care that there is a successful one.
@@ -808,11 +810,13 @@ Our definition has the machine accepting this input
 so the machine has solved this problem\Dash the
 machine has correctly guessed.
 
+\margingraphic[l]{0.175\textwidth}{automata/delphi.png}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Pythia}{The oracle at Delphi}}
 Saying that the machine is ``guessing'' is jarring since  
 \citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}}.
 Nonetheless, researchers in this area often say this.
 A perhaps less disconcerting way to put it is to imagine that someone, some
-oracle, furnishes the answer (``go around twice, then off to the right'') and
+\definend{oracle},
+furnishes the answer (``go around twice, then off to the right'') and
 we just have to check that answer on this machine.
 
 In this book we shall describe nondeterminism in both ways: as a
@@ -905,7 +909,7 @@ That is, it accepts the language
 $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$
 of strings with that suffix.
 
-Note again that something here is jarring.
+Note again that something here is disconcerting.
 Suppose that the listener is in state~$q_0$ and hears some noise 
 that happens to be a \str{0} signal, 
 and just after that the owner presses
@@ -943,11 +947,14 @@ This Nondeterministic Finite State Machine accepts valid integers.
 The $\varepsilon$-transition  
 allows the machine to spontaneously go from
 from $q_0$ to~$q_1$.
-This allows the machine to accept strings that do not start with a sign.
-For instance, given \str{123} and started in $q_0$,
-the machine can transition to state~$q_1$, then read the \str{1} and transition
-to $q_2$, staying there while processing the \str{2} and \str{3},
-and so accepting this input string.
+With this, the machine can accept strings that do not start with a sign.
+For instance, if we start this machine in~$q_0$
+and give it input~\str{123} then it 
+can follow the $\varepsilon$
+transition to state~$q_1$, then read the \str{1} and transition
+to $q_2$, staying there while processing the \str{2} and \str{3}.
+This is a branch of the computation tree accepting the input,
+so our definition says that the machine accepts the input.
 \end{example}
 
 \begin{example} 
@@ -979,23 +986,101 @@ a person's eye pick out the parts.
 % the \str{a}'s can be interwoven with the \str{aba}'s.
 \end{example}
 
+\begin{example}
+A $\varepsilon$ transition can also put two machines together in parallel.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm14.pdf}
+\end{center}
+The top nondeterministic machine's language is
+$\set{\sigma\in\kleenestar{\Sigma}\suchthat \text{$\sigma$ ends in \str{ab}}}$
+and the bottom machine's language is
+$\set{\sigma\in\kleenestar{\Sigma}\suchthat \text{$\sigma=(\str{ac})^n$ for some $n\in\N$}}$,
+where $\Sigma=\set{\str{a},\str{b},\str{c}}$.
+These two are unioned to make the language for the entire machine.
+\begin{equation*}
+  \set{\sigma\in\kleenestar{\Sigma}\suchthat
+    \text{either $\sigma$ ends in \str{ab} or $\sigma=(\str{ac})^n$ for $n\in\N$}}
+\end{equation*}
+\end{example}
+
+\begin{example}
+A $\varepsilon$ transition edge can also take a nondeterministic machine and
+give it the ``any number of repetitions'' effect.
+That is, without that edge this machine's language is
+$\set{\str{ab}}$
+while adding it makes the lanaguage  
+$\set{(\str{ab})^n\suchthat n\in\N}$.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm15.pdf}
+\end{center}
+\end{example}
 
 
-% \begin{frame}\vspace*{-1ex}
-% \exm 
-% This accepts the union of
-% $\lang_0=\set{\sigma\in\Sigma^*\suchthat \text{$\sigma$ ends in \ch{ab}}}$
-% and
-% $\lang_1=\set{\sigma\in\Sigma^*\suchthat \text{$\sigma=(ac)^n$ for some $n\in\N$}}$, where $\Sigma=\set{\ch{a},\ch{b}}$.
-% \begin{center}
-%   \includegraphics{asy/join_fsms2.pdf}
-% \end{center}
-% \pause
-% We can clean up the plethora of accepting states.
-% \begin{center}
-%   \includegraphics{asy/nfsm_one_final_state.pdf}
-% \end{center}
 
+\subsection{Equivalence of the two types of machines}
+We will show that the two kinds of Finite State Machines, deterministic and
+nondeterministic, accept the same languages.
+
+Any deterministic machine is by default a nondeterministic machine,
+so half of this assertion is trivial.
+What remains is to show that if a language is accepted by a
+nondeterminstic machine then there is a deterministic one that
+accepts the same language.
+We will show this by constructing the deterministic machine from the
+nondeterministic one.
+
+The example is clearer than the description, but here is the description
+first.
+Start with a nondeterministic machine $\FSM_N$, with
+the next-state function~$\Delta_N$.
+The deterministic machine $\FSM_D$ has states $s_i$ that are
+the sets of states of $\FSM_N$, so that $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$.
+To make the next-state function $\Delta_D$,  combine the next states associated
+with each $q_{i_j}$.
+\begin{equation*}
+  \Delta_D(s_i)=
+    \Delta_N(q_{i_1})\cup\Delta_N(q_{i_2})\cup \cdots
+\end{equation*}
+
+\begin{example}
+We start with a Nondeterministic Finite State Machine~$\FSM_N$
+that has no $\varepsilon$ transitions.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm16.pdf}
+\end{center}
+To make the deterministic machine below, 
+for convenience we denote the sets of states as $s_i$'s.
+To make the next-state function, 
+for example suppose that the deterministic machine is in the configuration where
+the state is $s_5=\set{q_0,q_2}$
+and the next input character is \str{a}.
+Then next states due to $q_0$ is $\set{q_0,q_1}$ and the next states due
+to $q_2$ is $\emptyset$ and in total the next states are $\set{q_0,q_1}=s_4$ .
+\begin{center}
+  \begin{tabular}{r|cc}
+    \multicolumn{1}{c}{\ }
+      &\str{a}   &\str{b}         \\
+      \cline{2-3}
+    $s_0=\set{}$                           &$s_0$  &$s_0$  \\
+    \acceptingstate $s_1=\set{q_0}$         &$s_4$  &$s_0$  \\
+    $s_2=\set{q_1}$                         &$s_0$  &$s_3$  \\
+    \acceptingstate $s_3=\set{q_2}$         &$s_0$  &$s_0$  \\
+    \acceptingstate $s_4=\set{q_0,q_1}$     &$s_4$  &$s_3$  \\
+    \acceptingstate $s_5=\set{q_0,q_2}$     &$s_4$  &$s_0$  \\
+    \acceptingstate $s_6=\set{q_1,q_2}$      &$s_0$  &$s_3$  \\
+    \acceptingstate $s_7=\set{q_0,q_1,q_2}$  &$s_4$  &$s_3$  \\
+  \end{tabular}
+\end{center}
+Checkmark a state of $\FSM_D$ if any of its elements are accepting
+states in $\FSM_N$.
+
+Besides the notational convenience,
+labeling the sets of states with the $s_i$'s makes clear that
+$\FSM_D$ is a Deterministic Finite State Machine. 
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm17.pdf}
+\end{center}
+\end{example}
 
 
 

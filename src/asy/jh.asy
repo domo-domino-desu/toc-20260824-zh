@@ -320,6 +320,11 @@ pair new_node_pos(node starting_pos, real theta, real vert) {
   return (starting_pos.pos.x+find_horiz(theta,vert), starting_pos.pos.y+vert);
 }
 
+// From starting point, angle, and desired horiz dist, return new pos
+pair new_node_pos_h(node starting_pos, real theta, real horiz) {
+  return (starting_pos.pos.x+horiz, starting_pos.pos.y+horiz*Tan(theta));
+}
+
 // circle centered at c, radius r
 path circle(pair c, real r)
 {

@@ -877,9 +877,10 @@ node s0=ncircle("$s_0$");
 node t=ncircle("$t$",ns_accepting);  
 
 // calculate nodes position
-real u=2.25cm;
-q0.pos = new_node_pos(s0, 30, 0.75*v);
-r0.pos = new_node_pos(s0, -30, -0.75*v);
+real u=2.25cm;  // horizontal
+real v=0.8*u;   // vertical
+q0.pos = new_node_pos(s0, 20, 0.33*v);
+r0.pos = new_node_pos(s0, -20, -0.33*v);
 hlayout(1*u, q0, q1, q2);
 hlayout(1*u, r0, r1);
 
@@ -926,12 +927,106 @@ hlayout(1*u, q0, q1, q2);
 draw(pic,
      (q0--q1).l("\str{a}"),
      (q1--q2).l("\str{b}"),
-     (q2..bend(20)..q0).l("$\varepsilon$")
+     (q2..bend(25)..q0).l("$\varepsilon$")
 );
 
 // draw nodes after edges
 draw(pic, q0, q1, q2);
 
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== NFSM without epsilon transitions, for proof of equivalence ==
+picture pic;
+int picnum = 16;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=1.75cm;
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(N)).l("\str{a}"),
+     (q0--q1).l("\str{a}"),
+     (q1--q2).l("\str{b}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== DFSM , for proof of equivalence ==
+picture pic;
+int picnum = 17;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// define nodes
+node s0=ncircle("$s_0$"); 
+node s1=ncircle("$s_1$",ns_accepting);  
+node s2=ncircle("$s_2$");  
+node s3=ncircle("$s_3$",ns_accepting);  
+node s4=ncircle("$s_4$",ns_accepting);  
+node s5=ncircle("$s_5$",ns_accepting);  
+node s6=ncircle("$s_6$",ns_accepting);  
+node s7=ncircle("$s_7$",ns_accepting);  
+
+// calculate nodes position
+real u=1.75cm;
+// hlayout(2*u, s0, s6);
+// layout(-45.0, s0, s3);
+// layout(30.0, s3, s6);
+// hlayout(1*u, s3, s4);
+// layout(-60.0, s3, s2);
+// layout(45.0, s6, s1);
+// layout(-20.0, s6, s5);
+// layout(-30.0, s4, s7);
+s0.pos = (0*u, 0*v);
+s3.pos = new_node_pos_h(s0, -45, 1*u);
+s6.pos = new_node_pos_h(s3, 30, 1*u);
+s4.pos = new_node_pos_h(s3, 0, 1*u);
+s2.pos = new_node_pos_h(s3, -50, 1*u);
+s1.pos = new_node_pos_h(s4, 50, 1*u);
+s5.pos = new_node_pos_h(s4, 15, 1*u);
+s7.pos = new_node_pos_h(s4, -15, 1*u);
+
+
+// draw edges
+draw(pic,
+     (s0..loop(W)).l("\str{a},\str{b}"),
+     (s1..bend..s0).l("\str{b}"),
+     (s1--s4).l("\str{a}"),
+     (s2..bend(-30)..s0).l("\str{a}").style("leftside"),
+     (s2..bend(-30)..s3).l(Label("\str{b}",Relative(0.75))).style("leftside"),
+     (s3--s0).l("\str{a},\str{b}"),
+     (s4..loop(S)).l("\str{a}"),
+     (s4--s3).l("\str{b}"),
+     (s5--s4).l("\str{a}"),
+     (s5..bend..s0).l("\str{b}"),
+     (s6--s0).l("\str{a}"),
+     (s6--s3).l("\str{b}"),
+     (s7--s4).l("\str{a}"),
+     (s7..bend(-50)..s3).l("\str{b}").style("leftside")
+);
+
+// draw nodes after edges
+draw(pic, s0, s1, s2, s3, s4, s5, s6, s7);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

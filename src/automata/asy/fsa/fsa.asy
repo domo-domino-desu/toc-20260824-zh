@@ -702,7 +702,7 @@ node q2=ncircle("$q_2$");
 // calculate nodes position
 // layout
 defaultlayoutrel = false;
-defaultlayoutskip = 1.75cm;
+defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 

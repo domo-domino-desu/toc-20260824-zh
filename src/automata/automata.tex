@@ -131,13 +131,13 @@ one of which is the \definend{start state}~$q_{\text{start}}$,
 and a subset $F\subseteq Q$ of \definend{accepting states} (or
 \definend{final states}).
 They also consist of a finite \definend{input alphabet} set~$\Sigma$
-and a \definend{transition function} $\map{\Delta}{Q\times\Sigma}{Q}$.
+and a \definend{next-state function} $\map{\Delta}{Q\times\Sigma}{Q}$.
 \end{definition}
 
 This definition may appear different than the one for 
-a Turing Machine, \cref{def:TuringMachine} from Chapter~One,
+a Turing Machine, \cref{def:TuringMachine} from Chapter~One
 but a lot of that is because here we don't need to expand on the terms
-`alphabet' or `transition function' since we already have seen them.
+`alphabet' or `transition function', since we already have seen them.
 
 The two definitions are alike in that at the heart of each is
 the transition function~$\Delta$.
@@ -325,6 +325,8 @@ and if the ending state
 is a final state $q\in F$
 then the machine \definend{accepts} the input~$\tau$
 (otherwise the machine \definend{rejects}~$\tau$).
+The \definend{language $\lang{L}(\FSM)$ accepted by that machine} is the
+set of accepted strings.
 
 If two configurations are related by being a single transition
 apart then we write
@@ -356,7 +358,7 @@ Since $q_0$ is an accepting state, the machine accepts \str{5013}.
 
 \begin{example}
 Finite State Machines are easy to translate to code.
-Here is a Scehem version of the multiple of three machine.  
+Here is a Scheme version of the multiple of three machine.  
 \lstinputlisting{automata/scheme/mod3fsm.scm}
 (Because the last thing called in \codeinline{multiple-of-three-fsm-helper}
 is itself, the compiler converts the recursion to iteration.
@@ -407,8 +409,7 @@ See the description of the North America Numbering Plan
 it leaves out error states).
 Consider the number \str{1-802-555-0101}.
 The initial \str{1} takes us along the second line,
-which means the call will leave the central office\Dash it will
-go out of town.
+which means the call will leave the central office.
 The \str{0} between the \str{8} and the~\str{2} determines that the call
 is to a different area code, not just to a different central office inside
 the same area code.
@@ -810,10 +811,10 @@ Our definition has the machine accepting this input
 so the machine has solved this problem\Dash the
 machine has correctly guessed.
 
-\margingraphic[l]{0.175\textwidth}{automata/delphi.png}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Pythia}{The oracle at Delphi}}
-Saying that the machine is ``guessing'' is jarring since  
+\margingraphic[l]{0.2\textwidth}{automata/delphi.png}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Pythia}{The oracle at Delphi}}
+Saying that the machine is guessing is jarring since  
 \citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}}.
-Nonetheless, researchers in this area often say this.
+% Nonetheless, researchers in this area often say this.
 A perhaps less disconcerting way to put it is to imagine that someone, some
 \definend{oracle},
 furnishes the answer (``go around twice, then off to the right'') and
@@ -835,7 +836,7 @@ as deterministic machines.
 
 The definition of a Nondeterministic Finite State Machine
 differs from that of a deterministic machine only in that
-the transition function does not output single states,
+the next-state function does not output single states,
 it outputs a set of states.
 
 
@@ -847,7 +848,7 @@ one of which is the \definend{start state}~$q_{\text{start}}$,
 a subset $F\subseteq Q$ of \definend{accepting states}
 (or \definend{final states}),
 a finite \definend{input alphabet} set~$\Sigma$,
-and a \definend{transition function}
+and a \definend{next-state function}
 $\map{\Delta}{Q\times\Sigma}{\powerset (Q)}$.
 \end{definition}
 
@@ -870,10 +871,10 @@ shown with its transition function.
 
 \begin{definition} \label{def:NFSMAccepted}
 A Nondeterministic Finite State Machine $\FSM$ \definend{accepts} the input
-string $\tau$ if there is some sequence of transitions allowed by
+string if there is some sequence of transitions for that string and allowed by
 the machine that ends in an accepting state.
 The \definend{language of the machine~$\lang{L}(\FSM)$} is the set
-of strings accepted by the machine.
+of accepted strings.
 \end{definition}
 
 \begin{example} \label{ex:NFSMSubstringAAOrBB}
@@ -928,7 +929,9 @@ can do it.
 \end{example}
 
 \subsection{$\varepsilon$ transitions}
-We can also allow machines to transition on empty input.
+Another extension of Finite State Machines, which we shall handle along with
+nondetreminism,
+allows machines to transition on empty input.
 The only change in the definition is that the
 transition function's signature
 goes from $\map{\Delta}{Q\times\Sigma}{\powerset(Q)}$
@@ -1029,36 +1032,34 @@ accepts the same language.
 We will show this by constructing the deterministic machine from the
 nondeterministic one.
 
-The example is clearer than the description, but here is the description
-first.
-Start with a nondeterministic machine $\FSM_N$, with
-the next-state function~$\Delta_N$.
-The deterministic machine $\FSM_D$ has states $s_i$ that are
+Start with a nondeterministic machine $\FSM_N$ with
+next-state function~$\Delta_N$, which has no $\varepsilon$ transitions.
+The states $s_i$ of the deterministic machine $\FSM_D$ are
 the sets of states of $\FSM_N$, so that $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$.
-To make the next-state function $\Delta_D$,  combine the next states associated
-with each $q_{i_j}$.
+The next-state function $\Delta_D$ of $\FSM_D$,  combines the
+next states associated with each $q_{i_j}$.
 \begin{equation*}
   \Delta_D(s_i)=
     \Delta_N(q_{i_1})\cup\Delta_N(q_{i_2})\cup \cdots
+  \tag*{($*$)}
 \end{equation*}
 
 \begin{example}
-We start with a Nondeterministic Finite State Machine~$\FSM_N$
-that has no $\varepsilon$ transitions.
+Consider this nondeterministic machine $\FSM_N$.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm16.pdf}
 \end{center}
-To make the deterministic machine below, 
-for convenience we denote the sets of states as $s_i$'s.
-To make the next-state function, 
-for example suppose that the deterministic machine is in the configuration where
-the state is $s_5=\set{q_0,q_2}$
-and the next input character is \str{a}.
-Then next states due to $q_0$ is $\set{q_0,q_1}$ and the next states due
-to $q_2$ is $\emptyset$ and in total the next states are $\set{q_0,q_1}=s_4$ .
+The deterministic machine is below. 
+Its states~$s_i$ are sets of states of $\FSM_N$.
+For an example of the next-state function, 
+suppose that this machine is in $s_5=\set{q_0,q_2}$ and is reading an~\str{a}.
+Apply equation~($*$):
+combine the set of next states due to~$q_0$, the set
+$\Delta_N(q_0,\str{a})=\set{q_0,q_1}$, with the next states
+due to~$q_2$, the set $\Delta_N(q_2,\str{a})=\emptyset$.
+That gives $\Delta_D(s_5,\str{a})=\set{q_0,q_1}=s_4$.
 \begin{center}
-  \begin{tabular}{r|cc}
-    \multicolumn{1}{c}{\ }
+  \begin{transitionfunction}[\Delta_D]
       &\str{a}   &\str{b}         \\
       \cline{2-3}
     $s_0=\set{}$                           &$s_0$  &$s_0$  \\
@@ -1069,18 +1070,101 @@ to $q_2$ is $\emptyset$ and in total the next states are $\set{q_0,q_1}=s_4$ .
     \acceptingstate $s_5=\set{q_0,q_2}$     &$s_4$  &$s_0$  \\
     \acceptingstate $s_6=\set{q_1,q_2}$      &$s_0$  &$s_3$  \\
     \acceptingstate $s_7=\set{q_0,q_1,q_2}$  &$s_4$  &$s_3$  \\
-  \end{tabular}
+  \end{transitionfunction}
 \end{center}
-Checkmark a state of $\FSM_D$ if any of its elements are accepting
+A state of $\FSM_D$ is accepting if any of its elements are accepting
 states in $\FSM_N$.
+The start state of $\FSM_D$ is not $s_0$, it is $s_1=\set{q_0}$ because
+the start state of $\FSM_N$ is~$q_0$.
 
 Besides the notational convenience,
-labeling the sets of states with the $s_i$'s makes clear that
-$\FSM_D$ is a Deterministic Finite State Machine. 
+naming the sets of states as the $s_i$'s makes clear that
+$\FSM_D$ is a Deterministic Finite State Machine.
+Here's a diagram.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm17.pdf}
 \end{center}
 \end{example}
+
+Note that if the nondeterministic machine has~$k$-many states then
+then under this construction the deterministic machine has $2^k$-many states.
+In practice, typically many of them can be eliminated.
+For instance, in the above machine the state~$s_6$ is unreachable from the
+start state since there are arrows out of $s_6$ but no arrows in.
+We will cover minimizing the number of states in a machine in the
+next section.
+
+If the nondeterministic machine has $\varepsilon$ transitions then we have to
+follow them.
+For instance, suppose that
+we are constructing the deterministic machine's next-state function~$\Delta_D$,
+that the current configuration is $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$  and
+that the machine is reading \str{a}.
+If there is a
+$\varepsilon$ transition from $q_{i_j}$ to some $q$ then we must
+add to equation~($*$) the term $\Delta_N(\set{q},\str{a})$.
+And we have to iterate:~if there is a
+$\varepsilon$ transition leading out of $q$ then
+we must handle it's endpoint the same way.
+The next example illustrates.
+
+\begin{example}
+Suppose that
+this machine is in state $s_1=\set{q_0}$ and is reading \str{a}.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm18.pdf}
+\end{center}
+Reading the character \str{a} while in $q_0$ leads to $q_2$.
+From $q_0$ and following the $\varepsilon$ transition to~$q_3$,
+and then reading the \str{a} gives~$q_3$.
+That it, compute the next state as here.
+\begin{equation*}
+  \Delta_D(s_1,\str{a})
+    =\Delta_N(q_0,\str{a})\cup\Delta_N(q_3,\str{a})
+    =\set{q_2} \cup \set{q_3}
+    =\set{q_2,q_3}=s_{10}
+\end{equation*}
+Now suppose the machine is in $s_2=\set{q_1}$ and reading \str{a}.
+Following the $\varepsilon$ to $q_0$ and then reading the \str{a} leads to
+$q_2$.
+Again starting in $q_1$, following the $\varepsilon$ to $q_0$
+and following another $\varepsilon$ to $q_3$,
+and then reading the \str{a} leads to~$q_3$.
+\begin{align*}
+  \Delta_D(s_2,\str{a})
+    &=\Delta_N(q_1,\str{a})\cup\Delta_N(q_0,\str{a})\cup\Delta_N(q_3,\str{a}) \\
+    &=\set{}\cup\set{q_2} \cup \set{q_3}
+    =s_{10}
+\end{align*}
+The deterministic machine is below. 
+\begin{center}
+  \begin{transitionfunction}[\Delta_D]
+      &\str{a}   &\str{b}         \\
+      \cline{2-3}
+    $s_0=\set{}$                                 &$s_0$     &$s_0$  \\
+    \acceptingstate $s_1=\set{q_0}$              &$s_{10}$  &$s_0$  \\
+    \acceptingstate $s_2=\set{q_1}$              &$s_{10}$  &$s_0$  \\
+                    $s_3=\set{q_2}$              &$s_0$     &$s_7$  \\
+    \acceptingstate $s_4=\set{q_3}$              &$s_4$     &$s_0$  \\
+    \acceptingstate $s_5=\set{q_0,q_1}$          &$s_{10}$  &$s_0$  \\
+    \acceptingstate $s_6=\set{q_0,q_2}$          &$s_{10}$  &$s_7$  \\
+    \acceptingstate $s_7=\set{q_0,q_3}$          &$s_{10}$  &$s_0$  \\
+    \acceptingstate $s_8=\set{q_1,q_2}$          &$s_{10}$  &$s_7$  \\
+    \acceptingstate $s_9=\set{q_1,q_3}$          &$s_{10}$  &$s_0$  \\
+    \acceptingstate $s_{10}=\set{q_2,q_3}$          &$s_4$    &$s_7$  \\
+    \acceptingstate $s_{11}=\set{q_0,q_1,q_2}$      &$s_{10}$  &$s_7$  \\
+    \acceptingstate $s_{12}=\set{q_0,q_1,q_3}$      &$s_{10}$  &$s_0$  \\
+    \acceptingstate $s_{13}=\set{q_0,q_2,q_3}$      &$s_{10}$  &$s_7$  \\
+    \acceptingstate $s_{14}=\set{q_1,q_1,q_3}$      &$s_{10}$  &$s_7$  \\
+    \acceptingstate $s_{15}=\set{q_0,q_1,q_2,q_3}$  &$s_{10}$  &$s_7$  \\
+  \end{transitionfunction}
+\end{center}
+A states is accepting if it contains $s_0$, $s_1$, or~$s_3$.
+For instance, if $\FSM_N$ ends in $q_0$ then it could take an $\varepsilon$
+transition to $q_3$.
+\end{example}
+
+
 
 
 

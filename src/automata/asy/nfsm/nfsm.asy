@@ -1325,3 +1325,196 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== NFSM exercise, omit at least one character ==
+picture pic;
+int picnum = 25;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$",ns_accepting);  
+node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$",ns_accepting);  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+q1.pos = new_node_pos_h(q0, 45, 1*u);
+hlayout(1*u, q0, q2);
+q3.pos = new_node_pos_h(q0, -45, 1*u);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$\varepsilon$"),
+     (q1..loop(N)).l("\str{a},\str{b}"),
+     (q0--q2).l("$\varepsilon$"),
+     (q2..loop(N)).l("\str{a},\str{c}"),
+     (q0--q3).l("$\varepsilon$"),
+     (q3..loop(N)).l("\str{b},\str{c}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ============== NFSM exercise, accept only the empty string ==
+picture pic;
+int picnum = 26;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+
+// draw edges
+
+// draw nodes after edges
+draw(pic, q0);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== NFSM exercise, any string but the empty one ==
+picture pic;
+int picnum = 27;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting);  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(1*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a},\str{b},\str{c}"),
+     (q1..loop(E)).l("\str{a},\str{b},\str{c}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== NFSM exercise, any string but the empty one ==
+picture pic;
+int picnum = 28;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0}"),
+     (q1--q2).l("\str{1}"),
+     (q1..loop(E)).l("\str{0},\str{1}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== NFSM exercise, describe language accepted ==
+picture pic;
+int picnum = 29;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0}"),
+     (q1--q2).l("\str{1}"),
+     (q0..bend..q2).l("\str{0}"),
+     (q1..loop(N)).l("\str{0}"),
+     (q2..loop(N)).l("\str{1}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== NFSM exercise, describe strings accepted ==
+picture pic;
+int picnum = 30;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0},\str{1}"),
+     (q1--q2).l("\str{1}"),
+     (q0..bend..q2).l("$\varepsilon$"),
+     (q2..loop(E)).l("\str{1}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

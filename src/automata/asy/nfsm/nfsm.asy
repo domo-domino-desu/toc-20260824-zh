@@ -1068,3 +1068,260 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== NFSM exercise, shortest strings ==
+picture pic;
+int picnum = 19;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(W)).l("\str{a}"),
+     (q0--q1).l("\str{a},\str{b}"),
+     (q1--q2).l("$\varepsilon$"),
+     (q2..loop(E)).l("\str{b}"),
+     (q2..bend..q0).l("\str{b}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== NFSM exercise, local phone numbers ==
+picture pic;
+int picnum = 20;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$");  
+node q3=ncircle("$q_3$");  
+node q4=ncircle("$q_4$");  
+node q5=ncircle("$q_5$");  
+node q6=ncircle("$q_6$");  
+node q7=ncircle("$q_7$");  
+node q8=ncircle("$q_8$",ns_accepting);  
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(1*u, q0, q1, q2, q3, q4, q5, q6, q7, q8);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0},..\str{9}"),
+     (q1--q2).l("\str{0},..\str{9}"),
+     (q2--q3).l("\str{0},..\str{9}"),
+     (q3--q4).l("\rule[-0\baselineskip]{0pt}{0.55\baselineskip}\str{-}"),
+     (q4--q5).l("\str{0},..\str{9}"),
+     (q5--q6).l("\str{0},..\str{9}"),
+     (q6--q7).l("\str{0},..\str{9}"),
+     (q7--q8).l("\str{0},..\str{9}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3, q4, q5, q6, q7, q8);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== NFSM exercise, convert to DFSM ==
+picture pic;
+int picnum = 21;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(W)).l("\str{0}"),
+     (q0--q1).l("\str{0}"),
+     (q1--q2).l("\str{0},\str{1}"),
+     (q2..bend..q0).l("\str{1}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== NFSM exercise, convert to DFSM ==
+picture pic;
+int picnum = 22;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(2*u, q0, q2);
+q1.pos = new_node_pos_h(q0, -30, 1*u);
+
+// draw edges
+draw(pic,
+     (q0..loop(W)).l("\str{0}"),
+     (q0--q1).l("\str{0}"),
+     (q0..bend(-15)..q2).l("$\varepsilon$").style("leftside"),
+     (q1--q2).l("\str{0},\str{1}"),
+     (q2..bend(-15)..q0).l("\str{1}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== NFSM exercise, final character appear twice ==
+picture pic;
+int picnum = 23;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting);  
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$");  
+node q6=ncircle("$q_6$",ns_accepting); 
+node q7=ncircle("$q_7$");  
+node q8=ncircle("$q_8$"); 
+node q9=ncircle("$q_9$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+q1.pos = new_node_pos_h(q0, 45, 1*u);
+hlayout(1*u, q1, q2, q3);
+// q6.pos = new_node_pos(q0, 0, 1*u);
+hlayout(1*u, q0, q4, q5, q6);
+q7.pos = new_node_pos_h(q0, -45, 1*u);
+hlayout(1*u, q7, q8, q9);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$\varepsilon$"),
+     (q1..loop(N)).l("\str{2},\str{3}"),
+     (q1--q2).l("\str{1}"),
+     (q2..loop(N)).l("\str{2},\str{3}"),
+     (q2--q3).l("\str{1}"),
+     (q0--q4).l("$\varepsilon$"),
+     (q4..loop(N)).l("\str{1},\str{3}"),
+     (q4--q5).l("\str{2}"),
+     (q5..loop(N)).l("\str{1},\str{3}"),
+     (q5--q6).l("\str{2}"),
+     (q0--q7).l("$\varepsilon$"),
+     (q7..loop(N)).l("\str{1},\str{2}"),
+     (q7--q8).l("\str{3}"),
+     (q8..loop(N)).l("\str{1},\str{2}"),
+     (q8--q9).l("\str{3}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3, q4, q5, q6, q7, q8, q9);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== NFSM exercise, final character appear twice ==
+picture pic;
+int picnum = 24;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting);  
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$");  
+node q6=ncircle("$q_6$",ns_accepting); 
+node q7=ncircle("$q_7$");  
+node q8=ncircle("$q_8$"); 
+node q9=ncircle("$q_9$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+q1.pos = new_node_pos_h(q0, 45, 1*u);
+hlayout(1*u, q1, q2, q3);
+// q6.pos = new_node_pos(q0, 0, 1*u);
+hlayout(1*u, q0, q4, q5, q6);
+q7.pos = new_node_pos_h(q0, -45, 1*u);
+hlayout(1*u, q7, q8, q9);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$\varepsilon$"),
+     (q1..loop(N)).l("\str{2},\str{3}"),
+     (q1--q2).l("\str{1}"),
+     // (q2..loop(N)).l("\str{2},\str{3}"),
+     (q2--q3).l("\str{1}"),
+     (q0--q4).l("$\varepsilon$"),
+     (q4..loop(N)).l("\str{1},\str{3}"),
+     (q4--q5).l("\str{2}"),
+     (q5..loop(N)).l("\str{1}"),
+     (q5--q6).l("\str{2}"),
+     (q0--q7).l("$\varepsilon$"),
+     (q7..loop(N)).l("\str{1},\str{2}"),
+     (q7--q8).l("\str{3}"),
+     (q8..loop(N)).l("\str{1},\str{2}"),
+     (q8--q9).l("\str{3}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3, q4, q5, q6, q7, q8, q9);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+

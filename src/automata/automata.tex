@@ -779,6 +779,7 @@ the machine split in two.
 Here is the computation tree.
 \begin{animatedfigure}{Steps in the nondeterministic computation.} 
   \animategraphics[poster=last]{3}{automata/asy/nfsm/nfsm}{02}{08}
+  \label{anim:NondeterministicComputationTree}
 \end{animatedfigure}
 When we considered the parallel approach to the Travelling Salesman
 we observed that if a solution exists then some child process would find it.
@@ -973,8 +974,8 @@ This is a branch of the computation tree accepting the input,
 so our definition says that the machine accepts the input.
 \end{example}
 
-\begin{example} 
-An $\varepsilon$ transition can tie together two machines serially.
+\begin{example} \label{ex:NFSM:JoinSerial}
+An $\varepsilon$ transition can tie together two machines.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm13.pdf}
 \end{center}
@@ -1002,7 +1003,7 @@ a person's eye pick out the parts.
 % the \str{a}'s can be interwoven with the \str{aba}'s.
 \end{example}
 
-\begin{example}
+\begin{example}  \label{ex:NFSMJoinParallel}
 A $\varepsilon$ transition can also put two machines together in parallel.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm14.pdf}
@@ -1133,7 +1134,7 @@ we must handle its endpoint the same way.
 Following sequences of $\varepsilon$ transitions is called finding
 the $\varepsilon$ closure (see \cref{exer:EpsilonClosure}).
 
-\begin{example}
+\begin{example}  \label{ex:NFSMEpsilonClosure}
 Suppose that
 this machine is in state $s_1=\set{q_0}$ and is reading \str{a}.
 \begin{center}
@@ -1218,7 +1219,7 @@ Give the transition function for the machine of
   \end{exparts}
 \end{exercise}
 
-\begin{exercise}
+\begin{exercise}  \label{exer:MFSMWithEpsilonTrans}
   This machine has $\Sigma=\set{\str{a},\str{b}}$.
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm19.pdf}
@@ -1230,6 +1231,12 @@ Give the transition function for the machine of
   \item List five strings of minimal length that are accepted.
   \item List five strings of minimal length that are not accepted.
   \end{exparts}
+\end{exercise}
+
+\begin{exercise}
+  Produce the table description of the next-state function $\Delta$
+  for the machine in the prior exercise.
+  It should have three columns, for \str{a}, \str{b}, and $\varepsilon$.
 \end{exercise}
 
 \begin{exercise} % Taylor p 511
@@ -1335,7 +1342,7 @@ gives the next-state function for a Nondeterministic Finite State Machine.
   Find a deterministic machine and a nondeterministic machine that accepts
   each language over $\B$.
   You need not construct the deterministic machine from the other, you can just
-  construct it by eye.
+  construct it using your native wit.
   \begin{exparts}
   \item The set of bitstrings containing an even number of \str{0}'s.
   \item The set of bitstrings containing the substring \str{11}.
@@ -1376,43 +1383,84 @@ gives the next-state function for a Nondeterministic Finite State Machine.
 \begin{exercise}
 Given a Nondeterministic Finite State Machine without $\varepsilon$ transitions,
 and with two accepting states, show how to add $\varepsilon$
-transitions so that the extended machine with have only one accepting state,
+transitions so that the extended machine will have only one accepting state,
 without changing the accepted language. 
 \end{exercise}
 
 \begin{exercise}
 \Cpageref{par:NFSMAccepted} has a description of
 when an input is accepted by a
-Nondeterministic Finite State Machine~$\FSM$.
+Nondeterministic Finite State Machine~$\FSM$ without $\varepsilon$ transitions.
 Here is a definition that more formal, and constructive,
-meaning that you could follow to
+meaning that you could follow it to
 write a program to compute whether the string is accepted.
-We define a function
-$\map{\Gamma}{Q\times \sigma}{\powerset(Q)}$.
-For the case where the input string is empty
+We define the \definend{extended transition function} 
+$\map{\hat{\Delta}}{Q\times \kleenestar{\Sigma}}{\powerset(Q)}$
+giving the set of states that the machine will be in after starting in the
+given state and consuming the given string.
+(So \cref{anim:NondeterministicComputationTree} illustrates the
+computation of $\hat{\Delta}(q_0,\str{00001})$.)
+Where the input string is empty
 $\sigma=\emptystring$,
-for each state $q\in\FSM$ let $\Gamma(q,\emptystring)=q$.
-Next, for the case where the input string is not empty,
-peel off the final character, $\sigma=\hat{\sigma}\concat x$ where $x\in\Sigma$,
-and for each $q\in Q$ define $\Gamma(q,\sigma)$ by:
+for each state $q\in\FSM$ let $\hat{\Delta}(q,\emptystring)=\set{q}$.
+Where the input string is not empty,
+peel off the final character, $\sigma=\sigma_0\concat x$ where $x\in\Sigma$,
+and for each $q\in Q$ define $\hat{\Delta}(q,\sigma)$ by:
 \begin{equation*}
-  \Gamma(q,\sigma)=
-    \Gamma(p_0,x)\cup\Gamma(p_1,x)\cup \,\cdots\,\Gamma(p_k,x)
+  \hat{\Delta}(q,\sigma)=
+    \hat{\Delta}(q_{i_0},x)\cup\hat{\Delta}(q_{i_1},x)\cup \,\cdots\,\hat{\Delta}(q_{i_k},x)
 \end{equation*}
-where $\Gamma(q,\hat{\sigma})=\set{p_0,p_1,\, \ldots\,p_k}$.
-Then
-$\lang{L}(\FSM)=\set{\tau\in\kleenestar{\Sigma}\suchthat \Gamma(q_0,\tau)\cap\neq\emptyset}$.
+where $\Delta(q,\sigma_0)=\set{q_{i_0},q_{i_1},\, \ldots\,q_{i_k}}$.
+Then where $F_{\FSM}$ is the set of final states,
+the language of the machine is 
+$\lang{L}(\FSM)=\set{\tau\in\kleenestar{\Sigma}\suchthat
+  \hat{\Delta}(q_0,\tau)\cap F_{\FSM}\neq\emptyset}$.
 \begin{exparts}
 \item For the machine of \cref{ex:NDFMFromDiscussion},
-  find $\Gamma(q,\emptystring)$ for each $q\in Q$.
-\item Find $\Gamma(q,\str{0})$ and $\Gamma(q,\str{1})$ for each $q\in Q$.
-\item Find $\Gamma(q,x)$ for each $q\in Q$ and $x\in\B^2$.
+  find $\hat{\Delta}(q,\emptystring)$ for each $q\in Q$.
+\item Find $\hat{\Delta}(q,\str{0})$
+  and $\hat{\Delta}(q,\str{1})$ for each $q\in Q$.
+\item Find $\hat{\Delta}(q,x)$ for each $q\in Q$ and $x\in\B^2$.
 \item Continue until you find
-  $\Gamma(q,x)$ for each $q\in Q$ and $x\in\B^5$.
+  $\hat{\Delta}(q,x)$ for each $q\in Q$ and $x\in\B^5$.
 \end{exparts}
+\end{exercise}
 
+\begin{exercise}
+  \Cref{ex:NFSMEpsilonClosure} illustrated following $\varepsilon$ transitions.
+  We can give a rigorous definition.
+  For each state $q\in Q$ we will define the
+  \definend{$\varepsilon$ closure} $E(q)\subset Q$.
+  The definition is inductive, so we get a sequence of sets
+  $E_0(q)\subseteq E_1(q)\subseteq \cdots E_k(q)=E(q)$.
+  The intiution is that $E_i(q)$ is the set of states reachable
+  from~$q$ by traversing $i$ or fewer $\varepsilon$ edges.
+  Formally, the definition's base step is that for each state, $E_0(q)=\set{q}$.
+  The inductive step starts with $E_i(q)=\set{q_{i_0},\,\ldots q_{i_j}}$
+  for some $i\in\N$ and produces $E_{i+1}(q)$
+  \begin{equation*}
+    E_{i+1}(q)=E_i(q)\cup \Delta(q_{I_0},\varepsilon)\cup\,\cdots\,
+                         \Delta(q_{i_j},\varepsilon)
+  \end{equation*}
+  \begin{exparts}
+  \item For the machine of \cref{ex:NFSMEpsilonClosure},
+    for each $q\in Q$ produce $E_0(q)$,
+    $E_1(q)$, $E_2(q)$, and~$E_3(q)$.
+    List $E(q)$ for each $q\in Q$.
+  \item Do the same for \cref{exer:MFSMWithEpsilonTrans}'s machine.
+  \item This machine has loops of $\varepsilon$'s.
+    \begin{center}
+      \includegraphics{automata/asy/nfsm/nfsm31.pdf}
+    \end{center}
+    Does the definition just keep going; what is $E(q)$ for each
+    $q\in Q$?
+  \item Prove that for every machine, $E(q)$ is defined for every $q\in Q$.
+  \end{exparts}
 \end{exercise}
 \end{exercises}
+
+
+
 
 
 % ==================================================
@@ -1424,12 +1472,13 @@ This machine
 accepts strings that
 have some number of \str{a}'s, followed by a \str{b},
 followed by some number of \str{a}'s.
-In this subsection we give a convenient way to
+We now give a convenient way to
 expressing constructs such as ``any number of'' and ``followed by.''
 We will see strings, called Regular Expressions, that
 describe languages like this one,
 languages that are accepted by some Finite State Machine.
 
+\subsection{Definition}
 A few preliminary examples will make the definition clearer when it comes.
 These use the alphabet $\Sigma=\set{\str{a},\,\ldots\, \str{z}}$.
 
@@ -1520,38 +1569,70 @@ the grammar of suitable regular expressions.
 In grammars we use
 the pipe as a metacharacter, to collapse rules
 with the same left side.
-We do that again here.
+We continue that here.
 But pipe also appears in regular expressions so for that usage
 we have wrapped it in single quotes,
 in \nonterminal{regex}'s second rule.
 
 As to the semantics of regular expressions\Dash what they mean\Dash
 we will define that recursively.
-The language represented by the single-character
+The language described by the single-character
 regular expression \re{$\emptyset$} is
-the empty set, so that $\lang{L}=\emptyset$.
-The language represented by the regular expression consisting
+the empty set, so that $\lang{L}(\emptyset)=\emptyset$.
+The language described by the regular expression consisting
 of only the empty string character \re{$\emptystring$}
 is the one-element language consisting of only the empty string 
-$\set{\emptystring}$.
-If a regular expression consists of just one character from the alphabet,
-such as \re{\str{a}}, then the language represented by that
+$\lang{L}(\varepsilon)=\set{\emptystring}$.
+If a regular expression consists of just one character from the alphabet
+then the language described by that
 expression contains only one string, which has only that
-one character $\set{\str{a}}$.
+one character.
+Thus, where $\str{a}\in \Sigma$,
+the language described by the one-character regular
+expression \re{\str{a}} is the set containing only one string,
+which has only that
+one character $\lang{L}(\str{a})\set{\str{a}}$.
 
-For the operations, suppose that
+For the semantics of the operations suppose that
 $\sigma$ and $\hat{\sigma}$ are regular expressions,
 representing the languages $\lang{L}$ and $\hat{\lang{L}}$.
-Then the regular expression combining the two
+The regular expression combining the two
 with the pipe \re{$\sigma$|$\hat{\sigma}$}
-represents the union of the two languages $\lang{L}\cup\hat{\lang{L}}$.
-The regular expression concatenating the two \re{$\sigma$$\hat{\sigma}$}
-represents the concatenation of the two languages $\lang{L}\hat{\lang{L}}$.
+describes the union of the two languages $\lang{L}\cup\hat{\lang{L}}$.
+The regular expression concatenating the two,
+\re{$\sigma$$\hat{\sigma}$},
+describes the concatenation of the two languages $\lang{L}\hat{\lang{L}}$.
 And the star regular expression \re{$\sigma$*}
-represents the Kleene star of the language $\kleenestar{\lang{L}}$.
+describes the Kleene star of the language $\kleenestar{\lang{L}}$.
 
-There are constructs that often appear in constructing regular 
-expressions.
+\begin{example}
+Let $\Sigma=\set{\str{a},\str{b}}$.
+Consider the regular expression \re{aba*}.  
+It is the concatenation of three substrings, \re{a}, \re{b}, 
+and \re{a*}.
+The first describes the single-element language $\lang{L}(\str{a})=\set{\str{a}}$.
+Likewise the second describes $\lang{L}(\str{b})=\set{\str{b}}$.
+Together, the string \re{ab} describes the concatenation of the languages.
+\begin{equation*}
+  \lang{L}(\str{a})\lang{L}(\str{b})
+  =\set{\sigma\in\kleenestar{\Sigma}\suchthat
+    \text{$\sigma=\sigma_0\concat\sigma_1$ where $\sigma_0\in\lang{L}(\str{a})$ and $\sigma_1\in\lang{L}(\str{b})$}}
+  =\set{\str{ab}}
+\end{equation*}
+The regular expression \re{a*} describes
+$\lang{L}(\re{a*})=\set{\str{a}^n\suchthat n\in\N}$.
+Concatenating it to the language in the prior equation gives this.
+\begin{align*}
+  \lang{L}(\re{aba*})
+  &=\set{\sigma\in\kleenestar{\Sigma}\suchthat
+    \text{$\sigma=\sigma_0\concat\sigma_1$ where $\sigma_0\in\lang{L}(\re{ab})$
+      and $\sigma_1\in\lang{L}(\re{a*})$}}             \\
+  &=\set{\str{ab}\str{a}^n\suchthat n\in\N}
+\end{align*}
+\end{example}
+
+There are constructs that appear often in constructing regular 
+expressions, so we will illustrate with some of those.
 These examples all use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
 
 \begin{example}
@@ -1561,28 +1642,28 @@ $\lang{L}=\set{a^{3k}\suchthat k\in\N}=\set{\emptystring,\str{aaa},\str{aaaaaa},
 regular expression \re{(aaa)*}.
 \end{example}
 
-Note the empty string in that set.
+Note the empty string in that language.
 A common gotcha is to think of star as a repetition operator and forget that
 it includes zero-many copies.
 
 \begin{example}
 The language where strings have any number
-of \str{a}'s and optionally ending in a \str{b}
+of \str{a}'s and optionally end in a \str{b}
 is described by
 the regular expression \re{a*($\emptystring$|b)}.
  
 Similarly, to describe the language consisting of words with 
 between three and five $\str{a}$'s,
 $\lang{L}=\set{\str{aaa}, \str{aaaa}, \str{aaaaa}}$,
-use \re{aaa(\emptystring|a|aa)}.
+we can use \re{aaa(\emptystring|a|aa)}.
 \end{example}
 
 \begin{example}
-To match any character we list them all.
+To match any character we can list them all.
 The language consisting of three-letter words ending in \str{bc} is
 $\set{\str{abc}, \str{bbc}, \str{cbc}}$.
 The regular expression \re{(a|b|c)bc} describes it.
-(Of course, if the alphabet is large then listing all characters soon becomes
+(If the alphabet is large then listing all characters is
 impractical; see the Extra section on Extended Regular Expressions.)
 \end{example}
 
@@ -1601,18 +1682,170 @@ $\str{c}$'s is described by
 
 
 \subsection{Kleene's Theorem}
-\begin{center}
-  \includegraphics[width=0.3\textwidth]{automata/mcculloch.jpg}
-  \includegraphics[width=0.3\textwidth]{automata/pitts.jpg}
-\end{center}
-% http://nautil.us/issue/21/information/the-man-who-tried-to-redeem-the-world-with-logic
-\begin{center}
-  \includegraphics[width=0.3\textwidth]{automata/kleene.jpg}
-\end{center}
-Pronounced KLAY-nee.
+\margingraphic{0.15\textwidth}{automata/kleene.jpg}{\label{fig:kleene}\href{https://en.wikipedia.org/wiki/Stephen_Cole_Kleene}{Stephen Cole Kleene 1909--1994}}
+In 1951, S~Kleene (\citetext{pronounced KLAY-nee}{His son Ken Kleene, wrote, ``As far as I am aware this pronunciation is incorrect in all known languages. I believe that this novel pronunciation was invented by my father.'' \autocite{fodc:Kleene}}) defined finite state machines.
+He was studying a
+\citetext{mathematical model of neurons}{\autocite{wiki:ArtificialNeuron}}
+proposed by W~McCulloch and W~Pitts.
+Neurons do not have any scratch memory, but just respond to the
+signals arriving from other neurons.
+He abstracted some aspects of the definition to get
+a version of Finite State Machines.
+He introduced regular expressions to
+describe the accepted languages.
+This includes the star operator that was later
+named after him.
 
+\begin{theorem}[Kleene's Theorem]
+  A language is accepted by a Finite State Machine if and only if that
+  language is described by a regular expression.
+\end{theorem}
+
+We will prove this in two halves: that
+if a language is described by a regular expression then it is
+accepted by some Finite State Machine, and
+if a language~$\lang{L}$ is accepted
+by some machine then that language is described by a regular expression.
+We will work with nondeterministic machines, but in the light of the
+prior subsection, the results hold for deterministic ones also.
+
+\begin{lemma}
+  Suppose that a language is described by a regular expression.
+  Then there is a Finite State Machine that accepts the language.
+\end{lemma}
+
+\begin{proof}
+  We are given a language~$\lang{L}$ described by a regular expression~$R$.
+  Fix a suitable alphabet $\Sigma=\set{\str{a}, \str{b}, \,\ldots}$.
+  We will use the structure of $R$ to construct the machine.
+  That is, let the complexity of a regular expression be
+  the total number of occurrences of any of the operation symbols pipe~\re{|},
+  concatenation, and Kleene star~\re{*}.
+  The argument will proceed by induction on the complexity.
+  
+  We start by considering regular expressions of complexity~$0$,
+  so that $R$ is a single character.
+  For the case that the regular expression is 
+  $R=\re{$\emptyset$}$ then the machine on the left below accepts the
+  language $\lang{L}(R)=\set{}$.
+  If $R=\re{$\emptystring$}$ then the machine in the middle will
+  accept the associated language $\lang{L}($\emptystring$)=\set{\emptystring}$.
+  If the regular expression is a single character from the alphabet, as in
+  $R=\re{\str{a}}$, then the machine on the right suffices.
+  \begin{center}
+    \includegraphics{automata/asy/nfsm/nfsm32.pdf}
+    \hspace{5em}
+    \includegraphics{automata/asy/nfsm/nfsm33.pdf}
+    \hspace{5em}
+    \includegraphics{automata/asy/nfsm/nfsm34.pdf}
+  \end{center}
+
+  What remains is to handle the three operations.
+  Suppose first that the regular expression decomposes into $R=\re{R_0|R_1}$,
+  where $R_0$ and~$R_1$ are regular expressions.
+  They must have lower complexity so the inductive assumption says that there
+  is a machine for each, a machine $\FSM_0$ whose language is described by
+  $R_0$ and a machine~$\FSM_1$ whose language is described by $R_1$.
+  Join the machines in parallel, as in \cref{ex:NFSMJoinParallel},
+  by creating a new state $s_0$ and connecting it via two $\varepsilon$
+  transitions, one to the start state of each of $\FSM_0$ and~$\FSM_1$. 
+
+  Next suppose that the regular expression decomposes into a concatenation
+  $R=R_0\concat R_1$.
+  Again the inductive assumption says that there
+  is a machine for each, $\FSM_0$ and~$\FSM_1$.
+  Join the machines serially, similarly to \cref{ex:NFSM:JoinSerial},
+  by taking all of the accepting states in $\FSM_0$ and making an
+  $\varepsilon$ transition to the start state of $\FSM_1$,
+  and then converting all those accepting states of $\FSM_0$ to be
+  non-accepting states. 
+  
+  Finally, suppose that the regular expression involves repetition
+  $R=\re{($R_0$)*}$.
+  Invent a new state~$s_0$ and make a $\varepsilon$ transition from it to
+  the start state of the machine $\FSM_0$.
+  Finish by connecting each accepting state of $\FSM_0$ to its start state.
+
+  For all three operation the language of the new machine will be the language
+  described by $R$.
+\end{proof}
 
 \begin{exercises}
+\begin{exercise}
+  For each regular expression produce, if possible, five bitstrings that match
+  and five that do not.
+  \begin{exparts*}
+  \item \re{(01*)}
+  \item \re{(01)*}
+  \item \re{1(0|1)1}
+  \item \re{(0|1)($\emptystring$|1)0*}
+  \item \re{$\emptyset$}
+  \end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+Give a regular expression to describe each language over $\B$.
+\begin{exparts*}
+\item The set of strings of odd parity, where the number of \str{1}'s is
+  odd.
+\item The set of strings where no two adjacent characters are equal.
+\item The set of strings representing in binary multiples of eight.
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+  Give a regular expression for the set of bitstrings whose number of \str{0}'s
+  is even and whose number of \str{1}'s is greater than 2. 
+\end{exercise}
+
+\begin{exercise}
+Give a regular expression to describe each language over
+the alphabet $\Sigma=\set{\str{a},\str{b},\str{c}}$.
+\begin{exparts*}
+\item The set of strings starting with \str{aba}.
+\item The set of strings ending with \str{aba}.
+\item The set of strings containing the substring \str{aba}.
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+Give a regular expression to describe each language over
+the alphabet $\Sigma=\set{\str{a},\str{b}}$.
+\begin{exparts*}
+\item Every \str{a} is both immediately preceeded and immediately followed
+  by a \str{b}.
+\item Each string has at least two \str{b}'s that are not followed by an
+  \str{a}.
+\item Each string has no more than one pair of consecutive \str{a}'s
+  and no more than one pair of consecutive \str{b}'s.
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+  Produce a regular expression for the language of bitstrings
+  such that the number of \str{1}'s is a multiple of four.
+\end{exercise}
+
+\begin{exercise}
+  Give a regular expression to accept each language.
+  \begin{exparts}
+  \item
+    $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+      \text{$\sigma$ ends with the same symbol it began with, and $\sigma\neq\emptystring$}}$    
+  \item
+    $\set{\str{a}^i\str{b}\str{a}^j\suchthat
+      \text{$i$ and $j$ leave the same remainder on division by three}}$
+  \end{exparts}
+\end{exercise}
+
+\begin{exercise}
+  Give a regular expression for the language over
+  $\Sigma=\set{\str{a},\str{b},\str{c}}$
+  whose strings are missing at least one letter,
+  that is, the strings that are either without any \str{a}'s,
+  or without any \str{b}'s, or without any \str{c}'s.
+\end{exercise}
+
 \begin{exercise}
 Construct the parse tree for \cref{ex:RegexABOrCStar}'s \re{a(b|c)*}.
 \begin{answer}
@@ -2103,6 +2336,7 @@ I'll use regular expressions."  Now they have two problems.
 
 
 \extra{Neural nets}
+\margingraphic{0.2\textwidth}{automata/mccullochpitts.png}{\label{fig:mcculloghpitts}\href{http://nautil.us/issue/21/information/the-man-who-tried-to-redeem-the-world-with-logic}{Warren McCulloch 1898--1969, Walter Pitts 1923--1969}}
 % \begin{exercise}
 % % Exercise http://djm.cc/fsquad/firing.html
 % Myhill posed the firing squad synchronization problem in 1957.

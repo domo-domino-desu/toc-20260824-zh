@@ -1518,3 +1518,111 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== NFSM exercise, circle of epsilons ======
+picture pic;
+int picnum = 31;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$");  
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(2*u, q0, q2);
+q1.pos = new_node_pos_h(q0, -30, 1*u);
+
+// draw edges
+draw(pic,
+     (q0..loop(W)).l("\str{0}"),
+     (q0--q1).l("\str{0},$\varepsilon$"),
+     (q0..bend(-15)..q2).l("$\varepsilon$").style("leftside"),
+     (q1--q2).l("\str{1},$\varepsilon$"),
+     (q2..bend(-15)..q0).l("\str{1},$\varepsilon$")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Kleene's Theorem; machine for emptyset ======
+picture pic;
+int picnum = 32;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+// draw edges
+
+// draw nodes after edges
+draw(pic, q0);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Kleene's Theorem; machine for emptystring ======
+picture pic;
+int picnum = 33;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+// draw edges
+
+// draw nodes after edges
+draw(pic, q0);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Kleene's Theorem; machine for one-char regex ======
+picture pic;
+int picnum = 34;
+unitsize(pic,1pt);
+// setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_0$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0--q1).l("\str{a}")
+     );
+
+// draw nodes after edges
+draw(pic, q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

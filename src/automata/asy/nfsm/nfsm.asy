@@ -820,7 +820,7 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$q_0$", ns_accepting),
+node q0=ncircle("$q_0$"),
   q1=ncircle("$q_1$"),
   q2=ncircle("$q_2$"),
   q3=ncircle("$q_3$", ns_accepting),
@@ -915,9 +915,9 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 // define nodes
-node q0=ncircle("$q_0$"); 
+node q0=ncircle("$q_0$",ns_accepting); 
 node q1=ncircle("$q_1$");  
-node q2=ncircle("$q_2$",ns_accepting);  
+node q2=ncircle("$q_2$");  
 
 // calculate nodes position
 real u=2.25cm;
@@ -1604,7 +1604,7 @@ unitsize(pic,1pt);
 
 // define nodes
 node q0=ncircle("$q_0$"); 
-node q1=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_2$",ns_accepting); 
 
 // calculate nodes position
 real u=1.5cm;  // horizontal  
@@ -1621,6 +1621,227 @@ draw(pic,
 draw(pic, q0, q1);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Kleene's Theorem; eliminate concatenation ======
+picture pic;
+int picnum = 35;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+node q=ncircle("$q$"); 
+node qo=ncircle("$q_o$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qi, q, qo);
+
+// draw edges
+draw(pic,
+     (qi--q).l("\str{a}"),
+     (q--qo).l("\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic, qi, q, qo);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Kleene's Theorem; eliminate concatenation ======
+picture pic;
+int picnum = 36;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+node qo=ncircle("$q_o$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(2*u, qi, qo);
+
+// draw edges
+draw(pic,
+     (qi--qo).l("\str{ab}"),
+     (qi--qo).l("\str{ab}")    // have to double up because of bug in asy-graphtheory; reported 2017-Jun-21
+     );
+
+// draw nodes after edges
+draw(pic, qi, qo);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; general node ======
+picture pic;
+int picnum = 37;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q=ncircle("$q$"); 
+node qi0=ncircle("$q_{i_0}$");
+node qij=ncircle("$q_{i_j}$"); 
+node qo0=ncircle("$q_{o_0}$"); 
+node qok=ncircle("$q_{o_k}$");  
+
+// calculate nodes position
+real u=2cm;  // horizontal  
+real v=0.8*u;  // vertical
+
+real spread_angle = 35.0;  // half the angle between the incoming arcs
+real angle_offset = 10.0;  // make q dip down 
+
+qi0.pos = new_node_pos_h(q0, 180-spread_angle, -1*u);
+qij.pos = new_node_pos_h(q0, 180+spread_angle, -1*u);
+qo0.pos = new_node_pos_h(q0, spread_angle, 1*u);
+qok.pos = new_node_pos_h(q0, -1*spread_angle, 1*u);
+
+label(pic, "\small $\vdots$", (qi0.pos.x, 0.07*v));
+label(pic, "\small $\vdots$", (qo0.pos.x, 0.07*v));
+
+// draw edges
+draw(pic,
+     (qi0..bend(-10)..q).l(Label("$R_{i_0}$",Relative(0.25))),
+     (qij..bend(10)..q).l(Label("$R_{i_j}$",Relative(0.25))).style("leftside"),
+     (q--qo0).l(Label("$R_{o_0}$",Relative(0.75))).style("leftside"),
+     (q--qok).l(Label("$R_{o_k}$",Relative(0.75))),
+     (q..loop(W)).l("$R_{\ell}$"),
+     (qi0..bend(-20)..qo0).l(Label("$R_{i_0,o_0}$",Relative(0.25))).style("leftside"),
+     (qi0..bend(-30)..qok).l(Label("$R_{i_0,o_k}$",Relative(0.2))).style("leftside"),
+     (qij..bend(20)..qok).l(Label("$R_{i_j,o_k}$",Relative(0.25))),
+     (qij..bend(30)..qo0).l(Label("\rule{0em}{2ex}$R_{i_j,o_0}$",Relative(0.20)))  // put a rule there to give a scotch of vert space
+     );
+
+// draw nodes after edges
+draw(pic, q, qi0, qij, qo0, qok);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Kleene's Theorem; general node ======
+picture pic;
+int picnum = 38;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// node q=ncircle("$q$"); 
+// node qi0=ncircle("$q_{i_0}$");
+// node qij=ncircle("$q_{i_j}$"); 
+// node qo0=ncircle("$q_{o_0}$"); 
+// node qok=ncircle("$q_{o_k}$");  
+
+// calculate nodes position
+real u=2cm;  // horizontal  
+real v=0.8*u;  // vertical
+
+// real spread_angle = 35.0;  // half the angle between the incoming arcs
+// real angle_offset = 10.0;  // make q dip down 
+
+// qi0.pos = new_node_pos_h(q0, 180-spread_angle, -1*u);
+// qij.pos = new_node_pos_h(q0, 180+spread_angle, -1*u);
+// qo0.pos = new_node_pos_h(q0, spread_angle, 1*u);
+// qok.pos = new_node_pos_h(q0, -1*spread_angle, 1*u);
+
+label(pic, "\small $\vdots$", (qi0.pos.x, 0.07*v));
+label(pic, "\small $\vdots$", (qo0.pos.x, 0.07*v));
+
+// draw edges
+draw(pic,
+     // (qi0..bend(-10)..q).l(Label("$R_{i_0}$",Relative(0.25))),
+     // (qij..bend(10)..q).l(Label("$R_{i_j}$",Relative(0.25))).style("leftside"),
+     // (q--qo0).l(Label("$R_{o_0}$",Relative(0.75))).style("leftside"),
+     // (q--qok).l(Label("$R_{o_k}$",Relative(0.75))),
+     // (q..loop(W)).l("$R_{\ell}$"),
+     // (qi0..bend(-20)..qo0).l(Label("$R_{i_0,o_0}$",Relative(0.25))).style("leftside"),
+     // (qi0..bend(-30)..qok).l(Label("$R_{i_0,o_k}$",Relative(0.2))).style("leftside"),
+     // (qij..bend(20)..qok).l(Label("$R_{i_j,o_k}$",Relative(0.25))),
+     // (qij..bend(30)..qo0).l(Label("\rule{0em}{2ex}$R_{i_j,o_0}$",Relative(0.20)))  // put a rule there to give a scotch of vert space
+     (qi0..bend(-20)..qo0).l(Label("\re{$R_{i_0,o_0}$|($R_{i_0}$$R_{\ell}$*$R_{o_0}$)}",Relative(0.40))).style("leftside"),
+     (qi0..bend(-30)..qok).l(Label("\strut\raisebox{1ex}{\re{$R_{i_0,o_k}$|($R_{i_0}$$R_{\ell}$*$R_{o_0}$)}}",Relative(0.3))).style("leftside"),
+     (qij..bend(30)..qo0).l(Label("\strut\raisebox{-1.2ex}{\re{$R_{i_j,o_0}$|($R_{i_j}$$R_{\ell}$*$R_{o_0}$)}}",Relative(0.30))), 
+     (qij..bend(20)..qok).l(Label("\re{$R_{i_j,o_k}$|($R_{i_j}$$R_{\ell}$*$R_{o_k}$)}",Relative(0.40)))
+     );
+
+// draw nodes after edges
+draw(pic, qi0, qij, qo0, qok);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Kleene's Theorem; combine edges before ======
+picture pic;
+int picnum = 39;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+node qj=ncircle("$q_j$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qi, qj);
+
+// draw edges
+draw(pic,
+     (qi..bend(-25)..qj).l("\str{a}"),
+     (qi..bend(25)..qj).l("\str{b}")  
+     );
+
+// draw nodes after edges
+draw(pic, qi, qj);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; combine edges after ======
+picture pic;
+int picnum = 40;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// node qi=ncircle("$q_i$"); 
+// node qo=ncircle("$q_j$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+//hlayout(1*u, qi, qj);
+
+// draw edges
+draw(pic,
+     (qi--qj).l("\re{a|b}"),
+     (qi--qj).l("\re{a|b}")  // have to double up because of bug in asy-graphtheory
+     );
+
+// draw nodes after edges
+draw(pic, qi, qj);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

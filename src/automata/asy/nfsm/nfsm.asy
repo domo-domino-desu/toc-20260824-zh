@@ -1845,5 +1845,402 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Kleene's Theorem; subset method concatenation ======
+picture pic;
+int picnum = 41;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+// node q=ncircle("$q$"); 
+node qo=ncircle("$q_o$"); 
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qi, qo);
+
+// draw edges
+draw(pic,
+     (qi--qo).l("\re{$R_0$$R_1$}"),
+     (qi--qo).l("\re{$R_0$$R_1$}")  // have to double up, bug in asy-graphtheory
+     );
+
+// draw nodes after edges
+draw(pic, qi, qo);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; subset method concatenation (after) ======
+picture pic;
+int picnum = 42;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+node q=ncircle("$q$"); 
+node qo=ncircle("$q_o$"); 
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qi, q, qo);
+
+// draw edges
+draw(pic,
+     (qi--q).l("\re{$R_0$}"),
+     (q--qo).l("\re{$R_1$}") 
+     );
+
+// draw nodes after edges
+draw(pic, qi, q, qo);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ============== Kleene's Theorem; subset method pipe ======
+picture pic;
+int picnum = 43;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+// node q=ncircle("$q$"); 
+node qo=ncircle("$q_o$"); 
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qi, qo);
+
+// draw edges
+draw(pic,
+     (qi--qo).l("\re{$R_0$|$R_1$}"),
+     (qi--qo).l("\re{$R_0$|$R_1$}")  // have to double up, bug in asy-graphtheory
+     );
+
+// draw nodes after edges
+draw(pic, qi, qo);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; subset method pipe (after) ======
+picture pic;
+int picnum = 44;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+// node q=ncircle("$q$"); 
+node qo=ncircle("$q_o$"); 
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qi, q, qo);
+
+// draw edges
+draw(pic,
+     (qi..bend(20)..qo).l("\re{$R_0$}"),
+     (qi..bend(-20)..qo).l("\re{$R_1$}") 
+     );
+
+// draw nodes after edges
+draw(pic, qi, qo);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Kleene's Theorem; subset method star ======
+picture pic;
+int picnum = 45;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+// node q=ncircle("$q$"); 
+node qo=ncircle("$q_o$"); 
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qi, qo);
+
+// draw edges
+draw(pic,
+     (qi--qo).l("\re{$R$*}"),
+     (qi--qo).l("\re{$R$*}")  // have to double up, bug in asy-graphtheory
+     );
+
+// draw nodes after edges
+draw(pic, qi, qo);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; subset method star (after) ======
+picture pic;
+int picnum = 46;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node qi=ncircle("$q_i$"); 
+node q=ncircle("$q$"); 
+node qo=ncircle("$q_o$"); 
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qi, q, qo);
+
+// draw edges
+draw(pic,
+     (qi--q).l("\re{$\varepsilon$}"),
+     (q..loop(S)).l("\re{$R$}"),
+     (q--qo).l("\re{$\varepsilon$}")
+     );
+
+// draw nodes after edges
+draw(pic, qi, q, qo);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Kleene's Theorem; subset method star ======
+picture pic;
+int picnum = 47;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+// node q=ncircle("$q$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, f);
+
+// draw edges
+draw(pic,
+     (e--f).l("\re{$R$}"),
+     (e--f).l("\re{$R$}")  // have to double up, bug in asy-graphtheory
+     );
+
+// draw nodes after edges
+draw(pic, e, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Kleene's Theorem; illustration ======
+picture pic;
+int picnum = 48;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(2*u, q0, q1);
+q2.pos = new_node_pos_h(q0, 45, 1*u);
+
+// draw edges
+draw(pic,
+     (q0..bend(20)..q1).l("\str{a}"),
+     (q1..bend(20)..q0).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q2..loop(N)).l("\str{b}"),
+     (q2--q0).l("\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Kleene's Theorem; illustration, introduce e and f ======
+picture pic;
+int picnum = 49;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(2*u, q0, q1);
+hlayout(-1*u, q0, e);
+hlayout(1*u, q1, f);
+q2.pos = new_node_pos_h(q0, 45, 1*u);
+
+// draw edges
+draw(pic,
+     (e--q0).l("$\varepsilon$"),
+     (q0..bend(20)..q1).l("\str{a}"),
+     (q0..bend..f).l("$\varepsilon$"),
+     (q1..bend(20)..q0).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q1--f).l("$\varepsilon$"),
+     (q2..loop(N)).l("\str{b}"),
+     (q2--q0).l("\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     q0, q1, q2,
+     f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Kleene's Theorem; illustration, eliminate q2 ======
+picture pic;
+int picnum = 50;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(2*u, q0, q1);
+hlayout(-1*u, q0, e);
+hlayout(1*u, q1, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("$\varepsilon$"),
+     (q0..bend(20)..q1).l("\str{a}"),
+     (q0..bend..f).l("$\varepsilon$"),
+     (q1..bend(20)..q0).l("\re{b|(ab*b)}"),
+     (q1--f).l("$\varepsilon$")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     q0, q1, 
+     f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Kleene's Theorem; illustration, eliminate q1 ======
+picture pic;
+int picnum = 51;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");   
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(3*u, q0, f);
+hlayout(-1*u, q0, e);
+
+// draw edges
+draw(pic,
+     (e--q0).l("$\varepsilon$"),
+     (q0..loop(N)).l("\re{$\varepsilon$|a(b|ab*b)}"),
+     (q0--f).l("\re{$\varepsilon$|a$\varepsilon$}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     q0, 
+     f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Kleene's Theorem; illustration, eliminate q0 ======
+picture pic;
+int picnum = 52;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(4*u, e, f);
+
+// draw edges
+draw(pic,
+     (e--f).l("$\varepsilon$($\varepsilon|a(b|ab*b)$)*($\varepsilon$|a$\varepsilon$)"),
+     (e--f).l("$\varepsilon$($\varepsilon|a(b|ab*b)$)*($\varepsilon$|a$\varepsilon$)")  // have to repeat because of a bug in asy-graphtheory
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 

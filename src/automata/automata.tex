@@ -1555,15 +1555,18 @@ So, a regular expression is a short string that describes a language
 by describing 
 the pattern of the strings in that language.
 
-The syntax of regular expressions is straightforward.
+Their syntax is straightforward.
 Start with characters of an alphabet~$\Sigma$ (and the special characters
 $\emptystring$ and $\emptyset$ that we will describe further in the next
-paragraph).
-Combine them using the operations of concatenation,
-vertical bar and star, using parentheses in their usual role
-of disambiguation.
-For instance, if $\Sigma=\set{\str{a},\,\ldots \str{z}}$ then this is
-the grammar of suitable regular expressions.
+paragraph), and
+combine them using concatenation,
+pipe, and star.
+
+\begin{definition}
+  Let $\Sigma$ be an alphabet not containing any of the metacharacters
+  \re{)}, \re{(}, \re{|}, or \re{*}.
+  A \definend{regular expression} over~$\Sigma$
+  is a string that can be derived from this grammar
 \begin{grammar}
 <regex> \produces{} <concat>
                     \alt <regex> `|' <concat>
@@ -1575,25 +1578,22 @@ the grammar of suitable regular expressions.
                        \alt  <simple> "*"
                        \alt "(" <regex> ")"
                        
-<char> \produces{} "a" | ... | "z"
+<char> \produces{} $x_0$ | $x_2$ | ... 
                     \alt $\emptystring$ | $\emptyset$
 \end{grammar}
-In grammars we use
+  where the characters $x_0$, $x_1$, \ldots{} are members of $\Sigma$. 
+\end{definition}
+\noindent (In grammars we use
 the pipe as a metacharacter, to collapse rules
 with the same left side.
-We continue that here.
 But pipe also appears in regular expressions so for that usage
 we have wrapped it in single quotes,
-in \nonterminal{regex}'s second rule.
+in \nonterminal{regex}'s second rule.)
 
-\begin{definition}
-  Let $\Sigma$ be an alphabet not containing any of the metacharacters
-  \re{)}, \re{(}, \re{|} or \re{*}.
-  A \definend{regular expression} over~$\Sigma$
-  is a string that can be derived using a grammar like the above,
-  but where the characters are the members of $\Sigma$,
-  along with $\emptystring$ and $\emptyset$.
-\end{definition}
+We don't want lots of parentheses so we must establish operator
+precedence: star~\re{*} binds most tightly, then concatentation, then
+the pipe alternation operator~\re{|}.
+We use parentheses when needed, as in \cref{ex:RegexABOrCStar}..
 
 As to the semantics of regular expressions\Dash what they mean\Dash
 we will define that recursively.
@@ -1614,9 +1614,9 @@ expression \re{\str{a}} is the set containing only one string,
 which has only that
 one character $\lang{L}(\str{a})\set{\str{a}}$.
 
-For the semantics of the operations suppose that
-$\sigma$ and $\hat{\sigma}$ are regular expressions,
-representing the languages $\lang{L}$ and $\hat{\lang{L}}$.
+For the semantics of the operations, suppose that
+$\sigma$ and $\hat{\sigma}$ are regular expressions that
+represent the languages $\lang{L}$ and $\hat{\lang{L}}$.
 The regular expression combining the two
 with the pipe \re{$\sigma$|$\hat{\sigma}$}
 describes the union of the two languages $\lang{L}\cup\hat{\lang{L}}$.
@@ -1702,8 +1702,10 @@ $\str{c}$'s is described by
 
 
 
+
+% -----------------------------------------
 \subsection{Kleene's Theorem}
-Stufy of regular expressions is justified by the next result, that
+Study of regular expressions is justified by the next result, that
 they describe a class of interesting languages.
 
 \begin{theorem}[Kleene's Theorem]
@@ -1719,7 +1721,7 @@ by some machine then that language is described by a regular expression.
 We will work with nondeterministic machines but since we can convert
 those the results hold for deterministic ones also.
 
-\begin{lemma}
+\begin{lemma} \label{lem:KleenesThmRegexToMachine}
   If a language is described by a regular expression
   then there is a Finite State Machine that accepts that language.
 \end{lemma}
@@ -1785,7 +1787,7 @@ those the results hold for deterministic ones also.
   will be the language described by $R$.
 \end{proof}
 
-\begin{lemma}
+\begin{lemma}  \label{lem:KleenesThmMachineToRegex}
   Any language accepted by a Finite State Machine 
   is described by a regular expression. 
 \end{lemma}
@@ -1843,11 +1845,12 @@ those the results hold for deterministic ones also.
   That node cannot be reached from the start state and
   so omitting it will not change the language of the machine.
   (Eliminating such a node may lead to another node now having no incoming
-  edges;if so then eliminate it also.)
+  edges.
+  Eliminate that one also.)
   Likewise, if a node that is not~$f$ has no outgoing edges then
   we can also omit it, since only~$f$ is an accepting state.
   
-  Now for the key operation.
+  Now for the key step.
   In general we have the picture on the left below
   for each state node~$q$ with $q\neq e$ and $q\neq f$.
   This node has incoming edges (at least one), from nodes
@@ -1877,6 +1880,48 @@ those the results hold for deterministic ones also.
   That edge is labelled with the desired regular expression.
 \end{proof}
 
+\begin{example}
+  Consider this machine, on the left.
+  Introduce $e$ and~$f$.
+  \begin{center}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm48.pdf}}
+    \hspace{2em}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm49.pdf}}
+  \end{center}
+  We start by eliminating $q_2$.
+  In the terms of the proof's key step, there is one incoming node $q_1=q_{i_0}$
+  and one outgoing node $q_0=q_{o_0}$.
+  The regular expressions are $R_{i_0}=\re{a}$,
+  $R_{o_0}=\re{b}$,
+  $R_{i_0,o_0}=\re{b}$,
+  and $R_{\ell}=\re{b}$.
+  That gives this machine.
+  \begin{center}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm50.pdf}}
+  \end{center}
+  Next eliminate $q_1$.
+  In terms of the proof's key step there is one incoming node
+  $q_0=q_{i_0}$
+  and two outgoing nodes $q_0=q_{o_0}$ and~$f=q_{o_1}$.
+  (Note that $q_0$ is both an incoming and outgoing node.)
+  The regular expressions are
+  $R_{i_0}=\re{a}$,
+  $R_{o_0}=\re{b|(ab*b)}$,
+  and $R_{o_1}=\re{$\varepsilon$}$.
+  \begin{center}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm51.pdf}}    
+  \end{center}
+  Almost done.
+  Eliminate $q_0$ by recognizing the sole incoming node as $e=q_{i_0}$
+  and the sole outgoing node as $f=q_{o_0}$,
+  and so $R_{i_0}=\re{$\varepsilon$}$,
+  $R_{o_0}=\re{$\varepsilon$|a$\varepsilon$}$,
+  and
+  $R_{\ell}=\re{$\varepsilon|a(b|ab*b)$}$.
+  \begin{center}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm52.pdf}}    
+  \end{center}
+\end{example}
 
 \begin{exercises}
 \begin{exercise}
@@ -1955,6 +2000,24 @@ the alphabet $\Sigma=\set{\str{a},\str{b}}$.
 \end{exercise}
 
 \begin{exercise}
+  Construct the parse tree for these regular expressions over
+  $\Sigma=\set{\str{a},\str{b}}$.
+  \begin{exparts*}
+  \item \re{a(b|c)}
+  \item \re{ab*(a|c)}  
+  \end{exparts*}
+  \begin{answer}
+    The tree for \re{a(b|c)} is on the left and the tree for \re{ab*(a|c)}
+    is on the right.
+    \begin{center}
+      \vcenteredhbox{\includegraphics{automata/asy/regex/regex02.pdf}}
+      \hspace{3em}
+      \vcenteredhbox{\includegraphics{automata/asy/regex/regex03.pdf}}
+    \end{center}
+  \end{answer}
+\end{exercise}
+
+\begin{exercise}
   Construct the parse tree for \cref{ex:RegexABOrCStar}'s \re{a(b|c)*}
   and \re{a(b*|c*)}.
 \begin{answer}
@@ -1968,6 +2031,31 @@ the alphabet $\Sigma=\set{\str{a},\str{b}}$.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+  An alternative proof of
+  \cref{lem:KleenesThmRegexToMachine} 
+  reverses the steps of \cref{lem:KleenesThmMachineToRegex}.
+  This is she \definend{subset method}.
+  Start by labelling the single edge on a two-state machine with
+  the given regular expression.
+  \begin{center}
+    \includegraphics{automata/asy/nfsm/nfsm47.pdf}
+  \end{center}
+  Then instead of eliminating nodes, introduce them.
+  \begin{center}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm41.pdf}}
+    \quad becomes\quad
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm42.pdf}} \\
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm43.pdf}}
+    \quad becomes\quad
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm44.pdf}} \\[1ex]
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm45.pdf}}
+    \quad becomes\quad
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm46.pdf}}
+  \end{center}
+  Use this approach to get a machine that accepts the language described
+  by \re{(a|b)c*}.
+\end{exercise}
 \end{exercises}
 
 

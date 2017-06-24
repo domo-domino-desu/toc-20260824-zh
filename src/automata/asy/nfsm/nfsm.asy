@@ -2229,14 +2229,152 @@ hlayout(4*u, e, f);
 
 // draw edges
 draw(pic,
-     (e--f).l("$\varepsilon$($\varepsilon|a(b|ab*b)$)*($\varepsilon$|a$\varepsilon$)"),
-     (e--f).l("$\varepsilon$($\varepsilon|a(b|ab*b)$)*($\varepsilon$|a$\varepsilon$)")  // have to repeat because of a bug in asy-graphtheory
+     (e--f).l("$\varepsilon$($\varepsilon$|(a(b|ab*b)))*($\varepsilon$|a$\varepsilon$)"),
+     (e--f).l("$\varepsilon$($\varepsilon$|(a(b|ab*b)))*($\varepsilon$|a$\varepsilon$)")  // have to repeat because of a bug in asy-graphtheory
      );
 
 // draw nodes after edges
 draw(pic,
      e,
      f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; exercise ======
+picture pic;
+int picnum = 53;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0..bend..q1).l("\str{a}"),
+     (q0..loop(N)).l("\str{a},\str{b}"),
+     (q1..bend..q0).l("\str{b}") 
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0,
+     q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; exercise ======
+picture pic;
+int picnum = 54;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{1}"),
+     (q0..loop(N)).l("\str{0},\str{1}"),
+     (q1--q2).l("\str{1}") 
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0,
+     q1,
+     q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; exercise ======
+picture pic;
+int picnum = 55;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$"); 
+node q1=ncircle("$q_1$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..bend(15)..q1).l("\str{a},\str{b}"),
+     (q1..bend(15)..q0).l("\str{a}"),
+     (q1--q2).l("\str{b}"),
+     (q2..bend(40)..q0).l("\str{a},\str{b}") 
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0,
+     q1,
+     q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; exercise ======
+picture pic;
+int picnum = 56;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{1}"),
+     (q1..loop(S)).l("\str{0}"),
+     (q1--q2).l("\str{1}"), 
+     (q2..bend..q0).l("\str{0}") 
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0,
+     q1,
+     q2
+     );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

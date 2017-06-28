@@ -726,42 +726,39 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// // ............................ P_add
-// picture pic;
-// int picnum = 1;
-// unitsize(pic,1pt);
+// ============== extended transition function example ================
+picture pic;
+int picnum = 15;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
 
-// // define nodes
-// // node[] n = ncircles("$q_0$", "$b$", "$c$", "$d$", "$e$", "$f$");
-// node q0=ncircle("$q_0$"),
-//      q1=ncircle("$q_1$"),
-//      q2=ncircle("$q_2$"),
-//      q3=ncircle("$q_3$"),
-//      q4=ncircle("$q_4$");
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
 
-// // layout
-// defaultlayoutrel = false;
-// defaultlayoutskip = 1.5cm;
-// real u = defaultlayoutskip;
-// real v = 0.85*u;
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
 
-// hlayout(u, q0, q1, q2, q3, q4);
+hlayout(u, q0, q1, q2);
 
-// // draw nodes
-// draw(pic, q0, q1, q2, q3, q4);
+// draw edges
+draw(pic,
+     (q0..loop(N)).l("\str{b}"),
+     (q0--q1).l("\str{a}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1..bend..q2).l("\str{b}"),
+     (q2..bend..q1).l("\str{a}"),
+     (q2..loop(N)).l("\str{b}")
+);
 
-// // draw edges
-// draw(pic,
-//      (q0--q1).l("\scriptsize $\blank,\str{1}$"), 
-//      (q0..loop(S)).l("\scriptsize $\str{1},\str{R}$"),
-//      // (q1--q2).l("\scriptsize $\blank,\str{L}$").style("leftside"),
-//      // (q1--q1).l(Label("\scriptsize $10$",position=Relative(0.7))),
-//      (q1--q2).l("\scriptsize $\blank,\str{L}$"),
-//      (q1..loop(S)).l("\scriptsize $\str{1},\str{R}$"),
-//      (q2--q3).l("\scriptsize $\blank,\str{R}$"),
-//      (q2..loop(S)).l("\scriptsize $\str{1},\str{L}$"),
-//      (q3--q4).l("\scriptsize $\str{1},\blank$"),
-//      (q3..loop(S)).l("\scriptsize $\blank,\str{R}$")
-//     );
-// shipout(format("circlediagram%02d",picnum),pic,format="pdf");
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

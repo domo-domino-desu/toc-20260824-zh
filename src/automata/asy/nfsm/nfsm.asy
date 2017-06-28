@@ -2382,3 +2382,40 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ============== Regular langs; exercise NFSM where flipping accepting states does not flip the language  ======
+picture pic;
+int picnum = 57;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=0.9*u;  // vertical
+hlayout(1*u, q0, q1);
+vlayout(1*v, q0, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{1}"),
+     (q0--q2).l("\str{1}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0,
+     q1,
+     q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

@@ -2419,3 +2419,49 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+
+
+
+// ============== pumping lemma example ================
+picture pic;
+int picnum = 58;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q4, q5);
+layout(40.0, q1, q2);
+layout(140.0, q1, q3);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1--q2).l("\str{b}").style("leftside"),
+     (q2--q3).l("\str{a}"),
+     (q3--q1).l("\str{a}").style("leftside"),
+     (q1--q4).l("\str{c}"),
+     // (q4..bend(-30)..q5).l("\str{a}"),
+     (q4--q5).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

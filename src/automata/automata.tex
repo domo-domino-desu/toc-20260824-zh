@@ -348,7 +348,7 @@ Here is a Scheme version of the multiple of three machine.
 (Because the last thing called in \codeinline{multiple-of-three-fsm-helper}
 is itself, the compiler converts the recursion to iteration.
 So we get the expressiveness of recursion with the space conservation
-of interation.)
+of iteration.)
 % Here is a Python version of the multiple of three machine.
 % \begin{lstlisting}
 % def multiple_of_three_fsm(s):
@@ -405,8 +405,8 @@ For one thing, area codes no longer are required to
 have a middle digit of \str{0} or~\str{1}; we  
 just need too many area codes to forgo the ones with a middle digit from
 \str{2} to \str{9}.
-This additional complication is possible because instead
-citetext{switching with physical devices}{%
+This additional complication is possible because instead of
+\citetext{switching with physical devices}{%
 The devices to do the switching were invented in 1889 by an undertaker whose
 competiter's wife was the local telephone operator and routed calls to
 her husband's business.
@@ -421,7 +421,7 @@ by determinism.
   For any finite state machine $\FSM$ with transition
   function $\map{\Delta}{Q\times \Sigma}{Q}$,
   the \definend{extended transition function} 
-  $\map{\extended{\Delta}}{Q}{Q}$
+  $\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$
   gives the state that the machine will be in after starting in the
   start state and consuming the given string.
 \end{definition}
@@ -442,15 +442,15 @@ by determinism.
   The new function $\extended{\Delta}$ differs from $\Delta$ in that
   it does not take as input the state, and in that it takes as input
   strings rather than characters.
-  But ignoring the difference between the character and the length~one
-  string containing that character, we have
+  It extends $\Delta$ in the sense that
   \begin{equation*}
     \extended{\Delta}(\str{a})=q_1
     \qquad
     \extended{\Delta}(\str{b})=q_0
   \end{equation*}
-  which repeats the first line of $\Delta$'s table.
-  The input of the length~zero string gives
+  which, ignoring the difference between a character and the length~one
+  string containing that character, repeats the first line of $\Delta$'s table.
+  The length~zero string gives
   $\extended{\Delta}(\emptystring)=q_0$, just by the definition of the start
   state. 
   Here is the action on the length~two strings.
@@ -465,13 +465,16 @@ by determinism.
   \end{equation*}
 \end{example}
 
-This emphasizes the role of determinism in \cref{def:FiniteStateMachine}
-because it is determinism that makes $\extended{\Delta}$ well-defined.
-Because the transition function~$\Delta$ has one and only one next state
-in all cases, with each input string, or whatever length,
-there is associated one and only one state.
+This emphasizes the role played by determinism in \cref{def:FiniteStateMachine}
+because determinism is what makes $\extended{\Delta}$ well-defined.
+The transition function~$\Delta$ has one and only one next state
+for all configurations and so, by induction, with each input string
+$\extended{\Delta}$ associates one and only one last state.
 
-
+Finally, note the likeness between $\extended{\Delta}$
+and the function $\phi_e$ computed by the Turing machine $\TM_e$.
+Both take as input the contents of their machine's start tape,
+and both give as output their machine's result.
 
 
 \begin{exercises}
@@ -1180,7 +1183,7 @@ Consider this nondeterministic machine $\FSM_N$.
 \end{center}
 The deterministic machine $\FSM_D$ is below.
 Its states~$s_i$ are the sets of states of $\FSM_N$.
-For an example of the next-state function, 
+For an example of computing the next-state function, 
 suppose that this machine is in $s_5=\set{q_0,q_2}$ and is reading an~\str{a}.
 Apply equation~($*$):
 combine the set of next states due to~$q_0$, the set
@@ -1216,13 +1219,13 @@ Here's a transition graph.
 \end{example}
 
 Note that if the nondeterministic machine has~$k$-many states then
-then under this construction the deterministic machine has $2^k$-many states.
-In practice, typically many of them can be eliminated.
-For instance, in the above machine the state~$s_6$ is unreachable from the
-start state since there are arrows out of $s_6$ but no arrows in.
+under this construction the deterministic machine has $2^k$-many states.
+Typically many of them can be eliminated.
+For instance, in the above machine the state~$s_6$ is unreachable 
+since there are no arrows into $s_6$.
 The next section covers minimizing the number of states in a machine.
 
-Now consider a nondeterministic machine
+Next we expand the above construction to a nondeterministic machine
 with $\varepsilon$ transitions.
 We have to follow those transitions.
 For instance, suppose that
@@ -1249,8 +1252,10 @@ this machine is in state $s_1=\set{q_0}$ and is reading \str{a}.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm18.pdf}
 \end{center}
-Reading \str{a} while in $q_0$ leads to $q_2$.
-Starting at $q_0$, following the $\varepsilon$ transition to~$q_3$,
+The arrow on the left takes the machine
+from $q_0$ to~$q_2$.
+Alternatively, starting at $q_0$,
+following the $\varepsilon$ transition to~$q_3$,
 and then reading the \str{a} gives~$q_3$.
 That is, compute the next state as here.
 \begin{equation*}
@@ -1543,7 +1548,7 @@ without changing the accepted language.
   \Cref{ex:NFSMEpsilonClosure} illustrated following $\varepsilon$ transitions.
   We can give a rigorous definition.
   For each state $q\in Q$ we will define the
-  \definend{$\varepsilon$ closure} $E(q)\subset Q$.
+  \definend{$\varepsilon$ closure} $E(q)\subseteq Q$.
   The definition is inductive, so we get a sequence of sets
   $E_0(q)\subseteq E_1(q)\subseteq \cdots E_k(q)=E(q)$.
   The intiution is that $E_i(q)$ is the set of states reachable
@@ -1822,18 +1827,14 @@ $\str{c}$'s is described by
 % -----------------------------------------
 \subsection{Kleene's Theorem}
 Study of regular expressions is justified by the next result, that
-they describe a class of interesting languages.
+they describe the languages of interest.
 
 \begin{theorem}[Kleene's Theorem] \label{th:KleenesTheorem}
   A language is accepted by a finite state machine if and only if that
   language is described by a regular expression.
 \end{theorem}
 
-We will prove this in two halves:~if
-a language is described by a regular expression then it is
-accepted by some finite state machine, and
-if a language~$\lang{L}$ is accepted
-by some machine then that language is described by a regular expression.
+We will prove the `if' and `only if' as separate halves.
 We will work with nondeterministic machines but since we can convert
 those the results hold for deterministic ones also.
 
@@ -1843,15 +1844,10 @@ those the results hold for deterministic ones also.
 \end{lemma}
 
 \begin{proof}
-  We are given a language described by a regular expression~$R$.
-  % Fix a suitable alphabet $\Sigma=\set{\str{a}, \str{b}, \,\ldots}$.
-  We will construct a machine that accepts the language,
-  proceding by induction using the structure of $R$.
-  % Let the complexity of a regular expression be
-  % the total number of occurrences of any of the operation symbols pipe~\re{|},
-  % concatenation, and Kleene star~\re{*}.
-  % The argument will proceed by induction on the complexity.
-  
+  We will show that for any regular expression~$R$ there is a machine that
+  accepts strings if and only if they match the expression.
+  We will proceed by induction using the structure of $R$.
+
   Start with regular expressions consisting of a single character.
   If 
   $R=\re{$\emptyset$}$ then the machine on the left below accepts the
@@ -1898,9 +1894,6 @@ those the results hold for deterministic ones also.
   its start state.
   (If the accepting state is the start state there is no harm in
   such a $\varepsilon$ loop, although it doesn't do anything.)
-
-  For all these cases, clearly the language of the new machine
-  will be the language described by $R$.
 \end{proof}
 
 \begin{lemma}  \label{lem:KleenesThmMachineToRegex}
@@ -1913,23 +1906,24 @@ those the results hold for deterministic ones also.
 
   If $\FSM$ has no accepting states then we are done;
   the regular expression is \re{$\emptyset$}.
-  Otherwise insert a new state $f$,
+  Otherwise first make a machine that accpets the same language but
+  that has a single accepting state:~insert a new state $f$,
   connect all of the machine's accepting states to $f$ with $\varepsilon$
   transitions,
   convert all the accepting states to non-accepting states,
   and then make $f$ an accepting state.
-  We now have one accepting state~$f$,
-  and the language is unchanged.
   
   Do the same for the start state.
   Make a new state~$e$ and connect it to $q_0$ with an $\varepsilon$
-  transition, and it will be the machine's start state.
-  (This allows us to uniformily handle the case of a one-satte machine.)
+  transition, and it will be the new machine's start state.
+  (This is for technical convenience,
+  allowing us to handle the case of a one-state machine uniformily with
+  all other cases.)
   
-  Our strategy is to eliminate states one at a time
-  until we get a machine whose only two states are $e$ and~$f$.
+  Our strategy is to, one at a time, eliminate this machine's states 
+  until we get a machine whose only two states are $e$ and~$f$,
+  and whose language is the same as the one we started with.
   We will then read the answer off of the diagram.
-
   When we eliminate a state, the edges around it can get more
   complex labels.
   Here is a simple example showing a portion of a transition graph.
@@ -1947,7 +1941,8 @@ those the results hold for deterministic ones also.
 
   With that, if any two state nodes have more than one edge between them
   then as shown below
-  use the pipe operator~\re{|} to combine those edges to make a single one.
+  use the pipe operator~\re{|} to combine those edges to make a single edge,
+  with a regular expression label.
   This includes the case of a state with more than one loop.
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm39.pdf}
@@ -1955,16 +1950,18 @@ those the results hold for deterministic ones also.
     \includegraphics{automata/asy/nfsm/nfsm40.pdf}
   \end{center}
 
-  For the last prepatory step, for each state node~$q$ that
+  For the last prepatory step, eliminate non-reachable states:
+  for each state node~$q$ that
   has no incoming edges, and is not state~$e$,
-  we can eliminate that node and the associated edges.
+  we can omit that node and its outbound edges from the graph.
   That node cannot be reached from the start state and
   so omitting it will not change the language of the machine.
   (Eliminating such a node may lead to another node now having no incoming
   edges.
-  Eliminate that one also.)
+  Eliminate that one also, repeating as many time as needed.)
   Likewise, if a node that is not~$f$ has no outgoing edges then
-  we can also omit it, since only~$f$ is an accepting state.
+  we can also omit it since it cannot lead to a string being accepted,
+  as only~$f$ is an accepting state.
   
   Now for the key step.
   In general we have the picture on the left below
@@ -1979,7 +1976,7 @@ those the results hold for deterministic ones also.
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm38.pdf}}
   \end{center}
   (Possibly some of the state nodes shown on the left equal some shown
-  on the right.
+  shown on the right.
   For example, possibly $q_{i_0}=q_{o_0}$.
   If so then the shown edge, $R_{i_0,o_0}$ in this case, is a loop.)
 
@@ -1990,7 +1987,7 @@ those the results hold for deterministic ones also.
   So the language accepted by the machine is unchanged.
   
   Perform this elimination for every node that is not $e$ or~$f$.
-  There are only finitely many state nodes, so this procedure must stop
+  There are only finitely many states so this procedure must stop
   eventually.
   At that point all that remains are $e$ and~$f$, with an edge between them.
   That edge is labelled with the desired regular expression.
@@ -2379,12 +2376,23 @@ operation.
 
 \subsection{Pumping lemma}
 Finite state machines can deal with long input strings.
-But because they are finite they must do so by looping.
+Kleene's insight, embodied in the star operator,
+is that a finite state machine handles long strings
+by looping.
 
+\begin{example}
+  This machine~$\FSM$ has a loop in the middle.
+  \begin{center}
+    \includegraphics{automata/asy/nfsm/nfsm58.pdf}
+  \end{center}
+  Skipping past the loop, going around zero times times,
+  will result in the machine accepting $\sigma_0=\str{acb}$.
+  Going around once will accept $\sigma_0=\str{abaacb}$.
+  Twice will get $\sigma_0=\str{a}(\str{baa})^2\str{cb}$.
+  The machine can pump out ever longer strings:
+  $\lang{L}=\set{\str{a}(\str{baa})^n\str{cb}\suchthat k\in\N}$.
+\end{example}
 
-\begin{TODO}
-  Example of small machine looping, and then pumping out accepted strings.
-\end{TODO}
 
 \begin{theorem}[Pumping Lemma]
   For every regular language~$\lang{L}$ there is a constant~$p$, the
@@ -2397,7 +2405,6 @@ But because they are finite they must do so by looping.
   and (iii)~for all $n\in\N$ the string
   $\alpha\beta^n\gamma$ is also a member of~$\lang{L}$.
 \end{theorem}
-
 
 \begin{proof}
   Observe that
@@ -2446,6 +2453,113 @@ But because they are finite they must do so by looping.
   and then $\gamma$ brings the machine to the
   same final state as did $\sigma$.
 \end{proof}
+
+We apply the Pumping Lemma to show that languages are not regular.
+
+\begin{example}
+  Prove that the language of matched parentheses
+  \begin{align*}
+    \lang{L}
+    &=\set{\str{(}^n\str{)}^n\in\kleenestar{\set{\str{)},\str{(}}}\suchthat
+        n\in\N}                                       \\
+    &=\set{\varepsilon, \str{()}, \str{(())}, \str{((()))}, 
+      \str{(}^4\mspace{2mu}\str{)}^4,\, \ldots}
+  \end{align*}
+  is not regular.
+
+  For contradiction, assume it is regular and let the pumping length be~$p$.
+  Consider the string $\sigma=\str{(}^p\str{)}^p\in\lang{L}$.
+  Apply the Pumping Lemma to decompose the string into substrings
+  $\sigma=\alpha\beta\gamma$, subject to the three conditions.
+  By condition~(i) the length of~$\alpha\beta$ is less than~$p$
+  and since $\alpha\beta$ is a 
+  prefix of~$\sigma=\str{(}^p\str{)}^p$,
+  both $\alpha$ and~$\beta$ are composed
+  only of~$\str{(}$'s.
+  By condition~(ii), $\beta$ contains at least one~$\str{(}$.
+
+  Condition~(iii) shows that all of these strings are in the
+  language~$\lang{L}$.
+  \begin{equation*}
+    \alpha\concat\gamma,
+    \quad  
+    \alpha\concat\beta\concat\gamma,
+    \quad  
+    \alpha\concat\beta^2\concat\gamma,
+    \quad  
+    \alpha\concat\beta^3\concat\gamma,
+    \quad\ldots
+  \end{equation*}
+  The first string has fewer $\str{(}$'s than $\str{)}$'s because
+  $\beta$ is omitted.
+  That's impossible since it does not satisfy the definition of the
+  language~$\lang{L}$.
+\end{example}
+
+\begin{remark}
+Don't make the mistake of thinking that the prefix $\alpha\beta$ is
+all of the string~$\str{(}^p$. 
+It is just some prefix, consisting only of $\str{(}$'s.
+The suffix $\gamma$ may well start with some $\str{(}$'s in addition to
+ending with $p$-many $\str{)}$'s.
+\end{remark}
+
+The hard part of these arguments is typically coming up with a 
+good~$\sigma$.
+You can often follow the pattern of that example, but not always.
+
+\begin{example}
+Show that this language is not regular.
+\begin{align*}
+  \lang{L}  &=\set{\str{a}^n\suchthat \text{$n$ is a perfect square} }  \\
+         &=\set{\emptystring,\, \str{a},\, \str{aaaa},\, \str{a}^9,\,\str{a}^{16},
+                \, \ldots}
+\end{align*}
+Suppose otherwise.  
+Fix a pumping length~$p$.
+
+Let $\sigma=\str{a}^{p^2}$.
+By the Pumping Lemma, $\sigma=\alpha\beta\gamma$ subject to the
+three conditions.
+By conditions~(i) 
+the length of~$\alpha\beta$ is less than~$p$ and
+thus $lh{\beta}<p$.
+By condition~(ii), $0<\lh{\beta}$.
+
+Condition~(iii) is that all of these strings are in the language.
+\begin{equation*}
+  \alpha\concat\gamma,
+  \quad  
+  \alpha\beta\gamma,
+  \quad  
+  \alpha\beta^2\gamma,
+  \quad  
+  \alpha\beta^3\gamma,
+  \quad\ldots
+\end{equation*}
+Consider $\alpha\beta^2\gamma$.
+We have this.
+\begin{align*}
+  p^2=\lh{\alpha\beta\gamma} &< \lh{\alpha\beta^2\gamma}
+                                 =p^2+\lh{\beta}   \\ 
+                                &\leq p^2+p<p^2+2p+1=(p+1)^2
+\end{align*}
+So $\alpha\beta^2\gamma$'s length is not a perfect square.
+\end{example}
+
+We can interpret this as: finite state machines ``cannnot square.''
+Similarly, they cannot recognize primality; no FSM accepts this
+language.
+\begin{align*}
+  \lang{L}  &=\set{\str{a}^n\suchthat \text{$n$ is a prime number} }  \\
+         &=\set{\str{aa},\, \str{aaa}, \str{a}^5,\,\str{a}^{7},
+                \, \ldots}
+\end{align*}
+So this gives us some sense of what the CPU part of a Turing machine
+can do without scratch memory.  
+
+
+
 
 
 \subsection{Minimization}
@@ -2543,6 +2657,15 @@ implying that the number of equivalence classes is finite and at most n.
       If we complement the set of accepting states then the language
       of the resulting machine also contains~\str{1}.
     \end{answer}
+  \end{exercise}
+
+  \begin{exercise}
+    Show that each language is not regular.
+    \begin{exparts}
+    \item $\lang{L}_0=\set{\str{a}^n\str{b}^m\str{c}^n\suchthat n,m\in\N}$
+    \item $\lang{L}_1=\set{\str{a}^n\str{b}^m\suchthat n+2=m}$
+    \item $\lang{L}_2=\set{\str{a}^n\str{b}^m\suchthat n<m}$
+    \end{exparts}    
   \end{exercise}
   
   \begin{exercise}

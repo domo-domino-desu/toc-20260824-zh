@@ -2375,8 +2375,9 @@ operation.
 
 
 \subsection{Pumping lemma}
-Finite state machines can deal with long input strings.
-Kleene's insight, embodied in the star operator,
+Although finite state machines are finite objects they can accept languages
+that are infinite; they can deal with long input strings.
+The intuition behind Kleene's star operator
 is that a finite state machine handles long strings
 by looping.
 
@@ -2387,9 +2388,9 @@ by looping.
   \end{center}
   Skipping past the loop, going around zero times times,
   will result in the machine accepting $\sigma_0=\str{acb}$.
-  Going around once will accept $\sigma_0=\str{abaacb}$.
-  Twice will get $\sigma_0=\str{a}(\str{baa})^2\str{cb}$.
-  The machine can pump out ever longer strings:
+  Going once around the loop will accept $\sigma_1=\str{abaacb}$.
+  Twice will get $\sigma_2=\str{a}(\str{baa})^2\str{cb}$.
+  Circling pumps out ever longer strings:
   $\lang{L}=\set{\str{a}(\str{baa})^n\str{cb}\suchthat k\in\N}$.
 \end{example}
 
@@ -2454,32 +2455,29 @@ by looping.
   same final state as did $\sigma$.
 \end{proof}
 
-We apply the Pumping Lemma to show that languages are not regular.
+We usually apply the Pumping Lemma to show that languages are not regular.
 
 \begin{example}
-  Prove that the language of matched parentheses
-  \begin{align*}
-    \lang{L}
-    &=\set{\str{(}^n\str{)}^n\in\kleenestar{\set{\str{)},\str{(}}}\suchthat
-        n\in\N}                                       \\
-    &=\set{\varepsilon, \str{()}, \str{(())}, \str{((()))}, 
-      \str{(}^4\mspace{2mu}\str{)}^4,\, \ldots}
-  \end{align*}
-  is not regular.
+  Consider the language of \definend{palindromes}
+  $\lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+    \reversal{\sigma}=\sigma}$.
+  Some members are \str{aba}, \str{bbaabb},
+  and~$\str{a}^5\str{b}\str{a}^5$.
+  We will prove that this language is not regular.
 
-  For contradiction, assume it is regular and let the pumping length be~$p$.
-  Consider the string $\sigma=\str{(}^p\str{)}^p\in\lang{L}$.
-  Apply the Pumping Lemma to decompose the string into substrings
-  $\sigma=\alpha\beta\gamma$, subject to the three conditions.
-  By condition~(i) the length of~$\alpha\beta$ is less than~$p$
-  and since $\alpha\beta$ is a 
-  prefix of~$\sigma=\str{(}^p\str{)}^p$,
-  both $\alpha$ and~$\beta$ are composed
-  only of~$\str{(}$'s.
-  By condition~(ii), $\beta$ contains at least one~$\str{(}$.
-
-  Condition~(iii) shows that all of these strings are in the
-  language~$\lang{L}$.
+  For a contradiction assume that it is regular.
+  Let its pumping length be~$p$.
+  Take $\sigma=\str{a}^p\str{b}\str{a}^p$.
+  Note that $\sigma\in\lang{L}$.
+  
+  The Pumping Lemma says that $\sigma$ decomposes into substrings
+  $\sigma=\alpha\concat\beta\concat\gamma$ subject to the conditions.
+  The first condition gives that $\lh{\alpha\beta}\leq p$,
+  and so both $\alpha$ and $\beta$ are composed solely of \str{a}'s.
+  With that,
+  the second condition gives that $\beta$ consists of at least one~\str{a}.
+  Then the third condition is that all of these strings are also members
+  of the language.
   \begin{equation*}
     \alpha\concat\gamma,
     \quad  
@@ -2490,71 +2488,143 @@ We apply the Pumping Lemma to show that languages are not regular.
     \alpha\concat\beta^3\concat\gamma,
     \quad\ldots
   \end{equation*}
-  The first string has fewer $\str{(}$'s than $\str{)}$'s because
-  $\beta$ is omitted.
-  That's impossible since it does not satisfy the definition of the
-  language~$\lang{L}$.
+  Because $\alpha$ and $\beta$ consist solely of \str{a}'s, $\gamma$ has
+  the~\str{b}.
+  Consider the first string in the list.
+  For the first string to be a palindrome, before the~\str{b} it must have
+  $p$-many \str{a}'s.
+  But this string has fewer than $p$-many \str{a}'s, because of the omission
+  of $\beta$,
+  so it is not in the language of palindromes, which is a contradiction.
 \end{example}
 
 \begin{remark}
-Don't make the mistake of thinking that the prefix $\alpha\beta$ is
-all of the string~$\str{(}^p$. 
-It is just some prefix, consisting only of $\str{(}$'s.
-The suffix $\gamma$ may well start with some $\str{(}$'s in addition to
-ending with $p$-many $\str{)}$'s.
+Don't make the mistake of thinking that the prefix $\alpha\beta$ must be
+all of the string~$\str{a}^p$ and that $\gamma$ must be
+$\str{b}\concat\str{a}^p$. 
+The lemma only gives that $\alpha\beta$ is some prefix
+consisting only of $\str{a}$'s.
+The suffix $\gamma$ may well start with some $\str{a}$'s in addition to
+containing a~\str{b} and then $\str{a}^p$'s.
 \end{remark}
 
-The hard part of these arguments is typically coming up with a 
-good~$\sigma$.
-You can often follow the pattern of that example, but not always.
+\begin{example}  \label{ex:FSMCannotRecognizePlusOne}
+  We prove that the language
+  $\lang{L}=\set{\str{0}^m\str{1}^n\in\kleenestar{\B}\suchthat
+    m=n+1}$
+  is not regular.
+  The first few members of this langugae are \str{0},
+  \str{001}, and~\str{00011}.
+
+  Assume otherwise.
+  Let its pumping length be~$p$ and
+  consider $\sigma=\str{0}^{p+1}\str{1}^p$.
+  Note that $\sigma\in\lang{L}$.
+  The Pumping Lemma gives that $\sigma=\alpha\beta\gamma$, subject to the
+  three conditions.
+  Condition~(i) says that $\lh{\alpha\beta}\leq p$, so $\alpha$ and~$\beta$
+  are made up only of \str{0}'s.
+  Condition~(ii) says that $\beta$ has at least one character, necessarily
+  a~\str{0}.
+  Condition~(iii) says that each of these is in the language.
+  \begin{equation*}
+    \alpha\gamma,
+    \quad  
+    \alpha\beta\gamma,
+    \quad  
+    \alpha\beta^2\gamma,
+    \quad  
+    \alpha\beta^3\gamma,
+    \quad\ldots
+  \end{equation*}
+  Consider $\alpha\gamma$.
+  By conditions~(i) and~(ii), all of the \str{1}'s are in~$\gamma$.
+  By condition~(ii), this string has fewer \str{0}'s then does
+  $\sigma$.
+  That's impossible according to the definition of~$\lang{L}$
+\end{example}
+
+\begin{example}
+  We prove that the language of matched parentheses
+  \begin{align*}
+    \lang{L}
+    &=\set{\str{(}^n\str{)}^n\in\kleenestar{\set{\str{)},\str{(}}}\suchthat
+        n\in\N}                                       \\
+    &=\set{\varepsilon, \str{()}, \str{(())}, \str{((()))}, 
+      \str{(}^4\mspace{2mu}\str{)}^4,\, \ldots\,}
+  \end{align*}
+  is not regular.
+
+  Assume for contradiction that it is regular, with pumping length~$p$.
+  Consider the string $\sigma=\str{(}^p\str{)}^p$, and
+  note that $\sigma\in\lang{L}$.
+  The Pumping Lemma decomposes it into substrings
+  $\sigma=\alpha\beta\gamma$ subject to the three conditions.
+  By condition~(i) the length of~$\alpha\beta$ is less than~$p$
+  and since $\alpha\beta$ is a 
+  prefix of~$\sigma$,
+  both $\alpha$ and~$\beta$ are composed
+  only of~$\str{(}$'s.
+  By condition~(ii), $\beta$ contains at least one~$\str{(}$.
+  Condition~(iii) shows that all of the strings
+  $\alpha\gamma$,
+  $\alpha\beta\gamma$,
+  $\alpha\beta^2\gamma$,
+  \ldots{}
+  are members of~$\lang{L}$.
+  
+  The prior couple of examples found a contradiction in the first string.
+  We could do that here also but for variety we will consider the
+  third string.
+  It has more $\str{(}$'s than $\str{)}$'s because
+  of the extra $\beta$.
+  That contradicts the definition of~$\lang{L}$.
+\end{example}
+
+The prior example is notable because compilers must recognize whether the input
+has matched parentheses.
+
+The examples so far have the same flavor.
+We can also use the Pumping Lemma for differently-flavored cases.
 
 \begin{example}
 Show that this language is not regular.
-\begin{align*}
-  \lang{L}  &=\set{\str{a}^n\suchthat \text{$n$ is a perfect square} }  \\
-         &=\set{\emptystring,\, \str{a},\, \str{aaaa},\, \str{a}^9,\,\str{a}^{16},
-                \, \ldots}
-\end{align*}
+\begin{equation*}
+  \lang{L}  =\set{\str{a}^n\suchthat \text{$n$ is a perfect square} } 
+         =\set{\emptystring,\, \str{a},\, \str{aaaa},\, \str{a}^9,\,\str{a}^{16},
+                \, \ldots\,}
+\end{equation*}
 Suppose otherwise.  
-Fix a pumping length~$p$.
+Fix a pumping length~$p$ and let $\sigma=\str{a}^{p^2}\in\lang{L}$.
 
-Let $\sigma=\str{a}^{p^2}$.
 By the Pumping Lemma, $\sigma=\alpha\beta\gamma$ subject to the
 three conditions.
-By conditions~(i) 
-the length of~$\alpha\beta$ is less than~$p$ and
-thus $lh{\beta}<p$.
-By condition~(ii), $0<\lh{\beta}$.
-
-Condition~(iii) is that all of these strings are in the language.
-\begin{equation*}
-  \alpha\concat\gamma,
-  \quad  
-  \alpha\beta\gamma,
-  \quad  
-  \alpha\beta^2\gamma,
-  \quad  
-  \alpha\beta^3\gamma,
-  \quad\ldots
-\end{equation*}
+Condition~(i) 
+is that the length of~$\alpha\beta$ is less than or equal to~$p$ and
+thus $lh{\beta}\leq p$.
+Condition~(ii) says that $0<\lh{\beta}$.
+Condition~(iii) is that all of the strings  $\alpha\gamma$,
+  $\alpha\beta\gamma$,
+  $\alpha\beta^2\gamma$, \ldots{}
+are members of the language.
 Consider $\alpha\beta^2\gamma$.
-We have this.
+Then
 \begin{align*}
-  p^2=\lh{\alpha\beta\gamma} &< \lh{\alpha\beta^2\gamma}
-                                 =p^2+\lh{\beta}   \\ 
+  p^2=\lh{\alpha\beta\gamma} < \lh{\alpha\beta^2\gamma}
+                                &=p^2+\lh{\beta}   \\ 
                                 &\leq p^2+p<p^2+2p+1=(p+1)^2
 \end{align*}
-So $\alpha\beta^2\gamma$'s length is not a perfect square.
+and so $\alpha\beta^2\gamma$'s length is not a perfect square, which is
+a contradiction.
 \end{example}
 
-We can interpret this as: finite state machines ``cannnot square.''
-Similarly, they cannot recognize primality; no FSM accepts this
-language.
-\begin{align*}
-  \lang{L}  &=\set{\str{a}^n\suchthat \text{$n$ is a prime number} }  \\
-         &=\set{\str{aa},\, \str{aaa}, \str{a}^5,\,\str{a}^{7},
-                \, \ldots}
-\end{align*}
+We can interpret the prior example
+as that finite state machines ``cannnot square.''
+Hardly surprising, as \cref{ex:FSMCannotRecognizePlusOne} says they
+cannot recognize plus one.
+There are many more instances along the same lines; 
+\cref{exer:NoFSMAcceptsPrimes} shows that they
+cannot recognize primality.
 So this gives us some sense of what the CPU part of a Turing machine
 can do without scratch memory.  
 
@@ -2666,6 +2736,27 @@ implying that the number of equivalence classes is finite and at most n.
     \item $\lang{L}_1=\set{\str{a}^n\str{b}^m\suchthat n+2=m}$
     \item $\lang{L}_2=\set{\str{a}^n\str{b}^m\suchthat n<m}$
     \end{exparts}    
+  \end{exercise}
+
+  \begin{exercise}
+    Show that the language over $\kleenestar{\set{\str{a},\str{b}}}$
+    consisting of strings having more \str{a}'s than \str{b}'s is not
+    regular.
+  \end{exercise}
+
+  \begin{exercise} % Rich, p 182
+    Decide if each is a regular language of bitstrings.
+    \begin{exparts*}
+    \item the number of \str{0}'s plus the number of \str{1}'s equals five
+    \item the number of \str{0}'s minus the number of \str{1}'s equals five
+    \end{exparts*}
+  \end{exercise}
+  
+  \begin{exercise}  \label{exer:NoFSMAcceptsPrimes}
+    Show that 
+    $\set{\sigma\in\kleenestar{\B}\suchthat
+      \text{$\sigma=\str{1}^n$ where $n$ is prime}}$
+    is not a regular language.
   \end{exercise}
   
   \begin{exercise}

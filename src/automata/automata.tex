@@ -668,6 +668,11 @@ Produce a finite state machine to accept each language.
 \end{exercise}
 
 \begin{exercise}
+  Show that the set of finite state machines is infinite.
+  Is it countable?
+\end{exercise}
+
+\begin{exercise}
   \cref{def:ExtendedTransitionFcn},
   the definition of the extended transition function,
   is a conceptual definition, not an entirely formal one.
@@ -2544,7 +2549,7 @@ containing a~\str{b} and then $\str{a}^p$'s.
   That's impossible according to the definition of~$\lang{L}$
 \end{example}
 
-\begin{example}
+\begin{example}  \label{ex:BalancedParensIsNotRegularLang}
   We prove that the language of matched parentheses
   \begin{align*}
     \lang{L}
@@ -2583,6 +2588,23 @@ containing a~\str{b} and then $\str{a}^p$'s.
 
 The prior example is notable because compilers must recognize whether the input
 has matched parentheses.
+
+The closure properties of regular languages come in handy in conjunction with
+the results we have seen.
+
+\begin{example}
+  The language $\lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+    \text{$\sigma$ has as many \str{a}'s as \str{b}'s}}$
+  is not regular.
+  If it were then its interesction with the language
+  $\hat{\lang{L}}=\set{\str{a}^m\str{b}^n\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat m,n\in\N}$ would be regular, since $\hat{\lang{L}}$ is clearly
+  regular and the intersection of two regular languages is regular.
+  But $\lang{L}\cap\hat{\lang{L}}$ is the set
+  $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
+  and \cref{ex:BalancedParensIsNotRegularLang} shows it isn't regular,
+  by substituting the letters for the parentheses.
+\end{example}
 
 The examples so far have the same flavor.
 We can also use the Pumping Lemma for differently-flavored cases.
@@ -2630,11 +2652,10 @@ can do without scratch memory.
 
 
 
-
-
-\subsection{Minimization}
-
-Motivation.
+\subsection{Machine equivalence}
+We have seen how to go from a machine to a description of the language,
+a regular expression.
+We now reverse the process, and go from the language to a machine.
 
 \begin{definition}
 Let $\lang{L}$ be a language over an alphabet~$\Sigma$.
@@ -2676,8 +2697,9 @@ Moreover, the proof will show that there is a correspondence between the classes
 and the states of a finite state automata accepting that lanuguage.
 
 \begin{proof}
-Suppose that $\lang{L}$ is a regular, over the alphabet~$\Sigma$.
-Then there is a finite state automata $\mathcal{A}$ accepting~$\lang{L}$.
+Suppose that $\lang{L}$ is a regular language, over~$\Sigma$,
+accepted by the finite state machine $\FSM$.
+
 Partition the set of all strings~$\kleenestar{\Sigma}$ with:
 two strings $\sigma,\hat{\sigma}$ are in the same part if 
 when~$\mathcal{A}$ is given them as input then they take 
@@ -2707,7 +2729,36 @@ this gives a many-to-one relation from states of A to equivalence classes,
 implying that the number of equivalence classes is finite and at most n.
 \end{proof}
 
+In contrast with Turing machines, we can tell if two finite
+state machines accept the same language.
+
+Use fill in the table algorithm.
+\begin{example}
+  Minimize this machine.
+  \begin{center}
+    \includegraphics{automata/asy/min/min00.pdf}
+  \end{center}
+\end{example}
+
+\begin{example}
+  Minimize this machine.
+  \begin{center}
+    \includegraphics{automata/asy/min/min01.pdf}
+  \end{center}
+\end{example}
+
+
+\begin{example}
+  Minimize this machine.
+  \begin{center}
+    \includegraphics{automata/asy/min/min02.pdf}
+  \end{center}
+\end{example}
+
+
 \subsection{Derivatives}
+
+
 
 \begin{exercises}
   \begin{exercise}
@@ -2743,7 +2794,25 @@ implying that the number of equivalence classes is finite and at most n.
     consisting of strings having more \str{a}'s than \str{b}'s is not
     regular.
   \end{exercise}
+  
+  \begin{exercise}
+    One of these is regular, one is not.
+    Which is which?
+    (Of course, you must prove your assertions.)
+    \begin{equation*}
+      \set{\str{0}^m\str{1}\str{0}^n\suchthat m,n\in\N}
+      \qquad
+      \set{\str{0}^n\str{1}\str{0}^n\suchthat n\in\N}
+    \end{equation*}
+  \end{exercise}
 
+  \begin{exercise}
+    Suppose that the language $\lang{L}$ over $\B$ is regular.
+    Show that the language
+    $\hat{\lang{L}}=\set{1\concat\sigma\suchthat \sigma\in\lang{L}}$,
+    also over~$\B$, is also regular.
+  \end{exercise}
+  
   \begin{exercise} % Rich, p 182
     Decide if each is a regular language of bitstrings.
     \begin{exparts*}
@@ -2751,12 +2820,35 @@ implying that the number of equivalence classes is finite and at most n.
     \item the number of \str{0}'s minus the number of \str{1}'s equals five
     \end{exparts*}
   \end{exercise}
+
+  \begin{exercise}  % Rich p183
+    Prove that the collection of regular languages over $\Sigma$
+    is closed under each of the operations.
+    \begin{exparts}
+    \item $\operatorname{pref}(\lang{L})=\set{\sigma\in\kleenestar{\Sigma}\suchthat \text{there is a $\tau\in\kleenestar{\Sigma}$ such that $\sigma\concat\tau\in\lang{L}$}}$ 
+      \item $\operatorname{suff}(\lang{L})=\set{\sigma\in\kleenestar{\Sigma}\suchthat \text{there is a $\tau\in\kleenestar{\Sigma}$ such that $\tau\sigma\in\lang{L}$}}$ 
+    \end{exparts}    
+  \end{exercise}
+  
+  \begin{exercise}
+    Show that
+    \set{\str{0}^m\str{1}^n\in\kleenestar{\B}\suchthat m\neq n} is not regular.
+    \textit{Hint:} use the closure properties of regular languages.
+  \end{exercise}
   
   \begin{exercise}  \label{exer:NoFSMAcceptsPrimes}
     Show that 
     $\set{\sigma\in\kleenestar{\B}\suchthat
       \text{$\sigma=\str{1}^n$ where $n$ is prime}}$
     is not a regular language.
+  \end{exercise}
+  
+  \begin{exercise}
+    Fix an alphabet~$\Sigma\neq \emptyset$.
+    Is the set of regular languages over~$\Sigma$ infinite?
+    If so, is it countable?
+    Is the set of languages over~$\Sigma$ that are not regular infinite?
+    If so, is it countable?
   \end{exercise}
   
   \begin{exercise}

@@ -214,10 +214,18 @@ $.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa11.pdf}               
 \end{center}
-When you design machines,
-having a meaning for each state is helpful.
-For instance here the meaning of $q_4$ is, ``so far have seen one~$a$ and an
+This illustrates the key principle for designing finite state machines:~the
+best approach is for each state to have a meaning.
+For instance, here the meaning of $q_4$ is, ``so far I have seen one~$a$ and an
 odd number of $b$'s.''
+The meaning of $q_5$ is. ``so far I
+have seen two \str{a}'s but an odd number of \str{b}'s.''
+The way the machine is drawn underlines this principle.
+The first row has states that have so far seen an even number of
+\str{b}'s and the second row's states have seen an odd number.
+The first column's states have seen no \str{a}'s,
+the second column's states have seen one,
+and the third column has states that have seen two \str{a}'s.
 \end{example}
 
 The description above of the language~$\lang{L}$
@@ -250,8 +258,9 @@ That drawing omits many edges, the ones involving the error state~$e$.
 For instance, from state~$q_0$ any input character other than \str{j}
 or~\str{p} is an error.
 The drawing below shows the extra edges for the top branch; putting in all the
-edges would make a mess and it would be harder to see the edges that are
-the point of the example.
+edges would make a mess and the clutter would make it
+harder to see the edges from the picture above,
+the ones that are the main point of the example.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa10.pdf}}
 \end{center}
@@ -1504,6 +1513,32 @@ gives the next-state function for a nondeterministic finite state machine.
 \end{exercise}
 
 \begin{exercise}
+  Rebut the contention, ``Epsilon transitions don't make any sense,
+  they cause contradictions, because this machine will never get its first
+  step done; it just endlessly following the epsilon transitions.''
+  \begin{center}
+    \includegraphics{automata/asy/nfsm/nfsm59.pdf}
+  \end{center}
+  \begin{answer}
+    We define that a string is accepted by a machine if there is a sequence
+    of states that allow the machine to process the string, and that ends
+    in an accepting state.
+    That definition does not concern itself with wrong ways to go, it only
+    requires that there be a right way.
+    For instance, this machine accepts \str{aab} by starting in $q_0$,
+    transitioning to $q_1$ on the first \str{a},
+    taking the $\varepsilon$ transition back to $q_0$,
+    then going to $q_1$ on the second~\str{a}, and finally
+    going to $q_2$ with the \str{b}.
+    The language accepted by the machine is defined to be the set of strings
+    that the machine can accept, and so 
+    the language of this machine is
+    $\lang{L}=\set{\str{a}^n\str{b}\suchthat n\in\N}$.
+  \end{answer}
+
+\end{exercise}
+
+\begin{exercise}
 Given a nondeterministic finite state machine without $\varepsilon$ transitions,
 and with two accepting states, show how to add $\varepsilon$
 transitions so that the extended machine will have only one accepting state,
@@ -2246,7 +2281,7 @@ We have defined tht the jobs they do are to accept languages.
 
 There are infinitely many regular languages; for instance all of these
 are regular: $\lang{L}_0=\set{}$, $\lang{L}_1=\set{\str{0}}$,
-$\lang{L}_2=\set{\str{00}}$, \ldots 
+$\lang{L}_2=\set{\str{00}}$, \ldots\@ 
 In this section we will study some of what makes a language regular,
 and some of what makes a language not regular.
 
@@ -2258,26 +2293,26 @@ and some of what makes a language not regular.
 \end{proof}
 
 Two points about the prior lemma.
-First, if the language is finite but large then the constructing the machine
-by listing cases is impractical.
+First, if the language is finite but large then constructing the machine
+by listing cases may not be possible in practice.
 There are finitely many people in the world and each has finitely many
 active phone numbers so that strictly speaking
 the set of all currently-active phone numbers
 is a regular language, but constructing a finite state machine for it
 is silly.
 
-Second, a language doesn't have to large to be difficult in practice.
+Second, a language doesn't have to be large for it to be difficult in practice.
 For instance, mathematicians have noticed that even numbers greater
 than~$2$ appear to all be the sum of
-two primes\Dash $4=2+2$, $6=3+3$, $8=3+5$, \ldots.
+two primes: $4=2+2$, $6=3+3$, $8=3+5$, \ldots\@
 The guess that it holds for all evens is
-\urldef\goldbachurl\url{https://en.wikipedia.org/wiki/Goldbach%27s_conjecture}
+\urldef\goldbachurl\url{https://en.wikipedia.org/wiki/Goldbach%27s_conjecture}%
 \citetext{\definend{Goldbach's conjecture}}{See \goldbachurl.}.
 No one knows if it is true.
 Thus, while the language consisting of the smallest even number greater than two
 that is the not sum of two primes (represented by a string using base~ten)
 is finite since it has either
-one member or none, we don't know what it is. 
+one member or none, we at this moment don't know how to write it down. 
 
 \subsection{Closure properties}
 We have seen that if two languages
@@ -2510,16 +2545,18 @@ $\str{b}\concat\str{a}^p$.
 The lemma only gives that $\alpha\beta$ is some prefix
 consisting only of $\str{a}$'s.
 The suffix $\gamma$ may well start with some $\str{a}$'s in addition to
-containing a~\str{b} and then $\str{a}^p$'s.
+containing a~\str{b} and then $\str{a}^p$.
 \end{remark}
 
 \begin{example}  \label{ex:FSMCannotRecognizePlusOne}
-  We prove that the language
+  The language
   $\lang{L}=\set{\str{0}^m\str{1}^n\in\kleenestar{\B}\suchthat
     m=n+1}$
-  is not regular.
-  The first few members of this langugae are \str{0},
-  \str{001}, and~\str{00011}.
+  is very simple.
+  Its members, such as \str{0},
+  \str{001}, and~\str{00011}, just have one more \str{0} than~\str{1}.
+  We will prove that it is not regular, that no finite state machine
+  accepts this language.
 
   Assume otherwise.
   Let its pumping length be~$p$ and
@@ -2652,19 +2689,70 @@ can do without scratch memory.
 
 
 
-\subsection{Machine equivalence}
-We have seen how to go from a machine to a description of the language,
-a regular expression.
-We now reverse the process, and go from the language to a machine.
+\subsection{Machine minimization}
+% We have seen how to go from a machine to a description of the language,
+% a regular expression.
+% We now reverse the process, and go from the language to a machine.
+Contrast these two finite state machines.
+For each the language of accepted strings is
+$\set{\sigma\in\kleenestar{\B}\suchthat
+  \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa16.pdf}
+  \hspace{3em}
+  \includegraphics{automata/asy/fsa/fsa17.pdf}
+\end{center}
+Focus first on the left.
+We think of a machine's states as having a meaning.
+For instance, $q_2$ means something like,
+``have seen the needed \str{1} but still
+waiting for a~\str{0}.''
+If properly designed, the machine is in state~$q_2$ if this is the case. 
+
+On the right the machine is not properly designed in this sense because
+the meaning of $q_4$ is the same.
+That is, the two states~$q_2$ and~$q_4$ have the same future.
+
+Hence the machine on the right has redundant states.
+We can
+get a new machine, a machine with fewer states that accepts the same language,
+by collapsing its $q_4$ onto its~$q_2$.
+We will now see an algorithm that starts with a finite machine and
+finds from it the smallest machine that accepts the same language.
 
 \begin{definition}
-Let $\lang{L}$ be a language over an alphabet~$\Sigma$.
-For a pair of strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$,
-a \definend{distinguishing extension} is a 
-string $\tau\in\kleenestar{\Sigma}$ 
-such that exactly one of the two strings $\sigma\concat\tau$ 
-and $\hat{\sigma}\concat\tau$ is an element of~$\lang{L}$. 
+In a finite state machine over a~$\Sigma$,
+two states $q,\hat{q}$ are \definend{indistinguishable}
+if for all strings
+$\sigma\in\kleenestar{\Sigma}$,
+starting the machine in~$q$ and giving it input~$\sigma$
+ends in an accepting state if and only if
+starting the machine in~$\hat{q}$ and giving it input~$\sigma$
+also ends in an accepting state.
+Otherwise the states are \definend{distinguishable}.
 \end{definition}
+
+\begin{example}
+  Consider the machine on the left above.
+  Its states $q_0$ and~$q_2$ are distinguishable.
+  Take the distinguishing string to be $\sigma=\str{0}$.
+  Starting the machine in~$q_0$ and feeding it the input~\str{0} ends
+  in the non-accepting state~$q_1$,
+  while starting in~$q_2$ and processing the same input ends
+  in the accepting state~$q_3$.
+\end{example}
+
+\begin{example}
+  For the machine on the right
+  the states $q_2$ and~$q_4$ are not distinguishable.
+  By inspection we see that the set of input strings that bring the
+  machine from~$q_2$ to an accepting state is
+  $\set{\sigma\in\kleenestar\suchthat
+    \text{$\sigma$ has the form \re{0*|(1*0*)}}}$.
+  Checking for state~$q_4$ shows that the set of strings taking
+  it to an accepting state is the same.
+\end{example}
+
 
 Examples, including example where the two do not have a distinguishing 
 extension.

@@ -2712,20 +2712,14 @@ If properly designed, the machine is in state~$q_2$ if this is the case.
 On the right the machine is not properly designed in this sense because
 the meaning of $q_4$ is the same.
 That is, the two states~$q_2$ and~$q_4$ have the same future.
-
-Hence the machine on the right has redundant states.
-We can
-get a new machine, a machine with fewer states that accepts the same language,
-by collapsing its $q_4$ onto its~$q_2$.
-We will now see an algorithm that starts with a finite machine and
-finds from it the smallest machine that accepts the same language.
+So, the machine on the right has redundant states.
 
 \begin{definition}
 In a finite state machine over a~$\Sigma$,
 two states $q,\hat{q}$ are \definend{indistinguishable}
 if for all strings
 $\sigma\in\kleenestar{\Sigma}$,
-starting the machine in~$q$ and giving it input~$\sigma$
+starting the machine in state~$q$ and giving it input~$\sigma$
 ends in an accepting state if and only if
 starting the machine in~$\hat{q}$ and giving it input~$\sigma$
 also ends in an accepting state.
@@ -2735,27 +2729,181 @@ Otherwise the states are \definend{distinguishable}.
 \begin{example}
   Consider the machine on the left above.
   Its states $q_0$ and~$q_2$ are distinguishable.
-  Take the distinguishing string to be $\sigma=\str{0}$.
-  Starting the machine in~$q_0$ and feeding it the input~\str{0} ends
+  We can use the distinguishing string $\sigma=\str{0}$.
+  Starting the machine in~$q_0$ and feeding it~\str{0} ends
   in the non-accepting state~$q_1$,
   while starting in~$q_2$ and processing the same input ends
   in the accepting state~$q_3$.
+
+  Also, $q_2$ and $q_3$ are distinguishable, using the length-zero
+  string~$\emptystring$.
 \end{example}
 
 \begin{example}
-  For the machine on the right
+  For the machine on the right,
   the states $q_2$ and~$q_4$ are not distinguishable.
-  By inspection we see that the set of input strings that bring the
+  By inspection, the set of input strings that bring the
   machine from~$q_2$ to an accepting state is
   $\set{\sigma\in\kleenestar\suchthat
     \text{$\sigma$ has the form \re{0*|(1*0*)}}}$.
-  Checking for state~$q_4$ shows that the set of strings taking
+  Again by inspection, for state~$q_4$ the set of strings taking
   it to an accepting state is the same.
+  (Note that if $\sigma=\str{0}$ then starting at $q_2$ takes the
+  machine to $q_3$ while starting at $q_4$ takes the machine to $q_5$.
+  This is not a distinguishing string because, while we don't end in the
+  same state, both states are accepting.)
+\end{example}
+
+\citetext{We will now see an algorithm}{The algorithm given here is
+  \definend{Moore's algorithm}.  It is easy to explain and good for
+  by-hand calculation.
+  There is a faster algorithm, \definend{Hopcroft's algorithm}, that you should
+  use if you are writing code.}
+that starts with a finite machine and
+finds from it the smallest machine that accepts the same language,
+by removing the redundancies,
+collapsing together indistinguishable states.
+The algorithm starts by finding all states that are
+distinguishable by the length-zero string.
+It next finds all states distinguishable by length zero or one strings,
+then proceeds to length two strings, etc. 
+
+For that algorithm, fix a machine~$\FSM$ over an alphabet~$\Sigma$.
+Where $n\in\N$, we say that two states $q,\hat{q}$ are
+\definend{$n$-indistinguishable}
+if for any string $\sigma\in\kleenestar{\Sigma}$ of length less than
+or equal to~$n$, starting the machine
+in state~$q$ and giving it input~$\sigma$ ends in an accepting state
+if and only if starting in~$\hat{q}$  and giving it input~$\sigma$ also
+ends in an accepting state.
+We write $q\sim_{n}\hat{q}$.
+(Otherwise the states are \definend{$n$-distinguishable}.)
+
+\begin{lemma}
+  The $q\sim_{n}\hat{q}$ relation between states is an equivalence.
+\end{lemma}
+
+\begin{proof}
+  We must show it is reflexive, symmetric, and transitive.
+  Fix some~$n$.
+  Obviously any state is $n$-indistinguishable from itself, for any~$n$.
+  Symmetry is also clear.
+  So suppose $q_0\sim_{n} q_1$ and  $q_1\sim_{n} q_2$.
+  Let $\sigma$ be a string of length less than or equal to~$n$.
+  If $\sigma$ takes the machine from $q_0$ to an accepting state then
+  because of $q_0\sim_{n} q_1$ it also takes the machine from
+  $q_1$ to an accepting state.
+  Because of $q_1\sim_{n} q_2$ it also takes the machine from
+  $q_2$ to an accepting state.
+  The same holds for non-accepting states.
+\end{proof}
+
+\begin{example}
+  We know that this machine we saw earlier has redundant states.
+  \begin{center}
+    \includegraphics{automata/asy/fsa/fsa17.pdf}
+  \end{center}
+  Consider which states that are indistinguishable by the length zero
+  string~$\emptystring$.
+  They fall into two classes,
+  the non-accepting states $Q-F=\set{q_0,q_1,q_2,q_4}$
+  accepting states $F=\set{q_3,q_5}$.
+  We can use this notation for these equivalence classes
+  of the $\sim_{0}$~relation.
+  \begin{equation*}
+    \mathcal{E}_{0,0}=\set{q_0,q_1,q_2,q_4}
+    \quad
+    \mathcal{E}_{0,1}=\set{q_3,q_5}
+  \end{equation*}
+
+  Next are the classes of states that are indistinguishable by
+  either length zero or length one strings.
+  To each state we feed the length one strings \str{0} and~\str{1}. 
+  \begin{center}
+    \begin{transitionfunction}[]
+             &\str{0}  &\str{1}   \\
+      \cline{2-3}
+      $q_0$  &$Q-F$    &$Q-F$    \\
+      $q_1$  &$Q-F$    &$F$    \\
+      $q_2$  &$F$      &$Q-F$    \\
+      $q_3$  &$F$      &$F$    \\
+      $q_4$  &$F$      &$Q-F$     \\
+      $q_5$  &$F$      &$F$    \\      
+    \end{transitionfunction}
+  \end{center}
+  Some states are distinguishable, and some are not.
+  For instance, $q_0$ and $q_1$ are $1$-distinguishable
+  by the input string~\str{1}, and 
+  both $q_0$ and~$q_1$ are $1$-distinguishable from $q_2$, by~\str{0}.
+  But $q_2$ and~$q_4$ are $1$-indistinguishable.
+  These are the $\sim_{1}$ equivalence classes.
+  \begin{equation*}
+    \mathcal{E}_{1,0}=\set{q_0}
+    \quad
+    \mathcal{E}_{1,1}=\set{q_1}
+    \quad
+    \mathcal{E}_{1,2}=\set{q_2,q_4}
+    \quad
+    \mathcal{E}_{1,3}=\set{q_3,q_5}
+  \end{equation*}
+  Observe that the states we've described as redundant have ended
+  in the same class. 
+\end{example}
+
+We may at first think that we should next see if we can separate these classes 
+still further, to get the $\sim_{2}$ classes, by passing
+each length two string to each state.
+Proceeding in that way, by then passing the collection of length
+three strings, etc., would be annoying because the number of
+strings to pass grows exponentially.
+
+However, now comes the key observation.
+Suppose that $\sigma$ is a 
+distinguishing string for two states $q,\hat{q}$ that
+are $n+1$-distinguishable but not
+$n$-distinguishable.
+Then the final character in~$\sigma$ must be the one that distinguishes the
+states.
+That is, where
+$
+ \sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}=\sigma_0\concat s_n 
+$
+and $\sigma_0$ brings the machine from $q$ to a state in some
+class $\mathcal{E}_{n,i}$, then
+$\sigma_0$ must bring the machine from $\hat{q}$ to the same class
+$\mathcal{E}_{n,i}$, or else the states $q$ and $\hat{q}$
+would be $n$-distinguishable.
+
+So we don't need to test the all the length~$n+1$ strings to see
+which bring each state to a final state and which  do not.
+We need only test all the single characters, to see which subdivide
+the $n$~classes, the $\mathcal{E}_{n,i}$'s.
+
+\begin{example}
+  We will minimize this machine.
+  \begin{center}
+    \includegraphics{automata/asy/min/min03.pdf}
+  \end{center}
+  That is, we will find a machine that accepts the same language but
+  has a minimimum number of states.
+
+  To keep the books we will use a sequence of tables.
+  On the left below we have a grid whose entries are pairs of states.
+  \newcommand{\cm}{\checkmark}
+  \begin{center} \small
+    \begin{tabular}[t]{|cccccc}
+      0   &    &    &    &    &    \\
+      \cm &1   &    &    &    &    \\
+      \cm &    &2   &    &    &    \\
+          &\cm &\cm &3   &    &    \\
+          &\cm &\cm &    &4   &    \\
+      \cm &    &    &\cm &\cm &5    \\ \hline
+    \end{tabular}
+  \end{center}
+
 \end{example}
 
 
-Examples, including example where the two do not have a distinguishing 
-extension.
 
 \begin{definition}
 Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$ are 

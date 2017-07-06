@@ -1517,4 +1517,3 @@ of the two.}
 }{%
 \end{minipage}
 }
-

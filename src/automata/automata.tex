@@ -2727,15 +2727,14 @@ Otherwise the states are \definend{distinguishable}.
 \end{definition}
 
 \begin{example}
-  Consider the machine on the left above.
-  Its states $q_0$ and~$q_2$ are distinguishable.
-  We can use the distinguishing string $\sigma=\str{0}$.
-  Starting the machine in~$q_0$ and feeding it~\str{0} ends
+  Starting the machine on the left above in state~$q_0$
+  and feeding it~$\sigma=\str{0}$ ends
   in the non-accepting state~$q_1$,
-  while starting in~$q_2$ and processing the same input ends
+  while starting it in~$q_2$ and processing the same input ends
   in the accepting state~$q_3$.
-
-  Also, $q_2$ and $q_3$ are distinguishable, using the length-zero
+  So $q_0$ and~$q_2$ are distinguishable.
+  
+  Also, $q_2$ and $q_3$ are distinguishable using the length-zero
   string~$\emptystring$.
 \end{example}
 
@@ -2744,31 +2743,35 @@ Otherwise the states are \definend{distinguishable}.
   the states $q_2$ and~$q_4$ are not distinguishable.
   By inspection, the set of input strings that bring the
   machine from~$q_2$ to an accepting state is
-  $\set{\sigma\in\kleenestar\suchthat
+  $\set{\sigma\in\kleenestar{\B}\suchthat
     \text{$\sigma$ has the form \re{0*|(1*0*)}}}$.
   Again by inspection, for state~$q_4$ the set of strings taking
-  it to an accepting state is the same.
-  (Note that if $\sigma=\str{0}$ then starting at $q_2$ takes the
+  it to an accepting state satisfies the same regular expression.
+  
+  The states need not be equal, it is a matter of whether they are
+  accepting.
+  If $\sigma=\str{0}$
+  then starting at $q_2$ takes the
   machine to $q_3$ while starting at $q_4$ takes the machine to $q_5$.
-  This is not a distinguishing string because, while we don't end in the
-  same state, both states are accepting.)
+  This is not a distinguishing string because, while the states aren't
+  equal, both are accepting.
 \end{example}
 
 \citetext{We will now see an algorithm}{The algorithm given here is
   \definend{Moore's algorithm}.  It is easy to explain and good for
   by-hand calculation.
-  There is a faster algorithm, \definend{Hopcroft's algorithm}, that you should
+  A faster algorithm exists, \definend{Hopcroft's algorithm}, that you should
   use if you are writing code.}
 that starts with a finite machine and
-finds from it the smallest machine that accepts the same language,
+finds from it the smallest machine that accepts the same language
 by removing the redundancies,
-collapsing together indistinguishable states.
-The algorithm starts by finding all states that are
+by collapsing together indistinguishable states.
+This algorithm first finds all states that are
 distinguishable by the length-zero string.
-It next finds all states distinguishable by length zero or one strings,
-then proceeds to length two strings, etc. 
+It next finds all states that are distinguishable by length zero or one
+strings, etc. 
 
-For that algorithm, fix a machine~$\FSM$ over an alphabet~$\Sigma$.
+Fix a machine~$\FSM$ over an alphabet~$\Sigma$.
 Where $n\in\N$, we say that two states $q,\hat{q}$ are
 \definend{$n$-indistinguishable}
 if for any string $\sigma\in\kleenestar{\Sigma}$ of length less than
@@ -2777,132 +2780,105 @@ in state~$q$ and giving it input~$\sigma$ ends in an accepting state
 if and only if starting in~$\hat{q}$  and giving it input~$\sigma$ also
 ends in an accepting state.
 We write $q\sim_{n}\hat{q}$.
-(Otherwise the states are \definend{$n$-distinguishable}.)
+Otherwise the states are \definend{$n$-distinguishable}.
+The $q\sim_{n}\hat{q}$ relation between states is an equivalence relation
+(\cref{exer:NEquivIsEquivRel} asks for the proof).
 
-\begin{lemma}
-  The $q\sim_{n}\hat{q}$ relation between states is an equivalence.
-\end{lemma}
+We saw this machine above, where we remarked that state~$q_4$ is redundant
+on~$q_2$.
+By the same token, $q_5$ is redundant on~$q_3$.
+\begin{center} \label{page:MachineWithRedundantStates}
+  \includegraphics{automata/asy/fsa/fsa17.pdf}
+\end{center}
+Consider which states that are indistinguishable by the length zero
+string~$\emptystring$.
+They fall into two classes,
+the non-accepting states $Q-F=\set{q_0,q_1,q_2,q_4}$
+accepting states $F=\set{q_3,q_5}$.
+We can use this notation for these equivalence classes
+of the $\sim_{0}$~relation.
+\begin{equation*}
+  \mathcal{E}_{0,0}=\set{q_0,q_1,q_2,q_4}
+  \quad
+  \mathcal{E}_{0,1}=\set{q_3,q_5}
+\end{equation*}
 
-\begin{proof}
-  We must show it is reflexive, symmetric, and transitive.
-  Fix some~$n$.
-  Obviously any state is $n$-indistinguishable from itself, for any~$n$.
-  Symmetry is also clear.
-  So suppose $q_0\sim_{n} q_1$ and  $q_1\sim_{n} q_2$.
-  Let $\sigma$ be a string of length less than or equal to~$n$.
-  If $\sigma$ takes the machine from $q_0$ to an accepting state then
-  because of $q_0\sim_{n} q_1$ it also takes the machine from
-  $q_1$ to an accepting state.
-  Because of $q_1\sim_{n} q_2$ it also takes the machine from
-  $q_2$ to an accepting state.
-  The same holds for non-accepting states.
-\end{proof}
+Next are the classes of states that are indistinguishable by
+either length zero or length one strings.
+To each state we feed the length one strings \str{0} and~\str{1}. 
+\begin{center}
+  \begin{transitionfunction}[]
+    &\str{0}  &\str{1}   \\
+    \cline{2-3}
+    $q_0$  &$Q-F$    &$Q-F$    \\
+    $q_1$  &$Q-F$    &$F$    \\
+    $q_2$  &$F$      &$Q-F$    \\
+    $q_3$  &$F$      &$F$    \\
+    $q_4$  &$F$      &$Q-F$     \\
+    $q_5$  &$F$      &$F$    \\      
+  \end{transitionfunction}
+\end{center}
+Some states are distinguishable, and some are not.
+For instance, $q_0$ and $q_1$ are $1$-distinguishable
+by the input string~\str{1}, and 
+both $q_0$ and~$q_1$ are $1$-distinguishable from $q_2$, by~\str{0}.
+But $q_2$ and~$q_4$ are $1$-indistinguishable.
+These are the $\sim_{1}$ equivalence classes.
+\begin{equation*}
+  \mathcal{E}_{1,0}=\set{q_0}
+  \quad
+  \mathcal{E}_{1,1}=\set{q_1}
+  \quad
+  \mathcal{E}_{1,2}=\set{q_2,q_4}
+  \quad
+  \mathcal{E}_{1,3}=\set{q_3,q_5}
+\end{equation*}
+Observe that the states we've described as redundant have ended
+in the same class. 
 
-\begin{example}
-  We know that this machine we saw earlier has redundant states.
-  \begin{center}
-    \includegraphics{automata/asy/fsa/fsa17.pdf}
-  \end{center}
-  Consider which states that are indistinguishable by the length zero
-  string~$\emptystring$.
-  They fall into two classes,
-  the non-accepting states $Q-F=\set{q_0,q_1,q_2,q_4}$
-  accepting states $F=\set{q_3,q_5}$.
-  We can use this notation for these equivalence classes
-  of the $\sim_{0}$~relation.
-  \begin{equation*}
-    \mathcal{E}_{0,0}=\set{q_0,q_1,q_2,q_4}
-    \quad
-    \mathcal{E}_{0,1}=\set{q_3,q_5}
-  \end{equation*}
-
-  Next are the classes of states that are indistinguishable by
-  either length zero or length one strings.
-  To each state we feed the length one strings \str{0} and~\str{1}. 
-  \begin{center}
-    \begin{transitionfunction}[]
-             &\str{0}  &\str{1}   \\
-      \cline{2-3}
-      $q_0$  &$Q-F$    &$Q-F$    \\
-      $q_1$  &$Q-F$    &$F$    \\
-      $q_2$  &$F$      &$Q-F$    \\
-      $q_3$  &$F$      &$F$    \\
-      $q_4$  &$F$      &$Q-F$     \\
-      $q_5$  &$F$      &$F$    \\      
-    \end{transitionfunction}
-  \end{center}
-  Some states are distinguishable, and some are not.
-  For instance, $q_0$ and $q_1$ are $1$-distinguishable
-  by the input string~\str{1}, and 
-  both $q_0$ and~$q_1$ are $1$-distinguishable from $q_2$, by~\str{0}.
-  But $q_2$ and~$q_4$ are $1$-indistinguishable.
-  These are the $\sim_{1}$ equivalence classes.
-  \begin{equation*}
-    \mathcal{E}_{1,0}=\set{q_0}
-    \quad
-    \mathcal{E}_{1,1}=\set{q_1}
-    \quad
-    \mathcal{E}_{1,2}=\set{q_2,q_4}
-    \quad
-    \mathcal{E}_{1,3}=\set{q_3,q_5}
-  \end{equation*}
-  Observe that the states we've described as redundant have ended
-  in the same class. 
-\end{example}
-
-We may at first think that we should next see if we can separate these classes 
-still further, to get the $\sim_{2}$ classes, by passing
-each length two string to each state.
-Proceeding in that way, by then passing the collection of length
-three strings, etc., would be annoying because the number of
-strings to pass grows exponentially.
-
+The natural next thing to do is to separate these classes still further,
+to get the $\sim_{2}$ classes.
+We may first think to pass each length two string to each state.
+That would be annoying because
+proceeding in this way, then passing the collection of length
+three strings, etc., would mean the job grows exponentially
+since there are $2^k$ strings of length~$k$.
 However, now comes the key observation.
-Suppose that $\sigma$ is a 
-distinguishing string for two states $q,\hat{q}$ that
-are $2$-distinguishable but not
-$1$-distinguishable.
+Suppose that two states $q,\hat{q}$
+are $2$-distinguishable but not $1$-distinguishable.
 Then where $\sigma$ is a distinguishing string,
-these two states must be distinguished by $\sigma$'s final character.
-That's because if an earlier character would do then they would be
+these two states must be distinguished by $\sigma$'s final character
+because if an earlier character would do then they would be
 $1$-distinguishable.
 
-That is, where
+That is, in general, imagine two states $q,\hat{q}$ that are
+$n$-indistinguishable but $n+1$-distinguishable.
+Suppose a distinguishing string is 
 $
  \sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}=\sigma_0\concat s_n 
-$
-and $\sigma_0$ brings the machine from $q$ to a state in some
+$.
+If $\sigma_0$ brings the machine from $q$ to a state in some
 class $\mathcal{E}_{n,i}$, then
 $\sigma_0$ must bring the machine from $\hat{q}$ to the same class
 $\mathcal{E}_{n,i}$, or else the states $q$ and $\hat{q}$
 would be $n$-distinguishable.
-
-So we don't need to test the all the length~$n+1$ strings to see
-which bring each state to a final state and which  do not.
-We need only test all the single characters, to see which subdivide
-the $n$~classes, the $\mathcal{E}_{n,i}$'s.
+It is the final character~$s_n$ that distinguishes the two states.
+Therefore, we need only test the single characters
+to see if they split the equivalence class  $\mathcal{E}_{n,i}$'s.
 
 \begin{example}
-  We will minimize this machine.
+  We will find a machine that accepts the same language as this one but
+  has a minimimum number of states.
   \begin{center}
     \includegraphics{automata/asy/min/min03.pdf}
   \end{center}
-  That is, we will find a machine that accepts the same language but
-  has a minimimum number of states.
-
   To keep the books we will use a sequence of tables.
-  In the tables below, there is an entry for 
-  every set two-element set of state indices $\set{i,j}$
+  These tables are triangular because they have an entry for 
+  every two-element set of state indices $\set{i,j}$
   with $i\neq j$ and $i,j\in\set{0,\,\ldots 5}$.
-  The table on the left marks the states that are $0$-distinguishable.
-  If $q_i$ is final and $q_j$ is not, or vice versa, then we've marked the
-  $i,j$~box.
-  We can read the equivalence classes off.
-  The equivalence class containing the entry~$i$ contains all the
-  indices~$j$ where box $i,j$ or~$j,i$ is not marked.
-  Thus, the equivalence class for $q_0$ also contains $q_3$ and $q_4$.
-  Similarly, the equivalence class containing $q_2$ also contains $q_1$
-  and~$q_5$.
+  
+  The starting table marks the states that are $0$-distinguishable, where
+  one of the two states is accepting and the other is not.
   \begin{center} 
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{0}   &    &    &    &    &    \\
@@ -2926,16 +2902,23 @@ the $n$~classes, the $\mathcal{E}_{n,i}$'s.
       \end{align*}
     \end{minipage}
   \end{center}
-  For the next step we look at the indistinguishable pairs in the table,
-  and we see if we can find input to distinguish them.
-  On the left is each $0$-indistinguishable pair, along with the
-  pair to which it is taken under the input character.
-  For instance, under the input \str{a} the machine's state $q_0$ is taken
-  to $q_1$, and $q_3$ is taken to $q_5$.
-  If the resulting pair is $0$-distinguishable then it gets a mark.
-  So on this round we've found that $q_1$ is distinguishable from $q_5$,
-  and that $q_2$ is distinguishable from $q_5$.
-  We add those marks to the table.
+  Read off the $\sim_{0}$ equivalence classes by:~to find
+  the class containing~$i$, find all blanks in $i$'s row or column.
+  That is, the class containing~$i$ consists of all the
+  indices~$j$ where box $i,j$ or~$j,i$ is not marked.
+  For instance, the equivalence class for $q_0$ also contains $q_3$ and~$q_4$.
+  Similarly, the equivalence class containing $q_2$ also contains $q_1$
+  and~$q_5$.
+  Those $0$-equivalence classes are on the right.
+
+  Iterate.
+  Look at the table's blanks, the $0$-indistinguishable pairs of states,
+  to see if they can be $1$-distinguished.
+  On the left below is each $0$-indistinguishable pair along with the
+  pair to which the machine takes it, given the input character.
+  For instance, the input \str{a} takes the machine's state $q_0$ 
+  to~$q_1$, and takes $q_3$ to~$q_5$.
+  If the resulting pair is $0$-distinguishable then mark it.
   \begin{center} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -2973,8 +2956,13 @@ the $n$~classes, the $\mathcal{E}_{n,i}$'s.
       \end{align*}
     \end{minipage}
   \end{center}
+  So this round finds that $q_1$ is $1$-distinguishable from~$q_5$
+  and that $q_2$ is $1$-distinguishable from~$q_5$.
+  Add those marks to the triangular table.
+
   Rinse, repeat.
-  At the next step we see if we can subdivide the $\mathcal{E}_{1,i}$'s.
+  The next iteration subdivides the $\sim_{1}$-equivalence classes,
+  the $\mathcal{E}_{1,i}$'s, to compute the $\sim_{2}$-equivalence classes.
   \begin{center} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -3006,54 +2994,111 @@ the $n$~classes, the $\mathcal{E}_{n,i}$'s.
       \begin{align*}
         \mathcal{E}_{2,0} &=\set{0} \\
         \mathcal{E}_{2,1} &=\set{3,4} \\
-        \mathcal{E}_{2,3} &=\set{1,2}   \\ 
-        \mathcal{E}_{2,4} &=\set{5}   
-      \end{align*}
-    \end{minipage}
-  \end{center}
-  Finally, we check and there is no more splitting.
-  \begin{center} \small
-    \begin{tabular}{r|ll}
-      \multicolumn{1}{c}{\ }
-                  &\multicolumn{1}{c}{\str{a}}
-                  &\multicolumn{1}{c}{\str{b}}  \\
-      \cline{2-3}
-      $\set{1,2}$  &$\set{3,4}$  &$\set{4,3}$  \\
-      $\set{3,4}$  &$\set{5,5}$   &$\set{5,5}$  \\                              
-    \end{tabular}
-    \qquad
-    \begin{minimizetable}{6}
-      \multicolumn{1}{c}{0}   &    &    &    &    &    \\
-      \cline{1-1}
-      \ck &\multicolumn{1}{|c}{1}   &    &    &    &    \\
-      \cline{2-2}
-      \ck &    &\multicolumn{1}{|c}{2}   &    &    &    \\
-      \cline{3-3}
-      \ck    &\ck &\ck &\multicolumn{1}{|c}{3}   &    &    \\
-      \cline{4-4}
-      \ck    &\ck &\ck &    &\multicolumn{1}{|c}{4}   &    \\
-      \cline{5-5}
-      \ck &\ck    &\ck    &\ck &\ck &\multicolumn{1}{|c}{5}    \\ 
-      \cline{1-5}      
-    \end{minimizetable}
-    \qquad
-    \begin{minipage}{0.2\linewidth}
-      \begin{align*}
-        \mathcal{E}_{2,0} &=\set{0} \\
-        \mathcal{E}_{2,1} &=\set{3,4} \\
         \mathcal{E}_{2,2} &=\set{1,2}   \\ 
         \mathcal{E}_{2,3} &=\set{5}   
       \end{align*}
     \end{minipage}
   \end{center}
-  We are done.
-  Here is the minimized machine, with $s_0=\mathcal{E}_{2,0}$, etc.
+
+  The last iteration gives  
+  no more splitting so the process stops.
+  Here is the minimized machine.
   \begin{center}
     \includegraphics{automata/asy/min/min04.pdf}
   \end{center}
+  We've written with $s_0$ for $\mathcal{E}_{2,0}$, etc.
+  The start state is the one containing~$q_0$.
+  The final states are the ones containing the final states of the
+  original machine, $q_1$, $q_2$, and~$q_5$.
+
+  As to the arrows, for instance consider this machine's arrow
+  labelled~\str{a} from $s_1$ to~$s_3$.
+  On this machine $s_1$ represents the class~$\mathcal{E}_1=\set{q_3,q_4}$.
+  Look on the starting machine at the arrows leaving those states and
+  labelled~\str{a}.
+  Both arrows go to $q_5$, which is contained in
+  the equivalence class~$s_3=\mathcal{E}_3$.
 \end{example}
 
+There is one more step, which was not needed in the prior example.
+If the machine has any states that are unreachable then we
+omit those before we start.
 
+\begin{example}  \label{ex:SecondMinimization}
+  Minimize this machine.
+  \begin{center}
+    \includegraphics{automata/asy/min/min00.pdf}
+  \end{center}
+  First,~$q_5$ cannot be reached from the start state.
+  Omit it.
+  That leaves this initial triangular table.
+  \begin{center} 
+    \begin{minimizetable}{5}
+      \multicolumn{1}{c}{0}   &    &    &    &    \\
+      \cline{1-1}
+          &\multicolumn{1}{|c}{1}   &    &    &    \\
+      \cline{2-2}
+          &    &\multicolumn{1}{|c}{2}   &    &    \\
+      \cline{3-3}
+      \ck &\ck &\ck &\multicolumn{1}{|c}{3}   &    \\
+      \cline{4-4}
+      \ck &\ck &\ck &    &\multicolumn{1}{|c}{4}   \\
+      \cline{1-4}      
+    \end{minimizetable}
+    \qquad
+    \begin{minipage}[c][][c]{0.2\linewidth}
+      \begin{align*}
+        \mathcal{E}_{0,0} &=\set{0,1,2} \\
+        \mathcal{E}_{0,1} &=\set{3,4} 
+      \end{align*}
+    \end{minipage}
+  \end{center}
+  Divide the $0$-equivalence classes into $1$-equivalence classes.
+  \begin{center} \small
+    \begin{tabular}{r|ll}
+      \multicolumn{1}{c}{\ }
+                  &\multicolumn{1}{c}{\str{0}}
+                  &\multicolumn{1}{c}{\str{1}}  \\
+      \cline{2-3}
+      $\set{0,1}$  &$\set{1,2}$  &$\set{2,3}$ \ck \\
+      $\set{0,2}$  &$\set{1,2}$  &$\set{2,4}$ \ck \\
+      $\set{1,2}$  &$\set{2,2}$  &$\set{3,4}$  \\
+      $\set{3,4}$  &$\set{3,4}$  &$\set{3,4}$  \\                              
+    \end{tabular}
+    \qquad
+    \begin{minimizetable}{5}
+      \multicolumn{1}{c}{0}   &    &    &    &    \\
+      \cline{1-1}
+      \ck &\multicolumn{1}{|c}{1}   &    &    &    \\
+      \cline{2-2}
+      \ck &    &\multicolumn{1}{|c}{2}   &    &    \\
+      \cline{3-3}
+      \ck &\ck &\ck &\multicolumn{1}{|c}{3}   &    \\
+      \cline{4-4}
+      \ck &\ck &\ck &    &\multicolumn{1}{|c}{4}   \\
+      \cline{1-4}      
+    \end{minimizetable}
+    \qquad
+    \begin{minipage}{0.15\linewidth}
+      \begin{align*}
+        \mathcal{E}_{1,0} &=\set{0} \\
+        \mathcal{E}_{1,1} &=\set{1,2}   \\ 
+        \mathcal{E}_{1,2} &=\set{3,4}   
+      \end{align*}
+    \end{minipage}
+  \end{center}
+  No additional splitting happens on the next iteration so the process stops.
+  The minimized machine has three states.
+  \begin{center}
+    \includegraphics{automata/asy/min/min05.pdf}
+  \end{center}
+\end{example}
+
+\begin{TODO}
+  lemma giving formal justification.
+  Note that $\sim$, without any subscript, is an equivalence.
+  Its classes are the final classes of $\sim_{n}$.
+\end{TODO}
 
 \begin{definition}
 Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$ are 
@@ -3118,28 +3163,6 @@ implying that the number of equivalence classes is finite and at most n.
 In contrast with Turing machines, we can tell if two finite
 state machines accept the same language.
 
-Use fill in the table algorithm.
-\begin{example}
-  Minimize this machine.
-  \begin{center}
-    \includegraphics{automata/asy/min/min00.pdf}
-  \end{center}
-\end{example}
-
-\begin{example}
-  Minimize this machine.
-  \begin{center}
-    \includegraphics{automata/asy/min/min01.pdf}
-  \end{center}
-\end{example}
-
-
-\begin{example}
-  Minimize this machine.
-  \begin{center}
-    \includegraphics{automata/asy/min/min02.pdf}
-  \end{center}
-\end{example}
 
 
 \subsection{Derivatives}
@@ -3227,6 +3250,46 @@ Use fill in the table algorithm.
     $\set{\sigma\in\kleenestar{\B}\suchthat
       \text{$\sigma=\str{1}^n$ where $n$ is prime}}$
     is not a regular language.
+  \end{exercise}
+
+  \begin{exercise}
+    Perform the minimization on the machine that we noted has redundant states
+    from page \cpageref{page:MachineWithRedundantStates}.
+  \end{exercise}
+
+  \begin{exercise}
+    What happens if you perform the minimization procedure in
+    \cref{ex:SecondMinimization} without first omitting the
+    unreachable state?
+  \end{exercise}
+  
+  \begin{exercise}
+  Minimize these two.
+  \begin{exparts}
+    \item \includegraphics{automata/asy/min/min01.pdf}
+    \item \includegraphics{automata/asy/min/min02.pdf}
+  \end{exparts}
+
+  \end{exercise}
+  
+  \begin{exercise} \label{exer:NEquivIsEquivRel}
+    \Cpageref{page:NEquivIsEquivRel} defines the relation
+    $\sim_{n}$.
+    Show it is an equivalence relation.
+    \begin{answer}
+        We must show that it is reflexive, symmetric, and transitive.
+        Fix some~$n$.
+        Obviously any state is $n$-indistinguishable from itself, for any~$n$.
+        Symmetry is also clear.
+        So suppose $q_0\sim_{n} q_1$ and  $q_1\sim_{n} q_2$.
+        Let $\sigma$ be a string of length less than or equal to~$n$.
+        If $\sigma$ takes the machine from $q_0$ to an accepting state then
+        because of $q_0\sim_{n} q_1$ it also takes the machine from
+        $q_1$ to an accepting state.
+        Because of $q_1\sim_{n} q_2$ it also takes the machine from
+        $q_2$ to an accepting state.
+        The same holds for non-accepting states.
+    \end{answer}
   \end{exercise}
   
   \begin{exercise}
@@ -3502,6 +3565,25 @@ Match a valid domain name from a URL.
 (Broken into two lines because it wouldn't fit on one.)
 \re{/\textasciicircum (http|https|ftp)://([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?/?/i}
 \end{example}
+
+% regex crossword http://www.bbc.co.uk/programmes/articles/5LCB3rN2dWLqsmGMy5KYtBf/puzzle-for-today
+% Puzzle No. 3 – Wednesday 5 July
+% This is no ordinary crossword!
+
+% Instead of a word or phrase, each clue is a regular expression (or a ‘regex’). To complete the puzzle, find the letter matching both the horizontal and vertical regex for each square.
+
+% The Internet has many regex resources, allowing you to learn and practice online – but here are a few pointers to get you started:
+
+% Characters in square brackets [LIKETHIS] are 'character classes'. They represent any one of the characters in the box. A caret (^), sometimes called a 'hat' inside a character class [^LIKETHIS] inverts the match. (Must NOT be any of the characters in the box). A number in curly brackets (like {2}) means that the character or pattern immediately before it must occur this number of times. (So A{3} literally means AAA).
+
+% Supplied by the National Cyber Security Centre https://www.ncsc.gov.uk/news/take-our-regex-crossword-challenge
+
+% \includegraphic{automata/regexcrossword.jpg}
+% The answer to the challenge is a quote from Ada Lovelace (a 19th century female mathematician who helped to pioneer Charles Babbage’s proposed mechanical computer).
+
+% ANSWER: “Your best and wisest refuge from all troubles is in your science.” Ada Lovelace http://imgur.com/a/9iK9J
+
+% See also https://regexcrossword.com/ and https://github.com/hermanschaaf/regex-crossword-solver
 
 % \begin{frame}{Regexes can do amazing things}
 % \centergraphic[height=0.8\textheight]{regular_expressions.png}  

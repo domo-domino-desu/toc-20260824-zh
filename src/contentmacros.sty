@@ -325,14 +325,54 @@
 
 \newcommand{\ck}{\checkmark}
 % Table for minimizing automata
-% Vert spacing is wrong, the eq classes are not vert centered wrt this environ.  Arraystretch?
 \newenvironment{minimizetable}[1]{%
   \begingroup\small  % make redefinitions local
     \setlength{\tabcolsep}{0.25em}\renewcommand{\arraystretch}{0.85}%
-    \begin{tabular}{|*{#1}{c}}
+    \begin{tabular}{|*{#1}{c}@{}}
       }{%
     \end{tabular}%
   \endgroup}
+
+% For making a sequence of equations inside of a larget structure, like center
+\usepackage{varwidth}  % like minipage but width varies
+\newcommand{\dropeqnvertspace}{  % omit above and below eqn spaces
+    \setlength{\abovedisplayskip}{0pt}
+    \setlength{\belowdisplayskip}{0pt}
+    \setlength{\abovedisplayshortskip}{0pt}
+    \setlength{\belowdisplayshortskip}{0pt}
+  }
+
+% OK, I'm not proud of this.  I want to include some AMS aligned-equations
+% as part of a larger display.  I cannot get LaTeX to make a natural-width
+% box around them.  Instead I by-eye use the rulealigned* environment to
+% make them the desired width, and then delete the *'s.  So not proud.
+% \begin{varwidth}{0.21\linewidth}  % adjust by eye
+%    \begin{rulealigned}%
+%      \mathcal{P}_{0,0} &=\set{0,3,4} \\
+%      \mathcal{P}_{0,1} &=\set{1,2,5}        
+%    \end{rulealigned}
+%  \end{varwidth}
+% From: https://tex.stackexchange.com/a/340064/121234
+\usepackage{mleftright}
+\newenvironment{rulealigned*}
+{\setlength{\fboxsep}{0pt}%
+ \definecolor{shadecolor}{rgb}{1,0.25,0.25}%
+  \begin{snugshade}%
+    \dropeqnvertspace$\mleft|\aligned%
+}{%
+  \endaligned\mright|$%
+  \end{snugshade}}
+\newenvironment{rulealigned}
+{
+    \dropeqnvertspace$\aligned%
+}{%
+  \endaligned$%
+}
+
+\newcommand{\equivclasses}[2][0.5\textwidth]{\begin{varwidth}{#1}%
+    $\aligned%
+    #2\endaligned$\end{varwidth}}
+\definition{\partset}{\mathcal{P}}
 
 % mapsto arrow made to go down
 \newcommand{\downmapsto}{\rotatebox[origin=c]{-90}{$\scriptstyle\mapsto$}\mkern2mu}

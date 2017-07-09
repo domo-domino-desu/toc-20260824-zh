@@ -911,7 +911,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============== example motivation for myhill nerods ================
+// ============== example motivation for myhill nerode ================
 picture pic;
 int picnum = 17;
 unitsize(pic,1pt);
@@ -954,5 +954,45 @@ draw(pic,
 // draw nodes
 draw(pic,
      q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== example for myhill-nerode ends in ab ================
+picture pic;
+int picnum = 18;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(S)).l("\str{b}"),
+     (q0--q1).l("\str{a}"),
+     (q1..loop(S)).l("\str{a}"),
+     (q1--q2).l("\str{b}").style("leftside"),
+     (q2..bend(-30)..q1).l("\str{a}").style("leftside"),
+     (q2..bend..q0).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

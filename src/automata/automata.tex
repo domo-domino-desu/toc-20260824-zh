@@ -2714,7 +2714,7 @@ the meaning of $q_4$ is the same.
 That is, the two states~$q_2$ and~$q_4$ have the same future.
 So, the machine on the right has redundant states.
 
-\begin{definition}
+\begin{definition}  \label{def:distinguishable}
 In a finite state machine over a~$\Sigma$,
 two states $q,\hat{q}$ are \definend{indistinguishable}
 if for all strings
@@ -2724,6 +2724,16 @@ ends in an accepting state if and only if
 starting the machine in~$\hat{q}$ and giving it input~$\sigma$
 also ends in an accepting state.
 Otherwise the states are \definend{distinguishable}.
+
+Where $n\in\N$, we say that two states $q,\hat{q}$ are
+\definend{$n$-indistinguishable}
+if for any string $\sigma$ of length less than
+or equal to~$n$, starting the machine
+in state~$q$ and giving it input~$\sigma$ ends in an accepting state
+if and only if starting in~$\hat{q}$  and giving it input~$\sigma$ also
+ends in an accepting state.
+We write $q\sim_{n}\hat{q}$.
+Otherwise the states are \definend{$n$-distinguishable}.
 \end{definition}
 
 \begin{example}
@@ -2757,10 +2767,20 @@ Otherwise the states are \definend{distinguishable}.
   equal, both are accepting.
 \end{example}
 
-\citetext{We will now see an algorithm}{The algorithm given here is
-  \definend{Moore's algorithm}.  It is easy to explain and good for
-  by-hand calculation.
-  A faster algorithm exists, \definend{Hopcroft's algorithm}, that you should
+\begin{lemma} \label{lemma:StateEquivIsEquivRel}
+  The $\sim$ relation, and the $\sim_{n}$ relations, between states
+  are equivalence relations.
+\end{lemma}
+
+\begin{proof}
+  See \cref{exer:NEquivIsEquivRel}.  
+\end{proof}
+
+\citetext{Using that definition, we will now develop an algorithm}{%
+  This is
+  \definend{Moore's algorithm}.  It is easy to explain and fine for
+  by-hand calculation, but
+  a faster algorithm exists, \definend{Hopcroft's algorithm}, that you should
   use if you are writing code.}
 that starts with a finite machine and
 finds from it the smallest machine that accepts the same language
@@ -2769,20 +2789,22 @@ by collapsing together indistinguishable states.
 This algorithm first finds all states that are
 distinguishable by the length-zero string.
 It next finds all states that are distinguishable by length zero or one
-strings, etc. 
+strings, etc.
+When it is done, the machine's staes have been broken into classes where
+inside each class all the states are indistinguishable.
 
-Fix a machine~$\FSM$ over an alphabet~$\Sigma$.
-Where $n\in\N$, we say that two states $q,\hat{q}$ are
-\definend{$n$-indistinguishable}
-if for any string $\sigma\in\kleenestar{\Sigma}$ of length less than
-or equal to~$n$, starting the machine
-in state~$q$ and giving it input~$\sigma$ ends in an accepting state
-if and only if starting in~$\hat{q}$  and giving it input~$\sigma$ also
-ends in an accepting state.
-We write $q\sim_{n}\hat{q}$.
-Otherwise the states are \definend{$n$-distinguishable}.
-The $q\sim_{n}\hat{q}$ relation between states is an equivalence relation
-(\cref{exer:NEquivIsEquivRel} asks for the proof).
+% Fix a machine~$\FSM$ over an alphabet~$\Sigma$.
+% Where $n\in\N$, we say that two states $q,\hat{q}$ are
+% \definend{$n$-indistinguishable}
+% if for any string $\sigma\in\kleenestar{\Sigma}$ of length less than
+% or equal to~$n$, starting the machine
+% in state~$q$ and giving it input~$\sigma$ ends in an accepting state
+% if and only if starting in~$\hat{q}$  and giving it input~$\sigma$ also
+% ends in an accepting state.
+% We write $q\sim_{n}\hat{q}$.
+% Otherwise the states are \definend{$n$-distinguishable}.
+% The $q\sim_{n}\hat{q}$ relation between states is an equivalence relation
+% (\cref{exer:NEquivIsEquivRel} asks for the proof).\label{page:NEquivIsEquivRel}
 
 We saw this machine above, where we remarked that state~$q_4$ is redundant
 on~$q_2$.
@@ -2798,12 +2820,12 @@ accepting states $F=\set{q_3,q_5}$.
 We can use this notation for these equivalence classes
 of the $\sim_{0}$~relation.
 \begin{equation*}
-  \mathcal{E}_{0,0}=\set{q_0,q_1,q_2,q_4}
+  \mathcal{P}_{0,0}=Q-F=\set{q_0,q_1,q_2,q_4}
   \quad
-  \mathcal{E}_{0,1}=\set{q_3,q_5}
+  \mathcal{P}_{0,1}=F=\set{q_3,q_5}
 \end{equation*}
 
-Next are the classes of states that are indistinguishable by
+Next we find the classes of states that are indistinguishable by
 either length zero or length one strings.
 To each state we feed the length one strings \str{0} and~\str{1}. 
 \begin{center}
@@ -2820,51 +2842,51 @@ To each state we feed the length one strings \str{0} and~\str{1}.
 \end{center}
 Some states are distinguishable, and some are not.
 For instance, $q_0$ and $q_1$ are $1$-distinguishable
-by the input string~\str{1}, and 
+by the input string~\str{1}.
+And 
 both $q_0$ and~$q_1$ are $1$-distinguishable from $q_2$, by~\str{0}.
 But $q_2$ and~$q_4$ are $1$-indistinguishable.
 These are the $\sim_{1}$ equivalence classes.
 \begin{equation*}
-  \mathcal{E}_{1,0}=\set{q_0}
+  \mathcal{P}_{1,0}=\set{q_0}
   \quad
-  \mathcal{E}_{1,1}=\set{q_1}
+  \mathcal{P}_{1,1}=\set{q_1}
   \quad
-  \mathcal{E}_{1,2}=\set{q_2,q_4}
+  \mathcal{P}_{1,2}=\set{q_2,q_4}
   \quad
-  \mathcal{E}_{1,3}=\set{q_3,q_5}
+  \mathcal{P}_{1,3}=\set{q_3,q_5}
 \end{equation*}
 Observe that the states we've described as redundant have ended
 in the same class. 
 
-The natural next thing to do is to separate these classes still further,
-to get the $\sim_{2}$ classes.
-We may first think to pass each length two string to each state.
+To get the $\sim_{2}$ classes
+we may first think to pass each length two string to each state.
 That would be annoying because
 proceeding in this way, then passing the collection of length
-three strings, etc., would mean the job grows exponentially
+three strings, etc., would mean that the job grows exponentially
 since there are $2^k$ strings of length~$k$.
 However, now comes the key observation.
 Suppose that two states $q,\hat{q}$
 are $2$-distinguishable but not $1$-distinguishable.
 Then where $\sigma$ is a distinguishing string,
-these two states must be distinguished by $\sigma$'s final character
+these two states must be distinguished by $\sigma$'s final character,
 because if an earlier character would do then they would be
 $1$-distinguishable.
 
-That is, in general, imagine two states $q,\hat{q}$ that are
-$n$-indistinguishable but $n+1$-distinguishable.
+In general, imagine two states $q,\hat{q}$ that are
+$n+1$-distinguishable but not $n$-distinguishable.
 Suppose a distinguishing string is 
 $
  \sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}=\sigma_0\concat s_n 
 $.
 If $\sigma_0$ brings the machine from $q$ to a state in some
-class $\mathcal{E}_{n,i}$, then
+class $\mathcal{P}_{n,i}$, then
 $\sigma_0$ must bring the machine from $\hat{q}$ to the same class
-$\mathcal{E}_{n,i}$, or else the states $q$ and $\hat{q}$
+$\mathcal{P}_{n,i}$, or else the states $q$ and $\hat{q}$
 would be $n$-distinguishable.
 It is the final character~$s_n$ that distinguishes the two states.
 Therefore, we need only test the single characters
-to see if they split the equivalence class  $\mathcal{E}_{n,i}$'s.
+to see if they split the equivalence class  $\mathcal{P}_{n,i}$'s.
 
 \begin{example}
   We will find a machine that accepts the same language as this one but
@@ -2895,12 +2917,10 @@ to see if they split the equivalence class  $\mathcal{E}_{n,i}$'s.
       \cline{1-5}      
     \end{minimizetable}
     \qquad
-    \begin{minipage}{0.2\linewidth}
-      \begin{align*}
-        \mathcal{E}_{0,0} &=\set{0,3,4} \\
-        \mathcal{E}_{0,1} &=\set{1,2,5} 
-      \end{align*}
-    \end{minipage}
+    \equivclasses{
+        \mathcal{P}_{0,0} &=\set{0,3,4} \\
+        \mathcal{P}_{0,1} &=\set{1,2,5}        
+     }
   \end{center}
   Read off the $\sim_{0}$ equivalence classes by:~to find
   the class containing~$i$, find all blanks in $i$'s row or column.
@@ -2948,13 +2968,18 @@ to see if they split the equivalence class  $\mathcal{E}_{n,i}$'s.
       \cline{1-5}      
     \end{minimizetable}
     \qquad
-    \begin{minipage}{0.2\linewidth}
-      \begin{align*}
-        \mathcal{E}_{1,0} &=\set{0,3,4} \\
-        \mathcal{E}_{1,1} &=\set{1,2}   \\ 
-        \mathcal{E}_{1,2} &=\set{5}   
-      \end{align*}
-    \end{minipage}
+    % \begin{varwidth}{0.19\linewidth}
+    %   \begin{rulealigned*}
+    %     \mathcal{P}_{1,0} &=\set{0,3,4} \\
+    %     \mathcal{P}_{1,1} &=\set{1,2}   \\ 
+    %     \mathcal{P}_{1,2} &=\set{5}   
+    %   \end{rulealigned*}
+    % \end{varwidth}
+    \equivclasses{%
+        \mathcal{P}_{1,0} &=\set{0,3,4} \\
+        \mathcal{P}_{1,1} &=\set{1,2}   \\ 
+        \mathcal{P}_{1,2} &=\set{5}   
+    }
   \end{center}
   So this round finds that $q_1$ is $1$-distinguishable from~$q_5$
   and that $q_2$ is $1$-distinguishable from~$q_5$.
@@ -2962,7 +2987,7 @@ to see if they split the equivalence class  $\mathcal{E}_{n,i}$'s.
 
   Rinse, repeat.
   The next iteration subdivides the $\sim_{1}$-equivalence classes,
-  the $\mathcal{E}_{1,i}$'s, to compute the $\sim_{2}$-equivalence classes.
+  the $\mathcal{P}_{1,i}$'s, to compute the $\sim_{2}$-equivalence classes.
   \begin{center} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -2990,34 +3015,40 @@ to see if they split the equivalence class  $\mathcal{E}_{n,i}$'s.
       \cline{1-5}      
     \end{minimizetable}
     \qquad
-    \begin{minipage}{0.2\linewidth}
-      \begin{align*}
-        \mathcal{E}_{2,0} &=\set{0} \\
-        \mathcal{E}_{2,1} &=\set{3,4} \\
-        \mathcal{E}_{2,2} &=\set{1,2}   \\ 
-        \mathcal{E}_{2,3} &=\set{5}   
-      \end{align*}
-    \end{minipage}
+    % \begin{varwidth}{0.2\linewidth}
+    %   \dropeqnvertspace
+    %   \begin{align*}
+    %     \mathcal{P}_{2,0} &=\set{0} \\
+    %     \mathcal{P}_{2,1} &=\set{3,4} \\
+    %     \mathcal{P}_{2,2} &=\set{1,2}   \\ 
+    %     \mathcal{P}_{2,3} &=\set{5}   
+    %   \end{align*}
+    % \end{varwidth}
+    \equivclasses{\mathcal{P}_{2,0} &=\set{0} \\
+        \mathcal{P}_{2,1} &=\set{3,4} \\
+        \mathcal{P}_{2,2} &=\set{1,2}   \\ 
+        \mathcal{P}_{2,3} &=\set{5}   
+      }
   \end{center}
 
-  The last iteration gives  
+  Running through one more iteration gives  
   no more splitting so the process stops.
   Here is the minimized machine.
   \begin{center}
     \includegraphics{automata/asy/min/min04.pdf}
   \end{center}
-  We've written with $s_0$ for $\mathcal{E}_{2,0}$, etc.
+  We've written with $s_0$ for $\mathcal{P}_{2,0}$, etc.
   The start state is the one containing~$q_0$.
   The final states are the ones containing the final states of the
   original machine, $q_1$, $q_2$, and~$q_5$.
 
   As to the arrows, for instance consider this machine's arrow
   labelled~\str{a} from $s_1$ to~$s_3$.
-  On this machine $s_1$ represents the class~$\mathcal{E}_1=\set{q_3,q_4}$.
+  On this machine $s_1$ represents the class~$\mathcal{P}_1=\set{q_3,q_4}$.
   Look on the starting machine at the arrows leaving those states and
   labelled~\str{a}.
   Both arrows go to $q_5$, which is contained in
-  the equivalence class~$s_3=\mathcal{E}_3$.
+  the equivalence class~$s_3=\mathcal{P}_3$.
 \end{example}
 
 There is one more step, which was not needed in the prior example.
@@ -3046,12 +3077,10 @@ omit those before we start.
       \cline{1-4}      
     \end{minimizetable}
     \qquad
-    \begin{minipage}[c][][c]{0.2\linewidth}
-      \begin{align*}
-        \mathcal{E}_{0,0} &=\set{0,1,2} \\
-        \mathcal{E}_{0,1} &=\set{3,4} 
-      \end{align*}
-    \end{minipage}
+    \equivclasses{%
+        \mathcal{P}_{0,0} &=\set{0,1,2} \\
+        \mathcal{P}_{0,1} &=\set{3,4}
+    }
   \end{center}
   Divide the $0$-equivalence classes into $1$-equivalence classes.
   \begin{center} \small
@@ -3079,13 +3108,11 @@ omit those before we start.
       \cline{1-4}      
     \end{minimizetable}
     \qquad
-    \begin{minipage}{0.15\linewidth}
-      \begin{align*}
-        \mathcal{E}_{1,0} &=\set{0} \\
-        \mathcal{E}_{1,1} &=\set{1,2}   \\ 
-        \mathcal{E}_{1,2} &=\set{3,4}   
-      \end{align*}
-    \end{minipage}
+    \equivclasses{%
+        \mathcal{P}_{1,0} &=\set{0} \\
+        \mathcal{P}_{1,1} &=\set{1,2}   \\ 
+        \mathcal{P}_{1,2} &=\set{3,4}   
+    }
   \end{center}
   No additional splitting happens on the next iteration so the process stops.
   The minimized machine has three states.
@@ -3094,79 +3121,32 @@ omit those before we start.
   \end{center}
 \end{example}
 
+\begin{lemma}
+  Given a finite state machine $\FSM$, define a sequence of
+  binary relations among the states by
+  \begin{align*}
+    &\mathcal{E}_0=\set{\set{q,\hat{q}}\suchthat \text{both are accepting, or neither is accepting}}   \\
+    &\mathcal{E}_{n+1}=\set{\set{q,\hat{q}}\in\mathcal{E}_{n}\suchthat
+      \text{for all $x\in\Sigma$ we have $\set{\Delta(q,x),\Delta{\hat{q},x}}\in\mathcal{E}_{n}$}}
+  \end{align*}
+  then these properties hold:
+  \begin{enumerate}
+  \item $\mathcal{E}_0\supseteq \mathcal{E}_1\supseteq \cdots$
+  \item if $\mathcal{E}_{n+1}=\mathcal{E}_n$ then for all subsequent
+    $\mathcal{E}_j$ we have $\mathcal{E}_j=\mathcal{E}_n$, and furthermore
+    $\mathcal{E}_n$ is the equivalence class for the $\sim$ relation
+  \item there is an iteration~$k$ with $k\in\set{0,\,\ldots\, |Q_{\FSM}|}$ such
+    that $\mathcal{E}_{k+1}=\mathcal{E}_k$.
+  \end{enumerate}
+
+\end{lemma}
+
+
 \begin{TODO}
   lemma giving formal justification.
   Note that $\sim$, without any subscript, is an equivalence.
   Its classes are the final classes of $\sim_{n}$.
 \end{TODO}
-
-\begin{definition}
-Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$ are 
-\definend{$\lang{L}$-related}, written $\sigma\sim_{\lang{L}}\hat{\sigma}$,
-if they have no distinguishing extension.  
-\end{definition}
-
-\begin{lemma}
-For any language~$\lang{L}$,
-the binary relation $\sim_{\lang{L}}$ between strings
-is an equivalence relation.   
-\end{lemma}
-
-\begin{proof}
-Sketch, including reminder of what is an equivalence.  
-\end{proof}
-
-Examples
-Reminder of equivalence classes.
-
-\begin{theorem}[Myhill-Nerode]
-A language~$\lang{L}$ is regular if and only if the relation
-$\sim_{\lang{L}}$ has only a finite number of equivalence classes.
-\end{theorem}
-
-Moreover, the proof will show that there is a correspondence between the classes
-and the states of a finite state automata accepting that lanuguage.
-
-\begin{proof}
-Suppose that $\lang{L}$ is a regular language, over~$\Sigma$,
-accepted by the finite state machine $\FSM$.
-
-Partition the set of all strings~$\kleenestar{\Sigma}$ with:
-two strings $\sigma,\hat{\sigma}$ are in the same part if 
-when~$\mathcal{A}$ is given them as input then they take 
-the machine to the same state.
-Observe that if two strings are in the same part then they are 
-$\lang{L}$-related.
-Thus, the parts are subsets of the equivalence classes of 
-$\sim_{\lang{L}}$.
-Since the number of parts is less than or equal to the number of states
-in $\mathcal{A}$, the number of equivalence classes is finite.
-
-If L is a regular language, then by definition there is a DFA A that
-recognizes it, with only finitely many states.
-If there are n states, then partition the set of all finite strings into
-n subsets, where subset Si is the set of strings that, when given as input
-to automaton A, cause it to end in state i. For every two strings x and y
-that belong to the same state, and for every choice of a third string z,
-automaton A reaches the same state on input xz as it reaches on input yz,
-and therefore must either accept both of the inputs xz and yz or reject both
-of them.
-Therefore, no string z can be a distinguishing extension for x and y,
-so they must be related by RL.
-Thus, Si is a subset of an equivalence class of RL.
-Combining this fact with the fact that every member of one of these
-equivalence classes belongs to one of the sets Si,
-this gives a many-to-one relation from states of A to equivalence classes,
-implying that the number of equivalence classes is finite and at most n.
-\end{proof}
-
-In contrast with Turing machines, we can tell if two finite
-state machines accept the same language.
-
-
-
-\subsection{Derivatives}
-
 
 
 \begin{exercises}
@@ -3266,17 +3246,26 @@ state machines accept the same language.
   \begin{exercise}
   Minimize these two.
   \begin{exparts}
-    \item \includegraphics{automata/asy/min/min01.pdf}
-    \item \includegraphics{automata/asy/min/min02.pdf}
+    \item\quad \vcenteredhbox{\includegraphics{automata/asy/min/min01.pdf}}
+    \item\quad \vcenteredhbox{\includegraphics{automata/asy/min/min02.pdf}}
   \end{exparts}
+  \end{exercise}
 
+  \begin{exercise}
+    \cref{def:distinguishable} defines a binary relation~$\sim$ between states.
+    Show that it is an equivalence relation.
   \end{exercise}
   
   \begin{exercise} \label{exer:NEquivIsEquivRel}
-    \Cpageref{page:NEquivIsEquivRel} defines the relation
-    $\sim_{n}$.
-    Show it is an equivalence relation.
+    Verify \cref{lemma:StateEquivIsEquivRel}.
+    \begin{exparts}
+    \item Verify that each $\sim_{n}$ is an equivalence relation between
+      states.
+    \item Verify that $\sim$ is an equivalence.
+    \end{exparts}
     \begin{answer}
+      \begin{exparts}
+        \item
         We must show that it is reflexive, symmetric, and transitive.
         Fix some~$n$.
         Obviously any state is $n$-indistinguishable from itself, for any~$n$.
@@ -3289,6 +3278,7 @@ state machines accept the same language.
         Because of $q_1\sim_{n} q_2$ it also takes the machine from
         $q_2$ to an accepting state.
         The same holds for non-accepting states.
+      \end{exparts}
     \end{answer}
   \end{exercise}
   
@@ -3756,7 +3746,7 @@ I'll use regular expressions."  Now they have two problems.
 
 
 \extra{Neural nets}
-\margingraphic{0.2\textwidth}{automata/mccullochpitts.png}{\label{fig:mcculloghpitts}\href{http://nautil.us/issue/21/information/the-man-who-tried-to-redeem-the-world-with-logic}{Warren McCulloch 1898--1969, Walter Pitts 1923--1969}}
+% \margingraphic{0.2\textwidth}{automata/mccullochpitts.png}{\label{fig:mcculloghpitts}\href{http://nautil.us/issue/21/information/the-man-who-tried-to-redeem-the-world-with-logic}{Warren McCulloch 1898--1969, Walter Pitts 1923--1969}}
 % \begin{exercise}
 % % Exercise http://djm.cc/fsquad/firing.html
 % Myhill posed the firing squad synchronization problem in 1957.
@@ -3794,3 +3784,125 @@ I'll use regular expressions."  Now they have two problems.
 % \end{exercise}
 
 \extra{XML}
+
+
+\extra{Myhill-Nerode}
+This finite state machine use the alphabet $\Sigma=\set{\str{a},\str{b}}$.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa18.pdf}  
+\end{center}
+It accepts the language of strings that end in \str{ab}.
+But let's consider all strings and see where they end up.
+\begin{center}  \small
+  \begin{tabular}{r|*{12}{c}}
+    \tabulartext{Input string $\sigma$}
+    &$\emptystring$ &\str{a} &\str{b}
+      &\str{aa} &\str{ab} &\str{ba} &\str{bb}
+      &\str{aaa} &\str{aab} &\str{aba} &\str{abb}        \\
+    \cline{2-12}
+    \tabulartext{Ending state $\extended{\Delta}(\sigma)$}
+    &$q_0$ &$q_1$ &$q_0$
+      &$q_1$ &$q_2$ &$q_1$ &$q_0$
+      &$q_1$ &$q_2$ &$q_1$ &$q_0$                 \\
+  \end{tabular}
+\end{center}
+The machine partitions $\kleenestar{\Sigma}$ into three classes,
+those strings that end at $q_0$, those ending at~$q_1$, and those
+ending at $q_2$.
+\begin{equation*}
+  \mathcal{P}_0=\set{\varepsilon, \str{b},\str{bb}, \,\ldots}
+  \quad
+  \mathcal{P}_1=\set{\str{a}, \str{aa},\str{ba}, \str{aba},\,\ldots}
+  \quad
+  \mathcal{P}_2=\set{\str{ab}, \str{aab}, \str{abb},\,\ldots}
+\end{equation*}
+The first part $\mathcal{P}_0$ are those strings that are either
+empty, or consist of a single~\str{b}, or end in \str{bb}.
+Put another way, $\mathcal{P}_0$ is described by the regular expression
+\re{$\emptystring$|b|((a|b)*bb)}.
+Similarly, $\mathcal{P}_1$ is described by \re{(a|b)*a}
+and $\mathcal{P}_2$ is described by \re{(a|b)*ab}.
+
+\begin{definition}
+  Let $\lang{L}$ be a language over $\Sigma$.
+  Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$
+  are \definend{indistinguishable} (or \definend{$\lang{L}$-indistinguishable})
+  if for every string
+  $\tau\in\kleenestar{\Sigma}$ we have
+  $\sigma\concat\tau\in\lang{L}$ if and only if
+  $\hat{\sigma}\concat\tau\in\lang{L}$.
+  Otherwise they are \definend{distinguishable}.
+\end{definition}
+
+Said another way, the two are distinguishable if there is a
+$\tau$ so that one of $\sigma\tau$ and $\hat{\sigma}\tau$ is
+and element of~$\lang{L}$ and one is not.
+
+\begin{definition}
+  If $\lang{L}$ is a language over $\Sigma$ then
+  $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$ are
+  \definend{$\lang{L}$-related}, written $\sigma\sim_{\lang{L}}\hat{\sigma}$,
+  if they have no distinguishing extension.  
+\end{definition}
+
+\begin{lemma}
+  For any language~$\lang{L}$,
+  the binary relation $\sim_{\lang{L}}$ between strings
+  is an equivalence relation.   
+\end{lemma}
+
+\begin{proof}
+Sketch, including reminder of what is an equivalence.  
+\end{proof}
+
+Examples
+Reminder of equivalence classes.
+
+\begin{theorem}[Myhill-Nerode]
+A language~$\lang{L}$ is regular if and only if the relation
+$\sim_{\lang{L}}$ has only a finite number of equivalence classes.
+\end{theorem}
+
+Moreover, the proof will show that there is a correspondence between the classes
+and the states of a finite state automata accepting that lanuguage.
+
+\begin{proof}
+Suppose that $\lang{L}$ is a regular language, over~$\Sigma$,
+accepted by the finite state machine $\FSM$.
+
+Partition the set of all strings~$\kleenestar{\Sigma}$ with:
+two strings $\sigma,\hat{\sigma}$ are in the same part if 
+when~$\mathcal{A}$ is given them as input then they take 
+the machine to the same state.
+Observe that if two strings are in the same part then they are 
+$\lang{L}$-related.
+Thus, the parts are subsets of the equivalence classes of 
+$\sim_{\lang{L}}$.
+Since the number of parts is less than or equal to the number of states
+in $\mathcal{A}$, the number of equivalence classes is finite.
+
+If L is a regular language, then by definition there is a DFA A that
+recognizes it, with only finitely many states.
+If there are n states, then partition the set of all finite strings into
+n subsets, where subset Si is the set of strings that, when given as input
+to automaton A, cause it to end in state i. For every two strings x and y
+that belong to the same state, and for every choice of a third string z,
+automaton A reaches the same state on input xz as it reaches on input yz,
+and therefore must either accept both of the inputs xz and yz or reject both
+of them.
+Therefore, no string z can be a distinguishing extension for x and y,
+so they must be related by RL.
+Thus, Si is a subset of an equivalence class of RL.
+Combining this fact with the fact that every member of one of these
+equivalence classes belongs to one of the sets Si,
+this gives a many-to-one relation from states of A to equivalence classes,
+implying that the number of equivalence classes is finite and at most n.
+\end{proof}
+
+In contrast with Turing machines, we can tell if two finite
+state machines accept the same language.
+
+
+
+\extra{Derivatives}
+

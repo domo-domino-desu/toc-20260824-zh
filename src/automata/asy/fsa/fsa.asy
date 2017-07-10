@@ -996,3 +996,6 @@ draw(pic,
      q0, q1, q2);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

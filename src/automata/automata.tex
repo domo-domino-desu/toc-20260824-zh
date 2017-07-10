@@ -2768,15 +2768,15 @@ Otherwise the states are \definend{$n$-distinguishable}.
 \end{example}
 
 \begin{lemma} \label{lemma:StateEquivIsEquivRel}
-  The $\sim$ relation, and the $\sim_{n}$ relations, between states
-  are equivalence relations.
+  The $\sim$ relation, and the $\sim_{n}$ relations,
+  are equivalences.
 \end{lemma}
 
 \begin{proof}
-  See \cref{exer:NEquivIsEquivRel}.  
+  \cref{exer:NEquivIsEquivRel}.  
 \end{proof}
 
-\citetext{Using that definition, we will now develop an algorithm}{%
+\citetext{Using the definition, we will now develop an algorithm}{%
   This is
   \definend{Moore's algorithm}.  It is easy to explain and fine for
   by-hand calculation, but
@@ -3121,32 +3121,57 @@ omit those before we start.
   \end{center}
 \end{example}
 
-\begin{lemma}
-  Given a finite state machine $\FSM$, define a sequence of
-  binary relations among the states by
-  \begin{align*}
-    &\mathcal{E}_0=\set{\set{q,\hat{q}}\suchthat \text{both are accepting, or neither is accepting}}   \\
-    &\mathcal{E}_{n+1}=\set{\set{q,\hat{q}}\in\mathcal{E}_{n}\suchthat
-      \text{for all $x\in\Sigma$ we have $\set{\Delta(q,x),\Delta{\hat{q},x}}\in\mathcal{E}_{n}$}}
-  \end{align*}
-  then these properties hold:
-  \begin{enumerate}
-  \item $\mathcal{E}_0\supseteq \mathcal{E}_1\supseteq \cdots$
-  \item if $\mathcal{E}_{n+1}=\mathcal{E}_n$ then for all subsequent
-    $\mathcal{E}_j$ we have $\mathcal{E}_j=\mathcal{E}_n$, and furthermore
-    $\mathcal{E}_n$ is the equivalence class for the $\sim$ relation
-  \item there is an iteration~$k$ with $k\in\set{0,\,\ldots\, |Q_{\FSM}|}$ such
-    that $\mathcal{E}_{k+1}=\mathcal{E}_k$.
-  \end{enumerate}
 
+\begin{lemma} \label{lem:CorrectnessOfMooresAlgorithm}
+  Let $\FSM$ be a finite state machine over the alphabet~$\Sigma$.
+  For this sequence of binary relations among the states
+  \begin{align*}
+    &\mathcal{E}_0=\set{\set{q,\hat{q}}\in Q_{\FSM}^2\suchthat \text{both are accepting or neither is accepting}}   \\
+    &\mathcal{E}_{n+1}=\set{\set{q,\hat{q}}\in\mathcal{E}_{n}\suchthat
+      \text{$\set{\Delta(q,x),\Delta(\hat{q},x)}\in\mathcal{E}_{n}$ for all $x\in\Sigma$}}
+  \end{align*}
+  these properties hold:
+  \begin{parenum}
+  \item $\mathcal{E}_0\supseteq \mathcal{E}_1\supseteq \cdots$
+  \item there is an~$n\in\set{0,\,\ldots\, |Q_{\FSM}|}$ such
+    that $\mathcal{E}_{n+1}=\mathcal{E}_n$, and furthermore,
+    $\mathcal{E}_j=\mathcal{E}_n$ for all $j\geq n$
+  \item $\mathcal{E}_k$ is the $\sim_{k}$
+    relation,
+    and if $\mathcal{E}_{n+1}=\mathcal{E}_{n}$ then $\mathcal{E}_{n}$
+    is the $\sim$ relation.
+  \end{parenum}
 \end{lemma}
 
+\begin{proof}
+  Property~(1) is just the observation that all of the elements of
+  $\mathcal{E}_{n+1}$ are elements of~$\mathcal{E}_n$, by definition.
+  For the first half of~(2),
+  as the examples illustrate, at each iteration we subdivide the
+  states, and obviously that can happen only until the states are in separate
+  parts.
+  The ``furthermore'' half of~(2) holds because if none of the
+  two-element sets of $\mathcal{E}_{n+1}$ differ from those of~$\mathcal{E}_n$
+  then they must be the same at the next step simply because it is the same
+  operation.
 
-\begin{TODO}
-  lemma giving formal justification.
-  Note that $\sim$, without any subscript, is an equivalence.
-  Its classes are the final classes of $\sim_{n}$.
-\end{TODO}
+  As to~(3), the $\sim_{k}$ relation is a set of two element sets, so
+  $\mathcal{E}_{k}$ is at least the right type of set.
+  We show $\mathcal{E}_k=\sim_{k}$ by induction on~$k$.
+  For $k=0$, \cref{def:distinguishable} gives that states are
+  $k$~indistinguishable if and only if either both are accepting states
+  or neither is, which is the definition of~$\mathcal{E}_{0}$.
+  For the inductive step suppose that for all $i\leq k$ it is the case
+  that $\mathcal{E}_{i}=\sim_{i}$ and consider the $k+1$~case.
+  This is what we called the ``key observation'' above:
+  if two states are not $k$-distinguishable but are $k+1$-distinguishable
+  then for any distinguishing string~$\sigma=\sigma_0\concat x$ (where
+  $\sigma_0\in\kleenestar{\Sigma}$ and $x\in\Sigma$) 
+  
+
+  
+  \cref{exer:CorrectnessOfMooresAlgorithm}
+\end{proof}
 
 
 \begin{exercises}
@@ -3157,7 +3182,7 @@ omit those before we start.
     producing another machine~$\hat{\FSM}$ by
     taking the complement of the accepting states,
     $F_{\hat{\FSM}}=\setcomp{(F_{\FSM})}$,
-    will not not result in the langugage of the second machine
+    will not result in the langugage of the second machine
     being the complement of the language of the first.
     \begin{answer}
       For this machine the language of accepted strings contains~\str{1}.
@@ -3200,6 +3225,16 @@ omit those before we start.
     Show that the language
     $\hat{\lang{L}}=\set{1\concat\sigma\suchthat \sigma\in\lang{L}}$,
     also over~$\B$, is also regular.
+  \end{exercise}
+
+  \begin{exercise}
+    What happens when you minimize a machine that is already minimal?
+    \begin{answer}
+      Not a hell of a lot.
+      You get back the original machine, in the sense that
+      you get $s_0=\mathcal{E}_{n,0}=\set{0}$,
+      $s_1=\mathcal{E}_{n,1}=\set{1}$, etc. 
+    \end{answer}
   \end{exercise}
   
   \begin{exercise} % Rich, p 182
@@ -3254,6 +3289,142 @@ omit those before we start.
   \begin{exercise}
     \cref{def:distinguishable} defines a binary relation~$\sim$ between states.
     Show that it is an equivalence relation.
+  \end{exercise}
+
+  \begin{exercise}
+    Minimize.
+    \begin{center}
+      \includegraphics{automata/asy/min/min06.pdf}
+    \end{center}
+    Note that the process takes, roughly, a number of steps that
+    are equal to the number of states in the machine.
+    \begin{answer}
+      This is the initial triangular table.
+      \begin{center} 
+        \begin{minimizetable}{5}
+          \multicolumn{1}{c}{0}   &    &    &    &    \\
+          \cline{1-1}
+          &\multicolumn{1}{|c}{1}   &    &    &    \\
+          \cline{2-2}
+          &    &\multicolumn{1}{|c}{2}   &    &    \\
+          \cline{3-3}
+          &    &    &\multicolumn{1}{|c}{3}   &    \\
+          \cline{4-4}
+          \ck &\ck &\ck &\ck    &\multicolumn{1}{|c}{4}   \\
+          \cline{1-4}      
+        \end{minimizetable}
+        \qquad
+        \equivclasses{%
+          \mathcal{P}_{0,0} &=\set{0,1,2,3} \\
+          \mathcal{P}_{0,1} &=\set{4}
+        }
+      \end{center}
+      Divide the $0$-equivalence classes into $1$-equivalence classes.
+      \begin{center} \small
+        \begin{tabular}{r|ll}
+          \multicolumn{1}{c}{\ }
+          &\multicolumn{1}{c}{\str{a}}
+          &\multicolumn{1}{c}{\str{b}}  \\
+          \cline{2-3}
+          $\set{0,1}$  &$\set{1,2}$  &$\set{0,1}$  \\
+          $\set{0,2}$  &$\set{1,3}$  &$\set{0,2}$  \\
+          $\set{1,2}$  &$\set{2,3}$  &$\set{1,2}$  \\
+          $\set{0,3}$  &$\set{1,4}$ \ck  &$\set{0,3}$  \\                              
+          $\set{1,3}$  &$\set{2,4}$ \ck  &$\set{1,3}$  \\                              
+          $\set{2,3}$  &$\set{3,4}$ \ck &$\set{2,3}$  \\                              
+        \end{tabular}
+        \qquad
+        \begin{minimizetable}{5}
+          \multicolumn{1}{c}{0}   &    &    &    &    \\
+          \cline{1-1}
+          &\multicolumn{1}{|c}{1}   &    &    &    \\
+          \cline{2-2}
+          &    &\multicolumn{1}{|c}{2}   &    &    \\
+          \cline{3-3}
+          \ck  &\ck  &\ck  &\multicolumn{1}{|c}{3}   &    \\
+          \cline{4-4}
+          \ck &\ck &\ck &\ck    &\multicolumn{1}{|c}{4}   \\
+          \cline{1-4}      
+        \end{minimizetable}
+        \qquad
+        \equivclasses{%
+          \mathcal{P}_{1,0} &=\set{0,1,2} \\
+          \mathcal{P}_{1,1} &=\set{3} \\
+          \mathcal{P}_{1,2} &=\set{4}
+        }
+      \end{center}
+      Divide the $1$-equivalence classes into $2$-equivalence classes.
+      \begin{center} \small
+        \begin{tabular}{r|ll}
+          \multicolumn{1}{c}{\ }
+          &\multicolumn{1}{c}{\str{a}}
+          &\multicolumn{1}{c}{\str{b}}  \\
+          \cline{2-3}
+          $\set{0,1}$  &$\set{1,2}$  &$\set{0,1}$  \\
+          $\set{0,2}$  &$\set{1,3}$ \ck  &$\set{0,2}$  \\
+          $\set{1,2}$  &$\set{2,3}$ \ck &$\set{1,2}$  \\
+        \end{tabular}
+        \qquad
+        \begin{minimizetable}{5}
+          \multicolumn{1}{c}{0}   &    &    &    &    \\
+          \cline{1-1}
+          &\multicolumn{1}{|c}{1}   &    &    &    \\
+          \cline{2-2}
+          \ck    &\ck    &\multicolumn{1}{|c}{2}   &    &    \\
+          \cline{3-3}
+          \ck  &\ck  &\ck  &\multicolumn{1}{|c}{3}   &    \\
+          \cline{4-4}
+          \ck &\ck &\ck &\ck    &\multicolumn{1}{|c}{4}   \\
+          \cline{1-4}      
+        \end{minimizetable}
+        \qquad
+        \equivclasses{%
+          \mathcal{P}_{2,0} &=\set{0,1} \\
+          \mathcal{P}_{2,1} &=\set{2} \\
+          \mathcal{P}_{2,2} &=\set{3} \\
+          \mathcal{P}_{2,3} &=\set{4}
+        }
+      \end{center}
+      Divide the $2$-equivalence classes into $3$-equivalence classes.
+      \begin{center} \small
+        \begin{tabular}{r|ll}
+          \multicolumn{1}{c}{\ }
+          &\multicolumn{1}{c}{\str{a}}
+          &\multicolumn{1}{c}{\str{b}}  \\
+          \cline{2-3}
+          $\set{0,1}$  &$\set{1,2}$ \ck  &$\set{0,1}$  \\
+        \end{tabular}
+        \qquad
+        \begin{minimizetable}{5}
+          \multicolumn{1}{c}{0}   &    &    &    &    \\
+          \cline{1-1}
+          \ck    &\multicolumn{1}{|c}{1}   &    &    &    \\
+          \cline{2-2}
+          \ck    &\ck    &\multicolumn{1}{|c}{2}   &    &    \\
+          \cline{3-3}
+          \ck  &\ck  &\ck  &\multicolumn{1}{|c}{3}   &    \\
+          \cline{4-4}
+          \ck &\ck &\ck &\ck    &\multicolumn{1}{|c}{4}   \\
+          \cline{1-4}      
+        \end{minimizetable}
+        \qquad
+        \equivclasses{%
+          \mathcal{P}_{3,0} &=\set{0} \\
+          \mathcal{P}_{3,1} &=\set{1} \\
+          \mathcal{P}_{3,1} &=\set{2} \\
+          \mathcal{P}_{3,2} &=\set{3} \\
+          \mathcal{P}_{3,3} &=\set{4}
+        }
+      \end{center}
+      No additional splitting happens on the next iteration;
+      indeed, there is nothing left to split.
+      The process stops.
+      The minimized machine has five states; it is the machine we started with.    
+    \end{answer}
+  \end{exercise}
+  
+  \begin{exercise}  \label{exer:CorrectnessOfMooresAlgorithm}
+    Verify \cref{lem:CorrectnessOfMooresAlgorithm}.
   \end{exercise}
   
   \begin{exercise} \label{exer:NEquivIsEquivRel}

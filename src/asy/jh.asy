@@ -67,13 +67,14 @@ pen DASHPEN=linecap(0)
             +linewidth(0.4pt)
             +linetype(new real[] {8,8});
 pen FCNPEN=linecap(0)
-            +gray(0.3)
+            +boldcolor
             +linewidth(1.5pt)
             +opacity(.5,"Normal");
 pen AXISPEN=linecap(0)
             +gray(0.3)
             +linewidth(0.4pt)
              +opacity(.5,"Normal");
+pen TICLABELPEN=fontsize(7pt);
 pen DXPEN=linecap(0)
            +red
            +linewidth(1pt);

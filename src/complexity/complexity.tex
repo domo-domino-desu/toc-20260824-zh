@@ -1,29 +1,28 @@
-\chapter{Big-O}
+\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. At that scale surface tension is much more important than gravity.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Orders of growth}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
+We will outline the basics of the orders of growth of functions.
+We will not give a detailed description, but only cover enough for
+our purposes.
+
+\section{Definition}
 For a job there may be available many algorithms.
-One may be better in that it is faster in the long run
-(or consumes less of some other resource, such as space).
-That is, an algorithm's time taken 
-is a function whose input is the size of the input.
+One may be better in that in the long run it is faster,
+or consumes less of some other resource such as memory.
+That is, an algorithm takes an amount of time that 
+is a function of the size of its input.
 Generally, larger input takes more time.
 We will give the mathematical tools to describe 
 the growth of these functions.
 
-\section{Definition}
-We will not need to analyze the growth of these functions precisely.
-Instead, we will make some simplyfing assumptions.
-We will not need to worry about constant factors, for instance.
-Nor will we need to worry about initial intervals.
-
 \subsection{Motivation}
 To determine if a number~$n\in\N$ is prime, two of the methods available are 
 the sieve and the Fermat test.
-To find if $n$ is prime
-the sieve takes about $\sqrt{n}$ many ticks, while 
-the Fermat test takes about $10\cdot \lg(n)$ ticks.\footnote{Recall that $\lg(n)=\log_2(n)$ is defined by: start with~$n$ and then find
-the power of $2$
-that produces it.
-So, if $n=8$ then $\lg(n)=3$.
-If $n=10$ then $\lg(n)\approx 3.32$.}
+The sieve takes about $\sqrt{n}$ many ticks to discover whether $n$ is prime,
+while the Fermat test takes about $10\cdot \lg(n)$ ticks.\footnote{%
+  Recall that $\lg(n)=\log_2(n)$ is defined by: start with~$n$ and then find
+  the power of $2$
+  that produces it.
+  So, if $n=8$ then $\lg(n)=3$.
+  If $n=10$ then $\lg(n)\approx 3.32$.}
 
 Comparing the two, at first the sieve seems best.
 For instance, for $x=1000$ the values are $\sqrt{1000}\approx 31.62$
@@ -41,26 +40,144 @@ $10\lg(1\,000\,000)\approx 199.32$.
 \end{center}
 
 \margingraphic[l]{0.20\textwidth}{complexity/knuth.jpg}{\label{fig:knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938 A pioneer of algorithm analysis}}
-We can analyze the behavior of algorithms at length, finding exact algebraic expressions for how long they take, or how much memory, or how many disk reads, etc.
-But for our purposes, 
-we are usually interested in the long-term behavior of the function
-on the large scale, as typified by the above graph,
-We will therefore discount any initial chopping and changing.
-Consonant with that, note that the factor of $10$ in $10\lg(x)$ is
-unimportant; what matters is that a logarithm function~$10\ln(x)$ grows slower
+We can analyze the behavior of algorithms quite precisely,
+finding exact algebraic expressions for how long they take,
+or how much memory, or how many disk reads, etc.
+But for our purposes, we get away with some simplyfing assumptions.
+First, we are usually interested in the long-term behavior of the function
+on the large scale, as typified by the above graph.
+We will therefore discount any initial chopping and changing,
+deliberately ignoring an initial interval if needed.
+Second, note that in $10\lg(x)$ the factor of $10$ is
+unimportant; what matters in the long run
+is that a logarithm function~$\lg(x)$ grows slower
 than does a power function~$x^{1/2}$.
-We will also take the view, in the definition below, that 
+Consonant with that, in the definition below, 
 in choosing between two long term behaviors like the ones shown above,
-we should discount constant factors.
+we discount constant factors.
+
+Before that definition we see a few more examples.
 
 \begin{example}
-  
+Let $\map{b}{\N}{\N}$ give as output
+the number of bits needed to represent its input.
+For comparison,
+$\floor{\lg(n)}$ gives the largest power of $2$ less than~$n$,
+\begin{center} \small
+  % \setlength{\tabcolsep}{6pt} % default is 6pt
+\begin{tabular}{r|c*{9}{c}}
+  \tabulartext{Input $n$}      &$0$       &$1$ &$2$ &$3$    
+      &$4$ &$5$    
+  &$6$ &$7$ &$8$ &$9$
+   \\
+  \tabulartext{Binary} &$0$ &$1$ &$10$
+            &$11$   &$100$ 
+            &$101$  &$110$ 
+            &$111$  &$1000$ &$1001$ 
+  \\  \hline
+  \begin{tabular}{@{}l@{}}
+    $b(n)$ \\ $\lg(n)$ 
+  \end{tabular}
+  &\begin{tabular}{@{}c@{}}
+    $1$ \\  $-\infty$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $1$ \\  $0$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $2$ \\  $1$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $2$ \\  $1.58$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $3$ \\  $2$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $3$ \\  $2.32$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $3$ \\  $2.58$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $3$ \\  $2.81$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $4$ \\  $3$
+  \end{tabular}
+  &\begin{tabular}{@{}l@{}}
+    $4$ \\  $3.17$
+  \end{tabular}
+\end{tabular}
+\end{center}
+The formula is $b(n)=1+\floor{\lg(n)}$, 
+except when $n=0$. 
+This pictures $b(x)$ for $x\in\leftclosed{1}{30}$.
+\begin{center}
+  \includegraphics{complexity/asy/bigo/bigo02.pdf}
+\end{center}
+Compare $b(n)=1+\floor{\lg(n)}$ with $f(x)=\lg(x)$.
+(Note the change in both the horizontal and vertical scales.)
+\begin{center}
+  \includegraphics{complexity/asy/bigo/bigo03.pdf}
+\end{center}
+The floor function does not matter much and the `$+1$' does not matter
+much\Dash over the long run,
+$b(n)$ and $\lg(n)$ give essentially the same values.
+We may say, without stretching the truth too much, that the function giving
+the number of bits required to express a number is the base~$2$
+logarithm.
+
+Because the definition below will discount constant factors,
+the base of the logarithm  does not matter.
+The formula relating bases for logarithmic functions 
+$\lg(x)=(1/\log_{b}(2))\cdot\log_b(x)$ shows that any two differ by a
+multiplicative factor, so we may say that the number of bits is
+``a'' logarithmic function.
 \end{example}
 
+The next example illustrates
+polynomial functions.
 
+\begin{example}
+  The graph on the left compares the values of $f(n)=n^2+5n+6$ with
+  those of $g(n)=n^2$.
+  The graph on the right compares them in ratio $f(n)/g(n)$.
+  \begin{center}
+    \includegraphics{complexity/asy/bigo/bigo04.pdf}
+    \hspace{3em}
+    \includegraphics{complexity/asy/bigo/bigo05.pdf}  
+  \end{center}
+  On the left your eye is impressed that $n^2+5n+6$ is always ahead of $n^2$.
+  But the ratios on the right show that this impression that
+  $n^2+5n+6$ is racing ahead is misleading.  
+  By $n=10$ or~$n=15$, the value of $n^2+5n+6$ is practically the same
+  as that of~$n^2$.
+  The $+5n$ and $+6$ don't make much difference, in the long run.
+  Instead the highest order term, the $n^2$, dominates.
 
-
-This definition reflects those considerations.
+  Now compare the quadratic $f(n)=n^2+5n+6$ with the cubic $g(x)=n^3+2n+3$.
+  Although $f(0)=6$ is larger than $g(0)=3$, and
+  $f(1)=12$ is larger than $g(1)=6$, soon enough the ouputs of $g$
+  are larger than those of~$f$.
+  On the left below the graph compares those outputs for inputs less than or
+  equal to~$n=100$.
+  This is something like the graph above comparing the values of $n^2+5n+6$
+  with those of $n^2$.
+  But here the values of $g$ race ahead of those of~$f$, so much that
+  the values of~$f$ don't really seem to leave the $n$-axis\Dash
+  although $f(100)=10\, 506$, it is no match for $g(100)=2\,000\,304$.
+  \begin{center}
+    \includegraphics{complexity/asy/bigo/bigo06.pdf}
+    \hspace{3em}
+    \includegraphics{complexity/asy/bigo/bigo07.pdf}  
+  \end{center}
+  The graph on the right emphasizes this:
+  the ratio $g/f$ doesn't settle down to a constant; the cubic polynomial races
+  away from the quadratic in the sense that the ratio grows without bound.
+  In this way, 
+  $g$ is a faster growing function than~$f$. 
+\end{example}
 
 \begin{definition}
 Let $\fcn{f,g}{\N}{\N}$.

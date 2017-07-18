@@ -404,6 +404,15 @@ yaxis(pic, XZero,
 		extend=false, begin=false),
       p=AXISPEN,
       arrow=None);
+// Hack: get the y=1 tick
+yaxis(pic, XZero,
+      ymin=0.5, ymax=1.5,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=1, step=1, 
+		beginlabel=true, endlabel=true,
+		Size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
 xequals(pic, 0,   
 	ymin=ymin, ymax=ymax+0.5,
         p=AXISPEN,
@@ -498,7 +507,7 @@ for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
   dot(pic, Scale(pic,(i,f(i))),FCNPEN,Fill(white));
   dot(pic, Scale(pic,(i,g(i))),second_pen,Fill(white));
 }
-label(pic,"$g$",Scale(pic,(90,1900000)), W);
+label(pic,"$g$",Scale(pic,(90,1900000)), 0.8W);
 label(pic,"$f$",Scale(pic,(90,0)), 2N);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -577,9 +586,357 @@ pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
   dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(white));
 }
+label(pic,"$g/f$",Scale(pic,(90,180)), 3S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+
+
+
+// ============== 2n^2+3n+4 vs n^2+5n+6 ======
+picture pic;
+int picnum = 8;
+
+size(pic,4.5cm,IgnoreAspect);
+
+real f(real x) {
+  return 2x**2+3*x+4;
+}
+pair F(real x) {
+  return (x,f(x));
+}
+real g(real x) {
+  return x**2+5*x+6;
+}
+pair G(real x) {
+  return (x,g(x));
+}
+
+// real maxnum(real x, real y) {
+//   if (x>=y) {
+//     return x;
+//   }
+//   return y;
+// }
+
+// limits
+real xmin=0; 
+real xmax=100;
+real ymin=0;
+real ymax=20000;
+
+// scale
+real scalefactor = 20/ymax;
+scale(pic,Linear,Linear(scalefactor));
+
+// xaxis  Draw axis without arrow, then draw without ticks and the arrow
+//  far enough out to not hit a tick
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=50, step=10,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+yequals(pic, 0,   
+	xmin=xmin, xmax=xmax+7,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=5000, step=1000, 
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+xequals(pic, 0,   
+	ymin=ymin, ymax=ymax+1500,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
+
+dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
+for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
+  dot(pic, Scale(pic,(i,f(i))),FCNPEN,Fill(white));
+  dot(pic, Scale(pic,(i,g(i))),second_pen,Fill(white));
+}
+label(pic,"$f$",Scale(pic,(90,19000)), 0.8W);
+label(pic,"$g$",Scale(pic,(90,8000)), 2S);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== (2n^2+3n+4)/(n^2+5n+6) ======
+picture pic;
+int picnum = 9;
+
+size(pic,4.5cm);
+
+real f(real x) {
+  return 2x**2+3*x+4;
+}
+pair F(real x) {
+  return (x,f(x));
+}
+real g(real x) {
+  return x**2+5*x+6;
+}
+pair G(real x) {
+  return (x,g(x));
+}
+
+// real maxnum(real x, real y) {
+//   if (x>=y) {
+//     return x;
+//   }
+//   return y;
+// }
+
+// limits
+real xmin=0; 
+real xmax=100;
+real ymin=0;
+real ymax=6;
+
+// scale
+real scalefactor = 20/ymax;
+scale(pic,Linear,Linear(scalefactor));
+
+// xaxis  Draw axis without arrow, then draw without ticks and the arrow
+//  far enough out to not hit a tick
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=50, step=50,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+yequals(pic, 0,   
+	xmin=xmin, xmax=xmax+8,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1, 
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+// Hack: get the y=2 tick
+yaxis(pic, XZero,
+      ymin=1.5, ymax=2.5,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=1, 
+		beginlabel=true, endlabel=true,Size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+xequals(pic, 0,   
+	ymin=ymin, ymax=ymax+1.5,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
+dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
+for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
+  dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(white));
+}
+label(pic,"$g/f$",Scale(pic,(90,2)), 2N);
+// asymptote
+yequals(pic, 2,   
+	xmin=0.4, xmax=xmax,
+        p=AXISPEN+linetype(new real[] {6,6}),
+	ticks=NoTicks,
+        arrow=None);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Illustrate f=O(g) ======
+picture pic;
+int picnum=10;
+
+size(pic,4cm,IgnoreAspect);
+
+// limits
+real xmin=0; 
+real xmax=100;
+real ymin=0;
+real ymax=100;
+
+
+// scale
+real scalefactor=1;
+scale(pic,Linear,Linear(scalefactor));
+
+path g=Scale(pic,(0,0))
+  ..Scale(pic,(10,5))
+  ..Scale(pic,(20,15))
+  ..Scale(pic,(30,20))
+  ..Scale(pic,(40,45))
+  ..Scale(pic,(60,60))
+  ..Scale(pic,(80,70))
+  ..Scale(pic,(100,100));
+path f=Scale(pic,(0,2))
+  ..Scale(pic,(10,5))
+  ..Scale(pic,(20,10))
+  ..Scale(pic,(30,30))
+  ..Scale(pic,(40,40))
+  ..Scale(pic,(60,53))
+  ..Scale(pic,(80,60))
+  ..Scale(pic,(100,63));
+pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
+draw(pic, f, FCNPEN_SOLID);
+draw(pic, g, second_pen);
+
+
+// xaxis  Draw axis without arrow, then draw without ticks and the arrow
+//  far enough out to not hit a tick
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax,
+      RightTicks(Label("%",TICLABELPEN), Step=10, step=5,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+xaxis(pic,YZero,
+      xmin=35, xmax=45,
+      RightTicks(Label("$N$",TICLABELPEN), Step=10, step=10,
+		 beginlabel=true, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+yequals(pic, 0,   
+	xmin=xmin, xmax=xmax+7,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax,
+      LeftTicks(Label("%",TICLABELPEN), Step=10, step=5, 
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+xequals(pic, 0,   
+	ymin=ymin, ymax=ymax+5,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
+
+// dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+// pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
+label(pic,"$g$",Scale(pic,(90,90)), 0.25W);
+label(pic,"$f$",Scale(pic,(80,60)), 2SE);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Illustrate f=O(g) ======
+picture pic;
+int picnum=11;
+
+size(pic,4cm,IgnoreAspect);
+
+// limits
+real xmin=0; 
+real xmax=100;
+real ymin=0;
+real ymax=100;
+
+
+// scale
+real scalefactor=1;
+scale(pic,Linear,Linear(scalefactor));
+
+path g=Scale(pic,(0,0))
+  ..Scale(pic,(10,5))
+  ..Scale(pic,(20,15))
+  ..Scale(pic,(30,20))
+  ..Scale(pic,(40,45))
+  ..Scale(pic,(60,60))
+  ..Scale(pic,(80,70))
+  ..Scale(pic,(100,100));
+path f=Scale(pic,(0,2))
+  ..Scale(pic,(10,5))
+  ..Scale(pic,(20,10))
+  ..Scale(pic,(30,30))
+  ..Scale(pic,(40,40))
+  ..Scale(pic,(60,62))
+  ..Scale(pic,(80,70))
+  ..Scale(pic,(100,93));
+pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
+draw(pic, f, FCNPEN_SOLID);
+draw(pic, g, second_pen);
+
+
+// xaxis  Draw axis without arrow, then draw without ticks and the arrow
+//  far enough out to not hit a tick
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax,
+      RightTicks(Label("%",TICLABELPEN), Step=10, step=5,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+xaxis(pic,YZero,
+      xmin=35, xmax=45,
+      RightTicks(Label("$N$",TICLABELPEN), Step=10, step=10,
+		 beginlabel=true, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+yequals(pic, 0,   
+	xmin=xmin, xmax=xmax+7,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax,
+      LeftTicks(Label("%",TICLABELPEN), Step=10, step=5, 
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=None);
+xequals(pic, 0,   
+	ymin=ymin, ymax=ymax+5,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
+
+// dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+// pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
+label(pic,"$g$",Scale(pic,(90,90)), 0.25W);
+label(pic,"$f$",Scale(pic,(80,70)), 3E);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

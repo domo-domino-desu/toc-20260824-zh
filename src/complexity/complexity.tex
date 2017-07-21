@@ -1,17 +1,81 @@
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. At that scale surface tension is much more important than gravity.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Orders of growth}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 We will review the basics of the orders of growth of functions.
-We will not give a detailed description but only do enough for
-our purposes.
+We will not give a detailed development, just enough for our needs.
 
 \section{Definition}
-For a job there may be available many algorithms.
-One may be better in that in the long run it is faster,
-or consumes less of some other resource such as memory.
+For a job there may be many algorithms available.
+One may be better in that in the long run it is faster
+(or consumes less of some other resource such as memory).
 That is, an algorithm takes an amount of time that 
 is a function of the size of its input.
-Generally, larger input takes more time.
-We will give the mathematical tools to describe 
-the growth of these functions.
+We often need to classify algorithms according to their runtime behavior.
+% Generally, larger input takes more time.
+We will review the mathematical tools describing 
+this behavior.
+
+First, an anecdote.
+Here is the grade school multiplication algorithm.
+How long does it take?
+\begin{equation*}
+  \begin{array}{@{}r@{}}
+    678\\
+    \times 42\\  \hline
+    1356\\
+   +27120\\  \hline
+   28476
+\end{array}
+\end{equation*}
+For each digit of the multiplier~$42$ we 
+multiply each digit of the multiplicand~$678$.
+That's a nested loop.
+The natural guess is that multiplication of two $n$-bit numbers
+requires a time of about $n^2$ ticks.
+
+% https://commons.wikimedia.org/wiki/File:Andrej_Nikolajewitsch_Kolmogorov.jpg
+\margingraphic{0.20\textwidth}{complexity/Kolmogorov.jpg}{\label{fig:kolmogorov}\href{https://en.wikipedia.org/wiki/Andrey_Kolmogorov}{Andrey Kolmogorov 1903--1987}}
+In 1960 A~Kolmogorov organized a seminar at Moscow State University aimed at
+proving this.
+Within a week one of his students,
+\citetext{A~Karatsuba}{See \url{https://en.wikipedia.org/wiki/Anatoly_Karatsuba}.}, had
+found that it is false.
+Karatsuba produced a 
+\citetext{clever algorithm}{%
+The idea is to let $k = \ceiling{n/2}$ 
+and write $x = x_1 2^k + x_0$ and $y = y_1 2^k + y_0$
+(so $678=21 \cdot 2^5+6$ and $42=1\cdot 2^5+10$). 
+Then we have $xy = A\cdot 2^{2k} + B\cdot 2^k + C$ 
+where $A = x_1 y_1$, and $B = x_1 y_0 + x_0 y_1$, and~$C = x_0 y_0$
+(here, $28\,476=21\cdot 2^{10}+216\cdot 2^5+60$). 
+The multiplications by $2^{2k}$ and $2^{k}$ are just bit-shifts to known 
+locations independent of the values of $x$ and $y$, 
+so they don't affect the time much. 
+But the two multiplications for 
+$B$ seem remove all the advantage and still give $\Theta(n^2)$ time.
+However, what Karatsuba noted instead was that
+$B = (x_0 + x_1)\cdot (y_0 + y_1) - A - C$
+Boom: done.
+Just one multiplication.}
+that used about
+$n^{\lg(3)}\approx n^{1.585}$ ticks.
+At the next meeting 
+Kolmogorov explained the beautiful result 
+and terminated the seminar.
+
+This story illustrates a theme in the Theory of Computation:
+we seem to be good at giving upper bounds for the resources used by
+algorithms, at finding increasingly clever ways to do a job.
+Perusing the blog feed \autocite{blog:TOC}
+shows that every day researchers
+produce results saying, ``here is a job and here is a way to do it faster, or in
+less space, etc., than we used to do it.'' 
+But we seem not at all good at proving lower bounds, at saying
+``no algorithm can do this job in less than this number of ticks.'' 
+That's one reason why in the development below we will
+mostly compare the growth rates of functions using a
+`less than or equal to' measure. 
+
+
+
 
 \subsection{Motivation}
 To determine if a number~$n\in\N$ is prime, two of the methods available are 
@@ -24,39 +88,118 @@ while the Fermat test takes about $10\cdot \lg(n)$ ticks.\footnote{%
   So, if $n=8$ then $\lg(n)=3$.
   If $n=10$ then $\lg(n)\approx 3.32$.}
 
-Comparing the two, at first the sieve seems best.
-For instance, for $x=1000$ the values are $\sqrt{1000}\approx 31.62$
+At first the sieve seems best.
+For instance, when the input is~$1000$ the values are $\sqrt{1000}\approx 31.62$
 and $10\cdot\lg(1000)\approx 99.66$.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo00.pdf}
 \end{center}
 However,
-in the long run the values of $\sqrt{x}$ are much larger than
-the values of $10\lg(x)$.
+in the long run the values of $\sqrt{n}$ are much larger than
+the values of $10\lg(n)$.
 For instance, $\sqrt{1\,000\,000}=1\,000$ while
 $10\lg(1\,000\,000)\approx 199.32$.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo01.pdf}
 \end{center}
 
-\margingraphic[l]{0.20\textwidth}{complexity/knuth.jpg}{\label{fig:knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938 A pioneer of algorithm analysis}}
-We can analyze the behavior of algorithms quite precisely,
-finding exact algebraic expressions for how long they take,
-or how much memory, or how many disk reads, etc.
-But for our purposes, we can get away with some simplyfing assumptions.
-First, we are usually interested in the long-term behavior of the function
-on the large scale, as typified by the above graph.
-We will therefore discount any initial chopping and changing,
-deliberately ignoring an initial interval if needed.
-Second, note that in $10\lg(x)$ the factor of $10$ is
-unimportant; what matters in the long run
-is that a logarithm function~$\lg(x)$ grows slower
-than does a power function~$x^{1/2}$.
-Consonant with that, in the definition below, 
-in choosing between two long term behaviors like the ones shown above,
-we discount constant factors.
+% \margingraphic[l]{0.20\textwidth}{complexity/knuth.jpg}{\label{fig:knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938 Pioneer of algorithm analysis}}
+% We can analyze the behavior of algorithms quite precisely,
+% finding exact algebraic expressions for how long they take
+% (or how much memory, or how many disk reads, etc.).
+% But for our purposes the function growth comparison
+% definition can get away with some simplyfing assumptions.
+% First, we are usually interested in the long-term behavior of the function
+% on the large scale, as typified by the above graph.
+% We will therefore discount any initial chopping and changing,
+% deliberately ignoring an initial interval if needed.
+% Second, note that in $10\lg(x)$ the constant factor of~$10$ is
+% unimportant in the long run; what matters most 
+% is that a logarithm function~$\lg(x)$ grows slower
+% than does a power function~$x^{1/2}$.
+% Consonant with that, the function growth rate comparison definition below 
+% discounts constant factors.
 
-Before that definition we see a few more examples.
+% Before that definition we see a few more examples.
+
+This shows that when comparing the growth rate of functions
+we are often more interested the long-term behavior.
+Thus, comparing the functions is not just a matter of
+seeing which has larger output values.
+Before the definition we see two motivating examples.
+
+\begin{example}
+  These graphs compare $f(n)=n^2+5n+6$ and $g(n)=n^2$.
+  The graph on the right compares them in ratio $f/g$.
+  \begin{center}
+    \includegraphics{complexity/asy/bigo/bigo04.pdf}
+    \hspace{3em}
+    \includegraphics{complexity/asy/bigo/bigo05.pdf}  
+  \end{center}
+  The first point of these graphs is the dots.
+  These are functions of natural numbers, not of real numbers,
+  since that is what we get in
+  analyzing the behavior of Turing machines, so
+  the graphs are discrete. 
+  The second point is that 
+  on the left your eye is impressed that $n^2+5n+6$ is ahead of $n^2$.
+  But on the right the ratios suggest that is misleading.  
+  By $n=10$-ish, the value of $n^2+5n+6$ is practically the same
+  as that of~$n^2$.
+  That is,
+  for large inputs the $+5n$ and $+6$ don't make much difference.
+  They are swamped by the highest order term, the $n^2$.
+  These two quadratic
+  functions track together and are, for our purposes, basically the same.
+
+  Next compare the quadratic $f(n)=n^2+5n+6$ with the cubic $g(x)=n^3+2n+3$.
+  Although $f(0)=6$ is larger than $g(0)=3$ and
+  $f(1)=12$ is larger than $g(1)=6$, soon enough because of $g$'s
+  leading $n^3$ its ouputs are larger than $f$'s.
+  So the first point with these graphs
+  is that the function comparison definition is
+  concerned with the eventual behavior of the two and will discount
+  whether one is initially ahead. 
+  The second point is that, in contrast to the 
+  the prior two graphs,
+  the two function don't track together.
+  The values of $g$ speed ahead of those of~$f$, so much so that
+  as shown the values of~$f$ don't seem to leave the axis\Dash
+  although $f(100)=10\, 506$, it is no match for $g(100)=2\,000\,304$.
+  \begin{center}
+    \includegraphics{complexity/asy/bigo/bigo06.pdf}
+    \hspace{3em}
+    \includegraphics{complexity/asy/bigo/bigo07.pdf}  
+  \end{center}
+  The ratio graph underlines this;
+  the cubic polynomial accelerates 
+  away from the quadratic in the sense that the ratios grow without bound.
+  In this sense, 
+  $g$ is a faster growing function than~$f$.
+  They both go to infinity but $g$ goes there faster.
+
+  The last comparison is between the quadratics $f(x)=2n^2+3n+4$ and
+  $g(n)=n^2+5n+6$.
+  While $f(0)=4$ is less than $g(0)=6$
+  and $f(1)=9$ is less than $g(1)=12$, eventually $f$'s 
+  values are above~$g$'s.
+  This we've seen before, that the function comparison definition
+  needs to discount initial behavior.
+  \begin{center}
+    \includegraphics{complexity/asy/bigo/bigo08.pdf}
+    \hspace{3em}
+    \includegraphics{complexity/asy/bigo/bigo09.pdf}  
+  \end{center}
+  What's different in this comparison is that,
+  unlike in the $n^3$~vs~$n^2$ graphs,
+  while the leading $2$ of~$f$
+  keeps its graph ahead,
+  it is not enough to make~$f$ accelerate away.
+  The ratio between the two is bounded and they track together.
+  So the function comparison
+  definition discounts constant multiples and considers these two
+  functions alike.
+\end{example}
 
 \begin{example}
 Let $\map{b}{\N}{\N}$ give as output
@@ -124,88 +267,19 @@ Compare $b(n)=1+\floor{\lg(n)}$ with $f(x)=\lg(x)$.
 The floor function does not matter much and the `$+1$' does not matter
 much\Dash over the long run,
 $b(n)$ and $\lg(n)$ give essentially the same values.
-We may say, without stretching the truth too much, that the function giving
+We may summarize, without stretching the truth too much,
+that the function giving
 the number of bits required to express a number is the base~$2$
 logarithm.
 
-The function comparison definition will disregard constant factors.
+We have mentioned that the
+function comparison definition given below disregards constant factors.
 The formula relating bases for logarithmic functions 
 $\lg(x)=(1/\log_{b}(2))\cdot\log_b(x)$ shows that any two differ by a
 multiplicative factor.
 Thus, even the logarithm's base does not matter:
 we may say that the number of bits is
 ``a'' logarithmic function.
-\end{example}
-
-\begin{example}
-  These graphs compare $f(n)=n^2+5n+6$ and $g(n)=n^2$.
-  The graph on the right compares them in ratio $f/g$.
-  \begin{center}
-    \includegraphics{complexity/asy/bigo/bigo04.pdf}
-    \hspace{3em}
-    \includegraphics{complexity/asy/bigo/bigo05.pdf}  
-  \end{center}
-  The first point of these graphs is the dots.
-  These are functions of natural numbers, not of real numbers, so
-  the graphs are discrete. 
-  The second point is that 
-  on the left your eye is impressed that $n^2+5n+6$ is ahead of $n^2$.
-  But on the right the ratios suggest that is misleaing.  
-  By $n=10$-ish, the value of $n^2+5n+6$ is practically the same
-  as that of~$n^2$.
-  That is,
-  for large inputs the $+5n$ and $+6$ don't make much difference.
-  They are swamped by the highest order term, the $n^2$.
-  These two functions track together and are, for our purposes, basically
-  the same.
-
-  Next compare the quadratic $f(n)=n^2+5n+6$ with the cubic $g(x)=n^3+2n+3$.
-  Although $f(0)=6$ is larger than $g(0)=3$ and
-  $f(1)=12$ is larger than $g(1)=6$, soon enough because of $g$'s
-  leading $n^3$ its ouputs are larger than $f$'s.
-  So the first point with these graphs
-  is that the function comparison definition is
-  concerned with the eventual behavior of the two and will discount
-  whether one is initially ahead. 
-  The second point is that, in contrast to the 
-  the prior two graphs,
-  the two function don't track together.
-  The values of $g$ speed ahead of those of~$f$, so much so that
-  as shown the values of~$f$ don't seem to leave the axis\Dash
-  although $f(100)=10\, 506$, it is no match for $g(100)=2\,000\,304$.
-  \begin{center}
-    \includegraphics{complexity/asy/bigo/bigo06.pdf}
-    \hspace{3em}
-    \includegraphics{complexity/asy/bigo/bigo07.pdf}  
-  \end{center}
-  The ratio graph underlines this;
-  the cubic polynomial accelerates 
-  away from the quadratic in the sense that the ratios grow without bound.
-  In this sense, 
-  $g$ is a faster growing function than~$f$.
-  They both go to infinity but $g$ goes there faster.
-
-  The last comparison is between the quadratics $f(x)=2n^2+3n+4$ and
-  $g(n)=n^2+5n+6$.
-  While $f(0)=4$ is less than $g(0)=6$
-  and $f(1)=9$ is less than $g(1)=12$, eventually $f$'s 
-  values are above~$g$'s.
-  This we've seen before, that the function comparison definition
-  needs to discount initial behavior.
-  \begin{center}
-    \includegraphics{complexity/asy/bigo/bigo08.pdf}
-    \hspace{3em}
-    \includegraphics{complexity/asy/bigo/bigo09.pdf}  
-  \end{center}
-  What's different in this comparison is that,
-  unlike in the $n^3$~vs~$n^2$ graphs,
-  while the leading$2$ of~$f$
-  keeps its graph ahead,
-  it is not enough to make~$f$ accelerate away.
-  The ratio between the two is bounded and they track together.
-  So the function comparison
-  definition discounts constant multiples and considers these two
-  functions alike.
 \end{example}
 
 \begin{definition}
@@ -312,14 +386,14 @@ natural number functions is only partial.
   \includegraphics{complexity/asy/bigo/bigo12.pdf}
   \hspace{6em}
   \includegraphics{complexity/asy/bigo/bigo13.pdf}
-  \caption{Each bean encloses the set of all natural number functions, with
+  \caption{Each bean encloses the set of natural number functions, with
     fast-growing functions at the top.
-    On the left the white wedge is $\bigOh(f)$ for some $f$ and
-    the ellipse at the top is $\bigTheta(f)$.
+    On the left the white wedge is $\bigOh(f)$ for some $f$.
     One of the functions in that ellipse is $f$, and in the wedge below~$f$
     are functions with growth rate less than or equal to that of~$f$.
-    On the right is the wedge for $\bigOh(n^3)$ with 
-    the wedge for $\bigOh(n^2)$ inside it.}
+    The ellipse at the top is $\bigTheta(f)$.
+    On the right is the wedge for $\bigOh(n^3)$, with 
+    the wedge for $\bigOh(n^2)$ inside.}
 \end{figurehere}
 
 \begin{lemma}
@@ -389,12 +463,22 @@ have the same growth rate, $f$ is~$\bigTheta(g)$.
 
 
 \begin{exercises}
-\begin{exercise}
-  Assume that $\map{f}{\N}{\N}$ is increasing, that $n_1\geq n_0$ implies that
-  $f(n_1)\geq f(n_2)$.
-  Assume also that $\map{c}{\N}{\N}$ is a constant function.
-  Show that $c$ is $\bigOh(f)$.
-\end{exercise}
+  \begin{exercise}
+    How many bits does it take to represent each number?
+    \begin{exparts*}
+      \item~$5$
+      \item~$50$
+      \item~$500$
+      \item~$5\,000$
+    \end{exparts*}
+  \end{exercise}
+
+  \begin{exercise}
+    Assume that $\map{f}{\N}{\N}$ is increasing, that $n_1\geq n_0$ implies that
+    $f(n_1)\geq f(n_2)$.
+    Assume also that $\map{c}{\N}{\N}$ is a constant function.
+    Show that $c$ is $\bigOh(f)$.
+  \end{exercise}
 \end{exercises}
 
 

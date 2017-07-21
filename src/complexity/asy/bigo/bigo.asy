@@ -38,14 +38,14 @@ real ymin=0.1;
 real ymax=100;
 
 // fcns
-real f(real x) {return scalefactor*sqrt(x);}
-real g(real x) {return scalefactor*10*log(x)/log(2);}  // they left out log2
+real f(real x) {return sqrt(x);}
+real g(real x) {return 10*log(x)/log(2);}  // they left out log2
 
 // curves
-path f=graph(f,xmin,xmax,n=400);
-path g=graph(g,xmin,xmax,n=400);
-draw(pic,f,FCNPEN);
-draw(pic,g,FCNPEN);
+path f=graph(pic,f,xmin,xmax,n=400);
+path g=graph(pic,g,xmin,xmax,n=400);
+// draw(pic,f,FCNPEN);
+// draw(pic,g,FCNPEN);
 
 // axes
 xaxis(pic,YZero,
@@ -55,7 +55,12 @@ xaxis(pic,YZero,
 		 Size=axis_tick_size, size=0.5*axis_tick_size,
 		 extend=false, begin=false),
       p=AXISPEN,
-      Arrow(TeXHead,axis_arrow_size));
+      arrow=None);
+yequals(pic, 0,   
+	xmin=0, xmax=xmax+80,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
 yaxis(pic,XZero,
       ymin-5, ymax+5,
       LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=50, step=50,
@@ -63,11 +68,21 @@ yaxis(pic,XZero,
 		Size=axis_tick_size, size=0.5*axis_tick_size,
 		extend=false, begin=false),
       p=AXISPEN,
-      Arrow(TeXHead,axis_arrow_size));
+      arrow=None);
+xequals(pic, 0,   
+	ymin=0, ymax=ymax+10,
+        p=AXISPEN,
+	ticks=NoTicks,
+        arrow=Arrow(TeXHead,axis_arrow_size));
 
+dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+for (int i=ceil(xmin);i<=floor(xmax); ++i) {
+  dot(pic, Scale(pic,(i,f(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+  dot(pic, Scale(pic,(i,g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+}
 // label the curves
-label(pic,"$\sqrt{x}$",(500,f(500)),2N,TICLABELPEN);
-label(pic,"$10\lg(x)$",(500,g(500)),2N,TICLABELPEN);
+label(pic,"$\sqrt{n}$",Scale(pic,(900,f(900))),1.5S,TICLABELPEN);
+label(pic,"$10\lg(n)$",Scale(pic,(800,g(800))),2S,TICLABELPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -87,18 +102,18 @@ real ymin=0.1;
 real ymax=1000;
 
 // fcns
-real f(real x) {return scalefactor*sqrt(x);}
-real g(real x) {return scalefactor*10*log(x)/log(2);}  // they left out log2
+real f(real x) {return sqrt(x);}
+real g(real x) {return 10*log(x)/log(2);}  // they left out log2
 
 // curves
-path f=graph(f,xmin,xmax,n=400);
-path g=graph(g,xmin,xmax,n=400);
-draw(pic,f,FCNPEN);
-draw(pic,g,FCNPEN);
+path f=graph(pic,f,xmin,xmax,n=400);
+path g=graph(pic,g,xmin,xmax,n=400);
+draw(pic,f,FCNPEN_SOLID+linewidth(2.5pt));
+draw(pic,g,FCNPEN_SOLID+linewidth(2.5pt));
 
 // axes
 xaxis(pic,YZero,
-      xmin-75000, xmax+75000,
+      xmin-50000, xmax+75000,
       RightTicks(Label("$%2.0f$",TICLABELPEN), Step=500000, step=100000,
 		 beginlabel=false, endlabel=true,
 		 Size=axis_tick_size, size=0.5*axis_tick_size,
@@ -114,9 +129,16 @@ yaxis(pic,XZero,
       p=AXISPEN,
       Arrow(TeXHead,axis_arrow_size));
 
+// draw the curves
+// dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+// for (int i=ceil(xmin);i<=floor(xmax); ++i) {
+//   dot(pic, Scale(pic,(i,f(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+//   dot(pic, Scale(pic,(i,g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+// }
 // label the curves
-label(pic,"$\sqrt{x}$",(500000,f(500000)),2N,TICLABELPEN);
-label(pic,"$10\lg(x)$",(500000,g(500000)),2N,TICLABELPEN);
+// Use n because 1 000 000 was too many dots for Asymptote
+label(pic,"$\sqrt{n}$",Scale(pic,(700000,f(700000))),2N,TICLABELPEN);
+label(pic,"$10\lg(n)$",Scale(pic,(700000,g(700000))),2N,TICLABELPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -202,7 +224,7 @@ real scalefactor = 1;
 scale(pic,Linear,Linear(scalefactor));
 
 real lg(real x) {return log(x)/log(2);}
-real scaled_lg(real x) {return scalefactor*lg(x);}
+real scaled_lg(real x) {return lg(x);}
 real one(real x) {
   return 1;
 }
@@ -254,13 +276,15 @@ xequals(pic, 0,
 
 dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
 
+pen second_pen=FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 dot(pic, Scale(pic,(0,scalefactor*1)), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
 for (int i=1;i<=xmax; ++i) {
   dot(pic, Scale(pic,G(i)), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+  dot(pic, Scale(pic,F(i)), second_pen, Fill(second_pen));
   // dot(pic, G(i), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
 }
 // impose on it the lg fcn
-draw(pic, graph(lg,1,xmax,operator ..),FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal") );  // lg(0)=-infty so start at x=1
+//draw(pic, graph(lg,1,xmax,operator ..),FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal") );  // lg(0)=-infty so start at x=1
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -978,11 +1002,15 @@ path wedge=(subpath(wedgecap,wc_t_r,wc_t_l)
 	    &subpath(wedge_left,0,left_intersection[0])
 	    &subpath(set_bound,left_intersection[1],right_intersection[1]))
           --cycle;
+path wedge_edge=subpath(wedge_left,left_intersection[0],0)
+		 &subpath(wedgecap,wc_t_l,wc_t_r)
+		 &subpath(wedge_right,0,right_intersection[0]);
 
 // draw it all
 filldraw(pic,set_bound, AXISPEN, fillpen=backgroundcolor);
 filldraw(pic,wedge,lightcolor,fillpen=white);
 filldraw(pic,wedgecap,lightcolor,fillpen=white);
+draw(pic,wedge_edge,highlightcolor);
 draw(pic,set_bound, AXISPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -1030,20 +1058,28 @@ path wedge0=(subpath(wedgecap0,wc0_t_r,wc0_t_l)
 	    &subpath(wedge0_left,0,left0_intersection[0])
 	    &subpath(set_bound,left0_intersection[1],right0_intersection[1]))
           --cycle;
+path wedge0_edge=subpath(wedge0_left,left0_intersection[0],0)
+		 &subpath(wedgecap0,wc0_t_l,wc0_t_r)
+		 &subpath(wedge0_right,0,right0_intersection[0]);
 real[] left1_intersection=intersect(wedge1_left,set_bound);
 real[] right1_intersection=intersect(wedge1_right,set_bound);
 path wedge1=(subpath(wedgecap1,wc1_t_r,wc1_t_l)
 	    &subpath(wedge1_left,0,left1_intersection[0])
 	    &subpath(set_bound,left1_intersection[1],right1_intersection[1]))
           --cycle;
+path wedge1_edge=subpath(wedge1_left,left1_intersection[0],0)
+		 &subpath(wedgecap1,wc1_t_l,wc1_t_r)
+		 &subpath(wedge1_right,0,right1_intersection[0]);
 
 // draw it all
 filldraw(pic,set_bound, AXISPEN, fillpen=backgroundcolor);
 filldraw(pic,wedge0,lightcolor,fillpen=white);
 filldraw(pic,wedgecap0,lightcolor,fillpen=white);
+draw(pic,wedge0_edge,highlightcolor);
 
 filldraw(pic,wedge1,lightcolor,fillpen=white);
 filldraw(pic,wedgecap1,lightcolor,fillpen=white);
+draw(pic,wedge1_edge,highlightcolor);
 draw(pic,set_bound, AXISPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

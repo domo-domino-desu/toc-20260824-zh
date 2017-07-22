@@ -778,7 +778,7 @@ pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
   dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(white));
 }
-label(pic,"$g/f$",Scale(pic,(90,2)), 2N);
+label(pic,"$f/g$",Scale(pic,(90,2)), 2N);
 // asymptote
 yequals(pic, 2,   
 	xmin=0.4, xmax=xmax,

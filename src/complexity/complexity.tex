@@ -124,11 +124,11 @@ $10\lg(1\,000\,000)\approx 199.32$.
 
 % Before that definition we see a few more examples.
 
-This shows that when comparing the growth rate of functions
-we are often more interested the long-term behavior.
-Thus, giving the best definition to comparing the growth rate of two
+% When comparing the growth rate of functions
+% we are typically more interested the long-term behavior.
+Thus, giving the best definition for comparing the growth rate of two
 functions is more complicated than just
-seeing which has larger output values.
+seeing which always has smaller output values.
 Before that definition we will see two motivating examples.
 
 \begin{example}
@@ -194,21 +194,19 @@ Before that definition we will see two motivating examples.
     \includegraphics{complexity/asy/bigo/bigo09.pdf}  
   \end{center}
   What's different in this comparison is that,
-  unlike in the prior graphs,
-  while $f$'s leading $2$ 
-  keeps its graph ahead,
-  it is not enough to make~$f$ accelerate away.
-  Instead, the ratio between the two is bounded and they track together.
+  $f$'s leading $2$ 
+  keeps its graph ahead
+  but is not enough to make it accelerate away.
+  Instead, the ratio between the two is bounded.
   So the function comparison
-  definition discounts constant multiples and considers these two
-  functions alike.
+  definition discounts constant multiples.
 \end{example}
 
 \begin{example}
 Let $\map{b}{\N}{\N}$ give as output
 the number of bits needed to represent its input.
-The second line gives
-$\floor{\lg(n)}$, the largest power of $2$ less than~$n$.
+The second line of this table gives
+$\lg(n)$, the power of $2$ that equals~$n$.
 \begin{center} \small
   % \setlength{\tabcolsep}{6pt} % default is 6pt
 \begin{tabular}{r|c*{9}{c}}
@@ -256,14 +254,14 @@ $\floor{\lg(n)}$, the largest power of $2$ less than~$n$.
   \end{tabular}
 \end{tabular}
 \end{center}
-The formula is $b(n)=1+\floor{\lg(n)}$, 
-except when $n=0$. 
-This pictures $b(x)$ for $x\in\leftclosed{1}{30}$.
+This shows $b(n)$ for $n\in\set{1,\,\ldots\,30}$.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo02.pdf}
 \end{center}
-Compare $b(n)=1+\floor{\lg(n)}$ with $f(x)=\lg(x)$.
-(Note the change in both the horizontal and vertical scales.)
+The formula is $b(n)=1+\floor{\lg(n)}$, 
+except that when $n=0$ then $b(n)=1$. 
+The graph below compares $b(n)=1+\floor{\lg(n)}$ with $f(n)=\lg(n)$.
+Note the change in both the graph's horizontal and vertical scales.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo03.pdf}
 \end{center}
@@ -285,19 +283,36 @@ we may say that the number of bits is
 ``a'' logarithmic function.
 \end{example}
 
+We are studying functions that describe the behavior of machines, such as
+how long they take or how much memory.
+These functions have natural number inputs,
+giving the size of the machine's inputs.
+These functions often often have natural number outputs, but we will also
+need functions with real outputs, such as~$\lg$.
+The outputs are usually non-negative, but again $\lg$ is an example of
+the opposite happening since it gives
+negative outputs when its inputs are between $0$ and~$1$
+(and it is not even defined for $n=0$).
+So we will focus on functions satisfying the next definition.
+
 \begin{definition}
-  Let $g$ be a function with natural number inputs and non-negative real
-  number outputs $\map{g}{\N}{\leftclosed{0}{\infty}}$.
+  A function $\map{f}{\N}{\R}$ is \definend{eventually nonnegative}
+  if there is an~$I\in\N$ so that $n>I$ implies that $f(n)$ is defined
+  and nonnegative.
+\end{definition}
+
+\begin{definition}
+  Let $g$ be a function that is eventually nonnegative.
   Then \definend{$\bigOh(g)$}, read ``big-O of $g$,''
-  is the collection of functions $\map{f}{\N}{\leftclosed{0}{\infty}}$
-  satisfying that there are numbers $N,C\in\N$ so that 
-  whenever $n>N$ then $f(n)<C\cdot g(n)$. 
+  is the collection of eventually nonnegative functions~$f$
+  satisfying this property:~there are numbers $N,C\in\N$ so that 
+  whenever $n\geq N$ then $C\cdot g(n)\geq f(n)$. 
   We say \definend{$f$ is in $\bigOh(g)$}, \definend{$f$ is $\bigOh(g)$},
   or \definend{$f=\bigOh(g)$}.
 \end{definition}
 
 These illustrate.
-Both show $\bigOh(g)$.
+Both show $f$ in~$\bigOh(g)$.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo10.pdf}
   \hspace{3em}
@@ -315,27 +330,27 @@ the rates are alike.
     \item
       The `$f=\bigOh(g)$' notation is awkward but 
       standard.\footnotemark{} %
+      The notation `$f\in\bigOh(g)$ is correct but is not at all usual.
     \item
-      We use `O' because this definition relates to the order of growth
-      of the function, although the $\bigOh$~symbol only expresses an
-      upper bound on that order.
+      We use `O' because this is about the order of growth,
+      although the $\bigOh$~symbol only expresses an
+      upper bound.
     \item
-      Some authors give this definition using functions with codomain~$\N$.
-      But we sometimes need real number outputs, for example $\lg(n)$.
-    \item
-      Some authors allow negative real outputs, and then take absolute
-      values in the inequality involving the two functions,
+      Some authors allow negative real outputs and then take absolute
+      values, 
       $f(x)\leq C\cdot |g(x)|$.
-      We only need nonnegative outputs.
+      % We would find the absolute values
+      % to be a distraction.
     \item
       You often see constructions such as `$n^2+5n+6$ is $\bigOh(n^2)$',
       replacing the named functions $f(n)=n^2+5n+6$ and $g(n)=n^2$
       with expressions.
     \item
-      Sometimes $f=\bigOh(g)$ is written as $f(n)=\bigOh(g(n))$.
-      But that is
+      Sometimes you see `$f$ is $\bigOh(g)$' stated as
+      `$f(n)$ is $\bigOh(g(n))$'.
+      This is
       wrong because $f(n)$ and $g(n)$ are numbers, not functions, and big-O is
-      a relation between functions.
+      relates functions.
   \end{parenum}
 \end{remark}\footnotetext{
   One way that it is awkward is that it does not follow the usual rules
@@ -347,30 +362,37 @@ the rates are alike.
 \begin{example} \label{ex:BigOFromDefn}
   To directly apply the definition, given two functions we must produce
   suitable $N$ and~$C$, and verify that they work.
-  Thus, for $f(n)=n^2$ and $g(n)=n^3$ then $f$ is~$\bigOh(g)$   
+  Thus, if $f(n)=n^2$ and $g(n)=n^3$ then $f$ is~$\bigOh(g)$   
   as $N=2$ and $C=1$ witness.
   The verification is that $n>2$ implies that $g(n)=n^3=n\cdot n^2$ is greater
-  than $2\cdot n^2$, which is greater than $n^2=C\cdot f(n)$.
+  than $2\cdot n^2$, which is greater than $n^2=1\cdot f(n)$.
 
   If $f(n)=5n^2$ and $g(n)=n^4$ then to show $f$ is $\bigOh(g)$
   take $N=2$ and $C=2$.
   To verify:
-  $n> 2$ implies that $C\cdot n^4=2\cdot n^2\cdot n^2=8n^2> 5\cdot n^2$.
+  $n> 2$ implies that $C\cdot n^4=2\cdot n^2\cdot n^2\geq 8n^2> 5\cdot n^2$.
 \end{example}
 
 \begin{example}
-  To have $f$ in~$\bigOh(g)$ does not require that the graph of $g$ be
+  The condition $f$ in~$\bigOh(g)$ does not mean that the graph of $g$ be
   eventually above the graph of~$f$.
-  Let $f(n)=n^2+1$ and~$g(n)=n^2$ and note that the graph of the second one
-  is always below that of the first.
-  Take $N=2$ and $C=1$.
-  If $n>N$ we can write $n=j+2$ for $j\in\N$.
-  Then $C\cdot g(n)=2n^2=2(j+2)^2=2j^2+4j+8$ is greater than
+  Let $f(n)=n^2+1$ and~$g(n)=n^2$.
+  The graph of the second
+  is always below the graph of the first but $f$ is~$\bigOh(g)$.
+  To verify, take $N=2$ and~$C=2$.
+  If $n>N$ we can write $n=j+2$ for $j\in\N^+$ and
+  then $C\cdot g(n)=2n^2=2(j+2)^2=2j^2+8j+8$ is greater than
   $f(n)=(j+2)^2+1=j^2+4j+5$.
 \end{example}
 
 \begin{example}
-Not every pair of functions is comparable.
+  The zero function~$Z$ is $\bigOh(g)$ for every
+  eventually nonnegative~$g$.
+  Just take $N=0$ and~$C=1$.
+\end{example}
+
+\begin{example}
+Not every pair of eventually nonnegative functions is comparable.
 For this function
 \begin{equation*}
   f(n)=\begin{cases} 
@@ -384,10 +406,14 @@ To see that $f$ is not~$\bigOh(n^3)$, observe that there are
 arbitrarily large inputs~$n$ where $C=2$ does not suffice:
 if $n$ is odd and $n>2$  then $f(n)=n^4=n\cdot n^3> 2\cdot n^3$.
 Similar reasoning works for any~$C$.
-The argument that $n^3$ is not~$\bigOh(f)$ works the same way, on even inputs.
+The argument that $n^3$ is not~$\bigOh(f)$ goes the same way, on even inputs.
 So the ordering imposed by $\bigOh{}$ on the set of
-natural number functions is only partial.
+functions is only partial.
 \end{example}
+
+\begin{remark}
+  We often omit the `eventually nonnegative' technicality.
+\end{remark}
 
 \begin{lemma}[Algebraic properties]
   Suppose that $f_0$ is $\bigOh(g_0)$ and that $f_1$ is $\bigOh(g_1)$.
@@ -405,15 +431,15 @@ natural number functions is only partial.
 
 
 \begin{lemma}
-  Where $f$ is a natural number function,
+  If $\map{f}{\N}{\leftclosed{0}{\infty}}$ then
   $f$ is $\bigOh(f)$.
-  Where $f,g,h$ are natural number functions,
+  Where $\map{f,g,h}{\N}{\leftclosed{0}{\infty}}$,
   if $f$ is~$\bigOh(g)$ and $g$ is~$\bigOh(h)$, then
   $f$ is~$\bigOh(h)$.
 \end{lemma}
 
 \begin{definition}
-  Two natural number functions $\fcn{f,g}{\N}{\N}$ have
+  Two functions $\fcn{f,g}{\N}{\leftclosed{0}{\infty}}$ have
   \definend{the same growth rate} if both $f$ is~$\bigOh(g)$ and also
   $g$ is~$\bigOh(f)$.
   We say \definend{$f$ is $\bigTheta(g)$} (or $g$ is~$\bigTheta(f)$).
@@ -423,14 +449,15 @@ natural number functions is only partial.
   \includegraphics{complexity/asy/bigo/bigo12.pdf}
   \hspace{6em}
   \includegraphics{complexity/asy/bigo/bigo13.pdf}
-  \caption{Each bean encloses the set of natural number functions, ordered by
-    putting fast-growing functions at the top.
-    On the left the white cone is $\bigOh(f)$ for some $f$.
+  \caption{Each bean encloses the set of eventually nonnegative  functions,
+    with fast-growing functions at the top.
+    On the left the white cone is $\bigOh(g)$ for some $g$.
     The cone's elements are the
-    functions with growth rate less than or equal to $f$'s rate.
-    The ellipse at the top is $\bigTheta(f)$.
-    One of the members of that ellipse is $f$.
-    On the right is the cone $\bigOh(n^3)$, with the subset $\bigOh(n^2)$.}
+    functions with growth rate less than or equal to $g$'s rate.
+    The ellipse at the top is $\bigTheta(g)$, those functions whose
+    rate equals $g$'s.
+    The bean on the right shows the cone $\bigOh(n^3)$
+    with the subset $\bigOh(n^2)$.}
 \end{figurehere}
 
 \begin{lemma}
@@ -439,7 +466,7 @@ natural number functions is only partial.
 \end{lemma}
 
 \begin{theorem}  \label{lem:LHBigO}
-  Let $f,g$ be natural number functions and suppose the the limit
+  Let $\map{f,g}{\N}{\leftclosed{0}{\infty}}$ and suppose the the limit
   $\lim_{n\to\infty}f(n)/g(n)$ exists and equals $L\in\R\cup{\infty}$.
   \begin{parenum}
   \item If $L=\infty$ then $f$ grows faster than~$g$,
@@ -473,7 +500,8 @@ so we make an observation that enables us to apply
 L'H\^opital's Rule to \cref{lem:LHBigO}.
 
 \begin{lemma} \label{lem:ReFcnsGiveNatFcns}
-  Let $\map{F,G}{\R}{\R}$ and let $\map{f,g}{\N}{\N}$ be such that
+  Let $\map{F,G}{\R}{\R}$ and let $\map{f,g}{\N}{\leftclosed{0}{\infty}}$
+  be such that
   for all natural numbers $F(n)=f(n)$ and $G(n)=g(n)$.
   If $\lim_{x\to\infty}F(x)/G(x)$ exists and equals $L\in\R\cup{\infty}$
   then $\lim_{n\to\infty}f(n)/g(n)$ also exists and also equals~$L$.
@@ -508,7 +536,7 @@ L'H\^opital's Rule to \cref{lem:LHBigO}.
 \end{example}
 
 \begin{exercise}
-  Non-polynomial functions appear often also.
+  Non-polynomial functions come up often also.
   We will contrast the polynomial $f(n)=n^2$ with the exponential $g(x)=2^n$.
   Convert to real functions and apply L'H\^{o}pital's Rule.
   \begin{equation*}
@@ -525,16 +553,16 @@ L'H\^opital's Rule to \cref{lem:LHBigO}.
   strictly less than the order of $g(x)=x$.
   \begin{equation*}
     \lim_{x\to\infty}\frac{\lg(x)}{x}
-    =\lim_{x\to\infty}\frac{(1/x)\cdot(1\ln(2))}{1}
+    =\lim_{x\to\infty}\frac{(1/x)\cdot(1/\ln(2))}{1}
     =0
   \end{equation*}
 \end{exercise}
 
 \begin{example}
   The order $\bigOh(n\cdot \lg(n))$ appears often.
-  We will show that it equals $\bigOh(n!)$, by mutual set containment.
+  We will show that it equals $\bigOh(n!)$ by mutual containment of sets.
   L`H\^{o}pital's Rule is not a good fit here because of the factorial so
-  we appeal directly to the definition of big-O.
+  we appeal directly to the definition of big~O.
   
   Recall that logarithmic functions turn multiplication into addition:
   $\lg(a\cdot b)=\lg(a)+\lg(b)$.
@@ -556,15 +584,14 @@ L'H\^opital's Rule to \cref{lem:LHBigO}.
   \end{align*}
 \end{example}
 
-In practice, Big-O is very widely used and is typically covered in
+Big-O is very widely used n practice and is typically covered in
 Programming~101. 
 It gives a rough understanding of an
-algorithm's running time, or its use of other resources such as memory or read/writes.
+algorithm's running time, or its use of other resources such as
+memory or read/writes.
 
-This table contains the orders of growth that appear most often in practice.
+This table contains the orders of growth that appear most often.
 They are listed in order from slowest-growing to fastest-growing.
-Each entry in the table is a different order than the others, so this
-is a hierarchy of growth rates.
 
 \begin{center}
   \begin{tabular}{lll}
@@ -585,8 +612,12 @@ is a hierarchy of growth rates.
     $\bigOh(n^n)$  &\textit{--No standard name--}          &  \\  
   \end{tabular}  
 \end{center}
+\begin{TODO}
+Give a linear order.
+\end{TODO}
+
 In practice 
-most algorithms, when analyzed, have a runtime behavior that falls somewhere
+most algorithms have a runtime behavior that falls somewhere
 on this hierarchy.
 For example, the orders of worst-case growth for three algorithms
 for sorting a list
@@ -596,6 +627,10 @@ bubble sort is~$\bigOh(n^2)$.
 You typically want an algorithm's runtime behavior to be a
 slow-growing function of its input, so functions near the table's top
 are desirable.
+
+\begin{TODO}
+  Chart of growth of functions in time to do a job.
+\end{TODO}
 
 Often people use the boundary between polynomial growth and exponential growth
 as a dividing line between conceivably useful in practice

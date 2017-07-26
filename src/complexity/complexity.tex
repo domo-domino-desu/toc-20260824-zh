@@ -1,21 +1,19 @@
-\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. At that scale surface tension is much more important than gravity.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Orders of growth}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
+\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the dominant forces\Dash bugs see surface tension as more important than gravity.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Orders of growth}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 We will review the basics of the orders of growth of functions.
-We will not give a detailed development, just enough for our needs.
+Because this is a review, we will not give a detailed development, just enough for our needs.
+And we will leave the proofs for the exercises.
 
 \section{Definition}
 For a job there may be many algorithms.
-We may want to choose which is faster
-(or consumes less of some other resource such as memory).
-That is, algorithms have time that 
+We may want to choose one that is faster,
+or consumes less of some other resource such as memory.
+That is, algorithms take time that 
 is a function of the size of their input and
-we classify them according to their runtime behavior.
-% Generally, larger input takes more time.
-We will review the mathematical tools describing 
-this behavior.
+we have tools to classify their behavior.
 
 First, an anecdote.
 Here is the grade school multiplication algorithm.
-How long does it take?
+% How long does it take?
 \begin{equation*}
   \begin{array}{@{}r@{}}
     678\\
@@ -204,7 +202,7 @@ Before that definition we will see two motivating examples.
 
 \begin{example}
 Let $\map{b}{\N}{\N}$ give as output
-the number of bits needed to represent its input.
+the number of bits needed to represent its input in binary.
 The second line of this table gives
 $\lg(n)$, the power of $2$ that equals~$n$.
 \begin{center} \small
@@ -410,11 +408,11 @@ functions is only partial.
   We often omit the `eventually nonnegative' technicality.
 \end{remark}
 
-\begin{lemma}[Algebraic properties]
+\begin{lemma}[Algebraic properties]  \label{lem:BigOAlgProps}
   Suppose that $f_0$ is $\bigOh(g_0)$ and that $f_1$ is $\bigOh(g_1)$.
 \begin{parenum}
 \item 
-  Where $a$ is a constant, the function $af_0$ is $\bigOh(g_0)$.
+  For any positive constant $a\in\R^+$, the function $af_0$ is $\bigOh(g_0)$.
 \item
   The sum $f_0+f_1$ is $\bigOh(g)$, where $g$ is defined by
   $g(n)=\max(g_0(n),g_1(n))$.  
@@ -425,7 +423,7 @@ functions is only partial.
 \end{lemma}
 
 
-\begin{lemma}
+\begin{lemma}  \label{lem:BigOhReflexiveAndTransitive}
   The big-O relation is reflexive:~$f$ is $\bigOh(f)$.
   It is also transitive:~if $f$ is~$\bigOh(g)$ and $g$ is~$\bigOh(h)$ then
   $f$ is~$\bigOh(h)$.
@@ -454,20 +452,20 @@ functions is only partial.
     with the subset $\bigOh(n^2)$.}
 \end{figurehere}
 
-\begin{lemma}
+\begin{lemma}  \label{lem:BigThetaEquivalence}
   The relation between functions of having the same growth rate
   is an equivalence.
 \end{lemma}
 
 \begin{theorem}  \label{lem:LHBigO}
   Let $f,g$ be eventually nonegative and suppose that 
-  $\lim_{n\to\infty}f(n)/g(n)$ exists and equals $L\in\R\cup{\infty}$.
+  $\lim_{n\to\infty}f(n)/g(n)$ exists and equals $L\in\R\cup\set{\infty}$.
   \begin{parenum}
   \item If $L=\infty$ then $f$ grows faster than~$g$,
     meaning that $g$ is~$\bigOh(f)$ but $f$ is not $\bigOh(g)$.
   \item If $L=0$ then $g$ grows faster than~$f$,
     so $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
-  \item If $L$ is between $0$ and~$\infty$
+  \item If $L$ is strictly between $0$ and~$\infty$
     then the two functions have the same growth
     rate, that is, $f$ is~$\bigTheta(g)$.
   \end{parenum}
@@ -580,7 +578,7 @@ L'H\^opital's Rule to \cref{lem:LHBigO}.
   \end{align*}
 \end{example}
 
-Big-O is so widely used n practice that it is often covered in
+Big-O is so widely used in practice that it is often covered in
 Programming~101. 
 It is convenient because it gives a rough metric to compare 
 algorithm's on running time, or the use of other resources such as
@@ -611,12 +609,14 @@ bubble sort is~$\bigOh(n^2)$.
     $\bigOh(n^n)$  &\textit{--No standard name--}          &  \\  
   \end{tabular}  
 \end{center}
-Writing $f\ll g$ for $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$,
-gives this linear hierarchy. 
+If $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$ then 
+$f$ grows at a strictly slower rate than~$g$.
+Notating that as $f\ll g$ gives this linear hierarchy. 
 \begin{multline*}
   1 \ll \lg\lg n \ll \lg n \ll (\lg n)^c \ll n \ll n\lg n  \\
     \ll n^2 \ll n^3 \ll \cdots
     \ll 2^n \ll 3^n \ll n! \ll n^n
+    \tag{$*$}
 \end{multline*}
 % You want an algorithm's runtime behavior to be a
 % slow-growing function of its input, so functions near the list's start
@@ -630,7 +630,7 @@ The chart's entries are how long the job will take, in years.
 Thus, if the algorithm takes time given by $n$ and $n=1$ then it finishes
 in $3.17\times 10^{-18}$~years, so that's the number of years one machine tick.
 \newcommand{\scinot}[2]{#1\times 10^{#2}}
-\begin{center}
+\begin{tablefigure}{Comparison of some functions from the order of growth hierarchy.}
   \begin{tabular}{r|*{4}{l}}
     \multicolumn{1}{c}{\ }
       &\multicolumn{1}{c}{\tabulartext{$n=1$}}
@@ -643,15 +643,16 @@ in $3.17\times 10^{-18}$~years, so that's the number of years one machine tick.
     $n^2$    &$\scinot{3.17}{-18}$ &$\scinot{3.17}{-16}$ &$\scinot{7.92}{-15}$ &$\scinot{3.17}{-14}$ \\  
     $n^3$    &$\scinot{3.17}{-18}$ &$\scinot{3.17}{-15}$ &$\scinot{3.96}{-13}$ &$\scinot{3.17}{-12}$ \\  
     $2^n$    &$\scinot{6.34}{-18}$ &$\scinot{3.24}{-15}$ &$\scinot{3.57}{-3}$ &$\scinot{4.02}{12}$ \\  
-  \end{tabular}
-\end{center}
+  \end{tabular} \label{tab:CompareFcnNumbers}
+\end{tablefigure}
 Consider the $n=100$ column.
 First note that input of that size is not very large
 and differences between the algorithms will only become more pronounced on
 larger inputs.
 With that,
-observe that $\lg n$ takes an order of magnitude less time than does~$n$,
-which in turn is an order of magnitude smaller than $n\lg n$
+observe that the entry for $\lg n$ is an order of magnitude smaller than
+the entry for~$n$,
+which in turn is an order of magnitude smaller than the one for~$n\lg n$
 ($2.11\times 10^{-15}$ years is 664 seconds, about eleven minutes).
 That continues until the last line.
 The last line's entry does not say $10^{-12}$~years, it says $10^{12}$~years.
@@ -673,7 +674,7 @@ No one knows why.)
 \begin{exercises}
   \begin{exercise}
     How many bits does it take to
-    represent each number?
+    express each number in binary?
     \begin{exparts*}
       \item~$5$
       \item~$50$
@@ -683,12 +684,187 @@ No one knows why.)
   \end{exercise}
 
   \begin{exercise}
+    For each given function, 
+    find which function~$f$ on the hierarchy labelled~($*$) has the 
+    same rate of growth.
+    \begin{exparts*}
+      \item $n^2+5n-2$
+      \item $2^n+n^3$
+      \item $3n^4-\lg\lg n$
+      \item $\lg n+5$
+    \end{exparts*}
+  \end{exercise}
+
+  \begin{exercise}
+    Find which function~$f$ on the hierarchy labelled~($*$) has the 
+    same rate of growth as each of these.
+    \begin{exparts}
+      \item
+        $f(n)=
+        \begin{cases}
+          n &\case{if $n<100$} \\
+          0 &\case{else}
+        \end{cases}$
+      \item
+        $f(n)=
+        \begin{cases}
+          1\,000\,000\cdot n &\case{if $n<10\,000$} \\
+          n^2 &\case{else}
+        \end{cases}$
+      \item
+        $f(n)=
+        \begin{cases}
+          1\,000\,000\cdot n^2 &\case{if $n<100\,000$} \\
+          \lg n &\case{else}
+        \end{cases}$
+    \end{exparts}
+  \end{exercise}
+
+  \begin{exercise}
+    For each pair of functions decide if $f$ is $\bigOh(g)$, 
+    or $g$ is $\bigOh(f)$, or both, or neither.
+    \begin{exparts}
+      \item $f(n)=4n^2+3$, $g(n)=(1/2)n^2-n$
+      \item $f(n)=53n^3$, $g(n)=\ln n$
+      \item $f(n)=2n^2$, $g(n)=\sqrt{n}$
+      \item $f(n)=n^{1.2}+\lg n$, $g(n)=n^{\sqrt{2}}+2n$
+      \item $f(n)=n^6$, $g(n)=2^{n/6}$
+      \item $f(n)=3^n$, $g(n)=3\cdot 2^n$
+      \item $f(n)=\lg(3n)$, $g(n)=\lg(n)$
+    \end{exparts}
+  \end{exercise}
+
+  \begin{exercise}
+    Which of these are $\bigOh(n^2)$?
+    \begin{exparts*}
+    \item $\lg n$
+    \item $3+2n+n^2$
+    \item $3+2n+n^3$
+    \item $10+4n^2+\floor{\cos(n^3)}$
+    \item $\lg(5^n)$
+    \end{exparts*}
+  \end{exercise}
+  
+  \begin{exercise}
+    For each find the smallest $k\in\N$ so that the given function is
+    $\bigOh(n^k)$.
+    \begin{exparts*}
+    \item $n^3+(n^4/10\,000\,000)$
+    \item $(n+2)(n+3)(n^2-\lg n)$
+    \item $5n^3+25+ceil{\cos(n)}$
+    \item $9\cdot (n^2+n^3)^4$
+    \item $\floor{\sqrt{5n^7+2n^2}}$
+    \end{exparts*}
+  \end{exercise}
+  
+  \begin{exercise}
+    To \cref{tab:CompareFcnNumbers} add a column for $n=200$.
+  \end{exercise}
+
+  \begin{exercise}
+    To \cref{tab:CompareFcnNumbers} add a row for $3^n$.
+  \end{exercise}
+
+  \begin{exercise}
+    On a computer that performs at 10~GHz, at 10\,000 million instructions per
+    second, what is the longest input
+    that can be done in a year under an algorithm with each time performance
+    function?
+    \begin{exparts*}
+    \item $\lg n$
+    \item $n$
+    \item $n\lg n$
+    \item $\sqrt{n}$
+    \item $n^2$
+    \item $n^3$
+    \item $2^n$
+    \end{exparts*}
+  \end{exercise}
+
+  \begin{exercise}
+    Sometimes in practice we must choose between two algorithms where the
+    performance of one is better than the performance of the other in a
+    big-O sense, but where the first has a long initial segment of
+    poorer performance.
+    What is the least input number such that $f(n)=1oo\,ooo\cdot n^2$
+    is less than or equal to $g(n)=n^3$?
+  \end{exercise}
+  
+  \begin{exercise}
+    Prove that $2^n$ is~$\bigOh(n!)$.
+    \begin{answer}
+      Because of the factorial, rather than use L'H\^{o}pital's Rule
+      we proceed directly from the definition.
+      Take $N=4$ and~$C=1$.
+      For $n>4$ we have this.
+      \begin{align*}
+        n! &=4!\cdot 5\cdot 6\cdots (n-1)\cdot n \\
+           &< 2^4\cdot 5\cdot 6\cdots (n-1)\cdot n=2^4\cdot 2^{n-4}=2^n
+      \end{align*}
+    \end{answer}
+  \end{exercise}
+
+  \begin{exercise}
+    Show that an eventually nonnegative function~$f$ is $\bigOh(1)$ if and
+    only if it is bounded above by a constant, so that there exists
+    $L\in\N$ so that for all inputs $n\in\N$, if $f$ is defined on~$n$
+    then $f(n)\leq L$.
+  \end{exercise}
+  
+  \begin{exercise}
+    Name three functions that are $\bigOh(Z)$ where $\map{Z}{\N}{\N}$ is the
+    zero function.
+  \end{exercise}
+  
+  \begin{exercise}
+    Verify these clauses of \cref{lem:BigOAlgProps}.
+    Let $f_0$ be~$\bigOh(g_0)$ and let $f_1$ be~$\bigOh(g_1)$.
+    \begin{exparts}
+      \item
+        If $a\in\R^+$ then
+        $a f$ is also~$\bigOh(g)$.
+      \item
+        The function $f_0+f_1$ is~$\bigOh(g)$, where $g$ is defined by
+        $g(n)=\max(g_0(n),g_1(n))$.
+      \item
+        The product $f_0f_1$ is~$\bigOh(g_0g_1)$.
+        (The product of two functions $h_0,h_1$ is defined by
+        $h_0h_1(n)=h_0(n)\cdot h_1(n)$.)
+    \end{exparts}
+  \end{exercise}
+
+  \begin{exercise}
+    Verify these clauses of \cref{lem:BigOhReflexiveAndTransitive}.
+    \begin{exparts}
+    \item The big-O relation is reflexive.
+    \item It is also transitive.
+    \end{exparts}
+  \end{exercise}
+
+  \begin{exercise}
+    Verify \cref{lem:BigThetaEquivalence}.
+    \textit{Hint:} the prior exercise does some of the work.
+  \end{exercise}
+
+  \begin{exercise}
+    Verify these clauses of \cref{lem:LHBigO}.
+    Assume that $f,g$ are eventually nonegative functions and suppose that 
+    $\lim_{n\to\infty}f(n)/g(n)$ exists and equals $L\in\R\cup\set{\infty}$.
+    \begin{exparts}
+    \item If $L=\infty$ then $f$ grows faster than~$g$.
+    \item If $L=0$ then $g$ grows faster than~$f$
+    \item If $L$ is between $0$ and~$\infty$
+      then the two functions have the same growth rate.
+    \end{exparts}
+  \end{exercise}
+  
+  \begin{exercise}
     Show that $\bigOh(2^n)\neq\bigOh(3^n)$.
   \end{exercise}
   
   \begin{exercise}
     Assume that $\map{f}{\N}{\N}$ is increasing,
-    so that $n_1\geq n_0$ implies $f(n_1)\geq f(n_2)$.
+    so that $n_1\geq n_0$ implies $f(n_1)\geq f(n_0)$.
     Assume also that $\map{c}{\N}{\N}$ is a constant function.
     Show that $c$ is $\bigOh(f)$.
   \end{exercise}

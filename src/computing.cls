@@ -1496,13 +1496,17 @@ of the two.}
 
 \captionsetup[figurehere]{labelformat=empty}
 \renewcommand{\thefigurehere}{\arabic{section}.\arabic{figurehere}}
-\newenvironment{fig}[2][figlabel]{%
+\newcommand{\figlabel}{\relax} % can't use evn arg #1 in second half so save it
+\newcommand{\figcapt}{\relax} % can't use evn arg #2 in second half so save it
+\newenvironment{fig}[2][]{%
+  \renewcommand\figlabel{#1}% Save for use in second half
+  \renewcommand\figcapt{#2}% Save for use in second half
   \begin{figurehere}[H]
   \setcounter{figurehere}{\value{theorem}}
   \refstepcounter{theorem}
-  \caption{\thetheorem~\textsc{Figure:} #2} \label{#1}
   \centering
 }{%
+  \caption{\thetheorem~\textsc{Figure:} \figcapt} \label{\figlabel}
   \end{figurehere}
 }
 \crefname{figurehere}{Figure}{Figures}

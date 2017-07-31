@@ -23,13 +23,14 @@
 % \end{definition}
 Our touchstone is the Turing machine.
 To better understand it we might take it apart.
-Turing machines have only two components, a CPU and a tape.
+A Turing machines has only two components, a CPU and a tape.
 Consequently, in this section we take the tape away and
 study the CPU alone.
 
 Alternatively stated,
 while a Turing Machine has unbounded memory, 
-the devices that we use every day do not.We can ask \citetext{what jobs can be done by a machine with bounded memory}{%
+the devices that we use every day do not.
+We can ask \citetext{what jobs can be done by a machine with bounded memory}{%
 From Rabin, Scott, Finite Automata and Their Decision Problems, 1959:
 Turing machines are widely considered to be the abstract prototype of digital computers; workers in the field, however, have felt more and more that the notion of a Turing machine is too general to serve as an accurate model of actual computers. It is well known that even for simple calculations it is impossible to give an a priori upper bound on the amount of tape a Turing machine will need for any given computation. It is precisely this feature that renders Turing's concept unrealistic.
 % 
@@ -485,6 +486,10 @@ and the function $\phi_e$ computed by the Turing machine $\TM_e$.
 Both take as input the contents of their machine's start tape,
 and both give as output their machine's result.
 
+\begin{TODO}
+  Add exercise that starts with a TM using only finite scratch memory, and
+  then produces an FSA doing that job.
+\end{TODO}
 
 \begin{exercises}
 \begin{exercise}
@@ -805,7 +810,7 @@ paths that visit every vertex and then come back to the start.
 We might for instance start with a map of the
 forty eight contiguous US~states
 and look at trips that visit every state capitol.
-We could ask if there is a cycle of less than $16,000$ kilometers.
+We could ask if there is a cycle of less than $16\,000$ kilometers.
 
 \margingraphic{0.175\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
 Imagine that we are solving this on a computer
@@ -840,7 +845,7 @@ The process assigned Albany, for instance, would know that the trip so far is
 $126.19$~kilometers and would then fork its own
 forty six children.
 At the end you have a whole lot of child processes but if there is
-a trip of less than $16,000$ kilometers then one of the children knows it.
+a trip of less than $16\,000$ kilometers then one of the children knows it.
 
 We could work this way if we had an unboundedly-parallel machine,
 because we could keep allocating as many processes
@@ -854,7 +859,7 @@ the machine has many process, each in a different state.
 This presentation of nondeterminism is familiar from our experience
 with everyday computers.
 When we are writing an email in one window 
-and watching a video in another the machine seems, to the user, to be
+and watching a video in another then the machine seems to the user to be
 in multiple states.
 
 This section carries this over to a finite state machine context.
@@ -863,7 +868,7 @@ This section carries this over to a finite state machine context.
 Consider this machine graph.
 Observe that leaving $q_0$ are two arrows labelled~\str{0}.
 It also has states with a deficit of edges; for instance,
-leaving $q_1$ is no arrow labelled~\str{1}.
+out of $q_1$ comes no~\str{1} arrow.
 This is a nondeterministic machine.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm00.pdf}}
@@ -918,7 +923,7 @@ furnishes the answer (``go around twice, then off to the right'') and
 we just have to check that answer on this machine.
 
 In this book we shall describe nondeterminism in both ways: as a
-machine being in multiple states at once, and as guessing.
+machine being in multiple states at once, and as a machine guessing.
 To use both paradigms we must reconcile them by showing that they describe the
 same-powered machine.
 We start that by, after giving a definition of Nondeterminstic
@@ -4026,17 +4031,17 @@ and see to what state they go.
       &$q_1$ &$q_2$ &$q_1$ &$q_0$                 \\
   \end{tabular}
 \end{center}
-The machine partitions $\kleenestar{\Sigma}$ into three equivalence classes,
+The machine splits $\kleenestar{\Sigma}$ into three equivalence classes,
 those strings that bring the machine to~$q_0$, those that bring the machine
 to~$q_1$, and those that bring the machine to~$q_2$.
 \begin{equation*}
-  \eclass_0=\set{\varepsilon, \str{b},\str{bb}, \,\ldots}
+  \eclass_0=\set{\varepsilon, \str{b},\str{bb},\, \str{abb}, \,\ldots}
   \quad
   \eclass_1=\set{\str{a}, \str{aa},\str{ba}, \str{aba},\,\ldots}
   \quad
   \eclass_2=\set{\str{ab}, \str{aab}, \str{abb},\,\ldots}
 \end{equation*}
-The first part $\eclass_0$ are those strings that are either
+The first part, $\eclass_0$, are those strings that are either
 empty, or consist of a single~\str{b}, or end in \str{bb}.
 Put another way, $\eclass_0$ is described by the regular expression
 \re{$\emptystring$|b|((a|b)*bb)}.
@@ -4044,40 +4049,141 @@ Similarly, $\eclass_1$ is described by \re{(a|b)*a}
 and $\eclass_2$ is described by \re{(a|b)*ab}.
 
 \begin{definition}
-  Let $\lang{L}$ be a language over $\Sigma$.
-  Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$
-  \definend{$\lang{L}$-indistinguishable}
-  when
-  $\sigma\concat\tau\in\lang{L}$ if and only if
-  $\hat{\sigma}\concat\tau\in\lang{L}$,
-  for every string
-  $\tau\in\kleenestar{\Sigma}$.
-  Otherwise they are \definend{$\lang{L}$-distinguishable}.
-\end{definition}
-
-Said another way, the two are $\lang{L}$-distinguishable when there is a
-$\tau$ so that one of $\sigma\tau$ and $\hat{\sigma}\tau$ is
-an element of~$\lang{L}$ and the other is not.
-
-\begin{definition}
-  If $\lang{L}$ is a language over $\Sigma$ then
-  $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$ are
-  \definend{$\lang{L}$-related}, written $\sigma\sim_{\lang{L}}\hat{\sigma}$,
-  if they have no distinguishing extension.  
+  Let $\FSM$ be a finite state machine over~$\kleenestar{\Sigma}$.
+  We say that two strings $\sigma_0,\sigma_1$ are
+  \definend{$\FSM$-related} if starting the machine with input~$\sigma_0$
+  ends with it in the same state as does starting the machine
+  with input~$\sigma_1$.
 \end{definition}
 
 \begin{lemma}
-  For any language~$\lang{L}$,
-  the binary relation $\sim_{\lang{L}}$ between strings
-  is an equivalence relation.   
+  The binary relation of $\FSM$-related is an equivalence.
 \end{lemma}
 
 \begin{proof}
-Sketch, including reminder of what is an equivalence.  
+  We must show that the relation  is reflexive, symmetric,
+  and transitive.
+  Reflexivity, that any input string $\sigma$ brings the machine
+  to the same state as itself, is obvious.
+  So also is symmetry, that $\sigma_0$ brings the machine to the same state
+  as $\sigma_1$ then $\sigma_1$ brings it to the same state as~$\sigma_0$.
+  Transitivity is also easy: if $\sigma_0$ brings $\FSM$ to the same state
+  as $\sigma_1$, and $\sigma_1$ brings it to the same state as~$\sigma_2$,
+  then clearly $\sigma_0$ brings it to the same state as $\sigma_2$.
 \end{proof}
 
-Examples
-Reminder of equivalence classes.
+Recall that every equivalence is associated with a partition of the underlying
+set; as illstrated above,
+the set of strings $\kleenestar{\Sigma}$ is split into parts that are
+disjoint, non-empty, and exhaustive.
+
+So a machine gives rise to a partition.
+Does a partition give a machine?
+
+\begin{definition}
+  Suppose that $\lang{L}$ is a language over $\Sigma$.
+  Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$
+  are \definend{$\lang{L}$-indistinguishable}
+  when
+  $\sigma\concat\tau\in\lang{L}$ if and only if
+  $\hat{\sigma}\concat\tau\in\lang{L}$,
+  for every suffix
+  $\tau\in\kleenestar{\Sigma}$.
+  In this case we also say that they are
+  \definend{$\lang{L}$-related, $\sigma\sim_{\lang{L}}\hat{\sigma}$}.
+  Otherwise they are \definend{$\lang{L}$-distinguishable}.
+\end{definition}
+
+Said another way, the two strings $\sigma$ and~$\hat{\sigma}$
+are $\lang{L}$-distinguishable when there is a
+suffix $\tau$ that separates them:~one
+of $\sigma\concat\tau$ and $\hat{\sigma}\concat\tau$
+is an element of~$\lang{L}$ and the other is not.
+
+\begin{example}
+  Let $\lang{L}$ be the set
+  $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has an even number of \str{1}'s}}$.
+  Then two strings $\sigma_0,\sigma_1$ are $\lang{L}$-related
+  if they both have an even number of \str{1}'s.
+  That's because for any $\tau\in\kleenestar{\B}$, if $\tau$ has an even number of \str{1}'s then $\sigma_0\concat\tau\in\lang{L}$ and  $\sigma_0\concat\tau\in\lang{L}$, while if $\tau$ has an odd number of \str{1}'s then the concatenations will not be members of~$\lang{L}$.  
+  Similarly, two strings are $\lang{L}$-related if both have an odd number of
+  $1$'s.
+  So the relationship of $\sim_{\lang{L}}$ gives rise to this partition
+  of $\kleenestar{\B}$.
+  \begin{equation*}
+    \epart_0=\set{\emptystring, \str{0},\str{00},\str{11},\str{000},\str{011},\str{101},\str{110},\,\ldots}
+    \quad
+    \epart_1=\set{\str{1}, \str{01},\str{10},\str{001},\str{010},\,\ldots}
+  \end{equation*}  
+\end{example}
+
+\begin{example}
+  Let $\lang{L}
+  =\set{\sigma\in\kleenestar{\set{\str{a}, \str{b}}} \suchthat
+    \text{$\sigma$ has the same number of \str{a}'s as \str{b}'s}}$.
+  Then two members of~$\lang{L}$, 
+  two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$ with the same number of
+  \str{a}'s as \str{b}'s, are $\lang{L}$-related.
+  This is because for any
+  suffix~$\tau$, the string $\sigma_0\concat\tau$ is an element of~$\lang{L}$
+  if and only if $\sigma_1\concat\tau$ is an element of~$\lang{L}$, which
+  happens if and only if $\tau$ has the same number of \str{a}'s as~\str{b}'s.
+
+  Similarly, two strings $\sigma_0,\sigma_1$ such that the number of
+  \str{a}'s is one more than the number of \str{b}'s are $\lang{L}$-related
+  because for any
+  suffix~$\tau$, the string $\sigma_0\concat\tau$ is an element of~$\lang{L}$
+  if and only if $\sigma_1\concat\tau$ is an element of~$\lang{L}$, namely 
+  if and only if $\tau$ has one fewer \str{a} than~\str{b}.
+
+  Following this reasoning, $\sim_{\lang{L}}$ partitions
+  $\kleenestar{\set{\str{a},\str{b}}}$ into the infinitely many parts
+  $\epart_i=\set{\sigma\in \kleenestar{\set{\str{a},\str{b}}}\suchthat \text{the number of \str{a}'s minus the number of \str{b}'s equals $i$}}$, where $i\in\Z$.
+\end{example}
+
+\begin{lemma}
+  For any language~$\lang{L}$,
+  the binary relation $\sim_{\lang{L}}$
+  is an equivalence.   
+\end{lemma}
+
+\begin{proof}
+  Reflexivity, that $\sigma\sim_{\lang{L}}\sigma$ for all
+  $\sigma\in\kleenestar{\Sigma}$, is trivial.
+  So also is symmetry, that $\sigma_0\sim_{\lang{L}}\sigma_1$
+  implies $\sigma_1\sim_{\lang{L}}\sigma_0$.
+  For transitivity 
+  suppose $\sigma_0\sim_{\lang{L}}\sigma_1$ and
+  $\sigma_1\sim_{\lang{L}}\sigma_2$.
+  If $\sigma_o\concat\tau\in\lang{L}$ then by the first supposition
+  $\sigma_1\concat\tau\in\lang{L}$, and that in turn gives
+  $\sigma_2\concat\tau\in\lang{L}$ by the second supposition.
+  Similarly $\sigma_o\concat\tau\notin\lang{L}$ implies
+  $\sigma_2\concat\tau\notin\lang{L}$.
+  Thus $\sigma_0\sim_{\lang{L}}\sigma_2$.
+\end{proof}
+
+\begin{example}
+  This machine~$\FSM$ accepts
+  $\lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+    \text{$\sigma$ has even length}}$.
+  \begin{center}
+    \includegraphics{automata/asy/fsa/fsa19.pdf}
+  \end{center}We will compare the partitions induced by the two relations on
+  $\kleenestar{\set{\str{a},\str{b}}}$.
+
+  These are the parts of strings that are $\FSM$-related.
+  \begin{align*}
+    \epart_0 &=\set{\emptystring}  \\
+    \epart_1 &=\set{\sigma\suchthat \text{$\sigma$ matches \re{a((b|a)(b|a))*}}}
+    \\
+    \epart_2 &=\set{\sigma\suchthat \text{$\sigma$ matches \re{b((b|a)(b|a))*}}}
+    \\
+    \epart_3 &=\set{\sigma\suchthat \text{$\sigma$ matches \re{(aa|ab)((b|a)(b|a))*}}}
+    \\
+    \epart_4 &=\set{\sigma\suchthat \text{$\sigma$ matches \re{(ba|bb)((b|a)(b|a))*}}}
+  \end{align*}
+\end{example}
 
 \begin{theorem}[Myhill-Nerode]
 A language~$\lang{L}$ is regular if and only if the relation
@@ -4088,19 +4194,30 @@ Moreover, the proof will show that there is a correspondence between the classes
 and the states of a finite state automata accepting that lanuguage.
 
 \begin{proof}
-Suppose that $\lang{L}$ is a regular language, over~$\Sigma$,
-accepted by the finite state machine $\FSM$.
+Suppose first that $\lang{L}$ is a regular language, over~$\Sigma$.
+Then it is accepted by a finite state machine, $\FSM$.
+If two strings $\sigma_0,\sigma_1$ are  $\FSM$-related  
+then they are $\sim_{\lang{L}}$ related because starting the machine with
+those two inputs causes it to end in the same state, so $\sigma_0\concat\tau$
+will move the machine to a final state if and only if $\sigma_1\concat\tau$
+does.
+
+This has two implications.
+The first is that the number of element in the partition induced by
+$\sim_{\lang{L}}$ is finite, because the number of elements in the partition
+associated with being $\FSM$-related is finite as there is one part for
+each state in~$\FSM$.
 
 Partition the set of all strings~$\kleenestar{\Sigma}$ with:
 two strings $\sigma,\hat{\sigma}$ are in the same part if 
-when~$\mathcal{A}$ is given them as input then they take 
+when~$\FSM$ is given them as input then they take 
 the machine to the same state.
 Observe that if two strings are in the same part then they are 
 $\lang{L}$-related.
 Thus, the parts are subsets of the equivalence classes of 
 $\sim_{\lang{L}}$.
 Since the number of parts is less than or equal to the number of states
-in $\mathcal{A}$, the number of equivalence classes is finite.
+in $\FSM$, the number of equivalence classes is finite.
 
 If L is a regular language, then by definition there is a DFA A that
 recognizes it, with only finitely many states.

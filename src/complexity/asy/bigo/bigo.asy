@@ -359,7 +359,7 @@ xequals(pic, 0,
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(xmin); i<=floor(xmax); ++i) {
   dot(pic, Scale(pic,F(i)), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-  dot(pic, Scale(pic,G(i)), second_pen, Fill(second_pen)); 
+  dot(pic, Scale(pic,G(i)), FCNPEN_SOLID, Fill(FCNPEN_SOLID)); 
 }
 label(pic,"$f$",Scale(pic,(20,500)), 3W);
 label(pic,"$g$",Scale(pic,(17,300)), 3E);
@@ -529,7 +529,7 @@ dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
   dot(pic, Scale(pic,(i,f(i))),FCNPEN_SOLID,Fill(white));
-  dot(pic, Scale(pic,(i,g(i))),second_pen,Fill(white));
+  dot(pic, Scale(pic,(i,g(i))),FCNPEN_SOLID,Fill(white));
 }
 label(pic,"$g$",Scale(pic,(90,1900000)), 0.8W);
 label(pic,"$f$",Scale(pic,(90,0)), 2N);
@@ -690,7 +690,7 @@ dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
   dot(pic, Scale(pic,(i,f(i))),FCNPEN_SOLID,Fill(white));
-  dot(pic, Scale(pic,(i,g(i))),second_pen,Fill(white));
+  dot(pic, Scale(pic,(i,g(i))),FCNPEN_SOLID,Fill(white));
 }
 label(pic,"$f$",Scale(pic,(90,19000)), 0.8W);
 label(pic,"$g$",Scale(pic,(90,8000)), 2S);

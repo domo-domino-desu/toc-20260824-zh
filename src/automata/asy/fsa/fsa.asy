@@ -1,0 +1,1001 @@
+// fsa.asy
+//  circle diagrams of a FSA
+
+import settings;
+// settings.dir="..";  // make it able to see jh.asy 
+settings.outformat="pdf";
+settings.render=0;
+
+unitsize(1pt);
+
+// cd junk is needed for relative import 
+cd("../../../asy");
+import settexpreamble;
+cd("");
+settexpreamble();
+cd("../../../asy/");
+import jh;
+cd("");
+cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
+import node;
+cd("");
+
+
+// define style
+// defaultnodestyle=nodestyle(drawfn=FillDrawer(lightgray,black));
+// defaultnodestyle=nodestyle(xmargin=1pt,
+// 			   black,  // label
+// 			   drawfn=FillDrawer(verylightcolor,boldcolor));
+
+// defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+boldcolor,
+// 			   arrow=Arrow(6,filltype=FillDraw(lightcolor,black))
+// 			   );
+defaultnodestyle=nodestyle(xmargin=1pt,
+			   textpen=fontsize(7pt),
+			   drawfn=FillDrawer(verylightcolor,boldcolor));
+
+defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+black,
+			   arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
+
+// Pen for edges when Labelled
+pen edge_text_pen = fontsize(7pt) + fontcommand("\ttfamily") + black;
+// color edges in walk
+pen walk_pen = linewidth(0.75bp) + highlight_color;
+
+string OUTPUT_FN = "fsa%02d";
+
+
+
+// ============== Power toggle ================
+picture pic;
+int picnum = 0;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_{\text{off}}$"),
+q1=ncircle("$q_{\text{on}}$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1);
+
+// edges
+draw(pic,
+     (q0..bend..q1).l("$\str{toggle}$"), 
+     (q1..bend..q0).l("$\str{toggle}$")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ============== Turnstile ================
+picture pic;
+int picnum = 1;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_{\text{init}}$"),
+     q1=ncircle("$q_{\text{one}}$"),
+     q2=ncircle("$q_{\text{ready}}$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+
+// edges
+draw(pic,
+     (q0..bend..q1).l("$\str{token}$"),
+     (q0..loop(S)).l("\str{push}"),
+     (q1..bend..q2).l("$\str{token}$"),
+     (q1..loop(S)).l("\str{push}"),
+     (q2..loop(S)).l("\str{token}"),
+     (q2..bend..q0).l("$\str{push}$")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ============== vending machine ================
+picture pic;
+int picnum = 2;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+     q5=ncircle("$q_5$"), 
+     q10=ncircle("$q_{10}$"), 
+     q15=ncircle("$q_{15}$"), 
+     q20=ncircle("$q_{20}$"), 
+     q25=ncircle("$q_{25}$"), 
+     q30=ncircle("$q_{30}$"); 
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q5, q10, q15, q20, q25, q30);
+
+// edges
+draw(pic,
+     (q0..bend..q5).l("\str{n}"),
+     (q0..loop(S)).l("push"),
+     (q5..bend..q10).l("\str{n}"),
+     (q5..loop(S)).l("push"),
+     (q10..bend..q15).l("\str{n}"),
+     (q10..loop(S)).l("push"),
+     (q15..bend..q20).l("\str{n}"),
+     (q15..loop(S)).l("push"),
+     (q20..bend..q25).l("\str{n}"),
+     (q20..loop(S)).l("push"),
+     (q25..bend..q30).l("\str{n}"),
+     (q25..loop(S)).l("push"),
+     (q30..bend(15)..q0).l("push"),
+     (q30..loop(N)).l("\str{n}")
+);
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q5, q10, q15, q20, q25, q30);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ============== vending machine, dimes  ================
+picture pic;
+int picnum = 3;
+setdefaultstatediagramstyles() ;
+
+draw(pic,
+     (q0..bend..q10).l("\str{d}"),
+     (q5..bend..q15).l("\str{d}"),
+     (q10..bend..q20).l("\str{d}"),
+     (q15..bend..q25).l("\str{d}"),
+     (q20..bend..q30).l("\str{d}"),
+     (q25..bend(-20)..q30).l("\str{d}"),
+     (q30..loop(N)).l("\str{d}")
+ );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q5, q10, q15, q20, q25, q30);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ============== vending machine, quarters  ================
+picture pic;
+int picnum = 4;
+setdefaultstatediagramstyles() ;
+
+draw(pic,
+     (q0..bend(20)..q25).l("\str{q}"),
+     (q5..bend(20)..q30).l("\str{q}"),
+     (q10..bend(-30)..q30).l(Label("\str{q}",Relative(0.1))).style("leftside"),
+     (q15..bend(-27.5)..q30).l(Label("\str{q}",Relative(0.1))).style("leftside"),
+     (q20..bend(-25)..q30).l(Label("\str{q}",Relative(0.1))).style("leftside"),
+     (q25..bend(-20)..q30).l(Label("\str{q}",Relative(0.1))).style("leftside"),
+     (q30..loop(N)).l("q")
+ );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q5, q10, q15, q20, q25, q30);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ============== vending machine, all  ================
+picture pic;
+int picnum = 5;
+setdefaultstatediagramstyles() ;
+
+// edges
+draw(pic,
+     (q0..bend..q5).l("n"),
+     (q5..bend..q10).l("n"),
+     (q10..bend..q15).l("n"),
+     (q15..bend..q20).l("n"),
+     (q20..bend..q25).l("n"),
+     (q25..bend..q30).l("n"),
+     (q30..bend(15)..q0).l("push")
+);
+
+draw(pic,
+     (q0..bend..q10).l("d"),
+     (q5..bend..q15).l("d"),
+     (q10..bend..q20).l("d"),
+     (q15..bend..q25).l("d"),
+     (q20..bend..q30).l("d")
+ );
+
+draw(pic,
+     (q0..bend(20)..q25).l("q"),
+     (q5..bend(20)..q30).l("q")
+ );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q5, q10, q15, q20, q25, q30);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== multiple of four ================
+picture pic;
+int picnum = 6;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+     q1=ncircle("$q_1$"),
+     q2=ncircle("$q_2$"),
+     q3=ncircle("$q_3$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1);
+vlayout(v, q1, q2);
+vlayout(v, q0, q3);
+
+// edges
+draw(pic,
+     (q0--q1).l("$\str{1}$"),
+     (q0..loop(W)).l("\str{0}"),
+     (q1--q2).l("$\str{1}$"),
+     (q1..loop(E)).l("\str{0}"),
+     (q2--q3).l("$\str{1}$"),
+     (q2..loop(E)).l("\str{0}"),
+     (q3--q0).l("$\str{1}$"),
+     (q3..loop(W)).l("\str{0}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== FSM picture ================
+picture pic;
+int picnum = 7;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+vlayout(v, q2, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{+},\str{-}"),
+     (q1--q2).l("\str{1},...,\str{9}"),
+     (q0..bendleft..q2).l("\str{1},...,\str{9}").style("leftside"),
+     (q0..bend(10)..e).l("other"),
+     (q1--e).l("other").style("leftside"),
+     (q2--e).l("other").style("leftside"),
+     (q2..loop(E)).l("\str{0},..,\str{9}"),
+     (e..loop(E)).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0,q1,q2,e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== accept valid integer ================
+picture pic;
+int picnum = 8;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+vlayout(v, q2, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{+},\str{-}"),
+     (q1--q2).l("\str{1},...,\str{9}"),
+     (q0..bendleft..q2).l("\str{1},...,\str{9}").style("leftside"),
+     (q0..bend(10)..e).l("other"),
+     (q1--e).l("other").style("leftside"),
+     (q2--e).l("other").style("leftside"),
+     (q2..loop(E)).l("\str{0},..,\str{9}"),
+     (e..loop(E)).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0,q1,q2,e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== filename extensions ================
+picture pic;
+int picnum = 9;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$");  
+node q3=ncircle("$q_3$",ns_accepting); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$");  
+node q6=ncircle("$q_6$",ns_accepting); 
+node q7=ncircle("$q_7$");  
+node q8=ncircle("$q_8$",ns_accepting); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+layout(30.0, (1/Cos(30.0))*u, q0, q1);
+hlayout(1*u, q1, q2, q3);
+hlayout(1*u, q0, q4, q5, q6);
+layout(-30.0, (1/Cos(-30.0))*u, q4, q7);
+hlayout(1*u, q7, q8);
+hlayout(4*u, q0, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{j}"),
+     (q1--q2).l("\str{p}"),
+     (q2--q3).l("\str{g}"),
+     (q0--q4).l("\str{p}"),
+     (q4--q5).l("\str{n}"),
+     (q5--q6).l("\str{g}"),
+     (q4--q7).l("\str{d}"),
+     (q7--q8).l("\str{f}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6, q7, q8, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== filename extensions, with errors ================
+picture pic;
+int picnum = 10;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// node q0=ncircle("$q_0$"); 
+// node q1=ncircle("$q_1$"); 
+// node q2=ncircle("$q_2$");  
+// node q3=ncircle("$q_3$",ns_accepting); 
+// node q4=ncircle("$q_4$"); 
+// node q5=ncircle("$q_5$");  
+// node q6=ncircle("$q_6$",ns_accepting); 
+// node q7=ncircle("$q_7$");  
+// node q8=ncircle("$q_8$",ns_accepting); 
+// node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+// defaultlayoutrel = false;
+// defaultlayoutskip = 1.75cm;
+// real u = defaultlayoutskip;
+// real v = 0.85*u;
+
+// layout(30.0, (1/Cos(30.0))*u, q0, q1);
+// hlayout(1*u, q1, q2, q3);
+// hlayout(1*u, q0, q4, q5, q6);
+// layout(-30.0, (1/Cos(-30.0))*u, q4, q7);
+// hlayout(1*u, q7, q8);
+// hlayout(4*u, q0, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{j}"),
+     (q1--q2).l("\str{p}"),
+     (q2--q3).l("\str{g}"),
+     (q0--q4).l("\str{p}"),
+     (q4--q5).l("\str{n}"),
+     (q5--q6).l("\str{g}"),
+     (q4--q7).l("\str{d}"),
+     (q7--q8).l("\str{f}")
+);
+draw(pic,
+     (q0..bend(-60)..e).l(Label("other",Relative(0.1))).style("leftside"),
+     (q1..bend(-48.5)..e).l(Label("other",Relative(0.1))).style("leftside"),
+     (q2..bend(-45)..e).l(Label("other",Relative(0.1))).style("leftside"),
+     (q3--e).l("any"),
+     (e..loop(E)).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6, q7, q8, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== at least two a's, even number b's ================
+picture pic;
+int picnum = 11;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+vlayout(v, q0, q3);
+hlayout(u, q3, q4, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1--q2).l("\str{a}"),
+     (q2..loop(E)).l("\str{a}"),
+     (q3--q4).l("\str{a}"),
+     (q0..bend..q3).l("\str{b}"),
+     (q3..bend..q0).l("\str{b}"), 
+     (q4--q5).l("\str{a}"),
+     (q1..bend..q4).l("\str{b}"),
+     (q4..bend..q1).l("\str{b}"), 
+     (q5..loop(E)).l("\str{a}"),
+     (q2..bend..q5).l("\str{b}"),
+     (q5..bend..q2).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== multiple of three ================
+picture pic;
+int picnum = 12;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1);
+layout(-60.0, 1*u, q0, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{1},\str{4},\str{7}"),
+     (q0..bend(15)..q2).l(Label("\str{2},\str{5},\str{8}",Relative(0.35))).style("leftside"),
+     (q0..loop(W)).l("\str{0},\str{3},\str{6},\str{9}"),
+     (q1..bend..q0).l("\str{2},\str{5},\str{8}"),
+     (q1..bend(-15)..q2).l(Label("\str{1},\str{4},\str{7}",Relative(0.65))),
+     (q1..loop(E)).l("\str{0},\str{3},\str{6},\str{9}"),
+     (q2..bend(-50)..q0).l("\str{1},\str{4},\str{7}").style("leftside"),
+     (q2..bend(50)..q1).l("\str{2},\str{5},\str{8}"),
+     (q2..loop(S)).l("\str{0},\str{3},\str{6},\str{9}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== North American Phone Numbering Plan ================
+picture pic;
+int picnum = 13;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node opr=ncircle("Op",ns_accepting); 
+node t1=ncircle("$\text{Int}_1$"); 
+node tn=ncircle("$\text{Int}_n$",ns_accepting); 
+node ll1=ncircle("$\text{LL}_1$"); 
+node ll2=ncircle("$\text{LL}_2$"); 
+node ll3=ncircle("$\text{LL}_3$"); 
+node x1=ncircle("$\text{X}_1$"); 
+node x2=ncircle("$\text{X}_2$"); 
+node x3=ncircle("$\text{X}_3$"); 
+node l1=ncircle("$\text{L}_1$"); 
+node l2=ncircle("$\text{L}_2$"); 
+node l3=ncircle("$\text{L}_3$"); 
+node l4=ncircle("$\text{L}_4$"); 
+node con=ncircle("Con",ns_accepting); 
+node h2=ncircle("$\text{H}_2$"); 
+node h3=ncircle("$\text{H}_3$"); 
+node help=ncircle("Info",ns_accepting); 
+node r2=ncircle("$\text{R}_2$"); 
+node r3=ncircle("$\text{R}_3$"); 
+node rep=ncircle("Rep",ns_accepting); 
+node e2=ncircle("$\text{E}_2$"); 
+node e3=ncircle("$\text{E}_3$"); 
+node emr=ncircle("Emr",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = 0.9*defaultlayoutskip;
+real v = 0.9*u;
+
+real theta=aTan(2*v/u);
+layout(theta,(1/Cos(theta))*u, q0, opr);
+hlayout(1*u, opr, t1, tn);
+real theta=aTan(v/u);
+layout(theta,(1/Cos(theta))*u, q0, ll1);
+hlayout(1*u, ll1, ll2);
+real alpha=aTan(-0.4*v/u);
+layout(alpha, (1/Cos(alpha))*u, ll2, ll3);
+hlayout(1*u, ll3, x1);
+hlayout(5*u, q0, x2);
+hlayout(u, x2, x3, l1);
+vlayout(1*v, l1, l2, l3, l4, con);
+real theta=aTan(-v/u);
+layout(theta, (1/Cos(theta))*u, q0, h2);
+layout(alpha, (1/Cos(alpha))*u, h2, h3);
+hlayout(1*u, h3, help);
+real theta=aTan(-2*v/u);
+layout(theta, (1/Cos(theta))*u, q0, r2);
+layout(alpha, (1/Cos(alpha))*u, r2, r3);
+hlayout(1*u, r3, rep);
+real theta=aTan(-3*v/u);
+layout(theta, (1/Cos(theta))*u, q0, e2);
+layout(alpha, (1/Cos(alpha))*u, e2, e3);
+hlayout(1*u, e3, emr);
+
+// draw edges
+draw(pic,
+     (q0--opr).l("\str{0}"),
+     (opr--t1).l("\str{1}"),
+     (t1--tn).l("$x$"),
+     (tn..loop(E)).l("$x$"),
+     (q0--ll1).l("\str{1}"),
+     (ll1--ll2).l("$n$"),
+     (ll2--HV--x3).l("$n$"),
+     (ll2--VH--ll3).l("$p$"),
+     (ll3--x1).l("$n$"),
+     (x1--HV--x2).l("$n$"),
+     (q0--x2).l("\str{2},\str{3},\str{5},\str{7},\str{8}"),
+     (x2--x3).l("$n$"),
+     (x3--l1).l("$x$"),
+     (l1--l2).l("$x$"),
+     (l2--l3).l("$x$"),
+     (l3--l4).l("$x$"),
+     (l4--con).l("$x$"),
+     (q0--h2).l("4").style("leftside"),
+     (h2--HV--x3).l("$n$"),
+     (h2--VH--h3).l("\str{1}"),
+     (h3--help).l("\str{1}"),
+     (q0--r2).l("6").style("leftside"),
+     (r2--HV--x3).l("$n$"),
+     (r2--VH--r3).l("\str{1}"),
+     (r3--rep).l("\str{1}"),
+     (q0--e2).l("9").style("leftside"),
+     (e2--HV--x3).l("$n$"),
+     (e2--VH--e3).l("\str{1}"),
+     (e3--emr).l("\str{1}")
+);
+
+// draw nodes
+draw(pic,
+     q0, opr, t1, tn,
+     ll1, ll2, ll3, x1,
+     x2, x3, l1, l2, l3, l4, con,
+     h2, h3, help,
+     r2, r3, rep,
+     e2, e3, emr);
+
+// draw legend
+label(pic,
+      "\renewcommand*{\arraystretch}{0.9}
+       \begin{tabular}{rl}
+         \multicolumn{2}{l}{Legend:} \\ 
+         \hspace{2em}$x$  &\str{0},\,\ldots \str{9} \\
+                     $n$  &\str{2},\,\ldots \str{9} \\
+                     $p$  &\str{0},\str{1} 
+         \end{tabular}",(7*u,1.45*v));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise of a*ba* ================
+picture pic;
+int picnum = 14;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+// layout(-45.0, 1*u, q0, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(S)).l("\str{a}"),
+     (q0--q1).l("\str{b}"),
+     (q1..loop(S)).l("\str{a}"),
+     (q1--q2).l("\str{b}"),
+     (q2..loop(S)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== extended transition function example ================
+picture pic;
+int picnum = 15;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(N)).l("\str{b}"),
+     (q0--q1).l("\str{a}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1..bend..q2).l("\str{b}"),
+     (q2..bend..q1).l("\str{a}"),
+     (q2..loop(N)).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== example motivation for myhill nerode ================
+// picture pic;
+// int picnum = 16;
+// unitsize(pic,1pt);
+// setdefaultstatediagramstyles() ;
+
+// // define nodes
+// node q0=ncircle("$q_0$"); 
+// node q1=ncircle("$q_1$"); 
+// node q2=ncircle("$q_2$"); 
+// node q3=ncircle("$q_3$"); 
+// node q4=ncircle("$q_4$"); 
+// node q5=ncircle("$q_5$",ns_accepting); 
+
+// // calculate nodes position
+// // layout
+// defaultlayoutrel = false;
+// defaultlayoutskip = 1.5cm;
+// real u = defaultlayoutskip;
+// real v = 0.9*u;
+
+// hlayout(1*u, q0, q3);
+// vlayout(1*v, q0, q1);
+// hlayout(1*u, q1, q4);
+// vlayout(1*v, q1, q2);
+// hlayout(1*u, q2, q5);
+
+// // draw edges
+// draw(pic,
+//      (q0--q1).l("\str{0}"),
+//      (q0..bend..q3).l("\str{1}"),
+//      (q1--q2).l("\str{0}"),
+//      (q1..bend..q4).l("\str{1}"),
+//      (q2..loop(W)).l("\str{1}"),
+//      (q2..bend..q5).l("\str{1}"),
+//      (q3..bend..q0).l("\str{1}"),
+//      (q3--q4).l("\str{0}"),
+//      (q4..bend..q1).l("\str{1}"),
+//      (q4--q5).l("\str{0}"),
+//      (q5..bend..q2).l("\str{1}"),
+//      (q5..loop(E)).l("\str{0}")
+// );
+
+// // draw nodes
+// draw(pic,
+//      q0, q1, q2, q3, q4, q5);
+
+// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// // ============== example motivation for myhill nerode ================
+// picture pic;
+// int picnum = 17;
+// unitsize(pic,1pt);
+// setdefaultstatediagramstyles() ;
+
+// // define nodes
+// node q0=ncircle("$q_0$"); 
+// node q1=ncircle("$q_1$"); 
+// node q2=ncircle("$q_2$"); 
+// node q3=ncircle("$q_3$"); 
+// node q4=ncircle("$q_4$"); 
+// node q5=ncircle("$q_5$",ns_accepting); 
+
+// // calculate nodes position
+// // layout
+// defaultlayoutrel = false;
+// defaultlayoutskip = 1.5cm;
+// real u = defaultlayoutskip;
+// real v = 0.9*u;
+
+// hlayout(1*u, q0, q3);
+// vlayout(1*v, q0, q1);
+// hlayout(1*u, q1, q4);
+// vlayout(1*v, q1, q2);
+// hlayout(1*u, q2, q5);
+
+// // draw edges
+// draw(pic,
+//      (q0--q1).l("\str{0}"),
+//      (q0..bend..q3).l("\str{1}"),
+//      (q1--q2).l("\str{0}"),
+//      (q1..bend..q4).l("\str{1}"),
+//      (q2..loop(W)).l("\str{1}"),
+//      (q2..bend..q5).l("\str{1}"),
+//      (q3..bend..q0).l("\str{1}"),
+//      (q3--q4).l("\str{0}"),
+//      (q4..bend..q1).l("\str{1}"),
+//      (q4--q5).l("\str{0}"),
+//      (q5..bend..q2).l("\str{1}"),
+//      (q5..loop(E)).l("\str{0}")
+// );
+
+// // draw nodes
+// draw(pic,
+//      q0, q1, q2, q3, q4, q5);
+
+// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== example motivation for myhill nerods ================
+picture pic;
+int picnum = 16;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.9*u;
+
+hlayout(1*u, q0, q2);
+vlayout(1*v, q0, q1);
+hlayout(1*u, q1, q3);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0}"),
+     (q0--q2).l("\str{1}"),
+     (q1..loop(S)).l("\str{0}"),
+     (q1--q3).l("\str{1}"),
+     (q2..loop(E)).l("\str{1}"),
+     (q2--q3).l("\str{0}"),
+     (q3..loop(S)).l("\str{0},\str{1}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== example motivation for myhill nerode ================
+picture pic;
+int picnum = 17;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.9*u;
+
+hlayout(1*u, q0, q2, q4);
+vlayout(1*v, q0, q1);
+hlayout(1*u, q1, q3, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0}"),
+     (q0--q2).l("\str{1}"),
+     (q1..loop(S)).l("\str{0}"),
+     (q1--q3).l("\str{1}"),
+     (q2--q4).l("\str{1}"),
+     (q2--q3).l("\str{0}"),
+     (q3..loop(S)).l("\str{0}"),
+     (q3--q5).l("\str{1}"),
+     (q4..loop(E)).l("\str{1}"),
+     (q4--q5).l("\str{0}"),
+     (q5..loop(S)).l("\str{0},\str{1}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== example for myhill-nerode ends in ab ================
+picture pic;
+int picnum = 18;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(S)).l("\str{b}"),
+     (q0--q1).l("\str{a}"),
+     (q1..loop(S)).l("\str{a}"),
+     (q1--q2).l("\str{b}").style("leftside"),
+     (q2..bend(-30)..q1).l("\str{a}").style("leftside"),
+     (q2..bend..q0).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

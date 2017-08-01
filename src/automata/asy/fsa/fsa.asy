@@ -1455,3 +1455,82 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
   
 
+
+// ============== partition for myhill-nerode, even length, non-minimal =======
+picture pic;
+int picnum = 20;
+unitsize(pic,1cm);
+
+real wth=4, hgt=2; 
+
+pair ll=(0,0), lr=(wth,0), ur=(wth,hgt), ul=(0,hgt);
+
+real Mborderpenwidth = 1pt, Lborderpenwidth = 0.5*Mborderpenwidth;
+pen Lborderpen = squarecap+linejoin(0)+linewidth(Lborderpenwidth)+highlightcolor;
+pen Mborderpen = squarecap+linejoin(0)+linewidth(Mborderpenwidth)+lightcolor;
+
+// declare the vert middle boundary (drawn later)
+path mid_bound = (0.5*(ur+ul))
+  ..(0.5*(ur.x+ul.x)+0.1, 0.5*(ul.y+ll.y))
+  ..(0.5*(lr+ll));
+
+// left boundaries
+real lft_topbnd_y=0.8*hgt;
+real[] lft_top_lft_t = intersections(ul--ll,(0,lft_topbnd_y),(wth,lft_topbnd_y));
+pair lft_top_lft = point(ul--ll, lft_top_lft_t[0]);
+real[] lft_top_rt_t = intersections(mid_bound,(0,lft_topbnd_y),(wth,lft_topbnd_y));
+pair lft_top_rt = point(mid_bound,lft_top_rt_t[0]);
+path left_top_bound = lft_top_lft
+  ..(0.5*(lft_top_lft+lft_top_rt)+(0,-0.1))
+  ..lft_top_rt;
+draw(pic,left_top_bound,Mborderpen);
+real lft_botbnd_y=0.4*hgt;
+real[] lft_bot_lft_t = intersections(ul--ll,(0,lft_botbnd_y),(wth,lft_botbnd_y));
+pair lft_bot_lft = point(ul--ll, lft_bot_lft_t[0]);
+real[] lft_bot_rt_t = intersections(mid_bound,(0,lft_botbnd_y),(wth,lft_botbnd_y));
+pair lft_bot_rt = point(mid_bound,lft_bot_rt_t[0]);
+path left_bot_bound = lft_bot_lft
+  ..(0.5*(lft_bot_lft+lft_bot_rt)+(0,-0.1))
+  ..lft_bot_rt;
+draw(pic,left_bot_bound,Mborderpen);
+// right boundary
+real rt_bnd_y=0.525*hgt;
+real[] rt_lft_t = intersections(mid_bound,(0,rt_bnd_y),(wth,rt_bnd_y));
+pair rt_lft = point(mid_bound,rt_lft_t[0]);
+real[] rt_rt_t = intersections(ur--lr,(0,rt_bnd_y),(wth,rt_bnd_y));
+pair rt_rt = point(ur--lr, rt_rt_t[0]);
+path rt_bound = rt_lft
+  ..(0.5*(rt_lft+rt_rt)+(0,-0.1))
+  ..rt_rt;
+draw(pic,rt_bound,Mborderpen);
+
+// draw the vert middle boundary
+draw(pic,mid_bound,Mborderpen);
+draw(pic,mid_bound,Lborderpen);
+
+// Draw the outside border
+path Mborder = ll--lr--ur--ul--cycle;
+draw(pic,Mborder,Mborderpen);
+// ? I want to draw the L border as on the outside edge of the Mborder
+// This shows a gap between the two.
+// real Lborderleft = ll.x-0.5*Mborderpenwidth+0.5*Lborderpenwidth;
+// real Lborderright = lr.x+0.5*Mborderpenwidth-0.5*Lborderpenwidth;
+// real Lborderbot = ll.y-0.5*Mborderpenwidth+0.5*Lborderpenwidth;
+// real Lbordertop = ul.y+0.5*Mborderpenwidth-0.5*Lborderpenwidth;
+// path Lborder = (Lborderleft,Lborderbot)
+//   --(Lborderright,Lborderbot)
+//   --(Lborderright,Lbordertop)
+//   --(Lborderleft,Lbordertop)
+//   --cycle;
+path Lborder=Mborder;
+draw(pic,Lborder,Lborderpen);
+
+// Labels
+label(pic,"$\epart_{\FSM,0}$",(0.25wth,0.875hgt));
+label(pic,"$\epart_{\FSM,3}$",(0.25wth,0.55hgt));
+label(pic,"$\epart_{\FSM,4}$",(0.25wth,0.175hgt));
+label(pic,"$\epart_{\FSM,1}$",(0.75wth,0.725hgt));
+label(pic,"$\epart_{\FSM,2}$",(0.75wth,0.225hgt));
+label(pic,"$\epart_{\lang{L},0}$",(-0.2wth,0.5hgt));
+label(pic,"$\epart_{\lang{L},1}$",(1.2wth,0.5hgt));
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

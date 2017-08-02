@@ -2173,6 +2173,21 @@ the alphabet $\Sigma=\set{\str{a},\str{b}}$.
 \end{exercise}
 
 \begin{exercise}
+  Fix a finite state machine~$\FSM$.
+  Kleene's Theorem shows that the set of strings taking $\FSM$ from the
+  start state to the set of final states is regular.
+  \begin{exparts}
+    \item
+      Show that for any set of states $S\subseteq Q_{\FSM}$ the set of
+      strings taking $\FSM$ from the start state to one of the states in~$S$
+      is regular.
+    \item
+      Show that the set of strings taking $\FSM$ from any single
+      state to any other single state is regular.
+  \end{exparts}
+\end{exercise}
+
+\begin{exercise}
   Construct the parse tree for these regular expressions over
   $\Sigma=\set{\str{a},\str{b}}$.
   \begin{exparts*}
@@ -2694,7 +2709,7 @@ can do without scratch memory.
 
 
 
-\subsection{Machine minimization}
+\subsection{Minimization}
 % We have seen how to go from a machine to a description of the language,
 % a regular expression.
 % We now reverse the process, and go from the language to a machine.
@@ -4016,8 +4031,8 @@ It accepts the language of strings that end in \str{ab}.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa18.pdf}  
 \end{center}
-Consider other strings, not just those matching \re{(a|b)*ab},
-and see to what state they go.
+Consider other strings, not just the accepted strings,
+and see to what state they bring the machine.
 \begin{center}  \small
   \begin{tabular}{r|*{12}{c}}
     \tabulartext{Input string $\sigma$}
@@ -4031,33 +4046,42 @@ and see to what state they go.
       &$q_1$ &$q_2$ &$q_1$ &$q_0$                 \\
   \end{tabular}
 \end{center}
-The machine splits $\kleenestar{\Sigma}$ into three equivalence classes,
+The collection of all strings $\kleenestar{\Sigma}$,
+is separated by the machine into three parts,
 those strings that bring the machine to~$q_0$, those that bring the machine
 to~$q_1$, and those that bring the machine to~$q_2$.
-\begin{equation*}
-  \eclass_0=\set{\varepsilon, \str{b},\str{bb},\, \str{abb}, \,\ldots}
-  \quad
-  \eclass_1=\set{\str{a}, \str{aa},\str{ba}, \str{aba},\,\ldots}
-  \quad
-  \eclass_2=\set{\str{ab}, \str{aab}, \str{abb},\,\ldots}
-\end{equation*}
-The first part, $\eclass_0$, are those strings that are either
-empty, or consist of a single~\str{b}, or end in \str{bb}.
-Put another way, $\eclass_0$ is described by the regular expression
-\re{$\emptystring$|b|((a|b)*bb)}.
-Similarly, $\eclass_1$ is described by \re{(a|b)*a}
-and $\eclass_2$ is described by \re{(a|b)*ab}.
+\begin{center}
+  \begin{tabular}{l}
+    $\eclass_{\FSM,0}=\set{\varepsilon, \str{b},\str{bb},\, \str{abb}, \,\ldots}$
+    \\
+    $\eclass_{\FSM,1}=\set{\str{a}, \str{aa},\str{ba}, \str{aba},\,\ldots}$
+    \\
+    $\eclass_{\FSM,2}=\set{\str{ab}, \str{aab}, \str{abb},\,\ldots}$
+  \end{tabular}
+  \qquad
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa21.pdf}}
+\end{center}
+
+% Make an exercise:
+% The first part, $\eclass_0$, are those strings that are either
+% empty, or consist of a single~\str{b}, or end in \str{bb}.
+% Put another way, $\eclass_0$ is described by the regular expression
+% \re{$\emptystring$|b|((a|b)*bb)}.
+% Similarly, $\eclass_1$ is described by \re{(a|b)*a}
+% and $\eclass_2$ is described by \re{(a|b)*ab}.
 
 \begin{definition}
-  Let $\FSM$ be a finite state machine over~$\kleenestar{\Sigma}$.
-  We say that two strings $\sigma_0,\sigma_1$ are
+  Let $\FSM$ be a finite state machine with alphabet~$\Sigma$.
+  Two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$ are
   \definend{$\FSM$-related} if starting the machine with input~$\sigma_0$
   ends with it in the same state as does starting the machine
   with input~$\sigma_1$.
 \end{definition}
 
 \begin{lemma}
-  The binary relation of $\FSM$-related is an equivalence.
+  The binary relation of $\FSM$-related is an equivalence,
+  and so partitions the collection of all strings $\kleenestar{\Sigma}$
+  into equivalence classes.
 \end{lemma}
 
 \begin{proof}
@@ -4065,55 +4089,70 @@ and $\eclass_2$ is described by \re{(a|b)*ab}.
   and transitive.
   Reflexivity, that any input string $\sigma$ brings the machine
   to the same state as itself, is obvious.
-  So also is symmetry, that $\sigma_0$ brings the machine to the same state
+  So is symmetry, that if $\sigma_0$ brings the machine to the same state
   as $\sigma_1$ then $\sigma_1$ brings it to the same state as~$\sigma_0$.
-  Transitivity is also easy: if $\sigma_0$ brings $\FSM$ to the same state
+  Transitivity is straightforward: if $\sigma_0$ brings $\FSM$ to the same state
   as $\sigma_1$, and $\sigma_1$ brings it to the same state as~$\sigma_2$,
-  then clearly $\sigma_0$ brings it to the same state as $\sigma_2$.
+  then $\sigma_0$ brings it to the same state as $\sigma_2$.
 \end{proof}
 
-Recall that every equivalence is associated with a partition of the underlying
-set; as illstrated above,
-the set of strings $\kleenestar{\Sigma}$ is split into parts that are
-disjoint, non-empty, and exhaustive.
-
 So a machine gives rise to a partition.
-Does a partition give a machine?
+Does it go the other way?
 
 \begin{definition}
   Suppose that $\lang{L}$ is a language over $\Sigma$.
   Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$
-  are \definend{$\lang{L}$-indistinguishable}
-  when
+  are \definend{$\lang{L}$-related}
+  (or \definend{$\lang{L}$-indistinguishable}),
+  denoted \definend{$\sigma\sim_{\lang{L}}\hat{\sigma}$},
+  when for every suffix $\tau\in\kleenestar{\Sigma}$ we have
   $\sigma\concat\tau\in\lang{L}$ if and only if
-  $\hat{\sigma}\concat\tau\in\lang{L}$,
-  for every suffix
-  $\tau\in\kleenestar{\Sigma}$.
-  In this case we also say that they are
-  \definend{$\lang{L}$-related, $\sigma\sim_{\lang{L}}\hat{\sigma}$}.
-  Otherwise they are \definend{$\lang{L}$-distinguishable}.
+  $\hat{\sigma}\concat\tau\in\lang{L}$.
+  Otherwise the two strings are \definend{$\lang{L}$-distinguishable}.
 \end{definition}
 
 Said another way, the two strings $\sigma$ and~$\hat{\sigma}$
-are $\lang{L}$-distinguishable when there is a
+can be $\lang{L}$-distinguished when there is a
 suffix $\tau$ that separates them:~one
 of $\sigma\concat\tau$ and $\hat{\sigma}\concat\tau$
 is an element of~$\lang{L}$ and the other is not.
 
+
+\begin{lemma}
+  For any language~$\lang{L}$,
+  the binary relation $\sim_{\lang{L}}$
+  is an equivalence.   
+\end{lemma}
+
+\begin{proof}
+  Reflexivity, that $\sigma\sim_{\lang{L}}\sigma$, is trivial.
+  So is symmetry, that $\sigma_0\sim_{\lang{L}}\sigma_1$
+  implies $\sigma_1\sim_{\lang{L}}\sigma_0$.
+  For transitivity 
+  suppose $\sigma_0\sim_{\lang{L}}\sigma_1$ and
+  $\sigma_1\sim_{\lang{L}}\sigma_2$.
+  If $\sigma_o\concat\tau\in\lang{L}$ then by the first supposition
+  $\sigma_1\concat\tau\in\lang{L}$, and that in turn gives
+  $\sigma_2\concat\tau\in\lang{L}$ by the second supposition.
+  Similarly $\sigma_o\concat\tau\notin\lang{L}$ implies
+  $\sigma_2\concat\tau\notin\lang{L}$.
+  Thus $\sigma_0\sim_{\lang{L}}\sigma_2$.
+\end{proof}
+
 \begin{example}
   Let $\lang{L}$ be the set
   $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has an even number of \str{1}'s}}$.
-  Then two strings $\sigma_0,\sigma_1$ are $\lang{L}$-related
-  if they both have an even number of \str{1}'s.
+  If two strings $\sigma_0,\sigma_1$ both have an even number of \str{1}'s
+  then they are $\lang{L}$-related.
   That's because for any $\tau\in\kleenestar{\B}$, if $\tau$ has an even number of \str{1}'s then $\sigma_0\concat\tau\in\lang{L}$ and  $\sigma_0\concat\tau\in\lang{L}$, while if $\tau$ has an odd number of \str{1}'s then the concatenations will not be members of~$\lang{L}$.  
-  Similarly, two strings are $\lang{L}$-related if both have an odd number of
-  $1$'s.
-  So the relationship of $\sim_{\lang{L}}$ gives rise to this partition
+  Similarly, two strings both have an odd number of
+  $1$'s then they are $\lang{L}$-related.
+  So the relationship $\sim_{\lang{L}}$ gives rise to this partition
   of $\kleenestar{\B}$.
   \begin{equation*}
-    \epart_0=\set{\emptystring, \str{0},\str{00},\str{11},\str{000},\str{011},\str{101},\str{110},\,\ldots}
+    \eclass_{\lang{L},0}=\set{\emptystring, \str{0},\str{00},\str{11},\str{000},\str{011},\str{101},\str{110},\,\ldots}
     \quad
-    \epart_1=\set{\str{1}, \str{01},\str{10},\str{001},\str{010},\,\ldots}
+    \eclass_{\lang{L},1}=\set{\str{1}, \str{01},\str{10},\str{001},\str{010},\,\ldots}
   \end{equation*}  
 \end{example}
 
@@ -4138,32 +4177,10 @@ is an element of~$\lang{L}$ and the other is not.
 
   Following this reasoning, $\sim_{\lang{L}}$ partitions
   $\kleenestar{\set{\str{a},\str{b}}}$ into the infinitely many parts
-  $\epart_i=\set{\sigma\in \kleenestar{\set{\str{a},\str{b}}}\suchthat \text{the number of \str{a}'s minus the number of \str{b}'s equals $i$}}$, where $i\in\Z$.
+  $\eclass_{\lang{L},i}=\set{\sigma\in \kleenestar{\set{\str{a},\str{b}}}\suchthat \text{the number of \str{a}'s minus the number of \str{b}'s equals $i$}}$, where $i\in\Z$.
 \end{example}
 
-\begin{lemma}
-  For any language~$\lang{L}$,
-  the binary relation $\sim_{\lang{L}}$
-  is an equivalence.   
-\end{lemma}
-
-\begin{proof}
-  Reflexivity, that $\sigma\sim_{\lang{L}}\sigma$ for all
-  $\sigma\in\kleenestar{\Sigma}$, is trivial.
-  So also is symmetry, that $\sigma_0\sim_{\lang{L}}\sigma_1$
-  implies $\sigma_1\sim_{\lang{L}}\sigma_0$.
-  For transitivity 
-  suppose $\sigma_0\sim_{\lang{L}}\sigma_1$ and
-  $\sigma_1\sim_{\lang{L}}\sigma_2$.
-  If $\sigma_o\concat\tau\in\lang{L}$ then by the first supposition
-  $\sigma_1\concat\tau\in\lang{L}$, and that in turn gives
-  $\sigma_2\concat\tau\in\lang{L}$ by the second supposition.
-  Similarly $\sigma_o\concat\tau\notin\lang{L}$ implies
-  $\sigma_2\concat\tau\notin\lang{L}$.
-  Thus $\sigma_0\sim_{\lang{L}}\sigma_2$.
-\end{proof}
-
-\begin{example}
+\begin{example}  \label{ex:MNMachineComparePartitions}
   This machine~$\FSM$ accepts
   $\lang{L}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
     \text{$\sigma$ has even length}}$.
@@ -4173,38 +4190,87 @@ is an element of~$\lang{L}$ and the other is not.
   We will compare the partitions induced by the two relations.
 
   The $\FSM$-related relation breaks $\kleenestar{\set{\str{a},\str{b}}}$
-  into five parts.
+  into five parts, one for each state (since every state in $\FSM$ is
+  reachable).
   \begin{align*}
-    \epart_{\FSM,0} &=\set{\emptystring}  \\
-    \epart_{\FSM,1} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{a((b|a)(b|a))*}}}
+    \eclass_{\FSM,0} &=\set{\emptystring}  \\
+    \eclass_{\FSM,1} &=\set{\str{a},\str{aaa},\str{aab},\str{aba},\str{abb},\str{aaaaa},\str{aaaab},\,\ldots}
     \\
-    \epart_{\FSM,2} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{b((b|a)(b|a))*}}}
+    \eclass_{\FSM,2} &=\set{\str{b},\str{baa},\str{bab},\str{bba},\str{bbb},\str{baaaa},\str{baaab},\,\ldots}
     \\
-    \epart_{\FSM,3} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{(aa|ab)((b|a)(b|a))*}}}
+    \eclass_{\FSM,3} &=\set{\str{aa},\str{ab},\str{aaaa},\str{aaab},\str{aaba},\str{aabb},\str{abaa},\str{abab},\str{abba},\str{abbb},\str{aaaaaa},\,\ldots{}}
     \\
-    \epart_{\FSM,4} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{(ba|bb)((b|a)(b|a))*}}}
+    \eclass_{\FSM,4} &=\set{\str{ba},\str{bb},\str{baaa},\str{baab},\str{baba},\str{babb},\str{bbaa},\str{bbab},\str{bbba},\str{bbbb},\str{baaaaa},\,\ldots{}}
   \end{align*}
-  This holds because there is one part for each state (as every state of
-  $\FSM$ is reachable.)
+  % Make this an exercise 
+  % \begin{align*}
+  %   \eclass_{\FSM,0} &=\set{\emptystring}  \\
+  %   \eclass_{\FSM,1} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{a((b|a)(b|a))*}}}
+  %   \\
+  %   \eclass_{\FSM,2} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{b((b|a)(b|a))*}}}
+  %   \\
+  %   \eclass_{\FSM,3} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{(aa|ab)((b|a)(b|a))*}}}
+  %   \\
+  %   \eclass_{\FSM,4} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{(ba|bb)((b|a)(b|a))*}}}
+  % \end{align*}
   
   The $\lang{L}$-related relation breaks $\kleenestar{\set{\str{a},\str{b}}}$
   into two parts.
   \begin{equation*}
-    \epart_{\lang{L},0} =\set{\sigma\suchthat\text{$\sigma$ has even length}}
+    \eclass_{\lang{L},0} =\set{\sigma\suchthat\text{$\sigma$ has even length}}
     \quad
-    \epart_{\lang{L},1} =\set{\sigma\suchthat\text{$\sigma$ has odd length}} 
+    \eclass_{\lang{L},1} =\set{\sigma\suchthat\text{$\sigma$ has odd length}} 
   \end{equation*}
-  Verify this by noting that if two strings are in $\epart_{\lang{L},0}$
+  Verify this by noting that if two strings are in $\eclass_{\lang{L},0}$
   then adding a suffix~$\tau$ will result in a string that is a member
   of~$\lang{L}$ if and only if the length of~$\tau$ is even,
-  and similarly for $\epart_{\lang{L},1}$ and odd.
+  and similarly for $\eclass_{\lang{L},1}$ and odd.
 
   This shows the universe of strings $\kleenestar{\set{\str{a},\str{b}}}$,
   partitioned.
+  The two $\lang{L}$-related parts are the left and right halves.
   The $\FSM$-related parts are subsets of the $\lang{L}$-related parts.
   \begin{center}
     \includegraphics{automata/asy/fsa/fsa20.pdf}
   \end{center}
+\end{example}
+
+\begin{lemma}  \label{lem:MRelatedImpliesLRelated}
+  Let $\FSM$ be a finite state machine that accepts~$\lang{L}$.
+  If two strings are $\FSM$-related then they are $\lang{L}$-related.
+\end{lemma}
+
+\begin{proof}
+Assume $\sigma_0$ and $\sigma_1$ are  $\FSM$-related.  
+Then starting $\FSM$ with input $\sigma_0$
+causes it to end in the same state as starting it with input~$\sigma_1$.
+Thus for any suffix~$\tau$, giving $\FSM$ the input $\sigma_0\concat\tau$
+causes it to end in the same state as does the input  $\sigma_1\concat\tau$.
+In particular, $\sigma_0\concat\tau$ takes $\FSM$
+to a final state if and only $\sigma_1\concat\tau$ does.
+So the two strings are $\lang{L}$-related.  
+\end{proof}
+
+\begin{example} \label{ex:MNMachineComparePartitionsCont}
+  We have one more observation to make about
+  \cref{ex:MNMachineComparePartitions}.
+  If we take a string $\sigma\in\eclass_{\FSM_1}$ and append an~\str{a},
+  then the string we get $\sigma\concat\str{a}$ is a member of
+  $\eclass_{\FSM,3}$.
+  This is simply because if the machine is in state~$q_1$ and it
+  receives an~$\str{a}$ then it moves to state~$q_3$.
+  Similarly, for all $\sigma\in\eclass_{\FSM,4}$, the string
+  $\sigma\concat\str{b}$ is a member of~$\eclass_{\FSM,2}$.
+
+  Similarly, if adding the alphabet character~$x\in\Sigma$ to one
+  string $\sigma\in\eclass_{\lang{L},i}$ results in a string
+  $\sigma\concat x\in\eclass_{\lang{L},j}$ then the same will happen
+  for any string in $\eclass_{\lang{L},i}$.
+  In this example we see that's true because
+  the $\eclass_{\FSM}$'s are contained in the $\eclass_{\lang{L}}$'s.
+  The key step of
+  the next result is to show it is true even in a context where there is no
+  machine.
 \end{example}
 
 \begin{theorem}[Myhill-Nerode]
@@ -4218,45 +4284,21 @@ and the states of a finite state automata accepting that lanuguage.
 \begin{proof}
 Suppose first that $\lang{L}$ is a regular language, over~$\Sigma$.
 Then it is accepted by a finite state machine, $\FSM$.
-If two strings $\sigma_0,\sigma_1$ are  $\FSM$-related  
-then they are $\sim_{\lang{L}}$ related because starting the machine with
-those two inputs causes it to end in the same state, so $\sigma_0\concat\tau$
-will move the machine to a final state if and only if $\sigma_1\concat\tau$
-does.
+By \cref{lem:MRelatedImpliesLRelated}
+the number of element in the partition induced by
+$\sim_{\lang{L}}$ is finite, 
+$\sim_{\lang{L}}$ has only a finite number of equivalence classes,
+because the number of elements in the partition
+associated with being $\FSM$-related is finite, as there is one part for
+each of $\FSM$'s reachable states.
 
-This has two implications.
-The first is that the number of element in the partition induced by
-$\sim_{\lang{L}}$ is finite, because the number of elements in the partition
-associated with being $\FSM$-related is finite as there is one part for
-each state in~$\FSM$.
+Now suppose that the number of elements in the partition
+associated with being $\FSM$-related is finite.
+We will show that $\lang{L}$ is regular.
+We will do this by producing a state machine
+that accepts~$\lang{L}$ and that is finite.
 
-Partition the set of all strings~$\kleenestar{\Sigma}$ with:
-two strings $\sigma,\hat{\sigma}$ are in the same part if 
-when~$\FSM$ is given them as input then they take 
-the machine to the same state.
-Observe that if two strings are in the same part then they are 
-$\lang{L}$-related.
-Thus, the parts are subsets of the equivalence classes of 
-$\sim_{\lang{L}}$.
-Since the number of parts is less than or equal to the number of states
-in $\FSM$, the number of equivalence classes is finite.
 
-If L is a regular language, then by definition there is a DFA A that
-recognizes it, with only finitely many states.
-If there are n states, then partition the set of all finite strings into
-n subsets, where subset Si is the set of strings that, when given as input
-to automaton A, cause it to end in state i. For every two strings x and y
-that belong to the same state, and for every choice of a third string z,
-automaton A reaches the same state on input xz as it reaches on input yz,
-and therefore must either accept both of the inputs xz and yz or reject both
-of them.
-Therefore, no string z can be a distinguishing extension for x and y,
-so they must be related by RL.
-Thus, Si is a subset of an equivalence class of RL.
-Combining this fact with the fact that every member of one of these
-equivalence classes belongs to one of the sets Si,
-this gives a many-to-one relation from states of A to equivalence classes,
-implying that the number of equivalence classes is finite and at most n.
 \end{proof}
 
 In contrast with Turing machines, we can tell if two finite

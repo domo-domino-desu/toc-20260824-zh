@@ -1468,11 +1468,12 @@ pair ll=(0,0), lr=(wth,0), ur=(wth,hgt), ul=(0,hgt);
 real Mborderpenwidth = 1pt, Lborderpenwidth = 0.5*Mborderpenwidth;
 pen Lborderpen = squarecap+linejoin(0)+linewidth(Lborderpenwidth)+highlightcolor;
 pen Mborderpen = squarecap+linejoin(0)+linewidth(Mborderpenwidth)+lightcolor;
+pen outsideborderpen = squarecap+linejoin(0)+linewidth(0.4)+black;
 
 // declare the vert middle boundary (drawn later)
-path mid_bound = (0.5*(ur+ul))
-  ..(0.5*(ur.x+ul.x)+0.1, 0.5*(ul.y+ll.y))
-  ..(0.5*(lr+ll));
+path mid_bound = interp(ul,ur,0.5)
+  ..(interp(ul.x,ur.x,0.5)+0.1,interp(ul.y,ll.y,0.5))
+  ..interp(ll,lr,0.5);
 
 // left boundaries
 real lft_topbnd_y=0.8*hgt;
@@ -1510,7 +1511,7 @@ draw(pic,mid_bound,Lborderpen);
 
 // Draw the outside border
 path Mborder = ll--lr--ur--ul--cycle;
-draw(pic,Mborder,Mborderpen);
+draw(pic,Mborder,outsideborderpen);
 // ? I want to draw the L border as on the outside edge of the Mborder
 // This shows a gap between the two.
 // real Lborderleft = ll.x-0.5*Mborderpenwidth+0.5*Lborderpenwidth;
@@ -1522,15 +1523,55 @@ draw(pic,Mborder,Mborderpen);
 //   --(Lborderright,Lbordertop)
 //   --(Lborderleft,Lbordertop)
 //   --cycle;
-path Lborder=Mborder;
-draw(pic,Lborder,Lborderpen);
+// path Lborder=Mborder;
+//draw(pic,Lborder,Lborderpen);
 
 // Labels
-label(pic,"$\epart_{\FSM,0}$",(0.25wth,0.875hgt));
-label(pic,"$\epart_{\FSM,3}$",(0.25wth,0.55hgt));
-label(pic,"$\epart_{\FSM,4}$",(0.25wth,0.175hgt));
-label(pic,"$\epart_{\FSM,1}$",(0.75wth,0.725hgt));
-label(pic,"$\epart_{\FSM,2}$",(0.75wth,0.225hgt));
-label(pic,"$\epart_{\lang{L},0}$",(-0.2wth,0.5hgt));
-label(pic,"$\epart_{\lang{L},1}$",(1.2wth,0.5hgt));
+label(pic,"$\eclass_{\FSM,0}$",(0.25wth,0.875hgt));
+label(pic,"$\eclass_{\FSM,3}$",(0.25wth,0.55hgt));
+label(pic,"$\eclass_{\FSM,4}$",(0.25wth,0.175hgt));
+label(pic,"$\eclass_{\FSM,1}$",(0.75wth,0.725hgt));
+label(pic,"$\eclass_{\FSM,2}$",(0.75wth,0.225hgt));
+label(pic,"$\eclass_{\lang{L},0}$",(-0.2wth,0.5hgt));
+label(pic,"$\eclass_{\lang{L},1}$",(1.2wth,0.5hgt));
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== partition for myhill-nerode, three parts =======
+picture pic;
+int picnum = 21;
+unitsize(pic,1cm);
+
+real wth=4, hgt=2; 
+
+pair ll=(0,0), lr=(wth,0), ur=(wth,hgt), ul=(0,hgt);
+
+real Mborderpenwidth = 1pt, Lborderpenwidth = 0.5*Mborderpenwidth;
+pen Lborderpen = squarecap+linejoin(0)+linewidth(Lborderpenwidth)+highlightcolor;
+pen Mborderpen = squarecap+linejoin(0)+linewidth(Mborderpenwidth)+lightcolor;
+pen outsideborderpen = squarecap+linejoin(0)+linewidth(0.4)+black;
+
+// declare the vert left boundary
+path left_bound = interp(ul,ur,0.3)
+  ..(interp(ul.x,ur.x,0.3)+0.1, interp(ul.y,ll.y,0.5))
+  ..interp(ll,lr,0.3);
+// declare the vert right boundary 
+path rt_bound = interp(ul,ur,0.65)
+  ..(interp(ul.x,ur.x,0.65)+0.1, interp(ul.y,ll.y,0.5))
+  ..interp(ll,lr,0.65);
+
+// Draw the boundaries
+draw(pic,left_bound,Mborderpen);
+draw(pic,rt_bound,Mborderpen);
+
+// Draw the outside border
+path Mborder = ll--lr--ur--ul--cycle;
+draw(pic,Mborder,outsideborderpen);
+
+// Labels
+label(pic,"$\eclass_{\FSM,0}$",(0.15wth,0.5hgt));
+label(pic,"$\eclass_{\FSM,1}$",(0.5wth,0.5hgt));
+label(pic,"$\eclass_{\FSM,2}$",(0.85wth,0.5hgt));
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

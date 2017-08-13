@@ -12,7 +12,7 @@
 % Make PDF offer better copy and paste
 \usepackage{cmap}  
 
-\usepackage{amsmath,amsthm,amssymb}  % later load mathtools
+\usepackage{amsmath,amssymb}  % later load mathtools
 
 % M Sharpe's XCharter
 % \usepackage[scaled=.98,sups,osf]{XCharter}% lining figures in math, osf in text
@@ -38,6 +38,7 @@
 \usepackage{adjustbox} % for clipping pictures
 
 \usepackage{etoolbox}
+\usepackage{trace}  % for debugging
 
 \usepackage[inline]{enumitem} % for exparts and exparts*, for exercises and answers 
 \newenvironment{parenum}{%
@@ -45,6 +46,50 @@
 }{%
   \end{enumerate*}
 }
+
+
+% == start new exercises
+% ========== Exercises =======================
+
+% Suppress page break between "Exercises" and top of list
+%  see https://tex.stackexchange.com/a/210847/121234
+\newcounter{@exercisenumber}[section]
+\renewcommand{\the@exercisenumber}{\arabic{@exercisenumber}}
+\newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
+\newlength{\jh@listtopsep}
+  \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
+\newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading}
+\newenvironment{exercises}{%
+  \typeout{!!!!! EXERCISES !!!!!}
+  \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
+  \nolisttopbreak
+  \setcounter{@exercisenumber}{\value{theorem}}
+  \begin{list}{}%
+    {
+      \renewcommand{\makelabel}[1]{\normalfont\scshape\refstepcounter{@exercisenumber}\the@exercisenumber.\ }
+      \setlength{\leftmargin}{1.5em}
+      \setlength{\labelwidth}{\leftmargin}
+      \setlength{\labelsep}{0em}
+      \setlength{\itemindent}{0em}
+      \setlength{\listparindent}{0.8\parindent}
+      \setlength{\topsep}{\jh@listtopsep}
+      \setlength{\parsep}{0ex}
+      \setlength{\itemsep}{0.5ex plus 0.1ex minus 0.05ex}
+      \setlength{\rightmargin}{0em}
+    }
+}{%
+  \end{list}
+}
+% \newenvironment{exercises}{\begin{list}{}{}}{\end{list}}
+
+\typeout{WWWWW About to process exercise WWWWW}
+\newenvironment{exercise}{%
+  \item
+}{%
+}
+% == end new exercises
+
+
 
 % hangingpar  Hanging paragraph
 %  #1  length of hanging
@@ -79,7 +124,7 @@
 \usepackage{answers}
 \Opensolutionfile{\answerbodyfilename}
 \Newassociation{answer}{ans}{\answerbodyfilename}
-
+% \newenvironment{answer}{}{}
 
 % ====================== citations ===========================
 % Put citations in the end, referencing text but without giving
@@ -313,87 +358,149 @@ of the two.}
   % \citeadd{\citechapter{\arabic{chapter}}{#3}}% 
 }
 
-\renewcommand{\thesection}{\thechapter.\Roman{section}}
-% \newcommand{\sectiontitlecontents}{Section \\[-.15ex] \thesection}
-% \newcommand{\format@section@title}[1]{\normalfont\large\color{boldcolor}#1}
-% \titleformat{name=\section}[hang]{\bfseries}{%
-%   \mbox{\checkoddpage\ifoddpage%
-%       \makebox[0em][r]{\format@section@title{\begin{tabular}[b]{@{}r@{}}\sectiontitlecontents\end{tabular}}\rule{\margin@numberingspace}{0ex}}%
-%     \else%
-%       \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\format@section@title{\begin{tabular}[b]{@{}l@{}}\sectiontitlecontents\end{tabular}}}%
-%   \fi}%
-%   }{0ex}{\normalfont\large\bfseries}[]
-\newcommand{\sectiontitlecontents}{\normalfont\large\color{boldcolor}\begin{tabular}[b]{@{}r@{}}Section \\[-.15ex] \thesection\end{tabular}\hspace*{\margin@numberingspace}}
-\newcommand{\format@section@title}[1]{\normalfont\large\color{boldcolor}#1}
-\newlength{\sectiontitlewidth}
-\titleformat{name=\section}[hang]{\bfseries}{%
- \settowidth{\sectiontitlewidth}{\sectiontitlecontents}%
- \llap{\parbox[b]{\sectiontitlewidth}{\sectiontitlecontents\hfill}}%
-}{0ex}{\normalfont\large\bfseries}[]
-\titlespacing*{\section}{0em}{*4}{*1}
+% == start new sectioning
 
-\titleformat{name=\section,numberless}[hang]{\bfseries}{%
- \settowidth{\sectiontitlewidth}{\sectiontitlecontents}%
- \llap{\parbox[b]{\sectiontitlewidth}{\sectiontitlecontents\hfill}}%
-  }{0ex}{\normalfont\large\bfseries}[\relax]
+% Sections, subsections
+\usepackage{etoolbox}
+% Put section names in margin with marginpar, always on left margin
+%  despite twoside option; see https://tex.stackexchange.com/a/73117/121234
+\setlength{\marginparsep}{1em}
+\usepackage{marginnote}
+\patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
+\patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
+\reversemarginpar 
+
+\setcounter{secnumdepth}{10} 
+\renewcommand\@seccntformat[1]{\relax} % no numbering inside section title
+\newlength{\jh@margintxttobodytext}
+  \setlength{\jh@margintxttobodytext}{0.0em}
+% Section
+\renewcommand{\section}{%
+  \renewcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
+  \@startsection{section}{1}%
+  {0em}%
+  {-3.5ex plus -1ex minus -0.2ex}%
+  {2.3ex plus .2ex}%
+  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
+}
+\renewcommand{\thesection}{\Roman{section}}
+
+
+% Subsections
+\renewcommand{\subsection}{%
+  \@startsection{subsection}{2}%
+  {0em}%
+  {-3.25ex plus -1ex minus -0.2ex}%
+  {-0.6em plus -0.1em}%  negative makes it a run-in header
+  {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
+}
+\renewcommand{\thesubsection}{\arabic{subsection}}
+
+% Extra
+\newcounter{extra}[chapter]
+\renewcommand{\theextra}{\Numberstring{chapter}.\Alph{extra}}
+\newcommand{\extra}{%
+  \renewcommand{\@exercisecounterstart}{\theextra} % put in the margin to count exercises env
+  \setcounter{theorem}{0}
+  \setcounter{subsection}{\the\numexpr\value{extra}+1\relax}
+  \renewcommand{\thesubsection}{\Alph{subsection}}
+  \@startsection{extra}{2}%
+  {0em}%
+  {-3.25ex plus -1ex minus -0.2ex}%
+  {-0.6em plus -0.1em}%  negative makes it a run-in header
+  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \theextra\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
+}
+\newcommand*\l@extra{\@dottedtocline{6}{10em}{5em}}% for toc
+\newcommand{\extramark}[1]{}% for page headers
+
+\let\extrasubsection=\subsection\relax
+\newenvironment{extraexample}{\begin{example}}{\end{example}}
+\newenvironment{extratheorem}[1][]{\begin{theorem}}{\end{theorem}}
+\newenvironment{extraexercise}{\begin{exercise}}{\end{exercise}}
+% == end new sectioning
+
+% % Was
+% \renewcommand{\thesection}{\thechapter.\Roman{section}}
+% \newcommand{\sectiontitlecontents}{\normalfont\large\color{boldcolor}\begin{tabular}[b]{@{}r@{}}Section \\[-.15ex] \thesection\end{tabular}\hspace*{\margin@numberingspace}}
+% \newcommand{\format@section@title}[1]{\normalfont\large\color{boldcolor}#1}
+% \newlength{\sectiontitlewidth}
+% \titleformat{\section}[hang]{\bfseries}{%
+%  \settowidth{\sectiontitlewidth}{\sectiontitlecontents}%
+%  \llap{\parbox[b]{\sectiontitlewidth}{\sectiontitlecontents\hfill}}%
+% }{0ex}{\normalfont\large\bfseries}[]
 % \titlespacing*{\section}{0em}{*4}{*1}
 
-\newcommand{\extra}[1]{%
-  \bgroup
-  \renewcommand{\sectiontitlecontents}{\normalfont\large\color{boldcolor} Extra\hspace*{\margin@numberingspace}}
-  \section*{#1}%
-  \addcontentsline{toc}{section}{Extra: #1}%
-  \egroup
-}
+% \titleformat{name=\section,numberless}[hang]{\bfseries}{%
+%  \settowidth{\sectiontitlewidth}{\sectiontitlecontents}%
+%  \llap{\parbox[b]{\sectiontitlewidth}{\sectiontitlecontents\hfill}}%
+%   }{0ex}{\normalfont\large\bfseries}[\relax]
+% % \titlespacing*{\section}{0em}{*4}{*1}
 
-\newlength{\subsectionbeforesep}
-\setlength{\subsectionbeforesep}{1.5ex plus0.2ex minus0.1ex}
-\newlength{\subsectionaftersep}
-\setlength{\subsectionaftersep}{0.8em plus0.2em minus0.1em}
-\renewcommand{\thesubsection}{\thechapter.\Roman{section}.{\large \arabic{subsection}}}
+% % Make a new sectioning unit, the \extra, at the same level as a \section  
+% \titleclass{\extra}{straight}[\chapter]
+% \newcounter{extra}[chapter]
+%    \renewcommand{\theextra}{\Alph{extra}}
+% %\titleformat{hcommandi}[hshapei]{hformati}{hlabeli}{hsepi}{hbefore-codei}[hafter-codei]
+% \titleformat{\extra}[block]%
+%   {\normalsize\normalfont\large\color{boldcolor}}{\llap{Extra\hspace{0.5em}}}{0em}{\bfseries}
+% \titlespacing{\extra}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+% \newcommand{\extraautorefname}{extra}
+
+% % \newcommand{\extra}[1]{%
+% %     \titleformat{section}[hang]{hformati}{hlabeli}{hsepi}{hbefore-codei}[hafter-codei]
+% %   \renewcommand{\sectiontitlecontents}{\normalfont\large\color{boldcolor} Extra\hspace*{\margin@numberingspace}}
+% %   \section*{#1}%
+% %   \addcontentsline{toc}{section}{Extra: #1}%
+% % }
+
+% \newlength{\subsectionbeforesep}
+% \setlength{\subsectionbeforesep}{1.5ex plus0.2ex minus0.1ex}
+% \newlength{\subsectionaftersep}
+% \setlength{\subsectionaftersep}{0.8em plus0.2em minus0.1em}
+% \renewcommand{\thesubsection}{\thechapter.\Roman{section}.{\large \arabic{subsection}}}
+% % \titleformat{\subsection}[runin]{\bfseries}{%
+% %   \mbox{\checkoddpage\ifoddpage%
+% %       \makebox[0em][r]{\normalfont{\color{boldcolor}\thesubsection}\rule{\margin@numberingspace}{0ex}}%
+% %     \else%
+% %       \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{1.25\margin@numberingspace}{0ex}\normalfont{\color{boldcolor}\thesubsection}}%
+% % \fi}}{0ex}{\normalfont\bfseries}[\relax]
+% % \titlespacing*{\subsection}{0em}{*1.5}{0.8em plus0.2em minus0.1em}
+% \newcommand{\subsectiontitlecontents}{\normalfont\normalsize\color{boldcolor}\thesubsection\hspace*{\margin@numberingspace}}
+% \newlength{\subsectiontitlewidth}
 % \titleformat{\subsection}[runin]{\bfseries}{%
-%   \mbox{\checkoddpage\ifoddpage%
-%       \makebox[0em][r]{\normalfont{\color{boldcolor}\thesubsection}\rule{\margin@numberingspace}{0ex}}%
-%     \else%
-%       \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{1.25\margin@numberingspace}{0ex}\normalfont{\color{boldcolor}\thesubsection}}%
-% \fi}}{0ex}{\normalfont\bfseries}[\relax]
-% \titlespacing*{\subsection}{0em}{*1.5}{0.8em plus0.2em minus0.1em}
-\newcommand{\subsectiontitlecontents}{\normalfont\normalsize\color{boldcolor}\thesubsection\hspace*{\margin@numberingspace}}
-\newlength{\subsectiontitlewidth}
-\titleformat{\subsection}[runin]{\bfseries}{%
- \settowidth{\subsectiontitlewidth}{\subsectiontitlecontents}%
- \llap{\parbox[b]{\subsectiontitlewidth}{\subsectiontitlecontents\hfill}}%
-}{0ex}{\normalfont\bfseries}[\relax]
-\titlespacing*{\subsection}{0em}{\subsectionbeforesep}{\subsectionbeforesep}
+%  \settowidth{\subsectiontitlewidth}{\subsectiontitlecontents}%
+%  \llap{\parbox[b]{\subsectiontitlewidth}{\subsectiontitlecontents\hfill}}%
+% }{0ex}{\normalfont\bfseries}[\relax]
+% \titlespacing*{\subsection}{0em}{\subsectionbeforesep}{\subsectionbeforesep}
 
-\newcommand{\extrasubsection}[1]{%
-  \bgroup
-  \vspace{\subsectionbeforesep}
-  \par\noindent\textbf{#1}\hspace{\subsectionaftersep}%
-  % \addcontentsline{toc}{section}{Extra: #1}%
-  \egroup
-}
+% \newcommand{\extrasubsection}[1]{%
+%   \bgroup
+%   \vspace{\subsectionbeforesep}
+%   \par\noindent\textbf{#1}\hspace{\subsectionaftersep}%
+%   % \addcontentsline{toc}{section}{Extra: #1}%
+%   \egroup
+% }
 
 
-% http://tex.stackexchange.com/a/98283/339
-\newlength\sectionnumberlen
-\setlength\sectionnumberlen{\dimexpr\oddsidemargin+1in+\hoffset\relax}
-% \titleformat{\section}
-%   {leftmargin}
-%   {\normalfont\bfseries}
-%   {section}{3em}{\relax}
-%  {\mbox{\checkoddpage\ifoddpage\makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}}}
-%  {\llap{\hspace*{-\sectionnumberlen}\thesection\hfill}}{0em}{}[]
-% \titleformat{\section}
-%   {\normalfont\bfseries}
-%   {\llap{\hspace*{-\sectionnumberlen}\thesection\hfill}}{0em}{}[]
-  % [{\makebox[\linewidth][l]{%
-  %   \hspace*{-\sectionnumberlen}\rule{\dimexpr\textwidth+\sectionnumberlen\relax}{1pt}}}]
+% % http://tex.stackexchange.com/a/98283/339
+% \newlength\sectionnumberlen
+% \setlength\sectionnumberlen{\dimexpr\oddsidemargin+1in+\hoffset\relax}
+% % \titleformat{\section}
+% %   {leftmargin}
+% %   {\normalfont\bfseries}
+% %   {section}{3em}{\relax}
+% %  {\mbox{\checkoddpage\ifoddpage\makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}}}
+% %  {\llap{\hspace*{-\sectionnumberlen}\thesection\hfill}}{0em}{}[]
+% % \titleformat{\section}
+% %   {\normalfont\bfseries}
+% %   {\llap{\hspace*{-\sectionnumberlen}\thesection\hfill}}{0em}{}[]
+%   % [{\makebox[\linewidth][l]{%
+%   %   \hspace*{-\sectionnumberlen}\rule{\dimexpr\textwidth+\sectionnumberlen\relax}{1pt}}}]
 
-% \titleclass{\part}{part}
-% \titleformat{name=\part}[block]{}{Part:}{1ex}{\large\centering}[\relax]
-% Summary of titlespacing command:  (*-ed form kills indent of paragraph)
-% \titlespacing*{ command }{ left }{ before-sep }{ after-sep }[ right-sep ]
+% % \titleclass{\part}{part}
+% % \titleformat{name=\part}[block]{}{Part:}{1ex}{\large\centering}[\relax]
+% % Summary of titlespacing command:  (*-ed form kills indent of paragraph)
+% % \titlespacing*{ command }{ left }{ before-sep }{ after-sep }[ right-sep ]
 
 
 
@@ -877,354 +984,341 @@ of the two.}
 %     \fi}%
 % }
 
-%======================== hyperref ===========
-\usepackage{hyperref}
-\hypersetup{
-    bookmarks=true,         % show bookmarks bar?
-    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
-    pdftoolbar=true,        % show Acrobat’s toolbar?
-    pdfmenubar=true,        % show Acrobat’s menu?
-    pdffitwindow=false,     % window fit to page when opened
-    pdfstartview={FitH},    % fits the width of the page to the window
-    pdftitle={Computing},    % title
-    pdfauthor={Jim Hefferon, Saint Michael's College},     % author
-    pdfsubject={Theory of Computation},   % subject of the document
-    pdfcreator={Jim Hefferon},   % creator of the document
-    pdfproducer={Jim Hefferon}, % producer of the document
-    pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
-    pdfnewwindow=true,      % links in new window
-    colorlinks=true,       % false: boxed links; true: colored links
-    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
-    citecolor=black,        % color of links to bibliography
-    filecolor=black,      % color of file links
-    urlcolor=black           % color of external links
-}
-% \newcommand\href[2]{\relax}
-
 
 % ================ animation ================
 \usepackage{animate}
 
-% ======== clever references ===============
-\usepackage{cleveref} % after hyperref, apparently
-\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
-  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
-  \ifcsname #2refname\endcsname
-    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
-  \fi
-}
 
 
+% == start new theorems
+\usepackage{cleveref}
 
-%============= theorems =============================
-% This stuff has to all come after cleveref, which must all come after hyperref
-% \usepackage{amsmath} % ,amssymb}
-\usepackage{ifoddpage}
-\usepackage{framed}
-  % \definecolor{shadecolor}{gray}{.95}
-  \colorlet{shadecolor}{backgroundcolor}
-\usepackage{footnote}
-% \usepackage{amsthm}
-% \usepackage{ntheorem} 
+%\usepackage[amsmath]{ntheorem} % cleveref requires amsthm or ntheorsm
+\usepackage[thmmarks,amsmath]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+% % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
+\newtheoremstyle{marginnumbers}%
+{\item[\theorem@headerfont\llap{##2\hspace{0.5em}}]{\theorem@headerfont ##1} }%
+{\item[\theorem@headerfont\llap{##2}]{\theorem@headerfont ##1\ (##3)} }%
+\theoremheaderfont{\scshape}
+\theorembodyfont{}    
+\theoremsymbol{}
+\theoremprework{}
+\theorempostwork{}
+\theoremseparator{}
 \usepackage{thmtools}
-\declaretheoremstyle[
-  spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
-  % headformat={\mbox{\checkoddpage\ifoddpage%
-  %   \makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME %
-  % \else%
-  %   \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
-  % \fi}\ignorespaces},
-  headpunct={},
-  bodyfont=\normalfont,
-  % postheadspace={.618em plus .2em minus .1em},
-  postheadspace={.55em plus .2em minus .1em},
-  preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
-  postfoothook={\end{snugshade}\end{savenotes}}
-%   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
-  ]{shadedtext}  % for text that has a shaded box behind it TODO: make the frames not add any vertical space, add a rule to the frame
-
-\declaretheoremstyle[
-  spaceabove=.35\thm@preskip, spacebelow=.65\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
-  % headformat={\mbox{\checkoddpage\ifoddpage%
-  %   \makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME %
-  % \else%
-  %   \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
-  % \fi}\ignorespaces},
-  headpunct={},
-  bodyfont=\normalfont,
-  % postheadspace={.618em plus .2em minus .1em},
-  postheadspace={.55em plus .2em minus .1em},
-  ]{text}   % for text that is not shaded 
-
-\declaretheoremstyle[
-  spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\NUMBER\NOTE\ignorespaces},
-  headindent={-1em},
-  headpunct={},
-  bodyfont=\normalfont,
-  postheadspace={.618em plus .2em minus .1em},
-  ]{exercise}   %  
-
-\declaretheoremstyle[
-  spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\NUMBER\NOTE\ignorespaces},
-  headindent={-1em},
-  headpunct={},
-  bodyfont=\normalfont,
-  postheadspace={.618em plus .2em minus .1em},
-  numberwithin=subsection
-  ]{extraexercise}   %  
-% \renewcommand{\theextraexercise}{\arabic{exercise}}
-
-\declaretheoremstyle[
-  % spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
-  headpunct={},
-  bodyfont=\normalfont,
-  postheadspace={.618em plus .2em minus .1em},
-  prefoothook={\hfill\qedsymbol}
-  ]{pf}  % for proofs, with qedsymbol at the end
-
-\declaretheoremstyle[
-  spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\NAME },
-  headpunct={},
-  bodyfont=\normalfont,
-  postheadspace={.618em plus .2em minus .1em},
-  preheadhook={\begin{savenotes}}, % savenotes allows appendrefs to appear as footnotes
-  postfoothook={\end{savenotes}}
-%   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
-  ]{nonumber}  % for text not numbered
-
-\declaretheoremstyle[
-  spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\NAME },
-  headpunct={},
-  bodyfont=\normalfont,
-  postheadspace={.618em plus .2em minus .1em},
-  preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
-  postfoothook={\end{snugshade}\end{savenotes}}
-%   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
-  ]{shadednonumber}  % for text that has a shaded box behind it 
-
-\declaretheorem[name=Theorem,
-                style=shadedtext,
+\declaretheorem[style=marginnumbers,
                 refname={Theorem,Theorems},
-                Refname={Theorem,Theorems},
-                numberwithin=subsection]{theorem}
-   % \surroundwithmdframed[style=thmstyle]{theorem}\resetparens[theorem]
-\renewcommand{\thetheorem}{\arabic{subsection}.\arabic{theorem}}
-
-\declaretheorem[name=Definition,
-                style=shadedtext,
-                refname={Definition,Definitions},
-                Refname={Definition,Definitions},
-                sibling=theorem]{definition} 
-   % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
-
-\declaretheorem[name=Church's Thesis,
-                style=shadedtext,
-                refname={Church's Thesis,Church's Theses},
-                Refname={Church's Thesis,Church's Theses},
-                sibling=theorem]{churchsthesis} 
-   % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
-
-\declaretheorem[name=Lemma,
-                style=shadedtext,
+                Refname={Theorem,Theorems}]{theorem}
+\numberwithin{theorem}{subsection}
+\declaretheorem[style=marginnumbers,
                 refname={Lemma,Lemmas},
                 Refname={Lemma,Lemmas},
                 sibling=theorem]{lemma}
-   % \surroundwithmdframed[style=thmstyle]{lemma}\resetparens[lemma]
-
-\declaretheorem[name=Corollary,
-                style=shadedtext,
-                refname={Corollary,Corollaries},
-                Refname={Corollary,Corollaries},
+\declaretheorem[style=marginnumbers,
+                refname={Corollary,Corollarys},
+                Refname={Corollary,Corollarys},
                 sibling=theorem]{corollary}
-   % \surroundwithmdframed[style=thmstyle]{corollary}\resetparens[corollary]
-
-\declaretheorem[name=Example,
-                style=text,
+\declaretheorem[style=marginnumbers,
+                refname={Definition,Definitions},
+                Refname={Definition,Definitions},
+                sibling=theorem]{definition}
+\declaretheorem[style=marginnumbers,
                 refname={Example,Examples},
                 Refname={Example,Examples},
                 sibling=theorem]{example}
-
-\declaretheorem[name=Exercise,
-                style=exercise,
-                refname={Exercise,Exercises},
-                Refname={Exercise,Exercises},
-                sibling=theorem]{exercise}
-
-\declaretheorem[name=Notation,
-                style=shadednonumber
-                refname={Notation,Notations},
-                Refname={Notation,Notations},
-                ]{notation}
-
-\declaretheorem[name=Remark,
+\declaretheorem[style=marginnumbers,
                 refname={Remark,Remarks},
                 Refname={Remark,Remarks},
-                style=nonumber]{remark}
-
-\let\proof\@undefined                     
-\let\endproof\@undefined               
-\declaretheorem[name=Proof,
+                sibling=theorem]{remark}
+\declaretheorem[style=nonumberplain,
                 refname={Proof,Proofs},
                 Refname={Proof,Proofs},
-                style=pf]{proof}
-
-% styling of proofs
-\renewcommand{\proofname}{{\scshape\small Proof}}
-% End of \begin{proof} ... \end{proof}
-\renewcommand{\qedsymbol}{{\scshape\small QED}}
-
-% Problem statements
-\declaretheorem[name=Problem,
-                style=shadedtext,
+                ]{proof}
+\declaretheorem[style=nonumberplain,
+                title={Church's Thesis},
+                refname={Church's Thesis,Church's Thesis},
+                Refname={Church's Thesis,Church's Thesis},
+                ]{churchsthesis}
+\declaretheorem[style=marginnumbers,
                 refname={Problem,Problems},
                 Refname={Problem,Problems},
-                sibling=theorem]{problem} 
+                sibling=theorem]{problem}
 \newcommand{\probleminput}{\textit{Input:}}
 \newcommand{\problemoutput}{\textit{Output:}}
 
-% In the Extra sections we want the numbering of
-% theorem environments to be different, more informal.
-\declaretheoremstyle[
-  spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\mbox{\checkoddpage\ifoddpage%
-    \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME \NOTE%
-  \else%
-    \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME \NOTE%
-%     \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
-  \fi}\ignorespaces},
-  % headformat={\NAME\NOTE },
-  headpunct={},
-  bodyfont=\normalfont,
-  postheadspace={.618em plus .2em minus .1em},
-  preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
-  postfoothook={\end{snugshade}\end{savenotes}}
-%   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
-  ]{extrashadedtext}  % for text that has a shaded box behind it TODO: make the frames not add any vertical space, add a rule to the frame
+% == end new theorems
 
-\declaretheoremstyle[
-  spaceabove=.35\thm@preskip, spacebelow=.65\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
-  headformat={\mbox{\checkoddpage\ifoddpage%
-    \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME %
-  \else%
-    \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME %
-    % \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
-  \fi}\ignorespaces},
-  headformat={\NAME\NOTE },
-  headpunct={},
-  bodyfont=\normalfont,
-  postheadspace={.618em plus .2em minus .1em},
-  ]{extratext}   % for text that is not shaded 
+% %============= theorems =============================
+% % This stuff has to all come after cleveref, which must all come after hyperref
+% % \usepackage{amsmath} % ,amssymb}
+% \usepackage{ifoddpage}
+% \usepackage{framed}
+%   % \definecolor{shadecolor}{gray}{.95}
+%   \colorlet{shadecolor}{backgroundcolor}
+% \usepackage{footnote}
+% % \usepackage{amsthm}
+% % \usepackage{ntheorem} 
+% \usepackage{thmtools}
+% \declaretheoremstyle[
+%   spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   % postheadspace={.618em plus .2em minus .1em},
+%   postheadspace={.55em plus .2em minus .1em},
+%   preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
+%   postfoothook={\end{snugshade}\end{savenotes}}
+% %   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
+%   ]{shadedtext}  % for text that has a shaded box behind it TODO: make the frames not add any vertical space, add a rule to the frame
 
-\declaretheoremstyle[
-  spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
-  headfont=\normalfont\scshape,
-  notefont=\normalfont\scshape, notebraces={ (}{)},
-  headformat={\NUMBER\NOTE\ignorespaces},
-  headindent={-1em},
-  headpunct={},
-  bodyfont=\normalfont,
-  postheadspace={.618em plus .2em minus .1em},
-  ]{extraexercise}   %  
+% \declaretheoremstyle[
+%   spaceabove=.35\thm@preskip, spacebelow=.65\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
+%   % headformat={\mbox{\checkoddpage\ifoddpage%
+%   %   \makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME %
+%   % \else%
+%   %   \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
+%   % \fi}\ignorespaces},
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   % postheadspace={.618em plus .2em minus .1em},
+%   postheadspace={.55em plus .2em minus .1em},
+%   ]{text}   % for text that is not shaded 
 
-\declaretheorem[name=Theorem,
-                style=extrashadedtext,
-                refname={Theorem,Theorems},
-                Refname={Theorem,Theorems},
-                ]{extratheorem}
-   % \surroundwithmdframed[style=thmstyle]{theorem}\resetparens[theorem]
-\renewcommand{\theextratheorem}{\arabic{extratheorem}}
+% \declaretheoremstyle[
+%   spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={\NUMBER\NOTE\ignorespaces},
+%   headindent={-1em},
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   postheadspace={.618em plus .2em minus .1em},
+%   ]{exercise}   %  
 
-\declaretheorem[name=Definition,
-                style=extrashadedtext,
-                refname={Definition,Definitions},
-                Refname={Definition,Definitions},
-                sibling=extratheorem]{extradefinition} 
-   % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
+% \declaretheoremstyle[
+%   spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={EXTRA \NUMBER\NOTE\ignorespaces},
+%   headindent={-1em},
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   postheadspace={.618em plus .2em minus .1em},
+%   numberwithin=subsection
+%   ]{extraexercise}   %  
+% % \renewcommand{\theextraexercise}{\arabic{exercise}}
 
-\declaretheorem[name=Lemma,
-                style=extrashadedtext,
-                refname={Lemma,Lemmas},
-                Refname={Lemma,Lemmas},
-                sibling=extratheorem]{extralemma}
-   % \surroundwithmdframed[style=thmstyle]{lemma}\resetparens[lemma]
+% \declaretheoremstyle[
+%   % spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   postheadspace={.618em plus .2em minus .1em},
+%   prefoothook={\hfill\qedsymbol}
+%   ]{pf}  % for proofs, with qedsymbol at the end
 
-\declaretheorem[name=Corollary,
-                style=extrashadedtext,
-                refname={Corollary,Corollaries},
-                Refname={Corollary,Corollaries},
-                sibling=extratheorem]{extracorollary}
-   % \surroundwithmdframed[style=thmstyle]{corollary}\resetparens[corollary]
+% \declaretheoremstyle[
+%   spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={\NAME },
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   postheadspace={.618em plus .2em minus .1em},
+%   preheadhook={\begin{savenotes}}, % savenotes allows appendrefs to appear as footnotes
+%   postfoothook={\end{savenotes}}
+% %   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
+%   ]{nonumber}  % for text not numbered
 
-\declaretheorem[name=Example,
-                style=extratext,
-                refname={Example,Examples},
-                Refname={Example,Examples},
-                sibling=extratheorem]{extraexample}
+% \declaretheoremstyle[
+%   spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={\NAME },
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   postheadspace={.618em plus .2em minus .1em},
+%   preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
+%   postfoothook={\end{snugshade}\end{savenotes}}
+% %   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
+%   ]{shadednonumber}  % for text that has a shaded box behind it 
 
-\declaretheorem[name=Exercise,
-                style=extraexercise,
-                refname={Exercise,Exercises},
-                Refname={Exercise,Exercises},
-                sibling=extratheorem]{extraexercise}
+% \declaretheorem[name=Theorem,
+%                 style=shadedtext,
+%                 refname={Theorem,Theorems},
+%                 Refname={Theorem,Theorems},
+%                 numberwithin=subsection]{theorem}
+%    % \surroundwithmdframed[style=thmstyle]{theorem}\resetparens[theorem]
+% \renewcommand{\thetheorem}{\arabic{subsection}.\arabic{theorem}}
 
-% This is supposed to turn on the main kind of theorem when it is put in 
-% the after code of a \section definition.  I get a stack overflow and 
-% I can't figure out why.
-% \newcommand{\setmaintheorems}{%
-%   \typeout{!!! set main theorems}% 
-%   \global\let\theorem=\maintheorem%        
-%     \global\let\endtheorem=\endmaintheorem% 
-%   \global\let\definition=\maindefinition% 
-%     \global\let\enddefinition=\endmaindefinition% 
-%   \global\let\lemma=\mainlemma%           
-%     \global\let\endlemma=\endmainlemma% 
-%   \global\let\corollary=\maincorollary%   
-%     \global\let\endcorollary=\endmaincorollary% 
-%   \global\let\example=\mainexample%       
-%     \global\let\endexample=\endmainexample% 
-%   \global\let\exercise=\mainexercise%     
-%     \global\let\endexercise=\endmainexercise% 
-% }
-% \newcommand{\setextratheorems}{%
-%   \global\let\theorem=\extratheorem%       
-%     \global\let\endtheorem%\endextratheorem 
-%   \global\let\definition=\extradefinition% 
-%     \global\let\enddefinition=\endextradefinition% 
-%   \global\let\lemma=\extralemma%           
-%     \global\let\endlemma=\endextralemma% 
-%   \global\let\corollary=\extracorollary%   
-%     \global\let\endcorollary=\endextracorollary% 
-%   \global\let\example=\extraexample%       
-%     \global\let\endexample=\endextraexample% 
-%   \global\let\exercise=\extraexercise%     
-%     \global\let\endexercise=\endextraexercise% 
-% }
+% \declaretheorem[name=Definition,
+%                 style=shadedtext,
+%                 refname={Definition,Definitions},
+%                 Refname={Definition,Definitions},
+%                 sibling=theorem]{definition} 
+%    % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
+
+% \declaretheorem[name=Church's Thesis,
+%                 style=shadedtext,
+%                 refname={Church's Thesis,Church's Theses},
+%                 Refname={Church's Thesis,Church's Theses},
+%                 sibling=theorem]{churchsthesis} 
+%    % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
+
+% \declaretheorem[name=Lemma,
+%                 style=shadedtext,
+%                 refname={Lemma,Lemmas},
+%                 Refname={Lemma,Lemmas},
+%                 sibling=theorem]{lemma}
+%    % \surroundwithmdframed[style=thmstyle]{lemma}\resetparens[lemma]
+
+% \declaretheorem[name=Corollary,
+%                 style=shadedtext,
+%                 refname={Corollary,Corollaries},
+%                 Refname={Corollary,Corollaries},
+%                 sibling=theorem]{corollary}
+%    % \surroundwithmdframed[style=thmstyle]{corollary}\resetparens[corollary]
+
+% \declaretheorem[name=Example,
+%                 style=text,
+%                 refname={Example,Examples},
+%                 Refname={Example,Examples},
+%                 sibling=theorem]{example}
+
+% \declaretheorem[name=Exercise,
+%                 style=exercise,
+%                 refname={Exercise,Exercises},
+%                 Refname={Exercise,Exercises},
+%                 sibling=theorem]{sectionexercise}
+
+% \declaretheorem[name=Exercise,
+%                 style=exercise,
+%                 refname={Exercise,Exercises},
+%                 Refname={Exercise,Exercises},
+%                 sibling=theorem]{extraexercise}
+
+% \declaretheorem[name=Notation,
+%                 style=shadednonumber
+%                 refname={Notation,Notations},
+%                 Refname={Notation,Notations},
+%                 ]{notation}
+
+% \declaretheorem[name=Remark,
+%                 refname={Remark,Remarks},
+%                 Refname={Remark,Remarks},
+%                 style=nonumber]{remark}
+
+% \let\proof\@undefined                     
+% \let\endproof\@undefined               
+% \declaretheorem[name=Proof,
+%                 refname={Proof,Proofs},
+%                 Refname={Proof,Proofs},
+%                 style=pf]{proof}
+
+% % styling of proofs
+% \renewcommand{\proofname}{{\scshape\small Proof}}
+% % End of \begin{proof} ... \end{proof}
+% \renewcommand{\qedsymbol}{{\scshape\small QED}}
+
+% % Problem statements
+% \declaretheorem[name=Problem,
+%                 style=shadedtext,
+%                 refname={Problem,Problems},
+%                 Refname={Problem,Problems},
+%                 sibling=theorem]{problem} 
+% \newcommand{\probleminput}{\textit{Input:}}
+% \newcommand{\problemoutput}{\textit{Output:}}
+
+% % In the Extra sections we want the numbering of
+% % theorem environments to be different, more informal.
+% \declaretheoremstyle[
+%   spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={\mbox{\checkoddpage\ifoddpage%
+%     \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME \NOTE%
+%   \else%
+%     \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME \NOTE%
+% %     \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
+%   \fi}\ignorespaces},
+%   % headformat={\NAME\NOTE },
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   postheadspace={.618em plus .2em minus .1em},
+%   preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
+%   postfoothook={\end{snugshade}\end{savenotes}}
+% %   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
+%   ]{extrashadedtext}  % for text that has a shaded box behind it TODO: make the frames not add any vertical space, add a rule to the frame
+
+% \declaretheoremstyle[
+%   spaceabove=.35\thm@preskip, spacebelow=.65\thm@postskip,
+%   headfont=\normalfont\scshape,
+%   notefont=\normalfont\scshape, notebraces={ (}{)},
+%   headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
+%   headformat={\mbox{\checkoddpage\ifoddpage%
+%     \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME %
+%   \else%
+%     \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME %
+%     % \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
+%   \fi}\ignorespaces},
+%   headformat={\NAME\NOTE },
+%   headpunct={},
+%   bodyfont=\normalfont,
+%   postheadspace={.618em plus .2em minus .1em},
+%   ]{extratext}   % for text that is not shaded 
+
+% % \declaretheoremstyle[
+% %   spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
+% %   headfont=\normalfont\scshape,
+% %   notefont=\normalfont\scshape, notebraces={ (}{)},
+% %   headformat={\NUMBER\NOTE\ignorespaces},
+% %   headindent={-1em},
+% %   headpunct={},
+% %   bodyfont=\normalfont,
+% %   postheadspace={.618em plus .2em minus .1em},
+% %   ]{extraexercise}   %  
+
+% \declaretheorem[name=Theorem,
+%                 style=extrashadedtext,
+%                 refname={Theorem,Theorems},
+%                 Refname={Theorem,Theorems},
+%                 ]{extratheorem}
+%    % \surroundwithmdframed[style=thmstyle]{theorem}\resetparens[theorem]
+% \renewcommand{\theextratheorem}{\arabic{extratheorem}}
+
+% \declaretheorem[name=Definition,
+%                 style=extrashadedtext,
+%                 refname={Definition,Definitions},
+%                 Refname={Definition,Definitions},
+%                 sibling=extratheorem]{extradefinition} 
+%    % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
+
+% \declaretheorem[name=Lemma,
+%                 style=extrashadedtext,
+%                 refname={Lemma,Lemmas},
+%                 Refname={Lemma,Lemmas},
+%                 sibling=extratheorem]{extralemma}
+%    % \surroundwithmdframed[style=thmstyle]{lemma}\resetparens[lemma]
+
+% \declaretheorem[name=Corollary,
+%                 style=extrashadedtext,
+%                 refname={Corollary,Corollaries},
+%                 Refname={Corollary,Corollaries},
+%                 sibling=extratheorem]{extracorollary}
+%    % \surroundwithmdframed[style=thmstyle]{corollary}\resetparens[corollary]
+
+% \declaretheorem[name=Example,
+%                 style=extratext,
+%                 refname={Example,Examples},
+%                 Refname={Example,Examples},
+%                 sibling=extratheorem]{extraexample}
 
 
 
@@ -1281,66 +1375,67 @@ of the two.}
 
 
 
-%============= exercise =============================
-% See also answers section near the top of this file
-%
-% exercises  environment to surround exercises for each section
-% \newcommand{\exlabel}[1]{%
-%   \begin{tabular}{@{}l@{}}
-%     \textbf{#1} \\[-2ex]
-%     {\color{lightcolor}\rule{\textwidth}{0.4pt}}
-%   \end{tabular}%
-%   \vspace*{-2ex}%
-%   }
 
-% Common to exercises and explorations?  Too much for explorations.
-\newlength{\exenvironmenttopsep}
-\setlength{\exenvironmenttopsep}{4ex plus 1.5ex minus .2ex}
+% %============= exercise =============================
+% % See also answers section near the top of this file
+% %
+% % exercises  environment to surround exercises for each section
+% % \newcommand{\exlabel}[1]{%
+% %   \begin{tabular}{@{}l@{}}
+% %     \textbf{#1} \\[-2ex]
+% %     {\color{lightcolor}\rule{\textwidth}{0.4pt}}
+% %   \end{tabular}%
+% %   \vspace*{-2ex}%
+% %   }
 
-\newenvironment{exercises}{%
-% from titlesec: *n in titlespace means: n times 1ex plus .3ex minus .06ex
-% so the *3 before means this.
-  \begin{list}{}{% 
-    \let\makelabel\exlabel
-    \setlength{\topsep}{\exenvironmenttopsep}
-    \setlength{\leftmargin}{1em}
-    \setlength{\rightmargin}{0em}
-    \setlength{\labelwidth}{1em}
-    \setlength{\labelsep}{0em}
-    \setlength{\itemindent}{0em}
-    \setlength{\parsep}{0ex plus 0.1ex}
-    \setlength{\listparindent}{1em}
-    \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
-    % \item[Exercises, Section \thesection] 
-    \item[Exercises] 
-}{%
-  \end{list}
-  \vspace{-4ex}% 
-}
+% % Common to exercises and explorations?  Too much for explorations.
+% \newlength{\exenvironmenttopsep}
+% \setlength{\exenvironmenttopsep}{4ex plus 1.5ex minus .2ex}
 
-\newcounter{extraexercisectr}
-\newcommand{\extraexerciseslabel}[1]{\stepcounter{extraexercisectr}\normalfont\textsc{#1}}
-\newenvironment{extraexercises}{%
-  \setcounter{extraexercisectr}{0}
-% from titlesec: *n in titlespace means: n times 1ex plus .3ex minus .06ex
-% so the *3 before means this.
-  \begin{list}{}{% 
-    \let\makelabel\extraexerciseslabel
-    \setlength{\topsep}{\exenvironmenttopsep}
-    \setlength{\leftmargin}{1em}
-    \setlength{\rightmargin}{0em}
-    \setlength{\labelwidth}{1em}
-    \setlength{\labelsep}{0em}
-    \setlength{\itemindent}{0em}
-    \setlength{\parsep}{0ex plus 0.1ex}
-    \setlength{\listparindent}{1em}
-    \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
-    % \item[Exercises, Section \thesection] 
-    \item[Exercises] 
-}{%
-  \end{list}
-  \vspace{-4ex}% 
-}
+% \newenvironment{exercises}{%
+% % from titlesec: *n in titlespace means: n times 1ex plus .3ex minus .06ex
+% % so the *3 before means this.
+%   \begin{list}{}{% 
+%     \let\makelabel\exlabel
+%     \setlength{\topsep}{\exenvironmenttopsep}
+%     \setlength{\leftmargin}{1em}
+%     \setlength{\rightmargin}{0em}
+%     \setlength{\labelwidth}{1em}
+%     \setlength{\labelsep}{0em}
+%     \setlength{\itemindent}{0em}
+%     \setlength{\parsep}{0ex plus 0.1ex}
+%     \setlength{\listparindent}{1em}
+%     \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
+%     % \item[Exercises, Section \thesection] 
+%     \item[Exercises] 
+% }{%
+%   \end{list}
+%   \vspace{-4ex}% 
+% }
+
+% \newcounter{extraexercisectr}
+% \newcommand{\extraexerciseslabel}[1]{\stepcounter{extraexercisectr}\normalfont\textsc{#1}}
+% \newenvironment{extraexercises}{%
+%   \setcounter{extraexercisectr}{0}
+% % from titlesec: *n in titlespace means: n times 1ex plus .3ex minus .06ex
+% % so the *3 before means this.
+%   \begin{list}{}{% 
+%     \let\makelabel\extraexerciseslabel
+%     \setlength{\topsep}{\exenvironmenttopsep}
+%     \setlength{\leftmargin}{1em}
+%     \setlength{\rightmargin}{0em}
+%     \setlength{\labelwidth}{1em}
+%     \setlength{\labelsep}{0em}
+%     \setlength{\itemindent}{0em}
+%     \setlength{\parsep}{0ex plus 0.1ex}
+%     \setlength{\listparindent}{1em}
+%     \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
+%     % \item[Exercises, Section \thesection] 
+%     \item[Exercises] 
+% }{%
+%   \end{list}
+%   \vspace{-4ex}% 
+% }
 
 % \expartsname for naming a part of an exercise, as in \item \expartsname{Commutativity}
 \newcommand{\expartsname}[1]{\textsc{(#1)}} 
@@ -1475,8 +1570,8 @@ of the two.}
 }{%
   \end{animatefigure}
 }
-\crefname{animatefigure}{Animation}{Animations}
-\Crefname{animatefigure}{Animation}{Animations}
+% \crefname{animatefigure}{Animation}{Animations}
+% \Crefname{animatefigure}{Animation}{Animations}
 
 
 \captionsetup[tablehere]{labelformat=empty}
@@ -1491,8 +1586,8 @@ of the two.}
 }{%
   \end{tablehere}
 }
-\crefname{tablehere}{Table}{Tables}
-\Crefname{tablehere}{Table}{Tables}
+% \crefname{tablehere}{Table}{Tables}
+% \Crefname{tablehere}{Table}{Tables}
 
 \captionsetup[figurehere]{labelformat=empty}
 \renewcommand{\thefigurehere}{\arabic{section}.\arabic{figurehere}}
@@ -1509,8 +1604,8 @@ of the two.}
   \caption{\thetheorem~\textsc{Figure:} \figcapt} \label{\figlabel}
   \end{figurehere}
 }
-\crefname{figurehere}{Figure}{Figures}
-\Crefname{figurehere}{Figure}{Figures}
+% \crefname{figurehere}{Figure}{Figures}
+% \Crefname{figurehere}{Figure}{Figures}
 
 
 % =================
@@ -1522,3 +1617,58 @@ of the two.}
 \end{minipage}
 }
 
+
+
+%======================== hyperref ===========
+\usepackage{hyperref}
+\hypersetup{
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={Computing},    % title
+    pdfauthor={Jim Hefferon, Saint Michael's College},     % author
+    pdfsubject={Theory of Computation},   % subject of the document
+    pdfcreator={Jim Hefferon},   % creator of the document
+    pdfproducer={Jim Hefferon}, % producer of the document
+    pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black           % color of external links
+}
+% \newcommand\href[2]{\relax}
+% \newcommand\hyperref[2][\relax]{#2}
+
+
+% ======== clever references ===============
+\usepackage{cleveref} % after hyperref, apparently
+\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+  \ifcsname #2refname\endcsname
+    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+  \fi
+}
+
+% % Add the exercise format-changing command to the end of sections and extra
+% % sections.  I tried 
+% % \apptocmd{\section}{\setupSectionExercises}{\typeout{patch success}}{\typeout{patch failure}}
+% % from etoolbox but it gave me errors, so I'm doing this by hand.
+% \newcommand{\setupSectionElets}{\let\exercise\sectionexercise\let\endexercise\endsectionexercise\renewcommand{\thetheorem}{\arabic{subsection}.\arabic{theorem}}}
+% \newcommand{\setupExtraElets}{\typeout{!!!!!! setupExtraElets being called !!!!!}\renewcommand{\thetheorem}{\arabic{theorem}}\let\exercise\extraexercise\let\endexercise\endextraexercise}
+% \let\save@section=\section
+% \def\section#1{\save@section{#1}\setupSectionElets}
+% \let\save@extra=\extra
+% \def\extra#1{\save@extra{#1}\setupExtraElets}
+
+
+\crefname{animatefigure}{Animation}{Animations}
+\Crefname{animatefigure}{Animation}{Animations}
+\crefname{tablehere}{Table}{Tables}
+\Crefname{tablehere}{Table}{Tables}
+\crefname{figurehere}{Figure}{Figures}
+\Crefname{figurehere}{Figure}{Figures}

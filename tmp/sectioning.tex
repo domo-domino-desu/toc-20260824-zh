@@ -1,0 +1,438 @@
+\documentclass{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb} % , amsthm}
+\RequirePackage[dvipsnames]{xcolor}
+% \include{colorscheme}  % change the color scheme
+\definecolor{darkgreycolor}{HTML}{595241}
+\definecolor{lightgreycolor}{HTML}{E0D4BE}   % {B8AE9C}
+\definecolor{whitecolor}{HTML}{FFFFFF}
+\definecolor{lightbluecolor}{HTML}{ACCFCC}
+\definecolor{redcolor}{HTML}{8A0917}
+
+\colorlet{highlightcolor}{redcolor}
+\colorlet{backgroundcolor}{lightbluecolor}
+\colorlet{boldcolor}{darkgreycolor}
+\colorlet{lightcolor}{lightgreycolor}
+\colorlet{verylightcolor}{whitecolor}
+
+\RequirePackage{graphicx}
+\usepackage{adjustbox} % for clipping pictures
+\usepackage{mwe}  % for chapter-opening picture
+
+\makeatletter
+
+% %================================================================
+% % FOOTNOTES
+% % Footnotes: Use footnote symbols (not numbers) on a per-page basis.
+% % \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+% \RequirePackage[perpage,symbol*,para,multiple]{footmisc}
+% \setlength{\footnotemargin}{-1em}
+% % \DefineFNsymbols{hefferon}{\dagger\ddagger\S}
+% \DefineFNsymbolsTM*{hefferon}{%
+%   \textdagger    \dagger
+%   \textdaggerdbl \ddagger
+%   \textsection   \mathsection
+%   \textbardbl    \|%
+%   \#\#%
+% }%
+% \setfnsymbol{hefferon}
+% \newlength{\footmarktotextglue}
+% \global\footmarktotextglue=.1em plus .05em minus .02em %
+% % was: \global\footglue=1.25em plus.3em minus.3em % space between footnotes
+% \global\footglue=0.65em plus.2em minus.1em % space between footnotes
+% \long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
+% \smash{\@makefnmark}\nobreak
+% \hskip\footmarktotextglue\relax#1% was .5em
+% }
+
+%=========== answers to exercises ===================================
+%  The file answerbody.tex holds the answers, and in input by the file 
+% answers.tex
+%
+% This needs to be before sections and chapters because they write to
+% the answer body file
+
+% Name of file holding answers
+\newcommand{\answerbodyfilename}{answerbody}
+
+\usepackage{answers}
+\Opensolutionfile{\answerbodyfilename}
+\Newassociation{answer}{ans}{\answerbodyfilename}
+
+
+
+% ========== Exercises =======================
+
+% Suppress page break between "Exercises" and top of list
+%  see https://tex.stackexchange.com/a/210847/121234
+\newcounter{@exercisenumber}[section]
+\renewcommand{\the@exercisenumber}{\arabic{@exercisenumber}}
+\newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
+\newlength{\jh@listtopsep}
+  \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
+\newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading}
+\newenvironment{exercises}{%
+  \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
+  \nolisttopbreak
+  \setcounter{@exercisenumber}{\value{theorem}}
+  \begin{list}{}%
+    {
+      \renewcommand{\makelabel}[1]{\normalfont\scshape\refstepcounter{@exercisenumber}\the@exercisenumber.\ }
+      \setlength{\leftmargin}{1.5em}
+      \setlength{\labelwidth}{\leftmargin}
+      \setlength{\labelsep}{0em}
+      \setlength{\itemindent}{0em}
+      \setlength{\listparindent}{0.8\parindent}
+      \setlength{\topsep}{\jh@listtopsep}
+      \setlength{\parsep}{0ex}
+      \setlength{\itemsep}{0.5ex plus 0.1ex minus 0.05ex}
+      \setlength{\rightmargin}{0em}
+    }
+}{%
+  \end{list}
+}
+\newenvironment{exercise}{%
+  \item
+}{%
+}
+
+% ========= Chapters and sections =============
+\newcommand{\clearemptydoublepage}{%
+  \newpage{\pagestyle{empty}% 
+  \cleardoublepage}}
+
+% Parts 
+\newcommand{\newpart}[1]{\clearemptydoublepage\thispagestyle{empty}%
+  \vspace*{\fill}%
+  \begin{center}
+    \large #1
+  \end{center}
+  \vspace*{\fill}%
+}
+\renewcommand{\thepart}{\Alph{part}}
+
+
+% Chapters
+\renewcommand{\chapter}{%
+  \@startsection{chapter}{0}%
+  {0em}%
+  {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
+  {1ex plus .3ex minus .06ex}% *1 from titlesec
+  {\marginnote{\smash{\normalfont\Large\color{boldcolor}\begin{tabular}[b]{@{}r@{}} Chapter \\[-0.15ex] \thechapter\end{tabular}}}[1.4ex]\normalfont\Large\bfseries}%
+}
+\usepackage{fmtcount}
+\renewcommand{\thechapter}{\Numberstring{chapter}}
+
+% \usepackage{nextpage}
+% \usepackage{xifthen}
+% % \chapteropen
+% % chapters start with a full page picture on the left, and a chapter
+% % page on the right
+% %  #1 figure scaling factor (times \paperwidth) default is 1
+% %  #2 figure name
+% %  #3 chapter name
+% \newlength{\jh@eventotaloutermargin}
+% \setlength{\jh@eventotaloutermargin}{\evensidemargin+1in}
+% % \newcommand{\jh@chapterfigure}[2]{\mbox{\hspace*{-\jh@eventotaloutermargin}\makebox[0em]{\includegraphics[width=#1\paperwidth]{#2}}}}
+
+% % For the chapter image, load it at full height and at full width, and then
+% % see which of the two is the right size (doesn't spill out of page)
+% \newsavebox{\jh@chaptergraphicrightsized}
+% \newsavebox{\jh@chaptergraphicrightheight}
+% \newsavebox{\jh@chaptergraphicrightwidth}
+% \newlength{\jh@graphicrightheightwidth}
+% \newlength{\jh@graphicrightheightheight}
+% \newlength{\jh@graphicrightwidthwidth}
+% \newlength{\jh@graphicrightwidthheight}
+
+% % \jh@loadchapterfigure Grab the image, decide on the size, and put in
+% % the box \jh@chaptergraphicrightsized
+% % #1 graphic name; e.g., einstein.jpg 
+% \newcommand{\jh@loadchapterfigure}[1]{%
+%   % \typeout{!!! About to read in graphic #1}
+%   \savebox{\jh@chaptergraphicrightheight}{\includegraphics[height=\paperheight]{#1}}%
+%   \savebox{\jh@chaptergraphicrightwidth}{\includegraphics[width=\paperwidth]{#1}}%
+%   % \typeout{!!! Just read in graphic.} 
+%   \settowidth{\jh@graphicrightheightwidth}{\usebox{\jh@chaptergraphicrightheight}}%
+%   % \settototalheight{\jh@graphicrightheightheight}{\usebox{\jh@chaptergraphicrightheight}}%
+%   % \settowidth{\jh@graphicrightwidthwidth}{\usebox{\jh@chaptergraphicrightwidth}}%
+%   % \settototalheight{\jh@graphicrightwidthheight}{\usebox{\jh@chaptergraphicrightwidth}}%
+%   % \typeout{!!! Paper height: \the\glueexpr\paperheight} 
+%   % \typeout{!!! Paper width: \the\glueexpr\paperwidth} 
+%   % \typeout{!!! Height of rightheight: \the\glueexpr\jh@graphicrightheightheight} 
+%   % \typeout{!!! Width of rightheight: \the\dimexpr\jh@graphicrightheightwidth} 
+%   % \typeout{!!! Height of rightwidth: \the\glueexpr\jh@graphicrightwidthheight} 
+%   % \typeout{!!! Width of rightwidth: \the\dimexpr\jh@graphicrightwidthwidth} 
+%   % \typeout{!!! About to ifthenelse}
+%   \ifthenelse{\dimtest{\jh@graphicrightheightwidth}{<=}{\paperwidth}}{%
+%     % \typeout{!!! using rightheight}
+%     \savebox{\jh@chaptergraphicrightsized}{%
+%        \usebox{\jh@chaptergraphicrightheight}}% 
+%   }{%
+%     % \typeout{!!! using rightwidth}
+%     \savebox{\jh@chaptergraphicrightsized}{%
+%        \usebox{\jh@chaptergraphicrightwidth}}% 
+%   }
+% }
+
+% % \jh@chapterfigure  Return a box with the figure
+% \newcommand{\jh@chapterfigure}{%
+%   \noindent\makebox[\textwidth][l]{%
+%     \hspace*{-\jh@eventotaloutermargin}%
+%     \setlength{\unitlength}{1pt}% 
+%     \begin{picture}(0,0)
+%       \put(0,0){\raisebox{-0.5\height}{\usebox{\jh@chaptergraphicrightsized}}}
+%     \end{picture}}%
+% }
+
+% % imagecredit  Give credit in a footnote-like entry for an image
+% %  #1  text of image credit
+% \newcommand\imagecredit[1]{%
+%   \begingroup% 
+%   \renewcommand\thefootnote{}\footnote{\hskip-\footmarktotextglue\textsc{Image:} #1}%
+%   \addtocounter{footnote}{-1}%
+%   \endgroup% 
+% }
+
+% % \chapteropen  Start a chapter
+% %  #1 optional  image credit; e.g., Einstein archive
+% %  #2 name of figure; e.g., einstein.jpg
+% %  #3 chapter name; e.g., Einstein's view
+% \newcommand{\chapteropen}[3][\relax]{%
+%   \cleartoevenpage[\thispagestyle{empty}]% clear to the next even page
+%   \jh@loadchapterfigure{#2}% 
+%   \thispagestyle{empty}\vspace*{\fill}{\centering\jh@chapterfigure}\vspace*{\fill}% draw the figure
+%   \clearpage% go to the odd page for the chapter head
+%   \chapter{#3}\imagecredit{#1}% 
+%   \Writetofile{\answerbodyfilename}{\protect\chapter{#3}}% 
+%   \citeadd{\citechapter{\thechapter}{#3}}
+%   % \citeadd{\citechapter{\arabic{chapter}}{#3}}% 
+% }
+
+\newcommand{\chapteropen}[3]{%
+  \clearpage
+  \thispagestyle{empty}%
+  \includegraphics{example-image-a}\clearpage
+  \chapter{#3}}
+
+
+
+% Sections, subsections
+\usepackage{etoolbox}
+% Put section names in margin with marginpar, always on left margin
+%  despite twoside option; see https://tex.stackexchange.com/a/73117/121234
+\setlength{\marginparsep}{1em}
+\usepackage{marginnote}
+\patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
+\patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
+\reversemarginpar 
+
+\setcounter{secnumdepth}{10} 
+\renewcommand\@seccntformat[1]{\relax} % no numbering inside section title
+\newlength{\jh@margintxttobodytext}
+  \setlength{\jh@margintxttobodytext}{0.0em}
+% Section
+\renewcommand{\section}{%
+  \renewcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
+  \@startsection{section}{1}%
+  {0em}%
+  {-3.5ex plus -1ex minus -0.2ex}%
+  {2.3ex plus .2ex}%
+  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
+}
+\renewcommand{\thesection}{\Roman{section}}
+
+
+% Subsections
+\renewcommand{\subsection}{%
+  \@startsection{subsection}{2}%
+  {0em}%
+  {-3.25ex plus -1ex minus -0.2ex}%
+  {-0.6em plus -0.1em}%  negative makes it a run-in header
+  {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
+}
+\renewcommand{\thesubsection}{\arabic{subsection}}
+
+% Extra
+\newcounter{extra}[chapter]
+\renewcommand{\theextra}{\Numberstring{chapter}.\Alph{extra}}
+\newcommand{\extra}{%
+  \renewcommand{\@exercisecounterstart}{\theextra} % put in the margin to count exercises env
+  \setcounter{theorem}{0}
+  \setcounter{subsection}{\the\numexpr\value{extra}+1\relax}
+  \renewcommand{\thesubsection}{\Alph{subsection}}
+  \@startsection{extra}{2}%
+  {0em}%
+  {-3.25ex plus -1ex minus -0.2ex}%
+  {-0.6em plus -0.1em}%  negative makes it a run-in header
+  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \theextra\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
+}
+\newcommand*\l@extra{\@dottedtocline{6}{10em}{5em}}% for toc
+\newcommand{\extramark}[1]{}% for page headers
+
+
+% ============ Theorems ========================
+\usepackage{cleveref}
+
+%\usepackage[amsmath]{ntheorem} % cleveref requires amsthm or ntheorsm
+\usepackage[thmmarks,amsmath]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+% % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
+\newtheoremstyle{marginnumbers}%
+{\item[\theorem@headerfont\llap{##2\hspace{0.5em}}]{\theorem@headerfont ##1} }%
+{\item[\theorem@headerfont\llap{##2}]{\theorem@headerfont ##1\ (##3)} }%
+\theoremheaderfont{\scshape}
+\theorembodyfont{}    
+\theoremsymbol{}
+\theoremprework{}
+\theorempostwork{}
+\theoremseparator{}
+\usepackage{thmtools}
+\declaretheorem[style=marginnumbers,
+                refname={Theorem,Theorems},
+                Refname={Theorem,Theorems}]{theorem}
+\numberwithin{theorem}{subsection}
+\declaretheorem[style=marginnumbers,
+                refname={Lemma,Lemmas},
+                Refname={Lemma,Lemmas},
+                sibling=theorem]{lemma}
+\declaretheorem[style=marginnumbers,
+                refname={Definition,Definitions},
+                Refname={Definition,Definitions},
+                sibling=theorem]{definition}
+\declaretheorem[style=marginnumbers,
+                refname={Example,Examples},
+                Refname={Example,Examples},
+                sibling=theorem]{example}
+\declaretheorem[style=marginnumbers,
+                refname={Remark,Remarks},
+                Refname={Remark,Remarks},
+                sibling=theorem]{remark}
+% % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
+% \newtheoremstyle{marginnumbers}%
+% {\item[\theorem@headerfont \llap{##2}]{\theorem@headerfont ##1} }%
+% {\item[\theorem@headerfont \llap{##2}]{\theorem@headerfont ##1\ (##3)} }%
+
+% % my definition
+% \theoremstyle{marginnumbers}
+% \theoremheaderfont{\scshape}
+% \theorembodyfont{}      % customize these to suit your tastes
+% \theoremsymbol{}
+% \theoremprework{}
+% \theorempostwork{}
+% \theoremseparator{}
+% % These are reset in the \renewcommand{\section} and \newcommand{\extra}
+% \newtheorem{within}{Within}   % dummy
+% \numberwithin{within}{subsection}
+% \newtheorem{theorem}[within]{Theorem}
+% \newtheorem{lemma}[within]{Lemma}
+% \newtheorem{corollary}[within]{Corollary}
+% \newtheorem{definition}[within]{Definition}
+% \newtheorem{example}[within]{Example}
+% \newtheorem{remark}[within]{Remark}
+
+\makeatother
+
+
+\usepackage{lipsum}
+\begin{document}
+\chapteropen[credit: ctan]{example-image-a}{Chapter One}
+\lipsum[1]
+\section{Section One.I}
+\lipsum[1]
+
+\subsection{Subsection One.I.1}
+\lipsum[1]
+\begin{lemma}
+  This is the lemma
+\end{lemma}
+\begin{theorem}
+  \label{th:FromSecOneI}
+  This is the theorem
+\end{theorem}
+\begin{theorem}[Jones]
+  This is the theorem
+\end{theorem}
+\begin{lemma}
+  This is the lemma
+\end{lemma}
+
+
+\subsection{Subsection One.I.2}
+\lipsum[1]
+
+\begin{exercises}
+  \begin{exercise}
+    \lipsum[2]
+  \end{exercise}
+\item goodbye
+\end{exercises}
+
+\extra{Extra topic}
+\lipsum[1]
+\begin{theorem}
+  This is the theorem
+\end{theorem}
+
+\begin{lemma}
+  This is the lemma
+\end{lemma}
+\extra{Second extra topic}
+\lipsum[1]
+\begin{theorem}
+  This is the theorem
+\end{theorem}
+
+\begin{lemma}
+  This is the lemma
+\end{lemma}
+
+\begin{exercises}
+  \begin{exercise}
+    \lipsum[2]
+  \end{exercise}
+\item goodbye
+\end{exercises}
+
+\section{Section One.II}
+\lipsum[1]
+
+From Section One.I: \cref{th:FromSecOneI}.
+
+
+\chapter{Chapter Two}
+\lipsum[1]
+\section{Section One.I}
+\lipsum[1]
+\subsection{Subsection One.I.1}
+\lipsum[1]
+\subsection{Subsection One.I.2}
+\lipsum[1]
+
+\begin{exercises}
+  \begin{exercise}
+    \lipsum[2]
+  \end{exercise}
+\item goodbye
+\end{exercises}
+
+
+\extra{Extra topic}
+\lipsum[1]
+
+\begin{exercises}
+  \begin{exercise}
+    \lipsum[2]
+  \end{exercise}
+\item goodbye
+\end{exercises}
+\extra{Second extra topic}
+\lipsum[1]
+
+\end{document}
+% TODO:
+
+Done: 1) Set exercises to respond to Extra section
+Done: 2) change to amsthm/check cleverref
+3) add chapter defn
+4) Set distances according to current class

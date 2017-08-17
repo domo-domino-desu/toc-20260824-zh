@@ -21,30 +21,40 @@
 \usepackage{mwe}  % for chapter-opening picture
 
 \makeatletter
+% ============================================================
+% Behavior inside and outside the Extra sections
+% This is the main complication; I want that inside an Extra things
+% are numbered less formally, etc.
+%   You can find this section by searching for "EXTRA SECTION TOGGLE"
+\usepackage{etoolbox}
+\newtoggle{insideextrasection} % True if inside an extra section, false ow. 
+% Notes
+% 1) This is set to false in a chapter command, and true in an extra command;
+%   search for the string "EXTRA TOGGLE RESET", 
 
-% %================================================================
-% % FOOTNOTES
-% % Footnotes: Use footnote symbols (not numbers) on a per-page basis.
-% % \renewcommand{\thefootnote}{\fnsymbol{footnote}}
-% \RequirePackage[perpage,symbol*,para,multiple]{footmisc}
-% \setlength{\footnotemargin}{-1em}
-% % \DefineFNsymbols{hefferon}{\dagger\ddagger\S}
-% \DefineFNsymbolsTM*{hefferon}{%
-%   \textdagger    \dagger
-%   \textdaggerdbl \ddagger
-%   \textsection   \mathsection
-%   \textbardbl    \|%
-%   \#\#%
-% }%
-% \setfnsymbol{hefferon}
-% \newlength{\footmarktotextglue}
-% \global\footmarktotextglue=.1em plus .05em minus .02em %
-% % was: \global\footglue=1.25em plus.3em minus.3em % space between footnotes
-% \global\footglue=0.65em plus.2em minus.1em % space between footnotes
-% \long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
-% \smash{\@makefnmark}\nobreak
-% \hskip\footmarktotextglue\relax#1% was .5em
-% }
+
+%================================================================
+% FOOTNOTES
+% Footnotes: Use footnote symbols (not numbers) on a per-page basis.
+% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
+\setlength{\footnotemargin}{-1em}
+\DefineFNsymbolsTM*{hefferon}{%
+  \textdagger    \dagger
+  \textdaggerdbl \ddagger
+  \textsection   \mathsection
+  \textbardbl    \|%
+  \#\#%
+}%
+\setfnsymbol{hefferon}
+\newlength{\footmarktotextglue}
+\global\footmarktotextglue=.1em plus .05em minus .02em %
+% was: \global\footglue=1.25em plus.3em minus.3em % space between footnotes
+\global\footglue=0.65em plus.2em minus.1em % space between footnotes
+\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
+\smash{\@makefnmark}\nobreak
+\hskip\footmarktotextglue\relax#1% was .5em
+}
 
 %=========== answers to exercises ===================================
 %  The file answerbody.tex holds the answers, and in input by the file 
@@ -61,6 +71,12 @@
 \Newassociation{answer}{ans}{\answerbodyfilename}
 \AtEndDocument{\Closesolutionfile{\answerbodyfilename}}
 
+% I want to pass a string like Three.II.1 as the ans argument in the answerfile.
+% But I get an infinite loop expanding \Numberstring{chapter}.  So I am
+% passing 3.II.1 and figuring I'll figure out later how to translate the
+% 3 to a Three.
+\renewcommand{\Currentlabel}{\arabic{chapter}.\@currentlabel}
+
 
 % ========== Exercises =======================
 
@@ -69,7 +85,7 @@
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
 \newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
-\newcommand{\@exercisecounterlabel}{{\normalfont\scshape\arabic{@exercisenumber}}}
+\newcommand{\@exercisecounterlabel}{\makebox[1.5em][r]{\normalfont\scshape\arabic{@exercisenumber}}}
 \newlength{\jh@listtopsep}
   \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
   \newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading}
@@ -82,7 +98,7 @@
       \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}
       \setlength{\leftmargin}{1.5em}
       \setlength{\labelwidth}{\leftmargin}
-      \setlength{\labelsep}{0em}
+      \setlength{\labelsep}{0.5em}
       \setlength{\itemindent}{0em}
       \setlength{\listparindent}{0.8\parindent}
       \setlength{\topsep}{\jh@listtopsep}
@@ -99,9 +115,27 @@
 }
 
 % ========= Chapters and sections =============
-\newcommand{\clearemptydoublepage}{%
+% How much space to put between numbering and margin 
+\newlength{\margin@numberingspace} % Dist between numbering and margin
+\setlength{\margin@numberingspace}{0.8em}
+\setlength{\marginparsep}{\margin@numberingspace}
+
+% Clear to an odd page with empty pages in between
+\newcommand{\clearemptydoublepage}{% clear to right page
   \newpage{\pagestyle{empty}% 
   \cleardoublepage}}
+% https://tex.stackexchange.com/a/365249/121234
+\newcommand*{\cleartoleftpage}{%
+  \clearpage
+    \if@twoside
+    \ifodd\c@page
+      \hbox{}\thispagestyle{empty}\newpage
+      \if@twocolumn
+        \hbox{}\newpage
+      \fi
+    \fi
+  \fi
+}
 
 % Parts 
 \newcommand{\newpart}[1]{\clearemptydoublepage\thispagestyle{empty}%
@@ -113,9 +147,11 @@
 }
 \renewcommand{\thepart}{\Alph{part}}
 
-
 % Chapters
 \renewcommand{\chapter}{%
+  % Record that we are not inside an Extra section.
+  % For more info search for "EXTRA SECTION TOGGLE".
+  \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
   \@startsection{chapter}{0}%
   {0em}%
   {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
@@ -187,14 +223,16 @@
 %     \end{picture}}%
 % }
 
-% % imagecredit  Give credit in a footnote-like entry for an image
-% %  #1  text of image credit
-% \newcommand\imagecredit[1]{%
-%   \begingroup% 
-%   \renewcommand\thefootnote{}\footnote{\hskip-\footmarktotextglue\textsc{Image:} #1}%
-%   \addtocounter{footnote}{-1}%
-%   \endgroup% 
-% }
+% imagecredit  Give credit in a footnote-like entry for an image
+%  #1  text of image credit
+\newcommand\imagecredit[1]{%
+  \begingroup% 
+  \renewcommand\thefootnote{}\footnote{\hskip-\footmarktotextglue\textsc{Image:} #1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup% 
+}
+
+
 
 % % \chapteropen  Start a chapter
 % %  #1 optional  image credit; e.g., Einstein archive
@@ -210,17 +248,23 @@
 %   \citeadd{\citechapter{\thechapter}{#3}}
 %   % \citeadd{\citechapter{\arabic{chapter}}{#3}}% 
 % }
-
+\newlength{\jh@eventotaloutermargin}
+\setlength{\jh@eventotaloutermargin}{\evensidemargin}
+\addtolength{\jh@eventotaloutermargin}{1in}
 \newcommand{\chapteropen}[3]{%
-  \clearpage
+  \cleartoleftpage
   \thispagestyle{empty}%
-  \includegraphics{example-image-a}\clearpage
-  \chapter{#3}}
-
-
+  \vspace*{\stretch{1}}
+  {\noindent\hspace*{-\jh@eventotaloutermargin}% 
+  \includegraphics[height=\paperheight,
+                   width=\paperwidth,
+                   keepaspectratio]{#2}}%
+  \vspace*{\stretch{1}}
+  \clearpage
+  \chapter{#3}\imagecredit{#1}%
+  \Writetofile{\answerbodyfilename}{\protect\chapter{#3}}}
 
 % Sections, subsections
-\usepackage{etoolbox}
 % Put section names in margin with marginpar, always on left margin
 %  despite twoside option; see https://tex.stackexchange.com/a/73117/121234
 \setlength{\marginparsep}{1em}
@@ -260,6 +304,9 @@
 \newcounter{extra}[chapter]
 \renewcommand{\theextra}{\Numberstring{chapter}.\Alph{extra}}
 \newcommand{\extra}{%
+  % Record that we are now inside an Extra section.
+  % For more info search for "EXTRA SECTION TOGGLE".
+  \global\toggletrue{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\@exercisecounterstart}{\theextra} % put in the margin to count exercises env
   \setcounter{theorem}{0}
   \setcounter{subsection}{\the\numexpr\value{extra}+1\relax}
@@ -339,7 +386,7 @@
 
 \usepackage{lipsum}
 \begin{document}
-\chapteropen[credit: ctan]{example-image-a}{Chapter One}
+\chapteropen{Credit to ctan}{example-image-a}{Chapter One}
 \lipsum[1]
 \section{Section One.I}
 \lipsum[1]
@@ -374,11 +421,13 @@
 \lipsum[1]
 
 \begin{exercises}
-  \item Hello
-  % \begin{exercise}
-  %   \lipsum[2]
-  % \end{exercise}
-\item goodbye
+  \begin{exercise}
+    \lipsum[2]
+    % \tracingall
+    \begin{answer}
+      \lipsum[3]
+    \end{answer}
+  \end{exercise}
 \end{exercises}
 
 
@@ -414,7 +463,8 @@
 From Section One.I: \cref{th:FromSecOneI}.
 
 
-\chapter{Chapter Two}
+\chapteropen{Credit to ctan}{example-image-a}{Chapter Two}
+% \chapter{Chapter Two}
 \lipsum[1]
 \section{Section One.I}
 \lipsum[1]
@@ -432,6 +482,7 @@ From Section One.I: \cref{th:FromSecOneI}.
     akfd a jasf alsf al falksdf.
     kasdfkl jafdkj alksdf jlaj.
     akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
+    % \tracingall
     \begin{answer}
       \lipsum[3]
     \end{answer}

@@ -40,7 +40,7 @@
 \usepackage{etoolbox}
 \usepackage{trace}  % for debugging
 
-\usepackage[inline]{enumitem} % for exparts and exparts*, for exercises and answers 
+\usepackage[inline]{enumitem} % for exparts and exparts*, for exercses and answers 
 \newenvironment{parenum}{%
   \begin{enumerate*}[label=(\arabic*),]%
 }{%

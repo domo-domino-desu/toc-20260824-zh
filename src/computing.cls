@@ -207,7 +207,7 @@ of the two.}
 
 
 \newcommand{\printnotes}{%
-  \newpage
+  \clearemptydoublepage
   \begingroup
   % \parindent 0pt
   \parskip 1ex

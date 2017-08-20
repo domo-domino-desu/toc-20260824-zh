@@ -1,6 +1,9 @@
 \documentclass[twoside]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\input{glyphtounicode}% Make PDF offer better copy and paste
+  \pdfgentounicode=1
+
 \RequirePackage[papersize={7.5in,9.25in},
                 textwidth=345pt, % textheight=550pt,  % LaTeX defaults
                 inner=.8in, top=1in, bottom=1in, %
@@ -27,8 +30,103 @@
 \usepackage{adjustbox} % for clipping pictures
 \usepackage{mwe}  % for chapter-opening picture
 
+
+% ++++++++++++++++++++++++++++++++++++++++
 \makeatletter
-\usepackage[inline]{enumitem} 
+
+% ========== enumitem =============
+\usepackage[inline]{enumitem}
+% parenum
+%  Enumerate inside a paragraph
+\newenvironment{parenum}{%
+  \begin{enumerate*}[label=(\arabic*),]%
+}{%
+  \end{enumerate*}
+}
+
+
+
+% ===== Page Headers and Footers =============
+\RequirePackage{fancyhdr}
+% See http://en.wikibooks.org/wiki/LaTeX/Page_Layout
+\setlength{\headheight}{15.2pt}
+
+%HEADINGS
+% \lhead[lh-even]{lh-odd} \chead[ch-even]{ch-odd} \rhead[rh-even]{rh-odd}
+% \lfoot[lf-even]{lf-odd} \cfoot[cf-even]{cf-odd} \rfoot[rf-even]{rf-odd}
+% where
+% When LaTeX wants to create a page with an empty style, it will insert the 
+% first argument of fancyplain, in all the other cases it will use the 
+% second argument
+% and available are
+% \thepage  number of the current page
+% \leftmark current chapter name printed like "CHAPTER 3. THIS IS THE CHAPTER TITLE"
+% \rightmark current section name printed like "1.6. THIS IS THE SECTION TITLE"
+% \chaptername the name chapter in the current language. If this is English, it will display "Chapter"
+% \thechapter 	current chapter number
+% \thesection 	current section number
+
+\pagestyle{fancy} % must preceed redefinitions of \chaptermark, \sectionmark
+\renewcommand{\chaptermark}[1]{%
+\markboth{\chaptername\ \thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{%
+ \markright{\sectionname\ \thesection.\ #1}}
+\renewcommand{\headrule}{{\color{lightcolor}%
+  \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
+
+% Main body of book
+\renewcommand{\chaptername}{Chapter}
+\newcommand{\sectionname}{Section}
+\fancypagestyle{bookbody}{%
+  \renewcommand{\headrulewidth}{.4pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \lhead[\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\thepage}]{\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\rightmark}}
+  \rhead[\fancyplain{}{\color{boldcolor}\leftmark}]{\fancyplain{}{\color{boldcolor}\thepage}}
+  \chead{}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{\fancyplain{\renewcommand{\footrulewidth}{.4pt}\thepage}{}}
+}
+
+% Front matter
+\fancypagestyle{bookfront}{%
+  \lhead{}
+  \rhead{}
+  \chead{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{}
+  % \cfoot{\fancyplain{}{-- \thepage{} --}}
+}
+
+% Chapters start with an empty page (includes first page of toc)
+\fancypagestyle{bookemptypage}{%
+  \lhead{}
+  \rhead{}
+  \chead{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{}
+}
+
+% Table of contents
+\fancypagestyle{booktoc}{%
+  \lhead{}
+  \rhead{}
+  \chead{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{}
+}
+
+\pagestyle{bookfront}
+\pagenumbering{roman}
 
 
 % ============================================================
@@ -211,6 +309,9 @@
   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesubsection}{\arabic{subsection}}  % set theorem numbering to be as outside Extra sections
   %
+  \pagestyle{bookbody}
+  \thispagestyle{bookemptypage}
+  %
   \@startsection{chapter}{0}%
   {0em}%
   {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
@@ -243,9 +344,9 @@
   \vspace*{\stretch{1}}  % vertically center on the page
   {\noindent\hspace*{-\jh@eventotaloutermargin}% Move everything left by \evensidemargin
   % The graphicx package will pick the smaller of the height and width
-  \includegraphics[height=\paperheight,
+  \makebox[\linewidth][l]{\includegraphics[height=\paperheight,
                    width=\paperwidth,
-                   keepaspectratio]{#2}}%
+                   keepaspectratio]{#2}}}%
   \vspace*{\stretch{1}} % vertically center
   \clearpage
   \chapter{#3}\imagecredit{#1}%
@@ -264,19 +365,25 @@
 \patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
 \reversemarginpar 
 
+% \sectiontitlecontents
+% endnotes makes the Notes page with a \section*{...} command.  I want
+% to make the "Section One.II" come out in the document body, but have
+% it disappear in the Notes page.  So there I redefine it to \relax.
+\newcommand{\sectiontitlecontents}[1]{#1}
+
 \setcounter{secnumdepth}{10}  % Display them all
 \renewcommand\@seccntformat[1]{\relax} % no numbering inside section title
 \newlength{\jh@margintxttobodytext}
   \setlength{\jh@margintxttobodytext}{0.0em}
 % Section
 \renewcommand{\section}{%
-  \renewcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
-  \renewcommand{\the@exercisenumber}{\Roman{section}.\arabic{@exercisenumber}}
+  \renewcommand{\@exercisecounterstart}{\thesection}% put in the margin to count exercises env
+  \renewcommand{\the@exercisenumber}{\Roman{section}.\arabic{@exercisenumber}}%
   \@startsection{section}{1}%
   {0em}%
   {-3.5ex plus -1ex minus -0.2ex}%
   {2.3ex plus .2ex}%
-  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
+  {\sectiontitlecontents{\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}\normalfont\bfseries}%
 }
 \renewcommand{\thesection}{\Roman{section}}
 
@@ -384,19 +491,142 @@
   \end{enumerate}
 }
 
+% ========== Bibliography =============
+% biblatex 
+\usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+\addbibresource{computing.bib}
+
+
+% ============= Citations ============
+% citetext
+%  Reference text in the body.
+% #1 text referenced in the citations
+% #2 Citation
+%  Example:
+%   The soldiers could 
+%    \citetext{see his hairy legs}{OR C Dobson, p 1094.}.
+% produces an end note like 
+%    \textit{see his hairy legs} OR C Dobson, p 1094.
+
+\usepackage{endnotes} %, endheads}
+\newcommand{\citetext}[2]{#1%
+  \endnote{\protect\hspace*{-2em}\textit{#1}\protect\hspace{.618em} #2}}
+\renewcommand{\makeenmark}{\relax} % leave no mark
+\newcommand{\citeadd}[1]{\addtoendnotes{#1}}
+
+\renewcommand{\notesname}{Notes}
+\usepackage{hanging} % make cited text be in hanging indented paragraphs
+% \def\enoteheading{\section*{\notesname
+%   \@mkboth{\MakeUppercase{\notesname}}{\MakeUppercase{\notesname}}}%
+%   \mbox{}\par\vskip-\baselineskip}
+\def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%
+  \leavevmode\llap{\makeenmark}}
+% \usepackage{needspace}   % prevent a page break between a chapter announcement and the citations on that chapter
+
+% How headings for chapters, Preface, etc. ar formatted on Citations page
+\newcommand{\citechapterformatting}[1]{\vspace{2ex}%
+  \par\noindent{\textbf{#1}}}
+% How chapters are put onto Citations page.  For Preface, etc. you use prior
+% command by hand.
+\newcommand{\citechapter}[2]{\citechapterformatting{Chapter #1\hspace{1em}#2}}
+
+% Change \theendnotes to add a hook for some explanatory text.
+\def\theendnotes{\immediate\closeout\@enotes \global\@enotesopenfalse
+  \begingroup
+    \makeatletter
+    %
+    % The machinery with \@ResetGT and > here ensures that
+    % \@doanenote works properly even if > is an active character
+    % at the point where \theendnotes is invoked. > needs to have
+    % catcode 12 when the arguments of \@doanenote are scanned, so
+    % that the > in the string "macro:->" is matched.  The actual
+    % footnote text is not an argument to \@doanenote, but just
+    % follows it in the .ent file; so \@ResetGT can reset the
+    % category code for > that should be used when processing
+    % that text.  That resetting takes place within a
+    % \begingroup-\endgroup block set up by \@doanenote and
+    % \@endanenote, so the catcode for > is back to 12 for the
+    % next note.
+    %
+    \edef\@tempa{`\string >}%
+    \ifnum\catcode\@tempa=12%
+      \let\@ResetGT\relax
+    \else
+      \edef\@ResetGT{\noexpand\catcode\@tempa=\the\catcode\@tempa}%
+      \@makeother\>%
+    \fi
+    \def\@doanenote##1##2>{\def\@theenmark{##1}\par\begingroup
+        \@ResetGT
+        \edef\@currentlabel{\csname p@endnote\endcsname\@theenmark}%
+        \enoteformat}
+    \def\@endanenote{\par\endgroup}%
+    \enoteheading
+    \enotesize
+    \jhendnoteshook
+    \input{\jobname.ent}%
+  \endgroup}
+
+\newcommand{\jhendnoteshook}{These are citations or discussions that
+  supplement the main line of development in the text body.
+  For each there is a word or phrase in italics from that text body, and 
+  then the notes are in plain text.
+  Many of the citations or discussions include sources for you to read more,
+  with a web link if possible.
+  }
+
+\newcommand{\printnotes}{%
+  \newpage
+  \begingroup
+  % \parindent 0pt
+  \parskip=1ex plus 0.2ex minus 0.1ex %
+  \def\enotesize{\normalsize}
+  % \hangparas{-2em}{-1}
+  \renewcommand{\sectiontitlecontents}[1]{\relax} % Cause the "Section One.II" not to printed.
+  \vspace*{0.25ex plus 0.02ex}
+  \thispagestyle{bookemptypage}
+  \theendnotes
+  \endgroup
+  }
+
+
+
+% ============ Misc typographic widgets ==========
+
+% hangingpar  Hanging paragraph
+%  #1  length of hanging
+\newenvironment{hangingpar}[1][1em]
+  {\begin{list}
+          {}
+          {\setlength{\itemindent}{-#1}%%'
+           \setlength{\leftmargin}{#1}%%'
+           \setlength{\itemsep}{0pt}%%'
+           \setlength{\parsep}{\parskip}%%'
+           \setlength{\topsep}{\parskip}%%'
+           }
+    \setlength{\parindent}{-#1}%%
+    \item[]
+  }
+  {\end{list}}
+
+% == blkarray ====
+%   Extended array features, such as labelled rows and columns
+\usepackage{blkarray} 
 
                 
 \makeatother
+% ++++++++++++++++++++++++++++++++++++++++
 
 
 \usepackage{lipsum}
 \begin{document}
-\chapteropen{Credit to ctan}{example-image-a}{Chapter One}
+
+\mainmatter% \setcounter{page}{0}
+\chapteropen{Credit to ctan}{example-image-a}{Title of Chapter One}
 \lipsum[1]
-\section{Section One.I}
+\section{Title of Section One.I}
 \lipsum[1]
 
-\subsection{Subsection One.I.1}
+\subsection{Title of Subsection One.I.1}
 \lipsum[1]
 \begin{lemma}
   This is the lemma
@@ -422,7 +652,7 @@
 \end{lemma}
 
 
-\subsection{Subsection One.I.2}
+\subsection{Title of Subsection One.I.2}
 \lipsum[1]
 
 \begin{exercises}
@@ -436,7 +666,13 @@
 \end{exercises}
 
 
-\extra{Extra topic}
+
+\section{Title of Section One.II}
+\lipsum[1]
+
+From Section One.I: \cref{th:FromSecOneI}.
+
+\extra{Title of Extra topic}
 \lipsum[1]
 \begin{theorem}
   This is the theorem
@@ -445,7 +681,7 @@
 \begin{lemma}
   This is the lemma
 \end{lemma}
-\extra{Second extra topic}
+\extra{Title of Second extra topic}
 \lipsum[1]
 \begin{theorem}
   This is the theorem
@@ -462,20 +698,20 @@
 \item goodbye
 \end{exercises}
 
-\section{Section One.II}
-\lipsum[1]
-
-From Section One.I: \cref{th:FromSecOneI}.
 
 
-\chapteropen{Credit to ctan}{example-image-a}{Chapter Two}
+\chapteropen{Credit to ctan}{example-image-a}{Title of Chapter Two}
 % \chapter{Chapter Two}
 \lipsum[1]
-\section{Section One.I}
+\section{Title of Section One.I}
+\citetext{Cited text}{This is the body of the first text citation.
+
+It has a paragraph break in it.}
+
 \lipsum[1]
-\subsection{Subsection One.I.1}
+\subsection{Title of Subsection One.I.1}
 \lipsum[1]
-\subsection{Subsection One.I.2}
+\subsection{Title of Subsection One.I.2}
 \lipsum[1]
 \begin{lemma}
   This is the lemma
@@ -598,7 +834,7 @@ From Section One.I: \cref{th:FromSecOneI}.
 \end{exercises}
 
 
-\extra{Extra topic}
+\extra{Title of Extra topic}
 \lipsum[1]
 \begin{lemma}
   This is the lemma
@@ -676,9 +912,11 @@ From Section One.I: \cref{th:FromSecOneI}.
   \end{exercise}
 \end{exercises}
 
-\extra{Second extra topic}
+\extra{Title of Second extra topic}
 \lipsum[1]
 
+
+\printnotes
 
 \end{document}
 % TODO:

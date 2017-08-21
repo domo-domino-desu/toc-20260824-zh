@@ -70,7 +70,8 @@
 \renewcommand{\chaptermark}[1]{%
 \markboth{\chaptername\ \thechapter.\ #1}{}}
 \renewcommand{\sectionmark}[1]{%
- \markright{\sectionname\ \thesection.\ #1}}
+  \markright{\sectionname\ \thesection.\ #1}}
+% Note that \extramark is defined by the definition of \extra
 \renewcommand{\headrule}{{\color{lightcolor}%
   \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
 
@@ -80,12 +81,12 @@
 \fancypagestyle{bookbody}{%
   \renewcommand{\headrulewidth}{.4pt}
   \renewcommand{\footrulewidth}{0pt}
-  \lhead[\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\thepage}]{\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\rightmark}}
-  \rhead[\fancyplain{}{\color{boldcolor}\leftmark}]{\fancyplain{}{\color{boldcolor}\thepage}}
+  \lhead[\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\thepage}}]{\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\rightmark}}}
+  \rhead[\fancyplain{}{\color{boldcolor}\textsl{\leftmark}}]{\fancyplain{}{\color{boldcolor}\textsl{\thepage}}}
   \chead{}
   \lfoot{}
   \rfoot{}
-  \cfoot{\fancyplain{\renewcommand{\footrulewidth}{.4pt}\thepage}{}}
+  \cfoot{\fancyplain{\renewcommand{\footrulewidth}{.4pt}\\textsl{thepage}}{}}
 }
 
 % Front matter
@@ -141,6 +142,13 @@
 %   search for the string "EXTRA TOGGLE RESET", 
 
 
+
+%================================================================
+% PARAGRAPHS
+\setlength{\parskip}{0.2ex plus 0.05ex minus 0.05ex}
+
+
+
 %================================================================
 % FOOTNOTES
 % Footnotes: Use footnote symbols (not numbers) on a per-page basis.
@@ -192,7 +200,7 @@
 %  see https://tex.stackexchange.com/a/210847/121234
 \newlength{\jh@listtopsep}
   % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
-  \setlength{\jh@listtopsep}{1.5ex plus 0.2ex minus 0.1ex}
+  \setlength{\jh@listtopsep}{1ex plus 0.2ex minus 0.1ex}
   \newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
 
 % Get the width of a single character; use it for the left margin
@@ -205,7 +213,7 @@
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
 \newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
-\newcommand{\@exercisecounterlabel}{\normalfont\scshape\arabic{@exercisenumber}.\hspace*{0.6em}}
+\newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
 \newenvironment{exercises}{%
   \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
   \nolisttopbreak
@@ -220,8 +228,14 @@
       \setlength{\listparindent}{0.8\parindent}
       \setlength{\topsep}{\jh@listtopsep}
       \setlength{\parsep}{0ex}
-      \setlength{\itemsep}{0.5ex plus 0.1ex minus 0.05ex}
+      \setlength{\itemsep}{0.6ex plus 0.25ex minus 0.05ex}
       \setlength{\rightmargin}{0em}
+      % Encourage a page break betweeen items; LaTeX book.cls has
+      % \@itempenalty     -\@lowpenalty
+      \@itempenalty-\@medpenalty %
+      % Also discourage clubs and widows
+      \clubpenalty6000 % % discourage breaking after first line
+      \widowpenalty6000 % discourage breaking before last line
     }
 }{%
   \end{list}
@@ -413,6 +427,9 @@
   \setcounter{subsection}{\the\numexpr\value{extra}+1\relax}
   \renewcommand{\thesubsection}{\Alph{subsection}} % Set theorem numbering for inside Extra sections
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
+  % For headers
+  % \let\sectionmark=\extramark %
+  %
   \@startsection{extra}{2}%
   {0em}%
   {-3.25ex plus -1ex minus -0.2ex}%
@@ -420,13 +437,55 @@
   {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \theextra\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
 }
 \newcommand*\l@extra{\@dottedtocline{6}{10em}{5em}}% for toc
-\newcommand{\extramark}[1]{}% for page headers
+\newcommand{\extramark}[1]{
+  \markright{Extra\ \thesubsection.\ #1}}% for page headers
+
+
+
+%======================== hyperref ===========
+\usepackage{hyperref}
+\hypersetup{
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={Computing},    % title
+    pdfauthor={Jim Hefferon, Saint Michael's College},     % author
+    pdfsubject={Theory of Computation},   % subject of the document
+    pdfcreator={Jim Hefferon},   % creator of the document
+    pdfproducer={Jim Hefferon}, % producer of the document
+    pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black           % color of external links
+}
+% \newcommand\href[2]{\relax}
+% \newcommand\hyperref[2][\relax]{#2}
+
+
+
+\usepackage{cleveref} % part of DeclareTheorem gives the refname's
+
+
+
+% ======== clever references ===============
+\usepackage{cleveref} % after hyperref, apparently
+\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+  \ifcsname #2refname\endcsname
+    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+  \fi
+}
 
 
 % ============ Theorems ========================
 % Theorems
 % These need to be numbered all as one, and the numbering in the margin
-\usepackage{cleveref} % part of DeclareTheorem gives the refname's
 
 % The cleveref package requires that theorems be made with either amsthm
 % or ntheorem.  I couldn't get the first to put numbering in the margins,
@@ -588,6 +647,240 @@
   \endgroup
   }
 
+% ==========================================================
+% TABLE OF CONTENTS
+\usepackage{tocloft}
+\tocloftpagestyle{empty}
+\setlength{\cftchapnumwidth}{3.25em}
+\setlength{\cftsecindent}{1em}
+\setlength{\cftsecnumwidth}{4.25em}
+\setlength{\cftsubsecindent}{2em}
+\setlength{\cftsubsecnumwidth}{5em}
+
+
+
+
+%============= listings =============================
+% \definecolor{listingsbackgroundcolor}{RGB}{244,245,213}
+\colorlet{listingsbackgroundcolor}{lightcolor}
+\usepackage{listings}
+% from: http://en.wikibooks.org/wiki/LaTeX/Packages/Listings
+\lstset{ %
+  % language=Octave,                % the language of the code
+  basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+  % \stringstyle=\ttfamily,  % use typewriter type
+  % numbers=left,                   % where to put the line-numbers
+  % numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+  % stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+                                % will be numbered
+  % numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{listingsbackgroundcolor},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  % frame=single,                   % adds a frame around the code
+  tabsize=8,                      % sets default tabsize to 8 spaces (emacs scheme buffer formatting wants that)
+  captionpos=b,                   % sets the caption-position to bottom
+  % breaklines=true,                % sets automatic line breaking
+  % breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  % title=\lstname,  % show the filename of files included with \lstinputlisting;
+                                % also try caption instead of title
+  escapeinside={<@}{@>}   % if you want to format lines in your code
+  % morekeywords={*,...}   % if you want to add more keywords to the set
+}
+
+% Don't want \lstinline!..! because it comes out too small.
+\usepackage{relsize}
+\newcommand\codeinline{\lstinline[basicstyle=\smaller\ttfamily]}
+
+% Note: you can refine the choices with something like:
+% \lstset{language=C,caption={Descriptive Caption Text},label=DescriptiveLabel}
+
+% Make single quotes correct in verbatim 
+\usepackage{upquote}
+
+
+
+% ================ animation ================
+\usepackage{animate}
+
+
+
+
+% ====================== figures ===========================
+% Figures and captions
+\usepackage{float}
+\newfloat{animatefigure}{H}{lof}
+\newfloat{tablehere}{H}{lof}
+\newfloat{figurehere}{H}{lof}
+
+
+\usepackage{caption} 
+\DeclareCaptionLabelSeparator{jhcaptionspace}{\hspace{0.6em}}
+\captionsetup{font=small,
+              format=hang,
+              indention=2em,
+              labelformat=simple,
+              labelsep=jhcaptionspace,
+              labelfont=sc,
+              textformat=simple,
+              position=bottom,
+              justification=RaggedRight
+            }
+
+            
+\captionsetup[animatefigure]{labelformat=empty}
+\renewcommand{\theanimatefigure}{\arabic{section}.\arabic{animatefigure}}
+\newenvironment{animatedfigure}[1]{%
+  \begin{animatefigure}[H]
+  \setcounter{animatefigure}{\value{theorem}}  % for \cref
+  \refstepcounter{theorem}
+  \caption{\textsc{\thetheorem~Animation:} #1}
+  % \caption{\small \textsc{Click to animate.} #1}
+  \centering
+}{%
+  \end{animatefigure}
+}
+\crefname{animatefigure}{Animation}{Animations}
+\Crefname{animatefigure}{Animation}{Animations}
+
+
+\captionsetup[tablehere]{labelformat=empty}
+% \newcounter{tablehere}
+\renewcommand{\thetablehere}{\arabic{section}.\arabic{tablehere}}
+\newenvironment{tablefigure}[1]{%
+  \begin{tablehere}[H]
+  \setcounter{tablehere}{\value{theorem}}
+  \refstepcounter{theorem}
+  \caption{\thetheorem~\textsc{Table:} #1}
+  \centering
+}{%
+  \end{tablehere}
+}
+\crefname{tablehere}{Table}{Tables}
+\Crefname{tablehere}{Table}{Tables}
+
+\captionsetup[figurehere]{labelformat=empty}
+\renewcommand{\thefigurehere}{\arabic{section}.\arabic{figurehere}}
+\newcommand{\figlabel}{\relax} % can't use evn arg #1 in second half so save it
+\newcommand{\figcapt}{\relax} % can't use evn arg #2 in second half so save it
+\newenvironment{fig}[2][]{%
+  \renewcommand\figlabel{#1}% Save for use in second half
+  \renewcommand\figcapt{#2}% Save for use in second half
+  \begin{figurehere}[H]
+  \setcounter{figurehere}{\value{theorem}}
+  \refstepcounter{theorem}
+  \centering
+}{%
+  \caption{\thetheorem~\textsc{Figure:} \figcapt} \label{\figlabel}
+  \end{figurehere}
+}
+\crefname{figurehere}{Figure}{Figures}
+\Crefname{figurehere}{Figure}{Figures}
+
+
+% =================== Margin graphics ===================
+% put graphics in the pargin
+
+% Wrapping around a figure
+\usepackage{wrapfig}
+% Set space around wrapfig figures
+% see http://tex.stackexchange.com/a/111397/339
+\setlength{\intextsep}{6pt plus 1pt minus 0.25 pt}% vertical padding; default: 12.0pt plus 2.0pt minus 2.0pt
+\setlength{\columnsep}{10pt}% horizontal padding; default: 10pt
+
+% Captions
+\usepackage{caption}[2013/02/03] % \usepackage{subcaption}
+% \captionsetup{%
+%   labelformat=empty,
+%   labelsep=quad,
+%   labelfont=bf,
+%   format=hang,
+%   justification=RaggedRight,
+%   indention=1em,
+%   skip=8pt
+% }
+\captionsetup[figure]{labelformat=empty,
+  format=hang,              
+  justification=RaggedRight,
+  indention=0.8em,
+  skip=8pt,
+  font=small
+}
+
+\RequirePackage{suffix}
+% \margingraphic -- graphic that sticks out into margin
+% Note placement: i or I, o or O, l or L, r or R (capitals are floats)
+% #1 l or r  which margin; r is default
+% #2 width of graphic
+% #3 graphic filename
+% #4 caption
+\captionsetup[wrapfigure]{labelformat=empty,
+                          format=hang,              
+                          justification=RaggedRight,
+                          indention=0.8em,
+                          skip=8pt,
+                          font=small
+}
+\newcommand{\margingraphic}[4][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics[width=#2]{#3}% 
+    \caption{#4}
+  \end{wrapfigure}}
+% For graphic without a caption
+\WithSuffix\newcommand\margingraphic*[3][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics[width=#2]{#3}
+  \end{wrapfigure}}
+% margingraphicnomag Same as margin graphic, but the graphic is not magnified
+\newcommand{\margingraphicnomag}[4][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics{#3}% 
+    \caption{#4}
+  \end{wrapfigure}}
+% For graphic without a caption
+\WithSuffix\newcommand\margingraphicnomag*[3][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics{#3}
+  \end{wrapfigure}}
+
+
+
+
+%============= explorations =============================
+% Additional material to go look at.
+\newcommand{\exlabel}[1]{%
+  \vbox{
+    \hbox{\textbf{#1}}
+     %\hbox{\raisebox{1ex}{\color{lightcolor}\rule{\textwidth}{0.4pt}}}
+  }}
+
+\newenvironment{explorations}{%
+  \begin{list}{}{% 
+    \let\makelabel\exlabel
+    \setlength{\topsep}{2ex plus 0.5ex minus .1ex}
+    \setlength{\leftmargin}{1em}
+    \setlength{\rightmargin}{0em}
+    \setlength{\labelwidth}{1em}
+    \setlength{\labelsep}{0.6em}
+    \setlength{\itemindent}{0em}
+    \setlength{\parsep}{0ex plus 0.1ex}
+    \setlength{\listparindent}{1em}
+    \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
+    \item[Explorations] \ \\
+}{%
+  \end{list}
+  \vspace{2ex plus .1ex minus 0.1ex}% 
+}
+
 
 
 % ============ Misc typographic widgets ==========
@@ -608,11 +901,271 @@
   }
   {\end{list}}
 
+% Make ellipsis space out properly before a period
+\usepackage[xspace]{ellipsis}
+
+\usepackage{url}
+\usepackage{microtype}
+
+
+% ================
+% Dash code stolen from tugboat.dtx
+\def\thinskip{\hskip 0.16667em\relax}
+\def\endash{--}
+\def\emdash{\endash-}
+\def\d@sh#1#2{\unskip#1\thinskip#2\thinskip\ignorespaces}
+\def\dash{\d@sh\nobreak\endash}
+\def\Dash{\d@sh\nobreak\emdash}
+\def\ldash{\d@sh\empty{\hbox{\endash}\nobreak}}
+\def\rdash{\d@sh\nobreak\endash}
+\def\Ldash{\d@sh\empty{\hbox{\emdash}\nobreak}}
+\def\Rdash{\d@sh\nobreak\emdash}
+
+
+% =============
+% Lists that do not break after a section starts.
+% http://tex.stackexchange.com/a/47586/339
+% copied from ltlists.dtx
+\def\nobreakitem{%
+  \@inmatherr\nobreakitem
+  \@ifnextchar [\@nobreakitem{\@noitemargtrue \@nobreakitem[\@itemlabel]}}
+\def\@nobreakitem[#1]{%
+  \if@noparitem
+    \@donoparitem
+  \else
+    \if@inlabel
+      \indent \par
+    \fi
+    \ifhmode
+      \unskip\unskip \par
+    \fi
+    \if@newlist
+      \if@nobreak
+        \@nbitem
+      \else
+        \addpenalty\@beginparpenalty
+        \addvspace\@topsep
+        \addvspace{-\parskip}%
+      \fi
+    \else
+      \addpenalty\@M%only new bit!
+      \addvspace\itemsep
+    \fi
+    \global\@inlabeltrue
+  \fi
+  \everypar{%
+    \@minipagefalse
+    \global\@newlistfalse
+    \if@inlabel
+      \global\@inlabelfalse
+      {\setbox\z@\lastbox
+       \ifvoid\z@
+         \kern-\itemindent
+       \fi}%
+      \box\@labels
+      \penalty\z@
+    \fi
+    \if@nobreak
+      \@nobreakfalse
+      \clubpenalty \@M
+    \else
+      \clubpenalty \@clubpenalty
+      \everypar{}%
+    \fi}%
+  \if@noitemarg
+    \@noitemargfalse
+    \if@nmbrlist
+      \refstepcounter\@listctr
+    \fi
+  \fi
+  \sbox\@tempboxa{\makelabel{#1}}%
+  \global\setbox\@labels\hbox{%
+    \unhbox\@labels
+    \hskip \itemindent
+    \hskip -\labelwidth 
+    \hskip -\labelsep
+    \ifdim \wd\@tempboxa >\labelwidth
+      \box\@tempboxa
+    \else
+      \hbox to\labelwidth {\unhbox\@tempboxa}%
+    \fi
+    \hskip \labelsep}%
+  \ignorespaces}
+\renewenvironment{quotation}{\begin{list}{}{%
+            \setlength{\parsep}{\parskip}%
+            \setlength{\itemsep}{-\parsep}%
+            \setlength{\labelwidth}{0em}%
+            \setlength{\topsep}{0.5ex}%
+            \setlength{\partopsep}{0ex}%
+            \setlength{\leftmargin}{\parindent}%
+            }\nobreakitem\relax\small%
+}{%
+  \end{list}%
+}
+
+
+
 % == blkarray ====
 %   Extended array features, such as labelled rows and columns
 \usepackage{blkarray} 
 
-                
+
+
+
+% === dates ====
+\RequirePackage{ifthen}
+\let\oldtoday\today
+\def\today{%
+  \number\year-\ifcase\month\or%
+  Jan\or Feb\or Mar\or Apr\or May\or Jun\or%
+  Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi%
+  -\ifthenelse{\number\day<10}{0}{}\number\day%
+}
+
+% \ymd format date in an ISO-like style
+%  #1 year
+%  #2 month as an integer
+%  #3 day  
+\newcommand{\ymd}[3]{%
+  \number#1-\ifcase#2\or%
+  Jan\or Feb\or Mar\or Apr\or May\or Jun\or%
+  Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi%
+  -\ifthenelse{\number#3<10}{0}{}\number#3%
+}
+
+
+
+
+% =================
+% Add notes for me to put something in
+\newenvironment{TODO}{%
+\par\noindent \makebox[0em][l]{\makebox[-1em][r]{\color{red}TO DO:}}\centering
+\begin{minipage}[t]{0.9\textwidth}\itshape
+}{%
+\end{minipage}
+}
+
+
+
+
+% ================ Content macros =========
+
+% Tape sequence
+%  List a sequence of executation steps by showing a bunch of tapes 
+% Usage: 
+%   \begin{tapesequence}
+%     \begin{tapesequencetable}
+%       0 &\tapegraphic{tapeoutput0.pdf} \\
+%       1 &\tapegraphic{tapeoutput1.pdf} \\
+%     \end{tapesequencetable}
+%   \end{tapesequence}
+\newenvironment{tapesequence}{%
+  % \vspace{1.5ex plus 0.25ex minus 0.15ex}%
+  \begin{center} % \vspace{-3ex}
+    \renewcommand{\arraystretch}{2.25}
+}{%
+  \end{center}
+  % \vspace{-1.5ex plus 0.25ex minus 0.15ex}% arraystretch leaves extra?
+}
+\newenvironment{tapesequencetable}{%
+  % \vspace{2.5ex plus 0.25ex minus 0.15ex}%
+  \begin{tabular}[t]{r|c} 
+    \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
+                         % \rule{0em}{2ex}
+                         \begin{tabular}[b]{@{}c@{}}
+                           \textsc{after} \\[-0.425ex] 
+                           \textsc{step} 
+                         \end{tabular}} 
+     &\textsc{configuration}                        \\[-1ex] \hline
+}{%
+  \end{tabular}%
+}
+\newcommand{\tapegraphic}[1]{%
+  \vcenteredhbox{\includegraphics{#1}}%
+}
+
+
+% ==== Grammars ==== (Asy doesn't like it) 
+\usepackage{syntax}
+\newlength{\grammarmargin}
+\setlength{\grammarmargin}{5em}
+\renewenvironment{grammar}{%
+  \list{}{%
+    \labelwidth\grammarindent%
+    \leftmargin\grammarmargin%
+    \advance\grammarindent\labelsep
+    \itemindent\z@%
+    \listparindent\z@%
+    \parsep\grammarparsep%
+    \small
+  }%
+  \let\\\@normalcr
+  \syntaxShortcuts\relax\relax%
+  % \def\alt{\\\llap{\textbar\hspace*{0em}}}% Comment this out from .sty file to adjust spacing
+  \def\gr@setpar{%
+    \def\par{%
+      \parshape\@ne\@totalleftmargin\linewidth%
+      \@@par%
+      \catcode`\<12%
+      \everypar{%
+        \everypar{}%
+        \catcode`\<\active%
+        \gr@implitem%
+      }%
+    }%
+  }%
+  \gr@setpar%
+  \par%
+  \let\gr@leftsq\[%
+  \let\gr@rightsq\]%
+  \def\gr@endsyntdiag]{\end{syntdiag}\gr@setpar\par}%
+  \def\[{\@ifnextchar[{\begin{syntdiag}\@gobble}\gr@leftsq}%
+  \def\]{\@ifnextchar]\gr@endsyntdiag\gr@rightsq}%
+}{%
+  \@newlistfalse%
+  \everypar{}%
+  \endlist%
+}
+\setlength{\grammarparsep}{0pt plus 0.15ex} % vert space between prods
+\setlength{\grammarindent}{5em} %
+\renewcommand{\grammarlabel}[2]{%
+  \hspace*{1.25em}\synt{#1} \hfill#2%
+}
+\def\alt{\\\llap{\textbar\hspace*{0.35em}}}%
+
+% Env to indent text
+\newenvironment{clip}{%
+  \begin{list}{}{\setlength{\leftmargin}{1.25em}
+                 \setlength{\parsep}{\grammarparsep}}\item[]
+}{%
+  \end{list}%
+}
+
+% Used for derivations; gives a raggedright block of indented text
+% \begin{displayedsteps}
+%  \initialstep\syntax{<start>}
+%   ..
+% \end{displayedsteps}
+\newenvironment{displayedsteps}{%
+  \begin{list}{}%
+      {\listparindent 1em%
+       %\itemindent    \listparindent
+       % \leftmargin 2em%
+       \rightmargin 1em%
+       \parsep        \z@ \@plus\p@}%
+       \item\relax \raggedright
+}{%
+  \end{list}
+}
+\newcommand{\initialstep}{\hspace*{-1em}}
+
+
+% ==== Remaining content macros ======
+% Broken out separately so they can be used in the
+% Asymptotegraphics
+\usepackage{contentmacros}
+
+
 \makeatother
 % ++++++++++++++++++++++++++++++++++++++++
 
@@ -673,7 +1226,7 @@
 From Section One.I: \cref{th:FromSecOneI}.
 
 \extra{Title of Extra topic}
-\lipsum[1]
+\lipsum[1-10]
 \begin{theorem}
   This is the theorem
 \end{theorem}
@@ -699,7 +1252,7 @@ From Section One.I: \cref{th:FromSecOneI}.
 \end{exercises}
 
 
-
+% ==============================================================
 \chapteropen{Credit to ctan}{example-image-a}{Title of Chapter Two}
 % \chapter{Chapter Two}
 \lipsum[1]

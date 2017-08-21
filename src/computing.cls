@@ -4,7 +4,7 @@
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions \relax
-\LoadClass[oneside]{book}
+\LoadClass[twoside]{book}
 
 % Use UTF-8
 \usepackage[utf8]{inputenc}
@@ -74,7 +74,7 @@
 
 \pagestyle{fancy} % must preceed redefinitions of \chaptermark, \sectionmark
 \renewcommand{\chaptermark}[1]{%
-\markboth{\chaptername\ \thechapter.\ #1}{}}
+  \markboth{\chaptername\ \thechapter.\ #1}{\chaptername\ \thechapter.\ #1}}
 \renewcommand{\sectionmark}[1]{%
   \markright{\sectionname\ \thesection.\ #1}}
 % Note that \extramark is defined by the definition of \extra
@@ -87,12 +87,15 @@
 \fancypagestyle{bookbody}{%
   \renewcommand{\headrulewidth}{.4pt}
   \renewcommand{\footrulewidth}{0pt}
-  \lhead[\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\thepage}}]{\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\rightmark}}}
-  \rhead[\fancyplain{}{\color{boldcolor}\textsl{\leftmark}}]{\fancyplain{}{\color{boldcolor}\textsl{\thepage}}}
-  \chead{}
-  \lfoot{}
-  \rfoot{}
-  \cfoot{\fancyplain{\renewcommand{\footrulewidth}{.4pt}\\textsl{thepage}}{}}
+  % \lhead[\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\thepage}}]{\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\leftmark}}}
+  % \rhead[\fancyplain{}{\color{boldcolor}\textsl{\rightmark}}]{\fancyplain{}{\color{boldcolor}\textsl{\thepage}}}
+  % \chead{}
+  % \lfoot{}
+  % \rfoot{}
+  % \cfoot{\fancyplain{\renewcommand{\footrulewidth}{.4pt}\\textsl{thepage}}{}}
+  \fancyhead[LE,RO]{{\color{boldcolor}\textsl{\thepage}}}
+  \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
+  \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
 }
 
 % Front matter
@@ -310,10 +313,12 @@
 
 %%%%%%%%%%%%%%%%%
 % Parts 
-\newcommand{\newpart}[1]{\clearemptydoublepage\thispagestyle{empty}%
+\renewcommand{\part}[1]{\clearemptydoublepage\thispagestyle{bookemptypage}%
   \vspace*{\fill}%
+  \refstepcounter{part}
   \begin{center}
-    \large #1
+    \normalfont\Large{\color{boldcolor}Part \thepart} \\[1.25ex]
+    \LARGE #1
   \end{center}
   \vspace*{\fill}%
 }
@@ -328,7 +333,7 @@
   % For more info search for "EXTRA SECTION TOGGLE".
   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesubsection}{\arabic{subsection}}  % set theorem numbering to be as outside Extra sections
-  %
+  % 
   \pagestyle{bookbody}
   \thispagestyle{bookemptypage}
   %
@@ -449,7 +454,10 @@
 
 
 %======================== hyperref ===========
-\usepackage{hyperref}
+\usepackage[draft]{hyperref}  % remove the draft option at the end.
+  % It is there to prevent errors like
+  % "\pdfendlink ended up in different nesting level than \pdfstartlink";
+  % see https://tex.stackexchange.com/a/154184/121234
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
     unicode=false,          % non-Latin characters in Acrobat’s bookmarks

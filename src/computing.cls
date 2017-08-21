@@ -8,11 +8,11 @@
 
 % Use UTF-8
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\input{glyphtounicode}% Make PDF offer better copy and paste
+  \pdfgentounicode=1
 
-% Make PDF offer better copy and paste
-\usepackage{cmap}  
-
-\usepackage{amsmath,amssymb}  % later load mathtools
+\usepackage{amsmath, amssymb} % no amsthm; use ntheorem because of margin numbering
 
 % M Sharpe's XCharter
 % \usepackage[scaled=.98,sups,osf]{XCharter}% lining figures in math, osf in text
@@ -38,9 +38,12 @@
 \usepackage{adjustbox} % for clipping pictures
 
 \usepackage{etoolbox}
-\usepackage{trace}  % for debugging
+% \usepackage{trace}  % for debugging
 
-\usepackage[inline]{enumitem} % for exparts and exparts*, for exercses and answers 
+% ========== enumitem =============
+\usepackage[inline]{enumitem}
+% parenum
+%  Enumerate inside a paragraph
 \newenvironment{parenum}{%
   \begin{enumerate*}[label=(\arabic*),]%
 }{%
@@ -48,68 +51,132 @@
 }
 
 
-% == start new exercises
-% ========== Exercises =======================
 
-% Suppress page break between "Exercises" and top of list
-%  see https://tex.stackexchange.com/a/210847/121234
-\newcounter{@exercisenumber}[section]
-\renewcommand{\the@exercisenumber}{\arabic{@exercisenumber}}
-\newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
-\newlength{\jh@listtopsep}
-  \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
-\newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading}
-\newenvironment{exercises}{%
-  \typeout{!!!!! EXERCISES !!!!!}
-  \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
-  \nolisttopbreak
-  \setcounter{@exercisenumber}{\value{theorem}}
-  \begin{list}{}%
-    {
-      \renewcommand{\makelabel}[1]{\normalfont\scshape\refstepcounter{@exercisenumber}\the@exercisenumber.\ }
-      \setlength{\leftmargin}{1.5em}
-      \setlength{\labelwidth}{\leftmargin}
-      \setlength{\labelsep}{0em}
-      \setlength{\itemindent}{0em}
-      \setlength{\listparindent}{0.8\parindent}
-      \setlength{\topsep}{\jh@listtopsep}
-      \setlength{\parsep}{0ex}
-      \setlength{\itemsep}{0.5ex plus 0.1ex minus 0.05ex}
-      \setlength{\rightmargin}{0em}
-    }
-}{%
-  \end{list}
+% ===== Page Headers and Footers =============
+\RequirePackage{fancyhdr}
+% See http://en.wikibooks.org/wiki/LaTeX/Page_Layout
+\setlength{\headheight}{15.2pt}
+
+%HEADINGS
+% \lhead[lh-even]{lh-odd} \chead[ch-even]{ch-odd} \rhead[rh-even]{rh-odd}
+% \lfoot[lf-even]{lf-odd} \cfoot[cf-even]{cf-odd} \rfoot[rf-even]{rf-odd}
+% where
+% When LaTeX wants to create a page with an empty style, it will insert the 
+% first argument of fancyplain, in all the other cases it will use the 
+% second argument
+% and available are
+% \thepage  number of the current page
+% \leftmark current chapter name printed like "CHAPTER 3. THIS IS THE CHAPTER TITLE"
+% \rightmark current section name printed like "1.6. THIS IS THE SECTION TITLE"
+% \chaptername the name chapter in the current language. If this is English, it will display "Chapter"
+% \thechapter 	current chapter number
+% \thesection 	current section number
+
+\pagestyle{fancy} % must preceed redefinitions of \chaptermark, \sectionmark
+\renewcommand{\chaptermark}[1]{%
+\markboth{\chaptername\ \thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{%
+  \markright{\sectionname\ \thesection.\ #1}}
+% Note that \extramark is defined by the definition of \extra
+\renewcommand{\headrule}{{\color{lightcolor}%
+  \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
+
+% Main body of book
+\renewcommand{\chaptername}{Chapter}
+\newcommand{\sectionname}{Section}
+\fancypagestyle{bookbody}{%
+  \renewcommand{\headrulewidth}{.4pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \lhead[\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\thepage}}]{\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\rightmark}}}
+  \rhead[\fancyplain{}{\color{boldcolor}\textsl{\leftmark}}]{\fancyplain{}{\color{boldcolor}\textsl{\thepage}}}
+  \chead{}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{\fancyplain{\renewcommand{\footrulewidth}{.4pt}\\textsl{thepage}}{}}
 }
-% \newenvironment{exercises}{\begin{list}{}{}}{\end{list}}
 
-\typeout{WWWWW About to process exercise WWWWW}
-\newenvironment{exercise}{%
-  \item
-}{%
+% Front matter
+\fancypagestyle{bookfront}{%
+  \lhead{}
+  \rhead{}
+  \chead{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{}
+  % \cfoot{\fancyplain{}{-- \thepage{} --}}
 }
-% == end new exercises
+
+% Chapters start with an empty page (includes first page of toc)
+\fancypagestyle{bookemptypage}{%
+  \lhead{}
+  \rhead{}
+  \chead{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{}
+}
+
+% Table of contents
+\fancypagestyle{booktoc}{%
+  \lhead{}
+  \rhead{}
+  \chead{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{}
+}
+
+\pagestyle{bookfront}
+\pagenumbering{roman}
+
+
+% ============================================================
+% Behavior inside and outside the Extra sections
+% This is the main complication; I want that inside an Extra things
+% are numbered less formally, etc.
+%   You can find this section by searching for "EXTRA SECTION TOGGLE"
+\usepackage{etoolbox}
+\newtoggle{insideextrasection} % True if inside an extra section, false ow. 
+% Notes
+% 1) This is set to false in a chapter command, and true in an extra command;
+%   search for the string "EXTRA TOGGLE RESET", 
 
 
 
-% hangingpar  Hanging paragraph
-%  #1  length of hanging
-\newenvironment{hangingpar}[1][1em]
-  {\begin{list}
-          {}
-          {\setlength{\itemindent}{-#1}%%'
-           \setlength{\leftmargin}{#1}%%'
-           \setlength{\itemsep}{0pt}%%'
-           \setlength{\parsep}{\parskip}%%'
-           \setlength{\topsep}{\parskip}%%'
-           }
-    \setlength{\parindent}{-#1}%%
-    \item[]
-  }
-  {\end{list}}
+%================================================================
+% PARAGRAPHS
+\setlength{\parskip}{0.2ex plus 0.05ex minus 0.05ex}
 
-% == blkarray: extended array features, such as labelled rows and columns
-\usepackage{blkarray} 
 
+
+%================================================================
+% FOOTNOTES
+% Footnotes: Use footnote symbols (not numbers) on a per-page basis.
+% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
+\setlength{\footnotemargin}{-1em}
+\DefineFNsymbolsTM*{hefferon}{%
+  \textdagger    \dagger
+  \textdaggerdbl \ddagger
+  \textsection   \mathsection
+  \textbardbl    \|%
+  \#\#%
+}%
+\setfnsymbol{hefferon}
+\newlength{\footmarktotextglue}
+\global\footmarktotextglue=.1em plus .05em minus .02em %
+% was: \global\footglue=1.25em plus.3em minus.3em % space between footnotes
+\global\footglue=0.65em plus.2em minus.1em % space between footnotes
+\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
+\smash{\@makefnmark}\nobreak
+\hskip\footmarktotextglue\relax#1% was .5em
+}
 
 %=========== answers to exercises ===================================
 %  The file answerbody.tex holds the answers, and in input by the file 
@@ -124,16 +191,402 @@
 \usepackage{answers}
 \Opensolutionfile{\answerbodyfilename}
 \Newassociation{answer}{ans}{\answerbodyfilename}
-% \newenvironment{answer}{}{}
+\AtEndDocument{\Closesolutionfile{\answerbodyfilename}}
 
-% ====================== citations ===========================
-% Put citations in the end, referencing text but without giving
-% a number in the text body.  
+% I want to pass a string like Three.II.1 as the ans argument in the answerfile.
+% But I get an infinite loop expanding \Numberstring{chapter}.  So I am
+% passing 3.II.1 and figuring I'll figure out later how to translate the
+% 3 to a Three.
+\renewcommand{\Currentlabel}{\arabic{chapter}.\@currentlabel}
 
+
+% ========== Exercises =======================
+
+% Suppress page break between "Exercises" and top of list
+%  see https://tex.stackexchange.com/a/210847/121234
+\newlength{\jh@listtopsep}
+  % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
+  \setlength{\jh@listtopsep}{1ex plus 0.2ex minus 0.1ex}
+  \newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
+
+% Get the width of a single character; use it for the left margin
+\newlength{\jh@widthofchar}
+\newsavebox{\jh@widthofcharbox}
+\savebox{\jh@widthofcharbox}{\scshape 0}
+\settowidth{\jh@widthofchar}{\hbox{\scshape 0}}  
+
+% Define the exercises environment
+\newcounter{@exercisenumber}[section]
+\renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
+\newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
+\newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
+\newenvironment{exercises}{%
+  \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
+  \nolisttopbreak
+  \begin{list}{\@exercisecounterlabel}%
+     {\usecounter{@exercisenumber}
+      \setcounter{@exercisenumber}{\value{theorem}}
+      \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}
+      \setlength{\leftmargin}{\jh@widthofchar}
+      \setlength{\labelwidth}{\leftmargin}
+      \setlength{\labelsep}{0em}
+      \setlength{\itemindent}{0em}
+      \setlength{\listparindent}{0.8\parindent}
+      \setlength{\topsep}{\jh@listtopsep}
+      \setlength{\parsep}{0ex}
+      \setlength{\itemsep}{0.6ex plus 0.25ex minus 0.05ex}
+      \setlength{\rightmargin}{0em}
+      % Encourage a page break betweeen items; LaTeX book.cls has
+      % \@itempenalty     -\@lowpenalty
+      \@itempenalty-\@medpenalty %
+      % Also discourage clubs and widows
+      \clubpenalty6000 % % discourage breaking after first line
+      \widowpenalty6000 % discourage breaking before last line
+    }
+}{%
+  \end{list}
+}
+\newenvironment{exercise}{%
+  \item
+}{%
+}
+
+% Exparts
+% Some exercises have multiple parts: (1) .. (2) ..
+% This can be on separate lines.
+\newenvironment{exparts}{%
+  \begin{enumerate}[topsep=0ex,
+                    itemsep=0ex, parsep=0ex,
+                    leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
+                    label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
+}{%
+  \end{enumerate}
+}
+
+% .. or inline
+\newenvironment{exparts*}{%
+  \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
+                     itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
+                     itemjoin={\hspace{0.6em plus .1em minus .1em\linebreak[2]}},
+                     % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
+                     ]
+}{%
+  \end{enumerate*}
+}
+
+% For naming a part of an exercise, as in \item \expartsname{Commutativity}
+\newcommand{\expartsname}[1]{\textsc{(#1)}} 
+
+% For a hint
+\newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
+
+
+
+
+% ========= Chapters and sections =============
+% How much space to put between numbering and margin 
+\newlength{\margin@numberingspace} % Dist between numbering and margin
+\setlength{\margin@numberingspace}{0.8em}
+\setlength{\marginparsep}{\margin@numberingspace}
+
+% Clear to an odd page with empty pages in between
+\newcommand{\clearemptydoublepage}{% clear to right page
+  \newpage{\pagestyle{empty}% 
+    \cleardoublepage}}
+% Clear to an even-numbered page, with blank pages between
+% https://tex.stackexchange.com/a/365249/121234
+\newcommand*{\cleartoleftpage}{%
+  \clearpage
+    \if@twoside
+    \ifodd\c@page
+      \hbox{}\thispagestyle{empty}\newpage
+      \if@twocolumn
+        \hbox{}\newpage
+      \fi
+    \fi
+  \fi
+}
+
+
+%%%%%%%%%%%%%%%%%
+% Parts 
+\newcommand{\newpart}[1]{\clearemptydoublepage\thispagestyle{empty}%
+  \vspace*{\fill}%
+  \begin{center}
+    \large #1
+  \end{center}
+  \vspace*{\fill}%
+}
+\renewcommand{\thepart}{\Alph{part}}
+
+%%%%%%%%%%%%%%%%%
+% Chapters
+% As with sections, put the numbering in the margin using a marginpar
+% (actually a marginnote that has been hacked to always be on the left).
+\renewcommand{\chapter}{%
+  % Record that we are not inside an Extra section.
+  % For more info search for "EXTRA SECTION TOGGLE".
+  \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
+  \renewcommand{\thesubsection}{\arabic{subsection}}  % set theorem numbering to be as outside Extra sections
+  %
+  \pagestyle{bookbody}
+  \thispagestyle{bookemptypage}
+  %
+  \@startsection{chapter}{0}%
+  {0em}%
+  {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
+  {1ex plus .3ex minus .06ex}% *1 from titlesec
+  {\marginnote{\smash{\normalfont\Large\color{boldcolor}\begin{tabular}[b]{@{}r@{}} Chapter \\[-0.15ex] \thechapter\end{tabular}}}[1.4ex]\normalfont\Large\bfseries}%
+}
+
+\usepackage{fmtcount}
+\renewcommand{\thechapter}{\Numberstring{chapter}}
+
+% imagecredit  Give credit in a footnote-like entry for an image
+%  #1  text of image credit
+\newcommand\imagecredit[1]{%
+  \begingroup% 
+  \renewcommand\thefootnote{}\footnote{\hskip-\footmarktotextglue\textsc{Image:} #1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup% 
+}
+
+% \chapteropen  Start a chapter
+%  #1 optional  image credit; e.g., Einstein archive
+%  #2 name of figure; e.g., einstein.jpg
+%  #3 chapter name; e.g., Einstein's view
+\newlength{\jh@eventotaloutermargin}
+\setlength{\jh@eventotaloutermargin}{\evensidemargin}
+\addtolength{\jh@eventotaloutermargin}{1in}
+\newcommand{\chapteropen}[3][\relax]{%
+  \cleartoleftpage
+  \thispagestyle{empty}%
+  \vspace*{\stretch{1}}  % vertically center on the page
+  {\noindent\hspace*{-\jh@eventotaloutermargin}% Move everything left by \evensidemargin
+  % The graphicx package will pick the smaller of the height and width
+  \makebox[\linewidth][l]{\includegraphics[height=\paperheight,
+                   width=\paperwidth,
+                   keepaspectratio]{#2}}}%
+  \vspace*{\stretch{1}} % vertically center
+  \clearpage
+  \chapter{#3}\imagecredit{#1}%
+  \Writetofile{\answerbodyfilename}{\protect\chapter{#3}}}
+
+
+%%%%%%%%%%%%%%%%%%%
+% Sections, subsections
+
+% Put section names in margin with marginpar; acutally marginnote.
+\setlength{\marginparsep}{1em}
+\usepackage{marginnote}
+% Hack that to make them always on left margin despite twoside option;
+% see https://tex.stackexchange.com/a/73117/121234
+\patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
+\patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
+\reversemarginpar 
+
+% \sectiontitlecontents
+% endnotes makes the Notes page with a \section*{...} command.  I want
+% to make the "Section One.II" come out in the document body, but have
+% it disappear in the Notes page.  So there I redefine it to \relax.
+\newcommand{\sectiontitlecontents}[1]{#1}
+
+\setcounter{secnumdepth}{10}  % Display them all
+\renewcommand\@seccntformat[1]{\relax} % no numbering inside section title
+\newlength{\jh@margintxttobodytext}
+  \setlength{\jh@margintxttobodytext}{0.0em}
+% Section
+\renewcommand{\section}{%
+  \renewcommand{\@exercisecounterstart}{\thesection}% put in the margin to count exercises env
+  \renewcommand{\the@exercisenumber}{\Roman{section}.\arabic{@exercisenumber}}%
+  \@startsection{section}{1}%
+  {0em}%
+  {-3.5ex plus -1ex minus -0.2ex}%
+  {2.3ex plus .2ex}%
+  {\sectiontitlecontents{\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}\normalfont\bfseries}%
+}
+\renewcommand{\thesection}{\Roman{section}}
+
+
+% Subsections
+\renewcommand{\subsection}{%
+  \@startsection{subsection}{2}%
+  {0em}%
+  {-3.25ex plus -1ex minus -0.2ex}%
+  {-0.6em plus -0.1em}%  negative makes it a run-in header
+  {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
+}
+\renewcommand{\thesubsection}{\arabic{subsection}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Extra
+% These are optional topics that are covered at the end of each chapter.  The
+% formatting of theorems, exercises, etc. is a bit looser.
+\newcounter{extra}[chapter]
+\renewcommand{\theextra}{\Numberstring{chapter}.\Alph{extra}}
+\newcommand{\extra}{%
+  % Record that we are now inside an Extra section.
+  % For more info search for "EXTRA SECTION TOGGLE".
+  \global\toggletrue{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
+  \renewcommand{\@exercisecounterstart}{\theextra} % put in the margin to count exercises env
+  \setcounter{theorem}{0}
+  \setcounter{subsection}{\the\numexpr\value{extra}+1\relax}
+  \renewcommand{\thesubsection}{\Alph{subsection}} % Set theorem numbering for inside Extra sections
+  \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
+  % For headers
+  % \let\sectionmark=\extramark %
+  %
+  \@startsection{extra}{2}%
+  {0em}%
+  {-3.25ex plus -1ex minus -0.2ex}%
+  {-0.6em plus -0.1em}%  negative makes it a run-in header
+  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \theextra\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
+}
+\newcommand*\l@extra{\@dottedtocline{6}{10em}{5em}}% for toc
+\newcommand{\extramark}[1]{
+  \markright{Extra\ \thesubsection.\ #1}}% for page headers
+
+
+
+%======================== hyperref ===========
+\usepackage{hyperref}
+\hypersetup{
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={Computing},    % title
+    pdfauthor={Jim Hefferon, Saint Michael's College},     % author
+    pdfsubject={Theory of Computation},   % subject of the document
+    pdfcreator={Jim Hefferon},   % creator of the document
+    pdfproducer={Jim Hefferon}, % producer of the document
+    pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black           % color of external links
+}
+% \newcommand\href[2]{\relax}
+% \newcommand\hyperref[2][\relax]{#2}
+
+
+
+\usepackage{cleveref} % part of DeclareTheorem gives the refname's
+
+
+
+% ======== clever references ===============
+\usepackage{cleveref} % after hyperref, apparently
+\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+  \ifcsname #2refname\endcsname
+    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+  \fi
+}
+
+
+% ============ Theorems ========================
+% Theorems
+% These need to be numbered all as one, and the numbering in the margin
+
+% The cleveref package requires that theorems be made with either amsthm
+% or ntheorem.  I couldn't get the first to put numbering in the margins,
+% whereas the second had that built in, so I went with it.
+\usepackage[thmmarks,amsmath]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+% % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
+\newtheoremstyle{marginnumbers}%
+{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1} }%
+{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)} }%
+\theoremheaderfont{\scshape}
+\theorembodyfont{}    
+\theoremsymbol{}
+\theoremprework{}
+\theorempostwork{}
+\theoremseparator{}
+\theorempreskip{.5\topsep}
+\theorempostskip{.5\topsep}
+\usepackage{thmtools}
+% \shadecolor{backgroundcolor}  % Use this as the background color for theorems
+\declaretheorem[style=marginnumbers,
+                shaded={bgcolor=backgroundcolor},
+                refname={Theorem,Theorems},
+                Refname={Theorem,Theorems}]{theorem}
+\numberwithin{theorem}{subsection}
+\declaretheorem[style=marginnumbers,
+                shaded={bgcolor=backgroundcolor},
+                refname={Lemma,Lemmas},
+                Refname={Lemma,Lemmas},
+                sibling=theorem]{lemma}
+\declaretheorem[style=marginnumbers,
+                shaded={bgcolor=backgroundcolor},
+                refname={Corollary,Corollary},
+                Refname={Corollary,Corollary},
+                sibling=theorem]{corollary}
+\declaretheorem[style=marginnumbers,
+                shaded={bgcolor=backgroundcolor},
+                refname={Definition,Definitions},
+                Refname={Definition,Definitions},
+                sibling=theorem]{definition}
+\declaretheorem[style=marginnumbers,
+                refname={Example,Examples},
+                Refname={Example,Examples},
+                sibling=theorem]{example}
+\declaretheorem[style=marginnumbers,
+                refname={Remark,Remarks},
+                Refname={Remark,Remarks},
+                sibling=theorem]{remark}
+\declaretheorem[style=nonumberplain,
+                refname={Proof,Proofs},
+                Refname={Proof,Proofs},
+                ]{proof}
+\declaretheorem[style=marginnumbers,
+                title={Church's Thesis},
+                refname={Church's Thesis,Church's Thesis},
+                Refname={Church's Thesis,Church's Thesis},
+                sibling=theorem]{churchsthesis}
+\declaretheorem[style=marginnumbers,
+                refname={Problem,Problems},
+                Refname={Problem,Problems},
+                sibling=theorem]{problem}
+\newcommand{\probleminput}{\textit{Input:}}
+\newcommand{\problemoutput}{\textit{Output:}}
+
+% \definend
+% The thing being defined.
+\newcommand{\definend}[1]{\textcolor{highlightcolor}{#1}}
+                
+% thmparts
+% An enumerated list inside the paragraph of the parts of a theorem, or
+% lemma or definition
+\newenvironment{thmparts}{%
+  \begin{enumerate}[label={\normalfont\scshape(\alph*)~},
+                    align=left, 
+                    ref={{\scshape\alph*}},
+    topsep={0.25ex plus 0.05ex minus 0.025ex},
+    leftmargin=1em,
+    rightmargin=0em,
+    labelwidth=1em,
+    labelsep=0em,
+    itemindent=0em,
+    parsep={0ex plus 0.1ex},
+    listparindent=1em,
+    itemsep={0.2ex plus .1ex minus 0.1ex}
+    ]
+}{%
+  \end{enumerate}
+}
+
+% ========== Bibliography =============
 % biblatex 
 \usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
 \addbibresource{computing.bib}
 
+
+% ============= Citations ============
 % citetext
 %  Reference text in the body.
 % #1 text referenced in the citations
@@ -144,16 +597,18 @@
 % produces an end note like 
 %    \textit{see his hairy legs} OR C Dobson, p 1094.
 
-\usepackage{fancyhdr} % has to go here for endheads, but not used until below.
-\usepackage{endnotes, endheads}
+\usepackage{endnotes} %, endheads}
 \newcommand{\citetext}[2]{#1%
-  \endnote{\protect\textit{#1}\protect\hspace{.618em} #2}}
+  \endnote{\protect\hspace*{-2em}\textit{#1}\protect\hspace{.618em} #2}}
 \renewcommand{\makeenmark}{\relax} % leave no mark
 \newcommand{\citeadd}[1]{\addtoendnotes{#1}}
 
 \renewcommand{\notesname}{Notes}
 \usepackage{hanging} % make cited text be in hanging indented paragraphs
-\def\enoteformat{\rightskip\z@ \leftskip\z@ \parindent=0em\hangpara{2em}{1}%
+% \def\enoteheading{\section*{\notesname
+%   \@mkboth{\MakeUppercase{\notesname}}{\MakeUppercase{\notesname}}}%
+%   \mbox{}\par\vskip-\baselineskip}
+\def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%
   \leavevmode\llap{\makeenmark}}
 % \usepackage{needspace}   % prevent a page break between a chapter announcement and the citations on that chapter
 
@@ -200,392 +655,27 @@
     \input{\jobname.ent}%
   \endgroup}
 
-\newcommand{\jhendnoteshook}{Each note refers to a word or phrase from
-the text body of the chapter, given here in italics.
-They include both citations and more traditional notes, as well as combinations
-of the two.}
-
+\newcommand{\jhendnoteshook}{These are citations or discussions that
+  supplement the main line of development in the text body.
+  For each there is a word or phrase in italics from that text body, and 
+  then the notes are in plain text.
+  Many of the citations or discussions include sources for you to read more,
+  with a web link if possible.
+  }
 
 \newcommand{\printnotes}{%
-  \clearemptydoublepage
+  \newpage
   \begingroup
   % \parindent 0pt
-  \parskip 1ex
+  \parskip=1ex plus 0.2ex minus 0.1ex %
   \def\enotesize{\normalsize}
   % \hangparas{-2em}{-1}
-  \def\sectiontitlecontents{\relax} % omit "Section Five.II"-like from margin
+  \renewcommand{\sectiontitlecontents}[1]{\relax} % Cause the "Section One.II" not to printed.
+  \vspace*{0.25ex plus 0.02ex}
+  \thispagestyle{bookemptypage}
   \theendnotes
   \endgroup
   }
-
-% \newenvironment{notes}{%
-%   \citationwrite{\citationbackslash end{citationlist}}
-%   \citationclose%
-%   \clearemptydoublepage%
-%   \thispagestyle{empty}%
-%   \vspace*{6ex}\noindent{\LARGE \textbf{Notes}}\vspace{2ex}%
-% }{%
-% }
-
-
-
-
-
-%=========== formatting ===================================
-% CHAPTERS, SECTIONS, SUBSECTIONS
-\newcommand{\clearemptydoublepage}{%
-  \newpage{\pagestyle{empty}% 
-  \cleardoublepage}}
-\newcommand{\newpart}[1]{\clearemptydoublepage\thispagestyle{empty}%
-  \vspace*{\fill}%
-  \begin{center}
-    \large #1
-  \end{center}
-  \vspace*{\fill}%
-}
-
-
-% Put numbering in margin 
-\newlength{\margin@numberingspace} % Dist between numbering and margin
-\setlength{\margin@numberingspace}{0.8em}
-
-\usepackage[calcwidth]{titlesec}
-% Summary of titleformat command:
-% \titleformat{ command }[ shape ]{ format }{ label }{ sep }{ before-code }[ after-code ]
-% Summary of titlespacing command:  (*-ed form kills indent of paragraph)
-% \titlespacing*{ command }{ left }{ before-sep }{ after-sep }[ right-sep ]
-
-\renewcommand{\thepart}{\Alph{part}}
-\titleclass{\part}{part}
-\titleformat{\part}[display]{\Large}{}{0em}{\thispagestyle{empty}\centering \LARGE{\color{boldcolor}Part \thepart} \\[1.5ex]}[\relax]
-
-\usepackage{fmtcount}
-\renewcommand{\thechapter}{\Numberstring{chapter}}
-\newcommand{\format@chapter@title}[1]{#1}
-% \newcommand{\format@chapter@title}[1]{\begin{tabular}[b]{@{}r@{}}Chapter \\[0.25ex] #1\end{tabular}}
-% \titleformat{\chapter}[hang]{\bfseries}{\makebox[0em][r]{\normalfont\Large\bfseries\format@chapter@title{\begin{tabular}[b]{@{}r@{}}Chapter \\ \thechapter\end{tabular}}\rule{\margin@numberingspace}{0ex}}}{0ex}{\normalfont\Large\bfseries}[\relax]
-\newcommand{\jh@grabtitle}[2][\relax]{%
-  \typeout{the chapter name is #2}% 
-  \Writetofile{\answerbodyfilename}{\chapter{#2}}%
-  #1 %
-}
-\titleformat{\chapter}[hang]{\bfseries}{\makebox[0em][r]{\normalfont\Large\color{boldcolor}\format@chapter@title{\begin{tabular}[b]{@{}r@{}}Chapter \\[-.15ex] \thechapter\end{tabular}}\rule{\margin@numberingspace}{0ex}}}{0ex}{\normalfont\Large\bfseries}[\relax]
-\titlespacing*{\chapter}{0em}{*5}{*1}
-
-\usepackage{nextpage}
-\usepackage{xifthen}
-% \chapteropen
-% chapters start with a full page picture on the left, and a chapter
-% page on the right
-%  #1 figure scaling factor (times \paperwidth) default is 1
-%  #2 figure name
-%  #3 chapter name
-\newlength{\jh@eventotaloutermargin}
-\setlength{\jh@eventotaloutermargin}{\evensidemargin+1in}
-% \newcommand{\jh@chapterfigure}[2]{\mbox{\hspace*{-\jh@eventotaloutermargin}\makebox[0em]{\includegraphics[width=#1\paperwidth]{#2}}}}
-
-% For the chapter image, load it at full height and at full width, and then
-% see which of the two is the right size (doesn't spill out of page)
-\newsavebox{\jh@chaptergraphicrightsized}
-\newsavebox{\jh@chaptergraphicrightheight}
-\newsavebox{\jh@chaptergraphicrightwidth}
-\newlength{\jh@graphicrightheightwidth}
-\newlength{\jh@graphicrightheightheight}
-\newlength{\jh@graphicrightwidthwidth}
-\newlength{\jh@graphicrightwidthheight}
-
-% \jh@loadchapterfigure Grab the image, decide on the size, and put in
-% the box \jh@chaptergraphicrightsized
-% #1 graphic name; e.g., einstein.jpg 
-\newcommand{\jh@loadchapterfigure}[1]{%
-  % \typeout{!!! About to read in graphic #1}
-  \savebox{\jh@chaptergraphicrightheight}{\includegraphics[height=\paperheight]{#1}}%
-  \savebox{\jh@chaptergraphicrightwidth}{\includegraphics[width=\paperwidth]{#1}}%
-  % \typeout{!!! Just read in graphic.} 
-  \settowidth{\jh@graphicrightheightwidth}{\usebox{\jh@chaptergraphicrightheight}}%
-  % \settototalheight{\jh@graphicrightheightheight}{\usebox{\jh@chaptergraphicrightheight}}%
-  % \settowidth{\jh@graphicrightwidthwidth}{\usebox{\jh@chaptergraphicrightwidth}}%
-  % \settototalheight{\jh@graphicrightwidthheight}{\usebox{\jh@chaptergraphicrightwidth}}%
-  % \typeout{!!! Paper height: \the\glueexpr\paperheight} 
-  % \typeout{!!! Paper width: \the\glueexpr\paperwidth} 
-  % \typeout{!!! Height of rightheight: \the\glueexpr\jh@graphicrightheightheight} 
-  % \typeout{!!! Width of rightheight: \the\dimexpr\jh@graphicrightheightwidth} 
-  % \typeout{!!! Height of rightwidth: \the\glueexpr\jh@graphicrightwidthheight} 
-  % \typeout{!!! Width of rightwidth: \the\dimexpr\jh@graphicrightwidthwidth} 
-  % \typeout{!!! About to ifthenelse}
-  \ifthenelse{\dimtest{\jh@graphicrightheightwidth}{<=}{\paperwidth}}{%
-    % \typeout{!!! using rightheight}
-    \savebox{\jh@chaptergraphicrightsized}{%
-       \usebox{\jh@chaptergraphicrightheight}}% 
-  }{%
-    % \typeout{!!! using rightwidth}
-    \savebox{\jh@chaptergraphicrightsized}{%
-       \usebox{\jh@chaptergraphicrightwidth}}% 
-  }
-}
-
-% \jh@chapterfigure  Return a box with the figure
-\newcommand{\jh@chapterfigure}{%
-  \noindent\makebox[\textwidth][l]{%
-    \hspace*{-\jh@eventotaloutermargin}%
-    \setlength{\unitlength}{1pt}% 
-    \begin{picture}(0,0)
-      \put(0,0){\raisebox{-0.5\height}{\usebox{\jh@chaptergraphicrightsized}}}
-    \end{picture}}%
-}
-
-% imagecredit  Give credit in a footnote-like entry for an image
-%  #1  text of image credit
-\newcommand\imagecredit[1]{%
-  \begingroup% 
-  \renewcommand\thefootnote{}\footnote{\hskip-\footmarktotextglue\textsc{Image:} #1}%
-  \addtocounter{footnote}{-1}%
-  \endgroup% 
-}
-
-% \chapteropen  Start a chapter
-%  #1 optional  image credit; e.g., Einstein archive
-%  #2 name of figure; e.g., einstein.jpg
-%  #3 chapter name; e.g., Einstein's view
-\newcommand{\chapteropen}[3][\relax]{%
-  \cleartoevenpage[\thispagestyle{empty}]% clear to the next even page
-  \jh@loadchapterfigure{#2}% 
-  \thispagestyle{empty}\vspace*{\fill}{\centering\jh@chapterfigure}\vspace*{\fill}% draw the figure
-  \clearpage% go to the odd page for the chapter head
-  \chapter{#3}\imagecredit{#1}% 
-  \Writetofile{\answerbodyfilename}{\protect\chapter{#3}}% 
-  \citeadd{\citechapter{\thechapter}{#3}}
-  % \citeadd{\citechapter{\arabic{chapter}}{#3}}% 
-}
-
-% == start new sectioning
-
-% Sections, subsections
-\usepackage{etoolbox}
-% Put section names in margin with marginpar, always on left margin
-%  despite twoside option; see https://tex.stackexchange.com/a/73117/121234
-\setlength{\marginparsep}{1em}
-\usepackage{marginnote}
-\patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
-\patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
-\reversemarginpar 
-
-\setcounter{secnumdepth}{10} 
-\renewcommand\@seccntformat[1]{\relax} % no numbering inside section title
-\newlength{\jh@margintxttobodytext}
-  \setlength{\jh@margintxttobodytext}{0.0em}
-% Section
-\renewcommand{\section}{%
-  \renewcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
-  \@startsection{section}{1}%
-  {0em}%
-  {-3.5ex plus -1ex minus -0.2ex}%
-  {2.3ex plus .2ex}%
-  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
-}
-\renewcommand{\thesection}{\Roman{section}}
-
-
-% Subsections
-\renewcommand{\subsection}{%
-  \@startsection{subsection}{2}%
-  {0em}%
-  {-3.25ex plus -1ex minus -0.2ex}%
-  {-0.6em plus -0.1em}%  negative makes it a run-in header
-  {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
-}
-\renewcommand{\thesubsection}{\arabic{subsection}}
-
-% Extra
-\newcounter{extra}[chapter]
-\renewcommand{\theextra}{\Numberstring{chapter}.\Alph{extra}}
-\newcommand{\extra}{%
-  \renewcommand{\@exercisecounterstart}{\theextra} % put in the margin to count exercises env
-  \setcounter{theorem}{0}
-  \setcounter{subsection}{\the\numexpr\value{extra}+1\relax}
-  \renewcommand{\thesubsection}{\Alph{subsection}}
-  \@startsection{extra}{2}%
-  {0em}%
-  {-3.25ex plus -1ex minus -0.2ex}%
-  {-0.6em plus -0.1em}%  negative makes it a run-in header
-  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \theextra\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
-}
-\newcommand*\l@extra{\@dottedtocline{6}{10em}{5em}}% for toc
-\newcommand{\extramark}[1]{}% for page headers
-
-\let\extrasubsection=\subsection\relax
-\newenvironment{extraexample}{\begin{example}}{\end{example}}
-\newenvironment{extratheorem}[1][]{\begin{theorem}}{\end{theorem}}
-\newenvironment{extraexercise}{\begin{exercise}}{\end{exercise}}
-% == end new sectioning
-
-% % Was
-% \renewcommand{\thesection}{\thechapter.\Roman{section}}
-% \newcommand{\sectiontitlecontents}{\normalfont\large\color{boldcolor}\begin{tabular}[b]{@{}r@{}}Section \\[-.15ex] \thesection\end{tabular}\hspace*{\margin@numberingspace}}
-% \newcommand{\format@section@title}[1]{\normalfont\large\color{boldcolor}#1}
-% \newlength{\sectiontitlewidth}
-% \titleformat{\section}[hang]{\bfseries}{%
-%  \settowidth{\sectiontitlewidth}{\sectiontitlecontents}%
-%  \llap{\parbox[b]{\sectiontitlewidth}{\sectiontitlecontents\hfill}}%
-% }{0ex}{\normalfont\large\bfseries}[]
-% \titlespacing*{\section}{0em}{*4}{*1}
-
-% \titleformat{name=\section,numberless}[hang]{\bfseries}{%
-%  \settowidth{\sectiontitlewidth}{\sectiontitlecontents}%
-%  \llap{\parbox[b]{\sectiontitlewidth}{\sectiontitlecontents\hfill}}%
-%   }{0ex}{\normalfont\large\bfseries}[\relax]
-% % \titlespacing*{\section}{0em}{*4}{*1}
-
-% % Make a new sectioning unit, the \extra, at the same level as a \section  
-% \titleclass{\extra}{straight}[\chapter]
-% \newcounter{extra}[chapter]
-%    \renewcommand{\theextra}{\Alph{extra}}
-% %\titleformat{hcommandi}[hshapei]{hformati}{hlabeli}{hsepi}{hbefore-codei}[hafter-codei]
-% \titleformat{\extra}[block]%
-%   {\normalsize\normalfont\large\color{boldcolor}}{\llap{Extra\hspace{0.5em}}}{0em}{\bfseries}
-% \titlespacing{\extra}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-% \newcommand{\extraautorefname}{extra}
-
-% % \newcommand{\extra}[1]{%
-% %     \titleformat{section}[hang]{hformati}{hlabeli}{hsepi}{hbefore-codei}[hafter-codei]
-% %   \renewcommand{\sectiontitlecontents}{\normalfont\large\color{boldcolor} Extra\hspace*{\margin@numberingspace}}
-% %   \section*{#1}%
-% %   \addcontentsline{toc}{section}{Extra: #1}%
-% % }
-
-% \newlength{\subsectionbeforesep}
-% \setlength{\subsectionbeforesep}{1.5ex plus0.2ex minus0.1ex}
-% \newlength{\subsectionaftersep}
-% \setlength{\subsectionaftersep}{0.8em plus0.2em minus0.1em}
-% \renewcommand{\thesubsection}{\thechapter.\Roman{section}.{\large \arabic{subsection}}}
-% % \titleformat{\subsection}[runin]{\bfseries}{%
-% %   \mbox{\checkoddpage\ifoddpage%
-% %       \makebox[0em][r]{\normalfont{\color{boldcolor}\thesubsection}\rule{\margin@numberingspace}{0ex}}%
-% %     \else%
-% %       \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{1.25\margin@numberingspace}{0ex}\normalfont{\color{boldcolor}\thesubsection}}%
-% % \fi}}{0ex}{\normalfont\bfseries}[\relax]
-% % \titlespacing*{\subsection}{0em}{*1.5}{0.8em plus0.2em minus0.1em}
-% \newcommand{\subsectiontitlecontents}{\normalfont\normalsize\color{boldcolor}\thesubsection\hspace*{\margin@numberingspace}}
-% \newlength{\subsectiontitlewidth}
-% \titleformat{\subsection}[runin]{\bfseries}{%
-%  \settowidth{\subsectiontitlewidth}{\subsectiontitlecontents}%
-%  \llap{\parbox[b]{\subsectiontitlewidth}{\subsectiontitlecontents\hfill}}%
-% }{0ex}{\normalfont\bfseries}[\relax]
-% \titlespacing*{\subsection}{0em}{\subsectionbeforesep}{\subsectionbeforesep}
-
-% \newcommand{\extrasubsection}[1]{%
-%   \bgroup
-%   \vspace{\subsectionbeforesep}
-%   \par\noindent\textbf{#1}\hspace{\subsectionaftersep}%
-%   % \addcontentsline{toc}{section}{Extra: #1}%
-%   \egroup
-% }
-
-
-% % http://tex.stackexchange.com/a/98283/339
-% \newlength\sectionnumberlen
-% \setlength\sectionnumberlen{\dimexpr\oddsidemargin+1in+\hoffset\relax}
-% % \titleformat{\section}
-% %   {leftmargin}
-% %   {\normalfont\bfseries}
-% %   {section}{3em}{\relax}
-% %  {\mbox{\checkoddpage\ifoddpage\makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}}}
-% %  {\llap{\hspace*{-\sectionnumberlen}\thesection\hfill}}{0em}{}[]
-% % \titleformat{\section}
-% %   {\normalfont\bfseries}
-% %   {\llap{\hspace*{-\sectionnumberlen}\thesection\hfill}}{0em}{}[]
-%   % [{\makebox[\linewidth][l]{%
-%   %   \hspace*{-\sectionnumberlen}\rule{\dimexpr\textwidth+\sectionnumberlen\relax}{1pt}}}]
-
-% % \titleclass{\part}{part}
-% % \titleformat{name=\part}[block]{}{Part:}{1ex}{\large\centering}[\relax]
-% % Summary of titlespacing command:  (*-ed form kills indent of paragraph)
-% % \titlespacing*{ command }{ left }{ before-sep }{ after-sep }[ right-sep ]
-
-
-
-
-
-% HEADERS and FOOTERS
-\RequirePackage{fancyhdr}
-% See http://en.wikibooks.org/wiki/LaTeX/Page_Layout
-\setlength{\headheight}{15.2pt}
-
-%HEADINGS
-% \lhead[lh-even]{lh-odd} \chead[ch-even]{ch-odd} \rhead[rh-even]{rh-odd}
-% \lfoot[lf-even]{lf-odd} \cfoot[cf-even]{cf-odd} \rfoot[rf-even]{rf-odd}
-% where
-% When LaTeX wants to create a page with an empty style, it will insert the 
-% first argument of fancyplain, in all the other cases it will use the 
-% second argument
-% and available are
-% \thepage  number of the current page
-% \leftmark current chapter name printed like "CHAPTER 3. THIS IS THE CHAPTER TITLE"
-% \rightmark current section name printed like "1.6. THIS IS THE SECTION TITLE"
-% \chaptername the name chapter in the current language. If this is English, it will display "Chapter"
-% \thechapter 	current chapter number
-% \thesection 	current section number
-
-\pagestyle{fancy} % must preceed redefinitions of \chaptermark, \sectionmark
-\renewcommand{\chaptermark}[1]{%
-  \markboth{#1}{#1}}
-\renewcommand{\sectionmark}[1]{%
-  \markright{#1}}
-\renewcommand{\headrule}{{\color{lightcolor}%
-  \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
-
-% Main body of book
-\renewcommand{\chaptername}{Chapter}
-\fancypagestyle{bookbody}{%
-  \renewcommand{\headrulewidth}{.4pt}
-  \renewcommand{\footrulewidth}{0pt}
-  \lhead[\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\thepage}]{\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{Section \thesection. \rightmark}}}
-  \rhead[\fancyplain{}{\color{boldcolor}\textsl{Chapter \thechapter. \leftmark}}]{\fancyplain{}{\thepage}}
-  \chead{}
-  \lfoot{}
-  \rfoot{}
-  \cfoot{\fancyplain{\renewcommand{\footrulewidth}{.4pt}\thepage}{}}
-}
-
-% Front matter
-\fancypagestyle{bookfront}{%
-  \lhead{}
-  \rhead{}
-  \chead{}
-  \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{0pt}
-  \lfoot{}
-  \rfoot{}
-  \cfoot{}
-  % \cfoot{\fancyplain{}{-- \thepage{} --}}
-}
-
-% Chapters start with an empty page (includes first page of toc)
-\fancypagestyle{bookemptypage}{%
-  \lhead{}
-  \rhead{}
-  \chead{}
-  \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{0pt}
-  \lfoot{}
-  \rfoot{}
-  \cfoot{}
-}
-
-% Table of contents
-\fancypagestyle{booktoc}{%
-  \lhead{}
-  \rhead{}
-  \chead{}
-  \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{0pt}
-  \lfoot{}
-  \rfoot{}
-  \cfoot{}
-}
-
-\pagestyle{bookfront}
-\pagenumbering{roman}
 
 % ==========================================================
 % TABLE OF CONTENTS
@@ -599,42 +689,6 @@ of the two.}
 
 
 
-
-%================================================================
-% PARAGRAPHS
-\setlength{\parskip}{0.2ex plus 0.05ex minus 0.05ex}
-
-
-
-%================================================================
-% FOOTNOTES
-% Footnotes: Use footnote symbols (not numbers) on a per-page basis.
-% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
-\setlength{\footnotemargin}{-1em}
-% \DefineFNsymbols{hefferon}{\dagger\ddagger\S}
-\DefineFNsymbolsTM*{hefferon}{%
-  \textdagger    \dagger
-  \textdaggerdbl \ddagger
-  \textsection   \mathsection
-  \textbardbl    \|%
-  \#\#%
-}%
-\setfnsymbol{hefferon}
-\newlength{\footmarktotextglue}
-\global\footmarktotextglue=.1em plus .05em minus .02em %
-% was: \global\footglue=1.25em plus.3em minus.3em % space between footnotes
-\global\footglue=0.65em plus.2em minus.1em % space between footnotes
-\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
-\smash{\@makefnmark}\nobreak
-\hskip\footmarktotextglue\relax#1% was .5em
-}
-
-
-% ============== grammars ===========
-% \usepackage{syntax}  % http://ctan.org/pkg/syntax-mdw some conflict with listings
-% \newcommand{\nonterminal}[1]{\textit{<#1>}}
-% \newcommand{\produces}{$\longrightarrow$}
 
 %============= listings =============================
 % \definecolor{listingsbackgroundcolor}{RGB}{244,245,213}
@@ -672,34 +726,210 @@ of the two.}
 % Note: you can refine the choices with something like:
 % \lstset{language=C,caption={Descriptive Caption Text},label=DescriptiveLabel}
 
-
-
-% ====================== dates ===========================
-\RequirePackage{ifthen}
-\let\oldtoday\today
-\def\today{%
-  \number\year-\ifcase\month\or%
-  Jan\or Feb\or Mar\or Apr\or May\or Jun\or%
-  Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi%
-  -\ifthenelse{\number\day<10}{0}{}\number\day%
-}
-
-% \ymd format date in an ISO-like style
-%  #1 year
-%  #2 month as an integer
-%  #3 day  
-\newcommand{\ymd}[3]{%
-  \number#1-\ifcase#2\or%
-  Jan\or Feb\or Mar\or Apr\or May\or Jun\or%
-  Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi%
-  -\ifthenelse{\number#3<10}{0}{}\number#3%
-}
-
-
-
-% ====================== other styles ===========================
 % Make single quotes correct in verbatim 
 \usepackage{upquote}
+
+
+
+% ================ animation ================
+\usepackage{animate}
+
+
+
+
+% ====================== figures ===========================
+% Figures and captions
+\usepackage{float}
+\newfloat{animatefigure}{H}{lof}
+\newfloat{tablehere}{H}{lof}
+\newfloat{figurehere}{H}{lof}
+
+
+\usepackage{caption} 
+\DeclareCaptionLabelSeparator{jhcaptionspace}{\hspace{0.6em}}
+\captionsetup{font=small,
+              format=hang,
+              indention=2em,
+              labelformat=simple,
+              labelsep=jhcaptionspace,
+              labelfont=sc,
+              textformat=simple,
+              position=bottom,
+              justification=RaggedRight
+            }
+
+            
+\captionsetup[animatefigure]{labelformat=empty}
+\renewcommand{\theanimatefigure}{\arabic{section}.\arabic{animatefigure}}
+\newenvironment{animatedfigure}[1]{%
+  \begin{animatefigure}[H]
+  \setcounter{animatefigure}{\value{theorem}}  % for \cref
+  \refstepcounter{theorem}
+  \caption{\textsc{\thetheorem~Animation:} #1}
+  % \caption{\small \textsc{Click to animate.} #1}
+  \centering
+}{%
+  \end{animatefigure}
+}
+\crefname{animatefigure}{Animation}{Animations}
+\Crefname{animatefigure}{Animation}{Animations}
+
+
+\captionsetup[tablehere]{labelformat=empty}
+% \newcounter{tablehere}
+\renewcommand{\thetablehere}{\arabic{section}.\arabic{tablehere}}
+\newenvironment{tablefigure}[1]{%
+  \begin{tablehere}[H]
+  \setcounter{tablehere}{\value{theorem}}
+  \refstepcounter{theorem}
+  \caption{\thetheorem~\textsc{Table:} #1}
+  \centering
+}{%
+  \end{tablehere}
+}
+\crefname{tablehere}{Table}{Tables}
+\Crefname{tablehere}{Table}{Tables}
+
+\captionsetup[figurehere]{labelformat=empty}
+\renewcommand{\thefigurehere}{\arabic{section}.\arabic{figurehere}}
+\newcommand{\figlabel}{\relax} % can't use evn arg #1 in second half so save it
+\newcommand{\figcapt}{\relax} % can't use evn arg #2 in second half so save it
+\newenvironment{fig}[2][]{%
+  \renewcommand\figlabel{#1}% Save for use in second half
+  \renewcommand\figcapt{#2}% Save for use in second half
+  \begin{figurehere}[H]
+  \setcounter{figurehere}{\value{theorem}}
+  \refstepcounter{theorem}
+  \centering
+}{%
+  \caption{\thetheorem~\textsc{Figure:} \figcapt} \label{\figlabel}
+  \end{figurehere}
+}
+\crefname{figurehere}{Figure}{Figures}
+\Crefname{figurehere}{Figure}{Figures}
+
+
+% =================== Margin graphics ===================
+% put graphics in the pargin
+
+% Wrapping around a figure
+\usepackage{wrapfig}
+% Set space around wrapfig figures
+% see http://tex.stackexchange.com/a/111397/339
+\setlength{\intextsep}{6pt plus 1pt minus 0.25 pt}% vertical padding; default: 12.0pt plus 2.0pt minus 2.0pt
+\setlength{\columnsep}{10pt}% horizontal padding; default: 10pt
+
+% Captions
+\usepackage{caption}[2013/02/03] % \usepackage{subcaption}
+% \captionsetup{%
+%   labelformat=empty,
+%   labelsep=quad,
+%   labelfont=bf,
+%   format=hang,
+%   justification=RaggedRight,
+%   indention=1em,
+%   skip=8pt
+% }
+\captionsetup[figure]{labelformat=empty,
+  format=hang,              
+  justification=RaggedRight,
+  indention=0.8em,
+  skip=8pt,
+  font=small
+}
+
+\RequirePackage{suffix}
+% \margingraphic -- graphic that sticks out into margin
+% Note placement: i or I, o or O, l or L, r or R (capitals are floats)
+% #1 l or r  which margin; r is default
+% #2 width of graphic
+% #3 graphic filename
+% #4 caption
+\captionsetup[wrapfigure]{labelformat=empty,
+                          format=hang,              
+                          justification=RaggedRight,
+                          indention=0.8em,
+                          skip=8pt,
+                          font=small
+}
+\newcommand{\margingraphic}[4][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics[width=#2]{#3}% 
+    \caption{#4}
+  \end{wrapfigure}}
+% For graphic without a caption
+\WithSuffix\newcommand\margingraphic*[3][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics[width=#2]{#3}
+  \end{wrapfigure}}
+% margingraphicnomag Same as margin graphic, but the graphic is not magnified
+\newcommand{\margingraphicnomag}[4][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics{#3}% 
+    \caption{#4}
+  \end{wrapfigure}}
+% For graphic without a caption
+\WithSuffix\newcommand\margingraphicnomag*[3][r]{%  'r' is right side, no floating
+  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
+  \begin{wrapfigure}{#1}[3em]{#2}
+    \centering
+    \includegraphics{#3}
+  \end{wrapfigure}}
+
+
+
+
+%============= explorations =============================
+% Additional material to go look at.
+\newcommand{\exlabel}[1]{%
+  \vbox{
+    \hbox{\textbf{#1}}
+     %\hbox{\raisebox{1ex}{\color{lightcolor}\rule{\textwidth}{0.4pt}}}
+  }}
+
+\newenvironment{explorations}{%
+  \begin{list}{}{% 
+    \let\makelabel\exlabel
+    \setlength{\topsep}{2ex plus 0.5ex minus .1ex}
+    \setlength{\leftmargin}{1em}
+    \setlength{\rightmargin}{0em}
+    \setlength{\labelwidth}{1em}
+    \setlength{\labelsep}{0.6em}
+    \setlength{\itemindent}{0em}
+    \setlength{\parsep}{0ex plus 0.1ex}
+    \setlength{\listparindent}{1em}
+    \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
+    \item[Explorations] \ \\
+}{%
+  \end{list}
+  \vspace{2ex plus .1ex minus 0.1ex}% 
+}
+
+
+
+% ============ Misc typographic widgets ==========
+
+% hangingpar  Hanging paragraph
+%  #1  length of hanging
+\newenvironment{hangingpar}[1][1em]
+  {\begin{list}
+          {}
+          {\setlength{\itemindent}{-#1}%%'
+           \setlength{\leftmargin}{#1}%%'
+           \setlength{\itemsep}{0pt}%%'
+           \setlength{\parsep}{\parskip}%%'
+           \setlength{\topsep}{\parskip}%%'
+           }
+    \setlength{\parindent}{-#1}%%
+    \item[]
+  }
+  {\end{list}}
 
 % Make ellipsis space out properly before a period
 \usepackage[xspace]{ellipsis}
@@ -707,6 +937,8 @@ of the two.}
 \usepackage{url}
 \usepackage{microtype}
 
+
+% ================
 % Dash code stolen from tugboat.dtx
 \def\thinskip{\hskip 0.16667em\relax}
 \def\endash{--}
@@ -719,6 +951,8 @@ of the two.}
 \def\Ldash{\d@sh\empty{\hbox{\emdash}\nobreak}}
 \def\Rdash{\d@sh\nobreak\emdash}
 
+
+% =============
 % Lists that do not break after a section starts.
 % http://tex.stackexchange.com/a/47586/339
 % copied from ltlists.dtx
@@ -798,21 +1032,53 @@ of the two.}
 }{%
   \end{list}%
 }
-% \renewenvironment{quotation}{%
-%   \begin{trivlist}\item\relax\small%
-%     \setlength{\parsep}{\parskip}%
-%     \setlength{\labelwidth}{0em}%
-%     \setlength{\leftmargin}{5\parindent}%
-%     \setlength{\itemindent}{0.618\parindent}%
-% }{%
-%   \end{trivlist}
-% }
- 
 
-% ================== Some handy definitions =============
 
-% Content definitions broken out separately so they can be used in the graphics
-\usepackage{contentmacros}
+
+% == blkarray ====
+%   Extended array features, such as labelled rows and columns
+\usepackage{blkarray} 
+
+
+
+
+% === dates ====
+\RequirePackage{ifthen}
+\let\oldtoday\today
+\def\today{%
+  \number\year-\ifcase\month\or%
+  Jan\or Feb\or Mar\or Apr\or May\or Jun\or%
+  Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi%
+  -\ifthenelse{\number\day<10}{0}{}\number\day%
+}
+
+% \ymd format date in an ISO-like style
+%  #1 year
+%  #2 month as an integer
+%  #3 day  
+\newcommand{\ymd}[3]{%
+  \number#1-\ifcase#2\or%
+  Jan\or Feb\or Mar\or Apr\or May\or Jun\or%
+  Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi%
+  -\ifthenelse{\number#3<10}{0}{}\number#3%
+}
+
+
+
+
+% =================
+% Add notes for me to put something in
+\newenvironment{TODO}{%
+\par\noindent \makebox[0em][l]{\makebox[-1em][r]{\color{red}TO DO:}}\centering
+\begin{minipage}[t]{0.9\textwidth}\itshape
+}{%
+\end{minipage}
+}
+
+
+
+
+% ================ Content macros =========
 
 % Tape sequence
 %  List a sequence of executation steps by showing a bunch of tapes 
@@ -848,621 +1114,8 @@ of the two.}
   \vcenteredhbox{\includegraphics{#1}}%
 }
 
-% ====== margin graphic =====
-% put graphics in the pargin
 
-% Wrapping around a figure
-\usepackage{wrapfig}
-% Set space around wrapfig figures
-% see http://tex.stackexchange.com/a/111397/339
-\setlength{\intextsep}{6pt plus 1pt minus 0.25 pt}% vertical padding; default: 12.0pt plus 2.0pt minus 2.0pt
-\setlength{\columnsep}{10pt}% horizontal padding; default: 10pt
-
-% Captions
-\usepackage{caption}[2013/02/03] % \usepackage{subcaption}
-% \captionsetup{%
-%   labelformat=empty,
-%   labelsep=quad,
-%   labelfont=bf,
-%   format=hang,
-%   justification=RaggedRight,
-%   indention=1em,
-%   skip=8pt
-% }
-\captionsetup[figure]{labelformat=empty,
-  format=hang,              
-  justification=RaggedRight,
-  indention=0.8em,
-  skip=8pt,
-  font=small
-}
-
-\RequirePackage{suffix}
-% \margingraphic -- graphic that sticks out into margin
-% Note placement: i or I, o or O, l or L, r or R (capitals are floats)
-% #1 l or r  which margin; r is default
-% #2 width of graphic
-% #3 graphic filename
-% #4 caption
-\captionsetup[wrapfigure]{labelformat=empty,
-                          format=hang,              
-                          justification=RaggedRight,
-                          indention=0.8em,
-                          skip=8pt,
-                          font=small
-}
-\newcommand{\margingraphic}[4][r]{%  'r' is right side, no floating
-  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
-  \begin{wrapfigure}{#1}[3em]{#2}
-    \centering
-    \includegraphics[width=#2]{#3}% 
-    \caption{#4}
-  \end{wrapfigure}}
-% For graphic without a caption
-\WithSuffix\newcommand\margingraphic*[3][r]{%  'r' is right side, no floating
-  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
-  \begin{wrapfigure}{#1}[3em]{#2}
-    \centering
-    \includegraphics[width=#2]{#3}
-  \end{wrapfigure}}
-% margingraphicnomag Same as margin graphic, but the graphic is not magnified
-\newcommand{\margingraphicnomag}[4][r]{%  'r' is right side, no floating
-  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
-  \begin{wrapfigure}{#1}[3em]{#2}
-    \centering
-    \includegraphics{#3}% 
-    \caption{#4}
-  \end{wrapfigure}}
-% For graphic without a caption
-\WithSuffix\newcommand\margingraphicnomag*[3][r]{%  'r' is right side, no floating
-  % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
-  \begin{wrapfigure}{#1}[3em]{#2}
-    \centering
-    \includegraphics{#3}
-  \end{wrapfigure}}
-
-% % Figures sticking into the margin.
-% \newlength{\margingraphic@size}  % default width of graphic
-% \setlength{\margingraphic@size}{0.3\textwidth}
-% \newlength{\margingraphic@border} % width between graphic and text
-% \setlength{\margingraphic@border}{1em}
-% \newlength{\margingraphic@protrude} % how far graphic protrudes into margin
-% \setlength{\margingraphic@protrude}{3em}
-% \newlength{\margingraphic@tmp}  % for length calculations
-% \newsavebox{\margingraphic@box}  % picture and caption go in here
-% \newcommand{\margingraphic@common}[4]{%
-%   \setlength{\margingraphic@tmp}{#1}
-%     \addtolength{\margingraphic@tmp}{\margingraphic@border}
-%     \addtolength{\margingraphic@tmp}{-\margingraphic@protrude}
-%   % make a box of the graphic and the caption
-%   \savebox{\margingraphic@box}{%
-%     \begin{parbox}{#1} 
-%       {\centering
-%       \includegraphics[width=#1]{#2}
-%       \captionof*{figure}{#3}
-%       }
-%     \end{parbox}}
-% }
-
-% \newcommand{\margingraphicleft}[3]{%
-%    \begin{wrapfigure}{L}{\margingraphic@tmp}
-%       \makebox[\margingraphic@size][r]{\usebox{\margingraphic@box}
-%                                                \rule{\margingraphic@border}{0pt}}
-%     \end{wrapfigure}}
-
-% % \margingraphic -- graphic that sticks out into margin
-% % #1 width of graphic (before it is shifted)
-% % #2 graphic filename
-% % #3 caption
-% \newcommand{\margingraphic}[3][0.2\textwidth]{%
-%   % make a border between the text and the graphic, find size of whole
-%   \setlength{\margingraphic@tmp}{#1}
-%     \addtolength{\margingraphic@tmp}{\margingraphic@border}
-%     \addtolength{\margingraphic@tmp}{-\margingraphic@protrude}
-%   % make a box of the graphic and the caption
-%   \savebox{\margingraphic@box}{%
-%     \begin{parbox}{#1} 
-%       {\centering
-%       \includegraphics[width=#1]{#2}
-%       \captionof*{figure}{#3}
-%       }
-%     \end{parbox}}
-%   \mbox{\checkoddpage\ifoddpage%
-%     \typeout{!!!! ODD PAGE}
-%     KKKKKK
-%       \begin{wrapfigure}{R}{\margingraphic@tmp}
-%         \typeout{!!!! IN MARGINGRAPHIC}
-%         TTTTTT
-%         % \makebox[\margingraphic@size][l]{% \rule{\margingraphic@border}{0pt}%
-%         %                                  \usebox{\margingraphic@box}}
-%       \end{wrapfigure}
-%     \else%
-%       \begin{wrapfigure}{L}{\margingraphic@tmp}
-%         \makebox[\margingraphic@size][r]{\usebox{\margingraphic@box}
-%                                                  \rule{\margingraphic@border}{0pt}}
-%       \end{wrapfigure}
-%     \fi}%
-% }
-
-
-% ================ animation ================
-\usepackage{animate}
-
-
-
-% == start new theorems
-\usepackage{cleveref}
-
-%\usepackage[amsmath]{ntheorem} % cleveref requires amsthm or ntheorsm
-\usepackage[thmmarks,amsmath]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
-% % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
-\newtheoremstyle{marginnumbers}%
-{\item[\theorem@headerfont\llap{##2\hspace{0.5em}}]{\theorem@headerfont ##1} }%
-{\item[\theorem@headerfont\llap{##2}]{\theorem@headerfont ##1\ (##3)} }%
-\theoremheaderfont{\scshape}
-\theorembodyfont{}    
-\theoremsymbol{}
-\theoremprework{}
-\theorempostwork{}
-\theoremseparator{}
-\usepackage{thmtools}
-\declaretheorem[style=marginnumbers,
-                refname={Theorem,Theorems},
-                Refname={Theorem,Theorems}]{theorem}
-\numberwithin{theorem}{subsection}
-\declaretheorem[style=marginnumbers,
-                refname={Lemma,Lemmas},
-                Refname={Lemma,Lemmas},
-                sibling=theorem]{lemma}
-\declaretheorem[style=marginnumbers,
-                refname={Corollary,Corollarys},
-                Refname={Corollary,Corollarys},
-                sibling=theorem]{corollary}
-\declaretheorem[style=marginnumbers,
-                refname={Definition,Definitions},
-                Refname={Definition,Definitions},
-                sibling=theorem]{definition}
-\declaretheorem[style=marginnumbers,
-                refname={Example,Examples},
-                Refname={Example,Examples},
-                sibling=theorem]{example}
-\declaretheorem[style=marginnumbers,
-                refname={Remark,Remarks},
-                Refname={Remark,Remarks},
-                sibling=theorem]{remark}
-\declaretheorem[style=nonumberplain,
-                refname={Proof,Proofs},
-                Refname={Proof,Proofs},
-                ]{proof}
-\declaretheorem[style=nonumberplain,
-                title={Church's Thesis},
-                refname={Church's Thesis,Church's Thesis},
-                Refname={Church's Thesis,Church's Thesis},
-                ]{churchsthesis}
-\declaretheorem[style=marginnumbers,
-                refname={Problem,Problems},
-                Refname={Problem,Problems},
-                sibling=theorem]{problem}
-\newcommand{\probleminput}{\textit{Input:}}
-\newcommand{\problemoutput}{\textit{Output:}}
-
-% == end new theorems
-
-% %============= theorems =============================
-% % This stuff has to all come after cleveref, which must all come after hyperref
-% % \usepackage{amsmath} % ,amssymb}
-% \usepackage{ifoddpage}
-% \usepackage{framed}
-%   % \definecolor{shadecolor}{gray}{.95}
-%   \colorlet{shadecolor}{backgroundcolor}
-% \usepackage{footnote}
-% % \usepackage{amsthm}
-% % \usepackage{ntheorem} 
-% \usepackage{thmtools}
-% \declaretheoremstyle[
-%   spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   % postheadspace={.618em plus .2em minus .1em},
-%   postheadspace={.55em plus .2em minus .1em},
-%   preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
-%   postfoothook={\end{snugshade}\end{savenotes}}
-% %   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
-%   ]{shadedtext}  % for text that has a shaded box behind it TODO: make the frames not add any vertical space, add a rule to the frame
-
-% \declaretheoremstyle[
-%   spaceabove=.35\thm@preskip, spacebelow=.65\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
-%   % headformat={\mbox{\checkoddpage\ifoddpage%
-%   %   \makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME %
-%   % \else%
-%   %   \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
-%   % \fi}\ignorespaces},
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   % postheadspace={.618em plus .2em minus .1em},
-%   postheadspace={.55em plus .2em minus .1em},
-%   ]{text}   % for text that is not shaded 
-
-% \declaretheoremstyle[
-%   spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={\NUMBER\NOTE\ignorespaces},
-%   headindent={-1em},
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   postheadspace={.618em plus .2em minus .1em},
-%   ]{exercise}   %  
-
-% \declaretheoremstyle[
-%   spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={EXTRA \NUMBER\NOTE\ignorespaces},
-%   headindent={-1em},
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   postheadspace={.618em plus .2em minus .1em},
-%   numberwithin=subsection
-%   ]{extraexercise}   %  
-% % \renewcommand{\theextraexercise}{\arabic{exercise}}
-
-% \declaretheoremstyle[
-%   % spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   postheadspace={.618em plus .2em minus .1em},
-%   prefoothook={\hfill\qedsymbol}
-%   ]{pf}  % for proofs, with qedsymbol at the end
-
-% \declaretheoremstyle[
-%   spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={\NAME },
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   postheadspace={.618em plus .2em minus .1em},
-%   preheadhook={\begin{savenotes}}, % savenotes allows appendrefs to appear as footnotes
-%   postfoothook={\end{savenotes}}
-% %   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
-%   ]{nonumber}  % for text not numbered
-
-% \declaretheoremstyle[
-%   spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={\NAME },
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   postheadspace={.618em plus .2em minus .1em},
-%   preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
-%   postfoothook={\end{snugshade}\end{savenotes}}
-% %   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
-%   ]{shadednonumber}  % for text that has a shaded box behind it 
-
-% \declaretheorem[name=Theorem,
-%                 style=shadedtext,
-%                 refname={Theorem,Theorems},
-%                 Refname={Theorem,Theorems},
-%                 numberwithin=subsection]{theorem}
-%    % \surroundwithmdframed[style=thmstyle]{theorem}\resetparens[theorem]
-% \renewcommand{\thetheorem}{\arabic{subsection}.\arabic{theorem}}
-
-% \declaretheorem[name=Definition,
-%                 style=shadedtext,
-%                 refname={Definition,Definitions},
-%                 Refname={Definition,Definitions},
-%                 sibling=theorem]{definition} 
-%    % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
-
-% \declaretheorem[name=Church's Thesis,
-%                 style=shadedtext,
-%                 refname={Church's Thesis,Church's Theses},
-%                 Refname={Church's Thesis,Church's Theses},
-%                 sibling=theorem]{churchsthesis} 
-%    % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
-
-% \declaretheorem[name=Lemma,
-%                 style=shadedtext,
-%                 refname={Lemma,Lemmas},
-%                 Refname={Lemma,Lemmas},
-%                 sibling=theorem]{lemma}
-%    % \surroundwithmdframed[style=thmstyle]{lemma}\resetparens[lemma]
-
-% \declaretheorem[name=Corollary,
-%                 style=shadedtext,
-%                 refname={Corollary,Corollaries},
-%                 Refname={Corollary,Corollaries},
-%                 sibling=theorem]{corollary}
-%    % \surroundwithmdframed[style=thmstyle]{corollary}\resetparens[corollary]
-
-% \declaretheorem[name=Example,
-%                 style=text,
-%                 refname={Example,Examples},
-%                 Refname={Example,Examples},
-%                 sibling=theorem]{example}
-
-% \declaretheorem[name=Exercise,
-%                 style=exercise,
-%                 refname={Exercise,Exercises},
-%                 Refname={Exercise,Exercises},
-%                 sibling=theorem]{sectionexercise}
-
-% \declaretheorem[name=Exercise,
-%                 style=exercise,
-%                 refname={Exercise,Exercises},
-%                 Refname={Exercise,Exercises},
-%                 sibling=theorem]{extraexercise}
-
-% \declaretheorem[name=Notation,
-%                 style=shadednonumber
-%                 refname={Notation,Notations},
-%                 Refname={Notation,Notations},
-%                 ]{notation}
-
-% \declaretheorem[name=Remark,
-%                 refname={Remark,Remarks},
-%                 Refname={Remark,Remarks},
-%                 style=nonumber]{remark}
-
-% \let\proof\@undefined                     
-% \let\endproof\@undefined               
-% \declaretheorem[name=Proof,
-%                 refname={Proof,Proofs},
-%                 Refname={Proof,Proofs},
-%                 style=pf]{proof}
-
-% % styling of proofs
-% \renewcommand{\proofname}{{\scshape\small Proof}}
-% % End of \begin{proof} ... \end{proof}
-% \renewcommand{\qedsymbol}{{\scshape\small QED}}
-
-% % Problem statements
-% \declaretheorem[name=Problem,
-%                 style=shadedtext,
-%                 refname={Problem,Problems},
-%                 Refname={Problem,Problems},
-%                 sibling=theorem]{problem} 
-% \newcommand{\probleminput}{\textit{Input:}}
-% \newcommand{\problemoutput}{\textit{Output:}}
-
-% % In the Extra sections we want the numbering of
-% % theorem environments to be different, more informal.
-% \declaretheoremstyle[
-%   spaceabove=.5\thm@preskip, spacebelow=.5\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={\mbox{\checkoddpage\ifoddpage%
-%     \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME \NOTE%
-%   \else%
-%     \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME \NOTE%
-% %     \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
-%   \fi}\ignorespaces},
-%   % headformat={\NAME\NOTE },
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   postheadspace={.618em plus .2em minus .1em},
-%   preheadhook={\begin{savenotes}\begin{snugshade}}, % savenotes allows appendrefs to appear as footnotes
-%   postfoothook={\end{snugshade}\end{savenotes}}
-% %   % for doing this with mdframed, see also http://tex.stackexchange.com/questions/34405/shaded-theorems-thmtools-spanning-pages
-%   ]{extrashadedtext}  % for text that has a shaded box behind it TODO: make the frames not add any vertical space, add a rule to the frame
-
-% \declaretheoremstyle[
-%   spaceabove=.35\thm@preskip, spacebelow=.65\thm@postskip,
-%   headfont=\normalfont\scshape,
-%   notefont=\normalfont\scshape, notebraces={ (}{)},
-%   headformat={\makebox[0em][r]{\NUMBER\rule{\margin@numberingspace}{0ex}}\NAME\NOTE\ignorespaces}, % note that \thetheorem is redefined below so \NUMBER is altered
-%   headformat={\mbox{\checkoddpage\ifoddpage%
-%     \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME %
-%   \else%
-%     \makebox[0em][r]{\rule{\margin@numberingspace}{0ex}}\NAME %
-%     % \makebox[0em][l]{\rule{\linewidth}{0ex}\rule{\margin@numberingspace}{0ex}\NUMBER}\NAME %
-%   \fi}\ignorespaces},
-%   headformat={\NAME\NOTE },
-%   headpunct={},
-%   bodyfont=\normalfont,
-%   postheadspace={.618em plus .2em minus .1em},
-%   ]{extratext}   % for text that is not shaded 
-
-% % \declaretheoremstyle[
-% %   spaceabove=.15\thm@preskip, spacebelow=.15\thm@postskip,
-% %   headfont=\normalfont\scshape,
-% %   notefont=\normalfont\scshape, notebraces={ (}{)},
-% %   headformat={\NUMBER\NOTE\ignorespaces},
-% %   headindent={-1em},
-% %   headpunct={},
-% %   bodyfont=\normalfont,
-% %   postheadspace={.618em plus .2em minus .1em},
-% %   ]{extraexercise}   %  
-
-% \declaretheorem[name=Theorem,
-%                 style=extrashadedtext,
-%                 refname={Theorem,Theorems},
-%                 Refname={Theorem,Theorems},
-%                 ]{extratheorem}
-%    % \surroundwithmdframed[style=thmstyle]{theorem}\resetparens[theorem]
-% \renewcommand{\theextratheorem}{\arabic{extratheorem}}
-
-% \declaretheorem[name=Definition,
-%                 style=extrashadedtext,
-%                 refname={Definition,Definitions},
-%                 Refname={Definition,Definitions},
-%                 sibling=extratheorem]{extradefinition} 
-%    % \surroundwithmdframed[style=thmstyle]{definition} \resetparens[definition]
-
-% \declaretheorem[name=Lemma,
-%                 style=extrashadedtext,
-%                 refname={Lemma,Lemmas},
-%                 Refname={Lemma,Lemmas},
-%                 sibling=extratheorem]{extralemma}
-%    % \surroundwithmdframed[style=thmstyle]{lemma}\resetparens[lemma]
-
-% \declaretheorem[name=Corollary,
-%                 style=extrashadedtext,
-%                 refname={Corollary,Corollaries},
-%                 Refname={Corollary,Corollaries},
-%                 sibling=extratheorem]{extracorollary}
-%    % \surroundwithmdframed[style=thmstyle]{corollary}\resetparens[corollary]
-
-% \declaretheorem[name=Example,
-%                 style=extratext,
-%                 refname={Example,Examples},
-%                 Refname={Example,Examples},
-%                 sibling=extratheorem]{extraexample}
-
-
-
-\newcommand{\definend}[1]{\textcolor{highlightcolor}{#1}}
-
-% thmparts
-%  For an enumerated list of the parts of a theorem or lemma or definition
-% (anything numbered like a theorem)
-\newenvironment{thmparts}{%
-  \begin{enumerate}[label={\normalfont\scshape(\alph*)~},
-                    align=left, 
-                    ref={{\scshape\alph*}},
-    topsep={0.25ex plus 0.05ex minus 0.025ex},
-    leftmargin=1em,
-    rightmargin=0em,
-    labelwidth=1em,
-    labelsep=0em,
-    itemindent=0em,
-    parsep={0ex plus 0.1ex},
-    listparindent=1em,
-    itemsep={0.2ex plus .1ex minus 0.1ex}
-    ]
-}{%
-  \end{enumerate}
-}
-
-
-
-%============= explorations =============================
-% Additional material to go look at.
-\newcommand{\exlabel}[1]{%
-  \vbox{
-    \hbox{\textbf{#1}}
-     %\hbox{\raisebox{1ex}{\color{lightcolor}\rule{\textwidth}{0.4pt}}}
-  }}
-
-\newenvironment{explorations}{%
-  \begin{list}{}{% 
-    \let\makelabel\exlabel
-    \setlength{\topsep}{2ex plus 0.5ex minus .1ex}
-    \setlength{\leftmargin}{1em}
-    \setlength{\rightmargin}{0em}
-    \setlength{\labelwidth}{1em}
-    \setlength{\labelsep}{0.6em}
-    \setlength{\itemindent}{0em}
-    \setlength{\parsep}{0ex plus 0.1ex}
-    \setlength{\listparindent}{1em}
-    \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
-    \item[Explorations] \ \\
-}{%
-  \end{list}
-  \vspace{2ex plus .1ex minus 0.1ex}% 
-}
-
-
-
-
-% %============= exercise =============================
-% % See also answers section near the top of this file
-% %
-% % exercises  environment to surround exercises for each section
-% % \newcommand{\exlabel}[1]{%
-% %   \begin{tabular}{@{}l@{}}
-% %     \textbf{#1} \\[-2ex]
-% %     {\color{lightcolor}\rule{\textwidth}{0.4pt}}
-% %   \end{tabular}%
-% %   \vspace*{-2ex}%
-% %   }
-
-% % Common to exercises and explorations?  Too much for explorations.
-% \newlength{\exenvironmenttopsep}
-% \setlength{\exenvironmenttopsep}{4ex plus 1.5ex minus .2ex}
-
-% \newenvironment{exercises}{%
-% % from titlesec: *n in titlespace means: n times 1ex plus .3ex minus .06ex
-% % so the *3 before means this.
-%   \begin{list}{}{% 
-%     \let\makelabel\exlabel
-%     \setlength{\topsep}{\exenvironmenttopsep}
-%     \setlength{\leftmargin}{1em}
-%     \setlength{\rightmargin}{0em}
-%     \setlength{\labelwidth}{1em}
-%     \setlength{\labelsep}{0em}
-%     \setlength{\itemindent}{0em}
-%     \setlength{\parsep}{0ex plus 0.1ex}
-%     \setlength{\listparindent}{1em}
-%     \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
-%     % \item[Exercises, Section \thesection] 
-%     \item[Exercises] 
-% }{%
-%   \end{list}
-%   \vspace{-4ex}% 
-% }
-
-% \newcounter{extraexercisectr}
-% \newcommand{\extraexerciseslabel}[1]{\stepcounter{extraexercisectr}\normalfont\textsc{#1}}
-% \newenvironment{extraexercises}{%
-%   \setcounter{extraexercisectr}{0}
-% % from titlesec: *n in titlespace means: n times 1ex plus .3ex minus .06ex
-% % so the *3 before means this.
-%   \begin{list}{}{% 
-%     \let\makelabel\extraexerciseslabel
-%     \setlength{\topsep}{\exenvironmenttopsep}
-%     \setlength{\leftmargin}{1em}
-%     \setlength{\rightmargin}{0em}
-%     \setlength{\labelwidth}{1em}
-%     \setlength{\labelsep}{0em}
-%     \setlength{\itemindent}{0em}
-%     \setlength{\parsep}{0ex plus 0.1ex}
-%     \setlength{\listparindent}{1em}
-%     \setlength{\itemsep}{0.2ex plus .1ex minus 0.1ex}}
-%     % \item[Exercises, Section \thesection] 
-%     \item[Exercises] 
-% }{%
-%   \end{list}
-%   \vspace{-4ex}% 
-% }
-
-% \expartsname for naming a part of an exercise, as in \item \expartsname{Commutativity}
-\newcommand{\expartsname}[1]{\textsc{(#1)}} 
-
-\newenvironment{exparts}{%
-  \begin{enumerate}[topsep=0ex,
-                    itemsep=0ex, parsep=0ex,
-                    leftmargin=2em,labelwidth=0.5em,labelsep=.16667em plus .08333em,
-                    label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
-}{%
-  \end{enumerate}
-}
-
-% produce an inline list
-\newenvironment{exparts*}{%
-  \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
-                     itemjoin={\hspace{0.6em plus .1em minus .1em\linebreak[2]}},
-                     before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}]
-}{%
-  \end{enumerate*}
-}
-
-% For an exercise hint
-\newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
-
-
-% Grammars
+% ==== Grammars ==== (Asy doesn't like it) 
 \usepackage{syntax}
 \newlength{\grammarmargin}
 \setlength{\grammarmargin}{5em}
@@ -1537,138 +1190,8 @@ of the two.}
 \newcommand{\initialstep}{\hspace*{-1em}}
 
 
+% ==== Remaining content macros ======
+% Broken out separately so they can be used in the
+% Asymptotegraphics
+\usepackage{contentmacros}
 
-
-% ====================== figures ===========================
-% Figures and captions
-\usepackage{float}
-\newfloat{animatefigure}{H}{lof}
-\newfloat{tablehere}{H}{lof}
-\newfloat{figurehere}{H}{lof}
-
-\DeclareCaptionLabelSeparator{jhcaptionspace}{\hspace{0.6em}}
-\usepackage{caption} 
-\captionsetup{font=small,
-              format=hang,
-              indention=2em,
-              labelformat=simple,
-              labelsep=jhcaptionspace,
-              labelfont=sc,
-              textformat=simple,
-              position=bottom,
-              justification=RaggedRight
-              }
-\captionsetup[animatefigure]{labelformat=empty}
-\renewcommand{\theanimatefigure}{\arabic{section}.\arabic{animatefigure}}
-\newenvironment{animatedfigure}[1]{%
-  \begin{animatefigure}[H]
-  \setcounter{animatefigure}{\value{theorem}}  % for \cref
-  \refstepcounter{theorem}
-  \caption{\textsc{\thetheorem~Animation:} #1}
-  % \caption{\small \textsc{Click to animate.} #1}
-  \centering
-}{%
-  \end{animatefigure}
-}
-% \crefname{animatefigure}{Animation}{Animations}
-% \Crefname{animatefigure}{Animation}{Animations}
-
-
-\captionsetup[tablehere]{labelformat=empty}
-% \newcounter{tablehere}
-\renewcommand{\thetablehere}{\arabic{section}.\arabic{tablehere}}
-\newenvironment{tablefigure}[1]{%
-  \begin{tablehere}[H]
-  \setcounter{tablehere}{\value{theorem}}
-  \refstepcounter{theorem}
-  \caption{\thetheorem~\textsc{Table:} #1}
-  \centering
-}{%
-  \end{tablehere}
-}
-% \crefname{tablehere}{Table}{Tables}
-% \Crefname{tablehere}{Table}{Tables}
-
-\captionsetup[figurehere]{labelformat=empty}
-\renewcommand{\thefigurehere}{\arabic{section}.\arabic{figurehere}}
-\newcommand{\figlabel}{\relax} % can't use evn arg #1 in second half so save it
-\newcommand{\figcapt}{\relax} % can't use evn arg #2 in second half so save it
-\newenvironment{fig}[2][]{%
-  \renewcommand\figlabel{#1}% Save for use in second half
-  \renewcommand\figcapt{#2}% Save for use in second half
-  \begin{figurehere}[H]
-  \setcounter{figurehere}{\value{theorem}}
-  \refstepcounter{theorem}
-  \centering
-}{%
-  \caption{\thetheorem~\textsc{Figure:} \figcapt} \label{\figlabel}
-  \end{figurehere}
-}
-% \crefname{figurehere}{Figure}{Figures}
-% \Crefname{figurehere}{Figure}{Figures}
-
-
-% =================
-% Add notes for me to put something in
-\newenvironment{TODO}{%
-\par\noindent \makebox[0em][l]{\makebox[-1em][r]{\color{red}TO DO:}}\centering
-\begin{minipage}[t]{0.9\textwidth}\itshape
-}{%
-\end{minipage}
-}
-
-
-
-%======================== hyperref ===========
-\usepackage{hyperref}
-\hypersetup{
-    bookmarks=true,         % show bookmarks bar?
-    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
-    pdftoolbar=true,        % show Acrobat’s toolbar?
-    pdfmenubar=true,        % show Acrobat’s menu?
-    pdffitwindow=false,     % window fit to page when opened
-    pdfstartview={FitH},    % fits the width of the page to the window
-    pdftitle={Computing},    % title
-    pdfauthor={Jim Hefferon, Saint Michael's College},     % author
-    pdfsubject={Theory of Computation},   % subject of the document
-    pdfcreator={Jim Hefferon},   % creator of the document
-    pdfproducer={Jim Hefferon}, % producer of the document
-    pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
-    pdfnewwindow=true,      % links in new window
-    colorlinks=true,       % false: boxed links; true: colored links
-    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
-    citecolor=black,        % color of links to bibliography
-    filecolor=black,      % color of file links
-    urlcolor=black           % color of external links
-}
-% \newcommand\href[2]{\relax}
-% \newcommand\hyperref[2][\relax]{#2}
-
-
-% ======== clever references ===============
-\usepackage{cleveref} % after hyperref, apparently
-\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
-  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
-  \ifcsname #2refname\endcsname
-    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
-  \fi
-}
-
-% % Add the exercise format-changing command to the end of sections and extra
-% % sections.  I tried 
-% % \apptocmd{\section}{\setupSectionExercises}{\typeout{patch success}}{\typeout{patch failure}}
-% % from etoolbox but it gave me errors, so I'm doing this by hand.
-% \newcommand{\setupSectionElets}{\let\exercise\sectionexercise\let\endexercise\endsectionexercise\renewcommand{\thetheorem}{\arabic{subsection}.\arabic{theorem}}}
-% \newcommand{\setupExtraElets}{\typeout{!!!!!! setupExtraElets being called !!!!!}\renewcommand{\thetheorem}{\arabic{theorem}}\let\exercise\extraexercise\let\endexercise\endextraexercise}
-% \let\save@section=\section
-% \def\section#1{\save@section{#1}\setupSectionElets}
-% \let\save@extra=\extra
-% \def\extra#1{\save@extra{#1}\setupExtraElets}
-
-
-\crefname{animatefigure}{Animation}{Animations}
-\Crefname{animatefigure}{Animation}{Animations}
-\crefname{tablehere}{Table}{Tables}
-\Crefname{tablehere}{Table}{Tables}
-\crefname{figurehere}{Figure}{Figures}
-\Crefname{figurehere}{Figure}{Figures}

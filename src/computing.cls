@@ -87,12 +87,6 @@
 \fancypagestyle{bookbody}{%
   \renewcommand{\headrulewidth}{.4pt}
   \renewcommand{\footrulewidth}{0pt}
-  % \lhead[\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\thepage}}]{\fancyplain{\renewcommand{\headrulewidth}{0pt}}{\color{boldcolor}\textsl{\leftmark}}}
-  % \rhead[\fancyplain{}{\color{boldcolor}\textsl{\rightmark}}]{\fancyplain{}{\color{boldcolor}\textsl{\thepage}}}
-  % \chead{}
-  % \lfoot{}
-  % \rfoot{}
-  % \cfoot{\fancyplain{\renewcommand{\footrulewidth}{.4pt}\\textsl{thepage}}{}}
   \fancyhead[LE,RO]{{\color{boldcolor}\textsl{\thepage}}}
   \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
   \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
@@ -407,8 +401,8 @@
   \@startsection{section}{1}%
   {0em}%
   {-3.5ex plus -1ex minus -0.2ex}%
-  {2.3ex plus .2ex}%
-  {\sectiontitlecontents{\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}\normalfont\bfseries}%
+  {1.8ex plus .2ex}%
+  {\sectiontitlecontents{\marginnote{\raisebox{-0.55ex}{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}}\normalfont\large\bfseries}%
 }
 \renewcommand{\thesection}{\Roman{section}}
 

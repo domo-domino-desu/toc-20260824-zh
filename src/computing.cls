@@ -411,7 +411,7 @@
 \renewcommand{\subsection}{%
   \@startsection{subsection}{2}%
   {0em}%
-  {-3.25ex plus -1ex minus -0.2ex}%
+  {-2ex plus -0.6ex minus -0.1ex}%
   {-0.6em plus -0.1em}%  negative makes it a run-in header
   {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
 }
@@ -498,62 +498,82 @@
 % The cleveref package requires that theorems be made with either amsthm
 % or ntheorem.  I couldn't get the first to put numbering in the margins,
 % whereas the second had that built in, so I went with it.
-\usepackage[thmmarks,amsmath]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+\usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+\usepackage{framed}
+\def\theoremframecommand{\colorbox{shadecolor}}
+\colorlet{shadecolor}{backgroundcolor}  % Use this as the background color for theorems
 % % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
+\newlength{\jh@thmtotextspace}  % horiz space between "Theorem" and "Let x .."
+  \setlength{\jh@thmtotextspace}{0.6em plus 0.1em minus 0.1em}
 \newtheoremstyle{marginnumbers}%
-{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1} }%
-{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)} }%
+{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1}\hspace{\jh@thmtotextspace} }%
+{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)}\hspace{\jh@thmtotextspace} }%
+\theoremstyle{marginnumbers}
 \theoremheaderfont{\scshape}
 \theorembodyfont{}    
 \theoremsymbol{}
 \theoremprework{}
 \theorempostwork{}
 \theoremseparator{}
-\theorempreskip{.5\topsep}
-\theorempostskip{.5\topsep}
-\usepackage{thmtools}
-% \shadecolor{backgroundcolor}  % Use this as the background color for theorems
-\declaretheorem[style=marginnumbers,
-                shaded={bgcolor=backgroundcolor},
-                refname={Theorem,Theorems},
-                Refname={Theorem,Theorems}]{theorem}
-\numberwithin{theorem}{subsection}
-\declaretheorem[style=marginnumbers,
-                shaded={bgcolor=backgroundcolor},
-                refname={Lemma,Lemmas},
-                Refname={Lemma,Lemmas},
-                sibling=theorem]{lemma}
-\declaretheorem[style=marginnumbers,
-                shaded={bgcolor=backgroundcolor},
-                refname={Corollary,Corollary},
-                Refname={Corollary,Corollary},
-                sibling=theorem]{corollary}
-\declaretheorem[style=marginnumbers,
-                shaded={bgcolor=backgroundcolor},
-                refname={Definition,Definitions},
-                Refname={Definition,Definitions},
-                sibling=theorem]{definition}
-\declaretheorem[style=marginnumbers,
-                refname={Example,Examples},
-                Refname={Example,Examples},
-                sibling=theorem]{example}
-\declaretheorem[style=marginnumbers,
-                refname={Remark,Remarks},
-                Refname={Remark,Remarks},
-                sibling=theorem]{remark}
-\declaretheorem[style=nonumberplain,
-                refname={Proof,Proofs},
-                Refname={Proof,Proofs},
-                ]{proof}
-\declaretheorem[style=marginnumbers,
-                title={Church's Thesis},
-                refname={Church's Thesis,Church's Thesis},
-                Refname={Church's Thesis,Church's Thesis},
-                sibling=theorem]{churchsthesis}
-\declaretheorem[style=marginnumbers,
-                refname={Problem,Problems},
-                Refname={Problem,Problems},
-                sibling=theorem]{problem}
+\theoremprework{\begin{snugshade}}
+\theorempostwork{\end{snugshade}}
+% \theorempreskip{.5\topsep}
+\theoremframepreskip{.55em plus .2em minus .1em}
+\theoreminframepreskip{0em plus .05em}
+\theoremframepostskip{.55em plus .2em minus .1em}
+\theoreminframepostskip{0em plus .05em}
+% \theorempostskip{.5\topsep}
+% \usepackage{thmtools}
+\newshadedtheorem{theorem}{Theorem}[section]
+\newshadedtheorem{lemma}[theorem]{Lemma}
+\newshadedtheorem{corollary}[theorem]{Corollary}
+\newshadedtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{proof}[theorem]{proof}
+\newtheorem{churchsthesis}[theorem]{Church's Thesis}
+\newtheorem{problem}[theorem]{Problem}
+% \declaretheorem[style=marginnumbers,
+%                 shaded={bgcolor=backgroundcolor},
+%                 refname={Theorem,Theorems},
+%                 Refname={Theorem,Theorems}]{theorem}
+% \numberwithin{theorem}{subsection}
+% \declaretheorem[style=marginnumbers,
+%                 shaded={bgcolor=backgroundcolor},
+%                 refname={Lemma,Lemmas},
+%                 Refname={Lemma,Lemmas},
+%                 sibling=theorem]{lemma}
+% \declaretheorem[style=marginnumbers,
+%                 shaded={bgcolor=backgroundcolor},
+%                 refname={Corollary,Corollary},
+%                 Refname={Corollary,Corollary},
+%                 sibling=theorem]{corollary}
+% \declaretheorem[style=marginnumbers,
+%                 shaded={bgcolor=backgroundcolor},
+%                 refname={Definition,Definitions},
+%                 Refname={Definition,Definitions},
+%                 sibling=theorem]{definition}
+% \declaretheorem[style=marginnumbers,
+%                 refname={Example,Examples},
+%                 Refname={Example,Examples},
+%                 sibling=theorem]{example}
+% \declaretheorem[style=marginnumbers,
+%                 refname={Remark,Remarks},
+%                 Refname={Remark,Remarks},
+%                 sibling=theorem]{remark}
+% \declaretheorem[style=nonumberplain,
+%                 refname={Proof,Proofs},
+%                 Refname={Proof,Proofs},
+%                 ]{proof}
+% \declaretheorem[style=marginnumbers,
+%                 title={Church's Thesis},
+%                 refname={Church's Thesis,Church's Thesis},
+%                 Refname={Church's Thesis,Church's Thesis},
+%                 sibling=theorem]{churchsthesis}
+% \declaretheorem[style=marginnumbers,
+%                 refname={Problem,Problems},
+%                 Refname={Problem,Problems},
+%                 sibling=theorem]{problem}
 \newcommand{\probleminput}{\textit{Input:}}
 \newcommand{\problemoutput}{\textit{Output:}}
 

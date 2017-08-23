@@ -453,6 +453,7 @@ pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
   dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(white));
 }
+label(pic,"$f/g$",Scale(pic,(20,2)), N);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -827,7 +828,7 @@ path f=Scale(pic,(0,2))
   ..Scale(pic,(100,63));
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 draw(pic, f, FCNPEN_SOLID);
-draw(pic, g, second_pen);
+draw(pic, g, FCNPEN_SOLID);  /* was: second_pen */
 
 
 // xaxis  Draw axis without arrow, then draw without ticks and the arrow
@@ -914,7 +915,7 @@ path f=Scale(pic,(0,2))
   ..Scale(pic,(100,87));
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 draw(pic, f, FCNPEN_SOLID);
-draw(pic, g, second_pen);
+draw(pic, g, FCNPEN_SOLID); // was: second_pen
 
 
 // xaxis  Draw axis without arrow, then draw without ticks and the arrow

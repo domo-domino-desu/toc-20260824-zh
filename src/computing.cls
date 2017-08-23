@@ -504,7 +504,7 @@
 \colorlet{shadecolor}{backgroundcolor}  % Use this as the background color for theorems
 % % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
 \newlength{\jh@thmtotextspace}  % horiz space between "Theorem" and "Let x .."
-  \setlength{\jh@thmtotextspace}{0.6em plus 0.1em minus 0.1em}
+  \setlength{\jh@thmtotextspace}{0.45em plus 0.05em minus 0.05em}
 \newtheoremstyle{marginnumbers}%
 {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1}\hspace{\jh@thmtotextspace} }%
 {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)}\hspace{\jh@thmtotextspace} }%
@@ -533,6 +533,23 @@
 \newtheorem{proof}[theorem]{proof}
 \newtheorem{churchsthesis}[theorem]{Church's Thesis}
 \newtheorem{problem}[theorem]{Problem}
+\crefname{theorem}{Theorem}{Theorems}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{Corollary}{Collaries}
+\Crefname{corollary}{Corollary}{Collaries}
+\crefname{definition}{Definition}{Definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{example}{Example}{Examples}
+\Crefname{example}{Example}{Theorems}
+\crefname{remark}{Remark}{Remarks}
+\Crefname{remark}{Remark}{Remarks}
+\crefname{problem}{Problem}{Problems}
+\Crefname{problem}{Problem}{Problems}
+\crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+\Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+
 % \declaretheorem[style=marginnumbers,
 %                 shaded={bgcolor=backgroundcolor},
 %                 refname={Theorem,Theorems},

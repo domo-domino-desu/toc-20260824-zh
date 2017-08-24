@@ -1,11 +1,11 @@
-\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the dominant forces\Dash bugs see surface tension as more important than gravity. Similiarly, changing an algorithm from taking quadratic time to taking time that is $n\lg n$ can make easy things that use to be impossible.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Orders of growth}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
+\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the dominant forces\Dash bugs see surface tension as more important than gravity. Similiarly, changing an algorithm from taking quadratic time to taking time that is $n\lg n$ can make easy things that were not previously practical.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Orders of growth}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 We will review the basics of the orders of growth of functions.
 Because this is a review, we will not give a detailed development, just enough for our needs.
 And we will leave the proofs for the exercises.
 
 \section{Definition}
 For a job there may be many algorithms.
-We may want to choose one that is faster, or uses less memory,
+We typically want to choose one that is faster, or uses less memory,
 or some other resource.
 That is, algorithms take time that 
 is a function of the size of their input and
@@ -589,14 +589,18 @@ L'H\^opital's Rule to \cref{lem:LHBigO}.
 
 Big-O is so widely used in practice that it is often covered in
 Programming~101. 
-It is convenient because it gives a rough metric to compare 
-algorithms.
-This table contains the orders of growth that appear most often.
+It gives a rough metric to compare algorithms.
 For example, the orders of worst-case growth for three algorithms
 for sorting a list
 are:~quicksort is~$\bigOh(n^2)$,
 merge sort is~$\bigOh(n\log n)$, and
 bubble sort is~$\bigOh(n^2)$.
+
+This table contains the orders of growth that appear most often in practice.
+It is listed in ascending order of growth, meaning that
+$\bigOh(f)$ is before $\bigOh(g)$ 
+if $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$
+(we denote this as  $f\ll g$). 
 \begin{center}
   \begin{tabular}{lll}
     \multicolumn{1}{l}{\quad\tabulartext{Order}} 
@@ -609,36 +613,44 @@ bubble sort is~$\bigOh(n^2)$.
     $\bigOh\bigl(\,(\lg(n))^c\,\bigr)$ &Polylogarithmic  &$f(n)=(\lg(n))^3$ \\ 
     $\bigOh(n)$    &Linear  &$f_0(n)=n$, $f_1(n)=3n+4)$  \\ 
     $\bigOh(n\lg(n))=\bigOh(\lg(n!))$    &Log-linear  &  \\ 
-    $\bigOh(n^2)$  &Quadratic  &$f_0(n)=5n^2$, $f_1(n)=3n^2+12$  \\ 
-    $\bigOh(n^c)$   &Polynomial  &$f(n)=n^{2.3728639}$  \\
-    $\bigOh(2^n)$, $\bigOh(3^n)$, \ldots   &Exponential  &$f_0(n)=2^n$, $f_1(n)=6\cdot 5^n+n^2$  \\ 
+    $\bigOh(n^2)$  &Polynomial (quadratic)  &$f_0(n)=5n^2$, $f_1(n)=3n^2+12$  \\ 
+    $\bigOh(n^3)$  &Polynomial (cubic)  &$f(n)=2n^3+12n^2+5$ \\ 
+    \quad$\smash\vdots$  &   &   \\
+    $\bigOh(2^n)$   &Exponential  &$f(n)=2^n$  \\ 
+    $\bigOh(3^n)$   &Exponential  &$f(n)=6\cdot 3^n+n^2$  \\ 
+    \quad$\smash\vdots$  &   &   \\
     $\bigOh(n!)$  &Factorial  &  \\  
     $\bigOh(n^n)$  &\textit{--No standard name--}          &  \\  
   \end{tabular}  
 \end{center}
-If $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$ then 
-$f$ grows at a strictly slower rate than~$g$.
-Notating that as $f\ll g$ gives this linear hierarchy. 
-\begin{multline*}
-  1 \ll \lg\lg n \ll \lg n \ll (\lg n)^c \ll n \ll n\lg n  \\
-    \ll n^2 \ll n^3 \ll \cdots
-    \ll 2^n \ll 3^n \ll n! \ll n^n
-    \tag{$*$}
-\end{multline*}
+% If $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$ then 
+% $f$ grows at a strictly slower rate than~$g$.
+% Notating that as $f\ll g$ gives this linear hierarchy. 
+% \begin{multline*}
+%   1 \ll \lg\lg n \ll \lg n \ll (\lg n)^c \ll n \ll n\lg n  \\
+%     \ll n^2 \ll n^3 \ll \cdots
+%     \ll 2^n \ll 3^n \ll n! \ll n^n
+%     \tag{$*$}
+% \end{multline*}
 % You want an algorithm's runtime behavior to be a
 % slow-growing function of its input, so functions near the list's start
 % are desirable.
 
-A modern computer runs at aout 10~GHz, which is
-10\,000 million instructions per second.
-This chart compares run times on such a computer,
-with a selection of input sizes.
-The chart's entries are how long the job will take, in years.
-Thus, if the algorithm takes time given by $n$ and $n=1$ then it finishes
-in $3.17\times 10^{-18}$~years, so that's the number of years in
-one machine tick.
-(One second is about $\scinot{3.17}{-8}$~years.)
-\begin{tablefigure}{Comparison of some functions in the order of growth hierarchy.}
+It is remarkable that this listing is linear, that the commonly-encountered
+orders of growth form a hierarchy.
+% This is the \deinend{Hardy hierarchy}.
+
+One more point about the list is that it divides in two.
+Below we compare algorithms that run in time $\lg n$, $n$, etc.
+A modern computer runs at about 10~GHz, which is
+$10\,000$ million ticks per second (that is, operations per second).
+The chart's entries show how long the job will take, in years.
+For instance, if an algorithm takes time given by $n$ and $n=1$ then it finishes
+in $3.17\times 10^{-18}$~years.
+(So that's the number of years per tick.
+Said another way, $10\,000$ million is $10^4\cdot 10^6=10^{10}$ instructions
+per second and one second is about $\scinot{3.17}{-8}$~years.)
+\begin{tablefigure}{Comparison of selected functions in the order of growth hierarchy.}
   \begin{tabular}{r|*{4}{l}}
     \multicolumn{1}{c}{\ }
       &\multicolumn{1}{c}{\tabulartext{$n=1$}}
@@ -654,29 +666,62 @@ one machine tick.
   \end{tabular} \label{tab:CompareFcnNumbers}
 \end{tablefigure}
 Consider the $n=100$ column.
-First note that input of that size is not very large
-and differences between the algorithms will only become more pronounced on
-larger inputs.
-With that,
-observe that the entry for $\lg n$ is an order of magnitude smaller than
-the entry for~$n$,
-which in turn is an order of magnitude smaller than the one for~$n\lg n$.
+% the differences between the growth of the functions
+% will only become more pronounced on larger inputs.
+As we go down the column, the time taken increases.
+Going from the $\lg n$ row to the~$n$ row raises the time by
+an order of magnitude.
+Going to the $n\lg n$ row raises the time by another order of
+magnitude.
 That continues until the last line.
 The last line's entry does not say $10^{-12}$~years, it says $10^{12}$~years.
-The universe is about 14~billion years old and a billion is $10^{9}$ years,
-so this computation takes longer than the
-age of the universe.
+The universe is about $14$~billion years old and a billion is $10^{9}$ years,
+so this exponential computation, even with input size only $100$,
+would take longer than the age of the universe.
+Exponential growth is \citetext{very much larger than polynomial growth}{%
+  There is an Indian legend involving exponential growth and the invention of
+  chess.
+  The game's inventor showed the game to the king, who loved it.
+  The inventor asked to be paid with a single grain of rice on the
+  first chessboard square, two on the second, four on the third, etc.
+  The king at first thought this was a modest request but
+  soon realized that the amount of rice was enormous.
+  
+  The formula for a geometric series gives
+  $1+2+4+\cdots+2^{63}=2^{64}-1=18\,446\,744\,073\,709\,551\,615
+  \approx \scinot{1.84}{19}$
+  grains of rice.
+  The surface are of the earth (not just land, also including water)
+  is $510\,072\,000$ square kilometers and there are
+  $10^{10}$ square centimeters in each square kilometer,
+  so the surface of the earth is $\scinot{5.10}{18}$~square centimeters.
+  That's between three and four grains of rice on every square centimeter of the
+  earth.
+  (There are about $7.5$~billion people on earth, so it is on the order of
+  $10^8$ grains of rice for each person in the world.  There are about
+  $1\,000\,000=10^7$ grains of rice in a bushel,
+  so that is ten bushels for each person.)}.
 
-We use the boundary between polynomial growth and exponential growth
-as a division between runtime behavior that is conceivably useful in practice
-and behavior that is not useful.
-A problem is \definend{untractable} if the best algorithm to solve it
-is superpolynomial and it is \definend{tractable} if the best algorithm
-is subexponential.
-(In practice, algorithms with a polynomial growth of a high degree, such as
-$\bigOh(n^{10})$ don't come up very much.
-No one knows why.)
+Consequently, we say that 
+a problem is \definend{tractable} if the best algorithm
+is behavior that is subexponential,
+so that it is conceivably practical.
+A problem is \definend{intractable} if the best algorithm to solve it
+is superpolynomial.
 
+We end by commenting on the effect of leading coefficients on the above table.
+Compare $cn^2$ with $d2^n$.
+We can make the first larger than the second when $n=100$ simply by
+taking $c=2^{100}$ and~$d=1$.
+But by moving on to $n=101$, $n=102$, etc., we will soon find that
+$2^{100}\cdot n^2$ is smaller than $1\cdot 2^n$.
+The point is that for a fixed $c$ and~$d$ the exponential function will
+eventually become larger than the polynomial function, no matter how enormous
+is the coefficient.
+
+% (In practice, algorithms with a polynomial growth of a high degree, such as
+% $\bigOh(n^{10})$ don't come up very much.
+% No one knows why.)
 
 \begin{exercises}
   \begin{exercise}

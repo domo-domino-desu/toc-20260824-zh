@@ -197,89 +197,6 @@
 \renewcommand{\Currentlabel}{\arabic{chapter}.\@currentlabel}
 
 
-% ========== Exercises =======================
-
-% Suppress page break between "Exercises" and top of list
-%  see https://tex.stackexchange.com/a/210847/121234
-\newlength{\jh@listtopsep}
-  % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
-  \setlength{\jh@listtopsep}{1ex plus 0.2ex minus 0.1ex}
-  \newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
-
-% Get the width of a single character; use it for the left margin
-\newlength{\jh@widthofchar}
-\newsavebox{\jh@widthofcharbox}
-\savebox{\jh@widthofcharbox}{\scshape 0}
-\settowidth{\jh@widthofchar}{\hbox{\scshape 0}}  
-
-% Define the exercises environment
-\newcounter{@exercisenumber}[section]
-\renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
-\newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
-\newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
-\newenvironment{exercises}{%
-  \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
-  \nolisttopbreak
-  \begin{list}{\@exercisecounterlabel}%
-     {\usecounter{@exercisenumber}
-      \setcounter{@exercisenumber}{\value{theorem}}
-      \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}
-      \setlength{\leftmargin}{\jh@widthofchar}
-      \setlength{\labelwidth}{\leftmargin}
-      \setlength{\labelsep}{0em}
-      \setlength{\itemindent}{0em}
-      \setlength{\listparindent}{0.8\parindent}
-      \setlength{\topsep}{\jh@listtopsep}
-      \setlength{\parsep}{0ex}
-      \setlength{\itemsep}{0.6ex plus 0.25ex minus 0.05ex}
-      \setlength{\rightmargin}{0em}
-      % Encourage a page break betweeen items; LaTeX book.cls has
-      % \@itempenalty     -\@lowpenalty
-      \@itempenalty-\@medpenalty %
-      % Also discourage clubs and widows
-      \clubpenalty6000 % % discourage breaking after first line
-      \widowpenalty6000 % discourage breaking before last line
-    }
-}{%
-  \end{list}
-}
-\newenvironment{exercise}{%
-  \item
-}{%
-}
-
-% Exparts
-% Some exercises have multiple parts: (1) .. (2) ..
-% This can be on separate lines.
-\newenvironment{exparts}{%
-  \begin{enumerate}[topsep=0ex,
-                    itemsep=0ex, parsep=0ex,
-                    leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
-                    label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
-}{%
-  \end{enumerate}
-}
-
-% .. or inline
-\newenvironment{exparts*}{%
-  \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
-                     itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
-                     itemjoin={\hspace{0.6em plus .1em minus .1em\linebreak[2]}},
-                     % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
-                     ]
-}{%
-  \end{enumerate*}
-}
-
-% For naming a part of an exercise, as in \item \expartsname{Commutativity}
-\newcommand{\expartsname}[1]{\textsc{(#1)}} 
-
-% For a hint
-\newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
-
-
-
-
 % ========= Chapters and sections =============
 % How much space to put between numbering and margin 
 \newlength{\margin@numberingspace} % Dist between numbering and margin
@@ -489,6 +406,95 @@
     \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
   \fi
 }
+
+
+
+
+% ========== Exercises =======================
+
+% Suppress page break between "Exercises" and top of list
+%  see https://tex.stackexchange.com/a/210847/121234
+\newlength{\jh@listtopsep}
+  % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
+  \setlength{\jh@listtopsep}{1ex plus 0.2ex minus 0.1ex}
+  \newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
+
+% Get the width of a single character; use it for the left margin
+\newlength{\jh@widthofchar}
+\newsavebox{\jh@widthofcharbox}
+\savebox{\jh@widthofcharbox}{\scshape 0}
+\settowidth{\jh@widthofchar}{\hbox{\scshape 0}}  
+
+% Define the exercises environment
+\newcounter{@exercisenumber}[section]
+\renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
+\newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
+\newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
+\newenvironment{exercises}{%
+  \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
+  \nolisttopbreak
+  \begin{list}{\@exercisecounterlabel}%
+     {\usecounter{@exercisenumber}
+      \setcounter{@exercisenumber}{\value{theorem}}
+      \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}
+      \setlength{\leftmargin}{\jh@widthofchar}
+      \setlength{\labelwidth}{\leftmargin}
+      \setlength{\labelsep}{0em}
+      \setlength{\itemindent}{0em}
+      \setlength{\listparindent}{0.8\parindent}
+      \setlength{\topsep}{\jh@listtopsep}
+      \setlength{\parsep}{0ex}
+      \setlength{\itemsep}{0.6ex plus 0.25ex minus 0.05ex}
+      \setlength{\rightmargin}{0em}
+      % Encourage a page break betweeen items; LaTeX book.cls has
+      % \@itempenalty     -\@lowpenalty
+      \@itempenalty-\@medpenalty %
+      % Also discourage clubs and widows
+      \clubpenalty6000 % % discourage breaking after first line
+      \widowpenalty6000 % discourage breaking before last line
+    }
+}{%
+  \end{list}
+}
+\newenvironment{exercise}{%
+  \item
+}{%
+}
+
+% Exparts
+% Some exercises have multiple parts: (1) .. (2) ..
+% This can be on separate lines.
+\newenvironment{exparts}{%
+  \begin{enumerate}[topsep=0ex,
+                    itemsep=0ex, parsep=0ex,
+                    leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
+                    label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
+}{%
+  \end{enumerate}
+}
+
+% .. or inline
+\newenvironment{exparts*}{%
+  \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
+                     itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
+                     itemjoin={\hspace{0.6em plus .1em minus .1em\linebreak[2]}},
+                     % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
+                     ]
+}{%
+  \end{enumerate*}
+}
+
+\crefname{exercise}{Exercise}{Exercises}
+\Crefname{exercise}{Exercise}{Exercises}
+
+% For naming a part of an exercise, as in \item \expartsname{Commutativity}
+\newcommand{\expartsname}[1]{\textsc{(#1)}} 
+
+% For a hint
+\newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
+
+
+
 
 
 % ============ Theorems ========================

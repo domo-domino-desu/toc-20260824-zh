@@ -243,7 +243,7 @@
   % Record that we are not inside an Extra section.
   % For more info search for "EXTRA SECTION TOGGLE".
   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
-  \renewcommand{\thesubsection}{\arabic{subsection}}  % set theorem numbering to be as outside Extra sections
+  \renewcommand{\thesection}{\Roman{section}}  % set theorem numbering to be as outside Extra sections
   % 
   \pagestyle{bookbody}
   \thispagestyle{bookemptypage}
@@ -328,9 +328,10 @@
 \renewcommand{\subsection}{%
   \@startsection{subsection}{2}%
   {0em}%
-  {-2ex plus -0.6ex minus -0.1ex}%
+  {-1.8ex plus -0.5ex minus -0.1ex}%
   {-0.6em plus -0.1em}%  negative makes it a run-in header
-  {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
+  % {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
+  {\normalfont\bfseries}%
 }
 \renewcommand{\thesubsection}{\arabic{subsection}}
 
@@ -346,8 +347,8 @@
   \global\toggletrue{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\@exercisecounterstart}{\theextra} % put in the margin to count exercises env
   \setcounter{theorem}{0}
-  \setcounter{subsection}{\the\numexpr\value{extra}+1\relax}
-  \renewcommand{\thesubsection}{\Alph{subsection}} % Set theorem numbering for inside Extra sections
+  \setcounter{section}{\the\numexpr\value{extra}+1\relax}
+  \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
   % For headers
   % \let\sectionmark=\extramark %
@@ -428,7 +429,7 @@
 % Define the exercises environment
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
-\newcommand{\@exercisecounterstart}{\thesection} % put in the margin to count exercises env
+\newcommand{\@exercisecounterstart}{\Numberstring{chapter}.\Roman{section}} % put in the margin to count exercises env
 \newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
 \newenvironment{exercises}{%
   \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
@@ -484,8 +485,8 @@
   \end{enumerate*}
 }
 
-\crefname{exercise}{Exercise}{Exercises}
-\Crefname{exercise}{Exercise}{Exercises}
+\crefname{@exercisenumber}{Exercise}{Exercises}
+\Crefname{@exercisenumber}{Exercise}{Exercises}
 
 % For naming a part of an exercise, as in \item \expartsname{Commutativity}
 \newcommand{\expartsname}[1]{\textsc{(#1)}} 
@@ -536,7 +537,7 @@
 \newshadedtheorem{definition}[theorem]{Definition}
 \newtheorem{example}[theorem]{Example}
 \newtheorem{remark}[theorem]{Remark}
-\newtheorem{proof}[theorem]{proof}
+% \newtheorem{proof}[theorem]{proof}
 \newtheorem{churchsthesis}[theorem]{Church's Thesis}
 \newtheorem{problem}[theorem]{Problem}
 \crefname{theorem}{Theorem}{Theorems}
@@ -555,6 +556,12 @@
 \Crefname{problem}{Problem}{Problems}
 \crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
 \Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+% Proofs are unnumbered
+\theoremheaderfont{\sc}\theorembodyfont{\upshape}
+\theoremstyle{nonumberplain}
+\theoremseparator{}
+\theoremsymbol{$\Box$} % {\rule{1ex}{1ex}}
+\newtheorem{proof}[theorem]{Proof} 
 
 % \declaretheorem[style=marginnumbers,
 %                 shaded={bgcolor=backgroundcolor},

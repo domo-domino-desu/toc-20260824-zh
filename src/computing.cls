@@ -328,7 +328,7 @@
 \renewcommand{\subsection}{%
   \@startsection{subsection}{2}%
   {0em}%
-  {-1.8ex plus -0.5ex minus -0.1ex}%
+  {-1.3ex plus -0.4ex minus -0.1ex}%
   {-0.6em plus -0.1em}%  negative makes it a run-in header
   % {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
   {\normalfont\bfseries}%
@@ -417,7 +417,7 @@
 %  see https://tex.stackexchange.com/a/210847/121234
 \newlength{\jh@listtopsep}
   % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
-  \setlength{\jh@listtopsep}{1ex plus 0.2ex minus 0.1ex}
+  \setlength{\jh@listtopsep}{0.8ex plus 0.2ex minus 0.1ex}
   \newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
 
 % Get the width of a single character; use it for the left margin
@@ -432,7 +432,7 @@
 \newcommand{\@exercisecounterstart}{\Numberstring{chapter}.\Roman{section}} % put in the margin to count exercises env
 \newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
 \newenvironment{exercises}{%
-  \vspace{3.25ex plus 1ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
+  \vspace{2.5ex plus 0.8ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
   \nolisttopbreak
   \begin{list}{\@exercisecounterlabel}%
      {\usecounter{@exercisenumber}
@@ -538,7 +538,7 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem{remark}[theorem]{Remark}
 % \newtheorem{proof}[theorem]{proof}
-\newtheorem{churchsthesis}[theorem]{Church's Thesis}
+\newshadedtheorem{churchsthesis}[theorem]{Church's Thesis}
 \newtheorem{problem}[theorem]{Problem}
 \crefname{theorem}{Theorem}{Theorems}
 \Crefname{theorem}{Theorem}{Theorems}
@@ -650,17 +650,18 @@
 %    \textit{see his hairy legs} OR C Dobson, p 1094.
 
 \usepackage{endnotes} %, endheads}
+
+\newlength{\jh@endnotesoutdent} \setlength{\jh@endnotesoutdent}{2em}
 \newcommand{\citetext}[2]{#1%
-  \endnote{\protect\hspace*{-2em}\textit{#1}\protect\hspace{.618em} #2}}
+  \endnote{\protect\hspace*{-\jh@endnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}
 \renewcommand{\makeenmark}{\relax} % leave no mark
 \newcommand{\citeadd}[1]{\addtoendnotes{#1}}
 
 \renewcommand{\notesname}{Notes}
 \usepackage{hanging} % make cited text be in hanging indented paragraphs
-% \def\enoteheading{\section*{\notesname
-%   \@mkboth{\MakeUppercase{\notesname}}{\MakeUppercase{\notesname}}}%
-%   \mbox{}\par\vskip-\baselineskip}
-\def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%
+% \def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%
+%   \leavevmode\llap{\makeenmark}}
+\def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em% \hangpara{2em}{1}%
   \leavevmode\llap{\makeenmark}}
 % \usepackage{needspace}   % prevent a page break between a chapter announcement and the citations on that chapter
 
@@ -718,7 +719,13 @@
 \newcommand{\printnotes}{%
   \newpage
   \begingroup
-  % \parindent 0pt
+  \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
+                textwidth=345pt, % textheight=550pt,  % LaTeX defaults
+                inner=.8in, top=1in, bottom=1in, %
+                headsep=12pt,
+                bindingoffset=0.4in,
+              left=\jh@endnotesoutdent}  % change the left margin
+  \parindent 0pt
   \parskip=1ex plus 0.2ex minus 0.1ex %
   \def\enotesize{\normalsize}
   % \hangparas{-2em}{-1}
@@ -726,6 +733,7 @@
   \vspace*{0.25ex plus 0.02ex}
   \thispagestyle{bookemptypage}
   \theendnotes
+  \restoregeometry  % Matches the \newgeometry after the \begingroup
   \endgroup
   }
 

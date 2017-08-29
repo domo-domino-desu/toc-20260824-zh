@@ -307,7 +307,7 @@
 % it disappear in the Notes page.  So there I redefine it to \relax.
 \newcommand{\sectiontitlecontents}[1]{#1}
 
-\setcounter{secnumdepth}{10}  % Display them all
+\setcounter{secnumdepth}{1}  % Display them all
 \renewcommand\@seccntformat[1]{\relax} % no numbering inside section title
 \newlength{\jh@margintxttobodytext}
   \setlength{\jh@margintxttobodytext}{0.0em}
@@ -743,7 +743,7 @@
 \tocloftpagestyle{empty}
 \setlength{\cftchapnumwidth}{3.25em}
 \setlength{\cftsecindent}{1em}
-\setlength{\cftsecnumwidth}{4.25em}
+\setlength{\cftsecnumwidth}{2em}
 \setlength{\cftsubsecindent}{2em}
 \setlength{\cftsubsecnumwidth}{5em}
 

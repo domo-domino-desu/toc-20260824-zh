@@ -71,8 +71,8 @@ its input alphabet is $\Sigma=\set{\str{token},\str{push}}$.
   \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa01.pdf}}
   \settoheight{\jhscratchheight}{\usebox{\scratchbox}}
   \vcenteredhbox{\usebox{\scratchbox}}
-  \hspace{4em}
-  \vcenteredhbox{\includegraphics[height=0.85\jhscratchheight]{automata/turnstile2.jpg}} % http://turnstiles.us/hwd/catrax_plus_foto3.jpg % http://upload.wikimedia.org/wikipedia/commons/2/2c/Turnstile.alewife.agr.jpg
+  \hspace{5em}
+  \vcenteredhbox{\includegraphics[height=0.925\jhscratchheight]{automata/turnstile2.jpg}} % http://turnstiles.us/hwd/catrax_plus_foto3.jpg % http://upload.wikimedia.org/wikipedia/commons/2/2c/Turnstile.alewife.agr.jpg
 \end{center}
 \end{example}
 
@@ -126,24 +126,24 @@ and a \definend{next-state function},
 or \definend{transition function}, $\map{\Delta}{Q\times\Sigma}{Q}$.
 \end{definition}
 
-This may not appear immediately appear to be that of the
+This may not appear immediately appear to be euqivalent to the
 definition of a Turing Machine, \cref{def:TuringMachine} from Chapter~One,
-with the write commands omitted.
-But a lot of that is because here we don't need to expand on the terms
+but with the write commands omitted.
+A lot of that is because here we don't need to expand on the terms
 `alphabet' or `transition function', since we already have seen them.
-All other differences between the two follow from the fact that that
+All of the other differences between the two follow from the fact that that
 finite state machines cannot write.
 For one thing, because finite state machines cannot write they don't need
 to move the tape for scratch work,
 so we've dropped the tape action symbols \str{L} and~\str{R}.
 
-The two definitions are alike in that at the heart of each is
+At the heart of each of the two definitions is
 the transition function~$\Delta$.
 It makes machines move step-by-step
 in response to the input.
 
 To work a finite state machine, put input on the tape, press the start button,
-and the machine just consumes the input, at each step reading in the next
+and the machine starts consuming the input, at each step reading in the next
 tape character.
 \begin{center}
   \includegraphics{automata/asy/machine/machine.pdf}
@@ -166,11 +166,11 @@ or \str{0},
 we cannot do this for a finite state machine.
 Instead, 
 to indicate a decision they will end one of these designated states.
-Above we've pictured that the accepting states are connected to a light
-so that we know when a computation was successful.
+Above we've pictured that the accepting states are connected to a red light
+so that we know when a computation succeeds.
 In the transition graphs below we denote the final states with double circles,
 and in the transition function tables we mark them with
-a \acceptingstatemark.
+a `\acceptingstatemark'.
 
 \begin{example}  \label{ex:FSAValidIntegers}
 This machine, shown with the
@@ -1909,9 +1909,9 @@ those the results hold for deterministic ones also.
     \includegraphics{automata/asy/nfsm/nfsm34.pdf}
   \end{center}
 
-  We finish by handling the three operations.
-  Suppose first that the regular expression decomposes into
-  $R=\re{$R_0$|$R_1$}$, where $R_0$ and~$R_1$ are regular expressions.
+  Finish by handling the three operations.
+  Pipe first:~suppose that the regular expression decomposes into
+  $R=\re{$R_0$|$R_1$}$, where $R_0$ and~$R_1$ are regular.
   By the inductive assumption there
   is a machine $\FSM_0$ whose language is described by
   $R_0$ and a machine~$\FSM_1$ whose language is described by $R_1$.
@@ -1946,87 +1946,86 @@ those the results hold for deterministic ones also.
   is described by a regular expression. 
 \end{lemma}
 
+The proof's strategy is to eliminate the machine's states,
+one at a time, keeping the accepting language the same,
+until only two remain.
+This pictures part of the larger transition graph, showing
+the before and after of the elimination of state~$q$.
+\begin{center}
+\includegraphics{automata/asy/nfsm/nfsm35.pdf}
+\hspace{3em}
+\includegraphics{automata/asy/nfsm/nfsm36.pdf}
+\end{center}
+The after picture has the edge labelled~\re{ab}.
+For the proof we will generalize transition graphs to allow
+edge labels that are regular expressions.
+
 \begin{proof}
   Let the machine be~$\FSM$.
-
   If $\FSM$ has no accepting states then we are done;
   the regular expression is \re{$\emptyset$}.
-  Otherwise first make a machine that accpets the same language but
-  that has a single accepting state:~insert a new state $f$,
-  connect all of the machine's accepting states to $f$ with $\varepsilon$
-  transitions,
-  convert all the accepting states to non-accepting states,
-  and then make $f$ an accepting state.
-  
-  Do the same for the start state.
-  Make a new state~$e$ and connect it to $q_0$ with an $\varepsilon$
-  transition, and it will be the new machine's start state.
-  (This is for technical convenience,
-  allowing us to handle the case of a one-state machine uniformily with
-  all other cases.)
-  
-  Our strategy is to, one at a time, eliminate this machine's states 
-  until we get a machine whose only two states are $e$ and~$f$,
-  and whose language is the same as the one we started with.
-  We will then read the answer off of the diagram.
-  When we eliminate a state, the edges around it can get more
-  complex labels.
-  Here is a simple example showing a portion of a transition graph.
-  We replace the portion on the left with
-  the one on the right.
-  \begin{center}
-    \includegraphics{automata/asy/nfsm/nfsm35.pdf}
-    \hspace{3em}
-    \includegraphics{automata/asy/nfsm/nfsm36.pdf}
-  \end{center}
-  After eliminating that state, 
-  the edge is now labelled~\re{ab}.
-  So we generalize our transition graphs to allow edge labels that
-  may be regular expressions.
+  Otherwise, we will first change the machine to a new one $\hat{\FSM}$ on which
+  we can execute the strategy.
 
-  With that, if any two state nodes have more than one edge between them
-  then as shown below
-  use the pipe operator~\re{|} to combine those edges to make a single edge,
-  with a regular expression label.
-  This includes the case of a state with more than one loop.
+  First we arrange so that,
+  while its language is the same as $\FSM$'s,
+  $\hat{\FSM}$ has only one accepting state and one start state.
+  To arrange for there to be a single accepting state:~insert a new
+  accepting state $f$,
+  connect all of the machine's accepting states to~$f$ with
+  $\varepsilon$~transitions,
+  and convert all the accepting states but~$f$ over to non-accepting states.
+  To arrange for there to be a single start state,
+  make a new state~$e$ with an edge to~$q_0$,
+  label that edge with $\varepsilon$,
+  and make~$e$ be the new start state.
+  (Adding a new start state is a technical convenience that
+  allowing us to handle the case of a one-state~$\FSM$ uniformily with
+  all other kinds of machines.)
+
+  With allowing regular expressions for edge labels we can set $\hat{\FSM}$
+  so that between any two state nodes is at most one edge.
+  If there is more than one edge from some~$q_i$ to some~$q_j$ 
+  then use the pipe~\re{|} to make a single edge.
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm39.pdf}
     \hspace{3em}
     \includegraphics{automata/asy/nfsm/nfsm40.pdf}
   \end{center}
+  Do the same for a state with more than one loop.
 
-  For the last prepatory step, eliminate non-reachable states:
+  For the last part of transforming $\FSM$ to  $\hat{\FSM}$,
+  eliminate non-reachable states:
   for each state node~$q$ that
   has no incoming edges, and is not state~$e$,
-  we can omit that node and its outbound edges from the graph.
-  That node cannot be reached from the start state and
-  so omitting it will not change the language of the machine.
+  omit that node and its outbound edges from the graph.
+  It cannot be reached from the start state and
+  so omitting it will not change the machine's language.
   (Eliminating such a node may lead to another node now having no incoming
   edges.
-  Eliminate that one also, repeating as many time as needed.)
+  Eliminate that one also, iterating as many time as needed.)
   Likewise, if a node that is not~$f$ has no outgoing edges then
   we can also omit it since it cannot lead to a string being accepted,
   as only~$f$ is an accepting state.
   
-  Now for the key step.
-  In general we have the picture on the left below
-  for each state node~$q$ with $q\neq e$ and $q\neq f$.
-  This node has incoming edges (at least one), from nodes
-  $q_{i_0}$,\,\ldots\, $q_{i_j}$.
-  It has outgoing edges (at least one), to nodes $q_{o_0}$,\,\ldots\,,$q_{o_k}$.
+  Now for the elimination steps.
+  Below,
+  the before picture aplies to any of $\hat{\FSM}$'s states~$q$
+  with $q\neq e$ and $q\neq f$.
+  This state node has incoming and outgoing edges by the prior paragraph.
   It might also have a loop.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm37.pdf}}
     \hspace{3em}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm38.pdf}}
   \end{center}
-  (Possibly some of the state nodes shown on the left equal some shown
-  shown on the right.
-  For example, possibly $q_{i_0}=q_{o_0}$.
-  If so then the shown edge, $R_{i_0,o_0}$ in this case, is a loop.)
+  In each picture possibly some of the state nodes shown on the left
+  of that picture equal some shown on the right.
+  For example, in the before picture possibly $q_{i_0}=q_{o_0}$.
+  If so then the shown edge, $R_{i_0,o_0}$ in that picture, is a loop.
 
   Eliminate $q$, and all the associated edges, by making the replacements
-  on the right.
+  shown in the after picture.
   Observe that the set of strings taking the machine from any incoming
   node~$q_i$ to any outgoing node~$q_o$ is unchanged.
   So the language accepted by the machine is unchanged.
@@ -2034,7 +2033,8 @@ those the results hold for deterministic ones also.
   Perform this elimination for every node that is not $e$ or~$f$.
   There are only finitely many states so this procedure must stop
   eventually.
-  At that point all that remains are $e$ and~$f$, with an edge between them.
+  At that point all that remains are $e$ and~$f$, with an edge from the
+  first to the second.
   That edge is labelled with the desired regular expression.
 \end{proof}
 
@@ -2079,7 +2079,7 @@ those the results hold for deterministic ones also.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm52.pdf}}    
   \end{center}
-  That's the desired regular expression.
+  That's the answer.
 \end{example}
 
 \begin{exercises}

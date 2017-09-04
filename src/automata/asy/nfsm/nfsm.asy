@@ -1698,7 +1698,7 @@ node qo0=ncircle("$q_{o_0}$");
 node qok=ncircle("$q_{o_k}$");  
 
 // calculate nodes position
-real u=2cm;  // horizontal  
+real u=2.25cm;  // horizontal  
 real v=0.8*u;  // vertical
 
 real spread_angle = 35.0;  // half the angle between the incoming arcs
@@ -1720,9 +1720,9 @@ draw(pic,
      (q--qok).l(Label("$R_{o_k}$",Relative(0.75))),
      (q..loop(W)).l("$R_{\ell}$"),
      (qi0..bend(-20)..qo0).l(Label("$R_{i_0,o_0}$",Relative(0.25))).style("leftside"),
-     (qi0..bend(-30)..qok).l(Label("$R_{i_0,o_k}$",Relative(0.2))).style("leftside"),
+     (qi0..bend(-30)..qok).l(Label("$R_{i_0,o_k}$",Relative(0.25))).style("leftside"),
      (qij..bend(20)..qok).l(Label("$R_{i_j,o_k}$",Relative(0.25))),
-     (qij..bend(30)..qo0).l(Label("\rule{0em}{2ex}$R_{i_j,o_0}$",Relative(0.20)))  // put a rule there to give a scotch of vert space
+     (qij..bend(30)..qo0).l(Label("\rule{0em}{2ex}$R_{i_j,o_0}$",Relative(0.25)))  // put a rule there to give a scotch of vert space
      );
 
 // draw nodes after edges
@@ -1746,7 +1746,7 @@ setdefaultstatediagramstyles() ;
 // node qok=ncircle("$q_{o_k}$");  
 
 // calculate nodes position
-real u=2cm;  // horizontal  
+real u=2.25cm;  // horizontal  
 real v=0.8*u;  // vertical
 
 // real spread_angle = 35.0;  // half the angle between the incoming arcs
@@ -1772,8 +1772,8 @@ draw(pic,
      // (qij..bend(20)..qok).l(Label("$R_{i_j,o_k}$",Relative(0.25))),
      // (qij..bend(30)..qo0).l(Label("\rule{0em}{2ex}$R_{i_j,o_0}$",Relative(0.20)))  // put a rule there to give a scotch of vert space
      (qi0..bend(-20)..qo0).l(Label("\re{$R_{i_0,o_0}$|($R_{i_0}$$R_{\ell}$*$R_{o_0}$)}",Relative(0.40))).style("leftside"),
-     (qi0..bend(-30)..qok).l(Label("\strut\raisebox{1ex}{\re{$R_{i_0,o_k}$|($R_{i_0}$$R_{\ell}$*$R_{o_0}$)}}",Relative(0.3))).style("leftside"),
-     (qij..bend(30)..qo0).l(Label("\strut\raisebox{-1.2ex}{\re{$R_{i_j,o_0}$|($R_{i_j}$$R_{\ell}$*$R_{o_0}$)}}",Relative(0.30))), 
+     (qi0..bend(-30)..qok).l(Label("\strut\raisebox{1ex}{\re{$R_{i_0,o_k}$|($R_{i_0}$$R_{\ell}$*$R_{o_0}$)}}",Relative(0.325))).style("leftside"),
+     (qij..bend(30)..qo0).l(Label("\strut\raisebox{-1.2ex}{\re{$R_{i_j,o_0}$|($R_{i_j}$$R_{\ell}$*$R_{o_0}$)}}",Relative(0.325))), 
      (qij..bend(20)..qok).l(Label("\re{$R_{i_j,o_k}$|($R_{i_j}$$R_{\ell}$*$R_{o_k}$)}",Relative(0.40)))
      );
 

@@ -1879,9 +1879,9 @@ they describe the languages of interest.
   language is described by a regular expression.
 \end{theorem}
 
-We will prove the `if' and `only if' as separate halves.
+We will do the `if' and `only if' as separate halves.
 We will work with nondeterministic machines but since we can convert
-those the results hold for deterministic ones also.
+those to deterministic machines, the result holds there also.
 
 \begin{lemma} \label{lem:KleenesThmRegexToMachine}
   If a language is described by a regular expression
@@ -1890,17 +1890,17 @@ those the results hold for deterministic ones also.
 
 \begin{proof}
   We will show that for any regular expression~$R$ there is a machine that
-  accepts strings if and only if they match the expression.
-  We will proceed by induction using the structure of $R$.
+  accepts strings matching that expression,
+  by induction using the structure of $R$.
 
   Start with regular expressions consisting of a single character.
   If 
-  $R=\re{$\emptyset$}$ then the machine on the left below accepts the
-  language of~$R$, since $\lang{L}(R)=\set{}$.
-  If $R=\re{$\emptystring$}$ then the machine in the middle 
-  accepts the associated language $\lang{L}($\emptystring$)=\set{\emptystring}$.
-  If the regular expression is a single character from the alphabet, as in
-  $R=\re{\str{a}}$, then the machine on the right will do.
+  $R=\re{$\emptyset$}$ then  $\lang{L}(R)=\set{}$ and
+  the machine on the left below accepts~$\lang{L}(R)$.
+  If $R=\re{$\emptystring$}$ then use the machine in the middle 
+  to accept $\lang{L}($\emptystring$)=\set{\emptystring}$.
+  If the regular expression is a character from the alphabet,
+  $R=\re{\str{a}}$, then the machine on the right suffices.
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm32.pdf}
     \hspace{5em}
@@ -1910,35 +1910,35 @@ those the results hold for deterministic ones also.
   \end{center}
 
   Finish by handling the three operations.
-  Pipe first:~suppose that the regular expression decomposes into
+  First suppose that the regular expression has the structure
   $R=\re{$R_0$|$R_1$}$, where $R_0$ and~$R_1$ are regular.
   By the inductive assumption there
   is a machine $\FSM_0$ whose language is described by
   $R_0$ and a machine~$\FSM_1$ whose language is described by $R_1$.
   Create the machine accepting the language described by $R$ by
-  joining the machines in parallel, as in \cref{ex:NFSMJoinParallel}:~make
+  joining those two machines in parallel, as in
+  \cref{ex:NFSMJoinParallel}:~introduce
   a new state $s$ and use $\varepsilon$
-  transitions to connect~$s$ to the start state of $\FSM_0$ and $\FSM_1$. 
+  transitions to connect~$s$ to the start states of $\FSM_0$ and $\FSM_1$. 
 
   Next suppose that the regular expression decomposes into a concatenation
   $R=R_0\concat R_1$.
-  By the inductive hypothesis there
-  is a machine for each, $\FSM_0$ and~$\FSM_1$.
-  Join the two machines serially, as in \cref{ex:NFSM:JoinSerial},
-  to create the machine accepting $\lang{L}(R)$:~for
+  The inductive hypothesis gives
+  a machine for each, $\FSM_0$ and~$\FSM_1$.
+  Join those two serially, as in \cref{ex:NFSM:JoinSerial}:~for
   each accepting state in $\FSM_0$, make
-  an $\varepsilon$ transition to the start state of $\FSM_1$,
-  and then converting all those accepting states of $\FSM_0$ to be
+  an $\varepsilon$ transition to the start state of $\FSM_1$
+  and then convert all those accepting states of $\FSM_0$ to be
   non-accepting states. 
   
-  Finally, suppose that the regular expression involves repetition
+  Finally, suppose that the regular expression's structure involves repetition
   $R=\re{($R_0$)*}$.
-  Take the machine~$FSM_0$ accepting $R_0$ and,
-  as in \cref{ex:EpsilonTransMakeKleeneStar},
+  As in \cref{ex:EpsilonTransMakeKleeneStar},
+  take the machine~$\FSM_0$ accepting $R_0$ and
   make an $\varepsilon$ transition from each of its accepting states to
   its start state.
-  (If the accepting state is the start state there is no harm in
-  such a $\varepsilon$ loop, although it doesn't do anything.)
+  (If the accepting state equals the start state there is no harm in
+  such a $\varepsilon$ loop, although it doesn't change the language.)
 \end{proof}
 
 \begin{lemma}  \label{lem:KleenesThmMachineToRegex}
@@ -1946,107 +1946,128 @@ those the results hold for deterministic ones also.
   is described by a regular expression. 
 \end{lemma}
 
-The proof's strategy is to eliminate the machine's states,
+Our strategy is to start with a finite state machine and eliminate its states
 one at a time, keeping the accepting language the same,
-until only two remain.
-This pictures part of the larger transition graph, showing
-the before and after of the elimination of state~$q$.
+until only two states remain.
+The picture below gives an example.
+It shows part of a larger transition graph,
+with a state node~$q$ having one incoming edge and one outgoing edge.
+On the left is the before picture and on the right is the after, with
+$q$ eliminated.
 \begin{center}
 \includegraphics{automata/asy/nfsm/nfsm35.pdf}
 \hspace{3em}
 \includegraphics{automata/asy/nfsm/nfsm36.pdf}
 \end{center}
-The after picture has the edge labelled~\re{ab}.
+In the after picture the edge is labelled~\re{ab}, with more
+than just one character.
 For the proof we will generalize transition graphs to allow
 edge labels that are regular expressions.
 
 \begin{proof}
-  Let the machine be~$\FSM$.
-  If $\FSM$ has no accepting states then we are done;
-  the regular expression is \re{$\emptyset$}.
-  Otherwise, we will first change the machine to a new one $\hat{\FSM}$ on which
-  we can execute the strategy.
+  Call the machine~$\FSM$.
+  If it has no accepting states then
+  the regular expression is \re{$\emptyset$} and we are done.
+  Otherwise, we will first transform the machine to a new one
+  $\hat{\FSM}$, with the same language, on which
+  we can execute the state-elimination strategy.
 
-  First we arrange so that,
-  while its language is the same as $\FSM$'s,
-  $\hat{\FSM}$ has only one accepting state and one start state.
-  To arrange for there to be a single accepting state:~insert a new
-  accepting state $f$,
-  connect all of the machine's accepting states to~$f$ with
-  $\varepsilon$~transitions,
-  and convert all the accepting states but~$f$ over to non-accepting states.
-  To arrange for there to be a single start state,
-  make a new state~$e$ with an edge to~$q_0$,
-  label that edge with $\varepsilon$,
-  and make~$e$ be the new start state.
-  (Adding a new start state is a technical convenience that
-  allowing us to handle the case of a one-state~$\FSM$ uniformily with
-  all other kinds of machines.)
+  First we arrange that
+  $\hat{\FSM}$ has a single accepting state.
+  Create a new state $f$ and
+  for each of $\FSM$'s accepting states make an edge connecting it to~$f$
+  (by the prior paragraph there is at least one such accepting state). 
+  Label those edges with $\varepsilon$.
+  Convert all the accepting states to non-accepting states
+  and make~$f$ accepting.
 
-  With allowing regular expressions for edge labels we can set $\hat{\FSM}$
-  so that between any two state nodes is at most one edge.
-  If there is more than one edge from some~$q_i$ to some~$q_j$ 
-  then use the pipe~\re{|} to make a single edge.
+  Next do a similar thing for the start state.
+  Introduce a new start state~$e$.
+  Give it an edge leading to $\FSM$'s~$q_0$
+  labelled with $\varepsilon$.
+  (Ensuring that $\hat{\FSM}$ has at least
+  two states is a technical convenience to
+  handle machines of all sizes uniformily.)
+
+  Because the edge labels are regular expressions, we can arrange~$\hat{\FSM}$
+  so that leading from any~$q_i$ to any~$q_j$
+  is at most one edge.
+  If $\FSM$ has more than one edge then use the pipe~\re{|} to combine them.
   \begin{center}
-    \includegraphics{automata/asy/nfsm/nfsm39.pdf}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm39.pdf}}
     \hspace{3em}
-    \includegraphics{automata/asy/nfsm/nfsm40.pdf}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm40.pdf}}
   \end{center}
-  Do the same for a state with more than one loop.
-
-  For the last part of transforming $\FSM$ to  $\hat{\FSM}$,
-  eliminate non-reachable states:
-  for each state node~$q$ that
-  has no incoming edges, and is not state~$e$,
-  omit that node and its outbound edges from the graph.
-  It cannot be reached from the start state and
-  so omitting it will not change the machine's language.
-  (Eliminating such a node may lead to another node now having no incoming
-  edges.
-  Eliminate that one also, iterating as many time as needed.)
-  Likewise, if a node that is not~$f$ has no outgoing edges then
-  we can also omit it since it cannot lead to a string being accepted,
-  as only~$f$ is an accepting state.
+  Do the same with loops, that is, cases where $i=j$.
+  This transformation, like the prior ones,
+  clearly does not change the language of accepted strings.
   
-  Now for the elimination steps.
-  Below,
-  the before picture aplies to any of $\hat{\FSM}$'s states~$q$
+  The last part of transforming to $\hat{\FSM}$ is to
+  drop any useless states.
+  If a state node~$q\neq f$ has no outgoing edges then
+  drop it, along with the edges that come into it.
+  The language of the machine will not change because this state
+  cannot lead to a string being accepted\Dash it doesn't lead anywhere so
+  it cannot lead to an accepting state, and $q$ cannot itself be an accepting
+  state as only~$f$ is an accepting state.
+
+  And, if a state node~$q$ is not reachable from the start~$e$ then we
+  can drop that node along with its incoming and outgoing edges.
+  (Construct the set of reachable states, and with it the set of
+  unreachable states, in the natural way.
+  Begin with the start state $S_0=\set{e}$.
+  Find all states reachable from $e$ in a single transition
+  by following every edge out of~$e$, $\varepsilon$ or not,  to get
+  $S_1=\set{e,q_{1,0}, \ldots\,q_{1,k}}$.
+  Then iterate:~starting with a set~$S_i$ of nodes that are
+  reachable in $i$-many steps,
+  for each $q\in S_i$ follow each outbound edge for a single step.
+  The collection of the nodes reached in this way is~$S_{i+1}$.
+  Stop the iteration
+  when $S_i=S_{i+1}$, at which point it is the set of ever-reachable
+  states.
+  The unreachable ones are the others.)
+  
+  With that, we have $\hat{\FSM}$ and
+  we are set up for the state elimination strategy.
+  Below are the before and after pictures of the elimination of one state.
+  The before picture applies to any  $q\in\hat{\FSM}$
   with $q\neq e$ and $q\neq f$.
-  This state node has incoming and outgoing edges by the prior paragraph.
+  It has at least one incoming and and at least one outgoing edge, by the
+  setup work above.
   It might also have a loop.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm37.pdf}}
-    \hspace{3em}
+    \hspace{2em}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm38.pdf}}
   \end{center}
-  In each picture possibly some of the state nodes shown on the left
-  of that picture equal some shown on the right.
-  For example, in the before picture possibly $q_{i_0}=q_{o_0}$.
-  If so then the shown edge, $R_{i_0,o_0}$ in that picture, is a loop.
+  (Possibly some of the state nodes shown on the left of each of the two
+  pictures equal some shown on the right.
+  For example, in the before picture possibly $q_{i_0}$ equals~$q_{o_0}$.
+  If so then the shown edge $R_{i_0,o_0}$ is a loop.)
 
-  Eliminate $q$, and all the associated edges, by making the replacements
+  Eliminate $q$ and the associated edges by making the replacements
   shown in the after picture.
   Observe that the set of strings taking the machine from any incoming
   node~$q_i$ to any outgoing node~$q_o$ is unchanged.
   So the language accepted by the machine is unchanged.
   
   Perform this elimination for every node that is not $e$ or~$f$.
-  There are only finitely many states so this procedure must stop
-  eventually.
-  At that point all that remains are $e$ and~$f$, with an edge from the
-  first to the second.
+  There are only finitely many states so this procedure must 
+  eventually stop.
+  At that point all that remains are $e$ and~$f$, with an edge.
   That edge is labelled with the desired regular expression.
 \end{proof}
 
 \begin{example}
-  Consider the machine on the left.
-  Introduce $e$ and~$f$.
+  Consider~$\FSM$ on the left below.
+  Introduce $e$ and~$f$ to get $\hat{\FSM}$ on the right.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm48.pdf}}
     \hspace{2em}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm49.pdf}}
   \end{center}
-  We start by eliminating $q_2$.
+  Start by eliminating $q_2$.
   In the terms of the proof's key step, there is one incoming node $q_1=q_{i_0}$
   and one outgoing node $q_0=q_{o_0}$.
   The regular expressions are $R_{i_0}=\re{a}$,
@@ -2291,15 +2312,16 @@ the alphabet $\Sigma=\set{\str{a},\str{b}}$.
 
 \subsection{Definition}
 Finite state machines are interesting, at least, because they give us insight
-into what the CPU of a Turing machine can do without scratch memeory.
-We have defined tht the jobs they do are to accept languages.
+into what the CPU of a Turing machine can do without scratch memory.
+We have defined that the jobs they do are to accept languages.
 
 \begin{definition}
   A set of strings is a \definend{regular language} if it is
   accepted by some finite state machine.
 \end{definition}
 
-There are infinitely many regular languages; for instance all of these
+There are infinitely many regular languages.
+For instance all of these
 are regular: $\lang{L}_0=\set{}$, $\lang{L}_1=\set{\str{0}}$,
 $\lang{L}_2=\set{\str{00}}$, \ldots\@ 
 In this section we will study some of what makes a language regular,
@@ -2322,17 +2344,20 @@ is a regular language, but constructing a finite state machine for it
 is silly.
 
 Second, a language doesn't have to be large for it to be difficult in practice.
-For instance, mathematicians have noticed that even numbers greater
-than~$2$ appear to all be the sum of
+For instance, every even number greater
+than~$2$ that mathematicians have looked at is the sum of
 two primes: $4=2+2$, $6=3+3$, $8=3+5$, \ldots\@
-The guess that it holds for all evens is
+The guess that this holds for all evens is
 \urldef\goldbachurl\url{https://en.wikipedia.org/wiki/Goldbach%27s_conjecture}%
 \citetext{\definend{Goldbach's conjecture}}{See \goldbachurl.}.
 No one knows if it is true.
-Thus, while the language consisting of the smallest even number greater than two
-that is the not sum of two primes (represented by a string using base~ten)
-is finite since it has either
-one member or none, we at this moment don't know how to write it down. 
+So consider the set of
+strings $n\in\kleenestar{\set{\str{0},\ldots\,\str{9}}}$
+consisting of the base~10 representation of the smallest even number
+that is not the sum of two primes.
+This set is finite since it has either
+one member or none.
+But, while small, this set is not easy; no one knows what it is. 
 
 \subsection{Closure properties}
 We have seen that if two languages

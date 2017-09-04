@@ -13,11 +13,12 @@ cd("../../../asy/");
 import settexpreamble;
 cd("");
 settexpreamble();
-cd("../../../asy/share/");
+cd("../../../asy/");
 import jh;
 cd("");
-
+cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
 import node;
+cd("");
 
 // define style
 // defaultnodestyle=nodestyle(drawfn=FillDrawer(lightgray,black));
@@ -649,5 +650,90 @@ draw(p,
 
 // draw nodes
 draw(p, w0, w1, w2, w3, w4, w5);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+
+// ============== Exercise: unreachable nodes ======
+int picnum = 13;
+picture p;
+
+unitsize(p,1pt);
+// setdefaultstatediagramstyles() ;
+  defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor,
+			     arrow=Arrow(6,filltype=FillDraw(white,backgroundcolor)));
+
+// define nodes
+node w0=ncircle("\strut$w_0$"),
+     w1=ncircle("\strut$w_1$"),
+     w2=ncircle("\strut$w_2$"),
+     w3=ncircle("\strut$w_3$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+real horiz_offset = -0.5*u;
+hlayout(1*u, w0, w1, w2);
+vlayout(-1*v, w1, w3);
+
+// draw edges
+draw(p,
+     (w0..bend(20)..w1),
+     (w1..bend(20)..w0),
+     (w1..bend(20)..w2),
+     (w2..bend(20)..w1),
+     (w3--w1),
+     (w3..loop(E))
+     );
+
+// draw nodes
+draw(p, w0, w1, w2, w3);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+// ============== Exercise: unreachable nodes ======
+int picnum = 14;
+picture p;
+
+unitsize(p,1pt);
+// setdefaultstatediagramstyles() ;
+
+// define nodes
+node w0=ncircle("\strut$w_0$"),
+     w1=ncircle("\strut$w_1$"),
+     w2=ncircle("\strut$w_2$"),
+     w3=ncircle("\strut$w_3$"),
+     w4=ncircle("\strut$w_4$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+real horiz_offset = -0.5*u;
+hlayout(w0, w4);
+vlayout(1*v, w0, w2);
+hlayout(1*u, w2, w1, w3);
+
+// draw edges
+draw(p,
+     (w0--w1),
+     (w1..bend(20)..w3),
+     (w1..loop(S)),
+     (w2--w4),
+     (w2..loop(S)),
+     (w3..loop(S)),
+     (w4..loop(E))
+     );
+
+// draw nodes
+draw(p, w0, w1, w2, w3, w4);
 
 shipout(format("graphs%02d",picnum),p,format="pdf");

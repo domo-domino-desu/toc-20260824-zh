@@ -2503,3 +2503,84 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+
+// ============== Exercise: unreachable states ======
+picture pic;
+int picnum = 60;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$"); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2);
+vlayout(-0.8*v, q1, q3);
+
+// draw edges
+draw(pic,
+     (q0..bend(20)..q1).l("\str{a}"),
+     (q1..bend(20)..q0).l("\str{a}"),
+     (q1..bend(20)..q2).l("\str{b}"),
+     (q2..bend(20)..q1).l("\str{b}"),
+     (q3--q1).l("\str{a}"),
+     (q3..loop(E)).l("\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Exercise: unreachable states (unconnected) ======
+picture pic;
+int picnum = 61;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+node q4=ncircle("$q_4$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(q0, q4);
+vlayout(1*v, q0, q2);
+hlayout(1*u, q2, q1, q3);
+
+// draw edges
+draw(pic,
+     (q0--q1).l(Label("\str{a},\str{b}",Relative(0.2))).style("leftside"),
+     (q1..bend(20)..q3).l("\str{a}"),
+     (q1..loop(S)).l("\str{b}"),
+     (q2--q4).l(Label("\str{a}",Relative(0.2))),
+     (q2..loop(S)).l("\str{b}"),
+     (q3..loop(S)).l("\str{a},\str{b}"),
+     (q4..loop(E)).l("\str{a},\str{b}")
+     );
+// (q--qo0).l(Label("$R_{o_0}$",Relative(0.75))).style("leftside"),
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3, q4);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

@@ -243,7 +243,7 @@
   % Record that we are not inside an Extra section.
   % For more info search for "EXTRA SECTION TOGGLE".
   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
-  \renewcommand{\thesection}{\Roman{section}}  % set theorem numbering to be as outside Extra sections
+  \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
   % 
   \pagestyle{bookbody}
   \thispagestyle{bookemptypage}
@@ -314,14 +314,14 @@
 % Section
 \renewcommand{\section}{%
   \renewcommand{\@exercisecounterstart}{\thesection}% put in the margin to count exercises env
-  \renewcommand{\the@exercisenumber}{\Roman{section}.\arabic{@exercisenumber}}%
+  \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
   \@startsection{section}{1}%
   {0em}%
   {-3.5ex plus -1ex minus -0.2ex}%
   {1.8ex plus .2ex}%
-  {\sectiontitlecontents{\marginnote{\raisebox{-0.55ex}{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\Roman{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}}\normalfont\large\bfseries}%
+  {\sectiontitlecontents{\marginnote{\raisebox{-0.55ex}{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\arabic{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}}\normalfont\large\bfseries}%
 }
-\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesection}{\arabic{section}}
 
 
 % Subsections
@@ -330,7 +330,7 @@
   {0em}%
   {-1.3ex plus -0.4ex minus -0.1ex}%
   {-0.6em plus -0.1em}%  negative makes it a run-in header
-  % {\marginnote{\normalfont\scshape \Roman{section}.\arabic{subsection}}\normalfont\bfseries}%
+  % {\marginnote{\normalfont\scshape \arabic{section}.\arabic{subsection}}\normalfont\bfseries}%
   {\normalfont\bfseries}%
 }
 \renewcommand{\thesubsection}{\arabic{subsection}}
@@ -395,11 +395,13 @@
 
 
 
-\usepackage{cleveref} % part of DeclareTheorem gives the refname's
-
 
 
 % ======== clever references ===============
+% This must come before cleveref
+\usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+
+
 \usepackage{cleveref} % after hyperref, apparently
 \def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
   \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
@@ -429,7 +431,7 @@
 % Define the exercises environment
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
-\newcommand{\@exercisecounterstart}{\Numberstring{chapter}.\Roman{section}} % put in the margin to count exercises env
+\newcommand{\@exercisecounterstart}{\Numberstring{chapter}.\arabic{section}} % put in the margin to count exercises env
 \newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
 \newenvironment{exercises}{%
   \vspace{2.5ex plus 0.8ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
@@ -504,8 +506,10 @@
 
 % The cleveref package requires that theorems be made with either amsthm
 % or ntheorem.  I couldn't get the first to put numbering in the margins,
-% whereas the second had that built in, so I went with it.
-\usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+% whereas the second had that built in, so I went with it (ntheorem is loaded
+% earlier in this .cls file, before cleveref).
+% \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+
 \usepackage{framed}
 \def\theoremframecommand{\colorbox{shadecolor}}
 \colorlet{shadecolor}{backgroundcolor}  % Use this as the background color for theorems
@@ -743,8 +747,8 @@
 \tocloftpagestyle{empty}
 \setlength{\cftchapnumwidth}{3.25em}
 \setlength{\cftsecindent}{1em}
-\setlength{\cftsecnumwidth}{2em}
-\setlength{\cftsubsecindent}{2em}
+\setlength{\cftsecnumwidth}{1em}
+\setlength{\cftsubsecindent}{2.5em}
 \setlength{\cftsubsecnumwidth}{5em}
 
 

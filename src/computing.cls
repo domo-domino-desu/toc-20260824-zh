@@ -233,7 +233,8 @@
   \end{center}
   \vspace*{\fill}%
 }
-\renewcommand{\thepart}{\Alph{part}}
+\usepackage{fmtcount}
+\renewcommand{\thepart}{\Numberstring{part}}
 
 %%%%%%%%%%%%%%%%%
 % Chapters
@@ -244,6 +245,7 @@
   % For more info search for "EXTRA SECTION TOGGLE".
   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
+  \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
   % 
   \pagestyle{bookbody}
   \thispagestyle{bookemptypage}
@@ -255,8 +257,7 @@
   {\marginnote{\smash{\normalfont\Large\color{boldcolor}\begin{tabular}[b]{@{}r@{}} Chapter \\[-0.15ex] \thechapter\end{tabular}}}[1.4ex]\normalfont\Large\bfseries}%
 }
 
-\usepackage{fmtcount}
-\renewcommand{\thechapter}{\Numberstring{chapter}}
+\renewcommand{\thechapter}{\Roman{chapter}}
 
 % imagecredit  Give credit in a footnote-like entry for an image
 %  #1  text of image credit
@@ -313,13 +314,12 @@
   \setlength{\jh@margintxttobodytext}{0.0em}
 % Section
 \renewcommand{\section}{%
-  \renewcommand{\@exercisecounterstart}{\thesection}% put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
   \@startsection{section}{1}%
   {0em}%
   {-3.5ex plus -1ex minus -0.2ex}%
   {1.8ex plus .2ex}%
-  {\sectiontitlecontents{\marginnote{\raisebox{-0.55ex}{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Numberstring{chapter}.\arabic{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}}\normalfont\large\bfseries}%
+  {\sectiontitlecontents{\marginnote{\raisebox{-0.55ex}{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}}\normalfont\large\bfseries}%
 }
 \renewcommand{\thesection}{\arabic{section}}
 
@@ -340,24 +340,25 @@
 % These are optional topics that are covered at the end of each chapter.  The
 % formatting of theorems, exercises, etc. is a bit looser.
 \newcounter{extra}[chapter]
-\renewcommand{\theextra}{\Numberstring{chapter}.\Alph{extra}}
+\renewcommand{\theextra}{\Alph{extra}}
 \newcommand{\extra}{%
   % Record that we are now inside an Extra section.
   % For more info search for "EXTRA SECTION TOGGLE".
   \global\toggletrue{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
-  \renewcommand{\@exercisecounterstart}{\theextra} % put in the margin to count exercises env
   \setcounter{theorem}{0}
   \setcounter{section}{\the\numexpr\value{extra}+1\relax}
   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
+  \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
   % For headers
   % \let\sectionmark=\extramark %
   %
+  \stepcounter{extra}%
   \@startsection{extra}{2}%
   {0em}%
   {-3.25ex plus -1ex minus -0.2ex}%
   {-0.6em plus -0.1em}%  negative makes it a run-in header
-  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \theextra\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
+  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
 }
 \newcommand*\l@extra{\@dottedtocline{6}{10em}{5em}}% for toc
 \newcommand{\extramark}[1]{
@@ -431,10 +432,10 @@
 % Define the exercises environment
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
-\newcommand{\@exercisecounterstart}{\Numberstring{chapter}.\arabic{section}} % put in the margin to count exercises env
+\newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
 \newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
 \newenvironment{exercises}{%
-  \vspace{2.5ex plus 0.8ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \@exercisecounterstart}{\normalfont\bfseries Exercises}%
+  \vspace{2.5ex plus 0.8ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \exercisecounterstart}{\normalfont\bfseries Exercises}%
   \nolisttopbreak
   \begin{list}{\@exercisecounterlabel}%
      {\usecounter{@exercisenumber}
@@ -519,22 +520,21 @@
 \newtheoremstyle{marginnumbers}%
 {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1}\hspace{\jh@thmtotextspace} }%
 {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)}\hspace{\jh@thmtotextspace} }%
-\theoremstyle{marginnumbers}
 \theoremheaderfont{\scshape}
 \theorembodyfont{}    
 \theoremsymbol{}
-\theoremprework{}
-\theorempostwork{}
 \theoremseparator{}
-\theoremprework{\begin{snugshade}}
-\theorempostwork{\end{snugshade}}
+% \theoremprework{\begin{snugshade}}
+% \theorempostwork{\end{snugshade}}
 % \theorempreskip{.5\topsep}
-\theoremframepreskip{.55em plus .2em minus .1em}
-\theoreminframepreskip{0em plus .05em}
-\theoremframepostskip{.55em plus .2em minus .1em}
-\theoreminframepostskip{0em plus .05em}
+% \theoremframepreskip{.35ex plus .1ex minus .02ex}
+\theoremframepreskip{-5ex}
+\theoreminframepreskip{0ex plus .05ex}
+\theoremframepostskip{.35ex plus .1ex minus .02ex}
+\theoreminframepostskip{0ex plus .05ex}
 % \theorempostskip{.5\topsep}
 % \usepackage{thmtools}
+\theoremstyle{marginnumbers}
 \newshadedtheorem{theorem}{Theorem}[section]
 \newshadedtheorem{lemma}[theorem]{Lemma}
 \newshadedtheorem{corollary}[theorem]{Corollary}

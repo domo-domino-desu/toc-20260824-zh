@@ -400,6 +400,8 @@
 
 % ======== clever references ===============
 % This must come before cleveref
+\usepackage{framed}
+% \setlength{\fboxsep}{0ex}
 \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
 
 
@@ -510,31 +512,32 @@
 % whereas the second had that built in, so I went with it (ntheorem is loaded
 % earlier in this .cls file, before cleveref).
 % \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+\setlength{\topsep}{4pt}  % bk10.clo has it set to 8pt
 
-\usepackage{framed}
 \def\theoremframecommand{\colorbox{shadecolor}}
+% \def\theoremframecommand{}
 \colorlet{shadecolor}{backgroundcolor}  % Use this as the background color for theorems
 % % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
 \newlength{\jh@thmtotextspace}  % horiz space between "Theorem" and "Let x .."
   \setlength{\jh@thmtotextspace}{0.45em plus 0.05em minus 0.05em}
 \newtheoremstyle{marginnumbers}%
-{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1}\hspace{\jh@thmtotextspace} }%
-{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)}\hspace{\jh@thmtotextspace} }%
+{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1}\hspace{\jh@thmtotextspace}}%
+{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)}\hspace{\jh@thmtotextspace}}%
+\theoremstyle{marginnumbers}
 \theoremheaderfont{\scshape}
 \theorembodyfont{}    
 \theoremsymbol{}
 \theoremseparator{}
-% \theoremprework{\begin{snugshade}}
-% \theorempostwork{\end{snugshade}}
+\theoremprework{}
+\theorempostwork{}
 % \theorempreskip{.5\topsep}
 % \theoremframepreskip{.35ex plus .1ex minus .02ex}
-\theoremframepreskip{-5ex}
-\theoreminframepreskip{0ex plus .05ex}
-\theoremframepostskip{.35ex plus .1ex minus .02ex}
-\theoreminframepostskip{0ex plus .05ex}
+\theoremframepreskip{0.5\topsep}
+\theoreminframepreskip{0.5\topsep}
+\theoreminframepostskip{0.5\topsep}
+\theoremframepostskip{0.5\topsep}
 % \theorempostskip{.5\topsep}
 % \usepackage{thmtools}
-\theoremstyle{marginnumbers}
 \newshadedtheorem{theorem}{Theorem}[section]
 \newshadedtheorem{lemma}[theorem]{Lemma}
 \newshadedtheorem{corollary}[theorem]{Corollary}
@@ -905,7 +908,7 @@
 \RequirePackage{suffix}
 % \margingraphic -- graphic that sticks out into margin
 % Note placement: i or I, o or O, l or L, r or R (capitals are floats)
-% #1 l or r  which margin; r is default
+% [#1] l or r  which margin; r is default
 % #2 width of graphic
 % #3 graphic filename
 % #4 caption

@@ -240,7 +240,8 @@
 % Chapters
 % As with sections, put the numbering in the margin using a marginpar
 % (actually a marginnote that has been hacked to always be on the left).
-\renewcommand{\chapter}{%
+\renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
+\newcommand{\jhchapter@nostar}{
   % Record that we are not inside an Extra section.
   % For more info search for "EXTRA SECTION TOGGLE".
   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
@@ -255,6 +256,24 @@
   {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
   {1ex plus .3ex minus .06ex}% *1 from titlesec
   {\marginnote{\smash{\normalfont\Large\color{boldcolor}\begin{tabular}[b]{@{}r@{}} Chapter \\[-0.15ex] \thechapter\end{tabular}}}[1.4ex]\normalfont\Large\bfseries}%
+}
+
+\newcommand{\jhchapter@star}{%
+  % Record that we are not inside an Extra section.
+  % For more info search for "EXTRA SECTION TOGGLE".
+  \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
+  \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
+  \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
+  % 
+  \pagestyle{bookfront}
+  \thispagestyle{bookemptypage}
+  %
+  \setcounter{chapter}{-1}
+  \@startsection{chapter}{0}%
+  {0em}%
+  {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
+  {1ex plus .3ex minus .06ex}% *1 from titlesec
+  {\normalfont\Large\bfseries}%
 }
 
 \renewcommand{\thechapter}{\Roman{chapter}}
@@ -748,7 +767,7 @@
 % TABLE OF CONTENTS
 \usepackage{tocloft}
 \tocloftpagestyle{empty}
-\setlength{\cftchapnumwidth}{3.25em}
+\setlength{\cftchapnumwidth}{1.5em}
 \setlength{\cftsecindent}{1em}
 \setlength{\cftsecnumwidth}{1em}
 \setlength{\cftsubsecindent}{2.5em}

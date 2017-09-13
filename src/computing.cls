@@ -552,8 +552,8 @@
 % \theorempreskip{.5\topsep}
 % \theoremframepreskip{.35ex plus .1ex minus .02ex}
 \theoremframepreskip{0.5\topsep}
-\theoreminframepreskip{0.5\topsep}
-\theoreminframepostskip{0.5\topsep}
+\theoreminframepreskip{0.25\topsep}
+\theoreminframepostskip{0.25\topsep}
 \theoremframepostskip{0.5\topsep}
 % \theorempostskip{.5\topsep}
 % \usepackage{thmtools}

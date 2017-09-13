@@ -60,14 +60,14 @@ Kolmogorov explained the result
 and closed the seminar.
 
 This story illustrates a theme in the Theory of Computation:
-we are good at finding clever ways to do a job and thereby
-reducing the the upper bound,
-the rate at which some computation resource, such as time,
-is consumed while solving the problem.
-Perusing the Theory of Computation blog feed \autocite{blog:TOC}
+perusing the Theory of Computation blog feed \autocite{blog:TOC}
 shows that every day researchers
 produce results saying, ``here is a job and here is a way to do it in less time,
 or less space, etc.'' 
+We are good at finding clever ways to do a job and thereby
+reducing the upper bound
+rate at which some computation resource, such as time,
+is consumed while solving the problem.
 But we are not good at proving nontrivial lower bounds, at saying
 ``no algorithm can do this job in less than this number of ticks.'' 
 That's one reason why in the development below we will
@@ -360,8 +360,8 @@ the rates are alike.
   One way that it is awkward is that it does not follow the usual rules
   of equality.
   For one thing, you cannot rewrite it as `$\protect\bigOh(g)=f$'.
-  Another is that $n=\bigOh(n^2)$ and $n^2=\bigOh(n^2)$ does not
-  allow us to conclude $n=n^2$.}
+  Another way is that $n=\bigOh(n^2)$ and $n^2=\bigOh(n^2)$ does not
+  allow us to conclude that $n=n^2$.}
 
 \begin{example} \label{ex:BigOFromDefn}
   To directly apply the definition, given two functions we must produce
@@ -704,7 +704,12 @@ Consequently, we say that
 a problem is
 \citetext{\definend{tractable}}{%
   Credit for this distinction goes to J~Edmunds in \autocite{Edmunds}.
-  He writes this, in a section called ``Digression,''
+  \protect\center \protect\small
+    \protect\includegraphics[width=0.23\textwidth]{complexity/edmonds.jpg}
+  \\
+    \protect\label{fig:edmonds}\protect\href{https://en.wikipedia.org/wiki/Jack_Edmonds}{Jack Edmonds, b~1934} % wikipedia 
+  \protect\endcenter  
+  In a ``Digression'' he writes this:
   An explanation is due on the use of the words ``efficient algorithm.''
   According to the dictionary, ``efficient'' means
 ``adequate in operation or performance.''
@@ -743,7 +748,9 @@ We close by remarking that the machines on which
 algorithms are implemented will vary widely,
 for instance in the time that they take to write to memory.
 Thus, without specifying the exact implementation and
-the machine, necessarily means that measure will be rough.
+the machine, necessarily means that any measure will be rough,
+so the face that big-O is a rough measure seems less of a
+disadvantage.
 
 \begin{exercises}
   \begin{exercise}
@@ -759,7 +766,7 @@ the machine, necessarily means that measure will be rough.
 
   \begin{exercise}
     For each given function, 
-    find which function~$f$ on the hierarchy labelled~($*$) has the 
+    find which function on the order of growth hierarchy has the 
     same rate of growth.
     \begin{exparts*}
       \item $n^2+5n-2$
@@ -770,7 +777,7 @@ the machine, necessarily means that measure will be rough.
   \end{exercise}
 
   \begin{exercise}
-    Find which function~$f$ on the hierarchy labelled~($*$) has the 
+    Find which function on the order of growth hierarchy has the 
     same rate of growth as each of these.
     \begin{exparts}
       \item
@@ -985,7 +992,149 @@ the machine, necessarily means that measure will be rough.
 
 % Other mathematicians compete about the complicated theorems that they are able to prove; combinatorialists like to compete about about the simplicity or self-evidence of statements they are unable to prove, i.e., ``I can't even prove ...''
 
-\section{\textbf{NP}}
+\section{Nondeterministic Turing machines}
+Given a propositional logic statement 
+is there an assignment of truth values that \definend{satisfies} it,
+that gives it a value~$T$?
+
+\begin{example}
+Consider this formula.
+\begin{equation*}
+ (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
+  \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (\neg P\vee R)
+\end{equation*} 
+The truth table finds some $T$'s in the final column.
+\begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
+\begin{tabular}{ccc|ccccc}
+  $P$  &$Q$  &$R$  &$P\vee Q$ &$P\vee \neg Q$ &$\neg P\vee Q$ &$\neg P\vee \neg Q\vee \neg R$ &$\neg P\vee R$ \\ \hline    
+  $F$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$ &$T$ \\     
+  $F$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$ &$T$ \\     
+  $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$ &$T$ \\     
+  $F$  &$T$  &$T$  &$T$ &$F$ &$T$ &$T$ &$T$ \\[1ex]     
+  $T$  &$F$  &$F$  &$T$ &$T$ &$F$ &$T$ &$F$ \\     
+  $T$  &$F$  &$T$  &$T$ &$T$ &$F$ &$T$ &$T$ \\     
+  $T$  &$T$  &$F$  &$T$ &$T$ &$T$ &$T$ &$F$ \\     
+  $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$      
+\end{tabular}
+\end{center}
+But as for a general algorithm, at this moment no one knows a
+better way than to keep trying inputs looking for a $T$.
+Here there are $2^3$~inputs; in general this algorithm takes exponential time.
+\end{example}
+The satisfiability problems lends itself to the unbounded 
+parallelism of a nondeterministic machine.
+
+
+
+
+\section{Time complexity}
+We are interested in classifying various problems: for which problems
+are there relatively good algorithms, and for which problems are there not?
+Given a problem we will be interested in its best solution.
+
+\begin{definition}
+Let $\map{t}{\N}{\N}$.
+A language~$\lang{L}$ is an element of \definend{$\DTIME(t)$}
+if there is a deterministic
+Turing machine that decides~$\lang{L}$ and runs in time~$\bigOh(t)$, and
+that language is an element of \definend{$\DTIME(t)$}
+if there is a nondeterministic
+Turing machine that decides~$\lang{L}$ and runs in time~$\bigOh(t)$. 
+\end{definition}
+
+This does not say that an algorithm is in that class,
+rather it says that a language is in that class.
+A language is in that class if there is an algorithm for its decision problem
+that has the stated big-O runtime behavior.
+
+\begin{definition}
+A language is in 
+the complexity class \definend{polynomial time $\compclass{P}$},
+often read \definend{polytime},
+if it is a member of $\DTIME(n^c)$
+for some power~$c\in\N$.
+\begin{equation*}
+  \compclass{P} =\bigcup_{c\in\N}\DTIME(n^c)          
+     =\DTIME(n)\cup\DTIME(n^2)\cup\DTIME(n^3)\cup\,\cdots
+\end{equation*}
+\end{definition}
+
+\begin{definition}
+A language is in 
+the complexity class \definend{exponential time $\EXP$}
+if it is a member of $\DTIME(2^{n^c})$
+for some power~$c\in\N$.
+\begin{equation*}
+  \EXP =\bigcup_{c\in\N}\DTIME(2^{n^c})           
+       =\DTIME(2^n)\cup\DTIME(2^{n^2})\cup\DTIME(2^{n^3})\cup\,\cdots
+\end{equation*}
+\end{definition}
+
+As discussed in the prior subsection,
+polytime is our first take at can-conceivably-be-used,
+and we say that the problem is `tractable'. 
+in contrast, $\EXP$ as too slow; we can't compute it.
+We say it is `intractable'.
+This view of the matter began with J~Edmunds.
+
+\begin{remark}
+A natural concern is that if we change the computing model 
+then we get different results.
+What if a problem is $\DTIME(n^3)$ for a 
+two-tape Turing machine but $\DTIME(n^5)$ for a one-tape 
+machine?.
+
+Experience with a wide range of alternative computational models is that
+in almost all cases a Turing machine can be simulated on such a different model
+machine in time~$\bigOh(n^2)$, and in any event can  be done
+in polytime.
+So if we have polytime sloppiness built in then we can essentially
+ignore the model issue. 
+\end{remark}
+
+
+
+
+
+
+
+
+
+\section{Complexity classes}
+
+ 
+\begin{definition}[the complexity class $\compclass{NP}$]
+A language $\lang{L}$ is a member of 
+$\compclass{NP}$ if there is a polynomial $\map{p}{\N}{\N}$ and a
+polynomial time Turing machine $\TM$, the \definend{verifier}
+for $\lang{L}$, such that 
+\begin{equation*}
+  \forall \sigma\in\strings 
+  \big[ \sigma\in\lang{L} 
+     \,\Longleftrightarrow\, 
+     \exists w\in \set{0,1}^{p(|\sigma|)}(\TM(\seq{\sigma,w})=1)  \big]
+\end{equation*}
+($w$ is the \definend{witness} or \definend{certificate} for $\sigma$).
+\end{definition}
+
+Note that the witness is restricted in length so that the verifier,
+which as a Turing machine reads one bit at a time, can 
+read it through in polynomial time.
+Note also that we can take the polynomial~$p$ to be trivial $p(i)=0$
+to get that $\compclass{P}\subseteq\compclass{NP}$.
+
+\begin{example}
+The satisfiability problem is in~$\compclass{NP}$.
+That is, $\lang{L}\in\compclass{NP}$ where this is $\lang{L}$.
+\begin{equation*}
+  \lang{L}=\set{\varphi\suchthat 
+             \text{$\varphi$ is a satisfiable propositional logic formula}}
+\end{equation*}
+\end{example}
+
+
+\subsection{Discussion}
+
 These two  
 computational problems seem similar.
 
@@ -1053,29 +1202,271 @@ however, we cannot today prove that
 that is the case.  
 
 
+\section{Problem reduction}
+Consider this problem.
 
+\begin{problem}[Graph Colorability]
+Given a graph and a natural number bound~$b$.
+Decide if the graph is \definend{$b$-colorable}, that is,
+whether its vertices can be partitioned into $b$-many classes 
+$\mathcal{V}=\mathcal{C}_0\cup\cdots\cup\mathcal{C}_{b-1}$ such
+that never are two same-class vertices 
+connected by an edge.
+\end{problem}
 
-\section{Complexity classes}
- 
-\begin{definition}[the complexity class $\compclass{NP}$]
-A language $\lang{L}$ is a member of 
-$\compclass{NP}$ if there is a polynomial $\map{p}{\N}{\N}$ and a
-polynomial time Turing machine $\TM$, the \definend{verifier}
-for $\lang{L}$, such that 
+We will show that a quick way to solve the 
+Satisfiability problem would give us a quick way to solve the 
+Graph Colorability problem.
+That is, 
+$\text{Graph Colorability}\leq\text{Satisfiability}$. 
+We will illustrate with $3$-colorability.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity00.pdf}
+\end{center}
+\endinput  
+\end{frame}
+\begin{frame}
+We will produce a set of propositional logic clauses 
+where the set is satisfiable\Dash 
+there is a set of boolean values for the variables making  all the clauses in
+the set true\Dash if and only if the graph has a $3$-coloring.  
+
+\pause
+Suppose that the graph has $n$~vertices $\mathcal{V}=\set{v_0\ldots\,,v_{n-1}}$.
+The boolean variables for the propositional logic clauses
+will come in three types
 \begin{equation*}
-  \forall \sigma\in\strings 
-  \big[ \sigma\in\lang{L} 
-     \,\Longleftrightarrow\, 
-     \exists w\in \set{0,1}^{p(|\sigma|)}(\TM(\seq{\sigma,w})=1)  \big]
+  {\color{red} r_0,\ldots,r_{n-1}}
+  \qquad
+  {\color{blue}b_0,\ldots,b_{n-1}}
+  \qquad
+  {\color{green}g_0,\ldots,g_{n-1}}
 \end{equation*}
-($w$ is the \definend{witness} or \definend{certificate} for $\sigma$).
-\end{definition}
+where {\color{red}$r_i$} will be $T$ if vertex~$i$ is colored red, etc.
+There will be two types of clauses.
+First, for each vertex~$v_i$ there is a clause ensuring that it gets a color.
+\begin{equation*}
+  ({\color{red}r_i}\vee{\color{blue}b_i}\vee{\color{green}g_i})
+\end{equation*}
+Second, for each edge $\set{v_i,v_j}$ there are three clauses that 
+together ensure that the edge
+does not connect two same-color vertices.
+\begin{equation*}
+  ({\color{red} \neg r_i\wedge \neg r_j}),
+  \qquad
+  ({\color{blue} \neg b_i\wedge \neg b_j}),
+  \qquad
+  ({\color{green} \neg g_i\wedge \neg g_j})
+\end{equation*}
+\end{frame}
 
-Note that the witness is restricted in length so that the verifier,
-which as a Turing machine reads one bit at a time, can 
-read it through in polynomial time.
-Note also that we can take the polynomial~$p$ to be trivial $p(i)=0$
-to get that $\compclass{P}\subseteq\compclass{NP}$.
+
+
+
+\begin{frame}
+\exm 
+Consider this problem.
+
+\begin{problemstatement}{Clique}
+Given a graph and a natural number bound~$b$.
+Decide if the graph has a $b$-vertex \alert{clique},
+a set of vertices such that every two are connected by an edge.
+\end{problemstatement}
+
+We will show that a quick way to solve the Clique problem would
+give us a quick way to solve the Satisfiability problem, so that
+$\text{Satisfiability}\leq\text{Clique}$. 
+
+\pause
+Given a set of propositional logic clauses, 
+\begin{equation*}
+  \set{x_0\wedge \neg x_1,\, x_0,\, \neg(\neg x_0\wedge \neg x_1)}
+\end{equation*}
+we can make a single statement by
+AND-ing them together, 
+\begin{equation*}
+  (x_0\wedge \neg x_1)\wedge(x_0)\wedge(\neg(\neg x_0\wedge \neg x_1))
+\end{equation*}
+and put that
+statement into 
+Conjunctive Normal Form.
+\begin{equation*}
+  \varphi=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
+\end{equation*}
+\end{frame}
+\begin{frame}
+The statement
+\begin{equation*}
+  \varphi=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
+\end{equation*}
+has three clauses.
+\begin{equation*}
+  C_0=x_0\vee x_1
+  \qquad
+  C_1=\neg x_0\vee\neg x_1
+  \qquad
+  C_2=x_0\vee \neg x_1
+\end{equation*}
+We will construct a graph~$\mathcal{G}$ that has a $k$-clique if and only if the
+statement~$\varphi$ is satisfiable ($k$ will be the number of clauses, $3$).
+
+\pause
+Put a vertex in $\mathcal{G}$ for each occurrence of a variable in a clause.
+our example has two variables in each of three clauses.
+\begin{align*}
+  \mathcal{V} &=\{v_{0,0},v_{0,1}, \\
+              &\qquad v_{1,0},v_{1,1}, \\
+              &\qquad v_{2,0},v_{2,0}\}
+\end{align*}  
+\end{frame}
+
+\begin{frame}
+Recall the clauses.
+\begin{equation*}
+  C_0=x_0\vee x_1
+  \qquad
+  C_1=\neg x_0\vee\neg x_1
+  \qquad
+  C_2=x_0\vee \neg x_1
+\end{equation*}
+Put an edge in~$\mathcal{G}$ if the associated variables~$x_i$ 
+are in different clauses
+and not complementary (i.e., not $x_0$ and $\neg x_0$).
+\begin{align*}
+  \mathcal{V} &=\set{v_{0,0},v_{0,1},v_{1,0},v_{1,1},v_{2,0},v_{2,1}} \\
+  \mathcal{E} &=\{\,\set{v_{0,0},v_{2,0}},\,
+                  \set{v_{0,0},v_{1,1}},\,
+                  \set{v_{0,0},v_{2,1}},  \\
+              &\qquad \set{v_{0,1},v_{1,0}},\,
+                      \set{v_{0,1},v_{2,0}}, \\
+              &\qquad \set{v_{1,0},v_{2,0}},\,
+                      \set{v_{1,0},v_{2,1}}, \\
+              &\qquad \set{v_{1,1},v_{2,0}}\,\}
+\end{align*} 
+\begin{center}
+  \includegraphics{asy/clique_graph.pdf}
+\end{center}  
+\end{frame}
+\begin{frame}
+Now the statement~$\varphi$ is satisfiable if and only if there is a 
+$3$-clique  in the graph.
+\begin{equation*}
+  \varphi={\color{red}(x_0\vee x_1)}
+          \wedge{\color{blue}(\neg x_0\vee\neg x_1)}
+          \wedge{\color{green}(x_0\vee \neg x_1)}
+\end{equation*}
+\begin{center}
+  \includegraphics{asy/clique_graph.pdf}
+\end{center}   
+\end{frame}
+
+
+
+
+\begin{frame}
+\exm The Satisfiability problem
+reduces to the Minimal Vertex Cover problem, 
+the problem of finding the smallest~$b$ that works in this decision problem.  
+
+\begin{problemstatement}{Vertex cover}
+Given a graph and a natural number bound~$b$. 
+Decide if
+there is a size~$b$ \alert{vertex cover}, a
+subset of the vertices~$C$ such that for every edge
+$\sequence{v,\hat{v}}$ an endpoint 
+is in~$C$.
+\end{problemstatement}
+
+\pause
+Suppose we start with this propositional logic formula. 
+\begin{equation*}
+  \Phi=(x_0\vee x_1\vee \neg x_2)
+       \wedge (\neg x_0\vee x_2\vee \neg x_3)
+       \wedge (\neg x_1\vee x_3)
+\end{equation*}
+We will construct a graph~$\mathcal{G}$ needed for a demonstration that 
+satisfying $\Phi$ corresponds to
+finding a minimal vertex cover for~$\mathcal{G}$.
+
+\pause
+We build the graph in three stages.
+First, for each variable we build a subgraph of two 
+vertices (the two are associated with that variable being $T$ or~$F$).
+\begin{center}
+  \includegraphics{asy/vertexcover.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}
+Next, for each clause in $\Phi$, add a subgraph:
+$\text{clause}_0= x_0\vee x_1\vee \neg x_2$, and
+$\text{clause}_1=\neg x_0\vee x_2\vee \neg x_3$, and
+$\text{clause}_2=\neg x_1\vee x_3$.
+\begin{center}
+  \includegraphics{asy/vertexcover1.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}
+Finally, for clause~$i$ and variable~$j$,
+if the variable is negated then connect $w_{i,j}$ to~$v_{j,F}$,  
+otherwise connect $w_{i,j}$ to~$v_{j,T}$.  
+\begin{center}
+  \includegraphics{asy/vertexcover2.pdf}
+\end{center}
+We won't prove that every minimal vertex cover is associated with
+an assignment to the variables that makes $\Phi$ true, but 
+we will exhibit an example.
+\end{frame}
+
+\begin{frame}
+This shows a minimal vertex cover.
+\begin{center}
+  \includegraphics{asy/vertexcover3.pdf}
+\end{center}
+For reference, here is the starting propositional logic formula.
+\begin{equation*}
+  \Phi=(x_0\vee x_1\vee \neg x_2)
+       \wedge (\neg x_0\vee x_2\vee \neg x_3)
+       \wedge (\neg x_1\vee x_3)
+\end{equation*}
+The idea is that in a minimal vertex cover, along the top one of each
+pair is colored.
+On the bottom, one of each grouping 
+is uncolored, and it is connected to a colored one on top.
+Those give the truth assignments, here 
+$x_0=T$, $x_2=T$, $x_3=T$. 
+\end{frame}
+
+
+\begin{frame}{Polynomial time reducible}
+\dfn
+Consider two languages $\lang,\hat{\lang}\subset\ks{\set{0,1}}$
+Then $\lang$ is \alert{polytime reducible} to $\hat{\lang}$,
+written $\lang\leq_p\hat{\lang}$ if there is a 
+polytime computable function $\map{f}{\ks{\set{0,1}}}{\ks{\set{0,1}}}$
+such that for every string $\sigma\in\ks{\set{0,1}}$ we have
+$\sigma\in\lang$ if and only if $f(\sigma)\in\hat{\lang}$.
+
+This ranks problems (actually, languages) by hardness.
+A quick way to solve~$\hat{\lang}$
+woud give a quick way to solve~$\lang$.
+\end{frame}
+
+
+\begin{frame}{$\protect\NP$-hard, $\protect\NP$-complete}
+\dfn
+We say that $\hat{\lang}$ is \alert{$\NP$-hard} 
+if $\lang\leq_p\hat{\lang}$ for every
+$\lang\in\NP$.
+We say that $\hat{\lang}$ is \alert{$\NP$-complete} if 
+$\hat{\lang}$ is $\NP$-hard and $\hat{\lang}\in\NP$.
+
+
+
+
+
+
 
 \begin{exercises}
 \begin{exercise}
@@ -1099,4 +1490,825 @@ What if there is a single witness that works for all~$\sigma$?
 % ===============================================================
 
 \extra{Sudoku is $\compclass{NP}$ complete}
+
+
+\endinput
+
+\section{Time complexity}
+% ------------------------------------------------------------
+\begin{frame}{$\DTIME$}
+We are interested in classifying various problems: for which problems
+are there relatively good algorithms, and for which problems are there not?
+Given a problem we will be interested in its best solution.
+
+\pause
+\dfn
+Let $\map{t}{\N}{\N}$.
+A language is an element of \alert{$\DTIME(t)$} if there is a 
+Turing machine that decides the language and runs in time~$\bigo(t)$. 
+
+This does not say that an algorithm is in that class,
+rather it says that a language is in that class.
+A language is in that class if there is an algorithm for its decision problem
+that has the stated big-oh time behavior.
+\end{frame}
+
+\begin{frame}{Polynomial time}
+\dfn
+A language is in 
+the complexity class \alert{polynomial time} \alert{$\P$}
+(often read \textit{polytime})
+if it is a member of $\DTIME(n^c)$
+for some power~$c\in\N$.
+\begin{align*}
+  \P &=\cup_{c\in\N}\DTIME(n^c)           \\
+     &=\DTIME(n)\cup\DTIME(n^2)\cup\DTIME(n^3)\cup\,\cdots
+\end{align*}
+
+We take polytime as a first take at can-conceivably-be-run.
+People say the problem is \alert{tractable}.
+
+\rem
+A natural concern is that if we change the computing model 
+then we get different results.
+We can imagine a situation where a problem is $\DTIME(n^3)$ for a 
+two-tape Turing machine, and a $\DTIME(n^5)$ for a one-tape 
+machine, or for Post's computation model.
+
+Experience with a wide range of alternative computational models is that
+in almost all cases a Turing machine can be simulated on such a different model
+machine in time~$\bigo(n^2)$, and in any event can  be done
+in polytime.
+So if we have polytime sloppiness built in then we can essentially
+ignore the model issue. 
+\end{frame}
+
+\begin{frame}{Jack Edmonds}\relax %
+{\small \itshape
+According to the dictionary, ``efficient'' means
+``adequate in operation or performance.''
+This is roughly the meaning I want\Dash in the sense that it is conceivable
+for [this problem] to have no efficient algorithm.
+
+\smallskip
+There is an obvious finite algorithm, but that algorithm increases in 
+difficulty exponentially with the size of the graph.  
+It is by no means obvious whether or not there exists an algorithm whose
+difficulty increases only algebraically with the size of the graph
+
+\smallskip\ldots\ \ 
+If only to motivate the search for good, practical algorithms, it is 
+important to realize that it is mathematically sensible even to question 
+their existence. 
+}
+\begin{center}  % http://www.iasi.cnr.it/jack/edmonds_big.jpg
+  \captionedfigure[.35]{edmonds.jpg}{J Edmonds, b 1934}    
+\end{center}
+  
+\end{frame}
+
+
+\begin{frame}[fragile]{Problems in $\P$}
+\exm Given two natural numbers, find their greatest common divisor; that is,
+solve the decision problem for 
+    $\lang=\set{\sequence{a,b,d}\suchthat \text{$d$ is the greatest common divisor}}$.
+
+  \pause
+  The naive approach is this.
+\begin{lstlisting}
+# relatively_prime.py
+def gcd(a, b):
+    r = 1
+    m = min(a, b)
+    for i in range(2, m):
+        if  ((a % i == 0)
+             and (b % i == 0)):
+            r = i
+    return r
+
+a = int(raw_input("a? "))
+b = int(raw_input("b? "))
+if gcd(a,b) == 1:
+    print "1"
+else:
+    print "0"
+\end{lstlisting}
+\pause
+But to decide if $16$ and~$24$ are relatively prime, with $4$-bit inputs,
+the algorithm loops through \lstinline!range(2,16)!, 
+approximately $16=2^4$-many values of~$i$.
+So it runs in time that is $\bigo(2^n)$ where
+$n$ is the input size.
+\end{frame}
+  
+\begin{frame}[fragile]
+In contrast, 
+Euclid's algorithm is not exponential in the size of the input.
+\begin{lstlisting}
+def euclid_gcd(a, b):
+    while (b != 0):
+        t = b
+        b = a % b
+        a = t
+    return a
+\end{lstlisting}
+It runs in time linear in the number of bits of the smaller number,
+$\bigo(\lg(\min(a,b)))$.
+Therefore $\lang\in\P$.
+
+\pause
+\exm Given a graph and two vertices in that graph, 
+  decide if there is a path in the graph from one vertex to the other.
+  \begin{equation*}
+    \hat{\lang}=\set{\sequence{G,v_0,v_1}\suchthat \text{$v_0$ is connected to $v_1$ in $G$}}
+  \end{equation*}
+  \pause
+  Dijkstra's Shortest Path algorithm tells us the answer in time
+  that is at worst $\bigo(|G|)$, where
+  $|G|$ is the number of vertices.
+  Thus $\hat{\lang}\in\P$.
+
+\pause
+\exm
+Given a natural number, decide if it is composite, non-prime.
+
+This was shown to be a member of~$\P$ only recently, in 2004.
+\end{frame}
+
+
+
+\begin{frame}{Exponential time}
+\dfn
+A language is in 
+the complexity class \alert{exponential time} \alert{$\EXP$}
+if it is a member of $\DTIME(2^{n^c})$
+for some power~$c\in\N$.
+\begin{align*}
+  \EXP &=\cup_{c\in\N}\DTIME(2^{n^c})           \\
+       &=\DTIME(2^n)\cup\DTIME(2^{n^2})\cup\DTIME(2^{n^3})\cup\,\cdots
+\end{align*}
+
+As a first take on what it means, 
+if an algorithm genuinely is in $\EXP$ 
+then it is too slow; we can't compute it.
+\end{frame}
+
+
+\begin{frame}{Satisfiability}
+Given a propositional logic statement 
+is there an assignment of truth values that \alert{satisfies} it,
+that gives it a value~$T$?
+\pause
+For example, consider this formula.
+\begin{equation*}
+ (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
+  \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (\neg P\vee R)
+\end{equation*} 
+As people, we try to understand what it means.
+But as for a general algorithm, at this moment no one knows a
+better way than to 
+try all $2^3$ inputs.
+\begin{center} \definecolor{rcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
+\begin{tabular}{ccc|ccccc}
+  $P$  &$Q$  &$R$  &$P\vee Q$ &$P\vee \neg Q$ &$\neg P\vee Q$ &$\neg P\vee \neg Q\vee \neg R$ &$\neg P\vee R$ \\ \hline    
+  $F$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$ &$T$ \\     
+  $F$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$ &$T$ \\     
+  $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$ &$T$ \\     
+  $F$  &$T$  &$T$  &$T$ &$F$ &$T$ &$T$ &$T$ \\     
+  $T$  &$F$  &$F$  &$T$ &$T$ &$F$ &$T$ &$F$ \\     
+  $T$  &$F$  &$T$  &$T$ &$T$ &$F$ &$T$ &$T$ \\     
+  $T$  &$T$  &$F$  &$T$ &$T$ &$T$ &$T$ &$F$ \\     
+  $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$      
+\end{tabular}
+\end{center}
+\end{frame}
+
+
+
+
+
+\section{P=NP}
+
+
+\begin{frame}{$\NTIME$, $\NP$}
+The satisfiability problems lends itself to the unbounded 
+parallelism of a nondeterministic machine.
+
+\dfn
+Let $\map{t}{\N}{\N}$.
+A language is an element of \alert{$\NTIME(t)$} if there is a 
+nondeterministic Turing machine that decides the language and runs in 
+time~$\bigo(t)$. 
+
+\pause
+\dfn
+A language is a member of the complexity class 
+\alert{nondeterministic polynomial time $\NP$}
+if it is a member of $\NTIME(n^c)$ for some power~$c$.
+\begin{equation*}
+  \NP=\NTIME(n)\cup\NTIME(n^2)\cup\NTIME(n^3)\cup\cdots
+\end{equation*}
+
+\exm  
+The satisfiability problem is in~$\NP$.
+That is, $\lang\in\NP$ where this is $\lang$.
+\begin{equation*}
+  \lang=\set{\varphi\suchthat 
+             \text{$\varphi$ is a satisfiable propositional logic formula}}
+\end{equation*}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Reduction of one problem to another}
+\exm 
+Consider this problem.
+
+\begin{problemstatement}{Graph Colorability}
+Given a graph and a natural number bound~$b$.
+Decide if the graph is \alert{$b$-colorable}, that is,
+whether its vertices can be partitioned into $b$-many classes 
+$\mathcal{V}=\mathcal{C}_0\cup\cdots\cup\mathcal{C}_{b-1}$ such
+that never are two same-class vertices 
+connected by an edge.
+\end{problemstatement}
+
+We will show that a quick way to solve the 
+Satisfiability problem would give us a quick way to solve the 
+Graph Colorability problem.
+That is, 
+$\text{Graph Colorability}\leq\text{Satisfiability}$. 
+\pause
+We will illustrate with $3$-colorability.
+\begin{center}
+  \only<1,2>{\includegraphics{asy/peterson_graph.pdf}}
+  \only<3->{\includegraphics{asy/peterson_graph1.pdf}}
+\end{center}
+\end{frame}
+\begin{frame}
+We will produce a set of propositional logic clauses 
+where the set is satisfiable\Dash 
+there is a set of boolean values for the variables making  all the clauses in
+the set true\Dash if and only if the graph has a $3$-coloring.  
+
+\pause
+Suppose that the graph has $n$~vertices $\mathcal{V}=\set{v_0\ldots\,,v_{n-1}}$.
+The boolean variables for the propositional logic clauses
+will come in three types
+\begin{equation*}
+  {\color{red} r_0,\ldots,r_{n-1}}
+  \qquad
+  {\color{blue}b_0,\ldots,b_{n-1}}
+  \qquad
+  {\color{green}g_0,\ldots,g_{n-1}}
+\end{equation*}
+where {\color{red}$r_i$} will be $T$ if vertex~$i$ is colored red, etc.
+There will be two types of clauses.
+First, for each vertex~$v_i$ there is a clause ensuring that it gets a color.
+\begin{equation*}
+  ({\color{red}r_i}\vee{\color{blue}b_i}\vee{\color{green}g_i})
+\end{equation*}
+Second, for each edge $\set{v_i,v_j}$ there are three clauses that 
+together ensure that the edge
+does not connect two same-color vertices.
+\begin{equation*}
+  ({\color{red} \neg r_i\wedge \neg r_j}),
+  \qquad
+  ({\color{blue} \neg b_i\wedge \neg b_j}),
+  \qquad
+  ({\color{green} \neg g_i\wedge \neg g_j})
+\end{equation*}
+\end{frame}
+
+
+
+
+\begin{frame}
+\exm 
+Consider this problem.
+
+\begin{problemstatement}{Clique}
+Given a graph and a natural number bound~$b$.
+Decide if the graph has a $b$-vertex \alert{clique},
+a set of vertices such that every two are connected by an edge.
+\end{problemstatement}
+
+We will show that a quick way to solve the Clique problem would
+give us a quick way to solve the Satisfiability problem, so that
+$\text{Satisfiability}\leq\text{Clique}$. 
+
+\pause
+Given a set of propositional logic clauses, 
+\begin{equation*}
+  \set{x_0\wedge \neg x_1,\, x_0,\, \neg(\neg x_0\wedge \neg x_1)}
+\end{equation*}
+we can make a single statement by
+AND-ing them together, 
+\begin{equation*}
+  (x_0\wedge \neg x_1)\wedge(x_0)\wedge(\neg(\neg x_0\wedge \neg x_1))
+\end{equation*}
+and put that
+statement into 
+Conjunctive Normal Form.
+\begin{equation*}
+  \varphi=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
+\end{equation*}
+\end{frame}
+\begin{frame}
+The statement
+\begin{equation*}
+  \varphi=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
+\end{equation*}
+has three clauses.
+\begin{equation*}
+  C_0=x_0\vee x_1
+  \qquad
+  C_1=\neg x_0\vee\neg x_1
+  \qquad
+  C_2=x_0\vee \neg x_1
+\end{equation*}
+We will construct a graph~$\mathcal{G}$ that has a $k$-clique if and only if the
+statement~$\varphi$ is satisfiable ($k$ will be the number of clauses, $3$).
+
+\pause
+Put a vertex in $\mathcal{G}$ for each occurrence of a variable in a clause.
+our example has two variables in each of three clauses.
+\begin{align*}
+  \mathcal{V} &=\{v_{0,0},v_{0,1}, \\
+              &\qquad v_{1,0},v_{1,1}, \\
+              &\qquad v_{2,0},v_{2,0}\}
+\end{align*}  
+\end{frame}
+
+\begin{frame}
+Recall the clauses.
+\begin{equation*}
+  C_0=x_0\vee x_1
+  \qquad
+  C_1=\neg x_0\vee\neg x_1
+  \qquad
+  C_2=x_0\vee \neg x_1
+\end{equation*}
+Put an edge in~$\mathcal{G}$ if the associated variables~$x_i$ 
+are in different clauses
+and not complementary (i.e., not $x_0$ and $\neg x_0$).
+\begin{align*}
+  \mathcal{V} &=\set{v_{0,0},v_{0,1},v_{1,0},v_{1,1},v_{2,0},v_{2,1}} \\
+  \mathcal{E} &=\{\,\set{v_{0,0},v_{2,0}},\,
+                  \set{v_{0,0},v_{1,1}},\,
+                  \set{v_{0,0},v_{2,1}},  \\
+              &\qquad \set{v_{0,1},v_{1,0}},\,
+                      \set{v_{0,1},v_{2,0}}, \\
+              &\qquad \set{v_{1,0},v_{2,0}},\,
+                      \set{v_{1,0},v_{2,1}}, \\
+              &\qquad \set{v_{1,1},v_{2,0}}\,\}
+\end{align*} 
+\begin{center}
+  \includegraphics{asy/clique_graph.pdf}
+\end{center}  
+\end{frame}
+\begin{frame}
+Now the statement~$\varphi$ is satisfiable if and only if there is a 
+$3$-clique  in the graph.
+\begin{equation*}
+  \varphi={\color{red}(x_0\vee x_1)}
+          \wedge{\color{blue}(\neg x_0\vee\neg x_1)}
+          \wedge{\color{green}(x_0\vee \neg x_1)}
+\end{equation*}
+\begin{center}
+  \includegraphics{asy/clique_graph.pdf}
+\end{center}   
+\end{frame}
+
+
+
+
+\begin{frame}
+\exm The Satisfiability problem
+reduces to the Minimal Vertex Cover problem, 
+the problem of finding the smallest~$b$ that works in this decision problem.  
+
+\begin{problemstatement}{Vertex cover}
+Given a graph and a natural number bound~$b$. 
+Decide if
+there is a size~$b$ \alert{vertex cover}, a
+subset of the vertices~$C$ such that for every edge
+$\sequence{v,\hat{v}}$ an endpoint 
+is in~$C$.
+\end{problemstatement}
+
+\pause
+Suppose we start with this propositional logic formula. 
+\begin{equation*}
+  \Phi=(x_0\vee x_1\vee \neg x_2)
+       \wedge (\neg x_0\vee x_2\vee \neg x_3)
+       \wedge (\neg x_1\vee x_3)
+\end{equation*}
+We will construct a graph~$\mathcal{G}$ needed for a demonstration that 
+satisfying $\Phi$ corresponds to
+finding a minimal vertex cover for~$\mathcal{G}$.
+
+\pause
+We build the graph in three stages.
+First, for each variable we build a subgraph of two 
+vertices (the two are associated with that variable being $T$ or~$F$).
+\begin{center}
+  \includegraphics{asy/vertexcover.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}
+Next, for each clause in $\Phi$, add a subgraph:
+$\text{clause}_0= x_0\vee x_1\vee \neg x_2$, and
+$\text{clause}_1=\neg x_0\vee x_2\vee \neg x_3$, and
+$\text{clause}_2=\neg x_1\vee x_3$.
+\begin{center}
+  \includegraphics{asy/vertexcover1.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}
+Finally, for clause~$i$ and variable~$j$,
+if the variable is negated then connect $w_{i,j}$ to~$v_{j,F}$,  
+otherwise connect $w_{i,j}$ to~$v_{j,T}$.  
+\begin{center}
+  \includegraphics{asy/vertexcover2.pdf}
+\end{center}
+We won't prove that every minimal vertex cover is associated with
+an assignment to the variables that makes $\Phi$ true, but 
+we will exhibit an example.
+\end{frame}
+
+\begin{frame}
+This shows a minimal vertex cover.
+\begin{center}
+  \includegraphics{asy/vertexcover3.pdf}
+\end{center}
+For reference, here is the starting propositional logic formula.
+\begin{equation*}
+  \Phi=(x_0\vee x_1\vee \neg x_2)
+       \wedge (\neg x_0\vee x_2\vee \neg x_3)
+       \wedge (\neg x_1\vee x_3)
+\end{equation*}
+The idea is that in a minimal vertex cover, along the top one of each
+pair is colored.
+On the bottom, one of each grouping 
+is uncolored, and it is connected to a colored one on top.
+Those give the truth assignments, here 
+$x_0=T$, $x_2=T$, $x_3=T$. 
+\end{frame}
+
+
+\begin{frame}{Polynomial time reducible}
+\dfn
+Consider two languages $\lang,\hat{\lang}\subset\ks{\set{0,1}}$
+Then $\lang$ is \alert{polytime reducible} to $\hat{\lang}$,
+written $\lang\leq_p\hat{\lang}$ if there is a 
+polytime computable function $\map{f}{\ks{\set{0,1}}}{\ks{\set{0,1}}}$
+such that for every string $\sigma\in\ks{\set{0,1}}$ we have
+$\sigma\in\lang$ if and only if $f(\sigma)\in\hat{\lang}$.
+
+This ranks problems (actually, languages) by hardness.
+A quick way to solve~$\hat{\lang}$
+woud give a quick way to solve~$\lang$.
+\end{frame}
+
+
+\begin{frame}{$\protect\NP$-hard, $\protect\NP$-complete}
+\dfn
+We say that $\hat{\lang}$ is \alert{$\NP$-hard} 
+if $\lang\leq_p\hat{\lang}$ for every
+$\lang\in\NP$.
+We say that $\hat{\lang}$ is \alert{$\NP$-complete} if 
+$\hat{\lang}$ is $\NP$-hard and $\hat{\lang}\in\NP$.
+\end{frame}
+
+
+
+\begin{frame}{Alternate characterization of $\NP$}
+\lem
+A language~$\lang$ is a member of~$\NP$ if and only if there is
+a polytime deterministic Turing machine~$\mach$, 
+and a polynomial~$p$, such that for all strings $\sigma\in\ks{\set{0,1}}$
+the following holds.
+\begin{equation*}
+  \sigma\in\lang
+  \quad\Longleftrightarrow\quad
+  \exists w(\sigma)\in\set{0,1}^{p(|\sigma|)}\lbrack\mach(\sigma,w(\sigma))=1\rbrack
+  \tag{$*$}
+\end{equation*}
+
+\smallskip
+The string~$w(\sigma)$ is a \alert{witness} or \alert{certificate} for~$\sigma$.
+Note that a single $\mach$ works for all~$\sigma$.
+
+\pf
+Suppose first that $\lang\in\NP$.
+Then it is decided by some nondeterministic machine~$\mach$ whose running time
+is a polynomial~$p$.
+For any input $\sigma\in\lang$ there is a sequence of nondeterministic forks
+in the computation history leading to acceptance by~$\mach$,
+and this sequence~$w$ can serve as the witness
+for~$\sigma$.
+Note that $w$ has length $p(|\sigma|)$ and can be verified in polynomial
+time by a deterministic machine simulating $\mach$, and
+thus $\lang\in\NP$.\continued
+\end{frame}
+\begin{frame}
+For the other direction 
+suppose that ($*$) holds; we will describe a polytime NDTM that 
+decides~$\lang$.
+The idea is that this NDTM tests every possible witness
+$w\in\set{0,1}^{p(|\sigma|)}$, using the polytime 
+$\mach(\sigma,w)$ to do so.
+Because of the unbounded parallelism, the total time taken
+is polytime. 
+Because of the case assumption that ($*$) holds,
+$\sigma\in\lang$ if and only if
+the NDTM will find such a witness $w(\sigma)$. 
+\qed
+\end{frame}
+
+
+\begin{frame}{Some $\protect\NP$-hard problems}
+We won't give proofs of these; see Garey and~Johnson's book.
+
+\begin{problemstatement}{Factoring}
+Given a number $n\in\N$ and lower and upper bounds $b_L,b_U\in\N$.
+Decide if the number has a prime factor in the interval.
+\end{problemstatement}
+
+The witness is the prime.
+(We don't know if this problem is $\NP$-complete.)
+
+\pause
+\begin{problemstatement}{Travelling salesman}
+Given a set of cities~$C=\set{c_0,\ldots,c_{n-1}}$,
+a function $\map{d}{C\times C}{\N}$ 
+giving the distance between any two cities,
+and a natural number~$k$.
+Decide if there is a tour of all the cities 
+$\sequence{c_{i_0},\ldots,c_{i_{n-1}}}$
+whose total distance is less than~$k$.
+\end{problemstatement}
+
+The witness is the circuit.
+(This problem is known to be $\NP$-complete.)
+
+\pause
+\begin{problemstatement}{Crossword puzzle}
+Given a set of $2n$-many words.
+Decide if they can be arranged into an $n\times n$ array 
+crossword.
+\end{problemstatement}
+
+The witness is the array.
+(This problem is known to be $\NP$-complete.)
+\end{frame}
+\begin{frame}
+\begin{problemstatement}{Subset sum}
+Given a set $S=\set{i_0,\ldots,i_{n-1}}$ of numbers,
+and a target number~$T$.
+Decide if a subset of~$S$ adds to~$T$.     
+\end{problemstatement}
+
+The witness is the subset of numbers.
+(This problem is known to be $\NP$-complete.)
+
+\pause
+\begin{problemstatement}{Graph isomorphism}
+Given two graphs.
+Decide if they are isomorphic.
+\end{problemstatement}
+
+The witness is the isomorphism.
+(We don't know if this problem is $\NP$-complete.)
+\end{frame}
+
+
+
+
+
+\begin{frame}{Cook's Theorem}
+\thm[1971] The satisfiability problem is $\NP$ complete.
+\pf Not given.
+ 
+\medskip
+\begin{center} % http://en.wikipedia.org/wiki/Stephen_Cook#/media/File:Prof.Cook.jpg
+  \captionedfigure[.3]{cook.jpg}{S Cook, b 1939}
+\end{center}
+\end{frame}
+
+
+
+
+\begin{frame}{The canonical six $\protect\NP$ complete problems}
+We have already seen this $\NP$-complete problem.
+
+\begin{problemstatement}{Satisfiability}
+Given a set of propositional logic statements $\varphi_j$. 
+Decide if there is 
+an assignment of booleans $\set{\textsc{T},\textsc{F}}$ to the
+variables making all the $\varphi_j$ true.
+\end{problemstatement}
+
+\pause
+This variation
+is sometimes convenient and is also $\NP$-complete.
+
+\begin{problemstatement}{Three-satisfiability ($3$-SAT)}
+Given a set of propositional logic statements $\varphi_j$, 
+each with no more than three variables. 
+Decide if there is  
+an assignment of booleans $\set{\textsc{T},\textsc{F}}$ to the
+variables making all the $\varphi_j$ true.   
+\end{problemstatement}
+
+\rem Two-satisfiability is not $\NP$-complete.
+\end{frame}
+
+
+\begin{frame}
+\begin{problemstatement}{Vertex cover}
+Given a graph and a natural number bound~$b$. 
+Decide if
+there is a size~$b$ \alert{vertex cover}, a
+subset of the vertices~$C$ such that for every edge
+$\sequence{v,\hat{v}}$ an endpoint 
+is in~$C$.
+\end{problemstatement}
+
+\pause
+\begin{problemstatement}{Clique}
+Given a graph and a natural number bound~$b$.
+Decide if the graph has a $b$-vertex \alert{clique},
+a set of vertices such that every two are connected by an edge.
+\end{problemstatement}
+
+\pause
+\begin{problemstatement}{Hamiltonian circuit}
+Given a graph. 
+Decide if it has a \alert{Hamiltonian circuit},
+an ordering of all the vertices
+$\sequence{v_0,v_1\ldots,v_{n-1}}$ such that 
+every pair $v_i$ and~$v_{i+1}$
+are connected by an edge, and also connected are $v_{n-1}$ and~$v_0$.
+\end{problemstatement}
+
+\pause
+\begin{problemstatement}{Three dimensional matching ($3$-DM)}
+Given three disjoint finite sets 
+$X$, $Y$, and~$Z$, and some $T\subseteq X\times Y\times Z$
+(so $T$ consists of triples $\sequence{x,y,z}\in T$).
+Decide if $T$ has a \alert{matching subset} $M\subseteq T$:~if 
+$\sequence{x_0,y_0,z_0},\sequence{x_1,y_1,z_1} \in M$ then
+$x_0\neq x_1$ and $y_0\neq y_1$ and~$z_0\neq z_1$. 
+\end{problemstatement}
+
+\pause
+\begin{problemstatement}{Partition}
+Given a multiset~$S\subset\N$ 
+(a collection of natural numbers in which there may be repeats).
+Decide if~$S$ can be \alert{partitioned} into 
+two disjoint sub-multisets $S_0$ and~$S_1$ such that
+the sum of the members of~$S_0$ equals the sum of the members of~$S_1$.
+\end{problemstatement}
+\end{frame}
+
+\begin{frame}{Richard Karp}\relax
+{\small\itshape
+In this paper we give theorems that suggest, but do not imply,
+that these problems, as well as many others, will remain intractible
+perpetually.
+}
+\begin{center} % http://www.berkeley.edu/news/media/releases/2008/06/images/karp.jpg
+  \captionedfigure[.2]{karp.jpg}{Richard Karp, b~1935}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{P=NP?}
+\lem $\P\subseteq \NP\subseteq \EXP$
+
+\begin{center}
+  \includegraphics{asy/pnp.pdf}
+\end{center}
+
+At this time, we do not know 
+whether  $\P=\NP$.
+(As to whether $\NP=\EXP$, 
+all currently-known algorithms for solving $\NP$-complete problems run
+in (worst case) exponential time, but we do not konw if $\NP=\EXP$ either.)  
+\end{frame}
+
+\begin{frame}{$P=NP$ guesses?}
+The $\P=\NP$ question is one of the 
+\href{http://www.claymath.org/millennium-problems}{Millennium Problems},
+for which there is a $\$1,000,000$~reward.
+
+\pause
+Most experts believe that $\P\neq\NP$.
+Arora and Barak put it this way.
+\begin{quotation}\small
+\noindent  
+If you have ever eattempted a crossword puzzle, you konw that it is much 
+harder to solve it from scratch than to verify a solution provided by 
+someone else.
+Likewise, solving a math homework problem  by yourself is usually much 
+harder than reading and understanding a solution provided by your instructor.
+The usual explanation for this difference of effort is that finding a solution 
+\ldots\ 
+requires \emph{creative effort}.
+Verifying a solution is much easier since somebody else has already done
+the cretaive part.
+\end{quotation}
+\end{frame}
+
+\begin{frame}
+Scott Aaronson in 
+\href{http://www.scottaaronson.com/blog/?p=122}{a 2006 blog post}
+(and also a
+\href{http://www.scottaaronson.com/blog/?p=1720}{2014 blog post})
+gives many reasons: here are a few.
+\begin{desc}
+\item[The Obvious Argument.] After half a century, we still don't 
+know any algorithm for an $\NP$-complete problem that runs in 
+subexponential time.
+\ldots
+In math, if decades of research fail to turn up an object, 
+and there's no a priori reason to suppose the object exists, 
+it's usually a good strategy to conjecture that the object doesn't exist. 
+\item[The Empirical Argument.] \ldots\ people certainly want fast ways 
+to solve $\NP$-complete problems in practice, 
+and they haven't been able to invent them.
+\item[The Philosophical Argument.] If $\P=\NP$, then the world would be a 
+profoundly different place than we usually assume it to be. 
+There would be no special value in ``creative leaps,'' 
+no fundamental gap between solving a problem and recognizing the solution 
+once it's found. 
+Everyone who could appreciate a symphony would be Mozart; 
+everyone who could follow a step-by-step argument would be Gauss; 
+everyone who could recognize a good investment strategy would be 
+Warren Buffett.
+\end{desc}
+\end{frame}
+
+
+\begin{frame}
+Knuth has the opposite guess.
+
+\begin{quotation} \small
+I've come to believe that $\P = \NP$, \ldots\, 
+Some of my reasoning is admittedly na\"ive: It's hard to believe that 
+$\P\neq\NP$ and that so many brilliant people have failed to discover why.
+\ldots
+
+My main point, however, is that I don't believe that the equality 
+$\P = \NP$ will turn out to be helpful even if it is proved, 
+because such a proof will almost surely be nonconstructive. 
+\ldots\ 
+Mathematics is full of examples where something is proved to exist, 
+yet the proof tells us nothing about how to find it. 
+Knowledge of the mere existence of an algorithm is completely different 
+from the knowledge of an actual algorithm.
+
+More to the point, Robertson and Seymour have proved a famous theorem in graph 
+theory: Any class of graphs that is closed under taking minors has a 
+finite number of minor-minimal graphs. 
+% (A minor of a graph is any graph obtainable by deleting vertices, deleting edges, or shrinking edges to a point. A minor-minimal graph H for is a graph whose smaller minors all belong to although H itself doesn't.) 
+Therefore there exists a polynomial-time algorithm to decide whether or not 
+a given graph belongs to that class: The algorithm checks that G doesn't 
+contain any of the class's minor-minimal graphs as a minor.
+\end{quotation}
+\end{frame}
+\begin{frame}
+\begin{quotation}\small
+But we don't know what that algorithm is, except for a few special classes, 
+because the set of minor-minimal graphs is often unknown. 
+The algorithm exists, but it's not known to be discoverable in finite time.
+
+% This consequence of Robertson and Seymour's theorem definitely surprised me, when I learned about it while reading a paper by LovÃ¡sz. And it tipped the balance, in my mind, toward the hypothesis that P = N P.
+
+The moral is that people should distinguish between known (or knowable) 
+polynomial-time algorithms and arbitrary polynomial-time algorithms. 
+People might never be able to implement a polynomial-time-worst-case algorithm 
+for satisfiability, even though $\P$ happens to equal $\NP$.
+\end{quotation}
+\end{frame}
+
+
+\begin{frame}{Exercises}
+\begin{enumerate}
+\item Memorize the canonical six $\NP$-complete problems
+  (of which there are seven).     
+\end{enumerate}
+\end{frame}
+
+\end{document}
+
+
+
+
 

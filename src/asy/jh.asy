@@ -315,6 +315,7 @@ void setdefaultgraphstyles() {
   drawstyle directedstyle=drawstyle(p=EDGEPEN_TT,
 				    arrow=Arrow(6,filltype=FillDraw(white,boldcolor)));
 }
+
 pen WALK_PEN = linewidth(0.75bp) + highlight_color;
 
 

@@ -33,6 +33,8 @@ nodestyle ns_bleachedbold=nodestyle(xmargin=1pt,textpen=NODEPEN,
 nodestyle ns_light=nodestyle(xmargin=1pt,textpen=NODEPEN,
 			     drawfn=FillDrawer(lightcolor,black));
 
+// 
+defaultlayoutrel = false;
 
 
 // ======================== petersen graph =============
@@ -239,24 +241,24 @@ node v0t=ncircle("\nodebox{\strut$v_{0,T}$}", ns_bleachedbg),
   w23=ncircle("\nodebox{$w_{2,3}$}");
 
 // calculate nodes position
-real u=1cm;
+real u=1.5cm;
 real v=0.7*u;
 hlayout(1.0*u, v0t, v0f);
-hlayout(1.5*u, v0f, v1t);
+hlayout(1.35*u, v0f, v1t);
 hlayout(1.0*u, v1t, v1f);
-hlayout(1.5*u, v1f, v2t);
+hlayout(1.35*u, v1f, v2t);
 hlayout(1.0*u, v2t, v2f);
-hlayout(1.5*u, v2f, v3t);
+hlayout(1.35*u, v2f, v3t);
 hlayout(1.0*u, v3t, v3f);
 
 vlayout(1.5*v, v0t, w00);
 hlayout(1.0*u, w00, w01);
-w02.pos = new_node_pos_h(w00, -45, 0.5*(w00.pos.x+w01.pos.x)-w00.pos.x);
-// w02.pos = w00.pos+(0.866*u, -0.866*u);
+// w02.pos = new_node_pos_h(w00, -45, 0.5*(w00.pos.x+w01.pos.x)-w00.pos.x);
+w02.pos = new_node_pos_h(w00, -45, 0.65*u);
 
-hlayout(2.0*u, w01, w10);
-hlayout(1.5*u, w10, w12);
-w13.pos = new_node_pos_h(w10, -45, 0.5*(w10.pos.x+w12.pos.x)-w10.pos.x);
+hlayout(2.5*u, w01, w10);
+hlayout(1.0*u, w10, w12);
+w13.pos = new_node_pos_h(w10, -45, 0.65*u);
 
 hlayout(2.0*u, w12, w21);
 hlayout(1.0*u, w21, w23);
@@ -292,7 +294,7 @@ draw(pic,
      w00, w01, w02, w10, w12, w13, w21, w23);
 
 
-dot(pic,w00.pos,red);
-dot(pic,w00.pos+(1*u,0),red);
+// dot(pic,w00.pos,red);
+// dot(pic,w00.pos+(1*u,0),red);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

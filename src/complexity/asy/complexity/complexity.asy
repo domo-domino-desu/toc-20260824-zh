@@ -24,13 +24,13 @@ cd("");
 string OUTPUT_FN = "complexity%02d";
 
 
-nodestyle ns_bleachedbg=nodestyle(xmargin=1pt,
+nodestyle ns_bleachedbg=nodestyle(xmargin=1pt,textpen=NODEPEN,
 				  drawfn=FillDrawer(backgroundcolor+white,black));
-nodestyle ns_bg=nodestyle(xmargin=1pt,
+nodestyle ns_bg=nodestyle(xmargin=1pt,textpen=NODEPEN,
 			  drawfn=FillDrawer(backgroundcolor,black));
-nodestyle ns_bleachedbold=nodestyle(xmargin=1pt,
+nodestyle ns_bleachedbold=nodestyle(xmargin=1pt,textpen=NODEPEN,
 				    drawfn=FillDrawer(bold_light,black));
-nodestyle ns_light=nodestyle(xmargin=1pt,
+nodestyle ns_light=nodestyle(xmargin=1pt,textpen=NODEPEN,
 			     drawfn=FillDrawer(lightcolor,black));
 
 
@@ -221,8 +221,8 @@ int picnum = 4;
 picture pic;
 setdefaultgraphstyles();
 
-node v0t=ncircle("\nodebox{$v_{0,T}$}", ns_bleachedbg),
-  v0f=ncircle("\nodebox{$v_{0,F}$}"),
+node v0t=ncircle("\nodebox{\strut$v_{0,T}$}", ns_bleachedbg),
+  v0f=ncircle("\nodebox{\strut$v_{0,F}$}"),
   v1t=ncircle("\nodebox{$v_{1,T}$}", ns_bleachedbg),
   v1f=ncircle("\nodebox{$v_{1,F}$}"),
   v2t=ncircle("\nodebox{$v_{2,T}$}", ns_bleachedbg),
@@ -239,7 +239,7 @@ node v0t=ncircle("\nodebox{$v_{0,T}$}", ns_bleachedbg),
   w23=ncircle("\nodebox{$w_{2,3}$}");
 
 // calculate nodes position
-real u=1.5cm;
+real u=1cm;
 real v=0.7*u;
 hlayout(1.0*u, v0t, v0f);
 hlayout(1.5*u, v0f, v1t);
@@ -249,22 +249,17 @@ hlayout(1.0*u, v2t, v2f);
 hlayout(1.5*u, v2f, v3t);
 hlayout(1.0*u, v3t, v3f);
 
-vlayout(2.0*v, v0t, w00);
-hlayout(1.5*u, w00, w01);
-w02.pos = new_node_pos(w01,  -120, -1*v);
+vlayout(1.5*v, v0t, w00);
+hlayout(1.0*u, w00, w01);
+w02.pos = new_node_pos_h(w00, -45, 0.5*(w00.pos.x+w01.pos.x)-w00.pos.x);
+// w02.pos = w00.pos+(0.866*u, -0.866*u);
 
 hlayout(2.0*u, w01, w10);
 hlayout(1.5*u, w10, w12);
-w13.pos = new_node_pos(w10,  -120, -1*v);
+w13.pos = new_node_pos_h(w10, -45, 0.5*(w10.pos.x+w12.pos.x)-w10.pos.x);
 
 hlayout(2.0*u, w12, w21);
-hlayout(1.5*u, w21, w23);
-
-
-// draw nodes
-draw(pic,
-     v0t, v0f, v1t, v1f, v2t, v2f, v3t, v3f,
-     w00, w01, w02, w10, w12, w13, w21, w23);
+hlayout(1.0*u, w21, w23);
 
 
 // draw edges
@@ -289,5 +284,15 @@ draw(pic,
      (v3f--w13),
      (v3f--w23)
 );
+
+
+// draw nodes, after edges
+draw(pic,
+     v0t, v0f, v1t, v1f, v2t, v2f, v3t, v3f,
+     w00, w01, w02, w10, w12, w13, w21, w23);
+
+
+dot(pic,w00.pos,red);
+dot(pic,w00.pos+(1*u,0),red);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

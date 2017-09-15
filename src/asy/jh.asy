@@ -191,7 +191,7 @@ path cut_off_ends(path p, real epsilon) {
 // node.asy parameters
 import node;
 // define node style
-pen NODEPEN=fontsize(7pt)+blue;
+pen NODEPEN=fontsize(7pt);
 pen EDGEPEN=fontsize(7pt); // +fontcommand("\ttfamily");
 pen  EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
 // //? doesn't do anything defaultlabelstyle=labelstyle(p=fontsize(6pt)+fontcommand("\ttfamily")+red);
@@ -349,7 +349,7 @@ pair new_node_pos(node starting_pos, real theta, real vert) {
 
 // From starting point, angle, and desired horiz dist, return new pos
 pair new_node_pos_h(node starting_pos, real theta, real horiz) {
-  return (starting_pos.pos.x+horiz, starting_pos.pos.y+horiz*Tan(theta));
+  return starting_pos.pos+(horiz, horiz*Tan(theta));
 }
 
 // circle centered at c, radius r

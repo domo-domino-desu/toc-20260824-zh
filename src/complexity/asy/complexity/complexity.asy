@@ -59,10 +59,6 @@ real v=0.7*u;
 circularlayout(1.35*u, startangle=90, outer);
 circularlayout(0.7*u, startangle=90, inner);
 
-// draw nodes
-draw(pic,outer[0],outer[1],outer[2],outer[3],outer[4],
-     inner[0],inner[1],inner[2],inner[3],inner[4]);
-
 // draw edges
 draw(pic,
      (outer[0]--outer[1]),
@@ -81,6 +77,11 @@ draw(pic,
      (inner[1]--inner[4]),
      (inner[2]--inner[4])
 );
+
+// draw nodes
+draw(pic,outer[0],outer[1],outer[2],outer[3],outer[4],
+     inner[0],inner[1],inner[2],inner[3],inner[4]);
+
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -111,10 +112,6 @@ real v=0.7*u;
 circularlayout(1.25*u, startangle=90, outer);
 circularlayout(0.6*u, startangle=90, inner);
 
-// draw nodes
-draw(pic,outer[0],outer[1],outer[2],outer[3],outer[4],
-     inner[0],inner[1],inner[2],inner[3],inner[4]);
-
 // draw edges
 draw(pic,
      (outer[0]--outer[1]),
@@ -133,6 +130,11 @@ draw(pic,
      (inner[1]--inner[4]),
      (inner[2]--inner[4])
 );
+
+// draw nodes
+draw(pic,outer[0],outer[1],outer[2],outer[3],outer[4],
+     inner[0],inner[1],inner[2],inner[3],inner[4]);
+
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -154,10 +156,6 @@ real u=1cm;
 real v=0.7*u;
 circularlayout(0.8*u, startangle=90, n);
 
-// draw nodes
-draw(pic,
-     n[0], n[1], n[2], n[3]);
-
 // draw edges
 draw(pic,
      (n[0]--n[1]),
@@ -167,6 +165,11 @@ draw(pic,
      (n[1]--n[3]),
      (n[2]--n[3])
 );
+
+// draw nodes
+draw(pic,
+     n[0], n[1], n[2], n[3]);
+
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -187,17 +190,11 @@ node v00=ncircle("\nodebox{$v_{0,0}$}", ns_bleachedbg),
 // calculate nodes position
 real u=1.5cm;
 real v=0.7*u;
-hlayout(0.5*u, v00, v01);
+hlayout(0.7*u, v00, v01);
 v10.pos = new_node_pos(v00,  -135, -1*v);
-v11.pos = new_node_pos(v10,  -45, -0.75*v);
+v11.pos = new_node_pos(v10,  -45, -0.7*v);
 v20.pos = new_node_pos(v01,  -45, -1*v);
-v21.pos = new_node_pos(v20,  -135, -0.75*v);
-
-
-// draw nodes
-draw(pic,
-     v00, v01, v10, v11, v20, v21);
-
+v21.pos = new_node_pos(v20,  -135, -0.7*v);
 
 // draw edges
 draw(pic,
@@ -210,6 +207,10 @@ draw(pic,
      (v10--v21),
      (v11--v20)
 );
+
+// draw nodes
+draw(pic,
+     v00, v01, v10, v11, v20, v21);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -241,7 +242,7 @@ node v0t=ncircle("\nodebox{\strut$v_{0,T}$}", ns_bleachedbg),
   w23=ncircle("\nodebox{$w_{2,3}$}");
 
 // calculate nodes position
-real u=1.5cm;
+real u=1.35cm;
 real v=0.7*u;
 hlayout(1.0*u, v0t, v0f);
 hlayout(1.35*u, v0f, v1t);
@@ -254,11 +255,11 @@ hlayout(1.0*u, v3t, v3f);
 vlayout(1.5*v, v0t, w00);
 hlayout(1.0*u, w00, w01);
 // w02.pos = new_node_pos_h(w00, -45, 0.5*(w00.pos.x+w01.pos.x)-w00.pos.x);
-w02.pos = new_node_pos_h(w00, -45, 0.65*u);
+w02.pos = new_node_pos_h(w00, -50, 0.5*u);
 
 hlayout(2.5*u, w01, w10);
 hlayout(1.0*u, w10, w12);
-w13.pos = new_node_pos_h(w10, -45, 0.65*u);
+w13.pos = new_node_pos_h(w10, -50, 0.5*u);
 
 hlayout(2.0*u, w12, w21);
 hlayout(1.0*u, w21, w23);
@@ -287,14 +288,370 @@ draw(pic,
      (v3f--w23)
 );
 
-
 // draw nodes, after edges
 draw(pic,
      v0t, v0f, v1t, v1f, v2t, v2f, v3t, v3f,
      w00, w01, w02, w10, w12, w13, w21, w23);
 
-
 // dot(pic,w00.pos,red);
 // dot(pic,w00.pos+(1*u,0),red);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ======================== crossword puzzle =============
+
+int picnum = 5;
+picture pic;
+
+// height of boxes
+real u=12pt;
+real v=u;
+
+int grid_entries = 3;  // number of grid entries
+for(int i=0; i <= grid_entries; ++i) {
+  draw(pic,
+       (i*v,0)--(i*v,grid_entries*u), MAINPEN+boldcolor);
+}
+for(int j=0; j <= grid_entries; ++j) {
+  draw(pic,
+       (0,j*u)--(grid_entries*v,j*u), MAINPEN+boldcolor);
+}
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+int picnum = 6;
+picture pic;
+
+// height of boxes
+real u=12pt;
+real v=u;
+
+label(pic, "\str{C}", (0.5*u,2.5*v), fontsize(9pt));
+label(pic, "\str{A}", (1.5*u,2.5*v), fontsize(9pt));
+label(pic, "\str{B}", (2.5*u,2.5*v), fontsize(9pt));
+label(pic, "\str{A}", (0.5*u,1.5*v), fontsize(9pt));
+label(pic, "\str{G}", (1.5*u,1.5*v), fontsize(9pt));
+label(pic, "\str{E}", (2.5*u,1.5*v), fontsize(9pt));
+label(pic, "\str{D}", (0.5*u,0.5*v), fontsize(9pt));
+label(pic, "\str{O}", (1.5*u,0.5*v), fontsize(9pt));
+label(pic, "\str{G}", (2.5*u,0.5*v), fontsize(9pt));
+
+int grid_entries = 3;  // number of grid entries
+for(int i=0; i <= grid_entries; ++i) {
+  draw(pic,
+       (i*v,0)--(i*v,grid_entries*u), MAINPEN+boldcolor);
+}
+for(int j=0; j <= grid_entries; ++j) {
+  draw(pic,
+       (0,j*u)--(grid_entries*v,j*u), MAINPEN+boldcolor);
+}
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ======================== broadcast =============
+
+int picnum = 7;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{\strut$v_0$}", ns_bleachedbg),
+  v1=ncircle("\nodebox{\strut$v_1$}"),
+  v2=ncircle("\nodebox{\strut$v_2$}"),
+  v3=ncircle("\nodebox{\strut$v_3$}"),
+  v4=ncircle("\nodebox{\strut$v_4$}"),
+  v5=ncircle("\nodebox{\strut$v_5$}"),
+  v6=ncircle("\nodebox{\strut$v_6$}"),
+  v7=ncircle("\nodebox{\strut$v_7$}"),
+  v8=ncircle("\nodebox{\strut$v_8$}"),
+  v9=ncircle("\nodebox{\strut$v_9$}"),
+  v10=ncircle("\nodebox{\strut$v_{10}$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+layout(135.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
+layout(-135.0, v0, v2);
+hlayout(-1.0*u, v2, v3);
+layout(45.0, v0, v4);
+layout(-45.0, v0, v5);
+layout(-60.0, v5, v6);
+v7.pos = new_node_pos_h(v4, 30, 1*u);
+v8.pos = new_node_pos_h(v4, -30, 1*u);
+hlayout(1.0*u, v5, v9);
+hlayout(1*u, v8, v10);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v0--v4),
+     (v0--v5),
+     (v1--v2),
+     (v2--v3),
+     (v2--v5),
+     (v4--v7),
+     (v4--v8),
+     (v5--v6),
+     (v5--v9),
+     (v8--v9),
+     (v8--v10)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+int picnum = 8;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v5=ncircle("\nodebox{\strut$v_5$}", ns_bleachedbg);
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+layout(135.0, v0, v1); 
+layout(-135.0, v0, v2);
+hlayout(-1.0*u, v2, v3);
+layout(45.0, v0, v4);
+layout(-45.0, v0, v5);
+layout(-60.0, v5, v6);
+v7.pos = new_node_pos_h(v4, 30, 1*u);
+v8.pos = new_node_pos_h(v4, -30, 1*u);
+hlayout(1.0*u, v5, v9);
+hlayout(1*u, v8, v10);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v0--v4),
+     (v0--v5),
+     (v1--v2),
+     (v2--v3),
+     (v2--v5),
+     (v4--v7),
+     (v4--v8),
+     (v5--v6),
+     (v5--v9),
+     (v8--v9),
+     (v8--v10)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+int picnum = 9;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v4=ncircle("\nodebox{\strut$v_4$}", ns_bleachedbg);
+node v9=ncircle("\nodebox{\strut$v_9$}", ns_bleachedbg);
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+layout(135.0, v0, v1); 
+layout(-135.0, v0, v2);
+hlayout(-1.0*u, v2, v3);
+layout(45.0, v0, v4);
+layout(-45.0, v0, v5);
+layout(-60.0, v5, v6);
+v7.pos = new_node_pos_h(v4, 30, 1*u);
+v8.pos = new_node_pos_h(v4, -30, 1*u);
+hlayout(1.0*u, v5, v9);
+hlayout(1*u, v8, v10);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v0--v4),
+     (v0--v5),
+     (v1--v2),
+     (v2--v3),
+     (v2--v5),
+     (v4--v7),
+     (v4--v8),
+     (v5--v6),
+     (v5--v9),
+     (v8--v9),
+     (v8--v10)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+int picnum = 10;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v1=ncircle("\nodebox{\strut$v_1$}", ns_bleachedbg);
+node v2=ncircle("\nodebox{\strut$v_2$}", ns_bleachedbg);
+node v5=ncircle("\nodebox{\strut$v_5$}", ns_bleachedbg);
+node v8=ncircle("\nodebox{\strut$v_8$}", ns_bleachedbg);
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+layout(135.0, v0, v1); 
+layout(-135.0, v0, v2);
+hlayout(-1.0*u, v2, v3);
+layout(45.0, v0, v4);
+layout(-45.0, v0, v5);
+layout(-60.0, v5, v6);
+v7.pos = new_node_pos_h(v4, 30, 1*u);
+v8.pos = new_node_pos_h(v4, -30, 1*u);
+hlayout(1.0*u, v5, v9);
+hlayout(1*u, v8, v10);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v0--v4),
+     (v0--v5),
+     (v1--v2),
+     (v2--v3),
+     (v2--v5),
+     (v4--v7),
+     (v4--v8),
+     (v5--v6),
+     (v5--v9),
+     (v8--v9),
+     (v8--v10)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+int picnum = 11;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v3=ncircle("\nodebox{\strut$v_3$}", ns_bleachedbg);
+node v6=ncircle("\nodebox{\strut$v_6$}", ns_bleachedbg);
+node v7=ncircle("\nodebox{\strut$v_7$}", ns_bleachedbg);
+node v10=ncircle("\nodebox{\strut$v_{10}$}", ns_bleachedbg);
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+layout(135.0, v0, v1); 
+layout(-135.0, v0, v2);
+hlayout(-1.0*u, v2, v3);
+layout(45.0, v0, v4);
+layout(-45.0, v0, v5);
+layout(-60.0, v5, v6);
+v7.pos = new_node_pos_h(v4, 30, 1*u);
+v8.pos = new_node_pos_h(v4, -30, 1*u);
+hlayout(1.0*u, v5, v9);
+hlayout(1*u, v8, v10);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v0--v4),
+     (v0--v5),
+     (v1--v2),
+     (v2--v3),
+     (v2--v5),
+     (v4--v7),
+     (v4--v8),
+     (v5--v6),
+     (v5--v9),
+     (v8--v9),
+     (v8--v10)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ======================== K_5 =============
+int picnum = 12;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node[] nodes=ncircles("\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}");
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+circularlayout(1.0*u, startangle=90, nodes);
+
+// draw edges
+draw(pic,
+     (nodes[0]--nodes[1]),
+     (nodes[0]--nodes[2]),
+     (nodes[0]--nodes[3]),
+     (nodes[0]--nodes[4]),
+     (nodes[1]--nodes[2]),
+     (nodes[1]--nodes[3]),
+     (nodes[1]--nodes[4]),
+     (nodes[2]--nodes[3]),
+     (nodes[2]--nodes[4]),
+     (nodes[3]--nodes[4])
+);
+
+// draw nodes
+draw(pic,
+     nodes[0], nodes[1], nodes[2], nodes[3], nodes[4]);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

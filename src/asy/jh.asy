@@ -305,7 +305,7 @@ void setdefaultgraphstyles() {
   NODEPEN=fontsize(7pt);
   EDGEPEN=linewidth(0.75bp)+fontsize(7pt)+boldcolor; 
   EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
-  defaultnodestyle=nodestyle(xmargin=1pt,
+  defaultnodestyle=nodestyle(xmargin=0.4pt,
 			     textpen=NODEPEN,
 			     drawfn=FillDrawer(white,boldcolor));
   // edge style

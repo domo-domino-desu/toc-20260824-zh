@@ -764,7 +764,7 @@ real v=0.7*u;
 hlayout(3*u, nodes[0], nodes[1]);
 vlayout(3*v, nodes[0], nodes[5]);
 hlayout(3*u, nodes[5], nodes[6]);
-nodes[2].pos = new_node_pos_h(nodes[0], -20.0, 1.5*u);
+nodes[2].pos = new_node_pos_h(nodes[0], -15.0, 1.5*u);
 nodes[3].pos = new_node_pos_h(nodes[2], -120.0, -0.5*u);
 hlayout(1*u, nodes[3], nodes[4]);
 
@@ -843,6 +843,195 @@ draw(pic,nodes[5]--nodes[6],WALK_PEN);
 // draw nodes
 draw(pic,
      nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6]);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ========== Clique exercise ==========
+int picnum = 17;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node[] nodes=ncircles("\nodebox{$v_0$}",
+		      "\nodebox{$v_1$}",
+		      "\nodebox{$v_2$}",
+		      "\nodebox{$v_3$}",
+		      "\nodebox{$v_4$}",
+		      "\nodebox{$v_5$}",
+		      "\nodebox{$v_6$}"
+		      );
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+
+hlayout(2*u, nodes[6], nodes[5]);
+vlayout(2*v, nodes[6], nodes[0]);
+nodes[1].pos = new_node_pos_h(nodes[6], -35.0, 1*u);
+hlayout(2*u, nodes[0], nodes[2]);
+nodes[4].pos = new_node_pos_h(nodes[5], -35.0, 1*u);
+hlayout(1*u, nodes[4], nodes[3]);
+
+// draw edges
+draw(pic,
+     (nodes[0]--nodes[1]),
+     (nodes[0]--nodes[2]),
+     (nodes[0]--nodes[6]),
+     (nodes[1]--nodes[2]),
+     (nodes[1]--nodes[6]),
+     (nodes[2]--nodes[3]),
+     (nodes[2]--nodes[4]),
+     (nodes[2]--nodes[5]),
+     (nodes[2]--nodes[4]),
+     (nodes[3]--nodes[4]),
+     (nodes[3]--nodes[5]),
+     (nodes[4]--nodes[5])
+);
+
+// draw nodes
+draw(pic,
+     nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6]);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ========= icosohedron ===========
+// Could not get this to go:
+// http://www.piprime.fr/files/asymptote/modules/polyhedron_js/index.html
+//Author Jens Schwaiger.
+int picnum = 18;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node[] outer=ncircles("\nodebox{}",
+		      "\nodebox{}",
+		      "\nodebox{}",
+		      "\nodebox{}",
+		      "\nodebox{}"
+		      );
+node[] middle_points=ncircles("\nodebox{}",
+			      "\nodebox{}",
+			      "\nodebox{}",
+			      "\nodebox{}",
+			      "\nodebox{}"
+			      );
+node[] middle_midpoints=ncircles("\nodebox{}",
+				 "\nodebox{}",
+				 "\nodebox{}",
+				 "\nodebox{}",
+				 "\nodebox{}"
+				 );
+node[] inner=ncircles("\nodebox{}",
+		      "\nodebox{}",
+		      "\nodebox{}",
+		      "\nodebox{}",
+		      "\nodebox{}"
+		      );
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+
+circularlayout(1.5*u, startangle=90, outer);
+circularlayout(1.0*u, startangle=90, middle_points);
+circularlayout(0.4*u, startangle=-90, inner);
+middle_midpoints[0].pos=0.5*(middle_points[0].pos+middle_points[1].pos);
+middle_midpoints[1].pos=0.5*(middle_points[1].pos+middle_points[2].pos);
+middle_midpoints[2].pos=0.5*(middle_points[2].pos+middle_points[3].pos);
+middle_midpoints[3].pos=0.5*(middle_points[3].pos+middle_points[4].pos);
+middle_midpoints[4].pos=0.5*(middle_points[4].pos+middle_points[0].pos);
+
+// draw edges
+draw(pic,
+     (outer[0]--outer[1]),
+     (outer[1]--outer[2]),
+     (outer[2]--outer[3]),
+     (outer[3]--outer[4]),
+     (outer[4]--outer[0]),
+     (middle_points[0]--middle_points[1]),
+     (middle_points[1]--middle_points[2]),
+     (middle_points[2]--middle_points[3]),
+     (middle_points[3]--middle_points[4]),
+     (middle_points[4]--middle_points[0]),
+     (inner[0]--inner[1]),
+     (inner[1]--inner[2]),
+     (inner[2]--inner[3]),
+     (inner[3]--inner[4]),
+     (inner[4]--inner[0]),
+     (middle_points[0]--outer[0]),
+     (middle_points[1]--outer[1]),
+     (middle_points[2]--outer[2]),
+     (middle_points[3]--outer[3]),
+     (middle_points[4]--outer[4]),
+     (inner[0]--middle_midpoints[2]),
+     (inner[1]--middle_midpoints[3]),
+     (inner[2]--middle_midpoints[4]),
+     (inner[3]--middle_midpoints[0]),
+     (inner[4]--middle_midpoints[1])
+);
+
+// draw nodes
+draw(pic,
+     outer[0], outer[1], outer[2], outer[3], outer[4],
+     middle_points[0], middle_points[1], middle_points[2], middle_points[3], middle_points[4],
+     middle_midpoints[0], middle_midpoints[1], middle_midpoints[2], middle_midpoints[3], middle_midpoints[4],
+     inner[0], inner[1], inner[2], inner[3], inner[4]
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+int picnum = 19;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+// draw edges
+draw(pic,
+     (outer[2]--outer[3]),
+     (middle_points[2]--middle_midpoints[2]),
+     (middle_points[3]--middle_midpoints[3]),
+     (inner[0]--inner[1]),
+     (middle_points[0]--outer[0]),
+     (middle_points[1]--outer[1]),
+     (middle_points[4]--outer[4]),
+     (inner[2]--middle_midpoints[4]),
+     (inner[3]--middle_midpoints[0]),
+     (inner[4]--middle_midpoints[1])
+);
+
+draw(pic,outer[0]--outer[1],WALK_PEN);
+draw(pic,outer[1]--outer[2],WALK_PEN);
+draw(pic,outer[2]--middle_points[2],WALK_PEN);
+draw(pic,middle_points[2]--middle_points[1],WALK_PEN);
+draw(pic,middle_points[1]--middle_points[0],WALK_PEN);
+draw(pic,middle_points[0]--middle_points[4],WALK_PEN);
+draw(pic,middle_points[4]--middle_midpoints[3],WALK_PEN);
+draw(pic,middle_midpoints[3]--inner[1],WALK_PEN);
+draw(pic,inner[1]--inner[2],WALK_PEN);
+draw(pic,inner[2]--inner[3],WALK_PEN);
+draw(pic,inner[3]--inner[4],WALK_PEN);
+draw(pic,inner[4]--inner[0],WALK_PEN);
+draw(pic,inner[0]--middle_midpoints[2],WALK_PEN);
+draw(pic,middle_midpoints[2]--middle_points[3],WALK_PEN);
+draw(pic,middle_points[3]--outer[3],WALK_PEN);
+draw(pic,outer[3]--outer[4],WALK_PEN);
+draw(pic,outer[4]--outer[0],WALK_PEN);
+
+// draw nodes
+draw(pic,
+     outer[0], outer[1], outer[2], outer[3], outer[4],
+     middle_points[0], middle_points[1], middle_points[2], middle_points[3], middle_points[4],
+     middle_midpoints[0], middle_midpoints[1], middle_midpoints[2], middle_midpoints[3], middle_midpoints[4],
+     inner[0], inner[1], inner[2], inner[3], inner[4]
+     );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

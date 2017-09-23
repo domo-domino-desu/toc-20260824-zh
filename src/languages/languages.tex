@@ -1478,53 +1478,41 @@ between the vertices.
 \end{fig}
 \end{example}
 
-A common way to represent a graph in a computer
-is an \definend{adjacency matrix}.
-This represents the prior example's graph.
-It has a $1$ in the $i,j$~entry if the graph has an edge $\set{v_i,v_j}$.
-\begin{equation*}
-  \begin{blockarray}{*{6}{c}}
-           &v_0 &v_1 &v_2 &v_3 &v_4    \\
-    \begin{block}{c(*{5}{c})}
-      v_0  &0   &1   &1  &0   &0  \\
-      v_1  &1   &0   &1  &1   &1  \\
-      v_2  &1   &1   &0  &1   &1  \\
-      v_3  &0   &1   &1  &0   &1  \\
-      v_4  &0   &1   &1  &1   &0  \\
-    \end{block}
-  \end{blockarray}
-  \tag{$*$}
-\end{equation*}
-\Cref{ex:SimpleGraphFiveVert}'s point is that a graph is about the connections
-between vertices, not about how it is drawn. 
-This representation
-underlines that because it is, after all, not drawn.
-
-
-\begin{TODO}
-(1) multiply the matrices to get reachable in two
-(2) defn of subgraph
-(3) circuit or cycle defn
-\end{TODO}
+Where $\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$ is a graph,
+a \definend{subgraph} $\hat{\mathcal{G}}$ is such that where
+$\hat{\mathcal{G}}=\sequence{\hat{\mathcal{V}}, \hat{\mathcal{E}}}$,
+then $\hat{\mathcal{V}}\subseteq\mathcal{V}$ and
+$\hat{\mathcal{E}}\subseteq\mathcal{E}$.
+(In general, a subgraph need not have all possible edges.
+A subgraph with every possible edge is an \definend{induced subgraph}.)
 
 
 There are many variations and extensions of \cref{def:SimpleGraph}.
 One is where what is being modelled requires that a vertex might be 
 connected to itself, forming a \definend{loop}.
-(We might extend the definition by allowing an edge to also be a one-element
-set.
-Instead of focusing on the formal details, in the rest of this introduction
-we keep the discussion at an intuitive level.)
 Another variant is allowing two vertices with more than one connection between
 them. 
-Still another is allowing edges to have a direction, 
-as in a road map of one-way streets, 
-giving a \definend{directed graph} or \definend{digraph}.
-The Turing machine above is a digraph and has loops.
+(We might extend \cref{def:SimpleGraph} by also allowing an edge to
+be a one-element set.
+In the rest of this introduction, instead of focusing on the formal details
+we will keep the discussion at an intuitive level.)
 
+Still another graph variant is a \definend{directed graph} or
+\definend{digraph}, where 
+edges have a direction, 
+as in a road map of one-way streets.
+The Turing machine above is a digraph, and also has loops.
 In a digraph, if an edge is directed from $v$ to $\hat{v}$ then we 
 can write it as $v\hat{v}$ but not in the other order.
 
+Another extension to the definition of a simple graph is to associate 
+with each edge a \definend{weight}, perhaps signifying the
+cost in money or in time for traversing that edge.
+
+
+
+
+\subsection{Paths}
 We often want to model moving through a network, from one vertex to another.
 Edges $e$ and~$\hat{e}$ are \definend{adjacent}
 if they share a vertex: where we can write the first edge as $e=uv$ then
@@ -1555,36 +1543,104 @@ and on the right is a cycle.
 \end{center}
 \end{example}
 
-Another extension to the definition of a simple graph is to associate 
-something with each edge, such as a \definend{weight}, perhaps signifying the
-cost in money or in time for traversing that edge.
+\begin{center}\small %https://math.stackexchange.com/a/1598203
+\begin{tabular}{r|ll}
+  \multicolumn{1}{c}{\tabulartext{Name}}
+    &\multicolumn{1}{c}{\tabulartext{Closed or open?}}
+    &\multicolumn{1}{c}{\tabulartext{Definition}}   \\ \cline{2-3}
+  \definend{Walk}
+    &Either
+    &Vertices may repeat. Edges may repeat.      \\
+  \definend{Trail}
+    &Open
+    &Vertices may repeat. Edges cannot repeat.   \\
+  \definend{Circuit}
+    &Closed
+    &Vertices may repeat. Edges cannot repeat.   \\
+  \definend{Path}
+    &Open
+    &Vertices cannot repeat. Edges cannot repeat. \\
+  \definend{Cycle}
+    &Closed
+    &Vertices cannot repeat. Edges cannot repeat.
+\end{tabular}
+\end{center}
 
-\begin{example} \label{ex:ShortestPath}
-The \definend{Shortest Path Problem} starts with a weighted graph, one where
-the edges have costs,
-and with an initial vertex and a final vertex. 
-From those it wants to find the cheapest path between the vertices.
-For instance, with this graph we could look for 
-the cheapest path from $A$ to~$F$.
-\begin{center}
-  \includegraphics{languages/asy/graphs/graphs08.pdf}
-\end{center} 
-\end{example}
+\subsection{Graph representation}
+A common way to represent a graph in a computer
+is an \definend{adjacency matrix}.
+This represents \cref{fig:DrawTwoWays}'s graph.
+It has a $1$ in the $i,j$~entry if the graph has an edge $\set{v_i,v_j}$.
+\begin{equation*}
+  \mathcal{M}(\mathcal{G})=
+  \begin{blockarray}{*{6}{c}}
+           &v_0 &v_1 &v_2 &v_3 &v_4    \\
+    \begin{block}{c(*{5}{c})}
+      v_0  &0   &1   &1  &0   &0  \\
+      v_1  &1   &0   &1  &1   &1  \\
+      v_2  &1   &1   &0  &1   &1  \\
+      v_3  &0   &1   &1  &0   &1  \\
+      v_4  &0   &1   &1  &1   &0  \\
+    \end{block}
+  \end{blockarray}
+  \tag{$*$}
+\end{equation*}
+\Cref{ex:SimpleGraphFiveVert}'s point is that a graph is about the connections
+between vertices, not about how it is drawn. 
+This representation
+underlines that because it is, after all, not drawn.
 
-\begin{example}  \label{ex:TravellingSalesman}
-The \definend{Travelling Salesman Problem} starts with a graph where the
-edges have costs and asks for the cheapest cycle that visits every vertex.
-An instance would be to take as input a list of the capitals of the 
-forty eight contiguous US~states,
-along with the distances between them: Montpelier~VT to	Albany~NY is $203.08$
-kilometers, etc.
-Then from among all trips around those cities such as 
-$\text{Montpelier}\rightarrow\text{Albany}\rightarrow\text{Harrisburg}\rightarrow \cdots \rightarrow\text{Montpelier}$, we want the cheapest one.
-\end{example}
+These variants can be part of the matrix in~($*$) by: loops mean that the
+entries on the diagonal can be non-zero, and multiple edges between two
+vertices means that the matrix's entries can be natural numbers
+other than $0$ or~$1$.
 
+To represent a digraph using the matrix, take the $i,j$ entry to be
+the number of edges directed from $v_i$ to~$v_j$.
+With this, the matrix can be not symmetric about the main diagonal
+from the upper left to the lower right.
+
+\begin{lemma}
+Let $\mathcal{M}(\mathcal{G})$ be the matrix representing
+the directed graph~$\mathcal{G}$,
+so that its $i,j$ entry is 
+the number of edges from $v_i$ to~$v_j$.
+Then the matrix multiplicative $n$-th power of the matrix
+is given by: its $i,j$ entry is the number of paths from vertex~$v_i$
+to vertex~$v_j$.
+\end{lemma}
+
+\begin{proof}
+Exercise.
+\end{proof}
+
+
+\subsection{Colors}
 Still another extension of the definition of simple graph is to 
 apportion the vertices into a number of categories,
 traditionally called \definend{colors}.
+
+Usually we show the classes by coloring the vertices,
+hence the name.
+On the left is a graph with a $3$-coloring.
+\begin{center}
+  \vcenteredhbox{\includegraphics{complexity/asy/complexity/complexity01.pdf}}
+  \hspace{3em}
+  \vcenteredhbox{\includegraphics{complexity/asy/complexity/complexity02.pdf}}
+\end{center}
+On the right is a graph for which there is no
+$3$-coloring.
+The argument goes:~imagine
+you had a $3$~coloring.
+Each vertex is connected to each other vertex.
+Consider, say, the vertex on top.
+If the three vertices it is connected to are
+differently-colored 
+then whatever color the top has will give an example of two same-colored
+vertices that are connected.
+If the three vertices it is connected to are
+not differently colored then those give an example of same-colored
+connected vertices.
 
 \begin{example}  \label{ex:CourseScheduling}
 The \definend{Course Scheduling Problem} starts with a list of students and the 
@@ -2111,7 +2167,268 @@ best solution according to some metric.
 
 
 
+\section{Satisfiability}
+
+
+\begin{TODO}
+Review prop logic, conjunctive normal form.
+\end{TODO}
+
+That is, where the formula uses the variables $b_0,\,\ldots\, b_{n-1}$,
+decide if there is an assignment of the values $T$ and~$F$ to those
+variables that making the formula have value~$T$. 
+
+\begin{problem}[Satisfiability, or \textsf{SAT}]
+Given a propositional logic formula in conjunctive normal form,
+decide if it is satisfiable.
+\end{problem}
+
+\begin{problem}[$3$-Satisfiability, or $3$-\textsf{SAT}]
+Given a propositional logic formula in conjunctive normal form,
+where each clause has at most three variables,
+decide if it is satisfiable.
+\end{problem}
+
+
+
+\section{Some problems}
+
+
+\margingraphic{0.2\textwidth}{complexity/hamilton.png}{\href{https://en.wikipedia.org/wiki/William_Rowan_Hamilton}{William Rowan Hamilton 1805--1865}} % By William_Rowan_Hamilton_portrait_oval.png: Unknown William_Rowan_Hamilton_portrait_oval_2.png: Unknown derivative work: Quibik [Public domain], via Wikimedia Commons
+W~R Hamilton was a polymath whose genius was recognized early and he was 
+given a sinecure as Astronomer Royal of Ireland.  
+He made important contributions to classical mechanics, where his 
+reformulation of Newtonian mechanics is now called Hamiltonian mechanics. 
+Other work of his in physics helped develop classical field theories such as 
+electromagnetism and laid the groud work for
+the development of quantum mechanics.  
+In mathematics, he is best known as the
+\citetext{inventor of the quaternion number system}{See \url{https://en.wikipedia.org/wiki/History_of_quaternions}.}.
+
+One of his ventures was a game, \textit{Around the World} (another version was
+called \citetext{\textit{The Icosian Game}}{See \url{http://puzzlemuseum.com/month/picm02/200207icosian.htm}.}).
+Below is a model of the board.
+The vertices were holes labelled with the names of world cities.
+Players put pegs in the holes, looking for a circuit that visited each 
+city once and only once. 
+\begin{animatedfigure}{Hamilton's \textit{Around the World} game}\centering
+  % \includegraphics[height=0.75in]{complexity/icosehedron.png}
+  % \hspace{2em}
+  \animategraphics[poster=first]{2}{complexity/asy/complexity/complexity}{18}{19}
+\end{animatedfigure} 
+The game was not a money maker.
+But it did result in Hamilton's name being associated with a problem.
+
+\begin{problem}[Hamiltonian circuit]
+Given a graph, decide if it contains a \definend{Hamiltonian circuit},
+a cyclic path that includes each vertex.
+\end{problem}
+
+Another example of finding a circuit that visits each vertex exactly once
+is the \definend{knight's tour}, 
+to find a circuit of the chess board using the knight piece.
+\begin{center}
+  \vcenteredhbox{\includegraphics[height=1in]{complexity/knight.jpg}}
+  \hspace{3em}
+  \vcenteredhbox{\includegraphics[height=1.2in]{complexity/knightstour.png}}
+\end{center}
+\citetext{Euler's solution is shown}{The figure is from \autocite{EulerKnightsTour}.}.
+In terms of a graph, there are sixty four vertices and each
+is connected to a number of others that represent vertices that a knight's move
+can reached in one knight's move.
+(Recall that a knight moves three squares at a time,
+two squares in one direction and then one square perpendicular to that.)
+Then this is a Hamiltonian circuit problem on that graph.
+
+Note that the Hamiltonian circuit problem is stated as
+``decide,'' rather than ``find.''
+Many of the problems below are stated in the same way.
+Again, this is a matter of technical convenience.  
+
+
+\begin{problem}[Shortest Path] \label{ex:ShortestPath}
+The \definend{Shortest Path Problem} starts with a weighted graph, one where
+the edges have costs,
+and with an initial vertex and a final vertex. 
+From those it wants to find the cheapest path between the vertices.
+\end{problem}
+
+For instance, with this graph we could look for 
+the cheapest path from $A$ to~$F$.
+\begin{center}
+  \includegraphics{languages/asy/graphs/graphs08.pdf}
+\end{center} 
+
+
+\begin{problem}[Travelling Salesman]  \label{ex:TravellingSalesman}
+The \definend{Travelling Salesman Problem} starts with a graph where the
+edges have costs and asks for the cheapest cycle that visits every vertex.
+\end{problem}
+
+An instance would be to take as input a list of the capitals of the 
+forty eight contiguous US~states,
+along with the distances between them: Montpelier~VT to	Albany~NY is $203.08$
+kilometers, etc.
+Then from among all trips around those cities such as 
+$\text{Montpelier}\rightarrow\text{Albany}\rightarrow\text{Harrisburg}\rightarrow \cdots \rightarrow\text{Montpelier}$, we want the cheapest one.
+
+
+\begin{problem}[Graph Colorability]
+Given a graph and a bound $B\in\N$, decide if the 
+graph is \definend{$B$-colorable}, 
+if we can partition its vertices into $B$-many classes 
+$\mathcal{V}=\mathcal{C}_0\cup\cdots\cup\mathcal{C}_{B-1}$ such
+that never are two same-class vertices connected by an edge.
+\end{problem}
+
+
+\begin{problem}[Clique]
+Given a graph and a bound~$B\in\N$,
+decide if the graph has a \definend{$B$-clique},
+a set of $b$~vertices such that any two are connected.
+\end{problem}
+
+A graph with a $4$-clique has a subgraph like that on the left,
+and a graph with a $5$~clique has a subgraph like the one on the right.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity02.pdf}
+  \hspace{3em}
+  \includegraphics{complexity/asy/complexity/complexity12.pdf}
+\end{center}
+
+\begin{example}
+Decide if this graph has a $4$-clique.
+\begin{animatedfigure}{Instance of the Clique
+  problem}\centering 
+  \animategraphics[poster=first]{1}{complexity/asy/complexity/complexity}{13}{14}
+\end{animatedfigure} 
+\end{example}
+
+
+\begin{problem}[Vertex cover]
+Given a graph and a bound~$B\in\N$,
+decide if the graph has a \definend{$B$-vertex cover},
+a set~$C$ containing $B$~vertices
+such that for any edge $v_iv_j$, at least one of the two ends
+is a member of~$C$.
+\end{problem}
+
+
+\begin{problem}[Subset sum]
+Given a set of natural
+numbers $S=\set{n_0,\,\ldots\, n_k}$ and a target $t\in\N$,
+decide if some subset of~$S$ adds to the target.
+\end{problem}
+
+
+\begin{problem}[Crossword]
+Given an $n\times n$ grid, and a set of $2n$s-many strings, each
+of length~$n$, decide if the words can be packed into the grid.
+\end{problem}
+
+\begin{example} % http://cgi.csc.liv.ac.uk/~ped/teachadmin/COMP202/annotated_np.html
+In this $3\times 3$ grid, can we pack the six words
+\str{AGE}, \str{AGO}, \str{BEG}, \str{CAB}, \str{CAD}, and \str{DOG}?
+\begin{animatedfigure}{Instance of the Crossword
+  problem}\centering 
+  \animategraphics[poster=first]{2}{complexity/asy/complexity/complexity}{05}{06}
+\end{animatedfigure} 
+\end{example}
+
+
+\begin{problem}[Broadcast]  \label{prob:broadcast}
+Given a graph with initial vertex~$v_0$, and a bound~$B\in\N$,
+decide if you can broadcast a message from $v_0$ to every other vertex
+within $B$~steps.
+At each step, any node that has heard the message can transmit it to
+at most one adjacent vertex.
+\end{problem}
+
+\begin{example} \label{ex:broadcast}
+In this graph no vertex is more than three edges away from the initial one.
+The animation shows it taking four steps to broadcast.
+\begin{animatedfigure}{Instance of the Broadcast
+  problem}\centering 
+  \animategraphics[poster=first]{1}{complexity/asy/complexity/complexity}{07}{11}
+\end{animatedfigure} 
+\end{example}
+
+\begin{problem}[$15$ tiles]
+Given an $n\times n$ grid, holding tiles numbered $1$, \ldots\,~$n-1$,
+and a blank,
+find the minimum number of moves that will put the tile numbers into
+order.
+A move consists of switching a tile with an adjacent blank.
+\end{problem}
+
+This game was
+\citetext{popularized as a toy}{%
+  It was invented by Noyes Palmer Chapman, a postmaster in Canastota, New York.
+  As early as 1874 he showed friends a precursor puzzle consisting of sixteen
+  numbered blocks that were to be put together in rows of four,
+  each summing to $34$.
+  Copies of the improved Fifteen Puzzle circulated in the northeast,
+  and students in the American School for the Deaf and other
+  started manufacturing the
+  puzzle by December 1879.
+  They become popular as the ``Gem Puzzle.''
+  Noyes Chapman had applied for a patent in February, 1880. 
+  By that time the game had became a craze in the U.S.,
+  somewhat as did Rubik's Cube a century later.
+  It was also immensely popular in Canada and Europe.
+  See~\autocite{wiki:FifteenPuzzle}} with a $4\times 4$ grid, hence the name.
+\begin{center}
+  \includegraphics[width=0.25\textwidth]{complexity/15game.png}
+\end{center}
+
 \begin{exercises}
+\begin{exercise}
+What is a $3$-clique?
+A $2$-clique?
+\begin{answer}
+A $3$-clique is a triangle.
+A $2$-clique is an edge.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that any subgraph of a clique is itself a clique.
+\end{exercise}
+
+\begin{exercise}
+How many edges does a $k$-clique have?
+\begin{answer}
+A $k$-clique has $k(k-1)/2$ edges, one for each combination of two vertices.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Find all $3$-cliques in this graph.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity17.pdf}
+\end{center}
+\end{exercise}
+
+\begin{exercise}
+Is there a $3$-clique in this graph?
+A $4$-clique?
+A $5$-clique?
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity15.pdf}
+\end{center}
+\begin{answer}
+It has a $4$-clique, and thus necessarily a $3$-clique
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity16.pdf}
+\end{center}
+but it has no $5$-clique, as you can check by exhaustion.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+In \cref{ex:broadcast} the broadcast takes four steps.
+Can it be done in fewer steps?
+\end{exercise}
 
 \begin{exercise}
 Express each decision problem as a problem of recognizing members of a 

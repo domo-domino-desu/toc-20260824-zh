@@ -1478,64 +1478,72 @@ between the vertices.
 \end{fig}
 \end{example}
 
+\begin{definition}
 Where $\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$ is a graph,
-a \definend{subgraph} $\hat{\mathcal{G}}$ is such that where
-$\hat{\mathcal{G}}=\sequence{\hat{\mathcal{V}}, \hat{\mathcal{E}}}$,
-then $\hat{\mathcal{V}}\subseteq\mathcal{V}$ and
+a \definend{subgraph}
+$\hat{\mathcal{G}}=\sequence{\hat{\mathcal{V}},\hat{\mathcal{G}}}$
+satisfies
+$\hat{\mathcal{V}}\subseteq\mathcal{V}$ and
 $\hat{\mathcal{E}}\subseteq\mathcal{E}$.
-(In general, a subgraph need not have all possible edges.
-A subgraph with every possible edge is an \definend{induced subgraph}.)
-
+A subgraph with every possible edge, with the property that
+for every $e=v_iv_j\in\mathcal{E}$ such that $v_i,v_j\in\hat{\mathcal{V}}$
+then $e\in\hat{\mathcal{E}}$, is an \definend{induced subgraph}.
+\end{definition}
 
 There are many variations and extensions of \cref{def:SimpleGraph}.
-One is where what is being modelled requires that a vertex might be 
+One allows a vertex to be 
 connected to itself, forming a \definend{loop}.
-Another variant is allowing two vertices with more than one connection between
-them. 
 (We might extend \cref{def:SimpleGraph} by also allowing an edge to
 be a one-element set.
 In the rest of this introduction, instead of focusing on the formal details
 we will keep the discussion at an intuitive level.)
 
-Still another graph variant is a \definend{directed graph} or
+Another variant allows two vertices to have more than one edge between
+them. 
+Another is a \definend{directed graph} or
 \definend{digraph}, where 
 edges have a direction, 
 as in a road map of one-way streets.
 The Turing machine above is a digraph, and also has loops.
 In a digraph, if an edge is directed from $v$ to $\hat{v}$ then we 
 can write it as $v\hat{v}$ but not in the other order.
-
-Another extension to the definition of a simple graph is to associate 
-with each edge a \definend{weight}, perhaps signifying the
-cost in money or in time for traversing that edge.
-
+Still another extension to the definition of a simple graph is to associate 
+with each edge a real number \definend{weight}, perhaps signifying the distance
+or perhaps the cost in money or in time for traversing that edge.
 
 
 
-\subsection{Paths}
-We often want to model moving through a network, from one vertex to another.
-Edges $e$ and~$\hat{e}$ are \definend{adjacent}
-if they share a vertex: where we can write the first edge as $e=uv$ then
-we can write the second as~$\hat{e}=vw$, sharing the vertex~$v$.
+
+\subsection{Traversal}
+We often want to model moving through a network from vertex to vertex.
+
+\begin{definition}
+Two graph edges are \definend{adjacent}
+if they share a vertex, so that the first edge is $uv$ and
+the second is~$vw$.
 A \definend{walk} is a sequence of adjacent edges 
-$W=\sequence{v_0v_1,\,v_1v_2,\,\ldots\,v_{n-1}v_n}$.
-This walk has length~$n$ because that is the number of edges.
-Here $v_0$ and~$v_n$ are the \definend{initial vertex} and
-\definend{final vertex}, and we may call $W$ a walk from $v_0$ to~$v_n$
-or write $W$ as $v_0\rightarrow v_1\rightarrow\cdots\,v_n$.
+$\sequence{v_0v_1,\,v_1v_2,\,\ldots,\,v_{n-1}v_n}$.
+Its \definend{length} is the number of edges, $n$.
+% Its \definend{initial vertex} is~$v_0$ and its \definend{final vertex} is~$v_n$.
+If the initial vertex~$v_0$ equals the final vertex~$v_n$ then it is a 
+\definend{closed} walk, otherwise it is \definend{open}.
 
-If the edges of a walk are distinct then it is a \definend{trail}.
-If in a trail the vertices are distinct 
-(except possibly that the initial vertex equals the final vertex) 
+If in a walk no edge occurs twice then it is a \definend{trail}.
+If a trail's vertices are distinct 
+(except possibly that it is closed,
+so the initial vertex equals the final vertex) 
 then it is a \definend{path}.
-If $v_0=v_n$ then it is a \definend{closed} trail or path.
-A closed path that is nontrivial, that has at least one edge,
-is a \definend{cycle}. 
+A closed path that has at least one edge is a \definend{cycle}. 
+A \definend{circuit} is a closed walk that either contains all of the edges,
+in which case it is an \definend{Euler circuit}, or all of the vertices,
+making it a \definend{Hamiltonian circuit}.
+
 A graph is \definend{connected} if there is a path between any two vertices.
+\end{definition}
 
 \begin{example} \label{ex:TwoWalkGraphs}
-Below, on the left is a walk from $u_0$ to~$u_3$
-and on the right is a cycle.
+On the left is a walk from $u_0$ to~$u_3$
+and on the right is a cycle that is also a circuit of all vertices.
 \begin{center}
   \includegraphics{languages/asy/graphs/graphs04.pdf}
   \hspace{3em}
@@ -1543,34 +1551,14 @@ and on the right is a cycle.
 \end{center}
 \end{example}
 
-\begin{center}\small %https://math.stackexchange.com/a/1598203
-\begin{tabular}{r|ll}
-  \multicolumn{1}{c}{\tabulartext{Name}}
-    &\multicolumn{1}{c}{\tabulartext{Closed or open?}}
-    &\multicolumn{1}{c}{\tabulartext{Definition}}   \\ \cline{2-3}
-  \definend{Walk}
-    &Either
-    &Vertices may repeat. Edges may repeat.      \\
-  \definend{Trail}
-    &Open
-    &Vertices may repeat. Edges cannot repeat.   \\
-  \definend{Circuit}
-    &Closed
-    &Vertices may repeat. Edges cannot repeat.   \\
-  \definend{Path}
-    &Open
-    &Vertices cannot repeat. Edges cannot repeat. \\
-  \definend{Cycle}
-    &Closed
-    &Vertices cannot repeat. Edges cannot repeat.
-\end{tabular}
-\end{center}
+
 
 \subsection{Graph representation}
 A common way to represent a graph in a computer
 is an \definend{adjacency matrix}.
-This represents \cref{fig:DrawTwoWays}'s graph.
-It has a $1$ in the $i,j$~entry if the graph has an edge $\set{v_i,v_j}$.
+This example represents \cref{fig:DrawTwoWays}'s graph:
+it has a~$1$ in the $i,j$~entry if the graph has an edge from $v_i$ to~$v_j$
+and a~$0$ otherwise.
 \begin{equation*}
   \mathcal{M}(\mathcal{G})=
   \begin{blockarray}{*{6}{c}}
@@ -1585,44 +1573,44 @@ It has a $1$ in the $i,j$~entry if the graph has an edge $\set{v_i,v_j}$.
   \end{blockarray}
   \tag{$*$}
 \end{equation*}
-\Cref{ex:SimpleGraphFiveVert}'s point is that a graph is about the connections
-between vertices, not about how it is drawn. 
-This representation
-underlines that because it is, after all, not drawn.
+% \Cref{ex:SimpleGraphFiveVert} make the point that a graph 
+% is about the connections between vertices, not about how it is drawn. 
+% This representation
+% underlines that because it is, after all, not drawn.
 
-These variants can be part of the matrix in~($*$) by: loops mean that the
-entries on the diagonal can be non-zero, and multiple edges between two
-vertices means that the matrix's entries can be natural numbers
-other than $0$ or~$1$.
-
-To represent a digraph using the matrix, take the $i,j$ entry to be
-the number of edges directed from $v_i$ to~$v_j$.
-With this, the matrix can be not symmetric about the main diagonal
-from the upper left to the lower right.
-
-\begin{lemma}
-Let $\mathcal{M}(\mathcal{G})$ be the matrix representing
-the directed graph~$\mathcal{G}$,
-so that its $i,j$ entry is 
+\begin{definition}
+For a directed graph~$\mathcal{G}$, the
+\definend{matrix representing the graph} $\mathcal{M}(\mathcal{G})$ has
+the $i,j$ entry equal to
 the number of edges from $v_i$ to~$v_j$.
-Then the matrix multiplicative $n$-th power of the matrix
-is given by: its $i,j$ entry is the number of paths from vertex~$v_i$
-to vertex~$v_j$.
+\end{definition}
+
+This covers the graph variants listed earlier.
+For instance, as in ($*$), a simple graph has only $0$ and~$1$ entries.
+A loop makes a diagonal entry be nonzero.
+And if there are multiple edges from one vertex to another then
+the associated entry will be larger than~$1$.
+
+\begin{lemma} \label{lem:MatPowerPatahsLengthN}
+Let the matrix $\mathcal{M}(\mathcal{G})$ representi
+the graph~$\mathcal{G}$.
+Then in its matrix multiplicative $n$-th power
+the $i,j$ entry is the number of paths of length~$n$
+from vertex~$v_i$ to vertex~$v_j$.
 \end{lemma}
 
 \begin{proof}
-Exercise.
+\Cref{exer:MatPowerPatahsLengthN}.
 \end{proof}
 
 
 \subsection{Colors}
-Still another extension of the definition of simple graph is to 
-apportion the vertices into a number of categories,
-traditionally called \definend{colors}.
+We sometimes
+apportion the vertices into a number of categories.
+The classes are traditionally called \definend{colors} because
+that's how we show them on a graph.
 
-Usually we show the classes by coloring the vertices,
-hence the name.
-On the left is a graph with a $3$-coloring.
+On the left below is a graph that is $3$-colored.
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/complexity/complexity01.pdf}}
   \hspace{3em}
@@ -1834,6 +1822,60 @@ Draw a graph for this adjacency matrix.
 \end{exercise}
 
 \begin{exercise}
+Fill in the table.
+\begin{center}\small %https://math.stackexchange.com/a/1598203
+\begin{tabular}{r|cccl}
+  \multicolumn{1}{c}{\tabulartext{\ }}
+    &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Closed\\ or open?\end{tabular}}}
+    &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Vertices can \\ repeat?\end{tabular}}}
+    &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Edges can\\ repeat?\end{tabular}}}   
+    &\multicolumn{1}{c}{\tabulartext{More}}   \\ \cline{2-5}
+  Walk
+    &
+    &  &      \\
+  Trail
+    &
+    &  &    \\
+  Circuit
+    &
+    &  &  & \\
+  Path
+    &
+    &  &  \\
+  Cycle
+    &
+    &  &  &
+\end{tabular}
+\end{center}
+\begin{answer}
+\begin{center}\small %https://math.stackexchange.com/a/1598203
+\begin{tabular}{r|cccl}
+  \multicolumn{1}{c}{\tabulartext{\ }}
+    &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Closed\\ or open?\end{tabular}}}
+    &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Vertices can \\ repeat?\end{tabular}}}
+    &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Edges can\\ repeat?\end{tabular}}}   
+    &\multicolumn{1}{c}{\tabulartext{More}}   \\ \cline{2-5}
+  Walk
+    &Either
+    &Yes  &Yes      \\
+  Trail
+    &Open
+    &Yes  &No    \\
+  Circuit
+    &Closed
+    &Yes  &No  &All edges or vertices; different kinds \\
+  Path
+    &Open
+    &No  &No  \\
+  Cycle
+    &Closed
+    &No  &No  &At least one edge
+\end{tabular}
+\end{center}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 A \definend{tree} is an undirected graph in which any two vertices are
 connected by one and only one path.
 Show that the parse graph given at this subsection's start is a tree
@@ -1887,20 +1929,16 @@ are not isomorphic.
 \end{exparts}
 \end{exercise}
 
-
-
-\begin{exercise}
-\textit{(Requires matrix multiplication.)}
-Consider the array representation given in equation~($*$).
+\begin{exercise} \label{exer:MatPowerPatahsLengthN}
+Prove \cref{lem:MatPowerPatahsLengthN}.
 \begin{exparts}
-\item Think of an edge as a length-one walk  from $v_i$ to~$v_j$.
-Show that the product of the matrix with itself will cause entry~$i,j$
-to contain the number of length-two walks.
-\item Use induction to show that, where the matrix is~$M$, in the
-power $M^n$, the entry $i,j$ is the number of length~$n$ walks from
-$v_i$ to~$v_j$.
-\item Extend the representation to cover loops and multiple edges between
-two vertices, in such a way that the prior item continues to be true. 
+\item Think of an edge as a length-one walk from $v_i$ to~$v_j$.
+  Show that the product of the matrix with itself
+  $\big(\mathcal{M}(\mathcal{G})\big)^2$ will have that entry~$i,j$
+  contains the number of length-two walks.
+\item Use induction to show that for $n\geq 1$, the
+  power $\big(\mathcal{M}(\mathcal{G})\big)^n$, has that the $i,j$~entry
+  is the number of length~$n$ walks from $v_i$ to~$v_j$.
 \end{exparts}
 \end{exercise}
 

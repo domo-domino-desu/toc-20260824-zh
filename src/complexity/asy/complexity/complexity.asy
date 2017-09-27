@@ -1037,3 +1037,43 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ======================== K_5 =============
+int picnum = 20;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node[] nodes=ncircles("\nodebox{A}",
+  "\nodebox{B}",
+  "\nodebox{C}",
+  "\nodebox{D}");
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+vlayout(1*v, nodes[0], nodes[1]);
+vlayout(-1*v, nodes[0], nodes[2]);
+hlayout(1*u, nodes[0], nodes[3]);
+
+// draw edges
+draw(pic,
+     (nodes[0]..bend(20)..nodes[1]),
+     (nodes[0]..bend(-20)..nodes[1]),
+     (nodes[0]..bend(20)..nodes[2]),
+     (nodes[0]..bend(-20)..nodes[2]),
+     (nodes[0]--nodes[3]),
+     (nodes[1]--nodes[3]),
+     (nodes[2]--nodes[3])
+);
+
+// draw nodes
+draw(pic,
+     nodes[0], nodes[1], nodes[2], nodes[3]);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

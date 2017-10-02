@@ -2098,72 +2098,94 @@ and
 
 A second type is a \definend{search problem}.
 Here we are looking for an instance of a solution, and while there may be many
-instances in the search space we stop when we have found the first one.
+instances in the search space we stop when we have found any one.
 An example is the problem of finding a flight between New York and
 San Francisco that costs less than \$800.
 
 Another problem type 
-are \definend{optimization problems}, which look for the 
-best solution, according to some metric.
+is the \definend{optimization problem}, which look for the 
+best solution according to some metric.
 We might look for the absolute cheapest flight between the two cities.
 
-A problem type that may be less familiar, but that we will see often, is  
-a \definend{decision problem}, one that must have an answer of `Yes' or `No'. 
+A type that will be very important for us is  
+the \definend{decision problem}, one with an answer of `Yes' or `No'. 
 The first problem described in this book, the 
 \protect\textit{Entscheidungsproblem},\footnote{%
   Recall that the word is German for ``decision problem''
   and that it asks for an algorithm to decide, given a mathematical statement,
   whether that statement is true or false.}
 is a decision problem.
-Another is ``Given $n,m\in\N$, decide if $n$ divides~$m$.''
-And, we seen many others in conjunction with the \HP, such as   
+Another is
+``Given two natural numbers, decide if the first divides the second.''
+And, we have seen many others in conjunction with the \HP, such as   
 the problem of
 determining, given an index~$e$, whether $\TMfcn_e$ will for any input
 output a seven.
 
-Decision problems involve functions of a kind, Boolean functions, 
-but they have a different feel so we will consider them separately.
-However, note that the two problems types are inter-computable in a sense.
-Consider the Travelling Salesman Problem.
-Contrast (1)~``Given a graph, find the circuit of minimal length''
-with (2)~``Given a graph, decide if there is a circuit of length
-less than~$n$.''
-If we had a good algorithm for answering~(1) then
-then we obviously could use it to answer~(2).
-If we had a good algorithm for~(2) then we could get a good algorithm
-for (1):~find the minimal length of a circuit 
-by first asking~(2) with $n=1$, then asking (2) with~$n=2$, etc.
-The first time we get a `Yes', that's the minimal length.
-
-Decision problems differ from the problems that appear
+Decision problems may be less familiar than
+others, in part because they differ from the problems that appear
 in introductory programming class,
 and may at first seem awkward.
 However, we will work with them often.
-One reason is that in the next chapter we will 
-study machines that cannot write, so we will need a simple 
-way for these machines signal their conclusion and a 
+One reason is that they simply fit the situations we will see in the
+upcoming material.
+For instance, in the next chapter we will 
+study machines that cannot write so we will need a simple 
+way for these machines to do something with the input, and a 
 `Yes' or `No' output suits this circumstance.
+Because we will see so much of decision problems, the rest of this subsection
+says more about them. 
 
 Often a decision problem is expressed as a
 \definend{language recognition problem}.
-For example we can express the problem of determining whether~$n$ divides~$m$
-by asking about membership in the language
-$\lang{L}=\set{\sequence{n,m}\in\N^2\suchthat \text{$n$ divides $m$}}$.
-Part of our interest in these problems arises from their practical
-applications; for instance, a language complier must recognize whether
-a given source file is a valid instance of a program in the language.
+For example we can express the problem of determining whether~$d$ divides~$n$
+by asking about membership of the pair $\sequence{d,n}$ in the language
+$\lang{L}=\set{\sequence{a,b}\in\N^2\suchthat \text{$a$ divides $b$}}$.
+Part of our interest in problems of language membership
+arises from practice; for instance, a language complier must recognize whether
+a given source file is a member of the language.
 
-Still another decision problem is,
-``For the weighted graph of the capitals of the contiguous 
-US states, given a circuit, decide if it is of length less than $11\,000$.''
-Contrast this with the Travelling Salesman Problem.
-This feels easier; verifying that a particular circuit has length
-less than $11\,000$ (or any other number) seems
-a great deal easier than finding such a circuit in the first place.
+A decision problems calls for producing a function of a kind,
+a Boolean function,
+but decision problems have a different feel
+so we consider them separately.
+However, they are related. 
+For instance, consider finding the natural number roots of a polynomial.
+Contrast the problem
+(1)~given $p(x)$, produce the list of its roots,
+with
+(2)~given $p(x)$ and $n\in\N$, decide if $p(n)=0$.
+Clearly, if we had a good algorithm for~(1), one that is super fast, then
+then we could use it to answer~(2), just by checking whether $n$ is on
+the root list.
+Conversely,
+with good algorithm for~(2) we could quickly solve
+(1) by first answering~(2) with $n=0$, then with~$n=1$, etc.
+(there is a formula bounding how large the root could be so we can stop
+searching when we hit the bound).
+That is, we can translate between the two.
 
-Similarly, the decision problem, ``Given $n,m\in\N$, decide if $n$ divides~$m$''
-seems significantly easier than
-\citetext{the problem of finding the the divisors of~$m$}{Finding factors is hard.
+Similiarly, consider
+these problems related to
+finding the shortest path through a graph:
+(1)~given a graph, two vertices, and a bound~$B\in\N$,
+find a path between them of length less than~$B$,
+and (2)~given a graph, two vertices, a bound~$B\in\N$,
+and a path between the two,
+verify that the path is of length less than the bound.
+The second is routine; just total the edge costs.
+However, while strictly speaking we could answer (1) by looping through
+all paths,
+there might be an extremely large number of them.
+So a fast way to do~(2) doesn't seem to obviously yield a fast way
+to do~(1).
+Instead, (2) appears to be a step up in difficulty from~(1)\Dash
+just brute-forcing a solution is not going to work;
+it seems to require an insight.
+
+Similarly, the problem of
+\citetext{finding the divisors of~$m$}{Finding
+  factors is hard.
   For instance, a number is called a Mersenne prime
   if it is a prime number of the form $2^n-1$.
   They are named after M~Mersenne, a French friar and important figure in
@@ -2188,43 +2210,31 @@ seems significantly easier than
   His audience gave him a standing ovation.
 
   Cole later said that finding the factors had been a significant effort,
-  taking ``three years of Sundays.''}.
+  taking ``three years of Sundays.''}
+seems significantly harder than ``Given $n,m\in\N$, decide if $n$ divides~$m$.''
+It seems to us that there is a gulf, a leap in difficulty,
+between simply verifying that a particular number is a factor,
+and finding that number in the first place.
 
+The final example, the
+\textit{Entscheidungsproblem}, brings up back to the the book's start. 
+A proof is a sequence of statements, where each is either an
+assumption or follows logically from the ones before it.
+Intuitively, we perceive that verifying that a statement follows
+according to a given rule from a given list of prior statements is routine.
+The leap, it seems to us, is in generating the statements in the
+first place.
 
-Similarly we could ask if a given circuit of the US capital cities
-is a member of the set of all
-cicuits of length less than $11\,000$.
-
-Yet another example is that 
-we can express the decision problem of checking whether 
-a particular four-coloring of 
-the Course Scheduling Problem 
-has the property that no same-colored vertices are adjacent, 
-by asking if it is a member of
-$
-  \hat{\lang{L}}=\set{C\suchthat \text{$C$ is a valid four-coloring of 
-                                         $\mathcal{G}$}}
-$.
-
-Connection with optimization problems.
-For instance, we may look in the contiguous US for a state capital circuit
-of length less than 11\,100.
-There might be many such circuits but we only need one and we return the
-first one that we find.
-
-Intuitively, it seems to us that there is a gulf, a leap in difficulty,
-between simply verifying that a particular number is a root of the
-given polynomial
-and finding the number in the first place.
-Likewise, there seems to be a step up in hardness in going from the
-problem of verifying that a particular route from New York to San Francisco
-is $xxx$ miles, and finding any route less than $xxx+1$ miles.
+This dichotomy between finding a solution, and verifying that the solution
+works is the central idea of the book's final part.
+We do not, at this moment, know how to prove the intuition, or indeed whether
+it  is true.
 
 
 
 
 
-\section{Some problems, with stories}
+\section{Sample problems, with stories}
 Knowing the stories behind some problems, besides being fun,
 helps give a sense of where such problems come from.
 In this section we will list a few problems, including their stories.
@@ -2391,7 +2401,7 @@ decide if it is satisfiable.
 
 
 
-\subsection{A miscellany of problems}
+\subsection{Problem miscellany}
 
 \begin{problem}[Graph Colorability]
 Given a graph and a bound $B\in\N$, decide if the 
@@ -2475,7 +2485,7 @@ The animation shows it taking four steps to broadcast.
 \end{animatedfigure} 
 \end{example}
 
-\begin{problem}[$15$ tiles]
+\begin{problem}[$15$ game]
 Given an $n\times n$ grid, holding tiles numbered $1$, \ldots\,~$n-1$,
 and a blank,
 find the minimum number of moves that will put the tile numbers into

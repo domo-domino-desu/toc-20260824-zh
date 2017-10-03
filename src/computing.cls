@@ -565,7 +565,7 @@
 \newtheorem{remark}[theorem]{Remark}
 % \newtheorem{proof}[theorem]{proof}
 \newshadedtheorem{churchsthesis}[theorem]{Church's Thesis}
-\newtheorem{problem}[theorem]{Problem}
+\newshadedtheorem{problem}[theorem]{Problem}
 \crefname{theorem}{Theorem}{Theorems}
 \Crefname{theorem}{Theorem}{Theorems}
 \crefname{lemma}{Lemma}{Lemmas}

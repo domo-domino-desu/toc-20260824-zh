@@ -12,7 +12,7 @@
 \input{glyphtounicode}% Make PDF offer better copy and paste
   \pdfgentounicode=1
 
-\usepackage{amsmath, amssymb} % no amsthm; use ntheorem because of margin numbering
+\usepackage{amsmath, amssymb, amsthm} % no amsthm; use ntheorem because of margin numbering
 
 % M Sharpe's XCharter
 % \usepackage[scaled=.98,sups,osf]{XCharter}% lining figures in math, osf in text
@@ -421,7 +421,9 @@
 % This must come before cleveref
 \usepackage{framed}
 % \setlength{\fboxsep}{0ex}
-\usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+% \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+% \usepackage{amsthm}
+% \usepackage{thmtools}
 
 
 \usepackage{cleveref} % after hyperref, apparently
@@ -531,41 +533,148 @@
 % whereas the second had that built in, so I went with it (ntheorem is loaded
 % earlier in this .cls file, before cleveref).
 % \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
-\setlength{\topsep}{4pt}  % bk10.clo has it set to 8pt
 
-\def\theoremframecommand{\colorbox{shadecolor}}
-% \def\theoremframecommand{}
-\colorlet{shadecolor}{backgroundcolor}  % Use this as the background color for theorems
-% % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
-\newlength{\jh@thmtotextspace}  % horiz space between "Theorem" and "Let x .."
-  \setlength{\jh@thmtotextspace}{0.45em plus 0.05em minus 0.05em}
-\newtheoremstyle{marginnumbers}%
-{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1}\hspace{\jh@thmtotextspace}}%
-{\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)}\hspace{\jh@thmtotextspace}}%
-\theoremstyle{marginnumbers}
-\theoremheaderfont{\scshape}
-\theorembodyfont{}    
-\theoremsymbol{}
-\theoremseparator{}
-\theoremprework{}
-\theorempostwork{}
-% \theorempreskip{.5\topsep}
-% \theoremframepreskip{.35ex plus .1ex minus .02ex}
-\theoremframepreskip{0.5\topsep}
-\theoreminframepreskip{0.25\topsep}
-\theoreminframepostskip{0.25\topsep}
-\theoremframepostskip{0.5\topsep}
-% \theorempostskip{.5\topsep}
-% \usepackage{thmtools}
-\newshadedtheorem{theorem}{Theorem}[section]
-\newshadedtheorem{lemma}[theorem]{Lemma}
-\newshadedtheorem{corollary}[theorem]{Corollary}
-\newshadedtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
-\newtheorem{remark}[theorem]{Remark}
-% \newtheorem{proof}[theorem]{proof}
-\newshadedtheorem{churchsthesis}[theorem]{Church's Thesis}
-\newshadedtheorem{problem}[theorem]{Problem}
+\newlength{\lrmarginaroundshadedtheorems}
+\newlength{\tbmarginaroundshadedtheorems}
+\newlength{\resttbaroundshadedtheorems}
+\setlength{\lrmarginaroundshadedtheorems}{2pt}
+\setlength{\tbmarginaroundshadedtheorems}{4pt}
+% \setlength{\tbmarginaroundshadedtheorems}{\lrmarginaroundshadedtheorems}
+\setlength{\resttbaroundshadedtheorems}{\topsep-\tbmarginaroundshadedtheorems}
+\newtheoremstyle{whitestyle}
+{0\topsep}               %space above
+{0\topsep}               %space below
+{}                      %bodyfont
+{0pt}                   %indent
+{\scshape}              %headfont
+{}                      %punctuation
+{0.6em}                 %space after head
+{\llap{\thmnumber{#2} }\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
+\newtheoremstyle{coloredstyle}
+{0\topsep}               %space above
+{0\topsep}               %space below
+{}                      %bodyfont
+{0pt}                   %indent
+{\scshape}              %headfont
+{}                      %punctuation
+{0.6em}                 %space after head
+{\llap{\thmnumber{#2}\hspace{\lrmarginaroundshadedtheorems} }\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
+
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{exercise}{Exercise}
+
+% % From https://tex.stackexchange.com/a/296184/121234
+% \def\renewtheorem#1{%
+%   \expandafter\let\csname#1\endcsname\relax
+%   \expandafter\let\csname c@#1\endcsname\relax
+%   \gdef\renewtheorem@envname{#1}
+%   \renewtheorem@secpar
+% }
+% \def\renewtheorem@secpar{\@ifnextchar[{\renewtheorem@numberedlike}{\renewtheorem@nonumberedlike}}
+% \def\renewtheorem@numberedlike[#1]#2{\newtheorem{\renewtheorem@envname}[#1]{#2}}
+% \def\renewtheorem@nonumberedlike#1{  
+% \def\renewtheorem@caption{#1}
+% \edef\renewtheorem@nowithin{\noexpand\newtheorem{\renewtheorem@envname}{\renewtheorem@caption}}
+% \renewtheorem@thirdpar
+% }
+% \def\renewtheorem@thirdpar{\@ifnextchar[{\renewtheorem@within}{\renewtheorem@nowithin}}
+% \def\renewtheorem@within[#1]{\renewtheorem@nowithin[#1]}
+
+
+\usepackage{mdframed}
+
+% Theorems
+% These need to be numbered all as one, and the numbering in the margin
+\mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %
+  leftmargin = 0pt, %
+  rightmargin = 0pt, %
+  innerleftmargin = \lrmarginaroundshadedtheorems, %
+  innerrightmargin = \lrmarginaroundshadedtheorems, %
+  innertopmargin = \tbmarginaroundshadedtheorems, %
+  innerbottommargin = \tbmarginaroundshadedtheorems, %
+  skipabove= \resttbaroundshadedtheorems, %
+  skipbelow= \resttbaroundshadedtheorems, %
+  splittopskip = 0pt, % 
+  splitbottomskip = 0pt, % 
+  topline=false,bottomline=false,leftline=false,rightline=false,}
+
+\mdfdefinestyle{whitestyle}{backgroundcolor=white, %
+  leftmargin = 0pt, %
+  rightmargin = 0pt, %
+  innerleftmargin = 0pt, %
+  innerrightmargin = 0pt, %
+  innertopmargin = 0pt, %
+  innerbottommargin = 0pt, %
+  skipabove= \topsep, %
+  skipbelow= \topsep, %
+  splittopskip = 0pt, % 
+  splitbottomskip = 0pt, % 
+  topline=false,bottomline=false,leftline=false,rightline=false,}
+
+% \newshadedtheorem{theorem}{Theorem}[section]
+% \newshadedtheorem{lemma}[theorem]{Lemma}
+% \newshadedtheorem{corollary}[theorem]{Corollary}
+% \newshadedtheorem{definition}[theorem]{Definition}
+% \newtheorem{example}[theorem]{Example}
+% \newtheorem{remark}[theorem]{Remark}
+% % \newtheorem{proof}[theorem]{proof}
+% \newshadedtheorem{churchsthesis}[theorem]{Church's Thesis}
+% \newshadedtheorem{problem}[theorem]{Problem}
+
+\theoremstyle{coloredstyle}
+\newmdtheoremenv[style=coloredstyle]{theorem}{Theorem}[section]
+\newmdtheoremenv[style=coloredstyle]{lemma}[theorem]{Lemma}
+\newmdtheoremenv[style=coloredstyle]{corollary}[theorem]{Corollary}
+\newmdtheoremenv[style=coloredstyle]{definition}[theorem]{Definition}
+\newmdtheoremenv[style=coloredstyle]{churchsthesis}[theorem]{Church's Thesis}
+\newmdtheoremenv[style=coloredstyle]{problem}[theorem]{Problem}
+
+\theoremstyle{whitestyle}
+\newmdtheoremenv[style=whitestyle]{example}[theorem]{Example}
+\newmdtheoremenv[style=whitestyle]{remark}[theorem]{Remark}
+
+
+% +++++++++ expmt with mdframed on +++++++++
+% \setlength{\topsep}{4pt}  % bk10.clo has it set to 8pt
+
+% \def\theoremframecommand{\colorbox{shadecolor}}
+% % \def\theoremframecommand{}
+% \colorlet{shadecolor}{backgroundcolor}  % Use this as the background color for theorems
+% % % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
+% \newlength{\jh@thmtotextspace}  % horiz space between "Theorem" and "Let x .."
+%   \setlength{\jh@thmtotextspace}{0.45em plus 0.05em minus 0.05em}
+% \newtheoremstyle{marginnumbers}%
+% {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1}\hspace{\jh@thmtotextspace}}%
+% {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)}\hspace{\jh@thmtotextspace}}%
+% \theoremstyle{marginnumbers}
+% \theoremheaderfont{\scshape}
+% \theorembodyfont{}    
+% \theoremsymbol{}
+% \theoremseparator{}
+% \theoremprework{}
+% \theorempostwork{}
+% % \theorempreskip{.5\topsep}
+% % \theoremframepreskip{.35ex plus .1ex minus .02ex}
+% \theoremframepreskip{0.5\topsep}
+% \theoreminframepreskip{0.25\topsep}
+% \theoreminframepostskip{0.25\topsep}
+% \theoremframepostskip{0.5\topsep}
+% % \theorempostskip{.5\topsep}
+% % \usepackage{thmtools}
+% \newshadedtheorem{theorem}{Theorem}[section]
+% \newshadedtheorem{lemma}[theorem]{Lemma}
+% \newshadedtheorem{corollary}[theorem]{Corollary}
+% \newshadedtheorem{definition}[theorem]{Definition}
+% \newtheorem{example}[theorem]{Example}
+% \newtheorem{remark}[theorem]{Remark}
+% % \newtheorem{proof}[theorem]{proof}
+% \newshadedtheorem{churchsthesis}[theorem]{Church's Thesis}
+% \newshadedtheorem{problem}[theorem]{Problem}
+% +++++++++ expmt with mdframed off +++++++++
+
+
+
 \crefname{theorem}{Theorem}{Theorems}
 \Crefname{theorem}{Theorem}{Theorems}
 \crefname{lemma}{Lemma}{Lemmas}
@@ -583,53 +692,12 @@
 \crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
 \Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
 % Proofs are unnumbered
-\theoremheaderfont{\sc}\theorembodyfont{\upshape}
-\theoremstyle{nonumberplain}
-\theoremseparator{}
-\theoremsymbol{$\Box$} % {\rule{1ex}{1ex}}
-\newtheorem{proof}[theorem]{Proof} 
+% \theoremheaderfont{\sc}\theorembodyfont{\upshape}
+% \theoremstyle{nonumberplain}
+% \theoremseparator{}
+% \theoremsymbol{$\Box$} % {\rule{1ex}{1ex}}
+% \newtheorem{proof}[theorem]{Proof} 
 
-% \declaretheorem[style=marginnumbers,
-%                 shaded={bgcolor=backgroundcolor},
-%                 refname={Theorem,Theorems},
-%                 Refname={Theorem,Theorems}]{theorem}
-% \numberwithin{theorem}{subsection}
-% \declaretheorem[style=marginnumbers,
-%                 shaded={bgcolor=backgroundcolor},
-%                 refname={Lemma,Lemmas},
-%                 Refname={Lemma,Lemmas},
-%                 sibling=theorem]{lemma}
-% \declaretheorem[style=marginnumbers,
-%                 shaded={bgcolor=backgroundcolor},
-%                 refname={Corollary,Corollary},
-%                 Refname={Corollary,Corollary},
-%                 sibling=theorem]{corollary}
-% \declaretheorem[style=marginnumbers,
-%                 shaded={bgcolor=backgroundcolor},
-%                 refname={Definition,Definitions},
-%                 Refname={Definition,Definitions},
-%                 sibling=theorem]{definition}
-% \declaretheorem[style=marginnumbers,
-%                 refname={Example,Examples},
-%                 Refname={Example,Examples},
-%                 sibling=theorem]{example}
-% \declaretheorem[style=marginnumbers,
-%                 refname={Remark,Remarks},
-%                 Refname={Remark,Remarks},
-%                 sibling=theorem]{remark}
-% \declaretheorem[style=nonumberplain,
-%                 refname={Proof,Proofs},
-%                 Refname={Proof,Proofs},
-%                 ]{proof}
-% \declaretheorem[style=marginnumbers,
-%                 title={Church's Thesis},
-%                 refname={Church's Thesis,Church's Thesis},
-%                 Refname={Church's Thesis,Church's Thesis},
-%                 sibling=theorem]{churchsthesis}
-% \declaretheorem[style=marginnumbers,
-%                 refname={Problem,Problems},
-%                 Refname={Problem,Problems},
-%                 sibling=theorem]{problem}
 \newcommand{\probleminput}{\textit{Input:}}
 \newcommand{\problemoutput}{\textit{Output:}}
 

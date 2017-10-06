@@ -12,6 +12,7 @@
 \input{glyphtounicode}% Make PDF offer better copy and paste
   \pdfgentounicode=1
 
+\usepackage{mathtools}  
 \usepackage{amsmath, amssymb, amsthm} % no amsthm; use ntheorem because of margin numbering
 
 % M Sharpe's XCharter
@@ -39,6 +40,11 @@
 
 \usepackage{etoolbox}
 % \usepackage{trace}  % for debugging
+
+
+% ========== lengths on which others are set =============
+\setlength{\topsep}{8.0pt plus 2.0pt minus 4.0pt}  % bk10.clo has it set to 8pt
+
 
 % ========== enumitem =============
 \usepackage[inline]{enumitem}
@@ -548,8 +554,9 @@
 {0pt}                   %indent
 {\scshape}              %headfont
 {}                      %punctuation
-{0.6em}                 %space after head
+{0.4em plus 0.2em}                 %space after head
 {\llap{\thmnumber{#2} }\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
+
 \newtheoremstyle{coloredstyle}
 {0\topsep}               %space above
 {0\topsep}               %space below
@@ -557,46 +564,26 @@
 {0pt}                   %indent
 {\scshape}              %headfont
 {}                      %punctuation
-{0.6em}                 %space after head
+{0.4em plus 0.2em}                 %space after head
 {\llap{\thmnumber{#2}\hspace{\lrmarginaroundshadedtheorems} }\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
-
-% \newtheorem{theorem}{Theorem}
-% \newtheorem{lemma}{Lemma}
-% \newtheorem{exercise}{Exercise}
-
-% % From https://tex.stackexchange.com/a/296184/121234
-% \def\renewtheorem#1{%
-%   \expandafter\let\csname#1\endcsname\relax
-%   \expandafter\let\csname c@#1\endcsname\relax
-%   \gdef\renewtheorem@envname{#1}
-%   \renewtheorem@secpar
-% }
-% \def\renewtheorem@secpar{\@ifnextchar[{\renewtheorem@numberedlike}{\renewtheorem@nonumberedlike}}
-% \def\renewtheorem@numberedlike[#1]#2{\newtheorem{\renewtheorem@envname}[#1]{#2}}
-% \def\renewtheorem@nonumberedlike#1{  
-% \def\renewtheorem@caption{#1}
-% \edef\renewtheorem@nowithin{\noexpand\newtheorem{\renewtheorem@envname}{\renewtheorem@caption}}
-% \renewtheorem@thirdpar
-% }
-% \def\renewtheorem@thirdpar{\@ifnextchar[{\renewtheorem@within}{\renewtheorem@nowithin}}
-% \def\renewtheorem@within[#1]{\renewtheorem@nowithin[#1]}
-
 
 \usepackage{mdframed}
 
-% Theorems
-% These need to be numbered all as one, and the numbering in the margin
 \mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %
   leftmargin = 0pt, %
   rightmargin = 0pt, %
   innerleftmargin = \lrmarginaroundshadedtheorems, %
   innerrightmargin = \lrmarginaroundshadedtheorems, %
-  innertopmargin = \tbmarginaroundshadedtheorems, %
-  innerbottommargin = \tbmarginaroundshadedtheorems, %
-  skipabove= \resttbaroundshadedtheorems, %
-  skipbelow= \resttbaroundshadedtheorems, %
-  splittopskip = 0pt, % 
-  splitbottomskip = 0pt, % 
+  innertopmargin = 0.5\topsep, %
+  innerbottommargin = 0.5\topsep, %
+  % innertopmargin = \tbmarginaroundshadedtheorems, %
+  % innerbottommargin = \tbmarginaroundshadedtheorems, %
+  skipabove= 0.5\topsep, %
+  skipbelow= 0.5\topsep, %
+  % skipabove= \resttbaroundshadedtheorems, %
+  % skipbelow= \resttbaroundshadedtheorems, %
+  splittopskip = 2pt, % 
+  splitbottomskip = 2pt, % 
   topline=false,bottomline=false,leftline=false,rightline=false,}
 
 \mdfdefinestyle{whitestyle}{backgroundcolor=white, %
@@ -606,8 +593,8 @@
   innerrightmargin = 0pt, %
   innertopmargin = 0pt, %
   innerbottommargin = 0pt, %
-  skipabove= \topsep, %
-  skipbelow= \topsep, %
+  skipabove= 0.5\topsep, %
+  skipbelow= 0.5\topsep, %
   splittopskip = 0pt, % 
   splitbottomskip = 0pt, % 
   topline=false,bottomline=false,leftline=false,rightline=false,}
@@ -633,6 +620,30 @@
 \theoremstyle{whitestyle}
 \newmdtheoremenv[style=whitestyle]{example}[theorem]{Example}
 \newmdtheoremenv[style=whitestyle]{remark}[theorem]{Remark}
+
+% Proofs
+% Too much space between proof and thm before it.
+% \expandafter\let\expandafter\oldproof\csname\string\proof\endcsname %
+% \let\oldendproof\endproof % 
+% Forget amsthm's proof environment
+\let\proof\relax % 
+\let\endproof\relax %
+% Halmos symbol
+\renewcommand\qedsymbol{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.7pt}%
+  \fcolorbox{boldcolor}{white}{\color{white}\rule{4pt}{8.5pt}}}}
+\usepackage{thmtools}
+\declaretheoremstyle[%
+  spaceabove=0.5\topsep,%
+  spacebelow=0.5\topsep,%
+  headfont=\normalfont\itshape,%
+  headpunct={}, %
+  postheadspace=0.6em,%
+  qed=\qedsymbol%
+]{proofstyle} 
+\declaretheorem[name={Proof},
+  style=proofstyle,
+  unnumbered,
+  ]{proof}
 
 
 % +++++++++ expmt with mdframed on +++++++++
@@ -873,9 +884,27 @@
   % morekeywords={*,...}   % if you want to add more keywords to the set
 }
 
+\lstdefinestyle{grammar}{
+  basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=8,                      % sets default tabsize to 8 spaces (emacs scheme buffer formatting wants that)
+  captionpos=b,                   % sets the caption-position to bottom
+  mathescape=true,
+  % literate=
+  %   {=}{$\leftarrow{}$}{1}
+  %   {==}{::=}{3},
+}
+
+
 % Don't want \lstinline!..! because it comes out too small.
 \usepackage{relsize}
 \newcommand\codeinline{\lstinline[basicstyle=\smaller\ttfamily]}
+
+
+
 
 % Note: you can refine the choices with something like:
 % \lstset{language=C,caption={Descriptive Caption Text},label=DescriptiveLabel}

@@ -53,6 +53,41 @@ path3 tm_front=tm_bot_front--tm_side_rt_front--reverse(tm_top_front)--cycle;
 path3 tm_top=tm_top_left--tm_top_front--tm_top_rt--cycle;
 path3 tm_rt=tm_bot_rt--tm_side_rt_back--reverse(tm_top_rt)--cycle;
 
+
+// External box; an oracle or a stack
+real eb_lh=1.25, eb_wd=1.5, eb_ht=1.75;  // dimensions of external box
+// Points
+triple eb_origin=(0,0,0);
+triple eb_bot_left_back=eb_origin;
+triple eb_bot_left_front=(eb_lh,0,0);
+triple eb_bot_rt_front=(eb_lh,eb_wd,0);
+triple eb_bot_rt_back=(0,eb_wd,0);
+triple eb_top_left_front=(eb_lh,0,eb_ht);
+triple eb_top_left_back=(0,0,eb_ht);
+triple eb_top_rt_front=(eb_lh,eb_wd,eb_ht);
+triple eb_top_rt_back=(0,eb_wd,eb_ht);
+
+// Edges
+path3 eb_bot_left=eb_origin--eb_bot_left_front;
+path3 eb_bot_front=eb_bot_left_front--eb_bot_rt_front;
+path3 eb_bot_rt=eb_bot_rt_front--eb_bot_rt_back;
+path3 eb_bot_back=eb_origin--eb_bot_rt_back;
+path3 eb_top_left=eb_top_left_back--eb_top_left_front;
+path3 eb_top_front=eb_top_left_front--eb_top_rt_front;
+path3 eb_top_rt=eb_top_rt_front--eb_top_rt_back;
+path3 eb_top_back=eb_top_left_back--eb_top_rt_back;
+path3 eb_side_left_front=eb_bot_left_front--eb_top_left_front;
+path3 eb_side_rt_front=eb_bot_rt_front--eb_top_rt_front;
+path3 eb_side_left_back=eb_origin--eb_top_left_back;
+path3 eb_side_rt_back=eb_bot_rt_back--eb_top_rt_back;
+
+// Faces
+path3 eb_front=eb_bot_front--eb_side_rt_front--reverse(eb_top_front)--cycle;
+path3 eb_top=eb_top_left--eb_top_front--eb_top_rt--cycle;
+path3 eb_rt=eb_bot_rt--eb_side_rt_back--reverse(eb_top_rt)--cycle;
+
+
+/// Material
 //material box_outside=material(diffusepen=gray(.3),specularpen=gray(.6),emissivepen=rgb(0.8,0.8,0.8));
 material tm_box_outside=material(diffusepen=rgb(0.50754,0.50754,0.50754),ambientpen=rgb(0.19225,0.19225,0.19225),specularpen=rgb(.508273,.508273,.508273),shininess=0.4*128,emissivepen=rgb(0.7,0.7,0.7));
 material tm_box_outside=material(ambientpen=gray(0.19225),  // background color; color in shadow
@@ -60,6 +95,11 @@ material tm_box_outside=material(ambientpen=gray(0.19225),  // background color;
 				 specularpen=gray(0.508273),  // shiny parts
 				 emissivepen=gray(0.7),
 				   shininess=.4*128);
+material eb_box_outside=material(ambientpen=gray(0.02),  // background color; color in shadow
+				 diffusepen=gray(0.15),  // color under white light 
+				 specularpen=gray(0.50),  // shiny parts
+				 emissivepen=gray(0.65),
+				   shininess=.2*128);
 
 // render render=render(compression=0,merge=true);
 
@@ -71,6 +111,16 @@ void tm_draw(pen p=TM_DOVETAILPEN) {
     draw(tm_top,p);
     draw(tm_front,p);
     draw(tm_rt,p);
+}
+
+// eb_draw  Draw the external box
+void eb_draw(pen p=TM_DOVETAILPEN, transform3 t=identity4) {
+    draw(t*surface(eb_front),eb_box_outside);
+    draw(t*surface(eb_top),eb_box_outside);
+    draw(t*surface(eb_rt),eb_box_outside);
+    draw(t*eb_top,p);
+    draw(t*eb_front,p);
+    draw(t*eb_rt,p);
 }
 
 

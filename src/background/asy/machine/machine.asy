@@ -40,29 +40,8 @@ triple view_from = (32,12,10);
 currentprojection=orthographic(view_from);
 currentlight=light(view_from);
 
-triple eb_origin = (-4,-2,0);
-pen pen(real t){
-  return interp(red,blue,1-2*abs(t-0.5));
-}
-
-pen wirepen(real t){
-  return MAINPEN+boldcolor+white;
-}
-// wire between TM and external box
-path3 wire_center=(tm_origin+(-1,0,0))
-  --(tm_origin+(-1,-1,0))
-  ..(tm_origin+(-1,-3+0.05*unitrand(),0))
-  ..(tm_origin+(-1+0.03*unitrand(),-3.5+0.1*unitrand(),0))
-  ..(tm_origin+(-1+0.03*unitrand(),-3+0.1*unitrand(),0))
-  ..(eb_origin+(-0.5+0.03*unitrand(),-2+0.03*unitrand(),0))
-  ..(eb_origin+(-0.75+0.03*unitrand(),-1+0.03*unitrand(),0))
-  ..(eb_origin+(-1,0,0));
-// dot(point(wire_center,4),red);
-// dot(point(wire_center,5),blue);
-// dot(point(wire_center,6),green);
-coloredpath cp = coloredpath(scale(0.3)*unitcircle, wirepen);
-// draw(tube(wire_center, cp, corner=5, relstep=0));
-draw(wire_center,MAINPEN+boldcolor);
+triple eb_origin = (-4,-2,0);  // where external box is shifted
+draw_wire(tm_origin=tm_origin,eb_origin=eb_origin);
 
 transform3 t=shift(eb_origin);
 eb_draw(t=t);

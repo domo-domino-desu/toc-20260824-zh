@@ -95,10 +95,10 @@ material tm_box_outside=material(ambientpen=gray(0.19225),  // background color;
 				 specularpen=gray(0.508273),  // shiny parts
 				 emissivepen=gray(0.7),
 				   shininess=.4*128);
-material eb_box_outside=material(ambientpen=gray(0.02),  // background color; color in shadow
-				 diffusepen=gray(0.15),  // color under white light 
-				 specularpen=gray(0.50),  // shiny parts
-				 emissivepen=gray(0.65),
+material eb_box_outside=material(ambientpen=gray(0.2),  // background color; color in shadow
+				 diffusepen=gray(0.35),  // color under white light 
+				 specularpen=gray(0.10),  // shiny parts
+				 emissivepen=gray(0.3),
 				   shininess=.2*128);
 
 // render render=render(compression=0,merge=true);
@@ -123,6 +123,20 @@ void eb_draw(pen p=TM_DOVETAILPEN, transform3 t=identity4) {
     draw(t*eb_rt,p);
 }
 
+
+// Wire between the TM and the External box
+
+void draw_wire(triple tm_origin=(0,0,0), triple eb_origin=eb_origin, pen p=MAINPEN+boldcolor){
+  path3 wire_center=(tm_origin+(-1,0,0))
+    --(tm_origin+(-1,-1,0))
+    ..(tm_origin+(-1,-3+0.05*unitrand(),0))
+    ..(tm_origin+(-1+0.03*unitrand(),-3.5+0.1*unitrand(),0))
+    ..(tm_origin+(-1+0.03*unitrand(),-3+0.1*unitrand(),0))
+    ..(eb_origin+(-0.5+0.03*unitrand(),-2+0.03*unitrand(),0))
+    ..(eb_origin+(-0.75+0.03*unitrand(),-1+0.03*unitrand(),0))
+    ..(eb_origin+(-1,0,0));
+  draw(wire_center,p);
+}
 
 // START button
 triple tm_but_center=(tm_lh,.2*tm_wd,.7*tm_ht);

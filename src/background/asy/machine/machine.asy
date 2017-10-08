@@ -20,8 +20,6 @@ cd("../../../asy/share");  // so it can see tm_share.asy
 import tm_share;
 cd("");
 
-
-
 string OUTPUT_FN = "machine%02d";
 
 // I cannot eliminate tons of white space around the left and right of this

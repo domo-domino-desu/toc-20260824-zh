@@ -2488,16 +2488,8 @@ list is now a routine, which acts on the argument, producing the correct output.
 
 
 
-\subsection{Parametrization}
-% \subsection{$\mathbf{s}$-$\mathbf{m}$-$\mathbf{n}$ theorem}
-% ====== S-m-n, uniformity
-\begin{TODO}
-In universality we have $F(e,x)=\phi_e(x)$ so the letter~$e$ goes from
-the a function argument to an index.
-Now generalize.
-Comment on uniformity
-\end{TODO}
 
+\subsection{Uniformity}
 We claim that there are functions no program can do.
 Can't we just put out the numbers $0$ and $1$?  
 What's to stop us?
@@ -2565,6 +2557,15 @@ Nevertheless, the problem is solvable.
 
 
 
+\subsection{Parametrization}
+% \subsection{$\mathbf{s}$-$\mathbf{m}$-$\mathbf{n}$ theorem}
+% ====== S-m-n, uniformity
+We can understand universality to be that there is a computable
+function $\map{F}{\N^2}{\N}$ such that
+$F(e,x)=\phi_e(x)$.
+There, the letter~$e$ goes from the function argument to an index.
+We now generalize this observation.
+
 Consider a two-input program $\TM_e(x,y)$.
 Freezing the first argument, that is, locking $x=a$ for some $a\in\N$,
 gives a one-input program $\TM{Q}_a(y)=\TM_e(a,y)$.
@@ -2582,11 +2583,33 @@ The next result is that the index of the second program is computable from the
 first.
 
 \begin{theorem}[Parameter theorem, $s$-$m$-$n$~theorem]
-There is a computable function $s$ such that
-for any recursive function of two variables $f(x,y)$ computed by
-$\TM_e$, freezing the first input at $a\in\N$ gives the function
-computed by $\TM_{s(e,a)}$.
+For every $m,n\in\N$
+there is a computable function $\map{s}{\N^{1+m}}{\N}$ with this behavior:
+where $m+n$-ary function computed by $\TM_e$ is
+$\TMfcn_e(x_0,\ldots,x_{m-1},x_m,\ldots,x_{m+n-1})$,
+freezing the initial $m$~variables at $a_0,\ldots,a_{m-1}\in\N$
+gives the function computed by $\TM_{s(e,a_0,\ldots,a_{m-1})}$.
 \end{theorem}
+
+\begin{proof}
+Fix $m$ and~$n$.
+The function $s_{m,n}$ inputs an index~$e$ and an $m$-tuple
+$x_0,\ldots,x_{m-1}$, and outputs another index,
+the index of a machine whose behavior equals 
+$\TMfcn_e(x_0,\ldots,x_{m-1},x_m,\ldots,x_{m+n-1})$.
+
+Consider the following Turing machine~$\TM$.
+When started with $e,x_1,\ldots,x_{m-1}$ on the tape,
+it erases the input $e$,
+moves the read/write head to the start of
+$x_0,\ldots,x_{m-1}$, and then passes control to machine $\TM_e$.  
+\begin{center}
+  \includegraphics{background/asy/flowcharts/flowcharts00.pdf}
+\end{center}
+This Turing machine is a set of instructions.
+The G\"odel number of that set 
+is the desired output, $s_{m,n}(e,x_0,\ldots,x_{m-1})$.
+\end{proof}
 
 The following Lisp code implements $s_1^1$.
 (Explain gensym.)
@@ -2603,6 +2626,10 @@ evaluates to the one-input function
 \lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
 adds~$3$ to its argument.
 
+\begin{TODO}
+Show it absorbing input.
+Compare to closure.
+\end{TODO}
 
 
 
@@ -3756,13 +3783,23 @@ answering, ``Is $x\in K$; does $\TMfcn_{x}(x)\converges$?''\footnote{%
 \begin{center}
   \includegraphics{background/asy/machine/machine00.pdf}
 \end{center}
-Working in a higher level language we have essentially introduced
+
+Phrased in terms of in a higher level language we have essentially introduced
 a boolean funciton \lstinline!oracle(x)! that we might use as here.
 \begin{lstlisting}
 (if (oracle(x))
     1
     0)
 \end{lstlisting}
+
+If we have an $A$ oracle box plugged in, then unplug it and replace
+it with a~$B$ oracle box, the above program snippet is unchanged.
+That is, the results of such a program depend both on the input and on the
+oracle.
+We shall denote the oracle machine as $\TM^A_e(x)$, and the
+function arising from that function as $\TMfcn_e^A(x)$.
+
+In lower-leve terms we can formalize it as:
 
 
 

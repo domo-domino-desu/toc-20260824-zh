@@ -2611,25 +2611,29 @@ The G\"odel number of that set
 is the desired output, $s_{m,n}(e,x_0,\ldots,x_{m-1})$.
 \end{proof}
 
-The following Lisp code implements $s_1^1$.
-(Explain gensym.)
+The following Lisp code implements $s_{1,1}$.
+(The \lstinline!gensym! function produces a symbol that does not appear
+elsewhere in the program.)
 % https://en.wikipedia.org/wiki/Smn_theorem
 \begin{lstlisting}
- (defun s11 (f x)
+ (defun s_1_1 (f x)
    (let ((y (gensym)))
      (list 'lambda (list y) (list f x y))))
 \end{lstlisting}
-For example, in the addition function \lstinline!(lambda (x y) (+ x y))!
+For example, in the addition function \lstinline!(lambda (x0 x1) (+ x0 x1))!
 we can fix the first variable~\lstinline!x! to have the value~$3$ with 
-the invocation \lstinline!(s11 '(lambda (x y) (+ x y)) 3)!, which  
+the invocation \lstinline!(s_1_1 '(lambda (x0 x1) (+ x0 x1)) 3)!, which  
 evaluates to the one-input function 
-\lstinline!(lambda (g42) ((lambda (x y) (+ x y)) 3 g42))! that 
+\lstinline!(lambda (g42) ((lambda (x0 x1) (+ x0 x1)) 3 g42))! that 
 adds~$3$ to its argument.
 
 \begin{TODO}
 Show it absorbing input.
 Compare to closure.
 \end{TODO}
+
+
+
 
 
 
@@ -2643,14 +2647,14 @@ that there are countably many Turing machines but
 uncountably many functions and so there are functions without an
 associated machine.
 While we certainly are glad to know what is true,
-our taste in this subject is to prefer an argument that produces an answer.
-We now provide a specific unsolvable problem,
+our taste in this subject is to prefer an argument that constructs an answer.
+We now produce
 a function for which there is no associated Turing machine.
 
 
 
 \subsection{Definition}
-The natural thing to do is to go through 
+The natural approach is to go through 
 Cantor's Theorem and effectivize it,
 to see how much of the proof we can express constructively.
 For a first try, consider an illustrative table adapted from the one on 
@@ -3573,7 +3577,129 @@ If so prove that, and if not then give a counterexample.
 
 
 
-\subsection{Philosophical impact}
+
+
+
+
+
+\section{Oracles}
+The \HP{} is unsolvable.
+Is it the hardest problem or are there even harder ones?
+
+What does it mean to say that one problem is harder than another?
+When we considered the problem of deciding whether
+a Turing machine halts on input~$3$,
+we proved that if we could solve it then we could solve \HP.
+% We did the same for many other problems, such as the problem of whether
+% the given Turing machine ever outputs-$7$.
+That is, in the proofs in that section
+we showed that these problems are at least as hard as the \HP.
+So we have an idea of relative computability,
+of `if we could solve problem~$A$ then we could
+solve problem~$B$'.
+
+To make it precise, consider an extension of the definition of Turing machine.
+To the CPU we attach a device, an \definend{oracle},
+that acts as the characteristic function of some set.
+An $A$-oracle answers question of the form, ``Is $x\in A$?''
+For instance, to see what could be computed if only we could solve
+the \HP{} we can posit a $K$-oracle,
+answering, ``Is $x\in K$; does $\TMfcn_{x}(x)\converges$?''\footnote{%
+  Of course, under Church's Thesis we interpret our proof of the \HP{} to
+  say that no such mechanism can exist. 
+  We treat the oracle as a black box,
+  meaning that we don't open it up to see how it works\Dash that would
+  let out the magic smoke.}
+\begin{center}
+  \includegraphics{background/asy/machine/machine00.pdf}
+\end{center}
+
+Rather than give a definition that extends that of Turing machine,
+we will sidestep the details by using Church's Thesis.
+Consider introducing into a higher level language 
+a boolean function \lstinline!oracle(x)!, as here.
+\begin{lstlisting}
+(if (oracle(x))
+    (display "It is a member of the set.")
+    (display "It is not a member of the set."))
+\end{lstlisting}
+This illustrates that programs in this extended language do not
+change depending on the oracle.
+If we have an $A$ oracle box plugged in, then unplug it and replace
+it with a~$B$ oracle box, the snippet stays the same.
+So to describe such a computation
+\definend{the computation relative to~$A$} we need to include
+an oracle set~$A$ as well as the index number~$e$, as 
+\definend{$\TM^A_e$}.
+The associated function,
+\definend{the function computed relative to $A$}, is 
+\definend{$\TMfcn_e^A$}.
+
+\begin{definition}
+If the function computed relative to $A$ is the characteristic function
+of a set~$B$ then we say that \definend{$B$ is $A$-computable} or that
+$B$ is \definend{Turing reducible} to $A$,
+denoted $B\leq_T A$.\footnotemark[1]
+\end{definition}\footnotetext{The terminology ``$B$ is reducible to $A$''
+  can be confusing.
+  The idea is that we can solve the problem of~$B$ by
+  instead solving~$A$.
+  For instance, we can reduce solving the \HP{} to solving
+  halts-on-$3$ problem.}
+
+
+Think of $B$ as being simpler, or at least no harder, than~$A$.
+
+\begin{theorem}
+\begin{thmparts}
+\item A set is computable if and only if it is computable
+relative to the empty set, or to any computable set.
+\item A set $A$ is computable from$B$
+\item \textsc{(Reflexivity)} Every set is computable from itself, $A\leq_T A$.
+\item \textsc{(Transitivity)} If $A\leq_T B$ and $B\leq_T C$ then $A\leq_T C$.
+\end{thmparts}
+\end{theorem}
+
+Inter-computable.
+
+\begin{definition}
+Two sets $A,B$ are \definend{$T$-equivalent, $A\equiv_T B$} if $A\leq_T B$
+and $B\leq_T A$.
+For any set~$A$, the collection of sets $T-equivalent$ to $A$ is the
+\definend{Turing degree} of~$A$.
+We use boldface $\textbf{a}$ for the Turing degree of~$A$.
+\end{definition}
+
+\begin{theorem}
+The relativized \HP{},
+$K^K=\set{x\suchthat \TMfcn_x(x)\converges}$,
+is not computable from a $K$ oracle: there is no index~$e\in\N$
+so that $\TMfcn_e^K$ is the characteristic function of~$K^K$.
+\end{theorem}
+
+\begin{proof}
+Suppose for contradiction that there is such an index~$e$.
+Then consider this program.
+\end{proof}
+
+\begin{lemma}
+TOT is T-equivalent to $K^K$
+\end{lemma}
+
+
+Showing that two sets are $T$-equivalent
+shows that two seemingly-different problems are in fact versions
+of the same problem.
+One is the other colored blue.
+
+
+
+
+
+
+
+
+\section{Philosophical impact}
 The \HP{} and related results are about limits.
 Given Church's Thesis, they say that there are things that we can never do.
 To understand their impact, in the intellectual world
@@ -3748,72 +3874,6 @@ but we should recognize them as our bedrock.
 % Hilbert's Tenth problem, 
 % other unsolvable problems, 
 % unsolvability by means of given instruments.
-
-
-
-
-\section{Oracles}
-The \HP{} is unsolvable.
-Is it the hardest problem or are there ones that are even harder?
-
-What does it mean to say that one problem is harder than another?
-Remember that when we considered the problem of deciding whether
-a Turing machine halts on input~$3$,
-we proved that if we could solve that problem then we could solve \HP.
-% We did the same for many other problems, such as the problem of whether
-% the given Turing machine ever outputs-$7$.
-That is, in the proofs in that section
-we showed that these problems are at least as hard as the \HP.
-So we have the beginnings of an idea of relative computability,
-of `if we could solve problem~$A$ then we could
-solve problem~$B$'.
-
-To make it precise consider an extension of the definition of Turing machine.
-To the CPU we attach a device, an \definend{oracle},
-that acts as the characteristic function of some set.
-An $A$-oracle answers question of the form, ``Is $x\in A$?''
-For instance, to see what could be computed if only we could solve
-the \HP we can posit a $K$-oracle,
-answering, ``Is $x\in K$; does $\TMfcn_{x}(x)\converges$?''\footnote{%
-  Of course, under Church's Thesis we interpret our proof of the \HP{} to
-  say that no such mechanism can exist. 
-  We treat the oracle as a black box,
-  meaning that we don't open it up to see how it works\Dash that would
-  let out the magic smoke.}
-\begin{center}
-  \includegraphics{background/asy/machine/machine00.pdf}
-\end{center}
-
-Phrased in terms of in a higher level language we have essentially introduced
-a boolean funciton \lstinline!oracle(x)! that we might use as here.
-\begin{lstlisting}
-(if (oracle(x))
-    1
-    0)
-\end{lstlisting}
-
-If we have an $A$ oracle box plugged in, then unplug it and replace
-it with a~$B$ oracle box, the above program snippet is unchanged.
-That is, the results of such a program depend both on the input and on the
-oracle.
-We shall denote the oracle machine as $\TM^A_e(x)$, and the
-function arising from that function as $\TMfcn_e^A(x)$.
-
-In lower-leve terms we can formalize it as:
-
-
-
-
-
-\begin{TODO}
-$\leq_T$
-\end{TODO}
-
-Reduction shows that two seemingly-different problems are in fact versions
-of the same problem.
-One is the other colored blue.
-
-
 
 
 

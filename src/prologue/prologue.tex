@@ -605,10 +605,10 @@ halt on some inputs and not on others.
 % which machines halt on which inputs.
 % The second chapter will cover the Halting Problem.
 
-\medskip
+\subsection{Functions computed by a mechanism}
 In the opening we declared that in this chapter
-we are more interested in the things that machines compute
-than in the details of how those things are computed.
+out chief concern is the things that machines compute, rather than
+the details of how to compute those things.
 We close by defining  
 the set of functions that are mechanically computable.
 
@@ -621,46 +621,54 @@ if indeed it does halt.
 However, we are especially interested in number theoretic functions
 $\map{f}{\N}{\N}$.\footnote{Turing and other mathematicians 
 began the subject by studying the effective computation of 
-mathematical functions. 
+mathematical functions, principly functions from number theory. 
 This has proven to be a fruitful approach and the subject continues to be 
-discussed in the language of number theoretic functions.}
+discussed in this language.}
 
 We have already seen machines that we think of as inputting and outputting 
 numbers, both in \cref{ex:MPred} and \cref{ex:MAdd}.
 Although in both cases the input is strings,
-we interpreted them as numbers 
-in unary notation, where $n$-many \str{1}'s represents the number~$n\in\N$.
+we interpreted them as numbers. 
 That is, the function that a machine computes depends on how we interpret
-its input and output.
+its the symbols on the tape at the start as input,
+and those on the tape at the end as output.
 
 So before we define the function computed by a machine we must first fix 
 a convention for interpreting the starting and ending tape.
 For example, to define which functions $\map{f}{\N}{\N}$
-are mechanically computable could adopt the unary convention for input
-and output
-or, because representing $0$ with a string of $0$-many \str{1}'s
-can be awkward, we could instead
-represent~$n$ with a string of $n+1$-many \str{1}'s.
-And of course
-the computers around us represent numbers using a form of binary,
-so there are other choices as well.
+are mechanically computable could adopt the unary convention of representing
+the number~$n\in\N$ with $n$-many \str{1}'s.
+And of course the computers around us represent numbers using a form of binary.
+But we will instead choose to
+represent $n$ with $n+1$-many \str{1}'s.
+This has the advantage of being simple like unary, but not too simple\Dash
+if for instance there are multiple input numbers separated by
+a blank then we can tell that two consecutive blanks means the end of
+the input, whereas with unary it could mean a blank, then zero-many \str{1}'s,
+and then a blank.
 
 Could our choice of convention change
 the set of computed functions?
 Informal reflection suggests not.
-(We will say \citetext{more in the next section}{%
+(We will \citetext{expand on this in the next section}{%
   See also \autocite{Boker}.}.)
-For instance, suppose that we are deciding between using unary or binary.
-For any function computed using unary
-we can give a binary-oriented machine computing the same function,
+For instance, suppose that we are deciding between using binary or
+representing $n$ with $n+1$-many \str{1}'s.
+For any function computed using the first convention
+we can give a machine computing the same function via the second,
 and vice versa.
-Consequently, we adopt the simplest convention, unary.  
+Consequently, we adopt the most convenient convention, the second one.  
 
-One final comment before the definition: we think of the machine 
+A final comment before the definition: we think of the machine 
 of \cref{ex:MAdd} as computing the function $\map{\text{add}}{\N^2}{\N}$
 given by $\text{add}(x,y)= x+y$.
 How will our convention address 
 functions that take in more than one input or put out more than one?
+Our convention will be that if when the machine is started there are
+on the tape multiple integers separated by single blanks,
+(where each integer~$n$ is reresented by $n+1$-many \str{1}'s)
+
+
 In the next chapter we will see how to interpret numbers as tuples of numbers,
 and in the next section we will argue that Turing machines can do such an
 interpretation.
@@ -669,15 +677,23 @@ approach will not keep us from getting functions with other arities.
 
 \begin{definition} \label{def:FcnComputedByTM}
 Let $\TM$ be a Turing machine with tape alphabet $\B=\set{\str{B},\str{1}}$.
-Suppose that the initial tape consists of a number~$n$ 
-represented in unary, and the machine is started with with the 
-head at the first \str{1}.  
+Suppose that the initial tape consists only of some
+numbers~$x_0,\ldots\,x_{m-1}$, 
+separated by blanks and where $x_i$ is represented with $x_i+1$-many \str{1}'s,
+and the machine is started with with the read/write head at $x_0$'s
+leftmost \str{1}.  
 If this computation halts, 
-and when it halts the ouptut tape contains a total of $m$-many \str{1}'s,
+and when it halts the ouptut tape contains some numbers
+$y_0,\ldots\,y_{n-1}$,
+represented in the
+same way and separated by single blanks, and with the read/write head
+on the left-most \str{1},
 then
-\definend{the function computed by the machine} 
-$\phi_{\TM}:\N\to\N$
-is the association $n\mapsto m$.
+\definend{the function computed by the machine $\phi_{\TM}:\N^{m}\to\N^n$}
+is this association.
+\begin{equation*}
+  \TMfcn(x_0,\ldots\,x_{m-1})=y_0,\ldots\,y_{n-1}
+\end{equation*}
 \end{definition}
 
 This illustrates $\map{\phi_{\TM}}{\N}{\N}$  with $\phi_{\TM}(3)=5$.
@@ -686,27 +702,32 @@ This illustrates $\map{\phi_{\TM}}{\N}{\N}$  with $\phi_{\TM}(3)=5$.
   \quad\mapsto\quad
  \vcenteredhbox{\includegraphics{prologue/asy/tape/tapefcn1.pdf}} 
 \end{equation*}
-We usually just write~$\phi$ when
+
+We usually omit the subscript and just write~$\phi$ when
 there is only one machine under discussion.
+We sometimes write $\vec{x}$ and $\vec{y}$ for $x_0,\ldots\,x_{m-1}$
+and $y_0,\ldots\,y_{n}$.
 
 If the definition doesn't apply to a machine 
 because its tape alphabet isn't $\B$
-then the function computed by that machine is undefined.
-Even machines where the alphabet is $\B$ can have undefined 
-output values for some inputs, if
-the machine does not halt on that input.
+then the function computed by that machine is empty; for no inputs does
+it returns an output.
+Even if a machine has the right alphabet, $\B$, it can have undefined 
+output values for some inputs, for instance because the symbols on the tape
+at the end of the computation do not have the required form,
+or because the machine does not halt on that input.
 
 \begin{definition}
 If for a Turing machine the value of a computation is not defined
-on an input~$n$ then we 
+on some input~$\vec{x}$ in its domain then we 
 say that the function computed by the machine \definend{diverges}, written
-\definend{$\phi(n)\mathord{\uparrow}$}.
+\definend{$\phi(\vec{x})\mathord{\uparrow}$}.
 Where the machine does give an output, 
 we say that it \definend{converges},  
-written \definend{$\phi(n)\mathord{\downarrow}$}.
-If $\phi$ is such that it diverges for which there is at least one input
-then we call~$\phi$ a \definend{partial function}.
-Otherwise, if $\phi$ has an output for each input, it is a 
+written \definend{$\phi(\vec{x})\mathord{\downarrow}$}.
+If $\phi$ is such that it diverges for at least one input
+then it is a \definend{partial function}.
+Otherwise, if $\phi$ has an output for each input inits domain, then it is a 
 \definend{total function}.
 \end{definition}
 

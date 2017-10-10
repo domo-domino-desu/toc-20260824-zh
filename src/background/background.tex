@@ -2582,7 +2582,7 @@ Obviously the second program is related to the first.
 The next result is that the index of the second program is computable from the
 first.
 
-\begin{theorem}[Parameter theorem, $s$-$m$-$n$~theorem]
+\begin{theorem}[Parameter theorem]
 For every $m,n\in\N$
 there is a computable function $\map{s}{\N^{1+m}}{\N}$ with this behavior:
 where $m+n$-ary function computed by $\TM_e$ is
@@ -2592,26 +2592,46 @@ gives the function computed by $\TM_{s(e,a_0,\ldots,a_{m-1})}$.
 \end{theorem}
 
 \begin{proof}
-Fix $m$ and~$n$.
-The function $s_{m,n}$ inputs an index~$e$ and an $m$-tuple
-$x_0,\ldots,x_{m-1}$, and outputs another index,
-the index of a machine whose behavior equals 
+We must create $s$ to be effective, to input 
+an index~$e$ and an $m$-tuple $x_0,\ldots,x_{m-1}$,
+and to output the index of a machine~$\hat{\TM}$.
+This machine~$\hat{\TM}$, when given the input $x_m,\ldots,x_{m+n-1}$,
+will return
 $\TMfcn_e(x_0,\ldots,x_{m-1},x_m,\ldots,x_{m+n-1})$.
 
-Consider the following Turing machine~$\TM$.
-When started with $e,x_1,\ldots,x_{m-1}$ on the tape,
-it erases the input $e$,
-moves the read/write head to the start of
-$x_0,\ldots,x_{m-1}$, and then passes control to machine $\TM_e$.  
+Basically, $s$ constructs the instructions for~$\hat{\TM}$.
+We know how to get from the instruction set to the index,
+using Cantor's encoding, so then we are done.
+The flowchart for $s$ is on the left below.
 \begin{center}
-  \includegraphics{background/asy/flowcharts/flowcharts00.pdf}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts00.pdf}}
+  \hspace{3em}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts01.pdf}}
 \end{center}
-This Turing machine is a set of instructions.
-The G\"odel number of that set 
-is the desired output, $s_{m,n}(e,x_0,\ldots,x_{m-1})$.
+The flowchart for $\hat{\TM}$, the Turing machine that $s$ constructs,
+is on the right.
+Before considering that, recall our convention for Turing machine input.
+It is encoded in unary, with the number~$k$ represented by
+a string of $k$-many \str{1}'s.
+Multiple inputs are separated with a single blank.
+And when the machine is started, the head should be under the input's
+left-most \str{1}.
+
+The machine $\hat{\TM}$ does not start by reading
+its inputs $x_m,\ldots,x_{m+n-1}$.
+Instead, it moves left and puts $x_0,\ldots,x_{m-1}$ on the tape,
+in unary and separated by blanks.
+Thus, 
+when this phase is done the machine will have $x_0,\ldots,x_{m+n-1}$ on the
+tape, in unary and separated by blanks.
+Next move the I/O head until it is on the leftmost \str{1}
+of the $x_0$.
+Finally, turn control
+over to Turing machine~$P_e$ (using universality),
+which will run on that input list.
 \end{proof}
 
-The following Lisp code implements $s_{1,1}$.
+The following Schem code implements $s_{1,1}$.
 (The \lstinline!gensym! function produces a symbol that does not appear
 elsewhere in the program.)
 % https://en.wikipedia.org/wiki/Smn_theorem

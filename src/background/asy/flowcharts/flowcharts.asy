@@ -27,38 +27,81 @@ int picnum = 0;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $e,x_0,\ldots,x_n$");
-node erase=nbox("Back up, erase $e$");
-node pos=nbox("Move I/O head to start of $x_0$");
-node run=nbox("Begin simulation of $\TM_e$");
+node read=nbox("Read $e,x_0,\ldots,x_{m-1}$");
+node create=nbox("Create instructions for $\hat{P}$");
+node ret=nbox(minipage_snug("Return index of\\ that instruction set"));
 node ending=nroundbox("End");
 
 // layout
 defaultlayoutrel = false;
 defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
+real v = 0.85*u;
 
-vlayout(0.85u,start,read);
-vlayout(0.85u,read,erase);
-vlayout(0.85u,erase,pos);
-vlayout(0.85u,pos,run);
-vlayout(0.85u,run,ending);
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,create);
+vlayout(1.275*v,create,ret);
+vlayout(1.25*v,ret,ending);
 
 // draw edges
 draw(pic,
      (start--read),
-     (read--erase),
-     (erase--pos),
-     (pos--run),
-     (run--ending)
+     (read--create),
+     (create--ret),
+     (ret--ending)
 );
 
 // draw nodes
 draw(pic,
      start,
      read,
-     erase,
-     pos,
+     create,
+     ret,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ---------------------------
+picture pic;
+int picnum = 1;
+
+// define nodes
+node start=nroundbox("Start");
+node shiftleft=nbox("Move left $x_0+\cdots+x_{m-1}+m$ cells");
+node inputprefix=nbox(minipage_snug("Put $x_0$, \ldots, $x_{m-1}$ on tape\\ separated by blanks"));
+node pointer=nbox("Move I/O head to start of $x_0$");
+node run=nbox("Simulate $P_e$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,shiftleft);
+vlayout(1.25*v,shiftleft,inputprefix);
+vlayout(1.275*v,inputprefix,pointer);
+vlayout(1.0*v,pointer,run);
+vlayout(1.0*v,run,ending);
+
+// draw edges
+draw(pic,
+     (start--shiftleft),
+     (shiftleft--inputprefix),
+     (inputprefix--pointer),
+     (pointer--run),
+     (run--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     shiftleft,
+     inputprefix,
+     pointer,
      run,
      ending
      );

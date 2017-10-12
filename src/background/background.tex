@@ -2724,23 +2724,57 @@ the middle box and so will never get to the
   $\definend{K_0}=\set{\sequence{e,x} \suchthat \text{$\TM_e(x)$ halts}}$.
 \end{definition}
 
-Out touchstone unsolvable problem is that the 
+Our touchstone unsolvable problem is that the 
 characteristic function of $K$ is not computable.
-When we say that this problem is unsolvable we mean that it is unsolvable
-by a mechanism\Dash there is no computer program with the following behavior. 
+
+\begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
+Given~$e\in\N$ determine whether Turing machine~$e$ halts on input~$e$,
+whether $\TMfcn_e(e)\converges$.
+\end{problem}
+
+\begin{theorem}[Unsolvability of the \HP]
+The \HP{} is mechanically unsolvable;
+there is no Turing machine $\TM$ with this behavior.
 \begin{equation*}
-  \computablefunction{halt\_checker}(e)=
+  \computablefunction{halt\_checker}(e)=K(e)=
   \begin{cases}
     1 &\case{if $\phi_e(e)\downarrow$}  \\
     0 &\case{otherwise}
   \end{cases}
 \end{equation*}
+\end{theorem}
 
-\begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
-Determine if a Turing machine halts.
-\probleminput~$e\in\N$.
-\problemoutput~$1$ if $\TM_e$ halts on input~$e$, and $0$ if it does not.
-\end{problem}
+\begin{proof}
+Suppose otherwise, that there is a Turing machine whose behavior is that of
+$\computablefunction{halt\_checker}$.
+% Let its index be $e_0$, so that $\TM_{e_0}$ halts on all inputs and
+% $\TMfcn_{e_0}=\computablefunction{halt\_checker}$.
+%
+Then this function is also mechanically computable.
+\begin{equation*}
+f(x)=
+  \begin{cases}
+  0          &\case{if $\TMfcn_e(e)\diverges$}  \\
+  \uparrow  &\case{if $\TMfcn_e(e)\converges$}
+  \end{cases}
+\end{equation*}
+Since it is a computable function it has an index.
+Let that index be~$\hat{e}$, so that
+$f(x)=\TMfcn_e(x)$ for all inputs~$x$.
+
+Now consider whether $f(\hat{e})$ converges or diverges.
+If it converges then by the second clause in the
+definition of $f$ we have $f(\hat{e})\diverges$, which is impossible.
+If it diverges then by the first clause in the definition of~$f$
+we have $f(\hat{e})\converges$, specifically $f(\hat{e})=0$,
+which is also impossible.
+Since a mechanically computable~$f$ leads to a contradiction,
+the function $\computablefunction{halt\_checker}$ is not
+mechanically computable.
+\end{proof}
+
+When we say that this problem is unsolvable we mean that it is unsolvable
+by a mechanism\Dash there is no computer program with the following behavior. 
 
 The statement of the problem may seem odd.
 Surely the more natural question is whether $\TM_e$ halts on input~$x$?
@@ -2752,6 +2786,7 @@ For the definition we go with the above statement
 because it is the standard usage and because it has some technical advantages,
 including that it falls out of the diagonalization development done
 at the start of this subsection.}
+We will say more about inter-computability in \cref{sec:Oracles}.
 
 If we can solve the $K_0$~problem of determining whether $\TM_e$ halts on
 input~$x$ then clearly we can answer the $K$~question of 
@@ -3601,7 +3636,7 @@ If so prove that, and if not then give a counterexample.
 
 
 
-\section{Oracles}
+\section{Oracles} \label{sec:Oracles}
 The \HP{} is unsolvable.
 Is it the hardest problem or are there ones that are even harder?
 
@@ -3636,13 +3671,21 @@ answering questions of the form,
   \includegraphics{background/asy/machine/machine00.pdf}
 \end{center}
 
-A formal definition extending that of Turing machines is messy.
+A definition for an $A$-oracle computation
+extending that of Turing machines is:~to the action
+symbols \str{L} and~\str{R} we add one more, \str{O}.
+When this action symbol appears, where the I/O head is under the
+leftmost \str{1} of a sequence of $n+1$-many \str{1}'s,
+that sequence is replaced
+by either a single~\str{1} followed by $n$-many \str{0}'s if $n\in A$,
+or entirely by $n+1$-many \str{0}'s if $n\notin A$.
 (For a full treatment see \autocite{Rogers}.)
-In this sketch we will instead use Church's Thesis and
-consider introducing into a higher level language 
+In this sketch, instead of working with the details of the
+definition we will use Church's Thesis and
+imagine introducing into a higher level language 
 a boolean function \lstinline!oracle(x)!, as here.
 \begin{lstlisting}
-(if (oracle(x))
+(if oracle(x)
     (display "It is a member of the set.")
     (display "It is not a member of the set."))
 \end{lstlisting}
@@ -3676,10 +3719,50 @@ denoted $B\leq_T A$.\footnotemark[1]
 Think of $B$ as being simpler, or at least no harder, than~$A$.
 
 \begin{theorem}
+The relativized \HP{},
+$K^K=\set{x\suchthat \TMfcn_x(x)\converges}$,
+is not computable from a $K$ oracle: there is no index~$e\in\N$
+so that $\TMfcn_e^K$ is the characteristic function of~$K^K$.
+\end{theorem}
+
+\begin{proof}
+Suppose otherwise, that there is a $K$-oracle Turing machine
+whose behavior is that of
+$\computablefunction{halt\_checker}$.
+
+Suppose otherwise, that there is a Turing machine whose behavior is that of
+$\computablefunction{halt\_checker}$.
+% Let its index be $e_0$, so that $\TM_{e_0}$ halts on all inputs and
+% $\TMfcn_{e_0}=\computablefunction{halt\_checker}$.
+%
+Then this function is also mechanically computable.
+\begin{equation*}
+f(x)=
+  \begin{cases}
+  0          &\case{if $\TMfcn_e(e)\diverges$}  \\
+  \uparrow  &\case{if $\TMfcn_e(e)\converges$}
+  \end{cases}
+\end{equation*}
+Since it is a computable function it has an index.
+Let that index be~$\hat{e}$, so that
+$f(x)=\TMfcn_e(x)$ for all inputs~$x$.
+
+Now consider whether $f(\hat{e})$ converges or diverges.
+If it converges then by the second clause in the
+definition of $f$ we have $f(\hat{e})\diverges$, which is impossible.
+If it diverges then by the first clause in the definition of~$f$
+we have $f(\hat{e})\converges$, specifically $f(\hat{e})=0$,
+which is also impossible.
+Since a mechanically computable~$f$ leads to a contradiction,
+the function $\computablefunction{halt\_checker}$ is not
+mechanically computable.
+\end{proof}
+
+\begin{theorem}
 \begin{thmparts}
 \item A set is computable if and only if it is computable
 relative to the empty set, or to any computable set.
-\item A set $A$ is computable from$B$
+\item A set $A$ is computable from $B$
 \item \textsc{(Reflexivity)} Every set is computable from itself, $A\leq_T A$.
 \item \textsc{(Transitivity)} If $A\leq_T B$ and $B\leq_T C$ then $A\leq_T C$.
 \end{thmparts}
@@ -3690,22 +3773,10 @@ Inter-computable.
 \begin{definition}
 Two sets $A,B$ are \definend{$T$-equivalent, $A\equiv_T B$} if $A\leq_T B$
 and $B\leq_T A$.
-For any set~$A$, the collection of sets $T-equivalent$ to $A$ is the
+For any set~$A$, the collection of sets $T$-equivalent to $A$ is the
 \definend{Turing degree} of~$A$.
 We use boldface $\textbf{a}$ for the Turing degree of~$A$.
 \end{definition}
-
-\begin{theorem}
-The relativized \HP{},
-$K^K=\set{x\suchthat \TMfcn_x(x)\converges}$,
-is not computable from a $K$ oracle: there is no index~$e\in\N$
-so that $\TMfcn_e^K$ is the characteristic function of~$K^K$.
-\end{theorem}
-
-\begin{proof}
-Suppose for contradiction that there is such an index~$e$.
-Then consider this program.
-\end{proof}
 
 \begin{lemma}
 TOT is T-equivalent to $K^K$

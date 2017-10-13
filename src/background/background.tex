@@ -2728,96 +2728,10 @@ Our touchstone unsolvable problem is that the
 characteristic function of $K$ is not computable.
 
 \begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
-Given~$e\in\N$ determine whether Turing machine~$e$ halts on input~$e$,
-whether $\TMfcn_e(e)\converges$.
+Given~$e\in\N$ determine whether Turing machine~$\TM_e$ halts on input~$e$,
+that is, whether $\TMfcn_e(e)\converges$.
 \end{problem}
 
-\begin{theorem}[Unsolvability of the \HP]
-The \HP{} is mechanically unsolvable;
-there is no Turing machine $\TM$ with this behavior.
-\begin{equation*}
-  \computablefunction{halt\_checker}(e)=K(e)=
-  \begin{cases}
-    1 &\case{if $\phi_e(e)\downarrow$}  \\
-    0 &\case{otherwise}
-  \end{cases}
-\end{equation*}
-\end{theorem}
-
-\begin{proof}
-Suppose otherwise, that there is a Turing machine whose behavior is that of
-$\computablefunction{halt\_checker}$.
-% Let its index be $e_0$, so that $\TM_{e_0}$ halts on all inputs and
-% $\TMfcn_{e_0}=\computablefunction{halt\_checker}$.
-%
-Then this function is also mechanically computable.
-\begin{equation*}
-f(x)=
-  \begin{cases}
-  0          &\case{if $\TMfcn_e(e)\diverges$}  \\
-  \uparrow  &\case{if $\TMfcn_e(e)\converges$}
-  \end{cases}
-\end{equation*}
-Since it is a computable function it has an index.
-Let that index be~$\hat{e}$, so that
-$f(x)=\TMfcn_e(x)$ for all inputs~$x$.
-
-Now consider whether $f(\hat{e})$ converges or diverges.
-If it converges then by the second clause in the
-definition of $f$ we have $f(\hat{e})\diverges$, which is impossible.
-If it diverges then by the first clause in the definition of~$f$
-we have $f(\hat{e})\converges$, specifically $f(\hat{e})=0$,
-which is also impossible.
-Since a mechanically computable~$f$ leads to a contradiction,
-the function $\computablefunction{halt\_checker}$ is not
-mechanically computable.
-\end{proof}
-
-When we say that this problem is unsolvable we mean that it is unsolvable
-by a mechanism\Dash there is no computer program with the following behavior. 
-
-The statement of the problem may seem odd.
-Surely the more natural question is whether $\TM_e$ halts on input~$x$?
-We will argue that the two problems are computationally equivalent, 
-are inter-solvable, meaning that if you can solve the one then
-you can solve the other, and so the choice of definition is a 
-matter of convenience.\footnote{%  
-For the definition we go with the above statement 
-because it is the standard usage and because it has some technical advantages,
-including that it falls out of the diagonalization development done
-at the start of this subsection.}
-We will say more about inter-computability in \cref{sec:Oracles}.
-
-If we can solve the $K_0$~problem of determining whether $\TM_e$ halts on
-input~$x$ then clearly we can answer the $K$~question of 
-whether $\TM_e$ halts on~$e$.
-The other half must be the harder half.
-So now suppose that we can answer the $K$~question of whether 
-a Turing machine halts 
-when given as input its own number, 
-the question of whether $\TM_e$ halts on input~$e$.
-Consider these programs.
-\begin{center}
-  \includegraphics{background/asy/hp/hp03.pdf}
-  \hspace{2em plus 0.5fil}
-  \includegraphics{background/asy/hp/hp04.pdf}
-\end{center}
-By Church's Thesis there is a Turing machine implementing the flowchart
-on the left; let it be machine~$\TM_{\hat{e}}$.
-Apply the \smn{} theorem, parametrizing $e$ and~$x$, to get the 
-flowchart on the right.
-(Note that the chart on the right 
-actually represents a family of programs.
-This family has infinitely many
-members, one for each pair $\protect\sequence{e,x}$.)
-This right-side chart, $\TM_{s(\hat{e},e,x)}$, either halts on all inputs~$y$ 
-or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
-In particular, $\TM_{s(\hat{e},e,x)}$ halts on $s(\hat{e},e,x)$ if
-$\phi_e(x)\converges$, and
-fails to halt on $s(\hat{e},e,x)$ if $\phi_e(x)\diverges$.
-So if we can solve the $K$~problem of whether a Turing machine halts
-when given as input its own number, then we can solve the $K_0$~problem
-of whether~$\phi_e(x)\converges$.  
 
 
 
@@ -2906,31 +2820,54 @@ that we have produced is indeed unsolvable, that
 it cannot be mechanically computed.
 
 \begin{theorem}[Unsolvability of the \HP]
-No computable function solves the \HP.
+The \HP{} is mechanically unsolvable;
+there is no Turing machine $\TM$ whose behavior is the
+characteristic function of~$K$.
 \end{theorem}
 
 \begin{proof}
-Suppose that a Turing Machine exists that solves the Halting Problem,
-that enables us to test for an arbitrary~$e$ whether $\TM_e$ halts on input~$e$.
-With that test we can write this program.
+Assume otherwise, that there is a Turing machine whose behavior is this.
+\begin{equation*}
+  K(e)=
+  \computablefunction{halt\_checker}(e)=
+  \begin{cases}
+  1  &\case{if $\TMfcn_e(e)\converges$}  \\
+  0  &\case{if $\TMfcn_e(e)\diverges$} 
+  \end{cases}
+\end{equation*}
+Then the function below is also mechanically computable.
+The flowchart illustrates;
+it uses $\computablefunction{halt\_checker}$ for the branch.
 \begin{center}
-  \includegraphics{background/asy/hp/hp05.pdf}
+\begin{minipage}{0.3\textwidth}
+  \begin{equation*}
+  f(e)=
+    \begin{cases}
+    0    &\case{if $\TMfcn_e(e)\diverges$}  \\
+    \uparrow  &\case{if $\TMfcn_e(e)\converges$}
+    \end{cases}
+  \end{equation*}
+\end{minipage}
+\hspace{3em}
+\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts02.pdf}}
 \end{center}
-Let this Turing machine have index~$\hat{e}$, so the program's behavior
-the same as~$\TM_{\hat{e}}$.
+(In the function's first case it doesn't matter
+that $f(e)$ returns a value of~$0$, just that it converges.)
+Since $f$ is a computable function it has an index.
+Let that index be~$\hat{e}$, so that
+$f(x)=\TMfcn_{\hat{e}}(x)$ for all inputs~$x$.
 
-Feed it the input~$\hat{e}$.
-If $\TM_{\hat{e}}$ halts on $\hat{e}$ then the test takes
-the right hand branch, which results in the machine  $\TM_{\hat{e}}$ not halting, 
-so that cannot be the case.
-If instead $\TM_{\hat{e}}$ fails to halt on $\hat{e}$ then the test
-goes left, which leads to the machine halting,
-so that also cannot be.
-Thus,
-no Turing machine solves the Halting Problem.
+Now feed $f$ its own index\Dash consider $f(\hat{e})=\TMfcn_{\hat{e}}(\hat{e})$.
+If it diverges then by the first clause in the definition of~$f$
+we have $f(\hat{e})\converges$,
+which contradicts that $f$~diverges.
+If it converges then by $f$'s second clause 
+we have $f(\hat{e})\diverges$, which is also impossible.
+Since the existence of a mechanically computable~$f$ leads to a contradiction,
+the function $\computablefunction{halt\_checker}$, the characteristic
+function of $K$, is not
+mechanically computable.
 \end{proof}
-
-
 
 
 
@@ -3221,33 +3158,16 @@ computable gives that the \HP{} is computably solvable,
 which is wrong.
 \end{example}
 
-In each example we show that 
-the given problem is at least as hard
-as \HP,
-because if we could solve the given problem 
-then we could use it to solve the \HP.
-We say that the \HP{} \definend{reduces to} 
-(or \definend{Turing reduces to})
-the given problem
-\begin{center}\citetext{$\text{\HP}\leq_{T}\text{Given Problem}$}{%
-This is called \definend{Turing reducibility} and 
-the $T$ stands for Turing.
-We have seen this earlier; 
-in the paragraphs following \cref{prob:HaltingProblem}
-we argued first that $K\leq_TK_0$ and then that $K_0\leq_T K$.}
-\end{center}
-or that using the given problem as an \definend{oracle} we 
-could compute the solution to the \HP.
 
-We closes with two points.
-The first is to reiterate that `unsolvable' 
-means unsolvable by mechanical means.
-There is no Turing machine that can compute the solution to the problem.
+We closes with two comments.
+The first is to reiterate that when we say that a problem is
+unsolvable we mean that it is unsolvable
+by a mechanism, that there  
+is no Turing machine that can compute the solution to the problem.
 There may well be a \citetext{function that solves it}{\autocite{wiki:ouija}}
-but there is no computable
-function that solves it.
+but there is no computable function that solves it.
 
-Out second point is some intuition.
+Out second comment is some intuition.
 There certainly are problems that start with ``Given~$e$'' that we can solve.
 One is: given~$e$ decide if one instruction in $\TM_e$ is 
 $\tminstruction{0}{B}{L}{1}$.
@@ -3703,11 +3623,13 @@ The associated function,
 \definend{the function computed relative to $A$}, is denoted
 \definend{$\TMfcn_e^A$}.
 
+Indexes of these pluggable functions.
+
 \begin{definition}
 If the function computed relative to $A$ is the characteristic function
 of a set~$B$ then we say that \definend{$B$ is $A$-computable} or that
 $B$ is \definend{Turing reducible} to $A$,
-denoted $B\leq_T A$.\footnotemark[1]
+denoted \definend{$B\leq_T A$}.\footnotemark[1]
 \end{definition}\footnotetext{The terminology ``$B$ is reducible to $A$''
   can be confusing.
   The idea is that we can solve the problem of~$B$ by
@@ -3718,6 +3640,7 @@ denoted $B\leq_T A$.\footnotemark[1]
 
 Think of $B$ as being simpler, or at least no harder, than~$A$.
 
+
 \begin{theorem}
 The relativized \HP{},
 $K^K=\set{x\suchthat \TMfcn_x(x)\converges}$,
@@ -3726,36 +3649,45 @@ so that $\TMfcn_e^K$ is the characteristic function of~$K^K$.
 \end{theorem}
 
 \begin{proof}
-Suppose otherwise, that there is a $K$-oracle Turing machine
-whose behavior is that of
-$\computablefunction{halt\_checker}$.
-
-Suppose otherwise, that there is a Turing machine whose behavior is that of
-$\computablefunction{halt\_checker}$.
-% Let its index be $e_0$, so that $\TM_{e_0}$ halts on all inputs and
-% $\TMfcn_{e_0}=\computablefunction{halt\_checker}$.
-%
-Then this function is also mechanically computable.
+Assume otherwise, that there is a machanical computation relative to a
+$K$~oracke whose behavior is this.
 \begin{equation*}
-f(x)=
+  K^K(e)=
   \begin{cases}
-  0          &\case{if $\TMfcn_e(e)\diverges$}  \\
-  \uparrow  &\case{if $\TMfcn_e(e)\converges$}
+  1  &\case{if $\TMfcn^K_e(e)\converges$}  \\
+  0  &\case{if $\TMfcn^K_e(e)\diverges$} 
   \end{cases}
+  \tag{$*$}
 \end{equation*}
-Since it is a computable function it has an index.
+Then the function below is also computable relative to a $K$~oracle.
+The flowchart illustrates;
+it uses the above function for the branch.
+\begin{center}
+\begin{minipage}{0.3\textwidth}
+  \begin{equation*}
+  f(e)=
+    \begin{cases}
+    0    &\case{if $\TMfcn^K_e(e)\diverges$}  \\
+    \uparrow  &\case{if $\TMfcn^K_e(e)\converges$}
+    \end{cases}
+  \end{equation*}
+\end{minipage}
+\hspace{3em}
+\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts03.pdf}}
+\end{center}
+Since $f$ is an oracle-computable function it has an index.
 Let that index be~$\hat{e}$, so that
-$f(x)=\TMfcn_e(x)$ for all inputs~$x$.
+$f(x)=\TMfcn^K_{\hat{e}}(x)$ for all inputs~$x$.
 
-Now consider whether $f(\hat{e})$ converges or diverges.
-If it converges then by the second clause in the
-definition of $f$ we have $f(\hat{e})\diverges$, which is impossible.
+Now feed $f$ its own index\Dash consider $f(\hat{e})=\TMfcn^K_{\hat{e}}(\hat{e})$.
 If it diverges then by the first clause in the definition of~$f$
-we have $f(\hat{e})\converges$, specifically $f(\hat{e})=0$,
-which is also impossible.
-Since a mechanically computable~$f$ leads to a contradiction,
-the function $\computablefunction{halt\_checker}$ is not
-mechanically computable.
+we have $f(\hat{e})\converges$,
+which contradicts that $f$~diverges.
+If it converges then by $f$'s second clause 
+we have $f(\hat{e})\diverges$, which is also impossible.
+Since the existence of a $K$ oracle computable~$f$ leads to a contradiction,
+the function used to create it, the characteristic
+function of $K^K$, is not $K$-computable.
 \end{proof}
 
 \begin{theorem}
@@ -3777,6 +3709,54 @@ For any set~$A$, the collection of sets $T$-equivalent to $A$ is the
 \definend{Turing degree} of~$A$.
 We use boldface $\textbf{a}$ for the Turing degree of~$A$.
 \end{definition}
+
+
+The statement of the problem may seem odd.
+Surely the more natural question is whether $\TM_e$ halts on input~$x$?
+We will argue that the two problems are computationally equivalent, 
+are inter-solvable, meaning that if you can solve the one then
+you can solve the other, and so the choice of definition is a 
+matter of convenience.\footnote{%  
+For the definition we go with the above statement 
+because it is the standard usage and because it has some technical advantages,
+including that it falls out of the diagonalization development done
+at the start of this subsection.}
+We will say more about inter-computability in \cref{sec:Oracles}.
+
+If we can solve the $K_0$~problem of determining whether $\TM_e$ halts on
+input~$x$ then clearly we can answer the $K$~question of 
+whether $\TM_e$ halts on~$e$.
+The other half must be the harder half.
+So now suppose that we can answer the $K$~question of whether 
+a Turing machine halts 
+when given as input its own number, 
+the question of whether $\TM_e$ halts on input~$e$.
+Consider these programs.
+\begin{center}
+  \includegraphics{background/asy/hp/hp03.pdf}
+  \hspace{2em plus 0.5fil}
+  \includegraphics{background/asy/hp/hp04.pdf}
+\end{center}
+By Church's Thesis there is a Turing machine implementing the flowchart
+on the left; let it be machine~$\TM_{\hat{e}}$.
+Apply the \smn{} theorem, parametrizing $e$ and~$x$, to get the 
+flowchart on the right.
+(Note that the chart on the right 
+actually represents a family of programs.
+This family has infinitely many
+members, one for each pair $\protect\sequence{e,x}$.)
+This right-side chart, $\TM_{s(\hat{e},e,x)}$, either halts on all inputs~$y$ 
+or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
+In particular, $\TM_{s(\hat{e},e,x)}$ halts on $s(\hat{e},e,x)$ if
+$\phi_e(x)\converges$, and
+fails to halt on $s(\hat{e},e,x)$ if $\phi_e(x)\diverges$.
+So if we can solve the $K$~problem of whether a Turing machine halts
+when given as input its own number, then we can solve the $K_0$~problem
+of whether~$\phi_e(x)\converges$.  
+
+\begin{lemma}
+$K\equiv_T K_0$
+\end{lemma}
 
 \begin{lemma}
 TOT is T-equivalent to $K^K$

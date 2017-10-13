@@ -107,3 +107,100 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ================= Proof of HP ==============
+picture pic;
+int picnum = 2;
+
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $e$");
+node test=nrounddiamond("$\TMfcn_e(e)\converges$?");
+node printout=nbox("Print 0");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+hlayout(-2.8*u,test,printout);
+hlayout(3.15*u,test,loop);
+vlayout(1.1*v,printout,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout).l("No"),
+     (test--loop).l("Yes").style("leftside"),
+     (printout--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     loop, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ---- relativization to K -------------
+picture pic;
+int picnum = 3;
+
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $e$");
+node test=nrounddiamond("$\TMfcn^K_e(e)\converges$?");
+node printout=nbox("Print 0");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+hlayout(-2.8*u,test,printout);
+hlayout(3.15*u,test,loop);
+vlayout(1.1*v,printout,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout).l("No"),
+     (test--loop).l("Yes").style("leftside"),
+     (printout--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     loop, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

@@ -756,7 +756,16 @@
 %    \textit{see his hairy legs} OR C Dobson, p 1094.
 
 \usepackage{endnotes} %, endheads}
-
+% \long\def\@endnotetext#1{%
+%      \if@enotesopen \else \@openenotes \fi
+%      \immediate\write\@enotes{\@doanenote{\@theenmark}}%
+%      \begingroup
+%         \def\next{#1}%
+%         \newlinechar='40
+%         \immediate\write\@enotes{\meaning\next}%
+%      \endgroup
+%      \immediate\write\@enotes{\@endanenote}}
+   
 \newlength{\jh@endnotesoutdent} \setlength{\jh@endnotesoutdent}{2em}
 \newcommand{\citetext}[2]{#1%
   \endnote{\protect\hspace*{-\jh@endnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}

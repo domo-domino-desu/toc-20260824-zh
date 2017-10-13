@@ -2650,6 +2650,7 @@ adds~$3$ to its argument.
 \begin{TODO}
 Show it absorbing input.
 Compare to closure.
+Discussion of how parametrization gives a family of programs.
 \end{TODO}
 
 
@@ -2659,29 +2660,30 @@ Compare to closure.
 
 
 %================================================
-\section{Halting Problem}
-We've shown that
+\section{The \HP}
+We've showed that
 there are functions that are not mechanically computable.
-Our proof used the machinery of Cantor's Theorem to show
-that there are countably many Turing machines but 
+We gave a counting argument:~there are countably many Turing machines but 
 uncountably many functions and so there are functions without an
 associated machine.
-While we certainly are glad to know what is true,
-our taste in this subject is to prefer an argument that constructs an answer.
-We now produce
-a function for which there is no associated Turing machine.
+While knowing what's true is a step forward,
+our taste is to prefer to construct a specific a function for which there
+is no associated Turing machine.
+We now exhibit such a function.
 
 
 
 \subsection{Definition}
 The natural approach is to go through 
 Cantor's Theorem and effectivize it,
-to see how much of the proof we can express constructively.
-For a first try, consider an illustrative table adapted from the one on 
+to see how much of the proof we can express as a construction.
+
+Consider an illustrative table adapted from the discussion of
+Cantor's Theorem, on 
 \cpageref{ex:DiagonalizationTable}.
-Imagine that the rows are the computable functions and 
-that the columns are inputs.
-For instance, this table imagines that $\phi_1(3)=0$.
+It imagines that the rows are computable functions and 
+the columns are inputs.
+For instance, this table lists $\phi_1(3)=0$.
 \begin{center} \small \setlength{\arraycolsep}{0.75\arraycolsep}
   \begin{tabular}{r|ccccccc@{\hspace*{1em}$\ldots$}}
     \multicolumn{1}{r}{\ } 
@@ -2706,72 +2708,223 @@ For instance, this table imagines that $\phi_1(3)=0$.
 Diagonalize.
 That is, consider the program and note that its output is not any of the 
 table's rows.
-But the table imagines that the rows are all of the computable functions,
-contradicting that the program computes a function that is not any row.
+That's a contradiction to the supposition that
+the rows are all of the computable functions.
 
 So what's the resolution?
 Among the computable functions 
 there must be one that on some input does not converge.
 In particular this must happen on the table's diagonal\Dash there must be
 some $e\in\N$ so that $\phi_e(e)\diverges$.
-This makes the seeming contradiction dissolve because
-in the flowchart, for those input~$e$'s, the program will never leave 
-the middle box and so will never get to the 
-`$\text{result}+1$' output.
+This makes the difficulty dissolve because for those input~$e$'s
+in the flowchart, the program will never leave 
+the middle box and so will never get to the contradictory output.
+In brief, in the above table some of the entries must be up arrows, $\uparrow$.
 
 \begin{definition}
-  $\definend{K}=\set{e \suchthat \text{$\TM_e(e)$ halts}}$, 
-  $\definend{K_0}=\set{\sequence{e,x} \suchthat \text{$\TM_e(x)$ halts}}$.
+  $\definend{K}=\set{e \suchthat \text{$\TM_e$ halts on input~$e$}}$
 \end{definition}
-
-Our touchstone unsolvable problem is that the 
-characteristic function of $K$ is not computable.
 
 \begin{problem}[Halting Problem]  \label{prob:HaltingProblem}
 Given~$e\in\N$ determine whether Turing machine~$\TM_e$ halts on input~$e$,
 that is, whether $\TMfcn_e(e)\converges$.
 \end{problem}
 
+Certainly for any $e\in\N$, either $\TMfcn_e(e)\converges$ or
+$\TMfcn_e(e)\diverges$.
+Thus there is a function giving $1$ in the first case and $0$ in the second.
+The \HP{} is to find a Turing machine whose behavior is that function.
+That is, the \HP{} is to produce a program 
+$\computablefunction{halt\_checker}$ that acts as the characteristic
+function of $K$, returning $1$ if $\TM_e$ halts on input~$e$ and
+returning~$0$ otherwise.
+
+
+\begin{theorem}[Unsolvability of the \HP]
+The \HP{} is mechanically unsolvable.
+\end{theorem}
+
+\begin{proof}
+Assume otherwise, that there is a Turing machine whose behavior is this.
+\begin{equation*}
+  K(e)=
+  \computablefunction{halt\_checker}(e)=
+  \begin{cases}
+  1  &\case{if $\TMfcn_e(e)\converges$}  \\
+  0  &\case{if $\TMfcn_e(e)\diverges$} 
+  \end{cases}
+\end{equation*}
+Then the function below is also mechanically computable.
+The flowchart illustrates $f$'s construction;
+it uses $\computablefunction{halt\_checker}$ for the branch.
+\begin{center}
+\begin{minipage}{0.3\textwidth}
+  \begin{equation*}
+  f(e)=
+    \begin{cases}
+    0    &\case{if $\TMfcn_e(e)\diverges$}  \\
+    \uparrow  &\case{if $\TMfcn_e(e)\converges$}
+    \end{cases}
+  \end{equation*}
+\end{minipage}
+\hspace{3em}
+\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts02.pdf}}
+\end{center}
+(In the function's first case it doesn't matter
+that $f(e)$ outputs~$0$, just that it converges.)
+Since $f$ is mechanically computable it has an index.
+Let that index be~$\hat{e}$, so that
+$f(x)=\TMfcn_{\hat{e}}(x)$ for all inputs~$x$.
+
+Now feed $f$ its own index\Dash consider $f(\hat{e})=\TMfcn_{\hat{e}}(\hat{e})$.
+If it diverges then by the first clause in the definition of~$f$
+we have $f(\hat{e})\converges$,
+which contradicts that $f$~diverges.
+If it converges then by $f$'s second clause 
+we have $f(\hat{e})\diverges$, which is also impossible.
+Since assuming that $f$ is mechanically computable is contradictory,
+the function from which $f$ is constructed,
+$\computablefunction{halt\_checker}$,
+is also not mechanically computable.
+\end{proof}
+
+
+
+
+
+
+\subsection{Discussion}
+The fact that the Halting Problem is unsolvable does not mean that 
+we cannot tell if any program halts. 
+This program obviously halts for every input.
+\begin{lstlisting}
+#;1> (define (prompt/read prompt)
+--->     (display prompt)
+--->     (read-line))
+#;2> 
+#;2> (+ 1
+--->    (string->number (prompt/read "Enter n")))
+Enter n---> 4
+5  
+\end{lstlisting}
+Nor does the unsolvability of \HP{} mean we cannot tell if a program 
+does not halt.
+Consider this one.
+\begin{lstlisting}
+#;1> (define (f x)
+--->   (+ 1 (f x)))
+\end{lstlisting}
+We have to interrupt it, or it would just keep going.
+\begin{lstlisting}
+#;2> (f 0)
+^C
+	Call history:
+
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	<eval>	  [f] (f x)
+	<eval>	  [f] (+ 1 (f x))
+	readline.scm:392: print-call-chain	  	<--
+
+*** user interrupt ***
+\end{lstlisting}
+
+Instead, the unsolvability of the Halting Problem 
+says that there is no single program that, for all~$e$, correctly computes 
+in a finite time whether $\TM_e$ halts on input~$e$.
+
+The ``finite time'' qualifier is there because we could just use a universal
+Turing machine to simulate $\TM_e$ on~$e$, but if that machine failed to halt
+then we would not find out in a finite time. 
+
+The ``single program'' qualifier is there because for any index~$e$,
+either $\TM_e$ halts on~$e$ or it does not.
+That is, for any~$e$ one of these two programs
+gives the right answer.
+\begin{center}
+% \vspace*{-4ex}
+\vspace*{-\ht\strutbox}
+\begin{minipage}[t]{0.4\linewidth}%
+\begin{lstlisting}
+read e
+print 0
+\end{lstlisting}%
+\end{minipage}%
+\hspace*{2em plus 0.5fil}
+\begin{minipage}[t]{0.4\linewidth}%
+\begin{lstlisting}
+read e
+print 1
+\end{lstlisting}%
+\end{minipage}%
+% \vspace*{-2ex}
+\end{center}
+Thus, the unsolvability of the Halting Problem is about 
+the non-existence of a single program that works across all
+indices.
+The \HP{} speaks to uniformity,
+or rather, the impossibility of uniformity.
+
+
+
 
 
 
 \subsection{Significance}  \label{subsec:Significance}
-An Introduction to Programming class can give the 
-impression that halting isn't very interesting, that 
-if a program doesn't halt then
-it just has a bug, something fixable. 
+A beginning programming class can leave the 
+impression that if a program doesn't halt then
+it just has a bug, something fixable.
+So the \HP{} could seem to be not very interesting. 
 That impression is wrong.
 
-Imagine, as a person might think after an Intro class, that we 
-can produce 
-a program to fix up all programs so that they halt on each input.
-Then we'd have a table of total functions like the one in the prior subsection,
-and diagonalization gives a contradiction.
+Imagine 
+a utility for programmers, $\computablefunction{always\_halt}$,
+to patch non-halting programs.
+After writing a program~$\TM$ we run it through the utility, which
+modifies the source so that for any input where $\TM$ fails to halt,
+the modified program will halt (and output $0$) but the utility
+does not change any outputs where $\TM$ does halt.
+That would cause the list of all programs to give rise to a 
+list of total functions like the one in the Definition subsection,
+and diagonalization leads to a contradiction.
 
-That is, that there are
-some indices and inputs for which the computation never halts
+So, the fact
+that there are some indices and inputs for which the computation never halts
 is essential to the nature of computation. 
-There must be computations that halt on all inputs, 
-computations that halt on no inputs, 
-and computations that \citetext{halt on some inputs but not on others}{A 
-Turing machine could fail to halt because it has an infinite loop.
-The Turing machine
-$\TM_0=\set{\tminstruction{0}{B}{B}{0},
-        \tminstruction{0}{1}{1}{0}}$
-never halts, cycling forever in state $q_0$.
-We could fix this problem; we could write a program checker that at each
-step checks whether the machine has ever before in this computation
-had the same configuration as it has now.
-This program checker will detect infinite loops like the prior one.
-However, note that there are machines that fail to halt but
-do not have loops, in the sense that they never repeat a configuration.
-One is $\TM_1=\set{\tminstruction{0}{B}{1}{1},
+There must be some computations that halt on all inputs, 
+some that halt on no inputs, 
+and some that \citetext{halt on some inputs but not on others}{A 
+  Turing machine could fail to halt because it has an infinite loop.
+  The Turing machine
+  $\TM_0=\set{\tminstruction{0}{B}{B}{0},
+    \tminstruction{0}{1}{1}{0}}$
+  never halts, cycling forever in state $q_0$.
+  We could patch this problem; we could write a program
+  $\computablefunction{inf\_loop\_checker}$ that at each
+  step checks whether a machine has ever before in this computation
+  had the same configuration as it has now.
+  This program will detect infinite loops like the prior one.
+  
+  However, note that there are machines that fail to halt but
+  do not have loops, in the sense that they never repeat a configuration.
+  One is $\TM_1=\set{\tminstruction{0}{B}{1}{1},
         \tminstruction{1}{1}{R}{0}}$
-which when started on a blank tape will endlessly move to the right,
-writing \str{1}'s.}.
+  which when started on a blank tape will endlessly move to the right,
+  writing \str{1}'s.}.
 
-That is certainly enough to justify its study but we will give a 
-second reason for interest in the Halting Problem.
+That alone is enough to justify study of the \HP{} but we will give a 
+second reason.
 If $\computablefunction{halt\_checker}$ were a computable function
 then we could solve many problems that we currently don't know how to solve. 
 For instance, a natural number is \textit{perfect} if it is the 
@@ -2814,187 +2967,49 @@ search for a stage at which the computation halts.
 
 
 
-\subsection{Unsolvability of the \HP}
-We are ready to verify that the specific candidate function
-that we have produced is indeed unsolvable, that 
-it cannot be mechanically computed.
 
-\begin{theorem}[Unsolvability of the \HP]
-The \HP{} is mechanically unsolvable;
-there is no Turing machine $\TM$ whose behavior is the
-characteristic function of~$K$.
-\end{theorem}
+% \begin{exercises}
+% \begin{exercise}
+% True of false: there is no function that solves the Halting Problem:
+% there is no $f$ such that $f(e)=1$ if $\phi_e(e)\converges$ and $f(e)=0$ if
+% $\phi_e(e)\diverges$.
+% \begin{answer}
+% False.  
+% There is such a function.  
+% But it is not computable; there is no Turing machine whose behavior is
+% that function.
+% \end{answer}
 
-\begin{proof}
-Assume otherwise, that there is a Turing machine whose behavior is this.
-\begin{equation*}
-  K(e)=
-  \computablefunction{halt\_checker}(e)=
-  \begin{cases}
-  1  &\case{if $\TMfcn_e(e)\converges$}  \\
-  0  &\case{if $\TMfcn_e(e)\diverges$} 
-  \end{cases}
-\end{equation*}
-Then the function below is also mechanically computable.
-The flowchart illustrates;
-it uses $\computablefunction{halt\_checker}$ for the branch.
-\begin{center}
-\begin{minipage}{0.3\textwidth}
-  \begin{equation*}
-  f(e)=
-    \begin{cases}
-    0    &\case{if $\TMfcn_e(e)\diverges$}  \\
-    \uparrow  &\case{if $\TMfcn_e(e)\converges$}
-    \end{cases}
-  \end{equation*}
-\end{minipage}
-\hspace{3em}
-\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts02.pdf}}
-\end{center}
-(In the function's first case it doesn't matter
-that $f(e)$ returns a value of~$0$, just that it converges.)
-Since $f$ is a computable function it has an index.
-Let that index be~$\hat{e}$, so that
-$f(x)=\TMfcn_{\hat{e}}(x)$ for all inputs~$x$.
+% \end{exercise}
 
-Now feed $f$ its own index\Dash consider $f(\hat{e})=\TMfcn_{\hat{e}}(\hat{e})$.
-If it diverges then by the first clause in the definition of~$f$
-we have $f(\hat{e})\converges$,
-which contradicts that $f$~diverges.
-If it converges then by $f$'s second clause 
-we have $f(\hat{e})\diverges$, which is also impossible.
-Since the existence of a mechanically computable~$f$ leads to a contradiction,
-the function $\computablefunction{halt\_checker}$, the characteristic
-function of $K$, is not
-mechanically computable.
-\end{proof}
-
-
-
-
-\subsection{Discussion}
-The fact that the Halting Problem is unsolvable does not mean that 
-we cannot tell if any program halts. 
-This program obviously halts for every input.
-\begin{lstlisting}
-#;1> (define (prompt/read prompt)
---->     (display prompt)
---->     (read-line))
-#;2> 
-#;2> (+ 1
---->    (string->number (prompt/read "Enter n")))
-Enter n---> 4
-5  
-\end{lstlisting}
-Nor does the unsolvability of \HP{} mean we cannot tell if a program 
-does not halt. 
-\begin{lstlisting}
-#;1> (define (f x)
---->   (+ 1 (f x)))
-\end{lstlisting}
-We have to interrupt it, or it would just keep going.
-\begin{lstlisting}
-#;2> (f 0)
-^C
-	Call history:
-
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	<eval>	  [f] (f x)
-	<eval>	  [f] (+ 1 (f x))
-	readline.scm:392: print-call-chain	  	<--
-
-*** user interrupt ***
-\end{lstlisting}
-
-Instead, the unsolvability of the Halting Problem 
-says that there is no single program that 
-takes in~$e$ and correctly computes 
-in a finite time whether $\TM_e$ halts on input~$e$.
-The ``finite time'' qualifier is there because we could just use a universal
-Turing machine to simulate $\TM_e$ on~$e$, but if that machine failed to halt
-then we would not find out in a finite time. 
-
-The ``single program'' qualifier is there because for any single index~$e$,
-either $\TM_e$ halts on~$e$ or it does not.
-That is, for any single~$e$ one of these two programs
-gives the right answer.
-\begin{center}
-% \vspace*{-4ex}
-\vspace*{-\ht\strutbox}
-\begin{minipage}[t]{0.4\linewidth}%
-\begin{lstlisting}
-read e
-print 0
-\end{lstlisting}%
-\end{minipage}%
-\hspace*{2em plus 0.5fil}
-\begin{minipage}[t]{0.4\linewidth}%
-\begin{lstlisting}
-read e
-print 1
-\end{lstlisting}%
-\end{minipage}%
-% \vspace*{-2ex}
-\end{center}
-The lesson is that the unsolvability of the Halting Problem is about 
-the non-existence of a single program that works across all
-$e\in\N$:~the \HP{} speaks to uniformity,
-or rather, the impossibility of uniformity.
-
-\begin{exercises}
-\begin{exercise}
-True of false: there is no function that solves the Halting Problem:
-there is no $f$ such that $f(e)=1$ if $\phi_e(e)\converges$ and $f(e)=0$ if
-$\phi_e(e)\diverges$.
-\begin{answer}
-False.  
-There is such a function.  
-But it is not computable; there is no Turing machine whose behavior is
-that function.
-\end{answer}
-
-\end{exercise}
-
-\begin{exercise}  \label{ex:HPByGetTotFcns}
-Make precise the table argument in \cref{subsec:Significance} 
-by showing that if $\computablefunction{halt\_check}$ were computable 
-then we could write a program that behaves 
-like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$,
-this program outputs the nominal value~$0$.
-Diagonalize to get a contradiction.
-\begin{answer}
-If 
-$\computablefunction{halt\_check}$ were computable then we could  
-write the program shown below.
-\begin{center}
-  \includegraphics{background/asy/hp/hp01.pdf}
-\end{center}
-It behaves 
-like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$
-this program outputs~$0$.
-With this program we get an input-output relationship like that imagined
-in the \cref{subsec:Significance}'s table, 
-containing only computable functions that are total.
-If $\computablefunction{halt\_check}$ is computable then
-this list is also computable and every total function is one of its rows,
-since if a function $\phi_e$ is total then the flowchart just never 
-takes the `\texttt{No}' branch.
-Now we can diagonalize, giving a contradiction.
-\end{answer}
-\end{exercise}
-\end{exercises}
+% \begin{exercise}  \label{ex:HPByGetTotFcns}
+% Make precise the table argument in \cref{subsec:Significance} 
+% by showing that if $\computablefunction{halt\_check}$ were computable 
+% then we could write a program that behaves 
+% like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$,
+% this program outputs the nominal value~$0$.
+% Diagonalize to get a contradiction.
+% \begin{answer}
+% If 
+% $\computablefunction{halt\_check}$ were computable then we could  
+% write the program shown below.
+% \begin{center}
+%   \includegraphics{background/asy/hp/hp01.pdf}
+% \end{center}
+% It behaves 
+% like $\phi_e$ except that for any inputs~$x$ where $\phi_e(x)\diverges$
+% this program outputs~$0$.
+% With this program we get an input-output relationship like that imagined
+% in the \cref{subsec:Significance}'s table, 
+% containing only computable functions that are total.
+% If $\computablefunction{halt\_check}$ is computable then
+% this list is also computable and every total function is one of its rows,
+% since if a function $\phi_e$ is total then the flowchart just never 
+% takes the `\texttt{No}' branch.
+% Now we can diagonalize, giving a contradiction.
+% \end{answer}
+% \end{exercise}
+% \end{exercises}
 
 
 
@@ -3004,19 +3019,16 @@ Now we can diagonalize, giving a contradiction.
 
 %================================================
 \subsection{General unsolvabilty}
-We have described the \HP{} as a touchstone.
-What this means is that for many other problems,
-their unsolvability is a consequence of the unsolvability of
-the \HP.
-
-In this subsection we will develop a strategy.
-Given a problem, we will show that if we could solve it then we
-could solve \HP, and so
-conclude that the given problem is unsolvable.
+In this subsection we will
+see that the \HP{} is part of a larger unsolvability phenomenon.
+We will consider a number of problems and for each
+show that if we could solve it then we
+could solve the \HP, and consequently 
+the given problem is also unsolvable.
 
 \begin{example} \label{ex:HaltOnThree}
-Consider the problem of determining halting not on an arbitrary input,
-but just on the input~$3$.
+Consider the problem of determining whether a given Turing machine halts 
+on the input~$3$.
 \begin{equation*}
   \computablefunction{halts\_on\_three\_checker}(x)=
   \begin{cases}
@@ -3158,6 +3170,8 @@ computable gives that the \HP{} is computably solvable,
 which is wrong.
 \end{example}
 
+These problems illustrate that we use the \HP{} as a touchstone for
+demonstrating algorithmic unsolvability.
 
 We closes with two comments.
 The first is to reiterate that when we say that a problem is
@@ -3167,31 +3181,22 @@ is no Turing machine that can compute the solution to the problem.
 There may well be a \citetext{function that solves it}{\autocite{wiki:ouija}}
 but there is no computable function that solves it.
 
-Out second comment is some intuition.
+Out second comment is some intuition about which problems are unsolvable.
 There certainly are problems that start with ``Given~$e$'' that we can solve.
-One is: given~$e$ decide if one instruction in $\TM_e$ is 
+Just to list one: given~$e$ decide if one instruction in $\TM_e$ is 
 $\tminstruction{0}{B}{L}{1}$.
 But that differs from the problems above.
 Each of those examples is about the behavior of the computed function\Dash
-each is about $\phi_e$, rather than about the details of the computation.
+each is about $\phi_e$, rather than about the computational details of $\TM_e$.
 
-This echos the opening of the first chapter, where we said we were more
+This takes us back to the opening of the first chapter,
+where we said we were more
 interested in the input-output behavior of the machines than in the
 implementation details of exactly how the computation proceeds. 
-In the next subsection we will expand on what `behavior' means. 
+In the next subsection we will expand on what this means. 
 
 
 \begin{exercises}
-% \begin{exercise}
-% True or false: there is no function that, given as input an index~$e$,
-% gives~$1$ as output if $\phi_e(e)\converges$ and gives~$0$
-% otherwise.
-% \begin{answer}
-% False.
-% There is such a function, but it is not computable.  
-% \end{answer}
-% \end{exercise}
-
 \begin{exercise}
 Show that each of these is an unsolvable problem by showing that solving it 
 would enable us to solve the \HP.
@@ -3591,18 +3596,19 @@ answering questions of the form,
   \includegraphics{background/asy/machine/machine00.pdf}
 \end{center}
 
-A definition for an $A$-oracle computation
+One way to define an oracle computation
 extending that of Turing machines is:~to the action
 symbols \str{L} and~\str{R} we add one more, \str{O}.
-When this action symbol appears, where the I/O head is under the
+When this symbol applies, where the I/O head is under the
 leftmost \str{1} of a sequence of $n+1$-many \str{1}'s,
 that sequence is replaced
 by either a single~\str{1} followed by $n$-many \str{0}'s if $n\in A$,
 or entirely by $n+1$-many \str{0}'s if $n\notin A$.
-(For a full treatment see \autocite{Rogers}.)
-In this sketch, instead of working with the details of the
+
+For a full treatment see \autocite{Rogers}.
+In this sectinon, instead of working with the details of the
 definition we will use Church's Thesis and
-imagine introducing into a higher level language 
+consider introducing into a programming language 
 a boolean function \lstinline!oracle(x)!, as here.
 \begin{lstlisting}
 (if oracle(x)
@@ -3614,16 +3620,22 @@ This is a \definend{computation relative to the oracle}.
 The above code snippet highlights that programs in this extended language do not
 change if we change the oracle\Dash
 if we have an $A$ oracle box plugged in, then unplug it and replace
-it with a~$B$ oracle box, the outcome of the computation may differ
-but the source is fixed.
-Thus, to specify an outcome of a relative computation we need to include
-an oracle set~$A$ and an index number~$e$ of the source, as 
-\definend{$\TM^A_e$}.
+it with a~$B$ oracle box, 
+the source is unchanged.
+(Of course, the outcome of the computation may differ.)
+Thus, as when we defined computation in the first chapter,
+we have a family of programs.
+They are just like programs in that first chapter except now they
+can contain the \lstinline{oracle} call.
+Each program is a string, so there are countably many.
+
+To specify an outcome of a relative computation, in addition to specifying
+which program we are using by giving its index~$e$, and which inputs
+we are we giving it, need to include
+an oracle set~$A$, leaving us with the notation \definend{$\TM^A_e$}.
 The associated function,
 \definend{the function computed relative to $A$}, is denoted
 \definend{$\TMfcn_e^A$}.
-
-Indexes of these pluggable functions.
 
 \begin{definition}
 If the function computed relative to $A$ is the characteristic function
@@ -3637,58 +3649,7 @@ denoted \definend{$B\leq_T A$}.\footnotemark[1]
   For instance, we can reduce solving the \HP{} to solving
   halts-on-$3$ problem.}
 
-
-Think of $B$ as being simpler, or at least no harder, than~$A$.
-
-
-\begin{theorem}
-The relativized \HP{},
-$K^K=\set{x\suchthat \TMfcn_x(x)\converges}$,
-is not computable from a $K$ oracle: there is no index~$e\in\N$
-so that $\TMfcn_e^K$ is the characteristic function of~$K^K$.
-\end{theorem}
-
-\begin{proof}
-Assume otherwise, that there is a machanical computation relative to a
-$K$~oracke whose behavior is this.
-\begin{equation*}
-  K^K(e)=
-  \begin{cases}
-  1  &\case{if $\TMfcn^K_e(e)\converges$}  \\
-  0  &\case{if $\TMfcn^K_e(e)\diverges$} 
-  \end{cases}
-  \tag{$*$}
-\end{equation*}
-Then the function below is also computable relative to a $K$~oracle.
-The flowchart illustrates;
-it uses the above function for the branch.
-\begin{center}
-\begin{minipage}{0.3\textwidth}
-  \begin{equation*}
-  f(e)=
-    \begin{cases}
-    0    &\case{if $\TMfcn^K_e(e)\diverges$}  \\
-    \uparrow  &\case{if $\TMfcn^K_e(e)\converges$}
-    \end{cases}
-  \end{equation*}
-\end{minipage}
-\hspace{3em}
-\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts03.pdf}}
-\end{center}
-Since $f$ is an oracle-computable function it has an index.
-Let that index be~$\hat{e}$, so that
-$f(x)=\TMfcn^K_{\hat{e}}(x)$ for all inputs~$x$.
-
-Now feed $f$ its own index\Dash consider $f(\hat{e})=\TMfcn^K_{\hat{e}}(\hat{e})$.
-If it diverges then by the first clause in the definition of~$f$
-we have $f(\hat{e})\converges$,
-which contradicts that $f$~diverges.
-If it converges then by $f$'s second clause 
-we have $f(\hat{e})\diverges$, which is also impossible.
-Since the existence of a $K$ oracle computable~$f$ leads to a contradiction,
-the function used to create it, the characteristic
-function of $K^K$, is not $K$-computable.
-\end{proof}
+Think of the set $B$ as being simpler, or at least no harder, than the set~$A$.
 
 \begin{theorem}
 \begin{thmparts}
@@ -3700,63 +3661,220 @@ relative to the empty set, or to any computable set.
 \end{thmparts}
 \end{theorem}
 
-Inter-computable.
+\begin{proof}
+For the first, a set is computable if its characteristic function is computable.
+Clearly if the characteristic function is computable without reference to an
+oracle, then it can be computed by an oracle machine, just by ignoring the
+oracle.
+For the other direction, suppose a characteristic function can be computed
+by reference to the empty set oracle (or any other computable oracle).
+Then it can be computed without reference to an oracle, just by replacing
+oracle calls with computations.
+
+The second item is clear.
+For the third, suppose that $\TM_e^B$ computes the characteristic
+function of~$A$ and that $\TM_{\hat{e}}^C$ computes the characteristic function
+of~$B$.
+Then in the computation of $A$ from the $B$~oracle we can replace the
+oracle calls to those calling $\TM_{\hat{e}}^C$.
+The result is a routine that computes the characteristic function of $A$
+directly from a $C$~oracle.
+\end{proof}
+
+\begin{example}
+The halts on~$3$ problem asks for a program that acts as the
+characteristic function of the set
+$A=\set{e\suchthat \text{$\TM_e$ halts on~$3$}}$.
+We will show that $K\leq_T A$.
+
+This is a reprise of \cref{ex:HaltOnThree}.
+Consider the function $\map{\psi}{\N^2}{N}$
+that returns $0$ if $\phi_x(x)\converges$ and that diverges otherwise.
+By Church's Thesis
+there is a Turing machine whose input-output behavior is $\psi$.
+Let that machine have index~$e$, so that $\psi=\phi_e$.
+Apply the \smn{} theorem to parametrize~$x$, giving $\phi_{s(e,x)}$.
+Observe that $\phi_x(x)\converges$ if and only if
+$A(s(e,x))=1$.
+That computes $K$ from an $A$~oracle.
+\end{example}
+
+Consider again the statement of the \HP,
+to determine the characteristic function of the set
+$\set{e\suchthat \text{$\TM_e$ halts on input~$e$}}$.
+That statement may seem odd.
+Surely the more natural question is whether $\TM_e$ halts on input~$x$?
+
+\begin{definition}
+  $\definend{K_0}=\set{\sequence{e,x} \suchthat \text{$\TM_e$ halts on input~$x$}}$
+\end{definition}
+
+We will argue that the two problems are computationally equivalent, 
+are inter-solvable, meaning that if you can solve the one then
+you can solve the other, and so the choice of problem is a 
+matter of convenience, and convention.
+% \footnote{%  
+%   For the definition we go with $K$ 
+%   because it is the standard usage and because it has some technical advantages,
+%   including that it falls out of the diagonalization development done
+%   at the start of this subsection.}
 
 \begin{definition}
 Two sets $A,B$ are \definend{$T$-equivalent, $A\equiv_T B$} if $A\leq_T B$
 and $B\leq_T A$.
 For any set~$A$, the collection of sets $T$-equivalent to $A$ is the
 \definend{Turing degree} of~$A$.
-We use boldface $\textbf{a}$ for the Turing degree of~$A$.
+We denote the Turing degree of~$A$ using boldface, \definend{$\textbf{a}$}.
 \end{definition}
 
+\begin{lemma}
+The two sets $K$ and $K_0$ are inter-computable: $K\equiv_T K_0$.
+\end{lemma}
 
-The statement of the problem may seem odd.
-Surely the more natural question is whether $\TM_e$ halts on input~$x$?
-We will argue that the two problems are computationally equivalent, 
-are inter-solvable, meaning that if you can solve the one then
-you can solve the other, and so the choice of definition is a 
-matter of convenience.\footnote{%  
-For the definition we go with the above statement 
-because it is the standard usage and because it has some technical advantages,
-including that it falls out of the diagonalization development done
-at the start of this subsection.}
-We will say more about inter-computability in \cref{sec:Oracles}.
+\begin{proof}
+For the first, suppose that we have access to a $K_0$-oracle.
+Since it can tell us whether $\TM_e$ halts on~$x$ for any input~$x$,
+it can clearly tell us whether $\TM_e$ halts on~$e$.
 
-If we can solve the $K_0$~problem of determining whether $\TM_e$ halts on
-input~$x$ then clearly we can answer the $K$~question of 
-whether $\TM_e$ halts on~$e$.
-The other half must be the harder half.
-So now suppose that we can answer the $K$~question of whether 
-a Turing machine halts 
-when given as input its own number, 
-the question of whether $\TM_e$ halts on input~$e$.
-Consider these programs.
+For the other half, suppose that we have access to a $K$~oracle and are
+given the pair $e,x\in\N^2$.
+We want to compute whether $\TM_e$ halts on input~$x$.
+Consider the program on the left below.
+By Church's Thesis there is a Turing machine implementing
+it; let it be machine~$\TM_{\hat{e}}$.
 \begin{center}
   \includegraphics{background/asy/hp/hp03.pdf}
   \hspace{2em plus 0.5fil}
   \includegraphics{background/asy/hp/hp04.pdf}
 \end{center}
-By Church's Thesis there is a Turing machine implementing the flowchart
-on the left; let it be machine~$\TM_{\hat{e}}$.
-Apply the \smn{} theorem, parametrizing $e$ and~$x$, to get the 
-flowchart on the right.
-(Note that the chart on the right 
-actually represents a family of programs.
-This family has infinitely many
-members, one for each pair $\protect\sequence{e,x}$.)
-This right-side chart, $\TM_{s(\hat{e},e,x)}$, either halts on all inputs~$y$ 
-or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
-In particular, $\TM_{s(\hat{e},e,x)}$ halts on $s(\hat{e},e,x)$ if
-$\phi_e(x)\converges$, and
-fails to halt on $s(\hat{e},e,x)$ if $\phi_e(x)\diverges$.
-So if we can solve the $K$~problem of whether a Turing machine halts
-when given as input its own number, then we can solve the $K_0$~problem
-of whether~$\phi_e(x)\converges$.  
+From $\TM_{\hat{e}}$ get the 
+flowchart on the right by applying the \smn{} theorem
+to parametrize $e$ and~$x$. 
+Note that the flowchart on the right represents a family of programs
+with infinitely many
+members, one for each pair $\protect\sequence{e,x}$.
 
-\begin{lemma}
-$K\equiv_T K_0$
-\end{lemma}
+Fix a pair $\sequence{e,x}$ and consider the 
+right-side flowchart $\TM_{s(\hat{e},e,x)}$ associated with that pair.
+The only reason it would fail to halt is the middle box, so
+it either halts on all inputs~$y$ 
+or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
+In particular, if
+$\phi_e(x)\converges$ then $\TM_{s(\hat{e},e,x)}$ halts when the input
+is its own number $y=s(\hat{e},e,x)$
+and if $\phi_e(x)\diverges$ then $\TM_{s(\hat{e},e,x)}$
+fails to halt on $y=s(\hat{e},e,x)$.
+So, from a $K$-oracle, given the ability to determine whether a
+Turing machine halts
+when given as input its own number, we can solve the $K_0$~problem
+of whether a given halts on a given arbitrary input.  
+\end{proof}
+
+
+\begin{theorem}
+The relativized \HP{},
+th problem of computing the characteristic function of 
+$K^K=\set{x\suchthat \TMfcn_x(x)\converges}$,
+is not computable from a $K$ oracle: there is no index~$e\in\N$
+so that $\TMfcn_e^K=K^K$.
+\end{theorem}
+
+\begin{proof}
+Assume otherwise, that there is a mechanical computation relative to a
+$K$~oracle with this behavior.
+\begin{equation*}
+  K^K(e)=
+  \begin{cases}
+  1  &\case{if $\TMfcn^K_e(e)\converges$}  \\
+  0  &\case{if $\TMfcn^K_e(e)\diverges$} 
+  \end{cases}
+  \tag{$*$}
+\end{equation*}
+Then the function below is also computable relative to a $K$~oracle.
+The flowchart illustrates $f$'s construction;
+it uses the above function for the branch.
+\begin{center}
+\begin{minipage}{0.3\textwidth}
+  \begin{equation*}
+  f(e)=
+    \begin{cases}
+    0    &\case{if $\TMfcn^K_e(e)\diverges$}  \\
+    \uparrow  &\case{if $\TMfcn^K_e(e)\converges$}
+    \end{cases}
+  \end{equation*}
+\end{minipage}
+\hspace{2.5em}
+\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts03.pdf}}
+\end{center}
+Since $f$ is an oracle-computable function, it has an index.
+Let that index be~$\hat{e}$, so that
+$f(x)=\TMfcn^K_{\hat{e}}(x)$ for all~$x$.
+
+Now feed $f$ its own index\Dash consider
+$f(\hat{e})=\TMfcn^K_{\hat{e}}(\hat{e})$.
+If it diverges then by the first clause in the definition of~$f$
+we have $f(\hat{e})\converges$,
+which contradicts that $f$~diverges.
+If it converges then by $f$'s second clause 
+we have $f(\hat{e})\diverges$, which is also impossible.
+Since assuming that $f$ is computable relative to a $K$~oracle leads to
+a contradiction,
+and we constructed~$f$ by assuming only that 
+the characteristic function of $K^K$ is $K$-computable,
+that also is not true.
+\end{proof}
+
+\begin{corollary}
+The set $K$ is computable from the set $K^K$, that is, $K\leq_T K^K$,
+This relation is strict, it holds in one direction only.
+\end{corollary}
+
+\begin{proof}
+The prior result shows that $K^K\not\leq_T K$ so we need only show that
+$K\leq_T K^K$.
+Consider the oracle function~$\psi^X$ that returns~$1$ if $x\in X$ and
+diverges if $x\notin X$.
+The flowchart on the left below, along with Church's Thesis, shows
+$\psi$ is an oracle-computable function.
+\begin{center}
+% \begin{minipage}{0.3\textwidth}
+%   \begin{equation*}
+%   psi(x,y)=
+%     \begin{cases}
+%     1  &\case{if $x\in X$}  \\
+%     0  &\case{if $x\notin X$}
+%     \end{cases}
+%   \end{equation*}
+% \end{minipage}
+% \hspace{1.5em}
+\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts04.pdf}}
+\hspace{3em}
+\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts05.pdf}}
+\end{center}
+Apply the \smn{} theorem to get the oracle function whose flowchart
+is on the right.
+\begin{equation*}
+  \TMfcn_{s(e,x)}(y)=
+  \begin{cases}
+  1 &\case{if $x\in X$}  \\
+  0 &\case{if $x\notin X$}
+  \end{cases}
+\end{equation*}
+Observe that, given a parameter~$x$,
+this function ignores its input~$y$ and so gives the same output for
+all input, namely $X(x)$.
+
+Now, taking a $K$ oracle we have $x\in K$ if and only if
+$\phi_{s(e,x)}^K(s(e,x))=1$,
+\begin{center}
+\end{center}
+
+\end{proof}
+
+That answers the question posed at the start of this section.
+There are problems strictly harder than the \HP.
+One is the relativized \HP, that of computing the characteristic function
+of $K^K$.
 
 \begin{lemma}
 TOT is T-equivalent to $K^K$

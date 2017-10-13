@@ -204,3 +204,102 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ================= K\leq K^K ==============
+picture pic;
+int picnum = 4;
+
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x,y$");
+node test=nrounddiamond("oracle(x)?");
+node printzero=nbox("Print 0");
+node printone=nbox("Print 1");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+hlayout(-3*u,test,printzero);
+hlayout(3.15*u,test,printone);
+vlayout(1.3*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printzero).l("No"),
+     (test--printone).l("Yes").style("leftside"),
+     (printzero..VH..ending),
+     (printone..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printzero,
+     printone, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ---- relativization to K -------------
+picture pic;
+int picnum = 5;
+
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nrounddiamond("oracle(x)?");
+node printzero=nbox("Print 0");
+node printone=nbox("Print 1");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+hlayout(-3*u,test,printzero);
+hlayout(3.15*u,test,printone);
+vlayout(1.3*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printzero).l("No"),
+     (test--printone).l("Yes").style("leftside"),
+     (printzero..VH..ending),
+     (printone..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printzero,
+     printone, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

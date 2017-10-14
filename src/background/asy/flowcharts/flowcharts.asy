@@ -219,7 +219,7 @@ node start=nroundbox("Start");
 node read=nbox("Read $x,y$");
 node test=nrounddiamond("oracle(x)?");
 node printzero=nbox("Print 0");
-node printone=nbox("Print 1");
+node loop=nbox("Loop");
 node ending=nroundbox("End");
 
 // layout
@@ -230,18 +230,17 @@ real v = 0.85*u;
 
 vlayout(1*v,start,read);
 vlayout(1.35*v,read,test);
-hlayout(-3*u,test,printzero);
-hlayout(3.15*u,test,printone);
-vlayout(1.3*v,test,ending);
+printzero.pos = test.pos + (-2*u,-1.0*v);
+loop.pos = test.pos + (2*u,-1.0*v);
+vlayout(1.0*v,printzero,ending);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--test),
-     (test--printzero).l("No"),
-     (test--printone).l("Yes").style("leftside"),
-     (printzero..VH..ending),
-     (printone..VH..ending)
+     (test..HV..printzero).l("Y"),
+     (test..HV..loop).l("N").style("leftside"),
+     (printzero--ending)
 );
 
 // draw nodes
@@ -250,7 +249,7 @@ draw(pic,
      read, 
      test,
      printzero,
-     printone, 
+     loop, 
      ending
      );
 
@@ -278,18 +277,18 @@ real v = 0.85*u;
 
 vlayout(1*v,start,read);
 vlayout(1.35*v,read,test);
-hlayout(-3*u,test,printzero);
-hlayout(3.15*u,test,printone);
 vlayout(1.3*v,test,ending);
+hlayout(-2.0*u,ending,printzero);
+hlayout(2.0*u,ending,printone);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--test),
-     (test--printzero).l("No"),
-     (test--printone).l("Yes").style("leftside"),
-     (printzero..VH..ending),
-     (printone..VH..ending)
+     (test..HV..printzero).l("N"),
+     (test..HV..printone).l("Y").style("leftside"),
+     (printzero--ending),
+     (printone--ending)
 );
 
 // draw nodes

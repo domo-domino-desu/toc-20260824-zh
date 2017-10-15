@@ -3585,34 +3585,55 @@ the set of outputs of some computable function
 \definend{$W_e$=\set{k\suchthat \text{$k=\TMfcn_e(i)$ for some $i\in\N$}}}.
 \end{definition}
 
-The term `enumerable' comes from the idea of a stream of output
+The term `enumerable' comes from picturing a stream of output
 $f(0)$, $f(1)$, $f(2)$, \ldots{} that fills out the set.
 
 \begin{lemma}
-A set~$S$ is computable if and only if both the set~$S$ and its
-complement~$\setcomp{S}$ are computably enumerable.
+\begin{thmparts}
+\item \label{lem:SetComputableThenSetCE}
+  If a set is computable then it is computably enumerable.
+\item \label{lem:SetComputableIffSetAndCompCE}
+  A set is computable if and only if both it and its
+  complement are computably enumerable.
+\end{thmparts}
 \end{lemma}
 
 \begin{proof}
-Suppose that $S$ is computable.
-If $S$ is empty then $S$ is computably enumerable by definition and
-$\setcomp{S}$ is computabley enumerable via the identity function.
-The $\setcomp{S}=\emptyset$ case is similar.
-The last case is where $S$ is computable and neither $S$ nor
-$\setcomp{S}$ is empty.
-For the effective function~$f$ that enumerates $S$, first fix
-some element $\hat{s}\in S$.
-Then, given $n\in\N$, determine if $n\in S$,
-which can be done effectively because
-$S$ is computable.
-If so then output~$n$ and if not then output $\hat{s}$.
-The function for $\setcomp{S}$ is similar.
+For \cref{lem:SetComputableThenSetCE} let the set~$S\subseteq\N$ be computable;
+we will produce an effective enumeration~$f$.
+There are three cases.
+If $S$ is empty then it is computably enumerable by definition.
+If $S$ is finite but nonempty then where $S=\set{s_0,\ldots s_{n}}$,
+a computable function whose range is~$S$ is $f(0)=s_0$, $f(1)=s_1$, \ldots
+$f(n)=s_n$, and for any larger input $m>n$, let $f(m)=s_0$.
+If~$S$ is infinite then let $f(0)$ be the smallest element of~$S$.
+We can find
+this element by trying $S(0)$, $S(1)$, \ldots.
+We can try these elements effectively because~$S$ is computable.
+We are sure to find one because~$S$ is infinite.
+Similarly, let $f(k)$ be the $k$-th smallest element in~$S$.
 
-Conversely suppose that both $S$ and $\setcomp{S}$ are computably enumerable.
+For \cref{lem:SetComputableIffSetAndCompCE} first
+suppose that $S$ is computable.
+The prior item shows that it is computably enumerable.
+And, since the fact that $S$ is computable implies that the
+complement~$\setcomp{S}$ is also computable, the prior item also
+gives that $\setcomp{S}$ is computably enumerable.
+
+To finish \cref{lem:SetComputableIffSetAndCompCE}
+suppose that both $S$ and $\setcomp{S}$ are computably enumerable.
 If either is empty then determining whether $s\in S$ is easy.
-Otherwise,
-to effectively determine if $s\in S$, enumerate $S$ and $\setcomp{S}$
-until $s$ appears in one of the two streams. 
+Otherwise, suppose that $S$ is enumerated by~$f_S$ and $\setcomp{S}$ is
+enumerated by $f_{\setcomp{S}}$.
+Given an input~$x\in\N$,
+to effectively determine which of the two sets contains~$x$,
+interleave their enumerations.
+That is, generate the stream
+$f_{S}(0)$, $f_{\setcomp{S}}(0)$, $f_{S}(1)$, $f_{\setcomp{S}}(1)$, \ldots
+This is an effective process.
+The input number must eventually appear.
+If $x=f_{S}(k)$ for some~$k$ then $x\in S$.
+If instead $x=f_{\setcomp{S}}(k)$ then $x\in S$.
 \end{proof}
 
 \begin{lemma}
@@ -3621,22 +3642,41 @@ partial computable function.
 \end{lemma}
 
 \begin{proof}
-Assume first that $S$ is computably enumerable,
-so it is either empty or is the range of some partial computable function~$f$.
-If it is empty then is is the domain of the partial recrsive procedure
-that halts on no input.
-Otherwise~$S$ is the domain of the effective procedure:~given an input~$x$,
-enumerate $f(0)$, $f(1)$, \ldots, waiting for~$x$ to appear. and if it does
-then halt and return some nominal value, such as~$x$.
-(If it never appears then this procedure never halts.)
+Assume first that $S$ is computably enumerable.
+Then it is either empty or is the range of some partial computable function.
+If it is empty then is is the domain of the partial recursive function
+that converges on no input.
+Otherwise~$S$ is the range of a computable function~$f$.
+We will produce an effective procedure that, given an input,
+halts if and only if that input is an element of~$S$.
+Given $x\in\N$,
+enumerate $f(0)$, $f(1)$, \ldots, and wait for~$x$ to appear.
+If it does appear then halt and return some nominal value.
+If it never appears then this procedure never halts.
 
-Now assume that $S$ is the domain of the partial computable function~$g$.
-We will construct a partially computable function~$f$ whose range is~$S$. 
-Given $n\in \N$, we do a computation in a sequence of stages.
-At stage~$k$, we runs the computation of $g(0)$, $g(1)$, \ldots\, and $g(k)$
-for $k$-many steps.
-If any of these halt and return 
+The implication in the other direction is more involved.
+Assume that $S$ is the domain of the partial computable function~$g$.
+We will produce a computable function~$f$ whose range is~$S$. 
+If $S$ is empty then it is computably enumerable by definition,
+so assume that it is not empty and fix $\hat{s}\in S$. 
+
+Given $n\in \N$,
+we run the computation of 
+$g(0)$, $g(1)$, \ldots\,$g(n)$ for $n$-many steps each.
+Possibly some of these $g(k)$ computations halt.
+Define $f(n)$ to be the least such~$k$ that has not already been enumerated
+by~$f$, that is, it is the least $k$ so $g(k)$ halts within~$n$ steps and such
+that $k\notin\set{f(0),f(1),\ldots f(n-1)}$.
+If no such $k$ exists then define $f(n)=\hat{s}$.
+
+To see that every element $s\in S$ is eventually enumerated by~$f$, note that
+$g(s)$ must converge in some number~$n_s$ of steps.
+At that point the number~$s$ is queued for output, in the sense that
+it will be enumerated by~$f$ as, at most, $f(n_s+s)$. 
 \end{proof}
+
+The prior argument's technique of interleaving the computations
+is known as \definend{dovetailing}.
 
 \begin{lemma}
 The \HP{} set $K$ is computably enumerable.
@@ -3644,7 +3684,11 @@ Its complement $\setcomp{K}$ is not.
 \end{lemma}
 
 \begin{proof}
-The set $K$ is the domain
+The set $K$ is the domain of the partial computable function~$f$ where
+$f(e)$ is computed by running the Turing machine~$\TM_e$ on input~$e$.
+But the complement~$\setcomp{K}$ is not computably enumerable, since that
+would imply that $K$ is computable, while the unsolvability of the
+\HP{} shows it is not.
 \end{proof}
 
 
@@ -3653,6 +3697,7 @@ The set $K$ is the domain
 \begin{exercise}
 Give a routine that enumerates each set
 \begin{exparts*}
+\item $\N$
 \item the even numbers
 \item the perfect squares
 \item the primes

@@ -247,12 +247,13 @@
 % Chapters
 % As with sections, put the numbering in the margin using a marginpar
 % (actually a marginnote that has been hacked to always be on the left).
-\renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
+% \renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
 \newcommand{\jhchapter@nostar}{
   % Record that we are not inside an Extra section.
   % For more info search for "EXTRA SECTION TOGGLE".
   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
+  \renewcommand{\thesubsection}{\arabic{subsection}}
   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
   % 
   \pagestyle{bookbody}
@@ -270,6 +271,7 @@
   % For more info search for "EXTRA SECTION TOGGLE".
   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
+  \renewcommand{\thesubsection}{\arabic{subsection}}
   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
   % 
   \pagestyle{bookfront}
@@ -339,54 +341,152 @@
 \newlength{\jh@margintxttobodytext}
   \setlength{\jh@margintxttobodytext}{0.0em}
 % Section
-\renewcommand{\section}{%
-  \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
-  \@startsection{section}{1}%
-  {0em}%
-  {-3.5ex plus -1ex minus -0.2ex}%
-  {1.8ex plus .2ex}%
-  {\sectiontitlecontents{\marginnote{\raisebox{-0.55ex}{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}}\normalfont\large\bfseries}%
-}
-\renewcommand{\thesection}{\arabic{section}}
+% \renewcommand{\section}{%
+%   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
+%   \@startsection{section}{1}%
+%   {0em}%
+%   {-3.5ex plus -1ex minus -0.2ex}%
+%   {1.8ex plus .2ex}%
+%   {\sectiontitlecontents{\marginnote{\raisebox{-0.55ex}{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}}\normalfont\large\bfseries}%
+% }
+% \renewcommand{\thesection}{\arabic{section}}
 
 
 % Subsections
-\renewcommand{\subsection}{%
-  \@startsection{subsection}{2}%
-  {0em}%
-  {-1.3ex plus -0.4ex minus -0.1ex}%
-  {-0.6em plus -0.1em}%  negative makes it a run-in header
-  % {\marginnote{\normalfont\scshape \arabic{section}.\arabic{subsection}}\normalfont\bfseries}%
-  {\normalfont\bfseries}%
-}
-\renewcommand{\thesubsection}{\arabic{subsection}}
+% \renewcommand{\subsection}{%
+%   \@startsection{subsection}{2}%
+%   {0em}%
+%   {-1.3ex plus -0.4ex minus -0.1ex}%
+%   {-0.6em plus -0.1em}%  negative makes it a run-in header
+%   % {\marginnote{\normalfont\scshape \arabic{section}.\arabic{subsection}}\normalfont\bfseries}%
+%   {\normalfont\bfseries}%
+% }
+% \renewcommand{\thesubsection}{\arabic{subsection}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Extra
-% These are optional topics that are covered at the end of each chapter.  The
-% formatting of theorems, exercises, etc. is a bit looser.
+\usepackage{titlesec}
+
+% Chapter
+\newcounter{jhchapter}
+  \newcommand{\thejhcounter}{\Roman{jhchapter}}
+\titleclass{\jhchapter}{straight}[\part]
+\titleformat{\jhchapter}[display]%
+  {\normalfont\Large\bfseries}%  title format
+  {}% label
+  {0em}% sep
+  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \Roman{chapter}\end{tabular}\hspace{0.6em}}}% before code
+  %[] % after-code
+\titlespacing*{\jhchapter}
+  {0pt}% left
+  {4.85ex plus 1.5ex minus 0.3ex}% before sep
+  {1.0ex plus 0.3ex minus 0.06ex}% after sep
+  % [] % right sep
+
+% TOC
+  \def\toclevel@jhchapter{0}
+  \def\l@jhchapter{\@dottedtocline{0}{0em}{1.5em}}
+
+\renewcommand{\chapter}[1]{%
+  \stepcounter{chapter}%
+  \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
+  \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
+  \renewcommand{\thesubsection}{\arabic{subsection}}%
+  \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
+  \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
+  % 
+  \pagestyle{bookbody}%
+  \thispagestyle{bookemptypage}%
+  \jhchapter{#1}}
+\renewcommand{\thechapter}{\Roman{chapter}}
+
+% Section
+\titleformat{\section}[hang]%
+  {\normalfont\large\bfseries}%  title format
+  {\thesection}% label
+  {0em}% sep
+  {\stepcounter{section}\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Section\\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace{0.6em}}}% before code
+  %[] % after-code
+\titlespacing*{\section}
+  {0pt}% left
+  {3.5ex plus 1ex minus 0.2ex}% before sep
+  {1.8ex plus 0.2ex}% after sep
+  % [] % right sep
+
+% Subsection
+\titleformat{\subsection}[runin]%
+  {\normalfont\bfseries}%  title format
+  {\thesection}% label
+  {0em}% sep
+  {}% before code
+  %[] % after-code
+\titlespacing*{\ubsection}
+  {0pt}% left
+  {1.3ex plus 0.4ex minus 0.1ex}% before sep
+  {0.6em plus 0.1em}% after sep
+  % [] % right sep
+  
+% Extra
+\titleclass{\extrasection}{straight}[\chapter]
+\newcounter{extrasection}[chapter]
+  \renewcommand{\theextrasection}{\Alph{extra}}
+\titleformat{\extrasection}[hang]
+  {\normalfont\bfseries}% title format
+  {}% label
+  {0em}% sep
+  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace{0.6em}}}% before code
+  
+\titlespacing*{\extrasection}%
+  {0pt}% left margin
+  {3.25ex plus 1ex minus 0.2ex}% before sep
+  {0.6em plus 0.1em}% aftersep
+
+% \newcommand{\extrasectionautorefname}{extra}
+
+\setcounter{tocdepth}{2}
+% \makeatletter
+  \def\toclevel@extrasection{0}
+  \def\l@extrasection{\@dottedtocline{1}{1.5em}{2.3em}}
+% \makeatother
+
 \newcounter{extra}[chapter]
-\renewcommand{\theextra}{\Alph{extra}}
-\newcommand{\extra}{%
-  % Record that we are now inside an Extra section.
-  % For more info search for "EXTRA SECTION TOGGLE".
-  \global\toggletrue{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
+\newcommand{\extra}[1]{%
+  \stepcounter{extra}
   \setcounter{theorem}{0}
-  \setcounter{section}{\the\numexpr\value{extra}+1\relax}
+  \setcounter{section}{\value{extra}}
   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
-  % For headers
-  % \let\sectionmark=\extramark %
-  %
-  \stepcounter{extra}%
-  \@startsection{extra}{2}%
-  {0em}%
-  {-3.25ex plus -1ex minus -0.2ex}%
-  {-0.6em plus -0.1em}%  negative makes it a run-in header
-  {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
-}
-\newcommand*\l@extra{\@dottedtocline{6}{10em}{5em}}% for toc
+\extrasection{#1}}
+% These are optional topics that are covered at the end of each chapter.  The
+% formatting of theorems, exercises, etc. is a bit looser.
+% \newcounter{extra}[chapter]
+% \renewcommand{\theextra}{\Alph{extra}}
+% \newcommand{\extra}{%
+%   % Record that we are now inside an Extra section.
+%   % For more info search for "EXTRA SECTION TOGGLE".
+%   \global\toggletrue{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
+%   \setcounter{theorem}{0}
+%   \setcounter{section}{\the\numexpr\value{extra}+1\relax}
+%   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
+%   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
+%   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
+%   % For headers
+%   % \let\sectionmark=\extramark %
+%   %
+%   \stepcounter{extra}%
+%   \@startsection{extra}{2}%
+%   {0em}%
+%   {-3.25ex plus -1ex minus -0.2ex}%
+%   {-0.6em plus -0.1em}%  negative makes it a run-in header
+%   {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
+% }
+% % Table of contents
+% \newcommand*\l@extra{\@dottedtocline{1}{1.5em}{2.3em}}% for toc
+% \newcommand{\toclevel@extra}{0}
+% % \let\stdl@extra\l@extra  % save for later
+% % \renewcommand*{\l@extra}[2]{%
+% %   \stdl@extra{\textsc{Extra} {#1}\@dottedtocline{6}{10em}{5em}#2}}% for toc
 \newcommand{\extramark}[1]{
   \markright{Extra\ \thesubsection.\ #1}}% for page headers
 
@@ -612,6 +712,7 @@
 
 \theoremstyle{coloredstyle}
 \newmdtheoremenv[style=coloredstyle]{theorem}{Theorem}[section]
+\renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % don't include the chapter
 \newmdtheoremenv[style=coloredstyle]{lemma}[theorem]{Lemma}
 \newmdtheoremenv[style=coloredstyle]{corollary}[theorem]{Corollary}
 \newmdtheoremenv[style=coloredstyle]{definition}[theorem]{Definition}

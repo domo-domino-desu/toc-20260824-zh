@@ -251,7 +251,7 @@ register has a finite number of possible values.
 Thus, however it is engineered, 
 in total the box has only finitely many states.
 
-While executing a calculation, the mechanism passes stepwise 
+While executing a calculation, the mechanism transitions  
 from state to state.
 For instance, 
 an agent doing multiplication may determine, because
@@ -512,28 +512,32 @@ the configuration, along with the Turing machine, encapsulates
 the future history of the computation.}.
 It is a four-tuple $\sequence{q,s,\tau_L,\tau_R}$, where
 $q$ is a state, 
-$s$ is a character from the tape alphabet,
+$s$ is a character from the tape alphabet (it signifies the character
+currently under the read/write head),
 and $\tau_L$ and~$\tau_R$ are strings of elements 
 from the tape alphabet~$\Sigma$,
-including possibly the empty string~$\emptystring$.
-Thus, each line in the
-trace table of \cref{ex:MAdd} graphically pictures a configuration. 
-For instance, on line~$2$ the configuration $\sequence{q,s,\tau_L,\tau_R}$ has 
-the state $q=q_0$, 
-the character under the head $s$ is the blank,
-to the left of the head is $\tau_L=\str{11}$,
-and to the right is $\tau_R=\str{111}$.
+including possibly the empty string~$\emptystring$
+(these signify the tape contents to the left and right of the head).
+For instance, line~$2$ of the trace table of \cref{ex:MAdd}
+graphically shows the configuration $\sequence{q,s,\tau_L,\tau_R}$, 
+where the state is $q=q_0$,
+where the character under the head $s$ is the blank,
+where to the left of the head is $\tau_L=\str{11}$,
+and where to the right is $\tau_R=\str{111}$.
 
+\label{DefnConfiguration}
 The action of the machine is that
-over time it transitions   
-from one configuration to the next.
-We refer to its configuration after the $s$-th transition as
-its configuration at \definend{step}~$s$.
-Its configuration at step~$0$ is its initial configuration.
+over time it transitions from one configuration to the next.
+We write $\mathcal{C}(s)$ for the machine's configuration after
+the $s$-th transition, and say this it the configuration
+at \definend{step}~$s$.
+Before we press the Start button, at step~$s=0$,
+its initial configuration is $\mathcal{C}(0)$.
 
 Suppose that at step~$i$ the machine $\TM$ is in configuration
-$\mathcal{C}_i=\sequence{q,s,\tau_L,\tau_R}$.
-Look for an instruction $q_pT_pT_nq_n\in\TM$ with
+$\mathcal{C}(i)=\sequence{q,s,\tau_L,\tau_R}$.
+Make the next transition by looking
+for an instruction $q_pT_pT_nq_n\in\TM$ with
 $q_p=q$ and~$T_p=s$.
 If there is no such instruction then $\TM$ \definend{halts} at 
 step~$i+1$.
@@ -545,10 +549,10 @@ There are three possibilities.
 the machine writes that
 symbol to the tape, so that the 
 next configuration is 
-$\mathcal{C}_{i+1}=\sequence{q_n,T_n,\tau_L,\tau_R}$.
+$\mathcal{C}(i+1)=\sequence{q_n,T_n,\tau_L,\tau_R}$.
 (2)~If $T_n=\str{L}$ then the machine moves the tape head to the left.
 That is, the next configuration is  
-$\mathcal{C}_{i+1}=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$,
+$\mathcal{C}(i+1)=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$,
 where $\hat{s}$ is the rightmost character of the string~$\tau_L$ (if
 $\tau_L=\emptystring$ then $\hat{s}$ is the blank character),
 where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
@@ -559,21 +563,20 @@ This is like~(2) so we skip the details.
 
 If two configurations are related in this way, by being a step apart, 
 then we write
-$\mathcal{C}_i \yields \mathcal{C}_{i+1}$ 
+$\mathcal{C}(i) \yields \mathcal{C}(i+1)$ 
 (read that aloud as ``yields in one step'').
 A \definend{computation} is a sequence
 $
-  \mathcal{C}_0 \yields \mathcal{C}_1 \yields \mathcal{C}_2
+  \mathcal{C}(0) \yields \mathcal{C}(1) \yields \mathcal{C}(2)
    \yields \cdots 
-$
-where $\mathcal{C}_o$ is the machine's initial configuration.
+$.
 If the computation halts then the sequence has a final 
-configuration~$\mathcal{C}_h$.
+configuration~$\mathcal{C}(h)$.
 We abbreviate such a sequence of steps 
 with~$\kleenestar{\yields}$ 
 (read ``yields eventually,'' or simply ``yields'').
-Thus we could abbreviate a halting comptuation with
-$\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
+Thus we abbreviate a halting comptuation with
+$\mathcal{C}(0)\mathrel{\kleenestar{\yields}}\mathcal{C}(h)$. 
 
 That description of the action of a Turing machine
 emphasizes that it is a
@@ -903,7 +906,11 @@ $010\,110\,111\,0\ldots$\,.
 \textit{Turing's number}, a computable number that is
 irrational
 because its decimal expansion never repeats and never terminates.)
+\end{exercise}
 
+\begin{exercise}
+What is the domain and codomain of the configuration function
+$\mathcal{C}$ defined on \cpageref{DefnConfiguration}?
 \end{exercise}
 \end{exercises}
 
@@ -963,25 +970,27 @@ The need for a fuller understanding of which
 things are mechanically computable was made pressing by
 the appearance in 1927 of the Incompleteness Theorem by Kurt G\"odel.
 This result says that for any (sufficiently powerful) axiom system there
-are statements that, while they are true in any model of those axioms, 
+are statements that, while true in any model of the axioms, 
 are not provable from those axioms. 
-G\"odel's proof essentially gives an algorithm, an intuitively
+G\"odel's proof gives an algorithm, an intuitively
 mechanically computable procedure, that takes as input
 a set of axioms 
-and produces as output the statement that is undecidable.
-Since proving theorems from axiom sets is a core behavior\Dash perhaps
-\emph{the} core behavior\Dash of mathematicians,
+and produces as output the undecidable statement.
+% Since proving theorems from axiom sets is a core behavior
+% \Dash perhaps
+% \emph{the} core behavior\Dash
+% of mathematicians,
 G\"odel's Theorem made clear that the mathematical community
 needed to understand what is `intuitively mechanically computable'.
 
 
+\margingraphic{0.23\textwidth}{prologue/church.jpg}{\label{fig:church}\href{http://en.wikipedia.org/wiki/Alonzo_Church}{Alonzo Church 1903--1995}}
 \citetext{A number of mathematicians}{See also \autocite{wiki:CTTimeline}.} proposed formalizations.
 One was 
 Alonzo Church,\footnote{After producing his machine model, 
   Turing became a PhD student of Church at Princeton.}
 whose system is called the \definend{$\lambda$-calculus}. 
 Church and his students succeeded in using 
-\margingraphic{0.23\textwidth}{prologue/church.jpg}{\label{fig:church}\href{http://en.wikipedia.org/wiki/Alonzo_Church}{Alonzo Church 1903--1995}}
 this system to compute many functions
 that are intuitively computable, 
 such as the doubling function and any polynomial function, along with

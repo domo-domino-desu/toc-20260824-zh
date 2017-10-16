@@ -4,27 +4,6 @@
 \input{glyphtounicode}% Make PDF offer better copy and paste
   \pdfgentounicode=1
 
-\RequirePackage[papersize={7.5in,9.25in},
-                textwidth=345pt, % textheight=550pt,  % LaTeX defaults
-                inner=.8in, top=1in, bottom=1in, %
-                headsep=12pt,
-                bindingoffset=0.4in,
-                ]{geometry}
-\usepackage{amsmath, amssymb} % no amsthm; use ntheorem because of margin numbering
-                
-\RequirePackage[dvipsnames]{xcolor}
-% \include{colorscheme}  % change the color scheme
-\definecolor{darkgreycolor}{HTML}{595241}
-\definecolor{lightgreycolor}{HTML}{E0D4BE}   % {B8AE9C}
-\definecolor{whitecolor}{HTML}{FFFFFF}
-\definecolor{lightbluecolor}{HTML}{ACCFCC}
-\definecolor{redcolor}{HTML}{8A0917}
-
-\colorlet{highlightcolor}{redcolor}
-\colorlet{backgroundcolor}{lightbluecolor}
-\colorlet{boldcolor}{darkgreycolor}
-\colorlet{lightcolor}{lightgreycolor}
-\colorlet{verylightcolor}{whitecolor}
 
 \RequirePackage{graphicx}
 \usepackage{adjustbox} % for clipping pictures
@@ -34,171 +13,31 @@
 % ++++++++++++++++++++++++++++++++++++++++
 \makeatletter
 \usepackage{cleveref}
+\usepackage{titlesec}
+% \extra
+% Like \section but with different formatting.
+\titleclass{\extra}{straight}[\chapter]
+\newcounter{extra}[chapter]  % Which extra section are we in?
+  \renewcommand{\theextra}{\Alph{extra}}
+\titleformat{\extra}
+  {\normalsize\large}{}{0em}{\makebox[0em][r]{\sffamily\normalsize\bfseries Extra\ \theextra\hspace{0.6em}}}
+\titlespacing*{\extra}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
-% ============ Theorems ========================
-\usepackage{calc}
-\newlength{\lrmarginaroundshadedtheorems}
-\newlength{\tbmarginaroundshadedtheorems}
-\newlength{\resttbaroundshadedtheorems}
-\setlength{\lrmarginaroundshadedtheorems}{2pt}
-\setlength{\tbmarginaroundshadedtheorems}{\lrmarginaroundshadedtheorems}
-\setlength{\resttbaroundshadedtheorems}{\topsep-\tbmarginaroundshadedtheorems}
-\usepackage{amsthm}
-\usepackage{thmtools}
-\newtheoremstyle{whitestyle}
-{0\topsep}               %space above
-{0\topsep}               %space below
-{}                      %bodyfont
-{0pt}                   %indent
-{\scshape}              %headfont
-{}                      %punctuation
-{0.6em}                 %space after head
-{\llap{\thmnumber{#2} }\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
-\newtheoremstyle{coloredstyle}
-{0\topsep}               %space above
-{0\topsep}               %space below
-{}                      %bodyfont
-{0pt}                   %indent
-{\scshape}              %headfont
-{}                      %punctuation
-{0.6em}                 %space after head
-{\llap{\thmnumber{#2}\hspace{\lrmarginaroundshadedtheorems} }\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
-\theoremstyle{coloredstyle}
-% \newtheorem{theorem}{Theorem}
-% \newtheorem{lemma}{Lemma}
-% \newtheorem{exercise}{Exercise}
+\newcommand{\scenarioautorefname}{scenario}
 
-% From https://tex.stackexchange.com/a/296184/121234
-\def\renewtheorem#1{%
-  \expandafter\let\csname#1\endcsname\relax
-  \expandafter\let\csname c@#1\endcsname\relax
-  \gdef\renewtheorem@envname{#1}
-  \renewtheorem@secpar
-}
-\def\renewtheorem@secpar{\@ifnextchar[{\renewtheorem@numberedlike}{\renewtheorem@nonumberedlike}}
-\def\renewtheorem@numberedlike[#1]#2{\newtheorem{\renewtheorem@envname}[#1]{#2}}
-\def\renewtheorem@nonumberedlike#1{  
-\def\renewtheorem@caption{#1}
-\edef\renewtheorem@nowithin{\noexpand\newtheorem{\renewtheorem@envname}{\renewtheorem@caption}}
-\renewtheorem@thirdpar
-}
-\def\renewtheorem@thirdpar{\@ifnextchar[{\renewtheorem@within}{\renewtheorem@nowithin}}
-\def\renewtheorem@within[#1]{\renewtheorem@nowithin[#1]}
+% Give extra same TOC level as sections
+\def\toclevel@extra{1}
+\def\l@extra{\@dottedtocline{3}{3.8em}{3.2em}}
+% for hyperref: \def\toclevel@extra{2}
 
 
-\usepackage{mdframed}
-
-% Theorems
-% These need to be numbered all as one, and the numbering in the margin
-\mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %
-  leftmargin = 0pt, %
-  rightmargin = 0pt, %
-  innerleftmargin = \lrmarginaroundshadedtheorems, %
-  innerrightmargin = \lrmarginaroundshadedtheorems, %
-  innertopmargin = \tbmarginaroundshadedtheorems, %
-  innerbottommargin = \tbmarginaroundshadedtheorems, %
-  skipabove= \resttbaroundshadedtheorems, %
-  skipbelow= \resttbaroundshadedtheorems, %
-  splittopskip = 0pt, % 
-  splitbottomskip = 0pt, % 
-  topline=false,bottomline=false,leftline=false,rightline=false,}
-
-\mdfdefinestyle{whitestyle}{backgroundcolor=white, %
-  leftmargin = 0pt, %
-  rightmargin = 0pt, %
-  innerleftmargin = 0pt, %
-  innerrightmargin = 0pt, %
-  innertopmargin = 0pt, %
-  innerbottommargin = 0pt, %
-  skipabove= \topsep, %
-  skipbelow= \topsep, %
-  splittopskip = 0pt, % 
-  splitbottomskip = 0pt, % 
-  topline=false,bottomline=false,leftline=false,rightline=false,}
-
-\newmdtheoremenv[style=coloredstyle]{theorem}{Theorem}
-
-\newmdtheoremenv[style=coloredstyle]{lemma}{Lemma}
-
-\theoremstyle{whitestyle}
-\newmdtheoremenv[style=whitestyle]{exercise}{Exercise}
-
-
-\newenvironment{exercises}{\par\noindent\textbf{Exercises}\begin{trivlist}\item[]}{\end{trivlist}}
-\newenvironment{answer}{\par\noindent\textsc{Answer}\begin{trivlist}\item[]}{\end{trivlist}}
-
-
-
-
-
-% % The cleveref package requires that theorems be made with either amsthm
-% % or ntheorem.  I couldn't get the first to put numbering in the margins,
-% % whereas the second had that built in, so I went with it.
-% \usepackage[thmmarks,amsmath]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
-% % % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
-% \newtheoremstyle{marginnumbers}%
-% {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1} }%
-% {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)} }%
-% \theoremheaderfont{\scshape}
-% \theorembodyfont{}    
-% \theoremsymbol{}
-% \theoremprework{}
-% \theorempostwork{}
-% \theoremseparator{}
-% \theorempreskip{.5\topsep}
-% \theorempostskip{.5\topsep}
-% \usepackage{thmtools}
-% % \shadecolor{backgroundcolor}  % Use this as the background color for theorems
-% \declaretheorem[style=marginnumbers,
-%                 shaded={bgcolor=backgroundcolor},
-%                 refname={Theorem,Theorems},
-%                 Refname={Theorem,Theorems}]{theorem}
-% \numberwithin{theorem}{subsection}
-% \declaretheorem[style=marginnumbers,
-%                 shaded={bgcolor=backgroundcolor},
-%                 refname={Lemma,Lemmas},
-%                 Refname={Lemma,Lemmas},
-%                 sibling=theorem]{lemma}
-% \declaretheorem[style=marginnumbers,
-%                 shaded={bgcolor=backgroundcolor},
-%                 refname={Definition,Definitions},
-%                 Refname={Definition,Definitions},
-%                 sibling=theorem]{definition}
-% \declaretheorem[style=marginnumbers,
-%                 refname={Example,Examples},
-%                 Refname={Example,Examples},
-%                 sibling=theorem]{example}
-% \declaretheorem[style=marginnumbers,
-%                 refname={Remark,Remarks},
-%                 Refname={Remark,Remarks},
-%                 sibling=theorem]{remark}
-
-% thmparts
-% An enumerated list inside the paragraph of the parts of a theorem, or
-% lemma or definition
-\newenvironment{thmparts}{%
-  \begin{enumerate}[label={\normalfont\scshape(\alph*)~},
-                    align=left, 
-                    ref={{\scshape\alph*}},
-    topsep={0.25ex plus 0.05ex minus 0.025ex},
-    leftmargin=1em,
-    rightmargin=0em,
-    labelwidth=1em,
-    labelsep=0em,
-    itemindent=0em,
-    parsep={0ex plus 0.1ex},
-    listparindent=1em,
-    itemsep={0.2ex plus .1ex minus 0.1ex}
-    ]
-}{%
-  \end{enumerate}
-}
 \makeatother
 % ++++++++++++++++++++++++++++++++++++++++
 
 
 \usepackage{lipsum}
 \begin{document}
+\tableofcontents
 
 \mainmatter% \setcounter{page}{0}
 \chapter{Title of Chapter One}
@@ -208,76 +47,22 @@
 
 \subsection{Title of Subsection One.I.1}
 \lipsum[1]
-\begin{lemma}
-  This is the lemma
-\end{lemma}
-\begin{theorem}
-  \label{th:FromSecOneI}
-  This is the theorem
-  \lipsum[1]
-\end{theorem}
-\begin{theorem}
-  This is the theorem
-\end{theorem}
-\begin{theorem}[Jones]
-  This is the theorem
-\end{theorem}
-\begin{theorem}
-  This is the theorem
-\end{theorem}
-\begin{theorem}[Jones]
-  This is the theorem
-\end{theorem}
-\begin{lemma}
-  This is the lemma
-\end{lemma}
 
 
 \subsection{Title of Subsection One.I.2}
 \lipsum[1]
 
-\begin{exercises}
-  \begin{exercise}
-    \lipsum[2]
-    % \tracingall
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-\end{exercises}
 
 
 
 \section{Title of Section One.II}
 \lipsum[1]
 
-From Section One.I: \cref{th:FromSecOneI}.
-
-\section{Title of Extra topic}
-\lipsum[1-10]
-\begin{theorem}
-  This is the theorem
-\end{theorem}
-
-\begin{lemma}
-  This is the lemma
-\end{lemma}
-\section{Title of Second extra topic}
+\extra{Title of Extra topic}
 \lipsum[1]
-\begin{theorem}
-  This is the theorem
-\end{theorem}
 
-\begin{lemma}
-  This is the lemma
-\end{lemma}
-
-\begin{exercises}
-  \begin{exercise}
-    \lipsum[2]
-  \end{exercise}
-\item goodbye
-\end{exercises}
+\extra{Title of Second extra topic}
+\lipsum[1]
 
 
 % ==============================================================
@@ -293,215 +78,15 @@ From Section One.I: \cref{th:FromSecOneI}.
 \lipsum[1]
 \subsection{Title of Subsection One.I.2}
 \lipsum[1]
-\begin{lemma}
-  This is the lemma
-\end{lemma}
-\begin{theorem}
-  This is the theorem
-\end{theorem}
-\begin{theorem}
-  This is the theorem
-\end{theorem}
-\begin{theorem}[Jones]
-  This is the theorem
-\end{theorem}
 
-\begin{exercises}
-  \begin{exercise}
-    \lipsum[2]
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    % \tracingall
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-\end{exercises}
-
-
-\section{Title of Extra topic}
+\extra{Title of Extra topic}
 \lipsum[1]
-\begin{lemma}
-  This is the lemma
-\end{lemma}
-\begin{theorem}
-  This is the theorem
-\end{theorem}
-\begin{theorem}
-  This is the theorem
-\end{theorem}
-\begin{theorem}[Jones]
-  This is the theorem
-\end{theorem}
 
-% \makeatletter
-% The width of a char is \showthe\jh@widthofchar pt.
-% \makeatother
 
-\begin{exercises}
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  
-  \begin{exercise}
-    akfd a jasf alsf al falksdf.
-    kasdfkl jafdkj alksdf jlaj.
-    akjsdf lkafd as dflka fdjaksdffj lka jdf lasdf lka jdflkja df lak df.
-    \begin{answer}
-      \lipsum[3]
-    \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-    \lipsum[2]
-  \end{exercise}
-
-  \begin{exercise}
-    \lipsum[2]
-  \end{exercise}
-
-  \begin{exercise}
-    \lipsum[2]
-  \end{exercise}
-
-  \begin{exercise}
-    \lipsum[2]
-  \end{exercise}
-
-  \begin{exercise}
-    \lipsum[2]
-  \end{exercise}
-
-  \begin{exercise}
-    \lipsum[2]
-  \end{exercise}
-
-  \begin{exercise}
-    % \begin{exparts}
-    % \item first part
-    % \item second part
-    % \end{exparts}
-  \end{exercise}
-
-  \begin{exercise}
-    % \begin{exparts*}
-    % \item first part
-    % \item second part
-    % \end{exparts*}
-  \end{exercise}
-\end{exercises}
-
-\section{Title of Second extra topic}
+\extra{Title of Second extra topic}
 \lipsum[1]
 
 
 % \printnotes
 
 \end{document}
-% TODO:
-
-Done: 1) Set exercises to respond to Extra section
-Done: 2) change to amsthm/check cleverref
-3) add chapter defn
-4) Set distances according to current class

@@ -43,7 +43,7 @@
 
 
 % ========== lengths on which others are set =============
-\setlength{\topsep}{8.0pt plus 2.0pt minus 4.0pt}  % bk10.clo has it set to 8pt
+\setlength{\topsep}{8.0pt plus 2.0pt minus 2.0pt}  % bk10.clo has it set to 8pt
 
 
 % ========== enumitem =============
@@ -409,17 +409,11 @@
   {0em}% sep
   {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Section\\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
   %[] % after-code
-% \titleformat{\section}[hang]%
-%   {\normalfont\large\bfseries}%  title format
-%   {}% label
-%   {0em}% sep
-%   {}% before code
-%   %[] % after-code
 
 \titlespacing*{\section}
   {0pt}% left
-  {3.5ex plus 1ex minus 0.2ex}% before sep
-  {1.8ex plus 0.2ex}% after sep
+  {3.5ex plus 1.5ex minus 0.3ex}% before sep
+  {1.8ex plus 0.3ex minus 0.05ex}% after sep
   % [] % right sep
 
 % Subsection
@@ -432,8 +426,8 @@
 
 \titlespacing*{\subsection}
   {0pt}% left
-  {1.3ex plus 0.4ex minus 0.1ex}% before sep
-  {0.6em plus 0.1em}% after sep
+  {1.3ex plus 0.5ex minus 0.1ex}% before sep, vertical
+  {0.6em plus 0.1em}% after sep, horiz
   % [] % right sep
   
 % Extra
@@ -661,8 +655,8 @@
 % \setlength{\tbmarginaroundshadedtheorems}{\lrmarginaroundshadedtheorems}
 \setlength{\resttbaroundshadedtheorems}{\topsep-\tbmarginaroundshadedtheorems}
 \newtheoremstyle{whitestyle}
-{0\topsep}               %space above
-{0\topsep}               %space below
+{0pt}               %space above
+{0pt}               %space below
 {}                      %bodyfont
 {0pt}                   %indent
 {\scshape}              %headfont
@@ -671,8 +665,8 @@
 {\llap{\thmnumber{#2}\hspace*{\margin@numberingspace}}\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
 
 \newtheoremstyle{coloredstyle}
-{0\topsep}               %space above
-{0\topsep}               %space below
+{0pt}               %space above
+{0pt}               %space below
 {}                      %bodyfont
 {0pt}                   %indent
 {\scshape}              %headfont
@@ -687,12 +681,12 @@
   rightmargin = 0pt, %
   innerleftmargin = \lrmarginaroundshadedtheorems, %
   innerrightmargin = \lrmarginaroundshadedtheorems, %
-  innertopmargin = 0.5\topsep, %
-  innerbottommargin = 0.5\topsep, %
+  innertopmargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
+  innerbottommargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
   % innertopmargin = \tbmarginaroundshadedtheorems, %
   % innerbottommargin = \tbmarginaroundshadedtheorems, %
-  skipabove= 0.5\topsep, %
-  skipbelow= 0.5\topsep, %
+  skipabove= 4pt plus 1pt minus 1pt, % 0.5\topsep
+  skipbelow= 4pt plus 1pt minus 1pt, % 0.5\topsep
   % skipabove= \resttbaroundshadedtheorems, %
   % skipbelow= \resttbaroundshadedtheorems, %
   splittopskip = 2pt, % 
@@ -706,8 +700,8 @@
   innerrightmargin = 0pt, %
   innertopmargin = 0pt, %
   innerbottommargin = 0pt, %
-  skipabove= 0.5\topsep, %
-  skipbelow= 0.5\topsep, %
+  skipabove= 6pt plus 1.5pt minus 1pt, % 0.75\topsep
+  skipbelow= 6pt plus 1.5pt minus 1pt, % 0.75\topsep
   splittopskip = 0pt, % 
   splitbottomskip = 0pt, % 
   topline=false,bottomline=false,leftline=false,rightline=false,}

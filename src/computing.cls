@@ -81,6 +81,8 @@
 \pagestyle{fancy} % must preceed redefinitions of \chaptermark, \sectionmark
 \renewcommand{\chaptermark}[1]{%
   \markboth{\chaptername\ \thechapter.\ #1}{\chaptername\ \thechapter.\ #1}}
+\newcommand{\jhchaptermark}[1]{%
+  \markboth{\chaptername\ \thechapter.\ #1}{\chaptername\ \thechapter.\ #1}}
 \renewcommand{\sectionmark}[1]{%
   \markright{\sectionname\ \thesection.\ #1}}
 % Note that \extramark is defined by the definition of \extra
@@ -175,7 +177,6 @@
 \setfnsymbol{hefferon}
 \newlength{\footmarktotextglue}
 \global\footmarktotextglue=.1em plus .05em minus .02em %
-% was: \global\footglue=1.25em plus.3em minus.3em % space between footnotes
 \global\footglue=0.65em plus.2em minus.1em % space between footnotes
 \long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
 \smash{\@makefnmark}\nobreak
@@ -248,44 +249,44 @@
 % As with sections, put the numbering in the margin using a marginpar
 % (actually a marginnote that has been hacked to always be on the left).
 % \renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
-\newcommand{\jhchapter@nostar}{
-  % Record that we are not inside an Extra section.
-  % For more info search for "EXTRA SECTION TOGGLE".
-  \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
-  \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
-  \renewcommand{\thesubsection}{\arabic{subsection}}
-  \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
-  % 
-  \pagestyle{bookbody}
-  \thispagestyle{bookemptypage}
-  %
-  \@startsection{chapter}{0}%
-  {0em}%
-  {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
-  {1ex plus .3ex minus .06ex}% *1 from titlesec
-  {\marginnote{\smash{\normalfont\Large\color{boldcolor}\begin{tabular}[b]{@{}r@{}} Chapter \\[-0.15ex] \thechapter\end{tabular}}}[1.4ex]\normalfont\Large\bfseries}%
-}
+% \newcommand{\jhchapter@nostar}{
+%   % Record that we are not inside an Extra section.
+%   % For more info search for "EXTRA SECTION TOGGLE".
+%   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
+%   \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
+%   \renewcommand{\thesubsection}{\arabic{subsection}}
+%   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
+%   % 
+%   \pagestyle{bookbody}
+%   \thispagestyle{bookemptypage}
+%   %
+%   \@startsection{chapter}{0}%
+%   {0em}%
+%   {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
+%   {1ex plus .3ex minus .06ex}% *1 from titlesec
+%   {\marginnote{\smash{\normalfont\Large\color{boldcolor}\begin{tabular}[b]{@{}r@{}} Chapter \\[-0.15ex] \thechapter\end{tabular}}}[1.4ex]\normalfont\Large\bfseries}%
+% }
 
-\newcommand{\jhchapter@star}{%
-  % Record that we are not inside an Extra section.
-  % For more info search for "EXTRA SECTION TOGGLE".
-  \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
-  \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
-  \renewcommand{\thesubsection}{\arabic{subsection}}
-  \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
-  % 
-  \pagestyle{bookfront}
-  \thispagestyle{bookemptypage}
-  %
-  \setcounter{chapter}{-1}
-  \@startsection{chapter}{0}%
-  {0em}%
-  {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
-  {1ex plus .3ex minus .06ex}% *1 from titlesec
-  {\normalfont\Large\bfseries}%
-}
+% \newcommand{\jhchapter@star}{%
+%   % Record that we are not inside an Extra section.
+%   % For more info search for "EXTRA SECTION TOGGLE".
+%   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
+%   \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
+%   \renewcommand{\thesubsection}{\arabic{subsection}}
+%   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
+%   % 
+%   \pagestyle{bookfront}
+%   \thispagestyle{bookemptypage}
+%   %
+%   \setcounter{chapter}{-1}
+%   \@startsection{chapter}{0}%
+%   {0em}%
+%   {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
+%   {1ex plus .3ex minus .06ex}% *1 from titlesec
+%   {\normalfont\Large\bfseries}%
+% }
 
-\renewcommand{\thechapter}{\Roman{chapter}}
+% \renewcommand{\thechapter}{\Roman{chapter}}
 
 % imagecredit  Give credit in a footnote-like entry for an image
 %  #1  text of image credit
@@ -336,7 +337,7 @@
 % it disappear in the Notes page.  So there I redefine it to \relax.
 \newcommand{\sectiontitlecontents}[1]{#1}
 
-\setcounter{secnumdepth}{1}  % Display them all
+\setcounter{secnumdepth}{10}  % Display them all
 \renewcommand\@seccntformat[1]{\relax} % no numbering inside section title
 \newlength{\jh@margintxttobodytext}
   \setlength{\jh@margintxttobodytext}{0.0em}
@@ -375,7 +376,7 @@
   {\normalfont\Large\bfseries}%  title format
   {}% label
   {0em}% sep
-  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \Roman{chapter}\end{tabular}\hspace{0.6em}}}% before code
+  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \Roman{chapter}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
   %[] % after-code
 \titlespacing*{\jhchapter}
   {0pt}% left
@@ -385,10 +386,11 @@
 
 % TOC
   \def\toclevel@jhchapter{0}
-  \def\l@jhchapter{\@dottedtocline{0}{0em}{1.5em}}
+  % \def\l@jhchapter{\@dottedtocline{0}{0em}{1.5em}}
 
 \renewcommand{\chapter}[1]{%
   \stepcounter{chapter}%
+  \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
   \renewcommand{\thesubsection}{\arabic{subsection}}%
@@ -403,10 +405,17 @@
 % Section
 \titleformat{\section}[hang]%
   {\normalfont\large\bfseries}%  title format
-  {\thesection}% label
+  {}% label
   {0em}% sep
-  {\stepcounter{section}\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Section\\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace{0.6em}}}% before code
+  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Section\\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
   %[] % after-code
+% \titleformat{\section}[hang]%
+%   {\normalfont\large\bfseries}%  title format
+%   {}% label
+%   {0em}% sep
+%   {}% before code
+%   %[] % after-code
+
 \titlespacing*{\section}
   {0pt}% left
   {3.5ex plus 1ex minus 0.2ex}% before sep
@@ -416,11 +425,12 @@
 % Subsection
 \titleformat{\subsection}[runin]%
   {\normalfont\bfseries}%  title format
-  {\thesection}% label
+  {}% label
   {0em}% sep
   {}% before code
   %[] % after-code
-\titlespacing*{\ubsection}
+
+\titlespacing*{\subsection}
   {0pt}% left
   {1.3ex plus 0.4ex minus 0.1ex}% before sep
   {0.6em plus 0.1em}% after sep
@@ -434,7 +444,7 @@
   {\normalfont\bfseries}% title format
   {}% label
   {0em}% sep
-  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace{0.6em}}}% before code
+  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
   
 \titlespacing*{\extrasection}%
   {0pt}% left margin
@@ -562,11 +572,13 @@
 % Define the exercises environment
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
-\newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
-\newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em}}
+\newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
+\newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
 \newenvironment{exercises}{%
-  \vspace{2.5ex plus 0.8ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \exercisecounterstart}{\normalfont\bfseries Exercises}%
-  \nolisttopbreak
+  % \vspace{2.5ex plus 0.8ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \exercisecounterstart}{\normalfont\bfseries Exercises}%
+  \vspace{2.5ex plus 0.8ex minus 0.2ex}%
+  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
+  \nolisttopbreak%
   \begin{list}{\@exercisecounterlabel}%
      {\usecounter{@exercisenumber}
       \setcounter{@exercisenumber}{\value{theorem}}
@@ -656,7 +668,7 @@
 {\scshape}              %headfont
 {}                      %punctuation
 {0.4em plus 0.2em}                 %space after head
-{\llap{\thmnumber{#2} }\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
+{\llap{\thmnumber{#2}\hspace*{\margin@numberingspace}}\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
 
 \newtheoremstyle{coloredstyle}
 {0\topsep}               %space above
@@ -666,7 +678,7 @@
 {\scshape}              %headfont
 {}                      %punctuation
 {0.4em plus 0.2em}                 %space after head
-{\llap{\thmnumber{#2}\hspace{\lrmarginaroundshadedtheorems} }\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
+{\llap{\thmnumber{#2}\hspace*{\margin@numberingspace}}\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
 
 \usepackage{mdframed}
 
@@ -957,13 +969,17 @@
 % TABLE OF CONTENTS
 \usepackage{tocloft}
 \tocloftpagestyle{empty}
-\setlength{\cftchapnumwidth}{1.5em}
+\setlength{\cftchapnumwidth}{1.25em}
 \setlength{\cftsecindent}{1em}
-\setlength{\cftsecnumwidth}{1em}
+\setlength{\cftsecnumwidth}{1.25em}
 \setlength{\cftsubsecindent}{2.5em}
-\setlength{\cftsubsecnumwidth}{5em}
+\setlength{\cftsubsecnumwidth}{1em}
 
-
+% from tocloft.sty; hack to make it print roman chapter number
+% I can't figure out hos to have jhchapter work, so I am putting a
+% \addcontentsline in the \chapter defn
+\newcommand{\l@jhchapter}[2]{\relax}
+\let\l@extrasection\l@section %
 
 
 %============= listings =============================

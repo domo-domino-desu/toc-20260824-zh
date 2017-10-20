@@ -815,5 +815,309 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// =============== graph for counties =============
+int picnum = 16;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+label(pic,graphic("counties01.eps","height=1.25in"),(0,0));
+layer(pic);
+
+// Grid to help locate nodes
+// height of boxes
+real u=2pt;
+real v=u;
+
+int grid_entries = 20;  // number of grid entries
+for(int i=-1*grid_entries; i <= grid_entries; ++i) {
+  draw(pic,
+       (i*v,-1*grid_entries*u)--(i*v,grid_entries*u), linewidth(0.1pt)+red);
+}
+for(int j=-1*grid_entries; j <= grid_entries; ++j) {
+  draw(pic,
+       (-1*grid_entries*v,j*u)--(grid_entries*v,j*u), linewidth(0.1pt)+red);
+}
+// major lines
+for(int i=-1*4; i <= 4; ++i) {
+  draw(pic,
+       (i*v*5,-1*4*u*5)--(i*v*5,4*u*5), linewidth(0.2pt)+blue);
+}
+for(int j=-1*4; j <= 4; ++j) {
+  draw(pic,
+       (-1*4*v*5,j*u*5)--(4*v*5,j*u*5), linewidth(0.2pt)+blue);
+}
+// axes
+  draw(pic,
+       (0*v*5,-1*4*u*5)--(0*v*5,4*u*5), linewidth(0.2pt)+green);
+  draw(pic,
+       (-1*4*v*5,0*u*5)--(4*v*5,0*u*5), linewidth(0.2pt)+green);
+
+node northumberland=ncircle("");   // Northumberland 0
+northumberland.pos = (2*u, 18*v);
+node cumbria=ncircle("");   // Cumbria 1
+cumbria.pos = (-3*u, 12*v);
+node tyne=ncircle("");  // Tyne & Wear 2
+tyne.pos = (3*u, 15*v);
+node durham=ncircle("");  // Durham 3
+durham.pos = (2*u, 12*v);
+node nyorkshire=ncircle("");  // North Yorkshire 4
+nyorkshire.pos = (5*u, 10*v);
+node lancashire=ncircle("");  // Lancashire 5
+lancashire.pos = (-2*u, 7*v);
+node wyorkshire=ncircle("");  // West Yorkshire 6
+wyorkshire.pos = (3*u, 7*v);
+node eyorkshire=ncircle("");  // East Riding of Yorkshire 7
+eyorkshire.pos = (9*u, 8*v);
+node merseyside=ncircle("");  // Merseyside 8
+merseyside.pos = (-3*u, 4*v);
+node manchester=ncircle("");  // Greater Manchester 9
+manchester.pos = (0*u, 5*v);
+node syorkshire=ncircle("");  // South Yorkshire 10
+syorkshire.pos = (5*u, 5*v);
+node cheshire=ncircle("");  // Cheshire 11
+cheshire.pos = (-2*u, 2*v);
+node derbyshire=ncircle("");  // Derbyshire 12
+derbyshire.pos = (3*u, 3*v);
+node nottinghamshire=ncircle("");  // Nottinghamshire 13
+nottinghamshire.pos = (6*u, 2*v);
+node lincolnshire=ncircle("");  // Lincolnshire 14
+lincolnshire.pos = (10*u, 3*v);
+node shropshire=ncircle("");  // Shropshire 15
+shropshire.pos = (-2*u, -2*v);
+node staffordshire=ncircle("");   // Staffordshire 16
+staffordshire.pos = (1*u, 1*v);
+node leicestershire=ncircle("");   // Leicestershire 17
+leicestershire.pos = (5*u, -1*v);
+node rutland=ncircle("");  // Rutland 18
+rutland.pos = (8*u, -1*v);
+node norfolk=ncircle("");  // Norfolk 19
+norfolk.pos = (15*u, 0*v);
+node herefordshire=ncircle("");  // Herefordshire 20
+herefordshire.pos = (-3*u, -6*v);
+node worcestershire=ncircle("");  // Worcestershire 21 
+worcestershire.pos = (1*u, -5*v);
+node wmidlands=ncircle("");  // West Midlands 22
+wmidlands.pos = (2*u, -2*v);
+node warwickshire=ncircle("");  // Warwickshire 23
+warwickshire.pos = (4*u, -5*v);
+node northamptonshire=ncircle("");  // Northamptonshire 24
+northamptonshire.pos = (6*u, -3*v);
+node cambridgeshire=ncircle("");  // Cambridgeshire 25
+cambridgeshire.pos = (11*u, -4*v);
+node suffolk=ncircle("");  // Suffolk 26
+suffolk.pos = (15*u, -5*v);
+node gloucestershire=ncircle("");  // Gloucestershire 27
+gloucestershire.pos = (1*u, -8*v);
+node oxfordshire=ncircle("");  // Oxfordshire 28
+oxfordshire.pos = (4*u, -8*v);
+node buckinghamshire=ncircle("");  // Buckinghamshire 29
+buckinghamshire.pos = (6*u, -7*v);
+node bedfordshire=ncircle("");  // Bedfordshire 30
+bedfordshire.pos = (8*u, -5*v);
+node hertfordshire=ncircle("");  // Hertfordshire 31
+hertfordshire.pos = (9*u, -8*v);
+node essex=ncircle("");  // Essex 32
+essex.pos = (13*u, -8*v);
+node bristol=ncircle("");   // Bristol 33
+bristol.pos = (-1*u, -10*v);
+node cornwall=ncircle("");   // Cornwall 34
+cornwall.pos = (-12*u, -19*v);
+node devon=ncircle("");  // Devon 35
+devon.pos = (-7*u, -15*v);
+node somerset=ncircle("");  // Somerset 36
+somerset.pos = (-3*u, -13*v);
+node dorset=ncircle("");  // Dorset 37
+dorset.pos = (0*u, -15*v);
+node wiltshire=ncircle("");  // Wiltshire 38
+wiltshire.pos = (2*u, -11*v);
+node hampshire=ncircle("");  // Hampshire 39
+hampshire.pos = (4*u, -13*v);
+node berkshire=ncircle("");  // Berkshire 40
+berkshire.pos = (6*u, -10*v);
+node surrey=ncircle("");  // Surrey 41
+surrey.pos = (8*u, -12*v);
+node wsussex=ncircle("");  // West Sussex 42
+wsussex.pos = (8*u, -15*v);
+node london=ncircle("");  // Greater London 43
+london.pos = (10*u, -10*v);
+node kent=ncircle("");  // Kent 44
+kent.pos = (14*u, -11*v);
+node esussex=ncircle("");  // East Sussex 45
+esussex.pos = (13*u, -14*v);
+node wight=ncircle("");  // Isle of Wight 46
+wight.pos = (4*u, -16*v);
+
+// calculate nodes position
+// real u=1cm;
+// real v=0.7*u;
+// vlayout(1*v, nodes[0], nodes[1]);
+// vlayout(-1*v, nodes[0], nodes[2]);
+// hlayout(1*u, nodes[0], nodes[3]);
+
+// draw edges
+draw(pic,
+     (northumberland--cumbria),
+     (northumberland--tyne),
+     (northumberland--durham),
+     (cumbria--durham),
+     (cumbria--nyorkshire),
+     (cumbria--lancashire),
+     (tyne--nyorkshire),
+     (durham--nyorkshire),
+     (nyorkshire--lancashire),
+     (nyorkshire--wyorkshire),
+     (nyorkshire--eyorkshire),
+     (nyorkshire--syorkshire),
+     (lancashire--wyorkshire),
+     (lancashire--merseyside),
+     (lancashire--manchester),
+     (wyorkshire--manchester),
+     (wyorkshire--syorkshire),
+     (eyorkshire--lincolnshire),
+     (merseyside--manchester),
+     (merseyside--cheshire),
+     (manchester--cheshire),
+     (manchester--derbyshire),
+     (syorkshire--derbyshire),
+     (syorkshire--nottinghamshire),
+     (syorkshire--lincolnshire),
+     (cheshire--shropshire),
+     (cheshire--staffordshire),
+     (cheshire--derbyshire),
+     (derbyshire--staffordshire),
+     (derbyshire--leicestershire),
+     (derbyshire--nottinghamshire),
+     (nottinghamshire--leicestershire),
+     (nottinghamshire--lincolnshire),
+     (lincolnshire--leicestershire),
+     (lincolnshire--rutland),
+     (lincolnshire--cambridgeshire),
+     (lincolnshire--norfolk),
+     (shropshire--staffordshire),
+     (shropshire--hertfordshire),
+     (shropshire--worcestershire),
+     (shropshire--wmidlands),
+     (staffordshire--wmidlands),
+     (staffordshire--warwickshire),
+     (staffordshire--leicestershire),
+     (leicestershire--warwickshire),
+     (leicestershire--northamptonshire),
+     (leicestershire--rutland),
+     (rutland--cambridgeshire),
+     (norfolk--cambridgeshire),
+     (norfolk--suffolk),
+     (herefordshire--worcestershire),
+     (herefordshire--gloucestershire),
+     (worcestershire--gloucestershire),
+     (worcestershire--warwickshire),
+     (worcestershire--wmidlands),
+     (wmidlands--warwickshire),
+     (warwickshire--gloucestershire),
+     (warwickshire--oxfordshire),
+     (warwickshire--northamptonshire),
+     (northamptonshire--oxfordshire),
+     (northamptonshire--buckinghamshire),
+     (northamptonshire--bedfordshire),
+     (northamptonshire--cambridgeshire),
+     (cambridgeshire--suffolk),
+     (cambridgeshire--bedfordshire),
+     (cambridgeshire--hertfordshire),
+     (cambridgeshire--essex),
+     (suffolk--essex),
+     (gloucestershire--bristol),
+     (gloucestershire--somerset),
+     (gloucestershire--wiltshire),
+     (gloucestershire--oxfordshire),
+     (oxfordshire--wiltshire),
+     (oxfordshire--berkshire),
+     (oxfordshire--buckinghamshire),
+     (buckinghamshire--berkshire),
+     (buckinghamshire--london),
+     (buckinghamshire--hertfordshire),
+     (buckinghamshire--bedfordshire),
+     (bedfordshire--hertfordshire),
+     (hertfordshire--london),
+     (hertfordshire--essex),
+     (essex--london),
+     (bristol--somerset),
+     (cornwall--devon),
+     (devon--somerset),
+     (devon--dorset),
+     (somerset--dorset),
+     (somerset--wiltshire),
+     (dorset--hampshire),
+     (dorset--wiltshire),
+     (wiltshire--hampshire),
+     (wiltshire--berkshire),
+     (hampshire--wsussex),
+     (hampshire--surrey),
+     (hampshire--wight),
+     (hampshire--berkshire),
+     (berkshire--surrey),
+     (berkshire--london),
+     (surrey--wsussex),
+     (surrey--kent),
+     (surrey--london),
+     (wsussex--esussex),
+     (london--kent),
+     (kent--esussex)
+     );
+
+// draw nodes
+draw(pic,
+     northumberland,
+     cumbria,
+     tyne,
+     durham,
+     nyorkshire,
+     lancashire,
+     wyorkshire,
+     eyorkshire,
+     merseyside,
+     manchester,
+     syorkshire,
+     cheshire,
+     derbyshire,
+     nottinghamshire,
+     lincolnshire,
+     shropshire,
+     staffordshire,
+     leicestershire,
+     rutland,
+     norfolk,
+     herefordshire,
+     worcestershire,
+     wmidlands,
+     warwickshire,
+     northamptonshire,
+     cambridgeshire,
+     suffolk,
+     gloucestershire,
+     oxfordshire,
+     buckinghamshire,
+     bedfordshire,
+     hertfordshire,
+     essex,
+     bristol,
+     cornwall,
+     devon,
+     somerset,
+     dorset,
+     wiltshire,
+     hampshire,
+     berkshire,
+     surrey,
+     wsussex,
+     london,
+     kent,
+     esussex,
+     wight
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 

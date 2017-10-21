@@ -454,10 +454,10 @@ node a=ncircle("\strut$A$"),
 defaultlayoutrel = false;
 defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
-real v = 0.60*u;
+real v = 0.40*u;
 
 hlayout(2*u, a, b);
-layout(30.0, a, d);
+layout(20.0, a, d);
 vlayout(-2*v, a, c);
 hlayout(2*u, c, i);
 hlayout(1*u, c, f);

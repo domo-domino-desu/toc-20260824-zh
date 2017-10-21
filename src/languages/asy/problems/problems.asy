@@ -821,37 +821,37 @@ picture pic;
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-label(pic,graphic("counties01.eps","height=1.25in"),(0,0));
-layer(pic);
+// label(pic,graphic("counties01.eps","height=1.25in"),(0,0));
+// layer(pic);
 
 // Grid to help locate nodes
 // height of boxes
 real u=2pt;
 real v=u;
 
-int grid_entries = 20;  // number of grid entries
-for(int i=-1*grid_entries; i <= grid_entries; ++i) {
-  draw(pic,
-       (i*v,-1*grid_entries*u)--(i*v,grid_entries*u), linewidth(0.1pt)+red);
-}
-for(int j=-1*grid_entries; j <= grid_entries; ++j) {
-  draw(pic,
-       (-1*grid_entries*v,j*u)--(grid_entries*v,j*u), linewidth(0.1pt)+red);
-}
-// major lines
-for(int i=-1*4; i <= 4; ++i) {
-  draw(pic,
-       (i*v*5,-1*4*u*5)--(i*v*5,4*u*5), linewidth(0.2pt)+blue);
-}
-for(int j=-1*4; j <= 4; ++j) {
-  draw(pic,
-       (-1*4*v*5,j*u*5)--(4*v*5,j*u*5), linewidth(0.2pt)+blue);
-}
-// axes
-  draw(pic,
-       (0*v*5,-1*4*u*5)--(0*v*5,4*u*5), linewidth(0.2pt)+green);
-  draw(pic,
-       (-1*4*v*5,0*u*5)--(4*v*5,0*u*5), linewidth(0.2pt)+green);
+// int grid_entries = 20;  // number of grid entries
+// for(int i=-1*grid_entries; i <= grid_entries; ++i) {
+//   draw(pic,
+//        (i*v,-1*grid_entries*u)--(i*v,grid_entries*u), linewidth(0.1pt)+red);
+// }
+// for(int j=-1*grid_entries; j <= grid_entries; ++j) {
+//   draw(pic,
+//        (-1*grid_entries*v,j*u)--(grid_entries*v,j*u), linewidth(0.1pt)+red);
+// }
+// // major lines
+// for(int i=-1*4; i <= 4; ++i) {
+//   draw(pic,
+//        (i*v*5,-1*4*u*5)--(i*v*5,4*u*5), linewidth(0.2pt)+blue);
+// }
+// for(int j=-1*4; j <= 4; ++j) {
+//   draw(pic,
+//        (-1*4*v*5,j*u*5)--(4*v*5,j*u*5), linewidth(0.2pt)+blue);
+// }
+// // axes
+//   draw(pic,
+//        (0*v*5,-1*4*u*5)--(0*v*5,4*u*5), linewidth(0.2pt)+green);
+//   draw(pic,
+//        (-1*4*v*5,0*u*5)--(4*v*5,0*u*5), linewidth(0.2pt)+green);
 
 node northumberland=ncircle("");   // Northumberland 0
 northumberland.pos = (2*u, 18*v);
@@ -898,7 +898,7 @@ herefordshire.pos = (-3*u, -6*v);
 node worcestershire=ncircle("");  // Worcestershire 21 
 worcestershire.pos = (1*u, -5*v);
 node wmidlands=ncircle("");  // West Midlands 22
-wmidlands.pos = (2*u, -2*v);
+wmidlands.pos = (1.5*u, -2.5*v);
 node warwickshire=ncircle("");  // Warwickshire 23
 warwickshire.pos = (4*u, -5*v);
 node northamptonshire=ncircle("");  // Northamptonshire 24
@@ -920,13 +920,13 @@ hertfordshire.pos = (9*u, -8*v);
 node essex=ncircle("");  // Essex 32
 essex.pos = (13*u, -8*v);
 node bristol=ncircle("");   // Bristol 33
-bristol.pos = (-1*u, -10*v);
+bristol.pos = (-1.5*u, -10*v);
 node cornwall=ncircle("");   // Cornwall 34
 cornwall.pos = (-12*u, -19*v);
 node devon=ncircle("");  // Devon 35
 devon.pos = (-7*u, -15*v);
 node somerset=ncircle("");  // Somerset 36
-somerset.pos = (-3*u, -13*v);
+somerset.pos = (-1.5*u, -13*v);
 node dorset=ncircle("");  // Dorset 37
 dorset.pos = (0*u, -15*v);
 node wiltshire=ncircle("");  // Wiltshire 38
@@ -995,7 +995,7 @@ draw(pic,
      (lincolnshire--cambridgeshire),
      (lincolnshire--norfolk),
      (shropshire--staffordshire),
-     (shropshire--hertfordshire),
+     (shropshire--herefordshire),
      (shropshire--worcestershire),
      (shropshire--wmidlands),
      (staffordshire--wmidlands),

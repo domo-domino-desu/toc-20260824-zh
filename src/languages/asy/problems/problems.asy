@@ -1120,4 +1120,319 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// =============== pyramid =============
+int picnum = 17;
+picture pic;
+settings.render = 16; settings.prc = false;
+import three;  // must set render, prc before importing three
+unitsize(pic,1cm,0);
+
+currentprojection=orthographic(10,5,2,up=Z);
+
+// https://en.wikipedia.org/wiki/Tetrahedron#Formulas_for_a_regular_tetrahedron
+triple origin=(0,0,0);
+triple corner0 = (3/4)*(sqrt(8/9),0,-1/3);
+triple corner1 = (3/4)*(-sqrt(2/9),sqrt(2/3),-1/3);
+triple corner2 = (3/4)*(-sqrt(2/9),-sqrt(2/3),-1/3);
+triple corner3 = (3/4)*(0,0,1);
+
+// dot(pic,corner0,red);
+// dot(pic,corner1,blue);
+// dot(pic,corner2,green);
+// dot(pic,corner3,black);
+dotfactor=3; // default 6
+dot(pic,corner0,boldcolor);
+dot(pic,corner1,boldcolor);
+dot(pic,corner2,boldcolor);
+dot(pic,corner3,boldcolor);
+
+path3 edge01 = corner0--corner1;
+path3 edge02 = corner0--corner2;
+path3 edge03 = corner0--corner3;
+path3 edge12 = corner1--corner2;
+path3 edge13 = corner1--corner3;
+path3 edge23 = corner2--corner3;
+
+// draw(pic,edge01,boldcolor);
+draw(pic,edge02,boldcolor);
+// draw(pic,edge03,boldcolor);
+// draw(pic,edge12,boldcolor);
+draw(pic,edge13,boldcolor);
+// draw(pic,edge23,boldcolor);
+draw(pic,corner2--corner3--corner0--corner1--corner2,DARKPEN+highlightcolor,nolight);
+
+// draw(pic,origin--2X,black);  // X axis
+// draw(pic,origin--2Y,black);  // X axis
+// draw(pic,origin--2Z,black);  // X axis
+
+real opacity_index=0.75;
+draw(pic,surface(corner0--corner3--corner2--cycle),lightcolor+opacity(opacity_index),nolight);  // left front
+draw(pic,surface(corner0--corner1--corner3--cycle),lightcolor+opacity(opacity_index),nolight);  // rt front
+draw(pic,surface(corner1--corner2--corner3--cycle),lightcolor+opacity(opacity_index),nolight);  // back
+draw(pic,surface(corner0--corner2--corner1--cycle),lightcolor+opacity(opacity_index),nolight);  // left front
+
+shipout(format(OUTPUT_FN,picnum),pic,format="png");   // PNG! bugs in asy
+
+
+
+// =============== cube =============
+int picnum = 18;
+picture pic;
+settings.render = 16; settings.prc = false;
+import three;  // must set render, prc before importing three
+unitsize(pic,1cm,0);
+
+currentprojection=orthographic(10,5,2,up=Z);
+
+// https://en.wikipedia.org/wiki/Tetrahedron#Formulas_for_a_regular_tetrahedron
+triple origin=(0,0,0);
+triple cornertx = (1,0,1);
+triple cornertf = (1,1,1);
+triple cornerty = (0,1,1);
+triple cornerto = (0,0,1);
+triple cornerbx = (1,0,0);
+triple cornerbf = (1,1,0);
+triple cornerby = (0,1,0);
+triple cornerbo = (0,0,0);
+
+// dot(pic,cornertx,red);
+// dot(pic,cornertf,blue);
+// dot(pic,cornerty,green);
+// dot(pic,cornerto,black);
+// dot(pic,cornerbx,red);
+// dot(pic,cornerbf,blue);
+// dot(pic,cornerby,green);
+// dot(pic,cornerbo,black);
+dotfactor=3; // default 6
+dot(pic,cornertx,boldcolor);
+dot(pic,cornertf,boldcolor);
+dot(pic,cornerty,boldcolor);
+dot(pic,cornerto,boldcolor);
+dot(pic,cornerbx,boldcolor);
+dot(pic,cornerbf,boldcolor);
+dot(pic,cornerby,boldcolor);
+dot(pic,cornerbo,boldcolor);
+
+path3 edgeboby = cornerbo--cornerby;
+path3 edgebobx = cornerbo--cornerbx;
+path3 edgebybf = cornerby--cornerbf;
+path3 edgebxbf = cornerbx--cornerbf;
+path3 edgeboto = cornerbo--cornerto;
+path3 edgebyty = cornerby--cornerty;
+path3 edgebxtx = cornerbx--cornertx;
+path3 edgebftf = cornerbf--cornertf;
+path3 edgetoty = cornerto--cornerty;
+path3 edgetotx = cornerto--cornertx;
+path3 edgetytf = cornerty--cornertf;
+path3 edgetxtf = cornertx--cornertf;
+
+draw(pic,edgeboby,boldcolor);
+// draw(pic,edgebobx,boldcolor);
+// draw(pic,edgebybf,boldcolor);
+// draw(pic,edgebxbf,boldcolor);
+// draw(pic,edgeboto,boldcolor);
+// draw(pic,edgebyty,boldcolor);
+draw(pic,edgebxtx,boldcolor);
+draw(pic,edgebftf,boldcolor);
+draw(pic,edgetoty,boldcolor);
+// draw(pic,edgetotx,boldcolor);
+// draw(pic,edgetytf,boldcolor);
+// draw(pic,edgetxtf,boldcolor);
+draw(pic,cornerbo--cornerbx--cornerbf--cornerby--cornerty--cornertf--cornertx--cornerto--cycle,DARKPEN+highlightcolor,nolight);
+
+// draw(pic,origin--2X,black);  // X axis
+// draw(pic,origin--2Y,black);  // X axis
+// draw(pic,origin--2Z,black);  // X axis
+
+real opacity_index=0.75;
+draw(pic,surface(cornerto--cornertx--cornertf--cornerty--cycle),lightcolor+opacity(opacity_index),nolight);  // top
+draw(pic,surface(cornerbo--cornerbx--cornertx--cornerto--cycle),lightcolor+opacity(opacity_index),nolight);  // xz plane
+draw(pic,surface(cornerbo--cornerto--cornerty--cornerby--cycle),lightcolor+opacity(opacity_index),nolight);  // yz plane
+draw(pic,surface(cornerby--cornerty--cornertf--cornerbf--cycle),lightcolor+opacity(opacity_index),nolight);  // right
+draw(pic,surface(cornerbx--cornerbf--cornertf--cornertx--cycle),lightcolor+opacity(opacity_index),nolight);  // front/left
+draw(pic,surface(cornerbo--cornerby--cornerbf--cornerbx--cycle),lightcolor+opacity(opacity_index),nolight);  // bot
+
+shipout(format(OUTPUT_FN,picnum),pic,format="png");   // PNG! bugs in asy
+
+
+
+
+
+// ========= octahedral graph ===========
+// 
+int picnum = 19;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node[] nodes=ncircles("\nodebox{0}",
+		      "\nodebox{1}",
+		      "\nodebox{2}",
+		      "\nodebox{3}",
+		      "\nodebox{4}",
+		      "\nodebox{5}"
+		      );
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+
+vlayout(-3.0*v,nodes[0],nodes[1]);
+nodes[2].pos = (0.5*u, (1/2)*(nodes[0].pos.y+nodes[1].pos.y));
+nodes[3].pos = (1.0*u, 1.0*v);
+vlayout(-1.0*v, nodes[3], nodes[4]);
+hlayout(2.5*u, nodes[2], nodes[5]);
+
+// draw edges
+draw(pic,
+     (nodes[0]--nodes[1]),
+     (nodes[0]--nodes[2]),
+     (nodes[0]--nodes[3]),
+     (nodes[0]--nodes[5]),
+     (nodes[1]--nodes[2]),
+     (nodes[1]--nodes[4]),
+     (nodes[1]--nodes[5]),
+     (nodes[2]--nodes[3]),
+     (nodes[2]--nodes[4]),
+     (nodes[3]--nodes[4]),
+     (nodes[3]--nodes[5]),
+     (nodes[4]--nodes[5])
+);
+
+// draw nodes
+draw(pic,
+     nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5]
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ========= octahedral graph ===========
+// 
+int picnum = 20;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node[] nodes=ncircles("\nodebox{0}",
+		      "\nodebox{1}",
+		      "\nodebox{2}",
+		      "\nodebox{3}",
+		      "\nodebox{4}",
+		      "\nodebox{5}",
+		      "\nodebox{6}",
+		      "\nodebox{7}",
+		      "\nodebox{8}",
+		      "\nodebox{9}",
+		      "\nodebox{10}",
+		      "\nodebox{11}"
+		      );
+
+// calculate nodes position
+real u=0.9cm;
+real v=0.7*u;
+
+real fan_angle = 45.0;
+vlayout(1.0*v, nodes[0], nodes[1]);
+vlayout(1.9*v, nodes[1], nodes[6]);
+nodes[2].pos = new_node_pos(nodes[1], -140, -1.0*v);
+nodes[3].pos = new_node_pos(nodes[1], -110, -1.0*v);
+nodes[4].pos = new_node_pos(nodes[1], -70,  -1.0*v);
+nodes[5].pos = new_node_pos(nodes[1], -40,  -1.0*v);
+nodes[7].pos = new_node_pos(nodes[6], -140, -0.5*v);
+nodes[8].pos = new_node_pos(nodes[6],  -40, -0.5*v);
+nodes[9].pos = new_node_pos(nodes[6],  -90, -1.15*v);
+nodes[10].pos = new_node_pos(nodes[0], -90+(-1*fan_angle), -4.75*v);
+nodes[11].pos = new_node_pos(nodes[0], -90+fan_angle, -4.75*v);
+
+// draw edges
+draw(pic,
+     (nodes[0]--nodes[10]),
+     (nodes[0]--nodes[11]),
+     (nodes[0]--nodes[1]),
+     (nodes[0]--nodes[2]),
+     (nodes[0]--nodes[5]),
+     (nodes[1]--nodes[2]),
+     (nodes[1]--nodes[3]),
+     (nodes[1]--nodes[4]),
+     (nodes[1]--nodes[5]),
+     (nodes[2]--nodes[3]),
+     (nodes[2]--nodes[7]),
+     (nodes[2]--nodes[10]),
+     (nodes[3]--nodes[4]),
+     (nodes[3]--nodes[6]),
+     (nodes[3]--nodes[7]),
+     (nodes[4]--nodes[5]),
+     (nodes[4]--nodes[6]),
+     (nodes[4]--nodes[8]),
+     (nodes[5]--nodes[8]),
+     (nodes[5]--nodes[11]),
+     (nodes[6]--nodes[7]),
+     (nodes[6]--nodes[8]),
+     (nodes[6]--nodes[9]),
+     (nodes[7]--nodes[9]),
+     (nodes[7]--nodes[10]),
+     (nodes[8]--nodes[9]),
+     (nodes[8]--nodes[11]),
+     (nodes[9]--nodes[10]),
+     (nodes[9]--nodes[11]),
+     (nodes[10]--nodes[11])
+);
+
+// draw nodes
+draw(pic,
+     nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5],
+     nodes[6], nodes[7], nodes[8], nodes[9], nodes[10], nodes[11]
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ========= map that requires four colors ===========
+// 
+int picnum = 21;
+picture pic;
+unitsize(pic,0.5cm);
+
+path insidecircle, outsidecircle;
+insidecircle = circle((0,0),1);
+outsidecircle = circle((0,0),2);
+
+// Times on the circles
+real t0=0;
+real t1=4/3;
+real t2=8/3;
+// Points associated with those times
+pair pti0=point(insidecircle,t0);
+pair pto0=point(outsidecircle,t0);
+pair pti1=point(insidecircle,t1);
+pair pto1=point(outsidecircle,t1);
+pair pti2=point(insidecircle,t2);
+pair pto2=point(outsidecircle,t2);
+
+draw(pic,pti0--pto0,MAINPEN);
+draw(pic,pti1--pto1,MAINPEN);
+draw(pic,pti2--pto2,MAINPEN);
+draw(pic,insidecircle,MAINPEN);
+draw(pic,outsidecircle,MAINPEN);
+
+label(pic,"$B$",midpoint(point(insidecircle,(t0+t1)/2)--point(outsidecircle,(t0+t1)/2)));
+label(pic,"$A$",midpoint(point(insidecircle,(t1+t2)/2)--point(outsidecircle,(t1+t2)/2)));
+label(pic,"$C$",midpoint(point(insidecircle,t2+(t0+t1)/2)--point(outsidecircle,t2+(t0+t1)/2)));
+label(pic,"$D$",(0,0));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+
 

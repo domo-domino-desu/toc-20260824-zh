@@ -1398,7 +1398,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // 
 int picnum = 21;
 picture pic;
-unitsize(pic,0.5cm);
+unitsize(pic,0.cm);
 
 path insidecircle, outsidecircle;
 insidecircle = circle((0,0),1);
@@ -1426,6 +1426,37 @@ label(pic,"$B$",midpoint(point(insidecircle,(t0+t1)/2)--point(outsidecircle,(t0+
 label(pic,"$A$",midpoint(point(insidecircle,(t1+t2)/2)--point(outsidecircle,(t1+t2)/2)));
 label(pic,"$C$",midpoint(point(insidecircle,t2+(t0+t1)/2)--point(outsidecircle,t2+(t0+t1)/2)));
 label(pic,"$D$",(0,0));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ========= map that would require five colors ===========
+// 
+int picnum = 22;
+picture pic;
+unitsize(pic,1.0cm);
+
+real ht=1.5,
+  wd=4;
+real small_country_radius = 0.8*min(ht/4,wd/10);
+path countryA0 = (0,0)--(wd,0)--(wd,ht)--(0,ht)--cycle;
+path countryB0 = circle((wd/5,ht/2),small_country_radius);
+path countryC0 = circle((2*wd/5,ht/2),small_country_radius);
+path countryD0 = circle((3*wd/5,ht/2),small_country_radius);
+path countryE0 = circle((4*wd/5,ht/2),small_country_radius);
+
+draw(pic,countryA0,MAINPEN);
+draw(pic,countryB0,MAINPEN);
+draw(pic,countryC0,MAINPEN);
+draw(pic,countryD0,MAINPEN);
+draw(pic,countryE0,MAINPEN);
+label(pic,"$A$",(0.05wd,0.9ht));
+label(pic,"$B$",(wd/5,ht/2));
+label(pic,"$C$",(2*wd/5,ht/2));
+label(pic,"$D$",(3*wd/5,ht/2));
+label(pic,"$E$",(4*wd/5,ht/2));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

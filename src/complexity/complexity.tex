@@ -1,4 +1,10 @@
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as far more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Orders of growth}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
+
+In the first part of the  book we studies which problems are solvable on a
+computer.
+Computational complexity tries to determine which problem are
+\emph{efficiently} solvable on a computer.
+
 We will review the basics of the orders of growth of functions.
 Because this is a review, we will not give a detailed development, just enough for our needs.
 And we will leave the proofs for the exercises.
@@ -473,7 +479,7 @@ functions is only partial.
 
 \begin{example}
   The order $\bigOh(n\cdot \lg(n))$ appears often.
-  We will show that it equals $\bigOh(n!)$ by mutual containment of sets.
+  We will show that it equals $\bigOh(\lg(n!))$ by mutual containment of sets.
   
   Recall that logarithmic functions turn multiplication into addition:
   $\lg(a\cdot b)=\lg(a)+\lg(b)$.
@@ -505,8 +511,9 @@ functions is only partial.
   \item If $L=0$ then $g$ grows faster than~$f$,
     so $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
   \item If $L$ is strictly between $0$ and~$\infty$
-    then the two functions have the same growth
-    rate, that is, $f$ is~$\bigTheta(g)$.
+  then the two functions have the same growth rate so that
+    $f$ is $\bigOh(g)$ and~$g$ is $\bigOh(f)$,
+    that is, $f$ is~$\bigTheta(g)$.
   \end{parenum}
 \end{theorem}
 
@@ -591,8 +598,49 @@ L'H\^opital's Rule to \cref{lem:LHBigO}.
   \end{equation*}
 \end{example}
 
+Recall that we can convert among logarithmss at the cost of a constant factor.
+For instance the natural log relates to the common log (the log with base~$10$)
+by $\ln(x)=\log_{10}(x)/\log_{10}(e)\approx \log_{10}(x)/0.434$.
+Similarly, $\lg(x)=\log_2(x)=\ln(x)/\ln(2)\approx \ln(x)/\approx0.693$.
+In general, $\log_b(x)=\log_c(x)/\log_c(b)$.
+Thus all logs have the same order of growth; for instance,
+$\ln$ is $\bigOh(\lg)$ and $\lg$ is $\bigOh(\ln)$. 
+
+\begin{example}
+For any positive exponent~$d\in\R$ the power function~$x^d$
+is greater, in a big-O sense, than the logarithmic function:
+$\log_b(x)$ is~$\bigOh(x^d)$ but 
+$x^d$ is not~$\bigOh(log_b(x))$.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{\ln(x)}{x^d}
+  =\lim_{x\to\infty}\frac{(1/x)}{x^d}
+  =\lim_{x\to\infty}\frac{1}{x^{d+1}}
+  =0
+\end{equation*}
+Thus, $\lg(x)$ is $\bigOh(x^{1})$
+and  $\lg(x)$ is $\bigOh(x^{0.1})$
+and  $\lg(x)$ is $\bigOh(x^{0.01})$, etc., and none of these
+comparisons reverse.
+
+A similar thing holds for the log-linear function $x\cdot\lg(x)$.
+\begin{multline*}
+  \lim_{x\to\infty}\frac{x\ln(x)}{x^d}
+  =\lim_{x\to\infty}\frac{x\cdot (1/x)+1\cdot\ln(x)}{dx^{d-1}}
+  =\lim_{x\to\infty}\frac{1+\ln(x)}{dx^{d-1}}          \\
+  =\lim_{x\to\infty}\frac{(1/x)}{d(d-1)x^{d-2}}
+  =(1/(d)(d-1))\cdot\lim_{x\to\infty}\frac{1}{x^{d-1}}
+  =0
+\end{multline*}
+For any power $d>1$,  the power function
+$x^d$ is greater, in a big-O sense, than the log-linear function.
+\end{example}
+
+
+
+
 \subsection{In practice}
-This table describes some select orders of growth.
+This table describes select orders of growth that appear often in
+practice.
 
 \begin{center}
   \begin{tabular}{lll}
@@ -601,7 +649,7 @@ This table describes some select orders of growth.
       &\multicolumn{1}{l}{\quad\tabulartext{Examples}} \\
     \hline
     $\bigOh(1)$        &Constant    &$f_0(n)=1$, $f_1(n)=15$  \\ 
-    $\bigOh(\lg(\lg(n)))$  &Double logarithmic  &    \\ 
+    $\bigOh(\lg(\lg(n)))$  &Double logarithmic  &$f(n)=\ln(\ln(x))$    \\ 
     $\bigOh(\lg(n))$  &Logarithmic  &$f_0(n)=\lg(n)$, $f_1(n)=\ln(n)$  \\ 
     $\bigOh\bigl(\,(\lg(n))^c\,\bigr)$ &Polylogarithmic  &$f(n)=(\lg(n))^3$ \\ 
     $\bigOh(n)$    &Linear  &$f_0(n)=n$, $f_1(n)=3n+4)$  \\ 
@@ -883,6 +931,23 @@ disadvantage.
   \end{exercise}
 
   \begin{exercise}
+  Use L'Hopitals' Rule to show that $(\ln(x))^2$ is $\bigOh(x)$.
+  Show also that $(\ln(x))^2$ is $\bigOh(x^p)$ for any power~$p\geq 1$.
+  \begin{answer}
+  We have
+  \begin{equation*}
+    \lim_{x\to\infty}\frac{(\ln(x))^2}{x}
+    =\lim_{x\to\infty}\frac{2\cdot\ln(x)\cdot (1/x)}{1}
+    =2\cdot\lim_{x\to\infty}\frac{\ln(x)}{x}
+    =2\cdot\lim_{x\to\infty}\frac{1/x}{1}
+    =2\cdot\lim_{x\to\infty}1/x
+    =0
+  \end{equation*}
+  and a similar result holds for any positive power.
+  \end{answer}
+  \end{exercise}
+  
+  \begin{exercise}
     Let $f(n)=2n$ and $g(n)=n^2$.
     Prove directly from \cref{def:BigO} that $f$ is~$\bigOh(g)$ but that
     $g$ is not~$\bigOh(f)$.
@@ -913,10 +978,17 @@ disadvantage.
   \end{exercise}
 
   \begin{exercise}
+  \begin{exparts}
+  \item Show that the function $f(x)=7$ is $\bigOh(1)$.
+  \item Show that the function $f(x)=7+\sin(x)$ is $\bigOh(1)$.
+    So if a function is in $\bigOh(1)$ that does not mean it is constant. 
+  \item Show that the function $f(x)=7+(1/x)$ is $\bigOh(1)$.
+  \item
     Show that an eventually nonnegative function~$f$ is $\bigOh(1)$ if and
     only if it is bounded above by a constant, so that there exists
     $L\in\N$ so that for all inputs $n\in\N$, if $f$ is defined on~$n$
     then $f(n)\leq L$.
+    \end{exparts}
   \end{exercise}
   
   \begin{exercise}
@@ -986,7 +1058,7 @@ disadvantage.
 % https://en.wikipedia.org/wiki/The_Turk
 % http://publicdomainreview.org/2016/05/04/frolicsome-engines-the-long-prehistory-of-artificial-intelligence/
 
-\chapter{Computational resources}
+% \chapter{Computational resources}
 
 % http://teachingintrotocs.blogspot.com/2012/06/tom-trotters-view-of-combinatorics.html
 

@@ -3589,59 +3589,42 @@ $n/\ln(n)$; that is, this limit is~$1$.
   \lim_{x\to\infty}\frac{\text{number of primes less than $x$}}{(x/\ln x)}
 \end{equation*}
 \end{theorem}
-This implies that primes are common.
+This shows the number of primes less than~$n$ for some values up to a million.
+\begin{center}
+  \includegraphics{complexity/asy/xygraphs/xygraphs00.pdf}
+\end{center}
+This theorem says that primes are common.
 For example, the number of primes less than $2^{1024}$ is about
-$\ln(2^{1024})\approx 2^{1014}$.
+$2^{1024}/\ln(2^{1024})
+  \approx 2^{1014}/709.78
+  \approx 2^{1024}/2^{9.47}
+  \approx 2^{1015}$.
+% sage: 1024*ln(2)
+% 1024*log(2)
+% sage: 1024*ln(2).n()
+% 709.782712893384
+% sage: ln(1024*ln(2))/ln(2)
+% log(1024*log(2))/log(2)
+% sage: (ln(1024*ln(2))/ln(2)).n()
+% 9.47123362705510
+% sage: 1024-(ln(1024*ln(2))/ln(2)).n()
+% 1014.52876637294
+% sage: 1/(1024*ln(2))  
 Said another way, if we choose a number~$n$ at random then the probability
 that it is prime is about $1/\ln(n)$ and so 
 a random number that is $1024$ bits long will be a prime with probability
 about $1/(\ln(2^{1024}))\approx 1/710$.
+% sage: 1/(1/(1024*ln(2)).n())
+% 709.782712893384
 So if we restrict our attention to odd numbers then on average
 we need only select $355$ numbers of about that size 
 before we find a prime.
 Hence we can efficiently generate large primes just by picking random numbers,
 as long as we can efficiently test their primality.
 
-
-
-A \definend{linear congruence} has the form
-$ax\equiv b\pmod m$.
-An example is $8x\equiv 3\pmod 5$.
-
-One way to solve for $x$ is to find a number $\hat{a}$ such that 
-$\hat{a}\cdot a\equiv 1\pmod m$. 
-Such a number~$\hat{a}$ is an \definend{inverse of $a$ modulo $m$}.
-
-\begin{example}
-To solve $3x\equiv 4\pmod 7$ we can note that $5\cdot 3\equiv 1\pmod 7$,
-and multiply through
-$5\cdot 3x\equiv 5\cdot 4\pmod 7$, giving $x\equiv 20\pmod 7$, which
-we can state in the canonical way as $x\equiv 6\pmod 7$. 
-\end{example}
-
-Recall \definend{relatively prime} or \definend{coprime}.
-
-\begin{theorem}
-If $a$ and~$m$ are relatively prime then there is an inverse for~$a$ 
-modulo~$m$.
-\end{theorem}
-
-\begin{proof}
-Because the greatest common divisor of $a$ and~$m$ is~$1$, Euclid's algorithm 
-gives a linear combination of the two that adds to~$1$.
-\begin{equation*}
-  sa+tm=1
-\end{equation*}
-Thus $sa+tm\equiv 1\pmod m$.
-Since $tm$ is a multiple of~$m$ we have $tm\equiv 0\pmod m$, leaving 
-$sa\equiv 1\pmod m$.\qed
-\end{proof}
-
-Recall that Euclid's algorithm is fast.
-Because of that,
-multiplication modulo $m$ is efficient\Dash~for any integer modulus~$m$
-we can do the operation of multiplication 
-efficiently, both in terms of time and, also importantly, space.
+On our way to giving an efficient way to test primality,
+we observe that the operations of multiplication and addition
+modulo~$m$ are efficient.
 
 \begin{example}
 Consider the product of $3\,915\,421$ by $52\,567\,004$
@@ -3658,75 +3641,66 @@ and $52\,567\,004\equiv 2\pmod{3}$ we have this.
   3\,915\,421\cdot 52\,567\,004 
   \equiv 1\cdot 2\pmod{3} 
 \end{equation*}
-So this multiplication is both time and space efficient.
+Thus multiplication modulo~$m$ is efficient in both time and space.
 \end{example}
 
-Along thopse lines, exponentiation modulo $m$ is also efficient,
+Similarly, exponentiation modulo $m$ is also efficient,
 both in time and in space.
 
 \begin{example}
-Consider $4^{13}$ modulo~$497$.
-The naive approach would be to raise $4$ to the $13$-th power, and then
+Consider $4^{13}$ modulo~$m=497$.
+The naive approach would be to raise $4$ to the $13$-th power,
+which is a very large number, and then
 divide by~$497$ to find the remainder.  
 
 There is a better way. 
-Start by 
-expressing the power~$13$ in base~$2$ as $13=8+4+1=1101_2$
-so we have this.
-\begin{equation*}
-  4^{13}=4^{8}\cdot 4^4\cdot 4^1
-\end{equation*}
-With that we can get the product~$p=4^{13}$ by:
-\begin{enumerate}
-\item start with~$4$, set $p=4$;
-\item square to get~$4^2$, leave $p$ alone;
-\item square to get~$4^4$, multiply that by~$p$ to get 
-  $p=4^4\cdot4^1=4^5$.
-\item square to get~$4^8$, multiply that by~$p$ to get $p=4^{13}$.
-\end{enumerate}
+Start by expressing the power~$13$ in base~$2$ as $13=8+4+1=1101_2$.
+So, $4^{13}=4^{8}\cdot 4^4\cdot 4^1$ and we need the $8$-th power,
+the $4$-th power, and the first power of~$4$.
+If we can efficiently get those powers
+then we can multiply them modulo~$m$ efficiently, so
+we will be set.
+
+To get the powers use successive squaring (modulo~$m$).
+That is, start with $p=1$.
+Squaring (modulo~$m$) gives $4^2$, then squaring again gives $4^4$, and
+squaring again gives $4^8$.
 \end{example}
 
-We will show one more operation that can be done efficiently,
-finding primes.
+Finally, we can efficiently take the inverse modulo~$m$.
+Recall that two numbers are
+\definend{relatively prime} or \definend{coprime}
+if their greatest common divisor is~$1$.
+For example, $15=3\cdot 5$ and $22=2\cdot 11$ are relatively prime.
+
+\begin{theorem}
+If $a$ and~$m$ are relatively prime then there is an inverse for~$a$ 
+modulo~$m$, a number~$k$ such that $a\cdot k\equiv 1\pmod{m}$
+\end{theorem}
+
+\begin{proof}
+Because the greatest common divisor of $a$ and~$m$ is~$1$, Euclid's algorithm 
+gives a linear combination of the two $sa+tm$ for some $s,t\in\Z$ 
+that adds to~$1$.
+Thus $sa+tm\equiv 1\pmod{m}$.
+Since $tm$ is a multiple of~$m$, we have $tm\equiv 0\pmod m$, leaving 
+$sa\equiv 1\pmod m$.
+\end{proof}
+
+Euclid's algorithm is efficient, both in time and space,
+so finding an inverse modulo~$m$ is efficient.
+
+Now we can test for primes.
 The simplest way to test whether a number~$n$ is prime is to try  
-dividing~$n$ by all numbers less than or equal to $\sqrt{n}$.  
-
-\begin{example}
-To see that $17$ is prime we can check whether it is divisible by 
-$2$, $3$, $4$.
-\end{example}
-
-\begin{example}
-Consider $415\,693$.
-Its square root is about~$644.74$.
-Because $415\,693=593\cdot 701$ we would have to check 
-$2$, \ldots, $593$, which is almost all the way to the square root.
-Very slow.
-\end{example}
+dividing~$n$ by all possible factors.
+But that is very slow.
+There is a faster way, based on the next result.
 
 \begin{theorem}[Fermat] For a prime~$p$, if $a\in\Z$
 is not divisible by~$p$ then $a^{p-1}\equiv 1\pmod p$.
 \end{theorem}
 
 \begin{proof}
-% (from Golub in AMM)
-% Suppose that we have a set of beads in $a$-many colors,
-% and we want to make a necklace containing $p$-many beads 
-% (all beads the same color is not acceptable).
-% How many possible necklaces are there?
-
-% To count them,
-% first put the beads on a string; there are $a^p$ many such strings.
-% Eliminate all-beads-the-same to get $a^p-a$ many ways.
-% Tie the string into a circle.
-% Note that now some strings have become indistinguishable
-% (for instance, in the $a=3$ case the two strings
-% blue-green-red and green-red-blue are now the same necklace).
-% The number of strings that are indistinguishable is~$p$,
-% so the total number of necklaces is $(a^p-a)/p$.
-
-% Because that number must be an integer,  
-% $a^p-a$ is divisible by~$p$.
 Let $a$ be an integer not divisible by the prime~$p$.
 Multiply~$a$ by each number $i\in\set{1,\ldots\,p-1}$ and
 reduce modulo~$p$ to get the numbers $r_i=ia\bmod{p}$.

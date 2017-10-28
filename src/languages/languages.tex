@@ -307,7 +307,7 @@ use are determined by rules.
 We will study rule sets, grammars, later in this chapter.
 
 \begin{definition}
-A \definend{class} is a collection of languages.
+A collection of languages is a \definend{class}.
 \end{definition}
 
 \begin{example}
@@ -315,16 +315,18 @@ The collection of all finite languages over
 $\Sigma=\set{\str{a},\str{b},\str{c}}$ is a class.
 So also is the collection of all languages over
 $\B=\kleenestar{\set{\str{0},\str{1}}}$ that contain only
-strings that have more \str{0}'s than \str{1}'s. 
+strings with more \str{0}'s than \str{1}'s. 
 \end{example}
 
 \begin{example}
 Fix the set of Turing machines using the alphabet
 $\Sigma=\set{\str{B},\str{1}}$.
-For any such machine $\TM_e$ associate the language
-$\lang{L}=\set{\sequence{x,y}\in\Sigma^2\suchthat
-  \text{$\TM_e$ when given $x$ as input will halt with output $y$}}$.
-The collection of all such languages is a class.
+For any such machine $\TM_e$ associate this language.
+\begin{equation*}
+\lang{L}_e=\set{\sequence{x,y}\in\Sigma^2\suchthat
+  \text{$\TM_e$ when given $x$ as input will halt with output $y$}}
+\end{equation*}
+The collection of these languages is a class.
 \end{example}
 
 Having defined languages, we next consider 
@@ -2130,7 +2132,7 @@ is a decision problem.\footnote{%
   and that it asks for an algorithm to decide, given a mathematical statement,
   whether that statement is true or false.}
 Another decision problem is,
-``Given two natural numbers, decide if the first divides the second.''
+``Given a natural number, decide if it is prime.''
 And we have seen many others in conjunction with the \HP, such as   
 the problem of
 determining, given an index~$e$, whether $\TMfcn_e$ will for any input
@@ -2147,7 +2149,7 @@ way for these machines to do something with the input, and a
 Another reason is that in many contexts stating a problem as
 a decision problem is natural.
 An obvious example is when we consider a Turing machine $\TM_e$ and
-think about the problem, given~$x$,
+think about the problem, given an input,
 of determining whether the machine halts on that
 input.
 
@@ -2172,11 +2174,12 @@ Part of our interest in problems of language membership
 arises from practice; for instance, a language complier must recognize whether
 a given source file is a member of the language.
 
-
-Here is an example of a subtle difference between two categories of problems.
-We can quickly determine whether a number has nontrivial factors,
-but finding these factors is apparently much more difficult.
-The first is a decision problem, the second a search.
+Often the differences between categories of problems can seem small,
+but they are important.
+Here is an example:~we can quickly determine whether a number has
+nontrivial factors (a decision problem),
+but we don't konw at this time how to quickly find any factors
+(a search problem).
 
 
 \begin{exercises}
@@ -3388,24 +3391,218 @@ This is the grammar of BNF, written in BNF.
 
 
 
+
+
 % ===============================================================
 
-\extra{The Discrete Logarithm Problem and the Web}
+\extra{The Factoring Problem and the Web}
 
-Much of the World Wide Web's popularity comes from the fact that
-we can spend money there.
-We can buy womthing with a credit card and it just appears at our door
-in the next couple of days.
-But keeping the card number secret requies that the exchange
-with the vendor be encrypted.
+One of the great things about the interwebs,
+besides that you can get free Theory of Computing books,
+is that can buy stuff.
+You send a credit card number and a couple of days later
+your stuff appears.
 
-An useful encryption system is one where we can quickly encode, but
-decoding is very slow, slow enough to be impractical.
+Obviously, to be practical this requires that your
+credit card number must be kept secret.
+It must be encrypted.
+
+When you use a web site with a \url{https}
+address, that site sends you information, called a key, that your browser
+uses to encrypt your card number.
+The web site then uses a different key to decrypt.
+This is an important point:~the decrypter must differ from
+than the encrypter since
+anyone on the net can see the encrypter information that the site sent you.
+But the site keeps the decrypter information private.
+These two, encrypter and decrypter, form a matched pair.
+We will describe the mathematical technologies that make this work.
+
+
+
+\subsection{The arithmetic}
+Everything on a modern computer is done in binary.
+Cnsider the message `send money'. 
+Its encoding as ASCII is \str{115} \str{101} \str{110} \str{100} \str{32}
+\str{109} \str{111} \str{110} \str{101} \str{121}.
+Converting to a bit string gives
+\str{01110011}\, \str{01100101}\, \str{01101110}\, \str{01100100}\,
+\str{00100000}\, \str{01101101}\, \str{01101111}\, \str{01101110}\,
+\str{01100101}\, \str{01111001}.
+in decimal that's
+% $544943221199950100456825$
+$544\,943\,221\,199\,950\,100\,456\,825$.
+So there is no loss in generality in
+viewing everything we do, including encryption systems, as numerical operations.
+
 To make such systems, mathematicians and computer scientists have
-leveraged that some operations we know how to do quickly, and some
-others we believe to be slow.
+leveraged that there are
+there are things we can do easily, but that we do not know how to easily
+undo\Dash
+that are numerical operations we can use for encryption that are fast,
+but such that the operations needed to decrypt
+(without the decrypter)
+are believed to be so slow that they are completely impractical.
+So this is engineering Big-O.
 
-First the quick ones.
+We will describe an algorithm based on the Factoring Problem.
+We have algorithms for multiplying numbers that are fast.
+The algorithms that
+we have for starting with a number and decomposing it into factors
+are, by comparison, quite slow.
+To illustrate this, you might contrast the time it takes you to multiply
+two four-digit numbers by hand with the time it takes you to factor an
+eight-digit number chosen at random.
+Set aside an afternoon for that second job, it'll take a while.
+
+\margingraphic{0.28\textwidth}{languages/rsa.png}{\href{https://en.wikipedia.org/wiki/Adi_Shamir}{Adi Shamir (b~1952)}, \href{https://en.wikipedia.org/wiki/Ron_Rivest}{Ron Rivest (b~1947)}, \href{https://en.wikipedia.org/wiki/Leonard_Adleman}{Leonard Adleman (b~1945)}} % source unknown; believed OK because very widely available
+The algorithm we shall describe exploits this difference.\footnote{%
+  Recent versions of the algorithm used in practice incorporate
+  refinements that we shall not discuss.
+  The core idea is unchanged.}
+It was invented in 1976 by three graduate students,
+R~Rivest, A~Shamir, and L~Adleman.
+Rivest read a paper introducing key pairs and decided to
+implement the idea.
+Over the course of a year, he and Shamir invented a number of
+proposals and for each Adleman would then produce a way to
+break it.
+Finally they had the idea of using
+Fermat's Little Theorem.
+Adleman was unable to break it since, he said, 
+it seemed that
+only solving the Factoring problem would break it and no one knew how to
+do that.
+\citetext{Their algorithm, called RSA}{Originally the authors were
+  listed in the standard alphabetic order: Adleman, Rivest, and Shamir.
+  Adleman objected that he had not done enough work to be listed first and
+  insisted on being listed last.
+  He said later, ``I remember thinking that this is probably the least
+  interesting paper I will ever write.''},
+was first announced in Martin Gardner's \textit{Mathematical Games} column in
+the August~1977 issue of \textit{Scientific American}.
+It generated a
+\citetext{tremendous amount of interest and excitement}{%
+  In his 1977 column, Martin Gardner posed a \$100 challenge,
+  to crack this message:
+  \str{9686 9613 7546 2206 1477 1409 2225 4355
+8829 0575 9991 1245 7431 9874 6951 2093
+0816 2982 2514 5708 3569 3147 6622 8839
+8962 8013 3919 9055 1829 9451 5781 5254}
+  The ciphertext was generated by the MIT team from a plaintext (English)
+  message using $e = 9007$ and this nubmer of $n$.
+  \begin{equation*}
+114,381,625,757,888,867,669,235,779,976,146,612,010,218,296,721,242,362,562,561,842,935,706,935,245,733,897,830,597,123,563,958,705,058,989,075,147,599,290,026,879,543,541
+  \end{equation*}
+  In 1994, a team of about 600 volunteers announced that they had
+  factored $n$.
+  \begin{equation*}
+    p=
+  3,490,529,510,847,650,949,147,849,619,903,898,133,417,764,638,493,387,843,990,820,577
+  \end{equation*}
+  and
+  \begin{equation*}
+  q=32,769,132,993,266,709,549,961,988,190,834,461,413,177,642,967,
+  992,942,539,798,288,533
+  \end{equation*}
+  That enabled them to decrypt the message:
+  \textit{the magic words are squeamish ossifage}.}.
+
+The basis of RSA is to find three numbers, a \definend{modulus}~$n$,
+an \definend{encrypter}~$e$, and a \definend{decrypter}~$d$,
+related by this equation
+(here $m$ is the message, as a number).
+\begin{equation*}
+(m^{e})^{d}\equiv m \pmod {n} 
+\end{equation*}
+The encrypted message is $m^e\bmod{n}$.
+To decrypt it, to recover~$m$, calculate $(m^e)^d\bmod{n}$.
+These three are chosen so that
+knowing $e$ and~$n$, or even~$m$, still leaves a potential secret-cracker 
+who is looking for~$d$ with an extremely difficult job.
+
+To choose them,
+first choose distinct prime numbers $p$ and~$q$.
+Pick these at random so they are of about equal bit-lengths.
+Compute $n=pq$ and $\varphi(n)=(p-1)\cdot(q-1)$.
+Next, choose~$e$ with $1<e<\varphi(n)$ that is realtively prime to~$n$.
+Finally, find $d$ as the multiplicative inverse of~$e$ modulo~$n$.
+(We shall show below that all these operations, including using the
+keys for encryption and decryption, can be done quickly.)
+
+The pair $\sequence{n,e}$ is the \definend{public key}
+and the pair $\sequence{n,d}$ is the \definend{private key}.
+The length of $d$ in bits is the \definend{key length}.
+Most experts consider a key length of $2\,048$ bits to be
+secure for the mid-term future, until 2030 or so,
+when computers will have grown in power enough that they may be able
+to use an exhaustive brute-force search to find~$d$.
+
+\begin{example}
+We will use numbers that are too small to use in practice, but
+that make a good illustration.
+Alice chooses the primes $p=101$ and $q=113$, and then calculates
+$n=pq=11\,413$ and $\varphi(n)=(p-1)(q-1)=11\,200$.
+To get the encrypter she finds a number $1<e<11\,200$ that is
+relatively prime to $11\,200$, choosing $e=3533$.
+She publishes her public key $\sequence{n,e}=\sequence{11\,413, 3\,533}$
+on her home page.
+She computes the decrypter $d=e^{-1}\bmod{11\,200}=6\,597$, and
+finds a safe place to store her private key
+$\sequence{n,d}=\sequence{11\,413,6\,597}$.
+
+Bob wants to say `Hi'.
+In an ASCII bit string that's \str{01001000} \str{01101001}.
+If he converted that string into a single decimal it would be bigger
+than~$n$ so he breaks it into
+two substrings, getting the decimals \str{72} and \str{105}.
+With her public key he computes
+\begin{equation*}
+  72^{3533}\bmod{11413}=10496
+  \qquad
+  105^{35333}\bmod{11413}=4861
+\end{equation*}
+and sends Alice the sequence $\sequence{10496,4861}$.
+Alice recovers his message by applying her private key.
+\begin{equation*}
+  10496^{6597}\bmod{11413} = 72
+  \qquad
+  4861^{6597}\bmod{11413} = 105
+\end{equation*}
+\end{example}
+
+
+% -----------------
+\subsection{The arithmetic, fast}
+We've just illustrated that RSA uses invertable operations.
+There are millions of ways to get invertable operations,
+so our understanding of RSA is incomplete unless we understand why these
+operations are the ones used.
+As discussed above, they can be done quickly.
+
+We start with a classic, and beautiful, result from Number Theory.
+
+\begin{theorem}[Prime Number Theorem]
+The number of primes less than $n\in\N$ is approximately
+$n/\ln(n)$; that is, this limit is~$1$.
+\begin{equation*} 
+  \lim_{x\to\infty}\frac{\text{number of primes less than $x$}}{(x/\ln x)}
+\end{equation*}
+\end{theorem}
+This implies that primes are common.
+For example, the number of primes less than $2^{1024}$ is about
+$\ln(2^{1024})\approx 2^{1014}$.
+Said another way, if we choose a number~$n$ at random then the probability
+that it is prime is about $1/\ln(n)$ and so 
+a random number that is $1024$ bits long will be a prime with probability
+about $1/(\ln(2^{1024}))\approx 1/710$.
+So if we restrict our attention to odd numbers then on average
+we need only select $355$ numbers of about that size 
+before we find a prime.
+Hence we can efficiently generate large primes just by picking random numbers,
+as long as we can efficiently test their primality.
+
+
 
 A \definend{linear congruence} has the form
 $ax\equiv b\pmod m$.
@@ -3421,6 +3618,8 @@ and multiply through
 $5\cdot 3x\equiv 5\cdot 4\pmod 7$, giving $x\equiv 20\pmod 7$, which
 we can state in the canonical way as $x\equiv 6\pmod 7$. 
 \end{example}
+
+Recall \definend{relatively prime} or \definend{coprime}.
 
 \begin{theorem}
 If $a$ and~$m$ are relatively prime then there is an inverse for~$a$ 
@@ -3505,12 +3704,61 @@ $2$, \ldots, $593$, which is almost all the way to the square root.
 Very slow.
 \end{example}
 
-\begin{theorem}[Fermat] For a prime~$p$, if $a$ is not divisable by~$p$ then
-$a^{p-1}\equiv 1\pmod p$.
+\begin{theorem}[Fermat] For a prime~$p$, if $a\in\Z$
+is not divisible by~$p$ then $a^{p-1}\equiv 1\pmod p$.
 \end{theorem}
 
+\begin{proof}
+% (from Golub in AMM)
+% Suppose that we have a set of beads in $a$-many colors,
+% and we want to make a necklace containing $p$-many beads 
+% (all beads the same color is not acceptable).
+% How many possible necklaces are there?
+
+% To count them,
+% first put the beads on a string; there are $a^p$ many such strings.
+% Eliminate all-beads-the-same to get $a^p-a$ many ways.
+% Tie the string into a circle.
+% Note that now some strings have become indistinguishable
+% (for instance, in the $a=3$ case the two strings
+% blue-green-red and green-red-blue are now the same necklace).
+% The number of strings that are indistinguishable is~$p$,
+% so the total number of necklaces is $(a^p-a)/p$.
+
+% Because that number must be an integer,  
+% $a^p-a$ is divisible by~$p$.
+Let $a$ be an integer not divisible by the prime~$p$.
+Multiply~$a$ by each number $i\in\set{1,\ldots\,p-1}$ and
+reduce modulo~$p$ to get the numbers $r_i=ia\bmod{p}$.
+
+We will show that the set $R=\set{r_1,\ldots\,r_{p-1}}$
+equals the set $P=\set{1,\ldots\,p-1}$.
+First, $R\subseteq P$.
+Because $p$ is prime and does not divide $i$ or~$a$, it does not divide their
+product~$ia$.
+Thus $r_i=ia\not\equiv 0\pmod{p}$ and so all the $r_i$ are members of the
+set $\set{1,\ldots\,p-1}$.
+
+To get inclusion the other way, $P\subseteq R$, note that
+if $i_0\neq i_1$ then $r_{i_0}\neq r_{i_1}$.
+For, with $r_0-r_1=i_0a-i_1a=(i_0-i_1)a$, because $p$ is prime and
+does not divide $i_0-i_1$ or~$a$ (as each is smaller in absolute value
+than~$p$), it does not divide their product.
+That means that the two sets have the same number of elements, so
+$P\subseteq R$.
+
+Now multiply together all of the elements of that set.
+\begin{align*}
+  a\cdot 2a\cdots (p-1) a
+    &\equiv 1\cdot 2\cdots\,(p-1)\pmod{p} \\
+  (p-1)!\cdot a^{p-1}
+    &\equiv (p-1)!\pmod{p} \\
+\end{align*}
+Cancelling the $(p-1)!$'s gives the result.
+\end{proof}
+
 \begin{example}
-Take the prime to be $p=7$.
+Let the prime be $p=7$.
 Any number $a$ with $0<a<p$ is not divisible by~$p$.
 Here is the list.
 \begin{center}  \small
@@ -3521,32 +3769,82 @@ Here is the list.
                   &\multicolumn{1}{c}{$5$}       
                   &\multicolumn{1}{c}{$6$} \\ \cline{1-7} 
     $a^{7-1}$\rule{0em}{2.5ex} 
-            &$1$ &$64$ &$729$ &$4\,096$ &$15\,625$ &$46\,656$ \\
+             &$1$ &$64$
+                  &$729$
+                  &$4\,096$
+                  &$15\,625$
+                  &$46\,656$ \\
+    $(a^{6}-1)/7$
+             &$0$ &$9$
+                  &$104$
+                  &$585$
+                  &$2\,232$
+                  &$6\,665$ \\
   \end{tabular}
 \end{center}
-For instance, $15\,625=7\cdot 2232+1$.
+For instance, $15\,625=7\cdot 2\,232+1$.
 \end{example}
 
-We can get evidence for the primeness of a number $n$ by picking an~$0<a<n$, 
-finding $a^{n-1}$, and if the result is not~$1$ then $n$ is not 
-prime.
+Given~$n$, if we find a base~$a$ with~$0<a<n$ so that 
+$a^{n-1}\bmod{n}$ is not~$1$ then $n$ is not prime.
 
 \begin{example}
+Consider $n=415\,692$.
 If $a=2$ then
-\begin{equation*}
-  2^{415692}\equiv 58346\pmod{415693}
-\end{equation*}
-so we know after one calculation that $415\,692$ is not prime.
+$2^{415692}\equiv 58346\pmod{415693}$
+so $n$ is not prime.
 \end{example}
 
-In a \definend{probabilistic primality test}
-we get confidence of the primeness of~$n$ 
-is to pick $k$-many of numbers~$a$ with $0<a<n$, and run the test.
-If~$n$ passes all of the $k$-many tests then we are quite confident that
-it is prime.
+There are $n$'s where $a^n-1\equiv 1\pmod{n}$ but $n$ is not prime.
+Such a number is a \definend{Fermat liar} or \definend{Fermat pseudoprime}
+with base~$a$.
+One for base $a=2$ is $n = 341=11\cdot 31$.
+However, \citetext{computer searches suggest that these are very rare}{%
+  For instance, among the numbers less than $2.5\times 10^{10}$ 
+  there are only $21\,853\approx 2.2\times 10^{4}$ pseudoprimes base $2$;
+  that's six orders of magnitude.}
+And, researchers have shown that if $n$ is not prime then
+each choice of base~$a$ has a greater than $1/2$ chance of finding that
+$a^n-1\equiv 1\pmod{n}$.
 
-This test is fast; it runs in time
+The rarity of exceptions suggests that we use a
+\definend{probabilistic primality test}:~given a number~$n$ to test for
+primality,
+pick at random a base~$a$ with $0<a<n$ and calculates whether
+$a^n-1\equiv 1\pmod{n}$.
+If that is not true then $n$ is not prime.\footnote{%
+  In this case we say that $a$ is a \protect\definend{witness} or
+  \protect\definend{certificate} of the fact that the number~$n$
+  is not prime.}
+If it is true then we have evidence that~$n$ is prime.
+
+If $n$ were not prime and we did the test with two different bases
+$a_0,a_1$ then
+there would be a less than $(1/2)^2$ chance of getting both
+$a_0^n-1\equiv 1\pmod{n}$ and $a_1^n-1\equiv 1\pmod{n}$.
+We are thus at least $1-(1/2)^2$ confident that $n$ is prime. 
+In general, after $k$-many iterations of choosing a base, doing the
+calculation, and never finding that that $n$ is not prime, then
+we have a greater than $1-(1/2^k)$ chance that~$n$ is prime.
+
+In summary,
+if~$n$ passes $k$-many tests for \citetext{any reasonable-sized~$k$}{%
+  Selecting an appropriate $k$ is an engineering choice between the cost
+  of extra iterations and the gain in confidence.}
+then \citetext{we are quite confident that it is prime}{%
+  There are numbers, called \definend{Carmichael numbers})
+  that are pseudoprime for every base~$a$ relatively prime to~$n$.
+  The smallest example is $n = 561 = 3\cdot 11\cdot17$,
+  and the next two are $1\,105$ and~$1\,729$.
+  Like pseudoprimes, these seem to be very rare.
+  Among the numbers less than $10^{16}$ there are about
+  $2.7\times 10^{14}$ primes but only
+  $246\ 683 \approx 2.4\times 10^5$-many Carmichael numbers.}.
+Our interest in the
+Fermat pseudoprimality test is that it is extremely fast; it runs in time
 $\bigOh (k \cdot \log^2n \cdot \log \log n \cdot \log \log \log n)$.
+So we can run it lots of times, and become very confident, at not much
+cost.
 
 \begin{example}
 We could test that $n=7$ is prime by computing, say,  
@@ -3555,31 +3853,38 @@ that $5^{6}\equiv 1\pmod{7}$, and that $6^{6}\equiv 1\pmod{7}$.
 The fact that $n=7$ does not fail makes us confident it is prime. 
 \end{example}
 
-(There are numbers~$n$ that pass all the tests for~$0<a<n$, called
-\definend{Carmichael numbers}.
-An example is $561$.
-But these numbers seem to be rare.)
+\begin{corollary}
+Let $p$ and~$q$ be unequal primes and
+suppose that $a$ is not divisible by either one.
+Then $a^{(p-1)(q-1)}\equiv 1\pmod{n}$.
+\end{corollary}
 
 \begin{proof}
-% (from Golub in AMM)
-Suppose that we have a set of beads in $a$-many colors,
-and we want to make a necklace containing $p$-many beads 
-(all beads the same color is not acceptable).
-How many possible necklaces are there?
-
-To count them,
-first put the beads on a string; there are $a^p$ many such strings.
-Eliminate all-beads-the-same to get $a^p-a$ many ways.
-Tie the string into a circle.
-Note that now some strings have become indistinguishable
-(for instance, in the $a=3$ case the two strings
-blue-green-red and green-red-blue are now the same necklace).
-The number of strings that are indistinguishable is~$p$,
-so the total number of necklaces is $(a^p-a)/p$.
-
-Because that number must be an integer,  
-$a^p-a$ is divisible by~$p$. 
+By Fermat, $a^{p-1}\equiv 1\pmod{p}$ and $a^{q-1}\equiv 1\pmod{q}$.
+Raise the first to the $q-1$ power and the second to the $p-1$ power.
+\begin{equation*}
+  a^{(p-1)(q-1)}\equiv 1\pmod{p}
+  \qquad
+  a^{(p-1)(q-1)}\equiv 1\pmod{q}
+\end{equation*}
+Since  $a^{(p-1)(q-1)}-1$ is divisible by both $p$ and~$q$,
+it is divisible by their product $pq=n$.
 \end{proof}
+
+
+
+
+\begin{definition}
+\definend{Euler's totient function} or \definend{Euler's phi function}
+is $\phi(n)=\text{the number of natural numbers in $set{1,\ldots,\,n-1}$ that are relatively prime to~$n$}$.
+\end{definition}
+
+
+
+
+
+
+
 
 If $b^y=x$ then \definend{$y$ is the logarithm of $x$ to the base~$b$}.
 
@@ -3617,6 +3922,40 @@ For every prime there is a primitive root modulo~$p$.
 \end{theorem}
 
 We omit the proof.
+
+The RSA algorithm raises a message to an exponent, modulo a composite number
+$N$ whose factors are not known.
+Thus the task can be neatly described as finding the $e$-th roots of an
+arbitrary number, modulo $N$.
+For large key sizes, more than $1024$ bits, we know of no efficient method for
+this.
+
+The most efficient method known to solve the RSA problem is by
+first factoring the modulus $N$.
+The RSA key setup routine already turns the public exponent $e$,
+with this prime factorization, into the private exponent $d$,
+and so exactly the same algorithm allows anyone who factors $N$
+to obtain the private key.
+Any $C$ can then be decrypted with the private key.
+
+So a fast algorithm for factoring would put RSA, the most widely used
+method for encryption on the web, at risk.
+There are published algorithms that are subexponential,
+that for $b$-bit numbers and for any $\varepsilon>0$
+are faster than $\bigOh((1+\varepsilon)^b)$.
+No published algorithm can factor all integers in polynomial
+time, i.e.\ in time $\bigOh(b^n)$ for some constant power~$n$.
+Most experts suspect that no such algorithm is possible, but there
+are no proofs.
+
+Shor's factoring algorithm takes only $\bigOh(b^3)$~time
+(and $\bigOh((b)$~space).
+But it runs only on quantum computers.
+Whether such machines will become practical is not clear.
+In 2001, the first seven-qubit quantum computer became the first to run
+Shor's algorithm.
+It factored the number 15.
+There has been progress in the interim, but it is still not a solved problem.
 
 \begin{problem}[Discrete Logarithm]
 Given as input a prime~$p$, a primitive root~$b$ modulo~$p$,
@@ -3681,7 +4020,45 @@ Experts see strong evidence that there is no way to answer it quickly
 % values to test, and this is exponential in the parameter $n$.
 % % https://crypto.stackexchange.com/a/12887
 
+\begin{exercises}
+\begin{exercise}
+To test whether a number~$n$ is prime, we could just try dividing it
+by all numbers less than it.
+\begin{exparts}
+\item
+Show that we needn't try all numbers less than~$n$, instead we can just
+try all~$k$ with $2\leq k\leq \sqrt{n}$.
+\item
+Show that we cannot lower that any further than~$\sqrt{n}$.
+\item
+For input~$n=10^{12}$ how many numbers would you need to test?
+\item
+Show that this is a terrible algorithm since it s exponential in the
+size of the input.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+With two factors $n=k_0\cdot k_1$ if one is greater than $\sqrt{n}$ then
+the other must be less.
+\item
+If $n$ is a perfect square $n\k\cdot k$ then its first nontrivial factor is
+$k=\sqrt{n}$.
+\item
+The square root of $10^{12}$ is $10^6=1\,000\,000$, a million.
+\item
+The input~$n$ has size about $\lg(n)$~bits.
+Thus $\sqrt{n}\approx\sqrt{2^{\text{size of $n$}}}
+  \approx ^{(1/2)\cdot\text{size of $n$}}$.
+\end{exparts}
+\end{answer}
+\end{exercise}
 
+\begin{exercise}
+Show that the probability that a random $b$-bit number is prime is
+about $1/b$.
+\end{exercise}
+\end{exercises}
 
 
 

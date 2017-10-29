@@ -3421,15 +3421,15 @@ We will describe the mathematical technologies that make this work.
 
 
 \subsection{The arithmetic}
-Everything on a modern computer is done in binary.
-Cnsider the message `send money'. 
-Its encoding as ASCII is \str{115} \str{101} \str{110} \str{100} \str{32}
+We can view that everything on a modern computer is numbers.
+Consider the message `send money'. 
+Its ASCII encoding is \str{115} \str{101} \str{110} \str{100} \str{32}
 \str{109} \str{111} \str{110} \str{101} \str{121}.
 Converting to a bit string gives
 \str{01110011}\, \str{01100101}\, \str{01101110}\, \str{01100100}\,
 \str{00100000}\, \str{01101101}\, \str{01101111}\, \str{01101110}\,
 \str{01100101}\, \str{01111001}.
-in decimal that's
+In decimal that's
 % $544943221199950100456825$
 $544\,943\,221\,199\,950\,100\,456\,825$.
 So there is no loss in generality in
@@ -3539,9 +3539,9 @@ when computers will have grown in power enough that they may be able
 to use an exhaustive brute-force search to find~$d$.
 
 \begin{example}
-We will use numbers that are too small to use in practice, but
-that make a good illustration.
-Alice chooses the primes $p=101$ and $q=113$, and then calculates
+Alice chooses the primes $p=101$ and~$q=113$
+(these are too small to use in practice but are good for an
+illustration), and then calculates
 $n=pq=11\,413$ and $\varphi(n)=(p-1)(q-1)=11\,200$.
 To get the encrypter she finds a number $1<e<11\,200$ that is
 relatively prime to $11\,200$, choosing $e=3533$.
@@ -3616,10 +3616,10 @@ a random number that is $1024$ bits long will be a prime with probability
 about $1/(\ln(2^{1024}))\approx 1/710$.
 % sage: 1/(1/(1024*ln(2)).n())
 % 709.782712893384
-So if we restrict our attention to odd numbers then on average
-we need only select $355$ numbers of about that size 
+On average
+we need only select $355$ odd numbers of about that size 
 before we find a prime.
-Hence we can efficiently generate large primes just by picking random numbers,
+Hence we can efficiently generate large primes by just picking random numbers,
 as long as we can efficiently test their primality.
 
 On our way to giving an efficient way to test primality,
@@ -3633,27 +3633,29 @@ The naive approach is to first multiply the two, and then
 divide by $3$ to find the remainder.
 
 But there is a more efficient way.
-We know that if $a\equiv b\pmod{m}$ and 
-$c\equiv d\pmod{m}$ then $ac\equiv bd\pmod{m}$.
+Rather than multiply first and then reduce modulo~$m$, reduce first
+and then multiply.
+That is, we know that if $a\equiv b\pmod{m}$ and 
+$c\equiv d\pmod{m}$ then $ac\equiv bd\pmod{m}$ and so
 Since $3\,915\,421\equiv 1\pmod{3}$
 and $52\,567\,004\equiv 2\pmod{3}$ we have this.
 \begin{equation*}
   3\,915\,421\cdot 52\,567\,004 
   \equiv 1\cdot 2\pmod{3} 
 \end{equation*}
-Thus multiplication modulo~$m$ is efficient in both time and space.
+In this way, multiplication modulo~$m$ is efficient in both time and space.
 \end{example}
 
 Similarly, exponentiation modulo $m$ is also efficient,
 both in time and in space.
 
 \begin{example}
-Consider $4^{13}$ modulo~$m=497$.
+Consider raising $4$ to the $13$-th power, modulo~$m=497$.
 The naive approach would be to raise $4$ to the $13$-th power,
-which is a very large number, and then
-divide by~$497$ to find the remainder.  
+which is a very large number, and reduce
+modulo~$497$.  
+But there is a better way. 
 
-There is a better way. 
 Start by expressing the power~$13$ in base~$2$ as $13=8+4+1=1101_2$.
 So, $4^{13}=4^{8}\cdot 4^4\cdot 4^1$ and we need the $8$-th power,
 the $4$-th power, and the first power of~$4$.
@@ -3661,30 +3663,34 @@ If we can efficiently get those powers
 then we can multiply them modulo~$m$ efficiently, so
 we will be set.
 
-To get the powers use successive squaring (modulo~$m$).
-That is, start with $p=1$.
-Squaring (modulo~$m$) gives $4^2$, then squaring again gives $4^4$, and
+Get the powers by repeated squaring (modulo~$m$).
+Start with $p=1$.
+Squaring gives $4^2$, then squaring again gives $4^4$, and
 squaring again gives $4^8$.
+Getting these powers (modulo~$m$) just requires a multiplication,
+which we can do efficiently.
 \end{example}
 
-Finally, we can efficiently take the inverse modulo~$m$.
+The last thing we need for efficiently testing primality
+is to efficiently find the multiplicative inverse modulo~$m$.
 Recall that two numbers are
 \definend{relatively prime} or \definend{coprime}
 if their greatest common divisor is~$1$.
 For example, $15=3\cdot 5$ and $22=2\cdot 11$ are relatively prime.
 
-\begin{theorem}
+\begin{lemma}
 If $a$ and~$m$ are relatively prime then there is an inverse for~$a$ 
 modulo~$m$, a number~$k$ such that $a\cdot k\equiv 1\pmod{m}$
-\end{theorem}
+\end{lemma}
 
 \begin{proof}
 Because the greatest common divisor of $a$ and~$m$ is~$1$, Euclid's algorithm 
-gives a linear combination of the two $sa+tm$ for some $s,t\in\Z$ 
+gives a linear combination of the two, a $sa+tm$ for some $s,t\in\Z$, 
 that adds to~$1$.
-Thus $sa+tm\equiv 1\pmod{m}$.
+Doing the operations modulo~$m$ gives $sa+tm\equiv 1\pmod{m}$.
 Since $tm$ is a multiple of~$m$, we have $tm\equiv 0\pmod m$, leaving 
 $sa\equiv 1\pmod m$.
+So $s$ is the inverse of~$a$, modulo~$m$.
 \end{proof}
 
 Euclid's algorithm is efficient, both in time and space,
@@ -3784,7 +3790,7 @@ $a^n-1\equiv 1\pmod{n}$.
 The rarity of exceptions suggests that we use a
 \definend{probabilistic primality test}:~given a number~$n$ to test for
 primality,
-pick at random a base~$a$ with $0<a<n$ and calculates whether
+pick at random a base~$a$ with $0<a<n$ and calculate whether
 $a^n-1\equiv 1\pmod{n}$.
 If that is not true then $n$ is not prime.\footnote{%
   In this case we say that $a$ is a \protect\definend{witness} or

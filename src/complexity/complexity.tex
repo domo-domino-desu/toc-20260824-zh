@@ -149,10 +149,11 @@ Before that definition we will see two additional motivating examples.
   These are functions of natural numbers, not of real numbers,
   since that is what we get in
   analyzing the behavior of Turing machines.
-  So the graphs are discrete.\footnote{The earlier graphs of
+  So the graphs are discrete.
+  (The earlier graphs of
     $\sqrt{n}$ and $10\lg n$ are also discrete but
-    it catches your eye here because the small domain, from $0$ to~$20$,
-    separates the dots.}
+    it catches your eye here because the small domain 
+    separates the dots.)
   The second point is that 
   on the left your eye is impressed that $n^2+5n+6$ is ahead of $n^2$.
   But on the right the ratios demonstrate that your impression is misleading.  
@@ -272,9 +273,10 @@ This shows $b(n)$ for $n\in\set{1,\,\ldots\,30}$.
 The formula is $b(n)=1+\floor{\lg(n)}$, 
 except that when $n=0$ then $b(n)=1$. 
 The graph below compares $b(n)=1+\floor{\lg(n)}$ with
-$f(n)=\lg(n)$.\footnote{The domain of~$f$ does not include~$0$ so $f$'s
-dots start with $n=1$.}
-Note the change in both the graph's horizontal and vertical scales.
+$f(n)=\lg(n)$.
+(Note the change in both the horizontal and vertical scales,
+and that the domain of~$f$ does not include~$0$ so $f$'s
+dots start with $n=1$.)
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo03.pdf}
 \end{center}
@@ -403,16 +405,13 @@ the rates are alike.
 
 \begin{example}
 Not every pair of eventually nonnegative functions is comparable.
-For this function
+Consider this function in comparison with $g(n)=n^3$.
 \begin{equation*}
   f(n)=\begin{cases} 
          n^2  &\case{if $n$ is even}  \\
          n^4  &\case{if $n$ is odd}
        \end{cases}
 \end{equation*}
-$f$ is not~$\bigOh(n^3)$,
-and $g(n)=n^3$ is not~$\bigOh(f)$.
-
 To see that $f$ is not~$\bigOh(n^3)$, observe that there are
 arbitrarily large inputs~$n$ where $C=2$ does not suffice:
 if $n$ is odd and $n>2$  then $f(n)=n^4=n\cdot n^3> 2\cdot n^3$.
@@ -423,7 +422,8 @@ functions is only partial.
 \end{example}
 
 \begin{remark}
-  We often omit the technicality of `eventually nonnegative'.
+We often omit the technicality of `eventually nonnegative',
+as in the following.
 \end{remark}
 
 \begin{lemma}[Algebraic properties]  \label{lem:BigOAlgProps}
@@ -464,7 +464,7 @@ functions is only partial.
     functions with growth rate less than or equal to $g$'s rate.
     The ellipse at the top of the cone is $\bigTheta(g)$, those functions whose
     growth rate equals $g$'s.
-    The bean on the right illustrates the cone $\bigOh(n^3)$
+    The bean on the right adds the cone $\bigOh(n^3)$
     with its subset $\bigOh(n^2)$.}
   \includegraphics{complexity/asy/bigo/bigo12.pdf}
   \hspace{6em}
@@ -625,7 +625,10 @@ and  $\lg(x)$ is $\bigOh(x^{0.01})$, etc.
 None of these comparisons reverse; \cref{exer:LogSmallerThanPower} shows that
 $x^d$ is not~$\bigOh(\log_b(x))$.
 
-A similar thing holds for the log-linear function $x\cdot\lg(x)$.
+The log-linear function $x\cdot\lg(x)$ has a similar relationship to the
+polynomials around it.
+The power function
+$x^d$ for $d>1$ is greater, in a big-O sense, than $x\cdot\lg(x)$.
 \begin{multline*}
   \lim_{x\to\infty}\frac{x\ln(x)}{x^d}
   =\lim_{x\to\infty}\frac{x\cdot (1/x)+1\cdot\ln(x)}{dx^{d-1}}
@@ -634,14 +637,173 @@ A similar thing holds for the log-linear function $x\cdot\lg(x)$.
   =(1/(d)(d-1))\cdot\lim_{x\to\infty}\frac{1}{x^{d-1}}
   =0
 \end{multline*}
-For any power $d>1$,  the power function
-$x^d$ is greater, in a big-O sense, than the log-linear function.
 \end{example}
 
 
 
+\subsection{Discussion}
+Big-O gives a rough metric to compare algorithms and
+is so widely used in practice that it is often covered in
+introduction to programming courses. 
+Here we will address some issues raised by the above that grow out of 
+the experience that most people have in those classes.
 
-\subsection{In practice}
+% https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
+The first issue is that
+\citetext{the definitions of big-O and big-Theta ignore constants}{%
+  This discussion originated as \autocite{SE:IgnoreConstants}.}.
+A reader can object to that by citing
+an algorithm that takes time given by the quadratic function $c\cdot n^2$.
+An enormous coefficient such as $c=2^{100}$ would make such an algorithm
+just as impractical as one that takes exponential time.\footnote{%
+  Although, in practice, often when an algorithm is discovered that has a
+  very large leading coefficient then soon researchers develop
+  improvements that lower the coefficient to a usable level.
+  In the same way, while in the past we have sometimes seen
+  algorithms that are polynomial but with 
+  large powers, such as $n^{10}$, often these powers have fallen
+  as researchers refine the approach.}
+(Similarly, an enormous $N$ negates the value of the analysis for
+practical purposes.)
+Why ignore the constants?
+
+Basically, we have no unit that we can rely on.
+
+Machines on which algorithms are implemented vary widely.
+Even if we forget about such things as Turing machines and just focus on
+the kind that we have on our desks and in our pockets, the machines
+still vary,
+for instance in how long they take to do a division or to write to memory.
+We could agree on
+\citetext{a reference standard machine}{%
+  This is something like the approach of Knuth's
+  \protect\textit{Art of Computer Programming} series.
+  But even he had to update his standard, from MIX to MMIX.}
+but we would have to periodically update the standard to keep up with
+changes.
+So published results from, say, a decade ago would be problematic
+because they refer to an old standard.
+Being reference independent is an advantage.
+
+But being reference independent means ignoring constants.
+If we say that from here New York City is twice as far as Boston, this
+relative statement is correct irrespective of the units. 
+But absolute measurement
+requires specifying units, such as miles or kilometers.
+
+The advantage of the approach is that we can do an analysis by
+counting the number of elementary operations, 
+We do not have to worry about costs of individual operations,
+about the difference between the cost of a division and the
+cost of a memory write,
+as long as those costs lie between fixed upper and lower bounds.
+However, the price to pay for that advantage is that
+constant factors are meaningless,
+since changing units is inseparable from changing constant factors\Dash
+changing from miles to kilometers requires multiplying by the factor~$1.61$.
+
+Thus, 
+Big~O notation is a unit free, relative measurement.
+It is not absolute.
+It can only measure performance variation.
+The advantage is the gain in implementation independence
+by allowing analysis that ignores the relative costs of
+elementary operations, as long as these costs are bounded.
+But the consequence is that constant factors are meaningless.
+
+Put another way, big~O statements are a tool for saying
+which algorithms scale better, for understanding how an algorithm
+performs as the input size grows.
+Thus, we say that a function that takes $3n$ steps is $\bigOh(n)$
+in order to express that, roughly,
+doubling the input size will no more than double the number of steps taken.
+Similarly, if an algorithm is $\bigOh(n^2)$ then
+doubling the input size will at most
+quadruple the number of steps, and
+$\bigOh(\lg n)$ means that doubling the input size will increase the number
+of steps by at most some constant.
+Big~O is, strictly speaking, only a rough guidel
+for comparing the performance of different algorithms;
+it cannot say which algorithms are absolutely
+faster.\footnote{%
+  Big~O is especially poor at
+  for comparing performance on a specified computing platform.
+  That's what benchmarks are for.}
+
+
+% https://stackoverflow.com/a/19647659
+That leads us to
+\citetext{the second issue with the definition of big~O and big~Theta}{%
+  This discussion originated as \autocite{SE:pseudopolynomial}.}.
+They are for understanding how an algorithm
+performs as the input size grows
+so they require a definition of input size.
+But in beginning programming experience that definition is often blurred. 
+
+Consider an algorithm that, given input $n\in\N$,
+tries to find any factors by testing each number $k\in\set{2,\ldots\,n-1}$
+to see if it divides~$n$.\footnote{%
+  This is not the best algorithm, but a good illustration.}
+If~$n$ is prime then it tests all those numbers, which is
+a worst-case of roughly~$n$-many divisions.
+The definition we are using
+of input size is the number of bits that represent the input.
+We know that the number of bits needed to represent~$n$ in binary
+is approximately the base~$2$ logarithm, $\lg n$.
+So for this algorithm the input is of size about~$\lg n$
+and the number of operations is about~$n$.
+That makes the number of operations exponential in the input
+size\Dash this algorithm is
+$\bigOh(2^b)$ where $b$ is the number of input bits.
+
+However, most people's experience from programming class is that this
+algorithm would be described as linear, as $\bigOh(n)$.
+How to reconcile the two?
+
+In most programming situations an input 
+fits into a fixed sized computer word, such as a $64$~bit word.
+Suppose that we are studying selection sort.
+With $n$ integer elements of input, the number of bits is $64n$.
+Analysis of selection sort gives that the time it takes grows quadratically
+so in bits we get $\bigOh((64n)^2)$.
+Ignoring constants gives that as the same as $\bigOh(n^2)$.
+
+The same would hold if we were programming a depth-first tree traversal.
+If your nodes are represented as successive integers and your
+locations are 64 bits then you can store awfully big trees, probably
+bigger than any tree you would ever encounter or have the time to process.
+But that fixed-size input storage
+decision changes the analysis of the relationship between
+input size and output size, since now the input size is measured as
+a function of the number of nodes~$n$.
+
+So in this common programming situation, where the bit size of the
+inputs is bounded,
+the runtime behavior is most conveniently described as a function of
+the number of inputs~$n$,
+not of the bit size of those inputs.
+
+An algorithm whose behavior as a function of the input is polynomial,
+but whose behavior as a function of the bit size of the input is
+exponential, is said to be \definend{pseudopolynomial}.
+The factoring algorithm given earlier is an example.
+% Such an algorithm may be acceptable for fixed-sized inputs, but
+% is not acceptable for arbitrary inputs.
+
+One final point about describing algorithm behavior with big-O.
+When we are analyzing an algorithm we can look for a number of
+different behavior descriptions.
+For instance, we can describe the time the algorithm takes, or the space.
+But we can also analyze the worst case behavior, or the average behavior.
+For example, the widely used sorting algorithm quicksort
+takes quadratic time $\bigOh(n^2)$ at worst.
+But on average it is fast, $\bigOh(n\lg n)$.
+So, algorithm analysis can happen on a number of fronts.
+
+
+
+
+\subsection{Tractable and intractable}
 This table describes select orders of growth that appear often in
 practice.
 
@@ -680,9 +842,6 @@ practice.
 % slow-growing function of its input, so functions near the list's start
 % are desirable.
 
-Big-O gives a rough metric to compare algorithms and
-is so widely used in practice that it is often covered in
-introduction to programming courses. 
 The above table
 contains the orders of growth that appear most often in practice.
 They are listed in ascending order, meaning that
@@ -751,16 +910,24 @@ Exponential growth is \citetext{very much larger than polynomial growth}{%
   $10^8$ grains of rice for each person in the world.  There are about
   $1\,000\,000=10^7$ grains of rice in a bushel,
   so that is ten bushels for each person.)}.
+
+One way to express that is to consider an algorithm that takes a time that
+grows at a rate of $2^b$, where the input is $b$-many bits.
+Adding one more bit, for instance bringing the input from
+\str{110100101} to \str{1101001010},
+will double the time used.
+
 Consequently, we say that 
 a problem is
 \citetext{\definend{tractable}}{%
   Credit for this distinction goes to J~Edmunds in \autocite{Edmunds}.
-  \protect\center \protect\small
+  \protect\begingroup\protect\centering \protect\small
     \protect\includegraphics[width=0.23\textwidth]{complexity/edmonds.jpg}
   \\
     \protect\label{fig:edmonds}\protect\href{https://en.wikipedia.org/wiki/Jack_Edmonds}{Jack Edmonds, b~1934} % wikipedia 
-  \protect\endcenter  
-  In a ``Digression'' he writes this:
+    \protect\endgroup
+    \protect\par  % 
+  In a ``Digression'' he writes:
   An explanation is due on the use of the words ``efficient algorithm.''
   According to the dictionary, ``efficient'' means
 ``adequate in operation or performance.''
@@ -780,28 +947,12 @@ if the best algorithm's resource consumption is subexponential,
 so that it is conceivably practical.
 A problem is \definend{intractable} if the best algorithm 
 is superpolynomial.
+In this part of the book we consider which problems are inheriently
+intractable,
+and which are open to analysis that makes them tractable. 
 
-Big-O is only a rough metric in practice even if we limit ourselves
-to subexponential functions in part because 
-leading coefficients play a role.
-Consider algorithms that take time give by the quadratic functions $cn^2$.
-An enormous coefficient such as $c=2^{100}$ would make such an algorithm
-just as impractical as one that takes exponential time~$2^n$.
-(Although, often when an algorithm is discovered that has a
-very large leading coefficient then soon researchers develop
-improvements that lower the coefficient to a usable level.
-In the same way, while in the past we have sometimes seen
-algorithms that are polynomial but with 
-large powers, such as $n^{10}$, often these have fallen
-to small powers as researchers sharpen the approach.)
 
-We close by remarking that the machines on which 
-algorithms are implemented will vary widely,
-for instance in the time that they take to write to memory.
-Thus, without specifying the exact implementation and
-the machine, necessarily means that any measure will be rough,
-so the face that big-O is a rough measure seems less of a
-disadvantage.
+
 
 \begin{exercises}
   \begin{exercise}

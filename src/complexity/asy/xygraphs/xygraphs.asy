@@ -48,7 +48,7 @@ scale(pic,Linear(scalefactor),Linear(5000));
 // limits
 real xmin=1;  // lg(xmin)=0
 real xmax=1000000;
-real ymin=0.1;
+real ymin=0;
 real ymax=100000;
 
 // fcns
@@ -95,7 +95,7 @@ label(pic,"$(1\,000\,000,78\,498)$",Scale(pic,(1000000,78498)),N,TICLABELPEN);
 
 // axes
 xaxis(pic,YZero,
-      xmin-50000, xmax+75000,
+      xmin-1, xmax+75000,
       RightTicks(Label("$%2.0f$",TICLABELPEN), Step=500000, step=100000,
 		 beginlabel=false, endlabel=true,
 		 Size=axis_tick_size, size=0.5*axis_tick_size,
@@ -103,7 +103,7 @@ xaxis(pic,YZero,
       p=AXISPEN,
       Arrow(TeXHead,axis_arrow_size));
 yaxis(pic,XZero,
-      ymin-1000, ymax+10000-1,
+      ymin, ymax+10000-1,
       LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=50000, step=10000,
 		beginlabel=false, endlabel=true,
 		Size=axis_tick_size, size=0.5*axis_tick_size,
@@ -121,77 +121,6 @@ yaxis(pic,XZero,
 // Use n because 1 000 000 was too many dots for Asymptote
 // label(pic,"$\sqrt{n}$",Scale(pic,(700000,f(700000))),2N,TICLABELPEN);
 // label(pic,"$10\lg(n)$",Scale(pic,(700000,g(700000))),2N,TICLABELPEN);
-
-shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
-
-
-
-// ============== how many bits to represent a natural number? ================
-picture pic;
-int picnum = 1;
-
-size(pic,5cm);
-real scalefactor = 1;
-scale(pic,Linear,Linear(scalefactor));
-
-real lg(real x) {return log(x)/log(2);}
-real one(real x) {
-  return 1;
-}
-real b(real x) {
-  return 1+floor(lg(x));
-}
-pair F(real x) {
-  return (x,lg(x));
-}
-pair G(real x) {
-  return (x,b(x));
-}
-
-// limits
-real xmin=0;  // lg(xmin)=0
-real xmax=30;
-real ymin=0;
-real ymax=5;
-
-// xaxis  Draw axis without arrow, then draw without ticks and the arrow
-//  far enough out to not hit a tick
-xaxis(pic,YZero,
-      xmin=xmin, xmax=xmax,
-      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1,
-		 beginlabel=false, endlabel=true,
-		 Size=axis_tick_size, size=0.5*axis_tick_size,
-		 extend=false, begin=false),
-      p=AXISPEN,
-      arrow=None);
-yequals(pic, 0,   
-	xmin=0, xmax=xmax+1.5,
-        p=AXISPEN,
-	ticks=NoTicks,
-        arrow=Arrow(TeXHead,axis_arrow_size));
-// yaxis
-yaxis(pic, XZero,
-      ymin=ymin, ymax=ymax,
-      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1,
-		beginlabel=false, endlabel=true,
-		Size=axis_tick_size, size=0.5*axis_tick_size,
-		extend=false, begin=false),
-      p=AXISPEN,
-      arrow=None);
-xequals(pic, 0,   
-	ymin=0, ymax=ymax+1.5,
-        p=AXISPEN,
-	ticks=NoTicks,
-        arrow=Arrow(TeXHead,axis_arrow_size));
-
-dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
-
-
-dot(pic, Scale(pic,(0,scalefactor*1)), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-for (int i=1;i<=xmax; ++i) {
-  dot(pic, Scale(pic,G(i)), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-  // dot(pic, G(i), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-}
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

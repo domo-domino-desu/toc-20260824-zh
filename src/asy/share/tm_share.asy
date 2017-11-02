@@ -104,29 +104,30 @@ material eb_box_outside=material(ambientpen=gray(0.2),  // background color; col
 // render render=render(compression=0,merge=true);
 
 // tm_draw  Draw the body of the Turing machine
-void tm_draw(pen p=TM_DOVETAILPEN) {
-    draw(surface(tm_front),tm_box_outside);
-    draw(surface(tm_top),tm_box_outside);
-    draw(surface(tm_rt),tm_box_outside);
-    draw(tm_top,p);
-    draw(tm_front,p);
-    draw(tm_rt,p);
+void tm_draw(picture pic=currentpicture, pen p=TM_DOVETAILPEN) {
+  draw(pic, surface(tm_front),tm_box_outside);
+  draw(pic, surface(tm_top),tm_box_outside);
+  draw(pic, surface(tm_rt),tm_box_outside);
+  draw(pic, tm_top,p);
+  draw(pic, tm_front,p);
+  draw(pic, tm_rt,p);
 }
 
 // eb_draw  Draw the external box
-void eb_draw(pen p=TM_DOVETAILPEN, transform3 t=identity4) {
-    draw(t*surface(eb_front),eb_box_outside);
-    draw(t*surface(eb_top),eb_box_outside);
-    draw(t*surface(eb_rt),eb_box_outside);
-    draw(t*eb_top,p);
-    draw(t*eb_front,p);
-    draw(t*eb_rt,p);
+void eb_draw(picture pic=currentpicture, pen p=TM_DOVETAILPEN, transform3 t=identity4, string eb_label="", material eb_material = eb_box_outside) {
+    draw(pic, t*surface(eb_front),eb_material);
+    draw(pic, t*surface(eb_top),eb_material);
+    draw(pic, t*surface(eb_rt),eb_material);
+    draw(pic, t*eb_top,p);
+    draw(pic, t*eb_front,p);
+    draw(pic, t*eb_rt,p);
+    draw(pic, t*surface(shift(eb_lh,0.5*eb_wd,0.75*eb_ht)*scale3(0.03)*rotate(90,Y)*rotate(90,Z)*eb_label));
 }
 
 
 // Wire between the TM and the External box
 
-void draw_wire(triple tm_origin=(0,0,0), triple eb_origin=eb_origin, pen p=MAINPEN+boldcolor){
+void draw_wire(picture pic=currentpicture, triple tm_origin=(0,0,0), triple eb_origin=eb_origin, pen p=MAINPEN+boldcolor){
   path3 wire_center=(tm_origin+(-1,0,0))
     --(tm_origin+(-1,-1,0))
     ..(tm_origin+(-1,-3+0.05*unitrand(),0))
@@ -135,7 +136,7 @@ void draw_wire(triple tm_origin=(0,0,0), triple eb_origin=eb_origin, pen p=MAINP
     ..(eb_origin+(-0.5+0.03*unitrand(),-2+0.03*unitrand(),0))
     ..(eb_origin+(-0.75+0.03*unitrand(),-1+0.03*unitrand(),0))
     ..(eb_origin+(-1,0,0));
-  draw(wire_center,p);
+  draw(pic, wire_center,p);
 }
 
 // START button
@@ -151,18 +152,18 @@ material tm_button_material=material(ambientpen=button_color+gray(.1),
 
 
 
-void tm_draw_start_button(string start_label="\textsf{Start}") {
+void tm_draw_start_button(picture pic=currentpicture, string start_label="\textsf{Start}") {
   pen[] r={rgb(0,0.8,0)}; // colors for tube of start button
   path b = scale(.15)*unitcircle;
   triple button_path_end = tm_but_center+(0.08,0,0);
   surface start_button_tube=tube(tm_but_center--button_path_end,
   				 coloredpath(b,r));
-  draw(start_button_tube,tm_button_material);
-  draw(shift(button_path_end)*rotate(90,Y)*surface(b),tm_button_material);
-  draw(shift(button_path_end)*rotate(90,Y)*path3(b),TM_DOVETAILPEN);
+  draw(pic, start_button_tube,tm_button_material);
+  draw(pic, shift(button_path_end)*rotate(90,Y)*surface(b),tm_button_material);
+  draw(pic, shift(button_path_end)*rotate(90,Y)*path3(b),TM_DOVETAILPEN);
   // draw(surface(tm_button),tm_button_material);
   // draw(tm_button,black+linewidth(0.4));
-  draw(surface(shift(tm_lh,0.2*tm_wd,0.4*tm_ht)*scale3(0.03)*rotate(90,Y)*rotate(90,Z)*start_label));
+  draw(pic, surface(shift(tm_lh,0.2*tm_wd,0.4*tm_ht)*scale3(0.03)*rotate(90,Y)*rotate(90,Z)*start_label));
 }
 
 // Halt light
@@ -173,10 +174,10 @@ material tm_halt_material=material(ambientpen=halt_light_color+black,  // backgr
 				   shininess=.1);
 path3 tm_halt_frame=circle((.8*tm_lh,.8*tm_wd,tm_ht),.25,Z);
 
-void tm_draw_halt_light (string tm_halt_label="\textsf{Halt}") {
-    draw(tm_halt_frame);
-    draw(shift(.8*tm_lh,.8*tm_wd,tm_ht)*scale3(.23)*unithemisphere,tm_halt_material);
-    draw(surface(shift(tm_lh,0.8*tm_wd,0.8*tm_ht)*scale3(0.03)*rotate(90,Y)*rotate(90,Z)*tm_halt_label));
+void tm_draw_halt_light (picture pic=currentpicture, string tm_halt_label="\textsf{Halt}") {
+    draw(pic, tm_halt_frame);
+    draw(pic, shift(.8*tm_lh,.8*tm_wd,tm_ht)*scale3(.23)*unithemisphere,tm_halt_material);
+    draw(pic, surface(shift(tm_lh,0.8*tm_wd,0.8*tm_ht)*scale3(0.03)*rotate(90,Y)*rotate(90,Z)*tm_halt_label));
 }
 
 pen TM_TAPEPEN=black+linewidth(0.1); // draw outline of tape
@@ -190,14 +191,14 @@ real tm_tape_ht=0.3*tm_ht;
 path3 tm_rt_tape=(.5*tm_tape_wd,0,0)--(.5*tm_tape_wd,3,0)..(.5*tm_tape_wd,4,0)..(.5*tm_tape_wd,6,-0.2)
   --(-0.5*tm_tape_wd,6,-0.2)..(-0.5*tm_tape_wd,4,0)..(-0.5*tm_tape_wd,3,0)--(-0.5*tm_tape_wd,0,0)--cycle;
 
-void tm_draw_rt_tape(string tape_text="\texttt{01101}") {
+void tm_draw_rt_tape(picture pic=currentpicture, string tape_text="\texttt{01101}") {
   triple mouth_pos = 0.5*(tm_bot_rt_front+tm_bot_rt_back)
     +(0,0,tm_tape_ht);
   transform3 mouth_transform=shift(mouth_pos)*rotate(90,X)*yscale3(.15)*scale3(.65); 
-  draw(mouth_transform*unitdisk, rgb(0.95,0.95,0.95));
-  draw(shift(mouth_pos)*surface(tm_rt_tape),tm_tape_material); // over-wide; bug?
-  draw(surface(shift(mouth_pos)*shift(0.1,0.1,0)*rotate(90,Z)*scale3(0.05)*Label(tape_text,align=Align)));
-  draw(shift(mouth_pos)*tm_rt_tape,TM_TAPEPEN);  
+  draw(pic, mouth_transform*unitdisk, rgb(0.95,0.95,0.95));
+  draw(pic, shift(mouth_pos)*surface(tm_rt_tape),tm_tape_material); // over-wide; bug?
+  draw(pic, surface(shift(mouth_pos)*shift(0.1,0.1,0)*rotate(90,Z)*scale3(0.05)*Label(tape_text,align=Align)));
+  draw(pic, shift(mouth_pos)*tm_rt_tape,TM_TAPEPEN);  
 }
 
 
@@ -209,30 +210,10 @@ path3 lf_tape=(0.5*tm_tape_wd,0,0)--(0.5*tm_tape_wd,-1,0)
   ..(-0.5*tm_tape_wd,-2.9,-0.2)..(-0.5*tm_tape_wd,-2.8,-0.2)..(-0.5*tm_tape_wd,-1.2,0)
   ..(-0.5*tm_tape_wd,-1,0)--(-0.5*tm_tape_wd,0,0)
   --cycle;
-void tm_draw_lf_tape() {
+void tm_draw_lf_tape(picture pic=currentpicture) {
   triple mouth_pos = 0.5*(tm_bot_left_front+tm_bot_left_back)
     +(0,0,tm_tape_ht);
   transform3 lf_tape_transform=shift(mouth_pos); 
-  draw(lf_tape_transform*lf_tape,TM_TAPEPEN);  
+  draw(pic, lf_tape_transform*lf_tape,TM_TAPEPEN);  
 }
-
-
-
-// Tape without machine
-
-// triple mouth=(0.5*lh,1*wd,0.35*ht);
-// transform3 mouth_transform=shift(mouth)*rotate(90,X)*yscale3(.15)*scale3(.5); 
-// draw(mouth_transform*unitdisk, rgb(0.95,0.95,0.95));
-// real del_x=0.1*lh;
-// real del_z=0.1*ht;
-// path3 tape;
-// path3 tape_outline=(-1*del_x,0,0)---(-1*del_x,1*wd,0)
-//   ..(-1*del_x,2.1*wd,0)..(-1*del_x,2.2*wd,-0.5*del_z)
-//   ..(-1*del_x,2.4*wd,-1*del_z)---(-1*del_x,2.6*wd,-1*del_z);
-// tape=(tape_outline--shift(2*del_x,0,0)*reverse(tape_outline)--cycle);
-// surface s = extrude(tape_outline, axis=(2del_x,0,0));
-// material tape_material=material(diffusepen=gray(.95),specularpen=gray(.1),emissivepen=rgb(0.8,0.8,0.8));
-// draw(shift(mouth)*s,tape_material);
-
-// draw(shift(mouth)*tape,linewidth(0.1));
 

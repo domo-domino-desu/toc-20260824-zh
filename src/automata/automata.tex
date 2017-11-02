@@ -142,11 +142,11 @@ the transition function~$\Delta$.
 It makes machines move step-by-step
 in response to the input.
 
-To work a finite state machine, put input on the tape, press the start button,
+To work a finite state machine, put input on the tape, press the Start button,
 and the machine starts consuming the input, at each step reading in the next
 tape character.
 \begin{center}
-  \includegraphics{automata/asy/machine/machine.pdf}
+  \includegraphics{automata/asy/machine/machine00.pdf}
 \end{center}
 Consequently there is no \HP{} for finite state machines\Dash they always halt,
 after a number of steps equal to the length of the input.
@@ -173,9 +173,8 @@ and in the transition function tables we mark them with
 a `\acceptingstatemark'.
 
 \begin{example}  \label{ex:FSAValidIntegers}
-This machine, shown with the
-transition function~$\Delta$,
-accepts strings that are valid as integers.
+This machine
+accepts strings that are valid as decimal representations of integers.
 Thus, it accepts `\str{21}' and `\str{-707}' but does not accept
 `\str{501-}'.
 
@@ -197,11 +196,12 @@ it as an accepting state.
     \acceptingstate $q_2$ &$e$   &$q_2$ &$e$   \\
     $e$   &$e$   &$e$   &$e$   \\
   \end{transitionfunction}
-\end{center}
-We can take this machine's alphabet to be any convienent character set.
-So, beyond the digits and the signs \str{+} and~\str{-},
-$\Sigma$ might include letters such as \str{a} and~\str{A}, and even
-more characters such as the exclamation point or the open parenthesis.
+  \end{center}
+  Any bad input character sends the machine to the error state~$e$.
+  So in practice we would take this machine's alphabet to be the
+  set of characters that someone could conceivably enter, 
+  including letters such as \str{a} and~\str{A} and even
+  characters such as the exclamation point or the open parenthesis.
 \end{example}
 
 
@@ -3610,12 +3610,155 @@ the $\sim$ equivalence classes.
 
 
 
+
+
+
 % =============================================
 \section{Pushdown automata}
 % "Stacks are overrated" Guy Steele https://www.youtube.com/watch?v=agw-wlHGi0E
+A finite state machine cannot accept a language of balanced parentheses.
+That makes it not powerful enough to use, for instance,
+if you want to tests inputs to see if they valid programs in a
+modern programming language.
+The natural data structure to handle nested parentheses is a stack.
+So we will introduce a machine type consisting of a finite state
+control attached to a device that is a pushdown stack.
+
+A stack is a data structure that
+is linear, like a list, but where you don't have random access to
+the elements.
+It is like the resturant dish dispenser shown below on the left.
+When you take a dish off the top then a spring inside pushes up the 
+remaining dishes so you now have access to the next one.
+The reverse happens when you put a new dish on; the spring gets compressed
+so all the old dishes side down and
+the new dish becomes the only one that is accessible.
+
+Similarly, you can push a piece of data onto the top of our
+stack device, or you can pop the top element.
+We say that this stack is LIFO:~Last-In, First-Out.
+
+Below on the right is a sequence of stacks.
+The first one already has three characters, \str{g3}, \str{g5}, and~\str{g2}.
+Then we push \str{g1} on the stack, and then \str{g0}.
+At this point, to get access to the \str{g1} we  must first pop off 
+\str{g0}, as in the last stack shown.
+\begin{center}
+  \vcenteredhbox{\includegraphics[height=1.1in]{automata/dishes.jpg}}
+  \hspace{3em}
+  \vcenteredhbox{\includegraphics{automata/asy/machine/machine02.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{automata/asy/machine/machine03.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{automata/asy/machine/machine04.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{automata/asy/machine/machine05.pdf}}
+\end{center}
+Once something is popped, it is gone.
+We can have a state in the control whose intuitive meaning is, say, that
+we just popped~$\str{g0}$, but obviously with a finite control 
+that strategy has limits.
+
+
+
 \subsection{Definition}
+We define this device type by extending the definition of Finite State machine.
+We will define a nondeterministic machine. 
+
+\begin{definition}
+A \definend{pushdown automata}
+consists of a finite set of \definend{states} $Q=\set{q_0,\ldots\,q_{n-1}}$
+including a \definend{start state}~$q_0$
+and a subset $F\subseteq Q$ of \definend{accepting states},
+a nonempty \definend{input alphabet}~$\Sigma$
+and a nonempty \definend{stack alphabet}~$\Gamma$,
+as well as a \definend{transition function}
+$\map{\Delta}{Q\times (\Sigma\cup\set{\varepsilon})\times \Gamma}{Q\times\kleenestar{\Gamma}}$.
+\end{definition}
+
+\begin{center}
+  \includegraphics{automata/asy/machine/machine01.pdf}
+\end{center}
+
+As with Finite State Machines, Pushdown Automata
+only consume the tape characters and so the tape head is read only.
+(However, these machines can fail to halt; see \cref{exer:PDANoHalt}.)
+
+We will assume that the stack alphabet~$\Gamma$ contains the character $\bot$
+(read that as ``bottom'') that we use to mark the stack bottom.
+We take the other characters in $\Gamma$ to be \str{g0}, \str{g1}, etc.
+We will also assume that the tape alpabet~$\Sigma$ does not contain the
+character~$\varepsilon$, which we will use for instructions
+that are purely stack operations, as described in the next paragraph. 
+
+As usual, the transition function describes how the machine acts.
+There are two cases for the input
+$\sequence{q_i,s,g_j}\in Q\times(\Sigma\cup\set{\varepsilon})\times\Gamma$.
+If $s\neq\varepsilon$ then $s\in\Sigma$ and the machine is consuming a
+tape character.
+In this case,
+\begin{equation*}
+  \Delta(q_i,s,g_j)=\sequence{q_k,\tau}\in Q\times\kleenestar{\Gamma}
+\end{equation*}
+applies when the machine is in state~$q_i$ with the tape head reading
+$s$ and the character $g_j$ on top of the stack.
+If those conditions are satisfied then
+the read head moves to the next cell to the right,
+the machine pops $g_j$ off the stack and pushes the characters of the
+string~$\tau$ onto the stack
+(where $\tau=\sequence{g_{i_0},\ldots\,g_{i_m}}$, they are pushed in the order
+of $g_{i_m}$ first to $g_{i_0}$ last), and the machine enters state $q_k$.
+The other case is $s=\varepsilon$.
+This case is the same except that the tape head does not move, so
+the only actions are the stack actions.
+
+The \definend{starting configuration} has the machine in state~$q_0$,
+with the read head pointing to the first character $\sigma[0]$
+of the string~$\sigma\in\kleenestar{\Sigma}$ on the input tape.
+and with the stack containing only the character~$\bot$.
+A machine \definend{accepts} its input~$\sigma$ if when it is started
+in its starting configuration, it eventually enters an accepting state
+$q\in F$, after scanning all of~$\sigma$.
+
+\begin{example}
+The grammar
+S \produces{} \str{[} S \str{]} | SS | $\varepsilon$
+generates the language of balanced parentheses.
+\begin{equation*}
+  \lang{L}=\set{\varepsilon,
+    \str{[]},
+    \str{[[]]},
+    \str{[][]},
+    \str{[[][]]},
+    \str{[[[]]]}, \ldots}
+\end{equation*}
+The Pumping Lemma shows that no Finite State Machine accepts this language. 
+This Pushdown Automata accepts it.
+It has states $Q=\set{q_0,q_1}$ with $F=\set{q_1}$
+and languages $\Sigma=\set{\text{\str{[}},\text{\str{]}}}$
+and $\Gamma=\set{\text{\str{g0}},\bot}$.
+\begin{center}
+\begin{tabular}{r|ll}
+  \multicolumn{1}{r}{\tabulartext{Instruction}}
+  &\multicolumn{1}{c}{\tabulartext{Input}}
+  &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+  \cline{2-3}
+  $0$  &$\sequence{q_o,\text{\str{[}},\bot}$ &$\sequence{q_0,\text{`\str{g0}$\bot$'}}$ \\
+  $1$  &$\sequence{q_o,\text{\str{[}},\text{\str{g0}}}$ &$\sequence{q_0,\text{`\str{g0g0}'}}$ \\
+  $2$  &$\sequence{q_o,\text{\str{]}},\text{\str{g0}}}$ &$\sequence{q_0,\varepsilon}$ \\
+  $3$  &$\sequence{q_o,\text{\str{]}},\bot}$ &$\sequence{q_0,\varepsilon}$ \\
+\end{tabular}
+\end{center}
+
+\end{example}
+
+
 
 \begin{exercises}
+\begin{exercise}  \label{exer:PDANoHalt}
+Produce a Pushdown Automata that does not halt.
+\end{exercise}
+
 \begin{exercise}
 Show that any language accepted by a pushdown automata is accepted by some
 Turing machine.

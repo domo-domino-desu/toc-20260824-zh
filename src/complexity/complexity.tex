@@ -1,4 +1,4 @@
-\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as far more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Orders of growth}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
+\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as far more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Complexity}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 
 In the first part of the  book we studies which problems are solvable on a
 computer.
@@ -9,7 +9,7 @@ We will review the basics of the orders of growth of functions.
 Because this is a review, we will not give a detailed development, just enough for our needs.
 And we will leave the proofs for the exercises.
 
-\section{Definition}
+\section{Big O}
 For a problem there may be many algorithms.
 We typically want to choose one that is faster or uses less memory,
 or less of some other resource.
@@ -645,16 +645,18 @@ $x^d$ for $d>1$ is greater, in a big-O sense, than $x\cdot\lg(x)$.
 Big-O gives a rough metric to compare algorithms and
 is so widely used in practice that it is often covered in
 introduction to programming courses. 
-Here we will address some issues raised by the above that grow out of 
-the experience that most people have in those classes.
+Here we will address some questions growing out of 
+the experience that some people have in those classes.
 
 % https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
 The first issue is that
-\citetext{the definitions of big-O and big-Theta ignore constants}{%
+\citetext{the definitions of Big-O and Big-Theta ignore constants}{%
   This discussion originated as \autocite{SE:IgnoreConstants}.}.
-A reader can object to that by citing
+A reader can object that doing so makes the definition useless
+for judging the practicality of an algorithm.
+Imagine
 an algorithm that takes time given by the quadratic function $c\cdot n^2$.
-An enormous coefficient such as $c=2^{100}$ would make such an algorithm
+An enormous coefficient such as $c=2^{100}$ would make it
 just as impractical as one that takes exponential time.\footnote{%
   Although, in practice, often when an algorithm is discovered that has a
   very large leading coefficient then soon researchers develop
@@ -663,7 +665,7 @@ just as impractical as one that takes exponential time.\footnote{%
   algorithms that are polynomial but with 
   large powers, such as $n^{10}$, often these powers have fallen
   as researchers refine the approach.}
-(Similarly, an enormous $N$ negates the value of the analysis for
+(Similarly, an enormous $N$ destroys the value of the algorithm for
 practical purposes.)
 Why ignore the constants?
 
@@ -671,12 +673,13 @@ Basically, we have no unit that we can rely on.
 
 Machines on which algorithms are implemented vary widely.
 Even if we forget about such things as Turing machines and just focus on
-the kind that we have on our desks and in our pockets, the machines
+the architecture of the machines
+that we have on our desks and in our pockets, they
 still vary,
 for instance in how long they take to do a division or to write to memory.
 We could agree on
-\citetext{a reference standard machine}{%
-  This is something like the approach of Knuth's
+\citetext{a standard reference machine}{%
+  This is the approach of Knuth's
   \protect\textit{Art of Computer Programming} series.
   But even he had to update his standard, from MIX to MMIX.}
 but we would have to periodically update the standard to keep up with
@@ -685,13 +688,17 @@ So published results from, say, a decade ago would be problematic
 because they refer to an old standard.
 Being reference independent is an advantage.
 
-But being reference independent means ignoring constants.
-If we say that from here New York City is twice as far as Boston, this
+Consider this geographical analogy:
+absolute measurement
+means specifying units, such as miles or kilometers.
+Being able to make statesments irrespective of the units means
+making relative statements such as,
+``from here New York City is twice as far as Boston.'', this
 relative statement is correct irrespective of the units. 
-But absolute measurement
-requires specifying units, such as miles or kilometers.
+Being reference independent precisely means ignoring constants
+and instead making relative statements.
 
-The advantage of the approach is that we can do an analysis by
+The advantage of ignoring constants is that we can do an analysis by
 counting the number of elementary operations, 
 We do not have to worry about costs of individual operations,
 about the difference between the cost of a division and the
@@ -706,13 +713,13 @@ Thus,
 Big~O notation is a unit free, relative measurement.
 It is not absolute.
 It can only measure performance variation.
-The advantage is the gain in implementation independence
-by allowing analysis that ignores the relative costs of
-elementary operations, as long as these costs are bounded.
-But the consequence is that constant factors are meaningless.
+% The advantage is the gain in implementation independence
+% by allowing analysis that ignores the relative costs of
+% elementary operations, as long as these costs are bounded.
+% But the consequence is that constant factors are meaningless.
 
-Put another way, big~O statements are a tool for saying
-which algorithms scale better, for understanding how an algorithm
+Put another way, Big~O statements are a tool for
+understanding how an algorithm
 performs as the input size grows.
 Thus, we say that a function that takes $3n$ steps is $\bigOh(n)$
 in order to express that, roughly,
@@ -722,9 +729,10 @@ doubling the input size will at most
 quadruple the number of steps, and
 $\bigOh(\lg n)$ means that doubling the input size will increase the number
 of steps by at most some constant.
-Big~O is, strictly speaking, only a rough guidel
-for comparing the performance of different algorithms;
-it cannot say which algorithms are absolutely
+We can use Big~O to compare algorithms only in that we can compare
+roughly how they perform as the input size grows.
+But it is only a rough guide;
+it cannot say with great precision which algorithms are absolutely
 faster.\footnote{%
   Big~O is especially poor at
   for comparing performance on a specified computing platform.
@@ -733,15 +741,15 @@ faster.\footnote{%
 
 % https://stackoverflow.com/a/19647659
 That leads us to
-\citetext{the second issue with the definition of big~O and big~Theta}{%
+\citetext{the second issue with the definition of Big~O and Big~Theta}{%
   This discussion originated as \autocite{SE:pseudopolynomial}.}.
-They are for understanding how an algorithm
+Understanding how an algorithm
 performs as the input size grows
-so they require a definition of input size.
-But in beginning programming experience that definition is often blurred. 
+requires a definition of input size.
+But often in beginning programming courses that definition is blurred. 
 
-Consider an algorithm that, given input $n\in\N$,
-tries to find any factors by testing each number $k\in\set{2,\ldots\,n-1}$
+Consider an algorithm for factoring numbers that, given input $n$,
+tests each $k\in\set{2,\ldots\,n-1}$
 to see if it divides~$n$.\footnote{%
   This is not the best algorithm, but a good illustration.}
 If~$n$ is prime then it tests all those numbers, which is
@@ -768,7 +776,7 @@ Analysis of selection sort gives that the time it takes grows quadratically
 so in bits we get $\bigOh((64n)^2)$.
 Ignoring constants gives that as the same as $\bigOh(n^2)$.
 
-The same would hold if we were programming a depth-first tree traversal.
+The same would hold in programming a depth-first tree traversal.
 If your nodes are represented as successive integers and your
 locations are 64 bits then you can store awfully big trees, probably
 bigger than any tree you would ever encounter or have the time to process.
@@ -2160,21 +2168,23 @@ it is divisible by their product $pq=n$.
 % For large key sizes, more than $1024$ bits, we know of no efficient method for
 % this.
 
-The most efficient method known to solve the RSA problem is by
+Experts think that the most likely attack on RSA encryption is by
 factoring the modulus~$n$.
-Anyone who factors~$n$ can ise the same method as the
-RSA key setup process itself to turn the encrypter~$e$,
+Anyone who factors~$n$ can use the same method as the
+RSA key setup process to turn the encrypter~$e$
 into the decrypter~$d$.
+That's why~$n$ is taken to be the product of two large primes; it makes
+factoring as hard as possible.
 
-So a fast algorithm to solve the Factoring problem would put RSA,
-the most widely used method for encryption on the Internet, at risk.
-There are published algorithms that are subexponential,
-that for $b$-bit numbers and for any $\varepsilon>0$
-are faster than $\bigOh((1+\varepsilon)^b)$.
-No published algorithm can factor all integers in polynomial
-time, i.e.\ in time $\bigOh(b^n)$ for some constant power~$n$.
-Most experts suspect that no such algorithm is possible, but there
-are no proofs.
+% So a fast algorithm to solve the Factoring problem would put RSA,
+% the most widely used method for encryption on the Internet, at risk.
+% There are published algorithms that are subexponential,
+% that for $b$-bit numbers and for any $\varepsilon>0$
+% are faster than $\bigOh((1+\varepsilon)^b)$.
+% No published algorithm can factor all integers in polynomial
+% time, i.e.\ in time $\bigOh(b^n)$ for some constant power~$n$.
+% Most experts suspect that no such algorithm is possible, but there
+% are no proofs.
 
 There is a factoring algorithm that takes only $\bigOh(b^3)$~time
 (and $\bigOh((b)$~space), called
@@ -2185,7 +2195,7 @@ whether such machines will ever become practical is not clear.
 For instance, in 2001 the first seven-qubit quantum computer
 became the first to run Shor's algorithm.
 It factored the number $15$.
-There has been progress in the interim, but not enough to put~$RSA$ at risk.
+There has been progress in the interim, but not enough to put RSA at risk.
 
 
 

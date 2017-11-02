@@ -42,7 +42,7 @@ triple eb_origin = (-4,-2,0);  // where external box is shifted
 draw_wire(tm_origin=tm_origin,eb_origin=eb_origin);
 
 transform3 t=shift(eb_origin);
-eb_draw(t=t);
+eb_draw(t=t, eb_label="\textsf{K}");
 tm_draw_lf_tape();
 tm_draw();
 tm_draw_start_button();
@@ -51,3 +51,4 @@ tm_draw_rt_tape("1001010");
 
 dot((0,1.15*tm_ht),invisible);  // little extra vert room
 shipout(format(OUTPUT_FN,picnum),format="pdf");
+

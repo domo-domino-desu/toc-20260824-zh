@@ -1750,19 +1750,20 @@ pipe, and star.
 <char> \produces{} $\emptyset$ | $\emptystring$   
                     \alt $x_0$ | $x_2$ | ...
 \end{grammar}
-  where the $x_i$ characters are members of $\Sigma$. 
+  where the characters  $x_i$ are members of the alphabet $\Sigma$. 
 \end{definition}
-\noindent (In grammars we use
-the pipe as a metacharacter, to collapse rules
-with the same left side.
-But pipe also appears in regular expressions so for that usage
+\noindent (As we often do in grammars, here
+we use the pipe symbol~\re{|} as a metacharacter,
+to collapse rules with the same left side.
+But pipe also appears in regular expressions themselves.
+For that usage
 we have wrapped it in single quotes,
 in \nonterminal{regex}'s second rule.)
 
 We don't want lots of parentheses so we must establish operator
 precedence: star~\re{*} binds most tightly, then concatentation, then
 the pipe alternation operator~\re{|}.
-We use parentheses when needed, as in \cref{ex:RegexABOrCStar}..
+We use parentheses when needed, as in \cref{ex:RegexABOrCStar}.
 
 As to the semantics of regular expressions\Dash what they mean\Dash
 we will define that recursively.
@@ -1770,21 +1771,18 @@ The language described by the single-character
 regular expression \re{$\emptyset$} is
 the empty set, so that $\lang{L}(\emptyset)=\emptyset$.
 The language described by the regular expression consisting
-of only the empty string character \re{$\emptystring$}
+of only the character~\re{$\emptystring$}
 is the one-element language consisting of only the empty string 
 $\lang{L}(\varepsilon)=\set{\emptystring}$.
 If a regular expression consists of just one character from the alphabet
 then the language described by that
 expression contains only one string, which has only that
-one character.
-Thus, where $\str{a}\in \Sigma$,
-the language described by the one-character regular
-expression \re{\str{a}} is the set containing only one string,
-which has only that
-one character $\lang{L}(\str{a})\set{\str{a}}$.
+one character:
+where $\str{a}\in \Sigma$,
+we have $\lang{L}(\str{a})\set{\str{a}}$.
 
-For the semantics of the operations, suppose that
-$\sigma$ and $\hat{\sigma}$ are regular expressions that
+Finally, we do the semantics of the operations.
+Let $\sigma$ and $\hat{\sigma}$ be regular expressions that
 represent the languages $\lang{L}$ and $\hat{\lang{L}}$.
 The regular expression combining the two
 with the pipe \re{$\sigma$|$\hat{\sigma}$}
@@ -3614,7 +3612,7 @@ the $\sim$ equivalence classes.
 
 
 % =============================================
-\section{Pushdown automata}
+\section{Pushdown machines}
 % "Stacks are overrated" Guy Steele https://www.youtube.com/watch?v=agw-wlHGi0E
 A finite state machine cannot accept a language of balanced parentheses.
 That makes it not powerful enough to use, for instance,
@@ -3665,7 +3663,7 @@ that strategy has limits.
 We define this device type by extending the definition of Finite State machine. 
 
 \begin{definition}
-A \definend{pushdown automata}
+A \definend{Pushdown machine}
 consists of a finite set of \definend{states} $Q=\set{q_0,\ldots\,q_{n-1}}$
 including a \definend{start state}~$q_0$
 and a subset $F\subseteq Q$ of \definend{accepting states},
@@ -3679,7 +3677,7 @@ $\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\time
   \includegraphics{automata/asy/machine/machine01.pdf}
 \end{center}
 
-As with Finite State Machines, Pushdown Automata
+As with Finite State machines, Pushdown machines
 only consume the tape characters and so the tape head is read only.
 (However, these machines can fail to halt; see \cref{exer:PDANoHalt}.)
 
@@ -3689,7 +3687,7 @@ We take the other characters in $\Gamma$ to be \str{g0}, \str{g1}, etc.
 We will also assume that the tape alpabet~$\Sigma$ does not contain the
 blank~\str{B} that we will use as an end of input marker, or the 
 character~$\varepsilon$ that we will use for instructions
-that are purely stack operations, as described in the next paragraph.\footnote{%
+that are purely stack operations as described in the next paragraph.\footnote{%
   The definition allows $\varepsilon$ appear as the second component
   of $\Delta$'s inputs.
   The definition also uses strings from $\kleenestar{\Gamma}$, which can
@@ -3719,6 +3717,10 @@ The other case is $s=\varepsilon$.
 This case is the same except that the tape head does not move, so
 the only actions are the stack actions.
 
+At each step the machine pops the top character off the stack.
+So if the stack is empty then the machine will freeze up, unable
+to continue and unable to accept the input string.
+
 The \definend{starting configuration} has the machine in state~$q_0$,
 with the read head pointing to the first character $\sigma[0]$
 of the string~$\sigma\in\kleenestar{\Sigma}$ on the input tape.
@@ -3741,7 +3743,7 @@ This grammar generates the language of balanced parentheses.
 \end{equation*}
 The Pumping Lemma shows that no Finite State Machine accepts this language. 
 But it is accepted by the
-Pushdown Automata described below.
+Pushdown machine described below.
 It has
 states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_1}$,
 and languages $\Sigma=\set{\text{\str{[}},\text{\str{]}}}$
@@ -3783,10 +3785,28 @@ It enters state~$q_1\in F$ after scanning the
 input \str{[[]][]} so this machine accepts that string.
 \end{example}
 
-How to change the defintion for nondeterministic machines.
+To make nondeterministic Pushdown machines,
+we alter the definition in two ways.
+The first is minor: we don't need the blank~\str{B} in the
+input alphabet as a nondeterministic machine can guess when
+the end of the input is coming.
+
+The second alteration changes the
+transition function~$\Delta$.
+We now allow the same input to give different outputs,
+$\map{\Delta}{Q\times (\Sigma\cup\set{\varepsilon})\times \Gamma}{\powerset({Q\times\kleenestar{\Gamma}})}$.
+We can conceptualize that the machine chooses one of the outputs, or that
+the computation evolves as a tree.
+(If the set of outputs is empty then we take the machine to freeze,
+resulting in a computation that does not accept the input.)
+
+The next example shows a nondeterministic machine.
+Compare line~$2$ and line~$6$, which show the same input associated with
+two different outputs.
+(We list multiple outputs on multiple lines to referencing easier.)
 
 \begin{example}
-This Nondeterministic Pushdown Automata accepts palindromes.It has
+This Pushdown machine has
 states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_1}$,
 and languages $\Sigma=\set{\text{\str{a}},\text{\str{b}}}$
 and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$.
@@ -3818,17 +3838,21 @@ This table gives its transition function~$\Delta$.
   $11$  &$q_1,\varepsilon,\bot$               &$q_2,\varepsilon$ \\
 \end{tabular}
 \end{center}
+This machine accepts the language of palindromes,
+strings $\sigma\in\kleenestar{\Sigma}$ that read the same
+forward and backward, $\sigma=\reversal{\sigma}$.
 \end{example}
 
-With Finite State machines, the deterministic machines can do
-all the jobs that nondeterministic machines can do.
 Indeed, we gave an algorithm that inputs a nondeterministic Finite State
 machine and outputs a deterministic Finite State machine that accepts
 the same language.
+So deterministic Finite State machines can do
+all of the jobs that nondeterministic ones can do.
 
-The prior example shows that situation is different for Pushdown machines.
-Nondeterministic Pushdown machines can do jobs that deterministic
-Pushdown machines cannot do.
+However,
+the prior example shows that situation is different for Pushdown machines.
+There are jobs that nondeterministic Pushdown machines can do jobs,
+but that no deterministic Pushdown machine can do.
 
 \subsection{Context free languages}
 
@@ -4445,9 +4469,9 @@ Does it go the other way?
 
 Said another way, the two strings $\sigma$ and~$\hat{\sigma}$
 can be $\lang{L}$-distinguished when there is a
-suffix $\tau$ that separates them:~one
-of $\sigma\concat\tau$ and $\hat{\sigma}\concat\tau$
-is an element of~$\lang{L}$ and the other is not.
+suffix $\tau$ that separates them:~of the two
+$\sigma\concat\tau$ and $\hat{\sigma}\concat\tau$, one
+is an element of~$\lang{L}$ while the other is not.
 
 
 \begin{lemma}
@@ -4569,7 +4593,7 @@ is an element of~$\lang{L}$ and the other is not.
   \end{center}
   That is, the $\FSM$-related partition is finer than the
   $\lang{L}$-related partition
-  (we use `fine' in the sense that sand is finer than gravel).
+  (`fine' in the sense that sand is finer than gravel).
 \end{example}
 
 \begin{lemma}  \label{lem:MRelatedImpliesLRelated}

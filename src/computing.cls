@@ -1407,10 +1407,10 @@
     \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
                          % \rule{0em}{2ex}
                          \begin{tabular}[b]{@{}c@{}}
-                           \textsc{after} \\[-0.425ex] 
-                           \textsc{step} 
+                           \tabulartext{After} \\[-0.425ex] 
+                           \tabulartext{step} 
                          \end{tabular}} 
-     &\textsc{configuration}                        \\[-1ex] \hline
+     &\tabulartext{Configuration}                        \\[-1ex] \hline
 }{%
   \end{tabular}%
 }

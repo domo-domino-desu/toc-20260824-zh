@@ -3639,7 +3639,7 @@ stack device, or you can pop the top element.
 We say that this stack is LIFO:~Last-In, First-Out.
 
 Below on the right is a sequence of stacks.
-The first one already has three characters, \str{g3}, \str{g5}, and~\str{g2}.
+The first one already has three characters, \str{g3}, \str{g0}, and~\str{g2}.
 Then we push \str{g1} on the stack, and then \str{g0}.
 At this point, to get access to the \str{g1} we  must first pop off 
 \str{g0}, as in the last stack shown.
@@ -3662,8 +3662,7 @@ that strategy has limits.
 
 
 \subsection{Definition}
-We define this device type by extending the definition of Finite State machine.
-We will define a nondeterministic machine. 
+We define this device type by extending the definition of Finite State machine. 
 
 \begin{definition}
 A \definend{pushdown automata}
@@ -3673,7 +3672,7 @@ and a subset $F\subseteq Q$ of \definend{accepting states},
 a nonempty \definend{input alphabet}~$\Sigma$
 and a nonempty \definend{stack alphabet}~$\Gamma$,
 as well as a \definend{transition function}
-$\map{\Delta}{Q\times (\Sigma\cup\set{\varepsilon})\times \Gamma}{Q\times\kleenestar{\Gamma}}$.
+$\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\times\kleenestar{\Gamma}}$.
 \end{definition}
 
 \begin{center}
@@ -3688,8 +3687,16 @@ We will assume that the stack alphabet~$\Gamma$ contains the character $\bot$
 (read that as ``bottom'') that we use to mark the stack bottom.
 We take the other characters in $\Gamma$ to be \str{g0}, \str{g1}, etc.
 We will also assume that the tape alpabet~$\Sigma$ does not contain the
-character~$\varepsilon$, which we will use for instructions
-that are purely stack operations, as described in the next paragraph. 
+blank~\str{B} that we will use as an end of input marker, or the 
+character~$\varepsilon$ that we will use for instructions
+that are purely stack operations, as described in the next paragraph.\footnote{%
+  The definition allows $\varepsilon$ appear as the second component
+  of $\Delta$'s inputs.
+  The definition also uses strings from $\kleenestar{\Gamma}$, which can
+  include the empty string.
+  So the symbol is meaning two different things.
+  But one of those is in the inputs and one is in the outputs
+  so there is no ambiguity.} 
 
 As usual, the transition function describes how the machine acts.
 There are two cases for the input
@@ -3720,12 +3727,12 @@ A machine \definend{accepts} its input~$\sigma$ if when it is started
 in its starting configuration, it eventually enters an accepting state
 $q\in F$, after scanning all of~$\sigma$.
 
-\begin{example}
-The grammar
-S \produces{} \str{[} S \str{]} | SS | $\varepsilon$
-generates the language of balanced parentheses.
+\begin{example}  \label{ex:PDSAcceptBalencedParens}
+This grammar generates the language of balanced parentheses.
 \begin{equation*}
-  \lang{L}=\set{\varepsilon,
+\text{S \produces{} \str{[} S \str{]} | SS | $\varepsilon$}
+\qquad
+  \lang{L}_{\text{bal}}=\set{\varepsilon,
     \str{[]},
     \str{[[]]},
     \str{[][]},
@@ -3733,25 +3740,99 @@ generates the language of balanced parentheses.
     \str{[[[]]]}, \ldots}
 \end{equation*}
 The Pumping Lemma shows that no Finite State Machine accepts this language. 
-This Pushdown Automata accepts it.
-It has states $Q=\set{q_0,q_1}$ with $F=\set{q_1}$
+But it is accepted by the
+Pushdown Automata described below.
+It has
+states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_1}$,
 and languages $\Sigma=\set{\text{\str{[}},\text{\str{]}}}$
 and $\Gamma=\set{\text{\str{g0}},\bot}$.
+This table gives its transition function~$\Delta$;
+the lines are numbered to make referring to them easier.
 \begin{center}
 \begin{tabular}{r|ll}
-  \multicolumn{1}{r}{\tabulartext{Instruction}}
+  \multicolumn{1}{r}{\tabulartext{Line}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \cline{2-3}
-  $0$  &$\sequence{q_o,\text{\str{[}},\bot}$ &$\sequence{q_0,\text{`\str{g0}$\bot$'}}$ \\
-  $1$  &$\sequence{q_o,\text{\str{[}},\text{\str{g0}}}$ &$\sequence{q_0,\text{`\str{g0g0}'}}$ \\
-  $2$  &$\sequence{q_o,\text{\str{]}},\text{\str{g0}}}$ &$\sequence{q_0,\varepsilon}$ \\
-  $3$  &$\sequence{q_o,\text{\str{]}},\bot}$ &$\sequence{q_0,\varepsilon}$ \\
+  $0$  &$q_o,\text{\str{[}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
+  $1$  &$q_o,\text{\str{[}},\text{\str{g0}}$  &$q_0,\text{`\str{g0g0}'}$ \\
+  $2$  &$q_o,\text{\str{]}},\text{\str{g0}}$  &$q_0,\varepsilon$ \\
+  $3$  &$q_o,\text{\str{]}},\bot$             &$q_2,\varepsilon$ \\
+  $4$  &$q_o,\text{\str{B}},\bot$             &$q_1,\varepsilon$ \\
 \end{tabular}
 \end{center}
-
+This machine keeps its tally by having the number of \str{g0}'s
+on the stack be the number of
+\str{[}'s seen so far minus the number of \str{]}'s seen.
+Here is the evolution of a computation from the input \str{[[]][]}.
+(The stack is drawn side-to-side instead of vertically just to
+fit the table on a single page.)
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{automata/asy/machine/machine06.pdf} \\
+    1 &\tapegraphic{automata/asy/machine/machine07.pdf} \\
+    2 &\tapegraphic{automata/asy/machine/machine08.pdf} \\
+    3 &\tapegraphic{automata/asy/machine/machine09.pdf} \\
+    4 &\tapegraphic{automata/asy/machine/machine10.pdf} \\
+    5 &\tapegraphic{automata/asy/machine/machine11.pdf} \\
+    6 &\tapegraphic{automata/asy/machine/machine12.pdf} \\
+    7 &\tapegraphic{automata/asy/machine/machine13.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+It enters state~$q_1\in F$ after scanning the
+input \str{[[]][]} so this machine accepts that string.
 \end{example}
 
+How to change the defintion for nondeterministic machines.
+
+\begin{example}
+This Nondeterministic Pushdown Automata accepts palindromes.It has
+states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_1}$,
+and languages $\Sigma=\set{\text{\str{a}},\text{\str{b}}}$
+and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$.
+This table gives its transition function~$\Delta$.
+\begin{center}
+\begin{tabular}{r|ll}
+  \multicolumn{1}{r}{\tabulartext{Line}}
+  &\multicolumn{1}{c}{\tabulartext{Input}}
+  &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+  \cline{2-3}
+  $0$  &$q_o,\text{\str{a}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
+  $1$  &$q_o,\text{\str{b}},\bot$             &$q_0,\text{`\str{g1}$\bot$'}$ \\
+  $2$  &$q_o,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g0}'}$ \\
+  $3$  &$q_o,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g1}'}$ \\
+  $4$  &$q_o,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\str{g0}'}$ \\
+  $5$  &$q_o,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\str{g1}'}$ \\
+\end{tabular}
+\hspace{3em}
+\begin{tabular}{r|ll}
+  \multicolumn{1}{r}{\tabulartext{Line}}
+  &\multicolumn{1}{c}{\tabulartext{Input}}
+  &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+  \cline{2-3}
+  $6$  &$q_o,\text{\str{a}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
+  $7$  &$q_o,\text{\str{b}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
+  $8$  &$q_o,\text{\str{]}},\text{\str{g0}}$  &$q_0,\varepsilon$ \\
+  $9$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
+  $10$  &$q_1,\text{\str{b}},\text{\str{g1}}$ &$q_1,\varepsilon$ \\
+  $11$  &$q_1,\varepsilon,\bot$               &$q_2,\varepsilon$ \\
+\end{tabular}
+\end{center}
+\end{example}
+
+With Finite State machines, the deterministic machines can do
+all the jobs that nondeterministic machines can do.
+Indeed, we gave an algorithm that inputs a nondeterministic Finite State
+machine and outputs a deterministic Finite State machine that accepts
+the same language.
+
+The prior example shows that situation is different for Pushdown machines.
+Nondeterministic Pushdown machines can do jobs that deterministic
+Pushdown machines cannot do.
+
+\subsection{Context free languages}
+
+State, but do not prove, the connection.
 
 
 \begin{exercises}
@@ -3760,24 +3841,22 @@ Produce a Pushdown Automata that does not halt.
 \end{exercise}
 
 \begin{exercise}
-Show that any language accepted by a pushdown automata is accepted by some
-Turing machine.
+Consider the Pushdown Automata in \cref{ex:PDSAcceptBalencedParens}.
+\begin{exparts}
+\item
+It has an asymmetry in the definition.
+In line~$3$ it specifies that if there are too many \str{]}'s
+then the machine should go to the error state~$q_2$.
+But there is no line specifying what to do if there are too many
+\str{[}'s.
+Why is it not needed?
+\item
+Prove that this machine accepts the language of balanced parentheses
+defined by the grammar.
+\end{exparts}
 \end{exercise}
 
-\begin{exercise}
-Show that the set of pushdown automata is countable.
-\end{exercise}
-\end{exercises}
 
-
-\section{Context free languages}
-
-% \begin{wrapfigure}{R}{0.4\textwidth}
-% \centering
-% \includegraphics[width=0.35\textwidth]{prologue/plimpton322.jpg} % http://en.wikipedia.org/wiki/Plimpton_322#/media/File:Plimpton_322.jpg
-% \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing pythagorean triples}}
-% \end{wrapfigure}
-\begin{exercises}
 \begin{exercise}
 Write a context-free grammar for $\set{\str{a}^n\str{b}\str{c}^n\suchthat n\in\N}$.
 \begin{answer}
@@ -3789,16 +3868,63 @@ X \produces{} aXc
 \end{exercise}
 
 \begin{exercise}
+Show that the set of pushdown automata is countable.
+\end{exercise}
+
+\begin{exercise}
+Show that any language accepted by a pushdown automata is accepted by some
+Turing machine.
+\end{exercise}
+
+\begin{exercise}
 Show that the set of context free languages is countable.
 \end{exercise}
+
+\begin{exercise}
+For both Turing machines and Finite State machines, after we gave an informal
+description of thow they act we supplemented that with a formal one.
+Supply that for Pushdown machines.
+\begin{exparts}
+\item
+Define a configuration.
+\item
+Define the meaning of the yields symbol~$\vdash$ and a transition step.
+\item
+Define when a machine accepts a string.
+\end{exparts}
+\end{exercise}
 \end{exercises}
+
+
+% \section{Context free languages}
+
+% % \begin{wrapfigure}{R}{0.4\textwidth}
+% % \centering
+% % \includegraphics[width=0.35\textwidth]{prologue/plimpton322.jpg} % http://en.wikipedia.org/wiki/Plimpton_322#/media/File:Plimpton_322.jpg
+% % \caption{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing pythagorean triples}}
+% % \end{wrapfigure}
+% \begin{exercises}
+% \begin{exercise}
+% Write a context-free grammar for $\set{\str{a}^n\str{b}\str{c}^n\suchthat n\in\N}$.
+% \begin{answer}
+% \begin{grammar}
+% X \produces{} aXc
+%               \alt b
+% \end{grammar}
+% \end{answer}
+% \end{exercise}
+
+% \begin{exercise}
+% Show that the set of context free languages is countable.
+% \end{exercise}
+% \end{exercises}
 
 
 
 
 
 % ========================================
-\extra{Extended Regular Expressions}
+\extra{Regular expressions in practice}
 Regular expressions are widely used for text operations.
 Imagine, for instance, searching through a large file for
 all of its email addresses.
@@ -4181,7 +4307,11 @@ I'll use regular expressions."  Now they have two problems.
 
 % regex for Roman numerals: https://phvu.wordpress.com/2009/05/19/an-cfg-for-roman-numerals/
 % '^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'
-
+\begin{exercises}
+\begin{exercise}
+Regex crossword.
+\end{exercise}
+\end{exercises}
 
 
 

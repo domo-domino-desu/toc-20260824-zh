@@ -79,3 +79,54 @@ void tape_output(string prefix, string s, real head_pos, string head_label="",  
 // tape_output("tape1","101",0,"$q_0$");
 // tape_output("tape2","101",1,"$q_2$");
 // tape_output("tape3","101",2,"$q_1$");
+
+real STACK_LENGTH=100pt;
+real STACK_WIDTH=TAPE_WIDTH;
+path stack_path(real stack_length=STACK_LENGTH) {
+  path stack=(0pt,0pt)--(stack_length,0pt)
+    --(stack_length,STACK_WIDTH)--(0pt,STACK_WIDTH)--cycle;
+  return stack;
+}
+
+
+// write the string to the stack, with character i at position x=i (positions
+// start counting at x=0)
+void stack_write(picture p, string[] S) {
+  for(int i=0; i < S.length; ++i) {
+    draw(p,Label("\smash{\makebox[0em]{"+S[i]+"}}", black), ((12*i)*1pt,10*0.25), align=Align, invisible);
+  }
+  dot(p,(-5pt,0),invisible);  // Keep it from cutting off leading symbols
+}
+
+// draw the stack
+// p  picture to which to draw
+// S  array of strings written to the stack
+// stack_length=STACK_LENGTH How long to draw?
+void stack_draw(picture p, string[] S, real stack_length=STACK_LENGTH) {
+  // filldraw(p, stack_path(stack_length),drawpen=TAPE_PEN+light_color,fillpen=white);
+  path sp = stack_path(stack_length);
+  draw(p,point(sp,0)--point(sp,1)--point(sp,2)--point(sp,3),TAPE_PEN+light_color);
+  draw(p,point(sp,3)--point(sp,3.1),TAPE_PEN+light_color);
+  draw(p,point(sp,3.9)--point(sp,4),TAPE_PEN+light_color);
+  stack_write(p,S);
+}
+
+
+void stack_output(string prefix, string[] S,  real stack_length=STACK_LENGTH) {
+  picture p;
+  unitsize(p,1pt);
+  stack_draw(p,S,stack_length);
+  shipout(prefix,p);
+}
+
+
+picture pda(string tape_contents, real head_pos, string head_label="", string[] stack_contents, real tape_length=TAPE_LENGTH, real stack_length=STACK_LENGTH, real separation=20pt) {
+  picture p_tape;
+  unitsize(p_tape,1pt);
+  tape_draw(p_tape, tape_contents, head_pos, head_label, tape_length);
+  picture p_stack;
+  unitsize(p_stack,1pt);
+  stack_draw(p_stack,stack_contents,stack_length);
+  add(p_tape,p_stack,(tape_length+separation,0)); // put spacer between the two
+  return p_tape;
+}

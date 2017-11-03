@@ -18,6 +18,7 @@ import jh;
 cd("");
 cd("../../../asy/share");  // so it can see tm_share.asy
 import tm_share;
+import tape;
 cd("");
 
 
@@ -69,7 +70,7 @@ tm_draw_lf_tape(pic);
 tm_draw(pic);
 tm_draw_start_button(pic);
 tm_draw_halt_light(pic, tm_halt_label="\textsf{Accept}");
-tm_draw_rt_tape(pic, "1001010");
+tm_draw_rt_tape(pic, "[[][]]");
 
 dot((0,1.15*tm_ht),invisible);  // little extra vert room
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -102,7 +103,7 @@ path stack = (-0.6*u,0*v) -- (-0.6*u,-4.6*v) -- (0.6*u,-4.6*v) -- (0.6*u,0*v) --
 fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,0*v), "\str{g3}");
-draw_stackchar(pic, (0,(-1*v)-stack_separator), "\str{g5}");
+draw_stackchar(pic, (0,(-1*v)-stack_separator), "\str{g0}");
 draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g2}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
@@ -123,7 +124,7 @@ fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,(0*v)), "\str{g1}");
 draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g3}");
-draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g5}");
+draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g0}");
 draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g2}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
@@ -145,7 +146,7 @@ fill(pic, stack, lightcolor);
 draw_stackchar(pic, (0,(0*v)), "\str{g0}");
 draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g1}");
 draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g3}");
-draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g5}");
+draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g0}");
 draw_stackchar(pic, (0,-4*v-stack_separator), "\str{g2}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
@@ -166,10 +167,57 @@ fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,(0*v)), "\str{g1}");
 draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g3}");
-draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g5}");
+draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g0}");
 draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g2}");
 // draw_stackchar(pic, (0,4*v+stack_separator), "$g_1$");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+// --------- Evolution of pda calculation ----------
+real tape_length = 100pt;
+real stack_length = 60pt;
+real separator = 20pt;
+
+picture pic;
+int picnum=6;
+pic=pda(" [[]][]",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=7;
+pic=pda(" [[]][]",2,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=8;
+pic=pda(" [[]][]",3,"$q_0$", new string[] {"\str{g0}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=9;
+pic=pda(" [[]][]",4,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=10;
+pic=pda(" [[]][]",5,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=11;
+pic=pda(" [[]][]",6,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=12;
+pic=pda(" [[]][]",7,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=13;
+pic=pda(" [[]][]",8,"$q_1$", new string[] {},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

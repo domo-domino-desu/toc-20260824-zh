@@ -221,3 +221,38 @@ int picnum=13;
 pic=pda(" [[]][]",8,"$q_1$", new string[] {},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+// ------------- NDFA accepting palindromes --------
+real tape_length = 80pt;
+real stack_length = 40pt;
+real separator = 20pt;
+
+picture pic;
+int picnum=14;
+pic=pda(" 0110",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=15;
+pic=pda(" 0110",2,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=16;
+pic=pda(" 0110",3,"$q_0$", new string[] {"\str{g1}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=17;
+pic=pda(" 0110",4,"$q_1$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=18;
+pic=pda(" 0110",5,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

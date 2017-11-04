@@ -3681,7 +3681,7 @@ $\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\time
 
 As with Finite State machines, Pushdown machines
 only consume the tape characters and so the tape head is read only.
-(However, these machines can fail to halt; see \cref{exer:PDANoHalt}.)
+However these machines can fail to halt; see \cref{exer:PDANoHalt}.
 
 We will assume that the stack alphabet~$\Gamma$ contains the character $\bot$
 (read that as ``bottom'') that we use to mark the stack bottom.
@@ -3694,9 +3694,9 @@ that are purely stack operations as described in the next paragraph.\footnote{%
   of $\Delta$'s inputs.
   The definition also uses strings from $\kleenestar{\Gamma}$, which can
   include the empty string.
-  So the symbol is meaning two different things.
-  But one of those is in the inputs and one is in the outputs
-  so there is no ambiguity.} 
+  So the symbol $\varepsilon$ can appear in two different senses.
+  But one of those is in the inputs and one is in the outputs,
+  so it isn't ambiguous.} 
 
 As usual, the transition function describes how the machine acts.
 There are two cases for the input
@@ -3787,11 +3787,95 @@ It enters state~$q_1\in F$ after scanning the
 input \str{[[]][]} so this machine accepts that string.
 \end{example}
 
-The example illustrates that Pushdown machines are intermediate between
-Finite State machines and Turing machines in that they have
-a kind of unbounded read/write memory, but it is limited in power.
+\begin{example}  \label{ex:PDAPalindromesMithMidMarker}
+A \citetext{\definend{palindrome}}{%
+  Some people like to make sentence-length palindromes that make some sense.
+  Some of the more famous are:
+  (1)~supposedly the first sentence ever uttered, ``Madam, I'm Adam''
+  (2)~Napoleon's lament, ``Able was I ere I saw Elba''
+  and (3)~``A man, a plan, a canal: Panama'', about Theodore Roosevelt.}
+is a string that reads the same forwards and
+backwards $\sigma=\reversal{\sigma}$.
+This is a language of palindromes with a character that marks the middle.
+\begin{equation*}
+  \lang{L}_{\text{MM}}
+  =\set{\sigma\in\kleenestar{\set{\str{a},\str{b},\str{c}}}\suchthat
+   \text{$\sigma=\tau\concat\str{c}\reversal{\tau}$ for some $\tau\in\kleenestar{\set{\str{a},\str{b}}}$}}
+\end{equation*}
+Consider the Pushdown machine with
+states $Q=\set{q_0,q_1,q_2,q_3}$ with accepting states $F=\set{q_3}$,
+and languages $\Sigma=\set{\text{\str{a}},\text{\str{b}},\text{\str{c}}}$
+and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$.
+The strategy implemented in its transition function~$\Delta$ is to
+spend the first half pushing characters on the stack,
+\str{g0} when it reads~\str{a} and \str{g1} when it reads~\str{b}.
+That happens while the machine is in state~$q_0$.
+Once it hits the middle \str{c}, it reverses.
+It shifts to state~$q_1$ and starts popping.
+When reading~\str{a} it checks that it is popping~\str{g0},
+and 
+when reading~\str{b} it checks that it is popping~\str{g1}.
+If all goes well it finds the bottom of the stack at the same moment the input
+runs out, and goes to the accepting state~$q_3$.
+If all does not go well it passes to the error state~$q_2$.
+\begin{center}
+\begin{tabular}{r|ll}
+  \multicolumn{1}{r}{\tabulartext{Line}}
+  &\multicolumn{1}{c}{\tabulartext{Input}}
+  &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+  \cline{2-3}
+  $0$  &$q_0,\text{\str{a}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
+  $1$  &$q_0,\text{\str{b}},\bot$             &$q_0,\text{`\str{g1}$\bot$'}$ \\
+  $2$  &$q_0,\varepsilon,\bot$                &$q_3,\varepsilon$ \\
+  $3$  &$q_0,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g0}'}$ \\
+  $4$  &$q_0,\text{\str{a}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\str{g1}'}$ \\
+  $5$  &$q_0,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\str{g0}'}$ \\
+  $6$  &$q_0,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\str{g1}'}$ \\
+  $7$  &$q_0,\text{\str{c}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
+  $8$  &$q_0,\text{\str{c}},\text{\str{g1}}$   &$q_1,\text{`\str{g1}'}$ \\
+\end{tabular}
+\hspace{2em}
+\begin{tabular}{r|ll}
+  \multicolumn{1}{r}{\tabulartext{Line}}
+  &\multicolumn{1}{c}{\tabulartext{Input}}
+  &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+  \cline{2-3}
+  $9$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_0,\varepsilon$ \\
+  $10$ &$q_1,\text{\str{a}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
+  $11$ &$q_1,\text{\str{a}},\bot$             &$q_2,\varepsilon$ \\
+  $12$ &$q_1,\text{\str{b}},\text{\str{g0}}$  &$q_2,\varepsilon$ \\
+  $13$ &$q_1,\text{\str{b}},\text{\str{g1}}$  &$q_0,\varepsilon$ \\
+  $14$  &$q_1,\text{\str{b}},\bot$            &$q_2,\varepsilon$ \\
+  $15$ &$q_1,\text{\str{B}},\text{\str{g0}}$  &$q_2,\varepsilon$ \\
+  $16$ &$q_1,\text{\str{B}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
+  $17$ &$q_1,\text{\str{B}},\bot$             &$q_3,\varepsilon$ \\
+\end{tabular}
+\end{center}
+Here is a computation.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{automata/asy/machine/machine06.pdf} \\
+    1 &\tapegraphic{automata/asy/machine/machine07.pdf} \\
+    2 &\tapegraphic{automata/asy/machine/machine08.pdf} \\
+    3 &\tapegraphic{automata/asy/machine/machine09.pdf} \\
+    4 &\tapegraphic{automata/asy/machine/machine10.pdf} \\
+    5 &\tapegraphic{automata/asy/machine/machine11.pdf} \\
+    6 &\tapegraphic{automata/asy/machine/machine12.pdf} \\
+    7 &\tapegraphic{automata/asy/machine/machine13.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+It enters state~$q_1\in F$ after scanning the
+input \str{[[]][]} so this machine accepts that string.
+\end{example}
 
-To make nondeterministic Pushdown machines,
+So Pushdown machines are intermediate between Turing machines
+and Finite State machines.
+They have a kind of unbounded read/write memory, but it is limited.
+
+
+
+\subsection{Nondeterministic Pushdown machines}
+To get nondeterminism
 we alter the definition in two ways.
 The first is minor: we don't need the blank~\str{B} in the
 input alphabet as a nondeterministic machine can guess when
@@ -3807,58 +3891,79 @@ the computation evolves as a tree.
 resulting in a computation that does not accept the input.)
 
 \begin{example} \label{ex:PDAForPalindromes}
-A \citetext{\definend{palindrome}}{%
-  Constructing sentence-length palindromes are a common recreational puzzle.
-  Some of the more famous are:
-  (1)~supposedly the first sentence ever uttered, ``Madam, I'm Adam''
-  (2)~Napoleon's lament, ``Able was I ere I saw Elba''
-  and (3)~``A man, a plan, a canal: Panama'', about Theodore Roosevelt.}
-is a string that reads the same forwards and
-backwards $\sigma=\reversal{\sigma}$.
-This grammar generates the language of palindromes,
+This grammar generates the language of all palindromes
 over $\kleenestar{\B}$.
 \begin{equation*}
 \text{P \produces{} $\varepsilon$ | \str{0} | \str{1} | \str{0}P\str{0} | \str{1}P\str{1}}
 \qquad
 \lang{L}_{\text{PAL}}=\set{\varepsilon, \str{0},\str{1},\str{00},\str{11},\str{000},\str{010},\str{101},\str{111},\ldots}
 \end{equation*}
-This Pushdown machine accepts $\lang{L}_{\text{PAL}}$.
+The language~$\lang{L}_{\text{PAL}}$ is not accepted by any Finite State machine;
+see \cref{exer:PanindromesNotRegularLang}.
+But it is accepted by a Pushdown machine.
 It has
-states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_1}$,
-languages $\Sigma=\set{\text{\str{a}},\text{\str{b}}}$
+states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_2}$,
+languages $\Sigma=\B$
 and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$,
-and this transition function~$\Delta$.
+and the transition function~$\Delta$ below.
+
+The strategy is to proceed in two phases, one for the prefix and
+one for the palindromic postfix.
+During the first phase the machine puts~\str{g0}
+on the stack when it reads the input~\str{0} and puts~\str{g1} on the stack
+when it reads~\str{1}.
+During the second phase, if it reads~\str{0} then it only proceeds
+if the popped stack character is~\str{g0}
+and if it reads~\str{1} then it only proceeds if it popped~\str{1}.
+How does it know when to change over from the first phase to the second?
+It is a nondeterministic machine, so it can guess.
+
 \begin{center}
-\begin{tabular}{r|ll}
+\begin{tabular}[t]{r|ll}
   \multicolumn{1}{r}{\tabulartext{Line}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \cline{2-3}
-  $0$  &$q_o,\text{\str{a}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
-  $1$  &$q_o,\text{\str{b}},\bot$             &$q_0,\text{`\str{g1}$\bot$'}$ \\
-  $2$  &$q_o,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g0}'}$ \\
-  $3$  &$q_o,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g1}'}$ \\
-  $4$  &$q_o,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\str{g0}'}$ \\
-  $5$  &$q_o,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\str{g1}'}$ \\
+  $0$  &$q_o,\text{\str{0}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
+  $1$  &$q_o,\text{\str{1}},\bot$             &$q_0,\text{`\str{g1}$\bot$'}$ \\
+  $2$  &$q_o,\text{\str{0}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g0}'}$ \\
+  $3$  &$q_o,\text{\str{1}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\str{g0}'}$ \\
+  $4$  &$q_o,\text{\str{0}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\str{g1}'}$ \\
+  $5$  &$q_o,\text{\str{1}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\str{g1}'}$ \\
 \end{tabular}
 \hspace{3em}
-\begin{tabular}{r|ll}
+\begin{tabular}[t]{r|ll}
   \multicolumn{1}{r}{\tabulartext{Line}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \cline{2-3}
-  $6$  &$q_o,\text{\str{a}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
-  $7$  &$q_o,\text{\str{b}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
-  $8$  &$q_o,\text{\str{]}},\text{\str{g0}}$  &$q_0,\varepsilon$ \\
-  $9$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
-  $10$  &$q_1,\text{\str{b}},\text{\str{g1}}$ &$q_1,\varepsilon$ \\
-  $11$  &$q_1,\varepsilon,\bot$               &$q_2,\varepsilon$ \\
+  $6$  &$q_o,\text{\str{0}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
+  $7$  &$q_o,\text{\str{1}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
+  $8$  &$q_1,\text{\str{0}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
+  $9$  &$q_1,\text{\str{1}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
+  $10$ &$q_1,\text{\str{0}},\text{\str{g0}}$  &$q_2,\varepsilon$ \\
+  $11$  &$q_1,\text{\str{1}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
 \end{tabular}
 \end{center}
-For an instance of the nondeterminism
+For an instance of nondeterminism
 compare line~$2$ and line~$6$, which show the same input associated with
 two different outputs.
 (We list multiple outputs on multiple lines for easier referencing.)
+
+This computation results in the machine
+accepting the string \str{0110}.
+It uses lines $0$, $3$, $7$, and~$10$ from the $\Delta$ tables.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{automata/asy/machine/machine14.pdf} \\
+    1 &\tapegraphic{automata/asy/machine/machine15.pdf} \\
+    2 &\tapegraphic{automata/asy/machine/machine16.pdf} \\
+    3 &\tapegraphic{automata/asy/machine/machine17.pdf} \\
+    4 &\tapegraphic{automata/asy/machine/machine18.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+Again, we see the nondeterminism here in that 
+there are plenty of wrong guesses that would take the machine in a haywire.
 \end{example}
 
 Indeed, we gave an algorithm that inputs a nondeterministic Finite State
@@ -3872,10 +3977,34 @@ the prior example shows that situation is different for Pushdown machines.
 There are jobs that nondeterministic Pushdown machines can do jobs,
 but that no deterministic Pushdown machine can do.
 
+
+
+
+
+
 \subsection{Context free languages}
+In the section on Grammars, \cref{sec:Grammars}, we restricted our attention
+to production rules where the head consists of a single nonterminal.
+An example of such a rule is \mbox{S \produces{} aS}.
 
-State, but do not prove, the connection.
+An example of a rule that does not satisfy that is
+\mbox{aSb \produces{} aS}.
+This rule allows substitution for the nonterminal~S only if it is
+preceeded by the terminal~\str{a} and followed by the terminal~\str{b}.
+A grammar with rules of this type is \definend{context sensitive}.
+The idea is that substitutions for S must be done in a context.
 
+If a language has a grammar in which all the rules are of the first type,
+of the type we described in \cref{sec:Grammars},
+then it is a \definend{context free} language.
+Most modern programming languages are context free;
+there is a grammar generating the set of all valid programs
+in such a language.
+This lists includes C, Java, and Python.
+
+We will state but not prove the connection with this section:
+a language has a context free grammar if and only if it is
+accepted by some nondeterministic pushdown automata.
 
 \begin{exercises}
 \begin{exercise}  \label{exer:PDANoHalt}
@@ -3952,6 +4081,13 @@ S \produces{} aSa | bSb | cTc | a | b | c | $\varepsilon$
 T \produces{} aTa | bTb | a | b | c | $\varepsilon$
 \end{grammar}
 \end{answer}
+\end{exercise}
+
+\begin{exercise} \label{exer:PanindromesNotRegularLang}
+Show that the language
+of all palindromes from \cref{ex:PDAForPalindromes}
+is not accepted by any Finite State machine.
+\hint~you can use the Pumping Lemma.
 \end{exercise}
 
 \begin{exercise}

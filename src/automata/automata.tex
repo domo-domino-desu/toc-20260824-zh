@@ -3660,11 +3660,13 @@ that strategy has limits.
 
 
 \subsection{Definition}
-We define this device type by extending the definition of Finite State machine. 
+We define this device type by extending the definition of Finite State machine.
+We will first define deterministic machines and later introduce the
+adjustments needed to move to nondeterministic ones.
 
 \begin{definition}
 A \definend{Pushdown machine}
-consists of a finite set of \definend{states} $Q=\set{q_0,\ldots\,q_{n-1}}$
+has a finite set of \definend{states} $Q=\set{q_0,\ldots\,q_{n-1}}$
 including a \definend{start state}~$q_0$
 and a subset $F\subseteq Q$ of \definend{accepting states},
 a nonempty \definend{input alphabet}~$\Sigma$
@@ -3734,7 +3736,7 @@ This grammar generates the language of balanced parentheses.
 \begin{equation*}
 \text{S \produces{} \str{[} S \str{]} | SS | $\varepsilon$}
 \qquad
-  \lang{L}_{\text{bal}}=\set{\varepsilon,
+  \lang{L}_{\text{BAL}}=\set{\varepsilon,
     \str{[]},
     \str{[[]]},
     \str{[][]},
@@ -3742,13 +3744,13 @@ This grammar generates the language of balanced parentheses.
     \str{[[[]]]}, \ldots}
 \end{equation*}
 The Pumping Lemma shows that no Finite State Machine accepts this language. 
-But it is accepted by the
-Pushdown machine described below.
-It has
-states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_1}$,
+But it is accepted by a
+Pushdown machine.
+This machine has
+states $Q=\set{q_0,q_1,q_2}$ with accepting states $F=\set{q_1}$,
 and languages $\Sigma=\set{\text{\str{[}},\text{\str{]}}}$
 and $\Gamma=\set{\text{\str{g0}},\bot}$.
-This table gives its transition function~$\Delta$;
+The table gives its transition function~$\Delta$;
 the lines are numbered to make referring to them easier.
 \begin{center}
 \begin{tabular}{r|ll}
@@ -3763,9 +3765,9 @@ the lines are numbered to make referring to them easier.
   $4$  &$q_o,\text{\str{B}},\bot$             &$q_1,\varepsilon$ \\
 \end{tabular}
 \end{center}
-This machine keeps its tally by having the number of \str{g0}'s
-on the stack be the number of
-\str{[}'s seen so far minus the number of \str{]}'s seen.
+Its strategy is to keep a running tally of the number of
+\str{[}'s minus the number of \str{]}'s.
+The tally is the number of \str{g0}'s on the stack.
 Here is the evolution of a computation from the input \str{[[]][]}.
 (The stack is drawn side-to-side instead of vertically just to
 fit the table on a single page.)
@@ -3785,6 +3787,10 @@ It enters state~$q_1\in F$ after scanning the
 input \str{[[]][]} so this machine accepts that string.
 \end{example}
 
+The example illustrates that Pushdown machines are intermediate between
+Finite State machines and Turing machines in that they have
+a kind of unbounded read/write memory, but it is limited in power.
+
 To make nondeterministic Pushdown machines,
 we alter the definition in two ways.
 The first is minor: we don't need the blank~\str{B} in the
@@ -3800,17 +3806,28 @@ the computation evolves as a tree.
 (If the set of outputs is empty then we take the machine to freeze,
 resulting in a computation that does not accept the input.)
 
-The next example shows a nondeterministic machine.
-Compare line~$2$ and line~$6$, which show the same input associated with
-two different outputs.
-(We list multiple outputs on multiple lines to referencing easier.)
-
-\begin{example}
-This Pushdown machine has
+\begin{example} \label{ex:PDAForPalindromes}
+A \citetext{\definend{palindrome}}{%
+  Constructing sentence-length palindromes are a common recreational puzzle.
+  Some of the more famous are:
+  (1)~supposedly the first sentence ever uttered, ``Madam, I'm Adam''
+  (2)~Napoleon's lament, ``Able was I ere I saw Elba''
+  and (3)~``A man, a plan, a canal: Panama'', about Theodore Roosevelt.}
+is a string that reads the same forwards and
+backwards $\sigma=\reversal{\sigma}$.
+This grammar generates the language of palindromes,
+over $\kleenestar{\B}$.
+\begin{equation*}
+\text{P \produces{} $\varepsilon$ | \str{0} | \str{1} | \str{0}P\str{0} | \str{1}P\str{1}}
+\qquad
+\lang{L}_{\text{PAL}}=\set{\varepsilon, \str{0},\str{1},\str{00},\str{11},\str{000},\str{010},\str{101},\str{111},\ldots}
+\end{equation*}
+This Pushdown machine accepts $\lang{L}_{\text{PAL}}$.
+It has
 states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_1}$,
-and languages $\Sigma=\set{\text{\str{a}},\text{\str{b}}}$
-and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$.
-This table gives its transition function~$\Delta$.
+languages $\Sigma=\set{\text{\str{a}},\text{\str{b}}}$
+and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$,
+and this transition function~$\Delta$.
 \begin{center}
 \begin{tabular}{r|ll}
   \multicolumn{1}{r}{\tabulartext{Line}}
@@ -3838,9 +3855,10 @@ This table gives its transition function~$\Delta$.
   $11$  &$q_1,\varepsilon,\bot$               &$q_2,\varepsilon$ \\
 \end{tabular}
 \end{center}
-This machine accepts the language of palindromes,
-strings $\sigma\in\kleenestar{\Sigma}$ that read the same
-forward and backward, $\sigma=\reversal{\sigma}$.
+For an instance of the nondeterminism
+compare line~$2$ and line~$6$, which show the same input associated with
+two different outputs.
+(We list multiple outputs on multiple lines for easier referencing.)
 \end{example}
 
 Indeed, we gave an algorithm that inputs a nondeterministic Finite State
@@ -3882,12 +3900,98 @@ defined by the grammar.
 
 
 \begin{exercise}
-Write a context-free grammar for $\set{\str{a}^n\str{b}\str{c}^n\suchthat n\in\N}$.
+The grammar \mbox{Q \produces{} 0Q0 | 1Q1 | $\varepsilon$} generates a
+different language of palindromes than the grammar in
+\cref{ex:PDAForPalindromes}.
+What is this language?
+\begin{answer}
+It is the language of even-length palindromes,
+$\set{\tau\concat\reversal{\tau}\suchthat \tau\in\kleenestar{\B}}$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Write a context-free grammar for
+$\set{\str{a}^n\str{b}\str{c}^n\in\kleenestar{\set{\str{a},\str{b},\str{c}}}\suchthat n\in\N}$,
+the language where the number of \str{a}'s before the \str{b} is the same
+as the number of \str{c}'s after it.
 \begin{answer}
 \begin{grammar}
 X \produces{} aXc
               \alt b
 \end{grammar}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Find a grammar that generates the language
+$\set{\sigma\concat \str{b}\concat\reversal{\sigma} \suchthat \sigma\in\kleenestar{\set{\str{a},\str{b}}}}$.
+\begin{answer}
+\begin{grammar}
+T \produces{} aTa
+              \alt bTb
+              \alt b
+\end{grammar}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+The grammar \mbox{Q \produces{} 0Q0 | 1Q1 | $\varepsilon$} generates a
+different language of palindromes than the grammar in
+\cref{ex:PDAForPalindromes}.
+What is this language?
+\end{exercise}
+
+\begin{exercise} % https://cs.stackexchange.com/a/60238/78536
+Find a grammar for the language over $\sigma=\set{\str{a},\str{b},\str{c}}$
+consisting of palindromes that contain at most three \str{c}'s.
+\hint~Use two nonterminals, with one for the case of not adjoining \str{c}'s.
+\begin{answer}
+\begin{grammar}
+S \produces{} aSa | bSb | cTc | a | b | c | $\varepsilon$
+T \produces{} aTa | bTb | a | b | c | $\varepsilon$
+\end{grammar}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that a string $\sigma\in\kleenestar{\B}$ is a palindrome
+$\sigma=\reversal{\sigma}$ if and only if it is generated by the grammar
+given in \cref{ex:PDAForPalindromes}.
+\hint~Use induction in both directions.
+\begin{answer}
+One direction is that if a string~$\sigma\in\kleenestar{\B}$
+is generated by the grammar then it is a palindrome $\sigma=\reversal{\sigma}$.
+We do induction on the grammar's structure.
+The basis step is that the string is either empty $\sigma=\varepsilon$,
+or of length one~$\sigma=\str{0}$ or $\sigma=\str{1}$.
+All three cases are evidentally palindromes.
+For the inductive step we assume the length of the
+string~$\lh{\sigma}$ is greater than one and that the statement is true for all
+shorter strings, all~$\tau\in\kleenestar{\B}$ with $\lh{\tau}<\lh{\sigma}$.
+In the case that $\sigma=\str{0}\tau\str{0}$, the string~$\sigma$ is a
+palindrome by the inductive hypothesis that $\tau$ is a palindrome.
+The case that $\sigma=\str{1}\tau\str{1}$ is similar.
+
+The other direction is that if the string is a palindrome
+$\sigma=\reversal{\sigma}$ then it is generated by the grammar.
+We can use induction on the length~$\lh{\sigma}$.
+If the length of $\sigma\in\kleenestar{\B}$ is~$0$ then the string
+is empty, $\sigma=\varepsilon$.
+In this case it is a palindrome and is also derived from the grammar since
+\mbox{P \produces{} $\varepsilon$} is one of the listed production rules.
+If the length of $\sigma$ is~$1$ then either $\sigma=\str{0}$ or
+$\sigma=\str{1}$, and these two are both palindromes and also derived from
+the grammar.
+Finally, assume that $\lh{\sigma}>1$ and that the statement is true for all
+strings $\tau\in\kleenestar{\B}$ of length less than~$\sigma$.
+There are two cases.
+If $\sigma$'s first character is~$0$ then because $\sigma$ is a palindrome
+it has the form $\sigma=\str{0}\tau\str{0}$, where $\tau$ is a palindrome.
+The induction hypothesis applies to give that $\tau$ is derived from the
+grammar.
+But then so is $\sigma$, using the production \mbox{P \produces{} \str{0}P\str{0}}.
+The case that $\sigma$'s first character is~$\str{1}$ works the same way. 
 \end{answer}
 \end{exercise}
 

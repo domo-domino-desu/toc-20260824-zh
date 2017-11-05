@@ -3766,9 +3766,10 @@ the lines are numbered to make referring to them easier.
 \end{tabular}
 \end{center}
 Its strategy is to keep a running tally of the number of
-\str{[}'s minus the number of \str{]}'s.
-The tally is the number of \str{g0}'s on the stack.
-Here is the evolution of a computation from the input \str{[[]][]}.
+\str{[}'s minus the number of \str{]}'s as 
+the number of \str{g0}'s on the stack.
+Here is the evolution of a computation starting with the input \str{[[]][]}
+and ending in an accepting state.
 (The stack is drawn side-to-side instead of vertically just to
 fit the table on a single page.)
 \begin{tapesequence}
@@ -3783,8 +3784,8 @@ fit the table on a single page.)
     7 &\tapegraphic{automata/asy/machine/machine13.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-It enters state~$q_1\in F$ after scanning the
-input \str{[[]][]} so this machine accepts that string.
+% It enters state~$q_1\in F$ after scanning the
+% input \str{[[]][]} so this machine accepts that string.
 \end{example}
 
 \begin{example}  \label{ex:PDAPalindromesMithMidMarker}
@@ -3795,29 +3796,32 @@ A \citetext{\definend{palindrome}}{%
   (2)~Napoleon's lament, ``Able was I ere I saw Elba''
   and (3)~``A man, a plan, a canal: Panama'', about Theodore Roosevelt.}
 is a string that reads the same forwards and
-backwards $\sigma=\reversal{\sigma}$.
-This is a language of palindromes with a character that marks the middle.
+backwards, $\sigma=\reversal{\sigma}$.
+This language of palindromes uses a~\str{c} character as a middle marker.
 \begin{equation*}
   \lang{L}_{\text{MM}}
   =\set{\sigma\in\kleenestar{\set{\str{a},\str{b},\str{c}}}\suchthat
-   \text{$\sigma=\tau\concat\str{c}\reversal{\tau}$ for some $\tau\in\kleenestar{\set{\str{a},\str{b}}}$}}
+   \text{$\sigma=\tau\concat\str{c}\concat\reversal{\tau}$ for some $\tau\in\kleenestar{\set{\str{a},\str{b}}}$}}
 \end{equation*}
-Consider the Pushdown machine with
-states $Q=\set{q_0,q_1,q_2,q_3}$ with accepting states $F=\set{q_3}$,
-and languages $\Sigma=\set{\text{\str{a}},\text{\str{b}},\text{\str{c}}}$
-and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$.
-The strategy implemented in its transition function~$\Delta$ is to
-spend the first half pushing characters on the stack,
+The Pushdown machine whose transition function is given below
+% has states $Q=\set{q_0,q_1,q_2,q_3}$, including the accepting states
+% $F=\set{q_3}$,
+% and languages $\Sigma=\set{\text{\str{a}},\text{\str{b}},\text{\str{c}}}$
+% and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$.
+uses the strategy is that while it is reading~$\tau$ it is 
+pushing characters onto the stack,
 \str{g0} when it reads~\str{a} and \str{g1} when it reads~\str{b}.
-That happens while the machine is in state~$q_0$.
-Once it hits the middle \str{c}, it reverses.
-It shifts to state~$q_1$ and starts popping.
+% That happens while the machine is in state~$q_0$.
+Once it hits the middle \str{c}, it % reverses.
+% It % shifts to state~$q_1$ and
+starts popping.
 When reading~\str{a} it checks that it is popping~\str{g0},
 and 
 when reading~\str{b} it checks that it is popping~\str{g1}.
-If all goes well it finds the bottom of the stack at the same moment the input
+If all goes well then
+it finds the bottom of the stack at the same moment the input
 runs out, and goes to the accepting state~$q_3$.
-If all does not go well it passes to the error state~$q_2$.
+% If all does not go well then it passes to the error state~$q_2$.
 \begin{center}
 \begin{tabular}{r|ll}
   \multicolumn{1}{r}{\tabulartext{Line}}
@@ -3840,32 +3844,29 @@ If all does not go well it passes to the error state~$q_2$.
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \cline{2-3}
-  $9$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_0,\varepsilon$ \\
+  $9$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
   $10$ &$q_1,\text{\str{a}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
   $11$ &$q_1,\text{\str{a}},\bot$             &$q_2,\varepsilon$ \\
   $12$ &$q_1,\text{\str{b}},\text{\str{g0}}$  &$q_2,\varepsilon$ \\
-  $13$ &$q_1,\text{\str{b}},\text{\str{g1}}$  &$q_0,\varepsilon$ \\
+  $13$ &$q_1,\text{\str{b}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
   $14$  &$q_1,\text{\str{b}},\bot$            &$q_2,\varepsilon$ \\
   $15$ &$q_1,\text{\str{B}},\text{\str{g0}}$  &$q_2,\varepsilon$ \\
   $16$ &$q_1,\text{\str{B}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
   $17$ &$q_1,\text{\str{B}},\bot$             &$q_3,\varepsilon$ \\
 \end{tabular}
 \end{center}
-Here is a computation.
+This computation has the machine accept \str{bacab}.
 \begin{tapesequence}
   \begin{tapesequencetable}
-    0 &\tapegraphic{automata/asy/machine/machine06.pdf} \\
-    1 &\tapegraphic{automata/asy/machine/machine07.pdf} \\
-    2 &\tapegraphic{automata/asy/machine/machine08.pdf} \\
-    3 &\tapegraphic{automata/asy/machine/machine09.pdf} \\
-    4 &\tapegraphic{automata/asy/machine/machine10.pdf} \\
-    5 &\tapegraphic{automata/asy/machine/machine11.pdf} \\
-    6 &\tapegraphic{automata/asy/machine/machine12.pdf} \\
-    7 &\tapegraphic{automata/asy/machine/machine13.pdf} \\
+    0 &\tapegraphic{automata/asy/machine/machine19.pdf} \\
+    1 &\tapegraphic{automata/asy/machine/machine20.pdf} \\
+    2 &\tapegraphic{automata/asy/machine/machine21.pdf} \\
+    3 &\tapegraphic{automata/asy/machine/machine22.pdf} \\
+    4 &\tapegraphic{automata/asy/machine/machine23.pdf} \\
+    5 &\tapegraphic{automata/asy/machine/machine24.pdf} \\
+    6 &\tapegraphic{automata/asy/machine/machine25.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-It enters state~$q_1\in F$ after scanning the
-input \str{[[]][]} so this machine accepts that string.
 \end{example}
 
 So Pushdown machines are intermediate between Turing machines
@@ -4009,6 +4010,25 @@ accepted by some nondeterministic pushdown automata.
 \begin{exercises}
 \begin{exercise}  \label{exer:PDANoHalt}
 Produce a Pushdown Automata that does not halt.
+\end{exercise}
+
+\begin{exercise}
+Produce a Pushdown machine to accept each language over
+$\Sigma=\set{\str{a},\str{b},\str{c}}$.
+\begin{exparts}
+\item
+$\set{\str{a}^n\str{c}\str{b}^{2n}\suchthat n\in\N}$
+\item
+$\set{\str{a}^n\str{c}\str{b}^{n-1}\suchthat n>0}$
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Give a Pushdown machine that accepts
+$\set{\str{0}\concat\tau\concat\str{1}\suchthat \tau\in\kleenestar{\B}}$.
+\begin{answer}
+This is a regular language so you don't need the stack.
+\end{answer}
 \end{exercise}
 
 \begin{exercise}

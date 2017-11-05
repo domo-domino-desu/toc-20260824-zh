@@ -222,7 +222,7 @@ pic=pda(" [[]][]",8,"$q_1$", new string[] {},tape_length,stack_length,separator)
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
-// ------------- NDFA accepting palindromes --------
+// ------------- NPDA accepting palindromes --------
 real tape_length = 80pt;
 real stack_length = 40pt;
 real separator = 20pt;
@@ -254,5 +254,47 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 picture pic;
 int picnum=18;
 pic=pda(" 0110",5,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ------------- DPDA accepting palindromes with middle marker --------
+real tape_length = 90pt;
+real stack_length = 40pt;
+real separator = 20pt;
+
+picture pic;
+int picnum=19;
+pic=pda(" bacab",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=20;
+pic=pda(" bacab",2,"$q_0$", new string[] {"\str{g1}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=21;
+pic=pda(" bacab",3,"$q_0$", new string[] {"\str{g0}", "\str{g1}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=22;
+pic=pda(" bacab",4,"$q_1$", new string[] {"\str{g0}", "\str{g1}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=23;
+pic=pda(" bacab",5,"$q_1$", new string[] {"\str{g1}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=24;
+pic=pda(" bacab",6,"$q_1$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=25;
+pic=pda(" bacab",7,"$q_3$", new string[] {},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

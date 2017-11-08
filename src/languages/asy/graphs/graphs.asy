@@ -737,3 +737,47 @@ draw(p,
 draw(p, w0, w1, w2, w3, w4);
 
 shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+// ============== Illustration of vertex cover ======
+int picnum = 15;
+picture p;
+
+unitsize(p,1pt);
+setdefaultgraphstyles() ;
+
+// define nodes
+node w0=ncircle("$w_0$"),
+     w1=ncircle("$w_1$"),
+     w2=ncircle("$w_2$"),
+     w3=ncircle("$w_3$"),
+     w4=ncircle("$w_4$"),
+     w5=ncircle("$w_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+hlayout(w0, w1, w2);
+vlayout(1*v, w0, w3);
+hlayout(1*u, w3, w4, w5);
+
+// draw edges
+draw(p,
+     (w0--w1),
+     (w0--w3),
+     (w1--w2),
+     (w1--w4),
+     (w2--w4),
+     (w2--w5),
+     (w3--w4),
+     (w4--w5)
+     );
+
+// draw nodes
+draw(p, w0, w1, w2, w3, w4, w5);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+

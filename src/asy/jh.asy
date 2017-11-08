@@ -197,6 +197,8 @@ pen  EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
 // //? doesn't do anything defaultlabelstyle=labelstyle(p=fontsize(6pt)+fontcommand("\ttfamily")+red);
 // // define edge style
 defaultdrawstyle=drawstyle(p=EDGEPEN, arrow=Arrow(DefaultHead,size=3));
+// // Edge with no arrow
+drawstyle undirectededgestyle=drawstyle(p=EDGEPEN, arrow=None);
 // // Standard node is single-circle border
 defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(backgroundcolor,black));
 // // Double circle nodes

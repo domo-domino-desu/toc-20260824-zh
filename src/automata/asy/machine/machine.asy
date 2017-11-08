@@ -227,6 +227,8 @@ real tape_length = 80pt;
 real stack_length = 40pt;
 real separator = 20pt;
 
+
+// ------ even length input
 picture pic;
 int picnum=14;
 pic=pda(" 0110",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
@@ -241,7 +243,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=16;
-pic=pda(" 0110",3,"$q_0$", new string[] {"\str{g1}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda(" 0110",3,"$q_1$", new string[] {"\str{g1}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -253,8 +255,47 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=18;
-pic=pda(" 0110",5,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda(" 0110",4,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ------ even length input
+picture pic;
+int picnum=19;
+pic=pda(" 01010",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=20;
+pic=pda(" 01010",2,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=21;
+pic=pda(" 01010",3,"$q_0$", new string[] {"\str{g1}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=22;
+pic=pda(" 01010",4,"$q_1$", new string[] {"\str{g1}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=23;
+pic=pda(" 01010",5,"$q_1$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+picture pic;
+int picnum=24;
+pic=pda(" 01010",5,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 
@@ -264,37 +305,37 @@ real stack_length = 40pt;
 real separator = 20pt;
 
 picture pic;
-int picnum=19;
+int picnum=25;
 pic=pda(" bacab",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
-int picnum=20;
+int picnum=26;
 pic=pda(" bacab",2,"$q_0$", new string[] {"\str{g1}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
-int picnum=21;
+int picnum=27;
 pic=pda(" bacab",3,"$q_0$", new string[] {"\str{g0}", "\str{g1}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
-int picnum=22;
+int picnum=28;
 pic=pda(" bacab",4,"$q_1$", new string[] {"\str{g0}", "\str{g1}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
-int picnum=23;
+int picnum=29;
 pic=pda(" bacab",5,"$q_1$", new string[] {"\str{g1}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
-int picnum=24;
+int picnum=30;
 pic=pda(" bacab",6,"$q_1$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
-int picnum=25;
+int picnum=31;
 pic=pda(" bacab",7,"$q_3$", new string[] {},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

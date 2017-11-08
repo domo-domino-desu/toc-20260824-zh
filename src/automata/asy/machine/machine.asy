@@ -255,12 +255,12 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=18;
-pic=pda(" 0110",4,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda(" 0110",5,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ------ even length input
+// ------ odd length input
 picture pic;
 int picnum=19;
 pic=pda(" 01010",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);

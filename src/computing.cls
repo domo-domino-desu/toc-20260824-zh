@@ -459,6 +459,7 @@
   \setcounter{theorem}{0}
   \setcounter{section}{\value{extra}}
   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
+  \setcounter{subsection}{0}
   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
 \extrasection{#1}}

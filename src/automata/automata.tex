@@ -56,8 +56,8 @@ Its input alphabet has one symbol, \str{toggle}.
   \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa00.pdf}}
   \settoheight{\jhscratchheight}{\usebox{\scratchbox}}
   \vcenteredhbox{\usebox{\scratchbox}}
-  \hspace{4em}
-  \vcenteredhbox{\includegraphics[height=0.7\jhscratchheight]{automata/powerbutton.png}}  % Free, from: http://www.clker.com/clipart-9978.html
+  \hspace{5em}
+  \vcenteredhbox{\includegraphics[height=0.6\jhscratchheight]{automata/powerbutton.png}}  % Free, from: http://www.clker.com/clipart-9978.html
 \end{center}
 \end{example}
 
@@ -146,7 +146,7 @@ To work a finite state machine, put input on the tape, press the Start button,
 and the machine starts consuming the input, at each step reading in the next
 tape character.
 \begin{center}
-  \includegraphics{automata/asy/machine/machine00.pdf}
+  \includegraphics{asy/share/machine02.pdf}
 \end{center}
 Consequently there is no \HP{} for finite state machines\Dash they always halt,
 after a number of steps equal to the length of the input.
@@ -3636,20 +3636,20 @@ Similarly, you can push a piece of data onto the top of our
 stack device, or you can pop the top element.
 We say that this stack is LIFO:~Last-In, First-Out.
 
-Below on the right is a sequence of stacks.
-The first one already has three characters, \str{g3}, \str{g0}, and~\str{g2}.
-Then we push \str{g1} on the stack, and then \str{g0}.
+Below on the right is a stack.
+It starts with three characters, \str{g3}, \str{g0}, and~\str{g2}.
+Next we push \str{g1} on the stack, and then \str{g0}.
 At this point, to get access to the \str{g1} we  must first pop off 
 \str{g0}, as in the last stack shown.
 \begin{center}
   \vcenteredhbox{\includegraphics[height=1.1in]{automata/dishes.jpg}}
   \hspace{4em}
   \vcenteredhbox{\includegraphics{automata/asy/machine/machine02.pdf}}
-  \hspace{1.5em}
+  \hspace{1.25em}
   \vcenteredhbox{\includegraphics{automata/asy/machine/machine03.pdf}}
-  \hspace{1.5em}
+  \hspace{1.25em}
   \vcenteredhbox{\includegraphics{automata/asy/machine/machine04.pdf}}
-  \hspace{1.5em}
+  \hspace{1.25em}
   \vcenteredhbox{\includegraphics{automata/asy/machine/machine05.pdf}}
 \end{center}
 Once something is popped, it is gone.
@@ -3660,9 +3660,8 @@ that strategy has limits.
 
 
 \subsection{Definition}
-We define this device type by extending the definition of Finite State machines.
-We will first define deterministic machines and later introduce the
-adjustments needed to move to nondeterministic ones.
+We will extend the definition of Finite State machines.
+We start with deterministic machines.
 
 \begin{definition}
 A \definend{Pushdown machine}
@@ -3676,7 +3675,7 @@ $\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\time
 \end{definition}
 
 \begin{center}
-  \includegraphics{automata/asy/machine/machine01.pdf}
+  \includegraphics{asy/share/machine03.pdf}
 \end{center}
 
 As with Finite State machines, Pushdown machines
@@ -3686,54 +3685,58 @@ However these machines can fail to halt; see \cref{exer:PDANoHalt}.
 We will assume that the stack alphabet~$\Gamma$ contains the character $\bot$
 (read that as ``bottom'') that we use to mark the stack bottom.
 The rest of $\Gamma$ is \str{g0}, \str{g1}, etc.
-We assume that the tape alphabet~$\Sigma$ does not contain the
-blank~\str{B} that we will use as an end of input marker, or the 
-character~$\varepsilon$ that we will use for instructions
-that are purely stack operations as described next.\footnote{%
-  The definition allows $\varepsilon$ appear as the second component
-  of $\Delta$'s inputs, and 
-  also uses strings from $\kleenestar{\Gamma}$, which can
-  include the empty string.
-  So the symbol $\varepsilon$ can appear in two different senses.
+We will also assume that the tape alphabet~$\Sigma$ does not contain the
+blank~\str{B}, or the 
+character~$\varepsilon$.
+We will use $\varepsilon$ use for instructions
+that are purely stack operations, as described next.\footnote{%
+  The definition allows $\varepsilon$ to appear in two separate places,
+  as the second component
+  of $\Delta$'s inputs and 
+  also as the empty string, from $\kleenestar{\Gamma}$.
   However, one of those is in the inputs and the other is in the outputs
   so it isn't ambiguous.} 
 
-As always, the transition function describes how the machine acts.
+The transition function describes how the machine acts.
 There are two cases for the input
 $\sequence{q_i,s,g_j}\in Q\times(\Sigma\cup\set{\str{B},\varepsilon})\times\Gamma$.
-If $s\in\Sigma$ then the machine is consuming a tape character.
-An instruction
-\begin{equation*}
-  \Delta(q_i,s,g_j)=\sequence{q_k,\gamma}\in Q\times\kleenestar{\Gamma}
-\end{equation*}
+When the character~$s$ is an element of $\Sigma\cup\set{B}$
+then an instruction
+$\Delta(q_i,s,g_j)=\sequence{q_k,\gamma}$
 applies when the machine is in state~$q_i$ with the tape head reading
 $s$ and with the character $g_j$ on top of the stack.
-If there is no such instruction then the computation ceases, with the
-input string not accepted.
-If there is exactly one instruction where those conditions are satisfied then
-the machien does this:~(i)~the read head moves one cell to the right,
+(If there is no such instruction then the computation ceases, with the
+input string not accepted.)
+If there is one such instruction then
+the machine does this:~(i)~the read head moves one cell to the right,
 (ii)~the machine pops $g_j$ off the stack,
 and pushes the characters of the string
 $\gamma=\sequence{g_{i_0},\ldots\,g_{i_m}}$ onto the stack in the order
 from $g_{i_m}$ first to $g_{i_0}$ last,
 and (iii)~the machine enters state $q_k$.
-The other case is $s=\varepsilon$.
-Everything is the same except that the tape head does not move,
-so the only actions are the stack actions.
-
-At each step the machine pops a character off the stack.
-So if the machine reaches a configuration where before an instruction
-the stack is empty then the machine will lock up and be unable
-to continue, and so unable to accept whatever was the input string.
+The other case for inputs is when the character $s$ is $\varepsilon$.
+In this case everything is the same except that the tape head does not move.
+We use this to manipulate the stack without consuming any input. 
 
 The starting configuration has the machine in state~$q_0$,
 reading the first character
 of~$\sigma\in\kleenestar{\Sigma}$,
 and with the stack containing only~$\bot$.
-A machine accepts its input~$\sigma$ if when it is started
-in its starting configuration,  after scanning all of~$\sigma$
-it eventually enters an accepting state
-$q\in F$.
+A machine accepts its input~$\sigma$ if, after it is started
+in its starting configuration and after scanning all of~$\sigma$,
+it eventually enters an accepting state $q\in F$.
+
+Notice that at each step the machine pops a character off the stack.
+If we want to leave the stack unchanged then as part of the instruction
+we must push that character back on.
+In addition, if the machine reaches a configuration where 
+the stack is empty then it will lock up and be unable to perform any more
+instructions.\footnote{%
+  An alternative to the final state definition of acceptance we are using is
+  to define that a machine accepts its input if after consuming that input,
+  it empties the stack.
+  The definitions are equivalent in that a string is accepted by
+  either type of machine if it is accepted by the other.}
 
 \begin{example}  \label{ex:PDSAcceptBalencedParens}
 This grammar generates the language of balanced parentheses.
@@ -4095,9 +4098,14 @@ defined by the grammar.
 \end{exercise}
 
 \begin{exercise}
-\Cref{ex:PDAForPalindromes} discusses the view of the nondeterministic
-computation tree.
-Draw the tree for these inputs.
+Give a Pushdown machine that accepts
+$\set{\str{a}^{2n}\str{b}^{n}\suchthat n\in\N}$.
+\end{exercise}
+
+\begin{exercise}
+\Cref{ex:PDAForPalindromes} discusses the view of a nondeterministic
+computation as a tree.
+Draw the tree for that machine these inputs.
 \begin{exparts*}
 \item \str{0110}
 \item \str{01010}

@@ -25,55 +25,56 @@ cd("");
 
 string OUTPUT_FN = "machine%02d";
 
-// ============== Finite state machine picture ================
-picture pic;
-int picnum = 0;
-unitsize(pic,22.5pt);
-// size3(pic,0,50pt);
-// size(0,70pt,(0,0),(70pt,70pt));
-viewportmargin=(-10pt,10pt);
+// These two got folded into asy/share/machine.asy
+// // ============== Finite state machine picture ================
+// picture pic;
+// int picnum = 0;
+// unitsize(pic,22.5pt);
+// // size3(pic,0,50pt);
+// // size(0,70pt,(0,0),(70pt,70pt));
+// viewportmargin=(-10pt,10pt);
 
-triple view_from = (32,12,10);
-currentprojection=orthographic(view_from);
-currentlight=light(view_from);
+// triple view_from = (32,12,10);
+// currentprojection=orthographic(view_from);
+// currentlight=light(view_from);
 
-tm_draw(pic=pic);
-tm_draw_start_button(pic);
-tm_draw_halt_light(pic,tm_halt_label="\textsf{Accept}");
-tm_draw_rt_tape(pic,"1001010");
+// tm_draw(pic=pic);
+// tm_draw_start_button(pic);
+// tm_draw_halt_light(pic,tm_halt_label="\textsf{Accept}");
+// tm_draw_rt_tape(pic,"1001010");
 
-draw((0,0)--(1,1),red);
-dot(pic,(0,1.15*tm_ht),invisible);  // little extra vert room
-shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+// draw((0,0)--(1,1),red);
+// dot(pic,(0,1.15*tm_ht),invisible);  // little extra vert room
+// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============== FSM with an attached pushdown stack ================
-picture pic;
-int picnum = 1;
-unitsize(pic,22.5pt);
-// size(pic,0,50pt);
-// size(0,70pt,(0,0),(70pt,70pt));
-viewportmargin=(-10pt,10pt);
+// // ============== FSM with an attached pushdown stack ================
+// picture pic;
+// int picnum = 1;
+// unitsize(pic,22.5pt);
+// // size(pic,0,50pt);
+// // size(0,70pt,(0,0),(70pt,70pt));
+// viewportmargin=(-10pt,10pt);
 
-triple view_from = (32,12,10);
-currentprojection=orthographic(view_from);
-currentlight=light(view_from);
+// triple view_from = (32,12,10);
+// currentprojection=orthographic(view_from);
+// currentlight=light(view_from);
 
-triple eb_origin = (-4,-2,0);  // where external box is shifted
-draw_wire(pic,tm_origin=tm_origin,eb_origin=eb_origin);
+// triple eb_origin = (-4,-2,0);  // where external box is shifted
+// draw_wire(pic,tm_origin=tm_origin,eb_origin=eb_origin);
 
-eb_box_outside=tm_box_outside;
-transform3 t=shift(eb_origin);
-eb_draw(pic, t=t, eb_label="\textsf{LIFO}", eb_material=eb_box_outside);
-tm_draw_lf_tape(pic);
-tm_draw(pic);
-tm_draw_start_button(pic);
-tm_draw_halt_light(pic, tm_halt_label="\textsf{Accept}");
-tm_draw_rt_tape(pic, "[[][]]");
+// eb_box_outside=tm_box_outside;
+// transform3 t=shift(eb_origin);
+// eb_draw(pic, t=t, eb_label="\textsf{LIFO}", eb_material=eb_box_outside);
+// tm_draw_lf_tape(pic);
+// tm_draw(pic);
+// tm_draw_start_button(pic);
+// tm_draw_halt_light(pic, tm_halt_label="\textsf{Accept}");
+// tm_draw_rt_tape(pic, "[[][]]");
 
-dot((0,1.15*tm_ht),invisible);  // little extra vert room
-shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+// dot((0,1.15*tm_ht),invisible);  // little extra vert room
+// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

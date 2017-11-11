@@ -3757,7 +3757,14 @@ Show that $A$ is computably enumerable.
 \begin{exercise}
 Let the set $K_0$ be the set
 $\set{\sequence{e,x}\suchthat \text{$\TM_e$ halts on input $x$}}$.
-Show thta $K_0$ is somputably enumerable.
+\begin{exparts}
+\item
+Show that $K_0$ is computably enumerable.
+\item
+Show that the columns of $K_0$, the sets
+$C_e=\set{\sequence{e,x}\suchthat \text{$\TM_e$ halts on input $x$}}$
+make up all the computable enumerable sets.
+\end{exparts}
 \end{exercise}
 
 \begin{exercise}
@@ -4358,7 +4365,496 @@ but we should recognize them as our bedrock.
 % unsolvability by means of given instruments.
 
 
+
+
+% =====================================================
 \section{Recursion theorem}
+% ? http://mathworld.wolfram.com/TuppersSelf-ReferentialFormula.html
+% https://www.quora.com/How-did-Jeff-Tupper-come-up-with-his-%E2%80%9Cself-referential%E2%80%9D-formula/answer/Anders-Kaseorg?share=449cd24c&srid=uXs
+% The $e$-th computably enumerable set is 
+% $W_e=\set{x\suchthat \phi_e(x)\downarrow}$.
+% Taking Church's Thesis, these form the largest collection of sets
+% that we will ever know anything about.
+
+% Consequently, define a binary relation between integers as $x\mathrel{R}e$
+% if $x\in W_e$.
+% % We can ask if this relation is reflexive\Dash for all~$e$ must 
+% % it be the case that $e\mathrel{R}e$?
+% % Clearly not, where $e$ is the index of a Turing machine that never halts.
+% %
+% With Russell's paradox in mind we ask the weaker question:~is 
+% there an~$e$ such that $e\mathrel{R}e$? 
+% That is, must there
+% be an index~$e$ so that $\phi_e(e)\downarrow$?
+% On the face of it, this seems to depend on the details of exactly how
+% we number the Turing machines.
+% We will prove, however, that it does not, and that there
+% must be such an index.
+Recall our first example of diagonalization, the proof that the
+set of real numbers is not countable.
+We assume that there is an $\map{f}{\N}{\leftclosed{0}{1}}$,
+as illustrated below,
+and consider the table listing the inputs and outputs.
+\begin{equation*} \setlength{\arraycolsep}{0.75\arraycolsep}
+  \begin{array}{c|r@{\hspace*{.35em}.\hspace*{.35em}}ccccccc@{\hspace*{1em}\ldots\;}}
+    \multicolumn{1}{c}{\text{\small $n$\hspace*{0.25em}}} 
+    &\multicolumn{8}{c}{\text{\hspace*{-1.00em}\small\tabulartext{Decimal expansion of $f(n)$}\ }}  \\ 
+   \cline{1-9}
+   \rule{0em}{2.15ex}% bit more vertical room 
+   0  &4   &3  &1  &2  &7  &7  &0  &4  \\  
+   1  &12  &0  &1  &0  &0  &0  &0  &0  \\  
+   2  &1   &4  &1  &4  &1  &5  &9  &2  \\  
+   3  &-20  &9  &1  &9  &5  &9  &1  &9  \\  
+   4  &  0 &1  &0  &1  &0  &0  &1  &0  \\
+   5  &-0  &6   &2  &5  &5  &4  &1  &8  \\[-.5ex]
+   \multicolumn{1}{c}{\vdotswithin{$0$}} 
+    &\multicolumn{4}{c}{\vdotswithin{$1$}}  
+  \end{array}
+\end{equation*}
+% \begin{center} \small
+%   \begin{tabular}{rr|ccccc}
+%     &\multicolumn{1}{c}{\ }
+%     &\multicolumn{4}{c}{\tabulartext{Output $f(n)$}}  \\
+%     &\multicolumn{1}{c}{\ }
+%       &$0$ &$1$ &$2$ &$3$ &\ldots \\  \cline{3-7}
+%    \multirow{5}{*}{\textsc{Input $n$}}
+%     &$0$ &$.r_{0,0}$ &$r_{0,1}$ &$r_{0,2}$ &$r_{0,3}$  &\ldots \\
+%     &$1$  &$.r_{1,0}$ &$r_{1,1}$ &$r_{1,2}$ &$r_{1,3}$  &\ldots \\
+%     &$2$  &$.r_{2,0}$ &$r_{2,1}$ &$r_{2,2}$ &$r_{2,3}$  &\ldots \\
+%     &$3$  &$.r_{3,0}$ &$r_{3,1}$ &$r_{3,2}$ &$r_{3,3}$  &\ldots \\ % [-.5ex]
+%     &$\mathrel{\makebox[\widthof{3}]{\vdots}}$
+%       &$\mathrel{\makebox[\widthof{=}]{\vdots}}$
+%       &$\mathrel{\makebox[\widthof{=}]{\vdots}}$
+%   \end{tabular}
+%   \end{center}
+Let the number on row~$n$ be 
+$d_n=\hat{d}.d_{n,0}d_{n,1}d_{n,2}\ldots$
+Ignore what's to the left of the decimal point.
+To its right, go down the diagonal, 
+taking the digits $d_{n,0}=3$, $d_{n,1}=1$, $d_{n,2}=4$, \ldots{} and 
+construct a number~$z=0.z_0,z_1,z_2\ldots$
+by making its $n$-th decimal place something other than~$d_{n,n}$.
+Specifically, transform $d_{n,n}$ to $z_n$ in this way.
+\begin{equation*}
+  t(d_{n,n})=
+  \begin{cases}
+  2  &\case{if $d_{n,n}=1$}  \\
+  1  &\case{otherwise}
+  \end{cases}
+\end{equation*}
+Thus, in the example above $z=0.121112\ldots$
+This number is not an output of $f$. 
+
+
+
+\subsection{When diagonalization fails}
+What if the transformation of the diagonal produces a sequence that
+is a row? 
+Then the member of the array where the diagonal crosses that row is
+unchanged by the transformation; if the $z=d_{n_0}$ then '
+$d_{n_0,n_0}=t(d_{n_0,n_0})$.
+That is, if diagonalization fails then the transformation has
+a fixed point.
+
+We will apply this to sequences of
+computable functions,
+$\TMfcn_{i_0},\TMfcn_{i_1},\TMfcn_{i_2},\ldots$
+In the spirit of studying effectiveness, we take the indices to be
+computable also,
+$\sequence{i_0,i_1,i_2,\ldots}=\sequence{\TMfcn_e(0),\TMfcn_e(1),\TMfcn_e(2),\ldots}$
+for some index~$e$.
+\begin{equation*}
+  \TMfcn_{\phi_e(0)},\,\TMfcn_{\phi_e(1)},\,\TMfcn_{\phi_e(2)},\,\ldots
+\end{equation*}
+Thus, this table lists all effective sequences of effective functions.
+\begin{center}\small \renewcommand{\arraystretch}{1.25}
+  \begin{tabular}{rr|ccccc}
+    &\multicolumn{1}{c}{\ }
+    &\multicolumn{4}{c}{\tabulartext{Sequence term~$\TMfcn_{\TMfcn_e(n)}$}}  \\
+    &\multicolumn{1}{c}{\ }
+      &$0$ &$1$ &$2$ &$3$ &\ldots \\  \cline{3-7}
+   \multirow{5}{*}{\tabulartext{Sequence~$e$}}
+    &$0$ &$\phi_{\phi_0(0)}$ &$\phi_{\phi_0(1)}$ &$\phi_{\phi_0(2)}$ &$\phi_{\phi_0(3)}$  &\ldots \\
+    &$1$ &$\phi_{\phi_1(0)}$ &$\phi_{\phi_1(1)}$ &$\phi_{\phi_1(2)}$ &$\phi_{\phi_1(3)}$  &\ldots \\
+    &$2$ &$\phi_{\phi_2(0)}$ &$\phi_{\phi_2(1)}$ &$\phi_{\phi_2(2)}$ &$\phi_{\phi_2(3)}$  &\ldots \\
+    &$3$ &$\phi_{\phi_3(0)}$ &$\phi_{\phi_3(1)}$ &$\phi_{\phi_3(2)}$ &$\phi_{\phi_3(3)}$  &    \\[-.5ex]
+    &$\mathrel{\makebox[\widthof{3}]{\vdots}}$
+      &$\mathrel{\makebox[\widthof{=}]{\vdots}}$
+      &$\mathrel{\makebox[\widthof{=}]{\vdots}}$
+  \end{tabular}
+\end{center}
+The natural transformation uses a computable function~$f$. 
+\begin{equation*}
+  \TMfcn_e\mapsunder{t_f}\TMfcn_{f(e)}
+\end{equation*}
+The next result shows that diagonalization fails with this transformation,
+because the transformed diagonal is
+a computable computable sequence of computable functions.
+Thus the transformation has a fixed point.
+
+\begin{theorem}[Recursion Theorem] 
+For any computable~$f$ there is an index~$e$ such that $\TMfcn_e=\TMfcn_{f(e)}$.
+\end{theorem}
+
+\begin{proof}
+In the array above, the diagonal is
+$\TMfcn_{\TMfcn_0(0)},\,\TMfcn_{\TMfcn_1(1)},\,\TMfcn_{\TMfcn_2(2)},\>\ldots$.
+This is its $i$-th entry.
+\begin{equation*}
+  d_{n,n}(x)=
+  \begin{cases}
+    \TMfcn_{\TMfcn_n(n)}(x)  &\case{if $\TMfcn_n(n)\converges$} \\
+    \uparrow                &\case{otherwise}
+  \end{cases}
+  % \hspace{3em}
+  % \vcenteredhbox{\includegraphics{asy/fixedpoint.pdf}}
+\end{equation*}
+Under the transformation~$t_f$ the diagonal 
+becomes $\TMfcn_{f\TMfcn_0(0)},\,\TMfcn_{f\TMfcn_1(1)},\,\TMfcn_{f\TMfcn_2(2)},\>\ldots$
+\begin{equation*}
+  t_f(D_{n,n})\;(x)=
+  \begin{cases}
+    \TMfcn_{f\TMfcn_n(n)}(x)   &\case{if $f\TMfcn_n(n)\converges$}     \\
+    \uparrow                 &\case{otherwise}
+  \end{cases}
+  % \hspace{3em}
+  % \vcenteredhbox{\includegraphics{asy/fixedpoint1.pdf}}
+\end{equation*}
+Here $n$ is a parameter and
+the instructions for $\TMfcn_{f\TMfcn_n(n)}$ depend uniformly on it. 
+That is, the \smn{} theorem gives a
+computable function~$g=\TMfcn_e$ as here.
+\begin{equation*}
+  t_f(d_{n,n})\;(x)=\TMfcn_{g(n)}(x)=\TMfcn_{\TMfcn_e(n)}(x)=
+  \begin{cases}
+    \TMfcn_{f\TMfcn_n(n)}(x)   &\case{if $f\TMfcn_n(n)\converges$} \\
+    \uparrow                 &\case{otherwise}
+  \end{cases}
+\end{equation*}
+Recognize the $\TMfcn_{\TMfcn_e(n)}$ as the entries from row~$e$. 
+So the transformation of the diagonal 
+gives a row
+\begin{center}\small \renewcommand{\arraystretch}{1.25}
+  \begin{tabular}{r|ccccc}
+     \multicolumn{1}{c}{\ }
+      &$0$ &$1$ &$\ldots$ &$e$ &\ldots \\  \cline{2-6}
+    $0$ &$\phi_{\phi_0(0)}$ &$\phi_{\phi_0(1)}$ &$\ldots$ &$\phi_{\phi_0(e)}$  &\ldots \\
+    $1$ &$\phi_{\phi_1(0)}$ &$\phi_{\phi_1(1)}$ &$\ldots$ &$\phi_{\phi_1(e)}$  &\ldots \\
+    $\mathrel{\makebox[\widthof{3}]{\vdots}}$
+      &$\mathrel{\makebox[\widthof{=}]{\vdots}}$
+      &$\mathrel{\makebox[\widthof{=}]{\vdots}}$               \\
+    $e$ &$\phi_{\phi_n(0)}$ &$\phi_{\phi_n(1)}$ &$\ldots$ &$\phi_{\phi_e(e)}=\TMfcn_{f\TMfcn_e(e)}$  &\ldots \\
+    $\mathrel{\makebox[\widthof{3}]{\vdots}}$
+      &$\mathrel{\makebox[\widthof{=}]{\vdots}}$
+      &$\mathrel{\makebox[\widthof{=}]{\vdots}}$
+  \end{tabular}
+\end{center}
+and
+the $e$-th entry in that row gives the desired fixed point
+$\phi_{\phi_e(e)}=\phi_{f\phi_e(e)}$.
+\end{proof}
+
+The power of this result is that it
+applies to \emph{any} computable function, any effective function that is
+total.
+
+\begin{corollary}
+There is an index~$e$ so that $W_e=\set{e}$.
+\end{corollary}
+
+\begin{proof}
+Use Church's Thesis and the $s$-$m$-$n$ theorem to construct a 
+computable function~$f$ such that for all $x$ we have
+$W_{f(x)}=\set{x}$.
+That is, consider this program.
+\begin{center}
+  % \includegraphics{asy/wm1.pdf}
+\end{center}
+By Church's Thesis it can be accomplished with a Turing machine;
+say, $\TM_{e_0}$.
+Apply the $s$-$m$-$n$ theorem to get the program below with parameter~$m$,
+so it is $\TM_{s(e_0,m)}$.
+\begin{center}
+  % \includegraphics{asy/wm.pdf}
+\end{center}
+Since $e_0$ is fixed (it is just the index of the first program),
+$s(e_0,x)$ is a function of one variable.
+\begin{equation*}
+  m\mapsunder{f}s(e_0,m)
+\end{equation*}
+The Recursion Theorem gives a fixed point~$m=e$ with
+$W_e=W_{f(e)}=\set{e}$.
+\end{proof}
+
+\begin{lemma}
+There is an $m\in\N$ such that  
+$\TMfcn_m(x)=m$ for all inputs~$x$.
+\end{lemma}
+
+\begin{proof}
+As earlier use Church's Thesis and the $s$-$m$-$n$ theorem to construct a 
+computable function~$f$ such that for all $x$ we have
+$W_{f(x)}=\set{x}$.
+
+Specifically, where Church's Thesis gives the left program as
+$\\TM_{e_0}$,
+\begin{center}
+  % \vcenteredhbox{\includegraphics{asy/phim1.pdf}}
+  \hspace{3em}
+  % \vcenteredhbox{\includegraphics{asy/phim.pdf}}
+\end{center}
+the $s$-$m$-$n$ theorem gives the right as $\TM_{s(e_0,m)}$.
+The function~$f$ defined by $f(m)= s(e_0,m)$ has a fixed point~$e$,
+giving $\TMfcn_e(x)=\TMfcn_{f(e)}(x)=e$ for all~$x$.
+\end{proof}
+
+
+
+% ...........
+\subsection{Discussion}
+The prior subsection shows that there is an integer $m$ such that
+$\set{m}=W_m=\set{x\suchthat \phi_m(x)\downarrow}$.
+If we think of the index~$m$ as the name of the function~$\TMfcn_{m}$ then 
+this computable function knows to converge on its name, and only on 
+its name.
+Said another way, $\TM_m$ is a program whose index, in some way,
+\emph{is} its behavior.
+There is something here that bears further investigation\Dash 
+the integer~$m$ in some sense ``names itself.''
+
+We also showed that there is an integer $m$ such that 
+$\TMfcn_m(x)=m]$ for all inputs.
+So this computable function outputs its name.
+We have used this informal idea of program index: look on the 
+hard drive for the executable file, which is a bit string,
+interpret that as a binary number, and call that the index
+of the program.
+Because $m$ appears in the code for this program, doesn't that mean that
+its index number must be bigger than~$m$?
+Since the bit string for $m$ is a substring?
+
+Again, this machine of course has some number, but why 
+must there
+be an~$m$ so that this is~$\TM_m$?
+How is it even possible\Dash since~$m$ is hard-coded 
+into the source code,
+mustn't the number of the machine be larger than~$m$? 
+
+
+
+
+
+
+\begin{exercises}
+\begin{exercise}
+% Rogers p 181
+Where $\map{f}{\N}{\N}$ is computable, show that there is
+a natural number~$n$ so that $W_n=W_{f(n)}$.
+\end{exercise}
+
+\begin{exercise}
+% Rogers p214
+Prove or disprove the existence of~$m$ with the given property.
+\begin{exparts}
+\item $W_m=\set{m^2}$
+\item $W_m=10^m$
+\item $W_m=\N-\set{m}$
+\item $W_m=\set{x\suchthat \text{$\phi_m(x)$ diverges}}$
+\end{exparts}
+\end{exercise}
+\end{exercises}
+
+
+% =======================================================
+\extra{Self Reproduction}
+
+\margingraphic{0.14\textwidth}{background/preformationism.jpg}{%
+  \label{fig:preformationism}\href{https://en.wikipedia.org/wiki/Preformationism}{Sperm drawing, 1695}}
+Where do babies come from?
+As a first whack at answering the question, 
+start with a baby and work backwards.
+
+Some early investigators, working without a microscope, perceived that the 
+fetus simply expands while retaining its essential features 
+(one head, two arms, etc.).
+They posited a \textit{homunculus}, 
+a small human-like figure that,
+when given the breath of life, swells to be a person.    
+
+But rub is that the homunculus may eventually become a parent.
+So inside each are it's children?
+And inside them the grandchildren?
+
+So, one problem with this approach is its potential infinite regress.
+This line of thinking suggests that all organisms were created at the same
+time, that they have existed since the beginning of creation.
+That doesn't sound right.
+
+% \begin{center}
+%   \captionedfigure[.30]{cranachadameve.jpg}{Adam and Eve, Lucas Cranach the Elder, 1528}    
+% \end{center}
+Does she contain all future generations?
+Today we know that sperm and egg don't contain future lives, they
+contains the code to create the future lives.
+
+
+
+
+\subsection{Paley's watch}
+W~Paley gave a parable in his 
+\textit{Natural Theology}, which gives for the existence of a god from
+the evidence we find in the natural world.
+This was a very influential text before the
+explication by Darwin and Wallace of descent with
+modification through natural selection.
+
+
+\begin{quotation}\small
+In crossing a heath, suppose I pitched my foot against a stone, and
+were asked how the stone came to be there; I might possibly answer, that,
+for anything I knew to the contrary, it had lain there forever:~nor would it
+perhaps be very easy to show the absurdity of this answer.
+But suppose I had found a watch upon the ground, and it should be inquired
+how the watch happened to be in that place; I should hardly think of the
+answer I had before given, that for anything I knew, the watch might have
+always been there.
+
+\ldots{} when we come to inspect the watch we perceive \ldots{}
+that its several parts are framed and put together for a purpose, e.g., that 
+they are so formed and adjusted as to produce motion, and that motion so 
+regulated as to point out the hour of the day; 
+that if the different parts had been differently shaped from what they are,
+or placed in aany other manner or in any other order than that in 
+which they are placed, either no motion at all would have been carried
+on by the machine, or none which would have answered the use that is now 
+served by it \ldots{} the inference we think is inevitable, that 
+the watch must have a maker\Dash that there must have existed, at some
+time and at some place or other, an artificer or artificers who
+formed it for the purpose which we find it actually to answer, 
+who comprehended its construction and designed its use.
+
+The marks of design are too strong to be got over.
+Design must have had a designer.
+That designer must have been a person.
+That person is GOD.
+\end{quotation}
+
+\margingraphic[l]{0.2\textwidth}{background/paley.jpg}{%
+  \label{fig:paley}\href{https://en.wikipedia.org/wiki/William_Paley}{William Paley 1743--1805}} % https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/William_Paley_by_George_Romney.jpg/1200px-William_Paley_by_George_Romney.jpg
+Paley goes on to give his strongest argument in the parable, which is that
+the most incredible thing is the ability for self-reproduction.
+Living things, organic things, seem different than machines.
+Living things can self-reproduce.
+Can machines reproduce?
+Or is this ability some kind of magic?
+
+\begin{quotation}\small
+Suppose, in the next place, that the person, who found the watch, would,
+after some time, discover, that, in addition to all the properties 
+which he had hitherto observed in it, it possessed the unexpected
+property of producing, in the course of its movement, another 
+watch like itself, (the thing is conceivable;) that it contained 
+within it a mechanism, a system of its parts, a mould for instance,
+or a complex adjustment of laths,
+files and other tools, evidently and separately calculated for this
+purpose; let us inquire, what effect ought such a discovery to have
+upon his former concluson?
+\end{quotation}
+
+% If that construction without this property, or which is the same thing, 
+% before this property had been noticed, 
+% proved intention and art to have been employed about it; 
+% still more strong would the proof appear, 
+% when he came to the knowledge of this further property, 
+% the crown and perfection of all the rest.
+After then calling the ability to reproduce the ``the crown and perfection''
+of other properties, Paley brings up the problem of the chicken and egg.
+
+\begin{quotation}\small
+The question is not simply, How came the first watch into existence?
+which question it may be pretended, 
+is done away by supposing the series of watches thus produced from one
+another to have been infinite, and consequently to have had no such first,
+for which it was necessary to provide a cause \ldots{} as it is, the
+metaphysics of that question have no place; for in the watch which we are 
+examining, are seen contrivance, design; an end; a purpose; means for the 
+end, adaptation to the purpose.
+And the question which irresistibly presses upon our thoughts, is,
+whence this contrivance and design?
+\end{quotation}
+
+
+One reason we perceive that machines cannot self-reproduce is
+an argument by complexity.
+Imagine a complex robot that assembles cell phones.
+Our first reaction is that this is like a law of thermodynamics thing\Dash 
+it is possible because the cell phone is less complex than the machine
+making it.
+Can machines produce things at least as complex as they are?
+Can they reproduce themselves?
+
+We will show that the Recursion Theorem gives a way, by showing some
+self-reproducing programs.
+
+
+\subsection{Quines}
+Comnpare the sentence ``cheese is derived from milk.''  
+with the sentence 
+``\,`cheese' is derived from the Old English word `cyse'\,''.
+When a word refers to something, as in the first sentence,
+it is said to be being `used'. 
+In the second sentence, where it is quoted\footnote{%
+  Sometimes authors instead use a different font, as when we use
+  a typewriter font to mention of computer code,
+  as in ``the \protect\lstinline!main()! line'' 
+  (in which I've just mentioned a mention).}
+because we are examining it for 
+its surface aspects (typographical, phonetic, etc.), 
+it is said to be being `mentioned'.
+% \hfill\textit{---Douglas Hofstadter}
+
+The sentence
+``Quine said that `quotation has a certain anomalous feature.'\,''
+both uses and mentions, since the 
+the meaning of the quoted words completes the sentence.
+So the distinction needs further explication.
+
+Self-referential statements mention themselves (or part of themselves), 
+and may produce logical paradoxes such as Quine's paradox, a sentence
+that asserts its own falshood. 
+\begin{center}
+  ``Yields falsehood when preceded by its quotation'' \\
+  \quad yields falsehood when preceded by its quotation.
+\end{center}
+If this sentence were false then it would be saying something that is true.
+If this sentence were true then what it says, that it is not true,
+would hold and it would be not true.
+(Compare this paradox with the Liar paradox). 
+
+In programming, a \textit{pointer} stores a reference; it mentions the thing.
+% \begin{center}
+%   \includegraphics{asy/pointer.pdf}
+% \end{center}
+To use the thing, you
+\textit{dereference}; you follow the pointer  
+to access the referrent.
+Here is an example in~$C$.
+% http://cslibrary.stanford.edu/106/
+\begin{lstlisting}
+void main() {   
+    int*    x;  // Allocate the pointers x and y
+    int*    y;  // (but not their referrents)
+    
+    x = malloc(sizeof(int));   // Allocate int referrent, and point x there
+    y = malloc(sizeof(int));   // Same for y
+    *x = 42;    // Dereference x to store 42 in its referrent
+    y = x;      // Sets content of location y to equal content of location x
+    *y = 13;    // Dereference y to store 13 in its (now shared) referrent
+}
+\end{lstlisting}
+This shows the 
+memory location named \lstinline!x! first and the one named \lstinline!y! 
+second. 
 
 
 

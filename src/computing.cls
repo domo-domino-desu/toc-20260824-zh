@@ -46,6 +46,9 @@
 \setlength{\topsep}{8.0pt plus 2.0pt minus 2.0pt}  % bk10.clo has it set to 8pt
 
 
+% ========== tables =============
+\usepackage{multirow}
+
 % ========== enumitem =============
 \usepackage[inline]{enumitem}
 % parenum
@@ -1405,12 +1408,12 @@
 \newenvironment{tapesequencetable}{%
   % \vspace{2.5ex plus 0.25ex minus 0.15ex}%
   \begin{tabular}[t]{r|c} 
-    \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
-                         % \rule{0em}{2ex}
-                         \begin{tabular}[b]{@{}c@{}}
-                           \tabulartext{After} \\[-0.425ex] 
-                           \tabulartext{step} 
-                         \end{tabular}} 
+    % \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
+    %                      \begin{tabular}[b]{@{}c@{}}
+    %                        \tabulartext{After} \\[-0.425ex] 
+    %                        \tabulartext{step} 
+                             %                            \end{tabular}}
+    \multicolumn{1}{r}{\tabulartext{Step}}
      &\tabulartext{Configuration}                        \\[-1ex] \hline
 }{%
   \end{tabular}%

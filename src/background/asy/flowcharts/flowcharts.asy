@@ -256,10 +256,11 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+
+
 // ---- relativization to K -------------
 picture pic;
 int picnum = 5;
-
 
 // define nodes
 node start=nroundbox("Start");
@@ -302,3 +303,230 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ---- recursion theorem -------------
+picture pic;
+int picnum = 6;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $n,x$");
+node getindex=nbox("Run $\TM_n$ on $n$");
+node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on input $x$"));
+node end=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,getindex);
+vlayout(1.4*v,getindex,simulate);
+vlayout(1.3*v,simulate,end);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--getindex),
+     (getindex--simulate),
+     (simulate--end)
+     );
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     getindex,
+     simulate, 
+     end
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ...................
+picture pic;
+int picnum = 7;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node getindex=nbox("Run $\TM_n$ on $n$");
+node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on input $x$"));
+node end=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,getindex);
+vlayout(1.4*v,getindex,simulate);
+vlayout(1.3*v,simulate,end);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--getindex),
+     (getindex--simulate),
+     (simulate--end)
+     );
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     getindex,
+     simulate, 
+     end
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ...................
+picture pic;
+int picnum = 8;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node getindex=nbox("Run $\TM_n$ on $n$");
+node simulate=nbox("With the result $w$, run $\TM_{f(w)}$ on $x$");
+node end=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,getindex);
+vlayout(1.2*v,getindex,simulate);
+vlayout(1.2*v,simulate,end);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--getindex),
+     (getindex--simulate),
+     (simulate--end)
+     );
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     getindex,
+     simulate, 
+     end
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ---- application of recursion theorem W_m={m}  -------------
+picture pic;
+int picnum = 9;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x,m$");
+node test=nrounddiamond("x=m?");
+node printzero=nbox("Print 0");
+node loop=nbox("Infinite loop");
+node dummy=nbox("");  
+node end=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+vlayout(0.9*v,test,dummy);
+hlayout(-1.5*u,dummy,printzero);
+vlayout(1.0*v,printzero,end);
+hlayout(1.75*u,dummy,loop);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..printzero).l("N"),
+     (test..HV..loop).l("Y").style("leftside"),
+     (printzero--end)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printzero,
+     loop, 
+     end
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ..........................
+picture pic;
+int picnum = 10;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node test=nrounddiamond("x=m?");
+node printzero=nbox("Print 0");
+node loop=nbox("Infinite loop");
+node dummy=nbox("");  
+node end=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+vlayout(0.9*v,test,dummy);
+hlayout(-1.5*u,dummy,printzero);
+vlayout(1.0*v,printzero,end);
+hlayout(1.75*u,dummy,loop);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..printzero).l("N"),
+     (test..HV..loop).l("Y").style("leftside"),
+     (printzero--end)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printzero,
+     loop, 
+     end
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

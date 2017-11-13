@@ -444,7 +444,7 @@ node start=nroundbox("Start");
 node read=nbox("Read $x,m$");
 node test=nrounddiamond("x=m?");
 node printzero=nbox("Print 0");
-node loop=nbox("Infinite loop");
+node loop=nbox("Loop");
 node dummy=nbox("");  
 node end=nroundbox("End");
 
@@ -459,14 +459,14 @@ vlayout(1.35*v,read,test);
 vlayout(0.9*v,test,dummy);
 hlayout(-1.5*u,dummy,printzero);
 vlayout(1.0*v,printzero,end);
-hlayout(1.75*u,dummy,loop);
+hlayout(1.5*u,dummy,loop);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--test),
-     (test..HV..printzero).l("N"),
-     (test..HV..loop).l("Y").style("leftside"),
+     (test..HV..printzero).l("Y"),
+     (test..HV..loop).l("N").style("leftside"),
      (printzero--end)
 );
 
@@ -492,7 +492,7 @@ node start=nroundbox("Start");
 node read=nbox("Read $x$");
 node test=nrounddiamond("x=m?");
 node printzero=nbox("Print 0");
-node loop=nbox("Infinite loop");
+node loop=nbox("Loop");
 node dummy=nbox("");  
 node end=nroundbox("End");
 
@@ -507,14 +507,14 @@ vlayout(1.35*v,read,test);
 vlayout(0.9*v,test,dummy);
 hlayout(-1.5*u,dummy,printzero);
 vlayout(1.0*v,printzero,end);
-hlayout(1.75*u,dummy,loop);
+hlayout(1.5*u,dummy,loop);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--test),
-     (test..HV..printzero).l("N"),
-     (test..HV..loop).l("Y").style("leftside"),
+     (test..HV..printzero).l("Y"),
+     (test..HV..loop).l("N").style("leftside"),
      (printzero--end)
 );
 

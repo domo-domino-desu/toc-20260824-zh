@@ -1330,12 +1330,15 @@
     \hskip \labelsep}%
   \ignorespaces}
 \renewenvironment{quotation}{\begin{list}{}{%
+            \setlength{\topsep}{0.65ex}%
             \setlength{\parsep}{\parskip}%
             \setlength{\itemsep}{-\parsep}%
             \setlength{\labelwidth}{0em}%
-            \setlength{\topsep}{0.5ex}%
+            \setlength{\listparindent}{0.7\parindent}%
+            % \setlength{\labelsep}{4in}%
+            \setlength{\itemindent}{\listparindent}%
             \setlength{\partopsep}{0ex}%
-            \setlength{\leftmargin}{\parindent}%
+            \setlength{\leftmargin}{1.2\parindent}%
             }\nobreakitem\relax\small%
 }{%
   \end{list}%

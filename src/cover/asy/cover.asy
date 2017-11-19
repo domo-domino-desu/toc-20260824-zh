@@ -83,7 +83,9 @@ path tcropper=T.deform(cropper);
 draw(pic, tcropper, green_color+linewidth(2pt));
 
 label(pic, "\makebox[0in][c]{Theory of Computation}",
-      (papersize_width/2,8.5inch), fontsize(40)+lightblack_color);
-label(pic, "\makebox[0in][r]{\begin{tabular}{r}\Large Jim Hef{}feron \\[0.5ex] \texttt{http://joshua.smcvt.edu/computation}\end{tabular}}", (papersize_width-0.5inch,0.9inch), fontsize(14)+lightblack_color);
+      (papersize_width/2,8.55inch), fontsize(35)+lightblack_color);
+label(pic, "\makebox[0in][c]{Making connections}",
+      (papersize_width/2,8.0inch), fontsize(19)+lightblack_color);
+label(pic, "\makebox[0in][r]{\begin{tabular}{r}\Large Jim Hef{}feron \\[0.35ex] \texttt{http://joshua.smcvt.edu/computation}\end{tabular}}", (papersize_width-0.5inch,0.9inch), fontsize(14)+lightblack_color);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

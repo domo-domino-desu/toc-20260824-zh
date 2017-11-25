@@ -5016,9 +5016,6 @@ is a program that outputs its own source code.\footnote{%
 
 % http://cs.brown.edu/courses/gs019/asgn/hw3.sol.pdf
 % http://cs.brown.edu/courses/gs019/lectures/recursion.pdf
-% We have shown that, as long as our numbering of Turing machines
-% is acceptable, there must be an integer $m$ such that
-% $\set{m}=W_m=\set{x\suchthat \phi_m(x)\downarrow}$.
 The Fixed Point Theorem shows that there is a number~$m$ such that 
 $\TMfcn_m(x)=m$ for all inputs.
 Think of~$m$ as the name of the function.
@@ -5115,6 +5112,11 @@ computation; the exercises ask for them in a few languages.
 an empty source file is 
 a valid program that produces no output but typically
 quine contests disallow that.)
+
+
+
+
+
 
 \margingraphic{0.18\textwidth}{background/thompson.jpg}{%
   \label{fig:thompson}\href{https://en.wikipedia.org/wiki/Ken_Thompson}{Ken Thompson b~1943}} % http://images.computerhistory.org/fellows/1997_ken_thompson.jpg
@@ -5232,7 +5234,7 @@ that outputs a program in a second language, which outputs the original program.
 
 
 % =======================================================
-\extra{A Universal Turing machine}
+% \extra{A Universal Turing machine}
 
 
 
@@ -5317,12 +5319,12 @@ This is not the only way that a function can fail to be computable, but it helps
 to answer the ``Why not?'' question.
 
 
-\begin{TODO}
-Note the Ackermann link.
-\end{TODO}
+\begin{remark}
+Note the connection with the Ackermann function: in an Extra section
+we showed that it is not primitive recursive because it grows
+faster than any primitive recursive function.
+\end{remark}
 
-% Exercise: give a diagonal construction of a function that is greater then
-% any computable fcn.
 
 %........................................................
 % \begin{frame}{I canna' hold it much longer, Captain}
@@ -5559,24 +5561,102 @@ any computable function.
 There are functions that grow slower than some computable function but
 are nonetheless not computable.)
 
+\begin{exercises}
+\begin{exercise}
+Give the computation history, the sequence of configurations, that come from
+running the three-state Busy Beaver machine.
+\hint~you can run it on the Turing machine simulator.
+\end{exercise}
 
+\begin{exercise}
+\begin{exparts}
+\item
+How many Turing machines with tape alphabet $\B$ are there having one state?
+\item
+Two?
+\item
+How many with $n$~states?
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+How many Turing machines are there, with a tape alphabet
+$\Sigma$ of $n$ characters and having $n$~states?
+\begin{answer}
+$\bigl( 2(c+1)(n+2) \bigr)^{(c+1)n}$
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Give a diagonal construction of a function that is greater than
+any computable fcn.
+\end{exercise}
+\end{exercises}
 
 % ----------------------------------------
-\extra{Arithmetization}
+% \extra{Arithmetization}
 
-RE iff roots of a diophantine eqn.
-Hilbert's Tenth
+% RE iff roots of a diophantine eqn.
+% Hilbert's Tenth
 
 
 \extra{Godel's Theorem}  \label{extra:Godel}
-\url{http://www.scottaaronson.com/blog/?p=710}
-\begin{center}
-  \includegraphics[width=.3\textwidth]{background/godel.jpg}
-\end{center}
+In 1930 K~G\"odel produced a result that demonstrated the inherient limitations
+of formal systems.
+An axiomatic system is any set of axioms from which some or all axioms can be used in conjunction to logically derive theorems. A theory consists of an axiomatic system and all its derived theorems. An axiomatic system that is completely described is a special kind of formal system.
+\margingraphic{0.20\textwidth}{background/godel.jpg}{% https://www.thefamouspeople.com/profiles/images/kurt-gdel-2.jpg
+  \label{fig:rosser}\href{https://www.newyorker.com/tech/elements/waiting-for-godel}{Kurt G\"odel 1906--1978}} % http://images.computerhistory.org/fellows/1997_ken_thompson.jpg
+% \url{http://www.scottaaronson.com/blog/?p=710}
+% \begin{center}
+%   \includegraphics[width=.3\textwidth]{background/godel.jpg}
+% \end{center}
+
+Consider the following variant of the \HP, the Consistent Guessing Problem
+Given as input a description of a Turing machine $\TM$:
+if the machine $\TM$ accepts on a blank tape, then accept,
+if $\TM$ rejects on a blank tape, then reject, and
+if $TM$ runs forever on a blank tape, then either accept or reject,
+but in any case, halt!
+
+\margingraphic[l]{0.18\textwidth}{background/rosser.png}{% https://www.math.cornell.edu/m/node/6955
+  \label{fig:rosser}\href{https://en.wikipedia.org/wiki/J._Barkley_Rosser}{J.\@ Barkley Rosser 1987--1989}} % https://www.math.cornell.edu/m/node/6955
+There is no Turing machine to solve the Consistent Guessing Problem.
+Let $P$ be a Turing machine that solves the Consistent Guessing Problem.
+Then we can easily modify $P$ to produce an new Turing machine $Q$ that,
+given as input a description $<\TM>$ of another Turing machine $\TM$:
+rejects if $TM(<\TM>)$ accepts,
+accepts if $\TM<\TM>$ rejects, and
+halts (either accepting or rejecting) if $\TM<\TM>$ runs forever.
+Now run $Q$ on its own description $Q<Q>$.
+If $Q<Q>$ accepts then it rejects; if $Q<Q>$ rejects, then it accepts.
+So the only remaining option is that $Q<Q>$ runs forever, violating the
+third condition.
+
+From the unsolvability of the Consistent Guessing Problem,
+I claim that Rosser’s Theorem follows.
+For suppose we had a complete and consistent (but not necessarily sound!)
+formal system $F$,
+which was powerful enough to talk about Turing machines.
+Then using $F$ we could solve the Consistent Guessing Problem as follows.
+Given as input a Turing machine description $<\TM>$,
+start enumerating all possible proofs and disproofs of the statement
+``$\TM$ accepts on a blank tape.''
+Accept as soon as you find a proof, or reject as soon as you find a disproof.
+
+Because $F$ is complete, you must eventually find either a proof or a disproof
+(and therefore halt, either accepting or rejecting).
+Also, because $F$ is consistent,
+if $\TM$ really rejects then $F$ can't prove that $\TM$ accepts,
+while if $\TM$ really accepts then $F$ can't prove that
+$\TM$ doesn’t accept since in either case the contradiction could be
+discovered in finite time.
+So you'll accept if $\TM$ accepts and reject if $\TM$ rejects.
+But this means that you’re solving Consistent Guessing Problem.
+
 
 % http://www.rudyrucker.com/blog/2012/08/01/memories-of-kurt-godel/
 
-%The next form in which Zen expresses itself is the denial of opposites \ldots\,.
+% The next form in which Zen expresses itself is the denial of opposites \ldots\,.
 % The point is not to be `caught', as the masters would say, in any of the
 % four propositions 1.~`It is A'; 2. `It is not-A'.;
 % 3. `It is both A and not-A.';

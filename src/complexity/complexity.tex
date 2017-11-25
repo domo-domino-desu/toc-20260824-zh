@@ -1260,40 +1260,226 @@ and which are open to analysis that makes them tractable.
 % Other mathematicians compete about the complicated theorems that they are able to prove; combinatorialists like to compete about about the simplicity or self-evidence of statements they are unable to prove, i.e., ``I can't even prove ...''
 
 \section{Nondeterministic Turing machines}
-Given a propositional logic statement 
-is there an assignment of truth values that \definend{satisfies} it,
-that gives it a value~$T$?
+We now consider nondeterminism for Turing machines.
 
-\begin{example}
-Consider this formula.
+Recall that a machine is nondeterminstic device if,
+given a present configuration and input,
+it may pass to a next configuration that does not have a unique
+state.
+That may involve more than one state, or no next state at all.
+
+Recall also that we have two models of how these operate.
+In the first, the machine is unboundedly parallel and it steps through
+a computation tree.
+In the second, the machine guesses which is the next state it will follow.
+Under the first model we say an input string is accepted if any of the
+branches is an accepting one, and under the second model we say the input
+is accepted if there is a sequences of guesses that the machine could
+take that leads to an accepting state.
+
+Finally, recall also that
+we have considered nondeterminism in the context of Finite State machines
+and Pushdown machines.
+For the first we found that it did not make any difference, that for any
+job done by a nondeterministic Finite State machine there is a deterministic
+Finite State machine to do the same job.
+But the second is different; there are jobs that can be done by
+some nondeterministic Pushdown machines that cannot be done by any
+deterministic machine.
+One is accepting the language of palindromes.
+
+We will show that for nondeterministic Turing machines, there is also no
+difference in capacity.
+
+\begin{lemma}
+For every task that can be done by a nondeterministic Turing machine
+there is a deterministic Turing machine that can do the same.
+\end{lemma}
+
+\begin{proof}
+Time-slicing
+Simulate the breadth-first search of the computation tree.
+\end{proof}
+
+So nondeterminism doesn't add any capacity to what can be computed in principle.
+
+However, a difference in speed seems possible.
+Job that a nondeterministic Turing machine can do, seemingly faster than
+it can be done by a deterministic machine.
+
+Recall the Satisfiability problem.
+Steven Cook.
+Given a propositional logic statement, 
+is there an assignment of truth values that satisfies it,
+that gives the statement a value~$T$?
+One example is this formula.
 \begin{equation*}
+ f = 
  (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
   \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (\neg P\vee R)
 \end{equation*} 
-The truth table finds some $T$'s in the final column.
+The natural approach is to
+use a truth table
+to see if there are any $T$'s in the final column.
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
-\begin{tabular}{ccc|ccccc}
-  $P$  &$Q$  &$R$  &$P\vee Q$ &$P\vee \neg Q$ &$\neg P\vee Q$ &$\neg P\vee \neg Q\vee \neg R$ &$\neg P\vee R$ \\ \hline    
-  $F$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$ &$T$ \\     
-  $F$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$ &$T$ \\     
-  $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$ &$T$ \\     
-  $F$  &$T$  &$T$  &$T$ &$F$ &$T$ &$T$ &$T$ \\[1ex]     
-  $T$  &$F$  &$F$  &$T$ &$T$ &$F$ &$T$ &$F$ \\     
-  $T$  &$F$  &$T$  &$T$ &$T$ &$F$ &$T$ &$T$ \\     
-  $T$  &$T$  &$F$  &$T$ &$T$ &$T$ &$T$ &$F$ \\     
-  $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$      
+\begin{tabular}{ccc|ccccc|c}
+  $P$  &$Q$  &$R$  &$P\vee Q$ &$P\vee \neg Q$ &$\neg P\vee Q$ &$\neg P\vee \neg Q\vee \neg R$ &$\neg P\vee R$ &$f$ \\ \hline    
+  $F$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$ &$T$ &$F$ \\     
+  $F$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$ &$T$ &$F$ \\     
+  $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ \\     
+  $F$  &$T$  &$T$  &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ \\[1ex]     
+  $T$  &$F$  &$F$  &$T$ &$T$ &$F$ &$T$ &$F$ &$F$ \\     
+  $T$  &$F$  &$T$  &$T$ &$T$ &$F$ &$T$ &$T$ &$F$ \\     
+  $T$  &$T$  &$F$  &$T$ &$T$ &$T$ &$T$ &$F$ &$T$ \\     
+  $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
 \end{tabular}
 \end{center}
 But as for a general algorithm, at this moment no one knows a
 better way than to keep trying inputs looking for a $T$.
 Here there are $2^3$~inputs; in general this algorithm takes exponential time.
-\end{example}
-The satisfiability problems lends itself to the unbounded 
+
+This problem seems to lends itself perfectly to the unbounded 
 parallelism of a nondeterministic machine.
+Richard Karp
+
+
+There are a collection of problems that for many years people have
+been trying to find a reasonably-fast algorithms for.
+
+For an instance,
 
 
 
 
+% =========================================
+\section{NP}
+\begin{definition}
+For a language $\lang{L}\subseteq\kleenestar{\B}$,
+the deterministic Turing machine $\TM$ is a \definend{verifier} if 
+for every string $\sigma\in\kleenestar{\B}$ we have
+$\sigma\in\lang{L}$
+if and only if
+there exists a \definend{witness} or \definend{certificate}
+string $\omega\in\kleenestar{\B}$,  such that the machine
+$\TM$ accepts the input $\sequence{\sigma,\omega}$.
+\end{definition}
+
+Formalizes the demon.
+Equivalence of verifier and guesser.
+
+\begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
+A language is accepted by a polynomial time nondeterministic Turing machine
+if and only
+if it is accepted by some polynomial
+time deterministic verifier.
+\end{lemma}
+
+\begin{proof}
+The idea is that the sequence of choices made through nondeterminism
+can be wrapped together to make the certificate, and vice versa.
+
+Suppose first that the language~$\lang{L}$ is accepted by the nondeterministic
+Turing machine~$\TM$ in polynomial time;
+we will construct a polynomial time verifier~$\TM[V]$.
+Let $\map{p}{\N}{\N}$ be the polynomial time function for~$\TM$.
+For any $\sigma\in\lang{L}$ the computation tree has an accepting branch.
+We can make a certificate $\omega$
+of the branchings.
+With the certificate, retracing $\TM$'s accepting branch
+can be done by a deterministic verifier.
+Because
+the branch's length must be less than $p(|\sigma|)$,
+the certificate will have length less than $p(|\sigma|)$.
+So the verifier~$\TM[V]$ can do the retracing in polynomial time.
+
+For the other direction suppose that the language $\lang{L}$
+is accepted by a verifier~$\TM[V]$ that runs in time
+that is bounded by some polynomial~$p$.
+We will describe a process cast in guessing terms, as we often do
+for  nondeterministic machines.
+Given $\sigma\in\kleenestar{\B}$, produce a sequence of $|\sigma|$
+guesses of branches in the computation tree to make a witness string~$\omega$.
+Use this witness along with $\sigma$ as inputs to $\TM[V]$.
+Because of the verifier step, there is a way for this guessing process to
+succeed if and only if $\sigma\in\lang{L}$.
+Because the verifier runs in polynomial time, the entire process of guessing and
+then verifying does also.
+\end{proof}
+
+\begin{definition}
+The collection of languages for which there is a 
+a polynomial time nondeterministic Turing machine acceptor, that is,
+the collection
+of languages for which there is a polynomial time deterministic
+Turing machine verifier, is \definend{$\compclass{NP}$}.
+\end{definition}
+
+While the description of a language as accepted by a polynomial time
+nondeterministic Turing machine is conceptually cleaner, experience shows that
+the verifier description is typically easier to work with in practice.
+These examples illuminate the role of the witness string.
+
+\begin{example}
+The Satisfaction problem is a member of the class~$\compclass{NP}$.
+Given a propositional logic formula, we can use as a witness~$\omega$
+the line number of an input that satisfies the formula.
+It is routine for us to make a deterministic Turing machine that
+runs in polynomial time that, given the formula and the witness,
+verifies in polynomial time that the formula is satisfied.
+\end{example}
+
+\begin{example}
+The Travelling Salesman problem is in the class~$\compclass{NP}$.
+Given $\sequence{\mathcal{G},B}$, a graph and a bound,
+we can use as a witness a sequence of nodes that
+constitute a circuit of total cost less than the bound.
+We can easily write a deterministic Turing machine that, given
+the graph and such a witness, verifies that the circuit in this
+graph costs less than the bound. 
+\end{example}
+
+\begin{example}
+The Subset Sum problem is in~$\compclass{NP}$.
+Given a set $S$ of numbers and a target sum~$B$,
+we can use as the witness~$\omega$ a subset of~$S$ whose members add to the
+target.
+Then we can easily write
+a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
+and verifies that the subset adds to the target, in polynomial time.
+\end{example}
+
+
+
+
+
+\subsection{$\compclass{P}$ versus $\compclass{NP}$}
+Discussion.
+
+
+
+\begin{exercises}
+\begin{exercise}
+Each of these problems is in~$\compclass{NP}$.
+For each, give a witness.
+\begin{exparts}
+\item
+Hamiltonian circuit problem: given a graph, determine if it has a
+Hamiltonian circuit.
+\item
+Composite problem: given a natural number determine if it is composite.
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Recast the second half of the proof of \cref{lem:VerifierAndGuesserEquiv}
+in computation tree terms.
+\end{exercise}
+\end{exercises}
+
+
+
+
+% =========================================
 \section{Time complexity}
 We are interested in classifying various problems: for which problems
 are there relatively good algorithms, and for which problems are there not?
@@ -1344,7 +1530,10 @@ in contrast, $\EXP$ as too slow; we can't compute it.
 We say it is `intractable'.
 This view of the matter began with J~Edmunds.
 
-\begin{remark}
+
+
+% ........................
+\subsection{Effect of the model of computation}
 A natural concern is that if we change the computing model 
 then we get different results.
 What if a problem is $\DTIME(n^3)$ for a 
@@ -1355,12 +1544,12 @@ Experience with a wide range of alternative computational models is that
 in almost all cases a Turing machine can be simulated on such a different model
 machine in time~$\bigOh(n^2)$, and in any event can  be done
 in polytime.
-So if we have polytime sloppiness built in then we can essentially
+So if we have polytime sloppiness built in then we can
 ignore the model issue. 
-\end{remark}
 
 
-\subsection{Speedup}
+
+
 
 
 
@@ -2363,6 +2552,14 @@ about $1/b$.
 The study of what we can't solve, even with computers we don't have
 (Scott Aaronson).
 \url{https://www.youtube.com/watch?v=JvIbrDR1G_c}
+
+
+
+
+
+\extra{Speedup Theorem}
+
+
 
 
 

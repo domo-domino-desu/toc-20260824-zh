@@ -1262,34 +1262,52 @@ and which are open to analysis that makes them tractable.
 \section{Nondeterministic Turing machines}
 We now consider nondeterminism for Turing machines.
 
-Recall that a machine is nondeterminstic device if,
-given a present configuration and input,
-it may pass to a next configuration that does not have a unique
-state.
-That may involve more than one state, or no next state at all.
+Recall that a machine is nondeterminstic device if
+from a present configuration and input
+it may pass to a next configuration that does not have a unique state.
+It can have more than one state, or no next state at all.
+
+So a nondeterministic Turing machine is a completely
+capable mechanical device, in the sense of Church's Thesis, that is
+unboundedly-parallel.
+Any time that an algorithm needs it, this machine can fork a number of
+children and continue on as multiple processes.
+(Of course, we simulate such a device on a modern operating system
+with time-slicing, where to the user it appears that many things
+are happening at once but in fact there is only one, or
+at least a limited number of physical processes.\footnote{%
+  Depending on the number of independent CPU's that the device has.})
 
 Recall also that we have two models of how these operate.
 In the first, the machine is unboundedly parallel and it steps through
 a computation tree.
 In the second, the machine guesses which is the next state it will follow.
-Under the first model we say an input string is accepted if any of the
-branches is an accepting one, and under the second model we say the input
+Under the first model we say an input string is accepted if there is a
+branch on the tree that is an accepting branch.
+Under the second model we say the input
 is accepted if there is a sequences of guesses that the machine could
-take that leads to an accepting state.
+take that leads to an accepting state.\footnote{%
+An alternative statement of this second model is that there is a
+demon that feeds the process with the correct branchings through the
+comptuation tree.}
 
 Finally, recall also that
 we have considered nondeterminism in the context of Finite State machines
 and Pushdown machines.
-For the first we found that it did not make any difference, that for any
+With Finite State machines we found that nondeterminism did not make any
+difference, in that for any
 job done by a nondeterministic Finite State machine there is a deterministic
-Finite State machine to do the same job.
-But the second is different; there are jobs that can be done by
-some nondeterministic Pushdown machines that cannot be done by any
+Finite State machine that can do the same job.
+But the nondeterminism in the context of Pushdown machines is a different
+story; there are jobs that can be done by
+a nondeterministic Pushdown machine that cannot be done by any
 deterministic machine.
 One is accepting the language of palindromes.
 
-We will show that for nondeterministic Turing machines, there is also no
-difference in capacity.
+As to nondeterministic Turing machines,
+we next show that the situation
+is like Finite State machines, where adding nondeterminism
+adds no difference in capacity.
 
 \begin{lemma}
 For every task that can be done by a nondeterministic Turing machine
@@ -1297,18 +1315,19 @@ there is a deterministic Turing machine that can do the same.
 \end{lemma}
 
 \begin{proof}
-Time-slicing
+Time-slicing.
+Cantor numbering.
 Simulate the breadth-first search of the computation tree.
 \end{proof}
 
+\margingraphic{0.20\textwidth}{complexity/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
 So nondeterminism doesn't add any capacity to what can be computed in principle.
-
-However, a difference in speed seems possible.
+However, a difference in speed may be a different story, and indeed seems
+plausible.
 Job that a nondeterministic Turing machine can do, seemingly faster than
 it can be done by a deterministic machine.
 
 Recall the Satisfiability problem.
-Steven Cook.
 Given a propositional logic statement, 
 is there an assignment of truth values that satisfies it,
 that gives the statement a value~$T$?
@@ -1334,25 +1353,33 @@ to see if there are any $T$'s in the final column.
   $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
 \end{tabular}
 \end{center}
+This problem seems to lends itself perfectly to the unbounded 
+parallelism of a nondeterministic machine.
+
 But as for a general algorithm, at this moment no one knows a
 better way than to keep trying inputs looking for a $T$.
 Here there are $2^3$~inputs; in general this algorithm takes exponential time.
+In 1971, S~Cook, showed that this problem is representative of a class
+of problems (in a sense we make precise below) where we can quickly
+verify a solution if given one, but we at this point do not konw how
+to quickly find one.
 
-This problem seems to lends itself perfectly to the unbounded 
-parallelism of a nondeterministic machine.
-Richard Karp
-
-
-There are a collection of problems that for many years people have
-been trying to find a reasonably-fast algorithms for.
-
-For an instance,
 
 
 
 
 % =========================================
 \section{NP}
+How to solve satisfaction?
+With unbounded parallelness a formula with $n$ variables could split
+into $2^n$-many child processes, each dedicate to a single line of the
+truth table.
+Each process has a simple job, and when they are done the controlling process
+can shout down the bus, ``Any successes?''
+
+Contrast that with solving chess, where verifying the solution would take a
+tremendous amount of comptuation.
+
 \begin{definition}
 For a language $\lang{L}\subseteq\kleenestar{\B}$,
 the deterministic Turing machine $\TM$ is a \definend{verifier} if 
@@ -1365,6 +1392,10 @@ $\TM$ accepts the input $\sequence{\sigma,\omega}$.
 \end{definition}
 
 Formalizes the demon.
+\begin{center}
+   \includegraphics[height=0.75in]{complexity/demon.jpg} % https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror
+\end{center}
+
 Equivalence of verifier and guesser.
 
 \begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
@@ -1448,6 +1479,11 @@ a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
 and verifies that the subset adds to the target, in polynomial time.
 \end{example}
 
+\margingraphic{0.20\textwidth}{complexity/karp.jpg}{\label{fig:RichardKarp}\href{https://en.wikipedia.org/wiki/Richard_M._Karp}{ichard M.\@ Karp b~1935}} % https://simons.berkeley.edu/people/richard-karp  https://simons.berkeley.edu/sites/default/files/styles/profile_main/public/rk1.jpg?itok=1kn5XodZ
+There are a collection of problems that for many years people have
+been trying to find a reasonably-fast algorithms for.
+
+For an instance,
 
 
 
@@ -1996,7 +2032,7 @@ two four-digit numbers by hand with the time it takes you to factor an
 eight-digit number chosen at random.
 Set aside an afternoon for that second job, it'll take a while.
 
-\margingraphic{0.28\textwidth}{complexity/rsa.png}{\href{https://en.wikipedia.org/wiki/Adi_Shamir}{Adi Shamir (b~1952)}, \href{https://en.wikipedia.org/wiki/Ron_Rivest}{Ron Rivest (b~1947)}, \href{https://en.wikipedia.org/wiki/Leonard_Adleman}{Leonard Adleman (b~1945)}} % source unknown; believed OK because very widely available
+\margingraphic{0.30\textwidth}{complexity/rsa.png}{\href{https://en.wikipedia.org/wiki/Adi_Shamir}{Adi Shamir (b~1952)}, \href{https://en.wikipedia.org/wiki/Ron_Rivest}{Ron Rivest (b~1947)}, \href{https://en.wikipedia.org/wiki/Leonard_Adleman}{Leonard Adleman (b~1945)}} % source unknown; believed OK because very widely available
 The algorithm we shall describe exploits this difference.\footnote{%
   Recent versions of the algorithm used in practice incorporate
   refinements that we shall not discuss.

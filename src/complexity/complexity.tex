@@ -39,8 +39,8 @@ Here is a multiplication problem.
    % 28476
 \end{array}
 \end{equation*}
-In grade school we learn the algorithm that f
-or each digit of the multiplier~$42$, we 
+In grade school we learn the algorithm that for
+each digit of the multiplier~$42$, we 
 multiply each digit of the multiplicand~$678$.
 That's a nested loop.
 So the natural hypothesis is that multiplication of two $n$-bit numbers
@@ -1262,47 +1262,67 @@ and which are open to analysis that makes them tractable.
 \section{Nondeterministic Turing machines}
 We now consider nondeterminism for Turing machines.
 
-Recall that a machine is nondeterminstic device if
+Recall that a machine is nondeterminstic if
 from a present configuration and input
-it may pass to a next configuration that does not have a unique state.
-It can have more than one state, or no next state at all.
-
-So a nondeterministic Turing machine is a completely
-capable mechanical device, in the sense of Church's Thesis, that is
+it may pass to a next configuration that has more than one state.
+That is, the transition function outputs sets.
+\begin{equation*}
+  \Delta(q_i,T_p)=\set{\sequence{q_{j_0},T_{n_0}},\sequence{q_{j_1},T_{n_1}}\,\ldots}
+\end{equation*}
+So for Turing machines, nondeterminism gives a completely
+capable device, in the sense of Church's Thesis, that is
 unboundedly-parallel.
-Any time that an algorithm needs it, this machine can fork a number of
-children and continue on as multiple processes.
-(Of course, we simulate such a device on a modern operating system
-with time-slicing, where to the user it appears that many things
-are happening at once but in fact there is only one, or
-at least a limited number of physical processes.\footnote{%
-  Depending on the number of independent CPU's that the device has.})
+At any step in a computation this machine can fork any finite number of
+children that can then continue on as multiple processes, and can
+go on to themselves fork more children.
 
-Recall also that we have two models of how these operate.
-In the first, the machine is unboundedly parallel and it steps through
-a computation tree.
-In the second, the machine guesses which is the next state it will follow.
+Recall also that we have two models of how these devices operate.
+In the first the machine's computation history is a tree and it
+simultaneously computes all branches.
+This fits exactly with the prior paragraph's `unboundedly parallel'
+idea, and also fits with our everyday experience where, for instance,
+if you want to start a new process by opening a new window, the
+window appears.
+In the second model the machine guesses which next state to follow.
 Under the first model we say an input string is accepted if there is a
 branch on the tree that is an accepting branch.
 Under the second model we say the input
 is accepted if there is a sequences of guesses that the machine could
-take that leads to an accepting state.\footnote{%
-An alternative statement of this second model is that there is a
+take that leads to an accepting state.
+(An alternative working of this second model is that there is a
 demon that feeds the process with the correct branchings through the
-comptuation tree.}
+comptuation tree, and input is accepted if there exists a sequence of
+branchings the demon could produce.)
+
+One interesting thing about nondeterministic Turing machines is that they
+appear to be a good match for solving problems that on a standard machine
+are hard to solve.
+An example is testing whether a number~$n\in\N$ is prime.
+In guessing terms, the machine just 
+comes up with a number $m\in\N$ and then checks whether
+$m$ divides~$n$.
+Such a procedure can succeed if and only if 
+$n$ is composite.
+(See also \cref{exer:PrimaliltyTesting}.)
+
+We say that a nondeterministic machine decides a language~$\lang{L}$ in
+time $\map{t}{\N}{\N}$ if for any
+input $\sigma\in\lang{L}$ the machine computes at least one accepting branch
+in time $t(|\sigma|)$ (whether by guessing or by computing the tree
+does not matter).
 
 Finally, recall also that
-we have considered nondeterminism in the context of Finite State machines
+we have considered nondeterminism in the context of both Finite State machines
 and Pushdown machines.
-With Finite State machines we found that nondeterminism did not make any
-difference, in that for any
+For Finite State machines, nondeterminism did not make any
+difference in that for any
 job done by a nondeterministic Finite State machine there is a deterministic
 Finite State machine that can do the same job.
-But the nondeterminism in the context of Pushdown machines is a different
+But Pushdown machines are a different
 story; there are jobs that can be done by
 a nondeterministic Pushdown machine that cannot be done by any
-deterministic machine.
-One is accepting the language of palindromes.
+deterministic machine
+(one is accepting the language of palindromes).
 
 As to nondeterministic Turing machines,
 we next show that the situation
@@ -1310,15 +1330,45 @@ is like Finite State machines, where adding nondeterminism
 adds no difference in capacity.
 
 \begin{lemma}
-For every task that can be done by a nondeterministic Turing machine
-there is a deterministic Turing machine that can do the same.
+Deterministic and nondeterministic Turing machines can do the same tasks.
+In particular, for every task that can be done by a nondeterministic  machine
+there is a deterministic machine that can do the same.
 \end{lemma}
 
+% For the proof, recall the inverse \codeinline{xy}
+% of the Cantor pairing function.
+% Here are the first few values of \codeinline{(car (xy c))}.
+% \begin{center}
+% \begin{tabular}{r|*{11}{c}}
+%   \tabulartext{Input $c$}
+%     &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$ &$7$ &$8$ &$9$ &$10$   \\ \cline{2-12}
+%   \tabulartext{Result}
+%     &$0$ &$0$ &$1$ &$0$ &$1$ &$2$ &$0$ &$1$ &$2$ &$3$ &$0$
+% \end{tabular}
+% \end{center}
+
 \begin{proof}
-Time-slicing.
-Cantor numbering.
-Simulate the breadth-first search of the computation tree.
+Since a deterministic Turing machine is a special case of a
+nondeterministic one, one direction is obvious.
+For the other, start with a nondeterministic machine and we will
+describe how a deterministic machine can simulate the same computation.
+
+The nondeterministic machine generates a computation tree.
+The deterministic machine can do a breadth-first traversal of that tree.
+If there is an accepting branch then the deterministic machine will
+eventually reach it, and it also will accept the input.
+Otherwise, it will not.
 \end{proof}
+
+The proof is, basically, time-slicing.
+On a modern computer we simulate an unboundedly-parallel device
+by having the CPU switch among processes, giving each enough time to
+make some progress but not so much time that other processes are
+starved.
+To the user it appears that many things
+are happening at once but actually there is only one, or
+at least a limited number of, simultaneous physical processes.\footnote{%
+  Depending on how many independent CPU's the device has.})
 
 \margingraphic{0.20\textwidth}{complexity/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
 So nondeterminism doesn't add any capacity to what can be computed in principle.
@@ -1358,27 +1408,77 @@ parallelism of a nondeterministic machine.
 
 But as for a general algorithm, at this moment no one knows a
 better way than to keep trying inputs looking for a $T$.
-Here there are $2^3$~inputs; in general this algorithm takes exponential time.
+This truth table has three inputs and there are $2^3$~lines.
+In general this brute force algorithm takes exponential time.
 In 1971, S~Cook, showed that this problem is representative of a class
 of problems (in a sense we make precise below) where we can quickly
 verify a solution if given one, but we at this point do not konw how
 to quickly find one.
 
+\begin{exercises}
+\begin{exercise}
+Write a program that simulates a nondeterministic Turing machine.
+\end{exercise}
 
+\begin{exercise}  \label{exer:PrimaliltyTesting}
+Express primality testing in computation tree terms.
+\end{exercise}
+
+\begin{exercise}
+Sketch a nondeterministic algorithm to solve each problem.
+Give both a computation tree formulation and a guessing formulation.
+\begin{exparts}
+\item
+The Travelling Salesman problem: given a graph where the edges have costs,
+find a circuit that is of least total cost.
+\item
+The Subset Sum problem: given a set~$S\subset\N$ and a target~$B\in\N$,
+find a subset of~$S$ whose members sum to~$B$.
+\item
+The Prime Factorization problem: given a number $n\in\N$, produce the prime
+factorization.
+\end{exparts}
+\end{exercise}
+\end{exercises}
 
 
 
 % =========================================
 \section{NP}
-How to solve satisfaction?
+How to solve the Satisfiability problem?
 With unbounded parallelness a formula with $n$ variables could split
-into $2^n$-many child processes, each dedicate to a single line of the
+into $2^n$-many child processes, each dedicated to a single line of the
 truth table.
 Each process has a simple job, and when they are done the controlling process
-can shout down the bus, ``Any successes?''
+can call down the bus, ``Any successes?''
+Using the alternative view of nondeterminism,
+if the machine guesses a solution, or is given a solution,  
+then verifying that it works is a quick task.
 
-Contrast that with solving chess, where verifying the solution would take a
-tremendous amount of comptuation.
+\margingraphic{0.25\textwidth}{complexity/demon.jpg}{\label{fig:Demon}\href{https://en.wikipedia.org/wiki/The_Nightmare}{\textit{The Nightmare} H~Fuseli, 1781}} % https://upload.wikimedia.org/wikipedia/commons/5/56/John_Henry_Fuseli_-_The_Nightmare.JPG  Henry Fuseli [Public domain], via Wikimedia Commons  (https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror)
+Contrast that with the situation for chess.
+Like Rock-Paper-Scissors or Tic-Tac-Toe, 
+\citetext{chess is a solvable game}{%
+  This is Zermelo's Theorem. See \autocite{wiki:ZermelosTheorem}.},
+meaning that there exists a strategy
+for one of the two players that forces a win, or at least a draw, no
+matter what the other player does.
+
+But imagine that a demon handed you a sheaf of papers and told you
+it is a perfect chess strategy for White.
+If you tried to verify that by having a computer step through
+the tree of Black responses to each move, and responses to those
+responses, etc., then 
+the tree of possible games is so large that at this moment,
+even with the strategy, 
+verifying that it is correct is beyond the Earth's computing capacity,
+
+
+
+
+\subsection{Definition}
+We are taking solving a problem and dividing it into two parts,
+coming up with the solution and verifying that it is correct.
 
 \begin{definition}
 For a language $\lang{L}\subseteq\kleenestar{\B}$,
@@ -1387,16 +1487,16 @@ for every string $\sigma\in\kleenestar{\B}$ we have
 $\sigma\in\lang{L}$
 if and only if
 there exists a \definend{witness} or \definend{certificate}
-string $\omega\in\kleenestar{\B}$,  such that the machine
+string $\omega\in\kleenestar{\B}$ such that the machine
 $\TM$ accepts the input $\sequence{\sigma,\omega}$.
 \end{definition}
 
-Formalizes the demon.
-\begin{center}
-   \includegraphics[height=0.75in]{complexity/demon.jpg} % https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror
-\end{center}
+The definition does not say where the witness~$\omega$ comes from.
+In some sense this formalizes the idea of a demon providing the
+answer and our only job then is to verify the answer's correctness.
 
-Equivalence of verifier and guesser.
+The next result says that the two formulations, guesser and
+verifier, are equivalent up to some polynomial sloppiness.
 
 \begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
 A language is accepted by a polynomial time nondeterministic Turing machine
@@ -1407,12 +1507,14 @@ time deterministic verifier.
 
 \begin{proof}
 The idea is that the sequence of choices made through nondeterminism
-can be wrapped together to make the certificate, and vice versa.
+can be bound together to make the certificate, and vice versa.
 
 Suppose first that the language~$\lang{L}$ is accepted by the nondeterministic
 Turing machine~$\TM$ in polynomial time;
 we will construct a polynomial time verifier~$\TM[V]$.
-Let $\map{p}{\N}{\N}$ be the polynomial time function for~$\TM$.
+Let $\map{p}{\N}{\N}$ be the polynomial time function for~$\TM$,
+so that the time taken by~$\TM$ on input~$\sigma\in\kleenestar{\B}$
+is $p(|\sigma|)$.
 For any $\sigma\in\lang{L}$ the computation tree has an accepting branch.
 We can make a certificate $\omega$
 of the branchings.
@@ -1479,14 +1581,21 @@ a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
 and verifies that the subset adds to the target, in polynomial time.
 \end{example}
 
-\margingraphic{0.20\textwidth}{complexity/karp.jpg}{\label{fig:RichardKarp}\href{https://en.wikipedia.org/wiki/Richard_M._Karp}{ichard M.\@ Karp b~1935}} % https://simons.berkeley.edu/people/richard-karp  https://simons.berkeley.edu/sites/default/files/styles/profile_main/public/rk1.jpg?itok=1kn5XodZ
+A problem is in NP if and only if we can provide a
+polynomially long proof witness for any
+positive solution.
+
+
+\margingraphic{0.20\textwidth}{complexity/karp.jpg}{\label{fig:RichardKarp}\href{https://en.wikipedia.org/wiki/Richard_M._Karp}{Richard M.\@ Karp b~1935}} % https://simons.berkeley.edu/people/richard-karp  https://simons.berkeley.edu/sites/default/files/styles/profile_main/public/rk1.jpg?itok=1kn5XodZ
 There are a collection of problems that for many years people have
 been trying to find a reasonably-fast algorithms for.
 
-For an instance,
+
+\subsection{$\compclass{NP}$ complete}
 
 
-
+The Factoring problem is believed to be hard for classical computers,
+but is not $\compclass{NP}$-complete.
 
 \subsection{$\compclass{P}$ versus $\compclass{NP}$}
 Discussion.
@@ -1800,6 +1909,10 @@ however, we cannot today prove that
 that is the case.  
 
   Is finding a solution as fast as recognizing one?
+
+Thus, $compclass{NP}$-complete is an intermediate between 
+possible and impossible; see \cref{extra:VotingParadoxes}.  
+
 
 
 \section{Problem reduction}
@@ -2590,7 +2703,7 @@ The study of what we can't solve, even with computers we don't have
 \url{https://www.youtube.com/watch?v=JvIbrDR1G_c}
 
 
-
+\extra{Voting Paradoxes} \label{extra:VotingParadoxes}
 
 
 \extra{Speedup Theorem}

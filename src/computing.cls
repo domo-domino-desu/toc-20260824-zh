@@ -1506,3 +1506,9 @@
 % Asymptotegraphics
 \usepackage{contentmacros}
 
+
+% =================
+% For xkcd graphics
+\newlength{\xkcdheight}
+\setlength{\xkcdheight}{1.85cm}
+

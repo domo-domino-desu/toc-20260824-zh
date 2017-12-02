@@ -778,32 +778,32 @@ where $n\leq k <2n$.
 % ==================================================
 \section{Nondeterminism}
 The definition of finite state machine inherits from the
-definition of Turing Machine
+definition of Turing machine
 the condition that the next state is a function
 of the current configuration.
 Because it is a function its output is determined by its input,
 so both kinds of machine are deterministic\Dash
 at each step the machine's behavior is fixed.
 
-We've seen that as a consequence no Turing Machine
+A consequence no machine satisfying the definition 
 can contain both of the instructions
 \tminstruction{4}{1}{B}{1}
-and~\tminstruction{4}{1}{1}{5} because both begin with
+and~\tminstruction{4}{1}{1}{5}, because both begin with
 $q_4\str{1}$. 
-Another example is that in the earlier transition graphs
-of finite state machines that
-had omitted edges, we commented that the edges belong there but
-were left out only for the graphic design reason that
-showing them would make a mess.
+% Another example is that in the earlier transition graphs
+% of finite state machines that
+% had omitted edges, we commented that the edges belong there but
+% were left out only for the graphic design reason that
+% showing them would make a mess.
 
-We will now drop that condition.
+We will now consider what happens when we drop that condition.
 We will consider machines
 where from any configuration the machine could move to one next state, 
 more than one, or none at all.
 
-This proves to be a very important concept in the Theory of Computation.
-A key reason for introducing finite state machines at all is to
-explore nondeterminism.
+This will be an extremely important idea.
+One reason for studying finite state machines at all is as an introduction to
+nondeterminism.
 
 
 \subsection{Motivation}
@@ -818,8 +818,8 @@ and look at trips that visit every state capitol.
 We could ask if there is a cycle of less than $16\,000$ kilometers.
 
 \margingraphic{0.175\textwidth}{automata/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
-Imagine that we are solving this on a computer
-(that is, on a Turing Machine) and let's start in Monteplier VT.
+Imagine that we are solving this on a computer,
+on a Turing machine, and let's start in Monteplier VT.
 We want \citetext{a function}{The name \textit{amb}
 abbreviates `ambiguous function'.
 These were described by John McCarthy in \autocite{McCarthy}.
@@ -838,13 +838,14 @@ Now we can define $\operatorname{less}(n)$ by
 $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''}
 $\operatorname{amb}(\text{Albany}, \text{Annapolis},\, ...\,)$
 that returns a next city.
-The philosopher and Hall of Fame baseball catcher Y~Berra said, ``If you
+
+The Hall of Fame baseball catcher and philosopher Y~Berra said, ``If you
 come to a fork in the road, take it.''
 That's how you could try the problem: when you come up against a choice,
 as with this function,
 fork a process for each possibility.
 Thus, if you start at Montpelier then you
-split the machine into forty seven machines\Dash you
+split the remaining job into forty seven sub-jobs\Dash you
 fork forty seven child processes, one for each potential next capital.
 The process assigned Albany, for instance, would know that the trip so far is
 $126.19$~kilometers and would then fork its own
@@ -867,7 +868,17 @@ When we are writing an email in one window
 and watching a video in another then the machine seems to the user to be
 in multiple states.
 
-This section carries this over to a finite state machine context.
+% This section considers this in a Finite State machine context.
+We will have two ways to think about, and talk about, nondeterminism.
+That is, there are two mental models.
+We take advantage of this informal discussion to introduce them both.\footnote{
+While they are an important component of conversations about nondeterminism, they do not, strictly speaking, form part of the definitions and proofs.}
+
+We can picture that when it is required to go into multiple next states then
+the machine is unboundedly parallel and forks a process for each next state.
+Or we can picture that the machine guesses.
+The first one seems more natural to a person with programming experience,
+so we will illustrate it first.
 
 \begin{example}  \label{ex:NFSMInDiscussion}
 Consider this machine graph.
@@ -887,6 +898,7 @@ Here is the computation tree.
   \animategraphics[poster=last]{3}{automata/asy/nfsm/nfsm}{02}{08}
   \label{anim:NondeterministicComputationTree}
 \end{animatedfigure}
+
 When we considered the parallel approach to the Travelling Salesman
 we observed that if a solution exists then some child process would find it.
 The same happens here; there is a
@@ -902,7 +914,7 @@ also does not accept the input.
 However, as with the Travelling Salesman approach, we don't care about
 unsuccessful branches.
 We only care that there is a successful one.
-So we shall define that a nondeterministic machine accepts the input
+So we define that a nondeterministic machine accepts the input
 if there is at least one branch in the computation tree that accepts the
 input.
 % \begin{center}
@@ -910,7 +922,7 @@ input.
 % \end{center}
 \end{example}
 
-One more point in this informal discussion of nondeterminism.
+Now we introduce the second mental model for nondeterminism.
 The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
 When we feed it the input \str{00001} the problem the machine faces is
 when to stop going around $q_0$'s loop and start to the right.
@@ -918,12 +930,17 @@ Our definition has the machine accepting this input
 so the machine has solved this problem\Dash the
 machine has correctly guessed.
 
+\margingraphic{0.25\textwidth}{automata/demon.jpg}{\label{fig:Demon}\href{https://en.wikipedia.org/wiki/The_Nightmare}{\textit{The Nightmare} H~Fuseli, 1781}} % https://upload.wikimedia.org/wikipedia/commons/5/56/John_Henry_Fuseli_-_The_Nightmare.JPG  Henry Fuseli [Public domain], via Wikimedia Commons  (https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror)
 Saying that the machine is guessing is jarring since  
 \citetext{it does not fit our intuition of how computers work}{\href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}}.
 % Nonetheless, researchers in this area often say this.
 A perhaps less disconcerting way to put it is to imagine that some oracle
 furnishes the answer (``go around twice, then off to the right'') and
-we just have to check that answer on this machine.
+the machine's job is only to check that answer.
+The oracle is often personified as a demon, a supernatural being,
+who somehow knows answers that cannot otherwise be found,
+and who comes to you in the night and tells you what it is, but you
+are suspicious and need to check that the answer is not a demonic trick.
 
 In this book we shall describe nondeterminism in both ways: as a
 machine being in multiple states at once, and as a machine guessing.
@@ -939,7 +956,7 @@ as deterministic machines.
 
 \subsection{Definition}
 
-The definition of a nondeterministic finite state machine
+A nondeterministic Finite State machine
 differs from that of a deterministic machine only in that
 the next-state function does not output single states,
 it outputs sets of states.

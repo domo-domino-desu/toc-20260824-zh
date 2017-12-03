@@ -848,6 +848,29 @@
 }{%
   \end{enumerate}
 }
+% thmdescription
+% An description list inside of a theorem, or lemma, or definition
+\newcommand{\thmdescriptionlabel}[1]{%
+    \hspace\labelsep \textsc{#1}%
+  }
+\newenvironment{thmdescription}{%
+  \let\descriptionlabel=\thmdescriptionlabel
+  \begin{description}[
+                    align=left, 
+                    ref={{}},
+    topsep={0.25ex plus 0.05ex minus 0.025ex},
+    leftmargin=0.8em,
+    rightmargin=0em,
+    labelwidth=0em,
+    labelsep=0.5em plus 0.1em minus 0.05em,
+    itemindent=-0.2em,
+    parsep={0ex plus 0.1ex},
+    listparindent=0.8\parindent,
+    itemsep={0.4ex plus .1ex minus 0.1ex}
+    ]
+}{%
+  \end{description}
+}
 
 % ========== Bibliography =============
 % biblatex 

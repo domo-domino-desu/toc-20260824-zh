@@ -1260,6 +1260,20 @@ and which are open to analysis that makes them tractable.
 
 % Other mathematicians compete about the complicated theorems that they are able to prove; combinatorialists like to compete about about the simplicity or self-evidence of statements they are unable to prove, i.e., ``I can't even prove ...''
 
+\section{Contrast between computability and complexity}
+What can be solved at all vs what can be solved in a practical time?
+Showing faster algorithms exist vs showing that any algorithm exists.
+
+Once you know a problem can be solved at all then the next step is to
+solve it efficiently.
+
+
+
+
+
+
+
+
 \section{Nondeterministic Turing machines}
 We now consider nondeterminism for Turing machines.
 
@@ -1517,7 +1531,6 @@ to calculate whether there are any $T$'s in the final column.
   $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
 \end{tabular}
 \end{center}
-\margingraphic{0.20\textwidth}{complexity/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
 This problem appears perfectly suited to the unbounded 
 parallelism of a nondeterministic machine.
 For a formula with $n$ variables the machine could split
@@ -1533,11 +1546,6 @@ But as for a general algorithm, at this moment no one knows a much
 better way than to keep trying inputs looking for a $T$.
 This truth table has three inputs and there are $2^3$~lines.
 In general this brute force algorithm takes exponential time.
-In 1971 S~Cook showed that this problem is representative of a class
-of problems, where we can quickly
-verify a solution if given one, but we at this point do not know how
-to quickly find one.
-The next section says much more about this.
 
 Contrast that with the situation for chess.
 Like Rock-Paper-Scissors or Tic-Tac-Toe, 
@@ -1575,6 +1583,12 @@ $\TM$ accepts the input $\sequence{\sigma,\omega}$.
 The definition does not say where the witness~$\omega$ comes from.
 In some sense this formalizes the idea of a demon providing the
 answer and our only job then is to verify the answer's correctness.
+ 
+Note that the witness is restricted in length so that the verifier,
+which as a Turing machine reads one bit at a time, can 
+read it through in polynomial time.
+Note also that we can take the polynomial~$p$ to be trivial $p(i)=0$
+to get that $\compclass{P}\subseteq\compclass{NP}$.
 
 The next result says that the two formulations, guesser and
 verifier, are equivalent up to some polynomial sloppiness.
@@ -1631,24 +1645,30 @@ of languages for which there is a polynomial time deterministic
 Turing machine verifier, is \definend{$\compclass{NP}$}.
 \end{definition}
 
+A problem is in NP if and only if we can provide a
+polynomially long proof witness for any
+positive solution.
+
+Often in mathematics we have a definition that captures the concept, and then
+a result that makes the definition to make it easier to work with.
+This is an example.
 While the description of a language as accepted by a polynomial time
 nondeterministic Turing machine is conceptually cleaner, experience shows that
 the verifier description is typically easier to work with in practice.
-These examples illuminate the role of the witness string.
-
-We are interested in classifying various problems: for which problems
-are there relatively good algorithms, and for which problems are there not?
-Given a problem, we will be interested in its best solution.
-
-\begin{remark}
-Restated, we would not say an algorithm is in $\compclass{P}$ or in
-$\compclass{NP}$.
-Rather, we say a language is in a class, if its best solution has the
-indicated behavior.
-\end{remark}
+These following examples illuminate the role of the witness string.
 
 \begin{example}
-The Satisfaction problem is a member of the class~$\compclass{NP}$.
+The Factorization problem is a member of the
+class~$\compclass{NP}$.
+Given a number~$n\in\N$, we can usee as witness~$\omega$ some 
+$a$ such that $1<a<n$ and $a$ is a factor of~$n$.
+\end{example}
+
+The verifier characterization allows us to easily identify problems 
+in~$\compclass{NP}$. 
+
+\begin{example}
+The Satisfiability problem is a member of~$\compclass{NP}$.
 Given a propositional logic formula, we can use as a witness~$\omega$
 the line number of an input that satisfies the formula.
 It is routine for us to make a deterministic Turing machine that
@@ -1676,114 +1696,198 @@ a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
 and verifies that the subset adds to the target, in polynomial time.
 \end{example}
 
-A problem is in NP if and only if we can provide a
-polynomially long proof witness for any
-positive solution.
+We are interested in classifying various problems: for which problems
+are there relatively good algorithms, and for which problems are there not?
+Given a problem, we will be interested in its best solution.
+
+Restated, we would not say an algorithm is in $\compclass{P}$ or in
+$\compclass{NP}$.
+Rather, we say a language is in a class, if its best solution has the
+indicated behavior.
 
 
-\margingraphic{0.20\textwidth}{complexity/karp.jpg}{\label{fig:RichardKarp}\href{https://en.wikipedia.org/wiki/Richard_M._Karp}{Richard M.\@ Karp b~1935}} % https://simons.berkeley.edu/people/richard-karp  https://simons.berkeley.edu/sites/default/files/styles/profile_main/public/rk1.jpg?itok=1kn5XodZ
-There are a collection of problems that for many years people have
-been trying to find a reasonably-fast algorithms for.
+
+
+
+
+\section{Problem reduction}
+% "Reduction decreases the number of problems without increasing the number of
+% answers"
+
+\begin{example}
+Recall that a graph is $k$-colorable if we can divide its vertices
+into $k$-many classes, called colors because that's how they
+are pictured, so that there is no edge between two same-colored
+vertices.
+\begin{animatedfigure}{A $3$-coloring of \protect\citetext{a graph}{This is the Petersen graph, a rich source of counterexamples for conjectures in Graph Theory}.}\centering 
+  \animategraphics[poster=last]{2}{complexity/asy/complexity/complexity}{00}{01}
+\end{animatedfigure} 
+We will show that a quick way to solve the Satisfiability problem
+would give us a quick way to solve Graph Colorability, that is,
+we will show that $\text{Graph Colorability}\leq\text{Satisfiability}$.
+To do this we need to translate facts about graphs into facts about
+a propositional logic statement.
+
+We illustrate with the problem of $3$-colorability.
+Given a graph, suppose that it has $n$~vertices $\set{v_0,\ldots\, v_{n-1}}$.
+We want to divide them into three classes, the first, second, and third colors.
+Begin the translation by 
+creating three types of boolean variables for the propositional logic clauses.
+\begin{equation*}
+  {f_0,\ldots f_{n-1}}
+  \qquad
+  {s_0,\ldots s_{n-1}}
+  \qquad
+  {t_0,\ldots t_{n-1}}
+  \end{equation*}
+If there is a $3$-coloring and 
+vertex~$v_i$ has the first color then $f_i=T$, $s_i=F$, and $t_i=F$.
+If instead vertex~$v_i$ has the second color then
+$f_i=F$, $s_i=T$, and $t_i=F$.
+And if vertex~$v_i$ has the third color then  $f_i=F$, $s_i=F$, and $t_i=T$.
+
+Next, for each $i\in\set{0,\ldots\,n-1}$ create a clause ensuring that
+vertex~$v_i$ gets some color.
+\begin{equation*}
+  (f_i\vee s_i \vee t_i)
+\end{equation*}
+Finally, for each of the graph's edges~$\set{v_i,v_j}$
+create three clauses that together ensure that the edge does not connect
+two same-color vertices.
+\begin{equation*}
+  (\neg f_i\wedge \neg f_j)
+  \qquad
+  (\neg s_i\wedge \neg s_j)
+  \qquad
+  (\neg t_i\wedge \neg t_j)
+\end{equation*}
+Now consider the conjunction of those clauses, the
+propositional logic statement that joins them together with $\wedge$'s.
+The graph has a $3$-coloring if and only if that statement
+is satisfiable\Dash if and only if
+there is a set of boolean values for the variables making all the clauses true.
+\end{example}
+
+
+\begin{example}
+We will outline the argument that a quick way to solve the Clique problem would
+give us a quick way to solve the Satisfiability problem.
+Recall the Clique problem:~given a graph and a bound~$k\in\N$,
+decide if the graph has a $k$-clique,
+a set of vertices such that every two are connected by an edge.
+
+To show that
+$\text{Satisfiability}\leq\text{Clique}$
+we show how to translate a Satisfiability question to a Clique question. 
+Consider this set of propositional logic clauses.
+\begin{equation*}
+  \set{x_0\wedge \neg x_1,\, x_0,\, \neg(\neg x_0\wedge \neg x_1)}
+\end{equation*}
+This set is satisfiable if and only if the single statement
+$(x_0\wedge \neg x_1)\wedge(x_0)\wedge(\neg(\neg x_0\wedge \neg x_1))$
+is satisfiable.
+Find an equivalent statement in Conjunctive Normal Form.
+\begin{equation*}
+  \xi=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
+\end{equation*}
+We will construct a graph~$\mathcal{G}$ that has a suitable
+clique if and only if the statement~$\xi$ is satisfiable
+(the clique size is the number of $\phi$'s clauses, $k=3$)
+Then a fast way to solve Clique problems
+gives a fast way to solve Satisfiability problems.
+
+To make the graph:~put a vertex in $\mathcal{G}$
+for each occurrence of an atom in one of $\xi$'s clause.
+An atom is either a variable~$x_i$ or the negation of a variable~$\neg x_i$.
+Our example statement~$\xi$ has three clauses, each with two atoms,
+so the graph below has six vertices.
+
+Next we take account of the clauses.
+Put an edge in~$\mathcal{G}$ if the associated atoms 
+are in different clauses
+and are not negations (that is, not $x_i$ and $\neg x_i$).
+% \begin{align*}
+%   \mathcal{V} &=\set{v_{0,0},v_{0,1},v_{1,0},v_{1,1},v_{2,0},v_{2,1}} \\
+%   \mathcal{E} &=\{\,\set{v_{0,0},v_{2,0}},\,
+%                   \set{v_{0,0},v_{1,1}},\,
+%                   \set{v_{0,0},v_{2,1}},  \\
+%               &\qquad \set{v_{0,1},v_{1,0}},\,
+%                       \set{v_{0,1},v_{2,0}}, \\
+%               &\qquad \set{v_{1,0},v_{2,0}},\,
+%                       \set{v_{1,0},v_{2,1}}, \\
+%               &\qquad \set{v_{1,1},v_{2,0}}\,\}
+                  %   \end{align*}
+This is the graph arising from $\xi$.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity03.pdf}
+\end{center}
+Observe that 
+$\xi$ is satisfiable if and only if
+the graph has a $3$-clique.
+\end{example}
+
+
+\begin{TODO}
+Hamiltonian Cycle problem is NP complete.
+As a corollary, Travelling Salesman Problem is NP complete.
+\end{TODO}
 
 
 \subsection{$\compclass{NP}$ complete}
 
+\begin{definition}
+A problem is \definend{$\compclass{NP}$ complete}
+if every other $\compclass{NP}$ problem reduces to it.
+\end{definition}
 
-The Factoring problem is believed to be hard for classical computers,
-but is not $\compclass{NP}$-complete.
+Give picture.
+
+\margingraphic{0.20\textwidth}{complexity/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
+In 1971 S~Cook showed that this problem is representative of a class
+of problems, where we can quickly
+verify a solution if given one, but we at this point do not know how
+to quickly find one.
+
+\begin{theorem}
+The satisfiability problem is in~$\compclass{NP}$.
+% That is, $\lang{L}\in\compclass{NP}$ where this is $\lang{L}$.
+% \begin{equation*}
+%   \lang{L}=\set{\varphi\suchthat 
+%              \text{$\varphi$ is a satisfiable propositional logic formula}}
+% \end{equation*}
+\end{theorem}
+
+\begin{proof}
+At least sketch it.
+\end{proof}
+
+
+NP complete problems are analogous to the solution to the \HP,
+in that they are at least as hard as any computably enumerable set.
+
+
+
+The Factoring problem is believed to be hard for classical
+computers,\footnote{%
+  In 1994, P~Shor discovered an algorithm for a quantum computer that
+  solves it in polynomial time.
+  This will have significant implications if quantum computation proves
+  to be possible.}
+But it is generally suspected to be not $\compclass{NP}$-complete.
 
 % https://xkcd.com/287/
 \begin{center}
   \citetext{\includegraphics[scale=2.5]{complexity/xkcdnpcomplete}}{\href{https://xkcd.com/287/}{Courtesy \url{xkcd.com}.}}
 \end{center}
 
+\margingraphic{0.20\textwidth}{complexity/karp.jpg}{\label{fig:RichardKarp}\href{https://en.wikipedia.org/wiki/Richard_M._Karp}{Richard M.\@ Karp b~1935}} % https://simons.berkeley.edu/people/richard-karp  https://simons.berkeley.edu/sites/default/files/styles/profile_main/public/rk1.jpg?itok=1kn5XodZ
+There are a collection of problems that for many years people have
+been trying to find a reasonably-fast algorithms for.
 
-\subsection{$\compclass{P}$ versus $\compclass{NP}$}
-Discussion.
+\begin{theorem}[G\&J List]
+These six problems are $\compclass{NP}$-complete.
+\end{theorem}
 
-Intermediate between solvable and unsolvable is intractible.
-
-
-\begin{exercises}
-\begin{exercise}
-Each of these problems is in~$\compclass{NP}$.
-For each, give a witness.
-\begin{exparts}
-\item
-Hamiltonian circuit problem: given a graph, determine if it has a
-Hamiltonian circuit.
-\item
-Composite problem: given a natural number determine if it is composite.
-\end{exparts}
-\end{exercise}
-
-\begin{exercise}
-Recast the second half of the proof of \cref{lem:VerifierAndGuesserEquiv}
-in computation tree terms.
-\end{exercise}
-\end{exercises}
-
-
-
-
-% =========================================
-\section{Complexity classes}
-We are interested in classifying various problems: for which problems
-are there relatively good algorithms, and for which problems are there not?
-Given a problem we will be interested in its best solution.
-
-\subsection{Time Complexity}
-The impediment a programmer runs across first is time.
-
-\begin{definition}
-Let $\map{t}{\N}{\N}$.
-A language~$\lang{L}$ is an element of \definend{$\DTIME(t)$}
-if there is a deterministic
-Turing machine that decides~$\lang{L}$ and runs in time~$\bigOh(t)$.
-A language is an element of \definend{$\NTIME(t)$}
-if there is a nondeterministic
-Turing machine that decides~$\lang{L}$ and runs in time~$\bigOh(t)$. 
-\end{definition}
-
-This does not say that an algorithm is in that class,
-rather it says that a language is in that class.
-A language is in that class if there is an algorithm for its decision problem
-that has the stated big-O runtime behavior.
-
-\begin{definition}
-A language is in 
-the complexity class \definend{polynomial time $\compclass{P}$},
-often read \definend{polytime},
-if it is a member of $\DTIME(n^c)$
-for some power~$c\in\N$.
-\begin{equation*}
-  \compclass{P} =\bigcup_{c\in\N}\DTIME(n^c)          
-     =\DTIME(n)\cup\DTIME(n^2)\cup\DTIME(n^3)\cup\,\cdots
-\end{equation*}
-\end{definition}
-
-\begin{proof}
-Refer to prior section.
-\end{proof}
-
-\begin{definition}
-A language is in 
-the complexity class \definend{exponential time $\EXP$}
-if it is a member of $\DTIME(2^{n^c})$
-for some power~$c\in\N$.
-\begin{equation*}
-  \EXP =\bigcup_{c\in\N}\DTIME(2^{n^c})           
-       =\DTIME(2^n)\cup\DTIME(2^{n^2})\cup\DTIME(2^{n^3})\cup\,\cdots
-\end{equation*}
-\end{definition}
-
-
-As discussed in the prior subsection,
-polytime is our first take at can-conceivably-be-used,
-and we say that the problem is `tractable'. 
-in contrast, $\EXP$ as too slow; we can't compute it.
-We say it is `intractable'.
-This view of the matter began with J~Edmunds.
 
 
 
@@ -1805,69 +1909,11 @@ in polytime.\footnote{%
 So if we have polytime sloppiness built in then we can
 ignore the model issue. 
 
+Strong Church's Thesis.
+
+Quantum computer?
 
 
-
-
-
-
-
-
-
-\section{Reduction}
-
- 
-\begin{definition}[the complexity class $\compclass{NP}$]
-A language $\lang{L}$ is a member of 
-$\compclass{NP}$ if there is a nondeterministc Turing machine~$\TM$ that
-accepts the language.
-\end{definition}
-
-Often in mathematics we have a definition that captures the concept, and then
-a result that makes the definition to make it easier to work with.
-This is an example.
-The concept of polynomial time on a nondeterministic Turing machine
-is sharp.
-But the next result proves to give the most fruitful way to think about
-such languages in practice.
- 
-\begin{lemma}
-A language $\lang{L}$ is a member of 
-$\compclass{NP}$ if and only if there is a polynomial $\map{p}{\N}{\N}$ and a
-polynomial time Turing machine $\TM$, the \definend{verifier}
-for $\lang{L}$, such that this holds.
-\begin{equation*}
-  \forall \sigma\in\strings 
-  \big[ \sigma\in\lang{L} 
-     \,\Longleftrightarrow\, 
-     \exists w\in \set{0,1}^{p(|\sigma|)}(\TM(\seq{\sigma,w})=1)  \big]
-\end{equation*}
-We say 
-$w$ is the \definend{witness} or \definend{certificate} for $\sigma$.
-\end{lemma}
-
-\begin{proof}
-Show both directions.
-\end{proof}
-
-Note that the witness is restricted in length so that the verifier,
-which as a Turing machine reads one bit at a time, can 
-read it through in polynomial time.
-Note also that we can take the polynomial~$p$ to be trivial $p(i)=0$
-to get that $\compclass{P}\subseteq\compclass{NP}$.
-
-\begin{example}
-The satisfiability problem is in~$\compclass{NP}$.
-That is, $\lang{L}\in\compclass{NP}$ where this is $\lang{L}$.
-\begin{equation*}
-  \lang{L}=\set{\varphi\suchthat 
-             \text{$\varphi$ is a satisfiable propositional logic formula}}
-\end{equation*}
-\end{example}
-
-
-NP complete problems are analogous to the solution to the \HP,
-in that they are at least as hard as any computably enumerable set.
 
 \subsection{Discussion}
 
@@ -2028,127 +2074,113 @@ possible and impossible; see \cref{extra:VotingParadoxes}.
 
 
 
-\section{Problem reduction}
-% "Reduction decreases the number of problems without increasing the number of
-% answers"
 
-\begin{example}
-Recall that a graph is $k$-colorable if we can divide its vertices
-into $k$-many classes, called colors because that's how they
-are pictured, so that there is no edge between two same-colored
-vertices.
-\begin{animatedfigure}{A $3$-coloring of \protect\citetext{a graph}{This is the Petersen graph, a rich source of counterexamples for conjectures in Graph Theory}.}\centering 
-  \animategraphics[poster=last]{2}{complexity/asy/complexity/complexity}{00}{01}
-\end{animatedfigure} 
-We will show that a quick way to solve the Satisfiability problem
-would give us a quick way to solve Graph Colorability, that is,
-we will show that $\text{Graph Colorability}\leq\text{Satisfiability}$.
-To do this we need to translate facts about graphs into facts about
-a propositional logic statement.
 
-We illustrate with the problem of $3$-colorability.
-Given a graph, suppose that it has $n$~vertices $\set{v_0,\ldots\, v_{n-1}}$.
-We want to divide them into three classes, the first, second, and third colors.
-Begin the translation by 
-creating three types of boolean variables for the propositional logic clauses.
+% \subsection{$\compclass{P}$ versus $\compclass{NP}$}
+% Discussion.
+
+Intermediate between solvable and unsolvable is intractible.
+
+
+\begin{exercises}
+\begin{exercise}
+Each of these problems is in~$\compclass{NP}$.
+For each, give a witness.
+\begin{exparts}
+\item
+Hamiltonian circuit problem: given a graph, determine if it has a
+Hamiltonian circuit.
+\item
+Composite problem: given a natural number determine if it is composite.
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Recast the second half of the proof of \cref{lem:VerifierAndGuesserEquiv}
+in computation tree terms.
+\end{exercise}
+\end{exercises}
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+% =========================================
+\section{Complexity classes}
+We are interested in classifying various problems: for which problems
+are there relatively good algorithms, and for which problems are there not?
+Given a problem we will be interested in its best solution.
+
+\subsection{Time Complexity}
+The impediment a programmer runs across first is time.
+
+\begin{definition}
+Let $\map{t}{\N}{\N}$.
+A language~$\lang{L}$ is an element of \definend{$\DTIME(t)$}
+if there is a deterministic
+Turing machine that decides~$\lang{L}$ and runs in time~$\bigOh(t)$.
+A language is an element of \definend{$\NTIME(t)$}
+if there is a nondeterministic
+Turing machine that decides~$\lang{L}$ and runs in time~$\bigOh(t)$. 
+\end{definition}
+
+This does not say that an algorithm is in that class,
+rather it says that a language is in that class.
+A language is in that class if there is an algorithm for its decision problem
+that has the stated big-O runtime behavior.
+
+\begin{lemma}
+A language is polytime, $\compclass{P}$,
+if it is a member of $\DTIME(n^c)$
+for some power~$c\in\N$.
 \begin{equation*}
-  {f_0,\ldots f_{n-1}}
-  \qquad
-  {s_0,\ldots s_{n-1}}
-  \qquad
-  {t_0,\ldots t_{n-1}}
-  \end{equation*}
-If there is a $3$-coloring and 
-vertex~$v_i$ has the first color then $f_i=T$, $s_i=F$, and $t_i=F$.
-If instead vertex~$v_i$ has the second color then
-$f_i=F$, $s_i=T$, and $t_i=F$.
-And if vertex~$v_i$ has the third color then  $f_i=F$, $s_i=F$, and $t_i=T$.
-
-Next, for each $i\in\set{0,\ldots\,n-1}$ create a clause ensuring that
-vertex~$v_i$ gets some color.
-\begin{equation*}
-  (f_i\vee s_i \vee t_i)
+  \compclass{P} =\bigcup_{c\in\N}\DTIME(n^c)          
+     =\DTIME(n)\cup\DTIME(n^2)\cup\DTIME(n^3)\cup\,\cdots
 \end{equation*}
-Finally, for each of the graph's edges~$\set{v_i,v_j}$
-create three clauses that together ensure that the edge does not connect
-two same-color vertices.
+A language is a member of 
+$\compclass{NP}$ if this holds.
 \begin{equation*}
-  (\neg f_i\wedge \neg f_j)
-  \qquad
-  (\neg s_i\wedge \neg s_j)
-  \qquad
-  (\neg t_i\wedge \neg t_j)
+  \compclass{NP} =\bigcup_{c\in\N}\NTIME(n^c)          
+     =\NTIME(n)\cup\NTIME(n^2)\cup\NTIME(n^3)\cup\,\cdots
 \end{equation*}
-Now consider the conjunction of those clauses, the
-propositional logic statement that joins them together with $\wedge$'s.
-The graph has a $3$-coloring if and only if that statement
-is satisfiable\Dash if and only if
-there is a set of boolean values for the variables making all the clauses true.
-\end{example}
+\end{lemma}
 
+\begin{proof}
+Refer to prior section.
+\end{proof}
 
-\begin{example}
-We will outline the argument that a quick way to solve the Clique problem would
-give us a quick way to solve the Satisfiability problem.
-Recall the Clique problem:~given a graph and a bound~$k\in\N$,
-decide if the graph has a $k$-clique,
-a set of vertices such that every two are connected by an edge.
-
-To show that
-$\text{Satisfiability}\leq\text{Clique}$
-we show how to translate a Satisfiability question to a Clique question. 
-Consider this set of propositional logic clauses.
+\begin{definition}
+A language is in 
+the complexity class \definend{exponential time $\EXP$}
+if it is a member of $\DTIME(2^{n^c})$
+for some power~$c\in\N$.
 \begin{equation*}
-  \set{x_0\wedge \neg x_1,\, x_0,\, \neg(\neg x_0\wedge \neg x_1)}
+  \EXP =\bigcup_{c\in\N}\DTIME(2^{n^c})           
+       =\DTIME(2^n)\cup\DTIME(2^{n^2})\cup\DTIME(2^{n^3})\cup\,\cdots
 \end{equation*}
-This set is satisfiable if and only if the single statement
-$(x_0\wedge \neg x_1)\wedge(x_0)\wedge(\neg(\neg x_0\wedge \neg x_1))$
-is satisfiable.
-Find an equivalent statement in Conjunctive Normal Form.
-\begin{equation*}
-  \xi=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
-\end{equation*}
-We will construct a graph~$\mathcal{G}$ that has a suitable
-clique if and only if the statement~$\xi$ is satisfiable
-(the clique size is the number of $\phi$'s clauses, $k=3$)
-Then a fast way to solve Clique problems
-gives a fast way to solve Satisfiability problems.
-
-To make the graph:~put a vertex in $\mathcal{G}$
-for each occurrence of an atom in one of $\xi$'s clause.
-An atom is either a variable~$x_i$ or the negation of a variable~$\neg x_i$.
-Our example statement~$\xi$ has three clauses, each with two atoms,
-so the graph below has six vertices.
-
-Next we take account of the clauses.
-Put an edge in~$\mathcal{G}$ if the associated atoms 
-are in different clauses
-and are not negations (that is, not $x_i$ and $\neg x_i$).
-% \begin{align*}
-%   \mathcal{V} &=\set{v_{0,0},v_{0,1},v_{1,0},v_{1,1},v_{2,0},v_{2,1}} \\
-%   \mathcal{E} &=\{\,\set{v_{0,0},v_{2,0}},\,
-%                   \set{v_{0,0},v_{1,1}},\,
-%                   \set{v_{0,0},v_{2,1}},  \\
-%               &\qquad \set{v_{0,1},v_{1,0}},\,
-%                       \set{v_{0,1},v_{2,0}}, \\
-%               &\qquad \set{v_{1,0},v_{2,0}},\,
-%                       \set{v_{1,0},v_{2,1}}, \\
-%               &\qquad \set{v_{1,1},v_{2,0}}\,\}
-                  %   \end{align*}
-This is the graph arising from $\xi$.
-\begin{center}
-  \includegraphics{complexity/asy/complexity/complexity03.pdf}
-\end{center}
-Observe that 
-$\xi$ is satisfiable if and only if
-the graph has a $3$-clique.
-\end{example}
+\end{definition}
 
 
-\begin{TODO}
-Hamiltonian Cycle problem is NP complete.
-As a corollary, Travelling Salesman Problem is NP complete.
-\end{TODO}
+As discussed in the prior subsection,
+polytime is our first take at can-conceivably-be-used,
+and we say that the problem is `tractable'. 
+in contrast, $\EXP$ as too slow; we can't compute it.
+We say it is `intractable'.
+This view of the matter began with J~Edmunds.
+
+
+\subsection{Space Complexity}
+
+
 
 
 
@@ -2157,13 +2189,6 @@ As a corollary, Travelling Salesman Problem is NP complete.
 Presentation of conditions in Arora, Barak is a good starting point.
 
 
-
-\section{Contrast between computability and complexity}
-What can be solved at all vs what can be solved in a practical time?
-Showing faster algorithms exist vs showing that any algorithm exists.
-
-Once you know a problem can be solved at all then the next step is to
-solve it efficiently.
 
 
 \section{Open problems}

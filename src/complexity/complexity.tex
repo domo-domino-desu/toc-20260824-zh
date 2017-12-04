@@ -1261,13 +1261,21 @@ and which are open to analysis that makes them tractable.
 % Other mathematicians compete about the complicated theorems that they are able to prove; combinatorialists like to compete about about the simplicity or self-evidence of statements they are unable to prove, i.e., ``I can't even prove ...''
 
 \section{Contrast between computability and complexity}
+
 What can be solved at all vs what can be solved in a practical time?
+
 Showing faster algorithms exist vs showing that any algorithm exists.
 
 Once you know a problem can be solved at all then the next step is to
 solve it efficiently.
 
-
+In this chapter we focus on the question of decideing languages.
+When we mention a problem, it will be to recognize a lanaguage.
+Further, we will typically work in languages that onsist of bitstrings.
+Thus, the problem of determining which numbers are prime
+may be the decision problem of
+computing membership in the set
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number, in binary}}$.
 
 
 
@@ -1279,7 +1287,8 @@ We now consider nondeterminism for Turing machines.
 
 Recall that a machine is nondeterminstic if
 from a present configuration and input
-it may pass to a next configuration that has more than one state.
+it may pass to a next configuration that has more than zero next states,
+one next state, or more.
 That is, the transition function outputs sets.
 \begin{equation*}
   \Delta(q_i,T_p)=\set{\sequence{q_{j_0},T_{n_0}},\sequence{q_{j_1},T_{n_1}}\,\ldots}
@@ -1322,22 +1331,11 @@ deterministic machine,
 one of which is accepting the language of palindromes.
 
 \begin{lemma}
-Deterministic and nondeterministic Turing machines can do the same tasks.
-In particular, for every task that can be done by a nondeterministic  machine
-there is a deterministic machine that can do the same.
+Deterministic and nondeterministic Turing machines solve the same problems.
+In particular,
+every problem that can be solved by a nondeterministic  machine
+can be solved by a deterministic machine.
 \end{lemma}
-
-% For the proof, recall the inverse \codeinline{xy}
-% of the Cantor pairing function.
-% Here are the first few values of \codeinline{(car (xy c))}.
-% \begin{center}
-% \begin{tabular}{r|*{11}{c}}
-%   \tabulartext{Input $c$}
-%     &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$ &$7$ &$8$ &$9$ &$10$   \\ \cline{2-12}
-%   \tabulartext{Result}
-%     &$0$ &$0$ &$1$ &$0$ &$1$ &$2$ &$0$ &$1$ &$2$ &$3$ &$0$
-% \end{tabular}
-% \end{center}
 
 \begin{proof}
 Since a deterministic Turing machine is a special case of a
@@ -1352,7 +1350,7 @@ eventually reach it, and it also will accept the input.
 Otherwise, it will not.
 \end{proof}
 
-The proof is, basically, time-slicing.
+That proof is, basically, time-slicing.
 In practice we simulate an unboundedly-parallel computer
 by having the CPU switch among processes, giving each enough time to
 make some progress but not so much time that other processes are
@@ -1369,16 +1367,13 @@ In practice, potentially,
 one interesting thing about nondeterministic Turing machines is that they
 appear to be a good match for solving problems that on a serial machine
 are hard to solve.
-An example is testing whether a number~$n\in\N$ is prime.
-In guessing terms, the machine just 
-comes up with a number $m\in\N$ and then checks whether
-$m$ divides~$n$.
-Such a procedure can succeed if and only if 
-$n$ is composite.
-(See also \cref{exer:PrimaliltyTesting}.)
+An example is the Travelling Salesman problem.
+Stated in guessing terms, the machine just 
+comes up with a circuit $c\in\N$ and then checks whether
+$c$ is smaller than the given bound.
 
 So while adding unbounded parallelism to Turing machines doesn't
-allow them to compute any new functions, it appears, at least, that it may
+allow them to compute any new functions, it at least appears that it may
 allow them to compute the functions faster.
 
 \begin{definition}
@@ -1568,6 +1563,11 @@ verifying that it is correct is beyond us.
 \subsection{Definition}
 We are taking solving a problem and dividing it into two parts,
 coming up with the solution and verifying that it is correct.
+We are considering the set of problems such that someone can convince you
+of a `yes' answer in a reasonable amount of time.
+That is, each string in the language there must be a proof that
+it is there, which is short in that it can be verified in deerministic
+polynomial time.
 
 \begin{definition}
 For a language $\lang{L}\subseteq\kleenestar{\B}$,
@@ -1583,7 +1583,13 @@ $\TM$ accepts the input $\sequence{\sigma,\omega}$.
 The definition does not say where the witness~$\omega$ comes from.
 In some sense this formalizes the idea of a demon providing the
 answer and our only job then is to verify the answer's correctness.
- 
+
+Notice also that the definition does not say that when the string is not
+in the language then there is a witness.
+More precisely, if we have a Boolean function $\map{f}{\B^n}{\B}$ that
+is a member of $\NP$ then it is not necessary that the complement
+$\neg f$ is an element of $\NP$.
+
 Note that the witness is restricted in length so that the verifier,
 which as a Turing machine reads one bit at a time, can 
 read it through in polynomial time.
@@ -1713,6 +1719,23 @@ indicated behavior.
 \section{Problem reduction}
 % "Reduction decreases the number of problems without increasing the number of
 % answers"
+As with incompleteness, a \definend{reduction}
+is an algorithm for transforming one problem into another.
+In a complexity context, 
+problem $A$ is reducible to problem~$B$, written $A\leq B$,
+if an algorithm for solving~$B$ efficiently could also be used to solve
+problem~$A$ efficiently.
+
+\begin{definition}
+The language $\lang{L_0}$ is
+\definend{polynomial time reducible}
+(or \definend{polynomial time mapping reducible}, or
+\definend{polynomial time many-one reducible})
+to the language~$\lang{L}_1$ if there is a computable function
+$\map{p}{\kleenestar{\B}}{\kleenestar{B}}$, that runs in polynomial time,
+such that
+$\sigma\in\lang{L}_0$ if and only if~$f(\sigma)\in\lang{L}_1$.
+\end{definition}
 
 \begin{example}
 Recall that a graph is $k$-colorable if we can divide its vertices
@@ -1827,12 +1850,6 @@ the graph has a $3$-clique.
 \end{example}
 
 
-\begin{TODO}
-Hamiltonian Cycle problem is NP complete.
-As a corollary, Travelling Salesman Problem is NP complete.
-\end{TODO}
-
-
 \subsection{$\compclass{NP}$ complete}
 
 \begin{definition}
@@ -1865,17 +1882,35 @@ At least sketch it.
 
 
 NP complete problems are analogous to the solution to the \HP,
-in that they are at least as hard as any computably enumerable set.
+which are at least as hard as any computably enumerable set.
+
+\begin{TODO}
+Hamiltonian Cycle problem is NP complete.
+As a corollary, Travelling Salesman Problem is NP complete.
+\end{TODO}
 
 
+P is the class of problems which we can solve efficiently using
+a conventional algorithm.
+Here are two problems known to be in $P$:
+Matrix multiplication, graph reachability.
 
+In 2002, a very exciting annuoncement was made, that 
+the problem of determining whether a given number is prime can be done
+in $\bigOh(n^6)$, so this problem is also in~$\P$.\footnote{
+  This is known as AKS after the authors Agrawal, Kayal, and Saxena
+  (the latter two were undergraduates % Indian Institute of Technology at Kanpur
+  at the time they did most of the work.}
+
+Two problems that are believed to be in $\NP$ but not $\NP$~complete are:
 The Factoring problem is believed to be hard for classical
 computers,\footnote{%
   In 1994, P~Shor discovered an algorithm for a quantum computer that
   solves it in polynomial time.
   This will have significant implications if quantum computation proves
   to be possible.}
-But it is generally suspected to be not $\compclass{NP}$-complete.
+but it is generally suspected to be not $\compclass{NP}$-complete.
+Graph Isomorphism.  
 
 % https://xkcd.com/287/
 \begin{center}
@@ -1950,6 +1985,9 @@ both halves, $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
 \end{theorem}
 
 
+
+\subsection{$\P=\NP$?}
+Two pictures; one with separation, one without.
 
 
 % ........................
@@ -2185,6 +2223,18 @@ in computation tree terms.
 
 % =========================================
 \section{Complexity classes}
+Here we will generalize the work we have done with $\P$ and $\NP$
+to other problems.
+
+\begin{definition}
+A \definend{complexity class} is a set of languages.
+\end{definition}
+
+Usually the languages are sets of bitstrings.
+And, typically they share some property involving how much of
+some resource such as time or memory is needed by a Turing machine
+recognizing a language.
+
 We are interested in classifying various problems: for which problems
 are there relatively good algorithms, and for which problems are there not?
 Given a problem we will be interested in its best solution.
@@ -2262,13 +2312,30 @@ For example, if $\compclass{P}=\compclass{NP}$ then $\compclass{NP}$
 is a strict subset of $\EXP$.
 But we just don't know.
 
-
+% https://complexityzoo.uwaterloo.ca/Petting_Zoo
+$\EXP$ contains nearly every other class that we regularly concern ourselves
+with.
+We can always construct classes of still harder problems but from a
+simplistic point of view, EXP is ``big enough'' to contain most problems
+we ever hope to attack.
 
 
 
 \subsection{Space Complexity}
 
-
+Whereas $\P$ is a class of problems that can be solved in a
+polynomially-bounded amount of time, $\compclass{PSPACE}$ is the class of
+problems that can be solved by a deterministic Turing machine that uses
+only a polynomially-bounded amount of space,
+regardless of how long the computation takes.
+Perhaps unsurprisingly, restricting by space instead of time allows for a
+lot more power.
+For instance, it is trivial to see that $\compclass{PSPACE}$ contains every
+problem in $\NP$: simply iterate through all possible proof strings
+(which have to be polynomially short) and check each one in turn.
+If any proof string works, then the answer to the problem is `yes'.
+Otherwise, you know that the answer must be `no',
+since otherwise you would have found a valid proof string. 
 
 
 

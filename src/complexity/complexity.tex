@@ -1,12 +1,27 @@
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as far more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Complexity}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 
-In the first part of the  book we asked which problems are solvable on a
+In the first part of the  book we asked which problems can be done on a
 computer.
+Once you know a problem can be do at all then the next step is to
+do it efficiently, so 
 Here we ask which problem are efficiently solvable.
 
-% We will review the basics of the orders of growth of functions.
-% Because this is a review, we will not give a detailed development, just enough for our needs.
-% And we will leave the proofs for the exercises.
+That is, we are switching from asking what can be done at all
+to asking what can be done in a time that is practical?
+(Or in an amount of space, or some other computational resource,
+that is practical.)
+
+In this chapter, by `problem' we will mean the question of deciding a
+language.
+Further, we will typically work in languages that consist of bitstrings.
+For example, we will take tthe problem of determining whether a number is
+prime or composite to be the decision problem of
+computing membership in the set
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number, in binary}}$.
+
+We will start by reviewing the basics of the orders of growth of functions.
+Because this is a review, we will not give a detailed development, just enough for our needs.
+And, we will leave the proofs for the exercises.
 
 
 
@@ -33,10 +48,10 @@ Here is a multiplication problem.
   \begin{array}{@{}r@{}}
     678\\
     \times 42\\
-   % \hline
-   %  1356\\
-   % +27120\\  \hline
-   % 28476
+   \hline
+    1356\\
+   +27120\\  \hline
+   28476
 \end{array}
 \end{equation*}
 In grade school we learn the algorithm that for
@@ -1260,23 +1275,6 @@ and which are open to analysis that makes them tractable.
 
 % Other mathematicians compete about the complicated theorems that they are able to prove; combinatorialists like to compete about about the simplicity or self-evidence of statements they are unable to prove, i.e., ``I can't even prove ...''
 
-\section{Contrast between computability and complexity}
-
-What can be solved at all vs what can be solved in a practical time?
-
-Showing faster algorithms exist vs showing that any algorithm exists.
-
-Once you know a problem can be solved at all then the next step is to
-solve it efficiently.
-
-In this chapter we focus on the question of decideing languages.
-When we mention a problem, it will be to recognize a lanaguage.
-Further, we will typically work in languages that onsist of bitstrings.
-Thus, the problem of determining which numbers are prime
-may be the decision problem of
-computing membership in the set
-$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number, in binary}}$.
-
 
 
 
@@ -1702,14 +1700,11 @@ a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
 and verifies that the subset adds to the target, in polynomial time.
 \end{example}
 
-We are interested in classifying various problems: for which problems
-are there relatively good algorithms, and for which problems are there not?
-Given a problem, we will be interested in its best solution.
-
-Restated, we would not say an algorithm is in $\compclass{P}$ or in
-$\compclass{NP}$.
-Rather, we say a language is in a class, if its best solution has the
-indicated behavior.
+In summary, we are interested in for which problems
+are there relatively good algorithms and for which problems are there not?
+Note that we are classifying problems, using their best solutions.
+We would not say an algorithm is in a class; 
+rather we say a language is in that class.
 
 
 
@@ -1719,10 +1714,14 @@ indicated behavior.
 \section{Problem reduction}
 % "Reduction decreases the number of problems without increasing the number of
 % answers"
-As with incompleteness, a \definend{reduction}
+A \definend{reduction}
 is an algorithm for transforming one problem into another.
+When we did incompleteness we said that  
+problem $A$ is reducible to problem~$B$, written $A\leq_T B$,
+if an algorithm for solving~$B$ could also be used to solve
+problem~$A$.
 In a complexity context, 
-problem $A$ is reducible to problem~$B$, written $A\leq B$,
+problem $A$ is reducible to problem~$B$, written $A\leq_p B$,
 if an algorithm for solving~$B$ efficiently could also be used to solve
 problem~$A$ efficiently.
 
@@ -1731,23 +1730,24 @@ The language $\lang{L_0}$ is
 \definend{polynomial time reducible}
 (or \definend{polynomial time mapping reducible}, or
 \definend{polynomial time many-one reducible})
-to the language~$\lang{L}_1$ if there is a computable function
-$\map{p}{\kleenestar{\B}}{\kleenestar{B}}$, that runs in polynomial time,
+to the language~$\lang{L}_1$, written $\lang{L}_0\leq_p\lang{L}_1$,
+if there is a computable function
+$\map{p}{\kleenestar{\B}}{\kleenestar{B}}$ that runs in polynomial time
 such that
 $\sigma\in\lang{L}_0$ if and only if~$f(\sigma)\in\lang{L}_1$.
 \end{definition}
 
 \begin{example}
-Recall that a graph is $k$-colorable if we can divide its vertices
+We start by seeing that a quick way to solve the Satisfiability problem
+would give us a quick way to solve Graph Colorability, that is,
+$\text{Graph Colorability}\leq_p\text{Satisfiability}$.
+Recall that a graph is $k$-colorable if we can partition its set of vertices
 into $k$-many classes, called colors because that's how they
 are pictured, so that there is no edge between two same-colored
 vertices.
 \begin{animatedfigure}{A $3$-coloring of \protect\citetext{a graph}{This is the Petersen graph, a rich source of counterexamples for conjectures in Graph Theory}.}\centering 
   \animategraphics[poster=last]{2}{complexity/asy/complexity/complexity}{00}{01}
 \end{animatedfigure} 
-We will show that a quick way to solve the Satisfiability problem
-would give us a quick way to solve Graph Colorability, that is,
-we will show that $\text{Graph Colorability}\leq\text{Satisfiability}$.
 To do this we need to translate facts about graphs into facts about
 a propositional logic statement.
 
@@ -1924,10 +1924,11 @@ problems reduce to it.
 
 Thus, $\compclass{NP}$-hard problems are at least as hard as any problem in
 $\compclass{NP}$.
-
-Thus, the set of $\compclass{NP}$~complete problems is the intersection
-of the class~$\compclass{NP}$ and the class of $\compclass{NP}$-hard
+So the set of $\compclass{NP}$~complete problems is the intersection
+of the class~$\compclass{NP}$ with the class of $\compclass{NP}$-hard
 problems.
+Often, a proof that a problem is $\NP$~complete has two parts:~the first shows
+it is in~$\NP$ and the second that it is $\NP$-hard.
 
 Picture.
 Based on the picture above.
@@ -2015,27 +2016,44 @@ Quantum computer?
 
 
 \subsection{Discussion}
+Consider the 
+\textit{Entscheidungsproblem}, which we mentioned at the book's start.
+It was proposed in 1928 by David Hilbert and Wilhelm Ackermann.
+It asks for an algorithm that takes as  
+as input a mathematical statement
+and determines whether that statement is true or false.
 
-These two  
-computational problems seem similar.
-
-\begin{example}
-Formally, a mathematical proof as a sequence of statements,
+Here is a plan for proving true statements,
+A  proof is a sequence of statements,
 $\sigma_0$, $\sigma_1$, \ldots, $\sigma_k$,
-where the final statement is the conclusion. 
-Each statement either is itself an axiom or
+where the final statement is the conclusion,
+and each statement either is itself an axiom or
 else follows from the statements before it
 by an application
-of one of the agreed-upon derivation rules.
+of one of the derivation rules of logic.
+So we try to brute-force a proof\Dash take all combinations of 
+all the axioms, using all the derivation rules.
+
+If a proof exists, that plan will find it eventually.
+The difficulty is that final word.
+The problem is that this algorithm is very slow.
+
 From experience we know that finding the proof of a desired  
 conclusion can be very hard; often it seems to take a leap of insight.
-Trying to brute-force it by taking all combinations of 
-all the axioms and all the derivation rules would be very slow.
-In contrast, if we were given the 
+In contrast, if we were given the certificate, the 
 sequence of statements along with a description
 of each step's rules, and asked only to check the 
 sequence for correctness,
 then that would be easy and quick.
+
+In proving something the leap, it seems to us, is coming up with the
+proposed proof in the first place.
+The verification that the statements follow
+according to the given rules from the given list of prior statements
+feels routine.
+But if $\P=\NP$ then the two jobs are, essentially, equally difficult.
+
+\begin{example}
 \end{example}
 
 \begin{example}
@@ -2129,14 +2147,6 @@ It seems to us that there is a gulf, a leap in difficulty,
 between simply verifying that a particular number is a factor,
 and finding that number in the first place.
 
-The final example, the
-\textit{Entscheidungsproblem}, brings up back to the the book's start. 
-A proof is a sequence of statements, where each is either an
-assumption or follows logically from the ones before it.
-Intuitively, we perceive that verifying that a statement follows
-according to a given rule from a given list of prior statements is routine.
-The leap, it seems to us, is in generating the statements in the
-first place.
 
 
 % This dichotomy between finding a solution, and verifying that the solution

@@ -1,27 +1,35 @@
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as far more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/waterstrider.jpg}{Complexity}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 
-In the first part of the  book we asked which problems can be done on a
-computer.
-Once you know a problem can be do at all then the next step is to
-do it efficiently, so 
-Here we ask which problem are efficiently solvable.
+In the first part of the  book we asked what can be done, mechanically.
+Once you know that a task can be done at all then the next step is to
+do it efficiently. in a practical time
+(or space, or some other computational resource).
 
-That is, we are switching from asking what can be done at all
-to asking what can be done in a time that is practical?
-(Or in an amount of space, or some other computational resource,
-that is practical.)
+To suit this change, we adjust our terms.
+In this part, although we will continue to informally discuss problems such as
+the Satisfiability or the Composite problem, formally,
+`problem' means a decision problem for a language.
+All our problems will be translated to those terms.
+In addition, languages will consist of bitstrings.
+For example, when we discuss the Composite problem, when we come to formalize it
+we take it to mean the problem of
+computing membership in
+$\lang{L}=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number in binary}}$.
 
-In this chapter, by `problem' we will mean the question of deciding a
-language.
-Further, we will typically work in languages that consist of bitstrings.
-For example, we will take tthe problem of determining whether a number is
-prime or composite to be the decision problem of
-computing membership in the set
-$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number, in binary}}$.
+To match this, we adjust our Turing machines.
+In this part they come with a subset of states that are accepting states.
+By saying that such a machine solves a problem,
+we mean that  the machine halts on all inputs~$\sigma\in\kleenestar{\B}$,
+and if when it halts it is in an accepting state then that input is in
+the language.
+Further, we may describe the running time of such a machine to be
+a function~$f$, meaning not only that
+for any input of length~$n$ it halts within $f(n)$-many steps.
+Because of this,
+we start this part by reviewing the orders of growth of functions.
+% Because this is a review, we will not give a detailed development,
+% just enough for our needs.
 
-We will start by reviewing the basics of the orders of growth of functions.
-Because this is a review, we will not give a detailed development, just enough for our needs.
-And, we will leave the proofs for the exercises.
 
 
 
@@ -373,7 +381,7 @@ the rates are alike.
       % upper bound.
     \item
       The `$f=\bigOh(g)$' notation is awkward but 
-      standard.\footnotemark{} %
+      standard.\footnotemark[2]
       The notation `$f\in\bigOh(g)$' is correct but not common.
     \item
       Some authors allow negative real outputs and write the
@@ -390,12 +398,12 @@ the rates are alike.
       wrong\Dash $f(n)$ and $g(n)$ are numbers, not functions, and big-O
       is a relationship between two functions.
   \end{parenum}
-\end{remark}\footnotetext{%
-  One way that it is awkward is that it does not follow the usual rules
-  of equality.
-  For one thing, you cannot rewrite it as `$\protect\bigOh(g)=f$'.
-  Another way is that $n=\bigOh(n^2)$ and $n^2=\bigOh(n^2)$ does not
-  allow us to conclude that $n=n^2$.}
+  \end{remark}\footnotetext[2]{%
+        One way that it is awkward is that it does not follow the usual rules
+        of equality so for instance
+        you cannot rewrite it as `$\protect\bigOh(g)=f$'.
+        Another way is that $n=\bigOh(n^2)$ and $n^2=\bigOh(n^2)$ does not
+        allow us to conclude that $n=n^2$.}
 
 \begin{example} \label{ex:BigOFromDefn}
   To directly apply the definition, given two functions we must produce
@@ -412,13 +420,13 @@ the rates are alike.
 \end{example}
 
 \begin{example}
-  The assertion that $f$ in~$\bigOh(g)$ does not mean that the graph of $g$ is
+  Just because $f$ is in~$\bigOh(g)$ does not mean that the graph of $g$ is
   eventually above the graph of~$f$.
-  Consider $f(n)=n^2+1$ and~$g(n)=n^2$.
-  The outputs of the second function
-  are always less than those of the first, but $f$ is~$\bigOh(g)$.
-  To verify, take $N=2$ and~$C=2$.
-  If $n>N$ we can write $n=j+2$ for $j\in\N^+$ and
+  An example is $f(n)=n^2+1$ and~$g(n)=n^2$. 
+  The outputs $g$
+  are always less than those of~$f$.
+  To verify that $f$ is~$\bigOh(g)$ take $N=2$ and~$C=2$, and then
+  if $n>N$ we can write $n=j+2$ for $j\in\N^+$, and
   then $C\cdot g(n)=2n^2=2(j+2)^2=2j^2+8j+8$ is greater than
   $f(n)=(j+2)^2+1=j^2+4j+5$.
 \end{example}
@@ -430,21 +438,21 @@ the rates are alike.
 \end{example}
 
 \begin{example}
-Not every pair of eventually nonnegative functions is comparable.
-Consider this function in comparison with $g(n)=n^3$.
+The ordering imposed by $\bigOh{}$ on the set of
+eventually nonnegative functions is only partial;
+some pairs of functions aren't comparable.
+Try to compare this function with $g(n)=n^3$.
 \begin{equation*}
   f(n)=\begin{cases} 
          n^2  &\case{if $n$ is even}  \\
          n^4  &\case{if $n$ is odd}
        \end{cases}
 \end{equation*}
-To see that $f$ is not~$\bigOh(n^3)$, observe that there are
+This function is not~$\bigOh(g)$ because there are
 arbitrarily large inputs~$n$ where $C=2$ does not suffice:
 if $n$ is odd and $n>2$  then $f(n)=n^4=n\cdot n^3> 2\cdot n^3$.
 Similar reasoning works for any~$C$.
-The argument that $n^3$ is not~$\bigOh(f)$ goes the same way, on even inputs.
-So the ordering imposed by $\bigOh{}$ on the set of
-functions is only partial.
+And $g$ is not~$\bigOh(f)$ for the same reason on even inputs.
 \end{example}
 
 \begin{remark}
@@ -969,15 +977,51 @@ will double the time used.
 
 Consequently, we say that 
 a problem is
-\citetext{\definend{tractable}}{%
-  Credit for this distinction goes to J~Edmunds in \autocite{Edmunds}.
+\citetext{\definend{tractable}}{% 
+  Credit for this distinction goes to A~Cobham and J~Edmunds, separately,
+  in 1964 see \autocite{Cobham} and \autocite{Edmunds}. 
   \protect\begingroup\protect\centering \protect\small
-    \protect\includegraphics[width=0.23\textwidth]{complexity/edmonds.jpg}
-  \\
-    \protect\label{fig:edmonds}\protect\href{https://en.wikipedia.org/wiki/Jack_Edmonds}{Jack Edmonds, b~1934} % wikipedia 
+  \protect\includegraphics[width=0.23\textwidth]{complexity/edmonds.jpg}
+  \hspace{3em}
+  \protect\includegraphics[width=0.23\textwidth]{complexity/cobham.jpg}
+    \\
+    \protect\label{fig:edmonds}\protect\href{https://en.wikipedia.org/wiki/Jack_Edmonds}{Jack Edmonds, b~1934} % wikipedia
+  \hspace{3em}  
+    \protect\label{fig:edmonds}\protect\href{https://en.wikipedia.org/wiki/Jack_Edmonds}{Alan Cobham, 1927-2011} % http://recursed.blogspot.com/2014/11/alan-cobham-appreciation.html 
     \protect\endgroup
-    \protect\par  % 
-  In a ``Digression'' he writes:
+    \protect\par  % http://recursed.blogspot.com/2014/11/alan-cobham-appreciation.html
+    Cobham's paper starts by asking whether ``is it harder to multiply than to
+    add?'' a question for which we still do not have a satisfactory answer.
+    Clearly we can add two $n$-bit numbers in $\bigOh(n)$ time,
+    but it is still not known whether it is possible to multiply in
+    linear time.
+
+    Cobham then goes on to point out the distinction between the complexity
+    of a problem and the running time of a particular algorithm to solve that
+    problem (a distinction that many students still don't appreciate).
+
+    Cobham also points out that many familiar functions, such as addition,
+    multiplication, division, square roots, and so forth can all be computed
+    in time ``bounded by a polynomial in the lengths of the numbers
+    involved.''
+    He suggests we consider the class of all functions having this property.
+
+    He then goes on to discuss why $\P$ is a natural class.
+    The reasons he gives are the same ones I give students today:~first,
+    that the definition is invariant under the choice of computing model.
+    Turing machines, RAMs, and familiar programming languages have the
+    property that if a problem is in $\P$ for one such model, then it is
+    in $P$ for all the others.
+    (Today, though, we have to add an asterisk, because the quantum computing
+    model offers several problems in BQP (such as integer factorization)
+    for which no polynomial-time solution is known in any reasonable
+    classical model.)
+
+    A second reason, Cobham observes, is that $\P$ has several natural closure
+    properties such as being ``closed in particular under \ldots{}
+    composition.''
+    
+  As for Edmunds, in a  ``Digression'' he writes:
   An explanation is due on the use of the words ``efficient algorithm.''
   According to the dictionary, ``efficient'' means
 ``adequate in operation or performance.''
@@ -993,8 +1037,11 @@ a problem is
   If only to motivate the search for good, practical algorithms, it is 
   important to realize that it is mathematically sensible even to question 
   their existence.}
-if the best algorithm's resource consumption is subexponential,
-so that it is conceivably practical.
+if there is an algorthm for it whose resource consumption is polynomial\Dash
+the algorithm is such that there is a constant~$C$ such that it runs in
+time~$\bigOh(n^C)$ on an $n$~bit input.
+We informally take these to be conceivably practical.\footnote{%
+  This identification is \definend{Cobham's thesis}.}
 A problem is \definend{intractable} if the best algorithm 
 is superpolynomial.
 In this part of the book we consider which problems are inheriently
@@ -1381,7 +1428,7 @@ A nondeterministic machine
 input $\sigma\in\lang{L}$ the machine computes at least one accepting branch
 in time $t(|\sigma|)$.\footnotemark[1].
 \end{definition}\footnotetext[1]{Whether we use the model that the machine
-deciddes by a computation tree or by guessing does not matter.}
+decides by a computation tree or by guessing does not matter.}
 
 The question of whether there is an actual difference in speed between
 deterministic and nondeterministic Turing machines is extremely interesting.
@@ -1651,7 +1698,11 @@ Turing machine verifier, is \definend{$\compclass{NP}$}.
 
 A problem is in NP if and only if we can provide a
 polynomially long proof witness for any
-positive solution.
+positive solution.\footnote{%
+  Please note: it is incorrect to say that an algorithm is in $\NP$
+  (or $\P$ for that matter).
+  Rather, what is in $\NP$ are problems\Dash languages\Dash
+  for which there exists an algorithm that runs sufficiently fast.}
 
 Often in mathematics we have a definition that captures the concept, and then
 a result that makes the definition to make it easier to work with.
@@ -1854,9 +1905,8 @@ the graph has a $3$-clique.
 
 \begin{definition}
 A problem is \definend{$\compclass{NP}$ complete}
-if every other $\compclass{NP}$ problem reduces to it:~the problem
-$\mathcal{N}$ is $\compclass{NP}$ complete if for every~$\compclass{NP}$
-problem~$\mathcal{P}$ we have $\mathcal{P}\leq_p\mathcal{N}$.
+if $\mathcal{P}\leq_p\mathcal{N}$ for every~$\compclass{NP}$
+problem~$\mathcal{P}$.
 \end{definition}
 
 Give picture.
@@ -1868,7 +1918,7 @@ verify a solution if given one, but we at this point do not know how
 to quickly find one.
 
 \begin{theorem}
-The satisfiability problem is in~$\compclass{NP}$.
+The satisfiability problem is $\compclass{NP}$~complete.
 % That is, $\lang{L}\in\compclass{NP}$ where this is $\lang{L}$.
 % \begin{equation*}
 %   \lang{L}=\set{\varphi\suchthat 
@@ -1987,11 +2037,19 @@ both halves, $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
 
 
 
-\subsection{$\P=\NP$?}
+\subsection{?$\P=\NP$?}
+Every deterministic Turing machine is, trivially, a nondeterministic machine.
+So $\P\subseteq\NP$.
+What about the other direction?
+
+The short answer is, no one knows.
+% http://www.claymath.org/millennium-problems
+
+
 Two pictures; one with separation, one without.
 
 
-% ........................
+
 \subsection{Effect of the model of computation}
 A natural concern is that if we change the computing model 
 then we get different results.
@@ -1999,15 +2057,25 @@ What if a problem is $\DTIME(n^3)$ for a
 two-tape Turing machine but $\DTIME(n^5)$ for a one-tape 
 machine?.
 
-Experience with a wide range of alternative computational models is that
-in all natural cases,
-a Turing machine can be simulated on such a different model
-machine in time~$\bigOh(n^2)$, and so can  be done
-in polytime.\footnote{%
-  Here a case is natural if it is not made
-  up to be a counterexample.}
-So if we have polytime sloppiness built in then we can
-ignore the model issue. 
+When Turing constructed his definition, he was concerned with nailing the
+concept of computability, not with making his model efficient. 
+However, in the intervening years experience
+with a wide range of alternative computational models shows that Turing machines
+can simulate these other, perhaps more practical, models pretty well.
+In all natural cases,\footnote{%
+  Here, we call a case natural if it is not made
+  up specifically to be a counterexample to this effect.}
+a Turing machine can simulate such a different model
+machine in a way that at most cubes the computation time.
+So if we find an algorithm that is $\bigOh(n^2)$ on a three tape Turing
+machine then it will be at most $\bigOh(n^6)$, still polytime.
+In short, if we have polytime sloppiness built in then we can
+ignore the issue of the underlying computation model. 
+
+Thus $\P$ is a
+robust class and has equivalent definitions over a large class of
+computer models.
+The standard practice is to define~$\P$P in terms of Turing machines.
 
 Strong Church's Thesis.
 
@@ -2015,14 +2083,38 @@ Quantum computer?
 
 
 
+
+
 \subsection{Discussion}
+As a first approximation, a problem is in $\P$ if it is fast\footnote{%
+  Cobham's thesis identifies an algorithm running in polynomial time
+  with being fast, or at least with being conceivably practical.
+  There are reasonable objections, such as that an algorithm that
+  runs in $n^{1000}$ time is not really practical.
+  Despite these objections we will take `fast' as a useful first approximation.}
+to find a solution,
+and a problem is in $\NP$ if it is fast to verify a solution.
+From this point of view, $\P\subseteq\NP$ because if a problem is
+fast to solve then it must be fast to verify.
+But the other direction seems unlikely.
+
 Consider the 
 \textit{Entscheidungsproblem}, which we mentioned at the book's start.
-It was proposed in 1928 by David Hilbert and Wilhelm Ackermann.
+It was proposed in 1928 by Hilbert and Ackermann.
 It asks for an algorithm that takes as  
 as input a mathematical statement
-and determines whether that statement is true or false.
+and returns as output whether that statement is true or false.
 
+Maybe it is a \citetext{caricature}{%
+  Paul Erdős joked that a mathematician is a machine for turning
+  coffee into theorems.}
+but imagine that the entire job of mathematicians is to prove theorems.
+Then Hilbert and Ackermann are asking to replace them with machines.
+
+
+In the light of G\"odel's Theorem that there are statements that are
+true but not provable, we change that goal to: given a statement, if it
+is probable then find a proof.
 Here is a plan for proving true statements,
 A  proof is a sequence of statements,
 $\sigma_0$, $\sigma_1$, \ldots, $\sigma_k$,
@@ -2053,31 +2145,12 @@ according to the given rules from the given list of prior statements
 feels routine.
 But if $\P=\NP$ then the two jobs are, essentially, equally difficult.
 
-\begin{example}
-\end{example}
 
-\begin{example}
-Consider a complicated propositional logic expression, say
-$(\neg(P_1\vee (P_2\wedge P_3)\rightarrow \neg P_4)\leftrightarrow (P_2\rightarrow P_3)\rightarrow (P_1\wedge \neg P_4)$.
-We want to find whether it is \definend{satisfiable}, 
-whether there is any assignment of 
-truth values $\true$ or~$\false$ to the 
-variables $P_1,\idots, P_4$ that makes the statement
-as a whole have the value $\true$.
-We can imagine trying to answer by reasoning
-in some way as, 
-``Well, the formula has an if and only if arrow so I can see that
-it boils down to \ldots''
-but an algorithm that unfailingly finds the solution that way is not evident.
-Alternatively, 
-you could go through the possible assignments
-$\seq{\false, \false, \false, \false}$, 
-then $\seq{\false, \false, \false, \true}$, etc., 
-until one causes the statement to yield $\true$, if one ever does.
-However, if instead you were given an answer, an assignment to the variables,
-and only asked to verify that it solves the problem, then you 
-could do that quickly.
-\end{example}
+Checking a proposed solution in polynomial time seems easier than
+finding a solution in polynomial time.
+We might guess that there are more problems where we can do the former
+than the latter.
+That is the guess that $\P\neq\NP$.
 
 % Move to complexity chapter?
 % However, they are related. 

@@ -1,0 +1,221 @@
+// bigo.asy
+//  Graphs and info about big-O
+
+import settings;
+settings.outformat="pdf";
+settings.render=0;
+
+unitsize(1pt);
+
+// cd junk is needed for relative import 
+cd("../../../asy");
+import settexpreamble;
+cd("");
+settexpreamble();
+cd("../../../asy/");
+import jh;
+cd("");
+
+string OUTPUT_FN = "pnp%02d";
+
+
+
+path ellipse(pair c, real a, real b)
+{
+  return shift(c)*scale(a,b)*unitcircle;
+}
+
+
+// ============== Illustrate P ======
+picture pic;
+int picnum=0;
+
+unitsize(pic,1cm);
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+// real a=0.35, b=1.5;
+// real WEDGE_TOP = 0.45*SET_TOP;
+// pair w=(0.5*SET_RT+0.5*a,WEDGE_TOP);
+// path wedgecap = ellipse(w, a, b);
+
+// pick points on the boundary to intersect
+pair boundbot = point(set_bound,1.5);
+pair boundrt = point(set_bound,2.275);
+pair p1 = (0.4*(boundbot.x+boundrt.x),boundrt.y+0.1);
+pair p2 = (0.60*(boundbot.x+boundrt.x),boundrt.y+0.2);
+// pair p3 = (0.75*(boundbot.x+boundrt.x),boundrt.y+0.1);
+path p = boundbot{(0.1,1)} :: p1 .. p2 .. {SE}boundrt;
+draw(pic,p,AXISPEN);
+// dot(pic,p1,green);
+// dot(pic,p2,green);
+// dot(pic,p3,green);
+
+// Figure out where the path P meets the set boundary
+path p_boundary = buildcycle(set_bound,p);
+
+// Make a shape to intersect with the P region, to form the n, n^2, etc's
+real a=0.75, b=0.30;
+path fcurve_ellipse = ellipse((0,0),a,b);
+// draw(pic,fcurve_ellipse,black);
+// dot(pic,point(fcurve_ellipse,2),blue);
+pair fcurve_bl = (point(fcurve_ellipse,2).x,-1);
+pair fcurve_br = (point(fcurve_ellipse,0).x,-1);
+path fcurve=subpath(fcurve_ellipse,0.0,2.0)
+  ..point(fcurve_ellipse,2)--fcurve_bl--fcurve_br--point(fcurve_ellipse,0)..cycle;
+
+// Make the shaded paths
+fill(pic,p_boundary,backgroundcolor+opacity(0.2));
+for (int i=0; i<5; ++i) {
+  real ystart = -0.28;
+  real yend = point(fcurve_ellipse,1).y; 
+  path oi = shift(boundbot.x+.4,ystart+(1-(1/(i+1)))*(yend-ystart))*fcurve;
+  fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/2^i))*(0.18-0.1)));
+}
+
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........  make the legend words ............
+picture pic;
+int picnum=1;
+
+unitsize(pic,1cm);
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+
+dot(pic,(-1.5,0),invisible);   // set it by eye to make letters shown
+label(pic,"\makebox[0em][r]{Intractable}",(0,SET_TOP),backgroundcolor);
+label(pic,"\makebox[0em][r]{$\vdots$\hspace*{1.5em}}",(0,0.6*SET_TOP),backgroundcolor);
+label(pic,"\makebox[0em][r]{Tractable}",(0,0),backgroundcolor);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Illustrate f=Theta(g) ======
+picture pic;
+int picnum=2;
+
+unitsize(pic,1cm);
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+real a=0.15, b=0.1;
+real WEDGE_TOP = 0.45*SET_TOP;
+pair w=(0.5*SET_RT+0.5*a,WEDGE_TOP);
+path wedgecap = ellipse(w, a, b);
+
+// make two lines tangent to wedgecap, one on left and one on right
+real wc_t_l=2.0, wc_t_r=0.17;  // cubic spline parameter on wedgecap
+pair d_l=dir(wedgecap,wc_t_l); // dir of tangent
+path wedge_left=point(wedgecap,wc_t_l)--(point(wedgecap,wc_t_l)+5*d_l);
+pair d_r=dir(wedgecap,wc_t_r);  // dir_of_tangent
+path wedge_right=point(wedgecap,wc_t_r)--(point(wedgecap,wc_t_r)-5*d_r);
+
+// intersect those lines with the set boundary
+real[] left_intersection=intersect(wedge_left,set_bound);
+real[] right_intersection=intersect(wedge_right,set_bound);
+path wedge=(subpath(wedgecap,wc_t_r,wc_t_l)
+	    &subpath(wedge_left,0,left_intersection[0])
+	    &subpath(set_bound,left_intersection[1],right_intersection[1]))
+          --cycle;
+path wedge_edge=subpath(wedge_left,left_intersection[0],0)
+		 &subpath(wedgecap,wc_t_l,wc_t_r)
+		 &subpath(wedge_right,0,right_intersection[0]);
+
+// draw it all
+filldraw(pic,set_bound, AXISPEN, fillpen=backgroundcolor);
+filldraw(pic,wedge,lightcolor,fillpen=white);
+filldraw(pic,wedgecap,lightcolor,fillpen=white);
+draw(pic,wedge_edge,highlightcolor);
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Illustrate O(n^3) and O(n^2) ======
+picture pic;
+int picnum=3;
+
+unitsize(pic,1cm);
+
+// bounds 
+// real SET_TOP=1.75;
+// real SET_RT=1.4;
+// path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+real a=0.15, b=0.1;
+// n^3
+real WEDGE_TOP0 = 0.55*SET_TOP;
+pair w0=(0.5*SET_RT+0.5*a,WEDGE_TOP0);
+path wedgecap0 = ellipse(w0, a, b);
+// n^2
+real WEDGE_TOP1 = 0.25*SET_TOP;
+pair w1=(0.5*SET_RT+0.5*a,WEDGE_TOP1);
+path wedgecap1 = ellipse(w1, a, b);
+
+// make two lines tangent to wedgecap, one on left and one on right
+real wc0_t_l=2.0, wc0_t_r=0.18;  // cubic spline parameter on wedgecap
+pair d0_l=dir(wedgecap0,wc0_t_l); // dir of tangent
+path wedge0_left=point(wedgecap0,wc0_t_l)--(point(wedgecap0,wc0_t_l)+5*d0_l);
+pair d0_r=dir(wedgecap0,wc0_t_r);  // dir_of_tangent
+path wedge0_right=point(wedgecap0,wc0_t_r)--(point(wedgecap0,wc0_t_r)-5*d0_r);
+
+real wc1_t_l=2.0, wc1_t_r=0.15;  // cubic spline parameter on wedgecap
+pair d1_l=dir(wedgecap1,wc1_t_l); // dir of tangent
+path wedge1_left=point(wedgecap1,wc1_t_l)--(point(wedgecap1,wc1_t_l)+5*d1_l);
+pair d1_r=dir(wedgecap1,wc1_t_r);  // dir_of_tangent
+path wedge1_right=point(wedgecap1,wc1_t_r)--(point(wedgecap1,wc1_t_r)-5*d1_r);
+
+// intersect those lines with the set boundary
+real[] left0_intersection=intersect(wedge0_left,set_bound);
+real[] right0_intersection=intersect(wedge0_right,set_bound);
+path wedge0=(subpath(wedgecap0,wc0_t_r,wc0_t_l)
+	    &subpath(wedge0_left,0,left0_intersection[0])
+	    &subpath(set_bound,left0_intersection[1],right0_intersection[1]))
+          --cycle;
+path wedge0_edge=subpath(wedge0_left,left0_intersection[0],0)
+		 &subpath(wedgecap0,wc0_t_l,wc0_t_r)
+		 &subpath(wedge0_right,0,right0_intersection[0]);
+real[] left1_intersection=intersect(wedge1_left,set_bound);
+real[] right1_intersection=intersect(wedge1_right,set_bound);
+path wedge1=(subpath(wedgecap1,wc1_t_r,wc1_t_l)
+	    &subpath(wedge1_left,0,left1_intersection[0])
+	    &subpath(set_bound,left1_intersection[1],right1_intersection[1]))
+          --cycle;
+path wedge1_edge=subpath(wedge1_left,left1_intersection[0],0)
+		 &subpath(wedgecap1,wc1_t_l,wc1_t_r)
+		 &subpath(wedge1_right,0,right1_intersection[0]);
+
+// draw it all
+filldraw(pic,set_bound, AXISPEN, fillpen=backgroundcolor);
+filldraw(pic,wedge0,lightcolor,fillpen=white);
+filldraw(pic,wedgecap0,lightcolor,fillpen=white);
+draw(pic,wedge0_edge,highlightcolor);
+
+filldraw(pic,wedge1,lightcolor,fillpen=white);
+filldraw(pic,wedgecap1,lightcolor,fillpen=white);
+draw(pic,wedge1_edge,highlightcolor);
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

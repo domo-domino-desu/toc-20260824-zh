@@ -5,16 +5,16 @@ Once you know that a task can be done at all then the next step is to
 do it efficiently. in a practical time
 (or space, or some other computational resource).
 
-To suit this change, we adjust our terms.
-In this part, although we will continue to informally discuss problems such as
-the Satisfiability or the Composite problem, formally,
-`problem' means a decision problem for a language.
-All our problems will be translated to those terms.
-In addition, languages will consist of bitstrings.
-For example, when we discuss the Composite problem, when we come to formalize it
-we take it to mean the problem of
-computing membership in
-$\lang{L}=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number in binary}}$.
+To adjust to this, we adjust our terms.
+Although we will still informally talk about problems such as
+the Satisfiability or the Composite problem in the same way as earlier,
+formally here we take
+`problem' to mean a decision problem for a language.
+In addition, languages will consist of bitstrings, so they are subsets
+of~$\kleenestar{\B}$.
+For example, formally we take the Composite problem
+to mean the problem of computing membership in the language
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number in binary}}$.
 
 To match this, we adjust our Turing machines.
 In this part they come with a subset of states that are accepting states.
@@ -120,8 +120,8 @@ about `less than or equal to'.
 \subsection{Motivation}
 Suppose that we have a job to do and two algorithms with which to do it.
 These have the property that when the input is size~$n\in\N$,
-the first algorithm takes about $\sqrt{n}$ many ticks in the worst case,
-while the second takes about $10\cdot \lg(n)$ ticks.\footnote{%
+the first algorithm takes about $\sqrt{n}$ many ticks in the worst case
+while the second takes about $10\cdot \lg(n)$.\footnote{%
   Recall that $\lg(n)=\log_2(n)$ is defined by: start with~$n$ and then find
   the power of $2$
   that produces it.
@@ -332,6 +332,10 @@ we may say that the number of bits is
 ``a'' logarithmic function.
 \end{example}
 
+
+
+
+% ......................
 \subsection{Definition}
 We are studying functions that describe machine resource use.
 These functions have natural number inputs
@@ -675,6 +679,37 @@ $x^d$ for $d>1$ is greater, in a big-O sense, than $x\cdot\lg(x)$.
 
 
 
+
+% ..............
+\subsection{Machine runtime}
+As described in the motivational material above,
+the connection between big-O and computing is that we often 
+specify how machines consume resources using that terminology.
+We are ready for the formal definition.
+
+The computational resource cost that is most often of concern
+is the time taken; definitions for other resources are similar.
+
+
+\begin{definition}
+A Turing machine $\TM$ 
+\definend{runs in time $\map{t_{\TM}}{\kleenestar{\Sigma}}{\N}$} 
+if  that function gives the 
+number of steps the machine takes on input~$\sigma\in\kleenestar{\Sigma}$.
+(If the machine does not halt then $t_{\TM}(\sigma)=\infty$.)
+The machine  
+\definend{runs in input length time $\map{\hat{t}_{\TM}}{\N}{\N}$} 
+if $\hat{t}_{\TM}(n)$ is the maximimum of the $t(\sigma)$ over all 
+inputs~$\sigma$ of length~$n$.
+Finally, the machine 
+\definend{runs in time that is $\bigOh(f)$} 
+if $\hat{t}_{\TM}$ is~$\bigOh(f)$. 
+\end{definition}
+
+
+
+
+
 \subsection{Discussion}
 Big-O gives a rough metric to compare algorithms and
 is so widely used in practice that it is often covered in
@@ -703,7 +738,7 @@ just as impractical as one that takes exponential time.\footnote{%
 practical purposes.)
 Why ignore the constants?
 
-\margingraphic{0.30\textwidth}{complexity/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
+\margingraphic{0.20\textwidth}{complexity/knuth.jpg}{\label{fig:Knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938}}
 Basically, we have no unit to rely on.
 
 Machines on which algorithms are implemented vary widely.
@@ -712,17 +747,19 @@ the architecture of the machines
 that we have on our desks and in our pockets they
 still vary,
 for instance in how long they take to do a division or to write to memory.
-We could agree on
-\citetext{a standard reference machine}{%
-  This is the approach of Knuth's
-  \protect\textit{Art of Computer Programming} series.
-  But even he had to update his standard, from MIX to MMIX.}
-but we would have to periodically update the standard to keep up with
-changes.
+We could agree on a standard reference machine\Dash
+for instance, this is the approach taken in  D~Knuth's
+\textit{Art of Computer Programming} series\Dash
+but we would have to periodically update the standard 
+\citetext{periodically update the standard}{%
+  Even Knuth had to update his standard, from the machine language 
+  MIX to MMIX.},
+to keep up with changes.
 So published results from, say, a decade ago would be problematic
 because they refer to an old standard.
 Being reference independent is an advantage.
 
+\margingraphic{0.30\textwidth}{complexity/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
 Being reference independent means ignoring constants
 and instead making relative statements.
 Consider this analogy:
@@ -1037,16 +1074,56 @@ a problem is
   If only to motivate the search for good, practical algorithms, it is 
   important to realize that it is mathematically sensible even to question 
   their existence.}
-if there is an algorthm for it whose resource consumption is polynomial\Dash
+if there is an algorithm for it whose resource consumption is polynomial\Dash
 the algorithm is such that there is a constant~$C$ such that it runs in
 time~$\bigOh(n^C)$ on an $n$~bit input.
-We informally take these to be conceivably practical.\footnote{%
-  This identification is \definend{Cobham's thesis}.}
+We informally identify this as the class of problems for which there
+is a solution algorithm that is conceivably practical.\footnote{%
+  This identification is \definend{Cobham's thesis}.
+  Some researchers object to it.
+  They note, for instance, that if a problem's best algorithm
+  is $\bigOh(n^{100})$ then solving that problem is not after all
+  conceivably practical.
+  Or, they note,  even if an algorithm it $\bigOh(n^2)$ but
+  the constant is extremely large, for instance if the algorithm
+  runs in time $2^{1\,000\,000}\cdot n^2$ , then similarly that
+  problem is not going to be solved on our computers.
+  One rejoinder to this objection is that in any event polynomial time is
+  better than exponential time,
+  and another is that in practice when someone announces an algorithm
+  for a problem of interest that has
+  a large exponent then over time that exponent tends to fall to
+  reasonable levels, as researchers refine the approach.
+  In any event, in the Theory of Computing, Cobham's thesis is accepted
+  widely accepted, although not universally.}
 A problem is \definend{intractable} if the best algorithm 
 is superpolynomial.
 In this part of the book we consider which problems are inheriently
 intractable,
 and which are open to analysis that makes them tractable. 
+
+Recall that at the start of this part we defined a problem to be
+a language decision problem.
+
+\begin{definition}
+A problem is a member of the class \definend{$\P$} if
+there is an algorithm for it that is tractable, that runs in
+polytime.
+\end{definition}
+
+This shows the collection of all languages
+$\lang{L}\subseteq\kleenestar{\B}$, with
+easy to decide languages at the bottom.
+\begin{center}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.5em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp00.pdf}}
+\end{center}
+The class~$\P$ is in blue.
+It contains languages such that the best algorithm to determine membership
+is $\bigOh(1)$,
+languages whose best algorithm is $\bigOh(n)$,
+ones that are $\bigOh(n^2)$, etc.
 
 
 
@@ -1328,8 +1405,6 @@ and which are open to analysis that makes them tractable.
 
 
 \section{Nondeterministic Turing machines}
-We now consider nondeterminism for Turing machines.
-
 Recall that a machine is nondeterminstic if
 from a present configuration and input
 it may pass to a next configuration that has more than zero next states,
@@ -1340,10 +1415,10 @@ That is, the transition function outputs sets.
 \end{equation*}
 So for Turing machines, nondeterminism gives a completely
 capable device, in the sense of Church's Thesis, that is
-unboundedly-parallel.
-At any step in a computation this machine can fork any finite number of
-children that can then continue on as multiple processes, and can
-go on to themselves fork more children.
+unboundedly-parallel\Dash
+at any step in a computation this machine can fork any finite number of
+children, who can then continue on as multiple processes and can
+go on to fork children of their own.
 
 Recall also that we have two models of how these devices operate.
 In the first the machine's computation history is a tree and it
@@ -1351,22 +1426,34 @@ simultaneously computes all branches.
 This fits exactly with the prior paragraph's `unboundedly parallel'
 idea, and also fits with our everyday experience where, for instance,
 if you want to start a new process by opening a new window, the
-window appears.
-In the second model the machine guesses which next state to follow.
-Under the first model we say an input string is accepted if there is a
-branch on the tree that is an accepting branch.
-Under the second model we say the input
-is accepted if there is a sequences of guesses that the machine could
-take that leads to an accepting state.
-(An alternative working of this second model is that there is a
-demon that feeds the process with the correct branchings through the
-comptuation tree, and input is accepted if there exists a sequence of
-branchings the demon could produce.)
+machine brings one up. 
+So that it appears to a user sitting at a keyboard that the machine
+can fork as many children as is called for.
 
-We have considered nondeterminism in both Finite State machines
+In the second model the machine guesses which next state to follow.
+This model can feel a little odd at first; 
+an alternative working is that there is a
+demon that gives the machine hints as to the correct branchings 
+to take through the comptuation tree.
+But this model is logically equivalent to the first, and proves to
+be a very useful way to think.
+
+The two are logically equivalent in that with the 
+definition of how they accept strings, they accept the same 
+languages.
+With the first model we say an input string is accepted if there is a
+branch on the tree that is an accepting branch.
+With the second model we say the input
+is accepted if there is a sequences of guesses that the machine could
+take 
+(or if there exists a sequence of
+branching hints that the demon could produce)
+that leads to an accepting state.
+
+We have already considered nondeterminism in both Finite State machines
 and Pushdown machines.
 For Finite State machines, nondeterminism did not make any
-difference in that for any
+difference in the sense that for any
 job done by a nondeterministic Finite State machine there is a deterministic
 Finite State machine that can do the same job.
 But Pushdown machines are a different
@@ -1542,20 +1629,18 @@ Write a program that simulates a nondeterministic Turing machine.
 
 % =========================================
 \section{NP}
-One example of a job that, intuitively, a nondeterministic Turing machine
-can do faster than
-a deterministic machine is the Satisfiability problem.
-Recall what it is:~given a propositional logic statement we ask if  
+Intuitively, it would seem that a nondeterministic Turing machine
+would be much faster than a deterministic one at the Satisfiability problem.
+Recall:~it asks, given a propositional logic statement, if  
 there is an assignment of input truth values
-making the statement give a value~$T$?
+making the statement give a value~$T$.
 This formula is an example.
 \begin{equation*}
  f = 
  (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
   \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (\neg P\vee R)
 \end{equation*} 
-The natural approach is to
-use a truth table
+The natural approach is to use a truth table
 to calculate whether there are any $T$'s in the final column.
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
@@ -1571,21 +1656,30 @@ to calculate whether there are any $T$'s in the final column.
   $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
 \end{tabular}
 \end{center}
-This problem appears perfectly suited to the unbounded 
-parallelism of a nondeterministic machine.
-For a formula with $n$ variables the machine could split
-into $2^n$-many child processes, each dedicated to a single line of the
+This appears to be a perfect fit for unbounded parallelism.
+Given a formula with $n$ variables, the machine could split
+into $2^n$-many child processes, each doing a single line of the
 truth table.
-When the children are done the controlling process
-calls down the bus, ``Any successes?''
-(In the terminology of guessing,
-the machine guesses a solution, or is given a solution, and
-then verifying that it works is a quick task.)
+When the children are done, the master process
+calls down the bus, ``Any successes?''\footnote{%
+  In  guessing terms,
+  the machine guesses a solution, or is given a solution by the demon, and
+  then only has to verify that it works, which is quick.}
 
-But as for a general algorithm, at this moment no one knows a much 
-better way than to keep trying inputs looking for a $T$.
-This truth table has three inputs and there are $2^3$~lines.
-In general this brute force algorithm takes exponential time.
+That's all right.
+The problem comes when we go on to suppose something like, because
+deterministic machines do not come with unbounded parallelism baked in
+they must be slower.
+At this moment, no one can prove that.
+We are left with the two facts:
+(1)~at this moment no one has produces a much 
+better approach for a deterministic machine
+than to keep trying truth table lines, looking for an output $T$
+(this truth table has three inputs and $2^3$~lines, and in 
+general such a brute force algorithm takes exponential time),
+and (2)~at this moment no one has produced a proof that no much better
+approach exists.
+
 
 Contrast that with the situation for chess.
 Like Rock-Paper-Scissors or Tic-Tac-Toe, 
@@ -1901,6 +1995,8 @@ the graph has a $3$-clique.
 \end{example}
 
 
+
+% ================================
 \subsection{$\compclass{NP}$ complete}
 
 \begin{definition}
@@ -3073,9 +3169,11 @@ about $1/b$.
 
 
 \extra{Quantum computing}
-The study of what we can't solve, even with computers we don't have
-(Scott Aaronson).
-\url{https://www.youtube.com/watch?v=JvIbrDR1G_c}
+Can we exploit the apparent exponentiality?
+
+% The study of what we can't solve, even with computers we don't have
+% (Scott Aaronson).
+% \url{https://www.youtube.com/watch?v=JvIbrDR1G_c}
 
 
 \extra{Voting Paradoxes} \label{extra:VotingParadoxes}

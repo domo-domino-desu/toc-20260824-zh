@@ -38,7 +38,10 @@ int picnum=0;
 
 unitsize(pic,1cm);
 
-srand(seconds()); // seed the random number generator
+// seed the random number generator; show on screen to save the number if wanted
+int srand_seed = seconds();
+write(format("PNP.ASY: Picture 0: srand_seed is %d",srand_seed));
+srand(srand_seed); 
 
 // bounds 
 real SET_TOP=1.75;
@@ -93,10 +96,7 @@ for(int i=0; i<pts.length; ++i) {
     }
   }
 }
-for(int i=0; i<numpts; ++i){
-  // dotfactor=2;
-  // dot(pic, pts[i], boldcolor);
-  // dotfactor=6;
+for(int i=0; i<pts.length; ++i){
   filldraw(pic, shift(pts[i])*scale(0.025)*unitcircle, boldcolor, fillpen=white);
 } 
 draw(pic,set_bound, AXISPEN);
@@ -184,6 +184,158 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Collection of all langugaes ======
+picture pic;
+int picnum=3;
+
+unitsize(pic,1cm);
+
+// seed the random number generator;
+//   If seconds() then uncomment to show on screen to save the number for later
+int srand_seed = 1512905530; // seconds();
+// write(format("PNP.ASY: Picture 3: srand_seed is %d",srand_seed));
+srand(srand_seed); 
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+// Determine bounds of set_bound
+picture set_bound_pic;
+draw(set_bound_pic,set_bound,AXISPEN);
+pair set_bound_min=min(set_bound_pic,user=true);
+pair set_bound_max=max(set_bound_pic,user=true);
+
+// Pick some points; they must be inside the set_bound
+pair[] pts;
+int numpts=30;
+bool flag=false;
+pair onept;
+real padding=0.25; // min dist between points
+for(int i=0; i<numpts; ++i) {
+  flag=false;
+  int tries=0; // watch for inf loop
+  while(flag==false){
+    if(tries>100) {
+      write("Too many tries; making fewer points");
+      break;
+    } else {
+      tries=tries+1;
+    }
+    // pick a point at random
+    onept = randpt(set_bound_min.x,set_bound_max.x,set_bound_min.y,set_bound_max.y);
+    // write(format("  onept.x=%f",onept.x));
+    // write(format("  onept.y=%f",onept.y));
+    // Check that it is not too close to another point
+    flag=true;
+    for(pair k : pts){
+      if(length(onept-k)<padding){
+	flag=false;
+      }
+    }
+    // Check that it is inside the set bound
+    flag=flag && inside(set_bound,onept);
+  }
+  // write(format("i=%d",i));
+  pts[i] = onept;
+}
+
+// Draw all the points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, shift(pts[i])*scale(0.025)*unitcircle, boldcolor, fillpen=white);
+} 
+
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ============== Illustrate P and NP ======
+
+// ................. NP strict superset .............
+picture pic;
+int picnum=4;
+
+unitsize(pic,1cm);
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+// pick points on the boundary to intersect
+pair boundbot = point(set_bound,1.5);
+pair boundrt = point(set_bound,2.275);
+pair p1 = (0.4*(boundbot.x+boundrt.x),boundrt.y+0.1);
+pair p2 = (0.60*(boundbot.x+boundrt.x),boundrt.y+0.2);
+// pair p3 = (0.75*(boundbot.x+boundrt.x),boundrt.y+0.1);
+path p = boundbot{(0.1,1)} :: p1 .. p2 .. {SE}boundrt;
+// dot(pic,p1,green);
+// dot(pic,p2,green);
+// dot(pic,p3,green);
+
+// Figure out where the path P meets the set boundary
+path p_boundary = buildcycle(set_bound,p);
+filldraw(pic,p_boundary,backgroundcolor+opacity(0.2),boldcolor);
+
+
+// Make NP boundary
+pair np1 = (0.425*(boundbot.x+boundrt.x),boundrt.y+0.6);
+pair np2 = (0.625*(boundbot.x+boundrt.x),boundrt.y+0.6);
+// dot(pic,np1,green);
+// dot(pic,np2,green);
+path np = boundbot{(0.1,2)} :: np1 .. np2 .. boundrt;
+
+path np_boundary = buildcycle(set_bound,np);
+filldraw(pic,np_boundary,backgroundcolor+opacity(0.2),highlightcolor);
+
+
+// Make a shape to intersect with the P region, to form the n, n^2, etc's
+// real a=0.75, b=0.30;
+// path fcurve_ellipse = ellipse((0,0),a,b);
+// // draw(pic,fcurve_ellipse,black);
+// // dot(pic,point(fcurve_ellipse,2),blue);
+// pair fcurve_bl = (point(fcurve_ellipse,2).x,-1);
+// pair fcurve_br = (point(fcurve_ellipse,0).x,-1);
+// path fcurve=subpath(fcurve_ellipse,0.0,2.0)
+//   ..point(fcurve_ellipse,2)--fcurve_bl--fcurve_br--point(fcurve_ellipse,0)..cycle;
+
+// // Make the shaded paths
+// fill(pic,p_boundary,backgroundcolor+opacity(0.2));
+// for (int i=0; i<5; ++i) {
+//   real ystart = -0.28;
+//   real yend = point(fcurve_ellipse,1).y-0.1; 
+//   path oi = shift(boundbot.x+.4,ystart+(1-(1/(i+1)))*(yend-ystart))*fcurve;
+//   fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/2^i))*(0.18-0.1)));
+// }
+
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................. NP  same set .............
+picture pic;
+int picnum=5;
+
+unitsize(pic,1cm);
+
+filldraw(pic,p_boundary,backgroundcolor+opacity(0.4),highlightcolor);
+
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
 
 
 // ============== Illustrate f=Theta(g) ======
@@ -233,7 +385,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 // ============== Illustrate O(n^3) and O(n^2) ======
 picture pic;
-int picnum=3;
+int picnum=21;
 
 unitsize(pic,1cm);
 

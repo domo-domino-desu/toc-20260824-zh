@@ -20,15 +20,115 @@ string OUTPUT_FN = "pnp%02d";
 
 
 
-path ellipse(pair c, real a, real b)
-{
+path ellipse(pair c, real a, real b) {
   return shift(c)*scale(a,b)*unitcircle;
 }
+
+pair randpt(real xmin=0, real xmax=1, real ymin=0, real ymax=1) {
+  return ((xmax-xmin)*unitrand()+xmin, (ymax-ymin)*unitrand()+ymin); 
+}
+
+
+
+
+
+// ============== Poset of all languages of bitstrings ======
+picture pic;
+int picnum=0;
+
+unitsize(pic,1cm);
+
+srand(seconds()); // seed the random number generator
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+// Determine bounds of set_bound
+picture set_bound_pic;
+draw(set_bound_pic,set_bound,AXISPEN);
+pair set_bound_min=min(set_bound_pic,user=true);
+pair set_bound_max=max(set_bound_pic,user=true);
+
+// Pick some points; they must be inside the set_bound
+pair[] pts;
+int numpts=25;
+bool flag=false;
+pair onept;
+real padding=0.25; // min dist between points
+for(int i=0; i<numpts; ++i) {
+  flag=false;
+  int tries=0; // watch for inf loop
+  while(flag==false){
+    if(tries>100) {
+      write("Too many tries; making fewer points");
+      break;
+    } else {
+      tries=tries+1;
+    }
+    // pick a point at random
+    onept = randpt(set_bound_min.x,set_bound_max.x,set_bound_min.y,set_bound_max.y);
+    // write(format("  onept.x=%f",onept.x));
+    // write(format("  onept.y=%f",onept.y));
+    // Check that it is not too close to another point
+    flag=true;
+    for(pair k : pts){
+      if(length(onept-k)<padding){
+	flag=false;
+      }
+    }
+    // Check that it is inside the set bound
+    flag=flag && inside(set_bound,onept);
+  }
+  // write(format("i=%d",i));
+  pts[i] = onept;
+}
+// Now draw edges
+real edge_threshold = 0.10;
+for(int i=0; i<pts.length; ++i) {
+  for(int j=i+1; j<pts.length; ++j){
+    if (unitrand() < edge_threshold) {
+      draw(pic, pts[i]--pts[j],backgroundcolor);
+    }
+  }
+}
+for(int i=0; i<numpts; ++i){
+  // dotfactor=2;
+  // dot(pic, pts[i], boldcolor);
+  // dotfactor=6;
+  filldraw(pic, shift(pts[i])*scale(0.025)*unitcircle, boldcolor, fillpen=white);
+} 
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........  make the legend words ............
+picture pic;
+int picnum=1;
+
+unitsize(pic,1cm);
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+
+dot(pic,(-1.5,0),invisible);   // set it by eye to make letters shown
+label(pic,"\makebox[0em][r]{Slow}",(0,SET_TOP),backgroundcolor);
+label(pic,"\makebox[0em][r]{$\vdots$\hspace*{1.0em}}",(0,0.6*SET_TOP),backgroundcolor);
+label(pic,"\makebox[0em][r]{Fast}",(0,0),backgroundcolor);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 // ============== Illustrate P ======
 picture pic;
-int picnum=0;
+int picnum=2;
 
 unitsize(pic,1cm);
 
@@ -71,7 +171,7 @@ path fcurve=subpath(fcurve_ellipse,0.0,2.0)
 fill(pic,p_boundary,backgroundcolor+opacity(0.2));
 for (int i=0; i<5; ++i) {
   real ystart = -0.28;
-  real yend = point(fcurve_ellipse,1).y; 
+  real yend = point(fcurve_ellipse,1).y-0.1; 
   path oi = shift(boundbot.x+.4,ystart+(1-(1/(i+1)))*(yend-ystart))*fcurve;
   fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/2^i))*(0.18-0.1)));
 }
@@ -82,30 +182,13 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ........  make the legend words ............
-picture pic;
-int picnum=1;
-
-unitsize(pic,1cm);
-
-// bounds 
-real SET_TOP=1.75;
-real SET_RT=1.4;
-
-dot(pic,(-1.5,0),invisible);   // set it by eye to make letters shown
-label(pic,"\makebox[0em][r]{Intractable}",(0,SET_TOP),backgroundcolor);
-label(pic,"\makebox[0em][r]{$\vdots$\hspace*{1.5em}}",(0,0.6*SET_TOP),backgroundcolor);
-label(pic,"\makebox[0em][r]{Tractable}",(0,0),backgroundcolor);
-
-shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
-
 
 
 
 
 // ============== Illustrate f=Theta(g) ======
 picture pic;
-int picnum=2;
+int picnum=20;
 
 unitsize(pic,1cm);
 

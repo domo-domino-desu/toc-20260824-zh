@@ -1008,9 +1008,9 @@ path wedge_edge=subpath(wedge_left,left_intersection[0],0)
 		 &subpath(wedge_right,0,right_intersection[0]);
 
 // draw it all
-filldraw(pic,set_bound, AXISPEN, fillpen=backgroundcolor);
-filldraw(pic,wedge,lightcolor,fillpen=white);
-filldraw(pic,wedgecap,lightcolor,fillpen=white);
+filldraw(pic,set_bound, AXISPEN, fillpen=white);
+filldraw(pic,wedge,AXISPEN,fillpen=backgroundcolor+opacity(0.3));
+filldraw(pic,wedgecap,AXISPEN,fillpen=backgroundcolor+opacity(0.3));
 draw(pic,wedge_edge,highlightcolor);
 draw(pic,set_bound, AXISPEN);
 
@@ -1073,13 +1073,13 @@ path wedge1_edge=subpath(wedge1_left,left1_intersection[0],0)
 		 &subpath(wedge1_right,0,right1_intersection[0]);
 
 // draw it all
-filldraw(pic,set_bound, AXISPEN, fillpen=backgroundcolor);
-filldraw(pic,wedge0,lightcolor,fillpen=white);
-filldraw(pic,wedgecap0,lightcolor,fillpen=white);
+filldraw(pic,set_bound, AXISPEN, fillpen=white);
+filldraw(pic,wedge0, AXISPEN,fillpen=backgroundcolor+opacity(0.3));
+filldraw(pic,wedgecap0, AXISPEN,fillpen=backgroundcolor+opacity(0.3));
 draw(pic,wedge0_edge,highlightcolor);
 
-filldraw(pic,wedge1,lightcolor,fillpen=white);
-filldraw(pic,wedgecap1,lightcolor,fillpen=white);
+filldraw(pic,wedge1, AXISPEN,fillpen=backgroundcolor+opacity(0.3));
+filldraw(pic,wedgecap1, AXISPEN,fillpen=backgroundcolor+opacity(0.3));
 draw(pic,wedge1_edge,highlightcolor);
 draw(pic,set_bound, AXISPEN);
 

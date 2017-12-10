@@ -485,6 +485,17 @@ as in the following.
   $f$ is~$\bigOh(h)$.
 \end{lemma}
 
+
+\begin{fig}[fig:BeanOfProblems]{The bean encloses all problems, that is,
+  all decision problems for some $\lang{L}\subseteq\kleenestar{\B}$.
+  Those problems for which there are algorithms that are fast to compute
+  are at the bottom.}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp00.pdf}}
+\end{fig}
+
+
 \begin{definition}
   Two eventually nonnegative functions have
   \definend{the same growth rate} if both $f$ is~$\bigOh(g)$ and also
@@ -678,213 +689,6 @@ $x^d$ for $d>1$ is greater, in a big-O sense, than $x\cdot\lg(x)$.
 \end{example}
 
 
-
-
-% ..............
-\subsection{Machine runtime}
-As described in the motivational material above,
-the connection between big-O and computing is that we often 
-specify how machines consume resources using that terminology.
-We are ready for the formal definition.
-
-The computational resource cost that is most often of concern
-is the time taken; definitions for other resources are similar.
-
-
-\begin{definition}
-A Turing machine $\TM$ 
-\definend{runs in time $\map{t_{\TM}}{\kleenestar{\Sigma}}{\N}$} 
-if  that function gives the 
-number of steps the machine takes on input~$\sigma\in\kleenestar{\Sigma}$.
-(If the machine does not halt then $t_{\TM}(\sigma)=\infty$.)
-The machine  
-\definend{runs in input length time $\map{\hat{t}_{\TM}}{\N}{\N}$} 
-if $\hat{t}_{\TM}(n)$ is the maximimum of the $t(\sigma)$ over all 
-inputs~$\sigma$ of length~$n$.
-Finally, the machine 
-\definend{runs in time that is $\bigOh(f)$} 
-if $\hat{t}_{\TM}$ is~$\bigOh(f)$. 
-\end{definition}
-
-
-
-
-
-\subsection{Discussion}
-Big-O gives a rough metric to compare algorithms and
-is so widely used in practice that it is often covered in
-introduction to programming courses. 
-Here we will address some questions growing out of 
-the experience that some people have in those classes.
-
-% Discussion started as: https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
-The first issue is that
-\citetext{the definitions of Big-O and Big-Theta ignore constants}{%
-  This discussion originated as \autocite{SE:IgnoreConstants}.}.
-A reader can object that doing so makes the definition useless
-for judging the practicality of an algorithm.
-Imagine
-an algorithm that takes time given by the quadratic function $C\cdot n^2$.
-An enormous coefficient such as $C=2^{100}$ would make it
-just as impractical as one that takes exponential time.\footnote{%
-  Although, in practice, often when an algorithm is discovered that has a
-  very large leading coefficient then soon researchers develop
-  improvements that lower the coefficient to a usable level.
-  In the same way, while in the past we have sometimes seen
-  algorithms that are polynomial but with 
-  large powers, such as $n^{10}$, often these powers have fallen
-  as researchers refine the approach.}
-(Similarly, an enormous $N$ destroys the value of the algorithm for
-practical purposes.)
-Why ignore the constants?
-
-\margingraphic{0.20\textwidth}{complexity/knuth.jpg}{\label{fig:Knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938}}
-Basically, we have no unit to rely on.
-
-Machines on which algorithms are implemented vary widely.
-Even if we forget about such things as Turing machines and just focus on
-the architecture of the machines
-that we have on our desks and in our pockets they
-still vary,
-for instance in how long they take to do a division or to write to memory.
-We could agree on a standard reference machine\Dash
-for instance, this is the approach taken in  D~Knuth's
-\textit{Art of Computer Programming} series\Dash
-but we would have to periodically update the standard 
-\citetext{periodically update the standard}{%
-  Even Knuth had to update his standard, from the machine language 
-  MIX to MMIX.},
-to keep up with changes.
-So published results from, say, a decade ago would be problematic
-because they refer to an old standard.
-Being reference independent is an advantage.
-
-\margingraphic{0.30\textwidth}{complexity/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
-Being reference independent means ignoring constants
-and instead making relative statements.
-Consider this analogy:
-absolute distance measurement
-means specifying units such as miles or kilometers.
-Being able to make statements irrespective of the units requires
-making relative statements such as,
-``from here New York City is twice as far as Boston.'' 
-
-Ignoring constants has the advantage
-% that we can do an analysis by
-% counting the number of elementary operations, 
-we do not have to worry % about different costs of individual operations,
-about the difference between the cost of a division and the
-cost of a memory write,
-as long as those costs lie between fixed upper and lower bounds.
-However, the price for that advantage is that
-constant factors are meaningless,
-since changing units is inseparable from changing constant factors\Dash
-changing from miles to kilometers requires multiplying by the constant~$1.61$.
-
-In short,
-Big~O notation is a unit free, relative measurement.
-It is not absolute.
-It can only measure performance variation.
-% The advantage is the gain in implementation independence
-% by allowing analysis that ignores the relative costs of
-% elementary operations, as long as these costs are bounded.
-% But the consequence is that constant factors are meaningless.
-Big~O is a tool that we use to understand how an algorithm
-performs as the input size grows.
-Thus, we say that a function that takes $3n$ steps is $\bigOh(n)$
-in order to express that, roughly,
-doubling the input size will no more than double the number of steps taken.
-Similarly, if an algorithm is $\bigOh(n^2)$ then
-doubling the input size will at most
-quadruple the number of steps, and
-$\bigOh(\lg n)$ means that doubling the input size will increase the number
-of steps by at most some constant.
-
-We can use Big~O to compare algorithms
-roughly, by how they perform as the input size grows.
-But it is only rough;
-it cannot say with great precision which algorithms are absolutely
-faster.\footnote{%
-  Big~O is especially poor at
-  judging how algorithms will perform on a specified computing platform.
-  Use benchmarks.}
-
-
-% https://stackoverflow.com/a/19647659
-That leads us to
-\citetext{the second issue with the definition of Big~O and Big~Theta}{%
-  This discussion originated as \autocite{SE:pseudopolynomial}.}.
-Understanding how an algorithm
-performs as the input size grows
-requires a definition of input size.
-But often in beginning programming courses that definition is blurred. 
-
-Consider a naive algorithm for factoring numbers that, given input $n$,
-tests each $k\in\set{2,\ldots\,n-1}$
-to see if it divides~$n$. %\footnote{%
-%   This is not the best algorithm, but a good illustration.}
-If~$n$ is prime then it tests all those numbers, which is
-a worst-case of roughly~$n$-many divisions.
-The definition we are using
-of input size is the number of bits that represent the input.
-We know that the number of bits needed to represent~$n$ in binary
-is approximately the base~$2$ logarithm, $\lg n$.
-So for this algorithm the input is of size about~$\lg n$
-and the number of operations is about~$n$.
-That makes the number of operations exponential in the input
-size\Dash this algorithm is
-$\bigOh(2^b)$ where $b$ is the number of input bits.
-
-However, most people's experience from programming class is that this
-algorithm would be described as linear, as $\bigOh(n)$, because
-for the number~$n$ there are about $n$-many divisions.
-How to reconcile the two?
-
-In many programming situations we make the engineering judgement that
-it suffices to have an input 
-fit into a fixed sized computer word, such as a $64$~bit word.
-For instance, suppose that we are studying selection sort and we
-decide that for every uses of our program the input will
-fit into a word.
-Then with $n$ integer elements of input, the number of bits is $64n$.
-Analysis of selection sort gives that the time it takes grows quadratically
-so in bits we get $\bigOh((64n)^2)$.
-Ignoring constants gives that as the same as $\bigOh(n^2)$.
-
-% Another example would be in programming a depth-first tree traversal.
-% You decide to represent nodes as successive integers that
-% fit into a single 64 bit word.
-% This may well be a sound application engineering decision since
-% then you can store awfully big trees, 
-% that will take a long time to process,
-% and so this engineering judgement may be right for your application.
-% In this case the fixed-size input storage
-% decision changes the analysis of the relationship between
-% input size and output size, since now the input size is measured as
-% a function of the number of nodes~$n$.
-
-Thus, in the common programming situation where the bit size of the
-inputs is bounded,
-the runtime behavior is most conveniently described as a function of
-the number of inputs~$n$,
-not of the bit size of those inputs.
-
-An algorithm whose behavior as a function of the input is polynomial,
-but whose behavior as a function of the bit size of the input is
-exponential, is said to be \definend{pseudopolynomial}.
-The factoring algorithm given earlier is an example.
-% Such an algorithm may be acceptable for fixed-sized inputs, but
-% is not acceptable for arbitrary inputs.
-
-One final point about describing algorithm behavior with big-O.
-When we are analyzing an algorithm we can look for a number of
-different behavior descriptions.
-For instance, we can describe the time the algorithm takes, or the space.
-But we can also analyze the worst case behavior, or the average behavior.
-For example, the widely used sorting algorithm quicksort
-takes quadratic time $\bigOh(n^2)$ at worst.
-But on average it is fast, $\bigOh(n\lg n)$.
-So, algorithm analysis can happen on a number of fronts.
 
 
 
@@ -1102,28 +906,187 @@ In this part of the book we consider which problems are inheriently
 intractable,
 and which are open to analysis that makes them tractable. 
 
-Recall that at the start of this part we defined a problem to be
-a language decision problem.
 
-\begin{definition}
-A problem is a member of the class \definend{$\P$} if
-there is an algorithm for it that is tractable, that runs in
-polytime.
-\end{definition}
 
-This shows the collection of all languages
-$\lang{L}\subseteq\kleenestar{\B}$, with
-easy to decide languages at the bottom.
-\begin{center}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
-  \hspace{0.5em}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp00.pdf}}
-\end{center}
-The class~$\P$ is in blue.
-It contains languages such that the best algorithm to determine membership
-is $\bigOh(1)$,
-languages whose best algorithm is $\bigOh(n)$,
-ones that are $\bigOh(n^2)$, etc.
+
+
+
+\subsection{Discussion}
+Big-O is a way to compare algorithms.
+It is so widely used in practice that it is often covered in
+introduction to programming courses. 
+We will here address questions growing out of 
+the experience that some people have in those classes.
+
+% Discussion started as: https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
+The first issue is that
+\citetext{the definitions of Big-O and Big-Theta ignore constants}{%
+  This discussion originated as \autocite{SE:IgnoreConstants}.}.
+A reader can object that doing so makes the definition useless
+for judging the practicality of an algorithm.
+Imagine
+an algorithm that takes time given by the quadratic function $C\cdot n^2$.
+An enormous coefficient such as $C=2^{100}$ would make it
+just as impractical as one that takes exponential time.\footnote{%
+  Although, in practice, often when an algorithm is discovered that has a
+  very large leading coefficient then soon researchers develop
+  improvements that lower the coefficient to a usable level.
+  In the same way, while in the past we have sometimes seen
+  algorithms that are polynomial but with 
+  large powers, such as $n^{10}$, often these powers have fallen
+  as researchers refine the approach.}
+(Similarly, an enormous $N$ destroys the value of the algorithm for
+practical purposes.)
+Why ignore the constants?
+
+\margingraphic{0.20\textwidth}{complexity/knuth.jpg}{\label{fig:Knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938}}
+Basically, we have no unit to rely on.
+
+Machines on which algorithms are implemented vary widely.
+Even if we forget about such things as Turing machines and just focus on
+the architecture of the machines
+that we have on our desks and in our pockets they
+still vary,
+for instance in how long they take to do a division or to write to memory.
+We could agree on a standard reference machine\Dash
+for instance, this is the approach taken in  D~Knuth's
+\textit{Art of Computer Programming} series\Dash
+but we would have to periodically update the standard 
+\citetext{periodically update the standard}{%
+  Even Knuth had to update his standard, from the machine language 
+  MIX to MMIX.},
+to keep up with changes.
+So published results from, say, a decade ago would be problematic
+because they refer to an old standard.
+Being reference independent is an advantage.
+
+\margingraphic[l]{0.32\textwidth}{complexity/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
+Being reference independent means ignoring constants
+and instead making relative statements.
+Consider this analogy:
+absolute distance measurement
+means specifying units such as miles or kilometers.
+Being able to make statements irrespective of the units requires
+making relative statements such as,
+``from here New York City is twice as far as Boston.'' 
+
+Ignoring constants has the advantage
+% that we can do an analysis by
+% counting the number of elementary operations, 
+we do not have to worry % about different costs of individual operations,
+about the difference between the cost of a division and the
+cost of a memory write,
+as long as those costs lie between fixed upper and lower bounds.
+However, the price for that advantage is that
+constant factors are meaningless,
+since changing units is inseparable from changing constant factors\Dash
+changing from miles to kilometers requires multiplying by the constant~$1.61$.
+
+In short,
+Big~O notation is a unit free, relative measurement.
+It is not absolute.
+It can only measure performance variation.
+% The advantage is the gain in implementation independence
+% by allowing analysis that ignores the relative costs of
+% elementary operations, as long as these costs are bounded.
+% But the consequence is that constant factors are meaningless.
+Big~O is a tool that we use to understand how an algorithm
+performs as the input size grows.
+Thus, we say that a function that takes $3n$ steps is $\bigOh(n)$
+in order to express that, roughly,
+doubling the input size will no more than double the number of steps taken.
+Similarly, if an algorithm is $\bigOh(n^2)$ then
+doubling the input size will at most
+quadruple the number of steps, and
+$\bigOh(\lg n)$ means that doubling the input size will increase the number
+of steps by at most some constant.
+
+We can use Big~O to compare algorithms
+roughly, by how they perform as the input size grows.
+But it is only rough;
+it cannot say with great precision which algorithms are absolutely
+faster.\footnote{%
+  Big~O is especially poor at
+  judging how algorithms will perform on a specified computing platform.
+  Use benchmarks.}
+
+
+% https://stackoverflow.com/a/19647659
+That leads us to
+\citetext{the second issue with the definition of Big~O and Big~Theta}{%
+  This discussion originated as \autocite{SE:pseudopolynomial}.}.
+Understanding how an algorithm
+performs as the input size grows
+requires a definition of input size.
+But often in beginning programming courses that definition is blurred. 
+
+Consider a naive algorithm for factoring numbers that, given input $n$,
+tests each $k\in\set{2,\ldots\,n-1}$
+to see if it divides~$n$. %\footnote{%
+%   This is not the best algorithm, but a good illustration.}
+If~$n$ is prime then it tests all those numbers, which is
+a worst-case of roughly~$n$-many divisions.
+The definition we are using
+of input size is the number of bits that represent the input.
+We know that the number of bits needed to represent~$n$ in binary
+is approximately the base~$2$ logarithm, $\lg n$.
+So for this algorithm the input is of size about~$\lg n$
+and the number of operations is about~$n$.
+That makes the number of operations exponential in the input
+size\Dash this algorithm is
+$\bigOh(2^b)$ where $b$ is the number of input bits.
+
+However, most people's experience from programming class is that this
+algorithm would be described as linear, as $\bigOh(n)$, because
+for the number~$n$ there are about $n$-many divisions.
+How to reconcile the two?
+
+In many programming situations we make the engineering judgement that
+it suffices to have an input 
+fit into a fixed sized computer word, such as a $64$~bit word.
+For instance, suppose that we are studying selection sort and we
+decide that for every uses of our program the input will
+fit into a word.
+Then with $n$ integer elements of input, the number of bits is $64n$.
+Analysis of selection sort gives that the time it takes grows quadratically
+so in bits we get $\bigOh((64n)^2)$.
+Ignoring constants gives that as the same as $\bigOh(n^2)$.
+
+% Another example would be in programming a depth-first tree traversal.
+% You decide to represent nodes as successive integers that
+% fit into a single 64 bit word.
+% This may well be a sound application engineering decision since
+% then you can store awfully big trees, 
+% that will take a long time to process,
+% and so this engineering judgement may be right for your application.
+% In this case the fixed-size input storage
+% decision changes the analysis of the relationship between
+% input size and output size, since now the input size is measured as
+% a function of the number of nodes~$n$.
+
+Thus, in the common programming situation where the bit size of the
+inputs is bounded,
+the runtime behavior is most conveniently described as a function of
+the number of inputs~$n$,
+not of the bit size of those inputs.
+
+An algorithm whose behavior as a function of the input is polynomial,
+but whose behavior as a function of the bit size of the input is
+exponential, is said to be \definend{pseudopolynomial}.
+The factoring algorithm given earlier is an example.
+% Such an algorithm may be acceptable for fixed-sized inputs, but
+% is not acceptable for arbitrary inputs.
+
+One final point about describing algorithm behavior with big-O.
+When we are analyzing an algorithm we can look for a number of
+different behavior descriptions.
+For instance, we can describe the time the algorithm takes, or the space.
+But we can also analyze the worst case behavior, or the average behavior.
+For example, the widely used sorting algorithm quicksort
+takes quadratic time $\bigOh(n^2)$ at worst.
+But on average it is fast, $\bigOh(n\lg n)$.
+So, algorithm analysis can happen on a number of fronts.
+
 
 
 
@@ -1402,9 +1365,76 @@ ones that are $\bigOh(n^2)$, etc.
 
 
 
+\section{$\P$}
+As described in the motivational material above,
+the connection between big-O and computing is that we often 
+specify how machines consume resources using that terminology.
+It is high time for the formal definition.
+
+The computational resource cost that is most often of concern
+is the time taken; definitions for other resources are similar.
+
+\begin{definition}
+A Turing machine $\TM$ 
+\definend{runs in time $\map{t_{\TM}}{\kleenestar{\Sigma}}{\N}$} 
+if  that function gives the 
+number of steps the machine takes on input~$\sigma\in\kleenestar{\Sigma}$.
+(If the machine does not halt then $t_{\TM}(\sigma)=\infty$.)
+The machine  
+\definend{runs in input length time $\map{\hat{t}_{\TM}}{\N}{\N}$} 
+if $\hat{t}_{\TM}(n)$ is the maximimum of the $t(\sigma)$ over all 
+inputs~$\sigma$ of length~$n$.
+Finally, the machine 
+\definend{runs in time that is $\bigOh(f)$} 
+if $\hat{t}_{\TM}$ is~$\bigOh(f)$. 
+\end{definition}
+
+Recall that at the start of this part we defined a problem to be
+a language decision problem.
+We now give a name for tractable problems.
+
+\begin{definition}
+A problem is a member of the class \definend{$\P$} if
+there is an algorithm for it that is tractable, that runs in
+polytime.
+\end{definition}
+
+% This shows the class~$\P$ as a subset of the collection of all languages.
+\begin{fig}[]{The bean encloses the set of all problems, 
+all decision problems for some language $\lang{L}\subseteq\kleenestar{\B}$.
+The class~$\P$ is shaded.
+The shade comes in layers because
+$\P$ contains languages such that there is an algorithm to determine membership
+that is $\bigOh(1)$,
+and also contains languages such that there is an algorithm that is $\bigOh(n)$,
+languages that are $\bigOh(n^2)$, etc.}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp02.pdf}}
+\end{fig}
+One problem in $\P$ is that of deciding the language
+$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$, and another
+is that of deciding the language of sorted strings
+$\set{\sigma\in\kleenestar{\str{a},\ldots \str{z}}\suchthat \text{$\sigma$ is in alphabetical order}}$.  
+
+\begin{exercises}
+\begin{exercise}
+True or False: every problem that involves determining membership in a
+finite language is $\P$.
+\begin{answer}
+True.
+That problem has an algorithm that is $\bigOh(1)$.
+\end{answer}
+\end{exercise}
+\end{exercises}
 
 
-\section{Nondeterministic Turing machines}
+
+
+
+
+
+\section{$\NP$}
 Recall that a machine is nondeterminstic if
 from a present configuration and input
 it may pass to a next configuration that has more than zero next states,
@@ -1517,10 +1547,242 @@ in time $t(|\sigma|)$.\footnotemark[1].
 \end{definition}\footnotetext[1]{Whether we use the model that the machine
 decides by a computation tree or by guessing does not matter.}
 
-The question of whether there is an actual difference in speed between
-deterministic and nondeterministic Turing machines is extremely interesting.
-The answer is not known.
-The next section says more.
+% The question of whether there is an actual difference in speed between
+% deterministic and nondeterministic Turing machines is extremely interesting.
+% The answer is not known.
+% The next section says more.
+
+
+
+% ..................
+\subsection{Speed}
+Intuitively, it would seem that a nondeterministic Turing machine
+would be much faster than a deterministic one at the Satisfiability problem.
+Recall:~it asks, given a propositional logic statement, if  
+there is an assignment of input truth values
+making the statement give a value~$T$.
+This formula is an example.
+\begin{equation*}
+ f = 
+ (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
+  \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (\neg P\vee R)
+\end{equation*} 
+The natural approach is to use a truth table
+to calculate whether there are any $T$'s in the final column.
+\begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
+\small
+\begin{tabular}{ccc|ccccc|c}
+  $P$  &$Q$  &$R$  &$P\vee Q$ &$P\vee \neg Q$ &$\neg P\vee Q$ &$\neg P\vee \neg Q\vee \neg R$ &$\neg P\vee R$ &$f$ \\ \hline    
+  $F$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$ &$T$ &$F$ \\     
+  $F$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$ &$T$ &$F$ \\     
+  $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ \\     
+  $F$  &$T$  &$T$  &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ \\[1ex]     
+  $T$  &$F$  &$F$  &$T$ &$T$ &$F$ &$T$ &$F$ &$F$ \\     
+  $T$  &$F$  &$T$  &$T$ &$T$ &$F$ &$T$ &$T$ &$F$ \\     
+  $T$  &$T$  &$F$  &$T$ &$T$ &$T$ &$T$ &$F$ &$T$ \\     
+  $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
+\end{tabular}
+\end{center}
+This appears to be a perfect fit for unbounded parallelism.
+Given a formula with $n$ variables, the machine could split
+into $2^n$-many child processes, each doing a single line of the
+truth table.
+When the children are done, the master process
+calls down the bus, ``Any successes?''\footnote{%
+  In  guessing terms,
+  the machine guesses a solution, or is given a solution by the demon, and
+  then only has to verify that it works, which is quick.}
+
+That's all right.
+The problem is if we go on to suppose that because
+deterministic machines do not come with unbounded parallelism baked in
+they must be slower.
+At this moment, no one can prove that.
+We are left with two facts for the deterministic machine case:
+(1)~no one has produced a much 
+better approach 
+than trying all of the truth table lines, looking for an output $T$
+(this truth table has three inputs and $2^3$~lines, and in 
+general such a brute force algorithm takes exponential time),
+and (2)~no one has produced a proof showing that no better
+way exists.
+
+\begin{definition}
+The collection of languages for which there is a 
+a polynomial time nondeterministic Turing machine acceptor is
+\definend{$\compclass{NP}$}.
+\end{definition}
+
+
+
+
+Contrast that with the situation for chess.
+Like Rock-Paper-Scissors or Tic-Tac-Toe, 
+\citetext{chess is a solvable game}{%
+  This is Zermelo's Theorem. See \autocite{wiki:ZermelosTheorem}.},
+meaning that there exists a strategy
+for one of the two players that forces a win, or at least a draw, no
+matter what the other player does.
+But imagine that a demon hands you a sheaf of papers and told you
+it has a perfect chess strategy.
+If you tried to verify that, by having a computer step through
+the tree of responses to each move, and responses to those
+responses, etc., then with the Earth's current computing capacity,
+even with the strategy in hand, 
+verifying that it is correct is beyond us.
+
+
+
+
+\subsection{Verifiers}
+We are dividing the solution of a problem into two parts:
+producing that solution, and verifying that it is correct.
+We are considering the set of problems such that someone can convince you
+of a `yes' answer in a reasonable amount of time.
+That is, each string in the language there must be a proof that
+it is there, which is short in that it can be verified in deerministic
+polynomial time.
+
+\begin{definition}
+For a language $\lang{L}\subseteq\kleenestar{\B}$,
+the deterministic Turing machine $\TM$ is a \definend{verifier} if 
+for every string $\sigma\in\kleenestar{\B}$ we have
+$\sigma\in\lang{L}$
+if and only if
+there exists a \definend{witness} (or \definend{certificate})
+string $\omega\in\kleenestar{\B}$ such that the machine
+$\TM$ accepts the input $\sequence{\sigma,\omega}$.
+\end{definition}
+
+The definition does not say where the witness~$\omega$ comes from.
+In some sense this formalizes the idea of a demon providing the
+answer and our only job then is to verify the answer's correctness.
+
+Notice also that the definition does not say that when the string is not
+in the language then there is a witness.
+More precisely, if we have a Boolean function $\map{f}{\B^n}{\B}$ that
+is a member of $\NP$ then it is not necessary that the complement
+$\neg f$ is an element of $\NP$.
+
+Note that the witness is restricted in length so that the verifier,
+which as a Turing machine reads one bit at a time, can 
+read it through in polynomial time.
+Note also that we can take the polynomial~$p$ to be trivial $p(i)=0$
+to get that $\compclass{P}\subseteq\compclass{NP}$.
+
+The next result says that the two formulations, guesser and
+verifier, are equivalent up to some polynomial sloppiness.
+
+\begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
+A language is accepted by a polynomial time nondeterministic Turing machine
+if and only
+if it is accepted by some polynomial
+time deterministic verifier.
+\end{lemma}
+
+\begin{proof}
+The idea is that the sequence of choices made through nondeterminism
+can be bound together to make the witness, and vice versa.
+
+Suppose first that the language~$\lang{L}$ is accepted by the nondeterministic
+Turing machine~$\TM$ in polynomial time;
+we will construct a polynomial time verifier~$\TM[V]$.
+Let $\map{p}{\N}{\N}$ be the polynomial time function for~$\TM$,
+so that the time taken by~$\TM$ on input~$\sigma\in\kleenestar{\B}$
+is $p(|\sigma|)$.
+For any $\sigma\in\lang{L}$ the computation tree has an accepting branch.
+We can make a certificate $\omega$
+of the branchings.
+With the certificate, retracing $\TM$'s accepting branch
+can be done by a deterministic verifier.
+Because
+the branch's length must be less than $p(|\sigma|)$,
+the certificate will have length less than $p(|\sigma|)$.
+So the verifier~$\TM[V]$ can do the retracing in polynomial time.
+
+For the other direction suppose that the language $\lang{L}$
+is accepted by a verifier~$\TM[V]$ that runs in time
+that is bounded by some polynomial~$p$.
+We will describe a process cast in guessing terms, as we often do
+for  nondeterministic machines.
+Given $\sigma\in\kleenestar{\B}$, produce a sequence of $|\sigma|$
+guesses of branches in the computation tree to make a witness string~$\omega$.
+Use this witness along with $\sigma$ as inputs to $\TM[V]$.
+Because of the verifier step, there is a way for this guessing process to
+succeed if and only if $\sigma\in\lang{L}$.
+Because the verifier runs in polynomial time, the entire process of guessing and
+then verifying does also.
+\end{proof}
+
+Thus, a problem is in NP if and only if we can provide a
+polynomially long proof witness for any
+positive solution.\footnote{%
+  Please note: it is incorrect to say that an algorithm is in $\NP$
+  (or $\P$ for that matter).
+  Rather, what is in $\NP$ are problems\Dash languages\Dash
+  for which there exists an algorithm that runs sufficiently fast.}
+
+Often in mathematics we have a definition that captures the concept, and then
+a result that makes the definition to make it easier to work with.
+This is an example.
+While the description of a language as accepted by a polynomial time
+nondeterministic Turing machine is conceptually cleaner, experience shows that
+the verifier description is typically easier to work with in practice.
+
+\begin{corollary}
+The collection of languages for which there is a 
+a polynomial time nondeterministic Turing machine acceptor, that is, $\NP$,
+equals the collection
+of languages for which there is a polynomial time deterministic
+Turing machine verifier.
+\end{corollary}
+
+These following examples illuminate the role of the witness string.
+
+\begin{example}
+The Factorization problem is a member of the
+class~$\compclass{NP}$.
+Given a number~$n\in\N$, we can usee as witness~$\omega$ some 
+$a$ such that $1<a<n$ and $a$ is a factor of~$n$.
+\end{example}
+
+The verifier characterization allows us to easily identify problems 
+in~$\compclass{NP}$. 
+
+\begin{example}
+The Satisfiability problem is a member of~$\compclass{NP}$.
+Given a propositional logic formula, we can use as a witness~$\omega$
+the line number of an input that satisfies the formula.
+It is routine for us to make a deterministic Turing machine that
+runs in polynomial time that, given the formula and the witness,
+verifies in polynomial time that the formula is satisfied.
+\end{example}
+
+\begin{example}
+The Travelling Salesman problem is in the class~$\compclass{NP}$.
+Given $\sequence{\mathcal{G},B}$, a graph and a bound,
+we can use as a witness a sequence of nodes that
+constitute a circuit of total cost less than the bound.
+We can easily write a deterministic Turing machine that, given
+the graph and such a witness, verifies that the circuit in this
+graph costs less than the bound. 
+\end{example}
+
+\begin{example}
+The Subset Sum problem is in~$\compclass{NP}$.
+Given a set $S$ of numbers and a target sum~$B$,
+we can use as the witness~$\omega$ a subset of~$S$ whose members add to the
+target.
+Then we can easily write
+a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
+and verifies that the subset adds to the target, in polynomial time.
+\end{example}
+
+In summary, we are interested in for which problems
+are there relatively good algorithms and for which problems are there not?
+Note that we are classifying problems, using their best solutions.
+We would not say an algorithm is in a class; 
+rather we say a language is in that class.
 
 
 
@@ -1624,232 +1886,6 @@ Write a program that simulates a nondeterministic Turing machine.
 \end{exercise}
 \end{exercises}
 
-
-
-
-% =========================================
-\section{NP}
-Intuitively, it would seem that a nondeterministic Turing machine
-would be much faster than a deterministic one at the Satisfiability problem.
-Recall:~it asks, given a propositional logic statement, if  
-there is an assignment of input truth values
-making the statement give a value~$T$.
-This formula is an example.
-\begin{equation*}
- f = 
- (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
-  \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (\neg P\vee R)
-\end{equation*} 
-The natural approach is to use a truth table
-to calculate whether there are any $T$'s in the final column.
-\begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
-\small
-\begin{tabular}{ccc|ccccc|c}
-  $P$  &$Q$  &$R$  &$P\vee Q$ &$P\vee \neg Q$ &$\neg P\vee Q$ &$\neg P\vee \neg Q\vee \neg R$ &$\neg P\vee R$ &$f$ \\ \hline    
-  $F$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$ &$T$ &$F$ \\     
-  $F$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$ &$T$ &$F$ \\     
-  $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ \\     
-  $F$  &$T$  &$T$  &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ \\[1ex]     
-  $T$  &$F$  &$F$  &$T$ &$T$ &$F$ &$T$ &$F$ &$F$ \\     
-  $T$  &$F$  &$T$  &$T$ &$T$ &$F$ &$T$ &$T$ &$F$ \\     
-  $T$  &$T$  &$F$  &$T$ &$T$ &$T$ &$T$ &$F$ &$T$ \\     
-  $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
-\end{tabular}
-\end{center}
-This appears to be a perfect fit for unbounded parallelism.
-Given a formula with $n$ variables, the machine could split
-into $2^n$-many child processes, each doing a single line of the
-truth table.
-When the children are done, the master process
-calls down the bus, ``Any successes?''\footnote{%
-  In  guessing terms,
-  the machine guesses a solution, or is given a solution by the demon, and
-  then only has to verify that it works, which is quick.}
-
-That's all right.
-The problem comes when we go on to suppose something like, because
-deterministic machines do not come with unbounded parallelism baked in
-they must be slower.
-At this moment, no one can prove that.
-We are left with the two facts:
-(1)~at this moment no one has produces a much 
-better approach for a deterministic machine
-than to keep trying truth table lines, looking for an output $T$
-(this truth table has three inputs and $2^3$~lines, and in 
-general such a brute force algorithm takes exponential time),
-and (2)~at this moment no one has produced a proof that no much better
-approach exists.
-
-
-Contrast that with the situation for chess.
-Like Rock-Paper-Scissors or Tic-Tac-Toe, 
-\citetext{chess is a solvable game}{%
-  This is Zermelo's Theorem. See \autocite{wiki:ZermelosTheorem}.},
-meaning that there exists a strategy
-for one of the two players that forces a win, or at least a draw, no
-matter what the other player does.
-But imagine that a demon hands you a sheaf of papers and told you
-it has a perfect chess strategy.
-If you tried to verify that, by having a computer step through
-the tree of responses to each move, and responses to those
-responses, etc., then with the Earth's current computing capacity,
-even with the strategy in hand, 
-verifying that it is correct is beyond us.
-
-
-
-
-\subsection{Definition}
-We are taking solving a problem and dividing it into two parts,
-coming up with the solution and verifying that it is correct.
-We are considering the set of problems such that someone can convince you
-of a `yes' answer in a reasonable amount of time.
-That is, each string in the language there must be a proof that
-it is there, which is short in that it can be verified in deerministic
-polynomial time.
-
-\begin{definition}
-For a language $\lang{L}\subseteq\kleenestar{\B}$,
-the deterministic Turing machine $\TM$ is a \definend{verifier} if 
-for every string $\sigma\in\kleenestar{\B}$ we have
-$\sigma\in\lang{L}$
-if and only if
-there exists a \definend{witness} (or \definend{certificate})
-string $\omega\in\kleenestar{\B}$ such that the machine
-$\TM$ accepts the input $\sequence{\sigma,\omega}$.
-\end{definition}
-
-The definition does not say where the witness~$\omega$ comes from.
-In some sense this formalizes the idea of a demon providing the
-answer and our only job then is to verify the answer's correctness.
-
-Notice also that the definition does not say that when the string is not
-in the language then there is a witness.
-More precisely, if we have a Boolean function $\map{f}{\B^n}{\B}$ that
-is a member of $\NP$ then it is not necessary that the complement
-$\neg f$ is an element of $\NP$.
-
-Note that the witness is restricted in length so that the verifier,
-which as a Turing machine reads one bit at a time, can 
-read it through in polynomial time.
-Note also that we can take the polynomial~$p$ to be trivial $p(i)=0$
-to get that $\compclass{P}\subseteq\compclass{NP}$.
-
-The next result says that the two formulations, guesser and
-verifier, are equivalent up to some polynomial sloppiness.
-
-\begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
-A language is accepted by a polynomial time nondeterministic Turing machine
-if and only
-if it is accepted by some polynomial
-time deterministic verifier.
-\end{lemma}
-
-\begin{proof}
-The idea is that the sequence of choices made through nondeterminism
-can be bound together to make the witness, and vice versa.
-
-Suppose first that the language~$\lang{L}$ is accepted by the nondeterministic
-Turing machine~$\TM$ in polynomial time;
-we will construct a polynomial time verifier~$\TM[V]$.
-Let $\map{p}{\N}{\N}$ be the polynomial time function for~$\TM$,
-so that the time taken by~$\TM$ on input~$\sigma\in\kleenestar{\B}$
-is $p(|\sigma|)$.
-For any $\sigma\in\lang{L}$ the computation tree has an accepting branch.
-We can make a certificate $\omega$
-of the branchings.
-With the certificate, retracing $\TM$'s accepting branch
-can be done by a deterministic verifier.
-Because
-the branch's length must be less than $p(|\sigma|)$,
-the certificate will have length less than $p(|\sigma|)$.
-So the verifier~$\TM[V]$ can do the retracing in polynomial time.
-
-For the other direction suppose that the language $\lang{L}$
-is accepted by a verifier~$\TM[V]$ that runs in time
-that is bounded by some polynomial~$p$.
-We will describe a process cast in guessing terms, as we often do
-for  nondeterministic machines.
-Given $\sigma\in\kleenestar{\B}$, produce a sequence of $|\sigma|$
-guesses of branches in the computation tree to make a witness string~$\omega$.
-Use this witness along with $\sigma$ as inputs to $\TM[V]$.
-Because of the verifier step, there is a way for this guessing process to
-succeed if and only if $\sigma\in\lang{L}$.
-Because the verifier runs in polynomial time, the entire process of guessing and
-then verifying does also.
-\end{proof}
-
-\begin{definition}
-The collection of languages for which there is a 
-a polynomial time deterministic Turing machine acceptor is
-\definend{$\compclass{P}$}, called \definend{polytime}.
-The collection of languages for which there is a 
-a polynomial time nondeterministic Turing machine acceptor, that is,
-the collection
-of languages for which there is a polynomial time deterministic
-Turing machine verifier, is \definend{$\compclass{NP}$}.
-\end{definition}
-
-A problem is in NP if and only if we can provide a
-polynomially long proof witness for any
-positive solution.\footnote{%
-  Please note: it is incorrect to say that an algorithm is in $\NP$
-  (or $\P$ for that matter).
-  Rather, what is in $\NP$ are problems\Dash languages\Dash
-  for which there exists an algorithm that runs sufficiently fast.}
-
-Often in mathematics we have a definition that captures the concept, and then
-a result that makes the definition to make it easier to work with.
-This is an example.
-While the description of a language as accepted by a polynomial time
-nondeterministic Turing machine is conceptually cleaner, experience shows that
-the verifier description is typically easier to work with in practice.
-These following examples illuminate the role of the witness string.
-
-\begin{example}
-The Factorization problem is a member of the
-class~$\compclass{NP}$.
-Given a number~$n\in\N$, we can usee as witness~$\omega$ some 
-$a$ such that $1<a<n$ and $a$ is a factor of~$n$.
-\end{example}
-
-The verifier characterization allows us to easily identify problems 
-in~$\compclass{NP}$. 
-
-\begin{example}
-The Satisfiability problem is a member of~$\compclass{NP}$.
-Given a propositional logic formula, we can use as a witness~$\omega$
-the line number of an input that satisfies the formula.
-It is routine for us to make a deterministic Turing machine that
-runs in polynomial time that, given the formula and the witness,
-verifies in polynomial time that the formula is satisfied.
-\end{example}
-
-\begin{example}
-The Travelling Salesman problem is in the class~$\compclass{NP}$.
-Given $\sequence{\mathcal{G},B}$, a graph and a bound,
-we can use as a witness a sequence of nodes that
-constitute a circuit of total cost less than the bound.
-We can easily write a deterministic Turing machine that, given
-the graph and such a witness, verifies that the circuit in this
-graph costs less than the bound. 
-\end{example}
-
-\begin{example}
-The Subset Sum problem is in~$\compclass{NP}$.
-Given a set $S$ of numbers and a target sum~$B$,
-we can use as the witness~$\omega$ a subset of~$S$ whose members add to the
-target.
-Then we can easily write
-a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
-and verifies that the subset adds to the target, in polynomial time.
-\end{example}
-
-In summary, we are interested in for which problems
-are there relatively good algorithms and for which problems are there not?
-Note that we are classifying problems, using their best solutions.
-We would not say an algorithm is in a class; 
-rather we say a language is in that class.
 
 
 
@@ -3180,6 +3216,8 @@ Can we exploit the apparent exponentiality?
 Use W Zwicker's materials.
 
 \extra{Speedup Theorem}
+There are problems with no best algorithm.
+
 Reason it does not contradict Busy Beaver.
 
 

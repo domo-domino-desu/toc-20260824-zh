@@ -285,34 +285,15 @@ filldraw(pic,p_boundary,backgroundcolor+opacity(0.2),boldcolor);
 
 
 // Make NP boundary
+pair npboundrt = point(set_bound,2.5);
 pair np1 = (0.425*(boundbot.x+boundrt.x),boundrt.y+0.6);
 pair np2 = (0.625*(boundbot.x+boundrt.x),boundrt.y+0.6);
 // dot(pic,np1,green);
 // dot(pic,np2,green);
-path np = boundbot{(0.1,2)} :: np1 .. np2 .. boundrt;
+path np = boundbot{(0.1,2)} :: np1 .. np2 .. npboundrt;
 
 path np_boundary = buildcycle(set_bound,np);
 filldraw(pic,np_boundary,backgroundcolor+opacity(0.2),highlightcolor);
-
-
-// Make a shape to intersect with the P region, to form the n, n^2, etc's
-// real a=0.75, b=0.30;
-// path fcurve_ellipse = ellipse((0,0),a,b);
-// // draw(pic,fcurve_ellipse,black);
-// // dot(pic,point(fcurve_ellipse,2),blue);
-// pair fcurve_bl = (point(fcurve_ellipse,2).x,-1);
-// pair fcurve_br = (point(fcurve_ellipse,0).x,-1);
-// path fcurve=subpath(fcurve_ellipse,0.0,2.0)
-//   ..point(fcurve_ellipse,2)--fcurve_bl--fcurve_br--point(fcurve_ellipse,0)..cycle;
-
-// // Make the shaded paths
-// fill(pic,p_boundary,backgroundcolor+opacity(0.2));
-// for (int i=0; i<5; ++i) {
-//   real ystart = -0.28;
-//   real yend = point(fcurve_ellipse,1).y-0.1; 
-//   path oi = shift(boundbot.x+.4,ystart+(1-(1/(i+1)))*(yend-ystart))*fcurve;
-//   fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/2^i))*(0.18-0.1)));
-// }
 
 draw(pic,set_bound, AXISPEN);
 
@@ -326,6 +307,74 @@ int picnum=5;
 unitsize(pic,1cm);
 
 filldraw(pic,p_boundary,backgroundcolor+opacity(0.4),highlightcolor);
+
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+
+
+// ============== NP complete ======
+
+picture pic;
+int picnum=6;
+
+unitsize(pic,1cm);
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+// P and NP
+// pick points on the boundary to intersect
+pair boundbot = point(set_bound,1.5);
+pair boundrt = point(set_bound,2.275);
+pair p1 = (0.4*(boundbot.x+boundrt.x),boundrt.y+0.1);
+pair p2 = (0.60*(boundbot.x+boundrt.x),boundrt.y+0.2);
+// pair p3 = (0.75*(boundbot.x+boundrt.x),boundrt.y+0.1);
+path p = boundbot{(0.1,1)} :: p1 .. p2 .. {SE}boundrt;
+// dot(pic,p1,green);
+// dot(pic,p2,green);
+// dot(pic,p3,green);
+
+// Figure out where the path P meets the set boundary
+path p_boundary = buildcycle(set_bound,p);
+// filldraw(pic,p_boundary,backgroundcolor+opacity(0.2),boldcolor);
+draw(pic,p_boundary,boldcolor+opacity(0.3));
+
+
+// Make NP boundary
+pair npboundrt = point(set_bound,2.5);
+pair np1 = (0.425*(boundbot.x+boundrt.x),boundrt.y+0.6);
+pair np2 = (0.625*(boundbot.x+boundrt.x),boundrt.y+0.6);
+// dot(pic,npboundrt,green);
+// dot(pic,np1,green);
+// dot(pic,np2,green);
+path np = boundbot{(0.1,2)} :: np1 .. np2 .. npboundrt;
+
+path np_boundary = buildcycle(set_bound,np);
+draw(pic,np_boundary,boldcolor);
+
+// NP hard
+// pick points on the boundary to intersect
+pair nphardboundrt = npboundrt;  //  point(set_bound,2.275);
+pair nphardboundtop = point(set_bound,3.4);
+// dot(pic,nphardboundrt,red);
+// dot(pic,nphardboundtop,red);
+path nphard = nphardboundtop{S} .. np1 .. nphardboundrt;
+path nphard_region = buildcycle(set_bound,nphard);
+filldraw(pic,nphard_region,backgroundcolor+opacity(0.2),boldcolor);
+// // dot(pic,p1,green);
+// // dot(pic,p2,green);
+// // dot(pic,p3,green);
+path np_complete = buildcycle(np,nphard);
+draw(pic,np_complete,highlightcolor);
 
 draw(pic,set_bound, AXISPEN);
 

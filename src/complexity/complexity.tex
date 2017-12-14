@@ -5,39 +5,24 @@ Once you know that a task can be done at all then a natural next step is to
 do it efficiently. in a practical time
 (or space, or some other computational resource).
 
-In the history of the Theory of Computing, the first phase was 
-mathematical; researchers such as Turing, Church,
+The history of the Theory of Computing began in the 1930's with a
+first phase that was mathematical.
+Researchers including Turing, Church,
 and Kleene were driven by considerations such as the
 \textit{Entscheidungsproblem}.
-The subject is interesting, the questions compelling, and there were
+Their subject was interesting, the questions compelling, and there were
 plenty of problems to solve.
-But more recently, much of the subject has become driven more by
-the challenging questions that come to it from work on algorithms,
-particularly algorithms that arise from applied fields.
+But more recently, gaining strength in the 1980's and 1990's,
+much of the subject has become driven more by
+questions arising from work on algorithms.
+With the wiespread availability of actual computers, many researchers
+in many fields began trying to solve their problems on a computer.
+Theory of Computing researchers responded, and the result is that
+much of the activity concerns questions that arise from applied fields.
 These fields naturally are not satisfied unless the answer is
 feasible.
 So that concern has grown in relative importance.
 
-To adjust to this, we adjust our terms.
-Although we will still informally talk about problems such as
-the Satisfiability or the Composite problem in the same way as earlier,
-formally here we take
-`problem' to mean a decision problem for a language.
-In addition, languages will consist of bitstrings, so they are subsets
-of~$\kleenestar{\B}$.
-For example, formally we take the Composite problem
-to mean the problem of computing membership in the language
-$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number in binary}}$.
-
-To match this, we adjust our Turing machines.
-In this part they come with a subset of states that are accepting states.
-By saying that such a machine solves a problem,
-we mean that  the machine halts on all inputs~$\sigma\in\kleenestar{\B}$,
-and if when it halts it is in an accepting state then that input is in
-the language.
-Further, we may describe the running time of such a machine to be
-a function~$f$, meaning not only that
-for any input of length~$n$ it halts within $f(n)$-many steps.
 Because of this,
 we start this part by reviewing the orders of growth of functions.
 % Because this is a review, we will not give a detailed development,
@@ -1280,6 +1265,18 @@ So, algorithm analysis can happen on a number of fronts.
       For any~$N$, if $n=\max(N, 2C+1)$ then $g(n)=n^2>2C\cdot n=C\cdot f(n)$.
     \end{answer}
   \end{exercise}
+    
+  \begin{exercise}
+  There are orders of growth between polynomial and exponential.
+  Let $f(n)=n^{\lg(n)}$.
+  \begin{exparts}
+  \item Verify that $g(m)=m^k$ is in $\bigOh(f)$ for all powers~$k\in\N$.
+  \item Verify that $f$ is in $\bigOh(2^m)$ by showing that
+  $n^{\ln(n)}=2^{(\lg(n))^2}$ (\hint~take the logarithm of both sides),
+  and this function grows more slowly than $2^{mn}$ for any~$m>0$ no matter
+  how small.
+  \end{exparts}
+  \end{exercise}
   
   \begin{exercise}
     Prove that $2^n$ is~$\bigOh(n!)$.
@@ -1386,20 +1383,79 @@ So, algorithm analysis can happen on a number of fronts.
 
 
 \section{$\P$}
+
 As described in the motivational material above,
 the connection between big-O and computing is that we often 
 specify how machines consume resources using that terminology.
 It is high time for the formal definition.
 
-The computational resource cost that is most often of concern
-is the time taken; definitions for other resources are similar.
+
+\subsection{Strings, problems, and classes}
+In this Part we will make some adjustments to fit the shift in focus.
+
+The first is that \citetext{we will adopt the mindset, the thesis, that everything is bitstrings}{This discussion is based on R J Lipton's wonderful blog \protect\url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/
+}.}.
+In today's world, we have become comfortable 
+with thinking we can use boolean strings to represent pretty much anything
+of interest.
+Of course, we are used to representing numbers and mathematical objects
+such as matrices and graphs in this way.
+But we also just accept having bits representing pictures,
+from selfies to the Old Masters,
+as well
+\citetext{Beethoven's 9th Symphony on a CD}{The official story is that
+the $72$ minute length of a CD was chosen to hold this piece.}, or
+a fantasy movie that makes things that have never happened
+seem perfectly real.
+Thus, whereas in prior chapters we would say ``using the Cantor fucntion,
+encode that as an integer'', today when a 
+Theory of Computation researcher says,
+``Let $n$ be an natural number \ldots''
+then everyone hearing it convert that to, 
+``Let $n$ be a bitstring that encodes the number in its binary
+representation.''
+Similarly, in this Part,
+``Let $\mathcal{G}$ be a graph \ldots'' means something like
+``Assume we have a reasonably efficient way to encode the graph as
+a string of \str{0}'s and \str{1}'s.''
+
+
+The next adjustment that we will make in this Part is that
+while informally we will continue to talk about problems such as
+the Satisfiability or the Composite problem in the same way as earlier,
+formally
+we take `problem' to mean a decision problem for a language.
+For example, formally we take the Composite problem
+to mean the problem of computing membership in the language
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number in binary}}$.
+(We will be casual about the distinction between the
+decision problem for a language and the language itself; fopr instance, we
+often use the letter $\mathcal{L}$ for a problem.)
+
+Is limiting ourselves to decision problems for languages too restricitve?
+Consider a function problem: given $n$, find its prime factors.
+Here we will formally take it tobe 
+the problem of deciding membership in the set
+$\set{\sigma=\str{1}^n0\str{1}^m\in\kleenestar{\B}\suchthat\text{$m$} is a facto of $n$}$.
+But that isn't a restriction because
+a fast way to solve the decision problem gives a fast way to solve the
+function problem.
+
+
+One of the things we often want to do is to
+classify computational problems according to their inherent
+difficulty, and relate those classes to each other.
+Here, `inherent' difficulty means that there
+may be more than one algorithm for a problem and we
+are typically interested one that uses fewer resources.
 
 \begin{definition}
 A Turing machine $\TM$ 
 \definend{runs in time $\map{t_{\TM}}{\kleenestar{\Sigma}}{\N}$} 
 if  that function gives the 
-number of steps the machine takes on input~$\sigma\in\kleenestar{\Sigma}$.
-(If the machine does not halt then $t_{\TM}(\sigma)=\infty$.)
+number of steps the machine takes to halt
+on input~$\sigma\in\kleenestar{\Sigma}$.
+If the machine does not halt then $t_{\TM}(\sigma)=\infty$.
 The machine  
 \definend{runs in input length time $\map{\hat{t}_{\TM}}{\N}{\N}$} 
 if $\hat{t}_{\TM}(n)$ is the maximimum of the $t(\sigma)$ over all 
@@ -1409,9 +1465,39 @@ Finally, the machine
 if $\hat{t}_{\TM}$ is~$\bigOh(f)$. 
 \end{definition}
 
-Recall that at the start of this part we defined a problem to be
-a language decision problem.
-We now give a name for tractable problems.
+We will also adjust our Turing machines.
+In this Part they come with a subset of states that are accepting states.
+We define that such a machine solves a problem
+when it halts on all inputs~$\sigma\in\kleenestar{\B}$,
+and when it halts it is in an accepting state if that input is in
+the language.
+This does not violate our understanding from the Halting Problem because
+if there is no such machine then just by definition,
+the problem isn't solved.
+
+There are many other computational resource of interest, space is one but
+there are others.
+In addition there are
+\citetext{a great many ways to group problems together}{%
+  At this writing there are 535 ways;
+  see \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.}.
+The most satisfactory definition proves to be the one that imposes
+the fewest restrictions.
+
+\begin{definition}
+A \definend{complexity class} is a collection of problems.
+\end{definition}
+
+The first example, the tractable problems, is the topic of the next subsection.
+More examples will follow.
+
+
+
+
+\subsection{Definition}
+
+the most important class of problems contains the ones for which there
+is an algorithm that can at least conceivably be used. 
 
 \begin{definition}
 A problem is a member of the class \definend{$\P$} if
@@ -1421,9 +1507,9 @@ polytime.
 
 % This shows the class~$\P$ as a subset of the collection of all languages.
 \begin{fig}[]{The bean encloses the set of all problems, 
-all decision problems for some language $\lang{L}\subseteq\kleenestar{\B}$.
+all decision problems for some $\lang\subseteq\kleenestar{\B}$.
 The class~$\P$ is shaded.
-The shade comes in layers because
+The shading is in layers because
 $\P$ contains languages such that there is an algorithm to determine membership
 that is $\bigOh(1)$,
 and also contains languages such that there is an algorithm that is $\bigOh(n)$,
@@ -1470,6 +1556,23 @@ This is a polynomial time algorithm.
 \end{exercise}
 
 \begin{exercise}
+Prove that each problem is in $\P$ by citing the runtime of a particular
+algorithm.
+\begin{exparts}
+\item Deciding the language of correct sums,
+$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$.
+\item Deciding the language
+$\set{\sigma\in\kleenestar{\str{a},\ldots \str{z}}\suchthat \text{$\sigma$ is in alphabetical order}}$.
+\item Deciding
+$\set{\sequence{A,B,C}\suchthat\text{the matrices are such that $AB=C$}}$.
+\item Deciding the language of primes,
+$\set{\str{1}^k\suchthat\text{$k$ is prime}}$.
+\item Reachable nodes:
+$\set{\sequence{\mathcal{G},v_0,v_1}\suchthat\text{the graph $\mathcal{G}$ has a path from $v_0$ to $v_1$}}$.  
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
 Prove that if $\mathcal{P}_1\in\P$ and if $\mathcal{P}_0\leq_p\mathcal{P}_1$
 then $\mathcal{P}_0\in\P$.
 \end{exercise}
@@ -1494,8 +1597,8 @@ Prove that the class of languages~$\P$ is closed under each operation.
 \section{$\NP$}
 Recall that a machine is nondeterminstic if
 from a present configuration and input
-it may pass to a next configuration that has more than zero next states,
-one next state, or more.
+it may pass to a next configuration where the number of next states
+is zero, or one, or more.
 That is, the transition function outputs sets.
 \begin{equation*}
   \Delta(q_i,T_p)=\set{\sequence{q_{j_0},T_{n_0}},\sequence{q_{j_1},T_{n_1}}\,\ldots}
@@ -1582,27 +1685,6 @@ at least a limited number of, simultaneous physical processes.\footnote{%
 So nondeterminism
 doesn't add any capacity to what can be computed in principle.
 
-In practice, potentially,
-one interesting thing about nondeterministic Turing machines is that they
-appear to be a good match for solving problems that on a serial machine
-are hard to solve.
-An example is the Travelling Salesman problem.
-Stated in guessing terms, the machine just 
-comes up with a circuit $c\in\N$ and then checks whether
-$c$ is smaller than the given bound.
-
-So while adding unbounded parallelism to Turing machines doesn't
-allow them to compute any new functions, it at least appears that it may
-allow them to compute the functions faster.
-
-\begin{definition}
-Let~$\lang{L}$ be a language.
-A nondeterministic machine
-\definend{decides the language in time $\map{t}{\N}{\N}$} if for any
-input $\sigma\in\lang{L}$ the machine computes at least one accepting branch
-in time $t(|\sigma|)$.\footnotemark[1].
-\end{definition}\footnotetext[1]{Whether we use the model that the machine
-decides by a computation tree or by guessing does not matter.}
 
 % The question of whether there is an actual difference in speed between
 % deterministic and nondeterministic Turing machines is extremely interesting.
@@ -1613,6 +1695,15 @@ decides by a computation tree or by guessing does not matter.}
 
 % ..................
 \subsection{Speed}
+In practice, potentially,
+one interesting thing about nondeterministic Turing machines is that they
+appear to be a good match for solving problems that on a serial machine
+are hard to solve.
+An example is the Travelling Salesman problem.
+Stated in guessing terms, the machine just 
+comes up with a circuit $c\in\N$ and then checks whether
+$c$ is smaller than the given bound.
+
 Intuitively, it would seem that a nondeterministic Turing machine
 would be much faster than a deterministic one at the Satisfiability problem.
 Recall:~it asks, given a propositional logic statement, if  
@@ -1650,6 +1741,18 @@ calls down the bus, ``Any successes?''\footnote{%
   the machine guesses a solution, or is given a solution by the demon, and
   then only has to verify that it works, which is quick.}
 
+So while adding unbounded parallelism to Turing machines doesn't
+allow them to compute any new functions, it at least appears that it may
+allow them to compute the functions faster.
+
+\begin{definition}
+A nondeterministic machine
+\definend{decides the language~$\lang$ in time $\map{t}{\N}{\N}$} if for any
+input $\sigma\in\lang$ the machine computes at least one accepting branch
+in time $t(|\sigma|)$.\footnotemark[1].
+\end{definition}\footnotetext[1]{Whether we use the model that the machine
+decides by a computation tree or by guessing does not matter.}
+
 That's all right.
 The problem is if we go on to suppose that because
 deterministic machines do not come with unbounded parallelism baked in
@@ -1665,11 +1768,10 @@ and (2)~no one has produced a proof showing that no better
 way exists.
 
 \begin{definition}
-The collection of languages for which there is a 
+The set of languages for which there is a 
 a polynomial time nondeterministic Turing machine acceptor is
-\definend{$\compclass{NP}$}.
+the complexity class~\definend{$\compclass{NP}$}.
 \end{definition}
-
 
 \begin{lemma}
 $\P\subseteq\NP$
@@ -1686,16 +1788,18 @@ nondeterministic machine.
 We don't know whether $\P\subset\NP$ or $\P=\NP$.
 This is an extremely important question; more on it later.
 
-\begin{fig}[fig:ProblemBeansPNP]{These beans with all the problems
-  show the two possibilities: that the containment $\P\subset\NP$
-  is strict, and that $\P=\NP$.}
-  % \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
-  % \hspace{0.6em}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp04.pdf}}
-  \hspace{3em}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp05.pdf}}
-\end{fig}
 
+
+
+
+\subsection{Verifiers}
+We are dividing the solution of a problem into two parts:
+producing that solution, and verifying that it is correct.
+We are considering the set of problems such that someone can convince you
+of a `yes' answer in a reasonable amount of time.
+That is, each string in the language there must be a proof that
+it is there, which is short in that it can be verified in deerministic
+polynomial time.
 
 Contrast that with the situation for chess.
 Like Rock-Paper-Scissors or Tic-Tac-Toe, 
@@ -1713,16 +1817,6 @@ even with the strategy in hand,
 verifying that it is correct is beyond us.
 
 
-
-
-\subsection{Verifiers}
-We are dividing the solution of a problem into two parts:
-producing that solution, and verifying that it is correct.
-We are considering the set of problems such that someone can convince you
-of a `yes' answer in a reasonable amount of time.
-That is, each string in the language there must be a proof that
-it is there, which is short in that it can be verified in deerministic
-polynomial time.
 
 \begin{definition}
 For a language $\lang{L}\subseteq\kleenestar{\B}$,
@@ -1914,6 +2008,26 @@ factorization.
 \end{exparts}
 \end{exercise}
 
+\begin{exercise}
+Two graphs $\mathcal{G}_0,\mathcal{G}_1$ are isomorphic if there is a
+one-to-one and onto function $\map{f}{\mathcal{V}_0}{\mathcal{V}_1}$ such
+that $\set{v,\hat{v}}$ is an edge of~$\mathcal{G}_0$ if and only if
+$\set{f(v),f(\hat{v})}$ is an edge of~$\mathcal{G}_1$.
+Consider the problem of computing wheter two graphs are isomorphic.
+\begin{exparts}
+\item Define the appropriate language.
+\item Show that the problem of determining membership in that language
+  is a member of the class $\NP$.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item This is the natural language
+$\set{\sequence{\mathcal{G}_0,\mathcal{G}_1}\suchthat\text{they are isomorphic}}$.
+\item
+The witness is the function, the set of ordered pairs $\sequence{v,f(v)}$.
+\end{exparts}
+\end{answer}
+\end{exercise}
 
 \begin{exercise}
 Prove that if $\mathcal{P}_1\in\NP$ and if $\mathcal{P}_0\leq_p\mathcal{P}_1$
@@ -1994,26 +2108,35 @@ No one knows if $\NP$ is closed under complementation.
 % answers"
 A \definend{reduction}
 is an algorithm for transforming one problem into another.
-When we did incompleteness we said that  
+
+When we did incompleteness problems were sets.
+We said that  
 problem $A$ is reducible to problem~$B$, written $A\leq_T B$,
-if an algorithm for solving~$B$ could also be used to solve
-problem~$A$.
-In a complexity context, 
-problem $A$ is reducible to problem~$B$, written $A\leq_p B$,
-if an algorithm for solving~$B$ efficiently could also be used to solve
-problem~$A$ efficiently.
+if an algorithm for solving~$B$ could also be used to solve~$A$.
+In a complexity context, problems are language decision problems, basically
+sets of bitstrings, and a
+problem~$\lang_1$ is reducible to problem~$\lang_0$, written
+$\lang_1\leq_p \lang_0$,
+if an algorithm for solving~$\lang_0$ efficiently could also be used to solve
+problem~$\lang_1$ efficiently.
 
 \begin{definition}
-The language $\lang{L}_0$ is
+The language $\lang_0$ is
 \definend{polynomial time reducible}
 (or \definend{polynomial time mapping reducible}, or
 \definend{polynomial time many-one reducible})
-to the language~$\lang{L}_1$, written $\lang{L}_0\leq_p\lang{L}_1$,
+to the language~$\lang_1$, written $\lang_0\leq_p\lang_1$,
 if there is a computable function
 $\map{f}{\kleenestar{\B}}{\kleenestar{B}}$ that runs in polynomial time
 such that
-$\sigma\in\lang{L}_0$ if and only if~$f(\sigma)\in\lang{L}_1$.
+$\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.
 \end{definition}
+
+In a polynomial reduction, if there is an algorithm for solving
+$\lang_0$ in $\bigOh(n^i)$ and the polynomial has degree~$j$
+then the solution to $\lang_1$ that is $\bigOh(n^{i+j})$ is:~given
+input $\sigma$, find $f(\sigma)$ and then apply the algorithm
+to determine if it is a member of $\lang_0$.
 
 \begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
   The ones with fast algorithms are at the bottom.
@@ -2142,10 +2265,10 @@ the graph has a $3$-clique.
 % ================================
 \subsection{$\compclass{NP}$ complete}
 \margingraphic{0.20\textwidth}{complexity/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
-We know that $\P\subseteq\NP$, so $\NP$ contains lots of easy problems,
+Because $\P\subseteq\NP$, the class $\NP$ contains lots of easy problems,
 ones with a fast algorithm.
-For instance, the problem of determining whether a number is odd is a member
-of $\NP$.
+For instance, one member of $\NP$ is
+the problem of determining whether a number is odd.
 Of course, the interest in the class is that it also contains lots of
 seemingly hard problems.
 In 1971 S~Cook showed that among the problems in $\NP$,
@@ -2216,41 +2339,8 @@ it is in~$\NP$ and the second that it is $\NP$-hard.
 NP complete problems are analogous to the solution to the \HP,
 which are at least as hard as any computably enumerable set.
 
-\begin{TODO}
-Hamiltonian Cycle problem is NP complete.
-As a corollary, Travelling Salesman Problem is NP complete.
-\end{TODO}
 
-
-P is the class of problems which we can solve efficiently using
-a conventional algorithm.
-Here are two problems known to be in $P$:
-Matrix multiplication, graph reachability.
-
-In 2002, a very exciting annuoncement was made, that 
-the problem of determining whether a given number is prime can be done
-in $\bigOh(n^6)$, so this problem is also in~$\P$.\footnote{
-  This is known as AKS after the authors Agrawal, Kayal, and Saxena
-  (the latter two were undergraduates % Indian Institute of Technology at Kanpur
-  at the time they did most of the work.}
-
-Two problems that are believed to be in $\NP$ but not $\NP$~complete are:
-The Factoring problem is believed to be hard for classical
-computers,\footnote{%
-  In 1994, P~Shor discovered an algorithm for a quantum computer that
-  solves it in polynomial time.
-  This will have significant implications if quantum computation proves
-  to be possible.}
-but it is generally suspected to be not $\compclass{NP}$-complete.
-Graph Isomorphism.  
-
-% https://xkcd.com/287/
-\begin{center}
-  \citetext{\includegraphics[scale=2.5]{complexity/xkcdnpcomplete}}{\href{https://xkcd.com/287/}{Courtesy \url{xkcd.com}.}}
-\end{center}
-
-
-% \margingraphic{0.20\textwidth}{complexity/karp.jpg}{\label{fig:RichardKarp}\href{https://en.wikipedia.org/wiki/Richard_M._Karp}{Richard M.\@ Karp b~1935}} % https://simons.berkeley.edu/people/richard-karp  https://simons.berkeley.edu/sites/default/files/styles/profile_main/public/rk1.jpg?itok=1kn5XodZ
+\margingraphic{0.20\textwidth}{complexity/karp.jpg}{\label{fig:RichardKarp}\href{https://en.wikipedia.org/wiki/Richard_M._Karp}{Richard M.\@ Karp b~1935}} % https://simons.berkeley.edu/people/richard-karp  https://simons.berkeley.edu/sites/default/files/styles/profile_main/public/rk1.jpg?itok=1kn5XodZ
 There are a collection of problems that for many years people have
 been trying to find a reasonably-fast algorithms for.
 This paper made clear to researchers that complexity provided a forum to
@@ -2302,9 +2392,60 @@ both halves, $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
 \end{thmdescription}
 \end{theorem}
 
+\begin{example}
+The Knapsack problem is: given a finite set $S$ whose elements each
+have a weight~$w(xs)\in\N^+$ and a value~$v(s)\in\N^+$, along with a
+bound $B\in\N^+$ and a value target~$K\in\N^+$, find a subset
+$\hat{S}\subseteq S$ whose elements have a total weight less than the
+bound and total value greater than the value target.
+The intuition is that we have items to pack in a knapsack and we must
+keep the weight down, while still packing valuable items.
+
+This problem is $\NP$~complete.
+It is clearly in the class $\NP$ because the witness is the sequence
+of items to pack that meet the requirements.
+
+To show it is $\NP$-hard, we use restriction; we show that a special case
+of the problem is $\NP$-hard.
+Consider the special case where $w(s)=v(s)$ for all~$s\in S$, and where
+$B$ and~$K$ each equal half of the total of all the weights.
+This is a Partition problem, which is in the above list of
+$\NP$~complete problems, and so is $\NP$-hard.
+\end{example}
+
+% https://xkcd.com/287/
+\begin{center}
+  \citetext{\includegraphics[scale=2.75]{complexity/xkcdnpcomplete}}{\href{https://xkcd.com/287/}{Courtesy \url{xkcd.com}.}}
+\end{center}
 
 
-\subsection{?$\P=\NP$?}
+\begin{example}
+Another $\NP$~complete problem is the Travelling Salesman problem.
+To show it is $\NP$ complete, show that
+$\text{Hamiltonian circuit}\leq_p\text{Travelling Salesman}$.
+\end{example}
+
+
+Two problems that are believed to be in $\NP$ but not $\NP$~complete are:
+\begin{example}
+The Factoring problem is believed to be hard for classical
+computers,\footnotemark[1]
+but it is generally suspected to be not $\compclass{NP}$-complete.
+\end{example}\footnotetext[1]{%
+  In 1994, P~Shor discovered an algorithm for a quantum computer that
+  solves the Factoring problem in polynomial time.
+  This will have significant implications if quantum computation proves
+  to be possible.}
+
+
+\begin{example}
+The Graph Isomorphism is also suspected to be not $\NP$ complete.  
+\end{example}
+
+
+
+
+\subsection{$\P=\NP$?}
 Every deterministic Turing machine is, trivially, a nondeterministic machine.
 So $\P\subseteq\NP$.
 What about the other direction?
@@ -2313,7 +2454,21 @@ The short answer is, no one knows.
 % http://www.claymath.org/millennium-problems
 
 
-Two pictures; one with separation, one without.
+\begin{fig}[fig:ProblemBeansPNP]{We know that $\P\subseteq\NP$ so
+  there are
+  two possibilities: that the containment is strict, $\P\neq\NP$,
+  and that $\P=\NP$.}
+  % \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  % \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp04.pdf}}
+  \hspace{3em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp05.pdf}}
+\end{fig}
+
+
+If we show any $\NP$ complete problem is a member of $\P$ then
+we have shown that $\P=\NP$.
+
 
 
 
@@ -2531,15 +2686,24 @@ $2^{\sqrt{n}}$.
 Much of cryptography consists in exploiting this difference; see the Extra on
 the RSA encryption system.
 
-
-
-% \subsection{$\compclass{P}$ versus $\compclass{NP}$}
-% Discussion.
-
 Intermediate between solvable and unsolvable is intractible.
 
 
 \begin{exercises}
+\begin{exercise}
+Describe the problem of determining whether a number is odd as the problem
+of deciding membership in a language.
+Show it is in~$\NP$.
+\begin{answer}
+The natural way to describ it as a decision problem for a language
+is with the language
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
+To show it is in $\NP$, we can have a deterministic Turing machine
+that uses an empty witness $\omega=\emptystring$, and accepts such
+strings in polynomial time.
+\end{answer}
+\end{exercise}
+
 \begin{exercise}
 True or False: the problem of deciding membership in the
 language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$
@@ -2556,6 +2720,13 @@ Hamiltonian circuit.
 \item
 Composite problem: given a natural number determine if it is composite.
 \end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Prove that if $\P=\NP$ then every $\mathcal{P}\in\P$ is
+$\NP$~complete, except for the problems of determining
+membership in the empty language and the full language,
+$\mathcal{P}=\emptyset$ and $\mathcal{P}=\kleenestar{\Sigma}$.
 \end{exercise}
 
 
@@ -2576,6 +2747,20 @@ Show that a polynomial time algorithm that calls a polynomial time
 subroutine is still polynomial time.
 Show that if the subroutine is exponential then the entire algorithm
 is exponential.
+\end{exercise}
+
+
+\begin{exercise}
+A problem is $\P$~complete if it maximally hard among problems in~$\P$.
+\begin{exparts}
+\item Give a formal definition.
+\item Show that if there is a $\P$-complete problem, and if it is not
+a member of $\NP$ then $\P\neq\NP$.
+\end{exparts}
+\begin{answer}
+A problem~$\prob[L]_0$ is \definend{$\P$~complete} if it is a member of the
+class~$\P$ and $\prob[L]_1\leq_p\prob[L]_0$ for every $\prob[L]_1\in\P$.
+\end{answer}
 \end{exercise}
 \end{exercises}
 

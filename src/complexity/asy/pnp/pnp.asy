@@ -38,9 +38,11 @@ int picnum=0;
 
 unitsize(pic,1cm);
 
-// seed the random number generator; show on screen to save the number if wanted
-int srand_seed = seconds();
-write(format("PNP.ASY: Picture 0: srand_seed is %d",srand_seed));
+// seed the random number generator;
+//   If seconds() then uncomment to show on screen to save the number for later
+// I've used the same number also for pic 3.
+int srand_seed = 1512905530; // seconds();
+// write(format("PNP.ASY: Picture 3: srand_seed is %d",srand_seed));
 srand(srand_seed); 
 
 // bounds 
@@ -56,7 +58,7 @@ pair set_bound_max=max(set_bound_pic,user=true);
 
 // Pick some points; they must be inside the set_bound
 pair[] pts;
-int numpts=25;
+int numpts=30;
 bool flag=false;
 pair onept;
 real padding=0.25; // min dist between points
@@ -192,6 +194,7 @@ unitsize(pic,1cm);
 
 // seed the random number generator;
 //   If seconds() then uncomment to show on screen to save the number for later
+// I've used the same number also for pic 1.
 int srand_seed = 1512905530; // seconds();
 // write(format("PNP.ASY: Picture 3: srand_seed is %d",srand_seed));
 srand(srand_seed); 
@@ -380,6 +383,62 @@ draw(pic,set_bound, AXISPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+
+// ============== EXP ======
+picture pic;
+int picnum=7;
+
+unitsize(pic,1cm);
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+// pick points on the boundary to intersect
+pair boundbot = point(set_bound,1.5);
+pair boundrt = point(set_bound,2.275);
+pair p1 = (0.4*(boundbot.x+boundrt.x),boundrt.y+0.1);
+pair p2 = (0.60*(boundbot.x+boundrt.x),boundrt.y+0.2);
+// pair p3 = (0.75*(boundbot.x+boundrt.x),boundrt.y+0.1);
+path p = boundbot{(0.1,1)} :: p1 .. p2 .. {SE}boundrt;
+// dot(pic,p1,green);
+// dot(pic,p2,green);
+// dot(pic,p3,green);
+
+// Figure out where the path P meets the set boundary
+path p_boundary = buildcycle(set_bound,p);
+filldraw(pic,p_boundary,backgroundcolor+opacity(0.2),boldcolor);
+
+
+// Make NP boundary
+pair npboundrt = point(set_bound,2.5);
+pair np1 = (0.425*(boundbot.x+boundrt.x),boundrt.y+0.6);
+pair np2 = (0.625*(boundbot.x+boundrt.x),boundrt.y+0.6);
+// dot(pic,np1,green);
+// dot(pic,np2,green);
+path np = boundbot{(0.1,2)} :: np1 .. np2 .. npboundrt;
+
+path np_boundary = buildcycle(set_bound,np);
+filldraw(pic,np_boundary,backgroundcolor+opacity(0.2),boldcolor);
+
+// Make EXP boundary
+pair expboundrt = point(set_bound,2.7);
+pair exp1 = (0.425*(boundbot.x+boundrt.x),boundrt.y+0.9);
+pair exp2 = (0.625*(boundbot.x+boundrt.x),boundrt.y+0.9);
+// dot(pic,exp1,green);
+// dot(pic,exp2,green);
+path exp = boundbot{(0.1,2)} :: exp1 .. exp2 .. expboundrt;
+
+path exp_boundary = buildcycle(set_bound,exp);
+filldraw(pic,exp_boundary,backgroundcolor+opacity(0.2),highlightcolor);
+
+draw(pic,set_bound, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

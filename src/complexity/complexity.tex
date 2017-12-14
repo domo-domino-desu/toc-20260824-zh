@@ -1496,7 +1496,7 @@ More examples will follow.
 
 \subsection{Definition}
 
-the most important class of problems contains the ones for which there
+The most important class of problems contains the ones for which there
 is an algorithm that can at least conceivably be used. 
 
 \begin{definition}
@@ -1542,6 +1542,16 @@ finite language is $\P$.
 \begin{answer}
 True.
 That problem has an algorithm that is $\bigOh(1)$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+This sentence is mistaken; describe what is wrong with it: ``I've got a problem
+whose algorithm is in $\P$.''
+\begin{answer}
+Algorithms are not in $\P$, rather, problems are in $\P$ if from among all
+the algorithms that solve them at least one algorithm is $\bigOh{n^c}$ for
+some constant~$c$.
 \end{answer}
 \end{exercise}
 
@@ -2345,7 +2355,10 @@ There are a collection of problems that for many years people have
 been trying to find a reasonably-fast algorithms for.
 This paper made clear to researchers that complexity provided a forum to
 work on commonalities among problems that had resisted attack for many years.
-
+``NP captures vast domains of computational, scientific, and mathematical
+ endeavors, and seems to roughly delimit what mathematicians and scientists
+ have been aspiring to compute feasibly.'' --- Christos Papadimitriou
+ 
 The next list is memorizable.
 It comes from \autocite{GareyJohnson}.
 The problem descriptions appeared earlier; they are copied
@@ -2782,18 +2795,6 @@ class~$\P$ and $\prob[L]_1\leq_p\prob[L]_0$ for every $\prob[L]_1\in\P$.
 Here we will generalize the work we have done with $\P$ and $\NP$
 to other problems.
 
-\begin{definition}
-A \definend{complexity class} is a set of languages.
-\end{definition}
-
-Usually the languages are sets of bitstrings.
-And, typically they share some property involving how much of
-some resource such as time or memory is needed by a Turing machine
-recognizing a language.
-
-We are interested in classifying various problems: for which problems
-are there relatively good algorithms, and for which problems are there not?
-Given a problem we will be interested in its best solution.
 
 \subsection{Time Complexity}
 The impediment a programmer runs across first is time.
@@ -2814,15 +2815,15 @@ A language is in that class if there is an algorithm for its decision problem
 that has the stated big-O runtime behavior.
 
 \begin{lemma}
-A language is polytime, $\compclass{P}$,
+A problem is polytime, $\compclass{P}$,
 if it is a member of $\DTIME(n^c)$
 for some power~$c\in\N$.
 \begin{equation*}
   \compclass{P} =\bigcup_{c\in\N}\DTIME(n^c)          
      =\DTIME(n)\cup\DTIME(n^2)\cup\DTIME(n^3)\cup\,\cdots
 \end{equation*}
-A language is a member of 
-$\compclass{NP}$ if this holds.
+The matching statement holds for 
+$\compclass{NP}$.
 \begin{equation*}
   \compclass{NP} =\bigcup_{c\in\N}\NTIME(n^c)          
      =\NTIME(n)\cup\NTIME(n^2)\cup\NTIME(n^3)\cup\,\cdots
@@ -2830,9 +2831,19 @@ $\compclass{NP}$ if this holds.
 \end{lemma}
 
 \begin{proof}
-Refer to prior section.
+Immediate.
 \end{proof}
 
+\begin{remark}
+Again, while the above definition of $\NP$ makes clear its naturalness,
+the characterization that proves to be most useful in practice
+is that a problem~$\prob$ is in $\NP$ if there is a deterministic
+Turing machine such that for each input~$\sigma$
+there is a polynomial length witness~$\omega$ and the verification
+on that machine for~$\sigma$ using~$\omega$ takes polytime.
+\end{remark}
+
+We can get new classes with this definition.
 
 \begin{definition}
 A language is in 
@@ -2850,16 +2861,34 @@ As discussed in the prior subsection,
 polytime is our first take at can-conceivably-be-used,
 and we say that the problem is `tractable'. 
 in contrast, $\EXP$ as too slow; we can't compute it.
-We say it is `intractable'.
-This view of the matter began with J~Edmunds.
 
 We know that every $\compclass{NP}$ problem is a member of~$\EXP$.
 For one thing, the Satisfaction problem can be solved in exponential time
-(by checking each row of the truth table), and any $\compclass{NP}$ problem
+by checking each row of the truth table, and any $\compclass{NP}$ problem
 can be solved from the Satisfaction problem with only an addition of
 polytime.
 
-But we don't know whether there are any $\compclass{NP}$ problems that
+\begin{lemma}
+$\NP\subseteq\EXP$
+\end{lemma}
+
+\begin{proof}
+Fix $\prob\in\NP$.
+We can verify $\prob$ on a deterministic Turing machine~$\TM$
+in polynomial time using a witness whose length is bounded by the
+same polynomial.
+Let this problem's bound be $n^c$. 
+
+We will decide $\prob$ in exponential time by brute-forcing it:~we
+will use~$\TM$ to run every possible verification. 
+Trying any single witness requires polynomial time, $n^c$.
+Witnesses are in binary so for length~$\ell$ there
+are $\sum_{0\leq i\leq\ell}2^{i}=2^{\ell+1}-1$~many possibile ones;
+In total then, brute force requires $\bigOh(n^c 2^{n^c})$ operations.
+Finish by observing that $n^c 2^{n^c}$ is in $\bigOh(2^{n^c})$. 
+\end{proof}
+
+We don't know whether there are any $\compclass{NP}$ problems that
 require exponential time.
 Conceivably $\compclass{NP}$ is contained in a smaller determinstic
 time complexity class\Dash maybe the Satisfiability problem, for instance,
@@ -2867,6 +2896,18 @@ can be solved in less than exponential time.
 For example, if $\compclass{P}=\compclass{NP}$ then $\compclass{NP}$
 is a strict subset of $\EXP$.
 But we just don't know.
+
+
+\begin{fig}[fig:BeanWithExp]{The bean encloses all problems.
+   Shaded are the three classes $\P$, $\NP$, and $\EXP$.
+   They are shown with strict containment, which most experts guess
+   is the true arrangement.}
+  \setlength{\unitlength}{1cm}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp07.pdf}}
+\end{fig}
+
 
 % https://complexityzoo.uwaterloo.ca/Petting_Zoo
 $\EXP$ contains nearly every other class that we regularly concern ourselves

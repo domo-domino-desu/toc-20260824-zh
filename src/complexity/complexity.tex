@@ -912,19 +912,18 @@ and which are open to analysis that makes them tractable.
 
 
 
-\subsection{Discussion}W
+\subsection{Discussion}
 We use Big~O to classify algorithms by how much they use 
-computing resources in solving various problems.
-(We are usually most concerned with the time taken.)
-The bottom line is that Big~O is about scalability. % credit: https://softwareengineering.stackexchange.com/a/20833
-Something that is $\bigOh(n^2)$ scales worse than one that is 
-$\bigOh(n \lg n)$, but better than one that is $\bigOh(n^3)$.
-Is it more complicated than that?
+computing resources.
+The bottom line is that Big~O is about scalability\Dash 
+something that is $\bigOh(n^2)$ scales worse than something that is 
+$\bigOh(n \lg n)$, but better than something that is
+$\bigOh(n^3)$.  % credit: https://softwareengineering.stackexchange.com/a/20833
+Is it any more complicated than that?
 
-Yes, there are some points that have traditionally given trouble.
-First, Big~O to describe the behavior of
-algorithms, not programs.
-Compare these program snippets.
+Yes, there are some points that traditionally give folks trouble.
+The first is that Big~O is for algorithms, not programs.
+For example, compare these program snippets.
 \begin{center}
 \begin{minipage}[t]{0.4\linewidth}
 \begin{lstlisting}
@@ -944,11 +943,12 @@ for(i=0; i<10; ++i){
 \end{lstlisting}
 \end{minipage}
 \end{center}
-The one on the left makes the mistake of putting
-\codeinline{x=10} inside the loop, which costs time.
-But Big~O disregards this constant difference in time between the two.
-That is, Big~O abstracts away details at the level of programs.
-Bit~O is suited for describing algorithms.
+The left one makes the mistake of putting
+\codeinline{x=10} inside the loop, which costs the time for nine assignments.
+But Big~O disregards this constant difference in time.
+That is, Big~O is not suited to describing programs because it
+abstracts away details at that level.
+Big~O's level is that of algorithms.
 
 % Besides, a program is written for, and runs on, a specific computing platform.
 % Each platform has its own startup costs, and other details.
@@ -978,40 +978,40 @@ Finally, the machine
 if $\hat{t}_{\TM}$ is~$\bigOh(f)$. 
 \end{definition}
 
-Another computing model,
-one that is widely used in Computational Complexity, is the
+A model
+that is widely used in Computational Complexity because
+it is a fair fit for the computing
+environment in which many algoithms will be implemented
+is the
 \definend{Integer Random Access Machine}.
-Whereas we might have Turing machines store in each cell only a
-single \str{0}'s or \str{1}'s, this machine type stores arbitrarily-large
-integers.
+Whereas a Turing machines store in each cell only a
+single bit, this model stores arbitrarily-large integers.
 And whereas to get to a stored value
 a Turing machine may have to spend a lot of steps moving the I/O
-head to that cell, `random access' means that this machine model
-just takes the memory address and retrieves its contents in a single
-step.
+head to that cell, this model is `random access' because it 
+retrieves the contents of any memory address in one step.
 This model also typically assumes a single step for
 elementary operations such as addition or multiplication.
 
-Algorithms can change their 
+That is, the second point is that to use Big~O to select a best algorithm,
+we must be aware that 
+algorithms can change their 
 Big-O characteristics when brought to different computing models.
-If we start with an algorithm intended for an Integer RAM on a Turing machine, 
-the conversion may cost us as much as $n^3$ time, so that if the algorithm is 
-$\bigOh{n^2}$ on the Integer RAM
-then on the Turing machine it is $\bigOh{n^5}$.
-
-So to select a best algorithm we must understand its Big~O description,
-which in turn means deciding on a reasonable model of the computing
-environment on which the algoithm will be implemented and run.
-
-
-
+For instance, if we start with an algorithm intended for an Integer RAM
+and ty to run it on a Turing machine, 
+the simulation may cost us as much as $n^3$ time, so that if the algorithm is 
+$\bigOh(n^2)$ on the Integer RAM
+then on the Turing machine it is $\bigOh(n^5)$.
+So we settle on a model and then use Big~O to help
+pick an algorithm associated with that model.
 
 % Discussion started as: https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
-The first issue is that
+OK, so we've settled on a model, perhaps the Integer RAM.
+Our third point addresses the mathematics of our tools:
 \citetext{the definitions of Big-O and Big-Theta ignore constants}{%
   This discussion originated as \autocite{SE:IgnoreConstants}.}.
-A reader can object that doing so makes the definition useless
-for judging the practicality of an algorithm.
+Does that potentially make the definition useless
+for judging the practicality of an algorithm?
 Imagine
 an algorithm that takes time given by the quadratic function $C\cdot n^2$.
 An enormous coefficient such as $C=2^{100}$ would make it
@@ -1024,12 +1024,13 @@ just as impractical as one that takes exponential time.
 %   algorithms that are polynomial but with 
 %   large powers, such as $n^{10}$, often these powers have fallen
 %   as researchers refine the approach.}
-(Similarly, an enormous $N$ destroys the value of the algorithm for
-practical purposes.)
+Similarly, an enormous $N$ may destroy our ability to compare
+the growth rates for input sizes that we will every see in
+practical circumstances.
 Why ignore the constants?
 
 \margingraphic{0.20\textwidth}{complexity/knuth.jpg}{\label{fig:Knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938}}
-Basically, we have no unit to rely on.
+The answer is that, basically, we have no unit to rely on.
 
 Machines on which algorithms are implemented vary widely.
 Even if we forget about such things as Turing machines and just focus on
@@ -1037,49 +1038,50 @@ the architecture of the machines
 that we have on our desks and in our pockets they
 still vary,
 for instance in how long they take to do a division or to write to memory.
-We could agree on a standard reference machine\Dash
+We could try to agree on a standard reference machine\Dash
 for instance, this is the approach taken in  D~Knuth's
-\textit{Art of Computer Programming} series\Dash
-but we would have to periodically update the standard 
-\citetext{periodically update the standard}{%
+\textit{Art of Computer Programming} series where he does a great
+deal of operation counting\Dash
+but we would have to 
+\citetext{update the standard periodically}{%
   Even Knuth had to update his standard, from the machine language 
-  MIX to MMIX.},
-to keep up with changes.
+  MIX to MMIX.}.
 So published results from, say, a decade ago would be problematic
 because they refer to an old standard.
-Being reference independent is an advantage.
+Being reference independent is an advantage, almost a necessity in a
+quickly changing field.
 
 \margingraphic[l]{0.32\textwidth}{complexity/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
 Being reference independent means ignoring constants
 and instead making relative statements.
-Consider this analogy:
-absolute distance measurement
+Consider this analogy:~absolute distance measurement
 means specifying units such as miles or kilometers.
 Being able to make statements irrespective of the units requires
 making relative statements such as,
-``from here New York City is twice as far as Boston.'' 
+``from here, New York City is twice as far as Boston.'' 
 
-Ignoring constants has the advantage
+Adopting definitions that ignore constants has the advantage
 % that we can do an analysis by
 % counting the number of elementary operations, 
 we do not have to worry % about different costs of individual operations,
 about the difference between the cost of a division and the
 cost of a memory write,
-as long as those costs lie between fixed upper and lower bounds.
-However, the price for that advantage is that
+as long as those costs lie between reasonable limits.
+However, the price is that
 constant factors are meaningless,
-since changing units is inseparable from changing constant factors\Dash
+since changing units is inseparable from changing constant factors; just as
 changing from miles to kilometers requires multiplying by the constant~$1.61$.
 
 In short,
-Big~O notation is a unit free, relative measurement.
-It is not absolute.
-It can only measure performance variation.
+Big~O notation ignores constants because it is
+a unit free, relative measurement.
+It is not absolute.; it is intended only to measure performance variation.
 % The advantage is the gain in implementation independence
 % by allowing analysis that ignores the relative costs of
 % elementary operations, as long as these costs are bounded.
 % But the consequence is that constant factors are meaningless.
-Big~O is a tool that we use to understand how an algorithm
+
+Big~O expresses how an algorithm
 performs as the input size grows.
 Thus, we say that a function that takes $3n$ steps is $\bigOh(n)$
 in order to express that, roughly,
@@ -1090,25 +1092,20 @@ quadruple the number of steps, and
 $\bigOh(\lg n)$ means that doubling the input size will increase the number
 of steps by at most some constant.
 
-We can use Big~O to compare algorithms
-roughly, by how they perform as the input size grows.
-But it is only rough;
-it cannot say with great precision which algorithms are absolutely
-faster.\footnote{%
-  Big~O is especially poor at
-  judging how algorithms will perform on a specified computing platform.
+We can use Big~O to compare how algorithms
+perform as the input size grows.
+But it is only a rough comparison;
+it cannot say with great precision when two algorithms are put into code,
+which will be absolutely faster.\footnote{%
   Use benchmarks.}
 
-
 % https://stackoverflow.com/a/19647659
-That leads us to
-\citetext{the second issue with the definition of Big~O and Big~Theta}{%
+That leads us to our fourth point,
+\citetext{another concern involving the definition of Big~O and Big~Theta}{%
   This discussion originated as \autocite{SE:pseudopolynomial}.}.
 Understanding how an algorithm
 performs as the input size grows
 requires a definition of input size.
-But in beginning programming courses that definition
-is sometimes not completely specified. 
 
 Consider a naive algorithm for factoring numbers that, given input $n$,
 tests each $k\in\set{2,\ldots\,n-1}$
@@ -1117,8 +1114,8 @@ to see if it divides~$n$. %\footnote{%
 If~$n$ is prime then it tests all those numbers, which is
 a worst-case of roughly~$n$-many divisions.
 
-There are two natural definitions of input size.
-You must choose the one that best fits what you are trying to model. 
+There are two natural definitions of input size, and we
+must choose the one that best fits what we are modelling. 
 
 As computation theorists, concerned with what happens as the input
 grows to infinity, 
@@ -1129,24 +1126,32 @@ is approximately the base~$2$ logarithm, $\lg n$.
 So for this algorithm the input is of size about~$\lg n$
 and the number of operations is about~$n$.
 That makes the number of operations exponential in the input
-size\Dash in this model this algorithm is exponential,
-$\bigOh(2^b)$ where $b$ is the number of input bits.
+size\Dash in this model this algorithm is 
+$\bigOh(2^b)$, where $b$ is the number of input bits.
 
-However, most people's experience from programming class is that this
+In contrast, most people's experience from programming class is that this
 algorithm would be described as linear, as $\bigOh(n)$, because
 for the number~$n$ there are about $n$-many divisions.
-How does that work?
+What's the explanation?
 
+This is another example where the algorithm's somewhat-hidden reliance
+on a computing model has an effect.
 In many application situations the programmer makes
 the engineering judgement that
-it suffices to have an input 
-fit into a fixed sized computer word, such as a $64$~bit word.
-For instance, suppose that we are studying selection sort and we
-judge that for every use of our program the input will
+input will fit into a fixed-sized computer word, such as a $64$~bit word.
+Imagine we are studying the naive factoring algorithm.
+We judge that for every use of our program the input will
 fit into a word.
-This means that we are selecting a computation model\footnote{%
-  It is called an \definend{integer RAM}, random access machine.}
+This means that we are selecting a computation model, such as the
+integer RAM model,
 where larger numbers take the same time to input as smaller ones.
+Then the prior paragraph applies, so the algorithm associated with
+this model is linear.
+
+For another example, if we are studying selection sort and after
+careful thought we decide on the specification that
+for every use of our program the input will
+fit into a word.
 Under this model, with $n$ integer elements of input
 the number of bits is $64n$.
 Analysis of selection sort gives that the time it takes grows quadratically
@@ -1175,9 +1180,8 @@ the bit size of those inputs.
 An algorithm whose behavior as a function of the input is polynomial,
 but whose behavior as a function of the bit size of the input is
 exponential, is said to be \definend{pseudopolynomial}.
-The factoring algorithm is an example.
 
-One final point about describing algorithm behavior with big-O.
+A final point about describing algorithm behavior with Big~O.
 When we are analyzing an algorithm we can look for a number of
 different behavior descriptions.
 For instance, we can describe the time the algorithm takes, or the space.

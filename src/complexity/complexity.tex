@@ -962,7 +962,7 @@ To find the Big~O behavior we must specify the costs for that model.
 As an example, here is the time consumption 
 definition for the model with which we are most familiar, the Turing machine.
 
-\begin{definition}
+\begin{definition} \label{def:TMTime}
 A Turing machine $\TM$ 
 \definend{runs in time $\map{t_{\TM}}{\kleenestar{\Sigma}}{\N}$} 
 if  that function gives the 
@@ -981,7 +981,7 @@ if $\hat{t}_{\TM}$ is~$\bigOh(f)$.
 A model
 that is widely used in Computational Complexity because
 it is a fair fit for the computing
-environment in which many algoithms will be implemented
+environment in which many algorithms will be implemented
 is the
 \definend{Integer Random Access Machine}.
 Whereas a Turing machines store in each cell only a
@@ -1006,11 +1006,11 @@ So we settle on a model and then use Big~O to help
 pick an algorithm associated with that model.
 
 % Discussion started as: https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
-OK, so we've settled on a model, perhaps the Integer RAM.
-Our third point addresses the mathematics of our tools:
+OK, so we've settled on a model, perhaps the Integer RAM model.
+Our third point is that
 \citetext{the definitions of Big-O and Big-Theta ignore constants}{%
-  This discussion originated as \autocite{SE:IgnoreConstants}.}.
-Does that potentially make the definition useless
+  This discussion originated as \autocite{SE:IgnoreConstants}.};
+does that potentially make the definition useless
 for judging the practicality of an algorithm?
 Imagine
 an algorithm that takes time given by the quadratic function $C\cdot n^2$.
@@ -1106,6 +1106,8 @@ That leads us to our fourth point,
 Understanding how an algorithm
 performs as the input size grows
 requires a definition of input size.
+There are two natural definitions and we
+must choose the one that best fits what we are modelling. 
 
 Consider a naive algorithm for factoring numbers that, given input $n$,
 tests each $k\in\set{2,\ldots\,n-1}$
@@ -1114,14 +1116,8 @@ to see if it divides~$n$. %\footnote{%
 If~$n$ is prime then it tests all those numbers, which is
 a worst-case of roughly~$n$-many divisions.
 
-There are two natural definitions of input size, and we
-must choose the one that best fits what we are modelling. 
-
-As computation theorists, concerned with what happens as the input
-grows to infinity, 
-we have defined
-the size of the input to be the number of bits that represent that input.
-The number of bits needed to represent~$n$ in binary
+Computation theorists often take
+the size of an input~$n$ to be he number of bits needed to represent~$n$ in binary
 is approximately the base~$2$ logarithm, $\lg n$.
 So for this algorithm the input is of size about~$\lg n$
 and the number of operations is about~$n$.
@@ -1479,23 +1475,138 @@ So, algorithm analysis can happen on a number of fronts.
 % Other mathematicians compete about the complicated theorems that they are able to prove; combinatorialists like to compete about about the simplicity or self-evidence of statements they are unable to prove, i.e., ``I can't even prove ...''
 
 
-\section{Sample problems}
-Much of the modern Theory of Computation is driven by problems.
-Often, these arise externally to the subject.
-We next see a collection of problems, and for some include a bit of
-background as to their origin.
+\section{Problems}
+Much of the present work in the Theory of Computation is driven by problems.
+Typically these come from some field outside the subject, and is taken
+up by computation researchers.
 
-Note the theme below that many problems are well-stated in the
-language of graphs.
+We often want to
+classify computational problems according to their inherent
+difficulty, and relate those problem classes to each other.
+Here, `inherent' means that when
+there is than one algorithm for a problem then we
+are interested in one that uses fewer resources.
+
+This section discusses how we approach problems, and introduces
+a collection of them to illustrate the discussion.
+
+% Note the theme below that many problems are well-stated in the
+% language of graphs.
 
 
-\subsection{With their stories}
+
+
+
+
+\subsection{Strings, problems, and classes}
+We will make some adjustments to the approach we have taken so far
+that will suit this Part's shift in focus.
+
+The first adjustment is to adopt a mindset,
+\citetext{that everything is bitstrings}{This discussion is based on R J Lipton's wonderful blog \protect\url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/
+}.}.
+We are used to representing numbers and mathematical objects
+such as matrices and graphs in this way.
+But in today's world we have become comfortable 
+with thinking we can use bitstrings to represent anything
+of interest: pictures,
+from selfies to the Old Masters,
+music such as 
+\citetext{Beethoven's 9th Symphony on a CD}{The official story is that
+the $72$ minute length of a CD was chosen to hold this piece.}, or
+a fantasy movie that makes things that have never happened
+seem perfectly real.
+
+In adopting this mindset,
+whereas earlier we might say,
+``use the Cantor function to encode that as an integer,''
+from now on we will translate
+``Let $n$ be an natural number \ldots''
+to
+``Imagine a bitstring encoding the number~$n$ in its binary
+representation.''
+Similarly, in this Part,
+``Let $\mathcal{G}$ be a graph \ldots'' translates to
+``Assume we have a reasonably efficient way to encode the graph as
+a string of \str{0}'s and \str{1}'s.''
+
+The second adjustment we will make in this Part is that
+while we will continue to talk informally about problems
+in the same way as earlier,
+formally from this point forward we take `problem'
+to mean a decision problem for a language.
+Consider the function problem that is given $n\in\N$ and finds its prime factors.
+Here we will formally take it to be 
+something like the problem of deciding membership in the set
+$\set{\sigma=\str{1}^n0\str{1}^p\in\kleenestar{\B}\suchthat\text{$p$ is a prime facto of $n$}}$.
+% Thus, we take the problem of deciding whether a
+% number is composite to be, formally,
+% the problem of computing membership in the language
+% $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number in binary}}$.
+(We will be casual about the distinction between the
+decision problem for a language and the language itself; for instance, we
+often use the letter $\prob$ for a problem.)
+
+Is limiting ourselves to decision problems for languages too restricitve?
+For our purposes in this Part,
+changing the function problem for the language decision problem
+isn't a restriction because
+a fast way to solve the decision problem gives a fast way to solve the
+function problem, and vice versa.
+
+\begin{TODO}
+  We may worry about a difference in runtime between
+  the two types of problem.
+  For instance, consider the problem of finding integer roots for a
+  polynomial.
+  The function problem that starts with a polynomial and returns a
+  root, if any, intuitively seems slower than the problem of verifying
+  that a pair $\sequence{p,r}$ is in the language
+  $\set{\sequence{p,r}\suchthat p(r)=0}$.
+  But for instance in the next section we will express interest in
+  classifying problems
+  in a way that disregards differences between two problems both of which have 
+  algorithms that are polytime.
+\end{TODO}
+
+Because we are isolating language decision problems,
+will also adjust our Turing machines.
+In this Part they come with a subset of states that are accepting states.
+and we define that such a machine solves a problem
+when it halts on all inputs~$\sigma\in\kleenestar{\B}$,
+and when it halts it is in an accepting state if that input is in
+the language.
+(This does not violate our understanding from the Halting Problem because
+if there is no such machine then just by definition,
+the problem isn't solved.)
+
+% The time taken by that machine follows \cref{def:TMTime}
+% given earlier.
+
+There are many other computational resources of interest; space is one, but
+there are others.
+In addition there are
+\citetext{a great many ways to group problems together}{%
+  At this writing there are 535 ways;
+  see \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.}.
+The most satisfactory definition proves to be the one that
+leaves the most freedom to name whatever classes we want.
+
+\begin{definition}
+A \definend{complexity class} is a collection of problems.
+\end{definition}
+
+
+
+
+
+\subsection{Problems with their stories}
 Knowing the stories behind some problems, besides being fun,
 helps give a sense of where such problems come from.
 In this section we will list a few problems, including their stories.
 The section after this is more of a problem listing.
 
-\margingraphic{0.2\textwidth}{complexity/hamilton.png}{\href{https://en.wikipedia.org/wiki/William_Rowan_Hamilton}{William Rowan Hamilton 1805--1865}} % By William_Rowan_Hamilton_portrait_oval.png: Unknown William_Rowan_Hamilton_portrait_oval_2.png: Unknown derivative work: Quibik [Public domain], via Wikimedia Commons
+\margingraphic[l]{0.2\textwidth}{complexity/hamilton.png}{\href{https://en.wikipedia.org/wiki/William_Rowan_Hamilton}{William Rowan Hamilton 1805--1865}} % By William_Rowan_Hamilton_portrait_oval.png: Unknown William_Rowan_Hamilton_portrait_oval_2.png: Unknown derivative work: Quibik [Public domain], via Wikimedia Commons
 W~R Hamilton was a polymath whose genius was recognized early and he was 
 given a sinecure as Astronomer Royal of Ireland.  
 He made important contributions to classical mechanics, where his 
@@ -2326,115 +2437,6 @@ language.
 
 
 
-\subsection{Strings, problems, and classes}
-In this Part we will make some adjustments to fit the shift in focus.
-
-The first is that \citetext{we will adopt the mindset, the thesis, that everything is bitstrings}{This discussion is based on R J Lipton's wonderful blog \protect\url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/
-}.}.
-In today's world, we have become comfortable 
-with thinking we can use boolean strings to represent pretty much anything
-of interest.
-Of course, we are used to representing numbers and mathematical objects
-such as matrices and graphs in this way.
-But we also just accept having bits representing pictures,
-from selfies to the Old Masters,
-as well
-\citetext{Beethoven's 9th Symphony on a CD}{The official story is that
-the $72$ minute length of a CD was chosen to hold this piece.}, or
-a fantasy movie that makes things that have never happened
-seem perfectly real.
-Thus, whereas in prior chapters we would say ``using the Cantor fucntion,
-encode that as an integer'', today when a 
-Theory of Computation researcher says,
-``Let $n$ be an natural number \ldots''
-then everyone hearing it convert that to, 
-``Let $n$ be a bitstring that encodes the number in its binary
-representation.''
-Similarly, in this Part,
-``Let $\mathcal{G}$ be a graph \ldots'' means something like
-``Assume we have a reasonably efficient way to encode the graph as
-a string of \str{0}'s and \str{1}'s.''
-
-
-The next adjustment that we will make in this Part is that
-while informally we will continue to talk about problems such as
-the Satisfiability or the Composite problem in the same way as earlier,
-formally
-we take `problem' to mean a decision problem for a language.
-For example, formally we take the Composite problem
-to mean the problem of computing membership in the language
-$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number in binary}}$.
-(We will be casual about the distinction between the
-decision problem for a language and the language itself; fopr instance, we
-often use the letter $\mathcal{L}$ for a problem.)
-
-Is limiting ourselves to decision problems for languages too restricitve?
-Consider a function problem: given $n$, find its prime factors.
-Here we will formally take it tobe 
-the problem of deciding membership in the set
-$\set{\sigma=\str{1}^n0\str{1}^m\in\kleenestar{\B}\suchthat\text{$m$} is a facto of $n$}$.
-But that isn't a restriction because
-a fast way to solve the decision problem gives a fast way to solve the
-function problem.
-
-
-One of the things we often want to do is to
-classify computational problems according to their inherent
-difficulty, and relate those classes to each other.
-Here, `inherent' difficulty means that there
-may be more than one algorithm for a problem and we
-are typically interested one that uses fewer resources.
-
-% \begin{definition}
-% A Turing machine $\TM$ 
-% \definend{runs in time $\map{t_{\TM}}{\kleenestar{\Sigma}}{\N}$} 
-% if  that function gives the 
-% number of steps the machine takes to halt
-% on input~$\sigma\in\kleenestar{\Sigma}$.
-% If the machine does not halt then $t_{\TM}(\sigma)=\infty$.
-% The machine  
-% \definend{runs in input length time $\map{\hat{t}_{\TM}}{\N}{\N}$} 
-% if $\hat{t}_{\TM}(n)$ is the maximimum of the $t(\sigma)$ over all 
-% inputs~$\sigma$ of length~$n$.
-% Finally, the machine 
-% \definend{runs in time that is $\bigOh(f)$} 
-% if $\hat{t}_{\TM}$ is~$\bigOh(f)$. 
-% \end{definition}
-
-We will also adjust our Turing machines.
-In this Part they come with a subset of states that are accepting states.
-We define that such a machine solves a problem
-when it halts on all inputs~$\sigma\in\kleenestar{\B}$,
-and when it halts it is in an accepting state if that input is in
-the language.
-This does not violate our understanding from the Halting Problem because
-if there is no such machine then just by definition,
-the problem isn't solved.
-
-
-\begin{TODO}
-Time for such a machine.
-Polynomial sloppiness.
-\end{TODO}
-
-There are many other computational resource of interest, space is one but
-there are others.
-In addition there are
-\citetext{a great many ways to group problems together}{%
-  At this writing there are 535 ways;
-  see \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.}.
-The most satisfactory definition proves to be the one that imposes
-the fewest restrictions.
-
-\begin{definition}
-A \definend{complexity class} is a collection of problems.
-\end{definition}
-
-
-
-
-
-
 
 \section{$\P$}
 
@@ -2483,6 +2485,11 @@ $\set{\sequence{\mathcal{G},v_0,v_1}\suchthat\text{in the graph $\mathcal{G}$, t
 % As we have described earlier,
 % the problems in $\P$ are often described as `tractable', meaning that
 % running the algorithm is at least conceivable.
+
+\begin{TODO}
+``Polynomial sloppiness.''
+\end{TODO}
+
 
 \margingraphic{0.30\textwidth}{complexity/london.png}{\label{fig:london}\href{http://www.math.uwaterloo.ca/tsp/pubs/index.html}{Pubs of London}} %
 Under Cobham's Thesis we identify $\P$ with the tractable problems.

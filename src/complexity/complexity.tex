@@ -1317,9 +1317,19 @@ So, algorithm analysis can happen on a number of fronts.
     performance of one is better than the performance of the other in a
     big-O sense, but where the first has a long initial segment of
     poorer performance.
-    What is the least input number such that $f(n)=1oo\,ooo\cdot n^2$
+    What is the least input number such that $f(n)=100\,000\cdot n^2$
     is less than or equal to $g(n)=n^3$?
-  \end{exercise}
+ \end{exercise}
+
+ \begin{exercise}
+ Where does the the restriction $g(n)\leq n^{\bigOh(1)}$ place the function
+ $g$ in the growth hierarchy?
+ \begin{answer}
+ Since a function $\map{f}{\N}{\N}$ is $bigOh(1)$ if it is bounded by
+ a constant, the restriction $g(n)\leq n^{\bigOh(1)}$ says that the function
+ $g$ is of at most polynomial growth.
+ \end{answer}
+ \end{exercise}
 
   \begin{exercise}
   Use L'Hopitals' Rule to show that $(\ln(x))^2$ is $\bigOh(x)$.
@@ -1475,23 +1485,19 @@ So, algorithm analysis can happen on a number of fronts.
 % Other mathematicians compete about the complicated theorems that they are able to prove; combinatorialists like to compete about about the simplicity or self-evidence of statements they are unable to prove, i.e., ``I can't even prove ...''
 
 
-\section{Problems}
+\section{Drivers}
 Much of the present work in the Theory of Computation is driven by problems.
-Typically these come from some field outside the subject, and is taken
-up by computation researchers.
-
-We often want to
-classify computational problems according to their inherent
-difficulty, and relate those problem classes to each other.
-Here, `inherent' means that when
-there is than one algorithm for a problem then we
+Typically these come from a field outside the subject, and are taken
+up by computation researchers, who
+want to
+classify problems by their inherent computational
+difficulty.
+`Inherent' means that when
+there is more than than one algorithm for a problem then we
 are interested in one that uses fewer resources.
 
-This section discusses how we approach problems, and introduces
-a collection of them to illustrate the discussion.
-
-% Note the theme below that many problems are well-stated in the
-% language of graphs.
+This section outlines how we approach problems in this Part, and then introduces
+a collection of ilustrative problems.
 
 
 
@@ -1499,46 +1505,47 @@ a collection of them to illustrate the discussion.
 
 
 \subsection{Strings, problems, and classes}
-We will make some adjustments to the approach we have taken so far
-that will suit this Part's shift in focus.
+We will make some adjustments to the approach that we have taken so far
+to suit this Part's shift in focus.
 
-The first adjustment is to adopt a mindset,
-\citetext{that everything is bitstrings}{This discussion is based on R J Lipton's wonderful blog \protect\url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/
+The first adjustment is a mindset, a thesis.
+We will take the point of view that 
+\citetext{everything is bitstrings}{This discussion is based on R J Lipton's wonderful blog \protect\url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/
 }.}.
-We are used to representing numbers and mathematical objects
-such as matrices and graphs in this way.
-But in today's world we have become comfortable 
-with thinking we can use bitstrings to represent anything
+Whereas earlier we might say,
+``use the Cantor function to encode that as a number,''
+from now on we will take
+``Let $n$ be an natural number \ldots''
+to mean 
+``Imagine a bitstring encoding the number~$n$ in its binary
+representation.''
+Similarly,
+``Let $\mathcal{G}$ be a graph \ldots'' translates to
+``Assume we have a reasonably efficient way to encode the graph as
+a string of \str{0}'s and \str{1}'s.''
+
+We are used to representing mathematical objects
+such as numbers, matrices, and graphs in this way.
+But the mindset is more:~in today's world we have come to think 
+that bitstrings can represent anything
 of interest: pictures,
 from selfies to the Old Masters,
 music such as 
 \citetext{Beethoven's 9th Symphony on a CD}{The official story is that
 the $72$ minute length of a CD was chosen to hold this piece.}, or
-a fantasy movie that makes things that have never happened
+a movie that makes things that have never happened
 seem perfectly real.
-
-In adopting this mindset,
-whereas earlier we might say,
-``use the Cantor function to encode that as an integer,''
-from now on we will translate
-``Let $n$ be an natural number \ldots''
-to
-``Imagine a bitstring encoding the number~$n$ in its binary
-representation.''
-Similarly, in this Part,
-``Let $\mathcal{G}$ be a graph \ldots'' translates to
-``Assume we have a reasonably efficient way to encode the graph as
-a string of \str{0}'s and \str{1}'s.''
 
 The second adjustment we will make in this Part is that
 while we will continue to talk informally about problems
 in the same way as earlier,
 formally from this point forward we take `problem'
 to mean a decision problem for a language.
-Consider the function problem that is given $n\in\N$ and finds its prime factors.
+Consider the function problem that is given $n\in\N$
+and finds its prime factors.
 Here we will formally take it to be 
 something like the problem of deciding membership in the set
-$\set{\sigma=\str{1}^n0\str{1}^p\in\kleenestar{\B}\suchthat\text{$p$ is a prime facto of $n$}}$.
+$\set{\sigma=\str{1}^n0\str{1}^{p_0}\cdots 0\str{1}^{p_{k-1}}\in\kleenestar{\B}\suchthat\text{$p_0$, \ldots{} $p_{k-1}$ are the prime factors of $n$}}$.
 % Thus, we take the problem of deciding whether a
 % number is composite to be, formally,
 % the problem of computing membership in the language
@@ -1548,30 +1555,21 @@ decision problem for a language and the language itself; for instance, we
 often use the letter $\prob$ for a problem.)
 
 Is limiting ourselves to decision problems for languages too restricitve?
-For our purposes in this Part,
-changing the function problem for the language decision problem
-isn't a restriction because
-a fast way to solve the decision problem gives a fast way to solve the
-function problem, and vice versa.
-
-\begin{TODO}
-  We may worry about a difference in runtime between
-  the two types of problem.
-  For instance, consider the problem of finding integer roots for a
-  polynomial.
-  The function problem that starts with a polynomial and returns a
-  root, if any, intuitively seems slower than the problem of verifying
-  that a pair $\sequence{p,r}$ is in the language
-  $\set{\sequence{p,r}\suchthat p(r)=0}$.
-  But for instance in the next section we will express interest in
-  classifying problems
-  in a way that disregards differences between two problems both of which have 
-  algorithms that are polytime.
-\end{TODO}
+For instance, consider the problem of finding integer roots for a
+polynomial.
+The function problem that starts with a polynomial and returns a
+root, if any, intuitively seems slower than the problem of verifying
+that a pair $\sequence{p,r}$ is in the language
+$\set{\sequence{p,r}\suchthat p(r)=0}$.
+However, we will consider, for example in the next section, classes
+of problems that are closed under the difference, in that if  
+a fast way to solve the decision problem is in the class then
+we can translate it to 
+a fast way to solve the function problem, and vice versa.
 
 Because we are isolating language decision problems,
-will also adjust our Turing machines.
-In this Part they come with a subset of states that are accepting states.
+will adjust our Turing machines.
+In this Part they come with a subset of states that are accepting states
 and we define that such a machine solves a problem
 when it halts on all inputs~$\sigma\in\kleenestar{\B}$,
 and when it halts it is in an accepting state if that input is in
@@ -1587,10 +1585,11 @@ There are many other computational resources of interest; space is one, but
 there are others.
 In addition there are
 \citetext{a great many ways to group problems together}{%
-  At this writing there are 535 ways;
+  At this writing there are 535 ways but the number changes frequently;
   see \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.}.
 The most satisfactory definition proves to be the one that
-leaves the most freedom to name whatever classes we want.
+leaves the most freedom to consider whatever classes prove to be
+of interest.
 
 \begin{definition}
 A \definend{complexity class} is a collection of problems.
@@ -1600,7 +1599,7 @@ A \definend{complexity class} is a collection of problems.
 
 
 
-\subsection{Problems with their stories}
+\subsection{Problems, with stories}
 Knowing the stories behind some problems, besides being fun,
 helps give a sense of where such problems come from.
 In this section we will list a few problems, including their stories.
@@ -1628,18 +1627,31 @@ city once and only once.
   % \hspace{2em}
   \animategraphics[poster=first]{2}{languages/asy/problems/problems}{13}{14}
 \end{animatedfigure} 
-The game was not a money maker.
-But it did result in Hamilton's name being associated with a problem.
+The game did not make money.
+But it did get Hamilton's name associated with a great problem.
 
-
-\begin{problem}[Hamiltonian circuit]
+\begin{problem}[Hamiltonian Circuit]
 Given a graph, decide if it contains a \definend{Hamiltonian circuit},
 a cyclic path that includes each vertex.
 \end{problem}
 
-Another example of a Hamilton circuit problem
-is the \definend{knight's tour},
-to use a knight to make a circuit of the the squares on a chess board.
+As stated, this is a language decision problem that inputs a graph
+and decides `yes' or `no', whether that graph has a circuit.
+Another decision problem would be to input a pair and decide
+if it is a member of
+$\set{\sequence{\mathcal{G},C}\suchthat\text{$C$ is a circuit of $\mathcal{G}$}}$.
+Which version of the problem we study depends on exactly which question
+we want to answer, but as stated above, formally we are taking
+the problems to be language decision problems.
+
+Of the other problems described in this section, some are stated as
+decision problems, but some are given as function problems or optimization
+problems.
+For these, there are exercises asking you to convert them.
+
+A special case of the Hamiltonian Circuit problem
+is the \definend{Knight's Tour},
+to use a chess knight to make a circuit of the squares on the board.
 \begin{center}
   \vcenteredhbox{\includegraphics[height=1in]{complexity/knight.jpg}}
   \hspace{3em}
@@ -1653,32 +1665,34 @@ An edge goes between two vertices if they are connected by a single knight move.
 two in one direction and then one square perpendicular to that.)
 Then the knight's tour is a Hamiltonian circuit problem on that graph.
 
-\margingraphic[l]{0.375\textwidth}{languages/xkcdtsp.png}{\label{fig:xkcdTravellingSalesman}\href{https://xkcd.com/399/}{Courtesy \url{xkcd.com}}}
 The Hamiltonian Circuit problem has another famous variant.
-Consider a map shoing the capitals of the 
-forty eight contiguous US~states,
+Consider a map of the  
+forty eight contiguous US~states, including the state capitals
 along with the distances between them: Montpelier~VT to	Albany~NY is $203.08$
 kilometers, etc.
 From among all trips that visit each city and return back to the start,
 such as 
 $\text{Montpelier}\rightarrow\text{Albany}\rightarrow\text{Harrisburg}\rightarrow \cdots \rightarrow\text{Montpelier}$, we want the shortest one.
 
-This was first extensively studied in the 1930's and in the
-1940's and 1950's people started to offer rewards for the solution.
-It gradually became the prototype for this kind of problem.
-There is still no known general solution\Dash we will discuss this in
-Part~III\Dash but we have programs that do a very good job
-so that, for instance, the forty eight US state capitols is easy.
-We can do better: for instance the travelling salesman problem for
-all of Sewden's $24\,978$ towns was solved in 2004.
-
 \begin{problem}[Travelling Salesman]  \label{ex:TravellingSalesman}
 Given a weighted graph, find 
 the cheapest circuit that visits every vertex.
 \end{problem}
 
-\margingraphic{0.2\textwidth}{languages/euler.jpg}{\href{https://en.wikipedia.org/wiki/Leonhard_Euler}{Leonhard Euler 1707--1783}} % Jakob Emanuel Handmann [Public domain], via Wikimedia Commons; https://commons.wikimedia.org/wiki/File%3ALeonhard_Euler.jpg
-The next problem sounds much like as the Hamilton circuit problem
+
+\margingraphic[l]{0.375\textwidth}{languages/xkcdtsp.png}{\label{fig:xkcdTravellingSalesman}\href{https://xkcd.com/399/}{Courtesy \url{xkcd.com}}}
+This is an optimization problem and we will want to recast it as a
+decision problem, see \cref{exer:RecastAsDecision}.
+The technique for doing that is to introduce a bound $B\in\N$.
+Then, to find the length of the shortest circuit we can first decide if
+there is a trip bounded in length by $B=1$, then see if there is a 
+trip bounded in length by $B=2$, etc.
+If we have an algorithm for the decision problem, then we just iterate until
+we find such a bound, and it therefore is the smallest bound.
+
+\margingraphic{0.18\textwidth}{languages/euler.jpg}{\href{https://en.wikipedia.org/wiki/Leonhard_Euler}{Leonhard Euler 1707--1783}} % Jakob Emanuel Handmann [Public domain], via Wikimedia Commons; https://commons.wikimedia.org/wiki/File%3ALeonhard_Euler.jpg
+The next problem sounds much like as the Hamilton circuit problem,\ in that it
+involves walking around a graph, exhaustively, 
 but on analysis it proves to be quite different.
 Today the city of Kaliningrad is in a Russian exclave between
 Poland and Lithuania, on the Baltic Sea.
@@ -1687,7 +1701,7 @@ As shown on the left below, the Pregel river divided the city into four areas,
 connected by seven bridges.
 The citizens used to promenade,
 to take leisurely walks or drives where they could see and be seen.
-The question arose: can a person's walk cross each bridge
+Among these citizens the question arose: can a person's walk cross each bridge
 once and only once,
 and arrive back at the start?
 \begin{center}  \setlength{\fboxsep}{0pt} \setlength{\fboxrule}{0.8pt}
@@ -1707,7 +1721,7 @@ no circuit is possible.
 This paper founded Graph Theory.
 Euler's summary sketch is in the middle above, and the graph is on the right.
 
-\begin{problem}[Euler circuit]
+\begin{problem}[Euler Circuit] \label{prob:EulerCircuit}
 Given a graph, find a circuit that traverses each edge once
 and only once.
 \end{problem}
@@ -1720,16 +1734,16 @@ Given a weighted graph and two vertices,
 find the cheapest path between them.
 \end{problem}
 
-For instance, with this graph we could look for 
+\noindent For instance, with this graph we could look for 
 the cheapest path from $A$ to~$F$.
 \begin{center}
   \includegraphics{languages/asy/graphs/graphs08.pdf}
 \end{center} 
+This is the problem that you have when you ask your phone for the
+shortest-time
+driving directions to a distant city.
+Dijkstra's algorithm  solves it quickly.
 
-When you ask your phone for the shortest-time
-driving directions to a city hundreds
-of miles away, you are asking to solve this problem.
-An algorithm from E~Dijkstra's solves it quickly.
 
 \margingraphic[l]{0.2\textwidth}{languages/demorgan.jpg}{\href{https://en.wikipedia.org/wiki/Augustus_De_Morgan}{Augustus De Morgan 1806--1871}} % By Sophia Elizabeth De Morgan (Memoir of Augustus De Morgan) [Public domain], via Wikimedia Commons; https://upload.wikimedia.org/wikipedia/commons/2/2c/De_Morgan_Augustus.jpg
 The next problem was discovered in 1852 by a young mathematician, F~Guthrie,
@@ -1769,7 +1783,7 @@ computer to check those cases.
 This was the first major proof that was done on a computer and it was
 controversial, although now that is routine.
 
-\begin{problem}[Graph Colorability]
+\begin{problem}[Graph Colorability] \label{prob:GraphColorability}
 Given a graph and a bound $B\in\N$, decide whether the 
 graph is \definend{$B$-colorable}, 
 whether we can partition its vertices into $B$-many classes 
@@ -1899,6 +1913,28 @@ Obviously, one guard will not do.
 A two-element list that covers is $C=\set{w_0,w_4}$.
 \end{example}
 
+\begin{problem}[Minimum Spanning Tree] \label{prob:minspanningtree}
+Given an edge-weighted undirected graph,
+find a \definend{minimum spanning tree}, a subgraph containing
+all the vertices of the original graph such that its edges have a mininimum
+total.
+\end{problem}
+
+Here is an example.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity21.pdf}
+\end{center}
+The highlighted subgraph includes all of
+the vertices, that is, it \definend{spans} the graph.
+A \definend{tree} is a graph with no cycles.
+This subgraph's edge weights total to a minimum from among all
+spanning subgraphs so it must not have any cycles or else we could eliminate
+an edge from the cycle, lowering the edge weight total, without
+dropping any vertices.
+
+The Mimimum Spanning Tree problem looks like the Hamiltonian Circuit problem
+in requiring that the subgraph contain all the vertices.
+However, for this problem we know algorithms that are quick, $\bigOh(n\lg n)$.
 
 \begin{problem}[Broadcast]  \label{prob:broadcast}
 Given a graph with initial vertex~$v_0$, and a bound~$B\in\N$,
@@ -1932,26 +1968,26 @@ Then $M=X\times Y\times Z$ contains these eight elements $\sequence{x,y,z}$.
 \begin{center}
 \begin{tabular}{cc}
   \multicolumn{1}{l}{$z=\str{a}$}
-  &\multicolumn{1}{l}{$z=\str{d}$}    \\
+  &\multicolumn{1}{l}{$z=\str{d}$}    \\[-0.5ex]
   \begin{tabular}{r|cc}
     \multicolumn{1}{r}{\ }
-    &\multicolumn{1}{c}{$b=\str{b}$}
-    &\multicolumn{1}{c}{$b=\str{c}$}  \\ \cline{2-3}
-    $a=\str{a}$
+    &\multicolumn{1}{c}{$y=\str{b}$}
+    &\multicolumn{1}{c}{$y=\str{c}$}  \\ \cline{2-3}
+    $x=\str{a}$
       &$\sequence{\str{a},\str{b},\str{a}}$
       &$\sequence{\str{a},\str{c},\str{a}}$  \\
-    $a=\str{b}$
+    $x=\str{b}$
       &$\sequence{\str{b},\str{b},\str{a}}$
       &$\sequence{\str{b},\str{c},\str{a}}$  \\
   \end{tabular}
   &\begin{tabular}{r|cc}
     \multicolumn{1}{r}{\ }
-    &\multicolumn{1}{c}{$b=\str{b}$}
-    &\multicolumn{1}{c}{$b=\str{c}$}  \\ \cline{2-3}
-    $a=\str{a}$
+    &\multicolumn{1}{c}{$y=\str{b}$}
+    &\multicolumn{1}{c}{$y=\str{c}$}  \\ \cline{2-3}
+    $x=\str{a}$
       &$\sequence{\str{a},\str{b},\str{d}}$
       &$\sequence{\str{a},\str{c},\str{d}}$  \\
-    $a=\str{b}$
+    $x=\str{b}$
       &$\sequence{\str{b},\str{b},\str{d}}$
       &$\sequence{\str{b},\str{c},\str{d}}$  \\
   \end{tabular}
@@ -2078,35 +2114,33 @@ A move consists of switching a tile with an adjacent blank.
 This game was
 \citetext{popularized as a toy}{%
   It was invented by Noyes Palmer Chapman, a postmaster in Canastota, New York.
-  As early as 1874 he showed friends a precursor puzzle consisting of sixteen
-  numbered blocks that were to be put together in rows of four,
-  each summing to $34$.
-  Copies of the improved Fifteen Puzzle circulated in the northeast,
+  As early as 1874 he showed friends a precursor puzzle.
+  By December~1879
+  copies of the improved puzzle were circulating in the northeast
   and students in the American School for the Deaf and other
-  started manufacturing the
-  puzzle by December 1879.
+  started manufacturing it.
   They become popular as the ``Gem Puzzle.''
   Noyes Chapman had applied for a patent in February, 1880. 
-  By that time the game had became a craze in the U.S.,
-  somewhat as did Rubik's Cube a century later.
-  It was also immensely popular in Canada and Europe.
-  See~\autocite{wiki:FifteenPuzzle}} with a $4\times 4$ grid, hence the name.
+  By that time the game had became a craze in the US,
+  somewhat like Rubik's Cube a century later.
+  It was also popular in Canada and Europe.
+  See~\autocite{wiki:FifteenPuzzle}}.
 \begin{center}
   \includegraphics[width=0.25\textwidth]{complexity/15game.png}
 \end{center}
 
 The final three problems may seem inextricably linked, but
-at this point they seem to have different behavior. 
-In 1801, Gauss gave two reasons to solve them,
-``The problem of distinguishing prime numbers from composite numbers
-and of resolving the latter into their prime factors is known to be one
-of the most important and useful in arithmetic.
-It has engaged the industry and wisdom of ancient and modern geometers
-to such an extent that it
-would be superfluous to discuss the problem at length \ldots{}
-Further, the dignity of the science itself
-seems to require that every possible means be explored for the solution of a
-problem so elegant and so celebrated.''
+as we understand them today, they seem to have different behavior. 
+% In 1801, Gauss gave two reasons to solve them,
+% ``The problem of distinguishing prime numbers from composite numbers
+% and of resolving the latter into their prime factors is known to be one
+% of the most important and useful in arithmetic.
+% It has engaged the industry and wisdom of ancient and modern geometers
+% to such an extent that it
+% would be superfluous to discuss the problem at length \ldots{}
+% Further, the dignity of the science itself
+% seems to require that every possible means be explored for the solution of a
+% problem so elegant and so celebrated.''
 
 \begin{problem}[Factorization]
 Given a number~$n\in\N$, factor it; that is, produce a number $1<a<n$
@@ -2236,6 +2270,31 @@ The answer is `yes' since $22+986+165=1173$.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+Give a function problem version of the Hamiltonian Circuit problem.
+Also give an optimization version.
+\begin{answer}
+A function problem version would be to input a graph and
+output a circuit.
+An optimization problem would return a circuit that is best by some
+criterion; for instance could, in a weighted graph, return the circuit
+of least weight (this is the Travelling Salesman problem).
+\end{answer}
+\end{exercise}
+
+\begin{exercise}  \label{exer:RecastAsDecision}
+Recast each to a language decision problem. 
+\begin{exparts*}
+\item
+The Travelling Salesman problem \cref{ex:TravellingSalesman}.
+\item
+The Euler Circuit problem \cref{prob:EulerCircuit}.
+\item
+The Shortest Path problem \cref{ex:ShortestPath}.
+\item
+Graph Colorability \cref{prob:GraphColorability}.
+\end{exparts*}
+\end{exercise}
 
 \begin{exercise}
 Show that with a solution to the Subset Sum decision problem
@@ -2440,20 +2499,15 @@ language.
 
 \section{$\P$}
 
-The first example of a computational complexity class is the collection of
-the problems that are tractable.
-
-
-
 \subsection{Definition}
-
-The most important class of problems contains the ones for which there
+The first example of a computational complexity class is the collection of
+the problems that are tractable, the ones for which there
 is an algorithm that can at least conceivably be used. 
 
 \begin{definition}
 A problem is a member of the class \definend{$\P$} if
-there is an algorithm for it that is tractable, that runs in
-polytime.
+there is an algorithm for it that runs in
+polynomial time on a deterministic Turing machine.
 \end{definition}
 
 % This shows the class~$\P$ as a subset of the collection of all languages.
@@ -2480,34 +2534,40 @@ $\set{\sequence{A,B,C}\suchthat\text{the matrices are such that $AB=C$}}$,
 (iv)~deciding the language of primes
 $\set{\str{1}^k\suchthat\text{$k$ is prime}}$,
 (v)~deciding the language of reachable nodes
-$\set{\sequence{\mathcal{G},v_0,v_1}\suchthat\text{in the graph $\mathcal{G}$, there is a path from $v_0$ to $v_1$}}$.  
+$\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat\text{graph $\mathcal{G}$ has a path from $v$ to $\hat{v}$}}$.  
 
-% As we have described earlier,
-% the problems in $\P$ are often described as `tractable', meaning that
-% running the algorithm is at least conceivable.
+\begin{remark}
+If a problem is in the class~$\P$, if it has an algorithm that is tractable,
+then we judging that problem to be tractable.
+We have noted that each algorithm is based on an underlying computing model.
+Different models perform at different levels; in particular, our experience with
+Turing machines makes it easy to believe that they are slow.
+Close analysis shows that
+they are typically slower by a factor of $n^2$ or $n^3$,
+meaning that a problem for which there is a $\bigOh(n^2)$ algorithm on
+a model such as Integer RAM might have the corresponding Turing machine
+algorithm be $\bigOh(n^5)$.
+By lumping all polynomial problems together we are smoothing over
+the differences between models\Dash it is all lost in the polynomial
+sloppiness.
+\end{remark}
 
-\begin{TODO}
-``Polynomial sloppiness.''
-\end{TODO}
-
-
-\margingraphic{0.30\textwidth}{complexity/london.png}{\label{fig:london}\href{http://www.math.uwaterloo.ca/tsp/pubs/index.html}{Pubs of London}} %
-Under Cobham's Thesis we identify $\P$ with the tractable problems.
+\margingraphic{0.32\textwidth}{complexity/london.png}{\label{fig:london}\href{http://www.math.uwaterloo.ca/tsp/pubs/index.html}{London pubs, courtesy Google Earth}} %
+Cobham's Thesis identifies $\P$ with the tractable problems.
 However, the world is messier than that.
 In practice, some problems not known to be in $\P$ have practical solutions
 and some that are in $\P$ do not.
 For instance, we believe that the Travelling Salesman problem is not in~$\P$
 (more on this later),
-but there exist algorithms that can in practice find solutions 
-for problems involving millions of nodes within a reasonable time, 
+but there exist algorithms that can in a reasonable time find solutions 
+for Travelling Salesman problems involving millions of nodes 
 with a high probability being just two or three percent away from the 
 optimal solution.
-One example is that 
-recently a group of applied mathematicians solved the Travelling
-Salesman Problem for 
-\citetext{the minimal UK pub crawl}{See \autocite{TspPubs}}, 
+For example, 
+recently a group of applied mathematicians solved the
+\citetext{the minimal pub crawl}{See \autocite{TspPubs}}, 
 the shortest route to visit 24\,727 UK pubs.
-The optimal tour has length 45\,495\,239 meters. 
+The optimal tour is 45\,495\,239 meters. 
 The algorithm took $305.2$ CPU days, running in parallel 
 on up to 48 cores on Linux servers.
 
@@ -2568,8 +2628,136 @@ $\set{\sequence{\mathcal{G},v_0,v_1}\suchthat\text{the graph $\mathcal{G}$ has a
 \end{exercise}
 
 \begin{exercise}
+Look up algorithms to decide which of these is currently known to be in~$\P$
+and which is not.
+\begin{exparts}
+\item
+The Shortest Path problem:~given a graph, two vertices,
+and a bound~$B\in\N$, accept if there is a path between the two whose length
+is less than the bound.
+\item
+The Knapsack problem:~given a finite set $S$ whose elements each
+have a weight~$w(s)\in\N^+$ and a value~$v(s)\in\N^+$, along with a
+bound $B\in\N^+$ and a value target~$K\in\N^+$, find a subset
+$\hat{S}\subseteq S$ whose elements have a total weight less than the
+bound and total value greater than the value target.
+\item
+The Euler Path problem: given an undirected graph decide if there is a
+circuit that uses every edge.
+\item
+The Hamiltonian Circuit problem: give a graph, decide if there is a circuit
+that uses every vertex.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item By Dijkstra's algorithm, this can be done in polynomial time.
+  So the problem is in~$\P$.
+\item The Knapsack problem is believed to be quite hard.
+  No polynomial algorithm is known.
+\item The Euler Path problem is easy; we just need to check whether each
+  node has even degreee.
+  There are algorithms that are linear.
+\item The Hamiltonian Circuit problem is believed to be hard.
+  No polynomial algorithm is known.  
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Sketch a proof that this problem is in $\P$: given a graph, decide if
+it is connected, that there is a path from any vertex to any other.
+\begin{answer}
+Pick a vertex and mark it.
+For the set of vertices connected to that one, mark them.
+At each step thereafter, mark all vertices connected to any in the set
+of already-marked vertices.
+
+This algorithm is polynomial in the size of the graph.
+Specifically, it will take $\bigOh(|\mathcal{V}|^2\cdot|\mathcal{E}|)$.
+But since every edge consists of two vertices,
+$|\mathcal{E}|\leq|\mathcal{V}|^2$.
+Thus this algorithm is $\bigOh(|\mathcal{V}|^4)$
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 Prove that if $\mathcal{P}_1\in\P$ and if $\mathcal{P}_0\leq_p\mathcal{P}_1$
 then $\mathcal{P}_0\in\P$.
+\end{exercise}
+
+\begin{exercise}
+Sketch a proof that each problem is in~$\P$.
+\begin{exparts}
+\item
+The $\prob[\tau]^3$ problem:~given a bitstring~$\sigma$, decide if it has the form
+$\sigma=\tau\concat\tau\concat\tau$.
+\item
+The problem of deciding which Turing machines halt within ten steps.
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Prove that $\P$ is closed under complement.
+\begin{answer}
+Assume that $\prob\in\P$.
+Then there is a deterministic Turing machine~$\TM$ that,
+given $\sigma\in\kleenestar{\B}$, accepts it if and only if $\sigma\in\prob$,
+and does so in polynomial time.
+Then the Turing machine~$\hat{\TM}$ that is the same as~$\TM$ except that the
+accepting and non-accepting states are swapped will accept
+$\setcomp{\prob}$, also in polynomial time.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Prove that $\P$ is closed under composition: if $f_0,f_1$ are polynomial time
+functions and their composition is defined then $\composed{f_1}{f_0}$ is
+also polytime.
+\begin{answer}
+If $f_0$ is $\bigOh(n^{k_0})$ and $f_1$ is $\bitOh(n^{k_1})$ then the composition
+is $\bigOh(n^{k_1k_0})$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Sketch a proof that every regular language is a member of $\P$.
+\begin{answer}
+Let $\lang$ be regular.
+Then there is a deterministic Finite State machine that accepts~$\lang$.
+
+We can create a program that simulates this machine.
+By Church's Thesis we can do it on a Turing machine.
+The number of steps that the simulation takes is linear in the length of the
+input, since the head is read-only.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+In an undirected graph, a \definend{triangle} is a $3$-clique, three vertices
+that are pairwise connected.
+Consider the Triangle problem:~given a graph, decide if it has a triangle.
+\begin{exparts}
+\item
+Why is this not the Clique problem?
+\item
+Sketch a proof that this problem is in~$\P$.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+Because the size of the clique is fixed.
+\item
+Given $\mathcal{G}$, enumerate all triples
+$\sequence{v_0,v_1,v_2}\in\mathcal{V}$
+and check whether all three of $v_0v_1, v_0v_2, and v_1v_2$
+are members of~$\mathcal{E}$.
+
+This is a polynomial algorithm.
+Specifically, it is $\bigOh(|\mathcal{V}|^3|\mathcal{E}|)$.
+Because $|\mathcal{E}\leq |\mathcal{V}|^2|$, the algorithm is
+$\bigOh(|\mathcal{V}|^5)$
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -2578,7 +2766,7 @@ Prove that the class of languages~$\P$ is closed under each operation.
 \item Reversal
 \item Union
 \item Concatenation
-\item Complementation
+\item Kleene star
 \end{exparts*}
 \end{exercise}
 \end{exercises}
@@ -3421,7 +3609,7 @@ both halves, $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
 
 \begin{example}
 The Knapsack problem is: given a finite set $S$ whose elements each
-have a weight~$w(xs)\in\N^+$ and a value~$v(s)\in\N^+$, along with a
+have a weight~$w(s)\in\N^+$ and a value~$v(s)\in\N^+$, along with a
 bound $B\in\N^+$ and a value target~$K\in\N^+$, find a subset
 $\hat{S}\subseteq S$ whose elements have a total weight less than the
 bound and total value greater than the value target.

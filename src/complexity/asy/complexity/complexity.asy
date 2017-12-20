@@ -1077,3 +1077,102 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+
+// ======================== Minimum spanning tree =============
+int picnum = 21;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+// node[] nodes=ncircles("\nodebox{0}",
+//   "\nodebox{1}",
+//   "\nodebox{2}",
+//   "\nodebox{3}",
+//   "\nodebox{4}",
+//   "\nodebox{5}",
+//   "\nodebox{6}",
+//   "\nodebox{7}",
+//   "\nodebox{8}",
+//   "\nodebox{9}");
+node[] nodes=ncircles("\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}",
+  "\nodebox{}");
+
+// calculate nodes position
+real u=1.1cm;
+real v=0.7*u;
+hlayout(2*u, nodes[0],nodes[2],nodes[6],nodes[7]);
+hlayout(1.5*u, nodes[7],nodes[8],nodes[9]);
+layout(-45.0, nodes[0],nodes[1]);
+hlayout(2.0*u, nodes[1], nodes[5]);
+layout(-40.0, nodes[1],nodes[4]);
+layout(45.0, nodes[2],nodes[3]);
+
+// draw edges
+draw(pic,
+     (nodes[0]..bend(10)..nodes[1]).l("4"),
+     (nodes[0]--nodes[2]).l("1").style("leftside"),
+     (nodes[0]..bend(-20)..nodes[3]).l(Label("4",Relative(0.3))).style("leftside"),
+     (nodes[1]--nodes[2]).l(Label("5",Relative(0.3))).style("leftside"),
+     (nodes[1]..bend(10)..nodes[4]).l("9"),
+     (nodes[1]--nodes[5]).l("9"),
+     // (nodes[1]--nodes[6]).l("7").style("leftside"),
+     (nodes[2]--nodes[3]).l("3").style("leftside"),
+     (nodes[2]--nodes[6]).l("7").style("leftside"),
+     (nodes[3]--nodes[6]).l("10").style("leftside"),
+     (nodes[3]..bend(-20)..nodes[9]).l("18").style("leftside"),
+     (nodes[4]--nodes[5]).l(Label("2",Relative(0.7))),
+     (nodes[4]..bend(20)..nodes[7]).l(Label("4",Relative(0.7))),
+     (nodes[4]..bend(20)..nodes[8]).l(Label("6",Relative(0.7))),
+     (nodes[5]--nodes[6]).l(Label("8",Relative(0.7))),
+     (nodes[5]..bend(10)..nodes[7]).l(Label("4",Relative(0.25))),
+     (nodes[6]--nodes[7]).l("9").style("leftside"),
+     (nodes[6]..bend(-25)..nodes[9]).l("8").style("leftside"),
+     (nodes[7]--nodes[8]).l("3"),
+     (nodes[7]..bend(-25)..nodes[9]).l(Label("9",Relative(0.2))).style("leftside"),
+     (nodes[8]--nodes[9]).l("9")
+     );
+// highlighted edges
+draw(pic,(nodes[0]..bend(10)..nodes[1]).l("4"),highlightcolor);
+draw(pic,(nodes[0]--nodes[2]).l("1").style("leftside"),highlightcolor);
+     // (nodes[0]..bend(-20)..nodes[3]).l(Label("4",Relative(0.3))).style("leftside"),
+     // (nodes[1]--nodes[2]).l(Label("5",Relative(0.3))).style("leftside"),
+     // (nodes[1]..bend(10)..nodes[4]).l("9"),
+     // (nodes[1]--nodes[5]).l("9"),
+draw(pic,(nodes[1]--nodes[6]).l("7").style("leftside"),highlightcolor);
+draw(pic,(nodes[2]--nodes[3]).l("3").style("leftside"),highlightcolor);
+     // (nodes[2]--nodes[6]).l("7").style("leftside"),
+     // (nodes[3]--nodes[6]).l("10").style("leftside"),
+     //(nodes[3]..bend(-20)..nodes[9]).l("18").style("leftside"),
+draw(pic,(nodes[4]--nodes[5]).l(Label("2",Relative(0.7))),highlightcolor);
+     // (nodes[4]..bend(20)..nodes[7]).l(Label("4",Relative(0.7))),
+     // (nodes[4]..bend(20)..nodes[8]).l(Label("6",Relative(0.7))),
+draw(pic,(nodes[5]--nodes[6]).label(Label("8",Relative(0.7))),highlightcolor);
+draw(pic,(nodes[5]..bend(10)..nodes[7]).l(Label("4",Relative(0.25))),highlightcolor);
+     // (nodes[6]--nodes[7]).l("9").style("leftside"),
+draw(pic,(nodes[6]..bend(-25)..nodes[9]).l("8").style("leftside"),highlightcolor);
+draw(pic,(nodes[7]--nodes[8]).l("3"),highlightcolor);
+     // (nodes[7]..bend(-25)..nodes[9]).l(Label("9",Relative(0.2))).style("leftside"),
+     // (nodes[8]--nodes[9]).l("9"),
+     // highlightcolor);
+
+// draw nodes
+draw(pic,
+     nodes[0], nodes[1], nodes[2], nodes[3], nodes[4],
+     nodes[5], nodes[6], nodes[7], nodes[8], nodes[9]);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+

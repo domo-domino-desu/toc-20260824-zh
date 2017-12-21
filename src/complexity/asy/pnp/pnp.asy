@@ -377,7 +377,7 @@ filldraw(pic,nphard_region,backgroundcolor+opacity(0.2),boldcolor);
 // // dot(pic,p2,green);
 // // dot(pic,p3,green);
 path np_complete = buildcycle(np,nphard);
-draw(pic,np_complete,highlightcolor);
+filldraw(pic,np_complete,fillpen=highlightcolor+opacity(0.25),drawpen=highlightcolor);
 
 draw(pic,set_bound, AXISPEN);
 

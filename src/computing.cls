@@ -1121,6 +1121,9 @@
 \crefname{tablehere}{Table}{Tables}
 \Crefname{tablehere}{Table}{Tables}
 
+% fig  Figure goes here
+% [#1] label
+% #2 caption
 \captionsetup[figurehere]{labelformat=empty}
 \renewcommand{\thefigurehere}{\arabic{section}.\arabic{figurehere}}
 \newcommand{\figlabel}{\relax} % can't use evn arg #1 in second half so save it

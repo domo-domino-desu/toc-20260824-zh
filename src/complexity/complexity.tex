@@ -887,26 +887,27 @@ identifies the tractable
 problems as the class of problems that are
 conceivably solvable in practice.\footnote{%
   Some researchers object to Cobham's Thesis.
-  They note, for instance, that if a problem's best algorithm
-  is $\bigOh(n^{100})$ then solving that problem is not after all
-  conceivably practical.
-  Or, even if an algorithm is $\bigOh(n^2)$, if
-  the constant is extremely large, so that for instance the algorithm
-  runs in time $2^{1\,000\,000}\cdot n^2$ , then that
-  problem is also not going to be solved on existing computers.
-  One rejoinder to their objection is that our experience is that
-  in practice when someone announces an algorithm
-  for a problem of interest that has
-  a large exponent then over time that exponent tends to fall to
-  reasonable levels, as researchers refine the approach.
+  They note that if a problem's best algorithm
+  is $\bigOh(n^{100})$ then the solution is not really
+  practical.
+  Even for an algorithm with a reasonable exponent if
+  the constant is extremely large, for instance if the run time
+  is $2^{1\,000\,000}\cdot n^2$ , then that
+  is also not going to work.
+  A rejoinder to these objection is that our experience is that
+  when someone announces an algorithm
+  with 
+  a large exponent or constant then we have seen that over time that
+  they tend to shrink as the approach is refined.
   In any event, polynomial time is
   better than exponential time.
-  Cobham's Thesis, while not universally accepted, is 
-  widely accepted.}
+  So Cobham's Thesis is widely, but not universally, accepted.
+  Here we accept it; it gives a technical meaning to
+  the informal `fast'.}
 
 In this part of the book we consider which problems are inheriently
 intractable,
-and which are open to analysis that makes them tractable. 
+and which one are open to analysis that makes them tractable. 
 
 
 
@@ -1880,7 +1881,7 @@ function defined by that formula.
 \end{center}
 That $T$ in the final column witnesses that this formula is satisfiable.
 
-\begin{problem}[Satisfiability, $\SAT$]
+\begin{problem}[Satisfiability, $\SAT$]  \label{prob:SAT}
 Given a propositional logic formula,
 decide if it is satisfiable.
 \end{problem}
@@ -2438,6 +2439,19 @@ This is a four-coloring.
 \end{exercise}
 
 \begin{exercise}
+Some authors define the Satisfiability problem as:~given
+a finite set of propositional logic statements,
+find if there is a single input tuple $b_0,\ldots b_{j-1}$
+(where each $b_i$ is either $T$ or $F$) that satisfies them all.
+Show that this is equivalent to the definition given in \cref{prob:SAT}.
+\begin{answer}
+A finite set of propositional logic statements $\set{S_0,\ldots S_{k-1}}$
+is satisfiable if and only if the single statement
+$S_0\wedge S_1\ldots \wedge S_{k-1}$ is satisfiable.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 What shape is a $3$-clique?
 A $2$-clique?
 \begin{answer}
@@ -2537,7 +2551,6 @@ The set $M=X\times Y\times Z$ contains these triples $\sequence{x,y,z}$.
 \end{center}
 \end{parts}
 \end{answer}
-
 \end{exercise}
 
 
@@ -2570,7 +2583,7 @@ language.
 \section{$\P$}
 
 \subsection{Definition}
-The first example of a computational complexity class is the collection of
+Our first computational complexity class is the collection of
 the problems that are tractable, the ones for which there
 is an algorithm that can at least conceivably be used. 
 
@@ -2953,39 +2966,37 @@ at least a limited number of, simultaneous physical processes.\footnote{%
 
 So nondeterminism
 doesn't add any capacity to what can be computed in principle.
-
-
-% The question of whether there is an actual difference in speed between
-% deterministic and nondeterministic Turing machines is extremely interesting.
-% The answer is not known.
-% The next section says more.
-
-
-
-% ..................
-\subsection{Speed}
-In practice, potentially,
-one interesting thing about nondeterministic Turing machines is that they
+That doesn't mean that these machines are worthless.
+When we considered nondeterministic Finite State machines we saw that they
+were often a good fit for the kinds of problems we wanted to solve.
+We could go from problem statement to a nondeterministic machine easily,
+and then apply the algorithm to get a deterministic machine from that.
+Similarly, one potentially interesting thing about
+nondeterministic Turing machines is that they
 appear to be a good match for solving problems that on a serial machine
 are hard to solve.
 An example is the Travelling Salesman problem.
 Stated in guessing terms, the machine just 
-comes up with a circuit $c\in\N$ and then checks whether
-$c$ is smaller than the given bound.
+guesses a circuit $c\in\N$ and then checks whether
+$c$ is shorter than the given bound.
+So for some problems, they simplify going from the problem statement
+to the solution.
 
-Intuitively, it would seem that a nondeterministic Turing machine
-would be much faster than a deterministic one at the Satisfiability problem.
-Recall:~it asks, given a propositional logic statement, if  
-there is an assignment of input truth values
-making the statement give a value~$T$.
-This formula is an example.
+
+% ..................
+\subsection{Speed}
+Potentially very interesting is that,
+intuitively, it would seem that if we had a nondeterministic Turing machine
+then might be much faster than a deterministic one.
+For example, consider the Satisfiability problem.
+Here is an example formula; is it satisfiable?
 \begin{equation*}
  f = 
  (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
   \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (\neg P\vee R)
 \end{equation*} 
-The natural approach is to use a truth table
-to calculate whether there are any $T$'s in the final column.
+The natural approach uses a truth table
+to calculate whether the final column has any $T$'s.
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
 \begin{tabular}{ccc|ccccc|c}
@@ -3000,46 +3011,47 @@ to calculate whether there are any $T$'s in the final column.
   $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
 \end{tabular}
 \end{center}
-This appears to be a perfect fit for unbounded parallelism.
+This problem appears to be a perfect fit for unbounded parallelism.
 Given a formula with $n$ variables, the machine could split
 into $2^n$-many child processes, each doing a single line of the
 truth table.
-When the children are done, the master process
+These children are done quickly, certainly in polytime,
+and then the master process
 calls down the bus, ``Any successes?''\footnote{%
   In  guessing terms,
   the machine guesses a solution, or is given a solution by the demon, and
   then only has to verify that it works, which is quick.}
-
-So while adding unbounded parallelism to Turing machines doesn't
-allow them to compute any new functions, it at least appears that it may
-allow them to compute the functions faster.
+% In total, a nondeterministic machine does this job in polytime.
 
 \begin{definition}
 A nondeterministic machine
 \definend{decides the language~$\lang$ in time $\map{t}{\N}{\N}$} if for any
 input $\sigma\in\lang$ the machine computes at least one accepting branch
-in time $t(|\sigma|)$.\footnotemark[1].
-\end{definition}\footnotetext[1]{Whether we use the model that the machine
-decides by a computation tree or by guessing does not matter.}
+in time $t(|\sigma|)$. % \footnotemark[2].
+\end{definition} % \footnotetext[2]{Whether we use the model that the machine
+  % decides by a computation tree or by guessing does not matter.}
 
-That's all right.
-The problem is if we go on to suppose that because
-deterministic machines do not come with unbounded parallelism baked in
+So while adding unbounded parallelism to Turing machines doesn't
+allow them to compute any entirely new functions, a person could
+sensibly conjecture that it may
+allow them to compute some already-computable functions faster.
+
+However:~no one can prove that.
+At this moment, no one can prove that just because
+deterministic machines do not come with unbounded parallelism baked in,
 they must be slower.
-At this moment, no one can prove that.
-We are left with two facts for the deterministic machine case:
+At this moment, for the deterministic machine case,
 (1)~no one has produced a much 
 better approach 
-than trying all of the truth table lines, looking for an output $T$
-(this truth table has three inputs and $2^3$~lines, and in 
-general such a brute force algorithm takes exponential time),
-and (2)~no one has produced a proof showing that no better
-way exists.
+than trying all of the lines of the truth table, looking for an output $T$\Dash
+this truth table has three inputs and $2^3$~lines, and in 
+general such a brute force algorithm takes exponential time\Dash 
+and (2)~no one can prove that no better way exists.
 
 \begin{definition}
-The set of languages for which there is a 
-a polynomial time nondeterministic Turing machine acceptor is
-the complexity class~\definend{$\compclass{NP}$}.
+The complexity class~\definend{$\compclass{NP}$} is 
+the set of languages for which there is a 
+a polynomial time nondeterministic Turing machine acceptor.
 \end{definition}
 
 \begin{lemma}
@@ -3047,15 +3059,15 @@ $\P\subseteq\NP$
 \end{lemma}
 
 \begin{proof}
-Any deterministic Turing machine is also nondeterministic one,
-just one that doesn't use nondeterminism.
+Any deterministic Turing machine is trivially also a nondeterministic one.
 So a problem has a polynomial time algorithm on a deterministic
-machine automatically has a polytime algorithm on a
+machine trivially has a polytime algorithm on a
 nondeterministic machine.
 \end{proof}
 
-We don't know whether $\P\subset\NP$ or $\P=\NP$.
-This is an extremely important question; more on it later.
+Again: we don't know which of $\P\subset\NP$ or $\P=\NP$ is true.
+This is an extremely important question; we will consider it separately
+in the next section.
 
 
 
@@ -3401,14 +3413,14 @@ No one knows if $\NP$ is closed under complementation.
 % "Reduction decreases the number of problems without increasing the number of
 % answers"
 A \definend{reduction}
-is an algorithm that allows us to translation from one problem to another.
-
+is a way to translate from one problem to another.
 For instance, when we studied incompleteness then problems were decision
 problems for sets.
-We considered Turing reductions, where $A\leq_T B$
-if there is a function $f$ computed by some Turing machine such that
-$x\in A$ if and only if $f(x)\in B$.
-This implies that an algorithm for solving~$B$ can be used to solve~$A$.
+We considered Turing reductions, where $B\leq_T A$
+if there is a function $f$ thta is computable such that
+$x\in B$ if and only if $f(x)\in A$.
+Thus, we can answer questions about~$B$ by translating
+them to questions about~$A$.
 That explains the terminology 'problem~$A$ reduces to problem~$B$'.
 
 In complexity, problems are language decision problems.
@@ -3419,13 +3431,14 @@ could also be used to solve problem~$\lang_1$ efficiently.
 Cobham's Thesis takes `efficiently' to mean polytime.
 
 \begin{definition}
-The language $\lang_0$ is
+The language $\lang_1$ is
 \definend{polynomial time reducible}
 (or \definend{polynomial time mapping reducible}, or
-\definend{polynomial time many-one reducible})
-to the language~$\lang_1$, written $\lang_0\leq_p\lang_1$,
+\definend{polynomial time many-one reducible}, or
+\definend{Karp reducible})
+to the language~$\lang_0$, written $\lang_1\leq_p\lang_0$,
 if there is a computable function
-$\map{f}{\kleenestar{\B}}{\kleenestar{B}}$ that runs in polynomial time
+$\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ that runs in polynomial time
 such that
 $\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.
 \end{definition}
@@ -3438,7 +3451,7 @@ to determine if it is a member of $\lang_0$.
 
 \begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
   The ones with fast algorithms are at the bottom.
-  Problems are shown connected if the one underneath reduces to the
+  Problems are connected if the one underneath reduces to the
   one above.}
   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
   \hspace{0.6em}
@@ -3447,26 +3460,25 @@ to determine if it is a member of $\lang_0$.
 
 
 \begin{example}
-We will show that the Subset Sum problem reduces to the Knapsack problem,
-$\text{Subset Sum}\leq_p\text{Knapsack}$.
-That is we will show that a quick way to solve the Knapsack problem would
+We will show that $\text{Subset Sum}\leq_p\text{Knapsack}$,
+so that a quick way to solve the Knapsack problem would
 yield a quick way to solve the Subset Sum problem.
 
-Recall that the Knapsack problem starts with a set~$S$ whose elements~$s_i$
+The Knapsack problem starts with a set~$S$ whose elements~$s_i$
 have both a weight~$w(s_i)\in\N^+$ and a value~$v(s_i)\in\N^+$.
-The problem is to determing if there is a subset $K\subseteq S$
-where for the items in~$K$, the sum of the
-weights is less than or equal to the weight bound
+The problem is to determine if there is $K\subseteq S$
+such that the sum of the
+weights of its elements is less than or equal to a weight bound
 and the sum of the values is
-greater than or equal to the value target.
-A special case of this problem is where element
-$s\in S$ has the same weight as value, $w(s_i)=v(s_i)=b_i$,
-and where the weight limit and valaue targets are the same.
-Observe that we satisfy the conditions only if the sum of the
+greater than or equal to a value target.
+A special case of this problem is where each element
+has the same weight as value, $w(s_i)=v(s_i)=b_i$,
+and where the weight limit and value targets are the same.
+A $K$ satisfies the conditions only if the sum of the
 weights and values exactly equals the limit and target.
 
-Recall also the Subset Sum problem.
-It starts with a set of numbers $b_0,\ldots b_{k-1}$
+The Subset Sum problem
+starts with a set of numbers $b_0,\ldots b_{k-1}$
 and a target~$T$, and asks if there is a subset that adds to the target.
 
 Given a Subset Sum problem $\prob$,
@@ -3485,31 +3497,32 @@ vertices.
 \begin{animatedfigure}{A $3$-coloring of \protect\citetext{a graph}{This is the Petersen graph, a rich source of counterexamples for conjectures in Graph Theory}.}\centering 
   \animategraphics[poster=last]{2}{complexity/asy/complexity/complexity}{00}{01}
 \end{animatedfigure} 
-We will sketch an argument that $\text{Graph Colorability}\leq_p\SAT$, that is,
-that a quick way to solve the Satisfiability problem
-would give us a quick way to solve Graph Colorability.
-We will show how to translate facts about graphs into
+We will sketch an argument that the Graph Colorability problem
+reduces to the Satisfiability problem,
+$\text{Graph Colorability}\leq_p\SAT$.
+For this, we must describe how to translate facts about graphs into
 statements in propositional logic.
 
 We illustrate with $k=3$.
 Given a graph, suppose that it has $n$~vertices $\set{v_0,\ldots\, v_{n-1}}$.
-We want to divide them into three classes, the first, second, and third colors.
-Begin the translation by 
-creating three types of boolean variables for the propositional logic clauses.
-\begin{equation*}
+We want to divide them into $3$~classes, the colors.
+Begin by creating three types of Boolean variables,
+$
   {f_0,\ldots f_{n-1}}
-  \qquad
+$, and
+$  
   {s_0,\ldots s_{n-1}}
-  \qquad
+$, and
+$  
   {t_0,\ldots t_{n-1}}
-  \end{equation*}
+$.
 If there is a $3$-coloring and 
 vertex~$v_i$ has the first color then $f_i=T$, $s_i=F$, and $t_i=F$.
 If instead vertex~$v_i$ has the second color then
 $f_i=F$, $s_i=T$, and $t_i=F$.
 And if vertex~$v_i$ has the third color then  $f_i=F$, $s_i=F$, and $t_i=T$.
 
-Next, for each $i\in\set{0,\ldots\,n-1}$ create a clause ensuring that
+For each $i\in\set{0,\ldots\,n-1}$ create a clause ensuring that
 vertex~$v_i$ gets some color.
 \begin{equation*}
   (f_i\vee s_i \vee t_i)
@@ -3524,11 +3537,14 @@ two same-color vertices.
   \qquad
   (\neg t_i\wedge \neg t_j)
 \end{equation*}
-Now consider the conjunction of those clauses, the
+Now take the conjunction of those clauses, the
 propositional logic statement that joins them together with $\wedge$'s.
 The graph has a $3$-coloring if and only if that statement
-is satisfiable\Dash if and only if
-there is a set of boolean values for the variables making all the clauses true.
+is satisfiable.
+
+The definition of reduction requires that the function that inputs
+a graph description and outputs a logic statement must be polynomial.
+This argument has a lot of messy detail, but is easy.
 \end{example}
 
 
@@ -3536,11 +3552,11 @@ there is a set of boolean values for the variables making all the clauses true.
 We will outline the argument that $\SAT\leq_p\text{Clique}$,
 that a quick way to solve the Clique problem would
 give us a quick way to solve the Satisfiability problem.
-Recall the Clique problem:~given a graph and a bound~$k\in\N$,
-decide if the graph has a $k$-clique,
-a set of vertices such that every two are connected by an edge.
+Recall the Clique problem:~given a graph and a bound~$B\in\N$,
+decide if the graph has a $B$-clique,
+a size~$B$ set of vertices such that every pair is connected by an edge.
 
-The reductino translates a Satisfiability question to a Clique question. 
+The reduction translates each Satisfiability question to a Clique question. 
 Consider this set of propositional logic clauses.
 \begin{equation*}
   \set{x_0\wedge \neg x_1,\, x_0,\, \neg(\neg x_0\wedge \neg x_1)}
@@ -3596,9 +3612,19 @@ ones with a fast algorithm.
 For instance, one member of $\NP$ is
 the problem of determining whether a number is odd.
 Of course, the interest in the class is that it also contains lots of
-seemingly hard problems.
-In 1971 S~Cook showed that among the problems in $\NP$,
-the Satisfiability problem is maximally hard.
+problems that are seemingly hard.
+Can we prove that they are actually hard?
+
+In 1971 S~Cook brought this question to
+widespread attention.
+He noted the significance of polynomial time reducibility, so that
+an efficient solution to one problem results in an efficient
+solution for the other.
+And, he
+showed that among the problems in $\NP$,
+there are ones that are maximally hard.\footnote{%
+  This was also shown by L~Levin who was behind the Iron Curtain so
+  that knowledge of the work did not spread for some time.}
 
 \begin{theorem}[Cook-Levin Theorem]
 The Satisfiability problem has the property
@@ -3613,16 +3639,14 @@ use as a certificate a sequence giving an assignment of truth values
 that satisfies the formula.
 
 \margingraphic{0.18\textwidth}{complexity/levin.png}{\label{fig:L Levin}\href{https://en.wikipedia.org/wiki/Leonid_Levin}{Leonid Levin b~1948}} % https://www.bu.edu/today/2014/american-academy-of-arts-sciences-taps-cas-prof-for-membership/
-The proof is long so we put it in an Extra section.
+The rest of the proof is long so it is in an Extra section.
 But its basic idea is reachable.
 We are given a problem $\prob\in\NP$ and we must show that
 $\prob\leq_p\SAT$.
 To show that $\prob$ is reducible to $\SAT$ we must translate
-questions about $\prob$ into questions in $\SAT$.
-So we must translate a membership question for $\prob$ into a Boolean
-formula in such a way that the membership answer is `yes' if and
+membership questions for $\prob$ into a Boolean
+formulas, in such a way that the membership answer is `yes' if and
 only if the formula yields $T$.
-
 The only thing we know about the problem $\prob$ is that its input
 $\sigma$ is
 accepted by some nondeterministic machine~$\TM$ in time given by
@@ -3630,8 +3654,8 @@ a polynomial~$p$.
 So the proof constructs, from $\TM$, $\sigma$, and $p$,
 a Boolean formula that yields $T$ if and only if
 $\TM$ accepts~$\sigma$.
-In the Boolean formula it encodes  the constraints that a Turing machine
-operates under, such as that the only symbol that can be changed in
+The Boolean formula encodes the constraints that a Turing machine
+operates under, such as that the only tape symbol that can be changed in
 any one step is the one under the machine's I/O head.
 
 Our main interest in the theorem is that it shows there are 
@@ -3644,9 +3668,6 @@ all problems in that class reduce to it:
 if $\prob[Q]\in\compclass{S}$ then $\prob[Q]\leq_p\prob$.
 \end{definition}
 
-The special case where the class is $\NP$ is important enough that we
-repeat the prior definition.
-
 \begin{definition}
 A problem is \definend{$\compclass{NP}$ complete} if it is also a member of
 $\NP$ and if $\mathcal{P}\leq_p\mathcal{N}$
@@ -3654,14 +3675,14 @@ for every~$\mathcal{P}\in\compclass{NP}$.
 \end{definition}
 
 \begin{definition}
-A problem $\prob$ is \definend{$\NP$-hard}
-if every $\NP$ problem reduces to it: if $\prob[Q]\in\NP$ then 
-if $\prob[Q]\leq_p\prob$.
+A problem $\prob_0$ is \definend{$\NP$-hard}
+if every $\NP$ problem reduces to it: if $\prob_1\in\NP$ then 
+if $\prob_1\leq_p\prob_0$.
 \end{definition}
 
 \begin{lemma}
 A problem is $\NP$ complete if and only if
-it is a member of $\NP$ that is $\NP$-hard.
+it is a member of $\NP$ and is $\NP$-hard.
 \end{lemma}
 
 \begin{proof}
@@ -3682,33 +3703,44 @@ This restates the definitions.
 Often, a proof that a problem is $\NP$~complete has two parts:~the first shows
 it is in~$\NP$ and the second that it is $\NP$-hard.
 
-
-
-NP complete problems are analogous to the solution to the \HP,
+The $\NP$~complete problems are like the problems Turing-equivalent to~$K$,
+the solution to the \HP, 
 which are at least as hard as any computably enumerable set.
 
-
 \margingraphic{0.20\textwidth}{complexity/karp.jpg}{\label{fig:RichardKarp}\href{https://en.wikipedia.org/wiki/Richard_M._Karp}{Richard M.\@ Karp b~1935}} % https://simons.berkeley.edu/people/richard-karp  https://simons.berkeley.edu/sites/default/files/styles/profile_main/public/rk1.jpg?itok=1kn5XodZ
-There are a collection of problems that for many years people have
-been trying to find a reasonably-fast algorithms for.
-This paper made clear to researchers that complexity provided a forum to
-work on commonalities among problems that had resisted attack for many years.
-``NP captures vast domains of computational, scientific, and mathematical
- endeavors, and seems to roughly delimit what mathematicians and scientists
- have been aspiring to compute feasibly.'' --- Christos Papadimitriou
+Soon after, R~Karp expanded on the concept.
+He produced a list of twenty one problems that were well known to be difficult,
+ones that many talented and hard-working people had for years tried
+attacked, and had been unable find an efficient algorithm.
+He showed that these problems were all $\NP$~complete and so were
+equivalent in that if any one could be solved by an efficient algorithm
+then they all could be. % Based off Karp's Turing award statement http://amturing.acm.org/award_winners/karp_3256708.cfm
+
+He also established a framework for classifying additional problems as
+$\NP$-complete.
+The published list of such problems has since grown to include many thousands. 
+Karp's paper made clear in the community of researchers
+that the collection of $\NP$~complete problems encompassed many of the
+computational problems, spread across 
+Computer Science, Mathematics, and the natural sciences,
+that had for many years resisted attack.
+Whatever it is that makes these problems hard, they all share.
  
-The next list is memorizable.
-It comes from \autocite{GareyJohnson}.
-The problem descriptions appeared earlier; they are copied
-here for convenience of
-reference.
+The following list from \autocite{GareyJohnson} contains those problems
+that experience shows are most often used to
+another problem is $\NP$~complete.
+(The descriptions appeared earlier; they are copied
+here for convenience.)
+For instance, you can show a problem of yours~$\prob$ is
+$\NP$~complete by showing that it is a member of~$\NP$ (this is usually
+easy), and by showing that $\prob\leq_p \text{$3$-$\SAT$}$.
 
 \begin{theorem}[Basic $\compclass{NP}$ Complete Problems]
 These six problems are $\compclass{NP}$-complete.
 \begin{thmdescription}
-\item[$3$-Satisfiability, $3$-\textsf{SAT}]
-Given a propositional logic formula in conjunctive normal form,
-in which each clause has at most three variables,
+\item[$3$-Satisfiability, $3$-$\SAT$]
+Given a propositional logic formula in conjunctive normal form
+in which each clause has at most $3$ variables,
 decide if it is satisfiable.
 
 \item[$3$-dimensional matching]
@@ -3736,40 +3768,42 @@ a cyclic path that includes each vertex.
 
 \item[Partition]
 Given a finite set~$A$ that has for each of its elements
-an associated positive number size $s(a)\in\N^+$,
+an associated size $s(a)\in\N^+$,
 decide if there is a division of the set into two halves
 $\hat{A},A-\hat{A}$ so the total of the sizes is the same in
 both halves, $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
 \end{thmdescription}
 \end{theorem}
 
-This list is convenient because experience shows that
-its elements often occur when we are
-trying to prove that a problem is $\NP$~complete.
 
 \begin{example}
-Recall the Knapsack problem is: given a finite set $S$ whose elements~$s$ each
-have a weight~$w(s)\in\N^+$ and a value~$v(s)\in\N^+$, along with a
-bound $B\in\N^+$ and a value target~$T\in\N^+$, find a subset
+The Knapsack problem starts with a 
+set~$=\set{s_0,\ldots s_{k-1}}$ whose
+elements
+have a weight~$w(s_i)\in\N^+$ and a value~$v(s_i)\in\N^+$, and a
+weight bound $B\in\N^+$ and value target~$T\in\N^+$.
+It decides if there is
 $K\subseteq S$ whose elements have a total weight less than or equal to the
 bound and total value greater than or equal to the target.
-This problem is $\NP$~complete.
 
-It is in the class $\NP$ because the witness is the sequence
-of items to pack that meet the requirements.
-To show that it is $\NP$-hard, we use restriction; we show that a special case
-of the problem is $\NP$-hard.
-Consider the special case where $w(s)=v(s)$ for all~$s\in S$, and where
+This is $\NP$~complete.
+The witness~$\omega$, where $\omega[i]=1$ if $s_i$ is in
+the knapsack, and $\omega[i]=0$ if not, is only $k$~bits long.
+This witness can be verified in polynomial
+time since it is just a matter of adding the weights and values
+for elements of~$K$.
+
+To show that it is $\NP$-hard, we show that a special case
+is $\NP$-hard.
+Consider the case where $w(s_i)=v(s_)$ for all~$s_i\in S$, and where
 $B$ and~$K$ each equal half of the total of all the weights.
 This is a Partition problem, which is in the above list of
-$\NP$~complete problems, and so is $\NP$-hard.
+$\NP$~complete problems.
 \end{example}
 
-% https://xkcd.com/287/
-\begin{center}
-  \citetext{\includegraphics[scale=2.75]{complexity/xkcdnpcomplete}}{\href{https://xkcd.com/287/}{Courtesy \url{xkcd.com}.}}
-\end{center}
-
+\begin{fig}[fig:xkcdnpcomplete]{Courtesy \href{https://xkcd.com/287/}{xkcd.com}.}
+  \includegraphics[scale=2.65]{complexity/xkcdnpcomplete}
+\end{fig}
 
 \begin{example}
 Another $\NP$~complete problem is the Travelling Salesman problem.
@@ -3778,21 +3812,19 @@ $\text{Hamiltonian circuit}\leq_p\text{Travelling Salesman}$.
 \end{example}
 
 
-Two problems that are believed to be in $\NP$ but not $\NP$~complete are:
-\begin{example}
-The Factoring problem is believed to be hard for classical
+There are problems that are members of $\NP$ but are
+believed to not be $\NP$~complete.
+One example is that the Factoring problem is believed to be hard for classical
 computers,\footnotemark[1]
-but it is generally suspected to be not $\compclass{NP}$-complete.
-\end{example}\footnotetext[1]{%
+but it is widely suspected to be not
+$\compclass{NP}$~complete.\footnote{%
   In 1994, P~Shor discovered an algorithm for a quantum computer that
   solves the Factoring problem in polynomial time.
   This will have significant implications if quantum computation proves
   to be possible.}
-
-
-\begin{example}
-The Graph Isomorphism is also suspected to be not $\NP$ complete.  
-\end{example}
+Experts also suspect that the Graph Isomorphism is not $\NP$ complete.  
+As always with such judgements, though, without proof they could turn out
+to be mistaken.
 
 
 
@@ -3801,6 +3833,11 @@ The Graph Isomorphism is also suspected to be not $\NP$ complete.
 Every deterministic Turing machine is, trivially, a nondeterministic machine.
 So $\P\subseteq\NP$.
 What about the other direction?
+
+This problem should be thought of as expressing the question of whether
+parallelism actually is faster.
+
+
 
 The short answer is, no one knows.
 % http://www.claymath.org/millennium-problems
@@ -3861,14 +3898,32 @@ Quantum computer?
 
 
 \subsection{Discussion} % https://www.scottaaronson.com/papers/pnp.pdf and https://arxiv.org/pdf/1108.1791.pdf
-As a first approximation, a problem is in $\P$ if it is fast\footnote{%
-  Cobham's thesis identifies an algorithm running in polynomial time
-  with being fast, or at least with being conceivably practical.
-  There are reasonable objections, such as that an algorithm that
-  runs in $n^{1000}$ time is not really practical.
-  Despite these objections we will take `fast' as a useful first approximation.}
-to find a solution,
-and a problem is in $\NP$ if it is fast to verify a solution.
+As formulated in Karp's original paper, the question of whether
+$\P$ equals $\NP$ seems of only technical interest.
+\begin{quotation}
+  \citetext{A large class}{
+  See \autocite{Karp}.}
+  of computational problems involve the
+  determination of properties of graphs, digraphs, integers,
+  arrays of integers, finite families of finite sets, boolean formulas and
+  elements of other countable domains.
+  Through simple encodings \ldots{} these problems can be converted into
+  language recognition problems, and we can inquire into their
+  computational complexity.
+  It is reasonable to consider such a problem satisfactorily solved when
+  an algorithm for its solution is found which terminates within a
+  number of steps bounded by a polymomial in the length of the input.
+  We show that a large number of classic unsolved problems of covering,
+  matching, packing, routing, assignment and sequencing are equivalent,
+  in the sense that either each of them possesses a
+  polynomial-bounded algorithm or none of them does.
+\end{quotation}
+
+
+Do finding proofs inherently require creative inspiration?
+
+A problem is in $\P$ if finding a solution is fast,
+and a problem is in $\NP$ if verifying a solution is fast.
 From this point of view, the result that $\P\subseteq\NP$
 becomes the observation that if a problem is
 fast to solve then it must be fast to verify.
@@ -4040,6 +4095,10 @@ Much of cryptography consists in exploiting this difference; see the Extra on
 the RSA encryption system.
 
 Intermediate between solvable and unsolvable is intractible.
+
+The collective failure by many talented people to find efficient algorithms for specific NP-complete problems strongly suggests that no efficient algorithm exists for any of them.
+
+G\&J p~14 two paragraphs beginning with ``Cook's''
 
 
 \begin{exercises}

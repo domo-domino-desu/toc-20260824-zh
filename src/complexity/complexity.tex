@@ -3781,16 +3781,15 @@ both halves, $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
 \end{thmdescription}
 \end{theorem}
 
-One way to use this list to show that a problem~$\prob$ is $\NP$~complete
-is to show that some problem on the list reduces to~$\prob$.
+We can show that a problem~$\prob$ is $\NP$~complete
+by showing that some problem on the list reduces to~$\prob$.
 
 \begin{example}
-We can 
-show that the Travelling Salesman problem is $\NP$ complete by
-showing that the Hamiltonian Circuit problem
+The Travelling Salesman problem is $\NP$ complete because
+the Hamiltonian Circuit problem
 reduces to it:
 $\text{Hamiltonian Circuit}\leq_p\text{Travelling Salesman}$.
-For this we must produce a reduction function~$f$, and show it is polytime.
+We must produce a reduction function~$f$ and check that it is polytime.
 
 The function inputs an instance of the Hamiltonian Circuit problem, a graph
 $\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$
@@ -3816,62 +3815,73 @@ is quadratic in the number of vertices.
 \end{example}
 
 One of Karp's points is the practical importance of
-$\NP$~completeness, that many problems from applications are
-$\NP$~complete.
-We next consider such an application, to a problem of scheduling college
-courses.
+$\NP$~completeness, that many problems from applications fall into this class.
+The next example is such an application.
+(It also illustrates that reductions can be quite complex.)
 
 \begin{example} % From https://people.cs.umass.edu/~barring/cs311/disc/9.html
-Most colleges make up a course schedule and then students pick
-from classes already assigned to time slots.
-Imagine instead that students select courses first and then the
-college faces the problem of deciding if there is a non-conflicting
-time schedule for the courses.
+Most colleges first make up a schedule by putting classes into
+time slots, and then students pick which classes they will take.
+Imagine instead that students first select the classes, and then the
+college has the problem of deciding if there is a time schedule for those
+classes that is non-conflicting.
 
-Consider the case where there are $2$~time slots,
-$k$-many classes, each with capacity~$c_0$, \ldots $c_{k-1}$, and 
-$n$-many students~$s_0$, \ldots $s_{n-1}$.
-Each student has two disjoint lists of classes
+Consider a college with $2$~time slots,
+$k$-many classes, each with a stated limited capacity, and 
+$n$-many students.
+Every student has two disjoint lists of classes
 $\ell_i,\hat{\ell}_i$ and
-must choose a class from each list $c_i\in\ell_i$ and
+must choose one class from each list $c_i\in\ell_i$ and
 $\hat{c}_i\in\hat{\ell}_i$.
-The problem~$\prob$ is the set of instances for which there is a solution.
+The problem~$\prob$ is to decide if there is a way to partition the set
+of classes into two such that every class is in a time slot and every
+student is in both of the classes they selected, and no student is in
+two classes in the same time slot.
+We will show that $\prob$ is $\NP$~complete.
 
-We will show that this problem is $\NP$~complete.
-First observe that it is a member of $\NP$ because checking a solution is
-fast:~a witness~$\omega$ is a list that assigs of students to classes
-and classes to time slots, which is a length polynomial
+First observe that $\prob$ is a member of $\NP$ because checking a solution is
+fast:~a witness~$\omega$ is a list that assignments of students to classes
+and classes to time slots, which has length polynomial
 in the number of students, and we can in polytime
 check that each student is assigned one class from each of their lists,
 that each class is given a time slot, etc.
 
-To finish we must show that there is a reduction function that runs in
-polytime.
-An input instance consist of $m$-many ~clauses that are joined by $\wedge$'s.
-each clause with $3$ or fewer Boolean variables or their negations
+To finish we will show $\prob$ is $\NP$-hard by showing that
+$\text{$3$-$\SAT$}\leq_p\prob$.
+For that we need a reduction function that runs in polytime.
+An input instance to this function
+consists of $m$-many clauses that are joined by $\wedge$'s,
+each clause with $3$ or fewer of the Boolean variables
+$x_0$, \ldots $x_{n-1}$ or their negations,
 joined by $\vee$'s.
-We will construct as output an instance of $\prob$.
+This function gives as output an instance of $\prob$.
 The output instance will have a successful schedule if and only if the
 input clause is satisfiable.
 
-We start by giving the output instance 
+For each of the Boolean variables
+the output instance will have an associated course $c_0$, \ldots $c_{n-1}$
+(of capacity equal to the number of students).
+There will be more courses also, including one named `T' and one named `F'
+(the idea is that
+if the input is satisfied by an assignment where $x_i=T$ then
+the output solution can assign $c_i$ to the same slot as course T).
+These will each have capacity $2m+1$.
+Start by giving the output $\prob$ instance 
 a student $s_0$ whose two lists are
-$\ell_{s_0}={\text{T}}$ and $\hat{\ell}_{s_0}=\set{\text{F}}$.
-This basically delinates the two time slots as `T' and `F'.
-In addition, for each of the Boolean variables $x_0$, \ldots $x_{n-1}$
-the output instance will have an associated course $c_0$, \ldots $c_{n-1}$.
+$\ell_{s_0}={\text{T}}$ and $\hat{\ell}_{s_0}=\set{\text{F}}$; this
+puts them in separate slots.
 
-Now we consider the input clauses.
-The easiest cases 
+Now consider the input clauses.
+The easiest ones 
 are clauses without negations, of the form
 $x_{i_0}$, or $x_{i_0}\vee x_{i_1}$, or $x_{i_0}\vee x_{i_1}\vee x_{i_2}$.
 If the clause is $x_{i_0}$ then in the output instance we create a student
 $s$ with the two lists
 $\ell_s=\set{c_{i_0}}$ and $\hat{\ell}_s=\set{\text{F}}$.
 If the clause is $x_{i_0}\vee x_{i_1}$ then the student
-gets the two lists
+gets
 $\ell_s=\set{c_{i_0},c_{i_1}}$ and $\hat{\ell}_s=\set{\text{F}}$.
-Similarly, for $x_{i_0}\vee x_{i_1}\vee x_{i_2}$ the student's
+Similarly, for $x_{i_0}\vee x_{i_1}\vee x_{i_2}$ the created student's
 lists are 
 $\ell_s=\set{c_{i_0},c_{i_1},c_{i_2}}$ and $\hat{\ell}_s=\set{\text{F}}$.
 
@@ -3883,11 +3893,12 @@ For instance, for $\neg x_{i_0}$ we create a student with lists
 $\ell_s=\set{\text{T}}$ and $\hat{\ell}_s=\set{c_{i_0}}$.
 
 The messiest clauses have a mixture of positive and negative atoms.
-Suppose that the $j$-th clause is $x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$.
+We will do an example: suppose that the $j$-th clause is
+$x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$.
 In addition to the classes $c_{i_0}$, $c_{i_1}$, and $c_{i_2}$ created earlier,
-we also create three new classes $t_j$, $f_j$ and~$z_j$.
-These three have a capacity of one student each.
-And here we don't just create one student, we create three: $s_j$, $u_j$, $v_j$.
+we also create three new classes $t_j$, $f_j$ and~$z_j$, of
+capacity of one student each.
+And we don't just create one student, we create three: $s_j$, $u_j$, $v_j$.
 Here are their lists.
 \begin{center}
 \begin{tabular}{r|cc}
@@ -3900,40 +3911,79 @@ Here are their lists.
 \end{tabular}
 \end{center}
 
-We must show that there is an assignment of truth values to the
-Boolean variables that makes the formula come out `$T$' if and only if
-there is a course schedule solution.
+To show that this reduction function suffices,
+we must show that if there is an assignment of truth values to the
+Boolean variables that satisfies the formula then 
+there is a course schedule solution, and we must also show the converse.
 
-So first suppose that there an assignment sending each Boolean variable to
-$T$ or $F$ and such that the entire propositional logic formula evaluates
+So first suppose that there a way to give each Boolean variable a value of
+$T$ or $F$ such that the entire propositional logic formula evaluates
 to~$T$.
-Then, where $x_i$ is assigned to $T$, putting the courses $c_i$
-in the time slot `T', and where $x_j$ is assigned to $F$, putting the
-course $c_j$ in the time slot `F', gives a solution to the
-course scheduling problem.
-The interesting case is a mixed postive and negative clause such as
+Then we get a non-conflicting course time slot alottment by:
+where $x_i=T$ put the course~$c_i$
+in the time slot T, and where $x_j=F$ put the course~$c_j$ in the F slot.
+This clearly works for the all-positive atom or all-negative atoms cases.
+The interesting cases are the mixed postive and negative atom clauses, such as
 $x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$.
-Suppose that it evaluates to $T$.
+% For the input propositional logic formula to evaluate to $T$ this
+% clause itself must evaluate to $T$.
+We can check that for each possible assignment making this clause
+evaluate to $T$ there is a non-conflicting way to arrange the other
+courses.
 For instance, suppose that
-$x_{i_0}\mapsto T$, $x_{i_1}\mapsto F$, and $x_{i_2}\mapsto T$.
-Then we can meet the scheduling requirements by having student~$s_j$ take
-course~$c_j$ in the time slot when~`T' is offered and also take course
-`F'.
-Student~$u_j$ takes~$t_j$ and student~$v_j$ takes~$f_j$
+$x_{i_0}=T$, $x_{i_1}=F$, and $x_{i_2}=T$.
+We have put course~$c_{i_0}$ in the time slot when~T is offered and
+student~$s_j$ can take it then, and similarly can also take
+course~$c_{i_2}$ when F is offered.
+Then student~$u_j$ takes~$t_j$ when T is offered and also takes
+course~F, and student~$v_j$ takes T and~$f_j$.
 
-Conversely, suppose that there is no assignment to make the clause
-$x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$ evaluate to $T$, so that
-$x_{i_0}\mapsto F$, $x_{i_1}\mapsto F$, and $x_{i_2}\mapsto T$.
-We claim that there is no way to assign these students to courses.
-If $c_{i_0}$ and $c_{i_1}$ are not to be `T' then~$s_j$ must take
-course~$t_j$ in that slot, and similarly must take $f_j$ in the other slot.
-But course~$t_j$ has enrollment~one so user $u_j$ must take
-$z_j$ and $v_j$ is stuck since both $f_j$ and~$z_j$ are taken
-and only have enrollment of one each.
+Conversely, suppose that for any assignment of truth values to
+the Boolean variables the input formula is not satisfied.
+We will show that implies that for any allocation of classes into time slots
+there is a conflict.
+
+So consider an allocation of classes into time slots, say with
+the classes $\set{c_{i_0},c_{i_1},\ldots}$ being put with class~T and
+the rest with class~F.
+The assignment of Boolean variables that sets $x_{i_0}=T$, $x_{i_1}=T$, etc.
+and the rest to~$F$ of course causes the formula to vield a value of~$F$,
+as this formula is not satisfiable.
+So for this assignment the formula has some clause, clause~$j$, that does not
+evaluate to~$T$.
+
+Suppose that clause~$j$ has the form
+$x_{i_0}\vee x_{i_1}\vee x_{i_2}$.
+Then the assignment must be 
+$x_{i_0}=F$, $x_{i_1}=F$, and $x_{i_2}=F$, and so the allocation of classes
+must be that all three of $c_{i_0}$, $c_{i_1}$, and $c_{i_2}$ go with class~F.
+This will cause a conflict in course assignments because the output instance
+was created with a student~$s_j$ having the lists
+$\ell_{s_j}=\set{c_{i_0}, c_{i_1}, c_{i_2}}$ and $\hat{\ell}_{s_j}=\set{F}$.
+
+The other case is that clause~$j$ has a mixed form, such as
+$x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$, so that the Boolean variable
+assignment is
+$x_{i_0}=F$, $x_{i_1}=F$, and $x_{i_2}=T$.
+This association comes from the allocation of classes that puts 
+$c_{i_0}$ and $c_{i_1}$ with class~F, and puts $c_{i_2}$ with~T.
+We claim that there is no non-conflicting way to assign students to courses.
+Refer to the table above.
+This allocation of classes could only be non-conflicting if student~$s_j$
+selected classes~$t_j$ and~$f_j$.
+But then because of the capacity of one in these claasses,
+student~$u_j$ must select~$z_j$ and~$F$, and student~$v_j$
+has a conflict. 
+
+Whew!
+To close, we observe that the reduction function that creates the
+output $\prob$ instance from the input propositional logic formula
+runs in polytime.
 \end{example}
 
-Another way to use the list to show that a problem~$\prob$ is $\NP$~complete
-is to find a special case of~$\prob$ on the list.
+Another way to use the basic list
+to show that a problem~$\prob$ is $\NP$~complete
+is to find a special case of~$\prob$ on that list.
 
 \begin{example}
 The Knapsack problem starts with a 

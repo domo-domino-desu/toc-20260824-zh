@@ -3985,8 +3985,9 @@ as this formula is not satisfiable.
 So for this assignment the formula has some clause, clause~$j$, that does not
 evaluate to~$T$.
 
-Suppose that clause~$j$ has the form
-$x_{i_0}\vee x_{i_1}\vee x_{i_2}$.
+The first possibility is that clause~$j$ has either all positive atoms
+or all negative atoms.
+Foe example, let the clause be $x_{i_0}\vee x_{i_1}\vee x_{i_2}$.
 Then the assignment must have
 $x_{i_0}=F$, $x_{i_1}=F$, and $x_{i_2}=F$, and so the allocation of classes
 must be that all three of $c_{i_0}$, $c_{i_1}$, and $c_{i_2}$ go with class~F.
@@ -4048,18 +4049,15 @@ $\NP$~complete problems.
   \includegraphics[scale=2.75]{complexity/xkcdnpcomplete}
 \end{fig}
 
-
-
-There are problems that are members of $\NP$ but are
-believed to not be $\NP$~complete.
-One example is that the Factoring problem is believed to be hard for classical
-computers,\footnotemark[1]
-but it is widely suspected to be not
-$\compclass{NP}$~complete.\footnote{%
+There are problems that are members of $\NP$ but are not
+$\NP$~complete.
+Most experts believe that while the Factoring problem is hard for classical
+computers\footnote{%
   In 1994, P~Shor discovered an algorithm for a quantum computer that
   solves the Factoring problem in polynomial time.
   This will have significant implications if quantum computation proves
-  to be possible.}
+  to be possible to engineer.}
+but that it is not $\compclass{NP}$~complete.
 Experts also suspect that the Graph Isomorphism is not $\NP$ complete.  
 As always with such judgements, though, without proof they could turn out
 to be mistaken.
@@ -4068,33 +4066,137 @@ to be mistaken.
 
 
 \subsection{$\P=\NP$?}
-Every deterministic Turing machine is, trivially, a nondeterministic machine.
-So $\P\subseteq\NP$.
+Every deterministic Turing machine is, trivially, a nondeterministic machine,
+so trivially $\P\subseteq\NP$.
 What about the other direction?
 
-This problem should be thought of as expressing the question of whether
-parallelism actually is faster.
-
-
-
-The short answer is, no one knows.
-% http://www.claymath.org/millennium-problems
-
-
-\begin{fig}[fig:ProblemBeansPNP]{We know that $\P\subseteq\NP$ so
-  there are
-  two possibilities: that the containment is strict, $\P\neq\NP$,
-  and that $\P=\NP$.}
+The short answer is that no one knows.
+One of these two pictures is right but
+we do not know which one.
+\begin{fig}[fig:ProblemBeansPNP]{Which is it: is $\P\supset\NP$
+  or is $\P=\NP$?}
   % \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
   % \hspace{0.6em}
   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp04.pdf}}
-  \hspace{3em}
+  \hspace{5em}
   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp05.pdf}}
 \end{fig}
 
-
-If we show any $\NP$ complete problem is a member of $\P$ then
+If the picture on the right is correct then there is a simple way
+to settle the question.
+If we show that any $\NP$ complete problem is a member of $\P$ then
 we have shown that $\P=\NP$.
+But despite nearly a half century of effort by some extremely bright
+people, no one has been able to do that.
+And conversely, no one has shown that there is an $\NP$ problem that is
+not a member of~$\P$.
+
+A great many people have worked on it because this
+is an extremely important problem.\footnote{%
+  One quick indication of its importance is that it is on a list
+  of problems in mathematics for which there is a one million dollar prize;
+  see \protect\url{http://www.claymath.org/millennium-problems}.}
+
+When we work on a crossword puzzle or a jigsaw puzzle we perceive that
+checking that the solution is correct is very much easier than
+finding the solution in the first place.
+We perceive that checking is mechanical, tedious.
+But we perceive that we must be creative to find the solution in the
+first place\Dash finding the solution to a jigsaw puzzle strikes us
+as far too much computation to be practical.
+This is the distinction that we informally see with $\NP$~complete
+problems.
+Verifying correctness of a solution~$\omega$ is tractable.
+But most researchers believe that finding the solution to such problems
+is not tractable.
+
+Part of what makes the $\P$~versus~$\NP$ question important
+is Karp's point that many of the problems that arise in practical
+applications fall into this category.
+Researchers who have been struggling with what can be expressed
+as a Vertex Cover problem and those struggling with a Clique problem
+find that they are in some sense working on the same problem.
+
+Another part of what makes it important involves mathematical proofs.
+Recall the \textit{Entscheidungsproblem} that was a motivation behind
+the definition of a Turing machine.
+It asks for an algorithm
+taking as input a mathematical statement and
+determines whether that statement is true.
+In the intervening century we have come to understand, through G\"odel's work,
+the difference between a statement's being true and being provable.
+So we modify the \textit{Entscheidungsproblem} to ask for an algorithm
+that inputs statements and decides whether they are provable.
+
+Well, that's easily solvable, in principle.
+A proof is a sequence of statements from some formal language.
+Each statement is either an axiom or follows from prior statements
+by some rule; a typical rule is the typographic replacement of all
+$x$'s with $y+4$'s.
+in modern terms then, the \textit{Entscheidungsproblem} is a decision
+problem:~given a statement~$\sigma$
+and bound~$B\in\N$, is there 
+a sequence of statements that is shorter than the bound
+and that makes a valid proof ending in~$\sigma$?
+
+In short, the \textit{Entscheidungsproblem} is in $\NP$.
+A computer can quickly check that a given proof is valid.
+And in principle a computer could brute-force the question of
+whether a given statement is provable.
+
+But we guess that brute-forcing is very slow.
+Is there a polynomial way?
+No one knows of one, but no one can show there isn't one either.
+
+As far back as 1956, G\"odel raised these issues in a letter to
+von~Neumann (that did not become public until much later).
+\begin{quotation}\small
+One can obviously easily construct a Turing machine,
+which for every formula $F$ in first order predicate logic and every
+natural number $n$, allows one to decide if there is a proof of $F$ of
+length $n$ ($\text{length} = \text{number of symbols}$).
+Let $\Psi (F,n)$ be the number of steps the machine requires for this
+and let $\phi (n) = \max_F \Psi(F,n)$.
+The question is how fast $\phi (n)$ grows for an optimal machine.
+One can show that $\phi (n) \geq k \cdot n$.
+If there really were a machine with
+$\phi(n) \sim k \cdot n$
+(or even $\sim k \cdot n^2$),
+this would have consequences of the greatest importance.
+Namely, it would obviously mean that in spite of the undecidability of
+the \textit{Entscheidungsproblem}, the mental work of a mathematician
+concerning Yes-or-No questions could be completely replaced by a machine.
+After all, one would simply have to choose the natural number $n$ so large
+that when the machine does not deliver a result,
+it makes no sense to think more about the problem.
+Now it seems to me, however, to be
+\citetext{completely within the realm of possibility
+  that $\phi (n)$ grows that slowly}{%
+  Hartmanis observes in \autocite{Hartmanis} that it is interesting
+  that G\"odel, the person who destroyed Hilbert's program of
+  automating mathematics, seemed to think that these problems quite
+  possibly are solvable in linear or quadratic time.}.
+Since it seems that $\phi (n) \geq k \cdot n$ is the only estimation which
+one can obtain by a generalization of the proof of the undecidability
+of the \textit{Entscheidungsproblem} and after all
+$\phi(n) \sim k \cdot n$ (or $\sim k \cdot n^2$)
+only means that the number of steps as opposed to trial and error can be
+reduced from $N$ to $\log N$ (or $(\log N)^2$).
+% However, such strong reductions appear in other finite problems,
+% for example in the computation of the quadratic residue symbol using repeated
+% application of the law of reciprocity.
+\ldots{}
+It would be interesting to know, for instance,
+the situation concerning the determination of primality of a number and
+how strongly in general the number of steps in finite combinatorial problems
+can be reduced with respect to simple exhaustive search.
+\end{quotation}
+
+One way to think of the question of whether $\P$ equals $\NP$ is that
+it expresses the question of whether in computation adding 
+parallelism adds speed.
+It asks:~can unbounded parallelism bring problems from super-polynomial
+to polynomial?
 
 
 

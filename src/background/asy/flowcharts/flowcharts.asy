@@ -257,8 +257,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-
-// ---- relativization to K -------------
+// ........ apply s-m-n thm ........
 picture pic;
 int picnum = 5;
 
@@ -267,7 +266,7 @@ node start=nroundbox("Start");
 node read=nbox("Read $y$");
 node test=nrounddiamond("oracle(x)?");
 node printzero=nbox("Print 0");
-node printone=nbox("Print 1");
+node loop=nbox("Loop");
 node ending=nroundbox("End");
 
 // layout
@@ -278,18 +277,17 @@ real v = 0.85*u;
 
 vlayout(1*v,start,read);
 vlayout(1.35*v,read,test);
-vlayout(1.3*v,test,ending);
-hlayout(-2.0*u,ending,printzero);
-hlayout(2.0*u,ending,printone);
+printzero.pos = test.pos + (-2*u,-1.0*v);
+loop.pos = test.pos + (2*u,-1.0*v);
+vlayout(1.0*v,printzero,ending);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--test),
-     (test..HV..printzero).l("N"),
-     (test..HV..printone).l("Y").style("leftside"),
-     (printzero--ending),
-     (printone--ending)
+     (test..HV..printzero).l("Y"),
+     (test..HV..loop).l("N").style("leftside"),
+     (printzero--ending)
 );
 
 // draw nodes
@@ -298,11 +296,60 @@ draw(pic,
      read, 
      test,
      printzero,
-     printone, 
+     loop, 
      ending
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// // ---- relativization to K -------------
+// picture pic;
+// int picnum = 5;
+
+// // define nodes
+// node start=nroundbox("Start");
+// node read=nbox("Read $y$");
+// node test=nrounddiamond("oracle(x)?");
+// node printzero=nbox("Print 0");
+// node printone=nbox("Print 1");
+// node ending=nroundbox("End");
+
+// // layout
+// defaultlayoutrel = false;
+// defaultlayoutskip = 0.75cm;
+// real u = defaultlayoutskip;
+// real v = 0.85*u;
+
+// vlayout(1*v,start,read);
+// vlayout(1.35*v,read,test);
+// vlayout(1.3*v,test,ending);
+// hlayout(-2.0*u,ending,printzero);
+// hlayout(2.0*u,ending,printone);
+
+// // draw edges
+// draw(pic,
+//      (start--read),
+//      (read--test),
+//      (test..HV..printzero).l("N"),
+//      (test..HV..printone).l("Y").style("leftside"),
+//      (printzero--ending),
+//      (printone--ending)
+// );
+
+// // draw nodes
+// draw(pic,
+//      start,
+//      read, 
+//      test,
+//      printzero,
+//      printone, 
+//      ending
+//      );
+
+// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

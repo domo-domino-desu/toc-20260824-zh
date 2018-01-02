@@ -577,3 +577,82 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+
+// ---- Exercise on Fixed Point Theorem
+picture pic;
+int picnum = 11;
+
+// define nodes
+node start=nroundbox("Start");
+node pstart=nbox("Print ``Start''");
+node pprinte=nbox("Print ``Print ''+ $e$");
+node pend=nbox("Print ``End''");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,pstart);
+vlayout(1.0*v,pstart,pprinte);
+vlayout(1.0*v,pprinte,pend);
+vlayout(1.0*v,pend,ending);
+
+// draw edges
+draw(pic,
+     (start--pstart),
+     (pstart--pprinte),
+     (pprinte--pend),
+     (pend--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     pstart,
+     pprinte,
+     pend,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ........... second part of that exercise
+picture pic;
+int picnum = 12;
+
+// define nodes
+node start=nroundbox("Start");
+node ppofe=nbox("Print machine number P(e)");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,ppofe);
+vlayout(1.0*v,ppofe,ending);
+
+// draw edges
+draw(pic,
+     (start--ppofe),
+     (ppofe--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     ppofe,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

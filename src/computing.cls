@@ -498,6 +498,7 @@
 \newcommand{\extramark}[1]{
   \markright{Extra\ \thesubsection.\ #1}}% for page headers
 
+% Note that the cleveref names are lower down, after loading cleveref
 
 
 %======================== hyperref ===========
@@ -1141,6 +1142,10 @@
 }
 \crefname{figurehere}{Figure}{Figures}
 \Crefname{figurehere}{Figure}{Figures}
+
+% Cleveref name for extra sections
+\crefname{extrasection}{Extra}{Extra}
+\Crefname{extrasection}{Extra}{Extra}
 
 
 % =================== Margin graphics ===================

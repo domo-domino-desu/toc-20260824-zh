@@ -781,3 +781,43 @@ draw(p, w0, w1, w2, w3, w4, w5);
 
 shipout(format("graphs%02d",picnum),p,format="pdf");
 
+
+
+
+
+// ======================== illustration of coloring problem =============
+int picnum = 16;
+picture p;
+
+// define nodes
+node va=ncircle("$A$",ns_bleachedbg),
+     vb=ncircle("$B$",ns_light),
+     vc=ncircle("$C$",ns_bleachedbg),
+     vd=ncircle("$D$",ns_light),
+     ve=ncircle("$E$",ns_bleachedbold);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+vb.pos = new_node_pos_h(va, 20.0, 1.0*u);
+hlayout(2*u, va, vc);
+ve.pos = new_node_pos_h(va, -45.0, 0.60*u);
+hlayout(0.9*u, ve, vd);
+// vd.pos = new_node_pos_h(vc, -130.0, -0.67*u);
+
+// draw edges
+draw(p,
+     (va--vd),
+     (va--ve),
+     (vb--ve),
+     (vc--ve)
+    );
+
+// draw nodes
+draw(p, va, vb, vc, vd, ve);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+

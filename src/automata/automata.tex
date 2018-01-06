@@ -1364,7 +1364,7 @@ $\varepsilon$~transition.
 
 
 
-
+% .....................................
 \begin{exercises}
   % \hspace*{0.7em}\textit{Unless specified otherwise, you can use
   %   $\varepsilon$ transitions in the nondeterministic machines
@@ -1682,47 +1682,49 @@ This machine
   \includegraphics{automata/asy/fsa/fsa14.pdf}
 \end{center}
 accepts strings that
-have some number of \str{a}'s, followed by a \str{b},
+have some number of \str{a}'s, followed by one~\str{b},
 followed by some number of \str{a}'s.
-We now give a convenient way to
-expressing constructs such as ``any number of'' and ``followed by.''
-We will see strings, called Regular Expressions, that
-describe languages like this one,
-languages that are accepted by some Finite State machine.
-
-A few preliminary examples will make the definition clearer when it comes.
-These use the alphabet $\Sigma=\set{\str{a},\,\ldots\, \str{z}}$.
+We now give a convenient way, called regular expressions, to
+denote constructs such as ``any number of'' and ``followed by.''
+% We will see strings, called Regular Expressions, that
+% describe languages like this one,
+% languages that are accepted by some Finite State machine.
+%
+We will introduce these with 
+a few preliminary examples so that the definition will be clearer when it comes.
+These use the alphabet $\Sigma=\set{\str{a},\ldots \str{z}}$.
 
 \begin{example}
 The string \re{h(a|e|i|o|u)t}
 is a regular expression that 
 describes the language where each word starts with~\str{h},
 \citetext{has a vowel in the middle}{%
-Most speakers of American English cite the vowels as `a', `e', `i',
-`o', and~`u'.  
-See \autocite{Bigham}.}, and ends with~\str{t}.
-The pipe operator `|' provides alternatives.
-Hence this regular expression
+  Most speakers of American English cite the vowels as `a', `e', `i',
+  `o', and~`u'.  
+  See \autocite{Bigham}.},
+and ends with~\str{t}.
+The pipe `|' is a kind of `or'.
+Hence, this regular expression
 describes the language consisting of five words of three letters
 each: $\lang=\set{\str{hat}, \str{het}, \str{hit},\str{hot}, \str{hut}}$.
 
 There are two subtleties with this regular expression.
-First, the parentheses are not there to be matched, they
+First, the parentheses are not part of the strings that are to be matched, they
 provide grouping.
-Second, besides the vertical bar operation,
+Second, besides the pipe operator and parentheses
 the regular expression also uses concatenation since
-the initial \str{h} is concatenated with the choice expression,
-which in turn is concatenated with the final \str{t}.
+the initial \str{h} is concatenated with \re{(a|e|i|o|u)},
+which in turn is concatenated with \str{t}.
 \end{example}
 
 \begin{example}
 The regular expression \re{ab*c} describes the language 
 whose words begin with $\str{a}$, followed by any number of $\str{b}$'s
-(including possibly zero-many $\str{b}$'s), followed by 
-a single~$\str{c}$ at the end.
-So the star operator~`$*$'  %`$\kleenestar{}$'
+(including possibly zero-many $\str{b}$'s), and ending with  
+a single~$\str{c}$.
+So the~`$*$'  %`$\kleenestar{}$'
 means `repeat the prior thing any number of times'.
-The language described by this regular expression is
+This regular expression describes the language
 $\lang=\set{\str{ac}, \str{abc}, \str{abbc},\, \ldots}$.
 \end{example}
 
@@ -1732,7 +1734,7 @@ The language described by
 the regular expression \re{a(b|c)*} consists of 
 words starting with $\str{a}$, and ending with any number of
 $\str{b}$'s or $\str{c}$'s.
-This does not mean `any number of \str{b}'s or any number of \str{c}'s'.  
+It does not mean `any number of \str{b}'s or any number of \str{c}'s'.  
 Rather, the two letters are mixed
 $\lang=\set{\str{a}, \str{ab}, \str{ac}, 
              \str{abb}, \str{abc}, \str{acb}, \str{acc},\, \ldots}$.
@@ -1746,26 +1748,27 @@ use the regular expression \re{a(b*|c*)}.
 \end{example}
 
 \begin{example}
-The language of the machine that opened this subsection is described by
+For the machine that opened this subsection, the language is described by
 the regular expression \re{a*ba*}.
 \end{example}
 
-So, a regular expression is a short string that describes a language
-by describing 
-the pattern of the strings in that language.
+% So a regular expression is a short string that
+% describes a language by describing 
+% the pattern of the strings in that language.
+% We are now ready for a formal definition.
 
-Their syntax is straightforward.
-Start with characters of an alphabet~$\Sigma$ (and the special characters
-$\emptystring$ and $\emptyset$ that we will describe further in the next
-paragraph), and
-combine them using concatenation,
-pipe, and star.
+% Their syntax is straightforward.
+% Start with characters of an alphabet~$\Sigma$ (and the special characters
+% $\emptystring$ and $\emptyset$ that we will describe below), and
+% combine them using concatenation,
+% pipe, and star.
 
-\begin{definition}
+\begin{definition} \label{def:RESyntax}
   Let $\Sigma$ be an alphabet not containing any of the metacharacters
   \re{)}, \re{(}, \re{|}, or \re{*}.
-  A \definend{regular expression} over~$\Sigma$
-  is a string that can be derived from this grammar
+  A \citetext{\definend{regular expression}}{%
+    In practice a regular expression is often called a `regex'.}
+  over~$\Sigma$ is a string that can be derived from this grammar
 \begin{grammar}
 <regex> \produces{} <concat>
                     \alt <regex> `|' <concat>
@@ -1778,55 +1781,54 @@ pipe, and star.
                        \alt "(" <regex> ")"
                        
 <char> \produces{} $\emptyset$ | $\emptystring$   
-                    \alt $x_0$ | $x_2$ | ...
+                    \alt $x_0$ | $x_1$ | ...
 \end{grammar}
-  where the characters  $x_i$ are members of the alphabet $\Sigma$. 
-\end{definition}
-\noindent (As we often do in grammars, here
-we use the pipe symbol~\re{|} as a metacharacter,
-to collapse rules with the same left side.
-But pipe also appears in regular expressions themselves.
-For that usage
-we have wrapped it in single quotes,
-in \nonterminal{regex}'s second rule.)
+  where the $x_i$ characters are members of the alphabet $\Sigma$.\footnotemark[1] 
+\end{definition}\footnotetext[1]{%
+  As we often do in grammars,
+  we use the pipe symbol~\re{|} as a metacharacter,
+  to collapse rules with the same left side.
+  But pipe also appears in regular expressions themselves.
+  For that usage
+  we have wrapped it in single quotes,
+  in \nonterminal{regex}'s second rule.}
 
 We don't want lots of parentheses so we must establish operator
 precedence: star~\re{*} binds most tightly, then concatentation, then
 the pipe alternation operator~\re{|}.
 We use parentheses when needed, as in \cref{ex:RegexABOrCStar}.
 
-As to the semantics of regular expressions\Dash what they mean\Dash
+As to their semantics, what they mean,
 we will define that recursively.
 The language described by the single-character
 regular expression \re{$\emptyset$} is
-the empty set, so that $\lang(\emptyset)=\emptyset$.
+the empty set, $\lang(\emptyset)=\emptyset$.
 The language described by the regular expression consisting
 of only the character~\re{$\emptystring$}
-is the one-element language consisting of only the empty string 
+is the one-element language consisting of only the empty string, 
 $\lang(\varepsilon)=\set{\emptystring}$.
 If a regular expression consists of just one character from the alphabet
-then the language described by that
-expression contains only one string, which has only that
-one character:
+then the language it describes by contains only one string and that
+string has only that single character:
 where $\str{a}\in \Sigma$,
-we have $\lang(\str{a})\set{\str{a}}$.
+we have $\lang(\str{a})=\set{\str{a}}$.
 
-Finally, we do the semantics of the operations.
+We finish by defining the semantics of the operations.
 Let $\sigma$ and $\hat{\sigma}$ be regular expressions that
 represent the languages $\lang$ and $\hat{\lang}$.
 The regular expression combining the two
-with the pipe \re{$\sigma$|$\hat{\sigma}$}
-describes the union of the two languages $\lang\cup\hat{\lang}$.
+with a pipe \re{$\sigma$|$\hat{\sigma}$}
+describes the union of the two languages, $\lang\cup\hat{\lang}$.
 The regular expression concatenating the two,
 \re{$\sigma$$\hat{\sigma}$},
-describes the concatenation of the two languages $\lang\hat{\lang}$.
-And the star regular expression \re{$\sigma$*}
-describes the Kleene star of the language $\kleenestar{\lang}$.
+describes the concatenation of the two languages, $\lang\hat{\lang}$.
+The star regular expression \re{$\sigma$*}
+describes the Kleene star of the language, $\kleenestar{\lang}$.
 
 \begin{example}
 Let $\Sigma=\set{\str{a},\str{b}}$.
 Consider the regular expression \re{aba*}.  
-It is the concatenation of three substrings, \re{a}, \re{b}, 
+It is the concatenation of \re{a}, \re{b}, 
 and \re{a*}.
 The first describes the single-element language $\lang(\str{a})=\set{\str{a}}$.
 Likewise the second describes $\lang(\str{b})=\set{\str{b}}$.
@@ -1849,24 +1851,25 @@ Concatenating it to the language in the prior equation gives this.
 \end{align*}
 \end{example}
 
-There are constructs that appear often in building regular 
-expressions, so we will illustrate with some of those.
-These examples all use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
+We will illustrate with some constructs that appear often in building regular 
+expressions.
+These examples use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
 
 \begin{example}
-The language consisting of strings of \str{a}'s that are a multiple of
-three long
+The language consisting of strings of \str{a}'s whose length is a multiple of
+three
 $\lang=\set{a^{3k}\suchthat k\in\N}=\set{\emptystring,\str{aaa},\str{aaaaaa},\,\ldots}$ is described by the
 regular expression \re{(aaa)*}.
 \end{example}
 
-Note the empty string in that language.
-A common gotcha is to think of star as a repetition operator and forget that
-it includes zero-many copies.
+Note that the empty string is a member of that language.
+A common gotcha is to forget that star is for any number of repetitions,
+including zero-many.
 
 \begin{example}
-The language where strings have any number
-of \str{a}'s and optionally end in a \str{b}
+The language of strings that have any number
+of \str{a}'s and optionally end in one~\str{b},
+$\lang=\set{\emptystring,\str{b},\str{a},\str{ab},\str{aa},\str{aab},\ldots}$,
 is described by
 the regular expression \re{a*($\emptystring$|b)}.
  
@@ -1892,7 +1895,7 @@ $\set{\str{b},\str{bc},\str{bcc},
              \str{aab},\,\ldots}$
 consisting of words starting with any number of $\str{a}$'s
 (including possibly zero-many \str{a}'s),
-followed by a single~$\str{b}$, and then ending in less than three
+followed by a single~$\str{b}$, and then ending in fewer than three
 $\str{c}$'s is described by 
 \re{a*b(\emptystring|c|cc)}. 
 \end{example}
@@ -1910,8 +1913,8 @@ they describe the languages of interest.
   language is described by a regular expression.
 \end{theorem}
 
-We will do the `if' and `only if' as separate halves.
-We will work with nondeterministic machines but since we can convert
+We will prove this in separate halves.
+Thise halves use nondeterministic machines but since we can convert
 those to deterministic machines, the result holds there also.
 
 \begin{lemma} \label{lem:KleenesThmRegexToMachine}
@@ -1921,17 +1924,17 @@ those to deterministic machines, the result holds there also.
 
 \begin{proof}
   We will show that for any regular expression~$R$ there is a machine that
-  accepts strings matching that expression,
-  by induction using the structure of $R$.
+  accepts strings matching that expression.
+  We use induction on the structure of regular expressions.
 
   Start with regular expressions consisting of a single character.
   If 
   $R=\re{$\emptyset$}$ then  $\lang(R)=\set{}$ and
   the machine on the left below accepts~$\lang(R)$.
-  If $R=\re{$\emptystring$}$ then use the machine in the middle 
-  to accept $\lang($\emptystring$)=\set{\emptystring}$.
+  If $R=\re{$\emptystring$}$ then $\lang(R)=\set{\emptystring}$
+  and the machine in the middle accepts this language.
   If the regular expression is a character from the alphabet,
-  $R=\re{\str{a}}$, then the machine on the right suffices.
+  such as $R=\re{\str{a}}$, then a machine like the one on the right works.
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm32.pdf}
     \hspace{5em}
@@ -1940,8 +1943,11 @@ those to deterministic machines, the result holds there also.
     \includegraphics{automata/asy/nfsm/nfsm34.pdf}
   \end{center}
 
-  Finish by handling the three operations.
-  First suppose that the regular expression has the structure
+  Finish by handling the three operations, by induction on the structure.
+  Assume that $R$ is constructed as in \cref{def:RESyntax} and
+  take the inductive hypothesis that its components satisfy the lemma.
+  There is a case for each operation.
+  First suppose that 
   $R=\re{$R_0$|$R_1$}$, where $R_0$ and~$R_1$ are regular.
   By the inductive assumption there
   is a machine $\FSM_0$ whose language is described by
@@ -1952,7 +1958,7 @@ those to deterministic machines, the result holds there also.
   a new state $s$ and use $\varepsilon$
   transitions to connect~$s$ to the start states of $\FSM_0$ and $\FSM_1$. 
 
-  Next suppose that the regular expression decomposes into a concatenation
+  The next case is that
   $R=R_0\concat R_1$.
   The inductive hypothesis gives
   a machine for each, $\FSM_0$ and~$\FSM_1$.
@@ -1962,14 +1968,14 @@ those to deterministic machines, the result holds there also.
   and then convert all those accepting states of $\FSM_0$ to be
   non-accepting states. 
   
-  Finally, suppose that the regular expression's structure involves repetition
+  The final case is that
   $R=\re{($R_0$)*}$.
   As in \cref{ex:EpsilonTransMakeKleeneStar},
   take the machine~$\FSM_0$ accepting $R_0$ and
   make an $\varepsilon$ transition from each of its accepting states to
   its start state.
   (If the accepting state equals the start state there is no harm in
-  such a $\varepsilon$ loop, although it doesn't change the language.)
+  this $\varepsilon$ loop, although it doesn't change the language.)
 \end{proof}
 
 \begin{lemma}  \label{lem:KleenesThmMachineToRegex}
@@ -2022,8 +2028,9 @@ edge labels that are regular expressions.
 
   Because the edge labels are regular expressions, we can arrange~$\hat{\FSM}$
   so that leading from any~$q_i$ to any~$q_j$
-  is at most one edge.
-  If $\FSM$ has more than one edge then use the pipe~\re{|} to combine them.
+  is at most one edge; 
+  if $\FSM$ has more than one edge then use the pipe~\re{|} to combine their
+  labels.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm39.pdf}}
     \hspace{3em}
@@ -2086,8 +2093,8 @@ edge labels that are regular expressions.
   Perform this elimination for every node that is not $e$ or~$f$.
   There are only finitely many states so this procedure must 
   eventually stop.
-  At that point all that remains are $e$ and~$f$, with an edge.
-  That edge is labelled with the desired regular expression.
+  Then, all that remains are $e$, $f$, and an edge.
+  The edge label is the desired regular expression.
 \end{proof}
 
 \begin{example}
@@ -2131,7 +2138,6 @@ edge labels that are regular expressions.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm52.pdf}}    
   \end{center}
-  That's the answer.
 \end{example}
 
 \begin{exercises}

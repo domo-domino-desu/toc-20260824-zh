@@ -1037,7 +1037,8 @@ so it won't play a part in any accepting string.
 \end{example}
 
 \begin{example}
-This garage door opener listener waits to hear the remote control send
+This nondeterministic
+garage door opener listener waits to hear the remote control send
 the signal \str{0101110}.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm11.pdf}
@@ -1046,20 +1047,20 @@ That is, it accepts the language
 $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$
 of strings with that suffix.
 
-Note again that something here is disconcerting.
-Suppose that the listener is in state~$q_0$ and hears some noise 
+Note again that something here is disconcerting to a person raised on
+introduction to programming.
+Suppose that the listener is in state~$q_0$ and hears some electrical noise 
 that happens to be a \str{0} signal, 
 and just after that the owner presses
 the remote to send the \str{0101110}.
-How does the machine know which of the two \str{0}'s was the correct one 
+How does the machine know which of the two \str{0}'s is the correct one 
 to start it down the right-hand path?
 The same holds for a \str{01}: this machine will end in an accepting 
 state if it hears a string \str{010101110}; how does 
 this mechanism guess correctly, ignoring
 the first \str{01} but paying attention to the second?
-
-This ``guessing'' may at first seem to be not a 
-mechanically-accomplishable task.
+This ``guessing'' may at first seem to be a
+not-mechanically-accomplishable task.
 However, we will soon show how a deterministic Finite State machine
 can do it.
 \end{example}
@@ -1067,7 +1068,7 @@ can do it.
 We will use nondeterministic Finite State machines in three ways.
 First, we need them to prove Kleene's Theorem,
 \cref{th:KleenesTheorem} below.
-Second, we also present them because they are very useful.
+Second, we also present them because they are useful in practice.
 Often, solving a complex job is much easier with a nondeterministic machine,
 and below we show how to convert such a solution to one using a
 deterministic machine, which is then easy to convert to code.
@@ -1126,7 +1127,6 @@ These two are unioned to make the language for the entire machine.
 \end{equation*}
 \end{example}
 
-
 \begin{example} \label{ex:NFSM:JoinSerial}
   An $\varepsilon$ transition can also tie together two machines by
   using a serial connection.
@@ -1179,33 +1179,28 @@ Examples are in the exercises.
 
 
 
-\subsection{Equivalence of the two types of machines}\label{sec:EquivDFSMAndNFSM}
-One of the main reasons to introduce nondeterminism in this chapter
-is that for Finite State machines it does not alter the power of the
-machines, and so
+\subsection{Equivalence of the machine types}\label{sec:EquivDFSMAndNFSM}
+For Finite State machines, nondeterminism does not alter the power of the
+machines and so
 our first encounter is that it is less a radical innovation and more
 of an engineering convenience.
 
 \begin{theorem}
   The set of languages accepted by deterministic Finite State machines
-  equals the set of languages accepted by nondeterministic machines.
-  This remains so if we allow the nondeterministic machines to
+  equals the set of languages accepted by nondeterministic Finite State
+  machines.
+  This remains true if we allow the nondeterministic machines to
   have $\varepsilon$ transitions.
 \end{theorem}
-
-We will not give a complete proof, although
-certainly one is possible.
-But a proof is a notational mess and the examples below
-are convincing.
 
 To show that the two sets are equal we will argue that they are subsets of
 each other.
 One direction is easy:
-any deterministic machine is a nondeterministic machine.\footnote{%
-  In a deterministic machine the next-state function outputs
-  single states.
-  To make it a nondeterministic machine just convert those single states
-  into singleton sets.}
+any deterministic machine is a nondeterministic machine.
+That is, in a deterministic machine the next-state function outputs
+single states.
+To make it a nondeterministic machine just convert those single states
+into singleton sets.
 Thus the assertion that the set of languages accepted by
 deterministic machines is a subset of the set accepted by
 nondeterministic machines is trivial.
@@ -1214,6 +1209,10 @@ For inclusion the other way
 we will demonstrate how to start
 with a nondeterministic machine, with $\varepsilon$ transitions, and
 construct a deterministic machine that accepts the same language.
+We will not give a complete proof, although
+certainly one is possible.
+But a proof is a notational mess and the examples below
+are convincing.
 
 First consider a nondeterministic machine $\FSM_N$, with
 next-state function~$\Delta_N$, which has no $\varepsilon$ transitions.
@@ -1232,15 +1231,17 @@ Consider this nondeterministic machine $\FSM_N$.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm16.pdf}
 \end{center}
-The deterministic machine $\FSM_D$ is below.
-Its states~$s_i$ are the sets of states of $\FSM_N$.
+The deterministic machine $\FSM_D$ that has the
+same behavior as $\FSM_N$ is below.
+
+The deterministic $\FSM_D$'s states~$s_i$ are the sets of states of $\FSM_N$.
 For an example of computing the next-state function, 
-suppose that this machine is in $s_5=\set{q_0,q_2}$ and is reading an~\str{a}.
+suppose that this machine is in $s_5=\set{q_0,q_2}$ and is reading~\str{a}.
 Apply equation~($*$):
 combine the set of next states due to~$q_0$, the set
 $\Delta_N(q_0,\str{a})=\set{q_0,q_1}$, with the next states
 due to~$q_2$, the set $\Delta_N(q_2,\str{a})=\set{}$.
-That gives $\Delta_D(s_5,\str{a})=\set{q_0,q_1}=s_4$.
+That gives $\Delta_D(s_5,\str{a})=\set{q_0,q_1}$, which is the state~$s_4$.
 \begin{center}
   \begin{transitionfunction}[\Delta_D]
       &\str{a}   &\str{b}         \\
@@ -1262,14 +1263,14 @@ the start state of $\FSM_N$ is~$q_0$.
 
 Besides the notational convenience,
 naming the sets of states as $s_i$'s makes clear that
-$\FSM_D$ is a deterministic Finite state machine.
+$\FSM_D$ is a deterministic Finite State machine.
 Here's a transition graph.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm17.pdf}
 \end{center}
 \end{example}
 
-Note that if the nondeterministic machine has~$k$-many states then
+If the nondeterministic machine has~$k$-many states then
 under this construction the deterministic machine has $2^k$-many states.
 Typically many of them can be eliminated.
 For instance, in the above machine the state~$s_6$ is unreachable 
@@ -1378,14 +1379,14 @@ Give the transition function for the machine of
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm30.pdf}
   \end{center}
-  \begin{exparts}
-  \item Is the empty string accepted?
-  \item Is the string \str{0} accepted?
-  \item Is the string \str{011} accepted?
+  \begin{exparts*}
+  \item Does it accept the empty string?
+  \item The string \str{0}?
+  \item \str{011}?
   \item \str{010}?
   % \item Are all strings of the form $\str{1}^j$ accepted, for $j>0$?
-  \item List all length five strings that are accepted.
-  \end{exparts}
+  \item List all length five accepted strings.
+  \end{exparts*}
 \end{exercise}
 
 \begin{exercise}  \label{exer:MFSMWithEpsilonTrans}
@@ -1393,13 +1394,13 @@ Give the transition function for the machine of
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm19.pdf}
   \end{center}
-  \begin{exparts}
+  \begin{exparts*}
   \item Does it accept the empty string?
   \item \str{a}?
     \str{b}?  
-  \item List five strings of minimal length that are accepted.
-  \item List five strings of minimal length that are not accepted.
-  \end{exparts}
+  \item List five strings of minimal length that it accepts.
+  \item List five of minimal length that it does not accept.
+  \end{exparts*}
 \end{exercise}
 
 \begin{exercise}

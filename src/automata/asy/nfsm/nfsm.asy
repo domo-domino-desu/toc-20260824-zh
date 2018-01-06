@@ -957,7 +957,7 @@ hlayout(1*u, q0, q1, q2);
 
 // draw edges
 draw(pic,
-     (q0..loop(W)).l("\str{a}"),
+     (q0..loop(N)).l("\str{a}"),
      (q0--q1).l("\str{a}"),
      (q1--q2).l("\str{b}")
 );

@@ -2367,18 +2367,18 @@ Conclude that there are languages not accepted by any Finite State machine.
 \subsection{Definition}
 Finite State machines are interesting, at least, because they give us insight
 into what a machine can do without scratch memory.
+We can get an idea of how powerful such a machine is by determining
+the set of jobs that they can and cannot do.
 
 \begin{definition}
-  A set of strings is a \definend{regular language} if it is
+  A \definend{regular language} is one that is 
   accepted by some Finite State machine.
 \end{definition}
 
 There are infinitely many regular languages.
 For one thing, every finite language $\lang_0=\set{}$,
 $\lang_1=\set{\str{0}}$, $\lang_2=\set{\str{00}}$, \ldots{}
-is regular; just list all that cases as in \cref{ex:FSAGraphicalFileExtensions}.
-% In this section we will consider what makes a language regular,
-% and makes one not regular.
+is regular; just list all the cases as in \cref{ex:FSAGraphicalFileExtensions}.
 
 If the language is finite but large then constructing the machine
 by listing cases may not be practical.
@@ -2389,7 +2389,8 @@ the set of all currently-active phone numbers
 is a regular language, but constructing a Finite State machine for it
 is silly.
 
-Second, a language doesn't have to be large for it to be difficult in practice.
+Second, a regular language doesn't have to be large for it to be
+difficult, in some sense.
 For example, every even number greater
 than~$2$ that mathematicians have looked at is the sum of
 two primes: $4=2+2$, $6=3+3$, $8=3+5$, \ldots\@
@@ -2397,30 +2398,26 @@ The guess that this holds for all evens is
 \urldef\goldbachurl\url{https://en.wikipedia.org/wiki/Goldbach%27s_conjecture}%
 \citetext{\definend{Goldbach's conjecture}}{See \goldbachurl.}.
 No one knows if it is true.
-So consider the set of
-strings $n\in\kleenestar{\set{\str{0},\ldots\,\str{9}}}$
+Now, the set of
+strings $\sigma\in\kleenestar{\set{\str{0},\ldots\,\str{9}}}$
 consisting of the base~10 representation of the smallest even number
-that is not the sum of two primes.
-This set is finite since it has either
+that is not the sum of two primes is finite since it has either
 one member or none.
-But, while small, this set is not easy; no one knows what it is. 
+But, while small, this set is not easy to determine. 
 
 \subsection{Closure properties}
-We have seen that if two languages
-are regular then the union of those two is also regular.
-We discussed this in the proof of Kleene's Theorem but
-we saw the idea as early as \cref{ex:NFSMJoinParallel}.
-We have also seen that if two languages are regular then their concatenation
-is regular; the idea for this is \cref{ex:NFSM:JoinSerial}.
-
+In the proof of Kleene's Theorem we saw that if two languages
+are regular then their union is also regular.
+We have also seen, in \cref{ex:NFSM:JoinSerial},
+that if two languages are regular then their concatenation
+is regular.
 We say that a structure is \definend{closed} under an operation if
-performing that operation on its members always results in another member.
-Two examples are: adding two integers always gives an integer, and 
-squaring an integer always results in an integer (although
-taking the square root does not).
+performing that operation on its members always yields another member.
+Familiar examples are that adding two integers always gives an integer, and 
+that squaring an integer always results in an integer.
 
 \begin{lemma}
-  The collection of regular languages is closed under the operations of
+  The collection of regular languages is closed under
   union, concatenation, and Kleene star.
 \end{lemma}
 
@@ -2437,30 +2434,26 @@ taking the square root does not).
 
 
 \begin{theorem}  \label{th:RegLangsClosedCompIntDiff}
-  The collection of regular languages is closed under the operations of
+  The collection of regular languages is closed under
   set complement, intersection, and set difference. 
 \end{theorem}
 
 \begin{proof}
-  First, the set equation
+  The  equation
   $S\cap \hat{S}=\setcomp{(\setcomp{S}\cup\setcomp{\smash{\hat{S}}\hspace{1.5pt}})}$
-  describes set intersection in terms of the other two operations.
-  So if the collection of regular languages are closed under complement and
-  difference
-  then substituting regular languages for $S$ and $\hat{S}$ on the equations's
-  right side shows that result, the outcome of the operation on the left,
-  is a regular language.
-  Similarly, closure under set difference follows 
-  from the equation
-  $S-\hat{S}=S\cup\setcomp{\smash{\hat{S}}\hspace{1.5pt}}$.
+  describes set intersection in terms of union and complement.
+  The prior lemma shows that regular languages are closed under union,
+  so if we show they are closed under complement then this equation
+  gives that they are also closed under intersection.
+  Similarly, 
+  $S-\hat{S}=S\cup\setcomp{\smash{\hat{S}}\hspace{1.5pt}}$ gives that
+  showing closure under complement will show closure under difference.
 
-  So this result boils down to showing closure under set complement.
   Fix a regular language~$\lang$.
   It is accepted by a Finite State machine~$\FSM$.
   \Cref{sec:EquivDFSMAndNFSM} shows that deterministic and nondeterministic
-  Finite State machines recognize the same set of languages, the regular
-  languages, so without loss of generality take~$\FSM$ to be a deterministic
-  machine.
+  Finite State machines recognize the same set of languages so without
+  loss of generality take~$\FSM$ to be deterministic.
   
   Define a new machine~$\hat{\FSM}$ with the same states and
   transition function as~$\FSM$ but whose accepting states are the
@@ -2499,14 +2492,15 @@ taking the square root does not).
 
 
 \subsection{Pumping lemma}
-Although Finite State machines are finite objects they can accept languages
+Although Finite State machines are finite, they can accept languages
 that are infinite; they can deal with long input strings.
-The intuition behind Kleene's star operator
-is that a Finite State machine handles long strings
-by looping.
+Experience with Kleene's star operator gives the intuition that 
+a Finite State machine handles long strings by looping.
+We will see a result formalizing that, and we will
+use it for proofs that languages are not regular.
 
 \begin{example}
-  This machine has a loop in the middle.
+  This machine has a loop.
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm58.pdf}
   \end{center}
@@ -2532,28 +2526,28 @@ by looping.
 \end{theorem}
 
 \begin{proof}
-  Observe that
-  if a Finite State machine is given an input string  whose length is
-  at least as large as the number of states in that machine,
+  If a Finite State machine is given an input string that is longer than
+  the number of states in that machine,
   then in processing that string
   the machine will visit some state more than once.
-  This is a Pigeonhole Principle argument:
+  This is the Pigeonhole Principle;
   the extended transition function $\extended{\Delta}$
   puts out states and if the input string is as long or longer than
   the number of available states, then the list of
   output states must repeat.
 
-  Let the language $\lang$ be accepted by the deterministic
+  So assume that $\lang$ is accepted by a deterministic
   Finite State machine~$\FSM$ and 
-  let $p$ to be the number of states in~$\FSM$.
-  Consider an long input string, a
+  take the pumping length~$p$ to be one more than
+  the number of states in~$\FSM$.
+  Consider a long input string, a
   $\sigma=\sequence{s_0,s_1,\,\ldots s_k}$
   with $k\geq p$.
-  Let $s_i$ and $s_j$ be characters associated with a state~$q$ that is
-  repeated in that
-  $q=\extended{\Delta}(\sequence{s_0,\,\ldots s_i})=\extended{\Delta}(\sequence{s_0,\,\ldots s_i})$.
-  Then for the substrings in the decomposition
-  we take $\alpha=\sequence{s_0,\,\ldots, s_i}$,
+  By the first paragraph some state~$q$ is used twice, so there are
+  substrings $\sequence{s_0,\,\ldots s_i}, \sequence{s_0,\,\ldots s_j}$
+  of $\sigma$ (with $j>i$) such that 
+  $q=\extended{\Delta}(\sequence{s_0,\,\ldots s_i})=\extended{\Delta}(\sequence{s_0,\,\ldots s_j})$.
+  Take $\alpha=\sequence{s_0,\,\ldots, s_i}$,
   $\beta=\sequence{s_{i+1},\,\ldots s_j}$, and
   $\gamma=\sequence{s_{j+1},\,\ldots s_k}$
   (possibly one or both of $\alpha$ and $\gamma$ is empty).
@@ -2581,20 +2575,19 @@ by looping.
   same final state as did $\sigma$.
 \end{proof}
 
-The Pumping Lemma is stated as `if a language is regular then it has these
-properties'.
-We usually use its converse, that if a language does not
-have those properties then the language is not regular.
+We typically use the Pumping Lemma to show that a language is
+not regular.
 
 \begin{example}
-  Consider the language of \definend{palindromes}
+  The language of \definend{palindromes}, stringe that read the
+  same backwards as forwards, is
   $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
     \reversal{\sigma}=\sigma}$.
   Some members are \str{aba}, \str{bbaabb},
   and~$\str{a}^5\str{b}\str{a}^5$.
   We will prove that this language is not regular.
 
-  For a contradiction assume that it is regular.
+  For a contradiction assume that the language~$\lang$ is regular. 
   Let its pumping length be~$p$.
   Consider $\sigma=\str{a}^p\str{b}\str{a}^p\in\lang$.
   
@@ -2616,38 +2609,36 @@ have those properties then the language is not regular.
     \alpha\concat\beta^3\concat\gamma,
     \quad\ldots
   \end{equation*}
-  We will show that the first string in the list, $\alpha\concat\gamma$,
+  We will argue that the first string in the list, $\alpha\concat\gamma$,
   is not a palindrome.
-  This will give a contradiction because the Pumping Lemma says that the strings
-  in the list are all in the language.
+  This is a contradiction because the Pumping Lemma says that the strings
+  in the list are all members of~$\lang$.
   
   Because $\alpha$ and $\beta$ consist entirely of \str{a}'s, $\gamma$ has
-  the~\str{b}, and 
-  by the definition of $\sigma$ following that~\str{b} must be $\str{a}^p$.
-  Thus,
-  for $\alpha\concat\gamma$ to be a palindrome, before the~\str{b} it must have
-  $p$-many \str{a}'s.
+  the~\str{b}.
+  By the definition of $\sigma$, following that~\str{b} must be $\str{a}^p$.
+  For $\alpha\concat\gamma$ to be a palindrome, before the~\str{b} ther must
+  also be $p$-many \str{a}'s.
   But $\alpha\concat\gamma$ has fewer than $p$-many \str{a}'s before the
-  \str{b}, because of the omission of $\beta$.
+  \str{b} because of the omission of $\beta$.
   So it is not a palindrome.
 \end{example}
 
 \begin{remark}
-Don't make the mistake of thinking that the prefix $\alpha\beta$ must be
-all of the string~$\str{a}^p$, and that $\gamma$ must be
-$\str{b}\concat\str{a}^p$. 
+Don't make the mistake of thinking that the prefix $\alpha\beta$ is
+all of~$\str{a}^p$ and $\gamma$ is~$\str{b}\concat\str{a}^p$. 
 The lemma only gives that $\alpha\beta$ is some prefix
 consisting only of $\str{a}$'s.
 The suffix $\gamma$ may well start with some $\str{a}$'s in addition to
-containing $\str{b}\concat\str{a}^p$.
+containing \str{b} and then~$\str{a}^p$.
 \end{remark}
 
 We introduced Finite State machines as stripped down Turing machines,
 as ones without a tape so they are simpler.
 A person might guess that the simpler machine type recognizes
 simpler languages.
-But that intuition can be misleading.
-Most people would judge that the language from
+But that intuition is misleading.
+Most people would informally judge that the language from
 \cref{ex:RegLangEvenZerosMoreThanFourOnes} is more complex
 than the following one, although the first is regular while the second is not.
 
@@ -2662,11 +2653,10 @@ than the following one, although the first is regular while the second is not.
   accepts this language.
 
   Assume otherwise.
-  Let its pumping length be~$p$ and
-  consider $\sigma=\str{0}^{p+1}\str{1}^p$.
-  Note that $\sigma\in\lang$.
-  The Pumping Lemma gives that $\sigma=\alpha\beta\gamma$, subject to the
-  three conditions.
+  Let the language's pumping length be~$p$ and
+  consider the string $\sigma=\str{0}^{p+1}\str{1}^p\in\lang$.
+  The Pumping Lemma gives the decomposition
+  $\sigma=\alpha\beta\gamma$, subject to the three conditions.
   Condition~(i) says that $\lh{\alpha\beta}\leq p$, so $\alpha$ and~$\beta$
   are made up only of \str{0}'s.
   Condition~(ii) says that $\beta$ has at least one character, necessarily
@@ -2686,11 +2676,11 @@ than the following one, although the first is regular while the second is not.
   By conditions~(i) and~(ii), all of the \str{1}'s are in~$\gamma$.
   By condition~(ii), this string has fewer \str{0}'s then does
   $\sigma$.
-  That's impossible according to the definition of~$\lang$
+  According to the definition of~$\lang$ that's impossible.
 \end{example}
 
 \begin{example}  \label{ex:BalancedParensIsNotRegularLang}
-  The language of matched parentheses
+  This language of matched parentheses is not regular.
   \begin{align*}
     \lang
     &=\set{\str{(}^n\str{)}^n\in\kleenestar{\set{\str{)},\str{(}}}\suchthat
@@ -2698,12 +2688,12 @@ than the following one, although the first is regular while the second is not.
     &=\set{\varepsilon, \str{()}, \str{(())}, \str{((()))}, 
       \str{(}^4\mspace{2mu}\str{)}^4,\, \ldots\,}
   \end{align*}
-  is not regular.
-  Assume for contradiction that it is regular, with pumping length~$p$.
+  Assume for contradiction that this languages is regular,
+  with pumping length~$p$.
   Consider $\sigma=\str{(}^p\str{)}^p\in\lang$.
-  The Pumping Lemma decomposes it into substrings
+  It decomposes into substrings
   $\sigma=\alpha\beta\gamma$ subject to the three conditions.
-  By condition~(i) the length of~$\alpha\beta$ is less than~$p$
+  By condition~(i) the length of~$\alpha\beta$ is less than or equal to~$p$
   and since $\alpha\beta$ is a 
   prefix of~$\sigma$,
   both $\alpha$ and~$\beta$ are composed
@@ -2741,7 +2731,7 @@ the Pumping Lemma results.
   by substituting the letters for the parentheses.
 \end{example}
 
-The examples so far have the same flavor.
+The examples so far all have the same flavor.
 We can also use the Pumping Lemma for differently-flavored cases.
 
 \begin{example}
@@ -2762,7 +2752,7 @@ By the Pumping Lemma, $\sigma=\alpha\beta\gamma$ subject to the
 three conditions.
 Condition~(i) 
 is that the length of~$\alpha\beta$ is less than or equal to~$p$ and
-thus $lh{\beta}\leq p$.
+thus $\lh{\beta}\leq p$.
 Condition~(ii) says that $0<\lh{\beta}$.
 Condition~(iii) is that all of the strings  $\alpha\gamma$,
   $\alpha\beta\gamma$,
@@ -2779,10 +2769,10 @@ and so $\alpha\beta^2\gamma$'s length is not a perfect square, which is
 a contradiction.
 \end{example}
 
-We can interpret the prior example
-as that Finite State machines cannnot square.
+We can informally interpret the prior example
+to be that Finite State machines cannnot square.
 Along the same lines, 
-\cref{ex:FSMCannotRecognizePlusOne} says they
+\cref{ex:FSMCannotRecognizePlusOne} says Finite State machines
 cannot recognize the successor operation and
 \cref{exer:NoFSMAcceptsPrimes} says that they
 cannot recognize primality.
@@ -2795,10 +2785,10 @@ cannot do without scratch memory.
 
 
 
+
+
+% ...................................................
 \subsection{Minimization}
-% We have seen how to go from a machine to a description of the language,
-% a regular expression.
-% We now reverse the process, and go from the language to a machine.
 Contrast these two Finite State machines.
 For each the language of accepted strings is
 $\set{\sigma\in\kleenestar{\B}\suchthat
@@ -2808,39 +2798,32 @@ $\set{\sigma\in\kleenestar{\B}\suchthat
   \hspace{3em}
   \includegraphics{automata/asy/fsa/fsa17.pdf}
 \end{center}
-Focus first on the left.
-We think of a machine's states as having a meaning.
-For instance, $q_2$ means something like,
-``have seen the needed \str{1} but still
+Our experience from building machines is that the states should have a meaning.
+For instance, on the left $q_2$ means something like,
+``have seen the needed at least one \str{1} but still
 waiting for a~\str{0}.''
-If properly designed, the machine is in state~$q_2$ if this is the case. 
+In a properly designed machine, input puts the machine in state~$q_2$
+if indeed that input has so far had at least one~\str{1} but no~\str{0}. 
 
 On the right the machine is not properly designed in this sense because
-the meaning of $q_4$ is the same.
-That is, the two states~$q_2$ and~$q_4$ have the same future.
-So, the machine on the right has redundant states.
+the meaning of $q_4$ is the same as that of~$q_2$.
+That is, the two states have the same future.
+The machine on the right has redundant states.
 
 \begin{definition}  \label{def:distinguishable}
-In a Finite State machine over a~$\Sigma$,
-two states $q,\hat{q}$ are \definend{indistinguishable}
-if for all strings
-$\sigma\in\kleenestar{\Sigma}$,
-starting the machine in state~$q$ and giving it input~$\sigma$
-ends in an accepting state if and only if
-starting the machine in~$\hat{q}$ and giving it input~$\sigma$
-also ends in an accepting state.
-We write $q\sim \hat{q}$.
-Otherwise the states are \definend{distinguishable}.
-
-Where $n\in\N$, we say that two states $q,\hat{q}$ are
-\definend{$n$-indistinguishable}
-if for any string $\sigma$ of length less than
-or equal to~$n$, starting the machine
+In a Finite State machine over~$\Sigma$,
+where $n\in\N$ we say that two states $q,\hat{q}$ are
+\definend{$n$-distinguishable}
+if there is a string $\sigma\in\kleenestar{\Sigma}$ with
+$\lh{\sigma}\leq n$ such that starting the machine
 in state~$q$ and giving it input~$\sigma$ ends in an accepting state
-if and only if starting in~$\hat{q}$  and giving it input~$\sigma$ also
-ends in an accepting state.
-We write $q\sim_{n}\hat{q}$.
-Otherwise the states are \definend{$n$-distinguishable}.
+while starting it in~$\hat{q}$ and giving it~$\sigma$ does not,
+or vice versa.
+Otherwise the states are \definend{$n$-indistinguishable, $q\sim_{n}\hat{q}$}.
+
+Two states $q,\hat{q}$ are \definend{distinguishable}
+if there is an~$n$ for which they are $n$-distinguishable.
+Otherwise they are \definend{indistinguishable, $q\sim\hat{q}$}.
 \end{definition}
 
 \begin{example}
@@ -2849,25 +2832,28 @@ Otherwise the states are \definend{$n$-distinguishable}.
   in the non-accepting state~$q_1$,
   while starting it in~$q_2$ and processing the same input ends
   in the accepting state~$q_3$.
-  So $q_0$ and~$q_2$ are distinguishable.
+  So $q_0$ and~$q_2$ are $n=1$-distinguishable, and therefore are
+  distinguishable.
   
-  Also, $q_2$ and $q_3$ are distinguishable using the length-zero
-  string~$\emptystring$.
+  Also, $q_2$ and $q_3$ are $0$-distinguishable, via~$\sigma=\emptystring$.
+  Any state that is not accepting is $0$-distinguishable from any
+  state that is accepting.
 \end{example}
 
 \begin{example}
   For the machine on the right,
-  the states $q_2$ and~$q_4$ are not distinguishable.
-  By inspection, the set of input strings that bring the
+  the states $q_2$ and~$q_4$ are indistinguishable.
+  The set of input strings that bring the
   machine from~$q_2$ to an accepting state is
   $\set{\sigma\in\kleenestar{\B}\suchthat
-    \text{$\sigma$ has the form \re{0*|(1*0*)}}}$.
-  Again by inspection, for state~$q_4$ the set of strings taking
+  \text{$\sigma$ has the form \re{0*|(1*0*)}}}$.
+  (Below we will see an algorithm but here we just work by inspection.)
+  For state~$q_4$ the set of strings taking
   it to an accepting state satisfies the same regular expression.
   
-  The states need not be equal, it is a matter of whether they are
-  accepting.
-  If $\sigma=\str{0}$
+  The states that the machine is brought to
+  need not be equal, it is a matter of whether they are accepting or not.
+  For instance, if $\sigma=\str{0}$
   then starting at $q_2$ takes the
   machine to $q_3$ while starting at $q_4$ takes the machine to $q_5$.
   This is not a distinguishing string because, while the states aren't
@@ -2883,35 +2869,35 @@ Otherwise the states are \definend{$n$-distinguishable}.
   \cref{exer:NEquivIsEquivRel}.  
 \end{proof}
 
-\citetext{Using the definition, we will now develop an algorithm}{%
+\citetext{We will give an algorithm}{%
   This is
-  \definend{Moore's algorithm}.  It is easy to understand and fine for
-  small-sized calculation but if you are writing code then be
+  \definend{Moore's algorithm}.  It is easy to understand and suitable for
+  small calculations but if you are writing code then be
   aware that another algorithm also exists, \definend{Hopcroft's algorithm}.
   See \autocite{Knuutila}.}
-that starts with a finite machine and
+that starts with a Finite State machine and
 finds from it the smallest machine that accepts the same language
 by removing the redundancies,
 by collapsing together indistinguishable states.
 This algorithm first finds all states that are
-distinguishable by the length-zero string.
+distinguishable by the length~zero string.
 It next finds all states that are distinguishable by length zero or one
 strings, etc.
-When it is done, the machine's staes have been broken into classes where
-inside each class all the states are indistinguishable.
+At the end, the machine's staes have been broken into classes where
+inside each class all of the states are indistinguishable.
 
-We saw this machine above, where we remarked that state~$q_4$ is redundant
-on~$q_2$.
+The machine below is the same as the one we saw earlier,
+where we remarked that state~$q_4$ is redundant on~$q_2$.
 By the same token, $q_5$ is redundant on~$q_3$.
 \begin{center} \label{page:MachineWithRedundantStates}
   \includegraphics{automata/asy/fsa/fsa17.pdf}
 \end{center}
-Consider which states that are indistinguishable by the length zero
+Consider first states that are indistinguishable by the length zero
 string~$\emptystring$.
 They fall into two classes,
 the non-accepting states $Q-F=\set{q_0,q_1,q_2,q_4}$
 accepting states $F=\set{q_3,q_5}$.
-We can use this notation for these equivalence classes
+We use this notation for the equivalence classes
 of the $\sim_{0}$~relation.
 \begin{equation*}
   \eclass_{0,0}=Q-F=\set{q_0,q_1,q_2,q_4}
@@ -2919,9 +2905,12 @@ of the $\sim_{0}$~relation.
   \eclass_{0,1}=F=\set{q_3,q_5}
 \end{equation*}
 
-Next we find the classes of states that are indistinguishable by
-either length zero or length one strings.
-To each state we feed the length one strings \str{0} and~\str{1}. 
+Next we find the classes of states that are $1$-indinstinguishable, that
+are indistinguishable by either length zero or length one strings.
+For each state we find where putting the machine in that state
+and feeding it the length one strings \str{0} and~\str{1} will take
+the machine.
+We only care whether the resulting state is final. 
 \begin{center}
   \begin{transitionfunction}[]
     &\str{0}  &\str{1}   \\
@@ -2949,38 +2938,56 @@ These are the $\sim_{1}$ equivalence classes.
   \eclass_{1,2}=\set{q_2,q_4}
   \quad
   \eclass_{1,3}=\set{q_3,q_5}
+  \tag{$*$}
 \end{equation*}
-Observe that the states we've described as redundant have ended
+Observe that the states we've described as redundant continue to be together
 in the same class.
 
 To get the $\sim_{2}$ classes
 we may first think to pass each length two string to each state.
-That would be annoying because
-proceeding in this way, then passing the collection of length
+Proceeding in this way, then passing the collection of length
 three strings, etc., would mean that the job grows exponentially
 since there are $2^k$ strings of length~$k$.
-However, now comes the key observation.
-Suppose that two states $q,\hat{q}$
-are $2$-distinguishable but not $1$-distinguishable.
-Then where $\sigma$ is a distinguishing string,
-these two states must be distinguished by $\sigma$'s final character,
+However:~if two states $q,\hat{q}$
+are $2$-distinguishable but not $1$-distinguishable
+then where $\sigma$ is a distinguishing string,
+these two states must be distinguished by $\sigma$'s final character
 because if an earlier character would do then they would be
 $1$-distinguishable.
-
-In general, imagine two states $q,\hat{q}$ that are
-$n+1$-distinguishable but not $n$-distinguishable.
-Suppose a distinguishing string is 
+In general, let two states $q,\hat{q}$ be
+$n+1$-distinguishable but not $n$-distinguishable and
+suppose that a distinguishing string is 
 $
  \sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}=\sigma_0\concat s_n 
 $.
 If $\sigma_0$ brings the machine from $q$ to a state in some
-class $\eclass_{n,i}$, then
+class then
 $\sigma_0$ must bring the machine from $\hat{q}$ to the same class
-$\eclass_{n,i}$, or else the states $q$ and $\hat{q}$
-would be $n$-distinguishable.
+or else the states $q$ and $\hat{q}$ would be $n$-distinguishable.
 It is the final character~$s_n$ that distinguishes the two states.
-Therefore, we need only test the single characters
+Therefore, we need only test single characters
 to see if they split the equivalence class  $\eclass_{n,i}$'s.
+
+Continuing with this example, we calculate whether the classes from
+equation~($*$) split any further.
+These are the relevant subsets of the table.
+\begin{center}
+  \begin{transitionfunction}[]
+    &\str{0}  &\str{1}   \\
+    \cline{2-3}
+    $q_2$      &$F$    &$Q-F$    \\
+    $q_4$      &$F$    &$Q-F$    
+  \end{transitionfunction}
+  \qquad  
+  \begin{transitionfunction}[]
+    &\str{0}  &\str{1}   \\
+    \cline{2-3}
+    $q_3$      &$F$    &$F$    \\
+    $q_5$      &$F$    &$F$    
+  \end{transitionfunction}
+\end{center}
+In neither case does the class split,
+so we stop. 
 
 \begin{example}
   We will find a machine that accepts the same language as this one but
@@ -2988,15 +2995,14 @@ to see if they split the equivalence class  $\eclass_{n,i}$'s.
   \begin{center}
     \includegraphics{automata/asy/min/min03.pdf}
   \end{center}
-  To keep the books we will use a sequence of tables.
-  These tables are lower-triangular because they have an entry for 
+  To keep the books we will use a sequence of tables like the one below.
+  They have an entry for 
   every two-element set of state indices $\set{i,j}$
   with $i,j\in\set{0,\,\ldots 5}$ and  $i\neq j$.
   
-  The starting table marks the $i,j$~entries
-  where
-  one of the two states $q_i$ and~$q_j$ is accepting and the other is not.
-  That is, the \ck{} marks pairs of states that are $0$-distinguishable.
+  Start by marking the $i,j$~entries for
+  state pairs that are $0$-distinguishable, that is, 
+  where one of $q_i,q_j$ is accepting while the other is not.
   \begin{center} 
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{0}   &    &    &    &    &    \\
@@ -3013,23 +3019,31 @@ to see if they split the equivalence class  $\eclass_{n,i}$'s.
       \cline{1-5}      
     \end{minimizetable}
    \end{center}
-   That leaves the blanks entries
-   for the state pairs that are $0$-indistinguishable.
+   The blanks entries
+   mark state pairs that are $0$-indistinguishable.
    So~$\sim_{0}$, which as a binary relation is a set of pairs,
-   is this.\footnote{Since in a set repeats collapse we can rewrite some of these. For instance, $\set{q_0,q_0}=\set{q_0}$.  But as written they are correct, and also conform to the word ``pairs.''}
+   is below.
+   (The table doesn't bother with the $q_i,q_i$ boxes, because
+   a state is indistinguishable from itself.
+   In the relation below these are written $\set{q_0,q_0}$. 
+   Of course in a set repeats collapse so we could rewrite, e.g.,
+   $\set{q_0,q_0}$ as $\set{q_0}$,
+   but as written they are correct and also fit with
+   \cref{lem:CorrectnessOfMooresAlgorithm}.)
    \begin{multline*}
      \sim_{0}=\bigl\{\set{q_0,q_0},\,\set{q_0,q_3},\,\set{q_0,q_4},\,
        \set{q_3,q_3},\,\set{q_3,q_4},\,\set{q_4,q_4}, \bigr.       \\
      \bigl. \set{q_1,q_1},\,\set{q_1,q_2},\,\set{q_1,q_5},\,
      \set{q_2,q_2},\,\set{q_2,q_5},\,\set{q_5,q_5} \bigr\}
    \end{multline*}
-   To break $\sim_{0}$ into the equivalence classes,
-   in the triangular table look in $i$'s row and column for the~$j$'s 
-   where entry $i,j$ or~$j,i$ is blank.
-   For instance, the equivalence class for $q_0$ also contains $q_3$ and~$q_4$.
+   Form the $\sim_{0}$-equivalence classes by 
+   finding entries~$i,j$ that are blank, and then $q_i$ is $0$-equivalent
+   to~$q_j$.
+   For instance, the equivalence class containing $q_0$ also contains
+   $q_3$ and~$q_4$ because the boxes $0,2$ and~$0,3$ are blank.
    Similarly, the equivalence class containing $q_2$ also contains $q_1$
    and~$q_5$.
-   Here are the two $\sim_{0}$ equivalence classes.
+   Here are the two $\sim_{0}$-equivalence classes.
    \begin{equation*}
      \eclass_{0,0} =\set{0,3,4}
      \qquad
@@ -3234,8 +3248,9 @@ the $\sim$ equivalence classes.
   Let $\FSM$ be a Finite State machine over the alphabet~$\Sigma$.
   For this sequence of binary relations among the states
   \begin{align*}
-    &\mathcal{R}_0=\set{\set{q,\hat{q}}\in Q_{\FSM}^2\suchthat \text{both are accepting or neither is accepting}}   \\
-    &\mathcal{R}_{k+1}=\set{\set{q,\hat{q}}\in\mathcal{R}_{k}\suchthat
+    \mathcal{R}_0&=\set{\set{q,\hat{q}}\in Q_{\FSM}^2\suchthat \text{both are accepting or neither is accepting}}   \\
+                 &\shortvdotswithin{=}   
+    \mathcal{R}_{k+1}&=\set{\set{q,\hat{q}}\in\mathcal{R}_{k}\suchthat
       \text{$\set{\Delta(q,x),\Delta(\hat{q},x)}\in\mathcal{R}_{k}$
       for all $x\in\Sigma$}}
   \end{align*}
@@ -3253,16 +3268,17 @@ the $\sim$ equivalence classes.
 \end{lemma}
 
 \begin{proof}
-  For property~(1), we 
-  first show that if two states are
-  $\mathcal{R}_k$-distinguishable then they are $\sim_{k}$-distinguishable, 
-  by induction on~$k$.
-  The $k=0$ base step is simple:~\cref{def:distinguishable}
+  Half of property~(1) is to  
+  show that if two states are
+  $\mathcal{R}_k$-distinguishable then they are $\sim_{k}$-distinguishable.
+  We do induction on~$k$.
+  For the $k=0$ base step, \cref{def:distinguishable}
   says that states are
   $0$~indistinguishable if and only if either both are accepting states
   or neither is, which is the definition of~$\mathcal{R}_{0}$.
-  For the inductive step suppose that for all $i\leq k$ we have 
-  $\mathcal{R}_{i}$ equals $\sim_{i}$ and consider the $k+1$~case.
+  The inductive step supposes that $\mathcal{R}_{i}$ equals $\sim_{i}$
+  for all $i\leq k$  
+  and considers the $k+1$~case.
   Let  $q$ and~$\hat{q}$ be $\mathcal{R}_{k+1}$~distinguishable.
   Then there is a character $x\in\Sigma$ such that the pair
   $\set{\Delta(q,x), \Delta(\hat{q},x)}$ was marked at some
@@ -3272,14 +3288,14 @@ the $\sim$ equivalence classes.
   Then the string $\sigma=x\concat\tau$ has length at most~$k+1$ and
   will $\sim_{k+1}$~distinguish $q$ from $\hat{q}$.
   
-  The other half of~(1) is proving
+  The other half of~(1) is to show
   that if two states are are $\sim_{k+1}$-distinguishable. 
   then they are $R_{k+1}$-distinguishable.
   We will use induction
   on the length~$k$ of the distinguishing string.
-  The $k=0$ base step is, as in the prior paragraph,
-  simply that $\sim_{0}$ and~$\mathcal{R}_0$ are equal by definition.
-  For the inductive step suppose that the length of $\sigma$ is $\ell+1$,
+  The $k=0$ base step is again
+  that $\sim_{0}$ and~$\mathcal{R}_0$ are equal by definition.
+  For the inductive step suppose that the length of $\sigma$ is $\ell+1$
   and suppose also the hypothesis
   that for all $j\leq \ell$ if two states are
   $\sim_{j}$-distintguishable then they are $\mathcal{R}_{j}$-distinguishable.
@@ -3294,20 +3310,20 @@ the $\sim$ equivalence classes.
   the pair $q,\hat{q}$ is $\mathcal{R}_{k+1}$-distinguishable,
   via the character~$x$.
 
-  Property~(2) is the observation that all of the elements of
+  Property~(2) holds because all of the elements of
   $\mathcal{R}_{k+1}$ are elements of~$\mathcal{R}_k$, by definition.
   
   For the first half of~(3),
-  as the examples illustrate, at each iteration we split 
-  equivalence classes and that can continue happening
-  only until each states is alone in its class.
+  as the examples illustrate, each iteration splits 
+  equivalence classes and that can only happen
+  each states is alone in its class.
   The worst case
   starts with a single class and at each iteration pulls out
   one state.
-  The ``furthermore'' part of~(3) holds because if none of the
+  The ``furthermore'' of~(3) holds because if none of the
   two-element sets of $\mathcal{R}_{n+1}$ differ from those of~$\mathcal{R}_n$
   then they must be the same at the next iteration,
-  because it is the same operation.
+  simply because it is the same operation.
 
   Property~(4) follows from the prior properties, and
   \cref{def:distinguishable}.
@@ -3316,6 +3332,36 @@ the $\sim$ equivalence classes.
 
 
 \begin{exercises}
+\begin{exercise}
+True or false.
+\begin{exparts}
+\item Every regular language is finite.
+\item Over $\kleenestar{\B}$, the empty language is not regular.
+\item Over $\kleenestar{\B}$, the language of all strings, $\kleenestar{\B}$,
+  is not regular.
+\item Every regular language is countable.
+\item Every Finite State machine accepts at least one string.
+\item For every Finite State machine there is one that has fewer
+  states but accepts the same language.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item False.
+The language $\set{\str{a}^n\suchthat n\in\N}$ is regular, and is infinite.
+\item False, the empty language is accepted by any Finite State machine
+that has no accepting states.
+\item False, the set of all strings is accepted by any Finite State machine
+whose states are all accepting states.
+\item False.
+Over $\kleenestar{\B}$ the language of all strings $\lang=\kleenestar{\B}$
+is regular, and is uncountable.
+\item False, a Finite State machine with no accepting states does not
+accept any strings.
+\item False, a minimal machine cannot be further reduced.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
   \begin{exercise}
     Show that each language is not regular.
     \begin{exparts}
@@ -3718,14 +3764,14 @@ the $\sim$ equivalence classes.
 % "Stacks are overrated" Guy Steele https://www.youtube.com/watch?v=agw-wlHGi0E
 A Finite State machine cannot accept a language of balanced parentheses.
 That makes it not powerful enough to use, for instance,
-if you want to tests inputs to see if they valid programs in a
+if you want to decide whether input strings are valid programs in a
 modern programming language.
 The natural data structure to handle nested parentheses is a stack.
 So we will introduce a machine type consisting of a finite state
 control attached to a device that is a pushdown stack.
 
-A stack is a data structure that
-is linear, like a list, but where you don't have random access to
+A stack is like a list in that it is 
+is linear, but you don't have random access to
 the elements.
 It is like the resturant dish dispenser shown below on the left.
 When you take a dish off the top then a spring inside pushes up the 

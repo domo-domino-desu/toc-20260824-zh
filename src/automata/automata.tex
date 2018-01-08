@@ -3762,7 +3762,7 @@ accept any strings.
 % =============================================
 \section{Pushdown machines}
 % "Stacks are overrated" Guy Steele https://www.youtube.com/watch?v=agw-wlHGi0E
-A Finite State machine cannot accept a language of balanced parentheses.
+A Finite State machine cannot accept the language of balanced parentheses.
 That makes it not powerful enough to use, for instance,
 if you want to decide whether input strings are valid programs in a
 modern programming language.
@@ -3770,13 +3770,12 @@ The natural data structure to handle nested parentheses is a stack.
 So we will introduce a machine type consisting of a finite state
 control attached to a device that is a pushdown stack.
 
-A stack is like a list in that it is 
-is linear, but you don't have random access to
-the elements.
+A stack is like a list in that the data is lined up in a row.
+However, with a stack you don't have random access to the elements.
 It is like the resturant dish dispenser shown below on the left.
-When you take a dish off the top then a spring inside pushes up the 
-remaining dishes so you now have access to the next one.
-The reverse happens when you put a new dish on; the spring gets compressed
+When you take one dish off the top then a spring pushes the 
+remaining dishes up, so you get access to the next one.
+The reverse happens when you pop a new dish on; the spring gets compressed
 so all the old dishes side down and
 the new dish becomes the only one that is accessible.
 
@@ -3784,10 +3783,12 @@ Similarly, you can push a piece of data onto the top of our
 stack device, or you can pop the top element.
 We say that this stack is LIFO:~Last-In, First-Out.
 
-Below on the right is a stack.
-It starts with three characters, \str{g3}, \str{g0}, and~\str{g2}.
-Next we push \str{g1} on the stack, and then \str{g0}.
-At this point, to get access to the \str{g1} we  must first pop off 
+Below on the right is a sequence of views of a stack data structure.
+It starts with three characters on the stack, \str{g3}, \str{g0}, and~\str{g2}.
+We push \str{g1} on the stack, and then \str{g0}.
+At this point, although \str{g1} is on the stack we don't have immediate
+access to it.
+to get at \str{g1} we  must first pop off 
 \str{g0}, as in the last stack shown.
 \begin{center}
   \vcenteredhbox{\includegraphics[height=1.1in]{automata/dishes.jpg}}
@@ -3801,15 +3802,17 @@ At this point, to get access to the \str{g1} we  must first pop off
   \vcenteredhbox{\includegraphics{automata/asy/machine/machine05.pdf}}
 \end{center}
 Once something is popped, it is gone.
-We can have a state in the control whose intuitive meaning is, say, that
-we just popped~$\str{g0}$, but obviously with a finite control 
-that strategy has limits.
+The machine could have a state in the control whose intuitive meaning is,
+say, that we just popped~$\str{g0}$, but since the control 
+is finite, that strategy has limits.
 
+Like a Turing machine tape, a stack is unbounded storage.
+But it comes with restrictions that the tape does not have.
 
 
 \subsection{Definition}
-We will extend the definition of Finite State machines.
-We start with deterministic machines.
+We will extend the definition of Finite State machines, starting
+with deterministic machines.
 
 \begin{definition}
 A \definend{Pushdown machine}
@@ -3826,9 +3829,10 @@ $\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\time
   \includegraphics{asy/share/machine03.pdf}
 \end{center}
 
-As with Finite State machines, Pushdown machines
-only consume the tape characters and so the tape head is read only.
-However these machines can fail to halt; see \cref{exer:PDANoHalt}.
+As with Finite State machines, Pushdown machines don't write to the tape but
+only consume the tape characters.
+However, unlike Finite State machinces these can fail to
+halt; see \cref{exer:PDANoHalt}.
 
 We will assume that the stack alphabet~$\Gamma$ contains the character $\bot$
 (read that as ``bottom'') that we use to mark the stack bottom.
@@ -3853,24 +3857,25 @@ then an instruction
 $\Delta(q_i,s,g_j)=\sequence{q_k,\gamma}$
 applies when the machine is in state~$q_i$ with the tape head reading
 $s$ and with the character $g_j$ on top of the stack.
-(If there is no such instruction then the computation ceases, with the
-input string not accepted.)
-If there is one such instruction then
+If there is no such instruction then the computation halts, with the
+input string not accepted.
+If there is such an instruction then
 the machine does this:~(i)~the read head moves one cell to the right,
 (ii)~the machine pops $g_j$ off the stack,
 and pushes the characters of the string
 $\gamma=\sequence{g_{i_0},\ldots\,g_{i_m}}$ onto the stack in the order
 from $g_{i_m}$ first to $g_{i_0}$ last,
 and (iii)~the machine enters state $q_k$.
-The other case for inputs is when the character $s$ is $\varepsilon$.
-In this case everything is the same except that the tape head does not move.
-We use this to manipulate the stack without consuming any input. 
+The other case for inputs $\sequence{q_i,s,g_j}$
+is when the character $s$ is $\varepsilon$.
+Everything is the same except that the tape head does not move.
+We use this case to manipulate the stack without consuming any input. 
 
 The starting configuration has the machine in state~$q_0$,
 reading the first character
 of~$\sigma\in\kleenestar{\Sigma}$,
 and with the stack containing only~$\bot$.
-A machine accepts its input~$\sigma$ if, after it is started
+A machine accepts its input~$\sigma$ if, after starting
 in its starting configuration and after scanning all of~$\sigma$,
 it eventually enters an accepting state $q\in F$.
 
@@ -3905,14 +3910,14 @@ This machine has
 states $Q=\set{q_0,q_1,q_2}$ with accepting states $F=\set{q_1}$,
 and languages $\Sigma=\set{\text{\str{[}},\text{\str{]}}}$
 and $\Gamma=\set{\text{\str{g0}},\bot}$.
-The table gives its transition function~$\Delta$.
-% the lines are numbered for ease of reference.
+The table gives its transition function~$\Delta$,
+with the instructions numbered for ease of reference.
 \begin{center}
 \begin{tabular}{r|ll}
-  \multicolumn{1}{r}{\tabulartext{\ }}
+  \multicolumn{1}{r}{\tabulartext{Instr no}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-  \cline{2-3}
+  \hline
   $0$  &$q_o,\text{\str{[}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
   $1$  &$q_o,\text{\str{[}},\text{\str{g0}}$  &$q_0,\text{`\str{g0g0}'}$ \\
   $2$  &$q_o,\text{\str{]}},\text{\str{g0}}$  &$q_0,\varepsilon$ \\
@@ -3925,8 +3930,8 @@ It keeps a running tally of the number of
 the number of \str{g0}'s on the stack.
 This computation starts with the input \str{[[]][]}
 and ends in an accepting state.
-(The stack is drawn side-to-side instead of vertically just to
-fit the table on a single page.)
+% (The stack is drawn side-to-side instead of vertically just to
+% fit the table on a single page.)
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{automata/asy/machine/machine06.pdf} \\
@@ -3966,14 +3971,14 @@ It enters $q_1$ and starts popping;
 when reading~\str{a} it checks that the popped character is~\str{g0},
 and 
 when reading~\str{b} it checks that what popped is~\str{g1}.
-If the machine finds the stack bottom at the same moment that the input
+If the machine hits the stack bottom at the same moment that the input
 runs out, then it goes into the accepting state~$q_3$.
 \begin{center}
 \begin{tabular}{r|ll}
-  \multicolumn{1}{r}{\tabulartext{}}
+  \multicolumn{1}{r}{\tabulartext{Instr no}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-  \cline{2-3}
+  \hline
   $0$  &$q_0,\text{\str{a}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
   $1$  &$q_0,\text{\str{b}},\bot$             &$q_0,\text{`\str{g1}$\bot$'}$ \\
   $2$  &$q_0,\varepsilon,\bot$                &$q_3,\varepsilon$ \\
@@ -3986,10 +3991,10 @@ runs out, then it goes into the accepting state~$q_3$.
 \end{tabular}
 \hspace{2em}
 \begin{tabular}{r|ll}
-  \multicolumn{1}{r}{\tabulartext{Line}}
+  \multicolumn{1}{r}{\tabulartext{Instr no}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-  \cline{2-3}
+  \hline
   $9$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
   $10$ &$q_1,\text{\str{a}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
   $11$ &$q_1,\text{\str{a}},\bot$             &$q_2,\varepsilon$ \\
@@ -4030,10 +4035,12 @@ The second alteration changes the
 transition function~$\Delta$.
 We now allow the same input to give different outputs,
 $\map{\Delta}{Q\times (\Sigma\cup\set{\varepsilon})\times \Gamma}{\powerset({Q\times\kleenestar{\Gamma}})}$.
-We can conceptualize that the machine chooses one of the outputs, or that
-the computation evolves as a tree.
 (If the set of outputs is empty then we take the machine to freeze,
 resulting in a computation that does not accept the input.)
+As always with nondeterminism, 
+we can conceptualize this either as that the 
+the computation evolves as a tree or as that the machine chooses one
+of the outputs.
 
 \begin{example} \label{ex:PDAForPalindromes}
 This grammar generates the language of all palindromes
@@ -4046,7 +4053,7 @@ over $\kleenestar{\B}$.
 The language~$\lang_{\text{PAL}}$ is not accepted by any Finite State machine;
 see \cref{exer:PanindromesNotRegularLang}.
 But it is accepted by a Pushdown machine.
-It has
+This machine has
 states $Q=\set{q_0,q_1,q_2}$ and accepting states $F=\set{q_2}$,
 languages $\Sigma=\B$
 and $\Gamma=\set{\text{\str{g0}},\str{g1},\bot}$,
@@ -4066,10 +4073,10 @@ It guesses.
 
 \begin{center}
 \begin{tabular}[t]{r|ll}
-  \multicolumn{1}{r}{\tabulartext{\ }}
+  \multicolumn{1}{r}{\tabulartext{Instr no}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-  \cline{2-3}
+  \hline
   $0$  &$q_o,\text{\str{0}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
   $1$  &$q_o,\text{\str{1}},\bot$             &$q_0,\text{`\str{g1}$\bot$'}$ \\
   $2$  &$q_o,\varepsilon,\bot$                &$q_2,\varepsilon$ \\
@@ -4082,10 +4089,10 @@ It guesses.
 \end{tabular}
 \hspace{3em}
 \begin{tabular}[t]{r|ll}
-  \multicolumn{1}{r}{\tabulartext{\ }}
+  \multicolumn{1}{r}{\tabulartext{Instr no}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-  \cline{2-3}
+  \hline
   $9$  &$q_o,\text{\str{1}},\text{\str{g0}}$  &$q_1,\text{`\str{g1}\str{g0}'}$ \\
   $10$ &$q_o,\text{\str{1}},\text{\str{g1}}$  &$q_1,\text{`\str{g1}\str{g1}'}$ \\
   $11$  &$q_o,\text{\str{0}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
@@ -4099,13 +4106,14 @@ It guesses.
 \end{tabular}
 \end{center}
 For an instance of nondeterminism
-compare line~$3$ and~$7$, which show the same input associated with
+compare instructions~$3$ and~$7$,
+which show the same input associated with
 two different outputs.
 (We list multiple outputs on multiple lines for ease of reference.)
 
 This computation shows the machine
 accepting the string \str{0110}.
-It uses lines $0$, $9$, $16$, and~$17$ from the $\Delta$ tables.
+It uses the instructions numbered $0$, $9$, $16$, and~$17$.
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{automata/asy/machine/machine14.pdf} \\
@@ -4115,7 +4123,7 @@ It uses lines $0$, $9$, $16$, and~$17$ from the $\Delta$ tables.
     4 &\tapegraphic{automata/asy/machine/machine18.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-Here the machine accepts \str{01010} using instruction lines
+Here the machine accepts \str{01010} using instructions
 $0$, $4$, $12$, $16$, and~$17$.
 \begin{tapesequence}
   \begin{tapesequencetable}
@@ -4126,32 +4134,36 @@ $0$, $4$, $12$, $16$, and~$17$.
     4 &\tapegraphic{automata/asy/machine/machine23.pdf} \\
     5 &\tapegraphic{automata/asy/machine/machine24.pdf} \\
   \end{tapesequencetable}
-\end{tapesequence}
-In those two computations a key is the role of nondeterminism.
-In the first, 
+  \end{tapesequence}
+  
+The nondeterminism is crucial.
+In the first example, 
 after step~$1$ the machine is in state~$q_0$, is reading a~\str{1},
 and the character that will be popped off the stack is~\str{g0}.
-Both instruction lines~$3$ and~$9$ apply to that configuration.
-Applying line~$3$
-would not lead to accepting the input string.
-The computation shown instead applies line~$9$, going to
+Both instructions~$3$ and~$9$ apply to that configuration.
+But, applying instruction~$3$
+would not lead to the machine accepting the input string.
+The computation shown instead applies instruction~$9$, going to
 state~$q_1$, whose intuitive meaning is that the machine switches from
 pushing to popping.
 
-We have given two ways to view nondeterminism.
+We have given two mental models of nondeterminism.
 One is that the machine guesses when to switch, and that for this
 even-length string making that switch halfway through is the right guess.
 We say the string is accepted because there exists a guess that is correct,
-that ends in acceptance
-(that there are incorrect guesses is not relevant).
-The other view of nondeterminism omits guessing and instead
-takes the comptuation to be a tree.
-In one branch the machine applies line~$3$ and in another
-it applies line~$9$,
-and there the string is accepted since there is at least one accepting
-branch (we've shown that one).
+that ends in acceptance.
+(That there exist incorrect guesses is not relevant.)
 
-Odd length strings are different.
+Taking the other view of nondeterminism omits guessing and instead
+sees the computuation as a tree.
+In one branch the machine applies instruction~$3$ and in another
+it applies instruction~$9$.
+By definition, for this machine the string is accepted
+because there is at least one accepting
+branch (the above table of the sequence of configurations
+shows the tree's accepting branch).
+
+Input strings with odd length are different.
 In the language of guessing, the machine needs to guess
 that it must switch from pushing to popping at the middle character,
 but it must not push anything onto the stack since that thing would
@@ -4163,16 +4175,31 @@ The net effect is that in this turn around from pushing to popping
 the stack is unchanged.
 \end{example}
 
-So Pushdown machines are intermediate between Turing machines
+Intuitively, Pushdown machines are between Turing machines
 and Finite State machines in that
 they have a kind of unbounded read/write memory, but it is limited.
-One way in which they differ from Finite State machines is that
-while deterministic Finite State machines can do
-any jobs that nondeterministic ones can do,
-for Pushdown machines there are
-nondeterministic ones that can do jobs
-no deterministic one can do.
+We've proved that they are more powerful than Finite State machines
+because they can recognize the language of balanced parentheses.
 
+There are two further results that we will mention but, in the interests of
+time, not prove.
+
+The first is that there are jobs that Turing machines can do but no
+Pushdown machine can do.
+One is to accept the language
+$\set{\sigma\concat\sigma\suchthat \sigma\in\kleenestar{\B}}$.
+Obviously a Turing machine can accept that language.
+We can use a Pushdown Pumping Lemma to show no Pushdown machine can
+accept it.
+
+The second result differentiates what happens for nondeterminism with
+Finite State machines from what happens with Pushdown machines.
+We've proved that deterministic Finite State machines can do
+any jobs that nondeterministic ones can do.
+But, as the presentation above suggests,
+while nondeterministic Pushdown machines can accept the langauge of
+palindromes, that job cannot be done by deterministic Pushdown machines.
+So, for Pushdown machines, nondeterminism changes what can be done.
 
 
 
@@ -4182,22 +4209,23 @@ no deterministic one can do.
 In the section on Grammars, \Cref{sec:Grammars}, we restricted our attention
 to production rules where the head consists of a single nonterminal, such
 as \mbox{S \produces{} \str{c}S}.
-An example of a rule where the head contains other stuff is
+An example of a rule where the head is not of that form is
 \mbox{\str{c}S\str{b} \produces{} \str{a}S}.
 With this rule we can substitute for~S only if it is
 preceded by~\str{c} and followed by~\str{b}.
 A grammar with rules of this type is called \definend{context sensitive}
-because substitutions are in a context.
+because substitutions can only be done in a context.
 
 If a language has a grammar in which all the rules are of the first type,
-of the type we described in \Cref{sec:Grammars},
+of the type we described in Chapter~III's \Cref{sec:Grammars},
 then it is a \definend{context free} language.
-Most modern programming languages are context free;
-there is a grammar generating the set of all valid programs
-in such a language.
-This lists includes C, Java, and Python.
+Most modern programming languages are context free,
+including C, Java, Python, and Scheme.
+So grammars without the restriction of being context free
+are much less common in practice.
 
-We will state but not prove the connection with this section:~a
+We will state, but not prove in the interests of time,
+the connection with this section:~a
 language is accepted by some nondeterministic Pushdown machine
 if and only if it has a context free grammar.
 
@@ -4843,13 +4871,134 @@ I'll use regular expressions."  Now they have two problems.
 % '^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'
 \begin{exercises}
 \begin{exercise}
-Regex crossword.
+Give a regular expression (using the form of the above discussion) to
+accept a string for each description.
+\begin{exparts}
+\item Containing the substring \str{abe}.
+\item Containing only upper and lower case ASCII letters and digits.
+\item Containing a string of between one and three digits.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item \re{.*abe.*}
+Note that in practice you often can just write \re{abe}; see your
+language's regular expression documentation.
+\item \re{[a-zA-Z0-9]*}
+\item \re{[^]}
+\end{exparts}
+\end{answer}
 \end{exercise}
+
+\begin{exercise}
+Give a regular expression (using the form of the above discussion)
+for each job (you can find exact descriptions on the web).
+\begin{exparts}
+\item Accept US phone numbers
+\item Accept ISO 8601 hours, minutes, seconds (with optional time zone)
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item \re{^[2-9]\d{2}-\d{3}-\d{4}$}
+or \re{((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}}
+\item \re{^(2[0-3]|[01][0-9]):?([0-5][0-9]):?([0-5][0-9])(Z|[+-](?:2[0-3]|[01][0-9])(?::?(?:[0-5][0-9]))?)$}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+The Roman numerals taught in grade school use the letters I, V, X, L, C, D,
+and~M to represent 1, 5, 10, 50, 100, 500, and 1000.
+They are written in descending order of magnitude, from M to~I, and are
+written greedily so that we don't write six I's but rather VI.
+Thus, the date written on the book held by the Statue of Liberty is 
+MDCCLXXVI, for 1776.  
+Further, we replace IIII with IV, and replace VIIII with IX.
+Give a regular expression for valid Roman numerals less than 5000.
+\begin{answer}
+\re{'^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+\definend{Regex golf} is where you are given to lists and want to find a
+regex that matches all the words in the first list but none of the
+words in the second.
+The `golf' aspect is that the person who finds the shortest one wins.
+See \url{https://alf.nu/RegexGolf}.
+Try these: accept the words in the first list and not the words in the second.
+\begin{exparts}
+\item Accept: Arthur, Ester, le~Seur, Silverter
+
+Do not accept: Bruble, Jones, Pappas, Trent, Zikle
+
+\item Accept: alight, bright, kite, mite, tickle
+
+Do not accept: buffing, curt, penny, tart
+
+\item Accept: afoot, catfoot, dogfoot, fanfoot, foody, foolery, foolish,
+fooster, footage, foothot, footle, footpad, footway, hotfoot, jawfoot,
+mafoo, nonfood, padfoot, prefool, sfoot, unfool
+
+Do not accept: Atlas, Aymoro, Iberic, Mahran, Ormazd, Silipan, altared,
+chandoo, crenel, crooked, fardo, folksy, forest, hebamic, idgah, manlike,
+marly, palazzi, sixfold, tarrock, unfold
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item \re{.*r}
+\item \re{.*i.*t.*}
+\item \re{.*foo.*}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Most operating systems come with file that has a list of words, which can
+be used for spell-checking, etc.
+For instance, on Linux you can find it by running the commmand
+\str{locate words | grep dict}.
+Use that file to find how many words fit the criteria.
+\begin{exparts*}
+\item contains the letter \str{a}
+\item starts with~\str{A}
+\item contains \str{a} or~\str{A}
+\item contains \str{X}
+\item contains \str{x} or~\str{X}
+\item contains the string \str{st}
+\item contains the string \str{ing}
+\item contains an~\str{a}, and later a~\str{b}
+\item contains none of the usual vowels \str{a}, \str{e}, \str{i}, \str{o}
+  or~\str{u}
+\item contains all the usual vowels
+\item contains all the usual vowels, in ascending order
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+In a \definend{regex crossword} each row and column has a regular expression.
+You have to find strings for those rows and columns that meet the constraints.
+Try this small one.
+\begin{center}
+% \newsavebox{\regexcwordcolone} \savebox{\regexcwordcolone}{\re{[\^{}SPEAK]+}}
+% \newsavebox{\regexcwordcoltwo} \savebox{\regexcwordcoltwo}{\re{EP|IP|EF}}
+\begin{tabular}{r|c|c|}
+  \multicolumn{1}{r}{\ }
+                &\multicolumn{1}{c}{\rotatebox{90}{\re{[\^{}SPEAK]+}}}
+                &\multicolumn{1}{c}{\rotatebox{90}{\re{EP|IP|EF}}}  \\
+  \cline{2-3}
+  \re{HE|LL|O+}  &  & \\ \cline{2-3}
+  \re{[PLEASE]+} &  & \\ \cline{2-3}
+\end{tabular}
+\end{center}
+\end{exercise}
+\begin{answer}
+\HELP
+\end{answer}
 \end{exercises}
 
 
 
-\extra{Neural nets}
+% \extra{Neural nets}
 % \margingraphic{0.2\textwidth}{automata/mccullochpitts.png}{\label{fig:mcculloghpitts}\href{http://nautil.us/issue/21/information/the-man-who-tried-to-redeem-the-world-with-logic}{Warren McCulloch 1898--1969, Walter Pitts 1923--1969}}
 % \begin{exercise}
 % % Exercise http://djm.cc/fsquad/firing.html
@@ -4887,10 +5036,10 @@ Regex crossword.
 % \end{answer}
 % \end{exercise}
 
-\extra{XML}
-\begin{center} % https://xkcd.com/1144/
-  \includegraphics[scale=0.50]{automata/xkcdtags.png}
-\end{center}
+% \extra{XML}
+% \begin{center} % https://xkcd.com/1144/
+%   \includegraphics[scale=0.50]{automata/xkcdtags.png}
+% \end{center}
 
 
 \extra{The Myhill-Nerode Theorem}

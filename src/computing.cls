@@ -36,6 +36,7 @@
 \RequirePackage[dvipsnames]{xcolor}
 \include{colorscheme}  % change the color scheme
 \RequirePackage{graphicx}
+
 \usepackage{adjustbox} % for clipping pictures
 
 \usepackage{etoolbox}

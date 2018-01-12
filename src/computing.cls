@@ -252,7 +252,7 @@
 % Chapters
 % As with sections, put the numbering in the margin using a marginpar
 % (actually a marginnote that has been hacked to always be on the left).
-% \renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
+\renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
 % \newcommand{\jhchapter@nostar}{
 %   % Record that we are not inside an Extra section.
 %   % For more info search for "EXTRA SECTION TOGGLE".
@@ -373,6 +373,7 @@
 \usepackage{titlesec}
 
 % Chapter
+% Main part chapters
 \newcounter{jhchapter}
   \newcommand{\thejhcounter}{\Roman{jhchapter}}
 \titleclass{\jhchapter}{straight}[\part]
@@ -388,11 +389,33 @@
   {1.0ex plus 0.3ex minus 0.06ex}% after sep
   % [] % right sep
 
+% jhchapter for notes and biblio  
+\newcounter{jhchapterstarred}
+  \newcommand{\thejhcounterstarred}{\relax}
+\titleclass{\jhchapterstarred}{straight}[\part]
+\titleformat{\jhchapterstarred}[display]%
+  {\normalfont\Large\bfseries}%  title format
+  {}% label
+  {0em}% sep
+  {}% before code
+  %[] % after-code
+\titlespacing*{\jhchapterstarred}
+  {0pt}% left
+  {4.85ex plus 1.5ex minus 0.3ex}% before sep
+  {1.0ex plus 0.3ex minus 0.06ex}% after sep
+  % [] % right sep
+
 % TOC
   \def\toclevel@jhchapter{0}
+  \def\toclevel@jhchapterstarred{0}
+  % l@jhchapter is defined elsewhere to make roman numeral
   % \def\l@jhchapter{\@dottedtocline{0}{0em}{1.5em}}
+  % Don't want two TOC entries for Notes and Biblio
+  % \def\l@jhchapterstarred{\@dottedtocline{0}{0em}{1.5em}}  Don't want 
+  \newcommand{\l@jhchapterstarred}[2]{\relax}
 
-\renewcommand{\chapter}[1]{%
+% \renewcommand{\chapter}[1]{%
+\newcommand{\jhchapter@nostar}[1]{%
   \stepcounter{chapter}%
   \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
@@ -404,6 +427,20 @@
   \pagestyle{bookbody}%
   \thispagestyle{bookemptypage}%
   \jhchapter{#1}}
+  
+% Starred chapter
+\newcommand{\jhchapter@star}[1]{%
+  \stepcounter{chapter}%
+  \addcontentsline{toc}{chapter}{\protect\numberline{\protect\hspace{\cftchapnumwidth} #1}}
+  \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
+  \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
+  \renewcommand{\thesubsection}{\arabic{subsection}}%
+  \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
+  \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
+  % 
+  \pagestyle{bookbody}%
+  \thispagestyle{bookemptypage}%
+  \jhchapterstarred{#1}}
 \renewcommand{\thechapter}{\Roman{chapter}}
 
 % Section
@@ -958,6 +995,9 @@
     \jhendnoteshook
     \input{\jobname.ent}%
   \endgroup}
+\def\enoteheading{\chapter*{\notesname
+  \@mkboth{\notesname}{\notesname}}%
+  \mbox{}\par\vskip-\baselineskip}
 
 \newcommand{\jhendnoteshook}{These are citations or discussions that
   supplement the main line of development in the text body.

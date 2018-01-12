@@ -971,7 +971,8 @@
   \newpage
   \begingroup
   \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
-                textwidth=345pt, % textheight=550pt,  % LaTeX defaults
+                % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
+                textwidth=6in,
                 inner=.8in, top=1in, bottom=1in, %
                 headsep=12pt,
                 bindingoffset=0.4in,

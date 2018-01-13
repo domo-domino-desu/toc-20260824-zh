@@ -31,6 +31,7 @@
                 inner=.8in, top=1in, bottom=1in, %
                 headsep=12pt,
                 bindingoffset=0.4in,
+                includeheadfoot
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}
@@ -140,6 +141,24 @@
   \rfoot{}
   \cfoot{}
 }
+
+% I can't figure out how to make this wider.
+% \fancypagestyle{endmatter}{%
+%   \renewcommand{\headrulewidth}{.4pt}
+%   \renewcommand{\footrulewidth}{0pt}
+%   \fancyheadoffset[RE,LO]{-0.5\textwidth}
+%   \fancyhead[LE,RO]{{KKK\color{boldcolor}\textsl{\thepage}}}
+%   \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
+%   \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
+% }
+\fancypagestyle{endmatter}{%
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \fancyhead[LE,RO]{}
+  \fancyhead[RE]{}
+  \fancyhead[LO]{}
+}
+
 
 \pagestyle{bookfront}
 \pagenumbering{roman}
@@ -540,7 +559,8 @@
 
 
 %======================== hyperref ===========
-\usepackage[draft]{hyperref}  % remove the draft option at the end.
+% \usepackage[draft]{hyperref}  % remove the draft option at the end.
+\usepackage{hyperref}  % remove the draft option at the end.
   % It is there to prevent errors like
   % "\pdfendlink ended up in different nesting level than \pdfstartlink";
   % see https://tex.stackexchange.com/a/154184/121234
@@ -1000,11 +1020,10 @@
   \mbox{}\par\vskip-\baselineskip}
 
 \newcommand{\jhendnoteshook}{These are citations or discussions that
-  supplement the main line of development in the text body.
-  For each there is a word or phrase in italics from that text body, and 
-  then the notes are in plain text.
-  Many of the citations or discussions include sources for you to read more,
-  with a web link if possible.
+  supplement the text body.
+  Each has a word or phrase in italics from that text body, and 
+  then the note is in plain text.
+  Many of the citations or discussions include sources for you to read more.
   }
 
 \newcommand{\printnotes}{%
@@ -1016,14 +1035,16 @@
                 inner=.8in, top=1in, bottom=1in, %
                 headsep=12pt,
                 bindingoffset=0.4in,
-              left=\jh@endnotesoutdent}  % change the left margin
+                left=\jh@endnotesoutdent, % change the left margin
+                includeheadfoot}
+  \setlength{\headwidth}{\textwidth}
   \parindent 0pt
   \parskip=1ex plus 0.2ex minus 0.1ex %
   \def\enotesize{\normalsize}
   % \hangparas{-2em}{-1}
   \renewcommand{\sectiontitlecontents}[1]{\relax} % Cause the "Section One.II" not to printed.
   \vspace*{0.25ex plus 0.02ex}
-  \thispagestyle{bookemptypage}
+  \pagestyle{endmatter}\thispagestyle{bookemptypage}
   \theendnotes
   \restoregeometry  % Matches the \newgeometry after the \begingroup
   \endgroup

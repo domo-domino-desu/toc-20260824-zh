@@ -28,10 +28,12 @@
 \usepackage{calc}
 \RequirePackage[papersize={7.5in,9.25in},
                 textwidth=345pt, % textheight=550pt,  % LaTeX defaults
-                inner=.8in, top=1in, bottom=1in, %
+                inner=.8in,
+                top=57.07pt, % 72.27-15.2 (lower down head height is 15.2)
+                bottom=1in, % 72.27 - 24.29494 pt (from \the\footskip)
                 headsep=12pt,
                 bindingoffset=0.4in,
-                includeheadfoot
+                % includeheadfoot
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}

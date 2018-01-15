@@ -4626,49 +4626,69 @@ Match a number given in hexadecimal with between two and four characters.
 \re{[a-fA-F0-9]\{2,4\}}.
 \end{example}
 
+% \margingraphic{0.45\textwidth}{automata/xkcdregexes.png}{\label{xkcd:knowregexes}\href{https://xkcd.com/208}{Courtesy \url{xkcd.com}}}
 \begin{example}
 Match a number given in hexadecimal with five or more characters.
 \re{[a-fA-F0-9]\{5,\}}
 \end{example}
 
-\begin{center} % https://xkcd.com/208
-  \includegraphics[scale=0.35]{automata/xkcdregexes.png}
-\end{center}
-
-% You can spend a lot of time perusing, say, the
-% \href{https://docs.python.org/3/library/re.html}{Python documentation}.
-
 \begin{remark}
 Some of these affect Kleene's Theorem, that is, they 
 go beyond what a regular expression as define earlier
 can do.
+Some of these additions are sufficient to make regular expressions
+as powerful as Turing machines, so that you can do sophisticated
+computations using them.
 \end{remark}
+
+\begin{center}
+  \begin{tabular}{c}
+  \includegraphics[scale=0.25]{automata/xkcdregexes.png}  \\
+  Courtesy \href{https://xkcd.com/208}{\texttt{xkcd.com}}
+  \end{tabular}
+\end{center}
 
 \subsection{But wait!  There's more!}
 Many implementations of extended regular expressions allow
-additional speicifiers, such as to do a case-insensitive search.
+additional specifiers, such as to do a case-insensitive search.
 Here the two slashes to mark the start and end of the regex, and the
 closing \verb!i! marks it as a case-insensitive one.
 
 \begin{example}
-Find repeated punctuation.
-\re{/\.+/i}
+Find repeated \str{k} or \str{K}'s.
+\re{/k+/i}
 \end{example}  
 
 \begin{example}
-Find images in an HTML document.
-\re{/(img|src)=("|')[\textasciicircum "'>]+/i}
+A number with one to eight digits
+\re{/\textbackslash d\{1,8\}/}.
 \end{example}
 
 \begin{example}
-Match a valid domain name from a URL.
-(Broken into two lines because it wouldn't fit on one.)
-\re{/\textasciicircum (http|https|ftp)://([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?/?/i}
+An identifier that begins with an ASCII letter and then has up to
+seven more digits or letters
+\re{/[a-zA-Z][0-9a-zA-Z]\{0,7\}/}.
 \end{example}
 
-\begin{center} % https://xkcd.com/1313
-  \includegraphics[height=\xkcdheight]{automata/xkcdregexgolf.png}
-\end{center}
+\begin{example}
+Match the text inside a single set of parentheses
+\re{/\(([[\textasciicircum ()]*)\)/}.
+\end{example}
+
+\begin{example}
+Find images in an HTML  document
+\re{/(img|src)=("|')[\textasciicircum "'>]+/i}.
+\end{example}
+
+% \begin{example}
+% Match a valid domain name from a URL.
+% (Broken into two lines because it wouldn't fit on one.)
+% \re{/\textasciicircum (http|https|ftp)://([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?/?/i}
+% \end{example}
+
+% \begin{center} % https://xkcd.com/1313
+%   \includegraphics[height=\xkcdheight]{automata/xkcdregexgolf.png}
+% \end{center}
 
 % regex crossword http://www.bbc.co.uk/programmes/articles/5LCB3rN2dWLqsmGMy5KYtBf/puzzle-for-today
 % Puzzle No. 3 – Wednesday 5 July
@@ -4729,7 +4749,7 @@ Match a valid domain name from a URL.
 Sometimes a regular expression is just what you need for a quick one-off job.
 Sometimes they are good for more complex tasks also.
 
-But we've seen that they often come with costs.
+But they often come with costs.
 One is complexity.
 Consider this expression to match times
 \re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s\textbackslash s*((a|A)|(p|P)(m|M))}.
@@ -4737,6 +4757,7 @@ It will match \str{13:00 am}.
 You can patch it up to avoid that error, but at the cost of introducting
 complexity.
 
+\margingraphic{0.50\textwidth}{automata/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
 The canonical extreme example is the regex for
 valid email addresses, according to the 
 RFC~822 standard.
@@ -4746,7 +4767,7 @@ Of course, even if you have an address that is well-formed according
 to the standard,
 whether someone responds to an email is an entirely different matter.)
 
-The first five lines, of $81$, are these.
+These are the first five lines, of $81$.
 \begin{lstlisting}
 (?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
 )+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:
@@ -4857,7 +4878,10 @@ I'll use regular expressions."  Now they have two problems.
 \end{quotation}
 
 \begin{center} % https://xkcd.com/1171/
-  \includegraphics[scale=0.35]{automata/xkcdperlproblems.png}
+  \begin{tabular}{c}
+    \includegraphics[scale=0.25]{automata/xkcdperlproblems.png}  \\
+    \href{https://xkcd.com/1171/}{Courtesy \texttt{xkcd.com}}
+  \end{tabular}
 \end{center}
 
 
@@ -4870,6 +4894,31 @@ I'll use regular expressions."  Now they have two problems.
 % regex for Roman numerals: https://phvu.wordpress.com/2009/05/19/an-cfg-for-roman-numerals/
 % '^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'
 \begin{exercises}
+\begin{exercise}
+Which of the strings matches the regular expression
+\re{ab+c}?
+\begin{exparts*}
+\item abc
+\item ac
+\item abbb
+\item bbc
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+Which of the strings matches the regular expression
+\re{[a-z]+[\textbackslash .\textbackslash? !]}?
+\begin{exparts*}
+\item  battle!
+\item Hot
+\item green
+\item swamping.\@
+\item jump up.\@
+\item undulate?
+\item is.?
+\end{exparts*}
+\end{exercise}
+
 \begin{exercise}
 Give a regular expression (using the form of the above discussion) to
 accept a string for each description.
@@ -4915,7 +4964,7 @@ MDCCLXXVI, for 1776.
 Further, we replace IIII with IV, and replace VIIII with IX.
 Give a regular expression for valid Roman numerals less than 5000.
 \begin{answer}
-\re{'^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'}
+\re{^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$}
 \end{answer}
 \end{exercise}
 
@@ -4979,22 +5028,82 @@ Use that file to find how many words fit the criteria.
 \begin{exercise}
 In a \definend{regex crossword} each row and column has a regular expression.
 You have to find strings for those rows and columns that meet the constraints.
-Try this small one.
-\begin{center}
-% \newsavebox{\regexcwordcolone} \savebox{\regexcwordcolone}{\re{[\^{}SPEAK]+}}
-% \newsavebox{\regexcwordcoltwo} \savebox{\regexcwordcoltwo}{\re{EP|IP|EF}}
+\begin{exparts*}
+\item
 \begin{tabular}{r|c|c|}
   \multicolumn{1}{r}{\ }
                 &\multicolumn{1}{c}{\rotatebox{90}{\re{[\^{}SPEAK]+}}}
                 &\multicolumn{1}{c}{\rotatebox{90}{\re{EP|IP|EF}}}  \\
   \cline{2-3}
-  \re{HE|LL|O+}  &  & \\ \cline{2-3}
-  \re{[PLEASE]+} &  & \\ \cline{2-3}
+  \re{HE|LL|O+}  &  &     \\ \cline{2-3}   
+  \re{[PLEASE]+} &  &     \\ \cline{2-3}
 \end{tabular}
-\end{center}
+\item
+\begin{tabular}{r|c|c|}
+  \multicolumn{1}{r}{\ }
+                &\multicolumn{1}{c}{\rotatebox{90}{\re{(A|B|C)\textbackslash 1}}}
+                &\multicolumn{1}{c}{\rotatebox{90}{\re{(AB|OE|SK)}}}  \\
+  \cline{2-3}
+  \re{.*M?O.*}  &  &     \\ \cline{2-3}   
+  \re{(AN|FE|BE)} &  &     \\ \cline{2-3}
+\end{tabular}
+  
+% Doesn't fit on page
+% \item % https://www.ncsc.gov.uk/news/take-our-regex-crossword-challenge
+% \begin{tabular}{r|*{14}{c|}}
+%   \multicolumn{1}{r}{\ }
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{\textbackslash sA?(SA|PEN\textbackslash s)\{2\}}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{([XYZ])(P|GO|EL)\textbackslash 1.}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{(LS|CA|OS)[L\textbackslash sP][DO]\{2\}}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{(U)(T)\textbackslash 2\textbackslash 1[AOB?]}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{(.)\textbackslash 1\textbackslash 1\textbackslash 1\textbackslash s}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{(FF|BE|QU|OS)\{2\}L}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{}ES?F?(OBZ|UCO|PTE)}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{S[MVU]B(TZ|BPIV)}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{T[GLMV]\{2\}(E)\textbackslash 1}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{(JK|AE|EN|MG)\{2\}L}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{N(XN|ZB|CA|FS)\{2\}}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{[XHD]R[MZVIJ]EC}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{X?W(\textbackslash sE|OS|PE)\{2\}}}}
+%      &\multicolumn{1}{c}{\rotatebox{90}{\re{[VIMZJ]\{3\}\textbackslash -\textbackslash s}}}
+%        \\
+%   \cline{2-15}
+%   \re{[\textasciicircum XZVCHFJLQM]+}  &&&&&&&&&&&&&& \\ \cline{2-15}
+%   \re{[\textasciicircum PZVJG]\{4\}[EFUG]\{6\}\textbackslash 1[\textasciicircum sPZVJI]\{2\}}  &&&&&&&&&&&&&& \\ \cline{2-15}
+%   \re{[\textasciicircum sPQFB]\{7\}[\textasciicircum MGVAJNZ\textbackslash s]+[\textasciicircum MVZJ]}  &&&&&&&&&&&&&& \\ \cline{2-15}
+%   \re{N[OYSRU]\{5\}[NICE]\{6\}\textbackslash s\textbackslash -}  &&&&&&&&&&&&&& \\ \cline{2-15}
+%   \re{.A[A\textbackslash sDL]\{4\}O[AECLV\textbackslash s]+}  &&&&&&&&&&&&&& \\ \cline{2-15}
+% \end{tabular}
+\end{exparts*}
 \end{exercise}
 \begin{answer}
-\HELP
+\begin{exparts}
+\item HELP
+\item
+\begin{tabular}{r|c|c|}
+  \multicolumn{1}{r}{\ }
+                &\multicolumn{1}{c}{\rotatebox{90}{\re{(A|B|C)\textbackslash 1}}}
+                &\multicolumn{1}{c}{\rotatebox{90}{\re{(AB|OE|SK)}}}  \\
+  \cline{2-3}
+  \re{.*M?O.*}  &B  &O     \\ \cline{2-3}   
+  \re{(AN|FE|BE)} &B  &E     \\ \cline{2-3}
+\end{tabular}
+% \item
+% A quote from Ada Lovelace, the 19th century mathematician (and daughter
+% of Lord Byron) who helped to 
+% pioneer Charles Babbage’s proposed mechanical computer.
+% ``Your best and wisest refuge from all troubles is in your science.'' Ada Lovelace http://imgur.com/a/9iK9J
+% \begin{center}
+% \begin{tabular}{|*{14}{c|}} 
+%   \hline
+%    &Y &O &U &R &B &E &S &T &A &N &D &W &I  \\ \hline
+%  S &E &S &T &R &E &F &U &G &E &F &R &O &M  \\ \hline
+%  A &L &L &T &R &O &U &B &L &E &S &I &S &I  \\ \hline
+%  N &Y &O &U &R &S &C &I &E &N &C &E &  &-  \\ \hline
+%    &A &D &A &  &L &O &V &E &L &A &C &E &  \\ \hline
+% \end{tabular}
+% \end{center}
+\exparts
 \end{answer}
 \end{exercises}
 

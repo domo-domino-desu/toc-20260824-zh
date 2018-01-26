@@ -42,8 +42,8 @@ do
 done
 
 # Generate the Asymptote figures, and other external files
-# If it says you cannot import node then you have to set ASYMPTOTE_DIR;
-# see the INSTALL file
+# If you get the error that you cannot import node then you have to
+# set ASYMPTOTE_DIR; see the INSTALL file.
 if [[ -z $REGENERATING ]] 
 then
     # For the cover
@@ -57,7 +57,7 @@ then
     # For the prologue chapter
     if [[ -z $VERBOSE ]]
     then
-	echo "Generating asy files for prologue"
+	echo "Generating graphics from asy files for prologue"
      fi
     cd prologue/asy
       cd circlediagram

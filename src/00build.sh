@@ -6,11 +6,10 @@ usage()
 cat << EOF
 usage: $0 options
 
-Generate book.pdf and answers.pdf.
+Generate book.pdf for Hefferon's _Theory of Computation_.
 
 OPTIONS:
    -h      Show this message
-   -n      Do not generate an answer file (used to speed development)
    -r      Regenerating; don't run Asymptote, etc. (used for development)
    -v      Verbose
 EOF
@@ -26,9 +25,9 @@ do
              usage
              exit 1
              ;;
-         n)
-             NOANSWERFILE=1
-             ;;
+         # n)
+         #     NOANSWERFILE=1
+         #     ;;
          r)
              REGENERATING=1
              ;;
@@ -47,6 +46,14 @@ done
 # see the INSTALL file
 if [[ -z $REGENERATING ]] 
 then
+    # For the cover
+    if [[ -z $VERBOSE ]]
+    then
+	echo "Generating graphics from asy files for cover"
+     fi
+    cd cover/asy
+      asy cover
+    cd ../..
     # For the prologue chapter
     if [[ -z $VERBOSE ]]
     then
@@ -56,39 +63,75 @@ then
       cd circlediagram
       asy circlediagram
       asy infloop
-      cd ../gates
+      cd ..
+      cd gates
       asy gates
-      cd ../tape
-      asy tapeadd
-      cd ../life
+      cd ..
+      cd life
       bash ./run_life.sh
       asy lifegraphics
+      cd ..
+      cd tape
+      asy tapeadd
       cd ..
     cd ../..
     # background chapter
     if [[ -z $VERBOSE ]]
     then
-	echo "Generating asy files for background"
+	echo "Generating graphics from asy files for background"
      fi
     cd background/asy
       cd arctan
       asy arctan
-      cd ../aristotle
+      cd ..
+      cd aristotle
       asy aristotle
-      cd ../correspondences
+      cd ..
+      cd busybeaver
+      asy busybeaver
+      cd ..
+      cd correspondences
       asy correspondences
-      cd ../galileo
+      cd ..
+      cd flowcharts
+      asy flowcharts
+      cd ..
+      cd galileo
       asy galileo
-      cd ../indexsets
-      asy indexsets
-      cd ../hp
+      cd ..
+      cd hp
       asy hp
+      cd ..
+      cd indexsets
+      asy indexsets
+      cd ..
+      cd hp
+      asy hp
+      cd ..
+      cd maps
+      asy maps
+      cd ..
+      cd memory
+      asy memory
+      cd ..
+    cd ../..
+    # languages chapter
+    if [[ -z $VERBOSE ]]
+    then
+	echo "Generating graphics from asy files for languages"
+     fi
+    cd languages/asy
+      cd graphs
+      asy graphs
+      cd ..
+      cd parsetree
+      asy parsetree
       cd ..
     cd ../..
     # automata chapter
     if [[ -z $VERBOSE ]]
     then
-	echo "Generating asy files for automata"
+	echo "Generating graphics from asy files for automata"
      fi
     cd automata/asy
       cd fsa
@@ -110,11 +153,23 @@ then
     # complexity chapter
     if [[ -z $VERBOSE ]]
     then
-	echo "Generating asy files for complexity"
+	echo "Generating graphics from asy files for complexity"
      fi
     cd complexity/asy
       cd bigo
       asy bigo
+      cd ..
+      cd complexity
+      asy complexity
+      cd ..
+      cd pnp
+      asy pnp
+      cd ..
+      cd problems
+      asy problems
+      cd ..
+      cd xygraphs
+      asy xygraphs
       cd ..
     cd ../..
 fi
@@ -122,9 +177,10 @@ fi
 # Generate the book; run it twice to settle future references
 pdflatex book
 # makeindex -s book.isty -p odd book.idx
+biber book
 pdflatex book
 
-# Generate the answer file
+# Generate answer file
 # if [[ -z $NOANSWERFILE ]] 
 # then
 #     pdflatex answers

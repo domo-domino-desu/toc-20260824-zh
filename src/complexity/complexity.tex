@@ -337,28 +337,30 @@ we may say that the number of bits is
 % ......................
 \subsection{Definition}
 We are studying functions that describe machine resource use.
-These functions have natural number inputs
-giving the size of the machine's inputs.
-We sometimes 
-need functions with real number outputs, such as~$\lg$.
-The outputs are usually non-negative reals,
-but a polynomial such as $n^2-5n+2$ has negative outputs for a few
-small inputs and 
-$\lg$ is not even defined 
-for input~$0$.
-So we will focus on functions 
-$\map{f}{\N}{\R}$ that are \definend{eventually nonnegative}, where
-there is an~$I\in\N$ such that $n>I$ implies that $f(n)$ is defined
-and nonnegative.
+These functions typically have domain~$\N$
+giving the size of the machine's inputs, and codomain~$\N$
+giving the amount of the resource that is used.
+We will call these \definend{natural number functions}.\footnote{
+  We have already used a function, $\lg$, that takes real number inputs,
+  and is not even defined on the input~$0$.
+  It also gives negative outputs for some of those inputs.
+  But all of the functions that
+  we will use are defined and nonnegative eventually,
+  meaning for instance that there is a $N\in\N$ so that if $x>N$ then $\lg(x)$
+  is defined and nonnegative, so that won't interfere with the use
+  of the big-O definition.
+  And, the fact that $\lg$'s outputs are not restricted to the natural
+  numbers also won't bother us because, for instance,
+  we can instead consider the ceiling $\ceiling{\lg}$.}
 
 \begin{definition}  \label{def:BigO}
-  Let $g$ be a function that is eventually nonnegative.
+  Let $g$ be a natural number function.
   Then \definend{$\bigOh(g)$}, read ``big-O of $g$,''
-  is the collection of eventually nonnegative functions~$f$
-  satisfying this property:~there are numbers $N,C\in\N$ so that 
+  is the collection of natural number functions~$f$
+  satisfying:~there are numbers $N,C\in\N$ so that 
   whenever $n\geq N$ then $C\cdot g(n)\geq f(n)$. 
   We say that \definend{$f$ is in $\bigOh(g)$},
-  that \definend{$f$ is $\bigOh(g)$},
+  or that \definend{$f$ is $\bigOh(g)$},
   or that \definend{$f=\bigOh(g)$}.
 \end{definition}
 
@@ -437,7 +439,7 @@ than~$g$'s.
 
 \begin{example}
   The zero function~$Z$ is $\bigOh(g)$ for every
-  eventually nonnegative~$g$.
+  $\map{g}{\N}{\N}$.
   Just take $N=0$ and~$C=1$.
 \end{example}
 
@@ -468,8 +470,41 @@ similar reasoning works for any~$C$.
 And $g$ is not~$\bigOh(f)$ for the same reason on even inputs.
 \end{example}
 
-We often omit the technicality of `eventually nonnegative',
-as in the following.
+\begin{lemma}  \label{lem:BigOhReflexiveAndTransitive}
+  The big-O relation is reflexive:~$f$ is $\bigOh(f)$.
+  It is also transitive:~if $f$ is~$\bigOh(g)$ and $g$ is~$\bigOh(h)$ then
+  $f$ is~$\bigOh(h)$.
+\end{lemma}
+
+\begin{definition}
+  Two natural number functions have
+  \definend{the same growth rate} if both $f$ is~$\bigOh(g)$ and also
+  $g$ is~$\bigOh(f)$.
+  We say \definend{$f$ is $\bigTheta(g)$} or, what is the same thing,
+  $g$ is~$\bigTheta(f)$.
+\end{definition}
+
+\begin{lemma}  \label{lem:BigThetaEquivalence}
+  The relation between functions of having the same growth rate
+  is an equivalence.
+\end{lemma}
+
+\begin{fig}[fig:BigOhBeans]{Each bean encloses the set of
+    natural number  functions.
+    Quickly-growing functions are at the top;
+    for instance, $f_0(n)=n^5$ is higher up than $f_1(n)=n^4$.
+    On the left the cone is $\bigOh(g)$ for some $g$.
+    The cone's elements are the
+    functions with growth rate less than or equal to $g$'s rate.
+    The ellipse at the top of the cone is $\bigTheta(g)$, those functions whose
+    growth rate equals $g$'s.
+    On the right is added 
+    a subset $\bigOh(f)$, for some $f$ in~$\bigOh(g)$.}
+  \includegraphics{complexity/asy/bigo/bigo12.pdf}
+  \hspace{6em}
+  \includegraphics{complexity/asy/bigo/bigo13.pdf}
+\end{fig}
+
 
 \begin{lemma}[Algebraic properties]  \label{lem:BigOAlgProps}
   Suppose that $f_0$ is $\bigOh(g_0)$ and that $f_1$ is $\bigOh(g_1)$.
@@ -484,42 +519,6 @@ as in the following.
   The product $f_0f_1$ is $\bigOh(g_0g_1)$.
 \end{parenum}
 \end{lemma}
-
-
-\begin{lemma}  \label{lem:BigOhReflexiveAndTransitive}
-  The big-O relation is reflexive:~$f$ is $\bigOh(f)$.
-  It is also transitive:~if $f$ is~$\bigOh(g)$ and $g$ is~$\bigOh(h)$ then
-  $f$ is~$\bigOh(h)$.
-\end{lemma}
-
-\begin{definition}
-  Two eventually nonnegative functions have
-  \definend{the same growth rate} if both $f$ is~$\bigOh(g)$ and also
-  $g$ is~$\bigOh(f)$.
-  We say \definend{$f$ is $\bigTheta(g)$} or, what is the same thing,
-  $g$ is~$\bigTheta(f)$.
-\end{definition}
-
-\begin{lemma}  \label{lem:BigThetaEquivalence}
-  The relation between functions of having the same growth rate
-  is an equivalence.
-\end{lemma}
-
-\begin{fig}[fig:BigOhBeans]{Each bean encloses the set of
-    eventually nonnegative  functions.
-    Quickly-growing functions are at the top;
-    for instance, $f_0(n)=n^5$ is higher up than $f_1(n)=n^4$.
-    On the left the cone is $\bigOh(g)$ for some $g$.
-    The cone's elements are the
-    functions with growth rate less than or equal to $g$'s rate.
-    The ellipse at the top of the cone is $\bigTheta(g)$, those functions whose
-    growth rate equals $g$'s.
-    On the right is added 
-    a subset $\bigOh(f)$, for some $f$ in~$\bigOh(g)$.}
-  \includegraphics{complexity/asy/bigo/bigo12.pdf}
-  \hspace{6em}
-  \includegraphics{complexity/asy/bigo/bigo13.pdf}
-\end{fig}
 
 
 \begin{example}
@@ -547,8 +546,14 @@ as in the following.
 \end{example}
 
 
+Directly applying the defintion of
+$\bigOh$, as in \cref{ex:BigOFromDefn}, is sometimes the best way
+to go.
+But often
+this result makes the job easier.
+
 \begin{theorem}  \label{lem:LHBigO}
-  Let $f,g$ be eventually nonegative and suppose that 
+  Let $f,g$ be natural number functions and suppose that 
   $\lim_{n\to\infty}f(n)/g(n)$ exists and equals $L\in\R\cup\set{\infty}$.
   \begin{parenum}
   \item If $L=\infty$ then $f$ grows faster than~$g$,
@@ -562,12 +567,8 @@ as in the following.
   \end{parenum}
 \end{theorem}
 
-Directly applying the defintion of
-$\bigOh$, as in \cref{ex:BigOFromDefn}, is sometimes the best way
-to go.
-But often
-this result from first semester calculus about the limit of
-a ratio of two functions makes the job easier.
+To apply that result we usually make use of 
+this theorem from first semester calculus.
 
 \begin{theorem}[L'H\^{o}pital's Rule]
 Suppose that $\map{f,g}{\R}{\R}$ are such that as $x\to\infty$ then both
@@ -580,9 +581,9 @@ $\lim_{x\to\infty}f(x)/g(x$ also exists and also equals~$L$.
 \end{theorem}
 
 Taking the derivative requires functions with inputs that are real numbers,
-not natural numbers,
-so we need the following observation in order to apply
-L'H\^opital's Rule to \cref{lem:LHBigO}.
+not natural numbers.
+So to apply
+L'H\^opital's Rule to \cref{lem:LHBigO} we need the next observation.
 
 \begin{lemma} \label{lem:ReFcnsGiveNatFcns}
   Let $\map{F,G}{\R}{\R}$ and let $\map{f,g}{\N}{\leftclosed{0}{\infty}}$
@@ -621,7 +622,7 @@ L'H\^opital's Rule to \cref{lem:LHBigO}.
 \end{example}
 
 \begin{example}
-  Non-polynomial functions also come up often.
+  Exponential functions also come up often.
   Compare $f(n)=n^2$ with $g(x)=2^n$,
   convert to real functions and apply L'H\^{o}pital's Rule.
   \begin{equation*}
@@ -642,6 +643,20 @@ L'H\^opital's Rule to \cref{lem:LHBigO}.
     =0
   \end{equation*}
 \end{example}
+
+That example is a blueprint for the single most important fact about
+the growth rate of functions.
+
+\begin{lemma} \label{lem:PolySlowerThanExp} 
+Polynomial functions grow slower than exponential functions:
+if $f$ is a polynomial function.
+then $f$ is $\bigOh(c^n)$ but
+$f$ is not $\bigTheta(c^n)$ for any $c>1$.
+\end{lemma}
+
+\begin{proof}
+\Cref{exer:PolySlowerThanExp}
+\end{proof}
 
 % We can convert among logarithms at the cost of a constant factor.
 % For instance the natural log relates to the common log (the base~$10$ log)
@@ -1327,7 +1342,7 @@ to.''
     \begin{exparts*}
     \item $n^3+(n^4/10\,000\,000)$
     \item $(n+2)(n+3)(n^2-\lg n)$
-    \item $5n^3+25+ceil{\cos(n)}$
+    \item $5n^3+25+ceiling{\cos(n)}$
     \item $9\cdot (n^2+n^3)^4$
     \item $\floor{\sqrt{5n^7+2n^2}}$
     \end{exparts*}
@@ -1449,7 +1464,7 @@ to.''
     So if a function is in $\bigOh(1)$ that does not mean it is constant. 
   \item Show that the function $f(x)=7+(1/x)$ is $\bigOh(1)$.
   \item
-    Show that an eventually nonnegative function~$f$ is $\bigOh(1)$ if and
+    Show that a natural number function~$f$ is $\bigOh(1)$ if and
     only if it is bounded above by a constant, so that there exists
     $L\in\N$ so that for all inputs $n\in\N$, if $f$ is defined on~$n$
     then $f(n)\leq L$.
@@ -1484,6 +1499,10 @@ to.''
     Assume also that $\map{c}{\N}{\N}$ is a constant function.
     Show that $c$ is $\bigOh(f)$.
   \end{exercise}
+
+  \begin{exercise}  \label{exer:PolySlowerThanExp}
+    Prove \cref{lem:PolySlowerThanExp}.
+  \end{exercise}
   
   \begin{exercise}
     Verify these clauses of \cref{lem:BigOhReflexiveAndTransitive}.
@@ -1500,7 +1519,7 @@ to.''
 
   \begin{exercise}
     Verify these clauses of \cref{lem:LHBigO}.
-    Assume that $f,g$ are eventually nonegative functions and suppose that 
+    Assume that $f,g$ are natural number functions and suppose that 
     $\lim_{n\to\infty}f(n)/g(n)$ exists and equals $L\in\R\cup\set{\infty}$.
     \begin{exparts}
     \item If $L=\infty$ then $f$ grows faster than~$g$.

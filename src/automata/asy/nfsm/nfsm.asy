@@ -2584,3 +2584,74 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+
+
+
+// ============== Next to last char is a ================
+picture pic;
+int picnum = 62;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2);
+
+// edges
+draw(pic,
+     (q0..loop(W)).l("\str{a},\str{b}"), 
+     (q0--q1).l("\str{a}"), 
+     (q1--q2).l("\str{a},\str{b}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ============== Lang is starts with 0, ends with 1 ================
+picture pic;
+int picnum = 63;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2);
+
+// edges
+draw(pic,
+     (q0--q1).l("\str{0}"), 
+     (q1..loop(N)).l("\str{0},\str{1}"), 
+     (q1--q2).l("\str{1}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

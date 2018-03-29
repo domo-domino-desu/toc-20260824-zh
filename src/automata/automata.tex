@@ -1862,16 +1862,16 @@ where $\str{a}\in \Sigma$,
 we have $\lang(\str{a})=\set{\str{a}}$.
 
 We finish by defining the semantics of the operations.
-Let $\sigma$ and $\hat{\sigma}$ be regular expressions that
-represent the languages $\lang$ and $\hat{\lang}$.
-The regular expression combining the two
-with a pipe \re{$\sigma$|$\hat{\sigma}$}
-describes the union of the two languages, $\lang\cup\hat{\lang}$.
-The regular expression concatenating the two,
-\re{$\sigma$$\hat{\sigma}$},
-describes the concatenation of the two languages, $\lang\hat{\lang}$.
-The star regular expression \re{$\sigma$*}
-describes the Kleene star of the language, $\kleenestar{\lang}$.
+We denote the language associated with the regular expression~$R$
+as $\lang(R)$.
+Then the pipe symbol means the union of the languages
+$\lang(R|\hat{R})=\lang(R)\cup\lang(\hat{R})$.
+Concatenation of the regular expressions
+means concatneation of the languges
+$\lang(R\concat\hat{R})=\lang(R)\concat\lang(\hat{R})$.
+And, the star of the regular expression  
+describes the Kleene star of the language,
+$\lang(\kleenestar{R})=\kleenestar{\lang(R)}$.
 
 \begin{example}
 Let $\Sigma=\set{\str{a},\str{b}}$.
@@ -2548,66 +2548,83 @@ We will see a result formalizing that, and we will
 use it for proofs that languages are not regular.
 
 \begin{example}
-  This machine has a loop.
-  \begin{center}
-    \includegraphics{automata/asy/nfsm/nfsm58.pdf}
-  \end{center}
-  Bypassing the loop, going around zero times times,
-  will result in the machine accepting $\sigma_0=\str{acb}$.
-  Going around once results in accepting $\sigma_1=\str{abaacb}$.
-  Twice gets $\sigma_2=\str{a}(\str{baa})^2\str{cb}$.
-  Circling more pumps out ever longer strings:
-  $\lang=\set{\str{a}(\str{baa})^n\str{cb}\suchthat k\in\N}$.
+Imagine a finite state machine with many states that accepts
+the string $\sigma_1=\str{abaacb}$.
+As that machine processes the string it passes from state to state;
+imagine they are the ones here.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm58.pdf}
+\end{center}
+Part of the processing includes
+a loop from $q_1$ to~$q_2$, to~$q_3$, and back to~$q_1$.
+We can get another accepted string by making the machine go
+around the loop twice, 
+$\sigma_2=\str{a}(\str{baa})^2\str{cb}$.
+Likewise, this machine accepts $\sigma_3=\str{a}(\str{baa})^3\str{cb}$,
+and looping more times pumps out more
+members of the machine's language.
+
+And bypassing the loop, going around zero times times by
+feeding the machine $\sigma_0=\str{acb}$, also ends in the accepting
+state~$q_5$.
 \end{example}
 
 
 \begin{theorem}[Pumping Lemma]
-  For every regular language~$\lang$ there is a constant~$p$, the
-  \definend{pumping length} for the language,
-  such that every string~$\sigma\in \lang$ with $\lh{\sigma}\geq p$
-  decomposes into three components
-  $\sigma=\alpha\concat\beta\concat\gamma$ satisfying:
-  (i)~$\beta$ is not empty,
-  (ii)~the first two components are short, $\lh{\alpha\beta}\leq p$,
-  and (iii)~for all $n\in\N$ the string
-  $\alpha\beta^n\gamma$ is also a member of~$\lang$.
+Let~$\lang$ be regular.
+Then there is a constant~$p$, the
+\definend{pumping length} for the language,
+such that every string~$\sigma\in \lang$ with $\lh{\sigma}\geq p$
+decomposes into three components
+$\sigma=\alpha\concat\beta\concat\gamma$ satisfying:
+(i)~the first two components are short, $\lh{\alpha\beta}\leq p$,
+(ii)~$\beta$ is not empty,
+and (iii)~all of these strings are also members of
+$\lang$: $\alpha\gamma$, $\alpha\beta^2\gamma$,
+$\alpha\beta^3\gamma$, \ldots\,
 \end{theorem}
 
 \begin{proof}
-  If a Finite State machine is given an input string that is longer than
-  the number of states in that machine,
+  This is the Pigeonhole Principle:~suppose that $\lang$ is accepted by the
+  Finite State machine~$\FSM$,
+  and that $\FSM$ has $p$~states.
+  If we give the machine an input string with more thatn~$p$ characters
   then in processing that string
   the machine will visit some state more than once.
-  This is the Pigeonhole Principle;
-  the extended transition function $\extended{\Delta}$
-  puts out states and if the input string is as long or longer than
-  the number of available states, then the list of
-  output states must repeat.
+  Said more completely, recall that the
+  extended transition function $\extended{\Delta}$ inputs a string
+  and outputs the state to which that string brings the machine.
+  Consider and input
+  $\sigma=\sequence{s_0,s_1\,\ldots s_k}$
+  with more characters than the machine has states, $k\geq p$.
+  Then the sequence of states through which the machine passes
+  in processing~$\sigma$
+  \begin{equation*}
+    \extended{\Delta}(\sequence{s_0}),\;  
+    \extended{\Delta}(\sequence{s_0,s_1}),\;
+    \extended{\Delta}(\sequence{s_0,s_1,s_2}),\;
+    \ldots\quad
+    \extended{\Delta}(\sequence{s_0,s_1,\,\ldots s_k})
+  \end{equation*}
+  must have a repeat.
 
-  So assume that $\lang$ is accepted by a deterministic
-  Finite State machine~$\FSM$ and 
-  take the pumping length~$p$ to be one more than
-  the number of states in~$\FSM$.
-  Consider a long input string, a
-  $\sigma=\sequence{s_0,s_1,\,\ldots s_k}$
-  with $k\geq p$.
-  By the first paragraph some state~$q$ is used twice, so there are
-  substrings $\sequence{s_0,\,\ldots s_i}, \sequence{s_0,\,\ldots s_j}$
-  of $\sigma$ (with $j>i$) such that 
-  $q=\extended{\Delta}(\sequence{s_0,\,\ldots s_i})=\extended{\Delta}(\sequence{s_0,\,\ldots s_j})$.
+  So suppose that the two substrings $\sequence{s_0,\,\ldots s_i}$ and
+  $\sequence{s_0,\,\ldots s_j}$
+  are such that  
+  $q=\extended{\Delta}(\sequence{s_0,\,\ldots s_i})
+     =\extended{\Delta}(\sequence{s_0,\,\ldots s_j})$,
+  with $j>i$.
   Take $\alpha=\sequence{s_0,\,\ldots, s_i}$,
   $\beta=\sequence{s_{i+1},\,\ldots s_j}$, and
   $\gamma=\sequence{s_{j+1},\,\ldots s_k}$
   (possibly one or both of $\alpha$ and $\gamma$ is empty).
-
-  These substrings obviously satisfy
-  conditions~(i) and~(ii).
+  These substrings obviously satisfy conditions~(i) and~(ii).
   For~(iii),
   \begin{equation*}
     \alpha\concat\gamma=\sequence{s_0,\,\ldots s_i,s_{j+1},\,\ldots s_k}
   \end{equation*}
-  brings the machine from the start state~$q_0$ to the state~$q$ and then to the
-  same final state as did $\sigma$.
+  brings the machine from the start state~$q_0$ to the state~$q$,
+  and then to the same final state as did $\sigma$.
   That is,
   $\extended{\Delta}(\alpha\gamma)=\extended{\Delta}(\alpha\beta\gamma)$.
   The other strings in~(iii) are similar.
@@ -2616,36 +2633,36 @@ use it for proofs that languages are not regular.
     \alpha\concat\beta^2\concat\gamma
       =\sequence{s_0,\,\ldots s_i,s_{i+1},\,\ldots, s_{j-1},s_{i+1},\,\ldots s_{j+1},\,\ldots s_k}
   \end{equation*}
-  the $\alpha$ brings the machine from~$q_0$ to~$q$,
-  then the first $\beta$ brings it around to~$q$ again,
-  and the second $\beta$ makes the machine loop to $q$ a second time,
-  and finally $\gamma$ brings it to the
-  same final state as did $\sigma$.
+  $\alpha$ brings the machine from~$q_0$ to the state~$q$,
+  and the first $\beta$ brings it around to~$q$ again,
+  then the second $\beta$ makes the machine loop to $q$ yet again,
+  and finally $\gamma$ brings it to the same final state as did $\sigma$.
 \end{proof}
 
 We typically use the Pumping Lemma to show that a language is
 not regular.
 
 \begin{example}
-  The language of \definend{palindromes}, stringe that read the
-  same backwards as forwards, is
-  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
-    \reversal{\sigma}=\sigma}$.
-  Some members are \str{aba}, \str{bbaabb},
+  A \definend{palindrome} is a string that reads the
+  same backwards as forwards.
+  Some examples are \str{aba}, \str{bbaabb},
   and~$\str{a}^5\str{b}\str{a}^5$.
+  The language of all palindromes over $\Sigma=\set{\str{a},\str{b}}$ is
+  $\lang=\set{\sigma\in\kleenestar{\Sigma}\suchthat
+    \reversal{\sigma}=\sigma}$.
   We will prove that this language is not regular.
 
-  For a contradiction assume that the language~$\lang$ is regular. 
+  For contradiction assume that it is regular. 
   Let its pumping length be~$p$.
   Consider $\sigma=\str{a}^p\str{b}\str{a}^p\in\lang$.
   
   The Pumping Lemma says that $\sigma$ decomposes into three substrings
   $\sigma=\alpha\concat\beta\concat\gamma$ subject to the conditions.
-  The first condition is that $\lh{\alpha\beta}\leq p$
+  Condition~(i) is that $\lh{\alpha\beta}\leq p$
   and so both $\alpha$ and $\beta$ are composed entirely of \str{a}'s.
   With that,
-  the second condition gives that $\beta$ consists of at least one~\str{a}.
-  Then the third condition is that all of these strings are also members
+  condition~(ii) gives that $\beta$ consists of at least one~\str{a}.
+  Then condition~(iii) is that all of these strings are also members
   of the language.
   \begin{equation*}
     \alpha\concat\gamma,
@@ -2665,11 +2682,11 @@ not regular.
   Because $\alpha$ and $\beta$ consist entirely of \str{a}'s, $\gamma$ has
   the~\str{b}.
   By the definition of $\sigma$, following that~\str{b} must be $\str{a}^p$.
-  For $\alpha\concat\gamma$ to be a palindrome, before the~\str{b} ther must
-  also be $p$-many \str{a}'s.
-  But $\alpha\concat\gamma$ has fewer than $p$-many \str{a}'s before the
-  \str{b} because of the omission of $\beta$.
-  So it is not a palindrome.
+  For $\alpha\concat\gamma$ to be a palindrome, the~\str{b} must be preceeded by
+  $p$-many \str{a}'s.
+  But $\alpha\concat\gamma$ has fewer than $p$-many \str{a}'s before
+  \str{b} because the $\beta$ is gone.
+  So $\alpha\gamma$ is not a palindrome.
 \end{example}
 
 \begin{remark}
@@ -2677,8 +2694,9 @@ Don't make the mistake of thinking that the prefix $\alpha\beta$ is
 all of~$\str{a}^p$ and $\gamma$ is~$\str{b}\concat\str{a}^p$. 
 The lemma only gives that $\alpha\beta$ is some prefix
 consisting only of $\str{a}$'s.
-The suffix $\gamma$ may well start with some $\str{a}$'s in addition to
-containing \str{b} and then~$\str{a}^p$.
+It could well be that, in addition to
+containing \str{b} and then~$\str{a}^p$,
+the suffix $\gamma$ also starts with some $\str{a}$'s.
 \end{remark}
 
 We introduced Finite State machines as stripped down Turing machines,

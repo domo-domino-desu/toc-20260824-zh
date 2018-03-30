@@ -2431,11 +2431,11 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 node q0=ncircle("$q_0$"); 
-node q1=ncircle("$q_1$"); 
-node q2=ncircle("$q_2$"); 
-node q3=ncircle("$q_3$"); 
-node q4=ncircle("$q_4$"); 
-node q5=ncircle("$q_5$",ns_accepting); 
+node q1=ncircle("$q_{i_1}$"); 
+node q2=ncircle("$q_{i_2}$"); 
+node q3=ncircle("$q_{i_3}$"); 
+node q4=ncircle("$q_{i_4}$"); 
+node q5=ncircle("$q_{i_5}$",ns_accepting); 
 
 // calculate nodes position
 // layout

@@ -60,7 +60,7 @@ its input alphabet has one symbol, \str{toggle}.
   \savebox{\scratchbox}{\includegraphics{automata/asy/fsa/fsa00.pdf}}
   \settoheight{\jhscratchheight}{\usebox{\scratchbox}}
   \vcenteredhbox{\usebox{\scratchbox}}
-  \hspace{5em}
+  \hspace{4em}
   \vcenteredhbox{\includegraphics[height=0.5\jhscratchheight]{automata/pix/powerbutton.png}}  % Free, from: http://www.clker.com/clipart-9978.html
 \end{center}
 \end{example}
@@ -2540,23 +2540,29 @@ that squaring an integer always results in an integer.
 
 
 \subsection{Pumping lemma}
-Although Finite State machines are finite, they can accept languages
-that are infinite; they can deal with long input strings.
+Although Finite State machines are finite,
+they can handle arbitrarily long input strings.
+For instance, \Cref{ex:PowerSwitch}'s power switch machine has
+only two states.
+But even if we toggle it hundreds of times it still knows whether
+in total it has been switched off or on.
+
 Experience with Kleene's star operator gives the intuition that 
-a Finite State machine handles long strings by looping.
-We will see a result formalizing that, and we will
+a Finite State machine handles long strings, as the power switch does,
+by looping.
+We will see a result expressing that and we will
 use it for proofs that languages are not regular.
 
 \begin{example}
 Imagine a finite state machine with many states that accepts
 the string $\sigma_1=\str{abaacb}$.
-As that machine processes the string it passes from state to state;
+As the machine processes the string, it passes from state to state;
 imagine they are the ones here.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm58.pdf}
 \end{center}
 Part of the processing includes
-a loop from $q_1$ to~$q_2$, to~$q_3$, and back to~$q_1$.
+a loop from $q_{i_1}$ to~$q_{i_2}$, to~$q_{i_3}$, and back to~$q_{i_1}$.
 We can get another accepted string by making the machine go
 around the loop twice, 
 $\sigma_2=\str{a}(\str{baa})^2\str{cb}$.
@@ -2564,7 +2570,7 @@ Likewise, this machine accepts $\sigma_3=\str{a}(\str{baa})^3\str{cb}$,
 and looping more times pumps out more
 members of the machine's language.
 
-And bypassing the loop, going around zero times times by
+And, bypassing the loop entirely, going around zero times times by
 feeding the machine $\sigma_0=\str{acb}$, also ends in the accepting
 state~$q_5$.
 \end{example}
@@ -2588,14 +2594,14 @@ $\alpha\beta^3\gamma$, \ldots\,
   This is the Pigeonhole Principle:~suppose that $\lang$ is accepted by the
   Finite State machine~$\FSM$,
   and that $\FSM$ has $p$~states.
-  If we give the machine an input string with more thatn~$p$ characters
+  If we give the machine an input string with more than~$p$ characters
   then in processing that string
   the machine will visit some state more than once.
   Said more completely, recall that the
   extended transition function $\extended{\Delta}$ inputs a string
   and outputs the state to which that string brings the machine.
-  Consider and input
-  $\sigma=\sequence{s_0,s_1\,\ldots s_k}$
+  Consider an input
+  $\sigma=\sequence{s_0,s_1,\ldots s_k}$
   with more characters than the machine has states, $k\geq p$.
   Then the sequence of states through which the machine passes
   in processing~$\sigma$
@@ -2604,21 +2610,20 @@ $\alpha\beta^3\gamma$, \ldots\,
     \extended{\Delta}(\sequence{s_0,s_1}),\;
     \extended{\Delta}(\sequence{s_0,s_1,s_2}),\;
     \ldots\quad
-    \extended{\Delta}(\sequence{s_0,s_1,\,\ldots s_k})
+    \extended{\Delta}(\sequence{s_0,s_1,\ldots s_k})
   \end{equation*}
   must have a repeat.
 
-  So suppose that the two substrings $\sequence{s_0,\,\ldots s_i}$ and
-  $\sequence{s_0,\,\ldots s_j}$
-  are such that  
+  So suppose that the two inputs $\sequence{s_0,\,\ldots s_i}$ and
+  $\sequence{s_0,\,\ldots s_j}$ with $j>i$
+  both take the machine to the same ending state, 
   $q=\extended{\Delta}(\sequence{s_0,\,\ldots s_i})
-     =\extended{\Delta}(\sequence{s_0,\,\ldots s_j})$,
-  with $j>i$.
-  Take $\alpha=\sequence{s_0,\,\ldots, s_i}$,
+     =\extended{\Delta}(\sequence{s_0,\,\ldots s_j})$.
+  Then let $\alpha=\sequence{s_0,\,\ldots, s_i}$,
   $\beta=\sequence{s_{i+1},\,\ldots s_j}$, and
   $\gamma=\sequence{s_{j+1},\,\ldots s_k}$
   (possibly one or both of $\alpha$ and $\gamma$ is empty).
-  These substrings obviously satisfy conditions~(i) and~(ii).
+  These clearly satisfy conditions~(i) and~(ii).
   For~(iii),
   \begin{equation*}
     \alpha\concat\gamma=\sequence{s_0,\,\ldots s_i,s_{j+1},\,\ldots s_k}
@@ -2639,64 +2644,114 @@ $\alpha\beta^3\gamma$, \ldots\,
   and finally $\gamma$ brings it to the same final state as did $\sigma$.
 \end{proof}
 
-We typically use the Pumping Lemma to show that a language is
-not regular.
+Typically we use the Pumping Lemma to show that a language is
+not regular, by assuming that if it is regular and then using the lemma
+to get an impossibility.
+
+
+\begin{example}  \label{ex:BalancedParensIsNotRegularLang}
+  We will show that this language of matched parentheses is not regular.
+  \begin{equation*}
+    \lang
+    =\set{\varepsilon, \str{()}, \str{(())}, \str{((()))}, 
+       \str{(}^4\mspace{2mu}\str{)}^4,\, \ldots\,}       
+    =\set{\str{(}^n\str{)}^n\in\kleenestar{\set{\str{)},\str{(}}}\suchthat
+        n\in\N}                                      
+  \end{equation*}
+  For contradiction, assume that it is regular.
+  Then the Pumping Lemma says that it has a pumping length~$p$.
+
+  Consider the string $\sigma=\str{(}^p\str{)}^p\in\lang$.
+  Its length is greater than or equal to~$p$ so
+  the Pumping Lemma says that it
+  decomposes into three substrings $\sigma=\alpha\concat\beta\concat\gamma$
+  satisfying the conditions.
+  Condition~(i) is that
+  the length of the prefix~$\alpha\concat\beta$ is less than or equal to~$p$.
+  Thus both of the substrings $\alpha$ and~$\beta$ are composed
+  exclusively of open parentheses,~$\str{(}$'s.
+  Condition~(ii) is that $\beta$ is not the empty string, so it
+  contains at least one~$\str{(}$.
+
+  Condition~(iii) is that all of the strings
+  $\alpha\gamma$,
+  $\alpha\beta^2\gamma$,
+  $\alpha\beta^3\gamma$,
+  \ldots{}
+  are members of~$\lang$.
+  We will find a contradiction by considering $\alpha\beta^2\gamma$.
+  Compared with $\sigma=\alpha\beta\gamma$, this string has an extra~$\beta$.
+  That adds at least one open parenthesis without adding any balancing closed
+  parentheses.
+  In short, $\alpha\beta^2\gamma$ has more \str{(}'s than \str{)}'s. 
+  So it is not a member of the language~$\lang$ of balanced parentheses, which 
+  contradicts the Pumping Lemma.
+  Therefore the assumption that $\lang$ is regular is incorrect.
+\end{example}
+
+Being able to show that a language is not regular gives a nice
+balance to the ability we already have to show that a language is regular,
+either by producing a Finite State machine that accepts it or
+by producing a regular expression that describes it.
+But more than symmetry motivates our interest.
+Since a Turing machine can solve the problem of accepting
+strings of balanced parentheses but the example says that a
+Finite State machine cannot,
+we now know that to solve the problem we need scratch memory.
+So the results here speak to problems, and the resources needed to solve them.
 
 \begin{example}
-  A \definend{palindrome} is a string that reads the
-  same backwards as forwards.
-  Some examples are \str{aba}, \str{bbaabb},
-  and~$\str{a}^5\str{b}\str{a}^5$.
+  Recall that a palindrome is a string that reads the
+  same backwards as forwards, such as
+  \str{abba}, \str{bbaabb},
+  or~$\str{a}^5\str{b}\str{a}^5$.
   The language of all palindromes over $\Sigma=\set{\str{a},\str{b}}$ is
   $\lang=\set{\sigma\in\kleenestar{\Sigma}\suchthat
     \reversal{\sigma}=\sigma}$.
-  We will prove that this language is not regular.
+  We will prove that it is not regular.
 
   For contradiction assume that it is regular. 
-  Let its pumping length be~$p$.
+  Call its pumping length~$p$.
   Consider $\sigma=\str{a}^p\str{b}\str{a}^p\in\lang$.
   
-  The Pumping Lemma says that $\sigma$ decomposes into three substrings
-  $\sigma=\alpha\concat\beta\concat\gamma$ subject to the conditions.
+  The Pumping Lemma says that $\sigma$ has a decomposition
+  $\sigma=\alpha\beta\gamma$ subject to the three conditions.
   Condition~(i) is that $\lh{\alpha\beta}\leq p$
-  and so both $\alpha$ and $\beta$ are composed entirely of \str{a}'s.
-  With that,
-  condition~(ii) gives that $\beta$ consists of at least one~\str{a}.
-  Then condition~(iii) is that all of these strings are also members
-  of the language.
-  \begin{equation*}
-    \alpha\concat\gamma,
-    \quad  
-    \alpha\concat\beta\concat\gamma,
-    \quad  
-    \alpha\concat\beta^2\concat\gamma,
-    \quad  
-    \alpha\concat\beta^3\concat\gamma,
-    \quad\ldots
-  \end{equation*}
-  We will argue that the first string in the list, $\alpha\concat\gamma$,
-  is not a palindrome.
-  This is a contradiction because the Pumping Lemma says that the strings
-  in the list are all members of~$\lang$.
+  and so both substrings $\alpha$ and $\beta$ are composed entirely of
+  \str{a}'s.
+  Condition~(ii) is that $\beta$ is not the empty string and so
+  $\beta$ consists of at least one~\str{a}.
   
+  Condition~(iii) considers the list of strings
+  $
+    \alpha\gamma,   
+    \alpha\beta^2\gamma,
+    \alpha\beta^3\gamma,
+    \ldots{}
+  $.
+  We will argue that the first one, $\alpha\gamma$,
+  is not a palindrome.
   Because $\alpha$ and $\beta$ consist entirely of \str{a}'s, $\gamma$ has
   the~\str{b}.
-  By the definition of $\sigma$, following that~\str{b} must be $\str{a}^p$.
-  For $\alpha\concat\gamma$ to be a palindrome, the~\str{b} must be preceeded by
+  By the definition of $\sigma$, after that~\str{b} must be $\str{a}^p$.
+  For $\alpha\gamma$ to be a palindrome, the~\str{b} must be preceeded by
   $p$-many \str{a}'s.
-  But $\alpha\concat\gamma$ has fewer than $p$-many \str{a}'s before
-  \str{b} because the $\beta$ is gone.
+  But $\alpha\gamma$ has fewer than $p$-many \str{a}'s before
+  \str{b} because, compared to $\sigma=\alpha\beta\gamma$, the $\beta$ is gone.
   So $\alpha\gamma$ is not a palindrome.
+  This is a contradiction because the Pumping Lemma says that the strings
+  in the list are all members of~$\lang$.
+  So the assumption that $\lang$ is regular is wrong.
 \end{example}
 
 \begin{remark}
 Don't make the mistake of thinking that the prefix $\alpha\beta$ is
-all of~$\str{a}^p$ and $\gamma$ is~$\str{b}\concat\str{a}^p$. 
-The lemma only gives that $\alpha\beta$ is some prefix
-consisting only of $\str{a}$'s.
-It could well be that, in addition to
-containing \str{b} and then~$\str{a}^p$,
-the suffix $\gamma$ also starts with some $\str{a}$'s.
+all of~$\str{a}^p$ and that $\gamma$ is~$\str{b}\str{a}^p$. 
+The lemma only gives that $\alpha\beta$ is some prefix of length
+less than or equal to~$p$, and therefore it
+consists exclusively of $\str{a}$'s.
+It could well be that the suffix $\gamma$ starts with some $\str{a}$'s,
+in addition to containing the rest.
 \end{remark}
 
 We introduced Finite State machines as stripped down Turing machines,
@@ -2745,40 +2800,6 @@ than the following one, although the first is regular while the second is not.
   According to the definition of~$\lang$ that's impossible.
 \end{example}
 
-\begin{example}  \label{ex:BalancedParensIsNotRegularLang}
-  This language of matched parentheses is not regular.
-  \begin{align*}
-    \lang
-    &=\set{\str{(}^n\str{)}^n\in\kleenestar{\set{\str{)},\str{(}}}\suchthat
-        n\in\N}                                       \\
-    &=\set{\varepsilon, \str{()}, \str{(())}, \str{((()))}, 
-      \str{(}^4\mspace{2mu}\str{)}^4,\, \ldots\,}
-  \end{align*}
-  Assume for contradiction that this languages is regular,
-  with pumping length~$p$.
-  Consider $\sigma=\str{(}^p\str{)}^p\in\lang$.
-  It decomposes into substrings
-  $\sigma=\alpha\beta\gamma$ subject to the three conditions.
-  By condition~(i) the length of~$\alpha\beta$ is less than or equal to~$p$
-  and since $\alpha\beta$ is a 
-  prefix of~$\sigma$,
-  both $\alpha$ and~$\beta$ are composed
-  only of~$\str{(}$'s.
-  By condition~(ii), $\beta$ contains at least one~$\str{(}$.
-  Condition~(iii) shows that all of the strings
-  $\alpha\gamma$,
-  $\alpha\beta\gamma$,
-  $\alpha\beta^2\gamma$,
-  \ldots{}
-  are members of~$\lang$.
-  
-  The prior couple of examples found a contradiction in the first string.
-  We could do that here also but for variety we will consider the
-  third string.
-  It has more $\str{(}$'s than $\str{)}$'s because
-  of the extra $\beta$.
-  That contradicts the definition of~$\lang$.
-\end{example}
 
 The closure properties for regular languages can work in conjunction with
 the Pumping Lemma results.
@@ -3425,6 +3446,18 @@ is regular, and is uncountable.
 accept any strings.
 \item False, a minimal machine cannot be further reduced.
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}  \label{exer:BalancedParenFirstStringNoGood}
+\Cref{ex:BalancedParensIsNotRegularLang} uses $\alpha\beta^2\gamma$
+to show that the language of
+balanced parentheses is not regular.
+Instead get the contradiction by showing that the first string on the list,
+$\alpha\gamma$, is not a member of the language.
+\begin{answer}
+The omission of $\beta$ means that it has at least one fewer
+open parenthesis~\str{(} than closed parenthesis~\str{)}.
 \end{answer}
 \end{exercise}
 

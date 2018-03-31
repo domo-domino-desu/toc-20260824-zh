@@ -211,31 +211,28 @@ it as an accepting state.
 
 \begin{example}  \label{ex:FSATwoAsEvenBs}
 This machine accepts a string if and only if it is a member of the language
-$
-  \lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
-               \suchthat \text{$\sigma$ contains at least two \str{a}'s
-                 and an even number of \str{b}'s}}
-$.
+of strings that contains at least two \str{0}'s
+                 and an even number of \str{1}'s.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa11.pdf}               
 \end{center}
-This illustrates the key principle for designing Finite State machines:~each
-state should mean something.
-For instance, $q_4$ means ``so far I have seen one~$a$ and an
-odd number of $b$'s.''
+This illustrates the key to designing Finite State machines:~each
+state means something.
+For instance, $q_4$ means ``so far I have seen one~$0$ and an
+odd number of $1$'s.''
 And $q_5$ means ``so far I
-have seen two \str{a}'s but an odd number of \str{b}'s.''
+have seen two \str{0}'s but an odd number of \str{1}'s.''
 The way the machine is drawn underlines this principle.
 The first row has states that have so far seen an even number of
-\str{b}'s, while the second row's states have seen an odd number.
-The first column's states have seen no \str{a}'s,
+\str{1}'s, while the second row's states have seen an odd number.
+The first column's states have seen no \str{0}'s,
 the second column's states have seen one,
-and the third column has states that have seen two \str{a}'s.
+and the third column has states that have seen two \str{0}'s.
 \end{example}
 
 The description above of the language~$\lang$
 connotes that the machine's alphabet is
-$\Sigma=\set{\str{a},\str{b}}$.
+$\B$.
 Our Finite State machine descriptions often don't specify the alphabet.
 For instance, in the next example the most sensible alphabet is
 all of \citetext{Unicode}{While in the early days of computers
@@ -1036,9 +1033,19 @@ The language accepted by this machine
   \includegraphics{automata/asy/nfsm/nfsm09.pdf}
 \end{center}
 is the set of strings containing the substring \str{aa} or \str{bb}.
-Note that the machine accepts both \str{010010} and \str{010110},
-even though the matching substring starts at index~$2$ in the first
-string and at index~$3$ in the second.
+For instance, the machine accepts \str{abaaba}, where the 
+matching substring starts at index~$2$, because there is a
+sequence of allowed transitions ending in an accepting state,
+namely this.
+\begin{equation*}
+  \sequence{q_0,\str{abaaba}}
+  \yields \sequence{q_0,\str{baaba}}
+  \yields \sequence{q_0,\str{aaba}}
+  \yields \sequence{q_1,\str{aba}}
+  \yields \sequence{q_2,\str{ba}}
+  \yields \sequence{q_2,\str{a}}
+  \yields \sequence{q_2,\emptystring}
+\end{equation*}
 \end{example}
 
 
@@ -1083,30 +1090,35 @@ the signal \str{0101110}.
 That is, it accepts the language
 $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$
 of strings with that suffix.
-
-Note again that something here is disconcerting to a person raised on
-introduction to programming.
-Suppose that the listener is in state~$q_0$ and hears some electrical noise 
-that happens to be a \str{0} signal, 
-and just after that the owner presses
-the remote to send the \str{0101110}.
-How does the machine know which of the two \str{0}'s is the correct one 
-to start it down the right-hand path?
-The same holds for a \str{01}: this machine will end in an accepting 
-state if it hears a string \str{010101110}; how does 
-this mechanism guess correctly, ignoring
-the first \str{01} but paying attention to the second?
-This ``guessing'' may at first seem to be a
-not-mechanically-accomplishable task.
-However, we will soon show how a deterministic Finite State machine
-can do it.
 \end{example}
+
+\begin{remark}
+Note again that something in that example
+can be disconcerting.
+The listener will end in an accepting 
+state if it starts in state~$q_0$ and
+hears a string \str{010101110}, with three \str{01}'s.
+How does this mechanism guess that it should ignore
+the first \str{01} but pay attention to the second?
+A person trained in
+programming may well react that ``guessing'' is a
+not-mechanically-accomplishable task.
+
+Of course, in mathematics
+we can consider whatever we like but in this book we have so far emphasized
+devices that are physically realizable in principle
+so this reaction reflects what may seem like a change in direction. 
+However, we will soon show how to convert a nondeterministic Finite State
+machine into  deterministic one.
+So we can think of the above machine
+as an abbreviation for a deterministic machine
+which obviates the paradox of guessing, at least for this class of machine.
+\end{remark}
 
 
 
 \subsection{$\varepsilon$ transitions}
-Another extension of Finite State machines, which we shall handle along with
-nondeterminism,
+Another extension of Finite State machines
 allows machines to transition spontaneously, without consuming any input.
 The only change in the definition is that the
 transition function's signature
@@ -1379,10 +1391,13 @@ This is the full deterministic machine.
     \acceptingstate $s_{15}=\set{q_0,q_1,q_2,q_3}$  &$s_{10}$  &$s_7$  \\
   \end{transitionfunction}
 \end{center}
-A states is accepting if it contains $q_3$, but is also accepting
+A state is accepting if it contains $q_3$ but is also accepting
 if it contains $q_0$ or $q_1$ since from those we can reach $q_3$ by
 $\varepsilon$ transitions.
-
+\begin{TODO}
+Is that right?  Needed?  Since the set of accepted strings won't change
+if you leave it out?
+\end{TODO}
 The start state of this machine is $s_7=\set{q_0, q_3}$,
 because from $q_0$ we can reach $q_3$ via an
 $\varepsilon$~transition.
@@ -2227,7 +2242,19 @@ Give a regular expression to describe each language over $\B$.
 
 \begin{exercise}
   Give a regular expression for the set of bitstrings whose number of \str{0}'s
-  is even and whose number of \str{1}'s is greater than 2. 
+  is even.
+  Give a regular expression for the set of bitstrings whose number of
+  \str{1}'s is greater than 2.
+  Give a regular expression for the set of bitstrings whose number of \str{0}'s
+  is even and whose number of \str{1}'s is greater than 2.
+  \begin{answer}
+  For the first, \re{(1*01*01*)*}.
+  For the second, \re{0*11*0*11*0*11*(0|1)*}.
+  For the last, use this.
+  \begin{equation*}
+    (1*01*01*)*(1|010)1*(1*01*01*)*(1|010)1*(1*01*01*)*(1|010)1*((1*01*01*)*(1|010)1*)*
+  \end{equation*}
+  \end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -2545,7 +2572,7 @@ they can handle arbitrarily long input strings.
 For instance, \Cref{ex:PowerSwitch}'s power switch machine has
 only two states.
 But even if we toggle it hundreds of times it still knows whether
-in total it has been switched off or on.
+in aggregate it is off or on.
 
 Experience with Kleene's star operator gives the intuition that 
 a Finite State machine handles long strings, as the power switch does,
@@ -2572,22 +2599,22 @@ members of the machine's language.
 
 And, bypassing the loop entirely, going around zero times times by
 feeding the machine $\sigma_0=\str{acb}$, also ends in the accepting
-state~$q_5$.
+state~$q_{i_5}$.
 \end{example}
 
 
 \begin{theorem}[Pumping Lemma]
-Let~$\lang$ be regular.
-Then there is a constant~$p$, the
+Let~$\lang$ be a regular language.
+Then there is a constant~$p\in\N$, the
 \definend{pumping length} for the language,
 such that every string~$\sigma\in \lang$ with $\lh{\sigma}\geq p$
 decomposes into three components
 $\sigma=\alpha\concat\beta\concat\gamma$ satisfying:
 (i)~the first two components are short, $\lh{\alpha\beta}\leq p$,
 (ii)~$\beta$ is not empty,
-and (iii)~all of these strings are also members of
-$\lang$: $\alpha\gamma$, $\alpha\beta^2\gamma$,
-$\alpha\beta^3\gamma$, \ldots\,
+and (iii)~all of these strings $\alpha\gamma$, $\alpha\beta^2\gamma$,
+$\alpha\beta^3\gamma$, \ldots{} are also members of
+the language.
 \end{theorem}
 
 \begin{proof}
@@ -2620,8 +2647,8 @@ $\alpha\beta^3\gamma$, \ldots\,
   $q=\extended{\Delta}(\sequence{s_0,\,\ldots s_i})
      =\extended{\Delta}(\sequence{s_0,\,\ldots s_j})$.
   Then let $\alpha=\sequence{s_0,\,\ldots, s_i}$,
-  $\beta=\sequence{s_{i+1},\,\ldots s_j}$, and
-  $\gamma=\sequence{s_{j+1},\,\ldots s_k}$
+  let $\beta=\sequence{s_{i+1},\,\ldots s_j}$, and
+  let $\gamma=\sequence{s_{j+1},\,\ldots s_k}$
   (possibly one or both of $\alpha$ and $\gamma$ is empty).
   These clearly satisfy conditions~(i) and~(ii).
   For~(iii),
@@ -2701,7 +2728,15 @@ we now know that to solve the problem we need scratch memory.
 So the results here speak to problems, and the resources needed to solve them.
 
 \begin{example}
-  Recall that a palindrome is a string that reads the
+Recall that a
+\citetext{palindrome}{%
+Sometimes people poke fun at psycology by labelling it
+the study of college freshmen because so many studies start,
+``we put a bunch of college freshmen in a room and lied to them
+about what we were doing and \ldots''
+Sometimes Theoretical Computer Science may seem like
+the study of palindromes.}
+is a string that reads the
   same backwards as forwards, such as
   \str{abba}, \str{bbaabb},
   or~$\str{a}^5\str{b}\str{a}^5$.
@@ -2745,13 +2780,12 @@ So the results here speak to problems, and the resources needed to solve them.
 \end{example}
 
 \begin{remark}
-Don't make the mistake of thinking that the prefix $\alpha\beta$ is
-all of~$\str{a}^p$ and that $\gamma$ is~$\str{b}\str{a}^p$. 
-The lemma only gives that $\alpha\beta$ is some prefix of length
-less than or equal to~$p$, and therefore it
-consists exclusively of $\str{a}$'s.
-It could well be that the suffix $\gamma$ starts with some $\str{a}$'s,
-in addition to containing the rest.
+Don't make the mistake of thinking that in that example
+the prefix $\alpha\beta$ is necessarily all of~$\str{a}^p$. 
+The Pumping Lemma only gives that $\alpha\beta$ has length
+less than or equal to~$p$.
+The suffix $\gamma$ could well start with some $\str{a}$'s,
+in addition to containing~$\str{b}\str{a}^p$.
 \end{remark}
 
 We introduced Finite State machines as stripped down Turing machines,
@@ -2800,24 +2834,6 @@ than the following one, although the first is regular while the second is not.
   According to the definition of~$\lang$ that's impossible.
 \end{example}
 
-
-The closure properties for regular languages can work in conjunction with
-the Pumping Lemma results.
-
-\begin{example}
-  The language $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
-    \text{$\sigma$ has as many \str{a}'s as \str{b}'s}}$
-  is not regular.
-  For, the language
-  $\hat{\lang}=\set{\str{a}^m\str{b}^n\in\kleenestar{\set{\str{a},\str{b}}}
-    \suchthat m,n\in\N}$ is clearly
-  regular, and the intersection of two regular languages is regular.
-  But $\lang\cap\hat{\lang}$ is the set
-  $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
-  and \cref{ex:BalancedParensIsNotRegularLang} shows it isn't regular,
-  by substituting the letters for the parentheses.
-\end{example}
-
 The examples so far all have the same flavor.
 We can also use the Pumping Lemma for differently-flavored cases.
 
@@ -2832,43 +2848,63 @@ is not regular.
 %          =\set{\emptystring,\, \str{a},\, \str{aaaa},\, \str{a}^9,\,\str{a}^{16},
 %                 \, \ldots\,}
 % \end{equation*}
-Suppose otherwise.  
-Fix a pumping length~$p$ and consider $\sigma=\str{a}^{p^2}$.
+For, suppose otherwise.  
+Fix a pumping length~$p$ and consider $\sigma=\str{a}^{(p^2)}$.
 
-By the Pumping Lemma, $\sigma=\alpha\beta\gamma$ subject to the
+By the Pumping Lemma, $\sigma$ decomposes into
+$\alpha\beta\gamma$, subject to the
 three conditions.
 Condition~(i) 
-is that the length of~$\alpha\beta$ is less than or equal to~$p$ and
-thus $\lh{\beta}\leq p$.
-Condition~(ii) says that $0<\lh{\beta}$.
-Condition~(iii) is that all of the strings  $\alpha\gamma$,
+is that $\lh{\alpha\beta}\leq p$, which implies that $\lh{\beta}\leq p$.
+Condition~(ii) is that $0<\lh{\beta}$.
+Condition~(iii) say that all of the strings  $\alpha\gamma$,
   $\alpha\beta\gamma$,
   $\alpha\beta^2\gamma$, \ldots{}
 are members of the language.
 Consider $\alpha\beta^2\gamma$.
-Then
-\begin{align*}
-  p^2=\lh{\alpha\beta\gamma} < \lh{\alpha\beta^2\gamma}
-                                &=p^2+\lh{\beta}   \\ 
-                                &\leq p^2+p<p^2+2p+1=(p+1)^2
-\end{align*}
-and so $\alpha\beta^2\gamma$'s length is not a perfect square, which is
+Because $p^2=\lh{\alpha\beta\gamma}$ we have
+\begin{equation*}
+  \lh{\alpha\beta^2\gamma}
+  =p^2+\lh{\beta}  
+  \leq p^2+p       
+  <p^2+2p+1=(p+1)^2
+\end{equation*}
+and so the length of $\alpha\beta^2\gamma$ is not a perfect square, which is
 a contradiction.
 \end{example}
 
-We can informally interpret the prior example
-to be that Finite State machines cannnot square.
-Along the same lines, 
-\cref{ex:FSMCannotRecognizePlusOne} says Finite State machines
-cannot recognize the successor operation and
-\cref{exer:NoFSMAcceptsPrimes} says that they
-cannot recognize primality.
-% And,
-% \cref{ex:BalancedParensIsNotRegularLang}
-% is notable because compilers must recognize whether the input
-% has matched parentheses.
-These results tell us in some sense what the CPU part of a Turing machine
-cannot do without scratch memory.  
+We can solve some problems by using the Pumping Lemma in conjunction with
+the closure properties of regular languages.
+
+\begin{example}
+  We can prove that 
+  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+    \text{$\sigma$ has as many \str{a}'s as \str{b}'s}}$
+  is not regular.
+  The language
+  $\hat{\lang}=\set{\str{a}^m\str{b}^n\in\kleenestar{\set{\str{a},\str{b}}}
+    \suchthat m,n\in\N}$ is clearly
+  regular, and the intersection of two regular languages is regular.
+  But $\lang\cap\hat{\lang}$ is the set
+  $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
+  and \cref{ex:BalancedParensIsNotRegularLang} shows it isn't regular,
+  by substituting the letters for the parentheses.
+\end{example}
+
+
+% We can informally interpret the prior example
+% to be that Finite State machines cannnot square.
+% Along the same lines, 
+% \cref{ex:FSMCannotRecognizePlusOne} says Finite State machines
+% cannot recognize the successor operation and
+% \cref{exer:NoFSMAcceptsPrimes} says that they
+% cannot recognize primality.
+% % And,
+% % \cref{ex:BalancedParensIsNotRegularLang}
+% % is notable because compilers must recognize whether the input
+% % has matched parentheses.
+% These results tell us in some sense what the CPU part of a Turing machine
+% cannot do without scratch memory.  
 
 
 
@@ -2877,7 +2913,7 @@ cannot do without scratch memory.
 % ...................................................
 \subsection{Minimization}
 Contrast these two Finite State machines.
-For each the language of accepted strings is
+For each, the language of accepted strings is
 $\set{\sigma\in\kleenestar{\B}\suchthat
   \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
 \begin{center}
@@ -3461,20 +3497,49 @@ open parenthesis~\str{(} than closed parenthesis~\str{)}.
 \end{answer}
 \end{exercise}
 
-  \begin{exercise}
+\begin{exercise}
     Show that each language is not regular.
     \begin{exparts}
     \item $\lang_0=\set{\str{a}^n\str{b}^m\str{c}^n\suchthat n,m\in\N}$
     \item $\lang_1=\set{\str{a}^n\str{b}^m\suchthat n+2=m}$
     \item $\lang_2=\set{\str{a}^n\str{b}^m\suchthat n<m}$
     \end{exparts}    
-  \end{exercise}
+\end{exercise}
 
   \begin{exercise}
     Show that the language over $\kleenestar{\set{\str{a},\str{b}}}$
     consisting of strings having more \str{a}'s than \str{b}'s is not
     regular.
   \end{exercise}
+
+\begin{exercise}
+One of these is regular and one is not.
+Which is which?
+\begin{exparts}
+\item $\set{\str{a}^n\str{b}^m\in\kleenestar{\set{\str{a},\str{b}}}\suchthat n,m\in\N}$
+\item $\set{\str{a}^n\str{b}^m\in\kleenestar{\set{\str{a},\str{b}}}\suchthat 3<m}$
+\end{exparts}
+\end{exercise}
+
+
+\begin{exercise}
+Which of these languages is regular and which is not?
+Of course, you must prove each assertion.
+Assume $\Sigma=\set{\str{a},\str{b}}$.
+\begin{exparts}
+\item $\set{\sigma\concat\sigma\suchthat \sigma\in\kleenestar{\Sigma}}$.
+\item $\set{\str{a}^n\str{b}^m\in\kleenestar{\Sigma}\suchthat n,m\in\N}$
+\item $\set{\str{a}^n\str{b}^m\in\kleenestar{\Sigma}\suchthat n+3=m}$
+\item $\set{\str{a}^n\str{b}^m\in\kleenestar{\Sigma}\suchthat m-n>12}$
+\end{exparts}
+\end{exercise}
+  
+\begin{exercise}
+Prove that
+$\lang=\set{\sigma\in\kleenestar{\set{\str{1}}}
+            \suchthat \text{$\lh{\sigma}=n!$ for some $n\in\N$}}$
+is not regular.
+\end{exercise}  
   
   \begin{exercise}
     One of these is regular, one is not.

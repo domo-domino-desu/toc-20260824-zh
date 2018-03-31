@@ -502,18 +502,18 @@ hlayout(u, q3, q4, q5);
 
 // draw edges
 draw(pic,
-     (q0--q1).l("\str{a}"),
-     (q1--q2).l("\str{a}"),
-     (q2..loop(E)).l("\str{a}"),
-     (q3--q4).l("\str{a}"),
-     (q0..bend..q3).l("\str{b}"),
-     (q3..bend..q0).l("\str{b}"), 
-     (q4--q5).l("\str{a}"),
-     (q1..bend..q4).l("\str{b}"),
-     (q4..bend..q1).l("\str{b}"), 
-     (q5..loop(E)).l("\str{a}"),
-     (q2..bend..q5).l("\str{b}"),
-     (q5..bend..q2).l("\str{b}")
+     (q0--q1).l("\str{0}"),
+     (q1--q2).l("\str{0}"),
+     (q2..loop(E)).l("\str{0}"),
+     (q3--q4).l("\str{0}"),
+     (q0..bend..q3).l("\str{1}"),
+     (q3..bend..q0).l("\str{1}"), 
+     (q4--q5).l("\str{0}"),
+     (q1..bend..q4).l("\str{1}"),
+     (q4..bend..q1).l("\str{1}"), 
+     (q5..loop(E)).l("\str{0}"),
+     (q2..bend..q5).l("\str{1}"),
+     (q5..bend..q2).l("\str{1}")
 );
 
 // draw nodes

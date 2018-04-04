@@ -1772,7 +1772,7 @@ draw(pic,
      // (qij..bend(20)..qok).l(Label("$R_{i_j,o_k}$",Relative(0.25))),
      // (qij..bend(30)..qo0).l(Label("\rule{0em}{2ex}$R_{i_j,o_0}$",Relative(0.20)))  // put a rule there to give a scotch of vert space
      (qi0..bend(-20)..qo0).l(Label("\re{$R_{i_0,o_0}$|($R_{i_0}$$R_{\ell}$*$R_{o_0}$)}",Relative(0.40))).style("leftside"),
-     (qi0..bend(-30)..qok).l(Label("\strut\raisebox{1ex}{\re{$R_{i_0,o_k}$|($R_{i_0}$$R_{\ell}$*$R_{o_0}$)}}",Relative(0.325))).style("leftside"),
+     (qi0..bend(-30)..qok).l(Label("\strut\raisebox{1ex}{\re{$R_{i_0,o_k}$|($R_{i_0}$$R_{\ell}$*$R_{o_k}$)}}",Relative(0.325))).style("leftside"),
      (qij..bend(30)..qo0).l(Label("\strut\raisebox{-1.2ex}{\re{$R_{i_j,o_0}$|($R_{i_j}$$R_{\ell}$*$R_{o_0}$)}}",Relative(0.325))), 
      (qij..bend(20)..qok).l(Label("\re{$R_{i_j,o_k}$|($R_{i_j}$$R_{\ell}$*$R_{o_k}$)}",Relative(0.40)))
      );
@@ -2654,4 +2654,114 @@ draw(pic,
 draw(pic, q0, q1, q2);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Kleene's Theorem; simple illustration ======
+picture pic;
+int picnum = 64;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(2*u, q0, q2);
+q1.pos = new_node_pos_h(q0, 35, 1*u);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{A}").style("leftside"),
+     (q0--q2).l("\str{D}"),
+     (q1..loop(N)).l("\str{B}"),
+     (q1--q2).l("\str{C}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................
+picture pic;
+int picnum = 65;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0);
+hlayout(2*u, q0, q2);
+hlayout(1*u, q2, f);
+q1.pos = new_node_pos_h(q0, 35, 1*u);
+
+// draw edges
+draw(pic,
+     (e--q0).l("$\emptystring$"),
+     (q0--q1).l("\str{A}").style("leftside"),
+     (q0--q2).l("\str{D}"),
+     (q1..loop(N)).l("\str{B}"),
+     (q1--q2).l("\str{C}").style("leftside"),
+     (q2--f).l("$\emptystring$")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, q1, q2, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ========== Exercise; two nodes are both incoming and outgoing ====== 
+picture pic;
+int picnum = 67;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+// node e=ncircle("$e$"); 
+// node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{A}").style("leftside"),
+     (q1..loop(N)).l("\str{B}"),
+     (q1..bend(-20)..q2).l("\str{C}").style("leftside"),
+     (q2..bend(-20)..q1).l("\str{D}").style("leftside"),
+     (q1..bend(-20)..q0).l("\str{E}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 

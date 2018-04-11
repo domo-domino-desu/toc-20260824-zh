@@ -2765,3 +2765,77 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise for right linear grammars ================
+picture pic;
+int picnum = 68;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node S=ncircle("$S$"); 
+node A=ncircle("$A$"); 
+node B=ncircle("$B$"); 
+node F=ncircle("$F$",ns_accepting); 
+
+// calculate nodes position
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, S, A, B, F);
+
+// draw edges
+draw(pic,
+     (S--A).l("\str{a}"),
+     (A..loop(N)).l("\str{a}"),
+     (A--B).l("\str{b}"),
+     (B..loop(N)).l("\str{b}"),
+     (B--F).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     S, A, B, F);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ============== exercise for right linear grammars ================
+picture pic;
+int picnum = 69;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node S=ncircle("$S$");  
+node F=ncircle("$F$",ns_accepting); 
+
+// calculate nodes position
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, S, F);
+
+// draw edges
+draw(pic,
+     (S..bend..F).l("\str{b}"),
+     (S..loop(N)).l("\str{a}"),
+     (F..bend..S).l("\str{b}"),
+     (F..loop(N)).l("\str{a}")
+);
+
+// draw nodes
+draw(pic,
+     S, F);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

@@ -11,6 +11,7 @@ Generate book.pdf for Hefferon's _Theory of Computation_.
 OPTIONS:
    -h      Show this message
    -r      Regenerating; don't run Asymptote, etc. (used for development)
+   -n      No answer file is generated (for development)
    -v      Verbose
 EOF
 }
@@ -25,9 +26,9 @@ do
              usage
              exit 1
              ;;
-         # n)
-         #     NOANSWERFILE=1
-         #     ;;
+         n)
+             NOANSWERFILE=1
+             ;;
          r)
              REGENERATING=1
              ;;
@@ -180,10 +181,10 @@ pdflatex book
 biber book
 pdflatex book
 
-# Generate answer file
-# if [[ -z $NOANSWERFILE ]] 
-# then
-#     pdflatex answers
-#     pdflatex answers
-# fi
+Generate answer file
+if [[ -z $NOANSWERFILE ]] 
+then
+    pdflatex answers
+    pdflatex answers
+fi
 

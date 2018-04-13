@@ -195,13 +195,13 @@
 
 % .. or inline
 \newenvironment{exparts*}{%
-  \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
+  \begin{enumerate}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
                      itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
                      itemjoin={\hspace{0.6em plus .1em minus .1em\linebreak[2]}},
                      % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
                      ]
 }{%
-  \end{enumerate*}
+  \end{enumerate}
 }
 
 
@@ -456,3 +456,6 @@
 
 \newcommand{\cref}[1]{REF:~\textit{#1}}
 \newcommand{\Cref}[1]{REF:~\textit{#1}}
+
+
+\newcommand{\definend}[1]{#1}  % should get rid of these in answers?

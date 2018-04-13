@@ -1151,13 +1151,12 @@ For this grammar
 \begin{clip}
   \syntax{S \produces{} "a"S"b" | T | U}
  
-  \syntax{T \produces "a"S | "a"}
+  \syntax{T \produces{} "a"S | "a"}
 
-  \syntax{U \produces S"b" | "b"} 
+  \syntax{U \produces{} S"b" | "b"} 
 \end{clip}
-the generated language is 
-$\lang=\set{\str{a}^i\str{b}^j\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
-   \text{not both of $i,j$ are zero}}$.
+the generated language is
+$\lang{L}=\set{\str{a}^i\str{b}^j\in\kleenestar{\set{\str{a},\str{b}}} \suchthat\text{$i\neq0$ or $j\neq 0$}}$.
 % https://cs.stackexchange.com/a/75423/67754
 One way to see that is to replace 
 \syntax{T} and \syntax{U} by their
@@ -1424,9 +1423,9 @@ to give a derivation of each string.
   \syntax{S}\derives\syntax{T "b" U}
   \derives\syntax{T "b" "b" T}    
   \derives\syntax{T "b" "b" "a" T } 
-  \derives\syntax{T "b" "b" "a" \varepsilon }=\syntax{T "b" "b" "a"}  \\ \quad 
+  \derives\syntax{T "b" "b" "a" \emptystring }=\syntax{T "b" "b" "a"}  \\ \quad 
   \derives\syntax{"a" T "b" "b" "a"}  
-  \derives\syntax{"a" \varepsilon "b" "b" "a"} = \syntax{"a" "b" "b" "a"} 
+  \derives\syntax{"a" \emptystring "b" "b" "a"} = \syntax{"a" "b" "b" "a"} 
 \end{tabular}
 \item
 \begin{tabular}{l}
@@ -1639,7 +1638,7 @@ derive the string \syntax{aaabbbccc}.
   \syntax{S} 
   \derives\syntax{"a"BS"c"}
   \derives\syntax{"a"B"a"BS"cc"}
-  \derives\syntax{"a"B"aB"abccc"}
+  \derives\syntax{"a"B"a"B"abccc"}
   \derives\syntax{"aa"BB"abccc"}
   \derives\syntax{"aa"B"a"B"bccc"}
   \derives\syntax{"aaa"BB"bccc"}
@@ -2019,7 +2018,7 @@ between some pairs of vertices.
 \begin{exercise}
 Fill in the table's blanks.
 \begin{center}\small %https://math.stackexchange.com/a/1598203
-\begin{tabular}{r|ccc}
+\begin{tabular}{r|cccc}
   \multicolumn{1}{c}{\tabulartext{\ }}
     &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Closed\\ or open?\end{tabular}}}
     &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Vertices can \\ repeat?\end{tabular}}}
@@ -2044,7 +2043,7 @@ Fill in the table's blanks.
 \end{center}
 \begin{answer}
 \begin{center}\small %https://math.stackexchange.com/a/1598203
-\begin{tabular}{r|ccc}
+\begin{tabular}{r|cccc}
   \multicolumn{1}{c}{\tabulartext{\ }}
     &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Closed\\ or open?\end{tabular}}}
     &\multicolumn{1}{c}{\tabulartext{\begin{tabular}[b]{@{}c@{}}Vertices can \\ repeat?\end{tabular}}}
@@ -2628,8 +2627,7 @@ Several variants do have standards, including Extended BNF, but
 these are not the most commonly used.}
 
 \begin{example}
-This is a grammar for real numbers 
-having a finite decimal part.
+This is a grammar for real numbers having a finite decimal part.
 Take the rules for \syntax{<natural>} from \cref{ex:grammarForNaturals}.
 \begin{grammar}
 <start> \bnfproduces{}  "-"<fraction>
@@ -2936,18 +2934,18 @@ must represent large numbers with lots of M's.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item Here it is.
-\item
+\item 
+\item This is the grammar for subtractive notation
 \begin{grammar}
-S \bnfproduces{} T H K U
+<start> \bnfproduces{} <thousands> <hundreds> <fifties> <ones>
 
-T \bnfproduces{} M | MM | MMM | MMMM | \emptystring     
+<thousands> \bnfproduces{} "M" | "MM" | "MMM" | "MMMM" | \emptystring     
 
-H \bnfproduces{} CM | CD | (D|\emptystring)(\emptystring|C|CC|CCC)   
+<hundreds> \bnfproduces{} "CM" | "CD" | ("D"|\emptystring)(\emptystring|"C"|"CC"|"CCC")   
 
-K \bnfproduces{} XC | XL | (L|\emptystring)(\emptystring|X|XX|XXX)  
+<tens> \bnfproduces{} "XC" | "XL" | ("L"|\emptystring)(\emptystring|"X"|"XX"|"XXX")  
 
-U \bnfproduces{} IX | IV | (V|\emptystring)(\emptystring|I|II|III)            
+<ones> \bnfproduces{} "IX" | "IV" | ("V"|\emptystring)(\emptystring|"I"|"II"|"III")            
 \end{grammar}
 \end{exparts}
 \end{answer}

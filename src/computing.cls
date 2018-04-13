@@ -1597,6 +1597,12 @@
 \newcommand{\initialstep}{\hspace*{-1em}}
 
 
+% \renewenvironment{grammar}{%
+% \begin{lstlisting}[style=grammar]  
+% }{%
+% \end{lstlisting}
+% }
+
 % ==== Remaining content macros ======
 % Broken out separately so they can be used in the
 % Asymptotegraphics

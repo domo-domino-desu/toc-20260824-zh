@@ -147,6 +147,9 @@ then
       cd nfsm
       asy nfsm
       cd ..
+      cd pda
+      asy pda
+      cd ..
       cd regex
       asy regex
       cd ..

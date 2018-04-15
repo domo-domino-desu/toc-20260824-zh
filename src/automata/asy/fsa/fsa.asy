@@ -1579,3 +1579,174 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ============== exercise: multiple of three, not empty string ================
+picture pic;
+int picnum = 22;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q3, q1);
+layout(-60.0, 1*u, q3, q2);
+
+// draw edges
+draw(pic,
+     (q0--q3).l("\str{0},\str{3},\str{6},\str{9}"),
+     (q0..bend(-60)..q1).l("\str{1},\str{4},\str{7}").style("leftside"),
+     (q0..bend(35)..q2).l("\str{2},\str{5},\str{8}"),
+     (q3--q1).l("\str{1},\str{4},\str{7}"),
+     (q3..bend(15)..q2).l(Label("\str{2},\str{5},\str{8}",Relative(0.35))).style("leftside"),
+     (q3..loop(N)).l("\str{0},\str{3},\str{6},\str{9}"),
+     (q1..bend..q3).l("\str{2},\str{5},\str{8}"),
+     (q1..bend(-15)..q2).l(Label("\str{1},\str{4},\str{7}",Relative(0.65))),
+     (q1..loop(E)).l("\str{0},\str{3},\str{6},\str{9}"),
+     (q2..bend(-50)..q3).l("\str{1},\str{4},\str{7}").style("leftside"),
+     (q2..bend(50)..q1).l("\str{2},\str{5},\str{8}"),
+     (q2..loop(S)).l("\str{0},\str{3},\str{6},\str{9}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== exercise: at least two a's ================
+picture pic;
+int picnum = 23;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0..loop(N)).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q1..loop(N)).l("\str{b}"),
+     (q2..loop(N)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== exercise: exactly two a's ================
+picture pic;
+int picnum = 24;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2, q3);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0..loop(N)).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q1..loop(N)).l("\str{b}"),
+     (q2--q3).l("\str{a}"),
+     (q2..loop(N)).l("\str{b}"),
+     (q3..loop(N)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: less than three a's ================
+picture pic;
+int picnum = 25;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2, q3);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0..loop(N)).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q1..loop(N)).l("\str{b}"),
+     (q2--q3).l("\str{a}"),
+     (q2..loop(N)).l("\str{b}"),
+     (q3..loop(N)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

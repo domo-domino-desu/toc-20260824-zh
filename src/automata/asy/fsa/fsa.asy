@@ -1917,3 +1917,65 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: at least two a's and at least two b's =========
+picture pic;
+int picnum = 30;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$"); 
+node q6=ncircle("$q_6$"); 
+node q7=ncircle("$q_7$"); 
+node q8=ncircle("$q_8$",ns_accepting);  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+vlayout(v, q0, q3, q6);
+hlayout(u, q3, q4, q5);
+hlayout(u, q6, q7, q8);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0--q3).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q1--q4).l("\str{b}"),
+     (q2..loop(E)).l("\str{a}"),
+     (q2--q5).l("\str{b}"),
+     (q3--q4).l("\str{a}"),
+     (q3--q6).l("\str{b}"),
+     (q4--q5).l("\str{a}"),
+     (q4--q7).l("\str{b}"),
+     (q5--q8).l("\str{b}"),
+     (q5..loop(E)).l("\str{a}"),
+     (q6--q7).l("\str{a}"),
+     (q6..loop(S)).l("\str{b}"),
+     (q7--q8).l("\str{a}"),
+     (q7..loop(S)).l("\str{b}"),
+     (q8..loop(S)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2,
+     q3, q4, q5,
+     q6, q7, q8);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

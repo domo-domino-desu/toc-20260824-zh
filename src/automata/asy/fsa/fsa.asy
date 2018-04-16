@@ -1749,4 +1749,171 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: at least one a followed by at least one b =========
+picture pic;
+int picnum = 26;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0..loop(N)).l("\str{b}"),
+     (q1--q2).l("\str{b}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q2..loop(N)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: accept only 911 =========
+picture pic;
+int picnum = 27;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting);  
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2, q3);
+vlayout(v, q1, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{9}").style("leftside"),
+     (q1--q2).l("\str{1}").style("leftside"),
+     (q2--q3).l("\str{1}").style("leftside"),
+     (q0--e).l(Label("other",Relative(0.2))),
+     (q1--e).l(Label("other",Relative(0.25))),
+     (q2--e).l(Label("other",Relative(0.40))),
+     (q3..bend(-20)..e).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: fail to accept only 911 =========
+picture pic;
+int picnum = 28;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$");  
+node e=ncircle("$e$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2, q3);
+vlayout(v, q1, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{9}").style("leftside"),
+     (q1--q2).l("\str{1}").style("leftside"),
+     (q2--q3).l("\str{1}").style("leftside"),
+     (q0--e).l(Label("other",Relative(0.2))),
+     (q1--e).l(Label("other",Relative(0.25))),
+     (q2--e).l(Label("other",Relative(0.40))),
+     (q3..bend(-20)..e).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: any substring of abc =========
+picture pic;
+int picnum = 29;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting);  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2, q3);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{a}").style("leftside"),
+     (q0..loop(N)).l("\str{b},\str{c}"),
+     (q1..bend(-20)..q2).l("\str{b}").style("leftside"),
+     (q1..bend(-20)..q0).l("\str{c}").style("leftside"),
+     (q1..loop(N)).l("a"),
+     (q2..bend(-20)..q3).l("\str{c}").style("leftside"),
+     (q2..bend(-20)..q1).l("a").style("leftside"),
+     (q2..bend(-40)..q0).l("b"),
+     (q3..loop(N)).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

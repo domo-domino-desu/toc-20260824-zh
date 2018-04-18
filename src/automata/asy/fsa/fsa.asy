@@ -1978,4 +1978,41 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: rebut: no machine accepts a^nb =========
+picture pic;
+int picnum = 31;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");  
+node q1=ncircle("$q_1$",ns_accepting);  
+node q2=ncircle("$q_2$");  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{b}"),
+     (q0..loop(N)).l("\str{a}"),
+     (q1--q2).l("any"),
+     (q2..loop(N)).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

@@ -2015,4 +2015,299 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: input ends in aa =========
+picture pic;
+int picnum = 32;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");  
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{a}").style("leftside"),
+     (q0..loop(W)).l("\str{b}"),
+     (q1..bend(-20)..q2).l("\str{a}").style("leftside"),
+     (q1..bend(-10)..q0).l("\str{b}").style("leftside"),
+     (q2..loop(E)).l("\str{a}"),
+     (q2..bend(-35)..q0).l("\str{b}").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== exercise: input is emptystring =========
+picture pic;
+int picnum = 33;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting);    
+node q1=ncircle("$q_1$");  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("any"),
+     (q1..loop(E)).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== exercise: input is emptystring =========
+picture pic;
+int picnum = 34;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting);    
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$");  
+node q3=ncircle("$q_3$");  
+node q4=ncircle("$q_4$",ns_accepting);  
+node q5=ncircle("$q_5$");  
+node q6=ncircle("$q_6$");  
+node q7=ncircle("$q_7$");  
+node q8=ncircle("$q_8$",ns_accepting);  
+node e=ncircle("$e$");  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2, q3, q4);
+vlayout(v, q3, e);
+vlayout(2v, q0, q5);
+hlayout(u, q5, q6, q7, q8);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0--q5).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q1..bend(5)..e).l("\str{b}"),
+     (q2--q3).l("\str{a}"),
+     (q2--e).l("\str{b}"),
+     (q3--q4).l("\str{b}"),
+     (q3--e).l("\str{a}"),
+     (q4--e).l("any"),
+     (q5--q6).l("\str{a}"),
+     (q5..bend(-10)..e).l("\str{b}").style("leftside"),
+     (q6--q7).l("\str{a}"),
+     (q6..bend(-5)..e).l("\str{b}").style("leftside"),
+     (q7--q8).l("\str{a}"),
+     (q7--e).l("\str{b}").style("leftside"),
+     (q8--e).l("any"),
+     (e..loop(E)).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4,
+     e,
+     q5, q6, q7, q8);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== exercise: input is emptystring =========
+picture pic;
+int picnum = 35;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting);    
+node q1=ncircle("$q_1$",ns_accepting);
+node q2=ncircle("$q_2$",ns_accepting);  
+node e=ncircle("$e$");  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+q1.pos = new_node_pos_h(q0, 15, 1.0*u);
+q2.pos = new_node_pos_h(q0, -15, 1.0*u);
+hlayout(2*u, q0, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0--q2).l("\str{b}"),
+     (q1--e).l("\str{b}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q2--e).l("\str{a}"),
+     (q2..loop(S)).l("\str{b}"),
+     (e..loop(E)).l("any")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== exercise: rock, paper, scissors =========
+picture pic;
+int picnum = 36;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_1$",ns_accepting);    
+node q2=ncircle("$q_2$");    
+node q3=ncircle("$q_3$");    
+node q4=ncircle("$q_4$",ns_accepting);
+node q5=ncircle("$q_5$",ns_accepting);  
+node q6=ncircle("$q_6$");  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+q1.pos = new_node_pos_h(q0, 25, 1.0*u);
+hlayout(1*u, q0, q2);
+q3.pos = new_node_pos_h(q0, -25, 1.0*u);
+q4.pos = new_node_pos_h(q0, 180-25, -1.0*u);
+hlayout(-1*u, q0, q5);
+q6.pos = new_node_pos_h(q0, 180+25, -1.0*u);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{PR}"),
+     (q0--q2).l("\str{PS}"),
+     (q0--q3).l("\str{RP}"),
+     (q0--q4).l("\str{RS}").style("leftside"),
+     (q0--q5).l("\str{SP}").style("leftside"),
+     (q0--q6).l("\str{SR}").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3,
+     q4, q5, q6);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: multiple of five ================
+picture pic;
+int picnum = 37;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(2*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0..bend(-15)..q1).l("\str{0},\str{5}").style("leftside"),
+     (q0..loop(W)).l("\str{1},\str{2},\str{3},\str{4},\str{6},\str{7},\str{8},\str{9}"),
+     (q1..bend(-15)..q0).l("\str{1},\str{2},\str{3},\str{4},\str{6},\str{7},\str{8},\str{9}").style("leftside"),
+     (q1..loop(E)).l("\str{0},\str{5}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== exercise: no 0's or no 2's ================
+picture pic;
+int picnum = 38;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, e);
+
+// draw edges
+draw(pic,
+     (q0--e).l("\str{0},\str{2}"),
+     (q0..loop(W)).l("\str{1},\str{3},\str{4},\str{5},\str{6},\str{7},\str{8},\str{9}"),
+     (e..loop(E)).l("any")
+     );
+
+// draw nodes
+draw(pic,
+     q0, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

@@ -250,7 +250,7 @@ Before that definition we will see two additional motivating examples.
   definition discounts constant multiples.
 \end{example}
 
-\begin{example}
+\begin{example}  \label{ex:BitsToRepresentANumber}
 Let $\map{b}{\N}{\N}$ give as output
 the number of bits needed to represent its input in binary.
 The second line of this table gives
@@ -267,6 +267,7 @@ $\lg(n)$, the power of $2$ that equals~$n$.
             &$101$  &$110$ 
             &$111$  &$1000$ &$1001$ 
   \\  \hline
+  \rule{0pt}{15pt}   % taller \strut
   \begin{tabular}{@{}l@{}}
     $b(n)$ \\ $\lg(n)$ 
   \end{tabular}
@@ -373,7 +374,10 @@ codomain~$\N$.\footnotemark[1]
 \end{definition}
 
 Think of `$f$ is $\bigOh(g)$' as meaning that
-$f$'s growth rate is less than or equal to $g$'s rate.
+$f$'s growth rate is less than or equal to $g$'s rate
+(some authors highlight this intuition by writing $f\ll g$
+if $f$ is $\bigOh(g)$ but it is not the case that
+$g$ is $\bigOh(f)$).
 These illustrate.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo10.pdf}
@@ -451,31 +455,21 @@ than~$g$'s.
   Just take $N=0$ and~$C=1$.
 \end{example}
 
-% \begin{example}
-% Some pairs of functions aren't comparable.
-% Try to compare this with $g(n)=n^3$.
-% \begin{equation*}
-%   f(n)=\begin{cases} 
-%          n^2  &\case{if $n$ is even}  \\
-%          n^4  &\case{if $n$ is odd}
-%        \end{cases}
-% \end{equation*}
-% This function is not~$\bigOh(g)$ because there are
-% arbitrarily large inputs~$n$ where $C=2$ does not suffice:
-% if $n$ is odd and $n>2$  then $f(n)=n^4=n\cdot n^3> 2\cdot n^3$, and
-% similar reasoning works for any~$C$.
-% And $g$ is not~$\bigOh(f)$ for the same reason on even inputs.
-% \end{example}
-
 \begin{example}
 Some pairs of functions aren't comparable.
-Let $f(n)=n^2$ if $n$~is even and let $f(n)=n^4$ if $n$~is odd.
-Try to compare this with $g(n)=n^3$.
-This function is not~$\bigOh(g)$ because there are
+Let $g(n)=n^3$.
+The function
+\begin{equation*}
+  f(n)=\begin{cases}
+         n^2  &\case{if $n$ is even}  \\
+         n^4  &\case{if $n$ is odd}
+       \end{cases}
+\end{equation*}
+is not~$\bigOh(g)$ because there are
 arbitrarily large inputs~$n$ where $C=2$ does not suffice:
 if $n$ is odd and $n>2$  then $f(n)=n^4=n\cdot n^3> 2\cdot n^3$, and
 similar reasoning works for any~$C$.
-And $g$ is not~$\bigOh(f)$ for the same reason on even inputs.
+Likewise, $g$ is not~$\bigOh(f)$ because of its behavior even inputs.
 \end{example}
 
 \begin{lemma}  \label{lem:BigOhReflexiveAndTransitive}
@@ -498,16 +492,16 @@ And $g$ is not~$\bigOh(f)$ for the same reason on even inputs.
 \end{lemma}
 
 \begin{fig}[fig:BigOhBeans]{Each bean encloses the set of
-    natural number  functions.
-    Quickly-growing functions are at the top;
+    natural number functions $\map{f}{\N}{\N}$.
+    Quickly growing functions are at the top;
     for instance, $f_0(n)=n^5$ is higher up than $f_1(n)=n^4$.
     On the left the cone is $\bigOh(g)$ for some $g$.
-    The cone's elements are the
+    It contains
     functions with growth rate less than or equal to $g$'s rate.
-    The ellipse at the top of the cone is $\bigTheta(g)$, those functions whose
+    The ellipse at the cone's top is $\bigTheta(g)$, those functions whose
     growth rate equals $g$'s.
-    On the right is added 
-    a subset $\bigOh(f)$, for some $f$ in~$\bigOh(g)$.}
+    The cone on the right is shown with  
+    a subset $\bigOh(f)$ for some $f$ in~$\bigOh(g)$.}
   \includegraphics{complexity/asy/bigo/bigo12.pdf}
   \hspace{6em}
   \includegraphics{complexity/asy/bigo/bigo13.pdf}
@@ -515,23 +509,27 @@ And $g$ is not~$\bigOh(f)$ for the same reason on even inputs.
 
 
 \begin{lemma}[Algebraic properties]  \label{lem:BigOAlgProps}
-  Suppose that $f_0$ is $\bigOh(g_0)$ and that $f_1$ is $\bigOh(g_1)$.
 \begin{parenum}
-\item 
-  For any positive constant $a\in\R^+$, the function $af_0$ is $\bigOh(g_0)$.
 \item
-  The sum $f_0+f_1$ is $\bigOh(g)$, where $g$ is defined by
+  If $f$ is $\bigOh(g)$ then 
+  for any positive constant $a\in\R^+$, the function $af$ is $\bigOh(g)$.
+\item
+  Suppose that $f_0$ is $\bigOh(g_0)$ and $f_1$ is $\bigOh(g_1)$.
+  Then the sum $f_0+f_1$ is $\bigOh(g)$, where
   $g(n)=\max(g_0(n),g_1(n))$.  
-  So if both $f_0$ and $f_1$ are $\bigOh(g)$ then $f_0+f_1$ is also $\bigOh(g)$.
-\item
-  The product $f_0f_1$ is $\bigOh(g_0g_1)$.
+  In particular, if there is a function $\hat{g}$ where
+  if both $f_0$ and $f_1$ are $\bigOh(\hat{g})$
+  then $f_0+f_1$ is also $\bigOh(\hat{g})$.
+  As well, 
+  the product $f_0f_1$ is $\bigOh(g_0g_1)$.
 \end{parenum}
 \end{lemma}
 
 
 \begin{example}
-  The order $\bigOh(n\cdot \lg(n))$ appears often.
-  We will show that it equals $\bigOh(\lg(n!))$ by set mutual containment.
+  The $\bigOh(f)$'s are sets.
+  To illustrate, we will show that $\bigOh(n\cdot \lg(n))$
+  equals $\bigOh(\lg(n!))$ by mutual containment.
   
   Recall that logarithmic functions turn multiplication into addition:
   $\lg(a\cdot b)=\lg(a)+\lg(b)$.
@@ -575,12 +573,12 @@ this result makes the job easier.
   \end{parenum}
 \end{theorem}
 
-To apply that result we usually make use of 
-this theorem from first semester calculus.
+To apply that theorem, we use 
+this result from first semester calculus.
 
 \begin{theorem}[L'H\^{o}pital's Rule]
-Suppose that $\map{f,g}{\R}{\R}$ are such that as $x\to\infty$ then both
-$f(x)\to\infty$ and $g(x)\to\infty$.
+Suppose that $\map{f,g}{\R}{\R}$ are such that both
+$f(x)\to\infty$ and $g(x)\to\infty$ as $x\to\infty$.
 If 
 $\lim_{x\to\infty}f^\prime(x)/g^\prime(x)$ exists and equals
 $L\in\R\cup\{\pm\infty\}$
@@ -590,8 +588,7 @@ $\lim_{x\to\infty}f(x)/g(x$ also exists and also equals~$L$.
 
 Taking the derivative requires functions with inputs that are real numbers,
 not natural numbers.
-So to apply
-L'H\^opital's Rule to \cref{lem:LHBigO} we need the next observation.
+So we need the next observation.
 
 \begin{lemma} \label{lem:ReFcnsGiveNatFcns}
   Let $\map{F,G}{\R}{\R}$ and let $\map{f,g}{\N}{\leftclosed{0}{\infty}}$
@@ -612,26 +609,56 @@ L'H\^opital's Rule to \cref{lem:LHBigO} we need the next observation.
     =\lim_{x\to\infty}\frac{4}{2}
     =2
   \end{equation*}
-  By \cref{lem:ReFcnsGiveNatFcns} the limit of the natural number functions
-  $\lim_{n\to\infty}f(n)/g(n)$ is also~$2$.
-  With that, \cref{lem:LHBigO} says that the two
-  have the same growth rate, $f$ is~$\bigTheta(g)$.
+  Then \cref{lem:LHBigO} (along with \cref{lem:ReFcnsGiveNatFcns})
+  says that the two
+  have the same growth rate, that is, $f$ is~$\bigTheta(g)$.
 
   Similarly, for $f(n)=2n^2+3n+4$ and $g(n)=n^3+5n+6$,
-  L'H\^opital's Rule shows that
   \begin{equation*}
     \lim_{x\to\infty}\frac{x^3+5x+6}{2x^2+3x+4}
     =\lim_{x\to\infty}\frac{3x^2+5x+6}{4x+3}
     =\lim_{x\to\infty}\frac{6x}{4}
     =\infty
   \end{equation*}
-  and so $f$ grows at a rate strictly slower than~$g$, that is,
+  shows that $f$ grows at a rate strictly less than~$g$'s rate, that is,
   $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
 \end{example}
 
+\begin{example} \label{ex:CompareLogToPower}
+For any power~$d>0$ the polynomial function~$x^d$
+grows more quickly than the logarithmic function:
+$\log_b(x)$ is~$\bigOh(x^d)$.
+Verify it with L'Hopital's Rule.
+(After \cref{ex:BitsToRepresentANumber} we noted that
+no matter what the base, all logarithmic functions have the
+same order of growth.
+Here we use $\ln$, with base~$e$, because its derivative is easy.)
+\begin{equation*}
+  \lim_{x\to\infty}\frac{\ln(x)}{x^d}
+  =\lim_{x\to\infty}\frac{(1/x)}{x^d}
+  =\lim_{x\to\infty}\frac{1}{x^{d+1}}
+  =0
+\end{equation*}
+Examples are that $\lg(x)$ is $\bigOh(x)$,
+that $\lg(x)$ is $\bigOh(x^{0.1})$,
+and that $\lg(x)$ is $\bigOh(x^{0.01})$.
+None of these comparisons reverse; \cref{exer:LogSmallerThanPower} shows that
+$x^d$ is not~$\bigOh(\log_b(x))$.
+
+The log-linear function $x\cdot\lg(x)$ has a similar relationship to the
+polynomials $x^d$, where $d>1$.
+\begin{multline*}
+  \lim_{x\to\infty}\frac{x\ln(x)}{x^d}
+  =\lim_{x\to\infty}\frac{x\cdot (1/x)+1\cdot\ln(x)}{dx^{d-1}}
+  =\lim_{x\to\infty}\frac{1+\ln(x)}{dx^{d-1}}          \\
+  =\lim_{x\to\infty}\frac{(1/x)}{d(d-1)x^{d-2}}
+  =\lim_{x\to\infty}\frac{1}{d(d-1)x^{d-1}}
+  =0
+\end{multline*}
+\end{example}
+
 \begin{example}
-  Exponential functions also come up often.
-  Compare $f(n)=n^2$ with $g(x)=2^n$,
+  To compare the exponential $g(n)=2^n$ with the polynomial $f(n)=n^2$,
   convert to real functions and apply L'H\^{o}pital's Rule.
   \begin{equation*}
     \lim_{x\to\infty}\frac{2^x}{x^2}
@@ -639,27 +666,19 @@ L'H\^opital's Rule to \cref{lem:LHBigO} we need the next observation.
     =\lim_{x\to\infty}\frac{2^x\cdot(\ln(2))^2}{2}
     =\infty
   \end{equation*}
-  Thus, by \cref{lem:LHBigO},
+  Thus,
   $f$'s order is strictly less than $g$'s\Dash $f$ is in~$\bigOh(g)$ but
   $g$ is not in~$\bigOh(f)$.
-
-  The same approach also shows that the order of $f(x)=\lg(x)$ is 
-  strictly less than the order of $g(x)=x$.
-  \begin{equation*}
-    \lim_{x\to\infty}\frac{\lg(x)}{x}
-    =\lim_{x\to\infty}\frac{(1/x)\cdot(1/\ln(2))}{1}
-    =0
-  \end{equation*}
 \end{example}
 
 That example is a blueprint for the single most important fact about
 the growth rate of functions.
 
 \begin{lemma} \label{lem:PolySlowerThanExp} 
-Polynomial functions grow slower than exponential functions:
-if $f$ is a polynomial function.
-then $f$ is $\bigOh(c^n)$ but
-$f$ is not $\bigTheta(c^n)$ for any $c>1$.
+Polynomial functions grow more slowly than exponential functions:~for
+any base $C>1$, if $f$ is a polynomial function
+then $f$ is~$\bigOh(C^n)$ but
+$C^n$ is not $\bigOh(f)$.
 \end{lemma}
 
 \begin{proof}
@@ -676,37 +695,6 @@ $f$ is not $\bigTheta(c^n)$ for any $c>1$.
 % $\ln$ is $\bigOh(\lg)$ and $\lg$ is $\bigOh(\ln)$, so that
 % $\ln$ is $\bigTheta(\lg)$. 
 
-\begin{example} \label{ex:CompareLogToPower}
-For any exponent~$d>0$ the power function~$x^d$
-is greater, in a big-O sense, than the logarithmic function:
-$\log_b(x)$ is~$\bigOh(x^d)$.
-Apply L'Hopital's Rule
-\begin{equation*}
-  \lim_{x\to\infty}\frac{\ln(x)}{x^d}
-  =\lim_{x\to\infty}\frac{(1/x)}{x^d}
-  =\lim_{x\to\infty}\frac{1}{x^{d+1}}
-\end{equation*}
-and observe that is $d>0$ then $d+1>1$ and so the limit is~$0$.
-Thus, $\lg(x)$ is $\bigOh(x^{1})$
-and  $\lg(x)$ is $\bigOh(x^{0.1})$
-and  $\lg(x)$ is $\bigOh(x^{0.01})$, etc.
-None of these comparisons reverse; \cref{exer:LogSmallerThanPower} shows that
-$x^d$ is not~$\bigOh(\log_b(x))$.
-
-The log-linear function $x\cdot\lg(x)$ has a similar relationship to the
-polynomials around it.
-The power function
-$x^d$ for $d>1$ is greater, in a big-O sense, than $x\cdot\lg(x)$.
-\begin{multline*}
-  \lim_{x\to\infty}\frac{x\ln(x)}{x^d}
-  =\lim_{x\to\infty}\frac{x\cdot (1/x)+1\cdot\ln(x)}{dx^{d-1}}
-  =\lim_{x\to\infty}\frac{1+\ln(x)}{dx^{d-1}}          \\
-  =\lim_{x\to\infty}\frac{(1/x)}{d(d-1)x^{d-2}}
-  =(1/(d)(d-1))\cdot\lim_{x\to\infty}\frac{1}{x^{d-1}}
-  =0
-\end{multline*}
-\end{example}
-
 
 
 
@@ -720,14 +708,12 @@ $x^d$ for $d>1$ is greater, in a big-O sense, than $x\cdot\lg(x)$.
 % -------------------------------
 \subsection{Tractable and intractable}
 
-When we analyze how a wide variety of algorithms consume resources, 
-we observe that some orders of growth
+Some orders of growth
 appear often in practice.
 This table lists them.
-It gives them in ascending order, meaning that
-$\bigOh(f)$ is before $\bigOh(g)$ 
-if $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$
-(some authors write $f\ll g$).
+They are in ascending order, meaning that
+$\bigOh(f)$ is listed before $\bigOh(g)$ 
+if $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
 
 \begin{tablefigure}{The order of growth hierarchy.}
   \begin{tabular}{@{}lll@{}}
@@ -737,16 +723,16 @@ if $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$
     \hline
     $\bigOh(1)$        &Constant    &$f_0(n)=1$, $f_1(n)=15$  \\ 
     $\bigOh(\lg(\lg(n)))$  &Double logarithmic  &$f(n)=\ln(\ln(x))$    \\ 
-    $\bigOh(\lg(n))$  &Logarithmic  &$f_0(n)=\lg(n)$, $f_1(n)=\ln(n)$  \\ 
+    $\bigOh(\lg(n))$  &Logarithmic  &$f_0(n)=\ln(n)$, $f_1(n)=\lg(n^3)$  \\ 
     $\bigOh\bigl(\,(\lg(n))^c\,\bigr)$ &Polylogarithmic  &$f(n)=(\lg(n))^3$ \\ 
     $\bigOh(n)$    &Linear  &$f_0(n)=n$, $f_1(n)=3n+4)$  \\ 
     $\bigOh(n\lg(n))=\bigOh(\lg(n!))$    &Log-linear  &  \\ 
     $\bigOh(n^2)$  &Polynomial (quadratic)  &$f_0(n)=5n^2+2n+12$  \\ 
-    $\bigOh(n^3)$  &Polynomial (cubic)  &$f(n)=2n^3+12n^2+5$ \\ 
-    % \quad$\smash\vdots$  &   &   \\
-    $\bigOh(2^n)$   &Exponential  &$f(n)=2^n$  \\ 
+    $\bigOh(n^3)$  &Polynomial (cubic)  &$f(n)=2n^3+12n^2+5$ \\
+    \quad\rule{0pt}{11pt}$\smash\vdots$  &   &   \\
+    $\bigOh(2^n)$   &Exponential  &$f(n)=10\cdot 2^n$  \\ 
     $\bigOh(3^n)$   &Exponential  &$f(n)=6\cdot 3^n+n^2$  \\ 
-    % \quad$\smash\vdots$  &   &   \\
+    \quad\rule{0pt}{11pt}$\smash\vdots$  &   &   \\
     $\bigOh(n!)$  &Factorial  &  \\  
     $\bigOh(n^n)$  &\textit{--No standard name--}          &  \\  
   \end{tabular}  
@@ -764,41 +750,37 @@ if $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$
 % slow-growing function of its input, so functions near the list's start
 % are desirable.
 
-The table above shows the hierarchy of commonly-encountered orders of growth. 
-We often divide in in two;
-the table below shows why.
-It compares algorithms that run in time $\lg n$, $n$, etc.
-(Whether this is their worst case time or
-average-case time, or whatever, doesn't matter.)
-A modern computer runs at about 10~GHz, which is
-$10\,000$ million ticks per second, that is, operations per second.
-The chart's entries show how long the job will take, in years.
-For instance, if an algorithm takes time given by $n$ and $n=1$ then it finishes
-in \citetext{$3.17\times 10^{-18}$~years}{So that's the number of years
-  per tick.
-  Said another way, $10\,000$ million is $10^4\cdot 10^6=10^{10}$ instructions
-  per second and one second is about $\scinot{3.17}{-8}$~years.}.
-\begin{tablefigure}{Comparison of some functions from the order of growth hierarchy.}
+We often divide that hierarchy in two;
+the \citetext{table below shows why}{
+This table is adapted from \autocite{GareyJohnson}.}.
+A modern computer runs at about 10~GHz,
+$10\,000$ million ticks per second.
+The chart shows how long a job will take if we use an algorithm
+that runs in time $\lg n$, or time~$n$, etc.
+\begin{tablefigure}{Comparison of the times taken by algorithms whose behavior is given by some functions from the order of growth hierarchy, on some input sizes~$n$.  Times are in years; one second is about $\scinot{3.17}{-8}$~years.}
   \begin{tabular}{r|*{4}{l}}
     \multicolumn{1}{c}{\ }
       &\multicolumn{1}{c}{\tabulartext{$n=1$}}
       &\multicolumn{1}{c}{\tabulartext{$n=10$}}
       &\multicolumn{1}{c}{\tabulartext{$n=50$}}
       &\multicolumn{1}{c}{\tabulartext{$n=100$}}  \\ \cline{2-5}
-    $\lg n$  &\multicolumn{1}{c}{$0$} &$\scinot{1.05}{-17}$ &$\scinot{1.79}{-17}$ &$\scinot{2.11}{-17}$ \rule{0em}{11pt} \\  
+    $\lg n$  &\multicolumn{1}{c}{---} &$\scinot{1.05}{-17}$ &$\scinot{1.79}{-17}$ &$\scinot{2.11}{-17}$ \rule{0em}{11pt} \\  
     $n$      &$\scinot{3.17}{-18}$ &$\scinot{3.17}{-17}$ &$\scinot{1.58}{-16}$ &$\scinot{3.17}{-16}$ \\  
-    $n\lg n$ &\multicolumn{1}{c}{$0$} &$\scinot{1.05}{-16}$ &$\scinot{8.94}{-16}$ &$\scinot{2.11}{-15}$ \\  
+    $n\lg n$ &\multicolumn{1}{c}{---} &$\scinot{1.05}{-16}$ &$\scinot{8.94}{-16}$ &$\scinot{2.11}{-15}$ \\  
     $n^2$    &$\scinot{3.17}{-18}$ &$\scinot{3.17}{-16}$ &$\scinot{7.92}{-15}$ &$\scinot{3.17}{-14}$ \\  
     $n^3$    &$\scinot{3.17}{-18}$ &$\scinot{3.17}{-15}$ &$\scinot{3.96}{-13}$ &$\scinot{3.17}{-12}$ \\  
     $2^n$    &$\scinot{6.34}{-18}$ &$\scinot{3.24}{-15}$ &$\scinot{3.57}{-3}$ &$\scinot{4.02}{12}$ \\  
   \end{tabular} \label{tab:CompareFcnNumbers}
 \end{tablefigure}
-Consider the $n=100$ column.
-At the tables's start the change between rows is an order of magnitude, which is
-big, but the times are small so it is less impressive.
-That changes with the final line.
-That line's entry does not say $10^{-12}$~years, it says $10^{12}$~years.
-This is a huge gap.
+Consider the final column.
+Between the first and second row the relative change is an order of
+magnitude, which is big, but the absolute times are quite small, much less
+than a second.
+The same is true between the second and third row, and the third and fourth.
+That holds until the final line.
+The final line's entry does not say $10^{-12}$~years, it says $10^{12}$~years.
+This is a huge relative change.
+But more than that, it is a huge absolute time.
 The universe is about $14$~billion years old and a billion is $10^{9}$ years,
 so this exponential computation, even with input size only $100$,
 would take longer than the age of the universe.

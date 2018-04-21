@@ -2310,4 +2310,89 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: vowels in ascending order ================
+picture pic;
+int picnum = 39;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2, q3, q4, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{A}"),
+     (q0..loop(S)).l("other"),
+     (q1--q2).l("\str{E}"),
+     (q1..loop(S)).l("other"),
+     (q2--q3).l("\str{I}"),
+     (q2..loop(S)).l("other"),
+     (q3--q4).l("\str{O}"),
+     (q3..loop(S)).l("other"),
+     (q4--q5).l("\str{U}"),
+     (q4..loop(S)).l("other"),
+     (q5..loop(S)).l("any")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: picture given transition function ================
+picture pic;
+int picnum = 40;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q2).l("\str{a}").style("leftside"),
+     (q0..bend(-10)..q1).l("\str{b}"),
+     (q1..bend(-30)..q0).l("\str{a}").style("leftside"),
+     (q1--q2).l("\str{b}"),
+     (q2..loop(E)).l("\str{a},\str{b}")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

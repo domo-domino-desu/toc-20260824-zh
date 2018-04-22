@@ -2395,4 +2395,50 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: picture given transition function ================
+picture pic;
+int picnum = 41;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_2$",ns_accepting); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q2, q3);
+vlayout(-0.75*v, q0, q1);
+vlayout(0.75*v, q2, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{+},\str{-}").style("leftside"),
+     (q0--q2).l("\str{0},\ldots \str{9}"),
+     (q1--q2).l("\str{0},\ldots \str{9}"),
+     (q2..loop(N)).l("\str{0},\ldots \str{9}"),
+     (q2--e).l("other"),
+     (q2--q3).l("\str{.}"),
+     (q3--e).l("other"),
+     (q3..loop(N)).l("\str{0},\ldots \str{9}"),
+     (e..loop(W)).l("any")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

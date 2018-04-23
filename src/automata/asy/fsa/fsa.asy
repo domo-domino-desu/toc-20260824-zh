@@ -2405,7 +2405,7 @@ setdefaultstatediagramstyles() ;
 node q0=ncircle("$q_0$"); 
 node q1=ncircle("$q_1$"); 
 node q2=ncircle("$q_2$",ns_accepting); 
-node q3=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$",ns_accepting); 
 node e=ncircle("$e$"); 
 
 // calculate nodes position
@@ -2437,6 +2437,165 @@ draw(pic,
      q0, q1, q2, q3, e);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: every 1 preceeded and followed by 0 ================
+picture pic;
+int picnum = 42;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+vlayout(1*v, q1, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0}").style("leftside"),
+     (q0--e).l("\str{1}").style("leftside"),
+     (q1..loop(N)).l("\str{0}"),
+     (q1..bend(-20)..q2).l("\str{1}").style("leftside"),
+     (q2..bend(-20)..q1).l("\str{0}").style("leftside"),
+     (q2--e).l("\str{1}").style("leftside"),
+     (e..loop(E)).l("any")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: binary, multiple of four ================
+picture pic;
+int picnum = 43;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{0}").style("leftside"),
+     (q0..loop(W)).l("\str{1}"),
+     (q1..bend(-20)..q2).l("\str{0}").style("leftside"),
+     (q1..bend(-10)..q0).l("\str{1}").style("leftside"),
+     (q2..bend(-35)..q0).l("\str{1}"),
+     (q2..loop(E)).l("\str{0}")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== exercise: decimal, even ================
+picture pic;
+int picnum = 44;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");  
+node q1=ncircle("$q_1$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1.5*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{0}, \str{2}, \str{4}, \str{6}, \str{8}").style("leftside"),
+     (q0..loop(W)).l("\str{1}, \str{3}, \str{5}, \str{7}, \str{9}"),
+     (q1..bend(-20)..q0).l("\str{1}, \str{3}, \str{5}, \str{7}, \str{9}").style("leftside"),
+     (q1..loop(E)).l("\str{0}, \str{2}, \str{4}, \str{6}, \str{8}")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== exercise: decimal, divisible by 100 ================
+picture pic;
+int picnum = 45;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{0}").style("leftside"),
+     (q0..loop(W)).l("other"),
+     (q1..bend(-20)..q2).l("\str{0}").style("leftside"),
+     (q1..bend(-10)..q0).l("other").style("leftside"),
+     (q2..bend(-35)..q0).l("other").style("leftside"),
+     (q2..loop(E)).l("\str{0}")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

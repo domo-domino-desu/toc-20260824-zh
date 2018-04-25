@@ -2599,5 +2599,104 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: any finite language is the lang of some FSA =======
+picture pic;
+int picnum = 46;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$");
+node ldots=nbox("\makebox[4em][c]{\ldots}",ns_noborder);
+node q3=ncircle("$q_{j-1}$");
+node q4=ncircle("$q_j$",ns_accepting); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1.10*u, q0, q1, q2, ldots, q3, q4, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$\sigma[0]$").style("leftside"),
+     (q0..bend..e).l(Label("other",Relative(0.2))),
+     (q1--q2).l("$\sigma[1]$").style("leftside"),
+     (q1..bend..e).l(Label("other",Relative(0.2))),
+     (q2--ldots).l("$\sigma[1]$").style("leftside"),
+     (ldots--q3).l("$\sigma[j-2]$").style("leftside"),
+     (q3--q4).l("$\sigma[j-1]$").style("leftside"),
+     (q3..bend..e).l(Label("other",Relative(0.2))),
+     (q4--e).l("other"),
+     (e..loop(E)).l("other")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, ldots, q3, q4, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ...
+picture pic;
+int picnum = 47;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node ldots0=nbox("\makebox[4em][c]{\ldots}",ns_noborder);
+node qi=ncircle("$q_i$"); 
+node qi1=ncircle("$q_{i+1}$");
+node ldots1=nbox("\makebox[4em][c]{\ldots}",ns_noborder);
+node qj=ncircle("$q_j$",ns_accepting);  
+node qj1=ncircle("$q_{j+1}$");  
+node ldots2=nbox("\makebox[4em][c]{\ldots}",ns_noborder);
+node qn=ncircle("$q_n$",ns_accepting); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1.10*u, q0, ldots0, qi, qi1, ldots1, qj, e);
+qj1.pos = new_node_pos_h(qi, -25, 1.10*u);
+hlayout(1.10*u, qj1, ldots2, qn);
+
+// draw edges
+draw(pic,
+     (q0--ldots0).l("$\alpha[0]$").style("leftside"),
+     (ldots0--qi).l("$\alpha[-1]$").style("leftside"),
+     (qi--qi1).l("$\sigma_k[i]$").style("leftside"),
+     (qi1--ldots1),
+     (ldots1--qj).l("$\sigma_k[-1]$").style("leftside"),
+     (qi--qj1).l("$\sigma_{k+1}[i]$"),
+     (qj1--ldots2),
+     (ldots2--qn).l("$\sigma_{k+1}[-1]$")
+     );
+
+// draw nodes
+draw(pic,
+     q0, ldots0, qi, qi1, ldots1, qj, qj1, ldots2, qn, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
 
 

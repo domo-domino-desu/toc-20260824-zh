@@ -297,7 +297,7 @@ the state is the initial state, so ~$\mathcal{C}_0=\sequence{q_0,\tau}$,
 and $\tau$ is the \definend{input}.
 
 The action of the machine is that
-over time it transitions   
+it transitions   
 from one configuration to the next.
 We refer to its configuration after the $s$-th transition as
 its configuration at \definend{step}~$s$.
@@ -888,7 +888,8 @@ Produce a Finite State machine to accept each language.
 \item 
   $\set{\sigma\in\kleenestar{\set{\str{0},\,\ldots \str{9}}}
     \suchthat \text{$\sigma$ represents a number divisible by $100$ in base ten}}$
-\item Describe this, rather than give the full machine.
+\item Describe this machine.
+  You need not give the full graph or table.
   \begin{equation*}    
    \set{\sigma\in\kleenestar{\set{\str{0},\,\ldots \str{9}}}
      \suchthat \text{$\sigma$ represents a multiple of $4$ in base ten}}
@@ -938,26 +939,85 @@ character alphabet $\Sigma=\set{\str{PR}, \str{PS}, \ldots}$.
 \end{exercise}
 
 \begin{exercise}
+  The definition of the extended transition function,
   \cref{def:ExtendedTransitionFcn},
-  the definition of the extended transition function,
-  is a conceptual definition, not an entirely formal one.
-  Here is a constructive definition, one from which you could easily
+  is conceptual, with some details held back.
+  Here is a constructive definition, one that you could easily translate to
   write a computer program.
-  Where the input string is empty
-  $\sigma=\emptystring$,
-  let $\extended{\Delta}(\sigma)$ be~$q_0$.
-  Where the input string~$\sigma$ is not empty,
+  On the empty input string,
+  $\extended{\Delta}(\emptystring)=q_0$.
+  If the input string~$\sigma$ is not empty then
   peel off the final character, $\sigma=\sigma_0\concat x$ for $x\in\Sigma$,
   and let $\extended{\Delta}(\sigma)$ be
   $\Delta(\extended{\Delta}(\sigma_0),x)$.
   Now apply this to the machine in \cref{ex:FSATwoAsEvenBs}.
   \begin{exparts}
-  \item Use the definition to find $\extended{\Delta}(\str{a})$
-    and $\extended{\Delta}(\str{b})$.
+  \item Use the definition to find $\extended{\Delta}(\str{0})$
+    and $\extended{\Delta}(\str{1})$.
   \item Use the definition to find $\extended{\Delta}$'s output on inputs
-    \str{aa}, \str{ab}, \str{ba}, and \str{bb}.
+    \str{00}, \str{01}, \str{10}, and \str{11}.
   \item Find its action on all length~three strings.
   \end{exparts}
+  \begin{answer}
+  \begin{exparts}
+  \item If the input string is $\sigma=\str{a}$ then peel off the final
+    character with
+    $\sigma=\sigma_0\concat\str{0}$ and the definition gives this.
+    \begin{equation*}
+      \extended{\Delta}(\str{0})
+      =\Delta(\extended{\Delta}(\emptystring),\str{0})
+      =\Delta(q_0,\str{0})
+      =q_1
+    \end{equation*}
+    (Note that in the left-most expression \str{0} is a length one string,
+    while in the rest of the above equation \str{0} is a character.)
+    Similarly, $\extended{\Delta}(\str{0})=q_3$
+  \item For $\sigma=\str{00}$ use the prior item's computation of
+    $\extended{\Delta}(\str{0})$.
+    \begin{equation*}
+      \extended{\Delta}(\str{00})
+      =\Delta(\extended{\Delta}(\str{0}),\str{0})
+      =\Delta(q_1,\str{0})
+      =q_2
+    \end{equation*}
+    The other three are similar.
+    \begin{equation*}
+      \extended{\Delta}(\str{01})=q_4
+      \quad\extended{\Delta}(\str{10})=q_4
+      \quad\extended{\Delta}(\str{11})=q_0
+    \end{equation*}
+  \item
+    For each of these use the prior item's computation.
+    Here is the first.
+    \begin{equation*}
+      \extended{\Delta}(\str{000})
+      =\Delta(\extended{\Delta}(\str{00}),\str{0})
+      =\Delta(q_2,\str{0})
+      =q_2
+    \end{equation*}
+    The others are computed in the same way.
+    \begin{center}
+    \begin{tabular}{*{8}{c}}
+      $\extended{\Delta}(\str{000})$
+      &$\extended{\Delta}(\str{001})$
+      &$\extended{\Delta}(\str{010})$
+      &$\extended{\Delta}(\str{011})$
+      &$\extended{\Delta}(\str{100})$
+      &$\extended{\Delta}(\str{101})$
+      &$\extended{\Delta}(\str{110})$
+      &$\extended{\Delta}(\str{111})$  \\ \hline
+      $q_2$
+      &$q_5$
+      &$q_5$
+      &$q_1$
+      &$q_5$
+      &$q_1$
+      &$q_1$
+      &$q_3$
+    \end{tabular}
+    \end{center}
+  \end{exparts}
+  \end{answer}
 \end{exercise}
 
 \begin{exercise}  \label{exer:FiniteLanguageAcceptedBySomeFSM}

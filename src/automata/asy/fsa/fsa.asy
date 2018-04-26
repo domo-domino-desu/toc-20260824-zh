@@ -401,10 +401,10 @@ draw(pic,
      (q1--q2).l("\str{p}"),
      (q2--q3).l("\str{g}"),
      (q0--q4).l("\str{p}"),
-     (q4--q5).l("\str{n}"),
-     (q5--q6).l("\str{g}"),
-     (q4--q7).l("\str{d}"),
-     (q7--q8).l("\str{f}")
+     (q4--q5).l("\str{d}"),
+     (q5--q6).l("\str{f}"),
+     (q4--q7).l("\str{n}"),
+     (q7--q8).l("\str{g}")
 );
 
 // draw nodes
@@ -2693,6 +2693,56 @@ draw(pic,
      q0, ldots0, qi, qi1, ldots1, qj, qj1, ldots2, qn, e);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== exercise: no more than one aa ==================
+picture pic;
+int picnum = 48;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$",ns_accepting);
+node q3=ncircle("$q_3$",ns_accepting);
+node q4=ncircle("$q_4$",ns_accepting); 
+node e=ncircle("$e$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2, q3, q4);
+vlayout(1*v, q3, e);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{a}").style("leftside"),
+     (q0..loop(N)).l("\str{b}"),
+     (q1..bend(-20)..q0).l("\str{b}").style("leftside"),
+     (q1..bend(-20)..q2).l("\str{a}").style("leftside"),
+     (q2--e).l("\str{a}"),
+     (q2..bend(-20)..q3).l("\str{b}").style("leftside"),
+     (q3..bend(-20)..q4).l("\str{a}").style("leftside"),
+     (q3..loop(N)).l("\str{b}"),
+     (q4--e).l("\str{a}").style("leftside"),
+     (q4..bend(-20)..q3).l("\str{b}").style("leftside"),
+     (e..loop(E)).l("any")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

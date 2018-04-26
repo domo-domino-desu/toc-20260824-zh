@@ -176,12 +176,43 @@ In the transition graphs below we denote the final states with double circles
 and in the transition function tables we mark them with
 a `\acceptingstatemark'.
 
+\begin{example}  \label{ex:FSATwoAsEvenBs}
+This machine accepts a string if and only if it
+contains at least two \str{0}'s as well as an even number of \str{1}'s.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa11.pdf}}               
+  \hspace{3em}
+  \begin{transitionfunction}
+      &\str{0}    &\str{1}   \\
+    \cline{2-3}
+    $q_0$ &$q_1$ &$q_3$   \\
+    $q_1$ &$q_2$ &$q_4$    \\
+    \acceptingstate
+    $q_2$ &$q_2$ &$q_5$  \\
+    $q_3$ &$q_4$ &$q_0$    \\
+    $q_4$ &$q_5$ &$q_1$    \\
+    $q_5$ &$q_5$ &$q_2$    \\
+  \end{transitionfunction}
+\end{center}
+This machine illustrates the key to designing Finite State machines:~each
+state means something.
+For instance, $q_4$ means ``so far I have seen one~$0$ and an
+odd number of $1$'s.''
+And $q_5$ means ``so far I
+have seen two \str{0}'s but an odd number of \str{1}'s.''
+The way the machine is drawn brings out this principle.
+The first row has states that have so far seen an even number of
+\str{1}'s, while the second row's states have seen an odd number.
+The first column holds states have seen no \str{0}'s,
+the second column holds states have seen one,
+and the third column has states that have seen two \str{0}'s.
+\end{example}
+
 \begin{example}  \label{ex:FSAValidIntegers}
 This machine
 accepts strings that are valid as decimal representations of integers.
 Thus, it accepts `\str{21}' and `\str{-707}' but does not accept
 `\str{501-}'.
-
 Both the transition graph and the table group some inputs together when
 they result in the same action.
 For instance, when in state~$q_0$ this machine does the same thing
@@ -201,54 +232,35 @@ it as an accepting state.
     $e$   &$e$   &$e$   &$e$   \\
   \end{transitionfunction}
   \end{center}
-  Any bad input character sends the machine to the error state~$e$.
-  In practice we would take this machine's alphabet to be the
-  set of characters that someone could conceivably enter, 
-  including letters such as \str{a} and~\str{A} and even
-  characters such as the exclamation point or the open parenthesis.
+  Any bad input character sends the machine to the error state~$e$,
+  from which the machine never returns.
 \end{example}
 
-
-\begin{example}  \label{ex:FSATwoAsEvenBs}
-This machine accepts a string if and only if it
-contains at least two \str{0}'s as well as an even number of \str{1}'s.
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa11.pdf}               
-\end{center}
-This illustrates the key to designing Finite State machines:~each
-state means something.
-For instance, $q_4$ means ``so far I have seen one~$0$ and an
-odd number of $1$'s.''
-And $q_5$ means ``so far I
-have seen two \str{0}'s but an odd number of \str{1}'s.''
-The way the machine is drawn underlines this principle.
-The first row has states that have so far seen an even number of
-\str{1}'s, while the second row's states have seen an odd number.
-The first column's states have seen no \str{0}'s,
-the second column's states have seen one,
-and the third column has states that have seen two \str{0}'s.
-\end{example}
-
-The description above of the language~$\lang$
-connotes that the machine's alphabet is
-$\B$.
-Our Finite State machine descriptions often don't specify the alphabet.
-For instance, in the next example the most sensible alphabet is
+\Cref{ex:FSATwoAsEvenBs} exlicitly states its alphabet because in the transition
+table the columns are labelled \str{0} and~\str{1}.
+But often our Finite State machine descriptions assume that a
+reader will infer the alphabet from the context.
+For instance, the prior example just says `else'. 
+In practice we would take the alphabet to be the
+set of characters that someone could conceivably enter, 
+including letters such as \str{a} and~\str{A} or characters
+characters such as exclamation point or open parenthesis.
+So a modern standard software design would be to use 
 all of \citetext{Unicode}{While in the early days of computers
-characters could be encoded with standards such as ASCII, which includes only
-upper and lower case unaccented letters, digits,
-a few punctuation marks, and a few
-control characters, in only 128 places,
-today's global interconnected world needs more.
-The Unicode standard assigns (to a fair approximation) every character in
-every language a unique number called a code point.
-See \autocite{wiki:Unicode}},
-but that detail is not relevant to the point of the example
-so we pass over it. 
+  characters could be encoded with standards such as ASCII, which includes only
+  upper and lower case unaccented letters, digits,
+  a few punctuation marks, and a few
+  control characters,
+  today's global interconnected world needs more.
+  The Unicode standard assigns a unique number called a code point to
+  every character in every language (to a fair approximation).
+  See \autocite{wiki:Unicode}}.
+But often for us that detail is not relevant
+to the point of the example, so we will pass over it without comment.
 
 \begin{example}  \label{ex:FSAGraphicalFileExtensions}
 This machine accepts strings that are members of the set
-$\set{\str{jpg},\str{png},\str{pdf}}$ of some filename extensions.
+$\set{\str{jpg},\str{pdf},\str{png}}$ of filename extensions.
 Notice that it has more than one final state.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa09.pdf}}
@@ -257,15 +269,21 @@ That drawing omits many edges, the ones involving the error state~$e$.
 For instance, from state~$q_0$ any input character other than \str{j}
 or~\str{p} is an error.
 The drawing below shows the extra edges for the top branch; putting in all the
-edges would make a mess and the clutter would make it
-harder to see the edges from the picture above,
-the ones that are the main point of the example.
+edges would make a mess.
+(Cases such as this are where the transition table is better
+than the graph picture.
+But most of our machines are small and have only a few states and edges
+so we typically like the picture.)
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa10.pdf}}
 \end{center}
-\Cref{exer:FiniteLanguageAcceptedBySomeFSM} asks for a proof that
-for any finite language, there is a Finite State machine that
-accepts a string if and only if it is a member of that language.
+This example illustrates that  
+for any finite language there is a Finite State machine that accepts
+a string if and only if it is a member of the language.
+The idea is to put the strings in alphabetical order, and for ones that have
+common prefixes have the machine step through the shared parts together,
+as here with \str{pdf} and \str{png}.
+\Cref{exer:FiniteLanguageAcceptedBySomeFSM} asks for a proof.
 \end{example}
 
 \begin{example} \label{ex:FSAMultOfThree}
@@ -1076,7 +1094,10 @@ This figure omits all the transitions involving~$e$, to be more readable.
   Produce a Finite State machine that accepts the language over
   $\Sigma=\set{\str{a},\str{b}}$
   containing no more than one occurrence of \str{aa}.
-  Note that the string \str{aaa} contains two occurrences.
+  Note that \str{aaa} contains two occurrences.
+  \begin{answer}
+    \quad\vcenteredhbox{\includegraphics{automata/asy/fsa/fsa48.pdf}}
+  \end{answer}
 \end{exercise}
 
 \begin{exercise}

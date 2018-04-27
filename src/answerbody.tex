@@ -1333,8 +1333,9 @@ and decimal part.
 representation is \str{0}, \str{4},
 or~\str{8}.
 That's $28$ cases.
-The picture is too cluttered to be deciphered but Finite State machines can
-accept strings satisfying a finite number of cases.
+The picture is too cluttered to be deciphered but this is a finite language
+and for any finite language there is a Finite State machines that
+accepts that langugae.
 We shall see an alternative approach that makes a clearer
 picture in the section on nondeterminism.
 \end{exparts}
@@ -1401,55 +1402,60 @@ picture in the section on nondeterminism.
   
 \end{ans}
 \begin{ans}{4.1.34}
-This is based on \cref{ex:FSAGraphicalFileExtensions}.
-
-We will prove this by induction.
-If the language is empty then we use any
-Finite State machine with the right alphabet and no accepting states.
-If the language has one string~$\sigma$ then we write a Finite State machine
-whose state transitions track the characters of~$\sigma$ as does the top line
-in the example.
-That is, we have this.
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa46.pdf}
-\end{center}
-As the diagram shows, the last state in that sequence is an accepting state.
-Also as shown, all transitions for characters not in the sequence go to $e$.
-(If $\sigma=\emptystring$ then there are two states,
-with the initial state~$q_0$ an accepting
-state and all transitions going to the error state~$e$ that is not an accepting
-state.)
-
-For the inductive case,
-assume that there is a machine for any language of size $n=1$, \ldots $n=k$
-and consider a language~$\lang$ with $k+1$-many strings.
-Order the alphabet $\Sigma$; in the example
-we use the grade school alphabetical ordering.
-This character ordering gives rise to an ordering of the strings,
-called lexicographic ordering.
-List $\lang$'s strings in this order:
-$\sigma_0$, \ldots $\sigma_k$, $\sigma_{k+1}$.
-The induction assumption gives a machine for the language
-consisting of the strings $\sigma_0$, \ldots $\sigma_k$.
-The example shows what to do next; it has the two final strings
-\str{png} and \str{pdf} and the machine splits where the two strings split,
-after the~\str{p}.
-Following that model,
-find the longest common substring for $\sigma_k$ and~$\sigma_{k+1}$,
-so that $\sigma_k=\alpha\concat\beta$, and $\sigma_{k+1}=\alpha\concat\gamma$,
-and the initial character of $\beta$ is not equal to the initial character
-of $\gamma$.
-(It could be that $\beta=\emptystring$.
-It could also be that $\alpha=\emptystring$.)
-Split the machine after it traverses the common string, as in the example.
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa47.pdf}
-\end{center}
-This figure omits all the transitions involving~$e$, to be more readable.
-\end{ans}
-\begin{ans}{4.1.35}
     \quad\vcenteredhbox{\includegraphics{automata/asy/fsa/fsa48.pdf}}
   
+\end{ans}
+\begin{ans}{4.1.35}
+\begin{exparts}
+\item
+There is one such machine, this one.
+\begin{center}
+\begin{transitionfunction}
+        &\str{0}  &\str{1}  \\ \cline{2-3}
+  $q_0$ &$q_0$    &$q_0$
+\end{transitionfunction}
+\end{center}
+
+\item
+This list has $16$ machines.
+\begin{center}
+\begin{transitionfunction}[\Delta_0]
+        &\str{0}  &\str{1}  \\ \cline{2-3}
+  $q_0$ &$q_0$    &$q_0$    \\
+  $q_1$ &$q_0$    &$q_0$    \\
+\end{transitionfunction}
+\hspace{1em}
+\begin{transitionfunction}[\Delta_1]
+        &\str{0}  &\str{1}  \\ \cline{2-3}
+  $q_0$ &$q_0$    &$q_0$    \\
+  $q_1$ &$q_0$    &$q_1$    \\
+\end{transitionfunction}
+\hspace{1em}
+\begin{transitionfunction}[\Delta_2]
+        &\str{0}  &\str{1}  \\ \cline{2-3}
+  $q_0$ &$q_0$    &$q_0$    \\
+  $q_1$ &$q_1$    &$q_0$    \\
+\end{transitionfunction}
+\hspace{2em}\ldots\hspace{2em}
+\begin{transitionfunction}[\Delta_{15}]
+        &\str{0}  &\str{1}  \\ \cline{2-3}
+  $q_0$ &$q_1$    &$q_1$    \\
+  $q_1$ &$q_1$    &$q_1$    \\
+\end{transitionfunction}
+\end{center}
+
+\item
+Fix $n$ states $Q=\set{q_0,\ldots q_{n-1}}$.
+Each line of the transition table has two slots so the number of
+distinct lines is $n\cdot n=n^2$.
+An overall table chooses $n$~such lines.
+There are $n^2\cdot n^2 \cdots n^2=n^{2n}$ many ways to do that.
+
+\item
+For each of the $n$~states, either it is final or it is not.
+The additional factor of $2^n$ makes the total number
+$2^nn^{2n}$.
+\end{exparts}
 \end{ans}
 \begin{ans}{4.1.36}
 \begin{exparts}
@@ -1532,15 +1538,17 @@ branches described above, such as
 \end{exparts}
 \end{ans}
 \begin{ans}{4.1.37}
-No, it must have a start state.
+No, a Finite State machine cannot have $Q=\emptyset$.
+The definition requires a start state.
 \end{ans}
 \begin{ans}{4.1.38}
-We shall use Church's Thesis and outline a program
-on an everyday computer.
+Fix some Finite State machine~$\FSM$.
+We shall  outline a computer program that acts as this machine.
+By Church's Thesis there is a Turing machine equivalent.
 
 The program has as a constant the Finite State machine's
 transition function~$\Delta$,
-perhaps simply stored as an array that is the transition table.
+perhaps simply storing the transition table as an array.
 The program uses this to simulate the Finite State machine.
 As input this program takes the input of the Finite State machine.
 
@@ -1548,6 +1556,53 @@ This simulation halts because a Finite State machine must halt.
 When it does so, the Turing machine erases the tape.
 If the simulation ended in an accepting state then
 the Turing machine writes a \str{1}, otherwise it writes a~\str{0}.
+\end{ans}
+\begin{ans}{4.1.40}
+This is based on \cref{ex:FSAGraphicalFileExtensions}.
+
+We will prove this by induction.
+If the language is empty then we use any
+Finite State machine with the right alphabet and no accepting states.
+If the language has one string~$\sigma$ then we write a Finite State machine
+whose state transitions track the characters of~$\sigma$ as does the top line
+in the example.
+That is, we have this.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa46.pdf}
+\end{center}
+As the diagram shows, the last state in that sequence is an accepting state.
+Also as shown, all transitions for characters not in the sequence go to $e$.
+(If $\sigma=\emptystring$ then there are two states,
+with the initial state~$q_0$ an accepting
+state and all transitions going to the error state~$e$ that is not an accepting
+state.)
+
+For the inductive case,
+assume that there is a machine for any language of size $n=1$, \ldots $n=k$
+and consider a language~$\lang$ with $k+1$-many strings.
+Order the alphabet $\Sigma$; in the example
+we use the grade school alphabetical ordering.
+This character ordering gives rise to an ordering of the strings,
+called lexicographic ordering.
+List $\lang$'s strings in this order:
+$\sigma_0$, \ldots $\sigma_k$, $\sigma_{k+1}$.
+The induction assumption gives a machine for the language
+consisting of the strings $\sigma_0$, \ldots $\sigma_k$.
+The example shows what to do next; it has the two final strings
+\str{png} and \str{pdf} and the machine splits where the two strings split,
+after the~\str{p}.
+Following that model,
+find the longest common substring for $\sigma_k$ and~$\sigma_{k+1}$,
+so that $\sigma_k=\alpha\concat\beta$, and $\sigma_{k+1}=\alpha\concat\gamma$,
+and the initial character of $\beta$ is not equal to the initial character
+of $\gamma$.
+(It could be that $\beta=\emptystring$.
+It could also be that $\alpha=\emptystring$.)
+Split the machine after it traverses the common string, as in the example.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa47.pdf}
+\end{center}
+This figure omits all the transitions involving~$e$, to be more readable.
 \end{ans}
 \begin{ans}{4.1.43}
   We will show that for any alphabet there are infinitely many

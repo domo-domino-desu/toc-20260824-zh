@@ -2197,12 +2197,15 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 node q0=ncircle("$q_0$");    
-node q1=ncircle("$q_1$",ns_accepting);    
+node q1=ncircle("$q_1$");    
 node q2=ncircle("$q_2$");    
 node q3=ncircle("$q_3$");    
 node q4=ncircle("$q_4$",ns_accepting);
-node q5=ncircle("$q_5$",ns_accepting);  
+node q5=ncircle("$q_5$");  
 node q6=ncircle("$q_6$");  
+node q7=ncircle("$q_7$",ns_accepting);  
+node q8=ncircle("$q_8$",ns_accepting);  
+node q9=ncircle("$q_9$");    
 
 // calculate nodes position
 // layout
@@ -2211,27 +2214,34 @@ defaultlayoutskip = 1.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-q1.pos = new_node_pos_h(q0, 25, 1.0*u);
+q1.pos = new_node_pos_h(q0, 30, 1.0*u);
 hlayout(1*u, q0, q2);
-q3.pos = new_node_pos_h(q0, -25, 1.0*u);
-q4.pos = new_node_pos_h(q0, 180-25, -1.0*u);
-hlayout(-1*u, q0, q5);
-q6.pos = new_node_pos_h(q0, 180+25, -1.0*u);
+q3.pos = new_node_pos_h(q0, -30, 1.0*u);
+q4.pos = new_node_pos_h(q1, 20, 1.0*u);
+hlayout(1*u, q1, q5);
+q6.pos = new_node_pos_h(q2, 10, 1.0*u);
+q7.pos = new_node_pos_h(q2, -10, 1.0*u);
+hlayout(1*u, q3, q8);
+q9.pos = new_node_pos_h(q3, -20, 1.0*u);
 
 // draw edges
 draw(pic,
-     (q0--q1).l("\str{PR}"),
-     (q0--q2).l("\str{PS}"),
-     (q0--q3).l("\str{RP}"),
-     (q0--q4).l("\str{RS}").style("leftside"),
-     (q0--q5).l("\str{SP}").style("leftside"),
-     (q0--q6).l("\str{SR}").style("leftside")
+     (q0--q1).l("\str{P}"),
+     (q0--q2).l("\str{R}"),
+     (q0--q3).l("\str{S}"),
+     (q1--q4).l("\str{R}"),
+     (q1--q5).l("\str{S}"),
+     (q2--q6).l("\str{P}"),
+     (q2--q7).l("\str{S}"),
+     (q3--q8).l("\str{P}"),
+     (q3--q9).l("\str{R}")
 );
 
 // draw nodes
 draw(pic,
-     q0, q1, q2, q3,
-     q4, q5, q6);
+     q0,
+     q1, q2,
+     q3, q4, q5, q6, q7, q8, q9);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -2745,6 +2755,64 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+
+
+// ============== exercise: tic-tac-toe =========
+picture pic;
+int picnum = 49;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_1$");    
+node q2=ncircle("$q_2$");    
+node q3=ncircle("$q_3$");    
+node q4=ncircle("$q_4$");
+node q5=ncircle("$q_5$");  
+node q6=ncircle("$q_6$");  
+node ldots0=nbox("\makebox[4em][c]{\ldots}",ns_noborder);  
+node ldots1=nbox("\makebox[4em][c]{\ldots}",ns_noborder);  
+node ldots2=nbox("\makebox[4em][c]{\ldots}",ns_noborder);    
+node ldots3=nbox("\makebox[4em][c]{\ldots}",ns_noborder);    
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+q1.pos = new_node_pos_h(q0, 15, 1.0*u);
+q2.pos = new_node_pos_h(q0, -15, 1.0*u);
+q3.pos = new_node_pos_h(q1, 20, 1.0*u);
+hlayout(1*u, q1, q4);
+hlayout(1*u, q2, q5);
+q6.pos = new_node_pos_h(q2, -20, 1.0*u);
+hlayout(0.5*u, q3, ldots0);
+hlayout(0.5*u, q4, ldots1);
+hlayout(0.5*u, q5, ldots2);
+hlayout(0.5*u, q6, ldots3);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{X}").style("leftside"),
+     (q0--q2).l("\str{E}"),
+     (q1--q3).l("\str{X}").style("leftside"),
+     (q1--q4).l("\str{E}"),
+     (q2--q5).l("\str{X}").style("leftside"),
+     (q2--q6).l("\str{E}")
+);
+
+// draw nodes
+draw(pic,
+     q0,
+     q1, q2,
+     q3, q4, q5, q6,
+     ldots0, ldots1, ldots2, ldots3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

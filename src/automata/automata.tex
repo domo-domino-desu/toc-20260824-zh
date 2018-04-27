@@ -931,30 +931,6 @@ picture in the section on nondeterminism.
 \end{exercise}
 
 \begin{exercise}
-In Rock-Paper-Scissors,
-two players each simultaneously
-produce one of the three \str{R}, \str{P}, or~\str{S}.  
-A player producing \str{R} beats a player producing~\str{S},
-and similarly \str{S} beats~\str{P}, and \str{P} beats~\str{R}
-(if they produce the same then it is a do-over).
-Encode a game instance with the two-character string
-$\sigma=\sequence{\text{player one's play, player two's play}}$.
-Make a machine that recognizes a win for player one.
-\begin{answer}
-This is a variant on a Finite State machine.
-The game only has six possible events: \str{PR} for first player Paper and
-second player Rock, \str{PS} for first player Paper and second player Scissors,
-etc.
-So the machine here does not take arbitrary length inputs.
-Instead, it takes length~one strings drawn from a six
-character alphabet $\Sigma=\set{\str{PR}, \str{PS}, \ldots}$.
-\begin{center}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa36.pdf}}
-\end{center}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
   The definition of the extended transition function,
   \cref{def:ExtendedTransitionFcn},
   is conceptual, with some details held back.
@@ -1101,8 +1077,104 @@ This figure omits all the transitions involving~$e$, to be more readable.
 \end{exercise}
 
 \begin{exercise}
-Make a machine that accepts a tic-tac-toe game that is a win for
-the \str{X}'s.  
+Consider a variant on a Finite State machine, where the set of input
+strings is bounded.
+\begin{exparts}
+\item
+In Rock-Paper-Scissors,
+two players each simultaneously
+produce one of the three \str{R}, \str{P}, or~\str{S}.  
+A player producing \str{R} beats a player producing~\str{S},
+and similarly \str{S} beats~\str{P}, and \str{P} beats~\str{R}
+(if they produce the same then it is a do-over).
+Encode a game instance with the two-character string
+$\sigma=\sequence{\text{player one's play, player two's play}}$.
+Make a machine that recognizes a win for player one.
+\item
+Make a machine that accepts a Tic-Tac-Toe game that is a win for
+the \str{X}'s.
+A board has nine squares so encode a game instance with length nine strings.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+There are three ways for the first player to win.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa36.pdf}}
+\end{center}
+\item
+Encode the ending position as a length nine string.
+\begin{center}
+\begin{tabular}{c|c|c}
+  $a_{0,0}$ &$a_{0,1}$ &$a_{0,2}$  \\ \hline
+  $a_{1,0}$ &$a_{1,1}$ &$a_{1,2}$  \\ \hline
+  $a_{2,0}$ &$a_{2,1}$ &$a_{2,2}$  \\ 
+\end{tabular}
+\hspace{1em}$\Longrightarrow$\hspace{1em}$a_{0,0}a_{1,0}\ldots a_{2,2}$
+\qquad $a_{i,j}\in\Sigma=\set{\str{X},\str{O},\str{B}}$
+\end{center}
+Here, \str{B} means that the square is blank, because the game ended before
+that square was filled.
+We are only interested in wins for player one so we only care about which
+squares are occupied by \str{X}'s.
+Thus, we take the alphabet to be $\hat{\Sigma}=\set{\str{X},\str{E}}$,
+where \str{E} means `else'. 
+There are eight ways for \str{X} to win.
+\begin{align*}
+&\begin{array}{c|c|c}
+  \str{X} &\str{X} &\str{X} \\ \hline
+  \str{E} &\str{E} &\str{E} \\ \hline
+  \str{E} &\str{E} &\str{E} \\  
+\end{array},\hspace{1em}
+\begin{array}{c|c|c}
+  \str{E} &\str{E} &\str{E} \\ \hline
+  \str{X} &\str{X} &\str{X} \\ \hline
+  \str{E} &\str{E} &\str{E} \\  
+\end{array},\hspace{1em}
+\begin{array}{c|c|c}
+  \str{E} &\str{E} &\str{E} \\ \hline
+  \str{E} &\str{E} &\str{E} \\ \hline
+  \str{X} &\str{X} &\str{X} \\  
+  \end{array},                                \\
+&\quad
+\begin{array}{c|c|c}
+  \str{X} &\str{E} &\str{E} \\ \hline
+  \str{X} &\str{E} &\str{E} \\ \hline
+  \str{X} &\str{E} &\str{E} \\  
+\end{array},\hspace{1em}
+\begin{array}{c|c|c}
+  \str{E} &\str{X} &\str{E} \\ \hline
+  \str{E} &\str{X} &\str{E} \\ \hline
+  \str{E} &\str{X} &\str{E} \\  
+\end{array},\hspace{1em}
+\begin{array}{c|c|c}
+  \str{E} &\str{E} &\str{X} \\ \hline
+  \str{E} &\str{E} &\str{X} \\ \hline
+  \str{E} &\str{E} &\str{X} \\  
+\end{array},                              \\  
+&\quad
+\begin{array}{c|c|c}
+  \str{X} &\str{E} &\str{E} \\ \hline
+  \str{E} &\str{X} &\str{E} \\ \hline
+  \str{E} &\str{E} &\str{X} \\  
+\end{array},\hspace{1em}
+\begin{array}{c|c|c}
+  \str{E} &\str{E} &\str{X} \\ \hline
+  \str{E} &\str{X} &\str{E} \\ \hline
+  \str{X} &\str{E} &\str{E} \\  
+\end{array}
+\end{align*}
+The machine takes the shape of a binary tree of depth nine.
+It has $2^9$ branches and $2^{10}$ total state nodes, too many to
+show here so this picture just shows ellipses.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa49.pdf}}
+\end{center}
+Put double-circle states for the terminal node in each of the eight
+branches described above, such as
+\str{XXXEEEEEE}.
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}

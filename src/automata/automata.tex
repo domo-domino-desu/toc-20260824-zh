@@ -1233,10 +1233,16 @@ the Turing machine writes a \str{1}, otherwise it writes a~\str{0}.
 \end{exercise}
 
 \begin{exercise}
-Consider a Finite State machine $\FSM$, its set of accepting states~$F$,
-and the associated language of accepted strings.
+Fix a Finite State machine $\FSM$, its set of accepting states~$F$,
+and the associated language~$\lang\subseteq\kleenestar{\Sigma}$
+of accepted strings.
 If we flip every accepting state to non-accepting and every non-accepting
 state to accepting, what happens to the language?
+\begin{answer}
+If we take the new set of final states to be $\hat{F}=Q-F$ then the
+machine will accept the complementary language
+$\hat{\lang}=\kleenestar{\Sigma}-\lang$.
+\end{answer}
 \end{exercise}
 
 \begin{exercise}  \label{exer:FiniteLanguageAcceptedBySomeFSM}
@@ -1291,20 +1297,6 @@ Split the machine after it traverses the common string, as in the example.
 \end{center}
 This figure omits all the transitions involving~$e$, to be more readable.
 \end{answer}
-\end{exercise}
-
-\begin{exercise}
-For each language $\lang$ accepted by some Finite State machine, let
-$\operatorname{rank}(\lang)$ be the smallest number~$n\in\N$
-such that $\lang$ is
-accepted by a Finite State machine with $n$ states.
-Prove that for every~$n$ there is a language with that rank.
-\end{exercise}
-
-\begin{exercise}
-Prove that the language accepted by a Finite State machine with~$n$ states is 
-infinite if and only if that machine accepts at least one string of length $k$,
-where $n\leq k <2n$.  
 \end{exercise}
 
 \begin{exercise}
@@ -1394,15 +1386,34 @@ more than one, or none at all.
 % \end{TODO}
 
 \subsection{Motivation}
-Suppose that you have a grammar
-and want to know if a particular string can be derived from it.
-This is a hard problem because
+Suppose that you have a grammar with a start symbol~$S$
+and some rules $\rho_0,\dots \rho_{n-1}$, 
+and want to know if a particular string~$\sigma$ can be derived from it.
+This is hard because
 at any step in the derivation there are multiple rules that apply;
 which is the correct next one? 
-What you want is
-\citetext{a routine $\operatorname{amb}(S,\sigma_0,\sigma_1\ldots \sigma_{n-1})$}{%
+You want to specify
+\citetext{a relationship $\sigma=\operatorname{amb}(S,\rho_0,\rho_1\ldots \rho_{n-1})$}{%
   The name \textit{amb}
   abbreviates `ambiguous function'.
+  Here is a small example.
+  Essentially Amb(x, y, z) splits the computation into three possible futures:
+  a future in which the value x is yielded,
+  a future in which the value y is yielded,
+  and a future in which the value z is yielded.
+  The future which leads to a successful subsequent computation is chosen.
+  The other ``parallel universes'' somehow go away.
+  (Amb called with no arguments fails.)
+% \begin{lstlistings}
+% (let ((x (amb 1 2 3))
+%       (y (amb 5 4 3)))
+%   (amb (= (* x y) 8)
+%   (println x y)))
+% \end{lstlistings}
+The output is 2 4 because Amb(1, 2, 3) correctly chooses the future
+in which x has value 2, Amb(7, 6, 4, 5) chooses 4 and consequently
+Amb(x * y = 8) produces a success.
+  
   These were described by John McCarthy in \autocite{McCarthy}.
   ``Ambiguous functions are not really functions.
   For each prescription of values
@@ -1417,10 +1428,10 @@ What you want is
   values are $x$ and~$y$ when both are defined: otherwise, whichever is defined.
   Now we can define $\operatorname{less}(n)$ by
   $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''}
-that gives you a derivation sequence.
+and have the computer somehow guess a successful derivation sequence.
 
 \margingraphic{0.175\textwidth}{automata/pix/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
-The premier American philosopher and Hall of Fame baseball catcher Y~Berra
+The American philosopher and Hall of Fame baseball catcher Y~Berra
 said, ``If you come to a fork in the road, take it.''
 That's how you could try the problem: when you come up against
 multiple possibilities,
@@ -1434,8 +1445,7 @@ the start.
 Continue until the desired string appears.
 
 The celebrated
-Travelling Salesman Problem% \footnote{%
-%   We will say more about this problem later.}
+Travelling Salesman Problem
 suggests the same approach.
 Take a map of the
 forty eight contiguous US~states,
@@ -2204,7 +2214,7 @@ whose second character is \str{a} and whose next to last character is~\str{b}.
   \item There is either an even number of \str{0}'s or an odd number
     of \str{1}'s. 
   \end{exparts}
-  \end{exercise}
+\end{exercise}
 
   
 \begin{exercise}
@@ -4606,6 +4616,22 @@ is not regular.
       \end{exparts}
     \end{answer}
   \end{exercise}
+
+\begin{exercise}
+For each language $\lang$ accepted by some Finite State machine, let
+$\operatorname{rank}(\lang)$ be the smallest number~$n\in\N$
+such that $\lang$ is
+accepted by a Finite State machine with $n$ states.
+Prove that for every~$n$ there is a language with that rank.
+\begin{answer}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Prove that the language accepted by a Finite State machine with~$n$ states is 
+infinite if and only if that machine accepts at least one string of length $k$,
+where $n\leq k <2n$.  
+\end{exercise}
   
   \begin{exercise}
     Fix an alphabet~$\Sigma\neq \emptyset$.

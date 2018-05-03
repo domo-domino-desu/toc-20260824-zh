@@ -1464,6 +1464,54 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== 3 color <= SAT =============
+
+int picnum = 23;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{$v_0$}"),
+  v1=ncircle("\nodebox{$v_1$}"),
+  v2=ncircle("\nodebox{$v_2$}"),
+v3=ncircle("\nodebox{$v_3$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+hlayout(1.0*u, v0, v1, v2);
+// layout(135.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
+// layout(-135.0, v0, v2);
+// hlayout(-1.0*u, v2, v3);
+// layout(45.0, v0, v4);
+// layout(-45.0, v0, v5);
+// layout(-60.0, v5, v6);
+v3.pos = new_node_pos_h(v0, -40, 1*u);
+// v8.pos = new_node_pos_h(v4, -30, 1*u);
+// hlayout(1.0*u, v5, v9);
+// hlayout(1*u, v8, v10);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v3),
+     (v1--v2),
+     (v1--v3)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
 
 
 

@@ -3555,20 +3555,20 @@ No one knows if $\NP$ is closed under complementation.
 % answers"
 A \definend{reduction}
 is a way to translate from one problem to another.
-When we studied incompleteness then problems were decision problems for sets.
-We defined Turing reductions, where $B\leq_T A$
-if there is a function computable~$f$ such that
+When we studied incomputability the problems were decision problems for
+sets.
+There we defined Turing reductions, where $B\leq_T A$
+if there is a computable function~$f$ such that
 $x\in B$ if and only if $f(x)\in A$.
-Such a function allows us to answer questions about~$B$ by translating
-them to questions about~$A$.
+This is a translation between problems\Dash a
+method to answer questions about~$B$ can be used
+to answer questions about~$A$.
 That explains the terminology 'problem~$A$ reduces to problem~$B$'.
 
 Computational complexity works with language decision problems.
-% Problem~$\lang_1$ is reducible to problem~$\lang_0$, written
-% $\lang_1\leq_p \lang_0$,
-% if we have an algorithm such that a method for solving~$\lang_0$ efficiently
-% could also be used to solve problem~$\lang_1$ efficiently.
-% Cobham's Thesis is that `efficiently' means polytime.
+Here problem~$\lang_1$ is reducible to problem~$\lang_0$
+if a method for solving~$\lang_0$ efficiently
+could be used to solve problem~$\lang_1$ efficiently.
 
 \begin{definition}
 The language $\lang_1$ is
@@ -3604,6 +3604,117 @@ to determine if it is a member of $\lang_0$.
 \end{fig}
 
 
+\begin{example}
+Recall that a graph is $k$-colorable if we can partition its vertex set
+into $k$-many classes, called `colors' because that's how they
+are pictured, so that there is no edge between two same-colored
+vertices.
+\begin{animatedfigure}{A $3$-coloring of \protect\citetext{a graph}{This is the Petersen graph, a rich source of counterexamples for conjectures in Graph Theory}.}\centering 
+  \animategraphics[poster=last]{2}{complexity/asy/complexity/complexity}{00}{01}
+\end{animatedfigure} 
+We will sketch an argument that Graph Colorability
+reduces to Satisfiability,
+$\text{Graph Colorability}\leq_p\SAT$.
+We'll go through the $k=3$ construction; other $k$'s go the same way.
+We must give a function~$f$
+that describes how to translate a
+particular $3$-coloring problem~$\lang_0$ into
+a problem~$\lang_1$ of the satisfiability of a particular
+statement in propositional logic,
+$f(\mathcal{G})=S$,
+such that the statement is satisfiable
+if and only if the graph is $3$-colorable.
+(More precisely, the function inputs $\mathcal{G}$'s
+bitstring representation
+and outputs $S$'s bitstring representation, and must run in
+polynomial time.)
+
+The translation inputs a graph~$\mathcal{G}$,
+with $\set{v_0,\ldots\, v_{n-1}}$.
+The outputted logic statement will have $3n$-many Boolean variables:
+$
+  {a_0,\ldots a_{n-1}}
+$, and
+$  
+  {b_0,\ldots b_{n-1}}
+$, and
+$  
+  {c_0,\ldots c_{n-1}}
+$.
+The idea is that if the $i$-th vertex~$v_i$ gets the first color then $a_i=T$,
+while if it gets the second color then $b_i=T$, and if it gets the
+third color then $c_i=T$.
+For each vertex~$v_i$ create a clause saying that it gets at least one color.
+\begin{equation*}
+  (a_i\vee b_i \vee c_i)
+\end{equation*}
+In addition, for each edge~$\set{v_i,v_j}$
+create three clauses that together ensure that the edge does not connect
+two same-color vertices.
+\begin{equation*}
+  (\neg a_i\vee \neg a_j)
+  \qquad
+  (\neg b_i\vee \neg b_j)
+  \qquad
+  (\neg c_i\vee \neg c_j)
+\end{equation*}
+Now the statement is the conjunction of those clauses,
+it joins them together with $\wedge$'s.
+The graph has a $3$-coloring if and only if that statement
+is satisfiable.
+
+This illustrates.
+The graph has four vertices so the statement starts with four clauses,
+saying that for each vertex~$v_i$ at least one of the associated
+variables $a_i$, $b_i$, or~$c_i$ has the value~$T$.
+The graph has four edges, $v_0v_1$, $v_0v_3$, $v_1v_2$, and
+$v_2v_3$.
+The statement continues with three clauses for each edge, 
+together ensuring that the variables associated with the edge's vertices
+do not both have the value~$T$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{complexity/asy/problems/problems23.pdf}}
+  \hspace{2em}
+  \begin{minipage}{3.25in}\small
+    \begin{multline*}
+      S=(a_0\vee b_0 \vee c_0)\wedge  
+      (a_1\vee b_1 \vee c_1)\wedge  
+      (a_2\vee b_2 \vee c_2)\wedge  
+      (a_3\vee b_3 \vee c_3)             \\
+      \begin{split}
+        &\wedge (\neg a_0\vee\neg a_1)
+               \wedge (\neg b_0\vee\neg b_1)
+               \wedge (\neg c_0\vee\neg c_1)   \\
+             &\wedge (\neg a_0\vee\neg a_3)
+               \wedge (\neg b_0\vee\neg b_3)
+               \wedge (\neg c_0\vee\neg c_3)   \\
+             &\wedge (\neg a_1\vee\neg a_2)
+               \wedge (\neg b_1\vee\neg b_2)
+               \wedge (\neg c_1\vee\neg c_2)   \\
+             &\wedge (\neg a_1\vee\neg a_3)
+               \wedge (\neg b_1\vee\neg b_3)
+               \wedge (\neg c_1\vee\neg c_3)  
+      \end{split}
+    \end{multline*}
+  \end{minipage}
+\end{center}
+Thus, $S$ is satisfiable if and only if $\mathcal{G}$ has a $3$-coloring.
+  
+Completing the proof would require
+verifying that the translation function, which inputs a bitstring
+representation of~$\mathcal{G}$ and outputs a bitstring represenation
+of~$S$, is polymomial.
+This argument is messy but routine.
+We won't go through it.
+\end{example}
+
+The significance of the reduction is that we now know that
+if we could solve~$\SAT$ in polynomial time then we could solve
+$k$-colorability in polynomial time.
+Given a $k$-coloring problem~$\lang_0$, translate it to a
+a $\SAT$ problem~$f(\lang_0)=\lang_1$.
+The translation takes polytime and~$\lang_1$ takes polytime, so
+in total this is a polytime scheme.
 
 \begin{example}
 We will show that $\text{Subset Sum}\leq_p\text{Knapsack}$,
@@ -3633,64 +3744,6 @@ taking the weight and value target to be~$T$.
 Clearly there is a solution to the Subset Sum problem if and only
 if there is a solution to the Knapsack instance.
 Seeing that the function~$f$ is in polytime is easy.
-\end{example}
-
-\begin{example}
-Recall that a graph is $k$-colorable if we can partition its vertex set
-into $k$-many classes, called `colors' because that's how they
-are pictured, so that there is no edge between two same-colored
-vertices.
-\begin{animatedfigure}{A $3$-coloring of \protect\citetext{a graph}{This is the Petersen graph, a rich source of counterexamples for conjectures in Graph Theory}.}\centering 
-  \animategraphics[poster=last]{2}{complexity/asy/complexity/complexity}{00}{01}
-\end{animatedfigure} 
-We will sketch an argument that the Graph Colorability problem
-reduces to the Satisfiability problem,
-$\text{Graph Colorability}\leq_p\SAT$.
-For this, we must describe how to translate facts about graphs into
-statements in propositional logic.
-
-We illustrate with $k=3$.
-Given a graph, suppose that it has $n$~vertices $\set{v_0,\ldots\, v_{n-1}}$.
-We want to divide them into $3$~classes, the colors.
-Begin by creating three types of Boolean variables,
-$
-  {f_0,\ldots f_{n-1}}
-$, and
-$  
-  {s_0,\ldots s_{n-1}}
-$, and
-$  
-  {t_0,\ldots t_{n-1}}
-$.
-If there is a $3$-coloring and 
-vertex~$v_i$ has the first color then $f_i=T$, $s_i=F$, and $t_i=F$.
-If instead vertex~$v_i$ has the second color then
-$f_i=F$, $s_i=T$, and $t_i=F$.
-And if vertex~$v_i$ has the third color then  $f_i=F$, $s_i=F$, and $t_i=T$.
-
-For each $i\in\set{0,\ldots\,n-1}$ create a clause ensuring that
-vertex~$v_i$ gets some color.
-\begin{equation*}
-  (f_i\vee s_i \vee t_i)
-\end{equation*}
-Finally, for each of the graph's edges~$\set{v_i,v_j}$
-create three clauses that together ensure that the edge does not connect
-two same-color vertices.
-\begin{equation*}
-  (\neg f_i\wedge \neg f_j)
-  \qquad
-  (\neg s_i\wedge \neg s_j)
-  \qquad
-  (\neg t_i\wedge \neg t_j)
-\end{equation*}
-Now take the conjunction of those clauses, the
-propositional logic statement that joins them together with $\wedge$'s.
-The graph has a $3$-coloring if and only if that statement
-is satisfiable.
-
-The definition of reduction requires that the function that inputs
-a graph description and outputs a logic statement must be polynomial.
-This argument is messy, but routine.
 \end{example}
 
 

@@ -1,6 +1,6 @@
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as far more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/pix/waterstrider.jpg}{Computational Complexity}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 
-In the first part of the  book we asked what can be done, mechanically.
+In the first part of this book we asked what can be done mechanically.
 Once you know that a task can be done at all then a natural next step is to
 do it efficiently. in a practical time
 (or space, or some other computational resource).
@@ -3674,7 +3674,7 @@ together ensuring that the variables associated with the edge's vertices
 do not both have the value~$T$.
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/problems/problems23.pdf}}
-  \hspace{2em}
+  \hspace{1.5em}
   \begin{minipage}{3.25in}\small
     \begin{multline*}
       S=(a_0\vee b_0 \vee c_0)\wedge  
@@ -3716,36 +3716,69 @@ a $\SAT$ problem~$f(\lang_0)=\lang_1$.
 The translation takes polytime and~$\lang_1$ takes polytime, so
 in total this is a polytime scheme.
 
+That example give some sense of why $\SAT$ can be a convenient
+problem to reduce to, since describing the conditions in a problem
+in logical statement terms is natural.
+Another kind of natural reduction is when we can see one problem
+as a special case of another, or at least closely related to that
+special case.
+
 \begin{example}
 We will show that $\text{Subset Sum}\leq_p\text{Knapsack}$,
 so that a quick way to solve the Knapsack problem would
 yield a quick way to solve the Subset Sum problem.
 
-The Knapsack problem starts with a set~$S$ whose elements~$s_i$
-have both a weight~$w(s_i)\in\N^+$ and a value~$v(s_i)\in\N^+$.
-The problem is to determine if there is $K\subseteq S$
-such that the sum of the
-weights of its elements is less than or equal to a weight bound
-and the sum of the values is
-greater than or equal to a value target.
-A special case of this problem is where each element
-has the same weight as value, $w(s_i)=v(s_i)=b_i$,
-and where the weight limit and value targets are the same.
-A $K$ satisfies the conditions only if the sum of the
+Recall that the Subset Sum problem
+starts with a set of numbers $S=\set{b_0,\ldots b_{k-1}}$
+and a target~$T$.
+It asks if there is a subset whose elements add to the target.
+As an illustration, one instance~$\lang_0$ is to ask if there is a subset of
+$S=\set{18, 23, 31, 33, 72,  86, 94}$ that adds to $T=126$.
+
+The Knapsack problem starts with a set
+of objects~$\hat{S}=\set{s_0, \ldots s_{n-1}}$
+and two bounds $W,V\in\N$.
+Each~$s_i$ has both a weight~$w(s_i)\in\N^+$ and a value~$v(s_i)\in\N^+$.
+The problem is to decide if there is subset $K\subseteq S$
+such that the sum of the element weights is less than or equal to~$W$
+while the sum of the values is greater than or equal to~$V$.
+For the reduction consider the special case is where each element
+has the same weight as value, $w(s_i)=v(s_i)$,
+and where $W=V$.
+In this case subset $K$ satisfies the conditions only if the sum of the
 weights and values exactly equals the limit and target.
 
-The Subset Sum problem
-starts with a set of numbers $b_0,\ldots b_{k-1}$
-and a target~$T$, and asks if there is a subset that adds to the target.
-
-Given a Subset Sum problem $\prob$,
-we produce $f(\prob)$, the associated special case of the Knapsack problem, by 
-taking the weight and value target to be~$T$.
-Clearly there is a solution to the Subset Sum problem if and only
-if there is a solution to the Knapsack instance.
-Seeing that the function~$f$ is in polytime is easy.
+Following the above illustration,
+from the Subset Sum instance
+produce the Knapsack instance $\lang_1=f(\lang_0)$ 
+by defining a set of objects~$\hat{S}$ with the same number of elements as~$S$,
+letting the weight and value of each element equal the associated
+element of~$S$,
+and setting the weight and value targets $W,V$ to equal~$T$.
+\begin{center}
+\begin{tabular}{r|*{7}{c}}
+  \tabulartext{object} &$s_0$ &$s_1$ &$s_2$ &$s_3$ &$s_4$ &$s_5$ &$s_6$  \\
+  \cline{2-8}
+  \rule{0pt}{11pt}
+  \tabulartext{weight} &$18$  &$23$  &$31$  &$33$  &$72$  &$86$ &$94$  \\
+  \tabulartext{value}  &$18$  &$23$  &$31$  &$33$  &$72$  &$86$ &$94$  \\
+\end{tabular}
+\hspace{2em}
+$W=V=126$
+\end{center}
+There is a solution to the Subset Sum instance~$\lang_0$ if and only
+if there is a solution to the Knapsack instance~$\lang_1$.
+Seeing that the function~$f$ to convert a bitstring representation
+of $\lang_0$ to one of~$\lang_1$ is polytime is easy.
 \end{example}
 
+Above we showed that $k$-coloring reduces to $\SAT$, so doing
+$\SAT$ fast is at least as hard as doing $k$-coloring fast.
+After the example we commented that $\SAT$ is often convenient for
+reductions, and in the next section we will give a therem saying that it
+is at least as hard as every problem in $\NP$.
+But, we close by giving an example of a problem that
+is at least as hard as $\SAT$.
 
 \begin{example}
 We will outline the argument that $\SAT\leq_p\text{Clique}$,
@@ -3753,30 +3786,26 @@ that a quick way to solve the Clique problem would
 give us a quick way to solve the Satisfiability problem.
 Recall the Clique problem:~given a graph and a bound~$B\in\N$,
 decide if the graph has a $B$-clique,
-a size~$B$ set of vertices such that every pair is connected by an edge.
+a size~$B$ set of vertices such that every vertex in the set is connected to
+every other vertex.
 
-The reduction translates each Satisfiability question to a Clique question. 
-Consider this set of propositional logic clauses.
-\begin{equation*}
-  \set{x_0\wedge \neg x_1,\, x_0,\, \neg(\neg x_0\wedge \neg x_1)}
-\end{equation*}
-This set is satisfiable if and only if the single statement
-$(x_0\wedge \neg x_1)\wedge(x_0)\wedge(\neg(\neg x_0\wedge \neg x_1))$
-is satisfiable.
-Find an equivalent statement in Conjunctive Normal Form,
+The reduction translates each Satisfiability instance~$\lang_0$
+to a Clique instance.
+To see how to construct $\lang_1=f(\lang_0)$,
+consider this example propositional logic statement.
 $
-  F=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
+  S=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
 $.
-We will construct a graph~$\mathcal{G}$ that has a suitable
-clique if and only if $F$ is satisfiable
-(the clique size is the number of $F$'s clauses, $k=3$).
-Then a fast way to solve Clique problems
-gives a fast way to solve Satisfiability problems.
-
+% We will construct a graph~$\mathcal{G}$ that has a suitable
+% clique if and only if $S$ is satisfiable
+% (the clique size is the number of $S$'s clauses, $k=3$).
+%
+The three components $x_0\vee x_1$, $\neg x_0\vee\neg x_1$, and
+$x_0\vee \neg x_1$ are called clauses.
+In a clause, an atom is either a variable~$x_i$ or its negation~$\neg x_i$.
 Put a vertex in $\mathcal{G}$
 for each occurrence of an atom in a clause.
-An atom is either a variable~$x_i$ or its negation~$\neg x_i$.
-The statement~$F$ has three clauses with wo atoms each
+The statement~$S$ has three clauses with two atoms each
 so the graph has six vertices.
 Put an edge in~$\mathcal{G}$ if the associated atoms 
 are in different clauses
@@ -3792,13 +3821,14 @@ and are not negations (that is, not $x_i$ and $\neg x_i$).
 %                       \set{v_{1,0},v_{2,1}}, \\
 %               &\qquad \set{v_{1,1},v_{2,0}}\,\}
                   %   \end{align*}
-This is the graph arising from $F$.
+This is the graph arising from $S$.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity03.pdf}
 \end{center}
 Observe that 
-$F$ is satisfiable if and only if
+$S$ is satisfiable if and only if
 the graph has a $3$-clique.
+Showing that the translation function~$f$ is polytime is routine.
 \end{example}
 
 
@@ -4266,7 +4296,7 @@ is an extremely important problem.\footnote{%
   One indication of its importance is that it is on a list
   of problems in mathematics for which there is a one million dollar prize;
   see \protect\url{http://www.claymath.org/millennium-problems}.}
-As formulated in Karp's original paper, the question of whether
+True, as formulated in Karp's original paper, the question of whether
 $\P$ equals $\NP$ may seem of only technical interest.
 \begin{quotation}
   \citetext{A large class}{
@@ -4524,23 +4554,27 @@ everyone ``knew'' that some algorithm was the fastest to solve
 a certain problem, but it proved not to be so.
 The section on Big-O begins with one, the grade school algorithm for
 multiplication.
-Another is the problem of solving systems linear
-of linear equations, for which is the $\bigOh(n^3)$ Gauss's Method algorithm is
-obvious and natural.
-But in 1968, while  trying to prove that it is optimal, Strassen instead found
+Another is the problem of solving systems
+of linear equations.
+The Gauss's Method algorithm is
+obvious, and natural, and runs in time that is~$\bigOh(n^3)$ .
+But while  trying to prove that Gauss's Method is optimal,
+Strassen instead found
 a method that is $\bigOh(n^{\lg 7})$ ($\lg 7\approx 2.81)$.
-We can give many, many examples of this.
+Every day  on the Theory of Computing blog feed
+\autocite{blog:TOC} there are examples of this, of researchers producing
+algorithms faster than the ones previously known.
 Viola says, ``The evidence is clear: we have grossly
 underestimated the reach of efficient computation, in a variety of contexts.''
-R~Lipton makes a similar statement, in allowing the possibility that
-$\P=\NP$ \autocite{Lipton}.
-
+R~Lipton makes a similar statement in allowing the possibility that
+$\P=\NP$~\autocite{Lipton}.
 \begin{quotation}
 Since we are constantly discovering new ways to program our ``machines'',
 why not a discovery that shows how to factor? or how to solve $\SAT$?
 Why are we all so sure that there are no great new programming methods
 still to be discovered?
-Methods that could allow us to \ldots{} solve $\SAT$?
+\ldots{}
+% Methods that could allow us to \ldots{} solve $\SAT$?
 I am puzzled that so many are convinced that these problems could not
 fall to new programming tricks, yet that is what is done each and every
 day in their own research.
@@ -5122,9 +5156,11 @@ discoverer.
 
 \begin{exercises}
 \begin{exercise}
-Give an algorithm for each problem that is exponential.
+Give a naive algorithm for each problem that is exponential.
 \begin{exparts}
 \item Travelling Salesman problem.
+\item Subset Sum problem.
+\item $k$-coloring problem.
 \end{exparts}
 \end{exercise}
 \end{exercises}

@@ -1,26 +1,17 @@
-% \begin{flushright}
-% \includegraphics[width=1.5in]{colossus.jpg} \\
-% \textit{The Coluosus, first used in January 1944, helped crack the German submarine
-% code and thwart a submarine warfare initiative, and so to solidify Allied control
-% of the Atlantic.}
-% \end{flushright}
-
-% TODO
-% http://en.wikipedia.org/wiki/One_instruction_set_computer
 \chapteropen[copyright Kevin Twomey, \protect\url{kevintwomey.com/lowtech.html}]{prologue/pix/mechanical.jpg}{Mechanical Computation} % ©Kevin Twomey http://kevintwomey.com/lowtech.html; permission granted November 23, 2014 2:14 
 
-What can be mechanically computed, at least in principle?
+What can be computed?
 For instance, the function that doubles its input, that
-takes in~$x$ and outputs~$2x$, is intuitively mechanically computable.
-We shall call such things \definend{effective}.
+takes in~$x$ and outputs~$2x$, is intuitively computable by a
+device.
+We shall call such functions \definend{effective}.
 
 The question asks for the things that can be computed more than  
 it asks for how to compute them. 
 In this Part
 we tend to be more interested in the function,
 in the input-output behavior,
-than we are in 
-the details of implementing that behavior.
+than in the details of implementing that behavior.
 
 
 
@@ -28,12 +19,12 @@ the details of implementing that behavior.
 
 
 \section{Turing machines}
-Despite this desire to downplay internal details, 
-we follow the approach of Alan
+Despite this desire to downplay implementation, 
+we follow the approach of
 \margingraphic{0.23\textwidth}{prologue/pix/turing.jpg}{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing 1912--1954}}
-Turing, that a necessary 
+A~Turing that the
 first step toward defining the set of computable functions
-is to reflect on the details of what a mechanism can do.
+is to reflect on the details of what mechanisms can do.
 
 Turing considered the kind of symbol-manipulating computation that
 a person uses in mathematics when they factor a polynomial 
@@ -41,38 +32,40 @@ or verify a step in a plane geometry proof.
 The context of his thinking was the 
 \textit{Entscheidungsproblem},\footnote{German for ``decision problem.''} 
 proposed in 1928 by 
-\citetext{David Hilbert and Wilhelm Ackermann}{Hilbert was a very prominent 
-mathematician, perhaps the world's most prominent mathematician, 
-and Ackermann was his student. 
-So they made an impression when 
-they wrote, ``[This] must be considered the
-main problem of mathematical logic'' \autocite{HilbertAckermann}, p 73.}, 
-which 
-asks for a mechanism that determines, after taking 
+\citetext{David Hilbert and Wilhelm Ackermann}{%
+  Hilbert was a very prominent 
+  mathematician, perhaps the world's most prominent mathematician, 
+  and Ackermann was his student. 
+  So they made an impression when 
+  they wrote, ``[This] must be considered the
+  main problem of mathematical logic'' \autocite{HilbertAckermann}, p 73.}, 
+which asks for an algorithm that determines, after taking 
 as input a \citetext{mathematical statement}{%
-Specifically, the statement comes from 
-a first-order logic.
-First-order logic differs from propositional logic, the logic of truth tables,
-in that it allows variables. 
-Thus for instance if you are studying the natural numbers then
-you can have a Boolean function $\operatorname{Prime}(x)$.
-(In this context a Boolean function is traditionally called `predicate'.)
-To make a statement that is either true or false we must then 
-quantify statements, as in 
-the (true) statement ``for all $x\in\N$, we have that $\operatorname{Prime}(x)$
-implies that $\operatorname{PerfectSquare}(x)$ does not hold.''
-The modifier ``first-order'' means that the variables used by the
-Boolean functions 
-are members of the domain of discourse (for $\operatorname{Prime}$
-above it is $\N$), but we cannot
-have that variables themselves are Boolean functions.
-(Allowing Boolean functions to take Boolean functions as input
-is possible, but would make this a higher-order logic.)}, 
-whether that statement is true or false.\footnote{When it finished
-computing it might turn on a light
-for `true', or print the symbol \protect\str{1}.}
+  Specifically, the statement comes from 
+  a first-order logic.
+  First-order logic differs from propositional logic, the logic of truth tables,
+  in that it allows variables. 
+  Thus for instance if you are studying the natural numbers then
+  you can have a Boolean function $\operatorname{Prime}(x)$.
+  (In this context a Boolean function is traditionally called `predicate'.)
+  To make a statement that is either true or false we must then 
+  quantify statements, as in 
+  the (true) statement ``for all $x\in\N$, we have that
+  $\operatorname{Prime}(x)$
+  implies that $\operatorname{PerfectSquare}(x)$ does not hold.''
+  The modifier ``first-order'' means that the variables used by the
+  Boolean functions 
+  are members of the domain of discourse (for $\operatorname{Prime}$
+  above it is $\N$), but we cannot
+  have that variables themselves are Boolean functions.
+  (Allowing Boolean functions to take Boolean functions as input
+  is possible, but would make this a higher-order logic.)}, 
+whether that statement is true or false.\footnote{%
+  When it finished
+  computing it might turn on a light
+  for `true', or print the symbol \protect\str{1}.}
 
-After thinking about it for some time, one day 
+After thinking about it for a while, one day 
 \citetext{after a run}{He was 22 years old at the time. \autocite{Hodges}, p 96.
   This book is the authoritative source for Turing's fascinating life.
   During the Second World War, he led a group of British cryptanalysts 
@@ -81,45 +74,46 @@ After thinking about it for some time, one day
   He devised a number of techniques for breaking German ciphers, including 
   an electromechanical machine that could find settings for the German coding 
   machine, the Enigma. 
-Because the Battle of the Atlantic was critical to the Allied war effort, and
-because cracking the codes was critical to defeating the German submarine 
-effort, Turing's work was very important.
-(The major motion picture on this \textit{The Imitation Game} 
-\autocite{wiki:ImitationGame} 
-is fun to watch but is not a slave to historical accuracy.)
-After the war, at the National Physical Laboratory
-he made one of the first designs for a stored-program computer.
-In 1952, when it was a crime 
-in the UK, Turing was prosecuted for homosexual acts. 
-He was given chemical castration as an alternative to prison. 
-He died in 1954 from cyanide poisoning which
-an inquest determined was suicide, although questions remain. 
-In 2009, following an Internet campaign, British Prime Minister Gordon Brown 
-made an official public apology on behalf of the British government for 
-``the appalling way he was treated.''
-}\footnote{He was a 
-serious candidate for the 
-1948 British Olympic marathon team.} Turing laid down in the grass and
-imagined a
-\citetext{clerk}{Before the engineering of 
-computing machines had advanced enough to 
-make capable machines widely available, 
-much of what we would today do with a program 
-was done by people, then called ``computers.''
-This book's cover shows human computers at work.
-\protect\begin{center} \protect\small
-  \protect\includegraphics[width=0.23\textwidth]{prologue/pix/katherinejohnson.jpg}
+  Because the Battle of the Atlantic was critical to the Allied war effort, and
+  because cracking the codes was critical to defeating the German submarine 
+  effort, Turing's work was very important.
+  (The major motion picture on this \textit{The Imitation Game} 
+  \autocite{wiki:ImitationGame} 
+  is fun to watch but is not a slave to historical accuracy.)
+  After the war, at the National Physical Laboratory
+  he made one of the first designs for a stored-program computer.
+  In 1952, when it was a crime 
+  in the UK, Turing was prosecuted for homosexual acts. 
+  He was given chemical castration as an alternative to prison. 
+  He died in 1954 from cyanide poisoning which
+  an inquest determined was suicide, although questions remain. 
+  In 2009, following an Internet campaign, British Prime Minister Gordon Brown 
+  made an official public apology on behalf of the British government for 
+  ``the appalling way he was treated.''
+  }\footnote{%
+  He was a 
+  serious candidate for the 
+  1948 British Olympic marathon team.}
+Turing laid down in the grass and imagined a
+\citetext{clerk}{%
+  Before the engineering of 
+  computing machines had advanced enough to 
+  make capable machines widely available, 
+  much of what we would today do with a program 
+  was done by people, then called ``computers.''
+  This book's cover shows human computers at work.
+  \protect\begin{center} \protect\small
+    \protect\includegraphics[width=0.23\textwidth]{prologue/pix/katherinejohnson.jpg}
   \\
   \protect\label{fig:johnson}\protect\href{https://bitchmedia.org/article/african-american-women-worked-some-nasas-first-computers}{Katherine Johnson, b~1918} % NASA photo; no permission
   \protect\end{center}
   Another example is that, as told in the film \textit{Hidden Figures},
-the trajectory for US astronaut 
-John Glenn's pioneering orbit of Earth was found by 
-the human computer Katherine Johnson,
-an African American woman whose accomplishments were made even
-more impressive because they occurred despite the 
-appalling discrimination that she faced.
-} 
+  the trajectory for US astronaut 
+  John Glenn's pioneering orbit of Earth was found by 
+  the human computer Katherine Johnson,
+  an African American woman whose accomplishments are all the
+  more impressive because they occurred despite the 
+  appalling discrimination that she faced.} 
 doing by-hand multiplication with a 
 sheet of paper that gradually becomes covered with columns of numbers.
 With this simple case of symbol-pushing computing as a prototype, 
@@ -143,23 +137,24 @@ the instructions
   see \protect\url{https://blog.cloudflare.com/randomness-101-lavarand-in-production/}.}, such as counting clicks from radioactive decay
 to determine which of two possibilities to perform.
 
-The other part of what makes the procedure definite
+The other thing making the procedure definite
 is that the agent does not use continuous methods or 
-\citetext{analog devices}{See \autocite{avgeeks} about slide rules,
-\autocite{wiki:Nomogram} about nomograms, 
-and \autocite{navyreviewer} about a naval firing computer.}.
+\citetext{analog devices}{%
+  See \autocite{avgeeks} about slide rules,
+  \autocite{wiki:Nomogram} about nomograms, 
+  and \autocite{navyreviewer} about a naval firing computer.}.
 So there is no question about the precision of operations as there
 might be, say, when \citetext{reading results off of a slide rule}{%
-Suppose that an intermediate result of a calculation is $1.23$.
-If we read it off the slide rule 
-with the convention that the resolution accuracy is only one decimal place 
-then we write down~$1.2$. 
-Doubling that gives $2.4$. 
-But doubling the original number $2\cdot 1.23=2.46$ 
-and then rounding to one place gives $2.5$.}.
+  Suppose that an intermediate result of a calculation is $1.23$.
+  If we read it off the slide rule 
+  with the convention that the resolution accuracy is only one decimal place 
+  then we write down~$1.2$. 
+  Doubling that gives $2.4$. 
+  But doubling the original number $2\cdot 1.23=2.46$ 
+  and then rounding to one place gives $2.5$.}.
 Instead, the agent works in a discrete fashion, step-by-step.
-Thus, if they need to pause they could stop between steps, note where they are
-(``about to carry a $1$''), and later pick up where they left off.
+For instance, if needed they could pause between steps, note where they are
+(``about to carry a $1$''), and later pick up again.
 We say that at each moment the clerk is in one of a finite set of 
 possible \definend{states},
 which we denote $q_0$, $q_1$, \ldots{}\@
@@ -177,18 +172,18 @@ mechanism has a tender.}.
 This includes imposing no upper bound on the amount of memory available for 
 inputs or for outputs, and no bound on the amount of extra 
 storage, scratch memory, needed in addition to that for inputs and
-outputs.\footnote{It is true that a physical computer such as
-  the cell phone in your pocket has memory space that
+outputs.\footnote{%
+  It is true that a physical computer such as
+  your cell phone has memory space that
   is bounded (putting aside for the moment storing things in the Cloud).
   However, that space is extremely large.
-  When studying algorithms on this device we 
-  find that imposing an upper bound on available memory 
-  is irrelevant or even a hindrance, rather than illuminating.
-  Usually the best thing to do when modelling existing
-  devices is to go without arbitrary bounds.}
+  In this Part, when working with the model devices we 
+  find that imposing a bound on memory 
+  is irrelevant, or even a hindrance.}
 He similarly put no upper bound on the number of instructions.
 And, he left unbounded the number of steps that a 
-computation performs before it finishes.\footnote{Some authors
+computation performs before it finishes.\footnote{%
+  Some authors
   describe the availablity of resources such as
   the amount of memory as `infinite'.
   Turing himself does this.
@@ -199,16 +194,16 @@ computation performs before it finishes.\footnote{Some authors
   But really, it doesn't matter.
   If we show that something cannot be computed
   when there are no bounds then we have shown that 
-  it cannot be computed on any physical device.}
+  it cannot be computed on any existing device.}
 
 The final question Turing faced is:
 how smart is the computing agent?
-For instance, should we require that it can multiply?
+For instance, can it multiply?
 We don't need to include a special facility for multiplication 
-because we can in principle instead do it with repeated addition.
-We don't even need addition because we can 
+because we can in principle instead multiply via repeated addition.
+We don't even need addition because we can  
 repeat the successor operation, the add-one operation.
-In this way we can pare the computing agent down until it is  
+In this way we pare the computing agent down until it is  
 quite basic, quite easy to understand,
 until the operations \citetext{are so elementary that we cannot easily
 imagine them further divided}{\autocite{Turing}},
@@ -225,11 +220,11 @@ mechanism and fitted with a tape.
 \end{center}
 
 The tape is the memory (sometimes called the store).
-The box can read from and write to this tape, one character at a time,
+The box can read from and write to it, one character at a time,
 as well as move a read/write head relative to the tape in either direction.
 For instance, to multiply, 
 the computing agent can get the two input multiplicands from the tape 
-(the drawing above shows 
+(the drawing shows 
 $74$ and~$72$, represented in binary and separated by a blank), 
 can use the tape for scratch work, and can write the
 output to the tape.
@@ -237,8 +232,8 @@ output to the tape.
 The box is the computing agent, the CPU
 (sometimes called the control).
 The \texttt{Start} button sets the computation going and 
-the \texttt{Halt} light flags when the computation is finished.
-How the mechanism inside the box is engineered is not 
+when it is finished the \texttt{Halt} light comes on.
+The engineering inside the box is not 
 important\Dash perhaps it has gears and levers
 or perhaps integrated circuits\Dash what
 matters is that each of its finitely many parts 
@@ -247,7 +242,7 @@ If it is made with gears then each gear settles in only
 a finite number of possible positions
 and if it has chips then each 
 register has a finite number of possible values.
-Thus, however it is engineered, 
+Thus, however it is made, 
 in total the box has only finitely many states.
 
 While executing a calculation, the mechanism transitions  
@@ -616,7 +611,7 @@ next configuration.
 
 
 
-\subsection{Functions computed by a machine}
+\subsection{Mechanical functions}
 In this chapter's opening we declared that 
 our chief concern is the things that the machines compute.
 We close by defining  
@@ -1469,7 +1464,7 @@ not numerical analysis and not toast.
 
 
 
-\subsection{How we will use Church's Thesis} 
+\subsection{Using Church's Thesis} 
 Our main interest in the Church's Thesis is that
 it imbues our technical definitions and theorems about machine models
 with a larger importance.
@@ -2180,9 +2175,8 @@ Tetration parenthesizes in the second way, so $\hyperoperation_4(3,3)=3^{27}$.
 Incidentally, $3^{27}=7\,625\,597\,484\,987$.
 The rapid growth of the output values is a striking aspect of tetration, and
 of the hyperoperation in general.
-The number of
-\citetext{particles in the entire universe is much less than
-$\hyperoperation_3(4,4)$}{%
+For instance,
+\citetext{$\hyperoperation_3(4,4)$ is much greater than the number of elementary particles in the universe}{%
   The radius of the universe if about $45\times 10^{9}$~light years.
   That's about $10^{62}$~Plank units.
   A system of much more than $r^{1.5}$ particles packed in $r$~Plank units

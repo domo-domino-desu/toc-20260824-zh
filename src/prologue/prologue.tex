@@ -9,7 +9,7 @@ We shall call such functions \definend{effective}.
 The question asks for the things that can be computed more than  
 it asks for how to compute them. 
 In this Part
-we tend to be more interested in the function,
+we will be more interested in the function,
 in the input-output behavior,
 than in the details of implementing that behavior.
 
@@ -307,16 +307,17 @@ along with the machine's state and the position of its read-write head.
 \begin{center}
   \tapegraphic{asy/share/tapedecrement0.pdf}
 \end{center}
-We shall suppose, unless stated otherwise, that a machine's 
-initial state is $q_0$.
-We've initialized this machine so that
-when we press \texttt{Start} it is reading~$\str{1}$, and thus 
+We take the convention that when we press \texttt{Start}
+the machine is in state $q_0$.
+The picture shows it reading~$\str{1}$ so 
 instruction $\tminstruction{0}{1}{R}{0}$ applies.
-Therefore the first step is to
-move the tape head right and stay in state~$q_0$.
-The first line  below
-shows the result, and
+Thus the first step is that the machine
+moves its tape head right, and stays in state~$q_0$.
+Below, the first line
+shows this and
 later lines show the machine's configuration after later steps.
+Roughly, the computation moves to the right, blanks out the
+final \str{1}, and moves back to the start.
 \begin{tapesequence}
   \begin{tapesequencetable}
     1 &\tapegraphic{asy/share/tapedecrement1.pdf} \\
@@ -335,8 +336,8 @@ later lines show the machine's configuration after later steps.
 \end{tapesequence}
 In step~$9$ 
 the instruction 
-$\tminstruction{2}{B}{R}{3}$ sends the machine to state~$q_3$
-and then no instruction applies so the machine halts.
+$\tminstruction{2}{B}{R}{3}$ sends the machine to state~$q_3$.
+No instruction applies so the machine halts.
 
 We can think of this machine as computing the predecessor function
 \begin{equation*}
@@ -345,26 +346,12 @@ We can think of this machine as computing the predecessor function
                     0    &\case{else}
                   \end{cases}
 \end{equation*}
-because if it begins with the head at the start of
-a string of $n$-many \str{1}'s then when it finishes the tape
-will have $n-1$-many \str{1}'s (except if $n=0$).
+because if we initialize the tape so that it contains only 
+a string of $n$-many \str{1}'s and the machine's head points to the first,
+then at the end the tape
+will have $n-1$-many \str{1}'s (except for $n=0$, where the tape will
+end with no \str{1}'s).
 \end{example}
-
-
-
-% We can also describe this Turing machine with a table.
-% \begin{center}
-%     \begin{tabular}{r|cc} 
-%             &$\text{\texttt{B}}$    &$\text{\texttt{1}}$    \\
-%       \hline
-%       $q_0$ &$\text{\texttt{1}}q_0$ &$\text{\texttt{R}}q_1$  \\
-%       $q_1$ &$\text{\texttt{1}}q_1$ &$\text{\texttt{R}}q_2$  \\
-%       $q_2$ &$\text{\texttt{1}}q_2$ &$\text{\texttt{1}}q_3$  \\
-%       $q_3$ &--                     &--
-%    \end{tabular}
-% \end{center}
-
-
 
 \begin{example} \label{ex:MAdd}
 This machine has eight four-tuples.
@@ -385,8 +372,8 @@ with a string of \str{1}'s and separated with a blank. %~\str{B}.
 \begin{center}
   \tapegraphic{asy/share/tapeadd00.pdf}
 \end{center}
-The computation fills in the blank separator with a \str{1} and then
-trims a \str{1} off of an end.
+It fills in the separator with a \str{1}, 
+trims a \str{1} off of the end, and returns to the start.
 \begin{tapesequence}
   \begin{tapesequencetable}
     1 &\tapegraphic{asy/share/tapeadd01.pdf} \\
@@ -411,7 +398,8 @@ trims a \str{1} off of an end.
     17 &\tapegraphic{asy/share/tapeadd17.pdf} 
   \end{tapesequencetable}
 \end{tapesequence}
-We can think of this machine as computing the sum of the two inputs.  
+We can think of this machine as computing the sum of two inputs,  
+$f(x,y)=x+y$.
 \end{example}
 
 \begin{definition} \label{def:TuringMachine}
@@ -458,9 +446,9 @@ For instance, \cref{ex:MPred} uses $q_3$ as a halting state and
 so has $Q=\hat{Q}\cup\set{q_3}$ where $\hat{Q}=\set{q_0,q_1,q_2}$.
 Similarly, \cref{ex:MAdd} uses $q_4$ as a halting state. 
 
-Instead of listing a machine's instructions 
+Instead of giving a machine's instructions as a list, 
 we can use a table or a diagram.
-Here is the \definend{transition table} description for $\TM_{\text{pred}}$,
+Here is the \definend{transition table} description for $\TM_{\text{pred}}$
 and its \definend{transition graph}.
 \begin{center}
   % \begin{tabular}{r|cc}
@@ -492,72 +480,81 @@ And here are the corresponding table and graph for $\TM_{\text{add}}$.
   \hspace{3em}
   \vcenteredhbox{\includegraphics{prologue/asy/circlediagram/circlediagram01.pdf}}
 \end{center}
-These are just other ways to show a machine's transition function. 
+The table's advantages are that it makes clear that $\Delta$
+is a finite function, and that it is simple
+to implement as a program.
+The graph is the easiest format to read when the machine is small,
+although if there are more than about a dozen states then it
+can be too much.
 
-Of course, the point of a Turing machine is what it does.
+Of course, the point of a machine is what it does.
 A Turing machine is a blueprint for a computation\Dash it is a program\Dash 
 and so
 to finish the formalization started by the definition we
 give a complete description of how these machines act.
 
 \label{text:DescriptionOfTMAction}
-As we saw in tracing through \cref{ex:MPred} and \cref{ex:MAdd},
-a \definend{configuration} of Turing machine $\TM$ is 
-\citetext{a snapshot, an instant in a computation}{That is,
-the configuration, along with the Turing machine, encapsulates
-the future history of the computation.}.
-It is a four-tuple $\sequence{q,s,\tau_L,\tau_R}$, where
+We saw in tracing through \cref{ex:MPred} and \cref{ex:MAdd}
+that a machine acts by 
+transitioning from one configuration to the next.
+A \definend{configuration}  of a Turing machine
+is a four-tuple $\configuration=\sequence{q,s,\tau_L,\tau_R}$, where
 $q$ is a state, 
-$s$ is a character from the tape alphabet (it signifies the character
-currently under the read/write head),
+$s$ is a character from the tape alphabet,
 and $\tau_L$ and~$\tau_R$ are strings of elements 
 from the tape alphabet~$\Sigma$,
-including possibly the empty string~$\emptystring$
-(these signify the tape contents to the left and right of the head).
-For instance, line~$2$ of the trace table of \cref{ex:MAdd}
-graphically shows the configuration $\sequence{q,s,\tau_L,\tau_R}$, 
+including possibly the empty string~$\emptystring$.
+These signify the current state, the character under the read/write head, and
+the tape contents to the left and right of the head.
+For instance, line~$2$ of the trace table of \cref{ex:MAdd},
 where the state is $q=q_0$,
-where the character under the head $s$ is the blank,
-where to the left of the head is $\tau_L=\str{11}$,
-and where to the right is $\tau_R=\str{111}$.
+the character under the head $s$ is the blank,
+and where to the left of the head is $\tau_L=\str{11}$,
+and to the right is $\tau_R=\str{111}$,
+graphically shows the configuration
+$\sequence{q,s,\tau_L,\tau_R}$.
+So a configuration is 
+\citetext{a snapshot, an instant in a computation}{That is,
+  the configuration, along with the Turing machine, encapsulates
+  the future history of the computation.}.
 
 \label{DefnConfiguration}
-The machine acts by 
-transitioning from one configuration to the next.
-We write $\mathcal{C}(s)$ for the machine's configuration after
-the $s$-th transition, and say that this is the configuration
-at \definend{step}~$s$.
-Before we press the Start button, at step~$s=0$,
-its initial configuration is $\mathcal{C}(0)$.
+We write $\configuration(t)$ for the machine's configuration after
+the $t$-th transition, and say that this is the configuration
+at \definend{step}~$t$.
+We extend that to step~$0$, and say
+that the \definend{initial configuration}, $\configuration(0)$,
+is the machine's configuration
+before we press the Start button.
 
-Suppose that at step~$i$ the machine $\TM$ is in configuration
-$\mathcal{C}(i)=\sequence{q,s,\tau_L,\tau_R}$.
+Suppose that at step~$t$ the machine $\TM$ is in configuration
+$\configuration(t)=\sequence{q,s,\tau_L,\tau_R}$.
 To make the next transition, find
 an instruction $q_pT_pT_nq_n\in\TM$ with
 $q_p=q$ and~$T_p=s$.
-If there is no such instruction then $\TM$ \definend{halts} at 
-step~$i+1$.
+If there is no such instruction then at 
+step~$t+1$ the machine $\TM$ \definend{halts}.
 
 Otherwise there will be only one such instruction, 
-by the condition of determinism.
+by determinism.
 There are three possibilities.
 (1)~If $T_n$ is a symbol in the tape alphabet set~$\Sigma$ then
 the machine writes that
 symbol to the tape, so that the 
 next configuration is 
-$\mathcal{C}(i+1)=\sequence{q_n,T_n,\tau_L,\tau_R}$.
+$\configuration(t+1)=\sequence{q_n,T_n,\tau_L,\tau_R}$.
 (2)~If $T_n=\str{L}$ then the machine moves the tape head to the left.
 That is, the next configuration is  
-$\mathcal{C}(i+1)=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$,
+$\configuration(t+1)=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$,
 where $\hat{s}$ is the rightmost character of the string~$\tau_L$ (if
 $\tau_L=\emptystring$ then $\hat{s}$ is the blank character),
 where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
 (if $\tau_L=\emptystring$ then $\hat{\tau}_L=\emptystring$ also),
-and where $\hat{\tau}_R$ is the concatenation of $s$ and $\tau_R$.
+and where $\hat{\tau}_R$ is the concatenation of $\sequence{s}$ and $\tau_R$.
 (3)~If $T_n=\str{R}$ then the machine moves the tape head to the right.
 This is like~(2) so we omit the details.
 
-We now make a crucial observation about that description.
+We now make an observation that is crucial.
 Some Turing machines,
 for at least some starting configurations, never halt.
 \begin{example}
@@ -727,8 +724,8 @@ If for a Turing machine the value of a computation is not defined
 on some input~$x$ in its domain then we 
 say that the function computed by the machine \definend{diverges}, written
 \definend{$\phi(x)\mathord{\uparrow}$}.
-Where the machine does give an output, 
-we say that it \definend{converges},  
+Where the machine does give an output, we say that
+it \definend{converges},  
 written \definend{$\phi(x)\mathord{\downarrow}$}.
 If $\phi$ is such that it diverges for at least one input
 then it is a \definend{partial function}.
@@ -801,9 +798,8 @@ Example~\ref{ex:MAdd} when the first addend is $0$ and the second is~$2$.
 The empty set is a Turing machine because it is a finite set of instructions.  
 What does it do?
 \begin{answer}
-It halts at the first step, because there is no instruction matching
-the current state and what's being read on the tape, because there 
-is no instruction.  
+It halts at the first step because there is no instruction matching
+the current state and what's being read on the tape.  
 \end{answer}
 \end{exercise}
 
@@ -922,6 +918,29 @@ palindrome and in the second if it was not.
 \end{exercise}
 
 \begin{exercise}
+Show that if a Turing machine 
+has the same configuration at two different steps then it will
+never halt.
+Is that sufficient condition also necessary?
+\begin{answer}
+Let the machine have the same configuration at two different steps
+$\configuration(t)=\configuration(\hat{t})$ with $t< \hat{t}$.
+By determinism, $\configuration(t+1)=\configuration(\hat{t}+1)$.
+Likewise, $\configuration(t+i)=\configuration(\hat{t}+i)$ for
+$i=2,\ldots $\@
+This means that the machine cycles every $\hat{t}-t$ steps, because
+$i=\hat{t}-t$ gives that
+$\configuration(t+(\hat{t}-t))=\configuration(\hat{t}+(\hat{t}-t))$
+but $\configuration(t+(\hat{t}-t))=\configuration(\hat{t})$.
+
+This sufficient condition is not necessary, since we can make a machine
+that never repeats its configuration but also never halts.
+One way is to make a machine that writes a \str{1} to the tape, then
+moves right, and then repeats.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 Show that the steps in the execution of a Turing machine are not 
 necessarily invertible.
 That is, produce a Turing machine and a configuration such that
@@ -934,9 +953,9 @@ you couldn't tell.
 Write a Turing machine that, when started on a blank tape,
 will run forever and produce a tape containing the string
 $010\,110\,111\,0\ldots$\@  
-(\textit{Remark:} this is 
-\definend{Turing's number}, a computable number that is
-irrational
+(\textit{Remark:} the number $0.010\,110\,111\,0\ldots$ is  
+\definend{Turing's number}.  It is a real number that is computable but is
+irrational,
 because its decimal expansion never repeats and never terminates.)
 \end{exercise}
 
@@ -1814,8 +1833,20 @@ whose definition is clearly not a problem.
              = \successor(\successor(3))=5 
 \end{equation*}
 
-One of the ways that Grassmannn's approach is elegant is that it extends
-naturally to other operations. 
+One of the ways that
+\citetext{Grassmannn's approach is elegant}{%
+  A~Perlis's epigram
+  ``Recursion is the root of computation since it trades description for time.''
+  expresses this elegance.
+  The grade school definition of addition is prescriptive, in that it
+  gives a procedure.
+  But Grassman's definition is descriptive since it gives the meaning,
+  the semantics, of the operation.
+  The recursive definition implicitly includes steps, and with them time,
+  in that you need to keep expanding the recursive calls.
+  But it does not include them in preference to what they are about.
+}
+is that it extends naturally to other operations. 
 Multiplication has the same form.
 \begin{equation*}
   \product (x,y) =\begin{cases}
@@ -3398,6 +3429,12 @@ Repeat this from right to left.
 
 % ==============================
 \extra{Game of Life}
+%If people do not believe that mathematics is simple, it is only because they do not realize how complicated life is.
+
+%—John von Neumann,
+
+%First national meeting of the Association for Computing Machinery, 19471
+% Alt, F. L. Archaeology of computers: reminiscences, 1945–1947. Commun. ACM 15, 693–694 (1972).
 
 \margingraphic{0.23\textwidth}{prologue/pix/vonneumann.jpg}{\label{fig:vonneumann}\href{https://en.wikipedia.org/wiki/John_von_Neumann}{John von Neumann 1903-1957}}
 John von Neumann was one of the twentieth century's 

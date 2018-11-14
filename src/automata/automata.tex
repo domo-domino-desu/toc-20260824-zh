@@ -338,8 +338,6 @@ and if the ending state
 is a final state $q\in F$
 then the machine \definend{accepts} the input~$\tau$,
 otherwise the machine \definend{rejects}~$\tau$.
-The \definend{language $\lang(\FSM)$ accepted by that machine} is the
-set of accepted strings.
 
 If two configurations are related by being separated by a single transition
 then we write
@@ -368,6 +366,12 @@ The multiple of three machine of the prior example gives this computation.
 \end{equation*}
 Since $q_0$ is an accepting state, the machine accepts \str{5013}.
 \end{example}
+
+\begin{definition}
+For a Finite State machine~$\FSM$, the
+\definend{language accepted by that machine~$\lang(\FSM)$} is the
+set of strings that it accepts.
+\end{definition}
 
 \begin{example}
 Finite State machines are easy to translate to code.
@@ -1362,42 +1366,45 @@ This figure omits all the transitions involving~$e$, to be more readable.
 
 % ==================================================
 \section{Nondeterminism}
-In both Turing machines and Finite State machines
-the next state is a function of the current configuration.
-Because it is a function, these machines are deterministic\Dash
-at each step the machine's behavior is fixed.
-For instance, no Turing machine  
-can contain both of the instructions
-\tminstruction{4}{1}{B}{1}
-and~\tminstruction{4}{1}{1}{5}, because both begin with
-$q_4\str{1}$. 
-We will now consider machines
-where from any configuration the machine could move to one next state, 
-more than one, or none at all.
-% We will first drop the condition for Finite State machines,
-% and in Chapter Five will do the same for Turing machines.
+Turing machines, and also Finite State machines, have the property that
+the next state is completely determined by the current state and current
+character.
+Consequently, once you lay out an initial tape and push Start then
+the rest of the computation is fixed.
+We now consider machines that are nondeterministic, 
+where from any configuration the machine could move to more than
+one next state, or just one, or even to none at all.
 
-% This will be an extremely important idea.
-% One reason for studying Finite State machines at all is as an introduction to
-% nondeterminism.
-
-% \begin{TODO}
-% Nondeterminism of deriving a string from a grammar
-% \end{TODO}
 
 \subsection{Motivation}
-Suppose that you have a grammar with a start symbol~$S$
-and some rules $\rho_0,\dots \rho_{n-1}$, 
-and want to know if a particular string~$\sigma$ can be derived from it.
-This is hard because
-at any step in the derivation there are multiple rules that apply;
-which is the correct next one? 
-You want to specify
-\citetext{a relationship $\sigma=\operatorname{amb}(S,\rho_0,\rho_1\ldots \rho_{n-1})$}{%
+Suppose that you have a grammar
+with rules~$R_0$,\ldots{} $R_{n-1}$ and start symbol~$S$.
+You want to know if the string~$\sigma$ has a derivation.
+The challenge to problems like this is that
+often at a step the derivation can go more than one way.
+For instance, if the first rule~$R_0$ is
+\syntax{S\produces{}\str{a}S|\str{b}A} then
+from \syntax{S} you to do two different things;
+which one will be fruitful? 
+
+In the derivation exercises we used intuition to
+spot that one way or another leads to an answer.
+Alternatively, if you were to write a program for it then you would try every
+possible derivation.
+For instance, you might do a breadth-first traversal of the tree of all
+derivations.
+
+Although the breadth-first technique is familiar, don't be misled into
+thinking it is natural. 
+This problem is most naturally done in parallel, and breadth-first traversal is
+a serialization what we do only because the device that we have requires it.
+
+What we really want, as programmers, is to call a function
+\citetext{$\sigma=\operatorname{amb}(S,R_0,R_1\ldots R_{n-1})$}{%
   The name \textit{amb}
   abbreviates `ambiguous function'.
   Here is a small example.
-  Essentially Amb(x, y, z) splits the computation into three possible futures:
+  Essentially \protect\verb!Amb(x, y, z)! splits the computation into three possible futures:
   a future in which the value x is yielded,
   a future in which the value y is yielded,
   and a future in which the value z is yielded.
@@ -1410,9 +1417,9 @@ You want to specify
 %   (amb (= (* x y) 8)
 %   (println x y)))
 % \end{lstlistings}
-The output is 2 4 because Amb(1, 2, 3) correctly chooses the future
-in which x has value 2, Amb(7, 6, 4, 5) chooses 4 and consequently
-Amb(x * y = 8) produces a success.
+  The output is 2 4 because Amb(1, 2, 3) correctly chooses the future
+  in which x has value 2, Amb(7, 6, 4, 5) chooses 4 and consequently
+  Amb(x * y = 8) produces a success.
   
   These were described by John McCarthy in \autocite{McCarthy}.
   ``Ambiguous functions are not really functions.
@@ -1431,7 +1438,7 @@ Amb(x * y = 8) produces a success.
 and have the computer somehow guess a successful derivation sequence.
 
 \margingraphic{0.175\textwidth}{automata/pix/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
-The American philosopher and Hall of Fame baseball catcher Y~Berra
+The American philosopher, and Hall of Fame baseball catcher, Y~Berra
 said, ``If you come to a fork in the road, take it.''
 That's how you could try the problem: when you come up against
 multiple possibilities,
@@ -1444,11 +1451,8 @@ spawns its own children, each of which now has a string that is two removed from
 the start.
 Continue until the desired string appears.
 
-The celebrated
-Travelling Salesman Problem
-suggests the same approach.
-Take a map of the
-forty eight contiguous US~states,
+The celebrated Travelling Salesman Problem suggests the same approach.
+Take a map of the forty eight contiguous US~states,
 and look at trips that visit every state capitol.
 We want to know if there is a cycle of less than $16\,000$ kilometers.
 Starting at Montpelier we could
@@ -4186,7 +4190,8 @@ the $\sim$ equivalence classes.
 
 \begin{exercises}
 \begin{exercise}
-True or false.
+True or false?
+Of course you must justify each answer.
 \begin{exparts}
 \item Every regular language is finite.
 \item Over $\kleenestar{\B}$, the empty language is not regular.
@@ -4233,6 +4238,33 @@ then a regular expression is
 The language over $\Sigma=\set{\str{a},\str{b}}$ described by the
 regular expression \re{a*} is
 $\set{\emptystring,\str{a},\str{aa},\ldots}$, and is infinite.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+True or false?
+Justify your answer.
+\begin{exparts}
+\item If $\lang_0$ is a regular languages and $\lang_1\subseteq \lang_0$ then
+  $\lang_1$ is also a regular languages.
+\item  If $\lang_0$ is not regular and $\lang_0\subseteq \lang_1$ then
+  $\lang_1$ is also not regular.
+\item If $\lang_0\cap\lang_1$ is regular then each of the two is
+  regular.  
+\end{exparts}
+\begin{answer}
+Each is false.
+\begin{exparts}
+\item For $\lang_0$ use the set of all bitstrings, $\kleenestar{\B}$.
+  For $\lang_1$ use any non-regular subset of it, such as
+  $\set{\str{0}^n\str{1}^n\suchthat n\in\N}$.
+\item For $lLang_0$ use any non-regular set of bitstrings, such as
+  $\set{\str{0}^n\str{1}^n\suchthat n\in\N}$.
+  For $\lang_1$ use $\kleenestar{\B}$.
+\item For $\lang_0$ take any nonregular set of bitstrings, such as 
+  $\set{\str{0}^n\str{1}^n\suchthat n\in\N}$.
+  For $\lang_1$ take its complement inside of $\kleenestar{\B}$
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -4285,7 +4317,18 @@ Assume $\Sigma=\set{\str{a},\str{b}}$.
 \item $\set{\str{a}^n\str{b}^m\in\kleenestar{\Sigma}\suchthat m-n>12}$
 \end{exparts}
 \end{exercise}
-  
+
+\begin{exercise}
+Is this language regular or not:
+$\set{\sigma\in\kleenestar{\B} suchthat \sigma=\alpha\beta\reversal{\alpha}}$.
+Either way, prove it.
+\begin{answer} % David Richerby https://cs.stackexchange.com/a/97885/67754
+The language is regular.
+It is a trick question:~take $\alpha=\emptystring$ to get that the set equals
+$\kleenestar{\B}$.
+\end{answer}
+\end{exercise}
+
 \begin{exercise}
 Prove that
 $\lang=\set{\sigma\in\kleenestar{\set{\str{1}}}
@@ -5454,92 +5497,147 @@ Define when a machine accepts a string.
 
 % ========================================
 \extra{Regular expressions in practice}
-Regular expressions are widely used for text operations.
-Imagine, for instance, searching through a large file for
-all of its email addresses.
-Doing this by hand would be stupid; instead it seems like a
-natural application of regular expressions.\footnote{Here we will
-describe some aspects of extended regular expressions as
-implemented in the Python~3 language.
-But your mileage may vary: we will not cover all of the extensions,
-and also many other languages do similar things but with some small variations.
-Read the tool's documentation.}
+Regular expressions are widely used.
+For instance, imagine searching through a large web server log file for
+the names of all the downloaded PDF's.
+Doing this by hand would be foolish; instead it is a
+natural application of regular expressions.
+A user on a Unix-derived system might type this.
+\begin{center}
+\str{grep pdf /var/log/apache2/access.log}
+\end{center}
+The \str{grep} utility looks through the file line by line, and if a line
+contains the string \str{pdf} then it prints that line.
 
-But there are many issues that come up in practice, which were not
-a big deal in the examples we saw in the theory section.
-For instance, for an email address we 
-want all the strings in the file that match the pattern
-of being a prefix, then \url{@}, then a suffix,
-all surrounded by whitespace.
-For the prefix we might
-specifying at least one instance of
-any non-whitespace character except \url{@}.
+In the place of the simple string \str{pdf} we could use a regular
+expressions.
+Here we will describe the regular expression capabilities that are in
+modern programming languages such as Python, JavaScript, and Scheme.
 
-While in our theoretical
-examples the alphabet was two or three characters, in practice
-at the very least $\Sigma$
-includes \str{a}, \ldots,~\str{z}, \str{A}, \ldots,~\str{Z},
+There are many issues in practice that were not
+a problem in the small-scale theory examples.
+One is that the theory alphabets had just a few characters
+but in practice the alphabet
+includes at least \str{a}, \ldots,~\str{z}, \str{A}, \ldots,~\str{Z},
 \str{0}, \ldots,~\str{9},
 space, tab, period, dash, exclamation point, percent sign, dollar sign, 
-open and closed parenthesis, and open and closed curly braces.
-(Often in practice $\Sigma$ is all of unicode.) 
-Writing \re{(a|b|c|...)*} just isn't practical.
-So we must extend regular expressions
-with convenient constructs giving us ways to write things like
-``any character,'' or ``any digit,'' or ``any whitespace character,'' or
-``any non-whitespace character.''
+open and closed parenthesis, open and closed curly braces, etc.\@
+It may may even contain all of unicode's
+more than one hundred thousand characters. 
+To match all of these
+a regular expression like \re{a|b|c|...} isn't going to work.
+So modern languages extend their regular expression capabilities
+with convenience constructs to describe such things as
+all characters, or all non-whitespace characters.
 
-For instance, for ``any digit'' we could write
+For instance, to match any digit we could write
 \re{(0|1|2|3|4|5|6|7|8|9)}.
 But that is too verbose for an often-used construct.
-So regular expressions in practice have been extended
-to allow us to instead write that set of characters as \re{[0123456789]},
-with square brackets but without the pipes.
-And if the characters are contiguous in the character set,
-as digits are in ASCII and Unicode,
-we can use a dash \re{[0-9]}.
-Another example of this is that for any single English letter,
+So modern languages allow us to write \re{[0123456789]},
+with square brackets but without the pipe characters.
+And, because the the digit characters are contiguous in the character
+set,\footnote{%
+  This is true both in ASCII and in Unicode.
+}
+we can shorten it further, to~\re{[0-9]}.
+Another example of the same abbreviation is that
+to match a single English letter,
 upper or lower case, we can use \re{[a-z,A-Z]}.
 
-\begin{example}
-To specify the set of strings inside a pair of parentheses
-we can use
-\re{\textbackslash ([\textasciicircum ()]*\textbackslash )}.
-(Note that this does not correctly handle nested parentheses.)
-\end{example}
+% \begin{example}
+% To specify the set of strings inside a pair of parentheses
+% we can use
+% \re{\textbackslash ([\textasciicircum ()]*\textbackslash )}.
+% (Note that this does not correctly handle nested parentheses.)
+% \end{example}
 
-We can also invert the set of characters using a caret at the start of
-the bracket expressions, so
-that we can specify a non-digit with \re{\textasciicircum[ 0-9]}
-and a non-letter with \re{[\textasciicircum 0-9]}.  
+To invert the set of matched characters, put a
+caret character~`\textasciicircum' as
+the first thing inside the bracket.
+Thus, \re{[\textasciicircum 0-9]} matches a non-digit
+and \re{[\textasciicircum a-z,A-Z]} matches a character that is not
+an ASCII letter.\footnote{%
+  We call these convenience constructs because they simply abbreviate something
+  that may be awkward  without the construct but is do-able.
+  However, modern popular programming languages also add to regular expressions
+  capabilities that are beyond mere conveniences.
+  More on this below.}
 
-We need convienences for the common lists.
-The most frequently-used one is a period \re{.} for any member of the
-alphabet.
-This is an abbreviation in the sense that we could in theory type
-\re{(a|b|...)}, but that would be very impractical.
-Other often used abbreviations are \re{\textbackslash d} for the digits,
+The common lists have short abbreviations.
+For the digits \re{[0-9]} we can write \re{\textbackslash d}.
+Other often-used abbreviations are
 \re{\textbackslash D} for the non-digits,
-\re{\textbackslash s} for the whitespace characters space, tab and newline,
-and \re{\textbackslash S} for the non-whitespace,
+\re{\textbackslash s} for the whitespace characters
+and \re{\textbackslash S} for non-whitespace.
 The abbreviation \re{\textbackslash w} covers
 the alphanumeric characters of upper and lower case letters, digits,
-and underscore,
-and \re{\textbackslash W} covers the non-alphanumeric characters.
+and underscore
+and \re{\textbackslash W} covers non-alphanumeric characters.
+And\Dash the big kahuna\Dash the period~`\re{.}' matches any member
+of the alphabet at all.
 
 \begin{example}
-This
-matches time strings
-in a common American twelve hour format.
-\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}.
-You might allow for capital letters on the \str{am} and \str{pm},
+Canadian postal codes consist of six characters.
+The first, third, and fifth are letters.
+The second, fourth, and sixth are digits.
+There is a space between the third and fourth character.
+The regular expression
+\re{[a-zA-Z]\textbackslash d[a-zA-Z] \textbackslash d[a-zA-Z]\textbackslash d}
+compactly describes those strings.
+
+Not every string matching this expression is a valid postal code.
+For instance, Canadian postal codes don't begin with \str{Z}.
+But often in practice we use regular expressions to dig out strings that
+look like
+the ones of interest, even though we are perhaps not
+perfectly describing the set. 
+\end{example}
+
+\begin{example}
+US postal codes, called ZIP codes,\tablefootnote{%
+  ZIP stands for Zone Improvement Plan.}
+are five digits.
+The regular expression
+\re{\textbackslash d\textbackslash d\textbackslash d\textbackslash d\textbackslash d}
+matches that.
+(As with the prior example, just because a string consists of five digits
+doesn't mean that there is a post office with that ZIP code.
+There are fewer than $50\,000$ assigned ZIP codes.)
+\end{example}
+
+\begin{example} \label{ex:AmerTime}
+This matches strings
+in a common American twelve hour format such as `8:05~am' or
+`10:15~pm'.
+\begin{center}
+\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
+\end{center}
+We can extend it to allow for capital letters on the \str{am} and \str{pm},
 and allow more than one space.
 \begin{center}
-  \re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s\textbackslash s*((a|A)|(p|P)(m|M))}
+  \re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s\textbackslash s*(am|AM|pm|PM)}
 \end{center}
 \end{example}
 
+Once we expand the alphabet~$\Sigma$ to include all characters, we
+run into the problem that we are already using some of the additional
+characters as metacharacters.
+That is, in the regular expression \re{a(b|c)d} the 
+\str{a}, \str{b}, \str{c}, and~\str{d} are there to match characters in
+a string.
+But the pipe~\str{|} doesn't match any character, it means something like
+`or', and the parentheses are for grouping.
+If in practice we want to allow matching a parenthesis or a pipe, how
+do we do that?
 
+To match a metacharacter preceed that character
+with a backslash,~\str{\textbackslash}.
+This is called
+\definend{escaping} the character.
+For instance, to match an open parenthesis escape that symbol to get
+the regular expression \re{\textbackslash (}.
+Similarly, \re{\textbackslash |} matches a pipe.
+Match backslash itself with \re{\textbackslash\textbackslash}.
 
 
 \subsection{Flexible quantifiers}
@@ -5567,9 +5665,9 @@ To match a metacharacter, prefix it with a backslash.
 Thus, to look for the string ``(Note'' you would put a backslash
 before the open parentheses
 \re{\textbackslash (Note:}.
-We say here that the parentheses has been \definend{escaped}.
+We say that the parentheses has been \definend{escaped}.
 
-\margingraphic{0.25\textwidth}{automata/pix/xkcdbackslashes.png}{\label{xkcd:knowbackslashes}\href{https://xkcd.com/1638}{Courtesy \url{xkcd.com}}}
+\margingraphic{0.35\textwidth}{automata/pix/xkcdbackslashes.png}{\label{xkcd:knowbackslashes}\href{https://xkcd.com/1638}{Courtesy \url{xkcd.com}}}
 All the extra metacharacters used by extended regular expressions\Dash period 
 \str{.}, plus \str{+}, curly braces 
 \str{\{} and~\str{\}}, and question mark \str{?}, for instance\Dash 
@@ -5582,7 +5680,12 @@ Here is a sampler of extended regular expressions used for
 some common jobs.
 
 \begin{example}
-Naively\footnote{%
+An integer, positive or negative matches \re{(\emptystring|-|+)\d+}
+\end{example}
+
+\begin{example}
+Naively match an email address:
+\re{.*@.*}.\tablefootnote{%
   This is naive in that the actual rules for the syntax of email addresses
   % https://tools.ietf.org/html/rfc5322
   are quite complex.
@@ -5590,8 +5693,6 @@ Naively\footnote{%
   that anyone is at that address.
   But this string is often used to check that a user-entered string
   meets some minimal level of expectation.}
-match an email address:
-\re{.*@.*}.
 \end{example}
 
 \begin{example}
@@ -5606,7 +5707,7 @@ Match lines starting with ``Theorem'' using
 
 \begin{example}
 Match a graphic file name:
-\re{.*(jpg|gif|png)}.
+\re{.*\.(jpg|gif|png)}.
 \end{example}
 
 \begin{example}
@@ -5620,14 +5721,12 @@ Match a number given in hexadecimal with five or more characters.
 \re{[a-fA-F0-9]\{5,\}}
 \end{example}
 
-\begin{remark}
-Some of these affect Kleene's Theorem, that is, they 
-go beyond what a regular expression as define earlier
-can do.
-Some of these additions are sufficient to make regular expressions
-as powerful as Turing machines, so that you can do sophisticated
-computations using them.
-\end{remark}
+
+\begin{example} \label{ex:NAPhoneNumber}
+Match North American phone numbers with the regular expression
+\re{\textbackslash d\{3\}-\textbackslash d\{3\}-\textbackslash d\{4\}}.
+\end{example}
+
 
 \begin{center}
   \begin{tabular}{c}
@@ -5635,6 +5734,7 @@ computations using them.
   Courtesy \href{https://xkcd.com/208}{\texttt{xkcd.com}}
   \end{tabular}
 \end{center}
+
 
 \subsection{But wait!  There's more!}
 Many implementations of extended regular expressions allow
@@ -5668,7 +5768,6 @@ Find images in an HTML  document
 \re{/(img|src)=("|')[\textasciicircum "'>]+/i}.
 \end{example}
 
-
 \begin{example} % https://github.com/reddit-archive/reddit/blob/master/r2/r2/lib/validator/validator.py#L1567
 Match a valid username on Reddit
 \re{\textbackslash A[\textbackslash w-]\{3,20\}\textbackslash Z}.
@@ -5679,6 +5778,42 @@ the square brackets, matches itself.
 The quantifier \re{\{3,20\}} will cause a string of between three and
 twenty characters to match.
 \end{example}
+
+The regular expression engines that come with recent programming languages
+are even more powerful.
+For instance, if you are looking through a file for strings that
+seem like North American phone numbers,
+\re{.*\textbackslash d\{1,3\} \textbackslash d\{3\}-\textbackslash d\{4\}.*}
+
+
+
+They go beyond just recognizing regular languages. 
+For example,they can
+accept the language $\set{\str{a}^n\str{b}^n\suchthat n>0}$,
+which the Pumping Lemma shows is not regular,
+using \re{\textasciicircum (a(?1)?b)\$}.
+Briefly, \re{(?1)} refers to the pattern that starts with the first
+open parenthesis, which is \re{a(?1)?b}.
+For example, the string \str{ab} matches on taking
+the second question mark to mean zero-many repeats of the first pattern.
+That is, the engine matches \re{?1} with the empty string, and the rest
+matches \str{ab}.
+
+Another demonstration of the power of these additions to the expressiveness
+of regular expressions is \re{(11+?)\textbackslash 1+|1?}, which accepts the
+language of numbers, represented in unary, that are nonprime.
+To see how it works, the number $15$ is composite because it breaks
+evenly into groups of three \str{111\,111\,111\,111\,111}.
+The regex uses its first substring \re{11+?} to match the first group
+of three.
+With that, the regex's second substring \re{\textbackslash 1+}
+matches the remaining four groups.
+
+In fact, although we won't show it,
+most of the modern language packages that are listed as
+regular expression engines that the full power of a Turing machine.
+
+
 
 % \begin{example}
 % Match a valid domain name from a URL.

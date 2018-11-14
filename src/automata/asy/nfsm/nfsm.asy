@@ -2839,3 +2839,72 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+real derivations_tree_width(int level, int RANK, real u) {
+  return (level/RANK)*5u;
+}
+
+
+// ============== cover all derivations  ================
+picture pic;
+int picnum = 70;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define layout parameters
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+int RANK = 3;
+
+node[][] tree;
+
+// define root node
+node root=ncircle("");  
+root.pos = (0*u,0*v);
+node[] treelevel = {root};
+tree[0] = treelevel;
+
+
+// calculate nodes position
+for(int level=1; level <= RANK; ++level) {
+  node[] treelevel;
+  int numnodes = 2^level;
+  real width = derivations_tree_width(level,RANK,u);
+  for(int nodenum=0; nodenum<numnodes; ++nodenum) {
+    node n;
+    n.pos = (nodenum*(width/(numnodes-1))*u,level*v);
+    treelevel.push(n);
+  }
+  tree[level] = treelevel;
+}
+
+// draw nodes
+for(int level=0; level <= RANK; ++level) {
+  write(format("level %d",level));
+  int numnodes = 2^level;
+  real width = derivations_tree_width(level,RANK,u);
+  for(int nodenum=0; nodenum<numnodes; ++nodenum) {
+    write(format("  nodenum %d ",nodenum));
+    write(format("  pos= %f,",tree[level][nodenum].pos.x));
+    write(format(" %f",tree[level][nodenum].pos.y));
+    draw(pic,
+	 tree[level][nodenum]);
+  }
+}
+// draw(pic,
+//      (S..bend..F).l("\str{b}"),
+//      (S..loop(N)).l("\str{a}"),
+//      (F..bend..S).l("\str{b}"),
+//      (F..loop(N)).l("\str{a}")
+// );
+
+// draw nodes
+// draw(pic,
+//      S, F);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

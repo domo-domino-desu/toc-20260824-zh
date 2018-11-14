@@ -184,30 +184,6 @@
 \setlength{\parskip}{0.2ex plus 0.05ex minus 0.05ex}
 
 
-
-%================================================================
-% FOOTNOTES
-% Footnotes: Use footnote symbols (not numbers) on a per-page basis.
-% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
-\setlength{\footnotemargin}{-1em}
-\DefineFNsymbolsTM*{hefferon}{%
-  \textdagger    \dagger
-  \textdaggerdbl \ddagger
-  \textsection   \mathsection
-  \textbardbl    \|%
-  \#\#%
-  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z%
-}%
-\setfnsymbol{hefferon}
-\newlength{\footmarktotextglue}
-\global\footmarktotextglue=.1em plus .05em minus .02em %
-\global\footglue=0.65em plus.2em minus.1em % space between footnotes
-\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
-\smash{\@makefnmark}\nobreak
-\hskip\footmarktotextglue\relax#1% was .5em
-}
-
 %=========== answers to exercises ===================================
 %  The file answerbody.tex holds the answers, and in input by the file 
 % answers.tex
@@ -740,6 +716,37 @@
 {\llap{\thmnumber{#2}\hspace*{\margin@numberingspace}}\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
 
 \usepackage{mdframed}
+\usepackage{tablefootnote} % print footnotes at bottom of page https://tex.stackexchange.com/a/113693/121234
+\AfterEndEnvironment{mdframed}{%
+ \tfn@tablefootnoteprintout% 
+ \gdef\tfn@fnt{0}% 
+ }
+
+ 
+
+%================================================================
+% FOOTNOTES
+% Footnotes: Use footnote symbols (not numbers) on a per-page basis.
+% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
+\setlength{\footnotemargin}{-1em}
+\DefineFNsymbolsTM*{hefferon}{%
+  \textdagger    \dagger
+  \textdaggerdbl \ddagger
+  \textsection   \mathsection
+  \textbardbl    \|%
+  \#\#%
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z%
+}%
+\setfnsymbol{hefferon}
+\newlength{\footmarktotextglue}
+\global\footmarktotextglue=.1em plus .05em minus .02em %
+\global\footglue=0.65em plus.2em minus.1em % space between footnotes
+\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
+\smash{\@makefnmark}\nobreak
+\hskip\footmarktotextglue\relax#1% was .5em
+}
+
 
 \mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %
   leftmargin = 0pt, %

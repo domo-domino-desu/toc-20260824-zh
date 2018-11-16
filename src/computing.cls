@@ -714,15 +714,21 @@
 {}                      %punctuation
 {0.4em plus 0.2em}                 %space after head
 {\llap{\thmnumber{#2}\hspace*{\margin@numberingspace}}\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
+ 
 
 \usepackage{mdframed}
 \usepackage{tablefootnote} % print footnotes at bottom of page https://tex.stackexchange.com/a/113693/121234
 \AfterEndEnvironment{mdframed}{%
- \tfn@tablefootnoteprintout% 
+  \tfn@tablefootnoteprintout%
  \gdef\tfn@fnt{0}% 
  }
+% \AtBeginEnvironment{example}{%
+%  \setcounter{mpfootnote}{\value{footnote}}}
+% \AtBeginEnvironment{example}{%
+%  \setcounter{mpfootnote}{\value{footnote}}}
+% \AtEndEnvironment{example}{%
+%  \setcounter{footnote}{\value{mpfootnote}}}
 
- 
 
 %================================================================
 % FOOTNOTES
@@ -746,6 +752,11 @@
 \smash{\@makefnmark}\nobreak
 \hskip\footmarktotextglue\relax#1% was .5em
 }
+\renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
+
+
+%================================================================
+% THEOREM ENVIRONMENTS
 
 
 \mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %

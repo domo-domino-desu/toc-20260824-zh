@@ -5496,234 +5496,227 @@ Define when a machine accepts a string.
 
 
 % ========================================
-\extra{Regular expressions in practice}
-Regular expressions are widely used.
+\extra{Regular expressions in the wild}
+Regular expressions are widely used in practice.
 For instance, imagine searching through a large web server log file for
 the names of all the downloaded PDF's.
-Doing this by hand would be foolish; instead it is a
-natural application of regular expressions.
 A user on a Unix-derived system might type this.
 \begin{center}
 \str{grep pdf /var/log/apache2/access.log}
 \end{center}
 The \str{grep} utility looks through the file line by line, and if a line
-contains the string \str{pdf} then it prints that line.
+contains the substring `\str{pdf}' then \str{grep} prints that line.
+In the place of the \str{pdf} we could use a regular
+expression.
 
-In the place of the simple string \str{pdf} we could use a regular
-expressions.
-Here we will describe the regular expression capabilities that are in
+That is, regular expressions are widely used for text operations.
+Here we will describe some of the regular expression capabilities that are in
 modern programming languages such as Python, JavaScript, and Scheme.
 
 There are many issues in practice that were not
-a problem in the small-scale theory examples.
-One is that the theory alphabets had just a few characters
+a problem in the small-scale theory examples that we saw earlier.
+One is that the theory alphabets had just two or three characters
 but in practice the alphabet
-includes at least \str{a}, \ldots,~\str{z}, \str{A}, \ldots,~\str{Z},
-\str{0}, \ldots,~\str{9},
+includes \str{a}\dash \str{z}, \str{A}\dash \str{Z},
+\str{0}\dash \str{9},
 space, tab, period, dash, exclamation point, percent sign, dollar sign, 
 open and closed parenthesis, open and closed curly braces, etc.\@
 It may may even contain all of unicode's
 more than one hundred thousand characters. 
-To match all of these
-a regular expression like \re{a|b|c|...} isn't going to work.
 So modern languages extend their regular expression capabilities
-with convenience constructs to describe such things as
-all characters, or all non-whitespace characters.
-
-For instance, to match any digit we could write
-\re{(0|1|2|3|4|5|6|7|8|9)}.
-But that is too verbose for an often-used construct.
-So modern languages allow us to write \re{[0123456789]},
-with square brackets but without the pipe characters.
-And, because the the digit characters are contiguous in the character
-set,\footnote{%
-  This is true both in ASCII and in Unicode.
-}
-we can shorten it further, to~\re{[0-9]}.
-Another example of the same abbreviation is that
-to match a single English letter,
-upper or lower case, we can use \re{[a-z,A-Z]}.
-
-% \begin{example}
-% To specify the set of strings inside a pair of parentheses
-% we can use
-% \re{\textbackslash ([\textasciicircum ()]*\textbackslash )}.
-% (Note that this does not correctly handle nested parentheses.)
-% \end{example}
-
-To invert the set of matched characters, put a
-caret character~`\textasciicircum' as
-the first thing inside the bracket.
-Thus, \re{[\textasciicircum 0-9]} matches a non-digit
-and \re{[\textasciicircum a-z,A-Z]} matches a character that is not
-an ASCII letter.\footnote{%
-  We call these convenience constructs because they simply abbreviate something
-  that may be awkward  without the construct but is do-able.
+with convenience constructs such as ways to match
+a digit, or any non-whitespace characters.\footnote{%
+  These are convenience constructs because they simply abbreviate something
+  that without the construct may be awkward but is do-able.
   However, modern popular programming languages also add to regular expressions
-  capabilities that are beyond mere conveniences.
+  some capabilities that go beyond mere abbreviations.
   More on this below.}
 
-The common lists have short abbreviations.
-For the digits \re{[0-9]} we can write \re{\textbackslash d}.
-Other often-used abbreviations are
-\re{\textbackslash D} for the non-digits,
+Consider matching a digit.
+We could use \re{(0|1|2|3|4|5|6|7|8|9)}
+but that is too verbose for an often-needed list.
+So modern languages allow us to write \re{[0123456789]},
+with square brackets but without the pipe characters.
+Or, because the digit characters are contiguous in the character
+set,\footnote{%
+  This is true in both ASCII and Unicode.
+}
+we can shorten it further to~\re{[0-9]}.
+Another example of the same abbreviation is that
+\re{[A-Za-z]} matches a single English letter,
+upper or lower case.
+
+To invert the set of matched characters, put a
+caret~`\re{\textasciicircum}' as
+the first thing inside the bracket.
+Thus, \re{[\textasciicircum 0-9]} matches a non-digit
+and \re{[\textasciicircum A-Za-z]} matches a character that is not
+an ASCII letter.
+
+The most common lists have short abbreviations.
+For the digits you can use \re{\textbackslash d}.
+Use
+\re{\textbackslash D} for the ASCII non-digits,
 \re{\textbackslash s} for the whitespace characters
-and \re{\textbackslash S} for non-whitespace.
-The abbreviation \re{\textbackslash w} covers
-the alphanumeric characters of upper and lower case letters, digits,
-and underscore
-and \re{\textbackslash W} covers non-alphanumeric characters.
-And\Dash the big kahuna\Dash the period~`\re{.}' matches any member
-of the alphabet at all.
+(space, tab, newline, formfeed, and line return)
+and \re{\textbackslash S} for ASCII characters that are non-whitespace.
+Cover
+the alphanumeric characters (upper and lower case ASCII letters, digits,
+and underscore) with \re{\textbackslash w} 
+and cover the ASCII non-alphanumeric characters with \re{\textbackslash W}.
+And\Dash the big kahuna\Dash the period~`\re{.}' is a metacharacter that
+matches any member of the alphabet at all.
 
-\begin{example}
-Canadian postal codes consist of six characters.
-The first, third, and fifth are letters.
-The second, fourth, and sixth are digits.
-There is a space between the third and fourth character.
-The regular expression
+\begin{example}  \label{ex:CanadianPostCodes}
+Canadian postal codes have seven characters:~the fourth is a space,
+the first, third, and sixth are letters, and
+the others are digits.
+This regular expression describes them.
+\begin{center}
 \re{[a-zA-Z]\textbackslash d[a-zA-Z] \textbackslash d[a-zA-Z]\textbackslash d}
-compactly describes those strings.
-
-Not every string matching this expression is a valid postal code.
-For instance, Canadian postal codes don't begin with \str{Z}.
-But often in practice we use regular expressions to dig out strings that
-look like
-the ones of interest, even though we are perhaps not
-perfectly describing the set. 
+\end{center}
 \end{example}
 
 \begin{example}
-US postal codes, called ZIP codes,\tablefootnote{%
+US postal codes, called ZIP codes, are five digits.\tablefootnote{%
   ZIP stands for Zone Improvement Plan.}
-are five digits.
-The regular expression
-\re{\textbackslash d\textbackslash d\textbackslash d\textbackslash d\textbackslash d}
-matches that.
-(As with the prior example, just because a string consists of five digits
-doesn't mean that there is a post office with that ZIP code.
-There are fewer than $50\,000$ assigned ZIP codes.)
+Match them with
+\re{\textbackslash d\textbackslash d\textbackslash d\textbackslash d\textbackslash d}.
 \end{example}
 
 \begin{example} \label{ex:AmerTime}
-This matches strings
-in a common American twelve hour format such as `8:05~am' or
-`10:15~pm'.
+In the twelve hour time format used in some countries some typical times strings are `8:05~am' or `10:15~pm'.
+You could use this regular expression.
 \begin{center}
 \re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
-\end{center}
-We can extend it to allow for capital letters on the \str{am} and \str{pm},
-and allow more than one space.
-\begin{center}
-  \re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s\textbackslash s*(am|AM|pm|PM)}
 \end{center}
 \end{example}
 
 Once we expand the alphabet~$\Sigma$ to include all characters, we
 run into the problem that we are already using some of the additional
 characters as metacharacters.
-That is, in the regular expression \re{a(b|c)d} the 
-\str{a}, \str{b}, \str{c}, and~\str{d} are there to match characters in
-a string.
-But the pipe~\str{|} doesn't match any character, it means something like
-`or', and the parentheses are for grouping.
-If in practice we want to allow matching a parenthesis or a pipe, how
-do we do that?
-
-To match a metacharacter preceed that character
-with a backslash,~\str{\textbackslash}.
-This is called
-\definend{escaping} the character.
-For instance, to match an open parenthesis escape that symbol to get
-the regular expression \re{\textbackslash (}.
-Similarly, \re{\textbackslash |} matches a pipe.
-Match backslash itself with \re{\textbackslash\textbackslash}.
-
-
-\subsection{Flexible quantifiers}
-As the strict syntax was defined earlier, 
-we can express ``at least one \str{a}'' with
-\re{aa*}.
-In that same syntax we can express ``between two and five \str{a}'s'' with 
-\re{aa|aaa|aaaa|aaaaa}.
-Both are often-used constructs, and awkward.
-
-For the first we have the extension of using a plus sign, as in
-\re{0+}.
-For the second we specify the quantity in curly braces \re{0\{2,5\}}.
-
-Another often-needed construct is ``at most one.''
-In the strict syntax we can write ``at most one \str{a}'' with
-\re{\emptystring|a}.
-The extension uses a question mark \re{a?}.
-
-In the expression \re{a(b|c)a} we do not intend to match the 
-open or closed parentheses, or the pipe character.
-These are metacharacters, part of the
+That is, in the regular expression \re{a(b|c)d} the parentheses and the pipe
+are not there to be matched.
+They are metacharacters, part of the
 syntax of the regular expression.
-To match a metacharacter, prefix it with a backslash.
-Thus, to look for the string ``(Note'' you would put a backslash
+
+\margingraphic{0.4\textwidth}{automata/pix/xkcdbackslashes.png}{\label{xkcd:knowbackslashes}\href{https://xkcd.com/1638}{Courtesy \url{xkcd.com}}}
+To match a metacharacter prefix it with a backslash,~`\str{\textbackslash}'.
+Thus, to look for the string `\str{(Note}' put a backslash
 before the open parentheses
 \re{\textbackslash (Note:}.
-We say that the parentheses has been \definend{escaped}.
+Similarly, \re{\textbackslash |} matches a pipe.
+And, match backslash itself with \re{\textbackslash\textbackslash}.
+This is called
+\definend{escaping} the metacharacter.
+% All the extra metacharacters used by extended regular expressions\Dash period 
+% \str{.}, plus \str{+}, curly braces 
+% \str{\{} and~\str{\}}, and question mark \str{?}, for instance\Dash 
+% are convenient but if you want to match that character then you must
+% escape it with a backslash.
 
-\margingraphic{0.35\textwidth}{automata/pix/xkcdbackslashes.png}{\label{xkcd:knowbackslashes}\href{https://xkcd.com/1638}{Courtesy \url{xkcd.com}}}
-All the extra metacharacters used by extended regular expressions\Dash period 
-\str{.}, plus \str{+}, curly braces 
-\str{\{} and~\str{\}}, and question mark \str{?}, for instance\Dash 
-are convenient but if you want to match that character then you must
-escape it with a backslash.
-And, to match a backslash you must use a double backslash.
-You can end up with  regular expressions that are very hard to understand.
 
-Here is a sampler of extended regular expressions used for
-some common jobs.
+\subsection{Quantifiers}
+In the theoretical cases we saw earlier,
+to match  `at most one \str{a}' we used \re{\emptystring|a}.
+In practice we can do \re{(|a)} but depicting the
+empty string by just putting nothing there can be confusing.
+Modern languages add a metacharacter for this:~write
+\re{a?}, with a question mark.
+
+Another often-needed construct is \re{a?} for `at most one \str{a}'.
+`at least one \str{a}' we use the regular expression \re{aa*}.
+We often need such matches in practice and so modern languages add a
+metacharacter for this:~use a plus sign, as in \re{a+}.
+
+More generally, we often want to specify quantities.
+For instance, to match between two and five \str{a}'s we can use 
+\re{a\{2,5\}}.
+Similarly, to match at least two \str{a}'s we can use \re{a\{2,\}}.
+We very often want `at least one \str{a}' and modern languages
+allow \re{a+}, giving us an additional metacharacter.
+
+As earlier, to match any of these metacharacters you need to escape them.
+For instance, \re{To be or not to be\textbackslash ?} matches
+the famous question. 
+
+
+\subsection{Cookbook of examples}
+
+All of the changes between the theoretical version and the in-practice
+version of regular expressions is driven by the needs of working
+programmers.
+For instance, one more addition is that modern implementations allow
+you to use the metacharacter caret~`\str{\textasciicircum}'
+to match the start of a line
+and dollar sign~`\str{\textdollar}' to match a line end.
+
+Here we list a pile of unrelated examples that show extended
+regular expressions accomplishing practical work.
 
 \begin{example}
-An integer, positive or negative matches \re{(\emptystring|-|+)\d+}
+The regular expression \re{(-|+)?\textbackslash d+} matches
+an integer, positive or negative.
+Note the question mark making the sign optional, and note also the plus
+sign making sure there is at least one digit.
 \end{example}
 
 \begin{example}
-Naively match an email address:
-\re{.*@.*}.\tablefootnote{%
+Match a number represented in hexadecimal with
+\re{[a-fA-F0-9]+} (programmers often prefix a hexadecimal representation
+with \str{0x} so the regular expression becomes \re{0x[a-fA-F0-9]+}).
+\end{example}
+
+\begin{example}
+The expression \re{\textbackslash S@\textbackslash S} is
+a naive email address description.\footnotemark
+\end{example}\footnotetext[1]{%
   This is naive in that the actual rules for the syntax of email addresses
   % https://tools.ietf.org/html/rfc5322
-  are quite complex.
-  In addition, even if you have a valid address, there is no guarantee
-  that anyone is at that address.
-  But this string is often used to check that a user-entered string
-  meets some minimal level of expectation.}
+  are quite complex (see below).
+  In addition, even with a string that follows those rules
+  there may be no email server, or respondent, at that address.
+  But this string is useful to check that what someone entered 
+  meets some minimal expectation.}
+
+\begin{example}
+Match a user name of between three and twelve letters, digits, or underscores
+with \re{\textbackslash w{3,12}}.
 \end{example}
 
 \begin{example}
-Match a number given in hexadecimal:
-\re{[a-fA-F0-9]+}.
+Match a password that must be at least eight characters long
+with \re{\textbackslash .{8,}}.
 \end{example}
 
 \begin{example}
-Match lines starting with ``Theorem'' using
+This matches a web URL.
+\begin{center}% ^((http|ftp|https):\/{2})(([0-9a-z_-]+\.){2,}(\S*)$
+\re{(https?:\textbackslash /\textbackslash /)?([\textbackslash da-z-]+)\textbackslash .([a-z\textbackslash .]\{2,3\})([\textbackslash /\textbackslash w \textbackslash .-]*)*\textbackslash /?}
+\end{center}
+Notice the question mark in \re{https?}, allowing the scheme to be either
+\str{http} or \str{https}.
+After a colon and two forward slashes there is a host part, consisting of between two and three fields separated
+by periods.
+At the end comes a path.
+  The specification allows paths to be case sensitive but here we have only
+  lower case.
+  The specification also allows one more part, the query, after a question mark
+  character but this regular expression leaves that out.
+\end{example}
+
+\begin{example}
+Match lines starting with `Theorem' using
 \re{\^{}Theorem}.
 \end{example}
 
 \begin{example}
 Match a graphic file name:
-\re{.*\.(jpg|gif|png)}.
+\re{\textbackslash w*\textbackslash .(jpg|gif|png)}.
 \end{example}
-
-\begin{example}
-Match a number given in hexadecimal with between two and four characters.
-\re{[a-fA-F0-9]\{2,4\}}.
-\end{example}
-
-% \margingraphic{0.45\textwidth}{automata/xkcdregexes.png}{\label{xkcd:knowregexes}\href{https://xkcd.com/208}{Courtesy \url{xkcd.com}}}
-\begin{example}
-Match a number given in hexadecimal with five or more characters.
-\re{[a-fA-F0-9]\{5,\}}
-\end{example}
-
 
 \begin{example} \label{ex:NAPhoneNumber}
-Match North American phone numbers with the regular expression
+North American phone numbers: 
 \re{\textbackslash d\{3\}-\textbackslash d\{3\}-\textbackslash d\{4\}}.
 \end{example}
 
@@ -5785,7 +5778,7 @@ For instance, if you are looking through a file for strings that
 seem like North American phone numbers,
 \re{.*\textbackslash d\{1,3\} \textbackslash d\{3\}-\textbackslash d\{4\}.*}
 
-
+% Using matching https://blogs.msdn.microsoft.com/oldnewthing/20060522-08/?p=31113
 
 They go beyond just recognizing regular languages. 
 For example,they can
@@ -5799,6 +5792,7 @@ the second question mark to mean zero-many repeats of the first pattern.
 That is, the engine matches \re{?1} with the empty string, and the rest
 matches \str{ab}.
 
+\margingraphic{0.50\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
 Another demonstration of the power of these additions to the expressiveness
 of regular expressions is \re{(11+?)\textbackslash 1+|1?}, which accepts the
 language of numbers, represented in unary, that are nonprime.
@@ -5881,36 +5875,60 @@ regular expression engines that the full power of a Turing machine.
 
 
 \subsection{Downsides}
-Sometimes a regular expression is just what you need for a quick one-off job.
-Sometimes they are good for more complex tasks also.
+Regular expressions are powerful tools, and this goes double for
+enhanced regexes.
+As illustrated by the examples above,
+some of their uses are:~to validate usernames, to searach text files,
+and to filter results.
+But they can come with costs also.
 
-But they often come with costs.
-One is complexity.
-Consider this expression to match times
-\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s\textbackslash s*((a|A)|(p|P)(m|M))}.
-It will match \str{13:00 am}.
-You can patch it up to avoid that error, but at the cost of introducting
-complexity.
+For instance, while
+the regular expression for twelve hour time from \cref{ex:AmerTime},
+\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)},
+does indeed match `8:05~am' and `10:15~pm',
+it falls short in some respects.
+One is that it requires \str{am} or \str{pm} at the end but times are often 
+are given without them.
+We could change the ending to 
+\re{(\emptystring|\textbackslash s am|\textbackslash s pm)}, which is a
+bit more complex but it solves the issue.
 
-\margingraphic{0.50\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
-The canonical extreme example is the regex for
-valid email addresses, according to the 
-RFC~822 standard.
-(It falls off the bottom of the page but the point about its complexity
-is clear.
-Of course, even if you have an address that is well-formed according
-to the standard,
-whether someone responds to an email is an entirely different matter.)
+Another issue is that it also matches some strings that you don't want, such as
+\str{13:00 am} or \str{9:61 pm}.
+We can solve this as with the prior paragraph, by listing the cases.\footnote{%
+  To fit it in the margins, a couple of substrings are elided.}
+\begin{center}
+  \re{(01|02|...|11|12):(01|02|...|59|60)(\textbackslash s am|\textbackslash s  pm)}
+  \end{center}
+This is like the prior fixup, in that it does indeed fix the issue but it
+does so at a cost of complexity, since it amounts to a list of
+the allowed substrings.
 
-These are the first five lines, of $81$.
-\begin{lstlisting}
-(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
-)+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:
-\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(
-?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ 
-\t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\0
-\end{lstlisting} % }{%
-% Here is the full listing.
+Another example is that not every string matching
+the Canadian regular expression in \cref{ex:CanadianPostCodes}
+has a corresponding post office.
+For one, no valid codes begin with \str{Z}
+And ZIP codes work the same way\Dash
+there are fewer than $50\,000$ assigned ZIP codes so 
+just because a string consists of five digits doesn't mean that the code
+is in use.
+
+How to fix these?
+% Should we change the Canadian regular expression to
+% \re{[a-zA-Y]\textbackslash d[a-zA-Z] \textbackslash d[a-zA-Z]\textbackslash d},
+% to get more accurate matches?
+Extending the regular expressions to cover only those codes actually in use
+would make them little more than a list of strings,
+and that list would change frequently.
+
+The canonical example of extreme complexity is the regex for
+\citetext{valid email addresses}{This expression follows the RFC~822 standard.
+The full listing is at \url{http://www.ex-parrot.com/pdw/Mail-RFC822-Address.html}.
+It is due to Paul Warren who did not write it by hand but instead
+used a Perl program to concatenate a simpler set of regular expressions
+that relate directly to the grammar defined in the RFC.
+To use the regular expression you would need to remove the formatting
+newlines.}
 % \protect\begin{lstlisting}
 % (?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
 % )+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:
@@ -5995,19 +6013,40 @@ These are the first five lines, of $81$.
 % |(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(
 % ?:\r\n)?[ \t])*))*)?;\s*)  
 % \protect\end{lstlisting}}
+(It falls off the bottom of the page .)
+We show here just five lines worth, out of $81$, but that's enough to
+make the point about its complexity.
+\begin{lstlisting}
+(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
+)+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:
+\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(
+?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ 
+\t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\0
+\end{lstlisting} % }{%
 
-The point that, at least some of the time, the cost of complexity
-outweighs the gain in expressiveness is often made by
-citing
-Jamie Zawinski (an early Netscape engineer and a well known programmer), who 
-wrote the following
-% \href{https://groups.google.com/forum/?hl=en#!msg/alt.religion.emacs/DR057Srw5-c/Co-2L2BKn7UJ}{on the Usenet group \texttt{alt.religion.emacs}}.
-on the Usenet group \texttt{alt.religion.emacs}.
+\noindent And, even if you have an address that is well-formed according
+to the standard, it is no help in understanding whether someone
+answers email sent to that address.
+
+At this point regular expressions may seem
+a little less like a fast and neat solution
+and a little more like a development and maintenance issue.
+The full story is that sometimes a regular expression is just what you need
+for a quick job
+and sometimes they are good for more complex tasks also.
+But at least some of the time the cost of complexity
+outweighs the gain in expressiveness.
+This power/complexity tradeoff is often referred to online by citing
+J~Zawinski, who 
+wrote this in
+\href{https://groups.google.com/forum/?hl=en#!msg/alt.religion.emacs/DR057Srw5-c/Co-2L2BKn7UJ}{\texttt{alt.religion.emacs}}
+\citetext{on 1997-Aug-12}{%
+  For some reason it keeps disappearing from the online archive.}.
 
 \begin{quotation}\small
 \noindent The notion that regexps are the solution to all
 problems is equally braindead.
-\ldots\ 
+\ldots\@
 Some people, when confronted with a problem, think "I know,
 I'll use regular expressions."  Now they have two problems.
 \end{quotation}
@@ -6019,12 +6058,12 @@ I'll use regular expressions."  Now they have two problems.
   \end{tabular}
 \end{center}
 
-
-% \centergraphic[height=0.3\textheight]{perl_problems.png}
-
-% \pause
-% You have to judge for yourself, but many people find them useful.
-% \end{frame}
+% As with the postal codes, one pattern that you see 
+% in practice if for programmers to make the engineering choice to use
+% regular expressions to give something of a rough cut, something
+% good-enough.
+% But they have plenty of other uses also, such as validating
+% new usernames, or input to a database.
 
 % regex for Roman numerals: https://phvu.wordpress.com/2009/05/19/an-cfg-for-roman-numerals/
 % '^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'
@@ -6086,6 +6125,17 @@ for each job (you can find exact descriptions on the web).
 or \re{((\(\textbackslash d{3}\) ?)|(\textbackslash d{3}-))?\textbackslash d{3}-\textbackslash d{4}}
 \item \re{\textasciicircum(2[0-3]|[01][0-9]):?([0-5][0-9]):?([0-5][0-9])(Z|[+-](?:2[0-3]|[01][0-9])(?::?(?:[0-5][0-9]))?)\$}
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+In the Downsides discussion of \cref{ex:AmerTime}, wee change the ending to
+\re{(\emptystring|\textbackslash s am|\textbackslash s pm)}.
+Why not \re{\textbackslash s(\emptystring|am|pm)}, which
+factors out the whitespace?
+\begin{answer}
+Factoring out the whitespace would mean that times without \str{am} or \str{pm}
+must have a trailing whitespace.
 \end{answer}
 \end{exercise}
 

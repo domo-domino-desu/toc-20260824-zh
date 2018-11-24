@@ -119,3 +119,56 @@
   (check-false (regexp-match? twelve-long "8 am"))
   (check-false (regexp-match? twelve-long "23:31"))
   )
+
+
+;; US ZIP postal codes, quantifiers
+(define zip-quantifiers #px"^\\d{5}$")
+(module+ test
+  (check-true (regexp-match? zip-quantifiers "12345"))
+  (check-true (regexp-match? zip-quantifiers "11111"))
+  (check-false (regexp-match? zip-quantifiers "1234"))
+  (check-false (regexp-match? zip-quantifiers "1234567"))
+  (check-false (regexp-match? zip-quantifiers "abcde"))
+  )
+
+
+;; digits, quantifiers
+(define digits-two-to-five #px"^\\d{2,5}$")
+(module+ test
+  (check-true (regexp-match? digits-two-to-five "12345"))
+  (check-true (regexp-match? digits-two-to-five "1234"))
+  (check-true (regexp-match? digits-two-to-five "123"))
+  (check-true (regexp-match? digits-two-to-five "12"))
+  (check-false (regexp-match? digits-two-to-five "1"))
+  (check-false (regexp-match? digits-two-to-five "123456"))
+  (check-false (regexp-match? digits-two-to-five "abcde"))
+  )
+
+
+;; digits, at least two
+(define digits-at-least-two #px"^\\d{2,}$")
+(module+ test
+  (check-true (regexp-match? digits-at-least-two "12345"))
+  (check-true (regexp-match? digits-at-least-two "123"))
+  (check-true (regexp-match? digits-at-least-two "12"))
+  (check-false (regexp-match? digits-at-least-two "1"))
+  (check-false (regexp-match? digits-at-least-two "12a"))
+  )
+
+;; digits, at least one
+(define digits-at-least-one #px"^\\d+$")
+(module+ test
+  (check-true (regexp-match? digits-at-least-one "12345"))
+  (check-true (regexp-match? digits-at-least-one "12"))
+  (check-true (regexp-match? digits-at-least-one "1"))
+  (check-false (regexp-match? digits-at-least-one ""))
+  (check-false (regexp-match? digits-at-least-one "12a"))
+  )
+
+;; Hamlet
+(define hamlet #px"^To be or not to be\?$")
+(module+ test
+  (check-true (regexp-match? hamlet "To be or not to be?"))
+  (check-false (regexp-match? hamlet "To be or not to be."))
+  (check-false (regexp-match? hamlet ""))
+  )

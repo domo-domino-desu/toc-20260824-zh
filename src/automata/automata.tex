@@ -5535,43 +5535,45 @@ A user on a Unix-derived system might type this.
 \end{center}
 The \str{grep} utility looks through the file line by line, and if a line
 contains the substring `\str{pdf}' then \str{grep} prints that line.
-In the place of the \str{pdf} we could use a regular
+In the place of the simple string \str{pdf} we could use a regular
 expression.
 
 That is, regular expressions are widely used for text operations.
-Here we will describe some of the regular expression capabilities that are in
-modern programming languages such as Python, JavaScript, and Scheme.
+Modern programming languages such as Python, JavaScript, and Scheme include
+regular expression capabilities that extend those from
+the small-scale theory examples that we saw earlier.
+These extensions fall into two categories.
+The first includes many
+convenience constructs, which make easier something
+that without the construct would be awkward but doable.
+The second is that some of the extensions to regular expressions
+in modern programming languages
+go beyond mere abbreviations.
+More on this later.
 
-In practice many issues arise that were not
-a problem in the earlier small-scale theory examples.
-One is that the earlier alphabets had just two or three characters
-but in practice the alphabet
-includes \str{a}\dash \str{z}, \str{A}\dash \str{Z},
+First, the convenience extensions.
+In practice many issues that arise are about sheer scale.
+Our earlier alphabets had two or three characters
+but in practice an alphabet must include at least all of ASCII's
+printable characters:~\str{a}\dash \str{z}, \str{A}\dash \str{Z},
 \str{0}\dash \str{9},
 space, tab, period, dash, exclamation point, percent sign, dollar sign, 
 open and closed parenthesis, open and closed curly braces, etc.\@
-It may may even contain all of unicode's
+It may may even contain all of Unicode's
 more than one hundred thousand characters. 
-So the regular expression capabilities in modern languages involve many
-extensions with convenience constructs, such as ways to match
-a digit or a non-whitespace character.\footnote{%
-  These are convenience constructs because they simply abbreviate something
-  that without the construct would be awkward but doable.
-  Modern popular programming languages also extend regular expressions
-  with some capabilities that go beyond mere abbreviations.
-  More on this later.}
+We need managable ways to describe larger sets of characters.
 
 Consider matching a digit.
 We could use \re{(0|1|2|3|4|5|6|7|8|9)}
 but that is too verbose for an often-needed list.
-So modern languages allow us to write \re{[0123456789]},
+One abbreviation that modern languages allow is \re{[0123456789]},
 with square brackets but without the pipe characters.
 Or, because the digit characters are contiguous in the character
 set,\footnote{%
   This is true in both ASCII and Unicode.
 }
 we can shorten it further to~\re{[0-9]}.
-Another example of the same abbreviation is that
+Another example of the same kind abbreviation is that
 \re{[A-Za-z]} matches a single English letter,
 upper or lower case.
 
@@ -5582,8 +5584,9 @@ Thus, \re{[\textasciicircum 0-9]} matches a non-digit
 and \re{[\textasciicircum A-Za-z]} matches a character that is not
 an ASCII letter.
 
-The most common lists have short abbreviations.
-For the digits you can use \re{\textbackslash d}.
+Another convenience is that 
+the most needed lists have short abbreviations.
+Another abbreviation for the digits is just \re{\textbackslash d}.
 Use
 \re{\textbackslash D} for the ASCII non-digits,
 \re{\textbackslash s} for the whitespace characters
@@ -5621,8 +5624,9 @@ We can match them with
 In the twelve hour time format used in some countries some typical times strings are `8:05~am' or `10:15~pm'.
 You could use this regular expression.
 \begin{center}
-\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
+\re{(|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
 \end{center}
+Note the empty string in \re{(|0|1)}.
 \end{example}
 
 Recall that in the regular expression \re{a(b|c)d} the parentheses and the pipe
@@ -5658,7 +5662,7 @@ to match  `at most one \str{a}' we used \re{\emptystring|a}.
 In practice we can do \re{(|a)} but depicting the
 empty string by just putting nothing there can be confusing.
 Modern languages add a metacharacter for this:~write
-\re{a?}, with a question mark.
+\re{a?}, with a question mark, to mean `at most one \str{a}'.
 
 Another often-needed construct is \re{a?} for `at most one \str{a}'.
 `at least one \str{a}' we use the regular expression \re{aa*}.
@@ -5681,21 +5685,11 @@ the famous question.
 
 \subsection{Cookbook of examples}
 
-All of the changes between the theoretical version and the in-practice
-version of regular expressions is driven by the needs of working
-programmers.
-Here we list a pile of unrelated examples that show extended
+All of the changes between the theoretical regular expressions and the
+extensions of regular expressions that we see in practice
+is driven by the desires of working programmers.
+Here is a pile of examples showing extended
 regular expressions accomplishing practical work.
-
-For instance, one more addition is that modern implementations allow
-you to use the metacharacter caret~`\str{\textasciicircum}'
-to match the start of a line
-and dollar sign~`\str{\textdollar}' to match a line end.
-
-\begin{example}
-Match lines starting with `Theorem' using
-\re{\^{}Theorem}.
-\end{example}
 
 \begin{example}
 The regular expression \re{(-|+)?\textbackslash d+} matches
@@ -5705,14 +5699,21 @@ sign making sure there is at least one digit.
 \end{example}
 
 \begin{example}
-Match a graphic file name:
-\re{\textbackslash w*\textbackslash .(jpg|gif|png)}.
+Match a programming language identifier that begins with an ASCII
+letter and then has up to seven more digits or letters
+\re{[a-zA-Z][0-9a-zA-Z]\{0,7\}}.
 \end{example}
 
 \begin{example}
 Match a number represented in hexadecimal with
 \re{[a-fA-F0-9]+} (programmers often prefix a hexadecimal representation
 with \str{0x} so the regular expression becomes \re{0x[a-fA-F0-9]+}).
+\end{example}
+
+
+\begin{example}
+Match the text inside a single set of parentheses
+\re{\(([[\textasciicircum ()]*)\)}.
 \end{example}
 
 \begin{example}
@@ -5737,8 +5738,6 @@ Match a password that must be at least eight characters long
 with \re{\textbackslash .\{8,\}}.
 \end{example}
 
-
-
 \begin{example}
 This matches a web URL.
 \begin{center}% ^((http|ftp|https):\/{2})(([0-9a-z_-]+\.){2,}(\S*)$
@@ -5760,7 +5759,6 @@ North American phone numbers:
 \re{\textbackslash d\{3\}-\textbackslash d\{3\}-\textbackslash d\{4\}}.
 \end{example}
 
-
 \begin{center}
   \begin{tabular}{c}
   \includegraphics[scale=0.25]{automata/pix/xkcdregexes.png}  \\
@@ -5770,10 +5768,31 @@ North American phone numbers:
 
 
 \subsection{But wait!  There's more!}
-Many implementations of extended regular expressions allow
+One more extensions is that 
+you can use the metacharacter caret~`\str{\textasciicircum}'
+to match the start of a line
+and dollar sign~`\str{\textdollar}' to match a line end.
+
+\begin{example}
+Match lines starting with `\,Theorem' using
+\re{\^{}Theorem}.
+Match lines ending with \str{end{equation*}} with
+\re{end\{equation\*\}\textdollar}.
+\end{example}
+
+\begin{example} % https://github.com/reddit-archive/reddit/blob/master/r2/r2/lib/validator/validator.py#L1567
+Match a valid username on Reddit:
+\re{\textasciicircum[\textbackslash w-]\{3,20\}\textdollar}.
+The \re{\textasciicircum} matches the start of the string,
+and \re{\textdollar} matches the end.
+The hyphen, because it comes last inside
+the square brackets, matches itself.
+The quantifier \re{\{3,20\}} will cause a string of between three and
+twenty characters to match.
+\end{example}
+
+Many implementations allow
 additional specifiers, such as to do a case-insensitive search.
-Here the two slashes to mark the start and end of the regex, and the
-closing \verb!i! marks it as a case-insensitive one.
 
 \begin{example}
 Find repeated \str{k} or \str{K}'s.
@@ -5781,37 +5800,16 @@ Find repeated \str{k} or \str{K}'s.
 \end{example}  
 
 \begin{example}
-A number with one to eight digits
-\re{/\textbackslash d\{1,8\}/}.
+In an HTML  document find images:
+\re{(img|src)=("|')[\textasciicircum "'>]+}.
+of match a graphic file name:
+\re{\textbackslash w*\textbackslash .(jpg|gif|png)}.
 \end{example}
 
-\begin{example}
-An identifier that begins with an ASCII letter and then has up to
-seven more digits or letters
-\re{/[a-zA-Z][0-9a-zA-Z]\{0,7\}/}.
-\end{example}
 
-\begin{example}
-Match the text inside a single set of parentheses
-\re{/\(([[\textasciicircum ()]*)\)/}.
-\end{example}
 
-\begin{example}
-Find images in an HTML  document
-\re{/(img|src)=("|')[\textasciicircum "'>]+/i}.
-\end{example}
 
-\begin{example} % https://github.com/reddit-archive/reddit/blob/master/r2/r2/lib/validator/validator.py#L1567
-Match a valid username on Reddit
-\re{\textbackslash A[\textbackslash w-]\{3,20\}\textbackslash Z}.
-The \re{\textbackslash A} matches the start of the string,
-and \re{\textbackslash Z} matches the end.
-The hyphen, because it comes at the end of the list of characters inside
-the square brackets, matches itself.
-The quantifier \re{\{3,20\}} will cause a string of between three and
-twenty characters to match.
-\end{example}
-
+\subsection{Beyond convenience}
 The regular expression engines that come with recent programming languages
 are even more powerful.
 For instance, if you are looking through a file for strings that
@@ -6164,6 +6162,35 @@ for each job (you can find exact descriptions on the web).
 \item \re{\textasciicircum [2-9]\textbackslash d{2}-\textbackslash d{3}-\textbackslash d{4}\$}
 or \re{((\(\textbackslash d{3}\) ?)|(\textbackslash d{3}-))?\textbackslash d{3}-\textbackslash d{4}}
 \item \re{\textasciicircum(2[0-3]|[01][0-9]):?([0-5][0-9]):?([0-5][0-9])(Z|[+-](?:2[0-3]|[01][0-9])(?::?(?:[0-5][0-9]))?)\$}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+In the United Kingdom post codes have six possible formats.
+They are: (i)~\str{A11 1AA},
+(ii)~\str{A1 1AA},
+(iii)~\str{A1A 1AA},
+(iv)~\str{AA11 1AA},
+(v)~\str{AA1 1AA},
+and (vi)~\str{AA1A 1AA}, where
+\str{A} stands for a capital ASCII letter and \str{1} stands for a digit.
+\begin{exparts}
+\item Give a regular expression.
+\item Shorten it.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+We can do the six as alternatives.
+\begin{center}
+  \re{[A-Z]\d{2} \d[A-Z]{2}|[A-Z]\d \d[A-Z]{2}|[A-Z]\d[A-Z] \d[A-Z]{2}|[A-Z]{2}\d{2} \d[A-Z]{2}|[A-Z]{2}\d \d[A-Z]{2}|[A-Z]{2}\d[A-Z] \d[A-Z]{2}}
+\end{center}
+
+\item We can factor out the ending of \re{\d[A-Z]{2}}.
+\begin{center}
+  \re{[A-Z]\d{2}|[A-Z]\d|[A-Z]\d[A-Z]|[A-Z]{2}\d{2}|[A-Z]{2}\d|[A-Z]{2}\d[A-Z]) \d[A-Z]{2}}
+\end{center}
 \end{exparts}
 \end{answer}
 \end{exercise}

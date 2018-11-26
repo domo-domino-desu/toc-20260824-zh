@@ -106,7 +106,6 @@
   )
 
 
-
 ;; Fixed/long twelve hour time format
 (define twelve-long #px"^(01|02|03|04|05|06|07|08|09|1|2|3|4|5|6|7|8|9|10|11|12):(01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36\37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55|56|57|58|59|60)\\s(am|pm)$")
 (module+ test
@@ -120,6 +119,8 @@
   (check-false (regexp-match? twelve-long "23:31"))
   )
 
+
+;; ============= Quantifiers ==================
 
 ;; US ZIP postal codes, quantifiers
 (define zip-quantifiers #px"^\\d{5}$")
@@ -166,9 +167,64 @@
   )
 
 ;; Hamlet
-(define hamlet #px"^To be or not to be\?$")
+(define hamlet #px"^To be or not to be\\?$")
 (module+ test
   (check-true (regexp-match? hamlet "To be or not to be?"))
   (check-false (regexp-match? hamlet "To be or not to be."))
   (check-false (regexp-match? hamlet ""))
+  )
+
+;; =========== Cookbook of examples =============
+
+;; integer, positive or negative
+(define integer-re #px"^(-|\\+)?\\d+$")
+(module+ test
+  (check-true (regexp-match? integer-re "123"))
+  (check-true (regexp-match? integer-re "+123"))
+  (check-true (regexp-match? integer-re "-123"))
+  (check-true (regexp-match? integer-re "0"))
+  (check-true (regexp-match? integer-re "9"))
+  (check-false (regexp-match? integer-re "1+23"))
+  (check-false (regexp-match? integer-re "a"))
+  (check-false (regexp-match? integer-re ""))
+  )
+
+
+
+;; hexadecimal
+(define hex #px"^[a-fA-F0-9]+$")
+(module+ test
+  (check-true (regexp-match? hex "123"))
+  (check-true (regexp-match? hex "12A"))
+  (check-true (regexp-match? hex "A2"))
+  (check-true (regexp-match? hex "0"))
+  (check-true (regexp-match? hex "F"))
+  (check-false (regexp-match? hex "12G"))
+  (check-false (regexp-match? hex "p"))
+  (check-false (regexp-match? hex ""))
+  )
+
+
+;; hexadecimal possibly with 0x
+(define hex-prefix #px"^(0x)?[a-fA-F0-9]+$")
+(module+ test
+  (check-true (regexp-match? hex-prefix "123"))
+  (check-true (regexp-match? hex-prefix "0x123"))
+  (check-true (regexp-match? hex-prefix "A2"))
+  (check-true (regexp-match? hex-prefix "0xe"))
+  (check-true (regexp-match? hex-prefix "0xF"))
+  (check-false (regexp-match? hex-prefix "12G"))
+  (check-false (regexp-match? hex-prefix "0xp"))
+  (check-false (regexp-match? hex-prefix ""))
+  )
+
+
+;; NA phone numbers
+(define na #px"^\\d{3}-\\d{3}-\\d{4}$")
+(module+ test
+  (check-true (regexp-match? na "123-456-7890"))
+  (check-true (regexp-match? na "999-000-9999"))
+  (check-false (regexp-match? na "123-456-789a"))
+  (check-false (regexp-match? na "456-7890"))
+  (check-false (regexp-match? na ""))
   )

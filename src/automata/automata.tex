@@ -5539,9 +5539,11 @@ In the place of the simple string \str{pdf} we could use a regular
 expression.
 
 That is, regular expressions are widely used for text operations.
-Modern programming languages such as Python, JavaScript, and Scheme include
-regular expression capabilities that extend those from
-the small-scale theory examples that we saw earlier.
+Modern programming languages such as Python and Scheme include
+capabilities for
+\definend{extended regular expressions}, sometimes called \definend{regexes},
+that go beyond the
+small-scale theory examples we saw earlier.
 These extensions fall into two categories.
 The first includes many
 convenience constructs, which make easier something
@@ -5642,7 +5644,8 @@ To match a metacharacter prefix it with a backslash,~`\str{\textbackslash}'.
 Thus, to look for the string `\str{(Note}' put a backslash
 before the open parentheses
 \re{\textbackslash (Note:}.
-Similarly, \re{\textbackslash |} matches a pipe.
+Similarly, \re{\textbackslash |} matches a pipe and \re{\textbackslash [}
+matches and open square bracket.
 And, match backslash itself with \re{\textbackslash\textbackslash}.
 This is called
 \definend{escaping} the metacharacter.
@@ -5683,50 +5686,39 @@ For instance, \re{To be or not to be\textbackslash ?} matches
 the famous question. 
 
 
-\subsection{Cookbook of examples}
-
-All of the changes between the theoretical regular expressions and the
+\subsection{In the wild}
+All of the changes between the theoretical regular expressions
+that we saw earlier and the
 extensions of regular expressions that we see in practice
 is driven by the desires of working programmers.
-Here is a pile of examples showing extended
+Here is a cookbook of examples showing extended
 regular expressions accomplishing practical work.
 
 \begin{example}
-The regular expression \re{(-|+)?\textbackslash d+} matches
+The regular expression \re{(-|\textbackslash +)?\textbackslash d+} matches
 an integer, positive or negative.
-Note the question mark making the sign optional, and note also the plus
-sign making sure there is at least one digit.
+The question mark makes the sign optional.
+The plus sign makes sure there is at least one digit; it is escaped because
+\str{+} is a metacharacter.
 \end{example}
 
 \begin{example}
-Match a programming language identifier that begins with an ASCII
-letter and then has up to seven more digits or letters
-\re{[a-zA-Z][0-9a-zA-Z]\{0,7\}}.
+The expression \re{[a-fA-F0-9]+} matches a number represented in hexadecimal.
+Programmers often prefix a hexadecimal representation
+with \str{0x} so the regular expression becomes \re{(0x)?[a-fA-F0-9]+}.
+\end{example}
+
+\begin{example} \label{ex:NAPhoneNumber}
+North American phone numbers match
+\re{\textbackslash d\{3\}-\textbackslash d\{3\}-\textbackslash d\{4\}}.
 \end{example}
 
 \begin{example}
-Match a number represented in hexadecimal with
-\re{[a-fA-F0-9]+} (programmers often prefix a hexadecimal representation
-with \str{0x} so the regular expression becomes \re{0x[a-fA-F0-9]+}).
+An identifier in the C programming language begins with an ASCII
+letter or an underscore and then has up to thirty more letters, digits, or
+underscores:
+\re{[a-zA-Z_]\textbackslash w\{0,30\}}.
 \end{example}
-
-
-\begin{example}
-Match the text inside a single set of parentheses
-\re{\(([[\textasciicircum ()]*)\)}.
-\end{example}
-
-\begin{example}
-The expression \re{\textbackslash S@\textbackslash S} is
-a naive email address description.\footnotemark
-\end{example}\footnotetext[1]{%
-  This is naive in that the actual rules for the syntax of email addresses
-  % https://tools.ietf.org/html/rfc5322
-  are quite complex (see below).
-  In addition, even with a string that follows those rules
-  there may be no email server, or respondent, at that address.
-  But this string is useful to check that a string 
-  meets some minimal expectation.}
 
 \begin{example}
 Match a user name of between three and twelve letters, digits, or underscores
@@ -5736,6 +5728,22 @@ with \re{\textbackslash w\{3,12\}}.
 \begin{example}
 Match a password that must be at least eight characters long
 with \re{\textbackslash .\{8,\}}.
+\end{example}
+
+\begin{example}
+For email addresses, \re{\textbackslash S@\textbackslash S} is
+a commonly used extended regular expression.\footnotemark
+\end{example}\footnotetext[1]{%
+  This is naive in that the actual rules for the syntax of email addresses
+  % https://tools.ietf.org/html/rfc5322
+  are quite complex (see below).
+  In addition, even if you have a string that follows those rules
+  there may be no person, or machine, at that address.
+  But this string is useful as a sanity check.}
+
+\begin{example}
+Match the text inside a single set of parentheses
+\re{\textbackslash ([\textasciicircum ()]*\textbackslash )}.
 \end{example}
 
 \begin{example}
@@ -5754,11 +5762,6 @@ At the end comes a path.
   character but this regular expression leaves that out.
 \end{example}
 
-\begin{example} \label{ex:NAPhoneNumber}
-North American phone numbers: 
-\re{\textbackslash d\{3\}-\textbackslash d\{3\}-\textbackslash d\{4\}}.
-\end{example}
-
 \begin{center}
   \begin{tabular}{c}
   \includegraphics[scale=0.25]{automata/pix/xkcdregexes.png}  \\
@@ -5767,7 +5770,7 @@ North American phone numbers:
 \end{center}
 
 
-\subsection{But wait!  There's more!}
+\subsection{But wait!  there's more!}
 One more extensions is that 
 you can use the metacharacter caret~`\str{\textasciicircum}'
 to match the start of a line
@@ -6132,7 +6135,7 @@ Which of the strings matches the regular expression
 \end{exercise}
 
 \begin{exercise}
-Give a regular expression (using the form of the above discussion) to
+Give an extended regular expression to
 accept a string for each description.
 \begin{exparts}
 \item Containing the substring \str{abe}.
@@ -6151,18 +6154,43 @@ language's regular expression documentation.
 \end{exercise}
 
 \begin{exercise}
-Give a regular expression (using the form of the above discussion)
+Give an extended regular expression
 for each job (you can find exact descriptions on the web).
 \begin{exparts}
-\item Accept US phone numbers
+\item Accept dates in mm/dd/yyyy format
 \item Accept ISO 8601 hours, minutes, seconds (with optional time zone)
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item \re{\textasciicircum [2-9]\textbackslash d{2}-\textbackslash d{3}-\textbackslash d{4}\$}
+\item \re{\textbackslash d{1,2}/\textbackslash d{1,2}/\textbackslash d{4}}
 or \re{((\(\textbackslash d{3}\) ?)|(\textbackslash d{3}-))?\textbackslash d{3}-\textbackslash d{4}}
 \item \re{\textasciicircum(2[0-3]|[01][0-9]):?([0-5][0-9]):?([0-5][0-9])(Z|[+-](?:2[0-3]|[01][0-9])(?::?(?:[0-5][0-9]))?)\$}
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Give a regex describing a floating point number.
+\begin{answer}
+One is \re{[-\textbackslash +]?(\textbackslash d)+\textbackslash .?|\textbackslash d)*\textbackslash .\textbackslash d+)}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Give a suitable extended regular expression.
+\begin{exparts}
+\item All Visa card numbers start with a \str{4}.
+New cards have 16 digits. Old cards have 13
+\item MasterCard numbers either start with \str{51} through \str{55},
+or with the numbers \str{2221} through \str{2720}.
+All have 16 digits.
+\item American Express card numbers start with \str{34}
+  or~\str{37} and have 15 digits. 
+\end{exparts}
+\begin{answer}
+\item \re{4(\textbackslash d{15}|\textbackslash d{12})}
+\item \re{(5[1-5]\textbackslash d{2}|222[1-9]|22[3-9]\textbvackslash d|2[3-6]\textbackslash d{2}|27[01]\textbackslash d|2720)\textbackslash d{12}}
+\item \re{3[47][0-9]{13}}
 \end{answer}
 \end{exercise}
 
@@ -6196,6 +6224,20 @@ We can do the six as alternatives.
 \end{exercise}
 
 \begin{exercise}
+You are stuck on a crossword puzzle.
+You know that the first letter (of eight) is an \str{g},
+the third is an \str{n}
+and that the seventh is an \str{i}.
+You have access to a file that contains all English words, each on its own
+line.
+Give a suitable regular expression.
+\begin{answer}
+A suitable regex is \re{g.n.{3}i.} and a match is
+`gynaecia', meaning the aggregate of carpels or pistils in a flower.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 In the Downsides discussion of \cref{ex:AmerTime}, wee change the ending to
 \re{(\emptystring|\textbackslash s am|\textbackslash s pm)}.
 Why not \re{\textbackslash s(\emptystring|am|pm)}, which
@@ -6218,6 +6260,29 @@ Give a regular expression for valid Roman numerals less than 5000.
 \begin{answer}
 \re{\textasciicircum M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\$}
 \end{answer}
+\end{exercise}
+
+\begin{exercise}
+Most operating systems come with file that has a list of words, which can
+be used for spell-checking, etc.
+For instance, on Linux it may be at \str{/usr/share/dict/words} but
+in any event you can find it by running
+\str{locate words | grep dict}.
+Use that file to find how many words fit the criteria.
+\begin{exparts*}
+\item contains the letter \str{a}
+\item starts with~\str{A}
+\item contains \str{a} or~\str{A}
+\item contains \str{X}
+\item contains \str{x} or~\str{X}
+\item contains the string \str{st}
+\item contains the string \str{ing}
+\item contains an~\str{a}, and later a~\str{b}
+\item contains none of the usual vowels \str{a}, \str{e}, \str{i}, \str{o}
+  or~\str{u}
+\item contains all the usual vowels
+\item contains all the usual vowels, in ascending order
+\end{exparts*}
 \end{exercise}
 
 \begin{exercise}
@@ -6252,29 +6317,6 @@ marly, palazzi, sixfold, tarrock, unfold
 \item \re{.*foo.*}
 \end{exparts}
 \end{answer}
-\end{exercise}
-
-\begin{exercise}
-Most operating systems come with file that has a list of words, which can
-be used for spell-checking, etc.
-For instance, on Linux it may be at \str{/usr/share/dict/words} but
-in any event you can find it by running
-\str{locate words | grep dict}.
-Use that file to find how many words fit the criteria.
-\begin{exparts*}
-\item contains the letter \str{a}
-\item starts with~\str{A}
-\item contains \str{a} or~\str{A}
-\item contains \str{X}
-\item contains \str{x} or~\str{X}
-\item contains the string \str{st}
-\item contains the string \str{ing}
-\item contains an~\str{a}, and later a~\str{b}
-\item contains none of the usual vowels \str{a}, \str{e}, \str{i}, \str{o}
-  or~\str{u}
-\item contains all the usual vowels
-\item contains all the usual vowels, in ascending order
-\end{exparts*}
 \end{exercise}
 
 \begin{exercise}

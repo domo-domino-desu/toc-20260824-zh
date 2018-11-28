@@ -81,17 +81,6 @@
   )
 
 
-;; US ZIP postal codes
-(define zip #px"^\\d\\d\\d\\d\\d$")
-(module+ test
-  (check-true (regexp-match? zip "12345"))
-  (check-true (regexp-match? zip "11111"))
-  (check-false (regexp-match? zip "1234"))
-  (check-false (regexp-match? zip "1234567"))
-  (check-false (regexp-match? zip "abcde"))
-  )
-
-
 ;; Twelve hour time format
 (define twelve #px"^(|0|1)\\d:\\d\\d\\s(am|pm)$")
 (module+ test
@@ -121,17 +110,68 @@
 
 
 ;; ============= Quantifiers ==================
-
-;; US ZIP postal codes, quantifiers
-(define zip-quantifiers #px"^\\d{5}$")
+;; At most one
+(define at-most-one #px"^(|a)$")
 (module+ test
-  (check-true (regexp-match? zip-quantifiers "12345"))
-  (check-true (regexp-match? zip-quantifiers "11111"))
-  (check-false (regexp-match? zip-quantifiers "1234"))
-  (check-false (regexp-match? zip-quantifiers "1234567"))
-  (check-false (regexp-match? zip-quantifiers "abcde"))
+  (check-true (regexp-match? at-most-one ""))
+  (check-true (regexp-match?  at-most-one "a"))
+  (check-false (regexp-match?  at-most-one "b"))
+  (check-false (regexp-match?  at-most-one "bab"))
+  (check-false (regexp-match?  at-most-one "aa"))
   )
 
+
+(define a-query #px"^a?$")
+(module+ test
+  (check-true (regexp-match? a-query ""))
+  (check-true (regexp-match? a-query "a"))
+  (check-false (regexp-match? a-query "b"))
+  (check-false (regexp-match? a-query "bab"))
+  (check-false (regexp-match? a-query "aa"))
+  )
+
+
+(define a-plus #px"^a+$")
+(module+ test
+  (check-true (regexp-match? a-plus "a"))
+  (check-true (regexp-match? a-plus "aa"))
+  (check-false (regexp-match? a-plus ""))
+  (check-false (regexp-match? a-plus "b"))
+  (check-false (regexp-match? a-plus "ab"))
+  )
+
+
+(define five-a #px"^a{5}$")
+(module+ test
+  (check-true (regexp-match? five-a "aaaaa"))
+  (check-false (regexp-match? five-a "aaaa"))
+  (check-false (regexp-match? five-a "bbbbb"))
+  (check-false (regexp-match? five-a "bababababa"))
+  (check-false (regexp-match? five-a ""))
+  )
+
+
+(define two-to-five-a #px"^a{2,5}$")
+(module+ test
+  (check-true (regexp-match? two-to-five-a "aaaaa"))
+  (check-true (regexp-match? two-to-five-a "aa"))
+  (check-false (regexp-match? two-to-five-a "a"))
+  (check-false (regexp-match? two-to-five-a "babababa"))
+  (check-false (regexp-match? two-to-five-a "aaaaaa"))
+  )
+
+
+(define at-least-two-a #px"^a{2,}$")
+(module+ test
+  (check-true (regexp-match? at-least-two-a "aa"))
+  (check-true (regexp-match? at-least-two-a "aaaaaaaa"))
+  (check-false (regexp-match? at-least-two-a "a"))
+  (check-false (regexp-match? at-least-two-a "baaa"))
+  (check-false (regexp-match? at-least-two-a ""))
+  )
+
+
+;; ==================== Cookbook ======================
 
 ;; digits, quantifiers
 (define digits-two-to-five #px"^\\d{2,5}$")
@@ -176,6 +216,38 @@
 
 ;; =========== Cookbook of examples =============
 
+;; US ZIP postal codes
+(define zip #px"^\\d\\d\\d\\d\\d$")
+(module+ test
+  (check-true (regexp-match? zip "12345"))
+  (check-true (regexp-match? zip "11111"))
+  (check-false (regexp-match? zip "1234"))
+  (check-false (regexp-match? zip "1234567"))
+  (check-false (regexp-match? zip "abcde"))
+  )
+
+;; US ZIP postal codes, quantifiers
+(define zip-quantifiers #px"^\\d{5}$")
+(module+ test
+  (check-true (regexp-match? zip-quantifiers "12345"))
+  (check-true (regexp-match? zip-quantifiers "11111"))
+  (check-false (regexp-match? zip-quantifiers "1234"))
+  (check-false (regexp-match? zip-quantifiers "1234567"))
+  (check-false (regexp-match? zip-quantifiers "abcde"))
+  )
+
+
+;; NA phone numbers
+(define na #px"^\\d{3}-\\d{3}-\\d{4}$")
+(module+ test
+  (check-true (regexp-match? na "123-456-7890"))
+  (check-true (regexp-match? na "999-000-9999"))
+  (check-false (regexp-match? na "123-456-789a"))
+  (check-false (regexp-match? na "456-7890"))
+  (check-false (regexp-match? na ""))
+  )
+
+
 ;; integer, positive or negative
 (define integer-re #px"^(-|\\+)?\\d+$")
 (module+ test
@@ -218,13 +290,37 @@
   (check-false (regexp-match? hex-prefix ""))
   )
 
-
-;; NA phone numbers
-(define na #px"^\\d{3}-\\d{3}-\\d{4}$")
+;; C identifier
+(define c-identifier #px"^[a-zA-Z_]\\w*$")
 (module+ test
-  (check-true (regexp-match? na "123-456-7890"))
-  (check-true (regexp-match? na "999-000-9999"))
-  (check-false (regexp-match? na "123-456-789a"))
-  (check-false (regexp-match? na "456-7890"))
-  (check-false (regexp-match? na ""))
+  (check-true (regexp-match? c-identifier "i"))
+  (check-true (regexp-match? c-identifier "n3"))
+  (check-true (regexp-match? c-identifier "__lib_sine"))
+  (check-true (regexp-match? c-identifier "ACamelCase"))
+  (check-false (regexp-match? c-identifier "1Identifier"))
+  (check-false (regexp-match? c-identifier ".23"))
+  (check-false (regexp-match? c-identifier ""))
+  )
+
+;; username
+(define username #px"^[\\w\\.]{3,12}$")
+(module+ test
+  (check-true (regexp-match? username "fred"))
+  (check-true (regexp-match? username "jim"))
+  (check-true (regexp-match? username "A1idiot"))
+  (check-true (regexp-match? username "john.doe"))
+  (check-false (regexp-match? username "1"))
+  (check-false (regexp-match? username "CatLoverFromHell"))
+  (check-false (regexp-match? username ""))
+  )
+
+;; password
+(define password #px"^.{8,}$")
+(module+ test
+  (check-true (regexp-match? password "12345678"))
+  (check-true (regexp-match? password "qwertyuiop"))
+  (check-true (regexp-match? password "Gotta Feed Dog"))
+  (check-false (regexp-match? password "x"))
+  (check-false (regexp-match? password "123456"))
+  (check-false (regexp-match? password ""))
   )

@@ -5734,18 +5734,18 @@ Match a valid username on Reddit:
 \re{[\textbackslash w-]\{3,20\}}.
 The hyphen, because it comes last in
 the square brackets, matches itself.
+And no, Reddit does not allow a period in a username.
 \end{example}
 
 \begin{example}
-For email addresses, \re{\textbackslash S@\textbackslash S} is
-a commonly used extended regular expression.\footnotemark
+For email addresses, \re{\textbackslash S+@\textbackslash S+} is
+a commonly used extended expression.\footnotemark
 \end{example}\footnotetext[1]{%
-  This is naive in that the actual rules for the syntax of email addresses
+  This is naive in that there are elaborate rules for the syntax of
+  email addresses
   % https://tools.ietf.org/html/rfc5322
-  are quite complex (see below).
-  In addition, even if you have a string that follows those rules
-  there may be no person, or machine, at that address.
-  But this is a reasonable sanity check.}
+  (see below).
+  But it is a reasonable sanity check.}
 
 \begin{example}
 Match the text inside a single set of parentheses
@@ -5753,19 +5753,33 @@ Match the text inside a single set of parentheses
 \end{example}
 
 \begin{example}
-This matches a web URL.
-\begin{center}% ^((http|ftp|https):\/{2})(([0-9a-z_-]+\.){2,}(\S*)$
-\re{(https?:\textbackslash /\textbackslash /)?([\textbackslash da-z-]+)\textbackslash .([a-z\textbackslash .]\{2,3\})([\textbackslash /\textbackslash w \textbackslash .-]*)*\textbackslash /?}
+This matches a URL, a web address such as
+\url{http://joshua.smcvt.edu/computing}.
+This regex is more intricate than prior ones so it bears with some
+explanation.
+It is based on breaking URL's into three parts:~a
+scheme such as \str{http},
+followed by
+\citetext{a colon and two forward slashes}{%
+  The inventor of the World Wide Web has admitted that the
+  two slashes don't have a purpose \autocite{Firth}.}
+a host such as \str{joshua.smcvt.edu},
+a path such as \str{/computing}
+(the standard also allows a query string that follows a question mark
+but this regex does not handle those).
+\begin{center}% 
+% \re{(https?|ftp)://([textasciicircumflex\textbackslash s/?\textbackslash .#]+\textbackslash .?)\{1,4\}(/[^\textbackslash s]*)?}
+\re{(https?|ftp)://([\textasciicircum\textbackslash s/?\textbackslash .\#]+\textbackslash .?)\{1,4\}(/[\textasciicircum\textbackslash s]*)?}
 \end{center}
-Notice the question mark in \re{https?}, allowing the scheme to be either
-\str{http} or \str{https}.
-After a colon and two forward slashes there is a host part, consisting of between two and three fields separated
-by periods.
+Notice the \re{https?}, so 
+the scheme can be \str{http} or \str{https}, as well as \str{ftp}.
+After a colon and two forward slashes comes the host part,
+consisting of some fields separated by periods.
+We allow almost any character in those fields, except for a space,
+a question mark, a period or a hash.
 At the end comes a path.
-  The specification allows paths to be case sensitive but here we have only
-  lower case.
-  The specification also allows one more part, the query, after a question mark
-  character but this regular expression leaves that out.
+The specification allows paths to be case sensitive but the regex
+here has only lower case.
 \end{example}
 
 % \begin{center}
@@ -5777,9 +5791,9 @@ At the end comes a path.
 
 
 \subsection{But wait!  there's more!}
-You can also match the start of a line with the metacharacter
+You can also match the start of a line and end of line with the metacharacters
 caret~`\str{\textasciicircum}' and
-match the line end with dollar sign~`\str{\textdollar}'.
+dollar sign~`\str{\textdollar}'.
 
 \begin{example}
 Match lines starting with `\,Theorem' using
@@ -5808,18 +5822,19 @@ of match a graphic file name:
 
 \subsection{Beyond convenience}
 The regular expression engines that come with recent programming languages
-are even more powerful.
-For instance, if you are looking through a file for strings that
-seem like North American phone numbers,
-\re{.*\textbackslash d\{1,3\} \textbackslash d\{3\}-\textbackslash d\{4\}.*}
+have capabilities
+that go beyond just matching regular languages, those languages that
+can be accepted by Finite State machines. 
 
+\begin{TODO}
+Back references
 % Using matching https://blogs.msdn.microsoft.com/oldnewthing/20060522-08/?p=31113
+\end{TODO}
 
-They go beyond just recognizing regular languages. 
-For example,they can
+With this capability, extended regexes can
 accept the language $\set{\str{a}^n\str{b}^n\suchthat n>0}$,
-which the Pumping Lemma shows is not regular,
-using \re{\textasciicircum (a(?1)?b)\$}.
+which the Pumping Lemma shows is not regular.
+For this they use \re{\textasciicircum (a(?1)?b)\$}.
 Briefly, \re{(?1)} refers to the pattern that starts with the first
 open parenthesis, which is \re{a(?1)?b}.
 For example, the string \str{ab} matches on taking
@@ -5827,7 +5842,7 @@ the second question mark to mean zero-many repeats of the first pattern.
 That is, the engine matches \re{?1} with the empty string, and the rest
 matches \str{ab}.
 
-\margingraphic{0.50\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
+\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
 Another demonstration of the power of these additions to the expressiveness
 of regular expressions is \re{(11+?)\textbackslash 1+|1?}, which accepts the
 language of numbers, represented in unary, that are nonprime.
@@ -5946,9 +5961,9 @@ for one thing, no valid codes begin with \str{Z}.
 And ZIP codes work the same way;
 there are fewer than $50\,000$ assigned ZIP codes so 
 many five digits strings are not in use.
-Extending the regular expressions to cover only those codes actually in use
-would make them little more than a list of strings,
-and that list would change frequently.
+Changing the regular expressions to cover only those codes actually in use
+would make them little more lists of strings,
+(which would change frequently).
 
 The canonical extreme example is the regex for
 \citetext{valid email addresses}{%
@@ -6044,7 +6059,7 @@ The canonical extreme example is the regex for
 % |(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(
 % ?:\r\n)?[ \t])*))*)?;\s*)  
 % \protect\end{lstlisting}}
-We show here just five lines out of $81$ but that's enough to
+We show here just five lines out of its~$81$ but that's enough to
 make the point about its complexity.
 \begin{lstlisting}
 (?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t]
@@ -6054,9 +6069,9 @@ make the point about its complexity.
 \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\0
 \end{lstlisting} % }{%
 
-\noindent And, even if you have an address that is well-formed according
-to the standard, it is no help in understanding whether someone
-answers email sent to that address.
+\noindent And, even if you do have an address that fits
+the standard, you don't know if there is an email server listening at
+that address.
 
 At this point regular expressions may be starting to seem
 a little less like a fast and neat problem-solver
@@ -6142,6 +6157,15 @@ language's regular expression documentation.
 \item \re{[a-zA-Z0-9]*}
 \item \re{[\textasciicircum]}
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Every lot of land in New York City is denoted by a string of digits called BBL,
+for Borough (one digit), Block (five digits), and Lot (four digits).
+Give a regex.
+\begin{answer}
+\re{\textbackslash d\{10\}}
 \end{answer}
 \end{exercise}
 

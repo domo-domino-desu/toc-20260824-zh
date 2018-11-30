@@ -5589,7 +5589,9 @@ and \re{[\textasciicircum A-Za-z]} matches a character that is not
 an ASCII letter.
 
 The most common lists have short abbreviations.
-Another abbreviation for the digits is \re{\textbackslash d}.
+Another abbreviation for the digits is
+\citetext{\re{\textbackslash d}}{%
+  We shall ignore cases of non-ASCII digits, that is, cases outside 0--9.}.
 Use
 \re{\textbackslash D} for the ASCII non-digits,
 \re{\textbackslash s} for the whitespace characters
@@ -5748,23 +5750,23 @@ a commonly used extended expression.\footnotemark
   But it is a reasonable sanity check.}
 
 \begin{example}
-Match the text inside a single set of parentheses
+Match the text inside a single set of parentheses with 
 \re{\textbackslash ([\textasciicircum ()]*\textbackslash )}.
 \end{example}
 
 \begin{example}
 This matches a URL, a web address such as
 \url{http://joshua.smcvt.edu/computing}.
-This regex is more intricate than prior ones so it bears with some
+This regex is more intricate than prior ones so it deserves some
 explanation.
 It is based on breaking URL's into three parts:~a
-scheme such as \str{http},
+scheme such as \str{http}
 followed by
 \citetext{a colon and two forward slashes}{%
   The inventor of the World Wide Web has admitted that the
   two slashes don't have a purpose \autocite{Firth}.}
 a host such as \str{joshua.smcvt.edu},
-a path such as \str{/computing}
+and a path such as \str{/computing}
 (the standard also allows a query string that follows a question mark
 but this regex does not handle those).
 \begin{center}% 
@@ -5802,19 +5804,20 @@ Match lines ending with \str{end\{equation*\}} using
 \re{end\{equation\textbackslash *\}\textdollar}.
 \end{example}
 
-Many implementations allow
-additional specifiers, such as to do a case-insensitive search.
+\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
+The regex engines in modern languages let you specify that the match is
+case insensitive
+(although they differ in the syntax).
 
 \begin{example}
-Find repeated \str{k} or \str{K}'s.
-\re{/k+/i}
-\end{example}  
-
-\begin{example}
-In an HTML  document find images:
-\re{(img|src)=("|')[\textasciicircum "'>]+}.
-of match a graphic file name:
-\re{\textbackslash w*\textbackslash .(jpg|gif|png)}.
+An HTML document tag for an image, such as
+\str{<img src="logo.jpg">}, uses either of the keys \str{src} or \str{img} to
+give the name of the file containing the image that will be served.
+Those strings can be in upper case or lower case, or any mix.
+Racket uses a \str{?i:} syntax to mark part of the
+regex as insensitive:
+\re{\textbackslash \textbackslash s+(?i:(img|src))=}
+(note the use of a double backslash, which is how Racket escapes the `s').
 \end{example}
 
 
@@ -5826,23 +5829,44 @@ have capabilities
 that go beyond just matching regular languages, those languages that
 can be accepted by Finite State machines. 
 
-\begin{TODO}
-Back references
-% Using matching https://blogs.msdn.microsoft.com/oldnewthing/20060522-08/?p=31113
-\end{TODO}
+\begin{example}
+The web document language HTML uses tags such as
+\str{<b>boldface text</b>} and \str{<i>italicized text</i>}.
+Matching any one is straightforward but to give a regular expression that
+matches them all you would seem to have to do each as a separate
+case and then combine cases with a pipe.
+However, instead we can have the system remember what it finds
+at the start and look for that again at the end.
+Thus, Racket's regex
+\re{<([\textasciicircum >]+)>[\textasciicircum<]*</\textbackslash\textbackslash 1>}
+matches HTML tags like the ones given.
+Its second character is an open parenthesis, and the
+\str{\textbackslash\textbackslash 1} refers to everything between that
+open parenthesisand the
+matching close parenthesis.
+(As you might guess from the\str{1}, you can also have
+a second match with \str{\textbackslash\textbackslash 2}, 
+etc.)
+\end{example}
 
-With this capability, extended regexes can
+That capability is a \definend{back reference}.
+It is very convenient.
+However, it gives extended regular expressions more power than
+the theoretical regular expressions that we studied earlier.
+
+\begin{example}
+Using the backreference capability, extended regexes can
 accept the language $\set{\str{a}^n\str{b}^n\suchthat n>0}$,
 which the Pumping Lemma shows is not regular.
-For this they use \re{\textasciicircum (a(?1)?b)\$}.
-Briefly, \re{(?1)} refers to the pattern that starts with the first
+For this, use \re{\textasciicircum (a(?1)?b)\$}.
+The idea is that \re{(?1)} refers to the pattern that starts with the first
 open parenthesis, which is \re{a(?1)?b}.
 For example, the string \str{ab} matches on taking
 the second question mark to mean zero-many repeats of the first pattern.
 That is, the engine matches \re{?1} with the empty string, and the rest
 matches \str{ab}.
+\end{example}
 
-\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
 Another demonstration of the power of these additions to the expressiveness
 of regular expressions is \re{(11+?)\textbackslash 1+|1?}, which accepts the
 language of numbers, represented in unary, that are nonprime.

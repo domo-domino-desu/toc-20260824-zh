@@ -442,3 +442,29 @@
   (check-false (regexp-match? url "http://.www.foo.bar./"))
   (check-false (regexp-match? url "tel:+1234567890"))
   )
+
+
+;; =========== Case insensitive =============
+
+;; text in parens
+(define img #px"\\s+(?i:(img|src))=")
+(module+ test
+  (check-true (regexp-match? img " img="))
+  (check-true (regexp-match? img " IMG="))
+  (check-true (regexp-match? img "  img="))
+  (check-true (regexp-match? img " src="))
+  (check-true (regexp-match? img " SRC="))
+  (check-false (regexp-match? img " imgk"))
+  (check-false (regexp-match? img "img="))
+  )
+
+;; =========== Back references =============
+
+;; text in parens
+(define tag #px"<([^>]+)>[^<]*</\\1>")
+(module+ test
+  (check-true (regexp-match? tag "<b>bold text</b>"))
+  (check-true (regexp-match? tag "<i>USS Constitutuion</i>"))
+  (check-false (regexp-match? tag "ttt"))
+  (check-false (regexp-match? tag "<a>cc</b>"))
+  )

@@ -5804,7 +5804,6 @@ Match lines ending with \str{end\{equation*\}} using
 \re{end\{equation\textbackslash *\}\textdollar}.
 \end{example}
 
-\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
 The regex engines in modern languages let you specify that the match is
 case insensitive
 (although they differ in the syntax).
@@ -5814,10 +5813,10 @@ An HTML document tag for an image, such as
 \str{<img src="logo.jpg">}, uses either of the keys \str{src} or \str{img} to
 give the name of the file containing the image that will be served.
 Those strings can be in upper case or lower case, or any mix.
-Racket uses a \str{?i:} syntax to mark part of the
+Racket uses a `\str{?i:}' syntax to mark part of the
 regex as insensitive:
 \re{\textbackslash \textbackslash s+(?i:(img|src))=}
-(note the use of a double backslash, which is how Racket escapes the `s').
+(note also the double backslash, which is how Racket escapes the `s').
 \end{example}
 
 
@@ -5825,15 +5824,16 @@ regex as insensitive:
 
 \subsection{Beyond convenience}
 The regular expression engines that come with recent programming languages
-have capabilities
-that go beyond just matching regular languages, those languages that
-can be accepted by Finite State machines. 
+have capabilities beyond matching only those languages that
+accepted by Finite State machines. 
 
 \begin{example}
 The web document language HTML uses tags such as
 \str{<b>boldface text</b>} and \str{<i>italicized text</i>}.
-Matching any one is straightforward but to give a regular expression that
-matches them all you would seem to have to do each as a separate
+Matching any one is straightforward, for instance
+\re{<b>[\textasciicircum<]*</b>}.
+But for a single expression that matches them all
+you would seem to have to do each as a separate
 case and then combine cases with a pipe.
 However, instead we can have the system remember what it finds
 at the start and look for that again at the end.
@@ -5844,42 +5844,56 @@ Its second character is an open parenthesis, and the
 \str{\textbackslash\textbackslash 1} refers to everything between that
 open parenthesisand the
 matching close parenthesis.
-(As you might guess from the\str{1}, you can also have
+(As you might guess from the \str{1}, you can also have
 a second match with \str{\textbackslash\textbackslash 2}, 
 etc.)
 \end{example}
 
-That capability is a \definend{back reference}.
+That is a \definend{back reference}.
 It is very convenient.
 However, it gives extended regular expressions more power than
 the theoretical regular expressions that we studied earlier.
 
-\begin{example}
-Using the backreference capability, extended regexes can
-accept the language $\set{\str{a}^n\str{b}^n\suchthat n>0}$,
-which the Pumping Lemma shows is not regular.
-For this, use \re{\textasciicircum (a(?1)?b)\$}.
-The idea is that \re{(?1)} refers to the pattern that starts with the first
-open parenthesis, which is \re{a(?1)?b}.
-For example, the string \str{ab} matches on taking
-the second question mark to mean zero-many repeats of the first pattern.
-That is, the engine matches \re{?1} with the empty string, and the rest
-matches \str{ab}.
+\begin{example} \label{ex:LangSquares}
+This is the language of \definend{squares} over $\Sigma=\set{\str{a},\str{b}}$.
+\begin{equation*}
+  \lang=
+  \set{\sigma\in\kleenestar{\Sigma}
+         \suchthat \text{$\sigma=\tau\concat\tau$ for some $\tau\in\kleenestar{\Sigma}$}}
+\end{equation*}
+Some members are \str{aabaab}, \str{baaabaaa}, and~\str{aa}.
+The Pumping Lemma shows that the language of squares is not regular;
+see \cref{exer:LangSquares}.
+Accept this language with the regex \re{(.+)\textbackslash 1}; note
+the back reference. 
 \end{example}
 
-Another demonstration of the power of these additions to the expressiveness
-of regular expressions is \re{(11+?)\textbackslash 1+|1?}, which accepts the
-language of numbers, represented in unary, that are nonprime.
-To see how it works, the number $15$ is composite because it breaks
-evenly into groups of three \str{111\,111\,111\,111\,111}.
-The regex uses its first substring \re{11+?} to match the first group
-of three.
-With that, the regex's second substring \re{\textbackslash 1+}
-matches the remaining four groups.
+% \begin{example}
+% Another language that the Pumping Lemma shows is not regular,
+% $\set{\str{a}^n\str{b}^n\suchthat n>0}$,
+% which the Pumping Lemma shows is not regular.
+% For this, use \re{\textasciicircum (a(?1)?b)\$}.
+% The idea is that \re{(?1)} refers to the pattern that starts with the first
+% open parenthesis, which is \re{a(?1)?b}.
+% For example, the string \str{ab} matches on taking
+% the second question mark to mean zero-many repeats of the first pattern.
+% That is, the engine matches \re{?1} with the empty string, and the rest
+% matches \str{ab}.
+% \end{example}
 
-In fact, although we won't show it,
-most of the modern language packages that are listed as
-regular expression engines that the full power of a Turing machine.
+% \begin{example}
+% Still 
+% another demonstration of the power of these additions to the expressiveness
+% of regular expressions is \re{(11+?)\textbackslash 1+|1?}, which accepts the
+% language of numbers, represented in unary, that are nonprime.
+% To see how it works, the number $15$ is composite because it breaks
+% evenly into groups of three \str{111\,111\,111\,111\,111}.
+% The regex uses its first substring \re{11+?} to match the first group
+% of three.
+% With that, the regex's second substring \re{\textbackslash 1+}
+% matches the remaining four groups.
+% \end{example}
+
 
 
 
@@ -5956,6 +5970,7 @@ some of their uses are:~to validate usernames, to searach text files,
 and to filter results.
 But they can come with costs also.
 
+\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
 For instance, 
 the regular expression for twelve hour time from \cref{ex:AmerTime}
 \re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
@@ -6141,7 +6156,7 @@ I'll use regular expressions."  Now they have two problems.
 % '^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'
 \begin{exercises}
 \begin{exercise}
-Which of the strings matches the regular expression
+Which of the strings matches the regex
 \re{ab+c}?
 \begin{exparts*}
 \item abc
@@ -6152,7 +6167,7 @@ Which of the strings matches the regular expression
 \end{exercise}
 
 \begin{exercise}
-Which of the strings matches the regular expression
+Which of the strings matches the regex
 \re{[a-z]+[\textbackslash .\textbackslash? !]}?
 \begin{exparts*}
 \item  battle!
@@ -6197,9 +6212,9 @@ Give a regex.
 \Cref{ex:NAPhoneNumber} gives a regex for North American phone numbers.
 \begin{exparts}
 \item They are sometimes written with parentheses around the area code.
-  Extend the pattern to cover this case.
+  Extend the regex to cover this case.
 \item Sometimes phone numbers do not include the area code.
-  Extend to cover this case also.  
+  Extend to cover this also.  
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -6211,7 +6226,30 @@ Give a regex.
 \end{exercise}
 
 \begin{exercise}
-Give a regular expression to accept time in a 24~hour format.
+Most operating systems come with file that has a list of words, which can
+be used for spell-checking, etc.
+For instance, on Linux it may be at \str{/usr/share/dict/words} but
+in any event you can find it by running
+\str{locate words | grep dict}.
+Use that file to find how many words fit the criteria.
+\begin{exparts*}
+\item contains the letter \str{a}
+\item starts with~\str{A}
+\item contains \str{a} or~\str{A}
+\item contains \str{X}
+\item contains \str{x} or~\str{X}
+\item contains the string \str{st}
+\item contains the string \str{ing}
+\item contains an~\str{a}, and later a~\str{b}
+\item contains none of the usual vowels \str{a}, \str{e}, \str{i}, \str{o}
+  or~\str{u}
+\item contains all the usual vowels
+\item contains all the usual vowels, in ascending order
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+Give a regex to accept time in a 24~hour format.
 It should match times of the form `hh:mm:ss.sss' or
 `hh:mm:ss' or `hh:mm' or `hh'.
 \begin{answer}
@@ -6254,7 +6292,7 @@ All have 16 digits.
 \end{exercise}
 
 \begin{exercise}
-In the United Kingdom post codes have six possible formats.
+Postal codes in the United Kingdom have six possible formats.
 They are: (i)~\str{A11 1AA},
 (ii)~\str{A1 1AA},
 (iii)~\str{A1A 1AA},
@@ -6263,7 +6301,7 @@ They are: (i)~\str{A11 1AA},
 and (vi)~\str{AA1A 1AA}, where
 \str{A} stands for a capital ASCII letter and \str{1} stands for a digit.
 \begin{exparts}
-\item Give a regular expression.
+\item Give a regex.
 \item Shorten it.
 \end{exparts}
 \begin{answer}
@@ -6273,7 +6311,6 @@ We can do the six as alternatives.
 \begin{center}
   \re{[A-Z]\d{2} \d[A-Z]{2}|[A-Z]\d \d[A-Z]{2}|[A-Z]\d[A-Z] \d[A-Z]{2}|[A-Z]{2}\d{2} \d[A-Z]{2}|[A-Z]{2}\d \d[A-Z]{2}|[A-Z]{2}\d[A-Z] \d[A-Z]{2}}
 \end{center}
-
 \item We can factor out the ending of \re{\d[A-Z]{2}}.
 \begin{center}
   \re{[A-Z]\d{2}|[A-Z]\d|[A-Z]\d[A-Z]|[A-Z]{2}\d{2}|[A-Z]{2}\d|[A-Z]{2}\d[A-Z]) \d[A-Z]{2}}
@@ -6289,7 +6326,7 @@ the third is an \str{n}
 and the seventh is an \str{i}.
 You have access to a file that contains all English words, each on its own
 line.
-Give a suitable regular expression.
+Give a suitable regex.
 \begin{answer}
 A suitable regex is \re{^g.n.{3}i.\textdollar} and a match is
 `gynaecia', meaning the aggregate of carpels or pistils in a flower.
@@ -6321,36 +6358,65 @@ Give a regular expression for valid Roman numerals less than 5000.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Most operating systems come with file that has a list of words, which can
-be used for spell-checking, etc.
-For instance, on Linux it may be at \str{/usr/share/dict/words} but
-in any event you can find it by running
-\str{locate words | grep dict}.
-Use that file to find how many words fit the criteria.
-\begin{exparts*}
-\item contains the letter \str{a}
-\item starts with~\str{A}
-\item contains \str{a} or~\str{A}
-\item contains \str{X}
-\item contains \str{x} or~\str{X}
-\item contains the string \str{st}
-\item contains the string \str{ing}
-\item contains an~\str{a}, and later a~\str{b}
-\item contains none of the usual vowels \str{a}, \str{e}, \str{i}, \str{o}
-  or~\str{u}
-\item contains all the usual vowels
-\item contains all the usual vowels, in ascending order
-\end{exparts*}
+\begin{exercise}  \label{exer:LangSquares}
+\Cref{ex:LangSquares} says that the language of squares
+over $\Sigma=\set{\str{a},\str{b}}$
+\begin{equation*}
+  \lang=
+  \set{\sigma\in\kleenestar{\Sigma}
+         \suchthat \text{$\sigma=\tau\concat\tau$ for some $\tau\in\kleenestar{\Sigma}$}}
+\end{equation*}
+is not regular.
+Verify that.
+\begin{answer}
+Assume it is a regular language and let its pumping length be~$p$.
+Consider $\sigma=\str{a}^p\str{b}\str{a}^p\str{b}$
+It is an element of~$\lang$ whose length is greater than~$p$ so
+By the Pumping Lemma it decomposes as $\sigma=\alpha\concat\beta\concat\gamma$
+subject to the three conditions.
+By the first condition the length of $\alpha\concat\beta$ is less than~$p$,
+and so these two substrings consist soley of~\str{a}'s.
+The second condition is that $\beta$ is not the empty string.
+The third condition says that the strings
+$\alpha\gamma$, $\alpha\beta^2\gamma$, \ldots{} are all members of~$\lang$.
+Note that the first is not a square because in omitting~$\beta$ it omits at
+least one~\str{a} from the prefix but not from the suffix.
+That's a contradiction.
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
-In \definend{regex golf} you are given two lists and must produce a
+Consider
+$\lang=\set{\str{0}^n\str{1}\str{0}^n\suchthat n>0}$.
+\begin{exparts*}
+\item Show that it is not regular.
+\item Find a regex.
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item We take the alphabet to be $\Sigma=\B$.
+Assume that it is regular and let its pumping length be~$p$.
+Consider $\sigma=\str{0}^p1\str{0}^p$, which is a member of the language.
+By the Pumping Lemma it therefore decomposes into $\sigma=\alpha\beta\gamma$
+subject to the three conditions.
+By the first and second conditions $\alpha\beta$ consists solely of
+str{0}'s, and is therefore part of the prefix before the~\str{1},
+and $\beta$ is nonempty.
+By the third condition the string $\alpha\gamma$ is also a member of~$\lang$.
+But this is a contradition because the omission of $\beta$ means
+that $\alpha\gamma$ has fewer \str{0}'s before the~\str{1} than after.
+\item \re{(a*)b\textbackslash 1}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+In \citetext{\definend{regex golf}}{See \url{https://alf.nu/RegexGolf}.}
+you are given two lists and must produce a
 regex that matches all the words in the first list but none of the
 words in the second.
 The `golf' aspect is that the person who finds the shortest regex, 
 the one with the fewest characters, wins.
-See \url{https://alf.nu/RegexGolf}.
 Try these: accept the words in the first list and not the words in the second.
 \begin{exparts}
 \item Accept: Arthur, Ester, le~Seur, Silverter

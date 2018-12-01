@@ -460,6 +460,15 @@
 
 ;; =========== Back references =============
 
+;; match tag
+(define b #px"<b>[^<]*</b>")
+(module+ test
+  (check-true (regexp-match? b "<b>bold text</b>"))
+  (check-true (regexp-match? b "<b>USS Constitutuion</b>"))
+  (check-false (regexp-match? b "ttt"))
+  (check-false (regexp-match? b "<b>cc</i>"))
+  )
+
 ;; text in parens
 (define tag #px"<([^>]+)>[^<]*</\\1>")
 (module+ test
@@ -468,3 +477,57 @@
   (check-false (regexp-match? tag "ttt"))
   (check-false (regexp-match? tag "<a>cc</b>"))
   )
+
+;; squares
+(define square #px"^(.*)\\1$")
+(module+ test
+  (check-true (regexp-match? square "aabaab"))
+  (check-true (regexp-match? square "baaabaaa"))
+  (check-true (regexp-match? square "aa"))
+  (check-true (regexp-match? square ""))
+  (check-false (regexp-match? square "aabab"))
+  (check-false (regexp-match? square "a"))
+  )
+
+;; anban
+(define anban #px"^(a*)b\\1$")
+(module+ test
+  (check-true (regexp-match? anban "aba"))
+  (check-true (regexp-match? anban "aabaa"))
+  (check-true (regexp-match? anban "aaabaaa"))
+  (check-true (regexp-match? anban "aaaaabaaaaa"))
+  (check-false (regexp-match? anban "ttt"))
+  (check-false (regexp-match? anban "ab"))
+  (check-false (regexp-match? anban "aa"))
+  (check-false (regexp-match? anban "ba"))
+  (check-false (regexp-match? anban "aaabaa"))
+  (check-false (regexp-match? anban "abaa"))
+  )
+
+;; anbn; from https://nikic.github.io/2012/06/15/The-true-power-of-regular-expressions.html
+;; but I can't make it work.  It doesn't work in Python either p = re.compile(r"^(a(\1)?b)$") won't compile.
+(define anbn #px"^(a(\\1)?b)$")
+(module+ test
+  (check-true (regexp-match? anbn "ab"))
+  ; Fails: (check-true (regexp-match? anbn "aabb"))
+  ;(check-true (regexp-match? anbn "aaabbb"))
+  ;(check-true (regexp-match? anbn "aaaabbbb"))
+  ;(check-false (regexp-match? anbn "ttt"))
+  ;(check-false (regexp-match? anbn "a"))
+  ;(check-false (regexp-match? anbn "aa"))
+  ;(check-false (regexp-match? anbn "aaaaab"))
+  ;(check-false (regexp-match? anbn "aaabb"))
+  ;(check-false (regexp-match? anbn "b"))
+  )
+
+;; primes
+;; https://iluxonchik.github.io/regular-expression-check-if-number-is-prime/
+;(define prime #px"^(11+?)\\1+|1?$");
+;(module+ test
+  ;(check-true (regexp-match? prime "11"))
+  ;(check-true (regexp-match? prime "111"))
+  ;(check-true (regexp-match? prime "11111"))
+  ;(check-true (regexp-match? prime "1111111"))
+  ;(check-true (regexp-match? prime "11111111111"))
+  ;(check-false (regexp-match? prime "1111"))
+  ;)

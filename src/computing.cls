@@ -692,7 +692,7 @@
 \newlength{\tbmarginaroundshadedtheorems}
 \newlength{\resttbaroundshadedtheorems}
 \setlength{\lrmarginaroundshadedtheorems}{2pt}
-\setlength{\tbmarginaroundshadedtheorems}{4pt}
+\setlength{\tbmarginaroundshadedtheorems}{0pt plus 0.4pt}
 % \setlength{\tbmarginaroundshadedtheorems}{\lrmarginaroundshadedtheorems}
 \setlength{\resttbaroundshadedtheorems}{\topsep-\tbmarginaroundshadedtheorems}
 \newtheoremstyle{whitestyle}
@@ -706,8 +706,8 @@
 {\llap{\thmnumber{#2}\hspace*{\margin@numberingspace}}\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
 
 \newtheoremstyle{coloredstyle}
-{0pt}               %space above
-{0pt}               %space below
+{\tbmarginaroundshadedtheorems}               %space above
+{\tbmarginaroundshadedtheorems}               %space below
 {}                      %bodyfont
 {0pt}                   %indent
 {\scshape}              %headfont
@@ -717,15 +717,20 @@
  
 
 \usepackage{mdframed}
-\usepackage{tablefootnote} % print footnotes at bottom of page https://tex.stackexchange.com/a/113693/121234
-\AfterEndEnvironment{mdframed}{%
-  \tfn@tablefootnoteprintout%
- \gdef\tfn@fnt{0}% 
- }
+\mdfsetup{skipabove=0pt,skipbelow=0pt}  % remove whitespace between theorems
+% \usepackage{tablefootnote} % print footnotes at bottom of page https://tex.stackexchange.com/a/113693/121234
+
+% \newcounter{mdFootnoteValueSaver}
+% \AfterEndEnvironment{mdframed}{%
+%   \tfn@tablefootnoteprintout%
+%  \gdef\tfn@fnt{0}% 
+%  }
 % \AtBeginEnvironment{example}{%
-%  \setcounter{mpfootnote}{\value{footnote}}}
+%  \setcounter{mdFootnoteValueSaver}{\value{footnote}}}
 % \AtBeginEnvironment{example}{%
-%  \setcounter{mpfootnote}{\value{footnote}}}
+%   \setcounter{mpfootnote}{\value{footnote}}}
+% \AtBeginEnvironment{definition}{%
+%   \setcounter{mpfootnote}{\value{footnote}}}
 % \AtEndEnvironment{example}{%
 %  \setcounter{footnote}{\value{mpfootnote}}}
 
@@ -757,7 +762,6 @@
 
 %================================================================
 % THEOREM ENVIRONMENTS
-
 
 \mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %
   leftmargin = 0pt, %
@@ -811,6 +815,23 @@
 \theoremstyle{whitestyle}
 \newmdtheoremenv[style=whitestyle]{example}[theorem]{Example}
 \newmdtheoremenv[style=whitestyle]{remark}[theorem]{Remark}
+
+\AtBeginEnvironment{theorem}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{lemma}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{corollary}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{definition}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{churchsthesis}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{problem}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{example}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{remark}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
 
 % Proofs
 % Too much space between proof and thm before it.

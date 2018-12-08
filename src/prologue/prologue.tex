@@ -1843,13 +1843,16 @@ defines the class of effective functions by providing a
 list of initial functions that are intuitively effective
 and a way to combine existing functions,
 to make new functions from old.
-An example of an intuitively effective initial function is
+One intuitively effective initial function is
 successor~$\map{\successor}{\N}{\N}$ given by~$\successor(x)=x+1$.
-An example of a combiner is function composition;
-for instance, because successor is effective the composition 
+An example of a combiner is function composition,
+which is intuitively mechanically computable.
+We then take the initial function and combine to make new
+functions:~because successor is effective the composition 
 $\composed{\successor}{\successor}$, the plus-two operation,
 is also effective.
-We next introduce another combiner.
+
+This section introduces another intuitively mechanically computable combiner.
    
 
 \margingraphic{.2\textwidth}{prologue/pix/grassmann.jpg}{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}
@@ -1857,7 +1860,7 @@ We next introduce another combiner.
 Grade school students learn addition and 
 multiplication as mildly complicated algorithms (``carry the one'').
 % In 1861 
-\citetext{Grassman produced a more elegant definition}{% In 1888
+\citetext{H~Grassman produced a more elegant definition}{% In 1888
 Dedekind used this defintion to give the first rigorous 
 proof of the laws of elementary school arithmetic.}.
 Here is the formula for addition, $\map{\plus}{\N^2}{\N}$, 
@@ -1894,21 +1897,27 @@ whether it is \citetext{logically problematic}{%
   James persisted, ``But what does this second turtle stand on?''
   The woman crowed, 
   ``It's no use Mr~James\Dash it's turtles all the way down.''
-  \autocite{wiki:Turtles}}\Dash isn't 
+  \autocite{wiki:Turtles}}\Dash isn't
 defining something in terms of itself a fallacy?
 Consider the expansion below. 
 In it, $\plus(3,2)$ is not defined in terms of itself,
 it is defined in terms of $\plus(3,1)$.
 In turn, $\plus(3,1)$ is defined in terms of $\plus(3,0)$, 
 whose definition is clearly not a problem.
-\begin{equation*}
-  \plus(3,2) = \successor(\plus(3,1)) 
-             = \successor(\successor(\plus(3,0))) 
-             = \successor(\successor(3))=5 
-\end{equation*}
+\begin{align*}
+  \plus(3,2) &= \successor(\plus(3,1))             \\
+             &= \successor(\successor(\plus(3,0))) \\
+             &= \successor(\successor(3))          \\
+             &=5
+\end{align*}
+The key is to
+\citetext{define the function on later values using only earlier ones}{%
+  For the function specified by $f(0)=1$ and
+  $f(n)=n\cdot f(f(n-1)-1)$, try computing the values
+  $f(0)$ through $f(5)$.}.
 
-One of the ways that
-\citetext{Grassmannn's approach is elegant}{%
+One of the
+\citetext{elegant things about Grassmannn's approach}{%
   A~Perlis's epigram
   ``Recursion is the root of computation since it trades description for time.''
   expresses this elegance.
@@ -2315,9 +2324,9 @@ the mathematician who brought them attention.\footnote{Ackermann
 came up earlier, as one of the authors of the 
 \protect\textit{Entscheidungsproblem}.}
 
-We have described hyperoperation
-but we have not shown that it is primitive recursive.
-The recursion
+From our description, hyperoperation is clearly intuitively
+mechanically computable.
+However, the recursion
 $
   \hyperoperation(n,x,y)=
   \hyperoperation(n-1, x, \hyperoperation(n, x, y-1))
@@ -2326,8 +2335,7 @@ does not fit the form of \cref{def:PrimitiveRecursion}.
 \begin{equation*}  
 f(x_0,\ldots,x_{k-1},y)= h(f(x_0,\ldots,x_{k-1},y-1),x_0,\ldots,x_{k-1},y-1)
 \end{equation*}
-The problem is not that its
-arguments are stated in a different order; 
+The problem is not that its arguments are stated in a different order; 
 that is cosmetic.
 The problem is that the $\hyperoperation$ following the equal sign
 in our description does not work as $h$ because 
@@ -2420,7 +2428,9 @@ On the right we have no such guarantee
 because the iteration is unbounded.
 Indeed, the snippet on the right might never halt at all.
 
-\citetext{We can prove that an operation is primitive recursive if and only if it is bounded}{\protect\autocite{MeyerRitchie}} 
+We can prove that
+\citetext{an operation is primitive recursive if and only if it is bounded}{%
+  \protect\autocite{MeyerRitchie}} 
 by proving that a programming language having only
 bounded loops computes all of the primitive recursive functions;
 see the Extra section. 
@@ -2550,31 +2560,27 @@ For larger inputs it outputs $x-10$.
 
 
 \begin{exercise}
-Recall that the greatest common divisor of two positive integers is the
-largest integer that divides them both.
-We can compute the greatest common divisor using Euclid's recursion,
+Define the factorial function $\factorial(y)=y\cdot(y-1)\cdots 1$
+by primitive recursion, using product and a constant function.
+Translate your definition into Scheme code.
+\begin{answer}
+The derivation for factorial is this.
 \begin{equation*}
-  \gcd(n,m)=
-  \begin{cases}
-  n                 &\case{if $m=0$}  \\
-  \gcd(m,\rem(n,m)) &\case{if $m>0$}
-  \end{cases}
+  \factorial(y)=\begin{cases}
+              1                  &\text{if $y=0$}  \\
+              \product(\factorial(z),\successor(z))) &\text{if $y=\successor(z)$}
+            \end{cases}
 \end{equation*}
-where $\rem(a,b)$ is the remainder when $a$ is divided by~$b$.
-ompute these.
-\begin{exparts*}
-\item $\gcd(28,12)$
-\item $\gcd(104,20)$
-\item $\gcd(309,25)$
-\end{exparts*}
+Here $g$ is a function of no inputs~$g(\,)=1$ and 
+$h(a,b)=\product(a,\successor(b))$.  
+\end{answer}
 \end{exercise}
-
 
 
 \begin{exercise}
 The \citetext{Towers of Hanoi is a famous puzzle}{%
   The puzzle was invented by E~Lucas in 1883 but the next year
-  H~De Parville made quite a great problem out of it. 
+  H~De Parville made of it quite a great problem: 
   \textit{In the great temple at Benares, says he, beneath the dome which marks
   the centre of the world, rests a brass plate in which are fixed three
   diamond needles, each a cubit high and as thick as the body of a bee.
@@ -2600,7 +2606,7 @@ that leads to this recurrence.
   h(n)=
   \begin{cases}
     1           &\case{if $n=1$}  \\
-    2h(n-1)+1   &\case{if $n>0$}
+    2\cdot h(n-1)+1   &\case{if $n>0$}
   \end{cases}
 \end{equation*}
 Compute the values for $n=1$, \ldots, $10$.
@@ -2614,24 +2620,7 @@ Compute the values for $n=1$, \ldots, $10$.
 \end{answer}
 \end{exercise}
 
-
-\begin{exercise}
-Define the factorial function $\factorial(y)=y\cdot(y-1)\cdots 1$
-by primitive recursion, using product and a constant function.
-Translate your definition into Scheme code.
-\begin{answer}
-The derivation for factorial is this.
-\begin{equation*}
-  \factorial(y)=\begin{cases}
-              1                  &\text{if $y=0$}  \\
-              \product(\factorial(z),\successor(z))) &\text{if $y=\successor(z)$}
-            \end{cases}
-\end{equation*}
-Here $g$ is a function of no inputs~$g(\,)=1$ and 
-$h(a,b)=\product(a,\successor(b))$.  
-\end{answer}
-\end{exercise}
-
+% Exercise on defining string operrations using recursion?
 
 % \begin{exercise}
 % Show that the minimum function $\min(x,y)$ can be derived, using composition
@@ -2984,6 +2973,59 @@ The third is this.
 Prove that $\hyperoperation_2(x,y)=x\cdot y$ and
 $\hyperoperation_3(x,y)=x^y$.
 \end{exercise}
+
+\begin{exercise}
+In 1202 Fibonacci posed this problem:
+\textit{A certain man put a pair of rabbits in a place surrounded on all sides
+  by a wall. How many pairs of rabbits can be produced from that
+  pair in a year if it is supposed that every month each pair begets a
+  new pair which from the second month on becomes productive?}
+It leads to this recurrence.
+\begin{equation*}
+  F(n)=
+  \begin{cases}
+    1              &\case{if $n=0$ or $n=1$}  \\
+    F(n-1)+F(n-2)  &\case{otherwise}
+  \end{cases}
+\end{equation*}
+Compute $F(0)$ through~$F(10)$.
+(\textit{Note:} this is not now in the primitive recursion form,
+although we could rewrite it that way using \cref{exer:ShowFcnsPrimRec}
+and \cref{exer:PrimRecBoundedOps}.)
+\begin{answer}
+\begin{center}
+\begin{tabular}{r|ccccccccccc}
+  $n$    &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$  &$7$  &$8$  &$9$  &$10$    \\
+  $h(n)$ &$1$ &$1$ &$2$ &$3$ &$5$ &$8$ &$13$ &$21$ &$34$ &$55$ &$89$   \\
+\end{tabular}
+\end{center}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Recall that the greatest common divisor of two positive integers is the
+largest integer that divides them both.
+We can compute the greatest common divisor using Euclid's recursion,
+\begin{equation*}
+  \gcd(n,m)=
+  \begin{cases}
+  n                 &\case{if $m=0$}  \\
+  \gcd(m,\rem(n,m)) &\case{if $m>0$}
+  \end{cases}
+\end{equation*}
+where $\rem(a,b)$ is the remainder when $a$ is divided by~$b$.
+(\textit{Note:} this is not now in the primitive recursion form,
+although we could rewrite it that way using \cref{exer:ShowFcnsPrimRec}
+and \cref{exer:PrimRecBoundedOps}.)
+Compute 
+\begin{exparts*}
+\item $\gcd(28,12)$
+\item $\gcd(104,20)$
+\item $\gcd(309,25)$.
+\end{exparts*}
+\end{exercise}
+
+
 \end{exercises}
 
 % \begin{explorations}

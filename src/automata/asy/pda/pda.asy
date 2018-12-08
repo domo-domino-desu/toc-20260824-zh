@@ -79,14 +79,14 @@ path ellipse(pair c, real majoraxis, real minoraxis)
 
 // ===========================================
 picture pic;
-int picnum = 1;
+int picnum = 0;
 unitsize(pic,1pt);
 
 real u = 2.5cm;
 real v = 0.7*u;
 // universal set
 real u_width = 1.25u;
-real u_height = v;
+real u_height = 0.9v;
 path universe = (0,0)--(u_width,0)--(u_width,u_height)--(0,u_height)--cycle;
 draw(pic,universe,MAINPEN);
 // label("All languages over $\B$",point(universe,1.8),E);
@@ -143,21 +143,21 @@ path tm_langs = ellipse(tm_langs_center,
 // draw them
 pair oset = (-0.001u,0v);
 real rotation_angle = 20;
-transform r = shift(0.33*u_width,0.33*u_height)*rotate(rotation_angle,(0,0));
+transform r = shift(0.2*u_width,0.3*u_height)*rotate(rotation_angle,(0,0));
 filldraw(pic,r*tm_langs,fillpen=highlight_light,drawpen=MAINPEN);
 pair tm_langs_focus = tm_langs_center
   +(sqrt(tm_langs_major_axis**2-tm_langs_minor_axis**2),0);
-label(pic,"\tiny $D$",tm_langs_focus,oset,p=NODEPEN);
+label(pic,"\tiny $D$",r*tm_langs_focus,oset,p=NODEPEN);
 filldraw(pic,r*npda_langs,fillpen=bold_light,drawpen=MAINPEN);
 pair npda_langs_focus = npda_langs_center
   +(sqrt(npda_langs_major_axis**2-npda_langs_minor_axis**2),0);
-label(pic,"\tiny $C$",npda_langs_focus,oset,p=NODEPEN);
+label(pic,"\tiny $C$",r*npda_langs_focus,oset,p=NODEPEN);
 filldraw(pic,r*pda_langs,fillpen=lightcolor,drawpen=MAINPEN);
 pair pda_langs_focus = pda_langs_center
   +(sqrt(pda_langs_major_axis**2-pda_langs_minor_axis**2),0);
-label(pic,"\tiny $B$",pda_langs_focus,oset,p=NODEPEN);
+label(pic,"\tiny $B$",r*pda_langs_focus,oset,p=NODEPEN);
 filldraw(pic,r*regular_langs,fillpen=backgroundcolor,drawpen=MAINPEN);
-label(pic,"\tiny $A$",regular_langs_center,p=NODEPEN);
+label(pic,"\tiny $A$",r*regular_langs_center,p=NODEPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

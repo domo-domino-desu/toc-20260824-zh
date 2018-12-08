@@ -1099,6 +1099,75 @@ $2^nn^{2n}$.
 \end{exercise}
 
 \begin{exercise}
+\textit{Propositiones ad acuendos iuvenes} (problems to sharpen
+the young) is the oldest collection
+of mathematical problems written in Latin.
+It teaches logical thinking and problem solving and was 
+written by Alcuin of York (735--804),
+head of the Frankish court school at Aachen and a royal advisor
+to Charlemagne.
+The problem titled
+\textit{Propositio de lupo et capra etfasciculo cauli} is famous.
+\textit{A man had to transport to the far side of a river
+\citetext{a wolf, a goat, and a bundle of cabbages}{%
+  This text is from Annie Raymond, from the University of Washington}.
+The only boat he could find was one that could
+carry only two of them. For that reason, he sought a plan which would
+enable them all to get to the far side unhurt. Let him, who is able, say
+how it could be possible to transport them safely.}
+Readers from the $700$'s would have understood that a wolf cannot be left
+alone with a goat nor can a goat be left alone with cabbages.
+Construct the relevant Finite State machine and solve the problem.
+\begin{answer}
+We can have the man, the wolf, the goat, and the cabbage,
+on the near or far side.
+The allowed transitions are: man crossses with wolf,
+man crosses with goat, man crosses with cabbage, and man crosses by himself.
+Here are the states; some of them lead to an error state, as readers of the
+$700$'s would have understood.
+
+In this Finite State machine the start state is $s_0$ and the only
+accepting state is~$s_{15}$.
+\begin{center}
+\begin{tabular}{cc|cccc}
+  \multicolumn{1}{c}{\tabulartext{state}}
+  &\multicolumn{1}{c}{\tabulartext{meaning}}
+                          &\str{with wolf}
+                          &\str{with goat}
+                          &\str{with cabbage}
+                          &\str{with nothing}  \\     
+   $s_0$  &n:~mwgc, f:~--- &$s_{12}$ &$s_{10}$  &$s_9$    &$s_8$      \\
+   $s_1$  &n:~mwg, f:~c    &$s_{13}$ &$s_{11}$  &$e$      &$s_9$   \\
+   $s_2$  &n:~mwc, f:~g    &$s_{14}$ &$e$       &$s_{11}$ &$s_{10}$     \\
+   $s_3$  &n:~mw, f:~gc    &$e$      &$e$       &$e$     &$e$     \\
+   $s_4$  &n:~mgc, f:~w    &$e$      &$s_{14}$  &$s_{13}$ &$s_{12}$      \\
+   $s_5$  &n:~mg, f:~wc    &$e$      &$s_{15}$  &$e$      &$s_{13}$      \\
+   $s_6$  &n:~mc, f:~wg    &$e$      &$e$       &$e$     &$e$        \\
+   $s_7$  &n:~m, f:~wgc    &$e$      &$e$       &$e$     &$e$       \\
+   $s_8$  &n:~wgc, f:~m--  &$e$      &$e$       &$e$     &$e$     \\
+   $s_9$  &n:~wg, f:~mc    &$e$      &$e$       &$e$     &$e$     \\
+   $s_{10}$  &n:~wc, f:~mg &$e$      &$s_0$     &$e$     &$s_2$       \\
+   $s_{11}$  &n:~w, f:~mgc &$e$      &$s_1$     &$s_{10}$ &$s_3$        \\
+   $s_{12}$  &n:~gc, f:~mw &$e$      &$e$       &$e$     &$e$        \\
+   $s_{13}$  &n:~g, f:~mwc &$s_1$    &$e$       &$s_4$    &$s_5$         \\
+   $s_{14}$  &n:~c, f:~mwg &$s_2$    &$s_4$     &$e$      &$s_6$         \\
+   $s_{15}$  &n:~---, f:~mwgc  &$s_{15}$   &$s_{15}$   &$s_{15}$   &$s_{15}$  \\
+   $e$    &error           &$e$     &$e$       &$e$      &$e$   \\
+\end{tabular}
+\end{center}
+
+Here is the solution in words:
+\textit{The man first brings the goat to the far side and leaves it there.
+He goes back and brings the wolf with him, leaving it on the far side,
+and brings back the goat.
+He leaves the goat on the initial side, takes the cabbage and brings it
+to the far side.
+Finally, he goes back to the original shore, and takes the goat to bring
+it to the far side.}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 Consider a variant on a Finite State machine, where the set of input
 strings is bounded.
 \begin{exparts}
@@ -1399,44 +1468,6 @@ thinking it is natural.
 This problem is most naturally done in parallel, and breadth-first traversal is
 a serialization what we do only because the device that we have requires it.
 
-What we really want, as programmers, is to call a function
-\citetext{$\sigma=\operatorname{amb}(S,R_0,R_1\ldots R_{n-1})$}{%
-  The name \textit{amb}
-  abbreviates `ambiguous function'.
-  Here is a small example.
-  Essentially \protect\verb!Amb(x, y, z)! splits the computation into three possible futures:
-  a future in which the value x is yielded,
-  a future in which the value y is yielded,
-  and a future in which the value z is yielded.
-  The future which leads to a successful subsequent computation is chosen.
-  The other ``parallel universes'' somehow go away.
-  (Amb called with no arguments fails.)
-% \begin{lstlistings}
-% (let ((x (amb 1 2 3))
-%       (y (amb 5 4 3)))
-%   (amb (= (* x y) 8)
-%   (println x y)))
-% \end{lstlistings}
-  The output is 2 4 because Amb(1, 2, 3) correctly chooses the future
-  in which x has value 2, Amb(7, 6, 4, 5) chooses 4 and consequently
-  Amb(x * y = 8) produces a success.
-  
-  These were described by John McCarthy in \autocite{McCarthy}.
-  ``Ambiguous functions are not really functions.
-  For each prescription of values
-  to the arguments the ambiguous function has a collection of possible values.
-  An example of an ambiguous function is
-  $\operatorname{less}(n)$ defined for all positive integer
-  values of $n$.
-  Every non-negative integer less than $n$ is a possible value of
-  $\operatorname{less}(n)$.
-  First we define a basic ambiguity operator $\operatorname{amb}(x, y)$
-  whose possible
-  values are $x$ and~$y$ when both are defined: otherwise, whichever is defined.
-  Now we can define $\operatorname{less}(n)$ by
-  $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''}
-and have the computer somehow guess a successful derivation sequence.
-
 \margingraphic{0.175\textwidth}{automata/pix/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
 The American philosopher, and Hall of Fame baseball catcher, Y~Berra
 said, ``If you come to a fork in the road, take it.''
@@ -1483,11 +1514,10 @@ in multiple states.
 
 This section considers nondeterministic Finite State machines.
 (We will do nondeterministic Turing machines in the fifth chapter.)
-We will have two ways to think about and talk about nondeterminism.
-There are two mental models.\footnote{%
-  While they are an important component of conversations about nondeterminism,
-  these models do not, strictly speaking, form part of the definitions
-  and proofs.}
+We will have two ways to think about nondeterminism,
+two mental models.\footnote{%
+  While they are helpful in learning and thinking about nondeterminism,
+  these models are not part of the formal definitions and proofs.}
 The first was introduced above.
 We can picture that when it is asked to go into multiple next states, 
 the machine forks.
@@ -1535,14 +1565,52 @@ input.
 %   \includegraphics{automata/asy/nfsm/nfsm08.pdf}
 % \end{center}
 \end{example}
-
-Now we introduce the second mental model for nondeterminism.
 The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
 When we feed it the input \str{00001} the problem the machine faces is
 when to stop going around $q_0$'s loop and start to the right.
 Our definition has the machine accepting this input
-so the machine has solved this problem\Dash the
+so the machine has solved this problem\Dash viewed from the outside,
+we could, perhaps somewhat fancifully, say that the
 machine has correctly guessed.
+
+This is our second mental model for nondeterminism.
+We will imagine programming by calling a function, some 
+\citetext{$\operatorname{amb}(S,R_0,R_1\ldots R_{n-1})$}{%
+  The name \textit{amb}
+  abbreviates `ambiguous function'.
+  Here is a small example.
+  Essentially \protect\verb!Amb(x, y, z)! splits the computation into three possible futures:
+  a future in which the value x is yielded,
+  a future in which the value y is yielded,
+  and a future in which the value z is yielded.
+  The future which leads to a successful subsequent computation is chosen.
+  The other ``parallel universes'' somehow go away.
+  (Amb called with no arguments fails.)
+% \begin{lstlistings}
+% (let ((x (amb 1 2 3))
+%       (y (amb 5 4 3)))
+%   (amb (= (* x y) 8)
+%   (println x y)))
+% \end{lstlistings}
+  The output is 2 4 because Amb(1, 2, 3) correctly chooses the future
+  in which x has value 2, Amb(7, 6, 4, 5) chooses 4 and consequently
+  Amb(x * y = 8) produces a success.
+  
+  These were described by John McCarthy in \autocite{McCarthy}.
+  ``Ambiguous functions are not really functions.
+  For each prescription of values
+  to the arguments the ambiguous function has a collection of possible values.
+  An example of an ambiguous function is
+  $\operatorname{less}(n)$ defined for all positive integer
+  values of $n$.
+  Every non-negative integer less than $n$ is a possible value of
+  $\operatorname{less}(n)$.
+  First we define a basic ambiguity operator $\operatorname{amb}(x, y)$
+  whose possible
+  values are $x$ and~$y$ when both are defined: otherwise, whichever is defined.
+  Now we can define $\operatorname{less}(n)$ by
+  $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''},
+and having the computer somehow guess a successful search sequence.
 
 \margingraphic{0.20\textwidth}{automata/pix/flauros.jpg}{\label{fig:Flauros}\href{https://en.wikipedia.org/wiki/List_of_demons_in_the_Ars_Goetia}{Flauros, Duke of Hell, gives true answers of all things past, present, and future}} % https://commons.wikimedia.org/wiki/File%3AIll_dict_infernal_p0294-278_flauros_demon.jpg Louis Le Breton [Public domain], via Wikimedia Commons
 % \margingraphic{0.25\textwidth}{automata/demon.jpg}{\label{fig:Demon}\href{https://en.wikipedia.org/wiki/The_Nightmare}{\textit{The Nightmare} H~Fuseli, 1781}} % https://upload.wikimedia.org/wikipedia/commons/5/56/John_Henry_Fuseli_-_The_Nightmare.JPG  Henry Fuseli [Public domain], via Wikimedia Commons  (https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror)

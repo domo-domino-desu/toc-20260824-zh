@@ -66,7 +66,9 @@ for (int picnum=0; picnum <= num_pics; ++picnum) {
 }
 
 
+// ===================================================
 // Correspondence between NxN and N
+// TODO: The first arrow, in picnum=1, does not show.
 node[] n = ncircles(
 		    "$\sequence{0,0}$",  // node 0
 		    "$\sequence{1,0}$",  // 1

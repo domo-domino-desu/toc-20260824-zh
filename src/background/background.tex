@@ -480,6 +480,7 @@ the lower left, $\sequence{1,0}$ and~$\sequence{0,1}$,
 then those that are two away, etc.
 This is a breadth-first traversal, starting in the lower left.
 
+% TODO: It misses the first arrow.
 \begin{animatedfigure}{The order in which we enumerate $\N\times\N$.} 
 \animategraphics[poster=first]{2}{background/asy/correspondences/correspondences2}{000}{009}
   \label{af:EnumerateNxN}
@@ -511,29 +512,27 @@ is an \definend{unpairing function}.
 % is \definend{Cantor's paring function}.
 \end{example}
 
-\Cref{af:EnumerateNxN} shows a breadth-first coverage
-of the array by
-\citetext{counting diagonally}{Some authors call this an anti-diagonal, 
+The formula for the unpairing function is amusing. 
+\Cref{af:EnumerateNxN} 
+\citetext{counts diagonally}{Some authors call this an anti-diagonal, 
 taking the diagonal to be composed of the pairs $\sequence{n,n}$.}.
 \begin{center}
   \includegraphics{background/asy/correspondences/correspondences3000.pdf}
 \end{center}
-For the idea behind the formula, consider the pair~$\sequence{1,2}$ in
-the above figure.
-The number of its diagonal, $3$, is the sum of its entries.
+Consider the pair~$\sequence{1,2}$.
+The number of its diagonal, $3$, is the sum of its entries~$1+2$.
 Also, before diagonal~$3$ are six pairs, 
 so that on diagonal~$3$ the initial pair~$\sequence{0,3}$ 
 gets counted as pair~$6$, and then
 $\sequence{1,2}$ corresponds to~$7$.
-
-Following that pattern, to get the number corresponding to~$\sequence{x,y}$
-first observe that it lies on diagonal $d=x+y$.
+In general, to get the number corresponding to~$\sequence{x,y}$
+observe that it lies on diagonal $d=x+y$.
 Diagonal~$0$ has one entry, diagonal~$1$ has
 two entries, diagonal~$2$ has three entries, etc.,
-so the number of entries prior to diagonal~$x+y$ is $1+2+\cdots+d$.
-This is an arithmetic series with total $d(d+1)/2$, 
-called the $d$-th \definend{triangle number}.
-Then, inside diagonal~$d$, the pair at the start is $\sequence{0,x+y}$,
+so the number of entries prior to diagonal~$d$ is $1+2+\cdots+d$.
+This is an \citetext{arithmetic series with total $d(d+1)/2$}{% 
+  It is called the $d$-th \definend{trianglar number}}.
+On diagonal~$d$, the first pair is $\sequence{0,x+y}$,
 next is~$\sequence{1,x+y-1}$, etc., and so
 $\sequence{x,y}$ is the~$x$-th pair from $d$'s start.
 
@@ -561,28 +560,20 @@ Cantor's correspondence is a correspondence.
 It is both one-to-one and onto, by construction.
 \end{proof}
 
-
-
-
-% \Cref{ex:PrimesCountable} and \cref{ex:StringsCountable} argued
-% that the set of prime numbers and the set of strings over a finite
-% alphabet are countable.
-That code enables us to make arguments that are less 
-hand-wavy and more precise.
-
 \begin{example}  \label{ex:RationalsAreCountable}
 The set of rational numbers $\Q$ is countable.
-We already know how to alternate between positives and negatives, 
+To show that,
+we already know how to alternate between positives and negatives so
 the problem reduces
-to doing the nonnegatives $\map{f}{\N}{\Q^+\cup\set{0}}$.
-A nonnegative rational is a numerator and denominator
-$\sequence{n,d}\in\N\times \N^+$, except
-that some pairs collapse; for instance, when the numerator is $4$ and the
-denominator is~$2$ gives the same rational as does $n=2$, $d=1$.
+to counting the nonnegatives $\map{f}{\N}{\Q^+\cup\set{0}}$.
+A nonnegative rational is a pair, a numerator and denominator
+$\sequence{n,d}\in\N\times \N^+$, except for the complication that
+some pairs collapse; for instance, when the numerator is $4$ and the
+denominator is~$2$ we have the same rational as with $n=2$ and~$d=1$.
 
-As we did when counting the primes, we will count the nonnegative 
-rationals not with a formula but instead with a program.
-To avoid double counting~$4/2$ and~$2/1$ we 
+As in \cref{ex:PrimesCountable} and \cref{ex:StringsCountable},
+we will use a program instead of a formula to count the rationals.
+In short, we will 
 \citetext{memoize}{%
   A memoized routine for computing a function
   saves the results of computing 
@@ -593,16 +584,17 @@ To avoid double counting~$4/2$ and~$2/1$ we
   (The term was invented by Donald Michie~\autocite{wiki:Michie}, 
   a coworker of Turing's in the World War~II effort to break the 
   German secret codes.)}. 
-That is, to list the rational numbers
-we generate the pairs $\sequence{a,b}$ in ascending order, 
-\codeinline{(xy 0)}, \codeinline{(xy 1)}, etc.
-For such a pair $\sequence{a,b}$, we reject it as the next rational
-number to be listed if $b=0$, or if
-the fraction $a/b$ is equivalent to a previously listed fraction.
-Otherwise, we enumerate it as the next nonnegative rational.
-\Cref{exer:CodeForRationalsCountable} asks for the Scheme code to compute
-this function.
+That is, 
+we generate pairs $\sequence{a,b}$ in ascending order.
+For each pair, reject it as the next rational
+number $a/b$ if $b=0$ or if
+$a/b$ is equivalent to a previously generated fraction.
+Otherwise, list it.
+The rational listed first corresponds to $0$, the next corresponds to $1$, etc.
+% \Cref{exer:CodeForRationalsCountable} asks for Scheme code to compute
+% this function.
 \end{example}
+
 
 
 
@@ -627,19 +619,19 @@ domain.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Produce a table giving the first eleven values of \codeinline{(car (xy c))}.
-\begin{answer}
-\begin{center}
-\begin{tabular}{r|*{11}{c}}
-  \tabulartext{Input $c$}
-    &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$ &$7$ &$8$ &$9$ &$10$   \\ \cline{2-12}
-  \tabulartext{Result}
-    &$0$ &$0$ &$1$ &$0$ &$1$ &$2$ &$0$ &$1$ &$2$ &$3$ &$0$
-\end{tabular}
-\end{center}
-\end{answer}
-\end{exercise}
+% \begin{exercise}
+% Produce a table giving the first eleven values of \codeinline{(car (xy c))}.
+% \begin{answer}
+% \begin{center}
+% \begin{tabular}{r|*{11}{c}}
+%   \tabulartext{Input $c$}
+%     &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$ &$7$ &$8$ &$9$ &$10$   \\ \cline{2-12}
+%   \tabulartext{Result}
+%     &$0$ &$0$ &$1$ &$0$ &$1$ &$2$ &$0$ &$1$ &$2$ &$3$ &$0$
+% \end{tabular}
+% \end{center}
+% \end{answer}
+% \end{exercise}
 
 \begin{exercise}
 Show that each pair of sets has the same cardinality by 
@@ -722,7 +714,7 @@ Observe that because $y$ is odd, it has the form $y=2n+1$ for some
 natural number~$n$.
 Thus there is a natural number that maps under~$g$ to~$y$, 
 namely~$n=(y-1)/2$, and thus~$g$ is onto.  
-\item ONe answer involves using the two prior exercise parts, 
+\item One answer involves using the two prior exercise parts, 
 and knowing that the inverse of a correspondence is also a correspondence,
 to get that the composition $\composed{f}{g^{-1}}$ is a correspondence from
 the even numbers to the odds.
@@ -1106,35 +1098,35 @@ is the number of elements in~$S$.
 
 
 
-\begin{exercise}\label{exer:InverseOfCorrrespondenceIsCorrespondence}
-We show that the inverse of a correspondence is also a correspondence.
-\begin{exparts}
-\item
-Let $S_0=\set{0,1,2,3}$ and
-$S_1=\set{\text{Spades}, \text{Hearts}, \text{Clubs}, \text{Diamonds}}$,
-and let $\map{f}{S_0}{S_1}$ be given by
-$f(0)=\text{Spades}$, $f(1)=\text{Hearts}$, $f(2)=\text{Clubs}$,
-$f(3)=\text{Diamonds}$.
-Find the inverse function $\map{f^{-1}}{S_1}{S_0}$
-and verify that it is a correspondence.
-\item
-Show that the inverse function exists, that it, show that the
-binary relation associating each $y\in C$ with $x\in D$ such that
-$f(x)=y$ is a well-defined function.
-\item
-Show that this inverse function $\map{f^{-1}}{C}{D}$ is a correspondence.
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item 
-The inverse function
-$\map{f^{-1}}{S_1}{S_0}$ is given by
-$f^{-1}(\text{Spades})=0$, $f^{-1}(\text{Hearts})=1$, $f^{-1}(\text{Clubs})=2$,
-and $f^{-1}(\text{Diamonds})=3$.
-It is both one-to-one and onto by inspection.
-\end{exparts}
-\end{answer}
-\end{exercise}
+% \begin{exercise}\label{exer:InverseOfCorrrespondenceIsCorrespondence}
+% We show that the inverse of a correspondence is also a correspondence.
+% \begin{exparts}
+% \item
+% Let $S_0=\set{0,1,2,3}$ and
+% $S_1=\set{\text{Spades}, \text{Hearts}, \text{Clubs}, \text{Diamonds}}$,
+% and let $\map{f}{S_0}{S_1}$ be given by
+% $f(0)=\text{Spades}$, $f(1)=\text{Hearts}$, $f(2)=\text{Clubs}$,
+% $f(3)=\text{Diamonds}$.
+% Find the inverse function $\map{f^{-1}}{S_1}{S_0}$
+% and verify that it is a correspondence.
+% \item
+% Show that the inverse function exists, that it, show that the
+% binary relation associating each $y\in C$ with $x\in D$ such that
+% $f(x)=y$ is a well-defined function.
+% \item
+% Show that this inverse function $\map{f^{-1}}{C}{D}$ is a correspondence.
+% \end{exparts}
+% \begin{answer}
+% \begin{exparts}
+% \item 
+% The inverse function
+% $\map{f^{-1}}{S_1}{S_0}$ is given by
+% $f^{-1}(\text{Spades})=0$, $f^{-1}(\text{Hearts})=1$, $f^{-1}(\text{Clubs})=2$,
+% and $f^{-1}(\text{Diamonds})=3$.
+% It is both one-to-one and onto by inspection.
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
 
 
 
@@ -1174,30 +1166,30 @@ $k$ with $\sequence{n,m}$, where $k-1=2^{n}(2m+1)$ is a correspondence.
 \end{exercise}
 
 
-\begin{exercise} \label{exer:CodeForRationalsCountable}
-Write the code to implement the method of \cref{ex:RationalsAreCountable}.  
-\end{exercise}
+% \begin{exercise} \label{exer:CodeForRationalsCountable}
+% Write the code to implement the method of \cref{ex:RationalsAreCountable}.  
+% \end{exercise}
 
-\begin{exercise}
-Write the code to implement the methods described in these examples. 
-\begin{exparts*}
-\item  \cref{ex:PrimesCountable}
-\item \cref{ex:StringsCountable}
-\end{exparts*}
-\end{exercise}
+% \begin{exercise}
+% Write the code to implement the methods described in these examples. 
+% \begin{exparts*}
+% \item  \cref{ex:PrimesCountable}
+% \item \cref{ex:StringsCountable}
+% \end{exparts*}
+% \end{exercise}
 
 
-\begin{exercise} \label{exer:EnumerateTMachines}
-Write a program that enumerates the set of Turing machines. 
-\end{exercise}
+% \begin{exercise} \label{exer:EnumerateTMachines}
+% Write a program that enumerates the set of Turing machines. 
+% \end{exercise}
 
-\begin{exercise} 
-Write a program that, given an index~$e$ and a number~$k$,
-produces a Turing machine that computes the same function as
-machine number~$e$, but such that if $k\neq\hat{k}$ then
-the machine your code produces for inputs $e,k$ and $e,\hat{k}$
-will differ. 
-\end{exercise}
+% \begin{exercise} 
+% Write a program that, given an index~$e$ and a number~$k$,
+% produces a Turing machine that computes the same function as
+% machine number~$e$, but such that if $k\neq\hat{k}$ then
+% the machine your code produces for inputs $e,k$ and $e,\hat{k}$
+% will differ. 
+% \end{exercise}
 
 \end{exercises}
 
@@ -1211,44 +1203,37 @@ will differ.
 \section{Diagonalization}
 Cantor's definition of cardinality led us to produce  
 correspondences.
-We now introduce a powerful technique that can do the opposite, that
-can show that no correspondence exists.
-We will approach the first question that we will
-address with this new technique by giving it
-an evocative framing.
+We now introduce a powerful technique that
+can show no correspondence exists.
+We start with a memorable 
+mathematical fable.
 
 
 \subsection{Hilbert's Hotel} \label{subsection:HilbertsHotel}
-The prior section describes how infinite 
-sets can be equinumerous even though one may seem in some sense
-smaller than the other.
-These lessons are brought out in a memorable 
-mathematical fable. 
-
 \margingraphic{.18\textwidth}{background/pix/hotel.jpg}{\label{fig:hotel}\href{http://en.wikipedia.org/wiki/Ryugyong_Hotel}{A hotel with lots of empty rooms}}   % http://upload.wikimedia.org/wikipedia/commons/6/6b/Ryugyong_Hotel_-_August_27%2C_2011_%28Cropped%29.jpg
-\citetext{Once unon a time}{The fable is due to 
-David Hilbert in 1924.  
-It was popularized by George Gamow in 
-\textit{One, Two, Three \ldots{} Infinity}.  \autocite{Kragh}.}
+\citetext{Once unon a time}{%
+  The fable is due to David Hilbert in 1924.  
+  It was popularized by George Gamow in 
+  \textit{One, Two, Three \ldots{} Infinity}.  \autocite{Kragh}.}
 there was an infinite hotel.  
 The rooms were 
-numbered $0$, $1$, \ldots, naturally.
+numbered $0$, $1$, \ldots\,, naturally.
 One day, every room was occupied when 
-someone new came. 
+someone new came to the front desk. 
 Could the hotel accomodate?
-The desk clerk hit on the idea of moving each guest up a room, that is,
+The clerk hit on the idea of moving each guest up a room, that is,
 moving the guest in room~$n$ to room~$n+1$. 
 With that, room~$0$ is empty.
 So this hotel always had space for a new person, 
-or any finite number of new people.
+or for any finite number of new people.
 
-Next came a bus with infinitely many people $p_0, p_1,\ \ldots\ $.
+Next a bus rolled in, with infinitely many people $p_0, p_1,\ \ldots$\@
 Again the clerk had an idea:~move each guest to a room with twice the number, 
 putting the guest from room~$n$ into room~$2n$.
-Now the odd-numbered rooms are empty 
-so everyone has a room.
+Now the odd-numbered rooms are empty, so $p_i$ goes in room~$2i+1$ 
+and everyone has a room.
 
-Just then a convoy of buses pulled in, 
+Just then a convoy of buses rolled in, 
 infinitely many of them,
 each with infinitely many people.
 \begin{equation*}
@@ -1261,15 +1246,14 @@ each with infinitely many people.
 By now the spirit of the thing was clear:
 move each guest to a new room with twice the number, and 
 the new people go into the odd-numbered rooms, in the breadth-first order
-$p_{0,0}$, $p_{1,0}$, $p_{0,1}$, $p_{2,0}$ \ldots{}
-of \cref{exam:NCrossN}.  
+of \cref{exam:NCrossN}: person $p_{x,y}$ goes in room $2\cdot\cantor(x,y)+1$.
 
 After this experience the clerk could be forgiven for thinking
 that there is always room in the infinite hotel\Dash
 that with a sufficiently clever method it can fit any set of new guests at all.
-The Hilbert's Hotel story makes natural the guess 
+That is, this story makes natural the guess 
 that all infinite sets have the same cardinality. 
-Despite its naturalness, though, that guess is wrong.
+However, that guess is wrong.
 We will next see that there are sets with so many members that they 
 cannot all fit in the hotel.\footnote{Alas, 
 the infinite hotel does not now exist.

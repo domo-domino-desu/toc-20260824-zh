@@ -219,3 +219,37 @@ label(pic,"\strut $2$",intersectionpoint(longdiag[2],cropline),shrinklabeloffset
 label(pic,"\strut $3$",intersectionpoint(longdiag[3],cropline),shrinklabeloffset*S);
 // centerAtOrigin(pic);
 shipout(format("correspondences3%03d",picnum),pic,format="pdf");
+
+
+// ==========================================
+// Correspondence between (0,1) and (0,\infty)
+int picnum = 0;
+picture pic;
+unitsize(pic,1cm);
+real u=1;
+real v=u;
+
+real proj_fcn(real x) {
+  return x/(x+1);
+}
+
+pair origin = (0*u,0*v);
+pair proj_point = (-1*u,1*v);  // point making projection
+real x = 3.3*u;    // how far out on x-axis is location of x
+pair xloc = (x,0*v);  // pt on x-axis
+pair yloc = (0*u,proj_fcn(x));  // projected-to pt on y-axis
+
+draw(pic,proj_point--xloc,MAINPEN+lightcolor);
+label(pic,"$P$",proj_point,W);
+draw(pic,origin--(0*u,1*v),DARKPEN);  // (0,1)
+label(pic,"\tiny $0$",(0*u,0*v),S);
+label(pic,"\tiny $1$",(0*u,1*v),NW);
+label(pic,"\tiny $0$",(0*u,0*v),W);
+draw(pic,origin--(7*u,0*v),DARKPEN,Arrow(TeXHead));  // x-axis
+dotfactor = 3;
+dot(pic,proj_point,DARKPEN, filltype=Fill(white));
+draw(pic,(xloc--(xloc-(0u,0.05v))),DARKPEN);
+  label(pic,"$x$",xloc,S);
+draw(pic,(yloc--(yloc-(0.05u,0v))),DARKPEN);
+  label(pic,"$f(x)$",yloc,NE);
+shipout(format("correspondences%03d",picnum),pic,format="pdf");

@@ -157,14 +157,104 @@
          n)
       2))
 
-(define (diag-num c)
-  (let ([s (exact-integer-sqrt (+ 1 (* 8 c )))])
-    (floor-quotient (- s 1)
-                    2)))
+(module+ test
+  (check-equal? 1 (triangle-num 1))
+  (check-equal? (+ 1 2) (triangle-num 2))
+  (check-equal? (+ 1 2 3) (triangle-num 3))
+  )
 
-;; xy given the cantor number , return (x y)
-(define (pair-infinite-cross-infinite c)
+;; Return the number of the diagonal that c is on 
+(define (diag-num c)
+  (exact-floor
+      (/
+       (sub1
+          (sqrt (add1 (* 8 c))))
+       2)))
+
+(module+ test
+  (check-equal? 0 (diag-num 0))
+  (check-equal? 1 (diag-num 1))
+  (check-equal? 1 (diag-num 2))
+  (check-equal? 2 (diag-num 3))
+  (check-equal? 2 (diag-num 4))
+  (check-equal? 2 (diag-num 5))
+  (check-equal? 100 (diag-num (triangle-num 100)))
+  (check-equal? 100 (diag-num (+ 1 (triangle-num 100))))
+  (check-equal? 100 (diag-num (+ 99 (triangle-num 100))))
+  )
+
+;; Given the cantor number, return the pair (x y)
+(define (pair-infinite-cross-infinite c set0 set1)
  (let* ([d (diag-num c)]
-        [t (triangle-num d)])
-   (list (- c t)
-         (- d (- c t )))))
+        [t (triangle-num d)]
+        [p (list (- c t)
+                 (- d (- c t )))])
+   (list (list-ref set0 (first p))
+         (list-ref set1 (second p)))))
+
+(module+ test
+  (let ([s0 (list 1 3 5 7 9 11)]  
+        [s1 (list 2 4 6 8 10 12)])
+    (check-equal? (list 3 6) (pair-infinite-cross-infinite 7 s0 s1))
+    (check-equal? (list 1 2) (pair-infinite-cross-infinite 0 s0 s1))
+    (check-equal? (list 1 12) (pair-infinite-cross-infinite 15 s0 s1))
+    (check-equal? (list 11 2) (pair-infinite-cross-infinite 20 s0 s1))
+    ))
+
+
+
+;; === TM's ===
+
+;; Return true if the number is even
+(define (even? n)
+  (if (= 0 (remainder n 2))
+      #t
+      #f))
+(module+ test
+  (check-equal? #t (even? 6))
+  (check-equal? #t (even? 0))
+  (check-equal? #f (even? 5))
+  )
+
+(define (bin->num-set b)
+  (define (bin->num-set-helper b st dex)
+    (cond ((= 0 b) st)
+          ((even? b) (bin->num-set-helper (quotient b 2) st (add1 dex)))
+          (else (bin->num-set-helper (quotient b 2) (cons dex st) (add1 dex))))
+    )
+  (bin->num-set-helper b '() 0))
+
+(module+ test
+  (check-equal? (list 0) (bin->num-set 1))
+  (check-equal? (list 1 0) (bin->num-set (+ 2 1)))
+  (check-equal? (list 2 0) (bin->num-set (+ 4 1)))
+  (check-equal? (list 5 2 0) (bin->num-set (+ 32 4 1)))
+  (check-equal? (list 5 3) (bin->num-set (+ 32 8)))
+  )
+
+
+(define (num-set->bin lst)
+  (if (empty? lst)
+      0
+      (+ (expt 2 (car lst))
+         (num-set->bin (cdr lst)))))
+
+(module+ test
+  (check-equal? 1 (num-set->bin (list 0)))
+  (check-equal? (+ 2 1) (num-set->bin (list 1 0)))
+  (check-equal? (+ 4 1) (num-set->bin (list 2 0)))
+  (check-equal? (+ 32 4 1) (num-set->bin (list 5 2 0)))
+  (check-equal? (+ 32 8) (num-set->bin (list 5 3)))
+  (check-equal? 1 (num-set->bin (list 0)))
+  )
+
+
+(define STATES(build-list 100 values))
+(define SIGMA (list #\B #\1))
+(define ACTIONS (append SIGMA (list #\L #\R)))
+
+;; Given the Turing machine, return the number
+; (define (count-tm tm))
+
+;; Given the number, return the Turing machine
+; (define (uncount-tm n))

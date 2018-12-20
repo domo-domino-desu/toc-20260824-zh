@@ -28,6 +28,35 @@
   )
 
 
+;; === finite cross finite ===
+;; Return the pair (i,j) counted n-th where set0 is finite and set1 is finite
+(define (pair-finite-cross-finite n set0 set1)
+  (let ([m (length set0)])
+    (if (>= n (* m (length set1)))
+        (error 'pair-finite-cross-finite "number too large to be a pair")
+        (list (list-ref set0 (remainder n m))
+              (list-ref set1 (quotient n m))))))
+
+; Sanity check
+; 6 |8  9 10 11
+; 4 |4  5  6  7 
+; 2 |0  1  2  3
+;    ----------
+;    1  3  5  7
+(module+ test
+  (let ([set0 (list 1 3 5 7)]
+        [set1 (list 2 4 6)])
+  (check-equal? (list 5 4) (pair-finite-cross-finite 6 set0 set1))
+  (check-equal? (list 7 2) (pair-finite-cross-finite 3 set0 set1))
+  (check-equal? (list 1 2) (pair-finite-cross-finite 0 set0 set1))
+  ))
+
+
+
+
+
+
+
 ;; === infinite cross finite ===
 ;; Return the pair (i,j) counted n-th where set0 is infinite and set1 is finite
 (define (pair-infinite-cross-finite n set0 set1)
@@ -257,4 +286,7 @@
 ; (define (count-tm tm))
 
 ;; Given the number, return the Turing machine
-; (define (uncount-tm n))
+;(define (uncount-tm n)
+;  (pair-infinite-cross-finite n STATES 
+;                              (pair finite-cross-finite 
+;  )

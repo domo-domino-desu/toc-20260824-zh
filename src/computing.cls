@@ -214,15 +214,16 @@
 
 % Clear to an odd page with empty pages in between
 \newcommand{\clearemptydoublepage}{% clear to right page
-  \newpage{\pagestyle{empty}% 
+  \newpage{\pagestyle{empty}\thispagestyle{empty}% 
     \cleardoublepage}}
 % Clear to an even-numbered page, with blank pages between
 % https://tex.stackexchange.com/a/365249/121234
 \newcommand*{\cleartoleftpage}{%
   \clearpage
+  \thispagestyle{empty}\pagestyle{empty}
     \if@twoside
     \ifodd\c@page
-      \hbox{}\thispagestyle{empty}\newpage
+      \hbox{}\thispagestyle{empty}\pagestyle{empty}\newpage
       \if@twocolumn
         \hbox{}\newpage
       \fi
@@ -307,7 +308,7 @@
 \addtolength{\jh@eventotaloutermargin}{1in}
 \newcommand{\chapteropen}[3][\relax]{%
   \cleartoleftpage
-  \thispagestyle{empty}%
+  \thispagestyle{bookemptypage}%
   \vspace*{\stretch{1}}  % vertically center on the page
   {\noindent\hspace*{-\jh@eventotaloutermargin}% Move everything left by \evensidemargin
   % The graphicx package will pick the smaller of the height and width
@@ -500,6 +501,7 @@
   \setcounter{subsection}{0}
   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
+  \markright{Extra \thesection{}. #1}%
 \extrasection{#1}}
 % These are optional topics that are covered at the end of each chapter.  The
 % formatting of theorems, exercises, etc. is a bit looser.
@@ -1046,11 +1048,11 @@
     \else
       \edef\@ResetGT{\noexpand\catcode\@tempa=\the\catcode\@tempa}%
       \@makeother\>%
-    \fi
+    \fi%
     \def\@doanenote##1##2>{\def\@theenmark{##1}\par\begingroup
         \@ResetGT
         \edef\@currentlabel{\csname p@endnote\endcsname\@theenmark}%
-        \enoteformat}
+        \enoteformat}%
     \def\@endanenote{\par\endgroup}%
     \enoteheading
     \enotesize
@@ -1061,7 +1063,8 @@
   \@mkboth{\notesname}{\notesname}}%
   \mbox{}\par\vskip-\baselineskip}
 
-\newcommand{\jhendnoteshook}{These are citations or discussions that
+  \newcommand{\jhendnoteshook}{%
+  These are citations or discussions that
   supplement the text body.
   Each has a word or phrase in italics from that text body, and 
   then the note is in plain text.
@@ -1069,6 +1072,8 @@
   }
 
 \newcommand{\printnotes}{%
+  % Table of Contents: make Notes aligned on left margin 
+  \addtocontents{toc}{\protect\setlength{\protect\cftchapnumwidth}{0em}}
   \newpage
   \begingroup
   \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
@@ -1086,7 +1091,7 @@
   % \hangparas{-2em}{-1}
   \renewcommand{\sectiontitlecontents}[1]{\relax} % Cause the "Section One.II" not to printed.
   \vspace*{0.25ex plus 0.02ex}
-  \pagestyle{endmatter}\thispagestyle{bookemptypage}
+  \pagestyle{endmatter}\thispagestyle{bookemptypage}%
   \theendnotes
   \restoregeometry  % Matches the \newgeometry after the \begingroup
   \endgroup
@@ -1096,7 +1101,8 @@
 % TABLE OF CONTENTS
 \usepackage{tocloft}
 \tocloftpagestyle{empty}
-\setlength{\cftchapnumwidth}{1.25em}
+\setlength{\cftchapindent}{0em}
+\setlength{\cftchapnumwidth}{1.25em}  % see also \printnotes
 \setlength{\cftsecindent}{1em}
 \setlength{\cftsecnumwidth}{1.25em}
 \setlength{\cftsubsecindent}{2.5em}
@@ -1105,8 +1111,8 @@
 % from tocloft.sty; hack to make it print roman chapter number
 % I can't figure out hos to have jhchapter work, so I am putting a
 % \addcontentsline in the \chapter defn
-\newcommand{\l@jhchapter}[2]{\relax}
-\let\l@extrasection\l@section %
+\newcommand{\l@jhchapter}[2]{\relax}%
+\let\l@extrasection\l@section%
 
 
 %============= listings =============================

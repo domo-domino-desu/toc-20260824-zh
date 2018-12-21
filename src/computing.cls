@@ -717,7 +717,8 @@
  
 
 \usepackage{mdframed}
-\mdfsetup{skipabove=0pt,skipbelow=0pt}  % remove whitespace between theorems
+\mdfsetup{skipabove=1.5pt plus 0.2pt minus 0.1pt,
+          skipbelow=1.5pt plus 0.2pt minus 0.1pt}  % small whitespace between theorems
 % \usepackage{tablefootnote} % print footnotes at bottom of page https://tex.stackexchange.com/a/113693/121234
 
 % \newcounter{mdFootnoteValueSaver}

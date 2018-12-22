@@ -821,3 +821,279 @@ draw(p, va, vb, vc, vd, ve);
 
 shipout(format("graphs%02d",picnum),p,format="pdf");
 
+
+
+
+// ======================== illustration of coloring problem =============
+int picnum = 16;
+picture p;
+
+// define nodes
+node va=ncircle("$A$",ns_bleachedbg),
+     vb=ncircle("$B$",ns_light),
+     vc=ncircle("$C$",ns_bleachedbg),
+     vd=ncircle("$D$",ns_light),
+     ve=ncircle("$E$",ns_bleachedbold);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+vb.pos = new_node_pos_h(va, 20.0, 1.0*u);
+hlayout(2*u, va, vc);
+ve.pos = new_node_pos_h(va, -45.0, 0.60*u);
+hlayout(0.9*u, ve, vd);
+// vd.pos = new_node_pos_h(vc, -130.0, -0.67*u);
+
+// draw edges
+draw(p,
+     (va--vd),
+     (va--ve),
+     (vb--ve),
+     (vc--ve)
+    );
+
+// draw nodes
+draw(p, va, vb, vc, vd, ve);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+// ======================== color cell towers =============
+int picnum = 17;
+picture p;
+
+// define nodes
+node v0=ncircle("$v_0$"),
+     v1=ncircle("$v_1$"),
+     v2=ncircle("$v_2$"),
+     v3=ncircle("$v_3$"),
+     v4=ncircle("$v_4$"),
+     v5=ncircle("$v_5$"),
+     v6=ncircle("$v_6$"),
+     v7=ncircle("$v_7$"),
+     v8=ncircle("$v_8$"),
+     v9=ncircle("$v_9$"),
+     v10=ncircle("$v_{10}$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+hlayout(1*u, v0, v1, v2);
+vlayout(1*v, v0, v3, v7);
+hlayout(1*u, v3, v4, v5, v6);
+hlayout(1*u, v7, v8, v9, v10);
+
+// draw edges
+draw(p,
+     (v0--v1),
+     (v0--v3),
+     (v1--v2),
+     (v1--v4),
+     (v2--v5),
+     (v3--v7),
+     (v5--v6),
+     (v6--v9),
+     (v7--v8),
+     (v0--v3),
+     (v8--v9),
+     (v9--v10)
+    );
+
+// draw nodes
+draw(p, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+// ======================== isomorphism exercise =============
+int picnum = 18;
+picture p;
+
+// define nodes
+node va=ncircle("$A$"),
+     vb=ncircle("$B$"),
+     vc=ncircle("$C$"),
+     vx=ncircle("$X$"),
+     vy=ncircle("$Y$"),
+     vz=ncircle("$Z$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+hlayout(1*u, va, vb, vc);
+vlayout(1*v, va, vx);
+hlayout(1*u, vx, vy, vz);
+
+// draw edges
+draw(p,
+     (va--vx),
+     (va--vy),
+     (va--vz),
+     (vb--vx),
+     (vb--vy),
+     (vb--vz),
+     (vc--vx),
+     (vc--vy),
+     (vc--vz)
+    );
+
+// draw nodes
+draw(p, va, vb, vc, vx, vy, vz);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+
+// ======================== isomorphism problem  =============
+int picnum = 19;
+picture p;
+
+// define nodes
+// define nodes
+node[] n = ncircles( "$a$",
+		     "$x$",
+		     "$b$",
+		     "$y$",
+		     "$c$",
+		     "$z$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+circularlayout(0.8*u, startangle=90, n);
+
+// draw edges
+draw(p,
+     (n[0]--n[1]),
+     (n[0]--n[3]),
+     (n[0]--n[5]),
+     (n[2]--n[1]),
+     (n[2]--n[3]),
+     (n[2]--n[5]),
+     (n[4]--n[1]),
+     (n[4]--n[3]),
+     (n[4]--n[5])
+    );
+
+// draw nodes
+draw(p, n);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+// ======================== color US =============
+int picnum = 20;
+picture p;
+
+// define nodes
+// vAl.pos=(32.806671u,-86.791130v);
+// vAk.pos=(61.370716u,-152.404419v);
+// vAz.pos=(33.729759u,-111.431221v);
+// vAr.pos=(34.969704u,-92.373123v);
+// vCa.pos=(36.116203u,-119.681564v);
+// vCo.pos=(39.059811u,-105.311104v);
+// vCt.pos=(41.597782u,-72.755371v);
+// vDe.pos=(39.318523u,-75.507141v);
+// // District of Columbia	38.897438	-77.026817
+// vFl.pos=(27.766279u,-81.686783v);
+// vGa.pos=(33.040619u,-83.643074v);
+// vHi.pos=(21.094318u,-157.498337v);
+// vId.pos=(44.240459u,-114.478828v);
+// vIl.pos=(40.349457u,-88.986137v);
+// vIn.pos=(39.849426u,-86.258278v);
+// vIa.pos=(42.011539u,-93.210526v);
+// vKs.pos=(38.526600u,-96.726486v);
+// vKy.pos=(37.668140u,-84.670067v);
+// vLa.pos=(31.169546u,-91.867805v);
+// vMe.pos=(44.693947u,-69.381927v);
+// vMd.pos=(39.063946u,-76.802101v);
+// vMa.pos=(42.230171u,-71.530106v);
+// vMi.pos=(43.326618u,-84.536095v);
+// vMn.pos=(45.694454u,-93.900192v);
+// vMs.pos=(32.741646u,-89.678696v);
+// vMo.pos=(38.456085u,-92.288368v);
+// vMt.pos=(46.921925u,-110.454353v);
+// vNe.pos=(41.125370u,-98.268082v);
+// vNv.pos=(38.313515u,-117.055374v);
+// vNh.pos=(43.452492u,-71.563896v);
+// vNj.pos=(40.298904u,-74.521011v);
+// vNm.pos=(34.840515u,-106.248482v);
+// vNy.pos=(42.165726u,-74.948051v);
+// vNc.pos=(35.630066u,-79.806419v);
+// vNd.pos=(47.528912u,-99.784012v);
+// vOh.pos=(40.388783u,-82.764915v);
+// vOk.pos=(35.565342u,-96.928917v);
+// vOr.pos=(44.572021u,-122.070938v);
+// vPa.pos=(40.590752u,-77.209755v);
+// vRi.pos=(41.680893u,-71.511780v);
+// vSc.pos=(33.856892u,-80.945007v);
+// vSd.pos=(44.299782u,-99.438828v);
+// vTn.pos=(35.747845u,-86.692345v);
+// vTx.pos=(31.054487u,-97.563461v);
+// vUt.pos=(40.150032u,-111.862434v);
+// uVt.pos=(44.045876u,-72.710686v);
+// uVa.pos=(37.769337u,-78.169968v);
+// vWa.pos=(47.400902u,-121.490494v);
+// vWv.pos=(38.491226u,-80.954453v);
+// vWi.pos=(44.268543u,-89.616508v);
+// vWy.pos=(42.755966u,-107.302490v);
+
+node v0=ncircle("$v_0$"),
+     v1=ncircle("$v_1$"),
+     v2=ncircle("$v_2$"),
+     v3=ncircle("$v_3$"),
+     v4=ncircle("$v_4$"),
+     v5=ncircle("$v_5$"),
+     v6=ncircle("$v_6$"),
+     v7=ncircle("$v_7$"),
+     v8=ncircle("$v_8$"),
+     v9=ncircle("$v_9$"),
+     v10=ncircle("$v_{10}$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+hlayout(1*u, v0, v1, v2);
+vlayout(1*v, v0, v3, v7);
+hlayout(1*u, v3, v4, v5, v6);
+hlayout(1*u, v7, v8, v9, v10);
+
+// draw edges
+draw(p,
+     (v0--v1),
+     (v0--v3),
+     (v1--v2),
+     (v1--v4),
+     (v2--v5),
+     (v3--v7),
+     (v5--v6),
+     (v6--v9),
+     (v7--v8),
+     (v0--v3),
+     (v8--v9),
+     (v9--v10)
+    );
+
+// draw nodes
+draw(p, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+

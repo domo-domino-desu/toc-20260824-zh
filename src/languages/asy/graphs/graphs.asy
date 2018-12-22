@@ -1001,99 +1001,286 @@ int picnum = 20;
 picture p;
 
 // define nodes
-// vAl.pos=(32.806671u,-86.791130v);
-// vAk.pos=(61.370716u,-152.404419v);
-// vAz.pos=(33.729759u,-111.431221v);
-// vAr.pos=(34.969704u,-92.373123v);
-// vCa.pos=(36.116203u,-119.681564v);
-// vCo.pos=(39.059811u,-105.311104v);
-// vCt.pos=(41.597782u,-72.755371v);
-// vDe.pos=(39.318523u,-75.507141v);
-// // District of Columbia	38.897438	-77.026817
-// vFl.pos=(27.766279u,-81.686783v);
-// vGa.pos=(33.040619u,-83.643074v);
-// vHi.pos=(21.094318u,-157.498337v);
-// vId.pos=(44.240459u,-114.478828v);
-// vIl.pos=(40.349457u,-88.986137v);
-// vIn.pos=(39.849426u,-86.258278v);
-// vIa.pos=(42.011539u,-93.210526v);
-// vKs.pos=(38.526600u,-96.726486v);
-// vKy.pos=(37.668140u,-84.670067v);
-// vLa.pos=(31.169546u,-91.867805v);
-// vMe.pos=(44.693947u,-69.381927v);
-// vMd.pos=(39.063946u,-76.802101v);
-// vMa.pos=(42.230171u,-71.530106v);
-// vMi.pos=(43.326618u,-84.536095v);
-// vMn.pos=(45.694454u,-93.900192v);
-// vMs.pos=(32.741646u,-89.678696v);
-// vMo.pos=(38.456085u,-92.288368v);
-// vMt.pos=(46.921925u,-110.454353v);
-// vNe.pos=(41.125370u,-98.268082v);
-// vNv.pos=(38.313515u,-117.055374v);
-// vNh.pos=(43.452492u,-71.563896v);
-// vNj.pos=(40.298904u,-74.521011v);
-// vNm.pos=(34.840515u,-106.248482v);
-// vNy.pos=(42.165726u,-74.948051v);
-// vNc.pos=(35.630066u,-79.806419v);
-// vNd.pos=(47.528912u,-99.784012v);
-// vOh.pos=(40.388783u,-82.764915v);
-// vOk.pos=(35.565342u,-96.928917v);
-// vOr.pos=(44.572021u,-122.070938v);
-// vPa.pos=(40.590752u,-77.209755v);
-// vRi.pos=(41.680893u,-71.511780v);
-// vSc.pos=(33.856892u,-80.945007v);
-// vSd.pos=(44.299782u,-99.438828v);
-// vTn.pos=(35.747845u,-86.692345v);
-// vTx.pos=(31.054487u,-97.563461v);
-// vUt.pos=(40.150032u,-111.862434v);
-// uVt.pos=(44.045876u,-72.710686v);
-// uVa.pos=(37.769337u,-78.169968v);
-// vWa.pos=(47.400902u,-121.490494v);
-// vWv.pos=(38.491226u,-80.954453v);
-// vWi.pos=(44.268543u,-89.616508v);
-// vWy.pos=(42.755966u,-107.302490v);
-
-node v0=ncircle("$v_0$"),
-     v1=ncircle("$v_1$"),
-     v2=ncircle("$v_2$"),
-     v3=ncircle("$v_3$"),
-     v4=ncircle("$v_4$"),
-     v5=ncircle("$v_5$"),
-     v6=ncircle("$v_6$"),
-     v7=ncircle("$v_7$"),
-     v8=ncircle("$v_8$"),
-     v9=ncircle("$v_9$"),
-     v10=ncircle("$v_{10}$");
+node
+vAl=ncircle("\tiny AL"),
+// vAk=ncircle("\tiny AK"),
+vAz=ncircle("\tiny AZ"),
+vAr=ncircle("\tiny AR"),
+vCa=ncircle("\tiny CA"),
+vCo=ncircle("\tiny CO"),
+vCt=ncircle("\tiny CT"),
+vDe=ncircle("\tiny DE"),
+vFl=ncircle("\tiny FL"),
+vGa=ncircle("\tiny GA"),
+// vHi=ncircle("\tiny HI"),
+vId=ncircle("\tiny ID"),
+vIl=ncircle("\tiny IL"),
+vIn=ncircle("\tiny IN"),
+vIa=ncircle("\tiny IA"),
+vKs=ncircle("\tiny KS"),
+vKy=ncircle("\tiny KY"),
+vLa=ncircle("\tiny LA"),
+vMe=ncircle("\tiny ME"),
+vMd=ncircle("\tiny MD"),
+vMa=ncircle("\tiny MA"),
+vMi=ncircle("\tiny MI"),
+vMn=ncircle("\tiny MN"),
+vMs=ncircle("\tiny MS"),
+vMo=ncircle("\tiny MO"),
+vMt=ncircle("\tiny MT"),
+vNe=ncircle("\tiny NE"),
+vNv=ncircle("\tiny NV"),
+vNh=ncircle("\tiny NH"),
+vNj=ncircle("\tiny NJ"),
+vNm=ncircle("\tiny NM"),
+vNy=ncircle("\tiny NY"),
+vNc=ncircle("\tiny NC"),
+vNd=ncircle("\tiny ND"),
+vOh=ncircle("\tiny OH"),
+vOk=ncircle("\tiny OK"),
+vOr=ncircle("\tiny OR"),
+vPa=ncircle("\tiny PA"),
+vRi=ncircle("\tiny RI"),
+vSc=ncircle("\tiny SC"),
+vSd=ncircle("\tiny SD"),
+vTn=ncircle("\tiny TN"),
+vTx=ncircle("\tiny TX"),
+vUt=ncircle("\tiny UT"),
+vVt=ncircle("\tiny VT"),
+vVa=ncircle("\tiny VA"),
+vWa=ncircle("\tiny WA"),
+vWv=ncircle("\tiny WV"),
+vWi=ncircle("\tiny WI"),
+vWy=ncircle("\tiny WY");
 
 // layout
 defaultlayoutrel = false;
 defaultlayoutskip = 1cm;
-real u = defaultlayoutskip;
-real v = 0.80*u;
-
-hlayout(1*u, v0, v1, v2);
-vlayout(1*v, v0, v3, v7);
-hlayout(1*u, v3, v4, v5, v6);
-hlayout(1*u, v7, v8, v9, v10);
-
+real u=0.5*defaultlayoutskip;
+real v=1*u;
+       
+vAl.pos=( -86.791130u,32.806671v);
+vAz.pos=(-111.431221u,33.729759v);
+vAr.pos=( -92.373123u,34.969704v);
+vCa.pos=(-119.681564u,36.116203v);
+vCo.pos=(-105.311104u,39.059811v);
+vCt.pos=( -72.755371u,41.597782v);
+vDe.pos=( -75.507141u,39.318523v);
+vFl.pos=( -81.686783u,27.766279v);
+vGa.pos=( -83.643074u,33.040619v);
+vId.pos=(-114.478828u,44.240459v);
+vIl.pos=( -88.986137u,40.349457v);
+vIn.pos=( -86.258278u,39.849426v);
+vIa.pos=( -93.210526u,42.011539v);
+vKs.pos=( -96.726486u,38.526600v);
+vKy.pos=( -84.670067u,37.668140v);
+vLa.pos=( -91.867805u,31.169546v);
+vMe.pos=( -69.381927u,44.693947v);
+vMd.pos=( -76.802101u,39.063946v);
+// was: vMa.pos=( -71.530106u,42.230171v);  Moved to show lines
+vMa.pos=( -73.530106u,42.530171v);
+vMi.pos=( -84.536095u,43.326618v);
+vMn.pos=( -93.900192u,45.694454v);
+vMs.pos=( -89.678696u,32.741646v);
+vMo.pos=( -92.288368u,38.456085v);
+vMt.pos=(-110.454353u,46.921925v);
+vNe.pos=( -98.268082u,41.125370v);
+vNv.pos=(-117.055374u,38.313515v);
+vNh.pos=( -71.563896u,43.452492v);
+vNj.pos=( -74.521011u,40.298904v);
+vNm.pos=(-106.248482u,34.840515v);
+vNy.pos=( -74.948051u,42.165726v);
+vNc.pos=( -79.806419u,35.630066v);
+vNd.pos=( -99.784012u,47.528912v);
+vOh.pos=( -82.764915u,40.388783v);
+vOk.pos=( -96.928917u,35.565342v);
+vOr.pos=(-122.070938u,44.572021v);
+vPa.pos=( -77.209755u,40.590752v);
+vRi.pos=( -71.511780u,41.680893v);
+vSc.pos=( -80.945007u,33.856892v);
+vSd.pos=( -99.438828u,44.299782v);
+vTn.pos=( -86.692345u,35.747845v);
+vTx.pos=( -97.563461u,31.054487v);
+vUt.pos=(-111.862434u,40.150032v);
+vVt.pos=( -72.710686u,44.045876v);
+vVa.pos=( -78.169968u,37.769337v);
+vWa.pos=(-121.490494u,47.400902v);
+vWv.pos=( -80.954453u,38.491226v);
+vWi.pos=( -89.616508u,44.268543v);
+vWy.pos=(-107.302490u,42.755966v);
+// vAk.pos=(-152.404419u,61.370716v);
+// vHi.pos=(-157.498337u,21.094318v);
+// District of Columbia	38.897438	-77.026817
+	
+	
 // draw edges
 draw(p,
-     (v0--v1),
-     (v0--v3),
-     (v1--v2),
-     (v1--v4),
-     (v2--v5),
-     (v3--v7),
-     (v5--v6),
-     (v6--v9),
-     (v7--v8),
-     (v0--v3),
-     (v8--v9),
-     (v9--v10)
-    );
-
+     // New England
+     (vMe--vNh),
+     (vNh--vVt),
+     (vNh--vMa),
+     (vVt--vNy),
+     (vVt--vMa),
+     (vMa--vCt),
+     (vMa--vRi),
+     (vMa--vNy),
+     (vCt--vNy),
+     (vCt--vRi),
+     // Midwest
+     (vNy--vPa),
+     (vNy--vNj),
+     (vNj--vDe),
+     (vPa--vNj),
+     (vPa--vMd),
+     (vPa--vWv),
+     (vPa--vDe),
+     (vPa--vOh),
+     (vOh--vMi),
+     (vOh--vIn),
+     (vOh--vKy),
+     (vOh--vWv),
+     (vWv--vKy),
+     (vWv--vVa),
+     (vMd--vVa),
+     (vMd--vDe),
+     (vMd--vWv),
+     (vVa--vKy),
+     (vVa--vTn),
+     (vVa--vNc),
+     (vKy--vIn),
+     (vKy--vIl),
+     (vKy--vMo),
+     (vKy--vTn),
+     (vMi--vWi),
+     (vMi--vIn),
+     (vWi--vMn),
+     (vWi--vIa),
+     (vIl--vWi),
+     (vIl--vIa),
+     (vIl--vMo),
+     (vIl--vIn),
+     // South
+     (vNc--vTn),
+     (vNc--vGa),
+     (vNc--vSc),
+     (vTn--vMo),
+     (vTn--vAr),
+     (vTn--vMs),
+     (vTn--vAl),
+     (vTn--vGa),
+     (vSc--vGa),
+     (vTx--vAr),
+     (vMs--vAr),
+     (vMs--vLa),
+     (vMs--vAl),
+     (vLa--vAr),
+     (vAl--vFl),
+     (vAl--vGa),
+     (vGa--vFl),
+     // west of Mississippi river
+     (vMn--vNd),
+     (vMn--vSd),
+     (vMn--vIa),
+     (vNd--vMt),
+     (vNd--vMn),
+     (vNd--vSd),
+     (vSd--vMn),
+     (vSd--vWy),
+     (vSd--vNe),
+     (vNe--vWy),
+     (vNe--vCo),
+     (vNe--vKs),
+     (vNe--vMo),
+     (vIa--vSd),
+     (vIa--vNe),
+     (vIa--vMo),
+     (vMo--vKs),
+     (vMo--vOk),
+     (vMo--vAr),
+     (vKs--vCo),
+     (vKs--vOk),
+     (vOk--vCo),
+     (vOk--vNm),
+     (vOk--vTx),
+     (vOk--vAr),
+     (vTx--vNm),
+     (vTx--vLa),
+     (vMt--vId),
+     (vMt--vWy),
+     (vMt--vSd),
+     (vId--vWa),
+     (vId--vOr),
+     (vId--vNv),
+     (vId--vUt),
+     (vId--vWy),
+     (vWy--vUt),
+     (vWy--vCo),
+     (vUt--vNv),
+     (vUt--vCo),
+     (vUt--vAz),
+     (vCo--vNm),
+     (vAz--vNv),
+     (vAz--vCa),
+     (vAz--vNm),
+     // West coast
+     (vWa--vOr),
+     (vOr--vCa),
+     (vOr--vNv),
+     (vCa--vNv)
+    );	
+	
 // draw nodes
-draw(p, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+draw(p,
+     vAl,
+     //     vAk,
+     vAz,
+     vAr,
+     vCa,
+     vCo,
+     vCt,
+     vDe,
+     vFl,
+     vGa,
+     //  vHi,
+     vId,
+     vIl,
+     vIn,
+     vIa,
+     vKs,
+     vKy,
+     vLa,
+     vMe,
+     vMd,
+     vMa,
+     vMi,
+     vMn,
+     vMs,
+     vMo,
+     vMt,
+     vNe,
+     vNv,
+     vNh,
+     vNj,
+     vNm,
+     vNy,
+     vNc,
+     vNd,
+     vOh,
+     vOk,
+     vOr,
+     vPa,
+     vRi,
+     vSc,
+     vSd,
+     vTn,
+     vTx,
+     vUt,
+     vVt,
+     vVa,
+     vWa,
+     vWv,
+     vWi,
+     vWy
+);
 
 shipout(format("graphs%02d",picnum),p,format="pdf");
-

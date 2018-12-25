@@ -1,31 +1,31 @@
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as far more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/pix/waterstrider.jpg}{Computational Complexity}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 
-In the first part of this book we asked what can be done mechanically.
-Once you know that a task can be done at all then a natural next step is to
-do it efficiently. in a practical time
-(or space, or some other computational resource).
+In the first part of this book we asked what can be done at all, mechanically.
+Once you know that a task can be done, then a natural next step is to
+look to do it efficiently, in a practical time
+or practical space, or by being parsimonious with
+some other computational resource.
 
-The Theory of Computing began in the 1930's.
-There were no physical computers and 
-the theory's initial phase had an abstract mathematical feel.
-Researchers including Turing, Church,
-and Kleene were driven by considerations such as the
+When the Theory of Computing began
+there were no physical computers.
+Researchers were driven by considerations such as the
 \textit{Entscheidungsproblem}.
-Their subject was interesting, the questions compelling, and there were
-plenty of problems.
+The subject was interesting, the questions compelling, and there were
+plenty of problems, but
+the initial phase had an abstract feel.
 
-When actual computers became increasingly available, people in many fields
-began working on algorithms to solve their problems, 
-Theory of Computing researchers responded.
+When actual computers became widely available, people in many fields
+began working on algorithms to solve their problems. 
+The Theory of Computing responded, and blossomed.
 Starting in the 1970's and gaining strength during the 1980's and 1990's,
-the subject has become driven more by
-questions at least originating in applied fields.
+the subject has incorporated many more
+questions that at least originate in applied fields.
 These fields need that the answers are
-feasible, so
-concerns such as algorithm running time have grown in relative importance.
+feasible so concerns about the practicality of algorithms
+have grown in importance.
 
-Because of this,
-we start this part by reviewing the orders of growth of functions.
+We start this part by reviewing how we measure algorithm practicality,
+the orders of growth of functions.
 As this is a review, we will not give a detailed development,
 just enough for our needs.
 
@@ -54,7 +54,7 @@ Here is a multiplication problem.
 \begin{equation*}
   \begin{array}{@{}r@{}}
     678\\
-    \times 42\\
+    \times\, 42\\
    \hline
     1356\\
    +27120\\  \hline
@@ -117,10 +117,10 @@ about `less than or equal to'.
 
 
 \subsection{Motivation}
-\begin{TODO}
-Illustrate lookup times
-\url{https://funcall.blogspot.com/2016/01/alist-vs-hash-table.html}
-\end{TODO}
+% \begin{TODO}
+% Illustrate lookup times
+% \url{https://funcall.blogspot.com/2016/01/alist-vs-hash-table.html}
+% \end{TODO}
 Suppose that we have a job to do and two algorithms with which to do it.
 These have the property that when the input is size~$n\in\N$, in the worst case
 the first algorithm takes about $\sqrt{n}$~many ticks 
@@ -331,12 +331,11 @@ logarithm.
 
 We have mentioned that the
 function comparison definition given below disregards constant factors.
-The formula relating bases for logarithmic functions 
-$\lg(x)=(1/\log_{b}(2))\cdot\log_b(x)$ shows that any two differ by a
-multiplicative factor.
-Thus, even the logarithm's base does not matter:
-we may say that the number of bits is
-``a'' logarithmic function.
+The formula for converting among logarithmic functions with different bases, 
+$\log_c(x)=(1/\log_{b}(c))\cdot\log_b(x)$, shows that they differ
+only by a multiplicative factor.
+So even the base does not matter:~we may say that the number of bits
+is ``a'' logarithmic function.
 \end{example}
 
 
@@ -344,119 +343,146 @@ we may say that the number of bits is
 
 % ......................
 \subsection{Definition}
-We are studying functions that describe machine resource use.
-Typically the size of the machine's inputs and of its outputs,
+We are studying how algorithms use machine resources.
+The sizes of a machine's resources,
+such as the size of inputs and outputs,
 are natural numbers.
+So a first guess may be that we should study the growth of
+natural number functions.
+However, above we have already found useful
+a function that takes reals to reals, $\lg$,
+that takes reals to reals so we will consider real functions.\footnote{%
+  When we have a function  that takes natural
+  number arguments, such as the factorial,
+  we can consider it a real function by extending it,
+  for instance as $f(x)=\floor{x}!$.}
+Note that the function $f(x)=\lg(x)$
+gives negative values for some arguments,
+and is not even defined for arguments less than or equal to~$0$,
+so we will extend beyond those real functions with positive values.
 
 \begin{definition}
-A \definend{natural number function} has domain~$\N$ and
-codomain~$\N$.\footnotemark[1]
-\end{definition}\footnotetext[1]{
-  In this discussion we have already used a function, $\lg$,
-  that takes real number inputs and gives real number outputs,
-  gives negative outputs for some of those inputs,
-  and is not even defined on the input~$0$.
-  But all of the functions that
-  we will use are defined and nonnegative eventually,
-  meaning that there is a large enough $N\in\N$
-  so that if $x>N$ then $f(x)$ is defined and nonnegative.
-  So that won't interfere with the use of the big-O definition.
-  And, if we are working with a function whose
-  outputs are not restricted to the natural numbers then
-  we can instead consider the ceiling $\ceiling{f}$.
-  So for our purposes natural number functions suffice.}
+A function~$f$ with real values and real arguments is a
+\definend{complexity function}
+if (1) its domain is  unbounded in that there is a number~$N$
+such that $x\geq N$ implies that $f(x)$ is defined,
+and (2)~it is eventually nonnegative in that
+there exists a number~$M$ so that
+$x\geq M$ implies that $f(x)\geq 0$.
+\end{definition}
 
+
+% \begin{definition}
+% A \definend{natural number function} has domain~$\N$ and
+% codomain~$\N$.% \footnotemark[1]
+% \end{definition}% \footnotetext[1]{
+%   In this discussion we have already used a function, $\lg$,
+%   that takes real number inputs and gives real number outputs,
+%   gives negative outputs for some of those inputs,
+%   and is not even defined on the input~$0$.
+%   But all of the functions that
+%   we will use are defined and nonnegative eventually,
+%   meaning that there is a large enough $N\in\N$
+%   so that if $x>N$ then $f(x)$ is defined and nonnegative.
+%   So that won't interfere with the use of the big-O definition.
+%   And, if we are working with a function whose
+%   outputs are not restricted to the natural numbers then
+%   we can instead consider the ceiling $\ceiling{f}$.
+%   So for our purposes natural number functions suffice.}
+
+  
 \begin{definition}  \label{def:BigO}
-  Let $g$ be a natural number function.
+  Let $g$ be a complexity function with domain~$D$.
   Then \definend{$\bigOh(g)$}, read ``big-O of $g$,''
-  is the collection of natural number functions~$f$
-  satisfying:~there are numbers $N,C\in\N$ so that 
+  is the collection of complexity functions~$f$ with domain~$D$
+  satisfying:~there are numbers $N,C\in D$ so that 
   whenever $n\geq N$ then $C\cdot g(n)\geq f(n)$. 
-  We say that \definend{$f$ is in $\bigOh(g)$},
+  We say that \definend{$f\in \bigOh(g)$},
   or that \definend{$f$ is $\bigOh(g)$},
   or that \definend{$f=\bigOh(g)$}.
 \end{definition}
 
-Think of `$f$ is $\bigOh(g)$' as meaning that
-$f$'s growth rate is less than or equal to $g$'s rate
-(some authors highlight this intuition by writing $f\ll g$
-if $f$ is $\bigOh(g)$ but it is not the case that
-$g$ is $\bigOh(f)$).
-These illustrate.
-\begin{center}
-  \includegraphics{complexity/asy/bigo/bigo10.pdf}
-  \hspace{3em}
-  \includegraphics{complexity/asy/bigo/bigo11.pdf}  
-\end{center}
-The sketch on the left has $g$ accelerating away
-from~$f$ so $f$ is~$\bigOh(g)$ since
-its rate is smaller.
-The sketch on the right is that $f$ is~$\bigOh(g)$ because
-the rates are alike.
-
 \begin{remark}
-  \begin{parenum}
+\begin{parenum}
+  \item The term `complexity function' is not standard.
+    We shall find it convenient for stating the results below.
     \item
-      We use the letter `O' because this is about the order of growth.
+      We use the letter `$\bigOh$' because this is about the order of growth.
       % although the $\bigOh$~symbol only expresses an
       % upper bound.
     \item
       The `$f=\bigOh(g)$' notation is awkward but 
-      standard.\footnotemark[2]
-      The notation `$f\in\bigOh(g)$' is correct but not common.
+      standard.\footnotemark[1]
+      The notation `$f\in\bigOh(g)$' is better but not as common.
     \item
       Some authors allow negative real outputs and write the
       inequality with absolute values, 
       $f(x)\leq C\cdot |g(x)|$.
     \item
-      You often see constructions such as `$n^2+5n+6$ is $\bigOh(n^2)$',
-      replacing the named functions $f(n)=n^2+5n+6$ and $g(n)=n^2$
+      You often see statements such as `$n^2+5n+6$ is $\bigOh(n^2)$'
+      that replace the named functions $f(n)=n^2+5n+6$ and $g(n)=n^2$
       with expressions.
     \item
       Sometimes you see `$f$ is $\bigOh(g)$' stated as
       `$f(n)$ is $\bigOh(g(n))$'.
       Strictly speaking, this is
-      wrong\Dash $f(n)$ and $g(n)$ are numbers, not functions, and big-O
-      is a relationship between functions.
+      wrong because $f(n)$ and $g(n)$ are numbers, not functions.
   \end{parenum}
-  \end{remark}\footnotetext[2]{%
+  \end{remark}\footnotetext[1]{%
         One way that it is awkward is that it does not follow the usual rules
-        of equality so for instance
+        of equality; for instance
         you cannot rewrite it as `$\protect\bigOh(g)=f$'.
         Another way is that $n=\bigOh(n^2)$ and $n^2=\bigOh(n^2)$ does not
         allow us to conclude that $n=n^2$.}
 
+Think of `$f$ is $\bigOh(g)$' as meaning that
+$f$'s growth rate is less than or equal to $g$'s rate.
+% (some authors highlight this intuition by writing $f\ll g$
+% if $f$ is $\bigOh(g)$ but it is not the case that
+% $g$ is $\bigOh(f)$).
+These illustrate; the sketch on the left suggests that $g$ is accelerating away
+from~$f$, that $g$'s growth rate is greater than $f$'s.
+The sketch on the right has the two tracking together, 
+so their rates are alike.
+
+\begin{center}
+  \includegraphics{complexity/asy/bigo/bigo10.pdf}
+  \hspace{3em}
+  \includegraphics{complexity/asy/bigo/bigo11.pdf}  
+\end{center}
+
 \begin{example} \label{ex:BigOFromDefn}
-  To directly apply the definition, given two functions we must produce
-  suitable $N$ and~$C$, and verify that they work.
+  To apply the definition to two functions 
+  we must produce
+  suitable $N$ and~$C$ and verify that they work.
   Let $f(n)=n^2$ and $g(n)=n^3$.
-  Then $f$ is~$\bigOh(g)$, as $N=2$ and $C=1$ witness.
+  Then $f$ is~$\bigOh(g)$, as witnessed by $N=2$ and $C=1$.
   The verification is that $n>2$ implies that $g(n)=n^3=n\cdot n^2$ is greater
   than $2\cdot n^2$, which is greater than $n^2=1\cdot f(n)$.
 
-  Similarly, if $f(n)=5n^2$ and $g(n)=n^4$ then to show $f$ is $\bigOh(g)$
+  If $f(n)=5n^2$ and $g(n)=n^4$ then to show $f$ is $\bigOh(g)$
   take $N=2$ and $C=2$.
-  The verification:
+  The verification is that
   $n> 2$ implies that $C\cdot n^4=2\cdot n^2\cdot n^2\geq 8n^2> 5\cdot n^2$.
 \end{example}
 
-We've given the intuition that $f$ is~$\bigOh(g)$ if
-$f$'s growth rate is less than or equal to $g$'s growth rate.
-That differs from saying that $f$'s values are eventually less
-than~$g$'s.
+Don't confuse a function having values that are strictly smaller than another
+with its having a growth rate that is strictly smaller.
 
 \begin{example}
-  Take $f(n)=n^2+1$ and~$g(n)=n^2$, so that $g(n)<f(n)$ for all~$n$.
-  To verify that $f$ is~$\bigOh(g)$, take $N=2$ and~$C=2$ and 
-  if $n>N$ we can write $n=j+2$ for $j\in\N^+$, giving
-  that $C\cdot g(n)=2n^2=2(j+2)^2=2j^2+8j+8$ is greater than
-  $f(n)=(j+2)^2+1=j^2+4j+5$.
+Let $f(n)=n^2+1$ and~$g(n)=n^2$, so that $g$'s values are
+smaller than $f$'s.
+But $f$ is~$\bigOh(g)$.
+To verify, take $N=2$ and~$C=2$.
+Then for $n\geq N$ write $n=j+2$, giving
+$C\cdot g(n)=2n^2=2(j+2)^2=2j^2+8j+8$, which is greater than
+$f(n)=(j+2)^2+1=j^2+4j+5$.
 \end{example}
 
 \begin{example}
   The zero function~$Z$ is $\bigOh(g)$ for every
   $\map{g}{\N}{\N}$.
-  Just take $N=0$ and~$C=1$.
+  Verify with $N=0$ and~$C=1$.
 \end{example}
 
 \begin{example}
@@ -469,47 +495,13 @@ The function
          n^4  &\case{if $n$ is odd}
        \end{cases}
 \end{equation*}
-is not~$\bigOh(g)$ because there are
-arbitrarily large inputs~$n$ where $C=2$ does not suffice:
-if $n$ is odd and $n>2$  then $f(n)=n^4=n\cdot n^3> 2\cdot n^3$, and
-similar reasoning works for any~$C$.
-Likewise, $g$ is not~$\bigOh(f)$ because of its behavior even inputs.
+is not~$\bigOh(g)$ because when $n$ is odd, no~$C$ will suffice.
+For instance, $C=3$ does not suffice since there is no number $N$
+such that $n\geq N$ guarantees $3n^4\leq n^3$; on the contrary, if
+$n\geq 1$ then $3n^4=3n\cdot n^2\geq 3\cdot n^2>n^2$.
+Similar reasoning works for any~$C$.
+Likewise, $g$ is not~$\bigOh(f)$ because of $f$'s behavior on even inputs.
 \end{example}
-
-\begin{lemma}  \label{lem:BigOhReflexiveAndTransitive}
-  The big-O relation is reflexive:~$f$ is $\bigOh(f)$.
-  It is also transitive:~if $f$ is~$\bigOh(g)$ and $g$ is~$\bigOh(h)$ then
-  $f$ is~$\bigOh(h)$.
-\end{lemma}
-
-\begin{definition}
-  Two natural number functions have
-  \definend{the same growth rate} if both $f$ is~$\bigOh(g)$ and also
-  $g$ is~$\bigOh(f)$.
-  We say \definend{$f$ is $\bigTheta(g)$} or, what is the same thing,
-  $g$ is~$\bigTheta(f)$.
-\end{definition}
-
-\begin{lemma}  \label{lem:BigThetaEquivalence}
-  The relation between functions of having the same growth rate
-  is an equivalence.
-\end{lemma}
-
-\begin{fig}[fig:BigOhBeans]{Each bean encloses the set of
-    natural number functions $\map{f}{\N}{\N}$.
-    Quickly growing functions are at the top;
-    for instance, $f_0(n)=n^5$ is higher up than $f_1(n)=n^4$.
-    On the left the cone is $\bigOh(g)$ for some $g$.
-    It contains
-    functions with growth rate less than or equal to $g$'s rate.
-    The ellipse at the cone's top is $\bigTheta(g)$, those functions whose
-    growth rate equals $g$'s.
-    The cone on the right is shown with  
-    a subset $\bigOh(f)$ for some $f$ in~$\bigOh(g)$.}
-  \includegraphics{complexity/asy/bigo/bigo12.pdf}
-  \hspace{6em}
-  \includegraphics{complexity/asy/bigo/bigo13.pdf}
-\end{fig}
 
 
 \begin{lemma}[Algebraic properties]  \label{lem:BigOAlgProps}
@@ -528,7 +520,6 @@ Likewise, $g$ is not~$\bigOh(f)$ because of its behavior even inputs.
   the product $f_0f_1$ is $\bigOh(g_0g_1)$.
 \end{parenum}
 \end{lemma}
-
 
 \begin{example}
   The $\bigOh(f)$'s are sets.
@@ -555,69 +546,103 @@ Likewise, $g$ is not~$\bigOh(f)$ because of its behavior even inputs.
   \end{align*}
 \end{example}
 
+\begin{lemma}  \label{lem:BigOhReflexiveAndTransitive}
+  The big-O relation is reflexive, so $f$ is $\bigOh(f)$.
+  It is also transitive, so if $f$ is~$\bigOh(g)$ and $g$ is~$\bigOh(h)$ then
+  $f$ is~$\bigOh(h)$.
+\end{lemma}
+
+\begin{definition}
+  Two complexity functions have
+  \definend{the same growth rate} if both $f$ is~$\bigOh(g)$ and also
+  $g$ is~$\bigOh(f)$.
+  We say \definend{$f$ is $\bigTheta(g)$} or, what is the same thing,
+  $g$ is~$\bigTheta(f)$.
+\end{definition}
+
+\begin{lemma}  \label{lem:BigThetaEquivalence}
+  The relation between functions of having the same growth rate
+  is an equivalence.
+\end{lemma}
+
+\begin{fig}[fig:BigOhBeans]{Each bean encloses the set of
+    all complexity functions.
+    Quickly growing functions are at the top;
+    for instance, $f_0(n)=n^5$ is higher up than $f_1(n)=n^4$.
+    On the left is the cone $\bigOh(g)$ for some $g$.
+    It contains
+    functions with growth rate less than or equal to $g$'s rate.
+    The ellipse at the cone's top is $\bigTheta(g)$, those functions whose
+    growth rate are equivalent to $g$'s.
+    On the right the cone is shown with  
+    a subset $\bigOh(f)$ for some $f$ in~$\bigOh(g)$.}
+  \includegraphics{complexity/asy/bigo/bigo12.pdf}
+  \hspace{6em}
+  \includegraphics{complexity/asy/bigo/bigo13.pdf}
+\end{fig}
 
 Directly applying the defintion of
 $\bigOh$, as in \cref{ex:BigOFromDefn}, is sometimes the best way
 to go.
-But often
-this result makes the job easier.
+But 
+this result often makes the job easier.
 
 \begin{theorem}  \label{lem:LHBigO}
-  Let $f,g$ be natural number functions and suppose that 
+  Let $f,g$ be complexity functions and suppose that 
   $\lim_{n\to\infty}f(n)/g(n)$ exists and equals $L\in\R\cup\set{\infty}$.
-  \begin{parenum}
+  \begin{enumerate}
   \item If $L=\infty$ then $f$ grows faster than~$g$,
-    meaning that $g$ is~$\bigOh(f)$ but $f$ is not $\bigOh(g)$.
+    that is, $g$ is~$\bigOh(f)$ but $f$ is not $\bigOh(g)$.
   \item If $L=0$ then $g$ grows faster than~$f$,
-    so $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
-  \item If $L$ is strictly between $0$ and~$\infty$
-  then the two functions have the same growth rate so that
+    meaning that $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
+  \item 
+  If $0<L<\infty$   
+  then the two functions have the same growth rate, meaning that
     $f$ is $\bigOh(g)$ and~$g$ is $\bigOh(f)$,
     that is, $f$ is~$\bigTheta(g)$.
-  \end{parenum}
+  \end{enumerate}
 \end{theorem}
 
 To apply that theorem, we use 
 this result from first semester calculus.
 
 \begin{theorem}[L'H\^{o}pital's Rule]
-Suppose that $\map{f,g}{\R}{\R}$ are such that both
+Suppose that $f,g$ are complexity functions such that both
 $f(x)\to\infty$ and $g(x)\to\infty$ as $x\to\infty$.
 If 
 $\lim_{x\to\infty}f^\prime(x)/g^\prime(x)$ exists and equals
 $L\in\R\cup\{\pm\infty\}$
 then
-$\lim_{x\to\infty}f(x)/g(x$ also exists and also equals~$L$.
+$\lim_{x\to\infty}f(x)/g(x)$ also exists and also equals~$L$.
 \end{theorem}
 
-Taking the derivative requires functions with inputs that are real numbers,
-not natural numbers.
-So we need the next observation.
+% Taking the derivative requires functions with inputs that are real numbers,
+% not natural numbers.
+% So we need the next observation.
 
-\begin{lemma} \label{lem:ReFcnsGiveNatFcns}
-  Let $\map{F,G}{\R}{\R}$ and let $\map{f,g}{\N}{\leftclosed{0}{\infty}}$
-  be such that
-  for all natural numbers $F(n)=f(n)$ and $G(n)=g(n)$.
-  If $\lim_{x\to\infty}F(x)/G(x)$ exists and equals $L\in\R\cup{\set{\infty}}$
-  then $\lim_{n\to\infty}f(n)/g(n)$ also exists and also equals~$L$.
-\end{lemma}
+% \begin{lemma} \label{lem:ReFcnsGiveNatFcns}
+%   Let $\map{F,G}{\R}{\R}$ and let $\map{f,g}{\N}{\leftclosed{0}{\infty}}$
+%   be such that
+%   for all natural numbers $F(n)=f(n)$ and $G(n)=g(n)$.
+%   If $\lim_{x\to\infty}F(x)/G(x)$ exists and equals $L\in\R\cup{\set{\infty}}$
+%   then $\lim_{n\to\infty}f(n)/g(n)$ also exists and also equals~$L$.
+% \end{lemma}
 
 \begin{example}
-  For polynomial functions L'H\^{o}pital's Rule works well.
-  Consider again $\fcn{f,g}{\N}{\N}$ given by 
-  $f(n)=n^2+5n+6$ and $g(n)=2n^2+3n+4$.
-  On the associated real functions L'H\^{o}pital's Rule gives this. 
+   L'H\^{o}pital's Rule works well for polynomial functions.
+  Consider again $\fcn{f,g}{\R}{\R}$ given by 
+  $f(x)=x^2+5x+6$ and $g(x)=2x^2+3x+4$. 
   \begin{equation*}
     \lim_{x\to\infty}\frac{2x^2+3x+4}{x^2+5x+6}
     =\lim_{x\to\infty}\frac{4x+3}{2x+5}
     =\lim_{x\to\infty}\frac{4}{2}
     =2
   \end{equation*}
-  Then \cref{lem:LHBigO} (along with \cref{lem:ReFcnsGiveNatFcns})
+  Then \cref{lem:LHBigO} 
   says that the two
   have the same growth rate, that is, $f$ is~$\bigTheta(g)$.
 
-  Similarly, for $f(n)=2n^2+3n+4$ and $g(n)=n^3+5n+6$,
+  Similarly, for $f(x)=2x^2+3x+4$ and $g(x)=x^3+5x+6$,
   \begin{equation*}
     \lim_{x\to\infty}\frac{x^3+5x+6}{2x^2+3x+4}
     =\lim_{x\to\infty}\frac{3x^2+5x+6}{4x+3}
@@ -629,34 +654,37 @@ So we need the next observation.
 \end{example}
 
 \begin{example} \label{ex:CompareLogToPower}
-For any power~$d>0$ the polynomial function~$x^d$
-grows more quickly than the logarithmic function:
-$\log_b(x)$ is~$\bigOh(x^d)$.
-Verify it with L'Hopital's Rule.
-(After \cref{ex:BitsToRepresentANumber} we noted that
-no matter what the base, all logarithmic functions have the
-same order of growth.
-Here we use $\ln$, with base~$e$, because its derivative is easy.)
+The logarithmic function $f(x)=\log_v(x)$ grows very slowly.
+For one thing, $\log_b(x)$ is~$\bigOh(x)$.
+More than that, $\log_b(x)$ is~$\bigOh(x^{0.1})$,
+and is~$\bigOh(x^{0.01})$, and in fact
+$\log_b(x)$ is~$\bigOh(x^d)$ for any~$d>0$.
 \begin{equation*}
   \lim_{x\to\infty}\frac{\ln(x)}{x^d}
-  =\lim_{x\to\infty}\frac{(1/x)}{x^d}
-  =\lim_{x\to\infty}\frac{1}{x^{d+1}}
+  =\lim_{x\to\infty}\frac{(1/x)}{dx^{d-1}}
+  =\frac{1}{d}\cdot\lim_{x\to\infty}\frac{1}{x^d}
   =0
 \end{equation*}
-Examples are that $\lg(x)$ is $\bigOh(x)$,
-that $\lg(x)$ is $\bigOh(x^{0.1})$,
-and that $\lg(x)$ is $\bigOh(x^{0.01})$.
-None of these comparisons reverse; \cref{exer:LogSmallerThanPower} shows that
+(After \cref{ex:BitsToRepresentANumber} we noted that
+no matter what the base, all logarithmic functions have the
+same order of growth, so 
+here we use $\ln$, with base~$e$, because its derivative is easy.)
+\Cref{exer:LogSmallerThanPower} shows that
 $x^d$ is not~$\bigOh(\log_b(x))$.
+
+The difference in growth rates is stronger than even that.
+For instance,  L'H\^{o}pital's Rule
+shows that $(\log_b(x))^2$ is $\bigOh(x^d)$;
+see~\cref{exer:PowersOfLogSmallerThanAnyPoly}.
 
 The log-linear function $x\cdot\lg(x)$ has a similar relationship to the
 polynomials $x^d$, where $d>1$.
 \begin{multline*}
   \lim_{x\to\infty}\frac{x\ln(x)}{x^d}
   =\lim_{x\to\infty}\frac{x\cdot (1/x)+1\cdot\ln(x)}{dx^{d-1}}
-  =\lim_{x\to\infty}\frac{1+\ln(x)}{dx^{d-1}}          \\
-  =\lim_{x\to\infty}\frac{(1/x)}{d(d-1)x^{d-2}}
-  =\lim_{x\to\infty}\frac{1}{d(d-1)x^{d-1}}
+  =\frac{1}{d}\cdot\lim_{x\to\infty}\frac{1+\ln(x)}{x^{d-1}}          \\
+  =\frac{1}{d(d-1)}\cdot\lim_{x\to\infty}\frac{(1/x)}{x^{d-2}}
+  =\frac{1}{d(d-1)}\cdot\lim_{x\to\infty}\frac{1}{x^{d-1}}
   =0
 \end{multline*}
 \end{example}
@@ -675,18 +703,23 @@ polynomials $x^d$, where $d>1$.
   $g$ is not in~$\bigOh(f)$.
 \end{example}
 
-That example is a blueprint for the single most important fact about
-the growth rate of functions.
+That example is a blueprint for the most important facts about
+growth rates.
 
-\begin{lemma} \label{lem:PolySlowerThanExp} 
-Polynomial functions grow more slowly than exponential functions:~for
-any base $C>1$, if $f$ is a polynomial function
-then $f$ is~$\bigOh(C^n)$ but
-$C^n$ is not $\bigOh(f)$.
+\begin{lemma} \label{lem:PolySlowerThanExp}
+Logarithmic functions grow more slowly than polynomial functions:~if
+$f(n)=\log_b(n)$ for some base~$b$ and $g(n)=a_mn^m+\cdots+a_0$ 
+then $f$ is~$\bigOh(g)$ but
+$g$ is not $\bigOh(f)$.
+Polynomial functions grow more slowly than exponential functions:~where
+$g$ is a polynomial function and $h(n)=b^n$ for some base~$b>1$ then 
+then $f$ is~$\bigOh(h)$ but
+$h$ is not $\bigOh(f)$.
 \end{lemma}
 
 \begin{proof}
-\Cref{exer:PolySlowerThanExp}
+\Cref{lem:ReFcnsGiveNatFcns} and
+\Cref{exer:PolySlowerThanExp}.
 \end{proof}
 
 % We can convert among logarithms at the cost of a constant factor.
@@ -888,7 +921,7 @@ problems\Dash those that are at least conceivably solvable in practice\Dash as
 those for which there is an algorithm whose resource
 consumption is polynomial.\footnote{%
   Some researchers dispute Cobham's Thesis, saying that it is not the right
-  description of conceivably solveable in practice.
+  description of conceivably solvable in practice.
   For example, they note that if a problem's best algorithm
   is $\bigOh(n^{100})$, or if it is quadratic but with an enormous constant,
   then the solution is not really
@@ -1079,7 +1112,7 @@ constant factors are meaningless,
 since changing units is inseparable from changing constant factors; just as
 changing from miles to kilometers requires multiplying by the constant~$1.61$.
 
-\margingraphic{0.34\textwidth}{complexity/pix/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
+\margingraphic{0.36\textwidth}{complexity/pix/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
 In short,
 Big~O notation ignores constants because it is
 a unit free, relative measurement.
@@ -1386,7 +1419,26 @@ to.''
     is less than or equal to $g(n)=n^3$?
  \end{exercise}
 
- \begin{exercise}
+ 
+  \begin{exercise} \label{exer:PowersOfLogSmallerThanAnyPoly}
+  Use L'Hopitals' Rule to show that $(\ln(x))^2$ is $\bigOh(x)$.
+  Show also that $(\ln(x))^2$ is $\bigOh(x^p)$ for any power~$p\geq 1$,
+  starting from \cref{ex:CompareLogToPower}.
+  \begin{answer}
+  We have
+  \begin{equation*}
+    \lim_{x\to\infty}\frac{(\ln(x))^2}{x}
+    =\lim_{x\to\infty}\frac{2\cdot\ln(x)\cdot (1/x)}{1}
+    =2\cdot\lim_{x\to\infty}\frac{\ln(x)}{x}
+    =2\cdot\lim_{x\to\infty}\frac{1/x}{1}
+    =2\cdot\lim_{x\to\infty}1/x
+    =0
+  \end{equation*}
+  and a similar result holds for any positive power.
+  \end{answer}
+\end{exercise}
+
+\begin{exercise}
  Where does the the restriction $g(n)\leq n^{\bigOh(1)}$ place the function
  $g$ in the growth hierarchy?
  \begin{answer}
@@ -1405,23 +1457,6 @@ to.''
  so $t(\sigma)=n$ where $\lh{\sigma}=n$.
  \end{answer}
  \end{exercise}
- 
-  \begin{exercise}
-  Use L'Hopitals' Rule to show that $(\ln(x))^2$ is $\bigOh(x)$.
-  Show also that $(\ln(x))^2$ is $\bigOh(x^p)$ for any power~$p\geq 1$.
-  \begin{answer}
-  We have
-  \begin{equation*}
-    \lim_{x\to\infty}\frac{(\ln(x))^2}{x}
-    =\lim_{x\to\infty}\frac{2\cdot\ln(x)\cdot (1/x)}{1}
-    =2\cdot\lim_{x\to\infty}\frac{\ln(x)}{x}
-    =2\cdot\lim_{x\to\infty}\frac{1/x}{1}
-    =2\cdot\lim_{x\to\infty}1/x
-    =0
-  \end{equation*}
-  and a similar result holds for any positive power.
-  \end{answer}
-  \end{exercise}
   
   \begin{exercise} \label{exer:LogSmallerThanPower}
   Do the converse half of \cref{ex:CompareLogToPower}:
@@ -1484,6 +1519,15 @@ to.''
     $L\in\N$ so that for all inputs $n\in\N$, if $f$ is defined on~$n$
     then $f(n)\leq L$.
     \end{exparts}
+  \end{exercise}
+    
+  \begin{exercise} \label{exer:PowersOfLogSmallerThanAnyPoly}
+  Use L'H\^{o}pital's Rule's to verify these, starting
+  from \cref{ex:CompareLogToPower}.
+  \begin{exparts}
+  \item $(\log_b(x))^2$ is $\bigOh(x^d)$ for any~$d\in\R^+$
+  \item $(\log_b(x))^3$ is $\bigOh(x^d)$ for any~$d\in\R^+$
+  \end{exparts}
   \end{exercise}
   
   \begin{exercise}

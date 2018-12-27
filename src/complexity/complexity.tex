@@ -959,7 +959,7 @@ Is it any more than that?
 
 Yes, that is the essence.
 Nonetheless there are some points that traditionally puzzle folks.
-A little explication may clarify those points.
+Some explication may clarify.
 
 First, Big~O is for algorithms, not programs.
 Compare these program snippets.
@@ -1002,8 +1002,8 @@ And whereas to get to a cell
 a Turing machine may have to spend a lot of steps moving the I/O
 head, the RAM model gets the contents of any register
 in one step.
-This model also typically also assumes a single step for
-elementary operations such as addition or multiplication.
+We can find the resource cost of using an algorithm on a machine model as here,
+which defines the time cost but the others are similar.
 
 \begin{definition} \label{def:TMTime}
 A machine $\mathcal{M}$ with input alphabet~$\Sigma$ 
@@ -1027,17 +1027,49 @@ For instance, close analysis shows that
 if we start with an algorithm intended for an Integer RAM
 and translate it to run on a Turing machine then 
 this may cost us as much as $n^3$ extra time, so that if the algorithm is 
-$\bigOh(n^2)$ on the Integer RAM
+$\bigOh(n^2)$ on the RAM machine
 then on the Turing machine it is $\bigOh(n^5)$.
+A more extreme example is that addition of two $n\times n$ matrices
+will take time that is $\bigOh(n^2)$ on a RAM model, but
+on an unboundedly parallel machine model will take constant time~$\bigOh(1)$.
 Thus, the best way to proceed is to settle on a model first,
 and only then use Big~O to help
 pick an algorithm for that model.
 
+% Discussion started as: https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
+OK, so we've settled on a model.
+Our third point is that
+\citetext{the definitions of Big-O and Big-Theta ignore the constants}{%
+  This discussion originated as \autocite{SE:IgnoreConstants}.};
+for instance, a $\bigOh(n^2)$ algorithm may take time that is $n^2$ or may take
+time that is $4n^2$.  
+Does that potentially make Big~O useless
+for judging the practicality of an algorithm?
+For instance, suppose that our analysis of an algorithm
+shows that for inputs~$n$ larger than~$N$ it takes time
+given by the quadratic function $C\cdot n^2$,
+so we describe this algorithm as $\bigOh(n^2)$.
+Don't we need to know~$C$ and~$N$?
+After all, an enormous coefficient such as $C=2^{100}$ would make the algorithm
+completely impractical and 
+similarly if $N$ is huge then we may need to analyze what happens before that
+point.
+
+And there are other constants that we ignore.
 Integer RAM machines are widely used in algorithm analysis
 as they are close to the machines we have on our desks.
-For instance, analysis of an algorithm may find that the resource cost
-for an input of size~$n$ takes time that is
-\citetext{$5n^2+4n\cdot w+3n\cdot r+2\cdot m$}{%
+Imagine that analysis of an algorithm may find that
+for an input of size~$n$ the time it takes is
+$4n^2\cdot T+3n\cdot W+2n\cdot R+\lg M$
+where the constants are:~$T$ is the time for a clock tick,
+$W$ is the time for a disk write and
+$R$~is the time for a disk read,
+and~$M$ is the time for a memory access.
+Besides ignoring the $4$ in~$4n^2$, in citing the algorithm we would typically
+also not put a value to the constants, instead for instance saying that
+the algorithm is ``logarithmic in memory usage.''
+(People do sometimes pay attention to
+\citetext{the order of magnitude of these constants}{%
   For a rough idea of that these may be, here are some numbers that
   every programmer should know. % http://highscalability.com/blog/2011/1/26/google-pro-tip-use-back-of-the-envelope-calculations-to-choo.html
   \protect\begin{center}
@@ -1055,65 +1087,48 @@ for an input of size~$n$ takes time that is
   \protect\end{center}
   A nanosecond is $10^{-9}$~seconds.  
   For a fuller description see
-  \protect\url{https://www.youtube.com/watch?v=JEpsKnWZrJ8&app=desktop}.}
-where $w$ is the time for a disk write,
-$w$ is the time for a disk read, and~$m$ is the time for a memory access.
-to find the Big~O behavior we must specify the costs on that model.
+  \protect\url{https://www.youtube.com/watch?v=JEpsKnWZrJ8&app=desktop}.}.)
+Doesn't using a resource-consumption measure that discounts differences in
+constants considerably reduce its value for a person in practice
+choosing among an array of algorithms?
 
-
-% Discussion started as: https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
-OK, so we've settled on a model.
-Our third point is that
-\citetext{the definitions of Big-O and Big-Theta ignore constants}{%
-  This discussion originated as \autocite{SE:IgnoreConstants}.};
-does that potentially make the definition useless
-for judging the practicality of an algorithm?
-Imagine
-an algorithm that takes time given by the quadratic function $C\cdot n^2$.
-An enormous coefficient such as $C=2^{100}$ would make it
-just as impractical as an algorithm that takes exponential time.
-Similarly, an enormous $N$ may mean that the algorithm just
-will not work in
-practical circumstances.
-Why use a resource-consumption measure that ignores constants?
-
-One answer is that in a real life situation, to a person coding on a
-particular platform,
+One answer is that
 finding these constants is very hard.
-They involve the computer's exact hardware details
+They involve the hardware's exact details
 such as the memory addressing and paging, cache hits, and whether
 the CPU can do some operations in parallel.
-And, our experience is that very little benefit
-comes from knowing the exact constants\Dash we never seem to find that they are
+And, even if you do the work to find the constants,
+often you get very little benefit\Dash we rarely 
+find that they are
 so enormous that they change what we do by much.
+As \cref{tab:CompareFcnNumbers} illustrates, knowing that the algorithm
+grows logarithmically in memory usage is in the long run
+vastly more important that the value of the constant.
 
 \margingraphic[l]{0.20\textwidth}{complexity/pix/knuth.jpg}{\label{fig:Knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938}}
-Even if we abstract away the details of today's machines, the
-difficulty is that we have no reliable standard unit.
-Machines on which algorithms are implemented vary widely.
-Even if we forget about such things as Turing machines and just focus on
-the architecture of the machines
-that we have on our desks and in our pockets they
-still vary,
-for instance in how long they take to do a division or to write to memory.
-We could try to agree on a standard reference machine\Dash
+A second, related, answer is that we have no reliable standard.
+Machines vary widely in their low-level details and these details can
+make a tremendous difference.
+This holds
+even if we forget about such models as Turing machines and just focus on
+the kinds of machines
+that we have on our desks and in our pockets.
+We could try to agree on a specification for a
+standard reference model\Dash
 for instance, this is the approach taken in  D~Knuth's
-\textit{Art of Computer Programming} series where he does a great
-deal of operation counting\Dash
+\textit{Art of Computer Programming} series\Dash
 but we would have to 
-\citetext{update the standard periodically}{%
-  Even Knuth had to update his standard, from the machine language 
-  MIX to MMIX.}.
-So published results from, say, a decade ago would be problematic
+\citetext{periodically update the standard}{%
+  Knuth had to update standards, from the MIX to MMIX.}.
+So published results from some ago may be problematic
 because they refer to an old standard.
 Being reference independent is an advantage, and in a
-quickly changing field, almost a necessity.
+quickly changing field almost a necessity.
 
-\margingraphic{0.36\textwidth}{complexity/pix/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
-But being reference independent requires ignoring constants
+But being reference independent requires ignoring constants,
 and instead making relative statements.
 Here is an analogy:~absolute measurement of distance
-is in units such as miles or kilometers.
+involve units such as miles or kilometers.
 But being able to make statements irrespective of the units requires
 making relative statements such as,
 ``from here, New York City is twice as far as Boston.'' 
@@ -1133,12 +1148,10 @@ changing from miles to kilometers requires multiplying by the constant~$1.61$.
 In short,
 Big~O notation ignores constants because it is
 a unit free, relative measurement.
-It is not absolute; it is intended only to measure performance variation.
-% The advantage is the gain in implementation independence
-% by allowing analysis that ignores the relative costs of
-% elementary operations, as long as these costs are bounded.
-% But the consequence is that constant factors are meaningless.
+It is not absolute; it is intended only to measure relative
+performance variation.
 
+\margingraphic{0.36\textwidth}{complexity/pix/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
 Big~O expresses how an algorithm
 performs as the input size grows.
 Thus, we say that a function that takes $3n$ steps is $\bigOh(n)$
@@ -1150,12 +1163,12 @@ quadruple the number of steps, and
 $\bigOh(\lg n)$ means that doubling the input size will increase the number
 of steps by at most some constant.
 
-We can use Big~O to compare how algorithms
+So we use Big~O to compare how algorithms
 perform as the input size grows.
-But it is only a rough comparison;
-it cannot say with great precision when two algorithms are put into code
-and run on a particular platform,
-which will be absolutely faster.\footnote{%
+But, as noted above, it is only a rough comparison;
+it cannot say with great precision when two algorithms
+which will be absolutely better wneh they are cast into code
+and run on a particular platform.\footnote{%
   For that, use benchmarks.}
 
 % https://stackoverflow.com/a/19647659
@@ -1177,41 +1190,39 @@ a worst-case of roughly~$n$-many divisions.
 We can take
 the size of an input~$n$ to be the number of bits needed
 to represent~$n$ in binary,
-approximately the base~$2$ logarithm, $\lg n$.
+approximately~$\lg n$.
 So for this algorithm the input is of size about~$\lg n$
 and the number of operations is about~$n$.
 That makes the number of operations exponential in the input
 size\Dash in this model this algorithm is 
 $\bigOh(2^b)$, where $b$ is the number of input bits.
 
-In contrast, most people's experience from programming class is that this
+However, most people's experience from programming class is that this
 algorithm would be described as linear, as $\bigOh(n)$, because
 for the number~$n$ there are about $n$-many divisions.
-How to explaiun the difference?
+How to explain the difference?
 
 This is another example of the effect of each algorithm's subtle reliance
-on a computing model.
-In many application situations the programmer makes
-the engineering judgement that
+on assumptions about a computing model.
+In many application situations the programmer assumes that
 input will fit into a fixed-sized computer word, such as a $64$~bit word.
 Imagine we are studying the naive factoring algorithm.
-We judge that for every use of our program the input will
-fit into a word.
-This means that we are selecting a computation model, such as the
-integer RAM model,
-where larger numbers take the same time to input as smaller ones.
+We make the engineering judgement that for every use of our program the
+input will fit in a word.
+This means that we are selecting a computation model, like the RAM model,
+where larger numbers take the same time to read in as smaller ones.
 Then the prior paragraph applies, so the algorithm associated with
 this model is linear.
 
-For another example, if we are studying selection sort and after
-careful thought we decide on the specification that
-for every use of our program the input will
-fit into a word.
-Under this model, with $n$ integer elements of input
-the number of bits is $64n$.
-Analysis of selection sort gives that the time it takes grows quadratically
-so in bits we get $\bigOh((64n)^2)$.
-That's $\bigOh(n^2)$.
+% For another example, if we are studying selection sort and after
+% careful thought we decide on the specification that
+% for every use of our program the input will
+% fit into a word.
+% Under this model, with $n$ integer elements of input
+% the number of bits is $64n$.
+% Analysis of selection sort gives that the time it takes grows quadratically
+% so in bits we get $\bigOh((64n)^2)$.
+% That's $\bigOh(n^2)$.
 
 % Another example would be in programming a depth-first tree traversal.
 % You decide to represent nodes as successive integers that
@@ -1225,24 +1236,26 @@ That's $\bigOh(n^2)$.
 % input size and output size, since now the input size is measured as
 % a function of the number of nodes~$n$.
 
-So this is an applications versus theory thing: in the common programming
-situation where the bit size of the inputs is bounded,
-the runtime behavior is conveniently described as a function of
+So this is in  part an application versus theory thing:~in the common
+programming practice situation where the bit size of the inputs is bounded,
+the runtime behavior is a function of
 the number of inputs~$n$.
-In the theoretical model, accepting integers that are arbitrarily large, it is 
-the bit size of those inputs.
-An algorithm whose behavior as a function of the input is polynomial,
+In a theoretical conversation, accepting input that is arbitrarily large, it is 
+a function of the bit size of those inputs.
+An algorithm whose behavior as a function of the input is polynomial
 but whose behavior as a function of the bit size of the input is
-exponential, is said to be \definend{pseudopolynomial}.
+exponential is said to be \definend{pseudopolynomial}.
 
-A final point about describing algorithm behavior with Big~O.
-When we are analyzing an algorithm we can look for a number of
-different behavior descriptions.
-For instance, we can describe the time the algorithm takes, or the space.
-But we can also analyze the worst case behavior, or the average behavior.
+One final point about Big~O.
+When we are analyzing an algorithm we can look at
+different behaviors.
+For instance, 
+we can analyze the worst case behavior or the average behavior.
 For example, the widely used sorting algorithm quicksort
 takes quadratic time $\bigOh(n^2)$ at worst.
 But on average it is fast, $\bigOh(n\lg n)$.
+Another example is that
+we can describe the time the algorithm takes or the space.
 So, algorithm analysis can happen on a number of fronts.
 
 
@@ -1838,6 +1851,7 @@ to use a chess knight to make a circuit of the squares on the board.
   \hspace{3em}
   \vcenteredhbox{\includegraphics[height=1.2in]{complexity/pix/knightstour.png}}
 \end{center}
+
 \citetext{On the right is the solution given by L~Euler}{%
   The figure is from \autocite{EulerKnightsTour}.}.
 In graph terms, there are sixty four vertices,
@@ -1873,15 +1887,17 @@ Formally, we will recast it as a
 decision problem.
 To do that, 
 introduce a threshold bound $B\in\N$ and change the problem statement to
-`decide if there is a circuit of length less than $B$'.
+`decide if
+there is a circuit of length less than $B$'.
 With it, to find the length of the shortest circuit we can first decide if
-there is a trip bounded in length by $B=1$, if there is a 
+
+\margingraphic{0.18\textwidth}{complexity/pix/euler.jpg}{\href{https://en.wikipedia.org/wiki/Leonhard_Euler}{Leonhard Euler 1707--1783}} % Jakob Emanuel Handmann [Public domain], via Wikimedia Commons; https://commons.wikimedia.org/wiki/File%3ALeonhard_Euler.jpg
+\noindent there is a trip bounded in length by $B=1$, if there is a 
 trip bounded in length by $B=2$, etc.
 If we have an algorithm for the decision problem, then we solve the
 optimization problem by iterating until
 we find such a bound.
 
-\margingraphic{0.18\textwidth}{complexity/pix/euler.jpg}{\href{https://en.wikipedia.org/wiki/Leonhard_Euler}{Leonhard Euler 1707--1783}} % Jakob Emanuel Handmann [Public domain], via Wikimedia Commons; https://commons.wikimedia.org/wiki/File%3ALeonhard_Euler.jpg
 The next problem sounds much like the Hamilton circuit problem, in that it
 involves walking around a graph, exhaustively.
 But it proves to be quite different.
@@ -2771,13 +2787,13 @@ other jobs, find the shortest time to finish the entire car.
 
 \end{exercises}
 
-\begin{TODO}
-P is closed under complement.
-Thus, So if P = NP then NP is closed under complement as well and also, if NP is not closed under complement, then P != NP.
-But it is not known if NP is closed under
-complement (and it is possible that NP is closed under complement
-but is still different than P).
-\end{TODO}
+% \begin{TODO}
+% P is closed under complement.
+% Thus, So if P = NP then NP is closed under complement as well and also, if NP is not closed under complement, then P != NP.
+% But it is not known if NP is closed under
+% complement (and it is possible that NP is closed under complement
+% but is still different than P).
+% \end{TODO}
 
 
 
@@ -3528,11 +3544,15 @@ and verifies that the subset adds to the target, in polynomial time.
 \end{example}
 
 In summary, we are interested in knowing:~for which problems
-are there relatively good algorithms, and for which are there not?
-Cobham's Thesis is that a problem in~$\P$ has a good algorithm.
+are there relatively good algorithms, and for which are there not.
+Cobham's Thesis identifies problems in~$\P$ with the problems
+that have a good algorithm.
 In this section we considered a class of problems for which
-there is a good way to verify solutions, but we don't know whether that
-is enough to mean it has a good algorithm to give a solution.
+there is a good way to verify solutions, in contrast with the problems
+for which there is a good algorithm to give a solution.
+
+In the next section we will consider whether the two classes of
+problems are different.
 
 
 % ........................
@@ -3551,6 +3571,20 @@ Sketch two algoorithms for decoding a substitution cipher, one
 deterministic and one nondeterministic.
 Describe the second in both computation tree terms, and in
 guessing terms.
+\end{exercise}
+
+\begin{exercise}
+The Double-SAT problem is: given a propositional logic statement,
+decide whether it has at least two different substitutions of Boolean values
+that make the statement true.
+Show that this problem is in~$\NP$.
+\end{exercise}
+
+\begin{exercise}
+The Independent Set problem starts with a graph and a natural number~$n$ and
+decides whether in the graph there are $n$-many independent vertices,
+that is, vertices that are not connected.
+Show that this problem is in~$\NP$.
 \end{exercise}
 
 \begin{exercise}
@@ -3573,11 +3607,69 @@ Clearly this can be done in polytime.
 \end{answer}
 \end{exercise}
 
+
+\begin{exercise}
+Describe the problem of determining whether a number is odd as the problem
+of deciding membership in a language.
+Show it is in~$\NP$.
+\begin{answer}
+The natural way to describe it as a decision problem for a language
+is with the language
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
+To show it is in $\NP$, we can have a deterministic Turing machine
+that uses an empty witness $\omega=\emptystring$, and accepts such
+strings in polynomial time.
+\end{answer}
+\end{exercise}
+
+
+\begin{exercise}
+True or False: for the
+language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$
+the problem of deciding membership 
+is in $\compclass{NP}$.
+\end{exercise}
+
+
+\begin{exercise}
+Each of these problems is in~$\compclass{NP}$.
+For each, give a witness.
+\begin{exparts}
+\item
+The problem of finding is a given number is divisible by four.
+\item
+The problem of finding the product of two matrices.
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Give a witness for each of these problems from~$\compclass{NP}$.
+\begin{exparts}
+\item
+Hamiltonian circuit problem: given a graph, determine if it has a
+Hamiltonian circuit.
+\item
+Composite problem: given a natural number determine if it is composite.
+\end{exparts}
+\end{exercise}
+
+
 \begin{exercise}
 Is the \HP{} in $\NP$?
 \begin{answer}
 The \HP{} is not decidable so it is not in $\NP$
 \end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that this problem is in $\NP$.
+A company has two delivery trucks.
+So each morning they are presented with a set of locations, and the
+distances between those.
+Some location is distinguished as the start and finish.
+They must decide if there are two cycles such that every location
+is on at least one of the two cycles and both cycles have length at
+most $K$.
 \end{exercise}
 
 \begin{exercise}
@@ -3684,16 +3776,16 @@ $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
 \end{exparts}
 \end{exercise}
 
-\begin{exercise}
-Write a program that simulates a nondeterministic Turing machine.
-\end{exercise}
+% \begin{exercise}
+% Write a program that simulates a nondeterministic Turing machine.
+% \end{exercise}
 
 \begin{exercise}
-Prove that the class of languages~$\NP$ is closed under each operation.
+Prove that the class of languages~$\NP$ is closed under
 \begin{exparts*}
-\item Reversal
-\item Union
-\item Concatenation
+\item reversal,
+\item union,
+\item concatenation.
 \end{exparts*}
 No one knows if $\NP$ is closed under complementation.
 \end{exercise}
@@ -3932,10 +4024,10 @@ of $\lang_0$ to one of~$\lang_1$ is polytime is easy.
 
 Above we showed that $k$-coloring reduces to $\SAT$, so doing
 $\SAT$ fast is at least as hard as doing $k$-coloring fast.
-After the example we commented that $\SAT$ is often convenient for
+We commented that $\SAT$ is often convenient for
 reductions, and in the next section we will give a therem saying that it
 is at least as hard as every problem in $\NP$.
-But, we close by giving an example of a problem that
+But we close by giving a problem that
 is at least as hard as $\SAT$.
 
 \begin{example}
@@ -3990,7 +4082,7 @@ Showing that the translation function~$f$ is polytime is routine.
 
 % ================================
 \subsection{$\compclass{NP}$ complete}
-\margingraphic{0.18\textwidth}{complexity/pix/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
+\margingraphic{0.17\textwidth}{complexity/pix/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
 Because $\P\subseteq\NP$, the class $\NP$ contains lots of easy problems,
 ones with a fast algorithm.
 For instance, one member of $\NP$ is
@@ -3999,7 +4091,7 @@ Of course, the interest in the class is that it also contains lots of
 problems that seem to be hard.
 Can we prove that they are hard?
 
-In 1971 S~Cook raised this question.
+In 1971 this question was raised by S~Cook.
 He noted the significance of polynomial time reducibility, so that
 an efficient solution to one problem results in an efficient
 solution for the other.
@@ -4386,21 +4478,17 @@ $\bigOh(n)$ in the number of elements in $S$.
 A deterministic machine can verify this witness in polynomial
 time since it only has to total the weights and values
 of the elements of~$K$.
+\end{example}
 
+\margingraphic{0.42\textwidth}{complexity/xkcdnpcomplete.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/287/}{Courtesy \url{xkcd.com}}}
 To show that it is $\NP$-hard, we show that a special case
 is $\NP$-hard.
 Consider the case where $w(s_i)=v(s_i)$ for all~$s_i\in S$, and where
 $B$ and~$K$ each equal half of the total of all the weights.
 This is a Partition problem, which is in the above list.
-\end{example}
-
-\begin{fig}[fig:xkcdnpcomplete]{Courtesy \href{https://xkcd.com/287/}{xkcd.com}.}
-  \includegraphics[scale=3]{complexity/xkcdnpcomplete}
-\end{fig}
-
 There are problems that are members of $\NP$ but are not
 $\NP$~complete.
-Most experts believe that while the Factoring problem is hard for classical
+Most experts believe that the Factoring problem is hard for classical
 computers\footnote{%
   In 1994, P~Shor discovered an algorithm for a quantum computer that
   solves the Factoring problem in polynomial time.
@@ -4768,21 +4856,21 @@ then we could have fast mechanical writers of excellent music.
 
 We finish with a taste of the contrarian view.
 
-\begin{TODO}
-Matching Problem (Marriage Problem).
-The naive algorithm tries all possible matches looking for one that
-is good.
-Even with only a hundred people, there are more things to try than
-there are atoms in the universe.
-But since the 1960's we have an algorithm (due to J~Edmonds) that
-does the job in polytime.
-That is, in this case we see a collapse from apparent exponential time to
-polynomial time.
-Why not look for it to happen every time?
+% \begin{TODO}
+% Matching Problem (Marriage Problem).
+% The naive algorithm tries all possible matches looking for one that
+% is good.
+% Even with only a hundred people, there are more things to try than
+% there are atoms in the universe.
+% But since the 1960's we have an algorithm (due to J~Edmonds) that
+% does the job in polytime.
+% That is, in this case we see a collapse from apparent exponential time to
+% polynomial time.
+% Why not look for it to happen every time?
 
-This coflates exponential with NP.
-Need to bring EXP in before this.
-\end{TODO}
+% This coflates exponential with NP.
+% Need to bring EXP in before this.
+% \end{TODO}
 
 E~Viola \autocite{Viola} observes that there are many cases where
 everyone ``knew'' that some algorithm was the fastest to solve
@@ -4866,21 +4954,25 @@ The other one, that ``$\NP$~complete is a subset of $\NP$-hard'' is true.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Describe the problem of determining whether a number is odd as the problem
-of deciding membership in a language.
-Show it is in~$\NP$.
-\begin{answer}
-The natural way to describe it as a decision problem for a language
-is with the language
-$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
-To show it is in $\NP$, we can have a deterministic Turing machine
-that uses an empty witness $\omega=\emptystring$, and accepts such
-strings in polynomial time.
-\end{answer}
+\begin{exercise} % http://www.cs.princeton.edu/courses/archive/fall02/cos126/exercises/np.html
+Assume that $\P\neq \NP$.
+Which of these can we infer from the fact that the Primality
+problem is in $\NP$
+but is not known to be $\NP$-complete?
+\begin{exparts*}
+\item
+There exists an algorithm that solves arbitrary instances of the Primality
+problem.
+\item
+There exists an algorithm that efficiently solves arbitrary instances
+of the Primality problem.
+\item
+If we found an efficient algorithm for the Primality problem then we could 
+immediately use it to solve the Travelling Salesman problem.
+\end{exparts*}
 \end{exercise}
 
-\begin{exercise}
+\begin{exercise} % See http://www.cs.princeton.edu/courses/archive/fall02/cos126/exercises/np-sol.html
 Suppose $\prob_1\leq_p\prob_0$.
 True or False?
 \begin{exparts*}
@@ -4933,36 +5025,6 @@ There is not enough information to conclude anything.
 \end{answer}
 \end{exercise}
 
-
-\begin{exercise}
-True or False: for the
-language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$
-the problem of deciding membership 
-is in $\compclass{NP}$.
-\end{exercise}
-
-
-\begin{exercise}
-Each of these problems is in~$\compclass{NP}$.
-For each, give a witness.
-\begin{exparts}
-\item
-The problem of finding is a given number is divisible by four.
-\item
-The problem of finding the product of two matrices.
-\end{exparts}
-\end{exercise}
-
-\begin{exercise}
-Give a witness for each of these problems from~$\compclass{NP}$.
-\begin{exparts}
-\item
-Hamiltonian circuit problem: given a graph, determine if it has a
-Hamiltonian circuit.
-\item
-Composite problem: given a natural number determine if it is composite.
-\end{exparts}
-\end{exercise}
 
 \begin{exercise}
 This illustrates how large a problem can be and still be in $\EXP$.
@@ -6037,9 +6099,9 @@ is not practical.
 Neither is one whose algorithm is $\bigOh(n^2)$ but whose running time
 on closer inspection proves to be $2^{1000}n^2$.
 
-\begin{TODO}
-Example
-\end{TODO}
+% \begin{TODO}
+% Example
+% \end{TODO}
 
 
 Further, on the other side of the ledger
@@ -6070,17 +6132,17 @@ The final stages, that improved the lower bound by by 0.000\,023 percent,
 required eight years of computation time 
 running in parallel on a network of Linux workstations.
 
-\begin{TODO}
-\url{https://www.youtube.com/watch?v=q8nQTNvCrjE}
-SAT solvers; Davis-Putnam-Logemann-Loveland
-http://www.cs.cornell.edu/gomes/papers/SATSolvers-KR-Handbook.pdf
-These are in the worst case exponential,
-but seem to perform pretty well in practice.
-\url{https://codingnest.com/modern-sat-solvers-fast-neat-underused-part-1-of-n/}
+% \begin{TODO}
+% \url{https://www.youtube.com/watch?v=q8nQTNvCrjE}
+% SAT solvers; Davis-Putnam-Logemann-Loveland
+% http://www.cs.cornell.edu/gomes/papers/SATSolvers-KR-Handbook.pdf
+% These are in the worst case exponential,
+% but seem to perform pretty well in practice.
+% \url{https://codingnest.com/modern-sat-solvers-fast-neat-underused-part-1-of-n/}
 
-Find most efficient route between all the Springfields in the US.
-\url{https://www.reddit.com/r/MapPorn/comments/91hxm6/the_most_efficient_route_between_every/?ref=share&ref_source=link}
-\end{TODO}
+% Find most efficient route between all the Springfields in the US.
+% \url{https://www.reddit.com/r/MapPorn/comments/91hxm6/the_most_efficient_route_between_every/?ref=share&ref_source=link}
+% \end{TODO}
 
 There are many results that give answers that are practical for
 problems that our theory suggests are intractible.

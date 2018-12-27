@@ -822,11 +822,11 @@ that runs in time $\lg n$, or time~$n$, etc.
 \end{tablefigure}
 Consider the final column.
 Between the first and second row the relative change is an order of
-magnitude, which is big, but the absolute times are quite small.
-The same is true between the second and third row, and the third and fourth.
-This holds until the final line.
+magnitude, which is a lot but the absolute times are quite small.
+The same holds between the second and third row, and the third and fourth.
+Then we get to the final line.
 Its entry does not say $10^{-12}$~years, it says $10^{12}$~years.
-This is a huge relative change.
+That is a huge relative change.
 And, it is a huge absolute change.
 The universe is about $14$~billion years old and a billion is $10^{9}$ years,
 so this exponential computation, even with input size only $100$,
@@ -847,7 +847,7 @@ Exponential growth is \citetext{very much larger than polynomial growth}{%
   truly, for enough to cover the whole surface of the earth to the
   depth of the twentieth part of a cubit.'' % Nagle
 
-  Sissa has the right idea, but his arithmetic is slightly off.
+  Sissa has the right idea but his arithmetic is slightly off.
   A cubit is the length of a forearm, from the tip of the middle finger
   to the bottom of the elbow, so perhaps twenty inches.
   The geometric series formula gives
@@ -907,22 +907,20 @@ With this in mind, \citetext{\definend{Cobham's thesis}}{%
     He suggests we consider the class of all functions having this property.
     
     As for Edmunds, in a  ``Digression'' he writes:
-    An explanation is due on the use of the words ``efficient algorithm.''
-    According to the dictionary, ``efficient'' means
-    ``adequate in operation or performance.''
+    ``An explanation is due on the use of the words `efficient algorithm.'
+    According to the dictionary, `efficient' means
+    `adequate in operation or performance.'
     This is roughly the meaning I want\Dash in the sense that it is conceivable
     for [this problem] to have no efficient algorithm.
-
     \ldots\ There is an obvious finite algorithm,
     but that algorithm increases in 
     difficulty exponentially with the size of the graph.  
     It is by no means obvious whether or not there exists an algorithm whose
     difficulty increases only algebraically with the size of the graph
-
     \ldots\  
     If only to motivate the search for good, practical algorithms, it is 
     important to realize that it is mathematically sensible even to question 
-    their existence.}
+    their existence.''}
 identifies the \definend{tractable}
 problems\Dash those that are at least conceivably solvable in practice\Dash as
 those for which there is an algorithm whose resource
@@ -957,91 +955,111 @@ The bottom line is that Big~O is about scalability\Dash
 something that is $\bigOh(n^2)$ scales worse than something that is 
 $\bigOh(n \lg n)$, but better than something that is
 $\bigOh(n^3)$.  % credit: https://softwareengineering.stackexchange.com/a/20833
-Is it any more complicated than that?
+Is it any more than that?
 
-Yes, there are some points that traditionally give folks trouble.
-The first is that Big~O is for algorithms, not programs.
-For example, compare these program snippets.
+Yes, that is the essence.
+Nonetheless there are some points that traditionally puzzle folks.
+A little explication may clarify those points.
+
+First, Big~O is for algorithms, not programs.
+Compare these program snippets.
 \begin{center}
 \begin{minipage}[t]{0.4\linewidth}
 \begin{lstlisting}
-for(i=0; i<10; ++i){
-  x=10;
-  find_clique(G,x,i);
-}
+for i in range(0,10):
+  x=4
+  find_clique(G,x,i)
 \end{lstlisting}
 \end{minipage}
 \hspace{2em}
 \begin{minipage}[t]{0.4\linewidth}
 \begin{lstlisting}
-x=10;
-for(i=0; i<10; ++i){
-  find_clique(G,x,i);
-}
+x=4
+for i in range(0,10):
+  find_clique(G,x,i)
 \end{lstlisting}
 \end{minipage}
 \end{center}
 The left one makes the mistake of putting
-\codeinline{x=10} inside the loop, which costs the time for nine assignments.
-But Big~O disregards this constant difference in time.
-That is, Big~O is not suited to describing programs because it
-abstracts away details at that level.
+\codeinline{x=4} inside the loop, which
+\citetext{costs the time for nine repeated assignments}{%
+  Assuming that the compiler does not optimize it out of the loop.}.
+But Big~O disregards this constant time difference,
+so it is not suited to analyzing fine coding details.
+Rather, it is best suited to an abstraction level one up from implementations. 
 Big~O's level is that of algorithms.
 
-% Besides, a program is written for, and runs on, a specific computing platform.
-% Each platform has its own startup costs, and other details.
-% It is all too low-level for us here.
-% We will work at the abstraction level of algorithms.
-
-That brings up the second point.
-Remember that an algorithm is tied to assumptions about
+That fits with the second point.
+Remember, an algorithm is tied to 
 an underlying computing model.
-To find the Big~O behavior we must specify the costs for that model.
-As an example, here is the time consumption 
-definition for the model with which we are most familiar, the Turing machine.
+For example, another model besides the Turing machine 
+that is widely used in Computational Complexity because
+it fits the computing environment in which many algorithms will be implemented,
+is the \definend{Integer Random Access Machine (RAM)}.
+Whereas Turing machines store a single bit in each cell,
+the RAM model stores arbitrarily-large integers in each register.
+And whereas to get to a cell
+a Turing machine may have to spend a lot of steps moving the I/O
+head, the RAM model gets the contents of any register
+in one step.
+This model also typically also assumes a single step for
+elementary operations such as addition or multiplication.
 
 \begin{definition} \label{def:TMTime}
-A Turing machine $\TM$ 
-\definend{runs in time $\map{t_{\TM}}{\kleenestar{\Sigma}}{\N}$} 
+A machine $\mathcal{M}$ with input alphabet~$\Sigma$ 
+\definend{takes time $\map{t_{\mathcal{M}}}{\kleenestar{\Sigma}}{\N\cup\set{\infty}}$} 
 if  that function gives the 
 number of steps the machine takes to halt
 on input~$\sigma\in\kleenestar{\Sigma}$.
-If the machine does not halt then $t_{\TM}(\sigma)=\infty$.
+If the machine does not halt then $t_{\mathcal{M}}(\sigma)=\infty$.
 The machine  
-\definend{runs in input length time $\map{\hat{t}_{\TM}}{\N}{\N}$} 
-if $\hat{t}_{\TM}(n)$ is the maximum of the $t(\sigma)$ over all 
+\definend{runs in input length time $\map{\hat{t}_{\mathcal{M}}}{\N}{\N\cup\set{\infty}}$} 
+if $\hat{t}_{\mathcal{M}}(n)$ is the maximum of the $t(\sigma)$ over all 
 inputs~$\sigma$ of length~$n$.
 Finally, the machine 
 \definend{runs in time that is $\bigOh(f)$} 
-if $\hat{t}_{\TM}$ is~$\bigOh(f)$. 
+if $\hat{t}_{\mathcal{M}}$ is~$\bigOh(f)$. 
 \end{definition}
 
-A model
-that is widely used in Computational Complexity because
-it is a fair fit for the computing
-environment in which many algorithms will be implemented
-is the
-\definend{Integer Random Access Machine (RAM)}.
-Whereas Turing machines store in each cell only a
-single bit, this model stores arbitrarily-large integers.
-And whereas to get to a stored value
-a Turing machine may have to spend a lot of steps moving the I/O
-head to that cell, this model is `random access' because it 
-retrieves the contents of any memory address in one step.
-This model also typically assumes a single step for
-elementary operations such as addition or multiplication.
-
-That is, the second point is that to use Big~O to select a best algorithm,
-we must be aware that 
-algorithms can change their 
-Big-O characteristics when brought to different computing models.
-For instance, if we start with an algorithm intended for an Integer RAM
-and try it on a Turing machine, 
-the simulation may cost us as much as $n^3$ time, so that if the algorithm is 
+Algorithms can have different
+resource costs on different machine models.
+For instance, close analysis shows that
+if we start with an algorithm intended for an Integer RAM
+and translate it to run on a Turing machine then 
+this may cost us as much as $n^3$ extra time, so that if the algorithm is 
 $\bigOh(n^2)$ on the Integer RAM
 then on the Turing machine it is $\bigOh(n^5)$.
-Thus, we settle on a model first and only then use Big~O to help
-pick an algorithm associated with that model.
+Thus, the best way to proceed is to settle on a model first,
+and only then use Big~O to help
+pick an algorithm for that model.
+
+Integer RAM machines are widely used in algorithm analysis
+as they are close to the machines we have on our desks.
+For instance, analysis of an algorithm may find that the resource cost
+for an input of size~$n$ takes time that is
+\citetext{$5n^2+4n\cdot w+3n\cdot r+2\cdot m$}{%
+  For a rough idea of that these may be, here are some numbers that
+  every programmer should know. % http://highscalability.com/blog/2011/1/26/google-pro-tip-use-back-of-the-envelope-calculations-to-choo.html
+  \protect\begin{center}
+    \protect\begin{tabular}{rl}
+       \protect\tabulartext{Operation}
+         &\protect\tabulartext{Cost in nanoseconds}   \protect\\
+      \hline 
+      Cache reference   &$0.5$--$7$   \protect\\
+      Branch mispredict &$5$      \protect\\
+      Main memory reference &$100$  \protect\\
+      Send 1K bytes over 1 Gbps network  &$10\,000$ \protect\\
+      Read 1 MB sequentially from disk   &$20\,000\,000$  \protect\\
+      Send packet CA to Netherlands to CA    &$150\,000\,000$
+    \protect\end{tabular}
+  \protect\end{center}
+  A nanosecond is $10^{-9}$~seconds.  
+  For a fuller description see
+  \protect\url{https://www.youtube.com/watch?v=JEpsKnWZrJ8&app=desktop}.}
+where $w$ is the time for a disk write,
+$w$ is the time for a disk read, and~$m$ is the time for a memory access.
+to find the Big~O behavior we must specify the costs on that model.
+
 
 % Discussion started as: https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
 OK, so we've settled on a model.
@@ -1053,9 +1071,9 @@ for judging the practicality of an algorithm?
 Imagine
 an algorithm that takes time given by the quadratic function $C\cdot n^2$.
 An enormous coefficient such as $C=2^{100}$ would make it
-just as impractical as one that takes exponential time.
+just as impractical as an algorithm that takes exponential time.
 Similarly, an enormous $N$ may mean that the algorithm just
-will not work, in
+will not work in
 practical circumstances.
 Why use a resource-consumption measure that ignores constants?
 
@@ -1092,11 +1110,11 @@ Being reference independent is an advantage, and in a
 quickly changing field, almost a necessity.
 
 \margingraphic{0.36\textwidth}{complexity/pix/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
-Being reference independent means ignoring constants
+But being reference independent requires ignoring constants
 and instead making relative statements.
-Here is an analogy:~absolute distance measurement
-means specifying units such as miles or kilometers.
-Being able to make statements irrespective of the units requires
+Here is an analogy:~absolute measurement of distance
+is in units such as miles or kilometers.
+But being able to make statements irrespective of the units requires
 making relative statements such as,
 ``from here, New York City is twice as far as Boston.'' 
 
@@ -1135,9 +1153,10 @@ of steps by at most some constant.
 We can use Big~O to compare how algorithms
 perform as the input size grows.
 But it is only a rough comparison;
-it cannot say with great precision when two algorithms are put into code,
+it cannot say with great precision when two algorithms are put into code
+and run on a particular platform,
 which will be absolutely faster.\footnote{%
-  Use benchmarks.}
+  For that, use benchmarks.}
 
 % https://stackoverflow.com/a/19647659
 That leads us to our fourth point,
@@ -1834,7 +1853,10 @@ The Hamiltonian Circuit problem has another famous variant.
 Given a set $S=\set{c_0,\ldots c_{k-1}}$ whose elements are called
 cities, and an array of distances $d(c_i,c_j)\in\N^+$ for all
 $c_i\neq c_j$ (subject to $d(c_i,c_2)=d(c_j,c_i)$), 
-find the cheapest circuit that visits every city.
+\citetext{find the cheapest circuit that visits every city}{%
+  The Travelling Salesman Problem was first posed by K~Menger,
+  in an article that appeared in the same journal issue as
+  did G\"odel's Incompleteness Theorem.}.
 \end{problem}
 
 \margingraphic[l]{0.375\textwidth}{complexity/pix/xkcdtsp.png}{\label{fig:xkcdTravellingSalesman}\href{https://xkcd.com/399/}{Courtesy \url{xkcd.com}}}
@@ -6049,6 +6071,7 @@ required eight years of computation time
 running in parallel on a network of Linux workstations.
 
 \begin{TODO}
+\url{https://www.youtube.com/watch?v=q8nQTNvCrjE}
 SAT solvers; Davis-Putnam-Logemann-Loveland
 http://www.cs.cornell.edu/gomes/papers/SATSolvers-KR-Handbook.pdf
 These are in the worst case exponential,

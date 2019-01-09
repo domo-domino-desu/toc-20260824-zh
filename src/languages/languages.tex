@@ -2528,56 +2528,49 @@ instances in the search space, we stop when we have found any one.
 An example is the problem
 ``Given a weighted graph, and two vertices, and a bound $B\in\N$,
 find a path between the vertices that costs less than the bound.'' 
-For instance, we can take as input a number and give as output any nontrivial
-factor of that number.
-Or, we can look for a flight between New York and
+For instance, we can look for a flight between New York and
 San Francisco that costs less than \$800
-and if we find one then we are satisfied that at least one exists.
+and if we find any one then we stop.
 
 % \begin{TODO}
 % Another example is a $k$-coloring
 % \end{TODO}
 
-\definend{Decision problems}, those with an answer of `Yes' or `No',
-are a very important type. 
+A \definend{decision problem} has an answer of `Yes' or `No'.
 The first problem we saw, the 
 \protect\textit{Entscheidungsproblem},
 is a decision problem.\footnote{%
   Recall that the word is German for ``decision problem''
   and that it asks for an algorithm to decide, given a mathematical statement,
-  whether that statement is true or false.}
+  whether the statement is true or false.}
 Another is
-`Given a natural number, decide if it is prime.'
-And, we have seen many more in conjunction with the \HP{}, such as   
-the problem of
+`Given a natural number, decide if it is prime'.
+We have seen many more decision problems 
+in conjunction with the \HP{}, such as the problem of
 determining, given an index~$e$, whether $\TMfcn_e$ will for any input
 output a seven.
+\citetext{In short, Decision:~Is there a needle in the haystack? Search:~Find it.}{%
+  \autocite{blog:ComputationalComplexityDecisionVsSearch}}
 
-Decision problems may be less familiar than
-others, perhaps because they differ from the problems that appear
-in programming classes.
+Although a decision problem calls for producing a function of a kind,
+a Boolean function,
+they have a different feel so we consider them separately.
+
+This problem type may be less familiar than
+other types, 
+perhaps because they don't appear much in programming classes.
 However we will work with them often.
 One reason is that in the next chapter we will 
 study machines that cannot write so we need a simple 
 way for these machines to do something with the input and a 
 `Yes' or `No' output suits the circumstance.
-Another reason is that in many contexts stating a problem as
-a decision problem is natural, such as
-when we consider a Turing machine $\TM_e$ and
-think about the problem, given an input,
-of determining whether the machine halts on that
-input.
-
-Although a decision problem calls for producing a function of a kind,
-a Boolean function,
-these problems have a different feel
-so we consider them separately.
+Another reason is that in many contexts stating a problem in this
+way is natural, as we saw with the \HP.
 
 Often a decision problem is expressed as a
 \definend{language recognition problem},
 where we are given some $\lang$ and asked for an algorithm to
-decide if given
-input is a member of the language.
+decide if the given input is a member of the language.
 An example is the problem, given an input string,
 of determining membership in 
 $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma$ starts with \str{a} and contains at least two \str{b}'s}}$.
@@ -2589,19 +2582,39 @@ Part of our interest in problems of language membership
 arises from practice; for instance, a language complier must recognize whether
 a given source file is a member of the language.
 
-Often the differences between categories of problems can seem small,
-but they are important.
+Search problems and decision problems are related.
+For one, if you can solve a search problem then you can solve the
+associated decision problem quickly.
+For instance, consider 
+the search problem that takes in a string~$\sigma$ and a substring~$\tau$,
+returns the starting index of $\tau$ in~$\sigma$ if it is there, 
+and returns $0$ if not.
+The associated decision problem just asks if $\tau$ is a substring of~$\sigma$,
+yes or no.
+Well, if you can solve the first then you can use it to instantly 
+solve the second.
+
+What about the other direction?
+Suppose that you could quickly solve the decision problem.
+Then to solve the search problem you could look at the initial segments
+of~$\sigma$: the initial substring of length~$0$, the initial substring
+of length~$1$, etc., and apply the decision problem to each in turn.
+That is, if we can solve the decision problem quickly then
+we can use it to solve the search problem, but with some overhead.
+
+But while the differences between two categories of problems can seem small,
+they are subtle.
 Here is an example:~we can quickly determine whether a number has
-nontrivial factors (a decision problem),
-but we don't know at this time how to quickly find any factors
-(a search problem).
+nontrivial factors, which is  a decision problem,
+but we don't know at this time how to quickly solve the search
+problem of finding any factors.
 
 
 \begin{exercises}
 \begin{exercise}
 Identify each as a function problem, a decision problem, a search
 problem, or an optimization problem.
-\begin{exparts}
+\begin{exparts*}
 \item The Connectedness Problem, which is given a graph
 and decides whether for any two vertices there is a path between them.
 \item
@@ -2620,18 +2633,19 @@ $a^k\equiv b (mod\ p)$.
 represents in decimal.
 \item The problem that takes a string and decides if there is a person in
 the address book with that name.
-\end{exparts}
+\end{exparts*}
 \end{exercise}
 
 \begin{exercise}
-Consider the problem of recognizing members of this language.
-\begin{equation*}
-\lang{F}=\set{\sequence{n,B}\in\N^2\suchthat
+Let
+$
+\lang_{F}=\set{\sequence{n,B}\in\N^2\suchthat
   \text{there is an $m\in\set{1,\ldots\,B}$ that divides $n$}}
-\end{equation*}
+$
+and consider its language decision problem.
 \begin{exparts}
 \item
-Show that $\sequence{d,B}\in\lang{F}$ if and only if $B$ is greater
+Show that $\sequence{d,B}\in\lang_{F}$ if and only if $B$ is greater
 than or equal to the least prime factor of $d$.
 \item
 Conclude that you can use a solution to the language recognition problem
@@ -2640,6 +2654,14 @@ prime factor of that number.
 \end{exparts}
 \end{exercise}
 
+\begin{exercise}
+Give and example where you can solve the decision problem instanteously
+but you cannnot do so for the search problem.
+\begin{answer}
+Ever list of nubmers has a maximum, but finding it means at least looking
+through the list.
+\end{answer}
+\end{exercise}
 
 \begin{exercise}
 Convert each function problem to an equivalent decision problem.
@@ -2658,7 +2680,8 @@ Briefly sketch an algorithm for each language recognition problem.
 $\lang=\set{\sigma\in\kleenestar{\set{\str{0},\ldots \str{9}}}
     \suchthat\text{$\sigma$ is the decimal representation of a multiple of $100$}}$
 \item
-$\set{\sigma\in\kleenestar{\set{\str{0},\str{1}}}\suchthat\text{$sigma$ has more \str{1}'s than \str{0}'s}}$
+$\set{\sigma\in\kleenestar{\set{\str{0},\str{1}}}\suchthat\text{$\sigma$ has more \str{1}'s than \str{0}'s}}$
+\item $\lang=\set{\sigma\in\kleenestar{\B}\suchthat \reversal{\sigma}=\sigma}$
 \end{exparts}
 \end{exercise}
 

@@ -985,7 +985,7 @@ real SET_RT=1.4;
 path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
 
 real a=0.15, b=0.1;
-real WEDGE_TOP = 0.45*SET_TOP;
+real WEDGE_TOP = 0.6*SET_TOP;
 pair w=(0.5*SET_RT+0.5*a,WEDGE_TOP);
 path wedgecap = ellipse(w, a, b);
 
@@ -1031,7 +1031,7 @@ unitsize(pic,1cm);
 
 real a=0.15, b=0.1;
 // n^3
-real WEDGE_TOP0 = 0.55*SET_TOP;
+real WEDGE_TOP0 = 0.6*SET_TOP;
 pair w0=(0.5*SET_RT+0.5*a,WEDGE_TOP0);
 path wedgecap0 = ellipse(w0, a, b);
 // n^2

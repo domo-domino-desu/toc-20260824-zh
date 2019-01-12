@@ -1457,7 +1457,7 @@ Turing machines, and also Finite State machines, have the property that
 the next state is completely determined by the current state and current
 character.
 Once you lay out an initial tape and push Start then
-the rest of the computation is fixed.
+you just walk through the steps like, well, like an automaton.
 We now consider machines that are nondeterministic, 
 where from any configuration the machine could move to more than
 one next state, or to just one, or even to no state at all.
@@ -1465,18 +1465,18 @@ one next state, or to just one, or even to no state at all.
 
 \subsection{Motivation}
 Suppose that you have a grammar
-with rules~$R_0$,\ldots{} $R_{n-1}$ and start symbol~$S$.
+with some rules and start symbol~$S$.
 You want to know if the string~$\sigma$ has a derivation.
 The challenge to problems like this is that
 often at a step the derivation can go more than one way.
-For instance, if the first rule~$R_0$ is
+For instance, if the first rule is
 \syntax{S\produces{}\str{a}S|\str{b}A} then
-from \syntax{S} you to do two different things;
+from \syntax{S} you can do two different things;
 which one will be fruitful? 
 
 In the derivation exercises we used intuition to
 spot that one way or another leads to an answer.
-If you wrote a program for it then you would try every
+If you wrote a program for it then you might instead try every
 possible derivation.
 For instance, you might do a breadth-first traversal of the tree of all
 derivations.
@@ -1486,36 +1486,36 @@ programming classes, don't be misled into thinking that it is natural.
 This problem is most naturally done in parallel, and breadth-first traversal is
 a serialization that we do only because it is required by
 the machine model that we have, that is,
-the devices that we are programming on.
+on the devices that we have in mind when we are programming.
 
 \margingraphic{0.175\textwidth}{automata/pix/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}
 The American philosopher, and Hall of Fame baseball catcher, Y~Berra
 said, ``If you come to a fork in the road, take it.''
 That's a natural way to attack this problem:~when you come up against
 multiple possibilities,
-fork a child process for each way.
+fork a child for each.
 Thus, the routine might begin with the start state~$S$ and for each rule that
 could apply it spawns a child process that does apply that rule, deriving a
 string one removed from the start.
 Then each child finds each rule that could apply to its string and
 spawns its own children, each of which now has a string that is two removed from
 the start.
-Continue until the desired string appears.
+Continue until the desired string appears, if it ever does.
 
-The celebrated Travelling Salesman Problem suggests the same approach.
-Take a map of the forty eight contiguous US~states,
+The celebrated Travelling Salesman Problem illustrates.
+Take a map of the forty eight contiguous US~states
 and look at trips that visit every state capitol.
-We want to know if there is a cycle of less than $16\,000$ kilometers.
+We want to know, say, if there is a cycle of less than $16\,000$ kilometers.
 Starting at Montpelier we could
 fork forty seven child processes, one for each potential next capital.
 The process assigned Albany, for instance, would know that the trip so far is
 $126$~kilometers and would then fork its own
-forty six children.
+children, forty six of them.
 At the end, if there is
-a trip of less than $16\,000$ kilometers then some child knows it.
-There may be a lot of child processes, and many of them may have failed
-to find a short trip, but if even one succeeded then we consider
-the search a success.
+a trip of less than $16\,000$ kilometers then some process knows it.
+There will be lots of processes and many of them may have failed
+to find a short enough trip, but if even one succeeded then we consider
+the overall search a success.
 
 This computation is nondeterministic in that during it
 the machine has many process.
@@ -1539,8 +1539,9 @@ two mental models.\footnote{%
   While they are helpful in learning and thinking about nondeterminism,
   these models are not part of the formal definitions and proofs.}
 The first was introduced above.
-We can picture that when it is asked to go into multiple next states, 
-the machine forks.
+We can picture that when it is presented with multiple possible next states, 
+the machine forks, so it is in all of them simultaneously.
+This example illustrates.
 % The second way is that the machine simply guesses.
 % The first one seems more natural to a person with programming experience,
 % so we will illustrate it first.

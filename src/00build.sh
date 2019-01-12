@@ -6,7 +6,7 @@ usage()
 cat << EOF
 usage: $0 options
 
-Generate book.pdf for Hefferon's _Theory of Computation_.
+Generate book.pdf for Jim Hefferon's _Theory of Computation_.
 
 OPTIONS:
    -h      Show this message
@@ -15,6 +15,10 @@ OPTIONS:
    -v      Verbose
 EOF
 }
+
+# The bug that gives the reason for this has been fixed;
+#   see https://github.com/vectorgraphics/asymptote/issues/77
+ASY=asy -nosafe   
 
 REGENERATING=
 NOANSWERFILE=
@@ -53,7 +57,7 @@ then
 	echo "Generating graphics from asy files for cover"
      fi
     cd cover/asy
-      asy cover
+      $ASY cover
     cd ../..
     # For the prologue chapter
     if [[ -z $VERBOSE ]]
@@ -62,18 +66,18 @@ then
      fi
     cd prologue/asy
       cd circlediagram
-      asy circlediagram
-      asy infloop
+      $ASY circlediagram
+      $ASY infloop
       cd ..
       cd gates
-      asy gates
+      $ASY gates
       cd ..
       cd life
       bash ./run_life.sh
-      asy lifegraphics
+      $ASY lifegraphics
       cd ..
       cd tape
-      asy tapeadd
+      $ASY tapeadd
       cd ..
     cd ../..
     # background chapter
@@ -83,37 +87,37 @@ then
      fi
     cd background/asy
       cd arctan
-      asy arctan
+      $ASY arctan
       cd ..
       cd aristotle
-      asy aristotle
+      $ASY aristotle
       cd ..
       cd busybeaver
-      asy busybeaver
+      $ASY busybeaver
       cd ..
       cd correspondences
-      asy correspondences
+      $ASY correspondences
       cd ..
       cd flowcharts
-      asy flowcharts
+      $ASY flowcharts
       cd ..
       cd galileo
-      asy galileo
+      $ASY galileo
       cd ..
       cd hp
-      asy hp
+      $ASY hp
       cd ..
       cd indexsets
-      asy indexsets
+      $ASY indexsets
       cd ..
       cd hp
-      asy hp
+      $ASY hp
       cd ..
       cd maps
-      asy maps
+      $ASY maps
       cd ..
       cd memory
-      asy memory
+      $ASY memory
       cd ..
     cd ../..
     # languages chapter
@@ -123,10 +127,10 @@ then
      fi
     cd languages/asy
       cd graphs
-      asy graphs
+      $ASY graphs
       cd ..
       cd parsetree
-      asy parsetree
+      $ASY parsetree
       cd ..
     cd ../..
     # automata chapter
@@ -136,22 +140,22 @@ then
      fi
     cd automata/asy
       cd fsa
-      asy fsa
+      $ASY fsa
       cd ..
       cd machine
-      asy machine
+      $ASY machine
       cd ..
       cd min
-      asy min
+      $ASY min
       cd ..
       cd nfsm
-      asy nfsm
+      $ASY nfsm
       cd ..
       cd pda
-      asy pda
+      $ASY pda
       cd ..
       cd regex
-      asy regex
+      $ASY regex
       cd ..
     cd ../..
     # complexity chapter
@@ -161,19 +165,19 @@ then
      fi
     cd complexity/asy
       cd bigo
-      asy bigo
+      $ASY bigo
       cd ..
       cd complexity
-      asy complexity
+      $ASY complexity
       cd ..
       cd pnp
-      asy pnp
+      $ASY pnp
       cd ..
       cd problems
-      asy problems
+      $ASY problems
       cd ..
       cd xygraphs
-      asy xygraphs
+      $ASY xygraphs
       cd ..
     cd ../..
 fi

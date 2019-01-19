@@ -134,7 +134,11 @@ Part of what makes the procedure definite is that
 the instructions
 \citetext{don't involve random methods}{%
   We can build things that return completely random results;
-  see for instance
+  one example is a device that registers consecutive 
+  clicks on a Geiger counter and if
+  the second gap between clicks is longer then the first it returns~$1$,
+  else it returns~$0$. 
+  See also
   \protect\url{https://blog.cloudflare.com/randomness-101-lavarand-in-production/}.},
 such as counting clicks from radioactive decay,
 to determine which of two possibilities to perform.
@@ -179,7 +183,7 @@ storage, scratch memory, needed in addition to that for inputs and
 outputs.\footnote{%
   It is true that a physical computer such as
   your cell phone has memory space that
-  is bounded (putting aside for the moment storing things in the Cloud).
+  is bounded (putting aside storing things in the Cloud).
   However, that space is extremely large.
   In this Part, when working with the model devices we 
   find that imposing a bound on memory 
@@ -514,7 +518,17 @@ Of course, the point of a machine is what it does.
 A Turing machine is a blueprint for a computation\Dash it is a program\Dash 
 and so
 to finish the formalization started by the definition we
-give a complete description of how these machines act.
+give 
+\citetext{a complete description of how these machines act}{%
+  Readers new to this subject sometimes ask why we choose
+  a model in which operations are so basic that programming
+  them can be an annoyance.
+  Why not choose a real machine?
+  The reason is that we can completely describe the actions 
+  of the Turing machine model,
+  or of any of the other simple models that other authors use,
+  in only a few paragraphs, as we do here.
+  There is no way to describe a real machine in less than a full book.}.
 
 \label{text:DescriptionOfTMAction}
 We saw in tracing through \cref{ex:MPred} and \cref{ex:MAdd}
@@ -849,11 +863,31 @@ unary, so that $n$ is represented as $n$-many $1$'s,
 and gives as output the number~$3$ written in unary. 
 \end{exercise}
 
-\begin{exercise}
-Produce a Turing machine that takes as input a number~$n$ written in
-unary, represented as $n$-many $1$'s, 
-and gives as output the number~$2n$ written in unary,
-with the head under the leftmost \str{1}. 
+% \begin{exercise}
+% Produce a Turing machine that takes as input a number~$n$ written in
+% unary, represented as $n$-many $1$'s, 
+% and gives as output the number~$2n$ written in unary,
+% with the head under the leftmost \str{1}. 
+% \end{exercise}
+\begin{exercise} %  \recommended
+Produce a doubler, a Turing machine that computes $f(x)=2x$.
+\begin{exparts}
+\item
+  Follow the convention of \cref{def:FcnComputedByTM}, so the
+  machine takes as input a number~$n$ written in unary, and with the 
+  initial position of the head under the leftmost \str{1} (if there is one),  
+  and halts with $2n$-many \str{1}'s on the tape, with the head 
+  under the leftmost~\str{1} (if there is one). 
+  \hint~erase the first~\str{1}, move right to the end of the \str{1}'s,
+  past a blank, and put down two~\str{1}'s. 
+  Then move left until you are at the
+  start of the first sequence of \str{1}'s, and repeat.
+\item
+  Instead use the convention that the input is written in binary.
+  Thus the tape alphabet is $\Sigma=\set{\str{B},\str{0}, \str{1}}$,
+  initially the head is under the leftmost bit of $n$,
+  and at the end the tape contains the binary representation of $2n$.
+\end{exparts}
 \end{exercise}
 
 \begin{exercise}
@@ -887,13 +921,25 @@ leftmost bit.
 \end{exercise}
 
 \begin{exercise}
-Give a Turing machine that
-takes as input a bit string, a sequence of \str{0}'s and \str{1}'s,
-and flips all of the bits, so each \str{0} becomes a \str{1}
-and each \str{1} becomes a \str{0}. 
-You can assume that at the start the machine's head is under the first bit, 
-and you must arrange that at the end the head should again be under the 
-first bit.
+% One way to argue that Turing machines can do anything that a modern CPU 
+% can do is to show how to do all of the CPU's operations and show how to
+% combine those operations.
+For each operation below produce a Turing machine.
+The input language is $\Sigma=\set{\str{0},\str{1},B}$.
+At the start the machine's head is under the 
+first bit. 
+Arrange that at the end the head is under the first bit of the result.
+\begin{exparts*}
+\item
+Take as input a $4$-bit string and do a bitwise~NOT, 
+so that each \str{0} becomes a \str{1}
+and each \str{1} becomes a \str{0}.
+\item 
+Take as input a $4$-bit string and do a bitwise
+circular left shift, so that from $b_3b_2b_1b_0$  you end with $b_2b_1b_0b_3$.
+\item 
+Take as input two $4$-bit strings and perform a bitwise~AND.
+\end{exparts*}
 \end{exercise}
 
 \begin{exercise}
@@ -915,22 +961,6 @@ with the tape containing only one bit, \str{1} if the input was even
 and \str{0} if it was not, and with the head under that output.
 \end{exercise}
 
-\begin{exercise}
-Produce a doubler, a Turing machine that computes $f(x)=2x$.
-\begin{exparts}
-\item
-  Follow the convention of \cref{def:FcnComputedByTM}, so the
-  machine takes as input a number~$n$ written in unary, and with the 
-  initial position of the head under the leftmost \str{1},  
-  and halts with $2n$-many \str{1}'s on the tape. 
-\item
-  Follow the convention that the input is written in binary.
-  Thus the tape alphabet is $\Sigma=\set{\str{B},\str{0}, \str{1}}$,
-  initially the head is under the leftmost bit of $n$,
-  and at the end the tape contains the binary representation of $2n$.
-\end{exparts}
-\end{exercise}
-
 
 \begin{exercise}
 Produce a Turing machine that replicates the input:~if 
@@ -945,11 +975,10 @@ two sequences of $n$-many \str{1}'s separated by a single blank.
 \item 
 Produce a machine that halts on exactly one input.
 \item
-Produce a Turing machine for which there is exactly one input where it 
-fails to halt.
-\item
-Produce a machine that halts on infinitely many inputs, and 
-also produce one that does not halt on infinitely many.
+Produce a Turing machine that fails to halt on exactly one input.
+% \item
+% Produce a machine that halts on infinitely many inputs, and 
+% also produce one that does not halt on infinitely many.
 \item
 Produce a single machine that halts on infinitely many inputs and 
 also does not halt on infinitely many.
@@ -1117,9 +1146,9 @@ was  \citetext{established  beyond  any  doubt}{\autocite{Godel95}}
 by  Turing.''
 
 \begin{churchsthesis}
-The set of things that are
-computable by a discrete and deterministic mechanism 
-is the same as the set of things that are computable by
+The set of things that can be computed, 
+by a discrete and deterministic mechanism, 
+is the same as the set of things that can be computed by
 a Turing machine.\footnotemark %
 \end{churchsthesis}\footnotetext[2]{Some authors
   call this the Church-Turing Thesis.  

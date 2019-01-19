@@ -641,9 +641,10 @@
   \end{list}
 }
 \newenvironment{exercise}{%
-  \item
+  \item %
 }{%
 }
+\newcommand{\recommended}{\llap{\checkmark}}
 
 % Exparts
 % Some exercises have multiple parts: (1) .. (2) ..

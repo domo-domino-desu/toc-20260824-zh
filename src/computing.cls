@@ -563,7 +563,8 @@
     linkcolor=black,          % color of internal links (change box color with linkbordercolor)
     citecolor=black,        % color of links to bibliography
     filecolor=black,      % color of file links
-    urlcolor=black           % color of external links
+    urlcolor=black,           % color of external links
+    plainpages=false   % prevent "destination with the same identifier" error
 }
 % \newcommand\href[2]{\relax}
 % \newcommand\hyperref[2][\relax]{#2}

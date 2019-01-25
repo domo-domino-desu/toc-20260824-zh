@@ -1,4 +1,5 @@
 \documentclass[9pt,t,serif,professionalfont,xcolor={table,dvipsnames},noamsthm]{beamer}
+\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
 \PassOptionsToPackage{pdfpagemode=FullScreen}{hyperref}
 \setbeamersize{text margin left = 0.5cm,
                text margin right = 0.3cm}
@@ -49,6 +50,10 @@
 \patchcmd{\CatchFBT@Fin@l}{\endlinechar\m@ne}{}
   {}{\typeout{Unsuccessful patch!}}
 \makeatother
+
+\usepackage{xr}
+  \externaldocument{../../book.aux}
+\usepackage{cleveref}
 
 \usepackage{multirow,bigstrut}
 \begin{document}
@@ -153,6 +158,30 @@ Fix some acceptable numbering that we will use for the rest of the course.
 
 
 
+\begin{frame}
+  \frametitle{A way to informally think about numbering}
+Turing machines are like programs.
+Imagine that you have a program $\TM$ in your editor, and save it to disc.
+It gets put on the hard drive as a bitstring, 
+which you can think of as a number~$e$ written in binary.
+The operating system associates in both directions, 
+from program to number and from number to program,
+effectively.
+\begin{center}
+  \includegraphics{asy/background05.pdf}
+\end{center}
+\pause
+This is only an analogy\Dash for instance leading \str{0}'s
+in the bitstring could cause ambiguity\dash but like any analogy its
+point is to help us get a better sense of what is happening.
+A Turing machine's index number is a name, a way to refer to that machine.
+We can go from machine source to index, or from index to machine source,
+effectively.
+\end{frame}
+
+
+
+
 
 \section{Diagonalization}
 
@@ -195,11 +224,8 @@ by the result above it is strictly less than.
 
 
 \begin{frame}
+\ExecuteMetaData[\catchfilefn]{th:CantorsThm}
 \ExecuteMetaData[\catchfilefn]{pf:CantorsThm}
-
-\pause
-\ExecuteMetaData[\catchfilefn]{cor:FcnsNToNNotCountable}
-\ExecuteMetaData[\catchfilefn]{pf:FcnsNToNNotCountable}
 \end{frame}
 
 
@@ -207,19 +233,228 @@ by the result above it is strictly less than.
 \begin{frame}
   \frametitle{There are uncomputable sets}
 
+\ExecuteMetaData[\catchfilefn]{cor:FcnsNToNNotCountable}
+\ExecuteMetaData[\catchfilefn]{pf:FcnsNToNNotCountable}
+
+\pause
 Turing machines compute functions from $\N$ to $\N$.
 There are uncountably many such functions, but only countably many 
-such Turing machines.
+Turing machines.
 Thus there are function that are not computed by any Turing machine.
 
 This is like Musical Chairs.
 There are a smaller number of chairs (Turing machines) than children
 (functions from $\N$ to~$\N$).
-Some function ha sno associated Turing machine.
+Some functions have no associated Turing machine.
 
 \pause
-In the light of Church's Thesis, we take this to mean that 
-there are jobs that no computer can do.
+\vspace*{2ex}
+\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{%
+  \color{red}
+  In the light of Church's Thesis we interpret this as:~mechanical
+  computation does not suffice.
+  There are jobs that no computer can do.}}
+\end{frame}
+
+
+
+\section{Universality}
+
+\begin{frame}
+  \frametitle{Universal Turing machine}
+\ExecuteMetaData[\catchfilefn]{th:UniversalTM}
+\ExecuteMetaData[\catchfilefn]{discussion:UniversalTM}
+
+\begin{itemize}
+\item This converts doing jobs in hardware job to doing them in software.
+\item The universal machine does not get as input Turing machine, it gets
+  a representation of a Turing machine.
+\item Yes, we could feed the $\UTM$ a representation of itself.
+\item A $\UTM$ is like an interpreter, or like an operating system. 
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Parametrization}
+
+Universality says that there is a computable
+function $\map{F}{\N^2}{\N}$ such that
+$F(e,x)=\phi_e(x)$.
+There, the letter~$e$ travels from the function's argument to an index.
+
+\ExecuteMetaData[\catchfilefn]{th:smn}
+
+\pause
+\textsc{Pf.}
+\ExecuteMetaData[\catchfilefn]{pf:smni}
+\end{frame}
+
+
+\begin{frame}
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../background/asy/flowcharts/flowcharts00.pdf}}
+  \hspace{3em}
+  \vcenteredhbox{\includegraphics{../../background/asy/flowcharts/flowcharts01.pdf}}
+\end{center}
+\ExecuteMetaData[\catchfilefn]{pf:smnii}\qedsymbol
+\end{frame}
+
+
+
+% ====================================================
+\section{The \HP}
+
+
+\begin{frame}
+  \frametitle{\HP}
+We are interested in finding which things are mechanically computable.
+We now ask about effectivizing Cantor's Theorem.
+This is the table from the discussion leading to that result.
+\begin{center}
+  \ExecuteMetaData[\catchfilefn]{table:CantorThmEffectivization}
+  \hspace*{2em plus 0.75fil}
+  \vcenteredhbox{\includegraphics{../../background/asy/hp/hp02.pdf}}
+\end{center}
+\end{frame}
+
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{def:K}
+\ExecuteMetaData[\catchfilefn]{prob:HP}
+\pause
+\ExecuteMetaData[\catchfilefn]{th:HPIsUnsolvable}
+
+\textsc{Pf.} \ExecuteMetaData[\catchfilefn]{pf:HPIsUnsolvablei}
+\begin{center}
+\begin{minipage}{0.3\textwidth}
+  \begin{equation*}
+  f(e)=
+    \begin{cases}
+    0    &\case{if $\TMfcn_e(e)\diverges$}  \\
+    \uparrow  &\case{if $\TMfcn_e(e)\converges$}
+    \end{cases}
+  \end{equation*}
+\end{minipage}
+\hspace{2.5em}
+\vcenteredhbox{\includegraphics{../../background/asy/flowcharts/flowcharts02.pdf}}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{pf:HPIsUnsolvableii}\qedsymbol
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Discussion}
+The fact that the Halting Problem is unsolvable does not mean that 
+we cannot tell if any program halts. 
+Nor does it mean that we cannot tell if a program 
+does not halt.
+Instead, the unsolvability of the Halting Problem 
+says that there is no single program that, for all~$e$, correctly computes 
+in a finite time whether $\TM_e$ halts on input~$e$.
+\begin{itemize}
+\item The ``finite time'' qualifier is there because we could just use a universal
+Turing machine to simulate $\TM_e$ on~$e$, but if that machine failed to halt
+then we would not find out in a finite time. 
+\item
+The ``single program'' qualifier is there because for any index~$e$,
+either $\TM_e$ halts on~$e$ or it does not.
+That is, for any~$e$ one of these two programs
+gives the right answer.
+\begin{center}
+% \vspace*{-4ex}
+\vspace*{-\ht\strutbox}
+\begin{minipage}[t]{0.4\linewidth}%
+\begin{lstlisting}
+read e
+print 0
+\end{lstlisting}%
+\end{minipage}%
+\hspace*{2em plus 0.5fil}
+\begin{minipage}[t]{0.4\linewidth}%
+\begin{lstlisting}
+read e
+print 1
+\end{lstlisting}%
+\end{minipage}%
+\end{center}
+\end{itemize}
+Thus, the unsolvability of the Halting Problem is about 
+the non-existence of a single program that works across all
+indices.
+It speaks to uniformity,
+or rather, the impossibility of uniformity.
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Unsolvability via reduction to \HP}
+
+Each of these problems is unsolvable.  
+For each, we show that by using \HP.
+
+\begin{enumerate}
+\item The problem of determining whether a given Turing machine
+  halts on input~$1$.
+\item The problem of determining whether a given Turing machine ever
+  outputs a 19.
+\item The problem of determining whether a given Turing machine 
+  gives as output the square of its input.
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Rice's Theorem}
+\ExecuteMetaData[\catchfilefn]{def:SameBehavior}
+\ExecuteMetaData[\catchfilefn]{def:IndexSet}
+
+\begin{example}
+These are index sets:
+(1)~$\set{e\in\N\suchthat
+      \text{$\phi_e(x)=9$}}$
+(2)~$\set{e\in\N\suchthat
+      \text{$\phi_e(x)=2x$ or $\phi_e(x)=x+6$}}$
+and (3)~$\set{e\in\N\suchthat
+      \text{$\phi_e(1)\converges$}}$
+\end{example}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{th:RicesTheorem}
+
+\textsc{Pf.}
+\ExecuteMetaData[\catchfilefn]{pf:RicesTheoremi}
+\end{frame}
+
+
+\begin{frame}
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../background/asy/hp/hp12.pdf}}
+  \hspace{2em plus 0.5fil}
+  \vcenteredhbox{\includegraphics{../../background/asy/hp/hp13.pdf}}
+\end{center}
+\ExecuteMetaData[\catchfilefn]{pf:RicesTheoremii}\qedsymbol
+
+\pause
+Show each of these is unsolvable using Rice's Theorem.
+
+\begin{enumerate}
+\item The problem of determining whether a given Turing machine
+  halts on input~$1$.
+\item The problem of determining whether a given Turing machine ever
+  outputs a 19.
+\item The problem of determining whether a given Turing machine 
+  gives as output the square of its input.
+\end{enumerate}
+
 \end{frame}
 
 \end{document}

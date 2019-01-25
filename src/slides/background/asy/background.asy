@@ -264,3 +264,38 @@ for (int i; i<NUMPOINTS; ++i) {
 // label(pic,"{\tiny$\vdots$}",shift(0.5*DOMAINTOCODOMAIN,0)*(0.5*h,1.3*v));
 shipout(format("background%02d",picnum),pic,format="pdf");
 
+
+
+
+// ......................................
+// Drop a program to disc, get a number
+
+import labelpath;
+picture pic;
+int picnum = 5;
+unitsize(pic,0.4cm);
+
+// Source doc
+pair pt1=(0.1,3);
+pair pt2=(0.075,3.1);
+pair pt3=(-0.1,3.5);
+path src_edge = (0,0){pt2-(0,0)}..tension 1 and 2 ..pt1..pt2..pt3..tension 2 and 1 ..{(0,5)-pt3}(0,5.0);
+path src_other_edge = shift(3.75,0)*src_edge;
+path paper = src_edge--reverse(src_other_edge)--cycle;
+// dot(pic,pt1,green);
+// dot(pic,pt2,green);
+// dot(pic,pt3,green);
+draw(pic,paper,miterjoin+lightcolor);
+label(pic,"\tiny \texttt{(def (f x y)}",pt3,NE);
+label(pic,"\tiny \hspace*{0.5cm}$\vdots$",pt1,E);
+
+real disc_radius = 8;
+pair disc_center = (1.825,-1*disc_radius-2);
+real disc_track_sector_radius = disc_radius - 1;
+path disc = arc(disc_center, disc_radius, 120, 60, CW);
+path track_sector = arc(disc_center, disc_track_sector_radius, 120, 60, CW);
+draw(pic,disc,lightcolor);
+labelpath(pic,"\tiny \texttt{0101000}",track_sector,highlightcolor);
+label(pic,"$\Updownarrow$",(disc_center.x,-1));
+shipout(format("background%02d",picnum),pic,format="pdf");
+

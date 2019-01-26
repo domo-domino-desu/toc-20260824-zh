@@ -18,6 +18,8 @@ EOF
 
 # The bug that gives the reason for this has been fixed;
 #   see https://github.com/vectorgraphics/asymptote/issues/77
+# but I don't have the updated asymptote.  Despite the name it is
+# perfectly safe.
 ASY=asy -nosafe   
 
 REGENERATING=

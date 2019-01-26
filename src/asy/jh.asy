@@ -66,7 +66,7 @@ pen THINPEN=linecap(0)
 pen DASHPEN=linecap(0)
             +linewidth(0.4pt)
             +linetype(new real[] {8,8});
-pen FCNPEN_NOCOLOR=linecap(0)
+pen FCNPEN_NOCOLOR=squarecap
   +linewidth(1.5pt);
 pen FCNPEN_SOLID=FCNPEN_NOCOLOR
   +lightcolor;

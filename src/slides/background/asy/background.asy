@@ -13,7 +13,7 @@ cd("");
 settexpreamble();
 
 cd("../../../asy/");
-import jh;
+import flowchart;  // imports jh
 cd("");
 
 // Draw a set bean

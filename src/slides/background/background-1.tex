@@ -276,6 +276,72 @@ Some functions have no associated Turing machine.
 
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Partial evaluation}
+
+Start with a two-input function.
+
+\begin{lstlisting}
+def power(base, exponent):
+    return base ** exponent  
+\end{lstlisting}
+
+By freezing, or parametrizing, 
+one if its arguments we get a family of functions.
+
+\begin{lstlisting}
+def identity(base):
+    return power(base, 1)
+def square(base):
+    return power(base, 2)
+def cube(base):
+    return power(base, 3)
+\end{lstlisting}
+
+\pause
+Python has a more systemmatic way to accomplishes the same thing.
+
+\begin{lstlisting}
+from functools import partial
+identity = partial(power, exponent=1)
+square = partial(power, exponent=2)
+cube = partial(power, exponent=3)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Freezing variables}
+
+On the left is a three input routine.
+By Church's Thesis there is a Turing machine to do the same behavior;
+let its index be~$e$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{asy/background06.pdf}}
+  \hspace{3em}
+  \vcenteredhbox{\includegraphics{asy/background07.pdf}}
+\end{center}
+The routine on the right has frozen the first two of the inputs.
+The \smn~Theorem says that there is a program that takes in
+$e$, $5$, and~$7$ and outputs the index of the Turing machine with
+the behavior on the right. 
+
+Further, it says that for all $3$-input, freeze~$2$ situations,
+the same program works.
+We write $s_2^{1}$ for the function that is the behavior of that program.
+In this class we will usually not worry about the bookkeeping and
+just call it~$s$:
+\begin{center}
+  \parbox{0.7\textwidth}{Where $e$ is the index of the Turing machine on the left,
+$s(e,5,7)$ is the index of the machine on the right.}
+\end{center}
+\end{frame}
+
+
+
+
 \begin{frame}
     \frametitle{Parametrization}
 
@@ -285,6 +351,9 @@ $F(e,x)=\phi_e(x)$.
 There, the letter~$e$ travels from the function's argument to an index.
 
 \ExecuteMetaData[\catchfilefn]{th:smn}
+
+This is the \alert{\smn~Theorem} or 
+\alert{Parametrization Theorem}.
 
 \pause
 \textsc{Pf.}
@@ -302,36 +371,48 @@ There, the letter~$e$ travels from the function's argument to an index.
 \end{frame}
 
 
-\begin{frame}[fragile]
-  \frametitle{Partial evaluation}
 
-We can start with this function
+\begin{frame}{A family of functions}
+Recall again the \lstinline{power} routine.
 
-\begin{lstlisting}
-def power(base, exponent):
-    return base ** exponent  
-\end{lstlisting}
+% \begin{lstlisting}
+% def power(base, exponent):
+%     return base ** exponent  
+% \end{lstlisting}
 
-and freeze one if its arguments.
+\begin{center}
+  \vcenteredhbox{\includegraphics{asy/background08.pdf}}
+\end{center}
 
-\begin{lstlisting}
-def square(base):
-    return power(base, 2)
+Suppose that is the machine with index~$e$.
+Looking at the different machines indexed by $s(e,x)$ 
+gives a family of routines.
 
-def cube(base):
-    return power(base, 3)
-\end{lstlisting}
+% \begin{lstlisting}
+% def identity(base):
+%     return power(base, 1)
+% def square(base):
+%     return power(base, 2)
+% def cube(base):
+%     return power(base, 3)
+% \end{lstlisting}
 
-\pause
-This accomplishes the same thing.
-
-\begin{lstlisting}
-from functools import partial
-
-square = partial(power, exponent=2)
-cube = partial(power, exponent=3)
-\end{lstlisting}
+\begin{center}
+  \vcenteredhbox{\includegraphics{asy/background09.pdf}}
+  \hspace{1em}
+  \vcenteredhbox{\includegraphics{asy/background10.pdf}}
+  \hspace{1em}
+  \vcenteredhbox{\includegraphics{asy/background11.pdf}}
+  \hspace{1em}
+  \ldots
+  \hspace{1em}
+  \vcenteredhbox{\includegraphics{asy/background12.pdf}}
+  \hspace{1em}
+  $\ldots$
+\end{center}
 \end{frame}
+
+
 
 
 % ====================================================
@@ -348,14 +429,32 @@ This is the table from the discussion leading to that result.
   \hspace*{2em plus 0.75fil}
   \vcenteredhbox{\includegraphics{../../background/asy/hp/hp02.pdf}}
 \end{center}
+Consider the flowchart on the right.
+All the boxes except the middle one are trivial.
+For the middle, use universality to simulate Turing machine~$e$ 
+running input~$e$.
+
+\pause
+But wait, that looks like a program giving output that isn't on the list
+of all program outputs.
+Where is the flaw in the reasoning?
+
+\pause
+Inherient in the nature of mechanical computation, necessary to avoid
+contradiction, is that sometimes a machine gets an input and fails to 
+halt.
 \end{frame}
 
 
 \begin{frame}
 \ExecuteMetaData[\catchfilefn]{def:K}
 
-This is the \HP.
+In the notation of effective functions it is 
+$K=\set{e\suchthat \TM_e(e)\converges}$.
+
 \ExecuteMetaData[\catchfilefn]{prob:HP}
+
+This is the \alert{\HP}.
 \pause
 \ExecuteMetaData[\catchfilefn]{th:HPIsUnsolvable}
 

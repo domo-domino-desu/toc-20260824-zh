@@ -299,3 +299,325 @@ labelpath(pic,"\tiny \texttt{0101000}",track_sector,highlightcolor);
 label(pic,"$\Updownarrow$",(disc_center.x,-1));
 shipout(format("background%02d",picnum),pic,format="pdf");
 
+
+
+// ======================================================
+// s-m-n theorem before and after
+
+picture pic;
+int picnum = 6;
+// unitsize(pic,1cm);
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox(minipage2("Read x0\\ Read x1\\ Read x2"));
+node dosomething=nbox("Do something");
+node output=nbox("Output something");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.35*v,start,read);
+vlayout(1.45*v,read,dosomething);
+vlayout(1.0*v,dosomething,output);
+vlayout(1.0*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--dosomething),
+     (dosomething--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     dosomething,
+     output,
+     ending
+     );
+
+shipout(format("background%02d",picnum),pic,format="pdf");
+
+// .....................
+picture pic;
+int picnum = 7;
+// unitsize(pic,1cm);
+
+// define nodes
+node start=nroundbox("Start");
+node fix=nbox(minipage2("x0 = 5\\ x1 = 7"));
+node read=nbox("Read x2");
+node dosomething=nbox("Do something");
+node output=nbox("Output something");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.25*v,start,fix);
+vlayout(1.25*v,fix,read);
+vlayout(1.0*v,read,dosomething);
+vlayout(1.0*v,dosomething,output);
+vlayout(1.0*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--fix),
+     (fix--read),
+     (read--dosomething),
+     (dosomething--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     fix,
+     read,
+     dosomething,
+     output,
+     ending
+     );
+
+shipout(format("background%02d",picnum),pic,format="pdf");
+
+
+
+
+// ======================================================
+// s-m-n family of pgms
+picture pic;
+int picnum = 8;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox(minipage2("Read base\\ Read exponent"));
+node dosomething=nbox("z = base**exponent");
+node output=nbox("Print z");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.25*v,start,read);
+vlayout(1.30*v,read,dosomething);
+vlayout(1.0*v,dosomething,output);
+vlayout(1.0*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--dosomething),
+     (dosomething--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     dosomething,
+     output,
+     ending
+     );
+
+shipout(format("background%02d",picnum),pic,format="pdf");
+
+
+// ..............................
+picture pic;
+int picnum = 9;
+
+// define nodes
+node start=nroundbox("Start");
+// node fix=nbox("exponent = 0");
+node read=nbox("Read base");
+node dosomething=nbox("z = base**0");
+node output=nbox("Print z");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.00*v,start,read);
+// vlayout(1.00*v,fix,read);
+vlayout(1.00*v,read,dosomething);
+vlayout(1.0*v,dosomething,output);
+vlayout(1.0*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     // (fix--read),
+     (read--dosomething),
+     (dosomething--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     // fix,
+     read,
+     dosomething,
+     output,
+     ending
+     );
+
+shipout(format("background%02d",picnum),pic,format="pdf");
+
+
+// ..............................
+picture pic;
+int picnum = 10;
+
+// define nodes
+node start=nroundbox("Start");
+// node fix=nbox("exponent = 1");
+node read=nbox("Read base");
+node dosomething=nbox("z = base**1");
+node output=nbox("Print z");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.00*v,start,read);
+// vlayout(1.00*v,fix,read);
+vlayout(1.00*v,read,dosomething);
+vlayout(1.0*v,dosomething,output);
+vlayout(1.0*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     // (fix--read),
+     (read--dosomething),
+     (dosomething--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     // fix,
+     read,
+     dosomething,
+     output,
+     ending
+     );
+
+shipout(format("background%02d",picnum),pic,format="pdf");
+
+
+// ..............................
+picture pic;
+int picnum = 11;
+
+// define nodes
+node start=nroundbox("Start");
+// node fix=nbox("exponent = 2");
+node read=nbox("Read base");
+node dosomething=nbox("z = base**2");
+node output=nbox("Print z");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.00*v,start,read);
+// vlayout(1.00*v,fix,read);
+vlayout(1.00*v,read,dosomething);
+vlayout(1.0*v,dosomething,output);
+vlayout(1.0*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     // (fix--read),
+     (read--dosomething),
+     (dosomething--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     // fix,
+     read,
+     dosomething,
+     output,
+     ending
+     );
+
+shipout(format("background%02d",picnum),pic,format="pdf");
+
+
+
+// ..............................
+picture pic;
+int picnum = 12;
+
+// define nodes
+node start=nroundbox("Start");
+// node fix=nbox("exponent = 2");
+node read=nbox("Read base");
+node dosomething=nbox("z = base**$x$");
+node output=nbox("Print z");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.00*v,start,read);
+// vlayout(1.00*v,fix,read);
+vlayout(1.00*v,read,dosomething);
+vlayout(1.0*v,dosomething,output);
+vlayout(1.0*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     // (fix--read),
+     (read--dosomething),
+     (dosomething--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     // fix,
+     read,
+     dosomething,
+     output,
+     ending
+     );
+
+shipout(format("background%02d",picnum),pic,format="pdf");
+

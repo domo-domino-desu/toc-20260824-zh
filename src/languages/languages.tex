@@ -3,7 +3,7 @@
 
 Turing machines input strings and output strings, sequences of tape symbols.
 So a natural way to work is to represent a problem as a string,
-put it on the tape, run a Turing machine on it, and end with
+put it on the tape, run a computation, and end with
 the solution as a string.
 
 Everyday computers work the same way.
@@ -11,9 +11,9 @@ Consider a program that finds the shortest driving distance
 between cities.   
 % Perhaps it works with a map of the country idealized as a
 % a collection of nodes and edges, intersections and the roads joining them.
-We input the map distances as a strings of symbols,
-input the desired two cities as two strings,
-and after running the program we get the output
+Probably we work by inputting the map distances as a strings of symbols and
+inputting the desired two cities as two strings,
+and after running the program we have the output
 directions as a string.
 So strings, and collections of strings, are essential.
 
@@ -27,22 +27,12 @@ So strings, and collections of strings, are essential.
 % that are strings of letters without digits.
 
 % \subsection{Definition}
-This section uses familiar terms, and the formal definition of
-each is related to its familiar meaning,
-but some aspects of the definition may be surprising.
+% This section uses familiar terms, and the formal definition of
+% each is related to its familiar meaning,
+% but some aspects of the definition may be surprising.
 
-\begin{definition}
-A \definend{symbol} (or \definend{token}) is something that 
-a machine can read and write.\footnotemark{}  %
-An \definend{alphabet} is a nonempty and finite set of symbols.
-A \definend{string} (or \definend{word})
-over an alphabet is a finite sequence of elements from that alphabet.
-The string with no elements is 
-the \citetext{\definend{empty string}, denoted ~$\emptystring$}{Possibly 
-  $\emptystring$ was chosen as an abbreviation for `empty'.   
-  Some authors use $\lambda$, possibly from the German word for 
-  `empty', \textit{leer}.  \autocite{csse:Siren}}.
-\end{definition}\footnotetext{%
+Recall that a \definend{symbol} (sometimes called a \definend{token}) 
+is something that a machine can read and write,\footnote{%
   We can imagine Turing's clerk 
   doing a calculation without symbols, keeping track of information by 
   \protect\citetext{requiring elephants to move 
@@ -50,7 +40,7 @@ the \citetext{\definend{empty string}, denoted ~$\emptystring$}{Possibly
   making
   a Turing machine out of Legos and want to keep track by sliding a block
   from one side of a column to the other.
-  Or, we could be using an abacus.}.
+  Or, we could use an abacus.}.
   But 
   \protect\citetext{we could translate any such procedure}{While a 
   person may quite sensibly worry that elephants could be not just on
@@ -68,41 +58,46 @@ the \citetext{\definend{empty string}, denoted ~$\emptystring$}{Possibly
   need to manipulate them.
   For this purpose, elephants
   would be an inconvenience.}
+and an \definend{alphabet} is a nonempty and finite set of symbols.
 
+%<*def:String>
+\begin{definition}
+A \definend{string} or \definend{word}
+over an alphabet is a finite sequence of elements from that alphabet.
+The string with no elements is 
+the \citetext{\definend{empty string}, denoted~$\emptystring$}{Possibly 
+  $\emptystring$ came as an abbreviation for `empty'.   
+  Some authors use $\lambda$, possibly from the German word for 
+  `empty', \textit{leer}.  \autocite{csse:Siren}}.
+\end{definition}
+%</def:String>
 We write symbols in a distinct typeface, as in \str{1} or \str{a},
 because the alternative of quoting them would be 
-clunky.\footnote[2]{We must give them a distinct look because 
-we must distinguish the symbol `\protect\str{a}'
-from the variable `$a$' 
-so that we can tell ``let $S=\protect\set{\protect\str{a}}$'' 
-apart from 
-``let $S=\protect\set{a}$.'' 
-Symbols are not variables\Dash they don't hold a value,
-they are themselves a value.}
-The term ``symbol'' is potentially misleading in that some 
-symbols contain more than one character.
+clunky.\footnote{%
+  We must give them a distinct look because 
+  we must distinguish the symbol `\protect\str{a}'
+  from the variable `$a$' 
+  so that we can tell ``let $S=\protect\str{a}$'' 
+  apart from 
+  ``let $S=a$.'' 
+  Symbols are not variables\Dash they don't hold a value,
+  they are themselves a value.}
+One potentially surprising aspect of the term `symbol' is that 
+some symbols contain more than one character.
 For instance, a programming language
-may have \str{if} as a symbol, as indecomposable
-into two separate letters.
-(This is one aspect of the definition of `symbol' that
-may be surprising.)
+may have \str{if} as a symbol, indecomposable
+into separate letters.
 
-% An alphabet can be finite $\Sigma_0=\set{\str{a},\dots, \str{z}}$ 
-% \citetext{or infinite $\Sigma_1=\set{\str{0},\str{1},\ldots}$}{%
-% There is no point in having an uncountably infinite alphabet as
-% the machines we use will run for at most countably many steps
-% and so use at most countably many symbols.}.
-
-% \begin{definition}
-% \end{definition}
-
+%<*discussion:AlphSymbol>
 Traditionally, we use the Greek letter $\Sigma$ to denote an alphabet.
 We denote strings with lower case Greek letters 
 and denote the string's 
 elements with the associated lower case roman letter, as in
-$\sigma=\sequence{s_0,\ldots,s_{i-1}}$
-or $\tau=\sequence{t_0,\ldots,t_{j-1}}$.\footnote{If $i=0$ or 
-$j=0$ then this gives the empty string, so we take $i,j\in\N$.}
+$\sigma=\sequence{s_0,\ldots,s_{i-1}}$%
+%</discussion:AlphSymbol>
+or $\tau=\sequence{t_0,\ldots,t_{j-1}}$.\footnote{%
+  If $i=0$ or 
+  $j=0$ then this gives the empty string, so we take $i,j\in\N$.}
 
 \begin{definition}  \label{def:StringLength}
 Let $\sigma=\sequence{s_0,\ldots,s_{n-1}}$ be a string.
@@ -119,22 +114,23 @@ instead of $\sequence{\str{a},\str{b},\str{c}}$, we write \str{abc}.
 That is, we usually have
 the alphabet consist of single-character symbols and then write strings
 by omitting the brackets and commas.\footnote{%
-  To see why the alphabets should be 
-  single-character symbols, consider the alphabet 
+  To see why when we drop the commas we want the alphabet to consist of 
+  single-character symbols, consider
   $\Sigma=\set{\str{a}, \str{aa}}$ 
   and the string $\str{aaa}$.
-  Without the commas this string is ambiguous: it could
+  Without the commas this string is ambiguous:~it could
   mean $\sequence{\str{a},\str{aa}}$, or 
   $\sequence{\str{aa},\str{a}}$, or
   $\sequence{\str{a},\str{a}, \str{a}}$.} 
 However, this convenience 
 comes with the disadvantage that without the diamond brackets  
 the empty string is just nothing, which is why 
-we have the separate symbol~$\emptystring$.\footnote{Omitting the 
-diamond brackets and commas blurs the distinction between a symbol 
-and a one-symbol string, between \str{a} and $\sequence{\str{a}}$.
-However, dropping the brackets it is so convenient that we accept this
-disadvantage.}
+we have the separate symbol~$\emptystring$.\footnote{%
+  Omitting the 
+  diamond brackets and commas blurs the distinction between a symbol 
+  and a one-symbol string, between \str{a} and $\sequence{\str{a}}$.
+  However, dropping the brackets it is so convenient that we accept this
+  disadvantage.}
 
 % \begin{example}
 % In many web programs the majority of the effort

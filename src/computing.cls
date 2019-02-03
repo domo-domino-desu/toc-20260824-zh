@@ -1618,6 +1618,23 @@
   \hspace*{1.25em}\synt{#1} \hfill#2%
 }
 \def\alt{\\\llap{\textbar\hspace*{0.35em}}}%
+% 2019-Feb-03 Setup for grammar that plays nice with beamer?
+\newenvironment{grammartable}{%
+  \begin{list}{}{%  even spacing top and bottom
+     \setlength{\topsep}{4pt plus1pt minus1.5pt}
+     \setlength{\partopsep}{0pt}
+     \setlength{\leftmargin}{2em}
+     \setlength{\itemindent}{0em}
+     \setlength{\labelwidth}{2em}
+     \setlength{\labelsep}{0em}
+ }\item[]
+  \renewcommand{\arraystretch}{1.25}\small
+  \begin{tabular}{@{\hspace{0em}}l} %
+}{%
+  \end{tabular}\end{list}}
+\newcommand{\syntaxor}{\textbar}  % for an alt 
+\newcommand{\othersyntax}{\qquad \syntaxor\hspace*{0.35em}}  % for an alt on next line
+
 
 % Env to indent text
 \newenvironment{clip}{%

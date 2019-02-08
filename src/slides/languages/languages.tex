@@ -12,6 +12,7 @@
 \hypersetup{colorlinks=true,linkcolor=blue} 
 
 \usepackage{../presentation,../presentationfonts}
+\usepackage{../../grammar}
 
 % load the pdfanim style, should be done after hyperref
 % \usepackage{pdfanim}
@@ -135,11 +136,226 @@ $\lang_1=\set{\sigma\in\kleenestar{\Sigma}\suchthat \sigma=\reversal{\sigma}}$.
 
 
 % ==============================================
-\ssection{Grammars}
+\section{Grammars}
 
 \begin{frame}
+  \frametitle{Some rules for English}
+
+\begin{itemize}
+\ExecuteMetaData[\catchfilefn]{ex:RulesForEnglish} 
+\end{itemize}
+We will write them this way.
+\ExecuteMetaData[\catchfilefn]{ex:GrammarRulesForEnglish} 
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Vocabulary}
+\ExecuteMetaData[\catchfilefn]{discussion:GrammarVocabulary} 
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Derivation}
+\ExecuteMetaData[\catchfilefn]{discussion:DerivationVocabulary} 
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Derivation tree}
+\ExecuteMetaData[\catchfilefn]{discussion:DerivationTree} 
+\begin{center}
+  \includegraphics{../../languages/asy/parsetree/parsetree000.pdf}
+\end{center}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Grammar}
+\ExecuteMetaData[\catchfilefn]{def:Grammar} 
+
+\begin{example}
+Let the alphabet be $\Sigma=\set{\trm{a},\trm{b}}$,
+let the set of nonterminals be $N=\set{\ntrm{start},\ntrm{left},\ntrm{right}}$,
+and let the start symbol be \ntrm{start}.
+Here are the five production rules in the set~$P$.
+\begin{grammar}
+\ntrm{start} \produces \trm{a}\ntrm{left}
+
+\ntrm{left} \produces \trm{a}\ntrm{left} 
+  \syntaxor \trm{b}\ntrm{right}
+
+\ntrm{right} \produces \trm{b}\ntrm{right} \syntaxor \emptystring
+\end{grammar}
+\end{example}
+
+We will usually not explicitly name the start symbol, but instead
+take the convention that it is the head of the first rule.
+Here is a derivation using the production rules.
+\begin{center}
+\ntrm{start}\derives \trm{a}\ntrm{left} \derives \trm{aa}\ntrm{left}
+  \derives \trm{aab}\ntrm{right} \derives \trm{aabb}\ntrm{right} 
+  \derives \trm{aabb}\emptystring = \trm{aabb}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{example}
+This is part of the grammar of C.
+
+\begin{grammar}
+\ntrm{statement\_list}
+	\produces{} \ntrm{statement}
+	\syntaxor \ntrm{statement\_list} \ntrm{statement}
+
+\ntrm{expression\_statement}
+	\produces{} \trm{;}
+	\syntaxor \ntrm{expression} \ntrm{;}
+
+\ntrm{selection\_statement}
+	\produces IF \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
+	\othersyntax IF \trm{(} \ntrm{expression} \trm{)} \ntrm{statement} ELSE \ntrm{statement}
+	\othersyntax SWITCH \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
+
+\ntrm{iteration\_statement}
+	\produces WHILE \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
+	\othersyntax DO \ntrm{statement} WHILE \trm{(} \ntrm{expression} \trm{)} \trm{;}
+	\othersyntax FOR \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \trm{)} \ntrm{statement}
+	\othersyntax FOR \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \ntrm{expression} \trm{)} \ntrm{statement}
+\end{grammar}
+As to the capitalization: `IF' essentially 
+means `any string that capitalizes to IF'.
+\end{example}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Recursive grammars}
+
+The two example grammars are recursive. 
+For instance, \ntrm{left} can expand to
+an expression involving \ntrm{left}.
+\begin{grammar}
+\ntrm{left} \produces \trm{a}\ntrm{left} 
+  \othersyntax \trm{b}\ntrm{right}
+\end{grammar}
+
+Similarly, \ntrm{statement\_list}'s expansion involves itself.
+\begin{grammar}
+\ntrm{statement\_list}
+	\produces{} \ntrm{statement}
+	\syntaxor \ntrm{statement\_list} \ntrm{statement}
+\end{grammar}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Abbreviation}
+
+For toy examples and exercises we may use capital letters as nonterminals
+and lowercase letters or digits as terminals.
+
+\begin{example}
+The strings derived from this grammar are elementary 
+arithemtic expressions 
+\begin{grammar}
+S \produces \trm{(} S \trm{)} \syntaxor S \trm{+} S \syntaxor S \trm{*} S \syntaxor I
+
+I \produces{} \trm{0} \syntaxor \trm{1} \syntaxor \ldots{} \trm{9}
+\end{grammar}
+such as \str{1+2*(3+4)}.
+\end{example}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Ambiguity of a grammar}
+% \ExecuteMetaData[\catchfilefn]{rem:AmbiguousGrammar} 
+This bit of C language-like code shows nested
+\codeinline{if} statements. 
+\begin{lstlisting}
+  if ... then ... if ... then ... else ...
+\end{lstlisting}
+This is a \definend{dangling else}.
+The \codeinline{else} could be associated
+with the first \codeinline{if} or the second.
+\begin{center}
+  \begin{minipage}{0.4\linewidth}
+    \begin{lstlisting}
+ if ... 
+ then ...
+     if ...
+     then ... 
+ else ...
+\end{lstlisting}
+  \end{minipage}
+  \quad
+  \begin{minipage}{0.4\linewidth}
+    \begin{lstlisting}
+ if ... 
+ then ...
+     if ...
+     then ... 
+     else ...
+\end{lstlisting}
+  \end{minipage}
+\end{center}
+An \definend{ambiguous grammar}
+is one where some strings
+have two different leftmost derivations. 
+This grammar
+\begin{grammar}
+\ntrm{expr} \produces{} \ntrm{expr} \trm{+} \ntrm{expr}
+        \othersyntax  \ntrm{expr} \trm{*} \ntrm{expr>}
+        \othersyntax  \trm{(} \ntrm{expr} \trm{)} \
+               \syntaxor  \trm{a}  \syntaxor  \trm{b}  \syntaxor \ldots{} 
+               \trm{z}
+\end{grammar}
+is ambiguous because \str{a+b*c} has two
+leftmost derivations.
+\begin{center}
+\hspace{1em}\begin{tabular}{l}
+  \ntrm{expr}\derives\ntrm{expr}\trm{+}\ntrm{expr}
+  \derives\trm{a} \trm{+} \ntrm{expr}                 \\ \quad
+  \derives\trm{a} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}          
+  \derives\trm{a} \trm{+} \trm{b} \trm{*} \ntrm{expr}          
+  \derives\trm{a} \trm{+} \trm{b} \trm{*} \trm{c}          
+\end{tabular}        \\[1ex]
+\hspace{1em}\begin{tabular}{l}
+  \ntrm{expr}\derives\ntrm{expr} \trm{*} \ntrm{expr}
+  \derives\ntrm{expr} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}    \\ \quad 
+  \derives\trm{a} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}  
+  \derives\trm{a} \trm{+} \trm{b} \trm{*} \ntrm{expr}  
+  \derives\trm{a} \trm{+} \trm{b} \trm{*} \trm{c}          
+\end{tabular}
+\end{center}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Language of a grammar}
+\ExecuteMetaData[\catchfilefn]{def:LanguageOfGrammar} 
+
+
+\begin{example}
+This grammar~$G$
+\begin{grammar}
+S \produces AB
+
+A \produces aA \syntaxor a
+
+B\produces bB \syntaxor b
+\end{grammar}
+lets you derive strings consisting of some \str{a}'s folowed by some \str{b}'s.
+\begin{equation*}
+\lang(G)=
+\set{\str{a}^n\str{b}^m\suchthat n,m\in\N}
+\end{equation*}
+\end{example}
 
 \end{frame}
+
 
 \end{document}
 

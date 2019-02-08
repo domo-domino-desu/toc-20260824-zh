@@ -1571,71 +1571,11 @@
 }
 
 
-% ==== Grammars ==== (Asy doesn't like it) 
+% ==== Grammars ====
+% This goes here rather than contentmacros because Asy's settexpreamble
+% doesn't look in the src directory when running contentmacros, so I 
+% handle it as a separate job 
 \usepackage{grammar}
-% \usepackage{syntax}
-% \newlength{\grammarmargin}
-% \setlength{\grammarmargin}{5em}
-% \renewenvironment{grammar}{%
-%   \list{}{%
-%     \labelwidth\grammarindent%
-%     \leftmargin\grammarmargin%
-%     \advance\grammarindent\labelsep
-%     \itemindent\z@%
-%     \listparindent\z@%
-%     \parsep\grammarparsep%
-%     \small
-%   }%
-%   \let\\\@normalcr
-%   \syntaxShortcuts\relax\relax%
-%   % \def\alt{\\\llap{\textbar\hspace*{0em}}}% Comment this out from .sty file to adjust spacing
-%   \def\gr@setpar{%
-%     \def\par{%
-%       \parshape\@ne\@totalleftmargin\linewidth%
-%       \@@par%
-%       \catcode`\<12%
-%       \everypar{%
-%         \everypar{}%
-%         \catcode`\<\active%
-%         \gr@implitem%
-%       }%
-%     }%
-%   }%
-%   \gr@setpar%
-%   \par%
-%   \let\gr@leftsq\[%
-%   \let\gr@rightsq\]%
-%   \def\gr@endsyntdiag]{\end{syntdiag}\gr@setpar\par}%
-%   \def\[{\@ifnextchar[{\begin{syntdiag}\@gobble}\gr@leftsq}%
-%   \def\]{\@ifnextchar]\gr@endsyntdiag\gr@rightsq}%
-% }{%
-%   \@newlistfalse%
-%   \everypar{}%
-%   \endlist%
-% }
-% \setlength{\grammarparsep}{0pt plus 0.15ex} % vert space between prods
-% \setlength{\grammarindent}{5em} %
-% \renewcommand{\grammarlabel}[2]{%
-%   \hspace*{1.25em}\synt{#1} \hfill#2%
-% }
-% \def\alt{\\\llap{\textbar\hspace*{0.35em}}}%
-% % 2019-Feb-03 Setup for grammar that plays nice with beamer?
-% \newenvironment{grammartable}{%
-%   \begin{list}{}{%  even spacing top and bottom
-%      \setlength{\topsep}{4pt plus1pt minus1.5pt}
-%      \setlength{\partopsep}{0pt}
-%      \setlength{\leftmargin}{2em}
-%      \setlength{\itemindent}{0em}
-%      \setlength{\labelwidth}{2em}
-%      \setlength{\labelsep}{0em}
-%  }\item[]
-%   \renewcommand{\arraystretch}{1.25}\small
-%   \begin{tabular}{@{\hspace{0em}}l} %
-% }{%
-%   \end{tabular}\end{list}}
-% \newcommand{\syntaxor}{\textbar}  % for an alt 
-% \newcommand{\othersyntax}{\qquad \syntaxor\hspace*{0.35em}}  % for an alt on next line
-
 
 % Env to indent text
 \newenvironment{clip}{%

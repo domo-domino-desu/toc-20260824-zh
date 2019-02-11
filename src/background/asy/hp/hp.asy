@@ -311,7 +311,7 @@ picnum = 6;
 node start=nroundbox("Start");
 node read=nbox("Read $x,y$");
 node test=nbox("Run $\TM_x$ on~$x$");
-node printout=nbox("Print 0");
+node printout=nbox("Print 42");
 node ending=nroundbox("End");
 
 // layout
@@ -353,7 +353,7 @@ picnum = 7;
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
 node test=nbox("Run $\TM_x$ on~$x$");
-node printout=nbox("Print 0");
+node printout=nbox("Print 42");
 node ending=nroundbox("End");
 
 // layout
@@ -674,6 +674,89 @@ draw(pic,
      (read--sim),
      (sim--print),
      (print--ending)
+);
+
+shipout(format("hp%02d",picnum),pic,format="pdf");
+
+
+
+// ---- halts on three is unsolvable, family of functions
+picture pic;
+picnum = 15;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_0$ on~$0$");
+node printout=nbox("Print 42");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format("hp%02d",picnum),pic,format="pdf");
+
+
+// ...................................
+picture pic;
+picnum = 16;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_1$ on~$1$");
+node printout=nbox("Print 42");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
 );
 
 shipout(format("hp%02d",picnum),pic,format="pdf");

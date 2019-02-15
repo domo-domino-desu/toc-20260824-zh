@@ -608,11 +608,23 @@
 \savebox{\jh@widthofcharbox}{\scshape 0}
 \settowidth{\jh@widthofchar}{\hbox{\scshape 0}}  
 
-% Define the exercises environment
+% ========= Define the exercises environment =======
+
+% Allow exercises to be recommended
+% In the exercise label it checks a toggle and prints the mark if the
+% toggle is true.
+\newtoggle{@recommended}
+\newcommand{\recommended}{\toggletrue{@recommended}}
+\newcommand{\recommendationmark}{\checkmark}
+\newlength{\recommendation@length}  % Put the mark this far into margin
+  \setlength{\recommendation@length}{1.25em}
+
+% Exercises are a list
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
 \newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
-\newcommand{\@exercisecounterlabel}{\normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
+\newcommand{\@exercisecounterlabel}{\iftoggle{@recommended}{\llap{\makebox[\recommendation@length][l]{\recommendationmark}}}{}\global\togglefalse{@recommended}%
+  \normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
 \newenvironment{exercises}{%
   % \vspace{2.5ex plus 0.8ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \exercisecounterstart}{\normalfont\bfseries Exercises}%
   \vspace{2.5ex plus 0.8ex minus 0.2ex}%
@@ -645,7 +657,6 @@
   \item %
 }{%
 }
-\newcommand{\recommended}{\llap{\checkmark}}
 
 % Exparts
 % Some exercises have multiple parts: (1) .. (2) ..

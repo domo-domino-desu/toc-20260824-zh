@@ -3088,58 +3088,145 @@ The subject of computability used to be called `recursive function theory'.
 
 
 \begin{exercises}
-\item[] \textit{Some of these exercises have answers that are large numbers.
-  To compute them you should 
-  use a computer, for instance writing a program 
-  or using a system such as Sage.}
+\item[] \textit{Some of the hyperoperation 
+  answers are tedious to compute.
+  You should use a computer, for instance by writing a script 
+  or using Sage.}
 \begin{exercise}
 Find the value of 
-$\hyperoperation_4(2,2)$, 
+$\hyperoperation_4(2,0)$, 
+$\hyperoperation_4(2,1)$,
+$\hyperoperation_4(2,2)$,
 $\hyperoperation_4(2,3)$,
-and
-$\hyperoperation_4(2,4)$.
+and $\hyperoperation_4(2,4)$.
 \begin{answer}
-We have $\hyperoperation_4(2,2)=2^2=4$, 
-and $\hyperoperation_4(2,3)=2^{2^2}=2^4=16$.
-The third is this.
-\begin{equation*}
-  \hyperoperation_4(2,4)=2^{2^{2^2}}=2^{16}=65536
-\end{equation*}
+The value $\hyperoperation_4(2,0)=1$ is immediate from the
+definition.
+Next, $\hyperoperation_4(2,1)=\hyperoperation_3(2,\hyperoperation_4(2,0))$,
+giving $\hyperoperation_2(2,\hyperoperation_3(2,0))=\hyperoperation_1(2,\hyperoperation_2(2,0))=2$.
+The last three are similar; a script is the best way to proceed.
+\begin{center}
+\begin{tabular}{r|ccccc}
+  $y$                       &$0$  &$1$  &$2$  &$3$   &$4$ \\  \cline{2-5}
+  $\hyperoperration(4,2,y)$ &$1$  &$2$  &$4$  &$16$  &$65\,536$
+\end{tabular}
+\end{center}
+Here is a python script that will help.
+\begin{lstlisting}
+# ackermann.py compute ackermann function
+def h(level,x,y):
+    if level==0:
+        return y+1
+    elif ((level==1) and (y==0)):
+        return x
+    elif ((level==2) and (y==0)):
+        return 0
+    elif ((level>2) and (y==0)):
+        return 1
+    else:
+        # print("calling H({:d}, {:d}, H({:d}, {:d}, {:d})".format(level-1, x, level, x, y-1))
+        return h(level-1, x, h(level, x, y-1))
+
+def h0(level,x,y):  # faster
+    if level==0:
+        return y+1
+    elif (level==1):
+        return x+y
+    elif (level==2):
+        return x*y
+    elif (level==3):
+        return x**y
+    elif ((level>2) and (y==0)):
+        return 1
+    else:
+        return h0(level-1, x, h0(level, x, y-1))
+
+level, x = 4, 2
+for y in range(3,4):
+    print("H({:d}, {:d}, {:}) = {:d}".format(level, x, y, h0(level, x, y)))
+\end{lstlisting}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 Graph 
-$\hyperoperation_2(2,y)$ 
+$\hyperoperation_1(2,y)$ 
 for~$y$ between zero and one hundred.
-Graph
-$\hyperoperation_2(2,y)$ 
-over the same range.
 Also graph
-$\hyperoperation_4(2,y)$ 
+$\hyperoperation_2(2,y)$ and $\hyperoperation_3(2,y)$
 over the same range.
-Put all three graphis on the same plot.
+Put all three graphs on the same plot.
 \end{exercise}
 
 
 \begin{exercise}
 How many years is $\hyperoperation_4(3,3)$ seconds?
+\begin{answer}
+A script yields that $\hyperoperation_4(3,3)=7\,625\,597\,484\,987$.
+If that is seconds then the number of years is about $241\,645.76$.
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
-What is the ratio $\hyperoperation_2(2,2)/\hyperoperation_4(3,3)$?
+What is the ratio $\hyperoperation_3(3,3)/\hyperoperation_2(2,2)$?
+\begin{answer}
+We have that $\hyperoperation_3(3,3)=27$ and
+$\hyperoperation_2(2,2)=4$ so the ratio is $6.75$.
+\end{answer}
 \end{exercise}
 
 \begin{exercise} \label{exer:HTwoHThree}
 Prove that $\hyperoperation_2(x,y)=x\cdot y$ and
 $\hyperoperation_3(x,y)=x^y$.
 \end{exercise}
+
+\begin{exercise}
+Let $g(x,y)=x+y$ and let $f(x)=\mu y\,\big[ g(x,y)=100 \big]$.
+Find, if it is defined:
+\begin{exparts*}
+\item $f(0)$
+\item $f(1)$
+\item $f(50)$
+\item $f(100)$
+\item $f(101)$.
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item $f(0)=100$
+\item $f(1)=99$
+\item $f(50)=50$
+\item $f(100)=0$
+\item This value is not defined.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Consider th Turing machine.
+$
+ \TM=
+  \set{ \tminstruction{0}{1}{R}{0},\,
+        \tminstruction{0}{B}{L}{1},\,
+        \tminstruction{1}{1}{L}{1},\,
+        \tminstruction{1}{B}{R}{2} 
+      }
+$.
+Define $g(x,y)=0$ if this machine, when started on a tape that
+is all blank except for $x$-many consecutive \str{1}'s 
+and with the head under the leftmost~\str{1}, has halted after step~$y$
+(define $g(x,y)=1$ if it has not halted). 
+Let $f(x)=\mu y\,\big[ g(x,y)=0 \big]$.
+Find:
+\begin{exparts*}
+\item $f(0)$
+\item $f(1)$
+\item $f(2)$
+\item $f(3)$
+\item $f(x)$.
+\end{exparts*}
+\end{exercise}
 \end{exercises}
 
-% \begin{explorations}
-% The class of primitive recursive functions can be extended into the 
-% transfinite, giving the \href{https://en.wikipedia.org/wiki/Grzegorczyk_hierarchy}{Grzegorczyk hierarchy}. 
-% \end{explorations}
 
 
 

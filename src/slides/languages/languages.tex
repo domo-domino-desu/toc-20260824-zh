@@ -358,6 +358,128 @@ lets you derive strings consisting of some \str{a}'s folowed by some \str{b}'s.
 
 
 
+% =================================================================
+\section{BNF}
+\begin{frame}[fragile]{Backus-Naur Form notation}
+Many programming languages, protocols, or formats use Backus-Naur form 
+description for their specification.
+Every rule has the structure.
+\mbox{\ntrm{name} \bnfproduces \ntrm{expansion}}.
+For instance, this is a grammar of arithmetic expressions.
+\begin{grammar}
+\ntrm{expr} \bnfproduces \ntrm{term} \trm{+} \ntrm{expr}
+         \othersyntax  \ntrm{term}
+
+\ntrm{term} \bnfproduces \ntrm{factor} \trm{*} \ntrm{term}
+         \othersyntax  \ntrm{factor}
+
+\ntrm{factor} \bnfproduces \trm{(} \ntrm{expr} \trm{)}
+           \othersyntax  \ntrm{const}
+
+\ntrm{const} \bnfproduces \trm{0} \syntaxor \trm{1} \syntaxor \ldots{} \trm{9} \syntaxor \ntrm{constant}\ntrm{constant}
+\end{grammar}
+
+\pause
+In a specification it may look like this.
+\begin{lstlisting}
+<expr> ::= <term> "+" <expr>
+         |  <term>
+
+<term> ::= <factor> "*" <term>
+         |  <factor>
+
+<factor> ::= "(" <expr> ")"
+           |  <const>
+
+<const> ::= integer
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Common extensions to BNF}
+\begin{description}
+\item[Repetition] To show the element may be repeated zero or more times,
+use curly braces.
+This is a comma-separated argument list.
+\begin{grammar}
+\ntrm{args} \bnfproduces \ntrm{arg} \{ \trm{,} \ntrm{arg} \trm{} \}
+\end{grammar}
+To denote zero or more times you may also see a Kleene star,~$*$, and
+to denote one or more times you may see a plus,~$+$.
+
+For zero or one repetitions, you may see square brackets.
+\begin{grammar}
+\ntrm{int} \bnfproduces [ \trm{+} \syntaxor \trm{-} ] \ntrm{natural}
+\end{grammar}
+
+\pause\item[Grouping] Use parentheses. 
+This shows two terms being either added or subtracted.
+\begin{grammar}
+\ntrm{expr} \bnfproduces \ntrm{term} ( \trm{+} | \trm{-} ) \ntrm{expr}
+\end{grammar}
+In addition to the vertical bar for ``or'', the parentheses are metacharacters.
+
+\pause\item[Concatenation]
+Rather than relying on juxtaposition (which is invisible), a comma~\trm{,} 
+may explicitly denote concatenation.
+\end{description}
+\end{frame}
+
+
+\begin{frame}[fragile]
+Here is a definition of a date and time format taken from RFC~5322.
+\begin{lstlisting}
+date-time       =   [ day-of-week "," ] date time [CFWS]
+
+   day-of-week     =   ([FWS] day-name) / obs-day-of-week
+
+   day-name        =   "Mon" / "Tue" / "Wed" / "Thu" /
+                       "Fri" / "Sat" / "Sun"
+
+   date            =   day month year
+
+   day             =   ([FWS] 1*2DIGIT FWS) / obs-day
+
+   month           =   "Jan" / "Feb" / "Mar" / "Apr" /
+                       "May" / "Jun" / "Jul" / "Aug" /
+                       "Sep" / "Oct" / "Nov" / "Dec"
+
+   year            =   (FWS 4*DIGIT FWS) / obs-year
+
+   time            =   time-of-day zone
+
+   time-of-day     =   hour ":" minute [ ":" second ]
+
+   hour            =   2DIGIT / obs-hour
+
+   minute          =   2DIGIT / obs-minute
+
+   second          =   2DIGIT / obs-second
+
+   zone            =   (FWS ( "+" / "-" ) 4DIGIT) / obs-zone
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Python's floating point}
+This is the grammar for floating point numbers in Python.
+\begin{lstlisting}
+floatnumber   ::=  pointfloat | exponentfloat
+
+pointfloat    ::=  [intpart] fraction | intpart "."
+
+exponentfloat ::=  (intpart | pointfloat) exponent
+
+intpart       ::=  digit+
+
+fraction      ::=  "." digit+
+
+exponent      ::=  ("e" | "E") ["+" | "-"] digit+
+\end{lstlisting}
+\end{frame}
+
+
+
+
 \section{Graphs}
 
 \begin{frame}
@@ -426,6 +548,114 @@ help us construct an isomorphisms, if there is one.
 (There are graphs with the same degree sequence that are not isomorphic.)
 \end{frame}
 
+
+
+
+
+% ==========================================
+\section{Problems}
+\begin{frame}{Problems, Algorithms, Programs}
+
+\begin{itemize}
+\item
+A problem is a job, a task that we want done.
+Often a problem encompasses a family of tasks.
+
+\pause\item
+An algorithm describes at a high level a way to solve the problem
+that is effective, that is computable on a mechanism.
+An algorithm
+should be described in a way that is detailed enough that implementing it is
+routine for an experienced professional.
+
+\pause\item
+A program is an implementation of an algorithm,
+typically expressed in a formal computer language.
+It is designed to be executed on a particular computing platform.
+\end{itemize}
+
+\begin{example}
+One problem is, given a natural number, to find its prime factorization.
+One algorithm to solve that problem is to use brute force, that is, to
+check every number less than the input.
+We could implement that with a program written in Scheme.
+\end{example}
+\end{frame}
+
+
+\begin{frame}{Points about algorithms}
+While an algorithm is an abstraction, it is nonetheless tied to
+an underlying computing model.
+We have seen the model of Turing machines.
+The most common model is the RAM machine, consisting of a CPU with access
+to memory, where each cell tholds a single atom.
+Another model is distributted computation such as SETI at home.
+
+\pause
+Strictly speaking, to specify the algorithm,
+a complete description of a problem should include the form of the
+inputs and outputs.
+For instance, if we state a problem as, `to input a sequence of natural numbers
+and return their product'
+then we have not fully specified the input.
+We might take the input to be 
+a list of strings representing decimal numbers
+or
+we might take it as a single bit string
+where each number $n$ is represented with $n$-many \str{1}'s
+and numbers are separated by \str{0}'s.
+This matters because the form of the input and output can change the algorithm
+or our analysis of its behavior.
+
+Nevertheless, for our purposes specifying the input in great
+detail is going into the weeds.
+In particular at this time
+we only want to know in principle whether we can solve the problems with
+mechanical computation and
+by Church's Thesis that is not 
+affected by the exact form of the input and output representations.
+In the fifth chapter we will worry more about the timing.
+\end{frame}
+
+
+\begin{frame}{Problem types}
+\begin{description}
+\item[Function problem]
+Produce an algorithm that has a single output for each input.
+
+\pause\item[Optimization problem]
+Produce an algorithm that find solutions that are best in some way.
+
+\pause\item[Search problem]
+Produce an algorithm that finds any value matching some criteria.
+
+\pause\item[Decision problem]
+Produce an algorithm that answers `yes' or `no'.
+
+A common case is a \alert{language recognition problem}, 
+where we are given a language and asked for an algorithm that 
+will decide membership in that language.
+\end{description}
+
+\pause
+Search problems and decision problems are related.
+For one, if you can solve a search problem then you can solve the
+associated decision problem quickly.
+For instance, consider 
+the search problem that takes in a string~$\sigma$ and a substring~$\tau$,
+returns the starting index of $\tau$ in~$\sigma$ if it is there, 
+and returns $0$ if not.
+The associated decision problem just asks if $\tau$ is a substring of~$\sigma$,
+yes or no.
+
+In the other direction,
+if you could quickly solve the decision problem
+then to solve the search problem you could look at the initial segments
+of~$\sigma$: the initial substring of length~$0$, the initial substring
+of length~$1$, etc., and apply the decision problem to each in turn.
+That is, if we can solve the decision problem quickly then
+we can use it to solve the search problem, but with some overhead.
+\end{frame}
 \end{document}
 
 

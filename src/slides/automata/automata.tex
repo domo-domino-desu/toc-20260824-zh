@@ -272,8 +272,9 @@ def multiple_of_three_fsm(s):
 \begin{frame}{Recall: determinism} 
 The definition of a Turing machine is that
 it is a set of four-tuple instructions  $q_pT_pT_nq_n$
-whose effect is to move the machine from configuration to configuration.
-That set is subject to the restriction that it must be
+whose effect is to govern the transitinos that me machine makes,
+in moving from configuration to configuration.
+That set of instructions is subject to the restriction that it must be
 deterministic\Dash no four-tuples can begin with 
 the same $q_pT_p$.
 
@@ -284,63 +285,181 @@ or \definend{next-state function}
 $\map{\Delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}$.  
 Briefly, these machines satisfy that 
 a present configuration determines a unique next state. 
+The definition of Finite State machine has the same restriction.
 
 \pause
-The definition of Finite State machine has the same restriction.
 We will now see what happens when we drop that requirement.
 We do it here for Finite State machines and we will do it in the next chapter
 for Turing machines.
 
 We will see two ways to informally think of nondeterminism.
-We will see examples, and its uses.
-We will show that nondetermistic machines do the same jobs as deterministic
+We will see examples of nondeterminism, and its uses.
+In particular, we
+will see that nondetermistic Finite State machines
+machines do the same jobs as deterministic
 ones. 
-\end{frame}
 
-
-\begin{frame}{First mental model: lots of children}
-Suppose that you have a grammar
-and you want to know if a string~$\sigma$ has a derivation.
-The challenge is that, for instance, if the first rule is
-\mbox{S\produces{}\trm{a}S\syntaxor\trm{b}A} then
-from S you can do two different things;
-which one will work? 
-
-If you wrote a program for this then you might instead try every
-possible derivation.
-For instance, you might do a breadth-first traversal of the tree of all
-derivations.
-
-\pause
-Although the breadth-first technique is familiar from experience with
-programming classes, don't think that it is natural. 
-This problem is most naturally done in parallel, and breadth-first traversal is
-a serialization that we do only because it is required by
-the machine model that we have in mind.
-
-\pause
-The celebrated Travelling Salesman Problem illustrates.
-Look at trips that visit every state capitol in the 
-forty eight contiguous US~states.
-We want to know if there is a cycle of less than $16\,000$ kilometers.
-Starting at Montpelier we could
-fork forty seven child processes, one for each potential next capital.
-The process assigned Albany, for instance, would know that the trip so far is
-$126$~kilometers. 
-Each child would then fork its own
-children, forty six of them.
-At the end, if there is
-a trip of less than $16\,000$ kilometers then some process knows it.
-There will be lots of processes, but if even one succeeded then we consider
-the overall search a success.
-
-This computation is nondeterministic in that during it
-the machine has many process.
-In that sense the machine is simultaneously in many different states.
+We start with an example and trace through the computation.
 \end{frame}
 
 
 \begin{frame}
+Here, leaving $q_0$ are two arrows labelled~\str{0}.
+Also, out of $q_1$ comes no~\str{1} arrow.
+\begin{center}\small
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm00.pdf}}
+\end{center}
+Give it input \str{00001}.
+\begin{center}\small
+  \only<2>{\includegraphics{asy/nfsm02.pdf}}%
+  \only<3>{\includegraphics{asy/nfsm03.pdf}}%
+  \only<4>{\includegraphics{asy/nfsm04.pdf}}%
+  \only<5>{\includegraphics{asy/nfsm05.pdf}}%
+  \only<6>{\includegraphics{asy/nfsm06.pdf}}%
+  \only<7>{\includegraphics{asy/nfsm07.pdf}}%
+  \only<8>{\includegraphics{asy/nfsm08.pdf}}%
+\end{center}
+
+\end{frame}
+
+
+
+
+\begin{frame}{First mental model: many children}
+In that example, when we had a choice we forked children to take each
+possibility.
+This is a natural approach.
+\begin{itemize}
+\item
+Consider a grammar \mbox{S\produces{}\trm{a}S\syntaxor\trm{b}A}.
+You have a string~$\sigma$ and want to know if it has a derivation.
+The challenge is that, for instance,
+from S you can do two different things;
+which one will work? 
+If you wrote a program for this then you might instead try every
+possible derivation.
+
+You might for instance do a breadth-first traversal of the tree of all
+derivations.
+Although the breadth-first technique is familiar from
+programming classes, don't think that it is natural. 
+This problem is most naturally done in parallel, and 
+we do the breadth-first serialization only because it is required by
+the machine model that we are programming to.
+
+\pause\item
+The celebrated Travelling Salesman Problem also illustrates.
+Look at trips that visit every state capitol in the 
+forty eight contiguous US~states.
+For instance, we may want to know if there is a cycle of less than 
+$16\,000$ kilometers.
+Start at Montpelier. 
+We could fork forty seven child processes, one for each potential next capital.
+The process assigned Albany, for instance, would know that the trip so far is
+$126$~kilometers. 
+Each child would then fork its own children, forty six of them.
+At the end, if there is
+a trip of less than $16\,000$ kilometers then some process knows it.
+If even one process is a success then we consider
+the overall search a success.
+This is nondeterministic in that during it
+the machine has many process and
+in that sense the machine is simultaneously in many different states.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Second mental model: guessing}
+We will define that a nondeterministic machine accepts an input
+if there is at least one branch in the computation tree that accepts the
+input.
+
+The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
+When we feed it the input \str{00001} the problem the machine faces is
+when it should stop going around $q_0$'s loop and start to the right.
+Our definition has the machine accepting this input
+so the machine has solved this problem\Dash viewed from the outside,
+we could, perhaps somewhat fancifully, say that the
+machine has correctly guessed.
+
+\pause
+This is jarring since  
+it does not fit our experience of how computers work.
+A less disconcerting way to put it is to imagine that the machine is
+furnished with the answer (``go around twice, then off to the right'') and
+only has to check that answer.
+The furnisher is often personified as a demon,
+but you are suspicious and must check that the answer is not a trick.
+\begin{center}
+  \includegraphics[height=0.8in]{bsd_daemon.jpg}
+\end{center}
+Under this mental model we say that a nondeterministic computation
+accepts the input if there exists a branch of the computation tree
+that the machine could check.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Definition}
+
+\ExecuteMetaData[\catchfilefn]{def:NondeterministicFiniteStateMachine}
+\ExecuteMetaData[\catchfilefn]{def:NFSMAccepted}
+
+\begin{example}
+This nondeterministic
+garage door opener listener waits to hear the remote control send
+the signal \str{0101110}.
+\begin{center}
+  \includegraphics{../../automata/asy/nfsm/nfsm11.pdf}
+\end{center}
+That is, it accepts the language
+$\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$
+of strings with that suffix.
+\end{example}
+
+The listener will end in an accepting 
+state if it starts in state~$q_0$ and
+hears a string \str{010101110}, with three \str{01}'s.
+How does this mechanism guess that it should ignore
+the first \str{01} but pay attention to the second?
+We may well at first think that ``guessing'' is a
+not-mechanically-accomplishable task.
+
+We will show how to convert a nondeterministic Finite State
+machine into  deterministic one.
+So we can think of this
+as an abbreviation for a deterministic machine,
+which obviates the paradox of guessing, at least for this class of machine.
+\end{frame}
+
+
+
+\begin{frame}{$\varepsilon$ transitions}
+\ExecuteMetaData[\catchfilefn]{discussion:epsilonTransitions}
+
+\begin{example}
+An $\varepsilon$ transition can tie two machines together, 
+in either a serial or a parallel way.
+\end{example}
+
+\pause
+\begin{example} 
+A $\varepsilon$ transition edge can also take a nondeterministic machine and
+give it the ``any number of repetitions'' effect.
+That is, without that edge this machine's language is
+$\set{\str{ab}}$
+while adding it makes the lanaguage  
+$\set{(\str{ab})^n\suchthat n\in\N}$.
+\begin{center}
+  \includegraphics{../../automata/asy/nfsm/nfsm15.pdf}
+\end{center}
+\end{example}
+\end{frame}
+
+
+\begin{frame}{Equivalence of the machine types}
+\ExecuteMetaData[\catchfilefn]{th:dfsmEquivndfsm}
+
 \end{frame}
 \end{document}
 

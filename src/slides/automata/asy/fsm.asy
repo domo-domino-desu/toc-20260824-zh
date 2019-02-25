@@ -112,7 +112,8 @@ draw(pic,
      (q1--e).l("other"),
      (q2..bend(-20)..q3).l("\str{F}").style("leftside"),
      (q2--e).l("other"),
-     (q3--e).l("any").style("leftside")
+     (q3--e).l("any").style("leftside"),
+     (e..loop(W)).l("any")
     );
 
 // draw nodes after edges so arrows are OK
@@ -152,7 +153,8 @@ draw(pic,
      (q1--e).l(Label("other",Relative(0.3))),
      (q2..bend(-20)..q3).l("\str{F}").style("leftside"),
      (q2--e).l(Label("other",Relative(0.3))).style("leftside"),
-     (q3..loop(N)).l("any")
+     (q3..loop(N)).l("any"),
+     (e..loop(W)).l("any")
     );
 
 // draw nodes after edges so arrows are OK

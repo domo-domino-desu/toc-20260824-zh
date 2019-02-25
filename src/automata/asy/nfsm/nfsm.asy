@@ -917,7 +917,7 @@ setdefaultstatediagramstyles() ;
 // define nodes
 node q0=ncircle("$q_0$",ns_accepting); 
 node q1=ncircle("$q_1$");  
-node q2=ncircle("$q_2$");  
+node q2=ncircle("$q_2$",ns_accepting);  
 
 // calculate nodes position
 real u=2.25cm;

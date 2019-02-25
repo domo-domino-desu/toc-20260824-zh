@@ -2503,6 +2503,7 @@ We will introduce these with
 a few preliminary examples so that the definition will be clearer when it comes.
 These use the alphabet $\Sigma=\set{\str{a},\ldots \str{z}}$.
 
+%<*ex:RegexOne>
 \begin{example}
 The string \re{h(a|e|i|o|u)t}
 is a regular expression that 
@@ -2525,7 +2526,9 @@ the regular expression also uses concatenation since
 the initial \str{h} is concatenated with \re{(a|e|i|o|u)},
 which in turn is concatenated with \str{t}.
 \end{example}
+%</ex:RegexOne>
 
+%<*ex:RegexTwo>
 \begin{example}
 The regular expression \re{ab*c} describes the language 
 whose words begin with $\str{a}$, followed by any number of $\str{b}$'s
@@ -2536,6 +2539,7 @@ means `repeat the prior thing any number of times'.
 This regular expression describes the language
 $\lang=\set{\str{ac}, \str{abc}, \str{abbc},\, \ldots}$.
 \end{example}
+%</ex:RegexTwo>
 
 \begin{example}  \label{ex:RegexABOrCStar}
 There is an interaction between pipe and star.
@@ -2573,6 +2577,7 @@ the regular expression \re{a*ba*}.
 % pipe, and star.
 
 \begin{definition} \label{def:RESyntax}
+%<*def:RESyntax>
   Let $\Sigma$ be an alphabet not containing any of the metacharacters
   \re{)}, \re{(}, \re{|}, or \re{*}.
   A \definend{regular expression}
@@ -2588,11 +2593,12 @@ the regular expression \re{a*ba*}.
                        \othersyntax  \ntrm{simple} \trm{*}
                        \othersyntax \trm{(} \ntrm{regex} \trm{)}
                        
-ntrm{char} \produces{} $\emptyset$ \syntaxor \emptystring   
+\ntrm{char} \produces{} $\emptyset$ \syntaxor \emptystring   
                     \othersyntax $x_0$ \syntaxor $x_1$ \syntaxor \ldots{}
 \end{grammar}
 where the $x_i$ characters are members of the alphabet 
 $\Sigma$.\footnotemark[1] 
+%</def:RESyntax>
 \end{definition}\footnotetext[1]{%
   As we often do in grammars,
   we use the pipe symbol~\re{|} as a metacharacter,
@@ -2608,6 +2614,7 @@ We use parentheses when needed, as in \cref{ex:RegexABOrCStar}.
 
 As to their semantics, what they mean,
 we will define that recursively.
+%<*discussion:RESemantics>
 The language described by the single-character
 regular expression \re{$\emptyset$} is
 the empty set, $\lang(\emptyset)=\emptyset$.
@@ -2632,6 +2639,7 @@ $\lang(R\concat\hat{R})=\lang(R)\concat\lang(\hat{R})$.
 And, the star of the regular expression  
 describes the Kleene star of the language,
 $\lang(\kleenestar{R})=\kleenestar{\lang(R)}$.
+%</discussion:RESemantics>
 
 \begin{example}
 Let $\Sigma=\set{\str{a},\str{b}}$.
@@ -2663,17 +2671,20 @@ We will illustrate with some constructs that appear often in building regular
 expressions.
 These examples use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
 
+%<*ex:RegexThree>
 \begin{example}
 The language consisting of strings of \str{a}'s whose length is a multiple of
 three
 $\lang=\set{a^{3k}\suchthat k\in\N}=\set{\emptystring,\str{aaa},\str{aaaaaa},\,\ldots}$ is described by the
 regular expression \re{(aaa)*}.
 \end{example}
+%</ex:RegexThree>
 
 Note that the empty string is a member of that language.
 A common gotcha is to forget that star is for any number of repetitions,
 including zero-many.
 
+%<*ex:RegexFour>
 \begin{example}
 The language of strings that have any number
 of \str{a}'s and optionally end in one~\str{b},
@@ -2686,16 +2697,20 @@ between three and five $\str{a}$'s,
 $\lang=\set{\str{aaa}, \str{aaaa}, \str{aaaaa}}$,
 we can use \re{aaa(\emptystring|a|aa)}.
 \end{example}
+%</ex:RegexFour>
 
 \begin{example}
+%<*ex:RegexFive>
 To match any character we can list them all.
 The language consisting of three-letter words ending in \str{bc} is
 $\set{\str{abc}, \str{bbc}, \str{cbc}}$.
 The regular expression \re{(a|b|c)bc} describes it.
+%</ex:RegexFive>
 (If the alphabet is large then listing all characters is
 impractical; see the Extra section on Extended Regular Expressions.)
 \end{example}
 
+%<*ex:RegexSix>
 \begin{example}
 The language
 $\set{\str{b},\str{bc},\str{bcc},
@@ -2707,6 +2722,7 @@ followed by a single~$\str{b}$, and then ending in fewer than three
 $\str{c}$'s is described by 
 \re{a*b(\emptystring|c|cc)}. 
 \end{example}
+%</ex:RegexSix>
 
 
 
@@ -2716,25 +2732,33 @@ $\str{c}$'s is described by
 Study of regular expressions is justified by the next result, that
 they describe the languages of interest.
 
+%<*th:KleenesTheorem>
 \begin{theorem}[Kleene's Theorem] \label{th:KleenesTheorem}
   A language is accepted by a Finite State machine if and only if that
   language is described by a regular expression.
 \end{theorem}
+%</th:KleenesTheorem>
 
 We will prove this in separate halves.
-Thise halves use nondeterministic machines but since we can convert
-those to deterministic machines, the result holds there also.
+These halves use nondeterministic machines but since we can convert
+those to deterministic machines, the result holds for those machines.
 
+%<*lem:KleenesThmRegexToMachine>
 \begin{lemma} \label{lem:KleenesThmRegexToMachine}
   If a language is described by a regular expression
   then there is a Finite State machine that accepts that language.
 \end{lemma}
+%</lem:KleenesThmRegexToMachine>
+
+The proof follows the steps suggested in \cref{ex:NFSMJoinParallel}, 
+\cref{ex:NFSM:JoinSerial}, and \cref{ex:EpsilonTransMakeKleeneStar}.
 
 \begin{proof}
   We will show that for any regular expression~$R$ there is a machine that
   accepts strings matching that expression.
   We use induction on the structure of regular expressions.
 
+%<*pf:KleenesThmRegexToMachinei>
   Start with regular expressions consisting of a single character.
   If 
   $R=\re{$\emptyset$}$ then  $\lang(R)=\set{}$ and
@@ -2743,6 +2767,7 @@ those to deterministic machines, the result holds there also.
   and the machine in the middle accepts this language.
   If the regular expression is a character from the alphabet,
   such as $R=\re{\str{a}}$, then a machine like the one on the right works.
+%</pf:KleenesThmRegexToMachinei>
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm32.pdf}
     \hspace{5em}
@@ -2751,6 +2776,7 @@ those to deterministic machines, the result holds there also.
     \includegraphics{automata/asy/nfsm/nfsm34.pdf}
   \end{center}
 
+%<*pf:KleenesThmRegexToMachineii>
   To finish, we handle the three operations.
   % Assume that $R$ is constructed as in \cref{def:RESyntax} and
   % take the inductive hypothesis that its components satisfy the lemma.
@@ -2761,8 +2787,7 @@ those to deterministic machines, the result holds there also.
   is a machine $\FSM_0$ whose language is described by
   $R_0$ and a machine~$\FSM_1$ whose language is described by $R_1$.
   Create the machine accepting the language described by $R$ by
-  joining those two machines in parallel, as in
-  \cref{ex:NFSMJoinParallel}:~introduce
+  joining those two machines in parallel:~introduce
   a new state $s$ and use $\varepsilon$
   transitions to connect~$s$ to the start states of $\FSM_0$ and $\FSM_1$. 
 
@@ -2770,7 +2795,7 @@ those to deterministic machines, the result holds there also.
   $R=R_0\concat R_1$.
   The inductive hypothesis gives
   a machine for each, $\FSM_0$ and~$\FSM_1$.
-  Join those two serially, as in \cref{ex:NFSM:JoinSerial}:~for
+  Join those two serially:~for
   each accepting state in $\FSM_0$, make
   an $\varepsilon$ transition to the start state of $\FSM_1$
   and then convert all those accepting states of $\FSM_0$ to be
@@ -2778,18 +2803,20 @@ those to deterministic machines, the result holds there also.
   
   The final case is that
   $R=\re{($R_0$)*}$.
-  As in \cref{ex:EpsilonTransMakeKleeneStar},
-  take the machine~$\FSM_0$ accepting $R_0$ and
-  make an $\varepsilon$ transition from each of its accepting states to
-  its start state.
-  (If the accepting state equals the start state there is no harm in
-  this $\varepsilon$ loop, although it doesn't change the language.)
+  % As in \cref{ex:EpsilonTransMakeKleeneStar},
+  Take the machine~$\FSM_0$ accepting $R_0$ and for each accepting state
+  that is not the start state, make an $\varepsilon$ transition to
+  the start state.
+  Make the start state an accepting state.
+%</pf:KleenesThmRegexToMachineii>
 \end{proof}
 
+%<*lem:KleenesThmMachineToRegex>
 \begin{lemma}  \label{lem:KleenesThmMachineToRegex}
   Any language accepted by a Finite State machine 
   is described by a regular expression. 
 \end{lemma}
+%</lem:KleenesThmMachineToRegex>
 
 Our strategy is to start with a Finite State machine and eliminate its states
 one at a time, keeping the accepted language the same.

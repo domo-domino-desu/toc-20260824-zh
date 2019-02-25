@@ -747,4 +747,188 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Suffix of HEF ================
+picture pic;
+int picnum = 11;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2, q3);
+
+// edges
+draw(pic,
+     (q0..loop(W)).l("any"),
+     (q0--q1).l("\str{H}"), 
+     (q1--q2).l("\str{E}"), 
+     (q2--q3).l("\str{F}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Prefix ab suffix ac ================
+picture pic;
+int picnum = 12;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2);
+
+// edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1--q2).l("\str{b}"), 
+     (q2..loop(S)).l("any") 
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ..................................
+picture pic;
+int picnum = 13;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node  q3=ncircle("$q_3$"),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q3, q4, q5);
+
+// edges
+draw(pic,
+     (q3--q4).l("\str{a}"),
+     (q3..loop(S)).l("any"),
+     (q4--q5).l("\str{b}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ..........................................
+picture pic;
+int picnum = 14;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$"),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2, q3, q4, q5);
+
+// edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1--q2).l("\str{b}"), 
+     (q2..loop(S)).l("any"), 
+     (q2--q3).l("$\varepsilon$"),
+     (q3--q4).l("\str{a}"),
+     (q3..loop(S)).l("any"),
+     (q4--q5).l("\str{b}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ..........................................
+picture pic;
+int picnum = 15;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$",ns_accepting),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$"),
+  q6=ncircle("$q_6$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+q1.pos = new_node_pos_h(q0, 35, 1*u);
+q4.pos = new_node_pos_h(q0, -35, 1*u);
+hlayout(u, q1, q2, q3);
+hlayout(u, q4, q5, q6);
+
+// edges
+draw(pic,
+     (q0--q1).l("$\varepsilon$"),
+     (q0--q4).l("$\varepsilon$"),
+     (q1--q2).l("\str{a}"), 
+     (q2--q3).l("\str{b}"),
+     (q3..loop(E)).l("any"), 
+     (q4--q5).l("\str{a}"),
+     (q4..loop(N)).l("any"),
+     (q5--q6).l("\str{b}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, q3, q4, q5, q6);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
 

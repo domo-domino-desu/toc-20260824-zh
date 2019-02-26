@@ -1,5 +1,5 @@
+\RequirePackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234 and https://www.latex4technics.com/?note=2uab
 \documentclass[9pt,t,serif,professionalfont,xcolor={table,dvipsnames},noamsthm]{beamer}
-\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
 \PassOptionsToPackage{pdfpagemode=FullScreen}{hyperref}
 \setbeamersize{text margin left = 0.5cm,
                text margin right = 0.3cm}
@@ -627,8 +627,133 @@ accepts strings matching that expression.
 
 \begin{frame}
 \ExecuteMetaData[\catchfilefn]{lem:KleenesThmMachineToRegex}
+
+The idea is to start with a Finite State machine and eliminate its states
+one at a time, keeping the accepted language the same, as here.
+\begin{center}
+\includegraphics{../../automata/asy/nfsm/nfsm35.pdf}
+\hspace{2em}
+\includegraphics{../../automata/asy/nfsm/nfsm36.pdf}
+\end{center}
+For this we generalize transition graphs to allow
+edge labels that are regular expressions.
+
+\pause
+A bit more detail:~take \re{A}, \re{B}, \re{C}, and~\re{D} to be
+regular expressions.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm64.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm65.pdf}}
+\end{center}
+Start by introducing a new start state guaranteed to have
+no incoming edges, $e$,
+and a new final state guaranteed to be unique,~$f$.
+Then eliminate $q_1$ as below.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm66.pdf}}
+\end{center}
 \end{frame}
 
+
+
+\begin{frame}
+The proof is in the book.
+Here we will give an example. 
+\begin{example}
+Consider~$\FSM$ on the left.
+Introduce $e$ and~$f$ to get $\hat{\FSM}$ on the right.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm48.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm49.pdf}}
+\end{center}
+\pause
+Start by eliminating $q_2$.
+That gives this machine.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm50.pdf}}
+\end{center}
+\end{example}
+\end{frame}
+\begin{frame}
+Next eliminate $q_1$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm51.pdf}}    
+\end{center}
+\pause
+Finally, eliminate $q_0$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm52.pdf}}    
+\end{center}
+That regular expression simplifies.
+For instance, \re{a$\varepsilon$}=\re{a}.
+The result is \re{(a(b|ab*b))*($\varepsilon$|a)}.
+\end{frame}
+
+
+
+
+% ==============================================
+\section{Regular languages}
+
+\begin{frame}{Definition}
+\ExecuteMetaData[\catchfilefn]{def:RegularLangs}
+
+\begin{example}
+(1)~The set
+$\set{\str{a}\str{b}^n\suchthat n\in\N}
+  =\set{\str{a}, \str{ab}, \str{abb}\,\ldots}$ is a regular language,
+(2~any finite set of strings is a regular language. 
+\end{example}
+
+\pause
+In the proof of Kleene's Theorem we saw that if two languages
+are regular then their union is also regular.
+We have also seen
+that if two languages are regular then their concatenation
+is regular.
+We say that a structure is \definend{closed} under an operation if
+performing that operation on its members always yields another member.
+
+\ExecuteMetaData[\catchfilefn]{lem:RegLangsClosedUnderUnionConcatStar}
+\begin{proof}
+  In the first half of Kleene's Theorem
+  we did the regular expression operations of pipe,
+  concatenation, and Kleene star.
+  Those correspond to these set operations:
+  for instance, if $R_0$ is a regular expression describing the language
+  $\lang_0$, and $R_1$ describes $\lang_1$, then the regular expression
+  $\re{$R_0$|$R_1$}$ describes $\lang_0\cup\lang_1$.
+\end{proof}
+\end{frame}
+
+
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{th:RegLangsClosedCompIntDiff}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{pf:RegLangsClosedCompIntDiff}
+\end{frame}
+
+
+\begin{frame}
+\begin{example}
+Let $\Sigma=\B=\set{\str{0},\str{1}}$.
+We could show that the language
+$\lang=\set{\sigma\str{1}\suchthat \sigma\in\kleenestar{\Sigma}}$
+is regular by producing a Finite State machine to accept it.
+But closure is easier.
+That language is the concatenation $\lang=\lang_0\concat\lang_1$
+of
+$  \lang_0=\kleenestar{\Sigma}$
+and
+$  \lang_1=\set{\str{1}}$,
+which are both clearly regular.
+Regualr languages are closed under concatenation, so $\lang$ is regular.
+\end{example}
+\end{frame}
 
 \end{document}
 

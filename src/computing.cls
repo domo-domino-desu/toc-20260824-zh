@@ -538,8 +538,8 @@
 
 % Note that the cleveref names are lower down, after loading cleveref
 
-
 %======================== hyperref ===========
+\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
 % \usepackage[draft]{hyperref}  % remove the draft option at the end.
 \usepackage{hyperref}  % remove the draft option at the end.
   % It is there to prevent errors like

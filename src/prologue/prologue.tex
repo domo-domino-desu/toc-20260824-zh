@@ -750,8 +750,9 @@ Because of this, the above one-input one-output definition
 suffices to get functions with other arities.
 So we will stick with it.
 
-Note the distinction between the machine~$\TM$ and the function~$\TMfcn$
-computed by that machine.
+\begin{remark}
+Note the difference between a machine,~$\TM$, and the function
+computed by that machine,~$\TMfcn$.
 For instance, consider a Turing machine that doubles its input. 
 The machine is a set of four-tuples.
 But its input-output behavior is a function, given by~$x\mapsto 2x$.
@@ -762,6 +763,7 @@ Thus we may say that
 on input~$x$ the machine~$\TM$ fails to halt or  
 equivalently, we may say $\TMfcn(x)\diverges$.
 But we don't say that the function doesn't halt.
+\end{remark}
 
 If the definition of the computed function doesn't apply to a machine 
 because its tape alphabet isn't $\set{\str{B},\str{1}}$
@@ -2268,6 +2270,13 @@ finding remainders, testing for less-than, and finding factors.
 See \cref{exer:ShowFcnsPrimRec} and~\ref{exer:PrimRecBoundedOps}
 for how to show that these are primitive recursive functions.
 
+The list there is so extensive that a person could wonder
+if every mechanically computed function is
+primitive recursive.
+In the next section we will see that the answer is no, that there is
+an intuitively mechanically computable function that is not
+primitive recursive.
+
 
 \begin{exercises}
 \begin{exercise}
@@ -2878,12 +2887,22 @@ $\map{\hyperoperation}{\N^3}{\N}$.
 \end{equation*}
 \end{definition}
 
-This is not written in the schema of primitive recursion, since
-it does not have the two cases.
-It looks awful close, though.
-Despite this appearance, this operation cannot be performed using
-preimitive recursion and function composition alone; see the Extra topic.
+Observe that hyperoperation is intuitively mechanically computable.
+Its Scheme code is a transcription of its definition.
+\begin{lstlisting}
+(define (H n x y)
+  (cond
+   ((= n 0) (+ y 1))
+   ((and (= n 1) (= y 0)) x)
+   ((and (= n 2) (= y 0)) 0)
+   ((= y 0) 1)
+   (else (H (- n 1) x (H n x (- y 1))))))  
+\end{lstlisting}
 
+One reason that hyperoperation~$\hyperoperation$ 
+is interesting is that it 
+arises naturally from the elementary and familiar operations of
+addition, multiplication, and exponentiaion.
 We often take~$n$ as a parameter, write it in a subscript, and  
 then describe the two-input function $\hyperoperation_n(x,y)$ as 
 $\hyperoperation$'s \definend{level~$n$}. 
@@ -2955,32 +2974,11 @@ For instance,
   \autocite{Levin}}.
 \end{remark}
 
-One reason that hyperoperation~$\hyperoperation$ 
-is interesting is that it is not
-a contrived example.
-It arises 
-directly from the elementary and familiar operations of
-addition, multiplication, and exponentiaion.
-Another
-is that it is intuitively mechanically computable.
-Its Scheme code is a transcription of its definition.
-\begin{lstlisting}
-(define (H n x y)
-  (cond
-   ((= n 0) (+ y 1))
-   ((and (= n 1) (= y 0)) x)
-   ((and (= n 2) (= y 0)) 0)
-   ((= y 0) 1)
-   (else (H (- n 1) x (H n x (- y 1))))))  
-\end{lstlisting}
-
-Hyperoperation is one of a family of functions with the same recursion,
-the same last line in \cref{def:Hyperoperation}. 
-These are called
-\definend{Ackermann functions} after 
-the mathematician who brought them attention.\footnote{%
-  We have seen Ackermann already, as one of the people who stated the 
-  \protect\textit{Entscheidungsproblem}.}
+% This is not written in the schema of primitive recursion, since
+% it does not have the two cases.
+% It looks awful close, though.
+% Despite this appearance, this operation cannot be performed using
+% preimitive recursion and function composition alone.
 
 Hyperoperation is clearly intuitively
 mechanically computable; for one thing we've given its Scheme code above.
@@ -3005,7 +3003,13 @@ derivation.
 Of course, just because the definition that we saw has the wrong
 form doesn't mean that
 there is no definition with the right form.
-However, Ackermann proved that there isn't, 
+However, Ackermann\footnote{%
+  We have seen Ackermann already, as one of the people who stated the 
+  \protect\textit{Entscheidungsproblem}.
+  Functions having the same recursion as $\hyperoperation$ are often called
+  \definend{Ackermann functions}.
+  } 
+proved that there isn't, 
 that $\hyperoperation$ is not primitive recursive.
 The proof is a detour for us so it is in an
 \hyperref[sec:ComputableFunctionNotPrimitiveRecursive]{Extra Section}
@@ -3023,10 +3027,34 @@ within the restrictions
 of \cref{def:PrimitiveRecursive} there is no single, uniform,
 way to compute them all.
 
+\begin{theorem}
+The hyperoperation~$\hyperoperation$ is not primitive recursive.
+\end{theorem}
+
+\begin{proof}
+See the Extra section.
+\end{proof}
+
+This relates to a point from the discussion of Church's Thesis.
+We have introduced the schema of primitive recursion by connecting it
+with elementary operations including addition and multiplication,
+so it is natural.
+We have observed that if a function is primitive recursive then it is
+intuitively mechanically computable.
+We have, especially in the exercises, built up a pile of
+functions that are both natural and intuitively mechanically computable 
+and demonstrated that they are primitive recursive.
+So `primitive recursive' may have seemed to have many of the 
+same characteristics as `Turing machine computable'.
+The contrast, though, is that we have now produced an intuitively
+mechanically computable function that is not primitive recursive.
+That is, `primitive recursive' fails the test that 
+in the Church's Thesis discussion we called coverage.
+To cover all mechanically computable functions we will need to expand.  
 
 
 
-\subsection{\protect\(\ \mathbf{\mu} \protect\) recursion}
+\subsection{\protect\(\mathbf{\mu} \protect\) recursion}
 The definition
 of the class of primitive recursive functions is a productive step towards  
 a definition of all functions that are 
@@ -3035,18 +3063,6 @@ natural and because it covers many familiar functions.
 But the prior subsection shows that this class is not big enough
 to contain all of the mechanically computable functions.
 So we will define a bigger class. 
-% For a hint of the right direction, 
-% we will mention two facts about primitive recursive functions. 
-
-% The first is that, as mentioned in the prior subsection and
-% developed in
-% \cref{sec:ComputableFunctionNotPrimitiveRecursive},
-% primitive recursive functions fall into levels 
-% (determined by 
-% the number of compositions and 
-% primitive recursion in their derivation).
-% The hyperoperation is not primitive recursive because it cuts across levels.
-% So we want a way to make functions that cut across levels.
 
 For a hint of the right direction consider \Cref{exer:PrimRecBoundedOps}.
 It shows that primitive recursion does bounded operations. 
@@ -3360,7 +3376,7 @@ but it does that task faster.
 \end{exercise}
 
 
-\begin{exercise}
+\begin{exercise}  \recommended
 Consider this Turing machine.
 \begin{equation*}
   \set{ \tminstruction{0}{1}{R}{1},\,

@@ -1547,40 +1547,6 @@
 
 % ================ Content macros =========
 
-% Tape sequence
-%  List a sequence of executation steps by showing a bunch of tapes 
-% Usage: 
-%   \begin{tapesequence}
-%     \begin{tapesequencetable}
-%       0 &\tapegraphic{tapeoutput0.pdf} \\
-%       1 &\tapegraphic{tapeoutput1.pdf} \\
-%     \end{tapesequencetable}
-%   \end{tapesequence}
-\newenvironment{tapesequence}{%
-  % \vspace{1.5ex plus 0.25ex minus 0.15ex}%
-  \begin{center} % \vspace{-3ex}
-    \renewcommand{\arraystretch}{2.25}
-}{%
-  \end{center}
-  % \vspace{-1.5ex plus 0.25ex minus 0.15ex}% arraystretch leaves extra?
-}
-\newenvironment{tapesequencetable}{%
-  % \vspace{2.5ex plus 0.25ex minus 0.15ex}%
-  \begin{tabular}[t]{r|c} 
-    % \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
-    %                      \begin{tabular}[b]{@{}c@{}}
-    %                        \tabulartext{After} \\[-0.425ex] 
-    %                        \tabulartext{step} 
-                             %                            \end{tabular}}
-    \multicolumn{1}{r}{\tabulartext{Step}}
-     &\tabulartext{Configuration}                        \\[-1ex] \hline
-}{%
-  \end{tabular}%
-}
-\newcommand{\tapegraphic}[1]{%
-  \vcenteredhbox{\includegraphics{#1}}%
-}
-
 
 % ==== Grammars ====
 % This goes here rather than contentmacros because Asy's settexpreamble

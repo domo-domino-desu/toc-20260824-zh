@@ -5013,13 +5013,15 @@ Prove that for every~$n$ there is a language with that rank.
 % =============================================
 \section{Pushdown machines}
 % "Stacks are overrated" Guy Steele https://www.youtube.com/watch?v=agw-wlHGi0E
+%<*discussion:StackIntroi>
 A Finite State machine cannot accept the language of balanced parentheses.
-That makes it not powerful enough to use, for instance,
+So it is not powerful enough to use, for instance,
 if you want to decide whether input strings are valid programs in a
 modern programming language.
 The natural data structure to handle nested parentheses is a stack.
-So we will introduce a machine type consisting of a finite state
-control attached to a device that is a pushdown stack.
+We will next see a machine type consisting of a Finite State
+machine attached to a pushdown stack.
+%</discussion:StackIntroi>
 
 A stack is like a list in that the data is lined up in a row.
 However, with a stack you don't have random access to the elements.
@@ -5034,6 +5036,7 @@ Similarly, you can push a piece of data onto the top of our
 stack device, or you can pop the top element.
 We say that this stack is LIFO:~Last-In, First-Out.
 
+%<*discussion:StackIntroii>
 Below on the right is a sequence of views of a stack data structure.
 It starts with three characters on the stack, \str{g3}, \str{g0}, and~\str{g2}.
 We push \str{g1} on the stack, and then \str{g0}.
@@ -5041,6 +5044,7 @@ At this point, although \str{g1} is on the stack we don't have immediate
 access to it.
 to get at \str{g1} we  must first pop off 
 \str{g0}, as in the last stack shown.
+%</discussion:StackIntroii>
 \begin{center}
   \vcenteredhbox{\includegraphics[height=1.1in]{automata/pix/dishes.jpg}}
   \hspace{4em}
@@ -5065,6 +5069,7 @@ But it comes with restrictions that the tape does not have.
 We will extend the definition of Finite State machines, starting
 with deterministic machines.
 
+%<*def:PushdownMachine>
 \begin{definition}
 A \definend{Pushdown machine}
 has a finite set of \definend{states} $Q=\set{q_0,\ldots\,q_{n-1}}$
@@ -5075,6 +5080,7 @@ and a nonempty \definend{stack alphabet}~$\Gamma$,
 as well as a \definend{transition function}
 $\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\times\kleenestar{\Gamma}}$.
 \end{definition}
+%</def:PushdownMachine>
 
 \begin{center}
   \includegraphics{asy/share/machine03.pdf}
@@ -5114,6 +5120,7 @@ situations where the code is written by a program, such as a word processor or
 \end{remark}
 
 \medskip
+%<*discussion:StackMachineTransitionsi>
 We will assume that the stack alphabet~$\Gamma$ contains the character $\bot$
 (read that as ``bottom'') that we use to mark the stack bottom.
 The rest of $\Gamma$ is \str{g0}, \str{g1}, etc.
@@ -5128,7 +5135,9 @@ that are purely stack operations, as described next.\footnote{%
   also as the empty string, from $\kleenestar{\Gamma}$.
   However, one of those is in the inputs and the other is in the outputs
   so it isn't ambiguous.} 
+%</discussion:StackMachineTransitionsi>
 
+%<*discussion:StackMachineTransitionsii>
 The transition function describes how the machine acts.
 There are two cases for the input
 $\sequence{q_i,s,g_j}\in Q\times(\Sigma\cup\set{\str{B},\varepsilon})\times\Gamma$.
@@ -5150,7 +5159,9 @@ The other case for inputs $\sequence{q_i,s,g_j}$
 is when the character $s$ is $\varepsilon$.
 Everything is the same except that the tape head does not move.
 We use this case to manipulate the stack without consuming any input. 
+%</discussion:StackMachineTransitionsii>
 
+%<*discussion:StackMachineTransitionsiii>
 The starting configuration has the machine in state~$q_0$,
 reading the first character
 of~$\sigma\in\kleenestar{\Sigma}$,
@@ -5170,6 +5181,7 @@ instructions.\footnote{%
   it empties the stack.
   The definitions are equivalent in that a string is accepted by
   either type of machine if it is accepted by the other.}
+%</discussion:StackMachineTransitionsiii>
 
 \begin{example}  \label{ex:PDSAcceptBalencedParens}
 This grammar generates the language of balanced parentheses.
@@ -5186,6 +5198,7 @@ This grammar generates the language of balanced parentheses.
 The Pumping Lemma shows that no Finite State Machine accepts this language. 
 But it is accepted by a
 Pushdown machine.
+%<*ex:BalancedParensAcceptedPushdown>
 This machine has
 states $Q=\set{q_0,q_1,q_2}$ with accepting states $F=\set{q_1}$,
 and languages $\Sigma=\set{\text{\str{[}},\text{\str{]}}}$
@@ -5210,8 +5223,7 @@ It keeps a running tally of the number of
 the number of \str{g0}'s on the stack.
 This computation starts with the input \str{[[]][]}
 and ends in an accepting state.
-% (The stack is drawn side-to-side instead of vertically just to
-% fit the table on a single page.)
+%</ex:BalancedParensAcceptedPushdown>
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{automata/asy/machine/machine06.pdf} \\
@@ -5235,6 +5247,7 @@ A \citetext{\definend{palindrome}}{%
   and (3)~``A man, a plan, a canal: Panama'', about Theodore Roosevelt.}
 is a string that reads the same forwards and
 backwards, $\sigma=\reversal{\sigma}$.
+%<*ex:PalindromesUsingMiddleMarkeri>
 This language of palindromes uses a~\str{c} character as a middle marker.
 \begin{equation*}
   \lang_{\text{MM}}
@@ -5286,6 +5299,7 @@ runs out, then it goes into the accepting state~$q_3$.
   $17$ &$q_1,\text{\str{B}},\bot$             &$q_3,\varepsilon$ \\
 \end{tabular}
 \end{center}
+%</ex:PalindromesUsingMiddleMarkeri>
 This computation has the machine accept \str{bacab}.
 \begin{tapesequence}
   \begin{tapesequencetable}
@@ -5305,6 +5319,7 @@ This computation has the machine accept \str{bacab}.
 
 
 \subsection{Nondeterministic Pushdown machines}
+%<*discussion:NondeterminsticPushdown>
 To get nondeterminism
 we alter the definition in two ways.
 The first is minor: we don't need the blank~\str{B} in the
@@ -5321,6 +5336,7 @@ As always with nondeterminism,
 we can conceptualize this either as that the 
 the computation evolves as a tree or as that the machine chooses one
 of the outputs.
+%</discussion:NondeterminsticPushdown>
 
 \begin{example} \label{ex:PDAForPalindromes}
 This grammar generates the language of all palindromes
@@ -5332,6 +5348,7 @@ over $\kleenestar{\B}$.
 \end{equation*}
 This language is not accepted by any Finite State machine,
 but it is accepted by a Pushdown machine.
+%<*ex:NondeterministicPushDownAcceptsPalindromes>
 This machine has
 $Q=\set{q_0,q_1,q_2}$ with accepting states $F=\set{q_2}$,
 and languages $\Sigma=\B$
@@ -5385,7 +5402,8 @@ For instance,
 compare instructions~$3$ and~$7$,
 which show the same input associated with
 two different outputs.
-% (We list multiple outputs on multiple lines for ease of reference.)
+%</ex:NondeterministicPushDownAcceptsPalindromes>
+
 
 Here the machine
 accepts the string \str{0110},
@@ -5399,7 +5417,7 @@ using instructions $0$, $9$, $16$, and~$17$.
     4 &\tapegraphic{automata/asy/machine/machine18.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-Next we see the machine accepting \str{01010} using instructions
+Here is the machine accepting \str{01010} using instructions
 $0$, $4$, $12$, $16$, and~$17$.
 \begin{tapesequence}
   \begin{tapesequencetable}
@@ -5501,7 +5519,7 @@ machine, or some Pushdown machine, etc.
   \begin{tabular}{rl}
     \tabulartext{Class}  &\tabulartext{Machine type} \\
     \hline
-    $A$ &Finite State, including nondeterministic \\
+    $A$ &Finite State, including nondeterministic\rule{0em}{2.15ex} \\
     $B$ &Pushdown \\
     $C$ &nondeterministic Pushdown \\
     $D$ &Turing \\

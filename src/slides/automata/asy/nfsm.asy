@@ -929,6 +929,41 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======= nfsm example .*10*1.* =========================
+picture pic;
+int picnum = 16;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2, q3);
+
+// edges
+draw(pic,
+     (q0--q1).l("\str{1}"),
+     (q0..loop(W)).l("any"),
+     (q1..loop(N)).l("\str{0}"), 
+     (q1--q2).l("\str{1}"),
+     (q2..loop(E)).l("any") 
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

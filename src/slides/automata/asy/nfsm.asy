@@ -151,11 +151,11 @@ label(pic, "$q_0$",(0,0),p);
 // legend at top of graphic
 label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.35));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
-label(pic, "$0$",(0.5, 5));
-label(pic, "$0$",(1.5, 5));
-label(pic, "$0$",(2.5, 5));
-label(pic, "$0$",(3.5, 5));
-label(pic, "$1$",(4.5, 5));
+label(pic, "\str{0}",(0.5, 5));
+label(pic, "\str{0}",(1.5, 5));
+label(pic, "\str{0}",(2.5, 5));
+label(pic, "\str{0}",(3.5, 5));
+label(pic, "\str{1}",(4.5, 5));
 draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
 draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
@@ -231,11 +231,11 @@ label(pic, "$q_1$",(1,-0.5),p);
 // legend at top of graphic
 label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.35));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
-label(pic, "$0$",(0.5, 5));
-label(pic, "$0$",(1.5, 5));
-label(pic, "$0$",(2.5, 5));
-label(pic, "$0$",(3.5, 5));
-label(pic, "$1$",(4.5, 5));
+label(pic, "\str{0}",(0.5, 5));
+label(pic, "\str{0}",(1.5, 5));
+label(pic, "\str{0}",(2.5, 5));
+label(pic, "\str{0}",(3.5, 5));
+label(pic, "\str{1}",(4.5, 5));
 draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
 draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
@@ -312,11 +312,11 @@ label(pic, "$q_2$",(2,-0.5),p);
 // legend at top of graphic
 label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.35));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
-label(pic, "$0$",(0.5, 5));
-label(pic, "$0$",(1.5, 5));
-label(pic, "$0$",(2.5, 5));
-label(pic, "$0$",(3.5, 5));
-label(pic, "$1$",(4.5, 5));
+label(pic, "\str{0}",(0.5, 5));
+label(pic, "\str{0}",(1.5, 5));
+label(pic, "\str{0}",(2.5, 5));
+label(pic, "\str{0}",(3.5, 5));
+label(pic, "\str{1}",(4.5, 5));
 draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
 draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
@@ -394,11 +394,11 @@ label(pic, "$q_2$",(3,0.5),p);
 // legend at top of graphic
 label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.35));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
-label(pic, "$0$",(0.5, 5));
-label(pic, "$0$",(1.5, 5));
-label(pic, "$0$",(2.5, 5));
-label(pic, "$0$",(3.5, 5));
-label(pic, "$1$",(4.5, 5));
+label(pic, "\str{0}",(0.5, 5));
+label(pic, "\str{0}",(1.5, 5));
+label(pic, "\str{0}",(2.5, 5));
+label(pic, "\str{0}",(3.5, 5));
+label(pic, "\str{1}",(4.5, 5));
 draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
 draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
@@ -476,11 +476,11 @@ label(pic, "$q_2$",(4,1.5),p);
 // legend at top of graphic
 label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.35));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
-label(pic, "$0$",(0.5, 5));
-label(pic, "$0$",(1.5, 5));
-label(pic, "$0$",(2.5, 5));
-label(pic, "$0$",(3.5, 5));
-label(pic, "$1$",(4.5, 5));
+label(pic, "\str{0}",(0.5, 5));
+label(pic, "\str{0}",(1.5, 5));
+label(pic, "\str{0}",(2.5, 5));
+label(pic, "\str{0}",(3.5, 5));
+label(pic, "\str{1}",(4.5, 5));
 draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
 draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
@@ -557,11 +557,11 @@ label(pic, "$q_3$",(5,1.5),p);
 // legend at top of graphic
 label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.35));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
-label(pic, "$0$",(0.5, 5));
-label(pic, "$0$",(1.5, 5));
-label(pic, "$0$",(2.5, 5));
-label(pic, "$0$",(3.5, 5));
-label(pic, "$1$",(4.5, 5));
+label(pic, "\str{0}",(0.5, 5));
+label(pic, "\str{0}",(1.5, 5));
+label(pic, "\str{0}",(2.5, 5));
+label(pic, "\str{0}",(3.5, 5));
+label(pic, "\str{1}",(4.5, 5));
 draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
 draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
@@ -638,11 +638,11 @@ label(pic, "$q_3$",(5,1.5),p+highlightcolor);
 // legend at top of graphic
 label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.35));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
-label(pic, "$0$",(0.5, 5));
-label(pic, "$0$",(1.5, 5));
-label(pic, "$0$",(2.5, 5));
-label(pic, "$0$",(3.5, 5));
-label(pic, "$1$",(4.5, 5));
+label(pic, "\str{0}",(0.5, 5));
+label(pic, "\str{0}",(1.5, 5));
+label(pic, "\str{0}",(2.5, 5));
+label(pic, "\str{0}",(3.5, 5));
+label(pic, "\str{1}",(4.5, 5));
 draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
 draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));

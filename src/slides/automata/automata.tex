@@ -205,8 +205,51 @@ This machine accepts strings with at least three \str{a}'s.
 \ExecuteMetaData[\catchfilefn]{discussion:FSMConfiguration}
 \end{frame}
 
-
 \begin{frame}{Configurations}
+A \definend{configuration} of a Finite State machine $\FSM$ is 
+a pair $\mathcal{C}=\sequence{q,\tau}$, where
+$q$ is a state and $\tau$ is a string of elements 
+from the tape alphabet~$\tau\in\kleenestar{\Sigma}$.
+The \definend{initial configuration}
+is~$\mathcal{C}_0=\sequence{q_0,\tau}$,
+where $\tau$ is the \definend{input}.
+
+\begin{example}
+Give this machine an input of $\sigma=\str{abababb}$.
+\begin{center}
+  \includegraphics{asy/fsm09.pdf}
+\end{center}
+The transition function~$\Delta$ determines how
+the machine moves step-by-step, from configuration to configuration,
+in response to the input.
+\begin{align*}
+    \mathcal{C}_0=\sequence{q_0,\str{abababb}}
+    &\yields \mathcal{C}_1=\sequence{q_1,\str{bababb}}  \\
+    &\yields \mathcal{C}_2= \sequence{q_1,\str{ababb}}  \\
+    &\yields \mathcal{C}_3= \sequence{q_2,\str{babb}}  \\
+    &\yields \mathcal{C}_4 = \sequence{q_2,\str{abb}}   \\
+    &\yields \mathcal{C}_5 = \sequence{q_3,\str{bb}}  \\
+    &\yields \mathcal{C}_6 = \sequence{q_3,\str{b}}  \\
+    &\yields \mathcal{C}_7=  \sequence{q_3,\emptystring}
+\end{align*}
+The machine accepts $\sigma$ because when $\tau=\emptystring$ 
+then the state,~$q_3$, is accepting.
+% \begin{center}
+% \begin{tabular}{*{8}{c}}
+%   $\mathcal{C}_0$ &$\mathcal{C}_1$ &$\mathcal{C}_2$ &$\mathcal{C}_3$
+%     &$\mathcal{C}_4$ &$\mathcal{C}_5$ &$\mathcal{C}_6$ &$\mathcal{C}_7$ \\ 
+%   \hline
+%   $\sequence{q_0,\str{abababb}}$ &$\sequence{q_1,\str{bababb}}$ &$\sequence{q_1,\str{ababb}}$ &$\sequence{q_2,\str{babb}}$
+%     &$\sequence{q_2,\str{abb}}$ &$\sequence{q_3,\str{bb}}$ &$\sequence{q_3,\str{b}}$ &$\sequence{q_3,\str{}}$ \\
+% \end{tabular}
+% \end{center}
+\end{example}
+
+\end{frame}
+
+
+
+\begin{frame}{Language of a machine}
 \ExecuteMetaData[\catchfilefn]{def:FSMLanguage}
 
 \begin{example}
@@ -259,6 +302,14 @@ def multiple_of_three_fsm(s):
 
 \begin{frame}{Extended transition function}
 \ExecuteMetaData[\catchfilefn]{def:ExtendedTransitionFcn}
+
+\begin{example}
+Find the extended transition function for this machine
+\begin{center}
+  \includegraphics{asy/fsm09.pdf}
+\end{center}
+for all strings of length less than four.
+\end{example}
 \end{frame}
 
 
@@ -337,18 +388,11 @@ The challenge is that, for instance,
 from S you can do two different things;
 which one will work? 
 If you wrote a program for this then you might instead try every
-possible derivation.
-
-You might for instance do a breadth-first traversal of the tree of all
+possible derivation, perhaps with a breadth-first traversal of the tree of all
 derivations.
-Although the breadth-first technique is familiar from
-programming classes, don't think that it is natural. 
-This problem is most naturally done in parallel, and 
-we do the breadth-first serialization only because it is required by
-the machine model that we are programming to.
 
 \pause\item
-The celebrated Travelling Salesman Problem also illustrates.
+The Travelling Salesman Problem also illustrates.
 Look at trips that visit every state capitol in the 
 forty eight contiguous US~states.
 For instance, we may want to know if there is a cycle of less than 
@@ -370,38 +414,30 @@ in that sense the machine is simultaneously in many different states.
 
 
 \begin{frame}{Second mental model: guessing}
-We will define that a nondeterministic machine accepts an input
-if there is at least one branch in the computation tree that accepts the
-input.
-
 The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
 When we feed it the input \str{00001} the problem the machine faces is
 when it should stop going around $q_0$'s loop and start to the right.
-Our definition has the machine accepting this input
+The example shows the machine accepting this input
 so the machine has solved this problem\Dash viewed from the outside,
 we could say that the
-machine has correctly guessed.
+machine has guessed correctly.
 
 \pause
 This is jarring since  
-it does not fit our experience of how computers work.
-A less disconcerting way to put it is to imagine that the machine is
+we typically don't expect computers to guess.
+We can instead imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
 only has to check that answer.
-The furnisher is often personified as a demon,
-but you are suspicious and must check that the answer is not a trick.
+The furnisher is often personified as a demon.
 \begin{center}
   \includegraphics[height=0.8in]{bsd_daemon.jpg}
 \end{center}
-Under this mental model we say that a nondeterministic computation
-accepts the input if there exists a branch of the computation tree
-that the machine could check.
 \end{frame}
 
-\begin{frame}{Uniting the two views}
-The point in either view is that this is an existence statement\Dash 
+\begin{frame}{What the two views share}
+In either mental model, this is an existence test\Dash 
 the machine accepts the input if there exists a sequence of configurations
-consistent with the machine's specification that ends in an accepting state.
+that ends in an accepting state.
 \end{frame}
 
 
@@ -424,18 +460,17 @@ of strings with that suffix.
 \end{example}
 
 The listener will end in an accepting 
-state if it starts in state~$q_0$ and
-hears a string \str{010101110}, with three \str{01}'s.
+state if it 
+hears a string $\sigma=\str{010101110}$, with three \str{01}'s.
 How does this mechanism guess that it should ignore
 the first \str{01} but pay attention to the second?
-We may well at first think that ``guessing'' is a
-not-mechanically-accomplishable task.
 
+As earlier, it is strange to say that a machine ``guesses.''
 We will show how to convert a nondeterministic Finite State
 machine into  deterministic one.
 So we can think of this
 as an abbreviation for a deterministic machine,
-which obviates the paradox of guessing, at least for this class of machine.
+which obviates the paradox of guessing, at least for Finite State machines.
 \end{frame}
 
 \begin{frame}
@@ -453,11 +488,8 @@ using an explicit deterministic machine.
   \includegraphics{asy/fsm03.pdf}
 \end{center}
 \end{example}
-\end{frame}
 
-
-
-\begin{frame}
+\pause
 \begin{example}
 This nondeterminstic Finite State machine  
 with alphabet $\Sigma=\set{\str{a},\str{b}}$
@@ -468,15 +500,15 @@ if it has \str{a} in the third position from the end.
 \end{center}
 \end{example}
 
-\pause
-\begin{example}
-This machine with alphabet $\Sigma=\set{\str{a},\str{b},\str{c}}$ 
-accepts an input string only
-if it ends in \str{aa}, or \str{bb}, or \str{cc}.
-\begin{center}
-  \includegraphics{asy/nfsm10.pdf}
-\end{center}
-\end{example}
+% \pause
+% \begin{example}
+% This machine with alphabet $\Sigma=\set{\str{a},\str{b},\str{c}}$ 
+% accepts an input string only
+% if it ends in \str{aa}, or \str{bb}, or \str{cc}.
+% \begin{center}
+%   \includegraphics{asy/nfsm10.pdf}
+% \end{center}
+% \end{example}
 \end{frame}
 
 
@@ -488,7 +520,7 @@ if it ends in \str{aa}, or \str{bb}, or \str{cc}.
 \begin{example}
 On the left the machine accepts strings with 
 prefix \str{ab}.
-The one on the right accepts strings with suffix \str{ac}.
+The one on the right accepts strings with suffix \str{ab}.
 \begin{center}
   \vcenteredhbox{\includegraphics{asy/nfsm12.pdf}}
   \hspace{4em}
@@ -499,7 +531,7 @@ This puts them together serially.
   \vcenteredhbox{\includegraphics{asy/nfsm14.pdf}}
 \end{center}
 \end{example}
-So it accepts only strings that begin with \str{ab} and end with \str{ac}.
+So it accepts only strings that begin with \str{ab} and end with \str{ab}.
 \end{frame}
 
 \begin{frame}
@@ -507,7 +539,7 @@ So it accepts only strings that begin with \str{ab} and end with \str{ac}.
 We can take the same two machines, 
 one that accepts strings with 
 prefix \str{ab} and
-one that accepts strings with suffix \str{ac}.
+one that accepts strings with suffix \str{ab}.
 \begin{center}
   \vcenteredhbox{\includegraphics{asy/nfsm12.pdf}}
   \hspace{4em}
@@ -518,7 +550,7 @@ and put them together in parallel.
   \vcenteredhbox{\includegraphics{asy/nfsm15.pdf}}
 \end{center}
 The bottom machine accepts strings that begin with \str{ab} 
-or end with \str{ac}.
+or end with \str{ab}.
 \end{example}
 
 \pause

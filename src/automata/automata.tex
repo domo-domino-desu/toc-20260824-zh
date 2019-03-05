@@ -136,37 +136,22 @@ or \citetext{\definend{transition function} $\map{\Delta}{Q\times\Sigma}{Q}$}{%
 %</def:FSM>
 
 This may not immediately appear to be like to the
-definition of a Turing Machine, \cref{def:TuringMachine} from Chapter~One
-but with the write commands omitted.
-A lot of that is because here we don't need to expand on the terms
-`alphabet' or `transition function', since we already have seen them.
-All of the other differences between the two follow from the fact that that
+definition of a Turing Machine.
+Sonme of that is because here we have already defined the terms
+`alphabet' and `transition function'.
+The other differences follow from the fact that that
 Finite State machines cannot write.
 For one thing, because Finite State machines cannot write they don't need
 to move the tape for scratch work,
 so we've dropped the tape action symbols \str{L} and~\str{R}.
 
-At the heart of each of the two definitions is
-the transition function~$\Delta$.
-It makes machines move step-by-step, from configuration to configuration,
-in response to the input.
-
-To work a Finite State machine, put input on the tape and press the Start
-button.
-The machine starts consuming the input, at each step reading in the next
-tape character.
-\begin{center}
-  \includegraphics{asy/share/machine02.pdf}
-\end{center}
-Consequently there is no \HP{} for Finite State machines\Dash they always halt
-after a number of steps equal to the length of the input.
-
 The other difference between Finite State machines and Turing machines
 is the presence of the accepting states.
 Consider, in the vending machine of \cref{ex:VendingMachine},
 the state $q_{30}$.
-It is a success state or goal state, meaning
-that the machine has seen in the input what it is looking for.
+It is an accepting state, meaning
+that the machine has seen in the input what it is looking for,
+so the input was successful.
 The same goes for \cref{ex:Turnstile}'s turnstile state~$q_{\text{ready}}$
 and \cref{ex:PowerSwitch}'s power switch state~$q_{\text{on}}$.
 While we can design a Turing Machine to indicate a choice by arranging so
@@ -180,6 +165,18 @@ so that we know when a computation succeeds.
 In the transition graphs below we denote the final states with double circles
 and in the transition function tables we mark them with
 a `\acceptingstatemark'.
+
+To work a Finite State machine device, put the
+input on the tape and press the Start button.
+The machine consumes the input, at each step reading in the next
+tape character.
+\begin{center}
+  \includegraphics{asy/share/machine02.pdf}
+\end{center}
+Consequently there is no \HP{} for Finite State machines\Dash they always halt
+after a number of steps equal to the length of the input.
+At the end either the light is on, marking that the input was
+accepted, or it isn't. 
 
 \begin{example}  \label{ex:FSATwoAsEvenBs}
 This machine accepts a string if and only if it
@@ -309,57 +306,58 @@ this machine to accept only non-empty strings.
 After the definition of Turing Machine we gave a formal
 description of the action of such a machine,
 on \cpageref{text:DescriptionOfTMAction}.
-We can do the same for a Finite State machine.
+We can do the same here.
+As there, the heart of the definitions is
+the transition function~$\Delta$.
+It makes the machine move step-by-step, from configuration to configuration,
+in response to the input.
 
 %<*discussion:FSMConfiguration>
 A \definend{configuration} of a Finite State machine $\FSM$ is 
 a pair $\mathcal{C}=\sequence{q,\tau}$, where
 $q$ is a state and $\tau$ is a (possibly empty) string of elements 
 from the tape alphabet~$\tau\in\kleenestar{\Sigma}$.
-In the \definend{initial configuration}
-the state is the initial state, so ~$\mathcal{C}_0=\sequence{q_0,\tau}$,
-and $\tau$ is the \definend{input}.
+For the \definend{input} string~$\tau_0$,
+the \definend{initial configuration}
+is~$\mathcal{C}_0=\sequence{q_0,\tau_0}$.
 
 The action of the machine is to transition   
 from one configuration to another.
-We refer to its configuration after the $s$-th transition as
-its configuration at \definend{step}~$s$.
-Its configuration at step~$0$ is its initial configuration.
+We say that the configuration after the $s$-th transition, $\mathcal{C}_s$ is
+the machine's configuration at \definend{step~$s$}.
+At step~$0$ its configuration is its initial configuration~$\mathcal{C}_0$.
 
 We must describe a transition.
 Assume that at step~$i$ the machine $\FSM$ is in the configuration
-$\mathcal{C}_i=\sequence{q,\tau_i}$ and that
-$\tau_i$ is not the empty string.
-In this case, pop the leading input character and call it $c$.
-That is,
-$c=\tau_i[0]$ and $\tau_{i+1}=\sequence{\tau_i[1],\ldots \tau_i[\,\lh{\tau_i}-1\,]}$.
+$\mathcal{C}_i=\sequence{q,\tau_i}$.
+If $\tau_i$ is not empty 
+then pop the leading input character and call it $c$.
+That is, where
+$c=\tau_i[0]$, take 
+$\tau_{i+1}=\sequence{\tau_i[1],\ldots \tau_i[\,\lh{\tau_i}-1\,]}$.
 The machine's next state is $\hat{q}=\Delta(q,c)$ and its next
 configuration is $\mathcal{C}_{i+1}=\sequence{\hat{q},\tau_{i+1}}$.
 
-The other case again has that at step~$i$ the machine $\FSM$ is in the
-configuration $\mathcal{C}_i=\sequence{q,\tau_i}$, but 
-$\tau_i$ is the empty string.
-This is then the \definend{halting configuration}
-$\mathcal{C}_i=\mathcal{C}_h$,
-and if the ending state
-is a final state $q\in F$
+The other case is that at step~$i$ the string~$\tau_i$ is empty.
+This is the \definend{halting configuration} $\mathcal{C}_i=\mathcal{C}_h$.
+If the ending state is a final state $q\in F$
 then the machine \definend{accepts} the input~$\tau$,
-otherwise the machine \definend{rejects}~$\tau$.
+otherwise it \definend{rejects}~$\tau$.
 
 If two configurations are related by being separated by a single transition
 then we write
-$\mathcal{C}_i \yields \mathcal{C}_{i+1}$ 
-(read aloud as ``yields in one step'').
-A \definend{computation} is a sequence 
+$\mathcal{C}_i \yields \mathcal{C}_{i+1}$.\footnote{%
+  Read the symbol aloud as ``yields in one step.''}
+A \definend{Finite State machine computation} is a sequence 
 $
   \mathcal{C}_0 \yields \mathcal{C}_1 \yields \mathcal{C}_2
    \yields \cdots\, \mathcal{C}_h
 $
 where $\mathcal{C}_o$ is the initial configuration.
 Abbreviate such a sequence
-with~$\kleenestar{\yields}$ 
-(read as ``yields eventually,'' or simply ``yields'').
-Thus we could write
+with~$\kleenestar{\yields}$.\footnote{%
+  Read it as ``yields eventually,'' or simply ``yields''}
+Thus we can write
 $\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
 %</discussion:FSMConfiguration>
 

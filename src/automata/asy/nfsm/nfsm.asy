@@ -740,7 +740,7 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$q_0$",ns_accepting),
+node q0=ncircle("$q_0$"),
   q1=ncircle("$q_1$"),
   q2=ncircle("$q_2$"),
   q3=ncircle("$q_3$"),

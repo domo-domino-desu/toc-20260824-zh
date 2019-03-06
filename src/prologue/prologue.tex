@@ -1,7 +1,302 @@
 \chapteropen[copyright Kevin Twomey, \protect\url{kevintwomey.com/lowtech.html}]{prologue/pix/mechanical.jpg}{Mechanical Computation} % ©Kevin Twomey http://kevintwomey.com/lowtech.html; permission granted November 23, 2014 2:14 
 
 What can be computed?
-For instance, the function that doubles its input, that $\tminstruction{3}{1}{B}{5}$
+For instance, the function that doubles its input, 
+takes in~$x$ and puts out~$2x$, is intuitively mechanically
+computable.
+We shall call such functions \definend{effective}.
+
+The question asks for the things that can be computed more than  
+it asks for how to compute them. 
+In this Part
+we will be more interested in the function,
+in the input-output behavior,
+than in the details of implementing that behavior.
+
+
+
+
+
+
+\section{Turing machines}
+Despite this desire to downplay implementation, 
+we follow the approach of
+\margingraphic{0.23\textwidth}{prologue/pix/turing.jpg}{\label{fig:turing}\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing 1912--1954}}
+A~Turing that the
+first step toward defining the set of computable functions
+is to reflect on the details of what mechanisms can do.
+
+Turing considered the kind of symbol-manipulating computation that
+a person uses in mathematics when they factor a polynomial 
+or verify a step in a plane geometry proof.
+The context of his thinking was the 
+\textit{Entscheidungsproblem},\footnote{German for ``decision problem.''} 
+proposed in 1928 by 
+\citetext{D~Hilbert and W~Ackermann}{%
+  Hilbert was a very prominent 
+  mathematician, perhaps the world's most prominent mathematician, 
+  and Ackermann was his student. 
+  So they made an impression when 
+  they wrote, ``[This] must be considered the
+  main problem of mathematical logic'' \autocite{HilbertAckermann}, p 73.}, 
+which asks for an algorithm that determines, after taking 
+as input a \citetext{mathematical statement}{%
+  Specifically, the statement comes from 
+  a first-order logic.
+  First-order logic differs from propositional logic, the logic of truth tables,
+  in that it allows variables. 
+  Thus for instance if you are studying the natural numbers then
+  you can have a Boolean function $\operatorname{Prime}(x)$.
+  (In this context a Boolean function is traditionally called `predicate'.)
+  To make a statement that is either true or false we must then 
+  quantify statements, as in 
+  the (true) statement ``for all $x\in\N$, we have that
+  $\operatorname{Prime}(x)$
+  implies that $\operatorname{PerfectSquare}(x)$ does not hold.''
+  The modifier ``first-order'' means that the variables used by the
+  Boolean functions 
+  are members of the domain of discourse (for $\operatorname{Prime}$
+  above it is $\N$), but we cannot
+  have that variables themselves are Boolean functions.
+  (Allowing Boolean functions to take Boolean functions as input
+  is possible, but would make this a higher-order logic.)}, 
+whether that statement is true or false.\footnote{%
+  When it finished
+  computing it might turn on a light
+  for `true', or print the symbol \protect\str{1}.}
+
+After thinking about it for a while, one day 
+\citetext{after a run}{He was 22 years old at the time. \autocite{Hodges}, p 96.
+  This book is the authoritative source for Turing's fascinating life.
+  During the Second World War, he led a group of British cryptanalysts 
+  at Bletchley Park, Britain's codebreaking center, where his section 
+  was responsible for German naval codes. 
+  He devised a number of techniques for breaking German ciphers, including 
+  an electromechanical machine that could find settings for the German coding 
+  machine, the Enigma. 
+  Because the Battle of the Atlantic was critical to the Allied war effort, and
+  because cracking the codes was critical to defeating the German submarine 
+  effort, Turing's work was very important.
+  (The major motion picture on this \textit{The Imitation Game} 
+  \autocite{wiki:ImitationGame} 
+  is fun to watch but is not a slave to historical accuracy.)
+  After the war, at the National Physical Laboratory
+  he made one of the first designs for a stored-program computer.
+  In 1952, when it was a crime 
+  in the UK, Turing was prosecuted for homosexual acts. 
+  He was given chemical castration as an alternative to prison. 
+  He died in 1954 from cyanide poisoning which
+  an inquest determined was suicide, although questions remain. 
+  In 2009, following an Internet campaign, British Prime Minister Gordon Brown 
+  made an official public apology on behalf of the British government for 
+  ``the appalling way he was treated.''
+  }\footnote{%
+  He was a 
+  serious candidate for the 
+  1948 British Olympic marathon team.}
+Turing laid down in the grass and imagined a
+\citetext{clerk}{%
+  Before the engineering of 
+  computing machines had advanced enough to 
+  make capable machines widely available, 
+  much of what we would today do with a program 
+  was done by people, then called ``computers.''
+  This book's cover shows human computers at work.
+  \protect\begin{center} \protect\small
+    \protect\includegraphics[width=0.23\textwidth]{prologue/pix/katherinejohnson.jpg}
+  \\
+  \protect\label{fig:johnson}\protect\href{https://bitchmedia.org/article/african-american-women-worked-some-nasas-first-computers}{Katherine Johnson, b~1918} % NASA photo; no permission
+  \protect\end{center}
+  Another example is that, as told in the film \textit{Hidden Figures},
+  the trajectory for US astronaut 
+  John Glenn's pioneering orbit of Earth was found by 
+  the human computer Katherine Johnson,
+  an African American woman whose accomplishments are all the
+  more impressive because they occurred despite the 
+  appalling discrimination that she faced.} 
+doing by-hand multiplication with a 
+sheet of paper that gradually becomes covered with columns of numbers.
+With this simple case of symbol-pushing computing as a prototype, 
+Turing posited conditions for the computing agent. 
+
+First, it (or he, or she) has a memory facility, like the 
+clerk's paper, 
+for storage and retrieval of information.
+% The clerk's paper is two-dimensional but that is  
+% is not essential, since we could stretch out the work 
+% into a one-dimensional strip.
+
+Second,  
+the computing agent must follow a definite procedure, 
+a precise set of instructions,
+with no room for creative leaps.
+Part of what makes the procedure definite is that 
+the instructions
+\citetext{don't involve random methods}{%
+  We can build things that return completely random results;
+  one example is a device that registers consecutive 
+  clicks on a Geiger counter and if
+  the second gap between clicks is longer then the first it returns~$1$,
+  else it returns~$0$. 
+  See also
+  \protect\url{https://blog.cloudflare.com/randomness-101-lavarand-in-production/}.},
+such as counting clicks from radioactive decay,
+to determine which of two possibilities to perform.
+
+The other thing making the procedure definite
+is that the agent does not use continuous methods or 
+\citetext{analog devices}{%
+  See \autocite{avgeeks} about slide rules,
+  \autocite{wiki:Nomogram} about nomograms, 
+  and \autocite{navyreviewer} about a naval firing computer.}.
+So there is no question about the precision of operations as there
+might be, say, when \citetext{reading results off of a slide rule}{%
+  Suppose that an intermediate result of a calculation is $1.23$.
+  If we read it off the slide rule 
+  with the convention that the resolution accuracy is only one decimal place 
+  then we write down~$1.2$. 
+  Doubling that gives $2.4$. 
+  But doubling the original number $2\cdot 1.23=2.46$ 
+  and then rounding to one place gives $2.5$.}.
+Instead, the agent works in a discrete fashion, step-by-step.
+For instance, if needed they could pause between steps, note where they are
+(``about to carry a $1$''), and later pick up again.
+We say that at each moment the clerk is in one of a finite set of 
+possible \definend{states},
+which we denote $q_0$, $q_1$, \ldots{}\@
+
+Turing's third condition arises because 
+he wanted to investigate what is computable in principle.
+He therefore imposed
+\citetext{no upper bound}{% 
+  This explication is derived 
+  from \autocite{Rogers},  p 1--5.} 
+on the amount of memory available.
+More precisely, he imposed no finite upper bound\Dash 
+should a calculation threaten to run out of storage space then 
+\citetext{more is provided}{% 
+  Perhaps the clerk has a helper, or the
+  mechanism has a tender.}.
+This includes imposing no upper bound on the amount of memory available for 
+inputs or for outputs, and no bound on the amount of extra 
+storage, scratch memory, needed in addition to that for inputs and
+outputs.\footnote{%
+  It is true that a physical computer such as
+  your cell phone has memory space that
+  is bounded (putting aside storing things in the Cloud).
+  However, that space is extremely large.
+  In this Part, when working with the model devices we 
+  find that imposing a bound on memory 
+  is irrelevant, or even a hindrance.}
+He similarly put no upper bound on the number of instructions.
+And, he left unbounded the number of steps that a 
+computation performs before it finishes.\footnote{%
+  Some authors
+  describe the availablity of resources such as
+  the amount of memory as `infinite'.
+  Turing himself does this.
+  \citetext{A reader may object that this violates the goal of the definition, to 
+  model physically-realizable computations}{%
+     We often describe computations without resource bounds.
+     An example is that 
+     the algorithm for long division
+     that we all learned in grade school puts no bounds on
+     either inputs or outputs, or scratch paper.}, % https://cs.stackexchange.com/a/100325/67754
+  and
+  so the development here instead says that 
+  the resources have no finite upper bound.
+  But really, it doesn't matter.
+  If we show that something cannot be computed
+  when there are no bounds then we have shown that 
+  it cannot be computed on any existing device.}
+
+The final question Turing faced is:
+how smart is the computing agent?
+For instance, can it multiply?
+We don't need to include a special facility for multiplication 
+because we can in principle instead multiply via repeated addition.
+We don't even need addition because we can  
+repeat the successor operation, the add-one operation.
+In this way we pare the computing agent down until it is  
+quite basic, quite easy to understand,
+until the operations \citetext{are so elementary that we cannot easily
+imagine them further divided}{\autocite{Turing}},
+while still keeping the agent powerful enough to do anything that can, 
+in principle, be done. 
+
+
+\subsection{Definition}
+Based on these reflections, Turing pictured a box containing a
+mechanism and fitted with a tape.
+\begin{center}
+   % \includegraphics{asy/share/tm.pdf}
+   \includegraphics{asy/share/machine00.pdf}
+\end{center}
+
+The tape is the memory (sometimes called the store).
+The box can read from and write to it, one character at a time,
+as well as move a read/write head relative to the tape in either direction.
+For instance, to multiply, 
+the computing agent can get the two input multiplicands from the tape 
+(the drawing shows 
+$74$ and~$72$, represented in binary and separated by a blank), 
+can use the tape for scratch work, and can write the
+output to the tape.
+
+The box is the computing agent, the CPU
+(sometimes called the control).
+The \texttt{Start} button sets the computation going and 
+when it is finished the \texttt{Halt} light comes on.
+The engineering inside the box is not 
+important\Dash perhaps it has integrated circuits like the machines
+we are used to, or perhaps it has gears and levers, or perhaps
+\citetext{LEGO's}{%
+  See for instance \protect\url{https://www.youtube.com/watch?v=RLPVCJjTNgk&t=114s}.}\Dash what
+matters is that each of its finitely many parts 
+can be in only finitely many states.
+If it has chips then each 
+register has a finite number of possible values and if it is made with
+gears or bricks then then each settles in only 
+a finite number of possible positions.
+Thus, however it is made, 
+in total the box has only finitely many states.
+
+While executing a calculation, the mechanism transitions  
+from state to state.
+For instance, 
+an agent doing multiplication may determine, because
+of what state it is in now and because of what it is now reading on the tape,
+that it next needs to carry a~$1$.
+The agent then passes to a new state, one whose intuitive meaning
+is that carries take place there.
+
+Consequently, machine steps involve four pieces of information,
+We denote the present state as $q_p$ and the next state as $q_n$.
+The other two, $T_p$ and~$T_n$, 
+describe what is presently being read on the tape
+and what happens next with the tape.
+What is happening presently with the tape is that the read/write head 
+is located over some character.
+As to the set of characters that can go on the tape,
+we will choose whatever is convenient.
+For the moment we restrict ourselves to 
+$\str{1}$ and~blank (we denote this with $\str{B}$ when leaving an empty
+space could cause confusion).
+The things that can happen next to the tape are:
+writing a character to the tape without moving the head, 
+which we denote for instance with $T_n=\str{1}$, or
+moving the tape head left or right without writing,
+which we denote with $T_n=\str{L}$ or~$T_n=\str{R}$,\footnote{Whether we
+move the tape head or the tape doesn't matter, what matters is their
+relative motion.
+Thus $T_n=\str{L}$ means that one or the other moves such that
+the head now points to the location one place to the left. 
+In drawings we keep the tape steady and move the head because
+then comparing graphics step by step is easier.}
+
+The four-tuple $q_pT_pT_nq_n$ is an \definend{instruction}.
+For example, the instruction
+$\tminstruction{3}{1}{B}{5}$
 is executed only if the machine is now in state~$q_3$
 and is reading a \str{1} on the tape.
 If so then the machine
@@ -2202,7 +2497,7 @@ $h(d(z),z)=\successor(\plus(d(z),\plus(\product(3,\successor(z)),\product(3,\pro
 The \citetext{Towers of Hanoi is a famous puzzle:}{%
   The puzzle was invented by E~Lucas in 1883 but the next year
   H~De Parville made of it quite a great problem with the delightful
-  problem statement} 
+  problem statement.} 
   \textit{In the great temple at Benares \ldots{} beneath the dome which marks
   the center of the world, rests a brass plate in which are fixed three
   diamond needles, each a cubit high and as thick as the body of a bee.

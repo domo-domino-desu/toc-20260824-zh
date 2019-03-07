@@ -291,7 +291,7 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 node
-  q0=ncircle("$e$",ns_accepting);
+  q0=ncircle("$q_0$",ns_accepting);
 
 // layout
 defaultlayoutrel = false;

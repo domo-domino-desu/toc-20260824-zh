@@ -43,7 +43,7 @@
 \subject{Computational complexity}
 
 \usepackage{catchfilebetweentags} % read text from background.tex
-\newcommand{\catchfilefn}{../../complexlity/complexity.tex}
+\newcommand{\catchfilefn}{../../complexity/complexity.tex}
 % Keep from swallowing end-of-lines
 %   https://tex.stackexchange.com/a/40704/121234
 \usepackage{etoolbox}
@@ -64,14 +64,171 @@
 
 
 
-
-\section{Big-O}
+\section{Review of Big-O}
 % ------------------------------------------------------
 \begin{frame}
   \frametitle{Definitions}
+\ExecuteMetaData[\catchfilefn]{def:ComplexityFcn}
+\ExecuteMetaData[\catchfilefn]{def:BigO}
+
+Think of `$f$ is $\bigOh(g)$' as meaning that
+$f$'s growth rate is less than or equal to $g$'s rate.
+
+\pause
+\begin{itemize}
+    \item Although Turing machines are discrete devices, we find the 
+      real number functions convenient, 
+      in particular when we do L'H\^{o}pital's Rule. 
+    \item  The term `complexity function' is not standard.
+      We shall find it convenient for stating the results below.
+    \item
+      We use the letter `$\bigOh$' because this is about the order of growth.
+    \item
+      The `$f=\bigOh(g)$' notation is awkward but 
+      standard.
+      The notation `$f\in\bigOh(g)$' is better but not as common.
+\end{itemize}
 \end{frame}
 
 
+\begin{frame}{Example: two functions that are $\bigOh(g)$}
+Think of $\bigOh(g)$ as the set of functions
+whose growth rate is less than or equal to the growth rate of~$g$.
+\begin{center}
+   % \vcenteredhbox{\includegraphics{asy/complexity00.pdf}}
+   % \hspace{2em}
+   % \vcenteredhbox{\includegraphics{asy/complexity01.pdf}}
+   \includegraphics{asy/complexity01.pdf}
+   \hspace{2em}
+   \includegraphics{asy/complexity00.pdf}
+\end{center}
+
+
+\begin{itemize}
+\item
+On the left, $h$ is $\bigOh(g)$ despite that $g(x)<h(x)$ small~$x$'s.
+But as $x$ goes to infinity, $g$ races ahead of~$h$.
+
+\item 
+On the left, $f$ is $\bigOh(g)$ despite that $g(x)< f(x)$ for all $x>0$.
+But as $x$ goes to infinity, the two track together.
+That is, $f$ is above~$g$ but they have the same growth rate.
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Properties of $\bigOh$}
+\ExecuteMetaData[\catchfilefn]{lem:BigOAlgProps}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{lem:BigOhReflexiveAndTransitive}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{def:BigTheta}
+\ExecuteMetaData[\catchfilefn]{lem:BigThetaEquivalence}
+Here the bean encloses the complexity functions.
+On the left is $\bigOh(g)$ for some~$g$,
+and on the right it also shows $\bigOh(f)$ for some $f$ in $\bigOh(g)$.
+\begin{center}
+  \includegraphics[scale=0.95]{../../complexity/asy/bigo/bigo12.pdf}
+  \hspace{3em}
+  \includegraphics[scale=0.95]{../../complexity/asy/bigo/bigo13.pdf}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}{Computing $\bigOh$}
+
+For many familiar functions these are more convenient ways to compute
+orders of growth comparisons.
+
+\ExecuteMetaData[\catchfilefn]{lem:LHBigO}
+
+\pause
+To compute the limits we usually can apply this theorem from 
+Calculus~I.
+
+\ExecuteMetaData[\catchfilefn]{th:LHopital}
+
+\begin{example}
+Consider $f(x)=3x^2-2x+4$ and $g(x)=(1/2)x^5-6$.
+Take derivatives twice to conclude that $f$ is~$\bigOh(g)$
+but $g$ is not~$\bigOh(f)$.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{6x-2}{(5/2)x^4}
+  \qquad
+  \lim_{x\to\infty}\frac{6}{10x^3}=0
+\end{equation*}
+\end{example}
+\end{frame}
+
+
+\begin{frame}{The Hardy Hierarchy}
+\ExecuteMetaData[\catchfilefn]{lem:PolySlowerThanExp}
+
+\begin{example}
+This shows that $f(x)=\lg(x)=\log_2(x)$ is $\bigOh(g)$ where
+$g$~is the polynomial $g(x)=x^2$.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{1/(x\cdot \ln(2))}{2x}
+  =\lim_{x\to\infty}\frac{1}{x^2\cdot 2\ln(2)}
+  =0
+\end{equation*}
+\end{example}
+
+\begin{example}
+This shows that the polynomial $f(x)=x^2$ is $\bigOh(g)$ where
+$g$~is the exponential $g(x)=2^x$.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{2x}{2^x\cdot \ln(2)}
+ \qquad
+  =\lim_{x\to\infty}\frac{2}{2^x\cdot \ln(2)^2}
+  =0
+\end{equation*}
+\end{example}
+\end{frame}
+
+
+\begin{frame}{The Hardy Hierarchy}
+Some orders of growth
+appear often in practice.
+Here they are in ascending order, so
+$\bigOh(f)$ is listed before $\bigOh(g)$ 
+if $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
+
+\begin{center}\small
+\ExecuteMetaData[\catchfilefn]{table:HardyHierarchy}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Tractable and intractable}
+We often split that hierarchy between polynomial functions
+and exponential functions.
+
+A modern computer runs at about 10~GHz,
+$10\,000$ million ticks per second,
+and there are about $\scinot{3.16}{7}$~seconds in a year.
+The chart shows how long a job will take if we use an algorithm
+that runs in time $\lg n$, or time~$n$, etc.
+\begin{center}\small
+\ExecuteMetaData[\catchfilefn]{table:TractibleAndIntractible}
+\end{center}
+Consider the final column, and its final line.
+It says $10^{12}$~years.
+The universe is about $14$~billion years old and a billion is $10^{9}$ years,
+so this exponential computation, even with input size only $100$,
+would take longer than the age of the universe.
+
+\pause
+\alert{Cobham's thesis} is that 
+the \alert{tractable}
+problems\Dash those that are at least conceivably solvable in practice\Dash are
+those for which there is an algorithm whose resource
+consumption is polynomial.
+\end{frame}
 
 \end{document}
 

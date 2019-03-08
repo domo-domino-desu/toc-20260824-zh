@@ -58,7 +58,8 @@
 % parenum
 %  Enumerate inside a paragraph
 \newenvironment{parenum}{%
-  \begin{enumerate*}[label=(\arabic*),]%
+  \begin{enumerate*}[label=(\arabic*),
+                     before=\unskip{\nobreak\ \mbox{}}]%
 }{%
   \end{enumerate*}
 }

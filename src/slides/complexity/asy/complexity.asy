@@ -87,5 +87,49 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ================ Hamiltonian path ===============
+picture pic;
+int picnum = 2;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+defaultdrawstyle=drawstyle(p=EDGEPEN_TT,
+  			     arrow=None);
+
+// define nodes
+node
+  v0=ncircle("$v_0$"), 
+  v1=ncircle("$v_1$"),
+  v2=ncircle("$v_2$"),
+  v3=ncircle("$v_3$"),
+  v4=ncircle("$v_4$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(v, v0, v1, v2);
+v3.pos = (u,v0.pos.y-0.5*v); // new_node_pos_h(v0, (3.14159/2)-atan(0.5*(v/u)), 1.0*u);
+vlayout(v, v3, v4);
+  
+// edges
+draw(pic,
+     (v0--v3),  
+     (v1--v3),  
+     (v2--v3),  
+     (v0--v4),  
+     (v1--v4),  
+     (v2--v4)
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, v0, v1, v2, v3, v4);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 

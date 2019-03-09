@@ -28,6 +28,11 @@ defaultnodestyle=nodestyle(xmargin=1pt,
 
 defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+black,
 			   arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
+// Pen for edges when Labelled
+pen edge_text_pen = fontsize(7pt) + fontcommand("\ttfamily") + black;
+// color edges in walk
+pen walk_pen = linewidth(0.75bp) + highlight_color;
+
 
 import graph;
 
@@ -88,12 +93,14 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 // ================ Hamiltonian path ===============
+
+// ........ no path ............
 picture pic;
 int picnum = 2;
 unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
-defaultdrawstyle=drawstyle(p=EDGEPEN_TT,
-  			     arrow=None);
+//defaultdrawstyle=drawstyle(p=EDGEPEN_TT,
+//  			     arrow=None);
 
 // define nodes
 node
@@ -105,28 +112,134 @@ node
 
 // layout
 defaultlayoutrel = false;
-defaultlayoutskip = 1.5cm;
+defaultlayoutskip = 1.2cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
 vlayout(v, v0, v1, v2);
-v3.pos = (u,v0.pos.y-0.5*v); // new_node_pos_h(v0, (3.14159/2)-atan(0.5*(v/u)), 1.0*u);
+v3.pos = (u,v0.pos.y-0.5*v); 
 vlayout(v, v3, v4);
   
 // edges
 draw(pic,
-     (v0--v3),  
-     (v1--v3),  
-     (v2--v3),  
-     (v0--v4),  
-     (v1--v4),  
-     (v2--v4)
+     (v0--v3).style(undirectededgestyle),  
+     (v1--v3).style(undirectededgestyle),  
+     (v2--v3).style(undirectededgestyle),  
+     (v0--v4).style(undirectededgestyle),  
+     (v1--v4).style(undirectededgestyle),  
+     (v2--v4).style(undirectededgestyle)
     );
 
 // draw nodes after edges so arrows are OK
 draw(pic, v0, v1, v2, v3, v4);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ........ path; Gas, Water, Electricity graph ............
+picture pic;
+int picnum = 3;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles();
+
+// define nodes
+node
+  v0=ncircle("$v_0$"), 
+  v1=ncircle("$v_1$"),
+  v2=ncircle("$v_2$"),
+  v3=ncircle("$v_3$"),
+  v4=ncircle("$v_4$"),
+  v5=ncircle("$v_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.2cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(v, v0, v1, v2);
+hlayout(u, v0, v3);
+vlayout(v, v3, v4, v5);
+  
+// edges
+draw(pic,
+     (v0--v3).style(undirectededgestyle),
+     (v0--v4).style(undirectededgestyle),
+     (v0--v5).style(undirectededgestyle),
+     (v1--v3).style(undirectededgestyle),
+     (v1--v4).style(undirectededgestyle),
+     (v1--v5).style(undirectededgestyle),
+     (v2--v3).style(undirectededgestyle),
+     (v2--v4).style(undirectededgestyle),
+     (v2--v5).style(undirectededgestyle)
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, v0, v1, v2, v3, v4, v5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ======== Shortest path =============
+// From https://www.cs.princeton.edu/~rs/AlgsDS07/15ShortestPaths.pdf
+picture pic;
+int picnum = 4;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles();
+
+// define nodes
+node
+  v0=ncircle("$v_0$"), 
+  v1=ncircle("$v_1$"),
+  v2=ncircle("$v_2$"),
+  v3=ncircle("$v_3$"),
+  v4=ncircle("$v_4$"),
+  v5=ncircle("$v_5$"),
+  v6=ncircle("$v_6$"),
+  v7=ncircle("$v_7$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, v0, v2);
+v1.pos = new_node_pos_h(v0, 30.0, 1.0*u);
+hlayout(u, v1, v5);
+vlayout(1.8*v, v5, v3);
+hlayout(1.5*u, v2, v4);
+hlayout(2*u, v3, v7);
+hlayout(0.9*u, v4, v6);
+
+  
+// edges
+draw(pic,
+     (v0--v1).l("$9$"),
+     (v0--v2).l(Label("$14$",edge_text_pen+black)).style(drawstyle(edge_text_pen+highlightcolor,Arrow(6))),
+     (v0--v3).l("$15$"),
+     (v1--v5).l("$24$").style("leftside"),
+     (v2--v3).l("$5$"),
+     (v2--v4).l("$30$"),
+     (v2--v5).l(Label("$18$",edge_text_pen+black)).style(drawstyle(edge_text_pen+highlightcolor,Arrow(6))),
+     (v3--v4).l("$20$"),
+     (v3--v7).l("$44$"),
+     (v4--v6).l("$11$"),
+     (v4--v7).l(Label("$16$",edge_text_pen+black)).style(drawstyle(edge_text_pen+highlightcolor,Arrow(6))),
+     (v5--v4).l(Label("$2$",edge_text_pen+black)).style(drawstyle(edge_text_pen+highlightcolor,Arrow(6))),
+     (v5..bend(-55)..v7).l("$19$").style("leftside"),
+     (v6--v5).l("$6$"),
+     (v6--v7).l("$6$")
+    );
+//draw(pic,v0.pos--v2.pos, walk_pen, arrow=Arrow(filltype=Fill));
+// draw(pic,v2.pos--v5.pos--v4.pos--v7.pos, highlightcolor+Arrow(6));
+
+// draw nodes after edges so arrows are OK
+draw(pic, v0, v1, v2, v3, v4, v5, v6, v7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

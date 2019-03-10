@@ -232,8 +232,103 @@ draw(pic,
      (v6--v5).l("$6$"),
      (v6--v7).l("$6$")
     );
-//draw(pic,v0.pos--v2.pos, walk_pen, arrow=Arrow(filltype=Fill));
-// draw(pic,v2.pos--v5.pos--v4.pos--v7.pos, highlightcolor+Arrow(6));
+
+// draw nodes after edges so arrows are OK
+draw(pic, v0, v1, v2, v3, v4, v5, v6, v7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ======== assignment graph coloring =============
+picture pic;
+int picnum = 5;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles();
+
+// define nodes
+node
+  v0=ncircle("$v_0$"), 
+  v1=ncircle("$v_1$"),
+  v2=ncircle("$v_2$"),
+  v3=ncircle("$v_3$"), 
+  v4=ncircle("$v_4$"),
+  v5=ncircle("$v_5$"),
+  v6=ncircle("$v_6$"),
+  v7=ncircle("$v_7$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, v0, v1, v2, v3);
+vlayout(1*v, v0, v4);
+hlayout(u, v4, v5, v6, v7);
+  
+// edges
+draw(pic,
+     (v0--v1).style(undirectededgestyle),
+     (v0..bend(25)..v2).style(undirectededgestyle),
+     (v0..bend(-20)..v3).style(undirectededgestyle),
+     (v1--v2).style(undirectededgestyle),
+     (v2--v3).style(undirectededgestyle),
+     (v2--v4).style(undirectededgestyle),
+     (v3--v4).style(undirectededgestyle),
+     (v4--v5).style(undirectededgestyle),
+     (v5--v6).style(undirectededgestyle),
+     (v5..bend(-25)..v7).style(undirectededgestyle),
+     (v6--v7).style(undirectededgestyle)
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, v0, v1, v2, v3, v4, v5, v6, v7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ......................................
+picture pic;
+int picnum = 6;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles();
+
+// define nodes
+node
+  v0=ncircle("$v_0$",ns_bg), 
+  v1=ncircle("$v_1$",ns_bleachedbg),
+  v2=ncircle("$v_2$",ns_bleachedbold),
+  v3=ncircle("$v_3$",ns_light), 
+  v4=ncircle("$v_4$",ns_bleachedbg),
+  v5=ncircle("$v_5$",ns_bg),
+  v6=ncircle("$v_6$",ns_bleachedbold),
+  v7=ncircle("$v_7$",ns_light);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, v0, v1, v2, v3);
+vlayout(1*v, v0, v4);
+hlayout(u, v4, v5, v6, v7);
+  
+// edges
+draw(pic,
+     (v0--v1).style(undirectededgestyle),
+     (v0..bend(25)..v2).style(undirectededgestyle),
+     (v0..bend(-20)..v3).style(undirectededgestyle),
+     (v1--v2).style(undirectededgestyle),
+     (v2--v3).style(undirectededgestyle),
+     (v2--v4).style(undirectededgestyle),
+     (v3--v4).style(undirectededgestyle),
+     (v4--v5).style(undirectededgestyle),
+     (v5--v6).style(undirectededgestyle),
+     (v5..bend(-25)..v7).style(undirectededgestyle),
+     (v6--v7).style(undirectededgestyle)
+    );
 
 // draw nodes after edges so arrows are OK
 draw(pic, v0, v1, v2, v3, v4, v5, v6, v7);

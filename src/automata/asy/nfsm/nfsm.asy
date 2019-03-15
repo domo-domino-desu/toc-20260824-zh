@@ -2920,7 +2920,7 @@ node q0=ncircle("$q_0$");
 node q1=ncircle("$q_1$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q0, q1);
 
@@ -2949,7 +2949,7 @@ node q2=ncircle("$q_2$");
 node q3=ncircle("$q_3$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q2, q3);
 
@@ -2978,7 +2978,7 @@ node q4=ncircle("$q_4$");
 node q5=ncircle("$q_5$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q4, q5);
 
@@ -3007,7 +3007,7 @@ node q6=ncircle("$q_6$");
 node q7=ncircle("$q_7$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q6, q7);
 
@@ -3036,7 +3036,7 @@ node q8=ncircle("$q_8$");
 node q9=ncircle("$q_9$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q8, q9);
 
@@ -3065,7 +3065,7 @@ node q10=ncircle("$q_{10}$");
 node q11=ncircle("$q_{11}$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q10, q11);
 
@@ -3096,7 +3096,7 @@ node q2=ncircle("$q_2$");
 node q3=ncircle("$q_3$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q0, q1, q2, q3);
 
@@ -3130,7 +3130,7 @@ node q6=ncircle("$q_6$");
 node q7=ncircle("$q_7$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 q4.pos = new_node_pos_h(q12, 30, 1*u);
 hlayout(u, q4, q5);
@@ -3172,7 +3172,7 @@ node q6=ncircle("$q_6$");
 node q7=ncircle("$q_7$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q0, q1, q2, q3, q12);
 q4.pos = new_node_pos_h(q12, 30, 1*u);
@@ -3214,7 +3214,7 @@ node q10=ncircle("$q_{10}$");
 node q11=ncircle("$q_{11}$",ns_accepting); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q8, q9, q10, q11);
 
@@ -3245,7 +3245,7 @@ node q10=ncircle("$q_{10}$");
 node q11=ncircle("$q_{11}$"); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q8, q9, q10, q11);
 
@@ -3288,7 +3288,7 @@ node q10=ncircle("$q_{10}$");
 node q11=ncircle("$q_{11}$"); 
 
 // calculate nodes position
-real u=1.25cm;  // horizontal  
+real u=1.1cm;  // horizontal  
 real v=0.8*u;  // vertical
 hlayout(u, q0, q1, q2, q3, q12);
 q4.pos = new_node_pos_h(q12, 30, 1*u);
@@ -3313,7 +3313,7 @@ draw(pic,
      (q8--q9).l("\str{e}").style("leftside"), 
      (q9--q10).l("\emptystring").style("leftside"), 
      (q10--q11).l("\str{f}").style("leftside"),
-     (q11..bend(30)..q8).l("\emptystring")
+     (q11..bend(35)..q8).l("\emptystring")
      );
 
 // draw nodes after edges

@@ -2882,13 +2882,13 @@ for(int level=1; level <= RANK; ++level) {
 
 // draw nodes
 for(int level=0; level <= RANK; ++level) {
-  write(format("level %d",level));
+  // write(format("level %d",level));
   int numnodes = 2^level;
   real width = derivations_tree_width(level,RANK,u);
   for(int nodenum=0; nodenum<numnodes; ++nodenum) {
-    write(format("  nodenum %d ",nodenum));
-    write(format("  pos= %f,",tree[level][nodenum].pos.x));
-    write(format(" %f",tree[level][nodenum].pos.y));
+    // write(format("  nodenum %d ",nodenum));
+    // write(format("  pos= %f,",tree[level][nodenum].pos.x));
+    // write(format(" %f",tree[level][nodenum].pos.y));
     draw(pic,
 	 tree[level][nodenum]);
   }
@@ -2905,6 +2905,425 @@ for(int level=0; level <= RANK; ++level) {
 //      S, F);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Kleene's Theorem; full example of regex->machine ======
+picture pic;
+int picnum = 71;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}").style("leftside"),  // bug in node5; have to have 2
+     (q0--q1).l("\str{a}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .....................................
+picture pic;
+int picnum = 72;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q2, q3);
+
+// draw edges
+draw(pic,
+     (q2--q3).l("\str{b}").style("leftside"),  // bug in node5; have to have 2
+     (q2--q3).l("\str{b}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .....................................
+picture pic;
+int picnum = 73;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q4, q5);
+
+// draw edges
+draw(pic,
+     (q4--q5).l("\str{c}").style("leftside"),  // bug in node5; have to have 2
+     (q4--q5).l("\str{c}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .....................................
+picture pic;
+int picnum = 74;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q6=ncircle("$q_6$"); 
+node q7=ncircle("$q_7$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q6, q7);
+
+// draw edges
+draw(pic,
+     (q6--q7).l("\str{d}").style("leftside"),  // bug in node5; have to have 2
+     (q6--q7).l("\str{d}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q6, q7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .....................................
+picture pic;
+int picnum = 75;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q8=ncircle("$q_8$"); 
+node q9=ncircle("$q_9$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q8, q9);
+
+// draw edges
+draw(pic,
+     (q8--q9).l("\str{e}").style("leftside"),  // bug in node5; have to have 2
+     (q8--q9).l("\str{e}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q8, q9);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .....................................
+picture pic;
+int picnum = 76;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q10=ncircle("$q_{10}$"); 
+node q11=ncircle("$q_{11}$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q10, q11);
+
+// draw edges
+draw(pic,
+     (q10--q11).l("\str{f}").style("leftside"),  // bug in node5; have to have 2
+     (q10--q11).l("\str{f}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q10, q11);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ..... a-->b .............
+picture pic;
+int picnum = 77;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q0, q1, q2, q3);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}").style("leftside"), 
+     (q1--q2).l("\emptystring").style("leftside"), 
+     (q2--q3).l("\str{b}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ..... c or d .............
+picture pic;
+int picnum = 78;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q12=ncircle("$q_{12}$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
+node q6=ncircle("$q_6$"); 
+node q7=ncircle("$q_7$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+q4.pos = new_node_pos_h(q12, 30, 1*u);
+hlayout(u, q4, q5);
+q6.pos = new_node_pos_h(q12, -30, 1*u);
+hlayout(u, q6, q7);
+
+// draw edges
+draw(pic,
+     (q12--q4).l("\emptystring").style("leftside"), 
+     (q4--q5).l("\str{c}").style("leftside"), 
+     (q12--q6).l("\emptystring").style("leftside"),
+     (q6--q7).l("\str{d}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q12, q4, q5, q6, q7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ..... a-->b-->c or d .............
+picture pic;
+int picnum = 79;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q12=ncircle("$q_{12}$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
+node q6=ncircle("$q_6$"); 
+node q7=ncircle("$q_7$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q0, q1, q2, q3, q12);
+q4.pos = new_node_pos_h(q12, 30, 1*u);
+hlayout(u, q4, q5);
+q6.pos = new_node_pos_h(q12, -30, 1*u);
+hlayout(u, q6, q7);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}").style("leftside"), 
+     (q1--q2).l("\emptystring").style("leftside"), 
+     (q2--q3).l("\str{b}").style("leftside"),
+     (q3--q12).l("\emptystring").style("leftside"), 
+     (q12--q4).l("\emptystring").style("leftside"), 
+     (q4--q5).l("\str{c}").style("leftside"), 
+     (q12--q6).l("\emptystring").style("leftside"),
+     (q6--q7).l("\str{d}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3, q12, q4, q5, q6, q7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ..... ef .............
+picture pic;
+int picnum = 80;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q8=ncircle("$q_{8}$"); 
+node q9=ncircle("$q_9$"); 
+node q10=ncircle("$q_{10}$"); 
+node q11=ncircle("$q_{11}$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q8, q9, q10, q11);
+
+// draw edges
+draw(pic,
+     (q8--q9).l("\str{e}").style("leftside"), 
+     (q9--q10).l("\emptystring").style("leftside"), 
+     (q10--q11).l("\str{f}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic, q8, q9, q10, q11);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ..... ef* .............
+picture pic;
+int picnum = 81;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q8=ncircle("$q_{8}$",ns_accepting); 
+node q9=ncircle("$q_9$"); 
+node q10=ncircle("$q_{10}$"); 
+node q11=ncircle("$q_{11}$"); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q8, q9, q10, q11);
+
+// draw edges
+draw(pic,
+     (q8--q9).l("\str{e}").style("leftside"), 
+     (q9--q10).l("\emptystring").style("leftside"), 
+     (q10--q11).l("\str{f}").style("leftside"),
+     (q11..bend(30)..q8).l("\emptystring")
+     );
+
+// draw nodes after edges
+draw(pic, q8, q9, q10, q11);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ..... a-->b-->c or d --> (e-->f)*.............
+picture pic;
+int picnum = 82;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q12=ncircle("$q_{12}$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$"); 
+node q6=ncircle("$q_6$"); 
+node q7=ncircle("$q_7$"); 
+node q8=ncircle("$q_{8}$",ns_accepting); 
+node q9=ncircle("$q_9$"); 
+node q10=ncircle("$q_{10}$"); 
+node q11=ncircle("$q_{11}$"); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q0, q1, q2, q3, q12);
+q4.pos = new_node_pos_h(q12, 30, 1*u);
+hlayout(u, q4, q5);
+q6.pos = new_node_pos_h(q12, -30, 1*u);
+hlayout(u, q6, q7);
+q8.pos = new_node_pos_h(q5, -30, 1*u);
+hlayout(u, q8, q9, q10, q11);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}").style("leftside"), 
+     (q1--q2).l("\emptystring").style("leftside"), 
+     (q2--q3).l("\str{b}").style("leftside"),
+     (q3--q12).l("\emptystring").style("leftside"), 
+     (q12--q4).l("\emptystring").style("leftside"), 
+     (q4--q5).l("\str{c}").style("leftside"), 
+     (q12--q6).l("\emptystring").style("leftside"),
+     (q6--q7).l("\str{d}").style("leftside"),
+     (q5--q8).l("\emptystring").style("leftside"),
+     (q7--q8).l("\emptystring").style("leftside"),
+     (q8--q9).l("\str{e}").style("leftside"), 
+     (q9--q10).l("\emptystring").style("leftside"), 
+     (q10--q11).l("\str{f}").style("leftside"),
+     (q11..bend(30)..q8).l("\emptystring")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3, q12, q4, q5, q6, q7, q8, q9, q10, q11);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

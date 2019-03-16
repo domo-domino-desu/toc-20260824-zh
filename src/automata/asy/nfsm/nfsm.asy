@@ -3327,3 +3327,46 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ..... illustration of epsilon successive moves .............
+picture pic;
+int picnum = 83;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$",ns_accepting); 
+node q5=ncircle("$q_5$"); 
+node q6=ncircle("$q_6$",ns_accepting); 
+
+// calculate nodes position
+real u=1.1cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q0, q1, q2);
+q3.pos = new_node_pos_h(q2, 30, 1*u);
+hlayout(u, q3, q4);
+q5.pos = new_node_pos_h(q2, -30, 1*u);
+hlayout(u, q5, q6);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0..bend(-35)..q2).l("\emptystring").style("leftside"),
+     (q1--q2).l("\str{b}"), 
+     (q2--q3).l("\emptystring"),
+     (q2--q5).l("\emptystring"), 
+     (q3--q4).l("\str{c}"), 
+     (q5--q6).l("\str{d}") 
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

@@ -285,7 +285,7 @@ void setdefaultstatediagramstyles() {
   // Nodes with double circle 
   ns_accepting=nodestyle(xmargin=1pt,
 			 textpen=NODEPEN,
-			 drawfn=Filler(backgroundcolor)+DoubleDrawer(black));
+			 drawfn=Filler(backgroundcolor)+DoubleDrawer(boldcolor));
   // Nodes without any boxing
   ns_noborder=nodestyle(xmargin=1pt,
 			textpen=NODEPEN,

@@ -2818,3 +2818,42 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: find minimum pumping length =========
+picture pic;
+int picnum = 50;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting);    
+node q1=ncircle("$q_1$");    
+node q2=ncircle("$q_2$");    
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1);
+vlayout(1*v, q0, q2);
+
+// draw edges
+draw(pic,
+     (q0..bend..q1).l("\str{0}").style("leftside"),
+     (q0--q2).l("\str{1}"),
+     (q1..bend..q0).l("\str{1}"),
+     (q1--q2).l("\str{0}").style("leftside"),
+     (q2..loop(E)).l("any")
+);
+
+// draw nodes
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

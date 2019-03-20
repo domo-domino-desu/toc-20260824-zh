@@ -920,7 +920,7 @@ node q1=ncircle("$q_1$");
 node q2=ncircle("$q_2$",ns_accepting);  
 
 // calculate nodes position
-real u=2.25cm;
+real u=1.5cm;
 hlayout(1*u, q0, q1, q2);
 
 // draw edges

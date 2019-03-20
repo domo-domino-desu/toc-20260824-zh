@@ -3853,43 +3853,34 @@ $h(\sigma\concat\tau)=h(\sigma)\concat h(\tau)$
 \section{Non-regular languages}
 Although Finite State machines are finite,
 they can handle arbitrarily long input strings.
-For instance, \Cref{ex:PowerSwitch}'s power switch machine has
-only two states
+For instance, this chapter's first example, the power switch from
+\Cref{ex:PowerSwitch}, has only two states
 but even if we toggle it hundreds of times, it still knows whether
-in aggregate it is off or on.
+it ends in $q_{\text{off}}$ or~$q_{\text{on}}$.
 
-Experience with Kleene's star operator gives the intuition that 
+Experience with the star operator gives the intuition that 
 a Finite State machine handles long strings, as the power switch does,
 by looping.
-We will see a result expressing that and we will
-use it for proofs that languages are not regular.
-
-\begin{example}
 %<*ex:FSMLoopingi>
-Imagine a finite state machine that accepts
-the string $\sigma_1=\str{abaacb}$.
-As the machine processes the string, it passes from state to state;
-imagine they are the ones here (there may be many other
-states but this only shows the ones that the machine traverses).
+For instance, the diagram below shows some of the states in a machine.
+This machine accepts the string~$\str{aabbbc}$.
+As it processes the string, this machine passes from state to state;
+they are the ones shown.
 %</ex:FSMLoopingi>
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm58.pdf}
 \end{center}
 %<*ex:FSMLoopingii>
 Part of the processing includes
-a loop from $q_{i_1}$ to~$q_{i_2}$, to~$q_{i_3}$, and back to~$q_{i_1}$.
-We can get another accepted string by making the machine go
-around the loop twice, 
-$\sigma_2=\str{a}(\str{baa})^2\str{cb}$.
-Likewise, this machine accepts $\sigma_3=\str{a}(\str{baa})^3\str{cb}$,
-and looping more times pumps out more
-members of the machine's language.
-
-In addition, bypassing the loop entirely, going around zero times times by
-feeding the machine $\sigma_0=\str{acb}$, also ends in the accepting
-state~$q_{i_5}$.
+a loop from $q_{i_1}$, to~$q_{i_2}$, to~$q_{i_3}$, and back to~$q_{i_1}$.
+The point is that if the machine must also accept the string that 
+takes it around the loop twice, 
+$\str{a}(\str{abb})^2\str{bc}$.
+Likewise, this machine accepts $\sigma_3=\str{a}(\str{abb})^3\str{bc}$,
+and looping more times pumps out more members of the machine's language.
+And, bypassing the loop entirely with
+$\str{abc}$ also ends in the accepting state.
 %</ex:FSMLoopingii>
-\end{example}
 
 %<*th:PumpingLemma>
 \begin{theorem}[Pumping Lemma]  \label{th:PumpingLemma}
@@ -3914,56 +3905,63 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   Finite State machine~$\FSM$.
   Denote the number of states in $\FSM$ by~$p$.
 
-  If we give the machine an input string with more than~$p$ characters
-  then in processing that string
-  the machine will visit some state more than once.
-  Said more completely, recall that the
-  extended transition function $\extended{\Delta}$ inputs a string
-  and outputs the state to which that string brings the machine.
-  Consider an input
-  $\sigma=\sequence{s_0,s_1,\ldots s_k}$
-  with at least as many characters as the machine has states, $k\geq p$.
-  Then the sequence of states through which the machine passes
-  in processing~$\sigma$
-  \begin{equation*}
-    \extended{\Delta}(\sequence{s_0}),\;  
-    \extended{\Delta}(\sequence{s_0,s_1}),\;
-    \extended{\Delta}(\sequence{s_0,s_1,s_2}),\;
-    \ldots\quad
-    \extended{\Delta}(\sequence{s_0,s_1,\ldots s_k})
-  \end{equation*}
-  must have a repeat, by the Pigeonhole Principle.
+  Finite State machines perform one transition per character 
+  so the number of characters in an input string equals the number of 
+  transitions.
+  The number of (not necessarily distinct) states that the machine visits 
+  is one more than the number of transitions. 
+  Thus, in processing an input string~$\sigma$ with at least~$p$ characters
+  the machine must visit some state more than once, by the Pigeonhole 
+  Principle.
+  % Said more completely, recall that the
+  % extended transition function $\extended{\Delta}$ inputs a string
+  % and outputs the state to which that string brings the machine.
+  % Consider an input
+  % $\sigma=\sequence{s_0,s_1,\ldots s_k}$
+  % with at least as many characters as the machine has states, $k\geq p$.
+  % Then the sequence of states through which the machine passes
+  % in processing~$\sigma$
+  % \begin{equation*}
+  %   \extended{\Delta}(\sequence{s_0}),\;  
+  %   \extended{\Delta}(\sequence{s_0,s_1}),\;
+  %   \extended{\Delta}(\sequence{s_0,s_1,s_2}),\;
+  %   \ldots\quad
+  %   \extended{\Delta}(\sequence{s_0,s_1,\ldots s_k})
+  % \end{equation*}
+  % must have a repeat.
 %</pf:PumpingLemmai>
 
 %<*pf:PumpingLemmaii>
-  So suppose that the two inputs $\sequence{s_0,\,\ldots s_i}$ and
-  $\sequence{s_0,\,\ldots s_j}$ with $j>i$
-  both take the machine to the same ending state, 
+  So fix such a repeated state~$q$.
+  Suppose that the two substrings of $\sigma$, $\sequence{s_0,\,\ldots s_i}$ and
+  $\sequence{s_0,\,\ldots s_j}$ with $j>i$,
+  that both take the machine to that state, 
   $q=\extended{\Delta}(\sequence{s_0,\,\ldots s_i})
      =\extended{\Delta}(\sequence{s_0,\,\ldots s_j})$.
-  Then let $\alpha=\sequence{s_0,\,\ldots, s_i}$,
+  Let $\alpha=\sequence{s_0,\,\ldots, s_i}$,
   let $\beta=\sequence{s_{i+1},\,\ldots s_j}$, and
   let $\gamma=\sequence{s_{j+1},\,\ldots s_k}$
   (possibly one or both of $\alpha$ and $\gamma$ is empty).
-  These clearly satisfy conditions~(i) and~(ii).
-  For~(iii),
+  These clearly satisfy conditions~(1) and~(2).
+  For~(3),
   \begin{equation*}
     \alpha\concat\gamma=\sequence{s_0,\,\ldots s_i,s_{j+1},\,\ldots s_k}
   \end{equation*}
-  brings the machine from the start state~$q_0$ to the state~$q$,
-  and then to the same final state as did $\sigma$.
+  brings the machine from the start state~$q_0$ to~$q$,
+  and then to the same ending state as did $\sigma$.
   That is,
   $\extended{\Delta}(\alpha\gamma)=\extended{\Delta}(\alpha\beta\gamma)$.
-  The other strings in~(iii) are similar.
-  For instance, in
+  The other strings given in condition~(2) are similar.
+  For instance, 
   \begin{equation*}
     \alpha\concat\beta^2\concat\gamma
+    =\alpha\beta\beta\gamma
       =\sequence{s_0,\,\ldots s_i,s_{i+1},\,\ldots, s_{j-1},s_{i+1},\,\ldots s_{j+1},\,\ldots s_k}
   \end{equation*}
-  $\alpha$ brings the machine from~$q_0$ to the state~$q$,
-  and the first $\beta$ brings it around to~$q$ again,
+  the substring $\alpha$ brings the machine from~$q_0$ to the state~$q$,
+  the first $\beta$ brings it around to~$q$ again,
   then the second $\beta$ makes the machine loop to $q$ yet again,
-  and finally $\gamma$ brings it to the same final state as did $\sigma$.
+  and finally $\gamma$ brings it to the same ending state as did $\sigma$.
 %</pf:PumpingLemmaii>
 \end{proof}
 

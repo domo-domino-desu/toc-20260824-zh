@@ -2451,12 +2451,12 @@ layout(140.0, q1, q3);
 // draw edges
 draw(pic,
      (q0--q1).l("\str{a}"),
-     (q1--q2).l("\str{b}").style("leftside"),
-     (q2--q3).l("\str{a}"),
-     (q3--q1).l("\str{a}").style("leftside"),
-     (q1--q4).l("\str{c}"),
+     (q1--q2).l("\str{a}").style("leftside"),
+     (q2--q3).l("\str{b}"),
+     (q3--q1).l("\str{b}").style("leftside"),
+     (q1--q4).l("\str{b}"),
      // (q4..bend(-30)..q5).l("\str{a}"),
-     (q4--q5).l("\str{b}")
+     (q4--q5).l("\str{c}")
 );
 
 // draw nodes

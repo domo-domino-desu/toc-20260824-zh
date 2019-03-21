@@ -2442,18 +2442,18 @@ node q5=ncircle("$q_{i_5}$",ns_accepting);
 defaultlayoutrel = false;
 defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
-real v = 0.85*u;
+real v = 0.8*u;
 
 hlayout(u, q0, q1, q4, q5);
-layout(40.0, q1, q2);
-layout(140.0, q1, q3);
+q2.pos = new_node_pos(q1, 60, 1*v);
+hlayout(-1*u, q2, q3);
 
 // draw edges
 draw(pic,
      (q0--q1).l("\str{a}"),
-     (q1--q2).l("\str{a}").style("leftside"),
-     (q2--q3).l("\str{b}"),
-     (q3--q1).l("\str{b}").style("leftside"),
+     (q1..bend..q2).l("\str{a}").style("leftside"),
+     (q2..bend..q3).l("\str{b}"),
+     (q3..bend..q1).l("\str{b}").style("leftside"),
      (q1--q4).l("\str{b}"),
      // (q4..bend(-30)..q5).l("\str{a}"),
      (q4--q5).l("\str{c}")

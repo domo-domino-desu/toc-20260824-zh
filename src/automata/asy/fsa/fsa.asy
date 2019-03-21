@@ -2856,4 +2856,56 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: two loops a problem for PL? =========
+picture pic;
+int picnum = 51;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_{i_1}$");    
+node q2=ncircle("$q_{i_2}$");    
+node q3=ncircle("$q_{i_3}$");    
+node q4=ncircle("$q_{i_4}$");    
+node q5=ncircle("$q_{i_5}$");    
+node q6=ncircle("$q_{i_6}$");    
+node q7=ncircle("$q_{i_7}$");    
+node q8=ncircle("$q_{i_8}$",ns_accepting);    
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.75*u;
+
+hlayout(1*u, q0, q1, q4, q5, q8);
+q2.pos = new_node_pos(q1, 60, 1*v);
+hlayout(-1*u, q2, q3);
+q6.pos = new_node_pos(q5, 60, 1*v);
+hlayout(-1*u, q6, q7);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1..bend..q2).l("\str{a}"),
+     (q2..bend..q3).l("\str{b}"),
+     (q3..bend..q1).l("\str{b}"),
+     (q1--q4).l("\str{a}"),
+     (q4--q5).l("\str{b}"),
+     (q5..bend..q6).l("\str{b}"),
+     (q6..bend..q7).l("\str{b}"),
+     (q7..bend..q5).l("\str{a}"),
+     (q5--q8).l("\str{a}")
+);
+
+// draw nodes
+draw(pic, q0, q1, q2, q3, q4, q5, q6, q7, q8);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

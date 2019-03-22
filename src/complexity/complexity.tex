@@ -3063,18 +3063,21 @@ The differences between models washes out in the general polynomial sloppiness.
 
 Another reason is that $P$ is a natural class of problems to study
 is that it has a number of appealing closure properties.
-For instance, let $\map{f}{\N}{\N}$ be a computable function and consider
-the decision problem for the language
+%<*discussion:PClosure>
+Fix a total function $\map{f}{\N}{\N}$ and consider
+the set
 $\prob_f=\set{\sequence{\bar{n},\bar{f(n)}}\in\kleenestar{\B}\suchthat n\in\N}$,
 where the bars mean that we represent the numbers in binary.
-Then we can consider~$f$ to be a problem.
+This set essentially turns the problem of computing the function~$f$ into 
+the decision problem of accepting the language~$\prob_f$.
 With that, $\P$ is closed under function addition,
 scalar multipliation by an integer,
 subtraction, multiplication, and composition.
-More examples are that $\P$ is closed under concatenation,
+it is also closed under concatenation,
 so if $\lang\in\P$ and $\hat{\lang}\in\P$ then the concatenation
 language $\lang\hat{\lang}$ is also an element of~$\P$,
 and the same holds for Kleene star.
+%</discussion:PClosure>
 
 
 
@@ -3374,13 +3377,16 @@ a nondeterministic Pushdown machine that cannot be done by any
 deterministic machine,
 one of which is accepting the language of palindromes.
 
+%<*lem:DeterministicAndNondeterministicTMsDoTheSame>
 \begin{lemma}
 Deterministic and nondeterministic Turing machines solve the same problems.
 In particular,
 every problem that can be solved by a nondeterministic  machine
 can be solved by a deterministic machine.
 \end{lemma}
+%</lem:DeterministicAndNondeterministicTMsDoTheSame>
 
+%<*pf:DeterministicAndNondeterministicTMsDoTheSame>
 \begin{proof}
 Since a deterministic Turing machine is a special case of a
 nondeterministic one, one direction is obvious.
@@ -3393,6 +3399,7 @@ If there is an accepting branch then the deterministic machine will
 eventually reach it, and it also will accept the input.
 Otherwise, it will not.
 \end{proof}
+%</pf:DeterministicAndNondeterministicTMsDoTheSame>
 
 That proof is, basically, time-slicing.
 With the machines that are on our desks and in our pockets,
@@ -3407,11 +3414,11 @@ at least a limited number of, simultaneous physical processes.\footnote{%
   Depending on how many CPU's the device has.}
 
 So nondeterminism
-doesn't add any capacity to what can be computed in principle.
-That doesn't mean that these machines are worthless.
+doesn't add to what can be computed in principle.
+But that doesn't mean that these machines are worthless.
 
 For one thing, we saw with nondeterministic Finite State machines
-that they were often a good fit for the problems we wanted to solve.
+that they can be a good fit for the problems we wanted to solve.
 There, we could easily go from problem statement to a nondeterministic machine
 and then get a deterministic machine from that.
 
@@ -3421,9 +3428,9 @@ appear to be a good match for solving some problems that on a serial machine
 are hard to solve.
 Take the Travelling Salesman problem.
 Stated in guessing terms, the machine just 
-guesses a circuit  and then checks whether
-it is shorter than the given bound.
-So for some problems, they simplify going from the problem statement
+guesses a circuit, or is given a circuit by some oracular demon,  
+and then checks whether it is shorter than the given bound.
+So for some problems, nondeterminism simplifies going from the problem statement
 to a solution statement.
 
 
@@ -3432,8 +3439,9 @@ to a solution statement.
 But the real excitement is that 
 a nondeterministic Turing machine, if we had one,
 might be much faster than a deterministic one.
+%<*discussion:SpeedOfNFSMi>
 Consider the Satisfiability problem.
-Here is an example formula; is it satisfiable?
+Recall how it goes: here is an example formula and we ask if it is satisfiable.
 \begin{equation*}
  F = 
  (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
@@ -3441,6 +3449,7 @@ Here is an example formula; is it satisfiable?
 \end{equation*} 
 The natural approach uses a truth table
 to calculate whether the final column has any $T$'s.
+It happens that this formula is satisfiable.
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
 \begin{tabular}{ccc|ccccc|c}
@@ -3455,20 +3464,28 @@ to calculate whether the final column has any $T$'s.
   $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
 \end{tabular}
 \end{center}
-This problem seems to be perfect for solving with unbounded parallelism.
-The machine could split
-into a child process for each line of the
-truth table.
-These children are done quickly, certainly in polytime,
-and then the master process
-calls down the bus, ``Any successes?''
-(Described in the other way,
-the machine guesses a solution, or is given a solution by the demon, and
-then only has to verify that it works, which is quick.)
-In total then, a nondeterministic machine does this job in polytime
-while a serial machine would seem to take
-exponential time.
+But in the truth table the number of rows is 
+exponential in the number of variables, 
+specificially it is $2$ raised to the number of variables.
+So that computation is very slow, superpolynomial.
+%</discussion:SpeedOfNFSMi>
 
+%<*discussion:SpeedOfNFSMii>
+This problem seems to be perfect for solving with unbounded parallelism.
+If we use the mental model of thinking of the machine as unboundedly parallel 
+then it could fork a child process for each line of the table.
+These children are done quickly, certainly in polytime,
+and then a master process can
+calls down the bus, ``Any successes?''
+(In terms of the other mental model, 
+the machine guesses a solution, or is given a solution by the demon, and
+then only has to verify that it works, which is also fast.)
+In total then, a nondeterministic machine does this job in polytime
+while a serial machine apparently takes
+exponential time.
+%</discussion:SpeedOfNFSMii>
+
+%<*def:NFSMAcceptsLang>
 \begin{definition}
 A nondeterministic machine
 \definend{decides the language~$\lang$ in time $\map{t}{\N}{\N}$} if for any
@@ -3476,6 +3493,7 @@ input $\sigma\in\lang$ the machine computes at least one accepting branch
 in time $t(|\sigma|)$. % \footnotemark[2].
 \end{definition} % \footnotetext[2]{Whether we use the model that the machine
   % decides by a computation tree or by guessing does not matter.}
+%</def:NFSMAcceptsLang>
 
 So while adding unbounded parallelism to Turing machines doesn't
 allow them to compute any entirely new functions, a person could
@@ -3493,22 +3511,28 @@ better approach
 than trying all of the lines of the truth table, looking for an output $T$
 and (2)~no one can prove that a better way is impossible.
 
+%<*def:NP>
 \begin{definition}
 The complexity class~\definend{$\compclass{NP}$} is 
 the set of languages for which there is a 
 a polynomial time nondeterministic Turing machine acceptor.
 \end{definition}
+%</def:NP>
 
+%<*lem:PSubsetNP>
 \begin{lemma}
 $\P\subseteq\NP$
 \end{lemma}
+%</lem:PSubsetNP>
 
+%<*pf:PSubsetNP>
 \begin{proof}
 Any deterministic Turing machine is trivially also a nondeterministic one.
 So a problem has a polynomial time algorithm on a deterministic
 machine trivially has a polytime algorithm on a
 nondeterministic machine.
 \end{proof}
+%</pf:PSubsetNP>
 
 Again: we don't know which of $\P\subset\NP$ or $\P=\NP$ is true.
 This is an extremely important question; we will consider it separately

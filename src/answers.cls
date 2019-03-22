@@ -31,7 +31,7 @@
                 % includeheadfoot
                 ]{geometry}
 
-                \RequirePackage[dvipsnames]{xcolor}
+\RequirePackage[dvipsnames]{xcolor}
 \include{colorscheme}  % change the color scheme
 \RequirePackage{graphicx}
 
@@ -257,19 +257,19 @@
   % morekeywords={*,...}   % if you want to add more keywords to the set
 }
 
-\lstdefinestyle{grammar}{
-  basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
-  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
-  showspaces=false,               % show spaces adding particular underscores
-  showstringspaces=false,         % underline spaces within strings
-  showtabs=false,                 % show tabs within strings adding particular underscores
-  tabsize=8,                      % sets default tabsize to 8 spaces (emacs scheme buffer formatting wants that)
-  captionpos=b,                   % sets the caption-position to bottom
-  mathescape=true,
-  % literate=
-  %   {=}{$\leftarrow{}$}{1}
-  %   {==}{::=}{3},
-}
+% \lstdefinestyle{grammar}{
+%   basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+%   backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+%   showspaces=false,               % show spaces adding particular underscores
+%   showstringspaces=false,         % underline spaces within strings
+%   showtabs=false,                 % show tabs within strings adding particular underscores
+%   tabsize=8,                      % sets default tabsize to 8 spaces (emacs scheme buffer formatting wants that)
+%   captionpos=b,                   % sets the caption-position to bottom
+%   mathescape=true,
+%   % literate=
+%   %   {=}{$\leftarrow{}$}{1}
+%   %   {==}{::=}{3},
+% }
 
 
 % Don't want \lstinline!..! because it comes out too small.
@@ -336,105 +336,106 @@
 %       1 &\tapegraphic{tapeoutput1.pdf} \\
 %     \end{tapesequencetable}
 %   \end{tapesequence}
-\newenvironment{tapesequence}{%
-  % \vspace{1.5ex plus 0.25ex minus 0.15ex}%
-  \begin{center} % \vspace{-3ex}
-    \renewcommand{\arraystretch}{2.25}
-}{%
-  \end{center}
-  % \vspace{-1.5ex plus 0.25ex minus 0.15ex}% arraystretch leaves extra?
-}
-\newenvironment{tapesequencetable}{%
-  % \vspace{2.5ex plus 0.25ex minus 0.15ex}%
-  \begin{tabular}[t]{r|c} 
-    % \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
-    %                      \begin{tabular}[b]{@{}c@{}}
-    %                        \tabulartext{After} \\[-0.425ex] 
-    %                        \tabulartext{step} 
-                             %                            \end{tabular}}
-    \multicolumn{1}{r}{\tabulartext{Step}}
-     &\tabulartext{Configuration}                        \\[-1ex] \hline
-}{%
-  \end{tabular}%
-}
-\newcommand{\tapegraphic}[1]{%
-  \vcenteredhbox{\includegraphics{#1}}%
-}
+% \newenvironment{tapesequence}{%
+%   % \vspace{1.5ex plus 0.25ex minus 0.15ex}%
+%   \begin{center} % \vspace{-3ex}
+%     \renewcommand{\arraystretch}{2.25}
+% }{%
+%   \end{center}
+%   % \vspace{-1.5ex plus 0.25ex minus 0.15ex}% arraystretch leaves extra?
+% }
+% \newenvironment{tapesequencetable}{%
+%   % \vspace{2.5ex plus 0.25ex minus 0.15ex}%
+%   \begin{tabular}[t]{r|c} 
+%     % \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
+%     %                      \begin{tabular}[b]{@{}c@{}}
+%     %                        \tabulartext{After} \\[-0.425ex] 
+%     %                        \tabulartext{step} 
+%                              %                            \end{tabular}}
+%     \multicolumn{1}{r}{\tabulartext{Step}}
+%      &\tabulartext{Configuration}                        \\[-1ex] \hline
+% }{%
+%   \end{tabular}%
+% }
+% \newcommand{\tapegraphic}[1]{%
+%   \vcenteredhbox{\includegraphics{#1}}%
+% }
 
 
 % ==== Grammars ==== (Asy doesn't like it) 
-\usepackage{syntax}
-\newlength{\grammarmargin}
-\setlength{\grammarmargin}{5em}
-\renewenvironment{grammar}{%
-  \list{}{%
-    \labelwidth\grammarindent%
-    \leftmargin\grammarmargin%
-    \advance\grammarindent\labelsep
-    \itemindent\z@%
-    \listparindent\z@%
-    \parsep\grammarparsep%
-    \small
-  }%
-  \let\\\@normalcr
-  \syntaxShortcuts\relax\relax%
-  % \def\alt{\\\llap{\textbar\hspace*{0em}}}% Comment this out from .sty file to adjust spacing
-  \def\gr@setpar{%
-    \def\par{%
-      \parshape\@ne\@totalleftmargin\linewidth%
-      \@@par%
-      \catcode`\<12%
-      \everypar{%
-        \everypar{}%
-        \catcode`\<\active%
-        \gr@implitem%
-      }%
-    }%
-  }%
-  \gr@setpar%
-  \par%
-  \let\gr@leftsq\[%
-  \let\gr@rightsq\]%
-  \def\gr@endsyntdiag]{\end{syntdiag}\gr@setpar\par}%
-  \def\[{\@ifnextchar[{\begin{syntdiag}\@gobble}\gr@leftsq}%
-  \def\]{\@ifnextchar]\gr@endsyntdiag\gr@rightsq}%
-}{%
-  \@newlistfalse%
-  \everypar{}%
-  \endlist%
-}
-\setlength{\grammarparsep}{0pt plus 0.15ex} % vert space between prods
-\setlength{\grammarindent}{5em} %
-\renewcommand{\grammarlabel}[2]{%
-  \hspace*{1.25em}\synt{#1} \hfill#2%
-}
-\def\alt{\\\llap{\textbar\hspace*{0.35em}}}%
+\usepackage{grammar}
+% \usepackage{syntax}
+% \newlength{\grammarmargin}
+% \setlength{\grammarmargin}{5em}
+% \renewenvironment{grammar}{%
+%   \list{}{%
+%     \labelwidth\grammarindent%
+%     \leftmargin\grammarmargin%
+%     \advance\grammarindent\labelsep
+%     \itemindent\z@%
+%     \listparindent\z@%
+%     \parsep\grammarparsep%
+%     \small
+%   }%
+%   \let\\\@normalcr
+%   \syntaxShortcuts\relax\relax%
+%   % \def\alt{\\\llap{\textbar\hspace*{0em}}}% Comment this out from .sty file to adjust spacing
+%   \def\gr@setpar{%
+%     \def\par{%
+%       \parshape\@ne\@totalleftmargin\linewidth%
+%       \@@par%
+%       \catcode`\<12%
+%       \everypar{%
+%         \everypar{}%
+%         \catcode`\<\active%
+%         \gr@implitem%
+%       }%
+%     }%
+%   }%
+%   \gr@setpar%
+%   \par%
+%   \let\gr@leftsq\[%
+%   \let\gr@rightsq\]%
+%   \def\gr@endsyntdiag]{\end{syntdiag}\gr@setpar\par}%
+%   \def\[{\@ifnextchar[{\begin{syntdiag}\@gobble}\gr@leftsq}%
+%   \def\]{\@ifnextchar]\gr@endsyntdiag\gr@rightsq}%
+% }{%
+%   \@newlistfalse%
+%   \everypar{}%
+%   \endlist%
+% }
+% \setlength{\grammarparsep}{0pt plus 0.15ex} % vert space between prods
+% \setlength{\grammarindent}{5em} %
+% \renewcommand{\grammarlabel}[2]{%
+%   \hspace*{1.25em}\synt{#1} \hfill#2%
+% }
+% \def\alt{\\\llap{\textbar\hspace*{0.35em}}}%
 
-% Env to indent text
-\newenvironment{clip}{%
-  \begin{list}{}{\setlength{\leftmargin}{1.25em}
-                 \setlength{\parsep}{\grammarparsep}}\item[]
-}{%
-  \end{list}%
-}
+% % Env to indent text
+% \newenvironment{clip}{%
+%   \begin{list}{}{\setlength{\leftmargin}{1.25em}
+%                  \setlength{\parsep}{\grammarparsep}}\item[]
+% }{%
+%   \end{list}%
+% }
 
-% Used for derivations; gives a raggedright block of indented text
-% \begin{displayedsteps}
-%  \initialstep\syntax{<start>}
-%   ..
-% \end{displayedsteps}
-\newenvironment{displayedsteps}{%
-  \begin{list}{}%
-      {\listparindent 1em%
-       %\itemindent    \listparindent
-       % \leftmargin 2em%
-       \rightmargin 1em%
-       \parsep        \z@ \@plus\p@}%
-       \item\relax \raggedright
-}{%
-  \end{list}
-}
-\newcommand{\initialstep}{\hspace*{-1em}}
+% % Used for derivations; gives a raggedright block of indented text
+% % \begin{displayedsteps}
+% %  \initialstep\syntax{<start>}
+% %   ..
+% % \end{displayedsteps}
+% \newenvironment{displayedsteps}{%
+%   \begin{list}{}%
+%       {\listparindent 1em%
+%        %\itemindent    \listparindent
+%        % \leftmargin 2em%
+%        \rightmargin 1em%
+%        \parsep        \z@ \@plus\p@}%
+%        \item\relax \raggedright
+% }{%
+%   \end{list}
+% }
+% \newcommand{\initialstep}{\hspace*{-1em}}
 
 
 % ==== Remaining content macros ======
@@ -449,6 +450,10 @@
 \newenvironment{ans}[1]%
   {\par\noindent\textbf{#1}\ }%
   {}
+
+% Mark an answer as verified by putting this in the source, and it gets 
+% carried through to answerbody.tex
+\newcommand{\verified}{\noindent\makebox[0in][r]{\textcolor{Fuchsia}{Verified}\hspace*{0.65in}}}
 
 \renewcommand{\chapter}[1]{\vspace*{0.5in}\begin{center}\Large\textbf{#1}\end{center}\vspace*{0.5in}}
 

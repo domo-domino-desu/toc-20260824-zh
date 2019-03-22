@@ -207,14 +207,7 @@
 \else
 \def\showlineno{Line \the\inputlineno}
 \fi
-% I want to pass a string like Three.II.1 as the ans argument in the answerfile.
-% Use the fmtcount package to format the chapter counter with \Numberstring.
-% But if you just say 
-% \renewcommand{\Currentlabel}{\Numberstring{chapter}.\@currentlabel}
-% then you get inf recursion.  Instead, in the definition of chapter it sets 
-% \storeNumberstring{chapterasnumberstring}{chapter}, and then 
-% that gets used here.
-\renewcommand{\Currentlabel}{\FMCuse{chapterasnumberstring}.\@currentlabel}
+\renewcommand{\Currentlabel}{\Roman{chapter}.\@currentlabel}
 
 
 % ========= Chapters and sections =============
@@ -330,7 +323,7 @@
   \vspace*{\stretch{1}} % vertically center
   \clearpage
   \chapter{#3}\imagecredit{#1}%
-  \Writetofile{\answerbodyfilename}{\protect\chapter{#3}}%
+  \Writetofile{\answerbodyfilename}{\protect\chapter{Chapter \Roman{chapter}: #3}}%
   \storeNumberstring{chapterasnumberstring}{chapter}% See answers description
 }
 
@@ -631,6 +624,9 @@
 \newcommand{\recommendationmark}{\checkmark}
 \newlength{\recommendation@length}  % Put the mark this far into margin
   \setlength{\recommendation@length}{1.25em}
+
+% Note that you can mark an exercise answer as verified with the \verified
+% macro, which is defined in answers.cls 
 
 % Exercises are a list
 \newcounter{@exercisenumber}[section]

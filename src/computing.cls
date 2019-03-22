@@ -200,11 +200,21 @@
 \Newassociation{answer}{ans}{\answerbodyfilename}
 \AtEndDocument{\Closesolutionfile{\answerbodyfilename}}
 
+% For debugging I want the input line number in the answer file.
+% For where this is used, see the exercise environment.
+\ifnum\inputlineno=\m@ne
+\let\showlineno\@empty
+\else
+\def\showlineno{Line \the\inputlineno}
+\fi
 % I want to pass a string like Three.II.1 as the ans argument in the answerfile.
-% But I get an infinite loop expanding \Numberstring{chapter}.  So I am
-% passing 3.II.1 and figuring I'll figure out later how to translate the
-% 3 to a Three.
-\renewcommand{\Currentlabel}{\arabic{chapter}.\@currentlabel}
+% Use the fmtcount package to format the chapter counter with \Numberstring.
+% But if you just say 
+% \renewcommand{\Currentlabel}{\Numberstring{chapter}.\@currentlabel}
+% then you get inf recursion.  Instead, in the definition of chapter it sets 
+% \storeNumberstring{chapterasnumberstring}{chapter}, and then 
+% that gets used here.
+\renewcommand{\Currentlabel}{\FMCuse{chapterasnumberstring}.\@currentlabel}
 
 
 % ========= Chapters and sections =============
@@ -320,7 +330,9 @@
   \vspace*{\stretch{1}} % vertically center
   \clearpage
   \chapter{#3}\imagecredit{#1}%
-  \Writetofile{\answerbodyfilename}{\protect\chapter{#3}}}
+  \Writetofile{\answerbodyfilename}{\protect\chapter{#3}}%
+  \storeNumberstring{chapterasnumberstring}{chapter}% See answers description
+}
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -655,6 +667,8 @@
   \end{list}
 }
 \newenvironment{exercise}{%
+  \Writetofile{\answerbodyfilename}{\@percentchar}
+  \Writetofile{\answerbodyfilename}{\@percentchar\space\showlineno\space is the exercise source}
   \item %
 }{%
 }

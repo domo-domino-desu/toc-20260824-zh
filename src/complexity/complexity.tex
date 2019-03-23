@@ -3323,44 +3323,37 @@ Prove that the class of languages~$\P$ is closed under each operation.
 
 
 
-\section{$\NP$}
+\section{Nondeterministic Turing machines}
 Recall that a machine is nondeterminstic if
 from a present configuration and input
-it may pass to a next configuration where the number of next states
-is zero, or one, or more.
-That is, the output of the transition function is a set.
-\begin{equation*}
-  \Delta(q_i,T_p)=\set{\sequence{q_{j_0},T_{n_0}},\sequence{q_{j_1},T_{n_1}}\,\ldots}
-\end{equation*}
-For Turing machines, nondeterminism gives a completely
-capable device, in the sense of Church's Thesis, that is
-also unboundedly-parallel\Dash
-at any step in a computation this machine can fork any finite number of
-children, who can then continue on as multiple processes and can
-go on to fork children of their own.
+it may pass to a next configuration with zero, or one, or more, next states.
+% That is, the output of the transition function is a set.
+% \begin{equation*}
+%   \Delta(q_i,T_p)=\set{\sequence{q_{j_0},T_{n_0}},\sequence{q_{j_1},T_{n_1}}\,\ldots}
+% \end{equation*}
+
+% For Turing machines, nondeterminism gives a completely
+% capable device, in the sense of Church's Thesis, that is
+% also unboundedly-parallel\Dash
+% at any step in a computation this machine can fork any finite number of
+% children, who can then continue on as multiple processes and can
+% go on to fork children of their own.
 
 Recall also that we have two models of how these devices operate.
-In the first, the machine's computation history is a tree and it
-simultaneously computes all branches.
-This fits exactly with the prior paragraph's `unboundedly parallel'
-and also fits with our experience on everyday computers where, for instance,
-you start a new process by opening a new window, and the machine can
-have lots of them open at a time. 
-
-In the second model the machine guesses which next state to follow and
-then deterministically computes that branch of the computation tree.
-This model can at first feel odd since our programming experience does not
-have machines guessing; 
-an alternative working is that an oracle, a
-demon, tells the machine the correct branchings 
-through the comptuation tree.
+In the first, the machine is unboundedly parallel:~its 
+computation history is a tree and it computes all of the branches.
+This
+fits with our experience on everyday computers where, for instance,
+you have lots of windows open at one time, running lots of processes.
+In the second model the machine guesses which next state to follow,
+or is told which one by an oracle, and
+then deterministically checks that branch of the computation tree.
 
 With the first model we say an input string is accepted if one of the 
 branchs on the tree is an accepting branch.
 With the second model we say the input
 is accepted if there is a sequences of guesses that the machine could
-make, or if there exists a sequence of
-branching hints that the demon could produce,
+make, or a sequence of hints that the demon could produce,
 that leads to an accepting state.
 With those definitions, the two models are logically equivalent in that
 they accept the same languages.
@@ -3381,7 +3374,7 @@ one of which is accepting the language of palindromes.
 \begin{lemma}
 Deterministic and nondeterministic Turing machines solve the same problems.
 In particular,
-every problem that can be solved by a nondeterministic  machine
+every problem that can be solved by a nondeterministic machine
 can be solved by a deterministic machine.
 \end{lemma}
 %</lem:DeterministicAndNondeterministicTMsDoTheSame>
@@ -3447,9 +3440,9 @@ Recall how it goes: here is an example formula and we ask if it is satisfiable.
  (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
   \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (\neg P\vee R)
 \end{equation*} 
-The natural approach uses a truth table
-to calculate whether the final column has any $T$'s.
-It happens that this formula is satisfiable.
+The natural approach is to compute a truth table
+see whether the final column has any $T$'s.
+Here the next to last row has the~$T$ so this formula is satisfiable.
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
 \begin{tabular}{ccc|ccccc|c}
@@ -3467,7 +3460,7 @@ It happens that this formula is satisfiable.
 But in the truth table the number of rows is 
 exponential in the number of variables, 
 specificially it is $2$ raised to the number of variables.
-So that computation is very slow, superpolynomial.
+So that computation is very slow, super-polynomial.
 %</discussion:SpeedOfNFSMi>
 
 %<*discussion:SpeedOfNFSMii>
@@ -3500,19 +3493,21 @@ allow them to compute any entirely new functions, a person could
 sensibly conjecture that it may
 allow them to compute some of them faster.
 
-However:~no one can prove that.
-At this moment, no one can prove that just because
-deterministic machines do not come with unbounded parallelism baked in
-and must simulate it with time-slicing,
-they must be slower.
-At this moment, for the deterministic machine case,
-(1)~no one has produced a much 
-better approach 
-than trying all of the lines of the truth table, looking for an output $T$
-and (2)~no one can prove that a better way is impossible.
+
+
+
+\subsection{$\NP$}
+We now name the class of problems associated with nondeterministic 
+Turing machines.
+We will give two equivalent descriptions, \cref{def:NP} and 
+\cref{lem:VerifierAndGuesserEquiv}.\footnote{%
+  This follows a pattern in mathematical presentations.
+  The definition is conceptually clearer, particularly at first sight, but 
+  experience shows that
+  the other description is typically easier to work with in practice.}
 
 %<*def:NP>
-\begin{definition}
+\begin{definition} \label{def:NP}
 The complexity class~\definend{$\compclass{NP}$} is 
 the set of languages for which there is a 
 a polynomial time nondeterministic Turing machine acceptor.
@@ -3528,47 +3523,26 @@ $\P\subseteq\NP$
 %<*pf:PSubsetNP>
 \begin{proof}
 Any deterministic Turing machine is trivially also a nondeterministic one.
-So a problem has a polynomial time algorithm on a deterministic
+So a problem that has a polynomial time algorithm on a deterministic
 machine trivially has a polytime algorithm on a
 nondeterministic machine.
 \end{proof}
 %</pf:PSubsetNP>
 
-Again: we don't know which of $\P\subset\NP$ or $\P=\NP$ is true.
-This is an extremely important question; we will consider it separately
-in the next section.
+%<*rem:DunnoPvsNP>
+\begin{remark}
+Very important:~no one knows whether $\P$ is a strict subset, 
+so that $\P\neq\NP$, or whether $\P=\NP$.
+That is, at this moment no one knows whether, because
+deterministic machines do not come with unbounded parallelism baked in
+and must simulate it with time-slicing,
+they are necessarily slower.
+This is an extremely important question that
+we will consider separately in the next section.
+\end{remark}
+%</rem:DunnoPvsNP>
 
-
-
-
-
-\subsection{Verifiers}
-We are dividing solving a problem into 
-producing that solution, and verifying that it is correct.
-We are considering the set of problems for which
-we can verify, or justify, a `yes' answer in  polytime.
-That is, there must be a quick algorithm that,
-for each string in the language, gives a proof that
-it is in the language.
-
-Contrast such problems with the problem of solving the game of chess.
-Like Rock-Paper-Scissors or Tic-Tac-Toe, 
-\citetext{chess is a solvable game}{%
-  This is Zermelo's Theorem. See \autocite{wiki:ZermelosTheorem}.},
-meaning that there exists a strategy
-for one of the two players that forces a win, or at least a draw, no
-matter what the other player does.
-But imagine that a demon hands you a sheaf of papers and tells you
-that it contains a perfect chess strategy.
-If you tried to verify it by having a computer step through
-the responses to each move and responses to those
-responses, etc., then even having the strategy in your hand, 
-verifying that it is correct seems
-beyond the Earth's computing capacity.
-The possibility tree is just too big.
-
-
-
+%<*def:Verifier>
 \begin{definition}
 A deterministic Turing machine $\TM$ is a
 \definend{verifier of a language} if 
@@ -3578,39 +3552,52 @@ there exists a \definend{witness} or \definend{certificate}
 string $\omega\in\kleenestar{\B}$ such that the machine
 $\TM$ accepts the input $\sequence{\sigma,\omega}$.
 \end{definition}
+%</def:Verifier>
 
 The definition does not say where the witness~$\omega$ comes from.
-In some sense this formalizes the idea of a demon providing the
-answer and $\TM$'s sole job is to verify its correctness.
+This fits our mental model of a demon providing the
+answer and machine only verifying its correctness.
+(Another way that it fits our model is that there is no requirement of the
+converse:~it does not require that there be a witness to the string not
+being in the language.)
 
-Notice also that the definition does not say that when the string is not
-in the language then there is a witness to that.
-
-% The next result is that the two formulations, guesser and
-% verifier, are equivalent up to some polynomial sloppiness.
-
+%<*lem:VerifierAndGuesserEquiv>
 \begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
-A language is a member of $\NP$, 
-it is accepted by a polynomial time nondeterministic Turing machine,
+A language is a member of $\NP$ 
 if and only
-if it can be verified by some polynomial
-time deterministic verifier.
+if it can be verified by some polynomial time deterministic verifier.
 \end{lemma}
+%</lem:VerifierAndGuesserEquiv>
 
-The verifier must run in time polynomial in the length of the input~$\sigma$.
-This implies is that the length of the witness~$\lh{\omega}$
-is polynomial in~$\sigma$, because the verifier is a 
-Turing machine and reads one bit at a time so if 
+Before the proof, we pause to highlight the `polynomial time'.
+We are dividing solving a problem into 
+first producing a solution and then verifying that it is correct.
+We are considering the set of problems for which
+we can verify a `yes' answer, quickly.
+Contrast this with the problem of chess. 
+\citetext{Chess is a solvable game}{%
+  This is Zermelo's Theorem. See \autocite{wiki:ZermelosTheorem}.},
+meaning that there is a strategy
+for one of the two players that forces a win or a draw, no
+matter what the other player does.
+But imagine that a demon hands you some papers and tells you
+that it contains a perfect chess strategy.
+If you tried to verify that assertion by having a computer step through
+the responses to each move and responses to those
+responses, etc., then that verification seems  
+beyond our current computing capacity, and
+maybe beyond the theoretical capacity of the universe.
+So the `polynomial time' here means that the verification is tractable.
+
+One more point:~because the verifier is polytime in $\sigma$,
+the length of the witness~$\lh{\omega}$
+is polynomial in~$\sigma$.
+This is because the verifier reads one bit per step, so if 
 the witness were too long then the
-machine would not be able to even read it in the alotted time.
-
-Observe that taking the polynomial~$p$ to be trivial $p(i)=0$
-gives that $\compclass{P}\subseteq\compclass{NP}$.
+machine would not even be able to read it in the alotted time.
 
 \begin{proof}
-The idea is that the sequence of choices made through nondeterminism
-can be bound together to make the witness, and vice versa.
-
+%<*pf:VerifierAndGuesserEquivi>
 Suppose first that the language~$\lang$ is accepted by the nondeterministic
 Turing machine~$\TM$ in polynomial time;
 we will construct a polynomial time verifier~$\TM[V]$.
@@ -3619,26 +3606,30 @@ such that the time taken by~$\TM$ on input~$\sigma\in\kleenestar{\B}$
 is $p(|\sigma|)$.
 For any $\sigma\in\lang$ the computation tree has an accepting branch.
 We can make a certificate $\omega$ of the branchings.
-With the certificate a deterministic verifier can retrace $\TM$'s
+With the certificate, a deterministic verifier can retrace $\TM$'s
 accepting branch.
 Because
 the branch's length must be less than the length of the computation,
 $p(|\sigma|)$,
 the certificate will have length less than $p(|\sigma|)$.
 So the verifier~$\TM[V]$ can do the retracing in polynomial time.
+%</pf:VerifierAndGuesserEquivi>
 
+%<*pf:VerifierAndGuesserEquivii>
 For the other direction suppose that the language $\lang$
 is accepted by a verifier~$\TM[V]$ that runs in time
 that is bounded by some polynomial~$p$.
 We will describe a process in guessing terms.
-Given $\sigma\in\kleenestar{\B}$, produce a sequence of $|\sigma|$
+Given $\sigma\in\kleenestar{\B}$, produce a sequence of $|\sigma|$-many
 guesses of branches in the computation tree to make a witness string~$\omega$.
 Use this witness along with $\sigma$ as inputs to $\TM[V]$.
 Because of the verifier step, there is a way for this guessing process to
 succeed if and only if $\sigma\in\lang$.
 Because the verifier runs in polynomial time, the entire process of guessing and
 then verifying does also.
+%</pf:VerifierAndGuesserEquivii>
 \end{proof}
+
 
 Thus, a problem is in NP if and only if we can provide a
 polynomially long proof witness for any
@@ -3648,21 +3639,7 @@ have efficient verifiers: there is a polytime algorithm that,
 given a solution~$\omega$,
 can verify that it is is correct.
 
-Often in mathematics we have a definition that captures the concept, followed 
-by a result that makes the definition easier to work with.
-This is an example.
-While the description of a language as accepted by a polynomial time
-nondeterministic Turing machine is conceptually cleaner, experience shows that
-in practice the verifier description is typically easier.
-The following examples illustrate.
-
-\begin{example}
-The Factorization problem is a member of the
-class~$\compclass{NP}$.
-Given a number~$n\in\N$, we can usee as witness~$\omega$ some 
-$a$ such that $1<a<n$ and $a$ is a factor of~$n$.
-\end{example}
-
+%<*ex:SATIsNP>
 \begin{example}
 The Satisfiability problem is a member of~$\compclass{NP}$.
 Given a propositional logic formula, we can use as a witness~$\omega$
@@ -3671,6 +3648,7 @@ Making a deterministic Turing machine that
 runs in polynomial time that, given the formula and the witness,
 verifies in polynomial time that the formula is satisfied is routine.
 \end{example}
+%</ex:SATIsNP>
 
 \begin{example}
 The Travelling Salesman problem is in the class~$\compclass{NP}$.
@@ -3683,6 +3661,15 @@ the graph and such a witness, verifies that the circuit in this
 graph costs less than the bound. 
 \end{example}
 
+%<*ex:FactorizationIsNP>
+\begin{example}
+The Factorization problem is a member of the
+class~$\compclass{NP}$.
+Given a number~$n\in\N$, we can use as witness~$\omega$ some 
+number $a$ that is a nontrivial factor of~$n$.
+\end{example}
+%</ex:FactorizationIsNP>
+
 \begin{example}
 The Subset Sum problem is in~$\compclass{NP}$.
 Given a set $S$ of numbers and a target sum~$B$,
@@ -3693,15 +3680,14 @@ a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
 and verifies that the subset adds to the target, in polynomial time.
 \end{example}
 
-In summary, we are interested in knowing:~for which problems
+In summary, we are interested in knowing for which problems
 are there relatively good algorithms, and for which are there not.
 Cobham's Thesis identifies problems in~$\P$ with the problems
 that have a good algorithm.
-In this section we considered a class of problems for which
-there is a good way to verify solutions, in contrast with the problems
-for which there is a good algorithm to give a solution.
-
-In the next section we will consider whether the two classes of
+In this section we defined the class of problems for which
+there is a good way to verify a solution, in contrast with the problems
+for which there is a good algorithm to generate a solution.
+In the next section we will consider whether these two classes of
 problems are different.
 
 
@@ -3757,7 +3743,6 @@ Clearly this can be done in polytime.
 \end{answer}
 \end{exercise}
 
-
 \begin{exercise}
 Describe the problem of determining whether a number is odd as the problem
 of deciding membership in a language.
@@ -3775,7 +3760,7 @@ strings in polynomial time.
 
 \begin{exercise}
 True or False: for the
-language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$
+language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$,
 the problem of deciding membership 
 is in $\compclass{NP}$.
 \end{exercise}
@@ -3803,11 +3788,64 @@ Composite problem: given a natural number determine if it is composite.
 \end{exparts}
 \end{exercise}
 
+\begin{exercise}
+The \definend{linear divisibilty problem} inputs $a,b\in\N$ and asks
+if there is an $x\in\N$ with $ax+1=b$.
+Recast it as a decision problem and show it is~$\NP$.
+\begin{answer}
+Here is the recasting, as the decision problem for this language.
+\begin{equation*}
+  \set{\sequence{a,b}\in\N^2\suchthat
+        \text{there exists $x\in\N$ with $ax+1=b$}}
+\end{equation*}
+It is a member of~$\NP$ because we can take the witness to be $\omega=x$.
+Checking that $ax+1=b$ is clearly polynomial.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Recast this as a decision problem and then show it is in~$\NP$:
+\textit{\citetext{We are going to put numbers into boxes.}{%
+    From \autocite{blog:ComputationalComplexityBoxesProblem}.} 
+  If three numbers $x$,$y$, and~$z$ are in a box then it cannot be the case 
+  that any two of them add to the third. 
+  If you put all of the numbers $1,2,\ldots{} n$ into boxes, 
+  what is the smallest number of boxes that you will need?}
+\begin{answer}
+To recast it as a language decision problem we produce a matching language.
+\begin{equation*}
+  \set{\sequence{n,k}\suchthat
+        \text{there is a partition of $\set{1,2,\ldots{} n}$ into at most~$k$ boxes where no two members add to a third}}
+\end{equation*}
+The witness~$\omega$ is the partition, the set of boxes.
+Checking that each box satisfies that no two members add to a third is clearly 
+polytime. 
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Given $n$ points scattered on a line, how far they are from each other
+defines an $n(n+1)/2$-member multiset. 
+(A multiset is a collection where repeated elements do not collapse to be 
+just one element.) 
+The reverse of this problem, starting with the distances and 
+reconstructing the positions, is the \definend{turnpike problem}.
+Recast it as a language decision problem and show it is~$\NP$. 
+\begin{answer}
+This is the equivalent language.
+\begin{equation*}
+  \set{M\suchthat 
+        \text{$M$ is a multiset with $n(n+1)/2$ distances}}
+\end{equation*}
+The witness~$\omega$ is a set of suitable positions.
+\end{answer}
+\end{exercise}
 
 \begin{exercise}
 Is the \HP{} in $\NP$?
 \begin{answer}
-The \HP{} is not decidable so it is not in $\NP$
+The \HP{} is not decidable so it is not in $\NP$.
 \end{answer}
 \end{exercise}
 
@@ -4231,7 +4269,7 @@ Showing that the translation function~$f$ is polytime is routine.
 
 
 % ================================
-\subsection{$\compclass{NP}$ complete}
+\subsection{$\compclass{NP}$ completeness}
 \margingraphic{0.17\textwidth}{complexity/pix/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
 Because $\P\subseteq\NP$, the class $\NP$ contains lots of easy problems,
 ones with a fast algorithm.
@@ -4270,7 +4308,7 @@ We are given a problem $\prob\in\NP$ and we must show that
 $\prob\leq_p\SAT$.
 To show that $\prob$ is reducible to $\SAT$ we must translate
 membership questions for $\prob$ into a Boolean
-formulas, in such a way that the membership answer is `yes' if and
+formulas so that the membership answer is `yes' if and
 only if the formula yields $T$.
 The only thing we know about the problem $\prob$ is that its input
 $\sigma$ is
@@ -5068,8 +5106,7 @@ day in their own research.
 \end{quotation}
 % Viola says, ``The evidence is clear: we have grossly
 % underestimated the reach of efficient computation, in a variety of contexts.''
-
-Knuth has a related but somewhat different take on it \autocite{Knuth}.
+Knuth has a related but somewhat different take, \autocite{Knuth}.
 \begin{quotation}
 Some of my reasoning is admittedly naive: It's hard to believe that
 $\P\neq\NP$ and that so many brilliant people have failed to discover why.
@@ -5099,6 +5136,7 @@ look to settle the question with proof.
 
 
 \begin{exercises}
+\recommended
 \begin{exercise}
 True or false: $\NP$ is a subset of $\NP$~complete, which is a subset of
 $\NP$-hard.
@@ -5110,6 +5148,7 @@ The other one, that ``$\NP$~complete is a subset of $\NP$-hard'' is true.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise} % http://www.cs.princeton.edu/courses/archive/fall02/cos126/exercises/np.html
 Assume that $\P\neq \NP$.
 Which of these can we infer from the fact that the Primality
@@ -5128,6 +5167,7 @@ immediately use it to solve the Travelling Salesman problem.
 \end{exparts*}
 \end{exercise}
 
+\recommended
 \begin{exercise} % See http://www.cs.princeton.edu/courses/archive/fall02/cos126/exercises/np-sol.html
 Suppose $\prob_1\leq_p\prob_0$. 
 For each, decide if it is true or false.
@@ -5181,6 +5221,15 @@ There is not enough information to conclude anything.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}  % https://cs.stackexchange.com/q/1810
+Are there any known problems in $\NP$ and not in $\P$ that aren't $\NP$ 
+complete?
+\begin{answer}
+No, if we knew of a problem in $\NP-\P$ then we'd know that $\P\neq\NP$.
+We don't know that.
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 The difficulty in settling $\P=\NP$ is to get lower
@@ -5224,6 +5273,7 @@ is a long chess game, but not completely out of range.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise} % http://www.cs.princeton.edu/courses/archive/fall02/cos126/exercises/np.html
 The Travelling Salesman Problem is $\NP$~complete.
 From $\P\neq\NP$ which of the following statements could we infer?
@@ -5305,6 +5355,7 @@ membership in the empty language and the full language,
 $\mathcal{P}=\emptyset$ and $\mathcal{P}=\kleenestar{\Sigma}$.
 \end{exercise}
 
+\recommended
 \begin{exercise}
 The Travelling Salesman Problem is $\NP$~complete.
 From $\P\neq\NP$ which of the following statements could we infer?

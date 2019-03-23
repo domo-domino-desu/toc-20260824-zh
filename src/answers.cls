@@ -40,6 +40,11 @@
 \usepackage{etoolbox}
 % \usepackage{trace}  % for debugging
 
+% ========== Bibliography =============
+% biblatex 
+\usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+\addbibresource{computing.bib}
+
 
 % ========== lengths on which others are set =============
 \setlength{\topsep}{8.0pt plus 2.0pt minus 2.0pt}  % bk10.clo has it set to 8pt
@@ -455,9 +460,11 @@
 % carried through to answerbody.tex
 \newcommand{\verified}{\noindent\makebox[0in][r]{\textcolor{Fuchsia}{Verified}\hspace*{0.65in}}}
 
-\renewcommand{\chapter}[1]{\vspace*{0.5in}\begin{center}\Large\textbf{#1}\end{center}\vspace*{0.5in}}
 
-\newcommand{\autocite}[1]{\textbf{#1}}
+\renewcommand{\chapter}[1]{\clearemptydoublepage\vspace*{0.15in}\begin{center}\Large\textbf{#1}\end{center}\vspace*{0.5in}}
+
+
+% \newcommand{\autocite}[1]{\textbf{#1}}
 
 \newcommand{\cref}[1]{REF:~\textit{#1}}
 \newcommand{\Cref}[1]{REF:~\textit{#1}}

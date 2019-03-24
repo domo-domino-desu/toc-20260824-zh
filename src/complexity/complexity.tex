@@ -3555,11 +3555,11 @@ $\TM$ accepts the input $\sequence{\sigma,\omega}$.
 %</def:Verifier>
 
 The definition does not say where the witness~$\omega$ comes from.
-This fits our mental model of a demon providing the
-answer and machine only verifying its correctness.
-(Another way that it fits our model is that there is no requirement of the
-converse:~it does not require that there be a witness to the string not
-being in the language.)
+This fits the model that a demon provides the
+answer and the machine need only verify its correctness.
+(Another way that it fits this model is that there is no requirement of the
+converse:~the definition does not require that there be a witness to a string 
+not being in the language.)
 
 %<*lem:VerifierAndGuesserEquiv>
 \begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
@@ -3630,58 +3630,116 @@ then verifying does also.
 %</pf:VerifierAndGuesserEquivii>
 \end{proof}
 
-
-Thus, a problem is in NP if and only if we can provide a
-polynomially long proof witness for any
-positive solution.
+Thus, a problem is in NP if and only if for any
+positive solution there exists a
+polynomially long proof witness.
 So, one way to think of $\NP$ is that it is the class of problems which
 have efficient verifiers: there is a polytime algorithm that,
 given a solution~$\omega$,
 can verify that it is is correct.
 
+\begin{remark}
+As we have described before, the part of this that is odd on 
+first encounter is the prior paragraph's `there exists'.
+A person with a computing mindset is used to thinking ``how will I 
+find it?''
+But here we are not required to find it; the question instead is
+if we are given it then can we verify that it works, in polytime? 
+\end{remark}
+
+\cref{lem:VerifierAndGuesserEquiv} makes clear that problems are
+language decision problems, and that strictly speaking
+we must express everything as bitstrings. 
+In the following couple of examples we use an over-bar to denote a thing's 
+representation as a bit string.
+For instance, given a number~$n\in\N$ we will  
+write $\bar{n}$ for some reasonably efficient  representation, 
+such as its binary representation.\footnote{%
+  Which representation does not matter much.
+  Here, `reasonable' means it is not so inefficient as to prevent a 
+  polynomial algorithm from working.}
+
 %<*ex:SATIsNP>
 \begin{example}
 The Satisfiability problem is a member of~$\compclass{NP}$.
-Given a propositional logic formula, we can use as a witness~$\omega$
-the line number of an input that satisfies the formula.
-Making a deterministic Turing machine that
-runs in polynomial time that, given the formula and the witness,
-verifies in polynomial time that the formula is satisfied is routine.
+Strictly speaking, we must first recast it as a language recognition
+problem, so consider this language.
+\begin{equation*}
+  \SAT=
+  \set{\bar{F}\in\kleenestar{\B}\suchthat
+    \text{$\bar{F}$ represents a satisfiable propositional logic statement~$F$}}
+\end{equation*}
+Given a propositional logic formula~$F$, we can use as a witness~$\omega$
+the line number of an input that satisfies~$F$.
+We can easily make a deterministic Turing machine that, 
+given the formula and the witness,
+verifies in polytime that the formula is satisfied.
 \end{example}
 %</ex:SATIsNP>
 
+%<*ex:TSPIsNP>
 \begin{example}
-The Travelling Salesman problem is in the class~$\compclass{NP}$.
-Given a graph~$\mathcal{G}$ and a bound~$B$, 
-we could use as a witness a sequence of nodes that
-constitute a circuit of total cost less than the bound
-$\omega=\sequence{v_{i_0},v_{i_1},\ldots v_{i_k}}$.
+Consider the Travelling Salesman problem from \cpageref{ex:TravellingSalesman}.
+As stated it is an optimization problem,
+not a language decision problem.
+To recast it, set a bound~$B\in\N$ and consider this set of bitstrings.
+\begin{equation*}
+  \mathcal{TS}_B=\set{\bar{G}\in\kleenestar{\B}\suchthat
+    \text{$G$ is a weighted graph with a circuit of length less than~$B$}}
+\end{equation*}
+To show this problem is in~$\NP$ we must show that there is a suitable witness.
+We can use as a witness a sequence of nodes 
+$\omega=\sequence{v_{i_0},v_{i_1},\ldots v_{i_k}}$ that
+constitute a circuit of total cost less than the bound.
 We can easily write a deterministic Turing machine that, given
-the graph and such a witness, verifies that the circuit in this
-graph costs less than the bound. 
+a representation of the graph and such a witness, 
+verifies that the circuit in this graph costs less than the bound. 
 \end{example}
+%</ex:TSPIsNP>
+
+The insistence in those examples on expressing things as bitstrings
+is technically correct and according to the definition.
+But it doesn't make anything clearer and 
+in practice authors often pass over the representation stuff.
+Having gone through it a couple of times, 
+we will from now on also pass it over.
 
 %<*ex:FactorizationIsNP>
 \begin{example}
-The Factorization problem is a member of the
-class~$\compclass{NP}$.
-Given a number~$n\in\N$, we can use as witness~$\omega$ some 
-number $a$ that is a nontrivial factor of~$n$.
+The Factorization problem takes as input a number and returns, if
+possible, a nontrivial factor.
+To show it is in~$\NP$ we first recast it as the decision 
+problem of the language
+% \begin{equation*}
+$
+  \lang=\set{n\in\N\suchthat \text{$n$ has a nontrivial factor}}
+$.
+% \end{equation*}
+With that, to determine that $n\in\lang$
+we can use as witness~$\omega$ some 
+number $a$ that is a nontrivial factor of~$n$, since we can
+verify it in polynomial time.
 \end{example}
 %</ex:FactorizationIsNP>
 
 \begin{example}
-The Subset Sum problem is in~$\compclass{NP}$.
-Given a set $S$ of numbers and a target sum~$B$,
-we can use as the witness~$\omega$ a subset of~$S$ whose members add to the
-target.
-Then we can easily write
-a deterministic routine that inputs $\sequence{S,B}$ and $\omega$
-and verifies that the subset adds to the target, in polynomial time.
+Recall the Subset Sum problem:~given a set of numbers $S\subset\N$ 
+and a target sum~$T\in\N$,
+we want to know if at least one subset of~$S$ adds to~$T$.
+Recast it as the decision problem for
+%\begin{equation*}
+$
+  \lang=\set{\sequence{S,T}\suchthat
+     \text{a subset of $S$ totals to $T$}}
+$.
+%\end{equation*}
+As the witness~$\omega$ we can use the subset~$\hat{S}\subseteq S$ 
+whose members add to the target.
+Verifying that the subset adds to the target in polynomial time is easy.
 \end{example}
 
 In summary, we are interested in knowing for which problems
-are there relatively good algorithms, and for which are there not.
+are there relatively good algorithms and for which are there not.
 Cobham's Thesis identifies problems in~$\P$ with the problems
 that have a good algorithm.
 In this section we defined the class of problems for which

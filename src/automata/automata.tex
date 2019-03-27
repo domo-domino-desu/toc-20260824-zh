@@ -3920,7 +3920,7 @@ $h(\sigma\concat\tau)=h(\sigma)\concat h(\tau)$
 
 
 
-\section{Non-regular languages}
+\section{Languages that are not regular}
 Although Finite State machines are finite,
 they can handle arbitrarily long inputs.
 This chapter's first example, the power switch from
@@ -3971,6 +3971,7 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   Suppose that $\lang$ is accepted by the
   Finite State machine~$\FSM$.
   Denote the number of states in $\FSM$ by~$p$.
+  Write $\sigma=\sequence{s_0,\ldots s_k}$.
 
   Finite State machines perform one transition per character 
   so the number of characters in an input string equals the number of 
@@ -3978,25 +3979,33 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   The number of (not necessarily distinct) states that the machine visits 
   is one more than the number of transitions. 
   Thus, in processing an input string~$\sigma$ with at least~$p$ characters
-  the machine must visit some state more than once, by the Pigeonhole 
-  Principle.
+  the machine must visit some state more than once, it must loop, 
+  by the Pigeonhole Principle.
 %</pf:PumpingLemmai>
 
 %<*pf:PumpingLemmaii>
-  Fix such a repeated state~$q$.
-  Suppose that the two substrings of $\sigma$, $\sequence{s_0,\,\ldots s_i}$ and
-  $\sequence{s_0,\,\ldots s_j}$ with $j>i$,
-  both take the machine to that state, meaning that the extended transition 
-  function gives
+  Take~$q$ to be the first such state that is visited a second time.
+  Fix the first two substrings of $\sigma$, $\sequence{s_0,\,\ldots s_i}$ and
+  $\sequence{s_0,\,\ldots s_j}$ with $j>i$, 
+  take the machine to that state, meaning that $j$ is minimal such that
+  the extended transition function gives
   $\extended{\Delta}(\sequence{s_0,\,\ldots s_i})
      =\extended{\Delta}(\sequence{s_0,\,\ldots s_j})
      =q$.
-  Let $\alpha=\sequence{s_0,\,\ldots, s_i}$,
-  let $\beta=\sequence{s_{i+1},\,\ldots s_j}$, and
-  let $\gamma=\sequence{s_{j+1},\,\ldots s_k}$
-  (possibly one or both of $\alpha$ and $\gamma$ is empty).
-  These clearly satisfy conditions~(1) and~(2).
-  For~(3),
+  Take $\alpha$ to be the string that first brings the machine to state~$q$, 
+  namely $\sequence{s_0,\,\ldots, s_i}$
+  Take $\beta$ to be the string that brings the machine around the loop once,
+  $\sequence{s_{i+1},\,\ldots s_j}$. 
+  Finally, take $\gamma$ to be the rest, $\sequence{s_{j+1},\,\ldots s_k}$.
+  (Possibly one or both of $\alpha$ and $\gamma$ is empty.)
+  These strings satisfy conditions~(1) and~(2).
+  (Choosing $q$ to be the first state that has a 
+  second visit guarantees that for instance if the 
+  string~$\sigma$ brings machine around a loop a hundred times then we
+  don't pick an $\alpha$ that includes the first ninety nine loops, and
+  thus is longer than~$p$.)
+
+  For condition~(3),
   \begin{equation*}
     \alpha\concat\gamma=\sequence{s_0,\,\ldots s_i,s_{j+1},\,\ldots s_k}
   \end{equation*}
@@ -4005,7 +4014,7 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   That is,
   $\extended{\Delta}(\alpha\gamma)=\extended{\Delta}(\alpha\beta\gamma)$
   is an accepting state.
-  The other strings given in condition~(2) are similar.
+  The other strings given in~(3) are similar.
   For instance, for
   \begin{equation*}
     \alpha\concat\beta^2\concat\gamma
@@ -4361,7 +4370,7 @@ One of these is regular and one is not.
 Which is which?
 Of course, you must prove your assertions.
 \begin{exparts}
-\item $\set{\str{a}^n\str{b}^m\in\kleenestar{\set{\str{a},\str{b}}}\suchthat n,m\in\N}$
+\item $\set{\str{a}^n\str{b}^m\in\kleenestar{\set{\str{a},\str{b}}}\suchthat n=m^2}$
 \item $\set{\str{a}^n\str{b}^m\in\kleenestar{\set{\str{a},\str{b}}}\suchthat 3<m,n}$
 \end{exparts}
 \end{exercise}
@@ -4375,8 +4384,9 @@ is not regular.
 \end{exercise}
 
 \begin{exercise}
-Is this language regular or not:
-$\set{\sigma\in\kleenestar{\B} \suchthat \sigma=\alpha\beta\reversal{\alpha}}$?
+Is this 
+$\set{\sigma\in\kleenestar{\B} \suchthat 
+  \text{$\sigma=\alpha\beta\reversal{\alpha}$ for $\alpha,\beta\in\kleenestar{\B}$}}$ regular?
 Either way, prove it.
 \begin{answer} % David Richerby https://cs.stackexchange.com/a/97885/67754
 The language is regular.
@@ -4394,14 +4404,11 @@ is not regular.
 \end{exercise}  
   
 \begin{exercise}
-One of these is regular, one is not.
+One of these is regular, one is not:
+$\set{\str{0}^m\str{1}\str{0}^n\suchthat m,n\in\N}$ and
+$\set{\str{0}^n\str{1}\str{0}^n\suchthat n\in\N}$.
 Which is which?
 Of course, you must prove your assertions.
-\begin{equation*}
-\set{\str{0}^m\str{1}\str{0}^n\suchthat m,n\in\N}
-\qquad
-\set{\str{0}^n\str{1}\str{0}^n\suchthat n\in\N}
-\end{equation*}
 \end{exercise}
 
 \recommended
@@ -4476,18 +4483,19 @@ We need that $\lh{\alpha\beta}\leq 4$, that $\lh{\beta}>0$, and that the
 strings $\alpha\gamma$, $\alpha\beta^2\gamma$, $\alpha\beta^3\gamma$, \ldots{}
 are members of~$\lang$.
 \begin{exparts}
-\item $\alpha=\emptystring$, $\beta=str{a}$, and~$\gamma=\str{bbb}$
-\item $\alpha=\emptystring$, $\beta=str{b}$, and~$\gamma=\str{b}^{14}$
+\item $\alpha=\emptystring$, $\beta=\str{a}$, and~$\gamma=\str{bbb}$
+\item $\alpha=\emptystring$, $\beta=\str{b}$, and~$\gamma=\str{b}^{14}$
 \end{exparts}
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Rebut someone who says to you, 
-``Look at the machine in this section's introduction
-on \cpageref{discussion:FSMLooping}.
-Sure, a single loop will cause $\sigma=\alpha\concat\beta\concat\gamma$, 
-but if you had a double
+``Sure, for the machine in the introduction
+on \cpageref{discussion:FSMLooping},
+a single loop will cause $\sigma=\alpha\concat\beta\concat\gamma$.
+But if you had a double
 loop like below then you need a longer decomposition.''
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa51.pdf}
@@ -4498,12 +4506,29 @@ there is at least one loop and
 it then reasons with that loop.
 It doesn't rely on there being no later loop.
 
-More explicitly, we can connect the decomposition 
-$\alpha\concat\beta\concat\gamma$ with the given double loop diagram.
-Associate $\alpha$ with the run up to the first loop, so $\alpha=\str{a}$.
-Associate $\beta$ with the first loop, so $\beta=\str{abb}$.
-And make $\gamma$ be what it takes to bring the machine to the 
-accepting state, either $\gamma=\str{abbbaa}$ or $\gamma=\str{aba}$.
+More explicitly, the Pumping Lemma says that we can take the pumping length
+to be the number of states in any machine that accepts the language.
+So set $p=9$.
+If $\sigma=\str{aabbabbaba}$ then because $\lh{\sigma}\geq p$ and 
+$\sigma\in\lang$, we know there is a decomposition satisfing the three
+conditions.  
+One such is $\alpha=\str{a}$, $\beta=\str{abbabb}$, and~$\gamma=\str{aba}$.
+Checking that (1)~$\lh{\alpha\beta}\leq p$, that (2)~$\beta\neq\emptystring$,
+and (3)~the strings $\alpha\gamma$, $\alpha\beta^2\gamma$, \ldots{} are all
+members of~$\lang$.
+
+If $\sigma=\str{a}(\str{abb})^{200}\str{aba}$ then again 
+because $\lh{\sigma}\geq p$ and $\sigma\in\lang$, 
+we know there is a decomposition satisfing the three conditions.  
+One such is $\alpha=\str{a}$, $\beta=\str{abb}$, 
+and~$\gamma=(\str{abb})^{199}\str{aba}$.
+Checking the three conditions is routine.
+
+Finally, if $\sigma=\str{aabbbabbaa}$ then
+we can take $\alpha=\str{aab}$, $\beta=\str{bbabba}$, and~$\gamma=\str{a}$.
+Or, we could instead take 
+$\alpha=\str{aab}$, $\beta=\str{bba}$, and~$\gamma=\str{bbaa}$.
+Again, checking the three conditions is routine.
 \end{answer}
 \end{exercise}
 

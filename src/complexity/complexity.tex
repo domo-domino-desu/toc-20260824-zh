@@ -2959,7 +2959,7 @@ experience, argues that it is so.
 % This mindset has the advantage of uniformity:~we can stick to bit strings
 % and not worry that we are missing out. 
 
-With that, having observed the need for representations  
+However, having observed the need for representations  
 and that we will use bit strings,
 from now on we will usually not mention it.
 We will usually leave
@@ -2983,6 +2983,7 @@ A second type
 is the \definend{optimization problem}, which look for the 
 best solution according to some metric.
 The Shortest Path problem is of this type.
+So is the Minimal Spanning Tree problem.
 
 Another type is a \definend{search problem}.
 Here, while there may be many
@@ -2990,8 +2991,9 @@ instances in the search space, we stop when we have found any one.
 An example is the problem, 
 ``Given a weighted graph, and two vertices, and a bound $B\in\N$,
 find a path between the vertices that costs less than the bound.'' 
-Another example is that of finding a $k$-coloring for a graph; there
+Another example is that of finding a $B$-coloring for a graph; there
 may be many colorings but we just want one.
+Two more are the Knapsack problem and the Subset Sum problem.
 
 A  problem with a `Yes' or `No' answer is a \definend{decision problem}.
 The first problem we saw, the 
@@ -3000,13 +3002,12 @@ is one of these.\footnote{%
   Recall that the word is German for ``decision problem''
   and that it asks for an algorithm to decide, given a mathematical statement,
   whether the statement is true or false.}
-Another is the problem of deciding whether a given natural number is prime.
+Another is the problem of deciding whether a given natural number is prime,
+and another is the Clique problem.
 We have also seen decision problems 
 in conjunction with the \HP{}, such as the problem of
-determining, given an index~$e$, whether $\TMfcn_e$ will for any input
-output a seven.
-% \citetext{In short, Decision:~Is there a needle in the haystack? Search:~Find it.}{%
-%   \autocite{blog:ComputationalComplexityDecisionVsSearch}}
+determining, given an index~$e$, whether $\TMfcn_e$ will 
+output a seven for any input.
 
 Although a decision problem calls for producing a function of a kind,
 a Boolean function,
@@ -3024,87 +3025,85 @@ way is natural, as we saw with the \HP.
 Often a decision problem is expressed as a
 \definend{language recognition problem},
 where we are given some $\lang$ and asked for an algorithm to
-decide if the given input is a member of the language.
-An example is the problem, given an input string,
-of determining membership in 
-$\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma$ starts with \str{a} and contains at least two \str{b}'s}}$.
-Another example is that we can express the problem of determining
-whether~$d$ divides~$n$
-by asking about membership of the pair $\sequence{d,n}$ in the language
-$\lang=\set{\sequence{a,b}\in\N^2\suchthat \text{$a$ divides $b$}}$.
+decide if an input is a member of the language.
+We did lots of these in the Automata chapter, such as 
+deciding if an input string is a member of  
+$\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma$ contains at least two \str{b}'s}}$.
 Part of our interest in problems of language membership
 arises from practice; for instance, a language complier must recognize whether
 a given source file is a member of the language.
 
-from this point forward we typically take `problem'
+From this point forward we typically take `problem'
 to mean a decision problem for a language.
+(We will be sloppy about the distinction between the
+decision problem for a language and the language itself; for instance, we
+often use the letter $\prob$ for a problem.)
 Often we will take problems discussed earlier and 
 recast them in language decision terms.
 
 \begin{example}
 Recall the Satisfiability problem, $\SAT$. 
-The input is a propositional logic formula such as this.
-\begin{equation*}
-  f(P,Q,R)=(P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
-  \wedge (\neg P\vee \neg Q\vee \neg R) % \wedge (\neg P\vee R)
-\end{equation*}
-The problem is to decide if the formula is ever true, if there
-exists an assignment of $T$ or~$F$ to the variables so that $f(P,Q,R)=T$.
-We can recast that as the decision problem for this language.
-\begin{equation*}
+As stated, it is a yes-or-no decision problem.
+We can recast it as the problem of determining membership in the language
+$
   \SAT=
-  \set{\bar{F}\in\kleenestar{\B}\suchthat
-    \text{$\bar{F}$ represents a satisfiable propositional logic statement~$F$}}
-\end{equation*}
+  \set{F\suchthat
+    \text{$F$ is a satisfiable propositional logic statement}}
+$
 \end{example}
 
 \begin{example}
-Consider the Travelling Salesman problem from \cpageref{ex:TravellingSalesman}.
-As stated it is an optimization problem,
-not a language decision problem.
-To recast it, set as a parameter a bound~$B\in\N$, and
-consider this set of bitstrings.
+Similarly, we can recast the problem of determining whether a given number 
+is prime to the problem of determining whether a given representation of~$n$
+is a member of 
+$\set{r\in\kleenestar{\B}\suchthat \text{$r$ represents a prime number}}$.
+\end{example}
+
+Those recastings are trivial.
+For optimization problems it is less straightforward but 
+there is a standard trick to convert it to a language decision problem.
+
+\begin{example}
+The Travelling Salesman problem, as stated, is an optimization problem.
+To recast it as a language decision problem, 
+set a bound~$B\in\N$ and consider this set of bit strings.
 \begin{equation*}
-  \mathcal{TS}_B=\set{\bar{G}\in\kleenestar{\B}\suchthat
-    \text{$G$ is a weighted graph with a circuit of length less than~$B$}}
+  \TS_B=\set{\mathcal{G}\suchthat
+    \text{$\mathcal{G}$ is a weighted graph with a circuit of length less than~$B$}}
 \end{equation*}
-We are recasting the optimization as a series of language decision problems.
-Given a weighted graph~$\mathcal{G}$, 
+Now, given a weighted graph~$\mathcal{G}$, 
 to find the least integer for which there is a circuit
 we can ask if $G$ is a member of~$\mathcal{TS}_1$, if it is a member 
 of~$\mathcal{TS}_2$, etc.\@
 When we find a $B$ then that gives the length of the shortest circuit.
+This rewords the optimization as a sequence of language decision problems.
 \end{example}
 
+\begin{example}
+Similarly, to find a minimal graph coloring for a given graph,
+define
+$\lang_B=\set{\mathcal{G}\suchthat \text{$\mathcal{G}$ has a $B$-coloring}}$
+where $B\in\N$.
+Then to solve the optimization problem we can 
+test whether a given graph has a $B=1$-coloring, 
+a $B=2$-coloring, etc.\@
+\end{example}
 
+% Is limiting ourselves to language decision problems too restricitve?
+% Consider the problem of finding integer roots for a polynomial.
+% The function problem that starts with a polynomial and returns a
+% root, if any, intuitively seems slower than the problem of verifying
+% that a pair $\sequence{p,r}$ is in the language
+% $\set{\sequence{p,r}\suchthat p(r)=0}$.
+% However, we will consider classes
+% of problems that are closed under the difference, in that if  
+% a fast way to solve the decision problem is in the class then
+% we can translate it to 
+% a fast way to solve the function problem, and vice versa.
 
-Consider the function problem that is given $n\in\N$
-and finds its prime factors.
-Informallly we still think of it in the same way, but in formally
-stating results, from here on 
-we will take it to be 
-the problem of deciding membership in
-$\set{\sigma=\str{1}^n0\str{1}^{p_0}\cdots 0\str{1}^{p_{k-1}}\in\kleenestar{\B}\suchthat\text{$p_0$, \ldots{} $p_{k-1}$ are the prime factors of $n$}}$.
-% Thus, we take the problem of deciding whether a
-% number is composite to be, formally,
-% the problem of computing membership in the language
-% $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number in binary}}$.
-(We will be sloppy about the distinction between the
-decision problem for a language and the language itself; for instance, we
-often use the letter $\prob$ for a problem.)
-
-Is limiting ourselves to language decision problems too restricitve?
-Consider the problem of finding integer roots for a
-polynomial.
-The function problem that starts with a polynomial and returns a
-root, if any, intuitively seems slower than the problem of verifying
-that a pair $\sequence{p,r}$ is in the language
-$\set{\sequence{p,r}\suchthat p(r)=0}$.
-However, we will consider classes
-of problems that are closed under the difference, in that if  
-a fast way to solve the decision problem is in the class then
-we can translate it to 
-a fast way to solve the function problem, and vice versa.
+In summary, we are thinking of problems as language recognition problems,
+and as all the work happening with bit strings.
+So we can rework the informal idea of `problem' in this way.
 
 %<*def:Problem>
 \begin{definition}
@@ -3112,19 +3111,12 @@ A \definend{problem} is a language decision problem.
 \end{definition}
 %</def:Problem>
 
-\begin{TODO}
-Recast problems as language decision problems.
-\end{TODO}
 
 \begin{fig}[fig:BeanOfProblems]{The bean encloses all problems.
   Since a problem is a decision problem for a language, this is basically
   the set of languages.
-  The ones with a fast
-  algorithm are at the bottom.
-  (We have previously shown this set as an undifferentiated rectangular
-  collection but this chapter has it with a partial top-to-bottom
-  ordering because we are saying how we
-  consider some to be harder than others.)}
+  We can imagine that the ones with a fast algorithm are at the bottom, and 
+  then we move to toward problems whose best algorihtm is slow at the top.}
   \setlength{\unitlength}{1cm}
   \begin{picture}(0,0)
     \put(0,0.8){\makebox[0cm][r]{\small The set $\kleenestar{\B}$:}}
@@ -3136,45 +3128,13 @@ Recast problems as language decision problems.
 \end{fig}
 
 Because we are isolating language decision problems,
-we will also adjust our Turing machines.
+we sometimes also find it convenient to our Turing machines.
 They now come with a subset of accepting states
 and we define that such a machine solves a problem
 if it halts on all inputs~$\sigma\in\kleenestar{\B}$,
 and when it does halt it is in an accepting state 
 exactly if $\sigma$ is in
 the language.
-% (This does not violate our understanding from the Halting Problem because
-% if there is no such machine then just by definition,
-% the problem isn't solved.)
-
-
-
-Search problems and decision problems are related.
-For one, if you can solve a search problem then you can solve the
-associated decision problem quickly.
-For instance, consider 
-the search problem that takes in a string~$\sigma$ and a substring~$\tau$,
-returns the starting index of $\tau$ in~$\sigma$ if it is there, 
-and returns $0$ if not.
-The associated decision problem just asks if $\tau$ is a substring of~$\sigma$,
-yes or no.
-Well, if you can solve the first then you can use it to instantly 
-solve the second.
-
-What about the other direction?
-Suppose that you could quickly solve the decision problem.
-Then to solve the search problem you could look at the initial segments
-of~$\sigma$: the initial substring of length~$0$, the initial substring
-of length~$1$, etc., and apply the decision problem to each in turn.
-That is, if we can solve the decision problem quickly then
-we can use it to solve the search problem, but with some overhead.
-
-But while the differences between two categories of problems can seem small,
-they are subtle.
-Here is an example:~we can quickly determine whether a number has
-nontrivial factors, which is  a decision problem,
-but we don't know at this time how to quickly solve the search
-problem of finding any factors.
 
 
 \begin{exercises}

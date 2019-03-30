@@ -234,12 +234,8 @@ consumption is polynomial.
 
 
 % =============================================================
-\section{Drivers}
+\section{Problems drive developments}
 \begin{frame}{Problems}
-\ExecuteMetaData[\catchfilefn]{def:Problem}
-\ExecuteMetaData[\catchfilefn]{def:ComplexityClass}
-
-\pause
 \ExecuteMetaData[\catchfilefn]{problem:HamiltonianProblem}
 \begin{example}
 The graph on the left has no Hamiltonian circuit.
@@ -362,6 +358,8 @@ Is $\varphi=(P\vee Q\vee R)\wedge(\neg P\vee\neg Q\vee R)\wedge(P\vee\neg Q\vee 
 
 
 \begin{frame}{Problems: graphs}
+\ExecuteMetaData[\catchfilefn]{prob:reachability}
+
 \ExecuteMetaData[\catchfilefn]{prob:minspanningtree}
 
 \ExecuteMetaData[\catchfilefn]{prob:VertexCover}
@@ -422,9 +420,99 @@ $\bigOh(n^6)$.
 
 
 % ===================================================
-\section{Polynomial time}
+\section{Reflections on problems}
+
+\begin{frame}{Problems, algorithms, and programs}
+\ExecuteMetaData[\catchfilefn]{discussion:Problem}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{discussion:Algorithm}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{discussion:Program}
+\end{frame}
+
+
+\begin{frame}{Representations}
+We shall assume that all of the input and output for our
+algorithms is in some reasonably 
+efficient representation in bit strings.
+
+Thus, we shall understand ``given two numbers $n_0,n_1\in\N$'' to mean
+`given the bit string representation of two numbers'.
+And 
+we shall take ``let $\mathcal{G}$ be a graph'' to mean
+`given a reasonably efficient representation of a graph~$\mathcal{G}$'.
+
+Having observed that, we will from now on usually ignore it.
+\end{frame}
+
+
+\begin{frame}{Types of problems}
+\begin{itemize}
+\item A \alert{function problem}.
+   asks that the algorithm have a single output for each input.
+\item An \alert{optimization problem}, which look for the 
+  best solution according to some metric.
+\item With a \alert{search problem}, while there may be many
+  solutions in the search space, we stop when we have found any one.
+\item A \definend{decision problem} has a `Yes' or `No' answer.
+\item Often a decision problem is expressed as a
+   \alert{language recognition problem},
+   where we are given some language and asked for an algorithm to
+   decide if an input is a member of that language.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Problems, classes}
+In this chapter, usually \alert{problem}
+means a decision problem for a language.
+Often, we will recast problem statements into language decision terms.
+
+\begin{example}
+The Subset Sum problem is `given a set~$S$ of numbers 
+and a target number~$T$, decide if a subset adds to the target'.
+We can recast it as the problem of deciding membership in this language.
+\begin{equation*}
+  \lang=\set{\sequence{S,t}\suchthat \text{A subset of $S$ adds to~$t$}}
+       =\set{\sequence{\set{19,21,52,106},40},\ldots}
+\end{equation*}
+\end{example}
+
+\begin{example}
+Consider the problem `given a graph and two vertices in the graph, decide if
+there is a path between the two'.
+Recast it as a decision problem for this language.
+\begin{equation*}
+  \lang=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat
+    \text{there is a path in~$\mathcal{G}$ between the vertices $v$ and~$\hat{v}$}}
+\end{equation*}
+\end{example}
+
+\begin{example}
+To recast the Shortest Path problem, set a bound~$B\in\N$ and consider this
+language.
+\begin{equation*}
+  \lang_B=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat
+               \text{there is a path between the vertices of length bounded by~$B$}}
+\end{equation*}
+To find the shortest path, see if there is a $B=1$ path, then see if there
+is a $B=2$ path, etc. 
+\end{example}
+
+\ExecuteMetaData[\catchfilefn]{def:ComplexityClass}
+\end{frame}
+
+
+
+
+% ===================================================
+\section{Complexity classes}
 
 \begin{frame}{$\P$}
+
+\pause
 \ExecuteMetaData[\catchfilefn]{def:P}
 
 Here are some languages whose decision problems are in~$\P$:\begin{parenum}
@@ -437,12 +525,12 @@ $\lang_3=\set{\sequence{A,B,C}\suchthat\text{the matrices are such that $AB=C$}}
 \item the language of primes
 $\lang_4=\set{\str{1}^k\suchthat\text{$k$ is prime}}$,
 \item the language of reachable nodes
-$\lang_5=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat\text{graph $\mathcal{G}$ has a path from $v\hat{v}$}}$.  
+$\lang_5=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat\text{graph $\mathcal{G}$ has a path $v\hat{v}$}}$.  
 \end{parenum}
 
 \pause
 In this illustration, the bean encloses all 
-all decision problems, for $\lang\subseteq\kleenestar{\B}$.
+all decision problems $\lang\subseteq\kleenestar{\B}$.
 Shaded is the class~$\P$.
 The shading is in layers because
 $\P$ contains problems such that there is a solution algorithm  
@@ -529,7 +617,7 @@ is zero, or one, or more.
 Recall also that we have two models of how these devices operate.
 In the first, the machine's computation history is a tree and it
 simultaneously computes all branches.
-That is, we can picture the machine as unboundedly parallel.
+That is, we picture the machine as unboundedly parallel.
 
 In the second model the machine guesses which next state to follow,
 or is told which next state to follow by a demon, and
@@ -652,7 +740,7 @@ that works, a witness~$\omega$ is such a sequence.
 \ExecuteMetaData[\catchfilefn]{pf:PolytimeReductionTrans}
 
 Here the bean encloses all problems, all subsets of $\kleenestar{\B}$.
-The ones with fast algorithms are at the bottom.
+The easy ones, the ones with fast algorithms, are at the bottom.
 Problems are connected if the one underneath reduces to the one above.
 \begin{center}
   \hspace*{-2em}
@@ -662,6 +750,196 @@ Problems are connected if the one underneath reduces to the one above.
 \end{center}
 \end{frame}
 
+\begin{frame}{Example: $\text{Graph Colorability}\leq_p\SAT$}
+We will sketch an argument
+that $\text{Graph Colorability}\leq_p\SAT$.
+We'll go through the $k=3$ construction; other $k$'s go the same way.
+
+\ExecuteMetaData[\catchfilefn]{ex:ColorabilityLeqSATi}
+\begin{center}
+  \includegraphics{../../complexity/asy/complexity/complexity01.pdf}
+\end{center}
+\ExecuteMetaData[\catchfilefn]{ex:ColorabilityLeqSATii}
+\end{frame}
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{ex:ColorabilityLeqSATiii}
+\end{frame}
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{ex:ColorabilityLeqSATiv}
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/problems/problems23.pdf}}
+  \hspace{1.5em}
+  \begin{minipage}{3.25in}\small
+    \begin{multline*}
+      S=(a_0\vee b_0 \vee c_0)\wedge  
+      (a_1\vee b_1 \vee c_1)\wedge  
+      (a_2\vee b_2 \vee c_2)\wedge  
+      (a_3\vee b_3 \vee c_3)             \\
+      \begin{split}
+        &\wedge (\neg a_0\vee\neg a_1)
+               \wedge (\neg b_0\vee\neg b_1)
+               \wedge (\neg c_0\vee\neg c_1)   \\
+             &\wedge (\neg a_0\vee\neg a_3)
+               \wedge (\neg b_0\vee\neg b_3)
+               \wedge (\neg c_0\vee\neg c_3)   \\
+             &\wedge (\neg a_1\vee\neg a_2)
+               \wedge (\neg b_1\vee\neg b_2)
+               \wedge (\neg c_1\vee\neg c_2)   \\
+             &\wedge (\neg a_1\vee\neg a_3)
+               \wedge (\neg b_1\vee\neg b_3)
+               \wedge (\neg c_1\vee\neg c_3)  
+      \end{split}
+    \end{multline*}
+  \end{minipage}  
+\end{center}
+\ExecuteMetaData[\catchfilefn]{ex:ColorabilityLeqSATv}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{ex:ColorabilityLeqSATvi}
+
+\ExecuteMetaData[\catchfilefn]{ex:ColorabilityLeqSATvii}
+\end{frame}
+
+\begin{frame}{Example: $\SAT\leq_p\text{Clique}$}
+\ExecuteMetaData[\catchfilefn]{ex:SATLeqCliquei}
+\begin{center}
+  \includegraphics{../../complexity/asy/complexity/complexity03.pdf}
+\end{center}
+\ExecuteMetaData[\catchfilefn]{ex:SATLeqCliqueii}
+\end{frame}
+
+
+
+% ===================================================
+\section{$\protect\compclass{NP}$ completeness}
+
+\begin{frame}{The Cook-Levin theorem}
+\ExecuteMetaData[\catchfilefn]{th:CookLevin}
+
+\ExecuteMetaData[\catchfilefn]{pf:CookLevini}
+
+\ExecuteMetaData[\catchfilefn]{pf:CookLevinii}
+\end{frame}
+
+\begin{frame}{Hardness}
+\ExecuteMetaData[\catchfilefn]{def:Hard}
+
+\ExecuteMetaData[\catchfilefn]{def:NPHard}
+\end{frame}
+
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{lem:NPCompleteIsTransitive}
+
+The proof is an exercise.
+
+\pause
+This shows all problems,
+  the collection of all $\lang\in\kleenestar{\B}$.
+  In the bottom right is~$\NP$, drawn with $\P$ as
+  a strict subset (although we don't know that is true).
+  In the top right, shaded, are the $\NP$-hard problems.
+  The highlighted intersection of the two
+  is the set of $\NP$ complete problems.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/pnp/pnp06.pdf}}
+\end{center}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{discussion:KarpsProblems}
+\end{frame}
+
+\begin{frame}{Garey \& Johnson's key $\NP$ complete problems}
+\ExecuteMetaData[\catchfilefn]{th:GJNPCompleteProblems}
+\end{frame}
+
+
+\begin{frame}{Travelling Salesman is $\NP$-complete}
+\begin{example}
+\ExecuteMetaData[\catchfilefn]{ex:TSIsNPComplete}
+\end{example}
+\end{frame}
+
+
+\begin{frame}{Knapsack is $\NP$-complete}
+\ExecuteMetaData[\catchfilefn]{ex:KnapsackIsNPComplete}
+\end{frame}
+
+
+\begin{frame}{$\EXP$}
+\ExecuteMetaData[\catchfilefn]{def:EXP}
+
+\ExecuteMetaData[\catchfilefn]{discussion:EXP}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{lem:PSubNPSubEXP}
+
+\ExecuteMetaData[\catchfilefn]{pf:PSubNPSubEXP}
+\end{frame}
+
+\begin{frame}{Dunno}
+We don't know whether there are any $\compclass{NP}$ problems that
+absolutely require exponential time.
+Conceivably $\compclass{NP}$ is contained in a smaller determinstic
+time complexity class\Dash maybe the Satisfiability problem, for instance,
+can be solved in less than exponential time.
+But we just don't know.
+
+Here the bean encloses all problems.
+   Shaded are the three classes $\P$, $\NP$, and $\EXP$, with
+   $\EXP$'s outline highlighted.
+   They are drawn with strict containment, which most experts guess
+   is the true arrangement, but no one knows for sure.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/pnp/pnp07.pdf}}
+\end{center}
+\end{frame}
+
+
+
+% ========================================
+% \section{?$\P=\NP$?}
+
+\begin{frame}{?$\P=\NP$?}
+Every deterministic Turing machine is trivially a nondeterministic machine,
+and so $\P\subseteq\NP$.
+What about the other direction:~can unbounded parallelism bring problems
+from super-polynomial to polynomial?
+
+The short answer is that no one knows.
+We do not know which of these two is right.
+\begin{center}
+  % \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  % \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/pnp/pnp04.pdf}}
+  \hspace{5em}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/pnp/pnp05.pdf}}
+\end{center}
+\end{frame}
+
+\begin{frame}{Discussion}
+\ExecuteMetaData[\catchfilefn]{discussion:PvsNPi}
+
+\ExecuteMetaData[\catchfilefn]{discussion:PvsNPii}
+\end{frame}
+
+\begin{frame}{The dominant view}
+\ExecuteMetaData[\catchfilefn]{discussion:PvsNPiii}
+\end{frame}
+
+\begin{frame}{The contrarian view}
+\ExecuteMetaData[\catchfilefn]{discussion:PvsNPiv}
+\end{frame}
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{discussion:PvsNPv}
+\end{frame}
 \end{document}
 
 

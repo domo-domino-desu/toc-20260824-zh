@@ -1510,6 +1510,65 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Kevin Bacon =============
+
+int picnum = 24;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node kevinbacon=nbox("\scriptsize Kevin Bacon",ns_noborder),
+  edasner=nbox("\scriptsize Ed Asner",ns_noborder),
+  elvispresley=nbox("\scriptsize Elvis Presley",ns_noborder),
+  merylstreep=nbox("\scriptsize Meryl Streep",ns_noborder),
+  alecbaldwin=nbox("\scriptsize Alec Baldwin",ns_noborder),
+  johnkennedy=nbox("\scriptsize John Kennedy",ns_noborder),
+  andiemacdowell=nbox("\scriptsize Andie MacDowell",ns_noborder),
+  jayosanders=nbox("\scriptsize Jay O Sanders",ns_noborder),
+  taraoreilley=nbox("\scriptsize Tara O'Reilley",ns_noborder),
+  jimhefferon=nbox("\scriptsize Jim Hef{}feron",ns_noborder);
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+hlayout(4.0*u, kevinbacon, alecbaldwin);
+layout(280.0, 1.5*v, alecbaldwin, johnkennedy);
+layout(165.0, 2.0*u, kevinbacon, edasner, elvispresley);
+layout(35.0, 2.0*v, kevinbacon, merylstreep);
+layout(310.0, 1.5*u, kevinbacon, andiemacdowell);
+layout(190.0, 2.0*u, kevinbacon, jayosanders);
+layout(190.0, 2.5*u, jayosanders, taraoreilley);
+vlayout(0.85*v, taraoreilley, jimhefferon);
+
+// draw edges
+draw(pic,
+     (kevinbacon--edasner).l("\tiny JFK"),
+     (edasner--elvispresley).l(Label("\tiny \hspace*{2em} Change of Habit",Relative(0.15))),
+     (kevinbacon--merylstreep).l(Label("\tiny \hspace*{1em}The River Wild",Relative(0.75))),
+     (kevinbacon--alecbaldwin).l("\tiny She's Having a Baby"),
+     (alecbaldwin--johnkennedy).l("\tiny Cats \& Dogs"),
+     (kevinbacon--andiemacdowell).l("\tiny Beauty Shop"),
+     (kevinbacon--jayosanders).l("\tiny JFK"),
+     (jayosanders--taraoreilley).l(Label("\tiny Northern Borders\hspace*{2.5em}",Relative(0.85))),
+     (taraoreilley--jimhefferon).l("\tiny Shout It Out!").style("leftside")
+);
+
+// draw nodes, after edges
+draw(pic,
+     kevinbacon,
+     edasner, elvispresley,
+     merylstreep,
+     alecbaldwin,johnkennedy,
+     andiemacdowell,
+     jayosanders, taraoreilley, jimhefferon);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 
 

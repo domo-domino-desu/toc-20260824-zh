@@ -1568,6 +1568,130 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Constellations =============
+
+int picnum = 25;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+// calculate nodes position
+real u=28.0cm;
+real v=u;
+defaultlayoutskip=u;
+
+// declination_to_radius  convert star location to polar coord radius
+real declination_to_radius(real dec, real decmins, real decsecs) {
+  real d = dec + (decmins/60) + (decsecs/(60*60));
+  return (90-d)/180; }
+
+real PI = 3.14159265359;
+// ra_to_theta  convert star right ascension to polar coord angle
+real ra_to_theta(real hrs, real ramins, real rasecs) {
+  return ( (hrs/24)+(ramins/(24*60))+(rasecs/(24*60*60)) )*2*PI; }
+
+real ROTATION_ANGLE = 30;
+pair star_to_rectangular(real hrs, real ramins, real rasecs, real dec, real decmins, real decsecs) {
+  real theta = ra_to_theta(hrs, ramins, rasecs);
+  real r = declination_to_radius(dec, decmins, decsecs);
+  real x = r*cos(theta);
+  real y = r*sin(theta);
+  return rotate(ROTATION_ANGLE)*(x*u, y*v);
+}
+
+node ursaminoralpha=ncircle("\tiny $\alpha$");
+node ursaminorbeta=ncircle("\tiny $\beta$");
+node ursaminorgamma=ncircle("\tiny $\gamma$");
+node ursaminordelta=ncircle("\tiny $\delta$");
+node ursaminorepsilon=ncircle("\tiny $\epsilon$");
+node ursaminoreta=ncircle("\tiny $\eta$");
+node ursaminorzeta=ncircle("\tiny $\zeta$");
+node dracoalpha=ncircle("\tiny $\alpha$",ns_light);
+node dracobeta=ncircle("\tiny $\beta$",ns_light);
+node dracodelta=ncircle("\tiny $\delta$",ns_light);
+node dracogamma=ncircle("\tiny $\gamma$",ns_light);
+node dracoepsilon=ncircle("\tiny $\epsilon$",ns_light);
+node dracozeta=ncircle("\tiny $\zeta$",ns_light);
+node dracoeta=ncircle("\tiny $\eta$",ns_light);
+// node dracotheta=ncircle("\tiny $\theta$",ns_light);
+node dracoiota=ncircle("\tiny $\iota$",ns_light);
+node dracokappa=ncircle("\tiny $\kappa$",ns_light);
+node dracolambda=ncircle("\tiny $\lambda$",ns_light);
+node dracoxi=ncircle("\tiny $\xi$",ns_light);
+node dracochi=ncircle("\tiny $\chi$",ns_light);
+
+
+ursaminoralpha.pos = star_to_rectangular(2, 31, 48.7, 89, 15, 51);
+ursaminorbeta.pos = star_to_rectangular(14, 50, 42.3, 74, 9, 20);
+ursaminorgamma.pos = star_to_rectangular(15, 20, 43.3, 71, 50, 2);
+ursaminordelta.pos = star_to_rectangular(17, 32, 12.9, 86, 35, 11);
+ursaminorepsilon.pos = star_to_rectangular(16, 45, 58.2, 82, 2, 14);
+ursaminoreta.pos = star_to_rectangular(16, 17, 30.3, 75, 45, 19.1);
+ursaminorzeta.pos = star_to_rectangular(15, 44, 3.5, 77, 47, 40.1);
+dracoalpha.pos = star_to_rectangular(14, 4, 23, 64, 22, 33);
+dracobeta.pos = star_to_rectangular(17, 30, 26, 52, 18, 5);
+dracodelta.pos = star_to_rectangular(19, 12, 33, 67, 39, 41);
+dracogamma.pos = star_to_rectangular(17, 56, 36, 51, 29, 20);
+dracoepsilon.pos = star_to_rectangular(19, 48, 10, 70, 16, 4);
+dracozeta.pos = star_to_rectangular(17, 8, 47, 65, 42, 53);
+dracoeta.pos = star_to_rectangular(16, 23, 59, 61, 30, 50);
+// dracotheta.pos = star_to_rectangular(, , , , , );
+dracoiota.pos = star_to_rectangular(15, 24, 56, 58, 57, 58);
+dracokappa.pos = star_to_rectangular(12, 33, 29, 69, 47, 17);
+dracolambda.pos = star_to_rectangular(11, 31, 24, 69, 19, 52);
+dracoxi.pos = star_to_rectangular(17, 53, 32, 56, 52, 21);
+dracochi.pos = star_to_rectangular(18, 21, 3, 72, 43, 58);
+
+// draw edges
+draw(pic,
+     (ursaminoralpha--ursaminordelta),
+     (ursaminordelta--ursaminorepsilon),
+     (ursaminorepsilon--ursaminorzeta),
+     (ursaminorzeta--ursaminorbeta),
+     (ursaminorzeta--ursaminoreta), 
+     (ursaminoreta--ursaminorgamma),
+     (ursaminorgamma--ursaminorbeta),
+     (dracobeta--dracogamma),
+     (dracobeta--dracoxi),
+     (dracogamma--dracoxi),
+     (dracoxi--dracodelta),
+     (dracodelta--dracoepsilon),
+     (dracoepsilon--dracochi),
+     (dracochi--dracozeta),
+     (dracozeta--dracoeta),
+     (dracoeta--dracoiota),
+     (dracoiota--dracoalpha),
+     (dracoalpha--dracokappa),
+     (dracokappa--dracolambda)
+);
+
+// draw nodes, after edges
+draw(pic,
+     ursaminoralpha,
+     ursaminorbeta,
+     ursaminorgamma,
+     ursaminordelta,
+     ursaminorepsilon,
+     ursaminoreta,
+     ursaminorzeta,
+     dracoalpha,
+     dracobeta,
+     dracodelta,
+     dracogamma,
+     dracoepsilon,
+     dracozeta,
+     dracoeta,
+     dracoiota,
+     dracokappa,
+     dracolambda,
+     dracoxi,
+     dracochi
+  );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

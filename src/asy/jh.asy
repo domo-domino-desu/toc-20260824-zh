@@ -84,7 +84,7 @@ pen TICLABELPEN=fontsize(7pt);
 pen DXPEN=linecap(0)
            +red
            +linewidth(1pt);
-pen LIGHTPEN=linewidth(0.4pt); // matches mpost line_width_light
+pen LIGHTPEN=linewidth(0.4pt)+squarecap; // matches mpost line_width_light
 pen DARKPEN=linewidth(0.8pt); // line_width_dark
 
 

@@ -1691,6 +1691,177 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ............. constellations smaller ..........
+int picnum = 26;
+picture pic;
+// setdefaultgraphstyles();
+// defaultlayoutrel = false;
+
+// calculate nodes position
+real u=1cm;
+real v=u;
+// defaultlayoutskip=u;
+
+// declination_to_radius  convert star location to polar coord radius
+// real declination_to_radius(real dec, real decmins, real decsecs) {
+//   real d = dec + (decmins/60) + (decsecs/(60*60));
+//   return (90-d)/180; }
+
+// real PI = 3.14159265359;
+// // ra_to_theta  convert star right ascension to polar coord angle
+// real ra_to_theta(real hrs, real ramins, real rasecs) {
+//   return ( (hrs/24)+(ramins/(24*60))+(rasecs/(24*60*60)) )*2*PI; }
+
+// real ROTATION_ANGLE = 30;
+// pair star_to_rectangular(real hrs, real ramins, real rasecs, real dec, real decmins, real decsecs) {
+//   real theta = ra_to_theta(hrs, ramins, rasecs);
+//   real r = declination_to_radius(dec, decmins, decsecs);
+//   real x = r*cos(theta);
+//   real y = r*sin(theta);
+//   return rotate(ROTATION_ANGLE)*(x*u, y*v);
+// }
+
+// node ursaminoralpha=ncircle("\tiny $\alpha$");
+// node ursaminorbeta=ncircle("\tiny $\beta$");
+// node ursaminorgamma=ncircle("\tiny $\gamma$");
+// node ursaminordelta=ncircle("\tiny $\delta$");
+// node ursaminorepsilon=ncircle("\tiny $\epsilon$");
+// node ursaminoreta=ncircle("\tiny $\eta$");
+// node ursaminorzeta=ncircle("\tiny $\zeta$");
+// node dracoalpha=ncircle("\tiny $\alpha$",ns_light);
+// node dracobeta=ncircle("\tiny $\beta$",ns_light);
+// node dracodelta=ncircle("\tiny $\delta$",ns_light);
+// node dracogamma=ncircle("\tiny $\gamma$",ns_light);
+// node dracoepsilon=ncircle("\tiny $\epsilon$",ns_light);
+// node dracozeta=ncircle("\tiny $\zeta$",ns_light);
+// node dracoeta=ncircle("\tiny $\eta$",ns_light);
+// // node dracotheta=ncircle("\tiny $\theta$",ns_light);
+// node dracoiota=ncircle("\tiny $\iota$",ns_light);
+// node dracokappa=ncircle("\tiny $\kappa$",ns_light);
+// node dracolambda=ncircle("\tiny $\lambda$",ns_light);
+// node dracoxi=ncircle("\tiny $\xi$",ns_light);
+// node dracochi=ncircle("\tiny $\chi$",ns_light);
+
+
+pair ursaminoralpha = star_to_rectangular(2, 31, 48.7, 89, 15, 51);
+pair ursaminorbeta = star_to_rectangular(14, 50, 42.3, 74, 9, 20);
+pair ursaminorgamma = star_to_rectangular(15, 20, 43.3, 71, 50, 2);
+pair ursaminordelta = star_to_rectangular(17, 32, 12.9, 86, 35, 11);
+pair ursaminorepsilon = star_to_rectangular(16, 45, 58.2, 82, 2, 14);
+pair ursaminoreta = star_to_rectangular(16, 17, 30.3, 75, 45, 19.1);
+pair ursaminorzeta = star_to_rectangular(15, 44, 3.5, 77, 47, 40.1);
+pair dracoalpha = star_to_rectangular(14, 4, 23, 64, 22, 33);
+pair dracobeta = star_to_rectangular(17, 30, 26, 52, 18, 5);
+pair dracodelta = star_to_rectangular(19, 12, 33, 67, 39, 41);
+pair dracogamma = star_to_rectangular(17, 56, 36, 51, 29, 20);
+pair dracoepsilon = star_to_rectangular(19, 48, 10, 70, 16, 4);
+pair dracozeta = star_to_rectangular(17, 8, 47, 65, 42, 53);
+pair dracoeta = star_to_rectangular(16, 23, 59, 61, 30, 50);
+// dracotheta.pos = star_to_rectangular(, , , , , );
+pair dracoiota = star_to_rectangular(15, 24, 56, 58, 57, 58);
+pair dracokappa = star_to_rectangular(12, 33, 29, 69, 47, 17);
+pair dracolambda = star_to_rectangular(11, 31, 24, 69, 19, 52);
+pair dracoxi = star_to_rectangular(17, 53, 32, 56, 52, 21);
+pair dracochi = star_to_rectangular(18, 21, 3, 72, 43, 58);
+
+// draw edges
+pen constpen=LIGHTPEN+backgroundcolor;
+draw(pic,ursaminoralpha--ursaminordelta,constpen);
+draw(pic,ursaminordelta--ursaminorepsilon,constpen);
+draw(pic,ursaminorepsilon--ursaminorzeta,constpen);
+draw(pic,ursaminorzeta--ursaminorbeta,constpen);
+draw(pic,ursaminorzeta--ursaminoreta,constpen); 
+draw(pic,ursaminoreta--ursaminorgamma,constpen);
+draw(pic,ursaminorgamma--ursaminorbeta,constpen);
+pen constpen=LIGHTPEN+lightcolor;
+draw(pic,dracobeta--dracogamma,constpen);
+draw(pic,dracobeta--dracoxi,constpen);
+draw(pic,dracogamma--dracoxi,constpen);
+draw(pic,dracoxi--dracodelta,constpen);
+draw(pic,dracodelta--dracoepsilon,constpen);
+draw(pic,dracoepsilon--dracochi,constpen);
+draw(pic,dracochi--dracozeta,constpen);
+draw(pic,dracozeta--dracoeta,constpen);
+draw(pic,dracoeta--dracoiota,constpen);
+draw(pic,dracoiota--dracoalpha,constpen);
+draw(pic,dracoalpha--dracokappa,constpen);
+draw(pic,dracokappa--dracolambda,constpen);
+
+// draw nodes, after edges
+dot(pic,ursaminoralpha);
+dot(pic,ursaminorbeta);
+dot(pic,ursaminorgamma);
+dot(pic,ursaminordelta);
+dot(pic,ursaminorepsilon);
+dot(pic,ursaminoreta);
+dot(pic,ursaminorzeta);
+dot(pic,dracoalpha);
+dot(pic,dracobeta);
+dot(pic,dracodelta);
+dot(pic,dracogamma);
+dot(pic,dracoepsilon);
+dot(pic,dracozeta);
+dot(pic,dracoeta);
+dot(pic,dracoiota);
+dot(pic,dracokappa);
+dot(pic,dracolambda);
+dot(pic,dracoxi);
+dot(pic,dracochi);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Interlocking directorships =============
+
+int picnum = 27;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node fordmotor=nbox("\scriptsize Ford Motor",ns_noborder),
+  jpmorgan=nbox("\scriptsize JP Morgan",ns_noborder),
+  caterpillar=nbox("\scriptsize Caterpillar",ns_noborder),
+  att=nbox("\scriptsize AT\&T",ns_noborder),
+  texasinstruments=nbox("\scriptsize Texas Instruments",ns_noborder),
+  citigroup=nbox("\scriptsize Citigroup",ns_noborder),
+  haliburton=nbox("\scriptsize Haliburton",ns_noborder),
+  georgiapacific=nbox("\scriptsize Georgia Pacific",ns_noborder),
+  aig=nbox("\scriptsize AIG",ns_noborder);
+
+// calculate nodes position
+real u=2cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+layout(30.0, 1*v, fordmotor, jpmorgan);
+hlayout(1*u, jpmorgan, caterpillar, att, texasinstruments);
+hlayout(4.5*u, fordmotor, citigroup);
+layout(-30.0, 1*v, fordmotor, aig);
+hlayout(1*u, aig, georgiapacific, haliburton);
+
+// draw edges
+draw(pic,
+     (fordmotor--citigroup),
+     (jpmorgan--aig),
+     (caterpillar..bend(20)..texasinstruments),
+     (caterpillar--georgiapacific),
+     (att--citigroup),
+     (att--haliburton),
+     (citigroup--haliburton)
+);
+
+// draw nodes, after edges
+draw(pic,
+     fordmotor,
+     jpmorgan, caterpillar, att, texasinstruments, 
+     citigroup,
+     haliburton, georgiapacific, aig);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

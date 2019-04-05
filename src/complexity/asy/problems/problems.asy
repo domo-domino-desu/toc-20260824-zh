@@ -1694,11 +1694,12 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............. constellations smaller ..........
 int picnum = 26;
 picture pic;
+size(pic,1.5inch,0);
 // setdefaultgraphstyles();
 // defaultlayoutrel = false;
 
 // calculate nodes position
-real u=1cm;
+real u=0.5cm;
 real v=u;
 // defaultlayoutskip=u;
 

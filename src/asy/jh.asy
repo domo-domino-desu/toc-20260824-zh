@@ -196,7 +196,9 @@ pen EDGEPEN=fontsize(7pt); // +fontcommand("\ttfamily");
 pen  EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
 // //? doesn't do anything defaultlabelstyle=labelstyle(p=fontsize(6pt)+fontcommand("\ttfamily")+red);
 // // define edge style
-defaultdrawstyle=drawstyle(p=EDGEPEN_TT, arrow=Arrow(DefaultHead,size=3));
+drawstyle directed=drawstyle(p=EDGEPEN_TT,
+			     arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
+defaultdrawstyle=directed;
 // // Edge with no arrow
 drawstyle undirectededgestyle=drawstyle(p=EDGEPEN_TT, arrow=None);
 // // Standard node is single-circle border

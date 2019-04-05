@@ -1864,6 +1864,72 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======================== Shortest path =============
+//  From http://www.cs.princeton.edu/courses/archive/spring10/cos226/exercises/sp.html
+int picnum = 28;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node[] nodes=ncircles("\nodebox{A}",
+  "\nodebox{B}",
+  "\nodebox{C}",
+  "\nodebox{D}");
+node q0 = ncircle("$q_0$");  // a
+node q1 = ncircle("$q_1$");  // b
+node q2 = ncircle("$q_2$");  // c
+node q3 = ncircle("$q_3$");  // d
+node q4 = ncircle("$q_4$");  // e
+node q5 = ncircle("$q_5$");  // f
+node q6 = ncircle("$q_6$");  // g
+node q7 = ncircle("$q_7$");  // h
+node q8 = ncircle("$q_8$");  // i
+
+
+// calculate nodes position
+real u=1.25cm;
+real v=0.7*u;
+q1.pos = new_node_pos_h(q0, 45, 1*u);
+hlayout(1*u, q0, q2);
+q3.pos = new_node_pos_h(q0, -45, 1*u);
+q4.pos = new_node_pos_h(q2, -20, 1*u);
+hlayout(1.5*u, q4, q5);
+q6.pos = new_node_pos_h(q4, 45, 0.75*u);
+hlayout(3.5*u, q1, q7);
+hlayout(3.5*u, q3, q8);
+
+// draw edges
+defaultdrawstyle=directed;
+draw(pic,
+     (q0--q1).l("$15$").style("leftside"),
+     (q0--q2).l("$13$"),
+     (q0--q3).l("$5$"),
+     (q1--q7).l("$12$").style("leftside"),
+     (q2--q1).l("$2$").style("leftside"),
+     (q2--q3).l("$18$").style("leftside"),
+     (q2--q6).l("$6$").style("leftside"),
+     (q3--q4).l("$4$"),
+     (q3--q8).l("$24$"),
+     (q4--q2).l("$3$").style("leftside"),
+     (q4--q5).l(Label("$9$",Relative(0.35))).style("leftside"),
+     (q4--q6).l(Label("$1$",Relative(0.25))).style("leftside"),
+     (q4--q8).l("$14$"),
+     (q5--q6).l("$16$").style("leftside"),
+     (q5--q7).l("$7$").style("leftside"),
+     (q5--q8).l("$10$").style("leftside"),
+     (q6--q1).l("$8$"),
+     (q6--q7).l("$17$").style("leftside"),
+     (q8--q7).l("$11$")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6, q7, q8);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

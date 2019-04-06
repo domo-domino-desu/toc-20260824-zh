@@ -1869,6 +1869,8 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 int picnum = 28;
 picture pic;
 setdefaultgraphstyles();
+  defaultdrawstyle=directededgestyle;
+
 defaultlayoutrel = false;
 
 node[] nodes=ncircles("\nodebox{A}",
@@ -1899,7 +1901,6 @@ hlayout(3.5*u, q1, q7);
 hlayout(3.5*u, q3, q8);
 
 // draw edges
-defaultdrawstyle=directed;
 draw(pic,
      (q0--q1).l("$15$").style("leftside"),
      (q0--q2).l("$13$"),

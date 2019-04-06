@@ -29,7 +29,7 @@ import texcolors;
 
 // colors Tech Office
 pen darkgrey_color=rgb("595241");  // hex string
-pen lightgrey_color=rgb("E0D4BE");  // rgb("B8AE9C");
+pen lightgrey_color=rgb("E0D4BE");  // tan
 pen white_color=rgb("FFFFFF");
 pen lightblue_color=rgb("ACCFCC");
 pen red_color=rgb("8A0917");
@@ -49,7 +49,10 @@ pen verylightcolor=white_color;
 
 // for places where the highlight color is too bold or dark, as with a colored node
 pen highlight_light = rgb(248/255, 145/255, 157/255); // from: http://hslpicker.com/#f67987
-pen bold_light = rgb(165/255, 155/255, 131/255); 
+pen bold_light = rgb(165/255, 155/255, 131/255);
+
+// grayed-out such as the edge of a graph
+pen grayed=gray(0.35);
 
 
 // ==================== General pens ===================
@@ -191,22 +194,38 @@ path cut_off_ends(path p, real epsilon) {
 // node.asy parameters
 import node;
 // define node style
-pen NODEPEN=fontsize(7pt);
-pen EDGEPEN=fontsize(7pt); // +fontcommand("\ttfamily");
-pen  EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
-// //? doesn't do anything defaultlabelstyle=labelstyle(p=fontsize(6pt)+fontcommand("\ttfamily")+red);
+pen GRAYPEN = gray(0.3);  // 0 is black, 1 is white
+pen NODEPEN=fontsize(7pt)+linecap(0);
+pen EDGEPEN=backgroundcolor+linewidth(1pt)+fontsize(7pt); // +fontcommand("\ttfamily");
+pen  EDGEPEN_TT=EDGEPEN+fontcommand("\color{black}\ttfamily");
+
+pen WALK_PEN = linewidth(0.75bp) + highlight_color;
+
 // // define edge style
-drawstyle directed=drawstyle(p=EDGEPEN_TT,
-			     arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
-defaultdrawstyle=directed;
+labelstyle edgelabel=labelstyle(fontsize(5pt)+fontcommand("\ttfamily")+GRAYPEN);
+drawstyle directededgestyle=drawstyle(edgelabel, p=EDGEPEN_TT,
+				      arrow=Arrow(6,filltype=FillDraw(backgroundcolor,GRAYPEN)));
+defaultdrawstyle=directededgestyle;
 // // Edge with no arrow
 drawstyle undirectededgestyle=drawstyle(p=EDGEPEN_TT, arrow=None);
-// // Standard node is single-circle border
+
+// Node styles
+// Standard node is single-circle border
 defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(backgroundcolor,black));
-// // Double circle nodes
+// Double circle nodes
 nodestyle ns_accepting=nodestyle(textpen=NODEPEN+red, drawfn=Filler(FILLCOLOR)+DoubleDrawer(black));
-// // nodes without any boxing
+// Nodes without any boxing
 nodestyle ns_noborder=nodestyle(xmargin=1pt, drawfn=None);
+
+// For graph coloring
+nodestyle ns_bleachedbg=nodestyle(xmargin=1pt,textpen=NODEPEN,
+				  drawfn=FillDrawer(backgroundcolor+white,black));
+nodestyle ns_bg=nodestyle(xmargin=1pt,textpen=NODEPEN,
+			  drawfn=FillDrawer(backgroundcolor,black));
+nodestyle ns_bleachedbold=nodestyle(xmargin=1pt,textpen=NODEPEN,
+				    drawfn=FillDrawer(bold_light,black));
+nodestyle ns_light=nodestyle(xmargin=1pt,textpen=NODEPEN,
+			     drawfn=FillDrawer(lightcolor,black));
 
 
 
@@ -275,6 +294,7 @@ node[] nrounddiamonds(nodestyle ns=defaultnodestyle ... Label[] Ls) {
     return nds;
 }
 
+
 // Set defaults for circle and arrow states diagrams
 void setdefaultstatediagramstyles() {
   // If you declare structures then you won't see the changes outside the fcn
@@ -293,8 +313,9 @@ void setdefaultstatediagramstyles() {
 			textpen=NODEPEN,
 			drawfn=None);
   // edge style
-  defaultdrawstyle=drawstyle(p=EDGEPEN,
-			     arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
+  // defaultdrawstyle=drawstyle(p=EDGEPEN,
+  // 			     arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
+  defaultdrawstyle=directededgestyle;
 
   // Pen for edges when Labelled
   // pen edge_text_pen = fontsize(7pt) + fontcommand("\ttfamily") + black;
@@ -306,33 +327,20 @@ void setdefaultstatediagramstyles() {
 // Set defaults for graphs
 void setdefaultgraphstyles() {
   // If you declare structures then you won't see the changes outside the fcn
-  NODEPEN=fontsize(7pt);
-  EDGEPEN=linewidth(0.75bp)+fontsize(7pt); // +boldcolor; 
-  EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
+  // NODEPEN=fontsize(7pt);
+  // EDGEPEN=linewidth(0.75bp)+fontsize(7pt); // +boldcolor; 
+  // EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
   defaultnodestyle=nodestyle(xmargin=0.4pt,
 			     textpen=NODEPEN,
 			     drawfn=FillDrawer(white,boldcolor));
   // edge style
-  // defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor);
-  defaultdrawstyle=drawstyle(p=EDGEPEN_TT+backgroundcolor, arrow=None);
-  // defaultdrawstyle=drawstyle(p=EDGEPEN_TT,
-  //			     arrow=None);
+  // defaultdrawstyle=drawstyle(p=EDGEPEN_TT+backgroundcolor, arrow=None);
+  defaultdrawstyle=undirectededgestyle;
+
   // for directed graphs 
   drawstyle directedstyle=drawstyle(p=EDGEPEN_TT,
 				    arrow=Arrow(6,filltype=FillDraw(white,boldcolor)));
 }
-
-pen WALK_PEN = linewidth(0.75bp) + highlight_color;
-
-// For graph coloring
-nodestyle ns_bleachedbg=nodestyle(xmargin=1pt,textpen=NODEPEN,
-				  drawfn=FillDrawer(backgroundcolor+white,black));
-nodestyle ns_bg=nodestyle(xmargin=1pt,textpen=NODEPEN,
-			  drawfn=FillDrawer(backgroundcolor,black));
-nodestyle ns_bleachedbold=nodestyle(xmargin=1pt,textpen=NODEPEN,
-				    drawfn=FillDrawer(bold_light,black));
-nodestyle ns_light=nodestyle(xmargin=1pt,textpen=NODEPEN,
-			     drawfn=FillDrawer(lightcolor,black));
 
 
 // Set defaults for parsetrees

@@ -207,7 +207,7 @@ drawstyle directededgestyle=drawstyle(edgelabel, p=EDGEPEN_TT,
 				      arrow=Arrow(6,filltype=FillDraw(backgroundcolor,GRAYPEN)));
 defaultdrawstyle=directededgestyle;
 // // Edge with no arrow
-drawstyle undirectededgestyle=drawstyle(p=EDGEPEN_TT, arrow=None);
+drawstyle undirectededgestyle=drawstyle(edgelabel, p=EDGEPEN_TT, arrow=None);
 
 // Node styles
 // Standard node is single-circle border
@@ -338,8 +338,9 @@ void setdefaultgraphstyles() {
   defaultdrawstyle=undirectededgestyle;
 
   // for directed graphs 
-  drawstyle directedstyle=drawstyle(p=EDGEPEN_TT,
-				    arrow=Arrow(6,filltype=FillDraw(white,boldcolor)));
+  drawstyle directedstyle=directededgestyle;
+    // drawstyle(p=EDGEPEN_TT,
+    // 				    arrow=Arrow(6,filltype=FillDraw(white,boldcolor)));
 }
 
 

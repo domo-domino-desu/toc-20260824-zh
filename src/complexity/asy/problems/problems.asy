@@ -1551,7 +1551,7 @@ draw(pic,
      (alecbaldwin--johnkennedy).l("\tiny Cats \& Dogs"),
      (kevinbacon--andiemacdowell).l("\tiny Beauty Shop"),
      (kevinbacon--jayosanders).l("\tiny JFK"),
-     (jayosanders--taraoreilley).l(Label("\tiny Northern Borders\hspace*{2.5em}",Relative(0.85))),
+     (jayosanders--taraoreilley).l(Label("\tiny \hspace*{3.5em}Northern Borders",Relative(0.15))).style("leftside"),
      (taraoreilley--jimhefferon).l("\tiny Shout It Out!").style("leftside")
 );
 

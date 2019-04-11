@@ -15,6 +15,7 @@ cd("");
 settexpreamble();
 cd("../../../asy/");
 import jh;
+import flowchart;
 cd("");
 cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
 import node;
@@ -335,6 +336,58 @@ draw(pic, v0, v1, v2, v3, v4, v5, v6, v7);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// ......................................
+picture pic;
+int picnum = 7;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\mathcal{G},v_0,v_1$");
+node convert=nbox("Convert to weighted graph $\hat{\mathcal{G}}$");
+node oracle=nbox("Solve Shortest Path on $\hat{\mathcal{G}},v_0,v_1$");
+node test=nrounddiamond("Path exists?");
+node printzero=nbox("Print 0");
+node printone=nbox("Print 1");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.25*v,read,convert);
+vlayout(1.25*v,convert,oracle);
+vlayout(1.5*v,oracle,test);
+vlayout(1.25*v,test,dummy);
+hlayout(-2.25*u,dummy,printzero);
+hlayout(2.25*u,dummy,printone);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--convert),
+     (convert--oracle),
+     (oracle--test),
+     (test..HV..printzero).l("N"),
+     (test..HV..printone).l("Y").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     convert,
+     oracle,
+     test,
+     printzero,
+     printone
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

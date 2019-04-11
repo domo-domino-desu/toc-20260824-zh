@@ -664,26 +664,50 @@ they accept the same languages.
 \ExecuteMetaData[\catchfilefn]{pf:PSubsetNP}
 
 \ExecuteMetaData[\catchfilefn]{rem:DunnoPvsNP}
+
+On the left $\NP$ is a strict superset while on the right
+the two classes are shown as equal.
+\begin{center}
+  % \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  % \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/pnp/pnp04.pdf}}
+  \hspace{3em}\mbox{versus}\hspace{3em}
+  \vcenteredhbox{\includegraphics{../../complexity/asy/pnp/pnp05.pdf}}
+\end{center}
 \end{frame}
 
 \begin{frame}{Verifiers}
 \ExecuteMetaData[\catchfilefn]{def:Verifier}
 
-The definition does not say where the witness~$\omega$ comes from.
+The definition says `there exists' a witness~$\omega$.
+it does not say where it comes from.
 This formalizes our second mental model, where a demon provides the
 answer and machine just deterministically verifies the correctness
 of that answer.
 
-\ExecuteMetaData[\catchfilefn]{lem:VerifierAndGuesserEquiv}
-
-\proofname \ExecuteMetaData[\catchfilefn]{pf:VerifierAndGuesserEquivi}
+\pause
+\begin{center}
+  \includegraphics[height=1.15in]{../../automata/pix/flauros.jpg}
+\end{center}
 \end{frame}
 
 
 \begin{frame}
+\ExecuteMetaData[\catchfilefn]{lem:VerifierAndGuesserEquiv}
+
+\proofname \ExecuteMetaData[\catchfilefn]{pf:VerifierAndGuesserEquivi}
+
+\pause
 \ExecuteMetaData[\catchfilefn]{pf:VerifierAndGuesserEquivii}
 \qedsymbol
-\pause
+\end{frame}
+
+
+
+\begin{frame}{Problems in $\NP$}
+By the prior result, to show that a problem is a member of the class~$\NP$
+we need only produce a deterministic polynomial time verifier.
+
 \ExecuteMetaData[\catchfilefn]{ex:SATIsNP}
 
 \pause
@@ -731,14 +755,67 @@ that works, a witness~$\omega$ is such a sequence.
 % ===================================
 \section{Problem reduction}
 
+\begin{frame}{Introduction}
+Recall the Vertex-to-vertex Path problem:~given a graph and two vertices,
+decide if there is a path between them.
+Recall also the Shortest Path problem:~given a weighted graph and two
+vertices, find the shortest path between them.
+
+These two are obviously related.
+In particular, if you can find the shortest path then you can find
+whether there is a path at all, no?
+
+\pause
+To make this idea precise recast these as language decision problems
+\begin{align*}
+  \lang_1 &=\set{\sequence{\mathcal{G},v_0,v_1}\suchthat
+               \text{there is a path from $v_0$ to $v_1$ in $\mathcal{G}$}} \\
+  \lang_B &=\set{\sequence{\mathcal{G},v_0,v_1}\suchthat
+               \text{there is a path from $v_0$ to $v_1$ shorter than length~$B$}}
+\end{align*}
+(with the second we are applying the standard bound technique using 
+the parameter~$B\in\N$).
+
+There is a type issue because
+the Shortest Path problem applies to weighted graphs.
+But we can convert an unweighted graph to a weighted one by giving each edge 
+a weight of~$1$. 
+\end{frame}
 
 \begin{frame}
+Suppose that you could solve the Shortest Path problem.
+Perhaps you have a library routine \str{SolveShortestPath}.
+We say you have a \alert{oracle} for the Shortest Path problem.
+This sketches an algorithm that leverages that oracle 
+to also solve the Vertex-to-vertex Path problem.
+\begin{center}
+  \includegraphics{asy/complexity07.pdf}
+\end{center}
+\pause
+Now, 
+suppose that not only do you have an oracle but
+in addition suppose that the oracle runs in polynomial time.
+Then, because the steps shown are fast, the
+algorithm shown above solves
+the Vertex-to-vertex Path problem in polytime. 
+
+So the above shows that if Shortest Path is in $\P$ then
+Vertex-to-vertex Path is also in~$\P$.
+\end{frame}
+
+
+
+\begin{frame}{Polytime reduction}
 \ExecuteMetaData[\catchfilefn]{def:PolyTimeReduction}
+
+The point:~if you can solve $\lang_0$ quickly then 
+you can solve $\lang_1$ quickly.
 
 \ExecuteMetaData[\catchfilefn]{lem:PolytimeReductionTrans}
 
 \ExecuteMetaData[\catchfilefn]{pf:PolytimeReductionTrans}
 
+\pause
 Here the bean encloses all problems, all subsets of $\kleenestar{\B}$.
 The easy ones, the ones with fast algorithms, are at the bottom.
 Problems are connected if the one underneath reduces to the one above.

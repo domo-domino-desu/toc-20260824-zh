@@ -4224,7 +4224,9 @@ a nondeterministic Turing machine, if we had one,
 might be much faster than a deterministic one.
 %<*discussion:SpeedOfNFSMi>
 Consider the Satisfiability problem.
-Recall how it goes: here is an example formula and we ask if it is satisfiable.
+
+\begin{example}  \label{ex:SatisfiabilityfastOnNDTM}
+Is this propositional logic formula satisfiable?
 \begin{equation*}
  f = 
  (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
@@ -4247,6 +4249,7 @@ Here the next to last row has the~$T$ so this formula is satisfiable.
   $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$F$ &$T$ &$F$      
 \end{tabular}
 \end{center}
+\end{example}
 %</discussion:SpeedOfNFSMi>
 %<*discussion:SpeedOfNFSMii>
 The number of rows in a truth table grows  
@@ -4256,7 +4259,7 @@ So that approach is very slow, super-polynomial.
 
 On the other hand,
 this problem seems perfectly suited for unbounded parallelism.
-For each line of the tabl we could fork a child process.
+For each line of the table we could fork a child process.
 These children are done quickly, certainly in polytime.
 Then we just call down the bus, ``Any successes?''
 and if any child is holding a `$T$' then we declare $f$ satisfiable.
@@ -4331,6 +4334,22 @@ We will take up this question again in the next section.
 \end{remark}
 %</rem:DunnoPvsNP>
 
+Having seen a conceptually clear definition, we next will see a lemma that
+gives a way
+to show that problems are in~$\NP$ that is usually easier than via
+the definition.
+To motivate that, consider the above example of Satisfiability,
+\cref{ex:SatisfiabilityfastOnNDTM}.
+Each line of the truth table is easy; the challenge for a deterministic
+machine is that there are a lot of lines.
+We think that nondeterministic machines can do it quickly on by spawning 
+lots of children but even a deterministic machine could get a 
+`yes' answer if it was told on what line to look.
+That is, for the problem above, if someone said, 
+``Hint: look at $\omega=\str{TTF}$'' 
+then even a deterministic machine could quickly verify 
+the satisfiability. 
+ 
 %<*def:Verifier>
 \begin{definition}
 A deterministic Turing machine $\TM$ is a
@@ -4353,7 +4372,8 @@ find it?''
 But here we are not required to find it.
 The question instead is:~if
 we are given~$\omega$, for instance by a demon,
-then can we verify in deterministic polytime that it is correct?
+then can we verify  that it is correct,
+in deterministic polytime?
 \end{remark}
 
 Note that the definition does not require that there be a witness to a string 
@@ -4444,10 +4464,10 @@ Strictly speaking, we must first recast it as a language recognition
 problem, so consider this language.
 \begin{equation*}
   \SAT=
-  \set{\bar{F}\in\kleenestar{\B}\suchthat
-    \text{$\bar{F}$ represents a satisfiable propositional logic statement~$F$}}
+  \set{f\suchthat
+    \text{$f$ is a propositional logic formula that is satisfiable}}
 \end{equation*}
-Given a propositional logic formula~$F$, we can use as a witness~$\omega$
+Given a propositional logic formula~$f$, we can use as a witness~$\omega$
 the line number of an input that satisfies~$F$.
 We can easily make a deterministic Turing machine that, 
 given the formula and the witness,

@@ -1,6 +1,6 @@
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Water striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as far more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/pix/waterstrider.jpg}{Computational Complexity}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 
-In the first part of this book we asked what can be done at all, mechanically.
+In the first part of this book we asked what can be done mechanically, at all.
 Once you know that a task can be done, then a natural next step is to
 look to do it efficiently, in a practical time
 or practical space, or by being parsimonious with
@@ -1625,6 +1625,53 @@ $\bigOh(n^3)$.
   \end{exercise}
   
   \begin{exercise}
+  We will show that there are functions with order of growth strictly 
+  between the
+  polynomial and exponential functions.
+  Specifically, $f(x)=x^{\lg x}$ is one.
+  \begin{exparts}
+  \item Argue that for any fixed $k$, $x^k\in\bigOh(x^{\lg x})$.
+  \item Show that $x^{\lg x}=2^{(\lg n)^2}$.
+   \hint~take the logarithm of both sides.
+  \item Use L'H\^{o}pitals rule to show that 
+    $x^{\lg x}$ is in $\bigOh(2^{cn})$ for any $c>0$.
+  \end{exparts}
+  \begin{answer}
+  \begin{exparts}
+  \item For any fixed~$k$, there is an~$x$ so large that $\lg(x)>k$.
+   Thus for any fixed $k$, $x^k\in\bigOh(x^{\lg x})$.
+  \item Taking the $\lg$ of the left side gives 
+    $\lg(x^{\lg x})$.
+    Apply the logarithm rule that $\log(a^b)=b\cdot\log(a)$ gives
+    $\lg x\cdot\lg x=(\lg x)^2$.
+
+    As to the right side, taking the $\lg$ gives $\lg(2^{(\lg x)^2})$,
+    and since the logarithm and exponential are inverse functions
+    we get $(\lg x)^2$.
+  \item Consider 
+  \begin{equation*}
+    \lim_{x\to\infty}\frac{(\lg x)^2}{2^{cx}}
+  \end{equation*}
+  and note that it is an $\infty/\infty$ limit.
+  Looking to apply L'H\^{o}pital's Rule, consider this.
+  \begin{equation*}
+    \lim_{x\to\infty}\frac{2\lg x\cdot (1/(x\ln 2))}{c\ln(2)\cdot 2^{cx}}
+    =\frac{2}{c(\ln 2)^2}\cdot\lim_{x\to\infty}\frac{\lg x}{x\cdot 2^{cx}}
+  \end{equation*}
+  Taking derivatives another time, consider this.
+  \begin{equation*}
+    \frac{2}{c(\ln 2)^2}\cdot
+      \lim_{x\to\infty}\frac{1/x}{1\cdot 2^{cx}+x\cdot  c\ln(2)2^{cx}}
+    =\frac{2}{c(\ln 2)^2}\cdot
+      \lim_{x\to\infty}\frac{1}{x\cdot 2^{cx}+x^2\cdot  c\ln(2)2^{cx}}
+  \end{equation*}
+  So the limit is~$0$, and thus $x^{\lg x}$ is in~$\bigOh(2^{cx})$ 
+  for any~$c>0$.
+  \end{exparts}
+  \end{answer}
+  \end{exercise}
+
+  \begin{exercise}
     Verify these clauses of \cref{lem:BigOAlgProps}.
     Let $f_0$ be~$\bigOh(g_0)$ and let $f_1$ be~$\bigOh(g_1)$.
     \begin{exparts}
@@ -1669,7 +1716,7 @@ $\bigOh(n^3)$.
   \end{exparts*}
   \begin{answer}
   \begin{exparts}
-  \item The function $f_0(x)=0$ is clearly computable an has
+  \item The function $f_0(x)=0$ is clearly computable and has
     output values that grow at a rate that is $\bigOh(1)$.
     Similarly, the output values of $f_1(x)=x$ grow
     at a rate that is $\bigOh(n)$,
@@ -4610,10 +4657,11 @@ Decide if each formula is satisfiable.
 
 \begin{exercise} % https://math.stackexchange.com/q/49509
 A friend of yours asks, 
-``In \cref{lem:VerifierAndGuesserEquiv}, since we are not required to
-compute the witness~$\omega$, why can't I just take it to be the bit~\str{1} if
+``In \cref{lem:VerifierAndGuesserEquiv}, since the witness~$\omega$ is not
+required to be effectively computable, 
+why can't I just take it to be the bit~\str{1} if
 $\sigma\in\lang$ and \str{0} if not?
-Then writing the Turing machine is easy, just ignore $\sigma$ and follow
+Then writing the Turing machine is easy:~just ignore $\sigma$ and follow
 the bit.''
 They are confused.
 Straighten them out.

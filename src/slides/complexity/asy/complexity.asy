@@ -341,6 +341,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ......................................
 picture pic;
 int picnum = 7;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -358,11 +359,11 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-vlayout(1*v,start,read);
+vlayout(1.15*v,start,read);
 vlayout(1.25*v,read,convert);
 vlayout(1.25*v,convert,oracle);
-vlayout(1.5*v,oracle,test);
-vlayout(1.25*v,test,dummy);
+vlayout(1.40*v,oracle,test);
+vlayout(1.15*v,test,dummy);
 hlayout(-2.25*u,dummy,printzero);
 hlayout(2.25*u,dummy,printone);
 

@@ -45,3 +45,16 @@ defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(FILLC
 nodestyle ns_accepting=nodestyle(textpen=NODEPEN, drawfn=Filler(FILLCOLOR)+DoubleDrawer(black));
 // // nodes without any boxing
 nodestyle ns_noborder=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=None);
+
+
+// Set defaults for drawing flowcharts
+void setdefaultflowchartstyles() {
+  // If you declare structures then you won't see the changes outside the fcn
+  pen NODEPEN=fontsize(8pt)+fontcommand("\sffamily");
+  pen EDGEPEN=linewidth(0.75bp)+black+fontsize(6pt)+fontcommand("\sffamily"); 
+  // define edge style
+  defaultdrawstyle=drawstyle(p=EDGEPEN, arrow=Arrow(DefaultHead,size=3));
+  // Standard node is single-circle border
+  defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(FILLCOLOR,black));
+}
+

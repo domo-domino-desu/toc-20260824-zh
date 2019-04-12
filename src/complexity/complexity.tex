@@ -2447,7 +2447,8 @@ and don't care about its factors?
 %<*prob:Composite>
 \begin{problem}[Composite]
 Given a number~$n\in\N$, determine if it has any nontrivial factors;
-that is, decide if there are numbers $1<a,b<n$ such that $ab=n$.
+that is, decide if there is a number~$a$ that divides~$n$ and
+such that $1<a<n$.
 \end{problem}
 %</prob:Composite>
 
@@ -4292,12 +4293,8 @@ allow them to compute some of functions faster.
 \subsection{$\NP$}
 We now name the class of problems associated with nondeterministic 
 Turing machines.
-We will give two equivalent descriptions, \cref{def:NP} and 
-\cref{lem:VerifierAndGuesserEquiv}.\footnote{%
-  This follows a pattern in mathematical presentations.
-  The definition is conceptually clearer, particularly at first sight, but 
-  experience shows that
-  the other description is typically easier to work with in practice.}
+% We will give two equivalent descriptions, \cref{def:NP} and 
+% \cref{lem:VerifierAndGuesserEquiv}.
 
 %<*def:NP>
 \begin{definition} \label{def:NP}
@@ -4334,21 +4331,26 @@ We will take up this question again in the next section.
 \end{remark}
 %</rem:DunnoPvsNP>
 
-Having seen a conceptually clear definition, we next will see a lemma that
-gives a way
-to show that problems are in~$\NP$ that is usually easier than via
-the definition.
-To motivate that, consider the above example of Satisfiability,
+We next see an alternate  way to show that a 
+problem is in~$\NP$.\footnote{%
+  A common pattern in mathematical presentations is to have a
+  a definition that is conceptually clearer, particularly at first sight, but 
+  then to follow that with results that make determining whether the 
+  definition applies computationally easier.}
+
+Consider the above example of Satisfiability,
 \cref{ex:SatisfiabilityfastOnNDTM}.
-Each line of the truth table is easy; the challenge for a deterministic
-machine is that there are a lot of lines.
-We think that nondeterministic machines can do it quickly on by spawning 
-lots of children but even a deterministic machine could get a 
+Each line of the truth table is easy; the challenge 
+is that there are a lot of lines.
+Intuitively, the speed advantage that a nondeterministic machine has
+is in covering all the lines, either by spawning lots of children or by
+guessing which line to do.  
+But even a deterministic machine could quickly get a 
 `yes' answer if it was told on what line to look.
-That is, for the problem above, if someone said, 
+That is, if in the example above someone said, 
 ``Hint: look at $\omega=\str{TTF}$'' 
 then even a deterministic machine could quickly verify 
-the satisfiability. 
+that the formula is satisfiable. 
  
 %<*def:Verifier>
 \begin{definition}
@@ -4357,62 +4359,156 @@ A deterministic Turing machine $\TM$ is a
 for every $\sigma\in\kleenestar{\B}$, that string is member of the language
 if and only if
 there exists a \definend{witness} or \definend{certificate}
-string $\omega\in\kleenestar{\B}$ such that the machine
-$\TM$ accepts the input $\sequence{\sigma,\omega}$.
+string $\omega\in\kleenestar{\B}$ such that
+$\TM$ accepts~$\sequence{\sigma,\omega}$.
 \end{definition}
 %</def:Verifier>
-
-\begin{remark}
-The definition says `there exists' a witness~$\omega$.
-It does not say where it comes from.
-As we have discussed a number of times, on a first encounter 
-this often strikes a person as odd, or counterintuitive. 
-A person with a computing mindset is used to thinking ``how will I 
-find it?''
-But here we are not required to find it.
-The question instead is:~if
-we are given~$\omega$, for instance by a demon,
-then can we verify  that it is correct,
-in deterministic polytime?
-\end{remark}
-
-Note that the definition does not require that there be a witness to a string 
-not being in the language.
 
 %<*lem:VerifierAndGuesserEquiv>
 \begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
 A language is a member of $\NP$ 
 if and only
-if it can be verified by some polynomial time deterministic verifier.
+if it has a polynomial time verifier.
+That is, $\lang\in\NP$ if and only if there is a 
+deterministic Turing machine~$\TM$ so that
+for every
+$\sigma\in\kleenestar{\B}$ there is a witness~$\omega$
+where $\sigma\in\lang$ if and only if $\TM$ accepts 
+$\sequence{\sigma,\omega}$, in time polynomial in~$\sigma$.
 \end{lemma}
 %</lem:VerifierAndGuesserEquiv>
 
-Before the proof, we pause to highlight the `polynomial time'.
-We are dividing solving a problem into 
-first producing a solution and then verifying that it is correct.
-We are considering the set of problems for which
-we can verify a `yes' answer, quickly.
-Contrast this with the problem of chess. 
-\citetext{Chess is a solvable game}{%
-  This is Zermelo's Theorem. See \autocite{wiki:ZermelosTheorem}.},
-meaning that there is a strategy
-for one of the two players that forces a win or a draw, no
-matter what the other player does.
-But imagine that a demon hands you some papers and tells you
-that it contains a perfect chess strategy.
-If you tried to verify that assertion by having a computer step through
-the responses to each move and responses to those
-responses, etc., then that verification seems  
-beyond our current computing capacity, and
-maybe beyond the theoretical capacity of the universe.
-So the `polynomial time' here means that the verification is tractable.
+The proof makes precise the intuition before the definition.
+Before that we will see some examples and discuss some aspects of the 
+definition and lemma.
 
-One more point:~because the verifier is polytime in $\sigma$,
-the length of the witness~$\lh{\omega}$
-is polynomial in~$\sigma$.
-This is because the verifier reads one bit per step, so if 
+%<*ex:SATIsNP>
+\begin{example}
+This is the Satisfiability problem.
+\begin{equation*}
+  \SAT=
+  \set{\sigma\suchthat
+    \text{$\sigma$ represents a propositional logic formula~$f$ that is satisfiable}}
+\end{equation*}
+As a witness we can use a string
+pointing to a line of the truth table,
+such as $\omega=\str{TTF}$.
+With that in mind, 
+we can write a Turing machine~$\TM$ that inputs
+a representation of a propositional logic statement
+$\sigma$ and a truth table line~$omega$,
+and then accepts that pair if it can verify that on that line 
+the statement~$\sigma$ returns a value of~$T$.
+If the statement~$\sigma$ is satisfiable then there is such a~$\omega$,
+and the machine can verify it quickly.
+If~$\sigma$ is not satisfiable then it doesn't matter what~$\omega$ 
+the machine gets, it will no be able to verify an ending~$T$.
+So $\sigma\in\SAT$ if and only if our machine~$\TM$ accepts
+$\sequence{\sigma,\omega}$ for some~$\omega$.
+\end{example}
+%</ex:SATIsNP>
+
+Describing $\sigma$ as a string `representing' a propositional logic statement,
+and $\omega$ as `representing' a table line gets tedious.
+It doesn't make anything clearer and 
+in practice authors usually omit it.
+From now on we'll do the same.
+For instance, the next example says that $\sigma$ is a triple instead of 
+bothering to say that it is a representation of one. 
+
+\begin{example}
+The Hamiltonian Path problem 
+\begin{equation*}
+  \lang=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat 
+             \text{some path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex}}
+\end{equation*}
+is in~$\NP$.
+To use the lemma to show that we will sketch a suitable Turing machine
+verifier~$\TM$.
+The idea is that the witness is the path, 
+$\omega=\sequence{v,v_1,\ldots \hat{v}}$.
+Our verifier inputs a triple~$\sigma=\sequence{\mathcal{G},v,\hat{v}}$ 
+and a path~$\omega$.
+It tries to verify that the list of vertices visited by the path is all
+of the vertices in the graph (and that the path begins with $v$ and
+ends with $\hat{v}$), and if so it accepts the pair.
+If there is a Hamiltonian path for the graph and vertices then there exists
+a witness~$\omega$ leading to acceptance by~$\TM$ of the pair (the
+check can be done in polytime).
+If there is no Hamiltonian path then for no~$\omega$ is~$P$  
+able to verify, so it will never accept.
+\end{example}
+
+Before the remaining examples we pause for a couple of comments.
+The most striking thing about the definition is that it says `there exists' 
+a witness~$\omega$.
+It does not say where that witness comes from.
+As we have discussed a number of times, on a first encounter 
+a person with a computing mindset may ask, 
+``how will the machine compute~$\omega$?'' 
+But the machine is not required to find it.
+The question is instead:~is there a machine that
+when given an~$\omega$, say by a demon,
+can use it to verify that $\sigma\in\lang$ in polytime?
+
+Note also that the definition does not require that there be a 
+witness to $\sigma\notin\lang$, rather there just is no
+witness that the verifier can accept.
+
+Third, a comment on the runtime of the verifier.
+Contrast the above two examples with the problem of chess. 
+\citetext{Chess is known to be a solvable game}{%
+  This is Zermelo's Theorem. See \autocite{wiki:ZermelosTheorem}.}\Dash there 
+is a strategy for one of the two players that forces a win or a draw, no
+matter how the opponent plays.
+Now imagine that a demon hands you some papers and tells you
+that it contains a perfect chess strategy.
+If you tried to verify that by having a computer step through
+the responses to each move and responses to those
+responses, etc., that at least appears to be  
+beyond our current computing capacity, and
+maybe beyond the theoretical capacity of the entire universe.
+So the `time polynomial in $\lh{\sigma}$' here 
+makes the verification tractable.
+
+Finally, because the verifier runs in time polynomial in $\lh{\sigma}$,
+the witness~$\lh{\omega}$ has length polynomial in~$\lh{\sigma}$.
+This is simply because if 
 the witness were too long then the
 machine would not even be able to read it in the alotted time.
+
+%<*ex:CompositeIsNP>
+\begin{example}
+The Composite problem asks whether a number has a nontrivial factor.
+\begin{equation*}
+  \lang=\set{n\in\N\suchthat \text{$n$ has a divisor~$m$ with $1<m<n$}}
+\end{equation*}
+F a witness~$\omega$ we can use any nontrivial factor~$a$.
+The verifier inputs~$\sequence{\sigma,\omega}$ where $\sigma$ is a number~$n$.
+If $\sigma\in\lang$, if the number is composite, then there is a suitable 
+witness, and the verifier can check that in polytime.
+If $\sigma\notin\lang$ then there is no suitable witness.
+\end{example}
+%</ex:CopositeIsNP>
+
+\begin{example}
+Recall the Subset Sum problem:~given a set of numbers $S\subset\N$ 
+and a target sum~$T\in\N$,
+we want to know if at least one subset of~$S$ adds to~$T$.
+Recast it as the decision problem for
+%\begin{equation*}
+$
+  \lang=\set{\sequence{S,T}\suchthat
+     \text{a subset of $S$ totals to $T$}}
+$.
+%\end{equation*}
+As the witness~$\omega$ we can use the subset~$\hat{S}\subseteq S$ 
+whose members add to the target.
+Verifying that the subset adds to the target in polynomial time is easy.
+\end{example}
+
+We finish with the promised proof
+of \cref{lem:VerifierAndGuesserEquiv}
 
 \begin{proof}
 %<*pf:VerifierAndGuesserEquivi>
@@ -4448,94 +4544,10 @@ then verifying does also.
 %</pf:VerifierAndGuesserEquivii>
 \end{proof}
 
-Thus, a problem is in NP if and only if for any
-positive solution there exists a
-polynomially long proof witness.
-So, one way to think of $\NP$ is that it is the class of problems which
+So one way to think of $\NP$ is that it is the class of problems which
 have efficient verifiers: there is a polytime algorithm that,
-given a solution~$\omega$,
-can verify that it is is correct.
-
-
-%<*ex:SATIsNP>
-\begin{example}
-The Satisfiability problem is a member of~$\compclass{NP}$.
-Strictly speaking, we must first recast it as a language recognition
-problem, so consider this language.
-\begin{equation*}
-  \SAT=
-  \set{f\suchthat
-    \text{$f$ is a propositional logic formula that is satisfiable}}
-\end{equation*}
-Given a propositional logic formula~$f$, we can use as a witness~$\omega$
-the line number of an input that satisfies~$F$.
-We can easily make a deterministic Turing machine that, 
-given the formula and the witness,
-verifies in polytime that the formula is satisfied.
-\end{example}
-%</ex:SATIsNP>
-
-%<*ex:TSPIsNP>
-\begin{example}
-Consider the Travelling Salesman problem from \cpageref{ex:TravellingSalesman}.
-As stated it is an optimization problem,
-not a language decision problem.
-So first recast it as a language decision problem 
-by setting a bound~$B\in\N$ and considering this set of bitstrings.
-\begin{equation*}
-  \mathcal{TS}_B=\set{\bar{G}\in\kleenestar{\B}\suchthat
-    \text{$G$ is a weighted graph with a circuit of length less than~$B$}}
-\end{equation*}
-To show this problem is in~$\NP$ we must show that there is a suitable witness.
-We can use a sequence of nodes 
-$\omega=\sequence{v_{i_0},v_{i_1},\ldots v_{i_k}}$ that
-constitute a circuit of total cost less than the bound.
-Then we can easily produce a deterministic Turing machine that, given
-a representation of the graph and such a witness, 
-verifies in polytime that the circuit in this graph costs less than the bound. 
-\end{example}
-%</ex:TSPIsNP>
-
-The insistence in those examples on expressing things as bitstrings
-is technically correct and according to the definition.
-But it doesn't make anything clearer and 
-in practice authors often pass over the representation stuff.
-Having gone through it a couple of times, 
-we will from now on also pass it over.
-
-%<*ex:FactorizationIsNP>
-\begin{example}
-The Factorization problem takes as input a number and returns, if
-possible, a nontrivial factor.
-To show it is in~$\NP$ we first recast it as the decision 
-problem of the language
-% \begin{equation*}
-$
-  \lang=\set{n\in\N\suchthat \text{$n$ has a nontrivial factor}}
-$.
-% \end{equation*}
-With that, to determine that $n\in\lang$
-we can use as witness~$\omega$ some 
-number $a$ that is a nontrivial factor of~$n$, since we can
-verify it in time polynomial in~$n$.
-\end{example}
-%</ex:FactorizationIsNP>
-
-\begin{example}
-Recall the Subset Sum problem:~given a set of numbers $S\subset\N$ 
-and a target sum~$T\in\N$,
-we want to know if at least one subset of~$S$ adds to~$T$.
-Recast it as the decision problem for
-%\begin{equation*}
-$
-  \lang=\set{\sequence{S,T}\suchthat
-     \text{a subset of $S$ totals to $T$}}
-$.
-%\end{equation*}
-As the witness~$\omega$ we can use the subset~$\hat{S}\subseteq S$ 
-whose members add to the target.
-Verifying that the subset adds to the target in polynomial time is easy.
-\end{example}
+given the hint of a witness~$\omega$,
+can use it to verify membership in the language.
 
 In summary, we are interested in knowing for which problems
 are there relatively good algorithms and for which are there not.
@@ -4546,6 +4558,7 @@ there is a good way to verify a solution, in contrast with the problems
 for which there is a good algorithm to generate a solution.
 In the next section we will consider whether these two classes of
 problems are different.
+
 
 
 % ........................
@@ -4592,6 +4605,35 @@ Decide if each formula is satisfiable.
 \end{tabular}
 \end{center}
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise} % https://math.stackexchange.com/q/49509
+A friend of yours asks, 
+``In \cref{lem:VerifierAndGuesserEquiv}, since we are not required to
+compute the witness~$\omega$, why can't I just take it to be the bit~\str{1} if
+$\sigma\in\lang$ and \str{0} if not?
+Then writing the Turing machine is easy, just ignore $\sigma$ and follow
+the bit.''
+They are confused.
+Straighten them out.
+\begin{answer}
+That lemma requires that there be a verifier with the property 
+that if $\sigma\in\lang$ then there is a witness leading to acceptance, 
+and if $\sigma\notin\lang$ then there exists no witness leading to 
+acceptance.
+Consider the problem $\lang=\set{n\in\N\suchthat \text{$n$ is even}}$.
+Your proposed verifier inputs a pair $\sequence{\sigma,\omega}$,
+where $\sigma$ is a number and $\omega$ is a bit, and then
+accepts the pair if $\omega=\str{1}$.
+Absolutely, if you give your verifier the pair  $\sequence{5,\str{1}}$
+then it will not accept.
+However, 
+give it $\sequence{5,\str{1}}$ and your verifier will accept.
+That is, for $\sigma=5$ there exists an~$\omega$ leading to acceptance, 
+so your verifier is wrong.
+Rather, for a correct verifier you need that there exists no~$\omega$ that 
+causes it to accept $\sigma=5$.
 \end{answer}
 \end{exercise}
 
@@ -4681,10 +4723,41 @@ strings in polynomial time.
 
 \recommended
 \begin{exercise}
+Recast the Travelling Salesman problem from 
+\cpageref{ex:TravellingSalesman}
+as a language decision problem by using the bound technique.
+Show that it is in $\NP$ by sketching a verifier that works with
+a suitable witness.
+\begin{answer}
+We recast it as a language decision problem 
+by setting a bound~$B\in\N$ and considering this set of bitstrings.
+\begin{equation*}
+  \TS_B=\set{\bar{G}\in\kleenestar{\B}\suchthat
+    \text{$G$ is a weighted graph with a circuit of length less than~$B$}}
+\end{equation*}
+
+To show that this problem is in~$\NP$ we must produce a verifier.
+For a witness we can use a circuit 
+$\omega=\sequence{v_{i_0},v_{i_1},\ldots v_{i_k}}$ that
+is of total cost less than the bound.
+The verifier gets an input pair~$\sequence{\sigma,\omega}$ where 
+$\sigma$ is a weighted graph, and checks 
+that $\omega$ is indeed a Hamiltonian circuit of the graph, and that it 
+costs less than the bound.
+A verifier can do those checks in time polynomial in~$\lh{\sigma}$.
+If the graph $\sigma$ is indeed an element of~$\TS_B$ then there is 
+such an~$\omega$, so the verifier can accept a pair.
+If $\sigma$ is not an element of~$\TS_B$ then there is no such 
+$\omega$, and so the verifier will never accept such a pair.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
 The Double-SAT problem is: given a propositional logic statement,
 decide whether it has at least two different substitutions of Boolean values
 that make the statement true.
-Show that this problem is in~$\NP$ by p[roducing a suitable witness.
+Show that this problem is in~$\NP$ by producing a suitable witness.
 \begin{answer}
 Given the propositional logic statement~$F$, a suitable witness is the
 pair $\omega\sequence{\ell_0,\ell_1}$ consisting of two lines of the

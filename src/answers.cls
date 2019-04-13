@@ -81,18 +81,24 @@
 \renewcommand{\sectionmark}[1]{%
   \markright{\sectionname\ \thesection.\ #1}}
 % Note that \extramark is defined by the definition of \extra
-\renewcommand{\headrule}{{\color{lightcolor}%
+% \renewcommand{\headrule}{{\color{lightcolor}%
+%   \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
+\renewcommand{\headrule}{{\color{black}%
   \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
 
 % Main body of book
 \renewcommand{\chaptername}{Chapter}
 \newcommand{\sectionname}{Section}
+
 \fancypagestyle{bookbody}{%
   \renewcommand{\headrulewidth}{.4pt}
   \renewcommand{\footrulewidth}{0pt}
-  \fancyhead[LE,RO]{{\color{boldcolor}\textsl{\thepage}}}
-  \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
-  \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
+  \fancyhead[LE,RO]{{\color{black}\textsl{Page \thepage}}} % instead of boldcolor
+  \fancyhead[RE]{{\color{black}\textsl{\leftmark}}}
+  \fancyhead[LO]{{\color{black}\textsl{\rightmark}}}
+  \lfoot{}
+  \rfoot{}
+  \cfoot{}
 }
 
 % Front matter
@@ -150,8 +156,8 @@
 }
 
 
-\pagestyle{bookfront}
-\pagenumbering{roman}
+\pagestyle{bookbody}
+\pagenumbering{arabic}
 
 
 
@@ -169,7 +175,8 @@
 % Clear to an odd page with empty pages in between
 \newcommand{\clearemptydoublepage}{% clear to right page
   \newpage{\pagestyle{empty}% 
-    \cleardoublepage}}
+    \cleardoublepage\thispagestyle{bookemptypage}}%
+    \pagestyle{bookbody}}
 % Clear to an even-numbered page, with blank pages between
 % https://tex.stackexchange.com/a/365249/121234
 \newcommand*{\cleartoleftpage}{%
@@ -369,83 +376,11 @@
 
 % ==== Grammars ==== (Asy doesn't like it) 
 \usepackage{grammar}
-% \usepackage{syntax}
-% \newlength{\grammarmargin}
-% \setlength{\grammarmargin}{5em}
-% \renewenvironment{grammar}{%
-%   \list{}{%
-%     \labelwidth\grammarindent%
-%     \leftmargin\grammarmargin%
-%     \advance\grammarindent\labelsep
-%     \itemindent\z@%
-%     \listparindent\z@%
-%     \parsep\grammarparsep%
-%     \small
-%   }%
-%   \let\\\@normalcr
-%   \syntaxShortcuts\relax\relax%
-%   % \def\alt{\\\llap{\textbar\hspace*{0em}}}% Comment this out from .sty file to adjust spacing
-%   \def\gr@setpar{%
-%     \def\par{%
-%       \parshape\@ne\@totalleftmargin\linewidth%
-%       \@@par%
-%       \catcode`\<12%
-%       \everypar{%
-%         \everypar{}%
-%         \catcode`\<\active%
-%         \gr@implitem%
-%       }%
-%     }%
-%   }%
-%   \gr@setpar%
-%   \par%
-%   \let\gr@leftsq\[%
-%   \let\gr@rightsq\]%
-%   \def\gr@endsyntdiag]{\end{syntdiag}\gr@setpar\par}%
-%   \def\[{\@ifnextchar[{\begin{syntdiag}\@gobble}\gr@leftsq}%
-%   \def\]{\@ifnextchar]\gr@endsyntdiag\gr@rightsq}%
-% }{%
-%   \@newlistfalse%
-%   \everypar{}%
-%   \endlist%
-% }
-% \setlength{\grammarparsep}{0pt plus 0.15ex} % vert space between prods
-% \setlength{\grammarindent}{5em} %
-% \renewcommand{\grammarlabel}[2]{%
-%   \hspace*{1.25em}\synt{#1} \hfill#2%
-% }
-% \def\alt{\\\llap{\textbar\hspace*{0.35em}}}%
-
-% % Env to indent text
-% \newenvironment{clip}{%
-%   \begin{list}{}{\setlength{\leftmargin}{1.25em}
-%                  \setlength{\parsep}{\grammarparsep}}\item[]
-% }{%
-%   \end{list}%
-% }
-
-% % Used for derivations; gives a raggedright block of indented text
-% % \begin{displayedsteps}
-% %  \initialstep\syntax{<start>}
-% %   ..
-% % \end{displayedsteps}
-% \newenvironment{displayedsteps}{%
-%   \begin{list}{}%
-%       {\listparindent 1em%
-%        %\itemindent    \listparindent
-%        % \leftmargin 2em%
-%        \rightmargin 1em%
-%        \parsep        \z@ \@plus\p@}%
-%        \item\relax \raggedright
-% }{%
-%   \end{list}
-% }
-% \newcommand{\initialstep}{\hspace*{-1em}}
 
 
 % ==== Remaining content macros ======
 % Broken out separately so they can be used in the
-% Asymptotegraphics
+% Asymptote graphics
 \usepackage{contentmacros}
 
 
@@ -453,7 +388,7 @@
 % quick defs to get it to go.
 
 \newenvironment{ans}[1]%
-  {\par\noindent\textbf{#1}\ }%
+  {\leftskip1em\par\noindent\hspace{-1em}\textbf{#1}\ }%
   {}
 
 % Mark an answer as verified by putting this in the source, and it gets 
@@ -466,8 +401,18 @@
 
 % \newcommand{\autocite}[1]{\textbf{#1}}
 
-\newcommand{\cref}[1]{REF:~\textit{#1}}
-\newcommand{\Cref}[1]{REF:~\textit{#1}}
+\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/12
+% \usepackage{hyperref}
+\externaldocument{book,prologue,background}
+\usepackage{cleveref}
+% \def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+%   \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+%   \ifcsname #2refname\endcsname
+%     \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+%   \fi
+% }
+\renewcommand{\cref}[1]{REF:~\textit{#1}}
+\renewcommand{\Cref}[1]{REF:~\textit{#1}}
 
 
 \newcommand{\definend}[1]{#1}  % should get rid of these in answers?

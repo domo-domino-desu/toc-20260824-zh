@@ -2417,12 +2417,6 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-
-
-
-
-
-
 // ============== pumping lemma example ================
 picture pic;
 int picnum = 58;
@@ -2772,7 +2766,7 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node S=ncircle("$S$"); 
+node s=ncircle("$S$");  // S screws with the direction
 node A=ncircle("$A$"); 
 node B=ncircle("$B$"); 
 node F=ncircle("$F$",ns_accepting); 
@@ -2783,11 +2777,11 @@ defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-hlayout(1*u, S, A, B, F);
+hlayout(1*u, s, A, B, F);
 
 // draw edges
 draw(pic,
-     (S--A).l("\str{a}"),
+     (s--A).l("\str{a}"),
      (A..loop(N)).l("\str{a}"),
      (A--B).l("\str{b}"),
      (B..loop(N)).l("\str{b}"),
@@ -2796,7 +2790,7 @@ draw(pic,
 
 // draw nodes
 draw(pic,
-     S, A, B, F);
+     s, A, B, F);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -2812,7 +2806,7 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node S=ncircle("$S$");  
+node s=ncircle("$S$");  // S screws with the direction  
 node F=ncircle("$F$",ns_accepting); 
 
 // calculate nodes position
@@ -2821,19 +2815,19 @@ defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-hlayout(1*u, S, F);
+hlayout(1*u, s, F);
 
 // draw edges
 draw(pic,
-     (S..bend..F).l("\str{b}"),
-     (S..loop(N)).l("\str{a}"),
-     (F..bend..S).l("\str{b}"),
+     (s..bend..F).l("\str{b}"),
+     (s..loop(N)).l("\str{a}"),
+     (F..bend..s).l("\str{b}"),
      (F..loop(N)).l("\str{a}")
 );
 
 // draw nodes
 draw(pic,
-     S, F);
+     s, F);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -3366,6 +3360,144 @@ draw(pic,
 // draw nodes after edges
 draw(pic,
      q0, q1, q2, q3, q4, q5, q6);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ======== exercise nondeterministic machine, given number states =======
+picture pic;
+int picnum = 84;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0}"),
+     (q1--q2).l("\str{0}") 
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ........... substring 0110 .............
+picture pic;
+int picnum = 85;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(u, q0, q1, q2, q3, q4);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{0}"),
+     (q0..loop(S)).l("any"),
+     (q1--q2).l("\str{1}"),
+     (q2--q3).l("\str{1}"),
+     (q3--q4).l("\str{0}"),
+     (q4..loop(S)).l("any")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3, q4);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........... even number 0's or two 1's .............
+picture pic;
+int picnum = 86;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+q1.pos = new_node_pos_h(q0, 20, 1*u);
+hlayout(1.0*u, q1, q2);
+q3.pos = new_node_pos_h(q0, -20, 1*u);
+hlayout(1.0*u, q3, q4, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\emptystring"),
+     (q1..bend..q2).l("\str{0}"),
+     (q2..bend..q1).l("\str{0}"),
+     (q2..loop(N)).l("\str{1}"),
+     (q0--q3).l("\emptystring"),
+     (q3..loop(S)).l("\str{0}"),
+     (q3--q4).l("\str{1}"),
+     (q4..loop(S)).l("\str{0}"),
+     (q4--q5).l("\str{1}"),
+     (q5..loop(S)).l("\str{0}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3, q4, q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........... {0}* .............
+picture pic;
+int picnum = 87;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+
+// draw edges
+draw(pic,
+     (q0..loop(N)).l("\str{0}"),   // bug in node; have to repeat
+     (q0..loop(N)).l("\str{0}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

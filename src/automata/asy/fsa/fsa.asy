@@ -2908,4 +2908,51 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== exercise: language of comment strings =========
+picture pic;
+int picnum = 52;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_1$");    
+node q2=ncircle("$q_2$");    
+node q3=ncircle("$q_3$");    
+node q4=ncircle("$q_4$",ns_accepting);    
+node e=ncircle("$e$");    
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.75*u;
+
+hlayout(1*u, q0, q1, q2, q3, q4);
+vlayout(1*v,q2, e);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{/}").style("leftside"),
+     (q0..bend..e).l(Label("other",Relative(0.25))),
+     (q1--q2).l("\str{\#}").style("leftside"),
+     (q1..bend..e).l(Label("other",Relative(0.35))),
+     (q2--q3).l("\str{\#}").style("leftside"),
+     (q2..loop(N)).l("other"),
+     (q2--e).l(Label("\str{/}, \str{\#}",Relative(0.3))),
+     (q3--q4).l("\str{/}").style("leftside"),
+     (q3..bend(-20)..e).l(Label("other",Relative(0.25))).style("leftside"),
+     (q4..bend(-20)..e).l(Label("any",Relative(0.25))).style("leftside"),
+     (e..loop(S)).l("any")
+);
+
+// draw nodes
+draw(pic, q0, q1, q2, q3, q4, e);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

@@ -1,5 +1,5 @@
-// graphs.asy
-//  Draw intro to graphs
+// complexity.asy
+//  For chapter on complexity
 
 import settings;
 // settings.dir="..";  // make it able to see jh.asy 
@@ -1172,6 +1172,57 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+
+
+// ......................................
+picture pic;
+int picnum = 22;
+setdefaultgraphstyles();
+
+// define nodes
+node q0=ncircle("$q_0$");
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$");
+node q3=ncircle("$q_3$");
+node q4=ncircle("$q_4$");
+node q5=ncircle("$q_5$");
+node q6=ncircle("$q_6$");
+node q7=ncircle("$q_7$");
+node q8=ncircle("$q_8$");
+node q9=ncircle("$q_9$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.0cm;
+real u = defaultlayoutskip;
+real v = 0.9*u;
+
+hlayout(1*u, q0, q1, q2, q3, q4);
+vlayout(1*v, q0, q5);
+hlayout(1*u, q5, q6, q7, q8, q9);
+
+// draw edges
+draw(pic,
+     (q0--q5),
+     (q0--q8),
+     (q1--q5),
+     (q1--q8),
+     (q2--q3),
+     (q2--q6),
+     (q2--q7),
+     (q3--q8),
+     (q4--q8),
+     (q4--q9),
+     (q5--q6),
+     (q7--q8),
+     (q8--q9)
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6, q7, q8, q9);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

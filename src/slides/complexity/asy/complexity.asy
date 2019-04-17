@@ -393,6 +393,55 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======== museum corridors =============
+picture pic;
+int picnum = 8;
+unitsize(pic,1pt);
+setdefaultgraphstyles();
+
+// define nodes
+node
+  v0=ncircle("$v_0$"), 
+  v1=ncircle("$v_1$"),
+  v2=ncircle("$v_2$"),
+  v3=ncircle("$v_3$"), 
+  v4=ncircle("$v_4$"),
+  v5=ncircle("$v_5$"),
+  v6=ncircle("$v_6$"),
+  v7=ncircle("$v_7$"),
+  v8=ncircle("$v_8$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, v0, v1, v2, v3);
+vlayout(1*v, v0, v4);
+hlayout(u, v4, v5, v6, v7, v8);
+  
+// edges
+draw(pic,
+     (v0--v1),
+     (v1--v2),
+     (v1--v5),
+     (v2--v3),
+     (v2--v6),
+     (v3--v7),
+     (v4--v5),
+     (v6--v7),
+     (v7--v8)
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, v0, v1, v2, v3, v4, v5, v6, v7, v8);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 
 

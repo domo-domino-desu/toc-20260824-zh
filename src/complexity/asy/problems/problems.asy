@@ -1938,12 +1938,12 @@ int picnum = 29;
 setdefaultgraphstyles();
 
 // define nodes
-node q0=ncircle("$q_0$");
-node q1=ncircle("$q_1$");
-node q2=ncircle("$q_2$");
-node q3=ncircle("$q_3$");
-node q4=ncircle("$q_4$");
-node q5=ncircle("$q_5$");
+node q0=ncircle("$v_0$");
+node q1=ncircle("$v_1$");
+node q2=ncircle("$v_2$");
+node q3=ncircle("$v_3$");
+node q4=ncircle("$v_4$");
+node q5=ncircle("$v_5$");
 
 // layout
 defaultlayoutrel = false;
@@ -1978,12 +1978,12 @@ int picnum = 30;
 setdefaultgraphstyles();
 
 // define nodes
-node q0=ncircle("$q_0$");
-node q1=ncircle("$q_1$");
-node q2=ncircle("$q_2$");
-node q3=ncircle("$q_3$");
-node q4=ncircle("$q_4$");
-node q5=ncircle("$q_5$");
+node q0=ncircle("$v_0$");
+node q1=ncircle("$v_1$");
+node q2=ncircle("$v_2$");
+node q3=ncircle("$v_3$");
+node q4=ncircle("$v_4$");
+node q5=ncircle("$v_5$");
 
 // layout
 defaultlayoutrel = false;

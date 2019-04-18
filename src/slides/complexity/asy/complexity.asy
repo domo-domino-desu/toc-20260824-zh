@@ -417,9 +417,14 @@ defaultlayoutskip = 1cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-hlayout(u, v0, v1, v2, v3);
+v1.pos = new_node_pos_h(v0, -15, 1*u);
+v2.pos = new_node_pos_h(v1,  15, 1*u);
+v3.pos = new_node_pos_h(v2,  -15, 1*u);
 vlayout(1*v, v0, v4);
-hlayout(u, v4, v5, v6, v7, v8);
+vlayout(1*v, v1, v5);
+vlayout(1*v, v2, v6);
+vlayout(1*v, v3, v7);
+v8.pos = new_node_pos_h(v7,  15, 1*u);
   
 // edges
 draw(pic,
@@ -436,6 +441,103 @@ draw(pic,
 
 // draw nodes after edges so arrows are OK
 draw(pic, v0, v1, v2, v3, v4, v5, v6, v7, v8);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ..............corridors labelled............................
+picture pic;
+int picnum = 9;
+unitsize(pic,1pt);
+setdefaultgraphstyles();
+
+// define nodes
+node
+  v0=ncircle("$v_0$"), 
+  v1=ncircle("$v_1$",ns_bg),
+  v2=ncircle("$v_2$",ns_bg),
+  v3=ncircle("$v_3$"), 
+  v4=ncircle("$v_4$"),
+  v5=ncircle("$v_5$",ns_bg),
+  v6=ncircle("$v_6$"),
+  v7=ncircle("$v_7$",ns_bg),
+  v8=ncircle("$v_8$");
+
+// // layout
+// defaultlayoutrel = false;
+// defaultlayoutskip = 1cm;
+// real u = defaultlayoutskip;
+// real v = 0.85*u;
+
+v1.pos = new_node_pos_h(v0, -15, 1*u);
+v2.pos = new_node_pos_h(v1,  15, 1*u);
+v3.pos = new_node_pos_h(v2,  -15, 1*u);
+vlayout(1*v, v0, v4);
+vlayout(1*v, v1, v5);
+vlayout(1*v, v2, v6);
+vlayout(1*v, v3, v7);
+v8.pos = new_node_pos_h(v7,  15, 1*u);
+
+// edges
+draw(pic,
+     (v0--v1).label("a"),
+     (v1--v2).label("b"),
+     (v1--v5).label("d"),
+     (v2--v3).label("c"),
+     (v2--v6).label("e"),
+     (v3--v7).label("f"),
+     (v4--v5).label("g"),
+     (v6--v7).label("h"),
+     (v7--v8).label("i")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, v0, v1, v2, v3, v4, v5, v6, v7, v8);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Hard for a class ======
+
+picture pic;
+int picnum=10;
+
+unitsize(pic,1cm);
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+// Make class boundary
+// path class = (0.45*SET_RT,0.25*SET_TOP)
+//                ..(0.25*SET_RT,0.5*SET_TOP)
+//                ..(0.75*SET_RT,0.4*SET_TOP)
+//   // ..(0.6*SET_RT,0.35*SET_TOP)
+//                ..cycle;
+path class = (0.45*SET_RT,0.55*SET_TOP)..(0.65*SET_RT,0.55*SET_TOP)
+              ..(0.6*SET_RT,0.2*SET_TOP)..(0.5*SET_RT,0.2*SET_TOP)
+              ..cycle;
+draw(pic,class,boldcolor);
+
+pair start_bean = point(set_bound,3.75);
+pair end_bean = point(set_bound,3.10);
+pair start_class = point(class,0.0);
+pair end_class = point(class,1.05);
+pair mid_class = ( (start_class.x+end_class.x)/2, start_class.y-0.05);
+path hard = start_bean -- start_class{mid_class-start_class}
+  .. mid_class
+  .. {end_class-mid_class}end_class -- end_bean;
+draw(pic,hard,highlightcolor);
+// dot(pic,point(class,1.25),red);
+// dot(pic,point(class,1.75),red);
+// dot(pic,point(set_bound,3.55),green);
+// dot(pic,point(set_bound,3.10),green);
+
+draw(pic,set_bound, AXISPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

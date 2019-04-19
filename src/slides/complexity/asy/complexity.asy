@@ -513,31 +513,41 @@ real SET_RT=1.4;
 path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
 
 // Make class boundary
-// path class = (0.45*SET_RT,0.25*SET_TOP)
-//                ..(0.25*SET_RT,0.5*SET_TOP)
-//                ..(0.75*SET_RT,0.4*SET_TOP)
-//   // ..(0.6*SET_RT,0.35*SET_TOP)
-//                ..cycle;
-path class = (0.45*SET_RT,0.55*SET_TOP)..(0.65*SET_RT,0.55*SET_TOP)
-              ..(0.6*SET_RT,0.2*SET_TOP)..(0.5*SET_RT,0.2*SET_TOP)
-              ..cycle;
-draw(pic,class,boldcolor);
+// path class = (0.45*SET_RT,0.55*SET_TOP)..(0.65*SET_RT,0.55*SET_TOP)
+//               ..(0.6*SET_RT,0.2*SET_TOP)..(0.5*SET_RT,0.2*SET_TOP)
+//               ..cycle;
+path class = (0.425*SET_RT,0.55*SET_TOP)..(0.5*SET_RT,0.57*SET_TOP)
+  ..(0.575*SET_RT,0.55*SET_TOP)
+  ..(0.55*SET_RT,0.2*SET_TOP)
+  ..(0.5*SET_RT,0.18*SET_TOP)
+  ..(0.44*SET_RT,0.2*SET_TOP)
+  ..cycle;
 
-pair start_bean = point(set_bound,3.75);
-pair end_bean = point(set_bound,3.10);
-pair start_class = point(class,0.0);
-pair end_class = point(class,1.05);
-pair mid_class = ( (start_class.x+end_class.x)/2, start_class.y-0.05);
-path hard = start_bean -- start_class{mid_class-start_class}
+// Find where a horizontal line crosses the class
+real HORIZ_LINE_HGT = 0.47*SET_TOP;
+real[] ints = times(class, (0,HORIZ_LINE_HGT));
+pair class_left = point(class, ints[0]);
+pair class_right = point(class, ints[1]);
+
+// dot(pic, class_left, red);
+// dot(pic, class_right, green);
+
+real[] start_bean_times = times(set_bound, class_left.x);
+pair start_bean = point(set_bound,start_bean_times[1]-0.1);
+real[] end_bean_times = times(set_bound, class_right.x-0.1);
+pair end_bean = point(set_bound,end_bean_times[1]);
+pair mid_class = ( (class_left.x+class_right.x)/2, HORIZ_LINE_HGT-0.05*SET_TOP);
+path hard = start_bean -- class_left
   .. mid_class
-  .. {end_class-mid_class}end_class -- end_bean;
-draw(pic,hard,highlightcolor);
-// dot(pic,point(class,1.25),red);
-// dot(pic,point(class,1.75),red);
-// dot(pic,point(set_bound,3.55),green);
-// dot(pic,point(set_bound,3.10),green);
+  .. class_right -- end_bean;
 
-draw(pic,set_bound, AXISPEN);
+path intersec = buildcycle(hard, class);
+
+fill(pic, intersec, highlight_light);
+draw(pic,class,boldcolor);
+draw(pic,hard,highlightcolor);
+
+draw(pic,set_bound, boldcolor);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

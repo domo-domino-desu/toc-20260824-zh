@@ -423,6 +423,29 @@ Here are the steps.
 % $f(x,y)=x+y$.
 \end{example}
 
+
+We now make an observation that is crucial.
+Some Turing machines,
+for at least some starting configurations, never halt.
+\begin{example}
+The machine
+$
+  \TM_{\text{inf loop}}=\set{
+        \tminstruction{0}{B}{B}{0},\,
+        \tminstruction{0}{1}{1}{0}
+      }
+$
+never halts, regardless of the input.
+\begin{center}
+  \vcenteredhbox{\includegraphics{prologue/asy/circlediagram/infloop.pdf}}
+\end{center}
+\noindent The exercises ask for examples of Turing machines that 
+halt on some inputs and not on others.
+\end{example}
+% The \definend{Halting Problem} is to determine, effectively, 
+% which machines halt on which inputs.
+% The second chapter will cover the Halting Problem.
+
 A \definend{symbol} is something that the device can write and read,
 for storage and retrieval.
 Obviously that depends on the mechanism
@@ -513,7 +536,7 @@ The table's advantages are that it makes clear that $\Delta$
 is a finite function, and that it is simple
 to implement as a program.
 The graph is the easiest format for small machines 
-but it is awkward if there are more than ten or twelve states.
+but it is visually confusing if there are lots of states.
 
 Of course, the point of a machine is what it does.
 A Turing machine is a blueprint for a computation\Dash it is like 
@@ -592,28 +615,6 @@ and where $\hat{\tau}_R$ is the concatenation of $\sequence{s}$ and $\tau_R$.
 (3)~If $T_n=\str{R}$ then the machine moves the tape head to the right.
 This is like~(2) so we omit the details.
 
-We now make an observation that is crucial.
-Some Turing machines,
-for at least some starting configurations, never halt.
-\begin{example}
-The machine
-$
-  \TM_{\text{inf loop}}=\set{
-        \tminstruction{0}{B}{B}{0},\,
-        \tminstruction{0}{1}{1}{0}
-      }
-$
-never halts, regardless of the input.
-\begin{center}
-  \vcenteredhbox{\includegraphics{prologue/asy/circlediagram/infloop.pdf}}
-\end{center}
-\end{example}
-\noindent The exercises ask for examples of Turing machines that 
-halt on some inputs and not on others.
-% The \definend{Halting Problem} is to determine, effectively, 
-% which machines halt on which inputs.
-% The second chapter will cover the Halting Problem.
-
 If two configurations are related by being a step apart, 
 then we write
 $\mathcal{C}(i) \yields \mathcal{C}(i+1)$.\footnote{% 
@@ -630,6 +631,33 @@ with~$\kleenestar{\yields}$
 so we can write a halting computation as
 $\mathcal{C}(0)\mathrel{\kleenestar{\yields}}\mathcal{C}(h)$.\footnote{% 
   Read this as ``yields eventually,'' or simply ``yields.''} 
+
+\begin{example} \label{ex:TraceComputation}
+In \cref{ex:MPred}, the pictures that trace the machine's execution
+show the successive configurations.
+So the computation is this. 
+\begin{multline*}
+\sequence{q_0,\str{1},\emptystring,\str{11}}
+\yields
+\sequence{q_0,\str{1},\str{1},\str{1}}
+\yields
+\sequence{q_0,\str{1},\str{11},\emptystring}
+\yields
+\sequence{q_0,\str{B},\str{111},\emptystring}
+\yields
+\sequence{q_1,\str{1},\str{11},\emptystring}  \\
+\yields
+\sequence{q_1,\str{B},\str{11},\emptystring}
+\yields
+\sequence{q_2,\str{1},\str{1},\emptystring}
+\yields
+\sequence{q_2,\str{1},\emptystring,\str{1}}
+\yields
+\sequence{q_2,\str{B},\emptystring,\str{11}}
+\yields
+\sequence{q_3,\str{1},\emptystring,\str{11}}
+\end{multline*}
+\end{example}
 
 That description of the action of a Turing machine
 emphasizes that it is a
@@ -842,17 +870,23 @@ that leads to its widespread acceptance.
 
 
 \begin{exercises}
+\recommended
 \begin{exercise}
-Trace the execution of the machine $\TM_{\text{pred}}$ from 
+Trace each computation, as in \cref{ex:TraceComputation}.
+\begin{exparts}
+\item
+The machine $\TM_{\text{pred}}$ from 
 Example~\ref{ex:MPred} when starting on a blank tape.
-\begin{answer}
-  Here is the trace.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Trace the execution of $\TM_{\text{add}}$ from 
+\item
+The machine $\TM_{\text{add}}$ from 
 Example~\ref{ex:MAdd} when the first addend is $0$ and the second is~$2$.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item Here is the trace.
+\item Here is the trace.
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -864,6 +898,7 @@ the current state and what's being read on the tape.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Trace the execution of $\TM_{\text{inf loop}}$ 
 for twenty steps, from a blank tape.
@@ -872,6 +907,7 @@ for twenty steps, from a blank tape.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Produce a Turing machine that, if it is started with the tape blank except for 
 a contiguous sequence of \str{1}'s, and with the head under the leftmost
@@ -890,6 +926,8 @@ and gives as output the number~$3$ written in unary.
 % and gives as output the number~$2n$ written in unary,
 % with the head under the leftmost \str{1}. 
 % \end{exercise}
+
+\recommended
 \begin{exercise} %  \recommended
 Produce a doubler, a Turing machine that computes $f(x)=2x$.
 \begin{exparts}
@@ -919,6 +957,7 @@ with the head under the leftmost \str{1},
 while if $n$ is even it gives the number~$0$, so the entire tape is blank. 
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Produce a Turing machine that performs the successor operation, that
 takes as input a number written in
@@ -926,6 +965,7 @@ unary, so that $n$ is represented as $n$-many $1$'s,
 and gives as output the number~$n+1$ written in unary. 
 \end{exercise}
 
+\recommended
 \begin{exercise}
 The machine in \cref{ex:MAdd} goes all the way to the right before turning
 to go back left.
@@ -936,11 +976,24 @@ Produce a machine that more efficiently finds the sum.
 Give a Turing machine that
 takes as input a bit string
 and adds a \str{01} at the back. 
-You can assume that at the start the machine's head is under the first bit, 
+You can assume that at the start the machine's head is under the leftmost bit, 
 and you must arrange that at the end the head should again be under the 
 leftmost bit.
 \end{exercise}
 
+
+\recommended
+\begin{exercise}
+Produce a Turing machine whose tape alphabet is 
+$\Sigma=\set{\str{B},\str{0},\str{1}}$, and which will, when given a binary
+number as input, decide if the number is divisible by~$2$.
+That is, the machine 
+starts with the head under the most significant bit and it ends
+with the tape containing only one bit, \str{1} if the input was even 
+and \str{0} if it was not, and with the head under that output.
+\end{exercise}
+
+\recommended
 \begin{exercise}
 % One way to argue that Turing machines can do anything that a modern CPU 
 % can do is to show how to do all of the CPU's operations and show how to
@@ -963,34 +1016,7 @@ Take as input two $4$-bit strings and perform a bitwise~AND.
 \end{exparts*}
 \end{exercise}
 
-\begin{exercise}
-Write a Turing machine that will take three input numbers, in unary and
-separated by a blank, and return their sum (that is, at the end the tape
-contains the sum of the three in unary and the head is under the leftmost
-\str{1}).
-Write a machine that takes an arbitrary number of numbers and returns their
-sum.
-\end{exercise}
-
-\begin{exercise}
-Produce a Turing machine whose tape alphabet is 
-$\Sigma=\set{\str{B},\str{0},\str{1}}$, and which will, when given a binary
-number as input, decide if the number is divisible by~$2$.
-That is, the machine 
-starts with the head under the most significant bit and it ends
-with the tape containing only one bit, \str{1} if the input was even 
-and \str{0} if it was not, and with the head under that output.
-\end{exercise}
-
-
-\begin{exercise}
-Produce a Turing machine that replicates the input:~if 
-it is started with the tape blank except for 
-a contiguous sequence of $n$-many \str{1}'s, and with the head under the
-first~\str{1}, it will eventually halt with the tape containing 
-two sequences of $n$-many \str{1}'s separated by a single blank.   
-\end{exercise}
-
+\recommended
 \begin{exercise}
 \begin{exparts}
 \item 
@@ -1007,6 +1033,14 @@ also does not halt on infinitely many.
 \end{exercise}
 
 \begin{exercise}
+Produce a Turing machine that replicates the input:~if 
+it is started with the tape blank except for 
+a contiguous sequence of $n$-many \str{1}'s, and with the head under the
+first~\str{1}, it will eventually halt with the tape containing 
+two sequences of $n$-many \str{1}'s separated by a single blank.   
+\end{exercise}
+
+\begin{exercise}
 Write a Turing machine that recognizes if its input is a
 palindrome, a string that is the same forward and backward.
 That is, when the machine starts the tape contains a finite string of
@@ -1015,6 +1049,16 @@ and the machine's head is under the leftmost character.
 Designate a ``yes'' state and a ``no'' state
 so that when the machine finishes, it is in the first if the input was a
 palindrome and in the second if it was not.
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Write a Turing machine that will take three input numbers, in unary and
+separated by a blank, and return their sum (that is, at the end the tape
+contains the sum of the three in unary and the head is under the leftmost
+\str{1}).
+Write a machine that takes an arbitrary number of numbers and returns their
+sum.
 \end{exercise}
 
 \begin{exercise}
@@ -1053,9 +1097,9 @@ you couldn't tell.
 Write a Turing machine that, when started on a blank tape,
 will run forever and produce a tape containing the string
 $010\,110\,111\,0\ldots$\@  
-(\textit{Remark:} the number $0.010\,110\,111\,0\ldots$ is  
-\definend{Turing's number}.  It is a real number that is computable but is
-irrational,
+(\textit{Remark:} the real number $0.010\,110\,111\,0\ldots$ is  
+\definend{Turing's number}.  It is a simple example of a number 
+that is computable but irrational,
 because its decimal expansion never repeats and never terminates.)
 \end{exercise}
 

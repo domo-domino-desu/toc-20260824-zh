@@ -198,7 +198,7 @@
 % This can be on separate lines.
 \newenvironment{exparts}{%
   \begin{enumerate}[topsep=0ex,
-                    itemsep=0ex, parsep=0ex,
+                    itemsep=0ex, parsep=0ex,listparindent=0.68\parindent,
                     leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
                     label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
 }{%

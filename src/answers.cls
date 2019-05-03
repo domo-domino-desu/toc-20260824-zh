@@ -4,7 +4,7 @@
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions \relax
-\LoadClass[twoside]{book}
+\LoadClass[twoside,fleqn]{book}
 
 % Use UTF-8
 \usepackage[utf8]{inputenc}

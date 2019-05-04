@@ -288,9 +288,6 @@
 \usepackage{relsize}
 \newcommand\codeinline{\lstinline[basicstyle=\smaller\ttfamily]}
 
-
-
-
 % Note: you can refine the choices with something like:
 % \lstset{language=C,caption={Descriptive Caption Text},label=DescriptiveLabel}
 
@@ -337,41 +334,39 @@
 
 
 
-% ================ Content macros =========
-
-% Tape sequence
-%  List a sequence of executation steps by showing a bunch of tapes 
-% Usage: 
-%   \begin{tapesequence}
-%     \begin{tapesequencetable}
-%       0 &\tapegraphic{tapeoutput0.pdf} \\
-%       1 &\tapegraphic{tapeoutput1.pdf} \\
-%     \end{tapesequencetable}
-%   \end{tapesequence}
-% \newenvironment{tapesequence}{%
-%   % \vspace{1.5ex plus 0.25ex minus 0.15ex}%
-%   \begin{center} % \vspace{-3ex}
-%     \renewcommand{\arraystretch}{2.25}
-% }{%
-%   \end{center}
-%   % \vspace{-1.5ex plus 0.25ex minus 0.15ex}% arraystretch leaves extra?
-% }
-% \newenvironment{tapesequencetable}{%
-%   % \vspace{2.5ex plus 0.25ex minus 0.15ex}%
-%   \begin{tabular}[t]{r|c} 
-%     % \multicolumn{1}{r}{\renewcommand{\arraystretch}{1.0}%
-%     %                      \begin{tabular}[b]{@{}c@{}}
-%     %                        \tabulartext{After} \\[-0.425ex] 
-%     %                        \tabulartext{step} 
-%                              %                            \end{tabular}}
-%     \multicolumn{1}{r}{\tabulartext{Step}}
-%      &\tabulartext{Configuration}                        \\[-1ex] \hline
-% }{%
-%   \end{tabular}%
-% }
-% \newcommand{\tapegraphic}[1]{%
-%   \vcenteredhbox{\includegraphics{#1}}%
-% }
+% ================ Display environment =========
+\newenvironment{display}{%
+  \if@fleqn %
+    \list{\relax}{%
+      \setlength{\leftmargin}{\mathindent}
+      \setlength{\itemindent}{0em}
+      \setlength{\labelwidth}{0em}
+      \setlength{\labelsep}{0em}
+      \setlength{\rightmargin}{0em}
+      \setlength{\listparindent}{0em}
+      \setlength{\parsep}{\parskip}
+      \setlength{\partopsep}{0ex}
+      \setlength{\itemsep}{0ex}
+      } 
+    % \trivlist  \item \relax \hspace*{\mathindent}
+  \else 
+    \list{\relax}{%
+      \setlength{\leftmargin}{0em}
+      \setlength{\itemindent}{0em}
+      \setlength{\labelwidth}{0em}
+      \setlength{\labelsep}{0em}
+      \setlength{\rightmargin}{0em}
+      \setlength{\listparindent}{0em}
+      \setlength{\parsep}{\parskip}
+      \setlength{\partopsep}{0ex}
+      \setlength{\itemsep}{0ex}
+      } \centering
+    % \trivlist  \centering \item \relax
+  \fi
+  \item \relax
+}{%
+  \endlist %
+}
 
 
 % ==== Grammars ==== (Asy doesn't like it) 

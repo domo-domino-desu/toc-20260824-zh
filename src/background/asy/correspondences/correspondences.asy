@@ -32,7 +32,7 @@ defaultlayoutskip = 0.5cm;
 real u = defaultlayoutskip;  // usual unit
 
 // Correspondence between {0,1}xN and N
-int num_pics = 7;
+int num_pics = 8;
 int col_hgt = 4;   // how far up to show? 
 for (int picnum=0; picnum <= num_pics; ++picnum) {
    // debugging: write(stdout,"Here.");
@@ -59,8 +59,13 @@ for (int picnum=0; picnum <= num_pics; ++picnum) {
    draw(pic, n[0], n[1], n[2], n[3], n[4],
 	   n[5], n[6], n[7], n[8], n[9] );
    // draw any edges
-   if (picnum > 0) {
+   if ((picnum > 0) && (picnum < 8)) {
      draw(pic, n[picnum-1] -- n[picnum], DARKPEN+light_color, arrow=Arrow(DefaultHead, filltype=Fill(DARKPEN+light_color), size=4));
+   }
+   if (picnum == 8) {
+     for (int pn =1; pn < 8; ++pn) {
+       draw(pic, n[pn-1] -- n[pn], DARKPEN+light_color, arrow=Arrow(DefaultHead, filltype=Fill(DARKPEN+light_color), size=4));
+     }
    }
   shipout(format("correspondences1%03d",picnum),pic,format="pdf");
 }
@@ -69,7 +74,7 @@ for (int picnum=0; picnum <= num_pics; ++picnum) {
 // ===================================================
 // Correspondence between NxN and N
 // TODO: The first arrow, in picnum=1, does not show.
-node[] n = ncircles(
+node[] n = nboxes(
 		    "$\sequence{0,0}$",  // node 0
 		    "$\sequence{1,0}$",  // 1
 		    "$\sequence{2,0}$",  // 2
@@ -100,7 +105,7 @@ int[] node_list_order = {0,
 			 12, 9, 6, 3};
 // layout
 defaultlayoutrel = false;
-gridlayout((4,4), (3u, -u), n);
+gridlayout((4,4), (3u, -1.25u), n);  // was -u
 hlayout(2u, n[3], m[0]);
 vlayout(-u, m[0], m[1], m[2] );
 vlayout(-u, n[12], m[3]);
@@ -108,7 +113,7 @@ vlayout(-u, n[13], m[4]);
 vlayout(-u, n[14], m[5]);
 
 // Animate the correspondence
-int num_pics = 9;
+int num_pics = 10;  // one extra for poster=last, for dumb PDF readers
 int col_hgt = 4;   // how far up to show? 
 for (int picnum=0; picnum <= num_pics; ++picnum) {
   picture pic;
@@ -161,9 +166,15 @@ for (int picnum=0; picnum <= num_pics; ++picnum) {
 	n[15]);
    draw(pic, m[0], m[1], m[2], m[3], m[4], m[5] );
    // draw any edges
-   if (picnum > 0) {
+   if ((picnum > 0) && (picnum < num_pics)) {
      draw(pic, n[node_list_order[picnum-1]] -- n[node_list_order[picnum]],
 	  DARKPEN+light_color, arrow=Arrow(DefaultHead, filltype=Fill(DARKPEN+light_color), size=4));
+   }
+   if (picnum == num_pics) {  // to show up if pdf reader does not animate
+     for (int pn = 1; pn<num_pics; ++pn) {
+       draw(pic, n[node_list_order[pn-1]] -- n[node_list_order[pn]],
+	    DARKPEN+light_color, arrow=Arrow(DefaultHead, filltype=Fill(DARKPEN+light_color), size=4));
+     }
    }
   shipout(format("correspondences2%03d",picnum),pic,format="pdf");
 }

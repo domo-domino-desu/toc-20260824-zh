@@ -4478,21 +4478,23 @@ Consider the above instance of \probname{Satisfiability},
 \cref{ex:SatisfiabilityfastOnNDTM}.
 Each line of the truth table is easy; the challenge 
 is that there are a lot of lines.
-Intuitively, the speed advantage that a nondeterministic machine has
-is in covering all the lines, either by spawning lots of children or by
-guessing which line to do.  
-But even a deterministic machine could quickly get a 
-`yes' answer if it was told on what line to look.
-That is, if in the example above someone said, 
-``Hint: look at $\omega=\str{TTF}$'' 
+Intuitively, as we have discussed many times, we can think that 
+a nondeterministic machine has a speed advantage in that it can use 
+unbounded parallelism to simultaneously cover all the lines. 
+Switching to the other way that we conceptualize nondeterminism,
+we can thing of this apparent speed advantage as that the machine can
+guess which line to check.  
+That is, if the demon whispers, 
+``Psst! Look at $\omega=\str{TTF}$'' 
 then even a deterministic machine could quickly verify 
 that the formula is satisfiable. 
 %</intro:Verifier>
  
 %<*def:Verifier>
-\begin{definition}
-A deterministic Turing machine $\TM$ is a
-\definend{verifier of a language} if 
+\begin{definition}  \label{def:Verifier}
+For a language, 
+a deterministic Turing machine~$\TM$ is a
+\definend{verifier} if 
 for every $\sigma\in\kleenestar{\B}$, that string is member of the language
 if and only if
 there exists a \definend{witness} or \definend{certificate}
@@ -4515,108 +4517,118 @@ $\sequence{\sigma,\omega}$, in time polynomial in~$\sigma$.
 \end{lemma}
 %</lem:VerifierAndGuesserEquiv>
 
-The proof makes precise the intuition before the definition.
-Before that we will see some examples and discuss some aspects of the 
+So to show that a language is in~$\NP$ we write a verifier~$\TM$, 
+a program that inputs hints~$\omega$ and confirms that they work.  
+Before the proof we will see some examples and discuss some aspects of the 
 definition and lemma.
 
 %<*ex:SATIsNP>
 \begin{example}
-This is \probname{Satisfiability}.
+The \probname{Satisfiability} problem is to determine membership in this
+language.
 \begin{equation*}
   \SAT=
   \set{\sigma\suchthat
     \text{$\sigma$ represents a propositional logic formula~$f$ that is satisfiable}}
 \end{equation*}
-As a witness we can use a string
-pointing to a line of the truth table,
+For the witnesses we can use strings pointing to a line of the truth table,
 such as $\omega=\str{TTF}$.
-With that in mind, 
-we can write a Turing machine~$\TM$ that inputs
+This family of witnesses works because we can write
+the verifier shown below, a Turing machine~$\TM$ that inputs
 a representation of a propositional logic statement
-$\sigma$ and a truth table line~$\omega$,
-and then accepts that pair if it can verify that on that line 
-the statement~$\sigma$ returns a value of~$T$.
-If the statement~$\sigma$ is satisfiable then there is such a~$\omega$,
-and the machine can verify it quickly.
+$\sigma$ and a representation of a truth table line~$\omega$,
+and accepts that pair if it can confirm that on that line 
+the statement~$\sigma$ returns~$T$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts000.pdf}}
+\end{center}
+If the statement~$\sigma$ is satisfiable then such an~$\omega$ exist,
+and the machine can verify the truth-table line quickly, certainly in polytime.
 If~$\sigma$ is not satisfiable then it doesn't matter what~$\omega$ 
-the machine gets, it will no be able to verify an ending~$T$.
-So $\sigma\in\SAT$ if and only if our machine~$\TM$ accepts
-$\sequence{\sigma,\omega}$ for some~$\omega$.
+the machine inputs, it will not be able to verify a~$T$ for that line.
+So $\sigma\in\SAT$ if and only if there exists an~$\omega$ 
+such that the verifier~$\TM$ accepts
+$\sequence{\sigma,\omega}$.
 \end{example}
 %</ex:SATIsNP>
 
-Describing $\sigma$ as a string `representing' a propositional logic statement
+\begin{remark}
+Before more example we pause for a couple of comments.
+The most striking thing about \cref{def:Verifier} is that it says 
+`there exists' a witness~$\omega$.
+It does not say where the witness comes from.
+A person with programming experience may ask, 
+``but how will we compute~$\omega$?'' 
+The question is not how to find it.
+The question is instead:~can we write a verifier program that
+takes~$\omega$'s, say from a demon,
+and uses them to verify that the $\sigma$'s are in $\lang$, in polytime?
+
+A second point is that the definition does not require that there be a 
+witness to $\sigma\notin\lang$.
+Rather there just is no witness that the verifier can accept.
+
+Third, a comment on the running time of the verifier.
+Contrast the above example with 
+\citetext{the problem of chess}{ 
+  Chess is known to be a solvable game.
+  This is Zermelo's Theorem \autocite{wiki:ZermelosTheorem}\Dash there 
+  is a strategy for one of the two players that forces a win or a draw, no
+  matter how the opponent plays}.
+Imagine that a demon hands you some papers and tells you
+that they contain a perfect chess strategy.
+Verifying this strategy by having a computer step through
+the responses to each listed move and responses to those
+responses, etc., at least appears to be an exponential-time job.
+So the fact that a verifier runs in time polynomial in $\lh{\sigma}$  
+makes the verification tractable.
+
+In addition, because the verifier runs in time polynomial in $\lh{\sigma}$,
+the witness~$\omega$ has length polynomial in~$\lh{\sigma}$.
+This is simply because if 
+the witness were too long then the
+machine would not even be able to read it in the alotted time.
+
+Finally, describing $\sigma$ as a string `representing' 
+a propositional logic statement
 and $\omega$ as `representing' a table line gets tedious.
-It doesn't make anything clearer and 
-in practice authors usually omit it.
-From now on we'll do the same.
+\citetext{In practice authors usually omit it}{%
+  This is exactly the same as a working programmer saying ``My program
+  inputs a number,'' rather than saying ``My program inputs the
+  binary representation of a number.''}.
+With the point made, from now on we'll do the same.
 For instance, the next example says that $\sigma$ is a triple instead of 
 bothering to say that it is a representation of one. 
+\end{remark}
 
 %<*ex:HamPathIsNP>
 \begin{example}
-The problem of \definend{\probname{Hamiltonian Path}} is like
+The \definend{\probname{Hamiltonian Path}} problem is like
 \probname{Hamiltonian Circuit} except that it inputs two vertices 
 instead of requiring that the starting vertex equal the ending one.  
 \begin{equation*}
   \lang=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat 
              \text{some path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex}}
 \end{equation*}
-is in~$\NP$.
-We will describe a suitable Turing machine verifier~$\TM$.
-The idea is that the witness is a path, 
+We will show that this problem is in~$\NP$.
+To do that, we will describe a family of witness~$\omega$'s, hints for a
+suitable Turing machine verifier~$\TM$.
+We take the witness to be a path, 
 $\omega=\sequence{v,v_1,\ldots\, \hat{v}}$.
-Our verifier inputs a triple~$\sigma=\sequence{\mathcal{G},v,\hat{v}}$ 
-and an~$\omega$.
-Then $\TM$ tries to verify that the list of vertices visited by the path is all
-of the vertices in the graph, and if so it accepts the pair.
+Our verifier inputs~$\sigma=\sequence{\mathcal{G},v,\hat{v}}$ 
+and an~$\omega$ and it
+tries to confirm that the list of vertices visited by the path is all
+of the vertices in the graph.
+\begin{center}
+  \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts001.pdf}}
+\end{center}
 If there is a Hamiltonian path for the graph and vertices then there exists
 a witness~$\omega$ leading to acceptance by~$\TM$ of the pair (the
 check can be done in polytime).
-If there is no such path then for no~$\omega$ is~$P$  
+If there is no such path then for no~$\omega$ is~$\TM$  
 able to verify, so it never accepts.
 \end{example}
 %</ex:HamPathIsNP>
-
-\begin{remark}
-Before the remaining examples we pause for a couple of comments.
-The most striking thing about the definition is that it says `there exists' 
-a witness~$\omega$.
-It does not say where that witness comes from.
-As we have discussed a number of times, on a first encounter 
-a person with a computing mindset may ask, 
-``how will the machine compute~$\omega$?'' 
-But the machine is not required to find it.
-The question is instead:~is there a machine that
-when given an~$\omega$, say by a demon,
-can use it to verify that $\sigma\in\lang$ in polytime?
-
-Note also that the definition does not require that there be a 
-witness to $\sigma\notin\lang$, rather there just is no
-witness that the verifier can accept.
-
-Third, a comment on the runtime of the verifier.
-Contrast the above two examples with the problem of chess. 
-\citetext{Chess is known to be a solvable game}{%
-  This is Zermelo's Theorem. See \autocite{wiki:ZermelosTheorem}.}\Dash there 
-is a strategy for one of the two players that forces a win or a draw, no
-matter how the opponent plays.
-Now imagine that a demon hands you some papers and tells you
-that it contains a perfect chess strategy.
-If you tried to verify that by having a computer step through
-the responses to each move and responses to those
-responses, etc., that at least appears to be  
-beyond our current computing capacity, and
-maybe beyond the theoretical capacity of the entire universe.
-So the `time polynomial in $\lh{\sigma}$' here 
-makes the verification tractable.
-
-Finally, because the verifier runs in time polynomial in $\lh{\sigma}$,
-the witness~$\lh{\omega}$ has length polynomial in~$\lh{\sigma}$.
-This is simply because if 
-the witness were too long then the
-machine would not even be able to read it in the alotted time.
-\end{remark}
 
 %<*ex:CompositeIsNP>
 \begin{example}
@@ -6378,6 +6390,25 @@ look to settle the question with proof.
 \begin{exercises}
 \recommended
 \begin{exercise}
+You hear someone say, ``The $\probname{Satisfiability}$ problem is $\NP$ 
+because it is not computable in polynomial time, so far as we know.''
+It's a short sentence but find three things wrong with it.
+\begin{answer}
+One thing wrong is that it seems to confuse $\NP$ with $\NP-\P$.
+That is, the speaker seems to mean something like, ``experts guess that
+$\probname{Satisfiability}$ is a problem in $\NP$ but not in~$\P$.''
+Also, the speaker no doubt means $\NP$~complete, not just~$\NP$.
+Another thing wrong is that whether the problem is not in~$\P$, whether
+there does not exist a polynomial time algorithm, is not influenced by the 
+fact that we don't know of such an algorithm. 
+Still another thing wrong is that being not solvable in polytime isn't the
+criteria for membership in~$\NP$; rather the criteria is being varifiable
+in polytime.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
 True or false: $\NP$ is a subset of $\NP$~complete, which is a subset of
 $\NP$-hard.
 \begin{answer}
@@ -6503,7 +6534,7 @@ Find a vertex cover~$S$ with $k=4$ elements.
 find an independent set~$\hat{S}$ with $\hat{k}=6$ elements.
 \item Prove that $S$ is a vertex cover if and only if
 its complement~$\hat{S}=\mathcal{V}-S$ is an independent set.
-\item Conclude that $\\probname{Independent Set}\leq_p\probname{Vertex Cover}$
+\item Conclude that $\probname{Independent Set}\leq_p\probname{Vertex Cover}$
 and that $\probname{Vertex Cover}\leq_p\probname{Independent Set}$.
 \end{exparts}
 \begin{answer}

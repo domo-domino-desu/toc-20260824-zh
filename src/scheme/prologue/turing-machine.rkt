@@ -5,16 +5,12 @@
 (define LEFT #\L) ;; Move tape pointer left
 (define RIGHT #\R) ;; Move tape pointer right
 (define HALT '())
+(provide  BLANK
+          STROKE
+          LEFT
+          RIGHT
+          HALT)
 
-(define tm
-  (list
-   '(0 BLANK LEFT 1)
-   '(0 STROKE RIGHT 0)
-   '(1 BLANK LEFT 2)                     
-   '(1 STROKE BLANK 1)
-   '(2 BLANK RIGHT 3)
-   '(2 STROKE LEFT 2)                     
-   ))
 
 ;; A configuration is a list of four things:
 ;;  the current state, as a natural number
@@ -49,17 +45,20 @@
 
 ;; =============================
 ;; Look in the machine to find the relevant instruction
-(define (delta current-state tape-symbol)
+(define (delta tm current-state tape-symbol)
   (define (delta-helper instruction-list)
     (if (empty? instruction-list)
         null
         (let ([instruction (first instruction-list)])
+          (display (second instruction))
           (if (and (= current-state (first instruction))
                    (char=? tape-symbol (second instruction)))
               (list (third instruction) (fourth instruction))
               (delta-helper (cdr instruction-list))))))
   (delta-helper tm))
-  
+
+(provide delta)
+
 ;; ====================
 ;; Changing the configuration
 
@@ -111,3 +110,15 @@
                         left-tape
                         action
                         right-tape)])))))
+
+(define tm0
+  (list
+   (list 0 BLANK LEFT 1)
+   (list 0 STROKE RIGHT 0)
+   (list 1 BLANK LEFT 2)                     
+   (list 1 STROKE BLANK 1)
+   (list 2 BLANK RIGHT 3)
+   (list 2 STROKE LEFT 2)                     
+   ))
+
+(display (delta tm0 1 STROKE))

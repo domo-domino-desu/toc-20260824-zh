@@ -11,32 +11,57 @@
           RIGHT
           HALT)
 
-
+;; ================= Configuration making and reading ==============
 ;; A configuration is a list of four things:
 ;;  the current state, as a natural number
 ;;  the contents of the tape to the left of the head, as a list of characters (in left-to-right order)
 ;;  the symbol being read
 ;;  the contents of the tape to the right of the head, as a list of characters
-(define c-test
-  (list 12 '(#\0 #\1 #\0 #\0) #\1 '(#\1 #\1 #\0)))
+(define (make-config current-state left-tape-list action right-tape-list)
+  (list current-state left-tape-list action right-tape-list))
+
+(define (get-current-state config) (first config))
+(define (get-left-tape-list config) (second config))
+(define (get-current-symbol config) (third config))
+(define (get-right-tape-list config) (fourth config))
+
+(provide make-config
+         get-current-state
+         get-left-tape-list
+         get-current-symbol
+         get-right-tape-list)
+
+;; tape-char-right  Return the element nearest the head on the right side of the tape
+(define (tape-char-right config)
+  (let ([right-tape-list (get-right-tape-list config)])
+    (if (empty? right-tape-list)
+        BLANK
+        (car right-tape-list))))
+
+;; tape-char-left  Return the element nearest the head on the right side of the tape
+(define (tape-char-left left-tape-list)
+    (tape-char-right (reverse left-tape-list)))
+
+(provide tape-char-right
+         tape-char-left)
 
 ;; return a string for use in debugging
 (define (configuration->string config)
-  (let ([state (string-append "q" (number->string (first config)))]  ;; like "q0"
-        [left (list->string (second config))]       ; like "0100"
-        [current (string #\* (third config) #\*)]  ; surround with *'s 
-        [right (list->string (fourth config))])
-    (string-append state ": " left current right)))
+  (let ([state (string-append "q" (number->string (get-current-state config)))]  ;; like "q0"
+        [left-tape (list->string (get-left-tape-list config))]       ; like "0100"
+        [current (string #\* (get-current-symbol config) #\*)]  ; surround with *'s 
+        [right-tape (list->string (get-right-tape-list config))])
+    (string-append state ": " left-tape current right-tape)))
 
 ;; return a string for use in Asymptote
 (define (configuration->asy config filename tape-length)
-  (let ([state (string-append "$q_{" (number->string (first config)) "}$")]  ;; like "q0"
-        [left (list->string (second config))]       ; like "0100"
-        [current (string (third config))]  ; convert character to string 
-        [right (list->string (fourth config))])
+  (let ([state (string-append "$q_{" (number->string (get-current-state config)) "}$")]  ;; like "q0"
+        [left-tape (list->string (get-left-tape-list config))]       ; like "0100"
+        [current (string (get-current-symbol config))]  ; convert character to string 
+        [right-tape (list->string (get-right-tape-list config))])
     (string-join (list (string-append "\"" filename "\"")
-                       (string-append "\"" left current right "\"")
-                       (number->string (string-length left))
+                       (string-append "\"" left-tape current right-tape "\"")
+                       (number->string (string-length left-tape))
                        (string-append "\"" state "\"")
                        (number->string tape-length))
                  ","
@@ -50,7 +75,6 @@
     (if (empty? instruction-list)
         null
         (let ([instruction (first instruction-list)])
-          (display (second instruction))
           (if (and (= current-state (first instruction))
                    (char=? tape-symbol (second instruction)))
               (list (third instruction) (fourth instruction))
@@ -62,34 +86,28 @@
 ;; ====================
 ;; Changing the configuration
 
-;; tape-char-right  Return the element nearest the head on the right side of the tape
-(define (tape-char-right tape-list)
-  (if (empty? tape-list)
-      BLANK
-      (car tape-list)))
-;; tape-char-left  Return the element nearest the head on the right side of the tape
-(define (tape-char-left tape-list)
-  (tape-char-right (reverse tape-list)))
-  
 ;; Respond to Left action
 (define (move-left config next-state)
-  (let ([left-tape (second config)]
-        [current (third config)]
-        [right-tape (fourth config)])
-    (list next-state
-          (reverse (cdr (reverse left-tape)))
-          (tape-char-left left-tape)
-          (cons current right-tape))))
+  (let ([left-tape-list (get-left-tape-list config)]
+        [prior-current-symbol (get-current-symbol config)]
+        [right-tape-list (get-right-tape-list config)])
+    (make-config next-state
+          (reverse (cdr (reverse left-tape-list))) ;; strip symbol off left
+          (tape-char-left left-tape-list)          ;; new current symbol
+          (cons prior-current-symbol right-tape-list)))) ;; push old current symbol onto right 
 
 ;; Respond to Right action
 (define (move-right config next-state)
-  (let ([left-tape (second config)]
-        [current (third config)]
-        [right-tape (fourth config)])
+  (let ([left-tape-list (get-left-tape-list config)]
+        [prior-current-symbol (get-current-symbol config)]
+        [right-tape-list (get-right-tape-list config)])
     (list next-state
-          (reverse (cons current (reverse left-tape)))
-          (tape-char-right right-tape)
-          (cdr right-tape))))
+          (reverse (cons prior-current-symbol (reverse left-tape-list)))  ;; push old current symbol on left
+          (tape-char-right right-tape-list) ;; new current symbol
+          (cdr right-tape-list))))  ;; strip symbol off right
+
+(provide move-left
+         move-right)
 
 ;; Take one step
 ;; Return a configuration
@@ -111,14 +129,3 @@
                         action
                         right-tape)])))))
 
-(define tm0
-  (list
-   (list 0 BLANK LEFT 1)
-   (list 0 STROKE RIGHT 0)
-   (list 1 BLANK LEFT 2)                     
-   (list 1 STROKE BLANK 1)
-   (list 2 BLANK RIGHT 3)
-   (list 2 STROKE LEFT 2)                     
-   ))
-
-(display (delta tm0 1 STROKE))

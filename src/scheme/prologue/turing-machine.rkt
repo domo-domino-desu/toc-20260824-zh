@@ -31,18 +31,30 @@
          get-current-symbol
          get-right-tape-list)
 
-;; tape-char-right  Return the element nearest the head on the right side of the tape
-(define (tape-char-right right-tape-list)
+;; tape-right-char  Return the element nearest the head on the right side of the tape
+(define (tape-right-char right-tape-list)
     (if (empty? right-tape-list)
         BLANK
         (car right-tape-list)))
 
-;; tape-char-left  Return the element nearest the head on the right side of the tape
-(define (tape-char-left left-tape-list)
-    (tape-char-right (reverse left-tape-list)))
+;; tape-left-char  Return the element nearest the head on the right side of the tape
+(define (tape-left-char left-tape-list)
+    (tape-right-char (reverse left-tape-list)))
 
-(provide tape-char-right
-         tape-char-left)
+;; tape-right-pop  Return the tape list without the element nearest the head on the right side of the tape
+(define (tape-right-pop right-tape-list)
+    (if (empty? right-tape-list)
+        '()
+        (cdr right-tape-list)))
+
+;; tape-left-pop   Return the tape list without the element nearest the head on the left side of the tape
+(define (tape-left-pop left-tape-list)
+    (reverse (tape-right-pop (reverse left-tape-list))))
+
+(provide tape-right-char
+         tape-left-char
+         tape-right-pop
+         tape-left-pop)
 
 ;; return a string for use in debugging
 (define (configuration->string config)
@@ -91,8 +103,8 @@
         [prior-current-symbol (get-current-symbol config)]
         [right-tape-list (get-right-tape-list config)])
     (make-config next-state
-          (reverse (cdr (reverse left-tape-list))) ;; strip symbol off left
-          (tape-char-left left-tape-list)          ;; new current symbol
+          (tape-left-pop left-tape-list) ;; strip symbol off left
+          (tape-left-char left-tape-list)          ;; new current symbol
           (cons prior-current-symbol right-tape-list)))) ;; push old current symbol onto right 
 
 ;; Respond to Right action
@@ -102,8 +114,8 @@
         [right-tape-list (get-right-tape-list config)])
     (list next-state
           (reverse (cons prior-current-symbol (reverse left-tape-list)))  ;; push old current symbol on left
-          (tape-char-right right-tape-list) ;; new current symbol
-          (cdr right-tape-list))))  ;; strip symbol off right
+          (tape-right-char right-tape-list) ;; new current symbol
+          (tape-right-pop right-tape-list))))  ;; strip symbol off right
 
 (provide move-left
          move-right)

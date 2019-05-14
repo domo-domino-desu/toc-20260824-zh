@@ -15,7 +15,7 @@
 ;; A configuration is a list of four things:
 ;;  the current state, as a natural number
 ;;  the contents of the tape to the left of the head, as a list of characters (in left-to-right order)
-;;  the symbol being read
+;;  the symbol being read, a character
 ;;  the contents of the tape to the right of the head, as a list of characters
 (define (make-config current-state left-tape-list action right-tape-list)
   (list current-state left-tape-list action right-tape-list))
@@ -32,11 +32,10 @@
          get-right-tape-list)
 
 ;; tape-char-right  Return the element nearest the head on the right side of the tape
-(define (tape-char-right config)
-  (let ([right-tape-list (get-right-tape-list config)])
+(define (tape-char-right right-tape-list)
     (if (empty? right-tape-list)
         BLANK
-        (car right-tape-list))))
+        (car right-tape-list)))
 
 ;; tape-char-left  Return the element nearest the head on the right side of the tape
 (define (tape-char-left left-tape-list)
@@ -112,20 +111,20 @@
 ;; Take one step
 ;; Return a configuration
 (define (step config)
-  (let* ([current-state (first config)]
-         [left-tape (second config)]
-         [tape-symbol (third config)]
-         [right-tape (fourth config)]
-         [action-next-state (delta current-state tape-symbol)])
+  (let* ([current-state (get-current-state config)]
+         [left-tape-list (get-left-tape-list config)]
+         [current-symbol (get-current-symbol config)]
+         [right-tape-list (get-right-tape-list config)]
+         [action-next-state (delta current-state current-symbol)])
     (if (empty? action-next-state)
         HALT
         (let ([action (first action-next-state)]
               [next-state (second action-next-state)])
           (cond
-            [(char=? LEFT action) (move-left config)]
-            [(char=? RIGHT action) (move-right config)]
+            [(char=? LEFT action) (move-left config next-state)]
+            [(char=? RIGHT action) (move-right config next-state)]
             [else (list next-state
-                        left-tape
+                        left-tape-list
                         action
-                        right-tape)])))))
+                        right-tape-list)])))))
 

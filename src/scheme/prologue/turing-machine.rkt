@@ -17,8 +17,8 @@
 ;;  the contents of the tape to the left of the head, as a list of characters (in left-to-right order)
 ;;  the symbol being read, a character
 ;;  the contents of the tape to the right of the head, as a list of characters
-(define (make-config current-state left-tape-list action right-tape-list)
-  (list current-state left-tape-list action right-tape-list))
+(define (make-config current-state left-tape-list action-char right-tape-list)
+  (list current-state left-tape-list action-char right-tape-list))
 
 (define (get-current-state config) (first config))
 (define (get-left-tape-list config) (second config))
@@ -79,18 +79,21 @@
                  #:before-first "tape_output("
                  #:after-last ");")))
 
+(provide configuration->string
+         configuration->asy)
+
 ;; =============================
 ;; Look in the machine to find the relevant instruction
 (define (delta tm current-state tape-symbol)
-  (define (delta-helper instruction-list)
-    (if (empty? instruction-list)
-        null
-        (let ([instruction (first instruction-list)])
-          (if (and (= current-state (first instruction))
-                   (char=? tape-symbol (second instruction)))
-              (list (third instruction) (fourth instruction))
-              (delta-helper (cdr instruction-list))))))
-  (delta-helper tm))
+  (define (delta-test inst)
+    (and (= current-state (first inst))
+         (equal? tape-symbol (second inst))))
+
+  (let ([inst (findf delta-test tm)])
+    ; (display inst)
+    (if (not inst)
+        '()
+        (list (third inst) (fourth inst)))))
 
 (provide delta)
 
@@ -120,14 +123,15 @@
 (provide move-left
          move-right)
 
+;; ===================================================
 ;; Take one step
 ;; Return a configuration
-(define (step config)
+(define (step config tm)
   (let* ([current-state (get-current-state config)]
          [left-tape-list (get-left-tape-list config)]
          [current-symbol (get-current-symbol config)]
          [right-tape-list (get-right-tape-list config)]
-         [action-next-state (delta current-state current-symbol)])
+         [action-next-state (delta tm current-state current-symbol)])
     (if (empty? action-next-state)
         HALT
         (let ([action (first action-next-state)]
@@ -135,8 +139,28 @@
           (cond
             [(char=? LEFT action) (move-left config next-state)]
             [(char=? RIGHT action) (move-right config next-state)]
-            [else (list next-state
-                        left-tape-list
-                        action
-                        right-tape-list)])))))
+            [else (make-config next-state
+                               left-tape-list
+                               action
+                               right-tape-list)])))))
+
+(provide step)
+
+;; ===================================================
+;; Execute a Turing machine
+;; Return a configuration
+(define (execute tm initial-config)
+  (define (execute-iter config s)
+    (set! s (+ 1 s))
+    (fprintf (current-output-port)
+           "step ~s: configuration ~s\n"
+           s
+           (configuration->string config))
+    (let ([new-config (step config tm)])
+      (if (eq? new-config HALT)
+          (display "HALT")
+          (execute-iter new-config s))))
+  (execute-iter initial-config 0))
+
+(provide execute)
 

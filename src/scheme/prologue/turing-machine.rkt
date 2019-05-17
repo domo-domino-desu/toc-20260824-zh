@@ -17,19 +17,21 @@
 ;;  the contents of the tape to the left of the head, as a list of characters (in left-to-right order)
 ;;  the symbol being read, a character
 ;;  the contents of the tape to the right of the head, as a list of characters
-(define (make-config current-state left-tape-list action-char right-tape-list)
-  (list current-state left-tape-list action-char right-tape-list))
+(define (make-config current-state left-tape-list action-char right-tape-list position)
+  (list current-state left-tape-list action-char right-tape-list position))
 
 (define (get-current-state config) (first config))
 (define (get-left-tape-list config) (second config))
 (define (get-current-symbol config) (third config))
 (define (get-right-tape-list config) (fourth config))
+(define (get-position config) (fifth config))
 
 (provide make-config
          get-current-state
          get-left-tape-list
          get-current-symbol
-         get-right-tape-list)
+         get-right-tape-list
+         get-position)
 
 ;; tape-right-char  Return the element nearest the head on the right side of the tape
 (define (tape-right-char right-tape-list)
@@ -61,8 +63,9 @@
   (let ([state (string-append "q" (number->string (get-current-state config)))]  ;; like "q0"
         [left-tape (list->string (get-left-tape-list config))]       ; like "0100"
         [current (string #\* (get-current-symbol config) #\*)]  ; surround with *'s 
-        [right-tape (list->string (get-right-tape-list config))])
-    (string-append state ": " left-tape current right-tape)))
+        [right-tape (list->string (get-right-tape-list config))]
+        [position (number->string (get-position config))])
+    (string-append state ": " left-tape current right-tape " :" position)))
 
 ;; return a string for use in Asymptote
 (define (configuration->asy config filename tape-length)
@@ -104,21 +107,25 @@
 (define (move-left config next-state)
   (let ([left-tape-list (get-left-tape-list config)]
         [prior-current-symbol (get-current-symbol config)]
-        [right-tape-list (get-right-tape-list config)])
+        [right-tape-list (get-right-tape-list config)]
+        [position (get-position config)])
     (make-config next-state
           (tape-left-pop left-tape-list) ;; strip symbol off left
           (tape-left-char left-tape-list)          ;; new current symbol
-          (cons prior-current-symbol right-tape-list)))) ;; push old current symbol onto right 
+          (cons prior-current-symbol right-tape-list) ;; push old current symbol onto right 
+          (sub1 position)))) ;; adjust position 
 
 ;; Respond to Right action
 (define (move-right config next-state)
   (let ([left-tape-list (get-left-tape-list config)]
         [prior-current-symbol (get-current-symbol config)]
-        [right-tape-list (get-right-tape-list config)])
-    (list next-state
-          (reverse (cons prior-current-symbol (reverse left-tape-list)))  ;; push old current symbol on left
-          (tape-right-char right-tape-list) ;; new current symbol
-          (tape-right-pop right-tape-list))))  ;; strip symbol off right
+        [right-tape-list (get-right-tape-list config)]
+        [position (get-position config)])
+    (make-config next-state
+                 (reverse (cons prior-current-symbol (reverse left-tape-list)))  ;; push old current symbol on left
+                 (tape-right-char right-tape-list) ;; new current symbol
+                 (tape-right-pop right-tape-list) ;; strip symbol off right
+                 (add1 position))))  ;; adjust position
 
 (provide move-left
          move-right)
@@ -131,6 +138,7 @@
          [left-tape-list (get-left-tape-list config)]
          [current-symbol (get-current-symbol config)]
          [right-tape-list (get-right-tape-list config)]
+         [position (get-position config)]
          [action-next-state (delta tm current-state current-symbol)])
     (if (empty? action-next-state)
         HALT
@@ -142,7 +150,8 @@
             [else (make-config next-state
                                left-tape-list
                                action
-                               right-tape-list)])))))
+                               right-tape-list
+                               position)])))))
 
 (provide step)
 

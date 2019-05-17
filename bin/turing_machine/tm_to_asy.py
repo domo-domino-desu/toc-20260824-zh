@@ -82,11 +82,24 @@ def critical(s, level=1):
     log.critical(t,exc_info=True)
     sys.exit(level)
 
+# ============================================
+def get_input_file(fn):
+    if fn is None:
+        return sys.stdin
+    try:
+        return open(fn, 'r')
+    except IOError as e:
+        critical("Input file {0!s} cannot be opened: {1!s}".format(fn,e))
+            
+def read_lines(f):
+    lines = f.readlines()
+    return [x.strip() for x in lines] 
+
 # Format example: "q0:   BB*1*1101B "
-output_line_regex = r"\s*(q\d*):\s([^\*]*)\*([^\*]*)\*([^\*]*)"
+output_line_regex = r"\s*(q\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s:(\d*)"
 output_line_re = re.compile(output_line_regex, re.I)  # re.I in case capital q
 def parse_line(lne,line_no):
-    """Split one line into the consituitent parts
+    """Split one line into the constituient parts
       lne  string  line of output from Turing machine simulator
     """
     m = output_line_re.match(lne)
@@ -94,17 +107,37 @@ def parse_line(lne,line_no):
         return {'state': m.group(1),
                 'prefix': m.group(2),
                 'currentchar': m.group(3),
-                'suffix': m.group(4)}
+                'suffix': m.group(4),
+                'position': m.group(5)}
     else:
         # error("line number {0:d} not a regex match with {1:s}: {2:s}".format(line_no,output_line_re,lne))
-        error("line number {0:d} not a match: >>{1:s}<<".format(line_no,lne))
-        
+        return None
+    # error("line number {0:d} not a match: >>{1:s}<<".format(line_no,lne))
 
+def parse_lines(lines):
+    total_parsed = 0
+    initial_offset_left, initial_offset_right = None, None
+    min_pos, max_pos = 0, 0
+    line_list = []
+    for lne,s in enumerate(lines):
+        d = parse_line(lne,s)
+        if not(d is None):
+            line_list.append((d,s))
+            if total_parsed == 0:
+                initial_offset_left = len(d['prefix'])
+                initial_offset_right = len(d['suffix'])
+            total_parsed = total_parsed+1
+            pos = int(d['position'])
+            min_pos = min(min_pos, pos)
+            max_pos = max(max_pos, pos)
+    return line_list, initial_offset_left, initial_offset_right, min_pos, max_pos
+    
 # ===========================================================
 def main(args):
-    test_line = "q0:   BB*1*1101B  "
+    # f = get_input_file(args.filename)
+    test_line = "q0:   BB*1*1101B :34 "
     d = parse_line(test_line,1)
-    print("state: {state}, prefix: {prefix}, current character: {currentchar}, suffix: {suffix}".format(**d))
+    print("state: {state}, prefix: {prefix}, current character: {currentchar}, suffix: {suffix}, position: {position}".format(**d))
 
 # ===========================================================
 if __name__ == '__main__':
@@ -117,8 +150,8 @@ if __name__ == '__main__':
                                          +", License: "+__license__)
         parser.add_argument('-f', '--filename',
                             action='store',
-                            default='tm_output.txt',
-                            help="File with output. Default: {0!s}".format(DEBUG))
+                            default=None,
+                            help="File with output. Default: stdin")
         parser.add_argument('-D', '--debug',
                             action='store_true',
                             default=DEBUG,

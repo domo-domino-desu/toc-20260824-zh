@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Convert output from turing machine simulator for use in Asymptote.
+Convert output from Turing machine simulator for use in Asymptote.
 """
-__version__ = "0.0.1"
+__version__ = "0.8.0"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
 
@@ -83,6 +83,20 @@ def critical(s, level=1):
     sys.exit(level)
 
 # ============================================
+TEST_LINE = "step 1: q0:   BB*1*1101B :34 "
+TEST_LINES = """step 0: q0: *1*11 :0
+step 1: q0: 1*1*1 :1
+step 2: q0: 11*1* :2
+step 3: q0: 111*B* :3
+step 4: q1: 11*1*B :2
+step 5: q1: 11*B*B :2
+step 6: q2: 1*1*BB :1
+step 7: q2: *1*1BB :0
+step 8: q2: *B*11BB :-1
+step 9: q3: B*1*1BB :0
+step 10: HALT
+""".splitlines()
+
 def get_input_file(fn):
     if fn is None:
         return sys.stdin
@@ -96,7 +110,7 @@ def read_lines(f):
     return [x.strip() for x in lines] 
 
 # Format example: "q0:   BB*1*1101B "
-output_line_regex = r"\s*(q\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s:(\d*)"
+output_line_regex = r"step (\d*):\s*q(\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s:([+-]?\d*)"
 output_line_re = re.compile(output_line_regex, re.I)  # re.I in case capital q
 def parse_line(lne,line_no):
     """Split one line into the constituient parts
@@ -104,11 +118,12 @@ def parse_line(lne,line_no):
     """
     m = output_line_re.match(lne)
     if m:
-        return {'state': m.group(1),
-                'prefix': m.group(2),
-                'currentchar': m.group(3),
-                'suffix': m.group(4),
-                'position': m.group(5)}
+        return {'step': m.group(1),
+                'state': m.group(2),
+                'prefix': m.group(3),
+                'currentchar': m.group(4),
+                'suffix': m.group(5),
+                'position': m.group(6)}
     else:
         # error("line number {0:d} not a regex match with {1:s}: {2:s}".format(line_no,output_line_re,lne))
         return None
@@ -119,7 +134,8 @@ def parse_lines(lines):
     initial_offset_left, initial_offset_right = None, None
     min_pos, max_pos = 0, 0
     line_list = []
-    for lne,s in enumerate(lines):
+    for s,lne in enumerate(lines):
+        print("lne is",lne)
         d = parse_line(lne,s)
         if not(d is None):
             line_list.append((d,s))
@@ -131,14 +147,70 @@ def parse_lines(lines):
             min_pos = min(min_pos, pos)
             max_pos = max(max_pos, pos)
     return line_list, initial_offset_left, initial_offset_right, min_pos, max_pos
-    
+
+def print_parsed_line(d):
+    """Show results of parsing the line, for debugging
+     d  dict  Results from parsing a line
+    """
+    print("state: {state}, prefix: {prefix}, current character: {currentchar}, suffix: {suffix}, position: {position}".format(**d))
+
+def tape_output(d,fn="tm{0:03d}".format(0),tape_width=100):
+    """Return a string giving one tape_output(...) line of the asy file
+      d  dict  results of parsing the line
+      fn  string  file name to which Asy will drop output
+      tape_width  integer  Asy makes the tape this wide, in pts
+    """
+    r = ['"'+fn+'"']
+    r.append('"'+d['prefix']+d['currentchar']+d['suffix']+'"')
+    r.append("{:d}".format(len(d['prefix'])))  # position of head
+    r.append('"$q_'+d['state']+'$"')
+    r.append("{:d}".format(tape_width))
+    return "tape_output("+",".join(r)+");"
+
+ASY_HEAD = """// {0:s}.asy
+//  draw succession of tapes for a Turing machine computation
+
+import settings;
+settings.dir="..";  // make it able to see jh.asy 
+settings.outformat="pdf";
+settings.render=0;
+
+import jh;
+
+unitsize(1pt);
+
+import tape;
+"""
+ASY_TAIL = """
+"""
+def asy(d_list, fn_prefix, tape_width=100):
+    """Create an asy file and populate it with the tape_output lines
+     d  dict result of parsing a line
+     fn_prefix  string  name of output file
+     tape_width  integer  Asy makes the tape this wide, in pts
+    """
+    r = [ASY_HEAD.format(fn_prefix)]
+    fn = fn_prefix+"{0:03d}"
+    for d,i in d_list:
+        r.append(tape_output(d,fn=fn.format(i),tape_width=tape_width))
+    r.append(ASY_TAIL)
+    f = open(fn_prefix+".asy","w")
+    f.write("\n".join(r))
+    f.close()
+
 # ===========================================================
 def main(args):
     # f = get_input_file(args.filename)
-    test_line = "q0:   BB*1*1101B :34 "
-    d = parse_line(test_line,1)
-    print("state: {state}, prefix: {prefix}, current character: {currentchar}, suffix: {suffix}, position: {position}".format(**d))
-
+    d = parse_line(TEST_LINE,1)
+    print_parsed_line(d)
+    d_list, initial_offset_left, initial_offset_right, min_pos, max_pos = parse_lines(TEST_LINES)
+    # print("d_list is ",pprint.pformat(d_list))
+    for d,i in d_list:
+        print("line ",i)
+        print_parsed_line(d)
+        print(tape_output(d,fn="tm{0:03d}".format(i)))
+    asy(d_list, "tm")
+        
 # ===========================================================
 if __name__ == '__main__':
     try:

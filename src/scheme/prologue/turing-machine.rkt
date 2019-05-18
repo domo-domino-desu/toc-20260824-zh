@@ -160,15 +160,16 @@
 ;; Return a configuration
 (define (execute tm initial-config)
   (define (execute-iter config s)
-    (set! s (+ 1 s))
-    (fprintf (current-output-port)
-           "step ~s: configuration ~s\n"
-           s
-           (configuration->string config))
-    (let ([new-config (step config tm)])
-      (if (eq? new-config HALT)
-          (display "HALT")
-          (execute-iter new-config s))))
+    (cond
+      [(eq? config HALT)
+       (fprintf (current-output-port)
+                "step ~s: HALT\n"
+                s)]
+      [else (fprintf (current-output-port)
+                     "step ~s: ~a\n"
+                     s
+                     (configuration->string config))
+            (execute-iter (step config tm) (add1 s))]))
   (execute-iter initial-config 0))
 
 (provide execute)

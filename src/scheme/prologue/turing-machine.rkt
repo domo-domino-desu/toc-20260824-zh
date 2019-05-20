@@ -174,3 +174,19 @@
 
 (provide execute)
 
+
+
+;; ========================================================
+;; Read TM from a file
+;; Read a string, interpret the characters
+;;  Can write "(1 a L 3)"
+(define (string->instruction s)
+  (let ([current-state (first instruction)]
+        [current-symbol (second instruction)]
+        [action (third instruction)]
+        [next-state (fourth instruction)])
+    (list (string->number current-state)
+          (first (string->list current-symbol))
+          (first (string->list action))
+          (string->number next-state))))
+

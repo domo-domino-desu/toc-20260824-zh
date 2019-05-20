@@ -171,25 +171,26 @@ ASY_HEAD = """// {0:s}.asy
 //  draw succession of tapes for a Turing machine computation
 
 import settings;
-settings.dir="..";  // make it able to see jh.asy 
 settings.outformat="pdf";
 settings.render=0;
 
-import jh;
+// cd needed for relative import 
+cd("{1:s}");
+// import jh;
+import tape;
+cd("");
 
 unitsize(1pt);
-
-import tape;
 """
 ASY_TAIL = """
 """
-def asy(d_list, fn_prefix, tape_width=100):
+def asy(d_list, fn_prefix, asy_dir):
     """Create an asy file and populate it with the tape_output lines
      d  dict result of parsing a line
      fn_prefix  string  name of output file
-     tape_width  integer  Asy makes the tape this wide, in pts
+     asy_dir string  Path to computing/src/asy
     """
-    r = [ASY_HEAD.format(fn_prefix)]
+    r = [ASY_HEAD.format(fn_prefix,asy_dir)]
     fn = fn_prefix+"{0:03d}"
     for d,i in d_list:
         r.append(tape_output(d,fn=fn.format(i),tape_width=tape_width))

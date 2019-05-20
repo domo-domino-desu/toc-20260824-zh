@@ -12,18 +12,27 @@ unitsize(1pt);
 
 pen TAPE_PEN=linewidth(.4pt)+squarecap+miterjoin+fontsize(8pt)+black;
 real TAPE_WIDTH=10pt;
+real DEFAULT_TAPE_LENGTH = 200pt;
 
-// tape_contents
-// write tape contents to picture and return the picture
-// (this enables us to measure the bounding box)
-picture tape_contents(string prefix, string current_symbol, string suffix) {
-  picture p;
-  string t=prefix+current_symbol+suffix;
-  label(p,"\texttt{"+t+"}",TAPE_PEN);
-  return(p);
+real TAPE_CELL_WIDTH = 10;
+
+// write the string to the tape, with character i at position x=i (positions
+// start counting at x=0)
+void tape_write(picture p, string s) {
+  for(int i=0; i < length(s); ++i) {
+    draw(p,Label("\makebox[0em]{\texttt{"+substr(s,i,1)+"}}", TAPE_PEN), (TAPE_CELL_WIDTH*i,10*0.25), align=Align, invisible);
+  }
 }
 
-
+// tape_contents
+// write tape contents to a picture and return the length of the picture
+// (this enables us to measure the bounding box)
+real tape_contents_length(string s) {
+  picture p;
+  tape_write(p,s);
+  real length = max(p,user=true).x-min(p,user=true).x;
+  return(length);
+}
 
 
 // return the path that is the wiggle at the end of the tape, where the
@@ -38,11 +47,12 @@ path tape_end_path(pair bottom) {
   return shift(bottom)*tape_end;
 }
 
-real TAPE_LENGTH=200pt;
-path tape_path(real tape_length=TAPE_LENGTH) {
-  path tape=(-10pt,0)--(tape_length-10pt,0)
-    ..reverse(tape_end_path((tape_length-10pt,0)))
-    --(-10pt,TAPE_WIDTH)..tape_end_path((-10pt,0))..cycle;
+real TAPE_PADDING = 7pt;  // pad the ends with blank space
+// draw the outline of the tape, including the ends
+path tape_path(real tape_length=DEFAULT_TAPE_LENGTH) {
+  path tape=(-TAPE_PADDING,0)--(tape_length+TAPE_PADDING,0)
+    ..reverse(tape_end_path((tape_length+TAPE_PADDING,0)))
+    --(-TAPE_PADDING,TAPE_WIDTH)..tape_end_path((-TAPE_PADDING,0))..cycle;
   return tape;
 }
 
@@ -54,17 +64,9 @@ void draw_tape_head(picture p, real location, string state="") {
   path tape_head=(0,0)--(0.5*TAPE_HEAD_X,-0.25*TAPE_HEAD_Y)
     --(0.5*TAPE_HEAD_X,-1*TAPE_HEAD_Y)--(-0.5*TAPE_HEAD_X,-1*TAPE_HEAD_Y)
     --(-0.5*TAPE_HEAD_X,-0.25*TAPE_HEAD_Y)--cycle;
-  path shifted_tape_head=shift(location*10,-0.5pt)*tape_head;
+  path shifted_tape_head=shift(location*TAPE_CELL_WIDTH,-0.5pt)*tape_head;
   fill(p,shifted_tape_head,verylight_color);
   draw(p, Label("\makebox[0em]{"+state+"}", TAPE_PEN+black),shifted_tape_head,align=N,TAPE_PEN+linewidth(0.4pt)+light_color);
-}
-
-// write the string to the tape, with character i at position x=i (positions
-// start counting at x=0)
-void tape_write(picture p, string s) {
-  for(int i=0; i < length(s); ++i) {
-    draw(p,Label("\makebox[0em]{\texttt{"+substr(s,i,1)+"}}", black), (10*i,10*0.25), align=Align, invisible);
-  }
 }
 
 // draw the tape and the head
@@ -72,17 +74,23 @@ void tape_write(picture p, string s) {
 // s  string written to the tape
 // head_pos  real number (prob nat num) position for the tape head
 // head_label string written to tape head (you may want to enclose in $'s)
-void tape_draw(picture p, string s, real head_pos, string head_label="", real tape_length=TAPE_LENGTH) {
+void tape_draw(picture p, string s, real head_pos, string head_label="", real tape_length=DEFAULT_TAPE_LENGTH) {
   filldraw(p, tape_path(tape_length),drawpen=TAPE_PEN+light_color,fillpen=verylight_color);
   tape_write(p,s);
   draw_tape_head(p,head_pos,head_label);
 }
 
-void tape_output(string prefix, string s, real head_pos, string head_label="",  real tape_length=TAPE_LENGTH) {
+// Output the tape
+//  fn_prefix string  prefix of the file name (suffix is by file type)
+//  s  string  String written to the tape
+//  head_pos  integer  Left-right position of the ehad, starting at 0
+//  head_label  string  string to put on the head
+void tape_output(string fn_prefix, string s, real head_pos, string head_label="") {
   picture p;
   unitsize(p,1pt);
+  real tape_length = tape_contents_length(s);
   tape_draw(p,s,head_pos,head_label,tape_length);
-  shipout(prefix,p);
+  shipout(fn_prefix,p);
 }
 
 // tape_output("tape1","101",0,"$q_0$");
@@ -129,7 +137,7 @@ void stack_output(string prefix, string[] S,  real stack_length=STACK_LENGTH) {
 }
 
 
-picture pda(string tape_contents, real head_pos, string head_label="", string[] stack_contents, real tape_length=TAPE_LENGTH, real stack_length=STACK_LENGTH, real separation=20pt) {
+picture pda(string tape_contents, real head_pos, string head_label="", string[] stack_contents, real tape_length=DEFAULT_TAPE_LENGTH, real stack_length=STACK_LENGTH, real separation=20pt) {
   picture p_tape;
   unitsize(p_tape,1pt);
   tape_draw(p_tape, tape_contents, head_pos, head_label, tape_length);

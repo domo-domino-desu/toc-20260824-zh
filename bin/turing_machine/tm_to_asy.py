@@ -20,6 +20,8 @@ DEBUG = False
 
 PGM_ROOTNAME = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 PGM_SRC_DIR = os.path.dirname(__file__)
+# print("ROOTNAME is "+PGM_ROOTNAME)
+print("basename is "+os.path.basename(__file__).rstrip('.py'))
 
 class JHException(Exception):
     pass
@@ -59,8 +61,8 @@ log.addHandler(log_sh)
 # Log most everything to a file
 log_fh = logging.FileHandler(os.path.abspath(os.path.join(
     os.path.dirname(__file__), 
-    os.path.basename(__file__).rstrip('.py') + '.log')),
-                         mode='w')
+    PGM_ROOTNAME + '.log')),
+    mode='w')
 log_fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - Line: %(lineno)d\n%(message)s'))
 _set_log_level(log_fh,"INFO")
 log.addHandler(log_fh)
@@ -83,17 +85,29 @@ def critical(s, level=1):
     sys.exit(level)
 
 # ============================================
-TEST_LINE = "step 1: q0:   BB*1*1101B :34 "
-TEST_LINES = """step 0: q0: *1*11 :0
-step 1: q0: 1*1*1 :1
-step 2: q0: 11*1* :2
-step 3: q0: 111*B* :3
-step 4: q1: 11*1*B :2
-step 5: q1: 11*B*B :2
-step 6: q2: 1*1*BB :1
-step 7: q2: *1*1BB :0
-step 8: q2: *B*11BB :-1
-step 9: q3: B*1*1BB :0
+TEST_LINE = "step 1: q0:   BB*1*1101B "
+# TEST_LINES = """step 0: q0: *1*11 :0
+# step 1: q0: 1*1*1 :1
+# step 2: q0: 11*1* :2
+# step 3: q0: 111*B* :3
+# step 4: q1: 11*1*B :2
+# step 5: q1: 11*B*B :2
+# step 6: q2: 1*1*BB :1
+# step 7: q2: *1*1BB :0
+# step 8: q2: *B*11BB :-1
+# step 9: q3: B*1*1BB :0
+# step 10: HALT
+# """.splitlines()
+TEST_LINES = """step 0: q0: *1*11
+step 1: q0: 1*1*1
+step 2: q0: 11*1*
+step 3: q0: 111*B*
+step 4: q1: 11*1*B
+step 5: q1: 11*B*B
+step 6: q2: 1*1*BB
+step 7: q2: *1*1BB
+step 8: q2: *B*11BB
+step 9: q3: B*1*1BB
 step 10: HALT
 """.splitlines()
 
@@ -107,12 +121,13 @@ def get_input_file(fn):
             
 def read_lines(f):
     lines = f.readlines()
-    return [x.strip() for x in lines] 
+    return [x.strip() for x in lines]
 
 # Format example: "q0:   BB*1*1101B "
-output_line_regex = r"step (\d*):\s*q(\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s:([+-]?\d*)"
+# output_line_regex = r"step (\d*):\s*q(\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s:([+-]?\d*)"
+output_line_regex = r"step (\d*):\s*q(\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s*"
 output_line_re = re.compile(output_line_regex, re.I)  # re.I in case capital q
-def parse_line(lne,line_no):
+def parse_line(lne,lne_no):
     """Split one line into the constituient parts
       lne  string  line of output from Turing machine simulator
     """
@@ -122,49 +137,111 @@ def parse_line(lne,line_no):
                 'state': m.group(2),
                 'prefix': m.group(3),
                 'currentchar': m.group(4),
-                'suffix': m.group(5),
-                'position': m.group(6)}
+                'suffix': m.group(5)}
     else:
         # error("line number {0:d} not a regex match with {1:s}: {2:s}".format(line_no,output_line_re,lne))
         return None
     # error("line number {0:d} not a match: >>{1:s}<<".format(line_no,lne))
-
+         
 def parse_lines(lines):
     total_parsed = 0
     initial_offset_left, initial_offset_right = None, None
     min_pos, max_pos = 0, 0
     line_list = []
-    for s,lne in enumerate(lines):
-        print("lne is",lne)
-        d = parse_line(lne,s)
+    for lne_no,lne in enumerate(lines):
+        # print("lne is",lne)
+        d = parse_line(lne,lne_no)
         if not(d is None):
-            line_list.append((d,s))
-            if total_parsed == 0:
-                initial_offset_left = len(d['prefix'])
-                initial_offset_right = len(d['suffix'])
-            total_parsed = total_parsed+1
-            pos = int(d['position'])
-            min_pos = min(min_pos, pos)
-            max_pos = max(max_pos, pos)
-    return line_list, initial_offset_left, initial_offset_right, min_pos, max_pos
+            d['line'] = lne
+            line_list.append((d,lne_no))
+            # if total_parsed == 0:
+            #     initial_offset_left = len(d['prefix'])
+            #     initial_offset_right = len(d['suffix'])
+            # total_parsed = total_parsed+1
+            # pos = int(d['position'])
+            # min_pos = min(min_pos, pos)
+            # max_pos = max(max_pos, pos)
+    return line_list
 
 def print_parsed_line(d):
     """Show results of parsing the line, for debugging
      d  dict  Results from parsing a line
     """
-    print("state: {state}, prefix: {prefix}, current character: {currentchar}, suffix: {suffix}, position: {position}".format(**d))
+    print("state: {state}, prefix: {prefix}, current character: {currentchar}, suffix: {suffix}".format(**d))
+  
+def find_position(prior_d, this_d):
+    """From the TM tape, detect the action, and adjust the position of the
+    head accordingly, where the position of the head is the number of squares
+    from its starting position
+      prior_d this_d  dict  See parse_line.
+    """
+    if prior_d is None:
+        this_d['position'] = 0
+        this_d['left_char_position'] = -len(this_d['prefix'])
+        this_d['right_char_position'] = len(this_d['suffix'])
+    # Else
+    # detect an L
+    elif ((len(this_d['prefix']) < len(prior_d['prefix']))
+          or (len(this_d['suffix']) > len(prior_d['suffix']))):
+        this_d['position'] = prior_d['position']+1
+        this_d['left_char_position'] = min(this_d['position'],prior_d['left_char_position'])
+        this_d['right_char_position'] = prior_d['right_char_position']
+    # detect an R
+    elif ((len(prior_d['prefix']) < len(this_d['prefix']))
+          or (len(prior_d['suffix']) > len(this_d['suffix']))):
+        this_d['position'] = prior_d['position']+1
+        this_d['left_char_position'] = prior_d['left_char_position']
+        this_d['right_char_position'] = max(this_d['position'],prior_d['right_char_position'])
+    # No movement
+    else:
+        this_d['position'] = prior_d['position']
+        this_d['left_char_position'] = prior_d['left_char_position']
+        this_d['right_char_position'] = prior_d['right_char_position']
+    return this_d
 
-def tape_output(d,fn="tm{0:03d}".format(0),tape_width=100):
+def find_positions(d_list):
+    """Find the furthest left character at each stage, and the furthest right.
+    """
+    prior_d, this_d = None, None
+    new_list = []
+    for d,line_no in d_list:
+        this_d = d
+        this_d = find_position(prior_d, this_d)
+        new_list.append((this_d,line_no))
+        prior_d = this_d
+    return new_list
+
+def find_extreme_positions(d_list):
+    """Find the furthest left and right postions taken by any char at any step
+     d_list list of dictionaries
+    """
+    furthest_left, furthest_right = 0,0
+    for d,line_no in d_list:
+        furthest_left = min(furthest_left, d['left_char_position'])
+        furthest_right = max(furthest_right, d['right_char_position'])
+    return furthest_left, furthest_right
+    
+def tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(0),replace_blanks=False):
     """Return a string giving one tape_output(...) line of the asy file
       d  dict  results of parsing the line
       fn  string  file name to which Asy will drop output
       tape_width  integer  Asy makes the tape this wide, in pts
     """
+    position = int(d['position'])
+    prefix = d['prefix']
+    left_char_position = d['left_char_position']
+    currentchar = d['currentchar']
+    suffix = d['suffix']
+    right_char_position = d['right_char_position']
+    left_padding = " "*(d['left_char_position']-furthest_left)
+    right_padding = " "*(furthest_right-d['right_char_position'])
     r = ['"'+fn+'"']
-    r.append('"'+d['prefix']+d['currentchar']+d['suffix']+'"')
-    r.append("{:d}".format(len(d['prefix'])))  # position of head
+    tape_string = left_padding+prefix+currentchar+suffix+right_padding
+    if replace_blanks:
+        tape_string = tape_string.replace("B"," ")
+    r.append('"'+tape_string+'"')
+    r.append("{:d}".format(+len(left_padding)+len(d['prefix'])))  # position of head
     r.append('"$q_'+d['state']+'$"')
-    r.append("{:d}".format(tape_width))
     return "tape_output("+",".join(r)+");"
 
 ASY_HEAD = """// {0:s}.asy
@@ -184,16 +261,28 @@ unitsize(1pt);
 """
 ASY_TAIL = """
 """
-def asy(d_list, fn_prefix, asy_dir):
+
+# Get the relative path from the current dir to the computing/src/asy
+def rel_path_to_asy(dir=os.getcwd()):
+    dex = dir.rfind(os.sep+"computing"+os.sep)
+    target_dir = os.path.join(dir[:dex],'computing/src/asy')
+    return os.path.relpath(target_dir)
+
+# Create an .asy file
+def asy(d_list, furthest_left, furthest_right, fn_prefix, asy_dir = rel_path_to_asy(), replace_blanks = False):
     """Create an asy file and populate it with the tape_output lines
      d  dict result of parsing a line
      fn_prefix  string  name of output file
-     asy_dir string  Path to computing/src/asy
+     asy_dir string  Relative Path to computing/src/asy from the current dir
     """
     r = [ASY_HEAD.format(fn_prefix,asy_dir)]
     fn = fn_prefix+"{0:03d}"
     for d,i in d_list:
-        r.append(tape_output(d,fn=fn.format(i),tape_width=tape_width))
+        r.append(tape_output(d,
+                             furthest_left,
+                             furthest_right,
+                             fn=fn.format(i),
+                             replace_blanks=replace_blanks))
     r.append(ASY_TAIL)
     f = open(fn_prefix+".asy","w")
     f.write("\n".join(r))
@@ -204,13 +293,17 @@ def main(args):
     # f = get_input_file(args.filename)
     d = parse_line(TEST_LINE,1)
     print_parsed_line(d)
-    d_list, initial_offset_left, initial_offset_right, min_pos, max_pos = parse_lines(TEST_LINES)
-    # print("d_list is ",pprint.pformat(d_list))
+    d_list = parse_lines(TEST_LINES)
+    print("d_list is ",pprint.pformat(d_list))
+    new_d_list = find_positions(d_list)
+    print("======= new d_list =======\n ",pprint.pformat(d_list))
+    furthest_left, furthest_right = find_extreme_positions(new_d_list)
+    print("=== furthest_left is ",pprint.pformat(furthest_left)," furthest right=",pprint.pformat(furthest_right))
     for d,i in d_list:
         print("line ",i)
         print_parsed_line(d)
-        print(tape_output(d,fn="tm{0:03d}".format(i)))
-    asy(d_list, "tm")
+        print(tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(i)))
+    asy(d_list, furthest_left, furthest_right, "tm", replace_blanks=True)
         
 # ===========================================================
 if __name__ == '__main__':

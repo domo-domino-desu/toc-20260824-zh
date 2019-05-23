@@ -65,7 +65,9 @@
         [current (string #\* (get-current-symbol config) #\*)]  ; surround with *'s 
         [right-tape (list->string (get-right-tape-list config))]
         [position (number->string (get-position config))])
-    (string-append state ": " left-tape current right-tape " :" position)))
+    ;; (string-append state ": " left-tape current right-tape " :" position)
+    (string-append state ": " left-tape current right-tape)
+    ))
 
 ;; return a string for use in Asymptote
 (define (configuration->asy config filename tape-length)
@@ -180,7 +182,7 @@
 ;; Read TM from a file
 ;; Read a string, interpret the characters
 ;;  Can write "(1 a L 3)"
-(define (string->instruction s)
+#|(define (string->instruction s)
   (let ([current-state (first instruction)]
         [current-symbol (second instruction)]
         [action (third instruction)]
@@ -189,4 +191,4 @@
           (first (string->list current-symbol))
           (first (string->list action))
           (string->number next-state))))
-
+|#

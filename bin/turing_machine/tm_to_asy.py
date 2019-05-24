@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Convert output from Turing machine simulator for use in Asymptote.
+Convert output from Turing machine simulator turing-machine.rkt 
+for use in Asymptote.
 """
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
 
@@ -20,8 +21,6 @@ DEBUG = False
 
 PGM_ROOTNAME = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 PGM_SRC_DIR = os.path.dirname(__file__)
-# print("ROOTNAME is "+PGM_ROOTNAME)
-print("basename is "+os.path.basename(__file__).rstrip('.py'))
 
 class JHException(Exception):
     pass
@@ -86,18 +85,6 @@ def critical(s, level=1):
 
 # ============================================
 TEST_LINE = "step 1: q0:   BB*1*1101B "
-# TEST_LINES = """step 0: q0: *1*11 :0
-# step 1: q0: 1*1*1 :1
-# step 2: q0: 11*1* :2
-# step 3: q0: 111*B* :3
-# step 4: q1: 11*1*B :2
-# step 5: q1: 11*B*B :2
-# step 6: q2: 1*1*BB :1
-# step 7: q2: *1*1BB :0
-# step 8: q2: *B*11BB :-1
-# step 9: q3: B*1*1BB :0
-# step 10: HALT
-# """.splitlines()
 TEST_LINES = """step 0: q0: *1*11
 step 1: q0: 1*1*1
 step 2: q0: 11*1*
@@ -112,6 +99,9 @@ step 10: HALT
 """.splitlines()
 
 def get_input_file(fn):
+    """Return a file.
+      fn  string  Name of file.  If None then stdin is returned
+    """
     if fn is None:
         return sys.stdin
     try:
@@ -120,15 +110,16 @@ def get_input_file(fn):
         critical("Input file {0!s} cannot be opened: {1!s}".format(fn,e))
             
 def read_lines(f):
+    """Return list of lines in the file.  Lines are stripped.
+    """    
     lines = f.readlines()
     return [x.strip() for x in lines]
 
-# Format example: "q0:   BB*1*1101B "
-# output_line_regex = r"step (\d*):\s*q(\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s:([+-]?\d*)"
+# Format example: TEST_LINE above
 output_line_regex = r"step (\d*):\s*q(\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s*"
 output_line_re = re.compile(output_line_regex, re.I)  # re.I in case capital q
 def parse_line(lne,lne_no):
-    """Split one line into the constituient parts
+    """Return dictionary with the line's constituient parts (or None)
       lne  string  line of output from Turing machine simulator
     """
     m = output_line_re.match(lne)
@@ -139,28 +130,21 @@ def parse_line(lne,lne_no):
                 'currentchar': m.group(4),
                 'suffix': m.group(5)}
     else:
-        # error("line number {0:d} not a regex match with {1:s}: {2:s}".format(line_no,output_line_re,lne))
         return None
-    # error("line number {0:d} not a match: >>{1:s}<<".format(line_no,lne))
          
 def parse_lines(lines):
+    """Return a list of dictionary's with line's constituent parts.  If a line
+    does not parse then it is skipped.
+    """
     total_parsed = 0
     initial_offset_left, initial_offset_right = None, None
     min_pos, max_pos = 0, 0
     line_list = []
     for lne_no,lne in enumerate(lines):
-        # print("lne is",lne)
         d = parse_line(lne,lne_no)
         if not(d is None):
             d['line'] = lne
             line_list.append((d,lne_no))
-            # if total_parsed == 0:
-            #     initial_offset_left = len(d['prefix'])
-            #     initial_offset_right = len(d['suffix'])
-            # total_parsed = total_parsed+1
-            # pos = int(d['position'])
-            # min_pos = min(min_pos, pos)
-            # max_pos = max(max_pos, pos)
     return line_list
 
 def print_parsed_line(d):
@@ -169,11 +153,13 @@ def print_parsed_line(d):
     """
     print("state: {state}, prefix: {prefix}, current character: {currentchar}, suffix: {suffix}".format(**d))
   
-def find_position(prior_d, this_d):
-    """From the TM tape, detect the action, and adjust the position of the
-    head accordingly, where the position of the head is the number of squares
-    from its starting position
-      prior_d this_d  dict  See parse_line.
+def _find_position(prior_d, this_d):
+    """Return a dictionary that adds information over those from
+    parse_lines.  Specifically, add the fields 'position', which is the
+    position of the head on the tape, where its initial position is 0.
+    Also added is 'left_char_position' giving the position of the leftmost char
+    now on the tape, and 'right_char_position'.
+      prior_d this_d  dict  See parse_lines.
     """
     if prior_d is None:
         this_d['position'] = 0
@@ -183,7 +169,7 @@ def find_position(prior_d, this_d):
     # detect an L
     elif ((len(this_d['prefix']) < len(prior_d['prefix']))
           or (len(this_d['suffix']) > len(prior_d['suffix']))):
-        this_d['position'] = prior_d['position']+1
+        this_d['position'] = prior_d['position']-1
         this_d['left_char_position'] = min(this_d['position'],prior_d['left_char_position'])
         this_d['right_char_position'] = prior_d['right_char_position']
     # detect an R
@@ -200,20 +186,25 @@ def find_position(prior_d, this_d):
     return this_d
 
 def find_positions(d_list):
-    """Find the furthest left character at each stage, and the furthest right.
+    """Modify the list of dictionaries returned from parse_lines.  
+    Specifically, add the fields 'position', which is the
+    position of the head on the tape, where its initial position is 0.
+    Also there is 'left_char_position' giving the position of the leftmost char
+    now on the tape, and 'right_char_position'.
+      d_list  list of dicts  See parse_lines.
     """
     prior_d, this_d = None, None
     new_list = []
     for d,line_no in d_list:
         this_d = d
-        this_d = find_position(prior_d, this_d)
+        this_d = _find_position(prior_d, this_d)
         new_list.append((this_d,line_no))
         prior_d = this_d
     return new_list
 
 def find_extreme_positions(d_list):
     """Find the furthest left and right postions taken by any char at any step
-     d_list list of dictionaries
+     d_list  list of dictionaries.  See parse_lines.
     """
     furthest_left, furthest_right = 0,0
     for d,line_no in d_list:
@@ -221,11 +212,12 @@ def find_extreme_positions(d_list):
         furthest_right = max(furthest_right, d['right_char_position'])
     return furthest_left, furthest_right
     
-def tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(0),replace_blanks=False):
+def tape_output(d,furthest_left,furthest_right,fn,replace_blanks=False):
     """Return a string giving one tape_output(...) line of the asy file
-      d  dict  results of parsing the line
-      fn  string  file name to which Asy will drop output
-      tape_width  integer  Asy makes the tape this wide, in pts
+      d  dict  results of parsing the output line.
+      furthest_left, furthest_right  integers  Furthest chars at any step.
+      fn  string  Name of PDF file that Asy will output to.  
+      replace_blanks=False  boolean  Replace 'B' with ' '?
     """
     position = int(d['position'])
     prefix = d['prefix']
@@ -235,7 +227,7 @@ def tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(0),replace_
     right_char_position = d['right_char_position']
     left_padding = " "*(d['left_char_position']-furthest_left)
     right_padding = " "*(furthest_right-d['right_char_position'])
-    r = ['"'+fn+'"']
+    r = ['"'+fn+'"']  # Asy needs quotes to konw it is a string
     tape_string = left_padding+prefix+currentchar+suffix+right_padding
     if replace_blanks:
         tape_string = tape_string.replace("B"," ")
@@ -245,7 +237,8 @@ def tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(0),replace_
     return "tape_output("+",".join(r)+");"
 
 ASY_HEAD = """// {0:s}.asy
-//  draw succession of tapes for a Turing machine computation
+// Draw a succession of tapes for a Turing machine computation
+// This is generated by computing/bin/turing_machine/tm_to_asy.py
 
 import settings;
 settings.outformat="pdf";
@@ -262,7 +255,7 @@ unitsize(1pt);
 ASY_TAIL = """
 """
 
-# Get the relative path from the current dir to the computing/src/asy
+# Get the relative path from the current dir to the dir computing/src/asy
 def rel_path_to_asy(dir=os.getcwd()):
     dex = dir.rfind(os.sep+"computing"+os.sep)
     target_dir = os.path.join(dir[:dex],'computing/src/asy')
@@ -271,9 +264,12 @@ def rel_path_to_asy(dir=os.getcwd()):
 # Create an .asy file
 def asy(d_list, furthest_left, furthest_right, fn_prefix, asy_dir = rel_path_to_asy(), replace_blanks = False):
     """Create an asy file and populate it with the tape_output lines
-     d  dict result of parsing a line
-     fn_prefix  string  name of output file
-     asy_dir string  Relative Path to computing/src/asy from the current dir
+     d_list  list of dicts  Results of parsing a line
+     furthest_left, furthest_right  integers  Posns of furthest chars ever.
+     fn_prefix  string  Prefix of name of file Asy will output to.  Note that
+       this routine adds "{:03d}" so three digits get appended to this prefix
+     asy_dir string  Relative path to computing/src/asy from the current dir
+     replace_blanks=False  boolean  Replace 'B' with ' '?
     """
     r = [ASY_HEAD.format(fn_prefix,asy_dir)]
     fn = fn_prefix+"{0:03d}"
@@ -290,20 +286,19 @@ def asy(d_list, furthest_left, furthest_right, fn_prefix, asy_dir = rel_path_to_
 
 # ===========================================================
 def main(args):
-    # f = get_input_file(args.filename)
     d = parse_line(TEST_LINE,1)
     print_parsed_line(d)
     d_list = parse_lines(TEST_LINES)
-    print("d_list is ",pprint.pformat(d_list))
+    # print("d_list is ",pprint.pformat(d_list))
     new_d_list = find_positions(d_list)
     print("======= new d_list =======\n ",pprint.pformat(d_list))
     furthest_left, furthest_right = find_extreme_positions(new_d_list)
-    print("=== furthest_left is ",pprint.pformat(furthest_left)," furthest right=",pprint.pformat(furthest_right))
+    # print("=== furthest_left is ",pprint.pformat(furthest_left)," furthest right=",pprint.pformat(furthest_right))
     for d,i in d_list:
         print("line ",i)
         print_parsed_line(d)
         print(tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(i)))
-    asy(d_list, furthest_left, furthest_right, "tm", replace_blanks=True)
+    asy(d_list, furthest_left, furthest_right, "tm", replace_blanks=False)
         
 # ===========================================================
 if __name__ == '__main__':

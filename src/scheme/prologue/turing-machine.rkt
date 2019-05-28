@@ -1,3 +1,4 @@
+#! /usr/bin/env racket
 #lang racket
 
 (define BLANK #\B)  ;; char used in tape data structure
@@ -182,13 +183,51 @@
 ;; Read TM from a file
 ;; Read a string, interpret the characters
 ;;  Can write "(1 a L 3)"
-#|(define (string->instruction s)
-  (let ([current-state (first instruction)]
-        [current-symbol (second instruction)]
-        [action (third instruction)]
-        [next-state (fourth instruction)])
-    (list (string->number current-state)
-          (first (string->list current-symbol))
-          (first (string->list action))
-          (string->number next-state))))
-|#
+(define s "1 a L 3")
+(define s0 "(3 b b 4)")
+
+(define (current-state-string->number s)
+  (if (eq? #\( (string-ref s 0))
+      (string->number (substring s 1))
+      (string->number s)))
+(define (current-symbol-string->char s)
+  (string-ref s 0))
+(define (action-symbol-string->char s)
+  (string-ref s 0))
+(define (next-state-string->number s)
+  (if (eq? #\) (string-ref s (- (string-length s) 1)))
+      (string->number (substring s 0 (- (string-length s) 1)))
+      (string->number s)))
+(define (string->instruction s)
+  (let* ([instruction (string-split (string-trim s))]
+         [current-state (current-state-string->number (first instruction))]
+         [current-symbol (current-symbol-string->char (second instruction))]
+         [action (action-symbol-string->char (third instruction))]
+         [next-state (next-state-string->number (fourth instruction))])
+    (list current-state
+          current-symbol
+          action
+          next-state)))
+(define inst (string->instruction s))
+inst
+(define inst1 (string->instruction s0))
+inst1
+
+(printf "Given arguments: ~s\n"
+          (current-command-line-arguments))
+
+(define verbose? (make-parameter #f))
+
+(define greeting
+  (command-line
+   #:once-each
+   [("-v") "Verbose mode" (verbose? #t)]
+   #:args
+   (str) str))
+
+(printf "~a~a\n"
+        greeting
+        (if (verbose?) " to you, too!" ""))
+
+
+

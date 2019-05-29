@@ -217,17 +217,23 @@ inst1
           (current-command-line-arguments))
 
 (define verbose? (make-parameter #f))
+(define tm-filename (make-parameter null))
 
-(define greeting
+(define command-line-parser
   (command-line
+   #:usage-help 
+   "Simulate a Turing machine."
+   "Put instructions like `state-number current-char action-char next-state-number' on separate lines."
    #:once-each
-   [("-v") "Verbose mode" (verbose? #t)]
-   #:args
-   (str) str))
+   [("-v" "--verbose") "Verbose mode" (verbose? #t)]
+   [("-f" "--filename") tmfn "Name of file with the Turing machine" (tm-filename tmfn)]
+   #:args  () (void)))
 
-(printf "~a~a\n"
-        greeting
-        (if (verbose?) " to you, too!" ""))
-
+(define TM-LINES '())
+(if (null? (tm-filename))
+    (set! TM-LINES (port->lines #:line-mode 'any #:close? #f))
+    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
+;;(set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any))
+TM-LINES
 
 

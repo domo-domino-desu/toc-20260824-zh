@@ -672,152 +672,136 @@ taking one configuration to another.
 
 
 
-\subsection{Mechanical functions}
+\subsection{Effective functions}
 In this chapter's opening we declared that 
-our chief concern is the things that the machines compute.
-We close by defining  
+our interest is not so much in the machines as it is 
+in the things that they compute.
+We close with a definition of   
 the set of functions that are mechanically computable.
 
 A function is an association of inputs with outputs.
-Thus the simplest candidate for a definition of the function computed 
+The simplest candidate for a definition of the function computed 
 by a machine is the 
-association of the string on the tape when the machine is
-started with the string that remains when the machine halts,
+association of the string on the tape when the machine starts
+with the string on the tape when it halts,
 if indeed it does halt.
-
-However, we are especially interested in number theoretic functions
-$\map{f}{\N}{\N}$.\footnote{%
-  Turing and other mathematicians 
-  began the subject by studying the effective computation of 
-  mathematical functions, principly functions from number theory. 
-  This has proven to be a fruitful approach and we continue to discuss
-  the subject in this language.}
-Both \cref{ex:MPred} and \cref{ex:MAdd} show machines
-where the inputs and outputs are strings of tape characters
-that we interpret as numbers. 
-That is, the function that a machine computes depends on how we interpret
-the symbols on the tape at the start
-and at the end.
-
-So before defining the function computed by a machine we first fix 
-a convention for interpreting the starting and ending tape.
-This definition adopts the most straightforward convention of
-representing single numbers, unary notation.
+(For the following definition, note that where $X$ is a set of characters,
+we use $\kleenestar{X}$ to denote the set of finite-length strings of 
+those characters).
 
 \begin{definition} \label{def:FcnComputedByTM}
-Let $\TM$ be a Turing machine with tape alphabet $\set{\str{B},\str{1}}$.
-Suppose that the initial tape is all blank except for
-$x$-many consecutive \str{1}'s
-and the machine is started with with the read/write head at the
-leftmost~\str{1}.  
-If this computation halts, 
-and when it halts the ouptut tape consists of $y$-many consecutive \str{1}'s
-and the read/write head is on the left-most~\str{1},
-then
-\definend{the function $\map{\phi_{\TM}}{\N}{\N}$} computed by the machine 
-is the association $\TMfcn_{\TM}(x)=y$.
+Let $\TM$ be a Turing machine with tape alphabet~$\Sigma$,
+and let $\Sigma_0$ be $\Sigma-\set{\str{B}}$.
+\definend{The function 
+$\map{\phi_{\TM}}{\kleenestar{\Sigma_0}}{\kleenestar{\Sigma_0}}$ 
+computed by~$\TM$} 
+is this:~to
+find $\TMfcn(\sigma)$ for $\sigma\in\kleenestar{\Sigma_0}$, place that 
+string on an otherwise blank tape, point the read/write head to its 
+first symbol, and start the machine.
+If $\TM$ halts 
+then where the consecutive non-blank characters under and to the right of 
+the head comprise the string~$\tau\in\kleenestar{\Sigma_0}$, we take
+$\TMfcn_{\TM}(\sigma)=\tau$.
 \end{definition}
-Usually 
-there will be only one machine under discussion, and then
-we omit the subscript to just write~$\phi$.
 
-This illustrates some $\map{\phi}{\N}{\N}$ with $\phi(3)=5$.
+\noindent This illustrates the computation of a function 
+where $\phi(\str{111})=\str{11111}$.\footnote{%
+  Turing and other mathematicians 
+  began the subject by studying the effective computation of 
+  mathematical functions, principly functions from number theory.
+  They often worked with the simplest tape alphabet, 
+  $\Sigma=\set{\str{B},\str{1}}$.
+  This has proven to be a fruitful approach and researchers still often discuss
+  the subject in these terms.}
 \begin{equation*}
  \vcenteredhbox{\includegraphics{prologue/asy/tape/tapefcn0.pdf}} 
   \quad\mapsto\quad
   \vcenteredhbox{\includegraphics{prologue/asy/tape/tapefcn1.pdf}}
 \end{equation*}
+(When there is only one machine under discussion, 
+we omit the subscript and just write~$\phi$.)
 
-Could the choice of convention change
-the set of computed functions?
-Informal reflection suggests not
-(we will \citetext{expand on this in the next section}{%
-  See also \autocite{Boker}.}).
-For instance, suppose that we are deciding between representing $n\in\N$
-in unary or binary.
-For any function computed using the first convention
-we can give a machine computing the same function via the second convention,
-and vice versa.
-Consequently we will adopt the convention that is easiest,
-and will feel free to change when it becomes easier to do
-something different.
+That definition has two fine points, both needed to make the 
+input-output association well-defined.
+One is that just specifying that the machine starts 
+with~$\sigma$ on the tape is not enough
+since the initial position of the head can change the output, so
+the definition also specifies the head's initial position.
+And, the definition omits blanks from $\sigma$ and~$\tau$
+since we would not be able to distinguish blanks
+at the end of those strings from blanks that are part of the unbounded tape.
 
-What about multiple inputs or outputs?
-We think of \cref{ex:MAdd}'s machine 
-as computing the two-input function $\map{\text{add}}{\N^2}{\N}$.
-There the convention is to separate the input numbers with a single
-blank.\footnote{%
-  When the numbers are separated with a single blank, many authors
-  do not use unary but instead
-  represent $n$ with $n+1$-many \str{1}'s.
-  This simplifies detecting an input of~$0$.}
-We could change the above definition to suppose that the initial tape consists
-only of some numbers~$x_0,\ldots\,x_{m-1}$ represented in unary and
-separated by single blanks,
-and with the read/write head at $x_0$'s leftmost \str{1}.  
-Similarly we could suppose that if the machine halts then the ouptut tape
-has the numbers $y_0,\ldots\,y_{n-1}$,
-represented in unary and separated by single blanks,
-and with the read/write head
-on the left-most \str{1}.
-Then the modified definition would be that the computable function
-$\phi:\N^{m}\to\N^n$
-is the association
-$\TMfcn(x_0,\ldots\,x_{m-1})=y_0,\ldots\,y_{n-1}$.
-(We sometimes write $\vec{x}$ and $\vec{y}$ in place of $x_0,\ldots\,x_{m-1}$
-and $y_0,\ldots\,y_{n}$.)
-
-However, we will find that all this messiness with separators is not
-necessary.
-The next chapter shows that if we want a tuple of numbers then we can interpret
-a single number as that tuple.
-Because of this, the above one-input one-output definition
-suffices to get functions with other arities.
-So we will stick with it.
-
-Sometimes the associated function has undefined output values. 
-This can happen, for instance, because it does not halt on 
-some inputs.
-Another way the function can be undefined is that,
-strictly speaking, 
-the definition of the computed function doesn't apply to a machine 
-if its tape alphabet isn't $\set{\str{B},\str{1}}$;
-in this case we formally take the function computed by that machine to be 
-empty, so that for no inputs does it return an output.\footnote{%
-  However, the next section argues that for machines with a different
-  tape alphabet there will be a machine with the alphabet 
-  $\set{\str{B},\str{1}}$ that performs the same algorithm,
-  so we will not be too concerned with this technicality.}
+The definition says `If $\TM$ halts \ldots'\,\@ 
+What if it doesn't?
 
 \begin{definition}
 If for a Turing machine the value of a computation is not defined
-on some input~$x$ in its domain then we 
+on some input~$\sigma\in\Sigma_0$ then we 
 say that the function computed by the machine \definend{diverges}, written
-\definend{$\phi(x)\mathord{\uparrow}$}.
-Where the machine does give an output, we say that
+\definend{$\phi(\sigma)\mathord{\uparrow}$}.
+Where the machine does have an associated output value, we say that
 it \definend{converges},  
 written \definend{$\phi(x)\mathord{\downarrow}$}.
-If $\phi$ is such that it diverges for at least one input
-then it is a \definend{partial function}.
-Otherwise, if $\phi$ has an output for each input inits domain, then it is a 
+If $\phi$ is defined for each input in $\Sigma_0$ then it is a 
 \definend{total function}.
+Otherwise, if it diverges for at least one member of~$\Sigma_0$,
+then it is a \definend{partial function}.
 \end{definition}
 
 \begin{remark}
-Be careful to distinguish between a machine,~$\TM$, and the function
-computed by that machine,~$\TMfcn$.
-For instance, consider $\TM_{\text{pred}}$. 
-The machine is a set of four-tuples.
+Be careful to distinguish between a machine~$\TM$ and the function
+computed by that machine~$\TMfcn_{\TM}$.
+For instance,  
+the machine $\TM_{\text{pred}}$ is a set of four-tuples.
 But the function is a set of input-output pairs, 
 which we may write as~$x\mapsto \operatorname{pred}(x)$.
 Another example of the difference is that machines halt or fail to halt, while 
 functions converge or diverge.
-
-As the chapter introduction notes, 
-we are using the Turing machine model to define the set of 
-effective functions,
-but it is really the functions that we most want.
 \end{remark}
+
+But wait, aren't there more functions that are computable;~what about functions
+with multiple inputs or outputs?
+Suppose that we want to show this is computable:~a function
+that takes in any finite list of numbers and returns the sum.
+That certainly can have multiple inputs.
+One machine with this associated function has 
+a tape alphabet~$\Sigma$ that, in addition to blank~$\str{B}$ 
+and stroke \str{1}, also contains
+the comma~`$\str{,}$' character.
+As earlier, use the stroke to represent numbers in unary but also use
+the comma to separate the inputs so that we can
+put any finite number of numbers on the starting tape.
+For instance, if this machine receives 
+the input $\sigma=\str{1111,,111,1}$ then it 
+should halt with the output $\tau=\str{11111111}$.
+Clearly such a Turing machine exists. 
+
+OK then, what if we want to compute with non-numbers?
+When we visit a web page then the browser program is doing 
+string-pushing,
+not number-crunching.
+And when we find the shortest path through a graph we are dealing with a
+mathematical object that is also not a simple number.
+The answer is that the machines around us work with the
+alphabet $\Sigma=\set{\str{0},\str{1}}$, and our everyday experience is that
+they are able to represent anything called for.
+So \cref{def:FcnComputedByTM} seems credible, at least at first glance.
+We will say much more about this general topic in the next section.
+
+% Similarly, we can ask: can the choice of convention change
+% the set of computed functions?
+% For instance, suppose that we are deciding between representing $n\in\N$
+% in unary or binary.
+% Informal reflection suggests not:~for any function computed using the 
+% first convention
+% we can give a machine computing the same function via the second convention,
+% and vice versa.
+% Consequently we will adopt the convention that is easiest,
+% and will feel free to change when it becomes easier to do
+% something different.
+% We will \citetext{expand on this in the next section}{%
+%   See also \autocite{Boker}.}.
 
 \begin{definition} \label{def:ComputableFcn}
 \definend{A computable function}, 
@@ -833,32 +817,16 @@ A relation is computable if it is computable as a set.
   The term `recursive' used to be universally used but now 
   is somewhat old-fashioned.}
 
-
-% The second point is that 
-% the example machines above cannot be made to do arbitrary things, 
-% they each do just one thing.
-% The right first take is not that a Turing machine is what 
-% we today call a computer,
-% a general-purpose device. 
-% Instead, the right first take is that a Turing machine is a program.
-
-% The second point brings us back to the start of this section.
-% At the end of the paper in which he introduced his definition of 
-% machine models, Turing showed that there is no machine that 
-% solves the 
-% \textit{Entscheidungsproblem}.
-% In the next chapter we will discuss the significance of this at length
-% but for now we note it as an example of  
-% something that we cannot do with 
-% mechanical computation.
-
-% To a person with training in programming, 
-% where all of the conversation is on getting the computer to do things,
-% the existence of jobs that cannot be done can be a surprise, perhaps
-% even a shock.
-% One thing that it shows is that the topics introduced 
-% here are nontrivial\Dash formalizing
-% the definition of mechanical computation leads to interesting results.
+When we describe these function we are often a bit sloppy 
+in that we gloss over the
+part about representing the inputs and outputs as strings.
+For instance, we may say ``consider the squaring function $\map{f}{\N}{\N}$''
+when we mean something like ``consider the function that inputs 
+a string of $n$-many \str{1}'s and outputs the string of 
+$n^2$-many \str{1}'s.'' 
+Whether we represent the input in unary or binary, or some other format,
+is typically not of interest (at least until the final chapter) so we 
+often omit it.
 
 We close with a summary.
 We have given a characterization of mechanical computation.
@@ -870,7 +838,6 @@ of what functions are mechanically computable.
 In the next subsection we will discuss this characterization,
 including the evidence
 that leads to its widespread acceptance.
-
 
 \begin{exercises}
 \recommended
@@ -994,6 +961,17 @@ with the head under the leftmost \str{1},
 while if $n$ is even it gives the number~$0$, so the entire tape is blank. 
 \end{exercise}
 
+\begin{exercise}
+\Cref{def:ComputableFcn} talks about a relation being computable.
+Consider the relation of less than between two natural numbers,
+i.e.\@ $3$ is less than $5$, but $2$ is not less than~$1$.
+Produce a Turing machine with tape 
+alphabet~$\Sigma=\set{\str{0},\str{1},\str{B}}$ 
+that takes in two numbers represented in unary and outputs $\tau=\str{1}$
+if the first number is less than the second, and
+$\tau=\str{0}$ if not. 
+\end{exercise}
+
 \recommended
 \begin{exercise}
 Produce a Turing machine that performs the successor operation, that
@@ -1029,6 +1007,19 @@ starts with the head under the most significant bit and it ends
 with the tape containing only one bit, \str{1} if the input was even 
 and \str{0} if it was not, and with the head under that output.
 \end{exercise}
+
+
+\begin{exercise}
+\Cref{def:ComputableFcn} talks about a relation being computable.
+Consider the relation of less than between two natural numbers,
+i.e.\@ $3$ is less than $5$, but $2$ is not less than~$1$.
+Produce a Turing machine with tape 
+alphabet~$\Sigma=\set{\str{0},\str{1},\str{B}}$ 
+that takes in two numbers represented in unary and outputs $\tau=\str{1}$
+if the first number is less than the second, and
+$\tau=\str{0}$ if not. 
+\end{exercise}
+
 
 \recommended
 \begin{exercise}
@@ -4708,6 +4699,8 @@ Write code that takes in a number of rows~$n$, a number of columns~$m$
 and a number of generations~$i$, and returns how many of the 
 $n\times m$ patterns will result in any surviving cells after~$i$ generations.
 \end{exercise}
+
+% Add one on: https://en.wikipedia.org/wiki/Garden_of_Eden_(cellular_automaton)
 \end{exercises}
 
 

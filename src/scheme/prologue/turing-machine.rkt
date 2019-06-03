@@ -245,12 +245,17 @@ inst1
    [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
    #:args  () (void)))
 
-(define TM-LINES '())
-(if (null? (tm-filename))
-    (set! TM-LINES (port->lines #:line-mode 'any #:close? #f))
-    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
+(tm-filename)
 
-TM-LINES
+(define TM-LINES '())  ;; list of file lines, one string per instruction
+;; This is for allowing input from the command line
+;;(if (null? (tm-filename))
+;;    (set! TM-LINES (port->lines #:line-mode 'any #:close? #f))
+;;    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
+(if (null? (tm-filename))
+    (set! TM-LINES '())
+    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
+;; for debugging: TM-LINES
 
 ;; Return the list with the last element omitted
 (define (omit-last-element lst)
@@ -260,10 +265,13 @@ TM-LINES
 ;; Note that the lines come in with an empty string at the end, which get omitted
 (define TM (for/list ([line (omit-last-element TM-LINES)])
              (string->instruction line)))
-TM
+;; for debugging: TM
+
 (define INITIAL-CONFIG (make-config 0
                                     (current-symbol-string->char (startchar))
                                     (string->list (startleft))
                                     (string->list (startright))
                                     0))  ;; TODO need the position?
-INITIAL-CONFIG
+;; for debugging: INITIAL-CONFIG
+
+(execute TM INITIAL-CONFIG)

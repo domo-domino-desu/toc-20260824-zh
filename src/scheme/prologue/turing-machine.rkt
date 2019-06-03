@@ -1,6 +1,16 @@
 #! /usr/bin/env racket
 #lang racket
 
+;; turing-machine.rkt
+;; A Turing machine simulation, for Theory of Computation by Hefferon
+;; Author: Jim Hefferon  License: GPL
+;; Input format: One line per instruction.  Each instruction has four elements: natural number, character, character, natural number.
+;; They are: current state, character currently being read on the tape, character giving action to perform next, next state.
+;; The action can be any of the characters, or a L or R, which mean to move the tape left or right.
+;;
+;; After each step, the machine prints out a picture of the tape, with the current char between asterisks.  There is a
+;; utility elsewhere in this repo that converts these pictures for use in Asymptote.
+
 (define BLANK #\B)  ;; char used in tape data structure
 (define STROKE #\1)  ;; char used to mark tape 
 (define LEFT #\L) ;; Move tape pointer left
@@ -15,22 +25,22 @@
 ;; ================= Configuration making and reading ==============
 ;; A configuration is a list of four things:
 ;;  the current state, as a natural number
-;;  the contents of the tape to the left of the head, as a list of characters (in left-to-right order)
 ;;  the symbol being read, a character
+;;  the contents of the tape to the left of the head, as a list of characters (in left-to-right order)
 ;;  the contents of the tape to the right of the head, as a list of characters
-(define (make-config current-state left-tape-list action-char right-tape-list position)
-  (list current-state left-tape-list action-char right-tape-list position))
+(define (make-config current-state  current-char left-tape-list right-tape-list position)
+  (list current-state current-char left-tape-list right-tape-list position))
 
 (define (get-current-state config) (first config))
-(define (get-left-tape-list config) (second config))
-(define (get-current-symbol config) (third config))
+(define (get-current-symbol config) (second config))
+(define (get-left-tape-list config) (third config))
 (define (get-right-tape-list config) (fourth config))
 (define (get-position config) (fifth config))
 
 (provide make-config
          get-current-state
-         get-left-tape-list
          get-current-symbol
+         get-left-tape-list
          get-right-tape-list
          get-position)
 
@@ -113,8 +123,8 @@
         [right-tape-list (get-right-tape-list config)]
         [position (get-position config)])
     (make-config next-state
-          (tape-left-pop left-tape-list) ;; strip symbol off left
           (tape-left-char left-tape-list)          ;; new current symbol
+          (tape-left-pop left-tape-list) ;; strip symbol off left
           (cons prior-current-symbol right-tape-list) ;; push old current symbol onto right 
           (sub1 position)))) ;; adjust position 
 
@@ -125,8 +135,8 @@
         [right-tape-list (get-right-tape-list config)]
         [position (get-position config)])
     (make-config next-state
-                 (reverse (cons prior-current-symbol (reverse left-tape-list)))  ;; push old current symbol on left
                  (tape-right-char right-tape-list) ;; new current symbol
+                 (reverse (cons prior-current-symbol (reverse left-tape-list)))  ;; push old current symbol on left
                  (tape-right-pop right-tape-list) ;; strip symbol off right
                  (add1 position))))  ;; adjust position
 
@@ -151,8 +161,8 @@
             [(char=? LEFT action) (move-left config next-state)]
             [(char=? RIGHT action) (move-right config next-state)]
             [else (make-config next-state
+                               action  ;; it is not a LEFT, and not a RIGHT, so it is in tape alphabet
                                left-tape-list
-                               action
                                right-tape-list
                                position)])))))
 
@@ -218,6 +228,9 @@ inst1
 
 (define verbose? (make-parameter #f))
 (define tm-filename (make-parameter null))
+(define startchar (make-parameter (make-string 1 BLANK)))  ;; string with one char, head points to this char first
+(define startleft (make-parameter ""))  ;; string giving tape left of the start char
+(define startright (make-parameter ""))  ;; string giving tape right of start char
 
 (define command-line-parser
   (command-line
@@ -227,13 +240,30 @@ inst1
    #:once-each
    [("-v" "--verbose") "Verbose mode" (verbose? #t)]
    [("-f" "--filename") tmfn "Name of file with the Turing machine" (tm-filename tmfn)]
+   [("-c" "--char") sc "Character the head points to at start" (startchar sc)]
+   [("-l" "--left") sl "String giving tape left of the start character" (startleft sl)]
+   [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
    #:args  () (void)))
 
 (define TM-LINES '())
 (if (null? (tm-filename))
     (set! TM-LINES (port->lines #:line-mode 'any #:close? #f))
     (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
-;;(set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any))
+
 TM-LINES
 
+;; Return the list with the last element omitted
+(define (omit-last-element lst)
+  (reverse (cdr (reverse lst))))
 
+;; Return a list of instructions
+;; Note that the lines come in with an empty string at the end, which get omitted
+(define TM (for/list ([line (omit-last-element TM-LINES)])
+             (string->instruction line)))
+TM
+(define INITIAL-CONFIG (make-config 0
+                                    (current-symbol-string->char (startchar))
+                                    (string->list (startleft))
+                                    (string->list (startright))
+                                    0))  ;; TODO need the position?
+INITIAL-CONFIG

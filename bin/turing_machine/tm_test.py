@@ -14,6 +14,7 @@ import argparse
 import time
 import unittest
 
+import tm_to_asy
 import subprocess # for run command
 
 PGM_ROOTNAME = os.path.splitext(os.path.basename(sys.argv[0]))[0]
@@ -61,14 +62,84 @@ log.addHandler(fh)
 # Directory where the racket program is.
 TM_CMD_DIR = os.path.join(PGM_SRC_DIR, "..", "..", "src", "scheme", "prologue")
 
+def run_tm(machine_filename, current_char='B', right_tape='', left_tape=''):
+    """Run an instance of the Turing machine simulator
+      machine_filename  string  Filename, including .tm, from subdir machines/
+      current_char  -ne-char string  Character under the machine's R/W head
+      right_tape  string  Contents of the tape to the right of the head
+      left_tape  string  Contents of tape to the left of the head
+    """
+    return subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', "machines/{}".format(machine_filename), '-c', current_char, '-l', left_tape, '-r', right_tape], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+# ============================================
+def get_final_config(s):
+    """From TM output, get the configuration tht preceeds halting
+      s  string TM output
+    """
+    lines = s.splitlines()
+    lines = [x.strip() for x in lines]
+    d_list = tm_to_asy.parse_lines(lines)
+    return d_list[-1][0]
+
+def count_chars(config, c="1"):
+    """Return the number of occurrences of the character above or to the 
+    right of the head in the machine's configuration
+     config  configuration dictionary; see tm_to_asy.py
+     c  character
+    """
+    tau = config['currentchar']+config['suffix'] 
+    return tau.count(c)
+
+    
 # ==============================================
 class PredecessorTestCase(unittest.TestCase):
     """Tests the predecessor Turing machine."""
 
+    # def test_run_tm(self):
+    #     """See that the run_tm command works"""
+    #     r = run_tm('pred.tm', '1', '111')
+    #     print(r.stdout.decode(encoding='UTF-8'))
+    
     def test_simple(self):
         """Do the dumbest possible thing"""
-        r = subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', 'machines/pred.tm', '-c', '1', '-r', '111'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        print(r.stdout)
+        i = 4
+        sigma = "1"*i
+        r = run_tm('pred.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        number_ones = count_chars(final_config)
+        # print("number of 1's is {0!s}".format(number_ones))
+        self.assertEqual(number_ones,3)
+        
+    def test_some(self):
+        """Try it on an initial sequence of inputs"""
+        for i in range(1,10):
+            sigma = "1"*i
+            r = run_tm('pred.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            number_ones = count_chars(final_config)
+            self.assertEqual(number_ones,i-1,"Predecessor should remove a 1")
+        
+    def test_zero(self):
+        """Try it on a zero input"""
+        sigma = ""
+        r = run_tm('pred.tm', 'B')
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        number_ones = count_chars(final_config)
+        self.assertEqual(number_ones,0,"Zero input should give zero out")
+
+    def test_equivalence_space_and_B(self):
+        """Show that space and B are the same"""
+        r_space = run_tm('pred.tm', ' ')
+        r_B = run_tm('pred.tm', 'B')
+        out_space = r_space.stdout.decode(encoding='UTF-8')
+        out_B = r_B.stdout.decode(encoding='UTF-8')
+        self.assertEqual(out_space,out_B,"Space and B should be the same")
 
 # ===========================================================
 def main(args):

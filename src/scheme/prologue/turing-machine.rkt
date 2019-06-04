@@ -32,7 +32,11 @@
   (list current-state current-char left-tape-list right-tape-list position))
 
 (define (get-current-state config) (first config))
-(define (get-current-symbol config) (second config))
+(define (get-current-symbol config)
+  (let ([cs (second config)])  ;; make horizontal whitespace like a B
+        (if (char-blank? cs)
+            #\B
+            cs)))
 (define (get-left-tape-list config) (third config))
 (define (get-right-tape-list config) (fourth config))
 (define (get-position config) (fifth config))
@@ -218,13 +222,13 @@
           current-symbol
           action
           next-state)))
-(define inst (string->instruction s))
-inst
-(define inst1 (string->instruction s0))
-inst1
+;; (define inst (string->instruction s))
+;; inst
+;; (define inst1 (string->instruction s0))
+;; inst1
 
-(printf "Given arguments: ~s\n"
-          (current-command-line-arguments))
+;;(printf "Given arguments: ~s\n"
+;;          (current-command-line-arguments))
 
 (define verbose? (make-parameter #f))
 (define tm-filename (make-parameter null))
@@ -245,7 +249,7 @@ inst1
    [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
    #:args  () (void)))
 
-(tm-filename)
+;; (tm-filename)
 
 (define TM-LINES '())  ;; list of file lines, one string per instruction
 ;; This is for allowing input from the command line

@@ -298,7 +298,7 @@ def main(args):
         print("line ",i)
         print_parsed_line(d)
         print(tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(i)))
-    asy(d_list, furthest_left, furthest_right, "tm", replace_blanks=False)
+    asy(d_list, furthest_left, furthest_right, args.output, replace_blanks=False)
         
 # ===========================================================
 if __name__ == '__main__':
@@ -312,7 +312,15 @@ if __name__ == '__main__':
         parser.add_argument('-f', '--filename',
                             action='store',
                             default=None,
-                            help="File with output. Default: stdin")
+                            help="File with Turing machine output")
+        parser.add_argument('-o', '--output',
+                            action='store',
+                            default='tm',
+                            help="Prefix of .asy filename. Default: tm")
+        parser.add_argument('-b', '--blanks',
+                            action='store_true',
+                            default=False,
+                            help="Convert B to blank. Default: {0!s}".format(False))
         parser.add_argument('-D', '--debug',
                             action='store_true',
                             default=DEBUG,

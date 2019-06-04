@@ -134,7 +134,7 @@ class PredecessorTestCase(unittest.TestCase):
         self.assertEqual(number_ones,0,"Zero input should give zero out")
 
     def test_equivalence_space_and_B(self):
-        """Show that space and B are the same"""
+        """Test that space and B are the same"""
         r_space = run_tm('pred.tm', ' ')
         r_B = run_tm('pred.tm', 'B')
         out_space = r_space.stdout.decode(encoding='UTF-8')

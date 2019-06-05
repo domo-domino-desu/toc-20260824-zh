@@ -4,7 +4,7 @@
 Convert output from Turing machine simulator turing-machine.rkt 
 for use in Asymptote.
 """
-__version__ = "0.9.5"
+__version__ = "1.0.0"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
 

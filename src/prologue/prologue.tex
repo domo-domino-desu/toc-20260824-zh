@@ -3868,13 +3868,24 @@ def show(n):
 
 
 % ==================================
+\newcommand{\tmfile}{scheme/prologue/turing-machine.rkt}
 \extra{Turing machine simulator}
 
 Writing code to simulate a Turing Machine is a reasonable 
 programming project.
 Here we will detail one implementation.
 
-We have seen this Turing machine whose input-output behavior is
+This implementttion has three design goals.
+The most important is to track with the 
+description we gave of the action of a Turing machine
+on \cpageref{DefnConfiguration},
+so it will use the instructions to guide 
+transitioning from configuration to configuration.
+The secondary goals are to output a picture of the machine after each step,
+and to be easy to understand for a reader who is not a Racket initiate.
+
+We have already seen this six-instruction 
+Turing machine, whose input-output behavior is
 the predecessor function.
 \begin{equation*}
  \TM_{\text{pred}}=
@@ -3886,110 +3897,83 @@ the predecessor function.
         \tminstruction{2}{1}{L}{2} 
       }
 \end{equation*}
-Our implementation's version of the machine
-\lstinputlisting[firstline=148,lastline=153]{scheme/prologue/tm.scm}
-uses some constants for convenience.
-\lstinputlisting[firstline=5,lastline=9]{scheme/prologue/tm.scm}
-Entering an initial tape works the same way.
-\lstinputlisting[firstline=154,lastline=156]{scheme/prologue/tm.scm}
-
-Turing machines work step-by-step.
-So there needs to be a routine that moves the machine through a step.
-That routine translates a starting machine configuration to
-another.
-Here are appropriate getters and setters.
-\lstinputlisting[firstline=98,lastline=105]{scheme/prologue/tm.scm}
-The translation has three cases: moving left on the tape, moving right,
-and writing a symbol to the tape.
-They are here as the three clauses in the \codeinline!cond!.
-\lstinputlisting[firstline=119,lastline=137]{scheme/prologue/tm.scm}
-Each of those three clauses returns a configuration.
-In the first two clauses, this output configuration just reflects the change in
-position of the read/write tape head.
-In the third the new configuration reflects that the 
-machine has written the \codeinline!nextaction! character to the tape,
-at the current position. 
-
-The \codeinline!step! routine chooses the \codeinline!cond! clause based 
-on the pair \codeinline!next!, 
-that is returned by the \codeinline!delta! function.
-This function matches a person's experience tracing through the 
-execution of a Turing machine such as~$\TM_{\text{pred}}$:
-you run your finger along the four-tuples looking at each one
-to see if it has the right current state and symbol, 
-until you find one that does and then you note the action to take,
-and the next state.
-\lstinputlisting[firstline=88,lastline=95]{scheme/prologue/tm.scm}
-If none of the four-tuples has the right first two entries then
-the machine halts.
-
-Finally, we tie these routines together with one that keeps taking steps
-until the machine halts.
-\lstinputlisting[firstline=139,lastline=146]{scheme/prologue/tm.scm}
-The \codeinline!max-steps! parameter puts an upper limit on the number
-of steps the machine will walk through. 
-Recall that there are Turing machines that never halt and so it is 
-there to prevent the code from running away.
-
-That \codeinline!tm-run! routine relies on one to display a configuration.
-\lstinputlisting[firstline=106,lastline=115]{scheme/prologue/tm.scm}
-(Code to make the string representation is, 
-unfortunately, ugly.)
-
-Here is the result of running \codeinline!M-pred! with the 
-initial tape \codeinline!tape-three!
-by having Scheme execute \codeinline!(tm-run M-pred tape-three 100)!.
+To simulate it, the program will input this file (the first line is a
+comment).
+\lstinputlisting{scheme/prologue/machines/pred.tm}
+The data structure for a Turing machine is the simplest one,
+a list of instructions.
+For the instructions, the program converts each of the above 
+six lines into a
+list with four members, a number, two characters, and a number.
+Thus, a Turing machine is stored as a list of lists.
+The above machine is this.
 \begin{lstlisting}
-$ csi -s tm.scm
-step 0 state 0, pos 0, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
-step 1 state 0, pos 1, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
-step 2 state 0, pos 2, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
-step 3 state 0, pos 3, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
-step 4 state 1, pos 2, (at -10) BBBBBBBBBB111BBBBBBB (at 9)
-step 5 state 1, pos 2, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
-step 6 state 2, pos 1, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
-step 7 state 2, pos 0, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
-step 8 state 2, pos -1, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
-step 9 state 3, pos 0, (at -10) BBBBBBBBBB11BBBBBBBB (at 9)
-halt  
-\end{lstlisting} % $
-This is the step-by-step evolution.
-The view includes the configuration information of the tape, the current state,
-and the red/write head position.
-(The choice to show the tape on the range of positions $\leftclosed{-10}{10}$
-is just arbitrary, to get something as output.)
+'("0 B L 1" "0 1 R 0" "1 B L 2" "1 1 B 1" "2 B R 3" "2 1 L 2" "")
+\end{lstlisting}
 
+After some convenience constants
+\lstinputlisting[firstline=14,lastline=18]{\tmfile}
+the program defines a configuration.
+\lstinputlisting[firstline=26,lastline=41]{\tmfile}
+The only point of interest is that
+\codeinline{get-current-symbol} translates any blank character
+to a \str{B}.
 
-% \subsection{Tape work}
-The routines to manipulate the tape data structure are less interesting.
-A person can understand the simulator without going into them.
-But to run the above code yourself you need to be able to 
-write your own machines and tapes.
-And for completeness, and as examples of Scheme code, here are the
-other routines.
+The heart of a Turing machine is its $\Delta$ function, which
+inputs the current state and current tape symbol and returns
+the action to be taken\Dash either \str{L}, or~\str{R}, or a character
+from the tape alphabet\Dash and the next state.
+\lstinputlisting[firstline=61,lastline=70]{\tmfile}
+(The Racket function \codeinline{findf} searches through \codeinline{tm}
+for a member on which \codeinline{delta-test} returns a value of true.)
 
-In our definition of a Turing machine the tape is unbounded at both ends.
-So we represent the tape as a list of pairs 
-$\sequence{\text{position},\text{symbol}}$.
-We call each such pair an \textit{info}.
-The setters and getters are easy.
-\lstinputlisting[firstline=14,lastline=19]{scheme/prologue/tm.scm}
+Again, as described following the definition of Turing machine, we need
+to work step by step.
+If there is no relevant instruction then the machine halts, and
+otherwise it either moves left, moves right, or writes a character
+in place of the current symbol.
+\lstinputlisting[firstline=129,lastline=144]{\tmfile}
+The actions of moving left and right are separate routines.
+\lstinputlisting[firstline=77,lastline=117]{\tmfile}
 
-To write a symbol \codeinline!sym! to the tape at position \codeinline!pos! 
-\lstinputlisting[firstline=31,lastline=33]{scheme/prologue/tm.scm}
-we need to be able to first erase any symbol at that location. 
-\lstinputlisting[firstline=22,lastline=28]{scheme/prologue/tm.scm}
+Finally, the implementation executes the machine by iterating the
+\codeinline{step} function.
+\lstinputlisting[firstline=152,lastline=165]{\tmfile}
 
-Reading from the tape should return a blank if there is nothing
-on the tape at that position.
-\lstinputlisting[firstline=52,lastline=56]{scheme/prologue/tm.scm}
-This uses a helper routine that returns False~\codeinline!#f!
-if it finds nothing at that position. 
-\lstinputlisting[firstline=36,lastline=40]{scheme/prologue/tm.scm}
+That routine calls this one to give a simple picture of the machine,
+giving the state number and the tape contents, with the current symbol
+shown between asterisks.
+\lstinputlisting[firstline=49,lastline=55]{\tmfile}
 
-Finally, \codeinline!configuration-get-string! uses this routine
-to get a string showing the current tape between the two limits.
-\lstinputlisting[firstline=59,lastline=64]{scheme/prologue/tm.scm}
+Besides this one, there is code that does dull things such
+as reading the lines from the file and converting them to instruction lists. 
+\lstinputlisting[firstline=175,lastline=196]{\tmfile}
+There is a bit more code
+for getting the file name from the command line, etc., that does not 
+bear on simulating a Turing machine;
+if you are interested you can look at the source. 
+
+Here is the simulator running.
+It takes input from the file \codeinline{pred.tm} shown earlier.
+Initially, the current symbol is \str{1} and to the right of that
+the tape has \str{111}. 
+\begin{lstlisting}
+ftpmaint@millstone:$ ./turing-machine.rkt -f machines/pred.tm -c "1" -r "111"
+step 0: q0: *1*111
+step 1: q0: 1*1*11
+step 2: q0: 11*1*1
+step 3: q0: 111*1*
+step 4: q0: 1111*B*
+step 5: q1: 111*1*B
+step 6: q1: 111*B*B
+step 7: q2: 11*1*BB
+step 8: q2: 1*1*1BB
+step 9: q2: *1*11BB
+step 10: q2: *B*111BB
+step 11: q3: B*1*11BB
+step 12: HALT
+\end{lstlisting}  % $
+The output is crude but good enough for small scale experiments.
 
 \begin{exercises}
 \begin{exercise}

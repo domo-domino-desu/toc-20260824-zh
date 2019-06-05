@@ -4,15 +4,15 @@
 ;; turing-machine.rkt
 ;; A Turing machine simulation, for Theory of Computation by Hefferon
 ;; Author: Jim Hefferon  License: GPL
-;; Input format: One line per instruction.  Each instruction has four elements: natural number, character, character, natural number.
-;; They are: current state, character currently being read on the tape, character giving action to perform next, next state.
-;; The action can be any of the characters, or a L or R, which mean to move the tape left or right.
-;;
-;; After each step, the machine prints out a picture of the tape, with the current char between asterisks.  There is a
-;; utility elsewhere in this repo that converts these pictures for use in Asymptote.
+;; Input format: One line per instruction.  Instruction is a space-separated list of four elements:
+;; natural number for current state, character for what the head is point to, character for the action (any alphabet
+;; character and L or R), natural number for the next state.  Best is to use digits or lower-case letters for alphabet.
+;; After each step, the machine prints out a picture of the tape with the current char between asterisks.
+;; 
+;; There is a utility elsewhere in this repo that converts these pictures for use in Asymptote.
 
-(define BLANK #\B)  ;; char used in tape data structure
-(define STROKE #\1)  ;; char used to mark tape 
+(define BLANK #\B)  ;; Easier to read than space
+(define STROKE #\1)  ;; 
 (define LEFT #\L) ;; Move tape pointer left
 (define RIGHT #\R) ;; Move tape pointer right
 (define HALT '())
@@ -26,10 +26,10 @@
 ;; A configuration is a list of four things:
 ;;  the current state, as a natural number
 ;;  the symbol being read, a character
-;;  the contents of the tape to the left of the head, as a list of characters (in left-to-right order)
+;;  the contents of the tape to the left of the head, as a list of characters
 ;;  the contents of the tape to the right of the head, as a list of characters
-(define (make-config current-state  current-char left-tape-list right-tape-list position)
-  (list current-state current-char left-tape-list right-tape-list position))
+(define (make-config state  char left-tape-list right-tape-list)
+  (list state char left-tape-list right-tape-list))
 
 (define (get-current-state config) (first config))
 (define (get-current-symbol config)
@@ -39,78 +39,31 @@
             cs)))
 (define (get-left-tape-list config) (third config))
 (define (get-right-tape-list config) (fourth config))
-(define (get-position config) (fifth config))
 
 (provide make-config
          get-current-state
          get-current-symbol
          get-left-tape-list
-         get-right-tape-list
-         get-position)
+         get-right-tape-list)
 
-;; tape-right-char  Return the element nearest the head on the right side of the tape
-(define (tape-right-char right-tape-list)
-    (if (empty? right-tape-list)
-        BLANK
-        (car right-tape-list)))
-
-;; tape-left-char  Return the element nearest the head on the right side of the tape
-(define (tape-left-char left-tape-list)
-    (tape-right-char (reverse left-tape-list)))
-
-;; tape-right-pop  Return the tape list without the element nearest the head on the right side of the tape
-(define (tape-right-pop right-tape-list)
-    (if (empty? right-tape-list)
-        '()
-        (cdr right-tape-list)))
-
-;; tape-left-pop   Return the tape list without the element nearest the head on the left side of the tape
-(define (tape-left-pop left-tape-list)
-    (reverse (tape-right-pop (reverse left-tape-list))))
-
-(provide tape-right-char
-         tape-left-char
-         tape-right-pop
-         tape-left-pop)
-
-;; return a string for use in debugging
+;; configuration-> string  Return a string showing the tape
 (define (configuration->string config)
-  (let ([state (string-append "q" (number->string (get-current-state config)))]  ;; like "q0"
-        [left-tape (list->string (get-left-tape-list config))]       ; like "0100"
-        [current (string #\* (get-current-symbol config) #\*)]  ; surround with *'s 
-        [right-tape (list->string (get-right-tape-list config))]
-        [position (number->string (get-position config))])
-    ;; (string-append state ": " left-tape current right-tape " :" position)
-    (string-append state ": " left-tape current right-tape)
-    ))
-
-;; return a string for use in Asymptote
-(define (configuration->asy config filename tape-length)
-  (let ([state (string-append "$q_{" (number->string (get-current-state config)) "}$")]  ;; like "q0"
-        [left-tape (list->string (get-left-tape-list config))]       ; like "0100"
-        [current (string (get-current-symbol config))]  ; convert character to string 
+  (let ([state (string-append "q" (number->string (get-current-state config)))]
+        [left-tape (list->string (get-left-tape-list config))]    
+        [current (string #\* (get-current-symbol config) #\*)]
         [right-tape (list->string (get-right-tape-list config))])
-    (string-join (list (string-append "\"" filename "\"")
-                       (string-append "\"" left-tape current right-tape "\"")
-                       (number->string (string-length left-tape))
-                       (string-append "\"" state "\"")
-                       (number->string tape-length))
-                 ","
-                 #:before-first "tape_output("
-                 #:after-last ");")))
+    (string-append state ": " left-tape current right-tape)))
 
-(provide configuration->string
-         configuration->asy)
+(provide configuration->string)
 
 ;; =============================
-;; Look in the machine to find the relevant instruction
+;; delta  Find the applicable instruction
 (define (delta tm current-state tape-symbol)
   (define (delta-test inst)
     (and (= current-state (first inst))
          (equal? tape-symbol (second inst))))
 
   (let ([inst (findf delta-test tm)])
-    ; (display inst)
     (if (not inst)
         '()
         (list (third inst) (fourth inst)))))
@@ -120,42 +73,64 @@
 ;; ====================
 ;; Changing the configuration
 
-;; Respond to Left action
+;; tape-right-char  Return the element nearest the head on the right side
+(define (tape-right-char right-tape-list)
+    (if (empty? right-tape-list)
+        BLANK
+        (car right-tape-list)))
+
+;; tape-left-char  Return the element nearest the head on the left
+(define (tape-left-char left-tape-list)
+    (tape-right-char (reverse left-tape-list)))
+
+;; tape-right-pop  Return the right tape list without char nearest the head
+(define (tape-right-pop right-tape-list)
+    (if (empty? right-tape-list)
+        '()
+        (cdr right-tape-list)))
+
+;; tape-left-pop   Return the left tape list without char nearest the head
+(define (tape-left-pop left-tape-list)
+    (reverse (tape-right-pop (reverse left-tape-list))))
+
+;; move-left  Respond to Left action
 (define (move-left config next-state)
   (let ([left-tape-list (get-left-tape-list config)]
         [prior-current-symbol (get-current-symbol config)]
-        [right-tape-list (get-right-tape-list config)]
-        [position (get-position config)])
+        [right-tape-list (get-right-tape-list config)])
+    ;; push old tape head symbol onto the right tape list 
     (make-config next-state
-          (tape-left-char left-tape-list)          ;; new current symbol
-          (tape-left-pop left-tape-list) ;; strip symbol off left
-          (cons prior-current-symbol right-tape-list) ;; push old current symbol onto right 
-          (sub1 position)))) ;; adjust position 
+          (tape-left-char left-tape-list)    ;; new current symbol
+          (tape-left-pop left-tape-list)       ;; strip symbol off left
+          (cons prior-current-symbol right-tape-list)))) 
 
-;; Respond to Right action
+;; move-right Respond to Right action
 (define (move-right config next-state)
   (let ([left-tape-list (get-left-tape-list config)]
         [prior-current-symbol (get-current-symbol config)]
-        [right-tape-list (get-right-tape-list config)]
-        [position (get-position config)])
+        [right-tape-list (get-right-tape-list config)])
+    ;; push old head symbol onto the left tape list
     (make-config next-state
                  (tape-right-char right-tape-list) ;; new current symbol
-                 (reverse (cons prior-current-symbol (reverse left-tape-list)))  ;; push old current symbol on left
-                 (tape-right-pop right-tape-list) ;; strip symbol off right
-                 (add1 position))))  ;; adjust position
+                 (reverse (cons prior-current-symbol (reverse left-tape-list))) 
+                 (tape-right-pop right-tape-list)))) ;; strip symbol off right
+
+(provide tape-right-char
+         tape-left-char
+         tape-right-pop
+         tape-left-pop)
 
 (provide move-left
          move-right)
 
 ;; ===================================================
 ;; Take one step
-;; Return a configuration
+;; step  Do one step; from a config and the tm, yield the next config
 (define (step config tm)
   (let* ([current-state (get-current-state config)]
          [left-tape-list (get-left-tape-list config)]
          [current-symbol (get-current-symbol config)]
          [right-tape-list (get-right-tape-list config)]
-         [position (get-position config)]
          [action-next-state (delta tm current-state current-symbol)])
     (if (empty? action-next-state)
         HALT
@@ -165,16 +140,15 @@
             [(char=? LEFT action) (move-left config next-state)]
             [(char=? RIGHT action) (move-right config next-state)]
             [else (make-config next-state
-                               action  ;; it is not a LEFT, and not a RIGHT, so it is in tape alphabet
+                               action  ;; not L or R so it is in tape alphabet
                                left-tape-list
-                               right-tape-list
-                               position)])))))
+                               right-tape-list)])))))
 
 (provide step)
 
 ;; ===================================================
 ;; Execute a Turing machine
-;; Return a configuration
+;; execute  Run a turing machine step-by-step until it halts
 (define (execute tm initial-config)
   (define (execute-iter config s)
     (cond
@@ -191,8 +165,6 @@
 
 (provide execute)
 
-
-
 ;; ========================================================
 ;; Read TM from a file
 ;; Read a string, interpret the characters
@@ -201,7 +173,7 @@
 (define s0 "(3 b b 4)")
 
 (define (current-state-string->number s)
-  (if (eq? #\( (string-ref s 0))
+  (if (eq? #\( (string-ref s 0))   ;; allow instr to start with (
       (string->number (substring s 1))
       (string->number s)))
 (define (current-symbol-string->char s)
@@ -209,7 +181,7 @@
 (define (action-symbol-string->char s)
   (string-ref s 0))
 (define (next-state-string->number s)
-  (if (eq? #\) (string-ref s (- (string-length s) 1)))
+  (if (eq? #\) (string-ref s (- (string-length s) 1))) ;; ends with )?
       (string->number (substring s 0 (- (string-length s) 1)))
       (string->number s)))
 (define (string->instruction s)
@@ -274,8 +246,7 @@
 (define INITIAL-CONFIG (make-config 0
                                     (current-symbol-string->char (startchar))
                                     (string->list (startleft))
-                                    (string->list (startright))
-                                    0))  ;; TODO need the position?
+                                    (string->list (startright))))  ;; TODO need the position?
 ;; for debugging: INITIAL-CONFIG
 
 (execute TM INITIAL-CONFIG)

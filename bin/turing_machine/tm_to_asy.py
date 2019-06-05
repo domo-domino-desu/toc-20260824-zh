@@ -286,19 +286,21 @@ def asy(d_list, furthest_left, furthest_right, fn_prefix, asy_dir = rel_path_to_
 
 # ===========================================================
 def main(args):
-    d = parse_line(TEST_LINE,1)
-    print_parsed_line(d)
     d_list = parse_lines(TEST_LINES)
     # print("d_list is ",pprint.pformat(d_list))
     new_d_list = find_positions(d_list)
-    print("======= new d_list =======\n ",pprint.pformat(d_list))
+    if args.debug:
+        print("args.blanks is {0!s}".format(args.blanks))
+        DEBUG=True
+        print("======= new d_list =======\n ",pprint.pformat(d_list))
     furthest_left, furthest_right = find_extreme_positions(new_d_list)
     # print("=== furthest_left is ",pprint.pformat(furthest_left)," furthest right=",pprint.pformat(furthest_right))
-    for d,i in d_list:
-        print("line ",i)
-        print_parsed_line(d)
-        print(tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(i)))
-    asy(d_list, furthest_left, furthest_right, args.output, replace_blanks=False)
+    if args.debug:
+        for d,i in d_list:
+            print("line ",i)
+            print_parsed_line(d)
+            print(tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(i)))
+    asy(d_list, furthest_left, furthest_right, args.output, replace_blanks=args.blanks)
         
 # ===========================================================
 if __name__ == '__main__':

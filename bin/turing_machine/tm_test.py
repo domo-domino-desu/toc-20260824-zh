@@ -159,42 +159,36 @@ class AddTwoTestCase(unittest.TestCase):
         """Do the dumbest possible thing"""
         i, j = 2, 3
         sigma = ("1"*i) + " " + ("1"*j)
-        r = run_tm('addtwo.tm', sigma[0], sigma[1:])
+        r = run_tm('sum.tm', sigma[0], sigma[1:])
         out = r.stdout.decode(encoding='UTF-8')
-        print(out)
+        # print(out)
         final_config = get_final_config(out)
         number_ones = count_chars(final_config)
         # print("number of 1's is {0!s}".format(number_ones))
         self.assertEqual(number_ones,5)
         
-    # def test_some(self):
-    #     """Try it on an initial sequence of inputs"""
-    #     for i in range(1,10):
-    #         sigma = "1"*i
-    #         r = run_tm('pred.tm', sigma[0], sigma[1:])
-    #         out = r.stdout.decode(encoding='UTF-8')
-    #         # print(out)
-    #         final_config = get_final_config(out)
-    #         number_ones = count_chars(final_config)
-    #         self.assertEqual(number_ones,i-1,"Predecessor should remove a 1")
+    def test_some(self):
+        """Try it on an initial sequence of inputs"""
+        for i in range(1,5):
+            for j in range(1,5):
+                sigma = ("1"*i) + " " + ("1"*j)
+                r = run_tm('sum.tm', sigma[0], sigma[1:])
+                out = r.stdout.decode(encoding='UTF-8')
+                # print(out)
+                final_config = get_final_config(out)
+                number_ones = count_chars(final_config)
+                self.assertEqual(number_ones,i+j,"Addtwo should add them")
         
-    # def test_zero(self):
-    #     """Try it on a zero input"""
-    #     sigma = ""
-    #     r = run_tm('pred.tm', 'B')
-    #     out = r.stdout.decode(encoding='UTF-8')
-    #     # print(out)
-    #     final_config = get_final_config(out)
-    #     number_ones = count_chars(final_config)
-    #     self.assertEqual(number_ones,0,"Zero input should give zero out")
-
-    # def test_equivalence_space_and_B(self):
-    #     """Test that space and B are the same"""
-    #     r_space = run_tm('pred.tm', ' ')
-    #     r_B = run_tm('pred.tm', 'B')
-    #     out_space = r_space.stdout.decode(encoding='UTF-8')
-    #     out_B = r_B.stdout.decode(encoding='UTF-8')
-    #     self.assertEqual(out_space,out_B,"Space and B should be the same")
+    def test_zeroes(self):
+        """Try when one or both are zero"""
+        for i,j in [(0,3), (3,0), (0,0)]:
+            sigma = ("1"*i) + " " + ("1"*j)
+            r = run_tm('sum.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            number_ones = count_chars(final_config)
+            self.assertEqual(number_ones,i+j,"Addtwo should add even zeroes")
 
 # ===========================================================
 def main(args):

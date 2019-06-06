@@ -33,6 +33,7 @@ defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+boldco
 picture pic;
 int picnum = 0;
 unitsize(pic,1pt);
+setdefaultstatediagramstyles();
 
 // define nodes
 // node[] n = ncircles("$q_0$", "$b$", "$c$", "$d$", "$e$", "$f$");
@@ -43,14 +44,11 @@ node q0=ncircle("$q_0$"),
 
 // layout
 defaultlayoutrel = false;
-defaultlayoutskip = 1.5cm;
+defaultlayoutskip = 1.40cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
 hlayout(u, q0, q1, q2, q3);
-
-// draw nodes
-draw(pic, q0, q1, q2, q3);
 
 draw(pic,
      (q0--q1).l("\scriptsize $\blank,\str{L}$"), 
@@ -62,13 +60,19 @@ draw(pic,
      (q2--q3).l("\scriptsize $\blank,\str{R}$"),
      (q2..loop(S)).l("\scriptsize $\str{1},\str{L}$")
     );
+
+// draw nodes
+draw(pic, q0, q1, q2, q3);
+
 shipout(format("circlediagram%02d",picnum),pic,format="pdf");
+
 
 
 // ............................ P_add
 picture pic;
 int picnum = 1;
 unitsize(pic,1pt);
+setdefaultstatediagramstyles();
 
 // define nodes
 // node[] n = ncircles("$q_0$", "$b$", "$c$", "$d$", "$e$", "$f$");
@@ -76,31 +80,35 @@ node q0=ncircle("$q_0$"),
      q1=ncircle("$q_1$"),
      q2=ncircle("$q_2$"),
      q3=ncircle("$q_3$"),
-     q4=ncircle("$q_4$");
+     q4=ncircle("$q_4$"),
+     q5=ncircle("$q_5$");
 
 // layout
 defaultlayoutrel = false;
-defaultlayoutskip = 1.5cm;
+defaultlayoutskip = 1.40cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-hlayout(u, q0, q1, q2, q3, q4);
-
-// draw nodes
-draw(pic, q0, q1, q2, q3, q4);
+hlayout(u, q0, q1, q2, q3, q4, q5);
 
 // draw edges
 draw(pic,
-     (q0--q1).l("\scriptsize $\blank,\str{1}$"), 
+     (q0--q1).l("\scriptsize $\blank,\blank$"), 
      (q0..loop(S)).l("\scriptsize $\str{1},\str{R}$"),
      // (q1--q2).l("\scriptsize $\blank,\str{L}$").style("leftside"),
      // (q1--q1).l(Label("\scriptsize $10$",position=Relative(0.7))),
-     (q1--q2).l("\scriptsize $\blank,\str{L}$"),
-     (q1..loop(S)).l("\scriptsize $\str{1},\str{R}$"),
-     (q2--q3).l("\scriptsize $\blank,\str{R}$"),
-     (q2..loop(S)).l("\scriptsize $\str{1},\str{L}$"),
+     (q1..loop(S)).l("\scriptsize $\blank,\str{1}$"),
+     (q1--q2).l("\scriptsize $\str{1},\str{1}$"),
+     (q2..loop(S)).l("\scriptsize $\blank,\str{L}$"),
+     (q2--q3).l("\scriptsize $\str{1},\str{B}$"),
+     (q3..loop(S)).l("\scriptsize $\blank,\str{R}$"),
      (q3--q4).l("\scriptsize $\str{1},\blank$"),
-     (q3..loop(S)).l("\scriptsize $\blank,\str{R}$")
+     (q4..bend..q5).l("\scriptsize $\blank,\str{R}$"),
+     (q4..bend(-20)..q5).l("\scriptsize $\str{1},\str{1}$").style("leftside")
     );
+
+// draw nodes
+draw(pic, q0, q1, q2, q3, q4, q5);
+
 shipout(format("circlediagram%02d",picnum),pic,format="pdf");
 

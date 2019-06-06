@@ -6,6 +6,8 @@ settings.outformat="pdf";
 settings.render=0;
 
 import jh;
+import settexpreamble;
+settexpreamble();
 defaultpen(fontsize(8pt));
 
 unitsize(1pt);
@@ -14,7 +16,7 @@ pen TAPE_PEN=linewidth(.4pt)+squarecap+miterjoin+fontsize(8pt)+black;
 real TAPE_WIDTH=10pt;
 real DEFAULT_TAPE_LENGTH = 200pt;
 
-real TAPE_CELL_WIDTH = 10;
+real TAPE_CELL_WIDTH = 6;  // too wide makes it hard to spot spaces
 
 // write the string to the tape, with character i at position x=i (positions
 // start counting at x=0)
@@ -29,6 +31,7 @@ void tape_write(picture p, string s) {
 // (this enables us to measure the bounding box)
 real tape_contents_length(string s) {
   picture p;
+  unitsize(p,1pt);
   tape_write(p,s);
   real length = max(p,user=true).x-min(p,user=true).x;
   return(length);
@@ -47,7 +50,7 @@ path tape_end_path(pair bottom) {
   return shift(bottom)*tape_end;
 }
 
-real TAPE_PADDING = 7pt;  // pad the ends with blank space
+real TAPE_PADDING = 12pt;  // pad the ends with blank space (make at least half the head width)
 // draw the outline of the tape, including the ends
 path tape_path(real tape_length=DEFAULT_TAPE_LENGTH) {
   path tape=(-TAPE_PADDING,0)--(tape_length+TAPE_PADDING,0)
@@ -58,7 +61,7 @@ path tape_path(real tape_length=DEFAULT_TAPE_LENGTH) {
 
 // draw the tape read/write head pointing to position x-location and
 // containing the state (e.g., "q_3")
-real TAPE_HEAD_X = 12pt; // how far tape head extends left-right
+real TAPE_HEAD_X = 14pt; // how far tape head extends left-right
 real TAPE_HEAD_Y = 12pt; // how far up-down
 void draw_tape_head(picture p, real location, string state="") {
   path tape_head=(0,0)--(0.5*TAPE_HEAD_X,-0.25*TAPE_HEAD_Y)
@@ -96,6 +99,8 @@ void tape_output(string fn_prefix, string s, real head_pos, string head_label=""
 // tape_output("tape1","101",0,"$q_0$");
 // tape_output("tape2","101",1,"$q_2$");
 // tape_output("tape3","101",2,"$q_1$");
+
+// ======= STACK ROUTINES ==============
 
 real STACK_LENGTH=100pt;
 real STACK_WIDTH=TAPE_WIDTH;

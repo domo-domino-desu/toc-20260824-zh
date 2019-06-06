@@ -142,6 +142,8 @@ def parse_lines(lines):
     line_list = []
     for lne_no,lne in enumerate(lines):
         d = parse_line(lne,lne_no)
+        if DEBUG:
+            print("  parse_lines: lne={0!s} and d={1!s}".format(lne,d))
         if not(d is None):
             d['line'] = lne
             line_list.append((d,lne_no))
@@ -233,7 +235,7 @@ def tape_output(d,furthest_left,furthest_right,fn,replace_blanks=False):
         tape_string = tape_string.replace("B"," ")
     r.append('"'+tape_string+'"')
     r.append("{:d}".format(+len(left_padding)+len(d['prefix'])))  # position of head
-    r.append('"$q_'+d['state']+'$"')
+    r.append('"$\\state{'+d['state']+'}$"')
     return "tape_output("+",".join(r)+");"
 
 ASY_HEAD = """// {0:s}.asy
@@ -284,14 +286,25 @@ def asy(d_list, furthest_left, furthest_right, fn_prefix, asy_dir = rel_path_to_
     f.write("\n".join(r))
     f.close()
 
+def get_file_contents(fn):
+    """Return the file contents
+      fn  string  File name 
+    """
+    with open(fn,'r') as f:
+        lines = f.read()
+    return lines
+
 # ===========================================================
 def main(args):
-    d_list = parse_lines(TEST_LINES)
+    if args.debug:
+        DEBUG=True
+    if args.verbose:
+        VERBOSE=True
+    file_contents = get_file_contents(args.filename)
+    d_list = parse_lines(file_contents.splitlines())
     # print("d_list is ",pprint.pformat(d_list))
     new_d_list = find_positions(d_list)
     if args.debug:
-        print("args.blanks is {0!s}".format(args.blanks))
-        DEBUG=True
         print("======= new d_list =======\n ",pprint.pformat(d_list))
     furthest_left, furthest_right = find_extreme_positions(new_d_list)
     # print("=== furthest_left is ",pprint.pformat(furthest_left)," furthest right=",pprint.pformat(furthest_right))

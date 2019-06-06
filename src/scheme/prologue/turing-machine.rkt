@@ -15,12 +15,12 @@
 (define STROKE #\1)  ;; 
 (define LEFT #\L) ;; Move tape pointer left
 (define RIGHT #\R) ;; Move tape pointer right
-(define HALT '())
+(define HALT-STATE -1) ;; Anything negative
 (provide  BLANK
           STROKE
           LEFT
           RIGHT
-          HALT)
+          HALT-STATE)
 
 ;; ================= Configuration making and reading ==============
 ;; A configuration is a list of four things:
@@ -48,11 +48,12 @@
 
 ;; configuration-> string  Return a string showing the tape
 (define (configuration->string config)
-  (let ([state (string-append "q" (number->string (get-current-state config)))]
-        [left-tape (list->string (get-left-tape-list config))]    
-        [current (string #\* (get-current-symbol config) #\*)]
-        [right-tape (list->string (get-right-tape-list config))])
-    (string-append state ": " left-tape current right-tape)))
+  (let* ([state-number (get-current-state config)]
+         [state-string (string-append "q" (number->string state-number))]
+         [left-tape (list->string (get-left-tape-list config))]    
+         [current (string #\* (get-current-symbol config) #\*)]  ;; wrap *'s
+         [right-tape (list->string (get-right-tape-list config))])
+    (string-append state-string ": " left-tape current right-tape)))
 
 (provide configuration->string)
 
@@ -65,7 +66,7 @@
 
   (let ([inst (findf delta-test tm)])
     (if (not inst)
-        '()
+        (list #\X HALT-STATE)  ;; X is arbitrary placeholder char
         (list (third inst) (fourth inst)))))
 
 (provide delta)
@@ -131,18 +132,16 @@
          [left-tape-list (get-left-tape-list config)]
          [current-symbol (get-current-symbol config)]
          [right-tape-list (get-right-tape-list config)]
-         [action-next-state (delta tm current-state current-symbol)])
-    (if (empty? action-next-state)
-        HALT
-        (let ([action (first action-next-state)]
-              [next-state (second action-next-state)])
-          (cond
-            [(char=? LEFT action) (move-left config next-state)]
-            [(char=? RIGHT action) (move-right config next-state)]
-            [else (make-config next-state
-                               action  ;; not L or R so it is in tape alphabet
-                               left-tape-list
-                               right-tape-list)])))))
+         [action-next-state (delta tm current-state current-symbol)]
+         [action (first action-next-state)]
+         [next-state (second action-next-state)])
+    (cond
+      [(char=? LEFT action) (move-left config next-state)]
+      [(char=? RIGHT action) (move-right config next-state)]
+      [else (make-config next-state
+                         action  ;; not L or R so it is in tape alphabet
+                         left-tape-list
+                         right-tape-list)])))
 
 (provide step)
 
@@ -151,16 +150,17 @@
 ;; execute  Run a turing machine step-by-step until it halts
 (define (execute tm initial-config)
   (define (execute-iter config s)
-    (cond
-      [(eq? config HALT)
-       (fprintf (current-output-port)
-                "step ~s: HALT\n"
-                s)]
-      [else (fprintf (current-output-port)
-                     "step ~s: ~a\n"
-                     s
-                     (configuration->string config))
-            (execute-iter (step config tm) (add1 s))]))
+    (if (= (get-current-state config) HALT-STATE)
+        (fprintf (current-output-port)
+                 "step ~s: HALT\n"
+                 s)
+        (begin
+          (fprintf (current-output-port)
+                   "step ~s: ~a\n"
+                   s
+                   (configuration->string config))
+          (execute-iter (step config tm) (add1 s)))))
+
   (execute-iter initial-config 0))
 
 (provide execute)
@@ -238,9 +238,9 @@
   (reverse (cdr (reverse lst))))
 
 ;; Return a list of instructions
-;; Note that the lines come in with an empty string at the end, which get omitted
-(define TM (for/list ([line (omit-last-element TM-LINES)])
-             (string->instruction line)))
+;; Note that empty lines give an error in the TM
+(define TM (for/list ([line TM-LINES])
+                 (string->instruction line)))
 ;; for debugging: TM
 
 (define INITIAL-CONFIG (make-config 0

@@ -64,12 +64,21 @@ TM_CMD_DIR = os.path.join(PGM_SRC_DIR, "..", "..", "src", "scheme", "prologue")
 
 def run_tm(machine_filename, current_char='B', right_tape='', left_tape=''):
     """Run an instance of the Turing machine simulator
-      machine_filename  string  Filename, including .tm, from subdir machines/
+      machine_filename  string  Filename, including .tm.  Taken from 
+        subdir in TM_CMD_DIR if such a file exists, else taken from 
+        subdir machines/
       current_char  -ne-char string  Character under the machine's R/W head
       right_tape  string  Contents of the tape to the right of the head
       left_tape  string  Contents of tape to the left of the head
     """
-    return subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', "machines/{}".format(machine_filename), '-c', current_char, '-l', left_tape, '-r', right_tape], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    first_choice_filepath = os.path.join(TM_CMD_DIR,'machines',machine_filename)
+    if os.path.exists(first_choice_filepath):
+        fn = first_choice_filepath
+    else:
+        fn = "machines/{}".format(machine_filename)
+        warn("The file {0:s} is not found, so using {1:s}".format(first_choice_filepath,fn))
+    # print("fn is "+fn)
+    return subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', fn, '-c', current_char, '-l', left_tape, '-r', right_tape], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 # ============================================
 def get_final_config(s):
@@ -140,6 +149,52 @@ class PredecessorTestCase(unittest.TestCase):
         out_space = r_space.stdout.decode(encoding='UTF-8')
         out_B = r_B.stdout.decode(encoding='UTF-8')
         self.assertEqual(out_space,out_B,"Space and B should be the same")
+
+    
+# ==============================================
+class AddTwoTestCase(unittest.TestCase):
+    """Tests the addtwo Turing machine."""
+
+    def test_simple(self):
+        """Do the dumbest possible thing"""
+        i, j = 2, 3
+        sigma = ("1"*i) + " " + ("1"*j)
+        r = run_tm('addtwo.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        print(out)
+        final_config = get_final_config(out)
+        number_ones = count_chars(final_config)
+        # print("number of 1's is {0!s}".format(number_ones))
+        self.assertEqual(number_ones,5)
+        
+    # def test_some(self):
+    #     """Try it on an initial sequence of inputs"""
+    #     for i in range(1,10):
+    #         sigma = "1"*i
+    #         r = run_tm('pred.tm', sigma[0], sigma[1:])
+    #         out = r.stdout.decode(encoding='UTF-8')
+    #         # print(out)
+    #         final_config = get_final_config(out)
+    #         number_ones = count_chars(final_config)
+    #         self.assertEqual(number_ones,i-1,"Predecessor should remove a 1")
+        
+    # def test_zero(self):
+    #     """Try it on a zero input"""
+    #     sigma = ""
+    #     r = run_tm('pred.tm', 'B')
+    #     out = r.stdout.decode(encoding='UTF-8')
+    #     # print(out)
+    #     final_config = get_final_config(out)
+    #     number_ones = count_chars(final_config)
+    #     self.assertEqual(number_ones,0,"Zero input should give zero out")
+
+    # def test_equivalence_space_and_B(self):
+    #     """Test that space and B are the same"""
+    #     r_space = run_tm('pred.tm', ' ')
+    #     r_B = run_tm('pred.tm', 'B')
+    #     out_space = r_space.stdout.decode(encoding='UTF-8')
+    #     out_B = r_B.stdout.decode(encoding='UTF-8')
+    #     self.assertEqual(out_space,out_B,"Space and B should be the same")
 
 # ===========================================================
 def main(args):

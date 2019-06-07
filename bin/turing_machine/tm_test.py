@@ -3,7 +3,7 @@
 """
 Some command-line tests of turing-machine.rkt
 """
-__version__ = "0.0.1"
+__version__ = "0.9.0"
 __author__ = "Jim Hefferon"
 __license__ = "GPL3"
 
@@ -230,6 +230,46 @@ class AddThreeTestCase(unittest.TestCase):
         number_ones = count_chars(final_config)
         # print("number of 1's is {0!s}".format(number_ones))
         self.assertEqual(number_ones,3)
+    
+# ==============================================
+class Decide010TestCase(unittest.TestCase):
+    """Tests the decide010 Turing machine."""
+
+    def test_a(self):
+        """Test the first item"""
+        for i in range(1,4):
+            sigma = ("1"*i)
+            r = run_tm('decide010a.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertEqual(sigma,final_config['prefix'])
+        # Now test with an empty input
+        sigma=""
+        r = run_tm('decide010a.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertEqual(sigma,final_config['prefix'])
+
+    def test_B(self):
+        """Test the second item"""
+        empty_string = ""
+        for i in range(1,2):
+            sigma = ("1"*i)
+            r = run_tm('decide010b.tm', " ", "", sigma)
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertEqual(empty_string,final_config['suffix'])
+        # Now test with an empty input
+        sigma=""
+        r = run_tm('decide010b.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertEqual(empty_string,final_config['suffix'])
+        
 
 # ===========================================================
 def main(args):

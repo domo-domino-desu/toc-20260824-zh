@@ -18,6 +18,9 @@
 % M Sharpe's XCharter
 \usepackage{computingfonts}
 
+% Get some file directories in this layout, such as where graphics are
+\input{directory.tex}
+
 \usepackage{calc}
 % Figure a person could print on letterpaper
 \RequirePackage[papersize={8.5in,11in},

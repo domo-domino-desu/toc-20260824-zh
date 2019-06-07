@@ -190,6 +190,47 @@ class AddTwoTestCase(unittest.TestCase):
             number_ones = count_chars(final_config)
             self.assertEqual(number_ones,i+j,"Addtwo should add even zeroes")
 
+    
+# ==============================================
+class AddThreeTestCase(unittest.TestCase):
+    """Tests the addthree Turing machine."""
+
+    def test_simple(self):
+        """Do the dumbest possible thing"""
+        i = 4
+        sigma = ("1"*i)
+        r = run_tm('addthree.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        number_ones = count_chars(final_config)
+        # print("number of 1's is {0!s}".format(number_ones))
+        self.assertEqual(number_ones,7)
+        
+    def test_some(self):
+        """Try it on an initial sequence of inputs"""
+        for i in range(1,5):
+            sigma = ("1"*i)
+            r = run_tm('addthree.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            number_ones = count_chars(final_config)
+            # print("number of 1's is {0!s}".format(number_ones))
+            self.assertEqual(number_ones,i+3)
+        
+    def test_zeroes(self):
+        """Try when the input is 0"""
+        i = 0
+        sigma = ("1"*i)
+        r = run_tm('addthree.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        number_ones = count_chars(final_config)
+        # print("number of 1's is {0!s}".format(number_ones))
+        self.assertEqual(number_ones,3)
+
 # ===========================================================
 def main(args):
     unittest.main()

@@ -24,6 +24,8 @@
 % \linespread{1.04}
 \usepackage{computingfonts}
 
+% Get some file directories in this layout, such as where graphics are
+\input{directory.tex}
 
 \usepackage{calc}
 \RequirePackage[papersize={7.5in,9.25in},

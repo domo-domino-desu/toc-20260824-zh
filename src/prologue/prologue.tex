@@ -302,9 +302,6 @@ If so then the machine
 writes a blank to the tape, replacing the \str{1},
 and passes into state~$q_5$.
 
-% Where the asy PDF's are located
-\newcommand{\tmexercises}{prologue/asy/tm_exercises/}
-
 \begin{example} \label{ex:MPred}
 This Turing machine has six instructions. 
 \begin{equation*}
@@ -423,10 +420,9 @@ Here are the steps.
 % $f(x,y)=x+y$.
 \end{example}
 
-
 Instead of giving a machine's instructions as a list
 we can use a table or a diagram.
-Here is the \definend{transition table} description for $\TM_{\text{pred}}$
+Here is the \definend{transition table} for $\TM_{\text{pred}}$
 and its \definend{transition graph}.
 \begin{center}
   \begin{transitionfunction}
@@ -3870,16 +3866,14 @@ def show(n):
 
 Writing code to simulate a Turing Machine is a reasonable 
 programming project.
-Here we will detail one implementation.
-
-This implementttion has three design goals.
-The most important is to track with the 
-description we gave of the action of a Turing machine
-on \cpageref{DefnConfiguration},
+Here we detail an implementation.
+It has three design goals.
+The main one is to track closely the 
+description on \cpageref{DefnConfiguration} of the action of a Turing machine,
 so it will use the instructions to guide 
 transitioning from configuration to configuration.
-The secondary goals are to output a picture of the machine after each step,
-and to be easy to understand for a reader who is not a Racket initiate.
+Secondary goals are to output a picture of the machine after each step,
+and to be easy for a reader new to Racket.
 
 We have already seen this six-instruction 
 Turing machine, whose input-output behavior is
@@ -3894,26 +3888,26 @@ the predecessor function.
         \tminstruction{2}{1}{L}{2} 
       }
 \end{equation*}
-To simulate it, the program will input this file (the first line is a
-comment).
-\lstinputlisting{scheme/prologue/machines/pred.tm}
+To simulate it, the program inputs this file.
+\lstinputlisting{\tmfiles pred.tm}
 The data structure for a Turing machine is the simplest one,
 a list of instructions.
 For the instructions, the program converts each of the above 
 six lines into a
 list with four members, a number, two characters, and a number.
 Thus, a Turing machine is stored as a list of lists.
-The above machine is this.
+The above machine is this (the line break is there only to make it fit in the 
+margins).
 \begin{lstlisting}
-'("0 B L 1" "0 1 R 0" "1 B L 2" "1 1 B 1" "2 B R 3" "2 1 L 2")
+'((0 #\B #\L 1) (0 #\1 #\R 0) (1 #\B #\L 2) (1 #\1 #\B 1) 
+    (2 #\B #\R 3) (2 #\1 #\L 2))
 \end{lstlisting}
 
 After some convenience constants
 \lstinputlisting[firstline=14,lastline=18]{\tmfile}
-the program defines a configuration.
+we define a configuration.
 \lstinputlisting[firstline=26,lastline=41]{\tmfile}
-The only point of interest is that
-\codeinline{get-current-symbol} translates any blank character
+Note that \codeinline{get-current-symbol} translates any blank character
 to a \str{B}.
 
 The heart of a Turing machine is its $\Delta$ function, which
@@ -3924,38 +3918,39 @@ from the tape alphabet\Dash and the next state.
 (The Racket function \codeinline{findf} searches through \codeinline{tm}
 for a member on which \codeinline{delta-test} returns a value of true.)
 
-Again, as described following the definition of Turing machine, we need
-to work step by step.
+Turing machine work discretely, step by step.
 If there is no relevant instruction then the machine halts, and
-otherwise it either moves left, moves right, or writes a character
-in place of the current symbol.
+otherwise it moves one cell left, one cell right, or writes one character.
 \lstinputlisting[firstline=129,lastline=144]{\tmfile}
-The actions of moving left and right are separate routines.
+Because moving left and right are more complicated, they are
+done in separate routines.
 \lstinputlisting[firstline=77,lastline=117]{\tmfile}
 
 Finally, the implementation executes the machine by iterating the
-\codeinline{step} function.
+operation of a single step.
 \lstinputlisting[firstline=152,lastline=165]{\tmfile}
 
-That routine calls this one to give a simple picture of the machine,
-giving the state number and the tape contents, with the current symbol
-shown between asterisks.
+The \codeinline{execute} routine 
+calls the following one to give a simple picture of the machine,
+showing the state number and the tape contents, with the current symbol
+displayed between asterisks.
 \lstinputlisting[firstline=49,lastline=55]{\tmfile}
 
-Besides this one, there is code that does dull things such
+Besides the prior routine, the implementation has other code 
+to do dull things such
 as reading the lines from the file and converting them to instruction lists. 
 \lstinputlisting[firstline=175,lastline=196]{\tmfile}
-There is a bit more code
+And, there is a bit more code
 for getting the file name from the command line, etc., that does not 
-bear on simulating a Turing machine;
-if you are interested you can look at the source. 
+bear at all on simulating a Turing machine so we will leave it aside. 
 
-Here is the simulator running.
+Below is a run of the simulator, with its command line invocation.
 It takes input from the file \codeinline{pred.tm} shown earlier.
-Initially, the current symbol is \str{1} and to the right of that
-the tape has \str{111}. 
+When the machine starts
+the current symbol is \str{1} and the tape to the right 
+has \str{111} (to the left the tape is empty). 
 \begin{lstlisting}
-ftpmaint@millstone:$ ./turing-machine.rkt -f machines/pred.tm -c "1" -r "11"
+$ ./turing-machine.rkt -f machines/pred.tm -c "1" -r "11"
 step 0: q0: *1*11
 step 1: q0: 1*1*1
 step 2: q0: 11*1*
@@ -3968,16 +3963,176 @@ step 8: q2: *B*11BB
 step 9: q3: B*1*1BB
 step 10: HALT
 \end{lstlisting}  % $
-The output is simple but good enough for small scale experiments.
+The output is crude but good enough for small scale experiments.
 
 \begin{exercises}
 \begin{exercise}
-Run the simulator on the code for \codeinline!P-pred! given earlier.    
+Run the simulator on the predecessor machine $\TM_{\text{pred}}$
+starting with five \str{1}'s.
+Also run it on an empty tape.
+\begin{answer}
+This command line run starts with five \str{1}'s.
+\begin{lstlisting}
+$ ./turing-machine.rkt -f machines/pred.tm -c "1" -r "1111"
+step 0: q0: *1*1111
+step 1: q0: 1*1*111
+step 2: q0: 11*1*11
+step 3: q0: 111*1*1
+step 4: q0: 1111*1*
+step 5: q0: 11111*B*
+step 6: q1: 1111*1*B
+step 7: q1: 1111*B*B
+step 8: q2: 111*1*BB
+step 9: q2: 11*1*1BB
+step 10: q2: 1*1*11BB
+step 11: q2: *1*111BB
+step 12: q2: *B*1111BB
+step 13: q3: B*1*111BB
+step 14: HALT
+\end{lstlisting}  % $
+Here it is looking like the tape.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises pred_five000.pdf} \\
+    1 &\tapegraphic{\tmexercises pred_five001.pdf} \\
+    2 &\tapegraphic{\tmexercises pred_five002.pdf} \\
+    3 &\tapegraphic{\tmexercises pred_five003.pdf} \\
+    4 &\tapegraphic{\tmexercises pred_five004.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    5 &\tapegraphic{\tmexercises pred_five005.pdf} \\
+    6 &\tapegraphic{\tmexercises pred_five006.pdf} \\
+    7 &\tapegraphic{\tmexercises pred_five007.pdf} \\
+    8 &\tapegraphic{\tmexercises pred_five008.pdf} \\
+    9 &\tapegraphic{\tmexercises pred_five009.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   10 &\tapegraphic{\tmexercises pred_five010.pdf} \\
+   11 &\tapegraphic{\tmexercises pred_five011.pdf} \\
+   12 &\tapegraphic{\tmexercises pred_five012.pdf} \\
+   13 &\tapegraphic{\tmexercises pred_five013.pdf} \\
+   14 &\tapegraphic{\tmexercises pred_five014.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+This is the command line invocation for an empty tape,
+\begin{lstlisting}
+$ ./turing-machine.rkt -f machines/pred.tm -c " "
+step 0: q0: *B*
+step 1: q1: *B*B
+step 2: q2: *B*BB
+step 3: q3: B*B*B
+step 4: HALT
+\end{lstlisting}  % $
+and the matching sequence of tape diagrams.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises pred_empty000.pdf} \\
+    1 &\tapegraphic{\tmexercises pred_empty001.pdf} \\
+    2 &\tapegraphic{\tmexercises pred_empty002.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    3 &\tapegraphic{\tmexercises pred_empty003.pdf} \\
+    4 &\tapegraphic{\tmexercises pred_empty004.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
 Run the simulator on Example~\ref{ex:MAdd}'s $\TM_{\text{add}}$ to add
-$2+3$.    
+$1+2$.
+Also simulate $0+2$ and $0+0$.    
+\begin{answer}
+This simulates $1+2$.
+\begin{lstlisting}
+$ ./turing-machine.rkt -f machines/pred.tm -c "1" -r " 11"
+step 0: q0: *1* 11
+step 1: q0: 1*B*11
+step 2: q1: 1*B*11
+step 3: q1: 1*1*11
+step 4: q2: 1*1*11
+step 5: q2: *1*111
+step 6: q2: *B*1111
+step 7: q3: *B*1111
+step 8: q3: B*1*111
+step 9: q4: B*B*111
+step 10: q5: BB*1*11
+step 11: HALT
+\end{lstlisting}  % $
+and this is the matching tape diagram.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises addonetwo000.pdf} \\
+    1 &\tapegraphic{\tmexercises addonetwo001.pdf} \\
+    2 &\tapegraphic{\tmexercises addonetwo002.pdf} \\
+    3 &\tapegraphic{\tmexercises addonetwo003.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    4 &\tapegraphic{\tmexercises addonetwo004.pdf} \\
+    5 &\tapegraphic{\tmexercises addonetwo005.pdf} \\
+    6 &\tapegraphic{\tmexercises addonetwo006.pdf} \\
+    7 &\tapegraphic{\tmexercises addonetwo007.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    8 &\tapegraphic{\tmexercises addonetwo008.pdf} \\
+    9 &\tapegraphic{\tmexercises addonetwo009.pdf} \\
+   10 &\tapegraphic{\tmexercises addonetwo010.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+The command line for $0+2$
+\begin{lstlisting}
+$ ./turing-machine.rkt -f machines/pred.tm -c " " -r "11"
+\end{lstlisting}  % $
+gives these tape diagrams.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises addzerotwo000.pdf} \\
+    1 &\tapegraphic{\tmexercises addzerotwo001.pdf} \\
+    2 &\tapegraphic{\tmexercises addzerotwo002.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    3 &\tapegraphic{\tmexercises addzerotwo003.pdf} \\
+    4 &\tapegraphic{\tmexercises addzerotwo004.pdf} \\
+    5 &\tapegraphic{\tmexercises addzerotwo005.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    6 &\tapegraphic{\tmexercises addzerotwo006.pdf} \\
+    7 &\tapegraphic{\tmexercises addzerotwo007.pdf} \\
+    8 &\tapegraphic{\tmexercises addzerotwo008.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+The command line for $0+0$
+\begin{lstlisting}
+$ ./turing-machine.rkt -f machines/pred.tm -c " " 
+\end{lstlisting}  % $
+gives this sequence of tape diagrams.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises addzerozero000.pdf} \\
+    1 &\tapegraphic{\tmexercises addzerozero001.pdf} \\
+    2 &\tapegraphic{\tmexercises addzerozero002.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    3 &\tapegraphic{\tmexercises addzerozero003.pdf} \\
+    4 &\tapegraphic{\tmexercises addzerozero004.pdf} \\
+    5 &\tapegraphic{\tmexercises addzerozero005.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    6 &\tapegraphic{\tmexercises addzerozero006.pdf} \\
+    7 &\tapegraphic{\tmexercises addzerozero007.pdf} \\
+    8 &\tapegraphic{\tmexercises addzerozero008.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -3986,6 +4141,90 @@ so that given as input a tape containing only a string of $n$ consecutive
 \str{1}'s, it returns a tape with a string of $n+3$ consecutive \str{1}'s.
 Follow our convention that when the program starts and ends
 the head is under the first \str{1}.
+Run it on the simulator, with an input of $4$ consecutive \str{1}'s,
+and also with an empty tape.
+\begin{answer}
+This ten-instruction machine
+\begin{align*}
+  \TM_{\text{addthree}} 
+  &=
+  \{\hspace{\setspacing} \tminstruction{0}{1}{R}{0},\,
+        \tminstruction{0}{B}{B}{1},\,
+        \tminstruction{1}{B}{1}{1},\,
+        \tminstruction{1}{1}{R}{2},\,
+        \tminstruction{2}{B}{1}{2},\,
+        \tminstruction{2}{1}{R}{3},\,        \\
+        &\qquad\;\tminstruction{3}{B}{1}{3},\,
+        \tminstruction{3}{1}{1}{4},\,          
+        \tminstruction{4}{1}{L}{4},\,
+        \tminstruction{4}{B}{R}{5} 
+      \hspace{\setspacing}\}
+\end{align*}
+\noindent matches the source for the simulator.
+\lstinputlisting{\tmfiles addthree.tm}
+\noindent This command line for input~$4$
+\begin{lstlisting}
+$ ./turing-machine.rkt -f machines/addthree.tm -c "1" -r "111"
+\end{lstlisting}  % $
+\noindent gives these tape diagrams.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0  &\tapegraphic{\tmexercises addthree_four000.pdf} \\
+    1  &\tapegraphic{\tmexercises addthree_four001.pdf} \\
+    2  &\tapegraphic{\tmexercises addthree_four002.pdf} \\
+    3  &\tapegraphic{\tmexercises addthree_four003.pdf} \\
+    4  &\tapegraphic{\tmexercises addthree_four004.pdf} \\
+    5  &\tapegraphic{\tmexercises addthree_four005.pdf} \\
+    6  &\tapegraphic{\tmexercises addthree_four006.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    7  &\tapegraphic{\tmexercises addthree_four007.pdf} \\
+    8  &\tapegraphic{\tmexercises addthree_four008.pdf} \\
+    9  &\tapegraphic{\tmexercises addthree_four009.pdf} \\
+   10  &\tapegraphic{\tmexercises addthree_four010.pdf} \\
+   11  &\tapegraphic{\tmexercises addthree_four011.pdf} \\
+   12  &\tapegraphic{\tmexercises addthree_four012.pdf} \\
+   13  &\tapegraphic{\tmexercises addthree_four013.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   14  &\tapegraphic{\tmexercises addthree_four014.pdf} \\
+   15  &\tapegraphic{\tmexercises addthree_four015.pdf} \\
+   16  &\tapegraphic{\tmexercises addthree_four016.pdf} \\
+   17  &\tapegraphic{\tmexercises addthree_four017.pdf} \\
+   18  &\tapegraphic{\tmexercises addthree_four018.pdf} \\
+   19  &\tapegraphic{\tmexercises addthree_four019.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+The command line for $0$
+\begin{lstlisting}
+$ ./turing-machine.rkt -f machines/addthree.tm -c " " 
+\end{lstlisting}  % $
+\noindent gives this sequence of tape diagrams.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0  &\tapegraphic{\tmexercises addthree_zero000.pdf} \\
+    1  &\tapegraphic{\tmexercises addthree_zero001.pdf} \\
+    2  &\tapegraphic{\tmexercises addthree_zero002.pdf} \\
+    3  &\tapegraphic{\tmexercises addthree_zero003.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    4  &\tapegraphic{\tmexercises addthree_zero004.pdf} \\
+    5  &\tapegraphic{\tmexercises addthree_zero005.pdf} \\
+    6  &\tapegraphic{\tmexercises addthree_zero006.pdf} \\
+    7  &\tapegraphic{\tmexercises addthree_zero007.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    8  &\tapegraphic{\tmexercises addthree_zero008.pdf} \\
+    9  &\tapegraphic{\tmexercises addthree_zero009.pdf} \\
+   10  &\tapegraphic{\tmexercises addthree_zero010.pdf} \\
+   11  &\tapegraphic{\tmexercises addthree_zero011.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}

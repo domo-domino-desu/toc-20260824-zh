@@ -4228,32 +4228,25 @@ $ ./turing-machine.rkt -f machines/addthree.tm -c " "
 \end{exercise}
 
 \begin{exercise}
-Write a machine to decide if a string contains \str{101}.
+Write a machine to decide if the input contains the substring~\str{010}.
 Fix $\Sigma=\set{\str{0}, \str{1}, \str{B}}$.
 The machine starts with the tape blank except for a 
 contiguous string of \str{0}'s and \str{1}'s,
 and with the head under the first non-blank symbol.
 When it finishes, the tape will have either just a~\str{1} 
-(if the input contained the substring \str{101})
-or just a~\str{0}.
-We will do this in stages, building up a few of  
+if the input contained the desired substring,
+or otherwise just a~\str{0}.
+We will do this in stages, building a few of  
 what amounts to subroutines.
 \begin{exparts}
-\item Write a sequence of instructions, starting with $q_{10}$,
-that if initially the head is under the first of a sequence of 
-non-blank entries, then at the end the head will be to the 
-right of the final such entry..
-\item Write a sequence of instructions, starting with $q_{20}$,
-that assumes that initially the head is just to the right of a sequence
-of non-blank entries, and that 
-that move the head 
-to the start of that sequence, replacing all the non-blank
-entries with blanks.
-\item Now, starting with $q_{30}$, assume the initial tape is blank,
-and finish with a tape containing only a \str{0}.
-\item Ditto, starting with $q_{40}$ and
-writing a \str{1}.
-\item Linking together the prior items, write the full machine.
+\item Write instructions, starting in state~$q_{10}$, so
+that if initially the machine's head is under the first of a sequence of 
+non-blank entries then at the end the head will be to the 
+right of the final such entry.
+\item Write a sequence of instructions, starting in state~$q_{20}$,
+so that if initially the head is just to the right of a sequence
+of non-blank entries, then at the end all entries are blank.
+\item Write the full machine, including linking in the prior items.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -4265,23 +4258,65 @@ Something like this will do.
        \tminstruction{10}{B}{B}{100} }
 \end{equation*}
 \item
-This will go right with $q_{20}$, and then back up blanking with $q_{21}$
-and~$q_{22}$.
+This will back up, blanking out cells.
+\begin{equation*}
+  \TM_1=\set{ 
+       \tminstruction{20}{0}{B}{21},\,
+       \tminstruction{20}{1}{B}{21},\,
+       \tminstruction{20}{B}{B}{100},\,   
+       \tminstruction{21}{0}{L}{20},\,
+       \tminstruction{21}{1}{L}{20},\,
+       \tminstruction{21}{B}{L}{20} 
+      }
+\end{equation*}
+\item Here, roughly $q_0$ is where none of the substring is matched,
+$q_1$ is where \str{0} has been seen and the machine is looking for 
+the~\str{1}, 
+and~$q_2$ is where \str{01} has been seen and the machine is looking for 
+the~\str{0}.
+Then the four states $q_3$, $q_4$, $q_5$, and $q_6$ mark a failure
+(they end with $q_6$ writing~\str{0} on a blank tape).
+The four states $q_7$, $q_8$, $q_9$, and $q_{10}$ mark a success.
 \begin{align*}
-  \TM_1&=
-  \{\hspace{\setspacing} 
-       \tminstruction{20}{0}{R}{20},\,
-       \tminstruction{20}{1}{R}{20},\,
-       \tminstruction{20}{B}{L}{21},\,   \\
-     &\qquad\;  \tminstruction{21}{0}{B}{22},\,
-       \tminstruction{21}{1}{B}{22},\,
-       \tminstruction{21}{B}{B}{100},\,   \\ 
-     &\qquad\;  \tminstruction{22}{0}{L}{21},\,
-       \tminstruction{22}{1}{L}{21},\,
-       \tminstruction{22}{B}{L}{21} 
-  \hspace{\setspacing} \}
+  \TM_{\text{decide010}} 
+  &=
+  \{\hspace{\setspacing} \tminstruction{0}{0}{R}{1},\,
+        \tminstruction{0}{1}{R}{0},\,
+        \tminstruction{0}{B}{B}{3},\,
+        \tminstruction{1}{0}{R}{1},\,
+        \tminstruction{1}{1}{R}{2},\,
+        \tminstruction{1}{B}{B}{3},\,        
+        \tminstruction{2}{0}{R}{7},\,
+        \tminstruction{2}{1}{1}{0},\,
+        \tminstruction{2}{B}{B}{3},\,        \\
+        &\qquad\;
+        \tminstruction{3}{0}{R}{3},\,
+        \tminstruction{3}{1}{R}{3},\,          
+        \tminstruction{3}{B}{L}{4},\,
+        \tminstruction{4}{0}{B}{5},\,
+        \tminstruction{4}{1}{B}{5},\,       
+        \tminstruction{4}{B}{B}{6},\,   \\  % too big to fit on one line
+        &\qquad\qquad\tminstruction{5}{0}{L}{4},\,
+        \tminstruction{5}{1}{L}{4},\,          
+        \tminstruction{5}{B}{L}{4},\,
+        \tminstruction{6}{0}{0}{100},\,
+        \tminstruction{6}{1}{0}{100},\,          
+        \tminstruction{6}{B}{0}{100},\,      \\
+        &\qquad\;
+        \tminstruction{7}{0}{R}{7},\,
+        \tminstruction{7}{1}{R}{7},\,          
+        \tminstruction{7}{B}{L}{8},\,
+        \tminstruction{8}{0}{B}{9},\,
+        \tminstruction{8}{1}{B}{9},\,          
+        \tminstruction{8}{B}{B}{10},\,      \\  % too big
+        &\qquad\qquad\tminstruction{9}{0}{L}{8},\,
+        \tminstruction{9}{1}{L}{8},\,          
+        \tminstruction{9}{B}{L}{8},\,
+        \tminstruction{10}{0}{1}{100},\,
+        \tminstruction{10}{1}{1}{100},\,          
+        \tminstruction{10}{B}{1}{100}      
+      \hspace{\setspacing}\}
 \end{align*}
-
 \end{exparts}
 \end{answer}
 

@@ -99,6 +99,12 @@ def count_chars(config, c="1"):
     tau = config['currentchar']+config['suffix'] 
     return tau.count(c)
 
+def is_empty(s):
+    """Test if the string is empty, where B's are normalized to spaces.
+      s  string
+    """
+    s = s.replace("B"," ")
+    return s.strip() == ""
     
 # ==============================================
 class PredecessorTestCase(unittest.TestCase):
@@ -252,7 +258,7 @@ class Decide010TestCase(unittest.TestCase):
         final_config = get_final_config(out)
         self.assertEqual(sigma,final_config['prefix'])
 
-    def test_B(self):
+    def test_b(self):
         """Test the second item"""
         empty_string = ""
         for i in range(1,2):
@@ -270,6 +276,45 @@ class Decide010TestCase(unittest.TestCase):
         final_config = get_final_config(out)
         self.assertEqual(empty_string,final_config['suffix'])
         
+    def test_c(self):
+        """Test the full machine"""
+        # A simple "yes"
+        sigma="010"
+        r = run_tm('decide010c.tm', "0", "10" )
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("1",final_config['currentchar'], "This should be a simple yes")
+        # A simple "no"
+        sigma="1101"
+        r = run_tm('decide010c.tm', "1", "101" )
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("0",final_config['currentchar'], "This should be a simple no")
+        # Various strings
+        for sigma,ans in [("000101","1"), ("01","0"), ("010110101","1")]:
+            r = run_tm('decide010c.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(is_empty(final_config['suffix']))
+            self.assertEqual(ans,final_config['currentchar'], sigma+" should give "+ans)
+        # Empty string
+        sigma=""
+        r = run_tm('decide010c.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("0",final_config['currentchar'],"Empty string is not a fit")
+
 
 # ===========================================================
 def main(args):

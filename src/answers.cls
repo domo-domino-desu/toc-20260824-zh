@@ -338,6 +338,7 @@
 
 
 % ================ Display environment =========
+% Like "center" except if fleqn is in effect, then it has a left margin
 \newenvironment{display}{%
   \if@fleqn %
     \list{\relax}{%

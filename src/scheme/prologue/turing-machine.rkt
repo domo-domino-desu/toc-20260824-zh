@@ -202,11 +202,34 @@
 ;;(printf "Given arguments: ~s\n"
 ;;          (current-command-line-arguments))
 
+
+;; =====================================
+;; Execute for a limited number of states
+(define (execute-guarded tm initial-config)
+  (define (execute-iter config s)
+    (cond [(> s (string->number (statelimit)))
+           (fprintf (current-output-port)
+                    "step ~s: Simulation stopped\n"
+                    s)]
+          [(= (get-current-state config) HALT-STATE)
+           (fprintf (current-output-port)
+                    "step ~s: HALT\n"
+                    s)]
+          [else (begin
+                  (fprintf (current-output-port)
+                           "step ~s: ~a\n"
+                           s
+                           (configuration->string config))
+                  (execute-iter (step config tm) (add1 s)))]))
+
+  (execute-iter initial-config 0))
+
 (define verbose? (make-parameter #f))
 (define tm-filename (make-parameter null))
 (define startchar (make-parameter (make-string 1 BLANK)))  ;; string with one char, head points to this char first
 (define startleft (make-parameter ""))  ;; string giving tape left of the start char
 (define startright (make-parameter ""))  ;; string giving tape right of start char
+(define statelimit (make-parameter "1000")) ;; max number of steps simulator runs
 
 (define command-line-parser
   (command-line
@@ -219,6 +242,7 @@
    [("-c" "--char") sc "Character the head points to at start" (startchar sc)]
    [("-l" "--left") sl "String giving tape left of the start character" (startleft sl)]
    [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
+   [("-s" "--statelimit") slmt "Number giving max number of steps to run" (statelimit slmt)]
    #:args  () (void)))
 
 ;; (tm-filename)
@@ -248,5 +272,4 @@
                                     (string->list (startleft))
                                     (string->list (startright))))  ;; TODO need the position?
 ;; for debugging: INITIAL-CONFIG
-
-(execute TM INITIAL-CONFIG)
+(execute-guarded TM INITIAL-CONFIG)

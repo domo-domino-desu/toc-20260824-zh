@@ -315,7 +315,77 @@ class Decide010TestCase(unittest.TestCase):
         self.assertTrue(is_empty(final_config['suffix']))
         self.assertEqual("0",final_config['currentchar'],"Empty string is not a fit")
 
+    
+# ==============================================
+class BlankOnesTestCase(unittest.TestCase):
+    """Tests the blankones Turing machine."""
 
+    def test_simple(self):
+        """Test the dumbest thing"""
+        i = 4
+        sigma = ("1"*i)
+        r = run_tm('blankones.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertTrue(is_empty(final_config['currentchar']),"All the four ones have been blanked")
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,3):
+            sigma = ("1"*i)
+            r = run_tm('blankones.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(is_empty(final_config['suffix']))
+            self.assertTrue(is_empty(final_config['currentchar']),"All the {!s} ones have been blanked".format(i))
+
+
+    
+# ==============================================
+class ConstantThreeTestCase(unittest.TestCase):
+    """Tests the constantthree Turing machine."""
+
+    def test_simple(self):
+        """Test the dumbest thing"""
+        i = 4
+        sigma = ("1"*i)
+        r = run_tm('constantthree.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertEqual(final_config['suffix'],"11","Suffix has two 1's")
+        self.assertEqual("1",final_config['currentchar'],"Current char is the leading 1")
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,3):
+            sigma = ("1"*i)
+            r = run_tm('constantthree.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertEqual(final_config['suffix'],"11","Suffix has two 1's")
+            self.assertEqual("1",final_config['currentchar'],"Current char is the leading 1")
+
+    def test_empty(self):
+        """Test the empty input string"""
+        sigma = ("")
+        r = run_tm('constantthree.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertEqual(final_config['suffix'],"11","Suffix has two 1's")
+        self.assertEqual("1",final_config['currentchar'],"Current char is the leading 1")
+
+            
 # ===========================================================
 def main(args):
     unittest.main()

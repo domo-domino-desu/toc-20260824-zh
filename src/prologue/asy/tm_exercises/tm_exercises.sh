@@ -153,3 +153,19 @@ echo "tm_exercises: doing mystery.tm on empty tape to get file family ${FN}"
 ${TM_DIR}/turing-machine.rkt -f ${TM_DIR}/machines/mystery.tm -c " " -s 10 > tmp/${FN}.out
 ${SCRIPT_DIR}/tm_to_asy.py --blanks -f tmp/${FN}.out -o${FN}
 asy ${FN}
+
+
+# blankones.tm on 2
+FN="blankones"
+echo "tm_exercises: doing blankones.tm on 2 to get file family ${FN}"
+${TM_DIR}/turing-machine.rkt -f ${TM_DIR}/machines/blankones.tm -c "1" -r "1" > tmp/${FN}.out
+${SCRIPT_DIR}/tm_to_asy.py --blanks -f tmp/${FN}.out -o${FN}
+asy ${FN}
+
+
+# constantthree.tm on 2
+FN="constantthree"
+echo "tm_exercises: doing constantthree.tm on 2 to get file family ${FN}"
+${TM_DIR}/turing-machine.rkt -f ${TM_DIR}/machines/constantthree.tm -c "1" -r "1" > tmp/${FN}.out
+${SCRIPT_DIR}/tm_to_asy.py --blanks -f tmp/${FN}.out -o${FN}
+asy ${FN}

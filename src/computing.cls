@@ -636,10 +636,14 @@
 \newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
 \newcommand{\@exercisecounterlabel}{\iftoggle{@recommended}{\llap{\makebox[\recommendation@length][l]{\recommendationmark}}}{}\global\togglefalse{@recommended}%
   \normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
-\newenvironment{exercises}{%
-  % \vspace{2.5ex plus 0.8ex minus 0.2ex}\par\noindent\marginnote{\normalfont\scshape \exercisecounterstart}{\normalfont\bfseries Exercises}%
+
+% exercises environment  Contents are
+%      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}
+% The optional argument is for notes.
+\newenvironment{exercises}[1][]{%
   \vspace{2.5ex plus 0.8ex minus 0.2ex}%
   \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
+  \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
   \nolisttopbreak%
   \begin{list}{\@exercisecounterlabel}%
      {\usecounter{@exercisenumber}
@@ -664,6 +668,33 @@
 }{%
   \end{list}
 }
+% \newenvironment{exercises}[1][]{%
+%   \vspace{2.5ex plus 0.8ex minus 0.2ex}%
+%   \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
+%   \nolisttopbreak%
+%   \begin{list}{\@exercisecounterlabel}%
+%      {\usecounter{@exercisenumber}
+%       \setcounter{@exercisenumber}{\value{theorem}}
+%       \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}
+%       \setlength{\leftmargin}{\jh@widthofchar}
+%       \setlength{\labelwidth}{\leftmargin}
+%       \setlength{\labelsep}{0em}
+%       \setlength{\itemindent}{0em}
+%       \setlength{\listparindent}{0.8\parindent}
+%       \setlength{\topsep}{\jh@listtopsep}
+%       \setlength{\parsep}{0ex}
+%       \setlength{\itemsep}{0.6ex plus 0.25ex minus 0.05ex}
+%       \setlength{\rightmargin}{0em}
+%       % Encourage a page break betweeen items; LaTeX book.cls has
+%       % \@itempenalty     -\@lowpenalty
+%       \@itempenalty-\@medpenalty %
+%       % Also discourage clubs and widows
+%       \clubpenalty6000 % % discourage breaking after first line
+%       \widowpenalty6000 % discourage breaking before last line
+%     }
+% }{%
+%   \end{list}
+% }
 \newenvironment{exercise}{%
   \Writetofile{\answerbodyfilename}{\@percentchar}
   \Writetofile{\answerbodyfilename}{\@percentchar\space\showlineno\space is the exercise source}

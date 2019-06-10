@@ -99,6 +99,13 @@ def count_chars(config, c="1"):
     tau = config['currentchar']+config['suffix'] 
     return tau.count(c)
 
+def is_blank(s):
+    """Test if the string is space or a B.
+      s  string of one character
+    """
+    s = s.replace("B"," ")
+    return s == " "
+
 def is_empty(s):
     """Test if the string is empty, where B's are normalized to spaces.
       s  string
@@ -385,10 +392,62 @@ class ConstantThreeTestCase(unittest.TestCase):
         self.assertEqual(final_config['suffix'],"11","Suffix has two 1's")
         self.assertEqual("1",final_config['currentchar'],"Current char is the leading 1")
 
+
+    
+# ==============================================
+class DoublerTestCase(unittest.TestCase):
+    """Tests the doubler Turing machine."""
+
+    def test_simple(self):
+        """Test the dumbest thing"""
+        i = 2
+        sigma = "1"*i
+        r = run_tm('doubler.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertEqual(final_config['suffix'],"111","Suffix has three 1's")
+        self.assertEqual("1",final_config['currentchar'],"Current char is the leading 1")
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,4):
+            sigma = ("1"*i)
+            r = run_tm('doubler.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertEqual(final_config['suffix'],"1"*(2*i-1),"Suffix has {0!s} 1's".format(2*i-1))
+            self.assertEqual("1",final_config['currentchar'],"Current char is the leading 1")
+
+    def test_empty(self):
+        """Test input of zero"""
+        sigma = ""
+        r = run_tm('doubler.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']),"Suffix has zero 1's")
+        self.assertTrue(is_blank(final_config['currentchar']),"Current char is a blank")
             
 # ===========================================================
+
+# Run only these tests
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(DoublerTestCase('test_simple'))
+    suite.addTest(DoublerTestCase('test_some'))
+    suite.addTest(DoublerTestCase('test_empty'))
+    # suite.addTests(DoublerTestCase())
+    return suite
+
 def main(args):
-    unittest.main()
+    # unittest.main()
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
 
 # ===========================================================
 if __name__ == '__main__':

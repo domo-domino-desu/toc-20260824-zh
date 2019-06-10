@@ -169,3 +169,19 @@ echo "tm_exercises: doing constantthree.tm on 2 to get file family ${FN}"
 ${TM_DIR}/turing-machine.rkt -f ${TM_DIR}/machines/constantthree.tm -c "1" -r "1" > tmp/${FN}.out
 ${SCRIPT_DIR}/tm_to_asy.py --blanks -f tmp/${FN}.out -o${FN}
 asy ${FN}
+
+
+# doubler.tm on 2, in unary
+FN="doubler"
+echo "tm_exercises: doing doubler.tm on 2 to get file family ${FN}"
+${TM_DIR}/turing-machine.rkt -f ${TM_DIR}/machines/doubler.tm -c "1" -r "1" > tmp/${FN}.out
+${SCRIPT_DIR}/tm_to_asy.py -f tmp/${FN}.out -o${FN}
+asy ${FN}
+
+
+# doublerbinary.tm on 6
+FN="doublerbinary"
+echo "tm_exercises: doing doublerbinary.tm on 6 to get file family ${FN}"
+${TM_DIR}/turing-machine.rkt -f ${TM_DIR}/machines/doublerbinary.tm -c "1" -r "10" > tmp/${FN}.out
+${SCRIPT_DIR}/tm_to_asy.py --blanks -f tmp/${FN}.out -o${FN}
+asy ${FN}

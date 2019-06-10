@@ -340,36 +340,36 @@
 % ================ Display environment =========
 % Like "center" except if fleqn is in effect, then it has a left margin
 \newenvironment{display}{%
-  \if@fleqn %
-    \list{\relax}{%
-      \setlength{\leftmargin}{\mathindent}
-      \setlength{\itemindent}{0em}
-      \setlength{\labelwidth}{0em}
-      \setlength{\labelsep}{0em}
-      \setlength{\rightmargin}{0em}
-      \setlength{\listparindent}{0em}
-      \setlength{\parsep}{\parskip}
-      \setlength{\partopsep}{0ex}
-      \setlength{\itemsep}{0ex}
-      } 
-    % \trivlist  \item \relax \hspace*{\mathindent}
-  \else 
-    \list{\relax}{%
-      \setlength{\leftmargin}{0em}
-      \setlength{\itemindent}{0em}
-      \setlength{\labelwidth}{0em}
-      \setlength{\labelsep}{0em}
-      \setlength{\rightmargin}{0em}
-      \setlength{\listparindent}{0em}
-      \setlength{\parsep}{\parskip}
-      \setlength{\partopsep}{0ex}
-      \setlength{\itemsep}{0ex}
-      } \centering
-    % \trivlist  \centering \item \relax
-  \fi
-  \item \relax
+  \if@fleqn%
+    \list{}{%
+      \setlength{\leftmargin}{\mathindent}%
+      \setlength{\itemindent}{0em}%
+      \setlength{\labelwidth}{0em}%
+      \setlength{\labelsep}{0em}%
+      \setlength{\rightmargin}{0em}%
+      \setlength{\listparindent}{\parindent}%
+      \setlength{\parsep}{\parskip}%
+      \setlength{\topsep}{0ex}%
+      \setlength{\partopsep}{0ex}%
+      \setlength{\itemsep}{0ex}%
+      }% 
+  \else% 
+    \list{}{%
+      \setlength{\leftmargin}{0em}%
+      \setlength{\itemindent}{0em}%
+      \setlength{\labelwidth}{0em}%
+      \setlength{\labelsep}{0em}%
+      \setlength{\rightmargin}{0em}%
+      \setlength{\listparindent}{\parindent}%
+      \setlength{\parsep}{\parskip}%
+      \setlength{\topsep}{0ex}%
+      \setlength{\partopsep}{0ex}%
+      \setlength{\itemsep}{0ex}%
+      }\centering%
+  \fi%
+  \item[]%
 }{%
-  \endlist %
+  \endlist%
 }
 
 

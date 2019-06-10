@@ -62,7 +62,7 @@ log.addHandler(fh)
 # Directory where the racket program is.
 TM_CMD_DIR = os.path.join(PGM_SRC_DIR, "..", "..", "src", "scheme", "prologue")
 
-def run_tm(machine_filename, current_char='B', right_tape='', left_tape=''):
+def run_tm(machine_filename, current_char='B', right_tape='', left_tape='', max_steps=100):
     """Run an instance of the Turing machine simulator
       machine_filename  string  Filename, including .tm.  Taken from 
         subdir in TM_CMD_DIR if such a file exists, else taken from 
@@ -78,7 +78,7 @@ def run_tm(machine_filename, current_char='B', right_tape='', left_tape=''):
         fn = "machines/{}".format(machine_filename)
         warn("The file {0:s} is not found, so using {1:s}".format(first_choice_filepath,fn))
     # print("fn is "+fn)
-    return subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', fn, '-c', current_char, '-l', left_tape, '-r', right_tape], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', fn, '-c', current_char, '-l', left_tape, '-r', right_tape, '-s', "{:d}".format(max_steps)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 # ============================================
 def get_final_config(s):
@@ -427,21 +427,65 @@ class DoublerTestCase(unittest.TestCase):
         sigma = ""
         r = run_tm('doubler.tm', " ")
         out = r.stdout.decode(encoding='UTF-8')
-        print(out)
+        # print(out)
         final_config = get_final_config(out)
         self.assertTrue(is_empty(final_config['prefix']))
         self.assertTrue(is_empty(final_config['suffix']),"Suffix has zero 1's")
         self.assertTrue(is_blank(final_config['currentchar']),"Current char is a blank")
             
+
+
+    
+# ==============================================
+class DoublerBinaryTestCase(unittest.TestCase):
+    """Tests the doublerbinary Turing machine."""
+
+    def test_simple(self):
+        """Test the dumbest thing"""
+        i = 2
+        sigma = "{0:b}".format(i)
+        r = run_tm('doublerbinary.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertEqual(final_config['suffix'],"00","Suffix has two 0's")
+        self.assertEqual("1",final_config['currentchar'],"Current char is the leading 1 for 4 in binary")
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,7):
+            sigma = "{0:b}".format(i)
+            r = run_tm('doublerbinary.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            expected_outcome = "{0:b}".format(2*i)
+            self.assertEqual(final_config['suffix'],expected_outcome[1:])
+            self.assertEqual(final_config['currentchar'],expected_outcome[0])
+
+    def test_zero(self):
+        """Test input of zero"""
+        sigma = "0"
+        r = run_tm('doublerbinary.tm', "0")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        expected_outcome = "0"
+        self.assertEqual(final_config['suffix'],expected_outcome[1:])
+        self.assertEqual(final_config['currentchar'],expected_outcome[0])
+            
 # ===========================================================
 
 # Run only these tests
+# how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(DoublerTestCase('test_simple'))
-    suite.addTest(DoublerTestCase('test_some'))
-    suite.addTest(DoublerTestCase('test_empty'))
-    # suite.addTests(DoublerTestCase())
+    suite.addTest(DoublerBinaryTestCase('test_simple'))
+    suite.addTest(DoublerBinaryTestCase('test_some'))
+    suite.addTest(DoublerBinaryTestCase('test_zero'))
     return suite
 
 def main(args):

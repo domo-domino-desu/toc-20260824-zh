@@ -18,9 +18,11 @@ SCRIPT_DIR=../../../../bin/turing_machine
 # #3=file family name (must be unique across all asy files in this file)
 # #4=initial tape current character, inside quotes
 # #5=initial tape right string, inside quotes
+# #6=max number steps to run TM simulation
+MAX_STEPS_DEFAULT=100
 define create-pdfs
   @echo "Using ${1}.tm on ${2} to get file family ${3}"
-  ${TM_DIR}/turing-machine.rkt -f ${MACHINE_DIR}/${1}.tm -c ${4} -r ${5} > tmp/${3}.out
+  ${TM_DIR}/turing-machine.rkt -f ${MACHINE_DIR}/${1}.tm -c ${4} -r ${5} -s ${6} > tmp/${3}.out
   ${SCRIPT_DIR}/tm_to_asy.py --blanks -f tmp/${3}.out -o pdfs/${3}
   cd pdfs; asy ${3}
 endef
@@ -30,14 +32,14 @@ endef
 # so the tapes will have B's in them.
 define create-pdfs-leavebs
   @echo "Using ${1}.tm on ${2} to get file family ${3}"
-  ${TM_DIR}/turing-machine.rkt -f ${MACHINE_DIR}/doubler.tm -c ${4} -r ${5} > tmp/${3}.out
+  ${TM_DIR}/turing-machine.rkt -f ${MACHINE_DIR}/doubler.tm -c ${4} -r ${5}  -s ${6} > tmp/${3}.out
   ${SCRIPT_DIR}/tm_to_asy.py -f tmp/${3}.out -o pdfs/${3}
   cd pdfs; asy ${3}
 endef
 
 
 
-all: textbody seconeexercises
+all: textbody topicexercises seconeexercises
 
 
 
@@ -46,18 +48,88 @@ all: textbody seconeexercises
 textbody: pdfs/pred.asy pdfs/add.asy
 
 pdfs/pred.asy: ${MACHINE_DIR}/pred.tm
-	$(call create-pdfs,pred,3,pred,"1","11")
+	$(call create-pdfs,pred,3,pred,"1","11",${MAX_STEPS_DEFAULT})
 
 pdfs/add.asy: ${MACHINE_DIR}/add.tm
-	$(call create-pdfs,add,2 and 3,add,"1","1 111")
+	$(call create-pdfs,add,2 and 3,add,"1","1 111",${MAX_STEPS_DEFAULT})
 
 
 
 
-### ========= These are for exercises for first section ===================
+### ========= These are for Topic exercises ===================
 
-seconeexercises: pdfs/doubler.asy
+topicexercises: pdfs/pred_five.asy pdfs/pred_empty.asy pdfs/doubler.asy \
+	pdfs/addonetwo.asy pdfs/addzerotwo.asy pdfs/addzerozero.asy  \
+	pdfs/addthree_four.asy pdfs/addthree_zero.asy
 
+pdfs/pred_five.asy: ${MACHINE_DIR}/pred.tm
+	$(call create-pdfs,pred,5,pred_five,"1","1111",${MAX_STEPS_DEFAULT})
+
+pdfs/pred_empty.asy: ${MACHINE_DIR}/pred.tm
+	$(call create-pdfs,pred,empty tape,pred_empty," ","",${MAX_STEPS_DEFAULT})
+
+pdfs/addonetwo.asy: ${MACHINE_DIR}/add.tm
+	$(call create-pdfs,add,1 and 2,addonetwo,"1"," 11",${MAX_STEPS_DEFAULT})
+
+pdfs/addzerotwo.asy: ${MACHINE_DIR}/add.tm
+	$(call create-pdfs,add,0 and 2,addzerotwo," ","11",${MAX_STEPS_DEFAULT})
+
+pdfs/addzerozero.asy: ${MACHINE_DIR}/add.tm
+	$(call create-pdfs,add,0 and 0,addzerozero," ","",${MAX_STEPS_DEFAULT})
+
+pdfs/addthree_four.asy: ${MACHINE_DIR}/addthree.tm
+	$(call create-pdfs,addthree,4,addthree_four,"1","111",${MAX_STEPS_DEFAULT})
+
+pdfs/addthree_zero.asy: ${MACHINE_DIR}/addthree.tm
+	$(call create-pdfs,addthree,0,addthree_zero," ","",${MAX_STEPS_DEFAULT})
+
+
+
+
+
+### ========= These are for section one exercises ===================
+
+seconeexercises: pdfs/pred_two.asy pdfs/addtwotwo.asy pdfs/infloop.asy \
+	pdfs/infloop.asy pdfs/mystery11.asy pdfs/mystery1011.asy \
+        pdfs/mystery110.asy pdfs/mystery1101.asy pdfs/mysteryempty.asy \
+        pdfs/blankones.asy pdfs/constantthree.asy pdfs/doubler.asy \
+	pdfs/doublerbinary.asy
+
+
+pdfs/pred_two.asy: ${MACHINE_DIR}/pred.tm
+	$(call create-pdfs,pred,2,pred_two,"1","1",${MAX_STEPS_DEFAULT})
+
+pdfs/addtwotwo.asy: ${MACHINE_DIR}/add.tm
+	$(call create-pdfs,add,2 and 2,addtwotwo,"1","1 11",${MAX_STEPS_DEFAULT})
+
+pdfs/infloop.asy: ${MACHINE_DIR}/infloop.tm
+	$(call create-pdfs,infloop,blank tape,infloop," ","",10)
+
+pdfs/mystery11.asy: ${MACHINE_DIR}/mystery.tm
+	$(call create-pdfs,mystery,11,mystery11,"1","1",10)
+
+pdfs/mystery1011.asy: ${MACHINE_DIR}/mystery.tm
+	$(call create-pdfs,mystery,1011,mystery1011,"1","011",10)
+
+pdfs/mystery110.asy: ${MACHINE_DIR}/mystery.tm
+	$(call create-pdfs,mystery,110,mystery110,"1","10",10)
+
+pdfs/mystery1101.asy: ${MACHINE_DIR}/mystery.tm
+	$(call create-pdfs,mystery,1101,mystery1101,"1","101",10)
+
+pdfs/mysteryempty.asy: ${MACHINE_DIR}/mystery.tm
+	$(call create-pdfs,mystery,empty tape,mysteryempty," ","",10)
+
+pdfs/blankones.asy: ${MACHINE_DIR}/blankones.tm
+	$(call create-pdfs,blankones,2,blankones,"1","1",${MAX_STEPS_DEFAULT})
+
+pdfs/constantthree.asy: ${MACHINE_DIR}/constantthree.tm
+	$(call create-pdfs,constantthree,2,constantthree,"1","1",${MAX_STEPS_DEFAULT})
+
+# note the use of leavebs here
 pdfs/doubler.asy: ${MACHINE_DIR}/doubler.tm
-	$(call create-pdfs-leabebs,doubler,2,doubler,"1","1")
+	$(call create-pdfs-leavebs,doubler,2,doubler,"1","1",${MAX_STEPS_DEFAULT})
+
+pdfs/doublerbinary.asy: ${MACHINE_DIR}/doublerbinary.tm
+	$(call create-pdfs,doublerbinary,6,doublerbinary,"1","10",${MAX_STEPS_DEFAULT})
 

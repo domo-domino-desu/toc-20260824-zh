@@ -258,23 +258,25 @@ ASY_TAIL = """
 """
 
 # Get the relative path from the current dir to the dir computing/src/asy
-def rel_path_to_asy(dir=os.getcwd()):
-    dex = dir.rfind(os.sep+"computing"+os.sep)
-    target_dir = os.path.join(dir[:dex],'computing/src/asy')
-    return os.path.relpath(target_dir)
+def rel_path_to_asy(from_dir=os.curdir):
+    dex = from_dir.rfind(os.sep+"computing"+os.sep)
+    asy_dir = os.path.join(from_dir[:dex],'computing/src/asy/')
+    # print("rel_path_to_asy: from_dir is {0:s} asy_dir is {1:s}".format(from_dir,asy_dir))
+    return os.path.relpath(asy_dir,start=from_dir)
 
 # Create an .asy file
-def asy(d_list, furthest_left, furthest_right, fn_prefix, asy_dir = rel_path_to_asy(), replace_blanks = False):
+def asy(d_list, furthest_left, furthest_right, fn_prefix, replace_blanks = False):
     """Create an asy file and populate it with the tape_output lines
      d_list  list of dicts  Results of parsing a line
      furthest_left, furthest_right  integers  Posns of furthest chars ever.
      fn_prefix  string  Prefix of name of file Asy will output to.  Note that
        this routine adds "{:03d}" so three digits get appended to this prefix
-     asy_dir string  Relative path to computing/src/asy from the current dir
      replace_blanks=False  boolean  Replace 'B' with ' '?
     """
+    asy_dir = rel_path_to_asy(os.path.abspath(os.path.dirname(fn_prefix)))
+    # print("fn_prefix is {0:s} asy_dir is {1:s}".format(fn_prefix,asy_dir))
     r = [ASY_HEAD.format(fn_prefix,asy_dir)]
-    fn = fn_prefix+"{0:03d}"
+    fn = os.path.basename(fn_prefix)+"{0:03d}"
     for d,i in d_list:
         r.append(tape_output(d,
                              furthest_left,

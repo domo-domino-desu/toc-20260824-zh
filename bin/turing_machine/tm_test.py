@@ -565,15 +565,65 @@ class SuccessorTestCase(unittest.TestCase):
         self.assertTrue(is_empty(final_config['suffix']))
         self.assertEqual("1",final_config['currentchar'],"The successsor of 0 is 1")
             
+
+    
+# ==============================================
+class LeqTestCase(unittest.TestCase):
+    """Tests the leq Turing machine."""
+
+    def test_simple(self):
+        """Test the dumbest thing"""
+        i, j = 2, 3
+        sigma = ("1"*i) + " " + ("1"*j)
+        r = run_tm('leq.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("1",final_config['currentchar'],"Indeed, 2 leq 3")
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,7):
+            for j in range(1,7):
+                sigma = ("1"*i) + " " + ("1"*j)
+                r = run_tm('leq.tm', sigma[0], sigma[1:],max_steps=250)
+                out = r.stdout.decode(encoding='UTF-8')
+                # print(out)
+                final_config = get_final_config(out)
+                self.assertTrue(is_empty(final_config['prefix']),"Nonempty prefix when i={0:d} j={1:d}".format(i,j))
+                self.assertTrue(is_empty(final_config['suffix']))
+                if (i<=j):
+                    self.assertEqual("1",final_config['currentchar'],"Indeed, 2 leq 3")
+                else:
+                    self.assertTrue(is_blank(final_config['currentchar']))
+
+    def test_zero(self):
+        """Test input of zero"""
+        for i in range(0,3):
+            for j in range(0,3):
+                sigma = ("1"*i) + " " + ("1"*j)
+                r = run_tm('leq.tm', sigma[0], sigma[1:],max_steps=250)
+                out = r.stdout.decode(encoding='UTF-8')
+                print(out)
+                final_config = get_final_config(out)
+                self.assertTrue(is_empty(final_config['prefix']),"Nonempty prefix when i={0:d} j={1:d}".format(i,j))
+                self.assertTrue(is_empty(final_config['suffix']))
+                if (i<=j):
+                    self.assertEqual("1",final_config['currentchar'],"Indeed, 2 leq 3")
+                else:
+                    self.assertTrue(is_blank(final_config['currentchar']))
+            
 # ===========================================================
 
 # Run only these tests
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(SuccessorTestCase('test_simple'))
-    suite.addTest(SuccessorTestCase('test_some'))
-    suite.addTest(SuccessorTestCase('test_zero'))
+    suite.addTest(LeqTestCase('test_simple'))
+    suite.addTest(LeqTestCase('test_some'))
+    suite.addTest(LeqTestCase('test_zero'))
     return suite
 
 def main(args):

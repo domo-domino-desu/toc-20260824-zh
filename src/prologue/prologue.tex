@@ -1399,17 +1399,6 @@ and on~$4$ it does this.
 \end{exercise}
 
 \begin{exercise}
-\Cref{def:ComputableFcn} talks about a relation being computable.
-Consider the relation of less than between two natural numbers,
-i.e.\@ $3$ is less than $5$, but $2$ is not less than~$1$.
-Produce a Turing machine with tape 
-alphabet~$\Sigma=\set{\str{0},\str{1},\str{B}}$ 
-that takes in two numbers represented in unary and outputs $\tau=\str{1}$
-if the first number is less than the second, and
-$\tau=\str{0}$ if not. 
-\end{exercise}
-
-\begin{exercise}
 Give a Turing machine that
 takes as input a bit string
 and adds a \str{01} at the back. 
@@ -1430,15 +1419,126 @@ and when it halts its head points to the first output character.
 For instance, $\TMfcn_{\TM}(\str{1111,,111,1})=\str{11111111}$. 
 \end{exercise}
 
-\recommended
+
 \begin{exercise}
-Produce a Turing machine whose tape alphabet is 
-$\Sigma=\set{\str{B},\str{0},\str{1}}$, and which will, when given a binary
-number as input, decide if the number is divisible by~$2$.
-That is, the machine 
-starts with the head under the most significant bit and it ends
-with the tape containing only one bit, \str{1} if the input was even 
-and \str{0} if it was not, and with the head under that output.
+\Cref{def:ComputableFcn} talks about a relation being computable.
+Consider the `less than or equal' relation between two natural numbers,
+i.e., $3$ is less than or equal to~$5$, but $2$ is not less than or 
+equal to~$1$.
+Produce a Turing machine with tape 
+alphabet~$\Sigma=\set{\str{0},\str{1},\str{B}}$ 
+that takes in two numbers represented in unary and outputs $\tau=\str{1}$
+if the first number is less than the second, and
+$\tau=\str{0}$ if not. 
+\begin{answer}
+The idea of this machine is that it starts with two 
+groups of \str{1}'s.
+The head blanks the first~\str{1} in the first group, then moves over
+and blanks the last~\str{1} in the second group. 
+At that point the relation of less-than-or-equal exists between the original
+two groups of~\str{1}'s if and only if it exists between what remains of the
+two groups.
+Iterating the machine ends with one of two cases: the first string is empty
+(in which case we must blank out what's left of the second string, if any, and
+print a \str{1}), and
+the second string is empty but the first is not (in this case we blank out
+what's left of the first string).
+The first case is handled by instructions starting with~$q_{50}$ and the
+second with instructions starting with~$q_{75}$. 
+\begin{align*}
+  \TM_{\text{leq}}
+  &=
+  \{\hspace{\setspacing} 
+     \tminstruction{0}{B}{R}{50},\,
+     \tminstruction{0}{1}{B}{1},\,
+     \tminstruction{1}{B}{R}{2},\,
+     \tminstruction{1}{1}{1}{2},\,
+     \tminstruction{2}{B}{R}{3},\,
+     \tminstruction{2}{1}{R}{2},\,
+     \tminstruction{3}{B}{L}{75},\,
+     \tminstruction{3}{1}{R}{4},\,
+     \tminstruction{4}{B}{L}{5},\,
+     \tminstruction{4}{1}{R}{4},\, 
+     \\ &\qquad\; 
+     \tminstruction{5}{B}{B}{6},\, 
+     \tminstruction{5}{1}{B}{6},\,
+     \tminstruction{6}{B}{L}{7},\, 
+     \tminstruction{6}{1}{1}{7},\,
+     \tminstruction{7}{B}{L}{8},\, 
+     \tminstruction{7}{1}{L}{7},\,
+     \tminstruction{8}{B}{R}{0},\, 
+     \tminstruction{8}{1}{L}{8},\,
+     \\ &\qquad\; 
+     \tminstruction{50}{B}{R}{51},\, 
+     \tminstruction{50}{1}{1}{51},\,
+     \tminstruction{51}{B}{1}{100},\,
+     \tminstruction{51}{1}{B}{52},\, 
+     \tminstruction{52}{B}{R}{51},\, 
+     \tminstruction{52}{1}{1}{51},\,
+     \\ &\qquad\; 
+     \tminstruction{75}{B}{L}{76},\, 
+     \tminstruction{75}{1}{1}{76},\,
+     \tminstruction{76}{B}{L}{100},\, 
+     \tminstruction{76}{1}{B}{77},\,
+     \tminstruction{77}{B}{L}{76},\, 
+     \tminstruction{77}{1}{L}{76}
+  \hspace{\setspacing}\}
+\end{align*}
+For instance, on inputs $2$ and~$3$ it does this.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises leq000.pdf} \\
+    1 &\tapegraphic{\tmexercises leq001.pdf} \\
+    2 &\tapegraphic{\tmexercises leq002.pdf} \\
+    3 &\tapegraphic{\tmexercises leq003.pdf} \\
+    4 &\tapegraphic{\tmexercises leq004.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    5 &\tapegraphic{\tmexercises leq005.pdf} \\
+    6 &\tapegraphic{\tmexercises leq006.pdf} \\
+    7 &\tapegraphic{\tmexercises leq007.pdf} \\
+    8 &\tapegraphic{\tmexercises leq008.pdf} \\
+    9 &\tapegraphic{\tmexercises leq009.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   10 &\tapegraphic{\tmexercises leq010.pdf} \\
+   11 &\tapegraphic{\tmexercises leq011.pdf} \\
+   12 &\tapegraphic{\tmexercises leq012.pdf} \\
+   13 &\tapegraphic{\tmexercises leq013.pdf} \\
+   14 &\tapegraphic{\tmexercises leq014.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+(This sequence is split in two to leave a place for a line break.)
+\begin{tapesequence}
+  \begin{tapesequencetable}
+   15 &\tapegraphic{\tmexercises leq015.pdf} \\
+   16 &\tapegraphic{\tmexercises leq016.pdf} \\
+   17 &\tapegraphic{\tmexercises leq017.pdf} \\
+   18 &\tapegraphic{\tmexercises leq018.pdf} \\
+   19 &\tapegraphic{\tmexercises leq019.pdf} \\
+   20 &\tapegraphic{\tmexercises leq020.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   21 &\tapegraphic{\tmexercises leq021.pdf} \\
+   22 &\tapegraphic{\tmexercises leq022.pdf} \\
+   23 &\tapegraphic{\tmexercises leq023.pdf} \\
+   24 &\tapegraphic{\tmexercises leq024.pdf} \\
+   25 &\tapegraphic{\tmexercises leq025.pdf} \\
+   26 &\tapegraphic{\tmexercises leq026.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   27 &\tapegraphic{\tmexercises leq027.pdf} \\
+   28 &\tapegraphic{\tmexercises leq028.pdf} \\
+   29 &\tapegraphic{\tmexercises leq029.pdf} \\
+   30 &\tapegraphic{\tmexercises leq030.pdf} \\
+   31 &\tapegraphic{\tmexercises leq031.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}

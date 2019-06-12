@@ -94,7 +94,7 @@ seconeexercises: pdfs/pred_two.asy pdfs/addtwotwo.asy pdfs/infloop.asy \
         pdfs/mystery110.asy pdfs/mystery1101.asy pdfs/mysteryempty.asy \
         pdfs/blankones.asy pdfs/constantthree.asy pdfs/doubler.asy \
 	pdfs/doublerbinary.asy pdfs/odd_three.asy pdfs/odd_four.asy \
-	pdfs/successor.asy
+	pdfs/successor.asy pdfs/leq.asy
 
 pdfs/pred_two.asy: ${MACHINE_DIR}/pred.tm
 	$(call create-pdfs,pred,2,pred_two,"1","1",${MAX_STEPS_DEFAULT})
@@ -141,4 +141,8 @@ pdfs/odd_four.asy: ${MACHINE_DIR}/odd.tm
 
 pdfs/successor.asy: ${MACHINE_DIR}/successor.tm
 	$(call create-pdfs,successor,3,successor,"1","11",${MAX_STEPS_DEFAULT})
+
+# note the use of leavebs here
+pdfs/leq.asy: ${MACHINE_DIR}/leq.tm
+	$(call create-pdfs-leavebs,leq,2 and 3,leq,"1","1 111",${MAX_STEPS_DEFAULT})
 

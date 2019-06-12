@@ -349,7 +349,7 @@
       \setlength{\rightmargin}{0em}%
       \setlength{\listparindent}{\parindent}%
       \setlength{\parsep}{\parskip}%
-      \setlength{\topsep}{0ex}%
+      \setlength{\topsep}{0.5 ex plus 0.2ex minus 0.1ex}%
       \setlength{\partopsep}{0ex}%
       \setlength{\itemsep}{0ex}%
       }% 

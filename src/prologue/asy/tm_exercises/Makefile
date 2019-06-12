@@ -93,8 +93,8 @@ seconeexercises: pdfs/pred_two.asy pdfs/addtwotwo.asy pdfs/infloop.asy \
 	pdfs/infloop.asy pdfs/mystery11.asy pdfs/mystery1011.asy \
         pdfs/mystery110.asy pdfs/mystery1101.asy pdfs/mysteryempty.asy \
         pdfs/blankones.asy pdfs/constantthree.asy pdfs/doubler.asy \
-	pdfs/doublerbinary.asy
-
+	pdfs/doublerbinary.asy pdfs/odd_three.asy pdfs/odd_four.asy \
+	pdfs/successor.asy
 
 pdfs/pred_two.asy: ${MACHINE_DIR}/pred.tm
 	$(call create-pdfs,pred,2,pred_two,"1","1",${MAX_STEPS_DEFAULT})
@@ -132,4 +132,13 @@ pdfs/doubler.asy: ${MACHINE_DIR}/doubler.tm
 
 pdfs/doublerbinary.asy: ${MACHINE_DIR}/doublerbinary.tm
 	$(call create-pdfs,doublerbinary,6,doublerbinary,"1","10",${MAX_STEPS_DEFAULT})
+
+pdfs/odd_three.asy: ${MACHINE_DIR}/odd.tm
+	$(call create-pdfs,odd,3,odd_three,"1","11",${MAX_STEPS_DEFAULT})
+
+pdfs/odd_four.asy: ${MACHINE_DIR}/odd.tm
+	$(call create-pdfs,odd,4,odd_four,"1","111",${MAX_STEPS_DEFAULT})
+
+pdfs/successor.asy: ${MACHINE_DIR}/successor.tm
+	$(call create-pdfs,successor,3,successor,"1","11",${MAX_STEPS_DEFAULT})
 

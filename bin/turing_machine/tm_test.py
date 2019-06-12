@@ -9,7 +9,7 @@ __license__ = "GPL3"
 
 import sys
 import os
-import traceback
+import traceback, pprint
 import argparse
 import time
 import unittest
@@ -71,6 +71,8 @@ def run_tm(machine_filename, current_char='B', right_tape='', left_tape='', max_
       right_tape  string  Contents of the tape to the right of the head
       left_tape  string  Contents of tape to the left of the head
     """
+    if len(current_char)!=1:
+        error("run_tm: The current_char must be a one-character string.")
     first_choice_filepath = os.path.join(TM_CMD_DIR,'machines',machine_filename)
     if os.path.exists(first_choice_filepath):
         fn = first_choice_filepath
@@ -88,6 +90,7 @@ def get_final_config(s):
     lines = s.splitlines()
     lines = [x.strip() for x in lines]
     d_list = tm_to_asy.parse_lines(lines)
+    # print("tm_test.get_final_config: d_list is {0!s}".format(pprint.pformat(d_list)))
     return d_list[-1][0]
 
 def count_chars(config, c="1"):
@@ -367,7 +370,7 @@ class ConstantThreeTestCase(unittest.TestCase):
         final_config = get_final_config(out)
         self.assertTrue(is_empty(final_config['prefix']))
         self.assertEqual(final_config['suffix'],"11","Suffix has two 1's")
-        self.assertEqual("1",final_config['currentchar'],"Current char is the leading 1")
+        self.assertEqual("1",final_config['currentchar'],"The ")
 
     def test_some(self):
         """Test a few cases"""
@@ -477,15 +480,100 @@ class DoublerBinaryTestCase(unittest.TestCase):
         self.assertEqual(final_config['suffix'],expected_outcome[1:])
         self.assertEqual(final_config['currentchar'],expected_outcome[0])
             
+
+
+    
+# ==============================================
+class OddTestCase(unittest.TestCase):
+    """Tests the odd Turing machine."""
+
+    def test_simple(self):
+        """Test the dumbest thing"""
+        i = 3
+        sigma = "1"*1
+        r = run_tm('odd.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("1",final_config['currentchar'],"3 is odd")
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,7):
+            sigma = "1"*i
+            r = run_tm('odd.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(is_empty(final_config['suffix']))
+            if ((i % 2) == 1):
+                self.assertEqual("1",final_config['currentchar'],"The number {0:d} is odd".format(i))
+            else:
+                self.assertTrue(is_blank(final_config['currentchar']),"The number {0:d} is even".format(i))
+
+    def test_zero(self):
+        """Test input of zero"""
+        sigma = ""
+        r = run_tm('odd.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertTrue(is_blank(final_config['currentchar']),"The number 0 is even")
+
+    
+# ==============================================
+class SuccessorTestCase(unittest.TestCase):
+    """Tests the successor Turing machine."""
+
+    def test_simple(self):
+        """Test the dumbest thing"""
+        i = 3
+        sigma = "1"*1
+        r = run_tm('successor.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(count_chars(final_config),i+1)
+        self.assertEqual("1",final_config['currentchar'])
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,9):
+            sigma = "1"*1
+            r = run_tm('successor.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(count_chars(final_config),i+1)
+            self.assertEqual("1",final_config['currentchar'])
+
+    def test_zero(self):
+        """Test input of zero"""
+        sigma = ""
+        r = run_tm('successor.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("1",final_config['currentchar'],"The successsor of 0 is 1")
+            
 # ===========================================================
 
 # Run only these tests
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(DoublerBinaryTestCase('test_simple'))
-    suite.addTest(DoublerBinaryTestCase('test_some'))
-    suite.addTest(DoublerBinaryTestCase('test_zero'))
+    suite.addTest(SuccessorTestCase('test_simple'))
+    suite.addTest(SuccessorTestCase('test_some'))
+    suite.addTest(SuccessorTestCase('test_zero'))
     return suite
 
 def main(args):

@@ -41,4 +41,4 @@ tape_output("tapeadd17","  11111 ",2,"$q_4$",100);
 
 // tapefcn
 tape_output("tapefcn0","  111 ",2,"$q_0$",100);
-tape_output("tapefcn1","  11111 ",2,"$q_n$",100);
+tape_output("tapefcn1","  11111 ",2,"$q_h$",100);

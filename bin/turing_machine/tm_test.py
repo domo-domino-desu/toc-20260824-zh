@@ -614,6 +614,40 @@ class LeqTestCase(unittest.TestCase):
                     self.assertEqual("1",final_config['currentchar'],"Indeed, 2 leq 3")
                 else:
                     self.assertTrue(is_blank(final_config['currentchar']))
+
+    
+# ==============================================
+class BitwiseOpsTestCase(unittest.TestCase):
+    """Tests the bitwise operations Turing machines."""
+
+    def test_not(self):
+        """Test bitwise NOT"""
+        sigma = "1001" 
+        r = run_tm('bitwisenot.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertEqual("110",final_config['suffix'])
+        self.assertEqual("0",final_config['currentchar'])
+        for i in range(0,16):
+            sigma = "{:04b}".format(i)
+            r = []
+            for x in sigma:
+                if (x=="0"):
+                    r.append("1")
+                else:
+                    r.append("0")
+            sigmacomp = "".join(r)
+            # print("sigma={0:s} and sigmacomp={1:s}".format(sigma,sigmacomp))
+            r = run_tm('bitwisenot.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertEqual(sigmacomp[1:],final_config['suffix'])
+            self.assertEqual(sigmacomp[0],final_config['currentchar'])
+
             
 # ===========================================================
 
@@ -621,9 +655,7 @@ class LeqTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(LeqTestCase('test_simple'))
-    suite.addTest(LeqTestCase('test_some'))
-    suite.addTest(LeqTestCase('test_zero'))
+    suite.addTest(BitwiseOpsTestCase('test_not'))
     return suite
 
 def main(args):

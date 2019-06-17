@@ -647,6 +647,57 @@ class BitwiseOpsTestCase(unittest.TestCase):
             self.assertTrue(is_empty(final_config['prefix']))
             self.assertEqual(sigmacomp[1:],final_config['suffix'])
             self.assertEqual(sigmacomp[0],final_config['currentchar'])
+    
+# ==============================================
+class SingleBitTestCase(unittest.TestCase):
+    """Tests the single bit operations Turing machines."""
+
+    def test_not(self):
+        """Test single bit NOT"""
+        sigma = "0" 
+        r = run_tm('singlebitnot.tm', sigma[0])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("1",final_config['currentchar'])
+        sigma = "1" 
+        r = run_tm('singlebitnot.tm', sigma[0])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("0",final_config['currentchar'])
+
+    def test_and(self):
+        """Test single bit AND"""
+        for (sigma,ans) in [("00","0"),
+                            ("01","0"),
+                            ("10","0"),
+                            ("11","1")]: 
+            r = run_tm('singlebitand.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(is_empty(final_config['suffix']))
+            self.assertEqual(ans,final_config['currentchar'])
+
+    def test_or(self):
+        """Test single bit OR"""
+        for (sigma,ans) in [("00","0"),
+                            ("01","1"),
+                            ("10","1"),
+                            ("11","1")]: 
+            r = run_tm('singlebitor.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(is_empty(final_config['suffix']))
+            self.assertEqual(ans,final_config['currentchar'])
 
             
 # ===========================================================
@@ -655,7 +706,9 @@ class BitwiseOpsTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(BitwiseOpsTestCase('test_not'))
+    suite.addTest(SingleBitTestCase('test_not'))
+    suite.addTest(SingleBitTestCase('test_and'))
+    suite.addTest(SingleBitTestCase('test_or'))
     return suite
 
 def main(args):

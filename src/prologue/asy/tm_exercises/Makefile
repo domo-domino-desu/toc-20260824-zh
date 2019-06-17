@@ -94,7 +94,8 @@ seconeexercises: pdfs/pred_two.asy pdfs/addtwotwo.asy pdfs/infloop.asy \
         pdfs/mystery110.asy pdfs/mystery1101.asy pdfs/mysteryempty.asy \
         pdfs/blankones.asy pdfs/constantthree.asy pdfs/doubler.asy \
 	pdfs/doublerbinary.asy pdfs/odd_three.asy pdfs/odd_four.asy \
-	pdfs/successor.asy pdfs/leq.asy pdfs/bitwisenot.asy
+	pdfs/successor.asy pdfs/leq.asy pdfs/bitwisenot.asy \
+	pdfs/singlebitnot.asy pdfs/singlebitand.asy pdfs/singlebitor.asy
 
 pdfs/pred_two.asy: ${MACHINE_DIR}/pred.tm
 	$(call create-pdfs,pred,2,pred_two,"1","1",${MAX_STEPS_DEFAULT})
@@ -148,4 +149,13 @@ pdfs/leq.asy: ${MACHINE_DIR}/leq.tm
 
 pdfs/bitwisenot.asy: ${MACHINE_DIR}/bitwisenot.tm
 	$(call create-pdfs,bitwisenot,6,bitwisenot,"0","110",${MAX_STEPS_DEFAULT})
+
+pdfs/singlebitnot.asy: ${MACHINE_DIR}/singlebitnot.tm
+	$(call create-pdfs,singlebitnot,0,singlebitnot,"0","",${MAX_STEPS_DEFAULT})
+
+pdfs/singlebitand.asy: ${MACHINE_DIR}/singlebitand.tm
+	$(call create-pdfs,singlebitand,01,singlebitand,"0","1",${MAX_STEPS_DEFAULT})
+
+pdfs/singlebitor.asy: ${MACHINE_DIR}/singlebitor.tm
+	$(call create-pdfs,singlebitor,01,singlebitor,"0","1",${MAX_STEPS_DEFAULT})
 

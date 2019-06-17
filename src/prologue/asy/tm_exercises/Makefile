@@ -95,7 +95,8 @@ seconeexercises: pdfs/pred_two.asy pdfs/addtwotwo.asy pdfs/infloop.asy \
         pdfs/blankones.asy pdfs/constantthree.asy pdfs/doubler.asy \
 	pdfs/doublerbinary.asy pdfs/odd_three.asy pdfs/odd_four.asy \
 	pdfs/successor.asy pdfs/leq.asy pdfs/bitwisenot.asy \
-	pdfs/singlebitnot.asy pdfs/singlebitand.asy pdfs/singlebitor.asy
+	pdfs/singlebitnot.asy pdfs/singlebitand.asy pdfs/singlebitor.asy \
+	pdfs/append01.asy pdfs/addany.asy
 
 pdfs/pred_two.asy: ${MACHINE_DIR}/pred.tm
 	$(call create-pdfs,pred,2,pred_two,"1","1",${MAX_STEPS_DEFAULT})
@@ -158,4 +159,12 @@ pdfs/singlebitand.asy: ${MACHINE_DIR}/singlebitand.tm
 
 pdfs/singlebitor.asy: ${MACHINE_DIR}/singlebitor.tm
 	$(call create-pdfs,singlebitor,01,singlebitor,"0","1",${MAX_STEPS_DEFAULT})
+
+pdfs/append01.asy: ${MACHINE_DIR}/append01.tm
+	$(call create-pdfs,append01,11,append01,"1","1",${MAX_STEPS_DEFAULT})
+
+# DUMMY keeps Bash from interpreting the comma in the string.
+DUMMY = "1,1,11"
+pdfs/addany.asy: ${MACHINE_DIR}/addany.tm
+	$(call create-pdfs,addany,11 then 1 then 11,addany,"1",${DUMMY},${MAX_STEPS_DEFAULT})
 

@@ -815,7 +815,7 @@ A Turing machine is a \definend{decider} for a set if it computes the
 characteristic function of that set.
 A relation is computable if it is computable as a set.
 \end{definition}\footnotetext[2]{%
-  The term `recursive' used to be universally used but now 
+  The term `recursive' used to be used universally but now 
   is old-fashioned.}
 
 We close with a summary.
@@ -829,7 +829,7 @@ In the next subsection we will discuss this characterization,
 including the evidence
 that leads to its widespread acceptance.
 
-
+% -------------------------------------------
 \begin{exercises}[For each exercise, assume the alphabet is $\Sigma=\set{\str{B},\str{1}}$ unless it says otherwise.]
 \recommended
 \begin{exercise}
@@ -1096,10 +1096,9 @@ The machine $\TM_{\text{blankones}}=\set{
 
 \recommended
 \begin{exercise}
-Produce Turing machines to perform these Boolean operation, using
+Produce Turing machines to perform these Boolean operations, using
 $\Sigma=\set{\str{B},\str{0},\str{1}}$.
-For each, begin and end with the head under the leftmost 
-character.
+Begin and end with the head under the leftmost character.
 \begin{exparts*}
 \item
 Take the `not' of a bit $b\in\Sigma_0=\Sigma-\set{\str{b}}$; that is,
@@ -1211,6 +1210,55 @@ Here is what it does on input $\sigma=\str{01}$.
   \end{tapesequencetable}
 \end{tapesequence}
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Give a Turing machine that
+takes as input a bit string, using the alphabet $\set{\str{B},\str{0},\str{1}}$,
+and adds~\str{01} at the back. 
+Assume that the machine's head starts under the leftmost bit 
+and arrange that it ends again under the 
+leftmost bit.
+\begin{answer}
+This machine uses~$q_0$ to slide to the right end, appends the \str{01},
+and uses~$q_2$ to slide back to the left. 
+\begin{equation*}
+  \TM_{\text{append01}}
+  =\set{ 
+     \tminstruction{0}{B}{0}{1},\,
+     \tminstruction{0}{0}{R}{0},\,
+     \tminstruction{0}{1}{R}{0},\,
+     \tminstruction{1}{B}{1}{2},\,
+     \tminstruction{1}{0}{R}{1},\,
+     \tminstruction{1}{1}{L}{2},\,
+     \tminstruction{2}{B}{R}{3},\,
+     \tminstruction{2}{0}{L}{2},\,
+     \tminstruction{2}{1}{L}{2}
+     }
+\end{equation*}
+This example shows what the machine does, on input $\sigma=\str{11}$.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises append01000.pdf} \\
+    1 &\tapegraphic{\tmexercises append01001.pdf} \\
+    2 &\tapegraphic{\tmexercises append01002.pdf} \\
+    3 &\tapegraphic{\tmexercises append01003.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    4 &\tapegraphic{\tmexercises append01004.pdf} \\
+    5 &\tapegraphic{\tmexercises append01005.pdf} \\
+    6 &\tapegraphic{\tmexercises append01006.pdf} \\
+    7 &\tapegraphic{\tmexercises append01007.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    8 &\tapegraphic{\tmexercises append01008.pdf} \\
+    9 &\tapegraphic{\tmexercises append01009.pdf} \\
+   10 &\tapegraphic{\tmexercises append01010.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
 \end{answer}
 \end{exercise}
 
@@ -1520,25 +1568,97 @@ and on~$4$ it does this.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Give a Turing machine that
-takes as input a bit string
-and adds a \str{01} at the back. 
-You can assume that at the start the machine's head is under the leftmost bit, 
-and you must arrange that at the end the head should again be under the 
-leftmost bit.
-\end{exercise}
-
 \begin{exercise} \label{exer:SumOfAnyNumberInputs}
 Write a machine~$\TM$ with tape alphabet~$\Sigma$ that, 
 in addition to blank~$\str{B}$ and stroke \str{1}, 
 also contains the comma~`$\str{,}$' character.
-Where $\Sigma_0=\Sigma-\set{\str{B}}$, interpreting input $\sigma\in\Sigma_0$
-as a list of natural numbers represented in unary,
-this machine should return the sum, also represented in unary.
-When this machine starts, the head points to the first input character
-and when it halts its head points to the first output character.
+Where $\Sigma_0=\Sigma-\set{\str{B}}$, if we interpret 
+the input $\sigma\in\Sigma_0$
+as a comma-separated list of natural numbers represented in unary,
+then this machine should return the sum, also in unary.
 For instance, $\TMfcn_{\TM}(\str{1111,,111,1})=\str{11111111}$. 
+As usual, at the start the head points to the first input character
+and at the end it points to the first output character.
+\begin{answer}
+While this Turing machine is moving right, if it hits a comma then it
+replaces it with a \str{1} and closes up to the left.
+That is, it scans left to the start of the string, erases the first~\str{1},
+and then starts moving right again.
+\begin{align*}
+  \TM_{\text{addany}}
+  &=
+  \{\hspace{\setspacing} 
+     \tminstruction{0}{B}{L}{10},\,
+     \tminstruction{0}{1}{R}{0},\,
+     \tminstruction{0}{,}{1}{1},\,
+     \tminstruction{1}{B}{R}{2},\,
+     \tminstruction{1}{1}{L}{1},\,
+     \tminstruction{1}{,}{L}{1},\,
+     \tminstruction{2}{B}{R}{0},\,
+     \tminstruction{2}{1}{B}{2},\,
+     \\ &\qquad\; 
+     \tminstruction{10}{B}{R}{100},\,
+     \tminstruction{10}{1}{L}{10},\, 
+     \tminstruction{10}{,}{L}{10} 
+  \hspace{\setspacing}\}
+\end{align*}
+For instance, on input~\str{11,1,11} it does this.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises addany000.pdf} \\
+    1 &\tapegraphic{\tmexercises addany001.pdf} \\
+    2 &\tapegraphic{\tmexercises addany002.pdf} \\
+    3 &\tapegraphic{\tmexercises addany003.pdf} \\
+    4 &\tapegraphic{\tmexercises addany004.pdf} \\
+    5 &\tapegraphic{\tmexercises addany005.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    6 &\tapegraphic{\tmexercises addany006.pdf} \\
+    7 &\tapegraphic{\tmexercises addany007.pdf} \\
+    8 &\tapegraphic{\tmexercises addany008.pdf} \\
+    9 &\tapegraphic{\tmexercises addany009.pdf} \\
+   10 &\tapegraphic{\tmexercises addany010.pdf} \\
+   11 &\tapegraphic{\tmexercises addany011.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   12 &\tapegraphic{\tmexercises addany012.pdf} \\
+   13 &\tapegraphic{\tmexercises addany013.pdf} \\
+   14 &\tapegraphic{\tmexercises addany014.pdf} \\
+   15 &\tapegraphic{\tmexercises addany015.pdf} \\
+   16 &\tapegraphic{\tmexercises addany016.pdf} \\
+   17 &\tapegraphic{\tmexercises addany017.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+(It is split into two sets of tables to give the formatter a place to 
+put a page break.)
+\begin{tapesequence}
+  \begin{tapesequencetable}
+   18 &\tapegraphic{\tmexercises addany018.pdf} \\
+   19 &\tapegraphic{\tmexercises addany019.pdf} \\
+   20 &\tapegraphic{\tmexercises addany020.pdf} \\
+   21 &\tapegraphic{\tmexercises addany021.pdf} \\
+   22 &\tapegraphic{\tmexercises addany022.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   23 &\tapegraphic{\tmexercises addany023.pdf} \\
+   24 &\tapegraphic{\tmexercises addany024.pdf} \\
+   25 &\tapegraphic{\tmexercises addany025.pdf} \\
+   26 &\tapegraphic{\tmexercises addany026.pdf} \\
+   27 &\tapegraphic{\tmexercises addany027.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   28 &\tapegraphic{\tmexercises addany028.pdf} \\
+   29 &\tapegraphic{\tmexercises addany029.pdf} \\
+   30 &\tapegraphic{\tmexercises addany030.pdf} \\
+   31 &\tapegraphic{\tmexercises addany031.pdf} \\
+   32 &\tapegraphic{\tmexercises addany032.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\end{answer}
 \end{exercise}
 
 
@@ -1671,9 +1791,9 @@ first~\str{1}, it will eventually halt with the tape containing
 two sequences of $n$-many \str{1}'s separated by a single blank.   
 \end{exercise}
 
-\begin{exercise}
-TODO simulate a size-four alphabet on a size-two alphabet machine.
-\end{exercise}
+% \begin{exercise}
+% TODO simulate a size-four alphabet on a size-two alphabet machine.
+% \end{exercise}
 
 \begin{exercise}
 \Cref{def:ComputableFcn} talks about a relation being computable.
@@ -1798,7 +1918,7 @@ For instance, on inputs $2$ and~$3$ it does this.
 
 \begin{exercise}
 Write a Turing machine with alphabet $\set{\str{B},\str{a},\str{b}}$ that will
-halt in state~$q_3$ if the input string contains twoo consecutive \str{b}'s,
+halt in state~$q_3$ if the input string contains two consecutive \str{b}'s,
 and will halt in state~$q_4$ otherwise.
 As always, start and end the machine with the head under the leftmost
 nonblank symbol.

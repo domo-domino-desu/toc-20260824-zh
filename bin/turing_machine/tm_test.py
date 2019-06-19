@@ -795,16 +795,121 @@ class AddAnyTestCase(unittest.TestCase):
         self.assertTrue(is_blank(final_config['currentchar']))
 
             
+    
+# ==============================================
+# class DuplicateTestCase(unittest.TestCase):
+#     """Tests the duplication operations Turing machines."""
+
+#     def test_simple(self):
+#         """Test some dumb thing"""
+#         sigma = "11" 
+#         r = run_tm('duplicate.tm', sigma[0], sigma[1:])
+#         out = r.stdout.decode(encoding='UTF-8')
+#         print(out)
+#         # final_config = get_final_config(out)
+#         # self.assertTrue(is_empty(final_config['prefix']))
+#         # self.assertEqual("1111",normalize_blanks(final_config['suffix']).strip())
+#         # self.assertEqual("1",final_config['currentchar'])
+
+#     # def test_some(self):
+#     #     """Test a few cases"""
+#     #     for sigma,tau in [("1,1","11"),
+#     #                       ("111,1111,1","11111111")]:
+#     #         r = run_tm('addany.tm', sigma[0], sigma[1:])
+#     #         out = r.stdout.decode(encoding='UTF-8')
+#     #         # print(out)
+#     #         final_config = get_final_config(out)
+#     #         self.assertTrue(is_empty(final_config['prefix']))
+#     #         self.assertEqual(tau[1:],normalize_blanks(final_config['suffix']).strip())
+#     #         self.assertEqual("1",final_config['currentchar'])
+
+#     # def test_one(self):
+#     #     """Test no commas"""
+#     #     sigma = "11" 
+#     #     r = run_tm('addany.tm', sigma[0], sigma[1:])
+#     #     out = r.stdout.decode(encoding='UTF-8')
+#     #     # print(out)
+#     #     final_config = get_final_config(out)
+#     #     self.assertTrue(is_empty(final_config['prefix']))
+#     #     self.assertEqual(sigma[1:],normalize_blanks(final_config['suffix']).strip())
+#     #     self.assertEqual(sigma[0],final_config['currentchar'])
+
+#     # def test_blank(self):
+#     #     """Test if the input string is blank"""
+#     #     r = run_tm('addany.tm', " ")
+#     #     out = r.stdout.decode(encoding='UTF-8')
+#     #     print(out)
+#     #     final_config = get_final_config(out)
+#     #     self.assertTrue(is_empty(final_config['prefix']))
+#     #     self.assertTrue(is_empty(final_config['suffix']))
+#     #     self.assertTrue(is_blank(final_config['currentchar']))
+
+            
+    
+# ==============================================
+class PalindromeTestCase(unittest.TestCase):
+    """Tests the palindrome Turing machines."""
+
+    def test_simple(self):
+        """Test some dumb thing"""
+        sigma = "abba" 
+        r = run_tm('palindrome.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("1",final_config['currentchar'])
+
+    def test_some(self):
+        """Test a few cases"""
+        for sigma in ["aa", "bbbb"]:
+            r = run_tm('palindrome.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(is_empty(final_config['suffix']))
+            self.assertEqual("1",final_config['currentchar'])
+        for sigma in ["aba","bbabb","a"]:
+            r = run_tm('palindrome.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(is_empty(final_config['suffix']))
+            self.assertEqual("1",final_config['currentchar'])
+        # These are non-palindromes
+        for sigma in ["ab","bbab"]:
+            r = run_tm('palindrome.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertTrue(is_empty(final_config['prefix']))
+            self.assertTrue(is_empty(final_config['suffix']))
+            self.assertTrue(is_blank(final_config['currentchar']))
+
+    def test_blank(self):
+        """Test a blank input string"""
+        r = run_tm('palindrome.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        print(out)
+        final_config = get_final_config(out)
+        self.assertTrue(is_empty(final_config['prefix']))
+        self.assertTrue(is_empty(final_config['suffix']))
+        self.assertEqual("1",final_config['currentchar'])
+
+
+            
 # ===========================================================
 
 # Run only these tests
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(AddAnyTestCase('test_simple'))
-    suite.addTest(AddAnyTestCase('test_some'))
-    suite.addTest(AddAnyTestCase('test_one'))
-    suite.addTest(AddAnyTestCase('test_blank'))
+    suite.addTest(PalindromeTestCase('test_simple'))
+    suite.addTest(PalindromeTestCase('test_some'))
+    suite.addTest(PalindromeTestCase('test_blank'))
     return suite
 
 def main(args):

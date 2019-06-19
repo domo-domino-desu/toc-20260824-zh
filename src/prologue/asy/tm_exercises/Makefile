@@ -96,7 +96,8 @@ seconeexercises: pdfs/pred_two.asy pdfs/addtwotwo.asy pdfs/infloop.asy \
 	pdfs/doublerbinary.asy pdfs/odd_three.asy pdfs/odd_four.asy \
 	pdfs/successor.asy pdfs/leq.asy pdfs/bitwisenot.asy \
 	pdfs/singlebitnot.asy pdfs/singlebitand.asy pdfs/singlebitor.asy \
-	pdfs/append01.asy pdfs/addany.asy
+	pdfs/append01.asy pdfs/addany.asy pdfs/palindromeabba.asy \
+	pdfs/palindromeaba.asy
 
 pdfs/pred_two.asy: ${MACHINE_DIR}/pred.tm
 	$(call create-pdfs,pred,2,pred_two,"1","1",${MAX_STEPS_DEFAULT})
@@ -167,4 +168,10 @@ pdfs/append01.asy: ${MACHINE_DIR}/append01.tm
 DUMMY = "1,1,11"
 pdfs/addany.asy: ${MACHINE_DIR}/addany.tm
 	$(call create-pdfs,addany,11 then 1 then 11,addany,"1",${DUMMY},${MAX_STEPS_DEFAULT})
+
+pdfs/palindromeabba.asy: ${MACHINE_DIR}/palindrome.tm
+	$(call create-pdfs,palindrome,abba,palindromeabba,"a","bba",${MAX_STEPS_DEFAULT})
+
+pdfs/palindromeaba.asy: ${MACHINE_DIR}/palindrome.tm
+	$(call create-pdfs,palindrome,aba,palindromeaba,"a","ba",${MAX_STEPS_DEFAULT})
 

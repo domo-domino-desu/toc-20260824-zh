@@ -455,7 +455,7 @@ but if there are lots of states then it is visually confusing.
 Now, a crucial observation.
 Some Turing machines,
 for at least some starting configurations, never halt.
-\begin{example}
+\begin{example} \label{ex:TMNeverHalts}
 The machine
 $
   \TM_{\text{inf loop}}=\set{
@@ -806,7 +806,7 @@ The next section says more.
 
 \begin{definition} \label{def:ComputableFcn}
 \definend{A computable function}, 
-or \definend{recursive function},\footnotemark[2]
+or \definend{recursive function},\footnotemark[1]
 is a total or partial function
 that is computed by some Turing machine.
 \definend{A computable set}, or \definend{recursive set} 
@@ -814,7 +814,7 @@ is one whose characteristic function is computable.
 A Turing machine is a \definend{decider} for a set if it computes the 
 characteristic function of that set.
 A relation is computable if it is computable as a set.
-\end{definition}\footnotetext[2]{%
+\end{definition}\footnotetext[1]{%
   The term `recursive' used to be used universally but now 
   is old-fashioned.}
 
@@ -830,7 +830,11 @@ including the evidence
 that leads to its widespread acceptance.
 
 % -------------------------------------------
-\begin{exercises}[For each exercise, assume the alphabet is $\Sigma=\set{\str{B},\str{1}}$ unless it says otherwise.]
+\begin{exercises}[For each exercise, unless it says otherwise assume the alphabet is $\Sigma=\set{\str{B},\str{1}}$. 
+Also assume that any machine you will write starts with its
+head under the leftmost non-blank character, if there are any
+non-blank characters, and arrange for it to end in the same way.]
+
 \recommended
 \begin{exercise}
 Trace each computation, as in \cref{ex:TraceComputation}.
@@ -841,8 +845,8 @@ Example~\ref{ex:MPred} when starting on a tape with two \str{1}'s.
 \item
 The machine $\TM_{\text{add}}$ from 
 Example~\ref{ex:MAdd} the addends are $2$ and~$2$.
-\item Give the two computations as sequences of configurations, 
-as described on \cpageref{DefnConfiguration}. 
+\item Give the two computations as configuration sequences, 
+as on \cpageref{DefnConfiguration}. 
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -922,6 +926,48 @@ The sum of $2$ and~$2$ is a little longer.
 \end{answer}
 \end{exercise}
 
+\recommended
+\begin{exercise}
+For each of these false statements about Turing machines, briefly
+explain the fallacy.
+\begin{exparts}
+\item Turing machines are not a complete model of computation because they can't
+do negative numbers.
+\item The problem with \cref{ex:TMNeverHalts} is that the instructions
+don't have any extra states where the machine goes to halt.
+\item For a machine to reach state~$q_{50}$ it must run for at least 
+fifty one steps.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item To show that some operation on negative numbers (or any mathematical
+object, for that matter) can be computed, name a representation for them
+with strings over a finite alphabet
+and then show how to use a Turing machine to do mechanical computations
+on those strings.
+For instance, to show that multiplication of two integers is mechanical,
+we could use the alphabet 
+$\Sigma=\set{\str{B},\str{0},\ldots \str{9},\str{+},\str{-}}$ and
+represent each integer as a pair 
+$\sequence{\text{sign},\text{natural number}}$.
+Making a Turing machine that has four cases, for the four possible pairs of
+signs, is tedious but perfectly possible. 
+\item If by ``problem'' we mean that the machine fails to halt, this is not
+the source of the problem.
+Rather, this machine is a straightforward infinite loop.
+\item We could give a machine states that are not sequential.
+The only limitation is that we use the convention that the initial state
+is~$q_0$.
+For instance, this machine fits the definition
+$\TM=\set{\tminstruction{0}{B}{B}{50},\,
+  \tminstruction{0}{1}{1}{50},\,
+  \tminstruction{50}{1}{1}{1},\,
+  \tminstruction{50}{1}{1}{1}}$,
+and on any input reaches state~$q_{50}$ after one step.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
 \begin{exercise}
 We often have some states that are \definend{halting states}, 
 where we send the machine solely to make it halt.
@@ -935,15 +981,6 @@ In \cref{ex:MAdd}, name the halting and working states.
 \begin{answer}
 The halting state is~$q_4$ and the working states are
 $q_0$, $q_1$, $q_2$ and~$q_3$. 
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-The empty set is a Turing machine, because it is a finite set of instructions.  
-What does it do?
-\begin{answer}
-It halts at the first step because there is no instruction matching
-the current state and what's being read on the tape.  
 \end{answer}
 \end{exercise}
 
@@ -1068,9 +1105,8 @@ for ten steps, or fewer if it halts.
 
 \recommended
 \begin{exercise}
-Produce a Turing machine that, if it is started with the tape blank except for 
-a contiguous sequence of \str{1}'s, and with the head under the leftmost
-\str{1}, will replace all those \str{1}'s with a blank and then halt. 
+Write a Turing machine that, if it is started with the tape blank except for 
+a sequence of \str{1}'s, will replace those with a blank and then halt. 
 \begin{answer}
 The machine $\TM_{\text{blankones}}=\set{
      \tminstruction{0}{B}{B}{2},\,
@@ -1098,7 +1134,6 @@ The machine $\TM_{\text{blankones}}=\set{
 \begin{exercise}
 Produce Turing machines to perform these Boolean operations, using
 $\Sigma=\set{\str{B},\str{0},\str{1}}$.
-Begin and end with the head under the leftmost character.
 \begin{exparts*}
 \item
 Take the `not' of a bit $b\in\Sigma_0=\Sigma-\set{\str{b}}$; that is,
@@ -1217,9 +1252,6 @@ Here is what it does on input $\sigma=\str{01}$.
 Give a Turing machine that
 takes as input a bit string, using the alphabet $\set{\str{B},\str{0},\str{1}}$,
 and adds~\str{01} at the back. 
-Assume that the machine's head starts under the leftmost bit 
-and arrange that it ends again under the 
-leftmost bit.
 \begin{answer}
 This machine uses~$q_0$ to slide to the right end, appends the \str{01},
 and uses~$q_2$ to slide back to the left. 
@@ -1267,7 +1299,6 @@ Produce a Turing machine that computes the constant function $\TMfcn(x)=3$.
 It inputs a number written in
 unary, so that $n$ is represented as $n$-many $1$'s, 
 and outputs the number~$3$ in unary.
-Start and finish with the head under the first~\str{1}. 
 \begin{answer}
 This machine works.
 \begin{align*}
@@ -1349,8 +1380,7 @@ Produce a doubler, a Turing machine that computes $f(x)=2x$.
 \begin{exparts}
 \item
   Assume that the
-  input and output is written in unary, and at the start and end  
-  the head is under the leftmost \str{1} (if there is one).  
+  input and output is in unary.  
   \hint~you can erase the first~\str{1}, move to the end of the \str{1}'s,
   past a blank, and put down two~\str{1}'s. 
   Then move left until you are at the
@@ -1359,7 +1389,6 @@ Produce a doubler, a Turing machine that computes $f(x)=2x$.
 \item
   Instead assume that the alphabet is $\Sigma=\set{\str{B},\str{0}, \str{1}}$
   and the input is represented in binary.
-  Again you must start and end with the head under the leftmost symbol.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -1577,8 +1606,6 @@ the input $\sigma\in\Sigma_0$
 as a comma-separated list of natural numbers represented in unary,
 then this machine should return the sum, also in unary.
 For instance, $\TMfcn_{\TM}(\str{1111,,111,1})=\str{11111111}$. 
-As usual, at the start the head points to the first input character
-and at the end it points to the first output character.
 \begin{answer}
 While this Turing machine is moving right, if it hits a comma then it
 replaces it with a \str{1} and closes up to the left.
@@ -1661,6 +1688,14 @@ put a page break.)
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+The empty set is a Turing machine, because it is a finite set of instructions.  
+What does it do?
+\begin{answer}
+It halts at the first step because there is no instruction matching
+the current state and what's being read on the tape.  
+\end{answer}
+\end{exercise}
 
 \begin{exercise}
 Is there a Turing machine configuration without any predecessor?
@@ -1684,12 +1719,11 @@ with $\mathcal{I}=q\mskip2mu s\mskip2mu s\mskip2mu q$.
 One way to argue that Turing machines can do anything that a modern CPU 
 can do involves showing how to do all of the CPU's operations 
 on a Turing machine.
-For each operation below produce a Turing machine.
-The input language is $\Sigma=\set{\str{0},\str{1},B}$.
-At the start the machine's head is under the 
-first bit. 
-Arrange that at the end the head is under the first bit of the result.
-\begin{exparts*}
+For each, describe a Turing machine that will perform
+that operation.
+You need not produce the machine, just outline the steps.
+Use the alphabet $\Sigma=\set{\str{0},\str{1},\str{B}}$.
+\begin{exparts}
 \item
 Take as input a $4$-bit string and do a bitwise~NOT, 
 so that each \str{0} becomes a \str{1}
@@ -1699,14 +1733,25 @@ Take as input a $4$-bit string and do a bitwise
 circular left shift, so that from $b_3b_2b_1b_0$  you end with $b_2b_1b_0b_3$.
 \item 
 Take as input two $4$-bit strings and perform a bitwise~AND.
-\end{exparts*}
+\end{exparts}
 \begin{answer}
 \begin{exparts}
-\item In this machine, state~$q_0$ flips the first bit 
-and then $q_1$ shifts right.
-This continues with $q_2$ and~$q_3$, etc., until the
+\item The machine can flip the first bit, slide right and flip the second 
+bit, etc.
+The fact that we know the number of bits in advance means that we can 
+just have four groups of states: first flip and slide, second flip and slide, 
+etc.  
+(We could do an arbitrary number of bits but it would be a little harder.)
+At the end we slide left to position the head at the left end of the 
+non-blank characters.
+
+Although the question says that you need not produce a machine, 
+here is one. 
+In this machine, state~$q_0$ flips the first bit 
+and then $q_1$ slides right.
+The next flip and slide combination is $q_2$ and~$q_3$, etc., until the
 machine gets to the fourth bit.
-Then it moves the head back to the start.
+Then it moves the head back to the start with~$q_7$.
 \begin{align*}
   \TM_{\text{bitwiseNOT}}
   &=
@@ -1735,8 +1780,8 @@ Then it moves the head back to the start.
      \tminstruction{6}{0}{1}{7},\,
      \tminstruction{6}{1}{0}{7},\,
      \tminstruction{7}{B}{R}{8},\, 
-     \tminstruction{7}{0}{l}{7},\, 
-     \tminstruction{7}{1}{l}{7}
+     \tminstruction{7}{0}{L}{7},\, 
+     \tminstruction{7}{1}{L}{7}
   \hspace{\setspacing}\}
 \end{align*}
 For instance, on input~$0110$ it does this.
@@ -1763,31 +1808,79 @@ For instance, on input~$0110$ it does this.
    12 &\tapegraphic{\tmexercises bitwisenot012.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
+\item 
+The machine has two cases, depending on what it finds for~$b_3$.
+If $b_3=\str{0}$ then it moves right, copying the next bit into the current one,
+and then at the end it appends a~\str{0}.
+Likewise, 
+if $b_3=\str{1}$ then it moves right, copying,
+and then at the end it appends a~\str{1}.
+As with the prior item, because we know in advance that 
+there are four bits we can just have three groups of states.
+\item
+One implementation is to expect two four-bit strings, 
+$a_3a_2a_1a_0$ and $b_3b_2b_1b_0$, separated by a blank.
+The machine reads~$a_3$ and goes into one of two states, $r_{0}$ or~$r_1$, 
+depending on whether $a_3=\str{0}$ or~$a_3=\str{1}$.
+From state~$r_0$ it slides past the blank separator, then 
+reads~$b_3$, and changes it to the logical `and' of $b_3$ and~$0$.
+Similarly, from state~$r_1$ it slides past the blank separator, 
+reads~$b_3$, and changes it to the logical `and' of $b_3$ and~$1$.
+Repeat that for a total of four iterations.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
+For each, produce a machine meeting the condition.
 \begin{exparts*}
 \item 
-Produce a machine that halts on exactly one input.
+It halts on exactly one input.
 \item
-Produce a Turing machine that fails to halt on exactly one input.
-% \item
-% Produce a machine that halts on infinitely many inputs, and 
-% also produce one that does not halt on infinitely many.
+It fails to halt on exactly one input.
+\item
+It halts on infinitely many inputs, and 
+fails to halt on infinitely many.
 \item
 Produce a single machine that halts on infinitely many inputs and 
 also does not halt on infinitely many.
 \end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item Under the convention that the machine starts with its head under
+the first non-blank character if there are any, 
+$\TM=\set{
+  \tminstruction{0}{B}{B}{1},\,
+  \tminstruction{0}{1}{1}{0}
+}$ 
+will halt only if the input is blank.
+\item The machine
+$\TM=\set{
+  \tminstruction{0}{B}{B}{0},\,
+  \tminstruction{0}{1}{1}{1}
+}$ 
+will fail to halt only if the input is blank.
+\item The machine
+$\TM=\set{
+  \tminstruction{0}{B}{R}{1},\,
+  \tminstruction{0}{1}{R}{1},\,
+  \tminstruction{1}{B}{B}{1},\,
+  \tminstruction{1}{1}{1}{2}
+}$ 
+will halt if and only if the second character is~\str{1}.
+(Trying the same idea for the first character won't work because of our 
+convention that the first character is blank only if all characters are
+blank, so there is only one input string with a blank first character.)
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
 Produce a Turing machine that replicates the input:~if 
 it is started with the tape blank except for 
-a contiguous sequence of $n$-many \str{1}'s, and with the head under the
-first~\str{1}, it will eventually halt with the tape containing 
+a contiguous sequence of $n$-many \str{1}'s,
+it will eventually halt with the tape containing 
 two sequences of $n$-many \str{1}'s separated by a single blank.   
 \end{exercise}
 
@@ -1920,30 +2013,167 @@ For instance, on inputs $2$ and~$3$ it does this.
 Write a Turing machine with alphabet $\set{\str{B},\str{a},\str{b}}$ that will
 halt in state~$q_3$ if the input string contains two consecutive \str{b}'s,
 and will halt in state~$q_4$ otherwise.
-As always, start and end the machine with the head under the leftmost
-nonblank symbol.
 \end{exercise}
 
 \begin{exercise}
-Write a Turing machine that recognizes if its input is a
-palindrome, a string that is the same forward and backward.
-That is, when the machine starts the tape contains a finite string of
-\str{0}'s and \str{1}'s, ended by the first blank,
-and the machine's head is under the leftmost character.
-Designate a ``yes'' state and a ``no'' state
-so that when the machine finishes, it is in the first if the input was a
-palindrome and in the second if it was not.
+Write a Turing machine that decides if its input is a
+palindrome, a string that is the same backward as forward.
+Use $\Sigma=\set{\str{B},\str{0},\str{1}}$.
+Have the machine end with a single~\str{1} on the tape if the input
+was a palindrome, and with a blank tape if not. 
+\begin{answer}
+The strategy is to blank out the first character, slide to the end,
+and then blank out the final character (if it matches the first), and then
+repeat.
+When the string is empty, the machine puts a \str{1} on the tape, showing
+success.
+
+The machine below remembers that the first character was an~\str{a} 
+by moving to state~$q_{20}$.
+It remembers a~\str{b} by moving to state~$q_{30}$.
+Starting in~$q_{40}$ it moves back to the start of the remaining input string.
+State~$q_{60}$ is for the cases where the machine detects that the input was 
+not a palindrome, while state~$q_{80}$ is for when the machine finds it is one.
+Finally, states $q_1, \dotso q_4$ handle the case that the input string
+(either the initial string or what is left of the initial string after
+some end-trimming) has one character.
+\begin{align*}
+  \TM_{\text{pal}}
+  &=
+  \{\hspace{\setspacing} 
+     \tminstruction{0}{B}{B}{80},\,
+     \tminstruction{0}{a}{B}{1},\,
+     \tminstruction{0}{b}{B}{3},\,
+     \tminstruction{1}{B}{R}{2},\,
+     \tminstruction{1}{a}{R}{2},\,
+     \tminstruction{1}{b}{R}{2},\,
+     \tminstruction{2}{B}{L}{80},\,
+     \tminstruction{2}{a}{a}{20},\,
+     \tminstruction{2}{b}{b}{20},\, 
+     \\ &\qquad\; 
+     \tminstruction{3}{B}{R}{4},\, 
+     \tminstruction{3}{a}{R}{4},\,
+     \tminstruction{3}{b}{R}{4},\, 
+     \tminstruction{4}{B}{L}{80},\,
+     \tminstruction{4}{a}{a}{30},\, 
+     \tminstruction{4}{b}{b}{30},\,
+     \\ &\qquad\; 
+     \tminstruction{20}{B}{L}{21},\, 
+     \tminstruction{20}{a}{R}{20},\,
+     \tminstruction{20}{b}{R}{20},\,
+     \tminstruction{21}{B}{B}{60},\, 
+     \tminstruction{21}{a}{B}{40},\, 
+     \tminstruction{21}{b}{b}{60},\,
+     \\ &\qquad\; 
+     \tminstruction{30}{B}{L}{31},\, 
+     \tminstruction{30}{a}{R}{30},\,
+     \tminstruction{30}{b}{R}{30},\, 
+     \tminstruction{31}{B}{B}{60},\,
+     \tminstruction{31}{a}{a}{60},\, 
+     \tminstruction{31}{b}{B}{40},\,
+     \\ &\qquad\; 
+     \tminstruction{40}{B}{L}{41},\, 
+     \tminstruction{40}{a}{L}{41},\,
+     \tminstruction{40}{b}{L}{41},\, 
+     \tminstruction{41}{B}{R}{0},\,
+     \tminstruction{41}{a}{L}{41},\, 
+     \tminstruction{41}{b}{L}{41},\,
+     \\ &\qquad\; 
+     \tminstruction{60}{B}{B}{100},\, 
+     \tminstruction{60}{a}{B}{61},\,
+     \tminstruction{60}{b}{B}{61},\, 
+     \tminstruction{61}{B}{L}{60},\,
+     \tminstruction{61}{a}{a}{60},\, 
+     \tminstruction{61}{b}{b}{60},\,
+     \\ &\qquad\; 
+     \tminstruction{80}{B}{1}{100},\, 
+     \tminstruction{80}{a}{1}{100},\,
+     \tminstruction{80}{b}{1}{100} 
+  \hspace{\setspacing}\}
+\end{align*}
+As an example, this is the action of the machine on \str{abba}.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises palindromeabba000.pdf} \\
+    1 &\tapegraphic{\tmexercises palindromeabba001.pdf} \\
+    2 &\tapegraphic{\tmexercises palindromeabba002.pdf} \\
+    3 &\tapegraphic{\tmexercises palindromeabba003.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    4 &\tapegraphic{\tmexercises palindromeabba004.pdf} \\
+    5 &\tapegraphic{\tmexercises palindromeabba005.pdf} \\
+    6 &\tapegraphic{\tmexercises palindromeabba006.pdf} \\
+    7 &\tapegraphic{\tmexercises palindromeabba007.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    8 &\tapegraphic{\tmexercises palindromeabba008.pdf} \\
+    9 &\tapegraphic{\tmexercises palindromeabba009.pdf} \\
+   10 &\tapegraphic{\tmexercises palindromeabba010.pdf} \\
+   11 &\tapegraphic{\tmexercises palindromeabba011.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+(The tape sequence is in two parts to leave room for a page break.)
+\begin{tapesequence}
+  \begin{tapesequencetable}
+   12 &\tapegraphic{\tmexercises palindromeabba012.pdf} \\
+   13 &\tapegraphic{\tmexercises palindromeabba013.pdf} \\
+   14 &\tapegraphic{\tmexercises palindromeabba014.pdf} \\
+   15 &\tapegraphic{\tmexercises palindromeabba015.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   16 &\tapegraphic{\tmexercises palindromeabba016.pdf} \\
+   17 &\tapegraphic{\tmexercises palindromeabba017.pdf} \\
+   18 &\tapegraphic{\tmexercises palindromeabba018.pdf} \\
+   19 &\tapegraphic{\tmexercises palindromeabba019.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   20 &\tapegraphic{\tmexercises palindromeabba020.pdf} \\
+   21 &\tapegraphic{\tmexercises palindromeabba021.pdf} \\
+   22 &\tapegraphic{\tmexercises palindromeabba022.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+A second example is the action of the machine on \str{aba}.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises palindromeaba000.pdf} \\
+    1 &\tapegraphic{\tmexercises palindromeaba001.pdf} \\
+    2 &\tapegraphic{\tmexercises palindromeaba002.pdf} \\
+    3 &\tapegraphic{\tmexercises palindromeaba003.pdf} \\
+    4 &\tapegraphic{\tmexercises palindromeaba004.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    5 &\tapegraphic{\tmexercises palindromeaba005.pdf} \\
+    6 &\tapegraphic{\tmexercises palindromeaba006.pdf} \\
+    7 &\tapegraphic{\tmexercises palindromeaba007.pdf} \\
+    8 &\tapegraphic{\tmexercises palindromeaba008.pdf} \\
+    9 &\tapegraphic{\tmexercises palindromeaba009.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+   10 &\tapegraphic{\tmexercises palindromeaba010.pdf} \\
+   11 &\tapegraphic{\tmexercises palindromeaba011.pdf} \\
+   12 &\tapegraphic{\tmexercises palindromeaba012.pdf} \\
+   13 &\tapegraphic{\tmexercises palindromeaba013.pdf} \\
+   14 &\tapegraphic{\tmexercises palindromeaba014.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\end{answer}
 \end{exercise}
 
-\recommended
-\begin{exercise}
-Write a Turing machine that will take three input numbers, in unary and
-separated by a blank, and return their sum (that is, at the end the tape
-contains the sum of the three in unary and the head is under the leftmost
-\str{1}).
-Write a machine that takes an arbitrary number of numbers and returns their
-sum.
-\end{exercise}
+% \recommended
+% \begin{exercise}
+% Write a Turing machine that will take three input numbers, in unary and
+% separated by a blank, and return their sum (that is, at the end the tape
+% contains the sum of the three in unary and the head is under the leftmost
+% \str{1}).
+% Write a machine that takes an arbitrary number of numbers and returns their
+% sum.
+% \end{exercise}
 
 \begin{exercise}
 Show that if a Turing machine 

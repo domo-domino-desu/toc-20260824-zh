@@ -97,7 +97,7 @@ seconeexercises: pdfs/pred_two.asy pdfs/addtwotwo.asy pdfs/infloop.asy \
 	pdfs/successor.asy pdfs/leq.asy pdfs/bitwisenot.asy \
 	pdfs/singlebitnot.asy pdfs/singlebitand.asy pdfs/singlebitor.asy \
 	pdfs/append01.asy pdfs/addany.asy pdfs/palindromeabba.asy \
-	pdfs/palindromeaba.asy
+	pdfs/palindromeaba.asy pdfs/twobsabba.asy pdfs/twobsaba.asy
 
 pdfs/pred_two.asy: ${MACHINE_DIR}/pred.tm
 	$(call create-pdfs,pred,2,pred_two,"1","1",${MAX_STEPS_DEFAULT})
@@ -174,4 +174,10 @@ pdfs/palindromeabba.asy: ${MACHINE_DIR}/palindrome.tm
 
 pdfs/palindromeaba.asy: ${MACHINE_DIR}/palindrome.tm
 	$(call create-pdfs,palindrome,aba,palindromeaba,"a","ba",${MAX_STEPS_DEFAULT})
+
+pdfs/twobsabba.asy: ${MACHINE_DIR}/twobs.tm
+	$(call create-pdfs,twobs,abba,twobsabba,"a","bba",${MAX_STEPS_DEFAULT})
+
+pdfs/twobsaba.asy: ${MACHINE_DIR}/twobs.tm
+	$(call create-pdfs,twobs,aba,twobsaba,"a","ba",${MAX_STEPS_DEFAULT})
 

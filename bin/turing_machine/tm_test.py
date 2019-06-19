@@ -121,6 +121,11 @@ def is_empty(s):
     """
     s = s.replace("B"," ")
     return s.strip() == ""
+
+def ending_state_number(final_config):
+    """Get as a natural number the number of the final state
+    """
+    return int(final_config['state'])
     
 # ==============================================
 class PredecessorTestCase(unittest.TestCase):
@@ -899,6 +904,45 @@ class PalindromeTestCase(unittest.TestCase):
         self.assertTrue(is_empty(final_config['suffix']))
         self.assertEqual("1",final_config['currentchar'])
 
+            
+    
+# ==============================================
+class TwobsTestCase(unittest.TestCase):
+    """Tests the two b's Turing machines."""
+
+    def test_simple(self):
+        """Test some dumb thing"""
+        sigma = "abba" 
+        r = run_tm('twobs.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertEqual(3,ending_state_number(final_config))
+
+    def test_some(self):
+        """Test a few cases"""
+        for sigma in ["aabb", "bbbb", "bbaaa", "bb"]:
+            r = run_tm('twobs.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertEqual(3,ending_state_number(final_config),"Expected {0:s} to succeed".format(sigma))
+        # These do not have "bb"
+        for sigma in ["aba", "babab", "aa", "b"]:
+            r = run_tm('twobs.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertEqual(4,ending_state_number(final_config),"Expected {0:s} to fail".format(sigma))
+
+    def test_empty(self):
+        """Test an empty input string"""
+        r = run_tm('twobs.tm', " ")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertEqual(4,ending_state_number(final_config), "Expected the empty input string to succeed")
+
 
             
 # ===========================================================
@@ -907,9 +951,9 @@ class PalindromeTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(PalindromeTestCase('test_simple'))
-    suite.addTest(PalindromeTestCase('test_some'))
-    suite.addTest(PalindromeTestCase('test_blank'))
+    suite.addTest(TwobsTestCase('test_simple'))
+    suite.addTest(TwobsTestCase('test_some'))
+    suite.addTest(TwobsTestCase('test_empty'))
     return suite
 
 def main(args):

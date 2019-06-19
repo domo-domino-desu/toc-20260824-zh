@@ -255,14 +255,20 @@
 (if (null? (tm-filename))
     (set! TM-LINES '())
     (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
+
 ;; for debugging: TM-LINES
 
 ;; Return the list with the last element omitted
 (define (omit-last-element lst)
   (reverse (cdr (reverse lst))))
 
-;; Return a list of instructions
 ;; Note that empty lines give an error in the TM
+(unless (non-empty-string? (last TM-LINES))
+    (fprintf (current-output-port)
+             "File ~s: Trailing empty string will cause an error.  Delete it.\n"
+             (tm-filename)))
+
+;; Return a list of instructions
 (define TM (for/list ([line TM-LINES])
                  (string->instruction line)))
 ;; for debugging: TM

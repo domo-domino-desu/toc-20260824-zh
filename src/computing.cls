@@ -1445,6 +1445,10 @@
 \usepackage{url}
 \usepackage{microtype}
 
+% Allows fill-in-blanks dotuline for instance.
+% conflict with restoregeometry: \usepackage{ulem}
+\newcommand{\fillinblank}[1][2.5em]{{\setlength{\fboxsep}{0pt}%
+  \fbox{\hbox{}\rule[-1pt]{0pt}{9pt}\hspace*{#1}}}}
 
 % ================
 % Dash code stolen from tugboat.dtx

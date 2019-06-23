@@ -435,7 +435,7 @@ and its \definend{transition graph}.
   \hspace{2em}
   \vcenteredhbox{\includegraphics{prologue/asy/circlediagram/circlediagram00.pdf}}
 \end{center}
-And here are the corresponding table and graph for $\TM_{\text{add}}$. 
+And here is the corresponding table and graph for $\TM_{\text{add}}$. 
 \begin{center}
   \begin{transitionfunction}
            &$\blank$      &\str{1}        \\ \cline{2-3}
@@ -3207,6 +3207,10 @@ and pays you with his own bills, numbered $2$ and~$4$.
 Next he buys from you bill number $2$ 
 and pays you with his bills numbered $6$ and~$8$.
 How much do you end with? 
+\begin{answer}
+You end with nothing since there is no bill still in
+your possession.
+\end{answer}
 \end{exercise}
 
 
@@ -3214,88 +3218,96 @@ How much do you end with?
 % Write a two-state Turing machine with a single tape that adds two inputs.
 % You may use as many symbols in your alphabet as is convenient.   
 % \end{exercise}
-\item[\textsc{Note:}]~\textit{the remaining exercises involve multitape 
+\item[{\it The}]~\textit{remaining exercises involve multitape 
 Turing machines. 
-As with single-tape machines, these are sets of four-tuples. 
-For each of these exercises, every tape has its own
-alphabet consisting of \str{0} , \str{1}, and~\str{B}. 
-Subscripts show what tape the symbol is for, 
-so that $\str{1}_0$ is for tape $0$. 
-Similarly, the tape action set
-contains $L_0$, $R_0$, $L_1$, $R_1$, etc.,
-and a typical instruction is $\tminstruction{0}{$\str{1}_0$}{$L_1$}{1}$.}
+A good way to define a $k$-tape machine is to start with 
+\cref{def:TuringMachine}'s single tape transition function 
+$\map{\Delta}{Q\times \Sigma}{(\Sigma\cup\set{\str{L},\str{R}})\times Q}$ 
+and extend it to
+$\map{\Delta}{Q\times \Sigma^k}{(\Sigma\cup\set{\str{L},\str{R}})^k\times Q}$. 
+Thus, a typical four-tuple for a $k=2$-tape machine with alphabet
+$\Sigma=\set{\str{0},\str{1},\str{B}}$
+is 
+\twotapetminstruction{4}{1}{B}{0}{L}{3}.
+It means that if the machine is in state~$q_4$ and the head on tape~$0$
+is reading~\str{1} while that on tape~$1$ is reading a blank,
+then the machine writes~\str{0} to tape~$0$, moves left on tape~$1$, 
+and goes into state~$q_3$.}
 
 \begin{exercise}
-Consider a two-tape machine.
-\begin{exparts}
-\item Write an instruction set for this machine 
- that inputs a binary string on tape~$0$ (the tape~$0$ head starts under
- the leftmost bit) and a blank tape~$1$.
- On tape~$1$ it outputs the complement string, with input \str{0}'s changed 
- to~\str{1}'s and input \str{1}'s changed to \str{0}'s.
- The machine ends with the tape~$1$ head under the leftmost bit, 
- with tape~$0$ blank.
-\item Simulate the machine from the
- prior item on a single-tape Turing machine, 
- using the eight-symbol tape alphabet
- $\set{\str{00}, \str{01}, \str{10}, \str{11}, 
-    \str{0}B, \str{1}B, B\str{0}, B\str{1}}$.
-\end{exparts}
+Write the transition table of a two-tape machine to complement a bitstring.
+The machine has alphabet
+$\set{\str{0},\str{1},\str{B}}$.
+It starts with a string~$\sigma$ of \str{0}'s and \str{1}'s 
+on tape~$0$ (the tape~$0$ head starts under the leftmost bit) 
+and tape~$1$ is blank.
+When it finishes, on 
+on tape~$1$ is the complement of~$\sigma$, with input \str{0}'s changed 
+to~\str{1}'s and input \str{1}'s changed to \str{0}'s,
+and with the tape~$1$ head under the leftmost bit.
+\begin{answer}
+The strategy is to move right on tape~$0$, writing the complementary bit
+onto tape~$1$ until the tape~$0$ head hits a blank.
+Then the machine moves left on tape~$1$.
+(Below, rather than write the pair of characters
+$\sequence{\str{x},\str{y}}$ we just have \str{xy}.)
+\begin{display}
+\begin{transitionfunction}
+        &\str{00} &\str{01} &\str{0B}   
+          &\str{10} &\str{11} &\str{1B}   
+          &\str{B0} &\str{B1} &\str{BB}     \\ \cline{2-10}
+ $q_0$  &$\str{00},q_1$ &$\str{01},q_1$ &$\str{01},q_1$   
+          &$\str{10},q_1$ &$\str{11},q_1$ &$\str{10},q_1$   
+          &$\str{B0},q_1$ &$\str{B1},q_1$ &$\str{LL},q_2$     \\ 
+ $q_1$  &$\str{RR},q_0$ &$\str{RR},q_0$ &$\str{RR},q_0$   
+          &$\str{RR},q_0$ &$\str{RR},q_0$ &$\str{RR},q_0$   
+          &$\str{RR},q_0$ &$\str{RR},q_0$ &$\str{LL},q_2$     \\ 
+ $q_2$  &$\str{0L},q_2$ &$\str{0L},q_2$ &$\str{0R},q_3$   
+          &$\str{1L},q_2$ &$\str{1L},q_2$ &$\str{1R},q_3$   
+          &$\str{BL},q_2$ &$\str{BL},q_2$ &$\str{BR},q_3$     \\ 
+\end{transitionfunction}
+\end{display}
+(Many of the input pairs cannot happen.   
+For example, if the machine is in state~$q_0$ then the input \str{00} 
+cannot happen.)
+\end{answer}
 \end{exercise}
-
-
-\begin{exercise}
-Consider a two-tape machine to count the number of \str{1}'s.
-% The tape alphabet is 
-% $\Sigma=\set{\str{0}_0, \str{0}_1, \str{1}_0, \str{1}_1, B_0, B_1 }$.
-% Similarly, the tape action set contains $L_0$,  $R_0$, $L_1$, and~$R_1$.
-\begin{exparts}
-\item Write an instruction set for this machine 
- that inputs a binary string on tape~$0$ (the tape~$0$ head starts under
- the leftmost bit) and a blank tape~$1$.
- On tape~$1$ it outputs the string that represents in unary the number of
- input \str{1}'s.
- The machine ends with the tape~$1$ head under the leftmost bit, 
- with tape~0 blank.
-\item Simulate the machine from the
- prior item on a single-tape Turing machine, 
- using the eight-symbol tape alphabet
- $\set{\str{00}, \str{01}, \str{10}, \str{11}, 
-    \str{0}B, \str{1}B, B\str{0}, B\str{1}}$.
-\end{exparts}
-\end{exercise}
-
 
 \begin{exercise}
 Write a two-tape Turing machine to take the logical and of two 
 bitstrings.
-\begin{exparts}
-\item
-% The tape alphabet is 
-% $\Sigma=\set{\str{0}_0, \str{0}_1, \str{1}_0, \str{1}_1, B_0, B_1 }$.
-% Similarly, the tape action set contains $L_0$,  $R_0$, $L_1$, and~$R_1$.
 The machine starts with two same-length strings of \str{0}'s and \str{1}'s
 on the two tapes.
 The tape~$0$ head starts under the leftmost bit, as does the tape~$1$ head.
 When the machine halts, the tape~$1$ head is under the leftmost bit
-of the result.
-(We don't care about the tape~$0$ head.)
-\item Simulate the machine from the
- prior item on a single-tape Turing machine, 
- using the eight-symbol tape alphabet
- $\set{\str{00}, \str{01}, \str{10}, \str{11}, 
-    \str{0}B, \str{1}B, B\str{0}, B\str{1}}$.
-\end{exparts}
-\end{exercise}
-
-\begin{exercise}
-One setup that is 
-often convenient is three tapes, where tape~$0$ holds the 
-inputs, tape~$1$ is for scratch work, and tape~$2$ is for the output.
-Write a three-tape Turing machine to multiply a pair of inputs, given in 
-unary and separated by a blank on the first tape (starting with the
-head under the leftmost bit), so that on halting the output
-appears on the third tape (with the head under the leftmost bit).
+of the result
+(we don't care about the tape~$0$ head).
+\begin{answer}
+The strategy is to move right on the two tapes, writing the logical and
+onto tape~$1$ until on both tapes the heads hit blanks.
+Then the machine moves left on tape~$1$.
+(Below, instead of writing the character pair $\sequence{\str{x},\str{y}}$,
+we just write \str{xy}.)
+\begin{display}
+\begin{transitionfunction}
+        &\str{00} &\str{01} &\str{0B}   
+          &\str{10} &\str{11} &\str{1B}   
+          &\str{B0} &\str{B1} &\str{BB}     \\ \cline{2-10}
+ $q_0$  &$\str{00},q_1$ &$\str{00},q_1$ &$\str{0B},q_1$   
+          &$\str{10},q_1$ &$\str{11},q_1$ &$\str{1B},q_1$   
+          &$\str{BB},q_1$ &$\str{BB},q_1$ &$\str{LL},q_2$     \\ 
+ $q_1$  &$\str{RR},q_0$ &$\str{RR},q_0$ &$\str{RR},q_0$   
+          &$\str{RR},q_0$ &$\str{RR},q_0$ &$\str{RR},q_0$   
+          &$\str{RR},q_0$ &$\str{RR},q_0$ &$\str{LL},q_2$     \\ 
+ $q_2$  &$\str{LL},q_2$ &$\str{LL},q_2$ &$\str{0R},q_3$   
+          &$\str{LL},q_2$ &$\str{LL},q_2$ &$\str{1R},q_3$   
+          &$\str{BL},q_2$ &$\str{BL},q_2$ &$\str{BR},q_3$     \\ 
+\end{transitionfunction}
+\end{display}
+(Many of these input pairs cannot happen.   
+For example, if the machine is in state~$q_1$ then the input \str{B0} 
+cannot happen.)
+\end{answer}
 \end{exercise}
 
 \end{exercises}
@@ -3307,7 +3319,7 @@ appears on the third tape (with the head under the leftmost bit).
 
 %================================================
 \section{Recursion}
-In the 1930's reseachers other than Turing 
+In the 1930's researchers other than Turing 
 also saw the need to make precise the notion of mechanical computability.
 Here we will outline an approach that is different than Turing's, 
 both to give a sense of another approach and because we will find it useful.
@@ -3316,15 +3328,14 @@ both to give a sense of another approach and because we will find it useful.
 % Turing defined machines and derived from that a definition of the
 % functions that are computable, those functions that
 % are the input-output behavior of the machines.
-This approach 
-defines the class of effective functions by providing a
+This approach has a very mathematical flavor.
+It provides a
 list of initial functions that are intuitively effective
-and a way to combine existing functions,
+and an intuitively effective way to combine existing functions,
 to make new functions from old.
 One intuitively effective initial function is
 successor~$\map{\successor}{\N}{\N}$ given by~$\successor(x)=x+1$.
-An example of a combiner is function composition,
-which is intuitively mechanically computable.
+An example of a combiner is function composition.
 We then take the initial function and combine to make new
 functions:~because successor is effective the composition 
 $\composed{\successor}{\successor}$, the plus-two operation,
@@ -3745,10 +3756,10 @@ You can use functions already defined in this section.
 \item
 \begin{center}
 \begin{tabular}{r|*{11}{r}}
-  \multicolumn{1}{c}{$n$}
+  $n$
     &$0$ &$1$ &$2$ &$3$ &$4$  &$5$  &$6$  &$7$  &$8$  &$9$  &$10$  \\ 
   \cline{2-12}
-  \multicolumn{1}{c}{$t(n)$}
+  $t(n)$
     &$0$ &$1$ &$4$ &$9$ &$16$ &$25$ &$36$ &$49$ &$64$ &$81$ &$100$  
 \end{tabular}
 \end{center}
@@ -3760,7 +3771,8 @@ You can use functions already defined in this section.
   h(s(z),z)  &\case{if $y=\successor(z)$}
   \end{cases}
 \end{equation*}
-Here, $g$ is the constant $g(\;)=0$ and 
+Here, $g$ is the constant function, the function of no arguments, $g(\;)=0$.
+And, 
 $h(s(z),z)=\plus(s(z),\pred(\product(2,\successor(z))))$.
 \end{exparts}
 \end{answer}
@@ -3790,10 +3802,10 @@ You can use functions already defined in this section.
 \item
 \begin{center}
 \begin{tabular}{r|*{11}{r}}
-  \multicolumn{1}{c}{$n$}
+  $n$
     &$0$ &$1$ &$2$ &$3$ &$4$  &$5$  \\ 
-   \cline{2-6}
-  \multicolumn{1}{c}{$t(n)$}
+   \cline{2-7}
+  $t(n)$
     &$0$ &$1$ &$8$ &$27$ &$64$ &$125$  
 \end{tabular}
 \end{center}
@@ -3862,6 +3874,7 @@ You can use functions already defined in this section.
 \begin{center}
 \begin{tabular}{r|cccccccccc}
   $n$    &$1$ &$2$ &$3$ &$4$  &$5$  &$6$  &$7$   &$8$   &$9$   &$10$    \\
+   \cline{2-11}
   $h(n)$ &$1$ &$3$ &$7$ &$15$ &$31$ &$63$ &$127$ &$255$ &$511$ &$1023$  \\
 \end{tabular}
 \end{center}

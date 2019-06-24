@@ -2468,7 +2468,14 @@ We cannot prove Church's Thesis.
 That is, 
 \citetext{we cannot give a mathematical proof}{%
   We cannot give a proof that starts from axioms whose justification 
-  is on firmer footing than the thesis itself.}.
+  is on firmer footing than the thesis itself.
+  R~Williams has commented, ``[T]he Church-Turing thesis is not a formal 
+  proposition that can be proved. 
+  It is a scientific hypothesis, so it can 
+  be `disproved' in the sense that it is falsifiable. 
+  Any `proof' must provide a definition of computability with it, 
+  and the proof is only as good as that definition.'' 
+  \autocite{williams}}.
 The definition of a Turing machine, or of lambda calculus
 or other equivalent schemes,
 \citetext{formalizes the notion of `effective' or `intuitively mechanically computable'}{%
@@ -2481,14 +2488,7 @@ free to proceed with reasoning mathematically about these systems,
 without fear of vagueness or ambiguity.
 So in a sense Church's Thesis
 comes before the mathematics or at any rate 
-\citetext{sits outside the usual derivation and verification work of mathematics}{%
-  Ryan Williams commented, ``[T]he Church-Turing thesis is not a formal 
-  proposition that can be proved. 
-  It is a scientific hypothesis, so it can 
-  be `disproved' in the sense that it is falsifiable. 
-  Any `proof' must provide a definition of computability with it, 
-  and the proof is only as good as that definition.'' 
-  \autocite{williams}}.
+sits outside the usual derivation and verification work of mathematics.
 \citetext{Turing wrote}{\autocite{Turing}}, 
 ``All arguments which can be given are bound to be, 
 fundamentally, appeals to intuition, and for this reason rather 
@@ -2848,12 +2848,12 @@ So we can fix one of them as our preferred formalization
 and get on with the mathematical analysis. 
 For this, we choose Turing machines.
 
-We will leverage Church's Thesis in one more way.
+Finally, we will also leverage Church's Thesis to make life easier.
 As the exercises in the prior section illustrate,
 while writing a few Turing machines gives some insight,
-after a short while it becomes unilluminating programming.
-Worse, focussing too much on constructing sets of four-tuples
-(or for that matter, on the low-level details of any computing model) 
+after a short while it is unilluminating.
+Worse, focussing too much on these details
+(or on the low-level details of any computing model) 
 can obscure larger points. 
 So if we can be clear and
 rigorous without actually having to handle a mass of detail
@@ -3345,18 +3345,18 @@ both to give a sense of another approach and because we will find it useful.
 % Turing defined machines and derived from that a definition of the
 % functions that are computable, those functions that
 % are the input-output behavior of the machines.
-This approach has a very mathematical flavor.
-It provides a
-list of initial functions that are intuitively effective
-and an intuitively effective way to combine existing functions,
+This approach has a classical mathematics flavor.
+It 
+lists initial functions that are intuitively mechanically computable,
+along with intuitively computable ways to combine existing functions,
 to make new functions from old.
-One intuitively effective initial function is
-successor~$\map{\successor}{\N}{\N}$ given by~$\successor(x)=x+1$.
-An example of a combiner is function composition.
-We then take the initial function and combine to make new
-functions:~because successor is effective the composition 
+An example is that
+one effective initial function is
+successor~$\map{\successor}{\N}{\N}$ given by~$\successor(x)=x+1$,
+and an effective combiner is function composition.
+Then the composition 
 $\composed{\successor}{\successor}$, the plus-two operation,
-is also effective.
+is also intuitively mechanically computable.
 
 This section introduces another intuitively mechanically computable combiner.
    
@@ -3383,19 +3383,19 @@ its definition.\footnote{That is, recursion is discrete feedback.}
 
 A common reaction on first seeing recursion is to wonder 
 whether it is \citetext{logically problematic}{% 
-  The sense that there is something puzzling about recursion
+  The sense that there is something perplexing about recursion
   is often expressed with an anecdote.
   After a lecture on cosmology 
-  the philosopher W~James was approached by a little old lady from the audience.
+  the philosopher W~James was approached by an older woman from the audience.
   ``Your theory that the sun is the center of the solar system, 
-  and the earth orbits around it, has a very convincing ring, Mr~James, 
-  but it's wrong. I've got a better theory,'' she said.
-  ``And what is that, madam?''
+  and the earth orbits around it, has a good ring, Mr~James, 
+  but it's wrong. I know better,'' she said.
+  ``And what is it that you think, madam?''
   ``Our crust of earth lies on the back of a giant turtle.''
   James gently asked, 
-  ``If your theory is correct, what does this turtle stand on?''
-  ``You're very clever, Mr~James, and that's a very good question,'' 
-  replied the lady, 
+  ``If your theory is correct then what does this turtle stand on?''
+  ``You're very clever, Mr~James,'' 
+  she replied, 
   ``but I have an answer. 
   The first turtle stands on the back of a 
   second, far larger, turtle.''
@@ -3421,8 +3421,7 @@ The key is to
   $f(n)=n\cdot f(f(n-1)-1)$, try computing the values
   $f(0)$ through $f(5)$.}.
 
-One of the
-\citetext{elegant things about Grassmannn's approach}{%
+\citetext{One elegant thing about Grassmannn's approach}{%
   A~Perlis's epigram,
   ``Recursion is the root of computation since it trades description for time''
   expresses this elegance.
@@ -3463,58 +3462,46 @@ Exponentiation works the same way.
 
 We are interested in
 Grassmann's definition because it is effective; it 
-translates immediately into a mechanical computation.
-For example, here is 
-Scheme code based on the definition of $\plus$.\footnote{Obviously
-Scheme comes with an addition operator, 
+translates immediately into a program.
+Here is code based on the definition of $\plus$.\footnote{Obviously
+Racket comes with an addition operator, 
 as in \protect\codeinline!(+ 3 2)!, with a multiplication operator, 
 as in \protect\codeinline!(* 3 2)!, and with exponentiation, 
 \protect\codeinline!(expt 3 2)!.}
-We start with successor. 
-\begin{lstlisting}
-(define (successor x)
-  (+ x 1))
-\end{lstlisting}
-With that, 
-the highlighted part of this code fits the definition above exactly.
-% \begin{center}
-% \begin{minipage}[]{0.5\linewidth}
-% \begin{equation*}    
-%   \plus (x,y) =\begin{cases}
-%                 x                 &\case{if $y=0$}  \\
-%                 \successor(\plus(x,z)) &\case{if $y=\successor(z)$}
-%                \end{cases}
-% \end{equation*}
-% \end{minipage}
-% \hspace*{1em}
-% \begin{minipage}[c]{.4\textwidth}\leavevmode % reason for the \leavevmode http://tex.stackexchange.com/q/22071/339
-\begin{lstlisting}
-(define (plus x y)
-  (let ((z (- y 1)))
-    <@\color{highlightcolor}(if (= y 0)@>
-    <@\color{highlightcolor}x@>
-    <@\color{highlightcolor}(successor (plus x z)))@>))  
-\end{lstlisting}
-% \end{minipage}
-% \end{center}
+Starting with a successor operation, 
+% \begin{lstlisting}
+% (define (successor x)
+%   (+ x 1))
+% \end{lstlisting}
+\lstinputlisting[firstline=7, lastline=8]{\prfiles primitive-recursive.rkt}
+this code exactly fits the definition of $\plus$.
+\lstinputlisting[firstline=13, lastline=17]{\prfiles primitive-recursive.rkt}
+% \begin{lstlisting}
+% (define (plus x y)
+%   (let ((z (- y 1)))
+%     <@\color{highlightcolor}(if (= y 0)@>
+%     <@\color{highlightcolor}x@>
+%     <@\color{highlightcolor}(successor (plus x z)))@>))  
+% \end{lstlisting}
 (The \codeinline!(let ..)! creates the local variable
 \codeinline!z!.)
 The same is true for $\product$ and $\power$.
-\begin{lstlisting}
-(define (product x y)
-  (let ((z (- y 1)))
-    <@\color{highlightcolor}(if (= y 0)@>
-	<@\color{highlightcolor}0@>
-	<@\color{highlightcolor}(plus (product x z) x))@>))
-\end{lstlisting}
-\begin{lstlisting}
-(define (power x y)
-  (let ((z (- y 1)))
-    <@\color{highlightcolor}(if (= y 0)@>
-	<@\color{highlightcolor}1@>
-	<@\color{highlightcolor}(product (power x z) x))@>))
-\end{lstlisting}
-% Again, the highlighted portion exactly matches the definition.
+\lstinputlisting[firstline=22, lastline=26]{\prfiles primitive-recursive.rkt}
+\lstinputlisting[firstline=31, lastline=35]{\prfiles primitive-recursive.rkt}
+% \begin{lstlisting}
+% (define (product x y)
+%   (let ((z (- y 1)))
+%     <@\color{highlightcolor}(if (= y 0)@>
+% 	<@\color{highlightcolor}0@>
+% 	<@\color{highlightcolor}(plus (product x z) x))@>))
+% \end{lstlisting}
+% \begin{lstlisting}
+% (define (power x y)
+%   (let ((z (- y 1)))
+%     <@\color{highlightcolor}(if (= y 0)@>
+% 	<@\color{highlightcolor}1@>
+% 	<@\color{highlightcolor}(product (power x z) x))@>))
+% \end{lstlisting}
 
 \begin{definition}  \label{def:PrimitiveRecursion}
 A function~$f$ is defined by the schema\footnotemark[2] 
@@ -3548,9 +3535,9 @@ $g(x_0)=1$ and $h(w,x_0,z)=\product(w,x_0)$.
 Primitive recursion suffices to define many familiar functions. 
 
 \begin{example}
-The predecessor function is awkward here because with our functions
-restricted to the naturals we can't give a predecessor of zero.
-We instead consider the function 
+Because with our functions
+restricted to the natural numbers we can't give a predecessor of zero.
+Instead consider the function 
 $\map{\pred}{\N}{\N}$ where
 $\pred(y)$ equals
 $y-1$ if $y>0$ and equals~$0$ if $y=0$.
@@ -3561,7 +3548,7 @@ That easily fits the primitive recursive schema.
               z  &\case{if $y=\successor(z)$}
             \end{cases}
 \end{equation*}
-The bookkeeping in \cref{def:PrimitiveRecursion}
+The arity bookkeeping in \cref{def:PrimitiveRecursion}
 is that $\pred$ has no $x_i$'s so $g$ is a function of no inputs 
 and is therefore constant, $g(\mskip 2mu)=0$,
 while $h$ has two inputs~$h(a,b)=b$. 
@@ -3616,20 +3603,19 @@ and $h_0(y_1,\ldots,y_{m_0})$, \ldots, $h_n(y_1,\ldots,y_{m_n})$,
 we get $f(h_0(y_{0,0},\ldots,y_{0,m_0}),\ldots,h_n(y_{n,0},\ldots,y_{n,m_n}))$,
 which is a function with $(m_0+1)+\cdots+(m_n+1)$-many inputs.
 
-Besides functions such as addition and proper subtraction,
-every day we use many other natural number functions such as
-finding remainders, testing for less-than, and finding factors.
-See \cref{exer:ShowFcnsPrimRec} and~\ref{exer:PrimRecBoundedOps}
-for how to show that these are primitive recursive functions.
-
-The list there is so extensive that a person could wonder
-if every mechanically computed function is
+Besides addition and proper subtraction,
+we commonly use many other primitive recursive functions such as
+finding remainders and testing for less-than.
+See the exercises
+to show that these are primitive recursive.
+The list is so extensive that a person could wonder
+whether every mechanically computed function is
 primitive recursive.
-In the next section we will see that the answer is no, that there is
-an intuitively mechanically computable function that is not
+The next section shows that the answer is no, that there are
+intuitively mechanically computable functions that are not
 primitive recursive.
 
-
+% ----------------------------------------------------
 \begin{exercises}
 
 \begin{exercise}
@@ -3645,6 +3631,41 @@ The converse does not hold\Dash there are total recursive functions that
 are not primitive recursive\Dash but at this point in the book you have
 not yet see that.
 It is covered in the next section.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+In defining $0^0$ there is a conflict between the desire to have that
+every power of~$0$ is $0$ and the desire to have that
+every number to the~$0$ power is~$1$.
+What does the definition of $\power$ given above do?
+\begin{answer}
+There the definition gives~$1$.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+As the section body describes, recursion doesn't have to be logically 
+problemmatic.
+But some recursions are; consider this one.
+\begin{equation*}
+  f(n)=
+  \begin{cases}
+    0         &\case{if $n=0$}  \\
+    f(2n-2)  &\case{otherwise}
+  \end{cases}
+\end{equation*}
+\begin{exparts*}
+\item Find $f(0)$ and~$f(1)$.
+\item Try to find $f(2)$.
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item $f(0)=0$, $f(1)=f(2\cdot 1-2)=f(0)=0$
+\item By definition $f(2)=f(2\cdot 2-2)=f(2)$ gives what amounts to an
+infinite loop.
+\end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -4113,6 +4134,32 @@ $n(x,y)=7\cdot\operatorname{equal}(x,1)\cdot\operatorname{equal}(y,2)
         +9\cdot\operatorname{equal}(x,5)\cdot\operatorname{equal}(y,5)$.
 \end{exparts}
 \end{answer}
+\end{exercise}
+
+\begin{exercise}
+Consider this recursive function.
+\begin{equation*}
+  f(n)=
+  \begin{cases}
+    n  &\case{if $n=1$ or~$n=2$}  \\
+    f(\frac{n+1}{2})+f(\frac{n-1}{2})  &\case{otherwise}
+  \end{cases}
+\end{equation*}
+\begin{exparts}
+\item Show~$f$ is primitive recursive.
+  You can use the above exercise statements and the functions defined
+  in the section body.  
+\item Fill in this table.
+\begin{equation*}
+\begin{tabular}{r|*{7}{c}}
+  $n$    &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$  \\ \cline{2-8}
+  $f(n)$ &    &    &    &    &    &    &  
+\end{tabular}
+\end{equation*}
+\item Recursion is closely linked to induction.
+Guess a non-recursive description of~$f$ and use induction
+to verify your answer.
+\end{exparts}
 \end{exercise}
 
 \recommended
@@ -4595,6 +4642,19 @@ That this function is primitive recursive follows from
 % \end{exercise}
 
 
+\begin{exercise}
+Show that every primitive recursive function is total.
+\begin{answer}
+We use induction.
+Every initial function in \cref{def:PrimitiveRecursive} is total.
+Every primitive recursive function is derived from 
+the initial functions using a finite number of applications of 
+function composition and primitive recursion. 
+Both of these combiners yield total function outputs from
+total function inputs.
+\end{answer}
+
+\end{exercise}
 
 \begin{exercise}
 Let $g,h$ be natural number functions (that are total).

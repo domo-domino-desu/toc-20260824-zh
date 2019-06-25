@@ -4738,7 +4738,7 @@ suppose that they are equal for $y=0$, \ldots, $y=k$ and consider
 the $y=k+1$ case. 
 \begin{align*}
   f(x_0,\ldots,x_{n-1},k+1)
-  &=g(f(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)
+  &=g(f(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)  \\
   &=g(\hat{f}(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)
    =\hat{f}(x_0,\ldots,x_{n-1},k+1)
 \end{align*}
@@ -4853,27 +4853,19 @@ $\map{\hyperoperation}{\N^3}{\N}$.
 \end{equation*}
 \end{definition}
 
-Observe that hyperoperation is intuitively mechanically computable.
-Its Scheme code is a transcription of its definition.
-\begin{lstlisting}
-(define (H n x y)
-  (cond
-   ((= n 0) (+ y 1))
-   ((and (= n 1) (= y 0)) x)
-   ((and (= n 2) (= y 0)) 0)
-   ((= y 0) 1)
-   (else (H (- n 1) x (H n x (- y 1))))))  
-\end{lstlisting}
+Hyperoperation is mechanically computable.
+Its code is a transcription of its definition.
+\lstinputlisting[firstline=4, lastline=10]{\prfiles hyperoperation.rkt}
 
 One reason that hyperoperation~$\hyperoperation$ 
 is interesting is that it 
 arises naturally from the elementary and familiar operations of
 addition, multiplication, and exponentiaion.
-We often take~$n$ as a parameter, write it in a subscript, and  
-then describe the two-input function $\hyperoperation_n(x,y)$ as 
-$\hyperoperation$'s \definend{level~$n$}. 
+We often take~$n$ to be a parameter called \definend{level}, 
+write it in a subscript, and  
+then consider the two-input function $\hyperoperation_n(x,y)$. 
 
-\begin{lemma}
+\begin{lemma} \label{lem:HyperopLevels}
 $\hyperoperation_0(x,y)=y+1$,
 $\hyperoperation_1(x,y)=x+y$,
 $\hyperoperation_2(x,y)=x\cdot y$,
@@ -5191,58 +5183,121 @@ The value $\hyperoperation_4(2,0)=1$ is immediate from the
 definition.
 Next, $\hyperoperation_4(2,1)=\hyperoperation_3(2,\hyperoperation_4(2,0))$,
 giving $\hyperoperation_2(2,\hyperoperation_3(2,0))=\hyperoperation_1(2,\hyperoperation_2(2,0))=2$.
+
 The last three are similar; a script is the best way to proceed.
-\begin{center}
+This is a copy of the straightforward transcription given in the section
+body, for convenience.
+\lstinputlisting[firstline=4, lastline=10]{\prfiles hyperoperation.rkt}
+These calls give the answers.
+\begin{lstlisting}
+> (H 4 2 0)
+1
+> (H 4 2 1)
+2
+> (H 4 2 2)
+4
+> (H 4 2 3)
+16
+> (H 4 2 4)
+65536
+\end{lstlisting}
+The last one takes some time;~below, 
+the first number is milliseconds of CPU time.
+\begin{lstlisting}
+> (time (H 4 2 4))
+cpu time: 193921 real time: 193804 gc time: 25086
+65536
+\end{lstlisting}
+Here is the summary.
+\begin{display}
 \begin{tabular}{r|ccccc}
-  $y$                       &$0$  &$1$  &$2$  &$3$   &$4$ \\  \cline{2-5}
+  $y$                       &$0$  &$1$  &$2$  &$3$   &$4$ \\  \cline{2-6}
   $\hyperoperation(4,2,y)$ &$1$  &$2$  &$4$  &$16$  &$65\,536$
 \end{tabular}
-\end{center}
-Here is a python script that will help.
-\begin{lstlisting}
-# ackermann.py compute ackermann function
-def h(level,x,y):
-    if level==0:
-        return y+1
-    elif ((level==1) and (y==0)):
-        return x
-    elif ((level==2) and (y==0)):
-        return 0
-    elif ((level>2) and (y==0)):
-        return 1
-    else:
-        # print("calling H({:d}, {:d}, H({:d}, {:d}, {:d})".format(level-1, x, level, x, y-1))
-        return h(level-1, x, h(level, x, y-1))
+\end{display}
+% > (time (H-fast 4 2 4))
+% cpu time: 197688 real time: 197549 gc time: 24382
+% 65536
 
-def h0(level,x,y):  # faster
-    if level==0:
-        return y+1
-    elif (level==1):
-        return x+y
-    elif (level==2):
-        return x*y
-    elif (level==3):
-        return x**y
-    elif ((level>2) and (y==0)):
-        return 1
-    else:
-        return h0(level-1, x, h0(level, x, y-1))
 
-level, x = 4, 2
-for y in range(3,4):
-    print("H({:d}, {:d}, {:}) = {:d}".format(level, x, y, h0(level, x, y)))
-\end{lstlisting}
+% \begin{lstlisting}
+% # ackermann.py compute ackermann function
+% def h(level,x,y):
+%     if level==0:
+%         return y+1
+%     elif ((level==1) and (y==0)):
+%         return x
+%     elif ((level==2) and (y==0)):
+%         return 0
+%     elif ((level>2) and (y==0)):
+%         return 1
+%     else:
+%         # print("calling H({:d}, {:d}, H({:d}, {:d}, {:d})".format(level-1, x, level, x, y-1))
+%         return h(level-1, x, h(level, x, y-1))
+
+% def h0(level,x,y):  # faster
+%     if level==0:
+%         return y+1
+%     elif (level==1):
+%         return x+y
+%     elif (level==2):
+%         return x*y
+%     elif (level==3):
+%         return x**y
+%     elif ((level>2) and (y==0)):
+%         return 1
+%     else:
+%         return h0(level-1, x, h0(level, x, y-1))
+
+% level, x = 4, 2
+% for y in range(3,4):
+%     print("H({:d}, {:d}, {:}) = {:d}".format(level, x, y, h0(level, x, y)))
+% \end{lstlisting}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 Graph 
 $\hyperoperation_1(2,y)$ 
-for~$y$ between zero and one hundred.
+up to $y=9$.
 Also graph
 $\hyperoperation_2(2,y)$ and $\hyperoperation_3(2,y)$
 over the same range.
-Put all three graphs on the same plot.
+Put all three plots on the same axes.
+\begin{answer}
+We can get the values with \cref{lem:HyperopLevels}, 
+or the Racket procedure given in the section body.
+\begin{lstlisting}
+> (for ([y (in-range 10)])
+    (printf "(~a,~a),\n" y (H 1 2 y)))
+(0,2),
+(1,3),
+(2,4),
+(3,5),
+(4,6),
+(5,7),
+(6,8),
+(7,9),
+(8,10),
+(9,11),
+\end{lstlisting}
+This summarizes the output.
+\begin{display}
+\begin{tabular}{r|*{10}{c}}
+  $y$                      &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$ &$7$ &$8$ &$9$ 
+   \\ \cline{2-11}
+  $\hyperoperation_1(2,y)$ &$2$ &$3$ &$4$ &$5$ &$6$ &$7$ &$8$ &$9$ &$10$ &$11$ 
+  \\
+  $\hyperoperation_2(2,y)$ &$0$ &$2$ &$4$ &$6$ &$8$ &$10$ &$12$ &$14$ &$16$ &$18$ 
+  \\
+  $\hyperoperation_3(2,y)$ &$1$ &$2$ &$4$ &$8$ &$16$ &$32$ &$64$ &$128$ &$256$ &$512$ 
+\end{tabular}
+\end{display}
+Here is a graph.
+\begin{display}
+  \includegraphics{prologue/asy/xygraphs/xygraphs00.pdf}
+\end{display}
+\end{answer}
 \end{exercise}
 
 \recommended

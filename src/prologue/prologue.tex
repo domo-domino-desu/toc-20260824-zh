@@ -3518,9 +3518,8 @@ from the functions $g$ and~$h$ if it has this form.
 \end{definition}
 \footnotetext[2]{A schema is an underlying organizational pattern or structure.}
 
-The bookkeeping is that the number of inputs to~$f$ is 
-one more than the number of 
-inputs to~$g$ and one less than the number of inputs to~$h$.
+The bookkeeping is that the arity of~$f$, the number of inputs, is 
+one more than the arity of~$g$ and one less than the arity of~$h$.
 We sometimes abbreviate $x_0,\ldots,x_{k-1}$ as $\vec{x}$.
 
 \begin{example}
@@ -3535,31 +3534,32 @@ $g(x_0)=1$ and $h(w,x_0,z)=\product(w,x_0)$.
 Primitive recursion suffices to define many familiar functions. 
 
 \begin{example}
-Because with our functions
-restricted to the natural numbers we can't give a predecessor of zero.
-Instead consider the function 
+The predecessor function is like an inverse to successor.
+However, with our
+restriction to the natural numbers we can't give a predecessor of zero, so
+instead consider
 $\map{\pred}{\N}{\N}$ where
 $\pred(y)$ equals
 $y-1$ if $y>0$ and equals~$0$ if $y=0$.
-That easily fits the primitive recursive schema.  
+Here is a definition of this function that fits the primitive recursive schema.
 \begin{equation*}
   \pred(y)=\begin{cases}
               0  &\case{if $y=0$}  \\
               z  &\case{if $y=\successor(z)$}
             \end{cases}
 \end{equation*}
-The arity bookkeeping in \cref{def:PrimitiveRecursion}
-is that $\pred$ has no $x_i$'s so $g$ is a function of no inputs 
+The arity bookkeeping
+is that $\pred$ has no $x_i$'s so $g$ is a function of zero-many inputs, 
 and is therefore constant, $g(\mskip 2mu)=0$,
 while $h$ has two inputs~$h(a,b)=b$. 
 \end{example}
 
 \begin{example}  \label{ex:ProperSub}
-As with predecessor, we must replace subtraction % $x-y$
-with \definend{proper subtraction}, denoted $x\dotminus y$,
+As with predecessor, we can't do subtraction because we don't have 
+negative numbers so consider
+\definend{proper subtraction}, denoted $x\dotminus y$,
 that gives $x-y$ if $x\geq y$ and gives~$0$ otherwise.  
-This fits the schema 
-with $g(x_0)=x_0$ and $h(w,x_0,z)=\pred(w)$.
+We can give a primitive recursive definition of this function as here.
 \begin{equation*}
   \operatorname{propersub}(x,y)
                =\begin{cases}
@@ -3567,9 +3567,14 @@ with $g(x_0)=x_0$ and $h(w,x_0,z)=\pred(w)$.
                  \pred(\operatorname{propersub}(x,z))  &\case{if $y=\successor(z)$}
                \end{cases}
 \end{equation*}
+In the terms of \cref{def:PrimitiveRecursion}, this has
+$g(x_0)=x_0$ and $h(w,x_0,z)=\pred(w)$.
+Then the bookkeeping is that the arity of~$g$ is one less
+than the arity of~$f\!$, and because~$h$ has dummy arguments its arity is
+one more than the arity of~$f\!$.
 \end{example}
 
-The Scheme code above make clear that 
+The computer code above make clear that 
 primitive recursion fits into the plan of 
 specifying combiners that preserve the property of effectiveness:
 if $g$ and~$h$ are effective then so is~$f$\!.
@@ -3577,12 +3582,12 @@ if $g$ and~$h$ are effective then so is~$f$\!.
 \begin{definition} \label{def:PrimitiveRecursive}
 The set of 
 \definend{primitive recursive functions} % \footnotemark[1]
-are those that can be derived 
+consists of those that can be derived 
 from the initial operations of 
 the \definend{zero} function~$\zero(\vec{x})=\zero(x_0,\ldots,x_{n-1})=0$,
 the \definend{successor} function~$\successor(\vec{x})=x+1$,
 and the \definend{projection}\footnotemark[1] 
-functions~$\projection_i(\vec{x})=x_i$
+functions~$\projection_i(\vec{x})=x_i$,
 by a finite number of applications of the combining operations of 
 function composition and primitive recursion. 
 \end{definition}
@@ -3606,8 +3611,7 @@ which is a function with $(m_0+1)+\cdots+(m_n+1)$-many inputs.
 Besides addition and proper subtraction,
 we commonly use many other primitive recursive functions such as
 finding remainders and testing for less-than.
-See the exercises
-to show that these are primitive recursive.
+See the exercises for these.
 The list is so extensive that a person could wonder
 whether every mechanically computed function is
 primitive recursive.
@@ -3951,7 +3955,7 @@ $h(a,b)=\product(a,\successor(b))$.
 \begin{exercise}
 Recall that the greatest common divisor of two positive integers is the
 largest integer that divides them both.
-We can compute the greatest common divisor using Euclid's recursion,
+We can compute the greatest common divisor using Euclid's recursion
 \begin{equation*}
   \gcd(n,m)=
   \begin{cases}
@@ -3960,14 +3964,50 @@ We can compute the greatest common divisor using Euclid's recursion,
   \end{cases}
 \end{equation*}
 where $\rem(a,b)$ is the remainder when $a$ is divided by~$b$.
-Compute 
+Note that this fits the schema of primitive recursion.
+Use Euclid's method to compute these. 
 \begin{exparts*}
 \item $\gcd(28,12)$
 \item $\gcd(104,20)$
-\item $\gcd(309,25)$.
+\item $\gcd(309,25)$
 \end{exparts*}
+\begin{answer}
+These are easy to compute by hand.
+But for fun we can write a program.
+\lstinputlisting[firstline=4, lastline=7]{\prfiles gcd.rkt}
+This version of the same program will mechanically give us the recursive calls.
+\lstinputlisting[firstline=9, lastline=16]{\prfiles gcd.rkt}
+\begin{exparts}
+\item This only takes two steps.
+\begin{lstlisting}
+> (gcd-euclid-verbose 28 12)
+  call (gcd-euclid 12 4)
+  call (gcd-euclid 4 0)
+  return 4
+4
+\end{lstlisting} %
+\item This also happens quickly.
+\begin{lstlisting}
+> (gcd-euclid-verbose 104 20)
+  call (gcd-euclid 20 4)
+  call (gcd-euclid 4 0)
+  return 4
+4
+\end{lstlisting}
+\item These two are relatively prime.
+\begin{lstlisting}
+> (gcd-euclid-verbose 309 25)
+  call (gcd-euclid 25 9)
+  call (gcd-euclid 9 7)
+  call (gcd-euclid 7 2)
+  call (gcd-euclid 2 1)
+  call (gcd-euclid 1 0)
+  return 1
+1
+\end{lstlisting}
+\end{exparts}
+\end{answer}
 \end{exercise}
-
 
 \recommended
 \begin{exercise}  \label{exer:ShowFcnsPrimRec}
@@ -4520,8 +4560,8 @@ schema, although we could rewrite it that way using \cref{exer:ShowFcnsPrimRec}
 and \cref{exer:PrimRecBoundedOps}.)
 \item Show that $F$ is primitive recursive.
   You may use the results from earlier, including \cref{exer:ShowFcnsPrimRec}, 
-  \cref{exer:ShowFcnsPrimRecfB}, \cref{exer:PrimRecBoundedOps} and
-  \cref{exer:PrimRecBoundedOpsB}.
+  \ref{exer:ShowFcnsPrimRecB}, \ref{exer:PrimRecBoundedOps}, and
+  \ref{exer:PrimRecBoundedOpsB}.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -4653,7 +4693,6 @@ function composition and primitive recursion.
 Both of these combiners yield total function outputs from
 total function inputs.
 \end{answer}
-
 \end{exercise}
 
 \begin{exercise}
@@ -4662,8 +4701,8 @@ Where $f$ is defined by primitive recursion from $g$ and~$h$,
 show that $f$ is well-defined.
 That is, show that if two functions both    
 satisfy \cref{def:PrimitiveRecursion} then
-they are equal, meaning that 
-with the same inputs they will yield the same outputs.
+they are equal, 
+so the same inputs they will yield the same outputs.
 \begin{answer}
 \autocite{Davis}  
 Suppose that if two functions $\map{f,\hat{f}}{\N^{n+1}}{\N}$ both    

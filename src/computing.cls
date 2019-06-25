@@ -1181,6 +1181,7 @@
 \lstset{ %
   % language=Octave,                % the language of the code
   basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+  columns=fullflexible,  % make code copy-and-pasteable
   % \stringstyle=\ttfamily,  % use typewriter type
   % numbers=left,                   % where to put the line-numbers
   % numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
@@ -1204,6 +1205,7 @@
 
 \lstdefinestyle{grammar}{
   basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+  columns=fullflexible,  % make code copy-and-pasteable
   backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
   showspaces=false,               % show spaces adding particular underscores
   showstringspaces=false,         % underline spaces within strings

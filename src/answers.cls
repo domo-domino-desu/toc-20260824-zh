@@ -400,9 +400,25 @@
 
 % \newcommand{\autocite}[1]{\textbf{#1}}
 
-\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/12
-% \usepackage{hyperref}
-\externaldocument{book,prologue,background,languages,automata,complexity}
+% Code below from https://www.overleaf.com/learn/how-to/Cross_referencing_with_the_xr_package_in_Overleaf
+\usepackage{xr}
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+\myexternaldocument{preface/preface}
+\myexternaldocument{prologue/prologue}
+\myexternaldocument{background/background}
+\myexternaldocument{langages/languages}
+\myexternaldocument{automata/automata}
+\myexternaldocument{/complexity/complexity}
+% \externaldocument{book,prologue,background,languages,automata,complexity}
 \usepackage{cleveref}
 \def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
   \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
@@ -426,6 +442,8 @@
 \Crefname{problem}{Problem}{Problems}
 \crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
 \Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+\crefname{@exercisenumber}{Exercise}{Exercises}
+\Crefname{@exercisenumber}{Exercise}{Exercises}
 
 % \renewcommand{\cref}[1]{REF:~\textit{#1}}
 % \renewcommand{\Cref}[1]{REF:~\textit{#1}}

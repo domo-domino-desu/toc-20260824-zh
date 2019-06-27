@@ -19,3 +19,7 @@
 
 (provide H
          H-fast)
+
+;; To get the outputs for Asymptote
+;;(for ([y (in-range 10)])
+;;    (printf "(~a,~a),\n" y (H 1 2 y)))

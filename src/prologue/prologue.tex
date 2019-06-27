@@ -38,8 +38,11 @@ proposed in 1928 by
   main problem of mathematical logic'' \autocite{HilbertAckermann}, p 73.}, 
 which asks for an algorithm that decides, after taking 
 as input a \citetext{mathematical statement}{%
-  Specifically, the statement comes from 
-  a first-order logic.
+  Specifically, the statement as discussed by Hilbert and Ackermann
+  comes from 
+  a first-order logic
+  (versions of the \textit{Entscheidungsproblem} for other systems were
+  proposed earlier by other mathematicians).
   First-order logic differs from propositional logic, the logic of truth tables,
   in that it allows variables. 
   Thus for instance if you are studying the natural numbers then
@@ -4859,7 +4862,7 @@ Its code is a transcription of its definition.
 
 One reason that hyperoperation~$\hyperoperation$ 
 is interesting is that it 
-arises naturally from the elementary and familiar operations of
+arises naturally from the familiar operations of
 addition, multiplication, and exponentiaion.
 We often take~$n$ to be a parameter called \definend{level}, 
 write it in a subscript, and  
@@ -4940,7 +4943,7 @@ For instance,
 
 Hyperoperation is clearly intuitively
 mechanically computable; for one thing we've given its Scheme code above.
-However, the recursion
+But the recursion line
 $
   \hyperoperation(n,x,y)=
   \hyperoperation(n-1, x, \hyperoperation(n, x, y-1))
@@ -5081,7 +5084,7 @@ if $f(\vec{x})$ is the the least number~$y$ such that $g(\vec{x},y)=0$.
 % (and is defined).
 \end{definition}
 \noindent This is unbounded search:~we have in mind the case that
-$g$ is mechanically computable
+$g$ is mechanically computable, perhaps even primitive recursive, 
 and we find $g(\vec{x},0)$ and then $g(\vec{x},1)$, etc.,
 waiting until one of them gives the output~$0$.
 If that ever happens, so that $g(\vec{x},n)=0$ for some least~$n$,
@@ -5090,38 +5093,102 @@ If it never happens that the output is zero
 then $f(\vec{x})$ is undefined.
 
 \begin{example}
-Let $g(x,y)=\ceiling{(x+1)/(y+1)-1}$, and let $f(x)=\mu\,y[g(x,y)=0]$.
-In general, $f(x)=x$.
-For instance, the first few values of $g(5,y)$ show that $f(5)=5$.
-\begin{equation*}
-  \begin{tabular}{r|rrrrrr}
-    \tabulartext{input $y$} 
-      &\multicolumn{1}{c}{$0$}
-      &\multicolumn{1}{c}{$1$}
-      &\multicolumn{1}{c}{$2$}
-      &\multicolumn{1}{c}{$3$}
-      &\multicolumn{1}{c}{$4$}
-      &\multicolumn{1}{c}{$5$} \\ \hline
-   \tabulartext{$g(5,y)$}
-      &$5$ &$2$ &$1$ &$1$ &$1$ &$0$
-  \end{tabular}
-\end{equation*}
+The polynomial $p(y)=y^2+y+41$ looks interesting
+because it seems, at least at the start, to 
+\citetext{output only primes}{%
+  In fact, there is no polynomial with integer coefficients that 
+  outputs a prime for all integer inputs, except if the polynomial is constant.
+  This was shown in 1752 by C~Goldbach.
+  The proof is so simple, and delightful, and not widely known,
+  that we will give it here.
+  Suppose $p$ is a polynomial with integer coefficients that on integer
+  inputs returns only primes.
+  Fix some $\hat{n}\in\N$, and then $p(\hat{n})=\hat{m}$ is a prime.
+  Into the polynomial plug $\hat{n}+k\cdot\hat{m}$, where $k\in\Z$.
+  Expanding gives lots of terms with $\hat{m}$ in them, and gathering
+  together like terms shows this.
+  \begin{equation*}
+    p(\hat{n}+k\cdot\hat{m})
+    \equiv p(\hat{n})\bmod \hat{m}
+  \end{equation*}
+  Because $p(\hat{n})=\hat{m}$, this gives that 
+  $p(\hat{n}+k\cdot\hat{m})=\hat{m}$ since that is the only
+  prime number that is a multiple of~$\hat{m}$, and $p$ outputs only primes.
+  But with that, $p(n)=\hat{m}$ has infinitely many roots, and is therefore
+  the constant polynomial.~$\qedsymbol$
+}.
+\begin{center}
+\begin{tabular}{r|*{10}{c}}
+  $y$    &$0$  &$1$  &$2$  &$3$  &$4$  &$5$  &$6$  &$7$  &$8$  &$9$ 
+    \\ \cline{2-11}
+  $p(y)$ &$41$ &$43$ &$47$ &$53$ &$61$ &$71$ &$83$ &$97$ &$113$ &$131$ 
+\end{tabular}
+\end{center}
+We could think to test this with a program that searches for non-primes by
+trying $p(0)$, $p(1)$ \ldots\@
+First, write a routine to test for primality
+\lstinputlisting[firstline=5, lastline=11]{\prfiles prime-generating-poly.rkt}
+along with a routine to calculate $p$.
+\lstinputlisting[firstline=14, lastline=15]{\prfiles prime-generating-poly.rkt}
+Use that in a routine that
+searches ascending~$y$'s for a nonprime output. 
+\lstinputlisting[firstline=18, lastline=25]{\prfiles prime-generating-poly.rkt}
+It finds that there is a nonprime output when the input is~$40$.
+\begin{lstlisting}
+> (f)
+40
+\end{lstlisting}
+Notice that~$f$
+is a function of zero-many inputs.
+That is because $\text{candidate-poly}$ is hard-coded into~$f$
+(this is what the definition means by ``$f$ is defined from~$g$'').
+Perhaps we should call it $f_{\text{candidate-poly}}$.
+To illustrate functions of more than zero-many variables, 
+this routine that gives the map $y\mapsto x_0y^2+x_1y+x_2$,
+\lstinputlisting[firstline=28, lastline=29]{\prfiles prime-generating-poly.rkt}
+and this one searches.
+\lstinputlisting[firstline=32, lastline=39]{\prfiles prime-generating-poly.rkt}
+This retests $p$.
+\begin{lstlisting}
+> (f-sub-g 1 1 41)
+40
+\end{lstlisting}
 \end{example}
 
-This Scheme code for unbounded minimization of a two-input function
-explains in what way $\mu$-recursion is recursive.
-\lstinputlisting[firstline=4,lastline=10]{prologue/scheme/mu.scm}
-Observe that here the recursion goes up instead of down, 
-with \codeinline{(+ y 1)}.
-To see it in action, we define the function of the prior example
-\lstinputlisting[firstline=12,lastline=14]{prologue/scheme/mu.scm}
-and get this Scheme interpreter session.
-\begin{lstlisting}
-#;1> (load "mu.scm")
-; loading mu.scm ...
-#;2> (g 5 0)
-5  
-\end{lstlisting}
+% \begin{example}
+% Let $g(x,y)=\ceiling{(x+1)/(y+1)-1}$, and let $f(x)=\mu\,y[g(x,y)=0]$.
+% In general, $f(x)=x$.
+% For instance, the first few values of $g(5,y)$ show that $f(5)=5$.
+% \begin{equation*}
+%   \begin{tabular}{r|rrrrrr}
+%     \tabulartext{input $y$} 
+%       &\multicolumn{1}{c}{$0$}
+%       &\multicolumn{1}{c}{$1$}
+%       &\multicolumn{1}{c}{$2$}
+%       &\multicolumn{1}{c}{$3$}
+%       &\multicolumn{1}{c}{$4$}
+%       &\multicolumn{1}{c}{$5$} \\ \hline
+%    \tabulartext{$g(5,y)$}
+%       &$5$ &$2$ &$1$ &$1$ &$1$ &$0$
+%   \end{tabular}
+% \end{equation*}
+% \end{example}
+
+
+% This Scheme code for unbounded minimization of a two-input function
+% explains in what way $\mu$-recursion is recursive.
+% \lstinputlisting[firstline=4,lastline=10]{prologue/scheme/mu.scm}
+% Observe that here the recursion goes up instead of down, 
+% with \codeinline{(+ y 1)}.
+% To see it in action, we define the function of the prior example
+% \lstinputlisting[firstline=12,lastline=14]{prologue/scheme/mu.scm}
+% and get this Scheme interpreter session.
+% \begin{lstlisting}
+% #;1> (load "mu.scm")
+% ; loading mu.scm ...
+% #;2> (g 5 0)
+% 5  
+% \end{lstlisting}
 
 Unbounded search is a theme in the Theory of Computation.
 For instance, we will later consider the question of which
@@ -5317,29 +5384,68 @@ $\hyperoperation_2(2,2)=4$ so the ratio is $6.75$.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise} \label{exer:HTwoHThree}
-Prove that $\hyperoperation_2(x,y)=x\cdot y$ and
+Finish the proof of \cref{lem:HyperopLevels} by verifying that
+$\hyperoperation_2(x,y)=x\cdot y$ and
 $\hyperoperation_3(x,y)=x^y$.
+\begin{answer}
+The proof of \cref{lem:HyperopLevels} shows that $\hyperoperation_1(x,y)=x+y$.
+The definition of $\hyperoperation$ gives
+\begin{equation*}
+  \hyperoperation_2=
+  \begin{cases}
+    0                                               &\case{if $y=0$}    \\
+    \hyperoperation_2(x,\,\hyperoperation_1(x,y-1)) &\case{otherwise}
+  \end{cases}
+\end{equation*}
+and we will use induction to show $\hyperoperation_2(x,y)=x\cdot y$.
+The base step is part of that definition.
+So suppose that $\hyperoperation_2(x,y)=x\cdot y$ for
+$y=0$, $y=1$, \ldots{} $y=k$. 
+For $y=k+1$,
+\begin{equation*}
+  \hyperoperation_2(x,y)
+  =\hyperoperation_1(x, x\cdot k)
+  =x+x\cdot k
+  =x\cdot(1+k)
+  =x\cdot y
+\end{equation*}
+(because $y=k+1$ the `otherwise' branch applies).
+
+The other equality is similar. 
+The key step is
+$
+  \hyperoperation_3(x,y)
+  =\hyperoperation_2(x, \hyperoperation_3(x,k))
+  =\hyperoperation_2(x, x^k)
+  =x\cdot x^k
+  =x^{k+1}
+  =x^y
+$.
+\end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
 Let $g(x,y)=x+y$ and let $f(x)=\mu y\,\big[ g(x,y)=100 \big]$.
-Find, if it is defined:
+For each, find the value or say that it is not defined.
 \begin{exparts*}
 \item $f(0)$
 \item $f(1)$
 \item $f(50)$
 \item $f(100)$
-\item $f(101)$.
+\item $f(101)$
 \end{exparts*}
 \begin{answer}
+This Racket program illustrates the definition.
+\lstinputlisting[firstline=4, lastline=13]{\prfiles mu-addition.rkt}
 \begin{exparts}
 \item $f(0)=100$
 \item $f(1)=99$
 \item $f(50)=50$
 \item $f(100)=0$
-\item This value is not defined.
+\item This is not defined.
 \end{exparts}
 \end{answer}
 \end{exercise}

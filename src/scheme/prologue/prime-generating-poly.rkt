@@ -4,34 +4,24 @@
 ;; prime?  Brute force test for primality; stops if no factor bigger than square root found
 (define (prime? n)
   (define (prime-helper n c)
-    (cond [(< n (* c c)) #t]
-          [(zero? (modulo n c)) #f]
+    (cond [(< n (* c c)) 0]
+          [(zero? (modulo n c)) 1]
           [else (prime-helper n (add1 c))]))
   
   (prime-helper n 2))
 
-;; candidate-poly  the function y |-> y^2 + y + 41
-(define (candidate-poly y)
-  (+ (* y y) y 41))
+;; p  Compute the value of the function given by y |->  x2 * y^2 + x1 * y + x0
+(define (p x0 x1 x2 y)
+  (+ (* x2 y y) (* x1 y) x0))
 
-;; f  Unbounded search to test if candidate-poly generates only primes
-(define (f)
-  (define (f-helper y)
-    (if (not (prime? (candidate-poly y)))
-        y
-        (f-helper (add1 y))))
-  
-  (let ([y 0])
-    (f-helper y)))
+;; g-sub-p  Test p's output for primality
+(define (g-sub-p x0 x1 x2 y)
+  (prime? (p x0 x1 x2 y)))
 
-;; g  Return the function given by y |->  ay^2 + by + c
-(define (g x0 x1 x2 y)
-  (+ (* x0 y y) (* x1 y) x2))
-
-;; f-sub-g?  Unbounded search to test if given quadratic poly generates only primes
+;; f-sub-g  Unbounded search to test if quadratic poly with params generates only primes
 (define (f-sub-g x0 x1 x2)
   (define (f-sub-g-helper y)
-    (if (not (prime? (g x0 x1 x2 y)))
+    (if (= 0 (g-sub-p x0 x1 x2 y))
         y
         (f-sub-g-helper (add1 y))))
   

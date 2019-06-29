@@ -193,7 +193,7 @@ sectionfourexercises: pdfs/mu_ex1zero.asy pdfs/mu_ex1one.asy \
 	pdfs/mu_ex1five.asy
 
 pdfs/mu_ex1zero.asy: ${MACHINE_DIR}/mu_ex1.tm
-	$(call create-pdfs,mu_ex1,0,mu_ex1zero,"0","",${MAX_STEPS_DEFAULT})
+	$(call create-pdfs,mu_ex1,0,mu_ex1zero," ","",${MAX_STEPS_DEFAULT})
 
 pdfs/mu_ex1one.asy: ${MACHINE_DIR}/mu_ex1.tm
 	$(call create-pdfs,mu_ex1,1,mu_ex1one,"1","",${MAX_STEPS_DEFAULT})

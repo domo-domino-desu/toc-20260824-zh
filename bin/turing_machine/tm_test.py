@@ -943,6 +943,72 @@ class TwobsTestCase(unittest.TestCase):
         final_config = get_final_config(out)
         self.assertEqual(4,ending_state_number(final_config), "Expected the empty input string to succeed")
 
+            
+    
+# ==============================================
+class MuEx1TestCase(unittest.TestCase):
+    """Tests an exercise in the mu-recursion section."""
+
+    def test_simple(self):
+        """Test some dumb thing"""
+        sigma = "1"*4 
+        r = run_tm('mu_ex1.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertEqual(5,count_chars(final_config))
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,6):
+            sigma = "1"*i 
+            r = run_tm('mu_ex1.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertEqual(i+1,count_chars(final_config))
+
+    def test_empty(self):
+        """Test the empty string""" 
+        r = run_tm('mu_ex1.tm', " ", "")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertEqual(1,count_chars(final_config))
+
+            
+    
+# ==============================================
+class MuEx2TestCase(unittest.TestCase):
+    """Tests an exercise in the mu-recursion section."""
+
+    def test_simple(self):
+        """Test some dumb thing"""
+        sigma = "1"*4 
+        r = run_tm('mu_ex2.tm', sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertEqual(5,count_chars(final_config))
+
+    def test_some(self):
+        """Test a few cases"""
+        for i in range(1,6):
+            sigma = "1"*i 
+            r = run_tm('mu_ex2.tm', sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.assertEqual(i+1,count_chars(final_config))
+
+    def test_empty(self):
+        """Test the empty string""" 
+        r = run_tm('mu_ex2.tm', " ", "")
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        self.assertEqual(1,count_chars(final_config))
+
 
             
 # ===========================================================
@@ -951,9 +1017,9 @@ class TwobsTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(TwobsTestCase('test_simple'))
-    suite.addTest(TwobsTestCase('test_some'))
-    suite.addTest(TwobsTestCase('test_empty'))
+    suite.addTest(MuEx2TestCase('test_simple'))
+    suite.addTest(MuEx2TestCase('test_some'))
+    suite.addTest(MuEx2TestCase('test_empty'))
     return suite
 
 def main(args):

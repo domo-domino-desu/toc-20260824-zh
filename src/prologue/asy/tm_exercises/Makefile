@@ -190,7 +190,10 @@ pdfs/twobsaba.asy: ${MACHINE_DIR}/twobs.tm
 
 sectionfourexercises: pdfs/mu_ex1zero.asy pdfs/mu_ex1one.asy \
 	pdfs/mu_ex1two.asy pdfs/mu_ex1three.asy pdfs/mu_ex1four.asy \
-	pdfs/mu_ex1five.asy
+	pdfs/mu_ex1five.asy \
+	pdfs/mu_ex2zero.asy pdfs/mu_ex2one.asy \
+	pdfs/mu_ex2two.asy pdfs/mu_ex2three.asy pdfs/mu_ex2four.asy \
+	pdfs/mu_ex2five.asy
 
 pdfs/mu_ex1zero.asy: ${MACHINE_DIR}/mu_ex1.tm
 	$(call create-pdfs,mu_ex1,0,mu_ex1zero," ","",${MAX_STEPS_DEFAULT})
@@ -209,6 +212,24 @@ pdfs/mu_ex1four.asy: ${MACHINE_DIR}/mu_ex1.tm
 
 pdfs/mu_ex1five.asy: ${MACHINE_DIR}/mu_ex1.tm
 	$(call create-pdfs,mu_ex1,5,mu_ex1five,"1","1111",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex2zero.asy: ${MACHINE_DIR}/mu_ex2.tm
+	$(call create-pdfs,mu_ex2,0,mu_ex2zero," ","",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex2one.asy: ${MACHINE_DIR}/mu_ex2.tm
+	$(call create-pdfs,mu_ex2,1,mu_ex2one,"1","",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex2two.asy: ${MACHINE_DIR}/mu_ex2.tm
+	$(call create-pdfs,mu_ex2,2,mu_ex2two,"1","1",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex2three.asy: ${MACHINE_DIR}/mu_ex2.tm
+	$(call create-pdfs,mu_ex2,3,mu_ex2three,"1","11",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex2four.asy: ${MACHINE_DIR}/mu_ex2.tm
+	$(call create-pdfs,mu_ex2,4,mu_ex2four,"1","111",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex2five.asy: ${MACHINE_DIR}/mu_ex2.tm
+	$(call create-pdfs,mu_ex2,5,mu_ex2five,"1","1111",${MAX_STEPS_DEFAULT})
 
 
 

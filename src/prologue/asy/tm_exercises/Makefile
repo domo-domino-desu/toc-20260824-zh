@@ -39,7 +39,7 @@ endef
 
 
 
-all: textbody topicexercises seconeexercises
+all: textbody topicexercises seconeexercises sectionfourexercises
 
 
 
@@ -180,4 +180,35 @@ pdfs/twobsabba.asy: ${MACHINE_DIR}/twobs.tm
 
 pdfs/twobsaba.asy: ${MACHINE_DIR}/twobs.tm
 	$(call create-pdfs,twobs,aba,twobsaba,"a","ba",${MAX_STEPS_DEFAULT})
+
+
+
+
+
+
+### ========= These are for section I.4 exercises ===================
+
+sectionfourexercises: pdfs/mu_ex1zero.asy pdfs/mu_ex1one.asy \
+	pdfs/mu_ex1two.asy pdfs/mu_ex1three.asy pdfs/mu_ex1four.asy \
+	pdfs/mu_ex1five.asy
+
+pdfs/mu_ex1zero.asy: ${MACHINE_DIR}/mu_ex1.tm
+	$(call create-pdfs,mu_ex1,0,mu_ex1zero,"0","",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex1one.asy: ${MACHINE_DIR}/mu_ex1.tm
+	$(call create-pdfs,mu_ex1,1,mu_ex1one,"1","",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex1two.asy: ${MACHINE_DIR}/mu_ex1.tm
+	$(call create-pdfs,mu_ex1,2,mu_ex1two,"1","1",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex1three.asy: ${MACHINE_DIR}/mu_ex1.tm
+	$(call create-pdfs,mu_ex1,3,mu_ex1three,"1","11",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex1four.asy: ${MACHINE_DIR}/mu_ex1.tm
+	$(call create-pdfs,mu_ex1,4,mu_ex1four,"1","111",${MAX_STEPS_DEFAULT})
+
+pdfs/mu_ex1five.asy: ${MACHINE_DIR}/mu_ex1.tm
+	$(call create-pdfs,mu_ex1,5,mu_ex1five,"1","1111",${MAX_STEPS_DEFAULT})
+
+
 

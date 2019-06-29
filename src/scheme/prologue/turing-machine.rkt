@@ -34,9 +34,9 @@
 (define (get-current-state config) (first config))
 (define (get-current-symbol config)
   (let ([cs (second config)])  ;; make horizontal whitespace like a B
-        (if (char-blank? cs)
-            #\B
-            cs)))
+    (if (char-blank? cs)
+        #\B
+        cs)))
 (define (get-left-tape-list config) (third config))
 (define (get-right-tape-list config) (fourth config))
 
@@ -63,7 +63,7 @@
   (define (delta-test inst)
     (and (= current-state (first inst))
          (equal? tape-symbol (second inst))))
-
+  
   (let ([inst (findf delta-test tm)])
     (if (not inst)
         (list #\X HALT-STATE)  ;; X is arbitrary placeholder char
@@ -76,23 +76,23 @@
 
 ;; tape-right-char  Return the element nearest the head on the right side
 (define (tape-right-char right-tape-list)
-    (if (empty? right-tape-list)
-        BLANK
-        (car right-tape-list)))
+  (if (empty? right-tape-list)
+      BLANK
+      (car right-tape-list)))
 
 ;; tape-left-char  Return the element nearest the head on the left
 (define (tape-left-char left-tape-list)
-    (tape-right-char (reverse left-tape-list)))
+  (tape-right-char (reverse left-tape-list)))
 
 ;; tape-right-pop  Return the right tape list without char nearest the head
 (define (tape-right-pop right-tape-list)
-    (if (empty? right-tape-list)
-        '()
-        (cdr right-tape-list)))
+  (if (empty? right-tape-list)
+      '()
+      (cdr right-tape-list)))
 
 ;; tape-left-pop   Return the left tape list without char nearest the head
 (define (tape-left-pop left-tape-list)
-    (reverse (tape-right-pop (reverse left-tape-list))))
+  (reverse (tape-right-pop (reverse left-tape-list))))
 
 ;; move-left  Respond to Left action
 (define (move-left config next-state)
@@ -101,9 +101,9 @@
         [right-tape-list (get-right-tape-list config)])
     ;; push old tape head symbol onto the right tape list 
     (make-config next-state
-          (tape-left-char left-tape-list)    ;; new current symbol
-          (tape-left-pop left-tape-list)       ;; strip symbol off left
-          (cons prior-current-symbol right-tape-list)))) 
+                 (tape-left-char left-tape-list)    ;; new current symbol
+                 (tape-left-pop left-tape-list)       ;; strip symbol off left
+                 (cons prior-current-symbol right-tape-list)))) 
 
 ;; move-right Respond to Right action
 (define (move-right config next-state)
@@ -149,7 +149,7 @@
 ;; Execute a Turing machine
 ;; execute  Run a turing machine step-by-step until it halts
 (define (execute tm initial-config)
-  (define (execute-iter config s)
+  (define (execute-helper config s)
     (if (= (get-current-state config) HALT-STATE)
         (fprintf (current-output-port)
                  "step ~s: HALT\n"
@@ -159,9 +159,9 @@
                    "step ~s: ~a\n"
                    s
                    (configuration->string config))
-          (execute-iter (step config tm) (add1 s)))))
-
-  (execute-iter initial-config 0))
+          (execute-helper (step config tm) (add1 s)))))
+  
+  (execute-helper initial-config 0))
 
 (provide execute)
 
@@ -206,7 +206,7 @@
 ;; =====================================
 ;; Execute for a limited number of states
 (define (execute-guarded tm initial-config)
-  (define (execute-iter config s)
+  (define (execute-helper config s)
     (cond [(> s (string->number (statelimit)))
            (fprintf (current-output-port)
                     "step ~s: Simulation stopped\n"
@@ -220,9 +220,9 @@
                            "step ~s: ~a\n"
                            s
                            (configuration->string config))
-                  (execute-iter (step config tm) (add1 s)))]))
+                  (execute-helper (step config tm) (add1 s)))]))
 
-  (execute-iter initial-config 0))
+  (execute-helper initial-config 0))
 
 (define verbose? (make-parameter #f))
 (define tm-filename (make-parameter null))

@@ -450,3 +450,31 @@
 
 
 \newcommand{\definend}[1]{#1}  % should get rid of these in answers?
+
+
+% ================= hyperref ===============
+\usepackage{hyperref}  % remove the draft option at the end.
+  % It is there to prevent errors like
+  % "\pdfendlink ended up in different nesting level than \pdfstartlink";
+  % see https://tex.stackexchange.com/a/154184/121234
+\hypersetup{
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={Computing},    % title
+    pdfauthor={Jim Hefferon, Saint Michael's College},     % author
+    pdfsubject={Theory of Computation answers to exercises},   % subject of the document
+    pdfcreator={Jim Hefferon},   % creator of the document
+    pdfproducer={Jim Hefferon}, % producer of the document
+    pdfkeywords={theory of computation} {computation} {turing machines} {answers}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black,           % color of external links
+    plainpages=false   % prevent "destination with the same identifier" error
+}

@@ -5693,20 +5693,21 @@ running time is a linear function of the input size.
 \begin{exercise}  \recommended
 Consider this Turing machine.
 \begin{equation*}
-  \set{ \tminstruction{0}{1}{R}{1},\,
+  \set{ 
         \tminstruction{0}{B}{R}{1},\,
+        \tminstruction{0}{1}{R}{1},\,
+        \tminstruction{1}{B}{R}{2},\, 
         \tminstruction{1}{1}{R}{2},\,
-        \tminstruction{1}{B}{R}{2} 
+        \tminstruction{2}{B}{L}{3},\, 
         \tminstruction{2}{1}{L}{3},\,
-        \tminstruction{2}{B}{L}{3} 
-        \tminstruction{3}{1}{L}{4},\,
-        \tminstruction{3}{B}{L}{4} 
+        \tminstruction{3}{B}{L}{4},\, 
+        \tminstruction{3}{1}{L}{4}
       }
 \end{equation*}
-Define $g(x,y)=0$ if this machine, when started on a tape that
+Let $g(x,y)=0$ if this machine, when started on a tape that
 is all blank except for $x$-many consecutive \str{1}'s 
 and with the head under the leftmost~\str{1}, has halted after $y$~steps.
-Define $g(x,y)=1$ if it has not halted after $y$~steps. 
+Otherwise, $g(x,y)=1$. 
 Let $f(x)=\least y\,\big[ g(x,y)=0 \big]$.
 Find:
 \begin{exparts*}
@@ -5715,6 +5716,65 @@ Find:
 \item $f(2)$
 \item $f(x)$.
 \end{exparts*}
+\begin{answer}
+One way to compute $f(x)$ is to run the machine until it halts.
+\begin{exparts}
+\item
+This is the computation with~$x=0$.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises mu_ex3zero000.pdf} \\
+    1 &\tapegraphic{\tmexercises mu_ex3zero001.pdf} \\
+    2 &\tapegraphic{\tmexercises mu_ex3zero002.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    3 &\tapegraphic{\tmexercises mu_ex3zero003.pdf} \\
+    4 &\tapegraphic{\tmexercises mu_ex3zero004.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\item
+This is~$x=1$.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises mu_ex3one000.pdf} \\
+    1 &\tapegraphic{\tmexercises mu_ex3one001.pdf} \\
+    2 &\tapegraphic{\tmexercises mu_ex3one002.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    3 &\tapegraphic{\tmexercises mu_ex3one003.pdf} \\
+    4 &\tapegraphic{\tmexercises mu_ex3one004.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\item
+This is the same for~$x=2$.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\tmexercises mu_ex3two000.pdf} \\
+    1 &\tapegraphic{\tmexercises mu_ex3two001.pdf} \\
+    2 &\tapegraphic{\tmexercises mu_ex3two002.pdf} \\
+  \end{tapesequencetable}
+  \hspace*{2em}
+  \begin{tapesequencetable}
+    3 &\tapegraphic{\tmexercises mu_ex3two003.pdf} \\
+    4 &\tapegraphic{\tmexercises mu_ex3two004.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
+\item
+The table summarizes.
+\begin{display}
+\begin{tabular}{r|*{3}{c}}
+  $x$    &$0$  &$1$ &$2$  
+  \\ \cline{2-4}
+  $f(x)$ &$4$  &$4$ &$4$  
+\end{tabular}
+\end{display}
+This machine ignores its input, moves right two squares and back left
+two, and then halts.
+So its running time is constant, $f(x)=4$. 
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \recommended
@@ -5730,54 +5790,86 @@ Define
 and let $H(n,k)$ be the $k$-fold composition of $h$ with itself,
 so $H(n,1)=h(n)$, $H(n,2)=\composed{h}{h}\,(n)$, 
 $H(n,3)=\composed{h}{\composed{h}{h}}\,(n)$, etc.
-(We can take $H(n,0)=0$.)
+(We can take $H(n,0)=0$, although its value isn't interesting.)
 Let $C(n)=\least k\big[ H(n,k)=1 \big]$.
 \begin{exparts}
 \item Compute $H(4,1)$, $H(4,2)$, and $H(4,3)$.
-\item Find $C(4)$ if it is defined.
-\item Find $C(5)$ (it is defined).
-\item Find $C(11)$ (it is defined).
-\item Find $C(n)$ for all~$n\in\leftclosed{1}{20}$.
+\item Find $C(4)$, if it is defined.
+\item Find $C(5)$, it is defined.
+\item Find $C(11)$, it is defined.
+\item Find $C(n)$ for all~$n\in\leftclosed{1}{20}$, where defined.
 \end{exparts}
 The \citetext{\definend{Collatz conjecture}}{%
   See \autocite{wiki:Collatz}.} is that $C(n)$ is defined for all~$n$.
 No one knows if it is true.
 \end{exercise}
 \begin{answer}
-Here also a script is helpful.
-This is part of a Python script.
-\begin{lstlisting}
-# collatz.py compute collatz conjecture
-def h(n):
-    if (n % 2 == 0):
-        return int(n/2)
-    else:
-        return 3*n+1
+These are not too hard to compute by hand, but a small program 
+is also handy.
+\lstinputlisting[firstline=4, lastline=17]{\prfiles collatz.rkt}
 
-def c(n):
-    if (n==0):
-        return [1], 0
-    k = n
-    r, count = [k,], 0
-    while (k!= 1):
-        k = h(k)
-        r.append(k)
-        count = count+1
-    return r, count
+% \begin{lstlisting}
+% # collatz.py compute collatz conjecture
+% def h(n):
+%     if (n % 2 == 0):
+%         return int(n/2)
+%     else:
+%         return 3*n+1
 
-def show(n):
-    v = c(n)
-    print("for {:d}: length={:d} sequence={:s}".format(n, v[1], str(v[0])))
-\end{lstlisting}
+% def c(n):
+%     if (n==0):
+%         return [1], 0
+%     k = n
+%     r, count = [k,], 0
+%     while (k!= 1):
+%         k = h(k)
+%         r.append(k)
+%         count = count+1
+%     return r, count
+
+% def show(n):
+%     v = c(n)
+%     print("for {:d}: length={:d} sequence={:s}".format(n, v[1], str(v[0])))
+% \end{lstlisting}
 \begin{exparts}
-\item $H(4,1)=2$, $H(4,2)=1$, $H(4,3)=4$
-\item $C(4)=2$, as shown in the prior item.
-\item The successive values are $16$, $8$, $4$, $2$, and $1$,
- so $C(5)=5$.
+\item The script gives this.
+\begin{lstlisting}
+> (H 4)
+2
+> (H (H 4))
+1
+> (H (H (H 4)))
+4
+\end{lstlisting}
+So $H(4,1)=2$, $H(4,2)=1$, $H(4,3)=4$.
+\item The script says this.
+\begin{lstlisting}
+> (C 4)
+2
+\end{lstlisting}
+ So $C(4)=2$, which matches the result of the prior item.
+\item Here are the successive values.
+\begin{lstlisting}
+> (H 5)
+16
+> (H (H 5))
+8
+> (H (H (H 5)))
+4
+> (H (H (H (H 5))))
+2
+> (H (H (H (H (H 5)))))
+1
+\end{lstlisting}
+Thus $C(5)=5$, which agrees with the program's result.
+\begin{lstlisting}
+> (C 5)
+5
+\end{lstlisting}
 \item The successive values are 
   $11$, $34$, $17$, $52$, $26$, $13$, $40$, $20$, $10$, $5$, $16$, 
   $8$, $4$, $2$, and $1$, so $C(11)=14$.
-\item This table shows the values.
+\item Here are the values.
 \begin{center}
 \begin{tabular}{r|*{19}{c}}
  $n$    &$1$ &$2$ &$3$ &$4$ &$5$ &$6$ &$7$ &$8$ &$9$ &$10$ 
@@ -5786,8 +5878,16 @@ def show(n):
           &$14$ &$9$  &$9$ &$17$ &$15$ &$4$ &$12$ &$20$ &$20$ 
 \end{tabular}
 \end{center}
+XKCD has something to say about the Collatz conjecture.
+\begin{display} \small
+  \begin{tabular}{c}
+    \includegraphics[height=2in]{prologue/pix/collatz_conjecture.png}  \\
+    \href{https://xkcd.com/710/}{Courtesy \texttt{xkcd.com}}
+  \end{tabular}
+\end{display}
 \end{exparts}
 \end{answer}
+
 
 \end{exercises}
 

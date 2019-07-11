@@ -3355,13 +3355,13 @@ along with intuitively computable ways to combine existing functions,
 to make new functions from old.
 An example is that
 one effective initial function is
-successor~$\map{\successor}{\N}{\N}$ given by~$\successor(x)=x+1$,
+successor~$\map{\successor}{\N}{\N}$ described by~$\successor(x)=x+1$,
 and an effective combiner is function composition.
 Then the composition 
 $\composed{\successor}{\successor}$, the plus-two operation,
 is also intuitively mechanically computable.
 
-This section introduces another intuitively mechanically computable combiner.
+We now introduce another combiner that is intuitively mechanically computable.
    
 
 \margingraphic{.2\textwidth}{prologue/pix/grassmann.jpg}{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}
@@ -3534,17 +3534,17 @@ The function~$\power$ is defined by primitive recursion from
 $g(x_0)=1$ and $h(w,x_0,z)=\product(w,x_0)$.   
 \end{example}
 
-Primitive recursion suffices to define many familiar functions. 
+Primitive recursion, along with function composition, 
+suffices to define many familiar functions. 
 
 \begin{example}
 The predecessor function is like an inverse to successor.
 However, with our
 restriction to the natural numbers we can't give a predecessor of zero, so
 instead consider
-$\map{\pred}{\N}{\N}$ where
-$\pred(y)$ equals
+$\map{\pred}{\N}{\N}$ described by:~$\pred(y)$ equals
 $y-1$ if $y>0$ and equals~$0$ if $y=0$.
-Here is a definition of this function that fits the primitive recursive schema.
+This definition fits the primitive recursive schema.
 \begin{equation*}
   \pred(y)=\begin{cases}
               0  &\case{if $y=0$}  \\
@@ -3561,19 +3561,22 @@ while $h$ has two inputs~$h(a,b)=b$.
 As with predecessor, we can't do subtraction because we don't have 
 negative numbers so consider
 \definend{proper subtraction}, denoted $x\dotminus y$,
-that gives $x-y$ if $x\geq y$ and gives~$0$ otherwise.  
-We can give a primitive recursive definition of this function as here.
+described by:~ if $x\geq y$ then $x\dotminus y$ equals $x-y$ and otherwise 
+if $x\dotminus y$ equals~$0$.
+This definition of that function 
+fits the primitive recursion scheme.
 \begin{equation*}
   \operatorname{propersub}(x,y)
                =\begin{cases}
                  x    &\case{if $y=0$}  \\
-                 \pred(\operatorname{propersub}(x,z))  &\case{if $y=\successor(z)$}
+                 \pred(\operatorname{propersub}(x,z))  
+                      &\case{if $y=\successor(z)$}
                \end{cases}
 \end{equation*}
-In the terms of \cref{def:PrimitiveRecursion}, this has
-$g(x_0)=x_0$ and $h(w,x_0,z)=\pred(w)$.
-Then the bookkeeping is that the arity of~$g$ is one less
-than the arity of~$f\!$, and because~$h$ has dummy arguments its arity is
+In the terms of \cref{def:PrimitiveRecursion},
+$g(x_0)=x_0$ and $h(w,x_0,z)=\pred(w)$;~the bookkeeping works 
+since the arity of~$g$ is one less
+than the arity of~$f\!$, and, because~$h$ has dummy arguments, its arity is
 one more than the arity of~$f\!$.
 \end{example}
 
@@ -5389,6 +5392,59 @@ $.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+This variant of $\hyperoperation$ is often labelled ``the''  
+Ackermann function. 
+\begin{equation*} 
+  \ackermann(k,y)=
+  \begin{cases}
+    y+1                &\case{if $k=0$}    \\
+    \ackermann(k-1,1)  &\case{if $y=0$ and $k>0$}  \\
+    \ackermann(k-1, \ackermann(k,y-1)) &\case{otherwise}
+  \end{cases}
+\end{equation*} 
+It has different boundary conditions but the same recursion,
+the same bottom line. 
+(In general, any function with that recusion is an Ackermann function.
+More about this variant is on \cpageref{eq:PeterAckermann}.)
+Compute $\ackermann(k,y)$ for $0\leq k <4$ and $0\leq y< 6$.
+\begin{answer}
+Writing a small script makes the job of computing easier.
+Here is the table fo values.
+\begin{center} 
+% \newsavebox{\rightbox}
+% \newcommand{\rightboxit}[1]{\makebox[2em][r]{#1}}
+%  \begin{array}{r|>{\begin{lrbox}{\rightbox}}c<{\end{lrbox}\rightboxit{\unhbox\rightbox}}rrrrrc}
+  \begin{tabular}{r|BEBBCCc}
+    \multicolumn{1}{c}{\relax}
+      &\multicolumn{1}{c}{$y=0$}
+      &\multicolumn{1}{c}{$y=1$}
+      &\multicolumn{1}{c}{$y=2$}
+      &\multicolumn{1}{c}{$y=3$}
+      &\multicolumn{1}{c}{$y=4$}
+      &\multicolumn{1}{c}{$y=5$}  \\ \cline{2-8}
+    $k=0$   &$1$   &$2$    &$3$    &$4$    &$5$     &$6$   &\ldots \\
+    $k=1$   &$2$   &$3$    &$4$    &$5$    &$6$     &$7$   &\ldots \\
+    $k=2$   &$3$   &$5$    &$7$    &$9$    &$11$    &$13$  &\ldots  \\
+    $k=3$   &$5$   &$13$   &$29$   &$61$   &$125$   &$253$ &\ldots  \\
+    $k=4$   &$13$  &$65\,533$  % &2^{65536}-3 &2^(2^{65536})-3   
+            &\multicolumn{1}{c}{\ldots}    
+  \end{tabular}
+\end{center}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Prove that the computation of $\hyperoperation(n,x,y)$ always terminates.
+\begin{answer}
+In each application of the recursion, either the first argument decreases 
+or else the first argument remains the same and the third argument decreases. 
+Further, each time that the third argument reaches zero, the first argument
+decreases, so it eventually reaches zero as well.
+If the first argument is zero then the computation terminates. 
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 Let $g(x,y)=x+y$ and let $f(x)=\least y\,\big[ g(x,y)=100 \big]$.
@@ -5908,17 +5964,15 @@ XKCD has something to say about the Collatz conjecture.
 
 Writing code to simulate a Turing Machine is a reasonable 
 programming project.
-Here we detail an implementation.
+Here we exhibit an implementation.
 It has three design goals.
 The main one is to track closely the 
-description on \cpageref{DefnConfiguration} of the action of a Turing machine,
-so it will use the instructions to guide 
-transitioning from configuration to configuration.
-Secondary goals are to output a picture of the machine after each step,
-and to be easy for a reader new to Racket.
+description of the action of a Turing machine on \cpageref{DefnConfiguration}.
+Secondary goals are to output a picture of the configuration after each step,
+and to be easy to understand for a reader new to Racket.
 
-We have already seen this six-instruction 
-Turing machine, whose input-output behavior is
+We earlier saw this 
+Turing machine that computes
 the predecessor function.
 \begin{equation*}
  \TM_{\text{pred}}=
@@ -5930,8 +5984,11 @@ the predecessor function.
         \tminstruction{2}{1}{L}{2} 
       }
 \end{equation*}
-To simulate it, the program inputs this file.
+To simulate it, the program will use this file.
 \lstinputlisting{\tmfiles pred.tm}
+Thus the simulator for any particular Turing machine is really the pair
+consisting of the code shown below along with this machine's file description.
+
 The data structure for a Turing machine is the simplest one,
 a list of instructions.
 For the instructions, the program converts each of the above 
@@ -5946,7 +6003,7 @@ margins).
 \end{lstlisting}
 
 After some convenience constants
-\lstinputlisting[firstline=14,lastline=18]{\tmfile turing-machine.rkt}
+\lstinputlisting[firstline=14,lastline=17]{\tmfile turing-machine.rkt}
 we define a configuration.
 \lstinputlisting[firstline=26,lastline=41]{\tmfile turing-machine.rkt}
 Note that \codeinline{get-current-symbol} translates any blank character
@@ -5988,9 +6045,9 @@ bear at all on simulating a Turing machine so we will leave it aside.
 
 Below is a run of the simulator, with its command line invocation.
 It takes input from the file \codeinline{pred.tm} shown earlier.
-When the machine starts
-the current symbol is \str{1} and the tape to the right 
-has \str{111} (to the left the tape is empty). 
+When the machine starts the input is \str{111}, with 
+a current symbol of \str{1} and the tape to the right 
+of \str{11} (the tape to the left is empty). 
 \begin{lstlisting}
 $ ./turing-machine.rkt -f machines/pred.tm -c "1" -r "11"
 step 0: q0: *1*11
@@ -7309,17 +7366,17 @@ Since the new function has only two variables we can show a table.
 %  \begin{array}{r|>{\begin{lrbox}{\rightbox}}c<{\end{lrbox}\rightboxit{\unhbox\rightbox}}rrrrrc}
   \begin{tabular}{r|BEBBCCc}
     \multicolumn{1}{c}{\relax}
-      &\multicolumn{1}{c}{y=0}
-      &\multicolumn{1}{c}{y=1}
-      &\multicolumn{1}{c}{y=2}
-      &\multicolumn{1}{c}{y=3}
-      &\multicolumn{1}{c}{y=4}
-      &\multicolumn{1}{c}{y=5}  \\ \cline{2-8}
-    k=0   &1   &2   &3   &4   &5   &6  &\ldots \\
-    k=1   &2   &3   &4   &5   &6   &7  &\ldots \\
-    k=2   &3   &5   &7   &9   &11   &13 &\ldots  \\
-    k=3   &5   &13   &29   &61   &125   &253 &\ldots  \\
-    k=4   &13   &65533  % &2^{65536}-3 &2^(2^{65536})-3   
+      &\multicolumn{1}{c}{$y=0$}
+      &\multicolumn{1}{c}{$y=1$}
+      &\multicolumn{1}{c}{$y=2$}
+      &\multicolumn{1}{c}{$y=3$}
+      &\multicolumn{1}{c}{$y=4$}
+      &\multicolumn{1}{c}{$y=5$}  \\ \cline{2-8}
+    $k=0$   &$1$   &$2$    &$3$    &$4$    &$5$     &$6$   &\ldots \\
+    $k=1$   &$2$   &$3$    &$4$    &$5$    &$6$     &$7$   &\ldots \\
+    $k=2$   &$3$   &$5$    &$7$    &$9$    &$11$    &$13$  &\ldots  \\
+    $k=3$   &$5$   &$13$   &$29$   &$61$   &$125$   &$253$ &\ldots  \\
+    $k=4$   &$13$  &$65\,533$  % &2^{65536}-3 &2^(2^{65536})-3   
             &\multicolumn{1}{c}{\ldots}    
   \end{tabular}
 \end{center}

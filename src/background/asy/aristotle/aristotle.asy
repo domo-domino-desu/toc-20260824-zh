@@ -75,6 +75,7 @@ for (int picnum=0; picnum <= num_pics; ++picnum) {
 }
 
 
+real small_wheel_raise=1.0*(large_wheel_r+small_wheel_r); // how far to raise small wheel
 // Put the small wheel inside the large one and correspond points
 int num_pics = 25;
 for (int picnum=0; picnum <= num_pics; ++picnum) {

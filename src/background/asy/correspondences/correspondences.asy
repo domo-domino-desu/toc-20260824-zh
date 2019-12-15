@@ -254,7 +254,7 @@ draw(pic,proj_point--xloc,MAINPEN+lightcolor);
 label(pic,"$P$",proj_point,W);
 draw(pic,origin--(0*u,1*v),DARKPEN);  // (0,1)
 label(pic,"\tiny $0$",(0*u,0*v),S);
-label(pic,"\tiny $1$",(0*u,1*v),NW);
+label(pic,"\tiny $1$",(0*u,1*v),SW);
 label(pic,"\tiny $0$",(0*u,0*v),W);
 draw(pic,origin--(7*u,0*v),DARKPEN,Arrow(TeXHead));  // x-axis
 dotfactor = 3;

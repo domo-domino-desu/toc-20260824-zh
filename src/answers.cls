@@ -419,34 +419,6 @@
 \myexternaldocument{automata/automata}
 \myexternaldocument{/complexity/complexity}
 % \externaldocument{book,prologue,background,languages,automata,complexity}
-\usepackage{cleveref}
-\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
-  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
-  \ifcsname #2refname\endcsname
-    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
-  \fi
-}
-\crefname{theorem}{Theorem}{Theorems}
-\Crefname{theorem}{Theorem}{Theorems}
-\crefname{lemma}{Lemma}{Lemmas}
-\Crefname{lemma}{Lemma}{Lemmas}
-\crefname{corollary}{Corollary}{Collaries}
-\Crefname{corollary}{Corollary}{Collaries}
-\crefname{definition}{Definition}{Definitions}
-\Crefname{definition}{Definition}{Definitions}
-\crefname{example}{Example}{Examples}
-\Crefname{example}{Example}{Theorems}
-\crefname{remark}{Remark}{Remarks}
-\Crefname{remark}{Remark}{Remarks}
-\crefname{problem}{Problem}{Problems}
-\Crefname{problem}{Problem}{Problems}
-\crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
-\Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
-\crefname{@exercisenumber}{Exercise}{Exercises}
-\Crefname{@exercisenumber}{Exercise}{Exercises}
-
-% \renewcommand{\cref}[1]{REF:~\textit{#1}}
-% \renewcommand{\Cref}[1]{REF:~\textit{#1}}
 
 
 \newcommand{\definend}[1]{#1}  % should get rid of these in answers?
@@ -478,3 +450,33 @@
     urlcolor=black,           % color of external links
     plainpages=false   % prevent "destination with the same identifier" error
 }
+
+% === clever ref must come after hyperref ====
+\usepackage{cleveref}
+\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+  \ifcsname #2refname\endcsname
+    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+  \fi
+}
+\crefname{theorem}{Theorem}{Theorems}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{Corollary}{Collaries}
+\Crefname{corollary}{Corollary}{Collaries}
+\crefname{definition}{Definition}{Definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{example}{Example}{Examples}
+\Crefname{example}{Example}{Theorems}
+\crefname{remark}{Remark}{Remarks}
+\Crefname{remark}{Remark}{Remarks}
+\crefname{problem}{Problem}{Problems}
+\Crefname{problem}{Problem}{Problems}
+\crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+\Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+\crefname{@exercisenumber}{Exercise}{Exercises}
+\Crefname{@exercisenumber}{Exercise}{Exercises}
+
+% \renewcommand{\cref}[1]{REF:~\textit{#1}}
+% \renewcommand{\Cref}[1]{REF:~\textit{#1}}

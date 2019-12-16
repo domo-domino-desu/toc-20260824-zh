@@ -232,11 +232,16 @@ label(pic,"\strut $3$",intersectionpoint(longdiag[3],cropline),shrinklabeloffset
 shipout(format("correspondences3%03d",picnum),pic,format="pdf");
 
 
+// ========= Exercises =================================
+string OUTPUT_FN = "correspondences%03d";
+import graph;
+
+
 // ==========================================
-// Correspondence between (0,1) and (0,\infty)
+// Correspondence between (0,1) and (0,\infty) for exercises
 int picnum = 0;
 picture pic;
-unitsize(pic,1cm);
+unitsize(pic,0.25cm);
 real u=1;
 real v=u;
 
@@ -251,16 +256,101 @@ pair xloc = (x,0*v);  // pt on x-axis
 pair yloc = (0*u,proj_fcn(x));  // projected-to pt on y-axis
 
 draw(pic,proj_point--xloc,MAINPEN+lightcolor);
-label(pic,"$P$",proj_point,W);
-draw(pic,origin--(0*u,1*v),DARKPEN);  // (0,1)
-label(pic,"\tiny $0$",(0*u,0*v),S);
-label(pic,"\tiny $1$",(0*u,1*v),SW);
-label(pic,"\tiny $0$",(0*u,0*v),W);
+label(pic,"\raisebox{3pt}{$P$}",proj_point,W);
+draw(pic,origin--(0*u,1.25*v),DARKPEN,Arrow(TeXHead));  // y-axis 
+// label(pic,"\tiny $0$",(0*u,0*v),S);
+draw(pic,(0*u,1*v)--((0*u,1*v)-(-0.05u,0v)),DARKPEN);  // tick at (0,1)
+  label(pic,"\tiny $y=1$",(0*u,1*v),E);
+// label(pic,"\tiny $0$",(0*u,0*v),W);
 draw(pic,origin--(7*u,0*v),DARKPEN,Arrow(TeXHead));  // x-axis
 dotfactor = 3;
 dot(pic,proj_point,DARKPEN, filltype=Fill(white));
-draw(pic,(xloc--(xloc-(0u,0.05v))),DARKPEN);
+// draw(pic,(xloc--(xloc-(0u,0.05v))),DARKPEN);
+dot(pic,xloc,DARKPEN, filltype=Fill(white));
   label(pic,"$x$",xloc,S);
-draw(pic,(yloc--(yloc-(0.05u,0v))),DARKPEN);
-  label(pic,"$f(x)$",yloc,NE);
-shipout(format("correspondences%03d",picnum),pic,format="pdf");
+// draw(pic,(yloc--(yloc-(0.05u,0v))),DARKPEN);
+dot(pic,yloc,DARKPEN, filltype=Fill(white));
+  label(pic,"$f(x)$",yloc,SW);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ====================
+// two correspondences from (3,5) to (-1,10)
+
+int picnum = 1;
+picture pic;
+unitsize(pic,0.35cm);
+real u=1;
+real v=u;
+
+scale(pic,Linear(3),Linear);  // make the y-axis 1/3 as tall
+
+real f0(real x) {
+  return (11/2)*(x-3)-1;
+}
+
+real xmin = 3.0;
+real xmax = 5.0;
+real ymin = f0(xmin);
+real ymax = f0(xmax);
+
+real[] xMajorTicks={3,4,5};
+real[] xMinorTicks={};
+real[] yMajorTicks={-1,1,3,5,7,9}; 
+real[] yMinorTicks={0,2,4,6,8,10}; 
+
+arrowbar axisarrow = Arrows(TeXHead);
+
+path g = graph(pic, f0,xmin,xmax);
+draw(pic, g, FCNPEN+highlightcolor);
+xaxis(pic, "$x$",YZero(extend=false),
+      xmin=xmin-0.5, xmax=xmax+0.5,
+      RightTicks(xMajorTicks,xMinorTicks),
+      EndArrow(TeXHead));           // arrow on rhs only
+yaxis(pic, "$y$",XEquals(xmin-0.5),
+      ymin=ymin-0.5, ymax=ymax+0.5,
+      LeftTicks(yMajorTicks,yMinorTicks),
+      axisarrow);
+
+label(pic, "{\small $f_0(x)=\frac{11}{2}(x-3)-1$}", Scale(pic,(4,1.5)), E);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// .......................................
+int picnum = 2;
+picture pic;
+unitsize(pic,0.35cm);
+real u=1;
+real v=u;
+
+scale(pic,Linear(3),Linear);  // make the y-axis 1/3 as tall
+
+real f1(real x) {
+  return (11/4)*(x-3)^2-1;
+}
+
+real xmin = 3.0;
+real xmax = 5.0;
+real ymin = f1(xmin);
+real ymax = f1(xmax);
+
+real[] xMajorTicks={3,4,5};
+real[] xMinorTicks={};
+real[] yMajorTicks={-1,1,3,5,7,9}; 
+real[] yMinorTicks={0,2,4,6,8,10}; 
+
+arrowbar axisarrow = Arrows(TeXHead);
+
+path g = graph(pic, f1,xmin,xmax);
+draw(pic, g, FCNPEN+highlightcolor);
+xaxis(pic, "$x$",YZero(extend=false),
+      xmin=xmin-0.5, xmax=xmax+0.5,
+      RightTicks(xMajorTicks,xMinorTicks),
+      EndArrow(TeXHead));           // arrow on rhs only
+yaxis(pic, "$y$",XEquals(xmin-0.5),
+      ymin=ymin-0.5, ymax=ymax+0.5,
+      LeftTicks(yMajorTicks,yMinorTicks),
+      axisarrow);
+
+label(pic, "{\small $f_1(x)=\frac{11}{4}(x-3)^2-1$}", Scale(pic,(4.25,1.5)), E);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

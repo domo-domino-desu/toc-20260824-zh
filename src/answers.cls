@@ -437,7 +437,7 @@
 ]{caption}
 % Format of captions (1) Name the question to which it pertains and
 %    (2) Put a hrule between figures 
-\DeclareCaptionLabelFormat{referenceanswerformat}{#1 for question \currentanswernumber}
+\DeclareCaptionLabelFormat{referenceanswerformat}{#1#2, for question \currentanswernumber}
 \DeclareCaptionFormat{linebetweenformat}{#1#2#3\textcolor{lightgreycolor}{\hrulefill}}
 \captionsetup[figure]{labelformat=referenceanswerformat,
                       format=linebetweenformat}
@@ -485,7 +485,7 @@
 }
 
 % === clever ref must come after hyperref ====
-\usepackage{cleveref}
+\usepackage[capitalize,nameinlink,noabbrev]{cleveref}
 \def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
   \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
   \ifcsname #2refname\endcsname
@@ -510,6 +510,10 @@
 \Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
 \crefname{@exercisenumber}{Exercise}{Exercises}
 \Crefname{@exercisenumber}{Exercise}{Exercises}
+\crefname{figure}{Figure}{Figures}
+\Crefname{figure}{Figure}{Figures}
 
 % \renewcommand{\cref}[1]{REF:~\textit{#1}}
 % \renewcommand{\Cref}[1]{REF:~\textit{#1}}
+\newcommand{\figureref}[1]{\Cref{#1} on page~\pageref{#1}}
+\newcommand{\Figureref}[1]{\Cref{#1} on page~\pageref{#1}}

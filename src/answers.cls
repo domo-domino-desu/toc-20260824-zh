@@ -49,33 +49,6 @@
 \addbibresource{computing.bib}
 
 
-% ========== floats, captions =============
-\usepackage{float}
-\usepackage[% see https://tex.stackexchange.com/a/122329/121234
-    font={small},
-    labelfont=sc,
-    format=hang,    
-    format=plain,
-    margin=0pt,
-    width=0.95\textwidth,
-]{caption}
-% Put a hrule between figures 
-\DeclareCaptionFormat{linebetweenformat}{#1#2#3\textcolor{lightgreycolor}{\hrulefill}}
-\captionsetup[figure]{format=linebetweenformat}
-% Allow subfigures
-\usepackage[list=true]{subcaption} % replaces subfigure and subfig
-
-% Use like this:
-% \begin{figure}
-% \centering
-% \subcaptionbox{A linear function}{\includegraphics{background/asy/correspondences/correspondences001.pdf}}%
-% \hspace{2em plus 1fil}
-% \subcaptionbox{A quadratic}{\includegraphics{background/asy/correspondences/correspondences002}}%
-% \caption{Two correspondences between $(3,5)$ and $(-1,11)$.}
-% \label{fig:TwoCorrespondences}
-% \end{figure}
-
-
 % ========== lengths on which others are set =============
 \setlength{\topsep}{8.0pt plus 2.0pt minus 2.0pt}  % bk10.clo has it set to 8pt
 
@@ -409,11 +382,13 @@
 \usepackage{contentmacros}
 
 
-% ++++++++++++++++++++++++=
-% quick defs to get it to go.
+% ++++++++++++++++++++++++
+% Answer environment
 
+\gdef\currentanswernumber{--No current answer number--}
 \newenvironment{ans}[1]%
-  {\leftskip1em\par\noindent\hspace{-1em}\textbf{#1}\ }%
+  {\gdef\currentanswernumber{#1}%  Save it 
+   \leftskip1em\par\noindent\hspace{-1em}\textbf{#1}\ }%
   {}
 
 % Mark an answer as verified by putting this in the source, and it gets 
@@ -448,6 +423,38 @@
 
 
 \newcommand{\definend}[1]{#1}  % should get rid of these in answers?
+
+
+
+% ========== floats, captions =============
+\usepackage{float}
+\usepackage[% see https://tex.stackexchange.com/a/122329/121234
+    font={small},
+    labelfont=sc,
+    format=hang,
+    margin=0pt,
+    width=0.95\textwidth,
+]{caption}
+% Format of captions (1) Name the question to which it pertains and
+%    (2) Put a hrule between figures 
+\DeclareCaptionLabelFormat{referenceanswerformat}{#1 for question \currentanswernumber}
+\DeclareCaptionFormat{linebetweenformat}{#1#2#3\textcolor{lightgreycolor}{\hrulefill}}
+\captionsetup[figure]{labelformat=referenceanswerformat,
+                      format=linebetweenformat}
+% Allow subfigures
+\usepackage[list=true]{subcaption} % replaces subfigure and subfig
+
+% Use like this:
+% \begin{figure}
+% \centering
+% \subcaptionbox{A linear function}{\includegraphics{background/asy/correspondences/correspondences001.pdf}}%
+% \hspace{2em plus 1fil}
+% \subcaptionbox{A quadratic}{\includegraphics{background/asy/correspondences/correspondences002}}%
+% \caption{Two correspondences between $(3,5)$ and $(-1,11)$.}
+% \label{fig:TwoCorrespondences}
+% \end{figure}
+
+
 
 
 % ================= hyperref ===============

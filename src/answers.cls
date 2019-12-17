@@ -52,14 +52,29 @@
 % ========== floats, captions =============
 \usepackage{float}
 \usepackage[% see https://tex.stackexchange.com/a/122329/121234
-    font={small,sf},
-    labelfont=bf,
+    font={small},
+    labelfont=sc,
     format=hang,    
     format=plain,
     margin=0pt,
-    width=0.8\textwidth,
+    width=0.95\textwidth,
 ]{caption}
+% Put a hrule between figures 
+\DeclareCaptionFormat{linebetweenformat}{#1#2#3\textcolor{lightgreycolor}{\hrulefill}}
+\captionsetup[figure]{format=linebetweenformat}
+% Allow subfigures
 \usepackage[list=true]{subcaption} % replaces subfigure and subfig
+
+% Use like this:
+% \begin{figure}
+% \centering
+% \subcaptionbox{A linear function}{\includegraphics{background/asy/correspondences/correspondences001.pdf}}%
+% \hspace{2em plus 1fil}
+% \subcaptionbox{A quadratic}{\includegraphics{background/asy/correspondences/correspondences002}}%
+% \caption{Two correspondences between $(3,5)$ and $(-1,11)$.}
+% \label{fig:TwoCorrespondences}
+% \end{figure}
+
 
 % ========== lengths on which others are set =============
 \setlength{\topsep}{8.0pt plus 2.0pt minus 2.0pt}  % bk10.clo has it set to 8pt

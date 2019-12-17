@@ -49,9 +49,20 @@
 \addbibresource{computing.bib}
 
 
+% ========== floats, captions =============
+\usepackage{float}
+\usepackage[% see https://tex.stackexchange.com/a/122329/121234
+    font={small,sf},
+    labelfont=bf,
+    format=hang,    
+    format=plain,
+    margin=0pt,
+    width=0.8\textwidth,
+]{caption}
+\usepackage[list=true]{subcaption} % replaces subfigure and subfig
+
 % ========== lengths on which others are set =============
 \setlength{\topsep}{8.0pt plus 2.0pt minus 2.0pt}  % bk10.clo has it set to 8pt
-
 
 % ========== tables =============
 \usepackage{multirow}

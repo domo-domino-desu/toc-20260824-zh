@@ -312,7 +312,7 @@ yaxis(pic, "$y$",XEquals(xmin-0.5),
       LeftTicks(yMajorTicks,yMinorTicks),
       axisarrow);
 
-label(pic, "{\small $f_0(x)=\frac{11}{2}(x-3)-1$}", Scale(pic,(4,1.5)), E);
+label(pic, "{\footnotesize $f_0(x)=\frac{11}{2}(x-3)-1$}", Scale(pic,(4,1.5)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -352,5 +352,5 @@ yaxis(pic, "$y$",XEquals(xmin-0.5),
       LeftTicks(yMajorTicks,yMinorTicks),
       axisarrow);
 
-label(pic, "{\small $f_1(x)=\frac{11}{4}(x-3)^2-1$}", Scale(pic,(4.25,1.5)), E);
+label(pic, "{\footnotesize $f_1(x)=\frac{11}{4}(x-3)^2-1$}", Scale(pic,(4.25,1.5)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

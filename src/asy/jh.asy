@@ -160,6 +160,16 @@ pen rgb() {
 }
 
 
+// Draw a set bean
+path setbean(real h=1, real v=1) {
+  path p;
+  p = (0,0)..(0,v)..(h,v)..tension(1.2)..(h,-v)..(0,-v)..cycle;
+  return p;
+}
+pen BEANCOLOR = backgroundcolor;
+pen ARROWCOLOR = highlightcolor;
+
+
 // vec_outline draw a vector's outline, filled in white
 // usage:
 // pen inverse_image_pen=linecap(1)

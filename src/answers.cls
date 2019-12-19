@@ -393,7 +393,7 @@
 
 % Mark an answer as verified by putting this in the source, and it gets 
 % carried through to answerbody.tex
-\newcommand{\verified}{\noindent\makebox[0in][r]{\textcolor{Fuchsia}{Verified}\hspace*{0.65in}}}
+\newcommand{\verified}{\noindent\makebox[0in][r]{\textcolor{Fuchsia}{Verified}\hspace*{0.6in}}}
 
 
 \renewcommand{\chapter}[1]{\clearemptydoublepage\vspace*{0.15in}\begin{center}\Large\textbf{#1}\end{center}\vspace*{0.5in}}
@@ -431,13 +431,13 @@
 \usepackage[% see https://tex.stackexchange.com/a/122329/121234
     font={small},
     labelfont=sc,
-    format=hang,
+    format=hang, % indentation=1em, version of caption?
     margin=0pt,
     width=0.95\textwidth,
 ]{caption}
 % Format of captions (1) Name the question to which it pertains and
 %    (2) Put a hrule between figures 
-\DeclareCaptionLabelFormat{referenceanswerformat}{#1#2, for question \currentanswernumber}
+\DeclareCaptionLabelFormat{referenceanswerformat}{#1 #2, for question \currentanswernumber}
 \DeclareCaptionFormat{linebetweenformat}{#1#2#3\textcolor{lightgreycolor}{\hrulefill}}
 \captionsetup[figure]{labelformat=referenceanswerformat,
                       format=linebetweenformat}

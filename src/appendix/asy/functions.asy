@@ -19,6 +19,7 @@ import jh;
 cd("");
 // import node;
 
+import fontsize;  // allow nonstandard font sizes
 import graph;
 
 
@@ -30,7 +31,7 @@ string OUTPUT_FN = "functions%03d";
 // xy graph of y=x^3
 int picnum = 0;
 picture pic;
-unitsize(pic,0.35cm);
+unitsize(pic,0.07cm);
 real u=1;
 real v=u;
 
@@ -45,25 +46,25 @@ real xmax = 3.0;
 real ymin = f(xmin);
 real ymax = f(xmax);
 
-real[] xMajorTicks={-3,-2,-1,0,1,2,3};
-real[] xMinorTicks={};
-real[] yMajorTicks={-25,-20,-15,-10,-5,0,5,10,15,20,25}; 
-real[] yMinorTicks={}; 
+real[] xMajorTicks={-2,2};
+real[] xMinorTicks={-3,-1,1,3};
+real[] yMajorTicks={-20,-10,10,20}; 
+real[] yMinorTicks={-25,-15,-5,5,15,25}; 
 
 arrowbar axisarrow = Arrows(TeXHead);
 
 path f_graph = graph(pic, f, xmin, xmax);
 draw(pic, f_graph, FCNPEN+highlightcolor);
-xaxis(pic, "$x$",YZero(extend=false),
+xaxis(pic, "",YZero(extend=false),
       xmin=xmin-0.5, xmax=xmax+0.5,
-      RightTicks(xMajorTicks,xMinorTicks),
-      EndArrow(TeXHead));           // arrow on rhs only
-yaxis(pic, "$y$",XZero(),
+      RightTicks(format="\scriptsize $%.4g$",xMajorTicks,xMinorTicks),
+      axisarrow);
+yaxis(pic, "",XZero(),
       ymin=ymin-0.5, ymax=ymax+0.5,
-      LeftTicks(yMajorTicks,yMinorTicks),
+      LeftTicks(format="\scriptsize $%.4g$",yMajorTicks,yMinorTicks),
       axisarrow);
 
-label(pic, "{\footnotesize $f(x)=x^3$}", Scale(pic,(1.5,25)), E);
+label(pic, "{\footnotesize $f(x)=x^3$}", Scale(pic,(1,-20)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -71,7 +72,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // xy graph of y=floor(x)
 int picnum = 1;
 picture pic;
-unitsize(pic,0.75cm);
+unitsize(pic,0.5cm);
 real u=1;
 real v=u;
 
@@ -86,10 +87,10 @@ real xmax = 3.0;
 real ymin = f(xmin);
 real ymax = f(xmax);
 
-real[] xMajorTicks={-3,-2,-1,0,1,2,3};
+real[] xMajorTicks={-3,-2,-1,1,2,3};
 real[] xMinorTicks={};
-real[] yMajorTicks={-4,-3,-2,-1,0,1,2,3}; 
-real[] yMinorTicks={}; 
+real[] yMajorTicks={-4,-2,2}; 
+real[] yMinorTicks={-3,-1,1,3}; 
 
 arrowbar axisarrow = Arrows(TeXHead);
 
@@ -109,16 +110,16 @@ for(int i=ceil(xmin); i < floor(xmax)+1; ++i) {
   dot(pic, Scale(pic,(i,f(i))), FCNPEN+highlightcolor+linewidth(0.6pt), FillDraw(drawpen=FCNPEN+highlightcolor+linewidth(0.6pt),fillpen=FCNPEN+highlightcolor+opacity(0.99)));
 }
 
-xaxis(pic, "$x$",YZero(extend=false),
+xaxis(pic, "",YZero(extend=false),
       xmin=xmin-0.5, xmax=xmax+0.5,
-      RightTicks(xMajorTicks,xMinorTicks),
-      EndArrow(TeXHead));           // arrow on rhs only
-yaxis(pic, "$y$",XZero(),
+      RightTicks(format="\scriptsize $%.4g$",xMajorTicks,xMinorTicks),
+      axisarrow);
+yaxis(pic, "",XZero(),
       ymin=ymin-1.5, ymax=ymax+0.5,
-      LeftTicks(yMajorTicks,yMinorTicks),
+      LeftTicks(format="\scriptsize $%.4g$",yMajorTicks,yMinorTicks),
       axisarrow);
 
-label(pic, "{\footnotesize $f(x)=\floor{x}$}", Scale(pic,(0.25,2.5)), E);
+label(pic, "{\footnotesize $f(x)=\floor{x}$}", Scale(pic,(1,-3)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -288,16 +289,16 @@ path domain, codomain;
 domain = (xmin-0.5,0)--(xmax+0.5,0);
 codomain = (xmin-0.5,SEPARATION)--(xmax+0.5,SEPARATION);
 // ticks ..
-real TICLENGTH = 0.1;
+real TICLENGTH = 0.2;
 for (int i=-3; i<4; ++i) {
   draw(pic,(i,0)--(i,TICLENGTH), DARKPEN);
-  label(pic,format("$%d$",i),(i,0+TICLENGTH), N);
+  label(pic,format("\scriptsize $%d$",i),(i,0+TICLENGTH), N);
   draw(pic,(i,SEPARATION)--(i,SEPARATION-TICLENGTH), DARKPEN);
-  label(pic,format("$%d$",i),(i,SEPARATION-TICLENGTH), S);
+  label(pic,format("\scriptsize $%d$",i),(i,SEPARATION-TICLENGTH), S);
 }
 // draw the domain and codomain
-draw(pic,domain,DARKPEN,Arrows(TeXHead));
-draw(pic,codomain,DARKPEN,Arrows(TeXHead));
+draw(pic,domain,Arrows(TeXHead));
+draw(pic,codomain,Arrows(TeXHead));
 
 for (int i=-3; i<0; ++i) {
   path a = (i,0){(1,i)}.. tension 1.25 and 1.1 .. {(1,i)}(abs(i),SEPARATION);

@@ -64,7 +64,7 @@ yaxis(pic, "",XZero(),
       LeftTicks(format="\scriptsize $%.4g$",yMajorTicks,yMinorTicks),
       axisarrow);
 
-label(pic, "{\footnotesize $f(x)=x^3$}", Scale(pic,(1,-20)), E);
+label(pic, "$\scriptsize f(x)=x^3$", Scale(pic,(1,-20)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -87,8 +87,8 @@ real xmax = 3.0;
 real ymin = f(xmin);
 real ymax = f(xmax);
 
-real[] xMajorTicks={-3,-2,-1,1,2,3};
-real[] xMinorTicks={};
+real[] xMajorTicks={-2,2};
+real[] xMinorTicks={-3,-1,1,3};
 real[] yMajorTicks={-4,-2,2}; 
 real[] yMinorTicks={-3,-1,1,3}; 
 
@@ -119,7 +119,7 @@ yaxis(pic, "",XZero(),
       LeftTicks(format="\scriptsize $%.4g$",yMajorTicks,yMinorTicks),
       axisarrow);
 
-label(pic, "{\footnotesize $f(x)=\floor{x}$}", Scale(pic,(1,-3)), E);
+label(pic, "$\scriptsize f(x)=\floor{x}$", Scale(pic,(1,-3)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 

@@ -385,7 +385,7 @@ for (int i=0; i<8; ++i) {
   dot(pic, codomain[i], DARKPEN);
   label(pic,format("\scriptsize $%d$",primes[i]), codomain[i], S);
   path c = domain[i] -- codomain[i];
-  draw(pic, subpath(c,0.10,0.90),LIGHTPEN+ARROWCOLOR,Arrows(TeXHead));
+  draw(pic, subpath(c,0.10,0.90),LIGHTPEN+ARROWCOLOR,bar=BeginBar(2),EndArrow(TeXHead));
 }
 // draw ldots
 domain[8] = (8,0);

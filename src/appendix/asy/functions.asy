@@ -309,3 +309,88 @@ for (int i=0; i<4; ++i) {
   draw(pic,subpath(a,0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
 }
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ===================================
+// Correspondence
+picture pic;
+int picnum = 6;
+unitsize(pic,1cm);
+
+// Establish all the stuff to draw
+path domain, codomain;
+domain = setbean(h,v);
+codomain = shift(DOMAINTOCODOMAIN,0)*setbean(h,v);
+pair[] domainpoint, codomainpoint;
+for (int i; i<4; ++i) {
+  domainpoint[i] = (0.5*h,((-2/3)+0.1)*v+(i/3)*(4/3)*v);
+  dot(pic,domainpoint[i],DARKPEN+black);
+}
+for (int i; i<4; ++i) {
+  codomainpoint[i] = shift(DOMAINTOCODOMAIN,0)*(0.5*h,((-2/3)+0.1)*v+(i/3)*(4/3)*v);
+  dot(pic,codomainpoint[i],DARKPEN+black);
+}
+path[] maparrow;
+maparrow[3] = domainpoint[3]{dir(0)}..codomainpoint[0];
+maparrow[2] = domainpoint[2]{dir(15)}..codomainpoint[3];
+maparrow[1] = domainpoint[1]{dir(15)}..codomainpoint[2];
+maparrow[0] = domainpoint[0]{dir(15)}..codomainpoint[1];
+// now draw; want white area around map arrow thru the border
+// First the outlines
+draw(pic,domain,LIGHTPEN);
+draw(pic,codomain,LIGHTPEN);
+// Next the arrow, wider, in white
+for (int i; i<4; ++i) {
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
+}
+// Now fill, draw dots, and draw arrows narrow
+fill(pic,domain,BEANCOLOR);
+fill(pic,codomain,BEANCOLOR);
+for (int i; i<4; ++i) {
+  dot(pic,domainpoint[i],DARKPEN+black);
+}
+for (int i; i<4; ++i) {
+  dot(pic,codomainpoint[i],DARKPEN+black);
+}
+for (int i; i<4; ++i) {
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
+}
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ..............................................
+// parallel lines map  N <--> primes
+int picnum = 7;
+picture pic;
+unitsize(pic,0.65cm);
+// Establish the stuff to draw
+real SEPARATION = -1.25;
+real xmin = 0;
+real xmax = 7;
+int[] primes = {2,3,5,7,11,13,17,19};
+pair[] domain;
+pair[] codomain;
+// draw the natural numbers as dots
+for (int i=0; i<8; ++i) {
+  domain[i] = (i,0);
+  dot(pic, domain[i], DARKPEN);
+  label(pic,format("\scriptsize $%d$",i), domain[i], N);
+  codomain[i] = (i,SEPARATION);
+  dot(pic, codomain[i], DARKPEN);
+  label(pic,format("\scriptsize $%d$",primes[i]), codomain[i], S);
+  path c = domain[i] -- codomain[i];
+  draw(pic, subpath(c,0.10,0.90),LIGHTPEN+ARROWCOLOR,Arrows(TeXHead));
+}
+// draw ldots
+domain[8] = (8,0);
+codomain[8] = (8,SEPARATION);
+label(pic, "\ldots", domain[8]);
+label(pic, "\ldots", codomain[8]);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

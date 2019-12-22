@@ -241,7 +241,7 @@ import graph;
 // Correspondence between (0,1) and (0,\infty) for exercises
 int picnum = 0;
 picture pic;
-unitsize(pic,0.25cm);
+unitsize(pic,0.75cm);
 real u=1;
 real v=u;
 
@@ -257,9 +257,9 @@ pair yloc = (0*u,proj_fcn(x));  // projected-to pt on y-axis
 
 draw(pic,proj_point--xloc,MAINPEN+lightcolor);
 label(pic,"\raisebox{3pt}{$P$}",proj_point,W);
-draw(pic,origin--(0*u,1.25*v),DARKPEN,Arrow(TeXHead));  // y-axis 
+draw(pic,origin--(0*u,1.35*v),DARKPEN,Arrow(TeXHead));  // y-axis 
 // label(pic,"\tiny $0$",(0*u,0*v),S);
-draw(pic,(0*u,1*v)--((0*u,1*v)-(-0.05u,0v)),DARKPEN);  // tick at (0,1)
+draw(pic,(0*u,1*v)--((0*u,1*v)-(-0.1u,0v)),DARKPEN);  // tick at (0,1)
   label(pic,"\tiny $y=1$",(0*u,1*v),E);
 // label(pic,"\tiny $0$",(0*u,0*v),W);
 draw(pic,origin--(7*u,0*v),DARKPEN,Arrow(TeXHead));  // x-axis

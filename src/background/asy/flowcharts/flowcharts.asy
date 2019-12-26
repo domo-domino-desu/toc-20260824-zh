@@ -656,3 +656,281 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+// =============== Exercises ===============
+// s-m-n them
+string OUTPUT_FN = "flowcharts1%03d";
+
+
+// .......... flowchart of a simple machine to be parametrized ..
+picture pic;
+int picnum = 0;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x_0$, $x_1$");
+node print=nbox("Print $x_0+x_1$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .......... answer: freeze it at x0=1 ..
+picture pic;
+int picnum = 1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x_1$");
+node print=nbox("Print $1+x_1$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .......... answer: freeze it at x0=0 ..
+picture pic;
+int picnum = 2;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x_1$");
+node print=nbox("Print $0+x_1$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ==== flowchart of a simple machine to be parametrized x0+x1*x2 
+picture pic;
+int picnum = 3;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x_0$, $x_1$, $x_2$");
+node print=nbox("Print $x_0+x_1\cdot x_2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ... answer: freeze x_0=1
+picture pic;
+int picnum = 4;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x_1$, $x_2$");
+node print=nbox("Print $1+x_1\cdot x_2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ... answer: freeze x_0=1, x1=2
+picture pic;
+int picnum = 5;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x_2$");
+node print=nbox("Print $1+2\cdot x_2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ==== flowchart of a simple machine to be parametrized with decision box 
+picture pic;
+int picnum = 6;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x_0$, $x_1$");
+node test=nrounddiamond("$x_0>1$?");
+node printout=nbox("Print $x_1$");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+hlayout(-3*u,test,printout);
+hlayout(3.35*u,test,loop);
+vlayout(1.1*v,printout,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout).l("No"),
+     (test--loop).l("Yes").style("leftside"),
+     (printout--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     loop, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

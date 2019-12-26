@@ -3886,40 +3886,46 @@ list is now a routine, which acts on the argument, producing the correct output.
 
 \subsection{Uniformity}
 We've argued that there are functions that no program can perform.
-Consider this job:~given a real number $r\in\leftclosed{0}{1}$,
+Consider this job:~given a real number $r\in\R$,
 write a program to produce its digits.
 More precisely, this asks for a family of programs,
-a $\TM_r$ for each $r\in\leftclosed{0}{1}$,
-such that when given input~$n$ the program returns the
-$n$-th decimal digit of~$r$.
+a $\TM_r$ for each~$r$,
+such that when given input~$n\in\N$ the program returns the
+value of the $n$-th decimal place of~$r$ (for~$n=0$
+the output is the integer to the left of the decimal point).
 
-By cardinality considerations there is no such family of programs:~there
+Because of cardinality there is no such family of programs:~there
 are countably many Turing machines
-but $\leftclosed{0}{1}$ has uncountably many members.
-But why can't we write those programs?
-Can't we just write whatever code to produce
-whatever decimal digits that we like?  
-What's stopping us?
+but uncountably many reals.
+But why can't we write it?
+One of the enjoyable things about coding is the feeling that we can
+get the machine to 
+do whatever we want;~what's stopping us from producing
+whatever digits we like?  
 
-% \begin{example}
-There are some $r$'s, such as $r=1/4$, for which there is such a program.
-For a more generic number, say $r=0.703\ldots$,
-we might briefly think of brute-forcing it.
+There are some real number $r$'s 
+for which there indeed is such a program.
+An easy one is~$r=1/4$.
+For a more generic number, say $r=0.703\ldots$\,,
+we might momentarily imagine brute-forcing it.
 \begin{lstlisting}
 read n
 if n==0:
-    print 7
-elif n==1:
     print 0
-...
+if n==1:
+    print 7
+elif n==2:
+    print 0
+  ...
 \end{lstlisting}
-But this is silly; programs have finite length.
-It could have \codeinline{if .. elif ..} branches for a few
-cases, however past some point it must have code that 
+An experienced programmer knows that this is silly
+because programs have finite length.
+We could have \codeinline{if .. elif ..} branches for a few
+cases but past some point it must have code that 
 handles all but finitely many input~$n$'s, uniformly.
 
 Thus, the fact that Turing machines have only finitely-many instructions
-imposes a requirement of uniformity.
+imposes on what we can do a requirement of uniformity.
 This can have surprising consequences.
 
 \begin{example} \label{ex:NineInPi}
@@ -3938,10 +3944,11 @@ there is a sequence of
   $n$ consecutive nines but no one has proved or disproved that.}.    
 
 Here is an answer:~there are two possibilities.
-Either for all inputs~$n$ such a sequence exists, or else there is some
+Either for all inputs~$n$ such a sequence exists or else there is some
 $n_0$ where the sequence exists for inputs less or equal to~$n_0$ and no such
-sequence exists for inputs larger than that.
-Therefore one of these two programs solves the problem.
+sequence exists for $n\geq n_0$.
+Therefore one of these two programs solves the problem\Dash we don't know
+which one, but one of the two does.
 \begin{center}
 \vspace*{-4ex}
 \begin{minipage}[t]{0.4\linewidth}%
@@ -3962,15 +3969,16 @@ else:
 \end{minipage}%
 \vspace*{-2ex}
 \end{center}
-It is unsettling that the answer, whichever answer it is,
+It is surprising that the answer, whichever of the two it is,
 seems not to have much to do with $\pi$.
-It is also unsettling that,
-although we have just shown that this problem is mechanically solvable,
-nonetheless we do not know what the solution is.
-\citetext{There is a difference between defining this function}{%
+It is also surprising, and perhaps unsettling, that
+we have shown that the problem is mechanically solvable
+without giving any information as to what the solution is.
+That is, 
+\citetext{there is a difference between defining this function}{%
   This is a little like  
   Schr\"odinger's cat paradox
-  (see \protect\url{https://en.wikipedia.org/wiki/Schr\%C3\%B6dinger's_cat}). 
+  (see \protect\url{https://en.wikipedia.org/wiki/Schr\%C3\%B6dinger's_cat}) 
   in that it seems that one of the two is right 
   but we just don't know which.
   }
@@ -3982,15 +3990,41 @@ and giving an algorithm to compute it.
     0 &\case{otherwise}
   \end{cases}
 \end{equation*}
-Nevertheless, we have shown that the problem is mechanically solvable.
+
+There is an alternative.
+Consider~$\TM_{\pi}$, that inputs~$i\in\N$ and outputs 
+\citetext{$\pi$'s $i$-th decimal place}{%
+  As we have noted, some real numbers have two decimal
+  representations, one ending in $0$'s and one ending in $9$'s.
+  But every such number is rational (as ``ending in $0$'s'' implies)
+  and $\pi$ is not rational, so $\pi$ is not one of these numbers.}.
+With it, we can write a routine that takes in~$n$ 
+and uses $\TM_{\pi}$'s ability to give the digits 
+to search for~$n$ nines in a row.
+This approach is constructive in that we are computing the answer
+not just saying that it exists.
+It is also uniform in the sense that we could  
+modify the routine to take as inputs both~$n$ and~$\TM_r$. 
+However, this approach 
+has the disadvantage that if $n_0$ is such that for $n\geq n_0$
+never does $r$ have $n$~nines in a row, then this routine will
+just search forever, never printing~$0$.
 \end{example}
 
 
 
+
+
 \subsection{Parametrization}
-We can understand universality to be that there is a computable
+Universality says that there is a single Turing machine~$\UTM$, which 
+takes in two inputs $e,x$  and returns the same value as
+we would get by running $\TM_e$ on input~$x$
+(including not halting, if that machine does not halt).
+
+That is, there is a computable
 function $\map{F}{\N^2}{\N}$ such that
-$F(e,x)=\phi_e(x)$.
+$F(e,x)=\TM_e(x)$ (again, including that if $\TM_e(x)\diverges$ then 
+$F(e,x)\diverges$ also).
 There, the letter~$e$ travels from the function's argument to an index.
 We now generalize this observation.
 
@@ -4002,42 +4036,60 @@ For example, starting with
 (define (P a b)
   (+ a b))
 \end{lstlisting}
-and fixing the first input at $a=7$ gives a one-input routine.
+and freezing the first input at $a=7$ gives a one-input routine.
 \begin{lstlisting}
 (define (P_7 b)
   (P 7 b))
 \end{lstlisting}
-This is \definend{partial application}.
+This is \citetext{\definend{partial application}}{%
+  See also \autocite{wiki:PartialApplication}.}.
 
 Obviously the second program is related to the first.
-The next result is that from the index of the first program, and from 
-the value that is frozen, we can 
-compute the index of the second program.
+The next result is that we can go
+from the index of the first program and
+the value that is frozen, over to
+the index of the second program, via a computable function.
 
 %<*th:smn>
 \begin{theorem}[Parameter theorem, or \smn{} theorem] \label{th:smn}
 For every $m,n\in\N$
-there is a computable function $\map{s}{\N^{1+m}}{\N}$ with this behavior:
-where $m+n$-ary function computed by $\TM_e$ is
-$\TMfcn_e(x_0,\ldots,x_{m-1},x_m,\ldots,x_{m+n-1})$,
-freezing the initial $m$~variables at $a_0,\ldots,a_{m-1}\in\N$
-gives the function computed by $\TM_{s(e,a_0,\ldots,a_{m-1})}$.
+there is a computable total function $\map{s}{\N^{1+m}}{\N}$ with 
+this behavior:~for the $m+n$-ary function
+$\TMfcn_e(x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1})$,
+freezing the initial $m$~variables at $a_0,\ldots a_{m-1}\in\N$
+gives a function equal to
+$\TMfcn_{s(e,a_0,\ldots a_{m-1})}(x_m,\ldots x_{m+n-1})$.
 \end{theorem}
 %</th:smn>
+(The function $\TMfcn_e(x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1})$ could be
+partial, that is, it could be that the Turing machine
+$\TM_e$ fails to halt on some inputs $x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1}$.)
 
 \begin{proof}
 %<*pf:smni>
-We will produce the function~$s$ to satisfy three requirements:~it must 
-be effective, 
+We will produce the function~$s$ to satisfy three 
+requirements:~\citetext{it must be effective}{%
+  In fact, careful analysis shows that it is primitive recursive.}, 
 it must input an index~$e$ and an $m$-tuple $x_0,\ldots,x_{m-1}$,
 and it must output the index of a machine~$\hat{\TM}$ that,
 when given the input $x_m,\ldots,x_{m+n-1}$,
-will return $\TMfcn_e(x_0,\ldots,x_{m-1},x_m,\ldots,x_{m+n-1})$.
+will return the value $\TMfcn_e(x_0,\ldots,x_{m-1},x_m,\ldots,x_{m+n-1})$.
 
 The idea is that $s$ constructs the instructions for~$\hat{\TM}$.
 We know how to get from the instruction set to the index,
 using Cantor's encoding, so with that we will be done.
 The flowchart for $s$ is on the left below.
+The flowchart for $\hat{\TM}$, the Turing machine that $s$ constructs,
+is on the right.
+
+Recall that we are being flexible about
+the convention for Turing machines that take more than one input.
+To be clear here, we assume for this argument that input
+is encoded in unary, with any number~$k\in\N$ represented by
+a string of $k$-many \str{1}'s, that
+multiple inputs are separated with a single blank, and that
+when the machine is started the head should be under the input's
+left-most \str{1}.
 %</pf:smni>
 \begin{center}
   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts00.pdf}}
@@ -4045,30 +4097,20 @@ The flowchart for $s$ is on the left below.
   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts01.pdf}}
 \end{center}
 %<*pf:smnii>
-The flowchart for $\hat{\TM}$, the Turing machine that $s$ constructs,
-is on the right.
-Before considering that, recall that we are being flexible about
-the convention for Turing machines that take more than one input.
-To be clear here, we assume for this argument that input
-is encoded in unary, with the number~$k$ represented by
-a string of $k$-many \str{1}'s, that
-multiple inputs are separated with a single blank, and that
-when the machine is started the head should be under the input's
-left-most \str{1}.
-
 With that, 
 the machine $\hat{\TM}$ does not start by reading
 its inputs $x_m,\ldots,x_{m+n-1}$.
 Instead, it moves left and puts $x_0,\ldots,x_{m-1}$ on the tape,
-in unary and separated by blanks.
-Thus, 
-when this phase is done the machine will have $x_0,\ldots,x_{m+n-1}$ on the
+in unary and separated by blanks, and with a blank between $x_{m-1}$ 
+and~$x_m$.
+Thus
+when this phase is done the machine will have 
+all of the inputs $x_0,\ldots,x_{m+n-1}$ on the
 tape, in unary and separated by blanks.
-Next move the I/O head until it is on the leftmost \str{1}
+Next $\hat{\TM}$ moves the I/O head until it is on the leftmost \str{1}
 of the $x_0$.
-Finally, turn control
-over to Turing machine~$P_e$ (using universality),
-which will run on that input list.
+Finally, using universality, $\hat{P}$ simulates
+Turing machine~$P_e$, and lets it run on that input list.
 %</pf:smnii>
 \end{proof}
 

@@ -213,7 +213,6 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 picture pic;
 int picnum = 4;
 
-
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x,y$");
@@ -928,6 +927,389 @@ draw(pic,
      test,
      printout,
      loop, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .......... flowchart of a machine that will parametrize to a family ..
+picture pic;
+int picnum = 7;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node print=nbox("Print $x\cdot y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// .......... fix x=0 ..
+picture pic;
+int picnum = 8;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node print=nbox("Print $0\cdot y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .......... fix x=1 ..
+picture pic;
+int picnum = 9;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node print=nbox("Print $1\cdot y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .......... fix x=2 ..
+picture pic;
+int picnum = 10;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node print=nbox("Print $2\cdot y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .......... leave x=x ..
+picture pic;
+int picnum = 11;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node print=nbox("Print $x\cdot y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.0*v,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .......... flowchart of a machine that will parametrize to a family ..
+picture pic;
+int picnum = 12;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x_0$, $x_1$, $y$");
+node test=nrounddiamond("$x_0$ even?");
+node ybranch=nbox("Print $x_1\cdot y$");
+node nbranch=nbox("Print $x_1+y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+ybranch.pos = test.pos + (-2*u,-1.0*v);
+nbranch.pos = test.pos + (2*u,-1.0*v);
+vlayout(1.85*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..ybranch).l("Y"),
+     (test..HV..nbranch).l("N").style("leftside"),
+     (ybranch..VH..ending),
+     (nbranch..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     ybranch,
+     nbranch, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// .......... parametrize x_0=0, x_1=3 ..
+picture pic;
+int picnum = 13;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nrounddiamond("$0$ even?");
+node ybranch=nbox("Print $3\cdot y$");
+node nbranch=nbox("Print $3+y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+ybranch.pos = test.pos + (-2*u,-1.0*v);
+nbranch.pos = test.pos + (2*u,-1.0*v);
+vlayout(1.85*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..ybranch).l("Y"),
+     (test..HV..nbranch).l("N").style("leftside"),
+     (ybranch..VH..ending),
+     (nbranch..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     ybranch,
+     nbranch, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// .......... parametrize x_0=1, x_1=3 ..
+picture pic;
+int picnum = 14;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nrounddiamond("$1$ even?");
+node ybranch=nbox("Print $3\cdot y$");
+node nbranch=nbox("Print $3+y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+ybranch.pos = test.pos + (-2*u,-1.0*v);
+nbranch.pos = test.pos + (2*u,-1.0*v);
+vlayout(1.85*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..ybranch).l("Y"),
+     (test..HV..nbranch).l("N").style("leftside"),
+     (ybranch..VH..ending),
+     (nbranch..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     ybranch,
+     nbranch, 
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// .......... parametrize x_0=a, x_1=b ..
+picture pic;
+int picnum = 15;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nrounddiamond("$a$ even?");
+node ybranch=nbox("Print $b\cdot y$");
+node nbranch=nbox("Print $b+y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+ybranch.pos = test.pos + (-2*u,-1.0*v);
+nbranch.pos = test.pos + (2*u,-1.0*v);
+vlayout(1.85*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..ybranch).l("Y"),
+     (test..HV..nbranch).l("N").style("leftside"),
+     (ybranch..VH..ending),
+     (nbranch..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     ybranch,
+     nbranch, 
      ending
      );
 

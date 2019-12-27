@@ -2388,7 +2388,7 @@ So there is an association between binary numbers and source code.
 \end{remark}
 
 %<*lem:EachTMHasInfManyIndices>
-\begin{lemma}
+\begin{lemma}  \label{lem:EveryCompFcnHasInfManyIndices}
 Every computable function has infinitely many indices:~if $f$ is 
 computable then there are infinitely many distinct $e_i\in\N$ with
 $f=\TMfcn_{e_0}=\TMfcn_{e_1}=\cdots$\,.
@@ -4062,10 +4062,10 @@ $\TM_e$ fails to halt on some inputs $x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1}$.)
 We will produce the function~$s$ to satisfy three 
 requirements:~\citetext{it must be effective}{%
   In fact, careful analysis shows that it is primitive recursive.}, 
-it must input an index~$e$ and an $m$-tuple $x_0,\ldots,x_{m-1}$,
+it must input an index~$e$ and an $m$-tuple $x_0,\ldots x_{m-1}$,
 and it must output the index of a machine~$\hat{\TM}$ that,
-when given the input $x_m,\ldots,x_{m+n-1}$,
-will return the value $\TMfcn_e(x_0,\ldots,x_{m-1},x_m,\ldots,x_{m+n-1})$.
+when given the input $x_m,\ldots x_{m+n-1}$,
+will return the value $\TMfcn_e(x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1})$.
 
 The idea is that $s$ constructs the instructions for~$\hat{\TM}$.
 We know how to get from the instruction set to the index,
@@ -4091,13 +4091,13 @@ left-most \str{1}.
 %<*pf:smnii>
 With that, 
 the machine $\hat{\TM}$ does not start by reading
-its inputs $x_m,\ldots,x_{m+n-1}$.
-Instead, it moves left and puts $x_0,\ldots,x_{m-1}$ on the tape,
+its inputs $x_m,\ldots x_{m+n-1}$.
+Instead, it moves left and puts $x_0,\ldots x_{m-1}$ on the tape,
 in unary and separated by blanks, and with a blank between $x_{m-1}$ 
 and~$x_m$.
 Thus
 when this phase is done the machine will have 
-all of the inputs $x_0,\ldots,x_{m+n-1}$ on the
+all of the inputs $x_0,\ldots x_{m+n-1}$ on the
 tape, in unary and separated by blanks.
 Next $\hat{\TM}$ moves the I/O head until it is on the leftmost \str{1}
 of the $x_0$.
@@ -4105,6 +4105,55 @@ Finally, using universality, $\hat{P}$ simulates
 Turing machine~$P_e$, and lets it run on that input list.
 %</pf:smnii>
 \end{proof}
+
+\begin{example}
+Consider the two-input Turing machine sketched by this flowchart.
+\begin{equation*}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1007.pdf}}
+  \tag{$*$}
+\end{equation*}
+Suppose that it has index~$e$.
+
+We can use the Parameter Theorem to fix $x$ at the value~$0$.
+On the left below is the flowchart for $\TM_{s_{1,1}(e,0)}$.
+It is a one-input machine and 
+the function that it computes is $\TMfcn_{s_{1,1}(e,0)}(y)=0$.
+For example, $\TMfcn_{s_{1,1}(e,0)}(5)=0$.
+\begin{center}
+  \includegraphics{background/asy/flowcharts/flowcharts1008.pdf}
+  \hspace{2em plus 0.5fil}
+  \includegraphics{background/asy/flowcharts/flowcharts1009.pdf}
+  \hspace{2em plus 0.5fil}
+  \includegraphics{background/asy/flowcharts/flowcharts1010.pdf}
+\end{center}
+Similarly the other two are flowcharts for $\TM_{s_{1,1}(e,1)}$ 
+and~$\TM_{s_{1,1}(e,2)}$, 
+freezing the value of $x$ at $1$ and~$2$.
+The machine sketched in the center computes $\TMfcn_{s_{1,1}(e,1)}(y)=y$,
+so for instance $\TMfcn_{s_{1,1}(e,1)}(5)=5$.
+On the right the machine computes $\TMfcn_{s_{1,1}(e,2)}(y)=2y$,
+and an example is $\TMfcn_{s_{1,1}(e,2)}(5)=10$.
+
+In general, this is the flowchart for $\TM_{s_{1,1}(e,x)}$.
+\begin{center}
+  \includegraphics{background/asy/flowcharts/flowcharts1011.pdf}
+\end{center}
+The difference between this and the flowchart in~($*$) above 
+is that here the machine does not read in~$x$.  
+Rather, like the three above, 
+$x$ is hard-coded into the program body.
+This is a family of functions, the first three of which are in the 
+prior paragraph.
+This family is parametrized by~$x$ and the indices of these functions are
+uniformily computable from $e$ and~$x$, using the function~$s$.
+\end{example}
+
+In the notation $s_{m,n}$, 
+the subscript~$m$ is the number of inputs being frozen
+while~$n$ is the number of inputs left free.
+As the example suggests, they can be more annoying than illuminating.
+We often omit them.
+
 
 % The following Scheme code implements $s_{1,1}$.
 % (The \lstinline!gensym! function produces a symbol that does not appear
@@ -4129,30 +4178,82 @@ Turing machine~$P_e$, and lets it run on that input list.
 % \end{TODO}
 
 \begin{exercises}
+\begin{exercise}
+% Started as https://cs.stackexchange.com/questions/69197/difference-between-turing-machine-and-universal-turing-machine
+Your friend asks,
+``What can a Universal Turing machine do that a regular Turing machine 
+cannot?''
+Help them out.
+\begin{answer}
+A Universal Turing machine is a regular machine, in that it is just another
+machine in the list $\TM_0$, $TM_1$, \ldots\@
+
+Perhaps your friend's question was meant to be more like, ``What does a 
+Universal Turing machine
+do that a non-Universal machine does not?''
+Every machine does a job.
+Some machines expect a single input and then double it, 
+some expect two inputs and then add them.
+A Universal Turing machine expects two inputs, $e$ and~$x$,
+and then the output of this machine is the same as the output
+of the machine $\TM_e$ on input~$x$
+(including failing to halt if that machine fails to halt).
+It is `Universal' in that any input/output behavior that can be mechanically 
+produced can be produced by this one device.
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 Has a Universal Turing machine, or a machine equivalent to one, 
-ever been constructed?
+ever been built?
 \begin{answer}
 Every general purpose computer, such as a standard laptop or a cell phone,
 is equivalent in computable power to a Universal Turing machine.
 
 A person can worry that a standard laptop for instance
-does not come installed with 
-infinitely much memory.
+does not come installed with infinitely much memory.
 That's true.
 But such a machine can store things in the Cloud and so is not restricted to
 the installed memory, and that memory in this way is unbounded.
 
 A person can go on to worry that there are only so many bits available in the
-physical universe, which may be so, and so memory is not in the end 
+physical universe, which might be so, and thus memory is not in the end 
 unbounded.
 Perhaps that is true\Dash although we could worry back that we have enough time
-to exhaust what bits there are\Dash but we will take
-general purpose devices to be at the very least to close to 
-Universal Turing machines as to be hard to distinguish.
+to exhaust what bits there are before the Big Bang becomes a Big Crunch\Dash 
+but we will take
+general purpose devices to be at the least so very close to 
+Universal Turing machines that it is quite hard to tell them apart.
 \end{answer}
 \end{exercise}
+
+\begin{exercise}
+Can a Universal Turing machine similate another Universal Turing machine,
+or itself?
+\begin{answer}
+Yes.
+If $\TM_{e_0}$ and $\TM_{e_1}$ are Universal then giving the first one
+the inputs $e_1$ and~$x$ will result in the input/output behavior
+exactly like the second.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Is there more than one Universal Turing machine?
+\begin{answer}
+Yes, every computable function has infinitely many 
+indices, by~\cref{lem:EveryCompFcnHasInfManyIndices}.
+So if $\TM_e$ is universal, then the associated function~$\TMfcn_e$
+has infinitely many indices:~ there are infinitely many
+unequal indices so that
+$\TMfcn_e=\TMfcn_{e_0}=\TMfcn_{e_1}=\cdots\,$.
+The associated machines 
+$\TM_{e_0}$, $\TM_{e_1}$, \ldots{} are all universal.
+\end{answer}
+
+\end{exercise}
+
 
 \begin{exercise}
 Consider the function 
@@ -4240,8 +4341,6 @@ Imagine that it has index~$e$.
 \end{answer}
 \end{exercise}
 
-
-\recommended
 \begin{exercise}
 Consider the Turing machine sketched by this flowchart.
 \begin{center}
@@ -4290,11 +4389,9 @@ Imagine that it has index~$e$.
 \end{answer}
 \end{exercise}
 
-
-
 \recommended
 \begin{exercise}
-Suppose the the Turing machine sketched by this flowchart has index~$e$.
+Suppose that the Turing machine sketched by this flowchart has index~$e$.
 \begin{center}
   \includegraphics{background/asy/flowcharts/flowcharts1006.pdf}
 \end{center}
@@ -4314,6 +4411,52 @@ Suppose the the Turing machine sketched by this flowchart has index~$e$.
 \item $\TMfcn_{s_{1,1}(e,1)}(5)=5$
 \item $\TMfcn_{s_{1,1}(e,2)}(x_1)\diverges$
 \item $\TMfcn_{s_{1,1}(e,2)}(5)\diverges$
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Suppose that the Turing machine sketched by this flowchart has index~$e$.
+\begin{center}
+  \includegraphics{background/asy/flowcharts/flowcharts1012.pdf}
+\end{center}
+We will describe the family of functions parametrized by the arguments~$x_0$
+and~$x_1$.
+\begin{exparts}
+\item Use \cref{th:smn}, the Parameter Theorem, to fix $x_0=0$ and~$x_1=3$.
+  Give a flowchart for $\TM_{s(e,0,3)}$ and describe $\TMfcn_{s(e,0,3)}$.
+  What is  $\TMfcn_{s(e,0,3)}(5)$?
+\item Use the Parameter Theorem to fix $x_0=1$.
+  Give a flowchart for $\TM_{s(e,1,3)}$ and describe $\TMfcn_{s(e,1,3)}$.
+  What is  $\TMfcn_{s(e,1,3)}(5)$?
+\item Give a flowchart for $\TM_{s(e,a,b)}$ and describe $\TMfcn_{s(e,a,b)}$.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item This is the flowchart sketching the machine $\TM_{s(e,0,3)}$.
+  \begin{center}
+    \includegraphics{background/asy/flowcharts/flowcharts1013.pdf}
+  \end{center}
+  This is the function that it computes is $\TMfcn_{s(e,0,3)}(y)=3y$.
+  Consequently,  $\TMfcn_{s(e,0,3)}(5)=15$.
+\item This is the flowchart for $\TM_{s(e,1,3)}$.
+  \begin{center}
+    \includegraphics{background/asy/flowcharts/flowcharts1014.pdf}
+  \end{center}
+  This machine computes the function $\TMfcn_{s(e,1,3)}(y)=3+y$
+  and consequently  $\TMfcn_{s(e,1,3)}(5)=8$.
+\item This is the flowchart for $\TM_{s(e,a,b)}$.
+  \begin{center}
+    \includegraphics{background/asy/flowcharts/flowcharts1015.pdf}
+  \end{center}
+  The distinction between this and the flowchart in the question statement
+  is that here the machine does not read in~$x_0$ or~$x_1$.  
+  Rather, they are hard-coded, as the values $a$ and~$b$, 
+  into the program body.
+  This is a family of functions.
+  It is parametrized by~$a$ and~$b$, and the indices of these functions are
+  uniformily computable from $e$, $a$, and~$b$, with the function~$s$.
 \end{exparts}
 \end{answer}
 \end{exercise}

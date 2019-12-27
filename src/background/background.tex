@@ -4561,7 +4561,7 @@ Cantor's Theorem on page~\pageref{ex:DiagonalizationTable}.
 This table's rows are the computable functions and 
 its columns are the inputs.
 For instance, this table imagines that $\phi_2(3)=5$.
-\begin{center} \small 
+\begin{center} \small \label{HPDiagonalizationTable}
   %<*table:CantorThmEffectivization>
   \setlength{\arraycolsep}{0.75\arraycolsep}
   \begin{tabular}{r|ccccccc@{\hspace*{1em}$\ldots$}}
@@ -4750,12 +4750,17 @@ Once we start it, it just keeps going.
 says that there is no single program that, for all~$e$, correctly computes 
 in a finite time whether $\TM_e$ halts on input~$e$.
 
-The ``finite time'' qualifier is there because we could just use a universal
-Turing machine to simulate $\TM_e$ on~$e$, but if that machine failed to halt
-then we would not find out in a finite time. 
-
-The ``single program'' qualifier is there because for any index~$e$,
-either $\TM_e$ halts on~$e$ or it does not.
+That has the qualifier `finite time' 
+because we could perfectly well write this program
+\begin{lstlisting}
+read e
+simulate machine e on input e
+print 1
+\end{lstlisting}
+but if $\TM_e$ on input~$e$ fails to halt then we would not find out 
+in a finite time.
+The `single program' qualifier is there because for any index~$e$,
+either $\TM_e$ halts on~$e$ or else it does not.
 That is, for any~$e$ one of these two programs
 gives the right answer.
 \begin{center}
@@ -4776,6 +4781,10 @@ print 1
 \end{minipage}%
 % \vspace*{-2ex}
 \end{center}
+Of course, solving the \HP{} by guessing is not what we had in mind.
+We had in mind a program, an effective procedure, that inputs~$e$
+and outputs an answer in a finite time.
+
 Thus, the unsolvability of the Halting Problem is about 
 the non-existence of a single program that works across all
 indices.
@@ -4800,11 +4809,11 @@ modifies the source so that for any input where $\TM$ fails to halt,
 the modified program will halt (and output $0$) but the utility
 does not change any outputs where $\TM$ does halt.
 That would cause the list of all programs to give rise to a 
-list of total functions like the one on \cpageref{ex:DiagonalizationTable}
+list of total functions like the one on \pageref{HPDiagonalizationTable},
 and diagonalization gives a contradiction.
 
 Thus, halting, or rather failure to halt, is central
-to the nature of comptuation.
+to the nature of computation.
 In any general computational scheme
 there must be some computations that halt on all inputs, 
 some that halt on no inputs, 
@@ -4844,23 +4853,29 @@ today we
 number is an even perfect number if and only if it has the form 
 $(2^p-1)\cdot 2^{p-1}$ where $2^p-1$ is prime.}.
 But we do not know if there are any odd perfect numbers.
+
 With a solution to the Halting Problem we could settle that question.
 The
 program shown here searches for an odd perfect number.\footnote{%
   It takes an
-  input $x$ but ignores it; recall that in this book we have a convention that 
-  all Turing machines take one input, and all give one output.}
+  input $x$ but ignores it; in this book we have a convention that 
+  we like Turing machines to all take an input and all give an output.}
 If it finds one then it halts.
 If not then it does not halt.
 So giving $\computablefunction{halt\_checker}$ the index of this program
 would settle whether there exists an odd perfect number.
 There are many open questions 
 \citetext{involving an unbounded search}{%
-A computer program that solved 
-the Halting Problem, if one existed, could be very slow. 
-So this might not be a feasible way to settle this question.  
-But at the moment we are studying what can be done in principle.} 
+  A computer program that solved 
+  the Halting Problem, if one existed, could be very slow. 
+  So this might not be a feasible way to settle this question.  
+  But at the moment we are studying what can be done in principle.} 
 that would fall to this approach.
+(Just to name one more:~no one knows if there is any $n>4$ such that
+$2^{(2^n)}+1$ is prime.
+We could answer the question by writing $\TM$ to search for such an~$n$,
+ and give the index of $\TM$ to 
+$\computablefunction{halt\_checker}$.)
  
 Before moving on, we note the appearance here of the theme of unbounded search.
 It does not just appear in looking for perfect numbers;
@@ -4936,6 +4951,7 @@ The \HP{} is part of a larger unsolvability phenomenon.
 \begin{example} \label{ex:HaltOnThree}
 Consider the problem of determining whether a given Turing machine halts 
 on the input~$3$.
+That is, given~$x$, does $\TMfcn_x(3)\converges$?
 \begin{equation*}
   \computablefunction{halts\_on\_three\_checker}(x)=
   \begin{cases}
@@ -4957,7 +4973,7 @@ simulates running $\TM_x$ on input~$x$.
 If that simulation halts then the program as a whole halts.
 If that simulation does not halt then this program as a whole
 does not halt.
-Thus, this program halts on input~$y=3$ if and only if 
+Thus, the program on the right halts on input~$y=3$ if and only if 
 $\TM_x$ halts on~$x$.
 So with this flowchart we could leverage being able
 to answer questions about
@@ -4972,7 +4988,8 @@ questions about whether $\TM_x$ halts on~$x$.
 % halts on~$x$ for a single~$x$.
 % For that we will bring in uniformity, using the program on the left.
 
-More precisely, for the proof that
+With that motivation we are ready for the argument.
+For the proof that
 $\computablefunction{halts\_on\_three\_checker}$ is not mechanically
 computable, assume otherwise.
 Consider this function.
@@ -4983,15 +5000,17 @@ Consider this function.
     \uparrow &\case{otherwise}
   \end{cases}
 \end{equation*}
-It is computed by the flowchart above on the left, so by Church's Thesis
+Observe that~$\psi$ is mechanically computable, because it
+is computed by the flowchart above on the left.
+So by Church's Thesis
 there is a Turing machine whose input-output behavior is $\psi$.
 That Turing machine has some index~$e$, meaning that $\psi=\phi_e$.
 
 Use the \smn{} theorem to parametrize~$x$, giving $\phi_{s(e,x)}$.
 This is a family of functions, one for~$x=0$, one for~$x=1$, etc.\@
-Below is a sketch of the family of associated machines.
+Below is the family of associated machines.
 Each has a `Read~$y$' but no `Read~$x$'; rather, 
-the value used in the middle box is hard-coded into the source.
+the value used in the middle box is hard coded into each source.
 \begin{center}
   \vcenteredhbox{\includegraphics{background/asy/hp/hp15.pdf}}
   \hspace*{3em}
@@ -5001,29 +5020,32 @@ the value used in the middle box is hard-coded into the source.
   \hspace*{2em}\ldots{}
 \end{center}
 
-As in the plan above, $\phi_x(x)\converges$ if and only if
+As in the plan above, for all $x\in\N$ we have that
+$\phi_x(x)\converges$ if and only if
 $\computablefunction{halts\_on\_three\_checker}(s(e,x))=1$.
-Therefore, 
+We know that the \smn{} function~$s$ is computable so 
 the supposition that $\computablefunction{halts\_on\_three\_checker}$ is 
-mechanically computable gives that the composition
+also computable gives that the composition
 $\composed{\computablefunction{halts\_on\_three\_checker}}{s}$
-is mechanically computable, which gives that the \HP{} is 
-mechanically computable, 
+is computable, which 
+in turn gives that the \HP{} is 
+computable, 
 which is false.
 We conclude that $\computablefunction{halts\_on\_three\_checker}$
-is not computable.
+is not mechanically computable.
 \end{example}
 
 \begin{example} \label{ex:OutputsSeven}
-We next show that this function is not mechanically computable.
+Show that this function is not mechanically computable: given~$x$,
+determine whether $\TMfcn_x$ outputs a~$7$ for any input.
 \begin{equation*}
-  \computablefunction{outputs\_seven\_checker}(e)=
+  \computablefunction{outputs\_seven\_checker}(x)=
   \begin{cases}
-    1 &\case{if $\TM_e$ outputs $7$ on some input~$x$}  \\
+    1 &\case{if $\TM_x$ outputs $7$ on some input}  \\
     0 &\case{otherwise} 
   \end{cases}
 \end{equation*}
-
+% We follow the pattern of the prior example.
 Assume otherwise, that it is a computable
 function, and consider this.
 \begin{equation*}
@@ -5033,10 +5055,10 @@ function, and consider this.
     \uparrow &\case{otherwise}
   \end{cases}
 \end{equation*}
-It is computed by the flowchart on the left below.
+It is computed by the flowchart on the left.
 Because it is intuitively mechanically computable, Church's Thesis gives that
 there is a Turing machine whose input-output behavior is $\psi$.
-That Turing machine has an index~$e$, so~$\psi=\phi_e$.
+That Turing machine has an index~$e$, so that~$\psi=\phi_e$.
 \begin{center}
   \includegraphics{background/asy/hp/hp08.pdf}
   \hspace*{2em plus 0.5fil}
@@ -5044,22 +5066,23 @@ That Turing machine has an index~$e$, so~$\psi=\phi_e$.
 \end{center}
 The \smn{} theorem gives 
 a family of functions $\phi_{s(e,x)}$ parametrized by $x$.
-A flowchart for member of that family is on the right; again, there is a 
-different such flowchart for each value of~$x$.
+On the right is a flowchart for an associated machine; again, $x$ is hard-coded
+so there is a 
+different machine for each value of~$x$.
 Then, $\phi_x(x)\converges$ if and only if
 $\computablefunction{outputs\_seven\_checker}(s(e,x))=1$.
-The supposition that $\computablefunction{outputs\_seven\_checker}$ is 
-computable gives that the composition
+If $\computablefunction{outputs\_seven\_checker}$ is 
+computable then the composition
 $\composed{\computablefunction{outputs\_seven\_checker}}{s}$
-is computable, which gives that the \HP{} is computably solvable, 
-which is not right.
+is computable, so the \HP{} is computably solvable, 
+which it isn't.
 So $\computablefunction{outputs\_seven\_checker}$ is not computable.
 \end{example}
 
 \begin{example} \label{ex:Doubles}
-We next show that the problem of determining whether a program
-doubles its input is unsolvable, that this 
-function is not mechanically computable.
+Show that this problem is unsolvable:~given $x$, determining whether $\TMfcn_x$
+doubles its input, that is, $\TMfcn_x(y)=2y$ for all~$y$. 
+We want to show that this function is not mechanically computable.
 \begin{equation*}
   \computablefunction{doubler\_checker}(e)=
   \begin{cases}
@@ -5077,36 +5100,40 @@ This function
   \end{cases}
 \end{equation*}
 is computed by the flowchart on the left below.
-This flowchart persuades us that $\psi$ is intutitively computable and then
+Because $\psi$ is intutitively mechanically computable,
 Church's Thesis says that there
 a Turing machine that computes it.
-This Turing machine has some index~$e$, so that $\psi=\phi_e$.
+This Turing machine has some index,~$e$, so that $\psi=\phi_e$.
 \begin{center}
   \includegraphics{background/asy/hp/hp10.pdf}
   \hspace*{2em plus 0.5fil}
   \includegraphics{background/asy/hp/hp11.pdf}
 \end{center}
 Apply the \smn{} theorem to get 
-a family of functions $\phi_{s(e,x)}$ parametrized by $x$.
+a family of functions $\phi_{s(e,x)}$, associated with the 
+flowchart on the right, parametrized by $x$.
 Then $\phi_x(x)\converges$ if and only if
 $\computablefunction{outputs\_seven\_checker}(s(e,x))=1$.
 So the supposition that $\computablefunction{doubler\_checker}$ is 
-computable gives that the \HP{} is computably solvable, 
+computable gives that the \HP{} is computable, 
 which is wrong.
 \end{example}
 
 These examples show that one of the roles that the \HP{}
 plays is that it is a touchstone for demonstrating algorithmic unsolvability.
+Most proofs that something is unsolvable involve showing that
+if we could solve the given problem then we could solve
+the \HP{}, but we cannot.
 
 We close with two comments.
 The first is to reiterate that when we say that a problem is
 unsolvable we mean that it is unsolvable
 by a mechanism, that there  
 is no Turing machine that can compute the solution to the problem.
-There may well be a \citetext{function that solves it}{\autocite{wiki:ouija}}
-but there is no computable function that solves it.
+There can be a \citetext{function that solves it}{\autocite{wiki:ouija}}
+but no computable function that solves it.
 
-Out second comment is some intuition about which problems are unsolvable.
+The second comment is some intuition about which problems are unsolvable.
 There certainly are problems that start with ``Given~$e$'' that we can solve.
 Just to list one: given~$e$ decide if one instruction in $\TM_e$ is 
 $\tminstruction{0}{B}{L}{1}$.
@@ -5123,11 +5150,10 @@ The next subsection expands.
 
 
 \subsection{Rice's Theorem}
-We have shown that a number of problems are unsolvable.
-The intuition from those examples is that
-we cannot, given $e$,  mechanically analyze the behavior of $\TM_e$.
+The intuition from the unsolvability examples is that
+we cannot, given $x$,  mechanically analyze the behavior of $\TM_x$.
 We now make that intuition precise.
-We start with two definitions that formalize `behavior'.
+These two definitions formalize `behavior'.
 
 %<*def:SameBehavior>
 \begin{definition}
@@ -5140,7 +5166,7 @@ and, when they do converge, they have the same outputs.
 
 %<*def:IndexSet>
 \begin{definition}
-A set $\mathcal{I}$ of natural numbers is an \definend{index set} if for all 
+A set $\mathcal{I}$ of natural numbers is an \definend{index set} when for all 
 indices~$e,\hat{e}\in\N$,
 if $e\in\mathcal{I}$ and $\TMfcn_e\samebehavior\TMfcn_{\hat{e}}$ 
 then also~$\hat{e}\in\mathcal{I}$. 
@@ -5175,10 +5201,9 @@ thus $\hat{e}\in\mathcal{J}$.
 
 \begin{example} \label{ex:NotIndexSet}
 The set $\set{e\in\N\suchthat
-      \text{$\TM_e$ contains an instruction starting with $q_1$}}$ 
+      \text{$\TM_e$ contains an instruction starting with $q_{10}$}}$ 
 is not an index set.
-We can easily produce two Turing machines with the same behavior,
-such as giving a constant output of $0$,
+We can easily produce two Turing machines having the same behavior
 where one machine contains such an instruction while the other does not.
 \end{example}
 
@@ -5219,7 +5244,7 @@ charted on the right.
 %<*pf:RicesTheoremii>
 We've constructed the functions on the right so that if 
 $\phi_x(x)\diverges$ then $\phi_{s(e,x)}\samebehavior\phi_{e_0}$
-and thus $s(e,x)\notin\mathcal{I}$, and so that
+and thus $s(e,x)\notin\mathcal{I}$, and also so that
 if $\phi_x(x)\converges$ then $\phi_{s(e,x)}\samebehavior\phi_{e_1}$
 and thus $s(e,x)\in\mathcal{I}$.
 Therefore being able to check whether an index $s(e,x)$
@@ -5237,18 +5262,18 @@ Consider the set
 $
   \mathcal{I}=\set{e\in\N \suchthat \phi_e(3)\converges}
 $.
-To apply Rice's Theorem we must show that it is not empty, that 
+To apply Rice's Theorem we must show that this set is not empty, that 
 it is not all of~$\N$, and that it is an index set.
 This set is not empty because we can write a Turing machine that 
 acts as the identity function $\phi(x)=x$, and if $e_0$ is the index of that 
 Turing Machine then $e_0\in\mathcal{I}$.
 The set is not all of $\N$ because, 
-where $e_1$ is the index of a Turing Machine that never halts then
-$e_1\notin\mathcal{I}$.
+where $e_1$ is the index of a Turing Machine that never halts, 
+we have that $e_1\notin\mathcal{I}$.
 
 To show that~$\mathcal{I}$ is an index set, assume that
 $e\in\mathcal{I}$ and 
-that $\hat{e}\in\N$ is such that $\phi_e\samebehavior\phi_{\hat{e}}$.
+let $\hat{e}\in\N$ be such that $\phi_e\samebehavior\phi_{\hat{e}}$.
 Then $e\in\mathcal{I}$ gives that  $\phi_e(3)\converges$ and 
 $\phi_e\samebehavior\phi_{\hat{e}}$ gives that
 $\phi_{\hat{e}}(3)\converges$ also.
@@ -5262,56 +5287,58 @@ given $e$, decide if $\phi_e(x)=7$ for some~$x$.
 We will show that
 $\mathcal{I}=\set{e\in\N \suchthat \text{$\phi_e(x)=7$ for some $x$}}$
 is a nontrivial index set.
-It is not empty because where $e_0$ is the index of a 
-Turing Machine that acts as the identity function $\phi_{e_0}(x)=x$
-then the input $x=7$ produces the output~$7$
+It is not empty because, where $e_0$ is the index of a 
+Turing Machine that acts as the identity function $\phi_{e_0}(x)=x$,
+the input $x=7$ produces the output~$7$
 so $e_0\in\mathcal{I}$.
-It is not all of $\N$ because, 
+This set is not all of $\N$ because, 
 where $e_1$ is the index of a Turing Machine that never halts, 
 $e_i\notin\mathcal{I}$.
 So this set is nontrivial.
 
 Showing that $\mathcal{I}$ is an index set is straightforward.
-Assume that $e\in\mathcal{I}$ and that $\hat{e}\in\N$ is such that
+Assume that $e\in\mathcal{I}$ and let $\hat{e}\in\N$ be such that
 $\phi_e\samebehavior\phi_{\hat{e}}$.
-Byt the first assumption, $\phi_e(x_0)=7$ for some input~$x_0$.
+By the first assumption, $\phi_e(x_0)=7$ for some input~$x_0$.
 By the second,
 $\phi_{\hat{e}}(x_0)=7$ also. 
 Consequently, $\hat{e}\in\mathcal{I}$.
 \end{example}
 
 We close by reflecting on the significance of Rice's Theorem.
-To recap, 
 Rice's Theorem speaks to the behavior of the machines.
 It addresses the properties of the functions
-associated with the machines, rather than the properties of the machines
-themselves.
-For example,~the set of functions
+associated with the machines.
+But it does not speak about the properties of the machines
+that aren't about the functions; 
+for example,~the set of functions
 computed by C~programs whose $100$-th character
 is a `k' would not be an index set. 
-So Rice's Theorem is about understanding what the machines do.
-Remember that we declared, in the first paragraph of the first chapter,
+Thus, Rice's Theorem is about understanding what the machines do.
+Remember that we declared, in the first paragraph of the first chapter 
+of this book,
 that we are more interested in what the machines do than in their
 internal construction.
 
 At the start of this chapter we saw by a counting argument that 
 unsolvable problems exist.
-Later the Halting Problem showed us that some interesting problems 
-that are unsolvable.
+Later the Halting Problem showed us that some interesting
+problems, some that are significant for the kinds of things
+we want to compute in practice, are unsolvable.
 Here we saw the definition of index set, 
 which is the natural way to encapsulate a behavior of interest.
 In this sense, 
-Rice's Theorem tells us that \emph{every} interesting problem
+Rice's Theorem says that \emph{every} interesting problem
 is unsolvable.
 
-This takes on particular significance in the light of Church's Thesis,
-since it says that `behavior of interest' is any behavior of this type
-that we will ever see in any mechanism.
+% This takes on particular significance in the light of Church's Thesis,
+% since it says that `behavior of interest' is any behavior of this type
+% that we will ever see in any mechanism.
 
-Now, the prior paragraphs are perhaps an overstatement; we've all seen
+Now, the prior paragraph is an overstatement; we've all seen
 and written real-world programs with behaviors that interested us.
-Nonetheless, Rice's Theorem is significant as
-the culmination of a program of investigation into what can be done,
+Nonetheless, Rice's Theorem is especially significant
+for an understanding what can be done
 mechanically.
   
 

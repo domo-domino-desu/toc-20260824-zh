@@ -4239,6 +4239,33 @@ exactly like the second.
 \end{answer}
 \end{exercise}
 
+\begin{exercise} % From https://cs.stackexchange.com/q/41854/67754
+Your class has a jerk who keeps throwing out pronouncements
+that the prof has to patiently correct.
+This time its, 
+``Universal Turing machines make no sense.
+How can a machine simulate another machine if it has a different alphabet?
+Obviously it can't.
+And how could a machine simulate another machine that has more states?
+It makes no sense at all.''
+Clue this chucklehead in.
+\begin{answer}
+The answer is that it does those things in software.
+Your laptop uses the binary alphabet, but simulates working with
+any language, with any alphabet.
+For instace, your laptop may simulate \str{a} with \str{111101}.
+Similarly, a Universal Turing machine with alphabet 
+$\Sigma=\set{\str{B},\str{1}}$ can simulate a Turing machine with
+alphabet  $\hat{\Sigma}=\set{\str{B},\str{a},\str{b}}$ by having
+codes for each symbol.
+Likewise, the universal machine does not use its states to simulate the states
+of the simulated machine.
+Rather, it has codes for those states that it manipulates on the tape.
+
+Chucklehead.
+\end{answer}
+\end{exercise}
+
 \begin{exercise}
 Is there more than one Universal Turing machine?
 \begin{answer}
@@ -4256,8 +4283,7 @@ $\TM_{e_0}$, $\TM_{e_1}$, \ldots{} are all universal.
 
 
 \begin{exercise}
-Consider the function 
-$f(x_0,x_1)=3x_0+x_0\cdot x_1$.
+Consider the function $f(x_0,x_1)=3x_0+x_0\cdot x_1$.
 \begin{exparts}
 \item Freeze $x_0$ to have the value~$4$.
   What is the resulting one-variable function?
@@ -4395,14 +4421,14 @@ Suppose that the Turing machine sketched by this flowchart has index~$e$.
 \begin{center}
   \includegraphics{background/asy/flowcharts/flowcharts1006.pdf}
 \end{center}
-\begin{exparts*}
-\item Describe $\TMfcn_{s_{1,1}(e,0)}$.
-\item What is  $\TMfcn_{s_{1,1}(e,0)}(5)$?
+\begin{exparts}
+\item Describe $\TMfcn_{s_{1,1}(e,0)}$ by giving the flowchart.
+\item What is the value of $\TMfcn_{s_{1,1}(e,0)}(5)$?
 \item Describe $\TMfcn_{s_{1,1}(e,1)}$.
 \item What is $\TMfcn_{s_{1,1}(e,1)}(5)$?
 \item Describe $\TMfcn_{s_{1,1}(e,2)}$.
 \item What is $\TMfcn_{s_{1,1}(e,2)}(5)$?
-\end{exparts*}
+\end{exparts}
 \begin{answer}
 \begin{exparts}
 \item $\TMfcn_{s_{1,1}(e,0)}(x_1)=x_1$
@@ -4519,7 +4545,7 @@ uncountably many functions and so there are functions with no
 associated machine.
 While knowing what's true is great,
 our taste is to prefer to construct a specific 
-unsolvable function rather than to just
+unsolvable function rather than just to
 know that there is one.
 We will now do that.
 
@@ -4531,8 +4557,7 @@ Cantor's Theorem and effectivize it,
 to see how much of the proof we can express as a construction.
 
 Consider an illustrative table adapted from the discussion of
-Cantor's Theorem on 
-\cpageref{ex:DiagonalizationTable}.
+Cantor's Theorem on page~\pageref{ex:DiagonalizationTable}.
 This table's rows are the computable functions and 
 its columns are the inputs.
 For instance, this table imagines that $\phi_2(3)=5$.
@@ -4562,31 +4587,34 @@ For instance, this table imagines that $\phi_2(3)=5$.
 \end{center}
 %<*discussion:HP>
 Diagonalize.
-That is, consider the program on the right
-and note that its output is not any of the table's rows.
-That contradicts the supposition that
+That is, consider the program on the right.
+Its output seems not to be any of the table's rows,
+which appears to contradict the supposition that
 the rows are all of the computable functions.
 
-When we did Cantor's Theorem this contradiction showed that there are more
+In the Cantor's Theorem argument, the contradiction showed that there are more
 than countably many rows.
-But here we know that the Turing machines are enumerable.
-So what's the resolution?
+But here we know that there are countably many Turing machines 
+so we can imagine the rows that are shown.
+So what's the resolution of the apparent contradicion?
 The program's first, second, fourth and fifth boxes are trivial so the
-problem lies with getting through the third box.
+problem must lie with getting through its third box.
+
 The issue is halting\Dash among the computable functions 
-there must be one that on some input does not converge, and 
-in particular this must happen on the diagonal; there must be
+there are ones does not converge on some inputs.  
+In particular the appraent contradiction shows that 
+this must happen on the diagonal; there must be
 an $e\in\N$ so that $\phi_e(e)\diverges$.
-This makes the difficulty dissolve because for those input~$e$'s
+Recognizing this makes the difficulty dissolve because for those input~$e$'s
 in the flowchart, the program will never leave 
-the middle box and so will never get to the contradictory output.
-To prevent a contradiction,
+the middle box and so will never get to the contradictory output box.
+In short,
 in the above table some of the entries must be up arrows, $\uparrow$.
 %</discussion:HP>
 
 %<*def:K>
 \begin{definition}
-  $\definend{K}=\set{e \suchthat \text{$\TM_e$ halts on input~$e$}}$
+  $\definend{K}=\set{e\in\N \suchthat \text{$\TM_e$ halts on input~$e$, that is, $\TMfcn_e(e)\converges$}}$
 \end{definition}
 %</def:K>
 
@@ -4599,12 +4627,13 @@ that is, whether $\TMfcn_e(e)\converges$.
 
 Certainly for any $e\in\N$, either $\TMfcn_e(e)\converges$ or
 $\TMfcn_e(e)\diverges$.
-Thus there is a function giving $1$ in the first case and $0$ in the second.
-The \HP{} is to find a Turing machine whose behavior is that function.
-That is, the \HP{} is to produce a program 
-$\computablefunction{halt\_checker}$ that acts as the characteristic
-function of $K$, returning $1$ if $\TM_e$ halts on input~$e$ and
-returning~$0$ otherwise.
+Thus there is a function giving~$1$ in the first case and~$0$ in the second.
+The \HP{} is to decide if that function is computable, 
+to find a Turing machine with that behavior.
+% That is, the \HP{} is to produce a program 
+% $\computablefunction{halt\_checker}$ that acts as the characteristic
+% function of $K$, returning $1$ if $\TM_e$ halts on input~$e$ and
+% returning~$0$ otherwise.
 
 %<*th:HPIsUnsolvable>
 \begin{theorem}[Unsolvability of the \HP]
@@ -4624,8 +4653,8 @@ Assume otherwise, that there is a Turing machine whose behavior is this.
   \end{cases}
 \end{equation*}
 Then the function below is also mechanically computable.
-The flowchart illustrates $f$'s construction;
-it uses $\computablefunction{halt\_checker}$ for the branch.
+The flowchart illustrates how $f$ is constructed;
+it uses $\computablefunction{halt\_checker}$ in its decision box.
 %</pf:HPIsUnsolvablei>
 \begin{center}
 \begin{minipage}{0.3\textwidth}
@@ -4641,31 +4670,31 @@ it uses $\computablefunction{halt\_checker}$ for the branch.
 \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts02.pdf}}
 \end{center}
 %<*pf:HPIsUnsolvableii>
-(It doesn't matter what the output is in the first case,
-just that it converges.)
-Since $f$ is mechanically computable it has an index.
+(In $f$'s first case the output value doesn't matter,
+all that matters is that~$f$ converges.)
+Since this function is mechanically computable it has an index.
 Let that index be~$\hat{e}$, so that
 $f(x)=\TMfcn_{\hat{e}}(x)$ for all inputs~$x$.
 
-Now feed $f$ its own index:~consider $f(\hat{e})=\TMfcn_{\hat{e}}(\hat{e})$.
+Now consider $f(\hat{e})=\TMfcn_{\hat{e}}(\hat{e})$,
+that is, feed the machine on the right the input~$\hat{e}$.
 If it diverges then by the first clause in the definition of~$f$
 we have $f(\hat{e})\converges$,
 which contradicts divergence.
 If it converges then by $f$'s second clause 
 we have $f(\hat{e})\diverges$, also impossible.
-Since assuming that $f$ is constructed from mechanically computable
-parts is contradictory,
-the part from which $f$ is constructed,
-$\computablefunction{halt\_checker}$,
+Since assuming that $\computablefunction{halt\_checker}$ is 
+mechanically computable leads to a contradiction,
+$\computablefunction{halt\_checker}$
 is not mechanically computable.
 %</pf:HPIsUnsolvableii>
 \end{proof}
 
-We will say that a task is \definend{unsolvable} if it is
-mechanically unsolvable, that is, if no Turing machine 
+With Church's Thesis in mind will say that a task is \definend{unsolvable} 
+if it is mechanically unsolvable, if no Turing machine 
 computes that task.
-In the case that the task is to compute the answer to `yes' or `no' questions,
-such as the task of  determining membership in a set,
+If the task is to compute the answer to `yes' or `no' questions,
+such as the task of determining membership in a set,
 then we will also use as a synonym that the problem is \definend{undecidable}.
 
 
@@ -4692,7 +4721,7 @@ Consider this one.
 #;1> (define (f x)
 --->   (+ 1 (f x)))
 \end{lstlisting}
-We have to interrupt it, or it would just keep going.
+Once we start it, it just keeps going.
 \begin{lstlisting}
 #;2> (f 0)
 ^C

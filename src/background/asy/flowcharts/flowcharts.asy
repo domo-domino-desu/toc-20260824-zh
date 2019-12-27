@@ -120,7 +120,7 @@ int picnum = 2;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $e$");
-node test=nrounddiamond("$K(e)=1$?");
+node test=nrounddiamond("$K(e)=0$?");
 node printout=nbox("Print 0");
 node loop=nbox("Infinite loop");
 node ending=nroundbox("End");
@@ -141,8 +141,8 @@ vlayout(1.1*v,printout,ending);
 draw(pic,
      (start--read),
      (read--test),
-     (test--printout).l("No"),
-     (test--loop).l("Yes").style("leftside"),
+     (test--printout).l("N"),
+     (test--loop).l("Y").style("leftside"),
      (printout--ending)
 );
 
@@ -188,8 +188,8 @@ vlayout(1.1*v,printout,ending);
 draw(pic,
      (start--read),
      (read--test),
-     (test--printout).l("No"),
-     (test--loop).l("Yes").style("leftside"),
+     (test--printout).l("N"),
+     (test--loop).l("Y").style("leftside"),
      (printout--ending)
 );
 
@@ -915,8 +915,8 @@ vlayout(1.1*v,printout,ending);
 draw(pic,
      (start--read),
      (read--test),
-     (test--printout).l("No"),
-     (test--loop).l("Yes").style("leftside"),
+     (test--printout).l("N"),
+     (test--loop).l("Y").style("leftside"),
      (printout--ending)
 );
 

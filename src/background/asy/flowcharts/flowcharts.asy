@@ -359,8 +359,8 @@ int picnum = 6;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $n,x$");
-node getindex=nbox("Run $\TM_n$ on $n$");
+node read=nbox("Read $e,x$");
+node getindex=nbox("Run $\TM_e$ on $e$");
 node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on input $x$"));
 node end=nroundbox("End");
 
@@ -402,7 +402,7 @@ int picnum = 7;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node getindex=nbox("Run $\TM_n$ on $n$");
+node getindex=nbox("Run $\TM_e$ on $e$");
 node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on input $x$"));
 node end=nroundbox("End");
 
@@ -444,7 +444,7 @@ int picnum = 8;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node getindex=nbox("Run $\TM_n$ on $n$");
+node getindex=nbox("Run $\TM_e$ on $e$");
 node simulate=nbox("With the result $w$, run $\TM_{f(w)}$ on $x$");
 node end=nroundbox("End");
 

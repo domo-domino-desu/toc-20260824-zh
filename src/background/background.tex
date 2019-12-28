@@ -5037,7 +5037,7 @@ is not mechanically computable.
 
 \begin{example} \label{ex:OutputsSeven}
 Show that this function is not mechanically computable: given~$x$,
-determine whether $\TMfcn_x$ outputs a~$7$ for any input.
+determine whether $\TM_x$ outputs a~$7$ for any input.
 \begin{equation*}
   \computablefunction{outputs\_seven\_checker}(x)=
   \begin{cases}
@@ -5324,7 +5324,7 @@ internal construction.
 
 At the start of this chapter we saw by a counting argument that 
 unsolvable problems exist.
-Later the Halting Problem showed us that there are some interesting
+Later the \HP{} showed us that there are some interesting
 problems that are unsolvable, some problems
 that are significant for the kinds of things
 we want to compute in practice.
@@ -6278,27 +6278,34 @@ computably enumerable.
 
 
 \section{Oracles} \label{sec:Oracles}
-The \HP{} is unsolvable.
+The \HP{} is so hard that it is unsolvable.
 It is the absolutely hardest problem
 or are there ones that are even harder?
 
 What does it mean to say that one problem is harder than another?
-We compared problem hardness already, when we considered the problem
+We have compared problem hardness already, 
+for instance when we considered the problem
 of whether a Turing machine halts on input~$3$.
-We proved that if we could solve the halts-on-$3$ problem
+There we proved that if we could solve the halts-on-$3$ problem
 then we could solve the \HP.
 That is, we proved that halts-on-$3$ is at least as hard as the \HP.
-So we have already encountered relative computability:~we
-think that one problem is harder than a second one (or more general than
-the second)
+So our idea is that
+one problem is harder than a second
 if solving the first would also give us a solution to the 
-second.
+second.\footnote{%
+  We can instead think that the first problem is more general than
+  the second.
+  For instance, the problem of inputting a natural number and
+  outputting its prime factors is harder than the problem of
+  inputting a natural and determining if it is divisible by seven.
+  Clearly if we could solve the first then we could solve the second.}
 
+\margingraphic{0.23\textwidth}{background/pix/delphi.png}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Pythia}{The oracle at Delphi}}
 Under Church's Thesis we interpret the unsolvability of the \HP{} to
 say that no mechanism can answer all questions about
 membership in~$K$.
-So if we want to think about answering questions about such sets, 
-we must look for the answers to be supplied in some way
+So if we want to answer questions about sets that are harder than~$K$ then 
+we need the answers to be supplied in some way
 that
 \citetext{won't be a physically-realizable discrete and deterministic
 mechanism}{%
@@ -6306,54 +6313,47 @@ mechanism}{%
   He said, ``We shall not go any further into the nature of this oracle
   apart from saying that it cannot be a machine.''
   \autocite{TuringThesis}}.
-
-\margingraphic{0.23\textwidth}{background/pix/delphi.png}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Pythia}{The oracle at Delphi}}
-Consequently, we posit that to the Turing machine CPU we attach a device,
+Consequently, we posit that to the Turing machine box we attach a device,
 an \definend{oracle},
 that acts as the characteristic function of a set. 
-To see what could be computed if only we could solve
-the \HP{} we can attach a $K$-oracle,
-answering questions of the form,
+To see what could be computed if we could solve
+the \HP{} we can attach a $K$-oracle.
+It answers questions of the form,
 ``Is $x\in K$; does $\TMfcn_{x}(x)\converges$?''
 This is a black box, meaning that we don't open it to see how it
 works.\footnote{%
-  That would
+  Opening it would
   let out the \citetext{magic smoke}{See \autocite{wiki:MagicSmoke}.}.}
-
-One way to define an oracle computation
-extending that of Turing machines is:~to the action
-symbols \str{L} and~\str{R}, add one more, \str{O}.
-When this symbol appears, where the read/write head is pointing to the
-leftmost \str{1} of a sequence of $n$-many \str{1}'s,
-if $n\in A$ then that sequence is replaced
-by a single~\str{1} followed by $n$-many \str{0}'s,
-while if $n\notin A$ then the sequence is replace 
-by $n$-many \str{0}'s.
 
 \begin{center}
   \includegraphics{asy/share/machine01.pdf}
 \end{center}
 
-This is \definend{computation relative to the oracle}.
-For a full treatment see \autocite{Rogers}.
+One way to formally define computation with an oracle $A\subseteq\N$
+extending the definition of Turing machines is:~to the action
+symbols \str{L} and~\str{R}, add one more, \str{O}.
+When this symbol appears, where the read/write head is pointing to the
+leftmost \str{1} of a sequence of $n$-many \str{1}'s,
+if $n\in A$ then that sequence is replaced
+by a single~\str{1} followed by $n$-many \str{0}'s,
+while if $n\notin A$ then the sequence is replaced 
+by $n$-many \str{0}'s.
+This is \citetext{\definend{computation relative to the oracle~$A$}}{
+  For a full treatment see \autocite{Rogers}.}.
+
 In this section, instead of working with the details of the
-definition, including the low-level details of Turing machine computations,
-we will use Church's Thesis and
-discuss introducing into a programming language 
+definition
+we will use Church's Thesis.
+We imagine enhancing our programming language by introducing 
 a Boolean function \codeinline{oracle(x)}.
-% \begin{lstlisting}
-% (if oracle(x)
-%     #t  ;; How you write True in Scheme
-%     #f)
-% \end{lstlisting}
-    
-Here, as when we defined computation in the first chapter,
-we have a family of programs, like programs we have considered earlier
-except that they may contain the \codeinline{oracle(x)} call.
-Each of these new program is a string and
+\begin{lstlisting}
+(if (oracle x)
+    ... )
+\end{lstlisting}    
+Each program in the enhanced language is a string and
 we can list them effectively, for instance in ascending alphabetical order,
 so each program has an index.
-The index is source-equivalent:~from an index we can compute the
+The index is source-equivalent, meaning that from an index we can compute the
 source associated with that index,
 and from a source we can find the index.
 
@@ -6363,26 +6363,27 @@ if we have an $A$ oracle box plugged in, and unplug it and replace
 it with a~$B$ oracle box, 
 then the white box is unchanged.
 Of course, the values returned by \codeinline{oracle(x)} may change,
-resulting in changes to the outcome of running the two-box system.
-But the Turing machine itself, what we think of as the source code,
+resulting in changes to the outcome of running the Turing machine 
+with the oracle, the two-box system.
+But the Turing machine itself, 
+what we think of as the program in the enhanced language,
 stays the same.
 
 Thus,
 to specify the outcome of a relative computation, in addition to specifying
-which program we are using, and which inputs,
-we must also specify 
-an oracle set.
+which program we are using and which inputs,
+we must also specify the oracle set.
 That explains all the parameters in the notations for the
-\definend{oracle Turing machine $\TM_e^A$}
+\definend{oracle Turing machine, $\TM_e^A$}
 and for the outcome of the
-\definend{function computed relative to an oracle $\TMfcn^A_e(x)$}.
+\definend{function computed relative to an oracle, $\TMfcn^A_e(x)$}.
 
 \begin{definition}
-If the function computed from~$A$ is the characteristic function
-of a set~$B$ then we say that \definend{$B$ is $A$-computable} or that
+If a function computed from~$A$ is the characteristic function
+of the set~$B$ then we say that \definend{$B$ is $A$-computable} or that
 $B$ is \definend{Turing reducible} to~$A$,
-denoted \definend{$B\leq_T A$}.\footnotemark[2]
-\end{definition}\footnotetext[2]{The terminology
+denoted \definend{$B\leq_T A$}.\footnotemark[1]
+\end{definition}\footnotetext[1]{The terminology
   ``$B$ is Turing-reducible to $A$''
   can at first seem reversed.
   The idea is that we can solve problem~$B$ by
@@ -6391,7 +6392,8 @@ denoted \definend{$B\leq_T A$}.\footnotemark[2]
   For instance, we may say that the problem of finding the area under a
   curve reduces to the problem of antidifferentiation.}
 
-Think of the set $B$ as being simpler, or at least no harder, than~$A$.
+Think of the set $B$ as being easier, or at least no harder, than~$A$.
+For instance, if $E$ is the set of even numbers then $E\leq_TK$.
 
 \begin{theorem}
 \begin{thmparts}
@@ -6404,11 +6406,11 @@ relative to the empty set, or relative to any computable set.
 
 \begin{proof}
 For the first, a set is computable if its characteristic function is computable.
-Clearly if the characteristic function is computable without reference to an
-oracle, then it can be computed by an oracle machine, simply by ignoring the
+If the characteristic function is computable without reference to an
+oracle then it can be computed by an oracle machine, by ignoring the
 oracle.
 For the other direction, suppose that a characteristic function can be computed
-by reference to the empty set oracle (or any other computable oracle).
+by reference to the empty set or any other computable oracle.
 Then it can be computed without reference to an oracle by replacing
 the oracle calls with computations.
 
@@ -6418,20 +6420,20 @@ function of~$A$ and that
 $\TM_{\hat{e}}^C$ computes the characteristic function of~$B$.
 Then in the computation of $A$ from $B$ we can replace the
 $B$-oracle calls with calls to $\TM_{\hat{e}}^C$.
-That gives a routine that computes the characteristic function of $A$
+That computes the characteristic function of $A$
 directly from~$C$.
 \end{proof}
 
 \begin{example}
-Consider the problem of determining, given~$e$, whether $\TM_e$ halts
+Recall the problem of determining, given~$e$, whether $\TM_e$ halts
 on input~$3$.
-This problem asks for a program that acts as the
+It asks for a program that acts as the
 characteristic function of the set
 $A=\set{e\suchthat \text{$\TM_e$ halts on~$3$}}$.
 We will show that $K\leq_T A$.
 
 This is a reprise of \cref{ex:HaltOnThree}.
-Consider the function $\map{\psi}{\N^2}{N}$
+We consider the function $\map{\psi}{\N^2}{N}$
 that returns $0$ if $\TMfcn_x(x)\converges$ and that diverges otherwise.
 By Church's Thesis
 there is a Turing machine whose input-output behavior is $\psi$.
@@ -6442,20 +6444,19 @@ $A(s(e,x))=1$.
 That computes $K$ from an $A$~oracle.
 \end{example}
 
-Consider again the \HP, which is
-to decide the characteristic function of the set
-$\set{e\suchthat \text{$\TM_e$ halts on input~$e$}}$.
-That may seem odd; 
-surely the more natural question is whether $\TM_e$ halts on input~$x$?
+The \HP{} is
+to decide whether $\TM_e$ halts on input~$e$.
+A person may perceive that  
+a more natural problem is to decide whether $\TM_e$ halts on input~$x$.
 
 \begin{definition}
   $\definend{K_0}=\set{\sequence{e,x} \suchthat \text{$\TM_e$ halts on input~$x$}}$
 \end{definition}
 
-We will argue that the problems of computing~$K$ and of computing~$K_0$
-are equivalent, 
+We will argue, though, that the two problems are equivalent.
+We will prove that the problems of computing~$K$ and of computing~$K_0$ 
 are inter-solvable, meaning that if you can solve the one then
-you can solve the other and so the choice of problem is a 
+you can solve the other, and so your choice of problem is a 
 matter of convenience and convention.
 % \footnote{%  
 %   For the definition we go with $K$ 
@@ -6464,11 +6465,13 @@ matter of convenience and convention.
 %   at the start of this subsection.}
 
 \begin{definition}
-Two sets $A,B$ are \definend{$T$-equivalent, $A\equiv_T B$} if $A\leq_T B$
+Two sets $A,B$ are \definend{Turing equivalent} or \definend{$T$-equivalent}, 
+denoted \definend{$A\equiv_T B$}, if $A\leq_T B$
 and $B\leq_T A$.
-For any set~$A$, the collection of sets $T$-equivalent to $A$ is the
+For any set~$A$, the collection of sets Turing equivalent to $A$ is the
 \definend{Turing degree} of~$A$.
-The Turing degree of~$A$ is denoted using boldface, as~\definend{$\textbf{a}$}.
+The Turing degree of a set named~$A$ is denoted using the 
+boldface lower case letter, here~\definend{$\textbf{a}$}.
 \end{definition}
 
 Showing that two sets are $T$-equivalent
@@ -6485,10 +6488,11 @@ Since it can say whether $\TM_e$ halts on~$x$ for any input~$x$,
 it can clearly say whether $\TM_e$ halts on~$e$.
 
 For the $K_0\leq_T K$ half, suppose that we have access to a $K$~oracle.
-The problem we must solve is:~given a pair $\sequence{e,x}\in\N^2$,
+The problem we must solve is:~given a pair $\sequence{e,x}$,
 determine whether $\TM_e$ halts on input~$x$.
 Consider the program sketched on the left below;
-obviously it halts for all input triples exactly if $\sequence{e,x}\in K_0$.
+obviously it halts for all input triples exactly if $\sequence{e,x}\in K_0$
+(it doesn't matter what it outputs).
 By Church's Thesis there is a Turing machine implementing
 it; let it be machine~$\TM_{\hat{e}}$.
 \begin{center}
@@ -6498,13 +6502,15 @@ it; let it be machine~$\TM_{\hat{e}}$.
 \end{center}
 Get the 
 flowchart on the right by applying the \smn{} theorem
-to parametrize $e$ and~$x$. 
+to parametrize $e$ and~$x$
+(that is, the flowchart represents $\TM_{s(\hat{e},e,x)}$). 
 That flowchart represents a family of programs
 with infinitely many
 members, one for each pair $\protect\sequence{e,x}$.
 
 Now suppose that we are given a pair $\sequence{e,x}$ and consider the 
-right-side flowchart $\TM_{s(\hat{e},e,x)}$ associated with that pair.
+right-side flowchart % $\TM_{s(\hat{e},e,x)}$ 
+for that pair.
 It either halts on all inputs~$y$ 
 or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
 In particular, taking the input to be the number of this machine
@@ -6539,7 +6545,7 @@ That is, there is no index~$e\in\N$ such that $\TMfcn_e^K=K^K$.
 \end{theorem}
 
 \begin{proof}
-We adaptat the proof that the \HP{} is unsolvable.
+We adapt the proof that the \HP{} is unsolvable.
 Assume otherwise, that there is a mechanical computation relative to a
 $K$~oracle with this behavior.
 \begin{equation*}
@@ -6548,7 +6554,7 @@ $K$~oracle with this behavior.
   1  &\case{if $\TMfcn^K_e(e)\converges$}  \\
   0  &\case{if $\TMfcn^K_e(e)\diverges$} 
   \end{cases}
-  \tag{$*$}
+  % \tag{$*$}
 \end{equation*}
 Then the function below is also computable relative to a $K$~oracle.
 The flowchart illustrates $f$'s construction;
@@ -6574,10 +6580,10 @@ Now feed $f$ its own index\Dash consider
 $f(\hat{e})=\TMfcn^K_{\hat{e}}(\hat{e})$.
 If it diverges then the first clause in the definition of~$f$
 gives that $f(\hat{e})\converges$,
-which contradicts that $f$~diverges.
+which is a contradiction.
 If it converges then $f$'s second clause 
 gives $f(\hat{e})\diverges$, which is also impossible.
-So assuming that $f$ is computable relative to a $K$~oracle leads to
+Either way, assuming that $f$ is computable relative to a $K$~oracle leads to
 a contradiction.
 We constructed~$f$ by assuming only that 
 the characteristic function of $K^K$ is $K$-computable,
@@ -6590,7 +6596,7 @@ Any set~$S$ is reducible to its relativized \HP{}, $S\leq_T K^S$.
 
 \begin{proof}
 The flowchart on the left sketches a function that is intuitively
-mechanically computable, relative to an oracle.
+mechanically computable, relative to an oracle~$X$.
 So Church's Thesis gives that there is an oracle Turing machine that
 computes it, $\TM_e^X$ for some index~$e$.
 Apply the \smn{} theorem to parametrize~$x$, giving the
@@ -6610,8 +6616,7 @@ which holds if and only if $s(e,x)\in K^A$.
 
 
 \begin{corollary}
-The set $K$ is computable from $K^K$, that is, $K\leq_T K^K$, but
-$K^K\not\leq_T K$. 
+$K\leq_T K^K$, but $K^K\not\leq_T K$
 \end{corollary}
 
 \begin{proof}
@@ -6628,14 +6633,16 @@ of $K^K$.
 % \end{lemma}
 
 
-\begin{exercises}
+\begin{exercises}[Recall the definition of decider from page~\pageref{def:ComputableFcn}.]
+
+\recommended
 \begin{exercise} % from http://people.cs.aau.dk/~srba/courses/tutorials-CC-10/t5-sol.pdf
 Suppose that the set $A$ is Turing-reducible to the set~$B$. 
 Which of these are true?
 \begin{exparts}
 \item A decider for $A$ can be used to decide~$B$.
-\item If $A$ is decidable then~$B$ is decidable also.
-\item If $A$ is undecidable then $B$ is undecidable too.
+\item If $A$ is computable then~$B$ is computable also.
+\item If $A$ is uncomputable then $B$ is uncomputable too.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -6653,6 +6660,7 @@ The other way around is right:~if $B$ is decidable then $A$ is decidable also.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Both oracles and deciders take in a number and return, $0$ or~$1$, whether 
 that number is in the set.
@@ -6663,6 +6671,7 @@ An oracle, typically, is not.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Prove that $A\leq_T \setcomp{A}$ for all $A\subseteq\N$.
 \end{exercise}
@@ -6674,8 +6683,19 @@ $\TMfcn^A(x)$
 then $\TMfcn^A(x)=\TMfcn^B(x)$.
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Prove that if $A\leq_T B$ and $B$ is computable then $A$ is computable. 
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Show that the \HP{} reduces to each.
+\begin{exparts}
+\item Given $x$, determine whether $\TM_x$ outputs a~$7$ for any input.
+\item Given $x$, determine whether $\TMfcn_x(y)=2y$ for all input.
+\end{exparts}
+
 \end{exercise}
 
 \begin{exercise}
@@ -6683,9 +6703,10 @@ Let $A$ and~$B$ be sets.
 Produce a set~$C$ so that $A\leq_T C$ and $B\leq_T C$.
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Fix an oracle.
-Prove that the colllection of sets computable from that oracle is countable.
+Prove that the collection of sets computable from that oracle is countable.
 \end{exercise}
 
 \begin{exercise}
@@ -6705,8 +6726,18 @@ is not transtive.
 \end{exparts}
 \end{exercise}
 \begin{answer}
-Hint for the last: use $\emptyset$, $K$, and $\setcomp{K}$.
+\begin{exparts}
+\item
+\item
+\item
+\item
+\item
+Hint: use $\emptyset$, $K$, and $\setcomp{K}$.
+\end{exparts}
 \end{answer}
+
+% Instead, define re in A, and prove that if S is re in A and S comp
+% is re in A then S is recursive in A?
 \end{exercises}
 
 

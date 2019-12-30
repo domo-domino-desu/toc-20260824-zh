@@ -254,6 +254,7 @@
 
 %%%%%%%%%%%%%%%%%
 % Chapters
+
 % As with sections, put the numbering in the margin using a marginpar
 % (actually a marginnote that has been hacked to always be on the left).
 \renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
@@ -545,6 +546,27 @@
   \markright{Extra\ \thesubsection.\ #1}}% for page headers
 
 % Note that the cleveref names are lower down, after loading cleveref
+
+% ............ appendix ..............
+\renewcommand{\appendix}{%
+  \part{Appendix}
+  \pagestyle{empty}
+  \setcounter{section}{0}
+  \renewcommand{\thesection}{Appendix \Alph{section}.}
+  \titleformat{\section}[hang]
+     {\normalfont\scshape}
+     {\makebox[0em][r]{\thesection\hspace*{1em}}}
+     {0em}
+     {\Large\bfseries}
+  \titlespacing*{\section}
+    {0pt}  % increase of left margin
+    {3.5ex plus 1.5ex minus 0.3ex}% before sep
+    {1.8ex plus 0.3ex minus 0.05ex}% after sep
+ \def\exercisecounterstart{\relax}
+}
+
+
+
 
 %======================== hyperref ===========
 \usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234

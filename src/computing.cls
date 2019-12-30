@@ -1442,7 +1442,12 @@
   {\end{list}}
 
 % Make ellipsis space out properly before a period
+% Use \dots command.
 \usepackage[xspace]{ellipsis}
+% Get inter-sentence spacing. 
+%  Use as either "$1, 2, 3, \ldots$\sentencespace" or 
+% "Washington, Adams, \dots\sentencespace" 
+\newcommand{\sentencespace}{\spacefactor=3000{} }
 
 \usepackage{url}
 \usepackage{microtype}

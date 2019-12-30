@@ -147,19 +147,12 @@
   \cfoot{}
 }
 
-% I can't figure out how to make this wider.
-% \fancypagestyle{endmatter}{%
-%   \renewcommand{\headrulewidth}{.4pt}
-%   \renewcommand{\footrulewidth}{0pt}
-%   \fancyheadoffset[RE,LO]{-0.5\textwidth}
-%   \fancyhead[LE,RO]{{KKK\color{boldcolor}\textsl{\thepage}}}
-%   \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
-%   \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
-% }
-\fancypagestyle{endmatter}{%
-  \renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{endmatter}{%  appendix and notes
+  \renewcommand{\headrulewidth}{0.4pt}
   \renewcommand{\footrulewidth}{0pt}
-  \fancyhead[LE,RO]{}
+  \fancyhead[LE,RO]{{\color{boldcolor}\textsl{\thepage}}}
+  % \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
+  % \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
   \fancyhead[RE]{}
   \fancyhead[LO]{}
 }
@@ -550,12 +543,13 @@
 % ............ appendix ..............
 \renewcommand{\appendix}{%
   \part{Appendix}
-  \pagestyle{empty}
+  \addcontentsline{toc}{chapter}{Appendix}
+  \pagestyle{endmatter}
   \setcounter{section}{0}
-  \renewcommand{\thesection}{Appendix \Alph{section}.}
+  \renewcommand{\thesection}{\Alph{section}}
   \titleformat{\section}[hang]
      {\normalfont\scshape}
-     {\makebox[0em][r]{\thesection\hspace*{1em}}}
+     {\makebox[0em][r]{Appendix \thesection.\hspace*{1em}}}
      {0em}
      {\Large\bfseries}
   \titlespacing*{\section}

@@ -1284,3 +1284,85 @@ draw(p,
 );
 
 shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+
+
+
+// ======================== same degree sequence, nonisomorphic =============
+int picnum = 21;
+picture p;
+
+// define nodes
+node v0=ncircle("\strut$v_0$"),
+     v1=ncircle("\strut$v_1$"),
+     v2=ncircle("\strut$v_2$"),
+     v3=ncircle("\strut$v_3$"),
+     v4=ncircle("\strut$v_4$"),
+     v5=ncircle("\strut$v_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, v0, v1);
+layout(22.5, v1, v2);
+hlayout(1*u, v2, v3);
+layout(-22.5, v1, v4);
+hlayout(1*u, v4, v5);
+
+// draw edges
+draw(p,
+     (v0--v1), 
+     (v1--v2), 
+     (v2--v3), 
+     (v1--v4), 
+     (v4--v5)
+    );
+
+// draw nodes
+draw(p, v0, v1, v2, v3, v4, v5);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+// ...................
+int picnum = 22;
+picture p;
+
+// define nodes
+node v0=ncircle("\strut$v_0$"),
+     v1=ncircle("\strut$v_1$"),
+     v2=ncircle("\strut$v_2$"),
+     v3=ncircle("\strut$v_3$"),
+     v4=ncircle("\strut$v_4$"),
+     v5=ncircle("\strut$v_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v, v0, v1);
+layout(-20.0, v0, v2);
+layout(20.0, v1, v2);
+hlayout(1*u, v2, v3, v4, v5);
+
+// draw edges
+draw(p,
+     (v0--v2), 
+     (v1--v2), 
+     (v2--v3), 
+     (v3--v4), 
+     (v4--v5)
+    );
+
+// draw nodes
+draw(p, v0, v1, v2, v3, v4, v5);
+
+shipout(format("graphs%02d",picnum),p,format="pdf");
+

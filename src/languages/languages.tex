@@ -1337,7 +1337,7 @@ Obviously, those two will give different program behaviors.
 This is known as a \definend{dangling else}.
 \end{example}
 
-\begin{example}
+\begin{example}  \label{ex:ElemArithExprs}
 This grammar for elementary algebra expressions
 \begin{grammar}
 \ntrm{expr} \produces{} \ntrm{expr} \trm{+} \ntrm{expr}
@@ -1704,7 +1704,13 @@ while
 
 \recommended
 \begin{exercise}
-Recall Turing's prototype computer, a clerk doing the symbolic
+\citetext{Recall Turing's prototype computer}{%
+  In this book we stick to grammars where each
+  rule head is a single nonterminal.
+  That greatly restricts the languages that we can compute.
+  More general grammars can compute more, including every set that can be
+  decided by a Turing machine.}, 
+a clerk doing the symbolic
 manipulations to multiply two large numbers.
 Deriving a string from a grammar has a similar feel
 and we can write grammars to do computations.
@@ -1716,11 +1722,6 @@ the even numbers, $\set{\str{1}^{2n}\suchthat n\in\N}$.
 \item Do the same for
 the multiples of three, $\set{\str{1}^{3n}\suchthat n\in\N}$.
 \end{exparts}
-(In this book we stick to grammars where each
-rule head is a single nonterminal.
-That greatly restricts the languages that we can compute.
-More general grammars can compute more, including every set that can be
-decided by a Turing machine.)
 \begin{answer}
 \begin{exparts}
 \item These two rules suffice:
@@ -1783,7 +1784,7 @@ Give a derivation for each string.
 \end{exercise}
 
 \begin{exercise}  \label{exer:AmbiguousGrammar}
-Using the \Cref{rem:AmbiguousGrammar}'s unambiguous grammar,
+Using the \Cref{ex:ElemArithExprs}'s unambiguous grammar,
 produce a derivation for \str{a+(b*c)}.
 \end{exercise}
 
@@ -1858,24 +1859,25 @@ derive \str{aaabbbccc}.
 
 % ====================================================
 \section{Graphs}
-This chapter's goal is to describe how we state problems and 
-solutions.
-As the \citetext{blogfeed for Theoretical Computer Science}{%
-\autocite{blog:TOC}} \url{http://cstheory-feed.org/} shows,
-people working in this field often state their results in terms of 
-graphs, so we will now review the basics of Graph Theory.
-
-\subsection{Definition}
-Graphs are so natural in this area that we have already used them. 
+Researchers in the Theory of Computation 
+\citetext{often state their problems}{%
+  For instance, see the blogfeed for Theoretical Computer Science
+  \protect\url{http://cstheory-feed.org/} \autocite{blog:TOC}}, 
+and the solution of those problems, in the language of 
+Graph Theory.
+Graphs are so natural in this area that we have also already used them. 
 Here are two examples.
 \begin{center}
   \vcenteredhbox{\includegraphics{prologue/asy/circlediagram/circlediagram00.pdf}}
   \hspace*{3em}
   \vcenteredhbox{\includegraphics{languages/asy/parsetree/parsetree004.pdf}}
 \end{center}
-Both examples have vertices, the circles and the symbols,
+Both have vertices, the circles and the symbols,
 that are connected by edges.
 The edges represent a relationship between the vertices.
+
+\subsection{Definition}
+We start with the simplest type of graph.
 
 %<*def:Graph>
 \begin{definition} \label{def:SimpleGraph}
@@ -1897,28 +1899,29 @@ and eight edges.
   \qquad
   $\mathcal{E}=\set{\set{v_0,v_1},\set{v_0,v_2},\,\ldots\,\set{v_3,v_4}}$
 \end{center}
-The most important thing to note is that the graph is not its picture.
+Important:~a graph is not its picture.
 A graph is about how the vertices are connected.
 Both of the pictures below
-show the same graph as above
-because they show the same vertices and the same connections 
-between them.
-\begin{fig}[fig:DrawTwoWays]{The same graph, laid out in two additional ways.}
+show the same graph
+because they show the same vertices and the same connections.
+\begin{center} \label{fig:DrawTwoWays}
+% \begin{fig}[fig:DrawTwoWays]{The same graph, laid out in two additional ways.}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs01.pdf}}
   \hspace*{3em}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs02.pdf}}
-\end{fig}
+% \end{fig}
+\end{center}
 \end{example}
 
 %<*discussion:EdgeNotation>
-Instead of the set $e=\set{v,\hat{v}}$ we often use a string $e=v\hat{v}$. 
-Since sets are unordered we could also write $e=\hat{v}v$.
+Instead of writing $e=\set{v,\hat{v}}$ we often use a string $e=v\hat{v}$. 
+Since sets are unordered we could also write the same edge as $e=\hat{v}v$.
 %</discussion:EdgeNotation>
 
-\margingraphic{0.18\textwidth}{languages/pix/edgelord.png}{\label{fig:xkcdedgelord}\href{https://xkcd.com/2036/}{Courtesy \url{xkcd.com}}}
 %<*discussion:GraphVariants>
-There are many variations of \cref{def:SimpleGraph}.
-One allows a vertex to  
+There are many variations of \cref{def:SimpleGraph}, used for
+modelling circumstances that a simple graph cannot cover.
+One variant allows a vertex to  
 connect to itself, forming a \definend{loop}.
 % (We might define this by extending \cref{def:SimpleGraph} to also allow
 % an edge to be a one-element set.
@@ -1944,7 +1947,7 @@ or the cost in money or in time to traverse that edge.
 
 
 \subsection{Traversal}
-We often want to describe problems that involve
+Many problems involve
 moving through a graph.
 
 %<*def:Adjacent>
@@ -1967,15 +1970,13 @@ A closed path that has at least one edge is a \definend{cycle}.
 A \definend{circuit} is a closed walk that either contains all of the edges,
 in which case it is an \definend{Euler circuit}, or all of the vertices,
 making it a \definend{Hamiltonian circuit}.
-
 A graph is \definend{connected} if there is a path between any two vertices.
 \end{definition}
 %</def:Adjacent>
 
 \begin{example} \label{ex:TwoWalkGraphs}
 On the left is a path from $u_0$ to~$u_3$.
-Because a path is a kind of a trail and of a walk, it is a trail and a
-walk also.
+(it is also an example of  a trail and a walk).
 On the right is a Hamiltonian circuit.
 \begin{center}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs04.pdf}}
@@ -2006,7 +2007,7 @@ $\hat{\mathcal{E}}=\set{u_0, u_1, u_3}$, gives a subgraph
 $\hat{\mathcal{G}}$.
 
 In the same graph, the induced subgraph involving the set of
-vertices $\set{u_0,u_2,u_3}$ is a triangle.
+vertices $\set{u_0,u_2,u_3}$ is the outer triangle.
 \end{example}
 
 
@@ -2015,7 +2016,12 @@ vertices $\set{u_0,u_2,u_3}$ is a triangle.
 
 
 \subsection{Graph representation}
-A common way to represent a graph in a computer
+A common way to 
+\citetext{represent a graph in a computer}{%
+  \Cref{ex:SimpleGraphFiveVert} make the point that a graph 
+  is about the connections between vertices, not about how it is drawn. 
+  This graph representation
+  also illustrates that point because it is, after all, not drawn.} 
 is with a matrix.
 This example represents \cref{ex:SimpleGraphFiveVert}'s graph:
 it has a~$1$ in the $i,j$~entry if the graph has an edge from $v_i$ to~$v_j$
@@ -2034,10 +2040,6 @@ and a~$0$ otherwise.
   \end{blockarray}
   \tag{$*$}
 \end{equation*}
-% \Cref{ex:SimpleGraphFiveVert} make the point that a graph 
-% is about the connections between vertices, not about how it is drawn. 
-% This representation
-% underlines that because it is, after all, not drawn.
 
 %<*def:AdjacencyMatrix>
 \begin{definition}
@@ -2049,10 +2051,16 @@ the number of edges from $v_i$ to~$v_j$.
 %</def:AdjacencyMatrix>
 
 This covers the graph variants listed earlier.
-For instance, as in ($*$), a simple graph has only $0$ and~$1$ entries.
-A loop makes a diagonal entry be nonzero.
-And if there are multiple edges from one vertex to another then
-the associated entry will be larger than~$1$.
+For instance, the graph represented in ($*$)
+is simple because the matrix has only $0$ and~$1$ entries,
+and because the matrix is symmetric (the $i,j$ entry has 
+a~$1$ if and only if the $j,i$ entry is also~$1$).
+If a graph has a loop then the matrix has 
+a nonzero diagonal entry.
+If the graph has a one-way edge from $v_i$ to~$v_j$
+then the $i,j$ entry records that edge but the $j,i$ entry does not. 
+And for a multigraph, where there are multiple edges from one vertex to 
+another, the associated entry will be larger than~$1$.
 
 %<*lem:MatrixPowersAdjacencyMatrix>
 \begin{lemma} \label{lem:MatPowerPatahsLengthN}
@@ -2071,8 +2079,7 @@ from vertex~$v_i$ to vertex~$v_j$.
 
 \subsection{Colors}
 We sometimes
-partition the vertices into classes,
-which are traditionally called \definend{colors}.
+partition a graph's vertices.
 
 %<*def:GraphColoring>
 \begin{definition}
@@ -2089,20 +2096,16 @@ On the left is a graph that is $3$-colored.
   \vcenteredhbox{\includegraphics{complexity/asy/complexity/complexity02.pdf}}
 \end{center}
 On the right the graph has no $3$-coloring.
-The argument goes:~consider, say, the vertex on top.
-If the three vertices connected to it are
-colored three different colors 
-then whatever color the top has will give an example of two same-colored
-vertices that are connected.
-If the three vertices it is connected to are
-not differently colored then those give an example of same-colored
-connected vertices, because every vertex is connected to every other vertex.
+The argument goes:~every vertex is connected to every other vertex and
+there are four vertices.
+So for not two connected vertices to be the same color we must use four
+colors.
 
 \begin{example}  \label{ex:CommitteeColoring}
-There are five committees.
-Some committees share some members.
-How many time slots do we need to schedule all committees so no
-members has to be in two places at once?
+This shows five committees, where
+some committees share some members.
+How many time slots do we need in order to schedule all committees so no
+members must be in two places at once?
 \begin{center}
 \begin{tabular}{ccccc}
   \tabulartext{A} &\tabulartext{B} &\tabulartext{C}
@@ -2113,20 +2116,20 @@ members has to be in two places at once?
   Smith  &Robinson &Ke     &Smith  &Robinson 
 \end{tabular}
 \end{center}
-Model this with a graph where each vertex is a committee and
-if committees share a member then put an edge between them.
+Model this with a graph by taking each vertex to be a committee and
+if committees are related by sharign a member 
+then put an edge between them.
 \begin{center}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs16.pdf}}
 \end{center}
-This shows that three colors suffice, that is,
-three time slots is enough.
+The picture shows that three colors is enough, that is,
+three time slots suffice.
 \end{example}
 
 
 
 \subsection{Graph isomorphism}
-The final  
-topic is to decide when two graphs are essentially identical.
+We sometimes want to know when two graphs are essentially identical.
 Consider these two.
 \begin{center}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs11.pdf}}
@@ -2143,7 +2146,7 @@ A person may suspect that as in \cref{fig:DrawTwoWays} these are two
 ways to draw the same graph, with the vertex names changed for further 
 obfuscation.
 
-That's true:~if we associate
+That's true:~if we make a correspondence between
 the vertices in this way
 \begin{center}  \small
   \begin{tabular}{r|cccccc}
@@ -2152,7 +2155,7 @@ the vertices in this way
     \tabulartext{Vertex on right} &$w_0$ &$w_2$ &$w_4$ &$w_1$ &$w_3$ &$w_5$ \\
   \end{tabular}
 \end{center}
-then as a consequence the edges associate also.
+then as a consequence the edges also correspond.
 \begin{center}  \small
   \begin{tabular}{@{}r|cccccc@{}}
     \tabulartext{Edge on left} 
@@ -2187,12 +2190,17 @@ $\set{f(v_i),f(v_j)}\in\hat{\mathcal{E}}$.
 \end{definition}
 %</def:GraphIsomorphism>
 
-To show graphs are isomorphic the most natural thing is to produce the map~$f$.
+To verify that two graphs are isomorphic 
+the most natural thing is to produce the map~$f$\!.
 Examples are in the exercises.
 
+\margingraphic{0.18\textwidth}{languages/pix/edgelord.png}{\label{fig:xkcdedgelord}\href{https://xkcd.com/2036/}{Courtesy \url{xkcd.com}}}
 %<*discussion:GraphIsomorphism>
-The \definend{degree of a vertex} is the total number of edges touching
-on that vertex (that is, where that vertex is an element of the set
+Showing that graphs are not isomorphic usually entails finding some 
+graph way in which they differ. 
+A common and useful such property is to consider 
+the \definend{degree of a vertex}, the total number of edges touching
+that vertex (that is, where that vertex is an element of the set
 that defines the edge) except that 
 a loop from the vertex to itself counts as two.
 The \definend{degree sequence} is the non-increasing sequence
@@ -2200,17 +2208,17 @@ of its vertex degrees.
 %</discussion:GraphIsomorphism>
 Thus, the graph in \cref{ex:CommitteeColoring} has degree sequence
 $\sequence{3,2,1,1,1}$.
-
 \Cref{exer:DegreeSequenceMustMatch} shows that if graphs are isomorphic then
 associated vertices have the same degree.
 Thus graphs with different degree sequences are not isomorphic.
 And, if the the degree sequences are equal then they
 help us construct an isomorphisms, if there is one.
-(There are graphs with the same degree sequence that are not isomorphic.)
 Examples of this also are in the exercises.
+(There are graphs with the same degree sequence that are not isomorphic.)
 
 
 \begin{exercises}
+\recommended
 \begin{exercise}
 Draw a picture of a graph illustrating each relationship.
 Some graphs will be digraphs, or may have loops or multiple edges 
@@ -2319,6 +2327,7 @@ Fill in the table's blanks.
 
 \newcommand{\dit}{\makebox[0.4em][c]{\raisebox{.595ex}{\str{.}}}}
 \newcommand{\dah}{\str{-}}
+\recommended
 \begin{exercise}
 Morse code represents text with a combination of a short sound,
 written `\dit{}' and pronounced ``dit,'' and a long sound,
@@ -2341,6 +2350,7 @@ Some representations are prefixes of others.
 Give the graph for the prefix relation.
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Cell tower must get different frequencies if they are in
 line of sight.
@@ -2353,6 +2363,7 @@ What is the minimal number of frequencies?
 Give an assignment of frequencies to towers.
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Blood cell transfusion is a common medical procedure.
 But the recipient must be compatible with the donor's blood type, or
@@ -2407,6 +2418,7 @@ Draw a graph for this adjacency matrix.
 \end{equation*}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 These two graphs are isomorphic.
 \begin{center}
@@ -2420,6 +2432,7 @@ These two graphs are isomorphic.
 \end{exparts}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 A \definend{tree} is an undirected graph in which any two vertices are
 connected by one and only one path.
@@ -2429,12 +2442,12 @@ Show that the parse graph given at this subsection's start is a tree
 
 \begin{exercise}
 Consider building a simple graph by starting with with $n$~vertices.
-\begin{exparts}
+\begin{exparts*}
 \item
 How many potential edges are there?
 \item
 How many such graphs are there?
-\end{exparts}
+\end{exparts*}
 \begin{answer}
 \begin{exparts}
 \item For each edge we choose two vertices.  
@@ -2472,6 +2485,18 @@ vertices of the second graph having that degree.
 Use the prior result to show that the two graphs of \cref{ex:TwoWalkGraphs}
 are not isomorphic.
 \end{exparts}
+\end{exercise}
+
+\begin{exercise}
+For these two graphs
+verify that they have the same degree sequence, and that they are
+not isomorphic.
+\hint~one graph has a longer path starting at the degree~$3$ vertex.
+\begin{center}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs21.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs22.pdf}}
+\end{center}
 \end{exercise}
 
 \begin{exercise} \label{exer:MatPowerPatahsLengthN}

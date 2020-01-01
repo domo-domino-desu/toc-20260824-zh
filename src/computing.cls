@@ -422,6 +422,7 @@
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
   \renewcommand{\thesubsection}{\arabic{subsection}}%
+  \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % Extra sections change this so change it back
   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
   % 
@@ -436,6 +437,7 @@
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
   \renewcommand{\thesubsection}{\arabic{subsection}}%
+  \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % Extra sections change this so change it back
   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
   % 
@@ -502,6 +504,7 @@
   \setcounter{section}{\value{extra}}
   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
   \setcounter{subsection}{0}
+  \renewcommand{\thetheorem}{\Alph{section}.\arabic{theorem}} 
   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
   \markright{Extra \thesection{}. #1}%

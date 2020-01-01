@@ -680,7 +680,7 @@ label(pic,
          \multicolumn{2}{l}{Legend:} \\ 
          \hspace{2em}$x$  &\str{0},\,\ldots \str{9} \\
                      $n$  &\str{2},\,\ldots \str{9} \\
-                     $p$  &\str{0},\str{1} 
+                     $p$  &\str{0},\,\str{1} 
          \end{tabular}",(7*u,1.45*v));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

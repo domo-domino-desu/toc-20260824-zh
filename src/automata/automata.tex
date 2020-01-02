@@ -4783,6 +4783,28 @@ Therefore the minimum pumping length for the language is~$1$.
 \end{answer}
 \end{exercise}
 
+  % \begin{exercise}
+  % Show that the language $\set{(\str{01})^n\suchthat n\in\N}$
+  % has minimal pumping length~$2$.
+  % \begin{answer} % YF: https://cs.stackexchange.com/a/84565/78536
+  % The pumping length is at most~$2$ because by the proof of the Pumping Lemma
+  % the minimal pumping length is no larger than the number of states in
+  % a Finite State machine that accepts the language, and finding a
+  % two-state machine for this language is routine.
+  
+  % The pumping length cannot be $1$
+  % since there is a length~$2$
+  % word in the language, namely \str{10}, that cannot be decomposed into
+  % $\alpha\beta\gamma$ such
+  % that $\beta\neq\emptystring$, $\lh{\alpha\beta}\leq 1$,
+  % and for all $n\in\N$ the string
+  % $\alpha\beta^n\gamma$ is also a member of the language.
+  % (With $\beta\neq\emptystring$ and $\lh{\alpha\beta}\leq 1$
+  % we have $\alpha\beta=\beta$, and neither $\beta=\str{0}$ nor
+  % $\beta=\str{1}$ works with the third condition.)
+  % \end{answer}
+  % \end{exercise}
+
 \begin{exercise}
 Nondeterministic Finite State machines can always be made to have a single
 accepting state.
@@ -4829,22 +4851,30 @@ Contrast these two Finite State machines.
 For each, the language of accepted strings is
 $\set{\sigma\in\kleenestar{\B}\suchthat
   \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa16.pdf}
+\begin{equation*}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
   \hspace{3em}
-  \includegraphics{automata/asy/fsa/fsa17.pdf}
-\end{center}
-Our experience from building machines is that the states should have a meaning.
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa17.pdf}}
+  \tag{*}
+\end{equation*}
+Our experience from making machines is that the states should have a meaning.
 For instance, on the left $q_2$ means something like,
 ``have seen the needed at least one \str{1} but still
 waiting for a~\str{0}.''
 In a properly designed machine, input puts the machine in state~$q_2$
 if indeed that input has so far had at least one~\str{1} but no~\str{0}. 
 
-On the right the machine is not properly designed in this sense because
-the meaning of $q_4$ is the same as that of~$q_2$.
-That is, the two states have the same future.
-The machine on the right has redundant states.
+The machine on the right doesn't satisfy this design principle because
+the meaning of $q_4$ is the same as that of~$q_2$, 
+and $q_3$'s meaning is the same as~$q_5$'s.
+That is, the pairs of states have the same future.
+This machine has redundant states.
+
+We will give an algorithm
+that starts with a Finite State machine and
+from it finds the smallest machine that accepts the same language.
+The algorithm works by
+by collapsing together redundant states.
 
 \begin{definition}  \label{def:distinguishable}
 In a Finite State machine over~$\Sigma$,
@@ -4905,36 +4935,32 @@ Otherwise they are \definend{indistinguishable, $q\sim\hat{q}$}.
   \cref{exer:NEquivIsEquivRel}.  
 \end{proof}
 
-We will give an algorithm
-that starts with a Finite State machine and
-finds from it the smallest machine that accepts the same language.
-The algorithm proceeds by removing the redundancies,
-by collapsing together indistinguishable states.\footnote{%
+Our algorithm\footnote{%
   This is
   \protect\definend{Moore's algorithm}.  
   It is easy to understand and suitable for
   small calculations but if you are writing code then 
   \protect\citetext{be aware that another algorithm}{%
     See \protect\autocite{Knuutila}.}, \protect\definend{Hopcroft's algorithm}, 
-  is better, albiet more complex.}
-It first finds all states that are
+  is better, albeit more complex.}
+first finds all states that are
 distinguishable by the length~zero string,
 next finds all states distinguishable by length zero or one
-strings, then all states distinguishable by length zero, one, or two
 strings, etc.
-At the end, the machine's states are broken into classes, where
-inside each class the states are indistinguishable.
-Those classes will be the states of the machine with the same
-behavior, but with a minimal number of states.
+At the end the machine's states are broken into classes where
+inside each class the states are indistinguishable by strings of any length.
+Those classes serve as the states of the minimal machine.
+We first outline the steps,
+then we will work through two complete examples
 
-Below is a copy of the machine with redundant states that
-we saw earlier.
-\begin{center} \label{page:MachineWithRedundantStates}
-  \includegraphics{automata/asy/fsa/fsa17.pdf}
-\end{center}
-Consider first states that are indistinguishable by the length zero
-string~$\emptystring$.
-They fall into two classes,
+% \begin{center} \label{page:MachineWithRedundantStates}
+%   \includegraphics{automata/asy/fsa/fsa17.pdf}
+% \end{center}
+So consider again
+the machine with redundant states that we saw in ($*$)~above.
+The states that are indistinguishable by the length zero
+string~$\emptystring$
+fall into two classes,
 the non-accepting states $Q-F=\set{q_0,q_1,q_2,q_4}$
 accepting states $F=\set{q_3,q_5}$.
 We use this notation for the equivalence classes
@@ -4947,27 +4973,32 @@ of the $\sim_{0}$~relation.
 
 Next we find the classes of states that are $1$-indinstinguishable, that
 are indistinguishable by either length zero or length one strings.
-For each state we find where putting the machine in that state
-and feeding it the length one strings \str{0} and~\str{1} will take
+One way to proceed is:~for each state we find where putting the 
+machine in that state
+and feeding it the length zero string~$\emptystring$
+and the length one strings \str{0} and~\str{1} will take
 the machine.
-We only care whether the resulting state is final. 
+In `take the machine' 
+we only care whether the resulting state is 
+a member of $\eclass_{0,0}$ or of~$\eclass_{0,1}$. 
+(The first column repeats the prior paragraph. 
+We'll streamline the algorithm below.)
 \begin{center}
   \begin{transitionfunction}[]
-    &\str{0}  &\str{1}   \\
-    \cline{2-3}
-    $q_0$  &$Q-F$    &$Q-F$    \\
-    $q_1$  &$Q-F$    &$F$    \\
-    $q_2$  &$F$      &$Q-F$    \\
-    $q_3$  &$F$      &$F$    \\
-    $q_4$  &$F$      &$Q-F$     \\
-    $q_5$  &$F$      &$F$    \\      
+           &$\emptystring$  &\str{0}           &\str{1}   \\
+    \cline{2-4}
+    $q_0$  &$\eclass_{0,0}$  &$\eclass_{0,0}$   &$\eclass_{0,0}$    \\
+    $q_1$  &$\eclass_{0,0}$  &$\eclass_{0,0}$   &$\eclass_{0,1}$    \\
+    $q_2$  &$\eclass_{0,0}$  &$\eclass_{0,1}$   &$\eclass_{0,0}$    \\
+    $q_3$  &$\eclass_{0,1}$  &$\eclass_{0,1}$   &$\eclass_{0,1}$    \\
+    $q_4$  &$\eclass_{0,0}$  &$\eclass_{0,1}$   &$\eclass_{0,0}$     \\
+    $q_5$  &$\eclass_{0,1}$  &$\eclass_{0,1}$   &$\eclass_{0,1}$    \\      
   \end{transitionfunction}
 \end{center}
-Some states are distinguishable, and some are not.
+Some states are distinguishable, some are not.
 For instance, $q_0$ and $q_1$ are $1$-distinguishable
-by the input string~\str{1}.
-And 
-both $q_0$ and~$q_1$ are $1$-distinguishable from $q_2$, by~\str{0}.
+by the input string~\str{1}, while
+and $q_1$ and $q_2$ are $1$-distinguishable by~\str{0}.
 But $q_2$ and~$q_4$ are $1$-indistinguishable.
 These are the $\sim_{1}$ equivalence classes.
 \begin{equation*}
@@ -4978,56 +5009,66 @@ These are the $\sim_{1}$ equivalence classes.
   \eclass_{1,2}=\set{q_2,q_4}
   \quad
   \eclass_{1,3}=\set{q_3,q_5}
-  \tag{$*$}
+  \tag{$**$}
 \end{equation*}
-The redundant states continue to be
-in the same class.
+The states that we spotted by eye as redundant, $q_2,q_4$ and~$q_3,q_5$ 
+continue to be together.
 
 To get the $\sim_{2}$ classes
-we may first think to pass each length two string to each state.
-Proceeding in this way, then passing the collection of length
-three strings, etc., would mean that the job grows exponentially
+we may think to expand the table to add four columns, one for each
+of \str{00}, \str{01}, \str{10}, and~\str{11}.
+But proceeding in this way, at the next step doing all strings of length
+three strings, etc., would make the time to do the job grow exponentially
 since there are $2^k$ strings of length~$k$.
-However:~if two states $q,\hat{q}$
-are $2$-distinguishable but not $1$-distinguishable
-then where $\sigma$ is a distinguishing string,
-these two states must be distinguished by $\sigma$'s final character
-because if an earlier character would do then they would be
-$1$-distinguishable.
-In general, let two states $q,\hat{q}$ be
-$n+1$-distinguishable but not $n$-distinguishable and
-suppose that a distinguishing string is 
-$
- \sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}=\sigma_0\concat s_n 
-$.
-If $\sigma_0$ brings the machine from $q$ to a state in some
-class then
-$\sigma_0$ must bring the machine from $\hat{q}$ to the same class
-or else the states $q$ and $\hat{q}$ would be $n$-distinguishable.
-It is the final character~$s_n$ that distinguishes the two states.
-Therefore, we need only test single characters
-to see if they split the equivalence class  $\eclass_{n,i}$'s.
 
-Continuing with this example, we calculate whether the classes from
-equation~($*$) split any further.
-These are the relevant subsets of the table.
+The way to streamline the algorithm
+is to ask how two states $q,\hat{q}$ could be
+$2$-distinguishable but not $1$-distinguishable.
+This happens only if, where the distinguishing string is $\sigma$, 
+the two states are distinguished by $\sigma$'s final character,
+simply because if an earlier character would do then they would be
+$1$-distinguishable.
+
+In general, let the states $q$ and~$\hat{q}$ be
+$n+1$-distinguishable but not $n$-distinguishable. 
+Suppose that a distinguishing string is 
+$
+ \sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}=\tau\concat s_n 
+$.
+Because the states are not $n$-distinguishable,
+where the prefix $\tau$ brings the machine from $q$ to a state~$r$ in some
+class~$\eclass_{n,i}$, then
+$\tau$ must bring the machine from $\hat{q}$ to some $\hat{r}$
+in the same class,~$\eclass_{n,i}$. 
+So the distinguishing must involve $\sigma$'s final character,~$s_n$,
+taking~$r$ to a state in one class and taking~$\hat{r}$ to 
+a state in another.
+
+Therefore, at each step we don't need to test whole strings, 
+we need only test single characters to see if 
+they split the equivalence classes, the $\eclass_{n,i}$'s.
+And we need only test classes with more than one character, because
+singleton classes cannot be split.
+These are the relevant single-character computations.
 \begin{center}
   \begin{transitionfunction}[]
     &\str{0}  &\str{1}   \\
     \cline{2-3}
-    $q_2$      &$F$    &$Q-F$    \\
-    $q_4$      &$F$    &$Q-F$    
+    $q_2$      &$\eclass_{1,3}$    &$\eclass_{1,2}$    \\
+    $q_4$      &$\eclass_{1,3}$    &$\eclass_{1,2}$    
   \end{transitionfunction}
   \qquad  
   \begin{transitionfunction}[]
     &\str{0}  &\str{1}   \\
     \cline{2-3}
-    $q_3$      &$F$    &$F$    \\
-    $q_5$      &$F$    &$F$    
+    $q_3$      &$\eclass_{1,3}$    &$\eclass_{1,3}$    \\
+    $q_5$      &$\eclass_{1,3}$    &$\eclass_{1,3}$    
   \end{transitionfunction}
 \end{center}
-In neither case does the class split,
-so we stop. 
+In neither case is there a split
+so the algorithm stops. 
+The examples below add a table notation that simplifies the
+computation.
 
 \begin{example}
   We will find a machine that accepts the same language as this one but
@@ -5035,7 +5076,8 @@ so we stop.
   \begin{center}
     \includegraphics{automata/asy/min/min03.pdf}
   \end{center}
-  To do bookkeeping we will use a sequence of tables like the one below.
+  To do bookkeeping we will use triangular
+  tables like the one below.
   They have an entry for 
   every two-element set of state indices $\set{i,j}$
   with $i,j\in\set{0,\,\ldots 5}$ and  $i\neq j$.
@@ -5090,7 +5132,7 @@ so we stop.
      \eclass_{0,1} =\set{1,2,5}        
    \end{equation*}
 
-  Now iterate.
+  Iterate.
   Look at the table's blanks, the $0$-indistinguishable pairs of states,
   to see if they can be $1$-distinguished.
   On the left below is each $0$-indistinguishable pair along with the
@@ -5145,7 +5187,6 @@ so we stop.
   The triangular table shows the additional marks, and the
   $1$-equivalence classes also reflect that.
 
-  Rinse, repeat.
   The next iteration subdivides the $\sim_{1}$-equivalence classes,
   the $\eclass_{1,i}$'s, to compute the $\sim_{2}$-equivalence classes.
   \begin{center} \small
@@ -5211,9 +5252,9 @@ so we stop.
   the equivalence class~$s_3=\eclass_3$.
 \end{example}
 
-There is one more step, which was not needed in the prior example.
-If the machine has any states that are unreachable then we
-omit those before we start.
+The algorithm has one more step, which was not needed in the prior example.
+If the machine has any states that are unreachable from~$q_0$ then we
+omit those.
 
 \begin{example}  \label{ex:SecondMinimization}
   Minimize this machine.
@@ -5221,7 +5262,7 @@ omit those before we start.
     \includegraphics{automata/asy/min/min00.pdf}
   \end{center}
   First,~$q_5$ cannot be reached from the start state.
-  Omit it.
+  Drop it.
   That leaves this initial triangular table.
   \begin{center} 
     \begin{minimizetable}{5}
@@ -5373,36 +5414,6 @@ the $\sim$ equivalence classes.
 
 \begin{exercises}
   \begin{exercise}
-  Show that if $\beta$ is a string then 
-  $\beta\concat\reversal{\beta}$ is a palindrome.
-  Do all palindromes have that form?  
-  \begin{answer}
-  If $\beta=\sequence{b_0,\ldots,b_{i-1}}$ is a string then 
-  $\beta\concat\reversal{\beta}
-  =\sequence{b_0,\ldots,b_{i-1}}\concat\sequence{b_{i-1},\ldots,b_0}$.
-  This is clearly a palindrome.
-
-  There are palindromes not of that form.
-  One is $\gamma=\str{010}$, which
-  cannot be decomposed as $\gamma=\beta\concat\reversal{\beta}$.  
-  \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
-  Which of these is a palindrome:~\str{()()}
-  or~\str{)(()}?
-  \begin{exparts*}
-  \item Only the first
-  \item Only the second
-  \item Both
-  \item Neither
-  \end{exparts*}
-  \begin{answer}
-  It is both.
-  \end{answer}
-  \end{exercise}
-
-  \begin{exercise}
     What happens when you minimize a machine that is already minimal?
     \begin{answer}
       Not a hell of a lot.
@@ -5412,39 +5423,15 @@ the $\sim$ equivalence classes.
     \end{answer}
   \end{exercise}
 
-  \begin{exercise}
-  Show that the language $\set{(\str{01})^n\suchthat n\in\N}$
-  has minimal pumping length~$2$.
-  \begin{answer} % YF: https://cs.stackexchange.com/a/84565/78536
-  The pumping length is at most~$2$ because by the proof of the Pumping Lemma
-  the minimal pumping length is no larger than the number of states in
-  a Finite State machine that accepts the language, and finding a
-  two-state machine for this language is routine.
-  
-  The pumping length cannot be $1$
-  since there is a length~$2$
-  word in the language, namely \str{10}, that cannot be decomposed into
-  $\alpha\beta\gamma$ such
-  that $\beta\neq\emptystring$, $\lh{\alpha\beta}\leq 1$,
-  and for all $n\in\N$ the string
-  $\alpha\beta^n\gamma$ is also a member of the language.
-  (With $\beta\neq\emptystring$ and $\lh{\alpha\beta}\leq 1$
-  we have $\alpha\beta=\beta$, and neither $\beta=\str{0}$ nor
-  $\beta=\str{1}$ works with the third condition.)
-  \end{answer}
-  \end{exercise}
 
+  \recommended
   \begin{exercise}
-    Perform the minimization on the machine that we noted has redundant states
-    from page \cpageref{page:MachineWithRedundantStates}.
-  \end{exercise}
-
-  \begin{exercise}
-    What happens if you perform the minimization procedure in
-    \cref{ex:SecondMinimization} without first omitting the
-    unreachable state?
+    Perform the minimization algorithm using the triangluar tables
+    on the machine with redundant states
+    at the start of this section.
   \end{exercise}
   
+  \recommended
   \begin{exercise}
   Minimize these two.
   \begin{exparts}
@@ -5453,17 +5440,25 @@ the $\sim$ equivalence classes.
   \end{exparts}
   \end{exercise}
 
+  \recommended
+  \begin{exercise}
+    What happens if you perform the minimization procedure in
+    \cref{ex:SecondMinimization} without first omitting the
+    unreachable state?
+  \end{exercise}
+
   \begin{exercise}
     \cref{def:distinguishable} defines a binary relation~$\sim$ between states.
     Show that it is an equivalence relation.
   \end{exercise}
 
+  \recommended
   \begin{exercise}
     Minimize.
     \begin{center}
       \includegraphics{automata/asy/min/min06.pdf}
     \end{center}
-    Note that the process takes, roughly, a number of steps that
+    Note that the algorithm takes, roughly, a number of steps that
     are equal to the number of states in the machine.
     \begin{answer}
       This is the initial triangular table.

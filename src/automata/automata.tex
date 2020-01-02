@@ -5668,7 +5668,7 @@ It starts with three characters on the stack, \str{g3}, \str{g0}, and~\str{g2}.
 We push \str{g1} on the stack, and then \str{g0}.
 At this point, although \str{g1} is on the stack we don't have immediate
 access to it.
-to get at \str{g1} we  must first pop off 
+To get at \str{g1} we  must first pop off 
 \str{g0}, as in the last stack shown.
 %</discussion:StackIntroii>
 \begin{center}
@@ -5683,16 +5683,17 @@ to get at \str{g1} we  must first pop off
   \vcenteredhbox{\includegraphics{automata/asy/machine/machine05.pdf}}
 \end{center}
 Once something is popped, it is gone.
-The machine could have a state in the control whose intuitive meaning is,
-say, that we just popped~$\str{g0}$, but since the control 
-is finite, that strategy has limits.
+The machine could have a state whose intuitive meaning is,
+say, that we just popped~$\str{g0}$, but because there are finitely
+many states that strategy has limits.
 
-Like a Turing machine tape, a stack is unbounded storage.
-But it comes with restrictions that the tape does not have.
+So, like a Turing machine tape, a stack is unbounded storage.
+But it has restrictions that the tape does not.
 
 
 \subsection{Definition}
-We will extend the definition of Finite State machines, starting
+To define these machines
+we will extend the definition of Finite State machines, starting
 with deterministic machines.
 
 %<*def:PushdownMachine>
@@ -5712,49 +5713,13 @@ $\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\time
   \includegraphics{asy/share/machine03.pdf}
 \end{center}
 
-As with Finite State machines, Pushdown machines don't write to the tape but
-only consume the tape characters.
-However, unlike Finite State machinces these can fail to
-halt; see \cref{exer:PDANoHalt}.
-
-\begin{remark}
-Stack machines are often used in practice, particularly for
-running machines.
-The familiar printer file format PDF is based on the PostScript language,
-which is based on a pushdown stack.
-Here is a `Hello World' PostScript program.
-\begin{lstlisting}
- /Courier             % name the font
- 20 selectfont        % name the font size in points and set it 
- 72 500 moveto        % position the cursor
- (Hello world!) show  % stroke the text
- showpage             % print the page
-\end{lstlisting}
-For instance, the interpreter pushes \str{Courier} on the stack, and
-then on the second line pushes \str{20}
-on the stack.
-It then executes \str{selectfont}, which pops two things off the stack
-to select the font name and size.
-After that it moves the current point, and places the text on the page.
-Finally, it draws that page to paper.
-
-This language is very fast, and makes efficient use of the resources
-of the machine on which it runs.
-But is better suited to
-situations where the code is written by a program, such as a word processor or
-\LaTeX{}, than to situations where a person is writing it.
-\end{remark}
-
-\medskip
 %<*discussion:StackMachineTransitionsi>
-We will assume that the stack alphabet~$\Gamma$ contains the character $\bot$
-(read that as ``bottom'') that we use to mark the stack bottom.
+We assume that the stack alphabet~$\Gamma$ contains the 
+character that we use to mark the stack bottom,~$\bot$.\footnote{%
+  Read that character aloud as ``bottom.''}
 The rest of $\Gamma$ is \str{g0}, \str{g1}, etc.
-We will also assume that the tape alphabet~$\Sigma$ does not contain the
-blank~\str{B}, or the 
-character~$\varepsilon$.
-We will use $\varepsilon$ use for instructions
-that are purely stack operations, as described next.\footnote{%
+We also assume that the tape alphabet~$\Sigma$ does not contain the
+blank,~\str{B}, or the character~$\varepsilon$.\footnote{%
   The definition allows $\varepsilon$ to appear in two separate places,
   as the second component
   of $\Delta$'s inputs and 
@@ -5764,28 +5729,34 @@ that are purely stack operations, as described next.\footnote{%
 %</discussion:StackMachineTransitionsi>
 
 %<*discussion:StackMachineTransitionsii>
-The transition function describes how the machine acts.
-There are two cases for the input
-$\sequence{q_i,s,g_j}\in Q\times(\Sigma\cup\set{\str{B},\varepsilon})\times\Gamma$.
+The transition function describes how these machines act.
+For the input
+$\sequence{q_i,s,g_j}\in Q\times(\Sigma\cup\set{\str{B},\varepsilon})\times\Gamma$
+there are two cases.
 When the character~$s$ is an element of $\Sigma\cup\set{B}$
 then an instruction
 $\Delta(q_i,s,g_j)=\sequence{q_k,\gamma}$
-applies when the machine is in state~$q_i$ with the tape head reading
-$s$ and with the character $g_j$ on top of the stack.
+applies when the machine is in state~$q_i$ with the tape head reading~$s$ 
+and with the character~$g_j$ on top of the stack.
 If there is no such instruction then the computation halts, with the
 input string not accepted.
 If there is such an instruction then
 the machine does this:~(i)~the read head moves one cell to the right,
-(ii)~the machine pops $g_j$ off the stack,
+(ii)~the machine pops $g_j$ off the stack
 and pushes the characters of the string
 $\gamma=\sequence{g_{i_0},\ldots\,g_{i_m}}$ onto the stack in the order
 from $g_{i_m}$ first to $g_{i_0}$ last,
 and (iii)~the machine enters state $q_k$.
-The other case for inputs $\sequence{q_i,s,g_j}$
+The other case for the input $\sequence{q_i,s,g_j}$
 is when the character $s$ is $\varepsilon$.
 Everything is the same except that the tape head does not move.
-We use this case to manipulate the stack without consuming any input. 
+(We use this case to manipulate the stack without consuming any input.) 
 %</discussion:StackMachineTransitionsii>
+
+As with Finite State machines, Pushdown machines don't write to the tape but
+only consume the tape characters.
+However, unlike Finite State machines they can fail to
+halt, see \cref{exer:PDANoHalt}.
 
 %<*discussion:StackMachineTransitionsiii>
 The starting configuration has the machine in state~$q_0$,
@@ -5865,12 +5836,7 @@ and ends in an accepting state.
 \end{example}
 
 \begin{example}  \label{ex:PDAPalindromesMithMidMarker}
-A \citetext{\definend{palindrome}}{%
-  Some people like to make sentence-length palindromes that make some sense.
-  Some of the more famous are:
-  (1)~supposedly the first sentence ever uttered, ``Madam, I'm Adam''
-  (2)~Napoleon's lament, ``Able was I ere I saw Elba''
-  and (3)~``A man, a plan, a canal: Panama'', about Theodore Roosevelt.}
+Recall that a palindrome
 is a string that reads the same forwards and
 backwards, $\sigma=\reversal{\sigma}$.
 %<*ex:PalindromesUsingMiddleMarkeri>
@@ -5941,6 +5907,33 @@ This computation has the machine accept \str{bacab}.
 \end{example}
 
 
+\begin{remark}
+Stack machines are often used in practice, particularly for
+running hardware.
+% The familiar printer file format PDF is based on the PostScript language,
+% which is based on a pushdown stack.
+Here is a `Hello World' program in the PostScript printer language.
+\begin{lstlisting}
+/Courier               % name the font
+20 selectfont          % font size in points, 1/72 of an inch 
+72 500 moveto          % position the cursor
+(Hello world!) show    % stroke the text
+showpage               % print the page
+\end{lstlisting}
+The interpreter pushes \str{Courier} on the stack, and
+then on the second line pushes \str{20}
+on the stack.
+It then executes \str{selectfont}, which pops two things off the stack
+to set the font name and size.
+After that it moves the current point, and places the text on the page.
+Finally, it draws that page to paper.
+
+This language is very fast and makes efficient use of the machine resources.
+But it is suited to
+situations where the code is written by a program, such as a word processor or
+\LaTeX{}, than to situations where a person is writing it.
+\end{remark}
+
 
 
 
@@ -5948,9 +5941,9 @@ This computation has the machine accept \str{bacab}.
 %<*discussion:NondeterminsticPushdown>
 To get nondeterminism
 we alter the definition in two ways.
-The first is minor: we don't need the blank~\str{B} in the
-input alphabet as a nondeterministic machine can guess when
-the end of the input is coming.
+The first is minor: we don't need the input characterblank~\str{B}
+as a nondeterministic machine can guess when
+the input string ends.
 
 The second alteration changes the
 transition function~$\Delta$.
@@ -5974,6 +5967,7 @@ over $\kleenestar{\B}$.
 \end{equation*}
 This language is not accepted by any Finite State machine,
 but it is accepted by a Pushdown machine.
+
 %<*ex:NondeterministicPushDownAcceptsPalindromes>
 This machine has
 $Q=\set{q_0,q_1,q_2}$ with accepting states $F=\set{q_2}$,
@@ -6032,8 +6026,9 @@ two different outputs.
 
 
 Here the machine
-accepts the string \str{0110},
-using instructions $0$, $9$, $16$, and~$17$.
+accepts the string \str{0110}.
+In the calculation it 
+uses instructions $0$, $9$, $16$, and~$17$.
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{automata/asy/machine/machine14.pdf} \\
@@ -6095,15 +6090,22 @@ The net effect is that in this turn around from pushing to popping
 the stack is unchanged.
 \end{example}
 
+Recall that deterministic Finite State machines can do
+any jobs that nondeterministic ones can do.
+The palindrome result shows that for Pushdown machines the situation is
+different. 
+While nondeterministic Pushdown machines can accept the langauge of
+palindromes, that job cannot be done by deterministic Pushdown machines.
+So for Pushdown machines, nondeterminism changes what can be done.
+
 Intuitively, Pushdown machines are between Turing machines
 and Finite State machines in that
 they have a kind of unbounded read/write memory, but it is limited.
 We've proved that they are more powerful than Finite State machines
 because they can recognize the language of balanced parentheses.
 
-There are two further results that we will mention but, in the interests of
-time, not prove.
-First, there are jobs that Turing machines can do but that no
+There is a relevant result that we will mention but not prove:~there 
+are jobs that Turing machines can do but that no
 Pushdown machine can do.
 One is the decision problem for the language
 $\set{\sigma\concat\sigma\suchthat \sigma\in\kleenestar{\B}}$.
@@ -6124,16 +6126,7 @@ in reverse order.\footnote{%
   machine can be computed by a Turing machine, the languages of Pushdown
   machines must be a strict subset.}
 
-The second result differentiates what happens for nondeterminism with
-Finite State machines from what happens with Pushdown machines.
-We've proved that deterministic Finite State machines can do
-any jobs that nondeterministic ones can do.
-But, as the presentation above suggests,
-while nondeterministic Pushdown machines can accept the langauge of
-palindromes, that job cannot be done by deterministic Pushdown machines.
-So, for Pushdown machines, nondeterminism changes what can be done.
-
-This summarizes.
+The diagram below summarizes.
 The box encloses all languages of bitstrings, all subsets of
 $\kleenestar{\B}$.
 The nested sets enclose those languages accepted by some Finite State
@@ -6175,7 +6168,7 @@ So grammars that are context sensitive,
 without the restriction of being required to be context free,
 are much less common in practice.
 
-We will state, but not prove in the interests of time,
+We will state, but not prove,
 the connection with this section:~a
 language is accepted by some nondeterministic Pushdown machine
 if and only if it has a context free grammar.
@@ -6185,10 +6178,12 @@ if and only if it has a context free grammar.
 
 
 \begin{exercises}
+\recommended
 \begin{exercise}  \label{exer:PDANoHalt}
 Produce a Pushdown Automata that does not halt.
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Produce a Pushdown machine to accept each language over
 $\Sigma=\set{\str{a},\str{b},\str{c}}$.
@@ -6229,6 +6224,7 @@ Give a Pushdown machine that accepts
 $\set{\str{a}^{2n}\str{b}^{n}\suchthat n\in\N}$.
 \end{exercise}
 
+\recommended
 \begin{exercise}
 \Cref{ex:PDAForPalindromes} discusses the view of a nondeterministic
 computation as a tree.
@@ -6239,6 +6235,7 @@ Draw the tree for that machine these inputs.
 \end{exparts*}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 The grammar \mbox{Q \produces{} 0Q0 | 1Q1 | $\varepsilon$} generates a
 different language of palindromes than the grammar in
@@ -6347,6 +6344,7 @@ The case that $\sigma$'s first character is~$\str{1}$ works the same way.
 \end{answer}
 \end{exercise}
 
+% \recommended
 \begin{exercise}
 Show that the set of pushdown automata is countable.
 \end{exercise}
@@ -7071,6 +7069,7 @@ I'll use regular expressions."
 % regex for Roman numerals: https://phvu.wordpress.com/2009/05/19/an-cfg-for-roman-numerals/
 % '^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$'
 \begin{exercises}
+\recommended
 \begin{exercise}
 Which of the strings matches the regex
 \re{ab+c}?
@@ -7096,6 +7095,7 @@ Which of the strings matches the regex
 \end{exparts*}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Give an extended regular expression for each.
 \begin{exparts*}
@@ -7120,6 +7120,7 @@ Give an extended regular expression for each.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Give an extended regular expression to
 accept a string for each description.
@@ -7169,6 +7170,7 @@ square bracket and an open curly brace.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Every lot of land in New York City is denoted by a string of digits called BBL,
 for Borough (one digit), Block (five digits), and Lot (four digits).
@@ -7178,6 +7180,7 @@ Give a regex.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 \Cref{ex:NAPhoneNumber} gives a regex for North American phone numbers.
 \begin{exparts}
@@ -7218,6 +7221,7 @@ Use that file to find how many words fit the criteria.
 \end{exparts*}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Give a regex to accept time in a 24~hour format.
 It should match times of the form `hh:mm:ss.sss' or
@@ -7243,6 +7247,7 @@ One is \re{[-\textbackslash +]?(\textbackslash d)+\textbackslash .?|\textbacksla
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Give a suitable extended regular expression.
 \begin{exparts}
@@ -7263,6 +7268,7 @@ All have 16 digits.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Postal codes in the United Kingdom have six possible formats.
 They are: (i)~\str{A11 1AA},
@@ -7291,6 +7297,7 @@ We can do the six as alternatives.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 You are stuck on a crossword puzzle.
 You know that the first letter (of eight) is an \str{g},
@@ -7326,6 +7333,7 @@ But that lies outside our scope.)
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 The Roman numerals taught in grade school use the letters I, V, X, L, C, D,
 and~M to represent 1, 5, 10, 50, 100, 500, and 1000.
@@ -7922,6 +7930,7 @@ This string will be accepted by this machine if and only if $\sigma\in\lang$.
 \begin{exercises}
 % https://cs.stackexchange.com/q/89689/78536
 
+\recommended
 \begin{exercise}
 Find the $\lang$ equivalence classes for each regular set.
 The alphabet is $\Sigma=\set{\str{a},\str{b}}$.
@@ -7931,6 +7940,7 @@ The alphabet is $\Sigma=\set{\str{a},\str{b}}$.
 \end{exparts}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 For each language describe the $\lang$~equivalence classes.
 The alphabet is $\B$.
@@ -7943,7 +7953,7 @@ The alphabet is $\B$.
 \end{exparts}
 \end{exercise}
 
-
+\recommended
 \begin{exercise}
 The language of palindromes  
 $\lang=\set{\sigma\in\kleenestar{\str{a},\str{b}}}\suchthat \reversal{\sigma}=\sigma$
@@ -7951,6 +7961,7 @@ is not regular.
 Find infinitely many $\lang$~equivalence classes.
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Use the Myhill-Nerode Theorem to show that the language
 $\lang=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$ is not regular.

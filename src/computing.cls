@@ -24,6 +24,11 @@
 % \linespread{1.04}
 \usepackage{computingfonts}
 
+
+% This must be early in the class file to avoid an option clash
+\usepackage[hyphens]{url}  % allow splitting at hyphens
+
+
 % Get some file directories in this layout, such as where graphics are
 \input{directory.tex}
 
@@ -1468,7 +1473,6 @@
 % "Washington, Adams, \dots\sentencespace" 
 \newcommand{\sentencespace}{\spacefactor=3000{} }
 
-\usepackage{url}
 \usepackage{microtype}
 
 % Allows fill-in-blanks dotuline for instance.

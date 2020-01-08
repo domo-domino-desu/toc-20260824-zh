@@ -394,3 +394,189 @@ label(pic, "\ldots", domain[8]);
 label(pic, "\ldots", codomain[8]);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ===================================
+// Exercise: two fcns, one with an inverse and one without 
+
+// .......... function f ...................
+picture pic;
+int picnum = 8;
+unitsize(pic,1cm);
+
+// Establish all the stuff to draw
+path domain, codomain;
+domain = setbean(h,v);
+codomain = shift(DOMAINTOCODOMAIN,0)*setbean(h,v);
+pair[] domainpoint, codomainpoint;
+for (int i; i<3; ++i) {
+  domainpoint[i] = (0.5*h,((-2/3)+0.1)*v+(i/2)*(4/3)*v);
+  dot(pic,domainpoint[i],DARKPEN+black);
+}
+label(pic, "${\scriptscriptstyle 0}$", domainpoint[0], W);
+label(pic, "${\scriptscriptstyle 1}$", domainpoint[1], W);
+label(pic, "${\scriptscriptstyle 2}$", domainpoint[2], W);
+for (int i; i<3; ++i) {
+  codomainpoint[i] = shift(DOMAINTOCODOMAIN,0)*(0.5*h,((-2/3)+0.1)*v+(i/2)*(4/3)*v);
+  dot(pic,codomainpoint[i],DARKPEN+black);
+}
+label(pic, "${\scriptscriptstyle 10}$", codomainpoint[0], E);
+label(pic, "${\scriptscriptstyle 11}$", codomainpoint[1], E);
+label(pic, "${\scriptscriptstyle 12}$", codomainpoint[2], E);
+
+path[] maparrow;
+maparrow[2] = domainpoint[2]{dir(15)}..codomainpoint[2];
+maparrow[1] = domainpoint[1]{dir(15)}..codomainpoint[1];
+maparrow[0] = domainpoint[0]{dir(15)}..codomainpoint[0];
+// now draw; want white area around map arrow thru the border
+// First the outlines
+draw(pic,domain,LIGHTPEN);
+draw(pic,codomain,LIGHTPEN);
+// Next the arrow, wider, in white
+for (int i; i<3; ++i) {
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
+}
+// Now fill, draw dots, and draw arrows narrow
+fill(pic,domain,BEANCOLOR);
+fill(pic,codomain,BEANCOLOR);
+for (int i; i<3; ++i) {
+  dot(pic,domainpoint[i],DARKPEN+black);
+}
+for (int i; i<3; ++i) {
+  dot(pic,codomainpoint[i],DARKPEN+black);
+}
+for (int i; i<3; ++i) {
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
+}
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................ function g ....................
+picture pic;
+int picnum = 9;
+unitsize(pic,1cm);
+
+// Establish all the stuff to draw
+path domain, codomain;
+domain = setbean(h,v);
+codomain = shift(DOMAINTOCODOMAIN,0)*setbean(h,v);
+pair[] domainpoint, codomainpoint;
+for (int i; i<3; ++i) {
+  domainpoint[i] = (0.5*h,((-2/3)+0.1)*v+(i/2)*(4/3)*v);
+  dot(pic,domainpoint[i],DARKPEN+black);
+}
+label(pic, "${\scriptscriptstyle 0}$", domainpoint[0], W);
+label(pic, "${\scriptscriptstyle 1}$", domainpoint[1], W);
+label(pic, "${\scriptscriptstyle 2}$", domainpoint[2], W);
+for (int i; i<3; ++i) {
+  codomainpoint[i] = shift(DOMAINTOCODOMAIN,0)*(0.5*h,((-2/3)+0.1)*v+(i/2)*(4/3)*v);
+  dot(pic,codomainpoint[i],DARKPEN+black);
+}
+label(pic, "${\scriptscriptstyle 10}$", codomainpoint[0], E);
+label(pic, "${\scriptscriptstyle 11}$", codomainpoint[1], E);
+label(pic, "${\scriptscriptstyle 12}$", codomainpoint[2], E);
+
+path[] maparrow;
+maparrow[2] = domainpoint[2]{dir(15)}..codomainpoint[2];
+maparrow[1] = domainpoint[1]{dir(15)}..codomainpoint[0];
+maparrow[0] = domainpoint[0]{dir(15)}..codomainpoint[0];
+// now draw; want white area around map arrow thru the border
+// First the outlines
+draw(pic,domain,LIGHTPEN);
+draw(pic,codomain,LIGHTPEN);
+// Next the arrow, wider, in white
+for (int i; i<3; ++i) {
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
+}
+// Now fill, draw dots, and draw arrows narrow
+fill(pic,domain,BEANCOLOR);
+fill(pic,codomain,BEANCOLOR);
+for (int i; i<3; ++i) {
+  dot(pic,domainpoint[i],DARKPEN+black);
+}
+for (int i; i<3; ++i) {
+  dot(pic,codomainpoint[i],DARKPEN+black);
+}
+for (int i; i<3; ++i) {
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
+}
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ==========================================
+// Exercise: If $\composed{g}{f}$ is onto, is $f$ onto?
+//  If it is one-to-one, is $g$ one-to-one?
+picture pic;
+int picnum = 10;
+unitsize(pic,1cm);
+
+// Establish all the stuff to draw
+path D, C, B;
+D = setbean(h,v);
+C = shift(DOMAINTOCODOMAIN,0)*setbean(h,v);
+B = shift(2*DOMAINTOCODOMAIN,0)*setbean(h,v);
+pair[] Dpoint, Cpoint, Bpoint;
+for (int i; i<2; ++i) {
+  Dpoint[i] = (0.5*h,((-2/3)+0.1)*v+(i)*(3/3)*v);
+  dot(pic,Dpoint[i],DARKPEN+black);
+}
+label(pic, "${\scriptscriptstyle 0}$", Dpoint[0], W);
+label(pic, "${\scriptscriptstyle 1}$", Dpoint[1], W);
+for (int i; i<3; ++i) {
+  Cpoint[i] = shift(DOMAINTOCODOMAIN,0)*(0.5*h,((-2/3)+0.1)*v+(i/2)*(4/3)*v);
+  dot(pic,Cpoint[i],DARKPEN+black);
+}
+label(pic, "${\scriptscriptstyle 10}$", Cpoint[0], N);
+label(pic, "${\scriptscriptstyle 11}$", Cpoint[1], N);
+label(pic, "${\scriptscriptstyle 12}$", Cpoint[2], N);
+for (int i; i<2; ++i) {
+  Bpoint[i] = shift(2*DOMAINTOCODOMAIN,0)*(0.5*h,((-2/3)+0.1)*v+(i)*(3/3)*v);
+  dot(pic,Bpoint[i],DARKPEN+black);
+}
+label(pic, "${\scriptscriptstyle 20}$", Bpoint[0], E);
+label(pic, "${\scriptscriptstyle 21}$", Bpoint[1], E);
+
+path[] DCmaparrow;
+DCmaparrow[1] = Dpoint[1]{dir(15)}..Cpoint[2];
+DCmaparrow[0] = Dpoint[0]{dir(15)}..Cpoint[1];
+path[] CBmaparrow;
+CBmaparrow[2] = Cpoint[2]{dir(15)}..Bpoint[1];
+CBmaparrow[1] = Cpoint[1]{dir(15)}..Bpoint[0];
+CBmaparrow[0] = Cpoint[0]{dir(15)}..Bpoint[0];
+// now draw; want white area around map arrow thru the border
+// First the outlines
+draw(pic,D,LIGHTPEN);
+draw(pic,C,LIGHTPEN);
+draw(pic,B,LIGHTPEN);
+// Next the arrow, wider, in white
+for (int i; i<2; ++i) {
+  draw(pic,subpath(DCmaparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
+}
+for (int i; i<3; ++i) {
+  draw(pic,subpath(CBmaparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
+}
+// Now fill, draw dots, and draw arrows narrow
+fill(pic,D,BEANCOLOR);
+fill(pic,C,BEANCOLOR);
+fill(pic,B,BEANCOLOR);
+for (int i; i<2; ++i) {
+  dot(pic,Dpoint[i],DARKPEN+black);
+}
+for (int i; i<3; ++i) {
+  dot(pic,Cpoint[i],DARKPEN+black);
+}
+for (int i; i<2; ++i) {
+  dot(pic,Bpoint[i],DARKPEN+black);
+}
+for (int i; i<2; ++i) {
+  draw(pic,subpath(DCmaparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
+}
+for (int i; i<3; ++i) {
+  draw(pic,subpath(CBmaparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
+}
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

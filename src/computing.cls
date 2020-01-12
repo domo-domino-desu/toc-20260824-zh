@@ -152,6 +152,15 @@
   \cfoot{}
 }
 
+\fancypagestyle{plain}{%  appendix and notes first page
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \fancyhead[LE,RO]{}
+  % \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
+  % \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
+  \fancyfoot[C]{{\color{boldcolor}\textsl{\thepage}}}
+}
+
 \fancypagestyle{endmatter}{%  appendix and notes
   \renewcommand{\headrulewidth}{0.4pt}
   \renewcommand{\footrulewidth}{0pt}
@@ -566,6 +575,31 @@
     {1.8ex plus 0.3ex minus 0.05ex}% after sep
  \def\exercisecounterstart{\relax}
 }
+
+
+
+% ============= Index ================
+% Copied defn from book.cls.  Modified:
+%  change size of "Index" to match the size of a chapter head
+%  change spacing of it to match spacing above and below chapter head
+% (except enlarged the space below from 1ex to 2ex)
+\renewenvironment{theindex}
+               {\if@twocolumn
+                  \@restonecolfalse
+                \else
+                  \@restonecoltrue
+                \fi
+                \vspace*{4.85ex plus 1.5ex minus 0.3ex}
+                \twocolumn[\mbox{\rule[-2ex]{0pt}{1pt}\normalfont\Large\bfseries\indexname}]%
+                % \vspace*{1.0ex plus 0.3ex minus 0.06ex}
+                \@mkboth{\MakeUppercase\indexname}%
+                        {\MakeUppercase\indexname}%
+                \thispagestyle{plain}\parindent\z@
+                \parskip\z@ \@plus .3\p@\relax
+                \columnseprule \z@
+                \columnsep 35\p@
+                \let\item\@idxitem}
+               {\if@restonecol\onecolumn\else\clearpage\fi}
 
 
 
@@ -1060,6 +1094,7 @@
 % ========== Bibliography =============
 % biblatex 
 \usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+  \renewcommand*{\bibfont}{\small}  % Use \small font for the body
 \addbibresource{computing.bib}
 
 
@@ -1092,14 +1127,15 @@
 \newcommand{\citeadd}[1]{\addtoendnotes{#1}}
 
 \renewcommand{\notesname}{Notes}
+
 \usepackage{hanging} % make cited text be in hanging indented paragraphs
 % \def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%
 %   \leavevmode\llap{\makeenmark}}
-\def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em% \hangpara{2em}{1}%
-  \leavevmode\llap{\makeenmark}}
+\def\enoteformat{\rightskip\z@ \leftskip 2.1em \parindent=0em% \hangpara{2em}{1}%
+  \leavevmode\llap{\makeenmark}\ }
 % \usepackage{needspace}   % prevent a page break between a chapter announcement and the citations on that chapter
 
-% How headings for chapters, Preface, etc. ar formatted on Citations page
+% How headings for chapters, Preface, etc. are formatted on Citations page
 \newcommand{\citechapterformatting}[1]{\vspace{2ex}%
   \par\noindent{\textbf{#1}}}
 % How chapters are put onto Citations page.  For Preface, etc. you use prior
@@ -1136,26 +1172,29 @@
         \edef\@currentlabel{\csname p@endnote\endcsname\@theenmark}%
         \enoteformat}%
     \def\@endanenote{\par\endgroup}%
-    \enoteheading
-    \enotesize
-    \jhendnoteshook
+    \enoteheading%
+    \enotesize\small\thispagestyle{plain}%
+    \jhendnoteshook%
     \input{\jobname.ent}%
   \endgroup}
-\def\enoteheading{\chapter*{\notesname
-  \@mkboth{\notesname}{\notesname}}%
-  \mbox{}\par\vskip-\baselineskip}
+% \def\enoteheading{\jhchapter*{\notesname
+%   \@mkboth{\notesname}{\notesname}}%
+%   \mbox{}\par\vskip-\baselineskip}
+\def\enoteheading{\vspace*{4.85ex plus 1.5ex minus 0.3ex}\par\noindent\mbox{\normalfont\Large\bfseries\notesname}\vspace*{1.0ex plus 0.3ex minus 0.06ex}\@mkboth{\notesname}{\notesname}\par\noindent}%
+
 
   \newcommand{\jhendnoteshook}{%
   These are citations or discussions that
   supplement the text body.
   Each has a word or phrase in italics from that text body, and 
   then the note is in plain text.
-  Many of the citations or discussions include sources for you to read more.
+  Many of the citations or discussions include links for you to read more.
   }
 
 \newcommand{\printnotes}{%
-  % Table of Contents: make Notes aligned on left margin 
-  \addtocontents{toc}{\protect\setlength{\protect\cftchapnumwidth}{0em}}
+  % Table of Contents 
+  \addcontentsline{toc}{chapter}{Notes}  
+  % \addtocontents{toc}{\protect\setlength{\protect\cftchapnumwidth}{0em}}
   \newpage
   \begingroup
   \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
@@ -1190,8 +1229,13 @@
 \setlength{\cftsubsecindent}{2.5em}
 \setlength{\cftsubsecnumwidth}{1em}
 
+\setlength{\cftbeforetoctitleskip}{0ex plus 0.05ex}
+\setlength{\cftaftertoctitleskip}{3ex plus 0.05ex minus 0.01ex}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+
 % from tocloft.sty; hack to make it print roman chapter number
-% I can't figure out hos to have jhchapter work, so I am putting a
+% I can't figure out how to have jhchapter work, so I am putting a
 % \addcontentsline in the \chapter defn
 \newcommand{\l@jhchapter}[2]{\relax}%
 \let\l@extrasection\l@section%

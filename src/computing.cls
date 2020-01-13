@@ -422,7 +422,7 @@
 
 % TOC
   \def\toclevel@jhchapter{0}
-  \def\toclevel@jhchapterstarred{0}
+  \def\toclevel@jhchapterstarred{100}
   % l@jhchapter is defined elsewhere to make roman numeral
   % \def\l@jhchapter{\@dottedtocline{0}{0em}{1.5em}}
   % Don't want two TOC entries for Notes and Biblio
@@ -447,7 +447,7 @@
 % Starred chapter
 \newcommand{\jhchapter@star}[1]{%
   \stepcounter{chapter}%
-  \addcontentsline{toc}{chapter}{\protect\numberline{\protect\hspace{\cftchapnumwidth} #1}}
+  % \addcontentsline{toc}{chapter}{\protect\numberline{\protect\hspace{\cftchapnumwidth} #1}}
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
   \renewcommand{\thesubsection}{\arabic{subsection}}%
@@ -1110,17 +1110,8 @@
 %    \textit{see his hairy legs} OR C Dobson, p 1094.
 
 \usepackage{endnotes} %, endheads}
-% \long\def\@endnotetext#1{%
-%      \if@enotesopen \else \@openenotes \fi
-%      \immediate\write\@enotes{\@doanenote{\@theenmark}}%
-%      \begingroup
-%         \def\next{#1}%
-%         \newlinechar='40
-%         \immediate\write\@enotes{\meaning\next}%
-%      \endgroup
-%      \immediate\write\@enotes{\@endanenote}}
    
-\newlength{\jh@endnotesoutdent} \setlength{\jh@endnotesoutdent}{2em}
+\newlength{\jh@endnotesoutdent} \setlength{\jh@endnotesoutdent}{1.5em}
 \newcommand{\citetext}[2]{#1%
   \endnote{\protect\hspace*{-\jh@endnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}
 \renewcommand{\makeenmark}{\relax} % leave no mark
@@ -1131,7 +1122,7 @@
 \usepackage{hanging} % make cited text be in hanging indented paragraphs
 % \def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%
 %   \leavevmode\llap{\makeenmark}}
-\def\enoteformat{\rightskip\z@ \leftskip 2.1em \parindent=0em% \hangpara{2em}{1}%
+\def\enoteformat{\rightskip\z@ \leftskip 1.6em \parindent=0em% \hangpara{2em}{1}%
   \leavevmode\llap{\makeenmark}\ }
 % \usepackage{needspace}   % prevent a page break between a chapter announcement and the citations on that chapter
 
@@ -1508,14 +1499,6 @@
     \item[]
   }
   {\end{list}}
-
-% Make ellipsis space out properly before a period
-% Use \dots command.
-\usepackage[xspace]{ellipsis}
-% Get inter-sentence spacing. 
-%  Use as either "$1, 2, 3, \ldots$\sentencespace" or 
-% "Washington, Adams, \dots\sentencespace" 
-\newcommand{\sentencespace}{\spacefactor=3000{} }
 
 \usepackage{microtype}
 

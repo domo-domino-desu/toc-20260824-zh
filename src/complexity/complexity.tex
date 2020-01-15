@@ -985,9 +985,10 @@ consumption is polynomial.\footnote{%
   when someone announces an algorithm with 
   a large exponent or large constant then over time the approach gets refined 
   and those two shrink.
+  And, if we were to show that a problem is not solvable in polynomial time
+  then we have a strong argument that it is not feasible.
   In any event, polynomial time is
-  better than exponential time and a problem not solvable with polynomial
-  resources is not tractable.
+  better than exponential time.
   Here we accepting the thesis; it gives 
   a technical meaning to the informal `acceptably fast'.}
 For instance, if a problems's best available algorithm runs in exponential time
@@ -3874,54 +3875,82 @@ Check all pairs of vertices.
 % Finally, the third adjustment is that we often want to consider a group of
 % problems.
 % 
-%<*def:ComplexityClass>
 Recall that 
-a \definend{complexity class}\index{class}\index{complexity class} 
-is a collection of problems.
+a class\index{class}\index{complexity class} 
+is a collection of languages.
+%<*def:ComplexityClass>
+\begin{definition}
+A \definend{complexity class}\index{complexity class} 
+is a collection of languages that can be
+computed within some resource bound.
+\end{definition}
 %</def:ComplexityClass>
-The problems are decision problems for a language, $\lang$.\index{language decision problem}
-Since a language is a set, 
-we are considering the characteristic functions of sets.
-We will group these problems together based on how hard they are to 
+
+\begin{example}
+One complexity class is 
+the collection of languages for which there is a Turing machine
+that runs in time $\bigOh(n^{10})$. 
+Restated, a language~$\lang$ is in that class if there is a Turing machine~$\TM$
+that runs in time~$\map{t}{\N}{\N}$ where $t\in\bigOh(n^{10})$,
+such that the associated function $\map{\TMfcn_{\TM}}{\N}{\B}$ 
+has $\TMfcn_{\TM}(n)=1$ if $n\in\lang$ and
+$\TMfcn_{\TM}(n)=0$ otherwise. 
+\end{example}
+
+\begin{example}
+We have already studied the class~\citetext{$\compclass{RE}$}{%
+  Recall that `recursively enumerable' is an old-fashioned term
+  for `computably ennumerable'.}\index{RE@$\compclass{RE}$, computably enumerable sets}\index{computably enumerable set!collection of, RE@collection of, $\compclass{RE}$} 
+of languages~$\lang$ that are 
+computably enumerable, that is, 
+for which there is a computable function~$\TMfcn_e$ so that
+the set $\set{k=f(i)\suchthat \text{$k=\TMfcn_e(i)$ for some input $i\in\N$}}$
+equals the set~$\lang$.
+Here the resource bound is that there is no finite time bound. 
+\end{example}
+
+Since a language is a set,
+we are studying the characteristic functions of sets, and 
+grouping them together based on how hard they are to 
 compute.\footnote{%
   There are
   \citetext{many ways to do this}{%
     At this writing there are 535 studied ways but the number 
    changes frequently;
    see \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.}.
-  This includes grouping them by how long they take, as we shall do,
-  but also by their use of computational resources other than
-  time, such as space.
-  The most satisfactory definition for a grouping proves to be the one that
-  leaves the most freedom to consider whatever classes prove to be
-  of interest, which is why the definition of `complexity class' is 
-  so general; is it any collection of problems at all.}
+  It may involve Turing machines or other machine types, such as 
+  nondeterministic Turing machines 
+  or Turing machines with access to an oracle for numbers that
+  are truly random.
+  It may also involve grouping problems by how long they take,
+  or by their use of computational resources other than
+  time, such as space.}
+  % The most satisfactory definition for a grouping proves to be the one that
+  % leaves the most freedom to consider whatever classes prove to be
+  % of interest, which is why the definition of `complexity class' is 
+  % so general; is it any collection of problems at all.}
+Recall that in complexity theory we do not distinguish  
+between problems\Dash that is, decision problems for a language\Dash and
+the language itself.\index{language decision problem}
+So we will often say that a complexity class is a collection of problems, 
+or that problem is a member of a class.
 
 
 
 \subsection{Definition} 
-Our first computational complexity class 
-is the most important one,
-$\P$.
+The complexity class that we introduce now  
+is the most important one.
 It is the collection of language decision problems 
-that we take to be tractable, 
-the ones for which there
-is an algorithm that can at least conceivably be used. 
+that we take to be tractable under Cobham's Thesis. 
 
 %<*def:P>
 \begin{definition}
-A problem is a member of the class \definend{$\P$}\index{P@$\P$}\index{polytime} 
-if
-there is an algorithm for it that runs in
+A problem is a member of the class 
+\definend{$\P$}\index{P@$\P$}\index{polytime} 
+if there is an algorithm for it that runs in
 polynomial time on a deterministic Turing machine.
 \end{definition}
 %</def:P>
-
-Note that 
-the members of $\P$ are problems, essentially languages,
-for which there exists a decision algorithm that is sufficiently fast.
-This extends to any complexity class:~the members are problems.
-In particular, it is wrong to say that an algorithm is in $\P$.
 
 % This shows the class~$\P$ as a subset of the collection of all languages.
 \begin{fig}[]{The bean encloses all
@@ -3959,6 +3988,12 @@ $\lang_5=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat\text{graph $\mathcal{G}$
 (this is the \probname{Vertex-to-Vertex Path} problem).  
 \end{parenum}
 
+\begin{remark}
+Again, note that 
+the members of $\P$ are problems, essentially languages,
+for which there exists a decision algorithm that is sufficiently fast.
+Thus, it is wrong to say that an algorithm is in~$\P$.
+\end{remark}
 
 
 \subsection{Effect of the model of computation}
@@ -7200,7 +7235,7 @@ Otherwise, the answer is `no'.
 Note that the method in the proof
 may take exponential time but it takes only polynomial space.
 
-We finish with a result whose proof is beyond our scope, but that
+Here is a result whose proof is beyond our scope, but that
 serves as a caution that time and space are very different.
 We don't know whether deterministic polynomial time equals
 nondeterministic polynomial time, but we do know the answer for space.
@@ -7208,6 +7243,36 @@ nondeterministic polynomial time, but we do know the answer for space.
 \begin{theorem}[Savitch's Theorem]
 $\PSPACE=\NPSPACE$
 \end{theorem}
+% and EXPSPACE
+
+We finish with a list of the most natural complexity classes.
+
+\begin{definition} % credit https://cse.buffalo.edu/~regan/papers/pdf/ALRch27.pdf
+These are the 
+\definend{canonical complexity classes}\index{complexity class!canonical} 
+\begin{enumerate}
+% \item $\P=\cup_{k=1,2,\ldots}\DTIME(n^k)$
+%   \definend{deterministic poynomial time}
+%   and $\NP=\cup_{k=1,2,\ldots}\NTIME(n^k)$ 
+%   \definend{nondeterministic polynomial time}
+\item $\P$,
+  \definend{deterministic poynomial time}
+  and $\NP$, 
+  \definend{nondeterministic polynomial time}
+\item $\compclass{E}=\cup_{k=1,2,\ldots}\DTIME(k^n)$
+  and $\compclass{NE}=\cup_{k=1,2,\ldots}\DTIME(k^n)$
+\item $\compclass{EXP}=\cup_{k=1,2,\ldots}\DTIME(2^{n^k})$, 
+  \definend{deterministic exponential time}
+  and $\compclass{NEXP}=\cup_{k=1,2,\ldots}\NTIME(2^{n^k})$, 
+  \definend{nondeterministic exponential time}
+\item $\compclass{L}=\DSPACE(\lg n)$, \definend{deterministic log space}
+  and $\compclass{NL}=\NSPACE(\lg n)$, \definend{nondeterministic log space}
+\item $\compclass{PSPACE}$, 
+  \definend{deterministic polynomial space}
+\item $\compclass{EXPSPACE}=\cup_{k=1,2,\ldots}\DSPACE(2^{n^k})$, 
+  \definend{deterministic exponential space}
+\end{enumerate}
+\end{definition}
 
 
 \subsection{The Zoo}\index{Zoo, complexity}\index{Complexity Zoo}

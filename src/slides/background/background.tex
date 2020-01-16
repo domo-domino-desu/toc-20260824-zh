@@ -73,7 +73,7 @@
   \begin{tabular}{rr|c@{\hspace*{3em}}c}
     \multicolumn{2}{c}{} &\multicolumn{2}{c}{\textit{One-to-one?}}  \\
     \multicolumn{2}{c}{} &\textit{No}  &\textit{Yes}   \\ \cline{3-4}
-   \multirow{2}[2]{*}[-8ex]{\it\shortstack{O \\ n \\ t \\ o \\  ?}}
+   \multirow{2}[2]{*}{\it Onto?}
    &\textit{No}
     &\bigstrut\vcenteredhbox{\includegraphics{asy/background02.pdf}} 
     &\vcenteredhbox{\includegraphics{asy/background01.pdf}}     \\
@@ -117,15 +117,50 @@ and if $S=\set{x\in\N\suchthat \text{$x$ is a square}}$ then $|S|=|\N|$.
 \end{frame}
 
 
+\begin{frame}
+\begin{example}
+The set $\set{n^2\suchthat n\in\N}$ is countably infinite.
+It is enumerated by the function $\map{f}{\N}{\N}$ given by $f(x)=x^2$.
+\end{example}
 
+\begin{example}
+The set $\N-\set{2,5}=\set{3,4,5,6,7,\ldots}$ is countably infinite.
+The function $f(x=x+3)$ below closes the gap.
+\begin{equation*}
+  \begin{array}{r|ccccccc@{\hspace{6pt}}c}
+    n
+      &0 &1 &2 &3 &4 &5 &6 &\ldots \\ \cline{2-9}
+    f(n)
+      &3
+      &4
+      &5
+      &6
+      &7
+      &8
+      &9
+      &\ldots
+  \end{array}
+  \qquad    
+\end{equation*}
+This function is clearly one-to-one and onto.
+\end{example}
 
-%========================================
-\section{Enumerating Turing machines}
+\ExecuteMetaData[\catchfilefn]{ex:SetOfPrimesCountable}
+\ExecuteMetaData[\catchfilefn]{ex:SetOfIntegersCountable}
+\end{frame}
 
 \begin{frame}
   \frametitle{Cross product}
 \begin{example}
 If $N_2=\set{0,1}\times\N$ then $|N_2|=|\N|$.
+\begin{center}
+  \includegraphics{../../background/asy/correspondences/correspondences1000.pdf}
+\end{center}
+\ExecuteMetaData[\catchfilefn]{table:CantorsCorrespondence}
+\ExecuteMetaData[\catchfilefn]{def:PairingFcn}
+\end{example}
+
+\begin{example}
 If $N_3=\set{0,1,2}\times\N$ then $|N_3|=|\N|$.
 For any finite~$k$, 
 if $N_k=\set{0,1,\ldots k-1}\times\N$ then $|N_k|=|\N|$.
@@ -147,6 +182,11 @@ We next want to enumerate this array that is infinite in two dimensions.
 \end{frame}
 
 
+
+
+
+%========================================
+\section{Enumerating Turing machines}
 
 \begin{frame}
   \frametitle{Counting Turing machines}
@@ -245,15 +285,15 @@ Thus there are function that are not computed by any Turing machine.
 This is like Musical Chairs.
 There are a smaller number of chairs (Turing machines) than children
 (functions from $\N$ to~$\N$).
-Some functions have no associated Turing machine.
+When the music stops some children are left without a chair, and similarly
+some functions have no associated Turing machine.
 
 \pause
 \vspace*{2ex}
 \fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{%
   \color{red}
-  In the light of Church's Thesis we interpret this as:~mechanical
-  computation does not suffice.
-  There are jobs that no computer can do.}}
+  In the light of Church's Thesis we interpret this as:~there are jobs 
+  that no computer can do.}}
 \end{frame}
 
 
@@ -266,11 +306,12 @@ Some functions have no associated Turing machine.
 \ExecuteMetaData[\catchfilefn]{discussion:UniversalTM}
 
 \begin{itemize}
-\item This converts doing jobs in hardware job to doing them in software.
-\item The universal machine does not get as input Turing machine, it gets
-  a representation of a Turing machine.
-\item Yes, we could feed the $\UTM$ a representation of itself.
 \item A $\UTM$ is like an interpreter, or like an operating system. 
+\item This converts doing jobs in hardware job to doing them in software.
+\item The universal machine does not get as input a Turing machine, it gets
+  the index of a Turing machine, which is equivalent to the
+  a representation of that machine.
+\item Yes, we could feed the $\UTM$ a representation of itself.
 \end{itemize}
 \end{frame}
 
@@ -296,11 +337,11 @@ By freezing, or parametrizing,
 one if its arguments we get a family of functions.
 
 \begin{lstlisting}
-def identity(base):
+def power_1(base):    # identity function
     return power(base, 1)
-def square(base):
+def power_2(base):    # squaring function
     return power(base, 2)
-def cube(base):
+def power_3(base):    # cubing function
     return power(base, 3)
 \end{lstlisting}
 
@@ -309,9 +350,9 @@ Python has a more systemmatic way to accomplishes the same thing.
 
 \begin{lstlisting}
 from functools import partial
-identity = partial(power, exponent=1)
-square = partial(power, exponent=2)
-cube = partial(power, exponent=3)
+power_1 = partial(power, exponent=1)
+power_2 = partial(power, exponent=2)
+power_3 = partial(power, exponent=3)
 \end{lstlisting}
 \end{frame}
 
@@ -328,17 +369,17 @@ let its index be~$e$.
   \hspace{3em}
   \vcenteredhbox{\includegraphics{asy/background07.pdf}}
 \end{center}
-The routine on the right has frozen the first two of the inputs.
+On the right we have frozen the first two inputs.
 The \smn~Theorem, which we are about to see,
- says that there is a program that takes in
-$e$, $5$, and~$7$ and outputs the index of the Turing machine with
-the behavior on the right. 
+says that we can do this uniformily:~there is a program that takes in
+$e$, $5$, and~$7$ and outputs the index of the Turing machine 
+on the right. 
 
-Further, it says that for all $3$-input, freeze~$2$ situations,
-the same program works.
+Further, it says that a single program works in all
+leave $1$-input, freeze the other~$2$ situations.
 We write $s_2^{1}$ for the function that is the behavior of that program.
-In this class we will usually not worry about the bookkeeping and
-just call it~$s$:
+In this class we will usually
+just call that function~$s$:
 \begin{center}
   \parbox{0.7\textwidth}{Where $e$ is the index of the Turing machine on the left,
 $s(e,5,7)$ is the index of the machine on the right.}

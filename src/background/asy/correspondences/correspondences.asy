@@ -255,7 +255,7 @@ real x = 3.3*u;    // how far out on x-axis is location of x
 pair xloc = (x,0*v);  // pt on x-axis
 pair yloc = (0*u,proj_fcn(x));  // projected-to pt on y-axis
 
-draw(pic,proj_point--xloc,MAINPEN+lightcolor);
+draw(pic,proj_point--xloc,DARKPEN+linewidth(1pt)+lightcolor);
 label(pic,"\raisebox{3pt}{$P$}",proj_point,W);
 draw(pic,origin--(0*u,1.35*v),DARKPEN,Arrow(TeXHead));  // y-axis 
 // label(pic,"\tiny $0$",(0*u,0*v),S);
@@ -353,4 +353,47 @@ yaxis(pic, "$y$",XEquals(xmin-0.5),
       axisarrow);
 
 label(pic, "{\footnotesize $f_1(x)=\frac{11}{4}(x-3)^2-1$}", Scale(pic,(4.25,1.5)), E);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// .......................................
+int picnum = 3;
+picture pic;
+unitsize(pic,0.60cm);
+real u=1;
+real v=u;
+
+scale(pic,Linear(1/3),Linear);  // make the y-axis 3x as tall
+
+real f(real x) {
+  return x/(x+1);
+}
+
+real xmin = 0;
+real xmax = 20.0;
+real ymin = 0;
+real ymax = f(xmax);
+
+real[] xMajorTicks={5,10,15};
+real[] xMinorTicks={1,2,3,4,6,7,8,9,11,12,13,14,16,17,18,19};
+real[] yMajorTicks={1}; 
+real[] yMinorTicks={}; 
+
+arrowbar axisarrow = Arrows(TeXHead);
+
+path grph = graph(pic, f,xmin,xmax);
+draw(pic, Scale(pic,(0+0.5,1))--Scale(pic,(20,1)), DASHPEN);
+draw(pic, grph, FCNPEN+highlightcolor);
+xaxis(pic, Label("\raisebox{10pt}[0pt][0pt]{\makebox[0em][l]{\hspace*{2.5pt}$x$}}",E),YZero(extend=false),
+      xmin=xmin, xmax=xmax+0.5,
+      RightTicks(xMajorTicks,xMinorTicks),
+      EndArrow(TeXHead));           // arrow on rhs only
+yaxis(pic, Label("\makebox[0em][l]{\hspace*{7.5pt}\raisebox{32.5pt}[0pt][0pt]{$y$}}",W),XZero,
+      ymin=ymin-0.5, ymax=ymax+0.5,
+      LeftTicks(yMajorTicks,yMinorTicks),
+      axisarrow);
+
+label(pic, "{\footnotesize $f(x)=x/(x+1)$}", Scale(pic,(8.25,1.75)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

@@ -397,3 +397,46 @@ yaxis(pic, Label("\makebox[0em][l]{\hspace*{7.5pt}\raisebox{32.5pt}[0pt][0pt]{$y
 
 label(pic, "{\footnotesize $f(x)=x/(x+1)$}", Scale(pic,(8.25,1.75)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ===============================================
+int picnum = 4;
+picture pic;
+unitsize(pic,1cm);
+real u=1;
+real v=u;
+
+scale(pic,Linear(1/2),Linear);  // make the y-axis 2x as tall
+
+real f(real x) {
+  return (atan(x)+(pi/2.0))/pi;
+}
+
+real xmin = -6;
+real xmax = 6;
+real ymin = -0.5;
+real ymax = 1.75;
+
+real[] xMajorTicks={-5,-3,-1,1,3,5};
+real[] xMinorTicks={-4,-2,2,4};
+real[] yMajorTicks={1}; 
+real[] yMinorTicks={}; 
+
+arrowbar axisarrow = Arrows(TeXHead);
+
+path grph = graph(pic, f,xmin,xmax);
+draw(pic, Scale(pic,(xmin,1))--Scale(pic,(xmax,1)), DASHPEN);
+draw(pic, grph, FCNPEN+highlightcolor);
+xaxis(pic, Label("\setlength{\unitlength}{1cm}\begin{picture}(0,0)\put(0,0.35){$x$}\end{picture}"),YZero(extend=false),
+      xmin=xmin, xmax=xmax,
+      RightTicks(xMajorTicks,xMinorTicks),
+      axisarrow);           // arrow on both sides
+yaxis(pic, Label("\setlength{\unitlength}{1cm}\begin{picture}(0,0)\put(0.2,-0.2){$y$}\end{picture}"),XZero,
+      ymin=ymin, ymax=ymax,
+      LeftTicks(yMajorTicks,yMinorTicks),
+      axisarrow);
+
+label(pic, "{\footnotesize $f(x)=(\arctan(x)+(\pi/2))/\pi$}", Scale(pic,(2.25,1.4)), E);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

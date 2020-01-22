@@ -457,13 +457,13 @@ label(pic,"$D$",(0,v),NW);
 draw(pic,codomain,LIGHTPEN);
 label(pic,"$C$",shift(DOMAINTOCODOMAIN,0)*(h,v),NE);
 // Label the points
-label(pic,"\tiny $d_0$",domainpoint[3],W);
-label(pic,"\tiny $d_1$",domainpoint[2],W);
-label(pic,"\tiny $d_2$",domainpoint[1],W);
-label(pic,"\tiny $d_3$",domainpoint[0],W);
-label(pic,"\tiny $c_0$",codomainpoint[2],E);
-label(pic,"\tiny $c_1$",codomainpoint[1],E);
-label(pic,"\tiny $c_2$",codomainpoint[0],E);
+// label(pic,"\tiny $d_0$",domainpoint[3],W);
+// label(pic,"\tiny $d_1$",domainpoint[2],W);
+// label(pic,"\tiny $d_2$",domainpoint[1],W);
+label(pic,"\tiny $\hat{d}$",domainpoint[0],W);
+// label(pic,"\tiny $c_0$",codomainpoint[2],E);
+// label(pic,"\tiny $c_1$",codomainpoint[1],E);
+// label(pic,"\tiny $c_2$",codomainpoint[0],E);
 // now the arrows, wider and in white first
 for (int i; i<4; ++i) {
   draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
@@ -511,14 +511,14 @@ label(pic,"$D$",(0,v),NW);
 draw(pic,codomain,LIGHTPEN);
 label(pic,"$C$",shift(DOMAINTOCODOMAIN,0)*(h,v),NE);
 // Label the points
-label(pic,"\tiny $d_0$",domainpoint[3],W);
-label(pic,"\tiny $d_1$",domainpoint[2],W);
-label(pic,"\tiny $d_2$",domainpoint[1],W);
-label(pic,"\tiny $d_3$",domainpoint[0],W);
-label(pic,"\tiny $c_0$",codomainpoint[3],E);
-label(pic,"\tiny $c_1$",codomainpoint[2],E);
-label(pic,"\tiny $c_2$",codomainpoint[1],E);
-label(pic,"\tiny $c_3$",codomainpoint[0],E);
+// label(pic,"\tiny $d_0$",domainpoint[3],W);
+// label(pic,"\tiny $d_1$",domainpoint[2],W);
+// label(pic,"\tiny $d_2$",domainpoint[1],W);
+label(pic,"\tiny $\hat{d}$",domainpoint[0],W);
+// label(pic,"\tiny $c_0$",codomainpoint[3],E);
+// label(pic,"\tiny $c_1$",codomainpoint[2],E);
+// label(pic,"\tiny $c_2$",codomainpoint[1],E);
+// label(pic,"\tiny $c_3$",codomainpoint[0],E);
 // now the arrows, wider and in white first
 for (int i; i<4; ++i) {
   draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);

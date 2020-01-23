@@ -539,3 +539,61 @@ shipout(format("maps%02d",picnum),pic,format="pdf");
 
 
 
+// ............ map not one-to-one, domain strictly bigger ..........
+picture pic;
+int picnum = 11;
+unitsize(pic,1cm);
+// Establish the stuff to draw
+path domain, codomain;
+domain = setbean(h,v);
+codomain = shift(DOMAINTOCODOMAIN,0)*setbean(h,v);
+// points
+pair[] domainpoint, codomainpoint;
+for (int i; i<4; ++i) {
+  domainpoint[i] = (0.6*h,((-2/3)+0.1)*v+(i/3)*(4/3)*v);
+}
+for (int i; i<3; ++i) {
+  codomainpoint[i] = shift(DOMAINTOCODOMAIN,0)*(0.5*h,((-1/2)+0.1)*v+(i/2)*(1)*v);
+}
+path[] maparrow;
+maparrow[3] = domainpoint[3]{dir(15)}..codomainpoint[2];
+maparrow[2] = domainpoint[2]{dir(15)}..codomainpoint[2];
+maparrow[1] = domainpoint[1]{dir(15)}..codomainpoint[0];
+maparrow[0] = domainpoint[0]{dir(10)}..codomainpoint[0];
+// Now draw; want white area around map arrow thru the border
+// First the outlines
+draw(pic,domain,LIGHTPEN);
+label(pic,"$D$",(0,v),NW);
+draw(pic,codomain,LIGHTPEN);
+label(pic,"$C$",shift(DOMAINTOCODOMAIN,0)*(h,v),NE);
+// Label the points
+label(pic,"\tiny $d_0$",domainpoint[3],W);
+label(pic,"\tiny $d_1$",domainpoint[2],W);
+label(pic,"\tiny $d_2$",domainpoint[1],W);
+label(pic,"\tiny $d_3$",domainpoint[0],W);
+label(pic,"\tiny $c_0$",codomainpoint[2],E);
+// label(pic,"\tiny $c_1$",codomainpoint[1],E);
+label(pic,"\tiny $c_1$",codomainpoint[0],E);
+// now the arrows, wider and in white first
+for (int i; i<4; ++i) {
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),DARKPEN+white);
+}
+fill(pic,domain,BEANCOLOR);
+fill(pic,codomain,BEANCOLOR);
+for (int i; i<4; ++i) {
+  dot(pic,domainpoint[i],DARKPEN+black);
+}
+// Only want to show two range points
+// for (int i; i<3; ++i) {
+//   dot(pic,codomainpoint[i],DARKPEN+black);
+// }
+dot(pic,codomainpoint[0],DARKPEN+black);
+dot(pic,codomainpoint[2],DARKPEN+black);
+// now arrows narrower
+for (int i; i<4; ++i) {
+  draw(pic,subpath(maparrow[i],0.08,0.92),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
+}
+shipout(format("maps%02d",picnum),pic,format="pdf");
+
+
+

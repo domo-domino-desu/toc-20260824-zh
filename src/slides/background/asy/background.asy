@@ -295,7 +295,7 @@ real disc_track_sector_radius = disc_radius - 1;
 path disc = arc(disc_center, disc_radius, 120, 60, CW);
 path track_sector = arc(disc_center, disc_track_sector_radius, 120, 60, CW);
 draw(pic,disc,lightcolor);
-labelpath(pic,"\tiny \texttt{0101000}",track_sector,highlightcolor);
+labelpath(pic,"\tiny \texttt{1101010}",track_sector,highlightcolor);
 label(pic,"$\Updownarrow$",(disc_center.x,-1));
 shipout(format("background%02d",picnum),pic,format="pdf");
 

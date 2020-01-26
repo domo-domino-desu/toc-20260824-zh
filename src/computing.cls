@@ -1211,40 +1211,20 @@
 
 
 % ............ Credits ..........
-% \usepackage{fancyvrb}
-% % Copied and modified from fancyvrb.sty
-% \newwrite\FV@OutFile
-% \def\VerbatimOut{\FV@Environment{}{VerbatimOut}}
-% \def\FVB@VerbatimOut#1{%
-%   \@bsphack
-%   \begingroup
-%     \FV@UseKeyValues
-%     \FV@DefineWhiteSpace
-%     \def\FV@Space{\space}%
-%     \FV@DefineTabOut
-%     \def\FV@ProcessLine{\immediate\write\FV@OutFile}%
-%     \immediate\openout\FV@OutFile #1\relax
-%     \let\FV@FontScanPrep\relax
-% %% DG/SR modification begin - May. 18, 1998 (to avoid problems with ligatures)
-%     \let\@noligs\relax
-% %% DG/SR modification end
-%     \FV@Scan}
-% \def\FVE@VerbatimOut{\immediate\closeout\FV@OutFile\endgroup\@esphack}
-% \DefineVerbatimEnvironment{VerbatimOut}{VerbatimOut}{}
 
 % Name of file holding credits
 \newcommand{\creditsfilename}{credits}
 
 \Opensolutionfile{\creditsfilename}
 \Newassociation{credit}{creditoutput}{\creditsfilename}
-\AtEndDocument{\Closesolutionfile{\creditsfilename}}
+% Needs to happen before this: \AtEndDocument{\Closesolutionfile{\creditsfilename}}
 
 % Write section title
-\Writetofile{\creditsfilename}{\protect\mbox{\protect\rule[-2ex]{0pt}{1pt}\protect\normalfont\protect\Large\protect\bfseries Credits}}
+\Writetofile{\creditsfilename}{\protect\noindent\protect\mbox{\protect\rule[-2ex]{0pt}{1pt}\protect\normalfont\protect\Large\protect\bfseries Credits}}
 \Writetofile{\creditsfilename}{ } % blank line
 
 \renewenvironment{creditoutput}[1]{%
-  \textsc{#1}}{}
+  \par\noindent\textsc{#1}}{ }
 
 % Copied and modified answers.sty's \Writetofile
 % \newcommand{\Credit}[1]{%
@@ -1262,7 +1242,14 @@
 %    \@esphack
 % }
 
-
+% Write the title of the chapter to the end notes and to the credits area.
+%  #1  Title of chapter, e.g., Background
+% Causes stack overflow, but putting the same commands in each time does
+% not.  Dunno.
+\newcommand{\chaptertitletoendfiles}[1]{%
+  \addtoendnotes{\vspace{3ex}\par\noindent\textbf{#1}}
+  \Writetofile{\creditsfilename}{\protect\vspace{3ex}\protect\par\protect\noindent\protect\textbf{#1}\protect\vspace{1ex}}
+}
 
 
 % ==========================================================

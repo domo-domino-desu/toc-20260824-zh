@@ -1209,6 +1209,62 @@
   \endgroup
   }
 
+
+% ............ Credits ..........
+% \usepackage{fancyvrb}
+% % Copied and modified from fancyvrb.sty
+% \newwrite\FV@OutFile
+% \def\VerbatimOut{\FV@Environment{}{VerbatimOut}}
+% \def\FVB@VerbatimOut#1{%
+%   \@bsphack
+%   \begingroup
+%     \FV@UseKeyValues
+%     \FV@DefineWhiteSpace
+%     \def\FV@Space{\space}%
+%     \FV@DefineTabOut
+%     \def\FV@ProcessLine{\immediate\write\FV@OutFile}%
+%     \immediate\openout\FV@OutFile #1\relax
+%     \let\FV@FontScanPrep\relax
+% %% DG/SR modification begin - May. 18, 1998 (to avoid problems with ligatures)
+%     \let\@noligs\relax
+% %% DG/SR modification end
+%     \FV@Scan}
+% \def\FVE@VerbatimOut{\immediate\closeout\FV@OutFile\endgroup\@esphack}
+% \DefineVerbatimEnvironment{VerbatimOut}{VerbatimOut}{}
+
+% Name of file holding credits
+\newcommand{\creditsfilename}{credits}
+
+\Opensolutionfile{\creditsfilename}
+\Newassociation{credit}{creditoutput}{\creditsfilename}
+\AtEndDocument{\Closesolutionfile{\creditsfilename}}
+
+% Write section title
+\Writetofile{\creditsfilename}{\protect\mbox{\protect\rule[-2ex]{0pt}{1pt}\protect\normalfont\protect\Large\protect\bfseries Credits}}
+\Writetofile{\creditsfilename}{ } % blank line
+
+\renewenvironment{creditoutput}[1]{%
+  \textsc{#1}}{}
+
+% Copied and modified answers.sty's \Writetofile
+% \newcommand{\Credit}[1]{%
+%    \@bsphack
+%    \Iffileundefined{credits}{}{%
+%       \Ifopen{credits}{%
+%          {%
+%             \let\protect\string
+%             \Ifanswerfiles{%
+%                \protected@iwrite{\@nameuse{credits@file}}{}{\XXX #1}%
+%             }{}%
+%          }%
+%       }{}%
+%    }%
+%    \@esphack
+% }
+
+
+
+
 % ==========================================================
 % TABLE OF CONTENTS
 \usepackage{tocloft}

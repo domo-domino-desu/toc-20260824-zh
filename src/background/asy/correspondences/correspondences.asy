@@ -15,7 +15,7 @@ cd("");
 settexpreamble();
 
 cd("../../../asy/");
-import jh;
+import jhnode;
 cd("");
 // import node;
 
@@ -440,3 +440,116 @@ yaxis(pic, Label("\setlength{\unitlength}{1cm}\begin{picture}(0,0)\put(0.2,-0.2)
 
 label(pic, "{\footnotesize $f(x)=(\arctan(x)+(\pi/2))/\pi$}", Scale(pic,(2.25,1.4)), E);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ========= cantor(x,y) as 3d function =========================
+// int picnum = 5;
+// import graph3;
+// picture pic;
+// settings.render=0;
+// size3(pic,1cm,0);
+
+// real cantor(pair z) {
+//   return z.x + (z.x+z.y)*(z.x+z.y+1)/2;
+// }
+
+// real xmin = 0;
+// real xmax = 5;
+// real ymin = 0;
+// real ymax = 5;
+
+// currentprojection=orthographic(xmax+1,2,5);
+
+// // real[] xMajorTicks={-5,-3,-1,1,3,5};
+// // real[] xMinorTicks={-4,-2,2,4};
+// // real[] yMajorTicks={1}; 
+// // real[] yMinorTicks={}; 
+
+// // arrowbar axisarrow = Arrows3(TeXHead);
+
+// surface s=surface(cantor, (xmin,ymin), (xmax,ymax), nx=10);
+// xaxis3(pic, Label("$x$"), xmin-0.5,xmax+0.5, Arrow3);
+// yaxis3(pic, Label("$y$"), ymin-0.5,ymax+0.5, Arrow3);
+// zaxis3(pic, XYZero(extend=true),0-0.5, cantor((xmax,ymax))+0.5, red, Arrow3);
+// draw(pic, s,green,meshpen=red,nolight,render(merge=true));
+
+// // label(pic, "{\footnotesize $f(x)=(\arctan(x)+(\pi/2))/\pi$}", Scale(pic,(2.25,1.4)), E);
+// shipout(format(OUTPUT_FN,picnum), pic, format="pdf");
+
+
+// // ========= cantor(x,y) as 3d function =========================
+// // int picnum = 6;
+// // picture pic;
+// // import graph3;
+// // settings.outformat="pdf";
+// // settings.render=0;
+
+// // size3(pic, 7.5cm,keepAspect=true);
+// // // unitsize(pic, 1cm);
+
+// // currentprojection=orthographic(3,2,4);
+// // currentlight=(5,3,0);
+
+// // real f(pair z) {return z.y^2-z.x^2;}
+
+// // draw(pic,surface(f,(-1,-1),(1,1),nx=32,Spline),
+// //                    lightblue+opacity(0.3),blue);
+// // shipout(format(OUTPUT_FN,picnum), pic, format="pdf");
+
+
+// // ============Cantor R^2 -> R ==========================
+// import graph3;
+// int picnum = 6;
+
+// picture pic;
+// size3(pic, 2.5cm,0);
+
+
+// real cantor(pair z) {
+//   return z.x + (z.x+z.y)*(z.x+z.y+1)/2;
+// }
+
+// real xmin = 0;
+// real xmax = 2;
+// real ymin = -6;
+// real ymax = 3;
+
+// // real f(pair z) {return z.y^2-z.x^2;}
+// currentprojection=orthographic(5,-5,15);
+// currentlight=(0,0,10);
+
+// draw(pic, (xmin,ymin,0)--(xmin,ymax,0)--(xmax,ymax,0)--(xmax,ymin,0)--cycle, DASHPEN);
+
+// // For the horizontal line where we find the y values
+// triple neg_intersection = (1,-5.27491721763537,8);
+// triple pos_intersection = (1,2.27491721763537,8);
+// triple horizline_posend = (1,4,8);
+// triple horizline_negend = (1,-6,8);
+// path3 horizline = horizline_negend--horizline_posend; 
+// // Draw line ends that are partly obscured by the surface
+// draw(pic,horizline_negend--neg_intersection, DARKPEN+highlightcolor);
+// draw(pic,pos_intersection--horizline_posend, DARKPEN+highlightcolor);
+
+// // Draw the surface add the axes
+// draw(pic, surface(cantor,(xmin-0.5,ymin-0.5),(xmax+0.5,ymax+0.5),nx=9,Spline),
+//      lightcolor+opacity(0.6),lightcolor, nolight);
+// xaxis3(pic, Label("$x$"), xmin-0.5,xmax+0.5, OutTicks, Arrow3);
+// yaxis3(pic, Label("$y$",S), ymin-0.5,ymax+0.5, OutTicks, Arrow3);
+// zaxis3(pic, Label("$z$"), XYZero(extend=true),0-0.5, cantor((xmax,ymax))+0.5, OutTicks, Arrow3);
+
+// // Draw rest of line
+// draw(pic,neg_intersection--pos_intersection, linewidth(2.0pt)+white);
+// draw(pic,neg_intersection--pos_intersection, DARKPEN+highlightcolor);
+// real save_dotfactor=dotfactor;
+// dotfactor=12;
+// dot(pic,(1,2.27,8),black);
+// dot(pic,(1,-5.27,8),black);
+// dotfactor=save_dotfactor;
+
+// shipout(format(OUTPUT_FN,picnum), pic, format="pdf");
+// // sage: n((-3-sqrt(57))/2)
+// // -5.27491721763537
+// // sage: n((-3+sqrt(57))/2)
+// // 2.27491721763537

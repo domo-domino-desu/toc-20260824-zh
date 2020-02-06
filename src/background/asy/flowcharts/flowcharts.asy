@@ -6,7 +6,7 @@ cd("");
 settexpreamble();
 
 cd("../../../asy");
-import jh;
+import jhnode;
 import flowchart;
 cd("");
 
@@ -141,8 +141,8 @@ vlayout(1.1*v,printout,ending);
 draw(pic,
      (start--read),
      (read--test),
-     (test--printout).l("N"),
-     (test--loop).l("Y").style("leftside"),
+     (test--printout).l("Y"),
+     (test--loop).l("N").style("leftside"),
      (printout--ending)
 );
 

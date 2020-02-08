@@ -5070,23 +5070,24 @@ and giving an algorithm to compute it.
   \end{cases}
 \end{equation*}
 
-In contrast, consider a routine~$R$ that inputs~$i\in\N$ and outputs 
+In contrast, consider a subroutine that inputs~$i\in\N$ and outputs 
 \citetext{$\pi$'s $i$-th decimal place}{%
   As we have noted, some real numbers have two decimal
   representations, one ending in $0$'s and one ending in $9$'s.
   But every such number is rational (as ``ending in $0$'s'' implies)
   and $\pi$ is not rational, so $\pi$ is not one of these numbers.}.
-With it, we can write a program that takes in~$n$ 
-searches~$\pi$ for~$n$ consecutive $9$'s.
+With it, we can write a program that takes in~$n$ and
+looks through~$\pi$ for~$n$ consecutive $9$'s by searching the 
+digits.
 This approach is constructive in that we are constructing the answer,
 not just saying that it exists.
 It is also uniform in the sense that we could 
-modify it to take the routine~$R$ as input,
+modify it to take other subroutines as input
 and thus look for strings of $9$'s in other numbers. 
 However, this approach 
 has the disadvantage that if $n_0$ is such that for $n\geq n_0$
 never does $\pi$ have $n$ consecutive $9$'s then this program will
-just search forever, never printing~$0$.
+just search forever, without printing~$0$.
 \end{example}
 \index{uniformity|)}
 
@@ -5094,39 +5095,41 @@ just search forever, never printing~$0$.
 
 
 \subsection{Parametrization}\index{parametrization|(}
-Universality says that there is a single Turing machine~$\UTM$, which 
-takes in two inputs $e,x$  and returns the same value as
+Universality says that there is a Turing machine that 
+takes in inputs $e$ and~$x$  and returns the same value as
 we would get by running $\TM_e$ on input~$x$
 (including not halting, if that machine does not halt).
-
 That is, there is a computable
-function $\map{F}{\N^2}{\N}$ such that
-$F(e,x)=\TM_e(x)$ (again, including that if $\TM_e(x)\diverges$ then 
-$F(e,x)\diverges$ also).
+function $\map{\phi}{\N^2}{\N}$ such that
+$\phi(e,x)=\TMfcn_e(x)$ if $\TMfcn_e(x)\converges$ and
+$\phi(e,x)\diverges$ if $\TMfcn_e(x)\diverges$.
+
 There, the letter~$e$ travels from the function's argument to an index.
 We now generalize this observation.
 
-Consider a two-input program $\TM_e(x,y)$.
-Freezing the first argument, that is, locking $x=a$ for some $a\in\N$,
-gives a one-input program $\TM[Q]_a(y)=\TM_e(a,y)$.
-For example, starting with
+Start with a program that takes two inputs
+such as this one.
 \begin{lstlisting}
-(define (P a b)
-  (+ a b))
+(define (P x y)
+  (+ x y))
 \end{lstlisting}
-and freezing the first input at $a=7$ gives a one-input routine.
+Freeze the first argument, that is, lock $x=a$ for some $a\in\N$.
+The result is a one-input program;~this shows~$a=7$.
 \begin{lstlisting}
 (define (P_7 b)
   (P 7 b))
 \end{lstlisting}
 This is \citetext{\definend{partial application}}{%
-  See also \autocite{wiki:PartialApplication}.}.
+  See \autocite{wiki:PartialApplication}.}.
 
-Obviously the second program is related to the first.
-The next result is that we can go
-from the index of the first program and
-the value that is frozen, over to
-the index of the second program, via a computable function.
+Obviously the second program is related to the first. 
+Denoting the function computed by the starting program~\codeinline{P} 
+as $\psi(x,y)=x+y$,
+partial application gives a family of programs and functions:
+$\psi_0(y)=y$, $\psi_1(y)=1+y$, $\psi_2(y)=2+y$, \ldots\sentencespace
+The next result is that from the index of the starting program or function, and
+from the values that are frozen, we can effectively compute the family
+members.
 
 %<*th:smn>
 \begin{theorem}[Parameter theorem, or \smn{} theorem] \label{th:smn}
@@ -5140,9 +5143,9 @@ gives a function equal to
 $\TMfcn_{s(e,a_0,\ldots a_{m-1})}(x_m,\ldots x_{m+n-1})$.
 \end{theorem}
 %</th:smn>
-(The function $\TMfcn_e(x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1})$ could be
+The function $\TMfcn_e(x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1})$ could be
 partial, that is, it could be that the Turing machine
-$\TM_e$ fails to halt on some inputs $x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1}$.)
+$\TM_e$ fails to halt on some inputs $x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1}$.
 
 \begin{proof}
 %<*pf:smni>

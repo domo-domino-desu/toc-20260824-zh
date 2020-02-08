@@ -5132,14 +5132,14 @@ from the values that are frozen, we can effectively compute the family
 members.
 
 %<*th:smn>
-\begin{theorem}[Parameter theorem, or \smn{} theorem] \label{th:smn}
+\begin{theorem}[\smn{} theorem, or Parameter theorem] \label{th:smn}
 \index{Parameter theorem}\index{s-m-n theorem@$s$-$m$-$n$ theorem}
 For every $m,n\in\N$
-there is a computable total function $\map{s_{m,n}}{\N^{1+m}}{\N}$ with 
-this behavior:~for the $m+n$-ary function
+there is a computable total function $\map{s_{m,n}}{\N^{1+m}}{\N}$  
+such that for the $m+n$-ary function
 $\TMfcn_e(x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1})$,
 freezing the initial $m$~variables at $a_0,\ldots a_{m-1}\in\N$
-gives a function equal to
+gives an $n$-ary function equal to
 $\TMfcn_{s(e,a_0,\ldots a_{m-1})}(x_m,\ldots x_{m+n-1})$.
 \end{theorem}
 %</th:smn>
@@ -5152,10 +5152,11 @@ $\TM_e$ fails to halt on some inputs $x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1}$.
 We will produce the function~$s$ to satisfy three 
 requirements:~\citetext{it must be effective}{%
   In fact, careful analysis shows that it is primitive recursive.}, 
-it must input an index~$e$ and an $m$-tuple $x_0,\ldots x_{m-1}$,
+it must input an index~$e$ and an $m$-tuple $a_0,\ldots a_{m-1}$,
 and it must output the index of a machine~$\hat{\TM}$ that,
 when given the input $x_m,\ldots x_{m+n-1}$,
-will return the value $\TMfcn_e(x_0,\ldots x_{m-1},x_m,\ldots x_{m+n-1})$.
+will return the value $\TMfcn_e(a_0,\ldots a_{m-1},x_m,\ldots x_{m+n-1})$, 
+or diverge if that function diverges.
 
 The idea is that $s$ constructs the instructions for~$\hat{\TM}$.
 We know how to get from the instruction set to the index,
@@ -5165,8 +5166,8 @@ The flowchart for $\hat{\TM}$, the Turing machine that $s$ constructs,
 is on the right.
 
 Recall that we are being flexible about
-the convention for Turing machines that take more than one input.
-To be clear here, we assume for this argument that input
+the convention for input and output representations for Turing machines.
+In this argument we assume that input
 is encoded in unary, with any number~$k\in\N$ represented by
 a string of $k$-many \str{1}'s, that
 multiple inputs are separated with a single blank, and that
@@ -5179,22 +5180,25 @@ left-most \str{1}.
   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts01.pdf}}
 \end{center}
 %<*pf:smnii>
-With that, 
-the machine $\hat{\TM}$ does not start by reading
+With that, the machine $\hat{\TM}$ does not start by reading
 its inputs $x_m,\ldots x_{m+n-1}$.
-Instead, it moves left and puts $x_0,\ldots x_{m-1}$ on the tape,
-in unary and separated by blanks, and with a blank between $x_{m-1}$ 
+Instead, it moves left and puts $a_0,\ldots a_{m-1}$ on the tape,
+in unary and separated by blanks, and with a blank between $a_{m-1}$ 
 and~$x_m$.
 Thus
-when this phase is done the machine will have 
-all of the inputs $x_0,\ldots x_{m+n-1}$ on the
+when this phase is done the machine~$\hat{\TM}$ has 
+the numbers $a_0,\ldots a_{m-1},x_m,\ldots x_{m+n-1}$ on the
 tape, in unary and separated by blanks.
 Next $\hat{\TM}$ moves the read/write head until it is on the leftmost \str{1}
-of the $x_0$.
+of those inputs.
 Finally, using universality, $\hat{P}$ simulates
 Turing machine~$P_e$, and lets it run on that input list.
 %</pf:smnii>
 \end{proof}
+
+That argument uses $a$'s for the values that the $x$~variables are frozen to.
+In the future we won't maintain that convention, as we will be thinking of the $x$'s as parameters and
+so sometimes varying them. 
 
 \begin{example}
 Consider the two-input Turing machine sketched by this flowchart.
@@ -5204,17 +5208,18 @@ Consider the two-input Turing machine sketched by this flowchart.
 \end{equation*}
 Suppose that it has index~$e$.
 
-We can use the Parameter Theorem to freeze the value of~$x$ to~$0$.
+We can use the \smn{} theorem to freeze the value of~$x$ to~$0$.
 On the left below is the flowchart for $\TM_{s_{1,1}(e,0)}$.
 It is a one-input machine and 
 the function that it computes is $\TMfcn_{s_{1,1}(e,0)}(y)=0$.
 For example, $\TMfcn_{s_{1,1}(e,0)}(5)=0$.
 \begin{center}
-  \includegraphics{background/asy/flowcharts/flowcharts1008.pdf}
-  \hspace{2em plus 0.5fil}
-  \includegraphics{background/asy/flowcharts/flowcharts1009.pdf}
-  \hspace{2em plus 0.5fil}
-  \includegraphics{background/asy/flowcharts/flowcharts1010.pdf}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1008.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1009.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1010.pdf}}
+  \hspace{2em}\ldots
 \end{center}
 Similarly the other two are flowcharts for $\TM_{s_{1,1}(e,1)}$ 
 and~$\TM_{s_{1,1}(e,2)}$, 
@@ -5228,13 +5233,13 @@ In general, this is the flowchart for $\TM_{s_{1,1}(e,x)}$.
 \begin{center}
   \includegraphics{background/asy/flowcharts/flowcharts1011.pdf}
 \end{center}
-The difference between this and the flowchart in~($*$) above 
-is that here the machine does not read in~$x$.  
-Rather, like the three above, 
+Compare this to the flowchart in~($*$) above. 
+The difference is that this machine does not read~$x$.  
+Rather, as in the three charts above, 
 $x$ is hard-coded into the program body.
-This is a family of functions, the first three of which are in the 
-prior paragraph.
-This family is parametrized by~$x$ and the indices of these functions are
+That is, $\TM_{s_{1,1}(e,x)}$ is a family of Turing machines, 
+the first three of which are in the prior paragraph.
+This family is parametrized by~$x$, and the indices are
 uniformily computable from $e$ and~$x$, using the function~$s$.
 \end{example}
 

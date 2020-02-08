@@ -27,7 +27,7 @@ int picnum = 0;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $e,x_0,\ldots,x_{m-1}$");
+node read=nbox("Read $e,a_0,\ldots,a_{m-1}$");
 node create=nbox("Create instructions for $\hat{P}$");
 node ret=nbox(minipage_snug("Return index of\\ that instruction set"));
 node ending=nroundbox("End");
@@ -69,9 +69,9 @@ int picnum = 1;
 
 // define nodes
 node start=nroundbox("Start");
-node shiftleft=nbox("Move left $x_0+\cdots+x_{m-1}+m$ cells");
-node inputprefix=nbox(minipage_snug("Put $x_0$, \ldots, $x_{m-1}$ on tape\\ separated by blanks"));
-node pointer=nbox("Move I/O head to start of $x_0$");
+node shiftleft=nbox("Move left $a_0+\cdots+a_{m-1}+m$ cells");
+node inputprefix=nbox(minipage_snug("Put $a_0$, \ldots, $a_{m-1}$ on tape\\ separated by blanks"));
+node pointer=nbox("Move I/O head to start of $a_0$");
 node run=nbox("Simulate $P_e$");
 node ending=nroundbox("End");
 

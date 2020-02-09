@@ -1316,3 +1316,119 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// .......... family computing y |--> y+n^2 ....
+picture pic;
+int picnum = 16;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node print=nbox("Print $y+x^2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .......... family computing x |--> mx+b ....
+picture pic;
+int picnum = 17;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $u$, $v$, $x$");
+node print=nbox("Print $u\cdot x+v$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .......... family computing y |--> 3n+y ....
+picture pic;
+int picnum = 18;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node print=nbox("Print $3\cdot x + y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

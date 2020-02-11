@@ -4788,7 +4788,10 @@ So there is a single Turing machine that we can tell
 ``Act like this other machine with this input'' and it can do that.
 We don't need infinitely many different machines, we just need this one.
 This is a 
-\definend{Universal Turing Machine}.\index{Universal Turing machine}\index{Turing machine!universal}
+\definend{Universal Turing Machine}.\footnote{%
+  Another often-used way to define a Universal Turing machine that is to 
+  have it take the single-number input $\cantor(e,x)$.}
+\index{Universal Turing machine}\index{Turing machine!universal}
 % We denote such a machine with~$\UTM$.
 %</discussion:UniversalTM> 
 
@@ -5158,21 +5161,14 @@ when given the input $x_m,\ldots x_{m+n-1}$,
 will return the value $\TMfcn_e(a_0,\ldots a_{m-1},x_m,\ldots x_{m+n-1})$, 
 or diverge if that function diverges.
 
-The idea is that $s$ constructs the instructions for~$\hat{\TM}$.
-We know how to get from the instruction set to the index,
+The idea is that the machine that computes~$s$
+will construct the instructions for~$\hat{\TM}$.
+We can get from the instruction set to the index
 using Cantor's encoding, so with that we will be done.
-The flowchart for $s$ is on the left below.
-The flowchart for $\hat{\TM}$, the Turing machine that $s$ constructs,
-is on the right.
 
-Recall that we are being flexible about
-the convention for input and output representations for Turing machines.
-In this argument we assume that input
-is encoded in unary, with any number~$k\in\N$ represented by
-a string of $k$-many \str{1}'s, that
-multiple inputs are separated with a single blank, and that
-when the machine is started the head should be under the input's
-left-most \str{1}.
+Below on the left is
+the flowchart for the machine that computes~$s$ 
+and on the right is the flowchart for $\hat{\TM}$.
 %</pf:smni>
 \begin{center}
   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts00.pdf}}
@@ -5180,18 +5176,21 @@ left-most \str{1}.
   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts01.pdf}}
 \end{center}
 %<*pf:smnii>
-With that, the machine $\hat{\TM}$ does not start by reading
-its inputs $x_m,\ldots x_{m+n-1}$.
-Instead, it moves left and puts $a_0,\ldots a_{m-1}$ on the tape,
+Recall that we are being flexible about
+the convention for input and output representations for Turing machines
+but to be precise
+in this argument we assume that input
+is encoded in unary, that
+multiple inputs are separated with a single blank, and that
+when the machine is started the head should be under the input's
+left-most \str{1}.
+
+With that, we construct the machine $\hat{\TM}$ so that the first thing it
+does is not read its inputs $x_m,\ldots x_{m+n-1}$.
+Instead, $\hat{\TM}$ first moves left and puts $a_0,\ldots a_{m-1}$ on the tape,
 in unary and separated by blanks, and with a blank between $a_{m-1}$ 
 and~$x_m$.
-Thus
-when this phase is done the machine~$\hat{\TM}$ has 
-the numbers $a_0,\ldots a_{m-1},x_m,\ldots x_{m+n-1}$ on the
-tape, in unary and separated by blanks.
-Next $\hat{\TM}$ moves the read/write head until it is on the leftmost \str{1}
-of those inputs.
-Finally, using universality, $\hat{P}$ simulates
+Then, using universality, $\hat{P}$ simulates
 Turing machine~$P_e$, and lets it run on that input list.
 %</pf:smnii>
 \end{proof}
@@ -5246,7 +5245,7 @@ uniformily computable from $e$ and~$x$, using the function~$s$.
 In the notation $s_{m,n}$, 
 the subscript~$m$ is the number of inputs being frozen
 while~$n$ is the number of inputs left free.
-As the prior example suggests, they can sometimes be a bother adn 
+As the prior example suggests, they can sometimes be a bother and 
 we usually omit them.
 \index{parametrization|)}
 
@@ -5650,41 +5649,91 @@ $x\mapsto mx+b$.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
-We can write programs that process the source code of programs.
+Suppose that $e_0$ is such that $\TMfcn_{e_0}$ is a 
+Universal Turing machine, in that if given the input $\cantor(e,x)$
+then it returns the same value as $\TMfcn_e(x)$.
+Suppose also that~$e_1$ is such that $\TMfcn_{e_1}(x)=4x$ for all~$x\in\N$.
+Determine, if possible, the value of these.
+If it is not possible, briefly describe why not.
+\begin{exparts*}
+\item $\TMfcn_{e_0}(\cantor(e_1,5))$
+\item $\TMfcn_{e_1}(\cantor(e_0,5))$
+\item $\TMfcn_{e_0}(\cantor(e_0,\cantor(e_1,5)))$
+\end{exparts*}
+\begin{answer}\verified
 \begin{exparts}
-\item
-Sketch a program that, when given the source code $\mathcal{S}$ of a
-program, will return the first character in that source (or some
-nominal value if the source is empty).
-
 \item 
-Sketch a program that, when given the source code $\mathcal{S}$ of a
-program, will return the final character in that source, or some nominal
-value.
-
-\item What happens when you feed the program in the prior part
-its own source?
+  This gives the same result as $\TMfcn_{e_1}(5)$, that is, it converges
+  and gives~$20$.
+\item
+  This returns $4$ times the the value of
+  $\cantor(e_0,5)$.
+\item This returns $\TMfcn_{e_1}(5)=20$.
 \end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
-We can write programs that process the source code of programs.
+Suppose that $e_0$ is such that if $\TMfcn_{e_0}(\cantor(e,x))$
+returns the same value as $\TMfcn_e(x)$ (or does not converge if
+that function does not converge).
+Suppose also that $\TMfcn_{e_1}(x)=x+2$
+and that $\TMfcn_{e_2}(x)=x^2$, for all~$x\in\N$.
+If possible determine the value of these
+(if it is not possible, say why not).
+\begin{exparts*}
+\item $\TMfcn_{e_0}(\cantor(e_1,4))$
+\item $\TMfcn_{e_0}(\cantor(4,e_1))$
+\item $\TMfcn_{e_1}(\cantor(e_0,\cantor(e_2,3)))$
+\item $\TMfcn_{e_0}(\cantor{e_0,\cantor(e_0,4)})$
+% \item $\TMfcn_{e_0}(\cantor{e_0,\cantor{e_2,e_1}})$
+\end{exparts*}
+\begin{answer}
 \begin{exparts}
+\item 
+  This gives the same result as $\TMfcn_{e_1}(4)$, that is, it gives~$6$.
 \item
-Sketch a program that, when given the source code $\mathcal{S}$ of a program,
-will return the number of times the character \str{a} appears in that source.
-
-\item
-What happens when you feed your program's source to itself?
-
-\item
-Sketch two program that perform the same task as each other, that is, 
-their input-output
-behavior is the same, but the program in the first item gives different
-results for those two.
+  This returns the value of $\phi_4(e_1)$, whataever that is.
+\item This returns $\TMfcn_{e_2}(3)$ plus~$2$, which is~$11$.
+\item Because $\pair(4)=\sequence{1,1}$, this returns the same as 
+  $\TMfcn_1(1)$, whatever that is.
 \end{exparts}
+\end{answer}
 \end{exercise}
+
+% \begin{exercise}
+% We can write programs that process the source code of programs.
+% \begin{exparts}
+% \item
+% Sketch a program that, when given the source code $\mathcal{S}$ of a
+% program, will return the first character in that source (or some
+% nominal value if the source is empty).
+% \item 
+% Sketch a program that, when given the source code $\mathcal{S}$ of a
+% program, will return the final character in that source, or some nominal
+% value.
+% \item What happens when you feed the program in the prior part
+% its own source?
+% \end{exparts}
+% \end{exercise}
+
+% \begin{exercise}
+% We can write programs that process the source code of programs.
+% \begin{exparts}
+% \item
+% Sketch a program that, when given the source code $\mathcal{S}$ of a program,
+% will return the number of times the character \str{a} appears in that source.
+% \item
+% What happens when you feed your program's source to itself?
+% \item
+% Sketch two program that perform the same task as each other, that is, 
+% their input-output
+% behavior is the same, but the program in the first item gives different
+% results for those two.
+% \end{exparts}
+% \end{exercise}
 
 % \begin{exercise}
 % On \cpageref{page:UTM} is the definition of the Scheme routine \codeinline{utm}
@@ -6515,7 +6564,22 @@ for an understanding what can be done
 mechanically.
 \index{Rice's theorem|)}  
 
+
+
+% ...................................................
 \begin{exercises}
+\begin{exercise}
+True of false: there is no function that solves the Halting Problem;
+there is no $f$ such that $f(e)=1$ if $\phi_e(e)\converges$ and $f(e)=0$ if
+$\phi_e(e)\diverges$.
+\begin{answer}
+False.  
+There is such a function.  
+But it is not computable; there is no Turing machine whose behavior is
+that function.
+\end{answer}
+\end{exercise}
+
 
 \recommended
 \begin{exercise}

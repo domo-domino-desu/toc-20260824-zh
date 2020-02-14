@@ -6,7 +6,7 @@ cd("");
 settexpreamble();
 
 cd("../../../asy");
-import jh;
+import jhnode;
 import flowchart;
 cd("");
 
@@ -28,6 +28,10 @@ cd("");
 // nodestyle ns_accepting=nodestyle(textpen=NODEPEN+fontcommand("\sffamily"), drawfn=Filler(FILLCOLOR)+DoubleDrawer(black));
 // // // nodes without any boxing
 // nodestyle ns_noborder=nodestyle(textpen=NODEPEN+fontcommand("\sffamily"), xmargin=1pt, drawfn=None);
+
+// ==========================================
+// Format of the names of the files produced (another format is below)
+string OUTPUT_FILE = "hp%02d";  
 
 // ---- Unbounded search for perfect numbers
 picture pic;
@@ -472,13 +476,13 @@ shipout(format("hp%02d",picnum),pic,format="pdf");
 
 // ---- doubler is unsolvable, before s-m-n
 picture pic;
-picnum = picnum+1;
+picnum = picnum+1;  // 10
 
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x,y$");
 node test=nbox("Run $\TM_x$ on~$x$");
-node printout=nbox("Print 2y");
+node printout=nbox("Print $2y$");
 node ending=nroundbox("End");
 
 // layout
@@ -520,7 +524,7 @@ picnum = picnum+1;
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
 node test=nbox("Run $\TM_x$ on~$x$");
-node printout=nbox("Print 2y");
+node printout=nbox("Print $2y$");
 node ending=nroundbox("End");
 
 // layout
@@ -688,7 +692,7 @@ picnum = 15;
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
 node test=nbox("Run $\TM_0$ on~$0$");
-node printout=nbox("Print 42");
+node printout=nbox("Print $42$");
 node ending=nroundbox("End");
 
 // layout
@@ -729,7 +733,7 @@ picnum = 16;
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
 node test=nbox("Run $\TM_1$ on~$1$");
-node printout=nbox("Print 42");
+node printout=nbox("Print $42$");
 node ending=nroundbox("End");
 
 // layout
@@ -760,4 +764,258 @@ draw(pic,
 );
 
 shipout(format("hp%02d",picnum),pic,format="pdf");
+
+
+
+// ================ For exercises =====================
+
+// Format of the names of the files produced 
+string OUTPUT_FILE = "hp10%02d";  
+
+// -------- unsolvable: determine if squaring function unsolvable ----
+picture pic;
+picnum = 0;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $y^2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// .............................................
+picture pic;
+picnum = 1;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $y^2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// -------- unsolvable: determine if same output on consecutive inputs ----
+picture pic;
+picnum = 2;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// .............................................
+picture pic;
+picnum = 3;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+// -------- unsolvable: determine if fcn total ----
+picture pic;
+picnum = 4;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// .............................................
+picture pic;
+picnum = 5;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
 

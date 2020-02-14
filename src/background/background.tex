@@ -5362,6 +5362,20 @@ $\TM_{e_0}$, $\TM_{e_1}$, \ldots{} are all universal.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+What happens if we feed a Universal Turing machine to itself?
+For instance, where the index~$e_0$ is such that 
+$\TMfcn_{e_0}(e,x)=\TMfcn_e(x)$ for all~$x$,
+what is the value of 
+$\TMfcn_{e_0}(e_0,5)$?
+\begin{answer}
+We know that $5$ equals $\cantor(2,0)$, that is, $\pair(5)=\sequence{2,0}$.
+So in $\TMfcn_{e_0}(e_0,5)$ the argument to $\TMfcn_{e_0}$ is the
+value of $\TMfcn_2(0)$.
+So, where $\pair(\TMfcn_2(0))=\sequence{a,b}$, the value of 
+$\TMfcn_{e_0}(e_0,5)$ is $\TMfcn_a(b)$.
+\end{answer}
+\end{exercise}
 
 \begin{exercise}
 Consider the function $f(x_0,x_1)=3x_0+x_0\cdot x_1$.
@@ -5507,14 +5521,14 @@ Suppose that the Turing machine sketched by this flowchart has index~$e$.
 \begin{center}
   \includegraphics{background/asy/flowcharts/flowcharts1006.pdf}
 \end{center}
-\begin{exparts}
+\begin{exparts*}
 \item Describe $\TMfcn_{s_{1,1}(e,0)}$.
 \item What is $\TMfcn_{s_{1,1}(e,0)}(5)$?
 \item Describe $\TMfcn_{s_{1,1}(e,1)}$.
 \item What is $\TMfcn_{s_{1,1}(e,1)}(5)$?
 \item Describe $\TMfcn_{s_{1,1}(e,2)}$.
 \item What is $\TMfcn_{s_{1,1}(e,2)}(5)$?
-\end{exparts}
+\end{exparts*}
 \begin{answer}\verified
 \begin{exparts}
 \item $\TMfcn_{s_{1,1}(e,0)}(x_1)=x_1$
@@ -5753,19 +5767,18 @@ We gave a counting argument, that there are countably many Turing machines but
 uncountably many functions and so there are functions with no
 associated machine.
 While knowing what's true is great,
-our taste is to prefer to construct a specific 
-unsolvable function rather than just to
-know that there is one.
+even better is to exhibit a specific 
+function that is unsolvable.
 We will now do that.
 
 
 
 \subsection{The \HP}\index{Halting problem|(}\index{problem!Halting|(}
-The natural approach is to go through 
+The natural way to produce such a function is to go through 
 Cantor's Theorem and effectivize it,
-to see how much of the proof we can express as a construction.
+to turn the proof into a construction.
 
-Consider an illustrative table adapted from the discussion of
+Here is an illustrative table adapted from the discussion of
 Cantor's Theorem on page~\pageref{ex:DiagonalizationTable}.\index{diagonalization!effectivized}
 This table's rows are the computable functions and 
 its columns are the inputs.
@@ -5795,30 +5808,34 @@ For instance, this table imagines that $\phi_2(3)=5$.
   \vcenteredhbox{\includegraphics{background/asy/hp/hp02.pdf}}
 \end{center}
 %<*discussion:HP>
-Diagonalize.
-That is, consider the program on the right.
-Its output seems not to be any of the table's rows,
-which appears to contradict the supposition that
+Try to diagonalize.
+That is, consider the machine on the right.
+It is an effective procedure;~we can write this 
+by using a Universal Turing machine. 
+However, it appears that this machine's output does not equal to any of 
+the rows,
+which would contradict the supposition that
 the rows are all of the computable functions.
 
-In the Cantor's Theorem argument, the contradiction showed that there are more
-than countably many rows.
-But here we know that there are countably many Turing machines 
-so we can imagine the rows that are shown.
-So what's the resolution of the apparent contradicion?
-The program's first, second, fourth and fifth boxes are trivial so the
-problem must lie with getting through its third box.
+Restated, 
+in the Cantor's Theorem argument, diagonalization gives a contradiction
+showing that there are more than countably many rows.
+But here we know that there are countably many Turing machines, 
+and thus we can have a row for each machine.
+So what's the resolution?
+The program's first, second, fourth and fifth boxes are trivial, and so the
+problem must lie with getting through the box in the middle.
 
 The issue is halting\Dash among the computable functions 
-there are ones does not converge on some inputs.  
-In particular the appraent contradiction shows that 
-this must happen on the diagonal; there must be
+there are ones that do not converge on some inputs.  
+In particular the apparent contradiction shows that there must be
 an $e\in\N$ so that $\phi_e(e)\diverges$.
-Recognizing this makes the difficulty dissolve because for those input~$e$'s
-in the flowchart, the program will never leave 
-the middle box and so will never get to the contradictory output box.
+With that the difficulty dissolves, because taking such an~$e$
+as input in the flowchart means that the machine will never leave 
+the middle box and so will never get to the output box and its contradiction.
 In short,
-in the above table some of the entries must be up arrows, $\uparrow$.
+in the above table some of the entries must be up arrows, $\uparrow$,
+saying that that computable function fails to converge for that input.
 %</discussion:HP>
 
 %<*def:K>
@@ -5870,7 +5887,7 @@ it uses $\computablefunction{halt\_checker}$ in its decision box.
   \begin{equation*}
   f(e)=
     \begin{cases}
-    0    &\case{if $\TMfcn_e(e)\diverges$}  \\
+    42    &\case{if $\TMfcn_e(e)\diverges$}  \\
     \uparrow  &\case{if $\TMfcn_e(e)\converges$}
     \end{cases}
   \end{equation*}
@@ -5879,14 +5896,23 @@ it uses $\computablefunction{halt\_checker}$ in its decision box.
 \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts02.pdf}}
 \end{center}
 %<*pf:HPIsUnsolvableii>
-(In $f$'s first case the output value doesn't matter,
+(\citetext{In $f$'s first case the output value doesn't matter}{%
+  Sometimes when we need an arbitrary output value, we use $42$,
+  because of its connection with 
+  \protect\textit{The Hitchhiker's Guide to the Galaxy},
+  \autocite{Adams}.
+  Other examples of this are \protect\textit{foo},
+  or \protect\textit{bar},
+  or \protect\textit{baz},
+  or \protect\textit{fizz},
+  or \protect\textit{buzz}.},
 all that matters is that~$f$ converges.)
 Since this function is mechanically computable it has an index.
 Let that index be~$\hat{e}$, so that
 $f(x)=\TMfcn_{\hat{e}}(x)$ for all inputs~$x$.
 
 Now consider $f(\hat{e})=\TMfcn_{\hat{e}}(\hat{e})$,
-that is, feed the machine on the right the input~$\hat{e}$.
+that is, feed the machine the input~$\hat{e}$.
 If it diverges then by the first clause in the definition of~$f$
 we have $f(\hat{e})\converges$,
 which contradicts divergence.
@@ -5899,13 +5925,13 @@ is not mechanically computable.
 %</pf:HPIsUnsolvableii>
 \end{proof}
 
-With Church's Thesis in mind will say that a task is 
+With Church's Thesis in mind will say that a problem is 
 \definend{unsolvable}\index{unsolvable problem}\index{problem!unsolvable} 
 if it is mechanically unsolvable, if no Turing machine 
 computes that task.
-If the task is to compute the answer to `yes' or `no' questions,
-such as the task of determining membership in a set,
-then we will also use as a synonym that the problem is 
+If the problem is to compute the answer to `yes' or `no' questions,
+so it is the problem of determining membership in a set,
+then we will say that the set is 
 \definend{undecidable}.\index{undecidable}\index{set!undecidable}
 \index{Halting problem|)}\index{problem!Halting|)}
 
@@ -5962,14 +5988,12 @@ says that there is no single program that, for all~$e$, correctly computes
 in a finite time whether $\TM_e$ halts on input~$e$.
 
 That has the qualifier `finite time' 
-because we could perfectly well write this program
-\begin{lstlisting}
-read e
-simulate machine e on input e
-print 1
-\end{lstlisting}
+because we could perfectly well write source code to 
+read an input~$e$, simulate $\TM_e$ on input~$e$, 
+and then print some nominal output, such as~$42$,
 but if $\TM_e$ on input~$e$ fails to halt then we would not find out 
 in a finite time.
+
 The `single program' qualifier is there because for any index~$e$,
 either $\TM_e$ halts on~$e$ or else it does not.
 That is, for any~$e$ one of these two programs
@@ -8503,8 +8527,6 @@ Show that there is an increasing sequence of integers
 $e_0<e_1<\cdots$ such that $W_{e_i}=\set{e_{i+1}}$.
 \end{exercise}
 
-% Put in Fixed point theorem section?
-% I don't know that it is doable here.
 % \begin{exercise}
 % Prompted by the philosophical consideration at the end of the section,
 % define a binary relation between integers as $x~e$

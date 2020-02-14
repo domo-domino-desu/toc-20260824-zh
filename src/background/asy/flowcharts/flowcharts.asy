@@ -121,7 +121,7 @@ int picnum = 2;
 node start=nroundbox("Start");
 node read=nbox("Read $e$");
 node test=nrounddiamond("$K(e)=0$?");
-node printout=nbox("Print 0");
+node printout=nbox("Print 42");
 node loop=nbox("Infinite loop");
 node ending=nroundbox("End");
 

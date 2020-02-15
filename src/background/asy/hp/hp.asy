@@ -1564,18 +1564,15 @@ shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
 
 
 
-
-
-// ---- the Halting Problem is unsolvable
+// -------- unsolvable: determine if fcn is successor ----
 picture pic;
-int picnum = 5;
+picnum = 20;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $e$");
-node test=nrounddiamond("$\TM_e(e)$ halts?");
-node printout=nbox("Print 0");
-node loop=nbox("Infinite loop");
+node read=nbox("Read $x$, $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $y+1$");
 node ending=nroundbox("End");
 
 // layout
@@ -1584,9 +1581,8 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 
 vlayout(0.85u,start,read);
-vlayout(1.2u,read,test);
-hlayout(-3.5u,test,printout);
-hlayout(3.85u,test,loop);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
 vlayout(0.85u,printout,ending);
 
 // draw nodes
@@ -1595,7 +1591,6 @@ draw(pic,
      read, 
      test,
      printout,
-     loop, 
      ending
      );
 
@@ -1603,11 +1598,135 @@ draw(pic,
 draw(pic,
      (start--read),
      (read--test),
-     (test--printout).l("No"),
-     (test--loop).l("Yes").style("leftside"),
+     (test--printout),
      (printout--ending)
 );
 
-shipout(format("hp%02d",picnum),pic,format="pdf");
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// .............................................
+picture pic;
+picnum = 21;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $y+1$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+// -------- unsolvable: determine if fcn converges on x and 2x ----
+picture pic;
+picnum = 22;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// .............................................
+picture pic;
+picnum = 23;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
 
 

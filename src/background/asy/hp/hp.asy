@@ -1019,3 +1019,595 @@ draw(pic,
 shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
 
 
+// -------- unsolvable: determine if diverge on five ----
+picture pic;
+picnum = 6;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// .............................................
+picture pic;
+picnum = 7;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nbox("Run $\TM_x$ on~$x$");
+node printout=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,test);
+vlayout(0.85u,test,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+
+// -------- give family of computable fncs and machines 3x+y ----
+picture pic;
+picnum = 8;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node printout=nbox("Print $3x+y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=0 ...........................
+picture pic;
+picnum = 9;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=1 ...........................
+picture pic;
+picnum = 10;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $3+y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=2 ...........................
+picture pic;
+picnum = 11;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $6+y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+
+
+// -------- give family of computable fncs and machines xy^2 ----
+picture pic;
+picnum = 12;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node printout=nbox("Print $x\cdot y^2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=0 ...........................
+picture pic;
+picnum = 13;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=1 ...........................
+picture pic;
+picnum = 14;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $y^2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=2 ...........................
+picture pic;
+picnum = 15;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $2y^2$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+// -------- give family of computable fncs and machines with choice ----
+picture pic;
+picnum = 16;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node test=nrounddiamond("$x$ odd?");
+node yesbox=nbox("Print $x$");
+node nobox=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(1.15u,read,test);
+hlayout(-2.5u,test,yesbox);
+hlayout(2.5u,test,nobox);
+vlayout(1.4u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     yesbox,
+     nobox, 
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--yesbox).l("Y"),
+     (test--nobox).l("N").style("leftside"),
+     (yesbox--VH--ending),
+     (nobox--VH--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=0 ...........................
+picture pic;
+picnum = 17;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=1 ...........................
+picture pic;
+picnum = 18;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $1$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............Freeze x=2 ...........................
+picture pic;
+picnum = 19;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node printout=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+
+
+
+
+
+// ---- the Halting Problem is unsolvable
+picture pic;
+int picnum = 5;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $e$");
+node test=nrounddiamond("$\TM_e(e)$ halts?");
+node printout=nbox("Print 0");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(1.2u,read,test);
+hlayout(-3.5u,test,printout);
+hlayout(3.85u,test,loop);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     test,
+     printout,
+     loop, 
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test--printout).l("No"),
+     (test--loop).l("Yes").style("leftside"),
+     (printout--ending)
+);
+
+shipout(format("hp%02d",picnum),pic,format="pdf");
+
+

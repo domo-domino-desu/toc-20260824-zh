@@ -1730,3 +1730,112 @@ shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
 
 
 
+
+
+// ============ union of decidable langs is decidable =======
+picture pic;
+int picnum = 24;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node e0test=nrounddiamond("$\TM_{e_0}(x)=1$?");
+node e0ybranch=nbox("Print $1$");
+node e1test=nrounddiamond("$\TM_{e_1}(x)=1$?");
+node e1ybranch=nbox("Print $1$");
+node e1nbranch=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,e0test);
+e0ybranch.pos = e0test.pos + (-2.5*u,-1.5*v);
+e1test.pos = e0test.pos + (3*u,-1.25*v);
+e1ybranch.pos = e1test.pos + (-2*u,-1.0*v);
+e1nbranch.pos = e1test.pos + (2*u,-1.0*v);
+vlayout(3.25*v,e0test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--e0test),
+     (e0test..HV..e0ybranch).l("Y"),
+     (e0test..HV..e1test).l("N").style("leftside"),
+     (e1test..HV..e1ybranch).l("Y"),
+     (e1test..HV..e1nbranch).l("N").style("leftside"),
+     (e0ybranch..VH..ending),
+     (e1ybranch..VH..ending),
+     (e1nbranch..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     e0test,
+     e0ybranch,
+     e1test,
+     e1ybranch,
+     e1nbranch, 
+     ending
+     );
+
+
+// ............ intersection ...............
+picture pic;
+int picnum = 25;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node e0test=nrounddiamond("$\TM_{e_0}(x)=1$?");
+node e0nbranch=nbox("Print $0$");
+node e1test=nrounddiamond("$\TM_{e_1}(x)=1$?");
+node e1ybranch=nbox("Print $1$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,e0test);
+e0nbranch.pos = e0test.pos + (2.5*u,-3.25*v);
+vlayout(1.9*v,e0test,e1test);
+vlayout(1.5*v,e1test,e1ybranch);
+// e1nbranch.pos = e1test.pos + (2*u,-1.0*v);
+vlayout(1*v,e1ybranch,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--e0test),
+     (e0test..HV..e0nbranch).label(Label("N",Relative(0.08))).style("leftside"),
+     (e0test--e1test).l("Y").style("leftside"),
+     (e1test--e1ybranch).l("Y").style("leftside"),
+     (e1test..HV..e0nbranch).label(Label("N",Relative(0.15))).style("leftside"),
+     (e1ybranch--ending),
+     (e0nbranch..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     e0test,
+     e0nbranch,
+     e1test,
+     e1ybranch, 
+     ending
+     );
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+

@@ -297,6 +297,10 @@ etc.
 The listing may have repeats, so perhaps for some $n_0\neq n_1$
 we have $f(n_0)=f(n_1)$.
 As always, we are most interested when the function is computable.
+The phrase `a function whose domain is the natural numbers' implies that the
+function is total but in \cref{sec:ComputablyEnumerableSets} we will
+show that we can use computably partial functions in the 
+place of computable total functions.
 
 \begin{example} \label{ex:MultiplesOfThreeCountable}
 The set of multiples of three, $3\N=\set{3k\suchthat k\in\N}$, is countable. 
@@ -6558,15 +6562,6 @@ that function.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Is $K$ infinite?
-\begin{answer}
-Yes, any finite set is computable.
-You could, for example, compute membership in a finite set with a sequence
-of if-then-else statements.
-\end{answer}
-\end{exercise}
-
 \recommended
 \begin{exercise}
 Your study partner asks you, ``The Turing machine 
@@ -6671,6 +6666,15 @@ to an extensionally equal one that runs longer),
 steps of execution (we can always modify a machine to an extensionally 
 equal one so that it uses extra memory), and
 (iii)~the machine source contains state~$q_{10}$ (we can add extra states).
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Is $K$ infinite?
+\begin{answer}
+Yes, any finite set is computable.
+You could, for example, compute membership in a finite set with a sequence
+of if-then-else statements.
 \end{answer}
 \end{exercise}
 
@@ -7779,20 +7783,20 @@ The complement of a decidable language is a decidable language.
 
 
 % ========================================
-\section{Computably enumerable sets}\index{computably enumerable|(}\index{set!computably enumerable|(}
+\section{Computably enumerable sets}\index{computably enumerable|(}\index{set!computably enumerable|(}\label{sec:ComputablyEnumerableSets}
 % Required for the section on oracles, which in turn is required
 % for the seciton on barriers to solving P=NP.
  
-The natural way to attack the \HP{} is to 
+To attack the \HP{} the natural thing is to 
 start by simulating $\TM_0$ on input~$0$ for a single step.
 Then simulate $\TM_0$ on input~$0$ for a second step and
 also simulate $\TM_1$ on input~$1$ for one step.
 After that, run $\TM_0$ on~$0$ for a third step,
 followed by $\TM_1$ on~$1$ for a second step,
 and then $\TM_2$ on~$2$ for one step.
-In this way, cycle among the $\TM_e$ on~$e$ simulations,
+This process cycles among the $\TM_e$ on~$e$ simulations,
 running each for a step.
-Eventually, some of these will halt and 
+Eventually you will see some of these halt and 
 the elements of $K$ will fill in.
 On computer systems this interleaving is called time-slicing 
 but in theory discussions it is called 
@@ -7805,24 +7809,22 @@ but in theory discussions it is called
   \protect\includegraphics[width=0.25\textwidth]{background/pix/dovetail.png} 
   \protect\end{center}}.\index{dovetailing}
 
-We are listing the elements of~$K$:~$f(0)$, 
-then~$f(1)$, \ldots\@
-(The computable function $f$ is such that, for instance, $f(0)=e$ where
-it happens that the first of these to halt is $\TM_e$ on input~$e$.) 
+We are listing the elements of~$K$:~first $f(0)$, 
+then~$f(1)$, \ldots{}
+(the computable function $f$ is such that, for instance, $f(0)=e$ where
+it happens that $\TM_e$ on input~$e$ is the first of these to halt). 
 \cref{def:Countable} gives the terminology that a function~$f$ with
 domain~$\N$ \definend{enumerates} its range. 
 
-Why won't this process of gradual enumeration solve the \HP,
-allowing us to decide whether or not a number is an element of~$K$?
-Enumeration will tell us what is in~$K$\Dash if $e\in K$ then we 
-will find that out eventually\Dash but if $e\notin K$ then 
-this process will never tell us so.
+Why won't this process of gradual enumeration solve the \HP?
+If $e\in K$ then it will tell us that eventually, 
+but if $e\notin K$ then it will not.
 
 %<*def:ComputableSet>
 \begin{definition}
 A set of natural numbers
-is \definend{decidable},\index{decidable!set}\index{set!decidable}
-or \definend{computable},\index{computable!set}\index{set!computable}
+is \definend{computable}\index{computable!set}\index{set!computable}
+(or \definend{decidable})\index{decidable!set}\index{set!decidable}
 if its
 characteristic function is computable, 
 if we can effectively determine both membership and non-membership.
@@ -7831,36 +7833,107 @@ if we can effectively determine both membership and non-membership.
 
 %<*def:ComputablyEnumerable>
 \begin{definition}
-A set is 
+A set of natural numbers is 
 \definend{computably enumerable}\index{computably enumerable set}\index{set!computably enumerable}\index{set!c.e.} 
-(or \definend{recursively enumerable},\index{recursively enumerable set}\index{set!recursively enumerable}\index{set!r.e.} 
-or \definend{c.e.},\index{c.e. set} or \definend{r.e.})\index{r.e. set}
+(or \definend{recursively enumerable}\index{recursively enumerable set}\index{set!recursively enumerable}\index{set!r.e.} 
+or \definend{c.e.}\index{c.e. set} or \definend{r.e.})\index{r.e. set}
 if it is effectively listable, that is, if it is
-the set of outputs of some computable function
-\definend{$W_e=\set{y\suchthat \text{$y=\TMfcn_e(i)$ for some $i\in\N$}}$}.
+the range of a total computable function
+\definend{$W_e=\set{y\suchthat \text{$y=\TMfcn_e(i)$ for some $i\in\N$, where $\TMfcn_i(x)\converges$ for all~$x$}}$} or it is the empty set.
 \end{definition}
 %</def:ComputablyEnumerable>
 
-Picture a stream of numbers generated by a computable function
-$\TMfcn_e(0)$, $\TMfcn_e(1)$, $\TMfcn_e(2)$,~\ldots{}\,, gradually filling 
-in the set~$W_e$.
-(If $\TMfcn_e(y)\diverges$ for all~$y$ then $W_e$ is empty.)
-
 %<*description:DecidableAndSemidecidable>
-A set~$S$ is computable if and only if there is a
-Turing machine that decides membership:~given an input number~$x$,
-the machine decides either `yes' or `no' whether $x\in S$.
-In contrast,
-with computably enumerable sets there is a Turing machine that
+So a set~$S$ is computable if there is a
+Turing machine that decides membership; this machine
+inputs a number~$x$ and 
+decides either `yes' or `no' whether $x\in S$.
+With computably enumerable sets there is a machine that 
 decides `yes' 
-but there is no requirement that the machine also decides `no'.
+but that machine need not address `no'.
 % Restated, a set is computable if there is a Turing machine that 
 % recognizes both members and nonmembers, while
 % a set is computably enumerable if there is a Turing machine that
 % recognizes members.
-Computably enumerable sets are sometimes called 
-`semidecidable'.\index{semidecidable set}\index{set!semidecidable}
+Computably enumerable sets are also called 
+\definend{semicomputable}\index{semicomputable set}\index{set!semicomputable}
+or \definend{semidecidable}.\index{semidecidable set}\index{set!semidecidable}
 %</description:DecidableAndSemidecidable>
+
+This is the natural way to computably produce sets\Dash picture 
+a stream of numbers
+$\TMfcn_e(0)$, $\TMfcn_e(1)$, $\TMfcn_e(2)$,~\ldots{}\, gradually filling 
+out the set~$W_e$.
+(This list may contain repeats, and the numbers could appear 
+in jumbled up order, that is, not necessarily in ascending order.)
+
+% The definition has that the enumerating function is total, which is 
+% natural for an `enumeration'; if for instance
+% $f(0)\converges$, $f(1)\diverges$, and~$f(2)\converges$ and we naively try to
+% produce the range by running the computable function~$f$ on successive inputs
+% then we will never get to the input~$2$.
+% But dovetailing solves that problem.
+% So we will next show that we get the same 
+% collection of sets if we relax the condition to 
+% allow partial computable functions. 
+
+%<*lem:CEIffDomainOfComputableFcn>
+\begin{lemma} \label{lem:CEIffDomainOfComputableFcn}
+The following are equivalent for a set of natural numbers.
+\begin{thmparts}
+\item It is computably enumerable, that is, either it is empty or it is
+  the range of a total computable function.
+\item It is the domain of a partial computable function.
+\item It is the range of a partial computable function.
+\end{thmparts}
+\end{lemma}
+%</lem:CEIffDomainOfComputableFcn>
+
+\begin{proof}
+We will show that the first two are equivalent.
+That the second and third are equivalent is 
+\cref{exer:CEIffDomainOfComputableFcn}.
+
+Assume first that $S$ is computably enumerable.
+If $S$ is empty then it is the domain of the partial computable function that 
+diverges on all inputs.
+So instead assume that $S$ is the range of a total computable~$f$\!,
+and we will describe a computable~$g$ with domain~$S$.
+Given the input~$x\in\N$, to compute $g(x)$
+enumerate $f(0)$, $f(1)$, \ldots{} 
+and wait for~$x$ to appear as one of the values.
+If~$x$ does appear then halt the computation 
+(and return some nominal value).
+If~$x$ never appears then the computation never halts.
+
+For the other direction,
+assume that $S$ is the domain of a partial computable function~$g$, 
+to show that it is computably enumerable.
+If $S$ is empty then it is computably enumerable by definition.
+Otherwise we must produce a total computable~$f$ whose range is~$S$. 
+If~$S$ is finite but not empty, $S=\set{s_0,\ldots s_m}$,
+then such a function is given by
+$0\mapsto s_0$, \ldots{} $m\mapsto s_m$, and $n\mapsto s_0$ for $n>m$. 
+
+The last case is that~$S$ is infinite. 
+Fix some $s_0\in S$. 
+Given input $n\in \N$, run the computations of each of
+$g(0)$, $g(1)$, \ldots{} $g(n)$ for $n$-many steps.
+Possibly some of these computations halt.
+Define $f(n)$ to be the least $k$ where $g(k)$ halts within~$n$ steps, and so
+that $k\notin\set{f(0),f(1),\ldots f(n-1)}$.
+If no such~$k$ exists then define $f(n)=\hat{s}$; this makes 
+$f$ a total function.
+
+If a number $t\notin S$ then $g(t)$ never converges 
+and so~$t$ is never enumerated by~$f$.
+If $s\in S$ then eventually $g(s)$ must converge,
+in some number of steps,~$n_s$.
+At that point the number~$s$ is queued for output by~$f$ in the sense that
+it will be enumerated by~$f$ as, at most, $f(n_s+s)$. 
+\end{proof}
+
+
 
 \begin{lemma}  \label{lem:ComputableAndCE}
 \begin{thmparts}
@@ -7877,16 +7950,16 @@ Computably enumerable sets are sometimes called
 \end{lemma}
 
 \begin{proof}
-First, let~$S\subseteq\N$ be computable;
-we will produce an effective enumeration~$\map{f}{\N}{\N}$.
+First, let~$S\subseteq\N$ be computable.
+We will produce an effective enumeration~$\map{f}{\N}{\N}$.
 If $S$ is finite, take $f(0)=s_0$, $f(1)=s_1$, \ldots
-$f(n-1)=s_{n-1}$, and for any larger input $m\geq n$, set $f(m)\diverges$.
+$f(n-1)=s_{n-1}$, and for any larger input, $m\geq n$, set $f(m)\diverges$.
 The other case is that $S$ is infinite.
 For~$f(0)$, find the smallest element of~$S$ 
 by testing whether $0\in S$, then whether $1\in S$, \ldots\sentencespace 
-This unbounded search is effective because~$S$ is computable
+This search is effective because~$S$ is computable
 and it must halt because $S$ is infinite.
-Similarly, define $f(k)$ to be the $k$-th smallest element in~$S$.
+Similarly, $f(k)$ will be the $k$-th smallest element in~$S$.
 
 As to the second item, first
 suppose that $S$ is computable.
@@ -7895,54 +7968,18 @@ Since the complement of a computable set is also computable,
 the prior item also
 gives that $\setcomp{S}$ is computably enumerable.
 
-For the other direction
-suppose that both $S$ and $\setcomp{S}$ are computably enumerable,
-and that $S$ is enumerated by~$f_S$ while $\setcomp{S}$ is
-enumerated by $f_{\setcomp{S}}$.
-Given an input~$x$,
-effectively determine which of the two sets contains~$x$ by
-dovetailing their enumerations.
-That is, first run the computation of $f_{S}(0)$ for a step,
-and the computation of $f_{\setcomp{S}}(0)$ for a step.
-Then run the computations of $f_{S}(0)$ and
-$f_{\setcomp{S}}(0)$ for a second step, etc.
-The sets are complements so eventually $x$ is enumerated into one or the other.
-\end{proof}
-
-%<*lem:CEIffDomainOfComputableFcn>
-\begin{lemma} \label{lem:CEIffDomainOfComputableFcn}
-A set is computably enumerable if and only if it is the domain of a
-partial computable function.
-\end{lemma}
-%</lem:CEIffDomainOfComputableFcn>
-
-\begin{proof}
-Assume first that $S$ is computably enumerable so that it 
-is the range of a computable function~$f$\!.
-We will produce an effective~$\map{g}{\N}{\N}$ that has domain~$S$, that
-converges if and only if the input is an element of~$S$.
-Given the input~$x\in\N$, to compute $g(x)$
-enumerate $f(0)$, $f(1)$, \ldots, and wait for~$x$ to appear.
-If it does appear then halt the computation of~$g(x)$ 
-(and return some nominal value).
-If~$x$ never appears in the enumerations then this procedure never halts.
-
-For the implication in the other direction,
-assume that $S$ is the domain of the partial computable function~$g$.
-We will produce a computable function~$f$ whose range is~$S$. 
-If $S$ is empty then it is computably enumerable by definition.
-So assume that~$S$ is not empty and fix some $\hat{s}\in S$. 
-Given input $n\in \N$, run the computations of 
-$g(0)$, $g(1)$, \ldots{} $g(n)$ for $n$-many steps each.
-Possibly some of these computations halt.
-Define $f(n)$ to be the least $k$ so $g(k)$ halts within~$n$ steps and so
-that $k\notin\set{f(0),f(1),\ldots f(n-1)}$.
-If no such $k$ exists then define $f(n)=\hat{s}$.
-
-If $s\in S$ then eventually $g(s)$ must converge,
-in some number~$n_s$ of steps.
-At that point the number~$s$ is queued for output by~$f$ in the sense that
-it will be enumerated by~$f$ as, at most, $f(n_s+s)$. 
+To finish,
+suppose that both $S$ and $\setcomp{S}$ are computably enumerable.
+Let $S$ be enumerated by~$f$ and let $\setcomp{S}$ be
+enumerated by $\bar{f}$. 
+We must give an effective procedure to determine whether a given~$x$
+is an element of~$S$.
+We will dovetail the two enumerations:~first run 
+the computation of $f(0)$ for a step
+and the computation of $\bar{f}(0)$ for a step,
+then run the computations of $f(0)$ and
+$\bar{f}(0)$ for a second step, etc.
+Eventually $x$ will be enumerated into one or the other.
 \end{proof}
 
 %<*lem:HPIsCE>
@@ -7977,6 +8014,26 @@ that we will ever know,
 and semidecidable sets are ones that we half know.
 
 \begin{exercises}
+\recommended
+\begin{exercise}
+You got a quiz question to define computably enumerable.
+A friend of yours says they answered with, 
+``A set that can be enumerated by a Turing machine
+but that is not computable.''
+Is your friend right?
+\begin{answer}
+Not completely right.
+A set is computably enumerable if it can be enumerated by a Turing machine, all
+right.
+That is, a Turing machine exists that, when started on a blank tape, will
+print all of the sets members on the tape (it may run forever, if there are
+infinitely many set members).
+However, the ``but is not computable'' is wrong.
+Any computable set is computably enumerable, although there are 
+computably enumerable sets that are not computable. 
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 Give a function that enumerates each set.
@@ -8025,28 +8082,9 @@ For each part we must produce a $\map{f}{\N}{\N}$ that is effective.
 \end{answer}
 \end{exercise}
 
-\recommended
 \begin{exercise}
-You got a quiz question to define computably enumerable.
-A friend of yours says they answered with, 
-``A set that can be enumerated by a Turing machine
-but that is not computable.''
-Is your friend right?
-\begin{answer}
-Not completely right.
-A set is computably enumerable if it can be enumerated by a Turing machine, all
-right.
-That is, a Turing machine exists that, when started on a blank tape, will
-print all of the sets members on the tape (it may run forever, if there are
-infinitely many set members).
-However, the ``but is not computable'' is wrong.
-Any computable set is computably enumerable, although there are 
-computably enumerable sets that are not computable. 
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-One of these two is computable and the other is computably enumerable.
+One of these two is computable and the other is computably enumerable but
+not computable.
 Which is which?
 \begin{exparts}
 \item $\set{e\suchthat \text{$\TM_e$ halts on input~$4$ in less than twenty steps}}$
@@ -8098,6 +8136,16 @@ Testing all inputs would never halt.
 \item
 As with the prior item, this set is neither.
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Name a set that has an enumeration but not a computable enumeration.
+\begin{answer}
+The complement of the \HP{} set, $\setcomp{K}$,
+is countable as it is a subset of~$\N$.
+So it has an enumeration.
+But this subsection shows that it has no computable enumeration.
 \end{answer}
 \end{exercise}
 
@@ -8176,7 +8224,7 @@ and $\set{e\in\N\suchthat \text{there is $x\in\N$ so that $\TMfcn_e(x)=7$}}$.
 \end{exercise}
 
 \begin{exercise}
-Write a program to enumerate each set.
+Sketch a program to enumerate each set.
 \begin{exparts*}
 \item the even numbers
 \item the perfect squares
@@ -8191,8 +8239,8 @@ Write a program to enumerate each set.
 \item
 Prove that every finite set is computably enumerable.
 \item
-Write a program that takes in a finite set and returns
-a routine that enumerates the set.
+Sketch a program that takes as input a finite set and returns
+a function that enumerates the set.
 \end{exparts*}
 \end{exercise}
 
@@ -8234,6 +8282,17 @@ $n\notin S$.
 \end{exercise}
 
 \begin{exercise}
+We know that there are sets, subsets of~$\N$, that are not computable.
+Are the computably enumerable sets the rest of the sets?
+\begin{exparts}
+\item By a countability argument show that they are not.
+\item Show that the set 
+  $\textrm{Tot}=\set{e\suchthat \text{$\TMfcn_e(y)\converges$ for all $y$}}$
+  is not computable and not computably enumerable.
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
 Suppose that there is a set $A$ and a computable function $f$ such that
 the set difference $A-\operatorname{range}(f)$ is finite.
 Show that $A$ is computably enumerable.
@@ -8253,6 +8312,10 @@ make up all the computable enumerable sets.
 \end{exparts}
 \end{exercise}
 
+\begin{exercise}  \label{exer:CEIffDomainOfComputableFcn}
+Finish the proof of \cref{lem:CEIffDomainOfComputableFcn} by showing that
+the second and third items are equivalent.
+\end{exercise}
 
 \begin{exercise}
 This section starts by recalling that we say that a function $\map{f}{\N}{S}$ 
@@ -8326,6 +8389,21 @@ Similarly it is not co-computably enumerable.
 % Exercise based on:
 % https://cstheory.stackexchange.com/questions/38193/about-the-decidability-of-sets-enumerated-in-non-decreasing-order?
 % \end{TODO}
+\begin{exercise}
+Computability is a property of sets so we can consider its
+interaction with set operations.
+\begin{exparts*}
+\item
+Must a subset of a computable set be computable?
+\item
+Must the union of two computable sets be computable?
+\item
+The intersection?
+\item
+The complement?
+\end{exparts*}
+\end{exercise}
+
 
 \begin{exercise}
 Computable enumerability is a property of sets so we can consider its

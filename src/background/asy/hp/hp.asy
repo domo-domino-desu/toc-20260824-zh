@@ -1739,9 +1739,9 @@ int picnum = 24;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node e0test=nrounddiamond("$\TM_{e_0}(x)=1$?");
+node e0test=nrounddiamond("$\TMfcn_{e_0}(x)=1$?");
 node e0ybranch=nbox("Print $1$");
-node e1test=nrounddiamond("$\TM_{e_1}(x)=1$?");
+node e1test=nrounddiamond("$\TMfcn_{e_1}(x)=1$?");
 node e1ybranch=nbox("Print $1$");
 node e1nbranch=nbox("Print $0$");
 node ending=nroundbox("End");
@@ -1785,6 +1785,8 @@ draw(pic,
      ending
      );
 
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
 
 // ............ intersection ...............
 picture pic;
@@ -1793,9 +1795,9 @@ int picnum = 25;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node e0test=nrounddiamond("$\TM_{e_0}(x)=1$?");
+node e0test=nrounddiamond("$\TMfcn_{e_0}(x)=1$?");
 node e0nbranch=nbox("Print $0$");
-node e1test=nrounddiamond("$\TM_{e_1}(x)=1$?");
+node e1test=nrounddiamond("$\TMfcn_{e_1}(x)=1$?");
 node e1ybranch=nbox("Print $1$");
 node ending=nroundbox("End");
 
@@ -1833,6 +1835,44 @@ draw(pic,
      e0nbranch,
      e1test,
      e1ybranch, 
+     ending
+     );
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............ complement ...............
+picture pic;
+int picnum = 26;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node output=nbox("Print $1-\TMfcn_e(x)$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,output);
+vlayout(1*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read, 
+     output, 
      ending
      );
 

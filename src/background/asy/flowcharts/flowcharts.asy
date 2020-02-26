@@ -166,9 +166,9 @@ int picnum = 3;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $e$");
-node test=nrounddiamond("$\TMfcn^K_e(e)\converges$?");
-node printout=nbox("Print 0");
+node read=nbox("Read $x$");
+node test=nrounddiamond("$\TMfcn^K_e(x)=1$?");
+node printout=nbox("Print $42$");
 node loop=nbox("Infinite loop");
 node ending=nroundbox("End");
 
@@ -180,8 +180,8 @@ real v = 0.85*u;
 
 vlayout(1*v,start,read);
 vlayout(1.35*v,read,test);
-hlayout(-2.8*u,test,printout);
-hlayout(3.15*u,test,loop);
+hlayout(-3.25*u,test,printout);
+hlayout(3.75*u,test,loop);
 vlayout(1.1*v,printout,ending);
 
 // draw edges
@@ -216,8 +216,8 @@ int picnum = 4;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x,y$");
-node test=nrounddiamond("oracle(x)?");
-node printzero=nbox("Print 0");
+node test=nrounddiamond("$x\in X$?");
+node printzero=nbox("Print $42$");
 node loop=nbox("Loop");
 node ending=nroundbox("End");
 
@@ -263,8 +263,8 @@ int picnum = 5;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
-node test=nrounddiamond("oracle(x)?");
-node printzero=nbox("Print 0");
+node test=nrounddiamond("$x\in X$?");
+node printzero=nbox("Print $42$");
 node loop=nbox("Loop");
 node ending=nroundbox("End");
 

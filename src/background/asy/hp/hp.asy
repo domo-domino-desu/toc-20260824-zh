@@ -186,7 +186,7 @@ int picnum = 3;
 node start=nroundbox("Start");
 node read=nbox("Read $e,x,y$");
 node simulate=nbox(minipage2("Simulate $\TM_{e}$\\ on input~$x$"));
-node printout=nbox("Output 0");
+node printout=nbox("Print 42");
 node ending=nroundbox("End");
 
 // layout
@@ -227,7 +227,7 @@ int picnum = 4;
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
 node simulate=nbox(minipage2("Simulate $\TM_{e}$\\ on input~$x$"));
-node printout=nbox("Output 0");
+node printout=nbox("Print 42");
 node ending=nroundbox("End");
 
 // layout

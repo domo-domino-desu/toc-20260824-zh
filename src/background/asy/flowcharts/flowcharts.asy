@@ -481,15 +481,15 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ---- application of recursion theorem W_m={m}  -------------
+// ======== application of recursion theorem W_m={m} ==============
 picture pic;
 int picnum = 9;
 
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x,m$");
-node test=nrounddiamond("x=m?");
-node printzero=nbox("Print 0");
+node test=nrounddiamond("$x=m$?");
+node printzero=nbox("Print $42$");
 node loop=nbox("Loop");
 node dummy=nbox("");  
 node end=nroundbox("End");
@@ -536,8 +536,8 @@ int picnum = 10;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node test=nrounddiamond("x=m?");
-node printzero=nbox("Print 0");
+node test=nrounddiamond("$x=m$?");
+node printzero=nbox("Print $42$");
 node loop=nbox("Loop");
 node dummy=nbox("");  
 node end=nroundbox("End");

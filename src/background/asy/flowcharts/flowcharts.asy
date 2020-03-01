@@ -628,7 +628,7 @@ int picnum = 12;
 
 // define nodes
 node start=nroundbox("Start");
-node ppofe=nbox("Print machine number P(e)");
+node ppofe=nbox("Print machine number $P(e)$");
 node ending=nroundbox("End");
 
 // layout
@@ -654,6 +654,159 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// =========== Programs that know their own source ==========
+picture pic;
+int picnum = 13;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$");
+node print=nbox("Print $\sigma$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............. apply smn to prior ...........
+picture pic;
+int picnum = 14;
+
+// define nodes
+node start=nroundbox("Start");
+node print=nbox("Print $\sigma$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............. regularize it ...........
+picture pic;
+int picnum = 15;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$");
+node erase=nbox("Erase $\sigma$");
+node print=nbox("Print $m(\,s(e_0,\sigma)\,)$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,erase,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--erase),
+     (erase--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     erase,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............. TM B ...........
+picture pic;
+int picnum = 16;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\tau$");
+node print=nbox("Print $q(\tau)\concat\tau$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 // =============== Exercises ===============
 // s-m-n them

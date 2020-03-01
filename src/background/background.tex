@@ -9649,11 +9649,11 @@ Rephrased for rhetorical effect,
   I~Judge.}.
 
 \begin{remark}
-Every Turing machine has some index number but why 
-must there be a machine numbered in a way related to its behavior?
+Every Turing machine has some index number but here
+the machine's index is in a way related to its behavior.
 At first glance it seems to be an accident of the particular numbering scheme.
-But it isn't an accident,
-the corollary says that it must happen as long as the numbering is acceptable.
+But it isn't an accident;
+the corollary says that it must happen for any acceptable numbering.
 These are deep results, showing very  surprising and interesting behaviors
 exhibited by any sufficiently powerful computation system.
 We say more in the discussion below and in \cref{sec:SelfReproduction}.
@@ -10680,6 +10680,77 @@ quine contests disallow that.)
 
 
 
+\subsection*{Know thyself}
+A program that prints itself may seem to be a parlour trick.
+But for 
+\citetext{a routine to have access to its code}{%
+  \definend{Introspection} is the ability to inspect code in the system,
+  such as to inspect the type of objects.
+  \definend{Reflection} is the ability to make modifications at runtime.} 
+is useful in a number of ways.
+For example, to write a \codeinline{toString(obj)} method 
+or a \codeinline{dump(obj)} method requires that
+the routine be able to inspect the object.
+Another example is a plugin archetecture to extend applications at runtime. 
+
+We will show how code can know its source.
+We shall expand on the above ideas, so we start by giving an alternate
+description of a machine that prints itself.
+
+To start we make two preliminary technical points.
+The first is that given two programs we can combine the two, so that
+we run the first and then run the second.
+In the same way, given two Turing  machines
+we can combine them by
+renumbering the states in the second so they do not conflict with any
+states in the first, and then changing the final states in the first machine
+to have the number of the starting state in the second.
+
+The second technical point 
+is that in saying that our numbering of Turing machines is
+`acceptable' we specified that there is a computable function from indices
+to machines, and back again.
+Define the computable function 
+$\map{m}{\N}{\kleenestar{\Sigma}}$ to take in an index~$e$ and return
+a string representation of~$\TM_e$.
+Also define the computable $\map{i}{\kleenestar{\Sigma}}{\N}$ to take in 
+a string representation and return an index for that machine
+(if the string doesn't represent a Turing machine then it doesn't matter what
+this function does).
+
+Consider the machine sketched on the left below.
+Suppose that it has index~$e_0$ and apply the \smn~Theorem to get the
+machine sketched in the middle.  
+It represents a family of machines, each of which has the string hard-wired into
+the source, so that it computes $\TM_{s(e_0,\sigma)}$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts13.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts14.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts15.pdf}}
+\end{center}
+Also consider the machine on the right.
+Let it be~$Q$ and let the function that it computes be 
+$\map{q}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$.
+
+For a machine that prints itself, call the one sketched below~$B$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts16.pdf}}
+\end{center}
+Define the machine~$A$ to print out the string representation of~$B$.
+That is, where $\tau$ is a string representation of~$B$, the machine~$A$
+is $\TM_{s(e_0,\tau)}$.
+Then the machine that prints its own source is the combination of $A$
+with~$B$.
+The $A$ part prints out~$B$ as a string, the $B$ part reads that in, computes
+the~$A$ part, and concatenates it to the~$B$ part.
+
+
+
+
+
+
 
 
 \margingraphic{0.18\textwidth}{background/pix/thompson.jpg}{%
@@ -10697,7 +10768,7 @@ One of the favorites was to write the shortest self-reproducing program.
 % the usual vehicle was FORTRAN.
 % Actually, FORTRAN was the language of choice for the same reason that
 % three-legged races are popular.
-\ldots{}
+\ldots{}\sentencespace
 
 More precisely stated, the problem is to write a source program that,
 when compiled and executed, will produce as output an exact copy of its source.

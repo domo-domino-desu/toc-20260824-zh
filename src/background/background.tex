@@ -9832,6 +9832,27 @@ Instead, it contains a name for the instructions for computing itself.
 
 % ................................................
 \begin{exercises}
+
+\begin{exercise}
+Your friend asks you about the proof of the Fixed Point Theorem, 
+\cref{th:FixedPointThm}.
+``The last line says $\TMfcn_{g(v)}=\TMfcn_{\TMfcn_v(v)}$; isn't this just
+saying that  $g(v)=\TMfcn_v(v)$?
+Why the circumlocution?''
+Help them out.
+\begin{answer}
+  The Padding Lemma, \cref{lem:EveryCompFcnHasInfManyIndices}
+  on page~\pageref{lem:EveryCompFcnHasInfManyIndices},
+  says that every computable function (including the partial functions) has many
+  indices.
+  So saying that the two are the same function,  
+  that $\TMfcn_{g(v)}=\TMfcn_{\TMfcn_v(v)}$, is very different than
+  saying that the indices are the same,
+  that  $g(v)=\TMfcn_v(v)$.
+\end{answer}
+\end{exercise}
+
+
 \begin{exercise}
 \recommended
 % Rogers p 181
@@ -9915,6 +9936,21 @@ Prove or disprove the existence of~$m$ with the given property.
 \item $W_m=\N-\set{m}$
 \item $W_m=\set{x\suchthat \text{$\phi_m(x)$ diverges}}$
 \end{exparts}
+\end{exercise}
+
+\begin{exercise}
+Prove that there is a program that outputs its own source code, that is, 
+there is a Turing machine that outputs a string representation of itself.
+\begin{answer}
+Define a machine that outputs its input, so that it computes
+$\TMfcn(x)=x$.
+If given the input of the source code of a Turing machine $\TM$ then
+its output is the source of $\TM$.
+By the Fixed Point Theorem, there is some Turing machine
+$\TM$ such that $\TM$ has the same behavior as $\TMfcn(\TM)$.
+But that behavior is to output the source code of $\TM$.
+So this machine outputs its own source.
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -10693,23 +10729,27 @@ or a \codeinline{dump(obj)} method requires that
 the routine be able to inspect the object.
 Another example is a plugin archetecture to extend applications at runtime. 
 
-We will show how code can know its source.
+\citetext{We will show how code can know its source}{%
+  This material is derived from the wonderful presentation 
+  in \autocite{Sipser}.}.
 We shall expand on the above ideas, so we start by giving an alternate
 description of a machine that prints itself.
 
-To start we make two preliminary technical points.
+Before we start, two technical points.
 The first is that given two programs we can combine the two, so that
 we run the first and then run the second.
-In the same way, given two Turing  machines
-we can combine them by
-renumbering the states in the second so they do not conflict with any
-states in the first, and then changing the final states in the first machine
+Similarly, given
+we can combine  two Turing  machines by
+renumbering the states so they do not conflict 
+and then changing the final states in the first machine
 to have the number of the starting state in the second.
 
-The second technical point 
+The second point 
 is that in saying that our numbering of Turing machines is
 `acceptable' we specified that there is a computable function from indices
 to machines, and back again.
+Define the function $s$ that inputs a Turing machine and returns 
+a string representation of that machine.
 Define the computable function 
 $\map{m}{\N}{\kleenestar{\Sigma}}$ to take in an index~$e$ and return
 a string representation of~$\TM_e$.
@@ -10718,7 +10758,8 @@ a string representation and return an index for that machine
 (if the string doesn't represent a Turing machine then it doesn't matter what
 this function does).
 
-Consider the machine sketched on the left below.
+Consider the machine sketched on the left below, which computes the
+$\operatorname{echo}$ function given by $\operatorname{echo}(\sigma)=\sigma$.
 Suppose that it has index~$e_0$ and apply the \smn~Theorem to get the
 machine sketched in the middle.  
 It represents a family of machines, each of which has the string hard-wired into
@@ -10734,17 +10775,31 @@ Also consider the machine on the right.
 Let it be~$Q$ and let the function that it computes be 
 $\map{q}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$.
 
-For a machine that prints itself, call the one sketched below~$B$.
+For a machine that prints itself, begin by letting
+the machine sketched below be~$B$.
 \begin{center}
   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts16.pdf}}
 \end{center}
-Define the machine~$A$ to print out the string representation of~$B$.
+Also, define the machine~$A$ to print out the string representation of~$B$.
 That is, where $\tau$ is a string representation of~$B$, the machine~$A$
 is $\TM_{s(e_0,\tau)}$.
 Then the machine that prints its own source is the combination of $A$
 with~$B$.
 The $A$ part prints out~$B$ as a string, the $B$ part reads that in, computes
 the~$A$ part, and concatenates it to the~$B$ part.
+
+We extend this to get a machine that computes with its own input.
+The idea is to start with a machine that takes two inputs,
+string representations of machines and strings, and then 
+find a fixed point to get a machine that uses its own representation.
+
+\begin{theorem}
+For any Turing machine $\TM_T$ that computes a function
+$\map{t}{\kleenestar{\Sigma}\times\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
+there is a machine~$\TM_R$ that computes 
+$\map{r}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
+where $r(\sigma)=t(s(\TM_R),\sigma)$.
+\end{theorem}
 
 
 
@@ -11710,6 +11765,16 @@ sage: 2*3*5^5*7*11*13^4*17*5*19^2
 % discovered in finite time.
 % So you'll accept if $\TM$ accepts and reject if $\TM$ rejects.
 % But this means that you’re solving Consistent Guessing Problem.
+
+% Just as a beginning programming class encourages a person to think that,
+% once you are given a sufficiently detailed specificatino of the problem
+% then producing a solution is routine, so also Hilbert and others perceived
+% that we could produce an axiom system on which to base Mathematics.
+% Then, for any question, with enough smarts we could settle any 
+% question at issue. 
+
+% The \HP{} shows that there are precisely stated problems that cannot be 
+% solved by an effective procedure.
 
 
 % http://www.rudyrucker.com/blog/2012/08/01/memories-of-kurt-godel/

@@ -1754,3 +1754,99 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ========= W_e = {0,1,2,.. e} =========
+picture pic;
+int picnum = 23;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node test=nrounddiamond("$y\leq x$?");
+node print=nbox("Print $42$");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+print.pos = test.pos +(-2.0*u,-1.0*v);
+loop.pos = test.pos +(2.0*u,-1.0*v);
+vlayout(1.65*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..print).l("Y"),
+     (test..HV..loop).l("N").style("leftside"),
+     (print..VH..ending),
+     (loop..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     print,
+     loop,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ......... after smn ..........
+picture pic;
+int picnum = 24;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nrounddiamond("$y\leq x$?");
+node print=nbox("Print $42$");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,test);
+print.pos = test.pos +(-2.0*u,-1.0*v);
+loop.pos = test.pos +(2.0*u,-1.0*v);
+vlayout(1.65*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..print).l("Y"),
+     (test..HV..loop).l("N").style("leftside"),
+     (print..VH..ending),
+     (loop..VH..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     print,
+     loop,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

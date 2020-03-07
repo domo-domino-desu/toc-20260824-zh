@@ -427,6 +427,9 @@
 
 
 % ========== floats, captions =============
+% Keep floats out of the bottom of the pages
+\renewcommand{\bottomfraction}{0}
+
 \usepackage{float}
 \usepackage[% see https://tex.stackexchange.com/a/122329/121234
     font={small},

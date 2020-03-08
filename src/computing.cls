@@ -1326,7 +1326,8 @@
 
 % Don't want \lstinline!..! because it comes out too small.
 \usepackage{relsize}
-\newcommand\codeinline{\lstinline[basicstyle=\smaller\ttfamily]}
+% \newcommand\codeinline{\lstinline[basicstyle=\smaller\ttfamily]}
+\newcommand\codeinline{\lstinline[basicstyle=\ttfamily]}
 
 
 

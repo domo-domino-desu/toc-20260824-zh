@@ -808,6 +808,85 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ======= Fixed Point phi_m(y)=m ==============
+picture pic;
+int picnum = 17;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node print=nbox("Print $x$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ...... after smn .............
+picture pic;
+int picnum = 18;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node print=nbox("Print $x$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
 // =============== Exercises ===============
 // s-m-n them
 string OUTPUT_FN = "flowcharts1%03d";

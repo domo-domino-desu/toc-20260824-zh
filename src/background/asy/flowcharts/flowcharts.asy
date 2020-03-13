@@ -737,7 +737,7 @@ int picnum = 15;
 node start=nroundbox("Start");
 node read=nbox("Read $\sigma$");
 node erase=nbox("Erase $\sigma$");
-node print=nbox("Print $m(\,s(e_0,\sigma)\,)$");
+node print=nbox("Print $\composed{\strng}{\mach}\,(s(e_0,\sigma))$");
 node ending=nroundbox("End");
 
 // layout

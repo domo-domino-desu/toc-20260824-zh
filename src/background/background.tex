@@ -5199,17 +5199,25 @@ Turing machine~$P_e$, and lets it run on that input list.
 %</pf:smnii>
 \end{proof}
 
-That argument uses $a$'s for the values that the $x$~variables are frozen to.
-In the future we won't maintain that convention, as we will be thinking of the $x$'s as parameters and
-so sometimes varying them. 
+% That argument uses $a$'s for the values that the $x$~variables are frozen to.
+% In the future we won't maintain that convention, as we will be thinking of the $x$'s as parameters and
+% so sometimes varying them. 
+
+In the notation $s_{m,n}$, 
+the subscript~$m$ is the number of inputs being frozen
+while~$n$ is the number of inputs left free.
+As the prior example suggests, they can sometimes be a bother and 
+we usually omit them.
 
 \begin{example}
-Consider the two-input Turing machine sketched by this flowchart.
+Consider the two-input routine sketched by this flowchart.
 \begin{equation*}
   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1007.pdf}}
   \tag{$*$}
 \end{equation*}
-Suppose that it has index~$e$.
+By Church's Thesis there is a Turing machine that fills in the sketch,
+and computes the function $\psi(x,y)=x\cdot y$.
+let that machine have index~$e$.
 We can use the \smn{} theorem to freeze the value of~$x$ to~$0$.
 On the left below is the flowchart sketching the machine $\TM_{s_{1,1}(e,0)}$.
 It computes the function $\TMfcn_{s_{1,1}(e,0)}(y)=0$;
@@ -5231,9 +5239,10 @@ On the right the machine computes $\TMfcn_{s_{1,1}(e,2)}(y)=2y$,
 and an example is $\TMfcn_{s_{1,1}(e,2)}(5)=10$.
 
 In general, this is the flowchart for $\TM_{s_{1,1}(e,x)}$.
-\begin{center}
-  \includegraphics{background/asy/flowcharts/flowcharts1011.pdf}
-\end{center}
+\begin{equation*}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1011.pdf}}
+  \tag{**}
+\end{equation*}
 Compare this to the flowchart in~($*$) above. 
 The difference is that this machine does not read~$x$.  
 Rather, as in the three charts above, 
@@ -5244,11 +5253,15 @@ This family is parametrized by~$x$, and the indices are
 uniformily computable from $e$ and~$x$, using the function~$s$.
 \end{example}
 
-In the notation $s_{m,n}$, 
-the subscript~$m$ is the number of inputs being frozen
-while~$n$ is the number of inputs left free.
-As the prior example suggests, they can sometimes be a bother and 
-we usually omit them.
+The \smn{} Theorem says that we can hard code the values of parameters into
+the machine's source.
+But it says more.
+It says that 
+the family of functions is uniformily computable.
+There is a single computable function, $s$, going from 
+the index~$e$ and the parameter value~$x$ to the index of the
+result in~($**$).
+So, the \smn{} Theorem is about uniformity.
 \index{parametrization|)}
 
 
@@ -11025,50 +11038,89 @@ quine contests disallow that.)
 
 
 
+
+
+\margingraphic{0.18\textwidth}{background/pix/thompson.jpg}{%
+  \label{fig:thompson}\href{https://en.wikipedia.org/wiki/Ken_Thompson}{Ken Thompson b~1943}}\index{Thompson, K!picture} % http://images.computerhistory.org/fellows/1997_ken_thompson.jpg
+\subsection*{Reflections on Trusting Trust}\index{Reflections on Trusting Trust@\textit{Reflections on Trusting Trust}}
+K~Thompson is one of the two main creators of the UNIX operating system.
+For this and other accomplishments he won the Turing Award,
+the highest honor in computer science.
+He began his acceptance address with this.
+\begin{quotation}
+In college, before video games, we would amuse ourselves by posing
+programming exercises.
+One of the favorites was to write the shortest self-reproducing program.
+% Since this is an exercise divorced from reality,
+% the usual vehicle was FORTRAN.
+% Actually, FORTRAN was the language of choice for the same reason that
+% three-legged races are popular.
+\ldots{}\sentencespace
+
+More precisely stated, the problem is to write a source program that,
+when compiled and executed, will produce as output an exact copy of its source.
+If you have never done this, I urge you to try it on your own.
+The discovery of how to do it is a revelation that far surpasses any
+benefit obtained by being told how to do it.
+The part about ``shortest'' was just an incentive to demonstrate skill
+and determine a winner.
+\end{quotation}
+
+This celebrated essay develops a quine and 
+goes on to show how the existence of such code poses a security threat that
+is very subtle and just about undetectable.
+The entire address \autocite{Thompson} is widely available; everyone
+should read it.
+
+
+
 \subsection*{Know thyself}
 A program that prints itself may seem to be a parlour trick.
-But for 
-\citetext{a routine to have access to its code}{%
+But 
+\citetext{for routines to have access to their code}{%
   \definend{Introspection} is the ability to inspect code in the system,
   such as to inspect the type of objects.
   \definend{Reflection} is the ability to make modifications at runtime.} 
 is useful in a number of ways.
-For example, to write a \codeinline{toString(obj)} method 
-or a \codeinline{dump(obj)} method requires that
-the routine be able to inspect the object.
+For example, to write a \codeinline{toString(obj)} method you probably 
+want your method to ask \codeinline{obj} for its source. 
+Similarly, a \codeinline{dump(obj)} method requires that
+the routine be able to inspect the object's source.
 Another example is a plugin archetecture to extend applications at runtime. 
 
-\citetext{We will show how code can know its source}{%
+\citetext{We will show how a routine can know its source}{%
   This material is derived from the wonderful presentation 
   in \autocite{Sipser}.}.
 We shall expand on the above ideas, so we start by giving an alternate
 description of a machine that prints itself.
 
 Before we start, two technical points.
-The first is that given two programs we can combine the two, so that
+The first is that given two programs we can combine the two into one, so that
 we run the first and then run the second.
-Similarly, given
-we can combine  two Turing  machines by
-renumbering the states so they do not conflict 
-and then changing the final states in the first machine
-to have the number of the starting state in the second.
-
+% Similarly, given
+% we can combine  two Turing  machines by
+% renumbering the states so they do not conflict 
+% and then changing the final states in the first machine
+% to have the number of the starting state in the second.
 The second point 
 is that in saying that our numbering of Turing machines is
 `acceptable' we specified that there is a computable function from indices
-to machines, and back again.
-Define the function $s$ that inputs a Turing machine and returns 
-a string representation of that machine.
-Define the computable function 
-$\map{m}{\N}{\kleenestar{\Sigma}}$ to take in an index~$e$ and return
-a string representation of~$\TM_e$.
-Also define the computable $\map{i}{\kleenestar{\Sigma}}{\N}$ to take in 
-a string representation and return an index for that machine
+to machines, and another computable function back again.
+Define the function $\map{\strng}{\mathcal{T}}{\kleenestar{\B}}$ 
+that inputs a Turing machine and returns 
+the standard string representation of that machine as a bitstring,
+define $\map{\mach}{\N}{\mathcal{T}}$ 
+that inputs an index~$e$ and returns the machine~$\TM_e$,  
+and define $\map{\idx}{\kleenestar{\B}}{\N}$ 
+that inputs the string representation of machine $\TM_e$ 
+and returns the index~$e$
 (if the string doesn't represent a Turing machine then it doesn't matter what
 this function does).
+Do this in such a way 
+that $\idx$ is the inverse of $\composed{\strng}{\mach}$.
 
 Consider the machine sketched on the left below, which computes the
-$\operatorname{echo}$ function given by $\operatorname{echo}(\sigma)=\sigma$.
+function $\operatorname{echo}(\sigma)=\sigma$.
 Suppose that it has index~$e_0$ and apply the \smn~Theorem to get the
 machine sketched in the middle.  
 It represents a family of machines, each of which has the string hard-wired into
@@ -11114,40 +11166,6 @@ where $r(\sigma)=t(s(\TM_R),\sigma)$.
 
 
 
-
-
-
-\margingraphic{0.18\textwidth}{background/pix/thompson.jpg}{%
-  \label{fig:thompson}\href{https://en.wikipedia.org/wiki/Ken_Thompson}{Ken Thompson b~1943}}\index{Thompson, K!picture} % http://images.computerhistory.org/fellows/1997_ken_thompson.jpg
-\subsection*{Reflections on Trusting Trust}\index{Reflections on Trusting Trust@\textit{Reflections on Trusting Trust}}
-K~Thompson is one of the two main creators of the UNIX operating system.
-For this and other accomplishments he won the Turing Award,
-the highest honor in computer science.
-He began his acceptance address with this.
-\begin{quotation}
-In college, before video games, we would amuse ourselves by posing
-programming exercises.
-One of the favorites was to write the shortest self-reproducing program.
-% Since this is an exercise divorced from reality,
-% the usual vehicle was FORTRAN.
-% Actually, FORTRAN was the language of choice for the same reason that
-% three-legged races are popular.
-\ldots{}\sentencespace
-
-More precisely stated, the problem is to write a source program that,
-when compiled and executed, will produce as output an exact copy of its source.
-If you have never done this, I urge you to try it on your own.
-The discovery of how to do it is a revelation that far surpasses any
-benefit obtained by being told how to do it.
-The part about ``shortest'' was just an incentive to demonstrate skill
-and determine a winner.
-\end{quotation}
-
-This celebrated essay develops a quine and 
-goes on to show how the existence of such code poses a security threat that
-is very subtle and just about undetectable.
-The entire address \autocite{Thompson} is widely available; everyone
-should read it.
 
 
 \begin{exercises}

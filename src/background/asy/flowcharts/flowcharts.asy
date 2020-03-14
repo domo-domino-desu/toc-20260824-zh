@@ -777,7 +777,8 @@ int picnum = 16;
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $\tau$");
-node print=nbox("Print $q(\tau)\concat\tau$");
+node compute=nbox("Compute $\rho=q(\tau)$");
+node print=nbox("Print $\rho\concat\tau$");
 node ending=nroundbox("End");
 
 // layout
@@ -786,13 +787,15 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-vlayout(1.0*v,start,read,print);
-vlayout(1.0*v,print,ending);
+vlayout(1.0*v,start,read,compute);
+vlayout(1.1*v,compute,print);
+vlayout(1.05*v,print,ending);
 
 // draw edges
 draw(pic,
      (start--read),
-     (read--print),
+     (read--compute),
+     (compute--print),
      (print--ending)
 );
 
@@ -800,6 +803,7 @@ draw(pic,
 draw(pic,
      start,
      read,
+     compute,
      print,
      ending
      );

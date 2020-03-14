@@ -5256,9 +5256,9 @@ uniformily computable from $e$ and~$x$, using the function~$s$.
 The \smn{} Theorem says that we can hard code the values of parameters into
 the machine's source.
 But it says more.
-It says that 
-the family of functions is uniformily computable.
-There is a single computable function, $s$, going from 
+It also says that the resulting 
+family of functions is uniformily computable;~there 
+is a single computable function, $s$, going from 
 the index~$e$ and the parameter value~$x$ to the index of the
 result in~($**$).
 So, the \smn{} Theorem is about uniformity.
@@ -10915,21 +10915,13 @@ mechanisms.
 
 
 \subsection*{Quines}
-A \citetext{\definend{quine}}{%
-  Named for the philosopher Willard Van Orman Quine.}
-is a program that outputs its own source code.\footnote{%
-  The easiest such program finds its source file on the disk and prints it. 
-  That is cheating.}\index{quine}\index{self reproducing program}
 % http://www.madore.org/~david/computers/quine.html
-
 % http://cs.brown.edu/courses/gs019/asgn/hw3.sol.pdf
 % http://cs.brown.edu/courses/gs019/lectures/recursion.pdf
 The Fixed Point Theorem shows that there is a number~$m$ such that 
 $\TMfcn_m(x)=m$ for all inputs.
-Think of~$m$ as the name of the function.
+Because it is the index, think of~$m$ as the function's name.
 This function outputs its name.
-Since we can go effectively from the index~$m$ to the machine source,
-this function knows its source, in a sense.
 Said another way, $\TM_m$ is a program whose name
 \emph{is} its behavior.
 This is \citetext{self-reference}{%
@@ -10975,22 +10967,41 @@ This is \citetext{self-reference}{%
   A wonderful popular book exploring these topics and many others is
   \autocite{Hofstadter}.}; machine~$m$ names itself.
 
+Since we can go effectively from the index~$m$ to the machine source,
+in a sense this machine knows its source.
+A \citetext{\definend{quine}}{%
+  Named for the philosopher Willard Van Orman Quine.}
+is a program that outputs its own source code.\footnote{%
+  The easiest such program finds its source file on the disk and prints it. 
+  That is cheating.}\index{quine}\index{self reproducing program} 
 To make this more concrete we will step through the nitty-gritty of making a
-quine.  
-We will use the C language since it is low-level.
+quine. 
+We will use the C language since it is low-level and so details are
+exposed.
 
-A first try might include the source as a string within itself.
+A naive approach is to include the source as a string within itself.
+Here is \codeinline{try0.c}.\footnote{%
+  The backslash-\protect\codeinline{n} gives a newline character.}
 \begin{lstlisting}
 main() {
   printf("main(){\n ... }");
 }    
 \end{lstlisting}
-But is obviously naive; it has infinite regress since included
-in the string would be another strings, etc.
-This is the same problem the homoculus theory had.
+But this obviously wrong. 
+Included in the string would be another string, etc., so this leads to
+infinite regress
+just as the homoculus theory did.
 
-A less naive approach, one that employs the thinking behind our
-discussion of the Fixed Point Theorem, is to mention the code before use.
+A more sophisticated approach is to leverage our
+discussion of the Fixed Point Theorem, to mention the code before using it.
+This is \codeinline{try1.c}.\footnote{%
+  The \protect\codeinline{char *e="..."} construct gives a string.
+  In the C language \protect\codeinline{printf(...)} command the first
+  argument is a string.
+  In that string double quotes expand to single quotes, 
+  \protect\codeinline{\%c} takes a character substitution from
+  any following arguments,
+  and \protect\codeinline{\%s} takes a string substitution.}
 \begin{lstlisting}
 char *e="main(){printf(e);}"
 main(){printf(e);};
@@ -10999,32 +11010,32 @@ Here is the printout.
 \begin{lstlisting}
 main(){printf(e);};  
 \end{lstlisting}
-This idea is summarized by the sentence ``quine `quine'''.
-Here, the verb to quine (invented by D~Hofstadter)\index{Hofstadter, D} 
-means
-``to write a sentence fragment a first time, and then to write it a second time, but with quotation marks around it''
-For example, if we quine `say' then we get ``say `say'''.
-Thus, if we quine `quine', we get ``quine `quine',''
-so that the sentence ``quine `quine''' is a quine…
-In this linguistic analogy, the verb ``to quine,'' plays the role of the code
-and ``quine'' in quotation marks plays the role of the data.
-% http://www.madore.org/~david/computers/quine.html
 
-We are closer but not quite there yet.
-Ratcheting up this approach gives the next try.
+Ratcheting up this approach gives \codeinline{try2.c}.
 \begin{lstlisting}
 char *e="main(){printf("char*e="");printf(e); printf("";\n");printf(e);"
 main(){printf("char *e="");printf(e); printf("";\n");printf(e);}
 \end{lstlisting}
-It is very close.
-To get a quine just escape some newlines and quotation marks.\footnote{%
-  Note that $10$ is the ASCII encoding for newline and
+This is close.
+Just escape some newlines and quotation marks.\footnote{%
+  The $10$ is the ASCII encoding for newline and
   34 is ASCII for a double quotation mark.}   
-This works.
+This program, \codeinline{try3.c}, works.
 \begin{lstlisting}
 char *e="char*e="%c %s %c; %c main() {printf(e,34,e,34,10,10);}%c";
 main(){printf(e,34,e,34,10,10);}
 \end{lstlisting}
+
+This idea is summarized by the sentence ``quine `quine'''.
+Here, \citetext{the verb `to quine'}{%
+  Invented by D~Hofstadter \index{Hofstadter, D}.} 
+means
+``to write a sentence fragment a first time, and then to write it a second time, but with quotation marks around it''
+For example, from `say' we get ``say `say'''.
+And, quining `quine' gives ``quine `quine'.''
+In this linguistic analogy, the verb ``to quine,'' plays the role of the code
+and ``quine'' in quotation marks plays the role of the data.
+% http://www.madore.org/~david/computers/quine.html
 
 A quine is a fixed point of an execution environment, 
 when the execution environment is viewed as a function.
@@ -11037,6 +11048,117 @@ quine contests disallow that.)
 
 
 
+
+\subsection*{Know thyself}
+A program that prints itself can seem to be a parlour trick.
+But 
+\citetext{for routines to have access to their code}{%
+  \definend{Introspection} is the ability to inspect code in the system,
+  such as to inspect the type of objects.
+  \definend{Reflection} is the ability to make modifications at runtime.} 
+is useful in a number of ways.
+For example, to write a \codeinline{toString(obj)} or a \codeinline{dump(obj)}
+method you probably 
+want your method to ask \codeinline{obj} for its source. 
+Another example is a plugin archetecture to extend applications at runtime. 
+
+\citetext{We will show how a routine can know its source}{%
+  This material is derived from the wonderful presentation 
+  in \autocite{Sipser}.}.
+We shall expand on the above ideas, so we will first give an alternate
+description of a machine that prints itself.
+
+Before we start, two technical points.
+First, given two programs we can combine them into one, so that
+we run the first and then run the second.
+% Similarly, given
+% we can combine  two Turing  machines by
+% renumbering the states so they do not conflict 
+% and then changing the final states in the first machine
+% to have the number of the starting state in the second.
+Second, we have fixed a numbering of Turing machines that is
+`acceptable, meaning that there is a computable function from indices
+to machines and another computable function back.
+Define the function $\map{\strng}{\mathcal{T}}{\kleenestar{\B}}$ 
+that inputs a Turing machine and returns 
+the standard bitstring representation of that machine,
+define $\map{\mach}{\N}{\mathcal{T}}$ 
+that inputs an index~$e$ and returns the machine~$\TM_e$,  
+and define $\map{\idx}{\kleenestar{\B}}{\N}$ 
+that inputs the string representation of machine $\TM_e$ 
+and returns the index~$e$
+(if the string doesn't represent a Turing machine then it doesn't matter what
+this function does).
+Do this in such a way 
+that $\idx$ is the inverse of $\composed{\strng}{\mach}$.
+
+Consider the machines sketched below.
+The first computes the
+function $\operatorname{echo}(\sigma)=\sigma$.
+Let it have index~$e_0$ and apply the \smn~Theorem to get the
+family of machines sketched in the middle,  $\TM_{s(e_0,\sigma)}$, 
+each of which ignores its input and just prints~$\sigma$.
+\begin{equation*}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts13.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts14.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts15.pdf}}
+\end{equation*}
+On the right,
+$s(e_0,\sigma)$ is the index of the middle machine so
+$\composed{\strng}{\mach}(s(e_0,\sigma))$ is the standard string representation
+of the middle machine for~$\sigma$.
+Thus, if~$\sigma$ is the standard representation of a Turing machine~$\TM$ then
+when the machine on the right is done, the tape will contain only the standard
+representation of the middle machine for~$\sigma$, the machine that ignores
+its input and prints out~$\sigma$.
+Call the machine on the right~$\TM[Q]$ and call the function that it computes 
+$\map{q}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$.
+
+For a machine that prints itself, begin by letting
+the Turing machine sketched below be~$\TM[B]$.
+\begin{center}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts16.pdf}}
+\end{center}
+Also define a machine~$\TM[A]$ to print out $\strng(B)$, 
+the string representation of~$\TM[B]$.
+That is, 
+the machine~$\TM[A]$ is $\TM_{s(e_0,\tau)}$.
+
+Then the machine that prints its own source is the 
+combination of $\TM[A]$ followed by~$\TM[B]$.
+First the $\TM[A]$ part prints out the standard string representation 
+of~$\TM[B]$. 
+Then the $\TM[B]$ part reads that in, computes
+the~$\TM[A]$ part, prints it and follows that with~$\strng(\TM[B])$.
+
+In some ways, $\rho$ plays the same role as \codeinline{try3.c}'s string
+\begin{center}
+  \codeinline{char *e="char*e="%c %s %c; %c main() {printf(e,34,e,34,10,10);}%c";}
+\end{center}
+in that we are following the slogan of ``Produce the machine, and then
+do the machine'' and both are the `produce' part.
+
+We will extend this approach to get a machine that computes with its own source.
+The idea is to start with a machine that takes two inputs,
+string representations of machines and strings, and then 
+get a machine that uses its own representation.
+
+\begin{theorem}
+For any Turing machine $\TM[C]$ that computes a two-input function
+$\map{c}{\kleenestar{\Sigma}\times\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
+there is a machine~$\TM[R]$ that computes a one-input function
+$\map{r}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
+where $r(\sigma)=t(s(\TM[R]),\sigma)$.
+\end{theorem}
+
+First modify $\TM[Q]$ to write its output after any input string already
+on the tape, because we need to preserve~$\sigma$.
+
+The machine~$\TM[B]$ is the same as earlier.
+It inputs a string and applies~$q$
+The machine $\TM[R]$ combines $\TM[A]$ and~$\TM[B]$ with the given~$\TM[C]$
 
 
 
@@ -11071,96 +11193,6 @@ goes on to show how the existence of such code poses a security threat that
 is very subtle and just about undetectable.
 The entire address \autocite{Thompson} is widely available; everyone
 should read it.
-
-
-
-\subsection*{Know thyself}
-A program that prints itself may seem to be a parlour trick.
-But 
-\citetext{for routines to have access to their code}{%
-  \definend{Introspection} is the ability to inspect code in the system,
-  such as to inspect the type of objects.
-  \definend{Reflection} is the ability to make modifications at runtime.} 
-is useful in a number of ways.
-For example, to write a \codeinline{toString(obj)} method you probably 
-want your method to ask \codeinline{obj} for its source. 
-Similarly, a \codeinline{dump(obj)} method requires that
-the routine be able to inspect the object's source.
-Another example is a plugin archetecture to extend applications at runtime. 
-
-\citetext{We will show how a routine can know its source}{%
-  This material is derived from the wonderful presentation 
-  in \autocite{Sipser}.}.
-We shall expand on the above ideas, so we start by giving an alternate
-description of a machine that prints itself.
-
-Before we start, two technical points.
-The first is that given two programs we can combine the two into one, so that
-we run the first and then run the second.
-% Similarly, given
-% we can combine  two Turing  machines by
-% renumbering the states so they do not conflict 
-% and then changing the final states in the first machine
-% to have the number of the starting state in the second.
-The second point 
-is that in saying that our numbering of Turing machines is
-`acceptable' we specified that there is a computable function from indices
-to machines, and another computable function back again.
-Define the function $\map{\strng}{\mathcal{T}}{\kleenestar{\B}}$ 
-that inputs a Turing machine and returns 
-the standard string representation of that machine as a bitstring,
-define $\map{\mach}{\N}{\mathcal{T}}$ 
-that inputs an index~$e$ and returns the machine~$\TM_e$,  
-and define $\map{\idx}{\kleenestar{\B}}{\N}$ 
-that inputs the string representation of machine $\TM_e$ 
-and returns the index~$e$
-(if the string doesn't represent a Turing machine then it doesn't matter what
-this function does).
-Do this in such a way 
-that $\idx$ is the inverse of $\composed{\strng}{\mach}$.
-
-Consider the machine sketched on the left below, which computes the
-function $\operatorname{echo}(\sigma)=\sigma$.
-Suppose that it has index~$e_0$ and apply the \smn~Theorem to get the
-machine sketched in the middle.  
-It represents a family of machines, each of which has the string hard-wired into
-the source, so that it computes $\TM_{s(e_0,\sigma)}$.
-\begin{center}
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts13.pdf}}
-  \qquad
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts14.pdf}}
-  \qquad
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts15.pdf}}
-\end{center}
-Also consider the machine on the right.
-Let it be~$Q$ and let the function that it computes be 
-$\map{q}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$.
-
-For a machine that prints itself, begin by letting
-the machine sketched below be~$B$.
-\begin{center}
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts16.pdf}}
-\end{center}
-Also, define the machine~$A$ to print out the string representation of~$B$.
-That is, where $\tau$ is a string representation of~$B$, the machine~$A$
-is $\TM_{s(e_0,\tau)}$.
-Then the machine that prints its own source is the combination of $A$
-with~$B$.
-The $A$ part prints out~$B$ as a string, the $B$ part reads that in, computes
-the~$A$ part, and concatenates it to the~$B$ part.
-
-We extend this to get a machine that computes with its own input.
-The idea is to start with a machine that takes two inputs,
-string representations of machines and strings, and then 
-find a fixed point to get a machine that uses its own representation.
-
-\begin{theorem}
-For any Turing machine $\TM_T$ that computes a function
-$\map{t}{\kleenestar{\Sigma}\times\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
-there is a machine~$\TM_R$ that computes 
-$\map{r}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
-where $r(\sigma)=t(s(\TM_R),\sigma)$.
-\end{theorem}
 
 
 

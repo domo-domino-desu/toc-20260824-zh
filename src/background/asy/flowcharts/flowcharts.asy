@@ -812,6 +812,97 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ............. Q for machine that knows its source ...........
+picture pic;
+int picnum = 19;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$");
+node movepast=nbox("Move to end of $\sigma$");
+node moveonemore=nbox("Move right, past one blank");
+node print=nbox("Print $\composed{\strng}{\mach}\,(s(e_0,\sigma))$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,movepast,moveonemore,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--movepast),
+     (movepast--moveonemore),
+     (moveonemore--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     movepast,
+     moveonemore,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............. B for machine that knows its source ...........
+picture pic;
+int picnum = 20;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\omega$, $\tau$");
+node compute=nbox("Compute $\alpha=q(\tau)$");
+node compose=nbox("$\rho=\alpha\concat\tau\concat\strng(\tau)$");
+node print=nbox("Print $\rho\concat\str{B}\concat\omega$");
+node run=nbox("Run $\TM[C]$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,compute,compose,print,run);
+vlayout(1.0*v,run,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--compute),
+     (compute--compose),
+     (compose--print),
+     (print--run),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     compute,
+     compose,
+     print,
+     run,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 // ======= Fixed Point phi_m(y)=m ==============
 picture pic;

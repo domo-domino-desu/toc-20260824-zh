@@ -776,9 +776,9 @@ int picnum = 16;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $\tau$");
-node compute=nbox("Compute $\rho=q(\tau)$");
-node print=nbox("Print $\rho\concat\tau$");
+node read=nbox("Read $\beta$");
+node compute=nbox("Compute $\alpha=q(\beta)$");
+node print=nbox("Print $\alpha\concat\beta$");
 node ending=nroundbox("End");
 
 // layout
@@ -864,7 +864,7 @@ int picnum = 20;
 node start=nroundbox("Start");
 node read=nbox("Read $\omega$, $\tau$");
 node compute=nbox("Compute $\alpha=q(\tau)$");
-node compose=nbox("$\rho=\alpha\concat\tau\concat\strng(\tau)$");
+node compose=nbox("$\rho=\alpha\concat\tau$");
 node print=nbox("Print $\rho\concat\str{B}\concat\omega$");
 node run=nbox("Run $\TM[C]$");
 node ending=nroundbox("End");

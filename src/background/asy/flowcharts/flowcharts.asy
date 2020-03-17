@@ -778,7 +778,7 @@ int picnum = 16;
 node start=nroundbox("Start");
 node read=nbox("Read $\beta$");
 node compute=nbox("Compute $\alpha=q(\beta)$");
-node print=nbox("Print $\alpha\concat\beta$");
+node print=nbox("Print $\smash{\alpha\concat\beta}$");
 node ending=nroundbox("End");
 
 // layout
@@ -788,8 +788,8 @@ real u = defaultlayoutskip;
 real v = 0.85*u;
 
 vlayout(1.0*v,start,read,compute);
-vlayout(1.1*v,compute,print);
-vlayout(1.05*v,print,ending);
+vlayout(1.00*v,compute,print);
+vlayout(1.00*v,print,ending);
 
 // draw edges
 draw(pic,
@@ -864,8 +864,8 @@ int picnum = 20;
 node start=nroundbox("Start");
 node read=nbox("Read $\omega$, $\tau$");
 node compute=nbox("Compute $\alpha=q(\tau)$");
-node compose=nbox("$\rho=\alpha\concat\tau$");
-node print=nbox("Print $\rho\concat\str{B}\concat\omega$");
+// node compose=nbox("$\rho=\alpha\concat\tau$");
+node print=nbox("Print $\smash{\alpha\concat\tau\concat\str{B}\concat\omega}$");
 node run=nbox("Run $\TM[C]$");
 node ending=nroundbox("End");
 
@@ -875,15 +875,16 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-vlayout(1.0*v,start,read,compute,compose,print,run);
+vlayout(1.0*v,start,read,compute);
+vlayout(1.00*v,compute,print);
+vlayout(1.0*v,print,run);
 vlayout(1.0*v,run,ending);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--compute),
-     (compute--compose),
-     (compose--print),
+     (compute--print),
      (print--run),
      (print--ending)
 );
@@ -893,7 +894,6 @@ draw(pic,
      start,
      read,
      compute,
-     compose,
      print,
      run,
      ending

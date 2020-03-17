@@ -418,7 +418,8 @@
 \myexternaldocument{background/background}
 \myexternaldocument{langages/languages}
 \myexternaldocument{automata/automata}
-\myexternaldocument{/complexity/complexity}
+\myexternaldocument{complexity/complexity}
+\myexternaldocument{appendix/appendix}
 % \externaldocument{book,prologue,background,languages,automata,complexity}
 
 

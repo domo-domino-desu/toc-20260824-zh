@@ -176,3 +176,61 @@ draw(
     );
 
 shipout(format("parsetree%03d",picnum),p,format="pdf");
+
+
+
+// ======================== a^nb^n =============
+int picnum = 2;
+picture p;
+
+// define nodes
+node start=nbox("\strut S"),
+     a1=nbox("\strut \trm{a}"),
+     s1=nbox("\strut S"),
+     b1=nbox("\strut\trm{b}"),
+     a2=nbox("\strut\trm{a}"),
+     s2=nbox("\strut S"),
+     b2=nbox("\strut\trm{b}"),
+     empty=nbox("\strut\emptystring");
+
+// layout
+defaultlayoutrel = true;
+defaultlayoutskip = 1inch;
+real u = 0.7inch;  // horizontal
+real v = 0.5*u;                 // vertical
+
+// rank 0
+start.pos=(0*u,0*v);
+// rank 1
+a1.pos=(-0.5*u,-1*v);
+s1.pos=(0.0*u,-1*v);
+b1.pos=(0.5*u,-1*v);
+// rank 2
+a2.pos=(-0.5*u,-2*v);
+s2.pos=(0.0*u,-2*v);
+b2.pos=(0.5*u,-2*v);
+// rank 3
+empty.pos=(0*u,-3*v);
+
+// draw edges
+draw(
+     (start--a1),
+     (start--s1),
+     (start--b1),
+     (s1--a2),
+     (s1--s2),
+     (s1--b2),
+     (s2--empty)
+    );
+
+// draw nodes
+draw(start,
+     a1,
+     s1,
+     b1,
+     a2,
+     s2,
+     b2,
+     empty);
+
+shipout(format("parsetree%03d",picnum),p,format="pdf");

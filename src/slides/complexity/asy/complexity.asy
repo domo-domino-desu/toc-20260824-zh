@@ -14,7 +14,7 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
+import jhnode;
 import flowchart;
 cd("");
 cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
@@ -59,9 +59,9 @@ yaxis(pic,"",ticks=LeftTicks(Label("$%.3g$"),
 			     Size=3, size=3),
       above=false);
 draw(pic,graph(pic,g,0,5.25,operator ..),FCNPEN_SOLID+boldcolor);
-label(pic,"$g(x)=4x^2$",Scale(pic,(3.5,g(3.5))),E);
+label(pic,"$g(x)=3x^2$",Scale(pic,(3.5,g(3.5))),E);
 draw(pic,graph(pic,f,0,5.25,operator ..),FCNPEN_SOLID+boldcolor);
-label(pic,"$f(x)=3x^2$",Scale(pic,(4.5,f(4.5))),W);
+label(pic,"$f(x)=4x^2$",Scale(pic,(4.5,f(4.5))),W);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

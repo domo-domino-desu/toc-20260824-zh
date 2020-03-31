@@ -14,7 +14,7 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
+import jhnode;
 cd("");
 cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
 import node;
@@ -23,7 +23,8 @@ cd("");
 // define style
 // defaultnodestyle=nodestyle(drawfn=FillDrawer(lightgray,black));
 defaultnodestyle=nodestyle(textpen=fontsize(7pt),drawfn=FillDrawer(white,black));
-defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor);
+drawstyle standarddrawstyle = drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor);
+defaultdrawstyle = standarddrawstyle;
 
 // Pen for edges when Labelled
 pen edge_text_pen = fontsize(7pt) + fontcommand("\ttfamily") + black;
@@ -1365,4 +1366,223 @@ draw(p,
 draw(p, v0, v1, v2, v3, v4, v5);
 
 shipout(format("graphs%02d",picnum),p,format="pdf");
+
+
+
+
+// ================== Homework =======================
+string OUTPUT_FN = "graphs1%03d";
+
+// ======= New England states ==========
+int picnum = 0;
+picture p;
+
+// define nodes
+node ME=ncircle("\strut ME"),
+     NH=ncircle("\strut NH"),
+     VT=ncircle("\strut VT"),
+     MA=ncircle("\strut MA"),
+     CT=ncircle("\strut CT"),
+     RI=ncircle("\strut RI");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, VT, NH, ME);
+layout(-40.0, VT, MA);
+layout(-120.0, MA, CT);
+hlayout(1*u, CT, RI);
+
+// draw edges
+draw(p,
+     (VT--NH), 
+     (VT--MA), 
+     (NH--ME), 
+     (NH--MA), 
+     (MA--ME),
+     (MA--CT),
+     (MA--RI),
+     (CT--RI)
+    );
+
+// draw nodes
+draw(p, VT, NH, ME, MA, CT, RI);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+// ======= Divisibility up to 12 ==========
+int picnum = 1;
+picture p;
+
+// define nodes
+node v12=ncircle("\strut $12$"),
+     v11=ncircle("\strut $11$"),
+     v10=ncircle("\strut $10$"),
+     v9=ncircle("\strut $9$"),
+     v8=ncircle("\strut $8$"),
+     v7=ncircle("\strut $7$"),
+     v6=ncircle("\strut $6$"),
+     v5=ncircle("\strut $5$"),
+     v4=ncircle("\strut $4$"),
+     v3=ncircle("\strut $3$"),
+     v2=ncircle("\strut $2$"),
+     v1=ncircle("\strut $1$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.75*u;
+
+v1.pos = (4*u,0*v);
+v2.pos = (3*u,1*v);
+hlayout(1*u, v2, v3, v5, v7, v11);
+v4.pos = (3*u,2*v);
+hlayout(1*u, v4, v6, v9, v10);
+v8.pos = (3*u,3*v);
+hlayout(1*u,v8,v12);
+// layout(-40.0, VT, MA);
+// layout(-120.0, MA, CT);
+// hlayout(1*u, CT, RI);
+
+// draw edges
+draw(p,
+     (v2--v1), 
+     (v3--v1), 
+     (v5--v1), 
+     (v7--v1), 
+     (v11--v1), 
+     (v4--v2), 
+     (v6--v2), 
+     (v6--v3), 
+     (v8--v4), 
+     (v9--v3), 
+     (v10--v2), 
+     (v10--v5), 
+     (v12--v6), 
+     (v12--v4)
+    );
+
+// draw nodes
+draw(p, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+// ======= Rock Paper Scissors ==========
+int picnum = 2;
+picture p;
+defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor,
+			     arrow=Arrow(6,filltype=FillDraw(white,backgroundcolor)));
+
+// define nodes
+node rock=ncircle("\strut R"),
+     paper=ncircle("\strut P"),
+     scissors=ncircle("\strut S");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 1.0*u;
+
+hlayout(1.0*u, rock, paper);
+scissors.pos = (0.5*u, 0.707*v);
+
+// draw edges
+draw(p,
+     (rock..bend(-20)..scissors), 
+     (scissors..bend(-20)..paper), 
+     (paper..bend(-20)..rock)
+    );
+
+// draw nodes
+draw(p, rock, paper, scissors);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+defaultdrawstyle = standarddrawstyle;
+
+
+
+// ======= Konigsberg bridges ==========
+int picnum = 3;
+picture p;
+
+// define nodes
+node m0=ncircle("\strut $m_0$"),
+     m1=ncircle("\strut $m_1$"),
+     m2=ncircle("\strut $m_2$"),
+     m3=ncircle("\strut $m_3$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1.0*u, m0, m1);
+vlayout(1.0*v, m0, m2);
+hlayout(1.0*u, m2, m3);
+
+// draw edges
+draw(p,
+     (m0..bend(20)..m1), 
+     (m0..bend(-20)..m1), 
+     (m0--m2), 
+     (m1--m2),
+     (m1..bend(20)..m3), 
+     (m1..bend(-20)..m3), 
+     (m2--m3)
+    );
+
+// draw nodes
+draw(p, m0, m1, m2, m3);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+// ======= Course prerequisites ==========
+int picnum = 4;
+picture p;
+defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor,
+			     arrow=Arrow(6,filltype=FillDraw(white,backgroundcolor)));
+
+// define nodes
+node calc1=ncircle("\strut I"),
+     calc2=ncircle("\strut II"),
+     calc3=ncircle("\strut III"),
+     linear=ncircle("\strut LA"),
+     reals=ncircle("\strut RA");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.75*u;
+
+hlayout(1*u, calc1, calc2);
+layout(-20.0, calc2, linear);
+layout(20.0, calc2, calc3);
+layout(-20.0, calc3, reals);
+
+// draw edges
+draw(p,
+     (calc1--calc2), 
+     (calc2--calc3), 
+     (calc2--linear), 
+     (calc3--reals), 
+     (linear--reals) 
+    );
+
+// draw nodes
+draw(p, calc1, calc2, calc3, linear, reals);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+defaultdrawstyle = standarddrawstyle;
 

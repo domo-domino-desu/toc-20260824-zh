@@ -1586,3 +1586,35 @@ draw(p, calc1, calc2, calc3, linear, reals);
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 defaultdrawstyle = standarddrawstyle;
 
+
+
+// ======= Graph with random nodes ==========
+int picnum = 5;
+picture p;
+
+// define nodes
+node[] v = ncircles("$v_0$",
+		    "$v_1$",
+		    "$v_2$",
+		    "$v_3$",
+		    "$v_4$",
+		    "$v_5$");
+
+// layout
+circularlayout(1cm, startangle=90, v);
+
+// draw edges
+draw(p,
+     (v[0]--v[1]), 
+     (v[0]--v[3]), 
+     (v[0]--v[5]), 
+     (v[1]--v[4]), 
+     (v[3]--v[4]),
+     (v[4]--v[5])
+    );
+
+// draw nodes
+draw(p, v);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+    

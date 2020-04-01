@@ -1617,4 +1617,131 @@ draw(p,
 draw(p, v);
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+// ======= Morse code tree ==========
+int picnum = 6;
+picture p;
+
+// define nodes
+node empty = ncircle("$\emptystring$"),
+     A = ncircle("A"),
+     B = ncircle("B"),
+     C = ncircle("C"),
+     D = ncircle("D"),
+     E = ncircle("E"),
+     F = ncircle("F"),
+     G = ncircle("G"),
+     H = ncircle("H"),
+     I = ncircle("I"),
+     J = ncircle("J"),
+     K = ncircle("K"),
+     L = ncircle("L"),
+     M = ncircle("M"),
+     N = ncircle("N"),
+     O = ncircle("O"),
+     P = ncircle("P"),
+     Q = ncircle("Q"),
+     R = ncircle("R"),
+     S = ncircle("S"),
+     T = ncircle("T"),
+     U = ncircle("U"),
+     V = ncircle("V"),
+     W = ncircle("W"),
+     X = ncircle("X"),
+     Y = ncircle("Y"),
+     Z = ncircle("Z");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.65*u;
+
+real total_width = 9.0*u;
+real nhd(real rank) { return 2^(rank+1); } // number of horizontal divisions
+real rank;    // depth in the tree; used for horizontal layout
+rank = 0;
+empty.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+rank = 1;
+E.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+T.pos = (3*(total_width/nhd(rank)), rank*-1*v);
+rank = 2;
+I.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+A.pos = (3*(total_width/nhd(rank)), rank*-1*v);
+N.pos = (5*(total_width/nhd(rank)), rank*-1*v);
+M.pos = (7*(total_width/nhd(rank)), rank*-1*v);
+rank = 3;
+S.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+U.pos = (3*(total_width/nhd(rank)), rank*-1*v);
+R.pos = (5*(total_width/nhd(rank)), rank*-1*v);
+W.pos = (7*(total_width/nhd(rank)), rank*-1*v);
+D.pos = (9*(total_width/nhd(rank)), rank*-1*v);
+K.pos = (11*(total_width/nhd(rank)), rank*-1*v);
+G.pos = (13*(total_width/nhd(rank)), rank*-1*v);
+O.pos = (15*(total_width/nhd(rank)), rank*-1*v);
+rank = 4;
+H.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+V.pos = (3*(total_width/nhd(rank)), rank*-1*v);
+F.pos = (5*(total_width/nhd(rank)), rank*-1*v);
+// u UMLAUT .pos = (7*(total_width/nhd(rank)), rank*-1*v);
+L.pos = (9*(total_width/nhd(rank)), rank*-1*v);
+// A UMLAUT.pos = (11*(total_width/nhd(rank)), rank*-1*v);
+P.pos = (13*(total_width/nhd(rank)), rank*-1*v);
+J.pos = (15*(total_width/nhd(rank)), rank*-1*v);
+B.pos = (17*(total_width/nhd(rank)), rank*-1*v);
+X.pos = (19*(total_width/nhd(rank)), rank*-1*v);
+C.pos = (21*(total_width/nhd(rank)), rank*-1*v);
+Y.pos = (23*(total_width/nhd(rank)), rank*-1*v);
+Z.pos = (25*(total_width/nhd(rank)), rank*-1*v);
+Q.pos = (27*(total_width/nhd(rank)), rank*-1*v);
+// O UMLAUT .pos = (29*(total_width/nhd(rank)), rank*-1*v);
+// CH .pos = (31*(total_width/nhd(rank)), rank*-1*v);
+// hlayout(1*u, calc1, calc2);
+// layout(-20.0, calc2, linear);
+// layout(20.0, calc2, calc3);
+// layout(-20.0, calc3, reals);
+
+// draw edges
+draw(p,
+     (empty--E).l("{\color{black} \dit}"), 
+     (empty--T).l("{\color{black} \dah}").style("leftside"),
+     // rank 2
+     (E--I).l("{\color{black} \dit}"), 
+     (E--A).l("{\color{black} \dah}").style("leftside"), 
+     (T--N).l("{\color{black} \dit}"), 
+     (T--M).l("{\color{black} \dah}").style("leftside"),
+     // rank 3
+     (I--S).l("{\color{black} \dit}"),
+     (I--U).l("{\color{black} \dah}").style("leftside"),
+     (A--R).l("{\color{black} \dit}"),
+     (A--W).l("{\color{black} \dah}").style("leftside"),
+     (N--D).l("{\color{black} \dit}"),
+     (N--K).l("{\color{black} \dah}").style("leftside"),
+     (M--G).l("{\color{black} \dit}"),
+     (M--O).l("{\color{black} \dah}").style("leftside"),
+     // rank 4
+     (S--H).l("{\color{black} \dit}"),
+     (S--V).l("{\color{black} \dah}").style("leftside"),
+     (U--F).l("{\color{black} \dit}"),
+     // (U--),
+     (R--L).l("{\color{black} \dit}"),
+     // (R--),
+     (W--P).l("{\color{black} \dit}"),
+     (W--J).l("{\color{black} \dah}").style("leftside"),
+     (D--B).l("{\color{black} \dit}"),
+     (D--X).l("{\color{black} \dah}").style("leftside"),
+     (K--C).l("{\color{black} \dit}"),
+     (K--Y).l("{\color{black} \dah}").style("leftside"),
+     (G--Z).l("{\color{black} \dit}"),
+     (G--Q).l("{\color{black} \dah}").style("leftside")
+     // (O--),
+     // (O--)
+    );
+
+// draw nodes
+draw(p, empty, E,T, I,A,N,M, S,U,R,W,D,K,G,O, H,V,F,L,P,J,B,X,C,Y,Z,Q);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
     

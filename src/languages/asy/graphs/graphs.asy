@@ -1744,4 +1744,56 @@ draw(p,
 draw(p, empty, E,T, I,A,N,M, S,U,R,W,D,K,G,O, H,V,F,L,P,J,B,X,C,Y,Z,Q);
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
-    
+
+
+
+// ======================== color cell towers =============
+int picnum = 7;
+picture p;
+
+// define nodes
+node v0=ncircle("$v_0$",ns_bleachedbg),
+     v1=ncircle("$v_1$",ns_light),
+     v2=ncircle("$v_2$",ns_bleachedbg),
+     v3=ncircle("$v_3$",ns_light),
+     v4=ncircle("$v_4$",ns_bleachedbg),
+     v5=ncircle("$v_5$",ns_light),
+     v6=ncircle("$v_6$",ns_bleachedbg),
+     v7=ncircle("$v_7$",ns_bleachedbg),
+     v8=ncircle("$v_8$",ns_light),
+     v9=ncircle("$v_9$",ns_bleachedbold),
+     v10=ncircle("$v_{10}$",ns_light);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = defaultlayoutskip;
+real v = 0.80*u;
+
+hlayout(1*u, v0, v1, v2);
+vlayout(1*v, v0, v3, v7);
+hlayout(1*u, v3, v4, v5, v6);
+hlayout(1*u, v7, v8, v9, v10);
+
+// draw edges
+draw(p,
+     (v0--v1),
+     (v0--v3),
+     (v1--v2),
+     (v1--v4),
+     (v2--v5),
+     (v3--v7),
+     (v5--v6),
+     (v6--v9),
+     (v7--v8),
+     (v0--v3),
+     (v8--v9),
+     (v9--v10)
+    );
+
+// draw nodes
+draw(p, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+

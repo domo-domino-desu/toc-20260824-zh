@@ -1869,3 +1869,31 @@ shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 defaultdrawstyle = standarddrawstyle;
 
 
+
+
+// ======= Given matrix, produce graph ==========
+int picnum = 9;
+picture p;
+
+// define nodes
+node[] v = ncircles("$v_0$",
+		    "$v_1$",
+		    "$v_2$",
+		    "$v_3$");
+
+// layout
+circularlayout(1cm, startangle=90, v);
+
+// draw edges
+draw(p,
+     (v[0]--v[1]), 
+     (v[0]--v[2]), 
+     (v[1]--v[3]), 
+     (v[2]--v[3])
+    );
+
+// draw nodes
+draw(p, v);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+

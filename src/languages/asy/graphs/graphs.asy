@@ -1626,32 +1626,32 @@ picture p;
 
 // define nodes
 node empty = ncircle("$\emptystring$"),
-     A = ncircle("A"),
-     B = ncircle("B"),
-     C = ncircle("C"),
-     D = ncircle("D"),
-     E = ncircle("E"),
-     F = ncircle("F"),
-     G = ncircle("G"),
-     H = ncircle("H"),
-     I = ncircle("I"),
-     J = ncircle("J"),
-     K = ncircle("K"),
-     L = ncircle("L"),
-     M = ncircle("M"),
-     N = ncircle("N"),
-     O = ncircle("O"),
+     a = ncircle("A"),
+     b = ncircle("B"),
+     c = ncircle("C"),
+     d = ncircle("D"),
+     e = ncircle("E"),
+     f = ncircle("F"),
+     g = ncircle("G"),
+     h = ncircle("H"),
+     i = ncircle("I"),
+     j = ncircle("J"),
+     k = ncircle("K"),
+     l = ncircle("L"),
+     m = ncircle("M"),
+     n = ncircle("N"),
+     o = ncircle("O"),
      P = ncircle("P"),
-     Q = ncircle("Q"),
-     R = ncircle("R"),
-     S = ncircle("S"),
-     T = ncircle("T"),
+     q = ncircle("Q"),
+     r = ncircle("R"),
+     s = ncircle("S"),
+     t = ncircle("T"),
      U = ncircle("U"),
      V = ncircle("V"),
-     W = ncircle("W"),
-     X = ncircle("X"),
-     Y = ncircle("Y"),
-     Z = ncircle("Z");
+     w = ncircle("W"),
+     x = ncircle("X"),
+     y = ncircle("Y"),
+     z = ncircle("Z");
 
 // layout
 defaultlayoutrel = false;
@@ -1665,37 +1665,37 @@ real rank;    // depth in the tree; used for horizontal layout
 rank = 0;
 empty.pos = (1*(total_width/nhd(rank)), rank*-1*v);
 rank = 1;
-E.pos = (1*(total_width/nhd(rank)), rank*-1*v);
-T.pos = (3*(total_width/nhd(rank)), rank*-1*v);
+e.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+t.pos = (3*(total_width/nhd(rank)), rank*-1*v);
 rank = 2;
-I.pos = (1*(total_width/nhd(rank)), rank*-1*v);
-A.pos = (3*(total_width/nhd(rank)), rank*-1*v);
-N.pos = (5*(total_width/nhd(rank)), rank*-1*v);
-M.pos = (7*(total_width/nhd(rank)), rank*-1*v);
+i.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+a.pos = (3*(total_width/nhd(rank)), rank*-1*v);
+n.pos = (5*(total_width/nhd(rank)), rank*-1*v);
+m.pos = (7*(total_width/nhd(rank)), rank*-1*v);
 rank = 3;
-S.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+s.pos = (1*(total_width/nhd(rank)), rank*-1*v);
 U.pos = (3*(total_width/nhd(rank)), rank*-1*v);
-R.pos = (5*(total_width/nhd(rank)), rank*-1*v);
-W.pos = (7*(total_width/nhd(rank)), rank*-1*v);
-D.pos = (9*(total_width/nhd(rank)), rank*-1*v);
-K.pos = (11*(total_width/nhd(rank)), rank*-1*v);
-G.pos = (13*(total_width/nhd(rank)), rank*-1*v);
-O.pos = (15*(total_width/nhd(rank)), rank*-1*v);
+r.pos = (5*(total_width/nhd(rank)), rank*-1*v);
+w.pos = (7*(total_width/nhd(rank)), rank*-1*v);
+d.pos = (9*(total_width/nhd(rank)), rank*-1*v);
+k.pos = (11*(total_width/nhd(rank)), rank*-1*v);
+g.pos = (13*(total_width/nhd(rank)), rank*-1*v);
+o.pos = (15*(total_width/nhd(rank)), rank*-1*v);
 rank = 4;
-H.pos = (1*(total_width/nhd(rank)), rank*-1*v);
+h.pos = (1*(total_width/nhd(rank)), rank*-1*v);
 V.pos = (3*(total_width/nhd(rank)), rank*-1*v);
-F.pos = (5*(total_width/nhd(rank)), rank*-1*v);
+f.pos = (5*(total_width/nhd(rank)), rank*-1*v);
 // u UMLAUT .pos = (7*(total_width/nhd(rank)), rank*-1*v);
-L.pos = (9*(total_width/nhd(rank)), rank*-1*v);
+l.pos = (9*(total_width/nhd(rank)), rank*-1*v);
 // A UMLAUT.pos = (11*(total_width/nhd(rank)), rank*-1*v);
 P.pos = (13*(total_width/nhd(rank)), rank*-1*v);
-J.pos = (15*(total_width/nhd(rank)), rank*-1*v);
-B.pos = (17*(total_width/nhd(rank)), rank*-1*v);
-X.pos = (19*(total_width/nhd(rank)), rank*-1*v);
-C.pos = (21*(total_width/nhd(rank)), rank*-1*v);
-Y.pos = (23*(total_width/nhd(rank)), rank*-1*v);
-Z.pos = (25*(total_width/nhd(rank)), rank*-1*v);
-Q.pos = (27*(total_width/nhd(rank)), rank*-1*v);
+j.pos = (15*(total_width/nhd(rank)), rank*-1*v);
+b.pos = (17*(total_width/nhd(rank)), rank*-1*v);
+x.pos = (19*(total_width/nhd(rank)), rank*-1*v);
+c.pos = (21*(total_width/nhd(rank)), rank*-1*v);
+y.pos = (23*(total_width/nhd(rank)), rank*-1*v);
+z.pos = (25*(total_width/nhd(rank)), rank*-1*v);
+q.pos = (27*(total_width/nhd(rank)), rank*-1*v);
 // O UMLAUT .pos = (29*(total_width/nhd(rank)), rank*-1*v);
 // CH .pos = (31*(total_width/nhd(rank)), rank*-1*v);
 // hlayout(1*u, calc1, calc2);
@@ -1705,43 +1705,43 @@ Q.pos = (27*(total_width/nhd(rank)), rank*-1*v);
 
 // draw edges
 draw(p,
-     (empty--E).l("{\color{black} \dit}"), 
-     (empty--T).l("{\color{black} \dah}").style("leftside"),
+     (empty--e).l("{\color{black} \dit}"), 
+     (empty--t).l("{\color{black} \dah}").style("leftside"),
      // rank 2
-     (E--I).l("{\color{black} \dit}"), 
-     (E--A).l("{\color{black} \dah}").style("leftside"), 
-     (T--N).l("{\color{black} \dit}"), 
-     (T--M).l("{\color{black} \dah}").style("leftside"),
+     (e--i).l("{\color{black} \dit}"), 
+     (e--a).l("{\color{black} \dah}").style("leftside"), 
+     (t--n).l("{\color{black} \dit}"), 
+     (t--m).l("{\color{black} \dah}").style("leftside"),
      // rank 3
-     (I--S).l("{\color{black} \dit}"),
-     (I--U).l("{\color{black} \dah}").style("leftside"),
-     (A--R).l("{\color{black} \dit}"),
-     (A--W).l("{\color{black} \dah}").style("leftside"),
-     (N--D).l("{\color{black} \dit}"),
-     (N--K).l("{\color{black} \dah}").style("leftside"),
-     (M--G).l("{\color{black} \dit}"),
-     (M--O).l("{\color{black} \dah}").style("leftside"),
+     (i--s).l("{\color{black} \dit}"),
+     (i--U).l("{\color{black} \dah}").style("leftside"),
+     (a--r).l("{\color{black} \dit}"),
+     (a--w).l("{\color{black} \dah}").style("leftside"),
+     (n--d).l("{\color{black} \dit}"),
+     (n--k).l("{\color{black} \dah}").style("leftside"),
+     (m--g).l("{\color{black} \dit}"),
+     (m--o).l("{\color{black} \dah}").style("leftside"),
      // rank 4
-     (S--H).l("{\color{black} \dit}"),
-     (S--V).l("{\color{black} \dah}").style("leftside"),
-     (U--F).l("{\color{black} \dit}"),
+     (s--h).l("{\color{black} \dit}"),
+     (s--V).l("{\color{black} \dah}").style("leftside"),
+     (U--f).l("{\color{black} \dit}"),
      // (U--),
-     (R--L).l("{\color{black} \dit}"),
+     (r--l).l("{\color{black} \dit}"),
      // (R--),
-     (W--P).l("{\color{black} \dit}"),
-     (W--J).l("{\color{black} \dah}").style("leftside"),
-     (D--B).l("{\color{black} \dit}"),
-     (D--X).l("{\color{black} \dah}").style("leftside"),
-     (K--C).l("{\color{black} \dit}"),
-     (K--Y).l("{\color{black} \dah}").style("leftside"),
-     (G--Z).l("{\color{black} \dit}"),
-     (G--Q).l("{\color{black} \dah}").style("leftside")
+     (w--P).l("{\color{black} \dit}"),
+     (w--j).l("{\color{black} \dah}").style("leftside"),
+     (d--b).l("{\color{black} \dit}"),
+     (d--x).l("{\color{black} \dah}").style("leftside"),
+     (k--c).l("{\color{black} \dit}"),
+     (k--y).l("{\color{black} \dah}").style("leftside"),
+     (g--z).l("{\color{black} \dit}"),
+     (g--q).l("{\color{black} \dah}").style("leftside")
      // (O--),
      // (O--)
     );
 
 // draw nodes
-draw(p, empty, E,T, I,A,N,M, S,U,R,W,D,K,G,O, H,V,F,L,P,J,B,X,C,Y,Z,Q);
+draw(p, empty, e,t, i,a,n,m, s,U,r,w,d,k,g,o, h,V,f,l,P,j,b,x,c,y,z,q);
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 
@@ -1795,5 +1795,77 @@ draw(p,
 draw(p, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+// ======================== blood types =============
+int picnum = 8;
+picture p;
+// make it a directed graph; see also line after shipout(..)
+defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor,
+			     arrow=Arrow(6,filltype=FillDraw(white,backgroundcolor)));
+
+// define nodes
+node ominus=ncircle("$\text{O}^-$"),
+     oplus=ncircle("$\text{O}^+$"),
+     aminus=ncircle("$\text{A}^-$"),
+     aplus=ncircle("$\text{A}^+$"),
+     bminus=ncircle("$\text{B}^-$"),
+     bplus=ncircle("$\text{B}^+$"),
+     abminus=ncircle("$\text{AB}^-$"),
+     abplus=ncircle("$\text{AB}^+$");
+
+// layout
+// see bloodtype.dot
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = 3*defaultlayoutskip;
+real v = 0.65*u;
+
+// aminus.pos = new_node_pos(ominus, -80.0, -1*v);
+vlayout(1*v, ominus, aminus);
+vlayout(2*v, aminus, abplus);
+hlayout(-0.90*u, aminus, oplus);
+hlayout(0.90*u, aminus, bminus);
+// layout(-60.0, oplus, aplus);
+aplus.pos = new_node_pos(oplus, -70.0, -1*v);
+hlayout(1*u, aplus, bplus, abminus);
+
+// draw edges
+draw(p,
+     (ominus..loop(N)),
+     (oplus..loop(E)),
+     (aminus..loop(W)),
+     (bminus..loop(E)),
+     (aplus..loop(W)),
+     (bplus..loop(E)),
+     (abminus..loop(E)),
+     (abplus..loop(S)),
+     (ominus..bend(20)..oplus),
+     (ominus--aminus),
+     (ominus--aplus),
+     (ominus--bminus),
+     (ominus--bplus),
+     (ominus--abminus),
+     (ominus..bend(90)..abplus),
+     (oplus--aplus),
+     (oplus--bplus),
+     (oplus--abplus),
+     (aminus--aplus),
+     (aminus--abminus),
+     (aminus--abplus),
+     (aplus--abplus),
+     (bminus..bend(20)..bplus),
+     (bminus--abminus),
+     (bminus..bend(-20)..abplus),
+     (bplus--abplus),
+     (abminus--abplus)
+    );
+
+// draw nodes
+draw(p, ominus, oplus, aminus, aplus, bminus, bplus, abminus, abplus);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+defaultdrawstyle = standarddrawstyle;
 
 

@@ -1897,3 +1897,109 @@ draw(p, v);
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 
+
+
+// ======= Tree iff exactly one path ==========
+int picnum = 10;
+picture p;
+
+// define nodes
+node a=ncircle("$A$"),
+     b=ncircle("$B$"),
+     c=ncircle("$C$"),
+     d=ncircle("$D$"),
+     e=ncircle("$E$"),
+     f=ncircle("$F$"),
+     g=ncircle("$G$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = defaultlayoutskip;
+real v = 0.65*u;
+
+real leftangle = -135.0;
+real rightangle = -45.0;
+a.pos = (0*u, 0*v);
+// rank 2
+b.pos = new_node_pos(a, leftangle, -1*v);
+c.pos = new_node_pos(a, rightangle, -1*v);
+// rank 2
+d.pos = new_node_pos(b, leftangle, -1*v);
+e.pos = new_node_pos(b, -90.0, -1*v);
+f.pos = new_node_pos(c, -90.0, -1*v);
+g.pos = new_node_pos(c, rightangle, -1*v);
+
+// draw edges
+draw(p,
+     (a--b), 
+     (a--c), 
+     (b--d), 
+     (b--e), 
+     (c--f), 
+     (c--g)
+    );
+
+// draw nodes
+draw(p, a, b, c, d, e, f, g);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+// .............. Answer on why not two paths ...
+int picnum = 11;
+picture p;
+
+// define nodes
+node v0=ncircle("$v_0$"),
+     v1=ncircle("$v_1$"),
+     ldots0=ncircle("$\ldots$",ns_noborder),
+     vi=ncircle("$v_i$"),
+     w0=ncircle("$w_0$"),
+     ldots1=ncircle("$\ldots$",ns_noborder),
+     wp=ncircle("$w_p$"),
+     x0=ncircle("$x_0$"),
+     ldots2=ncircle("$\ldots$",ns_noborder),
+     xq=ncircle("$x_q$"),
+     vk=ncircle("$v_k$"),
+     ldots3=ncircle("$\ldots$",ns_noborder),
+     // vnm=ncircle("$v_{n-1}$"),
+     vn=ncircle("$v_n$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1cm;
+real u = defaultlayoutskip;
+real v = 0.65*u;
+
+real diverg_angle = 20.0;
+hlayout(1.0*u, v0, v1, ldots0, vi);
+w0.pos = new_node_pos_h(vi, diverg_angle, 1*u);
+x0.pos = new_node_pos_h(vi, -1*diverg_angle, 1*u);
+hlayout(1.0*u, w0, ldots1, wp);
+hlayout(1.0*u, x0, ldots2, xq);
+vk.pos = new_node_pos_h(wp, -1*diverg_angle, 1*u);
+hlayout(1.0*u, vk, ldots3, vn);
+
+// draw edges
+draw(p,
+     (v0--v1), 
+     (v1--ldots0), 
+     (ldots0--vi), 
+     (vi--w0), 
+     (vi--x0), 
+     (w0--ldots1), 
+     (ldots1--wp), 
+     (x0--ldots2), 
+     (ldots2--xq), 
+     (wp--vk), 
+     (xq--vk), 
+     (vk--ldots3), 
+     (ldots3--vn) 
+    );
+
+// draw nodes
+draw(p, v0, v1, ldots0, vi, w0, x0, ldots1, wp, ldots2, xq, vk, ldots3, vn);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+

@@ -1335,12 +1335,12 @@ int picnum = 22;
 picture p;
 
 // define nodes
-node v0=ncircle("\strut$v_0$"),
-     v1=ncircle("\strut$v_1$"),
-     v2=ncircle("\strut$v_2$"),
-     v3=ncircle("\strut$v_3$"),
-     v4=ncircle("\strut$v_4$"),
-     v5=ncircle("\strut$v_5$");
+node v0=ncircle("\strut$w_0$"),
+     v1=ncircle("\strut$w_1$"),
+     v2=ncircle("\strut$w_2$"),
+     v3=ncircle("\strut$w_3$"),
+     v4=ncircle("\strut$w_4$"),
+     v5=ncircle("\strut$w_5$");
 
 // layout
 defaultlayoutrel = false;

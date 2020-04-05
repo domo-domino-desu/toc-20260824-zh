@@ -3575,7 +3575,7 @@ Consider this tree.
   \item A path is a trail with distinct vertices (except that possibly
   the starting vertex equals the ending vertex).
   This trail meets that criteria.
-  \item The vertex~$B$ appears twice, not at the start and end.
+  \item The vertex~$B$ appears twice, not both at the start and end.
   \item 
   \figureref{fig:TreePathWithCycle} illustrates.
   \begin{figure}
@@ -3638,6 +3638,15 @@ vertices of the second graph having that degree.
 Thus, isomorphic graphs have degree sequences that  
 are equal.    
 \item
+Verify that while these two graphs have the same degree sequence, they are
+not isomorphic.
+\hint~consider the paths starting at the degree~$3$ vertex.
+\begin{center}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs21.pdf}}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs22.pdf}}
+\end{center}
+\item
 Use the prior result to show that the two graphs of \cref{ex:TwoWalkGraphs}
 are not isomorphic.
 \end{exparts}
@@ -3670,23 +3679,18 @@ not isomorphic.
   So $f(v)$ has degree~$k$.
   \item This is the same as the prior item, but instead of a single vertex~$v$
   there is a sequence of vertices $v_0,\ldots v_n$.
+  \item Clearly they have the same degree sequence, 
+   $\sequence{3,1,1,1,1,1}$.
+   Suppose that the two are isomorphic via the correspondence~$f$.
+   Then $f$ must associate the two degree-$3$ vertices.
+   The graph on the left has two unequal length~$2$ paths that 
+   start with its degree~$3$ vertex.
+   The graph on the right does not have two.
   \item The degree sequences differ.
     On the left the degree sequence is $\sequence{3,3,3,3}$
     while on the right it is $\sequence{4,4,4,4,4,4,4,4}$. 
   \end{exparts}
 \end{answer}
-\end{exercise}
-
-\begin{exercise}
-For these two graphs
-verify that they have the same degree sequence, and that they are
-not isomorphic.
-\hint~one graph has a longer path starting at the degree~$3$ vertex.
-\begin{center}
-  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs21.pdf}}
-  \hspace{2em}
-  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs22.pdf}}
-\end{center}
 \end{exercise}
 
 \begin{exercise} \label{exer:MatPowerPatahsLengthN}
@@ -3696,10 +3700,32 @@ Prove \cref{lem:MatPowerPatahsLengthN}.
   Show that the product of the matrix with itself
   $\big(\mathcal{M}(\mathcal{G})\big)^2$ will have that entry~$i,j$
   contains the number of length-two walks.
-\item Use induction to show that for $n\geq 1$, the
-  power $\big(\mathcal{M}(\mathcal{G})\big)^n$, has that the $i,j$~entry
-  is the number of length~$n$ walks from $v_i$ to~$v_j$.
+\item Use induction to show that for $n> 2$, the $i,j$~entry
+  of the power $\big(\mathcal{M}(\mathcal{G})\big)^n$ equals 
+  the number of length~$n$ walks from $v_i$ to~$v_j$.
 \end{exparts}
+\begin{answer}
+  \begin{exparts}
+  \item There is a length~$2$ walk from $v_i$ to~$v_j$ if and only if there
+  is some~$v_k$ where both $v_iv_k$ and~$v_kv_j$ are edges.
+  Thus the number of such walks is
+  $m_{i,1}m_{1,j}+m_{i,2}m_{2,j}+\cdots m_{i,n}m_{n,j}$,
+  where each $m_{a,b}$ is an entry from $\mathcal{M}(\mathcal{G})$.
+  But that is the the $i,j$ entry 
+  of~$\big(\mathcal{M}(\mathcal{G})\big)^2$. 
+  \item For induction assume the hypothesis that the statement is true for
+  $n=2$, \ldots{} $n=p$ and consider $n=p+1$.
+  There is a length~$p+1$ walk from $v_i$ to~$v_j$ if and only if there
+  is some~$v_k$ where there is a length~$p$ walk from 
+  $v_i$ to~$v_k$, and also~$v_kv_j$ is an edge.
+  By the inductive hypothesis the number of such walks is
+  $q_{i,1}m_{1,j}+q_{i,2}m_{2,j}+\cdots q_{i,n}m_{n,j}$,
+  where each $q_{i,b}$ is an entry from $\bigl(\mathcal{M}(\mathcal{G})\bigr)^p$
+  and $m_{b,j}$ is an entry from $\mathcal{M}(\mathcal{G})$.
+  We recognize that as the $i,j$ entry 
+  of~$\big(\mathcal{M}(\mathcal{G})\big)^{p+1}$. 
+  \end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -3708,14 +3734,53 @@ some nodes~$q_i$ that are unreachable, so there is no path from $q_0$ to~$q_i$.
 \begin{exparts}
 \item Devise an algorithm that inputs a directed graph and a start node~$q_0$,
 and finds the set of nodes that are unreachable from~$q_0$.
-\item Apply your algorithm to these two.
+\item Apply your algorithm to these two starting with~$w_0$.
 \begin{center}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs13.pdf}}
   \hspace{3em}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs14.pdf}}
 \end{center}
 \end{exparts}
+\begin{answer}
+\begin{exparts}
+\item We will keep track of a set~$R$ of reachable vertices.
+  To start, put $q_0$ into a set~$R_0$.
+  For the first step find all vertices connected to~$q_0$, and enter them
+  into the set $R_1\supseteq R_0$.
+  At step~$k+1$ put all vertices connected to any vertex
+  in~$R_k$ into a set $R_{k+1}\supseteq R_k$.
+  When there are no new vertices then we are done (this must happen after
+  finitely many steps because there are finitely many vertices, by our 
+  definition of a graph).
+  The result is the set~$R$.
+  The unreachable vertices are those that are not members of~$R$.
+\item For the graph on the left these are the steps.
+\begin{center}
+\begin{tabular}[t]{r|l}
+  \multicolumn{1}{c}{\tabulartext{step}~$k$} 
+    &\multicolumn{1}{c}{\tabulartext{$R_k$}}
+  \\ \hline
+  $0$  &$\set{w_0}$  \\
+  $1$  &$\set{w_0,w_1}$  \\
+  $2$  &$\set{w_0,w_1,w_2}=R$  
+\end{tabular}
+\end{center}
+Here are the steps for the graph on the right.
+\begin{center}
+\begin{tabular}{r|l}
+  \multicolumn{1}{c}{\tabulartext{step}~$k$} 
+    &\multicolumn{1}{c}{\tabulartext{$R_k$}}
+  \\ \hline
+  $0$  &$\set{w_0}$  \\
+  $1$  &$\set{w_0,w_1}$  \\
+  $2$  &$\set{w_0,w_1,w_3}=R$  
+\end{tabular}
+\end{center}
+\end{exparts}
+\end{answer}
+
 \end{exercise}
+
 \end{exercises}
 \index{graph|)}
 

@@ -1753,23 +1753,23 @@
   \end{list}%
 }
 
-% Used for derivations; gives a raggedright block of indented text
-% \begin{displayedsteps}
-%  \initialstep\syntax{<start>}
-%   ..
-% \end{displayedsteps}
-\newenvironment{displayedsteps}{%
-  \begin{list}{}%
-      {\listparindent 1em%
-       %\itemindent    \listparindent
-       % \leftmargin 2em%
-       \rightmargin 1em%
-       \parsep        \z@ \@plus\p@}%
-       \item\relax \raggedright
-}{%
-  \end{list}
-}
-\newcommand{\initialstep}{\hspace*{-1em}}
+% % Used for derivations; gives a raggedright block of indented text
+% % \begin{displayedsteps}
+% %  \initialstep\syntax{<start>}
+% %   ..
+% % \end{displayedsteps}
+% \newenvironment{displayedsteps}{%
+%   \begin{list}{}%
+%       {\listparindent 1em%
+%        %\itemindent    \listparindent
+%        % \leftmargin 2em%
+%        \rightmargin 1em%
+%        \parsep        \z@ \@plus\p@}%
+%        \item\relax \raggedright
+% }{%
+%   \end{list}
+% }
+% \newcommand{\initialstep}{\hspace*{-1em}}
 
 
 % \renewenvironment{grammar}{%

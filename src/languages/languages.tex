@@ -4341,6 +4341,8 @@ This grammar is for a small C-like programming language.
     \caption{Parse tree for C-like language.}
     \label{fig:CLikeLang}
   \end{figure}
+  \item Yes, because all derivations must go from \ntrm{program} through
+    \ntrm{statement-list}, which forces them to have curly braces.
   \end{exparts}
 \end{answer}
 \end{exercise}
@@ -4365,6 +4367,36 @@ Here is a grammar for LISP.
 \ntrm{number} \bnfproduces{} \trm{1} \syntaxor \trm{2} \syntaxor \ldots{}  \trm{9}   
 \end{grammar}
 Derive the s-expression \str{(cons (car x) y)}.
+\begin{answer}
+  In this partial derivation
+  we feel free to leverage the BNF notation to, for instance, put in multiple
+  \ntrm{s-expression}'s for a \ntrm{list} at one time,
+  instead of putting them in one at a time.
+  \begin{displayedsteps}
+    \initialstep\ntrm{s-expression}
+    \derives \ntrm{list}
+    \\
+    \derives\trm{(} \ntrm{s-expression} \ntrm{s-expression} \ntrm{s-expression} \trm{)}
+    \\
+    \derives\trm{(} \ntrm{s-expression} \ntrm{list} \ntrm{s-expression} \trm{)}
+    \\
+    \derives\trm{(} \ntrm{s-expression} \trm{(} \ntrm{s-expression} \ntrm{s-expression} \trm{)} \ntrm{s-expression} \trm{)}
+    \\
+    \derives\trm{(} \ntrm{atomic-symbol} \trm{(} \ntrm{s-expression} \ntrm{s-expression} \trm{)} \ntrm{s-expression} \trm{)}
+    \\
+    \derives\trm{(} \ntrm{letter} \ntrm{atomic-part} \trm{(} \ntrm{s-expression} \ntrm{s-expression} \trm{)} \ntrm{s-expression} \trm{)}
+    \\
+    \derives\trm{(} \ntrm{letter} \ntrm{letter} \ntrm{atomic-part} \trm{(} \ntrm{s-expression} \ntrm{s-expression} \trm{)} \ntrm{s-expression} \trm{)}
+    \\
+    \derives\trm{(} \ntrm{letter} \ntrm{letter} \ntrm{letter} \ntrm{atomic-part} \trm{(} \ntrm{s-expression} \ntrm{s-expression} \trm{)} \ntrm{s-expression} \trm{)}
+    \\
+    \derives\trm{(} \ntrm{letter} \ntrm{letter} \ntrm{letter} \ntrm{letter} \trm{(} \ntrm{s-expression} \ntrm{s-expression} \trm{)} \ntrm{s-expression} \trm{)}
+    \\
+    \derives\trm{(} \trm{c} \ntrm{letter} \ntrm{letter} \ntrm{letter} \trm{(} \ntrm{s-expression} \ntrm{s-expression} \trm{)} \ntrm{s-expression} \trm{)}
+  \end{displayedsteps}
+  Expanding the remaining nonterminals to letters is tedious, so we will
+  stop here.
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -4387,11 +4419,49 @@ substitution.
 
 \ntrm{type}            \bnfproduces{}  \trm{b} \syntaxor \trm{c} \syntaxor \trm{d} \syntaxor \trm{e} \syntaxor \trm{E} \syntaxor \trm{f} \syntaxor \trm{F} \syntaxor \trm{g} \syntaxor \trm{G} \syntaxor \trm{n} \syntaxor \trm{o} \syntaxor \trm{s} \syntaxor \trm{x} \syntaxor \trm{X} \syntaxor \trm{\%}  
 \end{grammar}
-Give a derivation of these strings:
+Take \ntrm{integer} to produce
+\mbox{\ntrm{digit} \ntrm{integer}}
+or \ntrm{digit}.
+Give a derivation of these strings.
 \begin{exparts*}
 \item \str{03f}
 \item \str{+\#02X}.
 \end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item
+  Here we will leverage the BNF notation to, for instance, 
+  substitute for multiple nonterminals,
+  instead of putting them in one at a time.
+  \begin{displayedsteps}
+    \initialstep\ntrm{format-spec}
+    \derives \trm{0} \ntrm{width} \ntrm{type}
+    \\
+    \derives \trm{0} \ntrm{integer} \ntrm{type}
+    \\
+    \derives \trm{0} \ntrm{digit} \ntrm{type}
+    \\
+    \derives \trm{0} \trm{3} \ntrm{type}
+    \\
+    \derives \trm{0} \trm{3} \trm{f}
+  \end{displayedsteps}
+\item
+  \begin{displayedsteps}
+    \initialstep\ntrm{format-spec}
+    \derives \ntrm{sign} \trm{\#} \trm{0} \ntrm{width} \ntrm{type}
+    \\
+    \derives \trm{+} \trm{\#} \trm{0} \ntrm{width} \ntrm{type}
+    \\
+    \derives \trm{+} \trm{\#} \trm{0} \ntrm{integer} \ntrm{type}
+    \\
+    \derives \trm{+} \trm{\#} \trm{0} \ntrm{digit} \ntrm{type}
+    \\
+    \derives \trm{+} \trm{\#} \trm{0} \trm{2} \ntrm{type}
+    \\
+    \derives \trm{+} \trm{\#} \trm{0} \trm{2} \trm{X}
+  \end{displayedsteps}
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}

@@ -14,10 +14,11 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
-cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
+import jhnode;
+// now handled in jhnode
+// cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
+// import node;
 cd("");
 
 
@@ -2501,8 +2502,11 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 node q0=ncircle("$q_0$"); 
-node q1=ncircle("$q_1$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
 node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
 
 // calculate nodes position
 // layout
@@ -2511,21 +2515,30 @@ defaultlayoutskip = 1.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-hlayout(1*u, q0, q1, q2);
+hlayout(1*u, q0, q1);
+q2.pos = new_node_pos_h(q1, 20.0, 1*u);
+q3.pos = new_node_pos_h(q1, -20.0, 1*u);
+hlayout(1*u, q3, q4, q5);
 
 // draw edges
 draw(pic,
-     (q0..bend(-20)..q1).l("\str{0}").style("leftside"),
+     (q0--q1).l("\str{0}").style("leftside"),
      (q0..loop(W)).l("\str{1}"),
-     (q1..bend(-20)..q2).l("\str{0}").style("leftside"),
-     (q1..bend(-10)..q0).l("\str{1}").style("leftside"),
-     (q2..bend(-35)..q0).l("\str{1}"),
-     (q2..loop(E)).l("\str{0}")
+     (q1--q2).l("\str{0}").style("leftside"),
+     (q1--q3).l("\str{1}").style("leftside"),
+     (q2..loop(E)).l("\str{0}"),
+     (q2--q3).l("\str{1}"),
+     (q3--q4).l("\str{0}"),
+     (q3..loop(S)).l("\str{1}"),
+     (q4..bend(20)..q3).l("\str{1}"),
+     (q4--q5).l("\str{0}").style("leftside"),
+     (q5..loop(E)).l("\str{0}"),
+     (q5..bend(-20)..q3).l("\str{1}").style("leftside")
      );
 
 // draw nodes
 draw(pic,
-     q0, q1, q2);
+     q0, q1, q2, q3, q4, q5);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -2577,8 +2590,11 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 node q0=ncircle("$q_0$"); 
-node q1=ncircle("$q_1$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
 node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting); 
 
 // calculate nodes position
 // layout
@@ -2587,23 +2603,66 @@ defaultlayoutskip = 1.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-hlayout(1*u, q0, q1, q2);
+hlayout(1*u, q0, q1);
+q2.pos = new_node_pos_h(q1, 20.0, 1*u);
+q3.pos = new_node_pos_h(q1, -20.0, 1*u);
+hlayout(1*u, q3, q4, q5);
 
 // draw edges
 draw(pic,
-     (q0..bend(-20)..q1).l("\str{0}").style("leftside"),
-     (q0..loop(W)).l("other"),
-     (q1..bend(-20)..q2).l("\str{0}").style("leftside"),
-     (q1..bend(-10)..q0).l("other").style("leftside"),
-     (q2..bend(-35)..q0).l("other").style("leftside"),
-     (q2..loop(E)).l("\str{0}")
+     (q0--q1).l("\str{0}").style("leftside"),
+     (q0..loop(W)).l("\str{1},\ldots{}\,\str{9}"),
+     (q1--q2).l("\str{0}").style("leftside"),
+     (q1--q3).l("\str{1},\ldots{}\,\str{9}").style("leftside"),
+     (q2..loop(E)).l("\str{0}"),
+     (q2--q3).l("\str{1},\ldots{}\,\str{9}").style("leftside"),
+     (q3--q4).l("\str{0}"),
+     (q3..loop(S)).l("\str{1},\ldots{}\,\str{9}"),
+     (q4..bend(20)..q3).l("\str{1},\ldots{}\,\str{9}"),
+     (q4--q5).l("\str{0}").style("leftside"),
+     (q5..loop(E)).l("\str{0}"),
+     (q5..bend(-20)..q3).l("\str{1},\ldots{}\,\str{9}").style("leftside")
      );
 
 // draw nodes
 draw(pic,
-     q0, q1, q2);
+     q0, q1, q2, q3, q4, q5);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+// picture pic;
+// int picnum = 45;
+// unitsize(pic,1pt);
+// setdefaultstatediagramstyles() ;
+
+// // define nodes
+// node q0=ncircle("$q_0$"); 
+// node q1=ncircle("$q_1$"); 
+// node q2=ncircle("$q_2$",ns_accepting); 
+
+// // calculate nodes position
+// // layout
+// defaultlayoutrel = false;
+// defaultlayoutskip = 1.75cm;
+// real u = defaultlayoutskip;
+// real v = 0.85*u;
+
+// hlayout(1*u, q0, q1, q2);
+
+// // draw edges
+// draw(pic,
+//      (q0..bend(-20)..q1).l("\str{0}").style("leftside"),
+//      (q0..loop(W)).l("other"),
+//      (q1..bend(-20)..q2).l("\str{0}").style("leftside"),
+//      (q1..bend(-10)..q0).l("other").style("leftside"),
+//      (q2..bend(-35)..q0).l("other").style("leftside"),
+//      (q2..loop(E)).l("\str{0}")
+//      );
+
+// // draw nodes
+// draw(pic,
+//      q0, q1, q2);
+
+// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

@@ -1723,7 +1723,7 @@ is a member of that language.
 
 % ==================================================
 \section{Nondeterminism}\index{nondeterminism|(}
-Turing machines, and also Finite State machines, have the property that
+Turing machines and Finite State machines both have the property that
 the next state is completely determined by the current state and current
 character.
 Once you lay out an initial tape and push \texttt{Start} then
@@ -1738,51 +1738,52 @@ Suppose that you have a grammar
 with some rules and start symbol~$S$.
 You are given the string~$\sigma$ and asked if has a derivation.
 The challenge to these problems is that
-the derivation can potentially go more than one way.
+you sometimes have to guess which path the derivation should take.
 For instance, if you have
 \mbox{S\produces{}\trm{a}S\syntaxor\trm{b}A} then
 from S you can do two different things;
 which one will work? 
 
-In the grammar section's derivation exercises we used intuition to
-spot that one way or another leads to an answer.
-If you wrote a program for it then you might instead try every
+In the grammar section's derivation exercises, we expect that as an 
+intelligent person standing outside the problem we 
+have the insight to guess the right way. 
+However, 
+if instead you were writing a program then you might try every
 possible case;~you might do a breadth-first traversal of the tree of all
-derivations.
+derivations until you found a success.
 
 Although the breadth-first technique is familiar from experience with
-programming classes, don't think that it is natural. 
+programming classes, don't think that it is a natural fit. 
 This problem is most naturally done in parallel and breadth-first traversal is
 a serialization that we do only because it is required by
-the machine model that we have, that is, it is suited to 
-the single-CPU devices that we have in mind when we first learn programming.
+the single-CPU device model that we use when we first learn programming.
 
 \margingraphic{0.175\textwidth}{automata/pix/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}\index{Berra, Y!picture}
-The American philosopher, and Hall of Fame baseball catcher, Y~Berra
-said, ``If you come to a fork in the road, take it.''
+The American philosopher and Hall of Fame baseball catcher Y~Berra
+said, ``When you come to a fork in the road, take it.''
 That's a natural way to attack this problem:~when you come up against
 multiple possibilities,
 fork a child for each.
 Thus, the routine might begin with the start state~$S$ and for each rule that
-could apply it spawns a child process that applies that rule, deriving a
+could apply it spawns a child process, deriving a
 string one removed from the start.
 After that, each child finds each rule that could apply to its string and
 spawns its own children, each of which now has a string that is two removed from
 the start.
 Continue until the desired string~$\sigma$ appears, if it ever does.
 
-We can illustrate this with 
+For an illustration, consider
 the celebrated Travelling Salesman problem.\index{Travelling Salesman problem@\probname{Travelling Salesman} problem}
 Take a map of the forty eight contiguous US~states
 and look at trips that visit every state capital.
-We want to know, say, if there is a cycle, a trip that visits each
-capital and returns back to the start, of less than $16\,000$ kilometers.
+We want to know if there is a trip that visits each
+capital and returns back to the start of, say, less than $16\,000$ kilometers.
 Starting at Montpelier we could
 fork forty seven child processes, one for each potential next capital.
 The process assigned Albany, for instance, would know that the trip so far is
 $126$~kilometers. 
 Each child would then fork its own
-children, forty six of them.
+child processes, forty six of them.
 At the end, if there is
 a trip of less than $16\,000$ kilometers then some process knows it.
 There will be lots of processes and many of them have failed

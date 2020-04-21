@@ -1752,11 +1752,11 @@ if instead you were writing a program then you might try every
 possible case;~you might do a breadth-first traversal of the tree of all
 derivations until you found a success.
 
-Although the breadth-first technique is familiar from experience with
-programming classes, don't think that it is a natural fit. 
-This problem is most naturally done in parallel and breadth-first traversal is
-a serialization that we do only because it is required by
-the single-CPU device model that we use when we first learn programming.
+% Although the breadth-first technique is familiar from experience with
+% programming classes, don't think that it is a natural fit. 
+% This problem is most naturally done in parallel and breadth-first traversal is
+% a serialization that we do only because it is required by
+% the single-CPU device model that we use when we first learn programming.
 
 \margingraphic{0.175\textwidth}{automata/pix/yogi.jpg}{\label{fig:yogi}\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}\index{Berra, Y!picture}
 The American philosopher and Hall of Fame baseball catcher Y~Berra
@@ -1772,44 +1772,45 @@ spawns its own children, each of which now has a string that is two removed from
 the start.
 Continue until the desired string~$\sigma$ appears, if it ever does.
 
-For an illustration, consider
+The prototypical example is 
 the celebrated Travelling Salesman problem.\index{Travelling Salesman problem@\probname{Travelling Salesman} problem}
-Take a map of the forty eight contiguous US~states
-and look at trips that visit every state capital.
+Take a map of the 
+\citetext{roads in the US lower forty eight}{
+  See \url{https://wiki.openstreetmap.org/wiki/TIGER}.}.
 We want to know if there is a trip that visits each
-capital and returns back to the start of, say, less than $16\,000$ kilometers.
-Starting at Montpelier we could
-fork forty seven child processes, one for each potential next capital.
+state capital and returns back to the start in, say, 
+less than $16\,000$ kilometers.
+We'll start at Montpelier.
+From there, we could fork a process for each potential next capital,
+forty seven of them.
 The process assigned Albany, for instance, would know that the trip so far is
 $126$~kilometers. 
-Each child would then fork its own
-child processes, forty six of them.
+After that, each child would fork its own child processes, forty six of them.
 At the end, if there is
 a trip of less than $16\,000$ kilometers then some process knows it.
 There will be lots of processes and many of them have failed
-to find a short enough trip, but if even one succeeds then we consider
+to find a short trip, but if even one succeeds then we consider
 the overall search a success.
 
 This computation is nondeterministic in that while it is happening
-the machine has many process.
-In that sense the machine is simultaneously in many different states.
+the machine has many process, and so
+is simultaneously in many different states.
 
-\margingraphic{0.15\textwidth}{automata/pix/angel.jpg}{\label{fig:Angel}\href{https://en.wikipedia.org/wiki/Angel}{Persian angel, 1555}} % Kneeling Angel from Bukhara School c. 1555-1560. British Museum https://commons.wikimedia.org/wiki/File:Persian_angel_1555.jpg [Public domain], via Wikimedia Commons
-This approach suits an unboundedly-parallel machine, a machine that is
-angelic in that whenever we want more computational resources, 
+\margingraphic{0.18\textwidth}{automata/pix/angel.jpg}{\label{fig:Angel}\href{https://en.wikipedia.org/wiki/Angel}{Persian angel, 1555}} % Kneeling Angel from Bukhara School c. 1555-1560. British Museum https://commons.wikimedia.org/wiki/File:Persian_angel_1555.jpg [Public domain], via Wikimedia Commons
+This approach suits an unboundedly-parallel machine.
+Think of such a machine as
+angelic in that whenever it wants more computational resources, 
 such as being able to allocate new children, those resources just appear.
-Or, a single CPU could simulate the children with time-slicing,
-which dovetails by running the first process for a few ticks,
-then running the second for a few, 
-and then back to the first, the second, and then
-to the third, etc.
+Alternatively, a single CPU could simulate the children with time-slicing,
+dovetailing by running each process in succession for a few ticks.
 This echos our experience with everyday computers, where
 when we are writing an email in one window 
 and watching a video in another then the machine appears to be
-in multiple states simultaneously.
+in multiple states simultaneously, 
+although it may in fact be alternating between jobs.
 
 This section considers nondeterministic Finite State machines.
-(We will do nondeterministic Turing machines in the fifth chapter.)
+(Nondeterministic Turing machines appear in the fifth chapter.)
 We will have two ways to think about nondeterminism,
 two mental models.\footnote{%
   While these models are helpful in learning and thinking about nondeterminism,
@@ -1818,7 +1819,7 @@ The first was introduced above:~we
 can picture that when such a mathine 
 is presented with multiple possible next states then
 the machine forks, so that it is in all of them simultaneously.
-This illustrates.
+The next example illustrates.
 
 \begin{example}  \label{ex:NFSMInDiscussion}
 The Finite State machine below is nondeterministic because 
@@ -1828,11 +1829,9 @@ no~\str{1} arrow leaves $q_1$.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm00.pdf}}
 \end{center}
-Give it input \str{00001} and
-imagine that when there are two next states, then 
-the machine splits in two.
-As the animation below shows,
-the computation history is a tree.
+The animation below shows what happens with input \str{00001}. 
+We take the computation history as a tree.
+For example, on the first \str{0} the computation splits in two.
 \begin{animatedfigure}{Steps in the nondeterministic computation.} 
   \animategraphics[poster=last]{3}{automata/asy/nfsm/nfsm}{02}{08}
   \label{anim:NondeterministicComputationTree}
@@ -1852,22 +1851,22 @@ because this machine has no next state when the present
 state~$q_2$ and the input is~\str{0}.
 Another is the branch at the top, which never dies but
 also does not accept the input.
-However, we don't care about unsuccessful branches.
-We only care that there exists a successful one.
+However, we don't care about unsuccessful branches\Dash
+we only care that there is a successful one.
 So we will define that a nondeterministic machine accepts an input
 if there is at least one branch in the computation tree that accepts the
 input.
 
 The machine in the above example
 accepts a string if it ends in two~\str{0}'s and a~\str{1}.
-When we feed it the input \str{00001} the problem the machine faces is
-when it should stop going around $q_0$'s loop and start to the right.
+When we feed it the input \str{00001} the problem the machine faces 
+is:~when it should stop going around $q_0$'s loop and start to the right?
 Our definition has the machine accepting this input
-so the machine has solved this problem\Dash viewed from the outside,
-we could, perhaps somewhat fancifully, say that the
+so the machine has solved this problem\Dash viewed from the outside
+we could say, perhaps a bit fancifully, that the
 machine has correctly guessed.
 
-This is our second mental model for nondeterminism.
+This is our second model for nondeterminism.
 We will imagine programming by calling a function, some 
 \citetext{$\operatorname{amb}(S,R_0,R_1\ldots R_{n-1})$}{%
   The name \textit{amb}\index{amb@\textit{amb} function}
@@ -1908,17 +1907,17 @@ We will imagine programming by calling a function, some
   $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''},
 and having the computer somehow guess a successful search sequence.\index{guessing by a machine}
 
-\margingraphic{0.20\textwidth}{automata/pix/flauros.jpg}{\label{fig:Flauros}\href{https://en.wikipedia.org/wiki/List_of_demons_in_the_Ars_Goetia}{Flauros, Duke of Hell}}\index{Flauros!picture} %, gives true answers of all things past, present, and future}} % https://commons.wikimedia.org/wiki/File%3AIll_dict_infernal_p0294-278_flauros_demon.jpg Louis Le Breton [Public domain], via Wikimedia Commons
+\margingraphic{0.21\textwidth}{automata/pix/flauros.jpg}{\label{fig:Flauros}\href{https://en.wikipedia.org/wiki/List_of_demons_in_the_Ars_Goetia}{The demon Flauros, Duke of Hell}}\index{Flauros!picture} %, gives true answers of all things past, present, and future}} % https://commons.wikimedia.org/wiki/File%3AIll_dict_infernal_p0294-278_flauros_demon.jpg Louis Le Breton [Public domain], via Wikimedia Commons
 % \margingraphic{0.25\textwidth}{automata/demon.jpg}{\label{fig:Demon}\href{https://en.wikipedia.org/wiki/The_Nightmare}{\textit{The Nightmare} H~Fuseli, 1781}} % https://upload.wikimedia.org/wikipedia/commons/5/56/John_Henry_Fuseli_-_The_Nightmare.JPG  Henry Fuseli [Public domain], via Wikimedia Commons  (https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror)
 Saying that the machine is guessing is jarring since  
 \citetext{it does not fit our intuition of how computers work}{%
   \href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}}.
-Nonetheless, researchers in this area often speak this way.
+Nonetheless, researchers in this area often frame it in this way.
 A perhaps less disconcerting way to put it is to imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
 only has to check it.
 This mental model of nondeterminism is demonic because
-the furnisher is often personified as a supernatural being, 
+the furnisher seems to be a supernatural being, 
 \citetext{a demon}{%
   The term `demon' comes from Maxwell's demon.
   This is a a thought experiment created in 1867 by the physicist J~C Maxwell,
@@ -1935,19 +1934,19 @@ who somehow knows answers that cannot otherwise be found,
 but you are suspicious and must check that the answer is not a trick.
 Under this model, a nondeterministic computation
 accepts the input if there exists a branch of the computation tree
-that a machine could check.
+that a deterministic machine, if told what branch to take, could verify.
 
-We shall describe nondeterminism in both ways:~as a
+Below we shall describe nondeterminism using both paradigms:~as a
 machine being in multiple states at once, and as a machine guessing.
-To use both paradigms we must reconcile them by showing
-that there is a nondeterministic machine accepting
-a string under the first model if and only if there is one accepting
-that string under the second.
-Here we will do that for nondeterministic
-Finite State machines.
-% and showing that they
-% accept exactly the same set of languages
-% as deterministic ones.
+As mentioned above, here we will do that for Finite State
+machines but in the fifth chapter we will return to it in the
+context of Turing machines. 
+% To use both paradigms we must reconcile them by showing
+% that there is a nondeterministic machine accepting
+% a string under the first model if and only if there is one accepting
+% that string under the second.
+% Here we will do that for nondeterministic
+% Finite State machines.
 
 
 
@@ -1967,7 +1966,7 @@ $\FSM=\sequence{Q,q_{\text{start}},F,\Sigma,\Delta}$
 consists of a finite \definend{set of states}~$Q$,
 one of which is the \definend{start state}~$q_{\text{start}}$,
 a subset $F\subseteq Q$ of \definend{accepting states}\index{accepting state!nondeterministic Finite State machine}
-(or \definend{final states}),\definend{final state!nondeterministic Finite State machine}
+or \definend{final states},\index{final state!nondeterministic Finite State machine}
 a finite \definend{input alphabet} set~$\Sigma$,
 and a \definend{next-state function}\index{next-state function!nondeterministic Finite State machine}
 $\map{\Delta}{Q\times\Sigma}{\powerset (Q)}$.

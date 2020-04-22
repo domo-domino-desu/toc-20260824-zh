@@ -14,11 +14,11 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
+import jhnode;
 cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
-cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
+// import node;
+// cd("");
 
 
 // define style
@@ -3500,5 +3500,45 @@ draw(pic,
      q0);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Next to last char is a, deterministic ================
+picture pic;
+int picnum = 88;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(u, q0, q1, q2);
+
+// edges
+draw(pic,
+     (q0..loop(W)).l("\str{b}"), 
+     (q0..bend(10)..q1).l("\str{a}"),
+     (q1..bend(20)..q0).l("\str{b}"),
+     (q1..bend(-20)..q2).l("\str{a},\str{b}").style("leftside"),
+     (q2..bend(-30)..q1).l("\str{a}"),
+     (q2..bend(-35)..q0).l("\str{b}").style("leftside") 
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 

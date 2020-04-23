@@ -814,6 +814,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 // ============== epsilon-transitions, join of two machines ================
+// See also picnum 89 and 90
 picture pic;
 int picnum = 13;
 unitsize(pic,1pt);
@@ -3538,6 +3539,105 @@ draw(pic,
 draw(pic, q0, q1, q2);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== epsilon-transitions, join of two machines ================
+// Connected to picnum 13
+picture pic;
+int picnum = 89;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$", ns_accepting),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$", ns_accepting),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+// hlayout(3*u, q0, q3);
+q1.pos = new_node_pos(q0, 45, 1*v);
+q2.pos = new_node_pos(q0, 135, 1*v);
+// q4.pos = new_node_pos(q3, -45, 1*v);
+// q5.pos = new_node_pos(q3, -135, 1*v);
+
+
+// edges
+draw(pic, 
+     (q0--q1).l("\str{a}"), 
+     (q1--q2).l("\str{a}"), 
+     (q2--q0).l("\str{b}") 
+     // (q0--q3).l("$\varepsilon$"), 
+     // (q3..loop(S)).l("\str{a}"), 
+     // (q3--q4).l("\str{a}"), 
+     // (q4--q5).l("\str{b}"), 
+     // (q5--q3).l("\str{a}") 
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2
+     //     q3, q4, q5
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .......... Other machine ...........................
+picture pic;
+int picnum = 90;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting),
+  q3=ncircle("$q_3$", ns_accepting),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+// hlayout(3*u, q0, q3);
+// q1.pos = new_node_pos(q0, 45, 1*v);
+// q2.pos = new_node_pos(q0, 135, 1*v);
+q4.pos = new_node_pos(q3, -45, 1*v);
+q5.pos = new_node_pos(q3, -135, 1*v);
+
+
+// edges
+draw(pic, 
+     // (q0--q1).l("\str{a}"), 
+     // (q1--q2).l("\str{a}"), 
+     // (q2--q0).l("\str{b}"), 
+     // (q0--q3).l("$\varepsilon$"), 
+     (q3..loop(S)).l("\str{a}"), 
+     (q3--q4).l("\str{a}"), 
+     (q4--q5).l("\str{b}"), 
+     (q5--q3).l("\str{a}") 
+    );
+
+// draw nodes after edges
+draw(pic, // q0, q1, q2
+          q3, q4, q5
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

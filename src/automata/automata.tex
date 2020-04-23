@@ -2252,45 +2252,52 @@ These two are unioned to make the language for the entire machine.
 \end{example}
 
 \begin{example} \label{ex:NFSM:JoinSerial}
-  An $\varepsilon$ transition can also tie together two machines with
-  a serial connection.
+A $\varepsilon$ transition can also make a serial connection 
+between machines.
+The machine on the left below accepts the language
+$\set{(\str{aab})^m\suchthat m\in\N}$
+and the machine on the right accepts
+$\set{(\str{a}|\str{aba})^n\suchthat n\in\N}$.
+\begin{center} % align graphics on top https://tex.stackexchange.com/a/126919/121234
+  % Get width of first graphic
+  \newsavebox{\jhtmpboxautomatai}
+  \savebox{\jhtmpboxautomatai}{\includegraphics{automata/asy/nfsm/nfsm89.pdf}}
+  \newlength{\jhtmplengthautomatai}
+  \settowidth{\jhtmplengthautomatai}{\usebox{\jhtmpboxautomatai}}
+  % Get width of second graphic
+  \newsavebox{\jhtmpboxautomataii}
+  \savebox{\jhtmpboxautomataii}{\includegraphics{automata/asy/nfsm/nfsm90.pdf}}
+  \newlength{\jhtmplengthautomataii}
+  \settowidth{\jhtmplengthautomataii}{\usebox{\jhtmpboxautomataii}}
+  % Tabulars align paragraphs on top
+  \begin{tabular}{p{\jhtmplengthautomatai} @{\hspace*{3em}} p{\jhtmplengthautomatai}}
+    \vspace{0pt} \usebox{\jhtmpboxautomatai}
+    &\vspace{0pt} \usebox{\jhtmpboxautomataii}
+  \end{tabular}
+\end{center}
+If we insert a $\varepsilon$~bridge from
+each of the left side's final states 
+(in this example there happens to be only one such state) 
+and the right side's initial state 
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm13.pdf}
 \end{center}
-The left side is a nondeterministic machine.
-If $q_0$ were its sole accepting state 
-then the left side's language would be
-$\set{(\str{aab})^m\suchthat m\in\N}$.
-The right side 
-accepts strings in $\set{(\str{a}|\str{aba})^n\suchthat n\in\N}$.
-Overall, the machine accepts strings in the concatenation of those languages.
+then the 
+combined machine accepts strings in the concatenation of those languages.
 \begin{equation*}
   \mathcal{L}(\FSM)=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
     \suchthat \text{$\sigma=(\str{aab})^m(\str{a}|\str{aba})^n$ for $m,n\in\N$}}
 \end{equation*}
-That is, a string is accepted by the overall machine
-if first comes some number of \str{aab}'s,
-and then comes some number of either \str{a}'s or \str{aba}'s.
-For example, the machine
-accepts these two strings (the brackets are there to help
-a person's eye pick out the parts).
-\begin{equation*}
-  \newlength{\jhscratchlength} \setlength{\jhscratchlength}{0.25pt}
-  \underbracket[\jhscratchlength]{\str{aab}}\overbracket[\jhscratchlength]{\str{aab}}\underbracket[\jhscratchlength]{\str{aba}}\overbracket[\jhscratchlength]{\str{aba}}
-  \qquad
-  \underbracket[\jhscratchlength]{\str{aab}}\overbracket[\jhscratchlength]{\str{a}}\underbracket[\jhscratchlength]{\str{aba}}\overbracket[\jhscratchlength]{\str{a}}\underbracket[\jhscratchlength]{\str{aba}}
-\end{equation*}
-% Note that in the second part of a string 
-% the \str{a}'s can be interwoven with the \str{aba}'s.
+For example, it accepts \str{aabaababa} and
+\str{aabaabaaa}.
 \end{example}
 
-
 \begin{example} \label{ex:EpsilonTransMakeKleeneStar}
-An $\varepsilon$ transition edge can also take a nondeterministic machine and
-give it the Kleene star effect.
-That is, without the $\varepsilon$ edge this machine's language is
-$\set{\emptystring, \str{ab}}$
-while adding it makes the language  
+An $\varepsilon$ transition edge can also produce the Kleene star of a  
+a nondeterministic machine.
+For instance, without the $\varepsilon$~edge this machine's language is
+$\set{\emptystring, \str{ab}}$,
+while with it the language is  
 $\set{(\str{ab})^n\suchthat n\in\N}$.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm15.pdf}
@@ -2303,13 +2310,9 @@ $\set{(\str{ab})^n\suchthat n\in\N}$.
 
 % ........................................
 \subsection{Equivalence of the machine types}\label{sec:EquivDFSMAndNFSM}
-The following result says that
-for Finite State machines, nondeterminism does not alter the power of the
-machines. 
-So
-our first encounter with nondeterminism has it as
-less a radical innovation and more
-of a problem-solving convenience.
+We next prove that
+nondeterminism does not change what you can do
+with Finite State machines. 
 
 %<*th:dfsmEquivndfsm>
 \begin{theorem}
@@ -2321,55 +2324,65 @@ of a problem-solving convenience.
 \end{theorem}
 %</th:dfsmEquivndfsm>
 
-To show that the two classes are equal we will argue that they are subsets of
+We can show that the two classes are equal by showing that they are subsets of
 each other.
+
 One direction is easy;~any deterministic machine is a nondeterministic machine.
 That is, in a deterministic machine the next-state function outputs
 single states.
-To make it a nondeterministic machine just convert those single states
+To make it a nondeterministic machine just convert those states
 into singleton sets.
 Thus the set of languages accepted by
 deterministic machines is a subset of the set accepted by
 nondeterministic machines.
 
-For inclusion the other way
-we will demonstrate how to start
-with a nondeterministic machine with $\varepsilon$ transitions and
+We will demonstrate inclusion in the other direction constructively.
+We will show how to start
+with a nondeterministic machine with~$\varepsilon$ transitions and
 construct a deterministic machine that accepts the same language.
-We won't give a complete proof, although
-certainly one is possible, because
+We won't give a complete proof (although
+certainly one is possible) simply because
 a proof is a notational mess and the examples below
-are convincing.
+are entirely convincing.
 
-First consider a nondeterministic machine $\FSM_N$ 
-that has no $\varepsilon$ transitions.
-Let its next-state function be~$\Delta_N$.
-As the next example illustrates,
-the associated deterministic machine $\FSM_D$ has states $s_i$ that are
-the sets of states of $\FSM_N$, so $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$.
-The next-state function $\Delta_D$ of $\FSM_D$  combines the
-next states associated with each $q_{i_j}$.
-\begin{equation*}
-  \Delta_D(s_i)=
-    \Delta_N(q_{i_1})\cup\Delta_N(q_{i_2})\cup \cdots
-  \tag*{($*$)}
-\end{equation*}
+% First consider a nondeterministic machine $\FSM_N$ 
+% Let its next-state function be~$\Delta_N$.
+% Produce
+% the associated deterministic machine $\FSM_D$ by listing the
+% sets of states of $\FSM_N$.
+% The example below illustrates.
+% Each line of the table is a set $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$
+% of $\FSM_N$'s states.
+% The next-state function $\Delta_D$ of $\FSM_D$  combines the
+% next states associated with each $q_{i_j}$.
+% \begin{equation*}
+%   \Delta_D(s_i)=
+%     \Delta_N(q_{i_1})\cup\Delta_N(q_{i_2})\cup \cdots
+%   \tag*{($*$)}
+% \end{equation*}
 
 \begin{example}\index{nondeterministic Finite State machine!convert to a deterministic machine}
-Consider this nondeterministic machine with $\varepsilon$~transitions, $\FSM_N$.
+Consider this nondeterministic machine, $\FSM_N$,
+with no $\varepsilon$ transitions.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm16.pdf}
 \end{center}
-The deterministic machine $\FSM_D$ that has the
-same behavior as $\FSM_N$ is below.
+What differentiates a nondeterministic machine is that it can be in
+multiple states at once.
+So for
+the associated deterministic machine $\FSM_D$,
+each line of the transition function's table below is a 
+set $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$
+of $\FSM_N$'s states.
 
-The deterministic $\FSM_D$'s states~$s_i$ are the sets of states of $\FSM_N$.
-For instance, 
+As an illustration of constructing the table,
 suppose that this machine is in $s_5=\set{q_0,q_2}$ and is reading~\str{a}.
-Apply equation~($*$):~combine the set of next states due to~$q_0$, the set
+Combine the next states due to~$q_0$, the set
 $\Delta_N(q_0,\str{a})=\set{q_0,q_1}$, with the next states
 due to~$q_2$, the set $\Delta_N(q_2,\str{a})=\set{}$.
-That gives $\Delta_D(s_5,\str{a})=\set{q_0,q_1}$, which is the state~$s_4$.
+The union of those two sets 
+gives $\Delta_D(s_5,\str{a})=\set{q_0,q_1}$, which  
+below is the state~$s_4$.
 \begin{center}
   \begin{transitionfunction}[\Delta_D]
       &\str{a}   &\str{b}         \\
@@ -2384,10 +2397,9 @@ That gives $\Delta_D(s_5,\str{a})=\set{q_0,q_1}$, which is the state~$s_4$.
     \acceptingstate $s_7=\set{q_0,q_1,q_2}$  &$s_4$  &$s_3$  \\
   \end{transitionfunction}
 \end{center}
-A state of $\FSM_D$ is accepting if any of its elements are accepting
-states in $\FSM_N$.
-The start state of $\FSM_D$ is $s_1=\set{q_0}$ because
-the start state of $\FSM_N$ is~$q_0$.
+A state of the deterministic machine $\FSM_D$ 
+is accepting if any of its elements are accepting states in $\FSM_N$.
+The start state of $\FSM_D$ is $s_1=\set{q_0}$.
 
 Besides the notational convenience,
 naming the sets of states as $s_i$'s makes clear that
@@ -2401,7 +2413,8 @@ So does exhibiting its transition graph.
 If the nondeterministic machine has~$k$-many states then
 under this construction the deterministic machine has $2^k$-many states.
 Typically many of them can be eliminated.
-For instance, in the above machine the state~$s_6$ is unreachable 
+For instance, the above machine diagram makes clear that
+the state~$s_6$ is unreachable, 
 since there are no arrows into $s_6$.
 The next section covers minimizing the number of states in a machine.
 

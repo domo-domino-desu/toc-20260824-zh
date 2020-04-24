@@ -180,12 +180,17 @@ tape character.
 Consequently there is no \HP{} for Finite State machines\Dash they always halt
 after a number of steps equal to the length of the input.
 At the end either the \texttt{Accept} light is on or it isn't. 
+If it is on then we say the machine 
+\definend{accepts}\index{accepts}\index{string accepted!by deterministic Finite State machine} 
+the input string, otherwise it 
+\definend{rejects}\index{rejects}\index{string rejected}
+the string.
 
 \begin{example}  \label{ex:FSATwoAsEvenBs}
 This machine accepts a string if and only if it
 contains at least two \str{0}'s as well as an even number of \str{1}'s.
-(The $\acceptingstatemark$ next to $q_2$ signifies that
-it is an accepting state.)
+(The $\acceptingstatemark$ next to $q_2$ marks it
+as an accepting state.)
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa11.pdf}}               
   \hspace{3em}
@@ -351,7 +356,7 @@ This is the
 \definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{Finite State machine!halting confuguration} 
 $\mathcal{C}_h$.
 If the ending state is a final state $q\in F$
-then the machine \definend{accepts}\index{accept an input}\index{Finite State machine!accept string} 
+then the machine \definend{accepts}\index{accept an input}\index{Finite State machine!accept string}\index{accepts}\index{string accepted!by deterministic Finite State machine} 
 the input~$\tau$,
 otherwise it 
 \definend{rejects}~$\tau$.\index{reject an input}\index{Finite State machine!reject string}
@@ -2194,36 +2199,45 @@ That is, the language of this machine is the four element set
 $\lang=\set{\str{abc},\str{abd},\str{ac}, \str{ad}}$.
 \end{example}
 
-For a precise definition of which strings are accepted by
-a machine with $\varepsilon$~transitions, first define
+We can give a precise definition of which strings are accepted by
+a machine with $\varepsilon$~transitions. 
+
+First define
 $\map{E}{Q\times\N}{\powerset (Q)}$ so that $E(q,i)$ is
-the set of states~$q$ reachable within exactly~$i$ transitions.
+the set of states~$q$ reachable within at most $i$-many 
+$\varepsilon$~transitions.
 That is, for~$q\in Q$ set $E(q,0)=\set{q}$, and where 
 $E(q,i)=\set{q_{i_0},\ldots q_{i_k}}$
 set $E(q,i+1)=E(q,i)\cup \set{\Delta(q_{i_0},\varepsilon)}\cup
                          \cdots\cup\set{\Delta(q_{i_k},\varepsilon)}$.
-Observe that these are nested:
-$E(q,0)\subseteq E(q,1)\subseteq \cdots\,$  and that each is
+Observe that these are nested,
+$E(q,0)\subseteq E(q,1)\subseteq \cdots\,$,  and that each is
 a subset of~$Q$.
 But~$Q$ has only finitely many states so there must be an $\hat{i}\in\N$
-where the sequence of sets stops growing:
-$E(q,\hat{i}\,)\subseteq E(q,\hat{i}+1)\subseteq \cdots\,$.
+where the sequence of sets stops growing,
+$E(q,\hat{i}\,)= E(q,\hat{i}+1)= \cdots\,$.
 Then define the \definend{$\varepsilon$~closure} function 
 $\map{\hat{E}}{Q}{\powerset(Q)}$ by~$\hat{E}(q)=E(q,\hat{i}\,)$.
 
 With that,
 we will modify the definition of the extended transition 
-function~$\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$
+function~$\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$\index{extended transition function!for nondeterministic Finite State machines}\index{transition function!extended} 
 from \cpageref{discussion:NFSMStringAcceptance}.
-Start with 
+Begin by defining the extended transition function on the empty string to be
 $\extended{\Delta}(\emptystring)=\hat{E}(q_0)$.
-And for $\tau\in\kleenestar{\Sigma}$, where
-$\extended{\Delta}(\tau)=\set{q_{i_0},q_{i_1},\ldots{} q_{i_k}}$,
-for $t\in\Sigma$ define the action of the machine on the next longer string 
-to be 
-$\extended{\Delta}(\tau\concat t)=
-  \hat{E}(\Delta(q_{i_0},t))\cup\cdots \cup\hat{E}(\Delta(q_{i_k},t))$. 
-As earlier, the machine accepts $\sigma\in\kleenestar{\Sigma}$ 
+Then the rule for going from a string to its extension is this,  
+for $\tau\in\kleenestar{\Sigma}$ and 
+where $\extended{\Delta}(\tau)=\set{q_{i_0},q_{i_1},\ldots{} q_{i_k}}$. 
+\begin{equation*}
+  \extended{\Delta}(\tau\concat t)=
+  \hat{E}(\Delta(q_{i_0},t))\cup\cdots \cup\hat{E}(\Delta(q_{i_k},t))
+  \qquad
+  \text{for $t\in\Sigma$}
+  \tag{*}
+\end{equation*}
+With that, the nondeterministic machine with $\varepsilon$~transitions
+\definend{accepts}\index{accept an input}\index{Finite State machine!accept string}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
+a string $\sigma\in\kleenestar{\Sigma}$ 
 if any one of the states
 in $\extended{\Delta}(\sigma)$ is a final state.
 
@@ -2244,7 +2258,7 @@ $\set{\sigma\in\kleenestar{\Sigma}\suchthat \text{$\sigma$ ends in \str{ab}}}$
 and the bottom machine's language is
 $\set{\sigma\in\kleenestar{\Sigma}\suchthat \text{$\sigma=(\str{ac})^n$ for some $n\in\N$}}$,
 where $\Sigma=\set{\str{a},\str{b},\str{c}}$.
-These two are unioned to make the language for the entire machine.
+The language for the entire machine is the unioned of the two.
 \begin{equation*}
   \set{\sigma\in\kleenestar{\Sigma}\suchthat
     \text{either $\sigma$ ends in \str{ab} or $\sigma=(\str{ac})^n$ for $n\in\N$}}
@@ -2342,7 +2356,7 @@ with a nondeterministic machine with~$\varepsilon$ transitions and
 construct a deterministic machine that accepts the same language.
 We won't give a complete proof (although
 certainly one is possible) simply because
-a proof is a notational mess and the examples below
+a proof is messy and the examples below
 are entirely convincing.
 
 % First consider a nondeterministic machine $\FSM_N$ 
@@ -2397,8 +2411,20 @@ below is the state~$s_4$.
     \acceptingstate $s_7=\set{q_0,q_1,q_2}$  &$s_4$  &$s_3$  \\
   \end{transitionfunction}
 \end{center}
-A state of the deterministic machine $\FSM_D$ 
-is accepting if any of its elements are accepting states in $\FSM_N$.
+Expressed as an equation, compute the transition function of the
+deterministic machine from the transition function
+of the given nondeterministic machine as
+\begin{equation*}
+  \Delta_D(s_i,x)
+  =\Delta_N(q_{i_0},x)\cup\cdots \cup\Delta_N(q_{i_k},x) 
+\end{equation*}
+where $s_i=\set{q_{i_0},\ldots q_{i_k}}$ and $x\in\Sigma$.
+Thus, as we found above, 
+$\Delta_D(s_5,\str{a})=\Delta_N(q_0,\str{a})\cup\Delta_N(q_2,\str{a})$,
+which equals $\set{q_0,q_1}\cup\set{}=\set{q_0,q_1}=s_4$.
+
+The accepting states of the deterministic machine $\FSM_D$ 
+are the ones where any of the elements are accepting states in $\FSM_N$.
 The start state of $\FSM_D$ is $s_1=\set{q_0}$.
 
 Besides the notational convenience,
@@ -2444,7 +2470,7 @@ from $q_0$ to~$q_2$.
 Alternatively, starting at $q_0$,
 following the $\varepsilon$ transition to~$q_3$,
 and then reading the \str{a} gives~$q_3$.
-So the machine is next in the set of states $\set{q_0,q_3}$.
+So the machine is next in the two states $q_0$ and~$q_3$.
 
 This is the full deterministic machine. 
 \begin{center}
@@ -2469,13 +2495,41 @@ This is the full deterministic machine.
     \acceptingstate $s_{15}=\set{q_0,q_1,q_2,q_3}$  &$s_{10}$  &$s_7$  \\
   \end{transitionfunction}
 \end{center}
-For instance this repeats the computation above.
+This machine's start state is $s_7=\set{q_0, q_3}$
+because that is the $\varepsilon$~closure of $\set{q_0}$.
+A state is accepting if it contains $q_3$ but is also accepting
+if it contains $q_0$ or $q_1$ since the $\varepsilon$~closure of~$q_3$
+is $\set{q_0,q_1,q_3}$.
+
+Computing $\Delta_D(s,x)$ here is similar to the process in the prior example,
+but added in is that we have to take the $\varepsilon$~closure. 
+The steps:
+(i)~find the $\varepsilon$~closure of the state, 
+  $\hat{E}(s)=\set{q_{i_0},\ldots q_{i_k}}$
+(ii)~take the union  
+     $T=\Delta_N(q_{i_0},x)\cup \ldots \cup\Delta_N(q_{i_0},x)$,
+(iii) for each element of~$T$, find the $\varepsilon$~closure and
+  the answer is the union of all those,
+  $\cup_{t\in T}\hat{E}(t)$.
+
+As an example of constructing the table, this repeats the computation 
+of the next state if the machine starts in~$q_0$ and reads an~\str{a}
+more formally.
+% , using equation~($*$) from 
+% page~\pageref{discussion:NFSMStringAcceptance}.
 \begin{equation*}
   \Delta_D(s_1,\str{a})
     =\Delta_N(q_0,\str{a})\cup\Delta_N(q_3,\str{a})
     =\set{q_2} \cup \set{q_3}
     =\set{q_2,q_3}=s_{10}
 \end{equation*}
+If the deterministic machine starts in $s_1=\set{q_0}$ and instead reads
+the character \str{b} then it moves to $q_1$ but $\varepsilon$~transitions
+also allow it to move to $q_0$ or~$q_3$.
+Thus 
+
+
+
 Another example
 is that the machine is in $s_2=\set{q_1}$ and is reading \str{a}.
 Following the $\varepsilon$ to $q_0$ and then reading \str{a} leads to
@@ -2488,14 +2542,7 @@ and then reading the \str{a} leads to~$q_3$.
     &=\Delta_N(q_1,\str{a})\cup\Delta_N(q_0,\str{a})\cup\Delta_N(q_3,\str{a}) \\
     &=\set{}\cup\set{q_2} \cup \set{q_3}
     =s_{10}
-    \end{align*}
-    
-A state is accepting if it contains $q_3$ but is also accepting
-if it contains $q_0$ or $q_1$ since from those we can reach $q_3$ by
-$\varepsilon$ transitions.
-This machine's start state is $s_7=\set{q_0, q_3}$,
-because from $q_0$ we can reach $q_3$ via an
-$\varepsilon$~transition.
+    \end{align*}    
 \end{example} 
 
 

@@ -1053,9 +1053,10 @@ hlayout(1*u, q2, q3);
 
 // draw edges
 draw(pic,
+     (q0..bend..q1).l("\str{b}").style("leftside"),
      (q0..bend..q2).l("\str{a}"),
      (q0--q3).l("$\varepsilon$").style("leftside"),
-     (q1--q0).l("$\varepsilon$"),
+     (q1..bend..q0).l("$\varepsilon$"),
      (q2..bend..q0).l("\str{b}"),
      // (q2--q3).l("\str{b}"),
      (q3..loop(E)).l("\str{a}")

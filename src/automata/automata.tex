@@ -2007,6 +2007,35 @@ In this nondeterministic machine
 the entries of the array are not states, they are sets of states.
 \end{example}
 
+Nondeterministic machines are  
+less conceptually clear than deterministic ones
+so we should be careful to nail down the formalities.
+How a machine acts, the allowed transitions, 
+are delineated by the 
+the yields relation, $\yields$.
+Given a current state and current tape string, it says what is a 
+legal next state. 
+For nondeterministic Finite State machines it is:
+$\sequence{q_i,x\concat\sigma}\yields\sequence{q_j,\sigma}$ is allowed
+if $\Delta(q_i,x)$ contains~$q_j$.
+That is, the machine peels the leading character, $x$, off the string 
+and can next occupy any state allowed by the transition function~$\Delta$. 
+
+\begin{example}
+For the nondeterminstic machine of \cref{ex:NFSMInDiscussion}, the graphic
+shows this valid sequence of transition steps.
+\begin{equation*}
+  \sequence{q_0,\str{00001}}
+  \yields \sequence{q_0,\str{0001}}
+  \yields \sequence{q_0,\str{001}}
+  \yields \sequence{q_1,\str{01}}     \\
+  \yields \sequence{q_2,\str{1}}    
+  \yields \sequence{q_3,\emptystring}    
+\end{equation*}
+Because it ends in an accepting state, the machine accepts the
+initial string,~\str{00001}.
+\end{example}
+
 %<*def:NFSMAccepted}
 \begin{definition}\label{def:NFSMAccepted}
 A nondeterministic Finite State machine 
@@ -2021,7 +2050,7 @@ is the set of accepted strings.
 %</def:NFSMAccepted>
 
 \label{discussion:NFSMStringAcceptance}
-Here is a more detailed definition.
+Here is the formality.
 Fix a nondeterministic $\FSM$ with
 transition function $\map{\Delta}{Q\times \Sigma}{Q}$.
 Its 
@@ -2340,11 +2369,11 @@ with Finite State machines.
 
 We can show that the two classes are equal by showing that they are subsets of
 each other.
-
-One direction is easy;~any deterministic machine is a nondeterministic machine.
+One direction is easy;~any deterministic machine is,
+basically, a nondeterministic machine.
 That is, in a deterministic machine the next-state function outputs
-single states.
-To make it a nondeterministic machine just convert those states
+single states and
+to make it a nondeterministic machine just convert those states
 into singleton sets.
 Thus the set of languages accepted by
 deterministic machines is a subset of the set accepted by
@@ -2386,11 +2415,11 @@ multiple states at once.
 So for
 the associated deterministic machine $\FSM_D$,
 each line of the transition function's table below is a 
-set $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$
+set $s_i=\set{q_{i_1}, \ldots{}\, q_{i_k}}$
 of $\FSM_N$'s states.
 
 As an illustration of constructing the table,
-suppose that this machine is in $s_5=\set{q_0,q_2}$ and is reading~\str{a}.
+suppose that the above machine is in $s_5=\set{q_0,q_2}$ and is reading~\str{a}.
 Combine the next states due to~$q_0$, the set
 $\Delta_N(q_0,\str{a})=\set{q_0,q_1}$, with the next states
 due to~$q_2$, the set $\Delta_N(q_2,\str{a})=\set{}$.
@@ -2419,7 +2448,7 @@ In general, compute the transition function of the
 deterministic machine with
 $\Delta_D(s_i,x)
   =\Delta_N(q_{i_0},x)\cup\cdots \cup\Delta_N(q_{i_k},x)$, 
-where $s_i=\set{q_{i_0},\ldots q_{i_k}}$ and $x\in\Sigma$.
+where $s_i=\set{q_{i_0}, \ldots{}\, q_{i_k}}$ and $x\in\Sigma$.
 An example is 
 $\Delta_D(s_5,\str{a})=\Delta_N(q_0,\str{a})\cup\Delta_N(q_2,\str{a})$,
 which equals $\set{q_0,q_1}\cup\set{}=\set{q_0,q_1}=s_4$.
@@ -2543,6 +2572,29 @@ $\set{q_2}\cup\set{q_3}=\set{q_2,q_3}=s_{10}$.
 \begin{exercise}
 Give the transition function for the machine of
 \cref{ex:NFSMSubstringAAOrBB}, and of \cref{ex:NFSMRepeatsofAC}.
+\begin{answer}
+  The main point is that entries in the table are sets of states.
+  This is the machine in \cref{ex:NFSMSubstringAAOrBB}.
+  \begin{display}
+    \begin{transitionfunction}[\Delta]
+                               &\str{a}           &\str{b}   \\
+      \cline{2-3}
+                      $q_0$    &$\set{q_0,q_{1}}$ &$\set{q_0,q_2}$   \\
+                      $q_1$    &$\set{q_3}$       &$\set{}$   \\
+                      $q_2$    &$\set{}$          &$\set{q_3}$   \\
+      \acceptingstate $q_3$    &$\set{q_3}$       &$\set{q_3}$   \\
+    \end{transitionfunction}
+  \end{display}
+  This is \cref{ex:NFSMRepeatsofAC}'s machine.
+  \begin{display}
+    \begin{transitionfunction}[\Delta]
+                               &\str{a}       &\str{b}   &\str{c}      \\
+      \cline{2-4}
+      \acceptingstate $q_0$    &$\set{q_{1}}$ &$\set{}$  &$\set{}$     \\
+                      $q_1$    &$\set{}$      &$\set{}$  &$\set{q_0}$  \\
+    \end{transitionfunction}
+  \end{display}
+\end{answer}
 \end{exercise}
 
 \recommended
@@ -2551,20 +2603,54 @@ Give the transition function for the machine of
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm30.pdf}
   \end{center}
-  \begin{exparts}
+  \begin{exparts*}
   \item Does it accept the empty string?
   \item The string \str{0}?
   \item \str{011}?
   \item \str{010}?
   % \item Are all strings of the form $\str{1}^j$ accepted, for $j>0$?
   \item List all length five accepted strings.
+  \end{exparts*}
+\begin{answer}
+  \begin{exparts}
+  \item Yes.
+  From $q_0$ a $\varepsilon$~transition goes to $q_2$, which is an accepting
+  state.
+  \item No.
+  From $q_0$ the machine can either read the~\str{0}, which takes it to
+  $q_1$ (not an accepting state), or take the $\varepsilon$~transition
+  to $q_2$ and then read the~\str{0}, which sends the machine to 
+  the empty set of states (also not an accepting state).
+
+  Said another way, the $\varepsilon$~closure of $q_0$ is $\set{q_0,q_2}$.
+  Neither state, on reading the character~\str{0}, transitions to a state
+  whose $\varepsilon$~closure includes an accepting state. 
+  \item Yes.
+  With that input the machine can go from $q_0$ to~$q_1$, then to~$q_2$,
+  and then around the loop to~$q_2$ again.
+  More formally, this is a sequence of allowed transitions.
+  \begin{equation*}
+    \sequence{\set{q_0},\str{011}}
+    \yields \sequence{\set{q_1,q_2},\str{11}}
+    \yields \sequence{\set{q_2},\str{1}}
+    \yields \sequence{\set{q_2},\emptystring}     
+  \end{equation*}
+  \item No.
+  Starting at~$\set{q_0}$ with the character~\str{0} first on the tape the 
+  machine moves to~$\set{q_1}$.
+  Next, on the second character~\str{1} the machine moves to~$\set{q_2}$.
+  Finally, on the~\str{0} the machine moves to~$\set{}$, which is not an
+  accepting state. 
+  \item There are two:
+  \str{01111} and~\str{11111}.
   \end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
   Your friend says, ``Epsilon transitions don't make any sense
-  because this machine will never get its first
-  step done; it just endlessly following the epsilon transitions.''
+  because the machine below will never get its first
+  step done; it just endlessly follows the epsilons.''
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm59.pdf}
   \end{center}
@@ -2588,17 +2674,33 @@ Give the transition function for the machine of
 \end{exercise}
 
 \begin{exercise}  \label{exer:MFSMWithEpsilonTrans}
-  This machine has $\Sigma=\set{\str{a},\str{b}}$.
-  \begin{center}
-    \includegraphics{automata/asy/nfsm/nfsm19.pdf}
-  \end{center}
-  \begin{exparts*}
-  \item Does it accept the empty string?
-  \item \str{a}?
-    \str{b}?  
-  \item List five strings of minimal length that it accepts.
-  \item List five of minimal length that it does not accept.
-  \end{exparts*}
+This machine has $\Sigma=\set{\str{a},\str{b}}$.
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm19.pdf}
+\end{center}
+\begin{exparts*}
+\item Does it accept the empty string?
+\item \str{a}?
+  \str{b}?  
+\item List five strings of minimal length that it accepts.
+\item List five of minimal length that it does not accept.
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item It does not acccept the empty string because the $\varepsilon$~closure
+of $q_0$ does not contain any final states (since the $\varepsilon$~closure
+equals $\set{q_0}$).
+\item It accepts both of the one-character strings \str{a} and~\str{b}.
+For instance, on~\str{a} the machine can transition from $q_0$ to~$q_1$,
+and then it can make an $\varepsilon$~transition to~$q_2$, which is 
+an accepting state.
+\item Five of the shortest strings are: \str{a}, \str{b}, \str{aa}, \str{ab},
+and~\str{aab}.
+\item Five that it does not accept are:~the empty string~$\emptystring$,
+\str{ba}, \str{}
+\end{exparts}
+\end{answer}
+
 \end{exercise}
 
 \begin{exercise}

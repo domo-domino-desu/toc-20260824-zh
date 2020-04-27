@@ -309,39 +309,22 @@ Because $q_0$ is an accepting state, this machine accepts the empty string.
 this machine to accept only non-empty strings.
 \end{example}
 
-After the definition of Turing Machine we gave a formal
+After the definition of Turing machine we gave a formal
 description of the action of such a machine.
 % on \cpageref{text:DescriptionOfTMAction}.
 We can do the same here.
-As there, the heart of the definitions is
-the transition function~$\Delta$.
-It makes the machine move step-by-step, from configuration to configuration,
-in response to the input.
 
 %<*discussion:FSMConfiguration>
 A 
 \definend{configuration}\index{configuration}\index{Finite State machine!configuration} 
 of a Finite State machine $\FSM$ is 
 a pair $\mathcal{C}=\sequence{q,\tau}$, where
-$q$ is a state and $\tau$ is a (possibly empty) string of elements 
-from the tape alphabet,~$\tau\in\kleenestar{\Sigma}$.
-For the \definend{input}\index{input string}\index{Finite State machine!input string} 
-string~$\tau_0$,
-the 
-\definend{initial configuration}\index{initial configuration}\index{Finite State machine!initial configuration}
-is~$\mathcal{C}_0=\sequence{q_0,\tau_0}$.
+$q$ is a state and $\tau$ is a (possibly empty) string of 
+symbols,~$\tau\in\kleenestar{\Sigma}$.
 
-The action of the machine is to transition   
+A Finite State machine acts by transitioning   
 from one configuration to another.
-For $s\in\N^+$ we say that the the machine's configuration 
-at \definend{step~$s$}\index{step}\index{Finite State machine!step} 
-is its
-configuration after the $s$-th transition, $\mathcal{C}_s$.
-For $s=0$,
-at step~$0$, its configuration is its initial configuration,~$\mathcal{C}_0$.
-
-We must describe a transition.
-Assume that at step~$i$ the machine $\FSM$ is in the configuration
+Suppose that at step~$i$ the machine $\FSM$ is in the configuration
 $\mathcal{C}_i=\sequence{q,\tau_i}$.
 If $\tau_i$ is not empty 
 then pop the leading input character and call it $c$.
@@ -350,22 +333,27 @@ $c=\tau_i[0]$, take
 $\tau_{i+1}=\sequence{\tau_i[1],\ldots \tau_i[\,\lh{\tau_i}-1\,]}$.
 The machine's next state is $\hat{q}=\Delta(q,c)$ and its next
 configuration is $\mathcal{C}_{i+1}=\sequence{\hat{q},\tau_{i+1}}$.
+We denote this before-after relationship
+by $\mathcal{C}_i\yields\mathcal{C}_{i+1}$\footnote{%
+  Read $\yields$ aloud as ``yields'' or ``yields in one step.''}
+and say that this transition is \definend{allowed} or \definend{legal}.
 
 The other case is that at step~$i$ the string~$\tau_i$ is empty.
 This is the 
 \definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{Finite State machine!halting confuguration} 
 $\mathcal{C}_h$.
-If the ending state is a final state $q\in F$
-then the machine \definend{accepts}\index{accept an input}\index{Finite State machine!accept string}\index{accepts}\index{string accepted!by deterministic Finite State machine} 
-the input~$\tau$,
-otherwise it 
-\definend{rejects}~$\tau$.\index{reject an input}\index{Finite State machine!reject string}
 
-We denote that
-two configurations are related by being separated by a single transition
-with
-$\mathcal{C}_i \yields \mathcal{C}_{i+1}$. % \footnote{%
-%   Read the symbol aloud as ``yields in one step.''}
+We start a machine with some 
+\definend{input}\index{input string}\index{Finite State machine!input string} 
+string~$\tau_0$,
+and say that the 
+\definend{initial configuration}\index{initial configuration}\index{Finite State machine!initial configuration}
+is~$\mathcal{C}_0=\sequence{q_0,\tau_0}$.
+Then for $s\in\N^+$ the the machine's configuration 
+at \definend{step~$s$}\index{step}\index{Finite State machine!step} 
+is its
+configuration after the $s$-th transition, $\mathcal{C}_s$.
+
 A 
 \definend{Finite State machine computation}\index{computation!Finite State machine}\index{Finite State machine!computation}
 is a sequence 
@@ -375,11 +363,25 @@ $
 $
 where $\mathcal{C}_o$ is the initial configuration.
 Abbreviate such a sequence
-with~$\kleenestar{\yields}$ % \footnote{%
-%   Read it as ``yields eventually,'' or simply ``yields''}
+with~$\kleenestar{\yields}$,\footnote{%
+  Read it as ``yields eventually,'' or simply ``yields.''}
 so we can write
 $\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
+
+At each transition the length of the tape string drops by one so every 
+computation must eventually reach a halting configuration
+$\mathcal{C}_h=\sequence{q,\emptystring}$.
+If the ending state is a final state, $q\in F$,
+then the machine \definend{accepts}\index{accept an input}\index{Finite State machine!accept string}\index{accepts}\index{string accepted!by deterministic Finite State machine} 
+the input~$\tau_0$,
+otherwise it 
+\definend{rejects}~$\tau_0$.\index{reject an input}\index{Finite State machine!reject string}
 %</discussion:FSMConfiguration>
+
+Notice that, as with the formalism for Turing machines, 
+the heart of the definitions is the transition function~$\Delta$.
+It makes the machine move step-by-step, from configuration to configuration,
+in response to the input.
 
 \begin{example}
 The multiple of three machine of the prior example gives this computation.
@@ -1858,16 +1860,18 @@ state~$q_2$ and the input is~\str{0} this machine passes to
 \citetext{no-state}{%
   A person can wonder about no-state.
   Where is it, exactly?
-  One way to think about it is that it is like what happens if you write 
+  We can thing that it is like what happens if you write 
   a program with a sequence of if-then statements and forget to include an else.
   Obviously a computer goes somewhere, the instruction pointer points to
-  some memory address, but what happens is not sensible in terms of
-  the model you meant to have.
+  some next address, but what happens is not sensible in terms of
+  the model you mean.
 
-  In the wonderful book \autocite{Hofstadter}, he describes a place 
-  called Tumbolia, which is the place holes go when they are filled up
-  (or your lap goes when you stand up).
-  Perhaps the machines go there.}.
+  Alternatively, the wonderful book \autocite{Hofstadter} describes a place 
+  named Tumbolia, which is where holes go when they are filled
+  (also where your lap goes when you stand).
+  Perhaps the machines go there.}.\footnote{%
+  No-state cannot be an accepting state, since it isn't a state at all.
+}
 Another is the branch at the top, which never dies but
 also does not accept the input.
 However we don't care about unsuccessful branches,
@@ -2633,9 +2637,10 @@ Give the transition function for the machine of
   state.
   \item No.
   From $q_0$ the machine can either read the~\str{0}, which takes it to
-  $q_1$ (not an accepting state), or take the $\varepsilon$~transition
+  $q_1$, or take the $\varepsilon$~transition
   to $q_2$ and then read the~\str{0}, which sends the machine to 
-  no-state (also not an accepting state).
+  no-state.
+  Neither $q_2$ nor no-state is an accepting state.
 
   Said another way, the $\varepsilon$~closure of $q_0$ is $\set{q_0,q_2}$.
   Neither state, on reading the character~\str{0}, transitions to a state
@@ -2645,37 +2650,42 @@ Give the transition function for the machine of
   and then around the loop to~$q_2$ again.
   More formally, this is a sequence of allowed transitions.
   \begin{equation*}
-    \sequence{\set{q_0},\str{011}}
-    \yields \sequence{\set{q_1,q_2},\str{11}}
-    \yields \sequence{\set{q_2},\str{1}}
-    \yields \sequence{\set{q_2},\emptystring}     
+    \sequence{q_0,\str{011}}
+    \yields \sequence{q_1,\str{11}}
+    \yields \sequence{q_2,\str{1}}
+    \yields \sequence{q_2,\emptystring}     
   \end{equation*}
   \item No.
-  Starting at~$\set{q_0}$ with the character~\str{0} first on the tape the 
-  machine moves to~$\set{q_1}$.
-  Next, on the second character~\str{1} the machine moves to~$\set{q_2}$.
-  Finally, on the~\str{0} the machine moves to~$\set{}$, which is not an
-  accepting state. 
-  \item There are two:
-  \str{01111} and~\str{11111}.
+  Starting at~$q_0$ with the character~\str{0} first on the tape the machine
+  can do two things.
+  If it takes the $\varepsilon$~transition then when it reads the~\str{0}
+  it goes to no-state, which is not an accepting state.
+
+  Otherwise, the~\str{0} moves the machine to~$q_1$.
+  Next, on the second tape character~\str{1}, the machine moves to~$\set{q_2}$.
+  Finally, on the third character~\str{0},
+  the machine moves to no-state. 
+  \item There are two: \str{01111} and~\str{11111}.
   \end{exparts}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
-  Your friend says, ``Epsilon transitions don't make any sense
+  Your friend objects, ``Epsilon transitions don't make any sense
   because the machine below will never get its first
   step done; it just endlessly follows the epsilons.''
+  Correct their mistake.
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm59.pdf}
   \end{center}
-  Straighten them out.
   \begin{answer}
-    We define that a string is accepted by a machine if there is a sequence
-    of states that allow the machine to process the string, and that ends
-    in an accepting state.
-    That definition does not concern itself with wrong ways to go, it only
+    The definition is that a string is accepted by a machine 
+    if there is a sequence of allowed transitions, 
+    a sequence of states that allow the machine to process 
+    the string, that ends in an accepting state.
+    That definition does not say there must not be any wrong ways to go, it only
     requires that there be a right way.
+
     For instance, this machine accepts \str{aab} by starting in $q_0$,
     transitioning to $q_1$ on the first \str{a},
     taking the $\varepsilon$ transition back to $q_0$,

@@ -312,13 +312,13 @@ this machine to accept only non-empty strings.
 After the definition of Turing machine we gave a formal
 description of the action of those machines.
 We next do the same here.
-Finite State machines are easy to understand so this may seem 
-unnecessary but in addition to the principle that it is always
-good to have clearly stated rules,
-it pays off later when we consider the variant of nondeterministic
-Finite State machines, which are less easy to understand and
-so having rules and being able to contrast them with these rules
-is help.  
+% Finite State machines are easy to understand so this may seem 
+% unnecessary but in addition to the principle that it is always
+% good to have clearly stated rules,
+% it pays off later when we consider the variant of nondeterministic
+% Finite State machines, which are less easy to understand and
+% so having rules and being able to contrast them with these rules
+% is help.  
 
 \label{page:DefnYieldsFiniteStateMachine}
 %<*discussion:FSMConfiguration>
@@ -326,22 +326,25 @@ A
 \definend{configuration}\index{configuration}\index{Finite State machine!configuration} 
 of a Finite State machine is 
 a pair $\mathcal{C}=\sequence{q,\tau}$, where
-$q$ is a state and $\tau$ is a (possibly empty) string of 
-symbols,~$\tau\in\kleenestar{\Sigma}$.
+$q$ is a state, $q\in Q$, and $\tau$ is a (possibly empty) 
+string,~$\tau\in\kleenestar{\Sigma}$.
 We start a machine with some 
 \definend{input}\index{input string}\index{Finite State machine!input string} 
 string~$\tau_0$
 and say that the 
 \definend{initial configuration}\index{initial configuration}\index{Finite State machine!initial configuration}
 is~$\mathcal{C}_0=\sequence{q_0,\tau_0}$.
-A Finite State machine acts by a sequence of moves    
-from one configuration to another, each called a \definend{transition}.
+
+A Finite State machine acts by a sequence of \definend{transitions}    
+from one configuration to another.
 For $s\in\N^+$ the machine's configuration after the $s$-th transition 
 is its configuration at 
 \definend{step~$s$},\index{step}\index{Finite State machine!step} 
 $\mathcal{C}_s$.
 
-Here is the rule for an \definend{allowed} or \definend{legal} transition.
+Here is the rule for making a transition
+(we sometimes refer to this as an 
+\definend{allowed} or \definend{legal} transition, for emphasis).
 Suppose that the machine is in the configuration
 $\mathcal{C}_s=\sequence{q,\tau_s}$.
 In the case that $\tau_s$ is not empty, pop the string's leading symbol~$c$.
@@ -351,7 +354,7 @@ $\tau_{s+1}=\sequence{\tau_s[1],\ldots \tau_s[k]}$ for
 $k=\lh{\tau_s}-1$.
 Then the machine's next state is $\hat{q}=\Delta(q,c)$ and its next
 configuration is $\mathcal{C}_{s+1}=\sequence{\hat{q},\tau_{s+1}}$.
-Denote this before-after relationship
+Denote this before-after relationship between configurations
 by $\mathcal{C}_s\yields\mathcal{C}_{s+1}$.\footnote{%
   Read the symbol $\yields$ aloud as ``yields'' or ``yields in one step.''}
 
@@ -359,7 +362,7 @@ The other case is that the string~$\tau_s$ is empty.
 This is the 
 \definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{Finite State machine!halting confuguration} 
 $\mathcal{C}_h$.
-From here no further transitions happen.
+No transitions follow a halting configuration.
 
 At each transition the length of the tape string drops by one so every 
 computation eventually reaches a halting configuration
@@ -371,7 +374,7 @@ $
   \mathcal{C}_0 \yields \mathcal{C}_1 \yields \mathcal{C}_2
    \yields \cdots\, \mathcal{C}_h
 $.
-Abbreviate such a sequence
+We can abbreviate such a sequence
 with~$\kleenestar{\yields}$,\footnote{%
   Read it as ``yields eventually,'' or simply ``yields.''}
 as in
@@ -454,19 +457,26 @@ This is a simplified version of
 \citetext{how phone numbers used to be handled in North America}{%
   See the description of the North America Numbering Plan
   \autocite{wiki:NANumbering}.}.
-Consider \str{1-802-555-0101}.
-The \str{1} takes us along the second line
-so the call leaves the local exchange office to go to the long lines.
-The \str{0} between the \str{8} and the~\str{2} determines that the call
-is to a different area code,
-instead of a different local exchange within the same area code.
-Finally the machine processes the local exchange number of \str{555},
-and the line number of \str{0101}, and makes the connection.
+Consider the number \str{1-802-555-0101}.
+The iniital \str{1} signifies that 
+the call should leave the local exchange office to go to the long lines.
+The \str{802} is an area code; the system can tell this is so because
+its second digit is either~\str{0}
+or~\str{1} so it is not a 
+\citetext{same-area local exchange}{%
+  Initially, large states, those divided into multiple numbering plan areas 
+  were assigned area codes with a \str{1} in the second position 
+  while areas that covered entire states or provinces got codes with 
+  \str{0} as the middle digit. This was abandoned by the early 1950s.
+  \autocite{wiki:NANumbering}.}.
+Next the system processes the local exchange number of \str{555},
+routing the call to a particular physical local switching office.
+That office processes the line number of \str{0101}, and makes the connection.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa13.pdf}
 \end{center}
-Today's picture is much more complicated.
-For one thing, area codes no longer are required to
+Today the picture is much more complicated.
+For example, no longer are area codes required to
 have a middle digit of \str{0} or~\str{1}.
 This additional complication is possible because instead of
 \citetext{switching with physical devices}{%
@@ -492,6 +502,18 @@ we now do it in software.
   start state and consuming the given string.
 \end{definition}
 %</def:ExtendedTransitionFcn>
+
+Here is a constructive definition.
+Fix a Finite State machine $\FSM$ with
+transition function $\map{\Delta}{Q\times \Sigma}{Q}$.
+To begin, set $\extended{\Delta}(\emptystring)=\set{q_0}$.
+Then for $\tau\in\kleenestar{\Sigma}$, define
+$\extended{\Delta}(\tau\concat t)=
+  \Delta(q_{i_0},t)\cup\Delta(q_{i_1},t)\cup\cdots \cup\Delta(q_{i_k},t)$
+for any $t\in\Sigma$. 
+Finally, observe that a string $\sigma\in\kleenestar{\Sigma}$ is accepted 
+by the machine if
+$\extended{\Delta}(\sigma)$ is a final state.
 
 \begin{example}  \label{ex:ExtendedTransFcn}
   This machine's extended transition function $\extended{\Delta}$
@@ -1940,7 +1962,7 @@ Saying that the machine is guessing is jarring.
 %  since  
 % \citetext{it does not fit our intuition of how computers work}{%
 %   \href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}}.
-But researchers in this area often frame it in this way.
+% But researchers in this area often frame it in this way.
 A less disconcerting way to put it is to imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
 only has to check it.
@@ -2031,78 +2053,64 @@ the entries of the array are not states, they are sets of states.
 
 Nondeterministic machines are  
 less conceptually clear than deterministic ones
-so the formalities are a help here;
+so the formalities are a big help here;
 contrast this with the definitions on 
 page~\pageref{page:DefnYieldsFiniteStateMachine}.
 
 A 
-\definend{configuration}\index{configuration}\index{Finite State machine!configuration} 
+\definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}$, where
-$q$ is a state and $\tau$ is a string, $\tau\in\kleenestar{\Sigma}$.
+$q\in Q$ and $\tau\in\kleenestar{\Sigma}$.
 A machine starts with some 
-\definend{input}\index{input string}\index{Finite State machine!input string} 
-string~$\tau_0$; its
-\definend{initial configuration}\index{initial configuration}\index{Finite State machine!initial configuration}
-is~$\mathcal{C}_0=\sequence{q_0,\tau_0}$.
-From there it may proceed through one or more sequences of 
-\definend{transitions} from one configuration to another.
+\definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
+$\mathcal{C}_0=\sequence{q_0,\tau_0}$,
+using the \definend{input}\index{input string}\index{nondeterministic Finite State machine!input string} 
+string~$\tau_0$.
 
-Suppose that the machine is in the configuration
+Following an initial configuration there may be one or more sequences of 
+\definend{transitions}.
+Suppose that there is a machine configuration
 $\mathcal{C}_s=\sequence{q,\tau_s}$.
-For $s\in\N^+$, where $\tau_s$ is not the empty string, 
-an \definend{allowed} or \definend{legal} 
-transition is to pop the string's leading symbol~$c$ to get~$\tau_{s+1}$, 
-take the machine's next state to be a member~$\hat{q}$ of the 
+For $s\in\N^+$, in the case where $\tau_s$ is not the empty string, 
+a
+transition pops the string's leading symbol~$c$ to get~$\tau_{s+1}$, 
+takes the machine's next state to be a member~$\hat{q}$ of the 
 set~$\Delta(q,c)$ and 
-then take one of its subsequent configurations to be 
+then takes a subsequent configuration to be 
 $\mathcal{C}_{s+1}=\sequence{\hat{q},\tau_{s+1}}$.
-Denote this by $\mathcal{C}_s\yields\mathcal{C}_{s+1}$.
-% For $s\in\N^+$    if there is a sequence of allowed transitions such that machine 
-% is in a configuration~ $\mathcal{C}_s$ after the $s$-th transition 
-% then we say this is its configuration at 
-% \definend{step~$s$}.\index{step}\index{Finite State machine!step} 
+Denote that two configurations are connected by a transition
+with $\mathcal{C}_s\yields\mathcal{C}_{s+1}$.
 
 The other case is that~$\tau_s$ is the empty string.
 This is a 
-\definend{halting configuration}\index{halting configuration},\index{configuration!halting}\index{Finite State machine!halting confuguration} 
+\definend{halting configuration}\index{halting configuration},\index{configuration!halting}\index{nondeterministic Finite State machine!halting confuguration} 
 $\mathcal{C}_h$.
+After~$\mathcal{C}_h$, no transitions follow.
 
 % The computation may eventually reache a halting configuration
 % $\mathcal{C}_h=\sequence{q,\emptystring}$.
 A 
-\definend{Finite State machine computation}\index{computation!Finite State machine}\index{Finite State machine!computation}
-is a sequence that ends in a halting configuration,
+\definend{nondeterministic Finite State machine computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
+is a sequence of transitions that ends in a halting configuration,
 $
-  \mathcal{C}_0 \yields \mathcal{C}_1 \yields \mathcal{C}_2
-   \yields \cdots\, \mathcal{C}_h
+  \mathcal{C}_0=\sequence{q_0,\tau_0} 
+   \yields \mathcal{C}_1 \yields \mathcal{C}_2
+   \yields \cdots\, \mathcal{C}_h=\sequence{q,\emptystring}
 $.
-Abbreviate this
-with
-$\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
-There may be many sequence of allowed transitions that end in a halting
-configuration.
-If at least one such sequence ends with a halting state, $q\in F$,
-then the machine \definend{accepts}\index{accept an input}\index{Finite State machine!accept string}\index{accepts}\index{string accepted!by deterministic Finite State machine} 
+% Abbreviate this
+% with
+% $\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
+From an initial configuration  
+there may be many such sequences.
+If at least one ends with a halting state, with $q\in F$,
+then the machine \definend{accepts}\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
 the input~$\tau_0$,
 otherwise it 
-\definend{rejects}~$\tau_0$.\index{reject an input}\index{Finite State machine!reject string}
-
-% How a machine acts, the allowed transitions, 
-% are delineated by the 
-% the yields relation, $\yields$.
-% Given a current state and current tape string, it says what is a 
-% legal next state. 
-% For nondeterministic Finite State machines it is:
-% $\sequence{q_i,x\concat\sigma}\yields\sequence{q_j,\sigma}$ is allowed
-% if $\Delta(q_i,x)$ contains~$q_j$.
-% That is, the machine peels the leading character, $x$, off the string 
-% and can next occupy any state allowed by the transition function~$\Delta$. 
-% (This leaves out the case of an empty string, $\sequence{q_i,\emptystring}$. 
-% In this case the machine halts in state~$q_i$.)
+\definend{rejects}~$\tau_0$.\index{reject an input}\index{nondeterministic Finite State machine!reject string}
 
 \begin{example}
 For the nondeterminstic machine of \cref{ex:NFSMInDiscussion}, the graphic
-shows this valid sequence of transitions.
+shows this allowed sequence of transitions.
 \begin{equation*}
   \sequence{q_0,\str{00001}}
   \yields \sequence{q_0,\str{0001}}
@@ -2117,33 +2125,29 @@ initial string,~\str{00001}.
 
 %<*def:NFSMAccepted}
 \begin{definition}\label{def:NFSMAccepted}
-A nondeterministic Finite State machine 
-\definend{accepts}\index{accepts}\index{nondeterministic Finite State machine!accepts string} 
-an input
-string if for that string there is some sequence of transitions allowed by
-the machine that ends in an accepting state.
-The 
+For a nondeterministic Finite State machine~$\FSM$ 
+the 
 \definend{language of the machine~$\lang(\FSM)$}\index{language!of a nondeterministic Finite State machine}\index{nondeterministic Finite State machine!language of} 
 is the set of accepted strings.
 \end{definition}
 %</def:NFSMAccepted>
 
 \label{discussion:NFSMStringAcceptance}
-Here are the formalities.
-Fix a nondeterministic $\FSM$ with
-transition function $\map{\Delta}{Q\times \Sigma}{Q}$.
-Its 
+We must also adapt the definition 
+of $\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$, the 
 \definend{extended transition function}\index{extended transition function!nondeterministic Finite State machine} 
-$\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$
-gives the state that the machine will be in after starting in the
-start state and consuming the given string.
-That is, $\extended{\Delta}(\emptystring)=\set{q_0}$, and where
+here, to accommodate the sets of states.
+Fix a nondeterministic~$\FSM$ with
+transition function $\map{\Delta}{Q\times \Sigma}{Q}$.
+Start with $\extended{\Delta}(\emptystring)=\set{q_0}$.
+Then, where
 $\extended{\Delta}(\tau)=\set{q_{i_0},q_{i_1},\ldots{} q_{i_k}}$
-for $\tau\in\kleenestar{\Sigma}$, we have that
+for $\tau\in\kleenestar{\Sigma}$, define
 $\extended{\Delta}(\tau\concat t)=
   \Delta(q_{i_0},t)\cup\Delta(q_{i_1},t)\cup\cdots \cup\Delta(q_{i_k},t)$
 for any $t\in\Sigma$. 
-With that, $\sigma\in\kleenestar{\Sigma}$ is accepted if any element of
+With that, observe that
+$\sigma\in\kleenestar{\Sigma}$ is accepted if any element of
 $\extended{\Delta}(\sigma)$ is a final state.
 
 \begin{example} \label{ex:NFSMSubstringAAOrBB}
@@ -2152,10 +2156,12 @@ The language accepted by this nondeterministic machine
   \includegraphics{automata/asy/nfsm/nfsm09.pdf}
 \end{center}
 is the set of strings containing the substring \str{aa} or \str{bb}.
-For instance, the machine accepts \str{abaaba}, where the 
-matching substring starts at index~$2$, because there is a
+For instance, the machine accepts \str{abaaba} 
+% where the 
+% matching substring starts at index~$2$, 
+because there is a
 sequence of allowed transitions ending in an accepting state,
-namely this sequence.
+namely this one.
 \begin{equation*}
   \sequence{q_0,\str{abaaba}}
   \yields \sequence{q_0,\str{baaba}}

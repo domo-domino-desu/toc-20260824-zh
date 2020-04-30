@@ -2133,7 +2133,7 @@ is the set of accepted strings.
 %</def:NFSMAccepted>
 
 \label{discussion:NFSMStringAcceptance}
-We must also adapt the definition 
+We will also adapt the definition 
 of $\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$, the 
 \definend{extended transition function}\index{extended transition function!nondeterministic Finite State machine} 
 here, to accommodate the sets of states.
@@ -2224,7 +2224,7 @@ of strings with that suffix.
 
 \begin{remark}
 With a couple of examples under our belt, before going on we pause
-to acknowledge that something about nondeterminism
+to again acknowledge that something about nondeterminism
 is unsettling.
 If we feed the prior example's listener the string
 $\tau=\str{010101110}$ then it accepts.
@@ -2236,19 +2236,21 @@ After all, this is a sequence of allowed transitions.
   \yields \sequence{q_1,\str{101110}}     \\
   \yields \sequence{q_2,\str{01110}}    
   \yields \sequence{q_3,\str{1110}}    
-  \yields\;\cdots\;
+  \yields \sequence{q_4,\str{110}}    
+  \yields \sequence{q_5,\str{10}}    
   \yields \sequence{q_6,\str{0}}
   \yields \sequence{q_7,\emptystring}
 \end{multline*}
-But~$\tau$ begins with three \str{01}'s while the machine's chain of states
+But~$\tau$ begins with three sets of \str{01}'s 
+while the machine's chain of states
 is set up for a string, \str{0101110}, that begins with two.
 How can a mechanism guess that it should ignore
 the first~\str{01} but act on the second?
 Based on an introduction to programming class,
-a person may react that ``guessing'' is a
+a person's intuition may be that ``guessing'' is a
 not-mechanically-accomplishable task.\index{guessing by a machine}
 Now, in mathematics
-we can consider whatever we can precisely define. 
+we can consider whatever we can define precisely. 
 However, in this book we have so far emphasized
 devices that are physically realizable at least in principle
 so this may appear to be a change in direction. 
@@ -2257,7 +2259,7 @@ But it is not a change.
 We will show how to convert any nondeterministic Finite State
 machine into deterministic one that does the same job.
 So we can think of a nondeterministic machine
-as a convenient abbreviation.
+as an abbreviation, a convenience.
 This obviates at least some of the paradox of guessing, 
 at least for Finite State machines.
 \end{remark}
@@ -2291,7 +2293,7 @@ Note the $\varepsilon$ on the edge between $q_0$ and~$q_1$.
   \includegraphics{automata/asy/nfsm/nfsm12.pdf}
 \end{center}
 Because of the $\varepsilon$
-it can accept strings that do not start with a sign.
+it can accept strings that do not start with a \str{+} or \str{-}~sign.
 For instance, with input~\str{123} the machine 
 can begin by following the $\varepsilon$
 transition to state~$q_1$, then read the \str{1} and transition
@@ -2312,10 +2314,12 @@ That is, the language of this machine is the four element set
 $\lang=\set{\str{abc},\str{abd},\str{ac}, \str{ad}}$.
 \end{example}
 
-We can give a precise definition of which strings are accepted by
-a machine with $\varepsilon$~transitions. 
+We can give a precise definition of the action of 
+a nondeterministic Finite State machine with $\varepsilon$~transitions. 
 
-First define
+First we define the collection of states reachable by $\varepsilon$~moves
+from a given state.
+Take
 $\map{E}{Q\times\N}{\powerset (Q)}$ so that $E(q,i)$ is
 the set of states~$q$ reachable within at most $i$-many 
 $\varepsilon$~transitions.
@@ -2324,13 +2328,81 @@ $E(q,i)=\set{q_{i_0},\ldots q_{i_k}}$
 set $E(q,i+1)=E(q,i)\cup \set{\Delta(q_{i_0},\varepsilon)}\cup
                          \cdots\cup\set{\Delta(q_{i_k},\varepsilon)}$.
 Observe that these are nested,
-$E(q,0)\subseteq E(q,1)\subseteq \cdots\,$,  and that each is
+$E(q,0)\subseteq E(q,1)\subseteq \cdots\,$, and that each is
 a subset of~$Q$.
 But~$Q$ has only finitely many states so there must be an $\hat{i}\in\N$
 where the sequence of sets stops growing,
 $E(q,\hat{i}\,)= E(q,\hat{i}+1)= \cdots\,$.
-Then define the \definend{$\varepsilon$~closure} function 
+Then the \definend{$\varepsilon$~closure} function 
 $\map{\hat{E}}{Q}{\powerset(Q)}$ by~$\hat{E}(q)=E(q,\hat{i}\,)$.
+
+% &&&&&&&&&&&&
+With that, we are ready to describe the action.
+As before, a 
+\definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
+is a pair $\mathcal{C}=\sequence{q,\tau}$, where
+$q\in Q$ and $\tau\in\kleenestar{\Sigma}$.
+A machine starts with some 
+\definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
+$\mathcal{C}_0=\sequence{q_0,\tau_0}$,
+using the \definend{input}\index{input string}\index{nondeterministic Finite State machine!input string} 
+string~$\tau_0$.
+
+The key description is that of a
+\definend{transition}.
+Consider a configuration
+$\mathcal{C}_s=\sequence{q,\tau_s}$ for $s\in\N$ and suppose that
+$\tau_s$ is not the empty string.
+We will describe a configuration 
+$\mathcal{C}_{s+1}=\sequence{\hat{q},\tau_{s+1}}$ that is related to the
+given one by
+$\mathcal{C}_s\yields\mathcal{C}_{s+1}$.
+(As with the description above of nondeterministic machines without
+$\varepsilon$~transitions, there may be more than one configuration
+related in this way to $\mathcal{C}_s$.)
+
+The string is easy; just pop the given string's leading character 
+to get $\tau_s=t\concat\tau_{s+1}$ where $t\in\Sigma$.
+To get a legal state~$\hat{q}$:
+(i)~find the $\varepsilon$~closure $\hat{E}(q)=\set{q_{s_0},\ldots q_{s_k}}$,
+(ii)~pick an element $\bar{q}$ of the set
+$\Delta(q_{s_0},t)\cup\Delta(q_{s_1},t)\cup\cdots\cup\Delta(q_{s_k},t)$,
+and (iii)~take $\hat{q}$ to be an element of the $\varepsilon$~closure
+$\hat{E}(\bar{q})$.
+
+If $\tau_s$ is the empty string then 
+this is a 
+\definend{halting configuration}\index{halting configuration},\index{configuration!halting}\index{nondeterministic Finite State machine!halting confuguration} 
+$\mathcal{C}_h$.
+No transitions follow~$\mathcal{C}_h$.
+
+% The computation may eventually reache a halting configuration
+% $\mathcal{C}_h=\sequence{q,\emptystring}$.
+A 
+\definend{nondeterministic Finite State machine computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
+is a sequence of transitions ending in a halting configuration,
+$
+  \mathcal{C}_0=\sequence{q_0,\tau_0} 
+   \yields \mathcal{C}_1 \yields \mathcal{C}_2
+   \yields \cdots\, \mathcal{C}_h=\sequence{q,\emptystring}
+$.
+% Abbreviate this
+% with
+% $\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
+From a given~$\mathcal{C}_0$ there may be many such sequences.
+If at least one ends with a halting state, with $q\in F$,
+then the machine \definend{accepts}\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
+the input~$\tau_0$,
+otherwise it 
+\definend{rejects}~$\tau_0$.\index{reject an input}\index{nondeterministic Finite State machine!reject string}
+
+
+
+
+
+
+
+
 
 With that,
 we will modify the definition of the extended transition 

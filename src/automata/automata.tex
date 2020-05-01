@@ -309,6 +309,84 @@ Because $q_0$ is an accepting state, this machine accepts the empty string.
 this machine to accept only non-empty strings.
 \end{example}
 
+
+\begin{example}
+Finite State machines are easy to translate to code.
+Here is a Scheme version of the multiple of three machine.\footnotemark[1]  
+\lstinputlisting{automata/scheme/mod3fsm.scm}
+% Here is a Python version of the multiple of three machine.
+% \begin{lstlisting}
+% def multiple_of_three_fsm(s):
+%     state = 0
+%     for ch in s:
+%         if state == 0:
+%             if ch in set([0,3,6,9]):
+%                 state = 0
+%             elif ch in set([1,4,7]):
+%                 state = 1
+%             else:
+%                 state = 2
+%         elif state == 1:
+%             if ch in set([0,3,6,9]):
+%                 state = 1
+%             elif ch in set([1,4,7]):
+%                 state = 2
+%             else:
+%                 state = 0
+%         else:
+%             if ch in set([0,3,6,9]):
+%                 state = 2
+%             elif ch in set([1,4,7]):
+%                 state = 0
+%             else:
+%                 state = 1
+%     if state == 0:
+%         return True
+%     else:
+%         return False    
+% \end{lstlisting}
+\end{example}\footnotetext[1]{%
+  One of the great things about the Scheme programming languages is that,
+  because the last thing called in \codeinline{multiple-of-three-fsm-helper}
+  is itself, the compiler converts the recursion to iteration.
+  So we get the expressiveness of recursion with the space conservation
+  of iteration.}
+
+\begin{example}
+This is a simplified version of 
+\citetext{how phone numbers used to be handled in North America}{%
+  See the description of the North America Numbering Plan
+  \autocite{wiki:NANumbering}.}.
+Consider the number \str{1-802-555-0101}.
+The iniital \str{1} signifies that 
+the call should leave the local exchange office to go to the long lines.
+The \str{802} is an area code; the system can tell this is so because
+its second digit is either~\str{0}
+or~\str{1} so it is not a 
+\citetext{same-area local exchange}{%
+  Initially, large states, those divided into multiple numbering plan areas 
+  were assigned area codes with a \str{1} in the second position 
+  while areas that covered entire states or provinces got codes with 
+  \str{0} as the middle digit. This was abandoned by the early 1950s.
+  \autocite{wiki:NANumbering}.}.
+Next the system processes the local exchange number of \str{555},
+routing the call to a particular physical local switching office.
+That office processes the line number of \str{0101}, and makes the connection.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa13.pdf}
+\end{center}
+Today the picture is much more complicated.
+For example, no longer are area codes required to
+have a middle digit of \str{0} or~\str{1}.
+This additional complication is possible because instead of
+\citetext{switching with physical devices}{%
+  The devices to do the switching were invented in 1889 by an undertaker whose
+  competiter's wife was the local telephone operator and routed calls to
+  her husband's business.
+  \autocite{wiki:Strowger}},
+we now do it in software.
+\end{example}
+
 After the definition of Turing machine we gave a formal
 description of the action of those machines.
 We next do the same here.
@@ -391,7 +469,7 @@ the heart of the definitions is the transition function~$\Delta$.
 It makes the machine move step-by-step, from configuration to configuration,
 in response to the input.
 
-\begin{example}
+\begin{example}  \label{ex:MultipleOfThreeFormal}
 The multiple of three machine of the prior example gives this computation.
 \begin{equation*}
   \sequence{q_0,\str{5013}}
@@ -409,84 +487,6 @@ The set of strings accepted by a Finite State machine~$\FSM$ is the
 \definend{language accepted by that machine,~$\lang(\FSM)$}.
 \end{definition}
 %</def:FSMLanguage>
-
-\begin{example}
-Finite State machines are easy to translate to code.
-Here is a Scheme version of the multiple of three machine.\footnotemark[1]  
-\lstinputlisting{automata/scheme/mod3fsm.scm}
-% Here is a Python version of the multiple of three machine.
-% \begin{lstlisting}
-% def multiple_of_three_fsm(s):
-%     state = 0
-%     for ch in s:
-%         if state == 0:
-%             if ch in set([0,3,6,9]):
-%                 state = 0
-%             elif ch in set([1,4,7]):
-%                 state = 1
-%             else:
-%                 state = 2
-%         elif state == 1:
-%             if ch in set([0,3,6,9]):
-%                 state = 1
-%             elif ch in set([1,4,7]):
-%                 state = 2
-%             else:
-%                 state = 0
-%         else:
-%             if ch in set([0,3,6,9]):
-%                 state = 2
-%             elif ch in set([1,4,7]):
-%                 state = 0
-%             else:
-%                 state = 1
-%     if state == 0:
-%         return True
-%     else:
-%         return False    
-% \end{lstlisting}
-\end{example}\footnotetext[1]{%
-  One of the great things about the Scheme programming languages is that,
-  because the last thing called in \codeinline{multiple-of-three-fsm-helper}
-  is itself, the compiler converts the recursion to iteration.
-  So we get the expressiveness of recursion with the space conservation
-  of iteration.}
-
-\begin{example}
-This is a simplified version of 
-\citetext{how phone numbers used to be handled in North America}{%
-  See the description of the North America Numbering Plan
-  \autocite{wiki:NANumbering}.}.
-Consider the number \str{1-802-555-0101}.
-The iniital \str{1} signifies that 
-the call should leave the local exchange office to go to the long lines.
-The \str{802} is an area code; the system can tell this is so because
-its second digit is either~\str{0}
-or~\str{1} so it is not a 
-\citetext{same-area local exchange}{%
-  Initially, large states, those divided into multiple numbering plan areas 
-  were assigned area codes with a \str{1} in the second position 
-  while areas that covered entire states or provinces got codes with 
-  \str{0} as the middle digit. This was abandoned by the early 1950s.
-  \autocite{wiki:NANumbering}.}.
-Next the system processes the local exchange number of \str{555},
-routing the call to a particular physical local switching office.
-That office processes the line number of \str{0101}, and makes the connection.
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa13.pdf}
-\end{center}
-Today the picture is much more complicated.
-For example, no longer are area codes required to
-have a middle digit of \str{0} or~\str{1}.
-This additional complication is possible because instead of
-\citetext{switching with physical devices}{%
-  The devices to do the switching were invented in 1889 by an undertaker whose
-  competiter's wife was the local telephone operator and routed calls to
-  her husband's business.
-  \autocite{wiki:Strowger}},
-we now do it in software.
-\end{example}
-
 % We close with a definition that emphasizes the role played
 % by determinism.
 
@@ -1216,18 +1216,26 @@ you need not give the full graph or table.
 \end{exercise}
 
 \begin{exercise}
-  The definition of the extended transition function,
-  \cref{def:ExtendedTransitionFcn},
-  is conceptual, with some details held back.
-  Here is a constructive definition, one that you could easily translate into
-  a computer program.
-  On the empty input string,
-  $\extended{\Delta}(\emptystring)=q_0$.
-  Otherwise, if the input string~$\sigma$ is not empty, then
-  peel off the final character with $\sigma=\sigma_0\concat x$ for $x\in\Sigma$,
-  and define $\extended{\Delta}(\sigma)$ to be
-  $\Delta(\extended{\Delta}(\sigma_0),x)$.
-  We will work this definition through by 
+As in \cref{ex:MultipleOfThreeFormal}, find the computation for
+the multiple of three machine with the initial string
+\str{2332}.
+\begin{answer}
+This is the computation.
+\begin{equation*}
+  \sequence{q_0,\str{2332}}
+  \yields\sequence{q_2,332}
+  \yields\sequence{q_2,32}
+  \yields\sequence{q_2,2}
+  \yields\sequence{1_0,\emptystring}
+\end{equation*}
+The state $q_1$ is not an accepting state
+so the machine rejects \str{2332}.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+  We will through the formal definition of the extended transition function
+  that follows \cref{def:ExtendedTransitionFcn} by 
   applying it to the machine in \cref{ex:FSATwoAsEvenBs}.
   \begin{exparts}
   \item Use the definition to find $\extended{\Delta}(\str{0})$
@@ -1741,10 +1749,6 @@ is a member of that language.
 \end{exparts}
 \end{answer}
 \end{exercise}
-
-% \begin{exercise}
-% Variants: Moore machine, Mealy machine
-% \end{exercise}
 \end{exercises}
 \index{Finite State machine|)}
 
@@ -2302,7 +2306,7 @@ This is a branch of the computation tree accepting the input,
 and so the string \str{123} is in the machine's language.
 \end{example}
 
-\begin{example}
+\begin{example}  \label{ex:TwoOrMoreEpsilonTrans}
 A machine may follow two or more $\varepsilon$ transitions in a row.
 If this machine is in state~$q_0$ then it may stay in that state, or
 transition to $q_{2}$, or $q_3$, or~$q_5$,
@@ -2413,14 +2417,33 @@ in $\extended{\Delta}(\sigma)$ is a final state.
 
 \begin{remark}
 Certainly those form an intricate set of definitions,
-although we mitigated the complications 
+although mitigated 
 to some extent with the precursor ones given earlier.
 In the examples and the homework we will usually not resort to 
-these formalities.
+the formalities.
 However, they do demonstrate that
 we can give a precise sense to the informal ideas outlined above, such
 as machines ``guessing.''
 \end{remark}
+
+\begin{example}
+For the machine of \cref{ex:TwoOrMoreEpsilonTrans}, this sequence
+shows it accepts~\str{abc}
+\begin{equation*}
+  \sequence{q_0,\str{abc}}
+  \yields \sequence{q_1,\str{bc}}
+  \yields \sequence{q_2,\str{c}}
+  \yields \sequence{q_3,\str{c}}
+  \yields \sequence{q_4,\emptystring}     
+\end{equation*}
+(note the $\varepsilon$~transition between $q_2$ and~$q_3$).
+This sequence shows it also accepts the input string~\str{d}.
+\begin{equation*}
+  \sequence{q_0,\str{d}}
+  \yields \sequence{q_5,\str{d}}
+  \yields \sequence{q_6,\emptystring}     
+\end{equation*}
+\end{example}
 
 As with nondeterminstic machines, 
 one reason that we use $\varepsilon$~transitions is that
@@ -2724,7 +2747,7 @@ $\set{q_2}\cup\set{q_3}=\set{q_2,q_3}=s_{10}$.
 \begin{exercise}
 Give the transition function for the machine of
 \cref{ex:NFSMSubstringAAOrBB}, and of \cref{ex:NFSMRepeatsofAC}.
-\begin{answer}
+\begin{answer}\verified
   The main point is that entries in the table are sets of states.
   This is the machine in \cref{ex:NFSMSubstringAAOrBB}.
   \begin{display}
@@ -2763,25 +2786,26 @@ Give the transition function for the machine of
   % \item Are all strings of the form $\str{1}^j$ accepted, for $j>0$?
   \item List all length five accepted strings.
   \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
   \begin{exparts}
   \item Yes.
   From $q_0$ a $\varepsilon$~transition goes to $q_2$, which is an accepting
   state.
   \item No.
-  From $q_0$ the machine can either read the~\str{0}, which takes it to
+  From $q_0$ the machine can either read the~\str{0} and go to
   $q_1$, or take the $\varepsilon$~transition
   to $q_2$ and then read the~\str{0}, which sends the machine to 
   no-state.
   Neither $q_2$ nor no-state is an accepting state.
 
-  Said another way, the $\varepsilon$~closure of $q_0$ is $\set{q_0,q_2}$.
+  Said more formally, the $\varepsilon$~closure of $q_0$ is $\set{q_0,q_2}$.
   Neither state, on reading the character~\str{0}, transitions to a state
   whose $\varepsilon$~closure includes an accepting state. 
   \item Yes.
   With that input the machine can go from $q_0$ to~$q_1$, then to~$q_2$,
   and then around the loop to~$q_2$ again.
-  More formally, this is a sequence of allowed transitions.
+  More formally, this is a sequence of allowed transitions that ends in an
+  accepting state.
   \begin{equation*}
     \sequence{q_0,\str{011}}
     \yields \sequence{q_1,\str{11}}
@@ -2795,7 +2819,8 @@ Give the transition function for the machine of
   it goes to no-state, which is not an accepting state.
 
   Otherwise, the~\str{0} moves the machine to~$q_1$.
-  Next, on the second tape character~\str{1}, the machine moves to~$\set{q_2}$.
+  Next, on the following tape character~\str{1}, 
+  the machine moves to~$\set{q_2}$.
   Finally, on the third character~\str{0},
   the machine moves to no-state. 
   \item There are two: \str{01111} and~\str{11111}.
@@ -2813,20 +2838,26 @@ Give the transition function for the machine of
   \end{center}
   \begin{answer}
     The definition is that a string is accepted by a machine 
-    if there is a sequence of allowed transitions, 
-    a sequence of states that allow the machine to process 
-    the string, that ends in an accepting state.
-    That definition does not say there must not be any wrong ways to go, it only
-    requires that there be a right way.
+    if there is a sequence of legal transitions, 
+    a sequence of configurations that allows the machine to process 
+    the string and that ends in an accepting state.
+    It does not say there must not be any wrong ways to go, only
+    that there must be a right way.
 
-    For instance, this machine accepts \str{aab} by starting in $q_0$,
+    For instance, the given machine 
+    can accept \str{aab} by starting in $q_0$,
     transitioning to $q_1$ on the first \str{a},
-    taking the $\varepsilon$ transition back to $q_0$,
-    then going to $q_1$ on the second~\str{a}, and finally
-    going to $q_2$ with the \str{b}.
-    The language accepted by the machine is defined to be the set of strings
-    that the machine can accept, and so 
-    the language of this machine is
+    taking the $\varepsilon$ transition to~$q_0$,
+    then going to $q_1$ on the second~\str{a}, 
+    then going to $q_2$, which is accepting, with the~\str{b}.
+    \begin{equation*}
+      \sequence{q_0,\str{aab}}
+      \yields \sequence{q_1,\str{ab}}
+      \yields \sequence{q_0,\str{ab}}
+      \yields \sequence{q_1,\str{b}}
+      \yields \sequence{q_2,\emptystring}     
+    \end{equation*}
+    The language accepted by this machine is
     $\lang=\set{\str{a}^n\str{b}\suchthat n\in\N}$.
   \end{answer}
 \end{exercise}
@@ -2840,23 +2871,38 @@ This machine has $\Sigma=\set{\str{a},\str{b}}$.
 \item Does it accept the empty string?
 \item \str{a}?
   \str{b}?  
+\item Show that it accepts \str{aab} by producing a suitable sequence
+  of $\yields$ relations.
 \item List five strings of minimal length that it accepts.
 \item List five of minimal length that it does not accept.
 \end{exparts*}
 \begin{answer}
-\begin{exparts}
-\item It does not acccept the empty string because the $\varepsilon$~closure
-of $q_0$ does not contain any final states (since the $\varepsilon$~closure
-equals $\set{q_0}$).
-\item It accepts both of the one-character strings \str{a} and~\str{b}.
-For instance, on~\str{a} the machine can transition from $q_0$ to~$q_1$,
-and then it can make an $\varepsilon$~transition to~$q_2$, which is 
-an accepting state.
-\item Five of the shortest strings are: \str{a}, \str{b}, \str{aa}, \str{ab},
-and~\str{aab}.
-\item Five that it does not accept are:~the empty string~$\emptystring$,
-\str{ba}, \str{}
-\end{exparts}
+  \begin{exparts}
+  \item It does not acccept the empty string because the $\varepsilon$~closure
+  of $q_0$ does not contain any final states (since the $\varepsilon$~closure
+  equals $\set{q_0}$).
+  \item It accepts both of the one-character strings \str{a} and~\str{b}.
+  For instance, on~\str{a} the machine can transition from $q_0$ to~$q_1$,
+  and then it can make an $\varepsilon$~transition to~$q_2$, which is 
+  an accepting state.
+  \item The given machine 
+    can accept \str{aab} by starting in $q_0$,
+    transitioning to $q_0$ on the first \str{a},
+    then going to $q_1$ on the second~\str{a}, 
+    taking the $\varepsilon$ transition to~$q_2$,
+    then going to $q_2$, which is accepting, with the~\str{b}.
+    \begin{equation*}
+      \sequence{q_0,\str{aab}}
+      \yields \sequence{q_0,\str{ab}}
+      \yields \sequence{q_1,\str{b}}
+      \yields \sequence{q_2,\str{b}}
+      \yields \sequence{q_2,\emptystring}     
+    \end{equation*}
+  \item Five of the shortest strings are: \str{a}, \str{b}, \str{aa}, \str{ab},
+  and~\str{aab}.
+  \item Five that it does not accept are:~the empty string~$\emptystring$,
+  \str{ba}, \str{}
+  \end{exparts}
 \end{answer}
 
 \end{exercise}
@@ -2945,6 +2991,26 @@ Draw its transition graph.
   that accepts the language of strings whose second chracter is \str{a}
   and whose next to last character is also~\str{a}.
   Draw a graph and also give its transition function as a table.
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Make a table giving the $\varepsilon$~closure function~$\hat{E}$
+for the machine in \cref{ex:TwoOrMoreEpsilonTrans}.
+\begin{answer}
+That machine has seven states.
+\begin{display}
+\begin{tabular}{r|*{7}{c}}
+  \tabulartext{state}~$q$ 
+     &$q_0$           &$q_1$          &$q_2$        &$q_3$  
+     &$q_4$  &$q_5$  &$q_6$
+  \\ \cline{2-8}
+  \tabulartext{$\varepsilon$ closure $\hat{E}(q)$}
+     &$\set{q_0,q_2,q_3,q_5}$ &$\set{q_1}$ &$\set{q_2,q_3,q_5}$ &$\set{q_3}$
+     &$\set{q_4}$   &$\set{q_5}$  &$\set{q_6}$ 
+\end{tabular}
+\end{display}
+\end{answer}
 \end{exercise}
 
 
@@ -3184,34 +3250,35 @@ without changing the accepted language.
 % \end{exercise}
 
 \begin{exercise}  \label{exer:DefnEpsilonClosure}
-  \Cref{ex:NFSMEpsilonClosure} illustrated following $\varepsilon$ transitions.
-  We can give a rigorous definition.
-  For each state $q\in Q$ we will define the
-  \definend{$\varepsilon$ closure} $E(q)\subseteq Q$.
-  The definition is inductive, so we get a sequence of sets
-  $E_0(q)\subseteq E_1(q)\subseteq \cdots E_k(q)=E(q)$.
-  The intiution is that $E_i(q)$ is the set of states reachable
-  from~$q$ by traversing $i$ or fewer $\varepsilon$ edges.
-  Formally, the definition's base step is that for each state, $E_0(q)=\set{q}$.
-  The inductive step starts with $E_i(q)=\set{q_{i_0},\,\ldots q_{i_j}}$
-  for some $i\in\N$ and produces $E_{i+1}(q)$
-  \begin{equation*}
-    E_{i+1}(q)=E_i(q)\cup \Delta(q_{I_0},\varepsilon)\cup\,\cdots\,
-                         \Delta(q_{i_j},\varepsilon)
-  \end{equation*}
+  % \Cref{ex:NFSMEpsilonClosure} illustrated following $\varepsilon$ transitions.
+  % We can give a rigorous definition.
+  % For each state $q\in Q$ we will define the
+  % \definend{$\varepsilon$ closure} $E(q)\subseteq Q$.
+  % The definition is inductive, so we get a sequence of sets
+  % $E_0(q)\subseteq E_1(q)\subseteq \cdots E_k(q)=E(q)$.
+  % The intiution is that $E_i(q)$ is the set of states reachable
+  % from~$q$ by traversing $i$ or fewer $\varepsilon$ edges.
+  % Formally, the definition's base step is that for each state, $E_0(q)=\set{q}$.
+  % The inductive step starts with $E_i(q)=\set{q_{i_0},\,\ldots q_{i_j}}$
+  % for some $i\in\N$ and produces $E_{i+1}(q)$
+  % \begin{equation*}
+  %   E_{i+1}(q)=E_i(q)\cup \Delta(q_{I_0},\varepsilon)\cup\,\cdots\,
+  %                        \Delta(q_{i_j},\varepsilon)
+  % \end{equation*}
   \begin{exparts}
   \item For the machine of \cref{ex:NFSMEpsilonClosure},
-    for each $q\in Q$ produce $E_0(q)$,
-    $E_1(q)$, $E_2(q)$, and~$E_3(q)$.
-    List $E(q)$ for each $q\in Q$.
+    for each $q\in Q$ produce $E(q,0)$,
+    $E(q,1)$, $E(q,2)$, and~$E(q,3)$.
+    List $\hat{E}(q)$ for each $q\in Q$.
   \item Do the same for \cref{exer:MFSMWithEpsilonTrans}'s machine.
   \item This machine has loops of $\varepsilon$'s.
     \begin{center}
       \includegraphics{automata/asy/nfsm/nfsm31.pdf}
     \end{center}
-    Does the definition just keep going; what is $E(q)$ for each
+    Does the definition just keep going around; what is $\hat{E}(q)$ for each
     $q\in Q$?
-  \item Prove that for every machine, $E(q)$ is defined for every $q\in Q$.
+  \item Prove that for every machine, $\hat{E}(q)$ is 
+    defined for every $q\in Q$.
   \end{exparts}
 \end{exercise}
 \end{exercises}

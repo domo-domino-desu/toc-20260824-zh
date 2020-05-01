@@ -3387,6 +3387,7 @@ hlayout(u, q0, q1, q2);
 
 // draw edges
 draw(pic,
+     (q0..loop(W)).l("\str{0},\str{1}"),
      (q0--q1).l("\str{0}"),
      (q1--q2).l("\str{0}") 
      );
@@ -3419,11 +3420,11 @@ hlayout(u, q0, q1, q2, q3, q4);
 // draw edges
 draw(pic,
      (q0--q1).l("\str{0}"),
-     (q0..loop(S)).l("any"),
+     (q0..loop(W)).l("any"),
      (q1--q2).l("\str{1}"),
      (q2--q3).l("\str{1}"),
      (q3--q4).l("\str{0}"),
-     (q4..loop(S)).l("any")
+     (q4..loop(E)).l("any")
      );
 
 // draw nodes after edges
@@ -3460,6 +3461,7 @@ hlayout(1.0*u, q3, q4, q5);
 draw(pic,
      (q0--q1).l("\emptystring"),
      (q1..bend..q2).l("\str{0}"),
+     (q1..loop(N)).l("\str{1}"),
      (q2..bend..q1).l("\str{0}"),
      (q2..loop(N)).l("\str{1}"),
      (q0--q3).l("\emptystring"),
@@ -3493,8 +3495,8 @@ real v=0.8*u;  // vertical
 
 // draw edges
 draw(pic,
-     (q0..loop(N)).l("\str{0}"),   // bug in node; have to repeat
-     (q0..loop(N)).l("\str{0}")
+     (q0..loop(E)).l("\str{0}"),   // bug in node; have to repeat
+     (q0..loop(E)).l("\str{0}")
      );
 
 // draw nodes after edges
@@ -3592,6 +3594,8 @@ draw(pic, q0, q1, q2
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
 // .......... Other machine ...........................
 picture pic;
 int picnum = 90;
@@ -3634,6 +3638,55 @@ draw(pic,
 // draw nodes after edges
 draw(pic, // q0, q1, q2
           q3, q4, q5
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// =========== homework exercises =============
+
+string OUTPUT_FN = "nfsm1%03d";
+
+
+
+// .......... Other machine ...........................
+picture pic;
+int picnum = 0;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1);
+vlayout(1*v, q0, q2);
+hlayout(1*u, q2, q3);
+
+// edges
+draw(pic, 
+     (q0..loop(W)).l("\str{a}"), 
+     (q0--q1).l("\str{b}"), 
+     (q0..bend..q2).l("\str{b}"), 
+     (q1--q3).l("\str{a}, \str{b}").style("leftside"), 
+     (q2..bend..q0).l("\str{a}"), 
+     (q2--q3).l("\str{b}"), 
+     (q3..loop(E)).l("\str{a}, \str{b}")
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

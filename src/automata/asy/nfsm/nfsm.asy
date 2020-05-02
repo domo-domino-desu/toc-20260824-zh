@@ -3652,7 +3652,7 @@ string OUTPUT_FN = "nfsm1%03d";
 
 
 
-// .......... Other machine ...........................
+// .......... From nondeterministic table draw machine graph ..............
 picture pic;
 int picnum = 0;
 unitsize(pic,1pt);
@@ -3678,9 +3678,9 @@ hlayout(1*u, q2, q3);
 draw(pic, 
      (q0..loop(W)).l("\str{a}"), 
      (q0--q1).l("\str{b}"), 
-     (q0..bend..q2).l("\str{b}"), 
+     (q0--q2).l("\str{b}"), 
      (q1--q3).l("\str{a}, \str{b}").style("leftside"), 
-     (q2..bend..q0).l("\str{a}"), 
+     (q2--q1).l("\str{a}"), 
      (q2--q3).l("\str{b}"), 
      (q3..loop(E)).l("\str{a}, \str{b}")
     );
@@ -3692,6 +3692,188 @@ draw(pic, q0, q1, q2, q3
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+
+// .......... Accept strings with suffix 111000111  ..............
+picture pic;
+int picnum = 1;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$"),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$"),
+  q6=ncircle("$q_6$"),
+  q7=ncircle("$q_7$"),
+  q8=ncircle("$q_8$"),
+  q9=ncircle("$q_{9}$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1, q2, q3, q4, q5, q6, q7, q8, q9);
+
+// edges
+draw(pic, 
+     (q0..loop(W)).l("\str{0}, \str{1}"), 
+     (q0--q1).l("\str{1}"), 
+     (q1--q2).l("\str{1}"), 
+     (q2--q3).l("\str{1}"), 
+     (q3--q4).l("\str{0}"), 
+     (q4--q5).l("\str{0}"), 
+     (q5--q6).l("\str{0}"), 
+     (q6--q7).l("\str{1}"), 
+     (q7--q8).l("\str{1}"), 
+     (q8--q9).l("\str{1}")
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3, q4, q5, q6, q7, q8, q9
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// .......... Second char is an a, next to last char is a b  ..............
+picture pic;
+int picnum = 2;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting),
+  q3=ncircle("$q_3$"),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$"),
+  q6=ncircle("$q_6$", ns_accepting); 
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+q1.pos = new_node_pos_h(q0, 15,  1*u);
+q3.pos = new_node_pos_h(q0, -15, 1*u);
+hlayout(1*u, q1, q2);
+hlayout(1*u, q3, q4, q5, q6);
+
+// edges
+draw(pic, 
+     (q0--q1).l("\str{b}"), 
+     (q0--q3).l("\str{a}, \str{b}"), 
+     (q1--q2).l("\str{a}"), 
+     (q3--q4).l("\str{a}"), 
+     (q4..loop(S)).l("\str{a}, \str{b}"), 
+     (q4--q5).l("\str{b}"), 
+     (q5--q6).l("\str{a}, \str{b}") 
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3, q4, q5, q6
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// .......... Second char is an a, next to last char is also a  ..............
+picture pic;
+int picnum = 3;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting),
+  q3=ncircle("$q_3$"),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$", ns_accepting),
+  q6=ncircle("$q_6$"),
+  q7=ncircle("$q_7$"),
+  q8=ncircle("$q_8$"),
+  q9=ncircle("$q_9$", ns_accepting); 
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+q1.pos = new_node_pos_h(q0, 30,  1*u);
+hlayout(1*u, q1, q2);
+hlayout(1*u, q0, q3, q4, q5);
+q6.pos = new_node_pos_h(q0, -30, 1*u);
+hlayout(1*u, q6, q7, q8, q9);
+
+// edges
+draw(pic, 
+     (q0--q1).l("\str{a}"), 
+     (q1--q2).l("\str{a}"), 
+     (q0--q3).l("\str{a}, \str{b}"), 
+     (q3--q4).l("\str{a}"), 
+     (q4--q5).l("\str{a}, \str{b}"), 
+     (q0--q6).l("\str{a}, \str{b}"), 
+     (q6--q7).l("\str{a}"), 
+     (q7..loop(S)).l("\str{a}, \str{b}"), 
+     (q7--q8).l("\str{a}"), 
+     (q8--q9).l("\str{a}, \str{b}") 
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2,
+          q3, q4, q5,
+          q6, q7, q8, q9
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== NFSM exercise, begins with 10 ==
+picture pic;
+int picnum = 4;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{1}"),
+     (q1--q2).l("\str{0}"),
+     (q2..loop(E)).l("\str{0},\str{1}")
+);
+
+// draw nodes after edges
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

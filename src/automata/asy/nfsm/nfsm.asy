@@ -3877,4 +3877,121 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ------------ cat, cap, carumba --------------------
+picture pic;
+int picnum = 5;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$", ns_accepting),
+  q4=ncircle("$q_4$", ns_accepting),
+  q5=ncircle("$q_5$"),
+  q6=ncircle("$q_6$"),
+  q7=ncircle("$q_7$"),
+  q8=ncircle("$q_8$"),
+  q9=ncircle("$q_9$", ns_accepting); 
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1, q2);
+q3.pos = new_node_pos_h(q2, 30,  1*u);
+hlayout(1*u, q2, q4);
+q5.pos = new_node_pos_h(q2, -30, 1*u);
+hlayout(1*u, q5, q6, q7, q8, q9);
+
+// edges
+draw(pic, 
+     (q0--q1).l("\str{c}"), 
+     (q1--q2).l("\str{a}"), 
+     (q2--q3).l("\str{t}"), 
+     (q2--q4).l("\str{p}"), 
+     (q2--q5).l("\str{r}"), 
+     (q5--q6).l("\str{u}"), 
+     (q6--q7).l("\str{m}"),  
+     (q7--q8).l("\str{b}"), 
+     (q8--q9).l("\str{a}") 
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2,
+          q3,
+          q4,
+          q5, q6, q7, q8, q9
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ......... alternate: cat, cap, carumba  ..............
+picture pic;
+int picnum = 6;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$", ns_accepting),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$"),
+  q6=ncircle("$q_6$", ns_accepting),
+  q7=ncircle("$q_7$"),
+  q8=ncircle("$q_8$"),
+  q9=ncircle("$q_9$"),
+  q10=ncircle("$q_{10}$"),
+  q11=ncircle("$q_{11}$"),
+  q12=ncircle("$q_{12}$"), 
+  q13=ncircle("$q_{13}$", ns_accepting); 
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+q1.pos = new_node_pos_h(q0, 30,  1*u);
+hlayout(1*u, q1, q2, q3);
+hlayout(1*u, q0, q4, q5, q6);
+q7.pos = new_node_pos_h(q0, -30, 1*u);
+hlayout(1*u, q7, q8, q9, q10, q11, q12, q13);
+
+// edges
+draw(pic, 
+     (q0--q1).l("\str{c}"), 
+     (q1--q2).l("\str{a}"), 
+     (q2--q3).l("\str{t}"), 
+     (q0--q4).l("\str{c}"), 
+     (q4--q5).l("\str{a}"), 
+     (q5--q6).l("\str{p}"), 
+     (q0--q7).l("\str{c}"),  
+     (q7--q8).l("\str{a}"),  
+     (q8--q9).l("\str{r}"),  
+     (q9--q10).l("\str{u}"),  
+     (q10--q11).l("\str{m}"),  
+     (q11--q12).l("\str{b}"), 
+     (q12--q13).l("\str{a}") 
+    );
+
+// draw nodes after edges
+draw(pic, q0,
+          q1, q2, q3,
+          q4, q5, q6,
+          q7, q8, q9, q10, q11, q12, q13
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 

@@ -1248,20 +1248,20 @@ hlayout(1*u, q7, q8, q9);
 // draw edges
 draw(pic,
      (q0--q1).l("$\varepsilon$"),
-     (q1..loop(N)).l("\str{2},\str{3}"),
-     (q1--q2).l("\str{1}"),
-     (q2..loop(N)).l("\str{2},\str{3}"),
-     (q2--q3).l("\str{1}"),
+     (q1..loop(N)).l("\str{1},\str{2}"),
+     (q1--q2).l("\str{0}"),
+     (q2..loop(N)).l("\str{1},\str{2}"),
+     (q2--q3).l("\str{0}"),
      (q0--q4).l("$\varepsilon$"),
-     (q4..loop(N)).l("\str{1},\str{3}"),
-     (q4--q5).l("\str{2}"),
-     (q5..loop(N)).l("\str{1},\str{3}"),
-     (q5--q6).l("\str{2}"),
+     (q4..loop(N)).l("\str{0},\str{2}"),
+     (q4--q5).l("\str{1}"),
+     (q5..loop(N)).l("\str{0},\str{2}"),
+     (q5--q6).l("\str{1}"),
      (q0--q7).l("$\varepsilon$"),
-     (q7..loop(N)).l("\str{1},\str{2}"),
-     (q7--q8).l("\str{3}"),
-     (q8..loop(N)).l("\str{1},\str{2}"),
-     (q8--q9).l("\str{3}")
+     (q7..loop(N)).l("\str{0},\str{1}"),
+     (q7--q8).l("\str{2}"),
+     (q8..loop(N)).l("\str{0},\str{1}"),
+     (q8--q9).l("\str{2}")
 );
 
 // draw nodes after edges
@@ -1303,20 +1303,20 @@ hlayout(1*u, q7, q8, q9);
 // draw edges
 draw(pic,
      (q0--q1).l("$\varepsilon$"),
-     (q1..loop(N)).l("\str{2},\str{3}"),
-     (q1--q2).l("\str{1}"),
+     (q1..loop(N)).l("\str{1},\str{2}"),
+     (q1--q2).l("\str{0}"),
      // (q2..loop(N)).l("\str{2},\str{3}"),
-     (q2--q3).l("\str{1}"),
+     (q2--q3).l("\str{0}"),
      (q0--q4).l("$\varepsilon$"),
-     (q4..loop(N)).l("\str{1},\str{3}"),
-     (q4--q5).l("\str{2}"),
-     (q5..loop(N)).l("\str{1}"),
-     (q5--q6).l("\str{2}"),
+     (q4..loop(N)).l("\str{0},\str{2}"),
+     (q4--q5).l("\str{1}"),
+     (q5..loop(N)).l("\str{0}"),
+     (q5--q6).l("\str{1}"),
      (q0--q7).l("$\varepsilon$"),
-     (q7..loop(N)).l("\str{1},\str{2}"),
-     (q7--q8).l("\str{3}"),
-     (q8..loop(N)).l("\str{1},\str{2}"),
-     (q8--q9).l("\str{3}")
+     (q7..loop(N)).l("\str{0},\str{1}"),
+     (q7--q8).l("\str{2}"),
+     (q8..loop(N)).l("\str{0},\str{1}"),
+     (q8--q9).l("\str{2}")
 );
 
 // draw nodes after edges
@@ -4040,7 +4040,7 @@ setdefaultstatediagramstyles() ;
 // define nodes
 node q0=ncircle("$q_0$"),
   q1=ncircle("$q_1$"),
-q2=ncircle("$q_2$", ns_accepting);
+  q2=ncircle("$q_2$", ns_accepting);
 
 // layout
 defaultlayoutrel = false;
@@ -4064,6 +4064,8 @@ draw(pic, q0, q1, q2
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
 // ............... bitstrings with 11 substring; deterministic ............
 picture pic;
 int picnum = 9;
@@ -4081,7 +4083,7 @@ defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
 real v = .9u;
 
-hlayout(1*u, q0, q1, q2, q3);
+hlayout(1*u, q0, q1, q2);
 
 // edges
 draw(pic,
@@ -4094,6 +4096,207 @@ draw(pic,
 
 // draw nodes after edges
 draw(pic, q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ---------------- every 0 followed immediately by a 1 -------------
+picture pic;
+int picnum = 10;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$", ns_accepting),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1, q2);
+
+// edges
+draw(pic,
+     (q0..loop(W)).l("\str{1}"),
+     (q0..bend..q1).l("\str{0}"),
+     (q1..bend..q2).l("\str{1}"),
+     (q2..bend..q0).l("$\varepsilon$") 
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ---------------- every 000 followed by a 001 -------------
+picture pic;
+int picnum = 11;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$"),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$"),
+  q6=ncircle("$q_6$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1, q2, q3, q4, q5, q6);
+
+// edges
+draw(pic,
+     (q0..loop(S)).l("\str{1}"),
+     (q0--q1).l("\str{0}"),
+     (q1..bend(-35)..q0).l("$\varepsilon$").style("leftside"),
+     (q1--q2).l("\str{0}"),
+     (q2--q3).l("\str{0}"),
+     (q3..loop(S)).l("\str{0},\str{1}"),
+     (q3--q4).l("\str{0}"),
+     (q4--q5).l("\str{0}"),
+     (q5--q6).l("\str{1}"),
+     (q6..bend(15)..q0).l("$\varepsilon$") 
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3, q4, q5, q6
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ---------------- first two chars equals final two chars -------------
+picture pic;
+int picnum = 12;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting),
+  q3=ncircle("$q_3$", ns_accepting),
+  q4=ncircle("$q_4$"),
+  q5=ncircle("$q_5$"),
+  q6=ncircle("$q_6$"),
+  q7=ncircle("$q_7$", ns_accepting),
+  q8=ncircle("$q_8$"),
+  q9=ncircle("$q_9$"),
+  q10=ncircle("$q_{10}$"),
+  q11=ncircle("$q_{11}$", ns_accepting),
+  q12=ncircle("$q_{12}$"),
+  q13=ncircle("$q_{13}$"),
+  q14=ncircle("$q_{14}$"),
+  q15=ncircle("$q_{15}$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+q1.pos = new_node_pos_h(q0, 45,  1*u);
+hlayout(1*u, q1, q2, q3);
+q4.pos = new_node_pos_h(q0, 25,  1*u);
+hlayout(1*u, q4, q5, q6, q7);
+q8.pos = new_node_pos_h(q0, -22.5,  1*u);
+hlayout(1*u, q8, q9, q10, q11);
+q12.pos = new_node_pos_h(q0, -55,  1*u);
+hlayout(1*u, q12, q13, q14, q15);
+
+// edges
+draw(pic,
+     (q0--q1).l("\str{0}"),
+     (q1--q2).l("\str{0}"),
+     (q2--q3).l("\str{0}"),
+     (q0--q4).l("\str{0}"),
+     (q4--q5).l("\str{1}"),
+     (q5..loop(S)).l("\str{0},\str{1}"),
+     (q5--q6).l("\str{0}"),
+     (q6--q7).l("\str{1}"),
+     (q0--q8).l("\str{1}"),
+     (q8--q9).l("\str{0}"),
+     (q9..loop(S)).l("\str{0},\str{1}"),
+     (q9--q10).l("\str{1}"), 
+     (q10--q11).l("\str{0}"), 
+     (q0--q12).l("\str{1}"),
+     (q12--q13).l("\str{1}"),
+     (q13..loop(S)).l("\str{0},\str{1}"),
+     (q13--q14).l("\str{1}"), 
+     (q14--q15).l("\str{1}")
+    );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2, q3,
+              q4, q5, q6, q7,
+              q8, q9, q10, q11,
+              q12, q13, q14, q15
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ---------------- Even number of 0's or odd number of 1's -------------
+picture pic;
+int picnum = 13;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$", ns_accepting),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$", ns_accepting),
+  q4=ncircle("$q_4$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+q1.pos = new_node_pos_h(q0, 15,  1*u);
+hlayout(1*u, q1, q2);
+q3.pos = new_node_pos_h(q0, -15,  1*u);
+hlayout(1*u, q3, q4);
+
+// edges
+draw(pic,
+     (q0--q1).l("$\varepsilon$"),
+     (q1..loop(N)).l("\str{1}"),
+     (q1..bend..q2).l("\str{0}").style("leftside"),
+     (q2..bend..q1).l("\str{0}"),
+     (q2..loop(E)).l("\str{1}"),
+     (q0--q3).l("\str{1}"),
+     (q3..loop(S)).l("\str{0}"),
+     (q3..bend..q4).l("\str{1}"),
+     (q4..bend..q3).l("\str{1}").style("leftside"),
+     (q4..loop(E)).l("\str{0}")
+     );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2,
+              q3, q4
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

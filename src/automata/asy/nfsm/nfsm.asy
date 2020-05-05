@@ -4303,4 +4303,40 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ---------------- Accept any string except substring bba -------------
+picture pic;
+int picnum = 14;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1, q2);
+
+// edges
+draw(pic,
+     (q0..bend(10)..q1).l("\str{b}").style("leftside"),
+     (q0..bend(25)..q2).l("$\varepsilon$"),
+     (q0..loop(W)).l("\str{a}"),
+     (q1..bend..q0).l("\str{a}"),
+     (q2..loop(E)).l("\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic, q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 

@@ -1781,11 +1781,12 @@ For instance, if you have
 from S you can do two different things;
 which one will work? 
 
-In the grammar section's derivation exercises, we expect that as an 
-intelligent person standing outside the problem we 
+In the grammar section's derivation exercises, we expect that an 
+intelligent person 
 have the insight to guess the right way. 
 However, 
-if instead you were writing a program then you might try every
+if instead you were solving this problem with a program then you might 
+have it try every
 possible case;~you might do a breadth-first traversal of the tree of all
 derivations until you found a success.
 
@@ -1810,41 +1811,51 @@ the start.
 Continue until the desired string~$\sigma$ appears, if it ever does.
 
 The prototypical example is 
-the celebrated Travelling Salesman problem.\index{Travelling Salesman problem@\probname{Travelling Salesman} problem}
-Take a map of the 
-\citetext{roads in the US lower forty eight}{
+the celebrated 
+\citetext{Travelling Salesman problem}{%
+  See 
+  \url{https://nbviewer.jupyter.org/url/norvig.com/ipython/TSP.ipynb}.},\index{Travelling Salesman problem@\probname{Travelling Salesman} problem}
+that of finding the shortest circuit of every city in a list.
+Start with a map of the 
+\citetext{roads in the US lower forty eight states}{
   See \url{https://wiki.openstreetmap.org/wiki/TIGER}.}.
 We want to know if there is a trip that visits each
-state capital and returns back to the start in, say, 
+state capital and returns back to where it began in, say, 
 less than $16\,000$ kilometers.
-We'll start at Montpelier.
-From there, we could fork a process for each potential next capital,
-forty seven of them.
-The process assigned Albany, for instance, would know that the trip so far is
-$126$~kilometers. 
-After that, each child would fork its own child processes, forty six of them.
+We'll start at Montpelier, the capital of Vermont.
+From there, for each potential next capital we could fork a process,
+making forty seven new processes.
+The process that is assigned Concord, New Hampshire, for instance, 
+would know that the trip so far is $188$~kilometers. 
+In the next round, each child would fork its own child processes, 
+forty six of them.
+For instance the process that after Montpelier was assigned Concord
+would have a child assigned to Augusta, Maine and would know that
+so far the trip is $452$~kilometers.
 At the end, if there is
 a trip of less than $16\,000$ kilometers then some process knows it.
-There will be lots of processes and many of them have failed
+There will be lots of processes and many of them will have failed
 to find a short trip, but if even one succeeds then we consider
 the overall search a success.
 
+\margingraphic{0.18\textwidth}{automata/pix/angel.jpg}{\label{fig:Angel}\href{https://en.wikipedia.org/wiki/Angel}{Persian angel, 1555}} % Kneeling Angel from Bukhara School c. 1555-1560. British Museum https://commons.wikimedia.org/wiki/File:Persian_angel_1555.jpg [Public domain], via Wikimedia Commons
 This computation is nondeterministic in that while it is happening
 the machine has many process, and so
 is simultaneously in many different states.
-
-\margingraphic{0.18\textwidth}{automata/pix/angel.jpg}{\label{fig:Angel}\href{https://en.wikipedia.org/wiki/Angel}{Persian angel, 1555}} % Kneeling Angel from Bukhara School c. 1555-1560. British Museum https://commons.wikimedia.org/wiki/File:Persian_angel_1555.jpg [Public domain], via Wikimedia Commons
-This approach suits an unboundedly-parallel machine.
+it perfectly suits an unboundedly-parallel machine, one where any time
+you have a job for an additional computing agent, a CPU, you can allocate 
+one.\footnote{%
+  Alternatively, a single CPU can simulate the children with time-slicing,
+  dovetailing by running each process in succession for a few ticks.
+  This echos our experience with everyday computers, where
+  the machine appears to be
+  in multiple states simultaneously 
+  when we are writing an email in one window 
+  and watching a video in another,
+  although it may in fact be alternating between jobs.}
 Think of such a machine as
 angelic in that whenever it wants more computational resources, 
 such as being able to allocate new children, those resources just appear.
-Alternatively, a single CPU could simulate the children with time-slicing,
-dovetailing by running each process in succession for a few ticks.
-This echos our experience with everyday computers, where
-when we are writing an email in one window 
-and watching a video in another then the machine appears to be
-in multiple states simultaneously, 
-although it may in fact be alternating between jobs.
 
 This section considers nondeterministic Finite State machines.
 (Nondeterministic Turing machines appear in the fifth chapter.)
@@ -1867,7 +1878,7 @@ input then it passes to no state at all.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm00.pdf}}
 \end{center}
-The animation below shows what happens with input \str{00001}. 
+The animation shows what happens with input \str{00001}. 
 We take the computation history as a tree.
 For example, on the first \str{0} the computation splits in two.
 \begin{animatedfigure}{Steps in the nondeterministic computation.} 
@@ -1960,7 +1971,7 @@ We will imagine programming by calling a function, some
   $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''},
 and having the computer somehow guess a successful search sequence.\index{guessing by a machine}
 
-\margingraphic{0.21\textwidth}{automata/pix/flauros.jpg}{\label{fig:Flauros}\href{https://en.wikipedia.org/wiki/List_of_demons_in_the_Ars_Goetia}{The demon Flauros, Duke of Hell}}\index{Flauros!picture} %, gives true answers of all things past, present, and future}} % https://commons.wikimedia.org/wiki/File%3AIll_dict_infernal_p0294-278_flauros_demon.jpg Louis Le Breton [Public domain], via Wikimedia Commons
+\margingraphic{0.22\textwidth}{automata/pix/flauros.jpg}{\label{fig:Flauros}\href{https://en.wikipedia.org/wiki/List_of_demons_in_the_Ars_Goetia}{The demon Flauros, Duke of Hell}}\index{Flauros!picture} %, gives true answers of all things past, present, and future}} % https://commons.wikimedia.org/wiki/File%3AIll_dict_infernal_p0294-278_flauros_demon.jpg Louis Le Breton [Public domain], via Wikimedia Commons
 % \margingraphic{0.25\textwidth}{automata/demon.jpg}{\label{fig:Demon}\href{https://en.wikipedia.org/wiki/The_Nightmare}{\textit{The Nightmare} H~Fuseli, 1781}} % https://upload.wikimedia.org/wikipedia/commons/5/56/John_Henry_Fuseli_-_The_Nightmare.JPG  Henry Fuseli [Public domain], via Wikimedia Commons  (https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror)
 Saying that the machine is guessing is jarring.
 %  since  
@@ -3160,17 +3171,30 @@ for the machine in \cref{ex:TwoOrMoreEpsilonTrans}.
   \end{answer}
 \end{exercise}
 
-\recommended
 \begin{exercise}
   What is the language of this machine?
   \begin{center}
     \includegraphics{automata/asy/nfsm/nfsm29.pdf}
   \end{center}
   \begin{answer}\verified
-    One is
+    One description is
     $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
       \text{$\sigma=\emptystring$
         or $\sigma=\str{0}^i\str{1}^j$ for $i\geq 1$ and~$j\geq 0$}}$.
+  \end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+  What is the language of this nondeterministic machine with
+  $\varepsilon$ transitions?
+  \begin{center}
+    \includegraphics{automata/asy/nfsm/nfsm1014.pdf}
+  \end{center}
+  \begin{answer}\verified
+    It is 
+    $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+      \text{$\sigma$ has no substring \str{bba}}}$.
   \end{answer}
 \end{exercise}
 
@@ -7366,10 +7390,9 @@ and underscore) with \re{\textbackslash w}
 and cover the ASCII non-alphanumeric characters with \re{\textbackslash W}.
 And\Dash the big kahuna\Dash the dot~`\re{.}' is a metacharacter that
 matches any member of the alphabet at all.\footnote{%
-  Programming languages in practice by default have the dot character
+  Programming languages in practice by default have the dot
   match any character except newline.
-  They have a way to make it also match newline
-  if you want.}
+  In adition, they have a way to make it also match newline.}
 We saw the dot in the \str{grep} example that began this discussion.
   
 \begin{example}  \label{ex:CanadianPostCodes}
@@ -7417,6 +7440,12 @@ The scheme described above for representing lists with
 \re{\textbackslash d}, \re{\textbackslash D}, etc\@ is an
 extension of escaping.
 
+% Reference: https://swtch.com/~rsc/regexp/regexp1.html
+Operator precedence is:~repetition binds
+most strongly, then concatenation, and then alternation
+(force different meanings with parentheses).
+Thus, \re{ab*} is equivalent to \re{a(b*)}, and 
+\re{ab|cd} is equivalent to \re{(ab)|(cd)}.
 
 \subsection*{Quantifiers}
 In the theoretical cases we saw earlier,

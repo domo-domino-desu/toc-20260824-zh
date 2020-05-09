@@ -3603,35 +3603,43 @@ In 1951, S~Kleene\footnote{%
   He was a student of Church.} 
 was studying a
 \citetext{mathematical model of neurons}{\autocite{wiki:ArtificialNeuron}}.
-Neurons do not have any scratch memory.
-They just respond to input
-signals arriving from the other neurons to which they are connected.
-Kleene abstracted some aspects of the definition of other researchers to get
-a definition of Finite State machines.
+These are like Finite State machines in that they 
+do not have scratch memory.
+He noted patterns to the languages that are accepted by such devices.
 
-He noted patterns to the languages that are accepted by such machines.
-One of these patterns is the star operator that was later
-named after him.
-He gave the definition in the first subsection below,
-and mathematically justified that with the theorem in the second subsection.
-
-\subsection{Definition}
-This machine
+For instance, this Finite State machine
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa14.pdf}
 \end{center}
 accepts strings that
 have some number of \str{a}'s, followed by one~\str{b},
-followed by some number of \str{a}'s.
-We now give a convenient way, called regular expressions, to
+followed by some more \str{a}'s and one~\str{b}, and then
+followed by more characters.
+Kleene introduced a convenient way, called regular expressions, to
 denote constructs such as ``any number of'' and ``followed by.''
+He gave the definition in the first subsection below,
+and supported it with the theorem in the second subsection.
+
+
+\subsection{Definition}
+% This machine
+% \begin{center}
+%   \includegraphics{automata/asy/fsa/fsa14.pdf}
+% \end{center}
+% accepts strings that
+% have some number of \str{a}'s, followed by one~\str{b},
+% followed by some more \str{a}'s and one~\str{b}, and possibly
+% followed by more characters.
+% We now give a convenient way, called regular expressions, to
+% denote constructs such as ``any number of'' and ``followed by.''
 % We will see strings, called Regular Expressions, that
 % describe languages like this one,
 % languages that are accepted by some Finite State machine.
 %
+A regular expression is a string that describes a language.
 We will introduce these with 
-a few preliminary examples so that the definition will be clearer when it comes.
-These examples use the alphabet $\Sigma=\set{\str{a},\ldots \str{z}}$.
+a few examples.
+These use the alphabet $\Sigma=\set{\str{a},\ldots \str{z}}$.
 
 %<*ex:RegexOne>
 \begin{example}
@@ -3673,11 +3681,15 @@ $\lang=\set{\str{ac}, \str{abc}, \str{abbc},\, \ldots}$.
 
 \begin{example}  \label{ex:RegexABOrCStar}
 There is an interaction between pipe and star.
-The language described by 
-the regular expression \re{a(b|c)*} consists of 
-words starting with $\str{a}$ and ending with any number of
-$\str{b}$'s or $\str{c}$'s.
-The described language mixes the two letters,
+Consider the the regular expression \re{(b|c)*}.
+It could mean either
+`any number of repetitions of picking a \str{b} or~\str{c}'
+or `pick a \str{b} or~\str{c} and repeat that character any number of times'.
+
+The definition has it mean the first.
+Thus the language described by \re{a(b|c)*} consists of 
+words starting with $\str{a}$ and ending with any mixture of
+$\str{b}$'s and~$\str{c}$'s, so that
 $\lang=\set{\str{a}, \str{ab}, \str{ac}, 
              \str{abb}, \str{abc}, \str{acb}, \str{acc},\, \ldots}$.
 
@@ -3689,13 +3701,19 @@ $\hat{\lang}=\set{\str{a},
 use the regular expression \re{a(b*|c*)}. 
 \end{example}
 
+\index{regular expression!operator precedence}
+That is, the rules for operator
+precedence are:~star binds most tightly, then concatentation, then
+the pipe alternation operator,~\re{|}.
+To get another order, use parentheses.
+
 % \begin{example}
 % For the machine that opened this subsection, the
 % regular expression~\re{a*ba*} describes the language that the 
 % machine accepts.
 % \end{example}
 
-We first describe the syntax of regular expressions.
+% We first describe the syntax of regular expressions.
 
 \begin{definition}\index{regular expression} \label{def:RESyntax}
 %<*def:RESyntax>
@@ -3715,27 +3733,29 @@ We first describe the syntax of regular expressions.
                        \othersyntax \trm{(} \ntrm{regex} \trm{)}
                        
 \ntrm{char} \produces{} $\emptyset$ \syntaxor \emptystring   
-                    \othersyntax $x_0$ \syntaxor $x_1$ \syntaxor \ldots{}
+                    \syntaxor $x_0$ \syntaxor $x_1$ \syntaxor \ldots{}
 \end{grammar}
 where the $x_i$ characters are members of the alphabet 
 $\Sigma$.\footnotemark[1] 
 %</def:RESyntax>
 \end{definition}\footnotetext[1]{%
-  As we often do in grammars,
-  we use the pipe symbol~\re{|} as a metacharacter,
+  As we have done with other grammars,
+  here we use the pipe symbol~\re{|} as a metacharacter,
   to collapse rules with the same left side.
-  But pipe also appears in regular expressions themselves.
+  But pipe also appears in regular expressions.
   For that usage
-  it is wrapped in single quotes.}
+  we wrap it in single quotes, as \protect\smash{`\protect\trm{|}'}.}
 
-\index{regular expression!operator precedence}
-To cut down on parentheses we must establish operator
-precedence:~star binds most tightly, then concatentation, then
-the pipe alternation operator,~\re{|}.
-We use parentheses when needed, as in \cref{ex:RegexABOrCStar}.
-
-As to their semantics, what they mean,\index{regular expression!semantics}
+As to their semantics, 
+what regular expressions mean,\index{regular expression!semantics}
 we will define that recursively.
+% A regular expression is a string that describes a language.
+We start with the bottom line, the single-character regular expressions,
+and give the language that each describes.
+We will then do the forms on
+the other lines, for each interpreting it as the description of a 
+language.
+
 %<*discussion:RESemantics>
 The language described by the single-character
 regular expression \re{$\emptyset$} is
@@ -3744,43 +3764,43 @@ The language described by the regular expression consisting
 of only the character~\re{$\emptystring$}
 is the one-element language consisting of only the empty string, 
 $\lang(\varepsilon)=\set{\emptystring}$.
-If a regular expression consists of just one character from the alphabet
-then the language it describes by contains only one string and that
-string has only that single character:
-where $\str{a}\in \Sigma$,
-we have $\lang(\str{a})=\set{\str{a}}$.
+If the regular expression consists of just one character 
+from the alphabet~$\Sigma$
+then the language that it describes contains only one string and that
+string has only that single character, 
+as in $\lang(\str{a})=\set{\str{a}}$.
 
 We finish by defining the semantics of the operations.
-We denote the language associated with the regular expression~$R$
-as $\lang(R)$.
-Then the pipe symbol means the union of the languages
+Start with regular expressions $R$ and~$\hat{R}$
+describing languages $\lang(R)$ and~$\lang(\hat{R})$.
+Then the pipe symbol describes the union of the languages, so that
 $\lang(R|\hat{R})=\lang(R)\cup\lang(\hat{R})$.
 Concatenation of the regular expressions
-means concatenation of the languges
+means concatenation of the languages,
 $\lang(R\concat\hat{R})=\lang(R)\concat\lang(\hat{R})$.
-And, the Kleene star\index{Kleene star} 
+And, the Kleene star\index{Kleene star!regular expression} 
 of the regular expression  
 describes the star of the language,
-$\lang(\kleenestar{R})=\kleenestar{\lang(R)}$.
+$\lang(\kleenestar{R})=\kleenestar{\lang(R)}\!$.
 %</discussion:RESemantics>
 
 \begin{example}
-Let $\Sigma=\set{\str{a},\str{b}}$.
-Consider the regular expression \re{aba*}.  
+Consider the regular expression \re{aba*} over $\Sigma=\set{\str{a},\str{b}}$.  
 It is the concatenation of \re{a}, \re{b}, 
 and \re{a*}.
 The first describes the single-element language $\lang(\str{a})=\set{\str{a}}$.
-Likewise the second describes $\lang(\str{b})=\set{\str{b}}$.
-Together, the string \re{ab} describes the concatenation of the languages.
-\begin{equation*}
+Likewise, the second describes $\lang(\str{b})=\set{\str{b}}$.
+Thus, the string \re{ab} describes the concatenation of the languages.
+\begin{align*}
   \lang(\str{a})\concat \lang(\str{b})
-  =\set{\sigma\in\kleenestar{\Sigma}\suchthat
-    \text{$\sigma=\sigma_0\concat\sigma_1$ where $\sigma_0\in\lang(\str{a})$ and $\sigma_1\in\lang(\str{b})$}}
-  =\set{\str{ab}}
-\end{equation*}
-The regular expression \re{a*} describes
+  &=\set{\sigma\in\kleenestar{\Sigma}\suchthat
+    \text{$\sigma=\sigma_0\concat\sigma_1$ where $\sigma_0\in\lang(\str{a})$ and $\sigma_1\in\lang(\str{b})$}}          \\
+  &=\set{\str{ab}}
+\end{align*}
+The regular expression \re{a*} describes the star of the language
+$\lang(\str{a})$, namely
 $\lang(\re{a*})=\set{\str{a}^n\suchthat n\in\N}$.
-Concatenating it to the language in the prior equation gives this.
+Concatenating it with the language in the prior equation gives this.
 \begin{align*}
   \lang(\re{aba*})
   &=\set{\sigma\in\kleenestar{\Sigma}\suchthat
@@ -3791,9 +3811,9 @@ Concatenating it to the language in the prior equation gives this.
 \end{align*}
 \end{example}
 
-We will illustrate with some constructs that appear often in building regular 
-expressions.
-These examples use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
+We finish this subsection  
+with some constructs that appear often.
+These use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
 
 %<*ex:RegexThree>
 \begin{example}
@@ -3815,8 +3835,9 @@ The language consisting of three-letter words ending in \str{bc} is
 $\set{\str{abc}, \str{bbc}, \str{cbc}}$.
 The regular expression \re{(a|b|c)bc} describes it.
 %</ex:RegexFive>
-(If the alphabet is large then listing all characters is
-impractical; see the Extra section on Extended Regular Expressions.)
+(In practice the alphabet can be very large so that 
+listing all of the characters is
+impractical; for this, see \cref{extra:Regexs}.)
 \end{example}
 
 %<*ex:RegexFour>
@@ -7310,7 +7331,7 @@ Define when a machine accepts a string.
 
 
 % ========================================
-\extra{Regular expressions in the wild}\index{regular expressions!in practice|(}
+\extra{Regular expressions in the wild}\index{regular expressions!in practice|(}\label{extra:Regexs}
 Regular expressions are often used in practice.
 For instance, imagine that you need to  search a web server log for
 the names of all the PDF's downloaded from a subdirectory.

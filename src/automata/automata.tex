@@ -3771,17 +3771,17 @@ string has only that single character,
 as in $\lang(\str{a})=\set{\str{a}}$.
 
 We finish by defining the semantics of the operations.
-Start with regular expressions $R$ and~$\hat{R}$
-describing languages $\lang(R)$ and~$\lang(\hat{R})$.
+Start with regular expressions $R_0$ and~$R_1$
+describing languages $\lang(R_0)$ and~$\lang(R_1)$.
 Then the pipe symbol describes the union of the languages, so that
-$\lang(R|\hat{R})=\lang(R)\cup\lang(\hat{R})$.
+$\lang(R_0|R_1)=\lang(R_0)\cup\lang(R_1)$.
 Concatenation of the regular expressions
-means concatenation of the languages,
-$\lang(R\concat\hat{R})=\lang(R)\concat\lang(\hat{R})$.
+describes concatenation of the languages,
+$\lang(R_0\concat R_1)=\lang(R_0)\concat\lang(R_1)$.
 And, the Kleene star\index{Kleene star!regular expression} 
 of the regular expression  
 describes the star of the language,
-$\lang(\kleenestar{R})=\kleenestar{\lang(R)}\!$.
+$\lang(\kleenestar{R_0})=\kleenestar{\lang(R_0)}\!$.
 %</discussion:RESemantics>
 
 \begin{example}
@@ -3790,9 +3790,10 @@ It is the concatenation of \re{a}, \re{b},
 and \re{a*}.
 The first describes the single-element language $\lang(\str{a})=\set{\str{a}}$.
 Likewise, the second describes $\lang(\str{b})=\set{\str{b}}$.
-Thus, the string \re{ab} describes the concatenation of the languages.
+Thus, the string \re{ab} describes the concatenation of the two,
+another one-element language.
 \begin{align*}
-  \lang(\str{a})\concat \lang(\str{b})
+  \lang(\str{ab})=\lang(\str{a})\concat \lang(\str{b})
   &=\set{\sigma\in\kleenestar{\Sigma}\suchthat
     \text{$\sigma=\sigma_0\concat\sigma_1$ where $\sigma_0\in\lang(\str{a})$ and $\sigma_1\in\lang(\str{b})$}}          \\
   &=\set{\str{ab}}
@@ -3800,7 +3801,7 @@ Thus, the string \re{ab} describes the concatenation of the languages.
 The regular expression \re{a*} describes the star of the language
 $\lang(\str{a})$, namely
 $\lang(\re{a*})=\set{\str{a}^n\suchthat n\in\N}$.
-Concatenating it with the language in the prior equation gives this.
+Concatenating it with $\lang(\str{ab})$ gives this.
 \begin{align*}
   \lang(\re{aba*})
   &=\set{\sigma\in\kleenestar{\Sigma}\suchthat
@@ -3813,12 +3814,12 @@ Concatenating it with the language in the prior equation gives this.
 
 We finish this subsection  
 with some constructs that appear often.
-These use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
+These examples use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
 
 %<*ex:RegexThree>
 \begin{example}
-Describe the language consisting of strings of \str{a}'s whose length is a multiple of
-three,
+Describe the language consisting of strings of \str{a}'s whose 
+length is a multiple of three,
 $\lang=\set{a^{3k}\suchthat k\in\N}=\set{\emptystring,\str{aaa},\str{aaaaaa},\,\ldots}$, 
 with the regular expression \re{(aaa)*}.
 \end{example}
@@ -3837,19 +3838,19 @@ The regular expression \re{(a|b|c)bc} describes it.
 %</ex:RegexFive>
 (In practice the alphabet can be very large so that 
 listing all of the characters is
-impractical; for this, see \cref{extra:Regexs}.)
+impractical; see \cref{extra:Regexs}.)
 \end{example}
 
 %<*ex:RegexFour>
 \begin{example}
-Describe the language of strings that have any number
+The regular expression \re{a*($\emptystring$|b)} describes the language 
+of strings that have any number
 of \str{a}'s and optionally end in one~\str{b},
-$\lang=\set{\emptystring,\str{b},\str{a},\str{ab},\str{aa},\str{aab},\ldots}$,
-with the regular expression \re{a*($\emptystring$|b)}.
+$\lang=\set{\emptystring,\str{b},\str{a},\str{ab},\str{aa},\str{aab},\ldots}$.
  
 Similarly, to describe the language consisting of words with 
 between three and five $\str{a}$'s,
-$\lang=\set{\str{aaa}, \str{aaaa}, \str{aaaaa}}$,
+$\lang=\set{\str{aaa}, \str{aaaa}, \str{aaaaa}}$ we can 
 use \re{aaa(\emptystring|a|aa)}.
 \end{example}
 %</ex:RegexFour>
@@ -3860,10 +3861,11 @@ The language
 $\set{\str{b},\str{bc},\str{bcc},
              \str{ab},\str{abc},\str{abcc},
              \str{aab},\,\ldots}$
-consisting of words starting with any number of $\str{a}$'s
-(including possibly zero-many \str{a}'s),
+has words starting with any number of $\str{a}$'s
+(including zero-many \str{a}'s),
 followed by a single~$\str{b}$, and then ending in fewer than three
-$\str{c}$'s is described by 
+$\str{c}$'s. 
+To describe it we can use 
 \re{a*b(\emptystring|c|cc)}. 
 \end{example}
 %</ex:RegexSix>
@@ -3873,8 +3875,8 @@ $\str{c}$'s is described by
 
 % -----------------------------------------
 \subsection{Kleene's Theorem}\index{Kleene's theorem|(}
-Our study of regular expressions is justified by the next result, that
-they describe the languages of interest.
+The next result justifies our study of regular expressions because it shows 
+that they describe the languages of interest.
 
 %<*th:KleenesTheorem>
 \begin{theorem}[Kleene's theorem]\index{Kleene's theorem} 
@@ -3885,8 +3887,8 @@ they describe the languages of interest.
 %</th:KleenesTheorem>
 
 We will prove this in separate halves.
-These halves use nondeterministic machines but since we can convert
-those to deterministic machines, the result holds for those machines.
+The proofs use nondeterministic machines but since we can convert
+those to deterministic machines, the result holds there also.
 
 %<*lem:KleenesThmRegexToMachine>
 \begin{lemma} \label{lem:KleenesThmRegexToMachine}
@@ -3922,39 +3924,34 @@ those to deterministic machines, the result holds for those machines.
   \end{center}
 
 %<*pf:KleenesThmRegexToMachineii>
-  To finish, we handle the three operations.
-  % Assume that $R$ is constructed as in \cref{def:RESyntax} and
-  % take the inductive hypothesis that its components satisfy the lemma.
-  % There is a case for each operation.
-  First consider alternation; suppose that 
-  $R=\re{$R_0$|$R_1$}$, where $R_0$ and~$R_1$ are regular.
-  By the inductive assumption there
-  is a machine $\FSM_0$ whose language is described by
+  We finish by handling the three operations.
+  Let $R_0$ and~$R_1$ be regular expressions; the inductive hypothesis
+  gives a machine $\FSM_0$ whose language is described by
   $R_0$ and a machine~$\FSM_1$ whose language is described by $R_1$.
+
+  First consider alternation, $R=\re{$R_0$|$R_1$}$. 
   Create the machine accepting the language described by $R$ by
   joining those two machines in parallel:~introduce
   a new state $s$ and use $\varepsilon$
   transitions to connect~$s$ to the start states of $\FSM_0$ and $\FSM_1$. 
   See \cref{ex:NFSMJoinParallel}.
 
-  The next case is that
+  Next consider concatenation, 
   $R=R_0\concat R_1$.
-  The inductive hypothesis gives
-  a machine for each, $\FSM_0$ and~$\FSM_1$.
-  Join those two serially:~for
+  Join the two machines serially:~for
   each accepting state in $\FSM_0$, make
   an $\varepsilon$ transition to the start state of $\FSM_1$
   and then convert all those accepting states of $\FSM_0$ to be
   non-accepting states. 
   See \cref{ex:NFSM:JoinSerial}.
   
-  The final case is that
+  Finally consider Kleene star, 
   $R=\re{($R_0$)*}$.
   % As in \cref{ex:EpsilonTransMakeKleeneStar},
-  Take the machine~$\FSM_0$ accepting $R_0$ and for each accepting state
-  that is not the start state, make an $\varepsilon$ transition to
-  the start state.
-  Make the start state an accepting state.
+  For each accepting state in the machine~$\FSM_0$
+  that is not the start state make an~$\varepsilon$ transition to
+  the start state, and then
+  make the start state an accepting state.
   See \cref{ex:EpsilonTransMakeKleeneStar}.
 %</pf:KleenesThmRegexToMachineii>
 \end{proof}
@@ -3993,11 +3990,10 @@ process that we saw in the prior section.
 \end{lemma}
 %</lem:KleenesThmMachineToRegex>
 
-Our strategy is to start with a Finite State machine and eliminate its states
-one at a time, keeping the accepted language the same.
-Below is an illustration, before and after pictures of part of a larger machine
-where we eliminate the
-state~$q$.
+Our strategy starts with a Finite State machine and eliminates its states
+one at a time.
+Below is an illustration, before and after pictures of part of a larger machine,
+where we eliminate the state~$q$.
 \begin{center}
 \includegraphics{automata/asy/nfsm/nfsm35.pdf}
 \hspace{3em}
@@ -4007,13 +4003,15 @@ In the after picture the edge is labelled~\re{ab}, with more
 than just one character.
 For the proof we will generalize transition graphs to allow
 edge labels that are regular expressions.
-We will eliminate states until there are only two left, with one edge
-between them, and that edge will be labelled with the desired expression.
+We will eliminate states , keeping the accepted language the same.
+We will be done when there remain only two states, with one edge
+between them. 
+That edge's label is the desired regular expression.
 
 Before the proof, an example.
 Consider the machine on the left below.
-Take \re{A}, \re{B}, \re{C}, and~\re{D} to be
-regular expressions.
+% Take \re{a}, \re{b}, \re{c}, and~\re{d} to be
+% regular expressions.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm64.pdf}}
   \hspace{3em}

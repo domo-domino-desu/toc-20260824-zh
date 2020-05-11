@@ -2073,7 +2073,7 @@ node q1=ncircle("$q_1$",ns_accepting);
 node q2=ncircle("$q_2$"); 
 
 // calculate nodes position
-real u=1.5cm;  // horizontal  
+real u=1.25cm;  // horizontal  
 real v=1.0*u;  // vertical
 hlayout(2*u, q0, q1);
 q2.pos = new_node_pos_h(q0, 45, 1*u);
@@ -2111,7 +2111,7 @@ node e=ncircle("$e$");
 node f=ncircle("$f$",ns_accepting); 
 
 // calculate nodes position
-real u=1.5cm;  // horizontal  
+real u=1.25cm;  // horizontal  
 real v=1.0*u;  // vertical
 hlayout(2*u, q0, q1);
 hlayout(-1*u, q0, e);
@@ -2153,7 +2153,7 @@ node e=ncircle("$e$");
 node f=ncircle("$f$",ns_accepting); 
 
 // calculate nodes position
-real u=1.5cm;  // horizontal  
+real u=1.25cm;  // horizontal  
 real v=1.0*u;  // vertical
 hlayout(2*u, q0, q1);
 hlayout(-1*u, q0, e);
@@ -2190,7 +2190,7 @@ node e=ncircle("$e$");
 node f=ncircle("$f$",ns_accepting); 
 
 // calculate nodes position
-real u=1.5cm;  // horizontal  
+real u=1.25cm;  // horizontal  
 real v=1.0*u;  // vertical
 hlayout(3*u, q0, f);
 hlayout(-1*u, q0, e);
@@ -2225,7 +2225,7 @@ node e=ncircle("$e$");
 node f=ncircle("$f$",ns_accepting); 
 
 // calculate nodes position
-real u=1.5cm;  // horizontal  
+real u=1.25cm;  // horizontal  
 real v=1.0*u;  // vertical
 hlayout(4*u, e, f);
 

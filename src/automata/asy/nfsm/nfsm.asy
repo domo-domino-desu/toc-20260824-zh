@@ -4666,6 +4666,375 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ============= subset method exercise ================
+// part A
+picture pic;
+int picnum = 23;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, f);
+
+// draw edges
+draw(pic,
+     (e--f).l("\re{a|b}"),  // bug for one-edge graphs
+     (e--f).l("\re{a|b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................. A second ....................
+picture pic;
+int picnum = 24;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, f);
+
+// draw edges
+draw(pic,
+     (e..bend(20)..f).l("\re{a}"),  // bug for one-edge graphs
+     (e..bend(-20)..f).l("\re{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ part B ................
+picture pic;
+int picnum = 25;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, f);
+
+// draw edges
+draw(pic,
+     (e--f).l("\re{ca*}"),  // bug for one-edge graphs
+     (e--f).l("\re{ca*}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............ part B second ................
+picture pic;
+int picnum = 26;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node q0=ncircle("$q_0$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("\re{c}"), 
+     (q0--f).l("\re{a*}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ part B third ................
+picture pic;
+int picnum = 27;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, q1, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("\re{c}"), 
+     (q0--q1).l("\re{$\varepsilon$}"),
+     (q1..loop(N)).l("\re{a}"),
+     (q1--f).l("\re{$\varepsilon$}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, q1, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............ part C ................
+picture pic;
+int picnum = 28;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1.25*u, e, f);
+
+// draw edges
+draw(pic,
+     (e--f).l("\re{(a|b)c*}"),  // bug for one-edge graphs
+     (e--f).l("\re{(a|b)c*}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ part C second ................
+picture pic;
+int picnum = 29;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$");
+node q0=ncircle("$q_0$");
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("\re{(a|b)}"), 
+     (q0--f).l("\re{c*}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ part C third ................
+picture pic;
+int picnum = 30;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$");
+node q0=ncircle("$q_0$");
+node q1=ncircle("$q_1$");
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, q1, f);
+
+// draw edges
+draw(pic,
+     (e..bend(20)..q0).l("\re{a}"), 
+     (e..bend(-20)..q0).l("\re{b}"),
+     (q0--q1).l("\re{$\varepsilon$}"),
+     (q1..loop(N)).l("\re{c}"),
+     (q1--f).l("\re{$\varepsilon$}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, q1, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ part D ................
+picture pic;
+int picnum = 31;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1.5*u, e, f);
+
+// draw edges
+draw(pic,
+     (e--f).l("\re{(a|b)(b*|a*)}"),  // bug for one-edge graphs
+     (e--f).l("\re{(a|b)(b*|a*)}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ part D second ................
+picture pic;
+int picnum = 32;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node q0=ncircle("$q_0$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("\re{(a|b)}"),  // bug for one-edge graphs
+     (q0--f).l("\re{(b*|a*)}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............ part D third ................
+picture pic;
+int picnum = 33;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node q0=ncircle("$q_0$"); 
+// node q1=ncircle("$q_1$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, f);
+
+// draw edges
+draw(pic,
+     (e..bend(20)..q0).l("\re{a}"),  
+     (e..bend(-20)..q0).l("\re{b}"),  
+     (q0..bend(20)..f).l("\re{b*}"), 
+     (q0..bend(-20)..f).l("\re{a*}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ............ part D fourth ................
+picture pic;
+int picnum = 34;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node e=ncircle("$e$"); 
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0);
+q1.pos = new_node_pos_h(q0, 15, 1*u);
+q2.pos = new_node_pos_h(q0, -15, 1*u);
+hlayout(2*u, q0, f);
+
+// draw edges
+draw(pic,
+     (e..bend(20)..q0).l("\re{a}"),  
+     (e..bend(-20)..q0).l("\re{b}"),  
+     (q0--q1).l("\re{$\varepsilon$}"),
+     (q1..loop(N)).l("\re{b}"),
+     (q1--f).l("\re{$\varepsilon$}"),
+     (q0--q2).l("\re{$\varepsilon$}"),
+     (q2..loop(S)).l("\re{a}"),
+     (q2--f).l("\re{$\varepsilon$}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, q1, q2, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

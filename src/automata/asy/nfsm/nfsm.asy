@@ -4446,3 +4446,151 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ============== Kleene's Theorem; eliminate three states exercise ======
+picture pic;
+int picnum = 17;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, q1, q2, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("$\varepsilon$"),
+     (q0--q1).l("\re{1}"),
+     (q0..loop(N)).l("\re{0|1}"),
+     (q1--q2).l("\re{1}"),
+     (q2--f).l("$\varepsilon$")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     q0,
+     q1,
+     q2,
+     f
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................ after elimination of q0 ..........
+picture pic;
+int picnum = 18;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1.5*u, e, q1, q2, f);
+hlayout(1*u, q1, q2, f);
+
+// draw edges
+draw(pic,
+     (e--q1).l("\re{$\varepsilon$(0|1)*1}"),
+     (q1--q2).l("\re{1}"),
+     (q2--f).l("$\varepsilon$")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     q1,
+     q2,
+     f
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................ after elimination of q1 ..........
+picture pic;
+int picnum = 19;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// node q0=ncircle("$q_0$"); 
+// node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1.5*u, e, q2);
+hlayout(1*u, q2, f);
+
+// draw edges
+draw(pic,
+     (e--q2).l("\re{$\varepsilon$(0|1)*11}"),
+     (q2--f).l("$\varepsilon$")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     q2,
+     f
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................ after elimination of q2 ..........
+picture pic;
+int picnum = 20;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// node q0=ncircle("$q_0$"); 
+// node q1=ncircle("$q_1$"); 
+// node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1.5*u, e, f);
+
+// draw edges
+draw(pic,
+     (e--f).l("\re{$\varepsilon$(0|1)*11$\varepsilon$}"),  // bug in one-edge machine drawings
+     (e--f).l("\re{$\varepsilon$(0|1)*11$\varepsilon$}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     f
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

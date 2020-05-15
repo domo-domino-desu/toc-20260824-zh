@@ -4376,5 +4376,73 @@ draw(pic, q0, q1, q2
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ============== Kleene's Theorem; eliminate states exercise ======
+picture pic;
+int picnum = 15;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, q1, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("$\varepsilon$"),
+     (q0..bend..q1).l("\re{a}").style("leftside"),
+     (q0..loop(N)).l("\re{a|b}"),
+     (q0..bend..f).l("$\varepsilon$"),
+     (q1..bend..q0).l("\re{b}") 
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     q0,
+     q1,
+     f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .............. after eliminating q0 ..............
+picture pic;
+int picnum = 16;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q1, f);
+
+// draw edges
+draw(pic,
+     (e--q1).l("\re{$\varepsilon$(a|b)*a}").style("leftside"),
+     (e..bend..f).l("\re{$\varepsilon$(a|b)*$\varepsilon$}"),
+     (q1..loop(N)).l("\re{b(a|b)*a}"),
+     (q1--f).l("\re{b(a|b)*$\varepsilon$}").style("leftside") 
+     );
+
+// draw nodes after edges
+draw(pic,
+     e,
+     q1,
+     f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 

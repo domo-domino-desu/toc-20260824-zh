@@ -9,6 +9,15 @@
       (printf " ~a" (regexp-match? r s)))
       (newline)))
 
-(define s '("" "a" "b" "aa" "ab" "ba" "bb" "aaa" "aab" "aba" "abb" "baa" "bab" "bba" "bbb"))
-(define r '(#rx"^a*b$" #rx"^a*$" #rx"^z$" #rx"^$" #rx"^b(a|b)a$" #rx"^(a|b)(|a)a$"))
-(test-strings-against-regexes s r)
+;; Every a is immediately preceeded and immediately followed by a b
+(define r #rx"^((ba)*bb*)*$")
+(module+ test
+  (check-true (regexp-match? r "babbabbb"))
+  (check-true (regexp-match? r "babab"))
+  (check-true (regexp-match? r "bbbbbbabab"))
+  (check-true (regexp-match? r "bbbabbabbb"))
+  (check-true (regexp-match? r ""))
+  (check-false (regexp-match? r "baab"))
+  (check-false (regexp-match? r "ab"))
+  (check-false (regexp-match? r "a"))
+  )

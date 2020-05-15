@@ -4076,29 +4076,20 @@ starting machine.
   Along the same lines, 
   if a state node~$q$ is not reachable from the start~$e$ then
   can drop that node along with its incoming and outgoing edges.
-  (Construct the set of reachable states as follows.
-  Begin with $S_0=\set{e}$.
-  Find all states reachable from $e$ in a single transition
-  by following every edge out of it, $\varepsilon$ or not,  to get
-  $S_1=\set{e,q_{1,0}, \ldots\,q_{1,k}}$.
-  Then iterate:~starting with a set~$S_i$ of nodes that are
-  reachable in $i$-many steps,
-  for each $q\in S_i$ follow each outbound edge for a single step.
-  The collection of the nodes reached in this way is~$S_{i+1}$.
-  Stop the iteration
-  when $S_i=S_{i+1}$, at which point it is the set of ever-reachable
-  states.
-  The unreachable ones are the others.)
+  (The idea of unreachable is clear but for a formal definition 
+  see \Cref{exer:UnreachableStates}.)
   
   With that, $\hat{\FSM}$ is ready for state elimination.
   Below are 
   \citetext{before and after pictures}{%
     This diagram is derived from \autocite{HopcroftUllman}.}.
-  The before picture shows a state~$q$ with an edge leading into 
-  it and edges leading away 
-  (by the setup work above, $q$ has at least one incoming and at least one 
-  outgoing edge),
-  and which may also have a loop.
+  The before picture shows a state~$q$ to be eliminated.
+  There are states $q_{i_0}$, \ldots{} $q_{i_j}$ with an edge leading into~$q$, 
+  and states $q_{o_0}$, \ldots{} $q_{o_k}$ that receive an edge leading out
+  of~$q$. 
+  (By the setup work above, $q$ has at least one incoming and at least one 
+  outgoing edge.)
+  In addition, $q$ may have a loop.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm37.pdf}}
     \hspace{2.5em}
@@ -4109,6 +4100,7 @@ starting machine.
   pictures equal some shown on the right.
   For example, possibly $q_{i_0}$ equals~$q_{o_0}$.
   If so then the shown edge $R_{i_0,o_0}$ is a loop.)
+
   Eliminate $q$ and the associated edges by making the replacements
   shown in the after picture.
   Observe that the set of strings taking the machine from any incoming
@@ -4252,7 +4244,7 @@ For these regular expressions and for each element of
   \item \re{b(a|b)a}
   \item \re{(a|b)($\emptystring$|a)a}
   \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
   \figureref{fig:StringsMatchRegularExprs} shows the table.
   \begin{figure}
     \centering
@@ -4313,7 +4305,7 @@ For these regular expressions and for each element of
   \item \re{0(0|1)*}
   \item \re{(100)($\emptystring$|1)0*}
   \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
   \figureref{fig:StringsMatchRegularExprsii} shows the table.
   \begin{figure}
     \centering
@@ -4365,27 +4357,82 @@ For these regular expressions and for each element of
 
 \recommended
 \begin{exercise}
-A friend says to you, ``Kleene star means `match the inside and repeat' so 
+A friend says to you, ``The point of parentheses is that you first do inside the
+parentheses and then do what's outside.
+So Kleene star means `match the inside and repeat', and 
 the regular expression \re{(0*1)*} matches
 the strings \str{001001} and~\str{010101} 
 but not \str{01001} and~\str{00000101}, where the substrings 
 are unequal.''
 Straighten them out.
-\begin{answer}
-The semantics of the star operator is that the language of the
-star is the star of the language:~$\lang(\kleenestar{R})=\kleenestar(\lang(R))$.
-This is the definition of the star of the language. 
-\begin{equation*}
-\kleenestar{\lang(R)}
-  =\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \text{$k\in\N$ and $\sigma_0,\ldots,\sigma_{k-1}\in\lang(R)$}}
-\end{equation*}
-Thus \re{(0*1)*} matches \str{01001} because
-$\str{01001}=\str{01}\concat\str{001}$, and both of 
-\str{01} and~\str{001} matches \re{(0*1)}.
-So Kleene star means something more like
-``repeatedly match the inside.''
+\begin{answer}\verified
+  The definition is  
+  $
+  \kleenestar{\lang(R)}
+    =\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \text{$k\in\N$ and $\sigma_0,\ldots,\sigma_{k-1}\in\lang(R)$}}
+  $.
+  That is, the language of the
+  star is the star of the 
+  language:~$\lang(\kleenestar{R})=\kleenestar{(\lang(R))}$.
+
+  As an example, \re{(0*1)*} matches \str{01001} because
+  $\str{01001}=\str{01}\concat\str{001}$, and both of 
+  \str{01} and~\str{001} matches \re{(0*1)}.
+  Thus, Kleene star means something more like
+  ``repeatedly match the inside.''
 \end{answer}
 \end{exercise}
+% Using regular-expressions.rkt
+% (let ([s '("001001" "010101" "01001" "00000101")]
+%         [r '(#rx"^(0*1)*$")])
+%     (test-strings-against-regexes s r))
+
+%  001001 #t
+%  010101 #t
+%  01001 #t
+%  00000101 #t
+
+\begin{exercise}
+  Produce a regular expression for the language of bitstrings
+  with a substring consisting of at least three consecutive \str{1}'s.
+\begin{answer}\verified
+  One is \re{(0|1)*111(0|1)*}.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Someone who sits behind you in class says, ``I don't get it. 
+I got a regular expression that I am sure is right.
+But the book got a different one.''
+Explain what is up.
+\begin{answer}
+  Regular expressions are not unique.
+  For instance, here are two regular expressions for the language 
+  of strings over $\Sigma=\set{\str{a},\str{b}}$ that have a substring
+  with at least three \str{a}'s:~\re{(a|b)*aaa(a|b)*}
+  and \re{(a|b)*aaaa*(a|b)*}.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+  Give a regular expression for the language over
+  $\Sigma=\set{\str{a},\str{b},\str{c}}$
+  whose strings are missing at least one letter,
+  that is, the strings that are either without any \str{a}'s,
+  or without any \str{b}'s, or without any \str{c}'s.
+\begin{answer}
+\re{((a|b)*)|((a|c)*)|((b|c)*)}  
+\end{answer}
+\end{exercise}
+  
+% \begin{exercise}
+%   Produce a regular expression for the language of bitstrings
+%   such that the number of \str{1}'s is a multiple of four.
+% \begin{answer}
+%   For the number of \str{1}'s to be a multiple of four, take the
+%   \str{1}'s in groups of four, as in \re{(0*10*10*10*1)*0*}.  
+% \end{answer}
+% \end{exercise}
   
 \begin{exercise}  % HMU p 88
 Give a regular expression for each language.
@@ -4401,10 +4448,30 @@ Use $\Sigma=\kleenestar{\set{\str{a},\str{b}}}$.
 \begin{exparts}
 \item \re{b(a|b)*}
 \item \re{(a|b)*a(a|b)}
-\item \re{(a|b)*(a(a|b)*b|b(a|b)*a)(a|b)*}
-\item \re{(b*ab*ab*ab*)*}
-% \item \re{b*(a|b|\emptystring)(b|ab)*(a|\emptystring)}
+\item The two characters could come in the order 
+$\ldots{}\str{a}\ldots{}\str{b}\ldots{}$ or the order
+$\ldots{}\str{a}\ldots{}\str{b}\ldots{}$.
+So this works:
+\re{(a|b)*((a(a|b)*b)|(b(a|b)*a))(a|b)*}.
+\item The \str{a}'s must come in triplets: \re{(b*ab*ab*ab*)*b*}.
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Give a regular expression to describe each language over
+the alphabet $\Sigma=\set{\str{a},\str{b},\str{c}}$.
+\begin{exparts*}
+\item The set of strings starting with \str{aba}.
+\item The set of strings ending with \str{aba}.
+\item The set of strings containing the substring \str{aba}.
+\end{exparts*}
+\begin{answer}\verified
+  \begin{exparts}
+  \item \re{aba(a|b)*}
+  \item \re{(a|b)*aba}
+  \item \re{(a|b)*aba(a|b)*}
+  \end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -4417,34 +4484,20 @@ Give a regular expression to describe each language over $\B$.
 \item The set of strings where no two adjacent characters are equal.
 \item The set of strings representing in binary multiples of eight.
 \end{exparts*}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-  Give a regular expression for the set of bitstrings whose number of \str{0}'s
-  is even.
-  Give a regular expression for the set of bitstrings whose number of
-  \str{1}'s is greater than 2.
-  Give a regular expression for the set of bitstrings whose number of \str{0}'s
-  is even and whose number of \str{1}'s is greater than 2.
-  \begin{answer}
-  For the first, \re{(1*01*01*)*}.
-  For the second, \re{0*11*0*11*0*11*(0|1)*}.
-  For the last, use this.
-  \begin{equation*}
-    (1*01*01*)*(1|010)1*(1*01*01*)*(1|010)1*(1*01*01*)*(1|010)1*((1*01*01*)*(1|010)1*)*
-  \end{equation*}
-  \end{answer}
-\end{exercise}
-
-\begin{exercise}
-Give a regular expression to describe each language over
-the alphabet $\Sigma=\set{\str{a},\str{b},\str{c}}$.
-\begin{exparts*}
-\item The set of strings starting with \str{aba}.
-\item The set of strings ending with \str{aba}.
-\item The set of strings containing the substring \str{aba}.
-\end{exparts*}
+\begin{answer}
+  \begin{exparts}
+  \item There must be at least one~\str{1}, and more \str{1}'s must come in 
+  pairs:~\re{(0*10*1)*0*10*}.
+  \item The regular expression \re{(\emptystring|1)(01)*(\emptystring|0)}
+  will do.
+  Note that it matches the empty string, as well as the string~\str{0}
+  and the string~\str{1}.
+  \item A multiple of eight in binary ends in three \str{0}'s:~\re{(0|1)*000}.
+  That expression matches binary numbers with leading \str{0}'s and won't match
+  \str{0}.
+  If you don't like that then instead use \re{(1(0|1)*000)|0}.
+  \end{exparts}
+\end{answer}
 \end{exercise}
 
 \recommended
@@ -4453,17 +4506,43 @@ Give a regular expression to describe each language over
 the alphabet $\Sigma=\set{\str{a},\str{b}}$.
 \begin{exparts*}
 \item Every \str{a} is both immediately preceeded and immediately followed
-  by a \str{b}.
+  by a~\str{b} character.
 \item Each string has at least two \str{b}'s that are not followed by an
   \str{a}.
-\item Each string has no more than one pair of consecutive \str{a}'s
-  and no more than one pair of consecutive \str{b}'s.
+% \item Each string has no more than one pair of consecutive \str{a}'s
+%   and no more than one pair of consecutive \str{b}'s.
 \end{exparts*}
+\begin{answer}
+  \begin{exparts}
+  \item This is an answer: \re{((ba)*bb*)*}.
+  Notice that it matches the empty string, and that it matches \str{babab}.
+  \item \re{(a|b)*((bba*bb)|(bbb))(a|b)*}
+  % \item \re{}
+  \end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
-  Produce a regular expression for the language of bitstrings
-  such that the number of \str{1}'s is a multiple of four.
+  Give a regular expression for each language of bitstrings.
+  \begin{exparts*}
+  \item The number of \str{0}'s is even.
+  \item There are more than two \str{1}'s.
+  \item The number of \str{0}'s is even and 
+   there are more than two \str{1}'s.
+  \end{exparts*}
+\begin{answer}
+  \begin{exparts}
+  \item Here the \str{0}'s come in pairs:~\re{(1*01*01*)*1*}.
+  \item Here two of the \str{1}'s have no 
+    Kleene star's: \re{0*10*10*1*(0|1)*}.
+  \item One that will do is to start with the expression from the prior item
+  and replace all the \str{0}'s with the expression from the first item.
+  \begin{display}
+    \re{((1*01*01*)*1*)*1((1*01*01*)*1*)*1((1*01*01*)*1*)*1*(((1*01*01*)*1*)|1)*}
+  %     (1*01*01*)*(1|010)1*(1*01*01*)*(1|010)1*(1*01*01*)*(1|010)1*((1*01*01*)*(1|010)1*)*
+  \end{display}
+  \end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -4476,6 +4555,12 @@ the alphabet $\Sigma=\set{\str{a},\str{b}}$.
     $\set{\str{a}^i\str{b}\str{a}^j\suchthat
       \text{$i$ and $j$ leave the same remainder on division by three}}$
   \end{exparts}
+\begin{answer}
+  \begin{exparts}
+  \item \re{(a(a|b)*a)|(b(a|b)*b)}
+  \item \re{((aaa)*b(aaa)*)|(a(aaa)*ba(aaa)*)|(aa(aaa)*baa(aaa)*)}
+  \end{exparts}
+\end{answer}
 \end{exercise}
 
 \recommended
@@ -4495,13 +4580,6 @@ one.
 \end{exparts}
 \end{answer}
 \end{exercise}
-\begin{exercise}
-  Give a regular expression for the language over
-  $\Sigma=\set{\str{a},\str{b},\str{c}}$
-  whose strings are missing at least one letter,
-  that is, the strings that are either without any \str{a}'s,
-  or without any \str{b}'s, or without any \str{c}'s.
-\end{exercise}
 
 \begin{exercise}
   Fix a Finite State machine~$\FSM$.
@@ -4516,17 +4594,73 @@ one.
       Show that the set of strings taking $\FSM$ from any single
       state to any other single state is regular.
   \end{exparts}
-  \end{exercise}
+\begin{answer}
+  \begin{exparts}
+  \item Transform the machine~$\FSM$ to a new machine~$\hat{\FSM}$ by making
+  the set of final states of~$\hat{\FSM}$ be~$S$.
+  \item Transform the machine~$M$ to~$\hat{\FSM}$ by making
+  the start state be the given first single state, and also 
+  make the set~$S$ of the prior item contain only the ending state.
+  Then apply the argument given for the prior item. 
+  \end{exparts}
+\end{answer}
+\end{exercise}
 
-\begin{exercise}
-Part of the proof of \cref{lem:KleenesThmMachineToRegex} involves removing
+\begin{exercise}  \label{exer:UnreachableStates}
+Part of the proof of \cref{lem:KleenesThmMachineToRegex} involves
 unreachable states.
-For each of these machines, follow the procedure described there to find the
-set of unreachable states.\\
+Here is a definition.
+Given a state~$q$, construct the set of states reachable 
+from it by first setting $S_0=\set{q}\cup\hat{E}(q)$, 
+where $\hat{E}(q)$  is the $\varepsilon$~closure.
+Then iterate:~starting with the set~$S_i$ of states that are
+reachable in $i$-many steps, for each $\tilde{q}\in S_i$
+follow each outbound edge for a single step and also include the elements of
+the $\varepsilon$~closure.
+The union of~$S_i$ with the collection of the states reached in this way 
+is the set~$S_{i+1}$.
+Stop when $S_i=S_{i+1}$, 
+at which point it is the set of ever-reachable states.
+The unreachable states are the others.
+
+For each machine use that definition to find the set of unreachable states.
+\vspace{0.5ex}\par % little vertical room for graphic
 \begin{exparts*}
 \item \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm60.pdf}}
 \item \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm61.pdf}}
 \end{exparts*}
+\begin{answer}
+  We will construct the reachable states, and then the unreachable ones are
+  the others.
+  \begin{exparts}
+  \item The set of reachable states is $S_2=S_3=\cdots=\set{q_0,q_1,q_2}$.
+  So the set of unreachable states is $\set{q_3}$.
+  \begin{display}
+  \begin{tabular}{r|c}
+    \multicolumn{1}{c}{\tabulartext{$i$}} 
+      &\multicolumn{1}{c}{\tabulartext{$S_i$}} 
+    \\ \hline 
+    $0$  &$\set{q_0}$  \\
+    $1$  &$\set{q_0,q_1}$  \\
+    $2$  &$\set{q_0,q_1,q_2}$  \\
+    $3$  &$\set{q_0,q_1,q_2}$  \\
+  \end{tabular}
+  \end{display}
+  \item The set of reachable states is $S_2=S_3=\cdots=\set{q_0,q_1,q_3}$.
+  Thus the set of unreachable states is $\set{q_2,q_4}$.
+  \begin{display}
+  \begin{tabular}{r|c}
+    \multicolumn{1}{c}{\tabulartext{$i$}} 
+      &\multicolumn{1}{c}{\tabulartext{$S_i$}} 
+    \\ \hline 
+    $0$  &$\set{q_0}$  \\
+    $1$  &$\set{q_0,q_1}$  \\
+    $2$  &$\set{q_0,q_1,q_3}$  \\
+    $3$  &$\set{q_0,q_1,q_3}$  \\
+  \end{tabular}
+  \end{display}
+  \end{exparts}
+\end{answer}
 \end{exercise}
 
 \recommended
@@ -4534,9 +4668,17 @@ set of unreachable states.\\
 Show that the set of languages over $\Sigma$ that are
 described by a regular expression is countable.
 Conclude that there are languages not accepted by any Finite State machine.
+\begin{answer}
+  Alphabets are finite, as defined in \cref{sec:Strings}.
+  So the set of length~$n$ strings over~$\Sigma$ is finite, 
+  and therefore countable.
+  Chapter~II's \cref{th:UnionFiniteNumberCtbleSets} shows that the countable
+  union of countable sets is countable, and so the union over all~$n$ 
+  of length~$n$ strings is countable.
+\end{answer}
 \end{exercise}
 
-\recommended
+% \recommended
 \begin{exercise}
   Construct the parse tree for these regular expressions over
   $\Sigma=\set{\str{a},\str{b}}$.
@@ -4544,28 +4686,32 @@ Conclude that there are languages not accepted by any Finite State machine.
   \item \re{a(b|c)}
   \item \re{ab*(a|c)}  
   \end{exparts*}
-  \begin{answer}
-    The tree for \re{a(b|c)} is on the left and the tree for \re{ab*(a|c)}
-    is on the right.
-    \begin{center}
-      \vcenteredhbox{\includegraphics{automata/asy/regex/regex02.pdf}}
-      \hspace{3em}
-      \vcenteredhbox{\includegraphics{automata/asy/regex/regex03.pdf}}
-    \end{center}
-  \end{answer}
+\begin{answer}
+  \figureref{fig:ParseRegularExprsI} shows the two trees.
+  \begin{figure}
+    \centering
+    \vcenteredhbox{\includegraphics{automata/asy/regex/regex02.pdf}}
+    \hspace{3em}
+    \vcenteredhbox{\includegraphics{automata/asy/regex/regex03.pdf}}
+    \caption{Parse trees for \re{a(b|c)} and \re{ab*(a|c)}.}
+    \label{fig:ParseRegularExprsI}
+  \end{figure}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
   Construct the parse tree for \cref{ex:RegexABOrCStar}'s \re{a(b|c)*}
   and \re{a(b*|c*)}.
 \begin{answer}
-  On the left is the tree for \re{a(b|c)*} and on the right is the
-  tree for \re{a(b*|c*)}.
-\begin{center}
-  \vcenteredhbox{\includegraphics{automata/asy/regex/regex00.pdf}}
-  \hspace{3em}
-  \vcenteredhbox{\includegraphics{automata/asy/regex/regex01.pdf}}
-\end{center}
+  \figureref{fig:ParseRegularExprsII} shows the two trees.
+  \begin{figure}
+    \centering
+    \vcenteredhbox{\includegraphics{automata/asy/regex/regex00.pdf}}
+    \hspace{3em}
+    \vcenteredhbox{\includegraphics{automata/asy/regex/regex01.pdf}}
+    \caption{Parse trees for \re{a(b|c)*} and \re{a(b*|c*)}.}
+    \label{fig:ParseRegularExprsII}
+  \end{figure}
 \end{answer}
 \end{exercise}
 
@@ -4573,30 +4719,96 @@ Conclude that there are languages not accepted by any Finite State machine.
 \begin{exercise}
   Get a regular expression by
   applying the method of \cref{lem:KleenesThmMachineToRegex}'s proof
+  to this machine.
+  First eliminate $q_0$ and then~$q_1$.
+  At each step describe which state from the machine is playing the role of
+  $q_{i_0}$ and which edge is $R_{i_0}$, etc.
+  \begin{center}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm53.pdf}}
+  \end{center}
 \begin{exparts*}
-\item to the machine on the left
-\item to the machine on the right.  
+\item Get $\hat{\FSM}$ by introducing $e$ and~$f$.
+\item Where $q=q_0$, describe which state from the machine is 
+  playing the diagram's before picture role of
+  $q_{i_0}$, which edge is $R_{i_0}$, etc.
+\item Eliminate~$q_0$.
 \end{exparts*}
-\begin{center}
-  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm53.pdf}}
+\begin{answer}
+\begin{exparts}
+\item
+This is $\hat{\FSM}$.
+\begin{display}
+  \includegraphics{automata/asy/nfsm/nfsm1015.pdf}
+\end{display}
+\item
+This is the before half diagram of 
+\cref{lem:KleenesThmMachineToRegex}'s proof,
+with $\hat{\FSM}$ repeated for convenience.
+\begin{display}
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm37.pdf}}
   \hspace{3em}
-  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm54.pdf}}
-\end{center}
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1015.pdf}}
+\end{display}
+The state~$q_0$ has two states that originate arrows into it, 
+and two that receive arrows from it. 
+So we get this translation of the diagram's notation.
+\begin{display}
+\begin{tabular}{*{5}{c}}
+  $q$   &$q_{i_0}$ &$q_{i_1}$ &$q_{o_0}$ &$q_{o_1}$  \\  
+  \hline
+  $q_0$ &$e$      &$q_1$     &$q_1$     &$f$
+\end{tabular}
+% \end{display}
+% This is the translation of edge labels.
+% \begin{display}
+\hspace{2em}
+\begin{tabular}{*{9}{c}}
+  $R_{i_0}$ &$R_{i_1}$ &$R_{i_0,o_0}$ &$R_{i_0,o_1}$ &$R_{i_1,o_0}$ &$R_{i_1,o_1}$ 
+    &$R_{\ell}$ &$R_{o_0}$ &$R_{o_1}$  \\
+  \hline
+  $\varepsilon$ &\re{b}   &--   &--   &--   &--
+  &\re{a|b} &\re{a}   &$\varepsilon$
+\end{tabular}
+\end{display}
+\item  This is the after half diagram of 
+\cref{lem:KleenesThmMachineToRegex}'s proof,
+along with the machine $\hat{\FSM}$ after $q_0$ is eliminated.
+\begin{display}
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm38.pdf}}
+  \hspace{3em}
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1016.pdf}}
+\end{display}
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
-  Find the regular expression accepted by the machine by
-  applying the method of \cref{lem:KleenesThmMachineToRegex}'s proof
-\begin{exparts*}
-\item to the machine on the left
-\item to the machine on the right.  
-\end{exparts*}
-\begin{center}
-  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm55.pdf}}
-  \hspace{3em}
-  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm56.pdf}}
-\end{center}
+  Applying method of \cref{lem:KleenesThmMachineToRegex}'s proof
+  to this machine.
+  Eliminate $q_0$, then~$q_1$, and then~$q_2$.
+  At each step describe which state from the machine is playing the role of
+  $q_{i_0}$ and which edge is $R_{i_0}$, etc.
+  \begin{center}
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm54.pdf}}
+  \end{center}
+\begin{answer}
+
+\end{answer}
 \end{exercise}
+
+% \begin{exercise}
+%   Find the regular expression accepted by the machine by
+%   applying the method of \cref{lem:KleenesThmMachineToRegex}'s proof
+% \begin{exparts*}
+% \item to the machine on the left
+% \item to the machine on the right.  
+% \end{exparts*}
+% \begin{center}
+%   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm55.pdf}}
+%   \hspace{3em}
+%   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm56.pdf}}
+% \end{center}
+% \end{exercise}
 
 \begin{exercise}
 Apply the state elimination method of
@@ -5074,7 +5286,7 @@ $h(\sigma\concat\tau)=h(\sigma)\concat h(\tau)$
 
 
 % ================================================
-\section{Languages that are not regular}\index{languages!non-regular|(}
+\section{Languages that are not regular}\index{language!non-regular|(}
 Although Finite State machines are finite,
 they can handle arbitrarily long inputs.
 This chapter's first example, the power switch from
@@ -5823,7 +6035,7 @@ For deterministic machines that is not so.
 \end{answer}
 \end{exercise}
 \end{exercises}
-\index{languages!non-regular|)}
+\index{language!non-regular|)}
 
 
 

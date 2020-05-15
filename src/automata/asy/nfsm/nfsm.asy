@@ -4593,4 +4593,80 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ========== Exercise; two nodes are both incoming and outgoing ====== 
+picture pic;
+int picnum = 21;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0, q1, q2, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("$\varepsilon$"),
+     (q0..bend(-20)..q1).l("\re{A}").style("leftside"),
+     (q1..loop(N)).l("\re{B}"),
+     (q1..bend(-20)..q2).l("\re{C}").style("leftside"),
+     (q2..bend(-20)..q1).l("\re{D}").style("leftside"),
+     (q1..bend(-20)..q0).l("\re{E}").style("leftside"),
+     (q2--f).l("$\varepsilon$")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, q1, q2, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................ After eliminating q1 ............
+picture pic;
+int picnum = 22;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+// node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node e=ncircle("$e$"); 
+node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, e, q0);
+hlayout(1.5*u, q0, q2);
+hlayout(1*u, q2, f);
+
+// draw edges
+draw(pic,
+     (e--q0).l("$\varepsilon$"),
+     (q0..bend(-20)..q2).l("\re{AB*C}").style("leftside"),
+     (q0..loop(N)).l("\re{AB*E}"),
+     (q2..bend(-20)..q0).l("\re{DB*E}").style("leftside"),
+     (q2..loop(N)).l("\re{DB*C}"),
+     (q2--f).l("$\varepsilon$")
+     );
+
+// draw nodes after edges
+draw(pic,
+     e, q0, q2, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
 

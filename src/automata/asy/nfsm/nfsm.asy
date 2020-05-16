@@ -1957,7 +1957,7 @@ hlayout(1*u, qi, q, qo);
 
 // draw edges
 draw(pic,
-     (qi..bend(20)..qo).l("\re{$R_0$}"),
+     (qi..bend(20)..qo).l("\re{$R_0$}").style("leftside"),
      (qi..bend(-20)..qo).l("\re{$R_1$}") 
      );
 

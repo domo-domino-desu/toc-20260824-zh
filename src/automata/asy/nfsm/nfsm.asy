@@ -5036,6 +5036,125 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ======= From regular grammar to FSM =============
+picture pic;
+int picnum = 35;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node qs=ncircle("$q_S$"); 
+node qa=ncircle("$q_A$"); 
+node qb=ncircle("$q_B$"); 
+// node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qs, qa, qb);
+
+// draw edges
+// draw(pic,
+//      );
+
+// draw nodes after edges
+draw(pic,
+     qs, qa, qb);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ......... From regular grammar to FSM part B ........
+picture pic;
+int picnum = 36;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node qs=ncircle("$q_S$"); 
+node qa=ncircle("$q_A$"); 
+node qb=ncircle("$q_B$",ns_accepting); 
+// node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qs, qa, qb);
+
+// draw edges
+// draw(pic,
+//      );
+
+// draw nodes after edges
+draw(pic,
+     qs, qa, qb);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ......... From regular grammar to FSM part C ........
+picture pic;
+int picnum = 37;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node qs=ncircle("$q_S$"); 
+node qa=ncircle("$q_A$"); 
+node qb=ncircle("$q_B$",ns_accepting); 
+// node f=ncircle("$f$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qs, qa, qb);
+
+// draw edges
+draw(pic,
+     (qs..loop(N)).l("\str{a},\str{b}"),
+     (qs--qa).l("\str{a}"),
+     (qa--qb).l("\str{a}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     qs, qa, qb);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ......... From regular grammar to FSM part D ........
+picture pic;
+int picnum = 38;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node qs=ncircle("$q_S$"); 
+node qa=ncircle("$q_A$"); 
+node qb=ncircle("$q_B$",ns_accepting); 
+node qhat=ncircle("$\hat{q}$",ns_accepting); 
+
+// calculate nodes position
+real u=1.5cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, qs, qa, qb, qhat);
+
+// draw edges
+draw(pic,
+     (qs..loop(N)).l("\str{a},\str{b}"),
+     (qs--qa).l("\str{a}"),
+     (qa--qb).l("\str{a}"),
+     (qb--qhat).l("\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     qs, qa, qb, qhat);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

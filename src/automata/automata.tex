@@ -5254,7 +5254,7 @@ performing that operation on its members always yields another member}{%
 \end{example}
  
 So regular expressions,
-deterministic finite state machines, and nondeterministic finite state
+deterministic Finite State machines, and nondeterministic Finite State
 machines all describe the same set of languages, namely, the regular
 languages.
 \citetext{The fact that we can describe these languages in so many 
@@ -5447,25 +5447,26 @@ set of even-length strings in~$\lang$ is also regular.
     $\operatorname{allprefs}(\lang)=\set{\sigma\in\lang\suchthat \text{for all $\tau\in\kleenestar{\Sigma}$ that is a prefix of~$\sigma$, $\tau\in\lang$}}$ 
     \end{exparts}    
 \begin{answer}
-First, a definition.
-Consider the graphical representation of a Finite State machine.
-It is a directed graph.
-We say that from a state~$q$, another state~$\hat{q}$ is 
-\definend{reachable} if there is a sequence of directed edges that go from the 
-first node to the second.
-\begin{exparts}
-\item Fix a Finite State machine~$\FSM$ that accepts~$\lang$.
-From it derive a new Finite State machine by making an accepting state 
-every state~$q$ from which
-an accepting state of~$\FSM$ is reachable.
-Clearly that machine accepts $\operatorname{pref}(\lang)$.
-\item Again, fix a Finite State machine~$\FSM$ that accepts~$\lang$.
-Let~$S$ be the set of states reachable from~$q_0$. 
-Get $\hat{M}$ by introducing a new state $r$ and defining an
-$\varepsilon$~transition to each state in~$S$.
-Here also, clearly this machine accepts $\operatorname{suff}(\lang)$.
-\item We have 
-  $\operatorname{allprefs}(\lang)=\setcomp{(\setcomp{\lang}\concat\kleenestar{\Sigma})}$, so it is regular.
+  The graphical representation of a Finite State machine
+  is a directed graph.
+  So we can naturally extend the definition 
+  of one vertex being reachable from another to 
+  one state~$q$ being  reachable from another state~$\hat{q}$,
+  if there is a sequence of directed edges that go from the 
+  first node to the second.
+  \begin{exparts}
+  \item Fix a Finite State machine~$\FSM$ that accepts~$\lang$.
+  From it derive a new Finite State machine by making an accepting state 
+  every state~$q$ from which
+  an accepting state of~$\FSM$ is reachable.
+  Clearly that machine accepts $\operatorname{pref}(\lang)$.
+  \item Again, fix a Finite State machine~$\FSM$ that accepts~$\lang$.
+  Let~$S$ be the set of states reachable from~$q_0$. 
+  Get $\hat{M}$ by introducing a new state $r$ and defining an
+  $\varepsilon$~transition to each state in~$S$.
+  Here also, clearly this machine accepts $\operatorname{suff}(\lang)$.
+  \item We have 
+    $\operatorname{allprefs}(\lang)=\setcomp{(\setcomp{\lang}\concat\kleenestar{\Sigma})}$, so it is regular.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -5473,7 +5474,7 @@ Here also, clearly this machine accepts $\operatorname{suff}(\lang)$.
 \begin{exercise}
 \cref{{lem:SetRegLangsIsCountable}} shows that the collection of 
 regular languages over $\B$ is countable.
-Show that not every individual regular language in it is countable.
+Show that not every individual language in it is countable.
 \begin{answer}
   Over $\B$ the language of all strings $\lang=\kleenestar{\B}$
   is regular, and is uncountable.
@@ -5545,34 +5546,45 @@ Prove that the language accepted by a Finite State machine with~$n$ states is
 infinite if and only if that machine accepts at least one string of length $k$,
 where $n\leq k <2n$.
 \begin{answer}
-Suppose first that the machine accepts at least one string, $\sigma$, 
-of length $k$ where $n\leq k <2n$.
-Because the machine only has $n$ states, 
-by the Pigeonhole principle the accepted string~$\sigma$ decomposes as
-$\sigma=\alpha\concat\beta\concat\gamma$ where the $\beta$ portion is a 
-nontrivial loop. 
-That is, processing the $\alpha$ portion of the input brings the machine 
-from $q_0$ to some~$q$, then processing the $\beta\neq\emptystring$ portion 
-brings the machine from $q$ to~$q$ again, 
-and then processing the $\gamma$ portion brings the machine to some 
-final state.  
-But then clearly $\alpha\concat\beta\concat\beta\concat\gamma$ is accepted,
-as is $\alpha\concat\beta^n\concat\gamma$ for any $n\in\N$, and so the 
-language is infinite.
+  For one direction suppose 
+  that the machine accepts at least one string, $\sigma$, 
+  of length $k$ where $n\leq k <2n$.
+  In processing~$\sigma$ the machine must go through at least $n$-many
+  transitions.
+  But the machine has~$n$ states and starting at~$q_0$ and visiting all
+  the other states exactly once would require only $n-1$~many transitions.
+  Thus, by the Pigeonhole principle, 
+  in processing the string~$\sigma$ the machine visits some state~$q$ twice.
+  That is, in processing~$\sigma$ the machine makes a loop. 
 
-Conversely, suppose the language of accepted strings is infinite.
-At least one of them is longer than~$n$; fix one that is longer but of
-minimal length.
-Because the machine only has $n$ states, 
-by the Pigeonhole principle the accepted string~$\sigma$ decomposes as
-$\sigma=\alpha\concat\beta\concat\gamma$ where the $\beta$ portion is a 
-nontrivial loop so processing $\alpha$ brings the machine 
-from $q_0$ to some~$q$, then processing $\beta\neq\emptystring$ 
-brings the machine from $q$ to~$q$ again, 
-and then processing the $\gamma$ portion brings the machine to some 
-final state.  
-Because the string is of minimal length, $\lh{\beta}<n$.
-In total then, $\lh{\sigma}< 2n$.
+  Said another way, the accepted string~$\sigma$ decomposes as
+  $\sigma=\alpha\concat\beta\concat\gamma$ 
+  where processing the $\alpha$ portion takes the machine from the
+  start to the loop (from state $q_0$ to~$q$),
+  the $\beta$~portion takes the machine around the nontrivial loop
+  (so that $\beta\neq\emptystring$ brings the machine from $q$ to~$q$ again) 
+  and the $\gamma$~portion brings the machine to some 
+  final state.  
+  But then the accepted language is infinite, since
+  clearly the machine also accepts 
+  $\alpha\concat\beta\concat\beta\concat\gamma$, etc.
+  (Note that we can take~$\beta$ to be of length less than~$n$ because 
+  otherwise the size of the machine would imply it has a subloop.)
+
+  Conversely, suppose the language of accepted strings is infinite.
+  At least one of them is longer than~$n$; fix one that is longer but of
+  minimal length.
+  As in the prior paragraph,
+  because the machine only has~$n$ states, 
+  by the Pigeonhole principle the accepted string~$\sigma$ decomposes as
+  $\sigma=\alpha\concat\beta\concat\gamma$ where the $\beta$ portion is a 
+  nontrivial loop so processing $\alpha$ brings the machine 
+  from $q_0$ to some~$q$, then processing $\beta\neq\emptystring$ 
+  brings the machine from $q$ to~$q$ again, 
+  and then processing the $\gamma$ portion brings the machine to some 
+  final state.  
+  Because the string is of minimal length, $\lh{\beta}<n$.
+  In total then, $\lh{\sigma}< 2n$.
 \end{answer}
 \end{exercise}
 
@@ -5581,9 +5593,9 @@ Fix two alphabets $\Sigma_0,\Sigma_1$.
 A function $\map{h}{\Sigma_0}{\kleenestar{\Sigma_1}}$ induces a
 \definend{homomorphism} on~$\kleenestar{\Sigma_0}$ via the operation
 $h(\sigma\concat\tau)=h(\sigma)\concat h(\tau)$
-(and $h(\emptystring)=\emptystring$).
+and $h(\emptystring)=\emptystring$.
 \begin{exparts}
-\item Take $\Sigma_0=\B$ and $\sigma_1=\set{\str{a}, \str{b}}$.
+\item Take $\Sigma_0=\B$ and $\Sigma_1=\set{\str{a}, \str{b}}$.
   Fix a homomorphism $\hat{h}(\str{0})=\str{a}$ and $\hat{h}(\str{1})=\str{ba}$.
   Find $\hat{h}(\str{01})$, 
   $\hat{h}(\str{10})$, 
@@ -5598,19 +5610,19 @@ $h(\sigma\concat\tau)=h(\sigma)\concat h(\tau)$
   homomorphism, that if $\lang$ is regular then so is $h(\lang)$.  
 \end{exparts}
 \begin{answer}
-\begin{exparts}
-\item $\hat{h}(\str{01})=\str{aba}$, 
-  $\hat{h}(\str{10})=\str{baa}$,
-  $\hat{h}(\str{101})=\str{baaba}$
-\item A regular expression to describe 
-  $\hat{\lang}=\set{\sigma\concat\str{1}\suchthat\sigma\in\kleenestar{\B}}$
-  is \re{(\str{0}|\str{1})*\str{1}}
-  A regular expression to describe
-  $\hat{h}(\hat{\lang})$ is \re{(a|ba)*ba}.
-\item Let $\lang$ be described by the regular expression~$R$.
-  Apply the function~$h$ to each non-meta symbol in~$R$.
-  The result is a regular expression that describes $h(\lang)$. 
-\end{exparts}
+  \begin{exparts}
+  \item $\hat{h}(\str{01})=\str{aba}$, 
+    $\hat{h}(\str{10})=\str{baa}$,
+    $\hat{h}(\str{101})=\str{baaba}$
+  \item A regular expression to describe 
+    $\hat{\lang}=\set{\sigma\concat\str{1}\suchthat\sigma\in\kleenestar{\B}}$
+    is \re{(\str{0}|\str{1})*\str{1}}
+    A regular expression to describe
+    $\hat{h}(\hat{\lang})$ is \re{(a|ba)*ba}.
+  \item Let $\lang$ be described by the regular expression~$R$.
+    Apply the function~$h$ to each non-meta symbol in~$R$.
+    The result is a regular expression that describes $h(\lang)$. 
+  \end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -5644,55 +5656,125 @@ $h(\sigma\concat\tau)=h(\sigma)\concat h(\tau)$
       is the concatenation, in the opposite order, of the reversals
       $\reversal{(\sigma_0\concat\sigma_1)}
          =\reversal{\sigma_1}\concat\reversal{\sigma_0}$.
-    \textit{Hint:} you can use induction on the length of $\sigma_1$.
-  \item One way to prove the result
-    is to define a reversal operation on regular expressions.
-    Fix an alphabet~$\Sigma$.
-    Let $\mathcal{R}$ be the set of regular expressions over that
-    alphabet.
-    Then we can define each of these:
-    (i)~$\reversal{\emptyset}=\emptyset$
-    (ii)~$\reversal{\emptystring}=\emptystring$
-    (iii)~$\reversal(x)=x$ for any~$x\in\Sigma$
-    (iv)~$\reversal{(R_0\concat R_1)}=\reversal{R_1}\concat\reversal{R_0}$
-    (v)~$\reversal{\re{$R_0$|$R_1$}}=\re{$\reversal{R_0}$|$\reversal{R_1}$}$
-    (vi)~$\reversal{\re{$R$*}}=\re{$\reversal{R}$*}$.
+    \hint~do induction on the length of $\sigma_1$.
+    \item We will prove the result by showing that for any
+    regular expression~$R$, the reversal $\reversal{\lang(R)}$ is 
+    described by a regular expression.
+    We will construct this expression 
+    by defining a reversal operation on regular expressions.
+    Fix an alphabet~$\Sigma$ and let
+    (i)~$\reversal{\emptyset}=\emptyset$,
+    (ii)~$\reversal{\emptystring}=\emptystring$,
+    (iii)~$\reversal{x}=x$ for any~$x\in\Sigma$,
+    (iv)~$\reversal{(R_0\concat R_1)}=\reversal{R_1}\concat\reversal{R_0}$,
+    (v)~$\reversal{\re{($R_0$|$R_1$)}}=\re{$\reversal{R_0}$|$\reversal{R_1}$}$,
+    and (vi)~$\reversal{\re{($R$*)}}=\re{($\reversal{R}$)*}$.
     (Note the relationship between (iv) and the prior exercise item.)
-    Now show that this operation turns a regular expression for a language
-    into a regular expression for the language's reversal.
-  \item
-    Another way to prove this is to reverse the machine.
-    Take the language to be accepted by some machine~$\FSM$.
-    Construct a new nondeterministic Finite State machine~$\hat{\FSM}$ by:
-    (i)~giving $\hat{\FSM}$ all of $\FSM$'s states, so that
-    $Q_{\hat{\FSM}}=Q_{\FSM}$.
-    (ii)~adding to $\hat{\FSM}$ a new state~$s$, make $\varepsilon$
-    transitions from it to all of $\FSM$'s accepting states,
-    and make $s$ the start state of~$\hat{\FSM}$
-    (iii)~reverse all of the transitions in the $\FSM$'s graph, 
-    and
-    (iv)~turn $\FSM$'s accepting states to non-accepting states, and
-    turn $\FSM$'s start state to an accepting state.
-    Show that $\hat{\FSM}$ accepts $\reversal{\lang}$.
+    Now show that $\reversal{R}$ describes $\reversal{\lang(R)}$. 
+    \hint~use
+    induction on the length of the regular expression~$R$.
+  % \item
+  %   Another way to prove this is to reverse the machine.
+  %   Take the language to be accepted by some machine~$\FSM$.
+  %   Construct a new nondeterministic Finite State machine~$\hat{\FSM}$ by:
+  %   (i)~giving $\hat{\FSM}$ all of $\FSM$'s states, so that
+  %   $Q_{\hat{\FSM}}=Q_{\FSM}$.
+  %   (ii)~adding to $\hat{\FSM}$ a new state~$s$, make $\varepsilon$
+  %   transitions from it to all of $\FSM$'s accepting states,
+  %   and make $s$ the start state of~$\hat{\FSM}$
+  %   (iii)~reverse all of the transitions in the $\FSM$'s graph, 
+  %   and
+  %   (iv)~turn $\FSM$'s accepting states to non-accepting states, and
+  %   turn $\FSM$'s start state to an accepting state.
+  %   Show that $\hat{\FSM}$ accepts $\reversal{\lang}$.
   \end{exparts}
-  \end{exercise}
+\begin{answer}
+\begin{exparts}
+\item We prove this by induction on the length of~$\sigma_1$.
+For the base case consider both $\sigma_1=\emptystring$ and $\sigma_1=a$
+for some $a\in\Sigma$.
+With both, the statement obviously holds.
 
-  \begin{exercise}
-  Consider the set of powers of two $\set{2^n\suchthat n\in\N}$.
-  \begin{exparts}
-  \item Show that there is a Finite State machine that accepts the
-  collection of strings representing powers of~$2$ in binary.
-  \item Show that there is no Finite State machine that accepts the
-  collection of strings representing these numbers in decimal.
-  \end{exparts}
-  \begin{answer}
-  \begin{exparts}
-  \item These strings have an inital~\str{1} and any subsequent characters are
-  \str{0}'s.
-  \item \url{https://cstheory.stackexchange.com/q/2083}
-  \end{exparts}
-  \end{answer}
-  \end{exercise}
+For the inductive case assume that the statement is true when 
+$\lh{\sigma_1}=0$, $\lh{\sigma_1}=1$, \ldots{}
+$\lh{\sigma_1}=k$ and consider the  $\lh{\sigma_1}=k+1$ case.
+In this case $\sigma_1=\alpha\concat a$ for some character $a\in\Sigma$
+and string $\alpha\in\kleenestar{\Sigma}$ of length~$k$.
+Then 
+$\reversal{(\sigma_0\concat\sigma_1)}
+=\reversal{(\sigma_0\concat\alpha\concat a)}$.
+Apply the base case to get
+$=\reversal{a}\concat\reversal{(\sigma_0\concat\alpha)}$.
+The inductive hypothesis gives
+$=a\concat\reversal{\alpha}\concat\reversal{\sigma_0}$,
+and finish by recognizing that as 
+$\reversal{\sigma_1}\concat\reversal{\sigma_0}$.
+\item
+We prove this by induction on the length of the regular expression.
+The base case is that $\lh{R}=1$.
+If $R=\emptyset$ then
+by condition~(i) $\reversal{R}$ is the regular expression~$\emptyset$, 
+and
+$\lang(R)=\lang(\reversal{R})$ because both equal the empty set, as required.
+If $R=\emptystring$ then by condidtion~(ii) $\reversal{R}=\emptystring$,
+and $\lang(R)=\set{\emptystring}=\lang(\reversal{R})$, again as required.
+And, similarly, if $R=x$ for some $x\in\Sigma$ then
+by condition~(iii) $\reversal{R}=x$ and 
+$\lang(R)=\set{x}=\lang(\reversal{R})$. 
+
+Now for the inductive step.
+Assume that the statement is true for regular expressions~$R$ of length $n=1$,
+$n=2$, \ldots{} $n=k$, and consider an expression of length~$n=k+1$.
+We handled the case that it is a concatenation, $R=R_0\concat R_1$, in this
+question's first item.
+
+If $R=\re{$R_0$|$R_1$}$ then
+$\lang(\reversal{R})
+=\lang(\reversal{(R_0|R_1)})
+=\lang(\reversal{R_0}|\reversal{R_1})$ by condition~(v).
+By the definition of the language associated with a pipe regular
+expression following \cref{def:RESyntax} that gives
+$=\lang(\reversal{R_0})\cup\lang(\reversal{R_1})$.
+The inductive hypothesis gives 
+$=\reversal{\lang(R_0)}\cup\reversal{\lang(R_1)}$,
+which equals
+$\set{\reversal{\sigma_0}\suchthat \sigma_0\in\lang(R_0)}
+\cup
+\set{\reversal{\sigma_1}\suchthat \sigma_1\in\lang(R_1)}$
+and again applying the material following \cref{def:RESyntax}
+that equals
+$\reversal{\lang(R)}$.
+ 
+The final form is similar.
+If $R=\re{$R_0$*}$ then 
+$\lang(\reversal{R})=\lang(\re{($\reversal{R_0}$)*})$.
+By the definition following \cref{def:RESyntax} that equals 
+$\set{\sigma_0\concat\cdots\concat \sigma_m\suchthat \sigma_i\in\lang(\reversal{R_0})}$.
+Rewriting gives
+$\set{\reversal{\tau_0}\concat\cdots\concat \reversal{\tau_m}\suchthat \tau_j\in\lang(R_0)}$.
+By this exercise's first item that equals
+$\set{\reversal{(\tau_m\concat\cdots\concat \tau_0)}\suchthat \tau_j\in\lang(R_0)}$,
+which is the set $\reversal{(\kleenestar{\lang(R_0)})}$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+  % \begin{exercise}
+  % Consider the set of powers of two $\set{2^n\suchthat n\in\N}$.
+  % \begin{exparts}
+  % \item Show that there is a Finite State machine that accepts the
+  % collection of strings representing powers of~$2$ in binary.
+  % \item Show that there is no Finite State machine that accepts the
+  % collection of strings representing these numbers in decimal.
+  % \end{exparts}
+  % \begin{answer}
+  % \begin{exparts}
+  % \item These strings have an inital~\str{1} and any subsequent characters are
+  % \str{0}'s.
+  % \item \url{https://cstheory.stackexchange.com/q/2083}
+  % \end{exparts}
+  % \end{answer}
+  % \end{exercise}
 
 \end{exercises}
 \index{regular language|)}\index{language!regular|)}

@@ -7001,24 +7001,44 @@ Otherwise they are \definend{indistinguishable, $q\sim\hat{q}$}.\index{distingui
 \end{example}
 
 \begin{example}
-  For the machine on the right,
-  the states $q_2$ and~$q_4$ are indistinguishable.
-  Below we will see an algorithm but for instance, feeding a \str{0}
-  input to $q_2$ and~$q_4$ brings each to an accepting state.
-  Feeding a \str{1} to each results in a non-accepting state.
-  As to length~two strings, feeding each \str{00} takes the machine to 
-  an accepting state for both $q_2$ and~$q_4$, 
-  as does \str{01} and~\str{10}.
-  But feeding the two states the input \str{11} takes the machine to 
-  a non-accepting state.
+More happens with the machine in the right.
+This table gives the result of starting in each state and feeding the
+machine each length~$0$, length~$1$, and length~$2$ string.
+As called for in the definition, the table doesn't give 
+the resulting state but instead records whether it is accepting, $F$,
+or nonaccepting, $Q-F$.
+\begin{center}
+  \begin{tabular}{r|c|*{2}{c}|*{4}{c}}
+    \multicolumn{1}{r}{\ }
+           &\multicolumn{1}{c}{$\emptystring$}  
+           &\multicolumn{1}{c}{\str{0}}           
+           &\multicolumn{1}{c}{\str{1}}           
+           &\multicolumn{1}{c}{\str{00}}           
+           &\multicolumn{1}{c}{\str{01}}           
+           &\multicolumn{1}{c}{\str{10}}           
+           &\multicolumn{1}{c}{\str{11}}           
+            \\ \cline{2-8}
+    $q_0$  &$Q-F$ &$Q-F$ &$Q-F$ &$Q-F$ &$F$ &$F$ &$Q-F$  \\
+    $q_1$  &$Q-F$ &$Q-F$ &$F$   &$Q-F$ &$F$ &$F$ &$F$  \\
+    $q_2$  &$Q-F$ &$F$   &$Q-F$ &$F$   &$F$ &$F$ &$Q-F$  \\
+    $q_3$  &$F$   &$F$   &$F$   &$F$   &$F$ &$F$ &$F$  \\
+    $q_4$  &$Q-F$ &$F$   &$Q-F$ &$F$   &$F$ &$F$ &$Q-F$  \\
+    $q_5$  &$F$   &$F$   &$F$   &$F$   &$F$ &$F$ &$F$  \\      
+  \end{tabular}
+\end{center}
+The effect of the length~$0$ string is that there are two kinds of 
+states:~members of $\set{q_0,q_1,q_2,q_4}$ 
+are taken to nonaccepting resulting states 
+and members of $\set{q_3,q_5}$ result in accepting states. 
 
-  These illustrate that the resulting states 
-  need not be equal, it is a matter of whether they are accepting or not.
-  For instance, if $\sigma=\str{0}$
-  then starting at $q_2$ takes the
-  machine to $q_3$ while starting at $q_4$ takes the machine to $q_5$.
-  While the states aren't
-  equal, both are accepting.
+The length~$1$ strings split the machine's states into four groups.
+For instance, $q_0$ is $1$-distinguishable from $q_1$ because the two
+result columns say $Q-F$, $Q-F$ for~$q_0$ but say $Q-F$, $F$ for~$q_1$.
+In total there are four $2$-distinguishable sets of states, $\set{q_0}$,
+$\set{q_1}$, $\set{q_2,q_4}$, and $\set{q_3,q_5}$.
+
+The length~$2$ strings do not further divide the states; the
+relation of $2$-distinguishable gives the same four classes of states.
 \end{example}
 
 \begin{lemma} \label{lemma:StateEquivIsEquivRel}
@@ -7033,11 +7053,11 @@ Otherwise they are \definend{indistinguishable, $q\sim\hat{q}$}.\index{distingui
 Our algorithm\footnote{%
   This is
   \protect\definend{Moore's algorithm}.  
-  It is easy to understand and suitable for
+  It is easy and suitable for
   small calculations but if you are writing code then 
   \protect\citetext{be aware that another algorithm}{%
     See \protect\autocite{Knuutila}.}, \protect\definend{Hopcroft's algorithm}, 
-  is better, albeit more complex.}
+  is more efficient, but also more complex.}
 first finds all states that are
 distinguishable by the length~zero string,
 next finds all states distinguishable by length zero or one
@@ -7053,116 +7073,152 @@ then we will work through two complete examples
 % \end{center}
 So consider again
 the machine with redundant states that we saw in ($*$)~above.
-The states that are indistinguishable by the length zero
-string~$\emptystring$
-fall into two classes,
-the non-accepting states $Q-F=\set{q_0,q_1,q_2,q_4}$
-accepting states $F=\set{q_3,q_5}$.
-We use this notation for the equivalence classes
-of the $\sim_{0}$~relation.
+% The states that are indistinguishable by the length zero
+% string~$\emptystring$
+% fall into two classes,
+% the non-accepting states $Q-F=\set{q_0,q_1,q_2,q_4}$
+% and the accepting states $F=\set{q_3,q_5}$.
+We use the following notation the equivalence classes, here for the two classes
+of the $\sim_{0}$~relation, the four of the $\sim_{1}$~relation,
+and the four of the $\sim_{2}$~relation.
 \begin{equation*}
-  \eclass_{0,0}=Q-F=\set{q_0,q_1,q_2,q_4}
+  \begin{array}{r|l}
+  \multicolumn{1}{c}{n}
+  &\multicolumn{1}{c}{\tabulartext{$\sim_{n}$ classes}}
+  \\ \hline
+  0
+  &\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}
   \quad
-  \eclass_{0,1}=F=\set{q_3,q_5}
-\end{equation*}
-
-Next we find the classes of states that are $1$-indinstinguishable, that
-are indistinguishable by either length zero or length one strings.
-One way to proceed is:~for each state we find where putting the 
-machine in that state
-and feeding it the length zero string~$\emptystring$
-and the length one strings \str{0} and~\str{1} will take
-the machine.
-In `take the machine' 
-we only care whether the resulting state is 
-a member of $\eclass_{0,0}$ or of~$\eclass_{0,1}$. 
-(The first column repeats the prior paragraph. 
-We'll streamline the algorithm below.)
-\begin{center}
-  \begin{transitionfunction}[]
-           &$\emptystring$  &\str{0}           &\str{1}   \\
-    \cline{2-4}
-    $q_0$  &$\eclass_{0,0}$  &$\eclass_{0,0}$   &$\eclass_{0,0}$    \\
-    $q_1$  &$\eclass_{0,0}$  &$\eclass_{0,0}$   &$\eclass_{0,1}$    \\
-    $q_2$  &$\eclass_{0,0}$  &$\eclass_{0,1}$   &$\eclass_{0,0}$    \\
-    $q_3$  &$\eclass_{0,1}$  &$\eclass_{0,1}$   &$\eclass_{0,1}$    \\
-    $q_4$  &$\eclass_{0,0}$  &$\eclass_{0,1}$   &$\eclass_{0,0}$     \\
-    $q_5$  &$\eclass_{0,1}$  &$\eclass_{0,1}$   &$\eclass_{0,1}$    \\      
-  \end{transitionfunction}
-\end{center}
-Some states are distinguishable, some are not.
-For instance, $q_0$ and $q_1$ are $1$-distinguishable
-by the input string~\str{1}, while
-and $q_1$ and $q_2$ are $1$-distinguishable by~\str{0}.
-But $q_2$ and~$q_4$ are $1$-indistinguishable.
-These are the $\sim_{1}$ equivalence classes.
-\begin{equation*}
-  \eclass_{1,0}=\set{q_0}
+  \eclass_{0,1}=\set{q_3,q_5}
+  \\
+  1
+  &\eclass_{1,0}=\set{q_0}
   \quad
   \eclass_{1,1}=\set{q_1}
   \quad
   \eclass_{1,2}=\set{q_2,q_4}
   \quad
   \eclass_{1,3}=\set{q_3,q_5}
-  \tag{$**$}
+  \\
+  2
+  &\eclass_{2,0}=\set{q_0}
+  \quad
+  \eclass_{2,1}=\set{q_1}
+  \quad
+  \eclass_{2,2}=\set{q_2,q_4}
+  \quad
+  \eclass_{2,3}=\set{q_3,q_5}
+  \end{array}
 \end{equation*}
+% Next we find the classes of states that are $1$-indinstinguishable, that
+% are indistinguishable by either length zero or length one strings.
+% One way to proceed is:~for each state we find where putting the 
+% machine in that state
+% and feeding it the length zero string~$\emptystring$
+% and the length one strings \str{0} and~\str{1} will take
+% the machine.
+% In `take the machine' 
+% we only care whether the resulting state is 
+% a member of $\eclass_{0,0}$ or of~$\eclass_{0,1}$. 
+% (The first column repeats the prior paragraph. 
+% We'll streamline the algorithm below.)
+% \begin{center}
+%   \begin{transitionfunction}[]
+%            &$\emptystring$  &\str{0}           &\str{1}   \\
+%     \cline{2-4}
+%     $q_0$  &$\eclass_{0,0}$  &$\eclass_{0,0}$   &$\eclass_{0,0}$    \\
+%     $q_1$  &$\eclass_{0,0}$  &$\eclass_{0,0}$   &$\eclass_{0,1}$    \\
+%     $q_2$  &$\eclass_{0,0}$  &$\eclass_{0,1}$   &$\eclass_{0,0}$    \\
+%     $q_3$  &$\eclass_{0,1}$  &$\eclass_{0,1}$   &$\eclass_{0,1}$    \\
+%     $q_4$  &$\eclass_{0,0}$  &$\eclass_{0,1}$   &$\eclass_{0,0}$     \\
+%     $q_5$  &$\eclass_{0,1}$  &$\eclass_{0,1}$   &$\eclass_{0,1}$    \\      
+%   \end{transitionfunction}
+% \end{center}
+% Some states are distinguishable, some are not.
+% For instance, $q_0$ and $q_1$ are $1$-distinguishable
+% by the input string~\str{1}, while
+% and $q_1$ and $q_2$ are $1$-distinguishable by~\str{0}.
+% But $q_2$ and~$q_4$ are $1$-indistinguishable.
+% These are the $\sim_{1}$ equivalence classes.
+% \begin{equation*}
+%   \eclass_{1,0}=\set{q_0}
+%   \quad
+%   \eclass_{1,1}=\set{q_1}
+%   \quad
+%   \eclass_{1,2}=\set{q_2,q_4}
+%   \quad
+%   \eclass_{1,3}=\set{q_3,q_5}
+%   \tag{$**$}
+% \end{equation*}
 The states that we spotted by eye as redundant, $q_2,q_4$ and~$q_3,q_5$ 
-continue to be together.
+continue to be together in the same class.
 
-To get the $\sim_{2}$ classes
-we may think to expand the table to add four columns, one for each
-of \str{00}, \str{01}, \str{10}, and~\str{11}.
-But proceeding in this way, at the next step doing all strings of length
-three strings, etc., would make the time to do the job grow exponentially
-since there are $2^k$ strings of length~$k$.
+% To get the $\sim_{2}$ classes
+% we may think to expand the table to add four columns, one for each
+% of \str{00}, \str{01}, \str{10}, and~\str{11}.
+% But proceeding in this way, at the next step doing all strings of length
+% three strings, etc., would make the time to do the job grow exponentially
+% since there are $2^k$ strings of length~$k$.
 
-The way to streamline the algorithm
-is to ask how two states $q,\hat{q}$ could be
-$2$-distinguishable but not $1$-distinguishable.
-This happens only if, where the distinguishing string is $\sigma$, 
-the two states are distinguished by $\sigma$'s final character,
-simply because if an earlier character would do then they would be
-$1$-distinguishable.
-
-In general, let the states $q$ and~$\hat{q}$ be
-$n+1$-distinguishable but not $n$-distinguishable. 
-Suppose that a distinguishing string is 
+For the algorithm, consider
+how states $q$ and~$\hat{q}$ could be
+$n+1$-distinguishable but not $n$-distinguishable.
+% Where the distinguishing string is $\sigma$, 
+% this happens only if
+% the two states are distinguished by $\sigma$'s final character,
+% simply because if an earlier character would do then they would be
+% $n$-distinguishable.
+%
+% In general, let the states $q$ and~$\hat{q}$ be
+% $n+1$-distinguishable but not $n$-distinguishable. 
+Let the length~$n+1$ string 
 $
  \sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}=\tau\concat s_n 
-$.
+$ distinguishes them.
 Because the states are not $n$-distinguishable,
 where the prefix $\tau$ brings the machine from $q$ to a state~$r$ in some
 class~$\eclass_{n,i}$, then
 $\tau$ must bring the machine from $\hat{q}$ to some $\hat{r}$
 in the same class,~$\eclass_{n,i}$. 
-So the distinguishing must involve $\sigma$'s final character,~$s_n$,
-taking~$r$ to a state in one class and taking~$\hat{r}$ to 
-a state in another.
+So distinguishing between these states
+must involve $\sigma$'s final character~$s_n$
+taking~$r$ to a state in one class,~$\eclass_{n,j}$, and taking~$\hat{r}$ to 
+a state in another,~$\eclass_{n,\hat{j}}$.
 
 Therefore, at each step we don't need to test whole strings, 
-we need only test single characters to see if 
+we need only test single characters, to see whether
 they split the equivalence classes, the $\eclass_{n,i}$'s.
-And we need only test classes with more than one character, because
-singleton classes cannot be split.
-These are the relevant single-character computations.
+
+For instance, consider again the machine on the right above,
+along with its $\sim_1$ classes 
+$\eclass_{1,0}$, $\eclass_{1,1}$, $\eclass_{1,2}$, and~$\eclass_{1,3}$. 
+To see if there is any additional splitting in going to the $\sim_2$ classes, 
+instead of checking all the length~$2$ strings we
+see if the members of $\eclass_{1,2}$ and $\eclass_{2,2}$,  
+and are sent to different $\sim_1$~classes on being fed single characters.
+(We need only test classes with more than one member because the
+singleton classes cannot split.)
 \begin{center}
-  \begin{transitionfunction}[]
-    &\str{0}  &\str{1}   \\
+  \begin{transitionfunction}[\eclass_{1,2}]
+               &\str{0}  &\str{1}   \\
     \cline{2-3}
     $q_2$      &$\eclass_{1,3}$    &$\eclass_{1,2}$    \\
     $q_4$      &$\eclass_{1,3}$    &$\eclass_{1,2}$    
   \end{transitionfunction}
   \qquad  
-  \begin{transitionfunction}[]
-    &\str{0}  &\str{1}   \\
+  \begin{transitionfunction}[\eclass_{2,2}]
+               &\str{0}  &\str{1}   \\
     \cline{2-3}
     $q_3$      &$\eclass_{1,3}$    &$\eclass_{1,3}$    \\
     $q_5$      &$\eclass_{1,3}$    &$\eclass_{1,3}$    
   \end{transitionfunction}
 \end{center}
-In neither case is there a split
-so the algorithm stops. 
-The examples below add a table notation that simplifies the
+In both tables there is no split, because the right side of the rows 
+are the same for all the classes members. 
+So we can stop.
+
+The examples of this algorithm below show how to translate this into 
+a minimal machine, and add a table notation that simplifies the
 computation.
 
 \begin{example}
@@ -7174,12 +7230,11 @@ computation.
   To do bookkeeping we will use triangular
   tables like the one below.
   They have an entry for 
-  every two-element set of state indices $\set{i,j}$
-  with $i,j\in\set{0,\,\ldots 5}$ and  $i\neq j$.
+  every two-element set $\set{i,j}$
+  where $i$ and~$j$ are indices of states and $i\neq j$.
   
-  Start by marking the $i,j$~entries for
-  state pairs that are $0$-distinguishable, that is, 
-  where one of $q_i,q_j$ is accepting while the other is not.
+  Start by checkmarking the $i,j$~entries
+  where one of $q_i$ and $q_j$ is accepting while the other is not.
   \begin{center} 
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{0}   &    &    &    &    &    \\
@@ -7196,57 +7251,77 @@ computation.
       \cline{1-5}      
     \end{minimizetable}
    \end{center}
-   The blanks entries
-   mark state pairs that are $0$-indistinguishable.
-   So~$\sim_{0}$, which as a binary relation is a set of pairs,
-   is below.
-   (The table doesn't bother with the $q_i,q_i$ boxes, because
-   a state is indistinguishable from itself.
-   In the relation below these are written $\set{q_0,q_0}$. 
-   Of course in a set repeats collapse so we could rewrite, e.g.,
-   $\set{q_0,q_0}$ as $\set{q_0}$,
-   but as written they are correct and also fit with
-   \cref{lem:CorrectnessOfMooresAlgorithm}.)
-   \begin{multline*}
-     \sim_{0}=\bigl\{\set{q_0,q_0},\,\set{q_0,q_3},\,\set{q_0,q_4},\,
-       \set{q_3,q_3},\,\set{q_3,q_4},\,\set{q_4,q_4}, \bigr.       \\
-     \bigl. \set{q_1,q_1},\,\set{q_1,q_2},\,\set{q_1,q_5},\,
-     \set{q_2,q_2},\,\set{q_2,q_5},\,\set{q_5,q_5} \bigr\}
-   \end{multline*}
-   Form the $\sim_{0}$-equivalence classes by 
-   finding entries~$i,j$ that are blank, and then $q_i$ is $0$-equivalent
-   to~$q_j$.
-   For instance, the equivalence class containing $q_0$ also contains
-   $q_3$ and~$q_4$ because the boxes $0,2$ and~$0,3$ are blank.
-   Similarly, the equivalence class containing $q_2$ also contains $q_1$
-   and~$q_5$.
-   Here are the two $\sim_{0}$-equivalence classes.
+   These mark states that are $0$-distinguishable and the 
+   blanks denote pairs of states that are $0$-indistinguishable.
+   % So~$\sim_{0}$, which as a binary relation is a set of pairs,
+   % is below.
+   % \begin{multline*}
+   %   \sim_{0}=\bigl\{\set{q_0,q_0},\,\set{q_0,q_3},\,\set{q_0,q_4},\,
+   %     \set{q_3,q_3},\,\set{q_3,q_4},\,\set{q_4,q_4}, \bigr.       \\
+   %   \bigl. \set{q_1,q_1},\,\set{q_1,q_2},\,\set{q_1,q_5},\,
+   %   \set{q_2,q_2},\,\set{q_2,q_5},\,\set{q_5,q_5} \bigr\}
+   % \end{multline*}
+   % (The table doesn't bother with the $q_i,q_i$ boxes, because
+   % a state is indistinguishable from itself.
+   % In the relation below these are written $\set{q_0,q_0}$. 
+   % Of course in a set repeats collapse so we could rewrite, e.g.,
+   % $\set{q_0,q_0}$ as $\set{q_0}$,
+   % but as written they are correct and also fit with
+   % \cref{lem:CorrectnessOfMooresAlgorithm}.)
+   %
+   % Form the $\sim_{0}$-equivalence classes by 
+   % finding entries~$i,j$ that are blank, and then $q_i$ is $0$-equivalent
+   % to~$q_j$.
+   % For instance, the equivalence class containing $q_0$ also contains
+   % $q_3$ and~$q_4$ because the boxes $0,2$ and~$0,3$ are blank.
+   % Similarly, the equivalence class containing $q_2$ also contains $q_1$
+   % and~$q_5$.
+   In short, here are the two $\sim_{0}$-equivalence classes.
    \begin{equation*}
      \eclass_{0,0} =\set{0,3,4}
      \qquad
      \eclass_{0,1} =\set{1,2,5}        
    \end{equation*}
 
-  Iterate.
-  Look at the table's blanks, the $0$-indistinguishable pairs of states,
+  Next investigate
+  the table's blanks, the $0$-indistinguishable pairs of states,
   to see if they can be $1$-distinguished.
-  On the left below is each $0$-indistinguishable pair along with the
-  pair to which the machine takes it with the listed input character.
-  For instance, the input \str{a} takes the machine's state $q_0$ 
-  to~$q_1$, and takes $q_3$ to~$q_5$.
-  If the resulting pair is $0$-distinguishable then mark it.
+  For each $\sim_0$~class, look at all pairs of states.
+  The table below lists them on the left.
+  For each single character input, see where that
+  character sends the two states in the pair; that's listed in the middle.
+  On the right are the associated $\sim_0$~classes.
+
+  For instance, $q_0$ and~$q_3$ are in the same $\sim_0$~class, $\eclass_{0,0}$.
+  On being fed an~\str{a}, $q_0$ goes to~$q_1$ and
+  $q_3$ goes to~$q_5$.
+  The two, $q_1$ and~$q_5$, are together in $\eclass_{0,1}$. 
+  
+  In contrast, $q_2$ and~$q_5$ are together in~$\eclass_{0,1}$.
+  The character~\str{b} takes them to $q_3$ and~$q_5$.
+  Those are in different $\sim_0$~classes so their row gets a checkmark.
+  (Put a row mark if at least one entry on the right has different classes.)
   \begin{center} \small
-    \begin{tabular}{r|ll}
+    \begin{tabular}{r|ll|ll}
       \multicolumn{1}{c}{\ }
                   &\multicolumn{1}{c}{\str{a}}
+                  &\multicolumn{1}{c}{\str{b}} 
+                  &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}  \\
-      \cline{2-3}
-      $\set{0,3}$  &$\set{1,5}$  &$\set{2,5}$  \\
-      $\set{0,4}$  &$\set{1,5}$  &$\set{2,5}$  \\
-      $\set{1,2}$  &$\set{3,4}$  &$\set{4,3}$  \\
-      $\set{1,5}$  &$\set{3,5}$ \ck  &$\set{4,5}$ \ck  \\
-      $\set{2,5}$  &$\set{4,5}$ \ck  &$\set{3,5}$ \ck  \\
-      $\set{3,4}$  &$\set{5,5}$   &$\set{5,5}$  \\                              
+      \cline{2-5}
+      $0,3$  &$1,5$                           &$2,5$  
+             &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
+      $0,4$  &$1,5$      &$2,5$  
+             &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
+      $3,4$  &$5,5$       &$5,5$                              
+             &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
+      \cline{2-5}       
+      $1,2$  &$3,4$                            &$4,3$  
+             &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,0},\eclass_{0,0}$  \\
+      \splitclasses{$1,5$}  &$3,5$            &$4,5$   
+             &$\eclass_{0,0},\eclass_{0,1}$     &$\eclass_{0,0},\eclass_{0,1}$ \\
+      \splitclasses{$2,5$}  &$4,5$             &$3,5$   
+             &$\eclass_{0,0},\eclass_{0,1}$     &$\eclass_{0,0},\eclass_{0,1}$ \\
     \end{tabular}
     \qquad
     \begin{minimizetable}{6}
@@ -7263,37 +7338,37 @@ computation.
       \ck &\ck    &\ck    &\ck &\ck &\multicolumn{1}{|c}{5}    \\ 
       \cline{1-5}      
     \end{minimizetable}
-    \qquad
-    % \begin{varwidth}{0.19\linewidth}
-    %   \begin{rulealigned*}
-    %     \eclass_{1,0} &=\set{0,3,4} \\
-    %     \eclass_{1,1} &=\set{1,2}   \\ 
-    %     \eclass_{1,2} &=\set{5}   
-    %   \end{rulealigned*}
-    % \end{varwidth}
-    \equivclasses{%
-        \eclass_{1,0} &=\set{0,3,4} \\
-        \eclass_{1,1} &=\set{1,2}   \\ 
-        \eclass_{1,2} &=\set{5}   
-    }
   \end{center}
-  So this round finds that $q_1$ is $1$-distinguishable from~$q_5$
-  and that $q_2$ is $1$-distinguishable from~$q_5$.
-  The triangular table shows the additional marks, and the
-  $1$-equivalence classes also reflect that.
+  We have found that the states $q_1$ and~$q_2$ are not $1$-distinguishable,
+  but that $q_5$ can be $1$-distinguished from $q_1$ and~$q_2$.
+  In short, $\eclass_{0,1}=\set{1,2,5}$ splits into two $\sim_1$~classes. 
+  \begin{equation*}
+    \eclass_{1,0}=\set{0,3,4} \quad
+    \eclass_{1,1}=\set{1,2}   \quad
+    \eclass_{1,2}=\set{5}   
+  \end{equation*}
+  We've updated the triangular table with marks at $1,5$ and~$2,5$.
 
+  Iterate.
   The next iteration subdivides the $\sim_{1}$-equivalence classes,
   the $\eclass_{1,i}$'s, to compute the $\sim_{2}$-equivalence classes.
   \begin{center} \small
-    \begin{tabular}{r|ll}
+    \begin{tabular}{r|ll|ll}
       \multicolumn{1}{c}{\ }
                   &\multicolumn{1}{c}{\str{a}}
+                  &\multicolumn{1}{c}{\str{b}}  
+                  &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}  \\
-      \cline{2-3}
-      $\set{0,3}$  &$\set{1,5}$ \ck  &$\set{2,5}$ \ck \\
-      $\set{0,4}$  &$\set{1,5}$ \ck &$\set{2,5}$ \ck \\
-      $\set{1,2}$  &$\set{3,4}$  &$\set{4,3}$  \\
-      $\set{3,4}$  &$\set{5,5}$   &$\set{5,5}$  \\                              
+      \cline{2-5}
+      \splitclasses{$\set{0,3}$}  &$\set{1,5}$   &$\set{2,5}$  
+             &$\eclass_{1,1},\eclass_{1,2}$     &$\eclass_{1,1},\eclass_{1,2}$  \\
+      \splitclasses{$\set{0,4}$}  &$\set{1,5}$  &$\set{2,5}$  
+             &$\eclass_{1,1},\eclass_{1,2}$     &$\eclass_{1,1},\eclass_{1,2}$  \\
+      $\set{3,4}$  &$\set{5,5}$   &$\set{5,5}$  
+             &$\eclass_{1,2},\eclass_{1,2}$     &$\eclass_{1,2},\eclass_{1,2}$  \\
+      \cline{2-5}                              
+      $\set{1,2}$  &$\set{3,4}$  &$\set{4,3}$  
+             &$\eclass_{1,0},\eclass_{1,0}$     &$\eclass_{1,0},\eclass_{1,0}$  \\
     \end{tabular}
     \qquad
     \begin{minimizetable}{6}
@@ -7310,41 +7385,72 @@ computation.
       \ck &\ck    &\ck    &\ck &\ck &\multicolumn{1}{|c}{5}    \\ 
       \cline{1-5}      
     \end{minimizetable}
-    \qquad
-    % \begin{varwidth}{0.2\linewidth}
-    %   \dropeqnvertspace
-    %   \begin{align*}
-    %     \eclass_{2,0} &=\set{0} \\
-    %     \eclass_{2,1} &=\set{3,4} \\
-    %     \eclass_{2,2} &=\set{1,2}   \\ 
-    %     \eclass_{2,3} &=\set{5}   
-    %   \end{align*}
-    % \end{varwidth}
-    \equivclasses{\eclass_{2,0} &=\set{0} \\
-        \eclass_{2,1} &=\set{3,4} \\
-        \eclass_{2,2} &=\set{1,2}   \\ 
-        \eclass_{2,3} &=\set{5}   
-      }
   \end{center}
+  We have found that $q_3$ and~$q_4$ are not $2$-distinguishable, 
+  they are each distinguishable from $q_0$.
+  The $\sim_1$ class $\eclass_{1,0}$ splits into two $\sim_2$ classes.
+  \begin{equation*}
+        \eclass_{2,0}=\set{0} \quad
+        \eclass_{2,1}=\set{3,4} \quad
+        \eclass_{2,2}=\set{1,2}   \quad
+        \eclass_{2,3}=\set{5}   
+  \end{equation*}
+  The updated triangular table contains the same information since its only 
+  blanks are at entries $1,2$ and $3,4$.
 
-  Running through one more iteration gives  
-  no more splitting so the process stops.
-  Here is the minimized machine with $s_0$ for $\eclass_{2,0}$, etc.
+  Once more through the iteration gives this.
+  \begin{center} \small
+    \begin{tabular}{r|ll|ll}
+      \multicolumn{1}{c}{\ }
+                  &\multicolumn{1}{c}{\str{a}}
+                  &\multicolumn{1}{c}{\str{b}}  
+                  &\multicolumn{1}{c}{\str{a}}
+                  &\multicolumn{1}{c}{\str{b}}  \\
+      \cline{2-5}
+      $\set{3,4}$  &$\set{5,5}$   &$\set{5,5}$  
+             &$\eclass_{2,3},\eclass_{2,3}$     &$\eclass_{2,3},\eclass_{2,3}$  \\
+      \cline{2-5}                              
+      $\set{1,2}$  &$\set{3,4}$  &$\set{4,3}$  
+             &$\eclass_{2,1},\eclass_{2,1}$     &$\eclass_{2,1},\eclass_{2,1}$  \\
+    \end{tabular}
+    \qquad
+    \begin{minimizetable}{6}
+      \multicolumn{1}{c}{0}   &    &    &    &    &    \\
+      \cline{1-1}
+      \ck &\multicolumn{1}{|c}{1}   &    &    &    &    \\
+      \cline{2-2}
+      \ck &    &\multicolumn{1}{|c}{2}   &    &    &    \\
+      \cline{3-3}
+      \ck    &\ck &\ck &\multicolumn{1}{|c}{3}   &    &    \\
+      \cline{4-4}
+      \ck    &\ck &\ck &    &\multicolumn{1}{|c}{4}   &    \\
+      \cline{5-5}
+      \ck &\ck    &\ck    &\ck &\ck &\multicolumn{1}{|c}{5}    \\ 
+      \cline{1-5}      
+    \end{minimizetable}
+  \end{center}
+  There is  
+  no more splitting, so the algorithm stops with these classes.
+  \begin{equation*}
+        \eclass_{2,0}=\set{0} \quad
+        \eclass_{2,1}=\set{3,4} \quad
+        \eclass_{2,2}=\set{1,2}   \quad
+        \eclass_{2,3}=\set{5}   
+  \end{equation*}
+  So $q_1\sim q_2$ and $q_3\sim q_4$, but the others are all distinguishable. 
+
+  Taking $s_0$ as a name for $\eclass_{2,0}$, $s_1$ for $\eclass_{2,1}$, etc.,
+  we have this minimized machine.
   \begin{center}
     \includegraphics{automata/asy/min/min04.pdf}
   \end{center}
-  This machine's start state is the one containing the original machine's
-  start, $q_0$.
-  This machine's final states are the ones containing the final states of the
+  Its start state is the one containing $q_0$. 
+  Its final states are the ones containing final states of the
   original machine.
-
-  As to the arrows, for instance consider this machine's arrow
-  labelled~\str{a} from $s_1$ to~$s_3$.
-  On this machine $s_1$ represents the class~$\eclass_1=\set{q_3,q_4}$.
-  Look on the starting machine at the arrows leaving those states and
-  labelled~\str{a}.
-  Both arrows go to $q_5$, which is contained in
-  the equivalence class~$s_3=\eclass_3$.
+  As to the arrows, for instance consider~$s_0=\set{q_0}$. 
+  In the original machine, an input of \str{a} takes $q_0$ to~$q_1$.
+  Since $q_1$ is an element of~$\eclass_{2,2}=s_2$, the arrow 
+  out of $s_0$ labelled \str{a} goes to~$s_2$.
 \end{example}
 
 The algorithm has one more step, which was not needed in the prior example.

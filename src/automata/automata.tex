@@ -7430,14 +7430,14 @@ computation.
     \end{minimizetable}
   \end{center}
   There is  
-  no more splitting, so the algorithm stops with these classes.
+  no more splitting so the algorithm stops with these classes.
   \begin{equation*}
         \eclass_{2,0}=\set{0} \quad
         \eclass_{2,1}=\set{3,4} \quad
         \eclass_{2,2}=\set{1,2}   \quad
         \eclass_{2,3}=\set{5}   
   \end{equation*}
-  So $q_1\sim q_2$ and $q_3\sim q_4$, but the others are all distinguishable. 
+  Thus $q_1\sim q_2$ and $q_3\sim q_4$ but the others are all distinguishable. 
 
   Taking $s_0$ as a name for $\eclass_{2,0}$, $s_1$ for $\eclass_{2,1}$, etc.,
   we have this minimized machine.
@@ -7454,8 +7454,8 @@ computation.
 \end{example}
 
 The algorithm has one more step, which was not needed in the prior example.
-If the machine has any states that are unreachable from~$q_0$ then we
-omit those.
+If there are states that are unreachable from~$q_0$ then we
+omit those at the start.
 
 \begin{example}  \label{ex:SecondMinimization}
   Minimize this machine.
@@ -7478,23 +7478,31 @@ omit those.
       \ck &\ck &\ck &    &\multicolumn{1}{|c}{4}   \\
       \cline{1-4}      
     \end{minimizetable}
-    \qquad
-    \equivclasses{%
-        \eclass_{0,0} &=\set{0,1,2} \\
-        \eclass_{0,1} &=\set{3,4}
-    }
   \end{center}
-  Split the $0$-equivalence classes to make the $1$-equivalence classes.
+   It gives these $\sim_0$ classes, the non-final states and the final states.
+   \begin{equation*}
+        \eclass_{0,0}=\set{0,1,2} \quad
+        \eclass_{0,1}=\set{3,4}
+   \end{equation*}
+
+  Next we see if the $0$~classes split.
   \begin{center} \small
-    \begin{tabular}{r|ll}
+    \begin{tabular}{r|ll|ll}
       \multicolumn{1}{c}{\ }
                   &\multicolumn{1}{c}{\str{0}}
+                  &\multicolumn{1}{c}{\str{1}}  
+                  &\multicolumn{1}{c}{\str{0}}
                   &\multicolumn{1}{c}{\str{1}}  \\
-      \cline{2-3}
-      $\set{0,1}$  &$\set{1,2}$  &$\set{2,3}$ \ck \\
-      $\set{0,2}$  &$\set{1,2}$  &$\set{2,4}$ \ck \\
-      $\set{1,2}$  &$\set{2,2}$  &$\set{3,4}$  \\
-      $\set{3,4}$  &$\set{3,4}$  &$\set{3,4}$  \\                              
+      \cline{2-5}
+      \splitclasses{$0,1$}  &$1,2$  &$2,3$ 
+             &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,0},\eclass_{0,1}$  \\
+      \splitclasses{$0,2$}  &$1,2$  &$2,4$ 
+             &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,0},\eclass_{0,1}$  \\
+      $1,2$  &$2,2$  &$3,4$
+             &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,1},\eclass_{0,1}$  \\
+      \cline{2-5}
+      $3,4$  &$3,4$  &$3,4$
+             &$\eclass_{0,1},\eclass_{0,1}$     &$\eclass_{0,1},\eclass_{0,1}$  \\
     \end{tabular}
     \qquad
     \begin{minimizetable}{5}
@@ -7509,14 +7517,24 @@ omit those.
       \ck &\ck &\ck &    &\multicolumn{1}{|c}{4}   \\
       \cline{1-4}      
     \end{minimizetable}
-    \qquad
-    \equivclasses{%
-        \eclass_{1,0} &=\set{0} \\
-        \eclass_{1,1} &=\set{1,2}   \\ 
-        \eclass_{1,2} &=\set{3,4}   
-    }
   \end{center}
-  No additional splitting happens on the next iteration so the process stops.
+  The first row gets a check mark because on being fed a \str{1} the
+  states $q_0$ and~$q_1$ go to resulting states, $q_2$ and~$q_3$,
+  that are in different
+  $\sim_0$~classes.
+  The same is true for the second row.
+  So $q_0$ is $1$-distinguishable from $q_1$ and~$q_2$ but they are
+  not $1$-distinguishable from each other.
+  That is, $\eclass_{0,0}=\set{0,1,2}$ splits in two.
+   \begin{equation*}
+        \eclass_{1,0}=\set{0} \quad
+        \eclass_{1,1}=\set{1,2} \quad
+        \eclass_{1,2}=\set{3,4}
+   \end{equation*}
+  As earlier, the updated triangular table contains the same information,
+  since it has only two blank entries, $1,2$ and~$3,4$.
+
+  On the next iteration no more splitting happens.
   The minimized machine has three states.
   \begin{center}
     \includegraphics{automata/asy/min/min05.pdf}
@@ -7530,26 +7548,65 @@ the $\sim$ equivalence classes.
   Let $\FSM$ be a Finite State machine over the alphabet~$\Sigma$.
   For this sequence of binary relations among the states
   \begin{align*}
-    \mathcal{R}_0&=\set{\set{q,\hat{q}}\in Q_{\FSM}^2\suchthat \text{both are accepting or neither is accepting}}   \\
+    \mathcal{R}_0&=\set{\sequence{q,\hat{q}}\in Q_{\FSM}^2\suchthat \text{both are accepting or neither is accepting}}   \\
                  &\shortvdotswithin{=}   
-    \mathcal{R}_{k+1}&=\set{\set{q,\hat{q}}\in\mathcal{R}_{k}\suchthat
-      \text{$\set{\Delta(q,x),\Delta(\hat{q},x)}\in\mathcal{R}_{k}$
+    \mathcal{R}_{k+1}&=\sequence{\set{q,\hat{q}}\in\mathcal{R}_{k}\suchthat
+      \text{$\sequence{\Delta(q,x),\Delta(\hat{q},x)}\in\mathcal{R}_{k}$
       for all $x\in\Sigma$}}
   \end{align*}
-  these properties hold:
+  these hold:
   \begin{parenum}
-  \item the binary relation $\mathcal{R}_k$ equals the binary
-    relation~$\sim_{k}$
-  \item $\mathcal{R}_0\supseteq \mathcal{R}_1\supseteq \cdots$
-  \item there is an~$n\in\set{0,\,\ldots\, |Q_{\FSM}|}$ such
-    that $\mathcal{R}_{n+1}=\mathcal{R}_n$, and furthermore,
-    $\mathcal{R}_k=\mathcal{R}_n$ for all $k\geq n$
-  \item if $\mathcal{R}_{n+1}=\mathcal{R}_{n}$ then $\mathcal{R}_{n}$
-    is the $\sim$ relation.
+  \item $\sequence{q,\hat{q}}\in\mathcal{R}_{k}$ 
+   if and only if $q\sim_k\hat{q}$,
+  \item $\mathcal{R}_0\supseteq \mathcal{R}_1\supseteq \cdots$,
+  \item there is a number~$n\leq |Q_{\FSM}|$  such
+    that $\mathcal{R}_{n+1}=\mathcal{R}_n$ and furthermore
+    $\mathcal{R}_k=\mathcal{R}_n$ for all $k\geq n$, and
+  \item if $\mathcal{R}_{n+1}=\mathcal{R}_{n}$ then 
+    $\sequence{q,\hat{q}}\in\mathcal{R}_{n}$
+    if and only if $q\sim\hat{q}$.
   \end{parenum}
 \end{lemma}
 
 \begin{proof}
+  We first show that if $\sequence{q,\hat{q}}\notin\mathcal{R}_k$ then 
+  $q\not\sim_k\hat{q}$,
+  by induction on~$k$.
+  For the $k=0$ base step, \cref{def:distinguishable}
+  says that the states are $0$~indistinguishable, $q\sim_0\hat{q}$, 
+  if and only if either both are accepting states
+  or neither is, which is the definition of~$\mathcal{R}_{0}$.
+  For the inductive step suppose that the statement is true
+  for all $i\leq k$, consider the $k+1$~case, and for that suppose 
+  that $\sequence{q,\hat{q}}\notin\mathcal{R}_{k+1}$.
+  If  $\sequence{q,\hat{q}}\notin\mathcal{R}_{k}$ then the inductive hypothesis
+  applies and $q\not\sim_{k+1}\hat{q}$ also.
+  If  $\sequence{q,\hat{q}}\in\mathcal{R}_{k}$ 
+  but $\sequence{q,\hat{q}}\notin\mathcal{R}_{k+1}$ then
+  there is a character $x\in\Sigma$ such that the pair
+  $\set{\Delta(q,x), \Delta(\hat{q},x)}\notin \mathcal{R}_k$.
+  $\set{\Delta(q,x), \Delta(\hat{q},x)}\notin \mathcal{R}_k$.
+
+ was marked at some
+  previous iteration, $i$.
+  The inductive hypothesis says there is a string $\tau$ of length at most~$k$
+  that $\sim_{k}$~distinguishes $\Delta(q,x)$ from~$\Delta(\hat{q},x)$.
+  Then the string $\sigma=x\concat\tau$ has length at most~$k+1$ and
+  will $\sim_{k+1}$~distinguish $q$ from $\hat{q}$.
+  applies and $q\not\sim_{k+1}\hat{q}$ also.
+
+  Let  $q$ and~$\hat{q}$ be $\mathcal{R}_{k+1}$~distinguishable.
+  Then there is a character $x\in\Sigma$ such that the pair
+  $\set{\Delta(q,x), \Delta(\hat{q},x)}$ was marked at some
+  previous iteration, $i$.
+  The inductive hypothesis says there is a string $\tau$ of length at most~$k$
+  that $\sim_{k}$~distinguishes $\Delta(q,x)$ from~$\Delta(\hat{q},x)$.
+  Then the string $\sigma=x\concat\tau$ has length at most~$k+1$ and
+  will $\sim_{k+1}$~distinguish $q$ from $\hat{q}$.
+
+  We will say that the states $q_0$ and~$q_1$ are
+  $\mathcal{R}_k$-distinguishable if the set $q,\hat{q}$ is not a member
+  of $\mathcal{R}_k$.
   Half of property~(1) is to  
   show that if two states are
   $\mathcal{R}_k$-distinguishable then they are $\sim_{k}$-distinguishable.
@@ -7607,7 +7664,7 @@ the $\sim$ equivalence classes.
   then they must be the same at the next iteration,
   simply because it is the same operation.
 
-  Property~(4) follows from the prior properties, and
+  Property~(4) follows from the prior properties and
   \cref{def:distinguishable}.
   See \cref{exer:CorrectnessOfMooresAlgorithm}.
   \end{proof}

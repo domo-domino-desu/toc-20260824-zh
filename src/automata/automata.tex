@@ -7550,9 +7550,8 @@ We will close this section with a
 proof that this algorithm returns a minimal machine.
 For that, consider
 the drawing below.
-It shows the input machine above the output machine,
-so its states collapse down, or project 
-down, onto the output machine's states with
+It has the input machine above the output machine so we can imagine that
+its states project down onto the output machine's states with
 $p(q_0)=r_0$, $p(q_1)=p(q_2)=r_1$,
 $p(q_3)=p(q_4)=r_2$, and $p(q_5)=r_3$.
 \begin{center}
@@ -7571,7 +7570,8 @@ The tables below make the same point.
 The left table is the transition function of the starting 
 machine,~$\Delta_{\FSM_I}$.
 The right table groups the $q$'s into $r$'s, so it shows $\Delta_{\FSM_O}$.
-The point about the algorithm is that it makes this grouping possible.
+The states are grouped in a way that allows the transitions in $\FSM_O$ 
+to be derived from the transitions in $\FSM_I$.
 For instance, $q_1$ and~$q_2$ project to~$r_1$, and when presented with
 an input~\str{a} they each transition to a state 
 ($q_3$ and~$q_4$ respectively) that projects to~$r_2$.
@@ -7612,128 +7612,189 @@ $q\in\FSM_I$ and $x\in\Sigma$.
 
 
 \begin{lemma}
-The algorithm above, which inputs a Finite State machine~$\FSM_i$,
-returns a machine~$\FSM_o$ that from among all of the machine
-accepting the same language,
-$\lang(\FSM_i)=\lang(\FSM_o)$,
-has a minimal number of states. 
+The algorithm above
+returns a machine that accepts the same language as the input machine,
+$\lang(\FSM_O)=\lang(\FSM_I)$, and 
+from among all of the machine
+accepting the same language has the minimal number of states. 
 \end{lemma}
-
-The key point about
-the output machine is that its transition
-function~$\Delta_{\FSM_o}$ respects the transition
-function of the input~$\Delta_{\FSM_i}$ in the following sense.
-
-
-
 
 \begin{proof}
 We will argue that the algorithm halts for all input machines,
 that the returned machine accepts the same language,
 and that it has a minimal number of states.
+The first is easy:~the algorithm halts after a step where no class splits and
+since these machines have only finitely many states,
+that step must appear.
 
-The algorithm halts when there comes a step where no class splits.
-Since there are only finitely many states in a Finite State machine,
-that step must eventually come.
+The second holds because the transition function of the output
+machine respects the transition function of the input.
+Start both machines on the same string, $\sigma\in\kleenestar{\Sigma}$. 
+The machine~$\FSM_I$ starts in~$q_0$ while $\FSM_O$ starts in a state
+$\eclass_0$ that contains~$q_0$.
+The first character of~$\sigma$ moves~$\FSM_I$ to a state~$\hat{q}$
+and moves~$\FSM_O$ to a state that contains~$\hat{q}$.
+The processing proceeds in this way until the string runs out.
+Then $\FSM_I$ is in a final state if and only if 
+$\FSM_O$ is in a state that contains that final state, which is itself
+a final state of~$\FSM_O$.
+Thus the two machines accept the same set of strings.
 
- 
+\citetext{For the third}{%
+  This is derived from the presentation in \autocite{HopcroftUllman}.
+}, 
+let~$\hat{\FSM}$ be a machine that accepts
+the same language as~$\FSM_O$.
+We will show that it has at least as many states by giving an association,
+where each state in~$\FSM_O$ is associated with at least one state 
+in~$\hat{\FSM}$ and never are different states in~$\FSM_O$ associated
+with the same state in~$\hat{\FSM}$.
+
+Consider the union of the sets of states of the two machines 
+(assume that they have no states in common).
+We will follow the process above 
+to find when two states in this union are indistinguishable.
+As above, start by saying that two states in the union are
+$0$-indistinguishable if either both are final in their own machine 
+or neither is final.
+Step~$n+1$ of this process, also as above, begins with
+$\sim_n$~classes 
+$\eclass_{n,0},\ldots{}\,\eclass_{n,k}$ of states from the union that are
+$n$-indistinguishable.
+For each such class, see if it splits.
+That is, see if there 
+are two states in that class that are sent by a character
+$x\in\Sigma$ to different $\sim_n$~classes. 
+That gives the $\sim_{n+1}$ classes. 
+When we reach a step with no splitting 
+then we know which states are indistinguishable
+and they form the $\sim$~classes.
+
+Notice that the start states in the two machines are indistinguishable,
+that is, they are in the same $\sim$~class,
+because $\lang(\FSM_O)=\lang(\hat{\FSM})$.
+In addition, if two states are indistinguishable then their successor states
+on any one input symbol $x\in\Sigma$ are also indistinguishable
+from each other,
+simply because a string that distinguishes between the successors will
+distinguish between the original two states by pushing~$x$ onto its front.
+In turn, the successors of these successors are indistinguishable, etc.
+
+Now say that states in~$\FSM_O$ and $\hat{\FSM}$ are associated if they
+are indistinguishable, that is, if they are in the same $\sim$~class.
+We first show that every state~$q$ of $\FSM_O$ is associated with 
+at least one state of~$\hat{\FSM}$.
+Because~$\FSM_O$ is the output of the minimization process, it has
+no inaccessible state.
+So there is a string
+$\sigma\in\kleenestar{\Sigma}$ that takes the start state of~$\FSM_O$ to~$q$.
+This string takes the start state of~$\hat{\FSM}$ to some~$\hat{q}$, and the 
+prior paragraph applies to give that $q\sim\hat{q}$.
+
+We close by showing that it cannot be the case that there are 
+two different states of~$\FSM_O$ both associated with the same 
+state of~$\hat{\FSM}$. 
+If there were two such states then by \cref{lemma:StateEquivIsEquivRel} they
+would be indistinguishable from each other.
+But $\FSM_O$ is the output of the minimization
+process that ensures all of its states are distinguishable.
 \end{proof}
 
 
 
 
 
-This result verifies that the algorithm computes what we want,
-the $\sim$ equivalence classes.
+% This result verifies that the algorithm computes what we want,
+% the $\sim$ equivalence classes.
 
-\begin{lemma} \label{lem:CorrectnessOfMooresAlgorithm}
-  Let $\FSM$ be a Finite State machine over the alphabet~$\Sigma$.
-  For this sequence of binary relations among the reachable states
-  \begin{align*}
-    \mathcal{R}_0&=\set{\sequence{q,\hat{q}}\in Q_{\FSM}^2\suchthat \text{both are accepting or neither is accepting}}   \\
-                 &\shortvdotswithin{=}   
-    \mathcal{R}_{k+1}&=\sequence{\set{q,\hat{q}}\in\mathcal{R}_{k}\suchthat
-      \text{$\sequence{\Delta(q,x),\Delta(\hat{q},x)}\in\mathcal{R}_{k}$
-      for all $x\in\Sigma$}}
-  \end{align*}
-  these hold:
-  \begin{parenum}
-  \item $\sequence{q,\hat{q}}\in\mathcal{R}_{k}$ 
-   if and only if $q\sim_k\hat{q}$,
-  \item $\mathcal{R}_0\supseteq \mathcal{R}_1\supseteq \cdots$,
-  \item there is a number~$n\leq |Q_{\FSM}|$  such
-    that $\mathcal{R}_{n+1}=\mathcal{R}_n$ and furthermore
-    $\mathcal{R}_k=\mathcal{R}_n$ for all $k\geq n$, and
-  \item if $\mathcal{R}_{n+1}=\mathcal{R}_{n}$ then 
-    $\sequence{q,\hat{q}}\in\mathcal{R}_{n}$
-    if and only if $q\sim\hat{q}$.
-  \end{parenum}
-\end{lemma}
+% \begin{lemma} \label{lem:CorrectnessOfMooresAlgorithm}
+%   Let $\FSM$ be a Finite State machine over the alphabet~$\Sigma$.
+%   For this sequence of binary relations among the reachable states
+%   \begin{align*}
+%     \mathcal{R}_0&=\set{\sequence{q,\hat{q}}\in Q_{\FSM}^2\suchthat \text{both are accepting or neither is accepting}}   \\
+%                  &\shortvdotswithin{=}   
+%     \mathcal{R}_{k+1}&=\sequence{\set{q,\hat{q}}\in\mathcal{R}_{k}\suchthat
+%       \text{$\sequence{\Delta(q,x),\Delta(\hat{q},x)}\in\mathcal{R}_{k}$
+%       for all $x\in\Sigma$}}
+%   \end{align*}
+%   these hold:
+%   \begin{parenum}
+%   \item $\sequence{q,\hat{q}}\in\mathcal{R}_{k}$ 
+%    if and only if $q\sim_k\hat{q}$,
+%   \item $\mathcal{R}_0\supseteq \mathcal{R}_1\supseteq \cdots$,
+%   \item there is a number~$n\leq |Q_{\FSM}|$  such
+%     that $\mathcal{R}_{n+1}=\mathcal{R}_n$ and furthermore
+%     $\mathcal{R}_k=\mathcal{R}_n$ for all $k\geq n$, and
+%   \item if $\mathcal{R}_{n+1}=\mathcal{R}_{n}$ then 
+%     $\sequence{q,\hat{q}}\in\mathcal{R}_{n}$
+%     if and only if $q\sim\hat{q}$.
+%   \end{parenum}
+% \end{lemma}
 
-\begin{proof}
-  We first show that if $\sequence{q,\hat{q}}\notin\mathcal{R}_k$ then 
-  $q\not\sim_k\hat{q}$.
-  We use induction on~$k$.
-  For the $k=0$ base step, \cref{def:distinguishable}
-  says that the states are $0$~indistinguishable, $q\sim_0\hat{q}$, 
-  if and only if either both are accepting states
-  or neither is, which is the definition of~$\mathcal{R}_{0}$.
-  For the inductive step suppose that the statement is true
-  for all $i\leq k$, consider the $k+1$~case, and for that suppose 
-  that $\sequence{q,\hat{q}}\notin\mathcal{R}_{k+1}$.
-  If  $\sequence{q,\hat{q}}\notin\mathcal{R}_{k}$ then the inductive hypothesis
-  applies and $q\not\sim_{k+1}\hat{q}$ also.
-  If  $\sequence{q,\hat{q}}\in\mathcal{R}_{k}$ 
-  but $\sequence{q,\hat{q}}\notin\mathcal{R}_{k+1}$ then
-  there is a character $x\in\Sigma$ such that the pair
-  $\set{\Delta(q,x), \Delta(\hat{q},x)}\notin \mathcal{R}_k$.
-  $\set{\Delta(q,x), \Delta(\hat{q},x)}\notin \mathcal{R}_k$.
-  In this case, because the states $q$ and~$\hat{q}$ are reachable
-  there are strings $\tau$ and~$\hat{\tau}$ taking the machine to 
-  those states, and then $\tau\concat x$ and $\hat{\tau}\concat x$
-  suffice to $k+1$-distinguish $q$ from~$\hat{q}$, and 
-  so $q\not\sim_{k+1}\hat{q}$. 
+% \begin{proof}
+%   We first show that if $\sequence{q,\hat{q}}\notin\mathcal{R}_k$ then 
+%   $q\not\sim_k\hat{q}$.
+%   We use induction on~$k$.
+%   For the $k=0$ base step, \cref{def:distinguishable}
+%   says that the states are $0$~indistinguishable, $q\sim_0\hat{q}$, 
+%   if and only if either both are accepting states
+%   or neither is, which is the definition of~$\mathcal{R}_{0}$.
+%   For the inductive step suppose that the statement is true
+%   for all $i\leq k$, consider the $k+1$~case, and for that suppose 
+%   that $\sequence{q,\hat{q}}\notin\mathcal{R}_{k+1}$.
+%   If  $\sequence{q,\hat{q}}\notin\mathcal{R}_{k}$ then the inductive hypothesis
+%   applies and $q\not\sim_{k+1}\hat{q}$ also.
+%   If  $\sequence{q,\hat{q}}\in\mathcal{R}_{k}$ 
+%   but $\sequence{q,\hat{q}}\notin\mathcal{R}_{k+1}$ then
+%   there is a character $x\in\Sigma$ such that the pair
+%   $\set{\Delta(q,x), \Delta(\hat{q},x)}\notin \mathcal{R}_k$.
+%   $\set{\Delta(q,x), \Delta(\hat{q},x)}\notin \mathcal{R}_k$.
+%   In this case, because the states $q$ and~$\hat{q}$ are reachable
+%   there are strings $\tau$ and~$\hat{\tau}$ taking the machine to 
+%   those states, and then $\tau\concat x$ and $\hat{\tau}\concat x$
+%   suffice to $k+1$-distinguish $q$ from~$\hat{q}$, and 
+%   so $q\not\sim_{k+1}\hat{q}$. 
 
-  The other half of~(1) is to show that if 
-  $q\not\sim_{k}\hat{q}$ then
-  $\sequence{q,\hat{q}}\notin\mathcal{R}_k$.
-  We again use induction.
-  The $k=0$ base step is again
-  that $\sim_{0}$ and~$\mathcal{R}_0$ are equal by definition.
-  For the inductive step suppose that the length of $\sigma$ is $\ell+1$
-  and suppose also the hypothesis
-  that for all $j\leq \ell$ if two states are
-  $\sim_{j}$-distintguishable then they are $\mathcal{R}_{j}$-distinguishable.
-  Let $q$ and~$\hat{q}$ be $\sim_{k+1}$-distinguishable,
-  via the string~$\sigma$.
-  Decompose $\sigma$ as $\sigma=x\concat\sigma_{0}$, for $x\in\Sigma$.
-  Apply the inductive hypothesis,
-  giving that the pair $\set{\Delta(q,x),\Delta(\hat{q},x)}$
-  is $\mathcal{R}_{k}$-distinguishable,
-  and so they are in different $\mathcal{R}_{k}$ classes.
-  That implies that
-  the pair $q,\hat{q}$ is $\mathcal{R}_{k+1}$-distinguishable,
-  via the character~$x$.
+%   The other half of~(1) is to show that if 
+%   $q\not\sim_{k}\hat{q}$ then
+%   $\sequence{q,\hat{q}}\notin\mathcal{R}_k$.
+%   We again use induction.
+%   The $k=0$ base step is again
+%   that $\sim_{0}$ and~$\mathcal{R}_0$ are equal by definition.
+%   For the inductive step suppose that the length of $\sigma$ is $\ell+1$
+%   and suppose also the hypothesis
+%   that for all $j\leq \ell$ if two states are
+%   $\sim_{j}$-distintguishable then they are $\mathcal{R}_{j}$-distinguishable.
+%   Let $q$ and~$\hat{q}$ be $\sim_{k+1}$-distinguishable,
+%   via the string~$\sigma$.
+%   Decompose $\sigma$ as $\sigma=x\concat\sigma_{0}$, for $x\in\Sigma$.
+%   Apply the inductive hypothesis,
+%   giving that the pair $\set{\Delta(q,x),\Delta(\hat{q},x)}$
+%   is $\mathcal{R}_{k}$-distinguishable,
+%   and so they are in different $\mathcal{R}_{k}$ classes.
+%   That implies that
+%   the pair $q,\hat{q}$ is $\mathcal{R}_{k+1}$-distinguishable,
+%   via the character~$x$.
 
-  Property~(2) holds because all of the elements of
-  $\mathcal{R}_{k+1}$ are elements of~$\mathcal{R}_k$, by definition.
+%   Property~(2) holds because all of the elements of
+%   $\mathcal{R}_{k+1}$ are elements of~$\mathcal{R}_k$, by definition.
   
-  For the first half of~(3),
-  as the examples illustrate, each iteration splits 
-  equivalence classes and that can only happen
-  each states is alone in its class.
-  The worst case
-  starts with a single class and at each iteration pulls out
-  one state.
-  The ``furthermore'' of~(3) holds because if none of the
-  two-element sets of $\mathcal{R}_{n+1}$ differ from those of~$\mathcal{R}_n$
-  then they must be the same at the next iteration,
-  simply because it is the same operation.
+%   For the first half of~(3),
+%   as the examples illustrate, each iteration splits 
+%   equivalence classes and that can only happen
+%   each states is alone in its class.
+%   The worst case
+%   starts with a single class and at each iteration pulls out
+%   one state.
+%   The ``furthermore'' of~(3) holds because if none of the
+%   two-element sets of $\mathcal{R}_{n+1}$ differ from those of~$\mathcal{R}_n$
+%   then they must be the same at the next iteration,
+%   simply because it is the same operation.
 
-  Property~(4) follows from the prior properties and
-  \cref{def:distinguishable}.
-  See \cref{exer:CorrectnessOfMooresAlgorithm}.
-  \end{proof}
+%   Property~(4) follows from the prior properties and
+%   \cref{def:distinguishable}.
+%   See \cref{exer:CorrectnessOfMooresAlgorithm}.
+%   \end{proof}
   
 
 \begin{exercises}

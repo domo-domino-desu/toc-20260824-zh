@@ -868,7 +868,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============== example motivation for myhill nerods ================
+// ============== example motivation for myhill nerode ================
 picture pic;
 int picnum = 16;
 unitsize(pic,1pt);

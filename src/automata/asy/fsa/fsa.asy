@@ -55,7 +55,7 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 node q0=ncircle("$q_{\text{off}}$"),
-q1=ncircle("$q_{\text{on}}$");
+     q1=ncircle("$q_{\text{on}}$",ns_accepting);
 
 // layout
 defaultlayoutrel = false;
@@ -86,7 +86,7 @@ setdefaultstatediagramstyles() ;
 // define nodes
 node q0=ncircle("$q_{\text{init}}$"),
      q1=ncircle("$q_{\text{one}}$"),
-     q2=ncircle("$q_{\text{ready}}$");
+     q2=ncircle("$q_{\text{ready}}$",ns_accepting);
 
 // layout
 defaultlayoutrel = false;
@@ -125,7 +125,7 @@ node q0=ncircle("$q_0$"),
      q15=ncircle("$q_{15}$"), 
      q20=ncircle("$q_{20}$"), 
      q25=ncircle("$q_{25}$"), 
-     q30=ncircle("$q_{30}$"); 
+     q30=ncircle("$q_{30}$",ns_accepting); 
 
 // layout
 defaultlayoutrel = false;
@@ -245,7 +245,7 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$q_0$"),
+node q0=ncircle("$q_0$",ns_accepting),
      q1=ncircle("$q_1$"),
      q2=ncircle("$q_2$"),
      q3=ncircle("$q_3$");

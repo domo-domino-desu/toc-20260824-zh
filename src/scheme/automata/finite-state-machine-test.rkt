@@ -22,181 +22,93 @@
 
 
 ;; ============  configuration tests =================
-(test-case
-  "Test configuration getters and setters for minimal functionality"
-  (let ([config (make-config 1 (list #\x #\y))])
-    (check = 1 (get-current-state config))
-    (check equal? (list #\x #\y) (get-tape-list config))
-    (check char=? #\x (get-current-symbol config))
- ))
-(test-case
-  "Test configuration edge cases"
-  (let ([config (make-config 1 (string->list ""))])
-    (equal? '() (get-tape-list config))
- ))
-
-;;; ================ tape-right-char, tape-left-char ===============
-;
-;;; make-tape-list  make a tape list from a string
-;(define (make-tape-list s)
-;  (string->list s))
-;(define tl0 (make-tape-list "1101"))
-;(define tl1 (make-tape-list "0010"))
-;(define tl-blank (make-tape-list ""))
-;
-;(define c0 (make-config 0
-;                        STROKE
-;                        (make-tape-list "1101")
-;                        (make-tape-list "0010")
-;                        0))
-;(define c1 (make-config 2
-;                        STROKE
-;                        (make-tape-list "1")
-;                        (make-tape-list "0")
-;                        0))
-;
 ;(test-case
-; "Test tape-left-char and tape-right-char minimal functionality"
-; (check char=? #\1 (tape-right-char tl0) "First char on the right tape is a 1")
-; (check char=? #\0 (tape-right-char tl1) "First char on the right tape is a 0")
-; (check char=? #\1 (tape-left-char tl0) "Leftmost char on this tape is a 1")
-; (check char=? #\0 (tape-left-char tl1) "Leftmost char on the right tape is a 0")
-; )
+;  "Test configuration getters and setters for minimal functionality"
+;  (let ([config (make-config 1 (list #\x #\y))])
+;    (check = 1 (get-current-state config))
+;    (check equal? (list #\x #\y) (get-tape-list config))
+;    (check char=? #\x (get-current-symbol config))
+; ))
 ;(test-case
-; "Test tape-left-char and tape-right-char return blank if tape is empty"
-; (check char=? BLANK (tape-right-char tl-blank) "First char on right on empty tape is BLANK")
-; (check char=? BLANK (tape-left-char tl-blank) "Leftmost char on empty tape is BLANK")
-; )
-;
-;(test-case
-; "Test configuration->string minimal functionality"
-; (let ([s (configuration->string c0)])
-;   (check-equal? "q0: 1101*1*0010 :0" s "Expected debugging output string")
-;   )
-; )
-;
-;(define c-blank-tape (make-config 222
-;                                  STROKE
-;                                  (make-tape-list "")
-;                                  (make-tape-list "")
-;                                  0))
-;
-;(test-case
-; "Test configuration->string edge cases"
-; (let ([s (configuration->string c-blank-tape)])
-;   (check-equal? "q222: *1* :0" s "Expected debugging output string" )
-;   )
-; )
+;  "Test configuration edge cases"
+;  (let ([config (make-config 1 (string->list ""))])
+;    (equal? '() (get-tape-list config))
+; ))
 ;
 ;
-;;; ============  delta tests =========================
+;;;; ============  delta tests =========================
 ;(test-case
 ; "Test Delta, minimal functionality"
-; ; (delta tm0 1 STROKE)  ;; does it run at all?
-; (let* ([action-next-state (delta tm0 1 STROKE)]
-;        [action (first action-next-state)]
-;        [next-state (second action-next-state)])
+; ; does it run at all?
+; (let* ([next-state (delta fsm0 0 #\t)])
 ;   ; (println action)
 ;   ; (println next-state)
-;   (check char=? action BLANK "Action symbol in this instruction should be a blank")
-;   (check = next-state 1 "Next state in this instruction should be 1")
+;   (check = 1 next-state "Next state for toggle should be a 1")
 ;   ))
 ;
 ;(test-case
-; "Test Delta, additional functionality"
-; (let* ([action-next-state (delta tm1 3 BLANK)]
-;        [action (first action-next-state)]
-;        [next-state (second action-next-state)])
-;   (check char=? action RIGHT "Action called for should be to go right")
-;   (check = next-state 3 "Next state should be 3")
-;   ))
-;
-;(test-case
-; "Test Delta returns null if there is no such instruction"
-; (check-pred null? (delta tm1 4 BLANK) "No such instruction")
+; "Test Delta, number of cases"
+; (check = 1 (delta fsm0 0 #\t) "Toggle should change states")
+; (check = 0 (delta fsm0 1 #\t) "Toggle should change to state 0")
+; (check = 1 (delta fsm1 0 #\t) "Turnstile should change to state 1")
+; (check = 0 (delta fsm1 0 #\p) "Turnstile should stay in state 0")
 ; )
 ;
-;
-;;; ================ move-right, move-left ===============
-;
-;
 ;(test-case
-; "Test move-right, move-left basic functionality"
-; (move-left c0 10)  ; does it work at all?
-; (let ([config (move-left c0 10)])
-;   (check-eq? (get-current-state config) 10 "Use the given next state")
-;   (check-equal? (get-left-tape-list config) (make-tape-list "110") "Move left cuts off leftmost char")
-;   (check char=? (get-current-symbol config) #\1 "Move left pulls char from left tape list")
-;   (check-equal? (get-right-tape-list config) (make-tape-list "10010") "Move left pushes a char on right")
-;   )
-; (move-right c0 22)  ; does it work at all?
-; (let ([config (move-right c0 22)])
-;   (check-eq? (get-current-state config) 22 "Use the given next state")
-;   (check-equal? (get-left-tape-list config) (make-tape-list "11011") "Move right pushed old current-char onto left tape")
-;   (check char=? (get-current-symbol config) #\0 "Move right pulls char from right tape list")
-;   (check-equal? (get-right-tape-list config) (make-tape-list "010") "Move right strips char off right tape")
-;   ))
+; "Test Delta returns ERROR if a bad input"
+; (check = ERROR (delta fsm0 2 #\t) "No such state")
+; (check = ERROR (delta fsm0 0 #\s) "No such input")
+; (check = ERROR (delta fsm0 2 #\s) "No such input or state")
+;)
 ;
-;(define c2 (make-config 2
-;                        STROKE
-;                        (make-tape-list "")
-;                        (make-tape-list "1100")
-;                        0))
-;(define c3 (make-config 2
-;                        STROKE
-;                        (make-tape-list "0110")
-;                        (make-tape-list "")
-;                        2))
-;(define c4 (make-config 2
-;                        STROKE
-;                        (make-tape-list "")
-;                        (make-tape-list "")
-;                        -1))
 ;
-;(test-case
-; "Test move-left, move-right with blank tape"
-; (let ([config (move-left c2 55)])
-;   (check-eq? (get-current-state config) 55 "Use the given next state")
-;   (check-equal? (get-left-tape-list config) (make-tape-list "") "Move left leaves the blank tape blank")
-;   (check char=? (get-current-symbol config) BLANK "Move left tries to pulls char from left tape list, gets a blank")
-;   (check-equal? (get-right-tape-list config) (make-tape-list "11100") "Move left pushes a char on right")
-;   )
-; (let ([config (move-left c3 55)])
-;   (check-eq? (get-current-state config) 55 "Use the given next state")
-;   (check-equal? (get-left-tape-list config) (make-tape-list "011") "Move left strips a char off the left")
-;   (check char=? (get-current-symbol config) #\0 "Move left pulls char from left tape list")
-;   (check-equal? (get-right-tape-list config) (make-tape-list "1") "Move left pushes a char on right")
-;   )
-; (let ([config (move-left c4 55)])
-;   (check-eq? (get-current-state config) 55 "Use the given next state")
-;   (check-equal? (get-left-tape-list config) (make-tape-list "") "Move left leaves the blank tape blank")
-;   (check char=? (get-current-symbol config) BLANK "Move left tries to pulls char from left tape list, gets a blank")
-;   (check-equal? (get-right-tape-list config) (make-tape-list "1") "Move left pushes a char on right")
-;   )
-; (let ([config (move-right c2 55)])
-;   (check-eq? (get-current-state config) 55 "Use the given next state")
-;   (check-equal? (get-left-tape-list config) (make-tape-list "1") "Move right pushes a char onto the left tape")
-;   (check char=? (get-current-symbol config) #\1 "Move right pulls a char from right tape list")
-;   (check-equal? (get-right-tape-list config) (make-tape-list "100") "Move right shortens right list")
-;   )
-; (let ([config (move-right c3 55)])
-;   (check-eq? (get-current-state config) 55 "Use the given next state")
-;   (check-equal? (get-left-tape-list config) (make-tape-list "01101") "Move right pushes a char on left tape")
-;   (check char=? (get-current-symbol config) BLANK "Move right tries to pull a char from right tape, gets a blank")
-;   (check-equal? (get-right-tape-list config) (make-tape-list "") "Move right leaves right tape empty")
-;   )
-; (let ([config (move-right c4 55)])
-;   (check-eq? (get-current-state config) 55 "Use the given next state")
-;   (check-equal? (get-left-tape-list config) (make-tape-list "1") "Move right pushes char on left tape")
-;   (check char=? (get-current-symbol config) BLANK "Move right tries to pulls char from right tape list, gets a blank")
-;   (check-equal? (get-right-tape-list config) (make-tape-list "") "Move right leaves empty right tape still empty")
-;   )
-; )
-;
-;;; ======================== step =====================
+;;;; =================== step ======================
 ;(test-case
 ; "Test step, minimal functionality"
-; ; (step c0 tm0)
+; (let* ([config (make-config 0 '(#\t #\p))]
+;        [next-config (step fsm1 config)])
+;   (printf "~a\n" (configuration->string next-config))
+;   (check equal? (make-config 1 '(#\p)) next-config)))
+;
+;(test-case
+; "Test step, emptying tape"
+; (let* ([config (make-config 0 '(#\p))])
+;   (check equal? (make-config 0 '()) (step fsm1 config fsm1))))
+;
+;(test-case
+; "Test step, one following another"
+; (let* ([config (make-config 1 '(#\t #\p))]
+;        [second-config (step fsm1 config)])
+;   (printf "\nfinished second-config")
+;   (write second-config)
+;   (check equal? (make-config 0 '()) (step fsm1 second-config))))
+;
+;;(printf "KKK: ~a\n" (configuration->string (make-config 0 '())))
+;;(printf "LLL: ~a\n" (configuration->string (step (make-config 0 '(#\p)) fsm1)))
+;(test-case
+; "Test step, halting"
+; (let* ([config (make-config 0 '())]
+;        [next-config (step fsm1 config)])
+;   (check = HALT next-config)))
+
+
+
+
+;;; ======================== run =====================
+(test-case
+ "Test run, minimal functionality"
+ (printf "\n===Doing run===")
+ (let* ([F (list 2)]
+        [sigma ""])
+   (check = 0 (run fsm1 F sigma))))
+
+(test-case
+ "Test run, minimal functionality"
+ (printf "\n===Doing run===")
+ (let* ([F (list 2)]
+        [sigma (string #\t #\p #\t)])
+   (check = 2 (run fsm1 F sigma))))
+
 ; (let ([config (step c0 tm0)])
 ;   (check-eq? (get-current-state config) 0 "tm0 does not change state on this move-right")
 ;   (check-equal? (get-left-tape-list config) (make-tape-list "11011") "Move right adds a 1 to the left tape list")

@@ -33,7 +33,11 @@
 
 (define (get-current-state config) (first config))
 (define (get-tape-list config) (second config))
-(define (get-current-symbol config) (first (get-tape-list config)))
+(define (get-current-symbol config)
+  (let([tape-list (get-tape-list config)])
+    (if (null? tape-list)
+        ERROR
+        (first tape-list))))
 
 (provide make-config
          get-current-state
@@ -42,10 +46,12 @@
 
 ;; configuration-> string  Return a string showing the tape
 (define (configuration->string config)
-  (let* ([state-number (get-current-state config)]
-         [state-string (string-append "q" (number->string state-number))]
-         [tape-string (list->string (get-tape-list config))])
-    (string-append state-string ": " tape-string)))
+  (if (not (list? config))
+      "--"
+      (let* ([state-number (get-current-state config)]
+             [state-string (string-append "q" (number->string state-number))]
+             [tape-string (list->string (get-tape-list config))])
+        (string-append state-string ": " tape-string))))
 
 (provide configuration->string)
 
@@ -68,15 +74,86 @@
 ;; ===================================================
 ;; Take one step
 ;; step  Do one step; from a config and the fsm, yield the next config
-(define (step config fsm)
+(define (step fsm config)
+  (printf "\nInside step: config is ")
+  (display config)
+  (printf "\n")
+  ;(printf "\nInside step: current-state is ~a" (number->string (get-current-state config)))
+  ;(printf "\nInside step: current-symbol is ~a" (get-current-symbol config))
+;  (printf "Inside step: config is ~a\n" (configuration->string config))
   (let* ([current-state (get-current-state config)]
          [tape-list (get-tape-list config)]
          [current-symbol (get-current-symbol config)]
          [next-state (delta fsm current-state current-symbol)])
+    (printf "\n  Inside step: current-state is ~a" (number->string current-state))
+    (printf "\n  Inside step: current-symbol is ~a" current-symbol)
+    (printf "\n  Inside step: next-state is ~a" (number->string next-state))
+    (printf "\n  Inside step: tape-list is ")
+    (display tape-list)
+    (printf "\n")
     (make-config next-state
-                 (substring tape-list 1))))
+                 (cdr tape-list))))
+    ;(cond
+    ;  [(= next-state ERROR) ERROR]
+    ;  [(null? tape-list) HALT]
+     ; [else (make-config next-state
+     ;                    (cdr tape-list))])))
 
 (provide step)
+
+
+;; ===================================================
+;; Run a computation
+
+;; show-state-config  Print one line with state and current configuration information
+(define (show-step-config s c)
+  ;(printf "\n in show-step-config")
+  ;(printf "\n   step is ~a" (number->string s))
+  ;(printf "\n   config " )
+  ;(write c)
+  (printf "\nStep ~a: ~a" (number->string s)
+          (configuration->string c))
+  ;(printf "\n  leaving show-step-config")
+  )
+
+;; run  Run a FSM computation
+;(define (run fsm F sigma)
+;  (let* ([config (make-config 0
+;                              (string->list sigma))])
+;    (printf "\n in run about to show initial config")
+;    (show-step-config 0 config)
+;    (printf "\n (step fsm config)=")
+;    (display (step fsm config))
+;    (printf "\n")
+;    (for
+;        (; #:break (null? (get-tape-list config))
+;         [s (in-naturals 1)]
+;         [config (step fsm config)])
+;      (printf "\n  in run's loop: step is ~a" (number->string s))
+;      (printf "\n  config:")
+;      (write config)
+;      (printf "\n")
+;      (show-step-config s config))
+;    (get-current-state config)))
+
+(define (run fsm F sigma)
+  (define (run-helper config step)
+    (let ([tape-list (get-tape-list config)]
+          [current-state (get-current-state config)])
+      (if (null? tape-list)
+                 current-state
+                 (begin
+                   (show-step-config step config)
+                   (run-helper (make-config (delta fsm current-state (car tape-list))
+                                          (cdr tape-list))
+                               (+ 1 step))
+                   ))))
+  ;
+  (run-helper (make-config 0
+                           (string->list sigma))
+              0))
+
+(provide run)
 
 ;; ======================================================
 ;; Read machine from a file
@@ -95,7 +172,7 @@
   (let* ([instruction (string-split (string-trim s))]
          [current-state (current-state-string->number (first instruction))]
          [current-symbol (current-symbol-string->char (second instruction))]
-         [next-state (next-state-string->number (fourth instruction))])
+         [next-state (next-state-string->number (third instruction))])
     (list current-state
           current-symbol
           next-state)))

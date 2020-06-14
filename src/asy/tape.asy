@@ -58,6 +58,14 @@ path tape_path(real tape_length=DEFAULT_TAPE_LENGTH) {
     --(-TAPE_PADDING,TAPE_WIDTH)..tape_end_path((-TAPE_PADDING,0))..cycle;
   return tape;
 }
+// draw the outline of the tape, like the prior but bounded on left end 
+real TAPE_PADDING_WITHEND = 8pt;  // pad the ends with blank space (make at least half the head width)
+path tape_path_withend(real tape_length=DEFAULT_TAPE_LENGTH) {
+  path tape=(-TAPE_PADDING_WITHEND,0)--(tape_length+TAPE_PADDING_WITHEND,0)
+    ..reverse(tape_end_path((tape_length+TAPE_PADDING_WITHEND,0)))
+    --(-TAPE_PADDING_WITHEND,TAPE_WIDTH)--(-TAPE_PADDING_WITHEND,0)..cycle;
+  return tape;
+}
 
 // draw the tape read/write head pointing to position x-location and
 // containing the state (e.g., "q_3")
@@ -82,6 +90,12 @@ void tape_draw(picture p, string s, real head_pos, string head_label="", real ta
   tape_write(p,s);
   draw_tape_head(p,head_pos,head_label);
 }
+// draw the tape and the head; like the prior but tape is bounded on left end 
+void tape_draw_withend(picture p, string s, real head_pos, string head_label="", real tape_length=DEFAULT_TAPE_LENGTH) {
+  filldraw(p, tape_path_withend(tape_length),drawpen=TAPE_PEN+light_color,fillpen=verylight_color);
+  tape_write(p,s);
+  draw_tape_head(p,head_pos,head_label);
+}
 
 // Output the tape
 //  fn_prefix string  prefix of the file name (suffix is by file type)
@@ -93,6 +107,14 @@ void tape_output(string fn_prefix, string s, real head_pos, string head_label=""
   unitsize(p,1pt);
   real tape_length = tape_contents_length(s);
   tape_draw(p,s,head_pos,head_label,tape_length);
+  shipout(fn_prefix,p);
+}
+// Output the tape; like the prior but tape bounded on left end
+void tape_output_withend(string fn_prefix, string s, real head_pos, string head_label="") {
+  picture p;
+  unitsize(p,1pt);
+  real tape_length = tape_contents_length(s);
+  tape_draw_withend(p,s,head_pos,head_label,tape_length);
   shipout(fn_prefix,p);
 }
 

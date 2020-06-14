@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Convert output from Turing machine simulator turing-machine.rkt 
+Convert output from Finite State machine simulator finit-state-machine.rkt 
 for use in Asymptote.
 """
 __version__ = "1.0.0"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
+
+# 2020-Jun-14 JH Simplified version of turing machine script
 
 import sys
 import os, os.path
@@ -84,30 +86,25 @@ def critical(s, level=1):
     sys.exit(level)
 
 # ============================================
-TEST_LINE = "step 1: q0:   BB*1*1101B "
-TEST_LINES = """step 0: q0: *1*11
-step 1: q0: 1*1*1
-step 2: q0: 11*1*
-step 3: q0: 111*B*
-step 4: q1: 11*1*B
-step 5: q1: 11*B*B
-step 6: q2: 1*1*BB
-step 7: q2: *1*1BB
-step 8: q2: *B*11BB
-step 9: q3: B*1*1BB
-step 10: HALT
+TEST_LINE = "Step 1: q1: 0011 "
+TEST_LINES = """Step 0: q0: 10011
+Step 1: q1: 0011
+Step 2: q1: 011
+Step 3: q1: 11
+Step 4: q2: 1
+Step 5: q3: 
 """.splitlines()
 
 def get_input_file(fn):
     """Return a file.
-      fn  string  Name of file.  If None then return stdin
+      fn  string  Name of file.  If None then stdin is returned
     """
     if fn is None:
         return sys.stdin
     try:
         return open(fn, 'r')
     except IOError as e:
-        critical("Input file {0!s} cannot be opened: {1!s}".format(fn,e))
+        critical("Cannot open input file {0!s} because: {1!s}".format(fn,e))
             
 def read_lines(f):
     """Return list of lines in the file.  Lines are stripped.
@@ -116,19 +113,18 @@ def read_lines(f):
     return [x.strip() for x in lines]
 
 # Format example: TEST_LINE above
-output_line_regex = r"step (\d*):\s*q(\d*):\s([^*]*)\*([^*]*)\*([^*:]*)\s*"
+output_line_regex = r"(s|S)tep (\d*):\s*q(\d*):\s([^\s]*)\s*$"
 output_line_re = re.compile(output_line_regex, re.I)  # re.I in case capital q
-def parse_line(lne,lne_no):
+def parse_line(lne):
     """Return dictionary with the line's constituient parts (or None)
       lne  string  line of output from Turing machine simulator
     """
     m = output_line_re.match(lne)
     if m:
-        return {'step': m.group(1),
-                'state': m.group(2),
-                'prefix': m.group(3),
-                'currentchar': m.group(4),
-                'suffix': m.group(5)}
+        return {'step': m.group(2),
+                'state': m.group(3),
+                'input': m.group(4)
+        }
     else:
         return None
          
@@ -141,7 +137,7 @@ def parse_lines(lines):
     min_pos, max_pos = 0, 0
     line_list = []
     for lne_no,lne in enumerate(lines):
-        d = parse_line(lne,lne_no)
+        d = parse_line(lne)
         if DEBUG:
             print("  parse_lines: lne={0!s} and d={1!s}".format(lne,d))
         if not(d is None):
@@ -153,94 +149,27 @@ def print_parsed_line(d):
     """Show results of parsing the line, for debugging
      d  dict  Results from parsing a line
     """
-    print("state: {state}, prefix: {prefix}, current character: {currentchar}, suffix: {suffix}".format(**d))
+    print("step:{step}, state: {state}, input: {input}".format(**d))
   
-def _find_position(prior_d, this_d):
-    """Return a dictionary that adds information over those from
-    parse_lines.  Specifically, add the fields 'position', which is the
-    position of the head on the tape, where its initial position is 0.
-    Also added is 'left_char_position' giving the position of the leftmost char
-    now on the tape, and 'right_char_position'.
-      prior_d this_d  dict  See parse_lines.
-    """
-    if prior_d is None:
-        this_d['position'] = 0
-        this_d['left_char_position'] = -len(this_d['prefix'])
-        this_d['right_char_position'] = len(this_d['suffix'])
-    # Else
-    # detect an L
-    elif ((len(this_d['prefix']) < len(prior_d['prefix']))
-          or (len(this_d['suffix']) > len(prior_d['suffix']))):
-        this_d['position'] = prior_d['position']-1
-        this_d['left_char_position'] = min(this_d['position'],prior_d['left_char_position'])
-        this_d['right_char_position'] = prior_d['right_char_position']
-    # detect an R
-    elif ((len(prior_d['prefix']) < len(this_d['prefix']))
-          or (len(prior_d['suffix']) > len(this_d['suffix']))):
-        this_d['position'] = prior_d['position']+1
-        this_d['left_char_position'] = prior_d['left_char_position']
-        this_d['right_char_position'] = max(this_d['position'],prior_d['right_char_position'])
-    # No movement
-    else:
-        this_d['position'] = prior_d['position']
-        this_d['left_char_position'] = prior_d['left_char_position']
-        this_d['right_char_position'] = prior_d['right_char_position']
-    return this_d
-
-def find_positions(d_list):
-    """Modify the list of dictionaries returned from parse_lines.  
-    Specifically, add the fields 'position', which is the
-    position of the head on the tape, where its initial position is 0.
-    Also there is 'left_char_position' giving the position of the leftmost char
-    now on the tape, and 'right_char_position'.
-      d_list  list of dicts  See parse_lines.
-    """
-    prior_d, this_d = None, None
-    new_list = []
-    for d,line_no in d_list:
-        this_d = d
-        this_d = _find_position(prior_d, this_d)
-        new_list.append((this_d,line_no))
-        prior_d = this_d
-    return new_list
-
-def find_extreme_positions(d_list):
-    """Find the furthest left and right postions taken by any char at any step
-     d_list  list of dictionaries.  See parse_lines.
-    """
-    furthest_left, furthest_right = 0,0
-    for d,line_no in d_list:
-        furthest_left = min(furthest_left, d['left_char_position'])
-        furthest_right = max(furthest_right, d['right_char_position'])
-    return furthest_left, furthest_right
     
-def tape_output(d,furthest_left,furthest_right,fn,replace_blanks=False):
+def tape_output(d,fn,replace_blanks=False):
     """Return a string giving one tape_output(...) line of the asy file
       d  dict  results of parsing the output line.
-      furthest_left, furthest_right  integers  Furthest chars at any step.
       fn  string  Name of PDF file that Asy will output to.  
       replace_blanks=False  boolean  Replace 'B' with ' '?
     """
-    position = int(d['position'])
-    prefix = d['prefix']
-    left_char_position = d['left_char_position']
-    currentchar = d['currentchar']
-    suffix = d['suffix']
-    right_char_position = d['right_char_position']
-    left_padding = " "*(d['left_char_position']-furthest_left)
-    right_padding = " "*(furthest_right-d['right_char_position'])
     r = ['"'+fn+'"']  # Asy needs quotes to konw it is a string
-    tape_string = left_padding+prefix+currentchar+suffix+right_padding
+    tape_string = d['input']
     if replace_blanks:
         tape_string = tape_string.replace("B"," ")
     r.append('"'+tape_string+'"')
-    r.append("{:d}".format(+len(left_padding)+len(d['prefix'])))  # position of head
+    r.append("{:d}".format(0))  # position of head
     r.append('"$\\state{'+d['state']+'}$"')
-    return "tape_output("+",".join(r)+");"
+    return "tape_output_withend("+",".join(r)+");"
 
 ASY_HEAD = """// {0:s}.asy
-// Draw a succession of tapes for a Turing machine computation
-// This is generated by computing/bin/turing_machine/tm_to_asy.py
+// Draw a succession of tapes for a Finite State machine computation
+// This is generated by computing/bin/fsm/fsm_to_asy.py
 
 import settings;
 settings.outformat="pdf";
@@ -265,10 +194,9 @@ def rel_path_to_asy(from_dir=os.curdir):
     return os.path.relpath(asy_dir,start=from_dir)
 
 # Create an .asy file
-def asy(d_list, furthest_left, furthest_right, fn_prefix, replace_blanks = False):
+def asy(d_list, fn_prefix, replace_blanks = False):
     """Create an asy file and populate it with the tape_output lines
      d_list  list of dicts  Results of parsing a line
-     furthest_left, furthest_right  integers  Posns of furthest chars ever.
      fn_prefix  string  Prefix of name of file Asy will output to.  Note that
        this routine adds "{:03d}" so three digits get appended to this prefix
      replace_blanks=False  boolean  Replace 'B' with ' '?
@@ -279,8 +207,6 @@ def asy(d_list, furthest_left, furthest_right, fn_prefix, replace_blanks = False
     fn = os.path.basename(fn_prefix)+"{0:03d}"
     for d,i in d_list:
         r.append(tape_output(d,
-                             furthest_left,
-                             furthest_right,
                              fn=fn.format(i),
                              replace_blanks=replace_blanks))
     r.append(ASY_TAIL)
@@ -305,17 +231,15 @@ def main(args):
     file_contents = get_file_contents(args.filename)
     d_list = parse_lines(file_contents.splitlines())
     # print("d_list is ",pprint.pformat(d_list))
-    new_d_list = find_positions(d_list)
+    # new_d_list = find_positions(d_list)
     if args.debug:
         print("======= new d_list =======\n ",pprint.pformat(d_list))
-    furthest_left, furthest_right = find_extreme_positions(new_d_list)
-    # print("=== furthest_left is ",pprint.pformat(furthest_left)," furthest right=",pprint.pformat(furthest_right))
     if args.debug:
         for d,i in d_list:
             print("line ",i)
             print_parsed_line(d)
-            print(tape_output(d,furthest_left,furthest_right,fn="tm{0:03d}".format(i)))
-    asy(d_list, furthest_left, furthest_right, args.output, replace_blanks=args.blanks)
+            print(tape_output(d,fn="tm{0:03d}".format(i)))
+    asy(d_list, args.output, replace_blanks=args.blanks)
         
 # ===========================================================
 if __name__ == '__main__':
@@ -332,8 +256,8 @@ if __name__ == '__main__':
                             help="File with Turing machine output")
         parser.add_argument('-o', '--output',
                             action='store',
-                            default='tm',
-                            help="Prefix of .asy filename. Default: tm")
+                            default='fsm',
+                            help="Prefix of .asy filename. Default: fsm")
         parser.add_argument('-b', '--blanks',
                             action='store_true',
                             default=False,

@@ -21,7 +21,7 @@
 (define ONE #\1)  ;;  
 (define HALT -1) ;; 
 (define ERROR -1) ;; 
-(provide  A B ZERO ONE
+(provide A B ZERO ONE
           HALT ERROR)
 
 ;; ================= Configuration making and reading ==============
@@ -75,9 +75,9 @@
 ;; Take one step
 ;; step  Do one step; from a config and the fsm, yield the next config
 (define (step fsm config)
-  (printf "\nInside step: config is ")
-  (display config)
-  (printf "\n")
+  ; (printf "\nInside step: config is ")
+  ; (display config)
+  ; (printf "\n")
   ;(printf "\nInside step: current-state is ~a" (number->string (get-current-state config)))
   ;(printf "\nInside step: current-symbol is ~a" (get-current-symbol config))
 ;  (printf "Inside step: config is ~a\n" (configuration->string config))
@@ -85,12 +85,12 @@
          [tape-list (get-tape-list config)]
          [current-symbol (get-current-symbol config)]
          [next-state (delta fsm current-state current-symbol)])
-    (printf "\n  Inside step: current-state is ~a" (number->string current-state))
-    (printf "\n  Inside step: current-symbol is ~a" current-symbol)
-    (printf "\n  Inside step: next-state is ~a" (number->string next-state))
-    (printf "\n  Inside step: tape-list is ")
-    (display tape-list)
-    (printf "\n")
+    ; (printf "\n  Inside step: current-state is ~a" (number->string current-state))
+    ; (printf "\n  Inside step: current-symbol is ~a" current-symbol)
+    ; (printf "\n  Inside step: next-state is ~a" (number->string next-state))
+    ; (printf "\n  Inside step: tape-list is ")
+    ; (display tape-list)
+    ; (printf "\n")
     (make-config next-state
                  (cdr tape-list))))
     ;(cond
@@ -136,24 +136,42 @@
 ;      (show-step-config s config))
 ;    (get-current-state config)))
 
-(define (run fsm F sigma)
-  (define (run-helper config step)
-    (let ([tape-list (get-tape-list config)]
-          [current-state (get-current-state config)])
-      (if (null? tape-list)
-                 current-state
-                 (begin
-                   (show-step-config step config)
-                   (run-helper (make-config (delta fsm current-state (car tape-list))
-                                          (cdr tape-list))
-                               (+ 1 step))
-                   ))))
-  ;
-  (run-helper (make-config 0
-                           (string->list sigma))
-              0))
+;(define (run fsm sigma)
+;  (define (run-helper config step)
+;    (let ([tape-list (get-tape-list config)]
+;          [current-state (get-current-state config)])
+;      (if (null? tape-list)
+;                 current-state
+;                 (begin
+;                   (show-step-config step config)
+;                   (run-helper (make-config (delta fsm current-state (car tape-list))
+;                                          (cdr tape-list))
+;                               (+ 1 step))
+;                   ))))
+;  ;
+;  (run-helper (make-config 0
+;                           (string->list sigma))
+;              0))
 
-(provide run)
+(define (run fsm sigma)
+  (let* ([config (make-config 0
+                              (string->list sigma))]
+         [step-no 0])
+    (show-step-config step-no config)
+    (for ([current-symbol (get-tape-list config)])
+      (set! step-no (+ 1 step-no))
+      (set! config (step fsm config))
+      (show-step-config step-no config))
+    (get-current-state config)))
+
+
+(define (decide fsm F sigma)
+  (if (member (run fsm sigma) F)
+      "accept"
+      "reject"))
+
+(provide run
+         decide)
 
 ;; ======================================================
 ;; Read machine from a file

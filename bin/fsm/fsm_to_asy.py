@@ -207,7 +207,7 @@ def asy(d_list, fn_prefix, replace_blanks = False):
     fn = os.path.basename(fn_prefix)+"{0:03d}"
     for d,i in d_list:
         r.append(tape_output(d,
-                             fn=fn.format(i),
+                             fn=fn.format(i-1),
                              replace_blanks=replace_blanks))
     r.append(ASY_TAIL)
     f = open(fn_prefix+".asy","w")

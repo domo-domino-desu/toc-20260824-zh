@@ -93,7 +93,7 @@ currentlight=light(view_from);
 tm_draw(pic=pic);
 tm_draw_start_button(pic);
 tm_draw_halt_light(pic,tm_halt_label="\textsf{Accept}");
-tm_draw_rt_tape(pic,"1001010");
+tm_draw_rt_tape(pic,"10110");
 
 draw((0,0)--(1,1),red);
 dot(pic,(0,1.15*tm_ht),invisible);  // little extra vert room

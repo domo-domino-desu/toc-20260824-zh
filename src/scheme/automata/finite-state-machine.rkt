@@ -111,7 +111,7 @@
   ;(printf "\n   step is ~a" (number->string s))
   ;(printf "\n   config " )
   ;(write c)
-  (printf "\nStep ~a: ~a" (number->string s)
+  (printf "Step ~a: ~a\n" (number->string s)
           (configuration->string c))
   ;(printf "\n  leaving show-step-config")
   )
@@ -203,7 +203,7 @@
 (define verbose? (make-parameter #f))
 (define fsm-filename (make-parameter null))
 (define inputstring (make-parameter ""))  
-(define statelimit (make-parameter "1000")) ;; max number of steps simulator runs
+; (define statelimit (make-parameter "1000")) ;; max number of steps simulator runs
 
 (define command-line-parser
   (command-line
@@ -214,22 +214,17 @@
    [("-v" "--verbose") "Verbose mode" (verbose? #t)]
    [("-f" "--filename") fsmfn "Name of file with the Finite State machine" (fsm-filename fsmfn)]
    [("-i" "--input-string") in-st "String giving nonblank tape contents" (inputstring in-st)]
-   [("-s" "--statelimit") slmt "Number of steps to run" (statelimit slmt)]
+   ; [("-s" "--statelimit") slmt "Number of steps to run" (statelimit slmt)]
    #:args  () (void)))
-
-;; (tm-filename)
 
 (define FSM-LINES '())  ;; list of file lines, one string per instruction
 ;; This is for allowing input from the command line
-;;(if (null? (tm-filename))
-;;    (set! TM-LINES (port->lines #:line-mode 'any #:close? #f))
-;;    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
 (if (null? (fsm-filename))
     (set! FSM-LINES '())
     (set! FSM-LINES (file->lines (fsm-filename) #:mode 'text #:line-mode 'any)))
 
 ;; for debugging:
-FSM-LINES
+;FSM-LINES
 
 ;; Return the list with the last element omitted
 (define (omit-last-element lst)
@@ -244,8 +239,10 @@ FSM-LINES
 ;; Return a list of instructions
 (define FSM (for/list ([line FSM-LINES])
                  (string->instruction line)))
-;; for debugging: TM
+FSM
 
+
+(run FSM (inputstring))
 ;(define INITIAL-CONFIG (make-config 0
 ;                                    (current-symbol-string->char (startchar))
 ;                                    (string->list (startleft))

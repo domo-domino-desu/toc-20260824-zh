@@ -7,7 +7,6 @@
 ;;
 ;; These routines are adapted from the ones for Turing machines.
 
-
 ;; Input format: One line per instruction.  Instruction is a space-separated list of three elements:
 ;; natural number for current state, character for what the input is, natural number for the next state.
 ;; Best is to use digits or lower-case letters for alphabet.
@@ -75,29 +74,12 @@
 ;; Take one step
 ;; step  Do one step; from a config and the fsm, yield the next config
 (define (step fsm config)
-  ; (printf "\nInside step: config is ")
-  ; (display config)
-  ; (printf "\n")
-  ;(printf "\nInside step: current-state is ~a" (number->string (get-current-state config)))
-  ;(printf "\nInside step: current-symbol is ~a" (get-current-symbol config))
-;  (printf "Inside step: config is ~a\n" (configuration->string config))
   (let* ([current-state (get-current-state config)]
          [tape-list (get-tape-list config)]
          [current-symbol (get-current-symbol config)]
          [next-state (delta fsm current-state current-symbol)])
-    ; (printf "\n  Inside step: current-state is ~a" (number->string current-state))
-    ; (printf "\n  Inside step: current-symbol is ~a" current-symbol)
-    ; (printf "\n  Inside step: next-state is ~a" (number->string next-state))
-    ; (printf "\n  Inside step: tape-list is ")
-    ; (display tape-list)
-    ; (printf "\n")
     (make-config next-state
                  (cdr tape-list))))
-    ;(cond
-    ;  [(= next-state ERROR) ERROR]
-    ;  [(null? tape-list) HALT]
-     ; [else (make-config next-state
-     ;                    (cdr tape-list))])))
 
 (provide step)
 
@@ -107,35 +89,11 @@
 
 ;; show-state-config  Print one line with state and current configuration information
 (define (show-step-config s c)
-  ;(printf "\n in show-step-config")
-  ;(printf "\n   step is ~a" (number->string s))
-  ;(printf "\n   config " )
-  ;(write c)
   (printf "Step ~a: ~a\n" (number->string s)
           (configuration->string c))
-  ;(printf "\n  leaving show-step-config")
   )
 
 ;; run  Run a FSM computation
-;(define (run fsm F sigma)
-;  (let* ([config (make-config 0
-;                              (string->list sigma))])
-;    (printf "\n in run about to show initial config")
-;    (show-step-config 0 config)
-;    (printf "\n (step fsm config)=")
-;    (display (step fsm config))
-;    (printf "\n")
-;    (for
-;        (; #:break (null? (get-tape-list config))
-;         [s (in-naturals 1)]
-;         [config (step fsm config)])
-;      (printf "\n  in run's loop: step is ~a" (number->string s))
-;      (printf "\n  config:")
-;      (write config)
-;      (printf "\n")
-;      (show-step-config s config))
-;    (get-current-state config)))
-
 ;(define (run fsm sigma)
 ;  (define (run-helper config step)
 ;    (let ([tape-list (get-tape-list config)]
@@ -243,9 +201,3 @@ FSM
 
 
 (run FSM (inputstring))
-;(define INITIAL-CONFIG (make-config 0
-;                                    (current-symbol-string->char (startchar))
-;                                    (string->list (startleft))
-;                                    (string->list (startright))))  ;; TODO need the position?
-;; for debugging: INITIAL-CONFIG
-;(execute-guarded TM INITIAL-CONFIG)

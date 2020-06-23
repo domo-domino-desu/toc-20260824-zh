@@ -86,6 +86,6 @@ label(pic, "\makebox[0in][c]{Theory of Computation}",
       (papersize_width/2,8.55inch), fontsize(35)+lightblack_color);
 label(pic, "\makebox[0in][c]{Making Connections}",
       (papersize_width/2,8.0inch), fontsize(19)+lightblack_color);
-label(pic, "\makebox[0in][r]{\begin{tabular}{r}\Large Jim Hef{}feron \\[0.35ex] \texttt{hefferon.net/computation}\end{tabular}}", (papersize_width-0.5inch,0.9inch), fontsize(14)+lightblack_color);
+label(pic, "\makebox[0in][r]{\begin{tabular}{r}\Large Jim Hef{}feron \\[0.35ex] \texttt{https://hefferon.net/computation}\end{tabular}}", (papersize_width-0.5inch,0.9inch), fontsize(14)+lightblack_color);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

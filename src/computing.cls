@@ -934,6 +934,7 @@
 \theoremstyle{whitestyle}
 \newmdtheoremenv[style=whitestyle]{example}[theorem]{Example}
 \newmdtheoremenv[style=whitestyle]{remark}[theorem]{Remark}
+\newmdtheoremenv[style=whitestyle]{remarks}[theorem]{Remarks}
 \newmdtheoremenv[style=whitestyle]{discussion}[theorem]{Discussion}
 
 \AtBeginEnvironment{theorem}{%

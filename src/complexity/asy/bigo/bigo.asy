@@ -24,11 +24,12 @@ real axis_arrow_size = 0.35mm;
 real axis_tick_size = 0.75mm;
 
 
+
 // ============== compare sqrt(x) and 10*lg(x) on small scale ================
 picture pic;
 int picnum = 0;
-size(pic,4cm);
-real scalefactor = 6;
+size(pic,6cm,0);
+real scalefactor = 3.2;
 scale(pic,Linear,Linear(scalefactor));
 
 // limits
@@ -88,11 +89,12 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
 // ============== compare sqrt(x) and 10*lg(x) on larger scale ================
 picture pic;
 int picnum = 1;
-size(pic,4cm);
-real scalefactor = 750;
+size(pic,8cm,0);
+real scalefactor = 275;
 scale(pic,Linear,Linear(scalefactor));
 
 // limits
@@ -105,11 +107,6 @@ real ymax=1000;
 real f(real x) {return sqrt(x);}
 real g(real x) {return 10*log(x)/log(2);}  // they left out log2
 
-// curves
-path f=graph(pic,f,xmin,xmax,n=400);
-path g=graph(pic,g,xmin,xmax,n=400);
-draw(pic,f,FCNPEN_SOLID+linewidth(2.5pt));
-draw(pic,g,FCNPEN_SOLID+linewidth(2.5pt));
 
 // axes
 xaxis(pic,YZero,
@@ -129,18 +126,25 @@ yaxis(pic,XZero,
       p=AXISPEN,
       Arrow(TeXHead,axis_arrow_size));
 
-// draw the curves
-// dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
-// for (int i=ceil(xmin);i<=floor(xmax); ++i) {
-//   dot(pic, Scale(pic,(i,f(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-//   dot(pic, Scale(pic,(i,g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-// }
+// draw the graphs
+real xbreak = 100;  // where shift from dots to curves
+dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+for (int i=ceil(xmin);i<=floor(xbreak); ++i) {
+  dot(pic, Scale(pic,(i,f(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+  dot(pic, Scale(pic,(i,g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+}
+// Curves for part of the graph
+//   because 1 000 000 was too many dots for Asymptote
+path f=graph(pic,f,xbreak,xmax,n=400);
+path g=graph(pic,g,xbreak,xmax,n=400);
+draw(pic,f,FCNPEN_SOLID+linewidth(2.5pt));
+draw(pic,g,FCNPEN_SOLID+linewidth(2.5pt));
 // label the curves
-// Use n because 1 000 000 was too many dots for Asymptote
 label(pic,"$\sqrt{n}$",Scale(pic,(700000,f(700000))),2N,TICLABELPEN);
 label(pic,"$10\lg(n)$",Scale(pic,(700000,g(700000))),2N,TICLABELPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 
@@ -1084,7 +1088,6 @@ draw(pic,wedge1_edge,highlightcolor);
 draw(pic,set_bound, AXISPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
-
 
 
 

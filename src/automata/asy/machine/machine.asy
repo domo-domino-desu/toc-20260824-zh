@@ -100,12 +100,12 @@ real u=1;
 real v=0.6*u;
 real stack_separator = 0.0*u;
 
-path stack = (-0.6*u,0*v) -- (-0.6*u,-4.6*v) -- (0.6*u,-4.6*v) -- (0.6*u,0*v) -- cycle;  
+path stack = (-0.6*u,0*v) -- (-0.6*u,-3.6*v) -- (0.6*u,-3.6*v) -- (0.6*u,0*v) -- cycle;  
 fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,0*v), "\str{g3}");
-draw_stackchar(pic, (0,(-1*v)-stack_separator), "\str{g0}");
-draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g2}");
+// draw_stackchar(pic, (0,(-1*v)-stack_separator), "\str{g0}");
+draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g2}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -120,13 +120,13 @@ real u=1;
 real v=0.6*u;
 real stack_separator = 0.0*u;
 
-path stack = (-0.6*u,0*v) -- (-0.6*u,-4.6*v) -- (0.6*u,-4.6*v) -- (0.6*u,0*v) -- cycle;  
+path stack = (-0.6*u,0*v) -- (-0.6*u,-3.6*v) -- (0.6*u,-3.6*v) -- (0.6*u,0*v) -- cycle;  
 fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,(0*v)), "\str{g1}");
 draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g3}");
-draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g0}");
-draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g2}");
+// draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g0}");
+draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g2}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -141,14 +141,14 @@ real u=1;
 real v=0.6*u;
 real stack_separator = 0.0*u;
 
-path stack = (-0.6*u,0*v) -- (-0.6*u,-4.6*v) -- (0.6*u,-4.6*v) -- (0.6*u,0*v) -- cycle;  
+path stack = (-0.6*u,0*v) -- (-0.6*u,-3.6*v) -- (0.6*u,-3.6*v) -- (0.6*u,0*v) -- cycle;  
 fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,(0*v)), "\str{g0}");
 draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g1}");
 draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g3}");
-draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g0}");
-draw_stackchar(pic, (0,-4*v-stack_separator), "\str{g2}");
+// draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g0}");
+draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g2}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -163,13 +163,13 @@ real u=1;
 real v=0.6*u;
 real stack_separator = -0.0*u;
 
-path stack = (-0.6*u,0*v) -- (-0.6*u,-4.6*v) -- (0.6*u,-4.6*v) -- (0.6*u,0*v) -- cycle;  
+path stack = (-0.6*u,0*v) -- (-0.6*u,-3.6*v) -- (0.6*u,-3.6*v) -- (0.6*u,0*v) -- cycle;  
 fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,(0*v)), "\str{g1}");
 draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g3}");
-draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g0}");
-draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g2}");
+// draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g0}");
+draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g2}");
 // draw_stackchar(pic, (0,4*v+stack_separator), "$g_1$");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

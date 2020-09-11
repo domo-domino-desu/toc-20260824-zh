@@ -1,4 +1,4 @@
-\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\lg n$ can make some things easy that were previously not practical.\label{fig:WaterStrider}}]{complexity/pix/waterstrider.jpg}{Computational Complexity}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
+\chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as more important than gravity. Similiarly, changing an algorithm from taking $n^2$ time to taking time that is $n\cdot \lg n$ can make some things easy that were previously simply not practical.\label{fig:WaterStrider}}]{complexity/pix/waterstrider.jpg}{Computational Complexity}%https://commons.wikimedia.org/wiki/File:Gerris_by_webrunner.JPG
 
 In the first part of this book we asked what can be done with a mechanism 
 at all.
@@ -44,7 +44,7 @@ We have tools to describe these rates.
 % and we will leave the proofs as exercises.
 
 First, an anecdote.
-This is a typical grade school multiplication.
+Here is a grade school multiplication.
 \begin{equation*}
   \newlength{\scratchlength}\settowidth{\scratchlength}{$\mathsurround=0pt 0$}
   \begin{array}{r}
@@ -57,20 +57,21 @@ This is a typical grade school multiplication.
 \end{array}
 \end{equation*}
 The algorithm combines
-each digit of the multiplier, here~$42$, with
-each digit of the multiplicand,~$678$,
+each digit of the multiplier~$42$ with
+each digit of the multiplicand~$678$,
 in a nested loop.
-A person could naturally think that this is the right way\Dash indeed,
-the only way\Dash to compute multiplication and that in general 
-multiplication of two $n$~digit numbers
-requires about $n^2$ ticks.
+A person could think that this is the 
+right way to compute multiplication\Dash indeed, the only way\Dash 
+and that in general 
+to multiply of two $n$~digit numbers
+requires $n^2$-many ticks.
 
 % https://commons.wikimedia.org/wiki/File:Andrej_Nikolajewitsch_Kolmogorov.jpg
 % See also https://www.wired.com/story/mathematicians-discover-the-perfect-way-to-multiply/amp
 \margingraphic{0.20\textwidth}{complexity/pix/Kolmogorov.jpg}{\label{fig:kolmogorov}\href{https://en.wikipedia.org/wiki/Andrey_Kolmogorov}{Andrey Kolmogorov 1903--1987}}\index{Kolmogorov, A!picture}
-In 1960 A~Kolmogorov organized a seminar at Moscow State University aimed at
+In 1960, A~Kolmogorov organized a seminar at Moscow State University aimed at
 proving this.
-But by the seminar's second meeting one of his students,
+But before the seminar's second meeting one of the students,
 \citetext{A~Karatsuba}{See \url{https://en.wikipedia.org/wiki/Anatoly_Karatsuba}.},\index{Karatsuba, A}
 had found that it is false.
 He produced a 
@@ -92,22 +93,22 @@ He produced a
   Just one multiplication.}
 that used only 
 $n^{\lg(3)}\approx n^{1.585}$ ticks.
-At the next meeting Kolmogorov explained the result 
+At the next meeting, Kolmogorov explained the result 
 and closed the seminar.
 
-This illustrates a pattern in our 
-subject:~every day, 
-researchers
+And this phenomenon continues:~every day, 
+smart researchers
 produce results saying, ``for this job, here is a way to do it in less time,
-or less space, etc.''\footnote{%
+or less space, etc.''\,\footnote{%
   See the Theory of Computing blog feed at
   \protect\url{http://cstheory-feed.org/} \protect\autocite{blog:TOC}.} 
-We are good at finding clever ways to solve a problem that
-reduces the consumuption of some computation resource, such as time.
-However, we are not as good at proving nontrivial lower bounds, at saying
+People are good at finding clever algorithms that solve a problem
+using less time, or less space, or less of some other 
+computational resource.
+But we are not as good at finding lower bounds, at proving something like
 ``no algorithm can do the job faster then this.'' 
-That's one reason why in the development below we will
-mostly compare the growth rates of functions using a measure that is
+This is one reason that we will
+typically compare the growth rates of functions with a measure that is
 like `less than or equal to'. 
 
 
@@ -120,17 +121,23 @@ like `less than or equal to'.
 % \url{https://funcall.blogspot.com/2016/01/alist-vs-hash-table.html}
 % \end{TODO}
 Suppose that we have a job to do and two algorithms with which to do it.
-These have the property that when the input is size~$n\in\N$, in the worst case
-the first algorithm takes about $\sqrt{n}$~many ticks 
-while the second takes about $10\cdot \lg(n)$.\footnote{%
+We want to pick the one that performs best.
+Typically as the input to an algorithm grows, the algorithm takes longer.
+So we describe the performance of the algorithms with functions,
+where each function's argument is the input size and its value is the
+time that the algorithm takes on input of that size.
+
+Suppose that for these two algorithms, 
+when the input is size~$n\in\N$, in the worst case
+the first algorithm takes $\sqrt{n}$~many ticks 
+while the second takes $10\cdot \lg(n)$.\footnote{%
   Recall that $\lg(n)=\log_2(n)$. 
   That is, compute $\lg(n)$ 
   by starting with~$n$ and then finding the power of $2$
-  that produces it.
-  Thus, if $n=8$ then $\lg(n)=3$, and
+  that produces it, so 
+  if $n=8$ then $\lg(n)=3$ and
   if $n=10$ then $\lg(n)\approx 3.32$.}
-
-For small $n$ the square root seems better.
+The square root is better when $n$ is small.
 For instance, when the input is~$1000$
 the two output values are $\sqrt{1000}\approx 31.62$
 and $10 \lg(1000)\approx 99.66$.
@@ -138,18 +145,18 @@ and $10 \lg(1000)\approx 99.66$.
   \includegraphics{complexity/asy/bigo/bigo00.pdf}
 \end{center}
 However,
-in the long run the values of $\sqrt{n}$ are much larger than
-the values of $10\lg(n)$.
+for large~$n$ the value of $\sqrt{n}$ is much larger than
+the value of $10\lg(n)$.
 For instance, $\sqrt{1\,000\,000}=1\,000$ while
 $10\lg(1\,000\,000)\approx 199.32$.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo01.pdf}
 \end{center}
+So the first criteria for a measure that compares the growth of two
+functions is that it must focus on what happens in the long run.
 
-So comparing the growth of two
-functions is more complicated than just
-seeing which always has smaller output values.
-Before the definition we will see two additional motivating examples.
+The second criteria is more subtle.
+Consider these two examples.
 
 \begin{example}
   These graphs compare $f(n)=n^2+5n+6$ with $g(n)=n^2$.

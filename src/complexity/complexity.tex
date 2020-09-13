@@ -105,7 +105,8 @@ computational resource.
 But we are not as good at finding lower bounds, at proving something like
 ``no algorithm can do the job faster then this.'' 
 This is one reason that we will
-typically compare the growth rates of functions by using a measure that is
+typically compare the growth rates of functions by using a measure, 
+big~$\bigOh$, that is
 like `less than or equal to'. 
 
 
@@ -117,25 +118,26 @@ like `less than or equal to'.
 % Illustrate lookup times
 % \url{https://funcall.blogspot.com/2016/01/alist-vs-hash-table.html}
 % \end{TODO}
-To develop a way to compare the performance of algorithms,
-we first need a way to measure that performance.
-Typically as the input to an algorithm grows, the algorithm takes longer.
-So we describe the time performance of algorithms with functions
+To compare the performance of algorithms,
+we need a way to measure that performance.
+Typically, an algorithm takes longer on larger input.
+So we describe the time performance of an algorithm with a function
 whose argument is the input size and whose value is the maximum
-time that the algorithm takes on inputs of that size.
+time that the algorithm takes on all inputs of that size.
 
-Next we describe the criteria for the right way to compare those functions.
-Suppose that we are considering two algorithms.
+Next we develop the criteria for the definition of big~$\bigOh$,
+the tool that we use to compare those functions.
+Suppose first that we have two algorithms. 
 When the input is size~$n\in\N$, 
-the first algorithm takes $\sqrt{n}$~many ticks 
-while the second takes $10\cdot \lg(n)$.\footnote{%
+one takes $\sqrt{n}$~many ticks 
+while the other takes $10\cdot \lg(n)$.\footnote{%
   Recall that $\lg(n)=\log_2(n)$. 
   That is, compute $\lg(n)$ 
   by starting with~$n$ and then finding the power of $2$
   that produces it, so 
   if $n=8$ then $\lg(n)=3$ and
   if $n=10$ then $\lg(n)\approx 3.32$.}
-The square root is better when $n$ is small.
+Initially, it looks like~$\sqrt{n}$ is better.
 For instance, $\sqrt{1000}\approx 31.62$
 and $10 \lg(1000)\approx 99.66$.
 \begin{center}
@@ -148,8 +150,8 @@ $10\lg(1\,000\,000)\approx 199.32$.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo01.pdf}
 \end{center}
-So the first criteria for a measure that compares the growth of two
-functions is that it must focus on what happens in the long run.
+So the first criteria is that big~$\bigOh$'s definition
+must focus on what happens in the long run.
 
 The second criteria is more subtle.
 Consider these two examples.
@@ -162,8 +164,8 @@ Consider these two examples.
     \hspace{3em}
     \includegraphics{complexity/asy/bigo/bigo05.pdf}  
   \end{center}
-  On the left your eye is struck that $n^2+5n+6$ is ahead of $n^2$.
-  But on the right the ratios demonstrate that your eye is misleading you.
+  On the left we are struck that $n^2+5n+6$ is ahead of $n^2$.
+  But on the right the ratios show that this is misleading.
   For large inputs, $f$'s $5n$ and $6$
   are swamped by the highest order term, the $n^2$.
   Consequently these two
@@ -180,7 +182,7 @@ Consider these two examples.
    they have so many dots that they appear to be 
    continuous.}
 
-  \begin{example}
+  \begin{example}  \label{ex:DisregardConstMults}
   Next compare the quadratic $f(n)=n^2+5n+6$ with the cubic $g(x)=n^3+2n+3$.
   In contrast to the the prior example,
   these two don't track together.
@@ -196,7 +198,7 @@ Consider these two examples.
   \end{center}
   The right side graph underlines that~$g$ races ahead of~$f$
   because the ratios grow without bound.
-  So $g$ is a faster-growing function than~$f$.
+  So $g$ is a faster-growing function than~$f\!$.
   In the long run they both go to infinity, 
   but in this sense, $g$ goes there faster.
   \end{example}
@@ -204,27 +206,30 @@ Consider these two examples.
   \begin{example}
   Now compare the quadratics $f(x)=2n^2+3n+4$ and
   $g(n)=n^2+5n+6$.
-  While $f(0)=4$ is less than $g(0)=6$
-  and $f(1)=9$ is less than $g(1)=12$, eventually $f$'s 
-  values are above~$g$'s.
-  This we've seen before, that the function comparison definition
-  needs to discount initial behavior.
+  We've seen before that the function comparison definition
+  needs to discount the initial behavior that
+  $f(0)=4<g(0)=6$
+  and $f(1)=9<g(1)=12$. 
+  Eventually $f$'s values are above~$g$'s.
   \begin{center}
     \includegraphics{complexity/asy/bigo/bigo08.pdf}
     \hspace{3em}
     \includegraphics{complexity/asy/bigo/bigo09.pdf}  
   \end{center}
-  What's different in this comparison is that,
-  $f$'s leading $2$ 
-  keeps its graph ahead
-  but is not enough to make it accelerate away.
-  Instead, the ratio between the two is bounded.
-  So the function comparison
-  definition discounts constant multiples.
-\end{example}
+  What's different between this example and the prior one is that,
+  while $f$ stays ahead because its dominant term is $2n^2$ and 
+  $g$'s is~$n^2\!$,
+  it does not accelerate away.
+  Instead, the graph on the right shows that ratio between the two is bounded.
+  Because of that, 
+  for the tool that we will use to compare functions that describe algorithm 
+  behavior, we will want to consider these two equivalent.\footnotemark[1]
+\end{example}\footnotetext[1]{%
+    More on this is in the discussion at the end of this section.
+    }
 
 \begin{example}  \label{ex:BitsToRepresentANumber}
-We close the motivation with a particular, very important,
+We close the motivation with a very important
 example.
 Let $\map{b}{\N}{\N}$ give 
 the number of bits needed to represent its input in binary.
@@ -244,10 +249,10 @@ $\lg(n)$, the power of $2$ that equals~$n$.
   \\  \hline
   \rule{0pt}{15pt}   % taller \strut
   \begin{tabular}{@{}l@{}}
-    $b(n)$ \\ $\lg(n)$ 
+    $\bits (n)$ \\ $\lg(n)$ 
   \end{tabular}
   &\begin{tabular}{@{}c@{}}
-    $1$ \\  $-\infty$
+    $1$ \\  --
   \end{tabular}
   &\begin{tabular}{@{}l@{}}
     $1$ \\  $0$
@@ -278,13 +283,13 @@ $\lg(n)$, the power of $2$ that equals~$n$.
   \end{tabular}
 \end{tabular}
 \end{center}
-This is $b(n)$ for $n\in\set{1,\ldots 30}$.
+This is $\bits (n)$ for $n\in\set{1,\ldots 30}$.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo02.pdf}
 \end{center}
-The formula is $b(n)=1+\floor{\lg(n)}$, 
-except that if $n=0$ then $b(n)=1$. 
-The graph below compares $b(n)$ with
+The formula is $\bits (n)=1+\floor{\lg(n)}$, 
+except that if $n=0$ then $\bits(n)=1$. 
+The graph below compares $\bits (n)$ with
 $f(n)=\lg(n)$.
 (Note the change in the horizontal and vertical scales,
 and that the domain of~$f$ does not include~$0$.)
@@ -295,15 +300,15 @@ Over the long run the `$+1$' does not matter
 much and the floor does not matter much (and is algebraically awkward).
 A reasonable summary is
 that the function giving
-the number of bits required to express a number~$m$ is the base~$2$
+the number of bits required to express a number~$n$ is the base~$2$
 logarithm,~$\lg n$.
 
-We have mentioned that the
+\cref{ex:DisregardConstMults} notes that the
 function comparison definition given below disregards constant 
 multiplicative factors.
 The formula for converting among logarithmic functions with different bases, 
 $\log_c(x)=(1/\log_{b}(c))\cdot\log_b(x)$, shows that they differ
-only by a constant factor.
+only by a constant factor,~$1/\log_{b}(c)$.
 So even the base does not matter;~another reasonable summary is 
 that the number of bits
 is ``a'' logarithmic function.
@@ -314,74 +319,54 @@ is ``a'' logarithmic function.
 
 % ......................
 \subsection{Definition}
-We want to know how algorithms use machine resources.
-Resource sizes,
-such as the size of the input and the size of memory used,
-are natural numbers.
-So we may think to focus on
-natural number functions.
+Machine resource sizes,
+such as the number of bits of the input and of memory,
+are natural numbers and 
+so to describe the performance of algorithms 
+we may think to focus on functions that input and output
+natural numbers.
 However, above we have already found useful
-a function, $\lg$,  that takes reals to reals.
-So we will \citetext{instead consider a subset of the real functions}{%
-  When a function takes only natural
-  number arguments then we can
-  easily extend it to take real number arguments.
-  For instance, starting with the factorial function $f(n)=n!$, we
-  can extend to
-  $\smash{\hat{f}}(x)=\floor{x}!$, whose domain is the set of 
+a function, $\lg$,  that inputs and outputs reals.
+So instead \citetext{we will consider a subset of the real functions}{%
+  Some functions of interest take only natural
+  number arguments, such as $n!$. 
+  We can extend these to take real number arguments.
+  For instance, we can extend the factorial to
+  $\floor{x}!$, whose domain is the set of 
   nonnegative reals.}.
-Note that the function $f(x)=\lg(x)$
-gives negative values for some arguments,
-and is not even defined for arguments less than or equal to~$0$,
-so we will extend beyond those real functions with positive values.
+As to why we consider a subset, as a first take we want that these functions
+input and output positive values.
+But, for example, the function $\lg(x)$
+gives negative values for arguments less than~$1$,
+and is not even defined for arguments less than or equal to~$0$.
+With that in mind, we impose more technical restrictions.
 
 %<*def:ComplexityFcn>
 \begin{definition}
-A function~$f$ that inputs real number arguments and outputs real 
-number values is a 
-\definend{complexity function}\index{complexity function} 
-if it satisfies
+A \definend{complexity function}~$f$\index{complexity function} 
+is one that inputs real number arguments and outputs real 
+number values, and
 \begin{parenum}
-\item $f$ has an \definend{unbounded domain} in that there is a number~$N$
+\item it has an \definend{unbounded domain} in that there is a number~$N$
 such that $x\geq N$ implies that $f(x)$ is defined, and
-\item $f$ is \definend{eventually nonnegative} in that
+\item it is \definend{eventually nonnegative} in that
 there exists a number~$M\geq 0$ so that
 $x\geq M$ implies that $f(x)\geq 0$.
 \end{parenum}
 \end{definition}
 %</def:ComplexityFcn>
 
-
-% \begin{definition}
-% A \definend{natural number function} has domain~$\N$ and
-% codomain~$\N$.% \footnotemark[1]
-% \end{definition}% \footnotetext[1]{
-%   In this discussion we have already used a function, $\lg$,
-%   that takes real number inputs and gives real number outputs,
-%   gives negative outputs for some of those inputs,
-%   and is not even defined on the input~$0$.
-%   But all of the functions that
-%   we will use are defined and nonnegative eventually,
-%   meaning that there is a large enough $N\in\N$
-%   so that if $x>N$ then $f(x)$ is defined and nonnegative.
-%   So that won't interfere with the use of the big-O definition.
-%   And, if we are working with a function whose
-%   outputs are not restricted to the natural numbers then
-%   we can instead consider the ceiling $\ceiling{f}$.
-%   So for our purposes natural number functions suffice.}
-
-  
 %<*def:BigO>
 \begin{definition}  \label{def:BigO}
-  Let $g$ be a complexity function with domain~$D$.
+  Let $g$ be a complexity function.
   Then \definend{$\bigOh(g)$}\index{big O@big O, $\bigOh$}\index{function!big O@big O, $\bigOh$}
   is the collection of complexity functions~$f$
-  satisfying:~there are numbers $N,C\in D$ so that 
-  whenever $x\geq N$ then $C\cdot g(x)\geq f(x)$
-  (and $f(x)$ is defined). 
+  satisfying:~there are constants $N,C\in \R$ so that 
+  whenever $x\geq N$ then both $g(x)$ and~$f(x)$ are defined
+  and $C\cdot g(x)\geq f(x)$. 
   We say that \definend{$f\in \bigOh(g)$},
   or that \definend{$f$ is $\bigOh(g)$},
-  or that 
+  or that
   \definend{$f$ is of order at most~$g$},\index{order of!at most}\index{functions!order of at most}
   or that \definend{$f=\bigOh(g)$}.
 \end{definition}
@@ -390,14 +375,13 @@ $x\geq M$ implies that $f(x)\geq 0$.
 \begin{remarks}
 \begin{parenum}
   \item The term `complexity function' is not standard.
-    % We shall find it convenient for stating the results below.
+    We will find it convenient for stating the results below.
     \item
-      We use `$\bigOh$' because this is about the order of growth.
       Read $\bigOh(g)$ aloud as ``big-O of $g$.''
+      We use `$\bigOh$' because this is about the order of growth.
     \item
-      The `$f=\bigOh(g)$' notation, although very common, is 
+      The `$f=\bigOh(g)$' notation is very common, but is 
       awkward.\footnotemark[1]
-      % The notation `$f\in\bigOh(g)$' is better but not as common.
     \item
       Some authors allow negative real outputs and write the
       inequality with absolute values, 
@@ -412,10 +396,11 @@ $x\geq M$ implies that $f(x)\geq 0$.
       instead of `$f$ is $\bigOh(g)$ where $f(n)=n^2+5n+6$ and $g(n)=n^2$'.
   \end{parenum}
   \end{remarks}\footnotetext[1]{%
-        It is awkward in that it does not follow the usual rules
+        This notation is awkward in that it does not follow the usual rules
         of equality; for instance $f=\protect\bigOh(g)$ does not allow
-        you to write `$\protect\bigOh(g)=f$'.
-        Also, $n=\bigOh(n^2)$ and $n^2=\bigOh(n^2)$ does not
+        us to write `$\protect\bigOh(g)=f$'.
+        Another awkwardness is that 
+        $n=\bigOh(n^2)$ and $n^2=\bigOh(n^2)$ together do not
         imply that $n=n^2$.}
 
 Think of `$f$ is $\bigOh(g)$' as meaning that
@@ -423,10 +408,11 @@ $f$'s growth rate is less than or equal to $g$'s rate.
 % (some authors highlight this intuition by writing $f\ll g$
 % if $f$ is $\bigOh(g)$ but it is not the case that
 % $g$ is $\bigOh(f)$).
-These illustrate; the sketch on the left suggests that $g$ is accelerating away
-from~$f$, that $g$'s growth rate is greater than $f$'s.
-The sketch on the right has the two tracking together, 
-so their rates are alike.
+The sketches below illustrate;~on the left
+$g$ appears to be accelerating away
+from~$f$, so that $g$'s growth rate is greater than $f$'s.
+On the right the two seem to be tracking together, 
+so that both $f$ is $\bigOh(g)$ and $g$ is $\bigOh(f)$.
 
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo10.pdf}

@@ -186,7 +186,7 @@ fi
 
 # Generate the book; run it twice to settle future references
 pdflatex book
-# makeindex -s book.isty -p odd book.idx
+# makeindex -s book.ist -p odd book.idx
 biber book
 pdflatex book
 

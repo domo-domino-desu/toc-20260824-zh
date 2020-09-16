@@ -347,10 +347,10 @@ A \definend{complexity function}~$f$\index{complexity function}
 is one that inputs real number arguments and outputs real 
 number values, and
 \begin{parenum}
-\item it has an \definend{unbounded domain} in that there is a number~$N$
+\item it has an \definend{unbounded domain} in that there is a number~$N\in\R^+$
 such that $x\geq N$ implies that $f(x)$ is defined, and
 \item it is \definend{eventually nonnegative} in that
-there exists a number~$M\geq 0$ so that
+there exists a number~$M\in\R^+$ so that
 $x\geq M$ implies that $f(x)\geq 0$.
 \end{parenum}
 \end{definition}
@@ -361,8 +361,8 @@ $x\geq M$ implies that $f(x)\geq 0$.
   Let $g$ be a complexity function.
   Then \definend{$\bigOh(g)$}\index{big O@big O, $\bigOh$}\index{function!big O@big O, $\bigOh$}
   is the collection of complexity functions~$f$
-  satisfying:~there are constants $N,C\in \R$ so that 
-  whenever $x\geq N$ then both $g(x)$ and~$f(x)$ are defined
+  satisfying:~there are constants $N,C\in \R^+$ so that 
+  if $x\geq N$ then both $g(x)$ and~$f(x)$ are defined,
   and $C\cdot g(x)\geq f(x)$. 
   We say that \definend{$f\in \bigOh(g)$},
   or that \definend{$f$ is $\bigOh(g)$},
@@ -422,7 +422,7 @@ so that $f$ is $\bigOh(g)$ and also $g$ is $\bigOh(f)$.
 
   To apply the definition, 
   we must produce
-  suitable $N$ and~$C$ and verify that they work.
+  suitable $N$ and~$C$, and verify that they work.
 
 \begin{example} \label{ex:BigOFromDefn}
   Let $f(n)=n^2$ and $g(n)=n^3$.
@@ -452,11 +452,12 @@ $C\cdot g(n)=2n^2=n^2+n^2>n^2+1=f(n)$.
 \begin{example}
   Let $\map{Z}{\R}{\R}$ be the zero function~$Z(n)=0$.
   Then~$Z$ is $\bigOh(g)$ for every complexity function~$g$.
-  Verify that with $N=0$ and~$C=1$.
+  Verify that with $N=1$ and~$C=1$.
 \end{example}
 
 \begin{example}
-Some functions aren't comparable.
+Some pairs of functions aren't comparable, that is,
+neither $f\in\bigOh(g)$ nor $g\in\bigOh(f)$.
 Let $g(n)=n^3$ and consider this function.
 \begin{equation*}
   f(n)=\begin{cases}
@@ -467,8 +468,8 @@ Let $g(n)=n^3$ and consider this function.
 To see that $f$ is not~$\bigOh(g)$, consider odd inputs~$n$.
 There is no constant~$C$ that gives $c\cdot n^3\geq n^4$; 
 for instance,
-$C=3$ will not do because 
-$3\cdot g(n)=3n^3<n^4=f(n)$ when $n$ is greater than~$3$ and odd.
+$C=3$ will not do because when $n$ is greater than~$3$ and odd then
+$3\cdot g(n)=3n^3<n^4=f(n)$.
 Likewise, $g$ is not~$\bigOh(f)$ because of $f$'s behavior on even inputs.
 \end{example}
 
@@ -476,48 +477,84 @@ Likewise, $g$ is not~$\bigOh(f)$ because of $f$'s behavior on even inputs.
 \begin{lemma}[Algebraic properties]  \label{lem:BigOAlgProps}
 Let % $f$, $g$, $f_0$, $f_1$, $g_0$ and~$g_1$ 
 these be complexity functions.
-\begin{enumerate}
+\begin{thmparts}
 \item
   If $f$ is $\bigOh(g)$ then 
-  for any positive constant $a\in\R^+$, the function $af$ is $\bigOh(g)$.
-\item
+  for any positive constant $a\in\R^+$, the function $a\cdot f$ is $\bigOh(g)$.
+\item  
   If $f_0$ is $\bigOh(g_0)$ and $f_1$ is $\bigOh(g_1)$
   then the sum $f_0+f_1$ is $\bigOh(g)$, where
   $g(n)=\max(g_0(n),g_1(n))$.  
-  In particular, if there is a function $g_0$ where
-  both $f_0$ and $f_1$ are $\bigOh(g_0)$
-  then $f_0+f_1$ is also $\bigOh(g_0)$.
+  In particular, if there is a function $g$ where
+  both $f_0$ and $f_1$ are $\bigOh(g)$
+  then $f_0+f_1$ is also $\bigOh(g)$.
 \item
   If $f_0$ is $\bigOh(g_0)$ and $f_1$ is $\bigOh(g_1)$
   then the product $f_0f_1$ is $\bigOh(g_0g_1)$.
-\end{enumerate}
+\end{thmparts}
 \end{lemma}
 %</lem:BigOAlgProps>
 
+This result helps us simplify.
+From its first two items we get the principles:
+\begin{parenum}
+\item
+if a function is the sum of terms of which one has the largest growth rate 
+then we can keep just that one, and 
+\item
+if a function is a product of factors then we can drop constants,
+factors that do not depend on the input.
+\end{parenum}
+
 \begin{example}
-  The $\bigOh(f)$'s are sets.
-  To underline this, we will show that $\bigOh(n\cdot \lg(n))$
-  equals $\bigOh(\lg(n!))$ by mutual containment.
-  Recall that logarithmic functions turn multiplication into addition:
-  $\lg(a\cdot b)=\lg(a)+\lg(b)$.
-  The $\bigOh(\lg(n!))\subseteq\bigOh(n\lg(n))$ direction follows from
-  this.
-  \begin{align*}
-    \lg(n!) &= \lg(n) + \lg(n-1) + \cdots \lg(2) + \lg(1)            \\
-            &< \lg(n) + \lg(n)   + \cdots + \lg(n)+\lg(n) = n\cdot\lg(n)
-  \end{align*}
-  The $\bigOh(n\lg(n))\subseteq\bigOh(\lg(n!))$ direction is
-  trickier.
-  \begin{align*}
-  \lg(n!)
-      &= \lg(n) + \lg(n-1) + \cdots + \lg(1)   
-         > \lg(n) + \lg(n-1) + \cdots +\lg(\floor{n/2})   \\
-      &> \lg(\floor{n/2}) + \lg(\floor{n/2}) + \cdots +\lg(\floor{n/2}) 
-          =(n/2)\cdot\lg(n/2)                                \\             
-      &=(n/2)\bigl[ \lg(n)-\lg(2) \bigr]
-         =(1/2)\cdot n\lg(n)-(1/2)\cdot n\lg(2)
-  \end{align*}
+Consider $f(n)=5n^3-3n^2+12n$.
+Of the three summands, the one with the 
+largest growth rate is the one with the largest exponent
+(this is intuitively clear, and it will follow from 
+\cref{lem:LHBigO} below).
+By the second item in the prior result, because all of the summands are
+$\bigOh(5n^3)$, the first principle lets us simplify to say that
+$f$ is $\bigOh(5n^3)$.
+Similarly, because the first factor in the product $5n^3$ is constant,
+applying the first item in that result with $a=1/5$  
+lets us apply the second principle and simplify further to $f$ is $\bigOh(n^3)$.
 \end{example}
+
+% \begin{example}
+%   The $\bigOh(f)$'s are sets.
+%   To underline this, we will show that $\bigOh(n\cdot \lg(n))$
+%   equals $\bigOh(\lg(n!))$ by mutual containment.
+%   First 
+%   recall that logarithmic functions turn multiplication into addition,
+%   $\lg(a\cdot b)=\lg(a)+\lg(b)$.
+%   Then this shows that $f\in \bigOh(\lg(n!))$ implies 
+%   that $f\in\bigOh(n\lg(n))$.
+%   % \begin{align*}
+%   %   \lg(n!) &= \lg(n) + \lg(n-1) + \cdots \lg(2) + \lg(1)            \\
+%   %           &< \lg(n) + \lg(n)   + \cdots + \lg(n)+\lg(n) = n\cdot\lg(n)
+%   % \end{align*}
+%   \begin{equation*}
+%     \lg(n!) = \lg(n) + \lg(n-1) + \cdots +\lg(2)+ \lg(1)            
+%             < \lg(n) + \cdots +\lg(n) = n\cdot\lg(n)
+%   \end{equation*}
+%   Showing that $f\in\bigOh(n\lg(n))$ implies that $f\in\bigOh(\lg(n!))$ 
+%   is trickier.
+%   Start by again translating the product into a sum and 
+%   drop terms that are less than $\lg(\floor{n/2})$   
+%   \begin{align*}
+%     \lg(n!) &= \lg(n) + \lg(n-1) + \cdots + \lg(1)  \\
+%             &> \lg(n) + \lg(n-1) + \cdots +\lg(\floor{n/2})   
+%   \end{align*}
+%   \begin{align*}
+%   \lg(n!)
+%       &= \lg(n) + \lg(n-1) + \cdots + \lg(1)   
+%          > \lg(n) + \lg(n-1) + \cdots +\lg(\floor{n/2})   \\
+%       &> \lg(\floor{n/2}) + \lg(\floor{n/2}) + \cdots +\lg(\floor{n/2}) 
+%           =(n/2)\cdot\lg(n/2)                                \\             
+%       &=(n/2)\bigl[ \lg(n)-\lg(2) \bigr]
+%          =(1/2)\cdot n\lg(n)-(1/2)\cdot n\lg(2)
+%   \end{align*}
+% \end{example}
 
 %<*lem:BigOhReflexiveAndTransitive>
 \begin{lemma}  \label{lem:BigOhReflexiveAndTransitive}
@@ -575,7 +612,7 @@ But there is a result from Calculus that very often makes the job easier.
   Let $f,g$ be complexity functions. 
   Suppose that 
   $\lim_{x\to\infty}f(x)/g(x)$ exists and equals $L\in\R\cup\set{\infty}$.
-  \begin{enumerate}
+  \begin{thmparts}
   \item If $L=0$ then $g$ grows faster than~$f$,
     that is, $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.\footnotemark[1]
   \item If $L=\infty$ then $f$ grows faster than~$g$,
@@ -584,7 +621,7 @@ But there is a result from Calculus that very often makes the job easier.
   If $L$ is between $0$ and~$\infty$   
   then the two functions have equivalent growth rates,
     so that $f$ is~$\bigTheta(g)$ and $g$ is~$\bigTheta(f)$.\footnotemark[3]
-  \end{enumerate}
+  \end{thmparts}
 \end{theorem}\footnotetext[1]{%
   This case can be denoted
   \protect\definend{$f$ is $o(g)$}.\index{omicron@$o$, omicron}

@@ -1021,11 +1021,14 @@ then we may say that the problem is, or at least appears,
 
 
 \subsection{Discussion}
-Big~$\bigOh$ is about scalability:~an 
-algorithm that is $\bigOh(n^2)$ scales worse than something that is 
-$\bigOh(n \lg n)$ but better than something that is
-$\bigOh(n^3)$.  % credit: https://softwareengineering.stackexchange.com/a/20833
+Big~$\bigOh$ is about relative scalability:~an 
+algorithm that is $\bigOh(n^2)$ scales worse than one that is 
+$\bigOh(n \lg n)$ but better than one that is
+$\bigOh(n^3)$.  % credit: 
 Is there more to say than that?
+\begin{credit}
+  Some of the discussion is from \url{https://softwareengineering.stackexchange.com/a/20833}.
+\end{credit}
 
 Yes, that is the essence.
 Nonetheless, experience shows that there are points about Big~$\bigOh$
@@ -1110,31 +1113,24 @@ Thus, to understand the cost of an algorithm,
 we must first settle on a model,
 and only then discuss the Big~$\bigOh$.
 
-% Discussion started as: https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o
-We have already metioned our third point about Big~$\bigOh$
+\begin{credit}
+  Discussion of the third issue started as 
+  \url{https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o}.  
+\end{credit}
+We have already brought up our third issue about Big~$\bigOh$
 in relation to Cobham's Thesis.
 \citetext{The definition of Big-$\bigOh$ ignores constant factors}{%
   This discussion originated as \autocite{SE:IgnoreConstants}.};~does 
 that disqualify Big~$\bigOh$
-for comparing algorithms?
-If our analysis
-shows that for inputs~$n>N$, our algorithm takes time
+for comparing algorithms\Dash
+if, for inputs~$n>N$, our algorithm takes time
 given by $C\cdot n^2$,
 don't we need to know~$C$ and~$N$?
-After all, an enormous~$C$ would make the algorithm
-completely impractical, and 
-a huge~$N$ would mean that we need to analyze what happens 
+After all, if one algorithm has an enormous~$C$ and another has a tiny one,
+could that not make the second algorithm more useful for our case?
+Similarly,  
+a huge~$N$ seemingly could mean that we need to analyze what happens 
 before that point.\footnote{%
-% And, there are other constants that we ignore.
-% Imagine that analysis of an algorithm on a RAM model finds that
-% the time it takes is
-% $4n^2\cdot T+3n\cdot W+2n\cdot R+\lg M$
-% where the constants are:~$T$ is the time for a clock tick,
-% $W$ and~$R$ are the times for a disk write and read,
-% and~$M$ is the time for a memory access.
-% Besides ignoring the $4$ in~$4n^2$, in citing the algorithm we would typically
-% also not put a value to the constants, instead for instance saying that
-% the algorithm is ``logarithmic in memory usage.''
   People do sometimes note
   \protect\citetext{the order of magnitude of these constants}{%
     For a rough idea of that these may be, here are some numbers that
@@ -1155,121 +1151,122 @@ before that point.\footnote{%
     A nanosecond is $10^{-9}$~seconds.  
     For a fuller description see
     \protect\url{https://www.youtube.com/watch?v=JEpsKnWZrJ8&app=desktop}.}.}
-% Doesn't discounting
-% constants considerably reduce Big~$\bigOh$'s value for 
-% choosing among algorithms?
-
-One response is that finding these constants is very hard.
-They involve the hardware's low-level details
-such as the memory addressing and paging, cache hits, and whether
-the CPU can do some operations in parallel.
-And, even if you find the constants,
-usually 
-they do not change the algorithm that you pick.
-% As \cref{tab:CompareFcnNumbers} illustrates, knowing that the algorithm
-% grows logarithmically in memory usage is in the long run
-% vastly more influential that the exact value of the constant.
 
 \margingraphic[l]{0.17\textwidth}{complexity/pix/knuth.jpg}{\label{fig:Knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938}}\index{Knuth, D!picture}
-A second, related, response is that we have no standard.
-Machines vary widely in their low-level details and these details can
-make a tremendous difference.
-% This holds
-% even if we forget about such models as Turing machines and just focus on
-% the kinds of machines
-% that we have on our desks and in our pockets.
-We could try to agree 
-on a specification for a
-standard reference model\Dash
+The answer is that finding these constants is very hard.
+Machines vary widely in their low-level details 
+such as the memory addressing and paging, cache hits, and whether
+the CPU can do some operations in parallel,
+and these details can
+make a tremendous difference in constants such as $C$ and~$N$.
+Imagining doing the analysis on a comercially available machine,
+and then the vendor releases a new model so it is all to do again.
+That would be discouraging.
+And what's more, 
+experience shows that 
+usually knowing the exact numbers
+does not change the algorithm that you pick.
+As \cref{tab:CompareFcnNumbers} illustrates, knowing at a Big~$\bigOh$ level
+how the algorithm
+grows is, at least in the long run,
+vastly more influential that knowing the exact constant values.
+
+\margingraphic[r]{0.42\textwidth}{complexity/pix/xkcdknuth.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/163/}{Courtesy \url{xkcd.com}}}
+We could instead try to agree 
+on specifications for a standard reference model\Dash
 this is the approach taken by  D~Knuth in the monumental
 \textit{Art of Computer Programming} series\Dash
-but we would have to
-\citetext{periodically update the standard}{%
+but that opens up the risk that we might have to
+\citetext{sometimes update that standard}{%
   Knuth had to update standards, from MIX to MMIX.}.
-So published results from some ago may be a problem
+So published results from some ago may no longer apply,
 because they refer to an old standard.
-Being reference independent is an advantage, and in a
-quickly changing field, almost a necessity.
+Again, discouraging.
+So the analysis that we do to find the Big~$\bigOh$ behavior of an
+algorithm usually refers to an abstract computer model, such as a 
+Turing machine or a RAM model, but it usually does not go to the 
+extent of finding the constants. 
+Thus being reference independent is, in a
+quickly changing field, a very real advantage.
 
-But being reference independent requires that we ignore constants
-and instead make relative statements.
-Not having to worry 
-about the 
-\par\noindent
-\margingraphic[r]{0.38\textwidth}{complexity/pix/xkcdknuth.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/163/}{Courtesy \url{xkcd.com}}}
+This ties back to the paragraph that started this discussion.
+Big~$\bigOh$ is a tool for making relative comparisons. 
+But being reference independent implies ignoring constants
+such as $C$ and~$N$, and instead making relative statements.
+Not taking into account the precise
 difference between the cost of a division and the
 cost of a memory write 
 (as long as those costs lie between reasonable limits) implies that 
-constant factors are meaningless,
-since changing units is inseparable from changing constant factors.
+constant factors are meaningless, and we are left with relative 
+comparisons.
 Here is an analogy:~absolute measurement of distance
 involve units such as miles or kilometers,
-but being able to make statements irrespective of the units requires
-making relative statements such as,
+but being able to make statements irrespective of the unit constants requires
+making relative statements like,
 ``from here, New York City is twice as far as Boston.'' 
 
-\margingraphic{0.36\textwidth}{complexity/pix/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
-So, as this discussion began by saying, 
-Big~$\bigOh$ notation expresses how an algorithm
-performs, on a particular machine model, as the input size grows.
-Thus we say that a function that takes $3n$ steps is $\bigOh(n)$
+\margingraphic{0.38\textwidth}{complexity/pix/xkcdbigo.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
+Thus, we say that an algorithm that on input of size~$n$ will takes 
+$3n$~ticks is $\bigOh(n)$
 in order to express that, roughly,
 doubling the input size will no more than double the number of steps taken.
 Similarly, if an algorithm is $\bigOh(n^2)$ then
 doubling the input size will at most
-quadruple the number of steps, and
-$\bigOh(\lg n)$ means that doubling the input size will increase the number
-of steps by at most some constant.
+quadruple the number of steps.
+% , and
+% $\bigOh(\lg n)$ means that doubling the input size will increase the number
+% of steps by at most some constant.
 This notation ignores constants because that is inherient in being 
 a unit free, relative measurement.
 % It is not absolute; it is intended only to measure relative
 % performance variation.
 
-But certainly, as noted above, Big~$\bigOh$ is only a rough comparison;~it
+However, certainly Big~$\bigOh$ is only a rough comparison;~it
 cannot say with great precision when two algorithms
 which will be absolutely better when they are cast into code
-and run on a particular platform.\footnote{%
+and run on a particular platform for input sizes 
+in a particular range.\footnote{%
   For that, use benchmarks.}
 
-% https://stackoverflow.com/a/19647659
-That leads to the fourth point,
-\citetext{a concern involving the definition of Big~$\bigOh$ and Big~$\bigTheta$}{%
-  This discussion originated as \autocite{SE:pseudopolynomial}.}.
+\begin{credit}
+  The fourth point derives from \url{https://stackoverflow.com/a/19647659}.
+\end{credit}
+That leads to our fourth point about Big~$\bigOh$.
+\begin{credit}
+  This discussion originated as \autocite{SE:pseudopolynomial}.
+\end{credit}
 Understanding how an algorithm
 performs as the input size grows
-requires that we define input size.
-% There are two natural definitions and when we are modelling we
-% must choose whichever fits best. 
+requires that we define the input size.
 
-Consider a naive algorithm for factoring numbers that, given input $n$,
-tests each $k\in\set{2,\ldots\,n-1}$
-to see if it divides~$n$. 
-If~$n$ is prime then it tests all those $k$'s, which is
+Consider a naive algorithm for factoring numbers that, given an input natural
+number~$n$, tests each $k\in\set{2,\ldots\,n-1}$ to see if it divides~$n$. 
+If~$n$ is prime then it tests all of those $k$'s, which is
 roughly~$n$-many divisions.
-We can take
-the size of an input~$n$ to be the number of bits needed
+We can take the size of~$n$ to be the number of bits needed
 to represent~$n$ in binary,
 approximately~$\lg n$.
-So for this algorithm the input is of size about~$\lg n$
+That is, for this algorithm the input is of size~$\lg n$
 and the number of operations is about~$n$.
-That makes the number of operations exponential in the input
-size\Dash in this model this algorithm is 
+That's exponential growth\Dash passing from $\lg n$ to~$n$ 
+requires exponentiating\Dash so this algorithm is 
 $\bigOh(2^b)$, where $b$ is the number of input bits.
 
-However, most people's experience from programming class is that this
-algorithm would be described as linear, as $\bigOh(n)$, because
-for the number~$n$ there are about $n$-many divisions.
-How to explain the difference?
+However, in a programming class this
+algorithm would likely be described as linear, as $\bigOh(n)$,
+with the reasoning that 
+for the input~$n$ there are about $n$-many divisions.
+How to explain the difference between these two Big~$\bigOh$ estimates?
 
-This is another example that an algorithm depends on
-on an underlying computing model.
-In many application situations the programmer 
-makes the engineering judgement that for every use of their program the
-input will fit into a fixed-sized computer word, such as a $64$~bit word.
-This means that we are selecting a computation model, like the RAM model,
+This is another example of the relationship between an algorithm
+and an underlying computing model.
+A programmer may make  
+the engineering judgement that for every use of their program the
+input will fit into a $64$~bit word.
+They are selecting a computation model, like the RAM model,
 where larger numbers take the same time to read as smaller numbers.
-Then the prior paragraph applies and algorithm associated with
-this model is linear.
+With this model,
+the prior paragraph applies and the algorithm is linear.
 
 % For another example, if we are studying selection sort and after
 % careful thought we decide on the specification that
@@ -1293,28 +1290,28 @@ this model is linear.
 % input size and output size, since now the input size is measured as
 % a function of the number of nodes~$n$.
 
-So this is in  part an application versus theory thing:~in the common
-programming practice situation where the bit size of the inputs is bounded,
-the runtime behavior is a function of
-the number of inputs~$n$.
-In a theoretical conversation, accepting input that is arbitrarily large, it is 
-a function of the bit size of those inputs.
-An algorithm whose behavior as a function of the input is polynomial
+So this difference in Big~$\bigOh$ estimates is 
+an application versus theory thing.
+In the common programming application setting,
+where the bit size of the inputs is bounded,
+the runtime behavior is~$\bigOh(n)$.
+In a theoretical setting, accepting input that is arbitrarily large, 
+the runtime is a function of the bit size of the inputs,
+and so the algorithm is~$\bigOh(2^b)$.
+An algorithm whose behavior as a function of the input is polynomial,
 but whose behavior as a function of the bit size of the input is
-exponential is said to be \definend{pseudopolynomial}.
+exponential, is said to be 
+\definend{pseudopolynomial}.\index{pseudopolynomial}
 
-One final point about Big~$\bigOh$.
-When we are analyzing an algorithm we can look at
-different behaviors.
-For instance, 
-we can analyze the worst case behavior or the average behavior.
-An example is that the widely used sorting algorithm quicksort
-takes quadratic time $\bigOh(n^2)$ at worst
-but on average it is fast, $\bigOh(n\lg n)$.
-However, worst-case analysis is by far the most common.
-So, algorithm analysis can happen on a number of fronts.
-
-
+A last point about Big~$\bigOh$.
+When we are analyzing an algorithm
+we can consider the behavior that is the worst case 
+for any input of that size (as in \cref{def:TMTime}), 
+or the behavior that is the average over all inputs of that size.
+For instance, the quicksort algorithm
+takes quadratic time $\bigOh(n^2)$ at worst,
+but on average is $\bigOh(n\lg n)$.
+Note, though, that worst-case analysis is the most common.
 
 
 

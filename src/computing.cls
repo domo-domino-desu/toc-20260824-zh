@@ -1035,6 +1035,8 @@
 \Crefname{problem}{Problem}{Problems}
 \crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
 \Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+\crefname{tablefigure}{Table}{Table}
+\Crefname{tablefigure}{Table}{Table}
 % Proofs are unnumbered
 % \theoremheaderfont{\sc}\theorembodyfont{\upshape}
 % \theoremstyle{nonumberplain}

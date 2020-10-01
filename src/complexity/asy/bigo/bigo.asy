@@ -376,7 +376,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 picture pic;
 int picnum = 5;
 
-size(pic,4.5cm);
+size(pic,4.5cm,2cm,IgnoreAspect);
 
 // real f(real x) {
 //   return x**2+5*x+6;
@@ -455,7 +455,7 @@ yequals(pic, 1,
 dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
-  dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(white));
+  dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
 }
 label(pic,"$f/g$",Scale(pic,(20,2)), N);
 
@@ -520,16 +520,16 @@ yaxis(pic, XZero,
       p=AXISPEN,
       arrow=Arrow(TeXHead,axis_arrow_size));
 
-dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
-  dot(pic, Scale(pic,(i,f(i))),FCNPEN_SOLID,Fill(white));
-  dot(pic, Scale(pic,(i,g(i))),FCNPEN_SOLID,Fill(white));
+  dot(pic, Scale(pic,(i,f(i))),FCNPEN_SOLID,Fill(FCNPEN_SOLID));
+  dot(pic, Scale(pic,(i,g(i))),FCNPEN_SOLID,Fill(FCNPEN_SOLID));
 }
 // label(pic,"$g$",Scale(pic,(90,1900000)), 0.8W);
 // label(pic,"$f$",Scale(pic,(90,0)), 2N);
-label(pic,"$f$",Scale(pic,(xmax,0)), 2N);
-label(pic,"$g$",Scale(pic,(xmax,ymax)), 0.8W);
+label(pic,"$f$",Scale(pic,(xmax,0)), 3N);
+label(pic,"$g$",Scale(pic,(xmax,ymax)), 2W+1S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -540,7 +540,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 picture pic;
 int picnum = 7;
 
-size(pic,4.5cm,3.5cm,IgnoreAspect);
+size(pic,4.5cm,2.5cm,IgnoreAspect);
 
 real f(real x) {
   return 2x**3+3*x+4;
@@ -605,9 +605,9 @@ yaxis(pic, XZero,
 dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
-  dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(white));
+  dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
 }
-label(pic,"$g/f$",Scale(pic,(xmax,ymax)), 3S);
+label(pic,"$g/f$",Scale(pic,(xmax,ymax)), 0S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -683,11 +683,11 @@ yaxis(pic, XZero,
 // 	ticks=NoTicks,
 //         arrow=Arrow(TeXHead,axis_arrow_size));
 
-dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
-  dot(pic, Scale(pic,(i,f(i))),FCNPEN_SOLID,Fill(white));
-  dot(pic, Scale(pic,(i,g(i))),FCNPEN_SOLID,Fill(white));
+  dot(pic, Scale(pic,(i,f(i))),FCNPEN_SOLID,Fill(FCNPEN_SOLID));
+  dot(pic, Scale(pic,(i,g(i))),FCNPEN_SOLID,Fill(FCNPEN_SOLID));
 }
 // label(pic,"$f$",Scale(pic,(90,19000)), 0.8W);
 // label(pic,"$g$",Scale(pic,(90,8000)), 2S);
@@ -772,10 +772,10 @@ yaxis(pic, XZero,
 //         p=AXISPEN,
 // 	ticks=NoTicks,
 //         arrow=Arrow(TeXHead,axis_arrow_size));
-dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 for (int i=ceil(maxnum(xmin,1)); i<=floor(xmax); ++i) {
-  dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(white));
+  dot(pic, Scale(pic,(i,f(i)/g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
 }
 label(pic,"$f/g$",Scale(pic,(xmax,2)), 2N);
 // asymptote

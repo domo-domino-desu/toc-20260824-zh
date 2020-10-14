@@ -1398,10 +1398,10 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // 
 int picnum = 21;
 picture pic;
-unitsize(pic,0.cm);
+unitsize(pic,0.5cm);
 
 path insidecircle, outsidecircle;
-insidecircle = circle((0,0),1);
+insidecircle = circle((0,0),0.8);
 outsidecircle = circle((0,0),2);
 
 // Times on the circles
@@ -1457,6 +1457,79 @@ label(pic,"$B$",(wd/5,ht/2));
 label(pic,"$C$",(2*wd/5,ht/2));
 label(pic,"$D$",(3*wd/5,ht/2));
 label(pic,"$E$",(4*wd/5,ht/2));
+
+// Draw them again, with B and A interchanged, and shifted
+path countryB1 = (0,0)--(wd,0)--(wd,ht)--(0,ht)--cycle;
+path countryA1 = circle((wd/5,ht/2),small_country_radius);
+path countryC1 = circle((2*wd/5,ht/2),small_country_radius);
+path countryD1 = circle((3*wd/5,ht/2),small_country_radius);
+path countryE1 = circle((4*wd/5,ht/2),small_country_radius);
+
+draw(pic,shift(wd,0)*countryB1,MAINPEN);
+draw(pic,shift(wd,0)*countryA1,MAINPEN);
+draw(pic,shift(wd,0)*countryC1,MAINPEN);
+draw(pic,shift(wd,0)*countryD1,MAINPEN);
+draw(pic,shift(wd,0)*countryE1,MAINPEN);
+label(pic,"$B$",shift(wd,0)*(0.05wd,0.9ht));
+label(pic,"$A$",shift(wd,0)*(wd/5,ht/2));
+label(pic,"$C$",shift(wd,0)*(2*wd/5,ht/2));
+label(pic,"$D$",shift(wd,0)*(3*wd/5,ht/2));
+label(pic,"$E$",shift(wd,0)*(4*wd/5,ht/2));
+
+// Draw them again, with C and A interchanged, and shifted
+path countryC2 = (0,0)--(wd,0)--(wd,ht)--(0,ht)--cycle;
+path countryB2 = circle((wd/5,ht/2),small_country_radius);
+path countryA2 = circle((2*wd/5,ht/2),small_country_radius);
+path countryD2 = circle((3*wd/5,ht/2),small_country_radius);
+path countryE2 = circle((4*wd/5,ht/2),small_country_radius);
+
+draw(pic,shift(2*wd,0)*countryC2,MAINPEN);
+draw(pic,shift(2*wd,0)*countryB2,MAINPEN);
+draw(pic,shift(2*wd,0)*countryA2,MAINPEN);
+draw(pic,shift(2*wd,0)*countryD2,MAINPEN);
+draw(pic,shift(2*wd,0)*countryE2,MAINPEN);
+label(pic,"$C$",shift(2*wd,0)*(0.05wd,0.9ht));
+label(pic,"$B$",shift(2*wd,0)*(wd/5,ht/2));
+label(pic,"$A$",shift(2*wd,0)*(2*wd/5,ht/2));
+label(pic,"$D$",shift(2*wd,0)*(3*wd/5,ht/2));
+label(pic,"$E$",shift(2*wd,0)*(4*wd/5,ht/2));
+
+// Draw them again, with D and A interchanged, and shifted
+path countryD3 = (0,0)--(wd,0)--(wd,ht)--(0,ht)--cycle;
+path countryB3 = circle((wd/5,ht/2),small_country_radius);
+path countryC3 = circle((2*wd/5,ht/2),small_country_radius);
+path countryA3 = circle((3*wd/5,ht/2),small_country_radius);
+path countryE3 = circle((4*wd/5,ht/2),small_country_radius);
+
+draw(pic,shift(0.5*wd,-ht)*countryD3,MAINPEN);
+draw(pic,shift(0.5*wd,-ht)*countryB3,MAINPEN);
+draw(pic,shift(0.5*wd,-ht)*countryC3,MAINPEN);
+draw(pic,shift(0.5*wd,-ht)*countryA3,MAINPEN);
+draw(pic,shift(0.5*wd,-ht)*countryE3,MAINPEN);
+label(pic,"$D$",shift(0.5*wd,-ht)*(0.05wd,0.9ht));
+label(pic,"$B$",shift(0.5*wd,-ht)*(wd/5,ht/2));
+label(pic,"$C$",shift(0.5*wd,-ht)*(2*wd/5,ht/2));
+label(pic,"$A$",shift(0.5*wd,-ht)*(3*wd/5,ht/2));
+label(pic,"$E$",shift(0.5*wd,-ht)*(4*wd/5,ht/2));
+
+// Draw them again, with E and A interchanged, and shifted
+path countryE4 = (0,0)--(wd,0)--(wd,ht)--(0,ht)--cycle;
+path countryB4 = circle((wd/5,ht/2),small_country_radius);
+path countryC4 = circle((2*wd/5,ht/2),small_country_radius);
+path countryD4 = circle((3*wd/5,ht/2),small_country_radius);
+path countryA4 = circle((4*wd/5,ht/2),small_country_radius);
+
+draw(pic,shift(1.5*wd,-ht)*countryE4,MAINPEN);
+draw(pic,shift(1.5*wd,-ht)*countryB4,MAINPEN);
+draw(pic,shift(1.5*wd,-ht)*countryC4,MAINPEN);
+draw(pic,shift(1.5*wd,-ht)*countryD4,MAINPEN);
+draw(pic,shift(1.5*wd,-ht)*countryA4,MAINPEN);
+label(pic,"$E$",shift(1.5*wd,-ht)*(0.05wd,0.9ht));
+label(pic,"$B$",shift(1.5*wd,-ht)*(wd/5,ht/2));
+label(pic,"$C$",shift(1.5*wd,-ht)*(2*wd/5,ht/2));
+label(pic,"$D$",shift(1.5*wd,-ht)*(3*wd/5,ht/2));
+label(pic,"$A$",shift(1.5*wd,-ht)*(4*wd/5,ht/2));
+
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -2013,13 +2086,13 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
-
+real platonichgt = 1.5cm;  // make them all the same height
 // =============== pyramid =============
 int picnum = 31;
 picture pic;
 settings.render = 0; settings.prc = false;
 import three;  // must set render, prc before importing three
-unitsize(pic,1cm,0);
+size(pic,0,platonichgt);
 
 currentprojection=orthographic(10,5,2,up=Z);
 
@@ -2068,7 +2141,7 @@ draw(pic,corner2--corner3--corner0--corner1--corner2,DARKPEN+highlightcolor,noli
 // draw(pic,origin--2Y,black);  // X axis
 // draw(pic,origin--2Z,black);  // X axis
 
-real opacity_index=0.25;
+real opacity_index=0.5;
 draw(pic,surface(corner0--corner3--corner2--cycle),lightcolor+opacity(opacity_index),nolight);  // left front
 draw(pic,surface(corner0--corner1--corner3--cycle),lightcolor+opacity(opacity_index),nolight);  // rt front
 draw(pic,surface(corner1--corner2--corner3--cycle),lightcolor+opacity(opacity_index),nolight);  // back
@@ -2092,7 +2165,7 @@ picture pic;
 settings.render = 0;
 settings.prc = false;
 import three;  // must set render, prc before importing three
-unitsize(pic,1cm,0);
+size(pic,0,platonichgt);
 
 currentprojection=orthographic(10,5,2,up=Z);
 
@@ -2166,7 +2239,7 @@ draw(pic,edgetoty,boldcolor);
 // draw(pic,edgetxtf,boldcolor);
 draw(pic,cornerbo--cornerbx--cornerbf--cornerby--cornerty--cornertf--cornertx--cornerto--cycle,DARKPEN+highlightcolor,nolight);
 
-real opacity_index=0.25;
+real opacity_index=0.5;
 draw(pic,surface(cornerbo--cornerby--cornerbf--cornerbx--cycle),lightcolor+opacity(opacity_index),nolight);  // bot
 draw(pic,surface(cornerbo--cornerbx--cornertx--cornerto--cycle),lightcolor+opacity(opacity_index),nolight);  // xz plane
 draw(pic,surface(cornerbo--cornerto--cornerty--cornerby--cycle),lightcolor+opacity(opacity_index),nolight);  // yz plane
@@ -2206,7 +2279,7 @@ picture pic;
 settings.render = 0;
 settings.prc = false;
 import three;  // must set render, prc before importing three
-unitsize(pic,1cm,0);
+size(pic,0,platonichgt);
 
 currentprojection=orthographic(10,5,2,up=Z);
 
@@ -2264,7 +2337,7 @@ draw(pic,edge15,boldcolor);
 // back of Ham path
 draw(pic,corner2--corner1--corner4,DARKPEN+highlightcolor,nolight);
 
-real opacity_index=0.25;
+real opacity_index=0.5;
 draw(pic,surface(corner1--corner3--corner4--cycle),lightcolor+opacity(opacity_index),nolight);  // top rear
 draw(pic,surface(corner1--corner2--corner4--cycle),lightcolor+opacity(opacity_index),nolight);  // top rt rear
 draw(pic,surface(corner0--corner2--corner4--cycle),lightcolor+opacity(opacity_index),nolight);  // top front
@@ -2356,7 +2429,7 @@ picture pic;
 settings.render = 0;
 settings.prc = false;
 import three;  // must set render, prc before importing three
-unitsize(pic,1cm,0);
+size(pic,0,platonichgt);
 
 currentprojection=orthographic(10,5,2,up=Z);
 
@@ -2447,7 +2520,7 @@ path3 edge911 = corner9--corner11;
 // back of Ham path
 // draw(pic,corner2--corner1--corner4,DARKPEN+highlightcolor,nolight);
 
-real opacity_index=0.65;
+real opacity_index=0.75;
 // triangles in back
 draw(pic,surface(corner0--corner1--corner9--cycle),lightcolor+opacity(opacity_index),nolight);  // rear
 draw(pic,surface(corner0--corner5--corner9--cycle),lightcolor+opacity(opacity_index),nolight);  // rear
@@ -2474,6 +2547,12 @@ draw(pic,edge79,boldcolor);
 draw(pic,edge711,boldcolor);
 draw(pic,edge911,boldcolor);
 
+// back of Ham path
+draw(pic,corner3
+     --corner7--corner9--corner11--corner2,
+     DARKPEN+highlightcolor,nolight);
+
+
 // triangles in front
 draw(pic,surface(corner0--corner1--corner8--cycle),lightcolor+opacity(opacity_index),nolight);  // front
 draw(pic,surface(corner0--corner4--corner5--cycle),lightcolor+opacity(opacity_index),nolight);  // front
@@ -2485,8 +2564,6 @@ draw(pic,surface(corner2--corner4--corner10--cycle),lightcolor+opacity(opacity_i
 draw(pic,surface(corner3--corner6--corner10--cycle),lightcolor+opacity(opacity_index),nolight);  // front
 draw(pic,surface(corner4--corner8--corner10--cycle),lightcolor+opacity(opacity_index),nolight);  // front
 draw(pic,surface(corner6--corner8--corner10--cycle),lightcolor+opacity(opacity_index),nolight);  // front
-
-
 
 // edges in front
 draw(pic,edge04,boldcolor);
@@ -2509,12 +2586,16 @@ draw(pic,edge610,boldcolor);
 draw(pic,edge810,boldcolor);
 
 // front of Ham path
-// draw(pic,corner0--corner2,DARKPEN+highlightcolor,nolight);
-// draw(pic,corner4--corner3--corner5--corner0,DARKPEN+highlightcolor,nolight);
+draw(pic,corner0--corner1--corner8--corner6--corner3,
+     DARKPEN+highlightcolor,nolight);
+draw(pic,corner2--corner10--corner4--corner5--corner0,
+     DARKPEN+highlightcolor,nolight);
 
 // entire Ham path
-// draw(pic,corner0--corner2--corner1--corner4--corner3--corner5--corner0,DARKPEN+highlightcolor,nolight);
-
+// draw(pic,corner0--corner1--corner8--corner6--corner3
+//      --corner7--corner9--corner11
+//      --corner2--corner10--corner4--corner5--corner0,
+//      DARKPEN+highlightcolor,nolight);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");   // PNG! bugs in asy
 // The vertices are easy, but which vertex is connected to which?
@@ -2637,6 +2718,261 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+
+// =============== dodecahedron =============
+int picnum = 38;
+picture pic;
+settings.render = 0;
+settings.prc = false;
+import three;  // must set render, prc before importing three
+size(pic,0,platonichgt);
+
+currentprojection=orthographic(10,5,2,up=Z);
+
+real phi = (1+sqrt(5))/2;
+// https://en.wikipedia.org/wiki/Tetrahedron#Formulas_for_a_regular_tetrahedron
+triple origin=(0,0,0);
+triple corner0 = (1,1,1);
+triple corner1 = (1,1,-1);
+triple corner2 = (1,-1,1);
+triple corner3 = (1,-1,-1);
+triple corner4 = (-1,1,1);
+triple corner5 = (-1,1,-1);
+triple corner6 = (-1,-1,1);
+triple corner7 = (-1,-1,-1);
+triple corner8 = (0,phi,1/phi);
+triple corner9 = (0,phi,-1/phi);
+triple corner10 = (0,-phi,1/phi);
+triple corner11 = (0,-phi,-1/phi);
+triple corner12 = (1/phi,0,phi);
+triple corner13 = (1/phi,0,-phi);
+triple corner14 = (-1/phi,0,phi);
+triple corner15 = (-1/phi,0,-phi);
+triple corner16 = (phi,1/phi,0);
+triple corner17 = (phi,-1/phi,0);
+triple corner18 = (-phi,1/phi,0);
+triple corner19 = (-phi,-1/phi,0);
+
+dotfactor=3; // default 6
+dot(pic,corner0,boldcolor);
+dot(pic,corner1,boldcolor);
+dot(pic,corner2,boldcolor);
+dot(pic,corner3,boldcolor);
+dot(pic,corner4,boldcolor);
+dot(pic,corner5,boldcolor);
+dot(pic,corner6,boldcolor);
+dot(pic,corner7,boldcolor);
+dot(pic,corner8,boldcolor);
+dot(pic,corner9,boldcolor);
+dot(pic,corner10,boldcolor);
+dot(pic,corner11,boldcolor);
+dot(pic,corner12,boldcolor);
+dot(pic,corner13,boldcolor);
+dot(pic,corner14,boldcolor);
+dot(pic,corner15,boldcolor);
+dot(pic,corner16,boldcolor);
+dot(pic,corner17,boldcolor);
+dot(pic,corner18,boldcolor);
+dot(pic,corner19,boldcolor);
+
+// For composing the picture
+// label(pic,"\tiny $0$",corner0,E);
+// label(pic,"\tiny $1$",corner1,E);
+// label(pic,"\tiny $2$",corner2,E);
+// label(pic,"\tiny $3$",corner3,E);
+// label(pic,"\tiny $4$",corner4,E);
+// label(pic,"\tiny $5$",corner5,E);
+// label(pic,"\tiny $6$",corner6,E);
+// label(pic,"\tiny $7$",corner7,E);
+// label(pic,"\tiny $8$",corner8,E);
+// label(pic,"\tiny $9$",corner9,E);
+// label(pic,"\tiny $10$",corner10,E);
+// label(pic,"\tiny $11$",corner11,E);
+// label(pic,"\tiny $12$",corner12,E);
+// label(pic,"\tiny $13$",corner13,E);
+// label(pic,"\tiny $14$",corner14,E);
+// label(pic,"\tiny $15$",corner15,E);
+// label(pic,"\tiny $16$",corner16,E);
+// label(pic,"\tiny $17$",corner17,E);
+// label(pic,"\tiny $18$",corner18,E);
+// label(pic,"\tiny $19$",corner19,E);
+// draw(pic,origin--2X,black);  // X axis
+// draw(pic,origin--2Y,black);  // Y axis
+// draw(pic,origin--2Z,black);  // Z axis
+
+// edges
+path3 edge08 = corner0--corner8;
+path3 edge012 = corner0--corner12;
+path3 edge016 = corner0--corner16;
+path3 edge19 = corner1--corner9;
+path3 edge113 = corner1--corner13;
+path3 edge116 = corner1--corner16;
+path3 edge210 = corner2--corner10;
+path3 edge212 = corner2--corner12;
+path3 edge217 = corner2--corner17;
+path3 edge311 = corner3--corner11;
+path3 edge313 = corner3--corner13;
+path3 edge317 = corner3--corner17;
+path3 edge48 = corner4--corner8;
+path3 edge414 = corner4--corner14;
+path3 edge418 = corner4--corner18;
+path3 edge59 = corner5--corner9;
+path3 edge515 = corner5--corner15;
+path3 edge518 = corner5--corner18;
+path3 edge610 = corner6--corner10;
+path3 edge614 = corner6--corner14;
+path3 edge619 = corner6--corner19;
+path3 edge711 = corner7--corner11;
+path3 edge715 = corner7--corner15;
+path3 edge719 = corner7--corner19;
+path3 edge89 = corner8--corner9;
+path3 edge1011 = corner10--corner11;
+path3 edge1214 = corner12--corner14;
+path3 edge1315 = corner13--corner15;
+path3 edge1617 = corner16--corner17;
+path3 edge1819 = corner18--corner19;
+
+// back of Ham path
+// draw(pic,corner2--corner1--corner4,DARKPEN+highlightcolor,nolight);
+
+real opacity_index=0.75;
+// pentgons in back
+draw(pic,surface(corner4--corner18--corner19--corner6--corner14--cycle),lightcolor+opacity(opacity_index),nolight);  // rear
+draw(pic,surface(corner5--corner15--corner7--corner19--corner18--cycle),lightcolor+opacity(opacity_index),nolight);  // rear
+draw(pic,surface(corner6--corner19--corner7--corner11--corner10--cycle),lightcolor+opacity(opacity_index),nolight);  // rear
+
+// // edges in back
+draw(pic,edge418,boldcolor);
+draw(pic,edge518,boldcolor);
+draw(pic,edge610,boldcolor);
+draw(pic,edge614,boldcolor);
+draw(pic,edge619,boldcolor);
+draw(pic,edge711,boldcolor);
+draw(pic,edge715,boldcolor);
+draw(pic,edge719,boldcolor);
+draw(pic,edge1819,boldcolor);
+
+// Ham path in back
+draw(pic,
+     corner10
+     --corner6--corner19--corner18--corner5,
+     DARKPEN+highlightcolor,nolight);
+draw(pic,
+     corner15
+     --corner7--corner11--corner3,
+     DARKPEN+highlightcolor,nolight);
+
+// pentagons in front
+draw(pic,surface(corner0--corner8--corner4--corner14--corner12--cycle),lightcolor+opacity(opacity_index),nolight);  // front
+draw(pic,surface(corner0--corner8--corner9--corner1--corner16--cycle),lightcolor+opacity(opacity_index),nolight);  // front
+draw(pic,surface(corner0--corner12--corner2--corner17--corner16--cycle),lightcolor+opacity(opacity_index),nolight);  // front
+draw(pic,surface(corner1--corner9--corner5--corner15--corner13--cycle),lightcolor+opacity(opacity_index),nolight);  // front
+draw(pic,surface(corner1--corner13--corner3--corner17--corner16--cycle),lightcolor+opacity(opacity_index),nolight);  // front
+draw(pic,surface(corner2--corner10--corner11--corner3--corner17--cycle),lightcolor+opacity(opacity_index),nolight);  // front
+
+// edges in front
+draw(pic,edge08,boldcolor);
+draw(pic,edge012,boldcolor);
+draw(pic,edge016,boldcolor);
+draw(pic,edge19,boldcolor);
+draw(pic,edge113,boldcolor);
+draw(pic,edge116,boldcolor);
+draw(pic,edge210,boldcolor);
+draw(pic,edge212,boldcolor);
+draw(pic,edge217,boldcolor);
+draw(pic,edge311,boldcolor);
+draw(pic,edge313,boldcolor);
+draw(pic,edge317,boldcolor);
+draw(pic,edge48,boldcolor);
+draw(pic,edge414,boldcolor);
+draw(pic,edge59,boldcolor);
+draw(pic,edge515,boldcolor);
+draw(pic,edge89,boldcolor);
+draw(pic,edge1011,boldcolor);
+draw(pic,edge1214,boldcolor);
+draw(pic,edge1315,boldcolor);
+draw(pic,edge1617,boldcolor);
+
+// Ham path in front
+draw(pic,corner0--corner8--corner4--corner14
+     --corner12--corner2--corner10,
+     DARKPEN+highlightcolor,nolight);
+draw(pic,corner5
+     --corner9--corner1--corner13--corner15,
+     DARKPEN+highlightcolor,nolight);
+draw(pic,corner11--corner3
+     --corner17--corner16--corner0,
+     DARKPEN+highlightcolor,nolight);
+
+// entire Ham path
+// draw(pic,corner0--corner8--corner4--corner14
+//      --corner12--corner2--corner10
+//      --corner6--corner19--corner18--corner5
+//      --corner9--corner1--corner13--corner15
+//      --corner7--corner11--corner3
+//      --corner17--corner16--corner0,
+//      DARKPEN+highlightcolor,nolight);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");   // 
+// sage: PHI = (1+sqrt(5))/2
+// sage: PHI
+// 1/2*sqrt(5) + 1/2
+// sage: c0 = vector(RR, [1, 1, 1])
+// sage: c1 = vector(RR, [1, 1, -1])
+// sage: c2 = vector(RR, [1, -1, 1])
+// sage: c3 = vector(RR, [1, -1, -1])
+// sage: c4 = vector(RR, [-1, 1, 1])
+// sage: c5 = vector(RR, [-1, 1, -1])
+// sage: c6 = vector(RR, [-1, -1, 1])
+// sage: c7 = vector(RR, [-1, -1, -1])
+// sage: c8 = vector(RR, [0, PHI, 1/PHI])
+// sage: c9 = vector(RR, [0, PHI, -1/PHI])
+// sage: c10 = vector(RR, [0, -PHI, 1/PHI])
+// sage: c11 = vector(RR, [0, -PHI, -1/PHI])
+// sage: c12 = vector(RR, [1/PHI, 0, PHI])
+// sage: c13 = vector(RR, [1/PHI, 0, -PHI])
+// sage: c14 = vector(RR, [-1/PHI, 0, PHI])
+// sage: c15 = vector(RR, [-1/PHI, 0, -PHI])
+// sage: c16 = vector(RR, [PHI, 1/PHI, 0])
+// sage: c17 = vector(RR, [PHI, -1/PHI, 0])
+// sage: c18 = vector(RR, [-PHI, 1/PHI, 0])
+// sage: c19 = vector(RR, [-PHI, -1/PHI, 0])
+// sage: lst = [c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19]
+// # for each corner, find nearest three corners
+// sage: def dist(c):
+// ....:     dex = 0
+// ....:     for v in lst:
+// ....:         print("c",dex," dist=",(c-v).norm())
+// ....:         dex = dex+1
+// # Find the vertices behind, and those in front
+// sage: CAMERA = vector(RR, [10, 5, 2])
+// sage: for v in lst:
+// ....:     print("c",dex," dist to camera=",(CAMERA-v).norm())
+// ....:     dex = dex+1
+// ....:     
+// ('c', 0, ' dist to camera=', 9.89949493661167)
+// ('c', 1, ' dist to camera=', 10.2956301409870)
+// ('c', 2, ' dist to camera=', 10.8627804912002)
+// ('c', 3, ' dist to camera=', 11.2249721603218)
+// ('c', 4, ' dist to camera=', 11.7473401244707)
+// ('c', 5, ' dist to camera=', 12.0830459735946)
+// ('c', 6, ' dist to camera=', 12.5698050899765)
+// ('c', 7, ' dist to camera=', 12.8840987267251)
+// ('c', 8, ' dist to camera=', 10.6464794254956)
+// ('c', 9, ' dist to camera=', 10.8762032009107)
+// ('c', 10, ' dist to camera=', 12.0709653272843)
+// ('c', 11, ' dist to camera=', 12.2740570245742)
+// ('c', 12, ' dist to camera=', 10.6380065928727)
+// ('c', 13, ' dist to camera=', 11.2299357157555)
+// ('c', 14, ' dist to camera=', 11.7425952761729)
+// ('c', 15, ' dist to camera=', 12.2814012119952)
+// ('c', 16, ' dist to camera=', 9.66741849396741)
+// ('c', 17, ' dist to camera=', 10.2868683335844)
+// ('c', 18, ' dist to camera=', 12.5769765797468)
+// ('c', 19, ' dist to camera=', 13.0591354867961)
 
 
 

@@ -2978,5 +2978,73 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");   //
 
 
 
+// ======================== 3-D Matching =============
+// Credit: Jan Verschelde
+int picnum = 39;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node InstA=ncircle("\nodebox{\strut$A$}"),
+  InstB=ncircle("\nodebox{\strut$B$}"),
+  InstC=ncircle("\nodebox{\strut$C$}"),
+  InstD=ncircle("\nodebox{\strut$D$}"),
+  InstE=ncircle("\nodebox{\strut$E$}"),
+  Course0=ncircle("\nodebox{\strut$0$}"),
+  Course1=ncircle("\nodebox{\strut$1$}"),
+  Course2=ncircle("\nodebox{\strut$2$}"),
+  Course3=ncircle("\nodebox{\strut$3$}"),
+  Course4=ncircle("\nodebox{\strut$4$}"),
+  TimeAlpha=ncircle("\nodebox{\strut$\alpha$}"),
+  TimeBeta=ncircle("\nodebox{\strut$\beta$}"),
+  TimeGamma=ncircle("\nodebox{\strut$\gamma$}"),
+  TimeDelta=ncircle("\nodebox{\strut$\delta$}"),
+TimeEpsilon=ncircle("\nodebox{\strut$\varepsilon$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=u;
+defaultlayoutskip=u;
+
+vlayout(1*v, InstA, Course0, TimeAlpha);
+hlayout(1*u, InstA, InstB, InstC, InstD, InstE);
+hlayout(1*u, Course0, Course1, Course2, Course3, Course4);
+hlayout(1*u, TimeAlpha, TimeBeta, TimeGamma, TimeDelta, TimeEpsilon);
+
+// draw edges
+draw(pic,
+     (InstA--Course1),
+     (InstA--Course2),
+     (InstA--Course3),
+     (InstB--Course0),
+     (InstB--Course1),
+     (InstB--Course2),
+     (InstC--Course3),
+     (InstD--Course1),
+     (InstE--Course2),
+     (InstE--Course4),
+     (Course0--TimeAlpha),
+     (Course0--TimeDelta),
+     (Course1--TimeBeta),
+     (Course1--TimeEpsilon),
+     (Course2--TimeGamma),
+     (Course2--TimeEpsilon),
+     (Course3--TimeGamma),
+     (Course4--TimeDelta)
+);
+
+// draw nodes, after edges
+draw(pic,
+     InstA, InstB, InstC, InstD, InstE,
+     Course0, Course1, Course2, Course3, Course4,
+     TimeAlpha, TimeBeta, TimeGamma, TimeDelta, TimeEpsilon);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
 
 

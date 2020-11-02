@@ -4672,24 +4672,26 @@ if and only if in its
 In contrast, if the number is represented in unary then we may 
 scan the \str{1}'s, keeping track of the current remainder modulo~$4$.
 
-However, the representation doesn't matter in the sense that, for example, 
+However, the representation doesn't matter in the sense that 
+if we have an algorithm for one representation in hand
+then we can solve the problem for other representations by translating 
+to what the algorithm expects, and then applying that algorithm.
+For example, 
 for the divisible-by-four problem we could handle unary inputs by converting
 them to binary and then applying the binary algorithm.\footnote{%
   That is, the unary case reduces to the binary one.}
-If we have an algorithm for one representation in hand
-then we can solve the problem for other representations by translating 
-the inputs to what the algorithm expects, and then applying that algorithm.
+The same applies to output representations.
 % This might be some translation inefficiency, but it gives 
 % an answer.
 
 % \margingraphic{0.2\textwidth}{complexity/pix/norm.png}{\label{fig:xkcdnorm}\href{https://xkcd.com/2116/}{Courtesy \url{xkcd.com}}}
 Another way in which the representation doesn't matter is that
-typically we find that 
-its cost doesn't change the Big~$\bigOh$ runtime behavior.
+typically we find that the costs of different representations
+don't change the Big~$\bigOh$ runtime behavior.
 For example we might have a graph algorithm whose run time is not large at 
 all,~$\bigOh(n\lg n)$.
-Then using a representation for the graphs where inputting takes 
-$\bigOh(n)$ time
+Then using a reasonably efficient representation for the input graphs,
+where inputting takes $\bigOh(n)$ time,
 leaves the algorithm analysis conclusion unchanged, so that the 
 total runtime is $\bigOh(n\lg n)$. 
 
@@ -4734,24 +4736,26 @@ For example, a speaker may describe
 the \probname{Shortest Path} problem as, 
 ``Given a weighted graph and two vertices \ldots{}''
 in place of the more 
-complete specification, ``given
+complete specification, ``Given
 a reasonably efficient bitstring representation of a 
 weighted graph~$\bar{\mathcal{G}}$ 
 and vertices $\bar{v_0}$ and~$\bar{v_1}$, 
-for some meaning of reasonable,
-return a reasonably efficiency bitstring representation 
-of the shortest path between them.''
-Although naturally the exercises in this section discuss representations,
-later in the book we will also usually will leave 
-\citetext{detailed specifications to a programmer}{%
-  \autocite{article:MarsOrbiter}},
-because the details do not affect the outcome of our analysis,
+for some meaning of reasonable, \ldots{}''
+Outside of this discussion we also do this,\footnote{
+  Although, naturally the exercises in this section 
+  discuss representations.} 
+\citetext{leaving detailed specifications to a programmer}{%
+  \autocite{article:MarsOrbiter}}.
+Basically, the representation details do not affect the outcome of our analysis,
 much.\footnote{%  
   Keep in mind, though, that the distinction between thinking of an algorithm
   as inputting a number and thinking of it as inputting the 
   representation of a number is the basis for describing 
   the Big~$\bigOh$ behavior of that algorithm as
-  pseudopolynomial.}
+  pseudopolynomial.
+  This is because the binary representation of
+  a number~$n$ takes $\bigOh(\lg n)$ bits and so inputting it takes 
+  $\bigOh(\lg n)$ ticks.}
 
 
 
@@ -4847,35 +4851,59 @@ we must do so by comparing which languages they can decide.
 Still another reason is that in many contexts stating a problem in this
 way is natural, as we saw with the \HP.
 
-From this point on, 
-by `problem' we will usually mean a decision problem for a language.
+The distinctions between problem types are fuzzy, and
+we can often describe a task with more than one type.
+Determining the primality of a number, for instance, 
+could be stated as the function problem `given~$n>1$, return its
+smallest nontrivial prime factor' or as the decision problem
+`given~$n>1$, decide if it is prime'. 
+Sometimes the different types are essentially the same, but sometimes
+finding the problem type that best fits a task requires judgement.
+Consider the task of finding roots of a 
+polynomial.
+We may express it as a function problem with
+`given a polynomial~$p$, return the set of its rational number roots',
+or as a language decision problem with
+`decide if a given $\sequence{p,r}$,
+belongs to the set of all sequences consisting of a polynomial 
+and one of its rational roots'.
+The second option, for which the algorithm just 
+plugs $r$ into~$p$, seems not to
+capture the essential difficulty involved in find a root.
+
+But when we have a choice among problem types, we prefer language
+decision problems.
+From this point on, this is our default meaning of the term
+`problem'.
 (We will be sloppy about the distinction between the
 decision problem for a language and the language itself; for instance, we
 often use the letter $\prob$ for a problem.)
-Often, that will mean recasting problems to put them into language decision 
+Consequently, we often recast problems to put them into language decision 
 terms.
 
 \begin{example}
 Recall the \probname{Satisfiability} 
 problem.\index{Satisfiability@\probname{Satisfiability} problem!as a language recognition problem} 
 As stated, it is a decision problem, requiring a yes-or-no answer.
-But we can recast it as the problem of determining membership in this language
+But we can recast it as the problem of determining membership in the language
 $
   \SAT=
   \set{F\suchthat
     \text{$F$ is a satisfiable propositional logic statement}}
-$.
+$.\index{SAT@$\SAT$}
 \end{example}
 
 \begin{example}
-Similarly, we can recast the problem of determining whether a given number 
-is prime to the problem of determining whether a given representation of~$n$
+Similarly, we can state the task of determining whether a given number 
+is prime to the problem of determining whether a given string 
+representing~$n$
 is a member of 
 $\set{r\in\kleenestar{\B}\suchthat \text{$r$ represents a prime number}}$.
 \end{example}
 
-Recasing optimization problems is a little less straightforward.
-We will often consider a parametrized sequence of language decision problems.
+Recasing optimization problems
+often involves.
+using a parametrized sequence of language decision problems.
 
 \begin{example}
 Recall that the \probname{Chromatic Number} problem inputs a graph 

@@ -4615,147 +4615,11 @@ designed to be executed on a specific computing platform.
 %</discussion:Program>
 
 To illustrate the differences between the problems, algorithms, and programs,
-for a problem consider 
+consider the problem of
 \probname{Prime Factorization}.\index{Prime Factorization@\probname{Prime Factorization} problem}
 One algorithm is to use brute force, that is, given an input~$n>1$,
-for every number~$k\in\open{1}{n}$ see if $k$ divides~$n$.
+try every number~$k\in\open{1}{n}$ to see if $k$ divides~$n$.
 We could implement that algorithm with a program written in Scheme.
-
-
-
-\subsection{Statements and representations}
-To be complete, a description of a problem must include the form of the
-inputs and outputs.
-For instance, if we state a problem 
-as:~`\citetext{input two numbers and output their midpoint}{% 
-  See \protect\url{https://hal.archives-ouvertes.fr/file/index/docid/576641/filename/computing-midpoint.pdf}.}'
-then we have not fully specified what needs to be done.
-The input or output might use 
-strings representing decimal numbers, or might be in binary,
-or even might be in unary,
-where the number $n$ is represented with $n$-many \str{1}'s.\footnote{%
-  An experienced programmer may have the reaction that unary is
-  wasteful\Dash
-  if the input
-  is one thousand then this representation would require the 
-  machine to take a thousand steps just to read the input, 
-  while in binary notation the input is $\str{1111101000}$, which 
-  takes only ten steps to read.
-  But unary is not completely useless;~we have found that it
-  suited our purpose in the past, such as when we simply wanted to illustrate
-  Turing machines with a minimum of overhead detail.
-  In any event, it is certainly possible.}
-% Or we could specify something more exotic
-% such as putting the sequence numbers as 
-% powers of primes, so that~$\sequence{2,1,3}$ becomes 
-% the single number $2^23^15^3=1500$ and then we represent that in a string of
-% decimal digits.
-
-The representation of the input and output data both matters and doesn't matter.
-One sense in which it
-matters is that the input's form can change the algorithm
-that we choose, or its runtime behavior.
-Suppose for instance that we must decide whether a number is
-divisible by four.
-If the input is a bitstring representing the number in binary then 
-the algorithm is immediate:~a number is divisible by four 
-if and only if in its 
-\citetext{final two bits are \str{00}}{%
-  Decimal representation is not much harder since
-  a decimal number is divisible by four if and only if the final two digits
-  are in the set $\set{\str{00},\str{04}, \,\ldots\,\str{96}}$.}.\footnote{%
-    Thus, on a Turing machine, if when the machine starts the head is under
-    the final character, then the machine does not even need to read the
-    entire input to decide the question.
-    The algorithm runs in time independent of the input length.
-  }
-In contrast, if the number is represented in unary then we may 
-scan the \str{1}'s, keeping track of the current remainder modulo~$4$.
-
-However, the representation doesn't matter in the sense that 
-if we have an algorithm for one representation in hand
-then we can solve the problem for other representations by translating 
-to what the algorithm expects, and then applying that algorithm.
-For example, 
-for the divisible-by-four problem we could handle unary inputs by converting
-them to binary and then applying the binary algorithm.\footnote{%
-  That is, the unary case reduces to the binary one.}
-The same applies to output representations.
-% This might be some translation inefficiency, but it gives 
-% an answer.
-
-% \margingraphic{0.2\textwidth}{complexity/pix/norm.png}{\label{fig:xkcdnorm}\href{https://xkcd.com/2116/}{Courtesy \url{xkcd.com}}}
-Another way in which the representation doesn't matter is that
-typically we find that the costs of different representations
-don't change the Big~$\bigOh$ runtime behavior.
-For example we might have a graph algorithm whose run time is not large at 
-all,~$\bigOh(n\lg n)$.
-Then using a reasonably efficient representation for the input graphs,
-where inputting takes $\bigOh(n)$ time,
-leaves the algorithm analysis conclusion unchanged, so that the 
-total runtime is $\bigOh(n\lg n)$. 
-
-With this in mind, we will adopt the point of view,
-which we shall call \definend{Lipton's Thesis},\index{Lipton's Thesis} that 
-\citetext{everything of interest can be represented with reasonable efficiency by bitstrings}{%
-  See
-  \url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/}.
-  Of course, a wag may say that
-  if it cannot be represented by 
-  bitstrings then it isn't of interest.
-  But we mean something less tautological:~we mean that if we could 
-  want to compute with it then it can be put in bitstrings.
-  For example, we find that we can process speech, adjust colors on an image, 
-  or regulate pressure in a rocket fuel tank, all in bitstrings,
-  despite what may at first encounter seem to be the inheriently 
-  analog nature of these things.}.\footnote{%
-  Here, `reasonable' means that it is not so inefficient as to greatly
-  change the big-$\bigOh$ behavior.}\index{representation, of a problem}
-This applies to 
-all of the mathematically-flavored problems stated earlier, such as those about
-numbers, or graphs.
-But it also applies in cases that may seem less natural, such as that we 
-can use bitstrings to faithfully represent 
-\citetext{Beethoven's 9th Symphony}{%
-  The official story is that
-  CD's are $72$ minutes long so that they can hold this piece.}
-or an exquisite Old Master.\footnote{
-  The contention that bitstrings suffice to
-  give a representation that is efficient enough is 
-  in some ways like Church's Thesis.
-  We cannot prove it, but experience\Dash particularly all of our very recent 
-  experience, listening to online music, watching online movies, 
-  etc.\Dash finds it to be so.}
-\begin{fig}{\textit{Basket of Fruit} by Caravaggio (1571--1610)} % https://upload.wikimedia.org/wikipedia/commons/e/e5/Basket_of_Fruit-Caravaggio_%28c.1595%29.jpg
-  \includegraphics[width=0.8\textwidth]{complexity/pix/caravaggio.jpg}
-\end{fig}
-
-Because of this, in practice  
-researchers typically do not mention representations.
-For example, a speaker may describe
-the \probname{Shortest Path} problem as, 
-``Given a weighted graph and two vertices \ldots{}''
-in place of the more 
-complete specification, ``Given
-a reasonably efficient bitstring representation of a 
-weighted graph~$\bar{\mathcal{G}}$ 
-and vertices $\bar{v_0}$ and~$\bar{v_1}$, 
-for some meaning of reasonable, \ldots{}''
-Outside of this discussion we also do this,\footnote{
-  Although, naturally the exercises in this section 
-  discuss representations.} 
-\citetext{leaving detailed specifications to a programmer}{%
-  \autocite{article:MarsOrbiter}}.
-Basically, the representation details do not affect the outcome of our analysis,
-much.\footnote{%  
-  Keep in mind, though, that the distinction between thinking of an algorithm
-  as inputting a number and thinking of it as inputting the 
-  representation of a number is the basis for describing 
-  the Big~$\bigOh$ behavior of that algorithm as
-  pseudopolynomial.
-  This is because the binary representation of
-  a number~$n$ takes $\bigOh(\lg n)$ bits and so inputting it takes 
-  $\bigOh(\lg n)$ ticks.}
 
 
 
@@ -4855,9 +4719,10 @@ The distinctions between problem types are fuzzy, and
 we can often describe a task with more than one type.
 The task of determining the evenness of a number, for instance, 
 could be stated as the function problem `given~$n$, return its
-remainder on division by~$2$' or as the decision problem
+remainder on division by~$2$', or as the decision problem
 `given~$n$, decide if it is even'. 
-Sometimes the different types are essentially the same, but sometimes
+
+There, the different types are essentially the same, but sometimes
 finding the problem type that best fits a task requires judgement.
 Consider the task of finding roots of a 
 polynomial.
@@ -4871,32 +4736,51 @@ The second option, for which the algorithm just
 plugs $r$ into~$p$, seems not to
 capture the essential difficulty involved in find a root.
 
-When there is more than one equivalent problem type, so that we have a choice,
-we prefer language decision problems.
-This is the default meaning of
-`problem'.
-(We will be sloppy about the distinction between the
+When we have a choice of equivalent problem types,
+we prefer language decision problems.\footnote{%
+  Because of this,
+  some authors modify the definition of a Turing machine
+  to have it come with a subset of accepting states.
+  Such a machine solves a problem
+  if it halts on all input strings,
+  and when it halts it is in an accepting state exactly when that
+  string is in the language.
+}
+It is our default meaning of
+`problem'. % \footnote{%
+%   % from https://cs.stackexchange.com/a/79729
+%   Not every computational problem is naturally expressable as a 
+%   language decision problem 
+%   Consider the task of sorting the characters of strings
+%   into ascending order.
+%   We could try to express it as the language of sorted strings
+%   $\set{\sigma\in\kleenestar{\Sigma}\suchthat\text{$\sigma$ is sorted}}$. 
+%   But this 
+%   does not require that we find a good way 
+%   to sort an unsorted input.
+%   Another thought is to consider the language of pairs
+%   $\sequence{\sigma,p}$ where $p$ is a permutation of the numbers
+%   $0,\ldots \lh{\sigma}-1$ that brings the string into ascending order.
+%   But here also the formulation 
+%   seems to not capture the sorting problem, in that recognizing a
+%   correct permutation feels different than generating one from scratch.
+% }
+In addition, we will be sloppy about the distinction between the
 decision problem for a language and the language itself; for instance, we
-often write $\prob$ for a problem.)
+will write $\prob$ for a problem.
 
 \begin{example}
-Recall the \probname{Satisfiability} 
-problem.\index{Satisfiability@\probname{Satisfiability} problem!as a language recognition problem} 
-As stated, it is a decision problem, requiring a yes-or-no answer.
-But we can recast it as the problem of determining membership in the language
+The \probname{Satisfiability} 
+problem,\index{Satisfiability@\probname{Satisfiability} problem!as a language recognition problem} 
+as stated, is a decision problem.
+We can recast it as the problem of determining membership in the language
 $
   \SAT=
   \set{F\suchthat
-    \text{$F$ is a satisfiable propositional logic statement}}
+    \text{$F$ a satisfiable propositional logic statement}}
 $.\index{SAT@$\SAT$}
-\end{example}
-
-\begin{example}
-Similarly, we can state the task of determining whether a given number 
-is prime to the problem of determining whether a given string 
-representing~$n$
-is a member of 
-$\set{r\in\kleenestar{\B}\suchthat \text{$r$ represents a prime number}}$.
+This recasting is trivial, suggesting that the language recognition
+problem form is a natural way to describe the underlying task.
 \end{example}
 
 Recasting optimization problems as language decision problems
@@ -4907,78 +4791,49 @@ using a parametrized sequence of languages.
 The \probname{Chromatic Number} problem inputs a graph 
 and returns a minimal 
 number~$B\in\N$ such that the graph is $B$-colorable.
-Recast it by considering this
-family of languages parametrized by~$B$.
-\begin{equation*}
-  \lang_B=\set{\mathcal{G}\suchthat \text{$\mathcal{G}$ has a $B$-coloring}}
-\end{equation*}
-To see that having the capability of solve instances of $\lang_B$ for 
-each parameter~$B$ 
-is the same as 
-being able to solve the optimization problem, 
+Recast it by considering the
+family of languages,
+$
+  \lang_B=\set{\mathcal{G}\suchthat \text{$\mathcal{G}$ that has a $B$-coloring}}
+$.
+To see that having the capability to solve instances of $\lang_B$ 
+is in principle the same as being able to solve the optimization problem, 
 imagine that we are given a graph. 
-We could find the minimal chromatic number by 
+We could compute the minimal chromatic number by 
 testing $B=1$, $B=2$, etc., until we find the smallest $B$ for which
 $\mathcal{G}\in\lang_B$.
-Conversely, if we could find the minimal chromatic number then
-we could answer questions about particular~$\lang_B$'s by seeing
-whether~$B$ is less than the minimum.
+Conversely, if we could compute the minimal chromatic number then
+we could answer questions about particular~$\lang_B$'s, simply by seeing
+whether or not~$B$ is less than the minimum.
 \end{example}
 
 \begin{example}
 The \probname{Travelling Salesman} problem
 is an optimization problem.
 Recast it as a sequence of language decision problems as 
-above:~consider a parameter~$B\in\N$ and define this language.
-\begin{equation*}
+above:~consider a parameter~$B\in\N$ and define
+$
   \TS_B=\set{\mathcal{G}\suchthat
-    \text{$\mathcal{G}$ is a weighted graph with a circuit~$\mathcal{C}$  
+    \text{the graph~$\mathcal{G}$ has a circuit  
           of length no more than $B$}}
-\end{equation*}
-If we could solve the language decision
-problem for each~$B$ then, given a graph,
-we can ask if it is a member of~$\mathcal{TS}_1$, if it is a member 
-of~$\mathcal{TS}_2$, etc.
-The smallest $B$ for which we get a `yes' answer 
-is the length of the shortest circuit.
+$.
 \end{example}
 
-We have mentioned that any recasting must
-\citetext{capture the essential difficulty in the problem}{%
-  % from https://cs.stackexchange.com/a/79729
-  Not every computational problem is easy to express as a decision problem 
-  for a language in a way that is natural.
-  One example is the problem which, given an input string will
-  return the string with the characters sorted into ascending order.
-  We could recast it as the language of sorted strings
-  $\set{\sigma\in\kleenestar{\Sigma}\suchthat\text{$\sigma$ is sorted}}$. 
-  But recognizing a sorted input $\sigma$ 
-  does not seem to require that we find a good way 
-  to sort an unsorted input.
-  Better is to consider the language of pairs
-  $\sequence{\sigma,p}$ where $p$ is a permutation of the numbers
-  $0,\ldots \lh{\sigma}-1$ that brings the string into ascending order.
-  Here also the recast formulation 
-  seems to not capture the sorting problem in that recognizing a
-  correct permutation seems different than generating one from scratch.
-  (Besides the informal feeling that they miss the mark, 
-  precise evidence that these do not get at the nut of the search problem is
-  that  we can decide both languages in time that is
-  $\bigOh(n)$ where $n$ is the input size,
-  whereas sorting takes $\bigOh(n\lg n)$ time.)}.
+We want the way that a task is stated as a problem to 
+capture the essential difficulty of that task.
 % More precisely, we want that a fast way to solve the language 
 % decision problem translates to a fast way to solve the 
 % problem before it was recast.
-In particular, the above recastings of optimization problems
+In particular, these recastings of optimization problems
 preserves polytime solvability.
-For instance, if we could solve the \probname{Travelling Salseman} problem
-in polytime then clearly for any~$B$ we could solve $\mathcal{TS}_B$ in 
-polytime.
-Conversely, if there were a power $k\in\N$ 
+For instance, if there were a power $k\in\N$ 
 such that for each~$B$ we could solve $\mathcal{TS}_B$ in 
 time~$\bigOh(n^k)$ then we could 
 loop through $B=0$, $B=1$, etc.,\ to solve
 the \probname{Travelling Salseman} problem in time $\bigOh(n^{k+1})$.
+(For instance, if we could solve the \probname{Travelling Salseman} problem
+in polytime then clearly for any~$B$ we could solve $\mathcal{TS}_B$ in 
+polytime.)
 
 % Is limiting ourselves to language decision problems too restricitve?
 % Consider the problem of finding integer roots for a polynomial.
@@ -5018,17 +4873,172 @@ the \probname{Travelling Salseman} problem in time $\bigOh(n^{k+1})$.
 %   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp03.pdf}}
 % \end{fig}
 
-\begin{remark}
-Because we are isolating to language decision problems,
-some authors modify the definition of a Turing machine
-to have it come with a subset of accepting states.
-Such a machine solves a problem
-if it halts on all inputs~$\sigma\in\kleenestar{\B}$,
-and when it halts it is in an accepting state exactly if $\sigma$ is in
-the language.
-\end{remark}
+% \begin{remark}
+% Because we are isolating to language decision problems,
+% some authors modify the definition of a Turing machine
+% to have it come with a subset of accepting states.
+% Such a machine solves a problem
+% if it halts on all inputs~$\sigma\in\kleenestar{\B}$,
+% and when it halts it is in an accepting state exactly if $\sigma$ is in
+% the language.
+% \end{remark}
+
+
+
+
+\subsection{Statements and representations}
+To be complete, the description of a problem must include the form of the
+inputs and outputs.
+For instance, if we state a problem 
+as:~`\citetext{input two numbers and output their midpoint}{% 
+  See \protect\url{https://hal.archives-ouvertes.fr/file/index/docid/576641/filename/computing-midpoint.pdf}.}'
+then we have not fully specified what needs to be done.
+The input or output might use 
+strings representing decimal numbers, or might be in binary,
+or even might be in unary,
+where the number $n$ is represented with $n$-many \str{1}'s.\footnote{%
+  An experienced programmer may have the reaction that unary is
+  wasteful\Dash
+  if the input
+  is one thousand then this representation would require the 
+  machine to take a thousand steps just to read the input, 
+  while in binary notation the input is $\str{1111101000}$, which 
+  takes only ten steps to read.
+  But unary is not completely useless;~we have found that it
+  suited our purpose in the past, such as when we simply wanted to illustrate
+  Turing machines with a minimum of overhead detail.
+  In any event, it is certainly possible.}
+% Or we could specify something more exotic
+% such as putting the sequence numbers as 
+% powers of primes, so that~$\sequence{2,1,3}$ becomes 
+% the single number $2^23^15^3=1500$ and then we represent that in a string of
+% decimal digits.
+
+The representation of the input and output data both matters and doesn't matter.
+One sense in which it
+matters is that the input's form can change the algorithm
+that we choose, or its runtime behavior.
+Suppose for instance that we must decide whether a number is
+divisible by four.
+If the input is a bitstring representing the number in binary then 
+the algorithm is immediate:~a number is divisible by four 
+if and only if in its 
+\citetext{final two bits are \str{00}}{%
+  Decimal representation is not much harder since
+  a decimal number is divisible by four if and only if the final two digits
+  are in the set $\set{\str{00},\str{04}, \,\ldots\,\str{96}}$.}.\footnote{%
+    Thus, on a Turing machine, if when the machine starts the head is under
+    the final character, then the machine does not even need to read the
+    entire input to decide the question.
+    The algorithm runs in time independent of the input length.
+  }
+In contrast, if the number is represented in unary then we may 
+scan the \str{1}'s, keeping track of the current remainder modulo~$4$.
+
+However, the representation doesn't matter in the sense that 
+if we have an algorithm for one representation in hand
+then we can solve the problem for other representations by translating 
+to what the algorithm expects, and then applying that algorithm.
+For example, 
+for the divisible-by-four problem we could handle unary inputs by converting
+them to binary and then applying the binary algorithm.\footnote{%
+  That is, the unary case reduces to the binary one.}
+The same applies to output representations.
+% This might be some translation inefficiency, but it gives 
+% an answer.
+
+% \margingraphic{0.2\textwidth}{complexity/pix/norm.png}{\label{fig:xkcdnorm}\href{https://xkcd.com/2116/}{Courtesy \url{xkcd.com}}}
+Another way in which the representation doesn't matter is that
+typically we find that the costs of different representations
+don't change the Big~$\bigOh$ runtime behavior.
+For example we might have a graph algorithm whose run time is not large at 
+all,~$\bigOh(n\lg n)$.
+Even for this minimal time, we  can find a 
+representation for the input graphs,
+such as where inputting takes $\bigOh(n)$ time,
+that it leaves the algorithm analysis conclusion unchanged, so that the 
+total runtime is $\bigOh(n\lg n)$. 
+
+With this in mind, we will adopt the point of view,
+which we shall call \definend{Lipton's Thesis},\index{Lipton's Thesis} that 
+\citetext{everything of interest can be represented with reasonable efficiency by bitstrings}{%
+  See
+  \url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/}.
+  Of course, a wag may say that
+  if it cannot be represented by 
+  bitstrings then it isn't of interest.
+  But we mean something less tautological:~we mean that if we could 
+  want to compute with it then it can be put in bitstrings.
+  For example, we find that we can process speech, adjust colors on an image, 
+  or regulate pressure in a rocket fuel tank, all in bitstrings,
+  despite what may at first encounter seem to be the inheriently 
+  analog nature of these things.}.\footnote{%
+  Here, `reasonable' means that it is not so inefficient as to greatly
+  change the big-$\bigOh$ behavior.}\index{representation, of a problem}
+This applies to 
+all of the mathematically-flavored problems stated earlier, such as those about
+numbers, or graphs.
+But it also applies in cases that may seem less natural, such as that we 
+can use bitstrings to faithfully represent 
+\citetext{Beethoven's 9th Symphony}{%
+  The official story is that
+  CD's are $72$ minutes long so that they can hold this piece.}
+or an exquisite Old Master.\footnote{
+  The contention that bitstrings suffice to
+  give a representation that is efficient enough is 
+  in some ways like Church's Thesis.
+  We cannot prove it, but experience\Dash particularly all of our very recent 
+  experience, listening to online music, watching online movies, 
+  etc.\Dash finds it to be so.}
+\begin{fig}{\textit{Basket of Fruit} by Caravaggio (1571--1610)} % https://upload.wikimedia.org/wikipedia/commons/e/e5/Basket_of_Fruit-Caravaggio_%28c.1595%29.jpg
+  \includegraphics[width=0.8\textwidth]{complexity/pix/caravaggio.jpg}
+\end{fig}
+
+Because of this, in practice  
+researchers typically do not mention representations.
+For example, a speaker may describe
+the \probname{Shortest Path} problem as, 
+``Given a weighted graph and two vertices \ldots{}''
+in place of the more 
+complete specification, ``Given
+the following bitstring representation of a 
+weighted graph~$\bar{\mathcal{G}}$ 
+and vertices $\bar{v_0}$ and~$\bar{v_1}$ that is 
+reasonably efficient, \ldots{}''
+Outside of this discussion we also do this,\footnote{
+  Although, naturally the exercises in this section 
+  discuss representations.} 
+\citetext{leaving detailed specifications to a programmer}{%
+  \autocite{article:MarsOrbiter}}.
+Basically, the representation details do not affect the outcome of our analysis,
+much.\footnote{%  
+  Keep in mind, though, that the distinction between thinking of an algorithm
+  as inputting a number and thinking of it as inputting the 
+  representation of a number is the basis for describing 
+  the Big~$\bigOh$ behavior of that algorithm as
+  pseudopolynomial.
+  This is because the binary representation of
+  a number~$n$ takes $\bigOh(\lg n)$ bits and so inputting it takes 
+  $\bigOh(\lg n)$ ticks.}
+
+\begin{example}
+Similarly, we can state the task of determining whether a given number 
+is prime to the problem of determining whether a given string 
+representing~$n$
+is a member of 
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number}}$.
+\end{example}
+
+
+
+
+
 
 \begin{exercises}
+\item[\parbox{\textwidth}{\it These exercises here discuss 
+  represenations  
+  more than is usual elsewhere in the book.}]
+
 \recommended
 \begin{exercise}
 What is the difference\Dash speaking informally, since some of these 
@@ -5219,6 +5229,38 @@ What about the converse?
   Quick Sort.
 \end{answer}
 \end{exercise}
+
+\begin{exercise}
+Some tasks are hard to express as a 
+language decision problem.
+Consider sorting the characters of a string
+into ascending order.
+Briefly describe why each of these language decision problems 
+fails to capture the task's essential difficulty.
+\begin{exparts*}
+\item $\set{\sigma\in\kleenestar{\Sigma}\suchthat\text{$\sigma$ is sorted}}$
+\item $\set{\sequence{\sigma,p}\suchthat \text{$p$ is a permutation 
+      that orders $\sigma$}}$
+\end{exparts*}
+\end{exercise}
+%   % from https://cs.stackexchange.com/a/79729
+%   Not every computational problem is naturally expressable as a 
+%   language decision problem 
+%   Consider the task of sorting the characters of strings
+%   into ascending order.
+%   We could try to express it as the language of sorted strings
+%   $\set{\sigma\in\kleenestar{\Sigma}\suchthat\text{$\sigma$ is sorted}}$. 
+%   But this 
+%   does not require that we find a good way 
+%   to sort an unsorted input.
+%   Another thought is to consider the language of pairs
+%   $\sequence{\sigma,p}$ where $p$ is a permutation of the numbers
+%   $0,\ldots \lh{\sigma}-1$ that brings the string into ascending order.
+%   But here also the formulation 
+%   seems to not capture the sorting problem, in that recognizing a
+%   correct permutation feels different than generating one from scratch.
+% }
+
 
 \recommended
 \begin{exercise}

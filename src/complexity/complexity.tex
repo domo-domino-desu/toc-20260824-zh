@@ -5919,74 +5919,80 @@ Check all pairs of vertices.
 % =======================================
 \section{$\P$}\index{P@$\P$|(}
 Recall that 
-a complexity class\index{class}\index{complexity class}\index{class!complexity} 
+a class\index{class}\index{complexity class}\index{class!complexity} 
 is a collection of languages.
+Since we blur the distinction between a language~$L$ 
+and the problem of accepting strings in that language, we sometimes
+will say ``a class of problems.'' 
+
+\begin{definition}
+A \definend{language is accepted by a Turing machine}\index{Turing machine!language accepted}\index{language!accepted by Turing machine}\index{accepted language}
+if the function computed by that machine 
+is the characteristic function of the language. 
+\end{definition}
+\noindent
+Restated, $\lang$ is computed by~$\TM$ if the machine 
+has this input-output behavior.
+\begin{equation*}
+  \TMfcn_{\TM}(\sigma)=\charfcn{\lang}(\sigma)=
+  \begin{cases}
+    1  &\case{if $\sigma\in\lang$}  \\
+    0  &\case{otherwise}
+  \end{cases}
+\end{equation*}
+Note in particular that the machine halts for all inputs.
+
 %<*def:ComplexityClass>
 \begin{definition}
-A \definend{complexity class}\index{complexity class} 
-is a collection of languages that can be
-computed within some resource bound.
+The 
+\citetext{\definend{complexity class}}{%
+  There are various definitions, which are related but not equivalent.
+  This one derives from \autoref{AroraBarak}.
+}\index{complexity class}
+associated with a resource specification  
+is the collection of languages that are accepted by a 
+computer whose use of the resource fits the specification.
 \end{definition}
 %</def:ComplexityClass>
 
 \begin{example}
-The regular languages form a complexity class.
-Remember that a language~$\lang$ is regular if there is a deterministic Finite
-State machine that accepts it.
-The work done by such a machine is a kind of computation\Dash basically,
-A Finite State machine is a Turing machine that does not write\Dash and
-when presented with a candidate string~$\sigma$ the number of steps that
-the machine takes is linear, $\lh{\sigma}$. 
-\end{example}
-
-\begin{example}
-We have already studied the class~\citetext{$\compclass{RE}$}{%
-  Recall that `recursively enumerable' is an old-fashioned term
-  for `computably ennumerable'.}\index{RE@$\compclass{RE}$, computably enumerable sets}\index{computably enumerable set!collection of, RE@collection of, $\compclass{RE}$} 
-of languages~$\lang$ that are 
-computably enumerable, that is, 
-for which there is a computable function~$\TMfcn_e$ so that
-the set $\set{k=f(i)\suchthat \text{$k=\TMfcn_e(i)$ for some input $i\in\N$}}$
-equals the set~$\lang$.
-Here the resource bound is that there is no finite time bound. 
-\end{example}
-
-\begin{example}
-One complexity class is 
+The complexity class associated with quadratic time is 
 the collection of languages for which there is a Turing machine
-that runs in time $\bigOh(n^{10})$. 
-Restated, a language~$\lang$ is in that class if there is a Turing machine~$\TM$
-that runs in time~$\map{t}{\N}{\N}$ where $t\in\bigOh(n^{10})$,
-such that the associated function $\map{\TMfcn_{\TM}}{\N}{\B}$ 
-has $\TMfcn_{\TM}(n)=1$ if $n\in\lang$ and
-$\TMfcn_{\TM}(n)=0$ otherwise. 
+that accepts the language, and that runs in time $\bigOh(n^{2})$.
+That is, the class is 
+$\mathcal{C}=\set{\lang_0,\lang_1, \ldots}$, where 
+each $\lang_j$ is accepted by some machine~$\TM_{i_j}$,
+which, when given input~$\sigma$, finishes within $\sizeof{\sigma}^{2}$
+steps.
 \end{example}
 
-Since a language is a set,
-we are studying the characteristic functions of sets, and 
-grouping them together based on how hard they are to 
-compute.\footnote{%
+\begin{example}
+Another is the collection of languages accepted by machines 
+that runs in cubic space.
+For each language, 
+when its machine is given input~$\sigma$ then it halts after
+having used a number of tape squares bounded by~$\sizeof{\sigma}^3$.  
+\end{example}
+
+Two things in that definition bear development.
+As to the computing machine, 
+researchers study Turing machines but other machine types as well,  
+including nondeterministic Turing machines 
+or Turing machines with access to an oracle for numbers that
+are truly random.
+The resource specification used are for the most part as in the above examples,
+involving the Big~$\bigOh$ measures of the time and space behavior 
+of the machines.
+But the specification can be, for instance, the complement of $\bigOh(n^2)$,
+so it isn't a bound.\footnote{%
   There are
-  \citetext{many ways to do this}{%
-    At this writing there are 535 studied ways but the number 
+  \protect\citetext{many studied classes}{%
+    At this writing there are 545 studied ways but the number 
    changes frequently;
-   see \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.}.
-  It may involve Turing machines or other machine types, such as 
-  nondeterministic Turing machines 
-  or Turing machines with access to an oracle for numbers that
-  are truly random.
-  It may also involve grouping problems by how long they take,
-  or by their use of computational resources other than
-  time, such as space.}
-  % The most satisfactory definition for a grouping proves to be the one that
-  % leaves the most freedom to consider whatever classes prove to be
-  % of interest, which is why the definition of `complexity class' is 
-  % so general; is it any collection of problems at all.}
-Recall that in complexity theory we do not distinguish  
-between problems\Dash that is, decision problems for a language\Dash and
-the language itself.\index{language decision problem}
-So we will often say that a complexity class is a collection of problems, 
-or that problem is a member of a class.
+   see the Complexity Zoo web site, 
+   \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.},
+   some of which stretch this definition.
+   However, this one will do for our purposes.}
 
 
 
@@ -5999,15 +6005,15 @@ that we take to be tractable under Cobham's Thesis.
 %<*def:P>
 \begin{definition}
 A problem is a member of the class 
-\definend{$\P$}\index{P@$\P$}\index{polytime} 
-if there is an algorithm for it that runs in
-polynomial time on a deterministic Turing machine.
+\definend{$\P$}\index{P@$\P$}\index{polytime}\index{polynomial time}\index{complexity class!polytime}\index{complexity class!P@$\P$} 
+if there is an algorithm for it that on a deterministic Turing machine runs in
+polynomial time.
 \end{definition}
 %</def:P>
 
 % This shows the class~$\P$ as a subset of the collection of all languages.
 \begin{fig}[]{The bean encloses all
-decision problems, $\lang\subseteq\kleenestar{\B}$.
+decision problems, all $\lang\subseteq\kleenestar{\B}$.
 Shaded is the class~$\P$.
 The shading is in layers because
 $\P$ contains problems such that there is a solution algorithm  
@@ -6019,34 +6025,46 @@ ones with a $\bigOh(n^2)$ algorithm, etc.}
   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp02.pdf}}
 \end{fig}
 
-One problem that is a member of~$\P$ is that of deciding the
-language of perfect squares
-$\lang_0=\set{n\in\N\suchthat \text{there is $k\in\N$ with $k^2=n$}}$
-since given a natural number, no matter how large,
-we can quickly decide if it is a square by 
-at worst squaring all smaller numbers.
-Here are some other languages whose decision problems are in~$\P$:\begin{parenum}
-\item deciding the language of correct sums
-$\lang_1=\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$,
-\item the language of sorted strings
-$\lang_2=\set{\sigma\in\kleenestar{\str{a},\ldots \str{z}}\suchthat \text{$\sigma$ is in alphabetical order}}$,
-\item the language of primes
-$\lang_3=\set{k\suchthat\text{$k$ is decimal representation of a prime}}$,
-\item For a regular expression~$R$, the language of strings satisfying
- that expression
-$\lang_4=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
-  \suchthat\text{$\sigma$ satisfies $R$}}$,
-\item the language of pairs of connected nodes
-$\lang_5=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat\text{graph $\mathcal{G}$ has a path $v\hat{v}$}}$
-(this is the \probname{Vertex-to-Vertex Path} problem).  
-\end{parenum}
-
-\begin{remark}
-Again, note that 
+One problem that is a member of~$\P$ is that of deciding whether
+a given graph is connected.
+\begin{equation*}
+  \set{\mathcal{G}\suchthat \text{for any two vertices $v_0,v_1\in\mathcal{G}$}}
+\end{equation*}
+Another one is the problem of deciding whether two natural numbers 
+are relatively prime.
+\begin{equation*}
+  \set{\sequence{n_0,n_1}\in\N^2\suchthat\text{the greatest common divisor is~$1$}}
+\end{equation*}
+Still another is the problem of deciding substring-ness.
+\begin{equation*}
+  \set{\sequence{\sigma,\tau}\in\kleenestar{\Sigma}\suchthat \text{$\sigma$ is a substring of~$\tau$}}
+\end{equation*}
+These are collections of very different things.
+However, the common idea is that
 the members of $\P$ are problems, essentially languages,
-for which there exists a decision algorithm that is sufficiently fast.
-Thus, it is wrong to say that an algorithm is in~$\P$.
-\end{remark}
+for each of which there exists a decision algorithm that is sufficiently fast.
+
+% Here are some other languages whose decision problems are in~$\P$:\begin{parenum}
+% \item deciding if two natural numbers are relatively prime,
+% $\set{\sequence{n_0,n_1}\in\N^2\suchthat\text{the greatest common divisor is~$1$}}$
+% \item deciding whether one string is a substring of another,
+% $\lang_1=\set{\sequence{\sigma,\tau}\in\kleenestar{\Sigma}\suchthat \text{$\sigma$ is a substring of~$\tau$}}$,
+% \item the language of sorted strings
+% $\lang_2=\set{\sigma\in\kleenestar{\str{a},\ldots \str{z}}\suchthat \text{$\sigma$ is in alphabetical order}}$,
+% \item the language of primes
+% $\lang_3=\set{k\suchthat\text{$k$ is decimal representation of a prime}}$,
+% \item For a regular expression~$R$, the language of strings satisfying
+%  that expression
+% $\lang_4=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+%   \suchthat\text{$\sigma$ satisfies $R$}}$,
+% \item the language of pairs of connected nodes
+% $\lang_5=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat\text{graph $\mathcal{G}$ has a path $v\hat{v}$}}$
+% (this is the \probname{Vertex-to-Vertex Path} problem).  
+% \end{parenum}
+
+% \begin{remark}
+% Thus, it is wrong to say that an algorithm is in~$\P$.
+% \end{remark}
 
 
 \subsection{Effect of the model of computation}
@@ -6202,6 +6220,32 @@ some constant~$c$.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+True or false: if a language is accepted by a machine then 
+its complement is also accepted by a machine.
+\begin{answer}
+True.
+Let $\lang$ be computed by~$\TM$, so that the machine 
+has this input-output behavior.
+\begin{equation*}
+  \TMfcn_{\TM}(\sigma)=\charfcn{\lang}(\sigma)=
+  \begin{cases}
+    1  &\case{if $\sigma\in\lang$}  \\
+    0  &\case{otherwise}
+  \end{cases}
+\end{equation*}
+Modify the machine, by changing the outputs, 
+to get a new machine~$\hat{\TM}$ with the complementary behavior. 
+\begin{equation*}
+  \TMfcn_{\hat{\TM}}(\sigma)=\charfcn{\setcomp{\lang}}(\sigma)=
+  \begin{cases}
+    0  &\case{if $\sigma\in\lang$}  \\
+    1  &\case{otherwise}
+  \end{cases}
+\end{equation*}
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 What is the difference between a complexity class and an order of growth?
@@ -6220,14 +6264,54 @@ The \HP{} is not decidable, so it is not in $\P$
 \end{exercise}
 
 \begin{exercise}
-Show that any Regular language is in~$\P$.
-\begin{exercise}
+Recall that a Finite State machine is a kind of Turing machine, one
+that never writes to the tape.
+\begin{exparts}
+\item
+Show that the regular languages form a complexity class.
+\item
+Show that any regular language is in the class~$\P$.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+A language is regular if it is accepted by a Finite State machine.
+So the regular languages form a collection of languages that are
+computed.
+As to the resource bound, 
+a Finite State machine has the property that,
+when presented with a candidate string~$\sigma$, 
+the number of steps that it takes is
+equal to the length of the input, $\lh{\sigma}$. 
+\item
 For any regular language, it is accepted by some Finite State machine.
 A Finite State machine is a kind of Turing machine.
 Each Finite State machine runs in linear time, since $t(\sigma)=n$ where
 $\lh{\sigma}=n$.
 Linear is polynomial, so each Regular language can be accepted in polytime.
+\end{exparts}
+\end{answer}
 \end{exercise}
+
+\begin{exercise}
+Fix a resource bound.
+Let C be the class of languages computed by 
+deterministic Turing machines under that bound.
+Let NC be the class of languages computed by 
+nondeterministic Turing machines under the same bound.
+Describe the relationsip between the two classes.
+\end{exercise}
+
+\begin{exercise}
+We have already studied the class~\citetext{$\compclass{RE}$}{%
+  Recall that `recursively enumerable' is an old-fashioned term
+  for `computably ennumerable'.}\index{RE@$\compclass{RE}$, computably enumerable sets}\index{computably enumerable set!collection of, RE@collection of, $\compclass{RE}$} 
+of languages~$\lang$ that are 
+computably enumerable, that is, 
+for which there is a computable function~$\TMfcn_e$ so that
+the set $\set{k=f(i)\suchthat \text{$k=\TMfcn_e(i)$ for some input $i\in\N$}}$
+equals the set~$\lang$.
+Here the resource bound is that there is no finite time bound. 
 \end{exercise}
 
 \recommended

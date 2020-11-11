@@ -4959,17 +4959,15 @@ Basically, the representation details do not affect the outcome of our analysis,
 much.
 
 \begin{remark}
-However, remember that there is a caveat.
-We have seen that coflating these two
-\begin{equation*}
-  \set{n\in\N\suchthat \text{n is prime}}
-  \qquad
-  \set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number}}
-\end{equation*}
+There is a caveat.
+We have seen that coflating 
+$\set{n\in\N\suchthat \text{n is prime}}$
+with  
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number}}$
 can cause confusion.
 The distinction between thinking of an algorithm
-as inputting a number, as on the left, and thinking of it as inputting the 
-string representation of a number, is the basis for describing 
+as inputting a number and thinking of it as inputting the 
+string representation of a number is the basis for describing 
 the Big~$\bigOh$ behavior of that algorithm as
 pseudopolynomial.
 This is because the binary representation of
@@ -5105,7 +5103,19 @@ the subroutines forever.
 \end{exercise}
 
 \begin{exercise}
-What is the difference between a decison problem and a language
+\begin{credit}
+  A.A. at \url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/#comment-8872}
+\end{credit}
+So, if a problem is essentially a set of strings, 
+what constitutes a solution?
+\begin{answer}
+A solution is typically an algorithm or computation that acts as the
+characteristic function of the set.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+What is the difference between a decision problem and a language
 decision problem?
 \begin{answer}
 A decision problem is any one that ends in a `yes' or `no' answer.
@@ -5918,12 +5928,8 @@ Check all pairs of vertices.
 
 % =======================================
 \section{$\P$}\index{P@$\P$|(}
-Recall that 
-a class\index{class}\index{complexity class}\index{class!complexity} 
-is a collection of languages.
-Since we blur the distinction between a language~$L$ 
-and the problem of accepting strings in that language, we sometimes
-will say ``a class of problems.'' 
+Recall that we usually do not distinguish between a language~$\lang$ 
+and the problem of deciding which strings are in that language.
 
 \begin{definition}
 A \definend{language is accepted by a Turing machine}\index{Turing machine!language accepted}\index{language!accepted by Turing machine}\index{accepted language}
@@ -5931,7 +5937,7 @@ if the function computed by that machine
 is the characteristic function of the language. 
 \end{definition}
 \noindent
-Restated, $\lang$ is computed by~$\TM$ if the machine 
+Restated, $\lang$ is accepted by~$\TM\!$, or computed by~$\TM\!$, if the machine 
 has this input-output behavior.
 \begin{equation*}
   \TMfcn_{\TM}(\sigma)=\charfcn{\lang}(\sigma)=
@@ -5940,25 +5946,34 @@ has this input-output behavior.
     0  &\case{otherwise}
   \end{cases}
 \end{equation*}
-Note in particular that the machine halts for all inputs.
+Note in particular that the machine halts for all inputs, by definition.
 
 %<*def:ComplexityClass>
 \begin{definition}
-The 
+A
 \citetext{\definend{complexity class}}{%
   There are various definitions, which are related but not equivalent.
-  This one derives from \autoref{AroraBarak}.
-}\index{complexity class}
-associated with a resource specification  
-is the collection of languages that are accepted by a 
-computer whose use of the resource fits the specification.
+  Some authors fold in the requirement that that a class be associated
+  with some resource specification.
+  This has some implications because
+  if an author, for instance, requires that each class be problems that
+  are somehow solvable by Turing machines then each class is countable.
+  Our definition is more general and does not imply that 
+  a class is countable.  
+}\index{complexity class}\index{class}\index{class!complexity}
+is a collection of languages.
 \end{definition}
+
+The term `complexity' connotes that collections
+are typically associated with some resource specification, so that a
+class is the collection of languages that are accepted by a 
+mechanical computer whose use of some resource fits the specification.
 %</def:ComplexityClass>
 
 \begin{example}
 The complexity class associated with quadratic time is 
 the collection of languages for which there is a Turing machine
-that accepts the language, and that runs in time $\bigOh(n^{2})$.
+that accepts the language and that runs in time $\bigOh(n^{2})$.
 That is, the class is 
 $\mathcal{C}=\set{\lang_0,\lang_1, \ldots}$, where 
 each $\lang_j$ is accepted by some machine~$\TM_{i_j}$,
@@ -5967,32 +5982,34 @@ steps.
 \end{example}
 
 \begin{example}
-Another is the collection of languages accepted by machines 
-that runs in cubic space.
+Another is the collection of languages accepted by Turing machines 
+that use only in logarithmic space.
 For each language, 
-when its machine is given input~$\sigma$ then it halts after
-having used a number of tape squares bounded by~$\sizeof{\sigma}^3$.  
+when the associated accepting machine is given input~$\sigma$ 
+then it halts after
+having used a number of tape squares 
+less than or equal to~$\lg(\sizeof{\sigma})$.  
 \end{example}
 
-Two things in that definition bear development.
+Some points bear development.
 As to the computing machine, 
-researchers study Turing machines but other machine types as well,  
-including nondeterministic Turing machines 
-or Turing machines with access to an oracle for numbers that
-are truly random.
-The resource specification used are for the most part as in the above examples,
-involving the Big~$\bigOh$ measures of the time and space behavior 
-of the machines.
-But the specification can be, for instance, the complement of $\bigOh(n^2)$,
-so it isn't a bound.\footnote{%
-  There are
-  \protect\citetext{many studied classes}{%
-    At this writing there are 545 studied ways but the number 
+researchers study not just Turing machines but other machine types as well,  
+including nondeterministic Turing machines,
+and Turing machines with access to an oracle for random numbers.
+The resource specification used are often as above,
+involving bounds on 
+\citetext{the time and space behavior}{%
+  We will concentrate our attention resource bounds in the range from
+  logarithmic and exponential, because these are the most useful 
+  for understanding problems that arise in practice.
+  % https://cse.buffalo.edu/~regan/papers/pdf/ALRch27.pdf
+  }.
+But the specification could instead be, for instance, 
+the complement of $\bigOh(n^2)$, so it isn't always a bound.\footnote{%
+    At this writing there are 545 studied classes but the number 
    changes frequently;
-   see the Complexity Zoo web site, 
-   \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.},
-   some of which stretch this definition.
-   However, this one will do for our purposes.}
+   see the Complexity Zoo, 
+   \protect\url{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}.}
 
 
 
@@ -6000,7 +6017,7 @@ so it isn't a bound.\footnote{%
 The complexity class that we introduce now  
 is the most important one.
 It is the collection of language decision problems 
-that we take to be tractable under Cobham's Thesis. 
+that we take to be tractable, under Cobham's Thesis. 
 
 %<*def:P>
 \begin{definition}
@@ -6010,6 +6027,50 @@ if there is an algorithm for it that on a deterministic Turing machine runs in
 polynomial time.
 \end{definition}
 %</def:P>
+
+\begin{example}
+One problem that is a member of~$\P$ is that of deciding whether
+a given graph is connected.
+\begin{equation*}
+  \set{\mathcal{G}\suchthat \text{for any two vertices $v_0,v_1\in\mathcal{G}$, thre is a path from one to the other}}
+\end{equation*}
+The natural approach is to do a breadth first search or depth first search
+of the graph.
+The runtime of both is bounded by 
+$\bigOh(\sizeof{\mathcal{V}}+\sizeof{\mathcal{E}})$, which in turn is bounded
+by $\bigOh(\sizeof{\mathcal{V}}^3)$.
+\end{example}
+
+\begin{example}
+Another one is the problem of deciding whether two natural numbers 
+are relatively prime.
+\begin{equation*}
+  \set{\sequence{n_0,n_1}\in\N^2\suchthat\text{the greatest common divisor is~$1$}}
+\end{equation*}
+Euclid's algorithm solve this problem, with runtime 
+$\bigOh(\lg(\max(n_0,n_1)))$.
+\end{example}
+
+\begin{example}
+Still another is the 
+\probname{String Search} problem,\index{String Search problem@\probname{String Search} problem} 
+to decide substring-ness.
+\begin{equation*}
+  \set{\sequence{\sigma,\tau}\in\kleenestar{\Sigma}\suchthat \text{$\sigma$ is a substring of~$\tau$}}
+\end{equation*}
+Often $\tau$ is very long and is called the
+\definend{haystack}\index{haystack} 
+while $\sigma$ is short and is the \definend{needle}.
+The simple algorithm of seeing if $\sigma$ matches starting at the initial
+character of~$\tau$, then at the next character, etc., 
+has a runtime of $\bigOh(\sizeof{\sigma}\cdot\sizeof{\tau})$, which 
+is~$\bigOh(\max(\sizeof{\sigma},\sizeof{\tau})^2)$.
+\end{example}
+
+Those examples are collections of very different things.
+They have in common that
+the members of $\P$ are problems, essentially languages,
+and for each of which there is a decision algorithm that is sufficiently fast.
 
 % This shows the class~$\P$ as a subset of the collection of all languages.
 \begin{fig}[]{The bean encloses all
@@ -6025,24 +6086,30 @@ ones with a $\bigOh(n^2)$ algorithm, etc.}
   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp02.pdf}}
 \end{fig}
 
-One problem that is a member of~$\P$ is that of deciding whether
-a given graph is connected.
-\begin{equation*}
-  \set{\mathcal{G}\suchthat \text{for any two vertices $v_0,v_1\in\mathcal{G}$}}
-\end{equation*}
-Another one is the problem of deciding whether two natural numbers 
-are relatively prime.
-\begin{equation*}
-  \set{\sequence{n_0,n_1}\in\N^2\suchthat\text{the greatest common divisor is~$1$}}
-\end{equation*}
-Still another is the problem of deciding substring-ness.
-\begin{equation*}
-  \set{\sequence{\sigma,\tau}\in\kleenestar{\Sigma}\suchthat \text{$\sigma$ is a substring of~$\tau$}}
-\end{equation*}
-These are collections of very different things.
-However, the common idea is that
-the members of $\P$ are problems, essentially languages,
-for each of which there exists a decision algorithm that is sufficiently fast.
+
+\begin{example}
+Polytime is a restriction, but still this is a very large
+collection of problems, encompassing all practical algorithms. 
+These problems are all in~$\P$:
+\begin{parenum} 
+% \item determine if a number is prime,
+% $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime}}$,
+\item matrix multiplication, 
+$\set{\sequence{\sigma_0,\sigma_1,\sigma_2}\suchthat\text{they represent matrices with $M_0\cdot M_1=M_2$}}$,
+\item minimal spanning tree,
+$\set{\sequence{\mathcal{G},T}\suchthat\text{$T$ is a minimal spanning tree in~$\mathcal{G}$}}$,
+\item edit distance, the fewest
+single-character removals, insertions, or substitutions needed to transform
+one string to another, 
+$\set{\sequence{\sigma_0,\sigma_1,n}\suchthat \text{$\sigma_0$ transforms to $\sigma_1$ in at most $n$ edits}}$. 
+\end{parenum}
+\end{example}
+
+Two points here.
+First, if a problem is solved by an algorithm that is $\bigOh(\lg n)$
+then that problem is in~$\P$.
+Second, the members of~$P$ are problems.
+It is wrong to say that an algorithm is in~$\P$.
 
 % Here are some other languages whose decision problems are in~$\P$:\begin{parenum}
 % \item deciding if two natural numbers are relatively prime,
@@ -6070,23 +6137,24 @@ for each of which there exists a decision algorithm that is sufficiently fast.
 \subsection{Effect of the model of computation}
 A problem is in~$\P$ if it has an algorithm that is polytime.
 But algorithms are based on an underlying computing model.
-Is membership in $\P$ dependent on the model that we use for computation?
+Is membership in~$\P$ dependent on the model that we use?
 
-In particular, experience with the Turing machine model 
-gives a person the sense that they involve a lot of tape moving.
-So a person may expect that they are slow.
+In particular, our experience with Turing machines
+gives the sense that they involve a lot of tape moving.
+So we may expect that algorithms directed at Turing machine hardware
+are slow.
 However,
 close analysis with a wide range of alternative computational models
 proposed over the years shows that while
-Turing machines algorithms 
-are often slower than related algorithms for other natural models,\footnote{%
-  We can take a model to be `natural' if it
+Turing machine algorithms 
+are often slower than related algorithms for other natural models,
+it is only by a factor of between $n^2$ and~$n^4$.\footnote{%
+  We take a model to be `natural' if it
   was not invented in order to be a counterexample to this.}
-it is only by a factor of between $n^2$ and $n^4$.
-That is, we have a problem for which there is a
+That is, if we have a problem for which there is a
 $\bigOh(n)$ algorithm on
-another model then we might find that on a Turing machine
-model it may be $\bigOh(n^3)$, or $\bigOh(n^4)$, or~$\bigOh(n^5)$.
+another model then we may find that on a Turing machine
+model it is $\bigOh(n^3)$, or $\bigOh(n^4)$, or~$\bigOh(n^5)$.
 So it is still in~$\P$.
 
 A variation of Church's thesis, the 
@@ -6537,7 +6605,8 @@ costs time exponential in the length of the input.
 
 
 
-
+% https://cse.buffalo.edu/~regan/papers/pdf/ALRch27.pdf
+% Nondeterministic machines do not model physical computation devices, but they do model real computational problems
 % ===========================================
 \section{$\NP$}\index{NP@$\NP$|(}
 Recall that a machine is nondeterminstic\index{nondeterminism!for Turing machines}\index{Turing machine!nondeterminism} 

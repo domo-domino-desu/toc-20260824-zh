@@ -18,7 +18,6 @@ cd("");
 pen circuitcolor = boldcolor;
 pen circuitpen = DARKPEN+squarecap+circuitcolor;
 
-
 // Return an AND gate picture
 path andgate(real wd, real ln=-1) {
   if (ln<=0) {  // default is len = same as width; believe this is ANSI

@@ -177,11 +177,7 @@ for (int i=0; i<num_shades; ++i) {
   real ystart = -0.28;
   real yend = point(fcurve_ellipse,1).y; 
   path oi = shift(boundbot.x+.4,ystart+(i*(1/(num_shades-2)))*(yend-ystart))*fcurve;
-  // fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/2^i))*(0.18-0.1)));
-  // draw(pic,oi);
   fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity((-0.8/(num_shades-1))*i+0.9));
-  // fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1));
-  // fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/(2)^i))*(0.12-0.1)));
 }
 
 draw(pic,set_bound, AXISPEN);

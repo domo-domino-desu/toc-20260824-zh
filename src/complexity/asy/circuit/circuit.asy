@@ -333,15 +333,15 @@ path fourth_to_bot_or=(3*u,0*v)
 path exit_wire=(6*u,0*v)
   --(7.5*u,0*v);
    draw(pic,exit_wire,circuitpen);
-label(pic,"$P(x_0,x_1,x_2)$",(7*u,0*v),N);
+label(pic,"$f(b_0,b_1,b_2)$",(7*u,0*v),N);
 
 // layer 0
 filldraw(pic,shift(-1*u,8*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
-  label(pic,"\smash[b]{$x_2$}",(-1*u,8*v));
+  label(pic,"\smash[b]{$b_2$}",(-1*u,8*v));
 filldraw(pic,shift(-0.5*u,8*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
-  label(pic,"\smash[b]{$x_1$}",(-0.5*u,8*v));
+  label(pic,"\smash[b]{$b_1$}",(-0.5*u,8*v));
 filldraw(pic,shift(0*u,8*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
-  label(pic,"\smash[b]{$x_0$}",(0*u,8*v));
+  label(pic,"\smash[b]{$b_0$}",(0*u,8*v));
 
 // layer 1
 // first clause

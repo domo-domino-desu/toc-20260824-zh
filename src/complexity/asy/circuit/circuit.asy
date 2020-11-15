@@ -14,8 +14,10 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
-import circuit;
+import jhnode;
+cd("");
+cd("../../../asy/");
+import jhcircuit;
 cd("");
 // cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
 // import node;
@@ -32,6 +34,17 @@ string OUTPUT_FN = "circuit%03d";
 // 				    drawfn=FillDrawer(bold_light,black));
 // nodestyle ns_light=nodestyle(xmargin=1pt,textpen=NODEPEN,
 // 			     drawfn=FillDrawer(lightcolor,black));
+
+// defaultnodestyle=nodestyle(xmargin=1pt,
+// 			   textpen=fontsize(7pt),
+// 			   drawfn=FillDrawer(verylightcolor,boldcolor));
+
+// defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+black,
+// 			   arrow=Arrow(6,filltype=FillDraw(backgroundcolor,red)))
+  ;
+// Pen for edges when Labelled
+// pen edge_text_pen = fontsize(7pt) + fontcommand("\ttfamily") + black;
+
 
 // // 
 // defaultlayoutrel = false;
@@ -426,6 +439,152 @@ real source_gate_size = 0.9*and_gate_size;
 
 // NOT gate
 draw(pic,notgate(not_gate_size));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ======== Node circuits ====================
+
+// ........ compute the sum of the bits mod 3. ...............
+int picnum = 5;
+picture pic;
+// unitsize(pic,1cm);
+
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+
+defaultlayoutrel = false;  // not relative layout
+
+node b0=ncircle("$b_0$"),
+     b1=ncircle("$b_1$"),
+     b2=ncircle("$b_2$"),
+     b3=ncircle("$b_3$"),
+     and1=ncircle("$\wedge$"),
+     and2=ncircle("$\wedge$"),
+     and3=ncircle("$\wedge$"),
+     xor1=ncircle("$\oplus$"),
+     xor2=ncircle("$\oplus$"),
+     or1=ncircle("$\vee$"),
+     equiv=ncircle("$\equiv$"),
+     exit=nbox("$f(b_0,b_1,b_2,b_3)$",ns_noborder);
+
+// calculate nodes position
+real u=1.5cm;
+real v=0.55*u;
+vlayout(1*v, b0, b1, b2, b3);
+hlayout(1*u, b0, xor1);
+vlayout(1*v, xor1, and1, xor2, and2);
+and3.pos=(xor1.pos.x+1*u, (xor1.pos.y+and1.pos.y)/2);
+or1.pos=(and2.pos.x+1*u, (xor2.pos.y+and2.pos.y)/2);
+equiv.pos = (and3.pos.x+1*u, (and3.pos.y+or1.pos.y)/2);
+hlayout(1*u, equiv, exit);
+
+// draw edges
+draw(pic,
+     (b0--xor1),
+     (b0--and1),
+     (b1--xor1),
+     (b1--and1),
+     (b2--xor2),
+     (b2--and2),
+     (b3--xor2),
+     (b3--and2),
+     (xor1--and3),
+     (xor2--and3),
+     (and1--or1),
+     (and2--or1),
+     (and3--equiv),
+     (or1--equiv)
+     // (equiv--exit)
+);
+
+// draw nodes
+draw(pic,
+     b0, b1, b2, b3,
+     and1, and2, and3, xor1, xor2, or1, equiv, exit
+     );
+
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........ sum of the bits is even ...............
+int picnum = 6;
+picture pic;
+// unitsize(pic,1cm);
+
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+
+defaultlayoutrel = false;  // not relative layout
+
+node b0=ncircle("$b_0$"),
+     b1=ncircle("$b_1$"),
+     b2=ncircle("$b_2$"),
+     clause1_and1=ncircle("$f_0$"),
+     clause1_and2=ncircle("$f_1$"),
+     clause2_and1=ncircle("$f_2$"),
+     clause2_and2=ncircle("$\wedge$"),
+     clause3_and1=ncircle("$f_1$"),
+     clause3_and2=ncircle("$\wedge$"),
+     clause4_and1=ncircle("$\wedge$"),
+     clause4_and2=ncircle("$f_1$"),
+     or1=ncircle("$\vee$"),
+     or2=ncircle("$\vee$"),
+     or3=ncircle("$\vee$"),
+     exit=nbox("$f(b_0,b_1,b_2)$",ns_noborder);
+
+// calculate nodes position
+real u=1.25cm;
+real v=0.7*u;
+
+vlayout(2*v, clause1_and1,  clause2_and1, clause3_and1, clause4_and1);
+clause1_and2.pos = clause1_and1.pos+(1*u,-1*v);
+vlayout(2*v, clause1_and2,  clause2_and2, clause3_and2, clause4_and2);
+hlayout(1*u, clause2_and2, or1);
+hlayout(2*u, clause3_and2, or2);
+hlayout(3*u, clause4_and2, or3);
+hlayout(1*u, or3, exit);
+b0.pos = clause2_and1.pos-(1.5*u,-0.5*v);
+vlayout(2*v, b0, b1, b2);
+
+// draw edges
+draw(pic,
+     (b0--clause1_and2),
+     (b0--clause2_and2),
+     (b0--clause3_and2),
+     (b0--clause4_and2),
+     (b1--clause1_and1),
+     (b1--clause2_and1),
+     (b1--clause3_and1),
+     (b1--clause4_and1),
+     (b2--clause1_and1),
+     (b2--clause2_and1),
+     (b2--clause3_and1),
+     (b2--clause4_and1),
+     (clause1_and1--HV--clause1_and2),
+     (clause2_and1--HV--clause2_and2),
+     (clause3_and1--HV--clause3_and2),
+     (clause4_and1--HV--clause4_and2),
+     (clause1_and2--HV--or1),
+     (clause2_and2--or1),
+     (or1--HV--or2),
+     (clause3_and2--or2),
+     (or2--HV--or3),
+     (clause4_and2--or3)
+);
+
+// draw nodes
+draw(pic,
+     b0, b1, b2,
+     clause1_and1, clause1_and2,
+     clause2_and1, clause2_and2,
+     clause3_and1, clause3_and2,
+     clause4_and1, clause4_and2,
+     or1, or2, or3, exit
+     );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

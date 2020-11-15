@@ -169,13 +169,19 @@ pair fcurve_br = (point(fcurve_ellipse,0).x,-1);
 path fcurve=subpath(fcurve_ellipse,0.0,2.0)
   ..point(fcurve_ellipse,2)--fcurve_bl--fcurve_br--point(fcurve_ellipse,0)..cycle;
 
+
 // Make the shaded paths
-fill(pic,p_boundary,backgroundcolor+opacity(0.2));
-for (int i=0; i<5; ++i) {
+// fill(pic,p_boundary,backgroundcolor+opacity(0.2));
+int num_shades = 10;  // greater than 2
+for (int i=0; i<num_shades; ++i) {
   real ystart = -0.28;
-  real yend = point(fcurve_ellipse,1).y-0.1; 
-  path oi = shift(boundbot.x+.4,ystart+(1-(1/(i+1)))*(yend-ystart))*fcurve;
-  fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/2^i))*(0.18-0.1)));
+  real yend = point(fcurve_ellipse,1).y; 
+  path oi = shift(boundbot.x+.4,ystart+(i*(1/(num_shades-2)))*(yend-ystart))*fcurve;
+  // fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/2^i))*(0.18-0.1)));
+  // draw(pic,oi);
+  fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity((-0.8/(num_shades-1))*i+0.9));
+  // fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1));
+  // fill(pic,buildcycle(oi,p_boundary),backgroundcolor+opacity(0.1+(1-(1/(2)^i))*(0.12-0.1)));
 }
 
 draw(pic,set_bound, AXISPEN);

@@ -47,6 +47,7 @@ path[] sourcegate(real wd) {
 
 
 // ======================== circuit-eval =============
+// compute the sum of the bits mod 3.
 int picnum = 0;
 picture pic;
 unitsize(pic,1cm);
@@ -61,82 +62,120 @@ real not_gate_size = 0.9*and_gate_size;
 real source_gate_size = 0.9*and_gate_size;
 
 // wires
+real sep = 0.25; // how far apart on the gate to make the wires (this is half)
+// bus
+path x0_bus = (0*u,4*v)--(0*u,0*v-2*sep*source_gate_size);
+  draw(pic,x0_bus,circuitpen);
+path x1_bus = (-0.5*u,4*v)--(-0.5*u,0*v-2*sep*source_gate_size);
+  draw(pic,x1_bus,circuitpen);
+path x2_bus = (-1*u,4*v)--(-1*u,0*v-2*sep*source_gate_size);
+  draw(pic,x2_bus,circuitpen);
+path x3_bus = (-1.5*u,4*v)--(-1.5*u,0*v-2*sep*source_gate_size);
+  draw(pic,x3_bus,circuitpen);
+
 // layer 0 to layer 1
-path x0_to_or=(0*u,0*v)
-                 --(0.5*u,0*v)
-                 --(0.5*u,0*v-(1/6)*or_gate_size)
-                 --(1*u,0*v-(1/6)*or_gate_size);
-  draw(pic,x0_to_or,circuitpen);
-path x1_to_or=(0*u,1*v-(1/6)*source_gate_size)
-                --(0.5*u,1*v-(1/6)*source_gate_size)
-                --(0.5*u,0*v+(1/6)*or_gate_size)
-                --(1*u,0*v+(1/6)*or_gate_size);
-  draw(pic,x1_to_or,circuitpen);
-path x1_to_and=(0*u,1*v+(1/6)*source_gate_size)
-                --(0.5*u,1*v+(1/6)*source_gate_size)
-                --(0.5*u,2*v-(1/6)*and_gate_size)
-                --(1*u,2*v-(1/6)*and_gate_size);
+path x0_to_xor=(0*u,0*v-sep*source_gate_size)
+                --(1*u,0*v-sep*source_gate_size);
+  draw(pic,x0_to_xor,circuitpen);
+  dot(pic,(0*u,0*v-sep*source_gate_size));
+path x1_to_xor=(-0.5*u,0*v+sep*source_gate_size)
+                --(1*u,0*v+sep*source_gate_size);
+  draw(pic,x1_to_xor,circuitpen);
+  dot(pic,(-0.5*u,0*v+sep*source_gate_size));
+path x2_to_xor=(-1*u,1*v-sep*source_gate_size)
+                --(1*u,1*v-sep*source_gate_size);
+  draw(pic,x2_to_xor,circuitpen);
+  dot(pic,(-1*u,1*v-sep*source_gate_size));
+path x3_to_xor=(-1.5*u,1*v+sep*source_gate_size)
+                --(1*u,1*v+sep*source_gate_size);
+  draw(pic,x3_to_xor,circuitpen);
+  dot(pic,(-1.5*u,1*v+sep*source_gate_size));
+path x0_to_and=(0*u,2*v-sep*source_gate_size)
+                --(1*u,2*v-sep*source_gate_size);
+  draw(pic,x0_to_and,circuitpen);
+  dot(pic,(0*u,2*v-sep*source_gate_size));
+path x1_to_and=(-0.5*u,2*v+sep*source_gate_size)
+                --(1*u,2*v+sep*source_gate_size);
   draw(pic,x1_to_and,circuitpen);
-path x2_to_and=(0*u,2*v)
-                --(0.5*u,2*v)
-                --(0.5*u,2*v+(1/6)*and_gate_size)
-                --(1*u,2*v+(1/6)*and_gate_size);
+  dot(pic,(-0.5*u,2*v+sep*source_gate_size));
+path x2_to_and=(-1*u,3*v-sep*source_gate_size)
+                --(1*u,3*v-sep*source_gate_size);
   draw(pic,x2_to_and,circuitpen);
+  dot(pic,(-1*u,3*v-sep*source_gate_size));
+path x3_to_and=(-1.5*u,3*v+sep*source_gate_size)
+                --(1*u,3*v+sep*source_gate_size);
+  draw(pic,x3_to_and,circuitpen);
+  dot(pic,(-1.5*u,3*v+sep*source_gate_size));
+
 // layer 1 to layer 2
-path and_to_not=(1*u,2*v)
-                 --(2*u,2*v);
-  draw(pic,and_to_not,circuitpen);
-// path and_to_not=(1*u,2*v+(1/6)*and_gate_size)
-//                  --(1.5*u,2*v+(1/6)*and_gate_size)
-//                  --(1.5*u,2*v)
-//                  --(2*u,2*v);
-//   draw(pic,and_to_not,circuitpen);
-// path and_to_and=(1*u,2*v-(1/6)*and_gate_size)
-//                  --(1.5*u,2*v-(1/6)*and_gate_size)
-//                  --(1.5*u,0*v+(1/6)*and_gate_size)
-//                  --(2*u,0*v+(1/6)*and_gate_size);
-//   draw(pic,and_to_and,circuitpen);
-path or_to_and=(1*u,0*v)
-                 --(2*u,0*v);
-  draw(pic,or_to_and,circuitpen);
-// path or_to_and=(1*u,0*v)
-//                  --(1.5*u,0*v)
-//                  --(1.5*u,0*v-(1/6)*and_gate_size)
-//                  --(2*u,0*v-(1/6)*and_gate_size);
-//   draw(pic,or_to_and,circuitpen);
+path xor_bot_to_and=(1*u,0*v)
+                --(1.5*u,0*v)
+                --(1.5*u,0.5*v-sep*source_gate_size)
+                --(2*u,0.5*v-sep*source_gate_size);
+  draw(pic,xor_bot_to_and,circuitpen);
+path xor_top_to_and=(1*u,1*v)
+                --(1.5*u,1*v)
+                --(1.5*u,0.5*v+sep*source_gate_size)
+                --(2*u,0.5*v+sep*source_gate_size);
+  draw(pic,xor_top_to_and,circuitpen);
+path and_bot_to_and=(1*u,2*v)
+                --(1.5*u,2*v)
+                --(1.5*u,2.5*v-sep*source_gate_size)
+                --(2*u,2.5*v-sep*source_gate_size);
+  draw(pic,and_bot_to_and,circuitpen);
+path and_top_to_and=(1*u,3*v)
+                --(1.5*u,3*v)
+                --(1.5*u,2.5*v+sep*source_gate_size)
+                --(2*u,2.5*v+sep*source_gate_size);
+  draw(pic,and_top_to_and,circuitpen);
+
+
 // layer 2 to layer 3
-path not_to_final_or=(2*u,2*v)
-                 --(2.5*u,2*v)
-                 --(2.5*u,1*v+(1/6)*or_gate_size)
-                 --(3*u,1*v+(1/6)*or_gate_size);
-  draw(pic,not_to_final_or,circuitpen);
-path and_to_final_or=(2*u,0*v)
-                 --(2.5*u,0*v)
-                 --(2.5*u,1*v-(1/6)*or_gate_size)
-                 --(3*u,1*v-(1/6)*or_gate_size);
-  draw(pic,and_to_final_or,circuitpen);
+path and_to_equiv=(2*u,0.5*v)
+                --(2.5*u,0.5*v)
+                --(2.5*u,1.5*v-sep*source_gate_size)
+                --(3*u,1.5*v-sep*source_gate_size);
+  draw(pic,and_to_equiv,circuitpen);
+path or_to_equiv=(2*u,2.5*v)
+                --(2.5*u,2.5*v)
+                --(2.5*u,1.5*v+sep*source_gate_size)
+                --(3*u,1.5*v+sep*source_gate_size);
+  draw(pic,or_to_equiv,circuitpen);
+
 // layer 3 and out
-path final_or_to_infty=(3*u,1*v)
-                 --(4*u,1*v);
-  draw(pic,final_or_to_infty,circuitpen);
-  label(pic,"$C(x_0,x_1,x_2)$",(4*u,1*v),N);
+path exit_wire = (3*u,1.5*v)--(5*u,1.5*v);
+  draw(pic,exit_wire,circuitpen);
+  label(pic,"$M(x_0,x_1,x_2,x_3)$",(4.25*u,1.5*v),N);
 
 // layer 0
-filldraw(pic,shift(0*u,2*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
-  label(pic,"\smash[b]{$x_2$}",(0*u,2*v));
-filldraw(pic,shift(0*u,1*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
-  label(pic,"\smash[b]{$x_1$}",(0*u,1*v));
-filldraw(pic,shift(0*u,0*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
-  label(pic,"\smash[b]{$x_0$}",(0*u,0*v));
+filldraw(pic,shift(0*u,4*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$x_0$}",(0*u,4*v));
+filldraw(pic,shift(-0.5*u,4*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$x_1$}",(-0.5*u,4*v));
+filldraw(pic,shift(-1*u,4*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$x_2$}",(-1*u,4*v));
+filldraw(pic,shift(-1.5*u,4*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$x_3$}",(-1.5*u,4*v));
 
 // layer 1
-filldraw(pic,shift(1*u,2*v)*andgate(and_gate_size),drawpen=circuitpen,fillpen=white);
-filldraw(pic,shift(1*u,0*v)*orgate(or_gate_size),drawpen=circuitpen,fillpen=white);
-// // layer 2
-filldraw(pic,shift(2*u,2*v)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
-filldraw(pic,shift(2*u,0*v)*andgate(and_gate_size),drawpen=circuitpen,fillpen=white);
-// // layer 3
-filldraw(pic,shift(3*u,1*v)*orgate(or_gate_size),drawpen=circuitpen,fillpen=white);
+filldraw(pic,shift(1*u,0*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$\oplus$}",(1*u,0*v));
+filldraw(pic,shift(1*u,1*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$\oplus$}",(1*u,1*v));
+filldraw(pic,shift(1*u,2*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$\wedge$}",(1*u,2*v));
+filldraw(pic,shift(1*u,3*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$\wedge$}",(1*u,3*v));
+
+// layer 2
+filldraw(pic,shift(2*u,0.5*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$\wedge$}",(2*u,0.5*v));
+filldraw(pic,shift(2*u,2.5*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$\vee$}",(2*u,2.5*v));
+
+// layer 3
+filldraw(pic,shift(3*u,1.5*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$\equiv$}",(3*u,1.5*v));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -146,8 +185,8 @@ int picnum = 1;
 picture pic;
 unitsize(pic,1cm);
 // horiz and vert units
-real u = 1.5;
-real v = 0.75*u;
+real u = 1.4;
+real v = 0.6*u;
 
 // size of gates
 real and_gate_size = 0.65;

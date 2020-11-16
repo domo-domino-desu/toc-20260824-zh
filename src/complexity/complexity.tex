@@ -6038,6 +6038,8 @@ a given graph is connected.
 \begin{equation*}
   \set{\mathcal{G}\suchthat \text{for any two vertices $v_0,v_1\in\mathcal{G}$, thre is a path from one to the other}}
 \end{equation*}
+To verify this, we must produce an algorithm that decides membership
+in this language, and that runs in polynomial time.
 The natural approach is to do a breadth first search or depth first search
 of the graph.
 The runtime of both is bounded by 
@@ -6051,18 +6053,20 @@ are relatively prime.
 \begin{equation*}
   \set{\sequence{n_0,n_1}\in\N^2\suchthat\text{the greatest common divisor is~$1$}}
 \end{equation*}
+Again, to verify that this language is a member of~$\P$ we produce 
+an algorithm that determines membership, and that runs in polytime.
 Euclid's algorithm solve this problem, with runtime 
 $\bigOh(\lg(\max(n_0,n_1)))$.
 \end{example}
 
 \begin{example}
-Still another is the 
+Still another problem in~$\P$ is the 
 \probname{String Search} problem,\index{String Search problem@\probname{String Search} problem} 
 to decide substring-ness.
 \begin{equation*}
   \set{\sequence{\sigma,\tau}\in\kleenestar{\Sigma}\suchthat \text{$\sigma$ is a substring of~$\tau$}}
 \end{equation*}
-Often $\tau$ is very long and is called the
+In applications of this, often $\tau$ is very long and is called the
 \definend{haystack}\index{haystack} 
 while $\sigma$ is short and is the \definend{needle}.
 The algorithm that 
@@ -6087,6 +6091,10 @@ Boolean function.
 The only exception is that the vertices on the left are the 
 \definend{input gates}  
 that provide source bits, $b_0,b_1,b_2, b_3\in\B$.
+Below, $\wedge$ is the boolean function `and', $\vee$ is `or',
+$\oplus$ is `exclusive or', and $\equiv$ is the negation of
+`exclusive or', which returns~\str{1} if and only if the two inputs bits are
+the same.
 \begin{center}
   \includegraphics{complexity/asy/circuit/circuit005.pdf}
 \end{center}
@@ -6230,10 +6238,6 @@ watch events with great interest.
 
   
 
- 
-
-
-
 \subsection{Naturalness}
 \citetext{We will give the class~$\P$ a lot of attention}{%
   This discussion gained much from the material in 
@@ -6322,7 +6326,7 @@ Even if the objection to Cobham's Thesis is right and $\P$ is too broad,
 it would nonetheless still be useful because if we could show that a 
 problem is not in~$\P$ then we would have shown that no
 algorithm for its solution is practical.\footnote{%
-  This argument has lost some of its force in recent years, with the
+  This argument has lost some of its force in recent years with the
   rise of $\SAT$ solvers.
   These algorithms attack problems believed to not be in~$\P$,
   and can solve instances of the problems of moderately large size,
@@ -6342,8 +6346,8 @@ reason to use~$\P$ as a benchmark for other complexity classes.
 \begin{exercises}
 \recommended
 \begin{exercise}
-True or False: every problem that involves determining membership in a
-finite language is in $\P$.
+True or False: if the language is finite then the language decision problem 
+is in $\P$.
 \begin{answer}
 True.
 Such problems have solution algorithms that are basically a big list
@@ -6402,6 +6406,58 @@ A complexity class is a set of problems.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+Your friend says to you, 
+``The \probname{Circuit Evaluation} problem must take exponential
+time.
+There is a final vertex.
+It takes two inputs, which come from two vertices, and each of those
+take two inputs, etc., so that a five-deep circuit can have
+thirty two vertices.''
+Help them see where they are wrong.
+\begin{answer}
+Your friend is observing that the description of the circuit may have length
+exponential in the circuit depth, 
+so that an $r$-deep circuit may have $2^r$~many vertices.
+But the definition of polynomial time is that the number of steps taken 
+is a polynomial function of the size of the input.
+If the circuit representation is very large then
+that only means that the polynomial receives a large input.
+That is, we are not comparing the time taken to the depth of the
+circuit, but rather to the size of its representation.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that the language 
+$\set{\sigma\in\kleenestar{\B}\suchthat\text{$\sigma=\tau^3$ for some $\tau\in\kleenestar{\B}$}}$
+is in~$P$.
+\begin{answer}
+We will give an algorithm that clearly runs in polytime.
+Given~$\sigma$, find its length.
+If the length is not divisible by three, return~$0$.
+Otherwise, find the substring~$\tau$ that is the first third of~$\sigma$,
+and check whether $\tau\tau\tau=\sigma$.
+If so, return~$1$. 
+If not, return~$0$.   
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that the language of palindromes, 
+$\set{\sigma\in\kleenestar{\B}\suchthat \sigma=\reversal{\sigma}}$,
+is an element of~$\P$.
+\begin{answer}
+The algorithm is straightforward.
+Given~$\sigma$, 
+read the characters $\sigma[i]$ and compare them to the character
+read from the end, $\sigma[\sizeof{\sigma}-i]$.
+If each comparison give equality then return~$1$,
+else return~$0$.
+Clearly that algorithm is polynomial since the variable is~$\sizeof{\sigma}$. 
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 Is the \HP{} in $\P$?
@@ -6411,8 +6467,9 @@ The \HP{} is not decidable, so it is not in $\P$
 \end{exercise}
 
 \begin{exercise}
-Recall that a Finite State machine is a kind of Turing machine, one
-that never writes to the tape.
+Recall that a Finite State machine can be described as 
+a kind of Turing machine, one that never writes to the tape
+(and we can designate some states as accepting).
 \begin{exparts}
 \item
 Show that the regular languages form a complexity class.
@@ -6437,6 +6494,34 @@ Each Finite State machine runs in linear time, since $t(\sigma)=n$ where
 $\lh{\sigma}=n$.
 Linear is polynomial, so each Regular language can be accepted in polytime.
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+A common modification of the definition of Turing machine 
+designates one state as an accepting
+state. 
+Then the machine 
+\definend{decides the language}~$\lang$,\index{language!decided by a Turing machine}\index{Turing machine!deciding a language}\index{Turing machine!accepting a language}
+or \definend{accepts the language},
+if it halts on 
+all input strings and $\lang$
+is the set of strings that such that the machine ends in 
+the accepting state.
+A language is 
+\definend{decidable}\index{language!decidable}\index{decidable language}
+if it is decided by some machine.
+Prove that every language in~$\P$ is decidable.
+\begin{answer}
+A language is a member of~$\P$ if there is an algorithm for it that
+runs in polytime.
+That is, there is a Turing machine 
+that computes the characteristic function of the language in polytime.
+Clearly, existence of such a machine is equivalent to the 
+existence of a machine with a designated acceptance state, and that runs in 
+polytime.
+So the set of languages in~$\P$ is a subset of the set of decidable 
+languages.
 \end{answer}
 \end{exercise}
 
@@ -6668,6 +6753,31 @@ Show that $\P$ is closed under concatenation
 and Kleene star.
 \end{exercise}
 
+\begin{exercise}
+Show that this problem is unsolvable:~give a Turing machine~$\TM$,
+decide whether it runs in polytime on the empty input.
+\hint~if you could solve this problem then you could solve
+the \HP.
+\begin{answer}
+The idea is to, given~$\TM$, construct from it a 
+new machine~$\mathcal{N}_{\TM}$. 
+This machine will runs in
+polynomial time if and only if $\TM$ does not halt.
+Obviously that gives the contradiction that 
+if we were able to test machines for running in polytime
+then we could solve the \HP.
+
+The machine~$\mathcal{N}_{\TM}$ takes bigstrings as inputs.
+For input~$\sigma$, it uses a universal Turing machine to run~$M$ 
+(on the empty tape) for~$\sizeof{\sigma}$ steps.
+If $\TM$ does not halt within that time then $\mathcal{N}_{\TM}$ halts.
+If $\TM$ halts within that time then $\mathcal{N}_{\TM}$ will run
+for $2^{\sizeof{\sigma}}$ many steps.
+If $\TM$ halts then $\mathcal{N}_{\TM}$ runs in exponential time,
+and if $\TM$ does not halt then $\mathcal{N}_{\TM}$ runs in polynomial time, 
+as required.
+\end{answer}
+\end{exercise}
 
 % \begin{exercise}
 % Prove that $\P$ is closed under composition: if $f_0,f_1$ are polynomial time

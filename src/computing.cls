@@ -789,8 +789,9 @@
 % For naming a part of an exercise, as in \item \expartsname{Commutativity}
 \newcommand{\expartsname}[1]{\textsc{(#1)}} 
 
-% For a hint
+% For a hint, or caution, for exercises
 \newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
+\newcommand{\caution}{\textit{Caution:}} % no space because want to use a tie: ~
 
 
 

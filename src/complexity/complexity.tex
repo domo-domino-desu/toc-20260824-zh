@@ -6770,6 +6770,28 @@ The resource specification is that there is no finite time bound.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+Is $\P$ countable or uncountable?
+\begin{answer}
+There are countably many Turing machines to use as deciders, so $\P$
+is countable.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+If $\lang_0,\lang_1\in\P$ and $\lang_0\subseteq \lang\subseteq\lang_1$,
+must $\lang$ be in~$\P$?
+\begin{answer}
+No.
+Take $\lang_0=\emptyset$ and $\lang_1=\powerset(\kleenestar{\B})$.
+Because $\P$ is countable, as there are only countably many Turing machines
+to use as deciders, and the collection of all languages
+$\powerset(\kleenestar{\B})$ is uncountable, there are 
+uncountably many languages with $\lang_0\subseteq \lang\subseteq\lang_1$
+that are not in~$\P$.
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 Is the \HP{} in $\P$?
@@ -6953,7 +6975,7 @@ and $f_2$ is equivalent to $\neg P\wedge Q$.
 Prove that the union of two complexity classes is also a complexity class.
 What about the intersection?
 Complement?
-\begin{answer}
+\begin{answer}\verified
 A complexity class is just a set, a collection of languages.
 So the union of two is also a complexity class.
 The same holds for the intersection, and for the
@@ -6968,7 +6990,7 @@ Prove that $\P$ is closed under the union of two languages.
 That is, prove that if two languages are both  in~$\P$ then so is their
 union.
 Prove the same for the union of finitely many languages.
-\begin{answer}
+\begin{answer}\verified
 Let two languages $\lang_0,\lang_1\in\powerset(\kleenestar{\B})$
 be elements of~$\P$.
 Then there are computable functions to determine membership in the two
@@ -6977,7 +6999,7 @@ The algorithm to compute membership in the union gets as input a
 string~$\sigma\in\kleenestar{\B}$.
 It first checks whether the string is a member of the first language, and then
 checks whether it is a member of the second.
-Together, that takes a running time of~$\bigOh(x^{1+\max(n_0,n_1)})$, 
+Together, that takes a running time of~$\bigOh(x^{\max(n_0,n_1)})$, 
 which means that the algorithm runs in polytime.
 
 The argument for the union of any finite number of languages proceeds 
@@ -7022,7 +7044,7 @@ reversal.
 That is, prove that if a language is an element of~$\P$ then
 so is the reversal of that language (which is the language of 
 string reversals).
-\begin{answer}
+\begin{answer}\verified
 Fix a language~$\lang\in\P$.
 Then there is a Turing machine that computes the characteristic
 function 
@@ -7041,20 +7063,14 @@ to in total the runtime is~$\bigOh(x^{n+1})$.
 \end{exercise}
 
 \begin{exercise}
-Show that $\P$ is closed under the concatenation of two languages, 
-and the Kleene star of a language.
-(\hint~the second is trickier.
-Note that $\sigma\in\kleenestar{\lang}$ if
-$\sigma=\emptystring$, or $\sigma\in\lang$, 
-or $\sigma=\alpha\concat\beta$ for some $\alpha,\beta\in\kleenestar{\lang}$)
-\begin{answer}
-First we do concatenation.
-Consider two languages, $\lang_0,\lang_1\in\powerset(\kleenestar{\B})$
+Show that $\P$ is closed under the concatenation of two languages.
+\begin{answer}\verified
+Consider two languages, $\lang_0,\lang_1\in\powerset(\kleenestar{\B})$,
 that are members of~$\P$.
 Then there are powers $n_0,n_1\in\N$ so that~$\lang_0$ is accepted by
-a Turing machine in time~$\bigOh(x^{n_0})$, and
+a Turing machine with runtime~$\bigOh(x^{n_0})$, and
 $\lang_1$ is accepted by
-a Turing machine in time~$\bigOh(x^{n_1})$.
+a Turing machine with runtime~$\bigOh(x^{n_1})$.
 
 Here is the algorithm to decide 
 if a given input string~$\sigma\in\kleenestar{\B}$ is a member of 
@@ -7065,30 +7081,39 @@ then as $\sigma=\sigma[0]\concat\sigma[1:]$, etc.
 At each stage of this pass we have $\sigma=\alpha\concat\beta$ and
 we check whether $\alpha\in\lang_0$ and $\beta\in\lang_1$.
 
-Checking whether $\alpha\in\lang_0$ can be done in time~$\bigOh(x^{n_0})$,
+Checking whether $\alpha\in\lang_0$ takes 
+time~$\bigOh(\sizeof{\alpha}^{n_0})$,
 and   
-checking whether $\beta\in\lang_1$ can be done in time~$\bigOh(x^{n_1})$.
-(It simplifies things to overestimate with $x=\sizeof{\sigma}$, rather than 
-worry about the actual length of the substrings.)
-Hence each step of the pass can be done in~$\bigOh(x^{\max(n_0,n_1)})$ time.
+checking whether $\beta\in\lang_1$ takes time~$\bigOh(\sizeof{\beta}^{n_1})$.
+It simplifies things to overestimate and use $\sizeof{\sigma}$, rather than 
+worry about the length of the substrings.
+Hence each step of the pass can be done 
+in~$\bigOh(\sizeof{\sigma}^{\max(n_0,n_1)})$ time.
 The pass itself takes $\sizeof{\sigma}+1$~many steps, so overall
-the algorithm has runtime $\bigOh(x^{1+\max(n_0,n_1)})$.
-That's polytime.
+the algorithm runs in polytime, $\bigOh(\sizeof{\sigma}^{1+\max(n_0,n_1)})$.
+\end{answer}
+\end{exercise}
 
-To finish, we give an algorithm for Kleene star.
-We are given a language~$\lang\in\powerset(\kleenestar(\B))$ such that
-there is a Turing machine that decides the language,~$\TM_{\lang}$,
-in polytime, in $\bigOh(x^n)$ for some power~$n\in\N$. 
-The solution algorithm gets an input string~$\sigma$.
-and must decide whether $\sigma\in\kleenestar{\lang}$ in polytime.
+\begin{exercise}
+Show that $\P$ is closed under 
+Kleene star, meaning that if $\lang\in\P$ then $\kleenestar{\lang}\in\P$.
+(\hint~$\sigma\in\kleenestar{\lang}$ if
+$\sigma=\emptystring$, or $\sigma\in\lang$, 
+or $\sigma=\alpha\concat\beta$ for some $\alpha,\beta\in\kleenestar{\lang}$)
+\begin{answer}
+We are given a language~$\lang\in\powerset(\kleenestar{\B})$ such that
+there is a Turing machine,~$\TM_{\lang}$, that decides the language
+in polytime, in time that is some power, $n\in\N$, of the length of the 
+input string.
 
-The idea of the algorithm is to follow the hint that 
+We will follow the hint that 
 $\sigma\in\kleenestar{\lang}$ if
 $\sigma=\emptystring$, or $\sigma\in\lang$, 
 or $\sigma=\alpha\concat\beta$ for some $\alpha,\beta\in\kleenestar{\lang}$. 
-Before we start, consider the example of $\sigma=\sequence{s_0,s_1,s_2,s_3}$.
+Rather than present a flowchart of pseudocode, 
+we will work through the example of $\sigma=\sequence{s_0,s_1,s_2,s_3}$.
 This table lists the substrings~$\sigma[i:j]$.
-\begin{display}
+\begin{display}\def\arraystretch{1.1}
 \begin{tabular}{r|*{4}{c}}
   \multicolumn{1}{r}{\ }
     &\multicolumn{1}{c}{$j=0$}
@@ -7102,117 +7127,74 @@ This table lists the substrings~$\sigma[i:j]$.
   $i=3$ &                &                    &                      &$\sequence{s_3}$  \\
 \end{tabular}
 \end{display}
-On the main diagonal are the length one substrings. 
-We can determine whether each is a member of~$\lang$ by using~$\TM_{\lang}$.
-On the diagonal above that are the length two substrings.
+
+We start on the main diagonal, which holds all of the length one substrings.
+We can determine whether each of these 
+is a member of~$\lang$ by using~$\TM_{\lang}$.
+If it is a member, put a checkmark next to the substring.
+
+Next we move to the diagonal above, with the length two substrings.
 We can determine whether each is a member of~$\lang$ by using~$\TM_{\lang}$,
 or, taking the hint, by knowing whether both length~one substrings are members 
-of~$\kleenestar{\lang}$.
-Similarly, on the diagonal containing the length three substrings, we 
+of~$\kleenestar{\lang}$ (which we can do quickly using the checkmarks).
+Again, when a substring in this diagonal is a member then checkmark it.
+
+Now iterate.
+On the diagonal containing the length three substrings, we 
 can determine whether each is a member of~$\kleenestar{\lang}$ by first asking
-$\TM_{\lang}$ if it is a member of~$\lang$, and then by asking whether
-it is a length~two substring element of~$\kleenestar{\lang}$ concatenated
-with a length~one substring.
+$\TM_{\lang}$ if it is a member of~$\lang$.
+If not, we then determine whether
+it is the concatenation of two substrings.
+We've already checked or not~checked all the members of 
+both of the earlier diagonals, so determining that is very fast.
 
-Here is pseudocode.
-It uses the table~$T$, whose $(i,j)$ entry keeps track of whether 
-$\sigma[i:j]\in\kleenestar{\lang}$.
-\begin{lstlisting}
-for i in (0 ... n-1):
-    for j in (0 ... n-1):
-        T[i,j] = False
+In this way, we proceed through diagonals 
+until we get to the table's upper right.
+It holds the given string, $\sigma$, so we can determine whether
+$\sigma\in\kleenestar{\lang}$ in the same way.
 
-if sigma == EMPTYSTRING:
-    print ACCEPT
-else:
-    for lh in (1 ... n):
-        for i in (0 ... n-1-lh):
-            j = i+lh-1
-            if TM_L(sigma[i:j]) == ACCEPT:
-                T[i,j] = True
-            else:
-                for k in (i ... j-1):
-                    if (T[i,k] == True) and (T[k+1,j] == True):
-                        T[i,j] = True
+Now for the runtime analysis.
+Let $m=\sizeof{\sigma}$.
+This is a triply-nested loop. 
+The outer loop moves through the diagonals, from the length
+one substrings to the length~$m$ substring~$\sigma$.
+Inside that is a loop that moves through a particular diagonal, 
+starting at $i=0$, and covering at most~$m$ substrings.
+Finally, inside of that is a loop that 
+runs the machine $\TM_{\lang}$ and then possibly loops through the 
+substring pairs.
+The runtime on this inner loop is $\bigOh(m^n)+\bigOh(m)$, 
+and so in total we have $\bigOh(m)\cdot\bigOh(m)\cdot(\bigOh(m^n)+\bigOh(m))$,
+which is polynomial in~$m=\sizeof{\sigma}$.
 
-if T[i,1] == True:
-    return ACCEPT
-else:
-    return REJECT
-\end{lstlisting}
+% Here is pseudocode.
+% It uses the table~$T$, whose $(i,j)$ entry keeps track of whether 
+% $\sigma[i:j]\in\kleenestar{\lang}$.
+% \begin{lstlisting}
+% for i in (0 ... n-1):
+%     for j in (0 ... n-1):
+%         T[i,j] = False
+
+% if sigma == EMPTYSTRING:
+%     print ACCEPT
+% else:
+%     for lh in (1 ... n):
+%         for i in (0 ... n-1-lh):
+%             j = i+lh-1
+%             if TM_L(sigma[i:j]) == ACCEPT:
+%                 T[i,j] = True
+%             else:
+%                 for k in (i ... j-1):
+%                     if (T[i,k] == True) and (T[k+1,j] == True):
+%                         T[i,j] = True
+
+% if T[i,1] == True:
+%     return ACCEPT
+% else:
+%     return REJECT
+% \end{lstlisting}
 % Credit: gasarch https://www.cs.umd.edu/~gasarch/COURSES/452/F14/poly.pdf
-
-
-% Start with a language~$\lang$ and 
-% suppose that there is a power~$n$ such that we can determine whether 
-% a string is a member of~$\lang$ in time~$\bigOh(x^n)$.
-% The algorithm gets a string~$\sigma$, and must determine if it is a member of
-% $\kleenestar{\lang}$.
-
-% Earler we showed how to check whether $\sigma\in\lang^2$, and the algorithm
-% extends that to check whether $\sigma\in\lang^k$ for $k\leq\sizeof{\sigma}$. 
-% The $k=0$ case of checking whether $\sigma=\emptystring$ is easy,
-% as is the $k=1$ case of testing whether $\sigma\in\lang$.
-% In a general step we decompose~$\sigma$ into $k\leq\sizeof{\sigma}$~many 
-% parts, $\sigma=\sigma_0\concat\cdots\concat\sigma_{k-1}$,
-% and test whether each part is an element of~$\lang$.
-
-% For a particular~$k$, there are $\binom{\sizeof{\sigma}+1}{k}$ many
-% such decompositions, and $\binom{\sizeof{\sigma}+1}{k}$ 
-% is~$\bigOh((\sizeof{\sigma}+1)^k)$. 
-% Testing the substrings takes $\bigOh(x^n)$~time, and there are $k$~many
-% substrings so for a particular~$k$ the testing takes time~$\bigOh(x^{nk})$.
-% Not worrying about the lengths of particular substrings and instead
-% taking $x=\sizeof{\sigma}$ gives time~$\bigOh(\sizeof{\sigma}^{nk})$.
-% Thus, for a fixed~$k$ we have time 
-% $\bigOh((\sizeof{\sigma}+1)^k\cdot \sizeof{\sigma}^{nk})$. 
-% As $n$ is also fixed, that is polytime in $\sizeof{\sigma}$.
-
-% Finally, to finish, we let $k$ vary between $0$ and~$\sizeof{\sigma}$.
-% That is $\sizeof{\sigma}+1$~many steps, each of which is polytime in
-% $\sizeof{\sigma}$.
-% Overall, the total runs in polytime.
 \end{answer}
-\end{exercise}
-
-% \begin{exercise}
-% Prove that $\P$ is closed under composition: if $f_0,f_1$ are polynomial time
-% functions and their composition is defined then $\composed{f_1}{f_0}$ is
-% also polytime.
-% \begin{answer}
-% If $f_0$ is $\bigOh(n^{k_0})$ and $f_1$ is $\bitOh(n^{k_1})$ then the composition
-% is $\bigOh(n^{k_1k_0})$.
-% \end{answer}
-% \end{exercise}
-
-% \begin{exercise}
-% Sketch a proof that every regular language is a member of $\P$.
-% \begin{answer}
-% Let $\lang$ be regular.
-% Then there is a deterministic Finite State machine that accepts~$\lang$.
-
-% We can create a program that simulates this machine.
-% By Church's Thesis we can do it on a Turing machine.
-% The number of steps that the simulation takes is linear in the length of the
-% input, since the head is read-only.
-% \end{answer}
-% \end{exercise}
-
-\begin{exercise}
-As in the section body, where $\map{f}{\N}{\N}$ is a computable function,
-consider
-the decision problem~$\prob_f$ for the language
-$\set{\sequence{\bar{n},\bar{f(n)}}\in\kleenestar{\B}\suchthat n\in\N}$,
-where the bar means the numbers are represented in binary.
-In this way we can consider a function to be a member of~$\P$.
-Prove that $\P$ is closed under:
-\begin{exparts*}
-\item function addition,
-\item multiplication by a scalar~$r\in\R$,
-\item function subtraction,
-\item function multiplication, and
-\item function composition.
-\end{exparts*}
 \end{exercise}
 
 \begin{exercise}
@@ -7246,37 +7228,130 @@ as required.
 \end{exercise}
 
 \begin{exercise}
-Where $\lang_0,\lang_1\in\kleenestar{\B}$ are languages, we say that 
-$\lang_1\leq_p\lang_0$ if there is a function
-$\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ that is computable,
-total, that runs in poytime,
-and so that
-$\sigma\in\lang_1$ if and only if $f(\sigma)\in\lang_0$.
-Prove that if $\lang_0\in\P$ and $\lang_1\leq_p\mathcal{P}_0$
-then $\lang_1\in\P$.
+There are studied complexity classes besides those associated with language
+decision problems. 
+The class $\compclass{FP}$ consists of the binary 
+relations~$R\subseteq\N^2$ where there is a Turing machine that, 
+given input~$x\in\N$, can in polytime find a 
+$y\in\N$ where $\sequence{x,y}\in R$.
+\begin{exparts}
+\item Prove that this class closed under
+ function addition, multiplication by a scalar~$r\in\N$, subtraction,
+ multiplication, and function composition.
+\item
+Where $\map{f}{\N}{\N}$ is computable,
+consider this decision problem associated with the function, 
+$\lang_f=\set{\strng(\sequence{n,f(n)})\in\kleenestar{\B}\suchthat n\in\N}$
+(where the numbers are represented in binary).
+Assume that we have two functions $\map{f_0,f_1}{\N}{\N}$ 
+such that $\lang_{f_0},\lang_{f_1}\in\P$.
+Show that the natural algorithm to check for 
+closure under function addition is pseudopolynomial.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+Recall that a function is a kind of relation.
+Assume that there are computable functions $\map{f_0,f_1}{\N}{\N}$
+with associated Turing machines  $\TM_0$ and~$\TM_1$ that,
+given $a\in\N$, can find $f_0(a)$ or~$f_1(a)$ 
+in times $\bigOh(x^{n_0})$ and~$\bigOh(x^{n_1})$, for 
+some powers $n_0,n_1\in\N$.
+
+For addition the algorithm can, given~$a\in\N$, compute $f_0(a)$ and~$f_1(x)$
+in time~$\bigOh(x^{\max(n_0,n_1)})$.
+The grade school addition algorithm 
+brings the time up to $\bigOh(x^{1+\max(n_0,n_1)})$. 
+
+The scalar multiplication algorithm can, given~$a\in\N$, 
+compute $f_0(a)$ 
+in time~$\bigOh(x^{n_0})$.
+The naive multiplication algorithm brings the time up to 
+$\bigOh(x^{2+n_0})$.
+
+To subtract we can use a branch that tests if the second number is greater
+than the first, and if so returns~$0$.
+In any event, clearly polytime.
+
+Multiplication is similar, and just as simply in polytime.
+
+For composition, if $f_0$ is $\bigOh(x^{n_0})$ 
+and $f_1$ is $\bigOh(x^{n_1})$ then the composition
+is $\bigOh(x^{n_0n_1})$, also polytime.
+\item 
+Here is the naive algorithm.
+The solution algorithm gets a string~$\sigma$.
+it
+can determine in polytime that $\sigma=\strng(\sequence{a,y})$
+for some $a,y\in\N$
+(if $\sigma$ does not have that form then the algorithm rejects it).
+Now, the algorithm uses $\TM_0$ to determine whether $f_0(a)=0$,
+$f_0(a)=1$, \ldots{} $f_0(a)=y$.
+If none of those relations are true then the algorithm 
+rejects~$\sigma$.
+Otherwise, let $k\in\N$ be such that $f(a)=k$.
+The algorithm uses $TM_1$ to determine whether $f_1(a)=y-k$.
+If so, the algorithm accepts~$\sigma$, otherwise it rejects.
+
+The reason it is pseudopolynomial lies in the testing of the
+$y+1$~many pairs.
+Since~$y$ is represented in binary, taking that many steps is 
+exponential in the length of the representation of~$y$, in the length of
+the input~$\sigma$.
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
-We will show that making polynomially many calls to a subroutine that
-is polynomial may take exponential time.
-Consider a routine that may call a subroutine~\str{S}.
-This subroutine is perfectly reasonable:~\str{S} runs in time linear 
-in the input length, and given input of length~$n$ it returns 
-output of length~$2n$. 
-\begin{exparts}
-\item Show that if the routine calls \str{S} once then
-it costs a time that is polynomial in the length of the input.
-\item Show that if the routine calls \str{S} twice, 
-as $\str{S}(\str{S}(x))$, then
-it costs a time that is polynomial in the length of the the input.
-\item Ditto for a call that is nested $k$~deep for fixed~$k\in\N$.
-\item In contrast, for variable~$k$ show that the call
-\begin{equation*}
-  \underbrace{\str{S}(\str{S}(\cdots\str{S}(x)\cdots))}_{\text{$k$ times}}
-\end{equation*}
-costs time exponential in the length of the input.
-\end{exparts}
+Where $\lang_0,\lang_1\subseteq\kleenestar{\B}$ are languages, we say that 
+$\lang_1\leq_p\lang_0$ if there is a function
+$\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ that is computable,
+total, that runs in polytime,
+and so that
+$\sigma\in\lang_1$ if and only if $f(\sigma)\in\lang_0$.
+Prove that if $\lang_0\in\P$ and $\lang_1\leq_p\lang_0$
+then $\lang_1\in\P$.
+\begin{answer}
+From the assumption that  $\lang_0\in\P$ we get that there is a 
+Turing machine with runtime 
+$\bigOh(x^{n})$ for some power~$n\in\N$, and whose input/output behavior is 
+the characteristic function of~$\lang_0$.
+From the assumption that $\lang_1\leq_p\lang_0$
+we get that there is a 
+Turing machine whose runtime is  $\bigOh(x^{m})$ for some power~$m\in\N$,
+whose input/output behavior is the function~$f$,
+and such that $\sigma\in\lang_1$ if and only if $f(\sigma)\in\lang_0$.
+
+So, to decide questions about whether $\sigma\in\lang_1$, 
+we first translate them, at a cost of $\bigOh(\sizeof{\sigma}^{m})$,
+to questions about whether $f(\sigma)\in\lang_0$,
+which we can settle in $\bigOh(\sizeof{\sigma}^{n})$.
+The result, $\bigOh(\sizeof{\sigma}^{\max(n,m)})$, is polytime.
+\end{answer}
 \end{exercise}
+
+% \begin{exercise}
+% We will show that making polynomially many calls to a subroutine that
+% is polynomial may take exponential time.
+% Consider a routine that may call a subroutine~\str{S}.
+% This subroutine is perfectly reasonable:~\str{S} runs in time linear 
+% in the input length, and given input of length~$n$ it returns 
+% output of length~$2n$. 
+% \begin{exparts}
+% \item Show that if the routine calls \str{S} once then
+% it costs a time that is polynomial in the length of the input.
+% \item Show that if the routine calls \str{S} twice, 
+% as $\str{S}(\str{S}(x))$, then
+% it costs a time that is polynomial in the length of the the input.
+% \item Ditto for a call that is nested $k$~deep for fixed~$k\in\N$.
+% \item In contrast, for variable~$k$ show that the call
+% \begin{equation*}
+%   \underbrace{\str{S}(\str{S}(\cdots\str{S}(x)\cdots))}_{\text{$k$ times}}
+% \end{equation*}
+% costs time exponential in the length of the input.
+% \end{exparts}
+% \end{exercise}
+
 \end{exercises}
 \index{P@$\P$|)}
 

@@ -4747,7 +4747,7 @@ we prefer language decision problems.\footnote{%
   and when it halts it is in an accepting state exactly when that
   string is in the language.
 }
-It is our default meaning of
+It is our default interpretation of
 `problem'. % \footnote{%
 %   % from https://cs.stackexchange.com/a/79729
 %   Not every computational problem is naturally expressable as a 
@@ -5940,12 +5940,20 @@ distinguish between a language~$\lang$
 and the problem of deciding which strings are in that language.
 
 \begin{definition}
-A language is \definend{accepted} by a Turing machine\index{Turing machine!language accepted}\index{language!accepted by Turing machine}\index{accepted language}
+A language~$\lang$ is 
+\definend{decided} by a Turing machine\index{Turing machine!language decided}\index{language!accepted by Turing machine}\index{decided}
 if the function computed by that machine 
 is the characteristic function of the language. 
+The language is 
+\definend{recognized}\index{Turing machine!language recognized}\index{language!recognized by Turing machine}\index{recognized language}
+(or \definend{accepted}) by a machine\index{Turing machine!language accepted}\index{language!accepted by Turing machine}\index{accepted language}
+when for each input~$\sigma\in\kleenestar{\B}\!$, if $\sigma\in\lang$ 
+then the machine returns~$\str{1}$,
+while if $\sigma\notin\lang$ then it
+does not return~$\str{1}$.
 \end{definition}
 \noindent
-Restated, $\TM$ accepts the language $\lang$ if the machine 
+Restated, $\TM$ decides the language $\lang$ if the machine 
 has this input-output behavior.
 \begin{equation*}
   \TMfcn_{\TM}(\sigma)=\charfcn{\lang}(\sigma)=
@@ -5954,7 +5962,12 @@ has this input-output behavior.
     0  &\case{otherwise}
   \end{cases}
 \end{equation*}
-Note in particular that the machine halts for all inputs.
+Note in particular that in this case the machine halts for all inputs.
+Note also that if the machine does not recognize the language then 
+for any machine that correctly outputs~\str{1} when $\sigma\in\lang$,
+if $\sigma\notin\lang$ then on input $\sigma$, the machine 
+does not halt and output~\str{1},
+so possibly it just does not halt.
 
 %<*def:ComplexityClass>
 \begin{definition}\label{def:ComplexityClass}
@@ -5989,11 +6002,11 @@ specification.\footnote{There are other definitions of complexity class.
 
 \begin{example}
 One complexity class is 
-the collection of languages for which there is an accepting  Turing machine
+\!the collection of languages for which there is an deciding Turing machine
 that runs in time $\bigOh(n^{2})$.
 That is, 
 $\mathcal{C}=\set{\lang_0,\lang_1, \ldots}$, where 
-each $\lang_j$ is accepted by some machine~$\TM_{i_j}$,
+each $\lang_j$ is decided by some machine~$\TM_{i_j}$,
 which, when given input~$\sigma$, finishes within $\sizeof{\sigma}^{2}$
 steps.
 \end{example}
@@ -6010,7 +6023,8 @@ less than or equal to~$\lg(\sizeof{\sigma})$.
 
 Some points bear development.
 As to the computing machine, 
-researchers study not just Turing machines but other machine types as well,  
+researchers study not just Turing machines but other types of machines 
+as well,  
 including nondeterministic Turing machines,
 and Turing machines with access to an oracle for random numbers.
 The resource specification often 
@@ -7273,7 +7287,7 @@ To subtract we can use a branch that tests if the second number is greater
 than the first, and if so returns~$0$.
 In any event, clearly polytime.
 
-Multiplication is similar, and just as simply in polytime.
+Multiplication is similar, and also in polytime.
 
 For composition, if $f_0$ is $\bigOh(x^{n_0})$ 
 and $f_1$ is $\bigOh(x^{n_1})$ then the composition
@@ -7293,11 +7307,11 @@ Otherwise, let $k\in\N$ be such that $f(a)=k$.
 The algorithm uses $TM_1$ to determine whether $f_1(a)=y-k$.
 If so, the algorithm accepts~$\sigma$, otherwise it rejects.
 
-The reason it is pseudopolynomial lies in the testing of the
-$y+1$~many pairs.
-Since~$y$ is represented in binary, taking that many steps is 
-exponential in the length of the representation of~$y$, in the length of
-the input~$\sigma$.
+The reason it is pseudopolynomial and not properly polynomial
+lies in the testing of the $y+1$~many pairs.
+Inside of the input~$\sigma$, the number $y$ is represented in binary.
+So taking $y+1$ steps is taking time that is 
+exponential in the length of the input.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -7312,20 +7326,20 @@ $\sigma\in\lang_1$ if and only if $f(\sigma)\in\lang_0$.
 Prove that if $\lang_0\in\P$ and $\lang_1\leq_p\lang_0$
 then $\lang_1\in\P$.
 \begin{answer}
-From the assumption that  $\lang_0\in\P$ we get that there is a 
+Because  $\lang_0\in\P$, there is a 
 Turing machine with runtime 
 $\bigOh(x^{n})$ for some power~$n\in\N$, and whose input/output behavior is 
 the characteristic function of~$\lang_0$.
-From the assumption that $\lang_1\leq_p\lang_0$
-we get that there is a 
-Turing machine whose runtime is  $\bigOh(x^{m})$ for some power~$m\in\N$,
-whose input/output behavior is the function~$f$,
+Beacuse $\lang_1\leq_p\lang_0$,
+there is a 
+Turing machine whose runtime is  $\bigOh(x^{m})$ for some~$m\in\N$,
+whose input/output behavior is the function~$\map{f}{\N}{\N}$,
 and such that $\sigma\in\lang_1$ if and only if $f(\sigma)\in\lang_0$.
 
 So, to decide questions about whether $\sigma\in\lang_1$, 
-we first translate them, at a cost of $\bigOh(\sizeof{\sigma}^{m})$,
-to questions about whether $f(\sigma)\in\lang_0$,
-which we can settle in $\bigOh(\sizeof{\sigma}^{n})$.
+first translate them, at a cost of $\bigOh(\sizeof{\sigma}^{m})$,
+to questions about whether $f(\sigma)\in\lang_0$.
+Those questions we can settle in $\bigOh(\sizeof{\sigma}^{n})$.
 The result, $\bigOh(\sizeof{\sigma}^{\max(n,m)})$, is polytime.
 \end{answer}
 \end{exercise}
@@ -7358,66 +7372,68 @@ The result, $\bigOh(\sizeof{\sigma}^{\max(n,m)})$, is polytime.
 
 
 
-% https://cse.buffalo.edu/~regan/papers/pdf/ALRch27.pdf
-% Nondeterministic machines do not model physical computation devices, but they do model real computational problems
 % ===========================================
 \section{$\NP$}\index{NP@$\NP$|(}
-Recall that a machine is nondeterminstic\index{nondeterminism!for Turing machines}\index{Turing machine!nondeterminism} 
-if
-from a present configuration and input
+Recall that a machine is 
+nondeterminstic\index{nondeterminism!for Turing machines}\index{Turing machine!nondeterminism} 
+if from a present configuration and input
 it may pass to a next configuration with zero, or one, or more, next states.
 Recall also that we have two mental models of how these devices operate.
-In the first, the machine is unboundedly parallel:~its 
+The first is that the machine is unboundedly parallel:~its 
 computation history is a tree and it computes all of the branches.
 This
 fits with our experience on everyday computers where, for instance,
-we may have lots of windows open at one time, running lots of processes.
-In the second model the machine guesses which next state to follow,
-or is told which one by an oracle, and
-then deterministically checks that branch of the computation tree.
+we may have lots of windows open, all seeming to run processes in parallel.
+The second model is that the machine guesses which branch in the tree to 
+follow\Dash
+or is told by some demon\Dash and
+then deterministically verifies that branch.
 
-With the first model we say an input string is accepted if at least one of the 
+With the first model, we say an input string is accepted if at least one of the 
 branches on the tree is an accepting branch.
 With the second model we say the input
 is accepted if there is a sequences of guesses that the machine could
-make, or a sequence of hints that the demon could produce,
-that leads to an accepting state.
-With those definitions, the two models are logically equivalent in that
+make, or a sequence of hints from the demon,
+that ends in an accepting state.
+The two models are logically equivalent in that
 they accept the same languages.
 
-We have already considered nondeterminism for both Finite State machines
-and Pushdown machines.
 For Finite State machines, nondeterminism did not make any
 difference in the sense that for any
 job done by a nondeterministic Finite State machine there is a deterministic
 Finite State machine that can do the same job.
-But Pushdown machines are a different
-story:~there are jobs that can be done by
-a nondeterministic Pushdown machine that cannot be done by any
-deterministic machine.
-One such job is accepting the language of palindromes.
+But Pushdown machines are different:~there are jobs that
+a nondeterministic Pushdown machine can do but that cannot be done by any
+deterministic machine
+(one is the language decision problem for the language of palindromes).
 
 %<*lem:DeterministicAndNondeterministicTMsDoTheSame>
 \begin{lemma}
 Deterministic and nondeterministic Turing machines solve the same problems.
-In particular,
-every problem that can be solved by a nondeterministic machine
-can be solved by a deterministic machine.
+% In particular,
+% every problem that can be solved by a nondeterministic machine
+% can be solved by a deterministic machine.
 \end{lemma}
 %</lem:DeterministicAndNondeterministicTMsDoTheSame>
 
 %<*pf:DeterministicAndNondeterministicTMsDoTheSame>
 \begin{proof}
 Since a deterministic Turing machine is a special case of a
-nondeterministic one, one direction is obvious.
+nondeterministic one, 
+it is clear that if a problem can be solved by a deterministic machine
+then it can be solved by a nondeterministic one.
 
-For the other, start with a nondeterministic machine and we will
+For the other direction, start with a a problem~$\prob$ solved
+by a nondeterministic Turing machine. 
+We will
 describe how a deterministic machine can simulate the same computation.
 The nondeterministic machine generates a computation tree.
 The deterministic machine can do a breadth-first traversal of that tree.
 If there is an accepting branch then the deterministic machine will
-eventually reach it and it also will accept the input,
-otherwise it will not accept the input.
+eventually reach it and will accept the input.
+If there is no accepting branch in the tree then 
+the deterministic machine will never find one, and so
+will never accept the input.
 \end{proof}
 %</pf:DeterministicAndNondeterministicTMsDoTheSame>
 
@@ -10223,12 +10239,17 @@ $\PSPACE=\NPSPACE$
 \end{theorem}
 % and EXPSPACE
 
+% TODO:
+%  NL\subseteq P
+
 We finish with a list of the most natural complexity classes.
 
 \begin{definition} % credit https://cse.buffalo.edu/~regan/papers/pdf/ALRch27.pdf
 These are the 
 \definend{canonical complexity classes}\index{complexity class!canonical} 
 \begin{enumerate}
+\item $\compclass{L}=\DSPACE(\lg n)$, \definend{deterministic log space}
+  and $\compclass{NL}=\NSPACE(\lg n)$, \definend{nondeterministic log space}
 % \item $\P=\cup_{k=1,2,\ldots}\DTIME(n^k)$
 %   \definend{deterministic poynomial time}
 %   and $\NP=\cup_{k=1,2,\ldots}\NTIME(n^k)$ 
@@ -10243,8 +10264,6 @@ These are the
   \definend{deterministic exponential time}
   and $\compclass{NEXP}=\cup_{k=1,2,\ldots}\NTIME(2^{n^k})$, 
   \definend{nondeterministic exponential time}
-\item $\compclass{L}=\DSPACE(\lg n)$, \definend{deterministic log space}
-  and $\compclass{NL}=\NSPACE(\lg n)$, \definend{nondeterministic log space}
 \item $\compclass{PSPACE}$, 
   \definend{deterministic polynomial space}
 \item $\compclass{EXPSPACE}=\cup_{k=1,2,\ldots}\DSPACE(2^{n^k})$, 

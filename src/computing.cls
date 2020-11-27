@@ -815,8 +815,8 @@
 % \setlength{\tbmarginaroundshadedtheorems}{\lrmarginaroundshadedtheorems}
 \setlength{\resttbaroundshadedtheorems}{\topsep-\tbmarginaroundshadedtheorems}
 \newtheoremstyle{whitestyle}
-{0pt plus 0.5pt}               %space above
-{0pt plus 0.5pt}               %space below
+{2pt plus 0.5pt}               %space above
+{4pt plus 0.5pt}               %space below
 {}                      %bodyfont
 {0pt}                   %indent
 {\scshape}              %headfont

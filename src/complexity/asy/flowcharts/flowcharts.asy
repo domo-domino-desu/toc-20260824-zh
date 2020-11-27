@@ -13,12 +13,14 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
+import jhnode;
+cd("");
+cd("../../../asy/");
 import flowchart;
 cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
-cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
+// import node;
+// cd("");
 
 
 // define style
@@ -50,8 +52,8 @@ node start=nroundbox("Start");
 node read=nbox("Read $\sigma$, $\omega$");
 node compute=nbox("Compute line~$\omega$ of $\sigma$'s truth table");
 node test=nrounddiamond("Returns $T$?");
-node printyes=nbox("Print \"1\"");
-node printno=nbox("Print \"0\"");
+node printyes=nbox("Print \str{1}");
+node printno=nbox("--- Don't print \str{1} ---");
 node dummy=nbox("");  
 
 // layout
@@ -99,11 +101,11 @@ setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $\sigma$, $\omega$");
-node compute=nbox("Check path~$\omega$ valid in $\sigma$'s graph");
+node read=nbox("Read $\sigma=\sequence{\mathcal{G},v,\hat{v}}$, $\omega$");
+node compute=nbox("Check that~$\omega$ is a path in $\sigma$'s graph");
 node test=nrounddiamond("All vertices visited?");
-node printyes=nbox("Print \"1\"");
-node printno=nbox("Print \"0\"");
+node printyes=nbox("Print \str{1}");
+node printno=nbox("--- Don't print \str{1} ---");
 node dummy=nbox("");  
 
 // layout
@@ -116,8 +118,8 @@ vlayout(1.15*v,start,read);
 vlayout(1.15*v,read,compute);
 vlayout(1.40*v,compute,test);
 vlayout(1.15*v,test,dummy);
-hlayout(-2.25*u,dummy,printyes);
-hlayout(2.25*u,dummy,printno);
+hlayout(-3.25*u,dummy,printyes);
+hlayout(3.25*u,dummy,printno);
 
 // draw edges
 draw(pic,

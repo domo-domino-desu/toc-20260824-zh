@@ -4986,8 +4986,13 @@ or an exquisite Old Master.\footnote{
   \includegraphics[width=0.8\textwidth]{complexity/pix/caravaggio.jpg}
 \end{fig}
 
-So, in practice  
-researchers often do not mention representations.
+Consequently, in practice  
+\citetext{researchers often do not mention representations}{%
+  This is like a programmer saying, ``My program
+  inputs a number'' rather than, ``My program inputs the
+  binary representation of a number.''
+  It is also like a person saying, ``That's me on the card'' rather
+  than ``On that card is a picture of me.''}.
 We may describe
 the \probname{Shortest Path} problem as, 
 ``Given a weighted graph and two vertices \ldots{}''
@@ -7520,6 +7525,7 @@ Is this propositional logic formula satisfiable?
 \begin{equation*}
  (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
   \wedge (\neg P\vee \neg Q\vee \neg R) \wedge (Q\vee R)
+  \tag{$*$}
 \end{equation*} 
 The natural approach is to compute a truth table
 and see whether the final column has any $T$'s.
@@ -7528,7 +7534,7 @@ ends in a~$T$.
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
 \begin{tabular}{ccc|ccccc|c}
-  $P$  &$Q$  &$R$  &$P\vee Q$ &$P\vee \neg Q$ &$\neg P\vee Q$ &$\neg P\vee \neg Q\vee \neg R$ &$Q\vee R$ & \\ \hline    
+  $P$  &$Q$  &$R$  &$P\vee Q$ &$P\vee \neg Q$ &$\neg P\vee Q$ &$\neg P\vee \neg Q\vee \neg R$ &$Q\vee R$ &($*$) \\ \hline    
   $F$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$ &$F$ &$F$ \\     
   $F$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$ &$T$ &$F$ \\     
   $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ \\     
@@ -7556,9 +7562,9 @@ These children are done quickly, certainly in polytime.
 Then we just poll the processes, 
 and if any child is holding a `$T$' then we declare 
 that the expression is satisfiable.
-(In terms of the mental model:~the machine guesses a solution, 
-or is given a solution by the demon, and
-only has to verify that it works, which is also fast.)
+% (In terms of the mental model:~the machine guesses a solution, 
+% or is given a solution by the demon, and
+% only has to verify that it works, which is also fast.)
 In total then, a nondeterministic machine does this job in polytime
 while a serial machine appears to require
 exponential time.
@@ -7566,8 +7572,8 @@ exponential time.
 
 %<*def:NFSMAcceptsLang>
 \begin{definition}\index{language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!language}
-A nondeterministic machine
-\definend{recognizes the language~$\lang$ in time $\map{t}{\N}{\N}$} 
+Where $\map{t}{\N}{\N}$, a nondeterministic machine
+\definend{recognizes the language~$\lang$ in time $t$} 
 if for any
 input $\sigma\in\lang$ the machine computes at least one accepting branch
 in time $t(\mspace{2mu}|\sigma|\mspace{2mu})$. % \footnotemark[2].
@@ -7597,20 +7603,20 @@ in polytime.
 \end{definition}
 %</def:NP>
 
-A common pattern in mathematical presentations is to have
+A pattern in mathematical presentations is to have
 a definition that is conceptually clear, 
 followed by a result that we use in practice to 
 determine whether that definition applies.
 
 %<*intro:Verifier>
-Consider the above instance of \probname{Satisfiability},
-\cref{ex:SatisfiabilityfastOnNDTM}.
-Expressed in one of the ways that we conceptualize 
-nondeterministic computation,
-the demon whispers, 
-``Psst! The hint string is $\omega=\str{TTF}$,'' 
-and with that we can deterministically verify, quickly,  
-that the formula is satisfiable. 
+This is where we use the 
+nondeterministic computation conceptualization
+of the machine guessing or being told an answer.
+Consider the \probname{Satisfiability} example above.
+Imagine the demon whispering, 
+``Psst! Use the hint string $\omega=\str{TTF}$.'' 
+With that, we can deterministically verify, quickly,  
+that the formula is satisfiable.
 %</intro:Verifier>
  
 %<*def:Verifier>
@@ -7634,24 +7640,26 @@ if it has a polynomial time verifier.
 That is, $\lang\in\NP$ if and only if there is a 
 deterministic Turing machine~$\TM$ so that
 for every
-$\sigma\in\kleenestar{\B}$ there is a witness~$\omega$
+candidate for membership in the language, $\sigma\in\kleenestar{\B}$, 
+there is a witness~$\omega$
 where $\sigma\in\lang$ if and only if $\TM$ accepts 
-$\sequence{\sigma,\omega}$, in time polynomial in~$\sigma$.
+$\sequence{\sigma,\omega}$, in time polynomial in~$\sizeof{\sigma}$.
 \end{lemma}
 %</lem:VerifierAndGuesserEquiv>
 
-So to show that a language is in~$\NP$ we write a verifier~$\TM$, 
-a program that inputs hints~$\omega$ and confirms that they work.  
-The proof is below, on page~\pageref{proof:VerifierAndGuesserEquiv},
-but first we will see some examples and 
-clarify some aspects of the definition and lemma.
+So to show that a language~$\lang$ is in~$\NP$, we will produce a 
+verifier~$\TM\!$. 
+It takes as input a pair,
+a candidate for language membership~$\sigma$
+and a hint~$\omega$.
+If $\sigma\in\lang$ then the verifier will confirm it, using the hint,
+in polytime.
+If $\sigma\notin\lang$ then no hint will cause the verifier to 
+falsely report that $\sigma$ is in the language.  
 
-First, observe that 
-because the verifier runs in time polynomial in $\lh{\sigma}$,
-the witness~$\omega$ must have length polynomial in~$\lh{\sigma}$.
-This is simply because if 
-the witness were too long then the
-machine would not even be able to read it in the alotted time.
+The lemma's proof is below, on page~\pageref{proof:VerifierAndGuesserEquiv}.
+Before that, we will clarify some aspects of the definition and lemma
+with a few examples.
 
 %<*ex:SATIsNPi>
 \begin{example}
@@ -7661,51 +7669,51 @@ language.
 \begin{equation*}
   \SAT=
   \set{\sigma\suchthat
-    \text{$\sigma$ represents a propositional logic formula that is satisfiable}}
-\end{equation*}
-For the witnesses we can use strings pointing to a line of the truth table,
-such as $\omega=\str{TTF}$.
-This family of witnesses works because we can write
-the verifier shown below, a Turing machine~$\TM$ that inputs
-a representation of a propositional logic statement
-$\sigma$ and a representation of a truth table line~$\omega$,
-and accepts that pair if it can confirm that on that line 
-the statement~$\sigma$ returns~$T$.
+    \text{$\sigma$ represents a propositional logic formula 
+  that is satisfiable}}
+\end{equation*}\index{SAT@$\SAT$}
+We can write a
+verifier~$\TM$ that inputs the Propositional Logic 
+candidate string~$\sigma$,
+and a witness that points to a line of the truth table.
 %</ex:SATIsNPi>
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts000.pdf}}
 \end{center}
 %<*ex:SATIsNPii>
-If the statement~$\sigma$ is satisfiable then such an~$\omega$ exists,
-and the machine can verify the truth-table line quickly, certainly in polytime.
-If~$\sigma$ is not satisfiable then it doesn't matter what~$\omega$ 
-the machine inputs, it will not be able to verify a~$T$ for that line.
-So $\sigma\in\SAT$ if and only if there exists an~$\omega$ 
-that allows the verifier~$\TM$ to accept
-$\sequence{\sigma,\omega}$.
+This verifier, given a satisfiable candidate and a suitable hint
+such as the one from ($*$) along with~$\omega=\str{TTF}$,
+can easily check in polytime 
+that the Boolean values make the candidate yield~\true.
+But, given a candidate that is not satisfiable such as
+$\sigma=P\vee\neg P$, 
+no hint~$\omega$ will cause~$\TM$
+to falsely signal its acceptance
+that~$\sigma\in\SAT$.
 \end{example}
 %</ex:SATIsNPii>
 
-\begin{remark}
-We pause for a couple of comments.
+Before the next example, we pause for a few points.
 The most striking thing about \cref{def:Verifier} is that it says 
 ``there exists'' a witness~$\omega$.
 It does not say where that witness comes from.
 A person with a mindset of thinking computationally may well ask, 
-``but how will we find~$\omega$?'' 
-The question is not how to find it,
-the question is whether there exists a verifier
-Turing machine that
-inputs~$\omega$'s, for instance from a demon,
-and uses them to witness that the $\sigma$'s are in~$\lang$.
+``but how will we find the~$\omega$'s?'' 
+The question is not how to find them, the question is whether there is a
+Turing machine that verifies that the $\sigma$'s are in~$\lang$
+by using the hint~$\omega$'s (possibly supplied from some demon).
 In short, we don't compute the $\omega$'s,
 we just use them.
-(The examples that follow are there to help build intuition on this.)
 
-A second point is that the definition does not require that there be a 
-witness in the case that $\sigma\notin\lang$.
-Instead, in this case there just does not exist a string~$\omega$ 
-that the verifier can accept.
+The next point is that the definition does not require that there be a 
+witness that $\sigma\notin\lang$.
+Instead, in this case there just is no~$\omega$ 
+so that the verifier accepts $\sequence{\sigma,\omega}$.\footnote{%
+  This is why the flowchart above says `Don't print \str{1}'
+  instead of `Print \str{0}', to emphasize that the verifier is not
+  required to signal that $\sigma\notin\lang$.
+  Instead, it is only required to correctly signal when
+  $\sigma\in\lang$.}
 This is recognizing, not deciding.
 
 Third, a comment on the runtime of the verifier.
@@ -7716,77 +7724,79 @@ Contrast the~$\SAT$ problem with
   is a strategy for one of the two players that forces a win or a draw, no
   matter how the opponent plays}.
 Imagine that a demon hands you some papers and tells you
-that they contain a chess strategy, a flowchart, and that if you follow it
-then you cannot lose.
-Verifying that this strategy works, by having a computer step through
+that they contain a chess strategy where you cannot lose.
+Verifying this strategy, having a computer step through
 the responses to each move and responses to those
 responses, etc., 
-\citetext{at least appears to be an exponential-time job}{%
+\citetext{at least appears to take exponential time}{%
   In the terminology of a later section, chess is known to be 
   $\EXP$ complete.}.
-That is, even though you think you might have in your possession 
-a perfect strategy,
-it is useless because you cannot verify that in polytime.
-Thus, it is important that the definition requires that 
-the verifier runs in time polynomial in $\lh{\sigma}$,  
-because it makes the verification tractable.
+So 
+\citetext{the perfect strategy is useless in some sense}{%
+  Being given an answer with no accompanying justifiction is problemmatic.
+  This is like Feynmann's algorithm for solving Physics problems: 
+  ``The student asks \ldots{} what are Feynman's methods? 
+  [M]~Gell-Mann leans coyly against the blackboard and says: Dick's 
+  method is this. You write down the problem. You think very hard. 
+  (He shuts his eyes and presses his knuckles parodically to his forehead.) 
+  Then you write down the answer.''
+  \autocite{Gleick}}.
+The definition requires that 
+the verifier runs in time polynomial in $\lh{\sigma}$ in order 
+to make the verification tractable.
 
-Finally, above we described $\sigma$ as a string representing 
-a propositional logic statement
-and $\omega$ as representing a table line.
-As we mentioned in the earlier discussions on problems and representations,
-that gets tedious and
-\citetext{in practice authors usually omit it}{%
-  This is like a working programmer saying ``My program
-  inputs a number,'' rather than saying ``My program inputs the
-  binary representation of a number.''
-  It is also like a person saying ``That's me on the card'' rather
-  than ``On that card is a picture of me.''}.
-From now on we will do the same.
-For instance, the next example says that $\sigma$ is a triple instead of 
-saying that it represents a triple. 
-\end{remark}
+Finally, observe that 
+because the verifier runs in time polynomial in $\lh{\sigma}$,
+the witness~$\omega$ must have length that is polynomial in~$\lh{\sigma}$.
+If the witness were too long then the
+machine would not even be able to read it in the alotted time.
+So if we think that $\omega$ provides proof that $\sigma\in\lang$,
+and that the verifier checks the proof,
+then the definition requires that the proof must be tractible.
 
 %<*ex:HamPathIsNPi>
 \begin{example}
-The \definend{\probname{Hamiltonian Path}} problem is like
-\probname{Hamiltonian Circuit} except that it inputs two vertices 
+The 
+\definend{\probname{Hamiltonian Path}} problem\index{Hamiltonian Path problem@\probname{Hamiltonian Path} problem} 
+is like the
+\probname{Hamiltonian Circuit} problem\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem} 
+except that it inputs two vertices 
 instead of requiring that the starting vertex equal the ending one.  
 \begin{equation*}
-  \lang=\set{\sigma=\sequence{\mathcal{G},v,\hat{v}}\suchthat 
-             \text{some path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex}}
+  \set{\sequence{\mathcal{G},v,\hat{v}}\suchthat 
+             \text{some path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex exactly once}}
 \end{equation*}
-We will show that this problem is in~$\NP$.
-To do that, we will describe a family of witness~$\omega$'s, hints from the
-demon that will be inputs for a
-suitable Turing machine verifier~$\TM$.
-We take the witness to be a path, 
-$\omega=\sequence{v,v_1,\ldots\, \hat{v}}$.
-Our verifier inputs~$\sigma=\sequence{\mathcal{G},v,\hat{v}}$ 
-and~$\omega$ and then it
-tries to confirm that the list of vertices visited by the path is all
-of the vertices in the graph.
+We will show that this problem is in the class~$\NP$.
+We take each witness to be a path, 
+$\omega=\sequence{v,v_1,\ldots{} \hat{v}}$.
+Here is our verifier.
+% Our verifier inputs~$\sigma=\sequence{\mathcal{G},v,\hat{v}}$ 
+% and~$\omega$, and then it
+% tries to confirm that the list of vertices visited by the path is all
+% of the vertices in the graph.
 %</ex:HamPathIsNPi>
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts001.pdf}}
 \end{center}
 %<*ex:HamPathIsNPii>
-If there is a Hamiltonian path for the graph and vertices then there exists
-a witness~$\omega$ leading to acceptance by~$\TM$ of the pair (the
-check can be done in polytime).
-If there is no such path then for no~$\omega$ is~$\TM$  
-able to verify, so it never accepts.
+If there is a Hamiltonian path then there exists
+a witness~$\omega$ leading to acceptance, in polytime.
+If there is no such path then for no~$\omega$ will~$\TM$  
+verify, so it never signals acceptance.
 \end{example}
 %</ex:HamPathIsNPii>
 
 %<*ex:CompositeIsNP>
 \begin{example}
-\probname{Composite} asks whether a number has a nontrivial factor.
+The \probname{Composite} problem\index{Composite problem@\probname{Composite} problem}
+asks whether a number has a nontrivial factor.
 \begin{equation*}
   \lang=\set{n\in\N\suchthat \text{$n$ has a divisor~$a$ with $1<a<n$}}
 \end{equation*}
-For a witness~$\omega$ we can use any nontrivial factor~$a$.
-The verifier inputs~$\sequence{\sigma,\omega}$ where $\sigma$ is a number~$n$.
+The verifier inputs~$\sequence{\sigma,\omega}$, where $\sigma$ 
+represents a number~$n$ and
+as a witness~$\omega$, we can use any nontrivial factor~$a$.
+Our verifier just checks that $a$ divides~$n$.
 If $\sigma\in\lang$ then the number is composite and there is a suitable 
 witness, which the verifier can check in polytime.
 If $\sigma\notin\lang$ then there is no suitable witness and the verifier will
@@ -7795,22 +7805,25 @@ never accept the input pair.
 %</ex:CopositeIsNP>
 
 \begin{example}
-Recall \probname{Subset Sum}:~given a set of numbers $S\subset\N$ 
-and a target sum~$T\in\N$,
+Recall the
+\probname{Subset Sum} problem:~given\index{Subset Sum problem@\probname{Subset Sum} problem}
+a set of numbers $S\subset\N$ and a target sum~$T\in\N$,
 we want to know if at least one subset of~$S$ adds to~$T$.
-Recast it as the decision problem for
+Recast it as the decision problem for the language
 %\begin{equation*}
 $
-  \lang=\set{\sequence{S,T}\suchthat
+  \set{\sequence{S,T}\suchthat
      \text{a subset of $S$ totals to $T$}}
 $.
 %\end{equation*}
-As the witness~$\omega$ we can use the subset~$\hat{S}\subseteq S$ 
-whose members add to the target.
-Verifying that the subset adds to the target in polynomial time is easy.
+For $\sigma=\sequence{S,T}$,
+as~$\omega$ we can use the subset~$\smash{\hat{S}}\subseteq S$ 
+whose members add to~$T$.
+The verifier just checks that the subset adds to the target,
+which is easy in polytime.
 \end{example}
 
-We finish with the promised proof
+Finally, the promised proof
 of \cref{lem:VerifierAndGuesserEquiv}
 
 \begin{proof} \label{proof:VerifierAndGuesserEquiv}
@@ -7911,17 +7924,18 @@ these machines are eminently practical, as witnessed by the
 fact that computer scientists have been trying to solve them
 since physical computers became available.
 A later section will address such problems.
-\end{remark}\footnotetext[1]{%
-  Note that popularizations do sometimes misleadingly 
-  suggest that quantum computers
-  are nondeterministic. 
+\end{remark}
+\footnotetext[1]{%
+  Some popularizations misleadingly 
+  suggest that quantum computers are nondeterministic. 
   That is, 
-  these articles miss the point about interference.}
+  they miss the point about interference.} %
 
+\smallskip  % why needed?
 In summary, we are interested in knowing for which problems
-are there relatively good algorithms and for which are there not.
-Cobham's Thesis identifies the problems
-that have a good algorithm as the problems in~$\P$.
+there are good algorithms, and for which are there not.
+% Cobham's Thesis identifies the problems
+% that have a good algorithm as the problems in~$\P$.
 In this section we defined the class of problems for which
 there is a good way to verify a solution, in contrast with the problems
 for which there is a good algorithm to generate a solution.

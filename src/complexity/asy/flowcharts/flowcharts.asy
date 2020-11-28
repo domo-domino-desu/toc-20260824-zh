@@ -51,9 +51,9 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $\sigma$, $\omega$");
 node compute=nbox("Compute line~$\omega$ of $\sigma$'s truth table");
-node test=nrounddiamond("Returns $T$?");
+node test=nrounddiamond("It gives $T\,$?");
 node printyes=nbox("Print \str{1}");
-node printno=nbox("--- Don't print \str{1} ---");
+node printno=nbox("Print \str{0}");
 node dummy=nbox("");  
 
 // layout
@@ -66,8 +66,8 @@ vlayout(1.15*v,start,read);
 vlayout(1.15*v,read,compute);
 vlayout(1.40*v,compute,test);
 vlayout(1.15*v,test,dummy);
-hlayout(-2.25*u,dummy,printyes);
-hlayout(2.25*u,dummy,printno);
+hlayout(-2.5*u,dummy,printyes);
+hlayout(2.5*u,dummy,printno);
 
 // draw edges
 draw(pic,
@@ -105,7 +105,7 @@ node read=nbox("Read $\sigma=\sequence{\mathcal{G},v,\hat{v}}$, $\omega$");
 node compute=nbox("Check that~$\omega$ is a path in $\sigma$'s graph");
 node test=nrounddiamond("All vertices visited?");
 node printyes=nbox("Print \str{1}");
-node printno=nbox("--- Don't print \str{1} ---");
+node printno=nbox("Print \str{0}");
 node dummy=nbox("");  
 
 // layout

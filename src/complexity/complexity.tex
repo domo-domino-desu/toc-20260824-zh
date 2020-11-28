@@ -7400,11 +7400,11 @@ if from a present configuration and input
 it may pass to a next configuration with zero, or one, or more, next states.
 Recall also that we have two mental models of how these devices operate.
 The first is that the machine is unboundedly parallel:~its 
-computation history is a tree and it computes all of the branches
+computation history is a tree and it silmutaneously computes all of the branches
 that the input triggers.
 This
 fits with our experience on everyday computers where
-we may have lots of windows open, all seeming to run processes in parallel.
+we may have lots of windows open, appearing to all run processes in parallel.
 The second model is that the machine guesses which branch in the tree to 
 follow\Dash
 or is told by some demon\Dash and
@@ -7416,16 +7416,17 @@ triggered branch paths is accepting.
 With the second model we say that the input
 is accepted if there is a sequences of guesses that the machine could
 make, or a sequence of hints from the demon, consistent with the input,
-that ends in an accepting state.
-The two models are equivalent in that
-they result in recognizing the same languages.\footnote{%
-  Recall the distinction between deciding
-  and recognizing:~a machine decides a language if computes whether or not 
-  its input is a member of the language.
-  A machine recognizes a language if it computes whether an
-  input is a member, but for non-members it may either
-  halt and not accept it, or it might just not halt.   
-}
+that ends in an accepting state (or that causes the machine to output
+something signalling acceptance).
+% The two models are equivalent in that
+% they result in recognizing the same languages.\footnote{%
+%   Recall the distinction between deciding
+%   and recognizing:~a machine decides a language if computes whether or not 
+%   its input is a member of the language.
+%   A machine recognizes a language if it computes whether an
+%   input is a member, but for non-members it may either
+%   halt and not accept it, or it might just not halt.   
+% }
 
 For Finite State machines, nondeterminism does not make any
 difference, in that a language is recognized by 
@@ -7435,14 +7436,21 @@ Finite State machine.
 But Pushdown machines are different:~there are jobs that
 a nondeterministic Pushdown machine can do but that cannot be done by any
 deterministic machine.\footnote{%
-  One such job is the decision problem for the language of palindromes.}
+   One such job is the decision problem for the language of palindromes.}
 
 \begin{definition}\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language}
 A nondeterministic machine
 \definend{recognizes} the language~$\lang$ 
 when $\sigma\in\lang$ if and only if 
-the machine computes at least one accepting branch. 
+the machine computes at least one accepting branch.
 \end{definition}
+
+\noindent (Recall the distinction between deciding
+and recognizing:~a machine decides a language if computes whether or not 
+its input is a member of the language.
+A machine recognizes a language if it computes whether an
+input is a member, but for non-members it may either
+halt and not accept it, or it might just not halt.)
 
 %<*lem:DeterministicAndNondeterministicTMsDoTheSame>
 \begin{lemma}
@@ -7599,6 +7607,7 @@ The complexity
 class~\definend{$\compclass{NP}$}\index{NP@$\NP$} 
 is the set of languages for which there is a 
 nondeterministic Turing machine recognizer that runs
+in polytime, meaning that any accepting branch halts
 in polytime.
 \end{definition}
 %</def:NP>
@@ -7621,13 +7630,13 @@ that the formula is satisfiable.
  
 %<*def:Verifier>
 \begin{definition}  \label{def:Verifier}
-For a language, 
+Where $\lang$ is a language, 
 a deterministic Turing machine~$\TM$ is a
-\definend{verifier} whenever 
-a string $\sigma\in\kleenestar{\B}$ is member of the language
+\definend{verifier} for~$\lang$ if it halts on all inputs, and 
+a candidate string $\sigma\in\kleenestar{\B}$ is member of~$\lang$
 if and only if
-there exists a \definend{witness} or \definend{certificate}
-string $\omega\in\kleenestar{\B}$ such that
+there is a \definend{witness} or \definend{certificate}
+$\omega\in\kleenestar{\B}$ such that
 $\TM$ accepts~$\sequence{\sigma,\omega}$.
 \end{definition}
 %</def:Verifier>
@@ -7638,9 +7647,8 @@ A language is a member of $\NP$
 if and only
 if it has a polynomial time verifier.
 That is, $\lang\in\NP$ if and only if there is a 
-deterministic Turing machine~$\TM$ so that
-for every
-candidate for membership in the language, $\sigma\in\kleenestar{\B}$, 
+deterministic Turing machine~$\TM$ that halts on all inputs and so that
+for every candidate~$\sigma$, 
 there is a witness~$\omega$
 where $\sigma\in\lang$ if and only if $\TM$ accepts 
 $\sequence{\sigma,\omega}$, in time polynomial in~$\sizeof{\sigma}$.
@@ -7681,15 +7689,15 @@ and a witness that points to a line of the truth table.
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts000.pdf}}
 \end{center}
 %<*ex:SATIsNPii>
-This verifier, given a satisfiable candidate and a suitable hint
-such as the one from ($*$) along with~$\omega=\str{TTF}$,
+This verifier, given a satisfiable candidate 
+such as the one from ($*$), and a suitable witness
+such as~$\omega=\str{TTF}$,
 can easily check in polytime 
-that the Boolean values make the candidate yield~\true.
-But, given a candidate that is not satisfiable such as
+that the Boolean values make the candidate evaluate to~\true.
+But, with a candidate that is not satisfiable such as
 $\sigma=P\vee\neg P$, 
 no hint~$\omega$ will cause~$\TM$
-to falsely signal its acceptance
-that~$\sigma\in\SAT$.
+to signal its acceptance that~$\sigma\in\SAT$.
 \end{example}
 %</ex:SATIsNPii>
 
@@ -7706,15 +7714,10 @@ In short, we don't compute the $\omega$'s,
 we just use them.
 
 The next point is that the definition does not require that there be a 
-witness that $\sigma\notin\lang$.
-Instead, in this case there just is no~$\omega$ 
-so that the verifier accepts $\sequence{\sigma,\omega}$.\footnote{%
-  This is why the flowchart above says `Don't print \str{1}'
-  instead of `Print \str{0}', to emphasize that the verifier is not
-  required to signal that $\sigma\notin\lang$.
-  Instead, it is only required to correctly signal when
-  $\sigma\in\lang$.}
-This is recognizing, not deciding.
+witness to $\sigma\notin\lang$.
+Instead, in this case, from among all possible $\omega\in\kleenestar{\B}$, 
+there is none 
+so that the verifier accepts $\sequence{\sigma,\omega}$.
 
 Third, a comment on the runtime of the verifier.
 Contrast the~$\SAT$ problem with
@@ -7732,15 +7735,20 @@ responses, etc.,
   In the terminology of a later section, chess is known to be 
   $\EXP$ complete.}.
 So 
-\citetext{the perfect strategy is useless in some sense}{%
-  Being given an answer with no accompanying justifiction is problemmatic.
-  This is like Feynmann's algorithm for solving Physics problems: 
+\citetext{this perfect strategy is useless in some sense}{%
+  Being given an answer with no accompanying justifiction is a problem.
+  This is like Feynmann's algorithm for doing Physics: 
   ``The student asks \ldots{} what are Feynman's methods? 
   [M]~Gell-Mann leans coyly against the blackboard and says: Dick's 
   method is this. You write down the problem. You think very hard. 
   (He shuts his eyes and presses his knuckles parodically to his forehead.) 
   Then you write down the answer.''
-  \autocite{Gleick}}.
+  \autocite{Gleick}
+  It is also like the mathematician S~Ramanujan, who said that
+  the advanced formulas that he produced came to him as
+  dreams from the god Narasimha.
+  Some of these formulas were startling and amazing, but some of them
+  were wrong. \autocite{IndiaToday}}.
 The definition requires that 
 the verifier runs in time polynomial in $\lh{\sigma}$ in order 
 to make the verification tractable.
@@ -7749,10 +7757,16 @@ Finally, observe that
 because the verifier runs in time polynomial in $\lh{\sigma}$,
 the witness~$\omega$ must have length that is polynomial in~$\lh{\sigma}$.
 If the witness were too long then the
-machine would not even be able to read it in the alotted time.
-So if we think that $\omega$ provides proof that $\sigma\in\lang$,
-and that the verifier checks the proof,
-then the definition requires that the proof must be tractible.
+machine would not even be able to read it in the alotted time.\footnote{%
+  Some authors instead give the definition as that the 
+  verifier runs in time polynoimial in its input, $\sequence{\sigma,\omega}$, 
+  with the restriction that $\omega$ 
+  must have length polynomial in~$\sigma$.
+  Without such as restriction, we could get the verifier 
+  to have exponential runtime by giving it an exponential length witness.}
+So if we think that $\omega$ gives proof that $\sigma\in\lang$
+and that the verifier checks that proof,
+then the definition also requires that the supplied proof is tractable.
 
 %<*ex:HamPathIsNPi>
 \begin{example}
@@ -7770,19 +7784,15 @@ We will show that this problem is in the class~$\NP$.
 We take each witness to be a path, 
 $\omega=\sequence{v,v_1,\ldots{} \hat{v}}$.
 Here is our verifier.
-% Our verifier inputs~$\sigma=\sequence{\mathcal{G},v,\hat{v}}$ 
-% and~$\omega$, and then it
-% tries to confirm that the list of vertices visited by the path is all
-% of the vertices in the graph.
 %</ex:HamPathIsNPi>
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts001.pdf}}
 \end{center}
 %<*ex:HamPathIsNPii>
-If there is a Hamiltonian path then there exists
+If there is a Hamiltonian path then there is
 a witness~$\omega$ leading to acceptance, in polytime.
 If there is no such path then for no~$\omega$ will~$\TM$  
-verify, so it never signals acceptance.
+signal acceptance.
 \end{example}
 %</ex:HamPathIsNPii>
 
@@ -7794,11 +7804,11 @@ asks whether a number has a nontrivial factor.
   \lang=\set{n\in\N\suchthat \text{$n$ has a divisor~$a$ with $1<a<n$}}
 \end{equation*}
 The verifier inputs~$\sequence{\sigma,\omega}$, where $\sigma$ 
-represents a number~$n$ and
-as a witness~$\omega$, we can use any nontrivial factor~$a$.
+represents a number~$n$.
+As the witness~$\omega$, we can use any nontrivial factor~$a$.
 Our verifier just checks that $a$ divides~$n$.
 If $\sigma\in\lang$ then the number is composite and there is a suitable 
-witness, which the verifier can check in polytime.
+witness, which we can verify in polytime.
 If $\sigma\notin\lang$ then there is no suitable witness and the verifier will
 never accept the input pair.
 \end{example}
@@ -8227,6 +8237,15 @@ Give a witness for each of these problems from~$\compclass{NP}$.
 \end{exercise}
 
 \recommended
+\begin{exercise}
+The \definend{\probname{Longest Path}} problem\index{Longest Path problem@\probname{Longest Path} problem}
+is to input a graph and a bound, $\sequence{\mathcal{G},B}$, 
+and determine whether the graph contains a simple path
+of length at least~$B\in\N$.
+(A path is simple if no two of its vertices are equal).
+Show that this problem is a member of $\NP$. 
+\end{exercise}
+
 \begin{exercise}
 Recast this as a decision problem and then show it is in~$\NP$:
 \textit{\citetext{We are going to put numbers into boxes.}{%
@@ -9498,7 +9517,7 @@ is certainly the sexiest one in the Theoretical of Computing today.
 It has attracted a great deal of speculation, and gossip.
 \citetext{In 2018 a poll}{%
   The poll was conducted by 
-  W~Gasarch is a prominent researcher and blogger in Computational Complexity.
+  W~Gasarch, a prominent researcher and blogger in Computational Complexity.
   There were 124 respondents.
   For the description see
   \url{https://www.cs.umd.edu/users/gasarch/BLOGPAPERS/pollpaper3.pdf}.
@@ -9692,6 +9711,10 @@ is in that class because there is not algorithm yet known.
 It is not a question of whether there is a known algorithm, only of 
 whether there is any algorithm at all.
 \end{answer}
+\end{exercise}
+
+\begin{exercise}  % Show ... is NP complete
+https://cs.stackexchange.com/a/121271
 \end{exercise}
 
 \recommended

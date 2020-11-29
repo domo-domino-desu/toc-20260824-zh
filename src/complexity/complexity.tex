@@ -7439,7 +7439,7 @@ deterministic machine.\footnote{%
    One such job is the decision problem for the language of palindromes.}
 
 \begin{definition}\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language}
-A nondeterministic machine
+A nondeterministic Turing machine
 \definend{recognizes} the language~$\lang$ 
 when $\sigma\in\lang$ if and only if 
 the machine computes at least one accepting branch.
@@ -7570,9 +7570,6 @@ These children are done quickly, certainly in polytime.
 Then we just poll the processes, 
 and if any child is holding a `$T$' then we declare 
 that the expression is satisfiable.
-% (In terms of the mental model:~the machine guesses a solution, 
-% or is given a solution by the demon, and
-% only has to verify that it works, which is also fast.)
 In total then, a nondeterministic machine does this job in polytime
 while a serial machine appears to require
 exponential time.
@@ -7580,13 +7577,12 @@ exponential time.
 
 %<*def:NFSMAcceptsLang>
 \begin{definition}\index{language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!language}
-Where $\map{t}{\N}{\N}$, a nondeterministic machine
-\definend{recognizes the language~$\lang$ in time $t$} 
+Where $\map{t}{\N}{\N}$, a nondeterministic Turing machine
+\definend{recognizes a language in time $t$} 
 if for any
 input $\sigma\in\lang$ the machine computes at least one accepting branch
-in time $t(\mspace{2mu}|\sigma|\mspace{2mu})$. % \footnotemark[2].
-\end{definition} % \footnotetext[2]{Whether we use the model that the machine
-  % decides by a computation tree or by guessing does not matter.}
+in time $t(\mspace{2mu}|\sigma|\mspace{2mu})$.
+\end{definition} 
 %</def:NFSMAcceptsLang>
 
 So while adding nondeterminism to Turing machines doesn't
@@ -7612,6 +7608,23 @@ in polytime.
 \end{definition}
 %</def:NP>
 
+The next follows immediately from the
+definitions because a deterministic Turing machine is a special case
+of a nondeterministic one.
+
+%<*lem:PSubsetNP>
+\begin{lemma}
+$\P\subseteq\NP$
+\end{lemma}
+%</lem:PSubsetNP>
+
+%<*rem:DunnoPvsNP>
+\noindent Very important:~no one knows whether $\P$ is a strict subset, 
+that is, whether $\P\neq\NP$ or $\P=\NP$.\index{P versus NP@$\P$ versus $\NP$}
+This is the biggest open problem in the Theory of Computing,
+and we will say more in a later section.
+%</rem:DunnoPvsNP>
+
 A pattern in mathematical presentations is to have
 a definition that is conceptually clear, 
 followed by a result that we use in practice to 
@@ -7624,20 +7637,20 @@ of the machine guessing or being told an answer.
 Consider the \probname{Satisfiability} example above.
 Imagine the demon whispering, 
 ``Psst! Use the hint string $\omega=\str{TTF}$.'' 
-With that, we can deterministically verify, quickly,  
+With that hint, we can deterministically verify, quickly,  
 that the formula is satisfiable.
 %</intro:Verifier>
  
 %<*def:Verifier>
 \begin{definition}  \label{def:Verifier}
-Where $\lang$ is a language, 
-a deterministic Turing machine~$\TM$ is a
-\definend{verifier} for~$\lang$ if it halts on all inputs, and 
+A \definend{verifier} for a language~$\lang$
+is a deterministic Turing machine~$\TM[V]$ that halts on all inputs, and
+such that 
 a candidate string $\sigma\in\kleenestar{\B}$ is member of~$\lang$
 if and only if
 there is a \definend{witness} or \definend{certificate}
-$\omega\in\kleenestar{\B}$ such that
-$\TM$ accepts~$\sequence{\sigma,\omega}$.
+$\omega\in\kleenestar{\B}$ so that
+$\TM[V]$ accepts~$\sequence{\sigma,\omega}$.
 \end{definition}
 %</def:Verifier>
 
@@ -7647,16 +7660,16 @@ A language is a member of $\NP$
 if and only
 if it has a polynomial time verifier.
 That is, $\lang\in\NP$ if and only if there is a 
-deterministic Turing machine~$\TM$ that halts on all inputs and so that
+deterministic Turing machine~$\TM[V]$ that halts on all inputs and so that
 for every candidate~$\sigma$, 
 there is a witness~$\omega$
-where $\sigma\in\lang$ if and only if $\TM$ accepts 
+where $\sigma\in\lang$ if and only if $\TM[V]$ accepts 
 $\sequence{\sigma,\omega}$, in time polynomial in~$\sizeof{\sigma}$.
 \end{lemma}
 %</lem:VerifierAndGuesserEquiv>
 
 So to show that a language~$\lang$ is in~$\NP$, we will produce a 
-verifier~$\TM\!$. 
+verifier~$\TM[V]\!$. 
 It takes as input a pair,
 a candidate for language membership~$\sigma$
 and a hint~$\omega$.
@@ -7678,10 +7691,10 @@ language.
   \SAT=
   \set{\sigma\suchthat
     \text{$\sigma$ represents a propositional logic formula 
-  that is satisfiable}}
-\end{equation*}\index{SAT@$\SAT$}
+  that is satisfiable}}\index{SAT@$\SAT$}
+\end{equation*}
 We can write a
-verifier~$\TM$ that inputs the Propositional Logic 
+verifier~$\TM[V]$ that inputs the Propositional Logic 
 candidate string~$\sigma$,
 and a witness that points to a line of the truth table.
 %</ex:SATIsNPi>
@@ -7696,7 +7709,7 @@ can easily check in polytime
 that the Boolean values make the candidate evaluate to~\true.
 But, with a candidate that is not satisfiable such as
 $\sigma=P\vee\neg P$, 
-no hint~$\omega$ will cause~$\TM$
+no hint~$\omega$ will cause~$\TM[V]$
 to signal its acceptance that~$\sigma\in\SAT$.
 \end{example}
 %</ex:SATIsNPii>
@@ -7705,17 +7718,17 @@ Before the next example, we pause for a few points.
 The most striking thing about \cref{def:Verifier} is that it says 
 ``there exists'' a witness~$\omega$.
 It does not say where that witness comes from.
-A person with a mindset of thinking computationally may well ask, 
+A person with a computational mindset may ask, 
 ``but how will we find the~$\omega$'s?'' 
 The question is not how to find them, the question is whether there is a
-Turing machine that verifies that the $\sigma$'s are in~$\lang$
-by using the hint~$\omega$'s (possibly supplied from some demon).
+Turing machine that verifies that the $\sigma$'s are in~$\lang$,
+by using the hint~$\omega$'s.
 In short, we don't compute the $\omega$'s,
 we just use them.
 
 The next point is that the definition does not require that there be a 
 witness to $\sigma\notin\lang$.
-Instead, in this case, from among all possible $\omega\in\kleenestar{\B}$, 
+Instead, in this case, from among all possible $\omega\in\kleenestar{\B}\!$, 
 there is none 
 so that the verifier accepts $\sequence{\sigma,\omega}$.
 
@@ -7759,14 +7772,14 @@ the witness~$\omega$ must have length that is polynomial in~$\lh{\sigma}$.
 If the witness were too long then the
 machine would not even be able to read it in the alotted time.\footnote{%
   Some authors instead give the definition as that the 
-  verifier runs in time polynoimial in its input, $\sequence{\sigma,\omega}$, 
+  verifier runs in time polynomial in its input, $\sequence{\sigma,\omega}$, 
   with the restriction that $\omega$ 
   must have length polynomial in~$\sigma$.
-  Without such as restriction, we could get the verifier 
+  Without some kind of restriction, we could get the verifier 
   to have exponential runtime by giving it an exponential length witness.}
-So if we think that $\omega$ gives proof that $\sigma\in\lang$
+So if we think of it as that $\omega$ gives proof that $\sigma\in\lang$
 and that the verifier checks that proof,
-then the definition also requires that the supplied proof is tractable.
+then the definition requires that the proof is tractable.
 
 %<*ex:HamPathIsNPi>
 \begin{example}
@@ -7791,7 +7804,7 @@ Here is our verifier.
 %<*ex:HamPathIsNPii>
 If there is a Hamiltonian path then there is
 a witness~$\omega$ leading to acceptance, in polytime.
-If there is no such path then for no~$\omega$ will~$\TM$  
+If there is no such path then for no~$\omega$ will~$\TM[V]$  
 signal acceptance.
 \end{example}
 %</ex:HamPathIsNPii>
@@ -7842,114 +7855,122 @@ Suppose first that the language~$\lang$ is accepted by the nondeterministic
 Turing machine~$\TM$ in polynomial time;
 we will construct a polynomial time verifier~$\TM[V]$.
 Let $\map{p}{\N}{\N}$ be the polynomial 
-such that the time taken by~$\TM$ on input~$\sigma\in\kleenestar{\B}$
-is $p(|\sigma|)$.
-For any $\sigma\in\lang$ the computation tree has an accepting branch.
-We can make a certificate $\omega$ of the branchings.
-With the certificate, a deterministic verifier can retrace $\TM$'s
+such that on input~$\sigma\in\lang$, the nondeterministic
+Turing machine~$\TM$ has an accepting branch within
+the time $p(|\sigma|)$.
+We can make a certificate $\omega$ of this accepting branch.
+(Any Turing machine, including a nondeterministic one, has
+a finite number, $k$, of states.
+So we can represent a branch of a computation tree with 
+a string of numbers less than~$k$.)
+With that certificate, a deterministic verifier can retrace $\TM$'s
 accepting branch.
 Because
 the branch's length must be less than the length of the computation,
-$p(|\sigma|)$,
-the certificate will have length less than $p(|\sigma|)$.
+the certificate will have length less than $\bigOh(p)$.
 So the verifier~$\TM[V]$ can do the retracing in polynomial time.
 %</pf:VerifierAndGuesserEquivi>
 
 %<*pf:VerifierAndGuesserEquivii>
-For the other direction suppose that the language $\lang$
+For the other direction, suppose that the language $\lang$
 is accepted by a verifier~$\TM[V]$ that runs in time
-that is bounded by some polynomial~$p$.
-We will describe a process in guessing terms.
-Given $\sigma\in\kleenestar{\B}$, produce a sequence of $|\sigma|$-many
-guesses of branches in the computation tree to make a witness string~$\omega$.
-Use this witness along with $\sigma$ as inputs to $\TM[V]$.
-Because of the verifier step, there is a way for this guessing process to
-succeed if and only if $\sigma\in\lang$.
-Because the verifier runs in polynomial time, the entire process of guessing and
-then verifying does also.
+bounded by the polynomial~$q$, and that takes input pairs of bitstrings 
+$\sequence{\sigma,\omega}$.
+We will construct a nondeterministic Turing machine~$\TM$  
+that accepts an input bitstring~$\tau$
+if and only if $\tau\in\lang$.
+
+The key is that this machine is allowed to be nondeterministic.
+Given a candidate bitstring $\tau$, 
+(1)~$\TM$ nondeterminstically produces a witness
+bitstring $\kappa$
+of length less than $q(\sizeof{\tau})$
+(informally, it guesses $\kappa$, or gets it from a demon)
+(2)~it then runs  $\sequence{\tau,\kappa}$ through the verifier~$\TM[V]$,
+and
+(3)~if the verifier accepts then $\TM$ accepts, and if the 
+verifier does not accept then $\TM$ does not accept.
+
+By definition, a nondeterministic machine accepts a string if and only if
+there is a branch that accepts the string. 
+That is, $\TM$ accepts~$\tau$ if and only if there exists a way for the prior 
+paragraph to result in an accepted string.
+Suppose first that $\tau\in\lang$.
+Then because $\TM[V]$ is a verifier, there exists a witness~$\kappa$ that will 
+result in $\TM[V]$ accepting $\sequence{\tau,\kappa}$,
+so there is indeed a way for the prior paragraph to work, and so $\TM$ 
+accepts~$\tau$.
+Now suppose that $\tau\notin\lang$.
+Then by definition of a verifier, no~$\kappa$ will result in 
+$\TM[V]$ accepting $\sequence{\tau,\kappa}$,
+and thus $\TM$ does not accept~$\tau$.
 %</pf:VerifierAndGuesserEquivii>
 \end{proof}
 
-So one way to think of $\NP$ is that it is the class of problems that 
-have efficient verifiers:~there is a polytime algorithm that,
-given a witness~$\omega$,
-can use it to verify membership in the language.
-%<*lem:PSubsetNP>
-\begin{lemma}
-$\P\subseteq\NP$
-\end{lemma}
-%</lem:PSubsetNP>
+A common reaction to the second half of that proof is something like,
+``Wait, the machine pulls a witness out of thin air?
+With a probability of just about zero of getting a useful hint?''
+This reaction\Dash about nondeterministic Turing machines
+and reality versus abstraction\Dash is common and very 
+reasonable,
+so we will briefly comment.
 
-%<*pf:PSubsetNP>
-\begin{proof}
-Any deterministic Turing machine is trivially also a nondeterministic one.
-So a problem that has a polynomial time algorithm on a deterministic
-machine trivially has a polytime algorithm on a
-nondeterministic machine.
-\end{proof}
-%</pf:PSubsetNP>
-
-%<*rem:DunnoPvsNP>
-\index{P versus NP@$\P$ versus $\NP$}
-Very important:~no one knows whether $\P$ is a strict subset, 
-so that $\P\neq\NP$, or whether $\P=\NP$.
-That is, at this moment no one knows whether, because
-deterministic machines do not come with unbounded parallelism baked in
-and must simulate it with time-slicing,
-they are necessarily slower.
-We will take up this question in the next section.
-%</rem:DunnoPvsNP>
-
-\begin{remark}
-Before we finish, a comment on whether nondeterministic Turing machines
-are ``real.''
-We today know of no way to build physical devices 
+As to reality, we today know of no way to build physical devices 
 that bear the same relationship to nondeterministic Turing machines 
 that everyday computers bear to deterministic ones.
-
 Of course, when Turing formulated his definition there were no
-physical computers matching it, but they did appear.
+practical physical computers matching it, but they 
+were clearly coming and appeared soon after.
 Will we someday have nondeterministic computers?
 Puting aside ideas that 
-involve time travel or black holes as just too exotic for us,
+involve time travel or black holes as just too exotic,
 we will address the model that seems most reachable,
 quantum computing. 
 
 Well-established physical theory says 
-that particles can be be in a superposition of many states at once.
-Thinking naively it might seem that this is a nondeterministic 
-computation, or can be made to be a nondeterministic computation. 
-But we believe this is not true.
-That we know of at this moment, 
-to get the information out we have to find a way to 
-use interference, which means that 
-we cannot access individual branches.\footnotemark[1]
-However, thinking about nondeterministic Turing machines
-is nontheless useful.
-For one thing, feasible verification seems to be the limit of
-what can be done, in some ways like how computably enumerable sets
-seem to be a limit of what can be conceivably be known.
-For another, the class of problems that are associated with
-these machines are eminently practical, as witnessed by the
-fact that computer scientists have been trying to solve them
-since physical computers became available.
-A later section will address such problems.
-\end{remark}
-\footnotetext[1]{%
+that particles can be in a superposition of many states at once.
+Naively, it might seem that is a nondeterministic 
+computation, with multi-way branching. 
+But, that we know of, that is false.
+It seems that to get the information out of a quantum computer we must use 
+interference, and so
+we cannot read individual particles.\footnote{%
   Some popularizations misleadingly 
   suggest that quantum computers are nondeterministic. 
   That is, 
   they miss the point about interference.} %
 
-\smallskip  % why needed?
+But the fact that we do not have practical nondeterministic devices, 
+and do not believe we will in the
+near future, does not mean that their study is a purely academic 
+exercise.\footnote{%
+  Not that there anything wrong with that.}
+The nondeterministic Turing machine model
+is very fruitful.
+
+For one thing, \cref{lem:VerifierAndGuesserEquiv} translates
+questions about nondeterministic polynomial time to
+ones about deterministic machines, the verifiers.
+In short, a problem is in~$\P$ if it has a determistic decider, and
+is in~$\NP$ if it has a deterministic verifier.
+This makes feasible verification seem to be the limit of
+what can be done, like how computably enumerable sets
+seem to be a limit of what can be conceivably be known.
+
+For another thing, the class of problems that are associated with
+these machines are eminently practical, and
+computer scientists have been trying to solve them
+since computers have existed.
+Much more on this in a later section.
+
 In summary, we are interested in knowing for which problems
 there are good algorithms, and for which are there not.
 % Cobham's Thesis identifies the problems
 % that have a good algorithm as the problems in~$\P$.
-In this section we defined the class of problems for which
+In this section, we defined the class of problems for which
 there is a good way to verify a solution, in contrast with the problems
 for which there is a good algorithm to generate a solution.
-In the next section we will consider the question of
+We will next consider
 whether these two classes differ.
 
 
@@ -9300,6 +9321,11 @@ we ever seriously hope to attack.
 Every deterministic Turing machine is trivially a nondeterministic machine,
 and so $\P\subseteq\NP$.
 What about the other direction?
+% We do not know whether, because
+% deterministic machines do not come with unbounded parallelism baked in
+% and must simulate it with time-slicing,
+% they are necessarily slower.
+
 
 Posing the $\P$~versus~$\NP$ question asks:~does adding parallelism add speed?
 Can unbounded parallelism bring problems

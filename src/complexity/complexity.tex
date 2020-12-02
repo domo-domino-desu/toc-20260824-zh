@@ -7392,20 +7392,22 @@ The result, $\bigOh(\sizeof{\sigma}^{\max(n,m)})$, is polytime.
 
 
 
+
+
 % ===========================================
 \section{$\NP$}\index{NP@$\NP$|(}
 Recall that a machine is 
 nondeterminstic\index{nondeterminism!for Turing machines}\index{Turing machine!nondeterminism} 
 if from a present configuration and input
-it may pass to a next configuration with zero, or one, or more, next states.
+it may pass to a next configuration with zero, or one, or more than one, 
+next states.
+So for these machines, the input triggers a computational history that
+is a tree;~a diagram is on page~\pageref{ex:NFSMInDiscussion}.  
+
 Recall also that we have two mental models of how these devices operate.
-The first is that the machine is unboundedly parallel:~its 
-computation history is a tree and it silmutaneously computes all of the branches
-that the input triggers.
-This
-fits with our experience on everyday computers where
-we may have lots of windows open, appearing to all run processes in parallel.
-The second model is that the machine guesses which branch in the tree to 
+The first is that the machine is unboundedly parallel, so it simultaneously 
+computes all of the tree's branches.
+The second is that the machine guesses which branch in the tree to 
 follow\Dash
 or is told by some demon\Dash and
 then deterministically verifies that branch.
@@ -7413,20 +7415,103 @@ then deterministically verifies that branch.
 With the first model, we that 
 say an input string is accepted if at least one of the 
 triggered branch paths is accepting.
-With the second model we say that the input
-is accepted if there is a sequences of guesses that the machine could
+With the second model,
+the input is  accepted if there is a sequences of guesses that the machine could
 make, or a sequence of hints from the demon, consistent with the input,
-that ends in an accepting state (or that causes the machine to output
-something signalling acceptance).
-% The two models are equivalent in that
-% they result in recognizing the same languages.\footnote{%
-%   Recall the distinction between deciding
-%   and recognizing:~a machine decides a language if computes whether or not 
-%   its input is a member of the language.
-%   A machine recognizes a language if it computes whether an
-%   input is a member, but for non-members it may either
-%   halt and not accept it, or it might just not halt.   
-% }
+that ends in an accepting state.
+
+
+\subsection{Nondeterministic Turing machines}
+This modifies the definition of a Turing machine by 
+changing the transition function so that it outputs sets.
+
+\begin{definition}  \label{def:NondeterministicTuringMachine}
+A \definend{nondeterministic Turing machine}~$\TM$\index{nondeterministic Turing machine!definition} 
+is a finite set of
+instructions\index{instruction}\index{nondeterministic Turing machine!instruction} 
+$q_pT_pT_nq_n\in Q\times \Sigma\times(\Sigma\cup\set{\str{L},\str{R}})\times Q$,
+where
+% In an instruction the 
+% \definend{present state}~$q_p$\index{present state}\index{Turing machine!present state} and 
+% \definend{next state}~$q_n$\index{next state}\index{Turing machine!next state} are elements of a
+$Q$ is a finite set of states and % ~$Q$.\index{states!set of} 
+% The \definend{input symbol}\index{input symbol}\index{symbol!input}\index{Turing machine!input symbol} 
+% or \definend{current symbol}\index{current symbol}\index{symbol!current}\index{Turing machine!current symbol} 
+% $T_p$ is an element of the 
+% \definend{tape alphabet}\index{tape alphabet}\index{alphabet!tape}\index{Turing machine!tape alphabet} 
+$\Sigma$ is a finite set of tape alphabet characters,
+which contains at least two members, including
+blank\index{blank},
+and does not contain the characters $\str{L}$ or~$\str{R}$.
+Some of the states, $A\subseteq Q$, are \definend{accepting states}\index{accepting state}\index{state!accepting}\index{nondeterministic Turing machine!accepting state}, while others, $R\subseteq Q-A$, are \definend{rejecting states}.\index{rejecting state}\index{state!rejecting}\index{nondeterministic Turing machine!rejecting state}
+% The \definend{action symbol}\index{action symbol}\index{symbol!action}\index{Turing machine!action symbol} or 
+% \definend{next symbol}~$T_n$\index{symbol!next}\index{Turing machine!next symbol} 
+% is an element of the
+% \definend{action set}~$\Sigma\cup\set{\str{L},\str{R}}$.\index{action set}\index{Turing machine!action set} 
+The association of the present state and tape character
+with what happens next is given by the 
+transition function,\index{transition function}\index{function!transition}\index{nondeterministic Turing machine!transition function}
+% or \definend{next-state function}\index{next-state function}\index{function!next-state}\index{Turing machine!next-state function}
+$\map{\Delta}{Q\times \Sigma}{\powerset((\Sigma\cup\set{\str{L},\str{R}})\times Q)}$.
+\end{definition}
+
+After the definition of Turing machine,
+we gave a formal description of how these machines act,
+as a sequence of `$\yields$'~steps from an initial configuration
+that involves the input string.
+\cref{exer:DefnYieldsNondeterministicTM}
+asks for a similar description for these machines. 
+
+When the nondeterministic machine is a Turing machine, it 
+\citetext{adds some new wrinkles}{%
+  But it avoids a wrinkle that we needed for Finite State machines,
+  $\varepsilon$ transitions, since Turing machines are not 
+  required to consume their input one character at a time.}, 
+such as that the computation tree might have some branches that 
+halt while others do not, or branches that compute differing outputs.
+The simplest approach is to 
+follow what we did with Finite State machines,
+choosing not to describe a
+\citetext{function computed by a nondeterministic machine}{%
+  One thing that we can do is to 
+  define that the nondeterministic machine computes
+  $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ if 
+  on an input $\sigma$, all branches halt and they all leave the
+  same value on the tape, which we call $f(\sigma)$.
+  Otherwise, the value is undefined, $f(\sigma)\diverges$.
+  },
+but instead describe accepting the input. 
+
+\begin{definition}
+A nondeterministic Turing machine 
+\definend{accepts} an input string
+if there is at least one branch in the computation tree,
+one sequence of valid transitions from the starting configuration,
+that ends in an accepting state.
+The machine \definend{rejects} the input if every branch ends in 
+a reject state.
+\end{definition}
+
+Note the asymmetry, that acceptance requires only one accepting branch
+while rejecting requires that every branch rejects.\footnote{%
+  Of course, if rejecting the input only required at least one 
+  rejecting branch then we could find machines both accepting
+  and rejecting an input.}
+
+\begin{definition}
+A nondeterministic Turing machine~$\TM$
+\definend{decides}\index{decided language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!decided language} 
+the language~$\lang$ 
+if for every input string, 
+when the string is a member of $\lang$ then $\TM$ accepts it,
+and when the string is not a member of~$\lang$ then~$\TM$ rejects it.
+A nondeterministic Turing machine
+\definend{recognizes}\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language} 
+the language~$\lang$ 
+if for every input string, 
+when the string is a member of $\lang$ then $\TM$ accepts it,
+and when the string is not a member of~$\lang$ then~$\TM$ does not accept it.
+\end{definition}
 
 For Finite State machines, nondeterminism does not make any
 difference, in that a language is recognized by 
@@ -7438,27 +7523,11 @@ a nondeterministic Pushdown machine can do but that cannot be done by any
 deterministic machine.\footnote{%
    One such job is the decision problem for the language of palindromes.}
 
-\begin{definition}\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language}
-A nondeterministic Turing machine
-\definend{recognizes} the language~$\lang$ 
-when $\sigma\in\lang$ if and only if 
-the machine computes at least one accepting branch.
-\end{definition}
-
-\noindent (Recall the distinction between deciding
-and recognizing:~a machine decides a language if computes whether or not 
-its input is a member of the language.
-A machine recognizes a language if it computes whether an
-input is a member, but for non-members it may either
-halt and not accept it, or it might just not halt.)
-
 %<*lem:DeterministicAndNondeterministicTMsDoTheSame>
-\begin{lemma}
+\begin{lemma}  \label{lem:NonDeterAndDeterTMsHaveSameLangs}
 Deterministic and nondeterministic Turing machines 
 recognize the same languages.
-% In particular,
-% every problem that can be solved by a nondeterministic machine
-% can be solved by a deterministic machine.
+They also decide the same languages.
 \end{lemma}
 %</lem:DeterministicAndNondeterministicTMsDoTheSame>
 
@@ -7466,8 +7535,24 @@ recognize the same languages.
 \begin{proof}
 A deterministic Turing machine is a special case of a
 nondeterministic one. 
-So if a deterministic machine recognizes a language
-then a nondeterministic one also recognizes it.
+So if a deterministic machine decides a language, or recognizes a language,
+then a nondeterministic one does also.
+
+For the other direction, we first suppose that a nondeterministic Turing
+machine~$\TM$ decides a language~$\lang$.
+Consider the deterministic machine~$\TM[Q]$ that does a breadth-first search
+of $\TM$'s computation tree.
+Fix an input~$\sigma$.
+If $\TM$ accepts~$\sigma$ then the breadth-first search done by~$\TM[Q]$ will
+eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
+If $\TM$ does not accepts~$\sigma$ then every branch in its computation tree
+halts, in a rejecting state.
+the breadth-first search done by~$\TM[Q]$ will
+eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
+
+
+
+
 
 For the other direction, start with a problem~$\prob$ solved
 by a nondeterministic Turing machine. 
@@ -7498,26 +7583,25 @@ So nondeterminism
 doesn't add to what can be computed in principle.
 But that doesn't mean that these machines are worthless.
 
-For one thing, we saw with nondeterministic Finite State machines
-that they can be a good impedence match for the problems 
-that we wanted to solve.
-We could easily go from problem statement to a nondeterministic machine,
-and then get a deterministic machine from that.
+For one thing, we saw that nondeterministic Finite State machines
+can be a good impedence match for the problems 
+that we want to solve.
+% We could easily go from problem statement to a nondeterministic machine,
+% and then get a deterministic machine from that.
 Turing machines are similar.
 Nondeterministic Turing machines 
-are a good match for solving some problems that on a serial device
+can be good for solving some problems that on a serial device
 are hard to conceptualize.
 The 
 \probname{Travelling Salesman} problem\index{Travelling Salseman problem@\probname{Travelling Salseman} problem}
 is an example.
-Stated in guessing terms, the nondeterministic machine finds the
+The nondeterministic machine finds the
 salesman's best circuit by making a sequence of 
-where-next guesses.
-In supernatural terms, 
-the machine is given a circuit by some oracular demon 
+where-next guesses,
+or is given a circuit by some oracular demon, 
 and then checks whether it is shorter than a given bound.
-So for some problems, nondeterminism simplifies going from a statement of the
-problem to a statement of a solution.
+So for some problems, nondeterminism simplifies going from the
+problem to a solution.
 
 
 % ..................
@@ -7575,15 +7659,15 @@ while a serial machine appears to require
 exponential time.
 %</discussion:SpeedOfNFSMii>
 
-%<*def:NFSMAcceptsLang>
-\begin{definition}\index{language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!language}
-Where $\map{t}{\N}{\N}$, a nondeterministic Turing machine
-\definend{recognizes a language in time $t$} 
-if for any
-input $\sigma\in\lang$ the machine computes at least one accepting branch
-in time $t(\mspace{2mu}|\sigma|\mspace{2mu})$.
-\end{definition} 
-%</def:NFSMAcceptsLang>
+% %<*def:NFSMAcceptsLang>
+% \begin{definition}\index{language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!language}
+% Where $\map{t}{\N}{\N}$, a nondeterministic Turing machine
+% \definend{recognizes a language in time $t$} 
+% if for any
+% input $\sigma\in\lang$ the machine computes at least one accepting branch
+% in time $t(\mspace{2mu}|\sigma|\mspace{2mu})$.
+% \end{definition} 
+% %</def:NFSMAcceptsLang>
 
 So while adding nondeterminism to Turing machines doesn't
 allow them to compute any entirely new functions, a person could
@@ -7593,7 +7677,7 @@ allow them to compute some of those functions more quickly.
 
 
 
-\subsection{Definition}
+\subsection{$\NP$}
 Next we give the complexity class associated with nondeterministic 
 Turing machines.
 
@@ -7602,7 +7686,7 @@ Turing machines.
 The complexity 
 class~\definend{$\compclass{NP}$}\index{NP@$\NP$} 
 is the set of languages for which there is a 
-nondeterministic Turing machine recognizer that runs
+nondeterministic Turing machine decider that runs
 in polytime, meaning that any accepting branch halts
 in polytime.
 \end{definition}
@@ -8037,7 +8121,7 @@ Decide if each formula is satisfiable.
 
 \recommended
 \begin{exercise} % https://math.stackexchange.com/q/49509
-A friend of yours asks, 
+Your study partner asks, 
 ``In \cref{lem:VerifierAndGuesserEquiv}, since the witness~$\omega$ is not
 required to be effectively computable, 
 why can't I just take it to be the bit~\str{1} if
@@ -8063,6 +8147,19 @@ That is, for $\sigma=5$ there exists an~$\omega$ leading to acceptance,
 so your verifier is wrong.
 Rather, for a correct verifier you need that there exists no~$\omega$ that 
 causes it to accept $\sigma=5$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Uh-oh.
+You find yourself with nondeterministic Turing machine where
+on input~$\sigma\in\kleenestar{\B}$ there is one branch that accepts
+and one that rejects.
+Some branches don't halt at all.
+What is the upshot?
+\begin{answer}
+The machine accepts~$\sigma$, because it has at least one accepting
+branch.
 \end{answer}
 \end{exercise}
 
@@ -8330,6 +8427,15 @@ The \HP{} is not decidable so it is not in $\NP$.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+Is $\NP$ countable or uncountable?
+\begin{answer}
+Countable.
+A verifier is a deterministic Turing machine,
+and there are countably many such macines.
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 Show that this problem is in $\NP$.
@@ -8405,6 +8511,66 @@ State it both in terms of a computation tree and in terms of guessing.
 % \begin{exercise}
 % Write a program that simulates a nondeterministic Turing machine.
 % \end{exercise}
+
+\begin{exercise}
+\cref{lem:NonDeterAndDeterTMsHaveSameLangs} says that deterministic
+and nondeterministic Turing machines decide the same set of languages.
+We prove that.
+\begin{exparts}
+\item (K\"{o}nig's Lemma) 
+  Prove that if a connected tree has infinitely many vertices, but each
+  vertex has finite degree, then it has a infinite path.
+  \hint~fix a vertex~$v_0$ and for each of its neighbors, look at how many
+  vertices can be reached without going through~$v_0$.
+  One of the neighbors must have infinitely many such vertices;
+  call it~$v_1$.
+  Iterate.
+\item Use that to prove that the lemma is correct. 
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item % (Need for dependent choice is maybe more confusing than helpful.)
+As in the hint, fix a vertex,~$v_0$.
+Because the graph is connected, every vertex can be reached by a path that
+starts in~$\v_0$.
+For each of its neighbors, $v$, consider the set of vertices~$R_v$
+that can be reached by a path from~$v$ that does not go through~$v_0$.
+At least one of the neighbors must have infinitely many such vertices,
+or else the graph is a union of the finitely many sets~$R_v$ (and $v_0$), 
+each of which is finite.
+Pick one such neighbor and call it~$v_1$.
+By repeating this process we get an infinite path $\sequence{v_0,v_1,\ldots{}}$.
+\item
+Suppose that a nondeterministic Turing
+machine~$\TM$ decides a language~$\lang$.
+We will define a deterministic machine~$\TM[Q]$ that decides the same language.
+This machine does a breadth-first search of $\TM$'s computation tree.
+Fix an input~$\sigma$.
+If $\TM$ accepts~$\sigma$ then the search done by~$\TM[Q]$ will
+eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
+
+If $\TM$ does not accept~$\sigma$ then every branch in its computation tree
+halts, in a rejecting state.
+We claim that there is a longest such branch.
+Otherwise, by K\"{o}nig's Lemma, the computation tree 
+would be an infinite branch,
+which would contradict that $\TM$ halts on every branch.
+So, the breadth-first search done by~$\TM[Q]$ will
+eventually find that all branches reject, and then $\TM[Q]$ rejects~$\sigma$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}  \label{exer:DefnYieldsNondeterministicTM}
+Following the definition of Turing machine,
+on page~\pageref{text:DescriptionOfTMAction},
+we gave a formal description of how these machines act.
+We did the same for Finite State machines on
+page~\pageref{page:DefnYieldsFiniteStateMachine},
+and for nondeterministic Finite State machines on 
+page~\pageref{page:DefnYieldsNondeterministicFSM}.
+Give a formal description of the action of a nondeterministic 
+Turing machine.
+\end{exercise}
 
 \begin{exercise}
 Prove that the class of languages~$\NP$ is closed under
@@ -8776,16 +8942,48 @@ Showing that the translation function~$f$ is polytime is routine.
 %</ex:SATLeqCliqueii>
 \end{example}
 
+\begin{exercises}
+\begin{exercise}
+\begin{exparts}
+\item Show that if $\lang_0\notin\P$ and $\lang_0\leq_p\lang_1$
+  then $\lang_1\notin\P$ also.
+\item What about $\NP$? 
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+\item The same is true about $\NP$:~if $\lang_0\notin\NP$ and 
+  $\lang_0\leq_p\lang_1$ then $\lang_1\notin\NP$.
+  Assume that $\lang_0\leq_p\lang_1$, so that there is a polytime function 
+  $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ such that 
+  $\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$.
+  We will use this reduction to show that $\lang_1\in\NP$ implies that
+  $\lang_0\in\NP$.
+
+  If $\lang_1\in\NP$ then there is a nondeterministic Turing machine~$\TM_1$
+  that decides~$\lang_1$.
+  For the nondeterministic machine~$\TM_0$ that decided~$\lang_0$, 
+  start with an input candidate string~$\tau$.
+  Compute~$f(\tau)$.
+  Run $\TM_1$ on input~$f(\tau)$. 
+  If it accepts then $\TM_0$ accepts, and if it rejects then $\TM_0$ rejects.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\end{exercises}
+
+
 
 
 % ......................................
-\subsection{$\compclass{NP}$ complete}\index{NP complete@$\NP$ complete|(}
+\section{$\compclass{NP}$ completeness}\index{NP complete@$\NP$ complete|(}
 \margingraphic{0.17\textwidth}{complexity/pix/cook.jpg}{\label{fig:StephenCook}\href{https://en.wikipedia.org/wiki/Stephen_Cook}{Stephen Cook b~1939}}\index{Cook, S!picture} % http://web.cs.toronto.edu/Assets/Computer+Science+Digital+Assets/cooknsercmed.jpg http://web.cs.toronto.edu/news/current/herzbergcook.htm
 Because $\P\subseteq\NP$, the class $\NP$ contains lots of easy problems,
 ones with a fast algorithm.
 For instance, one member of $\NP$ is
 the problem of determining whether a number is odd.
-Of course, the interest in the class is that it also contains lots of
+The interest in the class is that it also contains lots of
 problems that seem to be hard.
 Can we prove that those problems are indeed hard?
 

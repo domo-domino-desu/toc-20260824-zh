@@ -8065,8 +8065,10 @@ Your friend says, ``$\NP$ is the set of problems with deterministic
 verifiers.''
 That's not quite right;
 gently correct them.
-\begin{answer}
-It matters that the verifier is both deterministic and runs in 
+\begin{answer}\verified
+The assertion that $\NP$ is the set of problems with deterministic 
+verifiers is correct, but not complete.
+In addition, the verifier runs in 
 time polynomial in the length of the input.
 \end{answer}
 \end{exercise}
@@ -8078,7 +8080,7 @@ Decide if each formula is satisfiable.
 \item $(P\wedge Q)\vee(\neg Q\wedge R)$
 \item $(P\to Q)\wedge \neg((P\wedge Q)\vee \neg P)$
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item This formula is satisfiable. 
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
@@ -8099,7 +8101,7 @@ Decide if each formula is satisfiable.
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
 \begin{tabular}{ccc|ccccc|c}
-  $P$  &$Q$  &$R$  &$P\to Q$ &$P\wedge Q$ &$\neg P$ &$(P\wedge Q)\vee \neg P$ &$\neg(P\wedge Q)\vee \neg P)$  &$(P\to Q)\wedge \neg((P\wedge Q)\vee \neg P)$  \\ \hline    
+  $P$  &$Q$  &$R$  &$P\to Q$ &$P\wedge Q$ &$\neg P$ &$(P\wedge Q)\vee \neg P$ &$\neg((P\wedge Q)\vee \neg P)$  &$(P\to Q)\wedge \neg((P\wedge Q)\vee \neg P)$  \\ \hline    
   $F$  &$F$  &$F$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\     
   $F$  &$F$  &$T$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\     
   $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\     
@@ -8125,23 +8127,25 @@ Then writing the Turing machine is easy:~just ignore $\sigma$ and follow
 the bit.''
 They are confused.
 Straighten them out.
-\begin{answer}
+\begin{answer}\verified
 That lemma requires that there be a verifier with the property 
 that if $\sigma\in\lang$ then there is a witness leading to acceptance, 
-and if $\sigma\notin\lang$ then there exists no witness leading to 
-acceptance.
+and if $\sigma\notin\lang$ then there exists no witness that would
+cause the verifier to accept.
+
 Consider the problem $\lang=\set{n\in\N\suchthat \text{$n$ is even}}$.
 Your proposed verifier inputs a pair $\sequence{\sigma,\omega}$,
 where $\sigma$ is a number and $\omega$ is a bit, and then
 accepts the pair if $\omega=\str{1}$.
-Absolutely, if you give your verifier the pair  $\sequence{5,\str{1}}$
-then it will not accept.
+Absolutely, if you give your verifier the pair $\sequence{\str{101},\str{0}}$
+then it will not accept (here, \str{101} represents the number~$5$, and is
+not an element of~$\lang$).
 However, 
-give it $\sequence{5,\str{1}}$ and your verifier will accept.
-That is, for $\sigma=5$ there exists an~$\omega$ leading to acceptance, 
+give it $\sequence{\str{101},\str{1}}$ and your verifier will accept.
+So, for $\sigma=\str{101}$ there exists an~$\omega$ leading to acceptance, 
 so your verifier is wrong.
-Rather, for a correct verifier you need that there exists no~$\omega$ that 
-causes it to accept $\sigma=5$.
+A correct verifier would have there exists no~$\omega$ that 
+causes it to accept $\sigma=\str{101}$.
 \end{answer}
 \end{exercise}
 
@@ -8153,15 +8157,81 @@ and one that rejects.
 Some branches don't halt at all.
 What is the upshot?
 \begin{answer}
-The machine accepts~$\sigma$, because it has at least one accepting
+The machine accepts~$\sigma$ because there is at least one accepting
 branch.
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
+Sketch a polytime nondeterministic algorithm to solve each.
+Give both an unbounded parallelism formulation and a guessing formulation.
+\begin{exparts}
+\item 
+The problem of \probname{$k$-Coloring}:~given\index{Graph Coloring problem@\probname{Graph Coloring} problem} 
+an undirected graph, 
+find a $k$-coloring for its vertices so that no two same-colored vertices
+are connected by an edge.
+\item
+\probname{Prime Factorization}:~given\index{Prime Factorization@\probname{Prime Factorization}} 
+a number $n\in\N$, produce the prime
+factorization.
+\item 
+The \definend{\probname{Stable Marriage}} problem:~given\index{Stable Marriage problem@\probname{Stable Marriage} problem} 
+equal numbers of men and women, each person ranks
+the members of the other sex.
+We must then assign to each person a partner in a stable way.
+An assignment is unstable if there are two people of opposite sex would
+rather have each other than their assigned partners,
+otherwise that assignment is stable.
+\item
+The \probname{Integer Linear Programming} problem:~maximize\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem} 
+a linear objective function
+$f(x_0,\ldots x_n)=d_0x_0+\cdots+d_nx_n$ subject to constraints
+$a_{i,0}x_0+\cdots+a_{i,n}x_n\leq b_i$ and~$x_j\in\N$. 
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item An unbounded parallelism algorithm is that the machine tries all
+possible $k$-colorings simultaneously.
+This runs in polytime because given a correct $k$-coloring, verifying that
+it is right is just a question of checking every pair of vertices.
+If they are the same color, then check whether there is an edge.
+
+A guessing algorithm is that the machine guesses a $k$-coloring
+(or is given one by the demon).
+It can verify this guess in polytime, because it
+is just a question of checking every pair of vertices, and 
+if they are the same color then checking whether there is an edge.
+\item An unbounded parallelism algorithm is that it tries each
+conceivable prime factorization, simultaneously.
+For instance, given the input~$8$, it could check the 
+products of $2^03^05^07^0$, $2^13^05^07^0$, \ldots{}  
+$2^73^75^77^7$.
+Multiplying is fast and checking whether a number is composite or
+prime can also be done in polytime, so each branch check happens in polytime.
+
+A guessing algorithm is that the machine guesses a prime factorization.
+For instance, for the input~$8$ it guesses a prime factorization of the form
+$2^{e_2}3^{e_3}5^{e_5}7^{e_7}$ (again, checking whether a number is composite or
+prime is fast because it can be done in polytime). 
+Verifying that a guess multiplies out to be the desired number can
+happen in polytime.
+\item
+An unbounded parallelism algorithm tries each possible assignment.
+It then only has to recognize a stable marriage in polytime, which
+is easy.
+
+A guessing algorithm guesses an assignment.
+It then verifies that the marriage is stable, in polytime.
+
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 Sketch a nondeterminstic algorithm for each.
-State it both in terms of a computation tree and in terms of guessing.
+State it both in terms of unbounded parallelism and in terms of guessing.
 \begin{exparts}
 \item
 \probname{Three Dimensional Matching}:~where $X,Y,Z$ are sets of integers
@@ -8174,38 +8244,6 @@ its elements has a size $s(a)\in\N^+$,
 decide if the set splits into 
 $\hat{A},A-\hat{A}$ so the total of the sizes is the same,
 $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
-\end{exparts}
-\end{exercise}
-
-\begin{exercise}
-Sketch a nondeterministic algorithm to solve each problem.
-Give both a computation tree formulation and a guessing formulation.
-\begin{exparts}
-% \item
-% The Travelling Salesman problem: given a graph where the edges have costs,
-% find a circuit that is of least total cost.
-% \item
-% The Subset Sum problem: given a set of numbers~$S\subset\N$ and a 
-% target~$B\in\N$, find a subset of~$S$ whose members sum to~$B$.
-\item
-\probname{Prime Factorization}: given a number $n\in\N$, produce the prime
-factorization.
-\item 
-The problem of \probname{$k$-Coloring}:~given an undirected graph, 
-find a $k$-coloring for its vertices.
-\item 
-The \definend{\probname{Marriage}} problem:~given equal numbers of men 
-and women, each person ranks
-the members of the other sex.
-We must then assign to each person a partner.
-An assignment is unstable if there are two people of opposite sex would
-rather have each other than their assigned partners,
-otherwise that assignment is stable.
-\item
-The \probname{Integer Linear Programming} problem:~maximize 
-a linear objective function
-$f(x_0,\ldots x_n)=d_0x_0+\cdots+d_nx_n$ subject to constraints
-$a_{i,0}x_0+\cdots+a_{i,n}x_n\leq b_i$ and~$x_j\in\N$. 
 \end{exparts}
 \end{exercise}
 

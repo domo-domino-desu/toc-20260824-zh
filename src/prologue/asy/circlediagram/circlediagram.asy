@@ -14,10 +14,10 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
+import jhnode;
 cd("");
 
-import node;
+// import node;
 
 // define style
 // defaultnodestyle=nodestyle(drawfn=FillDrawer(lightgray,black));
@@ -99,8 +99,8 @@ draw(pic,
      // (q1--q1).l(Label("\scriptsize $10$",position=Relative(0.7))),
      (q1..loop(S)).l("\scriptsize $\blank,\str{1}$"),
      (q1--q2).l("\scriptsize $\str{1},\str{1}$"),
-     (q2..loop(S)).l("\scriptsize $\blank,\str{L}$"),
-     (q2--q3).l("\scriptsize $\str{1},\str{B}$"),
+     (q2--q3).l("\scriptsize $\blank,\str{B}$"),
+     (q2..loop(S)).l("\scriptsize $\str{1},\str{L}$"),
      (q3..loop(S)).l("\scriptsize $\blank,\str{R}$"),
      (q3--q4).l("\scriptsize $\str{1},\blank$"),
      (q4..bend..q5).l("\scriptsize $\blank,\str{R}$"),

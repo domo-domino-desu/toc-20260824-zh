@@ -8170,63 +8170,212 @@ branch.
 
 \recommended
 \begin{exercise}
+You get an exercise, \textit{Write a nondeterministic algorithm
+that inputs a maze and outputs~\str{1} if there is a path from
+the start to the end.}
+\begin{exparts}
+\item You hand in an algorithm that does backtracking to find
+any possible solution.
+Your professor sends it back, and says to try again.
+What was wrong?
+\item You hand in an algorithm that, each time it comes to 
+a fork in the maze, chooses at random which way to go.
+Again you get it back with a note to try again.
+What is wrong with this one?
+\item Give a right answer. 
+\end{exparts}
+\begin{answer}\verified
+\begin{exparts}
+\item Backtracking will solve the problem.
+But it is a deterministic algorithm.
+(Technically, a deterministic algorithm is a special case of a nondeterminstic
+one, but when you ask about it, your professor says, ``The point of this
+exercise is to demonstrate understanding of nondeteminism, 
+not to quibble like a sea lawyer.'')
+\item Your algorithm chooses, but it does so at random.
+If there are paths through the maze, but
+the random choices happens not to fall on such a path, then 
+your algorithm will not detect them.
+A nondeterministic algorithm is required to output~\str{1} if there
+is a path (and not to output~\str{1} if there is not).
+\item We will give two answers, one using the unbounded parallelism
+imagery and one using choosing.
+
+The unbounded parallelism algorithm has a computational history that is 
+a tree.
+Whenever the algorithm finds itself at a place in the maze where it 
+can do more than one thing, it forks child processes to handle each 
+possibility.
+So it may have lots of branches, and lots of them may go to dead ends,
+but if there is a way through the maze then this algorithm will find it.
+So it reports~\str{1} if there is a path, and never reports~\str{1} when
+there is not.
+
+The choosing algorithm is to choose.
+That is, the machine guesses at the correct path (and then verifies 
+it against the input maze).
+By definition, if there is a way for this guess to be right
+then the algorithm is right.
+(Note again that is algorithm is not guessing at random.
+It is guessing correctly.)
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+\begin{credit}
+  Paul Black, \url{https://xlinux.nist.gov/dads/HTML/nondetermAlgo.html}
+\end{credit}
+Give a nondeterministic algorithm to search an unordered array of numbers,
+to see if it contains the number~$k$.
+Describe it both in terms of unbounded parallelism and in terms
+of guessing. 
+\begin{answer}
+The algorithm is given an unordered array $\sequence{a_0,a_1,\ldots{} a_{n-1}}$.
+It returns \str{Yes} if $k=a_i$ for some index~$i$.
+
+In the unbounded parallelism model, the computation tree of the algorithm
+is a single node with $n$~children, each of which is a process.
+Child~$i$ checks whether $a_i=k$, and if so causes the algorithm to 
+output~\str{Yes}.
+
+The guessing model is much the same, except that the machine does not 
+compute the tree.
+It guesses at a child process, and if the 
+array entry equals~$k$ then it causes the algorithm to output~\str{Yes}.
+This model, by definition, is the same as the other because it says
+that an algorithm is right if there is a way for the guess to
+correctly result in~\str{Yes}, which will happen if and only if there
+is an array entry that equals~$k$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 A \definend{simple substitution cipher} encrypts text by substituting one
 letter for another.
 Start by fixing a permutation of the letters, for example
 $\sequence{\str{F},\str{P},\ldots}$\sentencespace 
 Then the cipher is that any
 \str{A} is replaced by a \str{F}, any \str{B} is replaced by a \str{P}, etc.
-Sketch two algorithms for decoding a substitution cipher, one
-deterministic and one nondeterministic (assume that you have a program
-that can recognize a correctly decoded string).
-Describe the second in terms both of the mental model of unbounded parallelism,
-and of guessing.
-\begin{answer}
-The natural deterministic algorithm is to try every permutation,
-one after the other, until your program recognizes the result as correctly
+Sketch three algorithms for decoding a substitution cipher
+(assume that you have a program
+that can recognize a correctly decoded string), 
+\begin{exparts*}
+\item one that is deterministic,
+\item  and that is nondeterministic and is expressed in terms of 
+unbounded parallelism,
+and 
+\item one expressed in terms of guessing.
+\end{exparts*}
+\begin{answer}\verified
+\begin{exparts}
+\item
+A deterministic algorithm is to try every permutation,
+one after the other, until the program recognizes the result as correctly
 decoding.
-
-The unbounded parallelism model is to do the same, except that you
-try them all at once.
+\item
+The unbounded parallelism model is to do the same, except that it 
+tries them simultaneously.
 That is,
-the computation tree has a single root node with one child node for each
+the computation tree has a single root node with one child process for each
 of the $26!$-many permutations. 
-That child node involves making the one substituion and then checking it.
-One of the substitutions must be right, so for one of these child nodes
+That child takes its single permutation,
+substitutes it, and then checks it.
+This machine has $403\,291\,461\,126\,605\,635\,584\,000\,000-1$ 
+child processes that fail the check.
+But one of the substitutions is right, so overall
 you get the correctly decoded string.
-
+\item
 The guessing model guesses.
 It guesses a permutation (or is given it in a hint from the demon), and then
-the machine makes the substitution, 
+it works like any of the prior item's processes:~it makes the substitution
 and then applies the program to check it.
-Here, the point is that the definition of nondeterminism
-only requires that it is possible that the guess is correct,
-in which case you will get the correctly decoded string.
+This is correct because under this model of nondeterminism
+it just needs to be possible to have a guess that checks out.
+\end{exparts}
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-Sketch a polytime nondeterministic algorithm to solve each.
+Outline a nondeterministic algorithm that inputs a finite planar graph 
+and outputs \str{Yes} if and only if the graph has a four-coloring
+(that is, the algorithm recognizes a correct four-coloring).
+Describe it both in terms of unbounded parallelism and in terms of a demon
+giving the machine a witness.
+\begin{answer}
+First the unbounded parallelism description, which works by brute force.
+Where the number of vertices in the graph is $k$,
+the number of colorings is bounded, by $4^k$.
+The computation tree has a single root node with that many branches.
+Each branch tries its coloring and then checks to see whether it is correct, 
+that is, whether all connected vertices are different colors.
+If there is a correct coloring then this algorithm will find it,
+and output \str{Yes}.
+
+In the second model, the machine does not spawn $4^k$-many branches.
+The demon gives the machine a branch, and the machine just verifies that
+all connected vertices are different colors. 
+If a correct coloring exists for this graph then there 
+exists a hint that
+results in the machine verifying a correct coloring and outputting \str{Yes},
+so this algorithm works by definition.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+In a British TV game show 
+\citetext{\textit{Countdown}}{%
+  See \url{https://en.wikipedia.org/wiki/Countdown_(game_show)}.}
+that is 
+\citetext{quite popular}{%
+  See also \url{https://en.wikipedia.org/wiki/8_Out_of_10_Cats_Does_Countdown}.}, 
+players are given six numbers from
+$S=\set{1,2,\ldots{} 10, 25, 50, 75, 100}$ (numbers may be repeated), 
+along with a target integer~$T\in\closed{100}{999}$.
+They must construct an arithmetic expression that evaluates to the target,
+using the given numbers at most once.
+The arithmetic expression can involve addition, subtraction, 
+multiplication, and division
+(the division must have no remainder).
+Show that the decision problem for this language 
+\begin{equation*}
+  \prob[CD]=
+  \set{\sequence{s_0,\ldots{}s_5,T}\in S^6\times I
+    \suchthat \text{an allowed combination of the $s_i$ gives $T$}}
+\end{equation*}
+is in $\NP$.
+\begin{answer}
+This language is recognized by a nondeterministic machine~$\TM$, 
+because it can just guess an expression and then 
+deterministically verify it.
+If there is such an expression then there is a succeeding guess,
+that it, there is an accepting branch to $\TM$'s computation tree.
+If there is no such expression then no guess can succeed. 
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+For each language decision problem, give the language.
+Sketch a nondeterministic algorithm.
+It must be polytime.
 Give both an unbounded parallelism formulation and a guessing formulation.
 \begin{exparts}
-\item 
-The problem of \probname{$k$-Coloring}:~given\index{Graph Coloring problem@\probname{Graph Coloring} problem} 
-an undirected graph, 
-find a $k$-coloring for its vertices so that no two same-colored vertices
-are connected by an edge.
 \item
-\probname{Prime Factorization}:~given\index{Prime Factorization@\probname{Prime Factorization}} 
-a number $n\in\N$, produce the prime
-factorization.
-\item 
-The \definend{\probname{Stable Marriage}} problem:~given\index{Stable Marriage problem@\probname{Stable Marriage} problem} 
-equal numbers of men and women, each person ranks
-the members of the other sex.
-We must then assign to each person a partner in a stable way.
-An assignment is unstable if there are two people of opposite sex would
-rather have each other than their assigned partners,
-otherwise that assignment is stable.
+\definend{\probname{Three Primes}}:~given\index{Three Primes problem@\probname{Three Primes} problem} 
+a number $n\in\N$, decide if its prime
+factorization has exactly three primes, $n=p_0^{e_0}p_1^{e_1}p_2^{e_2}$ where
+$e_i>0$.
+% \item 
+% The \definend{\probname{Stable Marriage}} problem:~given\index{Stable Marriage problem@\probname{Stable Marriage} problem} 
+% equal numbers of men and women, each person ranks
+% the members of the other sex.
+% We must then assign to each person a partner in a stable way.
+% An assignment is unstable if there are two people of opposite sex would
+% rather have each other than their assigned partners,
+% otherwise that assignment is stable.
 \item
 The \probname{Integer Linear Programming} problem:~maximize\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem} 
 a linear objective function
@@ -8235,31 +8384,25 @@ $a_{i,0}x_0+\cdots+a_{i,n}x_n\leq b_i$ and~$x_j\in\N$.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item An unbounded parallelism algorithm is that the machine tries all
-possible $k$-colorings simultaneously.
-This runs in polytime because given a correct $k$-coloring, verifying that
-it is right is just a question of checking every pair of vertices.
-If they are the same color, then check whether there is an edge.
+\item 
+The language is 
+$\set{n\in\N\suchthat \text{$n$'s prime factorization has exactly three primes}}$.
 
-A guessing algorithm is that the machine guesses a $k$-coloring
-(or is given one by the demon).
-It can verify this guess in polytime, because it
-is just a question of checking every pair of vertices, and 
-if they are the same color then checking whether there is an edge.
-\item An unbounded parallelism algorithm is that it tries each
+One unbounded parallelism algorithm tries each
 conceivable prime factorization, simultaneously.
 For instance, given the input~$8$, it could check the 
 products of $2^03^05^07^0$, $2^13^05^07^0$, \ldots{}  
 $2^73^75^77^7$.
 Multiplying is fast and checking whether a number is composite or
-prime can also be done in polytime, so each branch check happens in polytime.
+prime can also be done in polytime.
+Thus each branch check happens in polytime.
 
 A guessing algorithm is that the machine guesses a prime factorization.
-For instance, for the input~$8$ it guesses a prime factorization of the form
-$2^{e_2}3^{e_3}5^{e_5}7^{e_7}$ (again, checking whether a number is composite or
-prime is fast because it can be done in polytime). 
-Verifying that a guess multiplies out to be the desired number can
-happen in polytime.
+For instance, for the input~$315$, the machine guesses 
+a prime factorization $3^{2}5^{1}7^{1}$. 
+Again, the verification is polytime because
+multiplication is polytime, as is checking whether the three numbers
+are composite or prime. 
 \item
 An unbounded parallelism algorithm tries each possible assignment.
 It then only has to recognize a stable marriage in polytime, which
@@ -8267,13 +8410,12 @@ is easy.
 
 A guessing algorithm guesses an assignment.
 It then verifies that the marriage is stable, in polytime.
-
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
-Sketch a nondeterminstic algorithm for each.
+Sketch a nondeterminstic algorithm for language decision problem.
 State it both in terms of unbounded parallelism and in terms of guessing.
 \begin{exparts}
 \item
@@ -8309,40 +8451,6 @@ $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
 To show it is in $\NP$, we can have a deterministic Turing machine
 that uses an empty witness $\omega=\emptystring$, and accepts such
 strings in polynomial time.
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-In a  
-\citetext{British game show}{%
-  See \url{https://en.wikipedia.org/wiki/Countdown_(game_show)}.}
-that is 
-\citetext{quite popular}{%
-  See also \url{https://en.wikipedia.org/wiki/8_Out_of_10_Cats_Does_Countdown}.}, 
-you are given six numbers from
-$S=\set{1,2,\ldots{} 10, 25, 50, 75, 100}$ (some numbers may be repeated), 
-along with a target 
-number~$T$ from the interval $I=\closed{100}{999}$.
-You must construct an arithmetic expression that evaluates to the target,
-using numbers from~$S$ at most once.
-The arithmetic expression can involve addition, subtraction, 
-multiplication, and division
-(the division must have no remainder).
-Show that the decision problem for this language 
-\begin{equation*}
-  \prob[CD]=
-  \set{\sequence{s_0,\ldots{}s_5,T}\in S^6\times I
-    \suchthat \text{an allowed combination the $s_i$ gives $T$}}
-\end{equation*}
-is in $\NP$.
-\begin{answer}
-This language is recognized by a nondeterministic machine~$\TM$, 
-because it can just guess an expression and then 
-deterministically verify it.
-If there is such an expression then there is a succeeding guess,
-that it, there is an accepting branch to $\TM$'s computation tree.
-If there is no such expression then no guess can succeed. 
 \end{answer}
 \end{exercise}
 
@@ -8397,14 +8505,6 @@ a natural number~$n$ and
 decides whether in the graph there are $n$-many independent vertices,
 that is, vertices that are not connected.
 Show that this problem is in~$\NP$.
-\end{exercise}
-
-\recommended
-\begin{exercise}
-Outline a nondeterministic algorithm that inputs a planar graph and outputs
-a four-coloring.
-Describe it both in terms of computation tree and in terms of a demon
-giving the machine a witness.
 \end{exercise}
 
 \recommended

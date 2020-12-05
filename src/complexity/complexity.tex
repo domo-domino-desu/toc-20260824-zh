@@ -8158,8 +8158,8 @@ Consequently, your verifier is wrong.
 \begin{exercise}
 Uh-oh.
 You find yourself with nondeterministic Turing machine where
-on input~$\sigma\in\kleenestar{\B}$ there is one branch that accepts
-and one that rejects.
+on input~$\sigma$, one branch of the computation tree accepts
+and one rejects.
 Some branches don't halt at all.
 What is the upshot?
 \begin{answer}\verified
@@ -8180,7 +8180,7 @@ Your professor sends it back, and says to try again.
 What was wrong?
 \item You hand in an algorithm that, each time it comes to 
 a fork in the maze, chooses at random which way to go.
-Again you get it back with a note to try again.
+Again you get it back with a note to work out another try.
 What is wrong with this one?
 \item Give a right answer. 
 \end{exparts}
@@ -8226,7 +8226,7 @@ It is guessing correctly.)
 \begin{credit}
   Paul Black, \url{https://xlinux.nist.gov/dads/HTML/nondetermAlgo.html}
 \end{credit}
-Give a nondeterministic algorithm to search an unordered array of numbers,
+Sketch a nondeterministic algorithm to search an unordered array of numbers,
 to see if it contains the number~$k$.
 Describe it both in terms of unbounded parallelism and in terms
 of guessing. 
@@ -8259,10 +8259,10 @@ Then the cipher is that any
 \str{A} is replaced by a \str{F}, any \str{B} is replaced by a \str{P}, etc.
 Sketch three algorithms for decoding a substitution cipher
 (assume that you have a program
-that can recognize a correctly decoded string), 
+that can recognize a correctly decoded string): 
 \begin{exparts*}
 \item one that is deterministic,
-\item  and that is nondeterministic and is expressed in terms of 
+\item one that is nondeterministic and is expressed in terms of 
 unbounded parallelism,
 and 
 \item one expressed in terms of guessing.
@@ -8302,24 +8302,24 @@ Outline a nondeterministic algorithm that inputs a finite planar graph
 and outputs \str{Yes} if and only if the graph has a four-coloring
 (that is, the algorithm recognizes a correct four-coloring).
 Describe it both in terms of unbounded parallelism and in terms of a demon
-giving the machine a witness.
-\begin{answer}
+providing a witness.
+\begin{answer}\verified
 First the unbounded parallelism description, which works by brute force.
 Where the number of vertices in the graph is $k$,
 the number of colorings is bounded, by $4^k$.
 The computation tree has a single root node with that many branches.
 Each branch tries its coloring and then checks to see whether it is correct, 
 that is, whether all connected vertices are different colors.
-If there is a correct coloring then this algorithm will find it,
+If there is a correct coloring then this algorithm will find it
 and output \str{Yes}.
 
 In the second model, the machine does not spawn $4^k$-many branches.
-The demon gives the machine a branch, and the machine just verifies that
+The demon gives the machine a branch and the machine just verifies that
 all connected vertices are different colors. 
 If a correct coloring exists for this graph then there 
 exists a hint that
 results in the machine verifying a correct coloring and outputting \str{Yes},
-so this algorithm works by definition.
+so this satisfies the definition of a guessing algorithm working.
 \end{answer}
 \end{exercise}
 
@@ -8336,13 +8336,13 @@ $S=\set{1,2,\ldots{} 10, 25, 50, 75, 100}$ (numbers may be repeated),
 along with a target integer~$T\in\closed{100}{999}$.
 They must construct an arithmetic expression that evaluates to the target,
 using the given numbers at most once.
-The arithmetic expression can involve addition, subtraction, 
+The expression can involve addition, subtraction, 
 multiplication, and division
 (the division must have no remainder).
 Show that the decision problem for this language 
 \begin{equation*}
   \prob[CD]=
-  \set{\sequence{s_0,\ldots{}s_5,T}\in S^6\times I
+  \set{\sequence{s_0,\ldots{} s_5,T}\in S^6\times I
     \suchthat \text{an allowed combination of the $s_i$ gives $T$}}
 \end{equation*}
 is in $\NP$.
@@ -8358,35 +8358,50 @@ If there is no such expression then no guess can succeed.
 
 \recommended
 \begin{exercise}
-For each language decision problem, give the language.
+The \definend{\probname{Integer Linear Programming}} problem\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem}
+is to maximize a linear objective function
+$f(x_0,\ldots x_n)=d_0x_0+\cdots+d_nx_n$ subject to constraints
+$a_{i,0}x_0+\cdots+a_{i,n}x_n\leq b_i$, where all of~$x_j, d_j, b_j, a_{i,j}$
+are integers. 
+For this language decision problem, give the language.
+Sketch a nondeterministic algorithm.
+Give both an unbounded parallelism formulation and a guessing formulation.
+\begin{answer}
+We recast this optimization problem as a sequence of language decision
+problems for a family of languages parametrized by the bound~$B\in\N$.
+\begin{equation*}
+  \lang_B=
+  \set{\sequence{x_0,x_1,\ldots{} x_n}\in\Z^{n+1}\suchthat
+       \text{the $x_j$ satisfy all the constraints and $f(x_0,x_1,\ldots{}x_n)\leq B$}}
+\end{equation*}
+
+An unbounded parallelism algorithm tries all possible assignments,
+in some way guaranteed to try every assignment eventually, 
+as with Cantor's enumeration.
+(If there is no satisfying assignment then the comptuation history
+tree is infinite.)
+If there is a satisfying assignment then this algorithm will find it.
+
+A guessing algorithm guesses an assignment.
+It then verifies that the assignment.
+If there is a satisfying assignment then there is a way to guess it,
+so this recognizes the language~$\lang_B$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+The 
+\definend{\probname{Semiprime}} problem\index{Semiprime problem@\probname{Semiprime} problem} 
+inputs a number $n\in\N$ and decides if its prime
+factorization has exactly two primes, $n=p_0^{e_0}p_1^{e_1}$ where
+$e_i>0$.
+State it as a language decision problem.
 Sketch a nondeterministic algorithm.
 It must be polytime.
 Give both an unbounded parallelism formulation and a guessing formulation.
-\begin{exparts}
-\item
-\definend{\probname{Three Primes}}:~given\index{Three Primes problem@\probname{Three Primes} problem} 
-a number $n\in\N$, decide if its prime
-factorization has exactly three primes, $n=p_0^{e_0}p_1^{e_1}p_2^{e_2}$ where
-$e_i>0$.
-% \item 
-% The \definend{\probname{Stable Marriage}} problem:~given\index{Stable Marriage problem@\probname{Stable Marriage} problem} 
-% equal numbers of men and women, each person ranks
-% the members of the other sex.
-% We must then assign to each person a partner in a stable way.
-% An assignment is unstable if there are two people of opposite sex would
-% rather have each other than their assigned partners,
-% otherwise that assignment is stable.
-\item
-The \probname{Integer Linear Programming} problem:~maximize\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem} 
-a linear objective function
-$f(x_0,\ldots x_n)=d_0x_0+\cdots+d_nx_n$ subject to constraints
-$a_{i,0}x_0+\cdots+a_{i,n}x_n\leq b_i$ and~$x_j\in\N$. 
-\end{exparts}
 \begin{answer}
-\begin{exparts}
-\item 
 The language is 
-$\set{n\in\N\suchthat \text{$n$'s prime factorization has exactly three primes}}$.
+$\set{n\in\N\suchthat \text{$n$'s prime factorization has exactly two primes}}$.
 
 One unbounded parallelism algorithm tries each
 conceivable prime factorization, simultaneously.
@@ -8397,20 +8412,12 @@ Multiplying is fast and checking whether a number is composite or
 prime can also be done in polytime.
 Thus each branch check happens in polytime.
 
-A guessing algorithm is that the machine guesses a prime factorization.
-For instance, for the input~$315$, the machine guesses 
-a prime factorization $3^{2}5^{1}7^{1}$. 
+A guessing algorithm is that the machine guesses a number with 
+the desired prime factorization (or is given one by a demon).
+For instance, the machine might guess $45=3^{2}5^{1}$. 
 Again, the verification is polytime because
-multiplication is polytime, as is checking whether the three numbers
+multiplication is polytime, as is checking whether the two numbers
 are composite or prime. 
-\item
-An unbounded parallelism algorithm tries each possible assignment.
-It then only has to recognize a stable marriage in polytime, which
-is easy.
-
-A guessing algorithm guesses an assignment.
-It then verifies that the marriage is stable, in polytime.
-\end{exparts}
 \end{answer}
 \end{exercise}
 

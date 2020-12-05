@@ -8325,6 +8325,159 @@ so this satisfies the definition of a guessing algorithm working.
 
 \recommended
 \begin{exercise}
+The \definend{\probname{Integer Linear Programming}} problem\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem}
+is to maximize a linear objective function
+$f(x_0,\ldots x_n)=d_0x_0+\cdots+d_nx_n$ subject to constraints
+$a_{i,0}x_0+\cdots+a_{i,n}x_n\leq b_i$, where all of~$x_j, d_j, b_j, a_{i,j}$
+are integers. 
+Recast it as a family of language decision problems.
+Sketch a nondeterministic algorithm,
+giving both an unbounded parallelism formulation and a guessing formulation.
+\begin{answer}\verified
+We recast this as a sequence of language decision
+problems for a family of languages parametrized by the bound~$B\in\N$.
+\begin{equation*}
+  \lang_B=
+  \set{\sequence{x_0,x_1,\ldots{} x_n}\in\Z^{n+1}\suchthat
+       \text{the $x_j$ satisfy all the constraints and $f(x_0,x_1,\ldots{}x_n)\leq B$}}
+\end{equation*}
+
+An unboundedly parallel algorithm tries all possible assignments,
+in some way guaranteed to try every assignment eventually 
+(as with Cantor's enumeration).
+If there is a satisfying assignment then this algorithm will find it
+and accept that branch.
+If there is no satisfying assignment then the comptuation history
+tree is infinite, but with no accepting branch.
+
+A guessing algorithm guesses an assignment $\sequence{x_0,\ldots{}x_n}$
+and then verifies that the assignment has $f(x_1,\ldots{}x_n)\leq B$.
+If there is a satisfying assignment then there is a way to guess it
+so, by definition, this machine recognizes the language~$\lang_B$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+The 
+\definend{\probname{Semiprime}} problem\index{Semiprime problem@\probname{Semiprime} problem} 
+inputs a number $n\in\N$ and decides if its prime
+factorization has exactly two primes, $n=p_0^{e_0}p_1^{e_1}$ where
+$e_i>0$.
+State it as a language decision problem.
+Sketch a nondeterministic algorithm that runs in polytime.
+Give both an unbounded parallelism formulation and a guessing formulation.
+\begin{answer}\verified
+The language is 
+$\lang=\set{n\in\N\suchthat \text{$n$'s prime factorization has exactly two nontrivial primes}}$.
+
+One unbounded parallelism algorithm tries each
+conceivable prime factorization, simultaneously.
+For instance, given the input~$8$, it could check the 
+products $2^03^05^07^0$, $2^13^05^07^0$, \ldots{}  
+$2^73^75^77^7$, to see whether any of them equals~$8$ and 
+nontrivially involves exactly two primes.
+Multiplying is fast and checking whether a number is composite or
+prime can also be done in polytime.
+Thus each branch check happens in polytime.
+
+A guessing algorithm is that the machine inputs the number~$n$
+and guesses 
+a two-prime factorization (or is given one by a demon).
+For instance, given $45$, the machine might guess $3^{2}5^{1}$.
+(It could also guess $3^15^2$, but that won't verify.) 
+Again, the verification is polytime because
+multiplication is polytime, as is checking whether the two numbers
+are composite or prime.
+By definition, the machine recognizes the language~$\lang$ if,
+given $n\in\N$, when $n\in\lang$ then there exists a guess that
+verifies, and when $n\notin\lang$ then there is no way for a guess to
+verify.
+So this algorithm recognizes~$\lang$.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+For each, give a language so that it is a language decision problem.
+Then give a polytime nondeterministic algorithm.
+State it in terms of guessing.
+\begin{exparts}
+\item
+\probname{Three Dimensional Matching}:~where\index{Three Dimensional Matching problem@\probname{Three Dimensional Matching} problem}
+$X,Y,Z$ are sets of integers
+having~$n$ elements, given as input a set of triples 
+$M\subseteq X\times Y\times Z$,
+decide if there is an $n$-element subset $\hat{M}\subseteq M$ so that
+no two triples agree on their first coordinates, or second, or third.
+\item
+\probname{Partition}:~given\index{Partition problem@\probname{Partition} problem} 
+a finite multiset~$A$ of natural numbers,
+decide if~$A$ splits into multisets
+$\hat{A},A-\hat{A}$ so the elements total to the same number,
+$\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
+\end{exparts}
+\begin{answer}\verified
+\begin{exparts}
+\item This is the language.
+\begin{equation*}
+  \lang=\set{M\in X\times Y\times Z \suchthat
+              \text{$M$ has an $n$-element subset $\hat{M}$ where no triples agree on any coordinate}}
+\end{equation*}
+
+A nondeterministic algorithm, framed in terms of guessing, is:~given~$M$, 
+the machine guesses a size~$n$ subset~$\hat{M}$ meeting the conditions.
+Verifying the conditions clearly takes only polytime.
+If there is such an~$\hat{M}$ then there is a way for the machine to 
+guess it, and it will verify.
+If there is no such~$\hat{M}$ then there is no way for the machine to 
+guess one that verifies.
+So by the definition of this model of nondeterminism, 
+the machine recognizes the language in polytime.
+\item Here is the language.
+\begin{equation*}
+  \lang=\set{A\suchthat
+        \text{$A$ is a multiset of natural numbers, 
+              with $\hat{A}\subseteq A$ so that 
+              $\sum_{a\in\hat{A}}a=\sum_{a\in A-hat{A}}a$}}
+\end{equation*}
+
+A nondeterministic algorithm stated in guessing terms is that, 
+when asked to determine if the given~$A$ is a member of~$\lang$, the 
+machine guesses at a~$\hat{A}$.
+(That is, $\hat{A}$ is the witness.)
+Verifying that $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$ is clearly
+polytime.
+If there is such a partition then the machine there exists a guess 
+that would pass verification.
+If there is no such partition then no guess will verify.
+So by the definition, this machine recognizes the language~$\lang$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+True or False: for the
+language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$,
+the problem of deciding membership 
+is in $\compclass{NP}$.
+\end{exercise}
+
+\begin{exercise}
+Describe the problem of determining whether a number is odd as the problem
+of deciding membership in a language.
+Show it is in~$\NP$.
+\begin{answer}
+The natural way to describe it as a decision problem for a language
+is with
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
+To show it is in $\NP$, we can have a deterministic Turing machine
+that uses an empty witness $\omega=\emptystring$, and accepts such
+strings in polynomial time.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
 In a British TV game show 
 \citetext{\textit{Countdown}}{%
   See \url{https://en.wikipedia.org/wiki/Countdown_(game_show)}.}
@@ -8353,111 +8506,6 @@ deterministically verify it.
 If there is such an expression then there is a succeeding guess,
 that it, there is an accepting branch to $\TM$'s computation tree.
 If there is no such expression then no guess can succeed. 
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-The \definend{\probname{Integer Linear Programming}} problem\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem}
-is to maximize a linear objective function
-$f(x_0,\ldots x_n)=d_0x_0+\cdots+d_nx_n$ subject to constraints
-$a_{i,0}x_0+\cdots+a_{i,n}x_n\leq b_i$, where all of~$x_j, d_j, b_j, a_{i,j}$
-are integers. 
-For this language decision problem, give the language.
-Sketch a nondeterministic algorithm.
-Give both an unbounded parallelism formulation and a guessing formulation.
-\begin{answer}
-We recast this optimization problem as a sequence of language decision
-problems for a family of languages parametrized by the bound~$B\in\N$.
-\begin{equation*}
-  \lang_B=
-  \set{\sequence{x_0,x_1,\ldots{} x_n}\in\Z^{n+1}\suchthat
-       \text{the $x_j$ satisfy all the constraints and $f(x_0,x_1,\ldots{}x_n)\leq B$}}
-\end{equation*}
-
-An unbounded parallelism algorithm tries all possible assignments,
-in some way guaranteed to try every assignment eventually, 
-as with Cantor's enumeration.
-(If there is no satisfying assignment then the comptuation history
-tree is infinite.)
-If there is a satisfying assignment then this algorithm will find it.
-
-A guessing algorithm guesses an assignment.
-It then verifies that the assignment.
-If there is a satisfying assignment then there is a way to guess it,
-so this recognizes the language~$\lang_B$.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-The 
-\definend{\probname{Semiprime}} problem\index{Semiprime problem@\probname{Semiprime} problem} 
-inputs a number $n\in\N$ and decides if its prime
-factorization has exactly two primes, $n=p_0^{e_0}p_1^{e_1}$ where
-$e_i>0$.
-State it as a language decision problem.
-Sketch a nondeterministic algorithm.
-It must be polytime.
-Give both an unbounded parallelism formulation and a guessing formulation.
-\begin{answer}
-The language is 
-$\set{n\in\N\suchthat \text{$n$'s prime factorization has exactly two primes}}$.
-
-One unbounded parallelism algorithm tries each
-conceivable prime factorization, simultaneously.
-For instance, given the input~$8$, it could check the 
-products of $2^03^05^07^0$, $2^13^05^07^0$, \ldots{}  
-$2^73^75^77^7$.
-Multiplying is fast and checking whether a number is composite or
-prime can also be done in polytime.
-Thus each branch check happens in polytime.
-
-A guessing algorithm is that the machine guesses a number with 
-the desired prime factorization (or is given one by a demon).
-For instance, the machine might guess $45=3^{2}5^{1}$. 
-Again, the verification is polytime because
-multiplication is polytime, as is checking whether the two numbers
-are composite or prime. 
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Sketch a nondeterminstic algorithm for language decision problem.
-State it both in terms of unbounded parallelism and in terms of guessing.
-\begin{exparts}
-\item
-\probname{Three Dimensional Matching}:~where $X,Y,Z$ are sets of integers
-having $n$ elements, given as input $M\subseteq X\times Y\times Z$ then
-decide if there is an $n$-element $\hat{M}\subseteq M$ so that
-no two triples agree on any coordinates.
-\item
-\probname{Partition}: given a finite multiset~$A$ such that each of 
-its elements has a size $s(a)\in\N^+$,
-decide if the set splits into 
-$\hat{A},A-\hat{A}$ so the total of the sizes is the same,
-$\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)$.
-\end{exparts}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-True or False: for the
-language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$,
-the problem of deciding membership 
-is in $\compclass{NP}$.
-\end{exercise}
-
-\begin{exercise}
-Describe the problem of determining whether a number is odd as the problem
-of deciding membership in a language.
-Show it is in~$\NP$.
-\begin{answer}
-The natural way to describe it as a decision problem for a language
-is with
-$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
-To show it is in $\NP$, we can have a deterministic Turing machine
-that uses an empty witness $\omega=\emptystring$, and accepts such
-strings in polynomial time.
 \end{answer}
 \end{exercise}
 

@@ -1557,6 +1557,11 @@
 % conflict with restoregeometry: \usepackage{ulem}
 \newcommand{\fillinblank}[1][2.5em]{{\setlength{\fboxsep}{0pt}%
   \fbox{\hbox{}\rule[-1pt]{0pt}{9pt}\hspace*{#1}}}}
+% Blank line with optional label
+%   \fillinblankLabelled[4em]{(a)}
+% produces a blank line that is 4em long, with (a) halfway along. 
+\newcommand{\fillinblankLabelled}[2][3.5em]{{\setlength{\fboxsep}{0pt}%
+  \underline{\hbox{}\rule[-1pt]{0pt}{9pt}\makebox[#1][c]{{\small #2}}}}}
 
 % ================
 % Dash code stolen from tugboat.dtx

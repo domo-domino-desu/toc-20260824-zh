@@ -7530,8 +7530,8 @@ deterministic machine.% \footnote{%
 %<*lem:DeterministicAndNondeterministicTMsDoTheSame>
 \begin{lemma}  \label{lem:NonDeterAndDeterTMsHaveSameLangs}
 Deterministic and nondeterministic Turing machines 
-recognize the same languages.
-They also decide the same languages.
+decide the same languages.
+They also recognize the same languages.
 \end{lemma}
 %</lem:DeterministicAndNondeterministicTMsDoTheSame>
 
@@ -7542,19 +7542,36 @@ nondeterministic one.
 So if a deterministic machine recognizes a language, or decides a language,
 then a nondeterministic one does also.
 
-For the other direction, suppose that a nondeterministic Turing
-machine~$\TM$ recognizes a language~$\lang$.
-We will describe how a deterministic machine~$\TM[Q]$ can do the same.
-The nondeterministic machine~$\TM$ generates a computation tree
-and~$\TM[Q]$ can do a breadth-first traversal of that tree.
+Suppose that a nondeterministic Turing
+machine~$\TM$ decides a language~$\lang$.
+We will define a deterministic machine~$\TM[Q]$ that decides the same language.
+This machine does a breadth-first search of $\TM$'s computation tree.
 Fix an input~$\sigma$.
-If the tree triggered by~$\sigma$ has an accepting branch then~$\TM[Q]$ will
-eventually reach it, and will accept that input.
-If the tree has no accepting branch then~$\TM[Q]$ will never find one, 
-and so will not accept~$\sigma$.
+If $\TM$ accepts~$\sigma$ then the search done by~$\TM[Q]$ will
+eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
+If $\TM$ does not accept~$\sigma$ then every branch in its computation tree
+halts, in a rejecting state.
+We claim that there is a longest such branch.
+Otherwise, the computation tree 
+would have an infinite branch
+(by K\"{o}nig's Lemma, which we prove as part of 
+\cref{exer:NonDeterAndDeterTMsHaveSameLangs}),
+which would contradict that $\TM$ halts on every branch.
+So, the breadth-first search done by~$\TM[Q]$ will
+eventually find that all branches reject, and then $\TM[Q]$ rejects~$\sigma$.
+% For the other direction, suppose that a nondeterministic Turing
+% machine~$\TM$ recognizes a language~$\lang$.
+% We will describe how a deterministic machine~$\TM[Q]$ can do the same.
+% The nondeterministic machine~$\TM$ generates a computation tree
+% and~$\TM[Q]$ can do a breadth-first traversal of that tree.
+% Fix an input~$\sigma$.
+% If the tree triggered by~$\sigma$ has an accepting branch then~$\TM[Q]$ will
+% eventually reach it, and will accept that input.
+% If the tree has no accepting branch then~$\TM[Q]$ will never find one, 
+% and so will not accept~$\sigma$.
 
-We will not use the `decides' part below and it requires 
-an extra lemma, so it is left as 
+We will not use the `recognizes' part below so it is left as
+part of  
 \cref{exer:NonDeterAndDeterTMsHaveSameLangs}. 
 \end{proof}
 %</pf:DeterministicAndNondeterministicTMsDoTheSame>
@@ -7684,7 +7701,7 @@ Turing machines.
 The complexity 
 class~\definend{$\compclass{NP}$}\index{NP@$\NP$} 
 is the set of languages for which there is a 
-nondeterministic Turing machine recognizer that runs
+nondeterministic Turing machine decider that runs
 in polytime, meaning that there is a polynomial~$p$ such that 
 any accepting branch halts
 in time~$p$.
@@ -7696,7 +7713,7 @@ definitions, because a deterministic Turing machine is a special case
 of a nondeterministic one.
 
 %<*lem:PSubsetNP>
-\begin{lemma}
+\begin{lemma}  \label{lem:PSubsetNP}
 $\P\subseteq\NP$\,\footnotemark[1]
 \end{lemma}\footnotetext[1]{%
   Very important:~no one knows whether $\P$ is a strict subset, 
@@ -8435,9 +8452,9 @@ the machine recognizes the language in polytime.
 \item Here is the language.
 \begin{equation*}
   \lang=\set{A\suchthat
-        \text{$A$ is a multiset of natural numbers, 
-              with $\hat{A}\subseteq A$ so that 
-              $\sum_{a\in\hat{A}}a=\sum_{a\in A-hat{A}}a$}}
+        \text{$A$ is a multiset of natural numbers 
+              with an $\hat{A}\subseteq A$ so that 
+              $\sum_{a\in\hat{A}}a=\sum_{a\in A-\hat{A}}a$}}
 \end{equation*}
 
 A nondeterministic algorithm stated in guessing terms is that, 
@@ -8446,33 +8463,11 @@ machine guesses at a~$\hat{A}$.
 (That is, $\hat{A}$ is the witness.)
 Verifying that $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$ is clearly
 polytime.
-If there is such a partition then the machine there exists a guess 
+If there is such a partition then for this machine there exists a guess 
 that would pass verification.
 If there is no such partition then no guess will verify.
 So by the definition, this machine recognizes the language~$\lang$.
 \end{exparts}
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-True or False: for the
-language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$,
-the problem of deciding membership 
-is in $\compclass{NP}$.
-\end{exercise}
-
-\begin{exercise}
-Describe the problem of determining whether a number is odd as the problem
-of deciding membership in a language.
-Show it is in~$\NP$.
-\begin{answer}
-The natural way to describe it as a decision problem for a language
-is with
-$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
-To show it is in $\NP$, we can have a deterministic Turing machine
-that uses an empty witness $\omega=\emptystring$, and accepts such
-strings in polynomial time.
 \end{answer}
 \end{exercise}
 
@@ -8499,31 +8494,64 @@ Show that the decision problem for this language
     \suchthat \text{an allowed combination of the $s_i$ gives $T$}}
 \end{equation*}
 is in $\NP$.
-\begin{answer}
-This language is recognized by a nondeterministic machine~$\TM$, 
-because it can just guess an expression and then 
-deterministically verify it.
-If there is such an expression then there is a succeeding guess,
-that it, there is an accepting branch to $\TM$'s computation tree.
-If there is no such expression then no guess can succeed. 
+Use \cref{lem:VerifierAndGuesserEquiv}.
+\begin{answer}\verified
+\cref{lem:VerifierAndGuesserEquiv}
+requires that we product a deterministic Turing machine verifier, $\TM[V]$.
+It must input pairs of the form $\sequence{\sigma,\omega}$, where 
+$\sigma=\sequence{s_0,\ldots{} s_5,T}$.
+It must have the property that if
+$\sigma\in\prob[CD]$ then there is a~$\omega$ such that~$\TM[V]$  
+accepts the input, while if $\sigma\notin\prob[CD]$ then there is no 
+such witness~$\omega$.
+And it must run in time polynomial in~$\sizeof{\sigma}$.
+
+The witness~$\omega$ is an arithmetic expression (or, more precisely,
+a string representation of an arithmetic expression) that evaluates
+to the target~$T$ and that involves a subset of the six 
+numbers~$s_0$, \ldots{} $s_5$, each used at most once.
+The verifier checks that the expression does indeed evaluate to the target,
+and does indeed use each of the six numbers at most once.
+Clearly those checks can be done in polytime.
+
+If 
+$\sigma\in\prob[CD]$ then by definition there is an
+arithmetic expression, and so a witness~$\omega$ exists 
+that will cause~$\TM[V]$ to 
+accept the input.
+If $\sigma\notin\prob[CD]$ then there is no such arithmetic expression,
+and therefore no witness~$\omega$ will cause~$\TM[V]$ to accept.
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-Recall how we recast \probname{Travelling Salesman}
-as a language decision problem by using the bound technique.
-Show that the result is in $\NP$ by sketching a verifier that works with
-a suitable witness.
-\begin{answer}
-We recast it as a language decision problem 
-by setting a bound~$B\in\N$ and considering this set of bitstrings.
+Recall that we recast \probname{Travelling Salesman} optimization problem
+as a language decision problem for a family of languages.
+Show that each such language 
+is in $\NP$ by applying \cref{lem:VerifierAndGuesserEquiv},
+sketching a verifier that works with a suitable witness.
+\begin{answer}\verified
+We recast the \probname{Travelling Salesman} problem from an optimization 
+problem by using bounds~$B\in\N$ to get this 
+parametrized set of bitstrings.
 \begin{equation*}
-  \TS_B=\set{\bar{G}\in\kleenestar{\B}\suchthat
+  \TS_B=\set{G\in\kleenestar{\B}\suchthat
     \text{$G$ is a weighted graph with a circuit of length less than~$B$}}
 \end{equation*}
 
-To show that this problem is in~$\NP$ we must produce a verifier.
+To show that this problem is in~$\NP$,
+\cref{lem:VerifierAndGuesserEquiv} requires that we produce a 
+deterministic Turing machine verifier, $\TM[V]$.
+It must input pairs of the form $\sequence{\sigma,\omega}$, where 
+$\sigma$ is a graph,~$\mathcal{G}$ 
+(technically, a bitsting representation of a graph).
+The verifier must have the property that if
+$\sigma\in\TS_B$ then there is a~$\omega$ such that~$\TM[V]$  
+accepts the input, while if $\sigma\notin\TS_B$ then there is no 
+such~$\omega$.
+This verifier must run in time polynomial in~$\sizeof{\sigma}$.
+
 For a witness we can use a circuit 
 $\omega=\sequence{v_{i_0},v_{i_1},\ldots v_{i_k}}$ that
 is of total cost less than the bound.
@@ -8533,24 +8561,10 @@ that $\omega$ is indeed a Hamiltonian circuit of the graph, and that it
 costs less than the bound.
 A verifier can do those checks in time polynomial in~$\lh{\sigma}$.
 If the graph $\sigma$ is indeed an element of~$\TS_B$ then there is 
-such an~$\omega$, so the verifier can accept a pair.
+such an~$\omega$, so there is a pair $\sequence{\sigma,\omega}$ 
+that the verifier can accept.
 If $\sigma$ is not an element of~$\TS_B$ then there is no such 
 $\omega$, and so the verifier will never accept such a pair.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-The problem \probname{Double-$\SAT$}\index{Double-SAT@\probname{Double-$\SAT$} problem} 
-is:~given a propositional logic statement,
-decide whether it has at least two different substitutions of Boolean values
-that make the statement true.
-Show that this problem is in~$\NP$ by producing a suitable witness.
-\begin{answer}
-Given the propositional logic statement~$F$, a suitable witness is the
-pair $\omega\sequence{\ell_0,\ell_1}$ consisting of two lines of the
-table.
-That is, each $\ell_i$ is a substitution, a map from the 
-propositional variables $P,Q,R,\ldots$ to the set~$\set{T,F}$.
 \end{answer}
 \end{exercise}
 
@@ -8559,50 +8573,155 @@ The problem of \probname{Independent Sets} starts with a graph and
 a natural number~$n$ and
 decides whether in the graph there are $n$-many independent vertices,
 that is, vertices that are not connected.
-Show that this problem is in~$\NP$.
+State it as a language decision problem, and 
+use \cref{lem:VerifierAndGuesserEquiv} to show that this problem is in~$\NP$.
+\begin{answer}\verified
+The \probname{Independent Sets} problem 
+is the decision problem for this language.
+\begin{equation*}
+  \lang=
+  \set{\sequence{\mathcal{G},n}\suchthat
+       \text{the graph~$\mathcal{G}$ has at least $n$ independent vertices}}
+\end{equation*}
+
+To show that this language decision problem is in~$\NP$,
+\cref{lem:VerifierAndGuesserEquiv} requires that we produce a 
+deterministic Turing machine verifier, $\TM[V]$.
+This verifier must input pairs of the form $\sequence{\sigma,\omega}$, where 
+$\sigma$ is a graph-natural number pair,~$\sequence{\mathcal{G},n}$. 
+The verifier must satisfy that if
+$\sigma\in\lang$ then there is a~$\omega$ such that~$\TM[V]$  
+accepts the input, while if $\sigma\notin\lang$ then there is no 
+such~$\omega$.
+This verifier must run in time polynomial in~$\sizeof{\sigma}$.
+
+For a witness, take a size-$n$ set of independent vertices from the graph,
+$\omega=\sequence{v_0,\ldots{}v_{n-1}}$.
+The verifier gets an input pair~$\sequence{\sigma,\omega}$ where 
+$\sigma$ is a graph, and checks 
+that the vertices are in the graph and that no two of them are connected.
+Those checks take time polynomial in~$\lh{\sigma}$
+(obviously, this depends on the graph being represented with 
+reasonable efficiency, but we always make that assumption).
+If the pair $\sigma$ is indeed an element of~$\lang$ then there is 
+such a witness~$\omega$, so there exists a pair $\sequence{\sigma,\omega}$ 
+that the  verifier can accept.
+If $\sigma$ is not an element of~$\lang$ then there is no such 
+$\omega$, and so there does not exist a pair that the 
+verifier will accept.
+\end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-Check that \probname{Knapsack} is in~$\NP$ by checking that for
-every `yes' there is a polynomial-length witness that can be verified
-by a deterministic machine in polytime.
+Use \cref{lem:VerifierAndGuesserEquiv} to show that the
+\probname{Knapsack} problem\index{Knapsack problem@\probname{Knapsack} problem} 
+is in~$\NP$.
 \begin{answer}
-Let the given set be $S=\set{s_0,\ldots s_{k-1}}$.
-Then there is a $k$-bit witness~$\omega$, where $\omega[i]=1$ if $s_i$ is in
-the knapsack, and $\omega[i]=0$ if not.
-Clearly that's polynomial in the length of the input, the bitstring
-representing~$k$.
+The \probname{Knapsack} problem 
+is the decision problem for this language, $\lang$.
+\begin{equation*}
+  \set{\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}\suchthat
+       \text{there is $I=\set{i_0,\ldots{} i_k}\subseteq\closed{0}{n-1}$
+             so $\sum_{i\in I}w_i\leq B$ and $\sum_{i\in I}v_i\geq T$}}
+\end{equation*}
 
-What remains is to check that the witness can be verified in polynomial
-time.
-This is just a matter of adding the weights associated with those $i$ such
-that $\omega[i]=1$ to see that the total is below the weight bound,
-and of adding the values to see that the total exceeds the value target.
-Clearly this can be done in polytime.
+To show that this language decision problem is in~$\NP$,
+\cref{lem:VerifierAndGuesserEquiv} requires that we produce a 
+deterministic Turing machine verifier, $\TM[V]$.
+The verifier input pairs $\sequence{\sigma,\omega}$, where 
+$\sigma=\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}$. 
+The verifier must have the property that if
+$\sigma\in\lang$ then there is a~$\omega$ such that~$\TM[V]$  
+accepts the input, while if $\sigma\notin\lang$ then there is no 
+such~$\omega$.
+This verifier must also run in time polynomial in~$\sizeof{\sigma}$.
+
+For a witness, take a set
+$\omega=\sequence{(w_{i_0},v_{i_0}),\ldots{} (w_{i_k},v_{i_k})}$.
+The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
+that the sum of the weights of pairs in~$\omega$ is less than 
+or equal to the bound~$B$,
+and also that the sum of the values of pairs in~$\omega$ is greater than 
+or equal to the target~$T$.
+Those checks clearly take time polynomial in~$\lh{\sigma}$.
+
+If $\sigma$ is indeed an element of~$\lang$ then there is 
+such a witness~$\omega$, so there exists a pair $\sequence{\sigma,\omega}$ 
+that the  verifier can accept.
+If $\sigma$ is not an element of~$\lang$ then there is no such 
+$\omega$, and so there does not exist a pair that the 
+verifier will accept.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Each of these problems is in~$\compclass{NP}$.
+For each, prove that by filling in the blanks in this argument.
+\begin{quotation}\it
+    \cref{lem:VerifierAndGuesserEquiv}
+    requires that we product a deterministic Turing machine verifier, $\TM[V]$.
+    It must input pairs of the form $\sequence{\sigma,\omega}$, where 
+    $\sigma=\fillinblankLabelled{\text{(a)}}$.
+    It must have the property that if
+    $\sigma\in\prob$ then there is an~$\omega$ such that~$\TM[V]$  
+    accepts the input, while if $\sigma\notin\prob$ then there is no 
+    such witness~$\omega$.
+    And it must run in time polynomial in~$\sizeof{\sigma}$.
+
+    The witness~$\omega$ is \fillinblankLabelled{(b)}.
+    The verifier checks \fillinblankLabelled{(c)}.
+    Clearly that can be done in polytime.
+
+    If 
+    $\sigma\in\prob$ then by definition there is \fillinblankLabelled{(d)}, 
+    and so a witness~$\omega$ exists that will cause~$\TM[V]$ to 
+    accept the input pair $\sequence{\sigma,\omega}$.
+    If $\sigma\notin\prob$ then there is no such \fillinblankLabelled{(e)},
+    and therefore no witness~$\omega$ will cause~$\TM[V]$ to accept
+    the input pair.
+\end{quotation}
+\begin{exparts*}
+\item
+The \probname{Hamiltonian Circuit} problem is to decide if a give graph
+has a circuit that includes all vertices.
+\item
+The \probname{Composite} problem is to decide if the given natural number
+has a nontrivial factor.
+\item 
+The problem \probname{Double-$\SAT$}\index{Double-SAT@\probname{Double-$\SAT$} problem} 
+problem inputs a propositional logic statement and
+decide whether it has at least two different substitutions of Boolean values
+that make it true.
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+True or False?~for the
+language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$,
+the problem of deciding membership 
+is in $\compclass{NP}$.
+\begin{answer}
+By \cref{lem:PSubsetNP} it suffices to show that the language 
+recognition problem is in~$\P$.
+But that's clear:~given a triple $\sequence{a,b,c}$, checking whether
+the first two sum to the third is clearly a polytime task.
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
-Each of these problems is in~$\compclass{NP}$.
-For each, give a witness.
-\begin{exparts}
-\item
-The problem of finding is a given number is divisible by four.
-\item
-The problem of finding the product of two matrices.
-\end{exparts}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-Give a witness for each of these problems from~$\compclass{NP}$.
-\begin{exparts*}
-\item
-\probname{Hamiltonian Circuit}
-\item
-\probname{Composite}
-\end{exparts*}
+Describe the problem of determining whether a number is odd as the problem
+of deciding membership in a language.
+Show it is in~$\NP$.
+\begin{answer}
+The natural way to describe it as a decision problem for a language
+is with
+$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
+To show it is in $\NP$, we can have a deterministic Turing machine
+that uses an empty witness $\omega=\emptystring$, and accepts such
+strings in polynomial time.
+\end{answer}
 \end{exercise}
 
 \recommended
@@ -8764,9 +8883,8 @@ State it both in terms of a computation tree and in terms of guessing.
 % \end{exercise}
 
 \begin{exercise}  \label{exer:NonDeterAndDeterTMsHaveSameLangs}
-\cref{lem:NonDeterAndDeterTMsHaveSameLangs} says that deterministic
-and nondeterministic Turing machines decide the same set of languages.
-We will prove that.
+The proof of 
+\cref{lem:NonDeterAndDeterTMsHaveSameLangs} leaves two things undone.
 \begin{exparts}
 \item (K\"{o}nig's Lemma) 
   Prove that if a connected tree has infinitely many vertices, but each
@@ -8776,7 +8894,9 @@ We will prove that.
   One of the neighbors must have infinitely many such vertices;
   call it~$v_1$.
   Iterate.
-\item Use that to prove that the lemma is correct. 
+\item Prove that if a nondeterministic Turing machine recognizes
+  a language then there is a deterministic machine that also
+  recognizes it. 
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -8792,22 +8912,33 @@ each of which is finite.
 Pick one such neighbor and call it~$v_1$.
 By repeating this process we get an infinite path $\sequence{v_0,v_1,\ldots{}}$.
 \item
-Suppose that a nondeterministic Turing
-machine~$\TM$ decides a language~$\lang$.
-We will define a deterministic machine~$\TM[Q]$ that decides the same language.
-This machine does a breadth-first search of $\TM$'s computation tree.
+For the other direction, suppose that a nondeterministic Turing
+machine~$\TM$ recognizes a language~$\lang$.
+We will describe how a deterministic machine~$\TM[Q]$ can do the same.
+The nondeterministic machine~$\TM$ generates a computation tree
+and~$\TM[Q]$ can do a breadth-first traversal of that tree.
 Fix an input~$\sigma$.
-If $\TM$ accepts~$\sigma$ then the search done by~$\TM[Q]$ will
-eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
+If the tree triggered by~$\sigma$ has an accepting branch then~$\TM[Q]$ will
+eventually reach it, and will accept that input.
+If the tree has no accepting branch then~$\TM[Q]$ will never find one, 
+and so will not accept~$\sigma$.
 
-If $\TM$ does not accept~$\sigma$ then every branch in its computation tree
-halts, in a rejecting state.
-We claim that there is a longest such branch.
-Otherwise, by K\"{o}nig's Lemma, the computation tree 
-would be an infinite branch,
-which would contradict that $\TM$ halts on every branch.
-So, the breadth-first search done by~$\TM[Q]$ will
-eventually find that all branches reject, and then $\TM[Q]$ rejects~$\sigma$.
+% Suppose that a nondeterministic Turing
+% machine~$\TM$ decides a language~$\lang$.
+% We will define a deterministic machine~$\TM[Q]$ that decides the same language.
+% This machine does a breadth-first search of $\TM$'s computation tree.
+% Fix an input~$\sigma$.
+% If $\TM$ accepts~$\sigma$ then the search done by~$\TM[Q]$ will
+% eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
+
+% If $\TM$ does not accept~$\sigma$ then every branch in its computation tree
+% halts, in a rejecting state.
+% We claim that there is a longest such branch.
+% Otherwise, by K\"{o}nig's Lemma, the computation tree 
+% would be an infinite branch,
+% which would contradict that $\TM$ halts on every branch.
+% So, the breadth-first search done by~$\TM[Q]$ will
+% eventually find that all branches reject, and then $\TM[Q]$ rejects~$\sigma$.
 \end{exparts}
 \end{answer}
 \end{exercise}

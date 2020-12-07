@@ -2634,7 +2634,7 @@ although now computer proofs are routine.
 Given a graph and a number $k\in\N$, decide whether the 
 graph is \definend{$k$-colorable}, 
 whether we can partition its vertices into $k$-many sets, 
-$\mathcal{V}=\mathcal{C}_0\cup\cdots\cup\mathcal{C}_{k-1}$, such
+$\mathcal{N}=\mathcal{C}_0\cup\cdots\cup\mathcal{C}_{k-1}$, such
 that no two same-set vertices are connected.
 \end{problem}
 
@@ -4119,7 +4119,7 @@ But it has no $5$-clique, as checked by exhaustion in
 Recall that 
 \probname{Vertex Cover}\index{Vertex Cover@\probname{Vertex Cover} problem} 
 inputs a graph
-$\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$ and a number~$k\in\N$,
+$\mathcal{G}=\sequence{\mathcal{N},\mathcal{E}}$ and a number~$k\in\N$,
 and asks if there is a subset~$S$ of at most $k$~vertices 
 such that for each edge at least one endpoint is an element of~$S$.
 The \definend{\probname{Independent Set}}\index{Independent Set@\probname{Independent Set} problem}
@@ -4151,7 +4151,7 @@ Find an independent set~$\hat{S}$ with $\hat{k}=6$ elements.
   \includegraphics{complexity/asy/complexity/complexity22.pdf}
 \end{center}
 \item Prove that $S$ is a vertex cover if and only if
-its complement~$\hat{S}=\mathcal{V}-S$ is an independent set.
+its complement~$\hat{S}=\mathcal{N}-S$ is an independent set.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -4165,9 +4165,9 @@ $\hat{S}=\set{q_0,q_3,q_5}$.
 An independent set with $\hat{k}=6$ elements is 
   $\hat{S}=\set{q_0,q_1,q_3,q_4,q_6,q_7}$.
 \item For any edge, if it has at least one endpoint in
-$S$ then it has at most one endpoint in the complement $\hat{S}=\mathcal{V}-S$.
+$S$ then it has at most one endpoint in the complement $\hat{S}=\mathcal{N}-S$.
 Conversely, If an edge has at most one endpoint in~$\hat{S}$ 
-then it has at least one endpoint in the complement~$S=\mathcal{V}-\hat{S}$. 
+then it has at least one endpoint in the complement~$S=\mathcal{N}-\hat{S}$. 
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -4823,7 +4823,7 @@ We can recast it as the problem of determining membership in the language
 $
   \SAT=
   \set{F\suchthat
-    \text{$F$ a satisfiable propositional logic statement}}
+    \text{$F$ is a satisfiable propositional logic statement}}
 $.\index{SAT@$\SAT$}
 This recasting is trivial, suggesting that the language recognition
 problem form is a natural way to describe the underlying task.
@@ -6091,7 +6091,7 @@ in this language, and that runs in polynomial time.
 The natural approach is to do a breadth first search or depth first search
 of the graph.
 The runtime of both is bounded by 
-$\bigOh(\sizeof{\mathcal{V}}^3)$.
+$\bigOh(\sizeof{\mathcal{N}}^3)$.
 \end{example}
 
 \begin{example}
@@ -6606,13 +6606,13 @@ so that we are give a pair $\sequence{\mathcal{G},B}$ and asked if the
 graph has a $B$-sized clique.
 \item
 Given $\mathcal{G}$, enumerate all triples
-$\sequence{v_0,v_1,v_2}\in\mathcal{V}^3$
+$\sequence{v_0,v_1,v_2}\in\mathcal{N}^3$
 and check whether all three of $v_0v_1, v_0v_2, and v_1v_2$
 are edges, members of~$\mathcal{E}$.
 This takes polynomial time.
-Specifically, it is $\bigOh(\sizeof{\mathcal{V}}^3\cdot\sizeof{\mathcal{E}})$.
-Because $\sizeof{\mathcal{E}}\leq \sizeof{\mathcal{V}}^2$, the algorithm is
-$\bigOh(\sizeof{\mathcal{V}}^5)$.
+Specifically, it is $\bigOh(\sizeof{\mathcal{N}}^3\cdot\sizeof{\mathcal{E}})$.
+Because $\sizeof{\mathcal{E}}\leq \sizeof{\mathcal{N}}^2$, the algorithm is
+$\bigOh(\sizeof{\mathcal{N}}^5)$.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -6726,10 +6726,10 @@ $S_{i-1}=S_i$, because the graph is finite.
 This algorithm takes a number of steps, $i$, that is bounded by the
 number of vertices in the graph, and
 so the algorithm is polynomial in the size of the graph.
-% Specifically, it will take $\bigOh(|\mathcal{V}|^2\cdot|\mathcal{E}|)$.
+% Specifically, it will take $\bigOh(|\mathcal{N}|^2\cdot|\mathcal{E}|)$.
 % But since every edge consists of two vertices,
-% $|\mathcal{E}|\leq|\mathcal{V}|^2$.
-% Thus this algorithm is $\bigOh(|\mathcal{V}|^4)$
+% $|\mathcal{E}|\leq|\mathcal{N}|^2$.
+% Thus this algorithm is $\bigOh(|\mathcal{N}|^4)$
 \end{answer}
 \end{exercise}
 
@@ -7790,26 +7790,33 @@ language.
   \SAT=
   \set{\sigma\suchthat
     \text{$\sigma$ represents a propositional logic formula 
-  that is satisfiable}}\index{SAT@$\SAT$}
+          that is satisfiable}}\index{SAT@$\SAT$}
 \end{equation*}
-We can write a
-verifier~$\TM[V]$ that inputs the Propositional Logic 
-candidate string~$\sigma$,
-and a witness~$\omega$ that points to a line of the truth table.
+\cref{lem:VerifierAndGuesserEquiv} requires that we produce a
+deterministic Turing machine verifier.
+It must input a pair,~$\sequence{\sigma,\omega}$, where
+$\sigma$ represents a propositional logic formula.
+It must have the property that if $\sigma\in\SAT$ then there is
+a witness~$\omega$ so that the verifier accepts the input 
+pair~$\sequence{\sigma,\omega}$,
+while if $\sigma\notin\SAT$ then there is no witness that will result
+in the verifier accepting the input.
+Consider~$\TM[V]$ below. 
+For witnesses, we use strings~$\omega$ that point to a line of the truth table.
 %</ex:SATIsNPi>
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts000.pdf}}
 \end{center}
 %<*ex:SATIsNPii>
-This verifier, given a satisfiable candidate 
-such as the one from ($*$), and a suitable witness
-such as~$\str{TTF}$,
-can easily check in polytime 
+Given a satisfiable candidate~$\sigma$ 
+such as the one from ($*$), for this verifier there is a suitable witness,
+such as~$\omega=\str{TTF}$, so that~$\TM[V]$
+can check in polytime 
 that on that line, the candidate evaluates to~\true.
 But, if given a candidate that is not satisfiable, such as
-$\sigma=P\vee\neg P$, 
-no hint~$\omega$ will cause~$\TM[V]$
-to accept that~$\sigma\in\SAT$.
+$\sigma=P\wedge\neg P$, then there does not exist a 
+hint that will cause~$\TM[V]$
+to accept, because no line that is pointed-to will verify.
 \end{example}
 %</ex:SATIsNPii>
 
@@ -7830,7 +7837,7 @@ witness to $\sigma\notin\lang$.
 Instead, in this case the requirement is that, 
 from among all possible $\omega\in\kleenestar{\B}\!$, 
 there is none 
-so that the verifier accepts $\sequence{\sigma,\omega}$.
+so that the verifier accepts the input $\sequence{\sigma,\omega}$.
 
 Third, a comment on the runtime of the verifier.
 Contrast the $\probname{Satisfiability}$ problem with
@@ -7894,18 +7901,22 @@ instead of requiring that the starting vertex equal the ending one.
              \text{some path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex exactly once}}
 \end{equation*}
 We will show that this problem is in the class~$\NP$.
+\cref{lem:VerifierAndGuesserEquiv} requires that we produce a
+deterministic Turing machine verifier~$\TM[V]$.
+Here is our verifier, which takes inputs $\sequence{\sigma,\omega}$, 
+where the candidate is $\sigma=\sequence{\mathcal{G},v,\hat{v}}$.
 We take each witness to be a path, 
 $\omega=\sequence{v,v_1,\ldots{} \hat{v}}$.
-Here is our verifier, where the candidate is 
-$\sigma=\sequence{\mathcal{G},v,\hat{v}}$.
 %</ex:HamPathIsNPi>
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts001.pdf}}
 \end{center}
 %<*ex:HamPathIsNPii>
 If there is a Hamiltonian path then there is
-a witness~$\omega$ leading to acceptance, in polytime.
-If there is no such path then for no~$\omega$ will~$\TM[V]$ accept.
+a witness~$\omega$ so that $\TM[V]$ will accept its input.
+Clearly that acceptance takes polytime.
+If the graph has no Hamiltonian path then for no
+hint~$\omega$ will~$\TM[V]$ accept its input.
 \end{example}
 %</ex:HamPathIsNPii>
 
@@ -7914,41 +7925,23 @@ If there is no such path then for no~$\omega$ will~$\TM[V]$ accept.
 The \probname{Composite} problem\index{Composite problem@\probname{Composite} problem}
 asks whether a number has a nontrivial factor.
 \begin{equation*}
-  \lang=\set{n\in\N\suchthat \text{$n$ has a divisor~$a$ with $1<a<n$}}
+  \lang=\set{n\in\N^+\suchthat \text{$n$ has a divisor~$a$ with $1<a<n$}}
 \end{equation*}
-The verifier inputs~$\sequence{\sigma,\omega}$, where $\sigma$ 
-represents a number~$n$.
-As the witness~$\omega$, we can use any nontrivial factor~$a$,
-and the verifier just checks that $a$ divides~$n$.
-If $\sigma\in\lang$ then the number is composite and there is a suitable 
-witness, which we can verify in polytime.
-If $\sigma\notin\lang$ then the verifier will
-never accept an input pair~$\sequence{\sigma,\omega}$,
+Briefly, the verifier inputs~$\sequence{\sigma,\omega}$, where $\sigma$ 
+represents a number~$n>1$.
+As the witness~$\omega$, we can use any number.
+The verifier checks that $\omega$ is between $1$ and~$n$, 
+and that it divides~$n$.
+If~$\sigma\in\lang$ then there is a suitable 
+witness, which the verifier can check in polytime.
+If $\sigma\notin\lang$ then no witness will make verifier
+accept an input pair~$\sequence{\sigma,\omega}$,
 because there is no nontrivial factor for $\omega$ to represent.
 \end{example}
 %</ex:CopositeIsNP>
 
-\begin{example}
-Recall the
-\probname{Subset Sum} problem:~given\index{Subset Sum problem@\probname{Subset Sum} problem}
-a set of numbers $S\subset\N$ and a target sum~$T\in\N$,
-we want to know if at least one subset of~$S$ adds to~$T$.
-Recast it as the decision problem for the language
-%\begin{equation*}
-$
-  \set{\sequence{S,T}\suchthat
-     \text{a subset of $S$ totals to $T$}}
-$.
-%\end{equation*}
-For $\sigma=\sequence{S,T}$,
-as~$\omega$ we can use the subset~$\smash{\hat{S}}\subseteq S$ 
-whose members add to~$T$.
-The verifier just checks that the subset adds to the target,
-which is easy in polytime.
-\end{example}
-
 Finally, the promised proof
-of \cref{lem:VerifierAndGuesserEquiv}
+of \cref{lem:VerifierAndGuesserEquiv}.
 
 \begin{proof} \label{proof:VerifierAndGuesserEquiv}
 %<*pf:VerifierAndGuesserEquivi>
@@ -7957,14 +7950,14 @@ Turing machine~$\TM$ in polynomial time;
 we will construct a polynomial time verifier~$\TM[V]$.
 Let $\map{p}{\N}{\N}$ be the polynomial 
 such that on input~$\sigma\in\lang$, the
-machine~$\TM$ has an accepting branch within
-$p(|\sigma|)$ steps.
-We can make a certificate $\omega$ of this accepting branch.
-(Any Turing machine has
-a finite number, $k$, of states.
-So we can represent a branch of a computation tree with 
-a string of numbers less than~$k$.)
-With that certificate, a deterministic verifier can retrace $\TM$'s
+machine~$\TM$ has an accepting branch of length at most
+$p(|\sigma|)$.
+Make a witness $\omega$ out of this accepting branch:~any
+Turing machine has
+a finite number of states,~$k$,
+so we can represent a branch of a computation tree with 
+a string of numbers less than~$k$.
+With that witness, a deterministic verifier can retrace $\TM$'s
 accepting branch.
 The branch's length must be less than $p(\sizeof{\sigma})$,
 so the verifier~$\TM[V]$ can do the retracing in polynomial time.
@@ -7973,7 +7966,7 @@ so the verifier~$\TM[V]$ can do the retracing in polynomial time.
 %<*pf:VerifierAndGuesserEquivii>
 Conversely, suppose that the language $\lang$
 is accepted by a verifier~$\TM[V]$ that runs in time
-bounded by the polynomial~$q$, and that takes as input 
+bounded by a polynomial~$q$, and that takes input 
 $\sequence{\sigma,\omega}$.
 We will construct a nondeterministic Turing machine~$\TM$  
 that accepts an input bitstring~$\tau$
@@ -7990,19 +7983,21 @@ and
 (3)~if the verifier accepts its input then $\TM$ accepts~$\tau$, while if the 
 verifier does not accept then $\TM$ also does not accept.
 
-By definition, a nondeterministic machine accepts a string if and only if
-there is a branch that accepts the string. 
-That is, $\TM$ accepts~$\tau$ if and only if there exists a way for the prior 
-paragraph to result in an accepted string.
+By definition, the nondeterministic machine~$\TM$ accepts the string 
+if there is a branch that accepts the string,
+and $\TM$ rejects the string if every branch rejects it. 
+% That is, $\TM$ accepts~$\tau$ if and only if there exists a way for the prior 
+% paragraph to result in an accepted string.
 Suppose first that $\tau\in\lang$.
-Because $\TM[V]$ is a verifier, there exists a witness~$\kappa$ that will 
+Because $\TM[V]$ is a verifier, in this case 
+there exists a witness~$\kappa$ that will 
 result in $\TM[V]$ accepting $\sequence{\tau,\kappa}$,
-so there is indeed a way for the prior paragraph to work, and so $\TM$ 
-accepts~$\tau$.
+so there is a way for the prior paragraph to result in acceptance of~$\tau$, 
+and so $\TM$ accepts~$\tau$.
 Now suppose that $\tau\notin\lang$.
-Then by the definition of a verifier, no~$\kappa$ will result in 
+By the definition of a verifier, no hint~$\kappa$ will result in 
 $\TM[V]$ accepting $\sequence{\tau,\kappa}$,
-and thus $\TM$ does not accept~$\tau$.
+and thus $\TM$ rejects~$\tau$.
 %</pf:VerifierAndGuesserEquivii>
 \end{proof}
 
@@ -8029,13 +8024,13 @@ we will address the devices that seem most likely to be coming,
 quantum computers. 
 
 Well-established physical theory says 
-that particles can be in a superposition of many states at once.
+that subatomic particles can be in a superposition of many states at once.
 Naively, it might seem that because of this multi-way branching,
-if we could build these as physical devices then we would have
+if we could manipulate these as physical devices then we would have
 nondeterministic computation. 
 But, that we know of, this is false.
 That we know, in order
-to get the information out of a quantum computer we must use interference, 
+to get information out of a quantum computer we must use interference, 
 and we cannot read individual particles.\footnote{%
   Some popularizations wrongly 
   suggest that quantum computers are nondeterministic. 
@@ -8043,7 +8038,7 @@ and we cannot read individual particles.\footnote{%
   they miss the point about interference.} %
 
 However, the fact that we do not have practical nondeterministic devices, 
-and do not believe we will in the
+and do not believe that we will in the
 near future, does not mean that their study is a purely academic 
 exercise.\footnote{%
   Not that there anything wrong with that.}
@@ -8072,7 +8067,7 @@ there are good algorithms, and for which are there not.
 % that have a good algorithm as the problems in~$\P$.
 In this section, we defined the class of problems for which
 there is a good way to verify a solution, in contrast with the problems
-for which there is a good algorithm to generate a solution.
+for which there is a good way to generate that solution.
 We will next consider
 whether these two classes differ.
 
@@ -8083,17 +8078,49 @@ whether these two classes differ.
 % \begin{exercise}  \label{exer:PrimaliltyTesting}
 % Express primality testing in computation tree terms.
 % \end{exercise}
+% \recommended
+% \begin{exercise}
+% Your friend says, ``The definition is tht 
+% $\NP$ is the set of problems with deterministic verifiers.''
+% They've not quite got all of it;
+% gently prompt them.
+% \begin{answer}\verified
+% The assertion that $\NP$ is the set of problems with deterministic 
+% verifiers is correct, but not complete.
+% In addition, the verifier runs in 
+% time polynomial in the length of the input.
+% \end{answer}
+% \end{exercise}
+
 \recommended
-\begin{exercise}
-Your friend says, ``$\NP$ is the set of problems with deterministic 
-verifiers.''
-That's not quite got all of it;
-gently prompt them.
+\begin{exercise} % https://math.stackexchange.com/q/49509
+Your study partner asks, 
+``In \cref{lem:VerifierAndGuesserEquiv}, since the witness~$\omega$ is not
+required to be effectively computable, 
+why can't I just take it to be the bit~\str{1} if
+$\sigma\in\lang$, and \str{0} if not?
+Then writing the verifier is easy:~just ignore $\sigma$ and follow
+the bit.''
+They are confused.
+Straighten them out.
 \begin{answer}\verified
-The assertion that $\NP$ is the set of problems with deterministic 
-verifiers is correct, but not complete.
-In addition, the verifier runs in 
-time polynomial in the length of the input.
+That lemma requires that the verifier have the property 
+that if $\sigma\in\lang$ then there is a witness leading to acceptance, 
+while if $\sigma\notin\lang$ then there exists no witness that would
+cause the verifier to accept.
+
+For instance, 
+consider the problem $\lang=\set{n\in\N\suchthat \text{$n$ is even}}$.
+Your study partner's proposed verifier inputs a pair $\sequence{\sigma,\omega}$,
+where $\sigma$ is a number and $\omega$ is a bit, and then
+accepts the pair if $\omega=\str{1}$.
+Absolutely, if you give your verifier the pair $\sequence{\str{101},\str{0}}$
+then it will not accept (here, \str{101} represents the number~$5$, and is
+not an element of~$\lang$).
+However, 
+give it $\sequence{\str{101},\str{1}}$ and your verifier will accept.
+So, for $\sigma=\str{101}$ there exists an~$\omega$ leading to acceptance. 
+Consequently, your verifier is wrong.
 \end{answer}
 \end{exercise}
 
@@ -8140,35 +8167,11 @@ Decide if each formula is satisfiable.
 \end{answer}
 \end{exercise}
 
-\recommended
-\begin{exercise} % https://math.stackexchange.com/q/49509
-Your study partner asks, 
-``In \cref{lem:VerifierAndGuesserEquiv}, since the witness~$\omega$ is not
-required to be effectively computable, 
-why can't I just take it to be the bit~\str{1} if
-$\sigma\in\lang$, and \str{0} if not?
-Then writing the verifier is easy:~just ignore $\sigma$ and follow
-the bit.''
-They are confused.
-Straighten them out.
-\begin{answer}\verified
-That lemma requires that the verifier have the property 
-that if $\sigma\in\lang$ then there is a witness leading to acceptance, 
-while if $\sigma\notin\lang$ then there exists no witness that would
-cause the verifier to accept.
-
-For instance, 
-consider the problem $\lang=\set{n\in\N\suchthat \text{$n$ is even}}$.
-Your study partner's proposed verifier inputs a pair $\sequence{\sigma,\omega}$,
-where $\sigma$ is a number and $\omega$ is a bit, and then
-accepts the pair if $\omega=\str{1}$.
-Absolutely, if you give your verifier the pair $\sequence{\str{101},\str{0}}$
-then it will not accept (here, \str{101} represents the number~$5$, and is
-not an element of~$\lang$).
-However, 
-give it $\sequence{\str{101},\str{1}}$ and your verifier will accept.
-So, for $\sigma=\str{101}$ there exists an~$\omega$ leading to acceptance. 
-Consequently, your verifier is wrong.
+\begin{exercise}
+True or false?  
+If a language is in~$\P$ then it is in~$\NP$.
+\begin{answer}
+True, by \cref{lem:PSubsetNP}.
 \end{answer}
 \end{exercise}
 
@@ -8340,7 +8343,6 @@ so this satisfies the definition of a guessing algorithm working.
 \end{answer}
 \end{exercise}
 
-\recommended
 \begin{exercise}
 The \definend{\probname{Integer Linear Programming}} problem\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem}
 is to maximize a linear objective function
@@ -8374,6 +8376,7 @@ so, by definition, this machine recognizes the language~$\lang_B$.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 The 
 \definend{\probname{Semiprime}} problem\index{Semiprime problem@\probname{Semiprime} problem} 
@@ -8471,22 +8474,6 @@ So by the definition, this machine recognizes the language~$\lang$.
 \end{answer}
 \end{exercise}
 
-
-% \begin{exercise}
-% For each problem, sketch a deterministic and a nondeterministic algorithm
-% for solving that problem.
-% Phrase the nondeterminstic algorithm in both computation tree terms, and
-% in guessing terms.
-% \begin{exparts}
-% \item
-% The \probname{Hamiltonian Path} problem:~given a graph and two vertices, 
-% decide if there is a path between these two that visits each vertex
-% once and only once.
-% \item
-% \probname{Euler Circuit}
-% \end{exparts}
-% \end{exercise}
-
 % \begin{exercise}
 % For each problem, sketch a nondeterminstic algorithm.
 % State it both in terms of a computation tree and in terms of guessing.
@@ -8500,44 +8487,81 @@ So by the definition, this machine recognizes the language~$\lang$.
 
 \recommended
 \begin{exercise}
-Each of these problems is in~$\compclass{NP}$.
-For each, prove that by filling in the blanks in this argument.
+For each problem, cast it as a language decision problem
+and then prove that it is in~$\NP$
+by filling in the blanks in this argument.
 \begin{quotation}\it
     \cref{lem:VerifierAndGuesserEquiv}
     requires that we produce a deterministic Turing machine verifier, $\TM[V]$.
     It must input pairs of the form $\sequence{\sigma,\omega}$, where 
-    $\sigma=\fillinblankLabelled{\text{(a)}}$.
+    $\sigma$ is \fillinblankLabelled{(1)}.
     It must have the property that if
     $\sigma\in\prob$ then there is an~$\omega$ such that~$\TM[V]$  
     accepts the input, while if $\sigma\notin\prob$ then there is no 
     such witness~$\omega$.
     And it must run in time polynomial in~$\sizeof{\sigma}$.
 
-    The witness~$\omega$ is \fillinblankLabelled{(b)}.
-    The verifier checks \fillinblankLabelled{(c)}.
-    Clearly that can be done in polytime.
+    The verifier interprets
+    the bitstring witness~$\omega$ as \fillinblankLabelled{(2)},
+    and checks that \fillinblankLabelled{(3)}.
+    Clearly that check can be done in polytime.
 
     If 
-    $\sigma\in\prob$ then by definition there is \fillinblankLabelled{(d)}, 
+    $\sigma\in\prob$ then by definition there is \fillinblankLabelled{(4)}, 
     and so a witness~$\omega$ exists that will cause~$\TM[V]$ to 
     accept the input pair $\sequence{\sigma,\omega}$.
-    If $\sigma\notin\prob$ then there is no such \fillinblankLabelled{(e)},
+    If $\sigma\notin\prob$ then there is no such \fillinblankLabelled{(5)},
     and therefore no witness~$\omega$ will cause~$\TM[V]$ to accept
     the input pair.
 \end{quotation}
 \begin{exparts*}
-\item
-The \probname{Hamiltonian Circuit} problem is to decide if a give graph
-has a circuit that includes all vertices.
-\item
-The \probname{Composite} problem is to decide if the given natural number
-has a nontrivial factor.
 \item 
 The \probname{Double-$\SAT$}\index{Double-SAT problem@\probname{Double-$\SAT$} problem} 
 problem inputs a propositional logic statement and
 decide whether it has at least two different substitutions of Boolean values
 that make it true.
+\item
+The
+\probname{Subset Sum} problem\index{Subset Sum problem@\probname{Subset Sum} problem}
+inputs a set of numbers $S\subset\N$ and a target sum~$T\in\N$,
+and decides whether least one subset of~$S$ adds to~$T$.
 \end{exparts*}
+\begin{answer}\verified
+\begin{exparts}
+\item This is the language~$\lang$.
+\begin{equation*}
+  \set{\sigma\suchthat
+             \text{$\sigma$ represents a Propositional Logic statement
+                   where at least two lines of the truth tables
+                   end in \true}}
+\end{equation*}
+These are suitable fill-ins:
+\begin{parenum}
+\item a Propositional Logic statement,
+\item a pointer to two lines of the truth table,
+\item for those two truth table lines, the statement returns \true,
+\item two truth table lines that cause the expression~$\sigma$ 
+  to evaluate to \true,
+and
+\item pair of truth table lines.
+\end{parenum}
+\item
+Here is the problem cast as the decision problem for a language.
+\begin{equation*}
+  \lang=\set{\sequence{S,T}\suchthat
+     \text{a subset of $A\subseteq S$ has $\sum_{a\in A}a=T$}}
+\end{equation*}
+These are fill-ins:
+\begin{parenum}
+\item a set and number pair $\sequence{S,T}$,
+\item a set of numbers,
+\item that is a subset of the given~$S$ and that its elements sum to~$T$, 
+\item a subset of~$S$ whose elements sum to~$T$,
+and
+\item subset of~$S$.
+\end{parenum}
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \recommended
@@ -8686,12 +8710,12 @@ verifier will accept.
 Use \cref{lem:VerifierAndGuesserEquiv} to show that the
 \probname{Knapsack} problem\index{Knapsack problem@\probname{Knapsack} problem} 
 is in~$\NP$.
-\begin{answer}
+\begin{answer}\verified
 The \probname{Knapsack} problem 
 is the decision problem for this language, $\lang$.
 \begin{equation*}
   \set{\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}\suchthat
-       \text{there is $I=\set{i_0,\ldots{} i_k}\subseteq\closed{0}{n-1}$
+       \text{there is $I=\set{i_0,\ldots{} i_k}\subseteq\set{0,\ldots{} n-1}$
              so $\sum_{i\in I}w_i\leq B$ and $\sum_{i\in I}v_i\geq T$}}
 \end{equation*}
 
@@ -8707,15 +8731,18 @@ such~$\omega$.
 This verifier must also run in time polynomial in~$\sizeof{\sigma}$.
 
 For a witness, take a set
-$\omega=\sequence{(w_{i_0},v_{i_0}),\ldots{} (w_{i_k},v_{i_k})}$.
+$\omega=\set{i_0,\ldots{}i_k}\subseteq\set{0,\ldots{}n-1}$.
 The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
-that the sum of the weights of pairs in~$\omega$ is less than 
+that the sum of the weights of the indicated pairs, 
+$\sum_{i\in \omega}w_i$,  is less than 
 or equal to the bound~$B$,
-and also that the sum of the values of pairs in~$\omega$ is greater than 
+and also that the sum of the values of pairs, $\sum_{i\in \omega}v_i$,  
+is greater than 
 or equal to the target~$T$.
 Those checks clearly take time polynomial in~$\lh{\sigma}$.
 
-If $\sigma$ is indeed an element of~$\lang$ then there is 
+If $\sigma$ is indeed an element of~$\lang$ then there is such a
+selection of indices, so there is
 such a witness~$\omega$, so there exists a pair $\sequence{\sigma,\omega}$ 
 that the  verifier can accept.
 If $\sigma$ is not an element of~$\lang$ then there is no such 
@@ -8725,31 +8752,18 @@ verifier will accept.
 \end{exercise}
 
 \begin{exercise}
-True or False?~for the
+True or false?
+For the
 language~$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$,
 the problem of deciding membership 
 is in $\compclass{NP}$.
-\begin{answer}
+\begin{answer}\verified
 By \cref{lem:PSubsetNP} it suffices to show that the language 
-recognition problem is in~$\P$.
+decision problem is in~$\P$.
 But that's clear:~given a triple $\sequence{a,b,c}$, checking whether
 the first two sum to the third is clearly a polytime task.
 \end{answer}
 \end{exercise}
-
-% \begin{exercise}
-% Describe the problem of determining whether a number is odd as the problem
-% of deciding membership in a language.
-% Show it is in~$\NP$.
-% \begin{answer}
-% The natural way to describe it as a decision problem for a language
-% is with
-% $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ ends in a \str{1}}}$
-% To show it is in $\NP$, we can have a deterministic Turing machine
-% that uses an empty witness $\omega=\emptystring$, and accepts such
-% strings in polynomial time.
-% \end{answer}
-% \end{exercise}
 
 \recommended
 \begin{exercise}
@@ -8758,69 +8772,126 @@ is to input a graph and a bound, $\sequence{\mathcal{G},B}$,
 and determine whether the graph contains a simple path
 of length at least~$B\in\N$.
 (A path is simple if no two of its vertices are equal).
-Show that this problem is a member of $\NP$. 
+Show that this is in $\NP$. 
+\begin{answer}\verified
+We start by expressing this as a language decision problem.
+\begin{equation*}
+  \lang=\set{\sequence{\mathcal{G},B}\suchthat
+             \text{$\mathcal{G}$ has a simple path of length at least $B$}}
+\end{equation*}
+
+To show that this problem is in~$\NP$,
+\cref{lem:VerifierAndGuesserEquiv} wants a 
+deterministic Turing machine verifier, $\TM[V]$.
+The verifier input pairs $\sequence{\sigma,\omega}$, where 
+$\sigma=\sequence{\mathcal{G},B}$. 
+The verifier must satisfy that if
+$\sigma\in\lang$ then there is a~$\omega$ such that~$\TM[V]$  
+accepts the input pair, while if $\sigma\notin\lang$ then there is no 
+such~$\omega$.
+Also, the verifier must run in time polynomial in~$\sizeof{\sigma}$.
+
+For a witness, take a path
+$\omega=\sequence{v_0,\ldots{}v_{n-1}}$.
+The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
+that the path is in~$\mathcal{G}$, is simple (that no two vertices are equal), 
+and has length at least~$B$.
+Those checks clearly can be done in time polynomial in~$\lh{\sigma}$.
+
+If $\sigma$ is indeed an element of~$\lang$ then there is such a
+path~$\omega$, so there exists a pair $\sequence{\sigma,\omega}$ 
+that the  verifier accepts.
+If $\sigma$ is not an element of~$\lang$ then there is no such 
+$\omega$, and so there does not exist a pair that the 
+verifier accepts.
+\end{answer}
 \end{exercise}
 
-% \begin{exercise}
-% Recast this as a decision problem and then show it is in~$\NP$:
-% \textit{\citetext{We are going to put numbers into boxes.}{%
-%     From \autocite{blog:ComputationalComplexityBoxesProblem}.} 
-%   If three numbers $x$,$y$, and~$z$ are in a box then it cannot be the case 
-%   that any two of them add to the third. 
-%   If you put all of the numbers $1,2,\ldots{} n$ into boxes, 
-%   what is the smallest number of boxes that you will need?}
-% \begin{answer}
-% To recast it as a language decision problem we produce a matching language.
-% \begin{equation*}
-%   \set{\sequence{n,k}\suchthat
-%         \text{there is a partition of $\set{1,2,\ldots{} n}$ into at most~$k$ boxes where no two members add to a third}}
-% \end{equation*}
-% The witness~$\omega$ is the partition, the set of boxes.
-% Checking that each box satisfies that no two members add to a third is clearly 
-% polytime. 
-% \end{answer}
-% \end{exercise}
-
 \begin{exercise}
-For each problem, recast it as a language decision problem by describing
-the associated language, and then show it is in~$\NP$ by finding a 
-witness.
+Recast each as a language decision problem 
+and then show it is in~$\NP$.
 \begin{exparts}
 \item
-The \definend{\probname{Linear Divisibilty}} problem inputs a pair of 
+The \definend{\probname{Linear Divisibilty}} problem\index{Linear Divisibility problem@\probname{Linear Divisibility} problem} 
+inputs a pair of 
 natural numbers $\sigma=\sequence{a,b}$ and asks
 if there is an $x\in\N$ with $ax+1=b$.
 \item
 Given $n$ points scattered on a line, how far they are from each other
-defines an $n(n+1)/2$-member multiset. 
-The reverse of this problem, starting with the distances and 
-reconstructing the positions, is the \definend{\probname{Turnpike}} problem.
+defines a multiset. 
+(Recall that a multiset is like a set but element repeats don't collapse.) 
+The reverse of this problem, starting with a multiset~$M$ of numbers and 
+deciding whether there exist a set of points on a line whose 
+pairwise distances defines $M$, is the 
+\definend{\probname{Turnpike}} problem.\index{Turnpike problem@\probname{Turnpike} problem}
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item
 Here is the recasting, as the decision problem for this language.
 \begin{equation*}
-  \set{\sequence{a,b}\in\N^2\suchthat
-        \text{there exists $x\in\N$ with $ax+1=b$}}
+  \lang_0=\set{\sequence{a,b}\in\N^2\suchthat
+             \text{there exists $x\in\N$ with $ax+1=b$}}
 \end{equation*}
-It is a member of~$\NP$ because we can take the witness to be $\omega=x$.
-Checking that $ax+1=b$ is clearly polynomial.
+
+For
+\cref{lem:VerifierAndGuesserEquiv}, we will produce a  
+deterministic Turing machine verifier, $\TM[V]$.
+It inputs pairs $\sequence{\sigma,\omega}$, where 
+$\sigma$ is the number pair $\sequence{a,b}$. 
+The verifier must satisfy that if
+$\sigma\in\lang_0$ then there is a witness~$\omega$ such that~$\TM[V]$  
+accepts the input pair, while if $\sigma\notin\lang_0$ then there is no 
+such~$\omega$.
+The verifier must run in time polynomial in~$\sizeof{\sigma}$.
+
+For a witness, take a number
+$\omega=x$.
+The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
+that $ax+1=b$.
+That can be done in time polynomial in~$\lh{\sigma}$.
+
+If $\sigma$ is indeed an element of~$\lang_0$ then there is such a
+number~$\omega=x$, so there exists a pair $\sequence{\sigma,\omega}$ 
+that the  verifier can accept.
+If $\sigma$ is not an element of~$\lang_0$ then there is no such 
+$\omega$, and so there does not exist a pair that the 
+verifier accepts.
 \item
-This is the equivalent language.
+This is the associated language.
 \begin{equation*}
-  \set{M\suchthat 
-        \text{$M$ is a multiset with $n(n+1)/2$ distances}}
+  \lang_1=\set{M\suchthat 
+              \text{there is a set~$P\subset\Z$ of numbers such that 
+                    $M$ is the multiset of pairwise distances}}
 \end{equation*}
-The witness~$\omega$ is a set of suitable positions.
+
+Consider a deterministic Turing machine verifier, $\TM[V]$,
+that inputs pairs $\sequence{\sigma,\omega}$, where 
+$\sigma$ is a multiset $M$. 
+For a witness, take a set of positions $\omega=P$.
+The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
+that the pairwise distances among elements of~$P$ equals~$M$.
+That can be done in time polynomial in~$\lh{\sigma}$.
+
+If $\sigma\in\lang_1$ then there is such a
+set of positions~$\omega=P$, so there exists a pair $\sequence{\sigma,\omega}$ 
+that the  verifier accepts.
+If $\sigma\notin\lang_1$ then there is no such set
+$\omega$, and so there does not exist a pair that the 
+verifier accepts.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 Is the \HP{} in $\NP$?
-\begin{answer}
-The \HP{} is not decidable so it is not in $\NP$.
+\begin{answer}\verified
+The class~$\NP$ is the set of languages decidable by a nondeterministic
+machine in polytime.
+Wvery problem decidable by a nondeterministic Turing machine is
+decidable by a deterministic Turing machine.
+The \HP{} is not decidable by a deterministic Turing machine, 
+so it is not in $\NP$.
 \end{answer}
 \end{exercise}
 
@@ -8855,7 +8926,7 @@ guessing.
 \recommended
 \begin{exercise}
 Two graphs $\mathcal{G}_0,\mathcal{G}_1$ are isomorphic if there is a
-one-to-one and onto function $\map{f}{\mathcal{V}_0}{\mathcal{V}_1}$ such
+one-to-one and onto function $\map{f}{\mathcal{N}_0}{\mathcal{N}_1}$ such
 that $\set{v,\hat{v}}$ is an edge of~$\mathcal{G}_0$ if and only if
 $\set{f(v),f(\hat{v})}$ is an edge of~$\mathcal{G}_1$.
 Consider the problem of computing wheter two graphs are isomorphic.
@@ -9294,7 +9365,7 @@ Put an edge in~$\mathcal{G}$ if the associated atoms
 are in different clauses
 and are not negations (that is, not $x_i$ and $\neg x_i$).
 % \begin{align*}
-%   \mathcal{V} &=\set{v_{0,0},v_{0,1},v_{1,0},v_{1,1},v_{2,0},v_{2,1}} \\
+%   \mathcal{N} &=\set{v_{0,0},v_{0,1},v_{1,0},v_{1,1},v_{2,0},v_{2,1}} \\
 %   \mathcal{E} &=\{\,\set{v_{0,0},v_{2,0}},\,
 %                   \set{v_{0,0},v_{1,1}},\,
 %                   \set{v_{0,0},v_{2,1}},  \\
@@ -9404,7 +9475,7 @@ $\sigma\in\setcomp{\lang}$ if and only if~$f(\sigma)\in\lang$.
 \recommended
 \begin{exercise}
 \probname{Vertex Cover} inputs a graph
-$\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$ and a number~$k\in\N$,
+$\mathcal{G}=\sequence{\mathcal{N},\mathcal{E}}$ and a number~$k\in\N$,
 and asks if there is a subset~$S$ of at most $k$~vertices 
 such that for each edge at least one endpoint is an element of~$S$.
 The \probname{Independent Set} problem inputs a graph and a 
@@ -9424,7 +9495,7 @@ Find a vertex cover~$S$ with $k=4$ elements.
 \item In that graph
 find an independent set~$\hat{S}$ with $\hat{k}=6$ elements.
 \item Prove that $S$ is a vertex cover if and only if
-its complement~$\hat{S}=\mathcal{V}-S$ is an independent set.
+its complement~$\hat{S}=\mathcal{N}-S$ is an independent set.
 \item Conclude that $\probname{Independent Set}\leq_p\probname{Vertex Cover}$
 and that $\probname{Vertex Cover}\leq_p\probname{Independent Set}$.
 \end{exparts}
@@ -9434,9 +9505,9 @@ and that $\probname{Vertex Cover}\leq_p\probname{Independent Set}$.
 \item An independent set with $\hat{k}=6$ elements is 
   $\hat{S}=\set{q_0,q_1,q_3,q_4,q_6,q_7}$.
 \item For any edge, if it has at least one endpoint in
-$S$ then it has at most one endpoint in the complement $\hat{S}=\mathcal{V}-S$.
+$S$ then it has at most one endpoint in the complement $\hat{S}=\mathcal{N}-S$.
 Conversely, If an edge has at most one endpoint in~$\hat{S}$ 
-then it has at least one endpoint in the complement~$S=\mathcal{V}-\hat{S}$. 
+then it has at least one endpoint in the complement~$S=\mathcal{N}-\hat{S}$. 
 \item We will do $\probname{Independent Set}\leq_p\probname{Vertex Cover}$; the 
 other reduction is similar.
 The definition requires that we produce a polytime computable
@@ -9687,14 +9758,14 @@ To prove this
 we must produce a reduction function~$f$ and check that it is polytime.
 
 The function inputs an instance of \probname{Hamiltonian Circuit}, a graph
-$\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$
+$\mathcal{G}=\sequence{\mathcal{N},\mathcal{E}}$
 whose edges are unweighted.
 It returns
 the instance of \probname{Travelling Salesman} that uses the vertex set
-$\mathcal{V}$ as cities and that takes the distances between the cities
+$\mathcal{N}$ as cities and that takes the distances between the cities
 to be: $d(v_i,v_j)=1$ if $v_iv_j$ is an edge of $\mathcal{G}$ and
 $d(v_i,v_j)=2$ if $v_iv_j\notin\mathcal{E}$,
-and such that the bound~$B$ is the number of vertices~$|\mathcal{V}|$.
+and such that the bound~$B$ is the number of vertices~$|\mathcal{N}|$.
 
 The bound means that there will be a \probname{Travelling Salesman} solution
 if and only if there is a \probname{Hamiltonian Circuit} solution, namely

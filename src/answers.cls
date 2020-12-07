@@ -196,6 +196,16 @@
 
 % Exparts
 \usepackage[inline]{enumitem}
+
+% parenum
+%  Enumerate inside a paragraph
+\newenvironment{parenum}{%
+  \begin{enumerate*}[label=(\arabic*),
+                     before=\unskip{\nobreak\ \mbox{}}]%
+}{%
+  \end{enumerate*}
+}
+
 % Some exercises have multiple parts: (1) .. (2) ..
 % This can be on separate lines.
 \newenvironment{exparts}{%

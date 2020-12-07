@@ -105,7 +105,7 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $\sigma$, $\omega$");
 node compute=nbox("Check that~$\omega$ is a path in $\sigma$'s graph");
-node test=nrounddiamond("All vertices visited?");
+node test=nrounddiamond("All vertices visited once?");
 node printyes=nbox("Accept");
 node printno=nbox("Reject");
 // node printyes=nbox("Print \str{1}");
@@ -122,8 +122,8 @@ vlayout(1.15*v,start,read);
 vlayout(1.15*v,read,compute);
 vlayout(1.40*v,compute,test);
 vlayout(1.15*v,test,dummy);
-hlayout(-3.25*u,dummy,printyes);
-hlayout(3.25*u,dummy,printno);
+hlayout(-4.25*u,dummy,printyes);
+hlayout(4.25*u,dummy,printno);
 
 // draw edges
 draw(pic,

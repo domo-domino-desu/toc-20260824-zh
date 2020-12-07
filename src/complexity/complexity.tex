@@ -8474,16 +8474,30 @@ So by the definition, this machine recognizes the language~$\lang$.
 \end{answer}
 \end{exercise}
 
-% \begin{exercise}
-% For each problem, sketch a nondeterminstic algorithm.
-% State it both in terms of a computation tree and in terms of guessing.
-% \begin{exparts*}
-% \item
-% \probname{Clique}
-% \item
-% \probname{Vertex Cover}
-% \end{exparts*}
-% \end{exercise}
+\begin{exercise}
+Sketch a nondeterministic algorithm that inputs a planar graph and
+a bound $B\in\N$ and decides whether the graph is $B$-colorable.
+Describe it in terms of unbounded parallelism and also in terms of the machine
+guessing.
+\begin{answer}\verified
+For unbounded parallelism, we can try every possible $B$-coloring
+of the graph's nodes.
+There are a large but finite number of those
+(where the graph has~$k$ vertices, there are $B^k$-many colorings).
+So the computation tree has a single node with that many children.
+Each coloring is easy to check for validity, 
+since we just have to check every pair of vertices 
+to see if they are the same color.
+If any of the child nodes is OK, then there is a $B$-coloring.
+
+For guessing, the machine nondeterministically selects one coloring
+(that is, it guesses one or is given one by a demon).
+It then checks, by iterating through every vertex pair to see if they
+are the same color.
+If there is a way to correctly nondeterministically guess then by 
+definition this algorithm succeeds.
+\end{answer}
+\end{exercise}
 
 \recommended
 \begin{exercise}
@@ -8897,7 +8911,7 @@ so it is not in $\NP$.
 
 \begin{exercise}
 Is $\NP$ countable or uncountable?
-\begin{answer}
+\begin{answer}\verified
 Countable.
 A verifier is a deterministic Turing machine,
 and there are countably many such macines.
@@ -8908,19 +8922,38 @@ and there are countably many such macines.
 \begin{exercise}
 Show that this problem is in $\NP$.
 A company has two delivery trucks.
-So each morning they are presented with a set of locations, and the
-distances between those.
-Some location is distinguished as the start and finish.
-They must decide if there are two cycles such that every location
-is on at least one of the two cycles and both cycles have length at
-most $K$.
-\end{exercise}
+They work with a weighted graph that called the road map.
+(Some vertex is distinguished as the start/finish.) 
+Each morning the company gets a set of vertices, $V$.
+They must decide if there are two cycles such that every vertex in~$V$
+is on at least one of the two cycles, and both cycles have length at
+most~$B\in\N$.
+\begin{answer}
+We use \cref{lem:VerifierAndGuesserEquiv}.
+This is a suitable language
+(where the road map is $\mathcal{G}=\sequence{\mathcal{N},\mathcal{E}}$).
+\begin{equation*}
+  \lang=\set{N\subseteq\mathcal{N}\suchthat
+       \text{$N$ is a set of vertices where there are two suitable cycles}}
+\end{equation*}
 
-\begin{exercise}
-Sketch a nondeterministic algorithm that inputs a planar graph and
-a bound $B\in\N$ and decides whether the graph is $B$-colorable.
-Describe it in terms of computation tree and also in terms of the machine
-guessing.
+To use \cref{lem:VerifierAndGuesserEquiv}, 
+we must produce a verifier and suitable witnesses.
+The verifier inputs $\sequence{\sigma,\omega}$, where $\sigma=N$
+(technically, $\sigma$ is a string representation of a
+set~$N\subseteq\mathcal{N}$).
+A witness is the two cycles, $\omega=\sequence{c_0,c_1}$.
+The verifier checks that every vertex $v\in V$ is on at least one
+of the two cycles, and that each of the cycles is of length at most~$B$.
+Clearly that check can be done in time polynomial in~$\sizeof{\sigma}$.
+
+If $\sigma\in\lang$ then there is a pair of cycles, so there exists a 
+suitable witness~$\omega$ such that the verifier accepts the pair
+$\sequence{\sigma,\omega}$.
+If $\sigma\notin\lang$ then there are not two such cycles.
+So there is no such witness~$\omega$ that checks out, and so the
+verifier will not accept for any such~$\omega$.
+\end{answer}
 \end{exercise}
 
 \recommended
@@ -8937,10 +8970,27 @@ Consider the problem of computing wheter two graphs are isomorphic.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item This is the natural language
-$\set{\sequence{\mathcal{G}_0,\mathcal{G}_1}\suchthat\text{they are isomorphic}}$.
+\item The natural language is
+$\lang=\set{\sequence{\mathcal{G}_0,\mathcal{G}_1}\suchthat
+      \text{they are isomorphic}}$.
 \item
-The witness is the function, the set of ordered pairs $\sequence{v,f(v)}$.
+We use \cref{lem:VerifierAndGuesserEquiv}, 
+so we must produce a verifier and suitable witnesses.
+The verifier inputs pairs $\sequence{\sigma,\omega}$ where 
+$\sigma$ is a pair $\sequence{\mathcal{G}_0,\mathcal{G}_1}$.
+The witness is a function, a set of ordered pairs $\sequence{v,f(v)}$.
+The verifier checks that the function satisfies the conditions, that it
+is one-to-one and onto, and that 
+$\set{v,\hat{v}}$ is an edge of~$\mathcal{G}_0$ if and only if
+$\set{f(v),f(\hat{v})}$ is an edge of~$\mathcal{G}_1$
+That check takes time polynomial in~$\sizeof{\sigma}$, 
+because it depends only on the size of the two graphs.
+
+If $\sigma\in\lang$ then there is such a function, so
+there exists a hint~$\omega$ that will allow the verifier to accept
+the pair $\sequence{\sigma,\omega}$.
+If the two graphs are not isomorphic then no witness~$\omega$ will 
+verify. 
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -8961,7 +9011,7 @@ The proof of
   a language then there is a deterministic machine that also
   recognizes it. 
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item % (Need for dependent choice is maybe more confusing than helpful.)
 As in the hint, fix a vertex,~$v_0$.
@@ -8975,7 +9025,7 @@ each of which is finite.
 Pick one such neighbor and call it~$v_1$.
 By repeating this process we get an infinite path $\sequence{v_0,v_1,\ldots{}}$.
 \item
-For the other direction, suppose that a nondeterministic Turing
+Suppose that a nondeterministic Turing
 machine~$\TM$ recognizes a language~$\lang$.
 We will describe how a deterministic machine~$\TM[Q]$ can do the same.
 The nondeterministic machine~$\TM$ generates a computation tree
@@ -8985,23 +9035,6 @@ If the tree triggered by~$\sigma$ has an accepting branch then~$\TM[Q]$ will
 eventually reach it, and will accept that input.
 If the tree has no accepting branch then~$\TM[Q]$ will never find one, 
 and so will not accept~$\sigma$.
-
-% Suppose that a nondeterministic Turing
-% machine~$\TM$ decides a language~$\lang$.
-% We will define a deterministic machine~$\TM[Q]$ that decides the same language.
-% This machine does a breadth-first search of $\TM$'s computation tree.
-% Fix an input~$\sigma$.
-% If $\TM$ accepts~$\sigma$ then the search done by~$\TM[Q]$ will
-% eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
-
-% If $\TM$ does not accept~$\sigma$ then every branch in its computation tree
-% halts, in a rejecting state.
-% We claim that there is a longest such branch.
-% Otherwise, by K\"{o}nig's Lemma, the computation tree 
-% would be an infinite branch,
-% which would contradict that $\TM$ halts on every branch.
-% So, the breadth-first search done by~$\TM[Q]$ will
-% eventually find that all branches reject, and then $\TM[Q]$ rejects~$\sigma$.
 \end{exparts}
 \end{answer}
 \end{exercise}

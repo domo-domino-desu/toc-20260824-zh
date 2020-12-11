@@ -16,9 +16,9 @@ settexpreamble();
 cd("../../../asy/");
 import jhnode;
 cd("");
-// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-// import node;
-// cd("");
+cd("../../../asy/");
+import tape;
+cd("");
 
 
 // define style
@@ -28,6 +28,12 @@ defaultnodestyle=nodestyle(xmargin=1pt,
 
 defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+black,
 			   arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
+
+
+// rotate to make the edges of the tree
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(40)*shift(1.65pt,0.33pt);
+
 
 string OUTPUT_FN = "ndtm%03d";
 
@@ -43,9 +49,6 @@ unitsize(pic,1.5cm,0.8cm);
 pen p;
 pen GRAYPEN = gray(0.8);
 pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
-
-transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
-transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(40)*shift(1.65pt,0.33pt);
 setdefaultparsetreestyles();
 
 p=MAINPEN;
@@ -113,6 +116,81 @@ draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // label(pic, "$5$",(5, -1.3));
 // label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
 //draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== Computation tree of NDTM ================
+
+
+picture pic;
+int picnum = 1;
+unitsize(pic,2.5cm,0.8cm);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+// step 0
+picture tape_pic;
+string tape_string;
+tape_string = " 00 ";
+tape_draw(tape_pic, tape_string, 1, "$\state{0}$", tape_contents_length(tape_string));
+add(pic, tape_pic, (0,0), above=true);
+
+// step 1, from top to bottom
+picture tape_pic;
+tape_string = " 00 ";
+tape_draw(tape_pic, tape_string, 2, "$\state{1}$", tape_contents_length(tape_string));
+add(pic, tape_pic, (1,1.5), above=true);
+label(pic, yield_t_up*"$\vdash$",(0.65,1.10),p);
+
+picture tape_pic;
+tape_string = " 10 ";
+tape_draw(tape_pic, tape_string, 1, "$\state{2}$", tape_contents_length(tape_string));
+add(pic, tape_pic, (1,-0.5), above=true);
+label(pic, yield_t_down*"$\vdash$",(0.65,-0.05),p);
+
+// step 2, from top to bottom
+picture tape_pic;
+tape_string = " 01 ";
+tape_draw(tape_pic, tape_string, 2, "$\state{3}$", tape_contents_length(tape_string));
+add(pic, tape_pic, (2,2.75), above=true);
+label(pic, yield_t_up*"$\vdash$",(1.65,2.45),p);
+
+picture tape_pic;
+tape_string = " 0  ";
+tape_draw(tape_pic, tape_string, 2, "$\state{1}$", tape_contents_length(tape_string));
+add(pic, tape_pic, (2,1.25), above=true);
+label(pic, yield_t_down*"$\vdash$",(1.65,1.45),p);
+
+picture tape_pic;
+tape_string = " 10 ";
+tape_draw(tape_pic, tape_string, 1, "$\state{2}$", tape_contents_length(tape_string));
+add(pic, tape_pic, (2,-0.5), above=true);
+label(pic, "$\vdash$",(1.65,-0.25),p);
+
+// step 3, from top to bottom
+picture tape_pic;
+tape_string = " 00 ";
+tape_draw(tape_pic, tape_string, 2, "$\state{3}$", tape_contents_length(tape_string));
+add(pic, tape_pic, (3,2.75), above=true);
+label(pic, "$\vdash$",(2.65,2.95),p);
+
+picture tape_pic;
+tape_string = " 10 ";
+tape_draw(tape_pic, tape_string, 1, "$\state{2}$", tape_contents_length(tape_string));
+add(pic, tape_pic, (3,-0.5), above=true);
+label(pic, "$\vdash$",(2.65,-0.25),p);
+label(pic, "$\cdots$",(3.65,-0.25),p);
+
+pen GRAYBRANCH = linewidth(0.215cm)+squarecap+gray(0.96);  // 
+path ed = (0,0)--(1,0);
+draw(pic, shift(0.45,0.65)*rotate(68.5)*xscale(0.85)*ed, GRAYBRANCH);
+draw(pic, shift(1.55,1.55)*rotate(-52.75)*xscale(0.32)*ed,  GRAYBRANCH);
+
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

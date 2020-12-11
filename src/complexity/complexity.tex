@@ -3703,7 +3703,7 @@ they are connected if they share a member of their Board of Directors
 
 \recommended
 \begin{exercise}
-A popular game extends the \probname{Vertex-to-vertex Path} problem 
+A popular game extends the \probname{Vertex-to-Vertex Path} problem 
 by counting the degrees of separation.
 Below is a portion of the movie connection graph, 
 where actors are connected if they have ever been 
@@ -5934,7 +5934,7 @@ Show how to use an algorithm that solves the
 \probname{Shortest Path}\index{Shortest Path@\probname{Shortest Path} problem} 
 problem
 to solve the 
-\probname{Vertex-to-vertex Path}\index{Vertex-to-vertex Path@\probname{Vertex-to-vertex Path} problem} 
+\probname{Vertex-to-Vertex Path}\index{Vertex-to-Vertex Path@\probname{Vertex-to-Vertex Path} problem} 
 problem.
 How to use it on graphs that are not weighted?
 \begin{answer}
@@ -5966,7 +5966,7 @@ Subtract that from the goal and then iterate using $S-\set{s_j}$.
 
 \begin{exercise}
 Show how to use an algorithm that solves 
-\probname{Vertex-to-vertex Path}\index{Vertex-to-vertex Path@\probname{Vertex-to-vertex Path} problem}
+\probname{Vertex-to-Vertex Path}\index{Vertex-to-Vertex Path@\probname{Vertex-to-Vertex Path} problem}
 problem to solve the 
 \probname{Graph Connectedness}\index{Graph Connectedness@\probname{Graph Connectedness} problem} 
 problem, 
@@ -7401,12 +7401,23 @@ nondeterminstic\index{nondeterminism!for Turing machines}\index{Turing machine!n
 if from a present configuration and input
 it may pass to a next configuration with zero, or one, or more than one, 
 next states.
-So for these machines, the input triggers a computational history that
+This is a nondeterministic Turing machine.
+\begin{equation*}
+  \TM=\set{        
+        \tminstruction{0}{0}{1}{2},\,
+        \tminstruction{0}{0}{R}{1},\,
+        \tminstruction{1}{0}{B}{1},\,
+        \tminstruction{1}{0}{1}{3},\,
+        \tminstruction{2}{1}{1}{2},\,
+        \tminstruction{3}{1}{0}{3}
+}
+\end{equation*}
+For these machines, an input triggers a computational history that
 is a tree.
 \begin{center}
-  \includegraphics{complexity/asy/ndtm/ndtm000.pdf}
+  \includegraphics{complexity/asy/ndtm/ndtm001.pdf}
 \end{center}
-Highlighted is one branch in that tree.
+The highlighted edges show one branch of that tree.
 
 Recall also that we have two mental models of how these devices operate.
 The first is that the machine is unboundedly parallel, so it simultaneously 
@@ -7466,8 +7477,8 @@ that involves the input string.
 asks for a similar description for these machines. 
 
 When the nondeterministic machine is a Turing machine instead of a Finite State
-machine, it 
-\citetext{adds some new wrinkles}{%
+machine then it 
+\citetext{adds some wrinkles}{%
   But it avoids a wrinkle that we needed for Finite State machines,
   $\varepsilon$ transitions, since Turing machines are not 
   required to consume their input one character at a time.}.
@@ -7554,7 +7565,7 @@ halts, in a rejecting state.
 We claim that there is a longest such branch.
 Otherwise, the computation tree 
 would have an infinite branch
-(by K\"{o}nig's Lemma, which we prove as part of 
+(by K\"{o}nig's Lemma, which is included in 
 \cref{exer:NonDeterAndDeterTMsHaveSameLangs}),
 which would contradict that $\TM$ halts on every branch.
 So, the breadth-first search done by~$\TM[Q]$ will
@@ -7848,12 +7859,13 @@ Contrast the $\probname{Satisfiability}$ problem with
   matter how the opponent plays}.
 Imagine that a demon hands you some papers and tells you
 that they contain a chess strategy where you cannot lose.
-Verifying this strategy, having a computer step through
+Checking that, by having a computer step through
 the responses to each move and responses to those
 responses, etc., 
 \citetext{at least appears to take exponential time}{%
   In the terminology of a later section, chess is known to be 
   $\EXP$ complete.}.
+That is, it appears that the chess strategy cannot be tractably verified.
 So 
 \citetext{this perfect strategy is, in some sense, useless}{%
   Being given an answer with no accompanying justifiction is a problem.
@@ -7864,7 +7876,7 @@ So
   (He shuts his eyes and presses his knuckles parodically to his forehead.) 
   Then you write down the answer.''
   \autocite{Gleick}
-  It is also like the mathematician S~Ramanujan, who said that
+  It is also like the mathematician S~Ramanujan, who relayed that
   the advanced formulas that he produced came in
   dreams from the god Narasimha.
   Some of these formulas were startling and amazing, but some of them
@@ -9049,6 +9061,65 @@ and for nondeterministic Finite State machines on
 page~\pageref{page:DefnYieldsNondeterministicFSM}.
 Give a formal description of the action of a nondeterministic 
 Turing machine.
+\begin{answer}
+A 
+configuration
+of a nondeterministic Turing machine~$\TM$
+is a set of four-tuples, $\sequence{q,s,\tau_L,\tau_R}$, where
+$q\in Q$,
+$s\in\Sigma$,
+and where $\tau_L$ and~$\tau_R$ are strings of elements 
+from the tape alphabet, $\tau_L,\tau_R\in\kleenestar{\Sigma}$.
+These signify the current state, the character under the read/write head, and
+the tape contents to the left and right of the head.
+We write $\configuration(t)$ for the machine's configuration after
+the $t$-th transition, and say that this is the configuration
+at step~$t$.
+The 
+initial configuration has the form
+$\configuration(0)=\set{\sequence{q_0,s,\alpha,\emptystring}}$. 
+We say that
+$\alpha\concat \sequence{s}$ is the machine's input.
+
+We next describe how the machine~$\TM$ transitions 
+from being in configuration
+$\configuration(t)$ to being in the next configuration, 
+$\configuration(t+1)$.
+Start with an empty set and then get $\configuration(t+1)$ by adding 
+instructions to it as follows.
+ 
+For each $\sequence{q,s,\tau_L,\tau_R}\in \configuration(t)$, 
+compute the set~$\Delta(q,s)$.
+That set may be empty, but if not then 
+for each instruction $I=q_pT_pT_nq_n$ in that set,
+there are three possibilities.
+(1)~If $T_n\in\Sigma$ then write that character to the tape, so that
+$\sequence{q_n,T_n,\tau_L,\tau_R}\in \configuration(t+1)$.
+We say that $I\yields \sequence{q_n,T_n,\tau_L,\tau_R}$.
+(2)~If $T_n=\str{L}$ then the machine moves the tape head to the left,
+that is, 
+$\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}\in \configuration(t+1)$,
+where $\hat{s}$ is the rightmost character of the string~$\tau_L$ (if
+$\tau_L=\emptystring$ then $\hat{s}$ is the blank character),
+where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
+(if $\tau_L=\emptystring$ then $\hat{\tau}_L=\emptystring$ also),
+and where $\hat{\tau}_R$ is the concatenation of $\sequence{s}$ and $\tau_R$.
+We say that $I\yields \sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$.
+(3)~If $T_n=\str{R}$ then the machine moves the tape head to the right.
+This is like~(2) so we omit the details.
+
+A computation tree branch
+is a sequence of configurations
+$
+  I_0 \yields \configuration(1) \yields 
+    \cdots \yields \configuration(h)  
+$,
+starting with the initial configuration $\configuration(0)$,
+and such that there is no instruction~$I$ where $I_k\yields I$.          
+If the instruction $I_k=\sequence{\hat{q},\hat{s},\beta,\gamma}$
+is such that its state is accepting, $\hat{q}\in A$,
+then we say the machine~$\TM$ accepts the input.
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
@@ -9078,43 +9149,34 @@ No one knows whether $\NP$ is closed under complementation.
 \section{Problem reduction}\index{problem reduction|(}
 % "Reduction decreases the number of problems without increasing the number of
 % answers"
-When we studied incomputability we considered whether there could be a 
+When we studied incomputability we found a sense in which we could think
+of some problems as harder than others.
+Consider, the
 $\computablefunction{halts\_on\_three\_checker}$ routine that, given~$x$,
 decides whether Turing machine~$x$ halts on input~$3$.
-We showed that with such a checker we could solve the \HP, and
-denoted that with 
+We showed that with such a program we could solve the \HP.
+We denoted this with
 $K\leq_T\computablefunction{halts\_on\_three\_checker}$.
-The intuition behind the notation is that solving the 
-Halts-on-three problem is at least
-as hard as solving the \HP.
-Formally, we write $B\leq_T A$ if there is a computable function~$f$ such that
-$x\in B$ if and only if $f(x)\in A$ and we
-then say that~$B$ is Turing-reducible to~$A$,\index{Turing reducible}
-because to solve~$B$ it suffices to solve~$A$.
-An instance is that the \HP{} is Turing-reducible 
-to the Halts-on-three problem. 
+The intuition is that solving the 
+\probname{Halts On Three}\index{Halts on Three problem@\probname{Halts on Three} problem} 
+problem is at least as hard as solving the \HP.
 
-In general, we say that problem $B$ is reduces to problem~$A$
+Formally, we write $B\leq_T A$ when there is a computable function~$f$ such that
+$x\in B$ if and only if $f(x)\in A$. 
+In this case, we
+say that~$B$ is Turing-reducible to~$A$,\index{Turing reducible}
+because to solve~$B$, it suffices to solve~$A$.
+
+In general, we say that problem $B$ `reduces to' problem~$A$
 if we can answer questions about~$B$ by accessing
 answers to questions about~$A$.
-A reduction is thus a way to translate from one to the other. 
-The translation uses arbitrary computable functions for $\leq_T$,
-and in other contexts uses other types of functions.
-
-In computational complexity we want to solve problems efficiently.
-In this context the appropriate idea of reduction, of some
-version of ``$\lang_1\leq\lang_0$'' expressing that
-$\lang_0$ is harder than~$\lang_0$,    
+A reduction is thus a way to translate from one domain to another. 
+For the reduction $\leq_T$, 
+this translation uses arbitrary computable functions.
+But in this chapter we are focused on solving problems efficiently.
+Consequently, the right idea of reduction
 is that~$\lang_1\leq\lang_0$ if a method for solving~$\lang_0$ efficiently
 gives us a method to solve~$\lang_1$ efficiently.
-
-For instance, if we have an efficient algorithm that solves
-\probname{Shortest Path} then with it we can efficiently solve  
-\probname{Vertex-to-vertex Path},
-simply by throwing away the path length information.
-So \probname{Vertex-to-vertex Path} reduces to \probname{Shortest Path};~we 
-shall write 
-$\text{\probname{Vertex-to-vertex Path}}\leq_p\text{\probname{Shortest Path}}$.
 
 %<*def:PolyTimeReduction>
 \begin{definition}
@@ -9127,10 +9189,54 @@ Then
 \definend{$\lang_1\leq_p\lang_0$},
 if there is a computable function
 $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ that runs in polynomial time
-such that
+and such that
 $\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.
 \end{definition}
 %</def:PolyTimeReduction>
+
+\begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
+  The ones with fast algorithms are at the bottom.
+  Problems are connected if the one underneath reduces to the
+  one above.}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp00.pdf}}
+\end{fig}
+
+\begin{example}
+Recall
+the \probname{Shortest Path} problem\index{Shortest Path problem@\probname{Shortest Path} problem} 
+that inputs a weighted graph, two vertices, and a bound,
+and
+decides if there is path between the vertices of length less than the bound.
+\begin{equation*}
+  \lang_0=\set{\sequence{\mathcal{G},v_0,v_1,B}\suchthat
+               \text{there is path between the vertices of length less than~$B$}}
+\end{equation*}
+Recall also 
+the \probname{Vertex-to-Vertex Path}\index{Vertex-to-Vertex Path problem@\probname{Vertex-to-Vetex Path} problem} 
+problem that inputs a graph and two vertices, and decides if there is a
+path between the two.
+\begin{equation*}
+  \lang_1=\set{\sequence{\mathcal{H},w_0,w_1}\suchthat
+               \text{there is path between the vertices}}
+\end{equation*}
+Suppose that we have an algorithm to decide questions of 
+membership in~$\lang_0$ that is fast.
+Then here is a strategy to leverage that algorithm that will quickly 
+decide whether $\sequence{\mathcal{H},w_0,w_1}\in\lang_1$:~make
+a weighted graph~$\mathcal{G}$ by starting with~$\mathcal{H}$ 
+and giving all its edges weight~$1$.
+Then present the input 
+$f(\mathcal{H})=\sequence{\mathcal{G},w_0,w_1,\sizeof{\mathcal{H}}}$ 
+to the fast algorithm
+(where $\sizeof{\mathcal{H}}$ is the number of vertices).
+Clearly the step of translating $\mathcal{H}$ into~$\mathcal{G}$ is fast, 
+and so the
+result is a fast way to decide~$\lang_1$.
+We write 
+$\text{\probname{Vertex-to-Vertex Path}}\leq_p\text{\probname{Shortest Path}}$.
+\end{example}
 
 %<*lem:PolytimeReductionTrans>
 \begin{lemma}
@@ -9143,26 +9249,16 @@ If $\prob_1\leq_p\prob_0$ and $\prob_0\in\P$ then $\prob_1\in\P$.
 Suppose that 
 $\prob_1\leq_p\prob_0$ via the function~$f$ 
 and also suppose that  
-there is an algorithm for determining membership in~$\lang_0$.
-To determine membership in $\lang_1$ we can do this:~given
+there is a polytime algorithm for determining membership in~$\lang_0$.
+Determine membership in $\lang_1$ by:~given
 input $\sigma$, find $f(\sigma)$ and apply the $\lang_0$-algorithm
 to determine if $f(\sigma)\in\lang_0$.
 Where the $\lang_0$ algorithm runs in time that is $\bigOh(n^i)$,
-and where $f$ runs in polytime for a polynomial that has degree~$j$,
+and where $f$ runs in time that is~$\bigOh(n^j)$,
 then determining $\lang_1$ membership in this way 
 runs in time that is~$\bigOh(n^{\max(i,j)})$.
 \end{proof}
 %</pf:PolytimeReductionTrans>
-
-\begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
-  The ones with fast algorithms are at the bottom.
-  Problems are connected if the one underneath reduces to the
-  one above.}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
-  \hspace{0.6em}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp00.pdf}}
-\end{fig}
-
 
 \begin{example}
 We will sketch an argument that \probname{Graph Colorability}
@@ -9311,15 +9407,15 @@ as a special case of another, or at least closely related.
 
 \begin{example}
 We will show that $\probname{Subset Sum}\leq_p\probname{Knapsack}$,
-so that a quick way to solve the Knapsack problem would
-yield a quick way to solve the Subset Sum problem.
+so that a quick way to solve the \probname{Knapsack} problem would
+yield a quick way to solve the \probname{Subset Sum} problem.
 
-Recall that \probname{Subset Sum} 
+Recall that the \probname{Subset Sum} problem 
 starts with a multiset $S=\set{b_0,\ldots b_{k-1}}\subset\N$
 and a target~$T\in\N^+$.
 It asks if there is a subset whose elements add to the target.
 
-\probname{Knapsack} starts with a multiset
+The \probname{Knapsack} problem starts with a multiset
 of objects~$\hat{S}=\set{s_0, \ldots s_{n-1}}$, along with a bound $W\in\N$
 and a target $V\in\N$.
 Each~$s_i$ has both a weight~$w(s_i)\in\N^+$ and a value~$v(s_i)\in\N^+$.
@@ -9331,7 +9427,7 @@ The reduction function~$f$ inputs instances of \probname{Subset Sum},
 pairs $\sequence{S,T}$, and outputs instances of 
 \probname{Knapsack}, five-tuples $\sequence{\hat{S},v,V,w,W}$,
 and must run in polytime.
-For the reduction, convert to the special case of \probname{Knapsack} 
+For that reduction, convert to the special case of \probname{Knapsack} 
 where each element
 has the same weight as value, $w(s_i)=v(s_i)$,
 and where $W=V=T$.
@@ -9355,29 +9451,33 @@ and set the weight and value targets $W,V$ to be~$T=126$,
 % \hspace{2em}
 % $W=V=126$
 % \end{center}
-A \probname{Subset Sum} instance has a solution~$A\subseteq S$ if and only
-the \probname{Knapsack} instance has a solution~$K=f(A)\subseteq\hat{S}$.
+A \probname{Subset Sum} problem 
+instance has a solution~$A\subseteq S$ if and only
+the \probname{Knapsack} problem 
+instance has a solution~$K=f(A)\subseteq\hat{S}$.
 Showing that the function~$f$ to convert the bitstring representations
 of problem instances is polytime is easy.
 \end{example}
 
-Above we showed that \probname{$k$ Coloring} reduces to 
-\probname{Satisfiability}, so doing
+Above we showed that the \probname{$k$ Coloring} problem reduces to 
+the \probname{Satisfiability} problem, so doing
 \probname{Satisfiability} fast is at least as hard as doing 
 \probname{$k$ Coloring} fast.
-There, we commented that \probname{Satisfiability} is often convenient for
+There, we commented that the \probname{Satisfiability} problem
+is often convenient for
 reductions and in the next section we will give a theorem saying that it
 is at least as hard as every problem in $\NP$.
-But we close by giving a problem that
+But firs we close by giving a problem that
 is at least as hard as \probname{Satisfiability}.
 
 \begin{example}
 %<*ex:SATLeqCliquei>
-Recall \probname{Clique}:~given a graph~$\mathcal{G}$ and a bound~$B\in\N$,
+Recall the \probname{Clique} problem:~given 
+a graph~$\mathcal{G}$ and a bound~$B\in\N$,
 decide if the graph has a $B$-clique,
 a size~$B$ set of vertices such that every vertex in the set is connected to
 every other vertex.
-We will suggest how to construct the polytime function~$f$ giving that 
+We will sketch how to construct the polytime function~$f$ giving that 
 $\text{\probname{Satisfiability}}\leq_p\text{\probname{Clique}}$.
 
 The reduction translates each \probname{Satisfiability} instance,
@@ -9421,6 +9521,8 @@ Showing that the translation function~$f$ is polytime is routine.
 %</ex:SATLeqCliqueii>
 \end{example}
 
+
+% .......................................
 \begin{exercises}
 
 \begin{exercise} % 
@@ -9451,6 +9553,31 @@ Instead, the other way around is right:~if
 $B$ is polytime decidable then $A$ is polytime decidable also.
 \item This is true.
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that $\probname{Hamiltonian Circuit}\leq_p\probname{Travelling Salesman}$.
+\begin{answer}
+The \probname{Hamiltonian Circuit} problem is the decision problem for this language.
+\begin{equation*}
+  \lang_0=\set{\mathcal{H}\suchthat
+                \text{the graph contains a circuit that includes each vertex exactly once}}
+\end{equation*}
+The \probname{Travelling Salesman} problem is this decision problem.
+\begin{equation*}
+  \lang_1=\set{\sequence{\mathcal{G},B}\suchthat
+          \text{some circuit of $\mathcal{G}$ that includes each vertex has total cost less than or equal to $B$}}
+\end{equation*}
+We must show that $\lang_0\leq_p\lang_1$.
+
+From $\mathcal{H}$, 
+construct the weighted graph~$G$ 
+with the same vertices and edges, and with all edges of weight~$1$.
+Then, $f(\mathcal{H})=\sequence{\mathcal{G},\sizeof{H}}$.
+Clearly $\mathcal{H}\in\lang_0$ if and only if
+$f(\mathcal{H})\in\lang_1$.
+Clearly also, $f$ runs in polytime.
 \end{answer}
 \end{exercise}
 

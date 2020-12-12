@@ -31,7 +31,9 @@ def subset_sum_solution(sequence, target):
             n -= 1
     return solution
 
-seq = [911, 22, 821, 563, 405, 986, 165, 732]
-target = 1173
+# seq = [911, 22, 821, 563, 405, 986, 165, 732]
+# target = 1173
+seq = [18, 23, 31, 33, 72, 86, 94]
+target = 126
  
 print(subset_sum_solution(seq, target))

@@ -9133,11 +9133,11 @@ Prove that the class of languages~$\NP$ is closed under
 \end{exparts*}
 No one knows whether $\NP$ is closed under complementation.
 \end{exercise}
-\begin{answer}
-\begin{exparts}
-\item 
-\end{exparts}
-\end{answer}
+% \begin{answer}
+% \begin{exparts}
+% \item 
+% \end{exparts}
+% \end{answer}
 \end{exercises}
 \index{NP@$\NP$|)}
 
@@ -9194,14 +9194,14 @@ $\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.
 \end{definition}
 %</def:PolyTimeReduction>
 
-\begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
-  The ones with fast algorithms are at the bottom.
-  Problems are connected if the one underneath reduces to the
-  one above.}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
-  \hspace{0.6em}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp00.pdf}}
-\end{fig}
+% \begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
+%   The ones with fast algorithms are at the bottom.
+%   Problems are connected if the one underneath reduces to the
+%   one above.}
+%   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+%   \hspace{0.6em}
+%   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp00.pdf}}
+% \end{fig}
 
 \begin{example}
 Recall
@@ -9260,11 +9260,84 @@ runs in time that is~$\bigOh(n^{\max(i,j)})$.
 \end{proof}
 %</pf:PolytimeReductionTrans>
 
+\begin{example}  \label{ex:SubsetSumLeqKnapsack}
+We will show that $\probname{Subset Sum}\leq_p\probname{Knapsack}$.
+% To repeat, the significance is that if we had a polytime algorithm for 
+% the \probname{Knapsack} problem then we could 
+% use it, along with this reduction, to 
+% get a polytime algorithm for the \probname{Subset Sum} problem.
+%
+Recall that the \probname{Subset Sum} problem 
+starts with a multiset $S=\set{s_0,\ldots s_{k-1}}\subset\N$
+(a set in which repeated numbers are allowed; basically a list of numbers)
+and a target~$T\in\N^+$.
+It asks if there is a subset whose elements add to the target.
+\begin{equation*}
+  \lang_0=\set{\sequence{S,T}\suchthat
+                \text{some subset of $S$ adds to $T$}}
+\end{equation*}
+The \probname{Knapsack} problem starts with a multiset
+of objects~$K=\set{k_0, \ldots k_{n-1}}$, along with a bound $W\in\N$
+and a target $V\in\N$.
+There are also two functions, $\set{w,v}{K}{\N+}$, giving 
+each~$k_i$ a weight~$w(k_i)$, and a value~$v(k_i)$.
+The problem is to decide if there is subset $A\subseteq K$
+such that the sum of the element weights is less than or equal to~$W$
+while the sum of the element values is greater than or equal to~$V$.
+\begin{equation*}
+  \lang_1=\set{\sequence{K,w,v,W,V}\suchthat
+                \text{some $A\subseteq K$ has $\sum_{a\in A}w(a)\leq W$
+               and $\sum_{a\in A}v(a)\geq V$}}
+\end{equation*}
+A reduction function~$f$ must input pairs
+$\sequence{S,T}$, 
+must output $5$-tuples $\sequence{K,w,v,W,V}$,
+must run in polytime, 
+and must be such that $\sequence{S,T}\in\lang_0$ holds if and
+only if $\sequence{K,w,v,W,V}\in\lang_1$ holds.
+
+As an illustration, suppose that we 
+want to know if there is a subset of
+$S=\set{18, 23, 31, 33, 72,  86, 94}$ that adds to $T=126$,
+and we have access to an oracle that can quickly 
+solve any \probname{Knapsack} problem.
+We could let $K$ equal~$S$, let $w$ and~$v$ be such that
+$w(18)=v(18)=18$, $w(23)=v(23)=23$, etc.,
+and set the weight and value targets $W$ and $V$ to be~$T=126$. 
+% as in the table below.
+% \begin{center}
+% \begin{tabular}{r|*{7}{c}}
+%   \tabulartext{object} &$s_0$ &$s_1$ &$s_2$ &$s_3$ &$s_4$ &$s_5$ &$s_6$  \\
+%   \cline{2-8}
+%   \rule{0pt}{11pt}
+%   \tabulartext{weight} &$18$  &$23$  &$31$  &$33$  &$72$  &$86$ &$94$  \\
+%   \tabulartext{value}  &$18$  &$23$  &$31$  &$33$  &$72$  &$86$ &$94$  \\
+% \end{tabular}
+% \hspace{2em}
+% $W=V=126$
+% \end{center}
+
+In general, given $\sequence{S,T}$, 
+take $f(\sequence{S,T})=\sequence{S,w,v,T,T}$, 
+where the functions are given by
+$w(s_i)=v(s_i)=s_i$.
+Then clearly $\sequence{S,T}\in\lang_0$ if and only if 
+$f(\sequence{S,T})\in\lang_1$, and clearly $f$ is polytime.
+\end{example}
+
+That example suggests that where the transformation
+from one problem set to another is concerned, the details
+can hide the ideas behind those details.
+Often authors will outline the transformation, and we will 
+do the same here.
+
 \begin{example}
-We will sketch an argument that \probname{Graph Colorability}
-reduces to \probname{Satisfiability},
+We will sketch an argument that the 
+\probname{Graph Colorability}\index{Graph Colorability problem@\probname{Graph Colorability} problem}
+problem reduces to the 
+\probname{Satisfiability}\index{Satisfiability problem@\probname{Satisfiability} problem} 
+problem,
 that $\probname{Graph Colorability}\leq_p\probname{Satisfiability}$.
-We'll go through the $k=3$ construction; other $k$'s go the same way.
 
 %<*ex:ColorabilityLeqSATi>
 Recall that a graph is $k$-colorable if we can partition the vertices
@@ -9276,30 +9349,24 @@ vertices.
   \animategraphics[poster=last]{2}{complexity/asy/complexity/complexity}{00}{01}
 \end{animatedfigure} 
 %<*ex:ColorabilityLeqSATii>
-\noindent And, a propositional logic statement~$S$ is satisfiable if there is an
-assignment of the variables in the statement that make the statement
-as a whole evaluate to~$T$.
+\noindent And, a propositional logic expression
+is satisfiable if there is an
+assignment of the values \true{} and \false{} to the variables 
+that makes the statement
+as a whole evaluate to~\true.
 %</ex:ColorabilityLeqSATii>
 
 %<*ex:ColorabilityLeqSATiii>
-Write the set of all graphs as $\lang_1$ and
+We'll go through the $k=3$ construction; other $k$'s work the same way.
+Write the set of $3$-colorable graphs as $\lang_1$ and
 write the set of propositional logic statements as~$\lang_0$.
-(As discussed earlier, these are actually sets of bitstrings.
-One is the set of strings  
-$\gamma\in\lang_1$ representing graphs~$\mathcal{G}$ 
-with reasonable efficiency.
-The other is the set of reasonably efficient string representations 
-$\sigma\in\lang_0$ of statements~$S$.
-For the rest of the discussion we will not mention representations.)
-
-To show that $\lang_1\leq_p\lang_0$ we will produce a 
-translation function~$f$
-that inputs a graph~$\mathcal{G}$
-and a outputs a propositional logic statement $S=f(\mathcal{G})$
-such that if the graph is $3$-colorable 
-if and only if the statement is satisfiable.
-The function must run in
-polynomial time.
+To show that $\lang_1\leq_p\lang_0$, we will produce a 
+translation function~$f$.
+It inputs a graph~$\mathcal{G}$
+and a outputs a propositional logic expression $E=f(\mathcal{G})$,
+such that the graph is $3$-colorable 
+if and only if the expression is satisfiable.
+The function will run in polynomial time.
 
 Let~$\mathcal{G}$ have vertices $\set{v_0,\ldots\, v_{n-1}}$.
 The statement will have $3n$-many Boolean variables:
@@ -9313,11 +9380,11 @@ $
   {c_0,\ldots c_{n-1}}
 $.
 The idea is that if the $i$-th vertex~$v_i$ gets the first color then 
-the associated variable $a_i$ evaluates to True, $a_i=T$,
-while if it gets the second color then $b_i=T$, and if it gets the
-third color then $c_i=T$.
+the associated variable is $a_i=\true$,
+while if it gets the second color then $b_i=\true$, and if it gets the
+third color then $c_i=\true$.
 Thus, for
-each vertex~$v_i$ create a clause saying that it gets at least one color.
+each vertex~$v_i$, create a clause saying that it gets at least one color.
 \begin{equation*}
   (a_i\vee b_i \vee c_i)
 \end{equation*}
@@ -9331,29 +9398,18 @@ two same-color vertices.
   \qquad
   (\neg c_i\vee \neg c_j)
 \end{equation*}
-Now the statement is the conjunction of those clauses;
-it joins them with $\wedge$'s.
-The graph has a $3$-coloring if and only if that statement
-is satisfiable.
+Now the desired expression is the conjunction;
+it joins the clauses together with $\wedge$'s.
 %</ex:ColorabilityLeqSATiii>
 
 %<*ex:ColorabilityLeqSATiv>
 This illustrates.
-The graph has four vertices so the statement starts with four clauses,
-saying that for each vertex~$v_i$ at least one of the associated
-variables $a_i$, $b_i$, or~$c_i$ has the value~$T$.
-The graph has four edges, $v_0v_1$, $v_0v_3$, $v_1v_2$, and
-$v_2v_3$.
-The statement continues with three clauses for each edge, 
-together ensuring that the variables associated with the edge's vertices
-do not both have the value~$T$.
-%</ex:ColorabilityLeqSATiv>
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/problems/problems23.pdf}}
-  \hspace{1.5em}
+  \hspace{1.25em}
   \begin{minipage}{3.25in}\small
     \begin{multline*}
-      S=(a_0\vee b_0 \vee c_0)\wedge  
+      E=(a_0\vee b_0 \vee c_0)\wedge  
       (a_1\vee b_1 \vee c_1)\wedge  
       (a_2\vee b_2 \vee c_2)\wedge  
       (a_3\vee b_3 \vee c_3)             \\
@@ -9374,115 +9430,55 @@ do not both have the value~$T$.
     \end{multline*}
   \end{minipage}
 \end{center}
+The graph has four vertices so the expression starts with four clauses,
+saying that for each vertex~$v_i$ at least one of the associated
+variables $a_i$, $b_i$, or~$c_i$ is~$\true$.
+The graph has four edges, $v_0v_1$, $v_0v_3$, $v_1v_2$, and
+$v_2v_3$.
+So the expression continues with three clauses for each edge, 
+together ensuring that the variables associated with the edge's vertices
+do not both have the value~$\true$.
+%</ex:ColorabilityLeqSATiv>
 %<*ex:ColorabilityLeqSATv>
-Thus, $S$ is satisfiable if and only if $\mathcal{G}$ has a $3$-coloring.
+Thus, $E$ is satisfiable if and only if $\mathcal{G}$ has a $3$-coloring.
 %</ex:ColorabilityLeqSATv>
   
 %<*ex:ColorabilityLeqSATvi>
 Completing the proof means
 checking that the translation function, which inputs a bitstring
-representation of~$\mathcal{G}$ and outputs a bitstring represenation
-of~$S$, is polymomial.
-That's clear, although the argument is messy so we'll skip it.
+representation of~$\mathcal{G}$ and outputs a bitstring represention
+of~$S$, is polynomial.
+That's clear, although the argument is messy so we omit it.
 %</ex:ColorabilityLeqSATvi>
 \end{example}
 
 %<*ex:ColorabilityLeqSATvii>
-The significance of the reduction is that we now know that
-if we could solve~\probname{Satisfiability} 
-in polynomial time then we could solve
-\probname{$k$ Colorability} in polynomial time.
-Given a $k$-coloring problem~$\mathcal{G}$, translate it to a
-a $\SAT$ problem~$f(\mathcal{G})=S$.
-The translation takes polytime and~$\lang_1$ takes polytime, so
-in total this is a polytime scheme.
+Echoing what we said above, 
+the significance of the reduction is that we now know that
+if we could solve the \probname{Satisfiability} problem 
+in polynomial time then we could solve the
+\probname{Graph Colorability} problem in polynomial time.
 %</ex:ColorabilityLeqSATvii>
 
-That example give some sense of why $\SAT$ can be a convenient
-problem to reduce to, a benchmark problem,
-since describing the conditions in a problem
-in logical statement terms is natural.
-Another kind of natural reduction is when we can see that one problem
-as a special case of another, or at least closely related.
-
-\begin{example}
-We will show that $\probname{Subset Sum}\leq_p\probname{Knapsack}$,
-so that a quick way to solve the \probname{Knapsack} problem would
-yield a quick way to solve the \probname{Subset Sum} problem.
-
-Recall that the \probname{Subset Sum} problem 
-starts with a multiset $S=\set{b_0,\ldots b_{k-1}}\subset\N$
-and a target~$T\in\N^+$.
-It asks if there is a subset whose elements add to the target.
-
-The \probname{Knapsack} problem starts with a multiset
-of objects~$\hat{S}=\set{s_0, \ldots s_{n-1}}$, along with a bound $W\in\N$
-and a target $V\in\N$.
-Each~$s_i$ has both a weight~$w(s_i)\in\N^+$ and a value~$v(s_i)\in\N^+$.
-The problem is to decide if there is subset $K\subseteq S$
-such that the sum of its element weights is less than or equal to~$W$
-while the sum of the values is greater than or equal to~$V$.
-
-The reduction function~$f$ inputs instances of \probname{Subset Sum}, 
-pairs $\sequence{S,T}$, and outputs instances of 
-\probname{Knapsack}, five-tuples $\sequence{\hat{S},v,V,w,W}$,
-and must run in polytime.
-For that reduction, convert to the special case of \probname{Knapsack} 
-where each element
-has the same weight as value, $w(s_i)=v(s_i)$,
-and where $W=V=T$.
-
-As an illustration, suppose that we 
-want to know if there is a subset of
-$S=\set{18, 23, 31, 33, 72,  86, 94}$ that adds to $T=126$.
-Let the \probname{Knapsack} instance $f(S)=\hat{S}$ 
-have the same number of elements as $S$, so $\hat{S}= \set{s_0,\ldots s_{6}}$,
-let $w(s_0)=v(s_0)=18$, $w(s_1)=v(s_1)=23$, etc.,
-and set the weight and value targets $W,V$ to be~$T=126$, 
-% as in the table below.
-% \begin{center}
-% \begin{tabular}{r|*{7}{c}}
-%   \tabulartext{object} &$s_0$ &$s_1$ &$s_2$ &$s_3$ &$s_4$ &$s_5$ &$s_6$  \\
-%   \cline{2-8}
-%   \rule{0pt}{11pt}
-%   \tabulartext{weight} &$18$  &$23$  &$31$  &$33$  &$72$  &$86$ &$94$  \\
-%   \tabulartext{value}  &$18$  &$23$  &$31$  &$33$  &$72$  &$86$ &$94$  \\
-% \end{tabular}
-% \hspace{2em}
-% $W=V=126$
-% \end{center}
-A \probname{Subset Sum} problem 
-instance has a solution~$A\subseteq S$ if and only
-the \probname{Knapsack} problem 
-instance has a solution~$K=f(A)\subseteq\hat{S}$.
-Showing that the function~$f$ to convert the bitstring representations
-of problem instances is polytime is easy.
-\end{example}
-
-Above we showed that the \probname{$k$ Coloring} problem reduces to 
-the \probname{Satisfiability} problem, so doing
-\probname{Satisfiability} fast is at least as hard as doing 
-\probname{$k$ Coloring} fast.
-There, we commented that the \probname{Satisfiability} problem
-is often convenient for
-reductions and in the next section we will give a theorem saying that it
-is at least as hard as every problem in $\NP$.
-But firs we close by giving a problem that
+So in this sense, the \probname{Satisfiability} problem
+is at least as hard as \probname{Graph Colorability}.
+The last example in this section gives a problem that
 is at least as hard as \probname{Satisfiability}.
 
 \begin{example}
 %<*ex:SATLeqCliquei>
-Recall the \probname{Clique} problem:~given 
-a graph~$\mathcal{G}$ and a bound~$B\in\N$,
-decide if the graph has a $B$-clique,
-a size~$B$ set of vertices such that every vertex in the set is connected to
-every other vertex.
-We will sketch how to construct the polytime function~$f$ giving that 
-$\text{\probname{Satisfiability}}\leq_p\text{\probname{Clique}}$.
+Recall the \probname{Clique}\index{Clique problem@\probname{Clique} problem} 
+problem:~it is the decisionn problem for the language
+$\lang=\set{\sequence{\mathcal{G},B}\suchthat\text{$\mathcal{G}$ has a clique of at least $B$ vertices}}$, 
+where a clique is a set of vertices that are all mutually connected.
+We will sketch the argument that 
+$\text{\probname{Satisfiability}}\leq_p\text{\probname{Clique}}$.\index{Satisfiability problem@\probname{Satisfiability} problem}
 
-The reduction translates each \probname{Satisfiability} instance,
-a propositional logic statement~$S$,
-to a \probname{Clique} instance $\sequence{\mathcal{G},B}=f(S)$.
+The reduction~$f$ inputs a propositional logic expression~$E$ and outputs
+a pair $f(E)=\sequence{\mathcal{G},B}$.
+It must run in polytime, and must be such that
+$E\in\SAT$ if and only if $f(E)\in\lang$.
+
 Consider this example propositional logic statement,
 $
   S=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
@@ -9521,9 +9517,32 @@ Showing that the translation function~$f$ is polytime is routine.
 %</ex:SATLeqCliqueii>
 \end{example}
 
+That example give some sense of why for reducibility 
+the \probname{Satisfiability} problem
+can be convenient, a benchmark problem.
+Often it is natural to describe the conditions in a problem
+in logical statement terms.
+Another kind of natural reduction is when we can see that one problem
+as a special case of another, or at least closely related.
+
+In the next section we will give a theorem saying that it
+is at least as hard as every problem in $\NP$.
+
+
 
 % .......................................
 \begin{exercises}
+\begin{exercise}
+\Cref{ex:SubsetSumLeqKnapsack} includes as 
+illustration a \probname{Subset Sum} problem,
+where $S=\set{18, 23, 31, 33, 72,  86, 94}$ 
+and $T=126$.
+Solve it.
+\begin{answer}
+There is indeed a subset that adds to~$T$,
+namely $A=\set{23, 31, 72}$.
+\end{answer}
+\end{exercise}
 
 \begin{exercise} % 
 Suppose that the language $A$ is polynomial time reducible to the language~$B$,
@@ -9556,9 +9575,64 @@ $B$ is polytime decidable then $A$ is polytime decidable also.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
-Show that $\probname{Hamiltonian Circuit}\leq_p\probname{Travelling Salesman}$.
+The \probname{Independent Set} problem\index{Independent Set problem@\probname{Independent Set} problem} 
+inputs a graph and a bound, and
+decides if there is a set of vertices, of size at least equal to the bound,
+that are not connected by any edge.
+The \probname{Vertex Cover} problem\index{Vertex Cover problem@\probname{Vertex Cover} problem}
+inputs a graph and a bound and decides if there is a vertex set, 
+of size less than or equal to the bound, 
+such that every edge contains at least one vertex in the set.
+\begin{exparts}
+\item State each as a language decision problem.
+\item
+Consider this graph.
+Find a vertex cover with four elements.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity22.pdf}
+\end{center}
+\item In that graph
+find an independent set with six elements.
+\item Show that in a graph, $S$ is an independent set if and only if
+  $\mathcal{N}-S$ is a vertex cover, where $\mathcal{N}$ is the
+  set of vertices.
+\item Conclude that $\probname{Vertex Cover}\leq_p\probname{Independent Set}$.
+\item Also conclude that 
+  $\probname{Independent Set}\leq_p \probname{Vertex Cover}$.
+\end{exparts}
 \begin{answer}
+\begin{exparts}
+\item A vertex cover with $k=4$ elements is $S=\set{q_2,q_5,q_8,q_9}$.
+\item An independent set with $\hat{k}=6$ elements is 
+  $\hat{S}=\set{q_0,q_1,q_3,q_4,q_6,q_7}$.
+\item For any edge, if it has at least one endpoint in
+$S$ then it has at most one endpoint in the complement $\hat{S}=\mathcal{N}-S$.
+Conversely, If an edge has at most one endpoint in~$\hat{S}$ 
+then it has at least one endpoint in the complement~$S=\mathcal{N}-\hat{S}$. 
+\item We will do $\probname{Independent Set}\leq_p\probname{Vertex Cover}$; the 
+other reduction is similar.
+The definition requires that we produce a polytime computable
+function~$f$.
+Given an instance of \probname{Independent Set} 
+$\sigma=\sequence{\mathcal{G},\hat{k}}$,
+then we convert that to an instance of  \probname{Vertex Cover}
+$f(\sigma)=\sequence{\mathcal{G},\lh{\mathcal{G}}-\hat{k}}$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Show that $\probname{Hamiltonian Circuit}\leq_p\probname{Travelling Salesman}$.\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem}\index{Travelling Salesman problem@\probname{Travelling Salesman} problem}
+\begin{exparts}
+\item State each as a language decision problem.
+\item Produce the reduction.  
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
 The \probname{Hamiltonian Circuit} problem is the decision problem for this language.
 \begin{equation*}
   \lang_0=\set{\mathcal{H}\suchthat
@@ -9569,8 +9643,8 @@ The \probname{Travelling Salesman} problem is this decision problem.
   \lang_1=\set{\sequence{\mathcal{G},B}\suchthat
           \text{some circuit of $\mathcal{G}$ that includes each vertex has total cost less than or equal to $B$}}
 \end{equation*}
+\item
 We must show that $\lang_0\leq_p\lang_1$.
-
 From $\mathcal{H}$, 
 construct the weighted graph~$G$ 
 with the same vertices and edges, and with all edges of weight~$1$.
@@ -9578,18 +9652,25 @@ Then, $f(\mathcal{H})=\sequence{\mathcal{G},\sizeof{H}}$.
 Clearly $\mathcal{H}\in\lang_0$ if and only if
 $f(\mathcal{H})\in\lang_1$.
 Clearly also, $f$ runs in polytime.
+\end{exparts}
 \end{answer}
 \end{exercise}
 
-\begin{exercise} % https://cs.stackexchange.com/q/92028
-If a problem~$\lang$ is in $\NP$ and $\lang\leq_p\hat{\lang}$
-then what can we say about the problem~$\hat{\lang}$?
-\begin{answer}
-Nothing.
-For instance, it could be that $\lang$ is in~$\P$ and so is $\hat{\lang}$.
-It could also be that $\hat{\lang}$ is in some higher-up class.
-There is not enough information to conclude anything. 
-\end{answer}
+\begin{exercise}
+The \probname{Vertex Cover} problem\index{Vertex Cover problem@\probname{Vertex Cover} problem}
+inputs a graph and a bound and decides if there is a vertex set, 
+of size less than or equal to the bound, 
+such that every edge contains at least one vertex in the set.
+The \probname{Set Cover} problem\index{Set Cover problem@\probname{Set Cover} problem} 
+inputs a set~$U$, a collection of subsets $S_0\subseteq S$, \ldots{}  
+$S_n\subseteq S$, and a bound~$B$, and
+decides if there is a subcollection of the $S_j$ whose union, of size at most
+equal to the bound,
+whose union is~$U$.
+\begin{exparts}
+\item State each as a language decision problem.
+\item Show that $\probname{Vertex Cover}\leq_p\probname{Set Cover}$.
+\end{exparts}
 \end{exercise}
 
 \begin{exercise}
@@ -9632,51 +9713,14 @@ $\sigma\in\setcomp{\lang}$ if and only if~$f(\sigma)\in\lang$.
 \end{answer}
 \end{exercise}
 
-\recommended
-\begin{exercise}
-\probname{Vertex Cover} inputs a graph
-$\mathcal{G}=\sequence{\mathcal{N},\mathcal{E}}$ and a number~$k\in\N$,
-and asks if there is a subset~$S$ of at most $k$~vertices 
-such that for each edge at least one endpoint is an element of~$S$.
-The \probname{Independent Set} problem inputs a graph and a 
-number~$\hat{k}\in\N$
-and asks if there is a subset~$\hat{S}$ with at least $\hat{k}$~vertices 
-such that for each edge at most one endpoint is in~$\hat{S}$.
-The two are obviously related.
-We will show both that $\text{Independent Set}\leq_p\text{Vertex Cover}$
-and that $\text{Vertex Cover}\leq_p\text{Independent Set}$.
-\begin{exparts}
-\item
-Consider this graph.
-Find a vertex cover~$S$ with $k=4$ elements.
-\begin{center}
-  \includegraphics{complexity/asy/complexity/complexity22.pdf}
-\end{center}
-\item In that graph
-find an independent set~$\hat{S}$ with $\hat{k}=6$ elements.
-\item Prove that $S$ is a vertex cover if and only if
-its complement~$\hat{S}=\mathcal{N}-S$ is an independent set.
-\item Conclude that $\probname{Independent Set}\leq_p\probname{Vertex Cover}$
-and that $\probname{Vertex Cover}\leq_p\probname{Independent Set}$.
-\end{exparts}
+\begin{exercise} % https://cs.stackexchange.com/q/92028
+If a problem~$\lang$ is in $\NP$ and $\lang\leq_p\hat{\lang}$
+then what can we say about the problem~$\hat{\lang}$?
 \begin{answer}
-\begin{exparts}
-\item A vertex cover with $k=4$ elements is $S=\set{q_2,q_5,q_8,q_9}$.
-\item An independent set with $\hat{k}=6$ elements is 
-  $\hat{S}=\set{q_0,q_1,q_3,q_4,q_6,q_7}$.
-\item For any edge, if it has at least one endpoint in
-$S$ then it has at most one endpoint in the complement $\hat{S}=\mathcal{N}-S$.
-Conversely, If an edge has at most one endpoint in~$\hat{S}$ 
-then it has at least one endpoint in the complement~$S=\mathcal{N}-\hat{S}$. 
-\item We will do $\probname{Independent Set}\leq_p\probname{Vertex Cover}$; the 
-other reduction is similar.
-The definition requires that we produce a polytime computable
-function~$f$.
-Given an instance of \probname{Independent Set} 
-$\sigma=\sequence{\mathcal{G},\hat{k}}$,
-then we convert that to an instance of  \probname{Vertex Cover}
-$f(\sigma)=\sequence{\mathcal{G},\lh{\mathcal{G}}-\hat{k}}$.
-\end{exparts}
+Nothing.
+For instance, it could be that $\lang$ is in~$\P$ and so is $\hat{\lang}$.
+It could also be that $\hat{\lang}$ is in some higher-up class.
+There is not enough information to conclude anything. 
 \end{answer}
 \end{exercise}
 

@@ -9146,7 +9146,7 @@ No one knows whether $\NP$ is closed under complementation.
 
 
 % ==============================================
-\section{Problem reduction}\index{problem reduction|(}
+\section{Polytime reduction}\index{polytime reduction|(}
 % "Reduction decreases the number of problems without increasing the number of
 % answers"
 When we studied incomputability we found a sense in which we could think
@@ -9171,16 +9171,17 @@ In general, we say that problem $B$ `reduces to' problem~$A$
 if we can answer questions about~$B$ by accessing
 answers to questions about~$A$.
 A reduction is thus a way to translate from one domain to another. 
-For the reduction $\leq_T$, 
-this translation uses arbitrary computable functions.
+The reduction $\leq_T$ translates via arbitrary computable functions.
 But in this chapter we are focused on solving problems efficiently.
 Consequently, the right idea of reduction
 is that~$\lang_1\leq\lang_0$ if a method for solving~$\lang_0$ efficiently
-gives us a method to solve~$\lang_1$ efficiently.
+gives us a method to solve~$\lang_1$ efficiently, 
+that is, to translate by doing at most polynomially-much 
+computation.
 
 %<*def:PolyTimeReduction>
 \begin{definition}
-Let $\lang_0,\lang_1$ be languages, subsets of~$\kleenestar{\B}$.
+Let $\lang_0,\lang_1$ be languages, subsets of some $\kleenestar{\Sigma}$.
 Then 
 \definend{$\lang_1$ is polynomial time reducible to $\lang_0$}\index{polynomial time reducibility}\index{reducibility!polynomial time}
 (or \definend{polynomial time mapping reducible}, or
@@ -9194,14 +9195,16 @@ $\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.
 \end{definition}
 %</def:PolyTimeReduction>
 
-% \begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
-%   The ones with fast algorithms are at the bottom.
-%   Problems are connected if the one underneath reduces to the
-%   one above.}
-%   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
-%   \hspace{0.6em}
-%   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp00.pdf}}
-% \end{fig}
+\begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
+  % The ones with fast algorithms are at the bottom.
+  Problems are connected if there is a polynomial time reduction from one 
+  to the other.
+  Highlighted are connections in the complexity class~$\P$, 
+  which is closed under polytime reduction.}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp08.pdf}}
+\end{fig}
 
 \begin{example}
 Recall
@@ -9240,7 +9243,8 @@ $\text{\probname{Vertex-to-Vertex Path}}\leq_p\text{\probname{Shortest Path}}$.
 
 %<*lem:PolytimeReductionTrans>
 \begin{lemma}
-If $\prob_1\leq_p\prob_0$ and $\prob_0\in\P$ then $\prob_1\in\P$. 
+The class $\P$ is closed under polytime reduction:~if 
+$\prob_1\leq_p\prob_0$ and $\prob_0\in\P$ then $\prob_1\in\P$. 
 \end{lemma}
 %</lem:PolytimeReductionTrans>
 
@@ -9580,6 +9584,92 @@ $B$ is polytime decidable then $A$ is polytime decidable also.
 
 \recommended
 \begin{exercise}
+Fix an alphabet~$\Sigma$.
+The \definend{\probname{Substring} problem}\index{Substring problem@\probname{Substring} problem} 
+inputs two strings and decides if the second is a substring of the first.
+The \definend{\probname{Cyclic Shift} problem}\index{Cyclic Shift problem@\probname{Cyclic Shift} problem}
+inputs two strings and decides if the second is a cyclic shift of the first.
+(Where $\alpha=a_0a_1\ldots{}a_{n-1}$ and
+$\beta=b_0b_1\ldots{}b_{n-1}$ are length~$n$ strings,
+$\beta$ is a cyclic shift of $\alpha$ if there is an 
+index $k\in\closed{0}{n-1}$ such that $a_i=b_{(k+i)\bmod n}$ for 
+all~$i$.)
+\begin{exparts}
+\item Name three cyclic shifts of $\alpha=\str{0110010}$.
+\item Decide whether $\beta=\str{101001101}$ is a cyclic shift of 
+  $\alpha=\str{001101101}$.
+\item State the \probname{Substring} problem as a language decision problem.
+\item Also state the \probname{Cyclic Shift} problem as a
+  language decision problem. 
+\item Show that $\probname{Cyclic Shift}\leq_p\probname{Substring}$.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item Three are: $\beta_2=\str{1001001}$, $\beta_1=\str{1100100}$,
+  and $\beta_0=\str{0110010}$.
+\item It is a cyclic shift, starting from index $k=6$.
+\item It is the decision problem for this language.
+\begin{equation*}
+  \lang_0=\set{\sequence{\sigma,\tau}\in\Sigma^2\suchthat
+                        \text{$\tau$ is a substring of $\sigma$}}
+\end{equation*}
+\item It is the decision problem for this.
+\begin{equation*}
+  \lang_1=\set{\sequence{\alpha,\beta}\in\Sigma^2\suchthat
+               \text{$\beta$ is a cyclic shift of $\alpha$}}
+\end{equation*}
+\item The key is the observation that for same length strings, 
+  $\beta$ is a cyclic shift of $\alpha$ if and only if 
+  $\beta$ is a substring of $\alpha\concat\alpha$.
+  So the reduction function~$f$ inputs $\sequence{\alpha,\beta}$
+  and if the two are the same length then 
+  it outputs $\sequence{\alpha\alpha,\beta}$ (else it outputs
+  some pair sure to fail, such as $\sequence{\emptystring,\str{0}}$).
+  Clearly~$f$ is computable in polytime,
+  and $\sequence{\alpha,\beta}\in\lang_1$ if and only if 
+  $f(\sequence{\alpha,\beta})\in\lang_0$.
+  Therefore $\lang_1\leq_p\lang_0$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+The \definend{\probname{Assignment} problem}\index{Assignment problem@\probname{Assignment} problem} inputs two same-sized sets, of workers 
+$W=\set{w_0,\ldots{}w_{n-1}}$ and tasks
+$T=\set{t_0,\ldots{} t_{n-1}}$. 
+For each worker-task pair there is a cost $c(w_i,t_j)$.
+The goal is to assign each of the tasks, one per worker,
+at minimal total cost.
+The \probname{Travelling Salesman} problem,\index{Travelling Salesman problem@\probname{Travelling Salesman} problem}
+of course, inputs a graph whose edge weights give a cost for traversing that
+edge, and asks for circuit of minimal total cost.
+\begin{exparts}
+\item Solve this \probname{Assignment} problem instance.
+\begin{center}
+\begin{tabular}{r|*{3}{c}}
+  \multicolumn{1}{r}{\tabulartext{Cost}}
+    &\multicolumn{1}{r}{\tabulartext{$w_0$}}
+    &\multicolumn{1}{r}{\tabulartext{$w_1$}}
+    &\multicolumn{1}{r}{\tabulartext{$w_2$}}  \\
+  \cline{2-4}
+  \tabulartext{$t_0$} &  &  &  \\
+  \tabulartext{$t_1$} &  &  &  \\
+  \tabulartext{$t_2$} &  &  &  \\
+\end{tabular}
+\end{center}
+\item Using a bound, recast the \probname{Assignment} problem as a 
+  language decision problem.
+\item Using a bound, recast the \probname{Travelling Salesman} problem as a 
+  language decision problem.
+\item Restate the \probname{Assignment} problem as that of finding
+  a weighting in a bipartite graph.
+\item Show that 
+  $\probname{Assignment}\leq_p\probname{Travelling Salesman}$.
+\end{exparts}
+\end{exercise}
+
+\recommended
+\begin{exercise}
 The \probname{Independent Set} problem\index{Independent Set problem@\probname{Independent Set} problem} 
 inputs a graph and a bound, and
 decides if there is a set of vertices, of size at least equal to the bound,
@@ -9676,6 +9766,18 @@ whose union is~$U$.
 \end{exparts}
 \end{exercise}
 
+\recommended
+\begin{exercise}
+Show that $\leq_p$ is reflexive.
+\begin{answer}
+We must show that $\lang\leq_p\lang$ for any 
+$\lang\in\powerset(\kleenestar(\Sigma))$.
+Take the reduction function to be the identity, $f(\sigma)=\sigma$.
+Clearly it can be computed in polytime, and just as clearly
+$\sigma\in\lang$ if and only if $f(\sigma)\in\lang$.
+\end{answer}
+\end{exercise}
+
 \begin{exercise}
 Show that $\leq_p$ is transitive: if $\lang_0\leq_p\lang_1$ 
 and~$\lang_1\leq_p\lang_2$ then $\lang_0\leq_p\lang_2$.
@@ -9688,6 +9790,40 @@ Then for all $\sigma\in\kleenestar{\B}$ we have
 $\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$,
 and $f(\sigma)\in\lang_1$ if and only if $\composed{g}{f}(\sigma)\in\lang_2$.
 Because $f,g$ are polytime, $\composed{g}{f}$ is polytime also.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+The symbol for polynomial time reducibility is a less-than sign,
+which suggests a relationship between the two problems.
+When  $\prob_i\leq_p\prob_j$, does that mean
+that $\prob_i$ takes an amount of time less than or equal to the amount
+take by $\prob_j$?
+Fix a language decision problem~$\prob_0$ 
+whose fastest solution algorithm is $\bigOh(n^3)$,
+another~$\prob_1$ whose fastest algorithm is $\bigOh(n^2)$,
+a third~$\prob_2$ whose fastest algorithm is $\bigOh(2^n)$,
+and a fourth~$\prob_3$ whose fastest algorithm is $\bigOh(lg n)$
+In array entry $i,j$ put a `N' if $\prob_i\leq_p\prob_j$ is not
+possible.
+\begin{center}\small
+\begin{tabular}{r|*{4}{c}}
+  \multicolumn{1}{r}{\ }
+             &$\prob_0$  &$\prob_1$  &$\prob_2$  &$\prob_3$  \\
+    \cline{2-5}
+  $\prob_0$  &\fillinblankLabelled{(0,0)}  &\fillinblankLabelled{(0,1)}
+                &\fillinblankLabelled{(0,2)}   &\fillinblankLabelled{(0,3)} \\  
+  $\prob_1$  &\fillinblankLabelled{(1,0)}  &\fillinblankLabelled{(1,1)}
+                &\fillinblankLabelled{(1,2)}   &\fillinblankLabelled{(1,3)} \\  
+  $\prob_2$  &\fillinblankLabelled{(2,0)}  &\fillinblankLabelled{(2,1)}
+                &\fillinblankLabelled{(2,2)}   &\fillinblankLabelled{(2,3)} \\  
+  $\prob_3$  &\fillinblankLabelled{(3,0)}  &\fillinblankLabelled{(3,1)}
+                &\fillinblankLabelled{(3,2)}   &\fillinblankLabelled{(3,3)} \\  
+\end{tabular}
+\end{center}
+\begin{answer}
+It is not possible for $\prob_0\leq_p\prob_2$ or for
+$\prob_1\leq_p\prob_2$
 \end{answer}
 \end{exercise}
 
@@ -9756,6 +9892,7 @@ There is not enough information to conclude anything.
 \end{exercise}
 
 \end{exercises}
+\index{problem reduction|)}
 
 
 
@@ -10205,96 +10342,6 @@ Experts also suspect that \probname{Graph Isomorphism} is not $\NP$ complete.
 As always with such judgements, though, without proof they could be
 mistaken.
 \index{NP complete@$\NP$ complete|)}
-
-
-
-
-
-% ...................................
-\subsection{$\EXP$}\index{EXP@$\EXP$|(}
-In this chapter's first section we included in the list of
-commonly encountered orders of growth $\bigOh(2^n)$
-and~$\bigOh(3^n)$, and by extension other exponentials.
-
-%<*def:EXP>
-\begin{definition}
-A problem is an element of the complexity class $\EXP$ if there is an
-algorithm for solving it that runs in time $\bigOh(b^{p(n)})$ for some
-constant base~$b$ and polynomial~$p$.
-\end{definition}
-%</def:EXP>
-
-%<*discussion:EXP>
-\probname{Satisfiability}\index{Satisfiability@\probname{Satisfiability} problem} 
-can be solved in exponential time
-by checking each row of the truth table, and any $\compclass{NP}$ problem
-can be solved from \probname{Satisfiability} with only an addition of
-polytime.
-So $\EXP$ has this relationship to the classes we have already studied.
-%</discussion:EXP>
-
-%<*lem:PSubNPSubEXP>
-\begin{lemma}
-$\P\subseteq\NP\subseteq\EXP$
-\end{lemma}
-%</lem:PSubNPSubEXP>
-
-%<*pf:PSubNPSubEXP>
-\begin{proof}
-Fix $\prob\in\NP$.
-We can verify $\prob$ on a deterministic Turing machine~$\TM$
-in polynomial time using a witness whose length is bounded by the
-same polynomial.
-Let this problem's bound be $n^c$. 
-
-We will decide $\prob$ in exponential time by brute-forcing it:~we
-will use~$\TM$ to run every possible verification. 
-Trying any single witness requires polynomial time, $n^c$.
-Witnesses are in binary so for length~$\ell$ there
-are $\sum_{0\leq i\leq\ell}2^{i}=2^{\ell+1}-1$~many possibile ones;
-In total then, brute force requires $\bigOh(n^c 2^{n^c})$ operations.
-Finish by observing that $n^c 2^{n^c}$ is in $\bigOh(2^{n^c})$. 
-\end{proof}
-%</pf:PSubNPSubEXP>
-
-We don't know whether there are any $\compclass{NP}$ problems that
-absolutely require exponential time.
-Conceivably $\compclass{NP}$ is contained in a smaller determinstic
-time complexity class\Dash for instance, 
-maybe \probname{Satisfiability}
-can be solved in less than exponential time.
-But we just don't know.
-
-\begin{fig}[fig:BeanWithExp]{The bean encloses all problems.
-   Shaded are the three classes $\P$, $\NP$, and $\EXP$, with
-   $\EXP$'s outline highlighted.
-   They are drawn with strict containment, which most experts guess
-   is the true arrangement, but no one knows for sure.}
-  \setlength{\unitlength}{1cm}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
-  \hspace{0.6em}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp07.pdf}}
-\end{fig}
-
-% In short, taking Cobham's Thesis, we
-% can think that $\P$ stands not for `polynomial time' but instead
-% for ``practical.''
-% And, if $\NP=\EXP$, then we can take it to stand for
-% ``not practical.''
-Whereas a first take on 
-polytime is ``can conceivably be used,'' 
-a first approximation of
-$\EXP$ is that for some of its 
-problems the best algorithms are just too slow to imagine using.
-% https://complexityzoo.uwaterloo.ca/Petting_Zoo
-However, the big take-away from $\EXP$ 
-is that it contains nearly every problem, and every class, that
-we concern ourselves with in practice.
-We can construct theories about still harder problems, but
-$\EXP$ is big enough to contain most problems
-we ever seriously hope to attack.
-\index{EXP@$\EXP$|)}
-
 
 
 
@@ -11069,7 +11116,6 @@ class~$\P$ and $\prob[L]_1\leq_p\prob[L]_0$ for every $\prob[L]_1\in\P$.
 \end{answer}
 \end{exercise}
 \end{exercises}
-\index{problem reduction|)}
 
 
 
@@ -11087,6 +11133,98 @@ class~$\P$ and $\prob[L]_1\leq_p\prob[L]_0$ for every $\prob[L]_1\in\P$.
 \section{Other classes}
 There are many other classes but we will see one more that delineates,
 in a sense, our everyday concerns.
+
+
+
+
+
+
+% ...................................
+\subsection{$\EXP$}\index{EXP@$\EXP$|(}
+In this chapter's first section we included in the list of
+commonly encountered orders of growth $\bigOh(2^n)$
+and~$\bigOh(3^n)$, and by extension other exponentials.
+
+%<*def:EXP>
+\begin{definition}
+A problem is an element of the complexity class $\EXP$ if there is an
+algorithm for solving it that runs in time $\bigOh(b^{p(n)})$ for some
+constant base~$b$ and polynomial~$p$.
+\end{definition}
+%</def:EXP>
+
+%<*discussion:EXP>
+\probname{Satisfiability}\index{Satisfiability@\probname{Satisfiability} problem} 
+can be solved in exponential time
+by checking each row of the truth table, and any $\compclass{NP}$ problem
+can be solved from \probname{Satisfiability} with only an addition of
+polytime.
+So $\EXP$ has this relationship to the classes we have already studied.
+%</discussion:EXP>
+
+%<*lem:PSubNPSubEXP>
+\begin{lemma}
+$\P\subseteq\NP\subseteq\EXP$
+\end{lemma}
+%</lem:PSubNPSubEXP>
+
+%<*pf:PSubNPSubEXP>
+\begin{proof}
+Fix $\prob\in\NP$.
+We can verify $\prob$ on a deterministic Turing machine~$\TM$
+in polynomial time using a witness whose length is bounded by the
+same polynomial.
+Let this problem's bound be $n^c$. 
+
+We will decide $\prob$ in exponential time by brute-forcing it:~we
+will use~$\TM$ to run every possible verification. 
+Trying any single witness requires polynomial time, $n^c$.
+Witnesses are in binary so for length~$\ell$ there
+are $\sum_{0\leq i\leq\ell}2^{i}=2^{\ell+1}-1$~many possibile ones;
+In total then, brute force requires $\bigOh(n^c 2^{n^c})$ operations.
+Finish by observing that $n^c 2^{n^c}$ is in $\bigOh(2^{n^c})$. 
+\end{proof}
+%</pf:PSubNPSubEXP>
+
+We don't know whether there are any $\compclass{NP}$ problems that
+absolutely require exponential time.
+Conceivably $\compclass{NP}$ is contained in a smaller determinstic
+time complexity class\Dash for instance, 
+maybe \probname{Satisfiability}
+can be solved in less than exponential time.
+But we just don't know.
+
+\begin{fig}[fig:BeanWithExp]{The bean encloses all problems.
+   Shaded are the three classes $\P$, $\NP$, and $\EXP$, with
+   $\EXP$'s outline highlighted.
+   They are drawn with strict containment, which most experts guess
+   is the true arrangement, but no one knows for sure.}
+  \setlength{\unitlength}{1cm}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp07.pdf}}
+\end{fig}
+
+% In short, taking Cobham's Thesis, we
+% can think that $\P$ stands not for `polynomial time' but instead
+% for ``practical.''
+% And, if $\NP=\EXP$, then we can take it to stand for
+% ``not practical.''
+Whereas a first take on 
+polytime is ``can conceivably be used,'' 
+a first approximation of
+$\EXP$ is that for some of its 
+problems the best algorithms are just too slow to imagine using.
+% https://complexityzoo.uwaterloo.ca/Petting_Zoo
+However, the big take-away from $\EXP$ 
+is that it contains nearly every problem, and every class, that
+we concern ourselves with in practice.
+We can construct theories about still harder problems, but
+$\EXP$ is big enough to contain most problems
+we ever seriously hope to attack.
+\index{EXP@$\EXP$|)}
+
+
 
 
 \subsection{Time Complexity}
@@ -12083,12 +12221,13 @@ So much more work needs to be done.
 % the diameter of the input graph, or
 % the length of clauses in the input Boolean formula.
 
-
 \endinput
 
 https://en.wikipedia.org/wiki/Concorde_TSP_Solver
 from
 https://rjlipton.wordpress.com/2020/11/19/traveling-salesman-problem-meets-complexity-theory/
+Video: 
+https://www.youtube.com/watch?v=q8nQTNvCrjE
 
 Vertex cover?
 Some other example selected for accessibility?

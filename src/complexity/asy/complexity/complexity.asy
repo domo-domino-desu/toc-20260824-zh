@@ -14,11 +14,11 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
+import jhnode;
 cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
-cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
+// import node;
+// cd("");
 
 
 string OUTPUT_FN = "complexity%02d";
@@ -1222,6 +1222,60 @@ draw(pic,
 // draw nodes
 draw(pic,
      q0, q1, q2, q3, q4, q5, q6, q7, q8, q9);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// =========== assignment, travelling salesman =================
+picture pic;
+int picnum = 23;
+setdefaultgraphstyles();
+
+// define nodes
+node w0=ncircle("$w_0$");
+node w1=ncircle("$w_1$");
+node w2=ncircle("$w_2$");
+node w3=ncircle("$w_3$");
+node t0=ncircle("$t_0$");
+node t1=ncircle("$t_1$");
+node t2=ncircle("$t_2$");
+node t3=ncircle("$t_3$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.0cm;
+real u = defaultlayoutskip;
+real v = 1.1*u;
+
+hlayout(1*u, w0, w1, w2, w3);
+vlayout(1*v, w0, t0);
+hlayout(1*u, t0, t1, t2, t3);
+
+// draw edges
+draw(pic,
+     (w0--t0),
+     (w0--t1),
+     (w0--t2),
+     (w0--t3),
+     (w1--t0),
+     (w1--t1),
+     (w1--t2),
+     (w1--t3),
+     (w2--t0),
+     (w2--t1),
+     (w2--t2),
+     (w2--t3),
+     (w3--t0),
+     (w3--t1),
+     (w3--t2),
+     (w3--t3)
+);
+
+// draw nodes
+draw(pic,
+     w0, w1, w2, w3,
+     t0, t1, t2, t3);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

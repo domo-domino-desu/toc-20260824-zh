@@ -9153,7 +9153,7 @@ When we studied incomputability we found a sense in which we could think
 of some problems as harder than others.
 Consider, the
 $\computablefunction{halts\_on\_three\_checker}$ routine that, given~$x$,
-decides whether Turing machine~$x$ halts on input~$3$.
+decides whether Turing machine~$\TM$ halts on input~$3$.
 We showed that with such a program we could solve the \HP.
 We denoted this with
 $K\leq_T\computablefunction{halts\_on\_three\_checker}$.
@@ -9163,14 +9163,19 @@ problem is at least as hard as solving the \HP.
 
 Formally, we write $B\leq_T A$ when there is a computable function~$f$ such that
 $x\in B$ if and only if $f(x)\in A$. 
-In this case, we
+We
 say that~$B$ is Turing-reducible to~$A$,\index{Turing reducible}
 because to solve~$B$, it suffices to solve~$A$.
 
-In general, we say that problem $B$ `reduces to' problem~$A$
+In general, we say that problem~$B$ `reduces to' problem~$A$
 if we can answer questions about~$B$ by accessing
-answers to questions about~$A$.
-A reduction is thus a way to translate from one domain to another. 
+information about~$A$.
+For example, in Calculus, finding the maximum of a polynomial function
+on a closed interval reduces to finding the zeroes of the derivative.
+Another example is that, given a list of numbers, finding the median
+reduces to the problem of sorting the list.
+A reduction is a way to translate problems from one domain to another. 
+
 The reduction $\leq_T$ translates via arbitrary computable functions.
 But in this chapter we are focused on solving problems efficiently.
 Consequently, the right idea of reduction
@@ -9194,17 +9199,6 @@ and such that
 $\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.
 \end{definition}
 %</def:PolyTimeReduction>
-
-\begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
-  % The ones with fast algorithms are at the bottom.
-  Problems are connected if there is a polynomial time reduction from one 
-  to the other.
-  Highlighted are connections in the complexity class~$\P$, 
-  which is closed under polytime reduction.}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
-  \hspace{0.6em}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp08.pdf}}
-\end{fig}
 
 \begin{example}
 Recall
@@ -9243,8 +9237,8 @@ $\text{\probname{Vertex-to-Vertex Path}}\leq_p\text{\probname{Shortest Path}}$.
 
 %<*lem:PolytimeReductionTrans>
 \begin{lemma}
-The class $\P$ is closed under polytime reduction:~if 
-$\prob_1\leq_p\prob_0$ and $\prob_0\in\P$ then $\prob_1\in\P$. 
+Under polytime reduction, the class $\P$ is closed downward:~if 
+$\prob_0\in\P$ and $\prob_1\leq_p\prob_0$ then $\prob_1\in\P$. 
 \end{lemma}
 %</lem:PolytimeReductionTrans>
 
@@ -9263,6 +9257,17 @@ then determining $\lang_1$ membership in this way
 runs in time that is~$\bigOh(n^{\max(i,j)})$.
 \end{proof}
 %</pf:PolytimeReductionTrans>
+
+\begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
+  % The ones with fast algorithms are at the bottom.
+  Problems are connected if there is a polynomial time reduction from one 
+  to the other.
+  Highlighted are connections in the complexity class~$\P$, 
+  which is closed downward under polytime reduction.}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
+  \hspace{0.6em}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp08.pdf}}
+\end{fig}
 
 \begin{example}  \label{ex:SubsetSumLeqKnapsack}
 We will show that $\probname{Subset Sum}\leq_p\probname{Knapsack}$.
@@ -9539,28 +9544,6 @@ is at least as hard as every problem in $\NP$.
 
 % .......................................
 \begin{exercises}
-% \item[] These exercises refer to some problems.
-% \begin{exercisedescription}
-% \item[\probname{Independent Set}]\index{Independent Set problem@\probname{Independent Set} problem}\  
-%   inputs a graph and a bound, and
-%   decides if there is a set of vertices, of size at least equal to the bound,
-%   that are not connected by any edge.
-% \item[\probname{Vertex Cover}]\index{Vertex Cover problem@\probname{Vertex Cover} problem}\ 
-% inputs a graph and a bound and decides if there is a vertex set, 
-% of size less than or equal to the bound, 
-% such that every edge contains at least one vertex in the set.
-% \item[\probname{Linear Programming}] inputs a list of linear inequalities
-% or equalities, such at 
-% $a_{i,0}x_0+\cdots+a_{i,n-1}x_{n-1}\leq b_i$ for $a_0,\ldots{}a_{n-1},b_i\in\Q$, 
-% and looks for a sequence $\sequence{s_0,\ldots{} s_{n-1}}\in\Q^n$
-% that satisfies all of the constraints
-% and such that a linear expression
-% $c_0x_0+\cdots+c_{n-1}x_{n-1}$ is maximal.
-% \item[\probname{Integer programming}] is a Linear Programming problem
-%   with the additional restriction that all numbers must be integers.
-% \end{exercisedescription}
-
-
 \begin{exercise}
 \Cref{ex:SubsetSumLeqKnapsack} includes as 
 illustration a \probname{Subset Sum} problem,
@@ -9846,9 +9829,10 @@ with a capacity.
   \includegraphics{complexity/asy/complexity/complexity25.pdf}
 \end{center}
 The 
-\definend{\probname{Max-Flow} problem}\index{Max-Flow problem@\probname{Max-Flow} problem} 
+\definend{\probname{Max-Flow}} problem\index{Max-Flow problem@\probname{Max-Flow} problem} 
 is to find the maximium amount that can flow from left to right.
-That is, we will find a \definend{flow}~$f_{q_i,q_j}$ for each edge, 
+That is, we will find a \definend{flow}~$F_{q_i,q_j}$\index{flow} 
+for each edge, 
 subject to the constraints that the flow through an edge must not exceed
 its capacity and that the flow into a vertex must equal the flow out
 (except for the source~$q_0$ and the sink~$q_6$).
@@ -9863,12 +9847,33 @@ that satisfies all of the constraints,
 and such that a linear expression
 $c_0x_0+\cdots+c_{n-1}x_{n-1}$ is maximal.
 \begin{exparts}
+\item Express each as a language decision problem, 
+  remembering the technique of converting optimization problems using
+  bounds.
 \item By eye, find the maximum flow for the above network.
+\item For each edge $v_iv_j$, define a variable $x_{i,j}$.
+Describe the constraints on that variable imposed by the edge's capacity.
+Also describe the constraints on the set of variables imposed 
+by the limitation that for many vertices the flow in must equal
+the flow out.
+Finally, use the variables to give an expression to optimize 
+in order to get maximum flow.  
 \item Show that 
   $\probname{Max-Flow}\leq_p\probname{Linear Programming}$.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
+\item \probname{Max-Flow} has this language.
+\begin{equation*}
+  \lang_0=\set{\sequence{F,\mathcal{G},B}\suchthat
+               \text{the flow~$F$ meets the constraints of $\mathcal{G}$ and the flow into the sink is at least~$B$}}
+\end{equation*}
+This is the language for the \probname{Linear Programming} optimization problem.
+\begin{equation*}
+  \lang_1=\set{\sequence{\vec{x},C,Z,B}\suchthat
+                \text{the point~$\vec{x}$ meets the constraints~$C$ and
+                     makes~$Z(\vec{x})\geq B$}}
+\end{equation*}
 \item There are algorithms to solve these problems, but for small ones we
 can do it by eye.
 The maximum flow is~$5$, with each edge's numbers
@@ -9876,7 +9881,46 @@ given in parentheses.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity26.pdf}  
 \end{center}
-\item
+\item The variables are $x_{0,1}, \ldots{}x_{5,6}$.
+These are the capacity constraints.
+\begin{align*}
+  &0\leq x_{0,1}\leq 3,\quad 
+  0\leq x_{0,2}\leq 2,\quad 
+  0\leq x_{0,3}\leq 1,\quad
+  0\leq x_{1,3}\leq 2,\quad
+  0\leq x_{1,4}\leq 2,\quad
+  \\  &\qquad  
+  0\leq x_{2,3}\leq 2,\quad
+  0\leq x_{2,5}\leq 1,\quad  
+  0\leq x_{3,4}\leq 4,\quad
+  0\leq x_{3,5}\leq 2,\quad
+  0\leq x_{3,6}\leq 2,\quad
+  \\  &\qquad  
+  0\leq x_{4,6}\leq 1,\quad\text{and}\quad
+  0\leq x_{5,6}\leq 2
+\end{align*}
+These are the flow constraints.
+\begin{align*}
+  &x_{0,1}=x_{1,3}+x_{1,4},\quad
+  x_{0,2}=x_{2,3}+x_{2,5},\quad
+  x_{0,3}+x_{1,3}+x_{2,3}=x_{3,4}+x_{3,5}+x_{3,6},
+  \\  &\qquad  
+  x_{1,4}+x_{3,4}=x_{4,6},\quad\text{and}\quad
+  x_{2,5}+x_{3,5}=x_{5,6}
+\end{align*}
+We want to maximize $Z=x_{3,6}+x_{4,6}+x_{5,6}$.
+Observe that all of these equations and inequalities are
+linear.
+\item We must construct a reduction fuction~$f$.
+The input is a triple $\sequence{F,\mathcal{G},B}$.
+Use that information to make variables, construct capacity constraints and
+flow constraints~$C$, and produce an optimization expression~$Z$.
+In particular, the flow~$F$ (shown in parentheses in the network above) 
+gives an associated point~$\vec{x}$ 
+in the \probname{Linear Programming} instance.
+Clearly that can be done in polytime.
+Clearly also $\sequence{F,\mathcal{G},B}\in\lang_0$
+if and only if $\sequence{\vec{x},C,Z,B}\in\lang_1$.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -9898,14 +9942,52 @@ Each band $b\in B$ has a set $S_b\subseteq D$ of drummers
 that they would agree to take on. 
 The goal is to make the most number of matches.
 \begin{exparts}
+\item Consider four bands $B=\set{b_0,b_1,b_2,b_3}$ and
+  drummers $D=\set{d_0,d_1,d_2,d_3}$.
+  Band $b_0$ likes drummers $d_0$ and~$d_2$.
+  Band $b_1$ likes only drummer~$d_1$, and 
+  $b_2$ also likes only~$d_1$.
+  Band~$b_3$ like the sound of both $d_2$ and~$d_3$.
+  What is the largest number of matches?
+\item Express each as a language decision problem.
+\item Draw a graph with the bands on the left and the drummers on the right.
+  Make an arrow from a band to a drummer if there is a connection.
+  Now add a source and a sink node to make a flow diagram.
 \item Show that 
   $\probname{Drummer}\leq_p\probname{Max-Flow}$.
 \end{exparts}
-% \begin{answer}
-% \begin{exparts}
-% \item
-% \end{exparts}
-% \end{answer}
+\begin{answer}
+\begin{exparts}
+\item The maximum number of matches is three, as in 
+  $(b_0,d_0)$, $(b_1,d_1)$, and $(b_3,d_2)$.
+\item The \probname{Max-Flow} problem has this language, where $W$ is a bound.
+\begin{equation*}
+  \lang_0=\set{\sequence{F,\mathcal{G},W}\suchthat
+               \text{the flow~$F$ meets the constraints of $\mathcal{G}$ and the flow into the sink is at least~$W$}}
+\end{equation*}
+The \probname{Drummer} problem has this, where $X$ is a bound.
+\begin{equation*}
+  \lang_1=\set{\sequence{B_0,\ldots{}B_k,(b_0,d_{i_0}),\ldots{}(b_m,d_{i_m}),X}\suchthat
+            \text{each $d_{i_j}\in B_j$ and $m\geq X$}}
+\end{equation*}
+\item Here is a network diagram (note the weights of~$1$ on each edge).
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity29.pdf}
+\end{center}
+\item A reduction function~$f$
+is given a sequence 
+$\sequence{B_0,\ldots{}B_k,(b_0,d_{i_0}),\ldots{}(b_m,d_{i_m}),X}$.
+It constructs a network that, from left to right, has a source node,
+a bank of band nodes, a bank of drummer nodes, and a sink node.
+Every edge is directed, and every edge has weight~$1$.
+The pairs $(b,d)$ in the input give a flow~$F$.
+So the output is the triple
+$f(\sequence{B_0,\ldots{}B_k,(b_0,d_{i_0}),\ldots{}(b_m,d_{i_m}),X})=\sequence{F,\mathcal{G},X}$.
+Clearly we can compute this~$f$ in polytime.
+And also clearly, 
+$\sequence{B_0,\ldots{}B_k,(b_0,d_{i_0}),\ldots{}(b_m,d_{i_m}),X}\in\lang_1$ if and only if $\sequence{F,\mathcal{G},X}\in\lang_0$.
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise} \label{exer:Def3SAT}
@@ -9928,26 +10010,36 @@ decides if there is a set of vertices, of size at least equal to the bound,
 that are not connected by any edge.
 \begin{exparts}
 \item In this graph
-find an independent set with six elements.
+find an independent set.
 \begin{center}
-  \includegraphics{complexity/asy/complexity/complexity22.pdf}
+  \includegraphics{complexity/asy/complexity/complexity30.pdf}
 \end{center}
 \item State \probname{Independent Set} as a language decision problem.
 \item Decide if $E=(P_0\vee\neg P_1\vee\neg P_2)\wedge(P_1\vee P_2\vee\neg P_3)$
   is satisfiable.
 \item State \probname{$3$-Satisfiability} as a language decision problem.
-\item We will produce a graph associated with the expression~$E$.
-  Make a triangle for each of the two clauses, where the vertices of the
+\item With the expression~$E$, 
+  make a triangle for each of the two clauses, where the vertices of the
   first are $v_0$, $\overline{v_1}$, and~$\overline{v_2}$, 
   while the vertices of the second are $w_1$, $w_2$, and $\overline{w_3}$.
   In addition to the edges forming the triangles, 
   also put one connecting $\overline{v_1}$ with~$w_1$, 
   and one connecting $\overline{v_2}$ with~$w_2$.
-  Argue that the expression is satisfiable if and only if the graph
-  has an independent set.
+  % Argue that the expression is satisfiable if and only if the graph
+  % has an independent set.
 \item Sketch an argument that
   $\probname{$3$-Satisfiability}\leq_p\probname{Independent Set}$.
 \end{exparts}
+\begin{answer}
+\begin{exparts}
+\item The natural independent set is this.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity31.pdf}
+\end{center}
+
+\end{exparts}
+\end{answer}
+
 \end{exercise}
 
 % 3-SAT < Integer LP
@@ -9959,7 +10051,7 @@ The \definend{\probname{$3$-Satisfiability} problem}
 is to decide the satisfiability of propositional logic expression
 where every clause consists of three literals
 (see \cref{exer:Def3SAT} for more).
-The \definend{\probname{Linear Programming}} 
+The \definend{\probname{Linear Programming} language decision} 
 problem\index{Linear Programming language decision problem@\probname{Linear Programming} language decision problem}
 starts with a list of linear equalities and inequalities, such as 
 $a_{i,0}x_0+\cdots+a_{i,n-1}x_{n-1}\leq b_i$ for $a_0,\ldots{}a_{n-1},b_i\in\Q$, 
@@ -9983,7 +10075,6 @@ constraint to the integer linear program problem as here.
 \end{equation*}
 \end{answer}
 \end{exercise}
-
 
 \recommended
 \begin{exercise}

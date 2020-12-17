@@ -1381,7 +1381,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 picture pic;
 int picnum = 27;
 setdefaultgraphstyles();
-defaultdrawstyle=directededgestyle;
+defaultdrawstyle=undirectededgestyle;
 
 // define nodes
 node q0=ncircle("$q_0$");
@@ -1434,7 +1434,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 picture pic;
 int picnum = 28;
 setdefaultgraphstyles();
-defaultdrawstyle=directededgestyle;
+defaultdrawstyle=undirectededgestyle;
 
 // define nodes
 node q0=ncircle("$q_0$", ns_light);
@@ -1483,6 +1483,146 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// =========== drummer leq max-flow =================
+picture pic;
+int picnum = 29;
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+
+// define nodes
+node q0=ncircle("$q_0$");
+node q1=ncircle("$b_0$");
+node q2=ncircle("$b_1$");
+node q3=ncircle("$b_2$");
+node q4=ncircle("$b_3$");
+node q5=ncircle("$d_0$");
+node q6=ncircle("$d_1$");
+node q7=ncircle("$d_2$");
+node q8=ncircle("$d_3$");
+node q9=ncircle("$q_9$");
+
+// layout
+real u=1.35cm;
+real v=0.7*u;
+real spread_angle = 25;
+hlayout(3*u, q0, q9);
+q1.pos = new_node_pos_h(q0,  1.5*spread_angle, 1*u);
+q2.pos = new_node_pos_h(q0,  0.5*spread_angle, 1*u);
+q3.pos = new_node_pos_h(q0, -0.5*spread_angle, 1*u);
+q4.pos = new_node_pos_h(q0, -1.5*spread_angle, 1*u);
+hlayout(1*u, q1, q5);
+hlayout(1*u, q2, q6);
+hlayout(1*u, q3, q7);
+hlayout(1*u, q4, q8);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$1$").style("leftside"),
+     (q0--q2).l("$1$").style("leftside"),
+     (q0--q3).l("$1$").style("leftside"),
+     (q0--q4).l("$1$").style("leftside"),
+     (q1--q5).l("$1$").style("leftside"),
+     (q1..bend(10)..q7).l(Label("$1$",Relative(0.3))).style("leftside"),
+     (q2--q6).l(Label("$1$",Relative(0.2))),
+     (q3--q6).l(Label("$1$",Relative(0.3))),
+     (q4--q7).l("$1$").style("leftside"),
+     (q4--q8).l("$1$"),
+     (q5--q9).l("$1$").style("leftside"),
+     (q6--q9).l("$1$").style("leftside"),
+     (q7--q9).l("$1$").style("leftside"),
+     (q8--q9).l("$1$").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6, q7, q8, q9
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// =========== 3-SAT leq Ind Set =================
+picture pic;
+int picnum = 30;
+setdefaultgraphstyles();
+defaultdrawstyle=undirectededgestyle;
+
+// define nodes
+node q0=ncircle("$q_0$");
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$");
+node q3=ncircle("$q_3$");
+node q4=ncircle("$q_4$");
+node q5=ncircle("$q_5$");
+
+// layout
+real u=1cm;
+real v=0.7*u;
+hlayout(1*u, q0, q1, q2);
+vlayout(1*v, q0, q3);
+hlayout(1*u, q3, q4, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1),
+     (q0--q3),
+     (q1--q2),
+     (q1--q3),
+     (q1--q5),
+     (q2--q5),
+     (q3--q4),
+     (q4--q5)
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ................ include answer .................
+picture pic;
+int picnum = 31;
+setdefaultgraphstyles();
+defaultdrawstyle=undirectededgestyle;
+
+// define nodes
+node q0=ncircle("$q_0$", ns_light);
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$", ns_light);
+node q3=ncircle("$q_3$");
+node q4=ncircle("$q_4$", ns_light);
+node q5=ncircle("$q_5$");
+
+// layout
+real u=1cm;
+real v=0.7*u;
+hlayout(1*u, q0, q1, q2);
+vlayout(1*v, q0, q3);
+hlayout(1*u, q3, q4, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1),
+     (q0--q3),
+     (q1--q2),
+     (q1--q3),
+     (q1--q5),
+     (q2--q5),
+     (q3--q4),
+     (q4--q5)
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

@@ -1281,4 +1281,100 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// =========== max-flow =================
+picture pic;
+int picnum = 25;
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+
+// define nodes
+node q0=ncircle("$q_0$");
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$");
+node q3=ncircle("$q_3$");
+node q4=ncircle("$q_4$");
+node q5=ncircle("$q_5$");
+node q6=ncircle("$q_6$");
+node q7=ncircle("$q_7$");
+
+// layout
+real spread_angle = 30;
+hlayout(2*u, q0, q3, q6);
+q1.pos = new_node_pos_h(q0, spread_angle, 1*u);
+q2.pos = new_node_pos_h(q0, -1*spread_angle, 1*u);
+hlayout(2*u, q1, q4);
+hlayout(2*u, q2, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$3$").style("leftside"),
+     (q0--q2).l("$2$"),
+     (q0--q3).l("$1$").style("leftside"),
+     (q1--q3).l("$2$").style("leftside"),
+     (q1--q4).l("$2$").style("leftside"),
+     (q2--q3).l("$2$"),
+     (q2--q5).l("$1$"),
+     (q3--q4).l("$4$").style("leftside"),
+     (q3--q5).l("$2$"),
+     (q3--q6).l("$2$").style("leftside"),
+     (q4--q6).l("$1$").style("leftside"),
+     (q5--q6).l("$2$")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ........... answers added .................
+picture pic;
+int picnum = 26;
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+
+// define nodes
+node q0=ncircle("$q_0$");
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$");
+node q3=ncircle("$q_3$");
+node q4=ncircle("$q_4$");
+node q5=ncircle("$q_5$");
+node q6=ncircle("$q_6$");
+node q7=ncircle("$q_7$");
+
+// layout
+real spread_angle = 30;
+hlayout(2*u, q0, q3, q6);
+q1.pos = new_node_pos_h(q0, spread_angle, 1*u);
+q2.pos = new_node_pos_h(q0, -1*spread_angle, 1*u);
+hlayout(2*u, q1, q4);
+hlayout(2*u, q2, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$3 (2)$").style("leftside"),
+     (q0--q2).l("$2 (2)$"),
+     (q0--q3).l("$1 (1)$").style("leftside"),
+     (q1--q3).l("$2 (1)$").style("leftside"),
+     (q1--q4).l("$2 (1)$").style("leftside"),
+     (q2--q3).l("$2 (1)$"),
+     (q2--q5).l("$1 (1)$"),
+     (q3--q4).l("$4 (0)$").style("leftside"),
+     (q3--q5).l("$2 (1)$"),
+     (q3--q6).l("$2 (2)$").style("leftside"),
+     (q4--q6).l("$1 (1)$").style("leftside"),
+     (q5--q6).l("$2 (2)$")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 

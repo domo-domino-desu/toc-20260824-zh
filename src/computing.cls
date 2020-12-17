@@ -71,6 +71,13 @@
   \end{enumerate*}
 }
 
+\newenvironment{exercisedescription}{%
+  \begin{description}[topsep=0ex,parsep=0ex,itemsep=0ex,
+                      labelsep=0.5em,labelwidth=0.5em,itemindent=0.15em,leftmargin=1em]
+}{%
+  \end{description}
+}
+
 
 
 % ===== Page Headers and Footers =============

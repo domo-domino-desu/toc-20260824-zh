@@ -1298,7 +1298,7 @@ node q6=ncircle("$q_6$");
 node q7=ncircle("$q_7$");
 
 // layout
-real spread_angle = 30;
+real spread_angle = 35;
 hlayout(2*u, q0, q3, q6);
 q1.pos = new_node_pos_h(q0, spread_angle, 1*u);
 q2.pos = new_node_pos_h(q0, -1*spread_angle, 1*u);
@@ -1345,7 +1345,7 @@ node q6=ncircle("$q_6$");
 node q7=ncircle("$q_7$");
 
 // layout
-real spread_angle = 30;
+real spread_angle = 35;
 hlayout(2*u, q0, q3, q6);
 q1.pos = new_node_pos_h(q0, spread_angle, 1*u);
 q2.pos = new_node_pos_h(q0, -1*spread_angle, 1*u);
@@ -1371,6 +1371,114 @@ draw(pic,
 // draw nodes
 draw(pic,
      q0, q1, q2, q3, q4, q5, q6
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// =========== vertex cover leq set cover =================
+picture pic;
+int picnum = 27;
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+
+// define nodes
+node q0=ncircle("$q_0$");
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$");
+node q3=ncircle("$q_3$");
+node q4=ncircle("$q_4$");
+node q5=ncircle("$q_5$");
+node q6=ncircle("$q_6$");
+node q7=ncircle("$q_7$");
+node q8=ncircle("$q_8$");
+node q9=ncircle("$q_9$");
+
+// layout
+real spread_angle = 30;
+hlayout(4*u, q0, q5);
+q1.pos = new_node_pos_h(q0, spread_angle, 1*u);
+q2.pos = new_node_pos_h(q0, -1*spread_angle, 1*u);
+hlayout(2*u, q1, q3);
+hlayout(2*u, q2, q4);
+hlayout(2*u, q3, q6, q8);
+hlayout(2*u, q4, q7, q9);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$a$").style("leftside"),
+     (q0--q2).l("$b$"),
+     (q1--q3).l("$c$").style("leftside"),
+     (q2--q3).l("$d$").style("leftside"),
+     (q2--q4).l("$e$"),
+     (q3--q5).l("$g$"),
+     (q3--q6).l("$f$").style("leftside"),
+     (q4--q5).l("$h$").style("leftside"),
+     (q4--q7).l("$i$"),
+     (q5--q6).l("$j$"),
+     (q5--q7).l("$k$").style("leftside"),
+     (q6--q8).l("$l$").style("leftside"),
+     (q7--q8).l("$m$"),
+     (q8--q9).l("$n$").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6, q7, q8, q9
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ............. vertex cover shown ...................
+picture pic;
+int picnum = 28;
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+
+// define nodes
+node q0=ncircle("$q_0$", ns_light);
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$");
+node q3=ncircle("$q_3$", ns_light);
+node q4=ncircle("$q_4$", ns_light);
+node q5=ncircle("$q_5$");
+node q6=ncircle("$q_6$", ns_light);
+node q7=ncircle("$q_7$", ns_light);
+node q8=ncircle("$q_8$");
+node q9=ncircle("$q_9$", ns_light);
+
+// layout
+real spread_angle = 30;
+hlayout(4*u, q0, q5);
+q1.pos = new_node_pos_h(q0, spread_angle, 1*u);
+q2.pos = new_node_pos_h(q0, -1*spread_angle, 1*u);
+hlayout(2*u, q1, q3);
+hlayout(2*u, q2, q4);
+hlayout(2*u, q3, q6, q8);
+hlayout(2*u, q4, q7, q9);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("$a$").style("leftside"),
+     (q0--q2).l("$b$"),
+     (q1--q3).l("$c$").style("leftside"),
+     (q2--q3).l("$d$").style("leftside"),
+     (q2--q4).l("$e$"),
+     (q3--q5).l("$g$"),
+     (q3--q6).l("$f$").style("leftside"),
+     (q4--q5).l("$h$").style("leftside"),
+     (q4--q7).l("$i$"),
+     (q5--q6).l("$j$"),
+     (q5--q7).l("$k$").style("leftside"),
+     (q6--q8).l("$l$").style("leftside"),
+     (q7--q8).l("$m$"),
+     (q8--q9).l("$n$").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6, q7, q8, q9
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

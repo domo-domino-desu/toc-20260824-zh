@@ -5835,7 +5835,7 @@ near as possible to~$v_0$,
 
 \begin{exercise}
 The \definend{\probname{Linear Programming}} 
-problem\index{Linear Programming@\probname{Linear Programming} problem}
+problem\index{Linear Programming language decision problem@\probname{Linear Programming} language decision problem}
 starts with a list of linear inequalities
 $a_{i,0}x_0+\cdots+a_{i,n-1}x_{n-1}\leq b_i$ for $a_0,\ldots{}a_{n-1},b_i\in\Q$  
 and it looks for a sequence $\sequence{s_0,\ldots{} s_{n-1}}\in\Q^n$
@@ -9236,16 +9236,39 @@ $\text{\probname{Vertex-to-Vertex Path}}\leq_p\text{\probname{Shortest Path}}$.
 \end{example}
 
 %<*lem:PolytimeReductionTrans>
-\begin{lemma}
+\begin{lemma} \label{lem:BasicFactsAboutPolytimeRed}
+Polytime reduction is reflexive: $\lang\leq_p\lang$ for all languages.
+It is also transitive: $\lang_2\leq_p\lang_1$ and $\lang_1\leq_p\lang_0$
+imply that $\lang_2\leq_p\lang_0$.
+There are pairs of languages that are incomparable, that are
+without a polytime reduction in either direction.
+Every nontrivial language is \definend{$P$~hard},\index{P hard@$\P$ hard} 
+that is, 
+every language $\lang_0$ has the property that if $\lang_1\in\P$
+then $\lang_1\leq_p\lang_0$.
 Under polytime reduction, the class $\P$ is closed downward:~if 
 $\prob_0\in\P$ and $\prob_1\leq_p\prob_0$ then $\prob_1\in\P$. 
+So is~$\NP$.
 \end{lemma}
 %</lem:PolytimeReductionTrans>
 
 %<*pf:PolytimeReductionTrans>
 \begin{proof}
-Suppose that 
-$\prob_1\leq_p\prob_0$ via the function~$f$ 
+The third sentence holds because there are uncountably many languages
+but only countably many reduction functions, as
+each such function is computed by a Turing machine.
+
+For the fourth, fix a $\lang_0$ that is nontrivial,
+so there is a~$\sigma\in\lang_0$ and a $\tau\notin\lang_0$.
+Let $\lang_1$ be an element of~$\P$.
+We will specify a reduction function~$f_{\lang_1}$ giving $\lang_1\leq_p\lang_0$.
+For any $\alpha\in\kleenestar{\B}$,
+computing whether $\alpha\in\lang_1$ can be done in polytime.
+If it is a member then set $f_{\lang_1}(\alpha)=\sigma$,
+and if not then set $f_{\lang_1}(\alpha)=\tau$.
+
+For downward closure of $\P$, suppose that
+$\prob_1\leq_p\prob_0$ via the function~$f\!$, 
 and also suppose that  
 there is a polytime algorithm for determining membership in~$\lang_0$.
 Determine membership in $\lang_1$ by:~given
@@ -9255,18 +9278,20 @@ Where the $\lang_0$ algorithm runs in time that is $\bigOh(n^i)$,
 and where $f$ runs in time that is~$\bigOh(n^j)$,
 then determining $\lang_1$ membership in this way 
 runs in time that is~$\bigOh(n^{\max(i,j)})$.
+
+The first two sentences, and 
+downward closure of $\NP$, are in \cref{exer:BasicFactsAboutPolytimeRed}.
 \end{proof}
 %</pf:PolytimeReductionTrans>
 
 \begin{fig}[fig:ProblemBeanWithReductions]{The bean encloses all problems.
   % The ones with fast algorithms are at the bottom.
-  Problems are connected if there is a polynomial time reduction from one 
-  to the other.
-  Highlighted are connections in the complexity class~$\P$, 
-  which is closed downward under polytime reduction.}
+  Problems are shown connected if there is a polynomial time reduction from one 
+  to the other (we only show a few problems for graphical clarity).
+  Highlighted are connections within the complexity class~$\P$.}
   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
   \hspace{0.6em}
-  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp08.pdf}}
+  \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp09.pdf}}
 \end{fig}
 
 \begin{example}  \label{ex:SubsetSumLeqKnapsack}
@@ -9545,6 +9570,49 @@ is at least as hard as every problem in $\NP$.
 % .......................................
 \begin{exercises}
 \begin{exercise}
+Your friend is confused.
+``Doesn't \cref{lem:BasicFactsAboutPolytimeRed} contradict itself?
+It says that every language in $\P$ is $\leq_p$ to every other language.
+But it also says that there are uncountably many languages and 
+so there aren't enough reduction functions for a given 
+language to be related to all others.'' 
+Straighten them out.
+\hint~the definition of reduction function~$f$ is asymmetric.
+Such a function must do the right thing for every input, 
+but it need not be onto and so it may leave elements of the codomain
+untouched, that is, free to vary.
+\begin{answer}
+% For every language~$\lang_0$, there are countably many associated 
+% reduction functions~$f$.
+% Since $\P$ is countable, $\lang_0$ has enough available $f$'s so that
+% for any $\lang_1\in\P$ it can have $\lang_1\leq_p\lang_0$.
+\Cref{lem:BasicFactsAboutPolytimeRed}
+says that where $\lang_0$ is a nontrivial language, every $\lang_1\in\P$
+reduces to it, $\lang_1\leq_p\lang_0$.
+Recall the proof.
+Because $\lang_0$ is nontrivial, 
+there is a~$\sigma\in\lang_0$ and a $\tau\notin\lang_0$.
+For $\lang_1\in\P$,
+specify a reduction function~$f_{\lang_1}$ as follows.
+Given $\alpha\in\kleenestar{\B}$,
+compute whether $\alpha\in\lang_1$.
+If so then set $f_{\lang_1}(\alpha)=\sigma$.
+If not then set $f_{\lang_1}(\alpha)=\tau$.
+
+Now the hint comes into play.
+This same reduction function works for any language $\lang$
+where $\sigma\in\lang$ and $\tau\notin\lang$.
+There are uncountably many such $\lang$'s.
+
+Restated, for a $\lang_0$, there are only countably many $\lang_1$ 
+below it, that is, such that $\lang_1\leq_p\lang_0$.
+However, for $\lang_1$ there may be uncountably many $\lang_0$ such that
+$\lang_1\leq_p\lang_0$,
+because of the asymmetry in the definition of reduction function.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 \Cref{ex:SubsetSumLeqKnapsack} includes as 
 illustration a \probname{Subset Sum} problem,
 where $S=\set{18, 23, 31, 33, 72,  86, 94}$ 
@@ -9556,6 +9624,7 @@ namely $A=\set{23, 31, 72}$.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise} % 
 Suppose that the language $A$ is polynomial time reducible to the language~$B$,
 $A\leq_p B$. 
@@ -9579,7 +9648,7 @@ the set~$A$ in polytime.
 As in the prior item, if $A$ is the empty set, which is decidable, 
 and $B=K$, then $A\leq_pB$ but $B$ is not decidable in polytime.
 The reason that $A\leq_pB$ is that $A$ can be decided in polytime
-without any regerence to~$B$ at all; in fact, deciding $A$ is $\bigOh(1)$.
+without any reference to~$B$ at all; in fact, deciding $A$ is $\bigOh(1)$.
 Instead, the other way around is right:~if 
 $B$ is polytime decidable then $A$ is polytime decidable also.
 \item This is true.
@@ -9821,8 +9890,9 @@ $\sequence{S,S_{v_0},\ldots{} B}\in\lang_1$.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise} \label{exer:DefMaxFlow}
-In this network, each edge is labelled
+In this network, each edge is labeled
 with a capacity.
 (Imagine railroad lines going from $q_0$ to~$q_6$.)
 \begin{center}
@@ -10059,20 +10129,68 @@ and it looks for a sequence $\sequence{s_0,\ldots{} s_{n-1}}\in\Q^n$
 that that is feasible, that satisfies all of the constraints.
 The \definend{\probname{Integer Linear Programming} problem}\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem}
 adds the requirement that all of the numbers be integers.
+\begin{exparts}
+\item Consider the propositional logic clause $P_0\vee \neg P_1\vee\neg P_2$.
+Create variables $z_0$, $z_1$, and~$z_2$ and list linear constraints such
+that each must be either~$0$ or~$1$.
+Also give a linear inequality that holds if and only
+if the clause is true.
+\item
 Show that $\probname{$3$-Satisfiability}\leq_p\probname{Integer Linear Programming}$.
+\end{exparts}
 \begin{answer}
-The reduction function is given a propositional logic expression.
+\begin{exparts}
+\item
+These constraints
+\begin{equation*}
+  0\leq z_0\leq 1, \quad
+  0\leq z_1\leq 1, \quad
+  0\leq z_2\leq 1
+\end{equation*}
+ensure, in an Integer Programming context, that each variable is 
+either~$0$ or~$1$.  
+As to the expression, use $z_0+(1-z_1)+(1-z_2)>0$.
+\item
+We must produce a reduction function~$f$.
+It is given a propositional logic expression.
 For each variable $P_i$ in that expression, create a variable $z_i$
-for the linear programming problem.
-To force each~$z_i$ to be either $0$ or~$1$, put in the constraint
-$0\leq z_i\leq 1$.   
-For every clause in the propositional logic expression we add a 
-constraint to the integer linear program problem as here.
+for the Integer Linear Programming problem.
+To force each~$z_i$ to be either $0$ or~$1$, include the constraint
+$0\leq z_i\leq 1$.
+For every clause in the propositional logic expression, add a 
+constraint to the Integer Linear Programming instance as in the prior item.
 \begin{equation*}
   P_i\vee \neg P_j\vee\neg P_k
   \qquad\text{is associated with}\qquad
   z_i+(1-z_j)+(1-z_k)>0
 \end{equation*}
+Clearly this function can be done in polytime.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Show that if $\lang_0\notin\P$ and $\lang_0\leq_p\lang_1$
+  then $\lang_1\notin\P$ also.
+What about $\NP$? 
+\begin{answer}
+The same is true about $\NP$.
+Both are immediate from \cref{lem:BasicFactsAboutPolytimeRed}.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Prove that $\lang\leq_p\setcomp{\lang}$
+if and only if $\setcomp{\lang}\leq_p\lang$.
+\begin{answer}
+Assume $\lang\leq_p\setcomp{\lang}$.
+Then there is a polytime~$f$ so that 
+$\sigma\in\lang$ if and only if~$f(\sigma)\in\setcomp{\lang}$.
+That's equivalent to 
+$\sigma\notin\lang$ if and only if~$f(\sigma)\notin\setcomp{\lang}$,
+which holds when
+$\sigma\in\setcomp{\lang}$ if and only if~$f(\sigma)\in\lang$.
 \end{answer}
 \end{exercise}
 
@@ -10146,23 +10264,53 @@ or equal to the bound is the \probname{Assignment} problem.
 
 To show that $\probname{Assignment}\leq_p\probname{Travelling Salesman}$,
 we construct a reduction function~$f$.
-It inputs
+It inputs a triple $\sequence{W,T,C}$ of workers, tasks, and the costs.
+It construcs the bipartite graph with a bank of $w$'s on one side, and
+a bank of $t$'s on the other.
+Every pair of $w$'s is connected by an edge of cost zero, as is
+every pair of $t$'s.
+Between each $t_i$ and~$w_j$ is an edge of cost $C(t_i,w_j)$.
+The output of the reduction function is 
+$f(\sequence{W,T,C})=\mathcal{G}$.
+This is computable in polytime, and 
+also an optimum solution for the \probname{Assignment} problem instance
+corresponds to an optimum solution to the 
+\probname{Travelling Salesman} problem instance. 
 \end{exparts}
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
+\recommended
+\begin{exercise}\label{exer:BasicFactsAboutPolytimeRed}
+\Cref{lem:BasicFactsAboutPolytimeRed} leaves a couple of points undone.
 \begin{exparts}
 \item
+Show that $\leq_p$ is reflexive and transitive.
+\item
+It says that nontrivial languages are $\P$~hard.
+What about trivial ones?
 Which languages reduce to the empty set?
 To $\kleenestar{\B}$?
-\item We say a language~$\lang_0$ is 
-\definend{$\P$ hard}\index{P hard@$\P$ hard}
-if $\lang_1\leq_p\lang_0$ for all $\lang_1\in\P$.
-Prove that every nontrivial language is $\P$~hard.
+\item Show that $\NP$ is downward closed, that  
+if $\lang_1\leq_p\lang_0$ and $\lang_0\in\NP$ then 
+$\lang_1\in\NP$ also.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
+\item
+We must show that $\lang\leq_p\lang$ for any 
+$\lang\in\powerset(\kleenestar(\Sigma))$.
+Take the reduction function to be the identity, $f(\sigma)=\sigma$.
+Clearly it can be computed in polytime, and just as clearly
+$\sigma\in\lang$ if and only if $f(\sigma)\in\lang$.
+
+For transitivity, let $\lang_0\leq_p\lang_1$ via the function~$f$,
+and let $\lang_1\leq_p\lang_2$ via the function~$g$,
+which are polytime computable.
+Then for all $\sigma\in\kleenestar{\B}$ we have 
+$\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$,
+and $f(\sigma)\in\lang_1$ if and only if $\composed{g}{f}(\sigma)\in\lang_2$.
+Because $f,g$ are polytime, $\composed{g}{f}$ is polytime also.
 \item
 Suppose that $\lang\leq_p\emptyset$.
 Then there is a function~$f$ such that
@@ -10174,46 +10322,27 @@ That is, $\lang$ is empty.
 The argument that $\lang\leq_p\kleenestar{\B}$ implies that
 $\lang=\kleenestar{\B}$ is just as easy.
 \item 
-Fix a $\lang_0\in\kleenestar{\B}$ that is nontrivial,
-so that there is a~$\sigma\in\lang_0$ and
-there is a $\tau\notin\lang_0$.
+  Assume that $\lang_0\leq_p\lang_1$, so that there is a polytime function 
+  $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ such that 
+  $\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$.
+  We will use this reduction to show that $\lang_1\in\NP$ implies that
+  $\lang_0\in\NP$.
 
-Let $\lang_1$ be an element of~$\P$.
-We must specify a reduction function~$f_{\lang_1}$.
-Given $\alpha\in\kleenestar{\B}$,
-compute whether $\alpha\in\lang_1$, which can be done in polytime,
-and if so then $f_{\lang_1}(\alpha)=\sigma$,
-while if not then $f_{\lang_1}(\alpha)=\tau$.
+  If $\lang_1\in\NP$ then there is a nondeterministic Turing machine~$\TM_1$
+  that decides~$\lang_1$.
+  For the nondeterministic machine~$\TM_0$ that decided~$\lang_0$, 
+  start with an input candidate string~$\tau$.
+  Compute~$f(\tau)$.
+  Run $\TM_1$ on input~$f(\tau)$. 
+  If it accepts then $\TM_0$ accepts, and if it rejects then $\TM_0$ rejects.
 \end{exparts}
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-Show that $\leq_p$ is reflexive.
-Show also that $\leq_p$ is transitive: if $\lang_0\leq_p\lang_1$ 
-and~$\lang_1\leq_p\lang_2$ then $\lang_0\leq_p\lang_2$.
-\begin{answer}
-We must show that $\lang\leq_p\lang$ for any 
-$\lang\in\powerset(\kleenestar(\Sigma))$.
-Take the reduction function to be the identity, $f(\sigma)=\sigma$.
-Clearly it can be computed in polytime, and just as clearly
-$\sigma\in\lang$ if and only if $f(\sigma)\in\lang$.
-
-For the second, let $\lang_0\leq_p\lang_1$ via the function~$f$,
-and let $\lang_1\leq_p\lang_2$ via the function~$g$,
-which are polytime computable.
-Then for all $\sigma\in\kleenestar{\B}$ we have 
-$\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$,
-and $f(\sigma)\in\lang_1$ if and only if $\composed{g}{f}(\sigma)\in\lang_2$.
-Because $f,g$ are polytime, $\composed{g}{f}$ is polytime also.
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 The symbol for polynomial time reducibility is a less-than sign,
 which suggests a relationship between the two problems.
-How strictis the relationship; when  $\prob_i\leq_p\prob_j$, does that mean
+How strict is the relationship; when  $\prob_i\leq_p\prob_j$, does that mean
 that the best algorithm to decide $\prob_i$ takes time that is  
 less than or equal to the amount
 taken by the best algorithm for $\prob_j$?
@@ -10221,7 +10350,7 @@ Fix a language decision problem~$\prob_0$
 whose fastest algorithm is $\bigOh(n^3)$,
 another~$\prob_1$ whose best algorithm is $\bigOh(n^2)$,
 a third~$\prob_2$ whose best is $\bigOh(2^n)$,
-and a fourth~$\prob_3$ whose best is $\bigOh(\lg n)$
+and a fourth~$\prob_3$ whose best is $\bigOh(\lg n)$.
 In the array entry $i,j$ below, put `N' if $\prob_i\leq_p\prob_j$ is not
 possible.
 \begin{center}\small
@@ -10247,67 +10376,45 @@ $\prob_1\leq_p\prob_2$
 
 \begin{exercise}
 Is there a connection between subset and polytime reducibility?
-Find languages $A,B\in\powerset(\kleenestar{\B})$ for each.
-\begin{exparts}
-\item $A\subset B$ and $A\leq_p B$
-\item $A\not\subset B$ and $A\leq_p B$
-\item $A\subset B$ and $A\not\leq_p B$
-\item $A\not\subset B$ and $A\not\leq_p B$
-\end{exparts}
-\end{exercise}
-
-\begin{exercise}
-Prove that $\lang\leq_p\setcomp{\lang}$
-if and only if $\setcomp{\lang}\leq_p\lang$.
-\begin{answer}
-Assume $\lang\leq_p\setcomp{\lang}$.
-Then there is a polytime~$f$ so that 
-$\sigma\in\lang$ if and only if~$f(\sigma)\in\setcomp{\lang}$.
-That's equivalent to 
-$\sigma\notin\lang$ if and only if~$f(\sigma)\notin\setcomp{\lang}$,
-which holds when
-$\sigma\in\setcomp{\lang}$ if and only if~$f(\sigma)\in\lang$.
-\end{answer}
-\end{exercise}
-
-\begin{exercise} % https://cs.stackexchange.com/q/92028
-If a problem~$\lang$ is in $\NP$ and $\lang\leq_p\hat{\lang}$
-then what can we say about the problem~$\hat{\lang}$?
-\begin{answer}
-Nothing.
-For instance, it could be that $\lang$ is in~$\P$ and so is $\hat{\lang}$.
-It could also be that $\hat{\lang}$ is in some higher-up class.
-There is not enough information to conclude anything. 
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-\begin{exparts}
-\item Show that if $\lang_0\notin\P$ and $\lang_0\leq_p\lang_1$
-  then $\lang_1\notin\P$ also.
-\item What about $\NP$? 
-\end{exparts}
+Find languages $A,B\in\powerset(\kleenestar{\B})$ for each:
+\begin{exparts*}
+\item $A\subset B$ and $A\leq_p B$,
+\item $A\not\subset B$ and $A\leq_p B$,
+\item $A\subset B$ and $A\not\leq_p B$,
+\item $A\not\subset B$ and $A\not\leq_p B$.
+\end{exparts*}
 \begin{answer}
 \begin{exparts}
-\item
-\item The same is true about $\NP$:~if $\lang_0\notin\NP$ and 
-  $\lang_0\leq_p\lang_1$ then $\lang_1\notin\NP$.
-  Assume that $\lang_0\leq_p\lang_1$, so that there is a polytime function 
-  $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ such that 
-  $\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$.
-  We will use this reduction to show that $\lang_1\in\NP$ implies that
-  $\lang_0\in\NP$.
-
-  If $\lang_1\in\NP$ then there is a nondeterministic Turing machine~$\TM_1$
-  that decides~$\lang_1$.
-  For the nondeterministic machine~$\TM_0$ that decided~$\lang_0$, 
-  start with an input candidate string~$\tau$.
-  Compute~$f(\tau)$.
-  Run $\TM_1$ on input~$f(\tau)$. 
-  If it accepts then $\TM_0$ accepts, and if it rejects then $\TM_0$ rejects.
+\item Take $A$ to be the language of strings whose length is a
+multiple of four, and $B$ to be the languge of strings whose length
+is even.
+Clearly both languages are in~$\P$, so $A\leq_p B$.
+\item 
+Take $A$ to be the language of even-length strings, 
+and $B$ to be the languge of odd-length strings.
+Clearly both languages are in~$\P$, so $A\leq_p B$.
+\item Take $A$ to be the language of even-length strings and
+$B=\kleenestar{\B}$.
+Because some strings are elements of it and some are not, the set~$A$
+does not reduce to~$\kleenestar{\B}$.
+\item Take $A$ to be the language of even-length
+strings and take $B=\emptyset$.
+Because some strings are elements of it and some are not, the set~$A$
+does not reduce to~$\kleenestar{\B}$.
 \end{exparts}
 \end{answer}
 \end{exercise}
+
+% \begin{exercise} % https://cs.stackexchange.com/q/92028
+% If a problem~$\lang$ is in $\NP$ and $\lang\leq_p\hat{\lang}$
+% then what can we say about the problem~$\hat{\lang}$?
+% \begin{answer}
+% Nothing.
+% For instance, it could be that $\lang$ is in~$\P$ and so is $\hat{\lang}$.
+% It could also be that $\hat{\lang}$ is in some higher-up class.
+% There is not enough information to conclude anything. 
+% \end{answer}
+% \end{exercise}
 
 \end{exercises}
 \index{problem reduction|)}

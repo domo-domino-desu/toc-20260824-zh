@@ -561,6 +561,130 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ................... Illustrate <_p, on P ..........
+picture pic;
+int picnum=9;
+
+unitsize(pic,1cm);
+
+// use seconds() to try verious random pics, then save one I like
+int srand_seed = seconds();
+write(format("PNP.ASY: Picture 9: srand_seed is %d",srand_seed));  // when trying random seeds, can save ones that I like
+srand(srand_seed); 
+
+// bounds 
+real SET_TOP=1.75;
+real SET_RT=1.4;
+path set_bound=(0,0.5*SET_TOP)..(0,0)..(SET_RT,0)..(SET_RT,SET_TOP)..(0,SET_TOP)..cycle;
+
+// Find the horizontal and vertical limits of the box around the bean 
+real max_horiz_extent_time = maxtimes(set_bound)[0];
+real max_vert_extent_time = maxtimes(set_bound)[1];
+real max_horiz_coord = point(set_bound,max_horiz_extent_time).x;
+real max_vert_coord = point(set_bound,max_vert_extent_time).y;
+real min_horiz_extent_time = mintimes(set_bound)[0];
+real min_vert_extent_time = mintimes(set_bound)[1];
+real min_horiz_coord = point(set_bound,min_horiz_extent_time).x;
+real min_vert_coord = point(set_bound,min_vert_extent_time).y;
+// dot(pic, (min_horiz_coord,min_vert_coord), blue);  // have a look
+
+// pick points on the boundary to intersect
+pair boundbot = point(set_bound,1.5);
+pair boundrt = point(set_bound,2.275);
+pair p1 = (0.4*(boundbot.x+boundrt.x),boundrt.y+0.1);
+pair p2 = (0.60*(boundbot.x+boundrt.x),boundrt.y+0.2);
+// pair p3 = (0.75*(boundbot.x+boundrt.x),boundrt.y+0.1);
+path p = boundbot{(0.1,1)} :: p1 .. p2 .. {SE}boundrt;
+// dot(pic,p1,green);
+// dot(pic,p2,green);
+// dot(pic,p3,green);
+
+// Figure out the path that borders P incl bean boundary
+path p_boundary = buildcycle(set_bound,p);
+
+// Pick some points; they must be inside the p_boundary
+pair[] p_pts;    // points in P
+pair[] nonp_pts;   // points not in P
+pair[] candidate_pts = {
+  // P pts
+  (0.82*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.25*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  (0.70*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.09*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  (0.5*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.04*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  (0.60*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.35*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  // Non-P pts
+  (0.20*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.20*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  (0.70*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.90*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  (0.150*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.87*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  (0.40*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.95*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  (0.10*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.50*(max_vert_coord-min_vert_coord)+min_vert_coord),
+  (0.30*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.30*(max_vert_coord-min_vert_coord)+min_vert_coord)
+};
+write(format("   number of candidate_points: %d",candidate_pts.length));
+int num_pts = candidate_pts.length;
+pair candidate_pt;  // pt we test to see if it is inside 
+// place points inside and outside P
+for (int i=0; i<num_pts; ++i) {
+  candidate_pt = candidate_pts.pop(); // iterate through array from back
+    // write(format("candidate_pt.x=%f ",candidate_pt.x));
+    // write(format("candidate_pt.y=%f",candidate_pt.y));
+    if (inside(p_boundary,candidate_pt)) {
+      p_pts.push(candidate_pt);
+      write(format("   point number %d is in P",i));
+    } else {
+      if (inside(set_bound,candidate_pt)) {
+	nonp_pts.push(candidate_pt);
+	write(format("   point number %d is in non-P",i));
+      } else {
+	write(format("   point number %d is not in set",i));
+      }
+    }
+}
+
+// Now draw edges
+// First the non-P langs
+// non-P to non-P
+real edge_threshold = 0.25;  // chance an edge gets drawn
+for(int i=0; i<nonp_pts.length; ++i) {
+  for (int j=0; j<nonp_pts.length; ++j) {
+    if (unitrand() < edge_threshold) {
+      draw(pic, nonp_pts[i]--nonp_pts[j],backgroundcolor);
+    }
+  }
+}
+// non-P to P
+for(int i=0; i<nonp_pts.length; ++i) {
+  for (int j=0; j<p_pts.length; ++j) {
+    draw(pic, nonp_pts[i]--p_pts[j],backgroundcolor);
+  }
+}
+
+// Draw the boundary of the universe, and of P
+draw(pic,set_bound, AXISPEN);
+draw(pic,p,AXISPEN);
+
+// Now the P lang edges
+for(int i=0; i<p_pts.length; ++i) {
+  for (int j=0; j<p_pts.length; ++j) {
+      draw(pic, p_pts[i]--p_pts[j],highlightcolor);
+  }
+}
+
+// write(format("p_pts.length=%d",p_pts.length));
+// write(format("nonp_pts.length=%d",nonp_pts.length));
+// Draw the non-P points
+for(int i=0; i<nonp_pts.length; ++i){
+  filldraw(pic, shift(nonp_pts[i])*scale(0.025)*unitcircle, boldcolor, fillpen=white);
+} 
+// Draw the P points
+for(int i=0; i<p_pts.length; ++i){
+  filldraw(pic, shift(p_pts[i])*scale(0.025)*unitcircle, boldcolor, fillpen=white);
+} 
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 
 // ============== Illustrate f=Theta(g) ======

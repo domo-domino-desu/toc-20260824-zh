@@ -568,7 +568,7 @@ int picnum=9;
 unitsize(pic,1cm);
 
 // use seconds() to try verious random pics, then save one I like
-int srand_seed = seconds();
+int srand_seed = 1608295644; // seconds();
 write(format("PNP.ASY: Picture 9: srand_seed is %d",srand_seed));  // when trying random seeds, can save ones that I like
 srand(srand_seed); 
 
@@ -629,13 +629,13 @@ for (int i=0; i<num_pts; ++i) {
     // write(format("candidate_pt.y=%f",candidate_pt.y));
     if (inside(p_boundary,candidate_pt)) {
       p_pts.push(candidate_pt);
-      write(format("   point number %d is in P",i));
+      // write(format("   point number %d is in P",i));
     } else {
       if (inside(set_bound,candidate_pt)) {
 	nonp_pts.push(candidate_pt);
-	write(format("   point number %d is in non-P",i));
+	// write(format("   point number %d is in non-P",i));
       } else {
-	write(format("   point number %d is not in set",i));
+	// write(format("   point number %d is not in set",i));
       }
     }
 }

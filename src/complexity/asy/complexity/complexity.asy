@@ -1626,3 +1626,115 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// =========== Hamiltonian Path leq Longest Path =================
+picture pic;
+int picnum = 32;
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+
+// define nodes
+node q0=ncircle("$q_0$");
+node q1=ncircle("$q_1$");
+node q2=ncircle("$q_2$");
+node q3=ncircle("$q_3$");
+node q4=ncircle("$q_4$");
+node q5=ncircle("$q_5$");
+node q6=ncircle("$q_6$");
+node q7=ncircle("$q_7$");
+node q8=ncircle("$q_8$");
+
+// layout
+real u=1.25cm;
+real v=0.75*u;
+hlayout(1*u, q0, q1, q2);
+vlayout(1*v, q0, q3, q6);
+hlayout(1*u, q3, q4, q5);
+hlayout(1*u, q6, q7, q8);
+
+// draw edges
+draw(pic,
+     (q0--q1),
+     (q0..bend(-25)..q2),
+     (q0--q3),
+     (q0--q4),
+     (q1--q2),
+     (q3--q6),
+     (q4--q7),
+     (q5--q0),
+     (q5--q2),
+     (q5..bend(-30)..q3),
+     (q5--q0),
+     (q6--q4),
+     (q7--q6),
+     (q7--q8),
+     (q8..bend(30)..q2),
+     (q8--q4),
+     (q8--q5)
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2,
+     q3, q4, q5,
+     q6, q7, q8
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ========== Ham circuit leq Ham path ==========
+int picnum = 33;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node[] nodes=ncircles("\nodebox{$v_0$}",
+		      "\nodebox{$v_1$}",
+		      "\nodebox{$v_2$}",
+		      "\nodebox{$v_3$}",
+		      "\nodebox{$v_4$}",
+		      "\nodebox{$v_5$}",
+		      "\nodebox{$v_6$}",
+		      "\nodebox{$v_7$}",
+		      "\nodebox{$v_8$}"
+		      );
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+
+hlayout(1*u, nodes[0], nodes[7]);
+hlayout(2*u, nodes[7], nodes[6]);
+vlayout(2*v, nodes[7], nodes[1]);
+nodes[2].pos = new_node_pos_h(nodes[7], -35.0, 1*u);
+hlayout(2*u, nodes[1], nodes[3]);
+nodes[5].pos = new_node_pos_h(nodes[6], -35.0, 1*u);
+hlayout(1*u, nodes[5], nodes[4]);
+vlayout(-1*v, nodes[4], nodes[8]);
+
+// draw edges
+draw(pic,
+     (nodes[0]--nodes[7]),
+     (nodes[1]--nodes[2]),
+     (nodes[1]--nodes[3]),
+     (nodes[1]--nodes[7]),
+     (nodes[2]--nodes[3]),
+     (nodes[2]--nodes[7]),
+     (nodes[3]--nodes[4]),
+     (nodes[3]--nodes[5]),
+     (nodes[3]--nodes[6]),
+     (nodes[4]--nodes[5]),
+     (nodes[4]--nodes[6]),
+     (nodes[4]--nodes[8]), 
+     (nodes[5]--nodes[6])
+);
+
+// draw nodes
+draw(pic,
+     nodes[0], nodes[1], nodes[2], nodes[3], nodes[4],
+     nodes[5], nodes[6], nodes[7], nodes[8]);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

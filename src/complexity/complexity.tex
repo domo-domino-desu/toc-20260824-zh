@@ -2635,7 +2635,8 @@ This was the first major proof that was done on a computer and
 Many mathematicians felt that the purpose of the subject was to 
 understand the things studied, and not just be satisfied when a 
 computer program that perhaps seems to be bug-free
-assures us that theorems are verified.
+assures us that theorems are verified.\footnote{%
+  This is in contrast to the goal of the \textit{Entscheidungsproblem}.}
 In the interim, though, a new generation has appeared that is more 
 comfortable with the process, and  
 now computer proofs are routine, or at least not as controversial.
@@ -9843,14 +9844,32 @@ The \probname{Travelling Salesman} problem is this decision problem.
           \text{some circuit of $\mathcal{G}$ that includes each vertex has total cost less than or equal to $B$}}
 \end{equation*}
 \item
-We must show that $\lang_0\leq_p\lang_1$.
-From $\mathcal{H}$, 
-construct the weighted graph~$G$ 
-with the same vertices and edges, and with all edges of weight~$1$.
-Then, $f(\mathcal{H})=\sequence{\mathcal{G},\sizeof{H}}$.
+The reduction function 
+inputs an instance of \probname{Hamiltonian Circuit}, a graph
+$\mathcal{H}=\sequence{\mathcal{N},\mathcal{E}}$
+whose edges are unweighted.
+It returns
+the instance of \probname{Travelling Salesman} that uses the vertex set
+$\mathcal{N}$ as cities and that takes the distances between the cities
+to be: $d(v_i,v_j)=1$ if $v_iv_j$ is an edge of $\mathcal{G}$ and
+$d(v_i,v_j)=2$ if $v_iv_j\notin\mathcal{E}$,
+and such that the bound~$B$ is the number of vertices~$|\mathcal{N}|$.
+
+The bound means that there will be a \probname{Travelling Salesman} solution
+if and only if there is a \probname{Hamiltonian Circuit} solution, namely
+the \probname{Travelling Salesman} solution uses the edges of 
+the Hamiltonian circuit.
+
 Clearly $\mathcal{H}\in\lang_0$ if and only if
 $f(\mathcal{H})\in\lang_1$.
-Clearly also,~$f$ runs in polytime.
+What remains is to show that $f$ runs in polytime. 
+The number of
+edges is less than twice the number of vertices, so that polytime in the
+input graph size is the same as polytime in the number of vertices.
+To output the \probname{Travelling Salesman} instance, the algorithm examines
+all the pairs of vertices, which is a nested loop and so takes time that
+is quadratic in the number of vertices.
+So $f$ runs in polytime.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -10511,16 +10530,6 @@ operates under, such as that the only tape symbol that can be changed in
 any one step is the one under the machine's Read/Write head.
 %</pf:CookLevinii>
 
-So, there are 
-problems in $\NP$ that are 
-\citetext{in a sense at least as hard as any problem in that class}{%
-  This is true in the sense that they can answer questions about
-  those other problems.
-  However, some of these problems run in nondetermistic
-  time that is $n$ while others run in $n^{1\,000\,000}$.
-  So this is at odds with our earlier characterization of 
-  problems that are harder to solve.}.
-
 %<*def:NPHard>
 \begin{definition}
 A problem~$\prob$ is \citetext{\definend{$\NP$~complete}}{%
@@ -10532,20 +10541,34 @@ if it is a member of $\NP$ and any member of $\NP$ reduces to it.
 \begin{definition}
 A problem~$\prob$ is \definend{$\NP$-hard}\index{NP hard@$\NP$ hard}\index{hard!NP@$\NP$}
 if every problem in $\NP$ reduces to it.
-In general, a problem~$\prob$ is 
-\definend{hard for a complexity class~\compclass{C}}\index{hard!for a class} 
+In general, for a complexity class~$\probname{C}$, a problem~$\prob$ is 
+\definend{$\probname{C}$-hard}\index{hard!for a class} 
 when all problems in that class reduce to it:~if 
 $\hat{\prob}\in\compclass{C}$ then $\hat{\prob}\leq_p\prob$.
 A problem is 
-\definend{complete for a class}\index{complete!for a class}
+\definend{$\probname{C}$ complete}\index{complete!for a class}
 if it is hard for that
 class and is also a member of that class.
 \end{definition}
 %</def:NPHard>
 
-\begin{fig}[fig:ProblemBeanWithNPComplete]{This shows all problems,
-  the collection of all $\lang\subseteq\kleenestar{\B}$.
-  The bottom right is~$\NP$, drawn with $\P$ as
+Informally speaking, if a problem is $\probname{C}$-hard then it is at
+least as difficult as any problem in~$\probname{C}$, 
+although it may not itself be a member of~$\probname{C}$.
+It is $\probname{C}$~complete if it is also a member of~$\probname{C}$.
+In particular, the Cook-Levin Theorem says that there are 
+members of $\NP$ that are, 
+\citetext{in a sense, at least as hard as any problem in that class}{%
+  This is true in the sense that they can answer questions about
+  those other problems.
+  However, some of these problems run in nondetermistic
+  time that is $n$ while others run in $n^{1\,000\,000}$.
+  So this sense is at odds with our earlier characterization of 
+  problems that are harder to solve.}.
+This illustrates.
+
+\begin{fig}[fig:ProblemBeanWithNPComplete]{The bean contains all problems.
+  The subset in the bottom right is~$\NP$, drawn with $\P$ as
   a proper subset (although, strictly speaking, we don't know that is true).
   The top right, shaded, has the $\NP$-hard problems.
   The highlighted intersection
@@ -10567,9 +10590,9 @@ and $\prob_1\in\NP$ then $\prob_1$ is $\NP$~complete.
 \end{proof}
 
 The $\NP$~complete problems are to the class~$\NP$ as the problems 
-Turing-equivalent to~$K$,
-the solution to the \HP, 
-are to the computably enumerable sets.
+Turing-equivalent to~$K$
+are to the computably enumerable sets,
+where $K$ is the solution to the \HP.
 They are at the top level of their class\Dash if we could solve the one 
 problem the  we could solve 
 every other problem in that
@@ -10580,8 +10603,8 @@ class.
 Soon after Cook raised the question of $\NP$~completeness, 
 R~Karp brought it to widespread attention.
 He produced a list of twenty one problems,
-spread across Computer Science, Mathematics, and the natural sciences,
-that were well known to be difficult,
+widely known in Computer Science, Mathematics, and the natural sciences,
+that were well-known to be difficult,
 so that many smart people had for years
 been unable find an efficient algorithm.
 Karp showed that they were all $\NP$~complete and so
@@ -10651,17 +10674,18 @@ is the same, $\sum_{s\in\hat{S}}s=\sum_{s\notin\hat{S}}s$.
 \end{theorem}
 %</th:GJNPCompleteProblems>
 
-\noindent (We will not show that these are all $\NP$ complete; 
-for that, see  \autocite{GareyJohnson}.)
+\noindent We will not show that these are all $\NP$ complete; 
+for that, see  \autocite{GareyJohnson}.
 
 \begin{example}
 %<*ex:TSIsNPComplete>
-\probname{Travelling Salesman} is $\NP$ complete because
-\probname{Hamiltonian Circuit}
+The \probname{Travelling Salesman} problem is $\NP$ complete.
+We can prove this by showing that
+the \probname{Hamiltonian Circuit} problem
 reduces to it:
 $\probname{Hamiltonian Circuit}\leq_p\probname{Travelling Salesman}$.
-To prove this 
-we must produce a reduction function~$f$ and check that it is polytime.
+To prove this, 
+we can produce a reduction function~$f$ and check that it is polytime.
 
 The function inputs an instance of \probname{Hamiltonian Circuit}, a graph
 $\mathcal{G}=\sequence{\mathcal{N},\mathcal{E}}$
@@ -10677,11 +10701,10 @@ The bound means that there will be a \probname{Travelling Salesman} solution
 if and only if there is a \probname{Hamiltonian Circuit} solution, namely
 the \probname{Travelling Salesman} solution uses the edges of 
 the Hamiltonian circuit.
-What remains is to show that $f$ is polytime in the size of the input problem
-instance, which we take to be the number of vertices since the number of
-edges is less than twice the number of vertices (so that polytime in the
-number of vertices is also polytime in the number of vertices plus the
-number of edges).
+All that remains is to show that $f$ runs in polytime. 
+The number of
+edges is less than twice the number of vertices, so that polytime in the
+input graph size is the same as polytime in the number of vertices.
 To output the \probname{Travelling Salesman} instance, the algorithm examines
 all the pairs of vertices, which is a nested loop and so takes time that
 is quadratic in the number of vertices.
@@ -10694,57 +10717,60 @@ Many problems from applications fall into this class.
 The next example illustrates.
 (It also illustrates that reductions can be complex.)
 
-\begin{example} % From https://people.cs.umass.edu/~barring/cs311/disc/9.html
-Most colleges make a schedule by putting classes into
+\begin{example} 
+\begin{credit}
+  \url{https://people.cs.umass.edu/~barring/cs311/disc/9.html}
+\end{credit}
+Usually, colleges make a schedule by putting classes into
 time slots and then students pick which classes they will take.
 Imagine instead that students first select the classes, and then the
-college must solve the problem of deciding if there is a
+college decides if there is a
 non-conflicting time schedule for those classes.
 
-Consider a college with $2$~time slots,
+Consider a college with $2$~time slots and
 $k$-many classes, each with some capacity for enrolled students, and 
 $n$-many total students.
-Every student~$s$ has two disjoint lists of classes
-$\ell_s,\hat{\ell}_s$ and
-must choose one class from each list $c_s\in\ell_s$ and
-$\hat{c}_s\in\hat{\ell}_s$.
+Every student~$s$ will take two classes, so they have two 
+disjoint lists of classes $\ell_s,\hat{\ell}_s$, and 
+will choose one class from each list.
 The problem~$\prob$ is to decide if there is a way to partition the set
-of classes into two such that every class is in a time slot and every
+of classes into two, so that every class is in a time slot and every
 student is in both of the classes they selected, and no student is in
 two classes in the same time slot.
 We will show that $\prob$ is $\NP$~complete.
 
-Observe that $\prob$ is a member of $\NP$ because checking a solution is
+Observe first that $\prob\in\NP$ because checking a solution is
 fast:~a witness~$\omega$ is a sequence of assignments of students to classes
-and classes to time slots, which has length polynomial
-in the number of students, and we can in polytime
-check that each student is assigned one class from each of their lists,
+and classes to time slots.
+This has length polynomial
+in the number of students, and we can 
+check in polytime
+that each student is assigned one class from each of their lists,
 that each class is given a time slot, etc.
 
 We will show that $\prob$ is $\NP$-hard by showing that
-$\text{$3$-$\SAT$}\leq_p\prob$, that
-there is a reduction function that runs in polytime.
-An input instance to this function
+$\text{$3$-$\SAT$}\leq_p\prob$.
+An input instance to the reduction function
 consists of $m$-many clauses that are joined by $\wedge$'s,
-each clause with $3$ or fewer of the Boolean variables
+each clause with~$3$ or fewer of the Boolean variables
 $x_0$, \ldots $x_{n-1}$ or their negations,
 joined by $\vee$'s.
-The reduction function gives as output an instance of $\prob$.
+The function's output is an instance of $\prob$.
 The output instance will have a successful schedule if and only if the
 input formula is satisfiable.
 
-For each of the input instance's Boolean variables
-the output instance will have an associated course: $c_0$, \ldots $c_{n-1}$
-(of capacity equal to the total number of students).
+For each of the input instance's Boolean variables~$x_i$
+the output instance will have an associated course, $c_i$,
+of capacity equal to the total number of students.
 There will be more courses also, including one named `T' and one named `F'
 (the idea is that
 if the input is satisfied by an assignment where $x_i=T$ then
-the output can allot $c_i$ to the same slot as course~T).
-These will each have capacity $2m+1$.
+the output can allot $c_i$ to the same time as course~`T').
+These courses will each have capacity $2m+1$.
 Also start by giving the output $\prob$ instance 
 a student $s_0$ whose two lists are
-$\ell_{s_0}={\text{T}}$ and $\hat{\ell}_{s_0}=\set{\text{F}}$; this
-puts them in separate slots.
+$\ell_{s_0}=\set{\text{T}}$ and $\hat{\ell}_{s_0}=\set{\text{F}}$; this
+puts the courses named `T' and `F' in separate times.
 
 Now consider the clauses in the input formula.
 The easiest clauses are the ones without negations, of the form
@@ -10759,20 +10785,21 @@ Similarly, for $x_{i_0}\vee x_{i_1}\vee x_{i_2}$ the created student's
 lists are 
 $\ell_s=\set{c_{i_0},c_{i_1},c_{i_2}}$ and $\hat{\ell}_s=\set{\text{F}}$.
 
-Clauses with only negations, of the form
-$\neg x_{i_0}$, or $\neg x_{i_0}\vee \neg x_{i_1}$,
-or $\neg x_{i_0}\vee \neg x_{i_1}\vee \neg x_{i_2}$,
+Clauses consisting only of negations,
+either $\neg x_{i}$, or $\neg x_i\vee\neg x_j$, 
+or $\neg x_i\vee\neg x_j\vee\neg x_k$, 
 are similar.
-For instance, for $\neg x_{i_0}$ we create a student with lists 
+For instance, for the one-atom clause $\neg x_{i_0}$ 
+we create a student with lists 
 $\ell_s=\set{\text{T}}$ and $\hat{\ell}_s=\set{c_{i_0}}$.
 
-The messiest clauses have a mixture of positive and negative atoms.
-We will do an example: suppose that the $j$-th clause is
+The messiest clauses are those with a mix of positive and negative atoms.
+We will show what to do with an example: suppose that the $j$-th clause is
 $x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$.
 In addition to the classes $c_{i_0}$, $c_{i_1}$, and $c_{i_2}$ created earlier,
 we also create three new classes $t_j$, $f_j$ and~$z_j$, with
 capacity of one student each.
-And we don't just create one student, we create three: $s_j$, $u_j$, and $v_j$.
+And we create three students: $s_j$, $u_j$, and $v_j$.
 Here are their lists.
 \begin{center}
 \begin{tabular}{r|cc}
@@ -10860,9 +10887,10 @@ output $\prob$ instance from the input propositional logic formula
 runs in polytime.
 \end{example}
 
-Another way to use the basic list
-to show that a problem~$\prob$ is $\NP$~complete
-is to find a special case of~$\prob$ on that list.
+Given a problem, $\prob$,
+there is another way to use the List of Basic $\NP$ Complete Problems.
+We can show that the problem~$\prob$ is $\NP$~complete
+by showing that a special case of it is on that list.
 
 %<*ex:KnapsackIsNPComplete>
 \begin{example}
@@ -10871,7 +10899,7 @@ multiset of objects~$S=\set{s_0,\ldots s_{k-1}}$ where the
 elements
 have a weight~$w(s_i)\in\N^+$ and a value~$v(s_i)\in\N^+$, along with a
 weight bound $B\in\N^+$ and value target~$T\in\N^+$.
-It asks if there is
+The problem is to find a set 
 $K\subseteq S$ whose elements have total weight less than or equal to the
 bound and total value greater than or equal to the target.
 
@@ -10917,10 +10945,11 @@ What about the other direction?
 % and must simulate it with time-slicing,
 % they are necessarily slower.
 
-
-Posing the $\P$~versus~$\NP$ question asks:~does adding parallelism add speed?
-Can unbounded parallelism bring problems
-from super-polynomial to polynomial?
+One way to think of nondeterministic machines is that they are 
+unboundedly parallel. 
+So the $\P$~versus~$\NP$ question asks:~does adding parallelism add speed?
+% Can unbounded parallelism bring problems
+% from super-polynomial to polynomial?
 
 The short answer is that no one knows.
 One of these two pictures is right but
@@ -10940,15 +10969,10 @@ that any $\NP$ complete problem is a member of~$\P$ then
 $\P=\NP$.
 If someone shows that there is an $\NP$ problem that is not a member
 of~$\P$ then $\P\neq\NP$.
-But despite nearly a half century of effort by many extremely bright
+However, despite nearly a half century of effort by many extremely smart
 people, no one has done either one.
 
-Many people have worked on this question because this
-is an extremely important problem.\footnote{%
-  One indication of its importance is that it is on a list
-  of problems in mathematics for which there is a one million dollar prize;
-  see \protect\url{http://www.claymath.org/millennium-problems}.}
-True, as formulated in Karp's original paper, the question of whether
+As formulated in Karp's original paper, the question of whether
 $\P$ equals $\NP$ may seem of only technical interest.
 \begin{quotation}
   \citetext{A large class}{%
@@ -10970,32 +10994,37 @@ $\P$ equals $\NP$ may seem of only technical interest.
 \end{quotation}
 But 
 %<*discussion:PvsNPi>
-Karp demonstrated that many of the problems people have been struggling
+Karp demonstrated that many of the problems that people had been struggling
 with in practical applications fall into this category.
-Researchers who have been struggling with 
-\probname{Vertex Cover} and those who have been
-struggling with \probname{Clique}
+Researchers who have been trying to find an efficient solution to  
+\probname{Vertex Cover}, and those who have been
+working on \probname{Clique}
 found that they are in some sense working on the same problem.
-By now the list of these problems includes
+By now the list of $\NP$ complete  problems includes
 determining the best layout of transistors on a chip,
 developing accurate financial-forecasting models,
 analyzing protein-folding behavior in a cell,
 or finding the most energy-efficient airplane wing.
+So the question of whether $\P=\NP$ is extremely practical, and
+extremely important.\footnote{%
+  One indication of its importance is that it is on a list
+  of problems in mathematics for which there is a one million dollar prize;
+  see \protect\url{http://www.claymath.org/millennium-problems}.}
 
 In practice, proving that a problem is a member of $\NP$ is often an
 ending point; a researcher may well reason that continuing to
-try to find a algorithm is likely to be not fruitful since many of the
-best minds of mathematics, science, and computer science have failed
+try to find an algorithm will not be fruitful, since many of the
+best minds of Mathematics, sScience, and Computer Science have failed
 at it.
 They may instead turn their attention elsewhere, perhaps to
-approximations.
+approximations that are good enough; see \cref{extra:Tractability}.
 %</discussion:PvsNPi>
 
 In the book's first part we studied problems that are unsolvable.
 That was a black and white situation; either a problem is mechanically solvable
 in principle or it is not.
-We here study that many problems of interest
-are infeasible.
+We now find that many problems of interest
+are solvable in principle, but that finding a solution is infeasible.
 That is, 
 the class of $\compclass{NP}$ complete problems form
 a kind of transition between 
@@ -11004,10 +11033,10 @@ the possible and the impossible.
 \margingraphic{0.40\textwidth}{complexity/xkcdnpcomplete.png}{\label{fig:xkcdBigO}\href{https://xkcd.com/287/}{Courtesy \url{xkcd.com}}}
 We can use this to engineering advantage.
 For instance, schemes for holding elections are notoriously prone to
-manipulation and there are theorems that say they must be.
-But we can hope to use system that, while in principle
-is manipulatable, are constructed so that it is in practice infeasible to
-compute how to do that.
+manipulation and there are theorems saying that they must be.
+But we can hope to use system that, while manipulatable in principle,
+is constructed so that it is in practice infeasible to
+compute how to do the manipulation.
 Another example of the same thing is the celebrated
 RSA encryption system that is used to protect Internet
 commerce; see~\cref{extra:RSA}.  
@@ -11024,11 +11053,12 @@ the definition of a Turing machine.
 It asks for
 an algorithm that inputs a mathematical statement~$\sigma$
 and outputs whether $\sigma$ is true.
-Maybe it is a \citetext{caricature}{%
+It is perhaps a \citetext{caricature}{%
   Paul Erdős joked that a mathematician is a machine for turning
   coffee into theorems.}
 but imagine that the job of mathematicians is to prove theorems.
-The \textit{Entscheidungsproblem} asks if we can replace them with machines.
+The \textit{Entscheidungsproblem} asks if we can replace 
+mathematicians with machines.
 
 In the intervening century we have come to understand, through
 the work of G\"odel and others,

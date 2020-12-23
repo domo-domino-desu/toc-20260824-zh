@@ -28,6 +28,9 @@
 % This must be early in the class file to avoid an option clash
 \usepackage[hyphens]{url}  % allow splitting at hyphens
 
+% Get RaggedRight
+\usepackage{ragged2e}
+
 
 % Get some file directories in this layout, such as where graphics are
 \input{directory.tex}

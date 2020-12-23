@@ -1738,3 +1738,50 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+
+// ========== 3-Sat leq Ind set ==========
+int picnum = 34;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0 = ncircle("$v_0$");
+node v1 = ncircle("$\overline{v}_1$");
+node v2 = ncircle("$\overline{v}_2$");
+node w1 = ncircle("$w_1$");
+node w2 = ncircle("$w_2$");
+node w3 = ncircle("$\overline{w}_3$");
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+
+real layout_angle = 20;
+v1.pos = new_node_pos_h(v0, layout_angle, 1*u);
+v2.pos = new_node_pos_h(v0, -1*layout_angle, 1*u);
+hlayout(2*u, v1, w1);
+hlayout(2*u, v2, w2);
+w3.pos = new_node_pos_h(w2, layout_angle, 1*u);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v1--v2),
+     (v1--w1),
+     (v2--w2),
+     (v0--v1),
+     (w1--w2),
+     (w1--w3),
+     (w2--w3)
+);
+
+// draw nodes
+draw(pic,
+     v0, v1, v2,
+     w1, w2, w3
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

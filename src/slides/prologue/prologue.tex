@@ -1,0 +1,230 @@
+\documentclass[9pt,t,serif,professionalfont,xcolor={table,dvipsnames},noamsthm]{beamer}
+\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
+\PassOptionsToPackage{pdfpagemode=FullScreen}{hyperref}
+\setbeamersize{text margin left = 0.5cm,
+               text margin right = 0.3cm}
+\mode<presentation>
+{
+  \usetheme{boxes}
+  \setbeamercovered{invisible}
+  \setbeamertemplate{navigation symbols}{} 
+}
+\hypersetup{colorlinks=true,linkcolor=blue} 
+
+% set the fonts
+\usefonttheme{professionalfonts} % using non standard fonts for beamer
+\usefonttheme{serif} % default family is serif
+\usepackage{../presentation,../presentationfonts}
+
+% load the pdfanim style, should be done after hyperref
+% \usepackage{pdfanim}
+
+% load and initialise animation
+% arguments:
+%   \PDFAnimLoad[options]{name}{xxx}{number}
+%   - options: in this example the animation is looped
+%   - name: name of the animation
+%     (with this name it can be reused several times in the document)
+%   - number: number of animation frames / files (n)
+% the animation will be composed of files
+% xxx0.pdf, xxx1.pdf ... xxx(n-1).pdf
+
+
+\title{Definition of Computation}
+
+\author{Jim Hef{}feron}
+\institute{
+  Mathematics and Statistics\\
+  Saint Michael's College\\
+  Colchester, VT\\[1ex]
+  \texttt{hefferon.net}
+}
+\date{}
+
+% This is only inserted into the PDF information catalog.
+\subject{Introduction to Computability}
+
+\usepackage{catchfilebetweentags} % read text from background.tex
+\newcommand{\catchfilefn}{../../prologue/prologue.tex}
+% Keep from swallowing end-of-lines
+%   https://tex.stackexchange.com/a/40704/121234
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\CatchFBT@Fin@l}{\endlinechar\m@ne}{}
+  {}{\typeout{Unsuccessful patch!}}
+\makeatother
+
+\usepackage{xr}
+  \externaldocument{../../book}
+  \externaldocument{../../prologue/prologue}
+
+% Directory of this chapter's asy material
+\newcommand{\asydir}{../../prologue/asy/}
+\newcommand{\tmexercises}{\asydir tm_exercises/pdfs/}
+% Directory of the src/asy material
+\newcommand{\generalasydir}{../../asy/}
+
+\usepackage{multirow,bigstrut}
+\begin{document}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+
+
+\section{Definition of computation}
+% ------------------------------------------------------
+\begin{frame}
+  \frametitle{Introduction}
+
+What can be done?
+
+\pause
+In 1928, D~Hibert and his student W~Ackermann proposed the
+\textit{Entscheidungsproblem},
+which asks for a definite procedure
+(what we today call an algorithm) that decides, from an input mathematical
+statement, whether that statement is true or false.
+
+Being interested in what is true or false requires no
+further explanation.
+But why the definite procedure?
+
+\pause
+In Mathematics and Computer Science we take Euclid's development a paradigm.
+The theorems follow from the axioms in a definite way: you can check,
+mechanically, each step of the proofs.
+So we start by defining a mechanical computation.
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Turing machine}
+A~Turing's approach to the \textit{Entscheidungsproblem} was to 
+describe a mechanism that computes.
+He imagined a clerk doing by-hand multiplication
+with a sheet of paper that gradually becomes covered with columns of
+numbers.
+With that image he described a number of principles that a 
+computing machine must satisfy.
+
+\pause
+\ExecuteMetaData[\catchfilefn]{discussion:DefTuringMachinei}
+\end{frame}
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{discussion:DefTuringMachineii}
+\end{frame}
+
+
+\begin{frame}
+Turing pictured a box containing a
+mechanism and fitted with a tape.
+\begin{center}
+   \includegraphics{\generalasydir /share/machine00.pdf}
+\end{center}
+\ExecuteMetaData[\catchfilefn]{discussion:DefTuringMachineiii}
+
+\ExecuteMetaData[\catchfilefn]{discussion:DefTuringMachineiv}
+\end{frame}
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{discussion:DefTuringMachinev}
+
+\pause
+\ExecuteMetaData[\catchfilefn]{discussion:DefTuringMachinevi}
+\end{frame}
+
+
+\begin{frame}{Example: computation of the predecessor}
+\ExecuteMetaData[\catchfilefn]{ex:PredecessorTMi}
+
+\ExecuteMetaData[\catchfilefn]{ex:PredecessorTMii}
+\end{frame}
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{ex:PredecessorTMiii}
+
+\ExecuteMetaData[\catchfilefn]{ex:PredecessorTMiv}
+\begin{center}
+  \begin{transitionfunction}
+           &$\blank$      &\str{1}        \\ \cline{2-3}
+     $q_0$ &$\str{L}q_1$  &$\str{R}q_0$     \\ 
+     $q_1$ &$\str{L}q_2$  &$\str{B}q_1$     \\ 
+     $q_2$ &$\str{R}q_3$  &$\str{L}q_2$     \\  
+     $q_3$ &--            &--     \\
+  \end{transitionfunction}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{\asydir circlediagram/circlediagram00.pdf}}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}{Example: computation of addition}
+\ExecuteMetaData[\catchfilefn]{ex:AdditionTMi}
+\ExecuteMetaData[\catchfilefn]{ex:AdditionTMii}
+And here is the table and graph for $\TM_{\text{add}}$. 
+\begin{center}
+  \begin{transitionfunction}
+           &$\blank$      &\str{1}        \\ \cline{2-3}
+     $q_0$ &$\str{B}q_1$  &$\str{R}q_0$     \\ 
+     $q_1$ &$\str{1}q_1$  &$\str{1}q_2$     \\ 
+     $q_2$ &$\str{B}q_3$  &$\str{L}q_2$     \\  
+     $q_3$ &$\str{R}q_3$  &$\str{B}q_4$     \\  
+     $q_4$ &$\str{R}q_5$  &$\str{1}q_5$     \\  
+     $q_5$ &--            &--     \\
+  \end{transitionfunction}
+  \hspace{2em}
+  \vcenteredhbox{\includegraphics{\asydir circlediagram/circlediagram01.pdf}}
+\end{center}
+\end{frame}
+\begin{frame}
+Here are the steps in the computation.
+\ExecuteMetaData[\catchfilefn]{ex:AdditionTMiii}
+\end{frame}
+
+
+\begin{frame}{Some Turing machines don't halt}
+A crucial observation:~some Turing machines,
+for at least some starting configurations, never halt.
+\ExecuteMetaData[\catchfilefn]{ex:SomeTMsDontHalt}
+\begin{center}
+  \vcenteredhbox{\includegraphics{\asydir circlediagram/infloop.pdf}}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Definition of a Turing machine}
+\ExecuteMetaData[\catchfilefn]{df:TM}
+
+\medskip
+\ExecuteMetaData[\catchfilefn]{df:TMnote}
+\end{frame}
+
+
+\begin{frame}{Definition of effective function}
+\ExecuteMetaData[\catchfilefn]{df:FcnComputedByTMi}
+
+\ExecuteMetaData[\catchfilefn]{df:FcnComputedByTMii}
+
+\ExecuteMetaData[\catchfilefn]{df:FcnComputedByTMiii}
+
+\ExecuteMetaData[\catchfilefn]{df:FcnConverge}
+\end{frame}
+
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{discussion:FcnConverge}
+\end{frame}
+
+
+\begin{frame}
+\ExecuteMetaData[\catchfilefn]{df:ComputableFcn}
+\end{frame}
+\end{document}
+
+
+
+

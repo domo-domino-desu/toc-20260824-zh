@@ -28,7 +28,7 @@
 % xxx0.pdf, xxx1.pdf ... xxx(n-1).pdf
 
 
-\title{Languages and Graphs}
+\title{Languages, Grammars, and Graphs}
 
 \author{Jim Hef{}feron}
 \institute{
@@ -148,11 +148,33 @@ Nonmembers: \str{)(}, \str{(()}, and \str{())(()}.
 \end{frame}
 
 
+\begin{frame}{Deciding a language vs recognizing a language}
+\ExecuteMetaData[\catchfilefn]{discussion:DecidingVsRecognizing}
+
+\begin{example}
+We can mechanically decide the language of perfect squares,
+$S=\set{n^2\suchthat n\in\N}$.
+We can mechanically recognize the language of the \HP,
+\begin{equation*}
+  K=\set{e\in\N\suchthat \TMfcn_e(e)\converges}
+\end{equation*}
+but no Turing machine decides~$K$.
+\end{example}
+\end{frame}
+
 
 
 
 % ==============================================
 \section{Grammars}
+\begin{frame}{Introduction}
+The definition of a language allows any subset of $\kleenestar{\Sigma}$
+at all.
+But usually in practice, there is a pattern.
+Often the pattern is that the language follows rules.
+For example, the C language consists of programs that follow
+rules of a grammar.
+\end{frame}
 
 \begin{frame}
   \frametitle{Some rules for English}
@@ -182,7 +204,7 @@ We will write them this way.
   \frametitle{Derivation tree}
 \ExecuteMetaData[\catchfilefn]{discussion:DerivationTree} 
 \begin{center}
-  \includegraphics{../../languages/asy/parsetree/parsetree000.pdf}
+  \includegraphics{\asydir parsetree/parsetree000.pdf}
 \end{center}
 \end{frame}
 
@@ -240,7 +262,7 @@ This is part of the grammar of C.
 	\othersyntax FOR \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \trm{)} \ntrm{statement}
 	\othersyntax FOR \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \ntrm{expression} \trm{)} \ntrm{statement}
 \end{grammar}
-As to the capitalization: `IF' essentially 
+As to the capitalization, here `IF'
 means `any string that capitalizes to IF'.
 \end{example}
 \end{frame}
@@ -273,8 +295,8 @@ For toy examples and exercises we may use capital letters as nonterminals
 and lowercase letters or digits as terminals.
 
 \begin{example}
-The strings derived from this grammar are elementary 
-arithemtic expressions 
+The strings derived from this grammar are
+arithemtic expressions,
 \begin{grammar}
 S \produces \trm{(} S \trm{)} \syntaxor S \trm{+} S \syntaxor S \trm{*} S \syntaxor I
 
@@ -284,18 +306,40 @@ such as \str{1+2*(3+4)}.
 \end{example}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Language of a grammar}
+\ExecuteMetaData[\catchfilefn]{def:LanguageOfGrammar} 
+
+\begin{example}
+This grammar~$G$
+\begin{grammar}
+S \produces AB
+
+A \produces aA \syntaxor a
+
+B\produces bB \syntaxor b
+\end{grammar}
+lets you derive strings consisting of some \str{a}'s folowed by some \str{b}'s.
+\begin{equation*}
+\lang(G)=
+\set{\str{a}^n\str{b}^m\suchthat n,m\in\N}
+\end{equation*}
+\end{example}
+\end{frame}
+
+
 
 \begin{frame}[fragile]
   \frametitle{Ambiguity of a grammar}
 % \ExecuteMetaData[\catchfilefn]{rem:AmbiguousGrammar} 
-This bit of C language-like code shows nested
+This bit of C-like code shows nested
 \codeinline{if} statements. 
 \begin{lstlisting}
   if ... then ... if ... then ... else ...
 \end{lstlisting}
-This is a \definend{dangling else}.
 The \codeinline{else} could be associated
 with the first \codeinline{if} or the second.
+This is a \definend{dangling else}.
 \begin{center}
   \begin{minipage}{0.4\linewidth}
     \begin{lstlisting}
@@ -349,54 +393,33 @@ leftmost derivations.
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Language of a grammar}
-\ExecuteMetaData[\catchfilefn]{def:LanguageOfGrammar} 
-
-\begin{example}
-This grammar~$G$
-\begin{grammar}
-S \produces AB
-
-A \produces aA \syntaxor a
-
-B\produces bB \syntaxor b
-\end{grammar}
-lets you derive strings consisting of some \str{a}'s folowed by some \str{b}'s.
-\begin{equation*}
-\lang(G)=
-\set{\str{a}^n\str{b}^m\suchthat n,m\in\N}
-\end{equation*}
-\end{example}
-\end{frame}
-
-
 
 
 
 % =================================================================
 \section{BNF}
 \begin{frame}[fragile]{Backus-Naur Form notation}
-Many programming languages, protocols, or formats use Backus-Naur form 
-description for their specification.
-Every rule has the structure.
+Many programming languages, protocols, or formats are specified
+using Backus-Naur form.
+Every rule has the structure:
 \mbox{\ntrm{name} \bnfproduces \ntrm{expansion}}.
-For instance, this is a grammar of arithmetic expressions.
-\begin{grammar}
-\ntrm{expr} \bnfproduces \ntrm{term} \trm{+} \ntrm{expr}
-         \othersyntax  \ntrm{term}
 
-\ntrm{term} \bnfproduces \ntrm{factor} \trm{*} \ntrm{term}
-         \othersyntax  \ntrm{factor}
+For instance, this is part of a BNF grammar of arithmetic expressions.
+% \begin{grammar}
+% \ntrm{expr} \bnfproduces \ntrm{term} \trm{+} \ntrm{expr}
+%          \othersyntax  \ntrm{term}
 
-\ntrm{factor} \bnfproduces \trm{(} \ntrm{expr} \trm{)}
-           \othersyntax  \ntrm{const}
+% \ntrm{term} \bnfproduces \ntrm{factor} \trm{*} \ntrm{term}
+%          \othersyntax  \ntrm{factor}
 
-\ntrm{const} \bnfproduces \trm{0} \syntaxor \trm{1} \syntaxor \ldots{} \trm{9} \syntaxor \ntrm{constant}\ntrm{constant}
-\end{grammar}
+% \ntrm{factor} \bnfproduces \trm{(} \ntrm{expr} \trm{)}
+%            \othersyntax  \ntrm{const}
 
-\pause
-In a specification it may look like this.
+% \ntrm{const} \bnfproduces \trm{0} \syntaxor \trm{1} \syntaxor \ldots{} \trm{9} \syntaxor \ntrm{constant}\ntrm{constant}
+% \end{grammar}
+
+% \pause
+% In a specification it may look like this.
 \begin{lstlisting}
 <expr> ::= <term> "+" <expr>
          |  <term>
@@ -413,14 +436,18 @@ In a specification it may look like this.
 
 \begin{frame}{Common extensions to BNF}
 \begin{description}[xxx]
-\item[Repetition] To show the element may be repeated zero or more times,
+\item[Repetition] To show that an element may be repeated zero or more times,
 use curly braces.
 This is a comma-separated argument list.
 \begin{grammar}
 \ntrm{args} \bnfproduces \ntrm{arg} \{ \trm{,} \ntrm{arg} \trm{} \}
 \end{grammar}
-To denote zero or more times you may also see a Kleene star,~`$*$', and
+To denote zero or more times you may also see a Kleene star,~`$*$'. 
+Also,
 to denote one or more times you may see a plus,~`$+$'.
+\begin{grammar}
+\ntrm{natural} \bnfproduces \ntrm{digit}+
+\end{grammar}
 
 For zero or one repetitions, you may see square brackets.
 \begin{grammar}
@@ -435,7 +462,7 @@ This shows two terms being added or subtracted.
 In addition to the vertical bar for ``or'', the parentheses are metacharacters.
 
 \pause\item[Concatenation]
-Juxtaposition is invisible so many authors use a comma~`\trm{,}' 
+Juxtaposition is invisible so occasionally you see a comma~`\trm{,}' 
 to denote concatenation.
 \end{description}
 \end{frame}

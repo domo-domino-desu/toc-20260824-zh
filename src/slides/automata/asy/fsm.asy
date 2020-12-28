@@ -14,11 +14,11 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
+import jhnode;
 cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
-cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
+// import node;
+// cd("");
 
 
 // define style

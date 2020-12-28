@@ -34,6 +34,10 @@
 
 % Get some file directories in this layout, such as where graphics are
 \input{directory.tex}
+% Define where the asy/ directory is, which will change from chapter 
+% to chapter, for the slides
+\newcommand{\asydir}{} 
+
 
 \usepackage{calc}
 \RequirePackage[papersize={7.5in,9.25in},

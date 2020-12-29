@@ -14,20 +14,12 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
+import jhnode;
 cd("");
 
-import node;
-
 // define style
-// defaultnodestyle=nodestyle(drawfn=FillDrawer(lightgray,black));
-defaultnodestyle=nodestyle(xmargin=1pt,
-			   black,  // label
-			   drawfn=FillDrawer(verylightcolor,boldcolor));
-
-defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+boldcolor,
-			   arrow=Arrow(6,filltype=FillDraw(lightcolor,black))
-			   );
+setdefaultstatediagramstyles();
+defaultdrawstyle=directededgestyle;
 
 // define nodes
 // node[] n = ncircles("$q_0$", "$b$", "$c$", "$d$", "$e$", "$f$");
@@ -41,12 +33,11 @@ real v = 0.85*u;
 
 // hlayout(u, q0);
 
-// draw nodes
-draw(q0);
-
 // draw edges
 draw(
      (q0..loop(W)).l("\scriptsize $\blank,\blank$"),
      (q0..loop(E)).l("\scriptsize $\str{1},\str{1}$")
     );
 
+// draw nodes
+draw(q0);

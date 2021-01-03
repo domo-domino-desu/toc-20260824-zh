@@ -7,15 +7,18 @@ settexpreamble();
 
 cd("../../../asy");
 import jhnode;
+cd("");
+
+cd("../../../asy");
 import flowchart;
 cd("");
 
 import settings;
 settings.outformat="pdf";
 
-cd("../../../asy/asy-graphtheory-master/modules");
-import node;
-cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");
+// import node;
+// cd("");
 
 string OUTPUT_FN = "flowcharts%02d";
 
@@ -24,6 +27,7 @@ string OUTPUT_FN = "flowcharts%02d";
 // ---- s-m-n theorem
 picture pic;
 int picnum = 0;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -66,6 +70,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ---------------------------
 picture pic;
 int picnum = 1;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -115,6 +120,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ================= Proof of HP ==============
 picture pic;
 int picnum = 2;
+setdefaultflowchartstyles();
 
 
 // define nodes
@@ -162,6 +168,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ---- relativization to K -------------
 picture pic;
 int picnum = 3;
+setdefaultflowchartstyles();
 
 
 // define nodes
@@ -212,6 +219,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ================= K\leq K^K ==============
 picture pic;
 int picnum = 4;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -259,6 +267,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ........ apply s-m-n thm ........
 picture pic;
 int picnum = 5;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -356,11 +365,12 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ---- recursion theorem -------------
 picture pic;
 int picnum = 6;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $e,x$");
-node getindex=nbox("Run $\TM_e$ on $e$");
+node read=nbox("Read $n,x$");
+node getindex=nbox("Run $\TM_n$ on $n$");
 node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on input $x$"));
 node end=nroundbox("End");
 
@@ -398,11 +408,12 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ...................
 picture pic;
 int picnum = 7;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node getindex=nbox("Run $\TM_e$ on $e$");
+node getindex=nbox("Run $\TM_n$ on $n$");
 node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on input $x$"));
 node end=nroundbox("End");
 
@@ -440,11 +451,12 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ...................
 picture pic;
 int picnum = 8;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node getindex=nbox("Run $\TM_e$ on $e$");
+node getindex=nbox("Run $\TM_n$ on $n$");
 node simulate=nbox("With the result $w$, run $\TM_{f(w)}$ on $x$");
 node end=nroundbox("End");
 
@@ -484,6 +496,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ======== application of recursion theorem W_m={m} ==============
 picture pic;
 int picnum = 9;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -532,6 +545,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ..........................
 picture pic;
 int picnum = 10;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -583,6 +597,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ---- Exercise on Fixed Point Theorem
 picture pic;
 int picnum = 11;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -625,6 +640,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ........... second part of that exercise
 picture pic;
 int picnum = 12;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -660,6 +676,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // =========== Programs that know their own source ==========
 picture pic;
 int picnum = 13;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -697,6 +714,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............. apply smn to prior ...........
 picture pic;
 int picnum = 14;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -732,6 +750,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............. regularize it ...........
 picture pic;
 int picnum = 15;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -773,6 +792,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............. TM B ...........
 picture pic;
 int picnum = 16;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -815,6 +835,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............. Q for machine that knows its source ...........
 picture pic;
 int picnum = 19;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -859,6 +880,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............. B for machine that knows its source ...........
 picture pic;
 int picnum = 20;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -907,6 +929,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ======= Fixed Point phi_m(y)=m ==============
 picture pic;
 int picnum = 17;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -944,6 +967,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ...... after smn .............
 picture pic;
 int picnum = 18;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -990,6 +1014,7 @@ string OUTPUT_FN = "flowcharts1%03d";
 // .......... flowchart of a simple machine to be parametrized ..
 picture pic;
 int picnum = 0;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1027,6 +1052,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... answer: freeze it at x0=1 ..
 picture pic;
 int picnum = 1;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1064,6 +1090,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... answer: freeze it at x0=0 ..
 picture pic;
 int picnum = 2;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1102,6 +1129,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ==== flowchart of a simple machine to be parametrized x0+x1*x2 
 picture pic;
 int picnum = 3;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1140,6 +1168,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ... answer: freeze x_0=1
 picture pic;
 int picnum = 4;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1179,6 +1208,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ... answer: freeze x_0=1, x1=2
 picture pic;
 int picnum = 5;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1217,6 +1247,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ==== flowchart of a simple machine to be parametrized with decision box 
 picture pic;
 int picnum = 6;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1264,6 +1295,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... flowchart of a machine that will parametrize to a family ..
 picture pic;
 int picnum = 7;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1302,6 +1334,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... fix x=0 ..
 picture pic;
 int picnum = 8;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1341,6 +1374,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... fix x=1 ..
 picture pic;
 int picnum = 9;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1380,6 +1414,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... fix x=2 ..
 picture pic;
 int picnum = 10;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1419,6 +1454,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... leave x=x ..
 picture pic;
 int picnum = 11;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1458,6 +1494,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... flowchart of a machine that will parametrize to a family ..
 picture pic;
 int picnum = 12;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1505,6 +1542,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... parametrize x_0=0, x_1=3 ..
 picture pic;
 int picnum = 13;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1552,6 +1590,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... parametrize x_0=1, x_1=3 ..
 picture pic;
 int picnum = 14;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1599,6 +1638,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... parametrize x_0=a, x_1=b ..
 picture pic;
 int picnum = 15;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1646,6 +1686,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... family computing y |--> y+n^2 ....
 picture pic;
 int picnum = 16;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1685,6 +1726,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... family computing x |--> mx+b ....
 picture pic;
 int picnum = 17;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1724,6 +1766,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .......... family computing y |--> 3n+y ....
 picture pic;
 int picnum = 18;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1764,6 +1807,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ========== Compute y |--> 7 =========
 picture pic;
 int picnum = 19;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1806,6 +1850,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .... Compute y |--> 7 after s-m-n ........
 picture pic;
 int picnum = 20;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1849,6 +1894,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ========== Compute y |--> 2y =========
 picture pic;
 int picnum = 21;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1891,6 +1937,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // .... Compute y |--> 2y after s-m-n ........
 picture pic;
 int picnum = 22;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1935,6 +1982,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ========= W_e = {0,1,2,.. e} =========
 picture pic;
 int picnum = 23;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -1982,6 +2030,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ......... after smn ..........
 picture pic;
 int picnum = 24;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -2030,6 +2079,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ========= W_e = {e-th prime number} =========
 picture pic;
 int picnum = 25;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -2077,6 +2127,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ....... after smn .................
 picture pic;
 int picnum = 26;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -2125,6 +2176,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ========= W_m = {m^2} =========
 picture pic;
 int picnum = 27;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -2173,6 +2225,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............ After s-m-n ..................
 picture pic;
 int picnum = 28;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -2222,6 +2275,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ========= W_m = N-{m} =========
 picture pic;
 int picnum = 29;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -2270,6 +2324,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............ After s-m-n ..................
 picture pic;
 int picnum = 30;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -2317,6 +2372,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ========= range of \phi_m={m} =========
 picture pic;
 int picnum = 31;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
@@ -2356,6 +2412,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ............ After s-m-n ..................
 picture pic;
 int picnum = 32;
+setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");

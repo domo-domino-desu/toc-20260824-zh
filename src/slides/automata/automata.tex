@@ -53,7 +53,7 @@
 \makeatother
 
 \usepackage{xr}
-  \externaldocument{../../book}
+  % \externaldocument{../../book}
   \externaldocument{../../automata/automata}
 \usepackage{cleveref}
 
@@ -81,8 +81,7 @@
 \begin{center}
   \includegraphics{\generalasydir share/machine02.pdf}
 \end{center}
-We will use the convention that the start state is $q_0$ 
-(unless stated otherwise).
+Our default convention is that that the start state is $q_0$.
 \end{frame}
 
 
@@ -96,9 +95,8 @@ It will accept strings that contain at least two \str{1}'s.
 \begin{center}
   \includegraphics{asy/fsm00.pdf}
 \end{center}
-The transition function is just a tabular version of the diagram.
-The $\acceptingstatemark$ next to $q_2$ marks
-it as an accepting state.
+The transition function is a tabular version of the diagram.
+For instance, $\Delta(q_1,\str{1})=q_2$.
 \begin{center}
 \begin{transitionfunction}
       &\str{0}    &\str{1}   \\
@@ -109,7 +107,8 @@ it as an accepting state.
     $q_2$ &$q_2$ &$q_2$  \\
 \end{transitionfunction}
 \end{center}
-
+The $\acceptingstatemark$ next to $q_2$ marks
+it as an accepting state.
 \end{example}
 \end{frame}
 
@@ -221,17 +220,18 @@ accepts strings with at least three \str{a}'s.
 % \ExecuteMetaData[\catchfilefn]{discussion:FSMConfiguration}
 % \end{frame}
 
-\begin{frame}{Configurations}
+\begin{frame}{The action of a Finite State machine}
+We can give a precise definition
+of how Finite State machines act.
 A \definend{configuration} of a Finite State machine $\FSM$ is 
 a pair $\mathcal{C}=\sequence{q,\tau}$, where
-$q$ is a state and $\tau$ is a string of elements 
-from the tape alphabet~$\tau\in\kleenestar{\Sigma}$.
+$q$ is a state and $\tau\in\kleenestar{\Sigma}$.
 The \definend{initial configuration}
-is~$\mathcal{C}_0=\sequence{q_0,\tau}$,
-where $\tau$ is the \definend{input}.
+is~$\mathcal{C}_0=\sequence{q_0,\tau_0}$,
+where $\tau_0$ is the \definend{input}.
 
 \begin{example}
-Give this machine the input $\sigma=\str{abababb}$.
+Give this machine the input $\tau_0=\str{abababb}$.
 \begin{center}
   \includegraphics{asy/fsm09.pdf}
 \end{center}
@@ -248,7 +248,7 @@ in response to the input (read `$\yields$' aloud as ``yields'').
     &\yields \mathcal{C}_6 = \sequence{q_3,\str{b}}  \\
     &\yields \mathcal{C}_7=  \sequence{q_3,\emptystring}
 \end{align*}
-The machine accepts $\sigma$ because when $\tau=\emptystring$ 
+The machine accepts $\tau_0$ because when $\tau=\emptystring$ 
 then the state,~$q_3$, is accepting.
 \end{example}
 \end{frame}
@@ -315,7 +315,16 @@ Find the extended transition function for this machine
 \begin{center}
   \includegraphics{asy/fsm09.pdf}
 \end{center}
-for all strings of length less than four.
+for all strings of length less than three.
+\begin{center}
+\begin{tabular}{r|*{7}{c}}
+  \tabulartext{Input $\sigma$}
+    &$\emptystring$ &\str{a} &\str{b} &\str{aa} &\str{ab} &\str{ba} &\str{bb} \\
+  \cline{2-8}
+  \tabulartext{$\hat{\Delta}(\sigma)$}
+    &$q_0$          &$q_1$   &$q_0$   &$q_2$    &$q_1$    &$q_1$    &$q_0$
+\end{tabular}
+\end{center}
 \end{example}
 \end{frame}
 
@@ -328,12 +337,10 @@ for all strings of length less than four.
 % ===========================================
 \section{Nondeterminism}
 \begin{frame}{Recall: determinism} 
-The definition of a Turing machine is that
-it is a set of four-tuple instructions  $q_pT_pT_nq_n$
-whose effect is to govern the transitions that the machine makes
-in moving from configuration to configuration.
-That set of instructions is subject to the restriction that it must be
-deterministic\Dash no four-tuples can begin with 
+Turing machines are defined as 
+sets of four-tuple instructions  $q_pT_pT_nq_n$,
+subject to the restriction that the set must be
+deterministic:~no pair of instructions can begin with 
 the same $q_pT_p$.
 
 Thus, over the set of instructions $q_pT_pT_nq_n\in\TM$,
@@ -343,31 +350,28 @@ or \definend{next-state function}
 $\map{\Delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}$.  
 Briefly, these machines satisfy that 
 a present configuration determines a unique next state. 
-The definition of Finite State machine has the same restriction.
+Finite State machines have the same restriction.
 
-\pause
 We will now see what happens when we drop that requirement.
 We do it here for Finite State machines and we will do it in the next chapter
 for Turing machines.
-
-We will see two ways to informally think of nondeterminism.
-We will also see examples of nondeterminism, and its uses.
-In particular, we
-will see that nondetermistic Finite State machines
-machines do the same jobs as deterministic
-ones. 
-
+% We will see two ways to informally think of nondeterminism.
+% We will also see examples of nondeterminism, and its uses.
+% In particular, we
+% will see that nondetermistic Finite State machines
+% machines do the same jobs as deterministic
+% ones. 
 To start, we see an example and trace through the computation.
 \end{frame}
 
 
 \begin{frame}
 Here, leaving $q_0$ are two arrows labelled~\str{0}.
-Also, out of $q_1$ comes no~\str{1} arrow.
+Also, out of $q_1$ comes no arrow with a~\str{1}.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
 \end{center}
-Give input \str{00001} to this machine.
+Give this machine the input \str{00001}.
 \begin{center}\small
   \only<2>{\includegraphics{asy/nfsm02.pdf}}%
   \only<3>{\includegraphics{asy/nfsm03.pdf}}%
@@ -384,7 +388,7 @@ Give input \str{00001} to this machine.
 
 
 \begin{frame}{First mental model: many children}
-In that example, when we had a choice we forked children to take each
+In that diagram, we forked child processes to cover each
 possibility.
 This is a natural approach.
 \begin{itemize}
@@ -393,7 +397,7 @@ Consider a grammar \mbox{S\produces{}\trm{a}S\syntaxor\trm{b}A}.
 You have a string~$\sigma$ and want to know if it has a derivation.
 The challenge is that, for instance,
 from S you can do two different things;
-which one will work? 
+which one is the right one? 
 If you wrote a program for this then you might instead try every
 possible derivation, perhaps with a breadth-first traversal of the tree of all
 derivations.
@@ -422,10 +426,13 @@ in that sense the machine is simultaneously in many different states.
 
 \begin{frame}{Second mental model: guessing}
 The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
-When we feed it the input \str{00001} the problem the machine faces is
+\begin{center}\small
+  \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
+\end{center}
+With input \str{00001}, the problem the machine faces is
 when it should stop going around $q_0$'s loop and start to the right.
-The example shows the machine accepting this input
-so the machine has solved this problem\Dash viewed from the outside,
+The example above has the machine accepting this input,
+so it has solved the problem\Dash viewed from the outside,
 we could say that the
 machine has guessed correctly.
 
@@ -468,7 +475,8 @@ of strings with that suffix.
 
 The listener will end in an accepting 
 state if it 
-hears a string $\sigma=\str{010101110}$, with three \str{01}'s.
+hears a string $\sigma=\str{010101110}$, with three \str{01}'s in the prefix
+instead of two.
 How does this mechanism guess that it should ignore
 the first \str{01} but pay attention to the second?
 
@@ -494,6 +502,7 @@ using an explicit deterministic machine.
 \begin{center}
   \includegraphics{asy/fsm03.pdf}
 \end{center}
+The nondeterministic machine is much simpler.
 \end{example}
 \end{frame}
 
@@ -508,7 +517,7 @@ if it has \str{a} in the third position from the end.
   \includegraphics{asy/nfsm09.pdf}
 \end{center}
 Thus 
-$\lang_{\FSM}=\set{\str{aaa}, \str{aab}, \str{aba}, \str{abb},\str{aaaa}, \str{aaab},\str{aaba},\str{aabb},\str{baaa},\str{baab},\ldots}$.
+$\lang(\FSM)=\set{\str{aaa}, \str{aab}, \str{aba}, \str{abb},\str{aaaa}, \str{aaab},\str{aaba},\str{aabb},\str{baaa},\str{baab},\ldots}$.
 \end{example}
 
 \pause
@@ -523,7 +532,7 @@ followed by a second \str{1}.
   \includegraphics{asy/nfsm16.pdf}
 \end{center}
 Thus 
-$\lang_{\hat{\FSM}}=\set{\str{11}, \str{011}, \str{110}, \str{111},\str{0011}, \str{0101},\str{0110},\str{0111},\ldots}$.
+$\lang(\hat{\FSM})=\set{\str{11}, \str{011}, \str{110}, \str{111},\str{0011}, \str{0101},\str{0110},\str{0111},\ldots}$.
 \end{example}
 \end{frame}
 
@@ -661,18 +670,18 @@ For each, take the alphabet to be~$\B\set{\str{0},\str{1}}$.
 it ends with.
 \end{example}
 
-\begin{example}
-Produce a regular expression for each.
-Take the alphabet to be the lower-case ASCII letters.
-Use \url{http://joshua.smcvt.edu/cgi-bin/test_regex.py}.
-(1)~Words containing both an \str{e} and a \str{u}.
-\pause
-(2)~Words having \str{f} as the second letter.
-\pause
-(3)~How many words start in \str{th}?
-\pause
-(4)~Words starting with \str{w} and containing a \str{y}.
-\end{example}
+% \begin{example}
+% Produce a regular expression for each.
+% Take the alphabet to be the lower-case ASCII letters.
+% Use \url{http://joshua.smcvt.edu/cgi-bin/test_regex.py}.
+% (1)~Words containing both an \str{e} and a \str{u}.
+% \pause
+% (2)~Words having \str{f} as the second letter.
+% \pause
+% (3)~How many words start in \str{th}?
+% \pause
+% (4)~Words starting with \str{w} and containing a \str{y}.
+% \end{example}
 \end{frame}
 % import re
 % import sys

@@ -684,24 +684,28 @@ the two classes are shown as equal.
 \end{frame}
 
 \begin{frame}{Verifiers}
+Mathematical presentations often introduce an idea with a definition that
+is natural or conceputally clear, and then follow that with
+a lemma that gives a more computational way to know when to 
+apply the definition.
+The next lemma is an example.
+It is how we usually show that a problem is in $\NP$.
+ 
 \ExecuteMetaData[\catchfilefn]{intro:Verifier}
 
 \ExecuteMetaData[\catchfilefn]{def:Verifier}
 
+\ExecuteMetaData[\catchfilefn]{lem:VerifierAndGuesserEquiv}
 \pause
 \begin{minipage}{0.8\textwidth}\RaggedRight
+The proof follows some examples.
 The definition says `there exists' a witness~$\omega$.
-It does not say where $\omega$ comes from.
-This formalizes our second mental model, where a demon provides the
-answer and it only remains for the machine 
-to deterministically verify the correctness
-of that hint.
+It does not say where it comes from.
+This formalizes the mental model or guessing, or of a demon providing the
+answer, and the machine only 
+deterministically verifies the correctness.
 \end{minipage}
-\hspace{1.5em}\vcenteredhbox{\includegraphics[height=0.75in]{../../automata/pix/flauros.jpg}}
-
-\ExecuteMetaData[\catchfilefn]{lem:VerifierAndGuesserEquiv}
-
-The proof is below, after some examples.
+\hspace{1.5em}\vcenteredhbox{\includegraphics[height=0.65in]{../../automata/pix/flauros.jpg}}
 \end{frame}
 
 
@@ -728,20 +732,20 @@ The proof is below, after some examples.
 
 \begin{frame}
 \begin{example}
-\probname{Vertex-to-vertex Path}
-takes as input a graph and two vertices and accepts the triple if
+\probname{Vertex-to-Vertex Path}
+takes as input a graph and two vertices and the triple is in the language if
 there is a path between the vertices.
 \begin{equation*}
   \lang=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat
               \text{there is a path in $\mathcal{G}$ from $v$ to $\hat{v}$}}
 \end{equation*}
 This problem is in $\NP$.
-The witness~$\omega$ is the path.
-We can write a verifier~$\TM$ that accepts a triple~$\sigma$ and a 
+For the witness~$\omega$, use the path.
+We can write a verifier~$\TM[V]$ that accepts a triple~$\sigma$ and a 
 witness~$\omega$, and tries to verify that the path lies in the graph between
 the two vertices.
-If there is such a path then there is a pair $\sequence{\sigma,\omega}$ for
-which $\TM$ can accept.
+If there is such a path then there is a pair $\sequence{\sigma,\omega}$ 
+that $\TM[V]$ can accept.
 If there is no such path then there is no such pair. 
 \end{example}
 
@@ -754,14 +758,15 @@ $b_{i,0}x_0+\cdots+b_{i,n}x_n\leq d_i$ and $x_i\geq 0$.
 To make this a language decision problem, recast it using a bound.
 \begin{equation*}
   \lang_B=\set{\sequence{f,C}\suchthat
-    \text{some $\sequence{x_0,\ldots x_n}$ satisfies the constraints and~$f(x_0,\ldots x_n)\geq B$}}
+    \text{some $\sequence{x_0,\ldots x_n}$ satisfies the constraints~$C$ and~$f(x_0,\ldots x_n)\geq B$}}
 \end{equation*}
-The witness is $\omega=\sequence{x_0,\ldots x_n}$.
-We can write a verifier~$\TM$ that takes in a problem~$\sigma$ and a
-purported witness~$\omega$, and checks whether the seequence satisfies the
-constraints of the problem and also makes the objective function large.
-If there is such a sequence then $\TM$ can verify it, in polytime.
-If there is no such sequence then $\TM$ can never succeed in verifying.  
+The witness is a tuple~$\omega=\sequence{x_0,\ldots x_n}$.
+We can write a verifier~$\TM[V]$ that takes in an instance and a
+purported witness,~$\sequence{\sigma,\omega}$, 
+and checks whether the instance satisfies the
+constraints and also makes the objective function large enough.
+If there is such a sequence then $\TM[V]$ can verify it, in polytime.
+If there is no such sequence then $\TM[V]$ can never accept its input.  
 \end{example}
 
 \pause
@@ -769,7 +774,7 @@ If there is no such sequence then $\TM$ can never succeed in verifying.
 \alert{\probname{$3$-Coloring}} takes a graph as input
 and decides if it can be colored with at most $3$~colors.
 For~$\omega$ use a purported $3$-coloring.
-The machine $\TM$ can verify that $\omega$ actually is a $3$-coloring  
+The machine $\TM[V]$ can verify that $\omega$ actually is a $3$-coloring  
 in time polynomial in the size of the graph.
 \end{example}
 \end{frame}
@@ -793,52 +798,53 @@ in time polynomial in the size of the graph.
 \section{Problem reduction}
 
 \begin{frame}{Introduction}
-Recall \probname{Vertex-to-vertex Path}:~given a graph and two vertices,
+Recall \probname{Vertex-to-Vertex Path}:~given a graph and two vertices,
 decide if there is a path between them.
 Recall also \probname{Shortest Path}:~given a weighted graph and two
 vertices, find the shortest path between them.
 
 These two are obviously related.
 In particular, if you can find the shortest path then you can find
-whether there is a path at all, no?
+whether there is a path at all.
 
 \pause
-To make this idea precise recast these as language decision problems
+To make this relationship idea precise, 
+recast these as language decision problems
 \begin{align*}
-  \lang_1 &=\set{\sequence{\mathcal{G},v_0,v_1}\suchthat
+  \lang &=\set{\sequence{\mathcal{G},v_0,v_1}\suchthat
                \text{there is a path from $v_0$ to $v_1$ in $\mathcal{G}$}} \\
-  \lang_B &=\set{\sequence{\mathcal{G},v_0,v_1}\suchthat
-               \text{there is a path from $v_0$ to $v_1$ shorter than length~$B$}}
+  \lang_B &=\set{\sequence{\hat{\mathcal{G}},w_0,w_1}\suchthat
+               \text{there is a path from $w_0$ to $w_1$ shorter than length~$B$}}
 \end{align*}
-(with the second we are applying the standard bound technique using 
+(with the second, we are applying the standard bound technique using 
 the parameter~$B\in\N$).
 
-There is a type issue because
+There is a type issue with the graphs because
 \probname{Shortest Path} applies to weighted graphs.
-But we can convert an unweighted graph to a weighted one by giving each edge 
+But we can consider an unweighted graph to be a weighted one where each edge 
 a weight of~$1$. 
 \end{frame}
 
 \begin{frame}
 Suppose that you could solve \probname{Shortest Path}.
 Perhaps you have a library routine \str{SolveShortestPath}.
-We say you have a \alert{oracle} for the Shortest Path problem.
-This sketches an algorithm that leverages that oracle 
-to also solve \probname{Vertex-to-vertex Path}.
+We say you you have a `Shortest Path \alert{oracle}'.
+
+This sketches an algorithm that leverages the oracle 
+to solve \probname{Vertex-to-Vertex Path}.
 \begin{center}
   \includegraphics{asy/complexity07.pdf}
 \end{center}
 \pause
-Now, 
-suppose that not only do you have an oracle but
-in addition suppose that the oracle runs in polynomial time.
-Then, because the algorithm shown is also fast, overall we've given
+The key idea here:~suppose that the oracle is fast, so it 
+runs in polynomial time.
+Then, because the algorithm sketched above is also fast, overall we've given
 a way to solve
-\probname{Vertex-to-vertex Path} in polytime. 
+\probname{Vertex-to-Vertex Path} in polytime. 
 
 \pause
-In particular, this shows that if \probname{Shortest Path} is in $\P$ then
-\probname{Vertex-to-vertex Path} is also in~$\P$.
+In particular, this slide shows that if \probname{Shortest Path} is in $\P$ then
+\probname{Vertex-to-Vertex Path} is also in~$\P$.
 \end{frame}
 
 
@@ -846,9 +852,10 @@ In particular, this shows that if \probname{Shortest Path} is in $\P$ then
 \begin{frame}{Polytime reduction}
 \ExecuteMetaData[\catchfilefn]{def:PolyTimeReduction}
 
-The point:~if you can solve $\lang_0$ quickly then 
-you can solve $\lang_1$ quickly.
+Reiterating for emphasis, the point is that~if you can solve $\lang_0$ 
+quickly then you can solve $\lang_1$ quickly.
 
+\pause
 \ExecuteMetaData[\catchfilefn]{lem:PolytimeReductionTrans}
 
 \proofname \ExecuteMetaData[\catchfilefn]{pf:PolytimeReductionTransi}
@@ -860,10 +867,12 @@ you can solve $\lang_1$ quickly.
 \pause
 \medskip
 This is a sketch of polytime reduction among problems.
-Here the bean encloses all problems, all subsets of $\kleenestar{\B}$.
-The easy ones, the ones with fast algorithms, are at the bottom.
+The bean encloses all problems, which we take to be languages, 
+subsets of $\kleenestar{\B}$
+(we only show a few problems for graphical clarity).
+The easy ones, the ones with fast solution algorithm, are at the bottom.
   Problems are shown connected if there is a polynomial time reduction from one 
-  to the other (we only show a few problems for graphical clarity).
+  to the other.
   Highlighted are connections within the complexity class~$\P$.
 \begin{center}
   \hspace*{-2em}
@@ -952,7 +961,8 @@ and~$S_{v_7}=\set{f,h,i}$.
 \begin{center}
   \vcenteredhbox{\includegraphics{asy/complexity09.pdf}}
 \end{center}
-The set cover $\set{S_{v_1},S_{v_2},S_{v_5},S_{v_7}}$ gives a vertex cover.
+The set cover $\set{S_{v_1},S_{v_2},S_{v_5},S_{v_7}}$ gives a vertex cover
+$\set{v_1,v_2,v_5,v_7}$.
 \end{example}
 \end{frame}
 
@@ -967,6 +977,12 @@ The set cover $\set{S_{v_1},S_{v_2},S_{v_5},S_{v_7}}$ gives a vertex cover.
   \includegraphics{../../complexity/asy/complexity/complexity01.pdf}
 \end{center}
 \ExecuteMetaData[\catchfilefn]{ex:ColorabilityLeqSATii}
+
+To demonstrate that 
+$\probname{Graph Colorability}\leq_p\probname{Satisfiability}$, 
+we must show that given an instance of \probname{Graph Colorability},
+we can translate it into an instance of \probname{Satisfiability}
+(where the translation algorithm takes polytime).
 \end{frame}
 
 \begin{frame}

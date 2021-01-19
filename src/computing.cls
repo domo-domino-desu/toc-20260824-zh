@@ -1198,10 +1198,10 @@
   supplement the text body.
   Each has a word or phrase in italics from that text body, and 
   then the note is in plain text.
-  Many of the citations or discussions include links for you to read more.
-
-  Note that some of these are from general discussions and so are
-  more informal than statements that might appear in a paper.}
+  Many of the entries include links to more detail.
+  % Note that some of these are from general discussions and so are
+  % more informal than statements that might appear in a paper.
+  }
 
 \newcommand{\printnotes}{%
   % Table of Contents 

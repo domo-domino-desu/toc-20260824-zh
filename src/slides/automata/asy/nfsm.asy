@@ -14,10 +14,7 @@ import settexpreamble;
 cd("");
 settexpreamble();
 cd("../../../asy/");
-import jh;
-cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
+import jhnode;
 cd("");
 
 
@@ -28,6 +25,11 @@ defaultnodestyle=nodestyle(xmargin=1pt,
 
 defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+black,
 			   arrow=Arrow(6,filltype=FillDraw(backgroundcolor,black)));
+
+// Pen for edges when Labelled
+pen edge_text_pen = fontsize(7pt) + fontcommand("\ttfamily") + black;
+// color edges in walk
+pen walk_pen = linewidth(0.75bp) + highlight_color;
 
 string OUTPUT_FN = "nfsm%02d";
 

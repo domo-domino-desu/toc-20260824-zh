@@ -180,11 +180,12 @@ zero or more repetitions of \str{HEF}.
 
 \begin{frame}
 \begin{example}
-This machine accepts only strings starting with zero or more 
+This machine accepts all strings starting with zero or more 
 copies of \str{HEF}.
 \begin{center}
   \includegraphics{asy/fsm06.pdf}
 \end{center}
+(It is a gotcha question; all strings begin with zero copies of \str{HEF}.)
 \end{example}
 \pause
 \begin{example}
@@ -221,14 +222,14 @@ accepts strings with at least three \str{a}'s.
 % \end{frame}
 
 \begin{frame}{The action of a Finite State machine}
-We can give a precise definition
+As with Turing machines, the book gives a precise definition
 of how Finite State machines act.
 A \definend{configuration} of a Finite State machine $\FSM$ is 
-a pair $\mathcal{C}=\sequence{q,\tau}$, where
-$q$ is a state and $\tau\in\kleenestar{\Sigma}$.
-The \definend{initial configuration}
-is~$\mathcal{C}_0=\sequence{q_0,\tau_0}$,
-where $\tau_0$ is the \definend{input}.
+a pair $\mathcal{C}=\sequence{q,\tau}$, with
+$q\in Q$ and $\tau\in\kleenestar{\Sigma}$.
+Where $\mathcal{C}_0=\sequence{q_0,\tau_0}$ is the
+\definend{initial configuration},
+$\tau_0$ is the \definend{input}.
 
 \begin{example}
 Give this machine the input $\tau_0=\str{abababb}$.
@@ -311,11 +312,13 @@ def multiple_of_three_fsm(s):
 \ExecuteMetaData[\catchfilefn]{def:ExtendedTransitionFcn}
 
 \begin{example}
-Find the extended transition function for this machine
+For this machine, compute the extended transition function 
+on all strings of length less than three.
 \begin{center}
   \includegraphics{asy/fsm09.pdf}
 \end{center}
-for all strings of length less than three.
+The alphabet is $\Sigma=\set{\str{a},\str{b}}$ so
+there are seven string  of length less than three.
 \begin{center}
 \begin{tabular}{r|*{7}{c}}
   \tabulartext{Input $\sigma$}
@@ -366,12 +369,13 @@ To start, we see an example and trace through the computation.
 
 
 \begin{frame}
-Here, leaving $q_0$ are two arrows labelled~\str{0}.
+This machine has two arrows labeled~\str{0} that are leaving $q_0$.
 Also, out of $q_1$ comes no arrow with a~\str{1}.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
 \end{center}
-Give this machine the input \str{00001}.
+We will walk through what happens when we give this machine 
+the input string~\str{00001}.
 \begin{center}\small
   \only<2>{\includegraphics{asy/nfsm02.pdf}}%
   \only<3>{\includegraphics{asy/nfsm03.pdf}}%
@@ -391,20 +395,19 @@ Give this machine the input \str{00001}.
 In that diagram, we forked child processes to cover each
 possibility.
 This is a natural approach.
-\begin{itemize}
-\item
-Consider a grammar \mbox{S\produces{}\trm{a}S\syntaxor\trm{b}A}.
+
+Consider a grammar \mbox{S\produces{}\trm{aa}S\syntaxor\trm{aaa}S}.
 You have a string~$\sigma$ and want to know if it has a derivation.
-The challenge is that, for instance,
+The challenge is that
 from S you can do two different things;
-which one is the right one? 
+which one is right? 
 If you wrote a program for this then you might instead try every
-possible derivation, perhaps with a breadth-first traversal of the tree of all
+possible derivation, doing a breadth-first traversal of the tree of all
 derivations.
 
-\pause\item
-The Travelling Salesman Problem also illustrates.
-Look at trips that visit every state capitol in the 
+\pause
+The Travelling Salesman problem illustrates.
+We look for an efficient trip that visits every state capitol in the 
 forty eight contiguous US~states.
 For instance, we may want to know if there is a cycle of less than 
 $16\,000$ kilometers.
@@ -417,10 +420,9 @@ At the end, if there is
 a trip of less than $16\,000$ kilometers then some process knows it.
 If even one process is a success then we consider
 the overall search a success.
-This is nondeterministic in that during it,
+This is an example of nondeterminism in that during it,
 the machine has many process and
-in that sense the machine is simultaneously in many different states.
-\end{itemize}
+in that sense is simultaneously in many different states.
 \end{frame}
 
 
@@ -429,10 +431,10 @@ The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
 \end{center}
-With input \str{00001}, the problem the machine faces is
-when it should stop going around $q_0$'s loop and start to the right.
-The example above has the machine accepting this input,
-so it has solved the problem\Dash viewed from the outside,
+With input \str{00001}, the problem the machine faces is:~when should it 
+stop going around $q_0$'s loop and start to the right?
+The example above has the machine accepting this input.
+So it has solved the problem\Dash viewed from the outside,
 we could say that the
 machine has guessed correctly.
 
@@ -444,7 +446,9 @@ furnished with the answer (``go around twice, then off to the right'') and
 only has to check that answer.
 The furnisher is often personified as a demon.
 \begin{center}
-  \includegraphics[height=1.2in]{../../automata/pix/flauros.jpg}
+  \vcenteredhbox{\includegraphics[height=1.2in]{../../automata/pix/flauros.jpg}}
+  % \hspace{2em}
+  % \mbox{Flauros, the Duke of Hell.}
 \end{center}
 \end{frame}
 
@@ -480,12 +484,12 @@ instead of two.
 How does this mechanism guess that it should ignore
 the first \str{01} but pay attention to the second?
 
-As earlier, it is strange to say that a machine ``guesses.''
-We will show how to convert a nondeterministic Finite State
-machine into  deterministic one.
-So we can think of this
-as an abbreviation for a deterministic machine,
-which obviates the paradox of guessing, at least for Finite State machines.
+As remarked earlier, it is striking to say that a machine guesses.
+But later we will show how to convert a nondeterministic Finite State
+machine into  deterministic one,
+So we can think of the nondeterministic machine
+as an abbreviation for a deterministic one.
+This obviates the paradox of guessing, at least for Finite State machines.
 \end{frame}
 
 \begin{frame}
@@ -497,7 +501,7 @@ accepts only those strings ending in \str{HEF}.
 \end{center}
 The alphabet~$\Sigma$ is the capital ASCII letters.
 
-Contrast this machine with what we got when we did this job
+Contrast that with what we got when we did this job
 using an explicit deterministic machine.
 \begin{center}
   \includegraphics{asy/fsm03.pdf}
@@ -522,7 +526,7 @@ $\lang(\FSM)=\set{\str{aaa}, \str{aab}, \str{aba}, \str{abb},\str{aaaa}, \str{aa
 
 \pause
 \begin{example}
-This machine~$\hat{\FSM}$ with alphabet $\Sigma=\set{\str{a},\str{b}}$ 
+This machine~$\hat{\FSM}$ with alphabet $\Sigma=\set{\str{0},\str{0}}$ 
 accepts an input string only
 if it contains a substring
 with a \str{1} followed by any number of \str{0}'s
@@ -583,7 +587,7 @@ or end with \str{ab}.
 A $\varepsilon$ transition edge can also take a machine and
 give it the ``any number of repetitions'' effect.
 That is, without that edge this machine's language is
-$\set{\str{ab}}$
+$\set{\emptystring,\str{ab}}$
 while adding it makes the lanaguage  
 $\set{(\str{ab})^n\suchthat n\in\N}$.
 \begin{center}
@@ -659,7 +663,7 @@ The strings that are accepted by this machine match \re{a*ba*}.
 
 \begin{example}
 Produce a regular expression to match each description.
-For each, take the alphabet to be~$\B\set{\str{0},\str{1}}$.
+For each, take the alphabet to be~$\B=\set{\str{0},\str{1}}$.
 (1)~The set of strings that end in three consecutive \str{1}'s. 
 \pause
 (2)~The set of strings with at least one~\str{0}.
@@ -797,7 +801,7 @@ The result is \re{(a(b|ab*b))*($\varepsilon$|a)}.
 (1)~The set
 $\set{\str{a}\str{b}^n\suchthat n\in\N}
   =\set{\str{a}, \str{ab}, \str{abb}\,\ldots}$ is a regular language,
-(2~any finite set of strings is a regular language. 
+(2)~any finite set of strings is a regular language. 
 \end{example}
 
 \pause
@@ -809,9 +813,9 @@ is regular.
 We say that a structure is \definend{closed} under an operation if
 performing that operation on its members always yields another member.
 
-\ExecuteMetaData[\catchfilefn]{lem:RegLangsClosedUnderUnionConcatStar}
+\ExecuteMetaData[\catchfilefn]{lem:RegLangsClosedUnderUnionConcatStar}%
 \begin{proof}
-  In the first half of Kleene's Theorem
+  In the first lemma for the proof of Kleene's Theorem
   we did the regular expression operations of pipe,
   concatenation, and Kleene star.
   Those correspond to these set operations:
@@ -835,8 +839,9 @@ performing that operation on its members always yields another member.
 Let $\Sigma=\B=\set{\str{0},\str{1}}$.
 We could show that the language
 $\lang=\set{\sigma\str{1}\suchthat \sigma\in\kleenestar{\Sigma}}$
-is regular by producing a Finite State machine to accept it.
-But closure is easier.
+is regular by producing a Finite State machine to accept it,
+or by giving a regular expression that describes it.
+But we can also use closure.
 That language is the concatenation $\lang=\lang_0\concat\lang_1$
 of
 $  \lang_0=\kleenestar{\Sigma}$
@@ -853,7 +858,7 @@ The language
 \lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b},\str{c}}}
   \suchthat \text{$\sigma$ does not have the substring \str{acb}}}
 \end{equation*}
-it the complement of this one.
+it the complement of this one,
 $\setcomp{\lang}=\set{\sigma\in\kleenestar{\set{\str{a},\str{b},\str{c}}}
   \suchthat \text{$\sigma$ has the substring \str{acb}}}$.
 The language $\setcomp{\lang}$ is regular because it is 
@@ -866,11 +871,12 @@ described by a regular expression,
 We can show that the language 
 \begin{equation*}
 \lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
-  \suchthat \text{$\sigma$ contains the substrings \str{acb} and \str{cbc}}}
+  \suchthat \text{$\sigma$ contains both of the substrings \str{acb} and \str{cbc}}}
 \end{equation*}
 is regular by constructing a Finite State machine
-for each substring, or give a regular expression, and then cite that the regular
+for each substring or give regular expressions, and then cite that the regular
 languages are closed under intersection.
+(\textit{Note:}~the string $\sigma=\str{acbc}$ is a member of $\lang$.)
 \end{example}
 \end{frame}
 
@@ -878,7 +884,7 @@ languages are closed under intersection.
 % ========================================================
 \section{Non-regular languages}
 
-\begin{frame}{Observation: periodicity}
+\begin{frame}{Periodicity}
 \ExecuteMetaData[\catchfilefn]{ex:FSMLoopingi}
 \begin{center}
   \includegraphics{\asydir nfsm/nfsm58.pdf}
@@ -895,8 +901,10 @@ languages are closed under intersection.
 
 \begin{frame}
 \ExecuteMetaData[\catchfilefn]{pf:PumpingLemmaii}\qedsymbol
-
-\pause
+\end{frame}
+\begin{frame}{Using the Pumping Lemma}
+When we use the Pumping Lemma, it is usually to show that a language
+is not regular.
 \begin{example}
 Show that each language over $\Sigma=\set{\str{a},\str{b}}$ is not a regular:
 (1)~$\set{\str{a}^n\str{b}^n\suchthat n\in\N}$,
@@ -1024,6 +1032,9 @@ Here is the machine accepting \str{01010}.
 
 
 \begin{frame}{Relation between machine types and languages}
+Below, the box includes all languages.
+That is, fix an alphabet~$\Sigma$ and then
+the universe consists of every subset of $\kleenestar{\Sigma}\!$.
 \begin{center} \small
   % \mbox{Languages over $\B$:\ }
   \vcenteredhbox{\includegraphics{\asydir pda/pda00.pdf}}
@@ -1037,6 +1048,13 @@ Here is the machine accepting \str{01010}.
     $D$ &Turing \\
   \end{tabular}
 \end{center}
+Area~$A$ encloses the languages that are regular, those decided by
+some Finite State machine.
+Area~$B$ enclosed the languages that are decided by some deterministic
+Pushdown machine.
+Area~$C$ contains the languages decided by some nondeterministic
+Pushdown machine.
+And, in area~$D$ are the languages decided by some Turing machine.
 \end{frame}
 \end{document}
 

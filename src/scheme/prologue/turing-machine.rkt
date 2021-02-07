@@ -242,7 +242,7 @@
    [("-c" "--char") sc "Character the head points to at start" (startchar sc)]
    [("-l" "--left") sl "String giving tape left of the start character" (startleft sl)]
    [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
-   [("-s" "--statelimit") slmt "Number giving max number of steps to run" (statelimit slmt)]
+   [("-s" "--steplimit") slmt "Number giving max number of steps to run" (statelimit slmt)]
    #:args  () (void)))
 
 ;; (tm-filename)

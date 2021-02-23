@@ -7,15 +7,17 @@ settexpreamble();
 
 cd("../../../asy");
 import jhnode;
+cd("");
+cd("../../../asy");
 import flowchart;
 cd("");
 
 import settings;
 settings.outformat="pdf";
 
-cd("../../../asy/asy-graphtheory-master/modules");
-import node;
-cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");
+// import node;
+// cd("");
 // size(0.5cm);  // units are big points: 72 is 1inch
 
 // pen NODEPEN=fontsize(8pt);
@@ -33,7 +35,7 @@ cd("");
 // Format of the names of the files produced (another format is below)
 string OUTPUT_FILE = "hp%02d";  
 
-// ---- Unbounded search for perfect numbers
+// =================== Unbounded search for perfect numbers =========
 picture pic;
 int picnum = 0;
 
@@ -1872,6 +1874,50 @@ draw(pic,
 draw(pic,
      start,
      read, 
+     output, 
+     ending
+     );
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+
+// ============= Does not cut across all TM's ===========
+picture pic;
+int picnum = 27;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node run=nbox("Run $\TM_x$ on $x$");
+node output=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,output);
+vlayout(1*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
      output, 
      ending
      );

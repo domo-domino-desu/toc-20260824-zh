@@ -54,8 +54,14 @@ int num_cols=5;  // number boxes horizontally
 real horiz_size=10.85;
 real vert_size=9.5;
 
-// seed the random number gnerator
-srand(seconds());
+// Seed the random number generator
+// Yncomment the next two lines and comment the seconds_seed setting,
+// then run a few until you get one you like.  Then install it as
+// the fixed seconds_seed.
+// int seconds_seed = seconds();
+// write(format("Seed for srand is %d",seconds_seed));
+int seconds_seed = 1614082795;
+srand(seconds_seed);
 
 // Generate the equivalence classes
 path classes[][];
@@ -73,11 +79,11 @@ pen fp;
 for(int r=0; r<num_rows; ++r) {
   for(int c=0; c<num_cols; ++c){
     if (unitrand()<=0.1) {  // Color a few of the index sets
-      fp=mediumgray;
+      fp=lightcolor;
     } else {
       fp=white;
     }
-    filldraw(shift((num_cols-1-c)*horiz_size,(num_rows-1-r)*vert_size)*classes[num_rows-1-r][num_cols-1-c],MAINPEN+LIGHTPEN+blue,fillpen=fp);
+    filldraw(shift((num_cols-1-c)*horiz_size,(num_rows-1-r)*vert_size)*classes[num_rows-1-r][num_cols-1-c],MAINPEN+LIGHTPEN+grayed,fillpen=fp);
   }
 }
 
@@ -89,5 +95,5 @@ label("$\cdots$",(wd-0.5cm,ht/2.0));
 // draw(subpath(ml, 3.0, 4.0), red);
 
 clip(universe);
-draw(universe,MAINPEN+DARKPEN+miterjoin);
+draw(universe,MAINPEN+LIGHTPEN+miterjoin);
 

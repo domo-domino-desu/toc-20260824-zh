@@ -1933,7 +1933,7 @@ int picnum = 28;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $x$");
+node read=nbox("Read $y$");
 node output=nbox("Print $42$");
 node ending=nroundbox("End");
 
@@ -1970,7 +1970,7 @@ int picnum = 29;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $x$");
+node read=nbox("Read $y$");
 node loop=nbox("Infinite loop");
 
 // layout
@@ -2006,8 +2006,8 @@ int picnum = 30;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $x$");
-node output=nbox("Print $x^2$");
+node read=nbox("Read $y$");
+node output=nbox("Print $y^2$");
 node ending=nroundbox("End");
 
 // layout
@@ -2043,6 +2043,78 @@ int picnum = 31;
 
 // define nodes
 node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node loop=nbox("Infinite loop");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,loop);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--loop)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     loop
+     );
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+// ============= Rice's Thm: successor fcn?  ===========
+picture pic;
+int picnum = 32;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node output=nbox("Print $x+1$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,output);
+vlayout(1*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     output, 
+     ending
+     );
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+// ................. all of N? .................
+picture pic;
+int picnum = 33;
+
+// define nodes
+node start=nroundbox("Start");
 node read=nbox("Read $x$");
 node loop=nbox("Infinite loop");
 
@@ -2069,5 +2141,81 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+
+
+// ============= Rice's Thm: fcns diverge on both x and 2x?  ===========
+picture pic;
+int picnum = 34;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node loop=nbox("Infinite loop");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,loop);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--loop)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     loop
+     );
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+// ................. all of N? .................
+picture pic;
+int picnum = 35;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node output=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,output);
+vlayout(1*v,output,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--output),
+     (output--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     output, 
+     ending
+     );
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
 
 

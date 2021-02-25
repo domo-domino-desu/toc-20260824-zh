@@ -172,17 +172,20 @@
   \fancyhead[LE,RO]{}
   % \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
   % \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
-  \fancyfoot[C]{{\color{boldcolor}\textsl{\thepage}}}
+  \fancyfoot[C]{} % {\color{boldcolor}\textsl{--Page \thepage--}}}
 }
 
 \fancypagestyle{endmatter}{%  appendix and notes
-  \renewcommand{\headrulewidth}{0.4pt}
+  % \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
-  \fancyhead[LE,RO]{{\color{boldcolor}\textsl{\thepage}}}
+  % \fancyhead[LE,RO]{{\color{boldcolor}\textsl{\thepage}}}
   % \fancyhead[RE]{{\color{boldcolor}\textsl{\leftmark}}}
   % \fancyhead[LO]{{\color{boldcolor}\textsl{\rightmark}}}
-  \fancyhead[RE]{}
-  \fancyhead[LO]{}
+  \fancyhead{}
+  \fancyfoot{}
+  % \fancyhead[RE]{{\color{boldcolor}\textsl{Index}}}
+  % \fancyhead[LO]{{\color{boldcolor}\textsl{Index}}}
 }
 
 

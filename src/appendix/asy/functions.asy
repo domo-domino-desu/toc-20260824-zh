@@ -46,7 +46,7 @@ real xmax = 3.0;
 real ymin = f(xmin);
 real ymax = f(xmax);
 
-real[] xMajorTicks={-2,2};
+real[] xMajorTicks={2};
 real[] xMinorTicks={-3,-1,1,3};
 real[] yMajorTicks={-20,-10,10,20}; 
 real[] yMinorTicks={-25,-15,-5,5,15,25}; 
@@ -54,7 +54,7 @@ real[] yMinorTicks={-25,-15,-5,5,15,25};
 arrowbar axisarrow = Arrows(TeXHead);
 
 path f_graph = graph(pic, f, xmin, xmax);
-draw(pic, f_graph, FCNPEN+highlightcolor);
+draw(pic, f_graph, MAINPEN+linewidth(0.6pt)+highlightcolor);
 xaxis(pic, "",YZero(extend=false),
       xmin=xmin-0.5, xmax=xmax+0.5,
       RightTicks(format="\scriptsize $%.4g$",xMajorTicks,xMinorTicks),
@@ -89,25 +89,25 @@ real ymax = f(xmax);
 
 real[] xMajorTicks={-2,2};
 real[] xMinorTicks={-3,-1,1,3};
-real[] yMajorTicks={-4,-2,2}; 
+real[] yMajorTicks={-4,2}; 
 real[] yMinorTicks={-3,-1,1,3}; 
 
 arrowbar axisarrow = Arrows(TeXHead);
 
 // draw graph as a sequence of line segments because Asy draws stairstep
 path f_graph = graph(pic, f, ceil(xmin)-0.5, ceil(xmin)-0.01);
-draw(pic, f_graph, FCNPEN+highlightcolor);
+draw(pic, f_graph, MAINPEN+highlightcolor);
 for(int i=ceil(xmin); i < floor(xmax); ++i) {
   path f_graph = graph(pic, f, i, i+0.99);
-  draw(pic, f_graph, FCNPEN+highlightcolor);
+  draw(pic, f_graph, MAINPEN+highlightcolor);
 }
 path f_graph = graph(pic, f, floor(xmax), floor(xmax)+0.5);
-draw(pic, f_graph, FCNPEN+highlightcolor);
+draw(pic, f_graph, MAINPEN+highlightcolor);
 // put in open and closed dots
 dotfactor=7;
 for(int i=ceil(xmin); i < floor(xmax)+1; ++i) {
-  dot(pic, Scale(pic,(i,f(i)-1)), FCNPEN+highlightcolor+linewidth(0.6pt), FillDraw(drawpen=FCNPEN+highlightcolor+linewidth(0.6pt),fillpen=white+opacity(0.5)));
-  dot(pic, Scale(pic,(i,f(i))), FCNPEN+highlightcolor+linewidth(0.6pt), FillDraw(drawpen=FCNPEN+highlightcolor+linewidth(0.6pt),fillpen=FCNPEN+highlightcolor+opacity(0.99)));
+  dot(pic, Scale(pic,(i,f(i)-1)), MAINPEN+highlightcolor+linewidth(0.6pt), FillDraw(drawpen=MAINPEN+highlightcolor+linewidth(0.6pt),fillpen=white));
+  dot(pic, Scale(pic,(i,f(i))), MAINPEN+highlightcolor+linewidth(0.6pt), FillDraw(drawpen=FCNPEN+highlightcolor+linewidth(0.6pt),fillpen=MAINPEN+highlightcolor));
 }
 
 xaxis(pic, "",YZero(extend=false),

@@ -22,8 +22,8 @@ path setbean(real h=1, real v=1) {
   p = (0,0)..(0,v)..(h,v)..tension(1.2)..(h,-v)..(0,-v)..cycle;
   return p;
 }
-pen BEANCOLOR = backgroundcolor;
-pen ARROWCOLOR = highlightcolor;
+pen BEANCOLOR = white;
+pen ARROWCOLOR = red;
 
 real h, v;  // horizontal and vertical units for beans
 h = 0.70; v = h; 

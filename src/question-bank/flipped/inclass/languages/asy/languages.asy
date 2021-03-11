@@ -145,3 +145,107 @@ draw(pic=p,
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 
 
+
+// ======================== non-iso graphs with same degree sequence ======
+int picnum = 2;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node n0=ncircle("\nodebox{\strut$0$}"),
+  n1=ncircle("\nodebox{\strut$1$}"),
+  n2=ncircle("\nodebox{\strut$2$}"),
+  n3=ncircle("\nodebox{\strut$3$}"),
+  n4=ncircle("\nodebox{\strut$4$}"),
+  n5=ncircle("\nodebox{\strut$5$}"),
+  n6=ncircle("\nodebox{\strut$6$}"),
+  n7=ncircle("\nodebox{\strut$7$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=u;
+defaultlayoutskip=u;
+
+hlayout(3*u, n0, n1);
+n4.pos = new_node_pos_h(n0, -45, 1*u);
+hlayout(1*u, n4, n5);
+vlayout(1*v, n4, n6);
+hlayout(1*u, n6, n7);
+vlayout(3*v, n0, n2);
+hlayout(3*u, n2, n3);
+
+// draw edges
+draw(pic,
+     (n0--n1),
+     (n0--n2),
+     (n0--n4),
+     (n1--n3),
+     (n2--n3),
+     (n2--n6),
+     (n4--n5),
+     (n4--n6),
+     (n5--n7),
+     (n6--n7)
+);
+
+// draw nodes, after edges
+draw(pic,
+     n0, n1, n2, n3, n4, n5, n6, n7
+     );
+
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .......................................................
+int picnum = 3;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node n0=ncircle("\nodebox{\strut$0$}"),
+  n1=ncircle("\nodebox{\strut$1$}"),
+  n2=ncircle("\nodebox{\strut$2$}"),
+  n3=ncircle("\nodebox{\strut$3$}"),
+  n4=ncircle("\nodebox{\strut$4$}"),
+  n5=ncircle("\nodebox{\strut$5$}"),
+  n6=ncircle("\nodebox{\strut$6$}"),
+  n7=ncircle("\nodebox{\strut$7$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=u;
+defaultlayoutskip=u;
+
+hlayout(3*u, n6, n2);
+n5.pos = new_node_pos_h(n0, -45, 1*u);
+hlayout(1*u, n5, n1);
+vlayout(1*v, n5, n0);
+hlayout(1*u, n0, n4);
+vlayout(3*v, n6, n7);
+hlayout(3*u, n7, n3);
+
+// draw edges
+draw(pic,
+     (n0--n4),
+     (n0--n5),
+     (n1--n4),
+     (n1--n5),
+     (n2--n3),
+     (n2--n6),
+     (n3--n4),
+     (n3--n7),
+     (n5--n6),
+     (n6--n7)
+);
+
+// draw nodes, after edges
+draw(pic,
+     n0, n1, n2, n3, n4, n5, n6, n7
+     );
+
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

@@ -153,14 +153,14 @@ picture pic;
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-node n0=ncircle("\nodebox{\strut$0$}"),
-  n1=ncircle("\nodebox{\strut$1$}"),
-  n2=ncircle("\nodebox{\strut$2$}"),
-  n3=ncircle("\nodebox{\strut$3$}"),
-  n4=ncircle("\nodebox{\strut$4$}"),
-  n5=ncircle("\nodebox{\strut$5$}"),
-  n6=ncircle("\nodebox{\strut$6$}"),
-  n7=ncircle("\nodebox{\strut$7$}");
+node n0=ncircle("\nodebox{\strut$v_0$}"),
+  n1=ncircle("\nodebox{\strut$v_1$}"),
+  n2=ncircle("\nodebox{\strut$v_2$}"),
+  n3=ncircle("\nodebox{\strut$v_3$}"),
+  n4=ncircle("\nodebox{\strut$v_4$}"),
+  n5=ncircle("\nodebox{\strut$v_5$}"),
+  n6=ncircle("\nodebox{\strut$v_6$}"),
+  n7=ncircle("\nodebox{\strut$v_7$}");
 
 // calculate nodes position
 real u=1.0cm;
@@ -204,14 +204,14 @@ picture pic;
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-node n0=ncircle("\nodebox{\strut$0$}"),
-  n1=ncircle("\nodebox{\strut$1$}"),
-  n2=ncircle("\nodebox{\strut$2$}"),
-  n3=ncircle("\nodebox{\strut$3$}"),
-  n4=ncircle("\nodebox{\strut$4$}"),
-  n5=ncircle("\nodebox{\strut$5$}"),
-  n6=ncircle("\nodebox{\strut$6$}"),
-  n7=ncircle("\nodebox{\strut$7$}");
+node n0=ncircle("\nodebox{\strut$n_0$}"),
+  n1=ncircle("\nodebox{\strut$n_1$}"),
+  n2=ncircle("\nodebox{\strut$n_2$}"),
+  n3=ncircle("\nodebox{\strut$n_3$}"),
+  n4=ncircle("\nodebox{\strut$n_4$}"),
+  n5=ncircle("\nodebox{\strut$n_5$}"),
+  n6=ncircle("\nodebox{\strut$n_6$}"),
+  n7=ncircle("\nodebox{\strut$n_7$}");
 
 // calculate nodes position
 real u=1.0cm;

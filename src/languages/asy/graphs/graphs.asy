@@ -16,9 +16,9 @@ settexpreamble();
 cd("../../../asy/");
 import jhnode;
 cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
-cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
+// import node;
+// cd("");
 
 // define style
 // defaultnodestyle=nodestyle(drawfn=FillDrawer(lightgray,black));
@@ -2003,3 +2003,56 @@ draw(p, v0, v1, ldots0, vi, w0, x0, ldots1, wp, ldots2, xq, vk, ldots3, vn);
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 
+
+
+// =============== Petersen graph ======================
+int picnum = 12;
+picture p;
+
+setdefaultgraphstyles();
+
+node outer0=ncircle("\nodebox{$v_0$}"),
+  outer1=ncircle("\nodebox{$v_1$}"),
+  outer2=ncircle("\nodebox{$v_2$}"),
+  outer3=ncircle("\nodebox{$v_3$}"),
+  outer4=ncircle("\nodebox{$v_4$}");
+node inner0=ncircle("\nodebox{$v_5$}"),
+  inner1=ncircle("\nodebox{$v_6$}"),
+  inner2=ncircle("\nodebox{$v_7$}"),
+  inner3=ncircle("\nodebox{$v_8$}"),
+  inner4=ncircle("\nodebox{$v_9$}");
+
+node[] outer={outer0, outer1, outer2, outer3, outer4};
+node[] inner={inner0, inner1, inner2, inner3, inner4};
+
+// calculate nodes position
+defaultlayoutskip = 1.2cm;
+real u = defaultlayoutskip;
+real v=0.7*u;
+circularlayout(1.25*u, startangle=90, outer);
+circularlayout(0.6*u, startangle=90, inner);
+
+// draw edges
+draw(p,
+     (outer[0]--outer[1]),
+     (outer[1]--outer[2]),
+     (outer[2]--outer[3]),
+     (outer[3]--outer[4]),
+     (outer[4]--outer[0]),
+     (outer[0]--inner[0]),
+     (outer[1]--inner[1]),
+     (outer[2]--inner[2]),
+     (outer[3]--inner[3]),
+     (outer[4]--inner[4]),
+     (inner[0]--inner[2]),
+     (inner[0]--inner[3]),
+     (inner[1]--inner[3]),
+     (inner[1]--inner[4]),
+     (inner[2]--inner[4])
+);
+
+// draw nodes
+draw(p,outer[0],outer[1],outer[2],outer[3],outer[4],
+     inner[0],inner[1],inner[2],inner[3],inner[4]);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");

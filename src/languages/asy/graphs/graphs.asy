@@ -2157,6 +2157,272 @@ draw(pic,
      n0, n1, n2, n3, n4, n5, n6, n7
      );
 
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============ Fish species exercise ===========
+int picnum = 15;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node nA=ncircle("$A$"),
+  nB=ncircle("B"),
+  nC=ncircle("$C$"),
+  nD=ncircle("$D$"),
+  nE=ncircle("$E$"),
+  nF=ncircle("$F$");
+
+// calculate nodes position
+real u=0.7cm;
+real v=u;
+defaultlayoutskip=u;
+
+hlayout(2*u, nD, nA);
+nB.pos = new_node_pos(nA, 135, -1*v);
+nF.pos = new_node_pos(nD, 45, -1*v);
+vlayout(2*v, nD, nE);
+hlayout(2*u, nE, nC);
+
+// draw edges
+draw(pic,
+     (nA--nB),
+     (nA--nC),
+     (nB--nC),
+     (nB--nD),
+     (nC--nD),
+     (nC--nE),
+     (nD--nF),
+     (nE--nF)
+);
+
+// draw nodes, after edges
+draw(pic,
+     nA, nB, nC, nD, nE, nF
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ............. nodes colored .........................
+int picnum = 16;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node nA=ncircle("$A$", ns1),
+  nB=ncircle("B", ns2),
+  nC=ncircle("$C$", ns3),
+  nD=ncircle("$D$", ns1),
+  nE=ncircle("$E$", ns2),
+  nF=ncircle("$F$", ns3);
+
+// calculate nodes position
+real u=0.7cm;
+real v=u;
+defaultlayoutskip=u;
+
+hlayout(2*u, nD, nA);
+nB.pos = new_node_pos(nA, 135, -1*v);
+nF.pos = new_node_pos(nD, 45, -1*v);
+vlayout(2*v, nD, nE);
+hlayout(2*u, nE, nC);
+
+// draw edges
+draw(pic,
+     (nA--nB),
+     (nA--nC),
+     (nB--nC),
+     (nB--nD),
+     (nC--nD),
+     (nC--nE),
+     (nD--nF),
+     (nE--nF)
+);
+
+// draw nodes, after edges
+draw(pic,
+     nA, nB, nC, nD, nE, nF
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============ Complete graph K_4 ===========
+int picnum = 17;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node n0=ncircle("$n_0$"),
+  n1=ncircle("$n_1$"),
+  n2=ncircle("$n_2$"),
+  n3=ncircle("$n_3$");
+
+// calculate nodes position
+real u=0.8cm;
+real v=u;
+defaultlayoutskip=u;
+
+hlayout(1*u, n0, n1);
+vlayout(1*v, n0, n3);
+hlayout(1*u, n3, n2);
+
+// draw edges
+draw(pic,
+     (n0--n1),
+     (n0--n2),
+     (n0--n3),
+     (n1--n2),
+     (n1--n3),
+     (n2--n3)
+);
+
+// draw nodes, after edges
+draw(pic,
+     n0, n1, n2, n3
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................ Complete graph K_3
+int picnum = 18;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node n0=ncircle("$n_0$"),
+  n1=ncircle("$n_1$"),
+  n2=ncircle("$n_2$");
+
+// calculate nodes position
+real u=0.8cm;
+real v=u;
+defaultlayoutskip=u;
+
+hlayout(1*u, n0, n1);
+n2.pos = new_node_pos_h(n0, -45, (0.5)*u);
+
+// draw edges
+draw(pic,
+     (n0--n1),
+     (n0--n2),
+     (n1--n2)
+);
+
+// draw nodes, after edges
+draw(pic,
+     n0, n1, n2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................ Complete graph K_2 ..............
+int picnum = 19;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node n0=ncircle("$n_0$"),
+  n1=ncircle("$n_1$");
+
+// calculate nodes position
+real u=0.8cm;
+real v=u;
+defaultlayoutskip=u;
+
+hlayout(1*u, n0, n1);
+
+// draw edges
+draw(pic,
+     (n0--n1)
+);
+
+// draw nodes, after edges
+draw(pic,
+     n0, n1
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................ Complete graph K_1 ..............
+int picnum = 20;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node n0=ncircle("$n_0$");
+
+// calculate nodes position
+real u=0.8cm;
+real v=u;
+defaultlayoutskip=u;
+
+
+// draw edges
+
+// draw nodes, after edges
+draw(pic,
+     n0
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============ Complete graph K_5 ===========
+int picnum = 21;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node n0=ncircle("$n_0$"),
+  n1=ncircle("$n_1$"),
+  n2=ncircle("$n_2$"),
+  n3=ncircle("$n_3$"),
+  n4=ncircle("$n_4$");
+
+node[] nodelist={n0, n1, n2, n3, n4};
+
+
+// calculate nodes position
+real u=0.8cm;
+real v=u;
+defaultlayoutskip=u;
+
+circularlayout(1.25*u, startangle=90, nodelist);
+
+// draw edges
+draw(pic,
+     (n0--n1),
+     (n0--n2),
+     (n0--n3),
+     (n0--n4),
+     (n1--n2),
+     (n1--n3),
+     (n1--n4),
+     (n2--n3),
+     (n2--n4),
+     (n3--n4)
+);
+
+// draw nodes, after edges
+draw(pic,
+     n0, n1, n2, n3, n4
+     );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

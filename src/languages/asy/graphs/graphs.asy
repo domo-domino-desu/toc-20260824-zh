@@ -2426,3 +2426,59 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// ============ Planar graph ===========
+int picnum = 22;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node nA=ncircle("$A$"),
+  nB=ncircle("$B$"),
+  nC=ncircle("$C$"),
+  nD=ncircle("$D$"),
+  nE=ncircle("$E$"),
+  nF=ncircle("$F$"),
+  nG=ncircle("$G$"),
+  nH=ncircle("$H$");
+
+// calculate nodes position for a planar graph
+// run with $ dot -Tpng < planar.dot > planar.png
+real u=0.8cm;
+real v=u;
+defaultlayoutskip=u;
+hlayout(5*u, nA, nG);
+hlayout(1*u, nG, nH);
+nB.pos = new_node_pos(nA, -60, -2*v);
+nC.pos = new_node_pos(nA, -30, -1*v);
+hlayout(2*u, nB, nD, nF);
+hlayout(2*u, nC, nE);
+
+// draw edges
+draw(pic,
+     (nA--nB),
+     (nA--nC),
+     (nA--nG),
+     (nA..bend(-20)..nH),
+     (nB--nC),
+     (nB--nD),
+     (nB--nF),
+     (nC--nD),
+     (nC--nE),
+     (nD--nE),
+     (nD--nF),
+     (nE--nF),
+     (nE--nG),
+     (nF--nH),
+     (nG--nH)
+);
+
+// draw nodes, after edges
+draw(pic,
+     nA, nB, nC, nD, nE, nF, nG, nH
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

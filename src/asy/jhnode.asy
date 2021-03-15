@@ -191,6 +191,8 @@ real find_vert(real theta, real horiz) {
 }
 
 // From starting point, angle, and desired vert dist, return new pos
+// (If you want the returned position to be below, maybe you want both
+// theta and vert to be negative?)
 pair new_node_pos(node starting_pos, real theta, real vert) {
   return (starting_pos.pos.x+find_horiz(theta,vert), starting_pos.pos.y+vert);
 }

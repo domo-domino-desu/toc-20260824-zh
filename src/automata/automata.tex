@@ -781,27 +781,6 @@ if there are five.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Give a brief plain English description of the language
-for each regular expression.
-\begin{exparts*}
-\item \re{a*cb*}
-\item \re{aa*}
-\item \re{a(a|b)*bb}
-\end{exparts*}
-\begin{answer}
-  \begin{exparts}
-  \item The language consists of strings with some number of \str{a}'s 
-  (that number may be zero), followed by a single~\str{c},
-  followed by some number of \str{b}'s.
-  \item The language consists of strings of at least one~\str{a}.
-  \item Strings in this language start with an~\str{a}, followed by
-  any number of characters, and end with two \str{b}'s.
-  \end{exparts}
-\end{answer}
-\end{exercise}
-
-
 \recommended
 \begin{exercise} % Models of Computation, Taylor p 509
 For the machines of \cref{ex:FSATwoAsEvenBs}, \cref{ex:FSAValidIntegers}, 
@@ -848,6 +827,219 @@ so that it accepts only non-empty strings.
   \end{center}
 \end{answer}
 \end{exercise}
+
+\recommended
+\begin{exercise}
+The best way to develop a Finite State machine is to think 
+about what each state is doing, what it means.
+For each language, name five strings that are in the language 
+and five that are not
+(the alphabet is $\Sigma=\set{\str{a}, \str{b}}$).
+Then design a Finite State machine 
+that will recognize the language by first
+giving a one-sentence English description of each state that you use.
+Then give both a circle diagram and a table for the transition function.
+\begin{exparts}
+\item
+$\lang_1=\set{\sigma\in\kleenestar{\Sigma}\suchthat
+               \text{$\sigma$ has at least one \str{a} and at least one \str{b}}}$
+\item
+$\lang_2=\set{\sigma\in\kleenestar{\Sigma}\suchthat
+               \text{$\sigma$ has fewer than three \str{a}'s}}$
+\item
+$\lang_3=\set{\sigma\in\kleenestar{\Sigma}\suchthat
+               \text{$\sigma$ ends in \str{ab}}}$
+\item
+$\lang_4=\set{\str{a}^n\str{b}^m\in\kleenestar{\Sigma}\suchthat
+               n,m\geq 2}$
+\item
+$\lang_5=\set{\str{a}^n\str{b}^m\str{a}^p\in\kleenestar{\Sigma}\suchthat
+               m=2}$
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item
+Five members are \str{ab}, \str{baab}, \str{ba}, 
+$\str{b}^7\str{a}^3$, and $\str{a}\str{b}^6\str{a}$.
+Five nonmembers are 
+\str{aaaa}, \str{bbbb}, \str{a}, \emptystring, and \str{b}.
+We take the meaning of the states to be as here.
+\begin{center}
+\begin{tabular}{r|l}
+  \textit{State}  &\textit{Description}  \\
+  \hline
+  $q_0$  &start state  \\  
+  $q_1$  &have seen at least one \str{a}, no \str{b}'s   \\
+  $q_2$  &have seen at least one \str{b}, no \str{a}'s   \\
+  $q_3$  &at least one of each  \\
+\end{tabular}
+\end{center}
+The circle drawing and transition table are \figureref{fig:AtLeastOneAOneB}.
+\begin{figure}
+  \centering
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa53.pdf}}
+  \qquad
+  \begin{tabular}{r|cc}
+     \multicolumn{1}{r}{$\Delta$} 
+       &\multicolumn{1}{c}{\str{a}} 
+       &\multicolumn{1}{c}{\str{b}}   \\
+     \cline{2-3} 
+     $q_0$  &$q_1$  &$q_2$  \\
+     $q_1$  &$q_1$  &$q_3$  \\
+     $q_2$  &$q_3$  &$q_2$  \\
+    +$q_3$  &$q_3$  &$q_3$  \\
+  \end{tabular}
+  \caption{Finite State machine accepting strings with at least one \str{a} and \str{b}.}
+  \label{fig:AtLeastOneAOneB}
+\end{figure}
+
+\item
+Five members are: \str{bb}, \emptystring, \str{aba}, \str{a}, 
+and $\str{bbb}\str{aa}\str{b}$.
+Five nonmembers are 
+\str{aaa}, \str{baaa}, $\str{a}^5$, \str{bababa}, and $\str{a}^{10}$.
+We take the states with this meaning.
+\begin{center}
+\begin{tabular}{r|l}
+  \textit{State}  &\textit{Description}  \\
+  \hline
+  $q_0$  &start state, no \str{a}'s seen yet  \\  
+  $q_1$  &have seen one \str{a}, and maybe some number of \str{b}'s   \\
+  $q_2$  &have seen two \str{a}'s   \\
+  $q_3$  &have seen three or more \str{a}'s  \\
+\end{tabular}
+\end{center}
+For the circle diagram and transition table, see \figureref{fig:FewerThanThreeAs}.
+\begin{figure}
+  \centering
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa54.pdf}}
+  \qquad
+  \begin{tabular}{r|cc}
+     \multicolumn{1}{r}{$\Delta$} 
+       &\multicolumn{1}{c}{\str{a}} 
+       &\multicolumn{1}{c}{\str{b}}   \\
+     \cline{2-3} 
+    +$q_0$  &$q_1$  &$q_0$  \\
+    +$q_1$  &$q_2$  &$q_1$  \\
+    +$q_2$  &$q_3$  &$q_2$  \\
+     $q_3$  &$q_3$  &$q_3$  \\
+  \end{tabular}
+  \caption{Finite State machine accepting strings with fewer than three \str{a}'s.}
+  \label{fig:FewerThanThreeAs}
+\end{figure}
+
+\item
+Five members are \str{ab}, \str{bab}, \str{aab}, \str{baab}, 
+and \str{abab}.
+Five nonmembers: 
+\str{a}, \str{bbb}, \emptystring, \str{b}, and \str{abababb}.
+We use the states with this meaning.
+\begin{center}
+\begin{tabular}{r|l}
+  \textit{State}  &\textit{Description}  \\
+  \hline
+  $q_0$  &start state, have not just seen an \str{a}  \\  
+  $q_1$  &have seen an \str{a}, waiting for a \str{b}'s   \\
+  $q_2$  &have just seen \str{ab}   \\
+\end{tabular}
+\end{center}
+The transition diagram and table are \figureref{fig:EndsInAB}.
+\begin{figure}
+  \centering
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa55.pdf}}
+  \qquad
+  \begin{tabular}{r|cc}
+     \multicolumn{1}{r}{$\Delta$} 
+       &\multicolumn{1}{c}{\str{a}} 
+       &\multicolumn{1}{c}{\str{b}}   \\
+     \cline{2-3} 
+     $q_0$  &$q_1$  &$q_0$  \\
+     $q_1$  &$q_1$  &$q_2$  \\
+    +$q_2$  &$q_1$  &$q_0$  \\
+  \end{tabular}
+  \caption{Finite State machine accepting strings that end in \str{ab}.}
+  \label{fig:fig:EndsInAB}
+\end{figure}
+
+\item
+Five members are \str{aabb}, \str{aaabb}, \str{aabbb}, $\str{a}^7\str{b}^9$,  
+and $\str{a}^2\str{b}^{200}$.
+Five nonmembers are
+\emptystring, \str{a}, \str{ab}, \str{ba}, and~\str{b}.
+We use the states with this meaning.
+\begin{center}
+\begin{tabular}{r|l}
+  \textit{State}  &\textit{Description}  \\
+  \hline
+  $q_0$  &start state, have not just seen anything  \\  
+  $q_1$  &have seen one character, an \str{a}   \\
+  $q_2$  &have seen at least two \str{a}'s   \\
+  $q_3$  &have seen at least two \str{a}'s and one \str{b}  \\
+  $q_4$  &have seen at least two \str{a}'s and at least two \str{b}'s   \\
+  $q_5=e$&error   \\
+\end{tabular}
+\end{center}
+See \figureref{fig:AtLeastTwoAsThenAtLeastTwoBs} 
+for the circle diagram and the table.
+\begin{figure}
+  \centering
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa56.pdf}}
+  \qquad
+  \begin{tabular}{r|cc}
+     \multicolumn{1}{r}{$\Delta$} 
+       &\multicolumn{1}{c}{\str{a}} 
+       &\multicolumn{1}{c}{\str{b}}   \\
+     \cline{2-3} 
+     $q_0$  &$q_1$  &$e$  \\
+     $q_1$  &$q_2$  &$e$  \\
+     $q_2$  &$q_2$  &$q_3$  \\
+     $q_3$  &$e$    &$q_4$  \\
+    +$q_4$  &$e$    &$q_4$  \\
+     $e$    &$e$    &$e$  \\
+  \end{tabular}
+  \caption{Finite State machine for strings of at least two \str{a}'s and then at least two \str{b}'s.}
+  \label{fig:AtLeastTwoAsThenAtLeastTwoBs}
+\end{figure}
+
+\item
+Five members are \str{aabba}, \str{aabb}, \str{abb}, \str{bb},  
+and $\str{a}^5\str{bb}^{7}$.
+Five nonmembers are
+\emptystring, \str{bab}, \str{aabaa}, \str{aabbbaa}, and~\str{aabbaab}.
+We take the states with this meaning.
+\begin{center}
+\begin{tabular}{r|l}
+  \textit{State}  &\textit{Description}  \\
+  \hline
+  $q_0$  &have so far seen some number of \str{a}'s, including zero-many  \\  
+  $q_1$  &have seen some \str{a}'s followed by one \str{b}   \\
+  $q_2$  &seen some \str{a}'s, two \str{b}'s, and some \str{a}'s   \\
+  $e$    &error   \\
+\end{tabular}
+\end{center}
+The two representations of the transition function are 
+\figureref{fig:SomeAsTwoBsSomeAs}.
+\begin{figure}
+  \centering
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa57.pdf}}
+  \qquad
+  \begin{tabular}{r|cc}
+     \multicolumn{1}{r}{$\Delta$} 
+       &\multicolumn{1}{c}{\str{a}} 
+       &\multicolumn{1}{c}{\str{b}}   \\
+     \cline{2-3} 
+     $q_0$  &$q_0$  &$q_1$  \\
+     $q_1$  &$e$    &$q_2$  \\
+    +$q_2$  &$q_2$  &$e$  \\
+     $e$    &$e$    &$e$  \\
+  \end{tabular}
+  \caption{Finite State machine for strings with some \str{a}'s, then two \str{b}'s, then some \str{a}'s.}
+  \label{fig:SomeAsTwoBsSomeAs}
+\end{figure}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
 
 \begin{exercise}
 Produce the transition graph picturing this transition
@@ -4377,6 +4569,26 @@ and~\str{1101}.
 Non-matches:~\emptystring, \str{0}, \str{1}, \str{00}, \str{01},
 and~\str{10}.
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Give a brief plain English description of the language
+for each regular expression.
+\begin{exparts*}
+\item \re{a*cb*}
+\item \re{aa*}
+\item \re{a(a|b)*bb}
+\end{exparts*}
+\begin{answer}
+  \begin{exparts}
+  \item The language consists of strings with some number of \str{a}'s 
+  (that number may be zero), followed by a single~\str{c},
+  followed by some number of \str{b}'s.
+  \item The language consists of strings of at least one~\str{a}.
+  \item Strings in this language start with an~\str{a}, followed by
+  any number of characters, and end with two \str{b}'s.
+  \end{exparts}
 \end{answer}
 \end{exercise}
 

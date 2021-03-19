@@ -2482,3 +2482,113 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+// ............... Planar graph: non-planar before ............
+int picnum = 23;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node nA=ncircle("$A$"),
+  nB=ncircle("$B$"),
+  nC=ncircle("$C$"),
+  nD=ncircle("$D$"),
+  nE=ncircle("$E$"),
+  nF=ncircle("$F$"),
+  nG=ncircle("$G$"),
+  nH=ncircle("$H$");
+
+// calculate nodes positions
+real u=0.8cm;
+real v=u;
+defaultlayoutskip=u;
+nB.pos = new_node_pos_h(nA, 25, 1*u);
+vlayout(1*v, nA, nC);
+nD.pos = new_node_pos_h(nC, -25, 1*u);
+hlayout(1*u, nB, nE);
+hlayout(1*u, nD, nF);
+nG.pos = new_node_pos_h(nE, -25, 1*u);
+vlayout(1*v, nG, nH);
+
+// draw edges
+// draw(pic,
+//      (nA--nB),
+//      (nA--nC),
+//      (nA--nG),
+//      (nA..bend(-20)..nH),
+//      (nB--nC),
+//      (nB--nD),
+//      (nB--nF),
+//      (nC--nD),
+//      (nC--nE),
+//      (nD--nE),
+//      (nD--nF),
+//      (nE--nF),
+//      (nE--nG),
+//      (nF--nH),
+//      (nG--nH)
+// );
+
+// draw nodes, after edges
+draw(pic,
+     nA, nB, nC, nD, nE, nF, nG, nH
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............... Planar graph: non-planar after ............
+int picnum = 24;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node nA=ncircle("$A$"),
+  nB=ncircle("$B$"),
+  nC=ncircle("$C$"),
+  nD=ncircle("$D$"),
+  nE=ncircle("$E$"),
+  nF=ncircle("$F$"),
+  nG=ncircle("$G$"),
+  nH=ncircle("$H$");
+
+// nodes positions 
+real u=0.8cm;
+real v=u;
+defaultlayoutskip=u;
+nB.pos = new_node_pos_h(nA, 25, 1*u);
+vlayout(1*v, nA, nC);
+nD.pos = new_node_pos_h(nC, -25, 1*u);
+hlayout(1*u, nB, nE);
+hlayout(1*u, nD, nF);
+nG.pos = new_node_pos_h(nE, -25, 1*u);
+vlayout(1*v, nG, nH);
+
+// draw edges
+draw(pic,
+     (nA--nB),
+     (nA--nC),
+     (nA--nG),
+     (nA--nH),
+     (nB--nC),
+     (nB--nD),
+     (nB--nF),
+     (nC--nD),
+     (nC--nE),
+     (nD--nE),
+     (nD--nF),
+     (nE--nF),
+     (nE--nG),
+     (nF--nH),
+     (nG--nH)
+);
+
+// draw nodes, after edges
+draw(pic,
+     nA, nB, nC, nD, nE, nF, nG, nH
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

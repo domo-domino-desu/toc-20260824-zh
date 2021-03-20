@@ -705,6 +705,10 @@
 % Note that you can mark an exercise answer as verified with the \verified
 % macro, which is defined in answers.cls 
 
+% Count the total number of exercises
+\newcounter{numberofexercises}
+  \setcounter{numberofexercises}{0}
+
 % Exercises are a list
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
@@ -714,9 +718,11 @@
     \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
   }{%
   }\global\togglefalse{@recommended}%
-  \typeout{!!! Exercise target is exercise.\thechapter.\the@exercisenumber}
+  \addtocounter{numberofexercises}{1}
+  % \typeout{!!! Exercise target is exercise.\thechapter.\the@exercisenumber}
   \hyperref{answers.pdf}{exercise}{\thechapter.\the@exercisenumber}{\the@exercisenumber}\hypertarget{exercise.\thechapter.\the@exercisenumber}{}\hspace*{0.6em plus 0.1em minus 0.05em}}
   %\normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
+\AtEndDocument{\typeout{Number of exercises: \thenumberofexercises.}}
 
 % exercises environment  Contents are
 %      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}

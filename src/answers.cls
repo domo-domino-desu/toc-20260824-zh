@@ -535,14 +535,21 @@
 \newcommand{\figureref}[1]{\Cref{#1} on page~\pageref{#1}}
 \newcommand{\Figureref}[1]{\Cref{#1} on page~\pageref{#1}}
 
+% Count the number of answers to exercises.
+\newcounter{numberanswers} 
+  \setcounter{numberanswers}{0}
+
+% ans environment
+%  how to typset the answer number?
 \newcommand{\answersetting}[1]{\leftskip1em\par\noindent\hspace{-1em}\textbf{#1}\ }
+% in answerbody are the answers, each inside an ans environment. 
 \renewenvironment{ans}[1]{%
+   \addtocounter{numberanswers}{1}
    \gdef\currentanswernumber{#1}%  Save it 
    % Make link back to exercise, and make this a target.    
    \iftoggle{insidetopic}{%
       \answersetting{\hyperref{book.pdf}{exercise}{#1}{#1}}\hypertarget{exercise.#1}{}
     }{%
-      \typeout{!!!! answer linking to exercise.#1}
       \answersetting{\hyperref{book.pdf}{exercise}{#1}{#1}\hypertarget{exercise.#1}{}}
     }
 }{%

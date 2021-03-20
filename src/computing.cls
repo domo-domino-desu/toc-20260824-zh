@@ -709,8 +709,14 @@
 \newcounter{@exercisenumber}[section]
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
 \newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
-\newcommand{\@exercisecounterlabel}{\iftoggle{@recommended}{\llap{\makebox[\recommendation@length][l]{\recommendationmark}}}{}\global\togglefalse{@recommended}%
-  \normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
+\newcommand{\@exercisecounterlabel}{%
+  \iftoggle{@recommended}{%
+    \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
+  }{%
+  }\global\togglefalse{@recommended}%
+  \typeout{!!! Exercise target is exercise.\thechapter.\the@exercisenumber}
+  \hyperref{answers.pdf}{exercise}{\thechapter.\the@exercisenumber}{\the@exercisenumber}\hypertarget{exercise.\thechapter.\the@exercisenumber}{}\hspace*{0.6em plus 0.1em minus 0.05em}}
+  %\normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
 
 % exercises environment  Contents are
 %      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}
@@ -723,7 +729,7 @@
   \begin{list}{\@exercisecounterlabel}%
      {\usecounter{@exercisenumber}
       \setcounter{@exercisenumber}{\value{theorem}}
-      \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}
+      \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}% 
       \setlength{\leftmargin}{\jh@widthofchar}
       \setlength{\labelwidth}{\leftmargin}
       \setlength{\labelsep}{0em}

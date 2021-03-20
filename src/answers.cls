@@ -1,6 +1,6 @@
 % computing.cls
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{computing}[2018/04/11 Class for computing book]
+\ProvidesClass{answers}[2021/03/20 Class for answers for computing book]
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions \relax
@@ -41,6 +41,9 @@
 \usepackage{adjustbox} % for clipping pictures
 
 \usepackage{etoolbox}
+\newtoggle{insidetopic}
+  \settoggle{insidetopic}{false}
+
 % \usepackage{trace}  % for debugging
 
 % ========== Bibliography =============
@@ -402,7 +405,8 @@
 
 % Mark an answer as verified by putting this in the source, and it gets 
 % carried through to answerbody.tex
-\newcommand{\verified}{\noindent\makebox[0in][r]{\textcolor{Fuchsia}{Verified}\hspace*{0.6in}}}
+% \newcommand{\verified}{\noindent\makebox[0in][r]{\textcolor{Fuchsia}{Verified}\hspace*{0.6in}}}
+\newcommand{\verified}{\relax}
 
 
 \renewcommand{\chapter}[1]{\clearemptydoublepage\vspace*{0.15in}\begin{center}\Large\textbf{#1}\end{center}\vspace*{0.5in}}
@@ -530,3 +534,16 @@
 % \renewcommand{\Cref}[1]{REF:~\textit{#1}}
 \newcommand{\figureref}[1]{\Cref{#1} on page~\pageref{#1}}
 \newcommand{\Figureref}[1]{\Cref{#1} on page~\pageref{#1}}
+
+\newcommand{\answersetting}[1]{\leftskip1em\par\noindent\hspace{-1em}\textbf{#1}\ }
+\renewenvironment{ans}[1]{%
+   \gdef\currentanswernumber{#1}%  Save it 
+   % Make link back to exercise, and make this a target.    
+   \iftoggle{insidetopic}{%
+      \answersetting{\hyperref{book.pdf}{exercise}{#1}{#1}}\hypertarget{exercise.#1}{}
+    }{%
+      \typeout{!!!! answer linking to exercise.#1}
+      \answersetting{\hyperref{book.pdf}{exercise}{#1}{#1}\hypertarget{exercise.#1}{}}
+    }
+}{%
+}

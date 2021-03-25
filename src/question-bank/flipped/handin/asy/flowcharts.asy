@@ -176,3 +176,42 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+// ========== NDFSM ==================
+picture pic;
+int picnum = 4;
+setdefaultstatediagramstyles();
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$",ns_accepting);  
+
+// calculate nodes position
+real u=1.75cm;  // horizontal  
+real v=1.0*u;  // vertical
+
+hlayout(1*u, q0, q1);
+vlayout(1*v, q0, q2);
+
+
+// draw edges
+draw(pic,
+     (q0..loop(N)).l("\str{a}"),
+     (q0..bend(15)..q1).l("\str{a},\str{b}"),
+     (q1..bend(15)..q0).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q2--q0).l("\str{b}"),
+     (q2..loop(S)).l("\str{b}")
+     );
+
+// draw nodes
+draw(pic,
+     q0, q1,
+     q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

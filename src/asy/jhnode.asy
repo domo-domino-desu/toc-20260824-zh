@@ -36,7 +36,7 @@ drawstyle undirectededgestyle=drawstyle(edgelabel, p=EDGEPEN_TT, arrow=None);
 // Standard node is single-circle border
 defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(backgroundcolor,black));
 // Double circle nodes
-nodestyle ns_accepting=nodestyle(textpen=NODEPEN+red, drawfn=Filler(FILLCOLOR)+DoubleDrawer(black));
+nodestyle ns_accepting=nodestyle(textpen=NODEPEN+red, drawfn=Filler(backgroundcolor)+DoubleDrawer(black));
 // Nodes without any boxing
 nodestyle ns_noborder=nodestyle(xmargin=1pt, drawfn=None);
 
@@ -130,7 +130,7 @@ void setdefaultstatediagramstyles() {
   // Nodes with double circle 
   ns_accepting=nodestyle(xmargin=1pt,
 			 textpen=NODEPEN,
-			 drawfn=Filler(backgroundcolor)+DoubleDrawer(boldcolor));
+			 drawfn=Filler(backgroundcolor)+DoubleDrawer(backgroundcolor));
   // Nodes without any boxing
   ns_noborder=nodestyle(xmargin=1pt,
 			textpen=NODEPEN,

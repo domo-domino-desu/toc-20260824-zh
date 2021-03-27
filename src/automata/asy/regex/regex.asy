@@ -656,7 +656,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ========== a*ba =============================
+// ========== a(a|b)*a =============================
 picture pic;
 int picnum = 6;
 unitsize(pic,1pt);

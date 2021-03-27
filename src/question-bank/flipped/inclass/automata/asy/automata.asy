@@ -275,3 +275,110 @@ draw(pic, q0, q1
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ========== a*ba =============================
+picture pic;
+int picnum = 6;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_1$");        
+node q2=ncircle("$q_2$",ns_accepting);    
+// node e=ncircle("$e$");    
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.75*u;
+
+hlayout(1*u, q0, q1, q2);
+// vlayout(1*v,q2, e);
+
+// draw edges
+draw(pic,
+     (q0..loop(N)).l("\str{a}"),
+     (q0--q1).l("\str{b}"),
+     (q1--q2).l("\str{a}")
+);
+
+// draw nodes
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ..............................................
+picture pic;
+int picnum = 7;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_1$");        
+node q2=ncircle("$q_2$",ns_accepting);    
+node e=ncircle("$e$");    
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+vlayout(1*v,q1, e);
+
+// draw edges
+draw(pic,
+     (q0..loop(N)).l("\str{a}"),
+     (q0--q1).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q1--e).l("\str{b}"),
+     (q2--e).l("\str{a},\str{b}"),
+     (e..loop(E)).l("\str{a},\str{b}")
+  );
+
+// draw nodes
+     draw(pic, q0, q1, q2,
+	  e
+	  );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ========== a(a|b)*a =============================
+picture pic;
+int picnum = 8;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_1$");        
+node q2=ncircle("$q_2$",ns_accepting);       
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1..loop(N)).l("\str{a},\str{b}"),
+     (q1--q2).l("\str{a}")
+);
+
+// draw nodes
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

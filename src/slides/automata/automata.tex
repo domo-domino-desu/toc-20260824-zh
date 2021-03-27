@@ -343,7 +343,7 @@ there are seven string  of length less than three.
 Turing machines are defined as 
 sets of four-tuple instructions  $q_pT_pT_nq_n$,
 subject to the restriction that the set must be
-deterministic:~no pair of instructions can begin with 
+deterministic\Dash no pair of instructions can begin with 
 the same $q_pT_p$.
 
 Thus, over the set of instructions $q_pT_pT_nq_n\in\TM$,
@@ -364,11 +364,100 @@ for Turing machines.
 % will see that nondetermistic Finite State machines
 % machines do the same jobs as deterministic
 % ones. 
-To start, we see an example and trace through the computation.
+
+\pause{\color{blue}\textit{Remark:}}
+The machine model that we are introducing 
+sometimes leaves the initial impression of being odd.
+So before the definition we will do some preliminary exposition. 
+We will first note that we already have some experience with
+such computations.
+Then we will see an example of a nondeterministic Finite State machine
+and trace through the acceptance of a string,
+which will give us two mental models for how to think about these computations.
+The full definition comes after that.
 \end{frame}
 
 
+\begin{frame}{Recall: grammars}
+Deriving a string from a grammar is a kind of computation.
+It is symbol pushing.
+
+For example, from this grammar
+\begin{grammar}
+  S \produces{} T\trm{b}U
+
+  T \produces{} \trm{a}T \syntaxor \emptystring{}
+
+  U \produces{} \trm{a}U \syntaxor \trm{b}U \syntaxor \emptystring{}  
+\end{grammar}
+we can derive $\sigma_0=\str{aabab}$
+  \begin{center}
+  \begin{tabular}{l}
+    S \derives T \trm{b} U
+    \derives \trm{a} T \trm{b} U    
+    \derives \trm{a} \trm{a} T \trm{b} U    
+    \derives \trm{a} \trm{a} \emptystring{} \trm{b} U
+       =\trm{a} \trm{a} \trm{b} U    
+    \\ \quad 
+    \derives \trm{a} \trm{a} \trm{b} \trm{a} U
+    \derives \trm{a} \trm{a} \trm{b} \trm{a} \trm{b} U
+    \derives \trm{a} \trm{a} \trm{b} \trm{a} \trm{b} \emptystring{}
+    =\trm{a} \trm{a} \trm{b} \trm{a} \trm{b}
+  \end{tabular}
+  \end{center}
+or $\sigma_1=\str{baab}$.
+\begin{center}
+  \begin{tabular}[t]{l}
+    S\derives  T \trm{b} U
+    \derives \emptystring{} \trm{b} U
+      = \trm{b} U    
+    \derives \trm{b} \trm{a} U 
+    \\ \quad 
+    \derives \trm{b} \trm{a} \trm{a} U 
+    \derives \trm{b} \trm{a} \trm{a} \trm{b} U 
+    \derives  \trm{b} \trm{a} \trm{a} \trm{b} \emptystring{}  
+    =  
+    \trm{b} \trm{a} \trm{a} \trm{b} 
+  \end{tabular}
+\end{center}
+\end{frame}
+
 \begin{frame}
+Here are two points about this kind of computation
+that will bear on nondeterministic Finite State machines.
+
+\begin{itemize}
+\item
+In the \mbox{\texttt{T}\produces{}\texttt{aT}} rule,
+the recursion might mislead a person into thinking that we are looking at 
+never-ending expansions, at an essentially infinite computation.
+But we are not interested in that.
+We simply define that a string~$\sigma$ is derivable if there is at least one
+successful sequence of $\derives$ steps.
+
+\pause\item
+Starting with a target string~$\sigma$, 
+one way that we could proceed is by brute force:~apply 
+all rules to the start symbol, then all allowed rules to each result,
+etc. 
+This is a breadth-first search of the $\derives$~sequences.
+
+There is another way to proceed, the way that we actually do it.
+We intuit a sequence of steps, and then verify our guess.   
+\end{itemize}
+
+By the second point, we already have some experience with a kind of 
+nondeterministic computation.
+While in the middle of a derivation-of-a-string computation, 
+while doing a sequence of $\derives$~steps,
+we often find that more than one rule applies.
+How we handle this is to look forward, hoping to guess a 
+finite sequence of legal steps that ends in the desired~$\sigma$.
+\end{frame}
+
+
+
+\begin{frame}{Example of a nondeterministic machine}
 This machine has two arrows labeled~\str{0} that are leaving $q_0$.
 Also, out of $q_1$ comes no arrow with a~\str{1}.
 \begin{center}\small

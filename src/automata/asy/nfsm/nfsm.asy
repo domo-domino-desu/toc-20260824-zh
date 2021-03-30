@@ -5155,6 +5155,81 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// =========== machine accepting aa*bb(bb)* ========= 
+picture pic;
+int picnum = 39;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+node q4=ncircle("$q_4$"); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2, q3, q4);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1--q2).l("\str{b}"),
+     (q2--q3).l("\str{b}"),
+     (q3..bend..q4).l("\str{b}"),
+     (q4..bend..q3).l("\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3, q4
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// =========== machine accepting aa*bbb(bbb)* ========= 
+picture pic;
+int picnum = 40;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$",ns_accepting); 
+node q5=ncircle("$q_5$"); 
+node q6=ncircle("$q_6$"); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2, q3, q4, q5, q6);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1--q2).l("\str{b}"),
+     (q2--q3).l("\str{b}"),
+     (q3--q4).l("\str{b}"),
+     (q4--q5).l("\str{b}"),
+     (q5--q6).l("\str{b}"),
+     (q6..bend..q4).l("\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3, q4, q5, q6
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

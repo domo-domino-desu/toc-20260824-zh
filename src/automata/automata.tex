@@ -5543,12 +5543,23 @@ described in the proof's comment on the subtle point.
 % =================================================
 \section{Regular languages}\index{regular language|(}\index{language!regular|(}
 
+
+We have seen that
+deterministic Finite State machines, nondeterministic Finite State
+machines, and  regular expressions
+all describe the same set of languages.
+\citetext{The fact that we can describe these languages in so many 
+  different ways}{\autocite{SE:noperm}.} 
+suggests that there is something natural and important about them.\footnote{%
+  This is just like the fact that the equivalence of Turing machines,
+  general recursive functions, and all kinds of other models suggests that the
+  computable sets form a natural and important collection.
+  Neither collection is just a historical artifact of what happened to be first
+  explored.}
+
 %...................................
 \subsection{Definition}
-Finite State machines give us insight
-into what a machine can do without scratch memory.
-We can quantify how powerful these machines are by determining
-the set of jobs that they can and cannot do.
+We will isolate and study these languages.
 
 %<*def:RegularLangs>
 \begin{definition}
@@ -5654,7 +5665,7 @@ We can ask about the closure of regular languages under other operations.
 We will use the 
 \definend{product construction}.\index{product construction}\index{Finite State machine!product}
 
-\begin{example}
+\begin{example} \label{ex:ProductConstruction}
 The machine on the left, $\FSM_0$,  
 accepts strings with fewer than two~\str{a}'s.
 The one on the right, $\FSM_1$, 
@@ -5685,7 +5696,7 @@ The transition tables contain the same information.
 \end{center}
 Consider a machine~$\FSM$ whose states are 
 \begin{equation*}
-  \mathcal{Q}_0\times\mathcal{Q}_1
+  Q_0\times Q_1
     =\set{ (q_0,s_0),\, (q_0,s_1),\, (q_1,s_0),\, (q_1,s_1),\, (q_2,s_0),\, (q_2,s_1) }
 \end{equation*}
 and whose transitions are given by 
@@ -5696,28 +5707,28 @@ as here.
   \multicolumn{1}{r}{$\Delta$}
     &\multicolumn{1}{c}{\str{a}} &\multicolumn{1}{c}{\str{b}}  
   \\ \cline{2-3}
-  $(q_0,r_0)$  &$(q_1,r_0)$  &$(q_0,r_1)$  \rule{0em}{2ex} \\
-  $(q_0,r_1)$  &$(q_1,r_1)$  &$(q_0,r_0)$  \\
-  $(q_1,r_0)$  &$(q_2,r_0)$  &$(q_1,r_1)$  \\
-  $(q_1,r_1)$  &$(q_2,r_1)$  &$(q_1,r_0)$  \\
-  $(q_2,r_0)$  &$(q_2,r_0)$  &$(q_2,r_1)$  \\
-  $(q_2,r_1)$  &$(q_2,r_1)$  &$(q_2,r_0)$  \\
+  $(q_0,s_0)$  &$(q_1,s_0)$  &$(q_0,s_1)$  \rule{0em}{2ex} \\
+  $(q_0,s_1)$  &$(q_1,s_1)$  &$(q_0,s_0)$  \\
+  $(q_1,s_0)$  &$(q_2,s_0)$  &$(q_1,s_1)$  \\
+  $(q_1,s_1)$  &$(q_2,s_1)$  &$(q_1,s_0)$  \\
+  $(q_2,s_0)$  &$(q_2,s_0)$  &$(q_2,s_1)$  \\
+  $(q_2,s_1)$  &$(q_2,s_1)$  &$(q_2,s_0)$  \\
 \end{tabular}
 \end{center}
 
 This machine runs $\FSM_0$ and $\FSM_1$ in parallel.
 For instance, if we feed the string \str{aba} to $\FSM$, 
-then it passes through the states
-$(q_0,r_0)$ to $(q_1,r_0)$, then to $(q_1,r_1)$, and then to $(q_2,r_1)$.
-This is simply because $\FSM_0$ passes through
+then the machine's states go from 
+$(q_0,s_0)$ to $(q_1,s_0)$, then to $(q_1,s_1)$, and then to $(q_2,s_1)$.
+This is simply because $\FSM_0$ passes from
 $q_0$ to~$q_1$, then to~$q_1$, and then~$q_2$, 
 while $\FSM_1$ does
-$r_0$ to~$r_0$, then to~$r_1$, and finally to~$r_1$.
+$s_0$ to~$s_0$, then to~$s_1$, and finally to~$s_1$.
 
 The above table does not specify which states are accepting.
 Suppose that we
-say that accepting states $(q_i,r_j)$ are the ones
-where both $q_i$ and $r_j$ are accepting.
+say that accepting states $(q_i,s_j)$ are the ones
+where both $q_i$ and $s_j$ are accepting.
 Then by the prior paragraph, $\FSM$ accepts a string~$\sigma$ if both
 $\FSM_0$ and~$\FSM_1$ accept it.
 That is, this specification of accepting states causes $\FSM$ to accept the 
@@ -5782,15 +5793,19 @@ $\FSM$ accepts the complement of~$\lang_1$.
 \end{proof}
 %</pf:RegLangsClosedCompIntDiff>
 
+These closure properties often make it easier to 
+show that a language is regular.
+
 \begin{example}  \label{ex:RegLangEvenZerosMoreThanFourOnes}
   To show that this language is regular,
-  either produce a machine that recognizes it
+  we could produce a machine that recognizes it
+  or give a regular expression.
   \begin{equation*}
     \lang=\set{\sigma\in\kleenestar{\B}\suchthat
                \text{$\sigma$ has an even number of \str{0}'s 
                      and more than two \str{1}'s}}
   \end{equation*}
-  or
+  But it is easier to 
   note that~$\lang=\lang_0\cap\lang_1$ where 
   $\lang_0=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has an even number of \str{0}'s}}$
   and
@@ -5798,19 +5813,6 @@ $\FSM$ accepts the complement of~$\lang_1$.
   Producing machines for those two is easy.
 \end{example}
  
-So regular expressions,
-deterministic Finite State machines, and nondeterministic Finite State
-machines all describe the same set of languages, namely, the regular
-languages.
-\citetext{The fact that we can describe these languages in so many 
-  different ways}{\autocite{SE:noperm}.} 
-suggests that there is something natural and important about these
-languages.
-This is just like the fact that the equivalence of Turing machines,
-general recursive functions, and all kinds of other models suggests that the
-computable sets form a natural and important collection.
-Neither collection is just a historical artifact of what happened to be first
-explored.
 
 
 \begin{exercises}
@@ -5959,6 +5961,112 @@ Is English a regular language?
 \begin{answer}
   Because the language is regular it is described by a regular expression, $R$.
   Then the regular expression \re{1$R$} describes $\hat{\lang}$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+If machines have $n_0$~states and $n_1$~states, then how many states 
+does the product have?
+\begin{answer}
+The size of the set $Q_0\times Q_1$ is $n_0\cdot n_1$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+For these two machines,
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1041.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1042.pdf}}
+\end{center}
+give the transition table for the cross product.
+Sepcify the accepting states so that the result will accept
+\begin{exparts*}
+\item
+the intersection of the languages of the two machines, and
+\item
+the union of the languages.
+\end{exparts*}
+\begin{answer}
+These are the tables for the machines.
+\begin{center}
+\begin{tabular}[t]{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta_0$}
+    &\multicolumn{1}{c}{\str{a}} &\multicolumn{1}{c}{\str{b}} 
+  \\ \cline{2-3}
+  \acceptingstate{} $q_0$  &$q_0$  &$q_1$  \\ 
+  \acceptingstate{} $q_1$  &$q_2$  &$q_1$  \\ 
+                    $q_2$  &$q_2$  &$q_0$  \\ 
+\end{tabular}
+\qquad
+\begin{tabular}[t]{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta_1$}
+    &\multicolumn{1}{c}{\str{a}} &\multicolumn{1}{c}{\str{b}} 
+  \\ \cline{2-3}
+                    $s_0$  &$s_1$  &$s_0$  \\ 
+  \acceptingstate{} $s_1$  &$s_0$  &$s_0$  \\ 
+\end{tabular}
+\end{center}
+Here is the cross product machine, without specifying any accepting states.
+\begin{center}
+\begin{tabular}{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta$}
+    &\multicolumn{1}{c}{\str{a}} &\multicolumn{1}{c}{\str{b}}  
+  \\  \cline{2-3}
+  $(q_0,s_0)$ &$(q_0,s_1)$   &$(q_1,s_0)$  \\
+  $(q_0,s_1)$ &$(q_0,s_0)$   &$(q_1,s_0)$  \\
+  $(q_1,s_0)$ &$(q_2,s_1)$   &$(q_1,s_0)$  \\
+  $(q_1,s_1)$ &$(q_2,s_0)$   &$(q_1,s_0)$  \\
+  $(q_2,s_0)$ &$(q_2,s_1)$   &$(q_0,s_0)$  \\
+  $(q_2,s_1)$ &$(q_2,s_0)$   &$(q_0,s_0)$  \\
+\end{tabular}
+\end{center}
+\begin{exparts}
+\item 
+To have this machine accept the intersection of the two
+languages, take the accepting states to be those in 
+$F=\set{(q_0,s_1),(q_1,s_1)}$.
+\item
+$F=\set{(q_0,s_0),(q_0,s_1),(q_1,s_0),(q_1,s_1)}$
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Find the machine that is the cross product of 
+the second machine, $\FSM_1$, from \cref{ex:ProductConstruction}.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm92.pdf}}
+\end{center}
+with itself.
+Set the accepting states so that it accepts the same language,
+$\lang_1$.
+\begin{answer}
+Here is the transistion table for~$\FSM_1$.
+\begin{center}
+\begin{tabular}[t]{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta_1$}
+    &\multicolumn{1}{c}{\str{a}} &\multicolumn{1}{c}{\str{b}} 
+  \\ \cline{2-3}
+  $s_0$  &$s_0$  &$s_1$  \\ 
+  \acceptingstate{} $s_1$  &$s_1$  &$s_0$  \\ 
+\end{tabular}
+\end{center}
+The product of this machine with itself has four states.
+\begin{center}
+\begin{tabular}[t]{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta_1$}
+    &\multicolumn{1}{c}{\str{a}} &\multicolumn{1}{c}{\str{b}} 
+  \\ \cline{2-3}
+  $(s_0,s_0)$  &$(s_0,s_0)$  &$(s_1,s_1)$  \\ 
+  $(s_0,s_1)$  &$(s_0,s_1)$  &$(s_1,s_0)$  \\ 
+  $(s_1,s_0)$  &$(s_1,s_0)$  &$(s_0,s_1)$  \\ 
+  \acceptingstate{} $(s_1,s_1)$  &$(s_1,s_1)$  &$(s_0,s_0)$   
+\end{tabular}
+\end{center}
+Here the accepting state is set for the intersection, to only $(s_1,s_1)$.
+We could include the states $(s_0,s_1)$ and $(s_1.s_0)$ for the union 
+construction, but it wouldn't matter because those are unreachable states.
 \end{answer}
 \end{exercise}
 

@@ -5302,4 +5302,68 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// =========== product construction exercise ========= 
+picture pic;
+int picnum = 41;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(N)).l("\str{a}"),
+     (q0--q1).l("\str{b}"),
+     (q1--q2).l("\str{a}"),
+     (q1..loop(N)).l("\str{b}"),
+     (q2..loop(N)).l("\str{a}"),
+     (q2..bend(-30)..q0).l("\str{b}").style("leftside")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ other one ...............
+picture pic;
+int picnum = 42;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node q0=ncircle("$s_0$"); 
+node q1=ncircle("$s_1$",ns_accepting);  
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0..bend..q1).l("\str{a}"),
+     (q0..loop(N)).l("\str{b}"),
+     (q1..bend..q0).l("\str{a},\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 

@@ -3681,6 +3681,76 @@ draw(pic, // q0, q1, q2
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// =========== Regular languages, product construction =======
+picture pic;
+int picnum = 91;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$", ns_accepting),
+  q1=ncircle("$q_1$", ns_accepting),
+  q2=ncircle("$q_2$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1, q2);
+
+// edges
+draw(pic, 
+     (q0--q1).l("\str{a}"),
+     (q0..loop(N)).l("\str{b}"),
+     (q1--q2).l("\str{a}"), 
+     (q1..loop(N)).l("\str{b}"),
+     (q2..loop(N)).l("\str{a},\str{b}")
+    );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// .............. product construction M_1 .................
+picture pic;
+int picnum = 92;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$s_0$"),
+  q1=ncircle("$s_1$", ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q1);
+
+// edges
+draw(pic, 
+     (q0..loop(N)).l("\str{a}"),
+     (q0..bend..q1).l("\str{b}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1..bend..q0).l("\str{b}") 
+    );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

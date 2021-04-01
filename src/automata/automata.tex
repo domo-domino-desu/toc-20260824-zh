@@ -2878,6 +2878,8 @@ We won't give a complete proof (although
 certainly one is possible) simply because
 a proof is messy and the examples below
 are entirely convincing.
+They give the 
+\definend{powerset construction}.\index{powerset construction}\index{Finite State machine!powerset construction}
 
 % First consider a nondeterministic machine $\FSM_N$ 
 % Let its next-state function be~$\Delta_N$.
@@ -5655,7 +5657,7 @@ Recall that a structure is \definend{closed} under an operation if
 The next result restates the above paragraph in this language.
 
 %<*lem:RegLangsClosedUnderUnionConcatStar>
-\begin{lemma}
+\begin{lemma}  \label{lem:RegLangsClosedUnderUnionConcatStar}
   The collection of regular languages is closed under
   union, concatenation, and Kleene star.
 \end{lemma}
@@ -5759,6 +5761,8 @@ set difference of the languages, $\lang_0-\lang_1$.
 A special case of that is when $\lang_0$ is the set of all strings, 
 $\kleenestar{\Sigma}$, whereby
 $\FSM$ accepts the complement of~$\lang_1$.
+\end{proof}
+%</pf:RegLangsClosedCompIntDiff>
 %   The identity
 %   $S\cap T=\setcomp{(\setcomp{S}\cup\setcomp{T})}$
 %   gives intersection in terms of union and complement.
@@ -5790,8 +5794,6 @@ $\FSM$ accepts the complement of~$\lang_1$.
 %   complement of the language of~$\FSM$ and
 %   since this language is recognized by a Finite State machine, it too
 %   is regular.
-\end{proof}
-%</pf:RegLangsClosedCompIntDiff>
 
 These closure properties often make it easier to 
 show that a language is regular.
@@ -5812,10 +5814,10 @@ show that a language is regular.
   $\lang_1=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has more than two \str{1}'s}}$.
   Producing machines for those two is easy.
 \end{example}
- 
 
-
+% -----------------------------------------------------------
 \begin{exercises}
+
 \recommended
 \begin{exercise}
 True or false?
@@ -6034,7 +6036,8 @@ $F=\set{(q_0,s_0),(q_0,s_1),(q_1,s_0),(q_1,s_1)}$
 
 \begin{exercise}
 Find the machine that is the cross product of 
-the second machine, $\FSM_1$, from \cref{ex:ProductConstruction}.
+the second machine, $\FSM_1$, from \cref{ex:ProductConstruction},
+with itself.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm92.pdf}}
 \end{center}
@@ -6067,6 +6070,52 @@ The product of this machine with itself has four states.
 Here the accepting state is set for the intersection, to only $(s_1,s_1)$.
 We could include the states $(s_0,s_1)$ and $(s_1.s_0)$ for the union 
 construction, but it wouldn't matter because those are unreachable states.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+One of our first examples of Finite State machines, \cref{ex:FSATwoAsEvenBs},
+accepts a string when it contains at least two \str{0}'s as well as an
+even number of \str{1}'s.
+Make such a machine as a product of two simple machines.
+\begin{answer}
+The machine on the left below accepts a string $\sigma\in\kleenestar{\B}$ if
+it contains at least two \str{0}'s.
+The one on the right accepts a string if it contains an even number of 
+\str{1}'s.
+\begin{center}
+\begin{tabular}[t]{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta_0$}
+  &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}}
+  \\  \cline{2-3}
+  $q_0$ &$q_1$ &$q_0$  \\
+  $q_1$ &$q_2$ &$q_1$  \\
+  \acceptingstate{} $q_2$ &$q_2$ &$q_2$  \\
+\end{tabular}
+\qquad
+\begin{tabular}[t]{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta_1$}
+  &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}}
+  \\  \cline{2-3}
+  \acceptingstate{} $s_0$ &$s_0$ &$s_1$  \\
+  $s_1$ &$s_1$ &$s_0$  \\
+\end{tabular}
+\end{center}
+The product construction gives this.
+We want the intersection of the two languages.
+\begin{center}
+\begin{tabular}[t]{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta$}
+  &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}}
+  \\  \cline{2-3}
+  $(q_0,s_0)$ &$(q_1,s_0)$ &$(q_0,s_1)$  \\
+  $(q_0,s_1)$ &$(q_1,s_1)$ &$(q_0,s_0)$  \\
+  $(q_1,s_0)$ &$(q_2,s_0)$ &$(q_1,s_1)$  \\
+  $(q_1,s_1)$ &$(q_2,s_1)$ &$(q_1,s_0)$  \\
+  \acceptingstate{}  $(q_2,s_0)$ &$(q_2,s_0)$ &$(q_2,s_1)$  \\
+  $(q_2,s_1)$ &$(q_2,s_1)$ &$(q_2,s_0)$  \\
+\end{tabular}
+\end{center}
 \end{answer}
 \end{exercise}
 
@@ -6191,6 +6240,54 @@ from~$q_X$ to~$\bar{q}$ labeled~\trm{t}.
   \item \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1037.pdf}}
   \item \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1038.pdf}}
   \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+We can give an alternative proof of \cref{th:RegLangsClosedCompIntDiff}, that   the collection of regular languages is closed under
+set intersection, set difference, and set complement,
+that does not rely on a somewhat mysterious ``by construction.''
+\begin{exparts}
+\item Observe that the identity
+$S\cap T=\setcomp{(\setcomp{S}\cup\setcomp{T})}$
+gives intersection in terms of union and complement.
+Use \cref{lem:RegLangsClosedUnderUnionConcatStar} to argue that
+if regular languages are closed under complement then
+they are also closed under intersection.
+\item Use the identity
+$S-T=S\cup\setcomp{T}$
+to make a similar observation about set difference.
+\item Show that the complement of a regular languae is also a
+regular language.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item \Cref{lem:RegLangsClosedUnderUnionConcatStar}
+shows that the collection of regular languages is closed under union.
+\item 
+This identity shows that closure under complement will also demonstrate
+closure under set difference.
+\item Fix a regular language~$\lang$ over some alphabet~$\Sigma$.
+  It is recognized by some deterministic Finite State machine~$\FSM$
+  with input alphabet~$\Sigma$.
+
+  Define a new machine~$\hat{\FSM}$ with the same states and
+  transition function as~$\FSM$ but whose accepting states are the
+  complement,
+  $F_{\hat{\FSM}}=Q_{\FSM}-F_{\FSM}$.
+  We will show that the language of this machine is 
+  $\kleenestar{\Sigma}-\lang$.
+
+  Because $\FSM$ is deterministic, each input string~$\tau$ is associated with a
+  unique last state, the state that the machine is in after it
+  consumes $\tau$'s last character, namely $\hat{\Delta}(\tau)$.
+  Observe that $\hat{\Delta}(\tau)\in F_{\hat{\FSM}}$ if and only if
+  $\hat{\Delta}(\tau)\notin F_{\FSM}$.
+  Thus the language of~$\hat{\FSM}$ is the
+  complement of the language of~$\FSM$ and
+  since this language is recognized by a Finite State machine, it too
+  is regular.
+\end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -7120,7 +7217,7 @@ You must prove your assertions.
 \begin{answer}
   The first is not regular while the second is regular.
   \begin{exparts}
-  \item For contradiction suppose that this language is regular.
+  \item For contradiction, suppose that this language is regular.
   Then it has a pumping length,~$p$.
   Consider the string $\sigma=\str{a}^{p^2}\str{b}^p$.
   It is a member of the language whose length is greater than or equal to~$p$

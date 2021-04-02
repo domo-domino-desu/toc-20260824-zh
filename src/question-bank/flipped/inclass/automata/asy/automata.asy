@@ -382,3 +382,82 @@ draw(pic, q0, q1, q2);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// ========== a^nb^{2m} =============================
+picture pic;
+int picnum = 9;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_1$");        
+node q2=ncircle("$q_2$");        
+node q3=ncircle("$q_3$",ns_accepting);       
+node q4=ncircle("$q_4$");        
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+
+hlayout(1*u, q0, q1, q2, q3, q4);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1--q2).l("\str{b}"),
+     (q2--q3).l("\str{b}"),
+     (q3..bend..q4).l("\str{b}"),
+     (q4..bend..q3).l("\str{b}")     
+);
+
+// draw nodes
+draw(pic, q0, q1, q2, q3, q4);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ========== a^nb^{3m} =============================
+picture pic;
+int picnum = 10;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$");    
+node q1=ncircle("$q_1$");        
+node q2=ncircle("$q_2$");        
+node q3=ncircle("$q_3$");       
+node q4=ncircle("$q_4$",ns_accepting);        
+node q5=ncircle("$q_5$");        
+node q6=ncircle("$q_6$");        
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+
+hlayout(1*u, q0, q1, q2, q3, q4, q5, q6);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1--q2).l("\str{b}"),
+     (q2--q3).l("\str{b}"),
+     (q3--q4).l("\str{b}"),
+     (q4--q5).l("\str{b}"),
+     (q5--q6).l("\str{b}"),
+     (q6..bend..q4).l("\str{b}")    
+);
+
+// draw nodes
+draw(pic, q0, q1, q2, q3, q4, q5, q6);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

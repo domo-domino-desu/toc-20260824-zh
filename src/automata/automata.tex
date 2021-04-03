@@ -5702,7 +5702,7 @@ Consider a machine~$\FSM$ whose states are
     =\set{ (q_0,s_0),\, (q_0,s_1),\, (q_1,s_0),\, (q_1,s_1),\, (q_2,s_0),\, (q_2,s_1) }
 \end{equation*}
 and whose transitions are given by 
-$\Delta(\,(q_0,r_j)\,)=(\,\Delta_0(q_i),\Delta_1(r_j)\,)$,
+$\Delta(\,(q_i,r_j)\,)=(\,\Delta_0(q_i),\Delta_1(r_j)\,)$,
 as here.
 \begin{center}
 \begin{tabular}{r|*{2}{c}}
@@ -5763,56 +5763,28 @@ $\kleenestar{\Sigma}$, whereby
 $\FSM$ accepts the complement of~$\lang_1$.
 \end{proof}
 %</pf:RegLangsClosedCompIntDiff>
-%   The identity
-%   $S\cap T=\setcomp{(\setcomp{S}\cup\setcomp{T})}$
-%   gives intersection in terms of union and complement.
-%   The prior lemma shows that regular languages are closed under union,
-%   so if we show that they are closed under complement then
-%   they are also closed under intersection.
-%   Similarly, the identity
-%   $S-T=S\cup\setcomp{T}$ means that
-%   showing closure under complement will also show closure under 
-%   set difference.
-%
-%   To show that the complement of a regular language
-%   is also regular, fix a regular language~$\lang$ over some alphabet~$\Sigma$.
-%   It is recognized by some deterministic Finite State machine~$\FSM$
-%   with input alphabet~$\Sigma$.
-%   Define a new machine~$\hat{\FSM}$ with the same states and
-%   transition function as~$\FSM$ but whose accepting states are the
-%   complement,
-%   $F_{\hat{\FSM}}=Q_{\FSM}-F_{\FSM}$.
-%   We will show that the language of this machine is 
-%   $\kleenestar{\Sigma}-\lang$.
-%
-%   Because $\FSM$ is deterministic, each input string~$\tau$ is associated with a
-%   unique last state, the state that the machine is in after it
-%   consumes $\tau$'s last character, namely $\hat{\Delta}(\tau)$.
-%   Observe that $\hat{\Delta}(\tau)\in F_{\hat{\FSM}}$ if and only if
-%   $\hat{\Delta}(\tau)\notin F_{\FSM}$.
-%   Thus the language of~$\hat{\FSM}$ is the
-%   complement of the language of~$\FSM$ and
-%   since this language is recognized by a Finite State machine, it too
-%   is regular.
 
 These closure properties often make it easier to 
 show that a language is regular.
 
 \begin{example}  \label{ex:RegLangEvenZerosMoreThanFourOnes}
-  To show that this language is regular,
-  we could produce a machine that recognizes it
-  or give a regular expression.
+  To show that the language
   \begin{equation*}
     \lang=\set{\sigma\in\kleenestar{\B}\suchthat
                \text{$\sigma$ has an even number of \str{0}'s 
                      and more than two \str{1}'s}}
   \end{equation*}
-  But it is easier to 
-  note that~$\lang=\lang_0\cap\lang_1$ where 
-  $\lang_0=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has an even number of \str{0}'s}}$
-  and
-  $\lang_1=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has more than two \str{1}'s}}$.
-  Producing machines for those two is easy.
+  is regular,
+  we could produce a machine that recognizes it,
+  or give a regular expression.
+  Or, we can instead
+  note that~$\lang$ is this intersection,
+  \begin{equation*}
+    \set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has an even number of \str{0}'s}}
+    \cap
+    \set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has more than two \str{1}'s}}
+  \end{equation*}
+  and producing machines for those two is easy.
 \end{example}
 
 % -----------------------------------------------------------
@@ -5825,6 +5797,7 @@ Obviously you must justify each answer.
 \begin{exparts}
 \item Every regular language is finite.
 \item Over $\B$, the empty language is not regular.
+\item The intersection of two languages is regular.
 \item Over $\B$, the language of all strings, 
   $\kleenestar{\B}\!$, is not regular.
 \item Every Finite State machine accepts at least one string.
@@ -5840,6 +5813,10 @@ Obviously you must justify each answer.
   \item False, the empty language is recognized by any Finite State machine
   that has no accepting states.
   It is also the language described by the regular expression~\re{$\emptyset$}.
+  \item False.
+    Rather, the intersection of two regular languages is regular.
+    For example, where $\lang$ is not regular, the intersection
+    $\lang\cap\kleenestar{\B}=\lang$ is not regular.
   \item False. 
   The language~$\kleenestar{\B}$ is the set of all strings is recognized by any 
   Finite State machine whose states are all accepting states.
@@ -5851,25 +5828,6 @@ Obviously you must justify each answer.
   For instance, a machine with only one state, and that state accepting,
   is the smallest machine that recognizes $\lang=\kleenestar{\B}$.
   \end{exparts}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Fix the alphabet~$\B$. 
-True or false?
-\begin{exparts*}
-\item The union of two languages is regular.
-\item The intersection of two languages is regular.
-\end{exparts*}
-\begin{answer}
-\begin{exparts}
-  \item False.
-  This is not necessary if the two languages are not regular.
-  For example, where $\lang$ is not regular, the union $\emptyset\cup\lang$
-  is not regular.
-\item This is like the last one,
-  $\lang\cap\kleenestar{\B}=\lang$.
-\end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -5892,6 +5850,42 @@ Which is which?
   regular expression \re{a*} is
   $\set{\emptystring,\str{a},\str{aa},\ldots}$, and is infinite.
   \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Is $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a power of $2$ in binary}}$ a regular language?
+\begin{answer}
+Yes.
+To show this we need to show that this is the language of some Finite State
+machine.  
+In binary, powers of~$2$ are represented by strings of bits starting 
+with~\str{1} and ending in~\str{0}'s.
+So the regular expression \re{10*} describes the language.
+(If you want to allow leading \str{0}'s then the regular expression is 
+\re{0*10*}.)
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Is English a regular language?
+\begin{answer}
+  This is not really a sensible question.
+  If we assert that no English sentence has more than a million words 
+  (see \autocite{wiki:LongestSentence}) then we might claim that
+  English is a regular language because we can list the sentences that 
+  we declare allowed,
+  and there are finitely many of them.
+
+  Otherwise we must choose a grammar.
+  But which one? 
+  Is ``Colorless green ideas sleep furiously'' a legal sentence even
+  though it is not sensible?
+  Is ``My god, it is her'' allowed even though some would say it should 
+  be ``My god, it is she''?
+
+  Really, it is not a sensible question.
+  (See \url{https://cs.stackexchange.com/a/116178/67754}.)
 \end{answer}
 \end{exercise}
 
@@ -5929,28 +5923,6 @@ Justify your answer.
   For $\lang_0$ use the set of all bitstrings, $\kleenestar{\B}$.
   For $\lang_1$ use any non-regular subset of it,
   the existence of which is guaranteed by \cref{lem:SetRegLangsIsCountable}.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Is English a regular language?
-\begin{answer}
-  This is not really a sensible question.
-
-  If we assert that no English sentence has more than a million words 
-  (see \autocite{wiki:LongestSentence}) then we might claim that
-  English is a regular language because we can enumerate the allowed sentences,
-  and there are finitely many of them.
-
-  Otherwise we must choose a grammar.
-  But which one? 
-  Is ``Colorless green ideas sleep furiously'' a legal sentence even
-  though it is not sensible?
-  Is ``My god, it is her'' allowed even though some would say it should 
-  be ``My god, it is she''?
-
-  Really, the whole thing is a problem.
-  (See \url{https://cs.stackexchange.com/a/116178/67754}.)
 \end{answer}
 \end{exercise}
 
@@ -6160,14 +6132,15 @@ concatenation of a regular language with a not-regular language
 \item cannot be
 \end{exparts*}
 \begin{answer}
-It might be regular, or might be not regular. 
-First note that the empty language $\lang=\emptyset$ and the language
-of all strings $\lang=\kleenestar{\Sigma}$ are regular.
+It might be regular, or might be not regular.
+First note that the language
+of all strings $\lang=\kleenestar{\Sigma}$ is regular.
 Now assume that $\lang_1$ is not regular.
-The concatenation
-$\emptyset\concat\lang_1=\lang_1$ gives a language that is not regular.
 The concatenation $\kleenestar{\Sigma}\concat\lang_1=\kleenestar{\Sigma}$
 gives a language that is regular.
+Also, where the alphabet is $\Sigma$ and $s\in\Sigma$ then 
+the concatenation
+$\set{s}\concat\lang_1$ gives a language that is not regular.
 \end{answer}
 \end{exercise}
 
@@ -6211,6 +6184,43 @@ set of even-length strings in~$\lang$ is also regular.
   The intersection of~$\lang$ with this collection is an intersection of
   two regular languages, so it is regular. 
 \end{answer}
+\end{exercise}
+
+\begin{exercise}
+\cref{ex:RegLangEvenZerosMoreThanFourOnes} shows that closure properties
+can make easier some arguments that a language is regular.
+It can do the same for arguments that a language is not regular.
+The next section shows that 
+$
+  \set{\str{a}^n\str{b}^n\in\kleenestar{\set{\str{a},\str{b}}}
+             \suchthat n\in\N}
+$
+is not regular
+(this is a restatement of \cref{ex:BalancedParensIsNotRegularLang}).
+Use that and closure properties to show that 
+$
+  \set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+        \text{$\sigma$ contains the same number of \str{a}'s as \str{b}'s}}
+$
+is not regular.
+\hint~one way is to use closure under intersection.
+\begin{answer}
+Let 
+$\set{\str{a}^n\str{b}^n\in\kleenestar{\set{\str{a},\str{b}}}
+             \suchthat n\in\N}$
+be $\lang_0$.
+Let the language described by the regular expression \re{a*b*} be~$\lang_1$,
+and let the language
+$
+  \set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+        \text{$\sigma$ contains the same number of \str{a}'s as \str{b}'s}}
+$
+be~$\lang_2$.
+If $\lang_2$ were regular then because the intersection of regular languages
+is a regular language, $\lang_2\cap\lang_1$ would be regular.
+But that set is $\lang_0$, which was given as not regular. 
+\end{answer}
+
 \end{exercise}
  
 \begin{exercise}
@@ -6260,15 +6270,14 @@ set of even-length strings in~$\lang$ is also regular.
 proof, that
 there are languages that are not regular.
 But we can also exhibit one.
-Prove that this language is not regular:
-$\lang=\set{\str{1}^k\suchthat k\in K}$,
+Prove that $\lang=\set{\str{1}^k\suchthat k\in K}$ is not regular,
 where $K$ is the \HP{} set, 
 $K=\set{e\in\N\suchthat\TMfcn_e(e)\converges}$.
 \begin{answer}
 If there was a Finite State machine~$\FSM$ that accepted this language then 
-here is how we could solve the \HP.
-Write~$\FSM$ as a subroutine.
-Given $e\in\N$, feed $\str{1}^e$ to the subroutine.
+to solve the \HP,
+write~$\FSM$ as a subroutine.
+Then, given $e\in\N$, feed $\str{1}^e$ to the subroutine.
 If it accepts, then $e\in K$ and otherwise $e\notin K$.    
 \end{answer}
 \end{exercise}
@@ -6610,23 +6619,6 @@ and $h(\emptystring)=\emptystring$.
   \end{exparts}
 \end{answer}
 \end{exercise}
-
-  % \begin{exercise}
-  % Consider the set of powers of two $\set{2^n\suchthat n\in\N}$.
-  % \begin{exparts}
-  % \item Show that there is a Finite State machine that recognizes the
-  % collection of strings representing powers of~$2$ in binary.
-  % \item Show that there is no Finite State machine that recognizes the
-  % collection of strings representing these numbers in decimal.
-  % \end{exparts}
-  % \begin{answer}
-  % \begin{exparts}
-  % \item These strings have an inital~\str{1} and any subsequent characters are
-  % \str{0}'s.
-  % \item \url{https://cstheory.stackexchange.com/q/2083}
-  % \end{exparts}
-  % \end{answer}
-  % \end{exercise}
 \end{exercises}
 \index{regular language|)}\index{language!regular|)}
 

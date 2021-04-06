@@ -1,0 +1,365 @@
+% \documentclass[noanswers, nolegalese, 11pt]{examjh}
+\documentclass[answers, nolegalese, 11pt]{examjh}
+\usepackage{../../../../computingfonts}
+\usepackage{../../../../contentmacros}
+\usepackage{../../../../grammar}
+\usepackage{graphicx}
+
+\setlength{\parindent}{0em}\setlength{\parskip}{0.5ex}
+\pagestyle{empty}
+\begin{document}\thispagestyle{empty}
+\makebox[\textwidth]{Questions for Five.I\hfill  From \textit{Theory of Computation}, by Hef{}feron}\vspace{-1ex}
+\makebox[\textwidth]{\hbox{}\hrulefill\hbox{}}
+
+
+A \textit{complexity function}~$f$ 
+is one that inputs real number arguments and outputs real 
+number values, and
+(1)~it has an unbounded domain, in that there is a number~$N\in\R^+$
+such that $x\geq N$ implies that $f(x)$ is defined, and
+(2)~it is eventually nonnegative, in that
+there is a number~$M\in\R^+$ so that
+$x\geq M$ implies that $f(x)\geq 0$.
+
+  Let $f,g$ be complexity functions. 
+  Suppose that 
+  $\lim_{x\to\infty}f(x)/g(x)$ exists and equals $L\in\R\cup\set{\infty}$.
+\begin{enumerate}
+  \item If $L=0$ then $g$ grows faster than~$f$,
+    that is, $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
+  This case is denoted
+  $f$ is $o(g)$.
+  \item If $L=\infty$ then $f$ grows faster than~$g$,
+    that is, $g$ is~$\bigOh(f)$ but $f$ is not $\bigOh(g)$.
+This case is denoted
+  $f$ is $\Omega(g)$.  
+\item 
+  If $L$ is between $0$ and~$\infty$   
+  then the two functions have equivalent growth rates,
+    so that $f$ is~$\bigTheta(g)$ and $g$ is~$\bigTheta(f)$.
+If $L=1$ then $f$ and~$g$ are \textit{asymptotically equivalent},
+  denoted $f\sim g$.
+  \end{enumerate}
+
+
+\begin{questions}
+\question
+For each pair, decide of $f$ is $\bigOh(g)$, or 
+$g$ is $\bigOh(f)$, or both, or neither.
+\begin{parts}
+\part
+$f(n)=3n^3+2n+4$, $g(n)=\ln(n)+6$
+\begin{solution}
+To signal that these are functions on $\R$ we convert from $n$'s to $x$'s.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{3x^3+2x+4}{\ln(x)+6}
+\end{equation*}
+This is an ``$\infty/\infty$'' limit.
+Apply L'H\^{o}pital's Rule.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{3x^3+2x+4}{\ln(x)+6}
+  =\lim_{x\to\infty}\frac{9x^2+2}{1/x}
+  =\lim_{x\to\infty}\frac{x\cdot(9x^2+2)}{1}
+  =\infty
+\end{equation*}
+So $g$ is $\bigOh(f)$ but $f$ is not $\bigOh(g)$.
+In short, $f$'s growth rate is strictly bigger than $g$'s.
+\end{solution}
+
+\part
+$f(n)=3n^3+2n+4$, $g(n)=n+5n^3$
+\begin{solution}
+To apply the theorem, consider the limit of the ratio.
+Use L'H\^{o}pital's Rule.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{3x^2+2x+4}{x+5x^3}
+  =
+  \lim_{x\to\infty}\frac{6x+2}{1+15x^2}
+  =
+  \lim_{x\to\infty}\frac{6}{30x}
+  =0
+\end{equation*}
+Conclude that $f$ is $\bigOh(g)$ but it is not the case that
+$g$ is $\bigOh(f)$.
+Briefly, $f$'s growth rate is strictly less than $g$'s.
+\end{solution}
+
+\part
+$f(n)=(1/2)n^3+12n^2$, $g(n)=n^2\ln(n)$
+\begin{solution}
+Apply L'H\^{o}pital's Rule.
+Note that we need to use the Product rule on the denominator.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{(1/2)x^3+12x^2}{x^2\ln(x)}
+  =\lim_{x\to\infty}\frac{(3/2)x^2+24x}{2x\ln(x)+x}
+  =\lim_{x\to\infty}\frac{3x+24}{2\ln(x)+3}
+  =\lim_{x\to\infty}\frac{3}{2(1/x)}
+  =\lim_{x\to\infty}\frac{3x}{2}
+  =\infty
+\end{equation*}
+So $g$ is $\bigOh(f)$ but $f$ is not $\bigOh(g)$.
+\end{solution}
+
+\part
+$f(n)=\lg(n)=\log_{2}(n)$, $g(n)=\ln(n)$
+\begin{solution}
+L'H\^{o}pital's Rule gives this.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{\lg(x)}{\ln(x)}
+  =\lim_{x\to\infty}\frac{(1/x)\cdot(1/ln(2))}{(1/x)}
+  =\lim_{x\to\infty}\frac{1}{\ln(2)}\cdot\frac{(1/x)}{(1/x)}
+  =\lim_{x\to\infty}\frac{1}{\ln(2)}
+\end{equation*}
+So both $g$ is $\bigOh(f)$ and $f$ is $\bigOh(g)$,
+that is, $g$ is $\bigTheta(f)$.
+In short, they grow at equivalent rates.
+\end{solution}
+
+\part
+$f(n)=n^2+\lg(n)$, $g(n)=n^4-n^3$
+\begin{solution}
+\begin{multline*}
+  \lim_{x\to\infty}\frac{x^2+\lg(x)}{x^4-x^3}
+  =\lim_{x\to\infty}\frac{2x+(1/x)}{4x^3-3x^2}
+  =\lim_{x\to\infty}\frac{2x^2+1}{4x^4-3x^3}     \\
+  =\lim_{x\to\infty}\frac{4x}{16x^3-9x^2}
+  =\lim_{x\to\infty}\frac{4}{48x^2-18x}
+  =0
+\end{multline*}
+So $f$ is $\bigOh(g)$ but $g$ is not $\bigOh(f)$.
+\end{solution}
+
+\part
+$f(n)=55$, $g(n)=n^2+n$
+\begin{solution}
+We consider the ratio of the functions.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{55}{x^2+x}
+\end{equation*}
+This is not an ``$\infty/\infty$'' limit, so 
+L'H\^{o}pital's Rule doesn't apply.
+But it doesn't matter because it is easier than that.
+The denominator grows at a faster rate than the numerator because
+the numerator doesn't grow at all.
+That is, $f$ is~$\bigOh(g)$ but 
+$g$ is not~$\bigOh(f)$.
+\end{solution}
+
+\part
+\begin{equation*}
+  f(n)=n^4-3
+  \qquad
+  g(n)=
+  \begin{cases}
+    n^3+n^2  &\case{if $n$ is odd}  \\
+    2n^5-n\lg(n) &\case{otherwise}
+  \end{cases}
+\end{equation*}
+\begin{solution}
+One thing happens for the odd inputs,
+\begin{equation*}
+  \lim_{k\to\infty}\frac{f(2k+1)}{g(2k+1)}=\infty
+\end{equation*}
+while a different thing happens for the even inputs.
+\begin{equation*}
+  \lim_{k\to\infty}\frac{f(2k)}{g(2k)}=0
+\end{equation*}
+Consequently, the limit has no single value.
+Neither is $f$ in $\bigOh(g)$ nor is 
+$g$ in $\bigOh(f)$.
+\end{solution}
+\end{parts}
+
+
+\question
+True or False?
+\begin{parts}
+\part
+$2n^4+3n^2+2$ is $\bigOh(n^5)$
+\begin{solution}
+True.
+\begin{equation*}
+\lim_{x\to\infty}\frac{2x^4+3x^2+2}{x^5}
+=
+\lim_{x\to\infty}\frac{8x^3+6x}{5x^4}
+=
+\lim_{x\to\infty}\frac{24x^2+6}{20x^3}
+=
+\lim_{x\to\infty}\frac{48x}{60x^2}
+=
+\lim_{x\to\infty}\frac{48}{60x}
+=0
+\end{equation*}
+\end{solution}
+
+\part
+$n-3$ is $\bigOh(n)$
+\begin{solution}
+True.
+\begin{equation*}
+\lim_{x\to\infty}\frac{x-3}{x}
+=
+\lim_{x\to\infty}\frac{1}{1}
+=1
+\end{equation*}
+\end{solution}
+
+\part
+$n^2+n\lg(n)$ is $\bigOh(2^n)$
+\begin{solution}
+True.
+\begin{multline*}
+\lim_{x\to\infty}\frac{x^2+x\lg(x)}{2^x}
+=
+\lim_{x\to\infty}\frac{2x+\lg(x)+1}{2^x\ln(2)}
+=
+\lim_{x\to\infty}\frac{2+(1/x)}{2^x(\ln(2))^2}     \\
+=
+\lim_{x\to\infty}\frac{2x+1}{x2^x(\ln(2))^2}
+=
+\lim_{x\to\infty}\frac{2}{2^x(\ln(2))^2+x\cdot 2^x(\ln(2))^3}
+=0
+\end{multline*}
+\end{solution}
+
+\part
+$2n^4+3n^2+2$ is $\bigOh(n^5)$
+\begin{solution}
+True.
+\begin{equation*}
+\lim_{x\to\infty}\frac{2x^4+3x^2+2}{x^5}
+=
+\lim_{x\to\infty}\frac{8x^3+6x}{5x^4}
+=
+\lim_{x\to\infty}\frac{8x^2+6}{5x^3}
+=
+\lim_{x\to\infty}\frac{16x}{15x^2}
+=
+\lim_{x\to\infty}\frac{16}{15x}
+=0
+\end{equation*}
+\end{solution}
+
+\part
+$2n^4+3n^2+2$ is $\bigOh(n^4)$
+\begin{solution}
+True.
+\begin{equation*}
+\lim_{x\to\infty}\frac{2x^4+3x^2+2}{x^4}
+=
+\lim_{x\to\infty}\frac{8x^3+6x}{4x^3}
+=
+\lim_{x\to\infty}\frac{8x^2+6}{4x^2}
+=
+\lim_{x\to\infty}\frac{16x}{8x}
+=2
+\end{equation*}
+\end{solution}
+\end{parts}
+
+\begin{question}
+Where is each function in the Hardy Hierarchy?
+\begin{parts}
+\part $5n^4+2n^5+3$
+\begin{solution}
+$5n^4+2n^5+3\in \bigOh(n^5)$
+\end{solution}
+
+\part $n^{2.51}+55n^{1.04}$
+\begin{solution}
+$n^{2.51}+55n^{1.04}\in\bigOh(n^{2.51})$
+\end{solution}
+
+\part $\lg(n)+n^{0.01}$
+\begin{solution}
+$n^{0.01}+\lg(n)\in\bigOh(n^{0.01})$
+\end{solution}
+
+\part $305\cdot 2^n$
+\begin{solution}
+$305\cdot 2^n\in\bigOh(2^n)$
+\end{solution}
+
+\part $3^n$
+\begin{solution}
+$3^n\in\bigOh(3^n)$
+\end{solution}
+
+\part $n2^n$
+\begin{solution}
+Bit of a trick question: $n2^n\in\bigOh(n2^n)$.
+Note that $n2^n\notin\bigOh(2^n)$.
+\end{solution}
+\end{parts}
+\end{question}
+
+
+\question
+\begin{parts}
+\part
+Verify that $(\ln(x))^2$ is $\bigOh(x)$.
+\part
+Show also that $(\ln(x))^2$ is $\bigOh(x^d)$ for any power~$d\geq 1$.
+\end{parts}
+% starting from \cref{ex:CompareLogToPower}.
+% (We are using the natural log but all logarithmic functions grow at the
+% same rate so the conclusion holds also for the base~$2$ logarithm, $\lg$.)
+\begin{solution}
+\begin{parts}
+\part
+We have
+\begin{equation*}
+  \lim_{x\to\infty}\frac{(\ln(x))^2}{x}
+  =\lim_{x\to\infty}\frac{2\cdot\ln(x)\cdot (1/x)}{1}
+  =2\cdot\lim_{x\to\infty}\frac{\ln(x)}{x}
+  =2\cdot\lim_{x\to\infty}\frac{1/x}{1}
+  =2\cdot\lim_{x\to\infty}1/x
+  =0
+\end{equation*}
+\part
+In general, start by comparing a power of the natural log to a polynomial.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{(\ln(x))^k}{x^d}
+  =\lim_{x\to\infty}\bigg(\frac{\ln(x)}{x^{d/k}}\bigg)^k
+  =\bigg(\lim_{x\to\infty}\frac{\ln(x)}{x^{d/k}}\bigg)^k
+\end{equation*}
+Apply L'H\^{o}pital's Rule to evaluate each limit inside the parentheses.
+\begin{equation*}
+  =\bigg(\lim_{x\to\infty}\frac{1}{(d/k)}\cdot\frac{1/x}{x^{(d/k)-1}}\bigg)^k
+  =\bigg(\lim_{x\to\infty}\frac{1}{(d/k)}\cdot\frac{1}{x^{d/k}}\bigg)^k
+\end{equation*}
+The answer is zero.
+\end{parts}
+\end{solution}
+
+\question
+An algorithm that inputs natural numbers runs in 
+\textit{pseudopolynomial time}
+if its runtime is polynomial in the numeric value of the input~$n$, 
+but exponential in the number of bits required to represent~$n$.   
+Show that the naive algorithm to test if the input is prime,
+which just checks whether it is divisible by any number
+that is smaller and greater than~$2$, 
+is pseudopolynomial.
+(\textit{Hint:}~we can check whether one number divides another in quadratic time.) 
+\begin{solution}
+Consider the number~$n\in\N$.
+The hint says that we can check whether a number divides~$n$ in
+quadratic time.
+Wrapping a loop around that to do all numbers~$m$ with $2<m<n$ adds
+one to the exponent.
+So the naive algorithm is~$\bigOh(n^3)$ in the value of~$n$.
+
+However, in terms of bits,
+the number~$n$ is represented by about $\lg(n)$-many bits.
+That is, this expresses the runtime as a function of 
+the size of the input.
+\begin{equation*}
+   \text{runtime}=n^3=(2^{\text{size}})^3=2^{3\cdot\text{size}}
+\end{equation*}
+So the relationship between the size of the input
+and the runtime is exponential.
+\end{solution}
+
+\end{questions}
+\end{document}

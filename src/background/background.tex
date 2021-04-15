@@ -6433,8 +6433,7 @@ interested in the input-output behavior of the machines.
 
 \begin{exercises}
 \begin{exercise}
-Someone in your class says, ``I don't get the point of the \HP; it just
-seems totally not relevant.
+Someone in your class says, ``I don't get the point of the \HP.
 If you want programs to halt then just watch them and when they exceed a
 set number of cycles, send a kill signal.''
 Give them a clue.
@@ -6449,7 +6448,7 @@ One is an operating system.
 \end{exercise}
 
 \begin{exercise}
-True or false: there is no function that solves the Halting Problem;
+True or false: there is no function that solves the Halting Problem, that is,
 there is no $f$ such that $f(e)=1$ if $\phi_e(e)\converges$ and $f(e)=0$ if
 $\phi_e(e)\diverges$.
 \begin{answer}\verified
@@ -6479,7 +6478,8 @@ correctly determine whether $\TM_x$ does that thing.
 \end{exercise}
 
 \begin{exercise}
-You have a person in class who a lot of time talks before thinking.
+You have a person in your class who a lot of time talks first and
+thinks second.
 They say,
 ``Hey, I can solve the \HP.
 For any given Turing machine there are a finite number of states,
@@ -6487,13 +6487,19 @@ right?
 And the tape alphabet is finite, right?
 So there are only finitely many state and character pairs that can happen.
 As the machine runs, just monitor it for a repeat pair.
-If we see one then declare that the machine is looping.''
-What's missing?
+If we see one then declare that the machine is looping, and so it won't halt.''
+What are they missing?
 \begin{answer}
-To detect a loop we must look for a repeated configuration, 
+First, to detect a loop we must look for a repeated configuration, 
 not just a repeated state-character pair.
 Machines can run forever without repeating a configuration,
-for instance by just writing more characters to the tape.
+for instance by just writing more characters to the tape,
+as in code that keeps incrementing a variable.
+
+Further, the \HP{} is not to detect an infinite loop.
+Rather, the \HP{} is to detect whether the machine will halt.
+Here also, code that just keeps incrementing a variable will not loop,
+but also not halt.
 \end{answer}
 \end{exercise}
 
@@ -6519,6 +6525,41 @@ No.
 Either $f$ does halt on all inputs, or it doesn't.
 So there are two possibilities, both of which are computable, 
 it is just that we don't know which one is true.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+\begin{credit}
+  CS SE user Kyle Strand \url{https://cs.stackexchange.com/q/11645/50343}.
+\end{credit}
+Would it be possible for a computer to detect infinite loops and 
+subsequently stop the associated process, or would implementing such logic 
+be solving the \HP?
+Specifically, 
+could the runtime environment do this:~after each instruction is executed,
+it makes a snapshot of all of the relevant memory, the stack and heap data, 
+the registers, the instruction pointer, etc., and
+before executing the next instruction it checks that snapshot against
+all prior ones, and if there is a repeat then it declares that the program is
+in an infinite loop?
+(Thus, for instance, a program generating an indefinitely long decimal 
+expansion of pi isn't in an infinite loop because at every iteration, 
+it has more digits of pi in its memory.)
+\begin{answer}
+A machine could do that. 
+It would not violate the unsolvability of the \HP.
+
+However:~a machine can fail to halt for reasons other than that it is in
+an infinite loop.
+The code below would not be flagged 
+as being in an infinite loop
+by the runtime environment described, but 
+it does not halt. 
+\protect\begin{lstlisting}
+i=0
+while True:
+    i=i+1
+\end{lstlisting}
 \end{answer}
 \end{exercise}
 
@@ -6565,7 +6606,8 @@ Consider the set consisting of~$1$ if Mallory reached the summit of Everest,
 and otherwise consisting of~$0$. 
 Is that set computable?
 \begin{answer}
-  Any finite set is computable.
+  Any finite set is computable, so yes.
+Thus, we should be cautious about coflating `computable' with knowable.
 \end{answer}
 \end{exercise}
 

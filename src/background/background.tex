@@ -9132,15 +9132,12 @@ set is unsolvable, and also the set is computably enumerable?
 \end{answer}
 \end{exercise}
 
-% \begin{exercise}
-% Sketch a program to enumerate each set.
-% \begin{exparts*}
-% \item the even numbers
-% \item the perfect squares
-% \item the primes
-% \item the set $\set{5,7,11}$.
-% \end{exparts*}
-% \end{exercise}
+\begin{exercise}
+Show that the collection of computably enumerable sets is countable.
+\begin{answer}
+There are only countably many Turing machines to do the enumeration.
+\end{answer}
+\end{exercise}
 
 \begin{exercise}
 \begin{exparts*}
@@ -9205,9 +9202,40 @@ subset.
 \end{answer}
 \end{exercise}
 
+\recommended
+\begin{exercise}
+Consider the function $\operatorname{steps}$ such that 
+$\operatorname{steps}(e)$ is 
+the minimal number of steps so that Turing machine~$\TM_e$ halts if
+started with $e$ on its
+input tape, or is undefined if the machine never halts.
+\begin{exparts}
+\item Argue that this function is partial computable.
+\item Argue that it is not total.
+\item Prove that it has no total extension, no total computable 
+$\map{f}{\N}{\N}$ so that if $\operatorname{steps}(e)\converges$ then
+$\operatorname{steps}(e)=f(e)$
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item Arguing by Church's Thesis:~compute $\operatorname{steps}(e)$ by running
+$\TM_e$ on input~$e$ and if it ever halts, outputting the number of steps.
+\item
+If $\operatorname{steps}$ were total in addition to being computable
+then we could solve the \HP.
+To decide whether $e\in K$, first compute $\operatorname{steps}(e)$. 
+Then run $\TM_e$ on input~$e$ for $\operatorname{steps}(e)$-many steps.
+If this computation has not halted by then, it will never halt.
+\item
+This is the same as the prior argument, but with~$f$ in place of 
+$\operatorname{steps}$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
 \begin{exercise}
 Let $f$ be a partial computable function that 
-enumerates the infinite set~$R\subseteq \N$.
+enumerates an infinite set~$R\subseteq \N$.
 Produce a total computable function
 that enumerates~$R$.
 \begin{answer}\verified
@@ -9960,27 +9988,6 @@ Help your prof out here.
 \end{exercise}
 
 \begin{exercise}
-Is the number of oracles countable or uncountable?
-\begin{answer}\verified
-  Any subset of~$\N$ can be an oracle, so there are uncountably many oracles. 
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-Prove that $A\leq_T \setcomp{A}$ for all $A\subseteq\N$.
-\begin{answer}\verified
-Consider a machine with oracle~$X$ that takes input~$x$, 
-accesses the oracle to determine if $x\in X$,
-and then prints out the opposite.
-So if it finds that $x\in X$ then it prints \str{0}, while if it finds that
-$x\notin X$ then it prints~\str{1}.
-This machine will, given oracle~$A$, compute the characteristic
-function of~$\setcomp{A}$.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
 Your study partner confesses, ``I don't understand relative computation.
 Any computation using an oracle must make only finitely many 
 \codeinline{oracle} calls if it halts.
@@ -9996,6 +10003,92 @@ Help them out.
 \end{answer}
 \end{exercise}
 
+\recommended
+\begin{exercise}
+Recall that the set $\set{e\suchthat \TMfcn_e(3)\converges}$ is 
+not computable.
+Sketch how to compute it using a $K$ oracle.
+\hint~one way is to use the \smn{} theorem to produce a family of machines 
+where the $x$-th member halts on all inputs if and only if machine~$x$ halts
+on~$3$. 
+\begin{answer}
+On the left of \figureref{fig:HaltsOnThreeKOracle} 
+is a flowchart sketching a program.
+By Church's Thesis there is a Turing machine that computes it.
+Let the index of that machine be~$e$.
+\begin{figure}\centering
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1033.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1034.pdf}}
+  \caption{Computing $\set{e\suchthat \TMfcn_e(3)\converges}$ with a $K$ oracle.}
+  \label{fig:HaltsOnThreeKOracle}
+\end{figure}
+Apply the \smn{} theorem to get a family of machines parametrized by~$x$.
+The $x$-th member of that family is shown on the right.
+Clearly it halts for all input if and only if $\TM_x$ halts on input~$3$.
+Thus, $TM_x$ halts on input~$3$ if and only if $s(e,x)\in K$. 
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+For the set $S=\set{e\suchthat \TMfcn_e(3)\converges}$, 
+show that $S\leq_T K_0$.
+\begin{answer}
+By definition, 
+$K_0=\set{\sequence{e,x}\suchthat \TMfcn_e(x)\converges}$.
+So $e\in S$ if and only if $\sequence{e,3}\in K_0$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Consider the set 
+$\set{e\suchthat \text{$\TMfcn_e(j)=7$ for some $j$}}$.
+\begin{exparts}
+\item Show that it is not computable, using Rice's theorem.
+\item Sketch how to compute it using a $K$ oracle.
+\hint~one way is to use the \smn{} theorem to produce a family of machines 
+where the $x$-th member halts on all inputs if and only if machine~$x$ 
+outputs~$7$ on some input. 
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item Let 
+$\mathcal{I}=\set{e\suchthat \text{$\TMfcn_e(j)=7$ for some $j$}}$.
+This set is not empty because one element is the index of 
+the Turing machine that outputs~$7$ for all inputs.
+This set is not all of~$\N$ because one non-element is the index of the
+Turing machine that fails to halt on all inputs.
+
+To see that~$\mathcal{I}$ is an index set, suppose that $e\in\mathcal{I}$
+and that $\hat{e}$ is such that $\TMfcn_e\samebehavior\TMfcn_{\hat{e}}$.
+Because $e\in\mathcal{I}$, there is an input~$j$ so that $\TMfcn_e(j)=7$.
+Because $\TMfcn_e\samebehavior\TMfcn_{\hat{e}}$, for the same~$j$ we
+have $\TMfcn_{\hat{e}}(j)=7$, and therefore $\hat{e}\in\mathcal{I}$ also.
+\item
+On the left of \figureref{fig:EverOutputsSevenOracle} 
+is a flowchart sketching a program.
+The middle chart expands on the box saying `dovetail'.
+By Church's Thesis there is a Turing machine that computes this flowchart.
+Let the index of that machine be~$e$.
+\begin{figure}\centering
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1035.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1037.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1036.pdf}}
+  \caption{Computing $\set{e\suchthat \text{$\TMfcn_e(x)=7$ for some $x$}}$ with a $K$ oracle.}
+  \label{fig:EverOutputsSevenOracle}
+\end{figure}
+Apply the \smn{} theorem to get a family of machines parametrized by~$x$.
+The $x$-th member of that family is shown on the right.
+Clearly it halts for all inputs~$y$ if and only if $\TM_x$ outputs a~$7$
+for any input.
+Thus, $TM_x$ ever outputs a~$7$ if and only if $s(e,x)\in K$. 
+\end{exparts}
+\end{answer}
+\end{exercise}
+
 \begin{exercise}
 Let $A$ and~$B$ be sets.
 Show that if $A(q)=B(q)$ for all $q\in\N$ used in the oracle computation
@@ -10004,6 +10097,20 @@ then $\TMfcn^A(x)=\TMfcn^B(x)$.
 \begin{answer}\verified
 The computation will proceed in exactly the same way, so it will come
 to the same result.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Prove that $A\leq_T \setcomp{A}$ for all $A\subseteq\N$.
+\begin{answer}\verified
+Consider a machine with oracle~$X$ that takes input~$x$, 
+accesses the oracle to determine if $x\in X$,
+and then prints out the opposite.
+So if it finds that $x\in X$ then it prints \str{0}, while if it finds that
+$x\notin X$ then it prints~\str{1}.
+This machine will, given oracle~$A$, compute the characteristic
+function of~$\setcomp{A}$.
 \end{answer}
 \end{exercise}
 
@@ -10094,6 +10201,13 @@ Show that the \HP{} set~$K$ reduces to each.
 \end{exercise}
 
 \begin{exercise}
+Is the number of oracles countable or uncountable?
+\begin{answer}\verified
+  Any subset of~$\N$ can be an oracle, so there are uncountably many oracles. 
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 Let $A$ and~$B$ be sets.
 Produce a set~$C$ so that $A\leq_T C$ and $B\leq_T C$.
 \begin{answer}\verified
@@ -10116,14 +10230,14 @@ Prove that the collection of sets computable from that oracle is countable.
 \end{exercise}
 
 \begin{exercise}
-The relation $\leq_T$ involves sets so we naturally ask how it interacts
+The relation $\leq_T$ involves sets, so we naturally ask how it interacts
 with set operations.
-\begin{exparts}
+\begin{exparts*}
 \item Does $A\subseteq B$ imply $A\leq_T B$?
 \item Is $A\leq_T A\cup B$?
 \item Is $A\leq_T A\cap B$?
 \item Is $A\leq_T \setcomp{A}$?
-\end{exparts}
+\end{exparts*}
 \begin{answer}\verified
   \begin{exparts}
   \item No.

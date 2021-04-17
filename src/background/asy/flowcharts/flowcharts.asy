@@ -2446,3 +2446,245 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ========= Exercise: Use K oracle to compute whether P_e(3) converges ======
+picture pic;
+int picnum = 33;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on $3$");
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............ After s-m-n ..................
+picture pic;
+int picnum = 34;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node run=nbox("Run $\TM_x$ on $3$");
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ========= Exercise: Use K oracle to compute whether P_e ever outputs 7 =====
+picture pic;
+int picnum = 35;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox(minipage_snug("Dovetail search for $j$\\where $\TM_x$ outputs $7$ on $j$"));
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,run);
+vlayout(1.25*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............ After s-m-n ..................
+picture pic;
+int picnum = 36;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node run=nbox(minipage_snug("Dovetail search for $j$\\where $\TM_x$ outputs $7$ on $j$"));
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,run);
+vlayout(1.25*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ Dovetail search for i where P_e outputs 7 on i ...............
+picture pic;
+int picnum = 37;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node initialize=nbox("$i=0$, $\text{Flag}=F$");
+node whilebox=nbox("While $\text{Flag}$ is $F$");
+node increment=nbox("Increment $i$");
+node forbox=nbox("For $j=0$ to $i$");
+node run=nbox(minipage_snug("Run $\TM_x$ on input $j$\\ for $i$-many steps"));
+node test=nrounddiamond("Halts and outputs $7$?");
+node setflag=nbox("Set $\text{Flag}=T$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,initialize);
+vlayout(1.15*v,initialize,whilebox);
+hlayout(5.25*u,whilebox,ending);
+increment.pos = whilebox.pos + (1*u, -1.15*v);
+vlayout(1.15*v,increment,forbox);
+run.pos = forbox.pos + (1*u,-1.5*v);
+vlayout(1.65*v,run,test);
+vlayout(1.5*v,test,setflag);
+
+// draw edges
+draw(pic,
+     (start--initialize),
+     (initialize--whilebox),
+     (whilebox--ending).l(Label("Else",Relative(0.15))).style("leftside"),
+     (whilebox..VHV..increment),
+     (increment--forbox),
+     (forbox..VHV..run),
+     // (forbox..HVHd(2*u)..increment),
+     (run--test),
+     (test--setflag).l("Y"),
+     (test..HVHd(-6.5*u)..forbox).l(Label("N",Relative(0.1))).style("leftside"),
+     // (increment..HVHd(2.25*u)..forbox),
+     //     (nullnode--forbox),
+     (setflag..HVHd(3*u)..whilebox)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     initialize,
+     whilebox,
+     increment,
+     forbox,
+     run,
+     test,
+     setflag,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

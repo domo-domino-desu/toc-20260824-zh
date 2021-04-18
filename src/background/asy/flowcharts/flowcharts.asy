@@ -2885,3 +2885,183 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============ K\leq_T Tot ======================
+picture pic;
+int picnum = 40;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on input $x$");
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .................. after applying s-m-n ..................
+picture pic;
+int picnum = 41;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node run=nbox("Run $\TM_x$ on input $x$");
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============ K\leq_T Ext ======================
+picture pic;
+int picnum = 42;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on input $x$");
+node run2=nbox("Return $\operatorname{steps}(x)$");
+node print=nbox("Print output");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,run2);
+vlayout(1*v,run2,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--run2),
+     (run2--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     run2,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .................. after applying s-m-n ..................
+picture pic;
+int picnum = 43;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on input $x$");
+node run2=nbox("Return $\operatorname{steps}(x)$");
+node print=nbox("Print output");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,run2);
+vlayout(1*v,run2,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--run2),
+     (run2--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     run2,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

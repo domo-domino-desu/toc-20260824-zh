@@ -2688,3 +2688,200 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============ P_e(3)=P_{2e}(3) ======================
+picture pic;
+int picnum = 38;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node runx=nbox("Run $\TM_x$ on input $3$");
+node run2x=nbox("Run $\TM_{2x}$ on input $3$");
+node test=nrounddiamond("Equal?");
+node print=nbox("Print $42$");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,runx);
+vlayout(1*v,runx,run2x);
+vlayout(1.35*v,run2x,test);
+print.pos = test.pos + (-2*u,-1*v);
+loop.pos = test.pos + (2*u,-1*v);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--runx),
+     (runx--run2x),
+     (run2x--test),
+     (test..HV..print).l(Label("Y",Relative(0.25))),
+     (test..HV..loop).l(Label("N",Relative(0.25))).style("leftside"),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     runx,
+     run2x,
+     test,
+     print,
+     loop,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .................. after applying s-m-n ..................
+picture pic;
+int picnum = 39;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node runx=nbox("Run $\TM_x$ on input $3$");
+node run2x=nbox("Run $\TM_{2x}$ on input $3$");
+node test=nrounddiamond("Equal?");
+node print=nbox("Print $42$");
+node loop=nbox("Infinite loop");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,runx);
+vlayout(1*v,runx,run2x);
+vlayout(1.35*v,run2x,test);
+print.pos = test.pos + (-2*u,-1*v);
+loop.pos = test.pos + (2*u,-1*v);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--runx),
+     (runx--run2x),
+     (run2x--test),
+     (test..HV..print).l(Label("Y",Relative(0.25))),
+     (test..HV..loop).l(Label("N",Relative(0.25))).style("leftside"),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     runx,
+     run2x,
+     test,
+     print,
+     loop,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============ K\leq_T Tot ======================
+picture pic;
+int picnum = 40;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on input $x$");
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .................. after applying s-m-n ..................
+picture pic;
+int picnum = 41;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node run=nbox("Run $\TM_x$ on input $x$");
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

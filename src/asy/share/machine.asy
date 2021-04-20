@@ -66,7 +66,7 @@ triple eb_origin = (-4,-2,0);  // where external box is shifted
 draw_wire(pic,tm_origin=tm_origin,eb_origin=eb_origin);
 
 transform3 t=shift(eb_origin);
-eb_draw(pic, t=t, eb_label="\textsf{K}");
+eb_draw(pic, t=t, eb_label="\textsf{X}");
 tm_draw_lf_tape(pic);
 tm_draw(pic);
 tm_draw_start_button(pic);

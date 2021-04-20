@@ -9549,36 +9549,48 @@ extending the definition of Turing machines.
 % by a single~\str{1} followed by $n$-many \str{0}'s,
 % while if $n\notin A$ then the sequence is replaced 
 % by $n$-many \str{0}'s.
-But \citetext{we will instead use Church's Thesis}{%
+But \citetext{we will instead describe it conceptually}{%
   For a full treatment see \autocite{Rogers}.}.
-Imagine enhancing a programming language by introducing 
-a Boolean function \codeinline{oracle}.
+Imagine adding to a programming language 
+a Boolean function \codeinline{oracle},
+or allowing questions to an oracle in a flowchart.\footnote{%
+  We allow a single oracle program to contain one such query, or 
+  more than one, or none at all. 
+  }
+\begin{center}
+\begin{minipage}{1.5in}
 \begin{lstlisting}
-(if (oracle(x))
-    ... )
+if oracle(x)
+    ... 
+else
+    ...
 \end{lstlisting}
+\end{minipage}
+\qquad
+\vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts21.pdf}}
+\end{center}
 When $x\in X$
 then this takes one branch, while if $x\notin X$ then it takes the other.
 
-Most of what we have already developed about machines carries over.
-For instance, program are strings, each program has an index,
-and the index is source-equivalent, so that from an index we can compute the
-program source
-and from a source we can find the index.
-
-In the setup above, the program code does not
-change if we change the oracle\Dash
-if we unplug the $X$ oracle box and replace
-it with a~$Y$ oracle box
+Above, we can change the oracle without changing the program code\Dash
+in the diagram if we unplug the black box $X$~oracle and replace
+it with a $Y$~oracle
 then the white box is unchanged.
-Of course, the values returned by \codeinline{oracle(x)} may change,
-resulting in changes to the outcome of running the program
-with the oracle, the two-box system.
+Of course, the values returned by the oracle may change,
+which may change the outcome of running the machine,
+the two-box system.
 But the enhanced Turing machine stays the same.
+
+Besides that one enhancement, the rest of what we have previously 
+developed about machines carries over.
+For instance, each white box, that is, each oracle Turing machine, has an index.
+That index is source-equivalent, meaning that from an index we can compute the
+machine source
+and from the source we can find the index.
 Thus,
-to specify a relative computation, in addition to specifying
-which program we are using and which inputs,
-we must also specify the oracle set.
+to specify a relative computation, as earlier we specify
+which machine we are using and which inputs, and 
+in addition we also specify the oracle set.
 This explains the notations for the
 \definend{oracle Turing machine, $\TM_e^X$},\index{oracle Turing machine}\index{Turing machine!with oracle}
 and for the outcome of the
@@ -9596,20 +9608,23 @@ denoted \definend{$S\leq_T X$}.
 \end{definition}
 
 That is, $S\leq_T X$ if and only if $\TMfcn_e^X=\charfcn{S}$ for some $e\in\N$.
-Think of the set $S$ as being a easier problem, or at least no harder, than~$X$.
-For instance, where $E$ is the set of even numbers then $E\leq_TK$.
-\begin{remark}
-The terminology
-`$S$ reduces to $X$' can at first seem reversed.
-The idea is that we can solve problem~$S$ by
-using a solution to~$X$.
-This phrase also appears in other areas of Mathematics.
-For instance, in Calculus 
-we may say that finding the area under a
-polynomial curve reduces to the problem of antidifferentiation.
-\end{remark}
 
-\begin{theorem}
+The terminology
+`$S$ reduces to $X$' can at first seem confused.
+Think of the set~$S$ as being a problem and we want to know how hard it is
+to answer questions about it.
+Then, as the notation suggests, $S\leq_T X$ means that problem~$S$ 
+is is no harder than problem~$X$,
+so that we can solve problem~$S$ by
+using a solution to~$X$.\footnote{%
+  The phrase `reduces to' also appears in other areas of Mathematics.
+  For instance, in Calculus 
+  we may say that finding the area under a
+  polynomial curve reduces to the problem of antidifferentiation,
+  because if we can antidifferentiate then we can compute the area.
+}
+
+\begin{theorem} \label{th:TReductionReflexiveAndTrans}
 \begin{thmparts}
 \item A set is computable if and only if it is computable
 relative to the empty set, or relative to any computable set.
@@ -9641,25 +9656,46 @@ directly from~$C$.
 \begin{example}
 Recall the problem of determining, given~$e$, whether $\TM_e$ halts
 on input~$3$.
-It asks for a program that acts as the
-characteristic function of the set
+It asks for a machine that acts as the
+characteristic function $\charfcn{A}$ of the set
 $A=\set{e\suchthat \text{$\TM_e$ halts on~$3$}}$.
 We will show that $K\leq_T A$.
 
-This is a reprise of \cref{ex:HaltOnThree}.
-There, we considered the function $\map{\psi}{\N^2}{\N}$
-that returns $42$ if $\TMfcn_x(x)\converges$ and that diverges otherwise.
-Church's Thesis gave a Turing machine whose input-output behavior is $\psi$.
-We let that machine have index~$e$, 
-and applied the \smn{} theorem to parametrize~$x$, 
-giving $\TMfcn_{s(e,x)}$.
-We finished by observing that $\TMfcn_x(x)\converges$ if and only if
-$\charfcn{A}(s(e,x))=1$, where $\charfcn{A}$ is the characteristic function.
-That computes $K$ from an $A$~oracle.
+We will do it in two steps.
+The first is a reprise of \cref{ex:HaltOnThree}.
+There, we considered the function $\map{\psi}{\N^2}{\N}$ below.
+\begin{center}
+  $\psi(x,y)=
+  \begin{cases}
+    42        &\case{if $\TMfcn_x(x)\converges$} \\
+    \;\diverges &\case{otherwise}
+  \end{cases}$
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1033.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts1034.pdf}}
+\end{center}
+It is computed by the machine sketched in the middle,
+so by Church's Thesis there is a Turing machine whose input-output behavior 
+is $\psi$.
+Let that machine have index~$e$.
+Apply the \smn{} theorem to parametrize~$x$, 
+giving $\TM_{s(e,x)}$ sketched on the right.
+Then, for any $k\in\N$ we have $k\in K$ if and only if
+$s(e,k)\in A$,
+
+With that, the second step is to build the oracle machine, 
+the white box pictured earlier.
+The machine below computes $K$ from an $A$~oracle, 
+by asking whether $s(e,k)\in A$, for the number~$e$ 
+fixed in the prior paragraph.
+\begin{center}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts22.pdf}}
+\end{center}
 \end{example}
 
 \begin{lemma} \label{lem:ComputableOracleDoesNothing}
-Any computable set, including $\emptyset$ or~$\N$,
+Any set that is computable, including $\emptyset$ or~$\N$,
 is Turing reducible to any other set.
 \end{lemma}
 
@@ -9716,36 +9752,36 @@ $K\equiv_T K_0$.
 
 \begin{proof}
 For $K\leq_T K_0$ suppose that we have access to a $K_0$-oracle.
-Since it can say whether $\TM_e$ halts on~$x$ for any input~$x$,
-it can clearly say whether $\TM_e$ halts on~$e$.
+This routine will determine $K$ from a $K_0$ oracle.
+\begin{center}
+  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts23.pdf}}
+\end{center}
 
 For the $K_0\leq_T K$ half, 
 % The problem we must solve is:~given a pair $\sequence{e,x}$,
 % determine whether $\TM_e$ halts on input~$x$.
-consider the flowchart on the left;
-obviously this machine 
+consider the flowchart on the left below;
+clearly this machine 
 halts for all input triples exactly if $\sequence{e,x}\in K_0$.
 By Church's Thesis there is a Turing machine implementing
-it; let it be machine~$\TM_{\hat{e}}$.
+it; let it be machine~$\TM_{e}$.
 \begin{center}
   \includegraphics{background/asy/hp/hp03.pdf}
-  \hspace{2em plus 0.5fil}
+  \qquad
   \includegraphics{background/asy/hp/hp04.pdf}
 \end{center}
 Get the 
 flowchart on the right by applying the \smn{} theorem
-to parametrize $e$ and~$x$
-(that is, this is a sketch of machine $\TM_{s(\hat{e},e,x)}$). 
-That flowchart represents a family of machines, 
-one for each pair $\protect\sequence{e,x}$.
+to parametrize $e$ and~$x$.
+That is, on the right is a sketch of $\TM_{s(e,x)}$.
 
 Now suppose that we are given a pair $\sequence{e,x}$ and consider the 
-right-side flowchart % $\TM_{s(\hat{e},e,x)}$ 
+right-side flowchart
 for that pair.
 It either halts on all inputs~$y$ 
 or fails to halt on all inputs, depending on whether $\phi_e(x)\converges$.
 In particular, taking the input to be the number of this machine
-$y=s(\hat{e},e,x)$, we have that
+$y=s(e,e,x)$, we have that
 $\TM_{s(\hat{e},e,x)}$ halts on input $s(\hat{e},e,x)$
 if and only if $\TMfcn_e(x)\converges$.
 So give a question about membership in $K_0$,
@@ -10297,6 +10333,32 @@ Show that the \HP{} set~$K$ reduces to each.
   diverges otherwise.
   Then $x\in K$ if and only if $s(e,x)\in D$, and so $K\leq_T D$.  
   \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+True or false (briefly justify). 
+\begin{TODO}
+Check the items.
+\end{TODO}
+\begin{exparts*}
+\item If $A\leq_T B$ then $\setcomp{A}\leq_T\setcomp{B}$.
+\item If $A\leq_T B$ then $\setcomp{A}\leq_TB$.
+\item If $A\leq_T B$ then $A\leq_T\setcomp{B}$.
+\item If $A\leq_T B$ and $B\leq_T C$ then $A\leq_T C$.
+\item If $A$ is a computable set and $B$ is any set then $A\leq_T B$
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item True.
+If $A\leq_T B$ then there is a computable function~$f$ so that
+$x\in A$ if and only if $f(x)\in B$.
+Restated, $x\notin A$ if and only if $f(x)\notin B$.
+\item True.
+This is part of \cref{th:TReductionReflexiveAndTrans}.
+\item True.
+This is \cref{lem:ComputableOracleDoesNothing}.
+\end{exparts}
 \end{answer}
 \end{exercise}
 

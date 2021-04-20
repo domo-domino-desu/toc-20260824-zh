@@ -832,6 +832,82 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======= Fixed Point phi_m(y)=m ==============
+picture pic;
+int picnum = 17;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node print=nbox("Print $x$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ...... after smn .............
+picture pic;
+int picnum = 18;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node print=nbox("Print $x$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,print);
+vlayout(1.0*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 // ............. Q for machine that knows its source ...........
 picture pic;
 int picnum = 19;
@@ -926,15 +1002,60 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ======= Fixed Point phi_m(y)=m ==============
+
+
+// ============== Oracle machines ================
+
+// ========= just the oracle query box ============
 picture pic;
-int picnum = 17;
+int picnum = 21;
+setdefaultflowchartstyles();
+
+// define nodes
+node nullboxtop=nbox("\raisebox{.5ex}{$\vdots$}", ns_noborder);  // into oracle? test
+node nullboxleft=nbox("\raisebox{1.75ex}{$\vdots$}", ns_noborder); // out on left
+node nullboxright=nbox("\raisebox{1.75ex}{$\vdots$}", ns_noborder);  // out on right
+node test=nrounddiamond("$x\in\text{oracle}$?");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.5*v,nullboxtop,test);
+nullboxleft.pos = test.pos + (-2.75*u,-1.25*v);
+nullboxright.pos = test.pos + (2.75*u,-1.25*v);
+
+// draw edges
+draw(pic,
+     (nullboxtop--test),
+     (test..HV..nullboxleft).l(Label("Y",Relative(0.25))),
+     (test..HV..nullboxright).l(Label("N",Relative(0.25))).style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     nullboxtop,
+     test,
+     nullboxleft,
+     nullboxright
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ========= oracle TM for P_e(3)\converges ============
+picture pic;
+int picnum = 22;
 setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $x$, $y$");
-node print=nbox("Print $x$");
+node read=nbox("Read $k$");
+node test=nrounddiamond("$s(e,k)\in\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
 node ending=nroundbox("End");
 
 // layout
@@ -943,36 +1064,47 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-vlayout(1.0*v,start,read,print);
-vlayout(1.0*v,print,ending);
+vlayout(0.8*v,start,read);
+vlayout(1.25*v,read,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
 
 // draw edges
 draw(pic,
      (start--read),
-     (read--print),
-     (print--ending)
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
 );
 
 // draw nodes
 draw(pic,
      start,
      read,
-     print,
+     test,
+     yes,
+     no,
      ending
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
-// ...... after smn .............
+
+// ========= K\leq_T K_0 ============
 picture pic;
-int picnum = 18;
+int picnum = 23;
 setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $y$");
-node print=nbox("Print $x$");
+node read=nbox("Read $x$");
+node test=nrounddiamond("$\sequence{x,x}\in\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
 node ending=nroundbox("End");
 
 // layout
@@ -981,25 +1113,34 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-vlayout(1.0*v,start,read,print);
-vlayout(1.0*v,print,ending);
+vlayout(0.8*v,start,read);
+vlayout(1.25*v,read,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
 
 // draw edges
 draw(pic,
      (start--read),
-     (read--print),
-     (print--ending)
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
 );
 
 // draw nodes
 draw(pic,
      start,
      read,
-     print,
+     test,
+     yes,
+     no,
      ending
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

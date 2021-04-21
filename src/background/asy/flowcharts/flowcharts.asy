@@ -3225,7 +3225,7 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $x$, $y$");
 node run=nbox("Run $\TM_x$ on input $x$");
-node run2=nbox("Return $\operatorname{steps}(x)$");
+node run2=nbox("Return $\operatorname{steps}(y)$");
 node print=nbox("Print output");
 node ending=nroundbox("End");
 
@@ -3271,7 +3271,7 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $x$, $y$");
 node run=nbox("Run $\TM_x$ on input $x$");
-node run2=nbox("Return $\operatorname{steps}(x)$");
+node run2=nbox("Return $\operatorname{steps}(y)$");
 node print=nbox("Print output");
 node ending=nroundbox("End");
 
@@ -3307,3 +3307,299 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ========= oracle TM for 2B\leq_T B ============
+picture pic;
+int picnum = 44;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node oddtest=nrounddiamond("$x$ is odd?");
+node test=nrounddiamond("$x/2\in\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.25*v,read,oddtest);
+vlayout(1.65*v,oddtest,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--oddtest),
+     (oddtest..HV..no).l(Label("Y",Relative(0.10))).style("leftside"),
+     (oddtest--test).l(Label("N",Relative(0.5))).style("leftside"),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     oddtest,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ========= oracle TM for B\leq_T 2B ============
+picture pic;
+int picnum = 45;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node oddtest=nrounddiamond("$x$ is odd?");
+node test=nrounddiamond("$2x\in\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1.25*v,read,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ========= oracle TM computing primes dividing n from Primes oracle ========
+picture pic;
+int picnum = 46;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $n$");
+node forbox=nbox("For i in $\leftclosed{2}{n}$");
+node oracletest=nrounddiamond("$i\in\text{oracle}$?");
+node divtest=nrounddiamond("$i$ divides $n$?");
+node print=nbox("Print $i$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,forbox);
+hlayout(2.5*u,forbox,ending);
+oracletest.pos = forbox.pos + (1*u,-1.5*v);
+vlayout(1.75*v,oracletest,divtest);
+vlayout(1.5*v,divtest,print);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--forbox),
+     (forbox--ending),
+     (forbox..VHV..oracletest),
+     (oracletest..HVHd(1.375*u)..forbox).l(Label("N",Relative(0.08))),
+     (oracletest--divtest).l(Label("Y",Relative(0.5))).style("leftside"),
+     (divtest..HVHd(1.29*u)..forbox).l(Label("N",Relative(0.05))),
+     (divtest--print).l(Label("Y",Relative(0.5))).style("leftside"),
+     (print..HVHd(2.5*u)..forbox)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     forbox,
+     oracletest,
+     divtest,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// == Exercise: Use K oracle to compute whether P_e(3) and P_e(4) converges ==
+picture pic;
+int picnum = 47;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on $3$ and $4$");
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............ After s-m-n ..................
+picture pic;
+int picnum = 48;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node run=nbox("Run $\TM_x$ on $3$ and $4$");
+node print=nbox("Print $42$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ========= oracle TM for Ext ============
+picture pic;
+int picnum = 49;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $k$");
+node test=nrounddiamond("$s(e,k)\notin\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(0.8*v,start,read);
+vlayout(1.25*v,read,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

@@ -3603,3 +3603,138 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// ========= oracle A \leq_T A^\comp ============
+picture pic;
+int picnum = 50;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node test=nrounddiamond("$y\notin\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(0.8*v,start,read);
+vlayout(1.25*v,read,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============ K\leq_T {x| \phi_x(y)=2y} ======================
+picture pic;
+int picnum = 51;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on input $x$");
+node print=nbox("Print $2\cdot y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .................. after applying s-m-n ..................
+picture pic;
+int picnum = 52;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on input $x$");
+node print=nbox("Print $2\cdot y$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,print);
+vlayout(1*v,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

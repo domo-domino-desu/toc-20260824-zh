@@ -187,16 +187,18 @@ real v = 0.85*u;
 
 vlayout(1*v,start,read);
 vlayout(1.35*v,read,test);
-hlayout(-3.25*u,test,printout);
-hlayout(3.75*u,test,loop);
+loop.pos = test.pos + (-2.75*u,-0.75*v);
+printout.pos = test.pos + (2.75*u,-0.75*v);
+// hlayout(-3.25*u,test,printout);
+// hlayout(3.75*u,test,loop);
 vlayout(1.1*v,printout,ending);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--test),
-     (test--printout).l("N"),
-     (test--loop).l("Y").style("leftside"),
+     (test..HV..printout).l(Label("N",Relative(0.25))).style("leftside"),
+     (test..HV..loop).l(Label("Y",Relative(0.25))),
      (printout--ending)
 );
 
@@ -224,7 +226,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x,y$");
-node test=nrounddiamond("$x\in X$?");
+node test=nrounddiamond("$x\in \text{oracle}$?");
 node printzero=nbox("Print $42$");
 node loop=nbox("Loop");
 node ending=nroundbox("End");
@@ -236,17 +238,17 @@ real u = defaultlayoutskip;
 real v = 0.85*u;
 
 vlayout(1*v,start,read);
-vlayout(1.35*v,read,test);
-printzero.pos = test.pos + (-2*u,-1.0*v);
-loop.pos = test.pos + (2*u,-1.0*v);
+vlayout(1.25*v,read,test);
+printzero.pos = test.pos + (-2.25*u,-0.75*v);
+loop.pos = test.pos + (2.25*u,-0.75*v);
 vlayout(1.0*v,printzero,ending);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--test),
-     (test..HV..printzero).l("Y"),
-     (test..HV..loop).l("N").style("leftside"),
+     (test..HV..printzero).l(Label("Y",Relative(0.25))),
+     (test..HV..loop).l(Label("N",Relative(0.25))).style("leftside"),
      (printzero--ending)
 );
 
@@ -272,7 +274,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
-node test=nrounddiamond("$x\in X$?");
+node test=nrounddiamond("$x\in \text{oracle}$?");
 node printzero=nbox("Print $42$");
 node loop=nbox("Loop");
 node ending=nroundbox("End");
@@ -284,17 +286,17 @@ real u = defaultlayoutskip;
 real v = 0.85*u;
 
 vlayout(1*v,start,read);
-vlayout(1.35*v,read,test);
-printzero.pos = test.pos + (-2*u,-1.0*v);
-loop.pos = test.pos + (2*u,-1.0*v);
+vlayout(1.25*v,read,test);
+printzero.pos = test.pos + (-2.25*u,-0.75*v);
+loop.pos = test.pos + (2.25*u,-0.75*v);
 vlayout(1.0*v,printzero,ending);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--test),
-     (test..HV..printzero).l("Y"),
-     (test..HV..loop).l("N").style("leftside"),
+     (test..HV..printzero).l(Label("Y",Relative(0.25))),
+     (test..HV..loop).l(Label("N",Relative(0.25))).style("leftside"),
      (printzero--ending)
 );
 
@@ -1103,6 +1105,105 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
 node test=nrounddiamond("$\sequence{x,x}\in\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(0.8*v,start,read);
+vlayout(1.25*v,read,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ......... K_0\leq_T K ............
+picture pic;
+int picnum = 24;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $e$, $x$");
+node test=nrounddiamond("$s(\hat{e},e,x)\in\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(0.8*v,start,read);
+vlayout(1.25*v,read,test);
+yes.pos = test.pos + (-3.25*u,-0.75*v);
+no.pos = test.pos + (3.25*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ========= oracle TM for S\leq_T K^S ============
+picture pic;
+int picnum = 25;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node test=nrounddiamond("$s(e,x)\in\text{oracle}$?");
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");
 node ending=nroundbox("End");

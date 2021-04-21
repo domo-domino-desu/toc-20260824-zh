@@ -195,11 +195,12 @@ node ending=nroundbox("End");
 defaultlayoutrel = false;
 defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
+real v = 0.85*u;
 
-vlayout(start,read);
-vlayout(1.25u,read,simulate);
-vlayout(1.25u,simulate,printout);
-vlayout(printout,ending);
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,simulate);
+vlayout(1.25*v,simulate,printout);
+vlayout(0.9*v,printout,ending);
 
 // draw nodes
 draw(pic,
@@ -236,11 +237,12 @@ node ending=nroundbox("End");
 defaultlayoutrel = false;
 defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
+real v = 0.85*u;
 
-vlayout(start,read);
-vlayout(1.25u,read,simulate);
-vlayout(1.25u,simulate,printout);
-vlayout(printout,ending);
+vlayout(1*v,start,read);
+vlayout(1.35*v,read,simulate);
+vlayout(1.25*v,simulate,printout);
+vlayout(0.9*v,printout,ending);
 
 // draw nodes
 draw(pic,

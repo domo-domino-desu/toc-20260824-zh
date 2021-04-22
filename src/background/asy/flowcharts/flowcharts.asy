@@ -3738,3 +3738,158 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+// ============ A\leq_T B implies ... ======================
+picture pic;
+int picnum = 53;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+node test=nrounddiamond("$f(x)\in\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(2.35*v,read,run);
+vlayout(2.75*v,run,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ................... A^comp \leq_T B .................
+picture pic;
+int picnum = 54;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+node test=nrounddiamond("$f(x)\in\text{oracle}$?");
+node yes=nbox("Print $0$");  // Note it is switched from 1
+node no=nbox("Print $1$");   // likewise, switched
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(2.35*v,read,run);
+vlayout(2.75*v,run,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// .............. A\leq_T B^comp ............
+picture pic;
+int picnum = 55;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+node test=nrounddiamond("$f(x)\notin\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(2.35*v,read,run);
+vlayout(2.75*v,run,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

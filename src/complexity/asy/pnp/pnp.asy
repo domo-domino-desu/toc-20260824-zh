@@ -801,5 +801,177 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======== Try a different graphic ====================================
+string OUTPUT_FN = "pnp1%03d";
+
+// REG: https://math.stackexchange.com/a/84070/12012
+
+// These apply to all the diagrams
+real UNIVERSE_HT = 2.5;
+real UNIVERSE_WD = UNIVERSE_HT*(1-sqrt(5))/2;
+real HGT_FACTOR = 0.65;
+path UNIVERSE=(0,0).. tension 1.20 ..(-0.5*UNIVERSE_WD,HGT_FACTOR*UNIVERSE_HT){up}..(0,UNIVERSE_HT)..(0.5*UNIVERSE_WD,HGT_FACTOR*UNIVERSE_HT){down}.. tension 1.20 ..cycle;
+
+real WHISKER_WD = 0.225;  // width of whisker for labels
+
+// Produce an arc above the base of the region, for P, NP, etc.
+//  hgt a negative number such as -.5, -.6, -.7
+path base_region_arc(real hgt) {
+  path ellipse_whole = ellipse((0,hgt),UNIVERSE_WD,-hgt*UNIVERSE_HT);
+  real[][] ints = intersections(UNIVERSE, ellipse_whole);
+  path ellipse_arc = subpath(ellipse_whole, ints[0][1], ints[1][1]);
+  return ellipse_arc;
+}
+
+pen base_region_pen = highlightcolor+linecap(0);
+pen squarebraces_label_pen = currentpen+linecap(0)+linejoin(0);
+
+path make_pt_path(pair pt) {
+  path pt_path = shift(pt)*scale(0.02)*unitcircle;
+  return pt_path;
+}
+
+
+// seed the random number generator;
+//   If seconds() then uncomment to show on screen to save the number for later
+int srand_seed = 1619269964;
+// int srand_seed = seconds();
+// write(format("PNP.ASY: Picture 0: srand_seed is %d",srand_seed));
+srand(srand_seed); 
+
+// Use that seed to pick some points; they must be inside the UNIVERSE
+pair[] pts;
+int numpts=60;
+bool flag=false;
+pair onept;  // a candidate point
+real padding=0.05; // min dist between points
+for(int i=0; i<numpts; ++i) {
+  flag=false;
+  int tries=0; // watch for inf loop
+  while(flag==false){
+    if(tries>100) {
+      write("Too many tries; making fewer points");
+      break;
+    } else {
+      tries=tries+1;
+    }
+    // pick a point at random
+    onept = randpt(-0.5*UNIVERSE_WD,0.5*UNIVERSE_WD,0,UNIVERSE_HT);
+    // write(format("  onept.x=%f",onept.x));
+    // write(format("  onept.y=%f",onept.y));
+    // Check that it is not too close to another point
+    flag=true;
+    for(pair k : pts){
+      if(length(onept-k)<padding){
+	flag=false;
+      }
+    }
+    // Check that it is inside the set bound
+    flag=flag && (inside(UNIVERSE,make_pt_path(onept))==1);
+  }
+  // write(format("i=%d",i));
+  pts[i] = onept;
+}
+write(format("  Number of points is %d",pts.length));
+
+
+
+// ============== Universe of all problems ======
+picture pic;
+int picnum=0;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+// (note that  we cover the stubs at end)
+
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), boldcolor, fillpen=white);
+} 
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ..... Labeled universe .............
+picture pic;
+int picnum=1;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+// (note that  we cover the stubs at end)
+
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), boldcolor, fillpen=white);
+} 
+
+label(pic,"{\scriptsize All languages:}", (-0.5*UNIVERSE_WD,0.9*UNIVERSE_HT),18*W);
+
+label(pic,"{\scriptsize Languages with fast algorithms}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),18*E);
+label(pic,"{\scriptsize \hspace*{4em}$\vdots$}", (0.5*UNIVERSE_WD,0.4*UNIVERSE_HT),18*E);
+label(pic,"\makebox[\width][l]{\scriptsize Languages with slow algorithms}", (0.5*UNIVERSE_WD,0.6*UNIVERSE_HT),18*E);
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........... Label REC ..........
+picture pic;
+int picnum=2;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+
+// Draw the region of Recursive langugages
+// Recursive langs
+path rec_arc = base_region_arc(-1.15); 
+draw(pic, rec_arc, base_region_pen);
+// RE langs
+path re_arc = point(UNIVERSE, 3.0){(1,1.1)}..{-dir(rec_arc,0.6)}point(rec_arc,0.6);
+draw(pic, re_arc, base_region_pen);
+// (note that we cover the stubs at end)
+
+// Label them
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.65*UNIVERSE_HT;
+// path top_whisker = (label_x-0.5*WHISKER_WD,label_y)--(label_x+0.5*WHISKER_WD,label_y);
+// path bot_whisker = (label_x-0.5*WHISKER_WD,0)--(label_x+0.5*WHISKER_WD,0);
+
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),E); 
+
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.70*UNIVERSE_HT;
+draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"\makebox[\width][r]{\scriptsize \probname{RE}}",(label_x,0.5*label_y),W); 
+
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+} 
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
 
 

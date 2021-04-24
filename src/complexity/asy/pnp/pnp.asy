@@ -970,6 +970,170 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ........... Label P ..........
+picture pic;
+int picnum=3;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+
+// Draw the region of Recursive langugages
+// Recursive langs
+path P_arc = base_region_arc(-0.6); 
+draw(pic, P_arc, base_region_pen);
+// (note that we cover the stubs at end)
+
+// Label it
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.32*UNIVERSE_HT;
+// path top_whisker = (label_x-0.5*WHISKER_WD,label_y)--(label_x+0.5*WHISKER_WD,label_y);
+// path bot_whisker = (label_x-0.5*WHISKER_WD,0)--(label_x+0.5*WHISKER_WD,0);
+
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+} 
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........... Label P=NP ..........
+picture pic;
+int picnum=4;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+
+// Draw the region of Recursive langugages
+// Recursive langs
+path P_arc = base_region_arc(-0.6); 
+draw(pic, P_arc, base_region_pen);
+// (note that we cover the stubs at end)
+
+// Label it
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.32*UNIVERSE_HT;
+// path top_whisker = (label_x-0.5*WHISKER_WD,label_y)--(label_x+0.5*WHISKER_WD,label_y);
+// path bot_whisker = (label_x-0.5*WHISKER_WD,0)--(label_x+0.5*WHISKER_WD,0);
+
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\probname{P}=\NP$}",(label_x,0.5*label_y),E); 
+
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+} 
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........... Label P and NP ..........
+picture pic;
+int picnum=5;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+
+// Draw the region of Recursive langugages
+// Recursive langs
+path P_arc = base_region_arc(-0.6); 
+draw(pic, P_arc, base_region_pen);
+
+path NP_arc = base_region_arc(-0.7); 
+draw(pic, NP_arc, base_region_pen);
+// (note that we cover the stubs at end)
+
+// Label it
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.32*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\P$}",(label_x,0.5*label_y),E); 
+
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.38*UNIVERSE_HT;
+draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\NP$}",(label_x,0.5*label_y),W); 
+
+
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+} 
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ........... Label P and NP and EXP ..........
+picture pic;
+int picnum=6;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+
+// Draw the region of Recursive langugages
+// Recursive langs
+path P_arc = base_region_arc(-0.6); 
+draw(pic, P_arc, base_region_pen);
+
+path NP_arc = base_region_arc(-0.7); 
+draw(pic, NP_arc, base_region_pen);
+
+path EXP_arc = base_region_arc(-0.85); 
+draw(pic, EXP_arc, base_region_pen);
+// (note that we cover the stubs at end)
+
+// Label it
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.32*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\P$}",(label_x,0.5*label_y),E); 
+
+real label_x = -0.95*UNIVERSE_WD;
+real label_y = 0.38*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\NP$}",(label_x,0.5*label_y),E); 
+
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.50*UNIVERSE_HT;
+draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\EXP$}",(label_x,0.5*label_y),W); 
+
+
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+} 
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

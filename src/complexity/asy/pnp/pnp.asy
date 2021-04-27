@@ -808,11 +808,36 @@ string OUTPUT_FN = "pnp1%03d";
 
 // These apply to all the diagrams
 real UNIVERSE_HT = 2.5;
-real UNIVERSE_WD = UNIVERSE_HT*(1-sqrt(5))/2;
+real UNIVERSE_WD = UNIVERSE_HT*(-1)*(1-sqrt(5))/2;
+write(format("UNIVERSE_WD=%f",UNIVERSE_WD));
 real HGT_FACTOR = 0.65;
 path UNIVERSE=(0,0).. tension 1.20 ..(-0.5*UNIVERSE_WD,HGT_FACTOR*UNIVERSE_HT){up}..(0,UNIVERSE_HT)..(0.5*UNIVERSE_WD,HGT_FACTOR*UNIVERSE_HT){down}.. tension 1.20 ..cycle;
 
-real WHISKER_WD = 0.225;  // width of whisker for labels
+real WHISKER_WD = 0.20;  // width of whisker for labels
+
+// Produce an arc above the base of the region, for P, NP, etc.
+// Goos quad_coeff is 3, good const_term is 0.6, 0.7-ish
+
+path parabola(real quad_coeff, real const_term) {
+  path p;
+  int n = 100;  // number of subdivisions
+  real start = -0.5*UNIVERSE_WD;
+  real end = 0.5*UNIVERSE_WD;
+  for(int i=0; i <= n; ++i) {
+    real next_x = start+(i/n)*(end-start);
+    pair next_point = (next_x, const_term-quad_coeff*next_x*next_x);
+    p = p .. next_point;
+  }
+  return p;
+}
+
+path parabolic_arc(real quad_coeff, real const_term) {
+  path p = parabola(quad_coeff, const_term);
+  real[][] ints = intersections(UNIVERSE, p);
+  path p_arc = subpath(p, ints[0][1], ints[1][1]);
+  return p_arc;
+}
+
 
 // Produce an arc above the base of the region, for P, NP, etc.
 //  hgt a negative number such as -.5, -.6, -.7
@@ -823,8 +848,8 @@ path base_region_arc(real hgt) {
   return ellipse_arc;
 }
 
-pen base_region_pen = highlightcolor+linecap(0);
-pen squarebraces_label_pen = currentpen+linecap(0)+linejoin(0);
+pen base_region_pen = highlightcolor+linecap(1);
+pen squarebraces_label_pen = currentpen+linecap(1)+linejoin(0);
 
 path make_pt_path(pair pt) {
   path pt_path = shift(pt)*scale(0.02)*unitcircle;
@@ -937,31 +962,30 @@ filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
 
 // Draw the region of Recursive langugages
 // Recursive langs
-path rec_arc = base_region_arc(-1.15); 
+// draw(pic, parabola(0.25,1.8), blue);
+path rec_arc = parabolic_arc(0.25,1.8); 
 draw(pic, rec_arc, base_region_pen);
 // RE langs
-path re_arc = point(UNIVERSE, 3.0){(1,1.1)}..{-dir(rec_arc,0.6)}point(rec_arc,0.6);
+real re_start = 0.80*length(rec_arc);
+path re_arc = point(UNIVERSE, 1.15){(1,1.1)}..{dir(rec_arc,re_start)}point(rec_arc,re_start);
 draw(pic, re_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
 // Label them
-real label_x = -0.65*UNIVERSE_WD;
-real label_y = 0.65*UNIVERSE_HT;
-// path top_whisker = (label_x-0.5*WHISKER_WD,label_y)--(label_x+0.5*WHISKER_WD,label_y);
-// path bot_whisker = (label_x-0.5*WHISKER_WD,0)--(label_x+0.5*WHISKER_WD,0);
-
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.68*UNIVERSE_HT;
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"\makebox[\width][l]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),E); 
 
-real label_x = 0.65*UNIVERSE_WD;
-real label_y = 0.70*UNIVERSE_HT;
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.77*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"\makebox[\width][r]{\scriptsize \probname{RE}}",(label_x,0.5*label_y),W); 
 
 // Draw points
-for(int i=0; i<pts.length; ++i){
-  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
-} 
+// for(int i=0; i<pts.length; ++i){
+//   filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+// } 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -979,25 +1003,21 @@ unitsize(pic,1cm);
 // Draw the universe of all langugaes
 filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
 
-// Draw the region of Recursive langugages
-// Recursive langs
-path P_arc = base_region_arc(-0.6); 
+// Draw the region of P
+path P_arc = parabolic_arc(1.5,0.8); 
 draw(pic, P_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
 // Label it
-real label_x = -0.65*UNIVERSE_WD;
-real label_y = 0.32*UNIVERSE_HT;
-// path top_whisker = (label_x-0.5*WHISKER_WD,label_y)--(label_x+0.5*WHISKER_WD,label_y);
-// path bot_whisker = (label_x-0.5*WHISKER_WD,0)--(label_x+0.5*WHISKER_WD,0);
-
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.30*UNIVERSE_HT;
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
 
 // Draw points
-for(int i=0; i<pts.length; ++i){
-  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
-} 
+// for(int i=0; i<pts.length; ++i){
+//   filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+// } 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -1015,25 +1035,22 @@ unitsize(pic,1cm);
 // Draw the universe of all langugaes
 filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
 
-// Draw the region of Recursive langugages
-// Recursive langs
-path P_arc = base_region_arc(-0.6); 
+// Draw the region of P=NP
+path P_arc = parabolic_arc(1.5,0.8); 
 draw(pic, P_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
 // Label it
-real label_x = -0.65*UNIVERSE_WD;
-real label_y = 0.32*UNIVERSE_HT;
-// path top_whisker = (label_x-0.5*WHISKER_WD,label_y)--(label_x+0.5*WHISKER_WD,label_y);
-// path bot_whisker = (label_x-0.5*WHISKER_WD,0)--(label_x+0.5*WHISKER_WD,0);
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.30*UNIVERSE_HT;
 
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
-label(pic,"{\scriptsize $\probname{P}=\NP$}",(label_x,0.5*label_y),E); 
+label(pic,"{\scriptsize $\P=\NP$}",(label_x,0.5*label_y),E); 
 
 // Draw points
-for(int i=0; i<pts.length; ++i){
-  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
-} 
+// for(int i=0; i<pts.length; ++i){
+//   filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+// } 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -1051,31 +1068,30 @@ unitsize(pic,1cm);
 // Draw the universe of all langugaes
 filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
 
-// Draw the region of Recursive langugages
-// Recursive langs
-path P_arc = base_region_arc(-0.6); 
+// Draw the region of P and NP langugages as unequal
+path P_arc = parabolic_arc(1.5,0.8); 
 draw(pic, P_arc, base_region_pen);
 
-path NP_arc = base_region_arc(-0.7); 
+path NP_arc = parabolic_arc(1.85,1.0); 
 draw(pic, NP_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
 // Label it
-real label_x = -0.65*UNIVERSE_WD;
-real label_y = 0.32*UNIVERSE_HT;
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.30*UNIVERSE_HT;
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"{\scriptsize $\P$}",(label_x,0.5*label_y),E); 
 
-real label_x = 0.65*UNIVERSE_WD;
-real label_y = 0.38*UNIVERSE_HT;
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.39*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"{\scriptsize $\NP$}",(label_x,0.5*label_y),W); 
 
 
 // Draw points
-for(int i=0; i<pts.length; ++i){
-  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
-} 
+// for(int i=0; i<pts.length; ++i){
+//   filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+// } 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -1093,44 +1109,105 @@ unitsize(pic,1cm);
 // Draw the universe of all langugaes
 filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
 
-// Draw the region of Recursive langugages
-// Recursive langs
-path P_arc = base_region_arc(-0.6); 
+// Draw the region of P and NP langugages as unequal
+path P_arc = parabolic_arc(1.5,0.8); 
 draw(pic, P_arc, base_region_pen);
 
-path NP_arc = base_region_arc(-0.7); 
+path NP_arc = parabolic_arc(1.85,1.0); 
 draw(pic, NP_arc, base_region_pen);
 
-path EXP_arc = base_region_arc(-0.85); 
+path EXP_arc = parabolic_arc(2.10,1.2); 
 draw(pic, EXP_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
 // Label it
-real label_x = -0.65*UNIVERSE_WD;
+real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.32*UNIVERSE_HT;
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"{\scriptsize $\P$}",(label_x,0.5*label_y),E); 
 
-real label_x = -0.95*UNIVERSE_WD;
+real label_x = 0.95*UNIVERSE_WD;
 real label_y = 0.38*UNIVERSE_HT;
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"{\scriptsize $\NP$}",(label_x,0.5*label_y),E); 
 
-real label_x = 0.65*UNIVERSE_WD;
-real label_y = 0.50*UNIVERSE_HT;
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.47*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"{\scriptsize $\EXP$}",(label_x,0.5*label_y),W); 
 
 
 // Draw points
-for(int i=0; i<pts.length; ++i){
-  filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
-} 
+// for(int i=0; i<pts.length; ++i){
+//   filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+// } 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ........... Label P and NP and NP Hard ..........
+picture pic;
+int picnum=7;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+
+// Draw the region of P and NP langugages as unequal
+path P_arc = parabolic_arc(1.5,0.8); 
+draw(pic, P_arc, base_region_pen);
+
+path NP_arc = parabolic_arc(1.85,1.0); 
+draw(pic, NP_arc, base_region_pen);
+
+path NP_hard_arc = parabolic_arc(-0.75,0.9); 
+draw(pic, NP_hard_arc, base_region_pen);
+// (note that we cover the stubs at end)
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+// Label it
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.30*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\P$}",(label_x,0.5*label_y),E); 
+
+real label_x = 0.95*UNIVERSE_WD;
+real label_y = 0.38*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\NP$}",(label_x,0.5*label_y),E); 
+
+real label_x = -0.65*UNIVERSE_WD;
+real label_y_bot = 0.37*UNIVERSE_HT;
+real label_y_top = 0.80*UNIVERSE_HT;
+draw(pic,// (label_x+0.5*WHISKER_WD,label_y_top)--
+     (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
+label(pic,"{\scriptsize $\probname{NP Hard}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
+
+// Locate NP Complete
+pair np_complete = (0,0.38*UNIVERSE_HT);
+path NP_complete_tag = np_complete{(1,2)}
+                       .. tension 1.6 .. np_complete+(0.32*UNIVERSE_WD,0.25*UNIVERSE_HT)
+                       .. tension 0.8 .. np_complete+(0.36*UNIVERSE_WD,0.23*UNIVERSE_HT)
+                       .. tension 1.2 .. {E}(np_complete+(0.60*UNIVERSE_WD,0.3*UNIVERSE_HT));
+draw(pic,NP_complete_tag,THINPEN);
+label(pic,"{\scriptsize $\NP$ complete}",np_complete+(0.60*UNIVERSE_WD,0.3*UNIVERSE_HT),E); 
+
+
+// Draw points
+// for(int i=0; i<pts.length; ++i){
+//   filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+// } 
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

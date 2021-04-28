@@ -569,7 +569,7 @@ unitsize(pic,1cm);
 
 // use seconds() to try verious random pics, then save one I like
 int srand_seed = 1608295644; // seconds();
-write(format("PNP.ASY: Picture 9: srand_seed is %d",srand_seed));  // when trying random seeds, can save ones that I like
+// write(format("PNP.ASY: Picture 9: srand_seed is %d",srand_seed));  // when trying random seeds, can save ones that I like
 srand(srand_seed); 
 
 // bounds 
@@ -619,7 +619,7 @@ pair[] candidate_pts = {
   (0.10*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.50*(max_vert_coord-min_vert_coord)+min_vert_coord),
   (0.30*(max_horiz_coord-min_horiz_coord)+min_horiz_coord, 0.30*(max_vert_coord-min_vert_coord)+min_vert_coord)
 };
-write(format("   number of candidate_points: %d",candidate_pts.length));
+// write(format("   number of candidate_points: %d",candidate_pts.length));
 int num_pts = candidate_pts.length;
 pair candidate_pt;  // pt we test to see if it is inside 
 // place points inside and outside P
@@ -801,6 +801,8 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+
 // ======== Try a different graphic ====================================
 string OUTPUT_FN = "pnp1%03d";
 
@@ -809,7 +811,7 @@ string OUTPUT_FN = "pnp1%03d";
 // These apply to all the diagrams
 real UNIVERSE_HT = 2.5;
 real UNIVERSE_WD = UNIVERSE_HT*(-1)*(1-sqrt(5))/2;
-write(format("UNIVERSE_WD=%f",UNIVERSE_WD));
+// write(format("UNIVERSE_WD=%f",UNIVERSE_WD));
 real HGT_FACTOR = 0.65;
 path UNIVERSE=(0,0).. tension 1.20 ..(-0.5*UNIVERSE_WD,HGT_FACTOR*UNIVERSE_HT){up}..(0,UNIVERSE_HT)..(0.5*UNIVERSE_WD,HGT_FACTOR*UNIVERSE_HT){down}.. tension 1.20 ..cycle;
 
@@ -859,9 +861,9 @@ path make_pt_path(pair pt) {
 
 // seed the random number generator;
 //   If seconds() then uncomment to show on screen to save the number for later
-int srand_seed = 1619269964;
+int srand_seed = 1619633659;
 // int srand_seed = seconds();
-// write(format("PNP.ASY: Picture 0: srand_seed is %d",srand_seed));
+// write(format("PNP.ASY: srand_seed for point-picking is %d",srand_seed));
 srand(srand_seed); 
 
 // Use that seed to pick some points; they must be inside the UNIVERSE
@@ -869,7 +871,7 @@ pair[] pts;
 int numpts=60;
 bool flag=false;
 pair onept;  // a candidate point
-real padding=0.05; // min dist between points
+real padding=0.10; // min dist between points
 for(int i=0; i<numpts; ++i) {
   flag=false;
   int tries=0; // watch for inf loop
@@ -1207,6 +1209,203 @@ label(pic,"{\scriptsize $\NP$ complete}",np_complete+(0.60*UNIVERSE_WD,0.3*UNIVE
 // } 
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Connect some problems to depict \leq_p ======
+picture pic;
+int picnum=8;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+// (note that  we cover the stubs at end)
+
+// Find the region of Recursive langugages
+path rec_arc = parabolic_arc(0.25,1.8); 
+draw(pic, rec_arc, base_region_pen);
+
+path non_rec_langs = buildcycle(UNIVERSE, rec_arc); // the non-recursive langs
+
+// Draw the region of P langugages
+path P_arc = parabolic_arc(1.5,0.8); 
+// Find region where langs are in P
+path p_langs = buildcycle(P_arc,UNIVERSE);
+
+// Draw edges
+
+// use seconds() to try verious random pics, then save one I like
+// int srand_seed = 1619633854; // 
+int srand_seed = seconds();
+write(format("PNP.ASY: Picture 1008: srand_seed for edge-picking is %d",srand_seed));  // when trying random seeds, can save ones that I like
+srand(srand_seed); 
+
+int numedges = numpts;
+for (int i=0; i<numedges; ++i) {
+  int firstpt_dex = floor((pts.length-0.01)*unitrand());
+  pair firstpt = pts[firstpt_dex];
+  int secondpt_dex = floor((pts.length-0.01)*unitrand());
+  pair secondpt = pts[secondpt_dex];
+  if (inside(p_langs,firstpt) && inside(p_langs,secondpt)) {
+      draw(pic, firstpt--secondpt, highlightcolor);
+  } else {
+    if (!inside(non_rec_langs,firstpt) && !inside(non_rec_langs,secondpt)) {
+      draw(pic, firstpt--secondpt, boldcolor);
+    }
+  }
+}
+
+// Draw the boundary of P
+draw(pic, P_arc, base_region_pen);
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), boldcolor, fillpen=white);
+} 
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ============== Cone that is \bigOh(g) ======
+picture pic;
+int picnum=9;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+// (note that  we cover the stubs at end)
+
+path equiv_ellipse = shift(-0.05*UNIVERSE_WD,0.55*UNIVERSE_HT)*scale(0.07)*ellipse((0,0),1,0.6);
+// draw(pic,equiv_ellipse, red);
+real ellipse_left_time = 1.9; // path time on left side of ellipse for int
+real ellipse_right_time = 0.1;  // On right side
+// Make line on left extending from ellipse to the edge of the universe 
+path wedge_left_line = point(equiv_ellipse, ellipse_left_time)
+  -- (point(equiv_ellipse,ellipse_left_time) + 5*dir(equiv_ellipse,ellipse_left_time));
+// path wedge_left = point(wedge_left_line,0)
+//   -- point(wedge_left_line, intersect(UNIVERSE, wedge_left_line)[1]);
+// // draw(pic,wedge_left, blue);
+// // Make line on right extending from ellipse to the edge of the universe 
+path wedge_right_line = point(equiv_ellipse,ellipse_right_time)
+  -- (point(equiv_ellipse,ellipse_right_time) - 5*dir(equiv_ellipse,ellipse_right_time));
+// path wedge_right = point(wedge_right_line,0)
+//   -- point(wedge_right_line, intersect(UNIVERSE, wedge_right_line)[1]);
+path bigo_wedge = subpath(equiv_ellipse, ellipse_right_time, ellipse_left_time)
+  .. tension 20 .. subpath(UNIVERSE, intersect(UNIVERSE, wedge_left_line)[0], 0)
+  .. subpath(UNIVERSE, length(UNIVERSE), intersect(UNIVERSE, wedge_right_line)[0])
+  .. tension 20 .. cycle;
+filldraw(pic, bigo_wedge, backgroundcolor, THINPEN);
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== Cone that is \bigOh(g), with equiv class ======
+picture pic;
+int picnum=10;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+// (note that  we cover the stubs at end)
+
+path equiv_ellipse = shift(-0.05*UNIVERSE_WD,0.55*UNIVERSE_HT)*scale(0.07)*ellipse((0,0),1,0.6);
+// draw(pic,equiv_ellipse, red);
+real ellipse_left_time = 1.9; // path time on left side of ellipse for int
+real ellipse_right_time = 0.1;  // On right side
+// Make line on left extending from ellipse to the edge of the universe 
+path wedge_left_line = point(equiv_ellipse, ellipse_left_time)
+  -- (point(equiv_ellipse,ellipse_left_time) + 5*dir(equiv_ellipse,ellipse_left_time));
+// path wedge_left = point(wedge_left_line,0)
+//   -- point(wedge_left_line, intersect(UNIVERSE, wedge_left_line)[1]);
+// // draw(pic,wedge_left, blue);
+// // Make line on right extending from ellipse to the edge of the universe 
+path wedge_right_line = point(equiv_ellipse,ellipse_right_time)
+  -- (point(equiv_ellipse,ellipse_right_time) - 5*dir(equiv_ellipse,ellipse_right_time));
+// path wedge_right = point(wedge_right_line,0)
+//   -- point(wedge_right_line, intersect(UNIVERSE, wedge_right_line)[1]);
+path bigo_wedge = subpath(equiv_ellipse, ellipse_right_time, ellipse_left_time)
+  .. tension 20 .. subpath(UNIVERSE, intersect(UNIVERSE, wedge_left_line)[0], 0)
+  .. subpath(UNIVERSE, length(UNIVERSE), intersect(UNIVERSE, wedge_right_line)[0])
+  .. tension 20 .. cycle;
+filldraw(pic, bigo_wedge, backgroundcolor, THINPEN);
+filldraw(pic, equiv_ellipse, highlightcolor+opacity(0.5), THINPEN+dotted);
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ................... Cones that are \bigOh(g) and \bigOh(f) .......
+picture pic;
+int picnum=11;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+// (note that  we cover the stubs at end)
+
+path equiv_ellipse = shift(-0.05*UNIVERSE_WD,0.55*UNIVERSE_HT)*scale(0.07)*ellipse((0,0),1,0.6);
+// draw(pic,equiv_ellipse, red);
+real ellipse_left_time = 1.9; // path time on left side of ellipse for int
+real ellipse_right_time = 0.1;  // On right side
+// Make line on left extending from ellipse to the edge of the universe 
+path wedge_left_line = point(equiv_ellipse, ellipse_left_time)
+  -- (point(equiv_ellipse,ellipse_left_time) + 5*dir(equiv_ellipse,ellipse_left_time));
+// // Make line on right extending from ellipse to the edge of the universe 
+path wedge_right_line = point(equiv_ellipse,ellipse_right_time)
+  -- (point(equiv_ellipse,ellipse_right_time) - 5*dir(equiv_ellipse,ellipse_right_time));
+path bigo_wedge = subpath(equiv_ellipse, ellipse_right_time, ellipse_left_time)
+  .. tension 20 .. subpath(UNIVERSE, intersect(UNIVERSE, wedge_left_line)[0], 0)
+  .. subpath(UNIVERSE, length(UNIVERSE), intersect(UNIVERSE, wedge_right_line)[0])
+  .. tension 20 .. cycle;
+filldraw(pic, bigo_wedge, backgroundcolor, THINPEN);
+
+path equiv_ellipse_f = shift(-0.07*UNIVERSE_WD,0.30*UNIVERSE_HT)*scale(0.04)*ellipse((0,0),1,0.6);
+// draw(pic,equiv_ellipse, red);
+// real ellipse_left_time = 1.9; // path time on left side of ellipse for int
+// real ellipse_right_time = 0.1;  // On right side
+// Make line on left extending from ellipse to the edge of the universe 
+path wedge_left_line_f = point(equiv_ellipse_f, ellipse_left_time)
+  -- (point(equiv_ellipse_f,ellipse_left_time) + 5*dir(equiv_ellipse_f,ellipse_left_time));
+// // Make line on right extending from ellipse to the edge of the universe 
+path wedge_right_line_f = point(equiv_ellipse_f,ellipse_right_time)
+  -- (point(equiv_ellipse_f,ellipse_right_time) - 5*dir(equiv_ellipse_f,ellipse_right_time));
+path bigo_wedge_f = subpath(equiv_ellipse_f, ellipse_right_time, ellipse_left_time)
+  .. tension 20 .. subpath(UNIVERSE, intersect(UNIVERSE, wedge_left_line_f)[0], 0)
+  .. subpath(UNIVERSE, length(UNIVERSE), intersect(UNIVERSE, wedge_right_line_f)[0])
+  .. tension 20 .. cycle;
+filldraw(pic, bigo_wedge_f, backgroundcolor+gray(0.1),THINPEN);
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+// Label it
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.55*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\bigOh(g)$}",(label_x,0.5*label_y),E); 
+
+real label_x = -0.65*UNIVERSE_WD;
+real label_y = 0.30*UNIVERSE_HT;
+draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\bigOh(f)$}",(label_x,0.5*label_y),W); 
+
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

@@ -910,7 +910,7 @@ int picnum=0;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 // (note that  we cover the stubs at end)
 
 // Draw points
@@ -932,7 +932,7 @@ int picnum=1;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 // (note that  we cover the stubs at end)
 
 // Draw points
@@ -940,11 +940,11 @@ for(int i=0; i<pts.length; ++i){
   filldraw(pic, make_pt_path(pts[i]), boldcolor, fillpen=white);
 } 
 
-label(pic,"{\scriptsize All languages:}", (-0.5*UNIVERSE_WD,0.9*UNIVERSE_HT),18*W);
+// label(pic,"{\scriptsize All languages:}", (-0.5*UNIVERSE_WD,0.9*UNIVERSE_HT),2*W);
 
-label(pic,"{\scriptsize Languages with fast algorithms}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),18*E);
-label(pic,"{\scriptsize \hspace*{4em}$\vdots$}", (0.5*UNIVERSE_WD,0.4*UNIVERSE_HT),18*E);
-label(pic,"\makebox[\width][l]{\scriptsize Languages with slow algorithms}", (0.5*UNIVERSE_WD,0.6*UNIVERSE_HT),18*E);
+label(pic,"{\scriptsize Languages with fast algorithms}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),2*E);
+label(pic,"{\scriptsize \hspace*{4em}$\vdots$}", (0.5*UNIVERSE_WD,0.4*UNIVERSE_HT),2*E);
+label(pic,"\makebox[\width][l]{\scriptsize Languages with slow algorithms}", (0.5*UNIVERSE_WD,0.6*UNIVERSE_HT),2*E);
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -960,7 +960,7 @@ int picnum=2;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of Recursive langugages
 // Recursive langs
@@ -1003,7 +1003,7 @@ int picnum=3;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P
 path P_arc = parabolic_arc(1.5,0.8); 
@@ -1035,7 +1035,7 @@ int picnum=4;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P=NP
 path P_arc = parabolic_arc(1.5,0.8); 
@@ -1068,7 +1068,7 @@ int picnum=5;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P and NP langugages as unequal
 path P_arc = parabolic_arc(1.5,0.8); 
@@ -1109,7 +1109,7 @@ int picnum=6;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P and NP langugages as unequal
 path P_arc = parabolic_arc(1.5,0.8); 
@@ -1159,16 +1159,21 @@ int picnum=7;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P and NP langugages as unequal
 path P_arc = parabolic_arc(1.5,0.8); 
-draw(pic, P_arc, base_region_pen);
 
 path NP_arc = parabolic_arc(1.85,1.0); 
-draw(pic, NP_arc, base_region_pen);
 
 path NP_hard_arc = parabolic_arc(-0.75,0.9); 
+
+path np_complete = buildcycle(NP_arc, NP_hard_arc);
+fill(pic, np_complete, backgroundcolor);
+
+// draw's after fill's
+draw(pic, P_arc, base_region_pen);
+draw(pic, NP_arc, base_region_pen);
 draw(pic, NP_hard_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
@@ -1202,7 +1207,6 @@ path NP_complete_tag = np_complete{(1,2)}
 draw(pic,NP_complete_tag,THINPEN);
 label(pic,"{\scriptsize $\NP$ complete}",np_complete+(0.60*UNIVERSE_WD,0.3*UNIVERSE_HT),E); 
 
-
 // Draw points
 // for(int i=0; i<pts.length; ++i){
 //   filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
@@ -1219,12 +1223,12 @@ int picnum=8;
 unitsize(pic,1cm);
 
 // Draw the universe of all langugaes
-filldraw(pic,UNIVERSE, backgroundcolor, AXISPEN);
+filldraw(pic,UNIVERSE, white, AXISPEN);
 // (note that  we cover the stubs at end)
 
 // Find the region of Recursive langugages
 path rec_arc = parabolic_arc(0.25,1.8); 
-draw(pic, rec_arc, base_region_pen);
+// draw(pic, rec_arc, base_region_pen+opacity(0.5)); // not show?
 
 path non_rec_langs = buildcycle(UNIVERSE, rec_arc); // the non-recursive langs
 
@@ -1236,9 +1240,9 @@ path p_langs = buildcycle(P_arc,UNIVERSE);
 // Draw edges
 
 // use seconds() to try verious random pics, then save one I like
-// int srand_seed = 1619633854; // 
-int srand_seed = seconds();
-write(format("PNP.ASY: Picture 1008: srand_seed for edge-picking is %d",srand_seed));  // when trying random seeds, can save ones that I like
+int srand_seed = 1619633854; // 
+// int srand_seed = seconds();
+// write(format("PNP.ASY: Picture 1008: srand_seed for edge-picking is %d",srand_seed));  // when trying random seeds, can save ones that I like
 srand(srand_seed); 
 
 int numedges = numpts;
@@ -1251,7 +1255,7 @@ for (int i=0; i<numedges; ++i) {
       draw(pic, firstpt--secondpt, highlightcolor);
   } else {
     if (!inside(non_rec_langs,firstpt) && !inside(non_rec_langs,secondpt)) {
-      draw(pic, firstpt--secondpt, boldcolor);
+      draw(pic, firstpt--secondpt, backgroundcolor);
     }
   }
 }
@@ -1261,6 +1265,19 @@ draw(pic, P_arc, base_region_pen);
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
+
+// Label them
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.30*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize $\P$}",(label_x,0.5*label_y),E); 
+
+real label_x = -0.70*UNIVERSE_WD;
+real label_y = 0.68*UNIVERSE_HT;
+draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"\makebox[\width][r]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),W); 
+
+
 
 // Draw points
 for(int i=0; i<pts.length; ++i){

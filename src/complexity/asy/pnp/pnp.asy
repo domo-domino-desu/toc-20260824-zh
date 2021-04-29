@@ -899,7 +899,7 @@ for(int i=0; i<numpts; ++i) {
   // write(format("i=%d",i));
   pts[i] = onept;
 }
-write(format("  Number of points is %d",pts.length));
+// write(format("  Number of points is %d",pts.length));
 
 
 
@@ -940,11 +940,11 @@ for(int i=0; i<pts.length; ++i){
   filldraw(pic, make_pt_path(pts[i]), boldcolor, fillpen=white);
 } 
 
-// label(pic,"{\scriptsize All languages:}", (-0.5*UNIVERSE_WD,0.9*UNIVERSE_HT),2*W);
+label(pic,"{\scriptsize All languages:}", (-0.5*UNIVERSE_WD,0.9*UNIVERSE_HT),2*W);
 
-label(pic,"{\scriptsize Languages with fast algorithms}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),2*E);
-label(pic,"{\scriptsize \hspace*{4em}$\vdots$}", (0.5*UNIVERSE_WD,0.4*UNIVERSE_HT),2*E);
-label(pic,"\makebox[\width][l]{\scriptsize Languages with slow algorithms}", (0.5*UNIVERSE_WD,0.6*UNIVERSE_HT),2*E);
+label(pic,"{\scriptsize Langs with fast algorithms}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),2*E);
+label(pic,"{\scriptsize \hspace*{4em}$\vdots$}", (0.5*UNIVERSE_WD,0.375*UNIVERSE_HT),2*E);
+label(pic,"\makebox[\width][l]{\scriptsize Langs with slow algorithms}", (0.5*UNIVERSE_WD,0.55*UNIVERSE_HT),2*E);
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -965,11 +965,21 @@ filldraw(pic,UNIVERSE, white, AXISPEN);
 // Draw the region of Recursive langugages
 // Recursive langs
 // draw(pic, parabola(0.25,1.8), blue);
-path rec_arc = parabolic_arc(0.25,1.8); 
-draw(pic, rec_arc, base_region_pen);
+path rec_arc = parabolic_arc(0.25,1.8);
+
 // RE langs
 real re_start = 0.80*length(rec_arc);
 path re_arc = point(UNIVERSE, 1.15){(1,1.1)}..{dir(rec_arc,re_start)}point(rec_arc,re_start);
+
+// Fill before draw
+path re_area = buildcycle(re_arc,rec_arc,UNIVERSE);
+fill(pic,re_area,backgroundcolor+gray(0.1));
+// draw(pic,re_area, blue);
+path rec_area = buildcycle(rec_arc,UNIVERSE);
+fill(pic,rec_area,backgroundcolor);
+// draw(pic,rec_area, blue);
+
+draw(pic, rec_arc, base_region_pen);
 draw(pic, re_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
@@ -1006,7 +1016,10 @@ unitsize(pic,1cm);
 filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P
-path P_arc = parabolic_arc(1.5,0.8); 
+path P_arc = parabolic_arc(1.5,0.8);
+
+path P_area = buildcycle(P_arc,UNIVERSE);
+fill(pic, P_area, backgroundcolor);
 draw(pic, P_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
@@ -1039,6 +1052,9 @@ filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P=NP
 path P_arc = parabolic_arc(1.5,0.8); 
+
+path P_area = buildcycle(P_arc,UNIVERSE);
+fill(pic, P_area, backgroundcolor);
 draw(pic, P_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
@@ -1072,9 +1088,14 @@ filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P and NP langugages as unequal
 path P_arc = parabolic_arc(1.5,0.8); 
-draw(pic, P_arc, base_region_pen);
-
 path NP_arc = parabolic_arc(1.85,1.0); 
+
+path NP_area = buildcycle(NP_arc,UNIVERSE);
+fill(pic, NP_area, backgroundcolor+gray(0.1));
+path P_area = buildcycle(P_arc,UNIVERSE);
+fill(pic, P_area, backgroundcolor);
+
+draw(pic, P_arc, base_region_pen);
 draw(pic, NP_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
@@ -1113,12 +1134,19 @@ filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P and NP langugages as unequal
 path P_arc = parabolic_arc(1.5,0.8); 
-draw(pic, P_arc, base_region_pen);
-
 path NP_arc = parabolic_arc(1.85,1.0); 
-draw(pic, NP_arc, base_region_pen);
-
 path EXP_arc = parabolic_arc(2.10,1.2); 
+
+// Fill before draw
+path EXP_area = buildcycle(EXP_arc,UNIVERSE);
+fill(pic, EXP_area, backgroundcolor+gray(0.15));
+path NP_area = buildcycle(NP_arc,UNIVERSE);
+fill(pic, NP_area, backgroundcolor+gray(0.09));
+path P_area = buildcycle(P_arc,UNIVERSE);
+fill(pic, P_area, backgroundcolor);
+
+draw(pic, NP_arc, base_region_pen);
+draw(pic, P_arc, base_region_pen);
 draw(pic, EXP_arc, base_region_pen);
 // (note that we cover the stubs at end)
 
@@ -1163,13 +1191,19 @@ filldraw(pic,UNIVERSE, white, AXISPEN);
 
 // Draw the region of P and NP langugages as unequal
 path P_arc = parabolic_arc(1.5,0.8); 
-
 path NP_arc = parabolic_arc(1.85,1.0); 
-
 path NP_hard_arc = parabolic_arc(-0.75,0.9); 
 
+// Fill before draw
+path NP_hard_area = buildcycle(UNIVERSE,NP_hard_arc);
+fill(pic, NP_hard_area, backgroundcolor+gray(0.15));
+path NP_area = buildcycle(NP_arc,UNIVERSE);
+fill(pic, NP_area, backgroundcolor+gray(0.09));
+path P_area = buildcycle(P_arc,UNIVERSE);
+fill(pic, P_area, backgroundcolor);
+
 path np_complete = buildcycle(NP_arc, NP_hard_arc);
-fill(pic, np_complete, backgroundcolor);
+fill(pic, np_complete, backgroundcolor+highlightcolor);
 
 // draw's after fill's
 draw(pic, P_arc, base_region_pen);
@@ -1276,8 +1310,6 @@ real label_x = -0.70*UNIVERSE_WD;
 real label_y = 0.68*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
 label(pic,"\makebox[\width][r]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),W); 
-
-
 
 // Draw points
 for(int i=0; i<pts.length; ++i){

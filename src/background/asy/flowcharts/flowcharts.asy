@@ -3749,7 +3749,8 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+// node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+node run=nbox("Compute some $f(x)$");
 node test=nrounddiamond("$f(x)\in\text{oracle}$?");
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");
@@ -3762,8 +3763,8 @@ real u = defaultlayoutskip;
 real v = 0.85*u;
 
 vlayout(1*v,start,read);
-vlayout(2.35*v,read,run);
-vlayout(2.75*v,run,test);
+vlayout(1*v,read,run);
+vlayout(1.35*v,run,test);
 yes.pos = test.pos + (-2.75*u,-0.75*v);
 no.pos = test.pos + (2.75*u,-0.75*v);
 vlayout(2*v,test,ending);
@@ -3800,7 +3801,8 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+// node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+node run=nbox("Compute some $f(x)$");
 node test=nrounddiamond("$f(x)\in\text{oracle}$?");
 node yes=nbox("Print $0$");  // Note it is switched from 1
 node no=nbox("Print $1$");   // likewise, switched
@@ -3813,8 +3815,8 @@ real u = defaultlayoutskip;
 real v = 0.85*u;
 
 vlayout(1*v,start,read);
-vlayout(2.35*v,read,run);
-vlayout(2.75*v,run,test);
+vlayout(1*v,read,run);
+vlayout(1.35*v,run,test);
 yes.pos = test.pos + (-2.75*u,-0.75*v);
 no.pos = test.pos + (2.75*u,-0.75*v);
 vlayout(2*v,test,ending);
@@ -3851,7 +3853,8 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+// node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+node run=nbox("Compute some $f(x)$");
 node test=nrounddiamond("$f(x)\notin\text{oracle}$?");
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");
@@ -3864,8 +3867,8 @@ real u = defaultlayoutskip;
 real v = 0.85*u;
 
 vlayout(1*v,start,read);
-vlayout(2.35*v,read,run);
-vlayout(2.75*v,run,test);
+vlayout(1*v,read,run);
+vlayout(1.35*v,run,test);
 yes.pos = test.pos + (-2.75*u,-0.75*v);
 no.pos = test.pos + (2.75*u,-0.75*v);
 vlayout(2*v,test,ending);

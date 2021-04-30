@@ -145,7 +145,7 @@ picture tape_pic;
 tape_string = " 00 ";
 tape_draw(tape_pic, tape_string, 2, "$\state{1}$", tape_contents_length(tape_string));
 add(pic, tape_pic, (1,1.5), above=true);
-label(pic, yield_t_up*"$\vdash$",(0.65,1.10),p);
+label(pic, yield_t_up*"\textcolor{highlightcolor}{$\vdash$}",(0.65,1.10),p);
 
 picture tape_pic;
 tape_string = " 10 ";
@@ -164,7 +164,7 @@ picture tape_pic;
 tape_string = " 0  ";
 tape_draw(tape_pic, tape_string, 2, "$\state{1}$", tape_contents_length(tape_string));
 add(pic, tape_pic, (2,1.25), above=true);
-label(pic, yield_t_down*"$\vdash$",(1.65,1.45),p);
+label(pic, yield_t_down*"\textcolor{highlightcolor}{$\vdash$}",(1.65,1.45),p);
 
 picture tape_pic;
 tape_string = " 10 ";
@@ -186,7 +186,7 @@ add(pic, tape_pic, (3,-0.5), above=true);
 label(pic, "$\vdash$",(2.65,-0.25),p);
 label(pic, "$\cdots$",(3.65,-0.25),p);
 
-pen GRAYBRANCH = linewidth(0.215cm)+squarecap+gray(0.96);  // 
+pen GRAYBRANCH = linewidth(0.215cm)+squarecap+highlightcolor+opacity(0.1);  // 
 path ed = (0,0)--(1,0);
 draw(pic, shift(0.45,0.65)*rotate(68.5)*xscale(0.85)*ed, GRAYBRANCH);
 draw(pic, shift(1.55,1.55)*rotate(-52.75)*xscale(0.32)*ed,  GRAYBRANCH);

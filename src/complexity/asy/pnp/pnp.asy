@@ -858,7 +858,6 @@ path make_pt_path(pair pt) {
   return pt_path;
 }
 
-
 // seed the random number generator;
 //   If seconds() then uncomment to show on screen to save the number for later
 int srand_seed = 1619633659;
@@ -868,10 +867,10 @@ srand(srand_seed);
 
 // Use that seed to pick some points; they must be inside the UNIVERSE
 pair[] pts;
-int numpts=60;
+int numpts=25;
 bool flag=false;
 pair onept;  // a candidate point
-real padding=0.10; // min dist between points
+real padding=0.15; // min dist between points
 for(int i=0; i<numpts; ++i) {
   flag=false;
   int tries=0; // watch for inf loop
@@ -899,7 +898,7 @@ for(int i=0; i<numpts; ++i) {
   // write(format("i=%d",i));
   pts[i] = onept;
 }
-// write(format("  Number of points is %d",pts.length));
+write(format("  Number of points is %d",pts.length));
 
 
 
@@ -952,7 +951,7 @@ draw(pic,UNIVERSE, AXISPEN);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
-
+real REC_HGT = 1.8;
 // ........... Label REC ..........
 picture pic;
 int picnum=2;
@@ -965,7 +964,7 @@ filldraw(pic,UNIVERSE, white, AXISPEN);
 // Draw the region of Recursive langugages
 // Recursive langs
 // draw(pic, parabola(0.25,1.8), blue);
-path rec_arc = parabolic_arc(0.25,1.8);
+path rec_arc = parabolic_arc(0.25,REC_HGT);
 
 // RE langs
 real re_start = 0.80*length(rec_arc);
@@ -1194,13 +1193,20 @@ path P_arc = parabolic_arc(1.5,0.8);
 path NP_arc = parabolic_arc(1.85,1.0); 
 path NP_hard_arc = parabolic_arc(-0.75,0.9); 
 
+path rec_arc = parabolic_arc(0.25,REC_HGT);  // copied from pic 2
+
 // Fill before draw
-path NP_hard_area = buildcycle(UNIVERSE,NP_hard_arc);
-fill(pic, NP_hard_area, backgroundcolor+gray(0.15));
 path NP_area = buildcycle(NP_arc,UNIVERSE);
 fill(pic, NP_area, backgroundcolor+gray(0.09));
 path P_area = buildcycle(P_arc,UNIVERSE);
 fill(pic, P_area, backgroundcolor);
+// path NP_hard_area = buildcycle(UNIVERSE,NP_hard_arc);
+path NP_hard_area = buildcycle(subpath(UNIVERSE,0,2),rec_arc,subpath(UNIVERSE,2,4),NP_hard_arc);
+
+real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
+pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
+radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
+	                     white,NP_hard_min,0.4*UNIVERSE_HT);
 
 path np_complete = buildcycle(NP_arc, NP_hard_arc);
 fill(pic, np_complete, backgroundcolor+highlightcolor);
@@ -1227,7 +1233,7 @@ label(pic,"{\scriptsize $\NP$}",(label_x,0.5*label_y),E);
 
 real label_x = -0.65*UNIVERSE_WD;
 real label_y_bot = 0.37*UNIVERSE_HT;
-real label_y_top = 0.80*UNIVERSE_HT;
+real label_y_top = 0.70*UNIVERSE_HT;
 draw(pic,// (label_x+0.5*WHISKER_WD,label_y_top)--
      (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
 label(pic,"{\scriptsize $\probname{NP Hard}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
@@ -1279,7 +1285,7 @@ int srand_seed = 1619633854; //
 // write(format("PNP.ASY: Picture 1008: srand_seed for edge-picking is %d",srand_seed));  // when trying random seeds, can save ones that I like
 srand(srand_seed); 
 
-int numedges = numpts;
+int numedges = floor(numpts/2);
 for (int i=0; i<numedges; ++i) {
   int firstpt_dex = floor((pts.length-0.01)*unitrand());
   pair firstpt = pts[firstpt_dex];
@@ -1290,6 +1296,39 @@ for (int i=0; i<numedges; ++i) {
   } else {
     if (!inside(non_rec_langs,firstpt) && !inside(non_rec_langs,secondpt)) {
       draw(pic, firstpt--secondpt, backgroundcolor);
+    }
+  }
+}
+
+// Every pt in P is connected to every other point
+for (int i=0; i<numpts; ++i) {
+  pair firstpt = pts[i];
+  if (inside(p_langs,firstpt)) {
+    for (int j=0; j<numpts; ++j) {
+      if (i != j) {
+	pair secondpt = pts[j];
+	if (inside(p_langs,secondpt)) {
+	  draw(pic, firstpt--secondpt, highlightcolor);
+	} else {
+	  if (!inside(non_rec_langs,secondpt)) {
+	  draw(pic, firstpt--secondpt, backgroundcolor);
+	  }
+	}
+      }
+    }
+  }
+}
+// Connect points in P to other points in P, on top of all other connections
+for (int i=0; i<numpts; ++i) {
+  pair firstpt = pts[i];
+  if (inside(p_langs,firstpt)) {
+    for (int j=0; j<numpts; ++j) {
+      if (i != j) {
+	pair secondpt = pts[j];
+	if (inside(p_langs,secondpt)) {
+	  draw(pic, firstpt--secondpt, highlightcolor);
+	}
+      }
     }
   }
 }
@@ -1454,6 +1493,105 @@ label(pic,"{\scriptsize $\bigOh(f)$}",(label_x,0.5*label_y),W);
 
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ........... Exercise: Label sets on P and NP and NP Hard graph ..........
+picture pic;
+int picnum=12;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+
+// Draw the region of P and NP langugages as unequal
+path P_arc = parabolic_arc(1.5,0.8); 
+path NP_arc = parabolic_arc(1.85,1.0); 
+path NP_hard_arc = parabolic_arc(-0.75,0.9); 
+
+path rec_arc = parabolic_arc(0.25,REC_HGT);  // copied from pic 2
+// RE langs  (added from Fig 107)
+real re_start = 0.80*length(rec_arc);
+path re_arc = point(UNIVERSE, 1.15){(1,1.1)}..{dir(rec_arc,re_start)}point(rec_arc,re_start);
+
+// Fill before draw
+path NP_area = buildcycle(NP_arc,UNIVERSE);
+fill(pic, NP_area, backgroundcolor+gray(0.09));
+path P_area = buildcycle(P_arc,UNIVERSE);
+fill(pic, P_area, backgroundcolor);
+// path NP_hard_area = buildcycle(UNIVERSE,NP_hard_arc);
+path NP_hard_area = buildcycle(subpath(UNIVERSE,0,2),rec_arc,subpath(UNIVERSE,2,4),NP_hard_arc);
+
+real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
+pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
+radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
+	                     white,NP_hard_min,0.4*UNIVERSE_HT);
+
+path np_complete = buildcycle(NP_arc, NP_hard_arc);
+fill(pic, np_complete, backgroundcolor+highlightcolor);
+
+// draw's after fill's
+draw(pic, P_arc, base_region_pen);
+draw(pic, NP_arc, base_region_pen);
+draw(pic, NP_hard_arc, base_region_pen);
+draw(pic, rec_arc, base_region_pen);  // added from fig 1007
+draw(pic, re_arc, base_region_pen);  // added from fig 1007
+// (note that we cover the stubs at end)
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+// Label it
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.30*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\P$}",(label_x,0.5*label_y),E); 
+
+real label_x = 0.95*UNIVERSE_WD;
+real label_y = 0.38*UNIVERSE_HT;
+draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
+label(pic,"{\scriptsize $\NP$}",(label_x,0.5*label_y),E); 
+
+real label_x = -0.65*UNIVERSE_WD;
+real label_y_bot = 0.37*UNIVERSE_HT;
+real label_y_top = 0.70*UNIVERSE_HT;
+draw(pic,// (label_x+0.5*WHISKER_WD,label_y_top)--
+     (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
+label(pic,"{\scriptsize $\probname{NP Hard}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
+
+real label_x = -1.5*UNIVERSE_WD;
+real label_y_bot = 0.00*UNIVERSE_HT;
+real label_y_top = 0.70*UNIVERSE_HT;
+draw(pic,(label_x+0.5*WHISKER_WD,label_y_top)--
+     (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
+label(pic,"{\scriptsize $\probname{Rec}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
+
+real label_x = -1.95*UNIVERSE_WD;
+real label_y_bot = 0.00*UNIVERSE_HT;
+real label_y_top = 0.77*UNIVERSE_HT;
+draw(pic,(label_x+0.5*WHISKER_WD,label_y_top)--
+     (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
+label(pic,"{\scriptsize $\probname{RE}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
+
+// Locate NP Complete
+pair np_complete = (0,0.38*UNIVERSE_HT);
+path NP_complete_tag = np_complete{(1,2)}
+                       .. tension 1.6 .. np_complete+(0.32*UNIVERSE_WD,0.25*UNIVERSE_HT)
+                       .. tension 0.8 .. np_complete+(0.36*UNIVERSE_WD,0.23*UNIVERSE_HT)
+                       .. tension 1.2 .. {E}(np_complete+(0.60*UNIVERSE_WD,0.3*UNIVERSE_HT));
+draw(pic,NP_complete_tag,THINPEN);
+label(pic,"{\scriptsize $\NP$ complete}",np_complete+(0.60*UNIVERSE_WD,0.3*UNIVERSE_HT),E); 
+
+// Draw points
+// for(int i=0; i<pts.length; ++i){
+//   filldraw(pic, make_pt_path(pts[i]), THINPEN+boldcolor, fillpen=white);
+// } 
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

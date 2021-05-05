@@ -150,5 +150,114 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============ Exercise: Fin \leq_p Reg =======================
+picture pic;
+int picnum = 2;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $x$");
+node testmatch=nrounddiamond("$\sigma$ matches $\str{a}^n\str{b}^n$?");
+node testlen=nrounddiamond("$\TM_x$ accepts a $\tau$ of length~$n$?");
+node printyes=nbox("Print \str{1}");
+node printno=nbox("Print \str{0}");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.25*v,read,testmatch);
+vlayout(1.85*v,testmatch,testlen);
+printyes.pos = testlen.pos+(-5.0*u,-0.8*v);
+printno.pos = testlen.pos+(5.0*u,-0.8*v);
+vlayout(2*v,testlen,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--testmatch),
+     (testmatch--testlen).l("Y").style("leftside"),
+     (testmatch..HV..printno).l(Label("N",Relative(0.15))).style("leftside"),
+     (testlen..HV..printyes).l(Label("Y",Relative(0.25))),
+     (testlen..HV..printno).l(Label("N",Relative(0.35))).style("leftside"),
+     (printyes..VHV..ending),
+     (printno..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     testmatch,
+     testlen,
+     printyes,
+     printno,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ...................... after s-m-n ................
+picture pic;
+int picnum = 3;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$");
+node testmatch=nrounddiamond("$\sigma$ matches $\str{a}^n\str{b}^n$?");
+node testlen=nrounddiamond("$\TM_x$ accepts a $\tau$ of length~$n$?");
+node printyes=nbox("Print \str{1}");
+node printno=nbox("Print \str{0}");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.25*v,read,testmatch);
+vlayout(1.85*v,testmatch,testlen);
+printyes.pos = testlen.pos+(-5.0*u,-0.8*v);
+printno.pos = testlen.pos+(5.0*u,-0.8*v);
+vlayout(2*v,testlen,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--testmatch),
+     (testmatch--testlen).l("Y").style("leftside"),
+     (testmatch..HV..printno).l(Label("N",Relative(0.15))).style("leftside"),
+     (testlen..HV..printyes).l(Label("Y",Relative(0.25))),
+     (testlen..HV..printno).l(Label("N",Relative(0.35))).style("leftside"),
+     (printyes..VHV..ending),
+     (printno..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     testmatch,
+     testlen,
+     printyes,
+     printno,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
 
 

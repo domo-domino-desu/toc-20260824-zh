@@ -1016,17 +1016,17 @@ class StartsWithZeroTestCase(unittest.TestCase):
     """Tests exercise in intro acting as char fcn of set of strings starting with zero."""
 
     TM_FILE_NAME = 'startswithzero.tm'
-    
-    def _is_char_function(self, final_config):
-        """Test the machine acts as a characteristic function, so all cells
-           are blank except the one under the head, and that one has 
+
+    def is_char_function(self,final_config):
+        """Test a finished machine acts as a characteristic function, so all 
+           cells are blank except the one under the head, and that one has 
            either '0' or '1'
              final_config  dictionary returned by get_final_config
         """
         self.assertTrue(is_empty(final_config['prefix']))
         self.assertTrue(is_empty(final_config['suffix']))
         self.assertTrue(final_config['currentchar'] in ['1','0'])
-
+    
     def test_simple(self):
         """Test some dumb thing"""
         sigma = "0"*4 
@@ -1037,7 +1037,7 @@ class StartsWithZeroTestCase(unittest.TestCase):
         self.assertEqual(1,count_chars(final_config))
         # acts as a function?
         # print("final_config is {0!s}".format(pprint.pformat(final_config)))
-        self._is_char_function(final_config)
+        self.is_char_function(final_config)
         self.assertTrue(final_config['currentchar']=='1')
 
     def test_empty(self):
@@ -1048,7 +1048,7 @@ class StartsWithZeroTestCase(unittest.TestCase):
         # print(out)
         final_config = get_final_config(out)
         # print("final_config is {0!s}".format(pprint.pformat(final_config)))
-        self._is_char_function(final_config)
+        self.is_char_function(final_config)
         self.assertTrue(final_config['currentchar']=='0')
         
     def test_some(self):
@@ -1060,7 +1060,7 @@ class StartsWithZeroTestCase(unittest.TestCase):
             out = r.stdout.decode(encoding='UTF-8')
             # print(out)
             final_config = get_final_config(out)
-            self._is_char_function(final_config)
+            self.is_char_function(final_config)
             self.assertTrue(final_config['currentchar']=='0')
         # Starts with 0
         for i in range(1,6):
@@ -1069,7 +1069,7 @@ class StartsWithZeroTestCase(unittest.TestCase):
             out = r.stdout.decode(encoding='UTF-8')
             # print(out)
             final_config = get_final_config(out)
-            self._is_char_function(final_config)
+            self.is_char_function(final_config)
             self.assertTrue(final_config['currentchar']=='1')
         # Starts with 0, mix of chars
         for i in range(1,3):
@@ -1078,7 +1078,7 @@ class StartsWithZeroTestCase(unittest.TestCase):
             out = r.stdout.decode(encoding='UTF-8')
             # print(out)
             final_config = get_final_config(out)
-            self._is_char_function(final_config)
+            self.is_char_function(final_config)
             self.assertTrue(final_config['currentchar']=='1')
         # Starts with 1, mix of chars
         for i in range(1,3):
@@ -1087,7 +1087,86 @@ class StartsWithZeroTestCase(unittest.TestCase):
             out = r.stdout.decode(encoding='UTF-8')
             # print(out)
             final_config = get_final_config(out)
-            self._is_char_function(final_config)
+            self.is_char_function(final_config)
+            self.assertTrue(final_config['currentchar']=='0')
+
+            
+    
+# ==============================================
+class StartsWithZeroOneTestCase(unittest.TestCase):
+    """Tests exercise in intro acting as char fcn of set of strings starting with 01."""
+
+    TM_FILE_NAME = 'startswithzeroone.tm'
+
+    def is_char_function(self,final_config):
+        """Test a finished machine acts as a characteristic function, so all 
+           cells are blank except the one under the head, and that one has 
+           either '0' or '1'
+             final_config  dictionary returned by get_final_config
+        """
+        self.assertTrue(is_empty(final_config['prefix']), "prefix "+final_config['prefix']+" should be empty")
+        self.assertTrue(is_empty(final_config['suffix']), "suffix "+final_config['suffix']+" should be empty")
+        self.assertTrue(final_config['currentchar'] in ['1','0'], "current character "+final_config['currentchar']+"should be 0 or 1")
+        
+    def test_simple(self):
+        """Test some dumb thing"""
+        sigma = "01"+ ("0"*4) 
+        r = run_tm(self.TM_FILE_NAME, sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out) # show the machine's output for debugging
+        final_config = get_final_config(out)
+        # print("final_config is {0!s}".format(pprint.pformat(final_config)))
+        self.is_char_function(final_config)
+        self.assertTrue(final_config['currentchar']=='1')
+
+    def test_empty(self):
+        """Test the empty string"""
+        sigma = " "
+        r = run_tm(self.TM_FILE_NAME, sigma[0], sigma[1:])
+        out = r.stdout.decode(encoding='UTF-8')
+        # print(out)
+        final_config = get_final_config(out)
+        # print("final_config is {0!s}".format(pprint.pformat(final_config)))
+        self.is_char_function(final_config)
+        self.assertTrue(final_config['currentchar']=='0')
+        
+    def test_some(self):
+        """Test a few cases"""
+        # Starts with 1
+        for i in range(1,6):
+            sigma = "1"+("1"*i) 
+            r = run_tm(self.TM_FILE_NAME, sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.is_char_function(final_config)
+            self.assertTrue(final_config['currentchar']=='0')
+        # Starts with 10
+        for i in range(1,6):
+            sigma = "10"+("1"*i) 
+            r = run_tm(self.TM_FILE_NAME, sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.is_char_function(final_config)
+            self.assertTrue(final_config['currentchar']=='0')
+        # Starts with 01, mix of chars
+        for i in range(1,3):
+            sigma = "01"+("01"*i) 
+            r = run_tm(self.TM_FILE_NAME, sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.is_char_function(final_config)
+            self.assertTrue(final_config['currentchar']=='1')
+        # Starts with 10, mix of chars
+        for i in range(1,3):
+            sigma = "10"+("01"*i) 
+            r = run_tm(self.TM_FILE_NAME, sigma[0], sigma[1:])
+            out = r.stdout.decode(encoding='UTF-8')
+            # print(out)
+            final_config = get_final_config(out)
+            self.is_char_function(final_config)
             self.assertTrue(final_config['currentchar']=='0')
 
 
@@ -1100,9 +1179,9 @@ class StartsWithZeroTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(StartsWithZeroTestCase('test_simple'))
-    suite.addTest(StartsWithZeroTestCase('test_empty'))
-    suite.addTest(StartsWithZeroTestCase('test_some'))
+    suite.addTest(StartsWithZeroOneTestCase('test_simple'))
+    suite.addTest(StartsWithZeroOneTestCase('test_empty'))
+    suite.addTest(StartsWithZeroOneTestCase('test_some'))
     return suite
 
 def main(args):

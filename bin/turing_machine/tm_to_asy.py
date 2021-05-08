@@ -246,6 +246,8 @@ import settings;
 settings.outformat="pdf";
 settings.render=0;
 
+string OUTPUT_FN = "{0:s}%03d";
+
 // cd needed for relative import 
 cd("{1:s}");
 // import jh;

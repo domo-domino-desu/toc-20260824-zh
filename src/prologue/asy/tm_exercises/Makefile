@@ -32,7 +32,7 @@ endef
 # so the tapes will have B's in them.
 define create-pdfs-leavebs
   @echo "Using ${1}.tm on ${2} to get file family ${3}"
-  ${TM_DIR}/turing-machine.rkt -f ${MACHINE_DIR}/doubler.tm -c ${4} -r ${5}  -s ${6} > tmp/${3}.out
+  ${TM_DIR}/turing-machine.rkt -f ${MACHINE_DIR}/${1}.tm -c ${4} -r ${5}  -s ${6} > tmp/${3}.out
   ${SCRIPT_DIR}/tm_to_asy.py -f tmp/${3}.out -o pdfs/${3}
   cd pdfs; asy ${3}
 endef
@@ -97,7 +97,9 @@ seconeexercises: pdfs/pred_two.asy pdfs/addtwotwo.asy pdfs/infloop.asy \
 	pdfs/successor.asy pdfs/leq.asy pdfs/bitwisenot.asy \
 	pdfs/singlebitnot.asy pdfs/singlebitand.asy pdfs/singlebitor.asy \
 	pdfs/append01.asy pdfs/addany.asy pdfs/palindromeabba.asy \
-	pdfs/palindromeaba.asy pdfs/twobsabba.asy pdfs/twobsaba.asy
+	pdfs/palindromeaba.asy pdfs/twobsabba.asy pdfs/twobsaba.asy \
+	pdfs/startswithzero.asy pdfs/startswithzeroone.asy \
+	pdfs/startswithzerostarone.asy
 
 pdfs/pred_two.asy: ${MACHINE_DIR}/pred.tm
 	$(call create-pdfs,pred,2,pred_two,"1","1",${MAX_STEPS_DEFAULT})
@@ -180,6 +182,18 @@ pdfs/twobsabba.asy: ${MACHINE_DIR}/twobs.tm
 
 pdfs/twobsaba.asy: ${MACHINE_DIR}/twobs.tm
 	$(call create-pdfs,twobs,aba,twobsaba,"a","ba",${MAX_STEPS_DEFAULT})
+
+# note the use of leavebs here
+pdfs/startswithzero.asy: ${MACHINE_DIR}/startswithzero.tm
+	$(call create-pdfs-leavebs,startswithzero,01101,startswithzero,"0","1101",${MAX_STEPS_DEFAULT})
+
+# note the use of leavebs here
+pdfs/startswithzeroone.asy: ${MACHINE_DIR}/startswithzeroone.tm
+	$(call create-pdfs-leavebs,startswithzeroone,01101,startswithzeroone,"0","1101",${MAX_STEPS_DEFAULT})
+
+# note the use of leavebs here
+pdfs/startswithzerostarone.asy: ${MACHINE_DIR}/startswithzerostarone.tm
+	$(call create-pdfs-leavebs,startswithzerostarone,00110,startswithzerostarone,"0","0110",${MAX_STEPS_DEFAULT})
 
 
 

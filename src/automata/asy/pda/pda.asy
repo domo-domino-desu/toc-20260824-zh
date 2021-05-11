@@ -8,16 +8,16 @@ settings.render=0;
 unitsize(1pt);
 
 // cd junk is needed for relative import 
+cd("../../../asy/");
+import jhnode;
+cd("");
 cd("../../../asy");
 import settexpreamble;
 cd("");
 settexpreamble();
-cd("../../../asy/");
-import jh;
-cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
-cd("");
+// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
+// import node;
+// cd("");
 
 
 string OUTPUT_FN = "pda%02d";
@@ -143,16 +143,20 @@ path tm_langs = ellipse(tm_langs_center,
 // draw them
 pair oset = (-0.001u,0v);
 real rotation_angle = 20;
-transform r = shift(0.2*u_width,0.3*u_height)*rotate(rotation_angle,(0,0));
-filldraw(pic,r*tm_langs,fillpen=highlight_light,drawpen=MAINPEN);
+// transform r = shift(0.2*u_width,0.3*u_height)*rotate(rotation_angle,(0,0));
+transform r = shift(0.2*u_width,0.5*u_height);
+// filldraw(pic,r*tm_langs,fillpen=highlight_light,drawpen=MAINPEN);
+filldraw(pic,r*tm_langs,fillpen=backgroundcolor+gray(0.98),drawpen=MAINPEN);
 pair tm_langs_focus = tm_langs_center
   +(sqrt(tm_langs_major_axis**2-tm_langs_minor_axis**2),0);
-label(pic,"\tiny $D$",r*tm_langs_focus,oset,p=NODEPEN);
-filldraw(pic,r*npda_langs,fillpen=bold_light,drawpen=MAINPEN);
+label(pic,"\tiny $D$",r*tm_langs_focus,oset,p=NODEPEN); // make white bg with ,UnFill
+// filldraw(pic,r*npda_langs,fillpen=bold_light,drawpen=MAINPEN);
+filldraw(pic,r*npda_langs,fillpen=backgroundcolor+gray(0.15),drawpen=MAINPEN);
 pair npda_langs_focus = npda_langs_center
   +(sqrt(npda_langs_major_axis**2-npda_langs_minor_axis**2),0);
 label(pic,"\tiny $C$",r*npda_langs_focus,oset,p=NODEPEN);
-filldraw(pic,r*pda_langs,fillpen=lightcolor,drawpen=MAINPEN);
+// filldraw(pic,r*pda_langs,fillpen=lightcolor,drawpen=MAINPEN);
+filldraw(pic,r*pda_langs,fillpen=backgroundcolor+gray(0.08),drawpen=MAINPEN);
 pair pda_langs_focus = pda_langs_center
   +(sqrt(pda_langs_major_axis**2-pda_langs_minor_axis**2),0);
 label(pic,"\tiny $B$",r*pda_langs_focus,oset,p=NODEPEN);

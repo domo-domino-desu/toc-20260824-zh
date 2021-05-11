@@ -2592,3 +2592,111 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+// =============== Petersen graph for coloring ======================
+int picnum = 25;
+picture p;
+
+setdefaultgraphstyles();
+
+node outer0=ncircle(" "),
+  outer1=ncircle(" "),
+  outer2=ncircle(" "),
+  outer3=ncircle(" "),
+  outer4=ncircle(" ");
+node inner0=ncircle(" "),
+  inner1=ncircle(" "),
+  inner2=ncircle(" "),
+  inner3=ncircle(" "),
+  inner4=ncircle(" ");
+
+node[] outer={outer0, outer1, outer2, outer3, outer4};
+node[] inner={inner0, inner1, inner2, inner3, inner4};
+
+// calculate nodes position
+defaultlayoutskip = 1.2cm;
+real u = defaultlayoutskip;
+real v=0.7*u;
+circularlayout(0.9*u, startangle=90, outer);
+circularlayout(0.45*u, startangle=90, inner);
+
+// draw edges
+draw(p,
+     (outer[0]--outer[1]),
+     (outer[1]--outer[2]),
+     (outer[2]--outer[3]),
+     (outer[3]--outer[4]),
+     (outer[4]--outer[0]),
+     (outer[0]--inner[0]),
+     (outer[1]--inner[1]),
+     (outer[2]--inner[2]),
+     (outer[3]--inner[3]),
+     (outer[4]--inner[4]),
+     (inner[0]--inner[2]),
+     (inner[0]--inner[3]),
+     (inner[1]--inner[3]),
+     (inner[1]--inner[4]),
+     (inner[2]--inner[4])
+);
+
+// draw nodes
+draw(p,outer[0],outer[1],outer[2],outer[3],outer[4],
+     inner[0],inner[1],inner[2],inner[3],inner[4]);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+// ............. 3-colored ........................
+int picnum = 26;
+picture p;
+
+setdefaultgraphstyles();
+
+node outer0=ncircle(" ",ns_bleachedbg),
+  outer1=ncircle(" ",ns_bg),
+  outer2=ncircle(" ",ns_bleachedbg),
+  outer3=ncircle(" ",ns_bg),
+outer4=ncircle(" ",ns_bleachedbold);
+node inner0=ncircle(" ",ns_bg),
+  inner1=ncircle(" ",ns_bleachedbg),
+inner2=ncircle(" ",ns_bleachedbold),
+inner3=ncircle(" ",ns_bleachedbold),
+  inner4=ncircle(" ",ns_bg);
+
+node[] outer={outer0, outer1, outer2, outer3, outer4};
+node[] inner={inner0, inner1, inner2, inner3, inner4};
+
+// calculate nodes position
+defaultlayoutskip = 1.2cm;
+real u = defaultlayoutskip;
+real v=0.7*u;
+circularlayout(0.9*u, startangle=90, outer);
+circularlayout(0.45*u, startangle=90, inner);
+
+// draw edges
+draw(p,
+     (outer[0]--outer[1]),
+     (outer[1]--outer[2]),
+     (outer[2]--outer[3]),
+     (outer[3]--outer[4]),
+     (outer[4]--outer[0]),
+     (outer[0]--inner[0]),
+     (outer[1]--inner[1]),
+     (outer[2]--inner[2]),
+     (outer[3]--inner[3]),
+     (outer[4]--inner[4]),
+     (inner[0]--inner[2]),
+     (inner[0]--inner[3]),
+     (inner[1]--inner[3]),
+     (inner[1]--inner[4]),
+     (inner[2]--inner[4])
+);
+
+// draw nodes
+draw(p,outer[0],outer[1],outer[2],outer[3],outer[4],
+     inner[0],inner[1],inner[2],inner[3],inner[4]);
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");

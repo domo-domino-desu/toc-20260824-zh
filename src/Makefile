@@ -529,7 +529,7 @@ appendix/appendix.tex : | appendix/asy/functions000.pdf
 
 # ============== book ================
 
-book.tex : cover/cover.tex \
+book.pdf : cover/cover.tex \
   preface/preface.tex \
   prologue/prologue.tex \
   background/background.tex \
@@ -537,3 +537,4 @@ book.tex : cover/cover.tex \
   automata/automata.tex \
   complexity/complexity.tex \
   appendix/appendix.tex
+	$(LATEX_CMD) book

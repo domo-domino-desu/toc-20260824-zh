@@ -332,8 +332,8 @@ prologue/prologue.tex : | prologue/asy/xygraphs/xygraphs00.pdf \
   prologue/asy/tm/tm000.pdf \
   prologue/asy/tm_exercises/inverse/inverse000.pdf \
   prologue/asy/tm_exercises/replicator/replicator000.pdf \
-  add000.pdf addany000.pdf addonetwo000.pdf
-  addthree_four000.pdf addthree_zero000.pdf addtwotwo000.pdf
+  add000.pdf addany000.pdf addonetwo000.pdf \
+  addthree_four000.pdf addthree_zero000.pdf addtwotwo000.pdf \
   addzerotwo000.pdf addzerozero000.pdf \
   append01000.pdf bitwisenot000.pdf blankones000.pdf constantthree000.pdf \
   doubler000.pdf doublerbinary000.pdf infloop000.pdf leq000.pdf \

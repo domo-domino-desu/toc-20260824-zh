@@ -13,7 +13,10 @@
   \pdfgentounicode=1
 
 \usepackage{mathtools}  
-\usepackage{amsmath, amssymb, amsthm} % no amsthm; use ntheorem because of margin numbering
+\usepackage{amsmath}
+% Fix some font-loading error
+\let\Bbbk\relax
+\usepackage{amssymb, amsthm} % no amsthm; use ntheorem because of margin numbering
 
 % M Sharpe's XCharter
 % \usepackage[scaled=.98,sups,osf]{XCharter}% lining figures in math, osf in text

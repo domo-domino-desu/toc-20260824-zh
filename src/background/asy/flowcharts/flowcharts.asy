@@ -1,17 +1,13 @@
 // flowcharts.asy
 //  Flow charts illustrating routines
-cd("../../../asy");
+
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-
-cd("../../../asy");
+// Set up Asy defaults
 import jhnode;
-cd("");
-
-cd("../../../asy");
+// Import flowchart commands
 import flowchart;
-cd("");
 
 import settings;
 settings.outformat="pdf";

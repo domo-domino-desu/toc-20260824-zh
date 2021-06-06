@@ -6,11 +6,9 @@ import settings;
 settings.outformat="pdf";
 settings.render=0;
 
-// cd needed for relative import 
-cd("../../../../asy");
-// import jh;
+
+// Bring in tape commands
 import tape;
-cd("");
 
 unitsize(1pt);
 

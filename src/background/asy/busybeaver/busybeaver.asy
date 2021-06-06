@@ -8,17 +8,12 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import 
-cd("../../../asy");
+
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy/");
-import jh;
-cd("");
-cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-import node;
-cd("");
+// Set up Asy defaults
+import jhnode;
 
 
 // define style

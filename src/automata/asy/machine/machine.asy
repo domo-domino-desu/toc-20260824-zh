@@ -8,18 +8,13 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import 
-cd("../../../asy");
+// Set LaTeX defaults
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy/");
-import jh;
-cd("");
-cd("../../../asy/share");  // so it can see tm_share.asy
+// Asy defaults
+import jhnode;
 import tm_share;
 import tape;
-cd("");
 
 
 

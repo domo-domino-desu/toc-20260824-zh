@@ -1,13 +1,11 @@
 // memory.asy
 //  Ilustrating pointers
-cd("../../../asy");
-import settexpreamble;
-cd("");
-settexpreamble();
 
-cd("../../../asy");
+// Set up LaTeX defaults 
+import settexpreamble;
+settexpreamble();
+// Set up Asy defaults
 import jh;
-cd("");
 
 import settings;
 settings.outformat="pdf";

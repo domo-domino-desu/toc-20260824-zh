@@ -7,17 +7,11 @@ settings.render=0;
 
 unitsize(1cm);
 
-// Get stuff common to all .asy files
-// cd junk is needed for relative import
-cd("../../asy/");
+// Set LaTeX defaults
 import settexpreamble;
-cd("");
 settexpreamble();
-
-cd("../../asy/");
+// Asy defaults
 import jh;
-cd("");
-// import node;
 
 import fontsize;  // allow nonstandard font sizes
 import graph;

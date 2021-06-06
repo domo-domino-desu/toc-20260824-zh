@@ -7,18 +7,13 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import 
-cd("../../../asy");
+// Set LaTeX defaults
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy/");
+// Asy defaults
 import jh;
-cd("");
 
 string OUTPUT_FN = "pnp%02d";
-
-
 
 path ellipse(pair c, real a, real b) {
   return shift(c)*scale(a,b)*unitcircle;

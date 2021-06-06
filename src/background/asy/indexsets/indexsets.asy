@@ -4,16 +4,12 @@
 import settings;
 settings.outformat="pdf";
 
-// Get stuff common to all .asy files
-// cd junk is needed for relative import
-cd("../../../asy/");  // set to path to common asy dir
-import settexpreamble;
-cd("");
-settexpreamble();
 
-cd("../../../asy/");  // set to path to common asy dir
+// Set up LaTeX defaults 
+import settexpreamble;
+settexpreamble();
+// Set up Asy defaults
 import jh;
-cd("");
 
 size(0,0);  // units are big points: 72 is 1inch
 

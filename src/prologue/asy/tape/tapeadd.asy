@@ -6,13 +6,12 @@ import settings;
 settings.outformat="pdf";
 settings.render=0;
 
-cd("../../../asy/");
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy");  // make it able to see jh.asy
+// Set up Asy defaults
 import jh;
-cd("");  // back to dir we started at
+
 cd("../../../asy/share");  // shared routines
 import tape;
 cd("");  // back to dir we started at

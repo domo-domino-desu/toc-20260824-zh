@@ -5,16 +5,11 @@ import settings;
 settings.outformat="pdf";
 settings.render=0;
 
-// Get stuff common to all .asy files
-// cd junk is needed for relative import
-cd("../../../asy/");
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-
-cd("../../../asy/");
+// Set up Asy defaults
 import jh;
-cd("");
 
 // Draw a set bean
 path setbean(real h=1, real v=1) {

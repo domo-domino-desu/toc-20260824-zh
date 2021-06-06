@@ -7,14 +7,12 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import 
-cd("../../../asy");
+
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy/");
+// Set up Asy defaults
 import jh;
-cd("");
 
 string OUTPUT_FN = "xygraphs%02d";
 

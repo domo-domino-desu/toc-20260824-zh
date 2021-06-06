@@ -7,17 +7,12 @@ settings.render=0;
 
 // unitsize(1cm);
 
-// Get stuff common to all .asy files
-// cd junk is needed for relative import
-cd("../../../asy/");  // set to path to common asy dir
-import settexpreamble;
-cd("");
-settexpreamble();
 
-cd("../../../asy/");  // set to path to common asy dir
+// Set up LaTeX defaults 
+import settexpreamble;
+settexpreamble();
+// Set up Asy defaults
 import jh;
-cd("");
-// import node;
 
 import life;
 string fn = "beacon";

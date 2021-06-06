@@ -12,9 +12,7 @@ import jh;
 
 // node.asy parameters
 // import patched version
-cd("asy-graphtheory-master/modules");
 import node;
-cd("");
 
 // define node style
 pen GRAYPEN = gray(0.3);  // 0 is black, 1 is white

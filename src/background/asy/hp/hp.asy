@@ -1,16 +1,13 @@
 // perfect.asy
 //  Flow charts showing Halting Problem args
-cd("../../../asy");
-import settexpreamble;
-cd("");
-settexpreamble();
 
-cd("../../../asy");
+// Set up LaTeX defaults 
+import settexpreamble;
+settexpreamble();
+// Set up Asy defaults
 import jhnode;
-cd("");
-cd("../../../asy");
+// Flowchart commands
 import flowchart;
-cd("");
 
 import settings;
 settings.outformat="pdf";

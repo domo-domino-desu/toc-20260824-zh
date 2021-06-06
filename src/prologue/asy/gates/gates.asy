@@ -4,16 +4,11 @@ import settings;
 settings.outformat="pdf";
 settings.render=0;
 
-// Get stuff common to all .asy files
-// cd junk is needed for relative import
-cd("../../../asy/");
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-
-cd("../../../asy/");
-import jh;
-cd("");
+// Set up Asy defaults
+import jhnode;
 
 pen circuitcolor = boldcolor;
 pen circuitpen = DARKPEN+squarecap+circuitcolor;

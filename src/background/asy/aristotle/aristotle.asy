@@ -7,10 +7,8 @@ settings.render=0;
 
 unitsize(1cm);
 
-// cd junk is needed for relative import 
-cd("../../../asy/");
+// Set up Asy defaults
 import jh;
-cd("");
 
 real PI = 3.14159265359; // must be in there somewhere
 pair origin=(0,0);

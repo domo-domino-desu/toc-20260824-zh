@@ -4,16 +4,12 @@
 // 2020-Jan-31  JH  node.asy and graph3.asy not compatible, so break this
 //   out.
 
-// Get stuff common to all .asy files
-// cd junk is needed for relative import
-cd("../../../asy/");
-import settexpreamble;
-cd("");
-settexpreamble();
 
-cd("../../../asy/");
+// Set up LaTeX defaults 
+import settexpreamble;
+settexpreamble();
+// Set up Asy defaults
 import jh;
-cd("");
 
 import settings;
 settings.outformat="pdf";

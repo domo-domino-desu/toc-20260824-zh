@@ -8,16 +8,11 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import tape --> jh
-cd("../../../asy/");
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy/share/");
-import jh;
-cd("");
-
-import node;
+// Set up Asy defaults
+import jhnode;
 
 // define style
 // defaultnodestyle=nodestyle(drawfn=FillDrawer(lightgray,black));

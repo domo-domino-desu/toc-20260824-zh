@@ -7,17 +7,12 @@ settings.render=0;
 
 unitsize(1cm);
 
-// Get stuff common to all .asy files
-// cd junk is needed for relative import
-cd("../../../asy/");
-import settexpreamble;
-cd("");
-settexpreamble();
 
-cd("../../../asy/");
+// Set up LaTeX defaults 
+import settexpreamble;
+settexpreamble();
+// Set up Asy defaults
 import jhnode;
-cd("");
-// import node;
 
 // Parameters
 real horiz_gap = 1;

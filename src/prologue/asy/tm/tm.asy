@@ -7,7 +7,6 @@ settings.render=0;
 
 // cd needed for relative import 
 cd("../../../asy");
-// import jh;
 import tape;
 cd("");
 

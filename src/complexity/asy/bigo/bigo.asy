@@ -7,14 +7,11 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import 
-cd("../../../asy");
+// Set LaTeX defaults
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy/");
-import jh;
-cd("");
+// Asy defaults
+import jhnode;
 
 string OUTPUT_FN = "bigo%02d";
 

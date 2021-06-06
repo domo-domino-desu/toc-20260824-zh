@@ -7,10 +7,12 @@ settings.render=0;
 
 unitsize(1cm);
 
-// cd junk is needed for relative import 
-cd("../../../asy/");
+
+// Set up LaTeX defaults 
+import settexpreamble;
+settexpreamble();
+// Set up Asy defaults
 import jh;
-cd("");
 
 //
 real horiz_gap = 0.8;

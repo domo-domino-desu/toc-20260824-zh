@@ -5,19 +5,11 @@ import settings;
 settings.outformat="pdf";
 settings.render=0;
 
-// unitsize(1cm);
-
-// Get stuff common to all .asy files
-// cd junk is needed for relative import
-cd("../../../asy/");  // set to path to common asy dir
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-
-cd("../../../asy/");  // set to path to common asy dir
+// Set up Asy defaults
 import jh;
-cd("");
-// import node;
 
 import life;
 string fn = "beehive";

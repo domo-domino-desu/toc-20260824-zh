@@ -8,14 +8,11 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import 
-cd("../../../asy");
+// Set LaTeX defaults
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy/");
+// Asy defaults
 import jhnode;
-cd("");
 
 // import node;
 

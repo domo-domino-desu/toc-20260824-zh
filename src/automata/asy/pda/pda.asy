@@ -7,17 +7,11 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import 
-cd("../../../asy/");
-import jhnode;
-cd("");
-cd("../../../asy");
+// Set LaTeX defaults
 import settexpreamble;
-cd("");
 settexpreamble();
-// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-// import node;
-// cd("");
+// Asy defaults
+import jhnode;
 
 
 string OUTPUT_FN = "pda%02d";

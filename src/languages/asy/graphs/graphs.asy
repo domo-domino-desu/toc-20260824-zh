@@ -8,17 +8,11 @@ settings.render=0;
 
 unitsize(1pt);
 
-// cd junk is needed for relative import tape --> jh
-cd("../../../asy/");
+// Set up LaTeX defaults 
 import settexpreamble;
-cd("");
 settexpreamble();
-cd("../../../asy/");
+// Set up Asy defaults
 import jhnode;
-cd("");
-// cd("../../../asy/asy-graphtheory-master/modules");  // import patched version
-// import node;
-// cd("");
 
 // define style
 // defaultnodestyle=nodestyle(drawfn=FillDrawer(lightgray,black));

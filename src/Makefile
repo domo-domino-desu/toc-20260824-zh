@@ -144,7 +144,7 @@ prologue/asy/tm_exercises/pdfs/append01000.pdf : prologue/asy/tm_exercises/pdfs/
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-prologue/asy/tm_exercises/pdfs/bitwisenot000.pdf : prologue/asy/tm_exercises/pdfs/bitwosenot.asy
+prologue/asy/tm_exercises/pdfs/bitwisenot000.pdf : prologue/asy/tm_exercises/pdfs/bitwisenot.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 

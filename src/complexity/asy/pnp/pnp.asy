@@ -893,7 +893,7 @@ for(int i=0; i<numpts; ++i) {
   // write(format("i=%d",i));
   pts[i] = onept;
 }
-write(format("  Number of points is %d",pts.length));
+// write(format("  Number of points is %d",pts.length));
 
 
 

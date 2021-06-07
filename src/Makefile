@@ -470,7 +470,7 @@ automata/asy/fsm_exercises/pdfs/endsinaii000.pdf : automata/asy/fsm_exercises/pd
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-automata/asy/fsm_exercises/pdfs/endsinaiii000.pdf : automata/asy/fsm_exercises/pdfs/andsinaiii.asy
+automata/asy/fsm_exercises/pdfs/endsinaiii000.pdf : automata/asy/fsm_exercises/pdfs/endsinaiii.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
@@ -480,11 +480,11 @@ automata/asy/fsm_exercises/pdfs/modfour000.pdf : automata/asy/fsm_exercises/pdfs
 
 # .... FSM_EXERCISES end
 
-automata/asy/machine/machine00.pdf : automata/asy/machine/machine.asy
+automata/asy/machine/machine02.pdf : automata/asy/machine/machine.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-automata/asy/min/000.pdf : automata/asy/min/.asy
+automata/asy/min/min00.pdf : automata/asy/min/min.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
@@ -505,8 +505,8 @@ automata/automata.tex : | automata/asy/fsa/fsa00.pdf \
   automata/asy/fsm_exercises/pdfs/endsinaii000.pdf \
   automata/asy/fsm_exercises/pdfs/endsinaiii000.pdf \
   automata/asy/fsm_exercises/pdfs/modfour000.pdf \
-  automata/asy/machine/machine00.pdf \
-  automata/asy/min/000.pdf \
+  automata/asy/machine/machine02.pdf \
+  automata/asy/min/min00.pdf \
   automata/asy/nfsm/nfsm00.pdf \
   automata/asy/pda/pda00.pdf \
   automata/asy/regex/regex00.pdf
@@ -518,7 +518,7 @@ complexity/asy/bigo/bigo00.pdf : complexity/asy/bigo/bigo.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-complexity/asy/circuit/000.pdf : complexity/asy/circuit/.asy
+complexity/asy/circuit/circuit000.pdf : complexity/asy/circuit/circuit.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
@@ -547,7 +547,7 @@ complexity/asy/xygraphs/xygraphs00.pdf : complexity/asy/xygraphs/xygraphs.asy
 	$(ASYMPTOTE_CMD) "$(<F)"
 
 complexity/complexity.tex : | complexity/asy/bigo/bigo00.pdf \
-  complexity/asy/circuit/000.pdf \
+  complexity/asy/circuit/circuit000.pdf \
   complexity/asy/complexity/complexity00.pdf \
   complexity/asy/flowcharts/flowcharts000.pdf \
   complexity/asy/ndtm/ndtm000.pdf \
@@ -567,7 +567,8 @@ appendix/appendix.tex : | appendix/asy/functions000.pdf
 
 # ============== book ================
 
-book.pdf : cover/cover.tex \
+book.pdf : book.tex \
+  cover/cover.tex \
   preface/preface.tex \
   prologue/prologue.tex \
   background/background.tex \

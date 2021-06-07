@@ -236,7 +236,7 @@ prologue/asy/tm_exercises/pdfs/mystery11000.pdf : prologue/asy/tm_exercises/pdfs
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-prologue/asy/tm_exercises/pdfs/mystery110000.pdf : prologue/asy/tm_exercises/pdfs/mysstery110.asy
+prologue/asy/tm_exercises/pdfs/mystery110000.pdf : prologue/asy/tm_exercises/pdfs/mystery110.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 

@@ -332,21 +332,59 @@ prologue/prologue.tex : | prologue/asy/xygraphs/xygraphs00.pdf \
   prologue/asy/tm/tm000.pdf \
   prologue/asy/tm_exercises/inverse/inverse000.pdf \
   prologue/asy/tm_exercises/replicator/replicator000.pdf \
-  add000.pdf addany000.pdf addonetwo000.pdf \
-  addthree_four000.pdf addthree_zero000.pdf addtwotwo000.pdf \
-  addzerotwo000.pdf addzerozero000.pdf \
-  append01000.pdf bitwisenot000.pdf blankones000.pdf constantthree000.pdf \
-  doubler000.pdf doublerbinary000.pdf infloop000.pdf leq000.pdf \
-  mu_ex1five000.pdf mu_ex1four000.pdf mu_ex1one000.pdf mu_ex1three000.pdf \
-  mu_ex1two000.pdf mu_ex1zero000.pdf mu_ex2five000.pdf mu_ex2four000.pdf \
-  mu_ex2one000.pdf mu_ex2three000.pdf mu_ex2two000.pdf mu_ex2zero000.pdf \
-  mu_ex3one000.pdf mu_ex3two000.pdf mu_ex3zero000.pdf mystery1011000.pdf \
-  mystery110000.pdf mystery11000.pdf mystery1101000.pdf mysteryempty000.pdf \
-  odd_four000.pdf odd_three000.pdf palindromeaba000.pdf palindromeabba000.pdf \
-  pred000.pdf pred_empty000.pdf pred_five000.pdf pred_two000.pdf \
-  singlebitand000.pdf singlebitnot000.pdf singlebitor000.pdf \
-  startswithzero000.pdf startswithzeroone000.pdf startswithzerostarone000.pdf \
-  successor000.pdf twobsaba000.pdf twobsabba000.pdf
+  prologue/asy/tm_exercises/pdfs/add000.pdf \
+  prologue/asy/tm_exercises/pdfs/addany000.pdf \
+  prologue/asy/tm_exercises/pdfs/addonetwo000.pdf \
+  prologue/asy/tm_exercises/pdfs/addthree_four000.pdf \
+  prologue/asy/tm_exercises/pdfs/addthree_zero000.pdf \
+  prologue/asy/tm_exercises/pdfs/addtwotwo000.pdf \
+  prologue/asy/tm_exercises/pdfs/addzerotwo000.pdf \
+  prologue/asy/tm_exercises/pdfs/addzerozero000.pdf \
+  prologue/asy/tm_exercises/pdfs/append01000.pdf \
+  prologue/asy/tm_exercises/pdfs/bitwisenot000.pdf \
+  prologue/asy/tm_exercises/pdfs/blankones000.pdf \
+  prologue/asy/tm_exercises/pdfs/constantthree000.pdf \
+  prologue/asy/tm_exercises/pdfs/doubler000.pdf \
+  prologue/asy/tm_exercises/pdfs/doublerbinary000.pdf \
+  prologue/asy/tm_exercises/pdfs/infloop000.pdf \
+  prologue/asy/tm_exercises/pdfs/leq000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex1five000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex1four000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex1one000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex1three000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex1two000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex1zero000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex2five000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex2four000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex2one000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex2three000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex2two000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex2zero000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex3one000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex3two000.pdf \
+  prologue/asy/tm_exercises/pdfs/mu_ex3zero000.pdf \
+  prologue/asy/tm_exercises/pdfs/mystery1011000.pdf \
+  prologue/asy/tm_exercises/pdfs/mystery110000.pdf \
+  prologue/asy/tm_exercises/pdfs/mystery11000.pdf \
+  prologue/asy/tm_exercises/pdfs/mystery1101000.pdf \
+  prologue/asy/tm_exercises/pdfs/mysteryempty000.pdf \
+  prologue/asy/tm_exercises/pdfs/odd_four000.pdf \
+  prologue/asy/tm_exercises/pdfs/odd_three000.pdf \
+  prologue/asy/tm_exercises/pdfs/palindromeaba000.pdf \
+  prologue/asy/tm_exercises/pdfs/palindromeabba000.pdf \
+  prologue/asy/tm_exercises/pdfs/pred000.pdf \
+  prologue/asy/tm_exercises/pdfs/pred_empty000.pdf \
+  prologue/asy/tm_exercises/pdfs/pred_five000.pdf \
+  prologue/asy/tm_exercises/pdfs/pred_two000.pdf \
+  prologue/asy/tm_exercises/pdfs/singlebitand000.pdf \
+  prologue/asy/tm_exercises/pdfs/singlebitnot000.pdf \
+  prologue/asy/tm_exercises/pdfs/singlebitor000.pdf \
+  prologue/asy/tm_exercises/pdfs/startswithzero000.pdf \
+  prologue/asy/tm_exercises/pdfs/startswithzeroone000.pdf \
+  prologue/asy/tm_exercises/pdfs/startswithzerostarone000.pdf \
+  prologue/asy/tm_exercises/pdfs/successor000.pdf \
+  prologue/asy/tm_exercises/pdfs/twobsaba000.pdf \
+  prologue/asy/tm_exercises/pdfs/twobsabba000.pdf
 
 
 # ============== background ================

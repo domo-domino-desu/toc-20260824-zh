@@ -389,9 +389,10 @@ prologue/prologue.tex : | prologue/asy/xygraphs/xygraphs00.pdf \
 
 # ============== background ================
 
-background/asy/3d/3d000.pdf : background/asy/3d/3d.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
+# Currently Asymptote and gs versions don't allow creating this file on U20.
+# background/asy/3d/3d000.pdf : background/asy/3d/3d.asy
+# 	cd $(@D); \
+# 	$(ASYMPTOTE_CMD) "$(<F)"
 
 background/asy/aristotle/aristotle1000.pdf : background/asy/aristotle/aristotle.asy
 	cd $(@D); \
@@ -577,3 +578,8 @@ book.pdf : book.tex \
   complexity/complexity.tex \
   appendix/appendix.tex
 	$(LATEX_CMD) book
+
+answers.pdf : book.pdf answers.tex
+	$(LATEX_CMD) answers
+
+all : book.pdf answers.pdf

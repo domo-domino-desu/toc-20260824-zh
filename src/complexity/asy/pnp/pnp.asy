@@ -1572,11 +1572,11 @@ label(pic,"{\scriptsize $\probname{RE}$}",(label_x,0.5*(label_y_top-label_y_bot)
 
 // Locate NP Complete
 pair np_complete = (0,0.38*UNIVERSE_HT);
-path NP_complete_tag = np_complete{(1,2)}
-                       .. tension 1.6 .. np_complete+(0.32*UNIVERSE_WD,0.25*UNIVERSE_HT)
-                       .. tension 0.8 .. np_complete+(0.36*UNIVERSE_WD,0.23*UNIVERSE_HT)
-                       .. tension 1.2 .. {E}(np_complete+(0.60*UNIVERSE_WD,0.3*UNIVERSE_HT));
-draw(pic,NP_complete_tag,THINPEN);
+path NP_complete_tag = np_complete{(1,1)}
+                       .. tension 1.6 .. np_complete+(0.33*UNIVERSE_WD,0.22*UNIVERSE_HT)
+                       .. tension 0.8 .. np_complete+(0.36*UNIVERSE_WD,0.21*UNIVERSE_HT)
+                       .. tension 1.2 .. {NE}(np_complete+(0.60*UNIVERSE_WD,0.3*UNIVERSE_HT));
+draw(pic,NP_complete_tag,THINPEN+gray(0.5));
 label(pic,"{\scriptsize $\NP$ complete}",np_complete+(0.60*UNIVERSE_WD,0.3*UNIVERSE_HT),E); 
 
 // Draw points

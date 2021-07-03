@@ -1082,4 +1082,369 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== n^2+5n+6, continuous ======
+picture pic;
+int picnum = 14;
+
+size(pic,4.5cm);
+
+real f(real x) {
+  return x**2+5*x+6;
+}
+real f_scaled(real x) {
+  return ScaleY(pic,f(x));
+}
+real g(real x) {
+  return x**2;
+}
+real g_scaled(real x) {
+  return ScaleY(pic,g(x));
+}
+
+// limits
+real xmin=0;  // lg(xmin)=0
+real xmax=20;
+real ymin=0;
+real ymax=max(f(xmax),g(xmax));
+
+// write(format("ymax is %f",ymax));
+
+// scale
+real scalefactor = 20/ymax;
+scale(pic,Linear,Linear(scalefactor));
+
+// write(format("f(xmax) is %f",f(xmax)));
+
+// xaxis 
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax+0.9,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=549,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=100, step=50,
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+
+// draw the graphs
+draw(pic, graph(f_scaled,xmin,xmax), FCNPEN);
+draw(pic, graph(g_scaled,xmin,xmax), FCNPEN);
+label(pic,"$f$",Scale(pic,(20,500)), 3W);
+label(pic,"$g$",Scale(pic,(17,300)), 3E);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============== f(x)/g(x), continuous ======
+picture pic;
+int picnum = 15;
+
+size(pic,4.5cm,2cm,IgnoreAspect);
+
+real ymax=2;
+
+// scale
+// real scalefactor = 20/ymax;
+// scale(pic,Linear,Linear(scalefactor));
+scale(pic,false);
+
+real f(real x) {
+  return x**2+5*x+6;
+}
+real g(real x) {
+  return x**2;
+}
+
+real ratio(real x) {
+  return f(x)/g(x);
+}
+
+// xaxis  
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax+0.9,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=0, ymax=12.9,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1, 
+		beginlabel=true, endlabel=true,
+		Size=axis_tick_size,size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// asymptote
+yequals(pic, 1,   
+	xmin=0.4, xmax=xmax,
+        p=AXISPEN+linetype(new real[] {6,6}),
+	ticks=NoTicks,
+        arrow=None);
+
+pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
+draw(pic, graph(ratio,1.0,xmax), FCNPEN);
+label(pic,"$f/g$",(20,2), N);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== (2n^3+3n+4) vs (n^2+5n+6) continuous ======
+picture pic;
+int picnum = 16;
+
+size(pic,4.5cm,IgnoreAspect);
+
+// limits
+real xmin=0; 
+real xmax=20;  // was 100
+real ymin=0;
+real ymax=17000;  // g(20)=16064  // was 2000000
+
+real f(real x) {
+  return 2x**3+3*x+4;
+}
+real g(real x) {
+  return x**2+5*x+6;
+}
+
+// scale
+real scalefactor = ymax/20; // 2/ymax;
+scale(pic,Linear(1),Linear(scalefactor));
+
+real f_scaled(real x) {
+  return ScaleY(pic,f(x));
+}
+real g_scaled(real x) {
+  return ScaleY(pic,g(x));
+}
+
+// xaxis
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax+0.9,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=10, step=1,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=5000, step=1000, 
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+
+draw(pic, graph(f_scaled,xmin,xmax), FCNPEN);
+draw(pic, graph(g_scaled,xmin,xmax), FCNPEN);
+
+label(pic,"$f$",Scale(pic,(xmax,0)), 3N);
+label(pic,"$g$",Scale(pic,(xmax,ymax)), 2W+1S);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== (2n^3+3n+4)/(n^2+5n+6) ======
+picture pic;
+int picnum = 17;
+
+size(pic,4.5cm,2.5cm,IgnoreAspect);
+
+real f(real x) {
+  return 2x**3+3*x+4;
+}
+real g(real x) {
+  return x**2+5*x+6;
+}
+real ratio(real x) {
+  return g(x)/f(x);
+}
+
+// limits
+real xmin=0; 
+real xmax=20;
+real ymin=0;
+real ymax=10;
+
+// scale
+//real scalefactor = 5/ymax;
+real scalefactor = 1;
+scale(pic,Linear,Linear(scalefactor));
+
+real ratio_scaled(real x) {
+  return ScaleY(ratio(x));
+}
+
+// xaxis
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax+0.9,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax+0.9,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1, 
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+
+draw(pic, graph(ratio_scaled,1,xmax), FCNPEN);
+label(pic,"$g/f$",Scale(pic,(0.90*xmax,0.20*ymax)), 0S);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== 2n^2+3n+4 vs n^2+5n+6 discrete ======
+picture pic;
+int picnum = 18;
+
+size(pic,4.5cm,IgnoreAspect);
+
+real f(real x) {
+  return 2x**2+3*x+4;
+}
+real g(real x) {
+  return x**2+5*x+6;
+}
+
+// limits
+real xmin=0; 
+real xmax=20;
+real ymin=0;
+real ymax=1000;  // f(20)=864, g(20)=506
+
+// scale
+real scalefactor = 20/ymax;
+scale(pic,Linear,Linear(scalefactor));
+scale(pic,true);
+
+real f_scaled(real x) {
+  return ScaleY(f(x));
+}
+real g_scaled(real x) {
+  return ScaleY(g(x));
+}
+
+// xaxis
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax+0.9,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax+50,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=500, step=100, 
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+
+draw(pic, graph(f,xmin,xmax), FCNPEN);
+draw(pic, graph(g,xmin,xmax), FCNPEN);
+label(pic,"$f$",Scale(pic,(xmax,f(xmax))), 2W);
+label(pic,"$g$",Scale(pic,(xmax,g(xmax))), 2S);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== (2n^2+3n+4)/(n^2+5n+6) continuous ======
+picture pic;
+int picnum = 19;
+
+size(pic,4.5cm);
+
+real f(real x) {
+  return 2x**2+3*x+4;
+}
+real g(real x) {
+  return x**2+5*x+6;
+}
+
+// limits
+real xmin=0; 
+real xmax=20;
+real ymin=0;
+real ymax=5;
+
+// scale
+real scalefactor = 10/ymax;
+scale(pic,Linear,Linear(scalefactor));
+scale(pic,false);
+
+real ratio(real x) {
+  return f(x)/g(x);
+}
+real ratio_scaled(real x) {
+  return ScaleY(ratio(x));
+}
+
+// xaxis  
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax+0.75,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=10, step=1,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax+0.9,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1, 
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// asymptote at y=2
+yequals(pic, 2,   
+	xmin=xmin, xmax=xmax,
+        p=AXISPEN+linetype(new real[] {6,6}),
+	ticks=NoTicks,
+        arrow=None);
+
+// write(format("ratio(1) %f",ratio(1)));
+// write(format("ratio(20) %f",ratio(20)));
+
+draw(pic, graph(ratio_scaled,xmin,xmax), FCNPEN);
+label(pic,"$f/g$",Scale(pic,(xmax,2)), 2N);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 

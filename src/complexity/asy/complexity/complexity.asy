@@ -173,12 +173,18 @@ int picnum = 3;
 picture pic;
 setdefaultgraphstyles();
 
-node v00=ncircle("\nodebox{$v_{0,0}$}", ns_bleachedbg),
-  v01=ncircle("\nodebox{$v_{0,1}$}", ns_bleachedbg),
-  v10=ncircle("\nodebox{$v_{1,0}$}", ns_bleachedbold),
-  v11=ncircle("\nodebox{$v_{1,1}$}", ns_bleachedbold),
-  v20=ncircle("\nodebox{$v_{2,0}$}", ns_light),
-  v21=ncircle("\nodebox{$v_{2,1}$}", ns_light);
+node v00=ncircle("$v_{0,0}$", ns_bleachedbg),
+  v01=ncircle("$v_{0,1}$", ns_bleachedbg),
+  v10=ncircle("$v_{1,0}$", ns_bleachedbold),
+  v11=ncircle("$v_{1,1}$", ns_bleachedbold),
+  v20=ncircle("$v_{2,0}$", ns_light),
+  v21=ncircle("$v_{2,1}$", ns_light);
+// node v00=ncircle("\nodebox{$v_{0,0}$}", ns_bleachedbg),
+//   v01=ncircle("\nodebox{$v_{0,1}$}", ns_bleachedbg),
+//   v10=ncircle("\nodebox{$v_{1,0}$}", ns_bleachedbold),
+//   v11=ncircle("\nodebox{$v_{1,1}$}", ns_bleachedbold),
+//   v20=ncircle("\nodebox{$v_{2,0}$}", ns_light),
+//   v21=ncircle("\nodebox{$v_{2,1}$}", ns_light);
 
 // calculate nodes position
 real u=1.5cm;

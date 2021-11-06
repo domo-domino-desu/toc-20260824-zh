@@ -17,6 +17,51 @@
 (provide BASE-FOR-NUM-ENCODING
          BASE-FOR-CHAR-ENCODING)
 
+;; test for parts of instructions, for instructions, and for TM
+(define (state? v)
+  (exact-nonnegative-integer? v))
+(define (present-symbol? v)
+  (if (not (char? v))
+      #f
+      (and (not (eqv? v LEFT))
+           (not (eqv? v RIGHT)))))
+(define (next-action? v)
+  (char? v))
+
+(define (instruction? v)
+  (and (list? v)
+       (= 4 (length v))
+       (state? (first v))
+       (present-symbol? (second v))
+       (next-action? (third v))
+       (state? (fourth v))))
+
+;; and-of-list  apply and to the list v
+;;   (for some reason, (apply + '(1 2))) works but (apply and '(#t #f)) does not.  A wart, for sure.
+(define (and-of-list v)
+  (if (null? v)
+      #t
+      (and (car v)
+           (and-of-list (cdr v)))))
+
+(define (TM? v)
+  (if (not (list? v))
+      #f
+      (let ([instruction-results (map instruction? v)])
+        (display "instruction first?") (display (instruction? (first v))) (newline)
+        (display "instruction first first?") (display (first (first v))) (display (state? (first (first v)))) (newline)
+        (display "instruction first second?") (display (second (first v))) (display (present-symbol? (second (first v)))) (newline)
+        (display "instruction first third?") (display (third (first v))) (display (next-action? (third (first v)))) (newline)
+        (display "instruction-results") (display instruction-results) (newline) 
+        (and-of-list instruction-results))))
+
+(provide state?
+         present-symbol?
+         next-action?
+         instruction?
+         TM?
+         and-of-list)
+
 ;; encode-present-state  input positive integer, output encoding as string
 (define (encode-present-state q)
   (number->string q BASE-FOR-NUM-ENCODING))
@@ -85,17 +130,21 @@
          decode-TM-instruction)
 
 ;; encode-TM  input list of instructions, return integer encoding
-;; TODO: case of null machine
 (define (encode-TM tm)
-  (display tm) (newline)
-  (display (map encode-TM-instruction tm)) (newline)
-  (string->number (string-join (map encode-TM-instruction tm))))
+  (if (null? tm)
+      0 
+      (string->number (string-join (map encode-TM-instruction tm) INTER-INSTRUCTION-SEPARATOR))))
 
 ;; decode-TM  input integer encoding of a Turing machine, return list representing that machine
 (define (decode-TM s)
   (let ([encoded-instructions (string-split (number->string s) INTER-INSTRUCTION-SEPARATOR)])
-    ; (display encoded-instructions)
-    (append (map decode-TM-instruction encoded-instructions))))
+    ;(display "encoded-instructions ")(display (string-join encoded-instructions)) (newline)
+    ;(display "map decode-TM-instruction: ")(display (map decode-TM-instruction encoded-instructions))(newline)
+    (with-handlers ([exn?
+                     (lambda (exn) "MMM")])
+      (append (map decode-TM-instruction encoded-instructions)))))
 
 (provide encode-TM
          decode-TM)
+
+;;;; TODO: every number that does not work for decode-TM must return the null machine.

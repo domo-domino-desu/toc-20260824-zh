@@ -3,6 +3,46 @@
 (require rackunit
          "tm-encoding.rkt")
 
+;; ============== Some Turing machines
+(define TM0 (list '(2 #\A #\C 4) (list 1 #\B LEFT 0)))  ; generic TM
+(define TM1 (list '(2 #\A #\C 4) ))  ; One-instruction TM
+(define TM2 '())  ; Empty TM
+
+
+;; ======= tests for parts of TM
+(test-case
+  "state"
+  (check-pred state? 5 "Generic integer is state?")
+  (check-pred state? 0 "0 is state?")
+  (check-eqv? #f (state? -1) "-1 is not state?")
+  (check-eqv? #f (state? #\2) "Character is not state?")
+ )
+(test-case
+  "present-symbol"
+  (check-pred present-symbol? #\C "Generic character is symbol?")
+  (check-eqv? #f (present-symbol? 0) "integer is not an allowed symbol?")
+)
+
+(test-case
+  "and-of-list"
+  (check-equal? #t (and-of-list '(#t #t)) "All true's gives true?")
+  (check-equal? #f (and-of-list '(#t #t #f)) "Any false results in a false?")
+  (check-equal? #t (and-of-list '()) "Null list gives true?")
+  (check-equal? #t (and-of-list '(#t)) "Length one list gives the value t?")
+  (check-equal? #f (and-of-list '(#f)) "Length one list gives the value f?")
+ )
+
+(test-case
+  "Turing machine"
+;  (check-pred TM? TM0 "Generic Turing machine OK?")
+;  (check-pred TM? TM1 "One-instruction Turing machine OK?")
+;  (check-pred TM? TM0 "Generic Turing machine OK?")
+  (check-pred TM? '((5 #\a LEFT 5)) "Test Turing machine OK?")
+ )
+
+
+
+
 ;; ======= encode-present-state and decode-present-state
 (test-case
  "present-state"
@@ -59,21 +99,20 @@
  (check-pred string? (encode-TM-instruction '(2 #\A #\C 4)) "Is the result on a generic instruction a string?")
  (check-pred string? (encode-TM-instruction (list 2 #\A LEFT 4)) "Is the result on an instruction using LEFT a string?")
  (check-pred string? (encode-TM-instruction (list 2 #\A RIGHT 4)) "Is the result on an instruction using RIGHT a string?")
- (check-equal? '(2 #\A #\C 4) (decode-TM-instruction (encode-TM-instruction '(2 #\A #\C 4))) "Does decoding undo encoding on an generic instruction?")
+ (check-equal? '(2 #\A #\C 4) (decode-TM-instruction (encode-TM-instruction '(2 #\A #\C 4))) "Does decoding undo encoding on a generic instruction?")
  (check-equal? (list 2 #\A LEFT 4) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 4))) "Does decoding undo encoding on an instruction using LEFT?")
 )
 
 
 ;; ======= encode-TM and decode-TM
-(define TM0 (list '(2 #\A #\C 4) (list 1 #\B LEFT 0)))
-(encode-TM TM0)
-(define TM1 '('(2 #\A #\C 4)) )
-(define TM2 '())
+(encode-TM TM2) (newline)
+(decode-TM 0)
 (test-case
  "TM-instruction"
-; (check-pred number? (encode-TM TM0) "Is the result on a generic TM an integer?")
- ; (check-pred string? (encode-TM TM1) "Is the result on a single-instruction TM an integer?")
-; (check-pred string? (encode-TM-instruction (list 2 #\A RIGHT 4)) "Is the result on an instruction using RIGHT a string?")
-; (check-equal? '(2 #\A #\C 4) (decode-TM-instruction (encode-TM-instruction '(2 #\A #\C 4))) "Does decoding undo encoding on an generic instruction?")
-; (check-equal? (list 2 #\A LEFT 4) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 4))) "Does decoding undo encoding on an instruction using LEFT?")
+;(check-pred number? (encode-TM TM0) "Is the result on a generic TM an integer?")
+;(check-pred number? (encode-TM TM1) "Is the result on a single-instruction TM an integer?")
+;(check-pred number? (encode-TM TM2) "Is the result on the empty TM an integer?")
+;(check-equal? TM0 (decode-TM (encode-TM TM0)) "Does decoding undo encoding on a generic machine?")
+;(check-equal? TM1 (decode-TM (encode-TM TM1)) "Does decoding undo encoding on a one-instruction machine?")
+;(check-equal? TM2 (decode-TM (encode-TM TM2)) "Does decoding undo encoding on the empty machine?")
 )

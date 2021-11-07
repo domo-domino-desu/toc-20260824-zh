@@ -37,7 +37,7 @@
 ;  (check-pred TM? TM0 "Generic Turing machine OK?")
 ;  (check-pred TM? TM1 "One-instruction Turing machine OK?")
 ;  (check-pred TM? TM0 "Generic Turing machine OK?")
-  (check-pred TM? '((5 #\a LEFT 5)) "Test Turing machine OK?")
+  (check-pred TM? (list (list 5 #\a LEFT 5)) "Test Turing machine OK?")
  )
 
 

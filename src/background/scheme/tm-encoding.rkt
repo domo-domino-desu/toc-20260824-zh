@@ -98,13 +98,18 @@
   (number->string (char->integer s) BASE-FOR-CHAR-ENCODING))
 
 ;; decode-present-symbol input a string, output character
-;;  (if string is not suitable, output #f)
+;;  (if string is not suitable, output #f, but no check to avoid L or R)
 (define (decode-present-symbol s)
-  (let ([char-code (string->number s BASE-FOR-CHAR-ENCODING)])
-    (if (or (false? char-code)
-            (< 0 char-code))
-        #f
-        (integer->char char-code))))
+  (display "decode-present-symbol: s=")(display s)(newline)
+  (if (= 0 (string-length s))
+      #f
+      (let ([char-code (string->number s BASE-FOR-CHAR-ENCODING)])
+        (display "decode-present-symbol: char-code=")(display char-code)(newline)
+        (display "decode-present-symbol: char-code false?")(display (false? char-code))(newline)
+        (if (or (false? char-code)
+                (>= 0 char-code))
+            #f
+            (integer->char char-code)))))
 
 (provide encode-present-symbol
          decode-present-symbol)
@@ -117,11 +122,13 @@
 ;; decode-next-action  input a string, output character
 ;;  (if string is not suitable, output #f)
 (define (decode-next-action s)
-  (let ([char-code (string->number s BASE-FOR-CHAR-ENCODING)])
-    (if (or (false? char-code)
-            (< 0 char-code))
-        #f
-        (integer->char char-code))))
+  (if (= 0 (string-length s))
+      #f
+      (let ([char-code (string->number s BASE-FOR-CHAR-ENCODING)])
+        (if (or (false? char-code)
+                (>= 0 char-code))
+            #f
+            (integer->char char-code)))))
 
 (provide encode-next-action
          decode-next-action)
@@ -147,6 +154,10 @@
               [this-input (decode-present-symbol (second split-string))]
               [next-action (decode-next-action (third split-string))]
               [next-state (decode-next-state (fourth split-string))])
+          (display "decode-TM-instruction this-state: ")(display this-state)(newline)
+          (display "decode-TM-instruction this-input: ")(display this-input)(newline)
+          (display "decode-TM-instruction next-action: ")(display next-action)(newline)
+          (display "decode-TM-instruction next-state: ")(display next-state)(newline)
           (if (not (and this-state this-input next-action next-state)) ; any fail to decode?
               #f
               (list this-state this-input next-action next-state))))))

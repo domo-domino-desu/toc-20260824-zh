@@ -100,12 +100,9 @@
 ;; decode-present-symbol input a string, output character
 ;;  (if string is not suitable, output #f, but no check to avoid L or R)
 (define (decode-present-symbol s)
-  (display "decode-present-symbol: s=")(display s)(newline)
   (if (= 0 (string-length s))
       #f
       (let ([char-code (string->number s BASE-FOR-CHAR-ENCODING)])
-        (display "decode-present-symbol: char-code=")(display char-code)(newline)
-        (display "decode-present-symbol: char-code false?")(display (false? char-code))(newline)
         (if (or (false? char-code)
                 (>= 0 char-code))
             #f
@@ -134,7 +131,7 @@
          decode-next-action)
 
 ;; encode-TM-instruction  input list of four, output encoding as string
-;; todo: ensure no leading 0's
+;;   Ensures no leading 0's, so full number is retained
 (define (encode-TM-instruction inst)
   (let([present-state (first inst)]
        [present-symbol (second inst)]
@@ -154,10 +151,6 @@
               [this-input (decode-present-symbol (second split-string))]
               [next-action (decode-next-action (third split-string))]
               [next-state (decode-next-state (fourth split-string))])
-          (display "decode-TM-instruction this-state: ")(display this-state)(newline)
-          (display "decode-TM-instruction this-input: ")(display this-input)(newline)
-          (display "decode-TM-instruction next-action: ")(display next-action)(newline)
-          (display "decode-TM-instruction next-state: ")(display next-state)(newline)
           (if (not (and this-state this-input next-action next-state)) ; any fail to decode?
               #f
               (list this-state this-input next-action next-state))))))
@@ -173,10 +166,7 @@
 
 ;; decode-TM  input integer encoding of a Turing machine, return list representing that machine
 (define (decode-TM s)
-  (display "decode-TM s=")(display s)(newline)
   (let ([encoded-instructions (string-split (number->string s) INTER-INSTRUCTION-SEPARATOR)])
-    (display "decode-TM encoded-instructions ")(display (string-join encoded-instructions " ++ ")) (newline)
-    (display "decode-TM map decode-TM-instruction: ")(display (map decode-TM-instruction encoded-instructions))(newline)
     (let ([list-of-instructions (map decode-TM-instruction encoded-instructions)])
       (if (not (and-of-list list-of-instructions))
           EMPTY-TURING_MACHINE                                 ;

@@ -10963,7 +10963,7 @@ run into the problem that we are already using some of the additional
 characters as metacharacters.
 
 \margingraphic{0.4\textwidth}{automata/pix/xkcdbackslashes.png}{\label{xkcd:knowbackslashes}\href{https://xkcd.com/1638}{Courtesy \url{xkcd.com}}}
-To match a metacharacter prefix it with a backslash,~`\str{\textbackslash}'.
+To match a metacharacter, prefix it with a backslash,~`\str{\textbackslash}'.
 Thus, to look for the string `\str{(Note}' put a backslash
 before the open parentheses
 \re{\textbackslash (Note}.
@@ -11034,15 +11034,14 @@ North American phone numbers match
 The regular expression \re{(-|\textbackslash +)?\textbackslash d+} matches
 an integer, positive or negative.
 The question mark makes the sign optional.
-The plus sign makes sure there is at least one digit; it is escaped because
-\str{+} is a metacharacter.
+The plus sign makes sure there is at least one digit.
 \end{example}
 
 \begin{example}
-The expression \re{[a-fA-F0-9]+} matches a natural number
-representation in hexadecimal.
+A natural number represented in hexadecimal can contain the usual digits,
+along with the additional characters `a' through `f' (sometimes capitalized). 
 Programmers often prefix such a representation
-with \str{0x} so the expression becomes \re{(0x)?[a-fA-F0-9]+}.
+with \str{0x}, so the expression is \re{(0x)?[a-fA-F0-9]+}.
 \end{example}
 
 \begin{example}
@@ -11055,26 +11054,27 @@ letters, digits, or underscores:
 \begin{example}
 Match a user name of between three and twelve letters, digits, underscores,
 or periods with \re{[\textbackslash w\textbackslash .]\{3,12\}}.
-Use \re{.\{8,\}} to match a password that is at least eight characters long.
+Match a password that is at least eight characters long with \re{.\{8,\}}.
 \end{example}
 
 \begin{example} % https://github.com/reddit-archive/reddit/blob/master/r2/r2/lib/validator/validator.py#L1567
 Match a valid username on Reddit:
 \re{[\textbackslash w-]\{3,20\}}.
 The hyphen, because it comes last in
-the square brackets, matches itself.
+the square brackets, matches itself (as distinguished from the hyphen 
+in \re{[a-z]}).
 And no, Reddit does not allow a period in a username.
 \end{example}
 
 \begin{example}
 For email addresses, \re{\textbackslash S+@\textbackslash S+} is
-a commonly used extended expression.\footnotemark
+an often used extended expression.\footnotemark
 \end{example}\footnotetext[1]{%
   This is naive in that there are elaborate rules for the syntax of
   email addresses
   % https://tools.ietf.org/html/rfc5322
   (see below).
-  But it is a reasonable sanity check.}
+  But it is a common sanity check.}
 
 \begin{example}
 Match the text inside a single set of parentheses with 
@@ -11083,32 +11083,29 @@ Match the text inside a single set of parentheses with
 
 \begin{example}
 This matches a URL, a web address such as
-\url{http://joshua.smcvt.edu/computing}.
-This regex is more intricate than prior ones so it deserves some
-explanation.
+\url{https://hefferon.net/computation}.
+This regex is more intricate than prior ones.
 It is based on breaking URL's into three parts:~a
-scheme such as \str{http}
+scheme such as `\str{http}',
 followed by
 \citetext{a colon and two forward slashes}{%
   The inventor of the World Wide Web, T~Berners Lee, has admitted that the
   two slashes don't have a purpose \autocite{Firth}.}
 a host such as \str{joshua.smcvt.edu},
-and a path such as \str{/computing}
+followed by a path such as \str{/computing}
 (the standard also allows a query string that follows a question mark
 but this regex does not handle those).
 \begin{center}% 
 % \re{(https?|ftp)://([textasciicircumflex\textbackslash s/?\textbackslash .#]+\textbackslash .?)\{1,4\}(/[^\textbackslash s]*)?}
 \re{(https?|ftp)://([\textasciicircum\textbackslash s/?\textbackslash .\#]+\textbackslash .?)\{1,4\}(/[\textasciicircum\textbackslash s]*)?}
 \end{center}
-Notice the \re{https?}, so 
-the scheme can be \str{http} or \str{https}, as well as \str{ftp}.
+Notice the question mark in \re{https?}, so that
+the scheme can be \str{http} or \str{https}.
 After a colon and two forward slashes comes the host part,
-consisting of some fields separated by periods.
+consisting of some fields separated by periods (between one and four fields).
 We allow almost any character in those fields, except for a space,
 a question mark, a period or a hash.
-At the end comes a path.
-The specification allows paths to be case sensitive but the regex
-here has only lower case.
+At the end comes the path.
 \end{example}
 
 % \begin{center}
@@ -11131,19 +11128,19 @@ Match lines ending with \str{end\{equation*\}} using
 \re{end\{equation\textbackslash *\}\textdollar}.
 \end{example}
 
-The regex engines in modern languages let you specify that the match is
+Regex engines in modern languages let you specify that the match is
 case insensitive
-(although they differ in the syntax).
+(although they differ in the syntax that you use to achieve this).
 
 \begin{example}
-An HTML document tag for an image, such as
+The web document language HTML document tag for an image, such as
 \str{<img src="logo.jpg">}, uses either of the keys \str{src} or \str{img} to
-give the name of the file containing the image that will be served.
+give the name of the file containing the image.
 Those strings can be in upper case or lower case, or any mix.
 Racket uses a `\str{?i:}' syntax to mark part of the
 regex as insensitive:
-\re{\textbackslash \textbackslash s+(?i:(img|src))=}
-(note also the double backslash, which is how Racket escapes the `s').
+\re{\textbackslash \textbackslash s+(?i:(img|src))=}.
+(Note also the double backslash, which is how Racket escapes the backslash.)
 \end{example}
 
 
@@ -11151,15 +11148,15 @@ regex as insensitive:
 
 \subsection*{Beyond convenience}
 The regular expression engines that come with recent programming languages
-have capabilities beyond matching only those languages that
+have capabilities beyond matching only those languages that are
 recognized by Finite State machines. 
 
 \begin{example}
-The web document language HTML uses tags such as
+The language HTML uses tags such as
 \str{<b>boldface text</b>} and \str{<i>italicized text</i>}.
-Matching any one is straightforward, for instance
+Matching any one tag is straightforward, for instance
 \re{<b>[\textasciicircum<]*</b>}.
-But for a single expression that matches them all
+But for a single expression that matches them all,
 you would seem to have to do each as a separate
 case and then combine cases with a pipe.
 However, instead we can have the system remember what it finds

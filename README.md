@@ -8,15 +8,15 @@ This is a draft.  I used it for a class in the springs of 2018-2021,
 and am using it in the spring of 2022.
 
 I am now supplementing the text with Jupyter notebooks, to illustrate
-things like Turing machines and regular expressions with code.
-I use Racket.
+with code things like Turing machines and regular expressions.
+I use the Scheme-descendent language Racket.
 
 
 ## Reports
 
 As with any draft, or any large software project for that matter, expect
-errors.  Bug reports are very welcome.  Reach me is via the Contact
-link at https://hefferon.net
+errors.  Bug reports are very welcome.  Reach me via the Contact
+link at https://hefferon.net.
 
 
 ## Home page
@@ -27,7 +27,7 @@ link at https://hefferon.net
 ## Source
 
 This uses LaTeX and related programs.  To compile the source
-files, see INSTALL.
+files, see INSTALL.  But really, just use the supplied PDF.
 
 
 ## History

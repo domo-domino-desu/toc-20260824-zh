@@ -213,7 +213,7 @@
 
 ;; ======================== execute =====================
 (define config-unary-3
-  (make-config 0 (make-tape-list "") STROKE (make-tape-list "11")))
+  (make-config 0  STROKE (make-tape-list "") (make-tape-list "11")))
 
 
 (test-case

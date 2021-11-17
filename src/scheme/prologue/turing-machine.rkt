@@ -1,5 +1,6 @@
 #! /usr/bin/env racket
 #lang racket
+(require racket/cmdline)
 
 ;; turing-machine.rkt
 ;; A Turing machine simulation, for Theory of Computation by Hefferon
@@ -210,9 +211,9 @@
 
 ;; =====================================
 ;; Execute for a limited number of states
-(define (execute-guarded tm initial-config)
+(define (execute-guarded tm initial-config slmt)
   (define (execute-helper config s)
-    (cond [(> s (string->number (statelimit)))
+    (cond [(> s (string->number (slmt)))
            (fprintf (current-output-port)
                     "step ~s: Simulation stopped\n"
                     s)]
@@ -235,7 +236,7 @@
 (define startchar (make-parameter (make-string 1 BLANK)))  ;; string with one char, head points to this char first
 (define startleft (make-parameter ""))  ;; string giving tape left of the start char
 (define startright (make-parameter ""))  ;; string giving tape right of start char
-(define statelimit (make-parameter "1000")) ;; max number of steps simulator runs
+(define steplimit (make-parameter "-1")) ;; max number of steps simulator runs; a negative makes it run until done
 
 (define command-line-parser
   (command-line
@@ -248,19 +249,15 @@
    [("-c" "--char") sc "Character the head points to at start" (startchar sc)]
    [("-l" "--left") sl "String giving tape left of the start character" (startleft sl)]
    [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
-   [("-s" "--steplimit") slmt "Number giving max number of steps to run" (statelimit slmt)]
+   [("-s" "--steplimit") slmt "Number giving max number of steps to run (negative for run until halt)" (steplimit slmt)]
    #:args  () (void)))
 
 ;; (tm-filename)
 
-(define TM-LINES '())  ;; list of file lines, one string per instruction
 ;; This is for allowing input from the command line
 ;;(if (null? (tm-filename))
 ;;    (set! TM-LINES (port->lines #:line-mode 'any #:close? #f))
 ;;    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
-(if (null? (tm-filename))
-    (set! TM-LINES '())
-    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
 
 ;; for debugging: TM-LINES
 
@@ -275,8 +272,8 @@
 ;             (tm-filename)))
 
 ;; Return a list of instructions
-(define TM (for/list ([line TM-LINES])
-                 (string->instruction line)))
+;(define TM (for/list ([line TM-LINES])
+;                 (string->instruction line)))
 ;; for debugging: TM
 
 (define INITIAL-CONFIG (make-config 0
@@ -285,3 +282,42 @@
                                     (string->list (startright))))  ;; TODO need the position?
 ;; for debugging: INITIAL-CONFIG
 ; (execute-guarded TM INITIAL-CONFIG)
+
+
+;; For running from the command line
+(module+ main
+  (display "Running main\n")
+  ;; Read command arguments  
+  (command-line
+   #:usage-help 
+   "Simulate a Turing machine."
+   "Put instructions of the form `state-number current-char action-char next-state-number' on separate lines."
+   #:once-each
+   [("-v" "--verbose") "Verbose mode" (verbose? #t)]
+   [("-f" "--filename") tmfn "Name of file with the Turing machine" (tm-filename tmfn)]
+   [("-c" "--char") sc "Character the head points to at start" (startchar sc)]
+   [("-l" "--left") sl "String giving tape left of the start character" (startleft sl)]
+   [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
+   [("-s" "--steplimit") slmt "Number giving max number of steps to run" (steplimit slmt)]
+   #:args  () (void))
+
+  ;; Read the file with the TM instructions
+  (define TM-LINES '())  ;; list of file lines, one string per instruction
+  (if (null? (tm-filename))
+    (set! TM-LINES '())
+    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
+  
+  ;; Return a list of instructions
+  (define TM (for/list ([line TM-LINES])
+               (string->instruction line)))
+  ;;(display TM)  ; temp for debugging
+  ;; Run the simulation
+  (display (startright))
+  (define initial-config
+    (make-config 0 (string-ref (startchar) 0) (string->list (startleft)) (string->list (startright))))
+  (define STEPLIMIT (string->number (steplimit)))
+  
+  (if (>= 0 STEPLIMIT)
+      (execute-guarded TM initial-config STEPLIMIT)
+      (execute TM initial-config))
+)

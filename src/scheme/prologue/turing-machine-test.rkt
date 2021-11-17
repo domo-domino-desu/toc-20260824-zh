@@ -2,6 +2,9 @@
 (require rackunit
          "turing-machine.rkt")
 
+;; TODO
+;; 1) start machine without any state 0
+
 ;; predecessor machine
 (define tm0  
   (list
@@ -30,7 +33,7 @@
 ;; ============  configuration tests =================
 (test-case
   "Test configuration getters and setters for minimal functionalality"
-  (let ([config (make-config 1  BLANK (list #\2) (list #\3) 0)])
+  (let ([config (make-config 1  BLANK (list #\2) (list #\3))])
     (check = 1 (get-current-state config))
     (check char=? BLANK (get-current-symbol config))
     (check char=? #\2 (first (get-left-tape-list config)))
@@ -39,7 +42,7 @@
  ))
 (test-case
   "Test configuration edge cases"
-  (let ([config (make-config 1  BLANK (string->list "") (string->list "") 0)])
+  (let ([config (make-config 1  BLANK (string->list "") (string->list ""))])
     (check-eq? '() (get-left-tape-list config))
     (check-eq? '() (get-right-tape-list config))
  ))
@@ -56,13 +59,11 @@
 (define c0 (make-config 0
                         STROKE
                         (make-tape-list "1101")
-                        (make-tape-list "0010")
-                        0))
+                        (make-tape-list "0010")))
 (define c1 (make-config 2
                         STROKE
                         (make-tape-list "1")
-                        (make-tape-list "0")
-                        0))
+                        (make-tape-list "0")))
 
 (test-case
  "Test tape-left-char and tape-right-char minimal functionality"
@@ -80,20 +81,19 @@
 (test-case
  "Test configuration->string minimal functionality"
  (let ([s (configuration->string c0)])
-   (check-equal? "q0: 1101*1*0010 :0" s "Expected debugging output string")
+   (check-equal? "q0: 1101*1*0010" s "Expected debugging output string")
    )
  )
 
 (define c-blank-tape (make-config 222
                                   STROKE
                                   (make-tape-list "")
-                                  (make-tape-list "")
-                                  0))
+                                  (make-tape-list "")))
 
 (test-case
  "Test configuration->string edge cases"
  (let ([s (configuration->string c-blank-tape)])
-   (check-equal? "q222: *1* :0" s "Expected debugging output string" )
+   (check-equal? "q222: *1*" s "Expected debugging output string" )
    )
  )
 
@@ -149,18 +149,15 @@
 (define c2 (make-config 2
                         STROKE
                         (make-tape-list "")
-                        (make-tape-list "1100")
-                        0))
+                        (make-tape-list "1100")))
 (define c3 (make-config 2
                         STROKE
                         (make-tape-list "0110")
-                        (make-tape-list "")
-                        2))
+                        (make-tape-list "")))
 (define c4 (make-config 2
                         STROKE
                         (make-tape-list "")
-                        (make-tape-list "")
-                        -1))
+                        (make-tape-list "")))
 
 (test-case
  "Test move-left, move-right with blank tape"
@@ -216,7 +213,7 @@
 
 ;; ======================== execute =====================
 (define config-unary-3
-  (make-config 0 (make-tape-list "") STROKE (make-tape-list "11") 0))
+  (make-config 0 (make-tape-list "") STROKE (make-tape-list "11")))
 
 
 (test-case

@@ -66,7 +66,8 @@
   
   (let ([inst (findf delta-test tm)])
     (if (not inst)
-        (list #\X HALT-STATE)  ;; X is arbitrary placeholder char
+        '()
+        ;; (list #\X HALT-STATE)  ;; X is arbitrary placeholder char
         (list (third inst) (fourth inst)))))
 
 (provide delta)
@@ -127,21 +128,24 @@
 ;; ===================================================
 ;; Take one step
 ;; step  Do one step; from a config and the tm, yield the next config
+;;   Returns null if machine halts.
 (define (step config tm)
   (let* ([current-state (get-current-state config)]
          [left-tape-list (get-left-tape-list config)]
          [current-symbol (get-current-symbol config)]
          [right-tape-list (get-right-tape-list config)]
-         [action-next-state (delta tm current-state current-symbol)]
-         [action (first action-next-state)]
-         [next-state (second action-next-state)])
-    (cond
-      [(char=? LEFT action) (move-left config next-state)]
-      [(char=? RIGHT action) (move-right config next-state)]
-      [else (make-config next-state
-                         action  ;; not L or R so it is in tape alphabet
-                         left-tape-list
-                         right-tape-list)])))
+         [action-next-state (delta tm current-state current-symbol)])
+    (if (null? action-next-state)
+        '()                       ;; machine is halted
+        (let ([action (first action-next-state)]
+              [next-state (second action-next-state)])
+          (cond
+            [(char=? LEFT action) (move-left config next-state)]
+            [(char=? RIGHT action) (move-right config next-state)]
+            [else (make-config next-state
+                               action  ;; not L or R so it is in tape alphabet
+                               left-tape-list
+                               right-tape-list)])))))
 
 (provide step)
 
@@ -149,17 +153,18 @@
 ;; Execute a Turing machine
 ;; execute  Run a turing machine step-by-step until it halts
 (define (execute tm initial-config)
-  (define (execute-helper config s)
-    (if (= (get-current-state config) HALT-STATE)
+  (define (execute-helper config stp)
+    (if (or (null? config)
+            (= (get-current-state config) HALT-STATE))
         (fprintf (current-output-port)
                  "step ~s: HALT\n"
-                 s)
+                 stp)
         (begin
           (fprintf (current-output-port)
                    "step ~s: ~a\n"
-                   s
+                   stp
                    (configuration->string config))
-          (execute-helper (step config tm) (add1 s)))))
+          (execute-helper (step config tm) (add1 stp)))))
   
   (execute-helper initial-config 0))
 
@@ -211,7 +216,8 @@
            (fprintf (current-output-port)
                     "step ~s: Simulation stopped\n"
                     s)]
-          [(= (get-current-state config) HALT-STATE)
+          [(or (null? config)
+               (= (get-current-state config) HALT-STATE))
            (fprintf (current-output-port)
                     "step ~s: HALT\n"
                     s)]
@@ -235,7 +241,7 @@
   (command-line
    #:usage-help 
    "Simulate a Turing machine."
-   "Put instructions like `state-number current-char action-char next-state-number' on separate lines."
+   "Put instructions of the form `state-number current-char action-char next-state-number' on separate lines."
    #:once-each
    [("-v" "--verbose") "Verbose mode" (verbose? #t)]
    [("-f" "--filename") tmfn "Name of file with the Turing machine" (tm-filename tmfn)]
@@ -263,10 +269,10 @@
   (reverse (cdr (reverse lst))))
 
 ;; Note that empty lines give an error in the TM
-(unless (non-empty-string? (last TM-LINES))
-    (fprintf (current-output-port)
-             "File ~s: Trailing empty string will cause an error.  Delete it.\n"
-             (tm-filename)))
+;(unless (non-empty-string? (last TM-LINES))
+;    (fprintf (current-output-port)
+;             "File ~s: Trailing empty line will cause an error.  Delete it.\n"
+;             (tm-filename)))
 
 ;; Return a list of instructions
 (define TM (for/list ([line TM-LINES])
@@ -278,4 +284,4 @@
                                     (string->list (startleft))
                                     (string->list (startright))))  ;; TODO need the position?
 ;; for debugging: INITIAL-CONFIG
-(execute-guarded TM INITIAL-CONFIG)
+; (execute-guarded TM INITIAL-CONFIG)

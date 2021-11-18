@@ -153,23 +153,50 @@
 ;; ===================================================
 ;; Execute a Turing machine
 ;; execute  Run a turing machine step-by-step until it halts
-(define (execute tm initial-config)
-  (define (execute-helper config stp)
+(define (execute tm initial-config [verbose #t])
+  (define (execute-helper config stp history)
     (if (or (null? config)
             (= (get-current-state config) HALT-STATE))
-        (fprintf (current-output-port)
-                 "step ~s: HALT\n"
-                 stp)
         (begin
-          (fprintf (current-output-port)
-                   "step ~s: ~a\n"
-                   stp
-                   (configuration->string config))
-          (execute-helper (step config tm) (add1 stp)))))
+          (when verbose
+              (fprintf (current-output-port)
+                       "step ~s: HALT\n"
+                       stp))
+          (reverse history))
+        (begin
+          (when verbose
+              (fprintf (current-output-port)
+                       "step ~s: ~a\n"
+                       stp
+                       (configuration->string config)))
+          (let ([next-config (step config tm)])
+            (execute-helper next-config (add1 stp) (cons next-config history))))))
   
-  (execute-helper initial-config 0))
+  (execute-helper initial-config 0 '()))
 
 (provide execute)
+
+;; =====================================
+;; Execute for a limited number of states
+(define (execute-guarded tm initial-config slmt)
+  (define (execute-helper config s)
+    (cond [(> s (string->number (slmt)))
+           (fprintf (current-output-port)
+                    "step ~s: Simulation stopped\n"
+                    s)]
+          [(or (null? config)
+               (= (get-current-state config) HALT-STATE))
+           (fprintf (current-output-port)
+                    "step ~s: HALT\n"
+                    s)]
+          [else (begin
+                  (fprintf (current-output-port)
+                           "step ~s: ~a\n"
+                           s
+                           (configuration->string config))
+                  (execute-helper (step config tm) (add1 s)))]))
+
+  (execute-helper initial-config 0))
 
 ;; ========================================================
 ;; Read TM from a file
@@ -200,36 +227,11 @@
           current-symbol
           action
           next-state)))
-;; (define inst (string->instruction s))
-;; inst
-;; (define inst1 (string->instruction s0))
-;; inst1
-
-;;(printf "Given arguments: ~s\n"
-;;          (current-command-line-arguments))
 
 
-;; =====================================
-;; Execute for a limited number of states
-(define (execute-guarded tm initial-config slmt)
-  (define (execute-helper config s)
-    (cond [(> s (string->number (slmt)))
-           (fprintf (current-output-port)
-                    "step ~s: Simulation stopped\n"
-                    s)]
-          [(or (null? config)
-               (= (get-current-state config) HALT-STATE))
-           (fprintf (current-output-port)
-                    "step ~s: HALT\n"
-                    s)]
-          [else (begin
-                  (fprintf (current-output-port)
-                           "step ~s: ~a\n"
-                           s
-                           (configuration->string config))
-                  (execute-helper (step config tm) (add1 s)))]))
 
-  (execute-helper initial-config 0))
+;; ========================================================
+;; Read command line.
 
 (define verbose? (make-parameter #f))
 (define tm-filename (make-parameter null))
@@ -252,42 +254,22 @@
    [("-s" "--steplimit") slmt "Number giving max number of steps to run (negative for run until halt)" (steplimit slmt)]
    #:args  () (void)))
 
-;; (tm-filename)
-
-;; This is for allowing input from the command line
-;;(if (null? (tm-filename))
-;;    (set! TM-LINES (port->lines #:line-mode 'any #:close? #f))
-;;    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
-
-;; for debugging: TM-LINES
 
 ;; Return the list with the last element omitted
-(define (omit-last-element lst)
-  (reverse (cdr (reverse lst))))
+;;(define (omit-last-element lst)
+;;  (reverse (cdr (reverse lst))))
 
-;; Note that empty lines give an error in the TM
-;(unless (non-empty-string? (last TM-LINES))
-;    (fprintf (current-output-port)
-;             "File ~s: Trailing empty line will cause an error.  Delete it.\n"
-;             (tm-filename)))
-
-;; Return a list of instructions
-;(define TM (for/list ([line TM-LINES])
-;                 (string->instruction line)))
-;; for debugging: TM
-
+;; Default initial configuration
 (define INITIAL-CONFIG (make-config 0
                                     (current-symbol-string->char (startchar))
                                     (string->list (startleft))
                                     (string->list (startright))))  ;; TODO need the position?
-;; for debugging: INITIAL-CONFIG
-; (execute-guarded TM INITIAL-CONFIG)
 
-
-;; For running from the command line
+;; For running from the command line; this is the Racket construct to execute code from
+;; command line but not from an importing module
 (module+ main
-  (display "Running main\n")
-  ;; Read command arguments  
+  ; (display "Running main\n")
+  ;; Read command line arguments  
   (command-line
    #:usage-help 
    "Simulate a Turing machine."
@@ -312,9 +294,11 @@
                (string->instruction line)))
   ;;(display TM)  ; temp for debugging
   ;; Run the simulation
-  (display (startright))
   (define initial-config
-    (make-config 0 (string-ref (startchar) 0) (string->list (startleft)) (string->list (startright))))
+    (make-config 0
+                 (string-ref (startchar) 0)
+                 (string->list (startleft))
+                 (string->list (startright))))
   (define STEPLIMIT (string->number (steplimit)))
   
   (if (>= 0 STEPLIMIT)

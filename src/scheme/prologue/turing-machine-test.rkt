@@ -219,6 +219,8 @@
 (test-case
  "Test execute, minimal functionality"
  (execute tm0 config-unary-3)
+ (let* ([history (execute tm0 config-unary-3 #f)])
+   (check-equal? (first history) (list 0 STROKE '() (list STROKE STROKE)) "tm0 started with unary 3"))
  )
 
 #|

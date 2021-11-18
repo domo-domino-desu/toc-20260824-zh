@@ -154,6 +154,10 @@
 ;; Execute a Turing machine
 ;; execute  Run a turing machine step-by-step until it halts
 (define (execute tm initial-config [verbose #t])
+  ;; execute-helper
+  ;;   config  4-tuple configuration or '()
+  ;;   stp  integer, step number
+  ;;   history  list of 4-tuple configurations
   (define (execute-helper config stp history)
     (if (or (null? config)
             (= (get-current-state config) HALT-STATE))
@@ -178,25 +182,60 @@
 
 ;; =====================================
 ;; Execute for a limited number of states
-(define (execute-guarded tm initial-config slmt)
-  (define (execute-helper config s)
-    (cond [(> s (string->number (slmt)))
-           (fprintf (current-output-port)
+(define (execute-guarded tm initial-config slmt [verbose #t])
+  (define (execute-helper config stp history)
+    (cond [(> stp slmt)
+           (begin
+             (when verbose
+               (fprintf (current-output-port)
                     "step ~s: Simulation stopped\n"
-                    s)]
+                    stp))
+             (reverse history))]
           [(or (null? config)
                (= (get-current-state config) HALT-STATE))
-           (fprintf (current-output-port)
+           (begin
+             (when verbose
+               (fprintf (current-output-port)
                     "step ~s: HALT\n"
-                    s)]
+                    stp))
+             (reverse history))]
           [else (begin
-                  (fprintf (current-output-port)
+                  (when verbose
+                    (fprintf (current-output-port)
                            "step ~s: ~a\n"
-                           s
-                           (configuration->string config))
-                  (execute-helper (step config tm) (add1 s)))]))
+                           stp
+                           (configuration->string config)))
+                  (let ([next-config (step config tm)])
+                    (execute-helper next-config (add1 stp) (cons next-config history))))]))
 
-  (execute-helper initial-config 0))
+  (execute-helper initial-config 0 '()))
+
+
+;;========================================================
+;; find-initial-strokes  Given a list, return number STROKE's that begin the list
+(define (find-initial-strokes lst)
+    (define (find-initial-strokes-helper lst k)
+      (cond ([(null? lst) k]
+             [(equal? STROKE (car lst)) k]
+             [#t (find-initial-strokes-helper (cdr lst) (add1 k))])))
+  
+  (find-initial-strokes-helper lst 0))
+
+
+;; computable-function Compute map f: N -> N 
+;;  tm  Turing machine
+;;  x   natural number
+(define (computable-function tm x [verbose #f])
+  (let* ([unary-input (if (= 0 x)
+                          '()
+                          (build-list x (lambda (y) STROKE)))]
+         [initial-config (make-config 0 STROKE '() unary-input)]
+         [history (execute tm initial-config verbose)]
+         [final-config (list-ref history (length history))]
+         [right-tape-list (get-right-tape-list final-config)])
+    (find-initial-strokes right-tape-list)))
+
+
 
 ;; ========================================================
 ;; Read TM from a file

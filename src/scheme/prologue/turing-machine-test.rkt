@@ -2,6 +2,8 @@
 (require rackunit
          "turing-machine.rkt")
 
+(require racket/pretty)  ; useful for debugging
+
 ;; TODO
 ;; 1) start machine without any state 0
 
@@ -215,13 +217,40 @@
 (define config-unary-3
   (make-config 0  STROKE (make-tape-list "") (make-tape-list "11")))
 
+(test-case
+ "test helper fcn find-initial-strokes"
+ (let ([lst0 (list STROKE STROKE BLANK)]
+      [lst1 (list STROKE STROKE BLANK STROKE)]
+      [lst2 (list STROKE BLANK)] 
+      [lst3 (list STROKE)] 
+      [lst4 (list BLANK)] 
+      [lst5 (list BLANK STROKE)] 
+      [lst6 (list BLANK BLANK)] 
+      [lst7 '()])
+   (pretty-print lst0)
+   (find-initial-strokes lst0)
+   (check = 2 (find-initial-strokes lst0) "list is STROKE STROKE BLANK")
+   (check = 2 (find-initial-strokes lst1) "list is STROKE STROKE BLANK STROKE")
+   (check = 1 (find-initial-strokes lst2) "list is STROKE BLANK")
+   (check = 1 (find-initial-strokes lst3) "list is STROKE")
+   (check = 0 (find-initial-strokes lst4) "list is BLANK")
+   (check = 0 (find-initial-strokes lst5) "list is BLANK STROKE")
+   (check = 0 (find-initial-strokes lst6) "list is BLANK BLANK")
+   (check = 0 (find-initial-strokes lst7) "list is empty")
+   ))
+
 
 (test-case
  "Test execute, minimal functionality"
  (execute tm0 config-unary-3)
  (let* ([history (execute tm0 config-unary-3 #f)])
-   (check-equal? (first history) (list 0 STROKE '() (list STROKE STROKE)) "tm0 started with unary 3"))
- )
+   (pretty-print history)
+   (check-equal? (first history) (list 0 STROKE '() (list STROKE STROKE)) "tm0 started with unary 3")
+   (check-equal? (get-current-state (last-non-halting-configuration history)) 3 "on unary 3, tm0 runs until state 3")
+   (check-equal? (get-current-symbol (last-non-halting-configuration history)) STROKE "on unary 3, tm0 ends pointing at 1")
+   (check-equal? (find-initial-strokes (get-left-tape-list (last-non-halting-configuration history))) 0 "on unary 3, tm0 ends with nothing to left")
+   (check-equal? (find-initial-strokes (get-right-tape-list (last-non-halting-configuration history))) 1 "on unary 3, tm0 ends with 1 to right (plus 1 under head)")
+ ))
 
 #|
 |#

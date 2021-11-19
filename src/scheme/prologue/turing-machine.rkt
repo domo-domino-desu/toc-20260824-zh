@@ -176,7 +176,7 @@
           (let ([next-config (step config tm)])
             (execute-helper next-config (add1 stp) (cons next-config history))))))
   
-  (execute-helper initial-config 0 '()))
+  (execute-helper initial-config 0 (list initial-config)))
 
 (provide execute)
 
@@ -188,7 +188,7 @@
            (begin
              (when verbose
                (fprintf (current-output-port)
-                    "step ~s: Simulation stopped\n"
+                    "step ~s: Simulation step limit reached\n"
                     stp))
              (reverse history))]
           [(or (null? config)
@@ -210,15 +210,26 @@
 
   (execute-helper initial-config 0 '()))
 
+(provide execute-guarded)
 
 ;;========================================================
-;; find-initial-strokes  Given a list, return number STROKE's that begin the list
+;; Routines to get the result of a TM computation
+
+;; last-non-halting-configuration  Given a history, return the final non-halting configuration
+;;   The history can't be empty, but it can be of length one.  But if it is of length one, that
+;;   entry is not null.
+(define (last-non-halting-configuration history)
+  (let ([history-reversed (reverse history)])
+    (if (null? (car history-reversed))
+        (cadr history-reversed)
+        (car (history-reversed)))))
+
+;; find-initial-strokes  Given a list, return the number of STROKE's that begin the list
 (define (find-initial-strokes lst)
-    (define (find-initial-strokes-helper lst k)
-      (cond ([(null? lst) k]
-             [(equal? STROKE (car lst)) k]
-             [#t (find-initial-strokes-helper (cdr lst) (add1 k))])))
-  
+  (define (find-initial-strokes-helper lst k)
+    (cond [(null? lst) k]
+          [(not (equal? STROKE (car lst))) k]
+          [#t (find-initial-strokes-helper (cdr lst) (add1 k))]))
   (find-initial-strokes-helper lst 0))
 
 
@@ -235,7 +246,9 @@
          [right-tape-list (get-right-tape-list final-config)])
     (find-initial-strokes right-tape-list)))
 
-
+(provide last-non-halting-configuration
+         find-initial-strokes
+         computable-function)
 
 ;; ========================================================
 ;; Read TM from a file

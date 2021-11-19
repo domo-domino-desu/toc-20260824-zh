@@ -27,8 +27,8 @@
      (list 1 STROKE RIGHT 1)
      (list 2 BLANK RIGHT 3)
      (list 2 STROKE LEFT 2)
-     (list 3 BLANK RIGHT 3)
-     (list 3 STROKE BLANK 4)
+     (list 3 BLANK RIGHT 4)
+     (list 3 STROKE BLANK 3)
      ))
 
 
@@ -119,7 +119,7 @@
         [action (first action-next-state)]
         [next-state (second action-next-state)])
    (check char=? action RIGHT "Action called for should be to go right")
-   (check = next-state 3 "Next state should be 3")
+   (check = next-state 4 "Next state should be 4")
    ))
 
 (test-case
@@ -214,8 +214,6 @@
 )
 
 ;; ======================== execute =====================
-(define config-unary-3
-  (make-config 0  STROKE (make-tape-list "") (make-tape-list "11")))
 
 (test-case
  "test helper fcn find-initial-strokes"
@@ -227,8 +225,6 @@
       [lst5 (list BLANK STROKE)] 
       [lst6 (list BLANK BLANK)] 
       [lst7 '()])
-   (pretty-print lst0)
-   (find-initial-strokes lst0)
    (check = 2 (find-initial-strokes lst0) "list is STROKE STROKE BLANK")
    (check = 2 (find-initial-strokes lst1) "list is STROKE STROKE BLANK STROKE")
    (check = 1 (find-initial-strokes lst2) "list is STROKE BLANK")
@@ -239,18 +235,67 @@
    (check = 0 (find-initial-strokes lst7) "list is empty")
    ))
 
+(test-case
+ "test helper fcn config-unary-n"
+ ; generic: unary 3
+ (check = 0 (get-current-state (config-unary-n 3)) "generic test of config-unary-n: state OK?")
+ (check-equal? STROKE (get-current-symbol (config-unary-n 3)) "generic test of config-unary-n: current symbol OK?")
+ (check-equal? '() (get-left-tape-list (config-unary-n 3)) "generic test of config-unary-n: left tape empty?")
+ (check-equal? (list STROKE STROKE) (get-right-tape-list (config-unary-n 3)) "generic test of config-unary-n: right tape has two strokes?")
+ ; special: unary 
+ (check = 0 (get-current-state (config-unary-n 0)) "test of config-unary-n: state OK?")
+ (check-equal? BLANK (get-current-symbol (config-unary-n 0)) "test of config-unary-n: current symbol OK?")
+ (check-equal? '() (get-left-tape-list (config-unary-n 0)) "test of config-unary-n: left tape empty?")
+ (check-equal? '() (get-right-tape-list (config-unary-n 0)) "test of config-unary-n: right tape has two strokes?")
+ )
+
+(define config-unary-3
+  (config-unary-n 3))
 
 (test-case
  "Test execute, minimal functionality"
- (execute tm0 config-unary-3)
- (let* ([history (execute tm0 config-unary-3 #f)])
-   (pretty-print history)
+ ; == generic test: predecessor machine on input unary 3
+ ; debugging: (execute tm0 (config-unary-n 3))
+ (let* ([history (execute tm0 (config-unary-n 3) #f)])
+   ; debugging: (pretty-print history)
    (check-equal? (first history) (list 0 STROKE '() (list STROKE STROKE)) "tm0 started with unary 3")
    (check-equal? (get-current-state (last-non-halting-configuration history)) 3 "on unary 3, tm0 runs until state 3")
    (check-equal? (get-current-symbol (last-non-halting-configuration history)) STROKE "on unary 3, tm0 ends pointing at 1")
    (check-equal? (find-initial-strokes (get-left-tape-list (last-non-halting-configuration history))) 0 "on unary 3, tm0 ends with nothing to left")
    (check-equal? (find-initial-strokes (get-right-tape-list (last-non-halting-configuration history))) 1 "on unary 3, tm0 ends with 1 to right (plus 1 under head)")
- ))
+   )
+ ; == test: predecessor machine on input unary 0
+ ; debugging: (execute tm0 (config-unary-n 0))
+ (let* ([history (execute tm0 (config-unary-n 0) #f)])
+   ; debugging: (pretty-print history)
+   (check-equal? (first history) (list 0 BLANK '() '()) "tm0 started with unary 0")
+   (check-equal? (get-current-state (last-non-halting-configuration history)) 3 "on unary 0, tm0 runs until step 3")
+   (check-equal? (get-current-symbol (last-non-halting-configuration history)) BLANK "on unary 0, tm0 ends pointing at blank")
+   (check-equal? (find-initial-strokes (get-left-tape-list (last-non-halting-configuration history))) 0 "on unary 0, tm0 ends with nothing to left")
+   (check-equal? (find-initial-strokes (get-right-tape-list (last-non-halting-configuration history))) 0 "on unary 0, tm0 ends with 0 to right (plus 0 under head)")
+   )
+ ; == generic test: addition machine on input unary 3 0
+ ; debug: (execute tm1 (config-unary-n 3))
+ (let* ([history (execute tm1 (config-unary-n 3) #f)])
+   ; debugging: (pretty-print history)
+   (check-equal? (length history) 15 "on unary 3 0, tm1 runs until step 14")
+   (check-equal? (get-current-state (last-non-halting-configuration history)) 4 "on unary 3 0, tm1 runs until state 4")
+   (check-equal? (get-current-symbol (last-non-halting-configuration history)) STROKE "on unary 3 0, tm1 ends pointing at 1")
+   (check-equal? (find-initial-strokes (get-left-tape-list (last-non-halting-configuration history))) 0 "on unary 3, tm1 ends with nothing to left")
+   (check-equal? (find-initial-strokes (get-right-tape-list (last-non-halting-configuration history))) 2 "on unary 3, tm1 ends with 2 to right (plus 1 under head)")
+   )
+ ; == generic test: addition machine on input unary 2 3
+ ; debugging: (execute tm1 (make-config 0 STROKE '() (list STROKE BLANK STROKE STROKE STROKE)))
+ (let* ([config-initial (make-config 0 STROKE '() (list STROKE BLANK STROKE STROKE STROKE))]
+        [history (execute tm1 config-initial #f)])
+   ; debugging: (pretty-print history)
+   (check-equal? (length history) 19 "on unary 2 3, tm1 runs until step 18")
+   (check-equal? (get-current-state (last-non-halting-configuration history)) 4 "on unary 2 3, tm1 runs until state 4")
+   (check-equal? (get-current-symbol (last-non-halting-configuration history)) STROKE "on unary 2 3, tm1 ends pointing at 1")
+   (check-equal? (find-initial-strokes (get-left-tape-list (last-non-halting-configuration history))) 0 "on unary 2 3, tm1 ends with nothing to left")
+   (check-equal? (find-initial-strokes (get-right-tape-list (last-non-halting-configuration history))) 4 "on unary 2 3, tm1 ends with 4 to right (plus 1 under head)")
+   )
+ )
 
 #|
 |#

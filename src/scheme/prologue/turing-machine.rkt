@@ -232,6 +232,13 @@
           [#t (find-initial-strokes-helper (cdr lst) (add1 k))]))
   (find-initial-strokes-helper lst 0))
 
+;; config-unary-n  Make initial configuration inputting n; returns configuration at state 0,
+;;    with head pointing to start of n-many STROKES
+;;  n  natural number  number of STROKES on tape
+(define (config-unary-n n)
+  (if (= n 0)
+      (make-config 0 BLANK (string->list "") (string->list ""))
+      (make-config 0 STROKE (string->list "") (string->list (make-string (- n 1) STROKE)))))
 
 ;; computable-function Compute map f: N -> N 
 ;;  tm  Turing machine
@@ -248,6 +255,7 @@
 
 (provide last-non-halting-configuration
          find-initial-strokes
+         config-unary-n
          computable-function)
 
 ;; ========================================================

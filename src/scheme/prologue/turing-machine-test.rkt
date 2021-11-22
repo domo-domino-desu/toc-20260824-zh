@@ -253,7 +253,7 @@
   (config-unary-n 3))
 
 (test-case
- "Test execute, minimal functionality"
+ "Test execute, simple functionality"
  ; == generic test: predecessor machine on input unary 3
  ; debugging: (execute tm0 (config-unary-n 3))
  (let* ([history (execute tm0 (config-unary-n 3) #f)])
@@ -295,6 +295,13 @@
    (check-equal? (find-initial-strokes (get-left-tape-list (last-non-halting-configuration history))) 0 "on unary 2 3, tm1 ends with nothing to left")
    (check-equal? (find-initial-strokes (get-right-tape-list (last-non-halting-configuration history))) 4 "on unary 2 3, tm1 ends with 4 to right (plus 1 under head)")
    )
+ )
+
+(test-case
+ "Test empty Turing machine"
+ (let* ([config-initial (make-config 0 STROKE '() (list BLANK))]
+        [history (execute '() config-initial #f)])
+   (check-equal? (length history) 2 "Empty Turing machine just gives back the initial configuration (and nil to mark halting)"))
  )
 
 #|

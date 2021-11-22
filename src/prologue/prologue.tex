@@ -709,7 +709,7 @@ $\mathcal{C}(i) \yields \mathcal{C}(i+1)$.\footnote{%
   Read the turnstile symbol $\yields$ aloud as ``yields.''
   We could, where $\mathcal{I}$ is the applicable instruction,
   write~$\yields_{\mathcal{I}}$,  
-  but we will never need that construct.}\index{yields@$\yields$, yields!for Turing machines}
+  but we will never need to do that.}\index{yields@$\yields$, yields!for Turing machines}
 A \definend{computation}\index{computation!Turing machine}\index{Turing machine!computation} 
 is a sequence
 $
@@ -718,7 +718,7 @@ $
 $.
 We abbreviate such a sequence 
 with~$\kleenestar{\yields}$.\footnote{% 
-  Read this aloud as ``yields eventually.''} %\index{yields eventually!$\kleenestar{\yields}$for Turing machines}
+  Read this aloud as ``yields star'' or ``yields eventually.''} %\index{yields eventually!$\kleenestar{\yields}$for Turing machines}
 If the computation halts then the sequence has a final 
 configuration~$\mathcal{C}(h)$,
 so we may write a halting computation as
@@ -765,24 +765,47 @@ taking one configuration to another.
 
 
 \subsection{Effective functions}\index{effective function|(}
-In this chapter's opening we declared that 
-our interest is not so much in the machines as it is 
+In the chapter's opening we expressed interest
+not so much in the machines, as  
 in the things that they compute.
-We close with a definition of   
+We define   
 the set of functions that are mechanically computable.
 
 %<*df:FcnComputedByTMi>
 A function is an association of inputs with outputs.\footnote{%
-  A review of functions is on page~\pageref{sec:Functions}.}
-The simplest candidate for a definition of the function computed 
-by a machine is the 
+  The appendix on page~\pageref{sec:Functions} reviews functions
+  and the one on page~\pageref{sec:Strings} reviews strings.}
+Turing machines use the tape for input and output so
+the natural candidate for the function computed 
+by the machine is the 
 association of the string on the tape when the machine starts
-with the string on the tape when it halts,
-if indeed it does halt.
+with the one on the tape when it halts,
+if indeed it does halt.\footnote{
+  There are couple of technical points that we shall mention here but not
+  emphasize.
+  First, just specifying the input string is not enough
+  since the initial position of the head can change the computation,
+  so we also specify that at the start the head is under the leftmost character.
+  As to the output, besides taking the convention of finishing with the
+  head under the leftmost output string character (this makes composition of the
+  computed functions easy), we must worry about trailing blanks.
+  When the machine halts there are infinitely many blanks to the 
+  right and we must specify which of these are significant.
+  There are a number of possible conventions; here is 
+  a natural one.
+  For any string $\sigma\in\kleenestar{\Sigma}$, where its length is~$n$ we say 
+  that its 
+  self-delimiting code string\protect\index{self-delimiting code!of a string}\protect\index{string!self-delimiting code} 
+   is $\bar{\sigma}=\str{1}^n\concat\blank\concat\sigma$.
+   Then we can take the convention of interpreting the output 
+   of the Turing machine to be
+   $\sigma$ where $\bar{\sigma}$ is the longest self-delimiting 
+   string whose left end is at the head.
+   This unambiguously determines the output.
+   (Note that while we mention this convention, following it can obscure
+   the computations so in the examples and exercises we will not go to these 
+   lengths; rather, we just consider plain output strings.)}  
 %</df:FcnComputedByTMi>
-(For the following definition, note that where $X$ is a set of characters,
-we use $\kleenestar{X}$ to denote the set of finite-length strings of 
-those characters).
 
 %<*df:FcnComputedByTMii>
 \begin{definition} \label{def:FcnComputedByTM}
@@ -795,9 +818,8 @@ is:~for input $\sigma\in\kleenestar{\Sigma_0}\!$, the output
 is the string that results from placing~$\sigma$  
 on an otherwise blank tape, pointing the read/write head to its 
 left-most symbol, and running the machine.
-If $\TM$ halts, and the non-blank characters are consecutive,
-and the first character is under the head,
-then $\TMfcn_{\TM}(\sigma)$ is that string.
+Where $\TM$ halts, the output $\TMfcn_{\TM}(\sigma)$ is the string such that
+and the first character is under the head.
 \end{definition}
 %</df:FcnComputedByTMii>
 
@@ -806,10 +828,12 @@ where $\phi(\str{111})=\str{11111}$.\footnote{%
   Mathematicians 
   began the subject by studying the effective computation of 
   mathematical functions, principally functions from number theory.
-  They often worked with the simplest tape alphabet, 
-  $\Sigma=\set{\str{B},\str{1}\!}$.
-  This approach has proven fruitful, so researchers still often discuss
-  the subject in these terms.}
+  They often worked 
+  $\Sigma=\set{\str{B},\str{1}\!}$ and took input and output in 
+  unary (or else where $0$ is represented by one stroke, $1$ by
+  two strokes, etc.).
+  This has proven fruitful, so researchers still often discuss
+  the subject in these terms and we may take this to say $\phi(3)=5$.}
 (If there is only one machine under discussion then 
 we may omit the subscript and just write~$\phi$.)
 \begin{equation*}
@@ -817,35 +841,6 @@ we may omit the subscript and just write~$\phi$.)
   \quad\mapsto\quad
   \vcenteredhbox{\includegraphics{prologue/asy/tape/tapefcn1.pdf}}
 \end{equation*}
-
-%<*df:FcnComputedByTMiii>
-That definition has two fine points, both needed to make the 
-input-output association well-defined.
-One is that just specifying that the machine starts 
-with~$\sigma$ on the tape is not enough
-since the initial position of the head can change the output.\footnote{%
-  Some authors don't require that the first character in
-  the output is under the head.
-  But this way is neater.}
-And, the definition omits blanks from $\sigma$ and~$\tau$
-since the machine would not be able to distinguish blanks
-at the end of those strings from blanks that are part of the unbounded 
-tape.\footnote{%
-  The definition has another fine point.
-  Consider the addition machine from  \cref{ex:MAdd}.
-  If we require for input 
-  that the machine head is under a stroke then, as written, we can 
-  add $3$ to~$0$ but we cannot add $0$ to~$3$.
-  There are a number of fixes:~a popular one is to denote the input~$0$
-  with one stroke, the input~$1$ with two strokes, etc., and adjust the 
-  addition machine accordingly (another possible adjustment is that 
-  we will in the next
-  chapter see how to represent multiple input numbers with a single number).
-  But we won't lose sleep about it since clearly we can work
-  within some reasonable convention\Dash
-  after all, everday machines successfully do these calculations within some
-  scheme.}
-%</df:FcnComputedByTMiii>
 
 The definition says ``If $\TM$ halts \ldots\sentencespace''
 What if it doesn't?
@@ -870,12 +865,7 @@ then it is a
 %</df:FcnConverge>
 
 Very important:~note the difference between a machine~$\TM$ and the function
-computed by that machine,~$\TMfcn_{\TM}$.\footnote{%
-  The introduction to this chapter says that we are most interested
-  in effective functions, $\TMfcn_{\TM}$, 
-  and that we study machines $\TM$ with an eye mostly to 
-  getting information about what they compute.
-  }
+computed by that machine,~$\TMfcn_{\TM}$.
 For example,  
 the machine $\TM_{\text{pred}}$ is a set of four-tuples
 but the predecessor function is a set of input-output pairs, 

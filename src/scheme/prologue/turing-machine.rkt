@@ -68,7 +68,6 @@
   (let ([inst (findf delta-test tm)])
     (if (not inst)
         '()
-        ;; (list #\X HALT-STATE)  ;; X is arbitrary placeholder char
         (list (third inst) (fourth inst)))))
 
 (provide delta)

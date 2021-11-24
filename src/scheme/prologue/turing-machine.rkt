@@ -151,7 +151,7 @@
 
 ;; ===================================================
 ;; Execute a Turing machine
-;; execute  Run a turing machine step-by-step until it halts
+;; execute  Run a Turing machine step-by-step until it halts
 (define (execute tm initial-config [verbose #t])
   ;; execute-helper
   ;;   config  4-tuple configuration or '()

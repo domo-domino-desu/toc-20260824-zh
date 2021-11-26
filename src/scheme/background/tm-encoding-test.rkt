@@ -1,4 +1,4 @@
-;;;; Tests of the code in tm-encodinig
+;;;; Tests of the code in tm-encoding
 #lang racket/base
 (require rackunit
          "tm-encoding.rkt")

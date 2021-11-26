@@ -1,4 +1,6 @@
 #lang racket
+(require "turing-machine.rkt")
+
 (define SEPARATOR "9")  ; inside of an instruction's representation
 (define INTER-INSTRUCTION-SEPARATOR "99")  ; between instructions
 

@@ -1,39 +1,68 @@
 #lang racket
-(require "turing-machine.rkt")
+(require "../prologue/turing-machine.rkt")
 
-(define SEPARATOR "9")  ; inside of an instruction's representation
-(define INTER-INSTRUCTION-SEPARATOR "99")  ; between instructions
+(define SEPARATOR BLANK)            ; inside of an instruction's representation
+(define INTER-INSTRUCTION-SEPARATOR (string BLANK BLANK))  ; between instructions
 
 (provide SEPARATOR
          INTER-INSTRUCTION-SEPARATOR)
 
-(define LEFT #\L)
-(define RIGHT #\R)
+;; Characters in the alphabet are represented with a unary string.  If we used their
+;; Unicode char point, that would be very hard to read.  Instead, we find the difference
+;; between character point of some lowest character and the one we want.  So basically,
+;; use a characer here that is below anything you intend to use.
+(define CHAR-POINT-OF-LOWEST-CHAR
+  (char->integer #\0))
 
-(provide LEFT
-         RIGHT)
-
-(define BASE-FOR-NUM-ENCODING 2) ; must be 2, 3, 4, ... 8
-(define BASE-FOR-CHAR-ENCODING 8) ; must be 2, 3, 4, ... 8
-
-(provide BASE-FOR-NUM-ENCODING
-         BASE-FOR-CHAR-ENCODING)
+(provide CHAR-POINT-OF-LOWEST-CHAR)
 
 (define EMPTY-TURING_MACHINE '())
 
 (provide EMPTY-TURING_MACHINE)
 
-;; test for parts of instructions, for instructions, and for TM
+
+;; == unary strings ====================
+
+;; unary-string?  Test whether a string is the unary representation of a number
+(define (unary-string? s)
+  (if (null? s)
+      #t
+      (and (eqv? STROKE (string-ref s 0))
+           (char=? (string->list s)))))
+;; natural->unary-string  Convert a natural number to unary encoded string
+;;  n  Natural number (n=0 is OK)
+(define (natural->unary-string n)
+  (make-string n STROKE))
+
+;; unary-string->natural  Convert a unary string to the natural number it represents 
+(define (unary-string->natural s)
+  (length s))
+
+(provide unary-string?
+         natural->unary-string
+         unary-string->natural)
+
+;; == test for parts of instructions, for instructions, and for TM  ===========
+
+;; state?  Test whether the argument is a possible state
+;;  Note that it does not check membership in the actual set of states for this machine
 (define (state? v)
-  (exact-nonnegative-integer? v))
-(define (present-symbol? v)
+  (unary-string? v))
+
+;; present-symbol?  Test whether the argument is a possible present symbol
+;;  Note that it does not check whether the argument is in the alphabet, but
+;;  it does reject L or R
+(define (present-symbol? v)  
   (if (not (char? v))
       #f
       (and (not (eqv? v LEFT))
            (not (eqv? v RIGHT)))))
+
+;; next-action?  Test whether the argument is a possible next-action (a char)
 (define (next-action? v)
   (char? v))
 
+;; instruction? Test whether the argument is a possible instruction, a four-tuple
 (define (instruction? v)
   (and (list? v)
        (= 4 (length v))
@@ -50,18 +79,21 @@
       (and (car v)
            (and-of-list (cdr v)))))
 
-(define (TM? v)
+;; TM?  Test whether the argument is a Turing machine, a list of instructions
+(define (TM? v [verbose #f])
   (display "TM? call ")(display v)(newline)
   (if (not (list? v))
       #f
       (let ([instruction-results (map instruction? v)])
-        (display "TM? instruction first first?") (display (first (first v))) (display (state? (first (first v)))) (newline)
-        (display "TM? instruction first second?") (display (second (first v))) (display (present-symbol? (second (first v)))) (newline)
-        (display "TM? instruction first third?") (display (third (first v))) (display (next-action? (third (first v)))) (newline)
-        (display "TM? instruction first fourth?") (display (fourth (first v))) (display (state? (fourth (first v)))) (newline)
-        (display "TM? net: instruction first?") (display (instruction? (first v))) (newline)
-        (display "TM? net: instruction-results") (display instruction-results) (newline) 
-        (display "TM? result ") (display (and-of-list instruction-results)) (newline)
+        (if verbose
+            (begin
+              (display "TM? instruction first first?") (display (first (first v))) (display (state? (first (first v)))) (newline)
+              (display "TM? instruction first second?") (display (second (first v))) (display (present-symbol? (second (first v)))) (newline)
+              (display "TM? instruction first third?") (display (third (first v))) (display (next-action? (third (first v)))) (newline)
+              (display "TM? instruction first fourth?") (display (fourth (first v))) (display (state? (fourth (first v)))) (newline)
+              (display "TM? net: instruction first?") (display (instruction? (first v))) (newline)
+              (display "TM? net: instruction-results") (display instruction-results) (newline) 
+              (display "TM? result ") (display (and-of-list instruction-results)) (newline)))
         (and-of-list instruction-results))))
 
 (provide state?
@@ -71,82 +103,86 @@
          TM?
          and-of-list)
 
-;; encode-present-state  input positive integer, output encoding as string
+;; encode-present-state  input natural number, output encoding as string
 (define (encode-present-state q)
-  (number->string q BASE-FOR-NUM-ENCODING))
+  (natural->unary-string))
 
-;; decode-present-state input a string, output natural number
+;; decode-present-state input a unary-string, output natural number
 ;;  (if string is not suitable, output #f)
 (define (decode-present-state s)
-  (string->number s BASE-FOR-NUM-ENCODING))
-
-(provide encode-present-state
-         decode-present-state)
+  (if (not (unary-string? s))
+      #f
+      (unary-string->natural s))
 
 ;; encode-next-state  input positive integer, output encoding as string
 (define (encode-next-state q)
-  (number->string q BASE-FOR-NUM-ENCODING))
+  (natural->unary-string q))
 
 ;; decode-next-state input a string, output natural number
 ;;  (if string is not suitable, output #f)
 (define (decode-next-state s)
-  (string->number s BASE-FOR-NUM-ENCODING))
+  (if (not (unary-string? s))
+      #f
+      (unary-string->natural s)))
 
 (provide encode-next-state
          decode-next-state)
 
-;; encode-present-symbol  input character, output encoding as string
+;; encode-present-symbol  input a present-symbol, output encoding as unary-string
 (define (encode-present-symbol s)
-  (number->string (char->integer s) BASE-FOR-CHAR-ENCODING))
+  (- (natural->unary-string (char->integer s))
+      CHAR-POINT-OF-LOWEST-CHAR))
 
-;; decode-present-symbol input a string, output character
-;;  (if string is not suitable, output #f, but no check to avoid L or R)
+;; decode-present-symbol input a unary-string, output a present symbol
+;;  (if string is not suitable, output #f)
 (define (decode-present-symbol s)
-  (if (= 0 (string-length s))
+  (if (not (unary-string? s))
       #f
-      (let ([char-code (string->number s BASE-FOR-CHAR-ENCODING)])
-        (if (or (false? char-code)
-                (>= 0 char-code))
+      (let* ([char-point (+ (unary-string->natural s)
+                            CHAR-POINT-OF-LOWEST-CHAR)]
+             [ch (integer->char char-point)])
+        (if (not (present-symbol? ch))
             #f
-            (integer->char char-code)))))
+            ch))))
 
 (provide encode-present-symbol
          decode-present-symbol)
 
-;; encode-next-action  input a character, output encoding as string representation of a number
-;;   (note that the number avoids the digit 9, as it is the separator)
+;; encode-next-action  Input a character, output encoding as unary string
 (define (encode-next-action s)
-  (number->string (char->integer s) BASE-FOR-CHAR-ENCODING)) 
+  (- (natural->unary-string (char->integer s))
+      CHAR-POINT-OF-LOWEST-CHAR))
 
-;; decode-next-action  input a string, output character
-;;  (if string is not suitable, output #f)
+;; decode-next-action  input a unary string, output next-action
+;;   If input string not suitable, return #f
 (define (decode-next-action s)
-  (if (= 0 (string-length s))
+  (if (not (unary-string? s))
       #f
-      (let ([char-code (string->number s BASE-FOR-CHAR-ENCODING)])
-        (if (or (false? char-code)
-                (>= 0 char-code))
+      (let* ([char-point (+ (unary-string->natural s)
+                            CHAR-POINT-OF-LOWEST-CHAR)]
+             [ch (integer->char char-point)])
+        (if (not (next-action? ch))
             #f
-            (integer->char char-code)))))
+            ch))))
 
 (provide encode-next-action
          decode-next-action)
 
-;; encode-TM-instruction  input list of four, output encoding as string
-;;   Ensures no leading 0's, so full number is retained
+;; encode-TM-instruction  Input instruction, output encoding as string
 (define (encode-TM-instruction inst)
   (let([present-state (first inst)]
        [present-symbol (second inst)]
        [next-action (third inst)]
        [next-state (fourth inst)])
-    (string-append SEPARATOR (encode-present-state present-state)  ; leading sep so no leading 0
+    (string-append (encode-present-state present-state)
                    SEPARATOR (encode-present-symbol present-symbol)
                    SEPARATOR (encode-next-action next-action)
                    SEPARATOR (encode-next-state next-state))))
 
-;; decode-TM-instruction  input string encoding instruction, return instruction (or empyty list if syntax doesn't match)
+;; decode-TM-instruction  input string encoding instruction, return instruction
+;;   Returns #f if the parsing does not work.
 (define (decode-TM-instruction s)  
-  (let([split-string (string-split s SEPARATOR)])  ; split-string consists of four strings
+  (let([split-string (string-split s SEPARATOR)])  ; break into four strings
     (if (not (= 4 (length split-string)))
         #f
         (let ([this-state (decode-present-state (first split-string))]

@@ -10,9 +10,9 @@
 ;; Characters in the alphabet are represented with a unary string.  If we used their
 ;; Unicode char point, that would be very hard to read.  Instead, we find the difference
 ;; between character point of some lowest character and the one we want.  So basically,
-;; use a characer here that is below anything you intend to use.
+;; use a characer here that is strictly below anything you will use.
 (define CHAR-POINT-OF-LOWEST-CHAR
-  (char->integer #\0))
+  (char->integer #\/))   ; note that / is one below #\0, so we can use digits, upper case letters, or lower case
 
 (provide CHAR-POINT-OF-LOWEST-CHAR)
 
@@ -25,10 +25,15 @@
 
 ;; unary-string?  Test whether a string is the unary representation of a number
 (define (unary-string? s)
-  (if (null? s)
-      #t
-      (and (eqv? STROKE (string-ref s 0))
-           (char=? (string->list s)))))
+  (define (unary-string-helper? charlist)
+    (if (null? charlist)
+        #t
+        (and (eqv? STROKE (car charlist))
+             (unary-string-helper? (cdr charlist)))))
+  (cond [(not (string? s)) #f]
+        [(null? s) #t]
+        [else (unary-string-helper? (string->list s))]))
+
 ;; natural->unary-string  Convert a natural number to unary encoded string
 ;;  n  Natural number (n=0 is OK)
 (define (natural->unary-string n)
@@ -36,18 +41,19 @@
 
 ;; unary-string->natural  Convert a unary string to the natural number it represents 
 (define (unary-string->natural s)
-  (length s))
+  (string-length s))
 
 (provide unary-string?
          natural->unary-string
          unary-string->natural)
+
 
 ;; == test for parts of instructions, for instructions, and for TM  ===========
 
 ;; state?  Test whether the argument is a possible state
 ;;  Note that it does not check membership in the actual set of states for this machine
 (define (state? v)
-  (unary-string? v))
+  (exact-nonnegative-integer? v))
 
 ;; present-symbol?  Test whether the argument is a possible present symbol
 ;;  Note that it does not check whether the argument is in the alphabet, but
@@ -81,11 +87,10 @@
 
 ;; TM?  Test whether the argument is a Turing machine, a list of instructions
 (define (TM? v [verbose #f])
-  (display "TM? call ")(display v)(newline)
   (if (not (list? v))
       #f
       (let ([instruction-results (map instruction? v)])
-        (if verbose
+        (when verbose
             (begin
               (display "TM? instruction first first?") (display (first (first v))) (display (state? (first (first v)))) (newline)
               (display "TM? instruction first second?") (display (second (first v))) (display (present-symbol? (second (first v)))) (newline)
@@ -103,16 +108,22 @@
          TM?
          and-of-list)
 
+
+;; ==== encodings and decodings ====
+
 ;; encode-present-state  input natural number, output encoding as string
 (define (encode-present-state q)
-  (natural->unary-string))
+  (natural->unary-string q))
 
 ;; decode-present-state input a unary-string, output natural number
 ;;  (if string is not suitable, output #f)
 (define (decode-present-state s)
   (if (not (unary-string? s))
       #f
-      (unary-string->natural s))
+      (unary-string->natural s)))
+
+(provide encode-present-state
+         decode-present-state)
 
 ;; encode-next-state  input positive integer, output encoding as string
 (define (encode-next-state q)
@@ -129,9 +140,9 @@
          decode-next-state)
 
 ;; encode-present-symbol  input a present-symbol, output encoding as unary-string
-(define (encode-present-symbol s)
-  (- (natural->unary-string (char->integer s))
-      CHAR-POINT-OF-LOWEST-CHAR))
+(define (encode-present-symbol ch)
+  (natural->unary-string (- (char->integer ch)
+                            CHAR-POINT-OF-LOWEST-CHAR)))
 
 ;; decode-present-symbol input a unary-string, output a present symbol
 ;;  (if string is not suitable, output #f)
@@ -150,8 +161,8 @@
 
 ;; encode-next-action  Input a character, output encoding as unary string
 (define (encode-next-action s)
-  (- (natural->unary-string (char->integer s))
-      CHAR-POINT-OF-LOWEST-CHAR))
+  (natural->unary-string (- (char->integer s)
+                            CHAR-POINT-OF-LOWEST-CHAR)))
 
 ;; decode-next-action  input a unary string, output next-action
 ;;   If input string not suitable, return #f
@@ -173,16 +184,17 @@
   (let([present-state (first inst)]
        [present-symbol (second inst)]
        [next-action (third inst)]
-       [next-state (fourth inst)])
+       [next-state (fourth inst)]
+       [separator-string (string SEPARATOR)])
     (string-append (encode-present-state present-state)
-                   SEPARATOR (encode-present-symbol present-symbol)
-                   SEPARATOR (encode-next-action next-action)
-                   SEPARATOR (encode-next-state next-state))))
+                   separator-string (encode-present-symbol present-symbol)
+                   separator-string (encode-next-action next-action)
+                   separator-string (encode-next-state next-state))))
 
 ;; decode-TM-instruction  input string encoding instruction, return instruction
 ;;   Returns #f if the parsing does not work.
 (define (decode-TM-instruction s)  
-  (let([split-string (string-split s SEPARATOR)])  ; break into four strings
+  (let([split-string (string-split s (string SEPARATOR))])  ; break into four strings
     (if (not (= 4 (length split-string)))
         #f
         (let ([this-state (decode-present-state (first split-string))]
@@ -199,13 +211,14 @@
 ;; encode-TM  input list of instructions, return integer encoding
 (define (encode-TM tm)
   (if (null? tm)
-      0 
-      (string->number (string-join (map encode-TM-instruction tm) INTER-INSTRUCTION-SEPARATOR))))
+      (natural->unary-string 0)
+      (string-join (map encode-TM-instruction tm) INTER-INSTRUCTION-SEPARATOR)))
 
 ;; decode-TM  input integer encoding of a Turing machine, return list representing that machine
 (define (decode-TM s)
-  (let ([encoded-instructions (string-split (number->string s) INTER-INSTRUCTION-SEPARATOR)])
+  (let ([encoded-instructions (string-split s INTER-INSTRUCTION-SEPARATOR)])
     (let ([list-of-instructions (map decode-TM-instruction encoded-instructions)])
+      (display "list of instructions")(display list-of-instructions)(newline)
       (if (not (and-of-list list-of-instructions))
           EMPTY-TURING_MACHINE                                 ;
           (append list-of-instructions)))))

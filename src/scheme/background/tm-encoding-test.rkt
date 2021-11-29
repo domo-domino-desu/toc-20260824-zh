@@ -8,6 +8,8 @@
 (define TM0 (list (list 2 #\0 #\1 4) (list 1 #\2 LEFT 0)))  ; generic TM
 (define TM1 (list (list 2 #\A #\C 4) ))  ; One-instruction TM
 (define TM2 '())  ; Empty TM
+(define TM3 (list (list 0 #\0 #\1 0) (list 0 #\2 LEFT 0)))  ; TM with state q0 a lot
+
 
 ;; ==== unary strings ====
 (test-case
@@ -15,22 +17,22 @@
  (check-true (unary-string? "1111") "test generic unary string")
  (check-false (unary-string? "101") "test non-unary string")
  (check-true (unary-string? "1") "test unary string of length one")
- (check-true (unary-string? "") "test unary string of length zero")
+ (check-false (unary-string? "") "test unary string of length zero")
  (check-false (unary-string? 3) "argument not a string")
  )
 
 (test-case
  "natural->unary-string"
- (check-equal? (natural->unary-string 3) "111" "generic natural number")
- (check-equal? (natural->unary-string 1) "1" "natural number is 1")
- (check-equal? (natural->unary-string 0) "" "natural number is 0, so get empty string")
+ (check-equal? (natural->unary-string 3) "1111" "generic natural number")
+ (check-equal? (natural->unary-string 1) "11" "natural number is 1")
+ (check-equal? (natural->unary-string 0) "1" "natural number is 0")
 )
 
 (test-case
  "unary-string->natural"
- (check-eqv? (unary-string->natural "111") 3 "generic unary string")
- (check-equal? (unary-string->natural "1") 1 "unary string represents 1")
- (check-equal? (unary-string->natural "") 0 "unary string is empty, so represents 0")
+ (check-eqv? (unary-string->natural "1114") 3 "generic unary string")
+ (check-equal? (unary-string->natural "11") 1 "unary string represents 1")
+ (check-equal? (unary-string->natural "1") 0 "unary string is empty, so represents 0")
  )
 
 
@@ -146,20 +148,27 @@
 
 
 ;; encode-TM-instruction, decode-TM-instruction
+; (encode-TM-instruction (list 0 #\A #\B 0))
+(test-case
+ "decode-TM-instruction"  ; a problem is an instruciton like <q2,a,b,q0> or <q0,a,b,q1> because it starts with B
+ (check-equal? (list 2 #\A #\B 0) (decode-TM-instruction "111B1111111111111111111B11111111111111111111B1") "Does <q2,A,B,q0> decode?")
+ (check-equal? (list 0 #\A #\B 2) (decode-TM-instruction "1B1111111111111111111B11111111111111111111B111") "Does <q0,A,B,q2> decode?")
+ (check-equal? (list 0 #\A #\B 0) (decode-TM-instruction "1B1111111111111111111B11111111111111111111B1") "Does <q0,A,B,q0> decode?")
+ )
+
 (test-case
  "encode-TM-instruction, decode-TM-instruction"
  (check-pred string? (encode-TM-instruction '(2 #\A #\C 4)) "Is the result on a generic instruction a string?")
  (check-pred string? (encode-TM-instruction (list 2 #\A LEFT 4)) "Is the result on an instruction using LEFT a string?")
  (check-pred string? (encode-TM-instruction (list 2 #\A RIGHT 4)) "Is the result on an instruction using RIGHT a string?")
  (check-equal? (list 2 #\A #\C 4) (decode-TM-instruction (encode-TM-instruction (list 2 #\A #\C 4))) "Does decoding undo encoding on a generic instruction?")
- (check-equal? (list 2 #\A LEFT 4) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 4))) "Does decoding undo encoding on an instruction using LEFT?")
- (check-equal? (list 2 #\A LEFT 0) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 0))) "Does decoding undo encoding on an instruction ending in state 0?")
+ (check-equal? (list 2 #\A LEFT 4) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 4))) "Instruction using LEFT?")
+ (check-equal? (list 2 #\A LEFT 0) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 0))) "Instruction ending in state 0?")
 )
 
-#|
 
 ;; encode-TM and decode-TM
-(encode-TM TM0) (newline)
+;(encode-TM TM0) (newline)
 ;(decode-TM 0)
 (test-case
  "encode-TM, decode-TM"
@@ -169,6 +178,9 @@
 (check-equal? TM0 (decode-TM (encode-TM TM0)) "Does decoding undo encoding on a generic machine?")
 (check-equal? TM1 (decode-TM (encode-TM TM1)) "Does decoding undo encoding on a one-instruction machine?")
 (check-equal? TM2 (decode-TM (encode-TM TM2)) "Does decoding undo encoding on the empty machine?")
+(check-equal? TM3 (decode-TM (encode-TM TM3)) "Does decoding undo encoding on machine with lots of q0's?")
 )
+
+#|
 
 |#

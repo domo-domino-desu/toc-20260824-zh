@@ -22,26 +22,30 @@
 
 
 ;; == unary strings ====================
+;; Note that the string representing 0 is "1", that representing 1 is "11", etc.
+;; (Otherwide, in the TM representation, "BBB" is not clear: is it "B"concat"BB" or "BB"concat"B"?
+;; It is not ambiguous, it is just more work to decode.
 
 ;; unary-string?  Test whether a string is the unary representation of a number
 (define (unary-string? s)
-  (define (unary-string-helper? charlist)
-    (if (null? charlist)
-        #t
-        (and (eqv? STROKE (car charlist))
-             (unary-string-helper? (cdr charlist)))))
-  (cond [(not (string? s)) #f]
-        [(null? s) #t]
-        [else (unary-string-helper? (string->list s))]))
+  (if (not (string? s))
+      #f
+      (let ([lst (string->list s)])
+        (if (null? lst)
+            #f
+            (and-of-list (map
+                          (lambda (x) (eqv? x STROKE))
+                          lst))))))
+
 
 ;; natural->unary-string  Convert a natural number to unary encoded string
 ;;  n  Natural number (n=0 is OK)
 (define (natural->unary-string n)
-  (make-string n STROKE))
+  (make-string (+ n 1) STROKE))
 
 ;; unary-string->natural  Convert a unary string to the natural number it represents 
 (define (unary-string->natural s)
-  (string-length s))
+  (- (string-length s) 1))
 
 (provide unary-string?
          natural->unary-string
@@ -194,7 +198,8 @@
 ;; decode-TM-instruction  input string encoding instruction, return instruction
 ;;   Returns #f if the parsing does not work.
 (define (decode-TM-instruction s)  
-  (let([split-string (string-split s (string SEPARATOR))])  ; break into four strings
+  (let* ([split-string (string-split s (string SEPARATOR) #:trim? #f)])  ; break into four strings
+    ; (display "list of four")(display split-string)(newline)
     (if (not (= 4 (length split-string)))
         #f
         (let ([this-state (decode-present-state (first split-string))]
@@ -216,9 +221,9 @@
 
 ;; decode-TM  input integer encoding of a Turing machine, return list representing that machine
 (define (decode-TM s)
-  (let ([encoded-instructions (string-split s INTER-INSTRUCTION-SEPARATOR)])
+  (let ([encoded-instructions (string-split s INTER-INSTRUCTION-SEPARATOR #:trim? #f)])
     (let ([list-of-instructions (map decode-TM-instruction encoded-instructions)])
-      (display "list of instructions")(display list-of-instructions)(newline)
+      ; (display "list of instructions")(display list-of-instructions)(newline)
       (if (not (and-of-list list-of-instructions))
           EMPTY-TURING_MACHINE                                 ;
           (append list-of-instructions)))))

@@ -230,3 +230,150 @@
 
 (provide encode-TM
          decode-TM)
+
+
+
+;; ============== ENCODING WITH EXTRA UNARY STRINGS ==================
+;; An extra unary string has 0 represented by "1", has 1 represented by "11", etc.
+
+;; extra-unary-string?  Test whether a string is the unary representation of a number
+(define (extra-unary-string? s)
+  (if (not (string? s))
+      #f
+      (let ([lst (string->list s)])
+        (if (null? lst)
+            #f
+            (and-of-list (map
+                          (lambda (x) (eqv? x STROKE))
+                          lst))))))
+
+;; natural->extra-unary-string  Convert a natural number to unary encoded string
+;;  n  Natural number (n=0 is OK)
+(define (natural->extra-unary-string n)
+  (make-string (+ n 1) STROKE))
+
+;; extra-unary-string->natural  Convert a unary string to the natural number it represents 
+(define (extra-unary-string->natural s)
+  (- (string-length s) 1))
+
+(provide extra-unary-string?
+         natural->extra-unary-string
+         extra-unary-string->natural)
+
+;; ==== Encode parts of machine using extra unary strings ====
+
+;; encode-present-state-extra  input natural number, output encoding as string
+(define (encode-present-state-extra q)
+  (natural->extra-unary-string q))
+
+;; decode-present-state input a unary-string, output natural number
+;;  (if string is not suitable, output #f)
+(define (decode-present-state-extra s)
+  (if (not (extra-unary-string? s))
+      #f
+      (extra-unary-string->natural s)))
+
+(provide encode-present-state-extra
+         decode-present-state-extra)
+
+;; encode-next-state-extra  input positive integer, output encoding as string
+(define (encode-next-state-extra q)
+  (natural->extra-unary-string q))
+
+;; decode-next-state-extra input a string, output natural number
+;;  (if string is not suitable, output #f)
+(define (decode-next-state-extra s)
+  (if (not (extra-unary-string? s))
+      #f
+      (extra-unary-string->natural s)))
+
+(provide encode-next-state-extra
+         decode-next-state-extra)
+
+;; encode-present-symbol-extra  input a present-symbol, output encoding as unary-string
+(define (encode-present-symbol-extra ch)
+  (natural->extra-unary-string (- (char->integer ch)
+                                  CHAR-POINT-OF-LOWEST-CHAR)))
+
+;; decode-present-symbol-extra input a unary-string, output a present symbol
+;;  (if string is not suitable, output #f)
+(define (decode-present-symbol-extra s)
+  (if (not (extra-unary-string? s))
+      #f
+      (let* ([char-point (+ (extra-unary-string->natural s)
+                            CHAR-POINT-OF-LOWEST-CHAR)]
+             [ch (integer->char char-point)])
+        (if (not (present-symbol? ch))
+            #f
+            ch))))
+
+(provide encode-present-symbol-extra
+         decode-present-symbol-extra)
+
+;; encode-next-action-extra  Input a character, output encoding as unary string
+(define (encode-next-action-extra s)
+  (natural->extra-unary-string (- (char->integer s)
+                                  CHAR-POINT-OF-LOWEST-CHAR)))
+
+;; decode-next-action-extra  input a unary string, output next-action
+;;   If input string not suitable, return #f
+(define (decode-next-action-extra s)
+  (if (not (extra-unary-string? s))
+      #f
+      (let* ([char-point (+ (extra-unary-string->natural s)
+                            CHAR-POINT-OF-LOWEST-CHAR)]
+             [ch (integer->char char-point)])
+        (if (not (next-action? ch))
+            #f
+            ch))))
+
+(provide encode-next-action-extra
+         decode-next-action-extra)
+
+;; encode-TM-instruction-extra  Input instruction, output encoding as string
+(define (encode-TM-instruction-extra inst)
+  (let([present-state (first inst)]
+       [present-symbol (second inst)]
+       [next-action (third inst)]
+       [next-state (fourth inst)]
+       [separator-string (string SEPARATOR)])
+    (string-append (encode-present-state-extra present-state)
+                   separator-string (encode-present-symbol-extra present-symbol)
+                   separator-string (encode-next-action-extra next-action)
+                   separator-string (encode-next-state-extra next-state))))
+
+;; decode-TM-instruction-extra  input string encoding instruction, return instruction
+;;   Returns #f if the parsing does not work.
+(define (decode-TM-instruction-extra s)  
+  (let* ([split-string (string-split s (string SEPARATOR) #:trim? #f)])  ; break into four strings
+    ; (display "list of four")(display split-string)(newline)
+    (if (not (= 4 (length split-string)))
+        #f
+        (let ([this-state (decode-present-state-extra (first split-string))]
+              [this-input (decode-present-symbol-extra (second split-string))]
+              [next-action (decode-next-action-extra (third split-string))]
+              [next-state (decode-next-state-extra (fourth split-string))])
+          (if (not (and this-state this-input next-action next-state)) ; any fail to decode?
+              #f
+              (list this-state this-input next-action next-state))))))
+
+(provide encode-TM-instruction-extra
+         decode-TM-instruction-extra)
+
+;; encode-TM-extra  input list of instructions, return integer encoding
+(define (encode-TM-extra tm)
+  (if (null? tm)
+      (natural->extra-unary-string 0)
+      (string-join (map encode-TM-instruction-extra tm) INTER-INSTRUCTION-SEPARATOR)))
+
+;; decode-TM-extra  input integer encoding of a Turing machine, return list representing that machine
+(define (decode-TM-extra s)
+  (let ([encoded-instructions (string-split s INTER-INSTRUCTION-SEPARATOR #:trim? #f)])
+    (let ([list-of-instructions (map decode-TM-instruction-extra encoded-instructions)])
+      ; (display "list of instructions")(display list-of-instructions)(newline)
+      (if (not (and-of-list list-of-instructions))
+          EMPTY-TURING_MACHINE                                 ;
+          (append list-of-instructions)))))
+
+(provide encode-TM-extra
+         decode-TM-extra)

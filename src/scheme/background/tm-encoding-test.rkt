@@ -11,6 +11,114 @@
 (define TM3 (list (list 0 #\0 #\1 0) (list 0 #\2 LEFT 0)))  ; TM with state q0 a lot
 
 
+;; ==== unary strings ====
+(test-case
+ "unary-string?"
+ (check-true (unary-string? "1111") "test generic unary string")
+ (check-false (unary-string? "101") "test non-unary string")
+ (check-true (unary-string? "1") "test unary string of length one")
+ (check-true (unary-string? "") "test unary string of length zero")
+ (check-false (extra-unary-string? 3) "argument not a string")
+ )
+
+(test-case
+ "natural->unary-string"
+ (check-equal? (natural->unary-string 3) "111" "generic natural number")
+ (check-equal? (natural->unary-string 1) "1" "natural number is 1")
+ (check-equal? (natural->unary-string 0) "" "natural number is 0")
+)
+
+(test-case
+ "unary-string->natural"
+ (check-eqv? (unary-string->natural "111") 3 "generic unary string")
+ (check-equal? (unary-string->natural "1") 1 "unary string represents 1")
+ (check-equal? (unary-string->natural "") 0 "unary string is empty, so represents 0")
+ )
+
+;; ==== encoding and decoding ====
+
+;; encode-present-state and decode-present-state
+
+(test-case
+ "encode-present-state, decode-present-state"
+ (check-pred string? (encode-present-state 42) "Is result on generic state number a string?")
+ (check-pred string? (encode-present-state 1) "Is result on state number 1 a string?")
+ (check-pred unary-string? (encode-present-state 2) "Is the result a unary string?")
+ (check-equal? 42 (decode-present-state (encode-present-state 42)) "Does decoding undo encoding on an generic state?")
+ (check-equal? 1 (decode-present-state (encode-present-state 1)) "Does decoding undo encoding on state 1?")
+ (check-equal? 0 (decode-present-state (encode-present-state 0)) "Does decoding undo encoding on state 0?")
+)
+
+;; encode-next-state and decode-next-state
+(test-case
+ "encode-next-state, decode-next-state"
+ (check-pred string? (encode-next-state 42) "Is result on generic state number a string?")
+ (check-pred string? (encode-next-state 1) "Is result on state number 1 a string?")
+ (check-pred string? (encode-next-state 0) "Is result on state number 0 a string?")
+ (check-pred unary-string? (encode-next-state 2) "Is the result a unary string?")
+ (check-equal? 42 (decode-next-state (encode-next-state 42)) "Does decoding undo encoding on an generic state?")
+ (check-equal? 1 (decode-next-state (encode-next-state 1)) "Does decoding undo encoding on state 1?")
+ (check-equal? 0 (decode-next-state (encode-next-state 0)) "Does decoding undo encoding on state 0?")
+)
+
+;; encode-present-symbol-extra and decode-present-symbol-extra
+(test-case
+ "encode-present-symbol, decode-present-symbol"
+ (check-pred string? (encode-present-symbol #\A) "Is result on generic symbol a string?")
+ (check-pred string? (encode-present-symbol #\a) "Is result on lower case letter symbol a string?")
+ (check-pred string? (encode-present-symbol #\B) "Is result on symbol for blank a string?")
+ (check-pred string? (encode-present-symbol #\0) "Is result on symbol for a digit a string?")
+ (check-pred unary-string? (encode-present-symbol #\A) "Is result a unary string?")
+ (check-equal? #f (decode-present-symbol "Z") "Encoding of a symbol should be an integer, so decode should reject others")
+ (check-equal? #\A (decode-present-symbol (encode-present-symbol #\A)) "Does decoding undo encoding on an generic char?")
+ (check-equal? #\a (decode-present-symbol (encode-present-symbol #\a)) "Does decoding undo encoding on a lower case letter?")
+ (check-equal? #\B (decode-present-symbol (encode-present-symbol #\B)) "Does decoding undo encoding on the char for blank?")
+ (check-equal? #\0 (decode-present-symbol (encode-present-symbol #\0)) "Does decoding undo encoding on the char for a digit?")
+)
+
+
+;; encode-next-action and decode-next-action
+(test-case
+ "encode-next-action, decode-next-action"
+ (check-pred string? (encode-next-action #\A) "Is result on generic symbol a character?")
+ (check-pred string? (encode-next-action BLANK) "Is result on symbol for blank a string?")
+ (check-pred string? (encode-next-action LEFT) "Is result of encoding LEFT a string?")
+ (check-pred string? (encode-next-action RIGHT) "Is result of encoding RIGHT a string?")
+ (check-pred unary-string? (encode-next-action #\a) "Is result of encoding a lower-case letter a unary string?")
+ (check-pred unary-string? (encode-next-action RIGHT) "Is result of encoding RIGHT a unary string?")
+ (check-false (decode-next-action "Z") "Encoding of next-action must be a string, so decode should reject others")
+ (check-equal? #\A (decode-next-action (encode-next-action #\A)) "Does decoding undo encoding on an generic char?")
+ (check-equal? #\B (decode-next-action (encode-next-action #\B)) "Does decoding undo encoding on the char for blank?")
+ (check-equal? LEFT (decode-next-action (encode-next-action LEFT)) "Does decoding undo encoding on the char for LEFT?")
+ (check-equal? RIGHT (decode-next-action (encode-next-action RIGHT)) "Does decoding undo encoding on the char for RIGHT?")
+)
+
+;; encode-TM-instruction, decode-TM-instruction
+; (encode-TM-instruction (list 0 #\A #\B 0))
+(test-case
+ "decode-TM-instruction"  ; a problem is an instruction like <q2,a,b,q0> or <q0,a,b,q1> because it starts with B
+ (check-equal? (list 2 #\A #\B 0) (decode-TM-instruction "11B111111111111111111B1111111111111111111B" #t) "Does <q2,A,B,q0> decode?")
+ (check-equal? (list 0 #\A #\B 2) (decode-TM-instruction-extra "B111111111111111111B1111111111111111111B11") "Does <q0,A,B,q2> decode?")
+ (check-equal? (list 0 #\A #\B 0) (decode-TM-instruction-extra "B111111111111111111B1111111111111111111B") "Does <q0,A,B,q0> decode?")
+ )
+
+#|
+(test-case
+ "encode-TM-instruction, decode-TM-instruction"
+ (check-pred string? (encode-TM-instruction '(2 #\A #\C 4)) "Is the result on a generic instruction a string?")
+ (check-pred string? (encode-TM-instruction (list 2 #\A LEFT 4)) "Is the result on an instruction using LEFT a string?")
+ (check-pred string? (encode-TM-instruction (list 2 #\A RIGHT 4)) "Is the result on an instruction using RIGHT a string?")
+ (check-equal? (list 2 #\A #\C 4) (decode-TM-instruction (encode-TM-instruction (list 2 #\A #\C 4))) "Does decoding undo encoding on a generic instruction?")
+ (check-equal? (list 2 #\A LEFT 4) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 4))) "Instruction using LEFT?")
+ (check-equal? (list 2 #\A LEFT 0) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 0))) "Instruction ending in state 0?")
+)
+|#
+
+
+
+;; ===========================================================
+;; ==== ENCODING WITH EXTRA UNARY STRINGS ====
+
 ;; ==== extra unary strings ====
 (test-case
  "extra-unary-string?"
@@ -30,9 +138,9 @@
 
 (test-case
  "extra-unary-string->natural"
- (check-eqv? (extra-unary-string->natural "1114") 3 "generic unary string")
- (check-equal? (extra-unary-string->natural "11") 1 "unary string represents 1")
- (check-equal? (extra-unary-string->natural "1") 0 "unary string is empty, so represents 0")
+ (check-eqv? (extra-unary-string->natural "1111") 3 "generic extra unary string")
+ (check-equal? (extra-unary-string->natural "11") 1 "extra unary string representing 1")
+ (check-equal? (extra-unary-string->natural "1") 0 "single strode represents 0")
  )
 
 
@@ -133,7 +241,7 @@
 (test-case
  "encode-next-action-extra, decode-next-action-extra"
  (check-pred string? (encode-next-action-extra #\A) "Is result on generic symbol a character?")
- (check-pred string? (encode-next-action-extra #\B) "Is result on symbol for blank a string?")
+ (check-pred string? (encode-next-action-extra BLANK) "Is result on symbol for blank a string?")
  (check-pred string? (encode-next-action-extra LEFT) "Is result of encoding LEFT a string?")
  (check-pred string? (encode-next-action-extra RIGHT) "Is result of encoding RIGHT a string?")
  (check-pred extra-unary-string? (encode-next-action-extra #\a) "Is result of encoding a lower-case letter a unary string?")

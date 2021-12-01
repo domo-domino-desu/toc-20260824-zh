@@ -21,31 +21,36 @@
 (provide EMPTY-TURING_MACHINE)
 
 
+;; and-of-list  apply and to the list v
+;;   For some reason, (apply + '(1 2))) works but (apply and '(#t #f)) does not.  A wart, for sure.
+(define (and-of-list v)
+  (if (null? v)
+      #t
+      (and (car v)
+           (and-of-list (cdr v)))))
+
+
 ;; == unary strings ====================
 ;; Note that the string representing 0 is "1", that representing 1 is "11", etc.
-;; (Otherwide, in the TM representation, "BBB" is not clear: is it "B"concat"BB" or "BB"concat"B"?
-;; It is not ambiguous, it is just more work to decode.
 
 ;; unary-string?  Test whether a string is the unary representation of a number
 (define (unary-string? s)
   (if (not (string? s))
       #f
       (let ([lst (string->list s)])
-        (if (null? lst)
-            #f
-            (and-of-list (map
-                          (lambda (x) (eqv? x STROKE))
-                          lst))))))
+        (and-of-list (map
+                      (lambda (x) (eqv? x STROKE))
+                      lst)))))
 
 
 ;; natural->unary-string  Convert a natural number to unary encoded string
 ;;  n  Natural number (n=0 is OK)
 (define (natural->unary-string n)
-  (make-string (+ n 1) STROKE))
+  (make-string n STROKE))
 
 ;; unary-string->natural  Convert a unary string to the natural number it represents 
 (define (unary-string->natural s)
-  (- (string-length s) 1))
+  (string-length s))
 
 (provide unary-string?
          natural->unary-string
@@ -81,20 +86,12 @@
        (next-action? (third v))
        (state? (fourth v))))
 
-;; and-of-list  apply and to the list v
-;;   (for some reason, (apply + '(1 2))) works but (apply and '(#t #f)) does not.  A wart, for sure.
-(define (and-of-list v)
-  (if (null? v)
-      #t
-      (and (car v)
-           (and-of-list (cdr v)))))
-
 ;; TM?  Test whether the argument is a Turing machine, a list of instructions
 (define (TM? v [verbose #f])
   (if (not (list? v))
       #f
       (let ([instruction-results (map instruction? v)])
-        (when verbose
+        (when verbose  ; debugging
             (begin
               (display "TM? instruction first first?") (display (first (first v))) (display (state? (first (first v)))) (newline)
               (display "TM? instruction first second?") (display (second (first v))) (display (present-symbol? (second (first v)))) (newline)
@@ -197,18 +194,34 @@
 
 ;; decode-TM-instruction  input string encoding instruction, return instruction
 ;;   Returns #f if the parsing does not work.
-(define (decode-TM-instruction s)  
-  (let* ([split-string (string-split s (string SEPARATOR) #:trim? #f)])  ; break into four strings
-    ; (display "list of four")(display split-string)(newline)
-    (if (not (= 4 (length split-string)))
-        #f
-        (let ([this-state (decode-present-state (first split-string))]
-              [this-input (decode-present-symbol (second split-string))]
-              [next-action (decode-next-action (third split-string))]
-              [next-state (decode-next-state (fourth split-string))])
-          (if (not (and this-state this-input next-action next-state)) ; any fail to decode?
-              #f
-              (list this-state this-input next-action next-state))))))
+(define INSTRUCTION-REGEX (string-append "(" INTER-INSTRUCTION-SEPARATOR ")?"
+                                         "(([^" (string SEPARATOR) "]*)"
+                                         (string SEPARATOR) "([^" (string SEPARATOR) "]*)"
+                                         (string SEPARATOR) "([^" (string SEPARATOR) "]*)"
+                                         (string SEPARATOR) "([^" (string SEPARATOR) "]*))"
+                                         "(.*)"))
+(define (decode-TM-instruction instruction-str [verbose #f])
+  (define (decode-TM-instruction-helper str instr-list)
+    (if (= 0 (string-length str))
+        instr-list
+        (let ([m (regexp-match (pregexp INSTRUCTION-REGEX) str)])
+          (if (not m)
+              #f      ; failed to parse
+              (let ([inter-instruction-separator (second m)]
+                    [new-encoded-instruction (third m)]
+                    [new-encoded-present-state (fourth m)]  ; part of new-encoded-instruction
+                    [new-encoded-present-symbol (fifth m)]
+                    [new-encoded-next-action (sixth m)]
+                    [new-encoded-next-state (seventh m)]
+                    [new-str (eighth m)])
+                (when verbose
+                  (display "match: ")(display m)(newline))
+                (decode-TM-instruction-helper new-str (cons new-encoded-instruction instr-list)))))
+        ))
+  
+  (if (not (string? instruction-str))
+      #f
+      (decode-TM-instruction-helper instruction-str '())))
 
 (provide encode-TM-instruction
          decode-TM-instruction)
@@ -235,6 +248,8 @@
 
 ;; ============== ENCODING WITH EXTRA UNARY STRINGS ==================
 ;; An extra unary string has 0 represented by "1", has 1 represented by "11", etc.
+;; (This makes that in the TM representation, "BBB" is easier to parse, since we can easily tell "B"concat"BB" from "BB"concat"B"?
+;; It is not ambiguous, it is just more work to decode.
 
 ;; extra-unary-string?  Test whether a string is the unary representation of a number
 (define (extra-unary-string? s)

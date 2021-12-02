@@ -192,7 +192,7 @@
                    separator-string (encode-next-action next-action)
                    separator-string (encode-next-state next-state))))
 
-;; decode-TM-instruction  input string encoding instruction, return instruction
+;; decode-TM  input string encoding instruction, return instruction
 ;;   Returns #f if the parsing does not work.
 (define INSTRUCTION-REGEX (string-append "(" INTER-INSTRUCTION-SEPARATOR ")?"
                                          "(([^" (string SEPARATOR) "]*)"
@@ -200,8 +200,36 @@
                                          (string SEPARATOR) "([^" (string SEPARATOR) "]*)"
                                          (string SEPARATOR) "([^" (string SEPARATOR) "]*))"
                                          "(.*)"))
+
 (define (decode-TM-instruction instruction-str [verbose #f])
-  (define (decode-TM-instruction-helper str instr-list)
+  (let ([m (regexp-match (pregexp INSTRUCTION-REGEX) instruction-str)])
+    (if (not m)
+        #f
+        (let ([inter-instruction-separator (second m)]
+              [new-encoded-instruction (third m)]
+              [new-encoded-present-state (fourth m)]  ; part of new-encoded-instruction
+              [new-encoded-present-symbol (fifth m)]
+              [new-encoded-next-action (sixth m)]
+              [new-encoded-next-state (seventh m)]
+              [new-str (eighth m)])
+          (when verbose ; debugging
+            (display "inter-instruction-separator: ")(display inter-instruction-separator)(newline)
+            (display "new encoded instruction: ")(display new-encoded-instruction)(newline)
+            (display "new-encoded-present-state: ")(display new-encoded-present-state)(newline)
+            (display "new-encoded-present-symbol: ")(display new-encoded-present-symbol)(newline)
+            (display "new-encoded-next-action: ")(display new-encoded-next-action)(newline)
+            (display "new-encoded-next-state: ")(display new-encoded-next-state)(newline)
+            (display "new-str: ")(display new-str)(newline))
+          (let ([instruction (list (decode-present-state new-encoded-present-state)
+                                   (decode-present-symbol new-encoded-present-symbol)
+                                   (decode-next-action new-encoded-next-action)
+                                   (decode-next-state new-encoded-next-state))])
+            (if (not (and-of-list instruction))
+                #f
+                instruction))))))
+
+(define (decode-TM TM-str [verbose #f])
+  (define (decode-TM-helper str instr-list)
     (if (= 0 (string-length str))
         instr-list
         (let ([m (regexp-match (pregexp INSTRUCTION-REGEX) str)])
@@ -209,19 +237,28 @@
               #f      ; failed to parse
               (let ([inter-instruction-separator (second m)]
                     [new-encoded-instruction (third m)]
-                    [new-encoded-present-state (fourth m)]  ; part of new-encoded-instruction
+                    [new-encoded-present-state (fourth m)] 
                     [new-encoded-present-symbol (fifth m)]
                     [new-encoded-next-action (sixth m)]
                     [new-encoded-next-state (seventh m)]
                     [new-str (eighth m)])
                 (when verbose
-                  (display "match: ")(display m)(newline))
-                (decode-TM-instruction-helper new-str (cons new-encoded-instruction instr-list)))))
+                  (display "inter-instruction-separator: ")(display inter-instruction-separator)(newline)
+                  (display "new encoded instruction: ")(display new-encoded-instruction)(newline)
+                  (display "new-encoded-present-state: ")(display new-encoded-present-state)(newline)
+                  (display "new-encoded-present-symbol: ")(display new-encoded-present-symbol)(newline)
+                  (display "new-encoded-next-action: ")(display new-encoded-next-action)(newline)
+                  (display "new-encoded-next-state: ")(display new-encoded-next-state)(newline)
+                  (display "new-str: ")(display new-str)(newline))
+                (decode-TM-helper new-str (cons (decode-TM-instruction new-encoded-instruction) instr-list)))))
         ))
   
-  (if (not (string? instruction-str))
+  (if (not (string? TM-str))
       #f
-      (decode-TM-instruction-helper instruction-str '())))
+      (let ([TM (decode-TM-helper TM-str '())])
+        (if (not (and-of-list TM))
+            #f
+            (reverse TM)))))
 
 (provide encode-TM-instruction
          decode-TM-instruction)
@@ -232,6 +269,7 @@
       (natural->unary-string 0)
       (string-join (map encode-TM-instruction tm) INTER-INSTRUCTION-SEPARATOR)))
 
+#|
 ;; decode-TM  input integer encoding of a Turing machine, return list representing that machine
 (define (decode-TM s)
   (let ([encoded-instructions (string-split s INTER-INSTRUCTION-SEPARATOR #:trim? #f)])
@@ -240,6 +278,7 @@
       (if (not (and-of-list list-of-instructions))
           EMPTY-TURING_MACHINE                                 ;
           (append list-of-instructions)))))
+|#
 
 (provide encode-TM
          decode-TM)

@@ -97,12 +97,11 @@
 ; (encode-TM-instruction (list 0 #\A #\B 0))
 (test-case
  "decode-TM-instruction"  ; a problem is an instruction like <q2,a,b,q0> or <q0,a,b,q1> because it starts with B
- (check-equal? (list 2 #\A #\B 0) (decode-TM-instruction "11B111111111111111111B1111111111111111111B" #t) "Does <q2,A,B,q0> decode?")
- (check-equal? (list 0 #\A #\B 2) (decode-TM-instruction-extra "B111111111111111111B1111111111111111111B11") "Does <q0,A,B,q2> decode?")
- (check-equal? (list 0 #\A #\B 0) (decode-TM-instruction-extra "B111111111111111111B1111111111111111111B") "Does <q0,A,B,q0> decode?")
+ (check-equal? (list 2 #\A #\B 0) (decode-TM-instruction "11B111111111111111111B1111111111111111111B") "Does <q2,A,B,q0> decode?")
+ (check-equal? (decode-TM-instruction "B111111111111111111B1111111111111111111B11") (list 0 #\A #\B 2) "Does <q0,A,B,q2> decode?")
+ (check-equal? (decode-TM-instruction "B111111111111111111B1111111111111111111B") (list 0 #\A #\B 0) "Does <q0,A,B,q0> decode?")
  )
 
-#|
 (test-case
  "encode-TM-instruction, decode-TM-instruction"
  (check-pred string? (encode-TM-instruction '(2 #\A #\C 4)) "Is the result on a generic instruction a string?")
@@ -112,7 +111,6 @@
  (check-equal? (list 2 #\A LEFT 4) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 4))) "Instruction using LEFT?")
  (check-equal? (list 2 #\A LEFT 0) (decode-TM-instruction (encode-TM-instruction (list 2 #\A LEFT 0))) "Instruction ending in state 0?")
 )
-|#
 
 
 
@@ -193,6 +191,20 @@
   (check-pred TM? TM2 "Empty Turing machine OK?")
  )
 
+
+;; encode-TM and decode-TM
+;(encode-TM TM0) (newline)
+;(decode-TM 0)
+(test-case
+ "encode-TM, decode-TM"
+(check-pred string? (encode-TM TM0) "Is the result on a generic TM a string?")
+(check-pred string? (encode-TM TM1) "Is the result on a single-instruction TM a string?")
+(check-pred string? (encode-TM TM2) "Is the result on the empty TM a string?")
+(check-equal? TM0 (decode-TM (encode-TM TM0)) "Does decoding undo encoding on a generic machine?")
+(check-equal? TM1 (decode-TM (encode-TM TM1)) "Does decoding undo encoding on a one-instruction machine?")
+(check-equal? TM2 (decode-TM (encode-TM TM2)) "Does decoding undo encoding on the empty machine?")
+(check-equal? TM3 (decode-TM (encode-TM TM3)) "Does decoding undo encoding on machine with lots of q0's?")
+)
 
 
 ;; ==== encoding and decoding ====

@@ -118,6 +118,14 @@ void tape_output_withend(string fn_prefix, string s, real head_pos, string head_
   shipout(fn_prefix,p);
 }
 
+// Label a portion of the tape
+path tape_label_path(real start_x, real end_x) {
+  return (start_x*TAPE_CELL_WIDTH, 1.25*TAPE_WIDTH)
+    --(start_x*TAPE_CELL_WIDTH, 1.5*TAPE_WIDTH)
+    --(end_x*TAPE_CELL_WIDTH, 1.5*TAPE_WIDTH)
+    --(end_x*TAPE_CELL_WIDTH, 1.25*TAPE_WIDTH);
+}
+
 // tape_output("tape1","101",0,"$q_0$");
 // tape_output("tape2","101",1,"$q_2$");
 // tape_output("tape3","101",2,"$q_1$");

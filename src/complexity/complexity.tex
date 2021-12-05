@@ -7572,9 +7572,10 @@ The result, $\bigOh(\sizeof{\sigma}^{\max(n,m)})$, is polytime.
 Recall that a machine is 
 nondeterministic\index{nondeterminism!for Turing machines}\index{Turing machine!nondeterminism} 
 if from a present configuration and input
-it may pass to a next configuration with zero, or one, or more than one, 
-next states.
-This is a nondeterministic Turing machine.
+it may pass to a next configuration with more than one next state
+(or zero, or one). 
+This is nondeterministic; for instance, there are two instructions starting
+with $q_0$ and \str{0}.
 \begin{equation*}
   \TM=\set{        
         \tminstruction{0}{0}{1}{2},\,
@@ -7585,17 +7586,18 @@ This is a nondeterministic Turing machine.
         \tminstruction{3}{1}{0}{3}
 }
 \end{equation*}
-For these machines, an input triggers a computational history that
-is a tree.
+For these machines, the computational history 
+can be more than a line, it can be a tree.
+Below is part of the tree for machine $\TM$ and input \str{00}, with one
+branch highlighted.
 \begin{center}
   \includegraphics{complexity/asy/ndtm/ndtm001.pdf}
 \end{center}
-The highlighted edges show one branch of that tree.
 
-Recall also that we have two mental models of how these devices operate.
-The first is that the machine is unboundedly parallel, so it simultaneously 
-computes all of the tree's branches.
-The second is that the machine guesses which branch in the tree to 
+Recall also that we have two mental models of these devices.
+The first is that the machine is unboundedly parallel and simultaneously 
+computes all of the branches.
+The second is that the machine guesses which branch to 
 follow\Dash
 or is told by some demon\Dash and
 then deterministically verifies that branch.
@@ -7649,14 +7651,13 @@ that involves the input string.
 \cref{exer:DefnYieldsNondeterministicTM}
 asks for a similar description for these machines. 
 
-When the nondeterministic machine is a Turing machine instead of a Finite State
-machine then it 
+Adding nondeterminism to Turing machines
 \citetext{adds some wrinkles}{%
   But it avoids a wrinkle that we needed for Finite State machines,
   $\varepsilon$ transitions, since Turing machines are not 
   required to consume their input one character at a time.}.
-The computation tree might have branches that 
-don't halt, or that compute differing outputs.
+The computation tree might have some branches that 
+don't halt, or some that compute differing outputs.
 The simplest approach is to 
 not describe a
 \citetext{function computed by a nondeterministic machine}{%
@@ -7668,14 +7669,14 @@ not describe a
   Otherwise, the value is undefined, $f(\sigma)\diverges$.
   },
 but instead do what we did with Finite State machines
-and describe when the input is accepted.
+and describe when the input is `accepted'.
 
 \begin{definition} \label{def:NondeterministicAccepts}
 A nondeterministic Turing machine 
 \definend{accepts} an input string
-if there is at least one branch in the computation tree,
+at least one branch in the computation tree,
 one sequence of valid transitions from the starting configuration,
-that ends in an accepting state.
+ends in an accepting state.
 The machine \definend{rejects} the input if every branch ends in 
 a reject state.
 \end{definition}
@@ -7684,21 +7685,27 @@ Note the asymmetry, that acceptance requires only one accepting branch
 while rejecting requires that every branch rejects.\footnote{%
   Of course, if rejecting the input only required at least one 
   rejecting branch then we could find machines both accepting
-  and rejecting an input.}
+  and rejecting the same input.}
+Note also that some branches may end in a state that is neither accepting
+nor rejecting, so the condition for rejecting is stronger than simply
+not accepting.
+Finally note that there are no non-halting branches.\footnote{%
+  We want to time these machines, so we want to settle acceptance or
+  rejection in a finite time.}
 
 \begin{definition}
-A nondeterministic Turing machine~$\TM$
-\definend{decides}\index{decided language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!decided language} 
-the language~$\lang$ 
-if for every input string, 
-when the string is a member of $\lang$ then $\TM$ accepts it,
-and when the string is not a member of~$\lang$ then~$\TM$ rejects it.
 A nondeterministic Turing machine
 \definend{recognizes}\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language} 
 the language~$\lang$ 
 if for every input string, 
 when the string is a member of $\lang$ then $\TM$ accepts it,
-and when the string is not a member of~$\lang$ then~$\TM$ does not accept it.
+and the machine never accepts a string that is not a member of~$\lang$.
+A nondeterministic Turing machine~$\TM$
+\definend{decides}\index{decided language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!decided language} 
+the language~$\lang$ 
+if for every input string, 
+when the string is a member of $\lang$ then $\TM$ accepts it
+and when the string is not a member of~$\lang$ then~$\TM$ rejects it.
 \end{definition}
 
 For Finite State machines, nondeterminism does not make any
@@ -7713,7 +7720,7 @@ deterministic machine.% \footnote{%
 
 %<*lem:DeterministicAndNondeterministicTMsDoTheSame>
 \begin{lemma}  \label{lem:NonDeterAndDeterTMsHaveSameLangs}
-Deterministic and nondeterministic Turing machines 
+For Turing machines, deterministic and nondeterministic machines 
 decide the same languages.
 They also recognize the same languages.
 \end{lemma}
@@ -7723,26 +7730,23 @@ They also recognize the same languages.
 \begin{proof}
 A deterministic Turing machine is a special case of a
 nondeterministic one. 
-So if there is a deterministic machine that decides a language, 
+So if a deterministic machine that decides a language
 or recognizes a language,
-then there is a nondeterministic one that does also.
+then a nondeterministic one that does also.
 
-Suppose that a nondeterministic Turing
+Conversely, suppose that a nondeterministic Turing
 machine~$\TM$ decides a language~$\lang$.
-We will define a deterministic machine~$\TM[Q]$ that decides the same language.
-This machine does a breadth-first search of $\TM$'s computation tree.
-Fix an input~$\sigma$.
+A deterministic machine~$\TM[Q]$ that decides the same language
+does a breadth-first search of $\TM$'s computation tree.
+For, fix an input~$\sigma$.
 If $\TM$ accepts~$\sigma$ then the search done by~$\TM[Q]$ will
 eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
 If $\TM$ does not accept~$\sigma$ then every branch in its computation tree
 halts, in a rejecting state.
-We claim that there is a longest such branch.
-Otherwise, the computation tree 
-would have an infinite branch
-(by K\"{o}nig's Lemma, which is included in 
-\cref{exer:NonDeterAndDeterTMsHaveSameLangs}),
-which would contradict that $\TM$ halts on every branch.
-So, the breadth-first search done by~$\TM[Q]$ will
+There is a longest such branch
+(by K\"{o}nig's Lemma, which is included as part of  
+\cref{exer:NonDeterAndDeterTMsHaveSameLangs}).
+So, the breadth-first search will
 eventually find that all branches reject, and then $\TM[Q]$ rejects~$\sigma$.
 % For the other direction, suppose that a nondeterministic Turing
 % machine~$\TM$ recognizes a language~$\lang$.
@@ -7766,12 +7770,13 @@ With the machines that are on our desks and in our pockets,
 we simulate an unboundedly-parallel computer
 by having the CPU switch among processes, giving each enough time to
 make some progress without starving other processes.
-This is a kind of dovetailing.
-The user perceives that many things
+This is a kind of dovetailing, doing a breadth-first search of the 
+computation tree.
+The person using a time-slicing system perceives that many things
 are happening at once, although actually there is only one, or
 at least a limited number of,\footnote{%
-  The number is limited by how many CPU's the device has.}
-simultaneous physical processes.
+  The number depends on how many CPU's the device has.}
+simultaneous physical computations.
 
 So nondeterminism
 doesn't add to what can be computed in principle.
@@ -7843,16 +7848,16 @@ ends in a~$T$.
 As to runtime, the number of table rows grows  
 exponentially.
 Specifically, it is $2$ raised to the number of input variables.
-So this approach is very slow on a serial model of computation.
+Thus this approach is very slow on a serial model of computation.
 
 Each line of the truth table is easy; the issue
 is that there are a lot of lines.
-So this problem perfectly suited for unbounded parallelism.
-For each line we could fork a child process.
+This approach is perfectly suited for unbounded parallelism.
+We could fork a child process for each line.
 These children are done quickly, certainly in polytime.
-If at the end any child is holding a `\true{}' then we declare 
-that the expression is satisfiable.
-In total then, a nondeterministic machine does this job in polytime
+If in the end any child is holding a `\true{}' then we declare 
+that the expression as a whole is satisfiable.
+That is, a nondeterministic machine does this job in polytime
 while a serial machine appears to require
 exponential time.
 %</discussion:SpeedOfNFSMii>
@@ -7868,9 +7873,9 @@ exponential time.
 % %</def:NFSMAcceptsLang>
 
 So while adding nondeterminism to Turing machines doesn't
-allow them to compute any entirely new functions, a person could
+allow them to compute any entirely new things, a person could
 sensibly conjecture that it does 
-allow them to compute some of those functions more quickly.
+allow them to compute them faster.
 
 
 
@@ -7879,7 +7884,7 @@ allow them to compute some of those functions more quickly.
 Next we give a class of language decision problems
 associated with nondeterministic 
 Turing machines.
-(Recall that we do not distinguish much between a language decision problem,
+(Recall that we do not distinguish much between a language decision problem
 and the language itself.)
 
 %<*def:NP>
@@ -7888,9 +7893,9 @@ The complexity
 class~\definend{$\compclass{NP}$}\index{NP@$\NP$}\index{complexity class!NP@$\NP$} 
 is the set of languages for which there is a 
 nondeterministic Turing machine decider that runs
-in polytime, meaning that there is a polynomial~$p$ such that 
-any accepting branch halts
-in time~$p$.
+in polytime, 
+meaning that there is a polynomial~$p$ such that on input $\sigma$,
+all branches halt in time~$p(\lh{\sigma})$.
 \end{definition}
 %</def:NP>
 
@@ -8755,7 +8760,7 @@ by filling in the blanks in this argument.
 \item 
 The \probname{Double-$\SAT$}\index{Double-SAT problem@\probname{Double-$\SAT$} problem} 
 problem inputs a propositional logic statement and
-decide whether it has at least two different substitutions of Boolean values
+decides whether it has at least two different substitutions of Boolean values
 that make it true.
 \item
 The

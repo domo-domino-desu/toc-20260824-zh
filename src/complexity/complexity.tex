@@ -7884,8 +7884,8 @@ allow them to compute them faster.
 Next we give a class of language decision problems
 associated with nondeterministic 
 Turing machines.
-(Recall that we do not distinguish much between a language decision problem
-and the language itself.)
+% (Recall that we do not distinguish much between a language decision problem
+% and the language itself.)
 
 %<*def:NP>
 \begin{definition} \label{def:NP}
@@ -7905,14 +7905,12 @@ of a nondeterministic one.
 
 %<*lem:PSubsetNP>
 \begin{lemma}  \label{lem:PSubsetNP}
-$\P\subseteq\NP$\,\footnotemark[1]
-\end{lemma}\footnotetext[1]{%
-  Very important:~no one knows whether $\P$ is a strict subset, 
-  that is, whether $\P\neq\NP$ or $\P=\NP$. 
-  % \index{P versus NP@$\P$ versus $\NP$}
-  This is the biggest open problem in the Theory of Computing.
-  We will say more in a later section.
-  }
+$\P\subseteq\NP$  % \,\footnotemark[1]
+\end{lemma}
+\noindent Very important:~no one knows whether $\P$ is a strict subset, 
+that is, whether $\P\neq\NP$ or $\P=\NP$.\index{P versus NP@$\P$ versus $\NP$}
+This is the biggest open problem in the Theory of Computing.
+We will say more in a later section.
 %</lem:PSubsetNP>
 
 A pattern in mathematical presentations is to have
@@ -7927,19 +7925,21 @@ mental model
 of the machine guessing or being told an answer.
 Consider the \probname{Satisfiability} example above.
 Imagine the demon whispering, 
-``Psst! Check out $\omega=\str{TTF}$.'' 
-With that hint, we can deterministically verify, quickly,  
-that the formula is satisfiable.
+``Psst! The $\omega=\str{TTF}$ line witnesses that the formula 
+is satisfiable.'' 
+We can then deterministically verify the hint, quickly.
 %</intro:Verifier>
  
 %<*def:Verifier>
 \begin{definition}  \label{def:Verifier}
-A \definend{verifier} for a language~$\lang$
-is a deterministic Turing machine~$\TM[V]$ that halts on all inputs, and
-such that for every string~$\sigma$ we have
+A \definend{verifier}\index{verifier}\index{language!verifier} 
+for a language~$\lang$
+is a deterministic Turing machine~$\TM[V]$ that halts on all 
+inputs~$\sigma\in\kleenestar{\B}$, subject to the condition that
 $\sigma\in\lang$
 if and only if
-there is a \definend{witness} or \definend{certificate}
+there is a \definend{witness}\index{witness} 
+or \definend{certificate}\index{certificate}
 $\omega\in\kleenestar{\B}$ so that
 $\TM[V]$ accepts~$\sequence{\sigma,\omega}$.
 \end{definition}
@@ -7949,96 +7949,91 @@ $\TM[V]$ accepts~$\sequence{\sigma,\omega}$.
 \begin{lemma}  \label{lem:VerifierAndGuesserEquiv}
 A language is in $\NP$ 
 if and only
-if it has a polytime verifier.
-That is, $\lang\in\NP$ exactly when there is a 
-deterministic Turing machine~$\TM[V]$ that halts on all inputs and so that
+if it has a polytime\index{verifier!polytime} 
+verifier:~$\lang\in\NP$ exactly when there is a 
+polynomial~$p$
+and a deterministic Turing machine~$\TM[V]$ that halts on all inputs~$\sigma$ 
+$p(\sizeof{\sigma})$ time, and such that
 $\sigma\in\lang$ if and only if there is a witness~$\omega$
 where $\TM[V]$ accepts 
-$\sequence{\sigma,\omega}$, in time polynomial in~$\sizeof{\sigma}$.
+$\sequence{\sigma,\omega}$.
 \end{lemma}
 %</lem:VerifierAndGuesserEquiv>
 
 So to show that a language~$\lang$ is in~$\NP$, we will produce a 
 verifier~$\TM[V]\!$. 
 It takes as input a pair containing
-a candidate for language membership~$\sigma$
-and a hint~$\omega$.
-If $\sigma\in\lang$ then the verifier will confirm it, using the hint,
-in polytime.
-If $\sigma\notin\lang$ then no hint will cause the verifier to 
-falsely report that $\sigma$ is in the language.  
+a candidate for language membership,~$\sigma$,
+and a witness,~$\omega$.
+If $\sigma\in\lang$ then the verifier will confirm it
+in polytime, using the witness.
+If $\sigma\notin\lang$ then no witness can cause the verifier to 
+falsely report that $\sigma$ is in the language.
 
-The lemma's proof is below, on page~\pageref{proof:VerifierAndGuesserEquiv}.
-Before that, we will clarify some aspects of the definition and lemma
-with a few examples and comments.
+We will first discuss some aspects of the definition and lemma and then
+the lemma's proof follows, on page~\pageref{proof:VerifierAndGuesserEquiv}.
 
 \begin{example}
 %<*ex:SATIsNPi>
-The \probname{Satisfiability}\index{Satisfiability problem@\probname{Satisfiability} problem} 
-problem is to decide membership in this
-language.
-\begin{equation*}
-  \SAT=
-  \set{\sigma\suchthat
-    \text{$\sigma$ represents a propositional logic formula 
-          that is satisfiable}}\index{SAT@$\SAT$}
-\end{equation*}
-\cref{lem:VerifierAndGuesserEquiv} requires that we produce a
-deterministic Turing machine verifier, $\TM[V]$.
-It must input a pair,~$\sequence{\sigma,\omega}$, where
-$\sigma$ represents a propositional logic formula.
-It must have the property that if $\sigma\in\SAT$ then there is
-a witness~$\omega$ so that the verifier accepts the input 
-pair~$\sequence{\sigma,\omega}$,
-while if $\sigma\notin\SAT$ then there is no witness that will result
-in the verifier accepting the input.
-%</ex:SATIsNPi>
-%<*ex:SATIsNPii>
+Our touchstone example is the
+\probname{Satisfiability}\index{Satisfiability problem@\probname{Satisfiability} problem} 
+problem.
+The process for using the lemma to show that this problem
+is in $\NP$
+% \begin{equation*}
+%   \SAT=
+%   \set{\sigma\suchthat
+%     \text{$\sigma$ represents a propositional logic formula 
+%           that is satisfiable}}\index{SAT@$\SAT$}
+% \end{equation*}
+involves producing a
+deterministic Turing machine verifier.
 Consider~$\TM[V]$ below. 
-For witnesses, we use strings~$\omega$ that 
-$\TM[V]$ takes as pointing to a line of the truth table.
-%</ex:SATIsNPii>
+The witnesses, the~$\omega$'s, are strings that 
+$\TM[V]$ intreprets as pointing to a line of the truth table.
+%</ex:SATIsNPi>
 \begin{center}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts000.pdf}}
 \end{center}
 %<*ex:SATIsNPiii>
-Given a satisfiable candidate~$\sigma$, 
-such as the one from ($*$), for this verifier there is a suitable witness,
-namely~$\omega=\str{TTF}$, so that~$\TM[V]$
+If a candidate formula~$\sigma$ is satisfiable then  
+there is a suitable witness, a line from the table, so that~$\TM[V]$
 can check in polytime 
-that on that line, the candidate evaluates to~\true.
-But, if given a candidate that is not satisfiable, such as
-$\sigma=P\wedge\neg P$, then there does not exist a 
-hint that will cause~$\TM[V]$
-to accept, because no line that is pointed-to will give~\true.
+that on line~$\omega$, the formula gives~\true.
+For instance, for the formula from~($*$) take
+$\omega=\str{TTF}$.
+But if a candidate is not satisfiable, such as
+$\sigma=P\wedge\neg P$, then no $\omega$ that the demon can suggest 
+will cause~$\TM[V]$
+to accept, because no truth table line evaluates to~\true.
 %</ex:SATIsNPiii>
 \end{example}
 
 \medskip
-Before the next example, a few points.
+Before the next example, a few notes.
 First, the most striking thing about \cref{def:Verifier} is that it says that
 ``there exists'' a witness~$\omega$.
 It does not say where that witness comes from.
-A person with a computational habit of thinking may well ask, 
-``but how will we find the~$\omega$'s?'' 
+A person with a computational mindset may well ask, 
+``but how will we calculate the~$\omega$'s?'' 
 The question is not how to find them, the question is whether there is a
-Turing machine that leverages the hint~$\omega$'s
-to verifies that the $\sigma$'s are in~$\lang$.
+Turing machine that can leverages a hint~$\omega$, if given one,
+to verify in polytime that the $\sigma$'s are in~$\lang$.
 In short, we don't compute the $\omega$'s,
 we just use them.
 
-The second point is that if $\sigma\in\lang$ then  
+The second note is that if $\sigma\in\lang$ then  
 the definition requires that 
 there exists a witness~$\omega$.
 But if $\sigma\notin\lang$ then then the definition 
 does not require a witness to that.
-Instead, the opposite is true:~the definition requires that 
+Instead, something like the opposite is true:~what's required is that 
 from among all possible witnesses $\omega\in\kleenestar{\B}\!$, 
 there is none
 such that the verifier accepts $\sequence{\sigma,\omega}$.\footnote{%
-  Because of this, perhaps we should refer to $\omega$ with terms like 
-  `potential witness' or `candidate certificate'. 
-  But, no one does.}
+  Because of this, perhaps our formal term for $\omega$ should be 
+  ``potential witness.'' 
+  But that would diverge from standard usage.}
 
 One consequence of this asymmetry in the verifier definition is that
 if a problem~$\prob$ is in~$\NP$ then it is not clear whether its
@@ -8047,17 +8042,16 @@ Consider again the \probname{Satsifiability} problem.
 If a propositional logic expression~$\sigma$ is
 satisfiable then a suitable witness for that is the single line of the
 truth table.
-But there is no obvious suitable witness to non-satisfiability; 
-instead, the natural 
-thing to do is to check all lines.
-This is a quite different thing, and for instance
-it appears to take more than polytime. 
+But for non-satisfiability 
+there is no obvious suitable witness; 
+instead, the natural thing to do is to check all lines.
+This is quite different; for instance, it appears to take more than polytime. 
 One consequence is that, where the complexity class 
-$\compclass{co-NP}$\index{co-NP@$\compclass{co-NP}$} is the collection
-of complements of languages from $\NP$,
+$\compclass{co-NP}$\index{co-NP@$\compclass{co-NP}$} 
+is the collection of complements of languages from $\NP$,
 we don't know whether $\NP=\compclass{co-NP}$.
 
-Third, a comment on the runtime of the verifier.
+The third note concerns the verifier's runtime.
 Consider
 \citetext{the problem of chess}{% 
   Chess is known to be a solvable game.
@@ -8065,11 +8059,11 @@ Consider
   is a strategy for one of the two players that forces a win or a draw, no
   matter how the opponent plays}.
 Imagine that a demon hands you some papers and tells you
-that they contain a chess strategy where you cannot lose.
-Checking that by having a computer step through
+that they contain an unbeatable chess strategy.
+Verifying that, by having a computer step through
 the responses to each move and responses to those
 responses, etc., 
-\citetext{at least appears to take exponential time}{%
+\citetext{at least appears to require exponential time}{%
   In the terminology of a later section, chess is known to be 
   $\EXP$ complete.
   See \autocite{Fraenkel}.}.
@@ -8099,21 +8093,25 @@ The definition requires that
 the verifier runs in polytime in order 
 to make the verification tractable.
 
-Our final point is related to that.
-Observe that 
-because the verifier runs in time polynomial in $\lh{\sigma}$,
-the witness~$\omega$ must have length that is polynomial in~$\lh{\sigma}$.
-If the witness were too long then the
-machine would not even be able to read it in the allotted time.\footnote{%
+Our final note is related to that.
+The verifier runs in time polynomial in $\lh{\sigma}$.
+Observe that, because of that time limit,
+the fact that there is such a verifier means that 
+there must be a witness~$\omega$ whose length is at most 
+polynomial in~$\lh{\sigma}$, simply because
+tf a witness were too long then the
+machine would not be able to read it in time.\footnote{%
   Some authors instead define that the 
   verifier runs in time polynomial in its input, $\sequence{\sigma,\omega}$, 
   with the restriction that $\omega$ 
   must have length polynomial in~$\sigma$.
   Without a restriction, the verifier 
   could have exponential runtime if the witness has exponential length.}
-So if we think of it as that $\omega$ gives proof that $\sigma\in\lang$
-and that the verifier checks that proof,
-then the definition requires that the proof is tractable.
+Thus, if we think of the definition as saying that $\omega$ certifies 
+that $\sigma\in\lang$,
+and that the verifier deterministically validates that certificate,
+then the definition's runtime limitation enforces tractability
+of that computation.
 
 %<*ex:HamPathIsNPi>
 \begin{example}
@@ -8123,7 +8121,8 @@ is like the
 \probname{Hamiltonian Circuit} problem\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem} 
 except that, 
 instead of requiring that the starting vertex equal the ending one,
-it inputs two vertices.  
+it inputs two vertices. 
+It is the problem of determining membership in this set. 
 \begin{equation*}
   \set{\sequence{\mathcal{G},v,\hat{v}}\suchthat 
              \text{some path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex exactly once}}
@@ -8133,7 +8132,7 @@ We will show that this problem is in the class~$\NP$.
 deterministic Turing machine verifier~$\TM[V]$.
 Here is our verifier, which takes inputs $\sequence{\sigma,\omega}$, 
 where the candidate is $\sigma=\sequence{\mathcal{G},v,\hat{v}}$.
-We take each witness to be a path, 
+The verifier interprets each witness to be a path, 
 $\omega=\sequence{v,v_1,\ldots{} \hat{v}}$.
 %</ex:HamPathIsNPi>
 \begin{center}
@@ -8141,10 +8140,12 @@ $\omega=\sequence{v,v_1,\ldots{} \hat{v}}$.
 \end{center}
 %<*ex:HamPathIsNPii>
 If there is a Hamiltonian path then there is
-a witness~$\omega$ so that $\TM[V]$ will accept its input.
+a witness~$\omega$, and so that $\TM[V]$ will accept its input.
 Clearly that acceptance takes polytime.
-If the graph has no Hamiltonian path then for no~$\omega$ 
-will~$\TM[V]$ be able to verify the hint and accept its input.
+On the other hand, if the graph has no Hamiltonian path then for no~$\omega$ 
+will~$\TM[V]$ be able to verify that $\omega$ is such a path.
+Thus, the verifier will not accept any input pair, 
+no matter what its second entry.
 \end{example}
 %</ex:HamPathIsNPii>
 
@@ -8168,42 +8169,43 @@ because there is no nontrivial factor for $\omega$ to represent.
 \end{example}
 %</ex:CopositeIsNP>
 
-At last, here is the proof
+At last, here is the promised proof
 of \cref{lem:VerifierAndGuesserEquiv}.
 
 \begin{proof} \label{proof:VerifierAndGuesserEquiv}
 %<*pf:VerifierAndGuesserEquivi>
 Suppose first that the language~$\lang$ is accepted by the nondeterministic
-Turing machine~$\TM$ in polynomial time;
-we will construct a polynomial time verifier~$\TM[V]$.
+Turing machine~$\TM$ in polynomial time.
+We will construct a polynomial time verifier~$\TM[V]$.
 Let $\map{p}{\N}{\N}$ be the polynomial 
 such that on input~$\sigma\in\lang$, the
 machine~$\TM$ has an accepting branch of length at most
 $p(|\sigma|)$.
-Make a witness $\omega$ out of this accepting branch:~any
-Turing machine has
+Make a witness out of this:~the
+Turing machine~$\TM$ has
 a finite number of states,~$k$,
-so we can represent a branch of a computation tree with 
-a string of numbers less than~$k$.
+so we can represent the accepting branch of its computation tree with 
+a sequence~$\omega$ of numbers less than~$k$.
 With that witness, a deterministic verifier can retrace $\TM$'s
-accepting branch.
-The branch's length must be less than $p(\sizeof{\sigma})$,
+acceptance of~$\sigma$.
+The $\omega$ branch's length must be less than $p(\sizeof{\sigma})$,
 so the verifier~$\TM[V]$ can do the retracing in polynomial time.
 %</pf:VerifierAndGuesserEquivi>
 
 %<*pf:VerifierAndGuesserEquivii>
 Conversely, suppose that the language $\lang$
-is accepted by a verifier~$\TM[V]$ that runs in time
-bounded by a polynomial~$q$, and that takes input 
-$\sequence{\sigma,\omega}$.
-We will construct a nondeterministic Turing machine~$\TM$  
+is accepted by a verifier~$\TM[V]$ that takes input 
+$\sequence{\sigma,\omega}$ and that runs in time
+bounded by a polynomial~$q$.
+We will construct a nondeterministic Turing machine~$\TM$
+that runs in polytime, and  
 that accepts an input bitstring~$\tau$
 if and only if $\tau\in\lang$.
 
 The key is that this machine is allowed to be nondeterministic.
 Given a candidate bitstring $\tau$, 
 (1)~$\TM$ nondeterminstically produces a witness
-bitstring $\kappa$
+bitstring~$\kappa$
 of length less than $q(\sizeof{\tau})$
 (informally speaking, it guesses $\kappa$, or gets it from a demon)
 (2)~it then runs  $\sequence{\tau,\kappa}$ through the verifier~$\TM[V]$,
@@ -8223,7 +8225,7 @@ result in $\TM[V]$ accepting $\sequence{\tau,\kappa}$,
 so there is a way for the prior paragraph to result in acceptance of~$\tau$, 
 and so $\TM$ accepts~$\tau$.
 Now suppose that $\tau\notin\lang$.
-By the definition of a verifier, no hint~$\kappa$ will result in 
+By the definition of a verifier, no witness~$\kappa$ will result in 
 $\TM[V]$ accepting $\sequence{\tau,\kappa}$,
 and thus $\TM$ rejects~$\tau$.
 %</pf:VerifierAndGuesserEquivii>
@@ -8231,45 +8233,50 @@ and thus $\TM$ rejects~$\tau$.
 
 A common reaction to the second half of that proof is something like,
 ``Wait, the machine pulls the witness~$\kappa$ out of thin air?
-How is that possibly legal?''
+How is that possibly legal?''\footnote{%
+  This echoes the first note after the definition and lemma above. 
+  }
 This reaction\Dash about nondeterministic Turing machines
 and everyday experience versus abstraction\Dash is common and very 
 reasonable,
-so we will address it.
+so we will address it with a discussion and a caution.
 
-As to everyday reality, we today know of no way to build physical devices 
+First, as to everyday engineering:~we 
+today know of no way to build physical devices 
 that bear the same relationship to nondeterministic Turing machines 
 that ordinary computers bear to deterministic ones.
-(Of course, you can write a program to simulate nondeterministic behavior,
-at a cost in efficiency, but no device does it natively.)
+(Of course, we can write a program to simulate nondeterministic behavior,
+although at a cost in efficiency, but no device does it natively.)
 When Turing formulated his definition there were no
 practical physical computers matching it, but they 
 were clearly coming and appeared soon after;
-will we someday have nondeterministic computers?
+will we someday have nondeterministic devices?
 Putting aside proposals that 
 involve things like time travel through wormholes as too exotic,
-we will address the devices that seem most likely to be coming,
-quantum computers. 
+in short we don't know of any.
 
+In particular, in order here is a caution about
+the machine types that seem likely to be coming,
+quantum computers. 
 Well-established physical theory says 
 that subatomic particles can be in a superposition of many states at once.
-Naively, it might seem that because of this multi-way branching,
+Naively, it may seem that because of this multi-way branching,
 if we could manipulate these then we would have
 nondeterministic computation. 
-But, that we know of, this is false.
+But that we know of, this is false.
 That we know of,
 to get information out of a quantum computer we must use interference, 
 and we cannot read individual particles.\footnote{%
   Some popularizations wrongly 
   suggest that quantum computers are nondeterministic. 
   That is, 
-  they miss the point about interference.} %
+  they miss this point about interference.} %
 
-However, the fact that we do not have practical nondeterministic devices, 
+Nonetheless, the fact that we do not have practical nondeterministic devices, 
 and do not believe that we will in the
-near future, does not mean that their study is a purely academic 
+immediate future, does not mean that their study is a purely academic 
 exercise.\footnote{%
-  Not that there anything wrong with that.}
+  Not that there is anything wrong with that.}
 The nondeterministic Turing machine model
 is very fruitful.
 
@@ -8289,14 +8296,15 @@ computer scientists have been trying to solve them
 since computers have existed.
 Much more on this in a later section.
 
-In summary, we are interested in knowing for which problems
-there are good algorithms, and for which are there not.
+We close with a summary of this section. 
+We want to know which problems
+have good solution algorithms, and which do not.
 % Cobham's Thesis identifies the problems
 % that have a good algorithm as the problems in~$\P$.
-In this section, we defined the class of problems for which
+Here we have defined the class of problems for which
 there is a good way to verify a solution, in contrast with the problems
 for which there is a good way to generate that solution.
-We will next consider
+In the next section we will consider
 whether these two classes differ.
 
 
@@ -8354,11 +8362,11 @@ Consequently, your verifier is wrong.
 
 \recommended
 \begin{exercise}
-Decide if each formula is satisfiable.
-\begin{exparts}
+Decide if each is satisfiable.
+\begin{exparts*}
 \item $(P\wedge Q)\vee(\neg Q\wedge R)$
 \item $(P\to Q)\wedge \neg((P\wedge Q)\vee \neg P)$
-\end{exparts}
+\end{exparts*}
 \begin{answer}\verified
 \begin{exparts}
 \item This formula is satisfiable. 
@@ -8405,7 +8413,7 @@ True, by \cref{lem:PSubsetNP}.
 
 \begin{exercise}
 Uh-oh.
-You find yourself with nondeterministic Turing machine where
+You find yourself with a nondeterministic Turing machine where
 on input~$\sigma$, one branch of the computation tree accepts
 and one rejects.
 Some branches don't halt at all.
@@ -8474,8 +8482,8 @@ It is guessing correctly.)
 \begin{credit}
   Paul Black, \url{https://xlinux.nist.gov/dads/HTML/nondetermAlgo.html}
 \end{credit}
-Sketch a nondeterministic algorithm to search an unordered array of numbers,
-to see if it contains the number~$k$.
+Sketch a nondeterministic algorithm to search an unordered array of numbers
+for the number~$k$.
 Describe it both in terms of unbounded parallelism and in terms
 of guessing. 
 \begin{answer}
@@ -8502,15 +8510,14 @@ is an array entry that equals~$k$.
 A \definend{simple substitution cipher} encrypts text by substituting one
 letter for another.
 Start by fixing a permutation of the letters, for example
-$\sequence{\str{F},\str{P},\ldots}$\sentencespace 
+$\sequence{\str{W},\str{P},\ldots}$\sentencespace 
 Then the cipher is that any
-\str{A} is replaced by a \str{F}, any \str{B} is replaced by a \str{P}, etc.
+\str{A} is replaced by a \str{W}, any \str{B} is replaced by a \str{P}, etc.
 Sketch three algorithms for decoding a substitution cipher
-(assume that you have a program
-that can recognize a correctly decoded string): 
+(assume that you can recognize a correctly decoded string): 
 \begin{exparts*}
 \item one that is deterministic,
-\item one that is nondeterministic and is expressed in terms of 
+\item one expressed in terms of
 unbounded parallelism,
 and 
 \item one expressed in terms of guessing.
@@ -8547,8 +8554,7 @@ it just needs to be possible to have a guess that checks out.
 \recommended
 \begin{exercise}
 Outline a nondeterministic algorithm that inputs a finite planar graph 
-and outputs \str{Yes} if and only if the graph has a four-coloring
-(that is, the algorithm recognizes a correct four-coloring).
+and outputs \str{Yes} if and only if the graph has a four-coloring.
 Describe it both in terms of unbounded parallelism and in terms of a demon
 providing a witness.
 \begin{answer}\verified

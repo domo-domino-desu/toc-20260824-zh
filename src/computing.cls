@@ -1154,7 +1154,8 @@
 \renewcommand{\makeenmark}{\relax} % leave no mark
 \newcommand{\citeadd}[1]{\addtoendnotes{#1}}
 
-\renewcommand{\notesname}{Notes}
+% \renewcommand{\notesname}{Notes}
+\renewcommand{\notesname}{\relax}
 
 \usepackage{hanging} % make cited text be in hanging indented paragraphs
 % \def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%

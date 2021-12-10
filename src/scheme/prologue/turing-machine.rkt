@@ -260,6 +260,10 @@
 ;; ========================================================
 ;; Read TM from a file
 ;; Read a string, interpret the characters
+
+;; comment character is a percent sign
+(define COMMENT-START #\%) 
+
 ;;  Can write "(1 a L 3)"
 (define s "1 a L 3")
 (define s0 "(3 b b 4)")
@@ -277,7 +281,9 @@
       (string->number (substring s 0 (- (string-length s) 1)))
       (string->number s)))
 (define (string->instruction s)
-  (let* ([instruction (string-split (string-trim s))]
+  (let* ([line-list (string-split s (string COMMENT-START) #:trim? #f)]
+         [instruction-string (first line-list)]  ;; (second line-list), if any, is a comment
+         [instruction (string-split (string-trim instruction-string))]
          [current-state (current-state-string->number (first instruction))]
          [current-symbol (current-symbol-string->char (second instruction))]
          [action (action-symbol-string->char (third instruction))]
@@ -286,8 +292,6 @@
           current-symbol
           action
           next-state)))
-
-
 
 ;; ========================================================
 ;; Read command line.
@@ -313,10 +317,6 @@
    [("-s" "--steplimit") slmt "Number giving max number of steps to run (negative for run until halt)" (steplimit slmt)]
    #:args  () (void)))
 
-
-;; Return the list with the last element omitted
-;;(define (omit-last-element lst)
-;;  (reverse (cdr (reverse lst))))
 
 ;; Default initial configuration
 (define INITIAL-CONFIG (make-config 0
@@ -347,10 +347,20 @@
   (if (null? (tm-filename))
     (set! TM-LINES '())
     (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
+
+  ;; See if the line contains an instruction
+  (define (nontrivial-line? line)
+    (let ([trimmed-string (string-trim line #:repeat? #t)])
+      (if (or (= 0 (string-length trimmed-string))
+              (eqv? (string-ref trimmed-string 0) COMMENT-START))
+          #f
+          #t)))
   
   ;; Return a list of instructions
-  (define TM (for/list ([line TM-LINES])
+  (define TM (for/list ([line TM-LINES]
+                        #:when (nontrivial-line? line))
                (string->instruction line)))
+  
   ;;(display TM)  ; temp for debugging
   ;; Run the simulation
   (define initial-config

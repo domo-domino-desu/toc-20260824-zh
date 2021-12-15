@@ -1,4 +1,6 @@
 % utm_copy.tm
+% Given markers S and T, copy the number of 1's following S over to
+% following T.
 % Scanning past G's, looking for a 1
 0 B B 10  % .. got a B, need to end the program
 0 1 G 1   % .. got a 1, make it a G and go to T and add a 1 

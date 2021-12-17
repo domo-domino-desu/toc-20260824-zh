@@ -149,9 +149,9 @@ def check_final_config(ell, prefix="", currentchar="", suffix=""):
          and suffix
     """
     d = final_dict(ell)
-    return(trim_blanks(d['prefix'])==trim_blanks(prefix)
+    return(trim_blanks(normalize_blanks(d['prefix']))==trim_blanks(normalize_blanks(prefix))
            and d['currentchar']==currentchar
-           and trim_blanks(d['suffix'])==trim_blanks(suffix))
+           and trim_blanks(normalize_blanks(d['suffix']))==trim_blanks(normalize_blanks(suffix)))
 
 
 
@@ -163,7 +163,7 @@ UTM_MACHINES_DIR = os.path.join("..", "..", "..", "..",
 
 # ==============================================
 class CopyTestCase(unittest.TestCase):
-    """Tests the predecessor Turing machine."""
+    """Tests the copy routine of the Universal Turing machine."""
     TM_NAME = os.path.join(UTM_MACHINES_DIR, "utm_copy.tm")
 
     # def test_run_tm(self):
@@ -233,6 +233,77 @@ class CopyTestCase(unittest.TestCase):
         
 
 
+
+# ==============================================
+class FindmaxTestCase(unittest.TestCase):
+    """Tests the findmax routine of the universal Turing machine."""
+    TM_NAME = os.path.join(UTM_MACHINES_DIR, "utm_findmax.tm")
+
+    def test_run_tm(self):
+        """See that the run_tm command works, view steps"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='11B1BTB',
+                   left_tape='',
+                   max_steps=100)
+        print(r.stdout.decode(encoding='UTF-8'))
+    
+    def test_simple(self):
+        """See that something works"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='11B1BTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="11B1BTB"))
+    
+    def test_ascending(self):
+        """Numbers in interval ascending"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='11B111BTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="111",currentchar="S",suffix="11B111BTB"))
+    
+    def test_descending(self):
+        """Numbers in interval descending"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='111B11BTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="111",currentchar="S",suffix="111B11BTB"))
+    
+    def test_equal(self):
+        """Numbers in interval equal"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='11B11BTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="11B11BTB"))
+    
+    def test_zero(self):
+        """Number in interval is zero"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='BBBTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="B",currentchar="S",suffix="BBBTB"))
+
+
             
 # ===========================================================
 
@@ -240,14 +311,16 @@ class CopyTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(CopyTestCase('test_simple'))
-    suite.addTest(CopyTestCase('test_some'))
-    suite.addTest(CopyTestCase('test_zero'))
-    suite.addTest(CopyTestCase('test_full'))
-    suite.addTest(CopyTestCase('test_empty'))
-    # suite.addTest(StartsWithZeroStarOneTestCase('test_empty'))
-    # suite.addTest(StartsWithZeroStarOneTestCase('test_no_one'))
-    # suite.addTest(StartsWithZeroStarOneTestCase('test_all'))
+    # suite.addTest(FindmaxTestCase('test_run_tm'))
+    suite.addTest(FindmaxTestCase('test_simple'))
+    suite.addTest(FindmaxTestCase('test_ascending'))
+    suite.addTest(FindmaxTestCase('test_descending'))
+    suite.addTest(FindmaxTestCase('test_equal'))
+    suite.addTest(FindmaxTestCase('test_zero'))
+    # suite.addTest(CopyTestCase('test_some'))
+    # suite.addTest(CopyTestCase('test_zero'))
+    # suite.addTest(CopyTestCase('test_full'))
+    # suite.addTest(CopyTestCase('test_empty'))
     return suite
 
 def main(args):

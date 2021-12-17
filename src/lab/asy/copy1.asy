@@ -1,5 +1,5 @@
 // copy1.asy
-//  Copy machine, alternate setup
+//  Copy machine, after first scan
 
 import settings;
 settings.outformat="pdf";
@@ -14,12 +14,13 @@ picture p;
 pen L_PEN = blue;  // pen used to label the tape
 unitsize(p,1pt);
 
-string s = "  SBBBBB..BT11B1111B..  ";
+string s = "  ..BSG1BB11BT1BBB..  ";
 real tape_length = tape_contents_length(s);
 
-tape_draw(p,s,2,"$q_0$",tape_length);
+tape_draw(p,s,5,"$q_4$",tape_length);
 
-// draw(p, "Interval", tape_label_path(3,10), LeftSide, L_PEN);
+// draw(p, "Source", tape_label_path(6,8), LeftSide, L_PEN);
+// draw(p, "Target", tape_label_path(14,16), LeftSide, L_PEN);
 
 shipout("copy1",p);
 

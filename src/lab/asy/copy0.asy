@@ -14,12 +14,13 @@ picture p;
 pen L_PEN = blue;  // pen used to label the tape
 unitsize(p,1pt);
 
-string s = "  S111B11B..1TBBBB..  ";
+string s = "  ..BS11BB11BTBBBB..  ";
 real tape_length = tape_contents_length(s);
 
-tape_draw(p,s,2,"$q_0$",tape_length);
+tape_draw(p,s,5,"$q_0$",tape_length);
 
-// draw(p, "Interval", tape_label_path(3,12), LeftSide, L_PEN);
+draw(p, "Source", tape_label_path(6,7), LeftSide, L_PEN);
+draw(p, "Target", tape_label_path(14,15), LeftSide, L_PEN);
 
 shipout("copy0",p);
 

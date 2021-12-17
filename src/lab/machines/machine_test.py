@@ -166,14 +166,14 @@ class CopyTestCase(unittest.TestCase):
     """Tests the copy routine of the Universal Turing machine."""
     TM_NAME = os.path.join(UTM_MACHINES_DIR, "utm_copy.tm")
 
-    # def test_run_tm(self):
-    #     """See that the run_tm command works"""
-    #     r = run_tm(self.TM_NAME,
-    #                current_char='S',
-    #                right_tape='11BBTBBB',
-    #                left_tape='',
-    #                max_steps=100)
-    #     print(r.stdout.decode(encoding='UTF-8'))
+    def test_run_tm(self):
+        """See that the run_tm command works"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='11BBTBBB',
+                   left_tape='',
+                   max_steps=100)
+        print(r.stdout.decode(encoding='UTF-8'))
     
     def test_simple(self):
         """See that something works"""
@@ -311,13 +311,13 @@ class FindmaxTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(FindmaxTestCase('test_run_tm'))
-    suite.addTest(FindmaxTestCase('test_simple'))
-    suite.addTest(FindmaxTestCase('test_ascending'))
-    suite.addTest(FindmaxTestCase('test_descending'))
-    suite.addTest(FindmaxTestCase('test_equal'))
-    suite.addTest(FindmaxTestCase('test_zero'))
-    # suite.addTest(CopyTestCase('test_some'))
+    # suite.addTest(FindmaxTestCase('test_run_tm'))
+    # suite.addTest(FindmaxTestCase('test_simple'))
+    # suite.addTest(FindmaxTestCase('test_ascending'))
+    # suite.addTest(FindmaxTestCase('test_descending'))
+    # suite.addTest(FindmaxTestCase('test_equal'))
+    # suite.addTest(FindmaxTestCase('test_zero'))
+    suite.addTest(CopyTestCase('test_run_tm'))
     # suite.addTest(CopyTestCase('test_zero'))
     # suite.addTest(CopyTestCase('test_full'))
     # suite.addTest(CopyTestCase('test_empty'))

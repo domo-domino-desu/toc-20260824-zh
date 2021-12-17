@@ -311,7 +311,7 @@ class FindmaxTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    # suite.addTest(FindmaxTestCase('test_run_tm'))
+    suite.addTest(FindmaxTestCase('test_run_tm'))
     suite.addTest(FindmaxTestCase('test_simple'))
     suite.addTest(FindmaxTestCase('test_ascending'))
     suite.addTest(FindmaxTestCase('test_descending'))

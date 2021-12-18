@@ -14,15 +14,15 @@ picture p;
 pen L_PEN = blue;  // pen used to label the tape
 unitsize(p,1pt);
 
-string s = "  1B111BX111B11Y11B1B1BZ11B1111  ";
+string s = "  ..BX111B11Y11B1B1BZ1B1..  ";
 real tape_length = tape_contents_length(s);
 
-tape_draw(p,s,23,"$q_{i}$",tape_length);
+tape_draw(p,s,12,"$q_{i}$",tape_length);
 
-draw(p, "$M$'s left tape\strut", tape_label_path(0,7), LeftSide, L_PEN);
-draw(p, "Buffer\strut", tape_label_path(9,14), LeftSide, L_PEN);
-draw(p, "Machine $M$\strut", tape_label_path(16,22), LeftSide, L_PEN);
-draw(p, "$M$'s right tape\strut", tape_label_path(24,32), LeftSide, L_PEN);
+draw(p, "$M$'s left tape\strut", tape_label_path(0,4), LeftSide, L_PEN);
+draw(p, "Buffer\strut", tape_label_path(6,11), LeftSide, L_PEN);
+draw(p, "Machine $M$\strut", tape_label_path(13,19), LeftSide, L_PEN);
+draw(p, "$M$'s right tape\strut", tape_label_path(21,27), LeftSide, L_PEN);
 
 shipout("utm3",p);
 

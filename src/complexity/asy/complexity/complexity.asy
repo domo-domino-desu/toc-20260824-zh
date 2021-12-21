@@ -1784,3 +1784,54 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+
+// ========== 3-Sat leq 3-coloring ==========
+int picnum = 35;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node Tnode = ncircle("$T$",ns_bleachedbg);
+node Fnode = ncircle("$F$",ns_light);
+node Gnode = ncircle("$G$",ns_gray);
+node anode = ncircle("$a$");
+node bnode = ncircle("$b$");
+node cnode = ncircle("$c$");
+// node n0 = ncircle("$n_0$");
+// node n1 = ncircle("$n_1$");
+// node n2 = ncircle("$n_2$");
+// node n3 = ncircle("$n_3$");
+// node n4 = ncircle("$n_4$");
+// node n5 = ncircle("$n_5$");
+node xnode = ncircle("$x_i$");
+node negxnode = ncircle("$\overline{x_i\!}$");
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+
+real layout_angle = -30;
+hlayout(2*u, Tnode, Fnode);
+Gnode.pos = new_node_pos_h(Tnode, layout_angle, 1*u);
+xnode.pos = new_node_pos(Gnode, -110, -2*v);
+negxnode.pos = new_node_pos(Gnode, -70, -2*v);
+
+// draw edges
+draw(pic,
+     (Tnode--Fnode),
+     (Tnode--Gnode),
+     (Fnode--Gnode),
+     (Gnode--xnode).style(dashedstyle),
+     (Gnode--negxnode).style(dashedstyle),
+     (xnode--negxnode)
+);
+
+// draw nodes
+draw(pic,
+     Tnode, Fnode, Gnode,
+     xnode, negxnode
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

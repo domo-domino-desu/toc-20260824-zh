@@ -30,6 +30,11 @@ defaultdrawstyle=directededgestyle;
 // // Edge with no arrow
 drawstyle undirectededgestyle=drawstyle(edgelabel, p=EDGEPEN_TT, arrow=None);
 
+// Edge dashed
+pen dashedgepen=linetype(new real[] {1,3});
+drawstyle dashedstyle=drawstyle(edgelabel, p=dashedgepen+EDGEPEN_TT, arrow=None);
+
+
 // Node styles
 // Standard node is single-circle border
 defaultnodestyle=nodestyle(textpen=NODEPEN, xmargin=1pt, drawfn=FillDrawer(backgroundcolor,black));
@@ -47,6 +52,8 @@ nodestyle ns_bleachedbold=nodestyle(xmargin=1pt,textpen=NODEPEN,
 				    drawfn=FillDrawer(bold_light,black));
 nodestyle ns_light=nodestyle(xmargin=1pt,textpen=NODEPEN,
 			     drawfn=FillDrawer(lightcolor,black));
+nodestyle ns_gray=nodestyle(xmargin=1pt,textpen=NODEPEN,
+			    drawfn=FillDrawer(gray(0.85),black));
 
 
 

@@ -183,7 +183,7 @@
 ;; Execute for a limited number of states
 (define (execute-guarded tm initial-config slmt [verbose #t])
   (define (execute-helper config stp history)
-    (cond [(> stp slmt)
+    (cond [(>= stp slmt)
            (begin
              (when verbose
                (fprintf (current-output-port)

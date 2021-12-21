@@ -304,5 +304,9 @@
    (check-equal? (length history) 2 "Empty Turing machine just gives back the initial configuration (and nil to mark halting)"))
  )
 
+;; ======================== execute-guarded =====================
+
+(test-case
+ "Test execute-guarded.")
 #|
 |#

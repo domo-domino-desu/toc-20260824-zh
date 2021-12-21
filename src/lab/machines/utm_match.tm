@@ -11,10 +11,12 @@
 % 1's after T.
 0 B B 10  % End of 1's after S
 0 1 G 1  
+0 G R 0 
 0 S R 0   % Start by shifting right to get into the interval
-0 T R 
+0 T R 20
 1 B R 1 % .. scan right, looking for T 
 1 1 R 1
+1 G R 1
 1 T R 2
 2 B B 20  % Ran out of 1's after T sooner than after S
 2 1 H 3
@@ -47,5 +49,5 @@
 30 G 1 31
 30 H 1 31
 30 S S 100
-30 T R 30
+30 T L 30
 31 1 L 30

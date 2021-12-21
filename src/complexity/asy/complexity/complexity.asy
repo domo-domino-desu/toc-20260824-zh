@@ -1786,6 +1786,11 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 // ========== 3-Sat leq 3-coloring ==========
+
+// Edge dashed
+pen dashedgepen=linetype(new real[] {1,3});
+drawstyle dashedstyle=drawstyle(edgelabel, p=dashedgepen+EDGEPEN_TT, arrow=None);
+
 int picnum = 35;
 picture pic;
 setdefaultgraphstyles();
@@ -1832,6 +1837,95 @@ draw(pic,
      xnode, negxnode
      );
 
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// -------------- show a full gadget --------------
+void drawgnd(picture p, pair cnx, real u, real v){
+  draw(p, cnx-(0.25*u,0)--cnx+(0.25*u,0));
+  draw(p, cnx-(0.15*u,0.15*v)--cnx+(0.15*u,-0.15*v));
+  draw(p, cnx-(0.05*u,0.3*v)--cnx+(0.05*u,-0.3*v));
+};
+
+int picnum = 36;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node Tnode = ncircle("$T$",ns_bleachedbg);
+node Fnode = ncircle("$F$",ns_light);
+node Gnode = ncircle("$G$",ns_gray);
+node anode = ncircle("$a$");
+node bnode = ncircle("$b$");
+node cnode = ncircle("$c$");
+node n0 = ncircle("$n_0$");
+node n1 = ncircle("$n_1$");
+node n2 = ncircle("$n_2$");
+node n3 = ncircle("$n_3$");
+node n4 = ncircle("$n_4$");
+node n5 = ncircle("$n_5$");
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+
+real layout_angle = -30;
+hlayout(2*u, Tnode, Fnode);
+Gnode.pos = new_node_pos_h(Tnode, layout_angle, 1*u);
+
+n0.pos = new_node_pos(Gnode, -135, -1.5*v);
+n3.pos = new_node_pos_h(n0, -135, -0.5*u);
+hlayout(1*u, n3, n4);
+hlayout(1.75*u, n0, n1);
+// n1.pos = new_node_pos(Gnode, -45, -1.5*v);
+hlayout(1*u, n1, n2);
+n5.pos = new_node_pos_h(n1, -45, 0.5*u);
+vlayout(1*v, n3, anode);
+vlayout(1*v, n4, bnode);
+vlayout(1*v, n5, cnode);
+  
+// draw edges
+draw(pic,
+     (Tnode--Fnode),
+     (Tnode--Gnode),
+     (Fnode--Gnode),
+     (Fnode--n2),
+     (Gnode--n0).style(dashedstyle),
+     (Gnode--n2).style(dashedstyle),
+     (n0--n1),
+     (n0--n3),
+     (n0--n4),
+     (n1--n2),
+     (n1--n5),
+     (n2--n5),
+     (n3--n4),
+     (n3--anode),
+     (n4--bnode),
+     (n5--cnode)
+);
+
+// draw nodes
+draw(pic,
+     Tnode, Fnode, Gnode,
+     n0, n1, n2, n3, n4, n5,
+     anode, bnode, cnode
+     );
+
+// draw extra paths
+path atoG = anode.pos
+  ..(anode.pos+(-0.5*u,0.25*v))
+  ..(anode.pos+(-0.75*u,+0.75*v));
+draw(pic,atoG,dashedgepen+EDGEPEN_TT);       
+path btoG = bnode.pos
+  ..(bnode.pos+(-0.85*u,-0.35*v))
+  ..(bnode.pos+(-2*u,+0.65*v));
+draw(pic,btoG,dashedgepen+EDGEPEN_TT);       
+// path ctoG = cnode.pos
+//   ..(cnode.pos+(-0.5*u,-0.25*v))
+//   ..(cnode.pos+(-1*u,+0.5*v));
+// draw(pic,ctoG,dashedgepen+EDGEPEN_TT);       
+
+drawgnd(pic, anode.pos-(0*u,0.5*v), u, v);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 

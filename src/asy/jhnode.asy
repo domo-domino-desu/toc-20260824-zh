@@ -30,9 +30,6 @@ defaultdrawstyle=directededgestyle;
 // // Edge with no arrow
 drawstyle undirectededgestyle=drawstyle(edgelabel, p=EDGEPEN_TT, arrow=None);
 
-// Edge dashed
-pen dashedgepen=linetype(new real[] {1,3});
-drawstyle dashedstyle=drawstyle(edgelabel, p=dashedgepen+EDGEPEN_TT, arrow=None);
 
 
 // Node styles

@@ -1790,6 +1790,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // Edge dashed
 pen dashedgepen=linetype(new real[] {2,1})+squarecap;
 drawstyle dashedstyle=drawstyle(edgelabel, p=dashedgepen+EDGEPEN_TT, arrow=None);
+drawstyle highlightstyle=drawstyle(edgelabel, p=WALK_PEN, arrow=None);
 
 int picnum = 35;
 picture pic;
@@ -1802,14 +1803,8 @@ node Gnode = ncircle("$G$",ns_gray);
 node anode = ncircle("$a$");
 node bnode = ncircle("$b$");
 node cnode = ncircle("$c$");
-// node n0 = ncircle("$n_0$");
-// node n1 = ncircle("$n_1$");
-// node n2 = ncircle("$n_2$");
-// node n3 = ncircle("$n_3$");
-// node n4 = ncircle("$n_4$");
-// node n5 = ncircle("$n_5$");
-node xnode = ncircle("$x_i$");
-node negxnode = ncircle("$\overline{x_i\!}$");
+node xnode = ncircle("$x$\strut");
+node negxnode = ncircle("$\neg x$");
 
 // calculate nodes position
 real u=1cm;
@@ -1818,8 +1813,8 @@ real v=0.7*u;
 real layout_angle = -30;
 hlayout(2*u, Tnode, Fnode);
 Gnode.pos = new_node_pos_h(Tnode, layout_angle, 1*u);
-xnode.pos = new_node_pos(Gnode, -110, -2*v);
-negxnode.pos = new_node_pos(Gnode, -70, -2*v);
+xnode.pos = new_node_pos(Gnode, -110, -1.65*v);
+negxnode.pos = new_node_pos(Gnode, -70, -1.65*v);
 
 // draw edges
 draw(pic,
@@ -1843,8 +1838,8 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // -------------- show a full gadget --------------
 void drawgnd(picture p, pair cnx, real u, real v){
   draw(p, cnx-(0.15*u,0)--cnx+(0.15*u,0),EDGEPEN_TT+squarecap);
-  draw(p, cnx-(0.10*u,0.15*v)--cnx+(0.10*u,-0.15*v),EDGEPEN_TT+squarecap);
-  draw(p, cnx-(0.05*u,0.3*v)--cnx+(0.05*u,-0.3*v),EDGEPEN_TT+squarecap);
+  draw(p, cnx-(0.10*u,0.125*v)--cnx+(0.10*u,-0.125*v),EDGEPEN_TT+squarecap);
+  draw(p, cnx-(0.05*u,0.25*v)--cnx+(0.05*u,-0.25*v),EDGEPEN_TT+squarecap);
 };
 
 int picnum = 36;
@@ -1932,8 +1927,6 @@ defaultlayoutrel = false;
 node Tnode = ncircle("$T$",ns_bleachedbg);
 node Fnode = ncircle("$F$",ns_light);
 node Gnode = ncircle("$G$",ns_gray);
-node anode = ncircle("$x$");
-node bnode = ncircle("$y$");
 node cnode = ncircle("$z$");
 node n0 = ncircle("\rule{0pt}{5pt} ");
 node n1 = ncircle("\rule{0pt}{5pt} ");
@@ -1941,15 +1934,19 @@ node n2 = ncircle("\rule{0pt}{5pt} ");
 node n3 = ncircle("\rule{0pt}{5pt} ");
 node n4 = ncircle("\rule{0pt}{5pt} ");
 node n5 = ncircle("\rule{0pt}{5pt} ");
-node dnode = ncircle("$\neg x$");
-node enode = ncircle("$\neg y$");
-node fnode = ncircle("$z$");
 node m0 = ncircle("\rule{0pt}{5pt} ");
 node m1 = ncircle("\rule{0pt}{5pt} ");
 node m2 = ncircle("\rule{0pt}{5pt} ");
 node m3 = ncircle("\rule{0pt}{5pt} ");
 node m4 = ncircle("\rule{0pt}{5pt} ");
 node m5 = ncircle("\rule{0pt}{5pt} ");
+node xnode = ncircle("$x$\strut");
+node negxnode = ncircle("$\neg x$");
+node ynode = ncircle("$y$\strut");
+node negynode = ncircle("$\neg y$");
+node znode = ncircle("$z$\strut");
+node negznode = ncircle("$\neg z$");
+node bottomcenternode =ncircle("o");  // locate the center of the bottom line
 
 // calculate nodes position
 real u=1cm;
@@ -1966,21 +1963,22 @@ n3.pos = new_node_pos_h(n0, -135, -0.5*u);
 hlayout(1*u, n3, n4);
 hlayout(1.25*u, n0, n1);
 n5.pos = new_node_pos_h(n1, -45, 0.5*u);
-vlayout(1*v, n3, anode);
-vlayout(1*v, n4, bnode);
-vlayout(1*v, n5, cnode);
 
 m0.pos = new_node_pos(Gnode, -60, -1.5*v);
 m3.pos = new_node_pos_h(m0, -135, -0.5*u);
 hlayout(1*u, m3, m4);
 hlayout(1.25*u, m0, m1);
-// n1.pos = new_node_pos(Gnode, -45, -1.5*v);
 hlayout(1*u, m1, m2);
 m5.pos = new_node_pos_h(m1, -45, 0.5*u);
-vlayout(1*v, m3, dnode);
-vlayout(1*v, m4, enode);
-vlayout(1*v, m5, fnode);
-  
+
+vlayout(3.75*v, Gnode, bottomcenternode);
+hlayout(-0.5*u, bottomcenternode, ynode);
+hlayout(0.5*u, bottomcenternode, negynode);
+hlayout(-1.25*u, ynode, negxnode);
+hlayout(-1*u, negxnode, xnode);
+hlayout(1.25*u, negynode, znode);
+hlayout(1*u, znode, negznode);
+
 // draw edges
 draw(pic,
      (Tnode--Fnode),
@@ -1996,9 +1994,6 @@ draw(pic,
      (n1--n5),
      (n2--n5),
      (n3--n4),
-     (n3--anode),
-     (n4--bnode),
-     (n5--cnode),
      (Fnode--m2),
      (Gnode--m0).style(dashedstyle),
      (Gnode--m2).style(dashedstyle),
@@ -2009,33 +2004,44 @@ draw(pic,
      (m1--m5),
      (m2--m5),
      (m3--m4),
-     (m3--dnode),
-     (m4--enode),
-     (m5--fnode)
+     (xnode--negxnode),
+     (ynode--negynode),
+     (znode--negznode)
 );
+
+// draw connections to gadgets
+draw(pic,
+     (n3--xnode).style(highlightstyle),
+     (n4--ynode).style(highlightstyle),
+     (n5--znode).style(highlightstyle),
+     (m3--negxnode).style(highlightstyle),
+     (m4--negynode).style(highlightstyle),
+     (m5--znode).style(highlightstyle)
+);
+
 
 // draw extra paths
 pair gnd_offset = (0*u,0.75*v);
-drawgnd(pic, anode.pos-gnd_offset, u, v);
-  draw(pic,anode.pos--(anode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, bnode.pos-gnd_offset, u, v);
-  draw(pic,bnode.pos--(bnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, cnode.pos-gnd_offset, u, v);
-  draw(pic,cnode.pos--(cnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, dnode.pos-gnd_offset, u, v);
-  draw(pic,dnode.pos--(dnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, enode.pos-gnd_offset, u, v);
-  draw(pic,enode.pos--(enode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, fnode.pos-gnd_offset, u, v);
-  draw(pic,fnode.pos--(fnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+drawgnd(pic, xnode.pos-gnd_offset, u, v);
+  draw(pic,xnode.pos--(xnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+drawgnd(pic, negxnode.pos-gnd_offset, u, v);
+  draw(pic,negxnode.pos--(negxnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+drawgnd(pic, ynode.pos-gnd_offset, u, v);
+  draw(pic,ynode.pos--(ynode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+drawgnd(pic, negynode.pos-gnd_offset, u, v);
+  draw(pic,negynode.pos--(negynode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+drawgnd(pic, znode.pos-gnd_offset, u, v);
+  draw(pic,znode.pos--(znode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+drawgnd(pic, negznode.pos-gnd_offset, u, v);
+  draw(pic,negznode.pos--(negznode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
 
 // draw nodes
 draw(pic,
      Tnode, Fnode, Gnode,
      n0, n1, n2, n3, n4, n5,
-     anode, bnode, cnode,
      m0, m1, m2, m3, m4, m5,
-     dnode, enode, fnode
+     // bottomcenternode, // for debugging
+     xnode, negxnode, ynode, negynode, znode, negznode
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

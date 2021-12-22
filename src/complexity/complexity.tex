@@ -4118,7 +4118,7 @@ do not.
   % \includegraphics{languages/asy/graphs/graphs10.pdf}
 \end{center}
 What is the minimum number of class times that we must use?  
-In coloring terms, we define that classes meeting at the same time
+In graph coloring terms, we define that classes meeting at the same time
 are the same color and we ask for the minimum number of colors needed so that
 no two same-colored vertices share an edge.
 \begin{exparts*}
@@ -11253,6 +11253,116 @@ The next example illustrates.\footnote{%
   However, showing one perhaps helps make memorable 
   that having a reasonably long argument is common.
   }
+
+\begin{example}
+Recall that a graph can be three-colored if we can partition its vertices
+into three categories, called ``colors'', 
+so that no two same-colored vertices are connected by an edge.
+We will show that the 
+\definend{\probname{$3$-Coloring}} problem\index{3-Coloring problem@\probname{$3$-Coloring} problem}
+$\lang=\set{\mathcal{G}\suchthat \text{the graph $\mathcal{G}$ has a $3$-coloring}}$
+is $\NP$~complete.
+
+The easy half is to show that $\lang\in\NP$.
+As a witness~$\omega$ we can use a $3$-coloring, a set of three sets of 
+vertices $P=\set{C_0,C_1,C_2}$, where every
+vertex is in one of the $C_i$'s and no vertex is in two of them.
+Then, given a graph and a witness, we can easily check in polytime that 
+the set $P$ partitions the vertices.
+
+The harder half is to show that $\lang$ is $\NP$~hard.
+We will prove that \probname{$3$-$\SAT$} reduces to it,
+$\probname{$3$-$\SAT$}\leq_p\probname{$3$-Coloring}$
+For that we produce a reduction function. 
+
+The reduction function 
+inputs propositional logic expressions in conjunctive normal form.
+One example is 
+$(x\vee y\vee z)\wedge(\neg x\vee \neg y\vee z)$.
+Such an expression has clauses joined by $\wedge$'s 
+so it is true if and only if each clause is true.
+Further,
+inside each clause, the literals\Dash the $x$ or $\neg x$'s\Dash 
+are joined by $\vee$'s, and so 
+a clause is true if any of the literals inside of it is true. 
+(Also, because we are proving that $\probname{$3$-$\SAT$}\leq_p\prob$,
+each such clause contains~$3$ or fewer literals.
+Since we can change a clause with fewer, such as $x\vee y$, into
+a clause with three, such as $x\vee x\vee y$, 
+withoug loss we can take each clause to have exactly three literals.)
+
+The reduction function must output instances of $\prob$,
+graphs.
+This output graph must be $3$-colorable if and only if the
+input expression is satisfiable.
+
+Naturally, we engineer the graph to reflect the structure of 
+the expression.
+We will have nodes labeled with the propositional literals, 
+such as $x$ or $\neg y$.
+Based on the expression, 
+we will attach to them graph structures that enforce the
+$3$-colorability condition.
+
+Building that graph structure starts with 
+a triangle of nodes labeled $T$, $F$, and $G$.
+Because they are a triangle, in a $3$-colored graph 
+no two can be colored the same.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity35.pdf}
+\end{center}
+The relevance for our engineering is that any node connected to $G$
+must be colored the same either as $T$ or~$F$.
+(We use dotted lines because below there will be many such connections
+and it helps visually to mark them as a separate category.)
+Observe that because the two literal nodes are connected, in this
+graph one of $x$ and $\neg x$
+is the color of~$T$ and the other is the color of~$F$.
+
+The full structure is here.
+(This kind of thing is common in complexity proofs 
+and is often called a `gadget'.)\index{gadget!in complexity arguments}
+Here, $a$, $b$, and~$c$ will be propositional literals.
+Note a the top that the solid line connection 
+forces that node to have the color of~$T$.
+Note also at the bottom that the nodes labeled $a$, $b$, and $c$,
+are connected to~$G$, but we've adopted a graphical shorthand for that
+(involving three lines)
+because otherwise in the next picture below there would be far too many 
+dashed lines. 
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity36.pdf}
+\end{center}
+We will verify that this graph is $3$-colorable if and only if 
+nodes $a$, $b$, and~$c$ are not the color of~$F$.
+
+For ``only if,'' if $a$, $b$, and $c$ are the color of~$F$ then between
+$n_3$ and $n_4$, one is the color of $T$ or~$G$ and the other is the other, 
+and so $n_0$ is the color of~$F$, and consequently $n_0$ is the color of~$F$.
+For ``if,'' we need only produce $3$-colorings in the remaining cases.
+\begin{center}\small
+\begin{tabular}{*{3}{c}|*{6}{c}}
+  $a$ &$b$ &$c$  &$n_0$ &$n_1$ &$n_2$ &$n_3$ &$n_4$ &$n_5$  \\
+  \hline
+  $F$ &$F$ &$T$ &&&&&&  \\
+  $F$ &$T$ &$F$ &&&&&&  \\
+  $F$ &$T$ &$T$ &&&&&&  \\[1ex]
+  $T$ &$F$ &$F$ &&&&&&  \\
+  $T$ &$F$ &$T$ &&&&&&  \\
+  $T$ &$T$ &$F$ &&&&&&  \\
+  $T$ &$T$ &$T$ &&&&&&  \\
+\end{tabular}
+\end{center}
+
+This is how to combine multiple clauses.
+On the left is a gadget for the first clause and on the right a 
+gadget for the second.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity37.pdf}
+\end{center}
+\end{example}
+
+
 
 \begin{example} 
 \begin{credit}

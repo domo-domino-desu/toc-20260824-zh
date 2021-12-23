@@ -11205,7 +11205,6 @@ is quadratic in the number of vertices.
 %</ex:TSIsNPComplete>
 \end{example}
 
-\medskip
 A common strategy 
 for using the list of Basic $\NP$~Complete Problems to 
 to show that a given problem is $\NP$~complete by
@@ -11243,360 +11242,198 @@ problem, which is in the above list.
 \end{example}
 %</ex:KnapsackIsNPComplete>
 
-One of Karp's points was the practical importance of
-$\NP$~completeness.
-Many problems from applications fall into this class.
-The next example illustrates.\footnote{%
-  It also gives an example of another point, that many reductions are complex.
-  For obvious reasons, we don't in this section show lots of examples that
-  take multiple pages to cover. 
-  However, showing one perhaps helps make memorable 
-  that having a reasonably long argument is common.
-  }
+Another common strategy in complexity proofs is to build the
+reduction function so that
+a subpart of the output instance 
+simulates the behavior of one of the input instance's fundamental
+units.
+Such a construct is 
+\citetext{often called a `gadget'}{%
+  See \url{https://cs.stackexchange.com/a/1249/50343} from the 
+  Computer Science Stack Exchange user JeffE}.\index{gadget!in complexity arguments}
+The next example illustrates.
 
 \begin{example}
 Recall that a graph can be three-colored if we can partition its vertices
-into three categories, called ``colors'', 
-so that no two same-colored vertices are connected by an edge.
+into three categories, the colors, 
+so that no two vertices with the same color are connected by an edge.
 We will show that the 
-\definend{\probname{$3$-Coloring}} problem\index{3-Coloring problem@\probname{$3$-Coloring} problem}
-$\lang=\set{\mathcal{G}\suchthat \text{the graph $\mathcal{G}$ has a $3$-coloring}}$
+\definend{\probname{$3$-Coloring}} problem,\index{3-Coloring problem@\probname{$3$-Coloring} problem}
+$\lang=\set{\mathcal{G}\suchthat \text{the graph $\mathcal{G}$ has a $3$-coloring}}$,
 is $\NP$~complete.
 
-The easy half is to show that $\lang\in\NP$.
+The easy half is $\lang\in\NP$.
 As a witness~$\omega$ we can use a $3$-coloring, a set of three sets of 
-vertices $P=\set{C_0,C_1,C_2}$, where every
+$\mathcal{G}$'s vertices, $P=\set{C_0,C_1,C_2}$, where every
 vertex is in one of the $C_i$'s and no vertex is in two of them.
-Then, given a graph and a witness, we can easily check in polytime that 
-the set $P$ partitions the vertices.
+With a graph and a witness, we can verify that 
+$P$ partitions the vertices in polytime.
 
-The harder half is to show that $\lang$ is $\NP$~hard.
+The other half is to show that $\lang$ is $\NP$~hard.
 We will prove that \probname{$3$-$\SAT$} reduces to it,
-$\probname{$3$-$\SAT$}\leq_p\probname{$3$-Coloring}$
-For that we produce a reduction function. 
+that $\probname{$3$-$\SAT$}\leq_p\probname{$3$-Coloring}$.
 
-The reduction function 
+For that, we produce a reduction function. 
+It
 inputs propositional logic expressions in conjunctive normal form.
-One example is 
+An example is
 $(x\vee y\vee z)\wedge(\neg x\vee \neg y\vee z)$.
-Such an expression has clauses joined by $\wedge$'s 
+It has clauses joined by $\wedge$'s, 
 so it is true if and only if each clause is true.
-Further,
-inside each clause, the literals\Dash the $x$ or $\neg x$'s\Dash 
-are joined by $\vee$'s, and so 
-a clause is true if any of the literals inside of it is true. 
-(Also, because we are proving that $\probname{$3$-$\SAT$}\leq_p\prob$,
-each such clause contains~$3$ or fewer literals.
-Since we can change a clause with fewer, such as $x\vee y$, into
-a clause with three, such as $x\vee x\vee y$, 
-withoug loss we can take each clause to have exactly three literals.)
+Inside each clause, the literals such as $x$ or $\neg y$ 
+are joined by $\vee$'s and so 
+a clause is true if and only if any literal is true. 
+(We are working with $\probname{$3$-$\SAT$}$, so
+each clause contains three or fewer literals.
+Since we can change a clause with fewer literals, such as $x\vee y$, into
+a clause with three, as in $x\vee x\vee y$, 
+we can take clauses to have exactly three literals.)
 
-The reduction function must output instances of $\prob$,
-graphs.
-This output graph must be $3$-colorable if and only if the
+The reduction function must output instances of $\prob$, that is, 
+graphs (and must run in polytime).
+The output graph must be $3$-colorable if and only if the
 input expression is satisfiable.
-
-Naturally, we engineer the graph to reflect the structure of 
+Naturally, we engineer this graph to reflect
 the expression.
 We will have nodes labeled with the propositional literals, 
 such as $x$ or $\neg y$.
 Based on the expression, 
 we will attach to them graph structures that enforce the
 $3$-colorability condition.
-
-Building that graph structure starts with 
+That starts with 
 a triangle of nodes labeled $T$, $F$, and $G$.
-Because they are a triangle, in a $3$-colored graph 
+Because they are a triangle, in a $3$-colored graph, 
 no two can be colored the same.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity35.pdf}
 \end{center}
 The relevance for our engineering is that any node connected to $G$
-must be colored the same either as $T$ or~$F$.
-(We use dotted lines because below there will be many such connections
-and it helps visually to mark them as a separate category.)
-Observe that because the two literal nodes are connected, in this
-graph one of $x$ and $\neg x$
-is the color of~$T$ and the other is the color of~$F$.
+must have either the color of $T$ or of~$F$.
+(We draw these edges with dotted lines for the
+visual effect of marking them as a separate category of connection.)
+The two literal nodes at the bottom are connected, 
+so one of $x$ and $\neg x$
+is the color of~$T$ while the other is the color of~$F$.
 
-The full structure is here.
-(This kind of thing is common in complexity proofs 
-and is often called a `gadget'.)\index{gadget!in complexity arguments}
-Here, $a$, $b$, and~$c$ will be propositional literals.
-Note a the top that the solid line connection 
-forces that node to have the color of~$T$.
-Note also at the bottom that the nodes labeled $a$, $b$, and $c$,
-are connected to~$G$, but we've adopted a graphical shorthand for that
-(involving three lines)
-because otherwise in the next picture below there would be far too many 
-dashed lines. 
+The full structure\Dash the gadget\Dash is the next figure.
+The $a$, $b$, and~$c$ stand for propositional literals.
+They 
+are connected to~$G$ but we've adopted a graphical shorthand
+(the ground symbol, with three lines)
+because otherwise in the picture below this one there would be far too many 
+edges to see clearly. 
+Note also that the solid line connection on the top right 
+forces $n_2$ to match $T$'s color.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity36.pdf}
 \end{center}
-We will verify that this graph is $3$-colorable if and only if 
-nodes $a$, $b$, and~$c$ are not the color of~$F$.
 
-For ``only if,'' if $a$, $b$, and $c$ are the color of~$F$ then between
-$n_3$ and $n_4$, one is the color of $T$ or~$G$ and the other is the other, 
-and so $n_0$ is the color of~$F$, and consequently $n_0$ is the color of~$F$.
-For ``if,'' we need only produce $3$-colorings in the remaining cases.
+We will verify that this structure is $3$-colorable if and only if 
+nodes $a$, $b$, and~$c$ are not the color of~$F$.
+For ``only if,'' when $a$, $b$, and $c$ are the color of~$F$ then one of
+$n_3$ and~$n_4$ is the color of $T$ or~$G$ and the other is the other color, 
+and so $n_0$ is the color of~$F$, and hence $n_0$ is the color of~$F$.
+For ``if,'' we need only exhibit one $3$-coloring for each remaining case.
 \begin{center}\small
 \begin{tabular}{*{3}{c}|*{6}{c}}
-  $a$ &$b$ &$c$  &$n_0$ &$n_1$ &$n_2$ &$n_3$ &$n_4$ &$n_5$  \\
+  $a$ &$b$ &\multicolumn{1}{c}{$c$}  
+    &$n_0$ &$n_1$ &$n_2$ &$n_3$ &$n_4$ &$n_5$  \\
   \hline
-  $F$ &$F$ &$T$ &&&&&&  \\
-  $F$ &$T$ &$F$ &&&&&&  \\
-  $F$ &$T$ &$T$ &&&&&&  \\[1ex]
-  $T$ &$F$ &$F$ &&&&&&  \\
-  $T$ &$F$ &$T$ &&&&&&  \\
-  $T$ &$T$ &$F$ &&&&&&  \\
-  $T$ &$T$ &$T$ &&&&&&  \\
+  $F$ &$F$ &$T$ &$F$ &$G$ &$T$ &$T$ &$G$ &$F$ \\
+  $F$ &$T$ &$F$ &$T$ &$F$ &$T$ &$G$ &$F$ &$G$  \\
+  $F$ &$T$ &$T$ &$F$ &$G$ &$T$ &$T$ &$G$ &$F$  \\[1ex]
+  $T$ &$F$ &$F$ &$T$ &$F$ &$T$ &$F$ &$G$ &$G$  \\
+  $T$ &$F$ &$T$ &$F$ &$G$ &$T$ &$G$ &$T$ &$F$  \\
+  $T$ &$T$ &$F$ &$T$ &$F$ &$T$ &$F$ &$G$ &$G$  \\
+  $T$ &$T$ &$T$ &$T$ &$F$ &$T$ &$F$ &$G$ &$G$  \\
 \end{tabular}
 \end{center}
 
-This is how to combine multiple clauses.
-On the left is a gadget for the first clause and on the right a 
-gadget for the second.
+Here is how to combine multiple clauses.
+This is the graph that the reduction function outputs for
+the expression
+$(x\vee y\vee z)\wedge(\neg x\vee \neg y\vee z)$.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity37.pdf}
 \end{center}
+On the left is the gadget for the first clause and on the right is the 
+gadget for the second.
+As mentioned above, the edge dashing and also the edge 
+highlighting are just to make the picture more visually comprehensible.
+Again, the three-line symbol at the bottom means that each
+literal node is connected to~$G$.
 \end{example}
 
-
+One of Karp's points was the practical importance of
+$\NP$~completeness.
+Many problems from applications fall into this class.
+The next example illustrates.
 
 \begin{example} 
-\begin{credit}
-  \url{https://people.cs.umass.edu/~barring/cs311/disc/9.html}
-\end{credit}
 Scheduling is a rich source of difficult combinatorial problems.
 Usually, colleges make a schedule by putting classes into
-time slots and then students pick which classes they will take.
-Imagine if instead, students first select the classes and then the
-college finds a non-conflicting schedule for those classes.
-Specifically, each student~$s$ gets a number of lists 
-$\ell_{s_i}$ 
-(perhaps the first list contains major courses, a second list contains
-other requirements, and a third contains elective courses).
-They must choose course from the lists, and submit
-their choices.
-then the college must decide if there is a non-conflicting way to 
-arrange courses into a 
-a limited number, $n$, of time slots.
-We will show that this decision problem is $\NP$~complete.
+time slots and after that students pick which classes they will take,
+hoping to find a set of time slots when the classes are offered 
+that allow them to take what they need.
+Imagine if instead, each student submits their list of classes
+and then the college tries to 
+find a non-conflicting schedule of time slots and rooms
+for those classes.
+
+More specifically, consider a college that has $t=12$ available time slots,
+such as Tuesday and Thursday from $8$ until $9:20$.
+They must schedule $n=420$ classes into $r=60$ classrooms.
+(We will ignore issues such as that science lab classes must be in 
+labratory rooms.) 
+Since $12\cdot 60=720$ and we need only accomodate
+$420$ classes, it might seem easy. 
+But when the $1724$ students submit their course requests, they 
+create conflicts:~when a student requests
+classes, that puts the restriction on the schedule that those classes
+cannot meet at the same time.
+With all those constraints, can we find a way through?
+
+The \definend{\probname{Class Scheduling}}\index{Class Scheduling problem@\probname{Class Scheduling} problem}
+problem inputs the number of time slots and rooms,
+and the set of class requests $s_i$ from each student,
+and decides if there is a way to allocate classes
+so that there is no conflict.
 \begin{equation*}
-  \lang=\set{\sequence{n,\set{s_0,s_1,\ldots }}\suchthat \text{where $s_i=\set{c_{i_0},c_{i_1}\ldots}$ is a class set, a schedule exists}}
+  \lang=\set{\sequence{t,r,\set{s_0,s_1,\ldots }}\suchthat \text{where $s_i=\set{c_{i_0},c_{i_1}\ldots}$ is a class set, a schedule exists}}
 \end{equation*}
+This problem is $\NP$-complete.
 
-For the proof that $\prob\in\NP$,
-as a witness~$\omega$ we can use 
-a sequence of assignments of students to classes 
-$\set{s_0=\sequence{c_{0,0},c_{0,11}\ldots},\ldots}$ 
-and classes to time slots $\set{t_0=\set{c_{0,0},c_{0,1}\ldots},\ldots}$.
-Clearly the length of $\omega$ is polynomial
-in the number of students, and we can 
-check in polytime
-that each student is assigned one class from each of their lists,
-that each class is given a time slot, and that there is no time slot conflict.
+It is a member of $\NP$ because we can take as a witness~$\omega$ an
+assignment of classes to rooms and times.
+Verifying in polytime 
+that $\omega$ meets the restrictions, such as that there are
+not too many time slots and that each student's list has no conflict,
+is straightforward.
 
-What remains is to show that $\prob$ is $\NP$~hard. 
-We will demonstrate that $\text{$3$-$\SAT$}$ reduces to it, 
-$\text{$3$-$\SAT$}\leq_p\prob$.
-For that we produce a reduction function. 
-
-The reduction function 
-inputs propositional logic expressions in conjunctive normal form.
-One example is 
-$(x_3\vee x_4\vee x_7)\wedge(x_3\vee \neg x_5\vee \neg x_6)\wedge (\neg x_0\vee\neg x_1)$.
-These expressions have clauses joined by $\wedge$'s 
-so it is true if and only if each clause is true.
-Further,
-inside each clause, the literals\Dash the $x_i$ or $\neg x_i$'s\Dash 
-are joined by $\vee$'s so 
-a clause is true if any of the literals inside of it is true. 
-(Also, because we are proving that $\text{$3$-$\SAT$}\leq_p\prob$,
-each such clause contains~$3$ or fewer literals.
-And, let the number of clauses be~$m$.)
-
-The reduction function must output instances of $\prob$,
-that is, must output collections of students and lists and courses.
-This decision problem 
-has a successful schedule if and only if the
-input formula is satisfiable.
-(And this can be verified in polytime.) 
-
-Here is how we construct a suitable scheduling problem from an input expression.
-The college will have $n=2$~time slots.
-Every student~$s$ gets two
-disjoint lists of classes $\ell_s,\hat{\ell}_s$.
-For each Boolean variable~$x_i$ in the input,  
-the output instance will have an associated course~$c_i$,
-of essentially infinite capacity 
-(that is, the capacity is equal to the total number of students at the college).
-There will also be a course named `T' 
-and one named `F', each
-each with capacity $2m+1$.
-One of the two available time slots will get course~`T'
-and to the other will get~`F'.
-To ensure this,
-in the output instance put a student~$\hat{s}$ whose two lists are
-$\ell_{\hat{s}}=\set{\text{T}}$ and 
-$\hat{\ell}_{\hat{s}}=\set{\text{F}}$. 
-(Think of it this way: if the expression can be satisfied then there
-is an assignment of the variables to truth values, such as $x_0$ gets true,
-$x_1$ gets false, etc., and then the course $c_0$ will go in the same time slot
-as the course `T', the course $c_1$ goes in with `F', etc.)
-
-Now consider the clauses in the input propositional logic expression.
-Easiest are the clauses without negations, of the form
-$x_{i_0}$, or $x_{i_0}\vee x_{i_1}$, or $x_{i_0}\vee x_{i_1}\vee x_{i_2}$.
-If the clause is $x_{i_0}$ then in the output instance we create a student
-$s$ with the two lists
-$\ell_s=\set{c_{i_0}}$ and $\hat{\ell}_s=\set{\text{F}}$.
-(For instance, if the clause is $x_7$ then the lists are 
-$\set{c_7}$ and $\set{\text{F}}$.)
-This ensures that course $c_{i_0}$ must be placed in the same time slot
-as course `T'.
-If the expression's clause is $x_{i_0}\vee x_{i_1}$
-thenadd to the output instance 
-a student~$s$ who gets
-$\ell_s=\set{c_{i_0},c_{i_1}}$ and $\hat{\ell}_s=\set{\text{F}}$.
-Similarly, for $x_{i_0}\vee x_{i_1}\vee x_{i_2}$, create a student
-whose lists are 
-$\ell_s=\set{c_{i_0},c_{i_1},c_{i_2}}$ and $\hat{\ell}_s=\set{\text{F}}$.
-
-Clauses consisting only of negations,
-either $\neg x_{i_0}$, or $\neg x_{i_0}\vee\neg x_{i_1}$, 
-or $\neg x_{i_0}\vee\neg x_{i_1}\vee\neg x_{i_2}$, 
-work much the same way, except that they ensure that the associated
-courses end in the same time slot as `F'.
-An example is that for the one-atom clause $\neg x_{i_0}$, 
-we create a student with the two lists 
-$\ell_s=\set{\text{T}}$ and $\hat{\ell}_s=\set{c_{i_0}}$.
-
-The messiest clauses are those with a mix of positive and negative atoms.
-We will show what to do with an example: suppose that the $j$-th clause is
-$x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$.
-In addition to the associated classes $c_{i_0}$, $c_{i_1}$, and~$c_{i_2}$,
-we also create three new classes $t_j$, $f_j$ and~$z_j$. 
-These classes have capacity of only one student each.
-And we create three students, $s_j$, $u_j$, and $v_j$, having
-these lists.
-\begin{center}\small
-\begin{tabular}{r|cc}
-  \multicolumn{1}{r}{\tabulartext{Student}}
-    &$\ell$                        &$\hat{\ell}$  \\
-  \hline
-  $s_j$                  &$\set{c_{i_0},c_{i_1},t_j}$    &$\set{c_{i_2},f_j}$  \\
-  $u_j$                  &$\set{t_j,z_j}$               &$\set{\text{F}}$  \\
-  $v_j$                  &$\set{\text{T}}$              &$\set{f_j,z_j}$  
-\end{tabular}
-\end{center}
-(Here is the thinking: if the expression is satisfiable then there is a
-way to get a consistent total expression by in this clause either having
-$x_{i_0}$ associated with true, 
-or having $x_{i_1}$ associated with true, 
-or having $x_{i_2}$ associated with false.
-If it is the $x_{i_0}$ one, then student $s_j$ can pick $c_{i_0}$ from their
-first list, student $u_j$ can pick $t_j$ from their first list,
-and $v_j$ can pick `T'.
-As to the second lists, $v_j$ can pick $z_j$, 
-$u_j$ can pick `F', 
-and $s_j$ can pick $f_j$.)
-
-To confirm that this reduction function suffices,
-we must show that if for the input instance 
-there is an assignment of truth values to the
-Boolean variables that satisfies the expression then for the output
-course scheduling instance there is a solution, 
-and we must also show the converse.
-
-So first suppose that there a way to give each Boolean variable a value of
-\true{} or \false{} such that the entire propositional logic formula evaluates
-to~\true.
-Then we get a non-conflicting course time slot allotment by:
-where $x_i=\true$, put the course~$c_i$ in the same time slot as course~`T',
-and where $x_j=\false$, put the course~$c_j$ in the slot slot with `F'.
-This clearly works for the all-positive atom or all-negative atoms clauses.
-The interesting clauses are the mixed positive and negative atom ones, such as
-our example $x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$.
-% For the input propositional logic formula to evaluate to $T$ this
-% clause itself must evaluate to $T$.
-We can check that for each possible assignment making this clause
-evaluate to~\true, there is a non-conflicting way to arrange the 
-courses.
-For instance, one such assignment is 
-$x_{i_0}=\true$, $x_{i_1}=\false$, and $x_{i_2}=\true$.
-Here is a way to assign courses to time slots that will avoid conflicts.
-We have put course~$c_{i_0}$ in the time slot with course~`T', and
-student~$s_j$ can take it then.
-This student can also take
-course~$c_{i_2}$ in the time slot when `F' is offered.
-As to student~$u_j$, then take course~$t_j$ when `T' is offered and also take
-course~`F'.
-Likewise, student~$v_j$ takes `T' and also takes course~$f_j$ when `F' 
-is offered.
-
-Conversely, suppose that for every assignment of truth values to
-the Boolean variables, the input expression is not satisfied.
-We will show that as a result, for any allocation of classes into time slots
-there is a conflict.
-
-So fix an allocation of classes into time slots, say with
-the classes $c_{i_0}$, $c_{i_1}$, \ldots{} being offered in the
-same slot as class~`T' and
-the rest with class~`F'.
-Associate with that allocation of classes the assignment of Boolean variables
-that sets $x_{i_0}=\true$, $x_{i_1}=\true$, etc.
-and the rest to~$\false$.
-By our assumption this expression is not satisfiable so 
-this assignment causes the formula to yield a value of~$\false$,
-Thus the expression has at least one clause, clause~$j$, that does not
-evaluate to~$\true$.
-
-The first possibility is that clause~$j$ has either all positive atoms
-or all negative atoms.
-An example is the clause $x_{i_0}\vee x_{i_1}\vee x_{i_2}$.
-To make this clause evaluate to~\false, the assignment must have
-$x_{i_0}=\false$, $x_{i_1}=\false$, and $x_{i_2}=\false$, 
-and so the allocation of classes
-must be that all three of $c_{i_0}$, $c_{i_1}$, and $c_{i_2}$ go with class~`F'.
-That gives a conflict in problem instance's course assignments, 
-because 
-we created a student~$s_j$ with the lists
-$\ell_{s_j}=\set{c_{i_0}, c_{i_1}, c_{i_2}}$ and $\hat{\ell}_{s_j}=\set{F}$.
-
-The other case is that clause~$j$ has a mixed form, such as
-$x_{i_0}\vee x_{i_1}\vee \neg x_{i_2}$, so that the Boolean variable
-assignment is
-$x_{i_0}=\false$, $x_{i_1}=\false$, and $x_{i_2}=\true$.
-The output course assignment problem instance puts 
-$c_{i_0}$ and $c_{i_1}$ into a course at the same time as class~`F', 
-and $c_{i_2}$ into a course at the same time as~`T'.
-We claim that there is no non-conflicting way to assign these
-students to courses.
-Refer to the table above.
-This allocation of classes could only be non-conflicting if student~$s_j$
-selected classes~$t_j$ and~$f_j$.
-But then because of the capacity of one in these classes,
-student~$u_j$ must select~$z_j$ and~`F', leaving student~$v_j$
-with a conflict. 
-
-Whew!
-To close, observe that the reduction function that creates the
-output $\prob$ instance from the input propositional logic formula
-runs in polytime.
+It is $\NP$~hard because it is a special case of the 
+\probname{$k$-Coloring} problem:~the\index{k Coloring problem@\probname{$k$ Coloring} problem}
+colors are the time slot/room combinations, 
+the nodes are the classes, and two nodes are 
+connected when some student has requested them both.
+The prior example shows that \probname{$k$-Coloring} is $\NP$~hard for 
+$k=3$ and an extension of that argument shows the same for any $k>2$.
+(When $k=1$ or $k=2$, the problem is solvable in polytime but 
+we assume that this college has more than one or two rooms.)
 \end{example}
 
-\medskip
+% \medskip
 Before we leave this discussion, we ask the
-natural question:~what problems are not complete?
-The short answer is that we don't know.
-First, it is trivial from the definition 
-that if a problem is $\NP$~hard but not in~$\NP$ then it is not $\NP$~complete.
+natural question:~we've shown that lots of problems are $\NP$-complete;
+what problems are not?
+First, any text on algorithms is full of descriptions of problems and 
+how to solve them in polytime.
+Also, it is trivial from the definition 
+that if a problem is not in~$\NP$ then it is not $\NP$~complete
+(whether it is $\NP$~hard or not).
 Likewise, the empty language and the language of all strings are 
 trivially not complete.
-But as to proving that interesting problems from~$\NP$ are not complete, 
-that is another matter. 
+But, if we come across an interesting problem that is in~$\NP$ and no polytime
+algorithm occurs then proving that it is not complete is another matter. 
 It is 
 \citetext{tied up with the question of whether $\P$ is unequal 
   to~$\NP$}{%
@@ -11607,8 +11444,9 @@ which we address in the next subsection.
 
 However, so that we have have not just brushed past the question, 
 with the assumption that $\P\neq\NP$,
-here are a few problems that are in~$\NP$ 
-and that many people conjecture are tough but not $\NP$~complete. 
+here are a few problems that are in~$\NP$, that appear to be 
+quite tough, 
+but that may well be not $\NP$~complete. 
 Most experts believe that the 
 \probname{Factoring}\index{Factoring problem@\probname{Factoring} problem}
 problem is hard for classical
@@ -11700,7 +11538,7 @@ determining the best layout of transistors on a chip,
 developing accurate financial-forecasting models,
 analyzing protein-folding behavior in a cell,
 or finding the most energy-efficient airplane wing.
-So the question of whether $\P=$ equals $NP$ is extremely practical, and
+So the question of whether $\P$ equals $\NP$ is extremely practical, and
 extremely important.\footnote{%
   One indication of its importance is its inclusion on 
   Clay Mathematics Institute's list
@@ -11718,7 +11556,7 @@ try to find an algorithm will not be fruitful, since many of the
 best minds of Mathematics, Computer Science, and the natural sciences 
 have failed at it.
 They may instead turn their attention elsewhere, perhaps to
-approximations that are good enough (see \cref{extra:Tractability}),
+approximations that are good enough (see the \cref{extra:Tractability} topic),
 or to probabilistic methods that solve the problem in most cases.
 %</discussion:PvsNPInPractice>
 
@@ -11889,7 +11727,7 @@ while only $12\%$ thought that $\P=\NP$.
 %</discussion:PvsNPii>
 This subsection discusses some of the intuition around the question. 
 
-\margingraphic*{0.25\textwidth}{complexity/pix/jigsaw.png}
+\margingraphic*{0.28\textwidth}{complexity/pix/jigsaw.png}
 \begin{credit}
   By Psyon (Own work) CC BY-SA 3.0 \url{https://commons.wikimedia.org/wiki/File:Jigsaw_Puzzle.svg}
 \end{credit}
@@ -11901,7 +11739,7 @@ then checking that it is correct is very much easier than
 it would have been to work out the solution from scratch.
 Checking for correctness is mechanical, tedious.
 But the finding of a solution, we perceive, 
-is creative\Dash we intuit that solving
+is creative\Dash we feel that solving
 a jigsaw puzzle by brute-force trying every possible piece against every
 other is too much computation to be practical.
 
@@ -11909,6 +11747,8 @@ Similarly, schemes for secret codes are engineered so that, given an
 encrypted message, decrypting it with the key is fast and easy,
 but trying to decrypt it by wading through all possible keys is,
 we think, just not tractable.
+That is, we leverage the separation that we believe exists between
+$\P$ and $\NP$, between tractable and not, to engineering advantage.
 
 %<*discussion:PvsNPiii>
 One way to think about the two classes is that
@@ -11952,13 +11792,13 @@ experience with Artificial Intelligence makes this seem more and
 more a possibility\Dash 
 then we could have fast mechanical writers of excellent music.
 
-We finish with a taste of the contrarian view, the conjecture that 
+We finish with a taste of the contrarian view, the conjecture 
+held by some experts that 
 $\P=\NP$.
 
 %<*discussion:PvsNPiv>
 \citetext{Many observers}{% 
   For example,  \autocite{Viola}} 
-Many observers
 have noted that  
 there are cases where everyone ``knew'' that some algorithm was the 
 fastest but in the end it proved not to be so.

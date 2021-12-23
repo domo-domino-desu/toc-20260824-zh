@@ -1850,9 +1850,9 @@ defaultlayoutrel = false;
 node Tnode = ncircle("$T$",ns_bleachedbg);
 node Fnode = ncircle("$F$",ns_light);
 node Gnode = ncircle("$G$",ns_gray);
-node anode = ncircle("$a$");
-node bnode = ncircle("$b$");
-node cnode = ncircle("$c$");
+node anode = ncircle("$a$\strut");
+node bnode = ncircle("$b$\strut");
+node cnode = ncircle("$c$\strut");
 node n0 = ncircle("$n_0$");
 node n1 = ncircle("$n_1$");
 node n2 = ncircle("$n_2$");
@@ -2018,7 +2018,6 @@ draw(pic,
      (m4--negynode).style(highlightstyle),
      (m5--znode).style(highlightstyle)
 );
-
 
 // draw extra paths
 pair gnd_offset = (0*u,0.75*v);

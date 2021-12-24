@@ -4973,9 +4973,19 @@ In addition, we will be sloppy about the distinction between the
 decision problem for a language and the language itself; for instance, we
 will write $\prob$ for a problem.
 
-\begin{fig}[fig:LangsBlob]{Each blob pictures the collection
-    of languages, $\powerset(\kleenestar{\B})$, 
-    which we sometimes call the `problems'. 
+\begin{fig}[fig:LangsBlob]{%
+   \protect\citetext{Each blob pictures the collection of languages}{%
+      One misleading aspect of this picture is that there are 
+      uncountably many languages but only countably many 
+      Turing machines, and hence only countably many computable 
+      or computably enumerable languages.
+      So, shown to scale, that area of the blob would be 
+      an infinitesimally small speck at the very bottom.
+      But such a picture would not show the features we want to
+      illustrate, so these drawings take a graphical license.    
+    }, 
+    $\powerset(\kleenestar{\B})$, 
+    which we often call the `problems'. 
     On the left, the dots in the blob
     emphasize that this is a collection of separate 
     sets, not a continuum.
@@ -11332,7 +11342,11 @@ We will verify that this structure is $3$-colorable if and only if
 nodes $a$, $b$, and~$c$ are not the color of~$F$.
 For ``only if,'' when $a$, $b$, and $c$ are the color of~$F$ then one of
 $n_3$ and~$n_4$ is the color of $T$ or~$G$ and the other is the other color, 
-and so $n_0$ is the color of~$F$, and hence $n_0$ is the color of~$F$.
+and hence $n_0$ is the color of~$F$,
+and as $n_2$ is the color of $T$, this makes $n_1$ the color of $G$,
+and this in turn implies that $n_5$ is the color of~$F$.
+That's a conflict because $c$ is the color of~$F$.
+
 For ``if,'' we need only exhibit one $3$-coloring for each remaining case.
 \begin{center}\small
 \begin{tabular}{*{3}{c}|*{6}{c}}
@@ -11351,17 +11365,17 @@ For ``if,'' we need only exhibit one $3$-coloring for each remaining case.
 
 Here is how to combine multiple clauses.
 This is the graph that the reduction function outputs for
-the expression
+the input expression
 $(x\vee y\vee z)\wedge(\neg x\vee \neg y\vee z)$.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity37.pdf}
 \end{center}
 On the left is the gadget for the first clause and on the right is the 
 gadget for the second.
-As mentioned above, the edge dashing and also the edge 
-highlighting are just to make the picture more visually comprehensible.
-Again, the three-line symbol at the bottom means that each
-literal node is connected to~$G$.
+% As mentioned above, the edge dashing and also the edge 
+% highlighting are just to make the picture more visually comprehensible.
+% Again, the three-line symbol at the bottom means that each
+% literal node is connected to~$G$.
 \end{example}
 
 One of Karp's points was the practical importance of
@@ -11375,23 +11389,23 @@ Usually, colleges make a schedule by putting classes into
 time slots and after that students pick which classes they will take,
 hoping to find a set of time slots when the classes are offered 
 that allow them to take what they need.
-Imagine if instead, each student submits their list of classes
+Imagine if instead, first each student submits their list of classes
 and then the college tries to 
 find a non-conflicting schedule of time slots and rooms
 for those classes.
 
-More specifically, consider a college that has $t=12$ available time slots,
-such as Tuesday and Thursday from $8$ until $9:20$.
-They must schedule $n=420$ classes into $r=60$ classrooms.
-(We will ignore issues such as that science lab classes must be in 
+Specifically, consider this college:~it has $t=12$ available time slots,
+such as Tuesday and Thursday from $8$ until $9$:$20$.
+It must schedule $n=420$ classes into $r=60$ classrooms.
+(We will ignore many issues, such as that science lab classes must be in 
 labratory rooms.) 
-Since $12\cdot 60=720$ and we need only accomodate
-$420$ classes, it might seem easy. 
-But when the $1724$ students submit their course requests, they 
-create conflicts:~when a student requests
-classes, that puts the restriction on the schedule that those classes
+Since $12\cdot 60=720$ and it need only accomodate
+$420$ classes, this might seem easy. 
+But when their $1724$ students submit course requests, they 
+create conflicts:~each pair of classes requested 
+puts the restriction on the schedule that those classes
 cannot meet at the same time.
-With all those constraints, can we find a way through?
+Can they find a schedule, despite all those constraints?
 
 The \definend{\probname{Class Scheduling}}\index{Class Scheduling problem@\probname{Class Scheduling} problem}
 problem inputs the number of time slots and rooms,
@@ -11412,41 +11426,60 @@ is straightforward.
 
 It is $\NP$~hard because it is a special case of the 
 \probname{$k$-Coloring} problem:~the\index{k Coloring problem@\probname{$k$ Coloring} problem}
-colors are the time slot/room combinations, 
+colors are the time slots, 
 the nodes are the classes, and two nodes are 
-connected when some student has requested them both.
+connected when some student has requested them both
+(and there is a restriction about the number of rooms).
 The prior example shows that \probname{$k$-Coloring} is $\NP$~hard for 
-$k=3$ and an extension of that argument shows the same for any $k>2$.
+$k=3$ and an extension of that argument shows the same for any $k>2$,
+even without the room number addition.
 (When $k=1$ or $k=2$, the problem is solvable in polytime but 
 we assume that this college has more than one or two rooms.)
 \end{example}
 
 % \medskip
-Before we leave this discussion, we ask the
-natural question:~we've shown that lots of problems are $\NP$-complete;
+Before we leave this discussion, we address a
+natural question:~so, lots of problems are $\NP$-complete;
 what problems are not?
-First, any text on algorithms is full of descriptions of problems and 
-how to solve them in polytime.
-Also, it is trivial from the definition 
-that if a problem is not in~$\NP$ then it is not $\NP$~complete
-(whether it is $\NP$~hard or not).
-Likewise, the empty language and the language of all strings are 
-trivially not complete.
-But, if we come across an interesting problem that is in~$\NP$ and no polytime
-algorithm occurs then proving that it is not complete is another matter. 
-It is 
-\citetext{tied up with the question of whether $\P$ is unequal 
+Trivially, the definition gives that 
+the empty language and the language of all strings are 
+not complete.
+Also trivially, 
+if a problem is not in $\NP$ then it is not $\NP$-complete.
+One way that this can happen is that,
+like the problem of finding a chess strategy, a problem is so
+hard that we cannot even check its solution in polytime.
+
+More substantively, this is 
+\citetext{bound to the question of whether or not $\P$ is unequal 
   to~$\NP$}{%
   Ladner's theorem is that if $\protect\P\neq\protect\NP$ 
   then there is a problem in 
   $\protect\NP-\protect\P$ that is not $\protect\NP$~complete.},
 which we address in the next subsection.
-
-However, so that we have have not just brushed past the question, 
-with the assumption that $\P\neq\NP$,
-here are a few problems that are in~$\NP$, that appear to be 
-quite tough, 
-but that may well be not $\NP$~complete. 
+However, 
+\citetext{so that we have not just brushed past the question}{%
+  The only sure way to show that a decision problem is not $\NP$-complete 
+  is to prove that its answer is yes for all instances or no for all 
+  instances. Everything else depends on the assumption that 
+  $\P\neq \NP$, because if $\P = \NP$ then every nontrivial decision 
+  problem is $\NP$-hard
+  (from SE user 
+   David Eppstein, \url{https://mathoverflow.net/a/9226}).},  
+assume that $\P\neq\NP$.
+Any text on algorithms is full of descriptions of various problems and 
+how to solve them in polytime, and
+with $\P\neq\NP$ these problems are not 
+$\NP$-complete.
+But more interestingly, if we are studying a problem that is in~$\NP$  
+and no polytime
+algorithm occurs, even after considerable effort, 
+then settling the question by 
+proving that it is not complete is another matter\Dash 
+we are at this moment at a loss for techniques to do that.
+Here are a few examples, problems in~$\NP$ that appear to be 
+quite tough but not $\NP$~complete, 
+but at this moment we have no proof of that. 
 Most experts believe that the 
 \probname{Factoring}\index{Factoring problem@\probname{Factoring} problem}
 problem is hard for classical
@@ -11485,7 +11518,7 @@ So $\P$~versus~$\NP$ asks:~does adding parallelism add speed?
 % from super-polynomial to polynomial?
 
 The short answer is that no one knows.
-We don't know which if these two pictures is right.
+We don't know which of these two pictures is right.
 \begin{fig}[fig:ProblemBeansPNP]{Which is it: $\P\subset\NP$
   or $\P=\NP$?}
   % \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
@@ -11497,11 +11530,11 @@ We don't know which if these two pictures is right.
 \noindent There are a number of ways
 to settle the question.
 By \cref{lem:InteractionNPCompleteAndReduction}, if someone can name
-an $\NP$ complete problem that they can prove is a member of~$\P$ then
+an $\NP$ complete problem that they can prove is a member of~$\P$, then
 $\P=\NP$.
 Conversely, 
 if someone shows that there is an $\NP$ problem that is not a member
-of~$\P$ then $\P\neq\NP$.
+of~$\P$, then $\P\neq\NP$.
 However, despite nearly a half century of effort by many extremely smart
 people, no one has done either one.
 

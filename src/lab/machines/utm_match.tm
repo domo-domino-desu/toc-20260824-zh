@@ -27,8 +27,8 @@
 3 H L 3
 3 S S 0
 3 T L 3
-% Number 1's after S ran out.
-% See if 1's after T are also gone
+% The 1's after S have run out.
+% See if the 1's after T are also gone
 10 B R 10  % Scan right 
 10 1 R 10
 10 T R 11

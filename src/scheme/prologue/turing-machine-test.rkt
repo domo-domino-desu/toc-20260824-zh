@@ -31,6 +31,12 @@
      (list 3 STROKE BLANK 3)
      ))
 
+;; inf loop
+(define tm2
+  (list
+   (list 0 BLANK BLANK 0)
+   (list 0 STROKE STROKE 0)))
+
 
 ;; ============  configuration tests =================
 (test-case
@@ -307,6 +313,15 @@
 ;; ======================== execute-guarded =====================
 
 (test-case
- "Test execute-guarded.")
+ "Test execute-guarded."
+ (let* ([cfg (make-config 0
+                         STROKE
+                         (make-tape-list "")
+                         (make-tape-list "1100"))]
+        [history (execute-guarded tm2 cfg 20 #f)])
+   (display "Hello")(newline)
+   (display (execute-guarded tm2 cfg 20 #f))
+   (display "End")(newline)
+   (check-equal? (length history) 20)))
 #|
 |#

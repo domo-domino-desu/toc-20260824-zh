@@ -183,6 +183,8 @@
 ;; Execute for a limited number of states
 (define (execute-guarded tm initial-config slmt [verbose #t])
   (define (execute-helper config stp history)
+    (begin
+      (display "config is ")(display (configuration->string config))(newline)
     (cond [(>= stp slmt)
            (begin
              (when verbose
@@ -205,9 +207,11 @@
                            stp
                            (configuration->string config)))
                   (let ([next-config (step config tm)])
-                    (execute-helper next-config (add1 stp) (cons next-config history))))]))
+                    (execute-helper next-config (add1 stp) (cons next-config history))))])))
 
-  (execute-helper initial-config 0 '()))
+(begin
+  (display "initial config is ") (display (configuration->string initial-config)) (newline)
+  (execute-helper initial-config 0 '())))
 
 (provide execute-guarded)
 

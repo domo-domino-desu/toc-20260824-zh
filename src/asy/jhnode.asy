@@ -51,6 +51,8 @@ nodestyle ns_light=nodestyle(xmargin=1pt,textpen=NODEPEN,
 			     drawfn=FillDrawer(lightcolor,black));
 nodestyle ns_gray=nodestyle(xmargin=1pt,textpen=NODEPEN,
 			    drawfn=FillDrawer(gray(0.85),black));
+nodestyle ns_white=nodestyle(xmargin=1pt,textpen=NODEPEN,
+			    drawfn=FillDrawer(white,black));
 
 
 

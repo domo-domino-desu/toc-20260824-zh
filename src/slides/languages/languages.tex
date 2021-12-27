@@ -156,10 +156,10 @@ Nonmembers are \str{)(}, \str{(()}, and \str{())(()}.
 \begin{example}
 We can mechanically decide the language of perfect squares,
 $S=\set{\str{1}^{(n^2)}\suchthat n\in\N}$.
-We can mechanically recognize the language of the \HP,
-\begin{equation*}
+A Turing machine can recognize the language of the \HP,
+$
   K=\set{e\in\N\suchthat \TMfcn_e(e)\converges}
-\end{equation*}
+$,
 but no Turing machine decides~$K$.
 \end{example}
 \end{frame}
@@ -170,27 +170,23 @@ but no Turing machine decides~$K$.
 % ==============================================
 \section{Grammars}
 \begin{frame}{Introduction}
-The definition allows a language to be
+The definition of  language allows
 any subset of $\kleenestar{\Sigma}$, at all.
-But in practice, usually there is a pattern.
-Often the language follows rules.
+But usually there is a pattern; often the language follows rules.
 For example, the C~language consists of programs that follow
 rules of a grammar.
-\end{frame}
 
-\begin{frame}
-  \frametitle{Some rules for English}
-
+Here are some rules for English
 \begin{itemize}
 \ExecuteMetaData[\catchfilefn]{ex:RulesForEnglish} 
 \end{itemize}
-We will write them this way.
-\ExecuteMetaData[\catchfilefn]{ex:GrammarRulesForEnglish} 
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Vocabulary}
+We will formally write the above rules this way.
+\ExecuteMetaData[\catchfilefn]{ex:GrammarRulesForEnglish} 
+
 \ExecuteMetaData[\catchfilefn]{discussion:GrammarVocabulary} 
 \end{frame}
 
@@ -265,7 +261,8 @@ This is part of the grammar of C.
 	\othersyntax FOR \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \ntrm{expression} \trm{)} \ntrm{statement}
 \end{grammar}
 As to the capitalization, here `IF'
-means `any string that capitalizes to IF'.
+means `any string that capitalizes to IF', so either
+`If', or `iF', or `if', or `IF'.
 \end{example}
 \end{frame}
 
@@ -273,15 +270,15 @@ means `any string that capitalizes to IF'.
 \begin{frame}
   \frametitle{Recursive grammars}
 
-The two example grammars above are recursive. 
+The prior two example grammars are recursive. 
 For instance, \ntrm{left} can expand to
 an expression involving \ntrm{left}.
 \begin{grammar}
 \ntrm{left} \produces \trm{a}\ntrm{left} 
   \othersyntax \trm{b}\ntrm{right}
 \end{grammar}
-
-Similarly, \ntrm{statement\_list}'s expansion involves itself.
+Similarly, in the C grammar, \ntrm{statement\_list}'s expansion 
+can involve itself.
 \begin{grammar}
 \ntrm{statement\_list}
 	\produces{} \ntrm{statement}
@@ -293,8 +290,8 @@ Similarly, \ntrm{statement\_list}'s expansion involves itself.
 \begin{frame}
   \frametitle{Abbreviation}
 
-For examples and exercises we may use capital letters as nonterminals
-and lowercase letters or digits as terminals.
+Often, for examples and exercises we use capital letters for nonterminals
+and lowercase letters or digits for terminals.
 
 \begin{example}
 The strings derived from this grammar are
@@ -321,10 +318,27 @@ A \produces aA \syntaxor a
 
 B\produces bB \syntaxor b
 \end{grammar}
-lets you derive strings consisting of some \str{a}'s folowed by some \str{b}'s.
+lets you derive strings consisting of some \str{a}'s followed by some \str{b}'s.
 \begin{equation*}
 \lang(G)=
 \set{\str{a}^n\str{b}^m\suchthat n,m\in\N^+}
+\end{equation*}
+\end{example}
+
+\begin{example}
+This grammar $\hat{G}$
+\begin{grammar}
+S \produces AB
+
+A \produces a
+
+B\produces bbB \syntaxor \emptystring
+\end{grammar}
+lets you derive strings consisting of a single \str{a},
+and then an even number of \str{b}'s (including possibly zero many \str{b}'s).
+\begin{equation*}
+\lang(\hat{G})=
+\set{\str{a}\str{b}^{2m}\suchthat m\in\N}
 \end{equation*}
 \end{example}
 \end{frame}
@@ -451,13 +465,12 @@ For instance, this is part of a BNF grammar of arithmetic expressions.
 \begin{description}[xxx]
 \item[Repetition] To show that an element may be repeated zero or more times,
 use curly braces.
-This is a comma-separated argument list.
+An example is that this describes a comma-separated argument list.
 \begin{grammar}
 \ntrm{args} \bnfproduces \ntrm{arg} \{ \trm{,} \ntrm{arg} \trm{} \}
 \end{grammar}
 To denote zero or more times you may also see a Kleene star,~`$*$'. 
-Also,
-to denote one or more times you may see a plus,~`$+$'.
+To denote one or more times you may see a plus,~`$+$'.
 \begin{grammar}
 \ntrm{natural} \bnfproduces \ntrm{digit}+
 \end{grammar}
@@ -472,7 +485,8 @@ This shows two terms being added or subtracted.
 \begin{grammar}
 \ntrm{expr} \bnfproduces \ntrm{term} ( \trm{+} | \trm{-} ) \ntrm{expr}
 \end{grammar}
-In addition to the vertical bar for ``or'', the parentheses are metacharacters.
+Here, in addition to the vertical bar, meaning `or', 
+the parentheses are metacharacters.
 
 \pause\item[Concatenation]
 Juxtaposition is invisible so occasionally you see a comma~`\trm{,}' 
@@ -482,7 +496,8 @@ to denote concatenation.
 
 
 \begin{frame}[fragile]
-Here is a definition of a date and time format taken from RFC~5322.
+Taken from RFC~5322, 
+here is a grammar for a common date and time format.
 \begin{lstlisting}
 date-time       =   [ day-of-week "," ] date time [CFWS]
 
@@ -517,7 +532,8 @@ date-time       =   [ day-of-week "," ] date time [CFWS]
 
 
 \begin{frame}[fragile]{Python's floating point}
-This is the grammar for floating point numbers in Python.
+This is the grammar that the Python documentation uses
+for floating point numbers.
 \begin{lstlisting}
 floatnumber   ::=  pointfloat | exponentfloat
 
@@ -556,6 +572,7 @@ and eight edges.
 \ExecuteMetaData[\catchfilefn]{discussion:EdgeNotation} 
 
 \ExecuteMetaData[\catchfilefn]{discussion:GraphVariants} 
+
 \pause
 \ExecuteMetaData[\catchfilefn]{def:Subgraph} 
 \end{frame}
@@ -571,8 +588,11 @@ and eight edges.
 \ExecuteMetaData[\catchfilefn]{def:AdjacencyMatrix} 
 
 \ExecuteMetaData[\catchfilefn]{lem:MatrixPowersAdjacencyMatrix} 
+\end{frame}
 
-\pause
+
+
+\begin{frame}{Graph coloring}
 \ExecuteMetaData[\catchfilefn]{def:GraphColoring} 
 
 \begin{example}
@@ -587,6 +607,11 @@ These classes have students in common:
 1007-4118, 3137-4118,
 1007-4156, 3137-4156, 3157-4156.
 What is the minimum number of time slots that we must use for the schedule?
+\pause
+\begin{center}
+  \only<2>{\includegraphics{asy/grammar002.pdf}}%
+  \only<3>{\includegraphics{asy/grammar003.pdf}}
+\end{center}
 \end{example}
 \end{frame}
 

@@ -81,7 +81,7 @@
 \begin{center}
   \includegraphics{\generalasydir share/machine02.pdf}
 \end{center}
-Our default convention is that that the start state is $q_0$.
+Our convention is that the start state is $q_0$.
 \end{frame}
 
 
@@ -109,6 +109,9 @@ For instance, $\Delta(q_1,\str{1})=q_2$.
 \end{center}
 The $\acceptingstatemark$ next to $q_2$ marks
 it as an accepting state.
+
+This machine accepts the string \str{01010}.
+It does not accept the string \str{001}.
 \end{example}
 \end{frame}
 
@@ -185,7 +188,7 @@ copies of \str{HEF}.
 \begin{center}
   \includegraphics{asy/fsm06.pdf}
 \end{center}
-(It is a gotcha question; all strings begin with zero copies of \str{HEF}.)
+(It is a gotcha question; all strings begin with zero-many copies of \str{HEF}.)
 \end{example}
 \pause
 \begin{example}
@@ -260,8 +263,9 @@ then the state,~$q_3$, is accepting.
 \ExecuteMetaData[\catchfilefn]{def:FSMLanguage}
 
 \begin{example}
-This machine accepts strings representing a natural number
-that is a multiple of three, such as \str{15} and~\str{5013}.
+This machine recognizes a natural number
+that is a multiple of three (that is, it accepts strings 
+representing such a number in base 10, such as \str{15} or~\str{5013}.
 \begin{center}
   \vcenteredhbox{\includegraphics{\asydir fsa/fsa12.pdf}}
 \end{center}
@@ -343,7 +347,7 @@ there are seven string  of length less than three.
 Turing machines are defined as 
 sets of four-tuple instructions  $q_pT_pT_nq_n$,
 subject to the restriction that the set must be
-deterministic\Dash no pair of instructions can begin with 
+deterministic\Dash that no two instructions can begin with 
 the same $q_pT_p$.
 
 Thus, over the set of instructions $q_pT_pT_nq_n\in\TM$,
@@ -427,14 +431,14 @@ or $\sigma_1=\str{baab}$.
 Two points about this kind of computation
 bear on the definition of nondeterministic Finite State machines.
 
-\begin{itemize}
+\begin{enumerate}
 \item
 In the \mbox{\texttt{T}\produces{}\texttt{aT}} rule,
 the recursion might mislead a person into thinking that we are looking at 
-neverending expansions, at a necessarily-infinite process.
-But we are not interested in that.
+neverending expansions, and thus at a necessarily-infinite process.
+But we are not interested in neverending expansions.
 We simply define that a string~$\sigma$ is derivable if there is at least one
-successful sequence of $\derives$ steps, and then we think about the set
+successful finite sequence of $\derives$ steps, and then we think about the set
 of derivable strings.
 
 \pause\item
@@ -443,11 +447,9 @@ one way that we could proceed is by brute force:~apply
 all rules to the start symbol, then all allowed rules to each result,
 etc. 
 This is a breadth-first search of the $\derives$~sequences.
-
-There is a second way to proceed, the way that we actually do these
-problems.
-We intuit a sequence of steps and then verify our guess.   
-\end{itemize}
+There is a second way to proceed, the way that we have actually done these
+problems in the past:~we intuit a sequence of steps and then verify our guess.
+\end{enumerate}
 
 By the second point, we already have some experience with a kind of 
 nondeterministic computation.
@@ -457,21 +459,21 @@ we often find that more than one rule applies.
 We could handle this by making room on the scratch paper and working through
 the consequences of both rules, 
 and in that sense being in more than one state at a time. 
-In truth though, 
-how we actually handle this is to look forward, hoping to guess a 
+However, 
+how we actually handle this is to look forward and guess a 
 finite sequence of legal steps that ends with the desired~$\sigma$.
 \end{frame}
 
 
 
 \begin{frame}{Example of a nondeterministic machine}\vspace*{-1ex}
-This machine has two arrows labeled~\str{0} that are leaving $q_0$.
-Also, out of $q_1$ comes no arrow with a~\str{1}.
+Leaving $q_0$, this machine has two different arrows labeled~\str{0}.
+Also, out of $q_1$ comes no arrow with a~\str{1}.\vspace*{-1ex}
 \begin{center}\small
   \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
 \end{center}
 We will walk through what happens when we give this machine 
-the input string~\str{00001}.
+the input string~\str{00001}.\vspace*{-0.5ex}
 \begin{center}\small
   \only<2>{\includegraphics{asy/nfsm02.pdf}}%
   \only<3>{\includegraphics{asy/nfsm03.pdf}}%
@@ -487,7 +489,7 @@ the input string~\str{00001}.
 
 
 
-\begin{frame}{First mental model: many children}
+\begin{frame}{Mental model number one: spawning}
 In that diagram, we forked child processes to cover each
 possibility.
 This is a natural approach.
@@ -501,17 +503,10 @@ This is a natural approach.
 % possible derivation, doing a breadth-first traversal of the tree of all
 % derivations.
 
-Above, we recalled the problem where we start with a grammar and then
-we are given a string and want to know if it is derivable.
-The obvious approach is 
-a breadth-first traversal of the tree of all derivations.
-
-% \pause
-Another illustration is the Travelling Salesman problem.
-We look for an efficient trip that visits every state capitol in the 
-forty eight contiguous US~states.
-For instance, we may want to know if there is a cycle of less than 
-$16\,000$ kilometers.
+An example is the Travelling Salesman problem.
+Suppose that we look for a cyclic trip that visits every state capitol in the 
+forty eight contiguous US~states,
+in less than $16\,000$ kilometers.
 Start at Montpelier~Vermont. 
 We could fork forty seven child processes, one for each potential next capital.
 The process assigned Albany, for instance, would know that the trip so far is
@@ -524,11 +519,19 @@ the overall search a success.
 This is an example of nondeterminism in that during it,
 the machine is juggling many process and
 in that sense is simultaneously in many different states.
+
+Another example is that above
+we recalled the problem where we start with a grammar and then
+we are given a string and asked if it is derivable.
+An obvious approach is 
+a breadth-first traversal of the tree of all derivations.
+% \pause
 \end{frame}
 
 
-\begin{frame}{Second mental model: guessing}
-The above machine accepts a string if it ends in two~\str{0}'s and a~\str{1}.
+\begin{frame}{Mental model number two: guessing}
+This nondeterministic machine from earlier
+accepts a string if it ends in two~\str{0}'s and a~\str{1}.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
 \end{center}
@@ -546,6 +549,7 @@ We can instead imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
 only has to check that answer.
 The furnisher is often personified as a demon.
+\pause
 \begin{center}
   \vcenteredhbox{\includegraphics[height=1.2in]{../../automata/pix/flauros.jpg}}
   % \hspace{2em}
@@ -554,7 +558,7 @@ The furnisher is often personified as a demon.
 \end{frame}
 
 \begin{frame}{What the two views share}
-In either mental model, this is an existence test\Dash 
+In both mental models, this is an existence test\Dash 
 the machine accepts the input if there exists a sequence of configurations
 that ends in an accepting state.
 \end{frame}
@@ -587,10 +591,10 @@ the first \str{01} but pay attention to the second?
 
 As remarked earlier, it is striking to say that a machine guesses.
 But later we will show how to convert a nondeterministic Finite State
-machine into  deterministic one,
+machine into  deterministic one.
 So we can think of the nondeterministic machine
 as an abbreviation for a deterministic one.
-This obviates the paradox of guessing, at least for Finite State machines.
+This obviates the paradox of guessing for Finite State machines.
 \end{frame}
 
 \begin{frame}
@@ -600,10 +604,9 @@ accepts only those strings ending in \str{HEF}.
 \begin{center}
   \includegraphics{asy/nfsm11.pdf}
 \end{center}
-The alphabet~$\Sigma$ is the capital ASCII letters.
-
+% The alphabet~$\Sigma$ is the capital ASCII letters.
 Contrast that with what we got when we did this job
-using an explicit deterministic machine.
+using a deterministic machine.
 \begin{center}
   \includegraphics{asy/fsm03.pdf}
 \end{center}
@@ -627,7 +630,7 @@ $\lang(\FSM)=\set{\str{aaa}, \str{aab}, \str{aba}, \str{abb},\str{aaaa}, \str{aa
 
 \pause
 \begin{example}
-This machine~$\hat{\FSM}$ with alphabet $\Sigma=\set{\str{0},\str{0}}$ 
+This machine~$\hat{\FSM}$ with alphabet $\Sigma=\set{\str{0},\str{1}}$ 
 accepts an input string only
 if it contains a substring
 with a \str{1} followed by any number of \str{0}'s

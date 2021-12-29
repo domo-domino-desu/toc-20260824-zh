@@ -4883,11 +4883,11 @@ The language is
 \definend{recognized},\index{Turing machine!language recognized}\index{language!recognized by Turing machine}\index{recognized language}\index{language!recognized}
 or
 \definend{accepted},\index{Turing machine!language accepted}\index{language!accepted by Turing machine}\index{accepted language}
-by
+by a machine
 when for each input~$\sigma\in\kleenestar{\B}\!$, if $\sigma\in\lang$ 
 then the machine returns~$\str{1}$,
 while if $\sigma\notin\lang$ then either the machine
-does not halt or it does not return~$\str{1}$.
+does not halt or it returns something other than~$\str{1}$.
 \end{definition}
 \noindent
 Restated, $\TM$ decides the language $\lang$ if the machine 
@@ -7748,14 +7748,15 @@ They also recognize the same languages.
 \begin{proof}
 A deterministic Turing machine is a special case of a
 nondeterministic one. 
-So if a deterministic machine that decides a language
+So if a deterministic machine decides a language
 or recognizes a language,
-then a nondeterministic one that does also.
+then a nondeterministic one does also.
 
 Conversely, suppose that a nondeterministic Turing
 machine~$\TM$ decides a language~$\lang$.
-A deterministic machine~$\TM[Q]$ that decides the same language
-does a breadth-first search of $\TM$'s computation tree.
+Then a deterministic machine~$\TM[Q]$ that 
+does a breadth-first search of $\TM$'s computation tree
+also decides the same language.
 For, fix an input~$\sigma$.
 If $\TM$ accepts~$\sigma$ then the search done by~$\TM[Q]$ will
 eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
@@ -7835,7 +7836,7 @@ a nondeterministic Turing machine, if we had one,
 
 %<*discussion:SpeedOfNFSMi>
 \begin{example}  \label{ex:SatisfiabilityfastOnNDTM}
-Consider \probname{Satisfiability}.\index{Satisfiability problem@\probname{Satisfiability} problem!on a nondeterministic Turing machine}
+Consider the \probname{Satisfiability} problem.\index{Satisfiability problem@\probname{Satisfiability} problem!on a nondeterministic Turing machine}
 Is this propositional logic formula satisfiable?
 \begin{equation*}
  (P\vee Q)\wedge (P\vee \neg Q)\wedge (\neg P\vee Q)
@@ -7925,11 +7926,11 @@ of a nondeterministic one.
 \begin{lemma}  \label{lem:PSubsetNP}
 $\P\subseteq\NP$  % \,\footnotemark[1]
 \end{lemma}
+%</lem:PSubsetNP>
 \noindent Very important:~no one knows whether $\P$ is a strict subset, 
 that is, whether $\P\neq\NP$ or $\P=\NP$.\index{P versus NP@$\P$ versus $\NP$}
 This is the biggest open problem in the Theory of Computing.
 We will say more in a later section.
-%</lem:PSubsetNP>
 
 A pattern in mathematical presentations is to have
 a definition that is conceptually clear, 
@@ -7953,7 +7954,7 @@ We can then deterministically verify the hint, quickly.
 A \definend{verifier}\index{verifier}\index{language!verifier} 
 for a language~$\lang$
 is a deterministic Turing machine~$\TM[V]$ that halts on all 
-inputs~$\sigma\in\kleenestar{\B}$, subject to the condition that
+inputs~$\sigma\in\kleenestar{\B}\!$, and such that
 $\sigma\in\lang$
 if and only if
 there is a \definend{witness}\index{witness} 
@@ -8004,7 +8005,7 @@ is in $\NP$
 %     \text{$\sigma$ represents a propositional logic formula 
 %           that is satisfiable}}\index{SAT@$\SAT$}
 % \end{equation*}
-involves producing a
+requires that we produce a
 deterministic Turing machine verifier.
 Consider~$\TM[V]$ below. 
 The witnesses, the~$\omega$'s, are strings that 
@@ -8018,7 +8019,7 @@ If a candidate formula~$\sigma$ is satisfiable then
 there is a suitable witness, a line from the table, so that~$\TM[V]$
 can check in polytime 
 that on line~$\omega$, the formula gives~\true.
-For instance, for the formula from~($*$) take
+For instance, for the formula~($*$) take
 $\omega=\str{TTF}$.
 But if a candidate is not satisfiable, such as
 $\sigma=P\wedge\neg P$, then no $\omega$ that the demon can suggest 
@@ -8138,7 +8139,7 @@ The
 is like the
 \probname{Hamiltonian Circuit} problem\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem} 
 except that, 
-instead of requiring that the starting vertex equal the ending one,
+instead of requiring that the starting vertex equals the ending one,
 it inputs two vertices. 
 It is the problem of determining membership in this set. 
 \begin{equation*}
@@ -8158,8 +8159,8 @@ $\omega=\sequence{v,v_1,\ldots{} \hat{v}}$.
 \end{center}
 %<*ex:HamPathIsNPii>
 If there is a Hamiltonian path then there is
-a witness~$\omega$, and so that $\TM[V]$ will accept its input.
-Clearly that acceptance takes polytime.
+a witness~$\omega$, and so there exists input that $\TM[V]$ will accept.
+Clearly that can be done in polytime.
 On the other hand, if the graph has no Hamiltonian path then for no~$\omega$ 
 will~$\TM[V]$ be able to verify that $\omega$ is such a path.
 Thus, the verifier will not accept any input pair, 
@@ -8225,7 +8226,7 @@ Given a candidate bitstring $\tau$,
 (1)~$\TM$ nondeterminstically produces a witness
 bitstring~$\kappa$
 of length less than $q(\sizeof{\tau})$
-(informally speaking, it guesses $\kappa$, or gets it from a demon)
+(informally speaking, it guesses $\kappa$, or gets it from a demon),
 (2)~it then runs  $\sequence{\tau,\kappa}$ through the verifier~$\TM[V]$,
 and
 (3)~if the verifier accepts its input then $\TM$ accepts~$\tau$, while if the 
@@ -8242,7 +8243,7 @@ there exists a witness~$\kappa$ that will
 result in $\TM[V]$ accepting $\sequence{\tau,\kappa}$,
 so there is a way for the prior paragraph to result in acceptance of~$\tau$, 
 and so $\TM$ accepts~$\tau$.
-Now suppose that $\tau\notin\lang$.
+Conversely, suppose that $\tau\notin\lang$.
 By the definition of a verifier, no witness~$\kappa$ will result in 
 $\TM[V]$ accepting $\sequence{\tau,\kappa}$,
 and thus $\TM$ rejects~$\tau$.

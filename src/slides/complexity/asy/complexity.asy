@@ -348,7 +348,7 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $\mathcal{G},v_0,v_1$");
 node convert=nbox("Convert to weighted graph $\hat{\mathcal{G}}$");
-node oracle=nbox("Solve Shortest Path on $\hat{\mathcal{G}},v_0,v_1$");
+node oracle=nbox("Solve Shortest Path on $\hat{\mathcal{G}},v_0,v_1$ with $B=\sizeof{\mathcal{G}}$");
 node test=nrounddiamond("Path exists?");
 node printzero=nbox("Print 0");
 node printone=nbox("Print 1");

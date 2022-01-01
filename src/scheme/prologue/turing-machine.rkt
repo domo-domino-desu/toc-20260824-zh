@@ -376,8 +376,10 @@
   
   (define STEPLIMIT (string->number (steplimit)))
   ; (display "STEPLIMIT is ")(display STEPLIMIT)(newline)
+  (define VERBOSE (string->number (steplimit)))
   
   (if (>= STEPLIMIT 0)
+      (if verbose
       (execute-guarded TM initial-config STEPLIMIT)
       (execute TM initial-config))
 )

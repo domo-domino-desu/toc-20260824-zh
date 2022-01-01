@@ -410,10 +410,10 @@ class MoveTestCase(unittest.TestCase):
                    right_tape='B1BTBBB',
                    left_tape='B',
                    max_steps=100,
-                   verbose=True)
+                   verbose=False)
         out = r.stdout.decode(encoding='UTF-8')
         d_list = parse_lines(out.splitlines())
-        self.assertTrue(check_final_config(d_list,prefix="BB",currentchar="S",suffix="B1BTB"))
+        self.assertTrue(check_final_config(d_list,prefix="BBB",currentchar="S",suffix="B1BTB"))
     
     # def test_descending(self):
     #     """Numbers in interval descending"""

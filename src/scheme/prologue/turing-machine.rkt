@@ -184,7 +184,8 @@
 (define (execute-guarded tm initial-config slmt [verbose #t])
   (define (execute-helper config stp history)
     (begin
-      (display "config is ")(display (configuration->string config))(newline)
+      ; (display "config is ")(display (configuration->string config))(newline)
+      ; (display "slmt is ")(display slmt)(newline)
     (cond [(>= stp slmt)
            (begin
              (when verbose
@@ -372,9 +373,11 @@
                  (string-ref (startchar) 0)
                  (string->list (startleft))
                  (string->list (startright))))
-  (define STEPLIMIT (string->number (steplimit)))
   
-  (if (>= 0 STEPLIMIT)
+  (define STEPLIMIT (string->number (steplimit)))
+  ; (display "STEPLIMIT is ")(display STEPLIMIT)(newline)
+  
+  (if (>= STEPLIMIT 0)
       (execute-guarded TM initial-config STEPLIMIT)
       (execute TM initial-config))
 )

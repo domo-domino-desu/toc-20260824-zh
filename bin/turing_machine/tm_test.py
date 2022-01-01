@@ -62,7 +62,7 @@ log.addHandler(fh)
 # Directory where the racket program is.
 TM_CMD_DIR = os.path.join(PGM_SRC_DIR, "..", "..", "src", "scheme", "prologue")
 
-def run_tm(machine_filename, current_char='B', right_tape='', left_tape='', max_steps=100):
+def run_tm(machine_filename, current_char='B', right_tape='', left_tape='', max_steps=100, verbose=False):
     """Run an instance of the Turing machine simulator
       machine_filename  string  Filename, including .tm.  Taken from 
         subdir in TM_CMD_DIR if such a file exists, else taken from 
@@ -70,17 +70,23 @@ def run_tm(machine_filename, current_char='B', right_tape='', left_tape='', max_
       current_char  -ne-char string  Character under the machine's R/W head
       right_tape  string  Contents of the tape to the right of the head
       left_tape  string  Contents of tape to the left of the head
+      max_steps  number  Maximum number of steps to run
+      verbose  boolean  Print each configuration
     """
     if len(current_char)!=1:
         error("run_tm: The current_char must be a one-character string.")
-    first_choice_filepath = os.path.join(TM_CMD_DIR,'machines',machine_filename)
+    first_choice_filepath = os.path.normpath(os.path.join(TM_CMD_DIR,'machines',machine_filename))
     if os.path.exists(first_choice_filepath):
         fn = first_choice_filepath
     else:
         fn = "machines/{}".format(machine_filename)
         warn("The file {0:s} is not found, so using {1:s}".format(first_choice_filepath,fn))
-    # print("fn is "+fn)
-    return subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', fn, '-c', current_char, '-l', left_tape, '-r', right_tape, '-s', "{:d}".format(max_steps)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if verbose:
+        print("cmd line is "+" ".join([os.path.normpath(os.path.join(TM_CMD_DIR,'turing-machine.rkt')),'-f', fn, '-c', current_char, '-l', left_tape, '-r', right_tape, '-s', "{:d}".format(max_steps), '-v']))
+        return subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', fn, '-c', current_char, '-l', left_tape, '-r', right_tape, '-s', "{:d}".format(max_steps), '-v'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    else:
+        print("cmd line is "+" ".join([os.path.normpath(os.path.join(TM_CMD_DIR,'turing-machine.rkt')),'-f', fn, '-c', current_char, '-l', left_tape, '-r', right_tape, '-s', "{:d}".format(max_steps), '-v']))
+        return subprocess.run([os.path.join(TM_CMD_DIR,'turing-machine.rkt'),'-f', fn, '-c', current_char, '-l', left_tape, '-r', right_tape, '-s', "{:d}".format(max_steps), '-v'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 # ============================================
 def get_final_config(s):

@@ -3,7 +3,7 @@
 """
 Some command-line tests of turing-machine.rkt
 """
-__version__ = "0.0.1"
+__version__ = "0.9"
 __author__ = "Jim Hefferon"
 __license__ = "GPL3"
 
@@ -321,27 +321,99 @@ class MatchTestCase(unittest.TestCase):
                    max_steps=100)
         print(r.stdout.decode(encoding='UTF-8'))
     
-    # def test_simple(self):
-    #     """See that something works"""
-    #     r = run_tm(self.TM_NAME,
-    #                current_char='S',
-    #                right_tape='11B1BTB',
-    #                left_tape='',
-    #                max_steps=100)
-    #     out = r.stdout.decode(encoding='UTF-8')
-    #     d_list = parse_lines(out.splitlines())
-    #     self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="11B1BTB"))
+    def test_simple(self):
+        """See that something works"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='11B1BTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="11B1BTB"))
     
-    # def test_ascending(self):
-    #     """Numbers in interval ascending"""
-    #     r = run_tm(self.TM_NAME,
-    #                current_char='S',
-    #                right_tape='11B111BTB',
-    #                left_tape='',
-    #                max_steps=100)
-    #     out = r.stdout.decode(encoding='UTF-8')
-    #     d_list = parse_lines(out.splitlines())
-    #     self.assertTrue(check_final_config(d_list,prefix="111",currentchar="S",suffix="11B111BTB"))
+    def test_ascending(self):
+        """Numbers in interval ascending"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='11B111BTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="111",currentchar="S",suffix="11B111BTB"))
+    
+    def test_descending(self):
+        """Numbers in interval descending"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='111B11BTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="111",currentchar="S",suffix="111B11BTB"))
+    
+    def test_equal(self):
+        """Numbers in interval equal"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='11B11BTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="11B11BTB"))
+    
+    def test_zero(self):
+        """Number in interval is zero"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='BBBTB',
+                   left_tape='',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="B",currentchar="S",suffix="BBBTB"))
+
+
+
+# ==============================================
+class MoveTestCase(unittest.TestCase):
+    """Tests the move routine of the universal Turing machine."""
+    TM_NAME = os.path.join(UTM_MACHINES_DIR, "utm_shiftright.tm")
+
+    def test_run_tm(self):
+        """See that the run_tm command works, view steps"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='B1BTB11B1B',
+                   left_tape='1B',
+                   max_steps=100)
+        print(r.stdout.decode(encoding='UTF-8'))
+    
+    def test_simple(self):
+        """See that something works"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='B1BTB11B',
+                   left_tape='BB',
+                   max_steps=100)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="B1BTB"))
+    
+    def test_double_blank(self):
+        """After interval is two blanks"""
+        r = run_tm(self.TM_NAME,
+                   current_char='S',
+                   right_tape='B1BTBBB',
+                   left_tape='B',
+                   max_steps=100,
+                   verbose=True)
+        out = r.stdout.decode(encoding='UTF-8')
+        d_list = parse_lines(out.splitlines())
+        self.assertTrue(check_final_config(d_list,prefix="BB",currentchar="S",suffix="B1BTB"))
     
     # def test_descending(self):
     #     """Numbers in interval descending"""
@@ -384,13 +456,9 @@ class MatchTestCase(unittest.TestCase):
 # how to discover all tests? not this: suite.addTests(DoublerTestCase())
 def suite():
     suite = unittest.TestSuite()
-    # suite.addTest(FindmaxTestCase('test_run_tm'))
-    # suite.addTest(FindmaxTestCase('test_simple'))
-    # suite.addTest(FindmaxTestCase('test_ascending'))
-    # suite.addTest(FindmaxTestCase('test_descending'))
-    # suite.addTest(FindmaxTestCase('test_equal'))
-    # suite.addTest(FindmaxTestCase('test_zero'))
-    suite.addTest(MatchTestCase('test_run_tm'))
+    # suite.addTest(MoveTestCase('test_run_tm'))
+    suite.addTest(MoveTestCase('test_simple'))
+    suite.addTest(MoveTestCase('test_double_blank'))
     # suite.addTest(CopyTestCase('test_zero'))
     # suite.addTest(CopyTestCase('test_full'))
     # suite.addTest(CopyTestCase('test_empty'))

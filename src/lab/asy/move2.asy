@@ -14,10 +14,10 @@ picture p;
 pen L_PEN = blue;  // pen used to label the tape
 unitsize(p,1pt);
 
-string s = "  ..BSB1BBT11B..  ";
+string s = "  ..BBSB1BT11B..  ";
 real tape_length = tape_contents_length(s);
 
-tape_draw(p,s,5,"$q_{2}$",tape_length);
+tape_draw(p,s,6,"$q_{2}$",tape_length);
 
 // draw(p, "$x$", tape_label_path(11,12), LeftSide, L_PEN);
 // draw(p, "Target", tape_label_path(14,15), LeftSide, L_PEN);

@@ -8,5 +8,5 @@
 # HISTORY
 #   2022-01-01 Jim Hefferon Written
 
-convert -density 300x300 -resize 65% $1.pdf $1.png
+convert -density 300x300 -resize 65% -sharpen 2x6 $1.pdf $1.png
 cp $1.png ../img

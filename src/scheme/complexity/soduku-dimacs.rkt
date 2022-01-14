@@ -10,9 +10,9 @@
 
 ;; triple->varnum  Find the variable number associated with the row, column, and value
 (define (triple->varnum row-number column-number variable-value)
-  (+ (* 81 variable-value)
-     (* 9 row-number)
-     column-number
+  (+ (* 81 (- variable-value 1))
+     (* 9 (- row-number 1))
+     (- column-number 1)
      1))   ;; add 1 because DIMACS doesn't allow variable 0 (uses 0 to terminate clauses)
 
 ;; varnum->triple  From the variable number, return the associated row, column, and value
@@ -22,22 +22,26 @@
          [vv-removed (- offset (* 81 variable-value))]
          [row-number (quotient vv-removed 9)]
          [column-number (remainder vv-removed 9)])
-    (list row-number column-number variable-value)))
-
+    (list (+ 1 row-number) (+ 1 column-number) (+ 1 variable-value))))
 
 ;; produce-clauses  Given a list of lists of triples, produce the matching set of strings
 ;;   for the DIMACS file
 (define (produce-clauses list-of-lists)
-  (define (one-line variables-in-clause) ; produce one line from a list of nine numbers
+  (define (one-line-of-one variable-in-clause) ; produce one line from a list of one number (for initial conds)
+    (apply format "~a 0\n" variable-in-clause))
+  (define (one-line-of-nine variables-in-clause) ; produce one line from a list of nine numbers (for auto-generated)
     (apply format "~a ~a ~a ~a ~a ~a ~a ~a ~a 0\n" variables-in-clause))
 
   (for/list ([clause-list list-of-lists])
-    (one-line (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
-                   clause-list))))
+    (if (= 9 (length clause-list))
+        (one-line-of-nine (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
+                               clause-list))
+        (one-line-of-one (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
+                               clause-list)))))
 
-
+;; Constant lists
 (define ONETONINE '(1 2 3 4 5 6 7 8 9))
-(define ONETOTHREE '(1 2 3))
+(define ONETOTHREE '(1 2 3))  ;; for boxes
 (define FOURTOSIX '(4 5 6))
 (define SEVENTONINE '(7 8 9))
 (define BOX-INDICES (list ONETOTHREE FOURTOSIX SEVENTONINE))
@@ -86,13 +90,55 @@
     (cons (one-box-one-value box-row-list box-column-list variable-value) accumulator)))
 
 
-;; write to file
-;; dump-to-file  Drop the clauses to the file
+;; ======= write to file =======
+;; FILENAME  Name of the output file
 (define FILENAME "soduku.cnf")
 
 ;; CLAUSES  The list of clauses.
-(define INITIAL-CLAUSES '())
 
+;; INITIAL-CLAUSES  The given layout of the board.  Each row is a list with a triple list: row number, column number, integer.
+(define INITIAL-CLAUSES
+  (list (list '(1 3 9)) ; there is a 9 in position (1,3)
+        (list '(1 8 1))
+        (list '(1 9 5))
+        (list '(2 1 5))
+        (list '(2 4 4))
+        (list '(2 6 9))
+        (list '(2 7 7))
+        (list '(3 1 4))
+        (list '(3 2 7))
+        (list '(3 3 3))
+        (list '(3 4 5))
+        (list '(3 5 6))
+        (list '(3 6 1))
+        (list '(3 7 9))
+        (list '(4 4 7))
+        (list '(4 5 4))
+        (list '(4 8 9))
+        (list '(4 9 6))
+        (list '(5 8 8))
+        (list '(6 3 4))
+        (list '(6 4 8))
+        (list '(6 5 3))
+        (list '(6 7 1))
+        (list '(6 8 5))
+        (list '(7 1 1))
+        (list '(7 2 3))
+        (list '(7 3 5))
+        (list '(7 4 9))
+        (list '(7 9 2))
+        (list '(8 3 6))
+        (list '(8 4 2))
+        (list '(8 5 5))
+        (list '(8 6 7))
+        (list '(8 8 3))
+        (list '(9 1 7))
+        (list '(9 2 2))
+        (list '(9 5 1))
+        (list '(9 9 9))
+           ))
+
+;; CLAUSES  The list of all clauses, including those auto generated.
 (define CLAUSES
   (append INITIAL-CLAUSES (row-restrictions) (column-restrictions) (box-restrictions)))
 

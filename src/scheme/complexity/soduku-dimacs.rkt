@@ -1,6 +1,8 @@
 #lang racket
 ;;;; soduku-dimacs.rkt
 ;;;;  Write a DIMACS file for the standard 9x9 Soduku puzzle
+(require racket/date)
+(date-display-format 'iso-8601)
 
 ;; Each clause is a list of triples (row number, column number, variable value).  Each
 ;; triple is a predicate: #t if the entry in that row and column has that value, and #f
@@ -85,17 +87,30 @@
 
 
 ;; write to file
-
-;; CLAUSES  The list of clauses.
-(define CLAUSES
-  (append (row-restrictions) (column-restrictions) (box-restrictions)))
-
 ;; dump-to-file  Drop the clauses to the file
 (define FILENAME "soduku.cnf")
 
+;; CLAUSES  The list of clauses.
+(define INITIAL-CLAUSES '())
+
+(define CLAUSES
+  (append INITIAL-CLAUSES (row-restrictions) (column-restrictions) (box-restrictions)))
+
+(define FILE-PREAMBLE
+  (list (format "c ~a\n" FILENAME)
+        "c DIMACS format file for SAT solver\n"
+        (format "c ~a Jim Hefferon, hefferon.net.  Public Domain.\n" (date->string (current-date)))
+        (format "p cnf ~a ~a\n" (* 9 9 9) (length CLAUSES))))
+  
+(define FILE-LINES
+  (append
+   FILE-PREAMBLE
+   (produce-clauses CLAUSES)))
+
+;; dump-to-file  Drop the clauses to the file
 (define (dump-to-file)
   (define (dump-lines outfile)
-    (for ([ln (produce-clauses CLAUSES)])
+    (for ([ln FILE-LINES])
       (display ln outfile)))
   
   (call-with-output-file* FILENAME dump-lines #:mode 'text #:exists 'replace))

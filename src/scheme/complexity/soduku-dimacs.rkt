@@ -4,41 +4,6 @@
 (require racket/date)
 (date-display-format 'iso-8601)
 
-;; Each clause is a list of triples (row number, column number, variable value).  Each
-;; triple is a predicate: #t if the entry in that row and column has that value, and #f
-;; otherwise.  Thus, each of the three values are between 1 and 9 inclusive.
-
-;; triple->varnum  Find the variable number associated with the row, column, and value
-(define (triple->varnum row-number column-number variable-value)
-  (+ (* 81 (- variable-value 1))
-     (* 9 (- row-number 1))
-     (- column-number 1)
-     1))   ;; add 1 because DIMACS doesn't allow variable 0 (uses 0 to terminate clauses)
-
-;; varnum->triple  From the variable number, return the associated row, column, and value
-(define (varnum->triple v)
-  (let* ([offset (- v 1)]
-         [variable-value (quotient offset 81)]
-         [vv-removed (- offset (* 81 variable-value))]
-         [row-number (quotient vv-removed 9)]
-         [column-number (remainder vv-removed 9)])
-    (list (+ 1 row-number) (+ 1 column-number) (+ 1 variable-value))))
-
-;; produce-clauses  Given a list of lists of triples, produce the matching set of strings
-;;   for the DIMACS file
-(define (produce-clauses list-of-lists)
-  (define (one-line-of-one variable-in-clause) ; produce one line from a list of one number (for initial conds)
-    (apply format "~a 0\n" variable-in-clause))
-  (define (one-line-of-nine variables-in-clause) ; produce one line from a list of nine numbers (for auto-generated)
-    (apply format "~a ~a ~a ~a ~a ~a ~a ~a ~a 0\n" variables-in-clause))
-
-  (for/list ([clause-list list-of-lists])
-    (if (= 9 (length clause-list))
-        (one-line-of-nine (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
-                               clause-list))
-        (one-line-of-one (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
-                               clause-list)))))
-
 ;; Constant lists
 (define ONETONINE '(1 2 3 4 5 6 7 8 9))
 (define ONETOTHREE '(1 2 3))  ;; for boxes
@@ -46,6 +11,94 @@
 (define SEVENTONINE '(7 8 9))
 (define BOX-INDICES (list ONETOTHREE FOURTOSIX SEVENTONINE))
 
+;; Each clause is a list of triples (row number, column number, variable value).  Each
+;; triple is a predicate: #t if the entry in that row and column has that value, and #f
+;; otherwise.  Thus, each of the three values are between 1 and 9 inclusive.
+
+(define (make-board)
+  (for/vector ([row ONETONINE])
+    (make-vector 9 0)))
+
+(define BOARD (make-board))
+
+(define (set-board-entry! board triple)
+  (let ([row (vector-ref board (- (first triple) 1))])
+    (vector-set! row (- (second triple) 1) (third triple))))
+
+(provide make-board
+         BOARD
+         set-board-entry!)
+
+;; triple->varnum  Find the variable number associated with the row, column, and value
+;;  row-number column-number  integers, counting starts at 1
+;;  variable-value  integer  value of the entry in row-number, column-number.  If negative, then
+;;   the predicate is to be negated. 
+;;   If variable-value < 0 then this routine uses the absolute value to compute the basic varnum,
+;;   but returns the negative of the polynomial (indicating that the predicate is negated).
+(define (triple->varnum row-number column-number variable-value)
+  (let ([a-value (+ (* 81 (- (abs variable-value) 1))
+                    (* 9 (- row-number 1))
+                    (- column-number 1)
+                    1)])   ;; add 1 because DIMACS doesn't allow variable 0 (uses 0 to terminate clauses)
+        (if (negative? variable-value)
+            (* -1 a-value)
+            a-value)))
+        
+;; varnum->triple  From the variable number, return the associated row, column, and value
+(define (varnum->triple v)
+  (let* ([offset (- (abs v) 1)]
+         [variable-value (quotient offset 81)]
+         [vv-removed (- offset (* 81 variable-value))]
+         [row-number (quotient vv-removed 9)]
+         [column-number (remainder vv-removed 9)])
+    (if (negative? v)
+        (list (+ 1 row-number) (+ 1 column-number) (* -1 (+ 1 variable-value)))
+        (list (+ 1 row-number) (+ 1 column-number) (+ 1 variable-value)))))
+
+(provide triple->varnum
+         varnum->triple)
+
+;; produce-clauses  Given a list of lists of triples, produce the matching set of strings
+;;   for the DIMACS file
+(define (produce-clauses list-of-lists)
+  (define (one-line-of-one variable-in-clause) ; produce one line from a list of one number (for initial conds)
+    (apply format "~a 0\n" variable-in-clause))
+  (define (one-line-of-two variables-in-clause) ; produce one line from a list of two numbers (for entry conditions)
+    (apply format "~a ~a 0\n" variables-in-clause))
+  (define (one-line-of-nine variables-in-clause) ; produce one line from a list of nine numbers (for auto-generated)
+    (apply format "~a ~a ~a ~a ~a ~a ~a ~a ~a 0\n" variables-in-clause))
+
+  (for/list ([clause-list list-of-lists])
+    (display clause-list)(newline)
+    (cond [(= 9 (length clause-list))
+           (one-line-of-nine (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
+                                  clause-list))]
+          [(= 1 (length clause-list))
+           (one-line-of-one (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
+                                 clause-list))]
+          [(= 2 (length clause-list))
+           (one-line-of-two (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
+                                 clause-list))])))
+
+
+;; entry-restrictions    Return list of list of triples, each list of triples meaning
+;;    that each entry cannot be two separate values 1-9.
+;(define (one-value-per-entry row-number column-number)
+;  (for*/fold ([accumulator '()]
+;              #:result (reverse accumulator))
+;             ([variable-value1 ONETONINE]
+;              [variable-value2 ONETONINE])
+;    (unless (= variable-value1 variable-value2)
+;       (cons (list (list row-number column-number (+ -1 variable-value1))
+;                   (list row-number column-number (+ -1 variable-value2))) accumulator))))
+(define (entry-restrictions)
+  (for*/list  ([row-number ONETONINE]
+               [column-number ONETONINE]
+               [variable-value1 ONETONINE]
+               [variable-value2 ONETONINE]
+               #:unless (>= variable-value1 variable-value2))
+    (list (list row-number column-number (* -1 variable-value1))
+          (list row-number column-number (* -1 variable-value2)))))
 
 ;; row-restrictions  Return list of list of triples, each list of triples meaning
 ;;    that each row has to have each value 1-9.
@@ -72,7 +125,6 @@
              ([variable-value ONETONINE]
               [column-number ONETONINE])
     (cons (one-column-one-value column-number variable-value) accumulator)))
-
 
 ;; box-restrictions  Return list of list of triples, each list of triples meaning
 ;;    that each 3x3 box has to have each value 1-9.
@@ -140,7 +192,7 @@
 
 ;; CLAUSES  The list of all clauses, including those auto generated.
 (define CLAUSES
-  (append INITIAL-CLAUSES (row-restrictions) (column-restrictions) (box-restrictions)))
+  (append INITIAL-CLAUSES (entry-restrictions) (row-restrictions) (column-restrictions) (box-restrictions)))
 
 (define FILE-PREAMBLE
   (list (format "c ~a\n" FILENAME)

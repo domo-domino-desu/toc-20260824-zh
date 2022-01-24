@@ -83,14 +83,6 @@
 
 ;; entry-restrictions    Return list of list of triples, each list of triples meaning
 ;;    that each entry cannot be two separate values 1-9.
-;(define (one-value-per-entry row-number column-number)
-;  (for*/fold ([accumulator '()]
-;              #:result (reverse accumulator))
-;             ([variable-value1 ONETONINE]
-;              [variable-value2 ONETONINE])
-;    (unless (= variable-value1 variable-value2)
-;       (cons (list (list row-number column-number (+ -1 variable-value1))
-;                   (list row-number column-number (+ -1 variable-value2))) accumulator))))
 (define (entry-restrictions)
   (for*/list  ([row-number ONETONINE]
                [column-number ONETONINE]

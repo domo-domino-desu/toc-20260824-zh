@@ -140,7 +140,8 @@
 
 ;; CLAUSES  The list of clauses.
 
-;; INITIAL-CLAUSES  The given layout of the board.  Each row is a list with a triple list: row number, column number, integer.
+;; INITIAL-CLAUSES  The given layout of the board.  Each row is a list with a triple list: row number,
+;; column number, integer.
 (define INITIAL-CLAUSES
   (list (list '(1 3 9)) ; there is a 9 in position (1,3)
         (list '(1 8 1))

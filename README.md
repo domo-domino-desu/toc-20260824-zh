@@ -1,28 +1,21 @@
 This is the source material for the textbook *Theory of Computation*
-by Jim Hefferon.   Get a PDF at https://hefferon.net/computation.
+by Jim Hefferon.   Get a PDF at the book's home page.
 
-The text has more than eight hundred exercises, and comes with complete
-answers to each, at the same site.  Also at that site are the in-class
-slides that I use, derived from the text so the wording is the same.
-And, there are videos on my YouTube channel for people who are
-reading this work on their own.
+The text has more than eight hundred exercises and comes with complete
+answers to each, at the same site.  Also there are the in-class
+slides that I use. And, there are videos on my YouTube channel for
+people who are reading this work on their own; the link is at the above
+site.
 
 
 ## Status
 
-This is a draft.  I used it for a class in the springs of 2018-2021,
-and am using it in the spring of 2022.
+This is a draft.  I used it in the springs of 2018-2021, and am using it
+now, in the spring of 2022.
 
-I am now supplementing the text with Jupyter notebooks, to illustrate
-with code things like Turing machines and regular expressions.
-I use the Scheme-descendent language Racket.
-
-
-## Reports
-
-As with any draft, or any large software project for that matter, expect
-errors.  Bug reports are very welcome.  Reach me via the link at
-https://hefferon.net/jimhefferon.html.
+Under development are Jupyter notebooks to illustrate topics such as
+Turing machines, including Universal Turing machines, regular expressions,
+and SAT solvers. I use the Scheme-descendent language Racket.
 
 
 ## Home page
@@ -30,10 +23,17 @@ https://hefferon.net/jimhefferon.html.
 [https://hefferon.net/computation](https://hefferon.net/computation)
 
 
+## Bug reports
+
+As with any draft, or any large software project at all, expect
+errors.  Bug reports are very welcome.  Reach me via the contact link
+on the home page.
+
+
 ## Source
 
-This uses LaTeX and related programs.  To compile the source
-files, see INSTALL.  But really, just use the supplied PDF.
+This uses LaTeX and related programs.  To compile the source files,
+see INSTALL.  But really, just use the supplied PDF.
 
 
 ## History

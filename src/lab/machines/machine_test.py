@@ -181,7 +181,8 @@ class CopyTestCase(unittest.TestCase):
                    current_char='S',
                    right_tape='11BBTBBB',
                    left_tape='',
-                   max_steps=100)
+                   max_steps=100,
+                   verbose=True)
         out = r.stdout.decode(encoding='UTF-8')
         d_list = parse_lines(out.splitlines())
         # print(d_list[-1])
@@ -254,7 +255,8 @@ class FindmaxTestCase(unittest.TestCase):
                    current_char='S',
                    right_tape='11B1BTB',
                    left_tape='',
-                   max_steps=100)
+                   max_steps=100,
+                   verbose=True)
         out = r.stdout.decode(encoding='UTF-8')
         d_list = parse_lines(out.splitlines())
         self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="11B1BTB"))
@@ -327,7 +329,8 @@ class MatchTestCase(unittest.TestCase):
                    current_char='S',
                    right_tape='11B1BTB',
                    left_tape='',
-                   max_steps=100)
+                   max_steps=100,
+                   verbose=True)
         out = r.stdout.decode(encoding='UTF-8')
         d_list = parse_lines(out.splitlines())
         self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="11B1BTB"))
@@ -398,7 +401,8 @@ class MoveTestCase(unittest.TestCase):
                    current_char='S',
                    right_tape='B1BTB11B',
                    left_tape='BB',
-                   max_steps=100)
+                   max_steps=100,
+                   verbose=True)
         out = r.stdout.decode(encoding='UTF-8')
         d_list = parse_lines(out.splitlines())
         self.assertTrue(check_final_config(d_list,prefix="11",currentchar="S",suffix="B1BTB"))
@@ -410,7 +414,7 @@ class MoveTestCase(unittest.TestCase):
                    right_tape='B1BTBBB',
                    left_tape='B',
                    max_steps=100,
-                   verbose=False)
+                   verbose=True)
         out = r.stdout.decode(encoding='UTF-8')
         d_list = parse_lines(out.splitlines())
         self.assertTrue(check_final_config(d_list,prefix="BBB",currentchar="S",suffix="B1BTB"))
@@ -457,9 +461,11 @@ class MoveTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     # suite.addTest(MoveTestCase('test_run_tm'))
-    suite.addTest(MoveTestCase('test_simple'))
     suite.addTest(MoveTestCase('test_double_blank'))
-    # suite.addTest(CopyTestCase('test_zero'))
+    suite.addTest(CopyTestCase('test_simple'))
+    suite.addTest(FindmaxTestCase('test_simple'))
+    # suite.addTest(MatchTestCase('test_simple'))
+    suite.addTest(MoveTestCase('test_simple'))
     # suite.addTest(CopyTestCase('test_full'))
     # suite.addTest(CopyTestCase('test_empty'))
     return suite

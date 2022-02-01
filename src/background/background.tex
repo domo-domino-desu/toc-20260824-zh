@@ -4839,7 +4839,7 @@ computationally equivalent to that machine's source.
 Even so,
 the universe won't collapse\Dash
 we can absolutely use a text editor to edit its own code
-or ask a compiler to compile its source.
+or ask a compiler to compile its own source.
 Similarly, 
 we can feed $\UTM$ its own index number. 
 Lots of interesting things happen as a result, 
@@ -4866,19 +4866,19 @@ as does $\TM_e$ on input~$x$.
 \margingraphicnomag*{0.2\textwidth}{background/asy/hp/hp14.pdf}
 This is a 
 \definend{Universal Turing Machine}.\footnote{%
-  Another often-used way to define a Universal Turing machine that is to 
-  have it take the single-number input $\cantor(e,x)$.}
+  We could also define a Universal Turing machine to 
+  take the single-number input $\cantor(e,x)$.}
 \index{Universal Turing machine}\index{Turing machine!universal}%
 % We denote such a machine with~$\UTM$.
-Observe that universal machines are familiar from
+Universal machines are familiar from
 everyday computing.
 % Universal machines
 % change hardware behavior in software.
 % \citetext{This is what a computer's operating
 % system does}{%
 % }.
-Consider your computer and its operating system, 
-along with some program that will run on it.\footnote{% 
+This figure outlines the action of a computer operating system
+when given some program and data to run.\footnote{% 
   The figure is a 
   \citetext{flow chart}{%
     Flowcharts are widely used to sketch algorithms; here is one from XKCD.
@@ -4899,14 +4899,14 @@ along with some program that will run on it.\footnote{%
   Diamond boxes, which appear in later flow charts, 
   are for decisions, \protect\texttt{if} statements.
 }\index{flow chart}
-Think of the program 
-as like some Turing machine, $\TM_e$. 
-It may take input, a string of \str{0}'s and \str{1}'s, that we can 
+The program 
+is like some Turing machine, $\TM_e$. 
+It may take input, a string of \str{0}'s and \str{1}'s that we can 
 interpret as the number~$x$.
-When asked, the operating system will load the program into 
-memory and then feed the input to that program.
-That is, when asked, the operating system arranges that 
-the computer will
+The operating system loads the program into  
+memory and then feeds the input to that program.
+That is, the operating system arranges that 
+the hardware will
 behave like the stored program, machine~$e$ with input~$x$. 
 Universal Turing machines
 change their behavior in software,
@@ -4915,7 +4915,7 @@ No patch chords.
 
 Another everyday computer experience that is like a universal
 machine is an interpreter.
-Below is a session with a Scheme interpreter.
+Below is a session with the Racket interpreter.
 After the interpreter's command line invocation, 
 in line~$1$ the system gets the source of a program that takes in 
 \codeinline!i! and 
@@ -4924,24 +4924,16 @@ In line~$2$ the interpreter
 runs that source with the input~$i=4$. 
 and returns the output of~$10$.
 \begin{lstlisting}
-$ csi
-
-CHICKEN
-(c) 2008-2013, The Chicken Team
-(c) 2000-2007, Felix L. Winkelmann
-Version 4.8.0.5 (stability/4.8.0) (rev 5bd53ac)
-linux-unix-gnu-x86-64 [ 64bit manyargs dload ptables ]
-compiled 2013-10-03 on aeryn.xorinia.dim (Darwin)
-
-#;1> (define sum
-  (lambda (i tot)
-    (if (= i 0)
-	tot
-	(sum (- i 1) (+ tot i)))))
-#;2> (sum 4 0)
+$ racket
+Welcome to Racket v8.3 [cs].
+> (define sum
+      (lambda (i tot)
+          (if (= i 0)
+              tot
+              (sum (- i 1) (+ tot i)))))
+> (sum 4 0)
 10
-#;3> (<@\color{highlightcolor}(lambda (i) (if (= i 0) 1 0))@> 1)
-0
+> 
 \end{lstlisting}  % $
 Illustrating this even more directly, in line~$3$ 
 the interpreter gets as a single expression
@@ -4956,35 +4948,32 @@ The most direct example of our everyday experience with
 computing systems that act as universal machines 
 is a programming language's \codeinline!eval! statement.\index{eval}
 \begin{lstlisting}
-#;1> (define (utm s)
-  (eval s (scheme-report-environment 5)))
-#;2> (define TEST '(lambda (i) (if (= i 0) 1 0)))
-#;3> TEST
-(lambda (i) (if (= i 0) 1 0))
-#;4> ((utm TEST) 5)
+> (define (utm s)
+      (eval s))
+> (define test '(lambda (i) (if (= i 0) 1 0)))
+> test
+'(lambda (i) (if (= i 0) 1 0))
+> ((utm test) 5)
 0
-#;5> ((utm TEST) 0)
+> ((utm test) 0)
 1
 \end{lstlisting}
-In line~$1$ the \codeinline{utm} is defined to evaluate its input
-(the \codeinline!scheme-report-environment!
-ensures that the routines defined in the specification for 
-Scheme~$5$ are available to \codeinline!eval!).\footnote{%
+In line~$1$, \codeinline{utm} is defined to evaluate its input.\footnote{%
   Writing a program that allows general users to  
   evaluate arbitrary code
   is powerful but not safe,
-  especially if these users just surf in from the internet.
+  especially if these users just surf in from the Internet.
   Restricting which commands the user can evaluate,
   known as sandboxing, forms part of
   being careful with that power.
   For us, however, the software engineering issues are not relevant.}
-In line~$2$ the \codeinline!(lambda (i) (if (= i 0) 1 0))!
-is quoted so that Scheme will keep it as
-a string and not execute it.
+Line~$2$ defines a list with the name \codeinline{test}.
+This list, \codeinline!(lambda (i) (if (= i 0) 1 0))!,
+is quoted so that Racket will not execute it.
 Lines~$4$ and~$5$ have that string fed to \codeinline!utm!,
-which runs \codeinline!eval! on it, so the first entry in the
-list is now a routine. 
-This routine acts on the argument, here $5$ or~$0$, producing the output.
+which runs \codeinline!eval! on it, so that the system will evaluate
+the input using the routine. 
+That routine on the two input $5$ and~$0$, produces the two outputs.
 
 To finish, to justify \cref{th:UTM},
 we have already exhibited what amounts to a Universal Turing machine.
@@ -4992,7 +4981,7 @@ In the Turing Machine simulator section on
 page~\pageref{extra:TuringMachineSimilator} 
 we gave code that reads an arbitrary Turing machine from a file,
 and then simulates it.
-The code is in Scheme but 
+The code is in Racket but 
 by Church's Thesis we could write this as a Turing machine.
 (For a Universal Turing machine that meets the criteria, we must not input
 the arbitrary Turing machine from a file, but instead we
@@ -5022,43 +5011,45 @@ One of the enjoyable things about coding is the feeling of being able to
 get the machine to do anything that we like\Dash what's stopping 
 us from producing whatever digits we like?  
 
-There are indeed some real numbers 
+There are real numbers 
 for which there is such a program.
-One is~$r=1/4$.
+One is~$0.25$.
+\begin{lstlisting}
+(define (one-quarter-decimal-places n)
+  (cond 
+      [(= n 0) 0]
+      [(= n 1) 2]
+      [(= n 2) 5]
+      [else 0]))
+\end{lstlisting}
 For a more generic number, say, some $r=0.703\ldots$\,,
 we might momentarily imagine brute-forcing it.
 \begin{lstlisting}
-read n
-if n==0:
-    print 0
-elif n==1:
-    print 7
-elif n==2:
-    print 0
-  ...
+(define (r-decimal-place n)
+  (cond
+    [(= n 0) 0]
+    [(= n 1) 7]
+    [(= n 2) 0]
+    [(= n 3) 3]
+    ...
+  ))
 \end{lstlisting}
 But that's silly.
-We can have \codeinline{if .. elif ..} branches for a few
-cases but because programs have finite length, 
-code must 
-handle all but finitely many~$n$'s uniformly.
-There must be a branch that handles infinitely many inputs
-(there may be a finite number of such branches),
-and 
-all except for finitely many inputs must be handled on such a branch.
-
-Thus, the fact that Turing machines have only finitely many instructions
-imposes a requirement of uniformity.
-What this machine does on~$1$ is unconnected to what it does on other inputs
+Programs have finite length and so  
+can't have infinitely many cases.
+Restated, 
+what this program does on~$n=7$ is unconnected to what it does on other inputs
 \begin{lstlisting}
-read n
-if n==1:
-    print 42
-else:
-    print 2*n
+(define (foo n)
+  (if (= n 7)
+      42
+      (* 2 n)))
 \end{lstlisting}
-but in any program there are only a finite number of different cases.
- 
+but a program can only only a finite number of such differently-behaving
+branches.
+The fact that Turing machines have only finitely many instructions
+imposes a condition of uniformity.
+
 \begin{example} \label{ex:NineInPi}
 Associating in this way the idea that `something is computable' with
 `it is uniformily computable'
@@ -5081,29 +5072,28 @@ Either for all~$n$ such a sequence exists or else there is some
 number $n_0$ where a sequence of $9$'s exists for lengths less than~$n_0$ 
 and no such sequence exists when $n\geq n_0$.
 Therefore the problem is solved by one of these two programs.
-However, we don't know which one.
+(However, at the moment we don't know which one.)
 \begin{center}
 \vspace*{-4ex}
 \begin{minipage}[t]{0.4\linewidth}%
 \begin{lstlisting}
-read n
-print 1
+(define (sequence-of-nines-0 n)
+  1)
 \end{lstlisting}%
 \end{minipage}%
 \hspace*{2em}
 \begin{minipage}[t]{0.4\linewidth}%
 \begin{lstlisting}
-read n
-if n < n0:
-    print 1
-else:
-    print 0
+(define (sequence-of-nines-1 n)
+  (if (< n n0)
+      1
+      0))
 \end{lstlisting}%
 \end{minipage}%
 \vspace*{-2ex}
 \end{center}
 One aspect that is surprising
-is that neither of the two have anything to do with $\pi$.
+is that neither of these two have anything to do with $\pi$.
 Also surprising, and perhaps unsettling, is that
 we have shown that the problem is solvable
 without showing how to solve it.
@@ -5156,7 +5146,7 @@ and thus look for strings of $9$'s in other numbers.
 However, this approach 
 has the disadvantage that if $n_0$ is such that for $n\geq n_0$
 never does $\pi$ have $n$ consecutive $9$'s then this program will
-just search forever, without printing~$0$.
+just search forever, without ever discovering that fact.
 \end{example}
 \index{uniformity|)}
 
@@ -5175,25 +5165,32 @@ $\phi(e,x)\diverges$ if $\TMfcn_e(x)\diverges$.
 
 There, the letter~$e$ travels from the function's argument to an index.
 We now generalize.
-
 Start with a program that takes two inputs
 such as this one.
 \begin{lstlisting}
 (define (P x y)
   (+ x y))
 \end{lstlisting}
-Freeze the first argument, that is, lock $x=a$ for some $a\in\N$.
+Freeze the first argument, that is, fix $x=a$ for some $a\in\N$.
 The result is a one-input program.
-This shows what happens when we freeze $x$ at~$a=7$.
+Here we freeze $x$ at~$7$ and at $8$.
+\begin{center}
+\vspace*{-4ex}
+\begin{minipage}[t]{0.4\linewidth}%
 \begin{lstlisting}
 (define (P_7 y)
   (P 7 y))
 \end{lstlisting}
-And here is the result for~$a=8$.
+\end{minipage}%
+\hspace*{2em}
+\begin{minipage}[t]{0.4\linewidth}%
 \begin{lstlisting}
 (define (P_8 y)
   (P 8 y))
 \end{lstlisting}
+\end{minipage}%
+\vspace*{-2ex}
+\end{center}
 This is \citetext{\definend{partial application}}{%
   See \autocite{wiki:PartialApplication}.}
 because we are not freezing all of the input variables.

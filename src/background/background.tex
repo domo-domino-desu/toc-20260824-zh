@@ -1828,7 +1828,7 @@ Denote the function $\map{f}{D}{C}$, and assume that $D$ is finite.
   then the prior items show that the sets have the same number of elements.
 
   For the other direction assume that the two have the same number of elements.
-  Fix a numbering of each,
+  Fix an ordering of each,
   $D=\set{d_0, \ldots d_{k}}$
   and
   $C=\set{c_0, \ldots c_{k}}$.
@@ -2442,8 +2442,8 @@ Very important:~\cref{lem:CrossProdFiniteCountableIsCountable} and
 \cref{lem:CantorsCorrespondenceIsCorrespondence} on the cross product 
 of countable sets are effectivizable.
 That is, if sets correspond to~$\N$ via some 
-effective numbering then their cross product corresponds to~$\N$
-via an effective numbering.
+effective function then their cross product corresponds to~$\N$
+via an effective function.
 We finish this
 section by applying that to Turing machines\Dash
 we will give a way to effectively number the Turing machines.
@@ -2453,8 +2453,8 @@ Each Turing machines instruction is a four-tuple, a member of
 $Q\times \Sigma\times (\Sigma\cup\set{\str{L},\str{R}})\times Q$,
 where $Q$ is the set of states and $\Sigma$ is the tape alphabet.
 So by the above results, 
-we can number the instructions:~there is an instruction whose number
-is~$0$, one with number~$1$, etc.\sentencespace
+we can list the instructions:~there is an instruction that corresponds 
+to~$0$, one corresponding to~$1$, etc.\sentencespace
 This is effective, meaning that there 
 is a program that takes in a natural number
 and outputs the corresponding instruction, as well as a program that takes
@@ -2518,7 +2518,7 @@ We will refer to it frequently, for instance by saying
 ``the $e$-th Turing machine.''
 
 The takeaway point is that because the numbering is acceptable, 
-the index is source-equivalent\Dash 
+the index is computationally equivalent to the source\Dash 
 we can go effectively from the index to the machine source, the set of 
 four-tuple instructions, or
 from the source to the index.
@@ -4800,26 +4800,24 @@ swapping cards.
 
 %<*discussion:UniversalTM> 
 Turing introduced the analog to this for computers.
-He produced a single Turing machine~$\UTM$
-that we can give the instructions,
-``Here is a Turing machine~$\mathcal{M}$. 
-Have the same input-output
-behavior that this machine 
-would on receiving the following input.''
-This machine can be made to have any desired computable behavior.
-So we don't need infinitely many different machines, we just need $\UTM$.
+He produced a Turing machine~$\UTM$
+can be fed a tape containing a description
+of a Turing machine~$\mathcal{M}$, along with input for that machine. 
+Then $\UTM$ will have the same behavior on that input
+as would $\mathcal{M}$.
+If~$\mathcal{M}$
+halts on the input then $\UTM$ 
+will halt and give the same output, 
+while if $\mathcal{M}$ does not halt on that input 
+then $\UTM$ also does not halt.
+
+This single machine can be made to have any desired computable behavior.
+So we don't need infinitely many different machines, we can just use $\UTM$.
 %</discussion:UniversalTM> 
 
-``Have the same input-output behavior'' means that if 
-the specified machine~$\mathcal{M}$
-halts on that input then this machine $\UTM$ 
-will halt and gives the same output, 
-while if $\mathcal{M}$ does not halt on that input 
-then this machine also does not halt.
-
 \margingraphic[l]{0.2\textwidth}{background/pix/snake.png}{\label{fig:ouroboros}\href{https://commons.wikimedia.org/w/index.php?curid=36915535}{An ouroboros, a snake swallowing its own tail}}\index{ouroboros}
-Before we state the theorem, 
-we will first address a question.
+Before stating the theorem, 
+we first address an often-asked question about whether it is even possible.
 The machine~$\UTM$ may seem to present a 
 chicken and egg problem:~how can we give a Turing machine as input to 
 a Turing machine?
@@ -4831,15 +4829,16 @@ to itself\Dash won't feeding a machine to itself lead to infinite regress?
 We run Turing machines 
 by loading symbols on the tape
 and pressing \texttt{Start}.
-So we don't feed a machine to itself, we feed it symbols. 
+So we don't feed machines with machines; we feed them symbols, representations
+of things. 
 True, we can feed $\UTM$ a specification of 
 itself, such as a pair $e,x$
-where~$e$ is the index number of $\UTM$ (and $x$ is the input), and thus is 
+where~$e$ is the index number of $\UTM$ (and $x$ is the input), and is thus 
 computationally equivalent to that machine's source.
 Even so,
 the universe won't collapse\Dash
-we can absolutely use a text editor to edit its own code
-or ask a compiler to compile its own source.
+we can absolutely use a text editor to edit its own source,
+or ask a compiler to compile its own executable.
 Similarly, 
 we can feed $\UTM$ its own index number. 
 Lots of interesting things happen as a result, 
@@ -4898,29 +4897,28 @@ This figure\footnote{%
   are for decisions, \protect\texttt{if} statements.
 }\index{flow chart} 
 outlines the action of a computer operating system
-that is given a program to run and some input data.
-The program 
-is like some Turing machine, $\TM_e$. 
-Think of the data as an input string of \str{0}'s and \str{1}'s that we can 
+that is given a program to run and some data for that program.
+Think of the program 
+as like some Turing machine, $\TM_e$, and 
+think of the data as a string of \str{0}'s and \str{1}'s that we can 
 interpret as a number,~$x$.
-The operating system loads the program and then feeds the input to that program.
+The operating system loads the program and then gives it the input.
 That is, the operating system arranges that 
 the hardware will
 behave like the stored program, machine~$e$ with input~$x$. 
-Universal Turing machines
-change their behavior in software,
-as does an operating system.
+As with an operating system, Universal Turing machines
+change their behavior in software
 No patch chords.
 
 Another experience that is like a universal
 machine is an interpreter.
 Below is the Racket interpreter.
-In line~$1$ the system gets the source of a program that takes in 
+At the first prompt the system gets the source of a program that takes in 
 \codeinline!i! and 
 adds up the first \codeinline!i!~numbers.
-In line~$2$ the interpreter 
+At the second prompt the interpreter 
 runs that source with the input~$i=4$, 
-and returns the output~$10$.
+and returns the output.
 \begin{lstlisting}
 $ racket
 Welcome to Racket v8.3 [cs].
@@ -4937,8 +4935,8 @@ Welcome to Racket v8.3 [cs].
 The most direct example of
 computing systems that act as universal machines 
 is a language's \codeinline!eval! statement.\index{eval}
-In the first line below 
-the interpreter is told to evaluate the expression that it gets as an 
+At the first prompt below we define a routine that has
+the interpreter is evaluate the expression that it gets as an 
 input.\footnote{%
   Writing a program that allows general users to  
   evaluate arbitrary code
@@ -4948,10 +4946,10 @@ input.\footnote{%
   known as sandboxing, forms part of
   being careful with that power.
   For us, however, the software engineering issues are not relevant.}
-In the line following, we define a list, quoted so that it is not interpreted,
-and in the fourth line
+In the next prompt we define a list, quoted so that it is not interpreted,
+and later
 the interpreter evaluates that list and applies 
-it to the number~$5$.
+it to the numbers~$5$ and~$0$.
 That is, like the loom's punched cards, our mechanism \codeinline!utm!
 allows us to swap behaviors
 at will.
@@ -4967,14 +4965,16 @@ at will.
 1
 \end{lstlisting}
 
-To finish our explication,
-we have already exhibited what amounts to a Universal Turing machine.
+Finally, as to the argument for the theorem, 
+the simplest way to prove that something exists is to produce it.
+We have already exhibited what amounts to a Universal Turing machine.
 In the Turing Machine simulator section on
 page~\pageref{extra:TuringMachineSimilator} 
 we gave code that reads an arbitrary Turing machine from a file
 and then simulates it.
 The code is in Racket but 
-by Church's Thesis we could write this as a Turing machine.
+Church's Thesis asserts that we could write a Turing machine
+with the same behavior.
 % (For a Universal Turing machine that meets the criteria, we must not input
 % the arbitrary Turing machine from a file, but instead we
 % input its index, which we then convert to a Turing machine.

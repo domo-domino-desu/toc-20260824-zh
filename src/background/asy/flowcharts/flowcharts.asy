@@ -29,7 +29,7 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $e,a_0,\ldots,a_{m-1}$");
 node create=nbox("Create instructions for $\hat{P}$");
-node ret=nbox(minipage_snug("Return index of\\ that instruction set"));
+node ret=nbox(minipage_snug("Return the index of\\ that instruction set"));
 node ending=nroundbox("End");
 
 // layout
@@ -71,8 +71,8 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node shiftleft=nbox("Move left $a_0+\cdots+a_{m-1}+m$ cells");
-node inputprefix=nbox(minipage_snug("Put $a_0$, \ldots, $a_{m-1}$ on tape\\ separated by blanks"));
-node pointer=nbox("Move I/O head to start of $a_0$");
+node inputprefix=nbox(minipage_snug("Put $a_0$, \ldots, $a_{m-1}$ on the tape\\ separated by blanks"));
+node pointer=nbox("Move I/O head to the start of $a_0$");
 node run=nbox("Simulate $P_e$");
 node ending=nroundbox("End");
 

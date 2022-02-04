@@ -18,7 +18,7 @@ path setbean(real h=1, real v=1) {
   return p;
 }
 pen BEANCOLOR = white;
-pen ARROWCOLOR = red;
+pen ARROWCOLOR = highlightcolor;
 
 real h, v;  // horizontal and vertical units for beans
 h = 0.70; v = h; 
@@ -262,7 +262,7 @@ draw(pic,shift(0,2)*horiz_tic);
 label(pic,"$\scriptstyle 2$", (0,2), W, boldcolor);
 
 path g0 = graph(f0,0,1);
-draw(pic,g0,FCNPEN+highlightcolor+roundcap);
+draw(pic,g0,FCNPEN_NOCOLOR+highlightcolor+roundcap);
 
 shipout(format("maps%02d",picnum),pic,format="pdf");
 
@@ -284,7 +284,7 @@ draw(pic,shift(0,2)*horiz_tic);
 label(pic,"$\scriptstyle 2$", (0,2), W, boldcolor);
 
 path g1 = graph(f1,0,1);
-draw(pic,g1,FCNPEN+highlightcolor+roundcap);
+draw(pic,g1,FCNPEN_NOCOLOR+highlightcolor+roundcap);
 
 shipout(format("maps%02d",picnum),pic,format="pdf");
 
@@ -306,7 +306,7 @@ draw(pic,shift(0,2)*horiz_tic);
 label(pic,"$\scriptstyle 2$", (0,2), W, boldcolor);
 
 path g2 = graph(f2,0,1);
-draw(pic,g2,FCNPEN+highlightcolor+roundcap);
+draw(pic,g2,FCNPEN_NOCOLOR+highlightcolor+roundcap);
 
 shipout(format("maps%02d",picnum),pic,format="pdf");
 

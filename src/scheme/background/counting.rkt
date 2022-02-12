@@ -99,22 +99,3 @@
        (= cantor-number 0)) '())
      ((= a 0) (list (- cantor-number 1)))
      (else (cantor-pairing-arity (+ 1 a) cantor-number)))))
-
-;; These routines are called from the command line, not when the material is imported
-(module+ main
-  ; (display "Running main\n")
-
-  ;; Command line parsing
-  (define verbose? (make-parameter #f))
-  (define test? (make-parameter #f))  ; run unit tests
-
-  ;; Read command line arguments  
-  (command-line
-   #:usage-help 
-   "Cantor functions for counting."
-   "Put instructions of the form `state-number current-char action-char next-state-number' on separate lines."
-   #:once-each
-   [("-v" "--verbose") "Verbose mode" (verbose? #t)]
-   [("-t" "--test") "Run unit tests" (test? #t)]
-   #:args  () (void))
-  )

@@ -1,44 +1,73 @@
 #lang racket
 ;; counting.rkt
-;;  Cantor counting fcn
+;;  Cantor counting functions
 
 ;; triangle-num  return 1+2+3+..+n
+;;   natural number -> natural number
 (define (triangle-num n)
   (/ (* (+ n 1)
      n)
      2))
 
-;; cantor-unpairing  Cantor number of the pair (x,y) of integers
+;; cantor-unpairing  Cantor number of the pair (x,y)
+;;  natural number, natural number -> natural number
 (define (cantor-unpairing x y)
   (let ((d (+ x y)))
     (+ (triangle-num d)
        x)))
 
-;; diag-num 
+(define (unpair x y)
+  (cantor-unpairing x y))
+
+(define (untuple-2 x y)
+  (cantor-unpairing x y))
+
+;; diag-num  Give number of diagonal containing Cantor pair numbered c
+;;  natural number -> natural number
+;;  c  Where (cantor-unpairing x y) -> c, return x+y
 (define (diag-num c)
   (let ([s (integer-sqrt (+ 1 (* 8 c)))])
     (floor (quotient (- s 1)
                      2))))
 
-;; cantor-pairing  given the cantor number, return (x y) 
+;; cantor-pairing  Given the cantor number, return the pair with that number
+;;   natural number -> list (natural number, natural number)
+;;   c  Where (cantor-unpairing x y) -> c, return (x y)
 (define (cantor-pairing c)
   (let* ([d (diag-num c)]
          [t (triangle-num d)])
     (list (- c t)
       (- d (- c t)))))
 
-;; cantor-unpairing-3 number triples
+(define (pair c)
+  (cantor-pairing c))
+
+(define (tuple-2 c)
+  (cantor-pairing c))
+
+;; cantor-unpairing-3  Cantor number of a triple
+;;  natural number, natural number, natural number -> natural number
 (define (cantor-unpairing-3 x0 x1 x2)
   (cantor-pairing x0 (cantor-pairing x1 x2)))
 
-; cantor-pairing-3  Return the triple that gave (cantor-unpairing-3 x0 x1 x2) => c
+(define (untuple-3 x0 x1 x2)
+  (cantor-unpairing-3 x0 x1 x2))
+
+;; cantor-pairing-3  Return the triple that gave (cantor-unpairing-3 x0 x1 x2) => c
+;;   natural number -> (natural natural natural)
 (define (cantor-pairing-3 c)
   (cons (car (cantor-pairing c))
     (cantor-pairing (cadr (cantor-pairing c)))))
 
+(define (tuple-3 c)
+  (cantor-pairing-3 c))
+
 ;; cantor-unpairing-4  Number quads
 (define (cantor-unpairing-4 x0 x1 x2 x3)
   (cantor-unpairing x0 (cantor-unpairing-3 x1 x2 x3)))
+
+(define (untuple-4 x0 x1 x2 x3)
+  (cantor-unpairing-4 x x1 x2 x3))
 
 ; cantor-pairing-4  Un-number quads: give (x0 x1 x2 x3) so that (cantor-unpairing-4 x0 x1 x2 x3) => c
 (define (cantor-pairing-4 c)
@@ -46,7 +75,10 @@
     (cons (car pr)
       (cantor-pairing-3 (cadr pr)))))
 
-;; These routines generalize: number any tuple, or find the tuple corresponging
+(define (tuple-4 c)
+  (cantor-pairing-4 c))
+
+;; These routines generalize: number any tuple, or find the tuple corresponding
 ;; to a number.
 ;;   The only ugliness is that the empty tuple is unique, so there is only
 ;; one tupe of that arity.

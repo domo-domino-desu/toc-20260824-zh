@@ -119,7 +119,7 @@
   (check-equal? (cantor-unpairing-3 0 0 0) 0)
   )
 
-;; cantor-pairing-3  Return the triple that gave (cantor-unpairing-3 x0 x1 x2) => c
+;; cantor-pairing-3  Return the triple for (cantor-unpairing-3 x0 x1 x2) => c
 ;;   natural number -> (natural natural natural)
 (define (cantor-pairing-3 c)
   (cons (car (cantor-pairing c))
@@ -159,7 +159,7 @@
   (check-equal? (cantor-unpairing-4 0 0 0 0) 0)
   )
 
-;; cantor-pairing-4  Un-number quads: give (x0 x1 x2 x3) so that (cantor-unpairing-4 x0 x1 x2 x3) => c
+;; cantor-pairing-4  Find the quad that corresponds to the given natural
 ;;   natural  ->  natural natural natural natural
 (define (cantor-pairing-4 c)
   (let ((pr (cantor-pairing c)))
@@ -192,7 +192,7 @@
 ;;   The only ugliness is that the empty tuple is unique, so there is only
 ;; one tupe of that arity.
 
-;; cantor-unpairing-n any-sized tuple  Be cantor-unparing-n where n is the length of the tuple
+;; cantor-unpairing-n any-sized tuple  Be cantor-unparing-n where n is the tuple length
 ;;   (natural ..) of n elets  ->  natural
 (define (cantor-unpairing-n . args)
   (cond
@@ -225,7 +225,7 @@
 
 ;; cantor-pairing-arity  return the list of the given arity making the cantor number c
 ;;  If arity=0 then only c=0 is valid (others return #f)
-;;  natural natural  ->  (natural .. natural) with arity elements
+;;  natural natural  ->  (natural .. natural) with arity-many elements
 (define (cantor-pairing-arity arity c)
   (cond
     [(= 0 arity) 

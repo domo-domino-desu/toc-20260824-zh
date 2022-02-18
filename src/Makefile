@@ -546,9 +546,10 @@ complexity/asy/flowcharts/flowcharts000.pdf : complexity/asy/flowcharts/flowchar
 # 	cd $(@D); \
 # 	$(ASYMPTOTE_CMD) "$(<F)"
 
-complexity/asy/problems/problems00.pdf : complexity/asy/problems/problems.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
+# Omitted because of ASY/GS troubles; use PDF's in repo.
+# complexity/asy/problems/problems00.pdf : complexity/asy/problems/problems.asy
+# 	cd $(@D); \
+# 	$(ASYMPTOTE_CMD) "$(<F)"
 
 complexity/asy/xygraphs/xygraphs00.pdf : complexity/asy/xygraphs/xygraphs.asy
 	cd $(@D); \

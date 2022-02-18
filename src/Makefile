@@ -519,9 +519,10 @@ automata/automata.tex : | automata/asy/fsa/fsa00.pdf \
 
 # ============== complexity ================
 
-complexity/asy/bigo/bigo00.pdf : complexity/asy/bigo/bigo.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
+# Omitted because of ASY/GS troubles; use PDF's in repo.
+# complexity/asy/bigo/bigo00.pdf : complexity/asy/bigo/bigo.asy
+# 	cd $(@D); \
+# 	$(ASYMPTOTE_CMD) "$(<F)"
 
 complexity/asy/circuit/circuit000.pdf : complexity/asy/circuit/circuit.asy
 	cd $(@D); \

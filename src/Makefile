@@ -62,6 +62,18 @@ cover/asy/cover00.pdf : cover/asy/cover.asy
 cover/cover.tex : | cover/asy/cover00.pdf
 
 
+# ============== asy/ ================
+
+# Omitted because of ASY changed to Physics-based; use PDF's in repo.
+# asy/share/machine00.pdf : asy/share/machine.asy
+# 	cd $(@D); \
+# 	$(ASYMPTOTE_CMD) "$(<F)"
+
+asy/share/tape1.pdf : asy/share/tape.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
+
 # ============== prologue ================
 
 # The PHONY is here because I use this as a test, as in "make xygraphs"
@@ -578,6 +590,7 @@ appendix/appendix.tex : | appendix/asy/functions000.pdf
 # ============== book ================
 
 book.pdf : book.tex \
+  asy/share/tape1.pdf \
   cover/cover.tex \
   preface/preface.tex \
   prologue/prologue.tex \

@@ -484,9 +484,10 @@ automata/asy/fsm_exercises/pdfs/modfour000.pdf : automata/asy/fsm_exercises/pdfs
 
 # .... FSM_EXERCISES end
 
-automata/asy/machine/machine02.pdf : automata/asy/machine/machine.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
+# Omitted because of ASY changed to Physics-based; use PDF's in repo.
+# automata/asy/machine/machine02.pdf : automata/asy/machine/machine.asy
+# 	cd $(@D); \
+# 	$(ASYMPTOTE_CMD) "$(<F)"
 
 automata/asy/min/min00.pdf : automata/asy/min/min.asy
 	cd $(@D); \

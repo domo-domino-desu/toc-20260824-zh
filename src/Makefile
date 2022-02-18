@@ -404,9 +404,10 @@ background/asy/busybeaver/busybeaver00.pdf : background/asy/busybeaver/busybeave
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-background/asy/correspondences/correspondences000.pdf : background/asy/correspondences/correspondences.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
+# Omitted because of ASY/GS troubles; use PDF's in repo.
+# background/asy/correspondences/correspondences000.pdf : background/asy/correspondences/correspondences.asy
+# 	cd $(@D); \
+# 	$(ASYMPTOTE_CMD) "$(<F)"
 
 background/asy/flowcharts/flowcharts00.pdf : background/asy/flowcharts/flowcharts.asy
 	cd $(@D); \

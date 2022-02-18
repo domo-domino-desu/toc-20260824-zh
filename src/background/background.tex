@@ -12896,123 +12896,181 @@ any computable function.
 
 % =============================
 \extra{Cantor in Code}  \label{sec:CantorInCode}
-The definitions of cardinality and accountability
-do not require that the functions must be effective.
-In this section we effectivize, 
-counting sets such as 
-$\set{0,1}\times\N$ and $\N\times\N$ 
-using functions that are mechanically computable.
+In this section we show that Cantor's correspondence
+between $\N$ and $\N\times\N$ is effective. 
 The most straightforward way to show that these functions can be computed is to 
-exhibit code, so here it is.
+exhibit code.
 
-Racket's \codeinline{let} creates a local variable.
-\lstinputlisting[firstline=2,lastline=14]{background/scheme/godelnumbering.scm}
-\noindent
-Use this code in the natural way.
+Recall that in this table
+\begin{equation*}
+  \begin{array}{r|cccccc@{\hspace{6pt}}c}
+    \tabulartext{$n\in\N$}
+      &0 &1 &2 &3 &4 &5 &\ldots 
+      \\ \cline{2-8}
+    \tabulartext{$\sequence{i,j}\in\set{0,1}\times\N$}
+      &\sequence{0,0} \rule{0em}{2ex} % make room above angle brackets
+      &\sequence{1,0}
+      &\sequence{0,1}
+      &\sequence{1,1}
+      &\sequence{0,2}
+      &\sequence{1,2}
+      &\ldots
+  \end{array}
+\end{equation*}
+%</table:CrossProductCorrespondence>
+%<*def:PairingFcn>
+the map from top row to bottom is Cantor's 
+pairing function\index{pairing function}\index{function!pairing} 
+because it outputs pairs, while
+its inverse, from bottom to top,
+is the
+unpairing function.\index{unpairing function}\index{function!unpairing}
+
+First, unpairing.
+Given $\sequence{x,y}$, we determine the diagonal that it lies on
+\lstinputlisting[firstline=17,lastline=22]{\cantorfile}
+and then use that to find the value.
+\lstinputlisting[firstline=33,lastline=38]{\cantorfile}
+
+Using the function is easy.
 \begin{lstlisting}
-#;1> (include "godelnumbering.scm")
-; including godelnumbering.scm ...
-#;2> (cantor 1 2)
-7
-\end{lstlisting}
+$ racket
+Welcome to Racket v8.3 [cs].
+> (require "counting.rkt")
+> (cantor-unpairing 1 1)
+4
+> (cantor-unpairing 34 10)
+1024
+> 
+\end{lstlisting} % $
 
-We will need both the map and its inverse, 
-which goes from the number to the pair.
-Here is the routine that inverts \codeinline{cantor}.
-The \codeinline{let*} variant allows us to 
-compute the local variable \codeinline{t} by using the 
-local variable \codeinline{d} computed before it, in the prior line.
-\lstinputlisting[firstline=37,lastline=42]{background/scheme/godelnumbering.scm}
-This is a sample use.
+A person may wonder about the choice of the elements of the pair 
+as the arguments to \codeinline{cantor-unpairing}.
+Perhaps it should instead input the pair itself?
+But the \codeinline{apply} operator makes the switch easy. 
+
 \begin{lstlisting}
-#;1> (include "godelnumbering.scm")
-; including godelnumbering.scm ...
-#;2> (xy 7)
-(1 2)
-\end{lstlisting}
+> (cantor-unpairing 10 12)
+263
+> (apply cantor-unpairing '(10 12))
+263
+\end{lstlisting} % $
 
-The \codeinline{xy} routine depends on a \codeinline{diag-num}
-to compute the number of the diagonal.
-For that, where the diagonal is $d(x,y)=x+y$, 
+Next, pairing.
+% It is similar to unpairing.
+Given a natural number $c$, to find the associated $\sequence{x,y}$,
+we first find which diagonal on which it will fall.
+Where the diagonal is $d(x,y)=x+y$, 
 let the associated triangle number be $t(x,y)=d(d+1)/2=(d^2+d)/2$.
 Then $0=d^2+d-2t$. 
 Applying the familiar formula 
-$(-b\pm\sqrt{b^2-4ac})/(2a)$ gives 
+$(-b\pm\sqrt{b^2-4ac})/(2a)$ gives this. 
 \begin{equation*}
   d=\frac{-1+\sqrt{1-4\cdot 1\cdot (-2t)}}{2\cdot 1}
    =\frac{-1+\sqrt{1+8t}}{2}
 \end{equation*}
-(of the `$\pm$', we keep only the `$+$' because the other root is negative).
-Not every pair corresponds to a triangle number 
-so to find the number of the diagonal lying before the 
+(Of the `$\pm$', we kept only the `$+$' because the other root is negative.)
+To find the number of the diagonal containing the 
 pair~$\sequence{x,y}$ with $\cantor(x,y)=c$, 
-\citetext{take the floor}{Let the $n$-th triangle number be
-$t(n)=0+1+\cdots+n=n(n+1)/2$.  
-The function~$t$ is monotonicly increasing and there are infinitely many 
-triangle numbers.
-Thus for every natural number~$c$ there is a unique triangle number $t(n)$ 
-that is maximal so that $c=t(n)+k$ for some~$k\in\N$.
-Because $t(n+1)=t(n)+n+1$, we see that $k<n+1$, that is, $k\leq n$.
-Thus, to compute the diagonal number~$d$ from the Cantor number~$c$ of a pair,
-we have $(1/2)d(d+1)\leq c< (1/2)(d+1)(d+2)$.
-Applying the quadratic formula to the left half and right halves gives
-$(1/2)(-3+\sqrt{1+8c})<d\leq (1/2)(-1+\sqrt{1+8c})$.
-Taking $(1/2)(-1+\sqrt{1+8c})$ to be $\alpha$ gives that 
-$c\in\rightclosed{\alpha-1}{\alpha}$ so that $d=\floor{\alpha}$. 
-\autocite{222835}}
-$d=\floor{(-1+\sqrt{1+8c})/2}$.\footnote{
-The code for \codeinline{diag-num} has two implementation details of interest.
-One is that in Scheme the \codeinline{floor} function returns
-a floating point number.  
-We want \codeinline{xy} to be the inverse of \codeinline{cantor},
-which inputs integers, so we want \codeinline{diag-num} to return an integer.
-That explains the \codeinline{inexact->exact} conversion.
-The second detail is that the code leads to numbers large enough to
-give floating point overflows.
-For instance, \protect\codeinline{(cantor-n 1 2 3 4 5 6 7)} returns
-\protect\codeinline{1.05590697087673e+55}.
-So the code shown has the naive version of \codeinline{diag-num}
-commented out
-and instead uses a library for bignums, integers of
-unbounded size.}
-\lstinputlisting[firstline=32,lastline=35]{background/scheme/godelnumbering.scm}
+\citetext{take the floor}{%
+  Let the $n$-th triangle number be
+  $t(n)=0+1+\cdots+n=n(n+1)/2$.  
+  The function~$t$ is monotonicly increasing and there are infinitely many 
+  triangle numbers.
+  Thus for every natural number~$c$ there is a unique triangle number $t(n)$ 
+  that is maximal so that $c=t(n)+k$ for some~$k\in\N$.
+  Because $t(n+1)=t(n)+n+1$, we see that $k<n+1$, that is, $k\leq n$.
+  Thus, to compute the diagonal number~$d$ from the Cantor number~$c$ of a pair,
+  we have $(1/2)d(d+1)\leq c< (1/2)(d+1)(d+2)$.
+  Applying the quadratic formula to the left half and right halves gives
+  $(1/2)(-3+\sqrt{1+8c})<d\leq (1/2)(-1+\sqrt{1+8c})$.
+  Taking $(1/2)(-1+\sqrt{1+8c})$ to be $\alpha$ gives that 
+  $c\in\rightclosed{\alpha-1}{\alpha}$ so that $d=\floor{\alpha}$. 
+  \autocite{222835}},
+$d=\floor{(-1+\sqrt{1+8c})/2}$.
+% \footnote{
+%   The code for \codeinline{diag-num} has and implementation detail of interest.
+%   The code leads to numbers large enough to
+%   give floating point overflows.
+%   For instance, \protect\codeinline{(cantor-n 1 2 3 4 5 6 7)} returns
+%   \protect\codeinline{1.05590697087673e+55}.
+%   }
 
-Extending to triples is straightforward. 
+\lstinputlisting[firstline=58,lastline=63]{\cantorfile}
+and then 
+\lstinputlisting[firstline=75,lastline=81]{\cantorfile}
 
-\lstinputlisting[firstline=44,lastline=51]{background/scheme/godelnumbering.scm}
-
-Using those routines is also straightforward.
+\noindent Use this in the natural way.
 
 \begin{lstlisting}
-#;2> (cantor-3 1 2 3)
-172
-#;3> (xy-3 172)
-(1 2 3)  
+> (cantor-pairing 15)
+'(0 5)
+> (cantor-pairing (cantor-unpairing 10 12))
+'(10 12)
 \end{lstlisting}
 
-Turing machines instructions are four tuples so we are 
-interested in those.
+Extending to triples is straightforward. 
+These routines are perhaps misnamed\Dash perhaps they are better named
+\codeinline{cantor-tupling-3} and \codeinline{cantor-untupling-3}\Dash
+but we will stick with them.
 
-\lstinputlisting[firstline=53,lastline=61]{background/scheme/godelnumbering.scm}
+\lstinputlisting[firstline=107,lastline=110]{\cantorfile}
+\lstinputlisting[firstline=122,lastline=126]{\cantorfile}
+
+\noindent
+Using these routines is also straightforward.
+
+\begin{lstlisting}> 
+> (cantor-pairing-3 172)
+'(1 2 3)
+> (for ([i '(0 1 2 3 4 5 6 7 8 9)])
+     (display (cantor-pairing-3 i))(newline))
+(0 0 0)
+(0 0 1)
+(1 0 0)
+(0 1 0)
+(1 0 1)
+(2 0 0)
+(0 0 2)
+(1 1 0)
+(2 0 1)
+(3 0 0)
+\end{lstlisting}
 
 % From uel.sty; need this because the url has a percent sign in it.
 \urldef{\yagni}\url{https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it}
 What the heck, 
 \citetext{let's extend to tuples of any size}{%
   See \yagni.}.
+
 We don't need these but they are fun.
-The \codeinline{cantor-n} routine takes a tuple of any length and
+The \codeinline{cantor-unpairing-n} routine generalizes 
+\codeinline{cantor-unpairing}, 
+\codeinline{cantor-unpairing-3}, etc.
+It takes a tuple of any length and
 outputs the Cantor number of that tuple.
-Also there is \codeinline{xy-arity} that takes two inputs, the length
+
+\lstinputlisting[firstline=195,lastline=203]{\cantorfile}
+
+Also there is \codeinline{cantor-pairing-arity} 
+that takes two inputs, the length
 of a tuple and its Cantor number, and produces the
 tuple.
 
-\lstinputlisting[firstline=63,lastline=87]{background/scheme/godelnumbering.scm}
+\lstinputlisting[firstline=226,lastline=239]{\cantorfile}
 
-The \codeinline{xy-arity} routine is not uniform in that 
+The \codeinline{cantor-pairing-arity} routine is not uniform in that 
 it covers only one arity at a time.
 Said another way, \codeinline{xy-arity} is not the inverse of 
 \codeinline{cantor-n} in that we have to tell it the tuple's arity.
+
+\begin{lstlisting}
+> (cantor-unpairing-n 3 4 5)
+1381
+> (cantor-pairing-arity 3 1381)
+'(3 4 5)
+\end{lstlisting}
+
 
 To cover tuples of all lengths we define two matched routines, 
 \codeinline{cantor-omega} and \codeinline{xy-omega} that 

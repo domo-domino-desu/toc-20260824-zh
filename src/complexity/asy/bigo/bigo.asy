@@ -1254,8 +1254,8 @@ yaxis(pic, XZero,
 draw(pic, graph(f_scaled,xmin,xmax), FCNPEN);
 draw(pic, graph(g_scaled,xmin,xmax), FCNPEN);
 
-label(pic,"$f$",Scale(pic,(xmax,0)), 3N);
-label(pic,"$g$",Scale(pic,(xmax,ymax)), 2W+1S);
+label(pic,"$g$",Scale(pic,(xmax,0)), 3N);
+label(pic,"$f$",Scale(pic,(xmax,ymax)), 2W+1S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

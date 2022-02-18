@@ -1,5 +1,5 @@
 # Makefile
-# For Theory of Computation by Jim Hefferon https://hefferon.net/computation
+# For Linear Algebra by Jim Hefferon joshua.smcvt.edu/linearalgebra
 # 2021-Jun-01 JH GPL 2
 
 # SRC_DIR  Full path for src/
@@ -38,17 +38,19 @@ LATEX_CMD := $(TEXINPUTS) $(LATEX)
 ASYMPTOTE_CMD := asy -nosafe
 
 # Makeindex command line.
-MAKEINDEX_CMD := makeindex -s sty/book.isty -p odd 
+MAKEINDEX_CMD := makeindex -s sty/book.isty
 
 # Command for making a .zip file, for the slides.
 ZIP_CMD := zip
 
 
-# .PHONY : all
-# all : book.pdf answers.pdf
 
-# book.pdf : book.tex cover preface prologue background languages automata complexity appendix
-# 	$(LATEX_CMD) book.tex
+
+# ============== all ================
+# You might try ftpmaint@Alonzo:~/Documents/toc/src$ make all 2>&1 | tee makefile.log
+
+# .PHONY : all
+all : book.pdf answers.pdf
 
 
 # ============== cover ================
@@ -581,5 +583,3 @@ book.pdf : book.tex \
 
 answers.pdf : book.pdf answers.tex
 	$(LATEX_CMD) answers
-
-all : book.pdf answers.pdf

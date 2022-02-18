@@ -1,5 +1,5 @@
 # Makefile
-# For Linear Algebra by Jim Hefferon joshua.smcvt.edu/linearalgebra
+# For Theory of Computation by Jim Hefferon https://hefferon.net/computation
 # 2021-Jun-01 JH GPL 2
 
 # SRC_DIR  Full path for src/
@@ -38,7 +38,7 @@ LATEX_CMD := $(TEXINPUTS) $(LATEX)
 ASYMPTOTE_CMD := asy -nosafe
 
 # Makeindex command line.
-MAKEINDEX_CMD := makeindex -s sty/book.isty
+MAKEINDEX_CMD := makeindex -s sty/book.isty -p odd 
 
 # Command for making a .zip file, for the slides.
 ZIP_CMD := zip

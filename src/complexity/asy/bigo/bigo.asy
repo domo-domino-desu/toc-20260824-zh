@@ -1214,10 +1214,10 @@ real xmax=20;  // was 100
 real ymin=0;
 real ymax=17000;  // g(20)=16064  // was 2000000
 
-real f(real x) {
+real g(real x) {
   return 2x**3+3*x+4;
 }
-real g(real x) {
+real f(real x) {
   return x**2+5*x+6;
 }
 
@@ -1254,8 +1254,8 @@ yaxis(pic, XZero,
 draw(pic, graph(f_scaled,xmin,xmax), FCNPEN);
 draw(pic, graph(g_scaled,xmin,xmax), FCNPEN);
 
-label(pic,"$g$",Scale(pic,(xmax,0)), 3N);
-label(pic,"$f$",Scale(pic,(xmax,ymax)), 2W+1S);
+label(pic,"$f$",Scale(pic,(xmax,0)), 3N);
+label(pic,"$g$",Scale(pic,(xmax,ymax)), 2W+1S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -1268,21 +1268,21 @@ int picnum = 17;
 
 size(pic,4.5cm,2.5cm,IgnoreAspect);
 
-real f(real x) {
+real g(real x) {
   return 2x**3+3*x+4;
 }
-real g(real x) {
+real f(real x) {
   return x**2+5*x+6;
 }
 real ratio(real x) {
-  return g(x)/f(x);
+  return f(x)/g(x);
 }
 
 // limits
 real xmin=0; 
 real xmax=20;
 real ymin=0;
-real ymax=10;
+real ymax=7;
 
 // scale
 //real scalefactor = 5/ymax;
@@ -1313,7 +1313,7 @@ yaxis(pic, XZero,
       arrow=Arrow(TeXHead,axis_arrow_size));
 
 draw(pic, graph(ratio_scaled,1,xmax), FCNPEN);
-label(pic,"$g/f$",Scale(pic,(0.90*xmax,0.20*ymax)), 0S);
+label(pic,"$f/g$",Scale(pic,(0.90*xmax,0.20*ymax)), 0S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

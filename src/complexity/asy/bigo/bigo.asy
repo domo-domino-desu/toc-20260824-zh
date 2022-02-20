@@ -1214,10 +1214,10 @@ real xmax=20;  // was 100
 real ymin=0;
 real ymax=17000;  // g(20)=16064  // was 2000000
 
-real g(real x) {
+real f(real x) {
   return 2x**3+3*x+4;
 }
-real f(real x) {
+real g(real x) {
   return x**2+5*x+6;
 }
 
@@ -1254,8 +1254,8 @@ yaxis(pic, XZero,
 draw(pic, graph(f_scaled,xmin,xmax), FCNPEN);
 draw(pic, graph(g_scaled,xmin,xmax), FCNPEN);
 
-label(pic,"$f$",Scale(pic,(xmax,0)), 3N);
-label(pic,"$g$",Scale(pic,(xmax,ymax)), 2W+1S);
+label(pic,"$g$",Scale(pic,(xmax,0)), 3N);
+label(pic,"$f$",Scale(pic,(xmax,ymax)), 2W+1S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -1268,10 +1268,10 @@ int picnum = 17;
 
 size(pic,4.5cm,2.5cm,IgnoreAspect);
 
-real g(real x) {
+real f(real x) {
   return 2x**3+3*x+4;
 }
-real f(real x) {
+real g(real x) {
   return x**2+5*x+6;
 }
 real ratio(real x) {
@@ -1282,7 +1282,7 @@ real ratio(real x) {
 real xmin=0; 
 real xmax=20;
 real ymin=0;
-real ymax=7;
+real ymax=35;
 
 // scale
 //real scalefactor = 5/ymax;
@@ -1305,7 +1305,7 @@ xaxis(pic,YZero,
 // yaxis
 yaxis(pic, XZero,
       ymin=ymin, ymax=ymax+0.9,
-      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1, 
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=10, step=1, 
 		beginlabel=false, endlabel=true,
 		Size=axis_tick_size, size=0.5*axis_tick_size,
 		extend=false, begin=false),

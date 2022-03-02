@@ -215,3 +215,86 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+// ================== Midterm-2022 ==================
+picture pic;
+int picnum = 5;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x,y$");
+node runhp=nbox("Run $\TM_x$ on $x$");
+node print=nbox("Print $5$");
+node end=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read,runhp,print,end);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (read--runhp),
+     (runhp--end)
+     );
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     runhp,
+     print,
+     end
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// .............................................
+picture pic;
+int picnum = 6;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node runhp=nbox("Run $\TM_x$ on $x$");
+node print=nbox("Print $5$");
+node end=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read,runhp,print,end);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (read--runhp),
+     (runhp--end)
+     );
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     runhp,
+     print,
+     end
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

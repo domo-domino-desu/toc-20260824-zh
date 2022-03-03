@@ -50,7 +50,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============== TM with an K oracle ================
+// ============== TM with an X oracle ================
 picture pic;
 int picnum = 1;
 unitsize(pic,22.5pt);
@@ -66,7 +66,7 @@ triple eb_origin = (-4,-2,0);  // where external box is shifted
 draw_wire(pic,tm_origin=tm_origin,eb_origin=eb_origin);
 
 transform3 t=shift(eb_origin);
-eb_draw(pic, t=t, eb_label="\textsf{X}");
+eb_draw(pic, t=t, eb_label="set \textsf{X}");
 tm_draw_lf_tape(pic);
 tm_draw(pic);
 tm_draw_start_button(pic);

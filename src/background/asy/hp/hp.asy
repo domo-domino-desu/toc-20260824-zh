@@ -2446,3 +2446,76 @@ shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
 
 
 
+// ========= First examples for Rice's Thm =============
+// Index in I
+picture pic;
+picnum = 52;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node printout=nbox("Print 42");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,printout);
+vlayout(0.85u,printout,ending);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     printout,
+     ending
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--printout),
+     (printout--ending)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+// ............ Index not in I ..............
+picture pic;
+picnum = 53;
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node loop=nbox("Infinite loop");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+
+vlayout(0.85u,start,read);
+vlayout(0.85u,read,loop);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     loop
+     );
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--loop)
+);
+
+shipout(format(OUTPUT_FILE,picnum),pic,format="pdf");
+
+
+
+

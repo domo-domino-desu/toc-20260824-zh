@@ -967,5 +967,117 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== breadth-first search of all derivations  ================
+picnum = 17;  
+picture p;
+
+defaultnodestyle=nodestyle(drawfn=FillDrawer(white,white));
+defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+backgroundcolor);
+
+
+// define nodes
+node S=nbox("\terminal{S}"),
+     TbU=nbox("\terminal{TbU}"),
+     aTbU=nbox("\terminal{aTbU}"),
+     epsbU=nbox("\terminal{$\varepsilon$bU}"),
+     TbaU=nbox("\terminal{TbaU}"),
+     TbbU=nbox("\terminal{TbbU}"),
+     Tbeps=nbox("\terminal{Tb$\varepsilon$}"),
+     aaTbU=nbox("\terminal{aaTbU}"),
+     aepsbU=nbox("\terminal{a$\varepsilon$bU}"),
+     baU=nbox("\terminal{baU}"),
+     bbU=nbox("\terminal{bbU}"),
+     beps=nbox("\terminal{b$\varepsilon$}"),
+     aTbaU=nbox("\terminal{aTbaU}"),
+     epsbaU=nbox("\terminal{$\varepsilon$baU}"),
+     TbaaU=nbox("\terminal{TbaaU}"),
+     TbabU=nbox("\terminal{TbabU}"),
+     Tbaeps=nbox("\terminal{Tba$\varepsilon$}"),
+     aTbbU=nbox("\terminal{aTbbU}"),
+     epsbbU=nbox("\terminal{$\varepsilon$bbU}"),
+     TbbaU=nbox("\terminal{TbbaU}"),
+     TbbbU=nbox("\terminal{TbbbU}"),
+     Tbbeps=nbox("\terminal{Tbb$\varepsilon$}"),
+     aTb=nbox("\terminal{aTb}"),
+     epsb=nbox("\terminal{$\varepsilon$b}");
+
+// layout
+defaultlayoutrel = true;
+defaultlayoutskip = 1inch;
+real u = 0.7inch;  // horizontal
+real v = 0.4*u;                 // vertical
+
+// rank 0
+S.pos=(0*u,0*v);
+// rank 1
+TbU.pos=(0*u,-1*v);
+// rank 2
+aTbU.pos=(-2*u,-2*v);
+epsbU.pos=(-1*u,-2*v);
+TbaU.pos=(-0.15*u,-2*v);
+TbbU.pos=(0.65*u,-2*v);
+Tbeps.pos=(1.5*u,-2*v);
+// rank 3
+aaTbU.pos=(-4*u,-3*v);
+aepsbU.pos=(-3.75*u,-3.25*v);
+baU.pos=(-3*u,-3*v);
+bbU.pos=(-2.75*u,-3.25*v);
+beps.pos=(-2.5*u,-3.5*v);
+aTbaU.pos=(2*u,-3*v);
+epsbaU.pos=(3*u,-3*v);
+TbaaU.pos=(-3*u,-3*v);
+TbabU.pos=(-2*u,-3*v);
+Tbaeps.pos=(-0.9*u,-3*v);
+aTbbU.pos=(0.9*u,-3*v);
+epsbbU.pos=(3*u,-3*v);
+TbbaU.pos=(-2*u,-3*v);
+TbbbU.pos=(-0.9*u,-3*v);
+Tbbeps.pos=(0.9*u,-3*v);
+aTb.pos=(3*u,-3*v);
+epsb.pos=(0.9*u,-3*v);
+
+// draw edges
+draw(p,
+     (S--TbU),  // rank 0 to rank 1
+     (TbU--aTbU),  // rank 1 to rank 2
+     (TbU--epsbU),
+     (TbU--TbaU),
+     (TbU--TbbU),
+     (TbU--Tbeps),
+     (aTbU--aaTbU),  // rank 2 to rank 3
+     (aTbU--aepsbU),
+     (epsbU--baU),
+     (epsbU--bbU),
+     (epsbU--beps),
+     (TbaU--aTbaU),
+     (TbaU--epsbaU),
+     (TbaU--TbaaU),
+     (TbaU--TbabU),
+     (TbaU--Tbaeps),     
+     (TbbU--aTbbU),
+     (TbbU--epsbbU),
+     (TbbU--TbbaU),
+     (TbbU--TbbbU),
+     (TbbU--Tbbeps),
+     (Tbeps--aTb),
+     (Tbeps--epsb)
+    );
+
+// draw nodes
+draw(p,
+     S,
+     TbU,
+     aTbU, epsbU, TbaU, TbbU, Tbeps,
+     aaTbU, aepsbU, baU, bbU, beps, 
+       aTbaU, epsbaU, TbaaU, TbabU, Tbaeps,
+       aTbbU, epsbbU, TbbaU, TbbbU, Tbbeps, 
+       aTb, epsb 
+     );
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+
 
 

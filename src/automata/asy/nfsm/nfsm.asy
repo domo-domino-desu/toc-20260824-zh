@@ -83,7 +83,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============== Computation history for first NFSM; iniital ================
+// ============== Computation history for first NFSM; initial ================
 picture pic;
 int picnum = 2;
 unitsize(pic,1.5cm,0.8cm);
@@ -5357,6 +5357,9 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

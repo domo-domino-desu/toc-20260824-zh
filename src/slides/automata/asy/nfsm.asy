@@ -1313,3 +1313,38 @@ shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 
 
 
+// ============== NFSM to convert to DFSM ================
+picture pic;
+int picnum = 20;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q3=ncircle("$q_2$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2);
+
+// edges
+draw(pic,
+     (q0..bend(20)..q1).l("\str{1}"), 
+     (q0..loop(N)).l("\str{0},\str{1}"),
+     (q1..bend(20)..q0).l("\str{1}"), 
+     (q1--q2).l("\str{1}"), 
+     (q2..loop(N)).l("\str{0}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

@@ -386,51 +386,40 @@ there are seven string  of length less than three.
 
 % ===========================================
 \section{Nondeterminism}
-\begin{frame}{Recall: determinism} 
-Turing machines are defined as 
+\begin{frame}{Recall: definition of determinism} 
+Turing machines are
 sets of four-tuple instructions  $q_pT_pT_nq_n$,
 subject to the restriction that the set must be
-deterministic\Dash that no two instructions can begin with 
+deterministic:~no two instructions can begin with 
 the same $q_pT_p$.
 
-Thus, over the set of instructions $q_pT_pT_nq_n\in\TM$,
+This implies that over the set of instructions $q_pT_pT_nq_n\in\TM$,
 the association of present pair $q_pT_p$ with next pair~$T_nq_n$,
 defines a function, the \definend{transition function}
 or \definend{next-state function}
 $\map{\Delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}$.  
-Briefly, these machines satisfy that 
-a present configuration determines a unique next state. 
 Finite State machines have the same restriction.
+Briefly, the
+present configuration determines a unique next state and so  
+at each step the machine is in one and only one state. 
 
-We will now see what happens when we drop that requirement.
+We now drop that.
 We will 
-do it here for Finite State machines and we will do it in the next chapter
+do it here for Finite State machines and in the next chapter
 for Turing machines.
-% We will see two ways to informally think of nondeterminism.
-% We will also see examples of nondeterminism, and its uses.
-% In particular, we
-% will see that nondetermistic Finite State machines
-% machines do the same jobs as deterministic
-% ones. 
 
 \pause{\color{blue}\textit{Remark:}}
-The machine model that we are introducing 
-sometimes leaves the initial impression of being odd.
-So before the definition we will do some preliminary exposition. 
-We will first note that we already have some experience with
-such computations.
-Then we will see an example of a nondeterministic Finite State machine
-and trace through the acceptance of a string,
-which will give us two mental models for how to think about these computations.
-The full definition comes after that.
+Nondeterminism proves to be a very important idea, but it
+sometimes gives the initial impression of being odd.
+So before the definition 
+we will see two examples of computations that, in some sense,
+do more than one thing at a time.
+These will lead to two mental models for what is happening.
 \end{frame}
 
 
-\begin{frame}{Recall: grammars}
-Deriving a string from a grammar is a kind of computation.
-It is symbol pushing.
-
-For example, from this grammar
+\begin{frame}{Deriving a string from a grammar}
+From this grammar
 \begin{grammar}
   S \produces{} T\trm{b}U
 
@@ -468,6 +457,12 @@ or $\sigma_1=\str{baab}$.
     \trm{b} \trm{a} \trm{a} \trm{b} 
   \end{tabular}
 \end{center}
+\pause
+These are computations in that they are symbol pushing, just as
+a Turing machine manipulates symbols.
+It is nondeterministic in that while doing a sequence of $\derives$~steps,
+we often find that more than one rule appliesand so there is not just a unique
+next string.
 \end{frame}
 
 
@@ -478,52 +473,41 @@ or $\sigma_1=\str{baab}$.
 }% 
 \setlength{\unitlength}{\wd\jhimagebox}
 \begin{frame}
-  \frametitle{How to find it?}
-Given a target string~$\sigma$, how to find a derivation?
-The problem is that
-while doing a sequence of $\derives$~steps,
-we often find that more than one rule applies.
-There are two ways to go.
+  % \frametitle{Finding a derivation}
+Given a target string~$\sigma$, how to derive it?
 
-First, we could brute force it:~apply 
+One way is brute force:~apply 
 all allowed production rules to the start symbol, 
 then all allowed rules to each result,
 etc. 
-In a sense we are doing many derivations at a time. 
 If $\sigma$ is in the language of the grammar then we will 
 eventually find it.
-This is a breadth-first search of the $\derives$~sequences.
+This is a breadth-first search of the $\derives\!$~sequences.
 % The width is \the\wd\jhimagebox.
 % The height is \the\ht\jhimagebox.
 % The width is 325.72612pt. The height is 110.4624pt.
 % I by-hand calculated that 110.4624÷325.72612 = 0.339126626
 \begin{center}\small
   \begin{picture}(1,0.339126626)
-    \only<1>{\put(0.558,0.249){\includegraphics{asy/nfsm17.pdf}}}%
-    \only<2>{\put(0.124,0.187){\includegraphics{asy/nfsm18.pdf}}}%
-    \only<3-4>{\put(0,0){\includegraphics{asy/nfsm19.pdf}}}%
+    \only<2>{\put(0.558,0.249){\includegraphics{asy/nfsm17.pdf}}}%
+    \only<3>{\put(0.124,0.187){\includegraphics{asy/nfsm18.pdf}}}%
+    \only<4-5>{\put(0,0){\includegraphics{asy/nfsm19.pdf}}}%
   \end{picture}
 \end{center}
-\only<4>{The second way, 
-how we actually handle this, is to guess a 
-finite sequence of legal steps.
+\only<5>{The second way, 
+what we actually do to solve these problems, is to guess.
 Then we verify that the guess is right.}
 \end{frame}
 
 
-\begin{frame}{Example of a nondeterministic machine}\vspace*{-1ex}
-Leaving $q_0$, this machine has two different arrows labeled~\str{0}.
-Also, out of $q_1$ comes no arrow with a~\str{1}.\vspace*{-1ex}
+\begin{frame}{A nondeterministic machine}\vspace*{-1ex}
+For the machine below, leaving $q_0$ are two different arrows labeled~\str{0}.
+And leaving $q_1$ is no arrow with a~\str{1}.\vspace*{-1ex}
 \begin{center}\small
   \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
 \end{center}
-We will walk through what happens when we give this machine 
-the input string~\str{00001}.
-\end{frame}
-
-
-\begin{frame}
-The computation history is a tree.
+Here are steps when this machine gets the input~\str{00001}.
+\vspace*{-1ex}
 \begin{center}\small
   \only<1>{\includegraphics{asy/nfsm02.pdf}}%
   \only<2>{\includegraphics{asy/nfsm03.pdf}}%
@@ -531,20 +515,32 @@ The computation history is a tree.
   \only<4>{\includegraphics{asy/nfsm05.pdf}}%
   \only<5>{\includegraphics{asy/nfsm06.pdf}}%
   \only<6>{\includegraphics{asy/nfsm07.pdf}}%
-  \only<7-8>{\includegraphics{asy/nfsm08.pdf}}% using onslide causes other figs to not be centered
+  \only<7>{\includegraphics{asy/nfsm08.pdf}}% using onslide causes other figs to not be centered
 \end{center}
-\onslide<8->{
+\end{frame}
+
+
+\begin{frame}
 \begin{itemize}
+\item
+For a given present-state, input character pair, there may be one next
+state, or more than one, or none.
+\item
+We are picturing that when the machine is called on to do two things, 
+it does them both.
+And when there is no next state, the branch dies.
+So the computation history is a tree.
 \item 
 After the first step, the machine is in multiple states simultaneously, namely 
 $q_0$ and~$q_1$.
-The same happens for other steps.
+The same happens for other steps; in the non-shaded vertical bands
+the machine is in a set of states.
 \item
 There is a branch that gets to the end and accepts the string.
 \item
 Branches can fail to accept the string because they die,  
 or because they get to the end and they just are not in an accepting state.
-\end{itemize}}
+\end{itemize}
 \end{frame}
 
 
@@ -553,26 +549,18 @@ or because they get to the end and they just are not in an accepting state.
 \begin{frame}{Mental model number one: spawning}
 In that diagram, we forked child processes to cover each
 possibility.
-This is a natural approach.
+This is a natural approach when called on to do multiple things.
 
-% Consider a grammar \mbox{S\produces{}\trm{aa}S\syntaxor\trm{aaa}S}.
-% You have a string~$\sigma$ and want to know if it has a derivation.
-% The challenge is that
-% from S you can do two different things;
-% which one is right? 
-% If you wrote a program for this then you might instead try every
-% possible derivation, doing a breadth-first traversal of the tree of all
-% derivations.
-
-An example is the Travelling Salesman problem.
-Suppose that we look for a cyclic trip that visits every state capitol in the 
-forty eight contiguous US~states,
+An example is the Travelling Salesman problem:~we want a cyclic trip 
+that visits every state capitol in the forty eight contiguous US~states,
 in less than $16\,000$ kilometers.
-Start at Montpelier~Vermont. 
-We could fork forty seven child processes, one for each potential next capital.
+Suppose that we start at Montpelier, Vermont.
+It is not clear what is the right next placed to go. 
+One thing that we could do is to
+fork forty seven child processes, a child for each potential next capital.
 The process assigned Albany, for instance, would know that the trip so far is
 $126$~kilometers. 
-Each child would then fork its own set of children, forty six of them.
+Then each child would then fork its own set of children, forty six of them.
 At the end, if there is
 a trip of less than $16\,000$ kilometers then some process knows it.
 If even one process is a success then we consider
@@ -580,33 +568,27 @@ the overall search a success.
 This is an example of nondeterminism in that during it,
 the machine is juggling many process and
 in that sense is simultaneously in many different states.
-
-Another example is that above
-we recalled the problem where we start with a grammar and then
-we are given a string and asked if it is derivable.
-An obvious approach is 
-a breadth-first traversal of the tree of all derivations.
 % \pause
 \end{frame}
 
 
 \begin{frame}{Mental model number two: guessing}
-This nondeterministic machine from earlier
+The nondeterministic machine from above
 accepts a string if it ends in two~\str{0}'s and a~\str{1}.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
 \end{center}
-With input \str{00001}, the problem the machine faces is:~when should it 
-stop going around $q_0$'s loop and start to the right?
-The example above has the machine accepting this input.
-So it has solved the problem\Dash viewed from the outside,
-we could say that the
-machine has guessed correctly.
+When presented with an input string, the machine must decide:~when 
+should it stop going around $q_0$'s loop, 
+and start following the tail to the right?
+The earlier example has the machine accepting \str{00001},
+so it has solved the problem\Dash viewed from the outside,
+we could say that the machine has guessed correctly.
 
 \pause
-This mindset is jarring because 
+This thinking is jarring because 
 we don't expect computers to guess.
-We can instead imagine that the machine is
+Alternatively, we can imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
 only has to check that answer.
 The furnisher is often personified as a demon.
@@ -765,13 +747,34 @@ $\set{(\str{ab})^n\suchthat n\in\N}$.
 
 
 \begin{frame}{Equivalence of the machine types}
-% \begin{lemma}
-% For every nondeterministic Finite State machine there is a deterministic
-% Finite State machine that accepts the same language.
-% \end{lemma}
-
 \ExecuteMetaData[\catchfilefn]{th:dfsmEquivndfsm}
 
+\pause
+\begin{example}
+Here is a nondeterministic Finite State machine.
+\begin{center}
+  \includegraphics{asy/nfsm20.pdf}
+\end{center}
+This is an equivalent deterministic Finite State machine.
+\begin{center}\small
+\begin{tabular}{r|cc}
+  \multicolumn{1}{c}{\ } &\str{0} &\str{1}  \\
+  \cline{2-3}
+  $s_0=\set{}$            &$s_0$ &$s_0$  \\
+  $s_1=\set{q_0}$         &$s_1$ &$s_4$  \\
+  $s_2=\set{q_1}$         &$s_0$ &$s_5$  \\
+  \acceptingstate
+  $s_3=\set{q_2}$         &$s_3$ &$s_0$  \\
+  $s_4=\set{q_0,q_1}$     &$s_1$ &$s_7$  \\
+  \acceptingstate
+  $s_5=\set{q_0,q_2}$     &$s_5$ &$s_4$  \\
+  \acceptingstate
+  $s_6=\set{q_1,q_2}$     &$s_3$ &$s_5$  \\
+  \acceptingstate
+  $s_7=\set{q_0,q_1,q_2}$ &$s_5$ &$s_7$  \\
+\end{tabular}
+\end{center}
+\end{example}
 \end{frame}
 
 

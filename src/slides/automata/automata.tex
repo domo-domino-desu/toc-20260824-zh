@@ -614,87 +614,99 @@ thing.
 
 
 \begin{frame}{Second mental model for nondeterminism: guessing}
-The nondeterministic machine from above
-accepts a string if it ends in two~\str{0}'s and a~\str{1}.
-\begin{center}\small
-  \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
-\end{center}
-When presented with an input string, the machine must decide:~when 
-should it stop going around $q_0$'s loop, 
-and start following the tail to the right?
-The earlier example has the machine accepting \str{00001},
-so it has solved the problem\Dash viewed from the outside,
-we could say that the machine has guessed correctly.
+For both the grammar example and the machine example, we also framed
+that the system guessed the answer.
 
-\pause
-This thinking is jarring because 
-we don't expect computers to guess.
-Alternatively, we can imagine that the machine is
+For example, we described the nondeterministic machine as guessing when 
+to stop going around $q_0$'s loop, 
+and start following the tail to the right.
+
+This characterization is jarring because 
+our previous experience with computers in programming class is that
+they don't guess.
+An alternate way to say it is that we imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
 only has to check that answer.
-The furnisher is often personified as a demon.
+Often, the furnisher is personified as a demon.
 \pause
-\begin{center}
+\begin{center}\small
   \vcenteredhbox{\includegraphics[height=1.2in]{../../automata/pix/flauros.jpg}}
-  % \hspace{2em}
-  % \mbox{Flauros, the Duke of Hell.}
+  \\
+  \mbox{Flauros, the Duke of Hell.}
 \end{center}
 \end{frame}
 
 \begin{frame}{What the two views share}
-In both models  this is an existence test\Dash 
+In both mental models, the computation succeeds if there is a way for it 
+to succeed.
+In particular, 
 the machine accepts the input if there exists a sequence of configurations
 that ends in an accepting state.
+
+Very important: `if there exists' doesn't mean that there must be an algorithm
+for finding it such as backtracking or dynamic programming, etc.
+This is pure existence\Dash it just requires that there 
+exist a way for the computation to succeed.
+That's why the demon is here;~it is a being so powerful that it 
+goes beyond needing ordinary computation to know the
+answer.
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Definition}
+\frametitle{Definition of a Nondeterministic Finite Sate machine}
+
+We change one thing from the definition of Finite State machine,
+the codomain of $\Delta$.
 
 \ExecuteMetaData[\catchfilefn]{def:NondeterministicFiniteStateMachine}
 \ExecuteMetaData[\catchfilefn]{def:NFSMAccepted}
 \pause
 \begin{example}
 This nondeterministic
-garage door opener listener waits to hear the remote control send
-the signal \str{0101110}.
+garage door listener waits to hear the remote control send
+\str{0101110}.
 \begin{center}
   \includegraphics{\asydir nfsm/nfsm11.pdf}
 \end{center}
 That is, it accepts the language
-$\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$
-of strings with that suffix.
-\end{example}
+$\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
 
-The listener will end in an accepting 
+For example, this listener will end in an accepting 
 state if it 
 hears a string $\sigma=\str{010101110}$, with three \str{01}'s in the prefix
 instead of two.
-How does this mechanism guess that it should ignore
-the first \str{01} but pay attention to the second?
+In terms of our second framing, it guesses that it should ignore
+the first \str{01} but not the second.
+(Said more precisely, there exists a sequence of configuations that leads
+to acceptance of $\sigma$.)
+\end{example}
 
-As remarked earlier, it is striking to say that a machine guesses.
-But later we will show how to convert a nondeterministic Finite State
-machine into  deterministic one.
-So we can think of the nondeterministic machine
+We will show how to convert any nondeterministic Finite State
+machine into a deterministic machine,
+so we can think of this machine
 as an abbreviation for a deterministic one.
-This obviates the paradox of guessing for Finite State machines.
+This may help obviate head-scratching over `guessing'.
 \end{frame}
 
 \begin{frame}
+  \frametitle{Nondeterminism can make a simpler machine}
 \begin{example}
 This nondeterministic Finite State machine 
 accepts only those strings ending in \str{HEF}.
+(The alphabet~$\Sigma$ is the capital ASCII letters.)
 \begin{center}
   \includegraphics{asy/nfsm11.pdf}
 \end{center}
-% The alphabet~$\Sigma$ is the capital ASCII letters.
+
+\pause
 Contrast that with what we got when we did this job
 using a deterministic machine.
 \begin{center}
   \includegraphics{asy/fsm03.pdf}
 \end{center}
-The nondeterministic machine is much simpler.
+The nondeterministic machine is
+more obviously true to its specification.
 \end{example}
 \end{frame}
 
@@ -728,15 +740,14 @@ $\lang(\hat{\FSM})=\set{\str{11}, \str{011}, \str{110}, \str{111},\str{0011}, \s
 \end{example}
 \end{frame}
 
-
-
 \begin{frame}{$\varepsilon$ transitions}
 \ExecuteMetaData[\catchfilefn]{discussion:epsilonTransitions}
 
 \pause
+These examples show what this extension can do.
 \begin{example}
-\hypertarget{ex:EpsilonTransitionsForConcat}{On the left} 
-the machine accepts strings with 
+\hypertarget{ex:EpsilonTransitionsForConcat}{The machine on the left} 
+accepts strings with 
 prefix \str{ab}.
 The one on the right accepts strings with suffix \str{ab}.
 \begin{center}
@@ -744,13 +755,15 @@ The one on the right accepts strings with suffix \str{ab}.
   \hspace{4em}
   \vcenteredhbox{\includegraphics{asy/nfsm13.pdf}}
 \end{center}
-This puts them together serially.
+This $\varepsilon$ transition joins them together, serially.
 \begin{center}
   \vcenteredhbox{\includegraphics{asy/nfsm14.pdf}}
 \end{center}
 \end{example}
-So it accepts only strings that begin with \str{ab} and end with \str{ab}.
+The joined machine accepts strings that begin with 
+\str{ab} and end with \str{ab}.
 \end{frame}
+
 
 \begin{frame}
 \begin{example} 
@@ -763,12 +776,12 @@ one that accepts strings with suffix \str{ab}.
   \hspace{4em}
   \vcenteredhbox{\includegraphics{asy/nfsm13.pdf}}
 \end{center}
-and put them together in parallel.
+and join them in parallel.
+The result accepts strings that begin with \str{ab} 
+or end with \str{ab}.
 \begin{center}
   \vcenteredhbox{\includegraphics{asy/nfsm15.pdf}}
 \end{center}
-The bottom machine accepts strings that begin with \str{ab} 
-or end with \str{ab}.
 \end{example}
 
 \pause
@@ -776,9 +789,9 @@ or end with \str{ab}.
 \hypertarget{ex:EpsilonTransitionsForStar}{An $\varepsilon$ transition edge} 
 can also take a machine and
 give it the ``any number of repetitions'' effect.
-That is, without that edge this machine's language is
-$\set{\emptystring,\str{ab}}$
-while adding it makes the lanaguage  
+That is, without that edge this machine accepts only two strings, the empty
+string or the string \str{ab}.
+With the edge, the lanaguage is  
 $\set{(\str{ab})^n\suchthat n\in\N}$.
 \begin{center}
   \includegraphics{\asydir nfsm/nfsm15.pdf}
@@ -817,6 +830,55 @@ This is an equivalent deterministic Finite State machine.
 \end{center}
 \end{example}
 \end{frame}
+
+
+
+
+\begin{frame}
+What if there are $\varepsilon$ transistions?
+
+\ExecuteMetaData[\catchfilefn]{df:EpsilonClosure}
+
+\begin{example}
+For this machine,
+these are the $\varepsilon$~closures.
+\begin{center}
+  \vcenteredhbox{\includegraphics{../../automata/asy/nfsm/nfsm93.pdf}}
+  \quad
+  \begin{tabular}{r|*{4}{c}}
+  \tabulartext{state}
+     &$q_0$           &$q_1$          &$q_2$        &$q_3$  
+  \\ \cline{2-5}
+  \tabulartext{$\varepsilon$ closure}
+     &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
+\end{tabular}
+\end{center}
+\end{example}
+\pause
+\ExecuteMetaData[\catchfilefn]{df:DFSMFromNFSM}
+\end{frame}
+
+\begin{frame}
+\begin{center}\small
+\begin{tabular}{r|cc}
+  \multicolumn{1}{c}{\ } &\str{0} &\str{1}  \\
+  \cline{2-3}
+  $s_0=\set{}$            &$s_0$ &$s_0$  \\
+  $s_1=\set{q_0}$         &$s_1$ &$s_4$  \\
+  $s_2=\set{q_1}$         &$s_0$ &$s_5$  \\
+  \acceptingstate
+  $s_3=\set{q_2}$         &$s_3$ &$s_0$  \\
+  $s_4=\set{q_0,q_1}$     &$s_1$ &$s_7$  \\
+  \acceptingstate
+  $s_5=\set{q_0,q_2}$     &$s_5$ &$s_4$  \\
+  \acceptingstate
+  $s_6=\set{q_1,q_2}$     &$s_3$ &$s_5$  \\
+  \acceptingstate
+  $s_7=\set{q_0,q_1,q_2}$ &$s_5$ &$s_7$  \\
+\end{tabular}
+\end{center}
+\end{frame}
+\end{document}
 
 
 

@@ -3745,6 +3745,51 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// =========== varepsilon closure ===============
+picture pic;
+int picnum = 93;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q2=ncircle("$q_2$"),
+  q1=ncircle("$q_1$", ns_accepting),
+  q3=ncircle("$q_3$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = .9u;
+
+hlayout(1*u, q0, q2);
+vlayout(1*v, q0, q1);
+hlayout(1*u, q1, q3);
+
+// edges
+draw(pic, 
+     (q0..loop(W)).l("\str{1}"),
+     (q0..bend..q2).l("\str{0}"),
+     (q0..bend..q1).l("$\varepsilon$"),
+     (q2..bend..q0).l("\str{0}"),
+     (q2..loop(E)).l("\str{1}"),
+     (q2..bend(-20)..q3).l("$\varepsilon$").style("leftside"),
+     (q1..bend..q0).l("\str{0}"), 
+     (q1..loop(W)).l("\str{0},\str{1}"),
+     (q3..bend(-20)..q1).l("$\varepsilon$").style("leftside"),
+     (q3..loop(E)).l("\str{0}")
+    );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2, q3
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 // =========== homework exercises =============

@@ -2929,8 +2929,11 @@ below is the state~$s_4$.
 \end{center}
 In general, compute the transition function of the
 deterministic machine with
-$\Delta_D(s_i,x)
-  =\Delta_N(q_{i_0},x)\cup\cdots \cup\Delta_N(q_{i_k},x)$, 
+\begin{equation*}
+\Delta_D(s_i,x)
+  =\Delta_N(q_{i_0},x)\cup\cdots \cup\Delta_N(q_{i_k},x)
+  \tag{$*$}
+\end{equation*}
 where $s_i=\set{q_{i_0}, \ldots{}\, q_{i_k}}$ and $x\in\Sigma$.
 An example is 
 $\Delta_D(s_5,\str{a})=\Delta_N(q_0,\str{a})\cup\Delta_N(q_2,\str{a})$,
@@ -2950,9 +2953,37 @@ So does its transition graph.
 % since there are no arrows into it.
 % The next section covers minimizing the number of states in a machine.
 
-We next expand that construction to cover~$\varepsilon$ transitions.
-Basically, we follow those transitions.
-For example, the start state of the deterministic machine
+We next extend the powerset construction to handle $\varepsilon$~transitions.
+Basically, we will follow the $\varepsilon$'s.
+%<*df:EpsilonClosure>
+For a state~$q$, the 
+\definend{$\varepsilon$~closure, $\hat{E}(q)$},\index{epsilon closure@$\varepsilon$ closure} 
+is the set of the states that
+are reachable from $q$ via some number of $\varepsilon$~transitions.
+This includes $q$ itself, as it is the result of zero-many
+transitions.
+The $\varepsilon$~closure of a set of states is the union of the 
+$\varepsilon$~closures of the members.
+%</df:EpsilonClosure>
+
+\begin{example}
+In this nondeterministic machine
+\begin{center}
+  \includegraphics{automata/asy/nfsm/nfsm93.pdf}
+\end{center}
+these are the $\varepsilon$~closures.
+\begin{center}
+\begin{tabular}{r|*{4}{c}}
+  \tabulartext{state~$q$} 
+     &$q_0$           &$q_1$          &$q_2$        &$q_3$  
+  \\ \cline{2-5}
+  \tabulartext{$\varepsilon$ closure $\hat{E}(q)$}
+     &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
+\end{tabular}
+\end{center}
+\end{example}
+
+ the start state of the deterministic machine
 is the $\varepsilon$~closure of~$\set{q_0}$, 
 the set of the states of~$\FSM_N$ that
 are reachable by a sequence of $\varepsilon$~transitions from $q_0$.
@@ -2964,6 +2995,30 @@ that the machine is reading \str{a}.
 If there is a $\varepsilon$ transition from $q_{i_j}$ to some~$q$ then
 to the set of next states add $\Delta_N(\set{q},\str{a})$, and in fact add
 the entire $\varepsilon$~closure.
+
+%<*df:DFSMFromNFSM>
+We can give a full algorithm for starting with a nondeterministic 
+machine~$\mathcal{N}$ and constructing a 
+deterministic machine~$\mathcal{D}$ with the same behavior.
+Elements of $\mathcal{D}$ are sets of states from~$\mathcal{N}\!$.
+The start state of $\mathcal{D}$ is the $\varepsilon$~closure of 
+$q_0\in\mathcal{N}\!$.
+A state of $\mathcal{D}$ is accepting if it contains any element of the 
+$\varepsilon$ closure of any of $\mathcal{N}$'s accepting states.
+
+As to the next-state function,
+consider a set of states~$S\subset Q_{\mathcal{N}}$ and tape 
+character~$x\in\Sigma$.
+We compute $\Delta_{\mathcal{D}}(S,x)$ in three steps. 
+(i)~Gather the $\varepsilon$~closures of all of the $q\in S$, 
+  giving a set $A=\cup_{q\in S}\hat{E}(q)$.
+  This is a subset of the states of $\mathcal{N}$.
+(ii)~Take the union of the next states of $A$'s elements,
+     $B=\cup_{a\in A}\Delta_{\mathcal{N}}(a,x)$.
+     This is also a subset of the states of $\mathcal{N}$.
+(iii)~Finish by gathering the $\varepsilon$~closures of $B$'s states, 
+  $\Delta_D(S,x)=\cup_{b\in B}\hat{E}(b)$.
+%</df:DFSMFromNFSM>
 
 \begin{example}  \label{ex:NFSMEpsilonClosure}
 Consider this nondeterministic machine.
@@ -2980,32 +3035,11 @@ Alternatively,
 following the $\varepsilon$ transition from $q_0$ to~$q_3$
 and then reading the~\str{a} gives~$q_3$.
 So the machine is next in the two states $q_0$ and~$q_3$.
-These are the $\varepsilon$~closures.
-\begin{center}
-\begin{tabular}{r|*{4}{c}}
-  \tabulartext{state}~$q$ 
-     &$q_0$           &$q_1$          &$q_2$        &$q_3$  
-  \\ \cline{2-5}
-  \tabulartext{$\varepsilon$ closure $\hat{E}(q)$}
-     &$\set{q_0,q_3}$ &$\set{q_0,q_1}$ &$\set{q_2}$ &$\set{q_3}$ 
-\end{tabular}
-\end{center}
 
-The full deterministic machine is on the next page. 
 The start state is the $\varepsilon$~closure of $\set{q_0}$,
 the state $s_7=\set{q_0, q_3}$.
-A state is accepting if it contains any element of the 
-$\varepsilon$ closure of~$q_1$.
 
-In general, for a state~$s$ and tape character~$x$,
-to compute $\Delta_D(s,x)$: 
-(i)~find the $\varepsilon$~closure of all of the $q$'s in the state~$s$, 
-  giving $\cup_{q\in s}\hat{E}(q)=\set{q_{i_0},\ldots q_{i_k}}$,
-then (ii)~take the union of the next states of the $q_{i_j}$ to get
-     $T=\Delta_N(q_{i_0},x)\cup \ldots \cup\Delta_N(q_{i_0},x)$
-and finally (iii)~find the $\varepsilon$~closure of each element of~$T$, 
-  and take the union of all those,
-  $\cup_{t\in T}\hat{E}(t)$.
+
 
 As an example take $s=s_5=\set{q_0,q_1}$ and $x=\str{a}$.
 Then~(i) gives $\set{q_0,q_3}\cup\set{q_0,q_1}=\set{q_0,q_1,q_3}$.

@@ -2,14 +2,26 @@
 % Use as much of http://cstheory.stackexchange.com/a/14818/4731 as possible
 
 Our touchstone model of mechanical computation is the Turing machine.
-A Turing machines has only two components, a CPU and a tape.
+A Turing machine has two components, a CPU and a tape.
 We will now take the tape away and
 study the CPU alone.
+So we consider what can be done with states alone.
 
-Alternatively stated,
-while a Turing Machine has unbounded memory, 
-the devices that we use every day do not.
-We can ask \citetext{what jobs can be done by a machine with bounded memory}{%
+Alternatively stated, a person could object to our characterization of
+Turing machines as the right model of what can be done by 
+an idealized discrete and deterministic device, on the following grounds:~While 
+each Turing Machine has finitely many states, 
+it can write to the tape.
+So there is a machine that writes a character, moves right, writes
+a character, moves right again, etc.
+This machines passes through infinitely many configurations.
+But no physical device can do that, even 
+\citetext{an idealized one}{%
+  Turing machines are `idealized' in that, for instance, the tape
+  length is
+  not bounded by the number of elementary 
+  particles in the universe.}.
+In this chapter we study \citetext{what can be done by a machine with a bounded number of possible configurations}{%
   From Rabin, Scott, Finite Automata and Their Decision Problems, 1959:
   \textit{Turing machines are widely considered to be the abstract prototype
   of digital computers; workers in the field, however, have felt more and more
@@ -31,21 +43,31 @@ We can ask \citetext{what jobs can be done by a machine with bounded memory}{%
 
 
 
-\section{Finite State Machines}\index{Finite State machine|(}
-We produce a new model of computation by modifying
-the definition of Turing Machine.
-We will strip out the capability to write, changing the
-tape head from read/write to read-only.
-This gives us insight into what can be done with states alone.
+\section{Finite State machines}\index{Finite State machine|(}
+We produce a new model of computation, the Finite State machine, by modifying
+the definition of the Turing machine.
+We will strip out the capability to write, changing from
+read/write to read-only.
 It will turn out that these machines can do many things, but
 not as many as Turing machines.
 
-\subsection{Definition}  
-We will use the same type of transition tables and transition graphs
+\subsection{Definition}
+We defined Turing machines as sets of instructions.
+We have occasionally referred to those instructions,
+and we will again soon, but what matters most about them is that
+they describe the machine's next-state function,~$\Delta$.
+It is this function that governs how the machine transitions from
+configuration to configuration durign a computation.
+
+For the definition of Finite State machines we will just give the
+transition function.
+For this
+we will use the same type of transition tables and transition graphs
 as with Turing machines.
+The preliminary examples below illustrate.
 
 \begin{example}  \label{ex:PowerSwitch}
-A power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$ and
+A power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$, and
 its input alphabet has one symbol, \str{toggle}.
 \begin{center}
   \newlength{\jhscratchheight}
@@ -57,6 +79,18 @@ its input alphabet has one symbol, \str{toggle}.
   \vcenteredhbox{\includegraphics[height=0.65\jhscratchheight]{automata/pix/powerbutton.png}}  % Free, from: http://www.clker.com/clipart-9978.html
 \end{center}
 \end{example}
+
+In that example the state $q_{\text{on}}$ is drawn with a double circle.
+Finite State machines don't write so they need some way 
+to indicate the computational result.
+In this case, the switch makes a connection that makes the power available.
+We say that this is an 
+\definend{accepting state}\index{accepting state}\index{final state}\index{state!accepting} 
+or 
+\definend{final state}.\index{final state}\index{state!final} 
+In the transition graphs we denote the final states with double circles
+and in the transition function tables we mark them with
+a `\acceptingstatemark'.
 
 \begin{example} \label{ex:Turnstile}
 Operate this turnstile by putting in two tokens and then pushing through.
@@ -101,7 +135,7 @@ and for quarters.
   nickles are $5$~cents, dimes are $10$~cents, and quarters are $25$~cents.}
 
 \begin{example} \label{ex:ModuloFourFSM}
-This machine, when started in state~$q_0$ and fed bit strings,
+This machine, when started in state~$q_0$ and fed bitstrings,
 will keep track of the remainder modulo~$4$ of the number of
 \str{1}'s.
 \begin{center}    
@@ -141,43 +175,44 @@ $\map{\Delta}{Q\times\Sigma}{Q}$}{%
 \end{definition}
 %</def:FSM>
 
-This may not immediately appear to be like our
+This may not immediately appear to be an adaptation of our earlier
 definition of a Turing Machine.
 Some of that is because we have already defined the terms
 `alphabet' and `transition function'.
 Another adjustment to the definition comes from the fact that
-Finite State machines cannot write, so they don't need
-to move the tape for scratch work and
-thus we've dropped the tape action symbols \str{L} and~\str{R}.
+Finite State machines cannot write, so
+we've dropped the tape action symbols \str{L} and~\str{R}.
+And we've already discussed that we are going straight to the 
+next-state function, rather than introduce instructions.
 
-The other difference between Finite State machines and Turing machines
-is the presence of the accepting states.
+The other difference is the accepting states.
 Consider, in the vending machine of \cref{ex:VendingMachine},
 the state $q_{30}$.
 It is an accepting state, meaning
-that the machine has seen in the input what it is looking for.
-The same goes for \cref{ex:Turnstile}'s turnstile state~$q_{\text{ready}}$
-and \cref{ex:PowerSwitch}'s power switch state~$q_{\text{on}}$.
-While we can design a Turing Machine to indicate a choice by arranging so
-that for each input
+that the machine has seen what it is looking for.
+These states have a connotation that the computation is a 
+success.
+While we could design a Turing Machine to compute a Boolean function,
+that is, to indicate a yes-no choice 
+by arranging it so that for each input
 the machine will halt and the only thing on the tape will be either a \str{1}
 or \str{0},
-a Finite State machine
-gives a decision by ending in one of these designated states.
-Below, we've pictured that the accepting states are wired to the red light
-so that we know when a computation succeeds.
-In the transition graphs we denote the final states with double circles
-and in the transition function tables we mark them with
-a `\acceptingstatemark'.
+a Finite State machine always
+gives a decision by ending either in one of these designated states 
+or not in one.
+Below, we've pictured that the accepting states are wired to the red light,
+so we can tell when the input is accepted.
 
-To work a Finite State machine device, put the
+To work a Finite State machine, put the
 finite-length input on the tape and press \texttt{Start}.\index{Start button@\texttt{Start} button}
 \begin{center}
   \includegraphics{asy/share/machine02.pdf}
 \end{center}
 The machine consumes the input, at each step deleting the prior 
 tape character and then reading the next one.
-We can trace through the steps when
+When the string is fully consumed, we check whether the light is lit or not.
+
+Below we trace through the steps when
 \cref{ex:ModuloFourFSM}'s modulo~$4$ machine gets the input~\str{10110}.
 \begin{center}
 \begin{tapesequence}
@@ -510,8 +545,7 @@ or \definend{accepted}), by the machine.\index{accepted language|see{recognized}
   
 \noindent (For Finite State machines, deciding a language is 
 equivalent to recognizing it, because the machine must halt.
-`Recognized' is more the common term.
-We also often say `accepts'.)
+`Recognized' is more the common term.)
 
 %</def:FSMLanguage>
 % We close with a definition that emphasizes the role played
@@ -2956,8 +2990,8 @@ So does its transition graph.
 We next extend the powerset construction to handle $\varepsilon$~transitions.
 Basically, we will follow the $\varepsilon$'s.
 %<*df:EpsilonClosure>
-For a state~$q$ the 
-\definend{$\varepsilon$~closure, $\hat{E}(q)$},\index{epsilon closure@$\varepsilon$ closure} 
+For a state~$q$, the 
+\definend{$\varepsilon$~closure $\hat{E}(q)$}\index{epsilon closure@$\varepsilon$ closure} 
 is the set of the states that
 are reachable from $q$ via some number of $\varepsilon$~transitions.
 This includes $q$ itself, as it is the result of zero-many
@@ -3003,13 +3037,13 @@ deterministic machine~$\mathcal{D}$ with the same behavior,
 even if $\mathcal{N}$ has $\varepsilon$~transitions.
 Elements of $\mathcal{D}$ are sets of states from~$\mathcal{N}\!$.
 The start state of $\mathcal{D}$ is the $\varepsilon$~closure of 
-$q_0\in\mathcal{N}\!$.
+$q_0$.
 A state of $\mathcal{D}$ is accepting if it contains any element of the 
 $\varepsilon$ closure of any of $\mathcal{N}$'s accepting states.
 
 As to the next-state function,
-consider a set of states~$S\subset Q_{\mathcal{N}}$ and tape 
-character~$x\in\Sigma$.
+consider a subset of $\mathcal{N}$'s states~$S$ and a tape 
+character~$x$.
 We compute $\Delta_{\mathcal{D}}(S,x)$ in three steps. 
 First, gather the $\varepsilon$~closures of all of the $q\in S$, 
   giving a set $A=\cup_{q\in S}\hat{E}(q)$.
@@ -3017,7 +3051,7 @@ First, gather the $\varepsilon$~closures of all of the $q\in S$,
 Second, apply $\mathcal{N}$'s next state function to $A$'s elements,
      giving $B=\cup_{a\in A}\Delta_{\mathcal{N}}(a,x)$.
      This is also a subset of the states of $\mathcal{N}$.
-Finally, gather the $\varepsilon$~closures of $B$'s states to get 
+Finally, gathering the $\varepsilon$~closures of $B$'s states gives 
   $\Delta_D(S,x)=\cup_{b\in B}\hat{E}(b)$.
 %</df:DFSMFromNFSM>
 

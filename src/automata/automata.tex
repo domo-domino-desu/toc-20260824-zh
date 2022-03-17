@@ -2900,28 +2900,14 @@ nondeterministic machines.
 We will demonstrate inclusion in the other direction constructively,
 by starting
 with a nondeterministic machine with~$\varepsilon$ transitions and
-constructing a deterministic machine that recognizes the same language.
-We won't give a complete proof simply because
-a proof is messy and the examples below
-are entirely convincing.
-They give the 
+building a deterministic machine that recognizes the same language.
+The two examples below show the 
 \definend{powerset construction}.\index{powerset construction}\index{Finite State machine!powerset construction}
-
-% First consider a nondeterministic machine $\FSM_N$ 
-% Let its next-state function be~$\Delta_N$.
-% Produce
-% the associated deterministic machine $\FSM_D$ by listing the
-% sets of states of $\FSM_N$.
-% The example below illustrates.
-% Each line of the table is a set $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$
-% of $\FSM_N$'s states.
-% The next-state function $\Delta_D$ of $\FSM_D$  combines the
-% next states associated with each $q_{i_j}$.
-% \begin{equation*}
-%   \Delta_D(s_i)=
-%     \Delta_N(q_{i_1})\cup\Delta_N(q_{i_2})\cup \cdots
-%   \tag*{($*$)}
-% \end{equation*}
+We will give a complete description of the algorithm just before the 
+second example.
+(We won't give a proof that it works simply because
+the examples
+are entirely convincing.)
 
 \begin{example}\index{nondeterministic Finite State machine!convert to a deterministic machine}
 Consider this nondeterministic machine, $\FSM_N$,
@@ -2931,22 +2917,19 @@ with no $\varepsilon$ transitions.
 \end{center}
 For
 the associated deterministic machine $\FSM_D$,
-each line of the transition function's table below is a 
-set $s_i=\set{q_{i_1}, \ldots{}\, q_{i_k}}$
-of $\FSM_N$'s states.
-Thus, if a nondeterministic machine has~$k$-many states then
-under this construction the deterministic machine has $2^k$-many states.
-Below, the start state of $\FSM_D$ is $s_1=\set{q_0}$ and
+as show below each member is a 
+set of $\FSM_N$'s states,  $s_i=\set{q_{i_1}, \ldots{}\, q_{i_k}}$.
+% Thus, if a nondeterministic machine has~$k$-many states then
+% under this construction the deterministic machine has $2^k$-many states.
+The start state of $\FSM_D$ is $s_1=\set{q_0}$ and
 a state of $\FSM_D$ is accepting
-if any of its element $q$'s are accepting states in $\FSM_N$.
+if any of its elements are accepting states in $\FSM_N$.
 
-As an illustration of constructing the table,
-suppose that the above machine is in $s_5=\set{q_0,q_2}$ and is reading~\str{a}.
-The next state is the union of the next states due to~$q_0$, the set
-$\Delta_N(q_0,\str{a})=\set{q_0,q_1}$, with the next states
-due to~$q_2$, the set $\Delta_N(q_2,\str{a})=\set{}$.
-Thus, $\Delta_D(s_5,\str{a})=\set{q_0,q_1}$, which  
-below is the state~$s_4$.
+As an illustration of constructing the transition table,
+suppose that $\FSM_N$ is in $s_5=\set{q_0,q_2}$ and is reading~\str{a}.
+The next state is the union of the next states due to~$q_0$
+with the next states due to~$q_2$.
+Thus, $\Delta_D(s_5,\str{a})=\set{q_0,q_1}$, which is~$s_4$.
 \begin{center}\small
   \begin{transitionfunction}[\Delta_D]
       &\str{a}   &\str{b}         \\
@@ -2961,17 +2944,17 @@ below is the state~$s_4$.
     \acceptingstate $s_7=\set{q_0,q_1,q_2}$  &$s_4$  &$s_3$  \\
   \end{transitionfunction}
 \end{center}
-In general, compute the transition function of the
-deterministic machine with
-\begin{equation*}
-\Delta_D(s_i,x)
-  =\Delta_N(q_{i_0},x)\cup\cdots \cup\Delta_N(q_{i_k},x)
-  \tag{$*$}
-\end{equation*}
-where $s_i=\set{q_{i_0}, \ldots{}\, q_{i_k}}$ and $x\in\Sigma$.
-An example is 
-$\Delta_D(s_5,\str{a})=\Delta_N(q_0,\str{a})\cup\Delta_N(q_2,\str{a})$,
-which equals $\set{q_0,q_1}\cup\set{}=\set{q_0,q_1}=s_4$.
+% In general, compute the transition function of the
+% deterministic machine with
+% \begin{equation*}
+% \Delta_D(s_i,x)
+%   =\Delta_N(q_{i_0},x)\cup\cdots \cup\Delta_N(q_{i_k},x)
+%   \tag{$*$}
+% \end{equation*}
+% where $s_i=\set{q_{i_0}, \ldots{}\, q_{i_k}}$ and $x\in\Sigma$.
+% An example is 
+% $\Delta_D(s_5,\str{a})=\Delta_N(q_0,\str{a})\cup\Delta_N(q_2,\str{a})$,
+% which equals $\set{q_0,q_1}\cup\set{}=\set{q_0,q_1}=s_4$.
 
 Besides the notational convenience,
 naming the sets of states as $s_i$'s makes clear that
@@ -2981,11 +2964,6 @@ So does its transition graph.
   \includegraphics{automata/asy/nfsm/nfsm17.pdf}
 \end{center}
 \end{example}
-% Typically many of them can be eliminated.
-% For instance, in the above machine
-% the state~$s_6$ is clearly unreachable 
-% since there are no arrows into it.
-% The next section covers minimizing the number of states in a machine.
 
 We next extend the powerset construction to handle $\varepsilon$~transitions.
 Basically, we will follow the $\varepsilon$'s.
@@ -3017,40 +2995,27 @@ these are the $\varepsilon$~closures.
 \end{center}
 \end{example}
 
-%  the start state of the deterministic machine
-% is the $\varepsilon$~closure of~$\set{q_0}$, 
-% the set of the states of~$\FSM_N$ that
-% are reachable by a sequence of $\varepsilon$~transitions from $q_0$.
-% In addition, suppose that we have a nondeterministic machine and 
-% we are constructing the associated deterministic machine's
-% next-state function~$\Delta_D$,
-% that the current configuration is $s_i=\set{q_{i_1},q_{i_2}, \,\ldots}$ and
-% that the machine is reading \str{a}.
-% If there is a $\varepsilon$ transition from $q_{i_j}$ to some~$q$ then
-% to the set of next states add $\Delta_N(\set{q},\str{a})$, and in fact add
-% the entire $\varepsilon$~closure.
-
 %<*df:DFSMFromNFSM>
-We can now give a full algorithm for starting with a nondeterministic 
-machine~$\mathcal{N}$ and constructing a 
-deterministic machine~$\mathcal{D}$ with the same behavior,
-even if $\mathcal{N}$ has $\varepsilon$~transitions.
-Elements of $\mathcal{D}$ are sets of states from~$\mathcal{N}\!$.
-The start state of $\mathcal{D}$ is the $\varepsilon$~closure of 
-$q_0$.
-A state of $\mathcal{D}$ is accepting if it contains any element of the 
-$\varepsilon$ closure of any of $\mathcal{N}$'s accepting states.
+We can now state the algorithm for starting with a nondeterministic 
+machine~$\FSM_N$ and constructing a 
+deterministic machine~$\FSM_D$ with the same behavior,
+even if $\FSM_N$ has $\varepsilon$~transitions.
+Elements of $\FSM_D$ are sets of states from~$\FSM_N$.
+The start state of $\FSM_D$ is $\set{q_0}$ 
+(or its $\varepsilon$~closure; it doesn't matter).
+A state of $\FSM_D$ is accepting if it contains any element of the 
+$\varepsilon$ closure of any of $\FSM_N$'s accepting states.
 
 As to the next-state function,
-consider a subset of $\mathcal{N}$'s states~$S$ and a tape 
+consider a subset of $\FSM_N$'s states~$S$ and a tape 
 character~$x$.
-We compute $\Delta_{\mathcal{D}}(S,x)$ in three steps. 
+We compute $\Delta_{D}(S,x)$ in three steps. 
 First, gather the $\varepsilon$~closures of all of the $q\in S$, 
   giving a set $A=\cup_{q\in S}\hat{E}(q)$.
-  This is a subset of the states of $\mathcal{N}$.
-Second, apply $\mathcal{N}$'s next state function to $A$'s elements,
-     giving $B=\cup_{a\in A}\Delta_{\mathcal{N}}(a,x)$.
-     This is also a subset of the states of $\mathcal{N}$.
+  This is a subset of the states of $\FSM_N$.
+Second, apply $\FSM_N$'s next state function to $A$'s elements,
+     giving $B=\cup_{a\in A}\Delta_{N}(a,x)$.
+     This is also a subset of the states of $\FSM_N$.
 Finally, gathering the $\varepsilon$~closures of $B$'s states gives 
   $\Delta_D(S,x)=\cup_{b\in B}\hat{E}(b)$.
 %</df:DFSMFromNFSM>
@@ -3060,53 +3025,77 @@ Consider this nondeterministic machine.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm18.pdf}
 \end{center}
-To find the set of next states, follow the 
-$\varepsilon$~transitions.
-For instance, suppose that this machine is in~$q_0$ and the next tape character 
-is~\str{a}.
-The arrow on the left takes the machine
-from $q_0$ to~$q_2$.
-Alternatively,
-following the $\varepsilon$ transition from $q_0$ to~$q_3$
-and then reading the~\str{a} gives~$q_3$.
-So the machine is next in the two states $q_0$ and~$q_3$.
+The table below goes through the comptation.
+The start state is $\set{q_0}$.
+A state is accepting if it contains $q_1$. 
 
-The start state is the $\varepsilon$~closure of $\set{q_0}$,
-the state $s_7=\set{q_0, q_3}$.
-
-
-
-As an example take $s=s_5=\set{q_0,q_1}$ and $x=\str{a}$.
-Then~(i) gives $\set{q_0,q_3}\cup\set{q_0,q_1}=\set{q_0,q_1,q_3}$.
-The next states for~(ii) are 
-$\Delta_N(q_0,\str{a})=\set{q_2,q_3}$, 
-$\Delta_N(q_1,\str{a})=\set{q_2,q_3}$, 
-and
-$\Delta_N(q_3,\str{a})=\set{q_3}$,
-so $T=\set{q_2,q_3}$.
-Finally, for~(iii) the union of the $\varepsilon$~closures gives
-$\set{q_2}\cup\set{q_3}=\set{q_2,q_3}=s_{10}$. 
+To do the next-state computation, for both inputs \str{a} and~\str{b}
+we need the $\varepsilon$ closure of the set of current states.
+Thus, the column labeled $A_i$ holds $\cup_{q\in s_i}\hat{E}(q)$. 
+And, the column labeled $B_{i,\str{a}}$ holds $\cup_{q\in A}\Delta_{N}(q,a)$, while
+$B_{i,\str{b}}=\cup_{q\in A}\Delta_{N}(q,b)$. 
+Rows have a dash when their $A_i$ is equal to an $A_j$ for an earlier row,
+so there is no need to repeat the computation. 
 \begin{center}\small
-  \begin{transitionfunction}[\Delta_D]
-      &\str{a}   &\str{b}         \\
-      \cline{2-3}
-    $s_0=\set{}$                                 &$s_0$     &$s_0$  \\
-    \acceptingstate $s_1=\set{q_0}$              &$s_{10}$  &$s_2$  \\
-    \acceptingstate $s_2=\set{q_1}$              &$s_{10}$  &$s_2$  \\
-                    $s_3=\set{q_2}$              &$s_0$     &$s_7$  \\
-                    $s_4=\set{q_3}$              &$s_4$     &$s_0$  \\
-    \acceptingstate $s_5=\set{q_0,q_1}$          &$s_{10}$  &$s_{12}$  \\
-    \acceptingstate $s_6=\set{q_0,q_2}$          &$s_{10}$  &$s_{12}$  \\
-    \acceptingstate $s_7=\set{q_0,q_3}$          &$s_{10}$  &$s_{12}$  \\
-    \acceptingstate $s_8=\set{q_1,q_2}$          &$s_{10}$  &$s_{12}$  \\
-    \acceptingstate $s_9=\set{q_1,q_3}$          &$s_{10}$  &$s_{2}$  \\
-                    $s_{10}=\set{q_2,q_3}$          &$s_4$    &$s_7$  \\
-    \acceptingstate $s_{11}=\set{q_0,q_1,q_2}$      &$s_{10}$  &$s_{12}$  \\
-    \acceptingstate $s_{12}=\set{q_0,q_1,q_3}$      &$s_{10}$  &$s_{12}$  \\
-    \acceptingstate $s_{13}=\set{q_0,q_2,q_3}$      &$s_{10}$  &$s_{12}$  \\
-    \acceptingstate $s_{14}=\set{q_1,q_2,q_3}$      &$s_{10}$  &$s_{12}$  \\
-    \acceptingstate $s_{15}=\set{q_0,q_1,q_2,q_3}$  &$s_{10}$  &$s_{12}$  \\
-  \end{transitionfunction}
+  % \begin{transitionfunction}[\Delta_D]
+  %     &\str{a}   &\str{b}         \\
+  %     \cline{2-3}
+  %   $s_0=\set{}$                                 &$s_0$     &$s_0$  \\
+  %   \acceptingstate $s_1=\set{q_0}$              &$s_{10}$  &$s_2$  \\
+  %   \acceptingstate $s_2=\set{q_1}$              &$s_{10}$  &$s_2$  \\
+  %                   $s_3=\set{q_2}$              &$s_0$     &$s_7$  \\
+  %                   $s_4=\set{q_3}$              &$s_4$     &$s_0$  \\
+  %   \acceptingstate $s_5=\set{q_0,q_1}$          &$s_{10}$  &$s_{12}$  \\
+  %   \acceptingstate $s_6=\set{q_0,q_2}$          &$s_{10}$  &$s_{12}$  \\
+  %   \acceptingstate $s_7=\set{q_0,q_3}$          &$s_{10}$  &$s_{12}$  \\
+  %   \acceptingstate $s_8=\set{q_1,q_2}$          &$s_{10}$  &$s_{12}$  \\
+  %   \acceptingstate $s_9=\set{q_1,q_3}$          &$s_{10}$  &$s_{2}$  \\
+  %                   $s_{10}=\set{q_2,q_3}$          &$s_4$    &$s_7$  \\
+  %   \acceptingstate $s_{11}=\set{q_0,q_1,q_2}$      &$s_{10}$  &$s_{12}$  \\
+  %   \acceptingstate $s_{12}=\set{q_0,q_1,q_3}$      &$s_{10}$  &$s_{12}$  \\
+  %   \acceptingstate $s_{13}=\set{q_0,q_2,q_3}$      &$s_{10}$  &$s_{12}$  \\
+  %   \acceptingstate $s_{14}=\set{q_1,q_2,q_3}$      &$s_{10}$  &$s_{12}$  \\
+  %   \acceptingstate $s_{15}=\set{q_0,q_1,q_2,q_3}$  &$s_{10}$  &$s_{12}$  \\
+  % \end{transitionfunction}
+  \begin{tabular}{r|c|*{2}{c}|*{2}{c}}
+     \multicolumn{1}{r}{$\Delta_D$}
+      &\multicolumn{1}{c}{$A_i$}
+      &$B_{i,\str{a}}$  &\multicolumn{1}{c}{$\hat{E}(B_{i,\str{a}})$}   
+      &$B_{i,\str{b}}$ &$\hat{E}(B_{i,\str{b}})$   
+      \\
+      \cline{2-6}
+    $s_0=\set{}$                             &$\set{}$   &$\set{}$   &$s_0$  
+                                                         &$\set{}$  &$s_0$  \\
+    \acceptingstate $s_1=\set{q_0}$          &$\set{q_0,q_3}$   &$\set{q_2,q_3}$   &$s_{10}$ 
+                                                         &$\set{q_1}$  &$s_{12}$  \\
+    \acceptingstate $s_2=\set{q_1}$          &$\set{q_0,q_1,q_3}$   &$\set{q_2,q_3}$    &$s_{2}$
+                                                          &$\set{q_1}$  &$s_{12}$  \\
+                    $s_3=\set{q_2}$          &$\set{q_2}$   &$\set{}$       &$s_0$  
+                                                  &$\set{q_0}$    &$s_7$  \\[0.5ex]
+                    $s_4=\set{q_3}$          &$\set{q_3}$   &$\set{q_3}$  &$s_4$  
+                                                           &$\set{}$     &$s_0$  \\
+    \acceptingstate $s_5=\set{q_0,q_1}$      &$\set{q_0,q_1,q_3}$   &--  &$s_{2}$  
+                                                        &--  &$s_{12}$  \\
+    \acceptingstate $s_6=\set{q_0,q_2}$      &$\set{q_0,q_2,q_3}$   &$\set{q_2,q_3}$         &$s_{10}$  
+                                                       &$\set{q_0,q_1}$  &$s_{12}$  \\
+    \acceptingstate $s_7=\set{q_0,q_3}$      &$\set{q_0,q_3}$   &--   &$s_{10}$
+                                                                &--  &$s_{12}$  \\[0.5ex]
+    \acceptingstate $s_8=\set{q_1,q_2}$      &$\set{q_0,q_1,q_2,q_3}$   &$\set{q_2,q_3}$   &$s_{10}$  
+                                            &$\set{q_0,q_1}$  &$s_{12}$  \\
+    \acceptingstate $s_9=\set{q_1,q_3}$      &$\set{q_0,q_1,q_3}$   &--        &$s_{2}$  &--  &$s_{12}$  \\
+                    $s_{10}=\set{q_2,q_3}$   &$\set{q_2,q_3}$   &$\set{q_3}$  &$s_4$  
+                                                         &$\set{q_0}$    &$s_7$  \\
+    \acceptingstate $s_{11}=\set{q_0,q_1,q_2}$   &$\set{q_0,q_1,q_2,q_3}$   &--   &$s_{10}$  
+                                                                  &--  &$s_{12}$  \\[0.5ex]
+    \acceptingstate $s_{12}=\set{q_0,q_1,q_3}$   &$\set{q_0,q_1,q_3}$   &--        &$s_{2}$  
+                                                &--  &$s_{12}$  \\
+    \acceptingstate $s_{13}=\set{q_0,q_2,q_3}$   &$\set{q_0,q_2,q_3}$   &--  &$s_{10}$  
+                                                             &--  &$s_{12}$  \\
+    \acceptingstate $s_{14}=\set{q_1,q_2,q_3}$   &$\set{q_0,q_1,q_2,q_3}$   &--   &$s_{10}$  
+                                                                     &--  &$s_{12}$  \\
+    \acceptingstate $s_{15}=\set{q_0,q_1,q_2,q_3}$ &$\set{q_0,q_1,q_2,q_3}$   &--    &$s_{10}$  
+                                                                   &--  &$s_{12}$  \\
+  \end{tabular}
 \end{center}
 \end{example} 
 

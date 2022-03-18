@@ -70,6 +70,7 @@
 (provide delta)
 
 
+
 ;; ===================================================
 ;; Take one step
 ;; step  Do one step; from a config and the fsm, yield the next config

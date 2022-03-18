@@ -977,7 +977,7 @@ defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+backgr
 
 
 // define nodes
-node S=nbox("\terminal{S}"),
+node Snode=nbox("\terminal{S}"),
 TbU=nbox("\terminal{TbU}");
      // aTbU=nbox("\terminal{aTbU}"),
      // epsbU=nbox("$\terminal{$\varepsilon$bU}$=\terminal{bU}"),
@@ -1009,7 +1009,7 @@ real u = 0.7inch;  // horizontal
 real v = 0.4*u;                 // vertical
 
 // rank 0
-S.pos=(0*u,0*v);
+Snode.pos=(0*u,0*v);
 // rank 1
 TbU.pos=(0*u,-1*v);
 // // rank 2
@@ -1043,8 +1043,8 @@ TbU.pos=(0*u,-1*v);
 
 // draw edges
 draw(p,
-     (S--TbU),  // rank 0 to rank 1
-     (S--TbU)  // oddball bug; have to draw a single edge twice.
+     (Snode--TbU),  // rank 0 to rank 1
+     (Snode--TbU)  // oddball bug; have to draw a single edge twice.
      // (TbU--aTbU),  // rank 1 to rank 2
      // (TbU--epsbU),
      // (TbU--TbaU),
@@ -1071,7 +1071,7 @@ draw(p,
 
 // draw nodes
 draw(p,
-     S,
+     Snode,
      TbU
      // aTbU, epsbU, TbaU, TbbU, Tbeps,
      // aaTbU, aepsbU, baU, bbU, beps, 
@@ -1092,7 +1092,7 @@ defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+backgr
 
 
 // define nodes
-node S=nbox("\terminal{S}"),
+node Snode=nbox("\terminal{S}"),
      TbU=nbox("\terminal{TbU}"),
      aTbU=nbox("\terminal{aTbU}"),
      epsbU=nbox("$\terminal{$\varepsilon$bU}$=\terminal{bU}"),
@@ -1124,7 +1124,7 @@ real u = 0.7inch;  // horizontal
 real v = 0.4*u;                 // vertical
 
 // rank 0
-S.pos=(0*u,0*v);
+Snode.pos=(0*u,0*v);
 // rank 1
 TbU.pos=(0*u,-1*v);
 // rank 2
@@ -1158,7 +1158,7 @@ Tbeps.pos=(2*u,-2*v);
 
 // draw edges
 draw(p,
-     (S--TbU),  // rank 0 to rank 1
+     (Snode--TbU),  // rank 0 to rank 1
      (TbU--aTbU),  // rank 1 to rank 2
      (TbU--epsbU),
      (TbU--TbaU),
@@ -1185,7 +1185,7 @@ draw(p,
 
 // draw nodes
 draw(p,
-     S,
+     Snode,
      TbU,
      aTbU, epsbU, TbaU, TbbU, Tbeps
      // aaTbU, aepsbU, baU, bbU, beps, 
@@ -1206,7 +1206,7 @@ defaultdrawstyle=drawstyle(p=fontsize(9.24994pt)+fontcommand("\ttfamily")+backgr
 
 
 // define nodes
-node S=nbox("\terminal{S}"),
+node Snode=nbox("\terminal{S}"),
      TbU=nbox("\terminal{TbU}"),
      aTbU=nbox("\terminal{aTbU}"),
      epsbU=nbox("$\terminal{$\varepsilon$bU}$=\terminal{bU}"),
@@ -1238,7 +1238,7 @@ real u = 0.7inch;  // horizontal
 real v = 0.4*u;                 // vertical
 
 // rank 0
-S.pos=(0*u,0*v);
+Snode.pos=(0*u,0*v);
 // rank 1
 TbU.pos=(0*u,-1*v);
 // rank 2
@@ -1272,7 +1272,7 @@ epsb.pos=(2.35*u,-3.5*v);
 
 // draw edges
 draw(p,
-     (S--TbU),  // rank 0 to rank 1
+     (Snode--TbU),  // rank 0 to rank 1
      (TbU--aTbU),  // rank 1 to rank 2
      (TbU--epsbU),
      (TbU--TbaU),
@@ -1299,7 +1299,7 @@ draw(p,
 
 // draw nodes
 draw(p,
-     S,
+     Snode,
      TbU,
      aTbU, epsbU, TbaU, TbbU, Tbeps,
      aaTbU, aepsbU, baU, bbU, beps, 
@@ -1345,6 +1345,96 @@ draw(pic,
 draw(pic, q0, q1, q2);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ============== NFSM with epsilon moves to convert to DFSM ================
+picture pic;
+int picnum = 21;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node s0=ncircle("$s_0$"),
+  s1=ncircle("$s_1$"),
+  s2=ncircle("$s_2$",ns_accepting),
+  s3=ncircle("$s_3$"),
+  s4=ncircle("$s_4$"),
+  s5=ncircle("$s_5$",ns_accepting),
+  s6=ncircle("$s_6$"),
+  s7=ncircle("$s_7$"),
+  s8=ncircle("$s_8$",ns_accepting),
+  s9=ncircle("$s_9$",ns_accepting),
+  s10=ncircle("$s_{10}$"),
+  s11=ncircle("$s_{11}$",ns_accepting),
+  s12=ncircle("$s_{12}$",ns_accepting),
+  s13=ncircle("$s_{13}$"),
+  s14=ncircle("$s_{14}$",ns_accepting),
+  s15=ncircle("$s_{15}$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+s0.pos = (1*u,3.5*v);
+s1.pos = (0.75*u,0.5*v);
+s2.pos = (1.5*u,2*v);
+s3.pos = (4*u,4*v);
+s4.pos = (3*u,3*v);
+s5.pos = (2*u,1*v);
+s6.pos = (4*u,1*v);
+s7.pos = (2.5*u,2*v);
+s8.pos = (5*u,4*v);
+s9.pos = (2*u,3*v);
+s10.pos = (6*u,4*v);
+s11.pos = (0.5*u,-0.5*v);
+s12.pos = (3.75*u,2.25*v);
+s13.pos = (5*u,1*v);
+s14.pos = (5.5*u,2.5*v);
+s15.pos = (3*u,0*v);
+
+// edges
+draw(pic,
+     (s0..loop(W)).l("\str{0},\str{1}"), 
+     (s1--s15).l("\str{0}"), 
+     (s1--s5).l("\str{1}"), 
+     (s2--s5).l("\str{0}"),
+     (s2..loop(W)).l("\str{1}"), 
+     (s3--s12).l("\str{0}"), 
+     (s3--s14).l(Label("\str{1}",Relative(0.15))), 
+     (s4--s12).l("\str{0}"), 
+     (s4--s2).l(Label("\str{1}",Relative(0.20))), 
+     (s5--s15).l("\str{0}"), 
+     (s5..loop(E)).l("\str{1}"), 
+     (s6--s15).l(Label("\str{0},\str{1}",Relative(0.25))), 
+     (s7..bend(-20)..s15).l("\str{0}"), 
+     (s7--s5).l("\str{1}"), 
+     (s8--s12).l("\str{0}"), 
+     (s8--s14).l(Label("\str{1}",Relative(0.15))), 
+     (s9..bend..s12).l("\str{0}"), 
+     (s9--s2).l("\str{1}"), 
+     (s10--s12).l(Label("\str{0}",Relative(0.15))),
+     (s10--s14).l("\str{1}"), 
+     (s11--s15).l("\str{0},\str{1}"), 
+     (s12--s15).l("\str{0}"), 
+     (s12--s5).l(Label("\str{1}",Relative(0.30))).style("leftside"), 
+     (s13--s15).l(Label("\str{0},\str{1}",Relative(0.25))).style("leftside"), 
+     (s14--s12).l("\str{0}"), 
+     (s14..loop(E)).l("\str{1}"), 
+     (s15..loop(S)).l("\str{0},\str{1}") 
+     );
+
+// draw nodes after edges so arrows are OK
+draw(pic, s0, s1, s2, s3,
+          s4, s5, s6, s7,
+          s8, s9, s10, s11,
+          s12, s13, s14, s15);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

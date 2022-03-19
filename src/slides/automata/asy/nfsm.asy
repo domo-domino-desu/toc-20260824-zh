@@ -1438,3 +1438,87 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Regular expressions ================
+
+
+// ============== Intro ================
+picture pic;
+int picnum = 22;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$"),
+  q3=ncircle("$q_3$",ns_accepting),
+  error=ncircle("$e$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1.5*u, q0, q1, q2, q3);
+error.pos = new_node_pos(q1,-45,-0.8*v);
+
+// edges
+draw(pic,
+     (q0--q1).l("\str{h}").style("leftside"), 
+     (q0..bend..error).l("else"),
+     (q1--q2).l("\str{a},\str{e},\str{i},\str{o},\str{u}").style("leftside"), 
+     (q1--error).l("else"),
+     (q2--q3).l("\str{t}").style("leftside"), 
+     (q2--error).l("else").style("leftside"),
+     (q3..bend(-20)..error).l("any").style("leftside"), 
+     (error..loop(S)).l("any")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, q3,
+       error);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ............... ab*c ....................
+picture pic;
+int picnum = 23;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+  q1=ncircle("$q_1$"),
+  q2=ncircle("$q_2$",ns_accepting),
+  error=ncircle("$e$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1.25*u, q0, q1, q2);
+vlayout(1*v, q1, error);
+
+// edges
+draw(pic,
+     (q0--q1).l("\str{a}").style("leftside"),
+     (q0..bend..error).l("else"),
+     (q1..loop(N)).l("\str{b}"),
+     (q1--q2).l("\str{c}").style("leftside"), 
+     (q1--error).l("else"), 
+     (q2..bend(-20)..error).l("any").style("leftside"),
+     (error..loop(S)).l("any")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2,
+       error);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+

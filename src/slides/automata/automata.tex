@@ -954,6 +954,11 @@ Note that many of the states are superfluous.
 
 
 
+
+
+
+
+
 % =======================================================
 \section{Regular expressions}
 
@@ -962,13 +967,24 @@ There is a pattern to the languages accepted by a Finite State machine.
 We describe them with \alert{regular expressions}.
 We will show some examples first, then a definition.
 
-\pause
 \ExecuteMetaData[\catchfilefn]{ex:RegexOne}
 
 \pause
+Those strings are accepted by this Finite State machine.
+\begin{center}
+  \includegraphics{asy/nfsm22.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}
 \ExecuteMetaData[\catchfilefn]{ex:RegexTwo}
 
 \pause
+That is the language of this machine.
+\begin{center}
+  \includegraphics{asy/nfsm23.pdf}
+\end{center}
+
 \begin{example}
 The strings that are accepted by this machine match \re{a*ba*}.
 \begin{center}
@@ -1145,6 +1161,9 @@ That regular expression simplifies.
 For instance, \re{a$\varepsilon$}=\re{a}.
 The result is \re{(a(b|ab*b))*($\varepsilon$|a)}.
 \end{frame}
+
+
+
 
 
 
@@ -1418,6 +1437,281 @@ Area~$C$ contains the languages decided by some nondeterministic
 Pushdown machine.
 And, in area~$D$ are the languages decided by some Turing machine.
 \end{frame}
+
+
+
+
+% ====================================================
+\section{Regexes}
+
+\begin{frame}
+  \frametitle{Regular expressions in practice}
+
+Regular expressions are so useful that they have escaped the theory and
+are widely used for symbol manipulation in the wild.
+
+Along the way, they acquired a large number of extensions.
+Some of these are conveniences, things that you could do with
+the regular expression tools we have already seen.
+But some of these are genuine extensions, which allow you to do 
+more than is possible with the regular expressions that we have 
+studied.
+
+We shall refer to the in-practice expressions as 
+\alert{regexes}.  
+\end{frame}
+
+
+\begin{frame}{Conveniences}
+Our theory alphabets had two or three characters.
+In practice we need at least ASCII's
+printable characters:~\str{a}\dash \str{z}, \str{A}\dash \str{Z},
+\str{0}\dash \str{9},
+space, tab, period, dash, exclamation point, percent sign, dollar sign, 
+open and closed parenthesis, open and closed curly braces, etc.\sentencespace
+It may even contain all of Unicode's
+more than one hundred thousand characters. 
+
+Regexes allow matching a digit with \re{[0123456789]},
+using square brackets as metacharacters.
+We can shorten it further to~\re{[0-9]}.
+Similarly,
+\re{[A-Za-z]} matches a single English letter.
+
+To invert the set of matched characters, put a
+caret~`\re{\textasciicircum}' as
+the first thing inside the bracket.
+Thus, \re{[\textasciicircum 0-9]} matches a non-digit
+and \re{[\textasciicircum A-Za-z]} matches a character that is not
+an ASCII letter.
+
+The most common lists have short abbreviations.
+Another abbreviation for the ASCII digits is
+\re{\textbackslash d}.
+Use
+\re{\textbackslash D} for the ASCII non-digits,
+\re{\textbackslash s} for the whitespace characters
+(space, tab, newline, formfeed, and line return)
+and \re{\textbackslash S} for ASCII characters that are non-whitespace.
+Cover
+the alphanumeric characters (upper and lower case ASCII letters, digits,
+and underscore) with \re{\textbackslash w} 
+and cover the complement with \re{\textbackslash W}.
+\end{frame}
+
+
+
+\begin{frame}
+Earlier,
+to match  `at most one \str{a}' we used \re{\emptystring|a}.
+So we can write something like \re{(|a)}.
+But depicting the empty string by just putting nothing there can be confusing.
+Modern languages allow you to write
+\re{a?} for `at most one \str{a}'.
+
+For `at least one \str{a}'
+modern languages use \re{a+}, so the plus sign is another
+metacharacter.
+More generally, we often want to specify quantities.
+For instance, to match five \str{a}'s extended regular expressions use
+the curly braces as metacharacters, with \re{a\{5\}}.
+Match between two and five of them with 
+\re{a\{2,5\}}
+and match at least two with \re{a\{2,\}}.
+Thus, \re{a+} is shorthand for \re{a\{1,\}}.
+
+\pause
+To match a metacharacter, \alert{escape} it with a backslash,~`\str{\textbackslash}'.
+Thus, to look for the string `\str{(Note}' put a backslash
+before the open parentheses:
+\re{\textbackslash (Note}.
+Similarly, \re{\textbackslash |} matches a pipe and \re{\textbackslash [}
+matches an open square bracket.
+And, \re{To be or not to be\textbackslash ?} matches
+the famous question. 
+Match backslash itself with \re{\textbackslash\textbackslash}.
+\end{frame}
+
+
+\begin{frame}
+\begin{example}
+US ZIP codes are five digits.
+Match them with
+\re{\textbackslash d\{5\}}.
+\end{example}
+
+\begin{example} \label{ex:NAPhoneNumber}
+North American phone numbers match
+\re{\textbackslash d\{3\} \textbackslash d\{3\}-\textbackslash d\{4\}}.
+\end{example}
+
+\begin{example}  \label{ex:CanadianPostCodes}
+Canadian postal codes have seven characters:~the fourth is a space,
+the first, third, and sixth are letters, and
+the others are digits.
+The regular expression
+\re{[a-zA-Z]\textbackslash d[a-zA-Z] \textbackslash d[a-zA-Z]\textbackslash d}
+describes them.
+\end{example}
+
+\begin{example}
+Dates are often given in the `dd/mm/yy' format.
+This matches:
+\re{\textbackslash d\textbackslash d/\textbackslash d\textbackslash d/\textbackslash d\textbackslash d}.
+\end{example}
+
+\begin{example} \label{ex:AmerTime}
+In the twelve hour time format some typical times
+strings are `8:05~am' or `10:15~pm'.
+You could use this (note the empty string at the start).
+\begin{center}
+\re{(|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
+\end{center}
+Note that it matches some strings that you don't want, 
+such as `18:05 am'. 
+\end{example}
+\end{frame}
+
+
+\begin{frame}
+\begin{example}
+The regex \re{(-|\textbackslash +)?\textbackslash d+} matches
+an integer, positive or negative.
+The question mark makes the sign optional.
+The plus sign makes sure there is at least one digit.
+\end{example}
+
+\begin{example}
+A natural number represented in hexadecimal can contain the usual digits,
+along with the additional characters `a' through `f' (sometimes capitalized). 
+Programmers often prefix such a representation
+with \str{0x}, so the expression is \re{(0x)?[a-fA-F0-9]+}.
+\end{example}
+
+\begin{example}
+A C language identifier begins with an ASCII
+letter or underscore and then can have arbitrarily many more
+letters, digits, or underscores:
+\re{[a-zA-Z\_]\textbackslash w*}.
+\end{example}
+
+\begin{example}
+Match a user name of between three and twelve letters, digits, underscores,
+or periods with \re{[\textbackslash w\textbackslash .]\{3,12\}}.
+Match a password that is at least eight characters long with \re{.\{8,\}}.
+\end{example}
+
+\pause
+\begin{example}
+For email addresses, \re{\textbackslash S+@\textbackslash S+} is
+an often used extended expression, as a sanity check.
+\end{example}
+
+\begin{example}
+Match the text inside a single set of parentheses with 
+\re{\textbackslash ([\textasciicircum ()]*\textbackslash )}.
+\end{example}
+
+\begin{example}
+We next match a URL, a web address such as
+\url{https://hefferon.net/computation}.
+It breaks URL's into~a
+scheme such as `\str{http}' along with
+a colon and two forward slashes,
+a host such as \str{hefferon.net} followed by a slash, and then
+a path such as \str{computing}
+(the standard also allows a trailing query string 
+but this regex does not handle that).
+\begin{center}% 
+% \re{(https?|ftp)://([textasciicircumflex\textbackslash s/?\textbackslash .#]+\textbackslash .?)\{1,4\}(/[^\textbackslash s]*)?}
+\re{(https?|ftp)://([\textasciicircum\textbackslash s/?\textbackslash .\#]+\textbackslash .?)\{0,3\}[\textasciicircum\textbackslash s/?\textbackslash .\#]+(/[\textasciicircum\textbackslash s]*/?)?}
+\end{center}
+% Notice the question mark in \re{https?}, so that
+% the scheme can be \str{http} or \str{https}.
+% Notice also that the host part,
+% consists of between one and four fields separated by periods.
+% We allow almost any character in those fields, except for a space,
+% a question mark, a period or a hash.
+% At the end comes the path.
+\end{example}
+\end{frame}
+
+
+\begin{frame}
+As to lines,
+you can also match the start of a line and end of line with the metacharacters
+caret~`\str{\textasciicircum}' and
+dollar sign~`\str{\textdollar}'.
+
+Many programs that use regexes are line-oriented.
+They often, by default, match the regex anywhere in the line.
+
+Sometimes, as ithe Python, there are two modes.
+One matches the give regex anywhere in the line, and one
+specifically requires you to put in the parts such as start of line
+and end of line.
+\end{frame}
+
+
+
+\begin{frame}{Genuine extensions}
+\begin{example}
+The web language HTML uses tags such as
+\str{<b>boldface text</b>} and \str{<i>italicized text</i>}.
+Matching any one tag is straightforward, for instance
+\re{<b>[\textasciicircum<]*</b>}.
+
+But for a single expression that matches them all,
+you would seem to have to do each as a separate
+case and then combine cases with a pipe.
+However, instead modern regexes allow the system to remember what it finds
+at the start and look for that again at the end.
+
+Thus, Racket's regex
+\re{<([\textasciicircum >]+)>.*</\textbackslash\textbackslash 1>}
+matches HTML tags like the ones given.
+Its second character is an open parenthesis, and the
+\str{\textbackslash\textbackslash 1} refers to everything between that
+open parenthesis and the
+matching close parenthesis.
+(As you might guess from the \str{1}, you can also have
+a second match with \str{\textbackslash\textbackslash 2}, 
+etc.)
+\end{example}
+
+That is a \definend{back reference}.
+It is very convenient, but
+it gives regexes
+more power than the theoretical regular expressions that we studied earlier.
+\end{frame}
+
+
+
+\begin{frame}
+\begin{example} \label{ex:LangSquares}
+This is the language of \definend{squares} over $\Sigma=\set{\str{a},\str{b}}$.
+\begin{equation*}
+  \lang=
+  \set{\sigma\in\kleenestar{\Sigma}
+         \suchthat \text{$\sigma=\tau\concat\tau$ for some $\tau\in\kleenestar{\Sigma}$}}
+\end{equation*}
+Some members are \str{aabaab}, \str{baaabaaa}, and~\str{aa}.
+The Pumping Lemma shows that the language of squares is not regular.
+Describe this language with the regex \re{(.+)\textbackslash 1}; note
+the back-reference. 
+\end{example}
+
+\begin{example}
+The regex \re{.?|(..+?)\textbackslash\textbackslash 1+} 
+matches a unary  number if and only if it is a
+not prime.
+The group corresponds to a natural number of characters that are matched. 
+This group then appears some natural number of times. 
+If there is a match then it is possible to find a product of two numbers 
+greater than or equal to 2 that match the string.
+\end{example}
+\end{frame}
+
 \end{document}
 
 

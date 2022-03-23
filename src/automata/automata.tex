@@ -10918,38 +10918,43 @@ Define when a machine accepts a string.
 
 % ========================================
 \extra{Regular expressions in the wild}\index{regular expression!in practice|(}\label{extra:Regexs}
-Regular expressions are often used in practice.
-For instance, imagine that you need to  search a web server log for
-the names of all the PDF's downloaded from a subdirectory.
-A user on a Unix-derived system might type this.
-\begin{center}
-\str{grep "/linearalgebra/.*\.pdf" /var/log/apache2/access.log}
-\end{center}
-The \str{grep} utility looks through the file line by line, and if a line
-matches the pattern then \str{grep} prints that line.
-That pattern, starting with the subdirectory \str{/linearalgebra/},
-is an extended regular expression.
-
-That is, in practice we often need text operations, and regular expressions
-are an important tool.
-Modern programming languages such as Python and Scheme include
+In practice, working with computers often calls for text operations, 
+that is, for symbol pushing. 
+Regular expressions are an important tool.
+Modern programming languages such as Racket and Python include
 capabilities for
 \definend{extended regular expressions},\index{regular expression!extended}\index{extended regular expression} 
-sometimes called 
+which we will call 
 \definend{regexes},\index{regular expression!regex}\index{regex}
 that go beyond the
 small-scale theory examples we saw earlier.
-These extensions fall into two categories.
-The first is
-convenience constructs that make easier something
-that would otherwise be doable, but awkward.
-The second is that some of the extensions to regular expressions
-in modern programming languages
-go beyond mere abbreviations.
-More on this later.
+
+As an example, imagine that a system administrator
+must search a web server log for
+the names of all the PDF's downloaded from a subdirectory.
+Someone on a Unix-derived system might type this.
+\begin{center}
+\str{grep "/linearalgebra/.*\textbackslash .pdf" /var/log/apache2/access.log}
+\end{center}
+The \str{grep} utility program looks through the log file line by line.
+If a line
+matches the pattern then \str{grep} prints that line.
+That pattern
+is an extended regular expression.
+Here, it asks for a string with the characters
+\str{/linearalgebra/}, then containing any number of characters, and
+then with \str{.pdf}.
+
+The in-practice extensions to regular expressions
+fall into two categories.
+First come
+convenience constructs that ease doing something
+that otherwise would be posible but awkward.
+Second comes extensions that give capabilities that are not
+possible with the theoretical regular expressions that we studied earlier.
 
 \margingraphic[r]{0.4\textwidth}{automata/pix/xkcdregexes.png}{\label{xkcd:knowbackregexes}\href{https://xkcd.com/208}{Courtesy \url{xkcd.com}}}
-First, the convenience extensions.
+First, we cover the convenience extensions.
 Many of them are about sheer scale:~our
 earlier alphabets had two or three characters
 but in practice an alphabet must include at least ASCII's
@@ -10959,22 +10964,22 @@ space, tab, period, dash, exclamation point, percent sign, dollar sign,
 open and closed parenthesis, open and closed curly braces, etc.\sentencespace
 It may even contain all of Unicode's
 more than one hundred thousand characters. 
-We need manageable ways to describe such large sets of characters.
+We need manageable ways to describe such large sets.
 
 Consider matching a digit.
-The regular expression \re{(0|1|2|3|4|5|6|7|8|9)}
+The regular expression \re{(0|1|2|3|4|5|6|7|8|9)} works, but 
 is too verbose for an often-needed list.
 One abbreviation that modern languages allow is \re{[0123456789]},
-omitting the pipe characters and using square brackets, which in extended
-regular expressions are metacharacters.
+omitting the pipe characters and using square brackets, which in
+regexes are metacharacters.
 Or, because the digit characters are contiguous in the character
 set,\footnote{%
-  The digits are contiguous in ASCII 
-  and their descendents are contiguous in Unicode.
+  The digits \str{0} through \str{9} are contiguous in both ASCII 
+  and Unicode.
 }
 we can shorten it further to~\re{[0-9]}.
 Along the same lines,
-\re{[A-Za-z]} matches a single English letter.
+\re{[A-Za-z]} matches a singleton English letter.
 
 To invert the set of matched characters, put a
 caret~`\re{\textasciicircum}' as
@@ -11000,8 +11005,7 @@ And\Dash the big kahuna\Dash the dot~`\re{.}' is a metacharacter that
 matches any member of the alphabet at all.\footnote{%
   Programming languages in practice by default have the dot
   match any character except newline.
-  In addition, they have a way to make it also match newline.}
-We saw the dot in the \str{grep} example that began this discussion.
+  In addition, thse languages have a way to make it also match newline.}
   
 \begin{example}  \label{ex:CanadianPostCodes}
 Canadian postal codes have seven characters:~the fourth is a space,
@@ -11027,13 +11031,13 @@ You could use this (note the empty string at the start).
 \end{center}
 \end{example}
 
-Recall that in the regular expression \re{a(b|c)d} the parentheses and the pipe
-are not there to be matched.
-They are metacharacters, part of the
-syntax of the regular expression.
-Once we expand the alphabet~$\Sigma$ to include all characters, we
-run into the problem that we are already using some of the additional
-characters as metacharacters.
+% Recall that in the regular expression \re{a(b|c)d} the parentheses and the pipe
+% are not there to be matched.
+% They are metacharacters, part of the
+% syntax of the regular expression.
+% Once we expand the alphabet~$\Sigma$ to include all characters, we
+% run into the problem that we are already using some of the additional
+% characters as metacharacters.
 
 \margingraphic{0.4\textwidth}{automata/pix/xkcdbackslashes.png}{\label{xkcd:knowbackslashes}\href{https://xkcd.com/1638}{Courtesy \url{xkcd.com}}}
 To match a metacharacter, prefix it with a backslash,~`\str{\textbackslash}'.
@@ -11140,14 +11144,12 @@ And no, Reddit does not allow a period in a username.
 \end{example}
 
 \begin{example}
-For email addresses, \re{\textbackslash S+@\textbackslash S+} is
-an often used extended expression.\footnotemark
-\end{example}\footnotetext[1]{%
-  This is naive in that there are elaborate rules for the syntax of
-  email addresses
-  % https://tools.ietf.org/html/rfc5322
-  (see below).
-  But it is a common sanity check.}
+The International Standards Organization date format calls for dates 
+like `yyyy-mm-dd HH:MM:SS' (along with many other variants). 
+The regex
+\re{\textbackslash d\{4\}-\textbackslash d\{2\}-\textbackslash d\{2\} (\textbackslash d\{2\}:\textbackslash d\{2\}(:\textbackslash d\{2\})?)?} 
+will match them.
+\end{example}
 
 \begin{example}
 Match the text inside a single set of parentheses with 
@@ -11233,15 +11235,16 @@ case and then combine cases with a pipe.
 However, instead we can have the system remember what it finds
 at the start and look for that again at the end.
 Thus, the regex
-\re{<([\textasciicircum >]+)>.*</\textbackslash 1>}
+\re{<([\textasciicircum >]+)>.*</\textbackslash\textbackslash 1>}
 matches HTML tags like the ones given.
 Its second character is an open parenthesis, and the
-\str{\textbackslash 1} refers to everything between that
+\str{\textbackslash\textbackslash 1} refers to everything between that
 open parenthesis and the
-matching close parenthesis.
-(As you might guess from the \str{1}, you can also have
-a second match with \str{\textbackslash 2}, 
-etc.)
+matching close parenthesis (and, that is not a typo; Racket's syntax
+calls for double backslashes).
+As is hinted by the \str{1}, you can also have
+a second match with \str{\textbackslash\textbackslash 2}, 
+etc.
 \end{example}
 
 That is a \definend{back reference}.
@@ -11266,6 +11269,23 @@ see \cref{exer:LangSquares}.
 Describe this language with the regex \re{(.+)\textbackslash 1}; note
 the back-reference. 
 \end{example}
+
+\begin{example}
+Another language that the Pumping Lemma shows cannot be represented 
+using regular expressions, but that can be described with regexes is 
+the language of prime numbers represented in unary,
+$\lang=\set{\str{1}^n\suchthat\text{$n$ is not prime}}$
+\citetext{It is described by the regex}{%
+  It is credited to the Perl hacker Abagail, from \url{http://abigail.be/}.}
+\re{\textasciicircum{}1?\$|\textasciicircum{}(11+?)\textbackslash\textbackslash 1+\$}.
+A brief explanation: the \re{\textasciicircum{}1?\$} matches a string that
+is either zero-many or one-many \str{1}'s.
+The \re{\textasciicircum{}(11+?)\textbackslash\textbackslash 1+\$} matches a 
+group of \str{1}'s repeated one or more times.
+Being able to divide the number of \str{1}'s into some number of subgroups
+is what characterizes a unary number as composite, that is, not prime.  
+\end{example}
+
 
 % \begin{example}
 % Another language that the Pumping Lemma shows is not regular,
@@ -11362,13 +11382,9 @@ the back-reference.
 % \end{example}
 
 
-\subsection*{Downsides}
-Regular expressions are powerful tools, and this goes double for
-enhanced regexes.
-As illustrated by the examples above,
-some of their uses are:~to validate usernames, to search text files,
-and to filter results.
-But they can come with costs also.
+\subsection*{Tradeoffs}
+Regexes are powerful tools.
+But they come with downsides.
 
 \margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
 For instance, 
@@ -11379,32 +11395,33 @@ but it falls short in some respects.
 One is that it requires \str{am} or \str{pm} at the end, but times are often 
 are given without them.
 We could change the ending to 
-\re{(\emptystring|\textbackslash s am|\textbackslash s pm)}, which is a
-bit more complex but does solve the issue.
+\re{(\emptystring|\textbackslash s am|\textbackslash s pm)}.
 
 Another issue is that it also matches some strings that you don't want, such as
 \str{13:00 am} or \str{9:61 pm}.
 We can solve this as with the prior paragraph, by listing the cases.\footnote{%
-  Some substrings are elided so it fits in the margins, .}
+  Some substrings are elided so it fits in the margins.}
 \begin{center}
   \re{(01|02|...|11|12):(01|02|...|59|60)(\textbackslash s am|\textbackslash s  pm)}
   \end{center}
 This is like the prior fix-up, in that it does indeed fix the issue but it
 does so at a cost of complexity, since it amounts to a list of
 the allowed substrings.
+Regexes can have a tendency to grow, to accrete subcases like this.
 
-Another example is that not every string matching
-the Canadian postal expression in \cref{ex:CanadianPostCodes}
-has a corresponding post office\Dash
+Another example is the Canadian postal expression in 
+\cref{ex:CanadianPostCodes}.
+Not every matching string
+has a corresponding physical post office\Dash
 for one thing, no valid codes begin with \str{Z}.
-And ZIP codes work the same way;
-there are fewer than $50\,000$ assigned ZIP codes so 
+And US ZIP codes work the same way;
+there are fewer than $50\,000$ assigned ZIP codes, so 
 many five digits strings are not in use.
 Changing the regular expressions to cover only those codes actually in use
-would make them little more lists of strings,
-(which would change frequently).
+would make them just lists of strings,
+which would change frequently.
 
-The canonical extreme example is the regex for
+The canonical example of this is the regex describing the official standard for
 \citetext{valid email addresses}{%
   This expression follows the RFC~822 standard.
   The full listing is at
@@ -11514,9 +11531,13 @@ make the point about its complexity.
 \noindent And, even if you do have an address that fits
 the standard, you don't know if there is an email server listening at
 that address.
+In practice, people often use the regex
+\re{\textbackslash S+@\textbackslash S+} as
+a sanity check, for instance on a web form that expects users to input
+an email address.
 
 At this point regular expressions may be starting to seem
-a little less like a fast and neat problem-solver
+a less like a fast and neat problem-solver
 and a little more like a potential development and maintenance problem.
 The full story is that sometimes a regular expression is just what you need
 for a quick job,
@@ -11528,7 +11549,15 @@ quote from
 % \urldef\zawinski\url{https://groups.google.com/forum/?hl=en#!msg/alt.religion.emacs/DR057Srw5-c/Co-2L2BKn7UJ}
 \citetext{J~Zawinski}{%
   The post is from \texttt{alt.religion.emacs} on 1997-Aug-12.
-  For some reason it keeps disappearing from the online archive.}.
+  (For some reason it keeps disappearing from the online archive.
+  The full discussion reveals that the quote is more dogmatic than
+  the complete assertion.)
+    One response is,
+  ``Some people, when confronted with a problem, think
+  `I know, I'll quote Jamie Zawinski.'
+  Now they have two problems.'' 
+  (Martin Liebach, 2009-Mar-04, 
+   \url{https://m.lieba.ch/2009/03/04/regex-humor/}.}.
 
 \smallskip
 \begin{minipage}{0.5\textwidth}
@@ -11695,13 +11724,13 @@ Give a regex.
 \end{exercise}
 
 \begin{exercise}
-Most operating systems come with file that has a list of words, which can
-be used for spell-checking, etc.
+Most operating systems come with file that has a list of words, which is
+usefull for spell-checking, etc.
 For instance, on Linux it may be at \str{/usr/share/dict/words} but
 in any event you can find it by running
 \str{locate words | grep dict}.
 Use that file to find how many words fit the criteria.
-\begin{exparts*}
+\begin{exparts}
 \item contains the letter \str{a}
 \item starts with~\str{A}
 \item contains \str{a} or~\str{A}
@@ -11714,7 +11743,7 @@ Use that file to find how many words fit the criteria.
   or~\str{u}
 \item contains all the usual vowels
 \item contains all the usual vowels, in ascending order
-\end{exparts*}
+\end{exparts}
 \end{exercise}
 
 \recommended
@@ -11809,7 +11838,7 @@ A suitable regex is \re{textasciicircum g.n.\{3\}i.\textdollar} and a match is
 \end{exercise}
 
 \begin{exercise}
-In the Downsides discussion of \cref{ex:AmerTime}, we change the ending to
+In the Tradeoffs discussion, we change the ending to
 \re{(\emptystring|\textbackslash s am|\textbackslash s pm)}.
 Why not \re{\textbackslash s(\emptystring|am|pm)}, which
 factors out the whitespace?
@@ -11817,6 +11846,14 @@ factors out the whitespace?
 Factoring out the whitespace would mean that times without \str{am} or \str{pm}
 must have a trailing whitespace.
 \end{answer}
+\end{exercise}
+
+\begin{exercise}
+Imagine that you decide to avoid regexes but still want to do 
+the sanity check for email addresses discussed above, of accepting the
+string if and only it it consists of a nonempty string of characters,
+followed by \str{@}, followed by a nonempty string of characters.
+Implement that as a routine in your favorite language.
 \end{exercise}
 
 \begin{exercise} % https://stackoverflow.com/a/1723225

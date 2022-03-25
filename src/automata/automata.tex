@@ -5622,10 +5622,10 @@ all describe the same set of languages.
 \citetext{The fact that we can describe these languages in so many 
   different ways}{\autocite{SE:noperm}.} 
 suggests that there is something natural and important about them.\footnote{%
-  This is just like the fact that the equivalence of Turing machines,
+  This is like the fact that the equivalence of Turing machines,
   general recursive functions, and all kinds of other models suggests that the
   computable sets form a natural and important collection.
-  Neither collection is just a historical artifact of what happened to be first
+  Neither collection is only a historical artifact of what happened to be first
   explored.}
 
 %...................................
@@ -5737,15 +5737,18 @@ We will use the
 \definend{product construction}.\index{product construction}\index{Finite State machine!product}
 
 \begin{example} \label{ex:ProductConstruction}
+%<*ex:RegLangsProductConsti>
 The machine on the left, $\FSM_0$,  
 accepts strings with fewer than two~\str{a}'s.
 The one on the right, $\FSM_1$, 
 accepts strings with an odd number of~\str{b}'s.
+%</ex:RegLangsProductConsti>
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm91.pdf}}
   \qquad
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm92.pdf}}
 \end{center}
+%<*ex:RegLangsProductConstii>
 The transition tables contain the same information.
 \begin{center}
 \begin{tabular}[t]{r|*{2}{c}}
@@ -5765,6 +5768,8 @@ The transition tables contain the same information.
   \acceptingstate{} $s_1$  &$s_1$  &$s_0$  \\ 
 \end{tabular}
 \end{center}
+%</ex:RegLangsProductConstii>
+%<*ex:RegLangsProductConstiii>
 Consider a machine~$\FSM$ whose states are 
 \begin{equation*}
   Q_0\times Q_1
@@ -5798,12 +5803,13 @@ $s_0$ to~$s_0$, then to~$s_1$, and finally to~$s_1$.
 
 The above table does not specify which states are accepting.
 Suppose that we
-say that accepting states $(q_i,s_j)$ are the ones
+say that the accepting states $(q_i,s_j)$ are the ones
 where both $q_i$ and $s_j$ are accepting.
 Then by the prior paragraph, $\FSM$ accepts a string~$\sigma$ if both
 $\FSM_0$ and~$\FSM_1$ accept it.
 That is, this specification of accepting states causes $\FSM$ to accept the 
 intersection of the language of $\FSM_0$ and the language of~$\FSM_1$.
+%</ex:RegLangsProductConstiii>
 \end{example}
 
 %<*th:RegLangsClosedCompIntDiff>
@@ -10923,46 +10929,55 @@ that is, for symbol pushing.
 Regular expressions are an important tool.
 Modern programming languages such as Racket and Python include
 capabilities for
-\definend{extended regular expressions},\index{regular expression!extended}\index{extended regular expression} 
+extended regular expressions,\index{regular expression!extended}\index{extended regular expression} 
 which we will call 
 \definend{regexes},\index{regular expression!regex}\index{regex}
 that go beyond the
 small-scale theory examples we saw earlier.
 
-As an example, imagine that a system administrator
-must search a web server log for
-the names of all the PDF's downloaded from a subdirectory.
-Someone on a Unix-derived system might type this.
+As an example, imagine a system administrator
+searching a web server log for
+the PDF's downloaded from a directory.
+They might type this.
 \begin{center}
 \str{grep "/linearalgebra/.*\textbackslash .pdf" /var/log/apache2/access.log}
 \end{center}
 The \str{grep} utility program looks through the log file line by line.
 If a line
 matches the pattern then \str{grep} prints that line.
-That pattern
-is an extended regular expression.
-Here, it asks for a string with the characters
-\str{/linearalgebra/}, then containing any number of characters, and
-then with \str{.pdf}.
+That pattern is a regex.
 
+Different languages have small variations on the syntax of 
+their regexes.
+Below, we will use Racket regexes.
+As a prototype to experiment with those regexes, 
+\codeinline{(regexp-match? #px"^[A-Z][A-Z][0-9][A-Z][A-Z]\$" "KE1AZ")} returns  % $
+\codeinline{#t}.
+(The command
+\codeinline{(regexp-match? #px"[0-9]" "KE1AZ")} 
+also returns \codeinline{#t}, although its expression doesn't account for the
+letters.
+Programmers often want to find the expression anywhere in the string,
+but for us the caret and dollar sign fit better.)
+ 
+\margingraphic[r]{0.4\textwidth}{automata/pix/xkcdregexes.png}{\label{xkcd:knowbackregexes}\href{https://xkcd.com/208}{Courtesy \url{xkcd.com}}}
 The in-practice extensions to regular expressions
 fall into two categories.
 First come
 convenience constructs that ease doing something
-that otherwise would be posible but awkward.
+that otherwise would be possible but awkward.
 Second comes extensions that give capabilities that are not
 possible with the theoretical regular expressions that we studied earlier.
 
-\margingraphic[r]{0.4\textwidth}{automata/pix/xkcdregexes.png}{\label{xkcd:knowbackregexes}\href{https://xkcd.com/208}{Courtesy \url{xkcd.com}}}
-First, we cover the convenience extensions.
-Many of them are about sheer scale:~our
-earlier alphabets had two or three characters
+Many of the convenience extensions
+are about the problem of sheer scale:~in the theory discussion our
+alphabets had two or three characters
 but in practice an alphabet must include at least ASCII's
 printable characters:~\str{a}\dash \str{z}, \str{A}\dash \str{Z},
 \str{0}\dash \str{9},
 space, tab, period, dash, exclamation point, percent sign, dollar sign, 
 open and closed parenthesis, open and closed curly braces, etc.\sentencespace
-It may even contain all of Unicode's
+These days it may even contain all of Unicode's
 more than one hundred thousand characters. 
 We need manageable ways to describe such large sets.
 
@@ -11042,7 +11057,7 @@ You could use this (note the empty string at the start).
 \margingraphic{0.4\textwidth}{automata/pix/xkcdbackslashes.png}{\label{xkcd:knowbackslashes}\href{https://xkcd.com/1638}{Courtesy \url{xkcd.com}}}
 To match a metacharacter, prefix it with a backslash,~`\str{\textbackslash}'.
 Thus, to look for the string `\str{(Note}' put a backslash
-before the open parentheses
+before the open parentheses,
 \re{\textbackslash (Note}.
 Similarly, \re{\textbackslash |} matches a pipe and \re{\textbackslash [}
 matches an open square bracket.
@@ -11098,7 +11113,7 @@ US postal codes, called \citetext{ZIP codes}{%
   the danger of naming your project something that will become obsolete
   if that project succeeds.},
 are five digits.
-We can match them with
+Match them with
 \re{\textbackslash d\{5\}}.
 \end{example}
 
@@ -11404,9 +11419,9 @@ We can solve this as with the prior paragraph, by listing the cases.\footnote{%
 \begin{center}
   \re{(01|02|...|11|12):(01|02|...|59|60)(\textbackslash s am|\textbackslash s  pm)}
   \end{center}
-This is like the prior fix-up, in that it does indeed fix the issue but it
-does so at a cost of complexity, since it amounts to a list of
-the allowed substrings.
+This is like the prior patch, in that it fixes the issue, but 
+at a cost of complexity since it amounts to a list of
+allowed substrings.
 Regexes can have a tendency to grow, to accrete subcases like this.
 
 Another example is the Canadian postal expression in 
@@ -11777,7 +11792,7 @@ One is \re{[-\textbackslash +]?(\textbackslash d)+\textbackslash .?|\textbacksla
 Give a suitable extended regular expression.
 \begin{exparts}
 \item All Visa card numbers start with a \str{4}.
-New cards have 16 digits. Old cards have 13
+New cards have 16 digits. Old cards have 13.
 \item MasterCard numbers either start with \str{51} through \str{55},
 or with the numbers \str{2221} through \str{2720}.
 All have 16 digits.
@@ -11857,7 +11872,7 @@ Implement that as a routine in your favorite language.
 \end{exercise}
 
 \begin{exercise} % https://stackoverflow.com/a/1723225
-Give an extended regular expression that matches no string.
+Give a regex that matches no string.
 \begin{answer}
 This tries to match a character after the end of the string: \re{\$.}
 (In practice, in a regular expression multiline mode the dollar sign matches a 
@@ -11868,7 +11883,7 @@ But that lies outside our scope.)
 
 \recommended
 \begin{exercise}
-The Roman numerals taught in grade school use the letters I, V, X, L, C, D,
+The Roman numerals from grade school use the letters I, V, X, L, C, D,
 and~M to represent 1, 5, 10, 50, 100, 500, and 1000.
 They are written in descending order of magnitude, from M to~I, and are
 written greedily so that we don't write six I's but rather VI.

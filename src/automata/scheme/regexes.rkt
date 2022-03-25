@@ -1,35 +1,47 @@
 #lang racket
+;; regexes.rkt
+;; Check the regexes given in the Regular Expressions in the wild topic.
+;; 2020-Mar-23 JH PD
+
+;; Difference between rx and px:
+;;  The px matches Perl more closely.  In particular, it allows \d, \D-type
+;; constructs.  
 
 ;; Check that the testing is working as I expect.
-(define abc #rx"a.c")
+(define abc #px"a.c")
 
 (module+ test
   (require rackunit)
-  (check-not-false (regexp-match? abc "abc"))
+  (check-true (regexp-match? abc "abc"))
   (check-false (regexp-match? abc "bbc"))
   )
 
-
+;; examples given as prototypes
+(module+ test
+  (check-true (regexp-match? #px"^[A-Z]{2}[0-9][A-Z]{2}$" "KE1AZ"))
+  (check-false (regexp-match? #px"^[0-9]$" "KE1AZ"))
+)
+  
 ;; Use square brackets to make digits list
-(define digits-sq #rx"^[0123456789]$")
+(define digits-sq #px"[0123456789]")
 (module+ test
   (check-true (regexp-match? digits-sq "3"))
   (check-true (regexp-match? digits-sq "0"))
   (check-true (regexp-match? digits-sq "9"))
+  (check-true (regexp-match? digits-sq "01"))
   (check-false (regexp-match? digits-sq "b"))
-  (check-false (regexp-match? digits-sq "01"))
   )
 
-(define digits-hyphen #rx"^[0-9]$")
+(define digits-hyphen #px"[0-9]")
 (module+ test
   (check-true (regexp-match? digits-hyphen "3"))
   (check-true (regexp-match? digits-hyphen "0"))
   (check-true (regexp-match? digits-hyphen "9"))
+  (check-true (regexp-match? digits-hyphen "01"))
   (check-false (regexp-match? digits-hyphen "b"))
-  (check-false (regexp-match? digits-hyphen "01"))
   )
 
-(define nondigits-sq #rx"^[^0123456789]$")
+(define nondigits-sq #px"[^0123456789]")
 (module+ test
   (check-false (regexp-match? nondigits-sq "3"))
   (check-false (regexp-match? nondigits-sq "0"))
@@ -40,7 +52,7 @@
 
 
 ;; Square brackets to make a ASCII letter list
-(define azAZ #rx"^[A-Za-z]$")
+(define azAZ #px"^[A-Za-z]$")
 (module+ test
   (check-true (regexp-match? azAZ "d"))
   (check-true (regexp-match? azAZ "a"))
@@ -49,7 +61,7 @@
   (check-false (regexp-match? azAZ "ab"))
   )
 
-(define nonazAZ #rx"^[^A-Za-z]$")
+(define nonazAZ #px"^[^A-Za-z]$")
 (module+ test
   (check-false (regexp-match? nonazAZ "d"))
   (check-false (regexp-match? nonazAZ "a"))

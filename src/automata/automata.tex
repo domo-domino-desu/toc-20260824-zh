@@ -6785,7 +6785,7 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   Suppose that $\lang$ is recognized by the
   Finite State machine~$\FSM$.
   Denote the number of states in $\FSM$ by~$p$.
-  Consider a string $\sigma$ with $\lh{\sigma}\geq p$.
+  Consider a string $\sigma\in\lang$ with $\lh{\sigma}\geq p$.
 
   Finite State machines perform one transition per character 
   so the number of characters in an input string equals the number of 
@@ -6794,34 +6794,37 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   is one more than the number of transitions; for instance, 
   with a one-character input a machine visits two 
   states (not necessarily distinct). 
-  Thus, in processing the input string~$\sigma$,
-  the machine must visit some state more than once. 
-  It must loop.
+  So in processing the input~$\sigma$ with $\lh{\sigma}\geq p$
+  the machine revisits some state. 
+  % It must loop.
 %</pf:PumpingLemmai>
 
 %<*pf:PumpingLemmaii>
-  Fix a repeated state,~$q$.
-  Also fix the first two substrings, 
+  Fix the first such repeated state,~$q$.
+  Also fix $\sigma$'s first two substrings, 
   $\sequence{s_0,\,\ldots s_i}$ and
-  $\sequence{s_0,\,\ldots s_i, \ldots{} s_j}$, of $\sigma$ 
-  that take the machine to state~$q$.
-  That is, $j$ is minimal such that $i\neq j$ and such that 
+  $\sequence{s_0,\,\ldots s_i, \ldots{} s_j}$, 
+  that take the machine to~$q$.
+  That is, $i$ and $j$ are minimal such that $i\neq j$ and such that 
   the extended transition function gives
   $\extended{\Delta}(\sequence{s_0,\,\ldots s_i})
      =\extended{\Delta}(\sequence{s_0,\,\ldots s_j})
      =q$.
-  Then let $\alpha=\sequence{s_0,\,\ldots, s_i}$ be the string that brings the 
-  machine up to the loop,
-  let $\beta=\sequence{s_{i+1},\,\ldots s_j}$  
-  is the string that brings the machine around the loop, 
+  Let $\alpha=\sequence{s_0,\,\ldots, s_i}$,
+  let $\beta=\sequence{s_{i+1},\,\ldots s_j}$, 
   and let $\gamma=\sequence{s_{j+1},\,\ldots s_k}$ be the rest of~$\sigma$.
-  (Possibly one or both of $\alpha$ and $\gamma$ is empty.)
+  (Think of $\alpha$ as the initial substring of $\sigma$ that transitions the 
+  machine up to the loop,
+  $\beta$ as the substring that takes the machine around the loop once,
+  and $\gamma$ as the rest of~$\sigma$. 
+  Possibly $\alpha$ is empty, and possibly $\gamma$ is empty or possibly
+  it also includes a substring that transistions the machine around
+  a loop after $\beta$ has taken it around the first time.)
   These strings satisfy conditions~(1) and~(2).
-  (Choosing $q$ to be a state that is repeated 
-  within the initial segment of~$\sigma$, and choosing $i$ and~$j$ to be minimal,
-  guarantees that for instance if the 
+  (Choosing $q$, $i$, and~$j$ to be minimal
+  guarantees that, for instance, if the 
   string~$\sigma$ brings machine around a loop a hundred times then we
-  don't pick an $\alpha$ that includes the first ninety nine loops, and
+  don't fix an $\alpha$ that includes the first ninety nine loops, and
   that therefore is longer than~$p$.)
 
   For condition~(3), this string
@@ -6832,7 +6835,7 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   and then to the same ending state as did $\sigma$.
   That is,
   $\extended{\Delta}(\alpha\gamma)=\extended{\Delta}(\alpha\beta\gamma)$
-  and so is an accepting state.
+  and so $\alpha\concat\gamma$ is accepted.
   The other strings in~(3) work the same way.
   For instance, for
   \begin{equation*}
@@ -6840,9 +6843,9 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
     =\alpha\beta\beta\gamma
       =\sequence{s_0,\,\ldots s_i,s_{i+1},\,\ldots, s_{j-1},s_{i+1},\,\ldots s_{j+1},\,\ldots s_k}
   \end{equation*}
-  the substring $\alpha$ brings the machine from~$q_0$ to the state~$q$,
+  the substring $\alpha$ brings the machine from~$q_0$ to~$q$,
   the first $\beta$ brings it around to~$q$ again,
-  then the second $\beta$ makes the machine loop to $q$ yet again,
+  the second $\beta$ makes the machine loop to $q$ yet again,
   and finally $\gamma$ brings it to the same ending state as did $\sigma$.
 %</pf:PumpingLemmaii>
 \end{proof}
@@ -6853,7 +6856,7 @@ not regular through an argument by contradiction.
 \begin{example}  \label{ex:BalancedParensIsNotRegularLang}
   The classic example is to 
   show that this language of matched parentheses is not regular.
-  The alphabet is the set of the two parentheses
+  The alphabet is the set of parentheses characters,
   $\Sigma=\set{\str{)},\str{(}}$.
   \begin{equation*}
     \lang
@@ -6862,6 +6865,7 @@ not regular through an argument by contradiction.
     =\set{\varepsilon, \str{()}, \str{(())}, \str{((()))}, 
        \str{(}^4\mspace{2mu}\str{)}^4,\, \ldots\,}       
   \end{equation*}
+
   For contradiction, assume that it is regular.
   Then the Pumping Lemma says that $\lang$ has a pumping length,~$p$.
 
@@ -6869,33 +6873,36 @@ not regular through an argument by contradiction.
   It is an element of~$\lang$ and 
   its length is greater than or equal to~$p$ so
   the Pumping Lemma applies.
-  So~$\sigma$
+  Hence~$\sigma$
   decomposes into three substrings $\sigma=\alpha\concat\beta\concat\gamma$
   satisfying the conditions.
   Condition~(1) is that
   the length of the prefix~$\alpha\concat\beta$ is less than or equal to~$p$.
-  Because of this condition we know that both $\alpha$ and~$\beta$ are composed
-  exclusively of open parentheses,~$\str{(}$'s.
-  Condition~(2) is that $\beta$ is not the empty string, so it
-  contains at least one~$\str{(}$.
+  Because of this condition, and because the first $p$-many characters 
+  are all open parentheses, we know that both $\alpha$ and~$\beta$ 
+  are composed of open parentheses.
+  Condition~(2) is that $\beta$ is not empty so it
+  consists of at least one~$\str{(}$.
 
-  Condition~(3) is that all of the strings
+  Condition~(3) is that the strings
   $\alpha\gamma$,
   $\alpha\beta^2\gamma$,
   $\alpha\beta^3\gamma$,
   \ldots{}
   are members of~$\lang$.
-  To get the desired contradiction, consider $\alpha\beta^2\gamma$.
+  To get the contradiction, consider $\alpha\beta^2\gamma$
+  (other choices would also work).
   Compared with $\sigma=\alpha\beta\gamma$, this string has an extra~$\beta$,
   which adds at least one open parenthesis 
-  without adding any balancing closed parentheses.
-  In short, $\alpha\beta^2\gamma$ has more \str{(}'s than \str{)}'s. 
+  without also adding any closed parentheses.
+  That is, $\alpha\beta^2\gamma$ has more \str{(}'s than \str{)}'s. 
   It is therefore not a member of~$\lang$. 
   But the Pumping Lemma says it must be a member of~$\lang$, and 
-  therefore the assumption that $\lang$ is regular is incorrect.
+  consequently the assumption that $\lang$ is regular is impossible.
 \end{example}
 
-We have seen many examples of things that regular expressions and Finite
+\medskip
+We have seen many examples of things that Finite
 State machines can do.
 Here we see something that they cannot.
 Matching parentheses, and other types of matching, is something that 
@@ -6908,7 +6915,7 @@ regular languages are not enough.
   is a string that reads the
   same backwards as forwards, such as
   \str{bab}, \str{abbaabba},
-  or~$\str{a}^5\str{b}\str{a}^5$.
+  or~$\str{a}^5\str{b}\str{a}^5\!$.
   We will prove that the language
   $\lang=\set{\sigma\in\kleenestar{\Sigma}\suchthat
     \reversal{\sigma}=\sigma}$
@@ -6918,7 +6925,7 @@ regular languages are not enough.
   For contradiction assume that this language is regular. 
   The Pumping Lemma says that $\lang$ has a pumping length.
   Call it~$p$.
-  Consider $\sigma=\str{a}^p\str{b}\str{a}^p$, 
+  Consider $\sigma=\str{a}^p\str{b}\str{a}^p\!$, 
   which is an element of~$\lang$ and
   has more than~$p$ characters. 
   Thus it decomposes as
@@ -6929,28 +6936,28 @@ regular languages are not enough.
   Condition~(2) is that $\beta$ is not the empty string and so
   $\beta$ consists of at least one~\str{a}.
   
-  Consider the list from condition~(3),
+  Condition~(3) gives that all of the strings
   $
     \alpha\gamma,   
     \alpha\beta^2\gamma,
     \alpha\beta^3\gamma,
     \ldots{}
-  $\sentencespace
-  We will get the desired contradiction from the first element, $\alpha\gamma$
-  (the other list members also lead to a contradiction but we only 
+  $ 
+  are also in the language.
+  We will get the desired contradiction from its first element, $\alpha\gamma$
+  (the other list members also give contradictions but we only 
   need one).
 
   Compared to $\sigma=\alpha\beta\gamma$, 
   in $\alpha\gamma$ the $\beta$ is gone.
   Because $\alpha$ and~$\beta$ consist entirely of~$\str{a}$'s,
-  the substring $\gamma$ got $\sigma$'s~\str{b}, and must also have
-  the $\str{a}^p$ that follows it.
+  the substring $\gamma$ has the \str{b} character from $\sigma$ 
+  and hence also has the $\str{a}^p$ that follows~\str{b}.
   So in passing from $\sigma=\alpha\beta\gamma$ to $\alpha\gamma$
   we've omitted at least one~\str{a} before the~\str{b} but none
-  of the \str{a}'s after it, and 
-  therefore $\alpha\gamma$ is not a palindrome. 
-  This contradicts the Pumping Lemma's third condition, that the strings
-  in the list are all members of~$\lang$.
+  of the \str{a}'s after it.
+  Thus $\alpha\gamma$ is not a palindrome, which 
+  contradicts the Pumping Lemma's third condition.
 \end{example}
 
 \begin{remark} \label{rem:PLPartsAreNotSigmaParts}
@@ -6961,7 +6968,7 @@ Don't make the mistake of thinking that the two decompositions match.
 The Pumping Lemma does not says that $\alpha=\str{a}^p$, $\beta=\str{b}$,
 and $\gamma=\str{a}^p$\Dash indeed, as the example says 
 the Pumping Lemma gives that
-$\beta$ is not the~$\str{b}$ part.
+$\beta$ does not contain the~$\str{b}$.
 Instead, the Pumping Lemma only says that the first two strings together, 
 $\alpha\concat\beta$, consists exclusively of \str{a}'s.
 So it could be that $\alpha\beta=\str{a}^p$, or it could instead be that 

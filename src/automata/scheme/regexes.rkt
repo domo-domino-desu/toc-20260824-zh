@@ -5,7 +5,8 @@
 
 ;; Difference between rx and px:
 ;;  The px matches Perl more closely.  In particular, it allows \d, \D-type
-;; constructs.  
+;; constructs.  Note also the "^ -- pattern -- $", which also tracks with the
+;; theory regular expressions
 
 ;; Check that the testing is working as I expect.
 (define abc #px"a.c")
@@ -23,25 +24,25 @@
 )
   
 ;; Use square brackets to make digits list
-(define digits-sq #px"[0123456789]")
+(define digits-sq #px"^[0123456789]$")
 (module+ test
   (check-true (regexp-match? digits-sq "3"))
   (check-true (regexp-match? digits-sq "0"))
   (check-true (regexp-match? digits-sq "9"))
-  (check-true (regexp-match? digits-sq "01"))
   (check-false (regexp-match? digits-sq "b"))
+  (check-false (regexp-match? digits-sq "01"))
   )
 
-(define digits-hyphen #px"[0-9]")
+(define digits-hyphen #px"^[0-9]$")
 (module+ test
   (check-true (regexp-match? digits-hyphen "3"))
   (check-true (regexp-match? digits-hyphen "0"))
   (check-true (regexp-match? digits-hyphen "9"))
-  (check-true (regexp-match? digits-hyphen "01"))
   (check-false (regexp-match? digits-hyphen "b"))
+  (check-false (regexp-match? digits-hyphen "01"))
   )
 
-(define nondigits-sq #px"[^0123456789]")
+(define nondigits-sq #px"^[^0123456789]$")
 (module+ test
   (check-false (regexp-match? nondigits-sq "3"))
   (check-false (regexp-match? nondigits-sq "0"))

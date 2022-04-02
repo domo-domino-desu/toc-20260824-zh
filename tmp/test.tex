@@ -1,93 +1,65 @@
 \documentclass{article}
-\usepackage{computingfonts}
+\usepackage{mdframed}
+\mdfsetup{skipabove=1.5pt plus 0.2pt minus 0.1pt,
+          skipbelow=1.5pt plus 0.2pt minus 0.1pt}  % small whitespace between theorems
 
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\R}{\mathbb{R}}
+\mdfdefinestyle{coloredstyle}{backgroundcolor=blue, %
+  leftmargin = 0pt, %
+  rightmargin = 0pt, %
+  innerleftmargin = \lrmarginaroundshadedtheorems, %
+  innerrightmargin = \lrmarginaroundshadedtheorems, %
+  innertopmargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
+  innerbottommargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
+  % innertopmargin = \tbmarginaroundshadedtheorems, %
+  % innerbottommargin = \tbmarginaroundshadedtheorems, %
+  skipabove= 4pt plus 1pt minus 1pt, % 0.5\topsep
+  skipbelow= 4pt plus 1pt minus 1pt, % 0.5\topsep
+  % skipabove= \resttbaroundshadedtheorems, %
+  % skipbelow= \resttbaroundshadedtheorems, %
+  splittopskip = 2pt, % 
+  splitbottomskip = 2pt, % 
+  topline=false,bottomline=false,leftline=false,rightline=false,}
 
-\RequirePackage[dvipsnames]{xcolor}
-\include{colorscheme}  % change the color scheme
+\theoremstyle{coloredstyle}
+\newmdtheoremenv[style=coloredstyle]{theorem}{Theorem}[section]
+\renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % don't include the chapter
 
-% \definend
-% The thing being defined.
-\newcommand{\definend}[1]{\textcolor{highlightcolor}{#1}}
-
-\newcommand{\probname}[1]{\mbox{\sf #1}}  % text name of a problem
-\newcommand{\DTIME}{\compclass{DTIME}}  % deterministic time
-\newcommand{\NTIME}{\compclass{NTIME}}  % nondeterministic time
-\newcommand{\DSPACE}{\compclass{DSPACE}}  % deterministic space
-\newcommand{\SPACE}{\compclass{SPACE}}  % deterministic space
-\newcommand{\NSPACE}{\compclass{NSPACE}}  % nondeterministic space
-\newcommand{\PSPACE}{\compclass{PSPACE}}  % poly space
-\newcommand{\NPSPACE}{\compclass{NPSPACE}}  % nondeterministic poly space
-\let\pilcrow=\P  % save meaning; redefine \P next
-\renewcommand{\P}{\compclass{P}}  % polytime time
-\newcommand{\NP}{\compclass{NP}}  % nondeterministic polytime
-\newcommand{\EXP}{\compclass{EXP}}  % exponential time
+\AtBeginEnvironment{theorem}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
 
 
+\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
+\setlength{\footnotemargin}{-1em}
+\DefineFNsymbolsTM*{hefferon}{%
+  \textdagger    \dagger
+  \textdaggerdbl \ddagger
+  \textsection   \mathsection
+  \textbardbl    \|%
+  \#\#%
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
+}%
+\setfnsymbol{hefferon}
+\newlength{\footmarktotextglue}
+\global\footmarktotextglue=.1em plus .05em minus .02em %
+\global\footglue=0.65em plus.2em minus.1em % space between footnotes
+\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
+\smash{\@makefnmark}\nobreak
+\hskip\footmarktotextglue\relax#1% was .5em
+}
+\renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
+
+\usepackage{lipsum}
 \begin{document}
-\section{Types of problems}
-There are patterns in which problems we see in the Theory of Computation.
-One problem type that we have already seen
-is a \definend{function problem}.
-This asks that the algorithm have a single output for each input. 
-Two examples are \probname{Prime Factorization}
-and the problem of finding the greatest common divisor of two
-natural numbers.
+\section{Section one}
+\lipsum[1-10]
 
-A second type 
-is the \definend{optimization problem}, which look for the 
-best solution according to some metric.
-\probname{Shortest Path} is of this type.
-So is \probname{Minimal Spanning Tree}.
+Material from the first paragraph.\footnote{%
+  This footnote is called in the standard way and extends more than a
+  full line width.}
 
-Another type is a \definend{search problem}.
-Here, while there may be many
-solutions in the search space, we stop when we have found any one.
-An example is the problem, 
-``Given a weighted graph, and two vertices, and a bound $B\in\N$,
-find a path between the vertices that costs less than the bound.'' 
-Another example is that of finding a $B$-coloring for a graph; there
-may be many colorings but we just want one.
-Two more are the Knapsack problem and the Subset Sum problem.
-
-\section{Exercises}
-\noindent Exercise A) Identify each as a function problem, 
-a decision problem, a search
-problem, or an optimization problem.
-\begin{enumerate}
-\item The problem \definend{\probname{Connectedness}}, which inputs a graph
-and decides whether for any two vertices there is a path between them.
-\item
-The problem that inputs two natural numbers and returns their least
-common multiple.
-\item The \probname{Graph Isomorphism} problem 
-that inputs two graphs and determines
-whether they are isomorphic.
-\item
-The \definend{\probname{Nearest Neighbor}} problem 
-that inputs a weighted graph and a vertex
-returns the vertex nearest the given one (that does not equal the
-given one).
-\item The \definend{\probname{Discrete Logarithm}} problem:~given 
-a prime number~$p$ and two
-numbers $a,b\in\N$, determine if there is a power~$k\in\N$ so that
-$a^k\equiv b \pmod p$.
-\item The problem that inputs a bitstring and returns the number that it
-represents in decimal.
-\item The problem that takes a string and decides if there is a person in
-the address book with that name.
-\end{enumerate}
-
-\noindent Exercise B) Recast each to a language decision problem:
-(1)
-\probname{Euler Circuit}, Problem 2.4.
-(2)
-\probname{Shortest Path}, Problem 2.7.
-(3)
-\probname{Graph Colorability}, Problem 2.9.
-
-
+\begin{theorem}
+Material from the theorem.\footnotemark[2]
+\end{theorem}\footnotetext[2]{%
+    This footnote is called with mark and text and also extends more than a
+  full line width.\protect\lipsum[2]}
 \end{document}

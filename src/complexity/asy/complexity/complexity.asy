@@ -1803,8 +1803,8 @@ node Gnode = ncircle("$G$",ns_gray);
 node anode = ncircle("$a$");
 node bnode = ncircle("$b$");
 node cnode = ncircle("$c$");
-node xnode = ncircle("$x$\strut");
-node negxnode = ncircle("$\neg x$");
+node xnode = ncircle("$w$\strut");
+node negxnode = ncircle("$\neg w$");
 
 // calculate nodes position
 real u=1cm;
@@ -1885,8 +1885,8 @@ draw(pic,
      (Tnode--Gnode),
      (Fnode--Gnode),
      (Fnode--n2),
-     (Gnode--n0).style(dashedstyle),
-     (Gnode--n2).style(dashedstyle),
+     (Gnode--n0), // .style(dashedstyle),
+     (Gnode--n2), // .style(dashedstyle),
      (n0--n1),
      (n0--n3),
      (n0--n4),
@@ -1984,9 +1984,9 @@ draw(pic,
      (Tnode--Fnode),
      (Tnode--Gnode),
      (Fnode--Gnode),
-     (Fnode--n2),
-     (Gnode--n0).style(dashedstyle),
-     (Gnode--n2).style(dashedstyle),
+     (Fnode..bend(-20)..n2),
+     (Gnode--n0), // .style(dashedstyle),
+     (Gnode--n2), //.style(dashedstyle),
      (n0--n1),
      (n0--n3),
      (n0--n4),
@@ -1995,8 +1995,8 @@ draw(pic,
      (n2--n5),
      (n3--n4),
      (Fnode--m2),
-     (Gnode--m0).style(dashedstyle),
-     (Gnode--m2).style(dashedstyle),
+     (Gnode--m0), // .style(dashedstyle),
+     (Gnode--m2), // .style(dashedstyle),
      (m0--m1),
      (m0--m3),
      (m0--m4),

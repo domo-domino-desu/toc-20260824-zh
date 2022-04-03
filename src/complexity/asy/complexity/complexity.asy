@@ -1859,6 +1859,16 @@ node n2 = ncircle("$n_2$");
 node n3 = ncircle("$n_3$");
 node n4 = ncircle("$n_4$");
 node n5 = ncircle("$n_5$");
+// nodes for lines from a, b, c to G
+node anode_below = nbox("",ns_noborder); 
+node bnode_below = nbox("",ns_noborder); 
+node cnode_below = nbox("",ns_noborder); 
+node anode_below_left = nbox("",ns_noborder); 
+node bnode_below_left = nbox("",ns_noborder); 
+node cnode_below_left = nbox("",ns_noborder); 
+node anode_above_left = nbox("",ns_noborder); 
+node bnode_above_left = nbox("",ns_noborder); 
+node cnode_above_left = nbox("",ns_noborder); 
 
 // calculate nodes position
 real u=1cm;
@@ -1878,7 +1888,16 @@ n5.pos = new_node_pos_h(n1, -45, 0.5*u);
 vlayout(1*v, n3, anode);
 vlayout(1*v, n4, bnode);
 vlayout(1*v, n5, cnode);
-  
+// Nodes for lines from a, b, c
+// real dist_below =0.75*v;
+// real dist_epsilon = 0.10*v;
+// anode_below_left.pos=anode.pos-(1*u,dist_below);
+// bnode_below_left.pos=anode_below_left.pos-(dist_epsilon,dist_epsilon);
+// cnode_below_left.pos=anode_below_left.pos-(2*dist_epsilon,2*dist_epsilon);
+// anode_above_left.pos=(anode_below_left.pos.x,Gnode.pos.y+dist_epsilon);
+// bnode_above_left.pos=anode_above_left.pos-(dist_epsilon,0);
+// cnode_above_left.pos=anode_above_left.pos-(2*dist_epsilon,dist_epsilon);
+
 // draw edges
 draw(pic,
      (Tnode--Fnode),
@@ -1907,6 +1926,29 @@ drawgnd(pic, bnode.pos-gnd_offset, u, v);
   draw(pic,bnode.pos--(bnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
 drawgnd(pic, cnode.pos-gnd_offset, u, v);
   draw(pic,cnode.pos--(cnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+
+// trying to draw all the lines
+// draw(pic,
+//      (anode.pos.x,anode.pos.y)--(anode.pos.x,anode_below_left.pos.y)
+//           --(anode_below_left.pos.x,anode_below_left.pos.y)
+//           --(anode_above_left.pos.x,anode_above_left.pos.y)
+//            --(Gnode.pos.x,anode_above_left.pos.y)
+//      // (bnode.pos.x,bnode.pos.y)--(bnode.pos.x,bnode_below_left.pos.y)
+//      //      --(bnode_below_left.pos.x,bnode_below_left.pos.y)
+//      //      --(bnode_above_left.pos.x,bnode_above_left.pos.y)
+//      //       --(Gnode.pos.x,bnode_above_left.pos.y),
+//      // (cnode.pos.x,cnode.pos.y)--(cnode.pos.x,cnode_below_left.pos.y)
+//      //      --(cnode_below_left.pos.x,cnode_below_left.pos.y)
+//      //      --(cnode_above_left.pos.x,cnode_above_left.pos.y)
+//      //       --(Gnode.pos.x,cnode_above_left.pos.y)
+//      //anode--VH--anode_below_left,
+//      // bnode--VH--bnode_below_left,
+//      // cnode--VH--cnode_below_left,
+//      // anode_below_left.pos--VH--Gnode,
+//      // bnode_below_left--VH--Gnode,
+//      // cnode_below_left--VH--Gnode
+//      );
+
 
 // draw nodes
 draw(pic,

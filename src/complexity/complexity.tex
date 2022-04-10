@@ -8159,21 +8159,22 @@ that verification to be tractable.
 
 Our final note is related to that.
 The verifier runs in time polynomial in $\lh{\sigma}$.
-Observe that, because of that time limit,
-the fact that there is such a verifier means that 
-there must be a witness~$\omega$ whose length is at most 
+The lemma says that if $\sigma\in\lang$  then 
+there must be a witness~$\omega$.
+Note that $\sizeof{\omega}$ must be at most 
 polynomial in~$\lh{\sigma}$, simply because
 if the witness were too long then the
-machine would not be able to read it in time.\footnote{%
+machine would not be able to read it before the the time for the computation
+ran out.\footnote{%
   Some authors instead define that the 
   verifier runs in time polynomial in its input, $\sequence{\sigma,\omega}$, 
-  with the restriction that $\omega$ 
-  must have length polynomial in~$\sigma$.
-  Without a restriction, the verifier 
+  with the restriction that $\sizeof{\omega}$ 
+  must be polynomial in~$\sizeof{\sigma}$.
+  Without some restriction, the verifier 
   could have exponential runtime if the witness has exponential length.}
 
-Restated, the definition says that $\omega$ certifies 
-that $\sigma\in\lang$,
+In summary, the definition says that $\omega$ certifies 
+that $\sigma\in\lang$
 and that the verifier deterministically validates that certificate.
 
 %<*ex:HamPathIsNPi>
@@ -8232,108 +8233,102 @@ because there is no nontrivial factor for $\omega$ to represent.
 \end{example}
 %</ex:CopositeIsNP>
 
-At last, here is the promised proof
+Now we are ready for the proof
 of \cref{lem:VerifierAndGuesserEquiv}.
 
 \begin{proof} \label{proof:VerifierAndGuesserEquiv}
 %<*pf:VerifierAndGuesserEquivi>
-Suppose first that the language~$\lang$ is accepted by the nondeterministic
+Suppose first that the language~$\lang$ is accepted by a nondeterministic
 Turing machine~$\TM$ in polynomial time.
-We will construct a polynomial time verifier~$\TM[V]$.
+We will construct a verifier~$\TM[V]$ that runs in polytime.
 Let $\map{p}{\N}{\N}$ be the polynomial 
 such that on input~$\sigma\in\lang$, the
 machine~$\TM$ has an accepting branch of length at most
 $p(|\sigma|)$.
-Make a witness out of this:~the
-Turing machine~$\TM$ has
+We make a witness out of this:~$\TM$ has
 a finite number of states,~$k$,
 so we can represent the accepting branch of its computation tree with 
-a sequence~$\omega$ of numbers less than~$k$.
-With that witness, a deterministic verifier can retrace $\TM$'s
+a sequence~$\omega$ of at most $p(\sizeof{\sigma})$ many numbers,
+each less than~$k$.
+With that witness, a deterministic verifier can retrace the machine's
 acceptance of~$\sigma$.
-The $\omega$ branch's length must be less than $p(\sizeof{\sigma})$,
-so the verifier~$\TM[V]$ can do the retracing in polynomial time.
+Because $\omega$'s length is at most $p(\sizeof{\sigma})$,
+the verifier~$\TM[V]$ can do the retracing in polynomial time.
 %</pf:VerifierAndGuesserEquivi>
 
 %<*pf:VerifierAndGuesserEquivii>
-Conversely, suppose that the language $\lang$
-is accepted by a verifier~$\TM[V]$ that takes input 
-$\sequence{\sigma,\omega}$ and that runs in time
+For the converse suppose that the language $\lang$
+is accepted by a verifier~$\hat{\TM[V]}$ that runs in time
 bounded by a polynomial~$q$.
-We will construct a nondeterministic Turing machine~$\TM$
-that runs in polytime, and  
+We will construct a polytime nondeterministic Turing machine~$\hat{\TM}$ 
 that accepts an input bitstring~$\tau$
 if and only if $\tau\in\lang$.
 
-The key is that this machine is allowed to be nondeterministic.
-Given a candidate bitstring $\tau$, 
-(1)~$\TM$ nondeterminstically produces a witness
-bitstring~$\kappa$
+The key is that $\hat{\TM}$ is allowed to be nondeterministic.
+Therefore, have the machine do this: given a candidate bitstring $\tau$, 
+(1)~$\hat{\TM}$ nondeterminstically produces a witness
+bitstring~$\hat{\omega}$
 of length less than $q(\sizeof{\tau})$
-(informally speaking, it guesses $\kappa$, or gets it from a demon),
-(2)~it then runs  $\sequence{\tau,\kappa}$ through the verifier~$\TM[V]$,
+(informally speaking, it guesses $\hat{\kappa}$, or gets it from a demon),
+(2)~it then runs  $\sequence{\tau,\hat{\kappa}}$ through $\hat{\TM[V]}$,
 and
-(3)~if the verifier accepts its input then $\TM$ accepts~$\tau$, while if the 
-verifier does not accept then $\TM$ also does not accept.
+(3)~if the verifier accepts its input then $\hat{\TM}$ accepts~$\tau$, 
+while if the 
+verifier does not accept then $\hat{\TM}$ also does not accept.
 
-By definition, the nondeterministic machine~$\TM$ accepts the string 
-if there is a branch that accepts the string,
-and $\TM$ rejects the string if every branch rejects it. 
-% That is, $\TM$ accepts~$\tau$ if and only if there exists a way for the prior 
-% paragraph to result in an accepted string.
+What remains is to check that this $\hat{\TM}$ accepts $\tau$
+if and only if $\tau\in\lang$. 
+By definition, a nondeterministic machine accepts the string 
+if there exists a branch that accepts the string,
+and rejects the string if every branch rejects it. 
 Suppose first that $\tau\in\lang$.
-Because $\TM[V]$ is a verifier, in this case 
-there exists a witness~$\kappa$ that will 
-result in $\TM[V]$ accepting $\sequence{\tau,\kappa}$,
+Because $\hat{\TM[V]}$ is a verifier, in this case 
+there exists a witness~$\hat{\omega}$ that will 
+result in $\hat{\TM[V]}$ accepting $\sequence{\tau,\hat{\omega}}$,
 so there is a way for the prior paragraph to result in acceptance of~$\tau$, 
-and so $\TM$ accepts~$\tau$.
+and so $\hat{\TM}$ accepts~$\tau$.
 Conversely, suppose that $\tau\notin\lang$.
-By the definition of a verifier, no witness~$\kappa$ will result in 
-$\TM[V]$ accepting $\sequence{\tau,\kappa}$,
-and thus $\TM$ rejects~$\tau$.
+By the definition of a verifier, no witness~$\hat{\omega}$ will result in 
+$\hat{\TM[V]}$ accepting $\sequence{\tau,\hat{\omega}}$,
+and thus $\hat{\TM}$ rejects~$\tau$.
 %</pf:VerifierAndGuesserEquivii>
 \end{proof}
 
 A common reaction to the second half of that proof is something like,
-``Wait, the machine pulls the witness~$\kappa$ out of thin air?
-How is that possibly legal?''\footnote{%
-  This echoes the first note after the definition and lemma above. 
-  }
-This reaction\Dash about nondeterministic Turing machines
-and everyday experience versus abstraction\Dash is common and very 
-reasonable,
-so we will address it with a discussion and a caution.
+``Wait, the machine pulls the witness~$\hat{\omega}$ out of 
+thin air?''
+% \footnote{%
+%   This echoes the first note after the definition and lemma above. 
+%   }
+This reaction\Dash about everyday experience versus abstraction\Dash is 
+common and reasonable, so we will address it.
 
-First, as to everyday engineering:~we 
-today know of no way to build physical devices 
+We today know of no way to build physical devices 
 that bear the same relationship to nondeterministic Turing machines 
 that ordinary computers bear to deterministic ones.
-(Of course, we can write a program to simulate nondeterministic behavior,
-although at a cost in efficiency, but no device does it natively.)
+(We can write a program to simulate nondeterministic behavior
+but no device does it natively.)
 When Turing formulated his definition there were no
-practical physical computers matching it, but they 
-were clearly coming and appeared soon after;
+physical computers but they appeared soon after;
 will we someday have nondeterministic devices?
 Putting aside proposals that 
 involve things like time travel through wormholes as too exotic,
-in short we don't know of any.
-
-In particular, in order here is a caution about
-the machine types that seem likely to be coming,
-quantum computers. 
-Well-established physical theory says 
-that subatomic particles can be in a superposition of many states at once.
-Naively, it may seem that because of this multi-way branching,
-if we could manipulate these then we would have
-nondeterministic computation. 
-But that we know of, this is false.
-That we know of,
-to get information out of a quantum computer we must use interference, 
-and we cannot read individual particles.\footnote{%
-  Some popularizations wrongly 
+in short, we don't know of any candidates.\footnote{%
+  In order here is a caution about
+  the machine types that seem likely to be coming,
+  quantum computers. 
+  Well-established physical theory says 
+  that subatomic particles can be in a superposition of many states at once.
+  Naively, it may seem that because of this multi-way branching,
+  if we could manipulate these then we would have
+  nondeterministic computation. 
+  But that we know of, this is false.
+  That we know of,
+  to get information out of a quantum computer we must use interference, 
+  and we cannot read individual particles.
+  (Some popularizations wrongly 
   suggest that quantum computers are nondeterministic. 
-  That is, 
-  they miss this point about interference.} %
+  That is, they miss this point about interference.)} %
 
 Nonetheless, the fact that we do not have practical nondeterministic devices, 
 and do not believe that we will in the

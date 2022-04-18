@@ -1663,14 +1663,14 @@ path halfbar(path pth,
 
 // seed the random number generator;
 //   If seconds() then uncomment to show on screen to save the number for later
-int srand_seed = 1619633659;
 // int srand_seed = seconds();
 // write(format("PNP.ASY: srand_seed for point-picking is %d",srand_seed));
+int srand_seed = 1650314745;
 srand(srand_seed); 
 
 // Use that seed to pick some points; they must be inside the UNIVERSE
 pair[] pts;
-int numpts=25;
+int numpts=30;
 bool flag=false;
 pair onept;  // a candidate point
 real padding=0.15; // min dist between points
@@ -2056,27 +2056,112 @@ label(pic,"\makebox[\width][r]{\scriptsize \probname{NP} hard}",(label_x,0.5*(la
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
 
-
-// Locate NP Complete
+// Locate NP Complete, make a path to the tag
 pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);
-// path NP_complete_tag = np_complete{(-1,-0.5)}
-//                        .. tension 1.6 .. np_complete+(-0.40*UNIVERSE_WD,-0.225*UNIVERSE_HT)
-//                        .. tension 0.8 .. np_complete+(-0.5*UNIVERSE_WD,-0.200*UNIVERSE_HT)
-//                        .. tension 1.2 .. {W}(np_complete+(-0.6*UNIVERSE_WD,-0.175*UNIVERSE_HT));
 path NP_complete_tag = np_complete{(-1,-0.1)} .. {W}(np_complete+(-0.45*UNIVERSE_WD,-0.175*UNIVERSE_HT));
 draw(pic,NP_complete_tag,THINPEN);
 label(pic,"{\scriptsize $\NP$ complete}",np_complete+(-0.45*UNIVERSE_WD,-0.17*UNIVERSE_HT),W); 
-
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ---------------- Connect some problems to depict \leq_p ----------
+picture pic;
+int picnum=8;
+
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+// (note that  we cover the stubs at end)
+
+// Find the area containing noncomputable langugages
+// path rec_arc = parabolic_arc(0.25,1.8); 
+// draw(pic, rec_arc, base_region_pen+opacity(0.5)); // not show?
+
+path non_rec_langs = buildcycle(UNIVERSE, rec_arc); // the non-recursive langs
+
+// Find the are of P langugages
+path p_langs = buildcycle(P_arc,UNIVERSE);
+
+// pts is an array of points from figure number 0.
+// Draw edges
+
+int numedges = floor(numpts/2);
+for (int i=0; i<numedges; ++i) {
+  int firstpt_dex = floor((pts.length-0.01)*unitrand());
+  pair firstpt = pts[firstpt_dex];
+  int secondpt_dex = floor((pts.length-0.01)*unitrand());
+  pair secondpt = pts[secondpt_dex];
+  if (inside(p_langs,firstpt) && inside(p_langs,secondpt)) {
+      draw(pic, firstpt--secondpt, highlightcolor);
+  } else {
+    if (!inside(non_rec_langs,firstpt) && !inside(non_rec_langs,secondpt)) {
+      draw(pic, firstpt--secondpt, backgroundcolor);
+    }
+  }
+}
+
+// Every pt in P is connected to every other point
+for (int i=0; i<numpts; ++i) {
+  pair firstpt = pts[i];
+  if (inside(p_langs,firstpt)) {
+    for (int j=0; j<numpts; ++j) {
+      if (i != j) {
+	pair secondpt = pts[j];
+	if (inside(p_langs,secondpt)) {
+	  draw(pic, firstpt--secondpt, highlightcolor);
+	} else {
+	  if (!inside(non_rec_langs,secondpt)) {
+	  draw(pic, firstpt--secondpt, backgroundcolor);
+	  }
+	}
+      }
+    }
+  }
+}
+// Connect points in P to other points in P, on top of all other connections
+for (int i=0; i<numpts; ++i) {
+  pair firstpt = pts[i];
+  if (inside(p_langs,firstpt)) {
+    for (int j=0; j<numpts; ++j) {
+      if (i != j) {
+	pair secondpt = pts[j];
+	if (inside(p_langs,secondpt)) {
+	  draw(pic, firstpt--secondpt, highlightcolor);
+	}
+      }
+    }
+  }
+}
+
+// Draw the boundary of P
+draw(pic, P_arc, base_region_pen);
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+// Label them
+real label_x = -0.70*UNIVERSE_WD;
+real label_y = 0.68*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][r]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),W); 
+
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.225*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
 
 
+// Draw points
+for(int i=0; i<pts.length; ++i){
+  filldraw(pic, make_pt_path(pts[i]), boldcolor, fillpen=white);
+} 
 
-
-
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

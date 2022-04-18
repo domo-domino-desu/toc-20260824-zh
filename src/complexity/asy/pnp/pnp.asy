@@ -2014,28 +2014,59 @@ fill(pic,NP_area,backgroundcolor+gray(0.1));
 path p_area = buildcycle(P_arc,UNIVERSE);
 fill(pic,p_area,backgroundcolor);
 
-// Draw
+// Have NP hard area fade out near rec boundary
+path NP_hard_area = buildcycle(subpath(UNIVERSE,0,2),rec_arc,NP_hard_arc);
+real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
+pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
+radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
+	                     white,NP_hard_min,0.45*UNIVERSE_HT);
+
+// Color NP complete area highlight color
+path NP_complete_area = buildcycle(NP_hard_arc,NP_arc);
+fill(pic,NP_complete_area,backgroundcolor+highlightcolor);
+
+// Draw region boundaries
 draw(pic, NP_hard_arc, base_region_pen);
 draw(pic, NP_arc, base_region_pen);
 draw(pic, P_arc, base_region_pen);
 // (note that we cover the stubs below)
 
 // Put in the P line with bars and label it
-real label_x = 0.65*UNIVERSE_WD;
+real label_x = 0.55*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
 label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
 
 // Put in the NP line with bars and label it
-real label_x = -0.65*UNIVERSE_WD;
+real label_x = 0.9*UNIVERSE_WD;
 real label_y = 0.325*UNIVERSE_HT;
-path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
+path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{NP}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][l]{\scriptsize \probname{NP}}",(label_x,0.5*label_y),E); 
+
+// Put in the NP hard line with bars and label it
+real label_x = -0.65*UNIVERSE_WD;
+real label_y_top = 0.725*UNIVERSE_HT;
+real label_y_bot = 0.275*UNIVERSE_HT;
+path np_halfbar = halfbar((label_x,label_y_top)--(label_x,label_y_bot),(0.5*WHISKER_WD,0));
+draw(pic,np_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][r]{\scriptsize \probname{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W); 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
+
+
+// Locate NP Complete
+pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);
+// path NP_complete_tag = np_complete{(-1,-0.5)}
+//                        .. tension 1.6 .. np_complete+(-0.40*UNIVERSE_WD,-0.225*UNIVERSE_HT)
+//                        .. tension 0.8 .. np_complete+(-0.5*UNIVERSE_WD,-0.200*UNIVERSE_HT)
+//                        .. tension 1.2 .. {W}(np_complete+(-0.6*UNIVERSE_WD,-0.175*UNIVERSE_HT));
+path NP_complete_tag = np_complete{(-1,-0.1)} .. {W}(np_complete+(-0.45*UNIVERSE_WD,-0.175*UNIVERSE_HT));
+draw(pic,NP_complete_tag,THINPEN);
+label(pic,"{\scriptsize $\NP$ complete}",np_complete+(-0.45*UNIVERSE_WD,-0.17*UNIVERSE_HT),W); 
+
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

@@ -1998,6 +1998,8 @@ real[] hard_arc_times = intersect(NP_hard_arc_full,rec_arc);
 //path NP_hard_arc = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.5){(0.5,1.0)}..(point(NP_arc,0.5).x+0.20*UNIVERSE_WD,0.8*UNIVERSE_HT);
 path NP_hard_arc = subpath(NP_hard_arc_full, 0, hard_arc_times[0]);
 
+
+
 // .............NP hard ...............
 picture pic;
 int picnum=7;
@@ -2087,6 +2089,12 @@ path p_langs = buildcycle(P_arc,UNIVERSE);
 
 // pts is an array of points from figure number 0.
 // Draw edges
+// seed the random number generator;
+//   If seconds() then uncomment to show on screen to save the number for later
+// int srand_seed = seconds();
+// write(format("PNP.ASY: srand_seed for edges is %d",srand_seed));
+int srand_seed = 1650318522;
+srand(srand_seed); 
 
 int numedges = floor(numpts/2);
 for (int i=0; i<numedges; ++i) {
@@ -2097,7 +2105,9 @@ for (int i=0; i<numedges; ++i) {
   if (inside(p_langs,firstpt) && inside(p_langs,secondpt)) {
       draw(pic, firstpt--secondpt, highlightcolor);
   } else {
-    if (!inside(non_rec_langs,firstpt) && !inside(non_rec_langs,secondpt)) {
+    if (!inside(non_rec_langs,firstpt)
+	&& !inside(non_rec_langs,secondpt)
+	&& unitrand() < 0.4) {
       draw(pic, firstpt--secondpt, backgroundcolor);
     }
   }
@@ -2162,6 +2172,94 @@ for(int i=0; i<pts.length; ++i){
 } 
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............. Exercise to locate languages ...............
+picture pic;
+int picnum=12;
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+
+// Fill before draw
+path NP_area = buildcycle(NP_arc,P_arc,UNIVERSE);
+fill(pic,NP_area,backgroundcolor+gray(0.1));
+
+// Fill before draw
+path p_area = buildcycle(P_arc,UNIVERSE);
+fill(pic,p_area,backgroundcolor);
+
+// Have NP hard area fade out near rec boundary
+path NP_hard_area = buildcycle(subpath(UNIVERSE,0,2),rec_arc,NP_hard_arc);
+real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
+pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
+radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
+	                     white,NP_hard_min,0.45*UNIVERSE_HT);
+
+// Color NP complete area highlight color
+path NP_complete_area = buildcycle(NP_hard_arc,NP_arc);
+fill(pic,NP_complete_area,backgroundcolor+highlightcolor);
+
+// Draw region boundaries
+draw(pic, NP_hard_arc, base_region_pen);
+draw(pic, NP_arc, base_region_pen);
+draw(pic, P_arc, base_region_pen);
+draw(pic, rec_arc, base_region_pen);
+draw(pic, re_arc, base_region_pen);
+// (note that we cover the stubs at end)
+
+// Put in the P line with bars and label it
+real label_x = 0.55*UNIVERSE_WD;
+real label_y = 0.225*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+
+// Put in the NP line with bars and label it
+real label_x = 0.9*UNIVERSE_WD;
+real label_y = 0.325*UNIVERSE_HT;
+path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+draw(pic,np_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \probname{NP}}",(label_x,0.5*label_y),E); 
+
+// Put in the NP hard line with bars and label it
+real label_x = -0.65*UNIVERSE_WD;
+real label_y_top = 0.68*UNIVERSE_HT;
+real label_y_bot = 0.275*UNIVERSE_HT;
+path np_halfbar = halfbar((label_x,label_y_top)--(label_x,label_y_bot),(0.5*WHISKER_WD,0));
+draw(pic,np_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][r]{\scriptsize \probname{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W);
+
+// Rec label
+real label_x = -1.45*UNIVERSE_WD;
+real label_y = 0.68*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][r]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),W); 
+
+// RE label
+real label_x = -1.9*UNIVERSE_WD;
+real label_y = 0.77*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \probname{RE}}",(label_x,0.5*label_y),W); 
+
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+// Locate NP Complete, make a path to the tag
+// pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);
+// path NP_complete_tag = np_complete{(-1,-0.1)} .. {W}(np_complete+(-0.45*UNIVERSE_WD,-0.175*UNIVERSE_HT));
+// draw(pic,NP_complete_tag,THINPEN);
+// label(pic,"{\scriptsize $\NP$ complete}",np_complete+(-0.45*UNIVERSE_WD,-0.17*UNIVERSE_HT),W); 
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

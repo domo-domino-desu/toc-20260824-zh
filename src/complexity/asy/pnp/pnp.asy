@@ -1990,13 +1990,12 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // 
 
 // NP hard arc
-// Make longer arc, then cut it off at intersection with rec_arc
-path NP_hard_arc_full = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.5){(0.5,1.0)}..(point(NP_arc,0.5).x+0.20*UNIVERSE_WD,0.8*UNIVERSE_HT);
-real[] hard_arc_times = intersect(NP_hard_arc_full,rec_arc);
-// write(format("first time is %f", hard_arc_times[0]));
-// write(format("  second time is %f", hard_arc_times[1]));
-//path NP_hard_arc = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.5){(0.5,1.0)}..(point(NP_arc,0.5).x+0.20*UNIVERSE_WD,0.8*UNIVERSE_HT);
-path NP_hard_arc = subpath(NP_hard_arc_full, 0, hard_arc_times[0]);
+// Make longer arc, then cut it off at intersection with UNIVERSE
+path NP_hard_arc_full = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.5){(0.5,1.0)}..(point(NP_arc,0.5).x+0.125*UNIVERSE_WD,UNIVERSE_HT);
+real[][] hard_arc_times = intersections(NP_hard_arc_full,subpath(UNIVERSE,0,3));
+// write(format("first time is %f", hard_arc_times[1][0]));
+// write(format("  second time is %f", hard_arc_times[1][1]));
+path NP_hard_arc = subpath(NP_hard_arc_full, 0, hard_arc_times[1][0]);
 
 
 
@@ -2017,11 +2016,13 @@ path p_area = buildcycle(P_arc,UNIVERSE);
 fill(pic,p_area,backgroundcolor);
 
 // Have NP hard area fade out near rec boundary
-path NP_hard_area = buildcycle(subpath(UNIVERSE,0,2),rec_arc,NP_hard_arc);
+// path NP_hard_area = buildcycle(subpath(UNIVERSE,0,2),rec_arc,NP_hard_arc);
+path NP_hard_area = buildcycle(subpath(UNIVERSE,0,3),NP_hard_arc_full);
 real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
 pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
-radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
-	                     white,NP_hard_min,0.45*UNIVERSE_HT);
+// radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
+// 	                     white,NP_hard_min,0.45*UNIVERSE_HT);
+fill(pic,NP_hard_area,backgroundcolor);
 
 // Color NP complete area highlight color
 path NP_complete_area = buildcycle(NP_hard_arc,NP_arc);
@@ -2049,7 +2050,7 @@ label(pic,"\makebox[\width][l]{\scriptsize \probname{NP}}",(label_x,0.5*label_y)
 
 // Put in the NP hard line with bars and label it
 real label_x = -0.65*UNIVERSE_WD;
-real label_y_top = 0.725*UNIVERSE_HT;
+real label_y_top = 1.0*UNIVERSE_HT;
 real label_y_bot = 0.275*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y_top)--(label_x,label_y_bot),(0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);
@@ -2109,6 +2110,10 @@ for (int i=0; i<numedges; ++i) {
 	&& !inside(non_rec_langs,secondpt)
 	&& unitrand() < 0.4) {
       draw(pic, firstpt--secondpt, backgroundcolor);
+    } else {  // non recursive languages
+      if (unitrand() < 0.95) {
+        draw(pic, firstpt--secondpt, backgroundcolor);
+      }
     }
   }
 }
@@ -2123,15 +2128,15 @@ for (int i=0; i<numpts; ++i) {
 	if (inside(p_langs,secondpt)) {
 	  draw(pic, firstpt--secondpt, highlightcolor);
 	} else {
-	  if (!inside(non_rec_langs,secondpt)) {
+	  // if (!inside(non_rec_langs,secondpt)) {
 	  draw(pic, firstpt--secondpt, backgroundcolor);
-	  }
+	  // }
 	}
       }
     }
   }
 }
-// Connect points in P to other points in P, on top of all other connections
+// Connect points in P to other points in P, redrawn, over all other connections
 for (int i=0; i<numpts; ++i) {
   pair firstpt = pts[i];
   if (inside(p_langs,firstpt)) {
@@ -2192,11 +2197,12 @@ path p_area = buildcycle(P_arc,UNIVERSE);
 fill(pic,p_area,backgroundcolor);
 
 // Have NP hard area fade out near rec boundary
-path NP_hard_area = buildcycle(subpath(UNIVERSE,0,2),rec_arc,NP_hard_arc);
 real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
 pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
-radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
-	                     white,NP_hard_min,0.45*UNIVERSE_HT);
+path NP_hard_area = buildcycle(subpath(UNIVERSE,0,3),NP_hard_arc_full);
+// radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
+// 	                     white,NP_hard_min,0.45*UNIVERSE_HT);
+fill(pic,NP_hard_area,backgroundcolor);
 
 // Color NP complete area highlight color
 path NP_complete_area = buildcycle(NP_hard_arc,NP_arc);
@@ -2226,7 +2232,7 @@ label(pic,"\makebox[\width][l]{\scriptsize \probname{NP}}",(label_x,0.5*label_y)
 
 // Put in the NP hard line with bars and label it
 real label_x = -0.65*UNIVERSE_WD;
-real label_y_top = 0.68*UNIVERSE_HT;
+real label_y_top = 1.0*UNIVERSE_HT;
 real label_y_bot = 0.275*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y_top)--(label_x,label_y_bot),(0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);

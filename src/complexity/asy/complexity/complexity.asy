@@ -173,12 +173,12 @@ int picnum = 3;
 picture pic;
 setdefaultgraphstyles();
 
-node v00=ncircle("$v_{0,0}$", ns_bleachedbg),
-  v01=ncircle("$v_{0,1}$", ns_bleachedbg),
-  v10=ncircle("$v_{1,0}$", ns_bleachedbold),
-  v11=ncircle("$v_{1,1}$", ns_bleachedbold),
-  v20=ncircle("$v_{2,0}$", ns_light),
-  v21=ncircle("$v_{2,1}$", ns_light);
+node v00=ncircle("$v_{0,0}$"),
+  v01=ncircle("$v_{0,1}$"),
+  v10=ncircle("$v_{1,0}$"),
+  v11=ncircle("$v_{1,1}$"),
+  v20=ncircle("$v_{2,0}$"),
+  v21=ncircle("$v_{2,1}$");
 // node v00=ncircle("\nodebox{$v_{0,0}$}", ns_bleachedbg),
 //   v01=ncircle("\nodebox{$v_{0,1}$}", ns_bleachedbg),
 //   v10=ncircle("\nodebox{$v_{1,0}$}", ns_bleachedbold),
@@ -190,10 +190,10 @@ node v00=ncircle("$v_{0,0}$", ns_bleachedbg),
 real u=1.5cm;
 real v=0.7*u;
 hlayout(0.7*u, v00, v01);
-v10.pos = new_node_pos(v00,  -135, -1*v);
-v11.pos = new_node_pos(v10,  -45, -0.7*v);
-v20.pos = new_node_pos(v01,  -45, -1*v);
-v21.pos = new_node_pos(v20,  -135, -0.7*v);
+v10.pos = new_node_pos(v00,  -135, -0.7*v);
+v11.pos = new_node_pos(v10,  -55, -0.7*v);
+v20.pos = new_node_pos(v01,  -45, -0.7*v);
+v21.pos = new_node_pos(v20,  -120, -0.7*v);
 
 // draw edges
 draw(pic,

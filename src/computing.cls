@@ -579,14 +579,14 @@
 
 % ............ appendix ..............
 \renewcommand{\appendix}{%
-  \part{Appendix}
+  \part{Appendices}
   \addcontentsline{toc}{chapter}{Appendix}
   \pagestyle{endmatter}
   \setcounter{section}{0}
   \renewcommand{\thesection}{\Alph{section}}
   \titleformat{\section}[hang]
      {\normalfont\scshape}
-     {\makebox[0em][r]{Appendix \thesection.\hspace*{1em}}}
+     {\makebox[0em][r]{Appendix \thesection\hspace*{1em}}}
      {0em}
      {\Large\bfseries}
   \titlespacing*{\section}

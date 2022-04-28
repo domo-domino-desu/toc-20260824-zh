@@ -3037,6 +3037,54 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======================== Linear programming =============
+int picnum = 40;
+picture pic;
+
+import graph;
+unitsize(pic, 0.35cm,0);
+
+real xmin = -0.75;
+real xmax = 8.75;
+real ymin = -0.75;
+real ymax = 5.75;
+
+real f1(real x) {return (8-(4/3)*x);}
+real f2(real x) {return (4);}
+real F2(real x) {return ((2-x)/2);}
+real F4(real x) {return ((4-x)/2);}
+real F6(real x) {return ((6-x)/2);}
+real F8(real x) {return ((8-x)/2);}
+real F10(real x) {return ((10-x)/2);}
+
+path feasible_region = (0,0)--(0,4)--(3,4)--(6,0)--cycle;
+fill(pic,feasible_region,backgroundcolor);
+
+xaxis(pic, Label("$x_0$",align=2*NE), YZero,
+      xmin=xmin, xmax=xmax,
+      RightTicks("%", Step=5, step=1),Arrow(TeXHead));
+yaxis(pic, Label("$x_1$",align=NE), XZero,
+      ymin=ymin,ymax=ymax,
+      LeftTicks("%", Step=5, step=1),Arrow(TeXHead));
+
+draw(pic, graph(f1, 2.5, 6.5));
+draw(pic, graph(f2, 0, 4));
+
+draw(pic, graph(F2, xmin, 3), highlightcolor);
+label(pic, "{\scriptsize $C = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
+draw(pic, graph(F4, xmin, 5), highlightcolor);
+label(pic, "{\scriptsize $C = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
+draw(pic, graph(F6, xmin, 7), highlightcolor);
+label(pic, "{\scriptsize $C = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
+draw(pic, graph(F8, xmin, 7), highlightcolor);
+label(pic, "{\scriptsize $C = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
+// draw(pic, graph(F10, xmin, 6), highlightcolor);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 
 

@@ -3060,7 +3060,7 @@ real F10(real x) {return ((10-x)/2);}
 path feasible_region = (0,0)--(0,4)--(3,4)--(6,0)--cycle;
 fill(pic,feasible_region,backgroundcolor);
 
-xaxis(pic, Label("$x_0$",align=3*E), YZero,
+xaxis(pic, Label("$x_0$",align=1*SE), YZero,
       xmin=xmin, xmax=xmax,
       RightTicks("%", Step=5, step=1),Arrow(TeXHead));
 yaxis(pic, Label("$x_1$",align=NE), XZero,
@@ -3071,13 +3071,13 @@ draw(pic, graph(f1, 2.5, 6.5));
 draw(pic, graph(f2, 0, 4));
 
 draw(pic, graph(F2, xmin, 3), highlightcolor);
-label(pic, "{\scriptsize $C = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
+label(pic, "{\scriptsize $F = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F4, xmin, 5), highlightcolor);
-// label(pic, "{\scriptsize $C = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F6, xmin, 7), highlightcolor);
-// label(pic, "{\scriptsize $C = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F8, xmin, 7), highlightcolor);
-// label(pic, "{\scriptsize $C = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F10, xmin, 6), highlightcolor);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -3105,7 +3105,7 @@ real F10(real x) {return ((10-x)/2);}
 path feasible_region = (0,0)--(0,4)--(3,4)--(6,0)--cycle;
 fill(pic,feasible_region,backgroundcolor);
 
-xaxis(pic, Label("$x_0$",align=3*E), YZero,
+xaxis(pic, Label("$x_0$",align=1*SE), YZero,
       xmin=xmin, xmax=xmax,
       RightTicks("%", Step=5, step=1),Arrow(TeXHead));
 yaxis(pic, Label("$x_1$",align=NE), XZero,
@@ -3116,13 +3116,13 @@ draw(pic, graph(f1, 2.5, 6.5));
 draw(pic, graph(f2, 0, 4));
 
 // draw(pic, graph(F2, xmin, 3), highlightcolor);
-// label(pic, "{\scriptsize $C = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
 draw(pic, graph(F4, xmin, 5), highlightcolor);
-label(pic, "{\scriptsize $C = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
+label(pic, "{\scriptsize $F = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F6, xmin, 7), highlightcolor);
-// label(pic, "{\scriptsize $C = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F8, xmin, 7), highlightcolor);
-// label(pic, "{\scriptsize $C = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F10, xmin, 6), highlightcolor);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -3151,7 +3151,7 @@ real F10(real x) {return ((10-x)/2);}
 path feasible_region = (0,0)--(0,4)--(3,4)--(6,0)--cycle;
 fill(pic,feasible_region,backgroundcolor);
 
-xaxis(pic, Label("$x_0$",align=3*E), YZero,
+xaxis(pic, Label("$x_0$",align=1*SE), YZero,
       xmin=xmin, xmax=xmax,
       RightTicks("%", Step=5, step=1),Arrow(TeXHead));
 yaxis(pic, Label("$x_1$",align=NE), XZero,
@@ -3162,13 +3162,13 @@ draw(pic, graph(f1, 2.5, 6.5));
 draw(pic, graph(f2, 0, 4));
 
 // draw(pic, graph(F2, xmin, 3), highlightcolor);
-// label(pic, "{\scriptsize $C = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F4, xmin, 5), highlightcolor);
-// label(pic, "{\scriptsize $C = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
 draw(pic, graph(F6, xmin, 7), highlightcolor);
-label(pic, "{\scriptsize $C = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
+label(pic, "{\scriptsize $F = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F8, xmin, 7), highlightcolor);
-// label(pic, "{\scriptsize $C = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F10, xmin, 6), highlightcolor);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -3198,7 +3198,7 @@ real F10(real x) {return ((10-x)/2);}
 path feasible_region = (0,0)--(0,4)--(3,4)--(6,0)--cycle;
 fill(pic,feasible_region,backgroundcolor);
 
-xaxis(pic, Label("$x_0$",align=3*E), YZero,
+xaxis(pic, Label("$x_0$",align=1*SE), YZero,
       xmin=xmin, xmax=xmax,
       RightTicks("%", Step=5, step=1),Arrow(TeXHead));
 yaxis(pic, Label("$x_1$",align=NE), XZero,
@@ -3209,13 +3209,13 @@ draw(pic, graph(f1, 2.5, 6.5));
 draw(pic, graph(f2, 0, 4));
 
 // draw(pic, graph(F2, xmin, 3), highlightcolor);
-// label(pic, "{\scriptsize $C = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F4, xmin, 5), highlightcolor);
-// label(pic, "{\scriptsize $C = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F6, xmin, 7), highlightcolor);
-// label(pic, "{\scriptsize $C = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
+// label(pic, "{\scriptsize $F = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
 draw(pic, graph(F8, xmin, 7), highlightcolor);
-label(pic, "{\scriptsize $C = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
+label(pic, "{\scriptsize $F = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F10, xmin, 6), highlightcolor);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -3234,6 +3234,9 @@ real xmax = 8.75;
 real ymin = -0.75;
 real ymax = 5.75;
 
+real[] xticks_at = {5};
+real[] yticks_at = {5};
+
 real f1(real x) {return (8-(4/3)*x);}
 real f2(real x) {return (4);}
 real F2(real x) {return ((2-x)/2);}
@@ -3245,7 +3248,7 @@ real F10(real x) {return ((10-x)/2);}
 path feasible_region = (0,0)--(0,4)--(3,4)--(6,0)--cycle;
 fill(pic,feasible_region,backgroundcolor);
 
-xaxis(pic, Label("$x_0$",align=3*E), YZero,
+xaxis(pic, Label("$x_0$",align=1*SE), YZero,
       xmin=xmin, xmax=xmax,
       RightTicks("%", Step=5, step=1),Arrow(TeXHead));
 yaxis(pic, Label("$x_1$",align=2*NE), XZero,
@@ -3256,14 +3259,25 @@ draw(pic, graph(f1, 2.5, 6.5));
 draw(pic, graph(f2, 0, 4));
 
 draw(pic, graph(F2, xmin, 3), highlightcolor);
-label(pic, "{\scriptsize $C = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
+label(pic, "{\scriptsize $F = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
 draw(pic, graph(F4, xmin, 5), highlightcolor);
-label(pic, "{\scriptsize $C = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
+label(pic, "{\scriptsize $F = 4$}", (xmin, F4(xmin)), align=W, highlightcolor);
 draw(pic, graph(F6, xmin, 7), highlightcolor);
-label(pic, "{\scriptsize $C = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
+label(pic, "{\scriptsize $F = 6$}", (xmin, F6(xmin)), align=W, highlightcolor);
 draw(pic, graph(F8, xmin, 7), highlightcolor);
-label(pic, "{\scriptsize $C = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
+label(pic, "{\scriptsize $F = 8$}", (xmin, F8(xmin)), align=W, highlightcolor);
 // draw(pic, graph(F10, xmin, 6), highlightcolor);
+xaxis(pic, Label("",align=1*SE),
+      YZero,
+      xmin=xmin, xmax=xmax,
+      RightTicks(OmitFormat("\raisebox{1ex}{\tiny $ %.4g$}", 0,4), Step=5, step=1),
+        Arrow(TeXHead),
+      above=true);
+yaxis(pic, Label("$x_1$",align=2*NE), XZero,
+      ymin=ymin,ymax=ymax,
+      LeftTicks(OmitFormat("\raisebox{0.5ex}{\tiny $ %.4g$}", 0,4), Step=5, step=1),
+         Arrow(TeXHead),
+      above=true);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

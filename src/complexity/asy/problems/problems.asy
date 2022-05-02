@@ -3258,6 +3258,10 @@ yaxis(pic, Label("$x_1$",align=2*NE), XZero,
 draw(pic, graph(f1, 2.5, 6.5));
 draw(pic, graph(f2, 0, 4));
 
+// check that the intersection is (3,4)
+// dot(pic,(3,4),red);
+// draw(pic, (3,-1)--(3,5),red);
+
 draw(pic, graph(F2, xmin, 3), highlightcolor);
 label(pic, "{\scriptsize $F = 2$}", (xmin, F2(xmin)), align=W, highlightcolor);
 draw(pic, graph(F4, xmin, 5), highlightcolor);
@@ -3278,6 +3282,7 @@ yaxis(pic, Label("$x_1$",align=2*NE), XZero,
       LeftTicks(OmitFormat("\raisebox{0.5ex}{\tiny $ %.4g$}", 0,4), Step=5, step=1),
          Arrow(TeXHead),
       above=true);
+
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

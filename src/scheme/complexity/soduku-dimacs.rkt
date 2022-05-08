@@ -39,7 +39,7 @@
   (let ([a-value (+ (* 81 (- (abs variable-value) 1))
                     (* 9 (- row-number 1))
                     (- column-number 1)
-                    1)])   ;; add 1 because DIMACS doesn't allow variable 0 (uses 0 to terminate clauses)
+                    1)])   ;; add 1 because DIMACS uses 0 to terminate clauses
         (if (negative? variable-value)
             (* -1 a-value)
             a-value)))
@@ -140,8 +140,8 @@
 
 ;; CLAUSES  The list of clauses.
 
-;; INITIAL-CLAUSES  The given layout of the board.  Each row is a list with a triple list: row number,
-;; column number, integer.
+;; INITIAL-CLAUSES  The given layout of the board.  Each row is a list with a
+;; triple: row number, column number, integer.
 (define INITIAL-CLAUSES
   (list (list '(1 3 9)) ; there is a 9 in position (1,3)
         (list '(1 8 1))
@@ -185,12 +185,14 @@
 
 ;; CLAUSES  The list of all clauses, including those auto generated.
 (define CLAUSES
-  (append INITIAL-CLAUSES (entry-restrictions) (row-restrictions) (column-restrictions) (box-restrictions)))
+  (append INITIAL-CLAUSES (entry-restrictions)
+          (row-restrictions) (column-restrictions) (box-restrictions)))
 
 (define FILE-PREAMBLE
   (list (format "c ~a\n" FILENAME)
         "c DIMACS format file for SAT solver\n"
-        (format "c ~a Jim Hefferon, hefferon.net.  Public Domain.\n" (date->string (current-date)))
+        (format "c ~a Jim Hefferon, hefferon.net.  Public Domain.\n"
+                (date->string (current-date)))
         (format "p cnf ~a ~a\n" (* 9 9 9) (length CLAUSES))))
   
 (define FILE-LINES

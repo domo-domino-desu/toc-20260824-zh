@@ -4,8 +4,6 @@
 ;; (require SAT)
 (require "soduku-dimacs.rkt")
 
-;;(define SOLUTION (solve/model "soduku.cnf"))
-
 (define (solution-triples solution)
   (map varnum->triple (hash-keys solution)))
 

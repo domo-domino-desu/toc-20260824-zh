@@ -1448,3 +1448,97 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== x^2 and x^(lg x) ======
+picture pic;
+int picnum = 20;
+
+size(pic,4.5cm);
+
+real f(real x) {
+  return x**3;
+}
+pair F(real x) {
+  return (x,f(x));
+}
+
+// log base 2
+real lg(real x) {
+  return(log10(x)/log10(2));
+}
+
+// causes a runtime overflow 
+// real g(real x) {
+//   return x**(lg(x));
+// }
+real g(real x) {
+  return x**(4);
+}
+pair G(real x) {
+  return (x,g(x));
+}
+
+real maxnum(real x, real y) {
+  if (x>=y) {
+    return x;
+  }
+  return y;
+}
+
+// limits
+real xmin=0;  
+real xmax=22;
+real ymin=0;
+real ymax=maxnum(f(20),g(20));
+
+// scale
+real scalefactor = (1.4/1)*(xmax/ymax);
+scale(pic,Linear,Linear(scalefactor));
+
+// xaxis  Draw axis without arrow, then draw without ticks and the arrow
+//  far enough out to not hit a tick
+xaxis(pic,YZero,
+      xmin=xmin, xmax=xmax+0.9,
+      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=5, step=1,
+		 beginlabel=false, endlabel=true,
+		 Size=axis_tick_size, size=0.5*axis_tick_size,
+		 extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// yequals(pic, 0,   
+// 	xmin=0, xmax=xmax+1.5,
+//         p=AXISPEN,
+// 	ticks=NoTicks,
+//         arrow=Arrow(TeXHead,axis_arrow_size));
+// yaxis
+yaxis(pic, XZero,
+      ymin=ymin, ymax=ymax+7000,
+      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=100000, step=10000,
+		beginlabel=false, endlabel=true,
+		Size=axis_tick_size, size=0.5*axis_tick_size,
+		extend=false, begin=false),
+      p=AXISPEN,
+      arrow=Arrow(TeXHead,axis_arrow_size));
+// xequals(pic, 0,   
+// 	ymin=0, ymax=ymax+15,
+//         p=AXISPEN,
+// 	ticks=NoTicks,
+//         arrow=Arrow(TeXHead,axis_arrow_size));
+
+dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
+pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
+for (int i=ceil(xmin); i<=floor(xmax); ++i) {
+  if (remainder(i,5)==0) {
+    dot(pic, Scale(pic,G(i)), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+  } else {
+    dot(pic, Scale(pic,F(i)), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
+  }
+}
+// label(pic,"$f$",Scale(pic,(20,500)), 3W);
+// label(pic,"$g$",Scale(pic,(17,300)), 3E);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+

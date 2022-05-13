@@ -3290,6 +3290,46 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======================== TSP =============
+
+int picnum = 45;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{$v_0$}"),
+  v1=ncircle("\nodebox{$v_1$}"),
+  v2=ncircle("\nodebox{$v_2$}"),
+  v3=ncircle("\nodebox{$v_3$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.8*u;
+defaultlayoutskip=u;
+
+hlayout(1*u, v0, v1);
+vlayout(1*v, v0, v2);
+hlayout(1*u, v2, v3);
+
+// draw edges
+draw(pic,
+     (v0--v1).l("3").style("leftside"),
+     (v0--v2).l("2"),
+     (v0--v3).l(Label("7",Relative(0.2))),
+     (v1--v2).l(Label("1",Relative(0.2))).style("leftside"),
+     (v1--v3).l("5").style("leftside"),
+     (v2--v3).l("4")
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 
 

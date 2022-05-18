@@ -1,0 +1,333 @@
+\section{Strings}\label{sec:Strings}\index{string|(}\thispagestyle{empty}
+
+An \definend{alphabet}\index{alphabet} 
+is a nonempty and finite set of 
+\definend{symbols}\index{symbol} 
+(sometimes called \definend{tokens}).\index{token}
+We write symbols in a distinct typeface, as in \str{1} or \str{a},
+because the alternative of quoting them would be 
+clunky.\footnote{%
+  We give them a distinct look 
+  to distinguish the symbol `\protect\str{a}'
+  from the variable `$a$', 
+  so that we can tell ``let $x=\str{a}$'' 
+  apart from 
+  ``let $x=a$.'' 
+  Symbols are not variables\Dash they don't hold a value,
+  they are themselves a value.}
+%<*def:String>
+A \definend{string}\index{string} 
+or \definend{word}\index{word|see {string}}
+over an alphabet is a finite sequence of elements from that alphabet.
+The string with no elements is 
+the \citetext{\definend{empty string}, denoted~$\emptystring$}{Possibly 
+  $\emptystring$ came as an abbreviation for `empty'.   
+  Some authors use $\lambda$, possibly from the German word for 
+  `empty', \textit{leer}.  \autocite{csse:Siren}}.\index{string!empty}\index{empty string@empty string, $\emptystring$}
+%</def:String>
+
+One potentially surprising aspect of a symbol is that 
+it may contain more than one letter.
+For instance, a programming language
+may have \str{if} as a symbol, meaning that it is indecomposable
+into separate letters.
+Another example is that the Racket alphabet 
+contains the symbols \str{or} and \str{car}, as well as 
+allowing variable names such as \str{x}, or \str{lastname}.
+An example of a string is $\str{(or a ready)}$, which is 
+a sequence of five alphabet elements,
+$\sequence{\str{(}, \str{or}, \str{a}, \str{ready},\str{)}}$.
+
+%<*discussion:AlphSymbol>
+Traditionally, we denote an alphabet with
+the Greek letter $\Sigma$.
+In this book we will name strings with lower case Greek letters 
+and denote the  
+items in the string with the associated lower case roman letter, as in
+$\sigma=\sequence{s_0,\ldots s_{n-1}}$ %
+and $\tau=\sequence{t_0,\ldots t_{m-1}}$.
+%</discussion:AlphSymbol>
+\label{def:StringLength}
+%<*def:StringLength>
+The \definend{length} of the string $\sigma$, 
+\definend{$\lh{\sigma}$},\index{string!length}\index{length of a string} 
+is the number of symbols that it contains,~$n$. 
+In particular, 
+the length of the empty string is $\lh{\emptystring}=0$.
+%</def:StringLength>
+
+In place of $s_i$ we sometimes write $\sigma[i]$.
+A convenience of this form is that 
+we use $\sigma[-1]$ for the final character, 
+$\sigma[-2]$ for the one before it, etc.
+We also write $\sigma[i\mathord{:} j]$ 
+for the substring between terms~$i$ and~$j$, 
+including the $i$-th term but not the $j$-th,
+and we write $\sigma[i\mathord{:}]$ 
+for the tail substring that starts with term~$i$.
+% Note that the subscript indices are set up so that if
+% if $i=0$ or $j=0$ then this gives the empty string, so we take $i,j\in\N$.
+
+The notations such as diamond brackets and commas are ungainly. 
+%<*dis:OmitCommas>
+For small-scale examples and exercises, we use the shortcut of 
+working with
+alphabets of single-character symbols and then writing strings
+by omitting the brackets and commas.
+That is, we write $\sigma=\str{abc}$ 
+instead of $\sequence{\str{a},\str{b},\str{c}}$.\footnote{%
+  To see why when we drop the commas we want the alphabet to consist of 
+  single-character symbols, consider
+  $\Sigma=\set{\str{a}, \str{aa}}$ 
+  and the string $\str{aaa}$.
+  Without the commas this string is ambiguous:~it could
+  mean $\sequence{\str{a},\str{aa}}$, or 
+  $\sequence{\str{aa},\str{a}}$, or
+  $\sequence{\str{a},\str{a}, \str{a}}$.} 
+%</dis:OmitCommas>
+This convenience 
+comes with the disadvantage that without the diamond brackets  
+the empty string is just nothing, which is why 
+we use the separate symbol~$\emptystring$.\footnote{%
+  Omitting the 
+  diamond brackets and commas also blurs the distinction between a symbol 
+  and a one-symbol string, between \str{a} and $\sequence{\str{a}}$.
+  However, dropping the brackets it is so convenient that we accept this
+  disadvantage.}
+
+%<*def:Bitstrings>
+The alphabet consisting of the zero and one characters is
+\definend{$\B=\set{\str{0},\str{1}}$}.
+Strings over this alphabet are  \definend{bitstrings}\index{bitstring} 
+or \definend{bit strings}.\footnote{%
+  Some authors consider infinite bitstrings
+  but ours will always be finite.}\index{bit string|see{bitstring}}
+%</def:Bitstrings>
+
+%<*def:KleeneStar>
+Where~$\Sigma$ is an alphabet,
+for $k\in\N$
+the set of length~$k$ strings over that alphabet is 
+\definend{$\Sigma^k$}.
+The set of strings over $\Sigma$ of any (finite) length is 
+\definend{$\kleenestar{\Sigma}=\cup_{k\in\N}\Sigma^k$}.
+The asterisk symbol is the \definend{Kleene star},\index{Kleene star} 
+read aloud as ``star.''
+%</def:KleeneStar>
+
+Strings are simple, so there are only a few operations.
+%<*def:StringOps>
+Let $\sigma=\sequence{s_0\ldots s_{n-1}}$ and 
+$\tau=\sequence{t_0,\ldots t_{m-1}}$ be strings over an
+alphabet~$\Sigma$.
+The 
+\definend{concatenation $\sigma\concat\tau$} or \definend{$\sigma\tau$}\index{concatenation of strings}\index{string!concatenation}
+appends the second sequence to the 
+first:~$\sigma\concat\tau=\sequence{s_0\ldots s_{n-1},t_0,\ldots t_{m-1}}$.
+\label{def:substring}
+Where
+$\sigma=\tau_0\concat \cdots \concat\tau_{k-1}$ then we say that
+$\sigma$ \definend{decomposes}\index{string!decomposition} 
+into the $\tau$'s and that
+each $\tau_i$ is a 
+\definend{substring}\index{substring}\index{string!substring} 
+of $\sigma$.
+The first substring, $\tau_0$, is a 
+\definend{prefix}\index{prefix of a string}\index{string!prefix} 
+of~$\sigma$.
+The last, $\tau_{k-1}$, is a 
+\definend{suffix}.\index{suffix of a string}\index{string!suffix} 
+
+A 
+\definend{power}\index{power of a string}\index{string!power} 
+or 
+\definend{replication}\index{replication of a string}\index{string!replication} 
+of a string is an
+iterated concatenation with itself, so that $\sigma^2=\sigma\concat\sigma$ 
+and $\sigma^3=\sigma\concat\sigma\concat\sigma$, etc.
+We write $\sigma^1=\sigma$ and $\sigma^0=\emptystring$.
+The 
+\citetext{\definend{reversal $\reversal{\sigma}$}{} of a string}{%
+  The most practical current notion of a string, the Unicode standard, 
+  does not have string reversal.
+  All of the naive ways to reverse a string run into problems for 
+  arbitrary Unicode strings which may contain non-ASCII characters, 
+  combining characters, ligatures, bidirectional text in multiple languages, 
+  and so on. 
+  For example, merely reversing the chars (the Unicode scalar values) 
+  in a string can cause combining marks to become attached to the wrong 
+  characters.
+  Another example is:~how to reverse \str{ab<backspace>ab}?
+  The Unicode Consortium has not gone through the effort to define the
+  reverse of a string because there is no real-world need for it. 
+  (From \url{https://qntm.org/trick}.)}\index{reversal of a string}\index{string!reversal} 
+takes the symbols in reverse 
+order:~$\reversal{\sigma}=\sequence{s_{n-1}, \ldots s_0}$.
+The empty string's reversal is
+$\reversal{\emptystring}=\emptystring$.
+%</def:StringOps>
+
+For example, 
+let $\Sigma=\set{\str{a},\str{b},\str{c}}$ and let
+$\sigma=\str{abc}$ and $\tau=\str{bbaac}$.
+Then the concatenation $\sigma\tau$ is \str{abcbbaac}.
+The third power $\sigma^3$ is \str{abcabcabc},
+and the reversal $\reversal{\tau}$ is \str{caabb}.
+%<*def:Palindrome>
+A string that equals its own reversal is a 
+\definend{palindrome};~examples\index{palindrome}
+are $\alpha=\str{abba}$, $\beta=\str{cdc}$, and $\emptystring$.
+%</def:Palindrome>
+
+
+\begin{exercises}
+\begin{exercise}
+Let $\sigma=\str{10110}$ and $\tau=\str{110111}$ be bit strings.
+Find each.
+\begin{exparts*}
+\item $\sigma\concat \tau$
+\item $\sigma\concat\tau\concat\sigma$
+\item $\reversal{\sigma}$
+\item $\sigma^3$
+\item $\str{0}^3\concat\sigma$ 
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item $\sigma\concat \tau=\str{10110}\concat\str{110111}=\str{10110110111}$.
+\item $\sigma\concat\tau\concat\sigma=
+   \str{10110}\concat\str{110111}\concat\str{10110}=\str{1011011011110110}$
+\item $\reversal{\sigma}=\reversal{\str{10110}}=\str{01101}$
+\item $\sigma^3=\str{10110}\concat\str{10110}\concat\str{10110}
+               =\str{101101011010110}$
+\item $\str{0}^3\concat\sigma=\str{000}\concat\str{10110}=\str{00010110}$ 
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Let the alphabet be $\Sigma=\set{\str{a},\,\str{b},\,\str{c}}$.
+Suppose that $\sigma=\str{ab}$ and $\tau=\str{bca}$.
+Find each.
+\begin{exparts*}
+\item $\sigma\concat\tau$
+\item $\sigma^2\concat\tau^2$
+\item $\reversal{\sigma}\concat\reversal{\tau}$  
+\item $\sigma^3$
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item \str{abbca}    
+\item \str{ababbcabca}
+\item \str{baacb}
+\item \str{ababab}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+
+\begin{exercise}
+Let
+$\lang=\set{\sigma\in\kleenestar{\B}\suchthat 
+   \text{$\lh{\sigma}=4$ and $\sigma$ starts with \str{0}}}$.
+How many elements are in that language?
+\begin{answer}
+There are $2^4=16$ bit strings of length~$4$ and half of them
+start with \str{0}, so there are $8$ strings in the language.   
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Suppose that $\Sigma=\set{\str{a},\,\str{b},\str{c}}$
+and that $\sigma=\str{abcbccbba}$.
+\begin{exparts*}
+\item Is \str{abcb} a prefix of $\sigma$?
+\item Is \str{ba} a suffix?
+\item Is \str{bab} a substring?
+\item Is \emptystring{} a suffix?
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item Yes.
+\item Yes.
+\item No.
+\item Yes.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+What is the relation between $\lh{\sigma}$, $\lh{\tau}$, 
+and $\lh{\sigma\concat\tau}$?
+You must justify your answer.
+\begin{answer}
+Show that the length of a concatenation is the sum of the two lengths:
+$\lh{\sigma\concat\tau}=
+\lh{\sequence{s_0\ldots s_{i-1},t_0,\ldots t_{j-1}}}=i+j=\lh{\sigma}+\lh{\tau}$.
+Proving this by induction is routine.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+The operation of string concatenation follows a simple algebra.
+For each of these, decide if it is true.
+If so, prove it. 
+If not, give a counterexample.
+\begin{exparts*}
+  \item $\alpha\concat\emptystring=\alpha$
+    and $\emptystring\concat\alpha=\alpha$
+  \item $\alpha\concat\beta=\beta\concat\alpha$
+  \item $\reversal{\alpha\concat\beta}=\reversal{\beta}\concat\reversal{\alpha}$
+  \item $\reversal{\reversal{\alpha}}=\alpha$
+  \item $\reversal{\alpha^i}=\alpha^i$ 
+\end{exparts*}
+\end{exercise}
+
+\begin{exercise}
+Show that string concatenation is not commutative, that there are 
+strings $\sigma$ and $\tau$ so that 
+$\sigma\concat\tau\neq\tau\concat\sigma$.
+\begin{answer}
+One example using $\B$ is $\sigma=\sequence{0}$ and $\tau=\sequence{1}$.
+Then $\sigma\concat\tau=\sequence{0,1}$ while
+$\tau\concat\sigma=\sequence{1,0}$.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+In defining decomposition above we have
+`$\sigma=\tau_0\concat \cdots \concat\tau_{n-1}$',
+without parentheses on the right side.
+This takes for granted that 
+the concatenation operation is associative, 
+that no matter how we parenthesize it we get the same string.
+Prove this.
+\hint{} use induction on the number of substrings, $n$.  
+\end{exercise}
+
+\begin{exercise}
+Prove that this constructive definition of string power is equivalent
+to the one above.
+\begin{equation*}
+  \sigma^n =
+    \begin{cases}
+      \emptystring  &\case{if $n=0$}  \\
+       \sigma^{n-1}\concat\sigma &\case{if $n>0$}
+    \end{cases}
+\end{equation*}
+\end{exercise}
+
+% \begin{exercise} \index{Levi's lemma}
+% (Levi's lemma)
+% Prove that for all strings $\alpha,\beta,\gamma,\delta\in\kleenestar{\Sigma}$, 
+% if $\alpha\concat\beta=\gamma\concat\delta$
+% then there exists a string $\sigma$ such that either
+% (1)~$\alpha\concat\sigma=\gamma$ 
+% or (2)~$\alpha=\gamma\concat\sigma$.
+% That is, there is a string in the middle 
+% that can be grouped to one side or the other.
+% \hint{} case~(1) applies when $\lh{\alpha}\leq\lh{\gamma}$.
+% \end{exercise}
+\end{exercises}
+\index{string|)}
+
+\endinput

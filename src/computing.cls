@@ -786,9 +786,9 @@
 %   \end{list}
 % }
 \newenvironment{exercise}{%
-  \Writetofile{\answerbodyfilename}{\@percentchar}
-  \Writetofile{\answerbodyfilename}{\@percentchar\space\showlineno\space is the exercise source}
   \item %
+  \Writetofile{\answerbodyfilename}{\@percentchar}%  Give line number of source, for editing
+  \Writetofile{\answerbodyfilename}{\@percentchar\space\showlineno\space is the exercise source}%
 }{%
 }
 

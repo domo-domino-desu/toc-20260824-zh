@@ -600,6 +600,9 @@ book.pdf : book.tex \
   complexity/complexity.tex \
   appendix/appendix.tex
 	$(LATEX_CMD) book
+	makeindex -s book.ist -p odd book.idx
+	biber book
+	$(LATEX_CMD) book
 
 answers.pdf : book.pdf answers.tex
 	$(LATEX_CMD) answers

@@ -1,21 +1,33 @@
 This is the source material for the textbook *Theory of Computation*
-by Jim Hefferon.   Get a PDF at the book's home page.
+by Jim Hefferon.
 
-The text has more than eight hundred exercises and comes with complete
-answers to each, at the same site.  Also there are the in-class
-slides that I use. And, there are videos on my YouTube channel for
-people who are reading this work on their own; the link is at the above
-site.
+The text covers standard material for an undergraduatge theory
+class: models of computation and in particular Turing machines,
+unsolvability and the Halting problem, Finite State machines
+and regular languages, computational complexity and P vs NP.
+
+There are more than eight hundred exercises, with fully-worked
+answers to each.  There are PDF slides suitable for classroom use.
+And, there are video lectures on my YouTube channel (these are
+particularly useful for those studying the material on their own).
+
+The easiest way to use this work is to get a PDF at the book's home
+page.  See the link below.
+
 
 
 ## Status
 
-This is a draft.  I used it in the springs of 2018-2021, and am using it
-now, in the spring of 2022.
+Ready to be used by others. I used it in class from 2018 through 2022. 
+For the bump to version 1.0 I only have to clean up the repository files,
+but the material is all set.
 
-Under development are Jupyter notebooks to illustrate topics such as
-Turing machines, including Universal Turing machines, regular expressions,
-and SAT solvers. I use the Scheme-descendent language Racket.
+Recent developments:
+  0) The book had a number of usability issues worked out in the
+  most recent run-through. 
+  1) Makefile compilation means the source contains all materials.
+  2) New Jupyter notebooks to illustrate topics such as
+     Universal Turing machines, regular expressions, and SAT solvers.
 
 
 ## Home page
@@ -25,8 +37,8 @@ and SAT solvers. I use the Scheme-descendent language Racket.
 
 ## Bug reports
 
-As with any draft, or any large software project at all, expect
-errors.  Bug reports are very welcome.  Reach me via the contact link
+As with any draft, or any large software project at all, there will be
+errors.  I greatly appreciate bug reports.  Reach me via the contact link
 on the home page.
 
 
@@ -45,5 +57,6 @@ see INSTALL.  But really, just use the supplied PDF.
 2020-Nov-11  JH Major revision in preparation for 1.0.  Added
   many exercises, provide full answers for each.  
 2021-Nov-15  JH Writing Jupyter notebooks.
-2020-Jan-21  JH Text is getting a final in-class use before being
+2022-Jan-21  JH Text is getting a final in-class use before being
   set to version 1.0.
+2022-May-20  JH Run-up to 1.0: got asy to work on recent OS install.

@@ -1,18 +1,20 @@
 This is the source material for the textbook *Theory of Computation*
 by Jim Hefferon.
 
-The text covers standard material for an undergraduatge theory
+The text covers standard material for an undergraduate theory
 class: models of computation and in particular Turing machines,
 unsolvability and the Halting problem, Finite State machines
 and regular languages, computational complexity and P vs NP.
+Its approach is precise but the presentation is liberal, seeking
+to highlight the ideas in the work and to make connections with
+related work.
 
-There are more than eight hundred exercises, with fully-worked
+It has more than eight hundred exercises, with fully-worked
 answers to each.  There are PDF slides suitable for classroom use.
-And, there are video lectures on my YouTube channel (these are
-particularly useful for those studying the material on their own).
+And, there are video lectures on my YouTube channel that are
+particularly useful for those studying the material on their own.
 
-The easiest way to use this work is to get a PDF at the book's home
-page.  See the link below.
+Get the PDF at the book's home page.  See the link below.
 
 
 
@@ -22,12 +24,11 @@ Ready to be used by others. I used it in class from 2018 through 2022.
 For the bump to version 1.0 I only have to clean up the repository files,
 but the material is all set.
 
-Recent developments:
-  0) The book had a number of usability issues worked out in the
-  most recent run-through. 
-  1) Makefile compilation means the source contains all materials.
-  2) New Jupyter notebooks to illustrate topics such as
-     Universal Turing machines, regular expressions, and SAT solvers.
+Recent developments: (0) The book had a number of usability issues that
+were worked out in the most recent classroom use, (1) the make-driven
+compilation means that the source contains all materials, (2) the new
+Jupyter notebooks illustrate topics such as Universal Turing machines,
+regular expressions, and SAT solvers.
 
 
 ## Home page
@@ -37,7 +38,7 @@ Recent developments:
 
 ## Bug reports
 
-As with any draft, or any large software project at all, there will be
+As with any draft, or any large software project, there will be
 errors.  I greatly appreciate bug reports.  Reach me via the contact link
 on the home page.
 

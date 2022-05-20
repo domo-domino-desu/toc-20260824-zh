@@ -27,8 +27,9 @@ real axis_tick_size = 0.75mm;
 picture pic;
 int picnum = 0;
 size(pic,5cm);
-real scalefactor = 1000;
-scale(pic,Linear(scalefactor),Linear(5000));
+// real scalefactor = 1000;
+// scale(pic,Linear(scalefactor),Linear(5000));
+scale(pic,Linear(1),Linear(5));
 
 // n, number of primes less than or equal to n 
 //   100, 25

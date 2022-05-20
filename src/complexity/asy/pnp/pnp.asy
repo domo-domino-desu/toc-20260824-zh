@@ -2239,14 +2239,14 @@ draw(pic,np_halfbar,squarebraces_label_pen);
 label(pic,"\makebox[\width][r]{\scriptsize \probname{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W);
 
 // Rec label
-real label_x = -1.45*UNIVERSE_WD;
+real label_x = -1.55*UNIVERSE_WD;
 real label_y = 0.68*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
 label(pic,"\makebox[\width][r]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),W); 
 
 // RE label
-real label_x = -1.9*UNIVERSE_WD;
+real label_x = -2.0*UNIVERSE_WD;
 real label_y = 0.77*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);

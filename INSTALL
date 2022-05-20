@@ -2,42 +2,64 @@ computing/INSTALL
 
 2022-May-18 Jim Hefferon https://gitlab.com/jim.hefferon
 
-These instructions create and install a copy of Theory of Computing.  They
-are written for Linux because that is what I have.  I expect they also work
-on a Mac but if you have Windows then I'm sorry, I cannot help you.
+These instructions create and install a copy of Theory of Computing.   Note
+that I ran these on a spare laptop, so these have been tested.
 
-  Comment: there has been an issue between Asymptote and Ghostscript.  There
-  was some kind of vulnerability in GS and they made some changes, and
-  the ASY version does not work with the GS version.  I am sure that this
-  will all work great someday, but as of today (2021-June-08) it can't
-  make the 3d.asy file without by-hand compilation of at least one of the
-  two programs.  I instead added a number of files, such as
-  src/background/asy/3d/3d000.pdf to the repo as a temp patch.  This explains
-  step (2).
+These are written for Linux because that is what I have.  I expect they
+also work on a Mac.  However, if you have Windows then I'm sorry, I cannot
+help you.  I am not a Windows-knowledgable person, sorry.
 
-0) Fresh Ubuntu 20 install, from scratch.  Fresh TeX Live, from the apt
+
+Preliminary Comment: there has been an issue between Asymptote and Ghostscript.
+  There was a vulnerability in GS and they made some changes, and then the
+ASY version did not work with the GS version.  Consequently, in 2021
+I put a bunch of .pdf's such as src/background/asy/3d/3d000.pdf into the
+repo.  I am trying to return to generating them from source in the
+Makefile but it is a process.
+
+Step 0) Fresh Ubuntu 20 install, from scratch.  Fresh TeX Live, from the apt
 package texlive-full.
 
-1) In a terminal, clone the git repo.
+1) Clone the book's git repo.  In a terminal do this.
   $ cd ~/Documents
   $ git clone https://gitlab.com/jim.hefferon/toc.git computing
 
-2) Get Asymptote to run.
-  a) Make sure that imagemagick is installed.
-  b) In /etc/ImageMagick-6/policy.xml change lines at the bottom
-    about PS, PDF, etc from rights="none" to rights="read|write".
-  c) Put the following lines at the end of your .profile in your home
+2) Set up Asymptote environment.
+  a) Make sure that imagemagick is installed.  In
+      /etc/ImageMagick-6/policy.xml
+    change lines at the bottom about PS, PDF, etc
+    from rights="none" to rights="read|write".
+  b) Put the following lines at the end of your .profile in your home
   directory (change "/Documents/computing" to wherever you put the repo).
 
 # Directories for the Asymptote drawing program
 export ASYMPTOTE_DIR=$HOME/Documents/computing/src/asy:$HOME/Documents/computing/src/asy/share:$HOME/Documents/computing/src/asy/asy-graphtheory-master/modules:$ASYMPTOTE_DIR
 
   Log out and log in again (this runs the profile).  You can check that the
-  prior works by opening a terminal and running "echo $ASYMPTOTE_DIR".
+  prior works by running "echo $ASYMPTOTE_DIR" in a terminal.
+
+3) Make sure you have a late enough Asymptote.
+  a) Change to the functions directory and try to run it.
+    $ cd ~/Documents/computing
+    $ cd src/appendix/asy
+    $ asy functions
+  If it compiles into a number of .pdf's without comment then you are all set.
+  If you get an error about a stack then you need to recompile Asymptote;
+  I needed to recompile when I installed on Ubuntu 20 in 2022.
+    $ sudo apt-get build-dep asymptote
+    $ cd ~/Downloads
+    $ git clone https://github.com/vectorgraphics/asymptote asymptote
+    $ cd asymptote
+    $ ./autorun.sh
+    $ ./make
+    $ sudo make install
+  (Then I had to close the terminal and open a new one for the new version
+  to come up.)  By the way, just to be sure, I recompiled Ghostscript
+  from its git repo in the same way.
   
-3) Run make.
+3) Make the book.
   $ cd ~/Documents/computing/src
-  $ make
-Wait.  At the end you have book.pdf and answers.pdf.
+  $ make -f Makefile-working-asy
+Then wait.  At the end you have book.pdf and answers.pdf.
 
   

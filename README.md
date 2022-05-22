@@ -11,24 +11,20 @@ related work.
 
 It has more than eight hundred exercises, with fully-worked
 answers to each.  There are PDF slides suitable for classroom use.
-And, there are video lectures on my YouTube channel that are
-particularly useful for those studying the material on their own.
+And there are video lectures on my YouTube channel coordinated
+with this text that are particularly useful for those studying
+the material on their own.
 
-Get the PDF at the book's home page.  See the link below.
+Go to the home page at the link below for the book's PDF and the
+other materials.
 
 
 
 ## Status
 
-Ready to be used by others. I used it in class from 2018 through 2022. 
-For the bump to version 1.0 I only have to clean up the repository files,
-but the material is all set.
+Ready. I have used it in class from 2018 through 2022, and for the
+bump to version 1.0 I only have to clean up the repository files, etc.
 
-Recent developments: (0) The book had a number of usability issues that
-were worked out in the most recent classroom use, (1) the make-driven
-compilation means that the source contains all materials, (2) the new
-Jupyter notebooks illustrate topics such as Universal Turing machines,
-regular expressions, and SAT solvers.
 
 
 ## Home page

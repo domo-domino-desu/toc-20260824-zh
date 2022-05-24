@@ -140,13 +140,15 @@ def parse_lines(lines):
     initial_offset_left, initial_offset_right = None, None
     min_pos, max_pos = 0, 0
     line_list = []
-    for lne_no,lne in enumerate(lines):
+    lne_no = 0
+    for lne in lines:
         d = parse_line(lne,lne_no)
         if DEBUG:
-            print("  parse_lines: lne={0!s} and d={1!s}".format(lne,d))
+            print("  parse_lines: lne_no{0!d}  lne={0!s} and d={1!s}".format(lne_no,lne,d))
         if not(d is None):
             d['line'] = lne
             line_list.append((d,lne_no))
+            lne_no = lne_no + 1
     return line_list
 
 def print_parsed_line(d):
@@ -333,7 +335,7 @@ if __name__ == '__main__':
         parser.add_argument('-o', '--output',
                             action='store',
                             default='tm',
-                            help="Prefix of .asy filename. Default: tm")
+                            help="Prefix of output .asy filename. Default: tm")
         parser.add_argument('-b', '--blanks',
                             action='store_true',
                             default=False,

@@ -108,7 +108,7 @@ pdfs/addtwotwo.asy: ${MACHINE_DIR}/add.tm
 	$(call create-pdfs,add,2 and 2,addtwotwo,"1","1 11",${MAX_STEPS_DEFAULT})
 
 pdfs/infloop.asy: ${MACHINE_DIR}/infloop.tm
-	$(call create-pdfs,infloop,blank tape,infloop," ","",10)
+	$(call create-pdfs,infloop,blank tape,infloop," ","",11)
 
 pdfs/mystery11.asy: ${MACHINE_DIR}/mystery.tm
 	$(call create-pdfs,mystery,11,mystery11,"1","1",10)

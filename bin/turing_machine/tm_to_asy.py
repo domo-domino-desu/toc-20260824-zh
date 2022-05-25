@@ -286,9 +286,13 @@ def asy(d_list, furthest_left, furthest_right, fn_prefix, replace_blanks = False
                              fn=fn.format(i),
                              replace_blanks=replace_blanks))
     r.append(ASY_TAIL)
-    f = open(fn_prefix+".asy","w")
-    f.write("\n".join(r))
-    f.close()
+    # f = open(fn_prefix+".asy","w")
+    try:
+        asy_fn = fn_prefix+".asy"
+        with open(asy_fn, 'w') as f:
+            f.write("\n".join(r))
+    except FileNotFoundError:
+        print("unable to write "+asy_fn)
 
 def get_file_contents(fn):
     """Return the file contents

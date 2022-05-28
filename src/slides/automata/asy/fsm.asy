@@ -333,28 +333,29 @@ node q0=ncircle("$q_0$"),
 defaultlayoutrel = false;
 defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
-real v = 0.85*u;
+real v = 0.75*u;
 
-hlayout(u, q0, q1, q2, q3);
-vlayout(2*v, q0, q4);
-vlayout(v, q2, e);
+q1.pos = new_node_pos(q0, 45, v);
+hlayout(u, q1, q2, q3);
+vlayout(2*v, q1, q4);
+vlayout(v, q3, e);
 hlayout(u, q4, q5, q6);
 
 // edges
 draw(pic,
-     (q0..bend(-20)..q1).l("\str{C}"), 
+     (q0--q1).l("\str{C}"), 
      (q0--e).l(Label("other",Relative(0.2))), 
-     (q1..bend(-20)..q2).l("\str{A}"),
+     (q1--q2).l("\str{A}"),
      (q1--e).l(Label("other",Relative(0.1))),
-     (q2..bend(-20)..q3).l("\str{T}"),
+     (q2--q3).l("\str{T}"),
      (q2--e).l(Label("other",Relative(0.35))).style("leftside"),
      (q3--e).l(Label("any",Relative(0.35))).style("leftside"),
      (e..loop(E)).l("any"),
-     (q0..bend(20)..q4).l("\str{D}"), 
+     (q0--q4).l("\str{D}"), 
      (q4--e).l(Label("other",Relative(0.25))).style("leftside"), 
-     (q4..bend(20)..q5).l("\str{O}"),
+     (q4--q5).l("\str{O}"),
      (q5--e).l(Label("other",Relative(0.25))),
-     (q5..bend(20)..q6).l("\str{G}"),
+     (q5--q6).l("\str{G}"),
      (q6--e).l(Label("any",Relative(0.35)))
     );
 

@@ -87,18 +87,18 @@ Turing and other researchers tried to capture what is computable in principle.
 Church's Thesis is that their definitions do indeed capture the intuitive 
 idea of effectively computable, of computable by an unbounded mechanism.
 
-A person can object to the characterization,
-``Although each Turing machine has only finitely many states, it can write to
+A person can object to the characterization with something like:
+``Although a Turing machine has only finitely many states, it can write to
 the tape.
-We can create a Turing machine that keeps writing characters
-to new places on the tape, and so has unboundedly many configurations.
-No physical device can have unboundedly many configurations.''
+There are Turing machines that write arbitrarily many times
+to the tape, and so have unboundedly many configurations.
+But the physical universe cannot support unboundedly many configurations.''
 
 We will next study machines that are modifications of Turing machines.
 These have finitely many states and can read,
 but they cannot write.
-All they can do is consume their input and then either indicate that the 
-input string was accepted or not accepted. 
+Instead, they just consume their input and then indicate either that the 
+input string was accepted or that it was not accepted. 
 \end{frame}
 
 
@@ -113,9 +113,9 @@ input string was accepted or not accepted.
 Our convention is that the start state is $q_0$.
 
 \pause{\color{blue}\textit{Remark:}}
-Turing machines are defined to be
-sets of instructions  $q_pT_pT_nq_n$.
-The instructions are subject to the restriction that the set must be
+Recall that Turing machines are defined to be
+sets of four-tuple instructions  $q_pT_pT_nq_n$,
+subject to the restriction that the set is
 deterministic, that no two instructions can begin with 
 the same pair $q_pT_p$.
 Consequently, over all $q_pT_pT_nq_n\in\TM$
@@ -124,8 +124,8 @@ defines a function, the next-state function
 $\map{\Delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}$.  
 
 Finite State machines work the same way, 
-and so in the definition above 
-we took the short cut of going straight to the function.
+and in the definition above 
+we skipped four-tuples and went straight to the function.
 \end{frame}
 
 
@@ -133,9 +133,9 @@ we took the short cut of going straight to the function.
 \begin{example}
 This machine has input alphabet 
 $\Sigma=\B=\set{\str{0},\str{1}}$.
-The set of states is $Q=\set{q_0,q_1,q_2}$
-It has one accepting state $F=\set{q_2}$.
-It will accept strings that contain at least two \str{1}'s.
+The set of states is $Q=\set{q_0,q_1,q_2}$.
+It has one accepting state $F=\set{q_2}$, marked in the diagram with
+a double circle.
 \begin{center}
   \includegraphics{asy/fsm00.pdf}
 \end{center}
@@ -156,6 +156,7 @@ it as an accepting state.
 
 This machine accepts the string \str{01010}.
 It does not accept the string \str{001}.
+In general, it accepts strings that contain at least two \str{1}'s.
 \end{example}
 \end{frame}
 
@@ -219,6 +220,8 @@ zero or more repetitions of \str{HEF}.
 \begin{center}
   \includegraphics{asy/fsm05.pdf}
 \end{center}
+The string consisting of zero-many repetitions of \str{HEF} is the
+empty string,~$\emptystring$. 
 \end{example}
 \end{frame}
 
@@ -273,13 +276,13 @@ As with Turing machines, we can give a definition
 of how Finite State machines act that is mathematically precise.
 A \definend{configuration} of a Finite State machine $\FSM$ is 
 a pair $\mathcal{C}=\sequence{q,\tau}$, with
-$q\in Q$ and $\tau\in\kleenestar{\Sigma}$.
+$q\in Q$ and $\tau\in\kleenestar{\Sigma}\!$.
 Where $\mathcal{C}_0=\sequence{q_0,\tau_0}$ is the
 \definend{initial configuration},
 $\tau_0$ is the \definend{input}.
 
 \begin{example}
-Give this machine the input $\tau_0=\str{abababb}$.
+We can trace throug this machine when given the input $\tau_0=\str{abababb}$.
 \begin{center}
   \includegraphics{asy/fsm09.pdf}
 \end{center}
@@ -307,7 +310,7 @@ then the state~$q_3$ is accepting.
 \ExecuteMetaData[\catchfilefn]{def:FSMLanguage}
 
 \begin{example}
-This machine.
+This machine
 \begin{center}
   \includegraphics{asy/fsm07.pdf}
 \end{center}
@@ -322,18 +325,19 @@ This machine
 \begin{center}
   \includegraphics{asy/fsm05.pdf}
 \end{center}
-Has the language
-$\lang=\set{\emptystring,\str{HEF}, \str{HEFHEF}, \str{HEF}^3,\ldots}$
+has the language
+$\lang=\set{\emptystring,\str{HEF}, \str{HEFHEF}, (\str{HEF})^3,\ldots}$.
 \end{example}
 
 \begin{example}
 This machine recognizes a natural number
 that is a multiple of three (that is, it accepts strings 
-representing such a number in base 10, such as \str{15} or~\str{5013}.
+representing such a number in base 10 such as \str{15} or~\str{5013}.
 \begin{center}
   \vcenteredhbox{\includegraphics{\asydir fsa/fsa12.pdf}}
 \end{center}
-The language is this, where $\Sigma=\set{\str{0}, \ldots\,\str{9}}$.
+Where $\Sigma=\set{\str{0}, \ldots{}\str{9}}$, 
+the language is this.
 \begin{equation*}
   \lang(\FSM)=\set{\sigma\in\kleenestar{\Sigma}
     \suchthat\text{$\sigma$ is the decimal representation of a multiple of three}}
@@ -343,7 +347,7 @@ The language is this, where $\Sigma=\set{\str{0}, \ldots\,\str{9}}$.
 
 \begin{frame}[fragile]{Finite State machines translate easily to code}
 \vspace*{-1ex}
-Here is a Python implementation of the multiple of three machine.
+Here is a Python implementation of the above multiple of three machine.
 \begin{lstlisting}
 def multiple_of_three_fsm(s):
     state = 0
@@ -385,8 +389,8 @@ on all strings of length less than three.
 \begin{center}
   \includegraphics{asy/fsm09.pdf}
 \end{center}
-The alphabet is $\Sigma=\set{\str{a},\str{b}}$ so
-there are seven string  of length less than three.
+The alphabet $\Sigma=\set{\str{a},\str{b}}$ has two elements so
+there are seven strings of length less than three.
 \begin{center}
 \begin{tabular}{r|*{7}{c}}
   \tabulartext{Input $\sigma$}
@@ -410,36 +414,39 @@ there are seven string  of length less than three.
 \begin{frame}{Recall: deterministic computation} 
 The definition gives that a Turing machine is a
 sets of instructions  $q_pT_pT_nq_n$.
-These sets are subject to the restriction of determinism, 
-that no two instructions can begin with the same pair, $q_pT_p$.
-Consequently, over the $q_pT_pT_nq_n\in\TM$,
-the association of present pair $q_pT_p$ with next pair~$T_nq_n$,
-defines a function, the next-state function
-$\map{\Delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}$. 
-It is this function that determines the sequence of transitions
-from configuration to configuration.   
+These sets must be deterministic, meaning  
+that no two instructions can begin with the same pair $q_pT_p$.
+Consequently, over the $q_pT_pT_nq_n\in\TM$
+the association of present pair $q_pT_p$ with next pair $T_nq_n$
+defines a function, the next-state function.
+\begin{equation*}
+\map{\Delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}
+\end{equation*}
+It is this function that 
+determines the sequence of transitions
+from configuration to configuration.
 
 Finite State machines work the same way. 
-(In fact, having gone through the development of Turing machines already, 
-we didn't define Finite State machines via instructions 
-but instead went straight to the next-state function.)
+The definition gives them as also deterministic.
 
 \pause
-We now drop the restriction of determinism.
+We now drop determinism.
 We will 
 do it here for Finite State machines and in the next chapter
 for Turing machines.
 
-Nondeterminism proves to be a very important idea, but it
+Nondeterminism proves to be very important.
+But it
 can give the initial impression of being odd or unnatural.
-So before the definition 
+So before the definition
 we will see two examples of computations that, in some sense,
 do more than one thing at a time.
-These will lead to two mental models for what is happening.
+These will lead to two mental models, which we will rely on for the
+rest of the course.
 \end{frame}
 
 
-\begin{frame}{Deriving a string from a grammar}
+\begin{frame}{Nondeterminism: deriving a string from a grammar}
 From this grammar
 \begin{grammar}
   S \produces{} T\trm{b}U
@@ -482,8 +489,8 @@ or $\sigma_1=\str{baab}$.
 Derivation is a computation in that it is symbol pushing, following
 effective rules.
 It is nondeterministic in that while doing a sequence of $\derives$~steps,
-we often find that more than one rule applies,
-so there is not just a unique next string.
+we often find that more than one rule applies
+so there is not just one next thing to do, not just a unique next string.
 \end{frame}
 
 
@@ -495,7 +502,7 @@ so there is not just a unique next string.
 \setlength{\unitlength}{\wd\jhimagebox}
 \begin{frame}
   % \frametitle{Finding a derivation}
-So, suppose that we have a grammar where there is sometimes more than one
+So suppose that we have a grammar where there is sometimes more than one
 applicable rule.
 Give a target string~$\sigma$, how to derive it?
 
@@ -506,7 +513,7 @@ etc.
 If $\sigma$ is in the language of the grammar then we will 
 eventually find it.
 This is a breadth-first search of the $\derives\!$~sequences;
-here are the first few levels.
+here are the first few levels for the grammar on the prior slide.
 % The width is \the\wd\jhimagebox.
 % The height is \the\ht\jhimagebox.
 % The width is 325.72612pt. The height is 110.4624pt.
@@ -519,12 +526,12 @@ here are the first few levels.
   \end{picture}
 \end{center}
 \only<4>{The second way, 
-what we actually do to solve these problems, is to guess.
+the way that we actually do to solve these problems, is to guess.
 Then we verify that the guess is right.}
 \end{frame}
 
 
-\begin{frame}{A nondeterministic machine}\vspace*{-1ex}
+\begin{frame}{Nondeterminism: a machine}\vspace*{-1ex}
 This machine is nondeterministic: for a given present-state, input character 
 pair there may be one next state, or more than one, or none.
 For instance, leaving $q_0$ are two different arrows labeled~\str{0}.
@@ -557,8 +564,8 @@ First, we can trace out every possible branch.
 As with the grammar,
 we are picturing that when the machine is called on to do two things, 
 it does them both.
+And when there is no next state, the branch dies.
 So the computation history is not straight-line but instead is a tree.
-And, when there is no next state, the branch dies.
 
 After the first step, the machine is in multiple states simultaneously, namely 
 $q_0$ and~$q_1$.
@@ -571,72 +578,74 @@ Branches can fail to accept the string because they die,
 or because they get to the end and they just are not in an accepting state.
 
 \pause
-Also as with the grammar, 
+As with the grammar, 
 there is a second way to think of what is happening. 
-This machine, when presented with an input string, must decide:~when 
+This machine,
+\begin{center}\small
+  \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
+\end{center}
+when presented with an input string~\str{00001}, must decide:~when 
 should it stop going around $q_0$'s loop 
 and start following the tail to the right?
 Above we've seen the machine accepting \str{00001},
-so it has solved the problem that we gave it.
-That is, 
-we could say that the machine has correctly guessed.
+so it has solved this problem.
+We could say that the machine has correctly guessed.
 \end{frame}
 
 
 
 
 \begin{frame}{First mental model for nondeterminism: spawning}
-For the grammar example, we made a distinct branch each time more than
+For the grammar example, we made a branch each time a
 one production rule applied to a string.
-For the machine, we also branched each time there was more than one
+For the machine, we also branched each time there was a
 possible thing to do.
 
-Another example of this is 
+Another example of this brainching is 
 the Travelling Salesman problem.
 Suppose that we want a cyclic trip 
 that visits every state capitol in the forty eight contiguous US~states
 in less than $16\,000$ kilometers.
 This is nondeterminism in that if we start at Montpelier, Vermont 
-then there are multiple possible next cities
-and it is not clear which is the right one. 
-One natural approach is to spawn forty seven child processes, 
-a child for each potential next city.
+then there are multiple possible next cities. 
+A natural approach is to spawn forty seven child processes, 
+one for each potential next city.
 The process assigned Albany, 
 for instance, would know that the trip so far is $126$~kilometers. 
 After that, each child would fork its own set of children, forty six of them.
 At the end if there is
-a trip of less than $16\,000$ kilometers then some process has found it.
+a trip of less than $16\,000$ kilometers then some branch has found it.
 Note that we consider
 the overall computation a success if there exists 
 even one process that is a success.
 
 This model 
 is a natural approach when called on to do multiple things.
-We are all used to devices with lots of windows open on the screen,
-doing lots of things.
+In everyday computing, we are all used to having lots of windows open 
+on the screen, doing lots of things.
 Under the hood, the operating system forks child processes to cover each
-thing.
+thing that it must do.
 \end{frame}
 
 
 \begin{frame}{Second mental model for nondeterminism: guessing}
-For both the grammar example and the machine example, we also framed
+For both the grammar example and the machine example, we have also framed
 that the system guessed the answer.
 
 For example, we described the nondeterministic machine as guessing when 
 to stop going around $q_0$'s loop, 
 and start following the tail to the right.
 
-This characterization is jarring because 
-our previous experience with computers in programming class is that
+Saying ``guessing'' is jarring because 
+our experience with computers in programming class is that
 they don't guess.
-An alternate way to say it is that we imagine that the machine is
+An alternate characterization is to imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
-only has to check that answer.
+it only has to verify that answer.
 Often, the furnisher is personified as a demon.
 \pause
 \begin{center}\small
-  \vcenteredhbox{\includegraphics[height=1.2in]{../../automata/pix/flauros.jpg}}
+  \vcenteredhbox{\includegraphics[height=1.25in]{../../automata/pix/flauros.jpg}}
   \\
   \mbox{Flauros, the Duke of Hell.}
 \end{center}
@@ -645,12 +654,12 @@ Often, the furnisher is personified as a demon.
 \begin{frame}{What the two views share}
 In both mental models, the computation succeeds if there is a way for it 
 to succeed.
-In particular, 
+More precisely, 
 the machine accepts the input if there exists a sequence of configurations
 that ends in an accepting state.
 
 Very important: `if there exists' doesn't mean that there must be an algorithm
-for finding it such as backtracking or dynamic programming, etc.
+for finding it, such as backtracking or dynamic programming, etc.
 This is pure existence\Dash it just requires that there 
 exist a way for the computation to succeed.
 That's why the demon is here;~it is a being so powerful that it 
@@ -667,17 +676,18 @@ the codomain of $\Delta$.
 
 \ExecuteMetaData[\catchfilefn]{def:NondeterministicFiniteStateMachine}
 \ExecuteMetaData[\catchfilefn]{def:NFSMAccepted}
+
+Note that the codomain is the power set $\powerset(Q)$
 \pause
 \begin{example}
 This nondeterministic
 garage door listener waits to hear the remote control send
 \str{0101110}.
+That is, it accepts the language
+$\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
 \begin{center}
   \includegraphics{\asydir nfsm/nfsm11.pdf}
 \end{center}
-That is, it accepts the language
-$\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
-
 For example, this listener will end in an accepting 
 state if it 
 hears a string $\sigma=\str{010101110}$, with three \str{01}'s in the prefix
@@ -687,12 +697,6 @@ the first \str{01} but not the second.
 (Said more precisely, there exists a sequence of configuations that leads
 to acceptance of $\sigma$.)
 \end{example}
-
-We will show how to convert any nondeterministic Finite State
-machine into a deterministic machine,
-so we can think of this machine
-as an abbreviation for a deterministic one.
-This may help obviate head-scratching over `guessing'.
 \end{frame}
 
 \begin{frame}
@@ -711,7 +715,7 @@ using a deterministic machine.
 \begin{center}
   \includegraphics{asy/fsm03.pdf}
 \end{center}
-The nondeterministic machine is
+The nondeterministic machine is simpler, and
 more obviously true to its specification.
 \end{example}
 \end{frame}
@@ -732,11 +736,12 @@ $\lang(\FSM)=\set{\str{aaa}, \str{aab}, \str{aba}, \str{abb},\str{aaaa}, \str{aa
 
 \pause
 \begin{example}
-This machine~$\hat{\FSM}$ with alphabet $\Sigma=\set{\str{0},\str{1}}$ 
+This nondeterministic machine~$\hat{\FSM}$ 
+with alphabet $\Sigma=\set{\str{0},\str{1}}$ 
 accepts an input string only
 if it contains a substring
-with a \str{1} followed by any number of \str{0}'s
-including zero-many \str{0}'s, 
+with a \str{1} followed by any number of \str{0}'s,
+including possibly zero-many \str{0}'s, 
 followed by a second \str{1}.
 \begin{center}
   \includegraphics{asy/nfsm16.pdf}
@@ -750,7 +755,6 @@ $\lang(\hat{\FSM})=\set{\str{11}, \str{011}, \str{110}, \str{111},\str{0011}, \s
 \ExecuteMetaData[\catchfilefn]{discussion:epsilonTransitions}
 
 \pause
-These examples show what this extension can do.
 \begin{example}
 \hypertarget{ex:EpsilonTransitionsForConcat}{The machine on the left} 
 accepts strings with 
@@ -807,15 +811,21 @@ $\set{(\str{ab})^n\suchthat n\in\N}$.
 
 
 \begin{frame}{Equivalence of the machine types}
+We will show how to convert any nondeterministic Finite State
+machine into a deterministic machine.
+% So we can think of nondeterminism
+% as an abbreviation for determinism.
+This may help obviate qualms over `guessing'.
+
 \ExecuteMetaData[\catchfilefn]{th:dfsmEquivndfsm}
 
 \pause
 \begin{example}
-Here is a nondeterministic Finite State machine.
+Here is a nondeterministic Finite State machine~$\FSM$.
 \begin{center}
   \includegraphics{asy/nfsm20.pdf}
 \end{center}
-This is an equivalent deterministic Finite State machine.
+The equivalent deterministic machine's states are the sets of $\FSM$'s states.
 \begin{center}\small
 \begin{tabular}{r|cc}
   \multicolumn{1}{c}{\ } &\str{0} &\str{1}  \\
@@ -945,7 +955,7 @@ it contains $q_1$.
                                  &\onslide<2>{--}  &\onslide<2>{$s_{15}$}  \\
   \end{tabular}
 \end{center}
-\onslide<2>{Lines have a dash if their $A_i$ is the same as some prior line's,
+\onslide<2>{Lines have a dash if their $A_i$ is the same as some prior line's
   and so the calculations would be recalculations.} 
 \end{frame}
 
@@ -955,7 +965,8 @@ Here is the deterministic machine as a graph.
   \includegraphics{asy/nfsm21.pdf}
 \end{center}
 The start state is $s_5$.
-Note that many of the states are superfluous.
+Many of the states are superfluous;
+for example, there is no way to get from the start state to $s_6$.
 \end{frame}
 
 
@@ -969,9 +980,9 @@ Note that many of the states are superfluous.
 \section{Regular expressions}
 
 \begin{frame}{Examples}
-There is a pattern to the languages accepted by a Finite State machine.
-We describe them with \alert{regular expressions}.
-We will show some examples first, then a definition.
+The languages accepted by a Finite State machine have patterns.
+We exploit these patterns to describe them with \alert{regular expressions}.
+We will start with some examples and then give a definition.
 
 \ExecuteMetaData[\catchfilefn]{ex:RegexOne}
 
@@ -1075,7 +1086,7 @@ that it ends with.
 We will show that for any regular expression~$R$ there is a machine that
 accepts strings matching that expression.
 We give nondeterministic machines, but of course we can convert them
-to deterministic ones so we can do that without loss of generality.
+to deterministic ones if desired.
 
 \ExecuteMetaData[\catchfilefn]{pf:KleenesThmRegexToMachinei}
   \begin{center}
@@ -1295,13 +1306,53 @@ the string $\sigma=\str{acbc}$ is a member of $\lang$.)
 \end{frame}
 
 \begin{frame}
-\ExecuteMetaData[\catchfilefn]{pf:PumpingLemmaii}\qedsymbol
+\ExecuteMetaData[\catchfilefn]{pf:PumpingLemmaii}\qedsymbol\ 
 \end{frame}
-\begin{frame}{Using the Pumping Lemma}
-When we use the Pumping Lemma, it is usually to show that a language
+
+\begin{frame}
+  % \frametitle{Using the Pumping Lemma}
+When we use the Pumping Lemma, typically it is to show that a language
 is not regular.
+
 \begin{example}
-Show that each language over $\Sigma=\set{\str{a},\str{b}}$ is not a regular:
+Show that this language over $\Sigma=\set{\str{a},\str{b}}$ is not regular:
+$\lang=\set{\str{a}^n\str{b}\str{a}^n\suchthat n\in\N}$.
+
+First, here are a few members of $\lang$: \str{aabaa}, 
+$\str{a}^5\str{b}\str{a}^5$, and \str{b}.
+Two non-members are $\str{a}^5\str{b}\str{a}^4$ and $\str{a}\str{b}$.
+
+Next, for contradiction suppose that $\lang$ is regular.
+Then it has a pumping length~$p$.
+Consider the string $\sigma=\str{a}^pb\str{a}^p$.
+Observe that $\sigma\in\lang$.
+
+Because $\sizeof{\sigma}\geq p$, the Pumping Lemma applies.
+The string decomposes as 
+$\sigma=\alpha\concat\beta\concat\gamma$, subject to the
+three conditions.
+Condition~(1) says that the initial two substrings together have length
+no greater than the pumping length, $\sizeof{\alpha\beta}\leq p$.
+Therefore, because the first $p$-many characters in $\sigma$ are all \str{a}'s,
+we conclude that substring $\alpha$ and substring $\beta$ consist solely of
+\str{a}'s.
+Condition~(2) says that $\beta$ is not the empty string
+and so $\beta$ consists of at least one \str{a}.
+With that, consider condition~(3).
+It says that all of the strings 
+$\alpha\gamma$, $\alpha\beta^2\gamma$, $\alpha\beta^3\gamma$, etc., are members
+of $\lang$.
+But now, compared with $\sigma$,
+the string $\alpha\gamma$ has at least one fewer \str{a} before the \str{b}, 
+but the same number of \str{a}'s after the \str{b}.
+Therefore, $\alpha\gamma$ does not have the same number of \str{a}'s before the
+\str{b} as after.
+It is thus not a member of~$\lang$, contradicting the Pumping Lemma.   
+\end{example}
+
+\pause
+\begin{example}
+Show that each language over $\Sigma=\set{\str{a},\str{b}}$ is not regular.
 \begin{enumerate}
 \item $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
 
@@ -1341,7 +1392,7 @@ Show that each language over $\Sigma=\set{\str{a},\str{b}}$ is not a regular:
 \begin{center}
   \includegraphics{\generalasydir share/machine03.pdf}
 \end{center}
-The book has the full details.
+The book has details.
 We will give a couple of examples.
 \end{frame}
 
@@ -1455,7 +1506,7 @@ Area~$B$ enclosed the languages that are decided by some deterministic
 Pushdown machine.
 Area~$C$ contains the languages decided by some nondeterministic
 Pushdown machine.
-And, in area~$D$ are the languages decided by some Turing machine.
+In area~$D$ are the languages decided by some Turing machine.
 \end{frame}
 
 
@@ -1472,7 +1523,7 @@ are widely used for symbol manipulation in the wild.
 
 Along the way, they acquired a large number of extensions.
 Some of these are conveniences, things that you could do with
-the regular expression tools we have already seen.
+the regular expression tools that we have already seen.
 But some of these are genuine extensions, which allow you to do 
 more than is possible with the regular expressions that we have 
 studied.
@@ -1489,7 +1540,7 @@ printable characters:~\str{a}\dash \str{z}, \str{A}\dash \str{Z},
 \str{0}\dash \str{9},
 space, tab, period, dash, exclamation point, percent sign, dollar sign, 
 open and closed parenthesis, open and closed curly braces, etc.\sentencespace
-It may even contain all of Unicode's
+The alphabet may even contain all of Unicode's
 more than one hundred thousand characters. 
 
 Regexes allow matching a digit with \re{[0123456789]},

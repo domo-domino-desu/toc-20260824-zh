@@ -160,7 +160,7 @@ Nonmembers are the strings \str{)(}, \str{(()}, and \str{())(()}.
 \ExecuteMetaData[\catchfilefn]{discussion:DecidingVsRecognizing}
 
 \begin{example}
-We can mechanically decide the language of perfect squares,
+A Turing machine can decide the language of perfect squares,
 $S=\set{\str{1}^{(n^2)}\suchthat n\in\N}$.
 A Turing machine can recognize the language of the \HP,
 $
@@ -177,12 +177,16 @@ but no Turing machine decides~$K$.
 \section{Grammars}
 \begin{frame}{Introduction}
 The definition of  language allows
-any subset of $\kleenestar{\Sigma}$, at all.
-But usually there is a pattern; often the language follows rules.
+any subset of $\kleenestar{\Sigma}$ at all.
+But in practice usually there is a pattern, a list of rules.
 For example, the C~language consists of programs that follow
 rules of a grammar.
+A natural language example is that
+``When nine hundred years old you reach, look as good you will not''
+may fit the rules wherever Yoda was raised but it does not fit the rules
+for English.
 
-Here are some rules for English
+This is a subset of the rules for English:
 \begin{itemize}
 \ExecuteMetaData[\catchfilefn]{ex:RulesForEnglish} 
 \end{itemize}
@@ -190,7 +194,7 @@ Here are some rules for English
 
 
 \begin{frame}
-We will formally write the above rules this way.
+We will formally write the above rules in this way.
 \ExecuteMetaData[\catchfilefn]{ex:GrammarRulesForEnglish} 
 
 \ExecuteMetaData[\catchfilefn]{discussion:GrammarVocabulary} 
@@ -219,9 +223,8 @@ We will formally write the above rules this way.
 
 \begin{example}
 Let the alphabet be $\Sigma=\set{\trm{a},\trm{b}}$,
-let the set of nonterminals be $N=\set{\ntrm{start},\ntrm{left},\ntrm{right}}$,
-and let the start symbol be \ntrm{start}.
-Here are the five production rules in the set~$P$.
+let the set of nonterminals be $N=\set{\ntrm{start},\ntrm{left},\ntrm{right}}$.
+Here are five production rules making the set~$P$.
 \begin{grammar}
 \ntrm{start} \produces \trm{a}\ntrm{left}
 
@@ -232,8 +235,8 @@ Here are the five production rules in the set~$P$.
 \end{grammar}
 \end{example}
 
-We will take the convention that 
-the start symbol is the head of the first rule.
+As to the start symbol, we take the convention that it 
+is the head of the first rule.
 Here is a derivation using the production rules.
 \begin{center}
 \ntrm{start}\derives \trm{a}\ntrm{left} \derives \trm{aa}\ntrm{left}
@@ -256,19 +259,19 @@ This is part of the grammar of C.
 	\syntaxor \ntrm{expression} \ntrm{;}
 
 \ntrm{selection\_statement}
-	\produces IF \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
-	\othersyntax IF \trm{(} \ntrm{expression} \trm{)} \ntrm{statement} ELSE \ntrm{statement}
-	\othersyntax SWITCH \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
+	\produces \trm{IF} \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
+	\othersyntax \trm{IF} \trm{(} \ntrm{expression} \trm{)} \ntrm{statement} \trm{ELSE} \ntrm{statement}
+	\othersyntax \trm{SWITCH} \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
 
 \ntrm{iteration\_statement}
-	\produces WHILE \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
-	\othersyntax DO \ntrm{statement} WHILE \trm{(} \ntrm{expression} \trm{)} \trm{;}
-	\othersyntax FOR \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \trm{)} \ntrm{statement}
-	\othersyntax FOR \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \ntrm{expression} \trm{)} \ntrm{statement}
+	\produces \trm{WHILE} \trm{(} \ntrm{expression} \trm{)} \ntrm{statement}
+	\othersyntax \trm{DO} \ntrm{statement} \trm{WHILE} \trm{(} \ntrm{expression} \trm{)} \trm{;}
+	\othersyntax \trm{FOR} \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \trm{)} \ntrm{statement}
+	\othersyntax \trm{FOR} \trm{(} \ntrm{expression\_statement} \ntrm{expression\_statement} \ntrm{expression} \trm{)} \ntrm{statement}
 \end{grammar}
-As to the capitalization, here `IF'
-means `any string that capitalizes to IF', so either
-`If', or `iF', or `if', or `IF'.
+(Here the capitalized terminals
+mean any string that capitalizes to that, so that \trm{IF} means
+\trm{If}, or \trm{iF}, or \trm{if}, or \trm{IF}.)
 \end{example}
 \end{frame}
 
@@ -277,36 +280,45 @@ means `any string that capitalizes to IF', so either
   \frametitle{Recursive grammars}
 
 The prior two example grammars are recursive. 
-For instance, \ntrm{left} can expand to
-an expression involving \ntrm{left}.
+For instance in this rule,
 \begin{grammar}
 \ntrm{left} \produces \trm{a}\ntrm{left} 
-  \othersyntax \trm{b}\ntrm{right}
+  \syntaxor \trm{b}\ntrm{right}
 \end{grammar}
-Similarly, in the C grammar, \ntrm{statement\_list}'s expansion 
-can involve itself.
+\ntrm{left} can expand to
+an expression involving \ntrm{left}.
+Similarly, in the C grammar \ntrm{statement\_list}'s expansion 
+involves itself.
 \begin{grammar}
 \ntrm{statement\_list}
 	\produces{} \ntrm{statement}
 	\syntaxor \ntrm{statement\_list} \ntrm{statement}
 \end{grammar}
+But we don't get stuck in an infinite regress. 
+The question is not whether you could perversely 
+keep expanding \ntrm{left} or \ntrm{statement\_list} forever.
+The question is, given a string such as \trm{aabb}, 
+whether you can find a terminating derivation.
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Abbreviation}
+  \frametitle{An abbreviation convention}
 
-Often, for examples and exercises we use capital letters for nonterminals
+For examples and exercises we often use uppercase letters for nonterminals
 and lowercase letters or digits for terminals.
 
 \begin{example}
-The strings derived from this grammar are
-arithemtic expressions,
+This grammar has two nonterminals, S and~I.
+Its terminals are the parentheses, \trm{(} and~\trm{)},
+the arithmetic operators, \trm{+} and~\trm{*}, 
+and the digits.
 \begin{grammar}
 S \produces \trm{(} S \trm{)} \syntaxor S \trm{+} S \syntaxor S \trm{*} S \syntaxor I
 
 I \produces{} \trm{0} \syntaxor \trm{1} \syntaxor \ldots{} \trm{9}
 \end{grammar}
+The derived strings are arithmetic expressions
 such as \str{1+2*(3+4)}.
 \end{example}
 \end{frame}
@@ -350,9 +362,31 @@ and then an even number of \str{b}'s (including possibly zero many \str{b}'s).
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{This is a kind of computation}
+Derivations involve pushing symbols around according to formal rules.
+So it fits with our idea of a mechanical computation.
+ 
+For instance, this grammar
+\begin{grammar}
+S \produces 11S \syntaxor \emptystring
+\end{grammar}
+produces the language $\set{\str{1}^{2n}\suchthat n\in\N}$
+of even numbers in unary notation.
+
+In a similar way we can compute such things as the set of perfect squares 
+or the set of primes.
+(There are grammar types that extend the ones we consider in this course, 
+for instance by allowing the head to have more than just a single 
+nonterminal.
+With grammars of these extended types we can compute more sets.
+For instance, the set of primes requires such a grammar.) 
+\end{frame}
+
+
 
 \begin{frame}[fragile]
-  \frametitle{Ambiguity of a grammar}
+  \frametitle{A grammar can be ambiguious}
 % \ExecuteMetaData[\catchfilefn]{rem:AmbiguousGrammar} 
 This bit of C-like code shows nested
 \codeinline{if} statements. 
@@ -360,7 +394,7 @@ This bit of C-like code shows nested
   if ... then ... if ... then ... else ...
 \end{lstlisting}
 The \codeinline{else} could be associated
-with the first \codeinline{if} or the second.
+with either the first \codeinline{if} or the second.
 This is a \definend{dangling else}.
 \begin{center}
   \begin{minipage}{0.4\linewidth}
@@ -431,7 +465,7 @@ while the right one gives $7\cdot 3=21$.
 
 % =================================================================
 \section{BNF}
-\begin{frame}[fragile]{Backus-Naur Form notation}
+\begin{frame}[fragile]{Backus-Naur notation}
 Many programming languages, protocols, or formats are specified
 using Backus-Naur form.
 Every rule has the structure:
@@ -465,6 +499,21 @@ For instance, this is part of a BNF grammar of arithmetic expressions.
 
 <const> ::= integer
 \end{lstlisting}
+
+As a first point, it is a more type-able version of this.
+\begin{grammar}
+\ntrm{expr} \produces \ntrm{term} \trm{+} \ntrm{expr}
+  \syntaxor \ntrm{term}
+
+\ntrm{term} \produces \ntrm{factor} \trm{*} \ntrm{term}
+  \syntaxor \ntrm{factor}
+
+\ntrm{factor} \produces \trm{(} \ntrm{expr} \trm{)} 
+  \syntaxor \ntrm{const}
+
+\ntrm{const} \produces \ntrm{integer} 
+\end{grammar}
+But there are also a number of extensions.
 \end{frame}
 
 \begin{frame}{Common extensions to BNF}
@@ -476,6 +525,9 @@ An example is that this describes a comma-separated argument list.
 \ntrm{args} \bnfproduces \ntrm{arg} \{ \trm{,} \ntrm{arg} \trm{} \}
 \end{grammar}
 To denote zero or more times you may also see a Kleene star,~`$*$'. 
+\begin{grammar}
+\ntrm{trailing-space} \bnfproduces \ntrm{whitespace}*
+\end{grammar}
 To denote one or more times you may see a plus,~`$+$'.
 \begin{grammar}
 \ntrm{natural} \bnfproduces \ntrm{digit}+
@@ -487,11 +539,11 @@ For zero or one repetitions, you may see square brackets.
 \end{grammar}
 
 \pause\item[Grouping] Use parentheses. 
-This shows two terms being added or subtracted.
+This shows the form of addition or subtraction.
 \begin{grammar}
 \ntrm{expr} \bnfproduces \ntrm{term} ( \trm{+} | \trm{-} ) \ntrm{expr}
 \end{grammar}
-Here, in addition to the vertical bar, meaning `or', 
+The vertical bar for `or' and 
 the parentheses are metacharacters.
 
 \pause\item[Concatenation]
@@ -602,6 +654,20 @@ and eight edges.
   \frametitle{Graph representation}
 \ExecuteMetaData[\catchfilefn]{def:AdjacencyMatrix} 
 
+\begin{example}
+This is the matrix for the graph.
+\begin{equation*}
+  \vcenteredhbox{\includegraphics{asy/grammar004.pdf}}
+  \hspace{5em}
+  \begin{pmatrix}
+    0 &2 &0 &0 \\
+    0 &0 &1 &1 \\
+    1 &0 &0 &0 \\
+    0 &1 &0 &0
+  \end{pmatrix}
+\end{equation*}
+\end{example}
+
 \ExecuteMetaData[\catchfilefn]{lem:MatrixPowersAdjacencyMatrix} 
 \end{frame}
 
@@ -634,7 +700,6 @@ What is the minimum number of time slots that we must use for the schedule?
 \begin{frame}{Graph isomorphism}
 We have a way to express that two graphs are, 
 while not equal, essentially the same.
-(So that one is the other ``colored green.'')
 
 \ExecuteMetaData[\catchfilefn]{def:GraphIsomorphism} 
 

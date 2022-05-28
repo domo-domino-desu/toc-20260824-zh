@@ -180,12 +180,12 @@ picture p;
 
 // define nodes
 node n1007=ncircle("1007",ns_bg),
-     n3137=ncircle("3137",ns_bleachedbold),
-     n3157=ncircle("3157",ns_light),
+     n3137=ncircle("3137",ns_light),
+     n3157=ncircle("3157",ns_bleachedbold),
      n3261=ncircle("3261",ns_gray),
      n3203=ncircle("3203",ns_light),
      n4115=ncircle("4115",ns_bleachedbold),
-     n4118=ncircle("4118",ns_light),
+     n4118=ncircle("4118",ns_gray),
      n4156=ncircle("4156",ns_gray);
 
 // layout
@@ -231,6 +231,47 @@ draw(pic=p,
      n1007,
      n4115, n3261, n3203,
      n4118, n3137, n4156, n3157
+     );
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+
+// ============== graph for adjancecy matrix ====================
+int picnum = 4;
+picture p;
+
+// define nodes
+node upperleft=ncircle("$v_0$"),
+     upperright=ncircle("$v_1$"),
+     lowerleft=ncircle("$v_2$"),
+     lowerright=ncircle("$v_3$");
+
+// layout
+defaultlayoutrel = true;
+defaultlayoutskip = 1.5cm;
+real u = 0.7*defaultlayoutskip;  // horizontal
+real v = 0.8*u;                 // vertical
+
+hlayout(1*u, upperleft, upperright);
+vlayout(1*v, upperleft, lowerleft);
+hlayout(1*u, lowerleft, lowerright);
+
+// draw edges
+draw(pic=p,
+     (upperleft..bend(20)..upperright).style(directededgestyle),
+     (upperleft..bend(-20)..upperright).style(directededgestyle),
+     (upperright--lowerleft).style(directededgestyle),
+     (upperright..bend(20)..lowerright).style(directededgestyle),
+     (lowerright..bend(20)..upperright).style(directededgestyle),
+     (lowerleft--upperleft).style(directededgestyle)
+     );
+
+// draw nodes
+draw(pic=p,
+     upperleft, upperright,
+     lowerleft, lowerright
      );
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");

@@ -2694,3 +2694,4 @@ draw(p,outer[0],outer[1],outer[2],outer[3],outer[4],
      inner[0],inner[1],inner[2],inner[3],inner[4]);
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+

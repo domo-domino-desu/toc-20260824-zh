@@ -59,9 +59,9 @@ yaxis(pic,"",ticks=LeftTicks(Label("$%.3g$"),
 			      Step=50,step=50,
 			     Size=3, size=3),
       above=false);
-draw(pic,graph(pic,g,0,5.25,operator ..),FCNPEN_SOLID+highlightcolor);
+draw(pic,graph(pic,g,0,5.25,operator ..),FCNPEN_NOCOLOR+highlightcolor);
 label(pic,"$g(x)=3x^2$",Scale(pic,(3.5,g(3.5))),E);
-draw(pic,graph(pic,f,0,5.25,operator ..),FCNPEN_SOLID+highlightcolor);
+draw(pic,graph(pic,f,0,5.25,operator ..),FCNPEN_NOCOLOR+highlightcolor);
 label(pic,"$f(x)=4x^2$",Scale(pic,(4.5,f(4.5))),W);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -85,10 +85,10 @@ yaxis(pic,"",ticks=LeftTicks(Label("$%.3g$"),
 			      Step=50,step=50,
 			     Size=3, size=3),
       above=false);
-draw(pic,graph(pic,g,0,5.25,operator ..),FCNPEN_SOLID+highlightcolor);
-label(pic,"$g(x)=3x^2$",Scale(pic,(3.5,g(3.5))),E);
-draw(pic,graph(pic,h,0,5.25,operator ..),FCNPEN_SOLID+highlightcolor);
-label(pic,"$h(x)=3x+10$",Scale(pic,(3,h(3))),SE);
+draw(pic,graph(pic,g,0,5.25,operator ..),FCNPEN_NOCOLOR+highlightcolor);
+label(pic,"$g(x)=3x^2$",Scale(pic,(3.25,g(3.25))),NW);
+draw(pic,graph(pic,h,0,5.25,operator ..),FCNPEN_NOCOLOR+highlightcolor);
+label(pic,"$f(x)=3x+10$",Scale(pic,(3,h(3))),SE);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

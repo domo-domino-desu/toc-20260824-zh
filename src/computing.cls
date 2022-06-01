@@ -655,6 +655,9 @@
 % \newcommand\href[2]{\relax}
 % \newcommand\hyperref[2][\relax]{#2}
 
+% These prevent annoying log messages like "
+%  Package hyperref Info: bookmark level for unknown animatefigure defaults to 0 on input line 7949.
+\providecommand*{\toclevel@animatefigure}{0}%
 
 
 

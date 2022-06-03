@@ -638,6 +638,7 @@
     pdfmenubar=true,        % show Acrobat’s menu?
     pdffitwindow=false,     % window fit to page when opened
     pdfstartview={FitH},    % fits the width of the page to the window
+    pdfpagemode=None,       % None, or UseOutlines, or UseThumbs, or FullScreen
     pdftitle={Computing},    % title
     pdfauthor={Jim Hefferon, Saint Michael's College},     % author
     pdfsubject={Theory of Computation},   % subject of the document

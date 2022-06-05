@@ -30,6 +30,7 @@
 
 % This must be early in the class file to avoid an option clash
 \usepackage[hyphens]{url}  % allow splitting at hyphens
+% \usepackage[hyphens]{xurl}  % 2022-Jun-05
 
 % Get RaggedRight
 \usepackage{ragged2e}
@@ -660,6 +661,8 @@
 %  Package hyperref Info: bookmark level for unknown animatefigure defaults to 0 on input line 7949.
 \providecommand*{\toclevel@animatefigure}{0}%
 
+% 2022-Jun-05
+\usepackage{breakurl}
 
 
 
@@ -1137,7 +1140,10 @@
 \usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
   \renewcommand*{\bibfont}{\small}  % Use \small font for the body
 \addbibresource{computing.bib}
-
+% 2022-Jun-05 From xurl docs, to minimize bad lines
+\setcounter{biburllcpenalty}{100}
+\setcounter{biburlucpenalty}{200}
+\setcounter{biburlnumpenalty}{100}
 
 % ============= Citations ============
 % citetext
@@ -1270,21 +1276,32 @@
 \renewenvironment{creditoutput}[1]{%
   \par\noindent\textsc{#1}}{ }
 
-% Copied and modified answers.sty's \Writetofile
-% \newcommand{\Credit}[1]{%
-%    \@bsphack
-%    \Iffileundefined{credits}{}{%
-%       \Ifopen{credits}{%
-%          {%
-%             \let\protect\string
-%             \Ifanswerfiles{%
-%                \protected@iwrite{\@nameuse{credits@file}}{}{\XXX #1}%
-%             }{}%
-%          }%
-%       }{}%
-%    }%
-%    \@esphack
-% }
+% Print out the credits
+% 2022-Jun-05
+% Use a wide page and empty headers and footers.
+\newcommand{\outputcredits}[1]{
+  \begingroup
+  \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
+                % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
+                textwidth=6in,
+                inner=.8in, top=1in, bottom=1in, %
+                headsep=12pt,
+                bindingoffset=0.4in,
+                left=\jh@endnotesoutdent, % change the left margin
+                includeheadfoot}
+  \setlength{\headwidth}{\textwidth}
+  \parindent 0pt
+  \parskip=1ex plus 0.2ex minus 0.1ex %
+  % \def\enotesize{\normalsize}
+  % \renewcommand{\sectiontitlecontents}[1]{\relax} % Cause the "Section One.II" not to printed.
+  \vspace*{0.25ex plus 0.02ex}
+  \pagestyle{endmatter}\thispagestyle{bookemptypage}%
+  % \clearemptydoublepage
+  \input{#1}
+  \restoregeometry  % Matches the \newgeometry after the \begingroup
+  \endgroup
+}
+
 
 % Write the title of the chapter to the end notes and to the credits area.
 %  #1  Title of chapter, e.g., Background

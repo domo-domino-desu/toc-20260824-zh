@@ -453,7 +453,8 @@
 % \renewcommand{\chapter}[1]{%
 \newcommand{\jhchapter@nostar}[1]{%
   \stepcounter{chapter}%
-  \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}
+  % \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}
+  \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}} #1}
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
   \renewcommand{\thesubsection}{\arabic{subsection}}%
@@ -633,7 +634,7 @@
   % "\pdfendlink ended up in different nesting level than \pdfstartlink";
   % see https://tex.stackexchange.com/a/154184/121234
 \hypersetup{
-    bookmarks=true,         % show bookmarks bar?
+%  warning says it is already set:    bookmarks=true,         % show bookmarks bar?
     unicode=false,          % non-Latin characters in Acrobat’s bookmarks
     pdftoolbar=true,        % show Acrobat’s toolbar?
     pdfmenubar=true,        % show Acrobat’s menu?
@@ -1296,8 +1297,8 @@
   % \renewcommand{\sectiontitlecontents}[1]{\relax} % Cause the "Section One.II" not to printed.
   \vspace*{0.25ex plus 0.02ex}
   \pagestyle{endmatter}\thispagestyle{bookemptypage}%
-  % \clearemptydoublepage
-  \input{#1}
+  % \cleartoleftpage
+  {\small\input{#1}}
   \restoregeometry  % Matches the \newgeometry after the \begingroup
   \endgroup
 }

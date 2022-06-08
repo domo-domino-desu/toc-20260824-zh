@@ -528,13 +528,17 @@
 % \newcommand{\extrasectionautorefname}{extra}
 
 \setcounter{tocdepth}{2}
-% \makeatletter
-  \def\toclevel@extrasection{0}
+  \def\toclevel@extrasection{1}  % Make pdf bookmarks come out at right level
   \def\l@extrasection{\@dottedtocline{1}{1.5em}{2.3em}}
-% \makeatother
 
 \newcounter{extra}[chapter]
+% Counter for naming the extra sections
+% \newcounter{extrasectionbookmarknumber}
+%   \setcounter{extrasectionbookmarknumber}{0}
 \newcommand{\extra}[1]{%
+  % Put the bookmark in at the right level
+  % \pdfbookmark[2]{#1}{extrasection.\theextrasectionbookmarknumber}
+  % \stepcounter{extrasectionbookmarknumber}
   \stepcounter{extra}
   \setcounter{theorem}{0}
   \setcounter{section}{\value{extra}}

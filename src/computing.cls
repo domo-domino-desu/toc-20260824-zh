@@ -277,7 +277,7 @@
   \end{center}
   \vspace*{\fill}%
 }
-\usepackage{fmtcount}
+\usepackage{fmtcount}  % Display the part number as an English word "One"
 \renewcommand{\thepart}{\Numberstring{part}}
 
 %%%%%%%%%%%%%%%%%
@@ -285,7 +285,8 @@
 
 % As with sections, put the numbering in the margin using a marginpar
 % (actually a marginnote that has been hacked to always be on the left).
-\renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
+\newcommand{\chapterwrapper}{%
+  \@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
 % \newcommand{\jhchapter@nostar}{
 %   % Record that we are not inside an Extra section.
 %   % For more info search for "EXTRA SECTION TOGGLE".
@@ -353,7 +354,7 @@
                    keepaspectratio]{#2}}}%
   \vspace*{\stretch{1}} % vertically center
   \clearpage
-  \chapter{#3}\imagecredit{#1}%
+  \chapterwrapper{#3}\imagecredit{#1}%
   \Writetofile{\answerbodyfilename}{\protect\chapter{Chapter \Roman{chapter}: #3}}%
   \storeNumberstring{chapterasnumberstring}{chapter}% See answers description
 }
@@ -450,11 +451,13 @@
   % \def\l@jhchapterstarred{\@dottedtocline{0}{0em}{1.5em}}  Don't want 
   \newcommand{\l@jhchapterstarred}[2]{\relax}
 
+% \let\jhaddcontentsline=\addcontentsline %
 % \renewcommand{\chapter}[1]{%
 \newcommand{\jhchapter@nostar}[1]{%
   \stepcounter{chapter}%
-  % \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}
-  \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}} #1}
+  \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}
+  % \jhaddcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}} #1}
+  % \pdfbookmark[1]{Beginning of Document}{beg}
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
   \renewcommand{\thesubsection}{\arabic{subsection}}%
@@ -1142,7 +1145,9 @@
 
 % ========== Bibliography =============
 % biblatex 
+% \AtEndPreamble{\let\murray@saved@addtocontents\addtocontents} % see https://tex.stackexchange.com/a/513586/339
 \usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+% \AtEndPreamble{\let\addtocontents\murray@saved@addtocontents} % see https://tex.stackexchange.com/a/513586/339
   \renewcommand*{\bibfont}{\small}  % Use \small font for the body
 \addbibresource{computing.bib}
 % 2022-Jun-05 From xurl docs, to minimize bad lines

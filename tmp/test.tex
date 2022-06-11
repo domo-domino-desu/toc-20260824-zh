@@ -1,65 +1,108 @@
-\documentclass{article}
-\usepackage{mdframed}
-\mdfsetup{skipabove=1.5pt plus 0.2pt minus 0.1pt,
-          skipbelow=1.5pt plus 0.2pt minus 0.1pt}  % small whitespace between theorems
+\documentclass{book}
+\usepackage{etoolbox}
+\newtoggle{insideextrasection}
+\usepackage{titlesec}
+\usepackage{amsmath,amsthm}
+  \newcommand{\thetheorem}{thetheorem}
 
-\mdfdefinestyle{coloredstyle}{backgroundcolor=blue, %
-  leftmargin = 0pt, %
-  rightmargin = 0pt, %
-  innerleftmargin = \lrmarginaroundshadedtheorems, %
-  innerrightmargin = \lrmarginaroundshadedtheorems, %
-  innertopmargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
-  innerbottommargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
-  % innertopmargin = \tbmarginaroundshadedtheorems, %
-  % innerbottommargin = \tbmarginaroundshadedtheorems, %
-  skipabove= 4pt plus 1pt minus 1pt, % 0.5\topsep
-  skipbelow= 4pt plus 1pt minus 1pt, % 0.5\topsep
-  % skipabove= \resttbaroundshadedtheorems, %
-  % skipbelow= \resttbaroundshadedtheorems, %
-  splittopskip = 2pt, % 
-  splitbottomskip = 2pt, % 
-  topline=false,bottomline=false,leftline=false,rightline=false,}
+\pagestyle{plain}
+\makeatletter
 
-\theoremstyle{coloredstyle}
-\newmdtheoremenv[style=coloredstyle]{theorem}{Theorem}[section]
-\renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % don't include the chapter
-
-\AtBeginEnvironment{theorem}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
+\newcommand{\the@exercisenumber}{the-atsign-exercisenumber}
 
 
-\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
-\setlength{\footnotemargin}{-1em}
-\DefineFNsymbolsTM*{hefferon}{%
-  \textdagger    \dagger
-  \textdaggerdbl \ddagger
-  \textsection   \mathsection
-  \textbardbl    \|%
-  \#\#%
-  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
-}%
-\setfnsymbol{hefferon}
-\newlength{\footmarktotextglue}
-\global\footmarktotextglue=.1em plus .05em minus .02em %
-\global\footglue=0.65em plus.2em minus.1em % space between footnotes
-\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
-\smash{\@makefnmark}\nobreak
-\hskip\footmarktotextglue\relax#1% was .5em
-}
-\renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
+\renewcommand{\chapter}{\@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
+% Chapter
+% Main part chapters
+\newcounter{jhchapter}
+  \newcommand{\thejhcounter}{\Roman{jhchapter}}
+\titleclass{\jhchapter}{straight}[\part]
+\titleformat{\jhchapter}[display]%
+  {\normalfont\Large\bfseries}%  title format
+  {}% label
+  {0em}% sep
+  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \Roman{chapter}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
+  %[] % after-code
+\titlespacing*{\jhchapter}
+  {0pt}% left
+  {4.85ex plus 1.5ex minus 0.3ex}% before sep
+  {1.0ex plus 0.3ex minus 0.06ex}% after sep
+  % [] % right sep
+
+% jhchapter for notes and biblio  
+\newcounter{jhchapterstarred}
+  \newcommand{\thejhcounterstarred}{\relax}
+\titleclass{\jhchapterstarred}{straight}[\part]
+\titleformat{\jhchapterstarred}[display]%
+  {\normalfont\Large\bfseries}%  title format
+  {}% label
+  {0em}% sep
+  {}% before code
+  %[] % after-code
+\titlespacing*{\jhchapterstarred}
+  {0pt}% left
+  {4.85ex plus 1.5ex minus 0.3ex}% before sep
+  {1.0ex plus 0.3ex minus 0.06ex}% after sep
+  % [] % right sep
+
+% TOC
+  \def\toclevel@jhchapter{0}
+  \def\toclevel@jhchapterstarred{100}
+  % l@jhchapter is defined elsewhere to make roman numeral
+  % \def\l@jhchapter{\@dottedtocline{0}{0em}{1.5em}}
+  % Don't want two TOC entries for Notes and Biblio
+  % \def\l@jhchapterstarred{\@dottedtocline{0}{0em}{1.5em}}  Don't want 
+  \newcommand{\l@jhchapterstarred}[2]{\relax}
+
+% \renewcommand{\chapter}[1]{%
+\newcommand{\jhchapter@nostar}[1]{%
+  \stepcounter{chapter}%
+  % \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}
+  \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}} #1}
+  \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
+  \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
+  \renewcommand{\thesubsection}{\arabic{subsection}}%
+  \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % Extra sections change this so change it back
+  \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
+  \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
+  % 
+  \pagestyle{bookbody}%
+  \thispagestyle{bookemptypage}%
+  \jhchapter{#1}}
+  
+% Starred chapter
+\newcommand{\jhchapter@star}[1]{%
+  \stepcounter{chapter}%
+  % \addcontentsline{toc}{chapter}{\protect\numberline{\protect\hspace{\cftchapnumwidth} #1}}
+  \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
+  \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
+  \renewcommand{\thesubsection}{\arabic{subsection}}%
+  \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % Extra sections change this so change it back
+  \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
+  \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
+  % 
+  \pagestyle{bookbody}%
+  \thispagestyle{bookemptypage}%
+  \jhchapterstarred{#1}}
+\renewcommand{\thechapter}{\Roman{chapter}}
+\makeatother
 
 \usepackage{lipsum}
 \begin{document}
-\section{Section one}
+
+\lipsum[1]
+
+\chapter{Chapter one}
 \lipsum[1-10]
 
-Material from the first paragraph.\footnote{%
-  This footnote is called in the standard way and extends more than a
-  full line width.}
+\section{Section one}
+\lipsum[2-10]
 
-\begin{theorem}
-Material from the theorem.\footnotemark[2]
-\end{theorem}\footnotetext[2]{%
-    This footnote is called with mark and text and also extends more than a
-  full line width.\protect\lipsum[2]}
+\chapter{Chapter two}
+\lipsum[1-10]
+
+
+\section{Section one}
+\lipsum[2-10]
+
 \end{document}

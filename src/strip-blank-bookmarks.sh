@@ -6,5 +6,7 @@
 # It is some interaction with another package (?titlesec?).  I have been
 # unable to figure it out, so I am stripping them out of the book.out file.
 
+# save the old version
+cp book.out book.out.sav
 # If the secodn {}'s field is nonempty then print the line
-awk '$0 !~ /\BOOKMARK [^\{]*\{[^\{]*\{\}/ { print $0 }' book.out
+awk '$0 !~ /\BOOKMARK [^\{]*\{[^\{]*\{\}/ { print $0 }' book.out.sav > book.out

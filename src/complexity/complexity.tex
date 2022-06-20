@@ -7883,9 +7883,9 @@ Adding nondeterminism to Turing machines
   $\varepsilon$ transitions, since Turing machines are not 
   required to consume their input one character at a time.}.
 The computation tree might have some branches that 
-halt and some that don't, or some that compute differing outputs.
-The simplest approach is to 
-not describe a
+halt and some that don't, or maybe some output~$0$ while some output~$1$.
+The simplest approach is not to 
+define a
 \citetext{function computed by a nondeterministic machine}{%
   One thing that we can do is to 
   define that the nondeterministic machine computes
@@ -7894,8 +7894,9 @@ not describe a
   same value on the tape, which we call $f(\sigma)$.
   Otherwise, the value is undefined, $f(\sigma)\diverges$.
   }
-but instead do what we did with Finite State machines
-and describe when the input string is accepted, so they are language
+but instead to follow our strategy for Finite State machines
+and describe when the input string is accepted, so that they 
+these machines are language
 deciders.
 
 Of course, we have two mental models for how nondeterministic machines act.
@@ -7919,7 +7920,7 @@ because their computation fails to halt.
 But we are using these machines as language deciders 
 and we shall want to time them (below, in \cref{def:NP}), 
 including how long they take to not accept.
-So we will only define accepting when  
+So we will only define language-decinding when  
 all branches halt.
 
 \begin{definition} \label{def:NondeterministicAccepts}
@@ -7929,23 +7930,16 @@ every sequence of valid transitions from the starting configuration, is finite.
 Then $\TM$ \definend{accepts} an input string
 if at least one branch ends in an accepting state, and
 otherwise \definend{rejects} the input.
-\end{definition}
-
-Note the asymmetry:~acceptance requires only one accepting branch
-while rejecting requires that every branch does not accept.\footnote{%
-  Of course, if rejecting the input only required the existence of a
-  single non-accepting branch then we could have machines both accepting
-  and rejecting the same input.}
-% Note also that some branches may end in a state that is neither accepting
-% nor rejecting, so the condition for rejecting is stronger than simply
-% not accepting.
-% Also, for rejection there must be no non-halting branches.
-% \footnote{%
-%   We want to time these machines so we want to settle acceptance or
-%   rejection in a finite time.}
-
-\begin{definition}
-A nondeterministic Turing machine $\TM$
+% \end{definition}
+%
+% Note the asymmetry:~acceptance requires only one accepting branch
+% while rejecting requires that every branch does not accept.\footnote{%
+%   If rejecting the input only required the existence of a
+%   non-accepting branch then we could have machines both accepting
+%   and rejecting the same input.}
+%
+% \begin{definition}
+The machine
 % \definend{recognizes}\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language} 
 % the language~$\lang$ 
 % if for every input string, 
@@ -7959,10 +7953,12 @@ when the string is a member of $\lang$ then $\TM$ accepts it
 and when the string is not a member of~$\lang$ then~$\TM$ rejects it.
 \end{definition}
 
+That definition raises the question of whether adding nondeterminism to
+Turing machines adds any new capabilities.
 For Finite State machines, nondeterminism does not make any
-difference in that a language is recognized by 
-a nondeterministic Finite State machine if and only if it is 
-decided by some deterministic
+difference in that a language is decided by 
+some nondeterministic Finite State machine if and only if it is 
+decided by a deterministic
 Finite State machine.
 But Pushdown machines are different:~there are languages that
 a nondeterministic Pushdown machine can decide but that cannot be decided by any
@@ -7996,7 +7992,7 @@ eventually find that, and then $\TM[Q]$ accepts~$\sigma$.
 If $\TM$ does not accept~$\sigma$ then every branch in its computation tree
 halts, in a state that is not accepting.
 There is a longest such branch
-by K\"{o}nig's Lemma.
+(by K\"{o}nig's Lemma).
 So the breadth-first search will
 eventually exhaust all branches, and then $\TM[Q]$ rejects~$\sigma$.
 % For the other direction, suppose that a nondeterministic Turing
@@ -8017,25 +8013,34 @@ eventually exhaust all branches, and then $\TM[Q]$ rejects~$\sigma$.
 %</pf:DeterministicAndNondeterministicTMsDoTheSame>
 
 That proof is, basically, time-slicing.
-With everyday computers
+In everyday computing
 we simulate an unboundedly-parallel machine
 by having its CPU cycle among processes.
-This is a kind of dovetailing, of doing a breadth-first traversal of the 
-computation tree.
-When we use a time-slicing system we perceive that many things
+For example, if on a machine's screen we have a window open to edit a
+program and another window showing a video,
+the computer may do the two tasks by updating the editor for a time, then
+updating the video, then back to the editor, etc.
+% Modern CPU's are so fast that it can juggle the two without any 
+% noticable delays.
+When we use a such a system we perceive that many things
 are happening at once although actually there is only one, or
 at least a limited number of
 simultaneous physical computations.\footnote{%
   Depending on how many cores are in the CPU.}
+This is a kind of dovetailing, 
+a way of doing a breadth-first traversal of a
+number of computation branches.
 
-Thus nondeterminism
-doesn't add to what can be computed in principle.
+The lemma says that adding nondeterminism
+doesn't expand what Turing machines can in principle compute.
 Nevertheless, these machines have several interesting aspects.
-For one thing, we saw that nondeterministic Finite State machines
+We saw that nondeterministic Finite State machines
 can be a good impedance match for many problems and
 simlarly, nondeterministic Turing machines 
-will prove to help in thinking about some problems that on a serial device
+will help in thinking about some problems that on a serial device
 are hard to conceptualize.
+But that is not the most interesting thing.
+
 % The 
 % \probname{Traveling Salesman} problem\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
 % is an example.
@@ -11800,9 +11805,11 @@ is the color of~$T$ while the other is the color of~$F$.
 but we've drawn them with dotted lines so that they 
 visually stand out in the two graphs below.)
 
-The full structure\Dash the gadget\Dash is the next 
-figure.\index{gadget!example of}
-Here, $a$, $b$, and~$c$ are propositional literals;
+The full structure\Dash the gadget\Dash is here.\index{gadget!example of}
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity36.pdf}
+\end{center}
+The $a$, $b$, and~$c$ are propositional literals;
 for instance, in the diagram below labelled~($*$), the gadget on the right has
 $a=\neg x$, $b=\neg y$, and $c=z$.
 They are connected to~$G$ but we've used a graphical shorthand,
@@ -11812,9 +11819,6 @@ These connections are dashed to mark them as forcing
 $T$-ness or $F$-ness, as described above.
 Note also that the connections on the top right 
 force $n_2$ to match $T$'s color.
-\begin{center}
-  \includegraphics{complexity/asy/complexity/complexity36.pdf}
-\end{center}
 
 We will verify that this is $3$-colorable if and only if 
 nodes $a$, $b$, and~$c$ are not the color of~$F$.
@@ -12304,6 +12308,7 @@ while only $12\%$ thought that $\P=\NP$.
 %</discussion:PvsNPii>
 This subsection discusses some of the intuition involved in the question. 
 
+\margingraphic[l]{0.25\textwidth}{complexity/pix/license_plate_alan_selman.jpg}{A~Selman's plate, courtesy S~Selman} % {\protect\citetext{A~Selman's plate}{Photo courtesy of S~Selman.}} % https://rjlipton.wordpress.com/2021/01/29/alan-selman-1941-2021/
 First, we address the intuition around the conjecture that $\P\neq\NP$.
 Imagine a jigsaw puzzle. 
 We perceive that
@@ -12349,7 +12354,6 @@ And R~Williams puts the chance that $\P\neq\NP$ at $80$\%.
 
 % The collective failure by many talented people to find efficient algorithms for specific NP-complete problems strongly suggests that no efficient algorithm exists for any of them.
 
-\margingraphic[l]{0.25\textwidth}{complexity/pix/license_plate_alan_selman.jpg}{A~Selman's plate, courtesy S~Selman} % {\protect\citetext{A~Selman's plate}{Photo courtesy of S~Selman.}} % https://rjlipton.wordpress.com/2021/01/29/alan-selman-1941-2021/
 Some commentators
 have extended this way of thinking beyond
 Theoretical Computer Science.
@@ -14386,7 +14390,7 @@ about $1/b$.
 
 
 % ===============================================================
-\extra{Tractability and good-enoughness}  \label{extra:Tractability}
+\extra{Good-enoughness}  \label{extra:Tractability}
 A theory shapes the way that you look at the world, at how you 
 see and address what comes before you in practice.
 For instance, Newton's $F=ma$ points

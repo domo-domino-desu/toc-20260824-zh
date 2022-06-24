@@ -8309,7 +8309,7 @@ This difference is essential\Dash in particular,
 verifying that a Boolean formula is not satisfiable takes more than polytime
 (as far as we know today). 
 One consequence is that, where the complexity class 
-$\compclass{co-NP}$\index{co-NP@$\compclass{co-NP}$} 
+\compclass{co-$\NP$}\index{co-NP@\compclass{co-$\NP$}} 
 is the collection of complements of languages from $\NP$,
 we don't know whether $\NP=\compclass{co-NP}$.
 
@@ -8572,17 +8572,15 @@ The model of nondeterministic Turing machines
 is very fruitful.
 
 For one thing, the problems that are associated with
-these machines, the members of $\NP$, are eminently practical\Dash
-computer scientists have been trying to find fast solutions to them
-since computers have existed.
-% Much more on this in a later section.
+these machines, the members of $\NP$, are eminently practical, as witnessed by 
+the fact that computer scientists have been trying to 
+find fast solutions to many members of
+this class since computers have existed.
 For another, \cref{lem:VerifierAndGuesserEquiv} rephrases
 questions about nondeterministic machines as
 questions about deterministic ones, the verifiers.
 
-% The theme of this chapter is that we want to know which problems
-% have solution algorithms that are tractable and which do not.
-We close with an observation.
+We close with a refletion.
 In this section we have defined the class of problems $\NP$ for which
 there is a good way to verify the solution, 
 in contrast with the problems in~$\P$
@@ -8604,10 +8602,10 @@ whether the two classes $\P$ and~$\NP$ differ.
 % \end{exercise}
 % \recommended
 % \begin{exercise}
-% Your friend says, ``The definition is tht 
+% Your friend says, ``The definition is that 
 % $\NP$ is the set of problems with deterministic verifiers.''
-% They've not quite got all of it;
-% gently prompt them.
+% They've not quite got it all;
+% give them a prompt.
 % \begin{answer}\verified
 % The assertion that $\NP$ is the set of problems with deterministic 
 % verifiers is correct, but not complete.
@@ -9656,38 +9654,61 @@ and consequently on the length of~$\omega$.
 % answers"
 When we studied incomputability we considered a sense in which
 some problems are harder than others.
-Consider the
-$\computablefunction{halts\_on\_three\_checker}$\index{Halts On Three problem@\probname{Halts On Three} problem}  
-routine that, given~$x$,
-decides whether Turing machine~$\TM$ halts on input~$3$.
-We showed that if we could solve the Halts-On-Three problem 
-then we could solve the \HP.
-We say
-$K\leq_T\computablefunction{halts\_on\_three\_checker}$.
-That is, we write $B\leq_T A$ 
-when there is a computable function~$f$ such that
-$x\in B$ if and only if $f(x)\in A$. 
-We say that~$B$ Turing-reduces to~$A$.\index{Turing reducible}
+Recall the
+$\probname{Halts on Three}$ problem\index{Halts On Three problem@\probname{Halts On Three} problem}  
+that
+decides membership in
+$S=\set{e\in\N\suchthat \TMfcn_e(3)\converges}$.
+We showed that if we could solve this problem 
+then we could solve the \HP{} and 
+we denoted this relationship with
+$K\leq_TS$.
+In general, a set $B$ Turing-reduces to~$A$,\index{Turing reducible}
+written $B\leq_T A$, 
+if there is an oracle~$A$ Turing machine, $\TM_e^A$ that computes the
+characteristic function of $B$.
+\begin{equation*} 
+  \TMfcn_e^A(x)=
+  \begin{cases}
+  1 &\case{if $x\in B$}  \\
+  0  &\case{otherwise}
+  \end{cases}
+  =\charfcn{B}(x)
+\end{equation*}
 
-% This is an instance of a larger phenemenon.
-In general, 
-we say that problem~$B$ `reduces to' problem~$A$
-when to solve~$B$, it suffices to solve~$A$.
-% Thus, it may be that getting to the store reduces to finding the car keys.
-% In Calculus, finding the maximum of a polynomial function
-% on a closed interval reduces to finding the zeroes of the derivative.
-An example is that, given a list of numbers, the problem of finding the median
-reduces to the problem of sorting the list.
-The idea is that knowing~$A$ 
-tells you $B$ and so $A$ is at least as hard as $B$, or can be thought of as
+Any time that there is a sense in which to solve problem~$B$, 
+it suffices to solve~$A$
+we say that $B$ `reduces to'~$A$.
+An example is that, given a list of numbers, the problem of finding the 
+maximum reduces to the problem of sorting the list.
+The idea is that solving~$A$ 
+gets you~$B$ and so $A$ is at least as hard as $B$, or can be thought of as
 containing at least as much information as~$B$.
 
-A reduction translates problems between domains. 
-Turing reduction $\leq_T$ translates via arbitrary computable functions.
-But in this chapter we are focused on solving problems efficiently
-so we will say
-that~$\lang_1$ reduces to $\lang_0$ if a method for solving 
-$\lang_0$ efficiently gives a way to solve~$\lang_1$ efficiently.
+So a reduction translates between problem domains. 
+As recapped above, Turing reduction $\leq_T$ translates via 
+any total computable function~$f$ at all.
+However in this chapter we are focused on solving problems efficiently
+so we will require that $f$ be computable in polytime.
+
+A
+\definend{Cook reduction}\index{Cook reducibility}\index{reducibility!Cook} 
+or  \definend{polytime Turing reduction}\index{Turing reducibility}\index{reducibility!polytime Turing},
+denoted $B\leq_T^pA$, 
+uses an oracle Turing machine 
+$\TMfcn_e^{A}=\charfcn{B}$ that runs in polytime.
+
+There is another reduction.
+We say that $B$ is \definend{many-one reducible} to~$A$, denoted $B\leq_m A$,
+if there is a total computable function~$f$ such that $x\in B$ if and only if
+$f(x)\in A$.\footnote{Another reducibilities is 
+  one-one reducibility, where the function must be one-to-one.}
+The difference is that in Cook reduction, we answer questions about $B$
+by asking a number of questions of an $A$ oracle.  
+In contrast, with $\leq_m$, we make only one oracle call
+and the reduction returns that call's result.
+Using this reduction, and taking the function to be computable in polytime,
+is the most common way to relate problems.
 
 %<*def:PolyTimeReduction>
 \begin{definition}
@@ -9700,43 +9721,34 @@ or
 \definend{polynomial time many-one reducible},\index{reducibility!polytime many-one}
 written 
 \definend{$\lang_1\leq_p\lang_0$} or \definend{$\lang_1\leq_m^p\lang_0$},
-if there is a computable 
+if there is a 
 \definend{reduction function}\index{reduction function}\index{function!reduction}
 or \definend{transformation function}\index{transformation function|see{reduction function}}
-$\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ that runs in polynomial time
+$\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ that 
+is computable in polynomial time
 and such that
 $\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.
 \end{definition}\footnotetext[1]{%
-  There are other reductions.
-  A
-  \protect\definend{Cook reduction}\index{Cook reducibility}\index{reducibility!Cook} 
-  or  
-  \definend{polytime Turing reduction}\index{Turing reducibility}\index{reducibility!polytime Turing},
-  $\lang_1\leq_T^p\lang_0$, 
-  determines membership in $\lang_1$
-  using a polytime Turing machine that can
-  ask a number of questions to an $\lang_0$.  
-  In contrast, Karp reduction 
-  can only make one oracle call,
-  and the reduction returns the result of that call.
-  If there is a Karp reduction between languages then there
-  is a Cook reduction also,
-  but experts believe the converse does not hold.
-  For example, with Cook reducibility we get 
-  $\text{\protect\probname{Chromatic Number}}\leq_T^p\text{\protect\probname{Graph Colorability}}$\index{Chromatic Number@\probname{Chromatic Number} problem}\index{Graph Colorability problem@\probname{Graph Colorability} problem} 
-  by first 
-  seeing if the graph is $2$-colorable, then seeing if it is 
-  $3$-colorable, etc.
-  But there is no evident way to do this with one oracle call, so 
-  it does not seem that there is a Karp reduction.
-  Another example is that the complexity classes $\NP$ and 
-  $\text{co-\NP}$ (with languages whose complement is in $\NP$)
-  are equal under Cook reduction but appear 
-  to be separate under Karp reduction.
-  In short, Karp reduction gives a more fine-grained division of
-  the problems.}
-  % Consequently, Karp reduction the right choice for a first look at
-  % complexity classes.
+If there is a Karp reduction then there
+is a Cook reduction also
+but experts believe that the converse does not hold, 
+For example, with Cook reducibility we get 
+$\text{\protect\probname{Chromatic Number}}\leq_T^p\text{\protect\probname{Graph Colorability}}$\index{Chromatic Number@\probname{Chromatic Number} problem}\index{Graph Colorability problem@\probname{Graph Colorability} problem} 
+by first 
+seeing if the graph is $2$-colorable, then seeing if it is 
+$3$-colorable, etc.
+But there is no evident way to do this with one oracle call so 
+it does not seem that there is a Karp reduction.
+Another example is that the complexity classes $\NP$ and 
+\compclass{co-$\NP$} % won't be correctly processed by makeindex: \protect\index{co-NP@\protect\compclass{co-$\protect\NP$}} 
+(containing languages whose complement is in $\NP$)
+are equal under Cook reduction but appear 
+to be separate under Karp reduction.
+So Karp reduction seems to give a more 
+fine-grained division of the problems and
+consequently, Karp reduction is the right choice for a first look at
+complexity classes.
+}
 %</def:PolyTimeReduction>
 
 \begin{fig}[fig:ProblemBeanWithReductions]{This 

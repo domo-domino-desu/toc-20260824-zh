@@ -9522,25 +9522,37 @@ verify.
 \end{answer}
 \end{exercise}
 
-% \begin{exercise}  \label{exer:NonDeterAndDeterTMsHaveSameLangs}
+\begin{exercise}  \label{exer:NonDeterAndDeterTMsHaveSameLangs}
 % Finishing the proof of 
 % \cref{lem:NonDeterAndDeterTMsHaveSameLangs} requires
-% a proof that if a nondeterministic Turing machine recognizes
-% a language then there is a deterministic machine that also
-% recognizes it. 
-% \begin{answer}\verified
-% Suppose that a nondeterministic Turing
-% machine~$\TM$ recognizes a language~$\lang$.
-% We will describe how a deterministic machine~$\TM[Q]$ can do the same.
-% The nondeterministic machine~$\TM$ generates a computation tree
-% and~$\TM[Q]$ can do a breadth-first traversal of that tree.
-% Fix an input~$\sigma$.
-% If the tree triggered by~$\sigma$ has an accepting branch then~$\TM[Q]$ will
-% eventually reach it, and will accept that input.
-% If the tree has no accepting branch then~$\TM[Q]$ will never find one, 
-% and so will not accept~$\sigma$.
-% \end{answer}
-% \end{exercise}
+% a proof that if 
+The definition of when a nondeterministic machine decides a language,
+\Cref{def:NondeterministicAccepts}, requires that every branch in the 
+computation tree is finite.
+For language recognition we drop that.
+We say that
+a nondeterministic Turing machine~$P$ 
+\definend{recognizes}\index{nondeterministic machine!recognizes a language}\index{recognizes a language!nondeterministic machine}
+a language~$\lang$ when if $\sigma\in \lang$ then
+there is at least one branch in the computation tree that accepts~$\sigma$,
+while if $\sigma\notin\lang$ then no branch in the computation tree accepts
+(some branches may fail to accept because they are infinite).  
+Show that if there is a nondeterministic machine that recognizes a language
+then there is a deterministic machine that also
+recognizes it. 
+\begin{answer}\verified
+Suppose that a nondeterministic Turing
+machine~$\TM$ recognizes a language~$\lang$.
+We will describe a deterministic machine~$\TM[Q]$ that does the same.
+Given an input~$\sigma$, 
+the nondeterministic machine~$\TM$ generates a computation tree
+and~$\TM[Q]$ can do a breadth-first traversal of that tree.
+If the tree triggered by~$\sigma$ has an accepting branch then~$\TM[Q]$ will
+eventually reach it, and will accept that input.
+If the tree has no accepting branch then~$\TM[Q]$ will never find one, 
+and so will not accept~$\sigma$.
+\end{answer}
+\end{exercise}
 
 \begin{exercise}  \label{exer:DefnYieldsNondeterministicTM}
 Following the definition of Turing machine,
@@ -9668,55 +9680,64 @@ written $B\leq_T A$,
 if there is an oracle~$A$ Turing machine that computes~$B$, so that 
 $\TMfcn_e^A=\charfcn{B}$.
 Said another way, we can answer questions about membership in~$B$ by
-being given access to a routine that can answer a finite number of
+being given access to a routine that can answer
 questions about membership in~$A$.
 
-In Mathematics we say that $B$ `reduces to'~$A$ any time that 
-there is a sense in which to solve problem~$B$, 
+In this chapter we are focused on solving problems efficiently
+so we define
+a
+\definend{Cook reduction}\index{Cook reducibility}\index{reducibility!Cook} 
+or  \definend{polytime Turing reduction}\index{Turing reducibility}\index{reducibility!polytime Turing},
+denoted $B\leq_T^pA$, 
+using an oracle Turing machine 
+$\TMfcn_e^{A}=\charfcn{B}$ that runs in polytime.
+
+This is part of a larger phenomenon where in Mathematics we say that $B$ 
+`reduces to'~$A$ any time that 
+in order to solve problem~$B$, 
 it suffices to solve~$A$.
 An example is that the problem of finding the 
-maximum of a list of numbers reduces to the problem of sorting the list\Dash
+maximum of a list of numbers reduces to the problem of sorting the list,
+because
 if you could sort then you could find the maximum (and the minimum, and
 the median, and many more things).
-The idea is that solving~$A$ 
-gets you~$B$ and so $A$ is at least as computationally hard a problem as $B$,
+The idea is that $A$ is at least as computationally hard as $B$,
 or that the language~$A$ contain at least as much information 
 as~$B$.\footnote{%
   We will not give a rigorous definition of this.}
 
 % So a reduction translates between problem domains. 
-As recapped above, Turing reduction $\leq_T$ translates via 
-any total computable function~$f$ at all.
-However in this chapter we are focused on solving problems efficiently
-so we will require that $f$ be computable in polytime.
-A
-\definend{Cook reduction}\index{Cook reducibility}\index{reducibility!Cook} 
-or  \definend{polytime Turing reduction}\index{Turing reducibility}\index{reducibility!polytime Turing},
-denoted $B\leq_T^pA$, 
-uses an oracle Turing machine 
-$\TMfcn_e^{A}=\charfcn{B}$ that runs in polytime.
-
-There is another reduction.
-Let $B$ be the set of prime numbers and suppose that 
-$A=\set{p^2+1\suchthat \text{$p$ is prime}}$.
-Clearly we can compute
-answers to questions about membership in~$B$
-from answers to questions about~$A$:~it is as simple as
-$x\in B$ iff $x^2+1\in A$.
-In some sense, $A$ is a translated instance of~$B$.
-We say that $B$ is \definend{many-one reducible} to~$A$, denoted $B\leq_m A$,
-if there is a total computable function~$f$ such that $x\in B$ if and only if
-$f(x)\in A$.\footnote{Another reducibility is 
-  one-one reducibility, where the function must be one-to-one.}
+Accordingly, there are reductions other than Turing reductions.
+Let $S=\set{e\in\N\suchthat \TMfcn_e(3)\converges}$ 
+and suppose that $T=\set{e^2+1\suchthat \TMfcn_e(3)\converges}$.
+We can compute
+answers to questions about membership in~$T$
+from answers to questions about~$S$:~it is as simple as
+$x\in S$ iff $x^2+1\in T$.
+Briefly, $T$ is a translation of~$S$.
+We say that $B$ is \definend{many-one reducible}\index{many-one reducible}\index{reducible!many-one} 
+to~$A$, denoted $B\leq_m A$,
+if there is a total computable 
+\definend{translation function}~$f$\index{translation function}\index{function!translation}
+such that $x\in B$ if and only if
+$f(x)\in A$.
+% \footnote{The name comes from the fact that still 
+%   another reducibility is one-one reducibility, 
+%   where the function must be one-to-one.}
 
 The difference from Turing reducibility
 is that for $B\leq_T A$, we answer questions about membership in $B$
-by asking a number of questions of an $A$ oracle.  
-In contrast, with $\leq_m$, we make only one oracle call
+by asking a number of questions of an $A$ oracle,
+and possibly using doing more processing with that information.  
+In contrast, with $\leq_m$ we make only one oracle call
 and the reduction returns that call's result.
+This difference gives that, while obviously if $B\leq_m A$ then $B\leq_T A$, 
+the converse does not hold and so
+Turing reductions are more general than many-one reductions
+(\cref{exer:TReducableDiffersFromMReducible} shows that the two differ). 
 
-Using many-one reduction and taking the function to be computable in polytime,
-is the most common way to relate problems; in common practice, this is what
+Using many-one reduction and taking the function to be computable in polytime
+is the most common way to relate problems\Dash in practice this is what
 researchers mean when they say `polytime reducible'.
 
 %<*def:PolyTimeReduction>
@@ -9740,7 +9761,7 @@ $\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.
 \end{definition}\footnotetext[1]{%
 If there is a Karp reduction then there
 is a Cook reduction also
-but experts believe that the converse does not hold, 
+but experts believe that the converse does not hold.
 For example, with Cook reducibility we get 
 $\text{\protect\probname{Chromatic Number}}\leq_T^p\text{\protect\probname{Graph Colorability}}$\index{Chromatic Number@\probname{Chromatic Number} problem}\index{Graph Colorability problem@\probname{Graph Colorability} problem} 
 by first 
@@ -10177,23 +10198,24 @@ and so there are only countably many such languages.
 \end{exercise}
 
 \begin{exercise}
-Suppose that $\prob[A]\leq_p\prob[B]$.
+Suppose that $\prob_1\leq_p\prob_0$.
 Which is true?
 \begin{exparts*}
-\item A fast algorithm for $\prob[A]$ would give a fast algorithm
-for $\prob[B]$.
-\item A fast algorithm for $\prob[B]$ would give a fast one
-for $\prob[A]$.
+\item A fast algorithm for $\prob_0$ would give a fast algorithm
+for $\prob_1$.
+\item A fast algorithm for $\prob_1$ would give a fast one
+for $\prob_0$.
 \end{exparts*}
 \begin{answer}
-A fast algorithm for $\prob[B]$ would give a fast one
-for $\prob[A]$.
+A fast algorithm for $\prob_0$ would give a fast one
+for $\prob_1$.
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 Suppose $\lang_1\leq_p\lang_0$.
-Which is right: $\lang_1$ reduces to $\lang_0$, or
+Which is the right way to use the phrase `reduces to': $\lang_1$ 
+reduces to $\lang_0$, or
 $\lang_0$ reduces to~$\lang_1$?
 \begin{answer}
 When $\lang_1\leq_p\lang_0$ then
@@ -11319,6 +11341,42 @@ then because $i\notin F$,
 the language decided by $\TM_{s(e,i)}$ is an infinite subset 
 of $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$, and so is not 
 regular.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}  \label{exer:TReducableDiffersFromMReducible}
+As discussed at the start of the section,
+$B\leq_T A$
+if there is an oracle~$A$ Turing machine that computes~$B$, so that 
+$\TMfcn_e^A=\charfcn{B}$.
+And, $B\leq_mA$ if there is a total computable function so that
+$x\in B$ if and only if $f(x)\in A$.
+We will show that the two reductions $\leq_T$ and $\leq_m$ differ.
+\begin{exparts}
+\item 
+Let $B$ be the nonempty computable set $\set{2n\suchthat n\in\N}$
+of even numbers and let $A$ be the empty set.
+Show that $B\leq_T A$ but it is not the case that $B\leq_m A$.
+\item
+Observe that $A\leq_T \setcomp{A}$ for all sets, and so $K\leq_T \setcomp{K}$.
+Show that if $B\leq_m A$ and $B$ is computably enumerable then 
+so is $A$, and conclude that $K$ is not many-one reducible to its complement.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item The oracle machine $\TM^A$ can just ignore the oracle and compute
+membership in the set~$B$.
+(By the way, note that this computation happens in polytime.)
+But for $B\leq_m A$, no function giving $x\in B\Leftrightarrow f(x)\in A$
+exists because never is $f(x)$ an element of $A=\emptyset$. 
+\item 
+Suppose that $B\leq_m A$ and that $B$ is computably enumerable.
+As we enumerate $B=\set{b_0,b_1 \ldots}$ we can also enumerate
+$A=\set{f(b_0),f(b_1)\ldots}$, and therefore $A$ is computably enumerable.
+As to the conclusion, if a set and its complement are both
+computably enumerable then both are computable.
+But of course $K$ is not computable. 
 \end{exparts}
 \end{answer}
 \end{exercise}

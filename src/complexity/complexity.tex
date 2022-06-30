@@ -11961,7 +11961,7 @@ for each remaining case.
 \end{tabular}
 \end{center}
 
-Here is how to combine multiple clauses.
+Here is how to combine multiple gadgets for multiple clauses.
 This is the graph that the reduction function outputs for
 the input expression
 $(x\vee y\vee z)\wedge(\neg x\vee \neg y\vee z)$.
@@ -11986,27 +11986,28 @@ The next example illustrates.
 
 \begin{example} 
 Scheduling is a rich source of difficult combinatorial problems.
-Usually, colleges make a schedule by putting classes into
-time slots and after that students pick which classes they will take,
-hoping to find a set of time slots when the classes are offered 
-that allow them to take what they need.
-Imagine if instead, first each student submits their list of classes
-and then the college tries to 
+One is the problem of scheduling college classes.
+Usually, it starts with colleges making a schedule by putting classes into
+time slots such as Tuesday and Thursday from $8$ until $9$:$20$.
+Then students try to find the classes that they need
+and that are offered in time slots that do not conflict.
+Imagine if instead the process began with each student submitting 
+their list of desired classes, and then the college tries to 
 find a non-conflicting schedule of time slots and rooms
-for those classes.
+to accomodate those requests.
 
-Specifically, consider this college:~it has $t=12$ available time slots,
-such as Tuesday and Thursday from $8$ until $9$:$20$.
+Specifically, consider a college with $t=12$ available time slots.
 It must schedule $n=420$ classes into $r=60$ classrooms.
 (We will ignore many issues, such as that science lab classes must be in 
 labratory rooms.) 
-Since $12\cdot 60=720$ and it need only accomodate
+Since $12\cdot 60=720$ and we need only accomodate
 $420$ classes, this might seem easy. 
-But when their $1724$ students submit course requests, they 
-create conflicts:~each pair of classes requested 
-puts the restriction on the schedule that those classes
+But when the $1724$ students submit course requests, they 
+create limits:~when a student submits their list then each pair of classes 
+on it 
+puts the restriction on the college-wide schedule that those two classes
 cannot meet at the same time.
-Can the college find a schedule, despite all those constraints?
+Can the college find a schedule despite all those constraints?
 
 The \definend{\probname{Class Scheduling}}\index{Class Scheduling problem@\probname{Class Scheduling} problem}
 problem inputs the number of time slots and rooms,
@@ -12015,104 +12016,110 @@ from each student,
 and decides if there is a way to allocate classes
 so that there is no conflict.
 \begin{equation*}
-  \lang=\set{\sequence{t,r,\set{s_0,s_1,\ldots }}\suchthat \text{where $s_i$ is a set of classes, a schedule exists}}
+  \lang=\set{\sequence{t,r,\set{s_0,s_1,\ldots }}\suchthat \text{a nonconflicting schedule exists}}
 \end{equation*}
 We will show that this problem is $\NP$-complete.
 
-It is a member of $\NP$ because we can take as a witness~$\omega$ an
-assignment of classes to rooms and times.
-Verifying in polytime 
-that $\omega$ meets the restrictions, such as that there are
-not too many time slots and that each student's list has no conflict,
+It is a member of $\NP$ because we can take as the witness~$\omega$ 
+a schedule, a nonconflicting assignment of classes to rooms and times.
+Writing a verifier that inputs
+$\sigma=\sequence{t,r,\set{s_0,s_1,\ldots }}$ and $\omega$
+and checks in polytime 
+that $\omega$ meets the restrictions, such as that 
+each student's list has no conflict,
 is straightforward.
 
-Typically the more challenging half is showing that a problem is $\NP$~hard.
-This problem a good match to the 
-\probname{Graph Colorability} problem:\index{Graph Colorability problem@\probname{Graph Colorability} problem}
-the colors are the $t$-many time slots,
+What remains is show that this problem is $\NP$~hard.
+This problem is a good fit with the 
+\probname{Graph Colorability} 
+problem:~the\index{Graph Colorability problem@\probname{Graph Colorability} problem}
+colors are the $t$-many time slots,
 the nodes of the graph are the $n$-many classes, and two nodes are 
 connected when some student has requested them both.
-(There is a further restriction about the number of available rooms.)
-
+(There is a further restriction about the number of available rooms
+that we will handle along the way.)
 The prior example shows that \probname{Graph Colorability} 
 is $\NP$~hard for $k=3$ colors and an extension of that argument shows 
 the same for any larger~$k$.
 % (When $k=1$ or $k=2$, the problem is solvable in polytime but 
 % we assume that this college has more than one or two rooms.)
-So we will show that \probname{Class Scheduling} is $\NP$~hard
+Consequently, we will show that \probname{Class Scheduling} is $\NP$~hard
 by showing $\probname{Graph Colorability}\leq_p\probname{Class Scheduling}$.
 
-So assume that we are given an instance of the 
-\probname{Graph Colorability} problem,
+Therefore, assume that we are given an instance of 
+\probname{Graph Colorability},
 a graph $\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$ along with some 
 natural number~$k$.
-For the associated instance of the \probname{Class Scheduling} problem,
+For the associated instance of \probname{Class Scheduling}
 we produce a college. 
 The number of classes is $n=\sizeof{V}$, as is the number of rooms,
 and the number of time slots is~$k$.
-Each student takes two classes, and each edge in 
-$\mathcal{E}$ names some student's two.
-Clearly from the input instance we can produce the
-output instance in polytime.
-Also clearly the \probname{Graph Colorability} instance has a solution
+Each student takes two classes and each edge in 
+$\mathcal{E}$ names a student's two.
+Clearly from the input instance we can in polytime produce the
+output instance.
+Also clearly, the \probname{Graph Colorability} instance has a solution
 if and only if the associated \probname{Class Scheduling} instance has a 
-working schedule.
+nonconflicting schedule.
 \end{example}
 
 % \medskip
 Before we leave this discussion, we address a
 natural question:~lots of problems are $\NP$-complete but
 what problems are not?
+
 Trivially, the definition gives that 
 the empty language and the language of all strings are 
 not complete.
 Also trivially, 
 if a problem is not in $\NP$ then it is not $\NP$-complete.
 For instance,
-like the problem of finding a chess strategy, a problem can be so
+as with the problem of finding a chess strategy, a problem can be so
 hard that we cannot even check its solution in polytime.
 
-This is 
-\citetext{tied to the question of whether or not $\P$ is unequal 
+The answer to which peroblems are not $\NP$~complete is 
+\citetext{tied to whether or not $\P$ is unequal 
   to~$\NP$}{%
   Ladner's theorem is that if $\protect\P\neq\protect\NP$ 
   then there is a problem in 
   $\protect\NP-\protect\P$ that is not $\protect\NP$~complete.},
 which we address in the next subsection.
-But 
-\citetext{so that we have not just brushed past the question}{%
+But so that we have not just brushed past the issue
+\citetext{to make the question interesting assume that $\P\neq\NP$}{%
   The only sure way to show that a decision problem is not $\NP$-complete 
   is to prove that its answer is yes for all instances or no for all 
   instances. Everything else depends on the assumption that 
   $\P\neq \NP$, because if $\P = \NP$ then every nontrivial decision 
   problem is $\NP$-hard
   (from SE user 
-   David Eppstein, \url{https://mathoverflow.net/a/9226}).},  
-assume that $\P\neq\NP$.
-Any text on algorithms is full of descriptions of various problems that we 
-can solve in polytime, and
-with $\P\neq\NP$ these problems are not 
+   David Eppstein, \url{https://mathoverflow.net/a/9226}).}.
+With that, most familiar problems are not $\NP$~complete:~any
+text on algorithms is full of descriptions of problems that we 
+can solve in polytime and
+$\P\neq\NP$ implies that these problems are not 
 $\NP$-complete.
 
-Finally consider $\NP-\P$, the problems in $\NP$ that cannot be solved
+Still assuming that $\P\neq\NP$, next consider $\NP-\P$, 
+the problems in $\NP$ that cannot be solved
 with a polytime algorithm.
 Imagine that we are studying a problem that is in~$\NP$  
 and no polytime
 algorithm occurs to us, even after considerable effort,
-and in addition we are unable to show that it is $\NP$ complete. 
-We might suspect that it is not complete.
-But proving that is astonishingly difficult\Dash 
-at this moment the field is at a loss for techniques to do it.
+and in addition we are unable to show that it is $\NP$~complete. 
+It is worth noting that proving that such a problem is not $\NP$~complete
+is astonishingly difficult\Dash 
+at this moment the field does not know how to do it.
 Here are a few examples, problems that many experts believe are
 in $\NP-\P$ but not $\NP$~complete, 
-although at this moment we don't know how to prove it:
+although no one can currently prove that:
 (i)~the \probname{Prime Factorization}\index{Prime Factorization problem@\probname{Prime Factorization} problem}
-problem is to produce the prime factorization of a natural number,\footnote{%
+problem is to produce the prime factorization of a given natural 
+number,\footnote{%
   In 1994, P~Shor discovered an algorithm for a quantum computer that
   solves the \protect\probname{Prime Factorization} problem in polynomial time.
-  This will have significant implications if quantum computation proves
-  to be possible to engineer.
-  But on classical computers, most experts believe the problem is
+  This will have significant implications if we manage the engineering that we 
+  need to build quantum computers.
+  However, on classical computers most experts believe that this problem is
   is in $\NP-\P$ but not complete.}
 (ii)~the
 \probname{Graph Isomorphism}\index{Graph Isomorphism problem@\probname{Graph Isomorphism} problem} 
@@ -12120,7 +12127,7 @@ problem is to decide if two graphs are isomorphic, and (iii)~the
 \probname{Vertex-to-Vertex Path}\index{Vertex-to-Vertex Path problem@\probname{Vertex-to-Vertex Path} problem}
 problem is to find if there is a path between given vertices.  
 As always though, the standard caution applies that
-without proof these judgements could be wrong.
+without proof these judgements could be mistaken.
 \index{NP complete@$\NP$ complete|)}
 
 

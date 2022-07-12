@@ -2088,3 +2088,125 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+
+// ============ SAT \leq_p clique =============
+
+int picnum = 38;
+picture pic;
+setdefaultgraphstyles();
+
+node v00=ncircle("$0,x_0$"),
+  v01=ncircle("$0,\neg x_1$"),
+  v02=ncircle("$0,x_2$"),
+  v10=ncircle("$1,\neg x_0$"),
+  v11=ncircle("$1,x_2$"),
+  v12=ncircle("$1,\neg x_3$"),
+  v20=ncircle("$2,\neg x_1$"),
+  v21=ncircle("$2,\neg x_2$");
+
+// calculate nodes position
+real u=1.5cm;
+real v=0.8*u;
+v00.pos = (-2*u,0*v);
+v01.pos = new_node_pos(v00, 35, 0.55*v);
+v02.pos = new_node_pos(v01, 35, 0.55*v);
+hlayout(4*u, v00, v10);
+v11.pos = new_node_pos(v10, 145, 0.55*v);
+v12.pos = new_node_pos(v11, 145, 0.55*v);
+v20.pos = (-0.7*u,-0.5*v);
+hlayout(1.4*u, v20, v21);
+
+// draw edges
+draw(pic,
+     (v00--v11), // clause 0 to clause 1
+     (v00..bend(10)..v12),
+     (v01--v10),
+     (v01--v11),
+     (v01--v12),
+     (v02..bend(10)..v10),
+     (v02..bend(10)..v11),
+     (v02--v12),
+     (v00--v20), // clause 0 to clause 2
+     (v00..bend(-10)..v21),
+     (v01--v20),
+     (v01--v21),
+     (v02--v20),
+     (v10..bend(10)..v20), // clause 1 to clause 2
+     (v10--v21),
+     (v11--v20),
+     (v12--v20),
+     (v12--v21)
+);
+// draw(pic, v00--v11, WALK_PEN);  // show 3-clique
+// draw(pic, v11--v20, WALK_PEN);
+// draw(pic, v20--v00, WALK_PEN);
+
+// draw nodes
+draw(pic,
+     v00, v01, v02,
+     v10, v11, v12,
+     v20, v21);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ...............................
+int picnum = 39;
+picture pic;
+setdefaultgraphstyles();
+
+node v00=ncircle("$0,x_0$"),
+  v01=ncircle("$0,\neg x_1$"),
+  v02=ncircle("$0,x_2$"),
+  v10=ncircle("$1,\neg x_0$"),
+  v11=ncircle("$1,x_2$"),
+  v12=ncircle("$1,\neg x_3$"),
+  v20=ncircle("$2,\neg x_1$"),
+  v21=ncircle("$2,\neg x_2$");
+
+// calculate nodes position
+real u=1.5cm;
+real v=0.8*u;
+v00.pos = (-2*u,0*v);
+v01.pos = new_node_pos(v00, 35, 0.55*v);
+v02.pos = new_node_pos(v01, 35, 0.55*v);
+hlayout(4*u, v00, v10);
+v11.pos = new_node_pos(v10, 145, 0.55*v);
+v12.pos = new_node_pos(v11, 145, 0.55*v);
+v20.pos = (-0.7*u,-0.5*v);
+hlayout(1.4*u, v20, v21);
+
+// draw edges
+draw(pic,
+     (v00--v11), // clause 0 to clause 1
+     (v00..bend(10)..v12),
+     (v01--v10),
+     (v01--v11),
+     (v01--v12),
+     (v02..bend(10)..v10),
+     (v02..bend(10)..v11),
+     (v02--v12),
+     (v00--v20), // clause 0 to clause 2
+     (v00..bend(-10)..v21),
+     (v01--v20),
+     (v01--v21),
+     (v02--v20),
+     (v10..bend(10)..v20), // clause 1 to clause 2
+     (v10--v21),
+     (v11--v20),
+     (v12--v20),
+     (v12--v21)
+);
+draw(pic, v00--v11, WALK_PEN);  // show 3-clique
+draw(pic, v11--v20, WALK_PEN);
+draw(pic, v20--v00, WALK_PEN);
+
+// draw nodes
+draw(pic,
+     v00, v01, v02,
+     v10, v11, v12,
+     v20, v21);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

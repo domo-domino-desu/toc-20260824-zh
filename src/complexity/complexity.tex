@@ -9947,11 +9947,7 @@ $f(\sequence{S,T})\in\lang_1$.
 Also clearly $f$ can be done in polytime.
 \end{example}
 
-The prior two examples show one kind of 
-natural reduction, when one of the problems
-is a special case of the other.
-
-In addition, the prior example suggests that where the transformation
+The prior example suggests that where the transformation
 from one problem set to another is concerned, the details, such as the
 exact descriptions of the language decision problems involved,
 can hide the ideas.
@@ -10085,94 +10081,79 @@ That's clear, although the argument is uninformative so we omit it.
 \end{example}
 
 \medskip
-%<*ex:ColorabilityLeqSATvii>
-Reiterating in terms of this chapter's focus,
-the significance of the polytime reduction 
-$\probname{Graph Colorability}\leq_p\probname{Satisfiability}$
-is that if we could solve the \probname{Satisfiability} problem 
-in polynomial time then we could solve the
-\probname{Graph Colorability} problem in polynomial time.
-%</ex:ColorabilityLeqSATvii>
-In this sense, \probname{Satisfiability}
-is at least as hard as \probname{Graph Colorability}.
-
-The introduction describes that if there is a reduction then 
-one problem is a translation of the other.
-Our last example expands on that. 
+This section's introduction suggests that there is a polynomial reduction when 
+one problem is a translation of the other, or at least a translation of
+a special case.
+Because polynomial time reducibility between problems is a key topic,
+in the final example we expand on that in a particular
+case, to give some insight into how to see that problems are
+related.
 
 \begin{example} \label{ex:SatReducesToClique}
 %<*ex:SATLeqCliquei>
-We will sketch that
+We will sketch that \probname{Clique}
+is at least as hard as \probname{Satisfiability}, that
 $\text{\probname{Satisfiability}}\leq_p\text{\probname{Clique}}$.\index{Satisfiability problem@\probname{Satisfiability} problem}
 
-Consider how to satisfy a boolean expression such as this one.
+Consider how to satisfy this Boolean expression $E$.
 \begin{equation*}
   (x_0\vee \neg x_1\vee x_2)
   \wedge (\neg x_0\vee x_2\vee \neg x_3)
   \wedge (\neg x_1\vee \neg x_2)
-  \label{$*$}
+  % \tag{$*$}
 \end{equation*}
 The $\wedge$'s mean that the statement as a whole is \true{} 
 if and only if all clauses are \true.
-And the $\vee$'s mean that a clause is \true{} if any of its literals 
-is \true.
-So to satisfy the expression, we select a literal from
-each clause to assign the value \true.
-For example, if $x_0$, $x_2$, and $\neg x_1$ are all \true{}
-then ($*$) is \true.
-Similarly, if $\neg x_1=x_3=\true$ then ($*$) is~\true.
-However, note that for the pick we cannot use $x_2$ and $\neg x_2$.
-This is the only constraint:~we must pick a set of literals that are 
-consistent in that no two are negations of each other.
-
-So in some sense 
-\probname{Satisfiability}, at its heart, is combinatorial.
-From the given expression we look for a combination of literals
-to assign the value~\true, at least one from each clause, 
-subject to the constraint that no two are negations.
-
-The \probname{Clique}\index{Clique problem@\probname{Clique} problem} 
-problem is the decision problem for the language
-$\lang=\set{\sequence{\mathcal{G},B}\suchthat\text{$\mathcal{G}$ has a clique of at least $B$ vertices}}$, 
-where a clique is a set of vertices that are mutually connected.
-
-The reduction function $f$ inputs a propositional logic 
-expression~$E$ and outputs a pair $f(E)=\sequence{\mathcal{G},B}$.
-It must run in polytime and must be such that
-$E\in\SAT$ if and only if $f(E)\in\lang$.
-With the combinatorial view above in mind, we consider a graph whose
-vertices are the elements of the $E$'s clauses, and where two vertices
-are connected as long as they are not negations.
-
-
-
-
-For the sketch, consider this expression.
-\begin{equation*}
-  E=(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)
-\end{equation*}
-It has three clauses, $x_0\vee x_1$, $\neg x_0\vee\neg x_1$, and
-$x_0\vee \neg x_1$, each with two literals.
+The $\vee$'s mean that each clause is \true{} 
+if and only if any of its literals is \true.
+So to satisfy the expression, select a literal from
+each clause and assign it the value \true.
+For example, we can make $E$ be \true{} by
+selecting $x_0$ from the first clause, $x_2$ from the second, 
+and $\neg x_1$ from the third, and making them \true.
+Similarly, if $\neg x_1$ from the first and third clauses and 
+$x_3$ from the second are $\true$ then $E$ is~\true.
+However, what we cannot do is 
+pick $x_2$ from the first and second, and then $\neg x_2$
+from the third, because we cannot make these literals both \true.
 %</ex:SATLeqCliquei>
 
 %<*ex:SATLeqCliqueii>
-For each occurrence of a literal in a clause, put a vertex in $\mathcal{G}$.
-The expression~$E$ has three clauses with two literals each,
-so the graph below has six vertices.
-As to the edges in~$\mathcal{G}$, connect vertices if the associated literals 
-are in different clauses
-and are not negations of each other (that is, are not $x_i$ and $\neg x_i$).
-\begin{center}
-  \includegraphics{\asydir complexity/complexity03.pdf}
-\end{center}
-The expression
-$E$ is satisfiable if and only if
-the graph has a $3$-clique.
-Clearly~$f$ is polytime.
-%</ex:SATLeqCliqueii>
+That is, we can think of
+\probname{Satisfiability} as a combinatorial problem.
+The clauses are like buckets and we select one thing from each bucket,
+subject to the constraint that the things we select must be
+pairwise compatible.
 
-So in contrast with the prior example, \probname{Clique} is a problem that
-is at least as hard as \probname{Satisfiability}.
+This view of \probname{Satisfiability} gives a binary
+relation `can be compatibly picked' between the literals in $E$'s clauses.
+So let $\mathcal{G}_E$ be a graph whose vertices are pairs
+$\sequence{c,\ell}$ where $c_i$ is the number of a clause and 
+$\ell_j$ is a literal in that clause.
+Two vertices $v_0=\sequence{c_0,\ell_0}$ and 
+$v_1=\sequence{c_1,\ell_1}$ are connected by an edge
+if they come from different clauses, $c_0\neq c_1$, 
+and the literals are not negations of each other,
+$\ell_0\neq \neg\ell_1$.
+%</ex:SATLeqCliqueii>
+\begin{animatedfigure}{Compatibility graph}\centering 
+  \animategraphics[poster=last]{1}{\asydir complexity/complexity}{38}{39}
+\end{animatedfigure} 
+%<*ex:SATLeqCliqueiii>
+A choice of three mutually compatibly vertices makes $E$ be \true.
+That is, the three-clause expression $E$ is satisfiable 
+if and only if $\mathcal{G}_E$ has a $3$-clique.
+More formally, 
+the \probname{Clique}\index{Clique problem@\probname{Clique} problem} 
+problem is the decision problem for the language
+$\lang=\set{\sequence{\mathcal{G},B}\suchthat\text{$\mathcal{G}$ has a clique with $B$ vertices}}$.
+The reduction function $f$ inputs a propositional logic 
+expression~$E$ and outputs a pair $f(E)=\sequence{\mathcal{G}_E,B}$
+where $B$ is the number of clauses in~$E$.
+The discussion above shows that
+$E\in\SAT$ if and only if $f(E)\in\lang$.
+Clearly this function can be computed in polytime.
+%</ex:SATLeqCliqueiii>
 \end{example}
 
 We close with some basic results on polytime reduction.
@@ -10228,6 +10209,16 @@ determining $\lang_1$ membership in this way
 runs in time that is~$\bigOh(n^{\max(i,j)})$, so still polynomial.
 %</pf:PolytimeReductionTransii>
 \end{proof}
+
+Reiterating in terms of this chapter's focus,
+the significance of the polytime reduction 
+$\probname{Graph Colorability}\leq_p\probname{Satisfiability}$
+is that if we could solve the \probname{Satisfiability} problem 
+in polynomial time then we could solve the
+\probname{Graph Colorability} problem in polynomial time.
+%</ex:ColorabilityLeqSATvii>
+In this sense, \probname{Satisfiability}
+is at least as hard as \probname{Graph Colorability}.
 
 By the lemma, because
 \cref{ex:GraphColorabilityReducesToSatisfiability}
@@ -10355,6 +10346,20 @@ Solve it.
 \begin{answer}
 There is indeed a subset that adds to~$T$,
 namely $A=\set{23, 31, 72}$.
+This is the graph.
+\begin{center}
+  \includegraphics{\asydir complexity/complexity03.pdf}
+\end{center}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Produce the compatibility graph for 
+$(x_0\vee x_1)\wedge(\neg x_0\vee\neg x_1)\wedge(x_0\vee \neg x_1)$.
+\begin{answer}
+It has three clauses, $x_0\vee x_1$, $\neg x_0\vee\neg x_1$, and
+$x_0\vee \neg x_1$, each with two literals.
+
 \end{answer}
 \end{exercise}
 

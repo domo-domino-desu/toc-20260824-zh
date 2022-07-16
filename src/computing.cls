@@ -823,7 +823,7 @@
 \newenvironment{exparts*}{%
   \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
                      itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
-                     itemjoin={\hspace{0.6em plus .1em minus .1em\linebreak[2]}},
+                     itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[2]},
                      % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
                      ]
 }{%

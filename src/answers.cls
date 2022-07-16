@@ -224,7 +224,7 @@
 \newenvironment{exparts*}{%
   \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
                      itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,% before=\unskip{ }, itemjoin={{; }}, itemjoin*={{, and }}
-                     itemjoin={\hspace{0.6em plus .1em minus .1em\linebreak[1]}},
+                     itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[1]},
                      ]
 }{%
   \end{enumerate*}

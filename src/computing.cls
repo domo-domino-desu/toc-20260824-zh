@@ -652,7 +652,7 @@
     pdfauthor={Jim Hefferon, Saint Michael's College},     % author
     pdfsubject={Theory of Computation},   % subject of the document
     pdfcreator={LaTeX, Asymptote},   % creator of the document; see https://tex.stackexchange.com/a/590921/339
-    pdfproducer={pdflatex}, % producer of the document
+    % pdfproducer={pdflatex}, % producer of the document; default is current pdflatex version
     pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
     pdfnewwindow=true,      % links in new window
     colorlinks=true,       % false: boxed links; true: colored links

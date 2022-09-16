@@ -6,12 +6,11 @@ import settings;
 settings.outformat="pdf";
 settings.render=0;
 
-// Set LaTeX defaults
-import settexpreamble;
-settexpreamble();
-// Asy defaults
-import jh;
+// cd needed for relative import 
+cd("../../../../asy");
+// import jh;
 import tape;
+cd("");
 
 unitsize(1pt);
 

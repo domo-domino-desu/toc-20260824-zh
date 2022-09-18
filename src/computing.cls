@@ -651,8 +651,9 @@
     pdftitle={Computing},    % title
     pdfauthor={Jim Hefferon, Saint Michael's College},     % author
     pdfsubject={Theory of Computation},   % subject of the document
-    pdfcreator={Jim Hefferon},   % creator of the document
-    pdfproducer={Jim Hefferon}, % producer of the document
+    pdfcreator={LaTeX, Asymptote},   % creator of the document; see https://tex.stackexchange.com/a/590921/339
+    % pdfproducer={pdflatex}, % producer of the document; default is current pdflatex version
+    pdfdisplaydoctitle=true, % show document title in window title
     pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
     pdfnewwindow=true,      % links in new window
     colorlinks=true,       % false: boxed links; true: colored links

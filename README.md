@@ -22,8 +22,7 @@ other materials.
 
 ## Status
 
-Ready. I have used it in class from 2018 through 2022, and for the
-bump to version 1.0 I only have to clean up the repository files, etc.
+Ready, version 1.0. I have used it in class from 2018 through 2022.
 
 
 
@@ -36,7 +35,7 @@ bump to version 1.0 I only have to clean up the repository files, etc.
 
 As with any draft, or any large software project, there will be
 errors.  I greatly appreciate bug reports.  Reach me via the contact link
-on the home page.
+on the home page.  Thank you.
 
 
 ## Source
@@ -57,3 +56,4 @@ see INSTALL.  But really, just use the supplied PDF.
 2022-Jan-21  JH Text is getting a final in-class use before being
   set to version 1.0.
 2022-May-20  JH Run-up to 1.0: got asy to work on recent OS install.
+2022-Jul-19  JH Version 1.0.

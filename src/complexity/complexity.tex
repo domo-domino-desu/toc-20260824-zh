@@ -14936,53 +14936,31 @@ Our characterization of $\NP$ complete problems as quite hard may
 give the impression that for such a problem any algorithm is
 terribly slow.
 But the situation is more nuanced than that.
-The prior extra section discusses how a problem may have a best algorithm
-that is super polynomial but in practice the problem is tractable.
-Problems may have occasional hard instances\Dash black holes
+The prior extra section gives and example of a problem that has a best algorithm
+that is super polynomial, but in practice that problem is tractable.
+That is, problems may have occasional hard instances\Dash black holes
 where the computer goes in and does not come out\Dash 
 but on most instances we can find the answer in a reasonable time. 
-In this section 
-we will demonstrate a program to solve $\SAT\!$, a 
+This section 
+demonstrates a program to solve $\SAT\!$, a 
 \definend{$\SAT$ solver},\index{SAT solver@$\SAT$ solver}
-and show how to use that as a general oracle.
+and shows how to use that as an oracle.
 
 A problem reduction $\prob_1\leq_p\prob_0$ gives a way to transfer problem 
 domains, 
 to change questions about $\prob_1$ into questions about $\prob_0$.
-% Then access to answers for questions about $\prob_0$
-% allows us to answer questions about~$\prob_1$.
-We will take $\prob_1$ to be the \probname{Soduku} problem 
-and $\prob_0$ to be $\SAT$, so that
-we consider $\probname{Soduku}\leq_p\SAT$.
+By `an oracle' we mean that we take $\prob_0$ to be $\SAT$.
+For $\prob_1$ we will consider Soduku.
+% so that
+% we consider $\probname{Soduku}\leq_p\SAT$.
 
-As a review:~an instance of a \probname{Soduku} problem 
-is a 9-by-9 array with some of the cells 
+The popular Soduku puzzle 
+starts with a 9-by-9 array, with some of the cells 
 already filled in.
 An example is below.
-We've solved it when we fill in the all of the blanks while satisfying some
-restrictions. 
-Each row must contain each of the numbers $1$--$9$. 
-Likewise each column must contain $1$--$9$. 
-The same criteria applies to the nine subsquares.\footnote{%
-  To characterize the computational complexity of a problem such as 
-  \protect\probname{Soduku} 
-  we must be able to describe how an algorithm's use of some resource grows 
-  with its input size. 
-  For that we must frame the problem in a way that allows the input size 
-  to grow.
-  Instead of eighty one variables $x_{1,1}, \ldots{} x_{9,9}$ 
-  we could generalize to have an arbitrary number,  $x_1, \ldots{} x_n$. 
-  Instead of those variables taking on the values $1$--$9$ we could 
-  give them a value in $1$--$k$;
-  we could also call these `colors' instead of `values'. 
-  And, in place of rows, columns, and subsquares that are driven by the 
-  geometry, 
-  an instance of the problem could have arbitrary size-$k$ sets,  
-  $S_i\protect\subseteq \protect\set{x_1,\ldots x_{k}}$. 
-  With that, we can show that \protect\probname{Soduku} is $\NP$-complete.
-  But having noted this, 
-  in this section we will ignore it and limit our attention to
-  the traditional $9\times 9$ board.}
+Players solve it by filling in the blanks while satisfying three
+restrictions:~each row must contain each of the numbers $1$--$9$, 
+and the same holds for each column as well as the nine subsquares.
 \begin{center}\small\renewcommand{\arraystretch}{1.25}
 \begin{tabular}{|*{3}{c}|*{3}{c}|*{3}{c}|}
   \hline
@@ -15001,40 +14979,81 @@ The same criteria applies to the nine subsquares.\footnote{%
 \end{tabular}
 \end{center}
 
-For the reduction $\probname{Soduku}\leq_p\SAT$ we must produce a
+We first argue that this is hard.
+There is a sense in which it is not.
+Because the $9\times 9$ puzzle is finite, in principle we could
+completely solve it by pre-generating a link between
+each initial puzzle board and an associated output solution.
+Then
+going from input to output is just a lookup table and runs in constant time.
+
+But in another sense it is hard.
+The definition of the computational complexity of a problem requires that
+we describe how a solution algorithm's use of some resource grows 
+with the problem's input size. 
+For that, we must frame the problem to allow instances of
+different input sizes.
+The natural way to generalize the puzzle is:~instead of eighty one
+variables $x_{1,1}, \ldots{} x_{9,9}$ 
+we could use an arbitrary number,  $x_1, \ldots{} x_n$. 
+Instead of those variables taking on $1$--$9$, they could take on
+a value in $1$--$k$
+(and we could call these `colors' instead of `values'). 
+And, in place of rows, columns, and subsquares that are driven by the 
+geometry, 
+a problem instance could have arbitrary sets,  
+$S\subseteq \set{x_1,\ldots x_n}$ of size~$k$. 
+With that, it is more than a finite-sized puzzle, it is a problem,
+and we can show that
+\citetext{the \probname{Soduku} problem is $\NP$-complete}{%
+  First proved in the MS thesis of Takayuki Yato,
+  from the Department of Information Science at the University of Tokyo
+  in 1987.
+  That document seems to have disappeared from the web; for a place to
+  start see the 
+  Soduku Wikipedia page.}.
+Thus, both $\probname{Soduku}\leq_p\SAT$ and
+$\SAT\leq_p\probname{Soduku}$, and we can fairly consider it to
+be quite hard.
+
+However, having noted this, 
+in this section we will ignore the generalization and limit our attention to
+the traditional $9\times 9$ board.
+
+To solve puzzle instances using the $\SAT$ solver as an oracle we
+focus on the reducion $\probname{Soduku}\leq_p\SAT\!$.
+We must produce a
 function that inputs game boards and outputs 
 Propositional Logic expressions.
 Recall that expressions such as  
 $(x_1\vee x_2)\wedge (\neg x_2\vee x_3)$  or  
 $(x_1\vee x_2\vee \neg x_3)\wedge x_4\wedge (\neg x_2\vee x_3)$ 
-is in Conjunctive Normal form, 
+are in Conjunctive Normal form, 
 CNF.\index{Conjunctive Normal Form}\index{CNF}\index{Propositional logic!Conjunctive Normal form}
-These are the conjunction of clauses, 
-where each clause is the disjunction of literals 
-(a literal is either a single atom such as $X$, 
-or the negation of an atom such as $\neg X$).
-The $\SAT$ solver can insist input must be in this form without
-fear of missing anything because
-for any Boolean function there is a CNF expression that gives that behavior.
-More is in \Cref{sec:PropLogic}.
+These are the conjunction of clauses 
+where each clause is the disjunction of literals
+(a literal is either a single atom such as $x_i$ 
+or the negation of an atom such as $\neg x_i$).
+The $\SAT$ solver can require that input be in this form because
+for any Boolean function there is a CNF expression giving that
+behavior; more is in \Cref{sec:PropLogic}.
 
-The $\SAT$ solver that we use needs its input in a file that 
+The $\SAT$ solver that we use needs its input that 
 is formatted to a standard called DIMACS.
-It starts with a few header lines.
-First come comment lines, 
-beginning with the characer~\str{c}. 
-Then comes the problem line, starting with a~\str{p} followed by a space, 
-followed by the problem type, which for us is \str{cnf}, 
-followed by the number of variables, 
-and then followed by the number of clauses.
+It starts with comment lines, 
+beginning with the character~\str{c}. 
+Then comes a problem line, starting with a~\str{p},
+then there is a space and the problem type, which for us is \str{cnf}, 
+followed by a space and the number of variables, 
+and then followed by a space and the number of clauses.
 The rest of the file consists of the clause descriptions.
-To describe a clause we list its indices.
-Thus we describe $x_2\vee x_5\vee x_6$ with \str{2 5 6}.
-Negations are described with negatives, so 
+To describe a clause the file we list its indices.
+Thus we describe $x_2\vee x_5\vee x_6$ with the list of indices \str{2 5 6}.
+Negations are described with negatives, so that 
 $\neg x_5\vee x_7\vee \neg x_9$ matches \str{-5 7 -9}.
-Then these clause descriptions are separated by \str{0}'s.\footnote{%
-  Since the format uses $0$ as the clause separator, 
-  we don't follow our usual practice of 
+These clause descriptions are separated by \str{0}'s.\footnote{%
+  Since DIMACS uses $0$ to separate clauses, 
+  in this section we don't follow our usual practice of 
   starting with the first variable named $x_0$.
   Rather, we start with $x_1$.}
 
@@ -15046,27 +15065,13 @@ Only one of these nine will be \true{} and the rest will be \false.
 The variable $x_{1,1,v}$ is \true{} if in our solution the number in 
 row $1$ and column $1$ is $v$. 
 Otherwise this variable is \false.
+Restated, if for instance in the first row and first column the puzzle has the
+value~$5$ then $x_{1,1,5}$ is \true{} while all other $x_{1,1,i}$ are~\false.
 
-Thus there is a variable $x_{r,c,v}$ 
-for each row, column, and value triple $r,c,v\in\set{1,\ldots{}9}$.
+Thus  
+for each row, column, and value triple $r,c,v\in\set{1,\ldots{}9}$
+we will have a variable $x_{r,c,v}$.
 That's a lot of variables, $3^3=729$ of them.
-
-We will work in  $x_{r,c,v}$'s but 
-we need a way to convert each to some $x_k$, and vice versa.
-The formula is $k=1+81\cdot(\sizeof{v}-1)+9\cdot(r-1)+(c-1)$.
-\begin{center}
-  \lstinputlisting[firstline=32,lastline=56]{\satsolverfile soduku-dimacs.rkt}
-\end{center}
-
-Here are a couple of example conversions using these routines, 
-to give a feel for what's happening.
-
-\begin{lstlisting}
-> (triple->varnum 3 4 5)
-346
-> (varnum->triple 346)
-'(3 4 5)
-\end{lstlisting}
 
 The CNF expression that we will produce has clauses of two kinds. 
 One describes the general rules of the game Soduku while the other
@@ -15075,20 +15080,20 @@ It is as though we bought a puzzle book and opened first to the
 introduction describing the rules, and later opened to the page containing the 
 specific partial board.
 To describe the general rules we need lot of clauses describing 
-relationships among the variables,
-such as that exactly one of 
+relationships among the variables.
+One such rule is that exactly one of 
 $x_{1,1,1}$, $x_{1,1,2}$, \ldots{} $x_{1,1,9}$ is $\true$.
-There are too many of these to write by hand so 
-we will get the computer to write them.
+There are too many of these rules to write by hand so 
+we will get the computer to do them.
 
-At the top of the file are some constants that are a described with words
-to make the code easier to read.
+The Racket
+file starts with some constants that make the code easier to read.
 \begin{center}
   \lstinputlisting[firstline=8,lastline=12]{\satsolverfile soduku-dimacs.rkt}
 \end{center}
 
-Next we describe the relationships between the variables.
-For each row there are nine restrictions.
+% We are ready to describe the relationships between the variables.
+Each row has nine restrictions.
 For instance, to express that the first row contains an entry with 
 the value $2$, we need this clause.
 \begin{equation*}
@@ -15102,9 +15107,9 @@ x_{1,1,2}
   \vee x_{1,8,2}
   \vee x_{1,9,2}
 \end{equation*} 
-The Racket code produces this corresponding list: 
+The Racket code below produces this corresponding list: 
 \str{( (1 1 2) (1 2 2) (1 3 2) (1 4 2) (1 5 2) (1 6 2) (1 7 2) (1 8 2) (1 9 2) )}. 
-To express all of the row restrictions we need  one such list for each 
+We express all of the row restrictions with one such list for each 
 row and value.
 \begin{center}
   \lstinputlisting[firstline=95,lastline=106]{\satsolverfile soduku-dimacs.rkt}
@@ -15116,7 +15121,7 @@ requiring that at least one entry in row~$3$ must be an~$8$.
 ((3 1 8) (3 2 8) (3 3 8) (3 4 8) (3 5 8) (3 6 8) (3 7 8) (3 8 8) (3 9 8))
 \end{lstlisting}
 
-The column restrictions match the row ones.
+The column restrictions are much like the row ones.
 \begin{center}
   \lstinputlisting[firstline=108,lastline=119]{\satsolverfile soduku-dimacs.rkt}
 \end{center}
@@ -15126,26 +15131,26 @@ requiring that at least one entry in column~$7$ must be an~$8$.
 ((1 7 8) (2 7 8) (3 7 8) (4 7 8) (5 7 8) (6 7 8) (7 7 8) (8 7 8) (9 7 8))
 \end{lstlisting}
 
-For the subsquares, the form of the code is a bit different 
-but the restrictions are the same in principle.
+For the subsquares, the restrictions are the same in principle
+but the form of the code is a bit different.
 \begin{center}
   \lstinputlisting[firstline=121,lastline=134]{\satsolverfile soduku-dimacs.rkt}
 \end{center}
-Here is a box restriction taken at random, 
+Here is one of the box restrictions produced by the Racket code below, 
 saying that some entry in the upper-right box has the value~$8$.
 \begin{lstlisting}
 ((7 1 8) (7 2 8) (7 3 8) (8 1 8) (8 2 8) (8 3 8) (9 1 8) (9 2 8) (9 3 8)) 
 \end{lstlisting}
 
-Running the $\SAT$ solver with just those restrictions 
+Running the $\SAT$ solver with just the restrictions above 
 finds that they can be satisfied. 
 But there is a surprise.
 It finds a satisfying assignment by putting more than one
 value in some boxes and no value at all in some other boxes.
 
-We need one more set of restrictions, that 
+Thus we need one more set of restrictions, that 
 no entry can contain two values. 
-We will add clauses like  $\neg x_{3,4,1}\vee \neg x_{3,4,2}$, 
+We add clauses like  $\neg x_{3,4,1}\vee \neg x_{3,4,2}$, 
 meaning that the row~$3$ and column~$4$ entry cannot be both 
 a $1$  and a~$2$ (it could of course be neither).
 \begin{center}
@@ -15168,14 +15173,33 @@ Here are the first few lines of that routine.
   \lstinputlisting[firstline=143,lastline=148]{\satsolverfile soduku-dimacs.rkt}
 \end{center} % full last line is 184
 
-Now we write all of these to a file.
+In this development, and in the Racket file, 
+we work in  $x_{r,c,v}$'s.
+But DIMACS wants a single index.
+So 
+we need to convert each of our variables to some $x_k$ and back again.
+The formula is $k=1+81\cdot(\sizeof{v}-1)+9\cdot(r-1)+(c-1)$.
+\begin{center}
+  \lstinputlisting[firstline=32,lastline=56]{\satsolverfile soduku-dimacs.rkt}
+\end{center}
+
+Here are a couple of example conversions using these routines.
+
+\begin{lstlisting}
+> (triple->varnum 3 4 5)
+346
+> (varnum->triple 346)
+'(3 4 5)
+\end{lstlisting}
+
+Now we can write all of this to the DIMACS-format file.
 \begin{center}
   \lstinputlisting[firstline=186,lastline=209]{\satsolverfile soduku-dimacs.rkt}
 \end{center}
 
 The first few lines of the result
 \texttt{soduku.cnf} look like this.
-This is the DIMACs format file. 
+% This is the DIMACs format file. 
 \begin{center}
   \lstinputlisting[firstline=1,lastline=12]{\satsolverfile soduku.cnf}
 \end{center}

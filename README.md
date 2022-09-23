@@ -1,8 +1,8 @@
-This is the source material for the textbook *Theory of Computation*
+This is the source for the textbook *Theory of Computation*
 by Jim Hefferon.
 
-The text covers standard material for an undergraduate theory
-class: models of computation and in particular Turing machines,
+The text is for an undergraduate computer science theory
+class.  It covers: models of computation and in particular Turing machines,
 unsolvability and the Halting problem, Finite State machines
 and regular languages, computational complexity and P vs NP.
 Its approach is precise but the presentation is liberal, seeking
@@ -11,31 +11,36 @@ related work.
 
 It has more than eight hundred exercises, with fully-worked
 answers to each.  There are PDF slides suitable for classroom use.
-And there are video lectures on my YouTube channel coordinated
+And there are video lectures on YouTube coordinated
 with this text that are particularly useful for those studying
 the material on their own.
 
-Go to the home page at the link below for the book's PDF and the
-other materials.
+
+
+## Get the book
+
+You can download [the book](https://joshua.smcvt.edu/computation/book.pdf)
+and [the answers](https://joshua.smcvt.edu/computation/answers.pdf).
 
 
 
 ## Status
 
-Ready, version 1.0. I have used it in class from 2018 through 2022.
+Version 1.0. I have taught out of it in class from 2018 through 2022.
 
 
 
 ## Home page
 
-[https://hefferon.net/computation](https://hefferon.net/computation)
+More information is at 
+[https://hefferon.net/computation](https://hefferon.net/computation).
 
 
 ## Bug reports
 
 As with any draft, or any large software project, there will be
 errors.  I greatly appreciate bug reports.  Reach me via the contact link
-on the home page.  Thank you.
+on the home page.
 
 
 ## Source

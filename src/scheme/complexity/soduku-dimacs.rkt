@@ -61,11 +61,11 @@
 ;; produce-clauses  Given a list of lists of triples, produce the matching set of strings
 ;;   for the DIMACS file
 (define (produce-clauses list-of-lists)
-  (define (one-line-of-one variable-in-clause) ; produce one line from a list of one number (for initial conds)
+  (define (one-line-of-one variable-in-clause) ; produce line from a list of one number
     (apply format "~a 0\n" variable-in-clause))
-  (define (one-line-of-two variables-in-clause) ; produce one line from a list of two numbers (for entry conditions)
+  (define (one-line-of-two variables-in-clause) ; produce line from a list of two numbers
     (apply format "~a ~a 0\n" variables-in-clause))
-  (define (one-line-of-nine variables-in-clause) ; produce one line from a list of nine numbers (for auto-generated)
+  (define (one-line-of-nine variables-in-clause) ; produce line from a list of nine numbers
     (apply format "~a ~a ~a ~a ~a ~a ~a ~a ~a 0\n" variables-in-clause))
 
   (for/list ([clause-list list-of-lists])

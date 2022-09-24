@@ -702,7 +702,7 @@
 \newlength{\jh@listtopsep}
   % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
   \setlength{\jh@listtopsep}{0.8ex plus 0.2ex minus 0.1ex}
-  \newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
+\newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
 
 % Get the width of a single character; use it for the left margin
 \newlength{\jh@widthofchar}
@@ -750,11 +750,11 @@
   \vspace{2.5ex plus 0.8ex minus 0.2ex}%
   \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
   \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
-  \nolisttopbreak%
+  %\nolisttopbreak % causes a \nobreak to appear after the first item
   \begin{list}{\@exercisecounterlabel}%
      {\usecounter{@exercisenumber}
       \setcounter{@exercisenumber}{\value{theorem}}
-      \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}% 
+      \renewcommand{\makelabel}[1]{{\normalfont\scshape ##1}}% 
       \setlength{\leftmargin}{\jh@widthofchar}
       \setlength{\labelwidth}{\leftmargin}
       \setlength{\labelsep}{0em}

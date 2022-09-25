@@ -45,7 +45,7 @@ on the home page.
 
 ## Source
 
-This uses LaTeX and related programs.  To compile the source files,
+This is made with LaTeX and related programs.  To compile the source files,
 see INSTALL.  But really, just use the supplied PDF.
 
 

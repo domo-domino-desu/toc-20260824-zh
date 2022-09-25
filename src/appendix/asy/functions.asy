@@ -1,5 +1,5 @@
-// correspondences.asy
-//  Animate correspondences between countable sets 
+// functions.asy
+//  Illustrations for function review 
 
 import settings;
 settings.outformat="pdf";

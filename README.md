@@ -1,19 +1,19 @@
 This is the source for the textbook *Theory of Computation*
 by Jim Hefferon.
 
-The text is for an undergraduate computer science first class in theory.
-It covers models of computation and in particular Turing machines,
+This is for an undergraduate computer science theory class.
+It covers models of computation such as Turing machines,
 unsolvability and the Halting problem, Finite State machines
-and regular languages, as well as computational complexity and P vs NP.
-Its pedagogical approach is that it is a mathematics text so things are
-proved but the presentation is liberal, seeking
-to highlight the ideas in the work and to make connections with
-related things from the background of the students.
+and regular languages, and ends with computational complexity
+and P vs NP. As to pedagogy, it is a mathematics text so things are
+proved.  But what sets it apart is that the presentation is liberal,
+highlighting the ideas in the work and making connections with things
+from the background that students bring to the class.
 
-The text has more than eight hundred exercises, with fully-worked
-answers to each.  There are PDF slides suitable for classroom use.
-And there are video lectures on YouTube that are particularly useful
-for those studying on their own.
+There are more than eight hundred exercises, each with a fully-worked
+answer.  There are PDF slides for classroom use.  And, there are video
+lectures on YouTube that are particularly useful for those working on
+their own.
 
 
 
@@ -38,15 +38,14 @@ More information is at
 
 ## Bug reports
 
-As with any large project, there will be
-errors.  I greatly appreciate bug reports.  Reach me via the contact link
-on the home page.
+As with any large project, there will be errors.  I greatly appreciate
+bug reports.  Reach me via the contact link on the home page.
 
 
 ## Source
 
-This is made with LaTeX and related programs.  To compile the source files,
-see INSTALL.  But really, just use the supplied PDF.
+This is made with LaTeX and related programs.  To compile the source files
+you can see INSTALL.  But really, just use the supplied PDF.
 
 
 ## History

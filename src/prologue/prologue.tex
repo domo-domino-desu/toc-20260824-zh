@@ -556,18 +556,17 @@ We take a \definend{symbol}\index{symbol}\index{tape symbol}
 to be something that the device can write and read,
 for storage and retrieval.\footnote{%
   How the device does this depends on its construction details.
-  A machine with two symbols $\Sigma=\set{\str{B},\str{1}}$
-  could read and write marks on a paper tape, or
-  align magnetic particles on a plastic tape, or manipulate
-  bits on a solid state drive,
-  or could push LEGO bricks to the left or right side of a slot.
+  It could read and write marks on a paper tape,
+  align magnetic particles on a plastic tape,
+  twiddle bits on a solid state drive,
+  or it could push LEGO bricks to the left or right side of a slot.
   Discreteness ensures that the machine can cleanly distinguish between the
   symbols, in contrast with the trouble that can happen, for instance,
   in reading an instrument dial near a boundary.}
 
 %<*df:TM>
 \begin{definition} \label{def:TuringMachine}
-A \definend{Turing machine}~$\TM$\index{Turing machine!definition} 
+A \definend{Turing machine}~$\TM$\footnotemark[2]\index{Turing machine!definition} 
 is a finite set of four-tuple 
 \definend{instructions}\index{instruction}\index{Turing machine!instruction} 
 $q_pT_pT_nq_n$.
@@ -583,8 +582,7 @@ set~$\Sigma$,
 which contains at least two members including one called
 \definend{blank}\index{blank}
 (and does not contain $\str{L}$ or~$\str{R}$).
-The \definend{action symbol}\index{action symbol}\index{symbol!action}\index{Turing machine!action symbol} or 
-\definend{next symbol}~$T_n$\index{symbol!next}\index{Turing machine!next symbol} 
+The \definend{action symbol}~$T_n$\index{action symbol}\index{symbol!action}\index{Turing machine!action symbol}\index{symbol!action}\index{Turing machine!action symbol} 
 is an element of the
 \definend{action set}~$\Sigma\cup\set{\str{L},\str{R}}$.\index{action set}\index{Turing machine!action set} 
 
@@ -598,11 +596,11 @@ defines a function, the
 \citetext{\definend{transition function}}{%
   The definition describes $\Delta$ as a function
   $\map{\Delta}{Q\times \Sigma}{(\Sigma\cup\set{\str{L},\str{R}})\times Q}$.
-  That is a bit of a fudge.
-  In $\TM_{\text{pred}}$ the state $q_3$ is used only for the purpose of
-  halting the machine, and so there is no defined next state.
+  That is a fudge.
+  In $\TM_{\text{pred}}$, the state $q_3$ is used only for the purpose of
+  halting the machine and so there is no defined next state.
   In $\TM_{\text{add}}$, the state~$q_5$ plays the same role.
-  So strictly speaking, the transition function is a partial function,
+  So, strictly speaking, the transition function is a partial function,
   one where for some members of the domain there is no associated 
   value;~see page~\pageref{def:PartialFunction}.
   (Alternatively, we could write the set of states as 
@@ -610,25 +608,23 @@ defines a function, the
   halting, and the transition function's definition is 
   $\map{\Delta}{Q\times \Sigma}{(\Sigma\cup\set{\str{L},\str{R}})\times (Q\cup\hat{Q})}$.)
   We have left this point out of the main presentation 
-  since it doesn't seem to cause confusion and the discussion can 
+  since it doesn't cause confusion and the discussion can 
   be a distraction.)}\index{transition function}\index{function!transition}\index{Turing machine!transition function}
 or \definend{next-state function}\index{next-state function}\index{function!next-state}\index{Turing machine!next-state function}
 $\map{\Delta}{Q\times \Sigma}{(\Sigma\cup\set{\str{L},\str{R}})\times Q}$. 
-\end{definition}
+\end{definition}\footnotetext[2]{%
+  We denote Turing machines with a $\TM$ because, although they are hardware, 
+the things from everyday experience that they are most like are programs.}
 %</df:TM>
 
-%<*df:TMnote>
-We denote Turing machines with $\TM$ because, although they are hardware, 
-the things from 
-our everyday experience that they are most like are  
-programs.
-%</df:TMnote>
+% %<*df:TMnote>
+% We denote Turing machines with a $\TM$ because, although they are hardware, 
+% the things from everyday experience that they are most like are programs.
+% %</df:TMnote>
 
 Of course, the point of these machines is what they do.
-A Turing machine is a blueprint for a computation\Dash it is like 
-a program\Dash and so
-to finish the formalization started by the definition we
-give 
+To finish the formalization we
+now give 
 \citetext{a complete description of a machine's action}{%
   It is reasonable to ask why our standard model, the Turing machine,
   is one that is so basic that programming it
@@ -644,43 +640,45 @@ give
   important, and the work in Chapter Five needs them.)}.
 
 \label{text:DescriptionOfTMAction}
-We saw in tracing through \cref{ex:MPred} and \cref{ex:MAdd}
-that a machine acts by directing the  
-transition from one configuration to the next.
+In tracing through \cref{ex:MPred} and \cref{ex:MAdd}
+we saw that a Turing machine acts by governing the transitions
+as that machine moves step by step.
 %<*def:TMConfigurationi>
 A 
 \definend{configuration}\index{configuration}\index{Turing machine!configuration}  
 of a Turing machine
-is a four-tuple $\configuration=\sequence{q,s,\tau_L,\tau_R}$, where
+is a four-tuple $\sequence{q,s,\tau_L,\tau_R}$, where
 \citetext{$q$ is a state, a member of~$Q$}{% 
   We are vague about what `states' are but we assume that
   whatever they are, the set of states~$Q$ is disjoint from 
   the set~$\Sigma\cup\set{\str{L},\str{R}}$.},
 $s$ is a character from the tape alphabet~$\Sigma$,
-and $\tau_L$ and~$\tau_R$ are strings of elements 
-from the tape alphabet,
+and $\tau_L$ and~$\tau_R$ are strings from~$\kleenestar{\Sigma}\!$,
 including possibly the empty string~$\emptystring$.\index{empty string@empty string, $\emptystring$}\index{string!empty}
 These signify the current state, the character under the read/write head, and
 the tape contents to the left and right of the head.
 %</def:TMConfigurationi>
-For instance, line~$2$ of the trace table of \cref{ex:MAdd},
-where the state is $q=q_0$,
-the character under the head~$s$ is the blank,
-and to the left of the head is $\tau_L=\str{11}$
-while to the right is $\tau_R=\str{111}$,
-graphically represents the configuration
-$\sequence{q,s,\tau_L,\tau_R}$.
+For instance, in the the trace table of \cref{ex:MAdd}
+the Step~$2$ line shows that after two transitions
+the state is $q=q_0$,
+the character under the head is the blank $s=\str{B}$,
+to the left of the head is $\tau_L=\str{11}$,
+and to the right is $\tau_R=\str{111}$.
+So the graphic on that line pictures the configuration
+$\sequence{q_0,\str{B},\str{11},\str{111}}$.
 That is, a configuration is 
-\citetext{a snapshot, an instant in a computation}{So
-  the configuration, along with the Turing machine, encapsulates
-  the future history of the computation.}.
+\citetext{a snapshot, an instant in a computation}{%
+  So
+  the configuration along with the Turing machine is all the information
+  that you need to continue a computation\Dash it encapsulates
+  the future history of that computation.}.
 
 \label{DefnConfiguration}
 %<*def:TMConfigurationii>
 We write $\configuration(t)$ for the machine's configuration after
-the $t$-th transition, and say that this is the configuration
+the $t$-th transition and say that this is the configuration
 at \definend{step}~$t$.\index{step}\index{computation!step}
-We extend that to step~$0$, and say
+We extend that to step~$0$ by saying
 that the 
 \definend{initial configuration}\index{initial configuration}\index{configuration!initial} 
 $\configuration(0)$
@@ -696,8 +694,8 @@ $q_p=q$ and~$T_p=s$.
 If there is no such instruction then at 
 step~$t+1$ the machine $\TM$ \definend{halts}.
 
-Otherwise there will be only one such instruction, 
-by determinism.
+Otherwise the condition of determinism ensures that the set~$\TM$
+has only one such instruction.
 There are three possibilities.
 (1)~If $T_n$ is a symbol in the tape alphabet set~$\Sigma$ then
 the machine writes that
@@ -705,13 +703,14 @@ symbol to the tape, so that the
 next configuration is 
 $\configuration(t+1)=\sequence{q_n,T_n,\tau_L,\tau_R}$.
 (2)~If $T_n=\str{L}$ then the machine moves the tape head to the left.
-That is, the next configuration is  
+Thus the next configuration is  
 $\configuration(t+1)=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$,
-where $\hat{s}$ is the rightmost character of the string~$\tau_L$ (if
-$\tau_L=\emptystring$ then $\hat{s}$ is the blank character),
-where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
-(if $\tau_L=\emptystring$ then $\hat{\tau}_L=\emptystring$ also),
-and where $\hat{\tau}_R$ is the concatenation of $\sequence{s}$ and $\tau_R$.
+where $\hat{s}$ is the rightmost character of the string~$\tau_L$,
+where $\hat{\tau}_R$ is the concatenation of $\sequence{s}$ with~$\tau_R$,
+and where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
+(more precisely, $\hat{s}=\tau_L[-1]$ and $\hat{\tau}_L=\tau_L[:-1]$;
+if $\tau_L=\emptystring$ then $\hat{s}$ is the blank and
+$\hat{\tau}_L=\emptystring$),
 (3)~If $T_n=\str{R}$ then the machine moves the tape head to the right.
 This is like~(2) so we omit the details.
 

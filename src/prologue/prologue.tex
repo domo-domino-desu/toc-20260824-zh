@@ -705,14 +705,17 @@ next configuration is
 $\configuration(t+1)=\sequence{q_n,T_n,\tau_L,\tau_R}$.
 (2)~If $T_n=\str{L}$ then the machine moves the tape head to the left.
 So the next configuration is  
-$\configuration(t+1)=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$,
-where $\hat{s}$ is the rightmost character of the string~$\tau_L$,
+$\configuration(t+1)=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$
+% where $\hat{s}$ is the rightmost character of the string~$\tau_L$,
+% where $\hat{\tau}_R$ is the result of pushing the character~$s$
+% onto the string~$\tau_R$,
+% and where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted.
+% (More precisely,
 where $\hat{\tau}_R$ is the concatenation of the one-character string
-$\sequence{s}$ with~$\tau_R$,
-and where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
-(more precisely, $\hat{s}=\tau_L[-1]$ and $\hat{\tau}_L=\tau_L[\,:-1]$;
-if $\tau_L=\emptystring$ then $\hat{s}$ is the blank and
-$\hat{\tau}_L=\emptystring$),
+$\sequence{s}$ with $\tau_R$, where
+if $\tau_L=\emptystring$ then $\hat{s}$ is the blank
+and $\hat{\tau}_L=\emptystring$,
+and otherwise where $\hat{s}=\tau_L[-1]$ and $\hat{\tau}_L=\tau_L[\,:-1]$.
 (3)~If $T_n=\str{R}$ then the machine moves the tape head to the right.
 This is like~(2) so we omit the details.
 
@@ -720,8 +723,7 @@ This is like~(2) so we omit the details.
 If two configurations are related by being a step apart 
 then we write
 $\mathcal{C}(i) \yields \mathcal{C}(i+1)$.\footnote{% 
-  The `$\,\yields$' is a turnstile symbol.
-  Read it aloud as ``yields.''
+  Read `$\,\yields$' aloud as ``yields.''
   % We could, where $\mathcal{I}$ is the applicable instruction,
   % write~$\yields_{\mathcal{I}}$,  
   % but we will never need to do that.
@@ -732,19 +734,20 @@ $
   \mathcal{C}(0) \yields \mathcal{C}(1) \yields \mathcal{C}(2)
    \yields \cdots\, 
 $.
-We abbreviate such a sequence 
-with~$\kleenestar{\yields}$.
 If the computation halts then the sequence has a final 
-configuration~$\mathcal{C}(h)$
-so we may write a halting computation as
+configuration~$\mathcal{C}(h)$.
+We abbreviate a sequence of $\yields$'s 
+with~$\kleenestar{\yields}$
+and 
+so we could write a halting computation as
 $\mathcal{C}(0)\mathrel{\kleenestar{\yields}}\mathcal{C}(h)$.\footnote{% 
   Read this aloud as ``yields eventually.''} %\index{yields eventually!$\kleenestar{\yields}$for Turing machines} 
 %</def:TMConfigurationiii>
 
 \begin{example} \label{ex:TraceComputation}
-In \cref{ex:MPred}, the pictures that trace the machine's execution
-show the successive configurations.
-So the computation is this. 
+In \cref{ex:MPred}, the pictures that trace the machine's execution, illustrating
+the successive configurations.
+Here is the same sequence as a computation. 
 \begin{multline*}
 \sequence{q_0,\str{1},\emptystring,\str{11}}
 \yields
@@ -768,6 +771,7 @@ So the computation is this.
 \end{multline*}
 \end{example}
 
+\medskip
 Finally, as in that example,
 observe that our description of the action of a Turing machine
 emphasizes that it is a
@@ -798,70 +802,47 @@ the set of functions that are mechanically computable.
 A function is an association of inputs with outputs. % \footnote{%
   % The appendix on page~\pageref{sec:Functions} reviews functions
   % and the one on page~\pageref{sec:Strings} reviews strings.}
-For Turing machines,
-the natural computed function is the 
-association of the string on the tape when the machine starts
-with the one on the tape when it halts,
-if it ever does halt.  
-%</df:FcnComputedByTMi>
-
-%<*df:FcnComputedByTMii>
-\begin{definition} \label{def:FcnComputedByTM}
-Let $\TM$ be a Turing machine with tape alphabet~$\Sigma$.
-\definend{The function 
-$\map{\TMfcn_{\TM}}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$ 
-computed by~$\TM$}\index{function!computed by a Turing machine}\index{Turing machine!function computed} 
-is:~for input $\sigma\in\kleenestar{\Sigma}\!$, 
-the output $\TMfcn_{\TM}(\sigma)$ 
-is the string that results from placing~$\sigma$  
-on an otherwise blank tape, pointing the read/write head of $\TM$ to $\sigma$'s
-left-most symbol, and running the machine until it halts.\footnotemark
-\end{definition}\footnotetext{%
-  The input is unambiguous because it is what's on the tape when we start the 
-  machine.
-  But the output is more of a problem; in the addition machine input,
-  the separator blank is significant and if we allow significant blanks 
-  in the output, then which of the infinitely many blanks matter? 
-  There are a number of things that we can do.  
-  One is that instead of using blanks as separators, etc.,
-  we can enlarge the alphabet and use the new characters for that
-  purpose. 
-  Another is that for any string 
-  $\sigma\in\kleenestar{\Sigma}$, where its length is~$n$ we say 
-  that its 
-  self-delimiting code string\protect\index{self-delimiting code!of a string}\protect\index{string!self-delimiting code} 
-  is $\bar{\sigma}=\str{1}^n\concat\blank\concat\sigma$
-  (or use any nonblank character in place of \str{1}).
-  Outputting self-delimiting code strings 
-  eliminates any ambiguity without requiring a
-  change in alphabet.}
-%</df:FcnComputedByTMii>
-
-\noindent Just specifying the input string is not enough,
-since the initial position of the head can change the computation.
-So we specify that when the machine starts, 
-its head is under the string's first character.
-In this book we like to write machines so that they also finish with the
-head under the first character of the output, which
-isn't strictly necessary, although it makes composition easier.
-
-This illustrates the computation of a value of a function, 
-$\TMfcn(\str{111})=\str{11111}$ 
-(when there is only one machine under discussion then 
-we write~$\TMfcn$ instead of $\TMfcn_{\TM}$).
+The most natural assocition for Turing machines is to connect
+the string on the tape when the machine starts
+with the one on the tape when it halts.
+The idea is to compute the value of the function such as
+$\TMfcn(\str{111})=\str{11111}$ as below. 
 \begin{equation*}
  \vcenteredhbox{\includegraphics{prologue/asy/tape/tapefcn0.pdf}} 
   \quad\mapsto\quad
   \vcenteredhbox{\includegraphics{prologue/asy/tape/tapefcn1.pdf}}
 \end{equation*}
+% </df:FcnComputedByTMi>
+\noindent
+But there are a couple of technical points that the definition must handle.
+First, a Turing machine may fail to halt on some input
+strings.
+Second,
+just specifying the input string is not enough,
+since the initial position of the head can change the computation.
 
-The definition says ``until it halts.''
-What if the machine doesn't halt?
+%<*df:FcnComputedByTMii>
+\begin{definition} \label{def:FcnComputedByTM}
+  Let $\TM$ be a Turing machine with tape alphabet~$\Sigma$.
+  For input $\sigma\in\kleenestar{\Sigma}\!$,
+  placing that on an otherwise blank tape and pointing $\TM$'s read/write head
+  to $\sigma$'s left-most symbol is \definend{loading} that input.
+  If we start~$\TM$ with $\sigma$ loaded and it eventually halts
+  then we denote the associated output string as
+  \definend{$\TMfcn_{\TM}(\sigma)$}.
+  If the machine never halts then $\sigma$ has no associated output.
+The
+\definend{function 
+computed by the machine}~$\TM$\index{function!computed by a Turing machine}\index{Turing machine!function computed} 
+is the set of associations $\sigma \mapsto \TMfcn_{\TM}(\sigma)$.
+\end{definition}
+% </df:FcnComputedByTMii>
 
 %<*df:FcnConverge>
 \begin{definition}
-If for a Turing machine the value of a computation is not defined
-on some input~$\sigma\in\kleenestar{\Sigma}$ then we 
+For $\sigma\in\kleenestar{\Sigma}\!$,
+if the value of a Turing machine computation is not defined
+on~$\sigma$ then we 
 say that the function computed by the machine 
 \definend{diverges} on that input,\index{diverge}\index{function!diverge} 
 written \definend{$\TMfcn(\sigma)\mathord{\uparrow}$}
@@ -869,27 +850,8 @@ written \definend{$\TMfcn(\sigma)\mathord{\uparrow}$}
 Otherwise we say that
 it \definend{converges},\index{converge}\index{function!converge}  
 \definend{$\TMfcn(\sigma)\mathord{\downarrow}$}.
-If $\phi$ converges for each input in $\kleenestar{\Sigma}$ then it is a 
-\definend{total function}.\footnotemark[1]\index{total function}\index{function!total}
-\end{definition}\footnotetext[1]{%
-Traditionally, a function comes with
-a domain, the set of 
-inputs on which it is defined.
-For computable functions we instead take that
-the set of inputs is $\kleenestar{\Sigma}\!$, 
-understanding that the underlying machine may halt on only some of them.
-So we introduce the notion of a 
-\protect\definend{partial function},\protect\index{partial function}\protect\index{function!partial} 
-where some
-$W\subseteq\kleenestar{\Sigma}$ is the set of input strings $\sigma$ such that
-$\phi(\sigma)\converges$. 
-If $W=\kleenestar{\Sigma}$ then $\phi$ is total.
-Strictly speaking, every computable $\phi$ is partial but saying that it is 
-partial usually connotes that
-it is not total, that $W\subsetneq\kleenestar{\Sigma}\!$.
-}
+\end{definition}
 %</df:FcnConverge>
-
 
 %<*discussion:FcnVsMachine>
 Very important:~note the difference between the machine $\TM$ and the function
@@ -901,6 +863,47 @@ which we might describe with $x\mapsto \operatorname{pred}(x)$.
 Another example of the difference is that machines halt or fail to halt, while 
 functions converge or diverge.
 %</discussion:FcnVsMachine>
+
+Some additional points:
+\begin{parenum}
+\item
+When there is only one machine under discussion then 
+we write~$\TMfcn$ instead of $\TMfcn_{\TM}$.
+\item
+In this book we like to write machines so that they also finish with the
+head under the first character of the output string, which
+isn't strictly necessary but is neater.
+\item
+In other fields of mathematics a function comes with a domain, the set of 
+inputs on which it is defined.
+Here the convention is to write
+$\map{\phi}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
+and talk about a 
+\protect\definend{partial function},\protect\index{partial function}\protect\index{function!partial} 
+where some
+$W\subseteq\kleenestar{\Sigma}$ is the set of input strings $\sigma$ such that
+$\phi(\sigma)\converges$. 
+If $W=\kleenestar{\Sigma}$ then $\phi$ is said to be a
+\definend{total function}.\index{total function}\index{function!total}
+Strictly speaking, `partial' is redundant because
+every $\phi$ is partial, but saying so
+usually connotes that it is not total.
+\item
+  In the addition machine input, the separator blank is significant.
+  If we allow significant blanks 
+  in the input and output strings then which of the infinitely many blanks
+  count and which do not? 
+  There are a number of ways to handle this.
+  One of them is to just say that the blanks are not significant, and code what
+  we want to say using input and output integers, in unary.
+  For instance, we could code the triple of numbers $\sequence{7,8,9}$
+  as the single number $2^73^85^9$. % =1\,640\,250\,000\,000$.
+  This uses uniqueness of prime factorization to ensure unambiguous
+  encoding and decoding.
+  In our Turing machines we omit the coding to avoid ambiguity
+  because it obfuscates the ideas.
+\end{parenum}
+
 
 %<*discussion:FcnConverge>
 To claim, for instance, that a Turing machine computes the sucessor function,
@@ -956,7 +959,7 @@ The next section says more.
 \begin{definition} \label{def:ComputableFcn}
 A \definend{computable function},\index{computable function}\index{function!computable} 
 or \index{recursive function}\index{function!recursive}\definend{recursive function},\footnotemark[1]
-is a function computed by some Turing machine (it may be total or partial).
+is one computed by some Turing machine (it may be a total function or partial).
 \definend{A computable set},\index{computable set}\index{set!computable} 
 or \definend{recursive set},\index{recursive set}\index{set!recursive} 
 is one whose characteristic function is computable.

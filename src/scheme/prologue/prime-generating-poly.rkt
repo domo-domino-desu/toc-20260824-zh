@@ -1,30 +1,29 @@
 #lang racket
 ;; prime-generating-poly.rkt
 
-;; prime?  Brute force test for primality; stops if no factor bigger than square root found
-(define (prime? n)
-  (define (prime-helper n c)
-    (cond [(< n (* c c)) 0]
-          [(zero? (modulo n c)) 1]
-          [else (prime-helper n (add1 c))]))
-  
-  (prime-helper n 2))
+(require math/number-theory)  ;; provides prime? 
 
-;; p  Compute the value of the function given by y |->  x2 * y^2 + x1 * y + x0
+;; p  Compute the value of the function given by y |->  x0 * y^2 + x1 * y + x2
 (define (p x0 x1 x2 y)
-  (+ (* x2 y y) (* x1 y) x0))
+  (+ (* x0 y y) (* x1 y) x2))
 
-;; g-sub-p  Test p's output for primality
-(define (g-sub-p x0 x1 x2 y)
-  (prime? (p x0 x1 x2 y)))
+(provide p)
 
-;; f-sub-g  Unbounded search to test if quadratic poly with params generates only primes
-(define (f-sub-g x0 x1 x2)
-  (define (f-sub-g-helper y)
-    (if (= 0 (g-sub-p x0 x1 x2 y))
+;; g  Test p's output for primality
+(define (g x0 x1 x2 y)
+  (if (prime? (p x0 x1 x2 y))
+      1
+      0))
+
+(provide g)
+
+;; f  Unbounded search to test if quadratic poly with params generates only primes
+(define (f x0 x1 x2)
+  (define (f-helper y)
+    (if (= 0 (g x0 x1 x2 y))
         y
-        (f-sub-g-helper (add1 y))))
+        (f-helper (add1 y))))
   
-  (let ([y 0])
-    (f-sub-g-helper y)))
+    (f-helper 0))
 
+(provide f)

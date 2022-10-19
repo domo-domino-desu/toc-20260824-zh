@@ -5861,12 +5861,13 @@ and we calculate $g(\vec{x},0)$, then $g(\vec{x},1)$, etc.,
 waiting until one of them gives the output~$0$.
 If that ever happens, so that $g(\vec{x},n)=0$ for some least~$n$,
 then $f(\vec{x})=n$.
-If it never happens that the output is $g(\vec{x},n)=0$
+If it never happens that the output is~$0$
 then $f(\vec{x})$ is undefined.
 %</def:MuRecursionii>
 
 \begin{example}
-The polynomial $p(y)=y^2+y+41$ seems, at least at the start, to 
+Euler noticed in 1772 that the polynomial $p(y)=y^2+y+41$ seems, 
+at least at the start, to 
 \citetext{output only primes}{%
   In fact, there is no polynomial with integer coefficients that 
   outputs a prime for all integer inputs, except if the polynomial is constant.
@@ -5896,74 +5897,37 @@ The polynomial $p(y)=y^2+y+41$ seems, at least at the start, to
   $p(y)$ &$41$ &$43$ &$47$ &$53$ &$61$ &$71$ &$83$ &$97$ &$113$ &$131$ 
 \end{tabular}
 \end{center}
-We could test this with a program that searches for non-primes by
-trying $p(0)$, then $p(1)$, etc.
-Start with a function that computes quadratic polynomials,
-$p(\vec{x},y)=p(x_0,x_1,x_2,y)=x_0y^2+x_1y+x_2$
-and consider a test for the primality of the output.
+We could test whether this ever fails by doing an unbounded search 
+for non-primes.
+This test for the primality of a quadratic polynomial's output.
 \begin{equation*}
+  g(x_0,x_1,x_2,y)=
   g(\vec{x},y)=
   \begin{cases}
-    0  &\case{if $p(\vec{x},y)$ is prime}  \\
-    1  &\case{otherwise}
+    1  &\case{if $x_0y^2+x_1y+x_2$ is prime}  \\
+    0  &\case{otherwise}
   \end{cases}
 \end{equation*}
-Now, do the search with $f(\vec{x})=\least y\,\big[ g(\vec{x},y)=0 \big]$.
-(We are using the general function~\codeinline{p} rather than just 
-$y^2+y+41$ so that the inputs to $g$ include a $\vec{x}$, and thus better
-match the definition.)
+Then the search is 
+$f(\vec{x})=\least y\,\big[ g(\vec{x},y)=0 \big]$.\footnotemark %
 
-Some code illustrates an important point.
-Start with a test for primality,
+Some code illustrates.
+Start with a test for primality
+provided with Racket, 
 \lstinputlisting[firstline=4, lastline=4]{\prfiles prime-generating-poly.rkt}
-and a way to compute the output of $y\mapsto x_0y^2+x_1y+x_2$.
-\lstinputlisting[firstline=6, lastline=8]{\prfiles prime-generating-poly.rkt}
-Now, this is~$g$.
+and use it for~$g$.
 \lstinputlisting[firstline=12, lastline=16]{\prfiles prime-generating-poly.rkt}
-With that, the search function finds that the polynomial 
-above returns some non-primes.
+With that, the search function 
 \lstinputlisting[firstline=20, lastline=27]{\prfiles prime-generating-poly.rkt}
-(The function name
-\codeinline{p} is hard-coded into \codeinline{g}'s source.
-Likewise the search routine has \codeinline{g} baked in.) 
+finds that the polynomial first returns a non-prime for input~$40$.
 \begin{lstlisting}
 > (f 1 1 41)
 40
 \end{lstlisting}
-\end{example}
-
-
-% This Scheme code for unbounded minimization of a two-input function
-% explains in what way $\mu$-recursion is recursive.
-% \lstinputlisting[firstline=4,lastline=10]{prologue/scheme/mu.scm}
-% Observe that here the recursion goes up instead of down, 
-% with \codeinline{(+ y 1)}.
-% To see it in action, we define the function of the prior example
-% \lstinputlisting[firstline=12,lastline=14]{prologue/scheme/mu.scm}
-% and get this Scheme interpreter session.
-% \begin{lstlisting}
-% #;1> (load "mu.scm")
-% ; loading mu.scm ...
-% #;2> (g 5 0)
-% 5  
-% \end{lstlisting}
-
-Unbounded search is a theme in the Theory of Computation.
-For instance, we will later consider the question of which
-programs halt and a natural way for a program to not halt is
-because it is 
-\citetext{looking for something that is not there}{%
-  Goldbach's conjecture is that 
-  every even number can be written as the sum of at most two primes. 
-  Here are the first few instances:
-  $2=2$, $4=2+2$, $6=3+3$, $8=5+3$, $10=7+3$.
-  A natural attack is to
-  do an unbounded computer search. 
-  As of this writing the conjecture has been tested up to $10^{18}$.
-}.
-% And, we will later see finite analogues, where the thing is there 
-% but it may take such a very long time to find it
-% that the search is infeasible.
+\end{example}\footnotetext{%
+  We are using $x_0y^2+x_1y+x_2$ rather than just 
+  $y^2+y+41$ so that the inputs to $g$ include $\vec{x}$, to
+  better illustrate the definition.}
 
 Using the minimization operator we can get functions whose output 
 value is undefined for some inputs.
@@ -5973,6 +5937,72 @@ If $g(x,y)=1$ for all~$x,y\in\N$
 then $f(x)=\least y[g(x,y)=0]$ is undefined
 for all~$x$.
 \end{example}
+
+In that example we imagine $f$ searching and searching but it will never find
+such a~$y$.
+In the next example, no one knows if the search will end.
+
+\begin{example}
+\definend{Goldbach's conjecture}\index{Goldbach's conjecture} 
+is that every even number can be written as the sum of at most two primes. 
+Here are the first few instances: $2=2$, $4=2+2$, $6=3+3$, $8=5+3$, $10=7+3$.
+A natural attack is to search for a counterexample.
+With this helper function
+\begin{equation*}
+  \operatorname{gb-check}(n)=
+  \begin{cases}
+    i  &\case{the numbers $i$ and $n-i$ are both prime, and $i\leq n-i$}  \\
+    0  &\case{otherwise}
+  \end{cases}
+\end{equation*}
+we get a version of the definition's $g$.
+\begin{equation*}
+  \operatorname{gb-g}(n)
+  \begin{cases}
+    1  &\case{if $\operatorname{gb-check}(2n)\neq 0$}  \\
+    0  &\case{otherwise}
+  \end{cases}
+\end{equation*} 
+The unbounded search is 
+$\operatorname{gb-f}()=\least y\,\big[ \operatorname{gb-g}(y)=0 \big]$.
+
+The Racket code for the helper
+\lstinputlisting[firstline=31, lastline=37]{\prfiles prime-generating-poly.rkt}
+immediately gives the code for $\operatorname{gb-g}$
+\lstinputlisting[firstline=45, lastline=49]{\prfiles prime-generating-poly.rkt}
+and $\operatorname{gb-f}$
+\lstinputlisting[firstline=51, lastline=57]{\prfiles prime-generating-poly.rkt}
+The $\operatorname{gb-f}$ routine just runs and runs, without halting.
+
+This is not an infinite loop because $\operatorname{gb-f}$ 
+is trying different numbers each time, 
+but experience is that it nonetheless fails to halt 
+until a user runs out of patience and pulls the plug.
+Researchers have gone past $4\times 10^{18}$ without
+finding a counterexample.
+\end{example}
+
+\begin{example}
+Imagine that you have a mathematical theorem to prove, perhaps
+Goldbach's Conjecture.
+Here is a sketch of a way to proceed.
+A proof is a sequence of statements in a suitable formal language
+whose last statement is the desired theorem.
+You could run a search as:~for each~$n$, 
+interpret it as a string (perhaps convert it to binary and 
+interpret the binary as a string) and check
+whether that string is a proof of the theorem.
+If this search halts then you are done.
+Obviously this relates to the 
+\textit{Entscheidungsproblem}.\index{Entscheidungsproblem@\textit{Entscheidungsproblem}}\index{decision problem} 
+\end{example}
+
+\medskip
+These example show that unbounded search is a natural computational construct.
+It is also a theme in this book.
+For instance, we will later consider the question of which
+programs halt and a natural way to think about a computation not halting is
+as a search for a step where it halts.
 
 %<*def:GeneralRecursive>
 \begin{definition} \label{def:Recursive}
@@ -5997,7 +6027,8 @@ and minimization.\index{minimization, unbounded}
 
 S~Kleene\index{Kleene, S} 
 showed that the set of functions satisfying this definition is
-the same as the set given in \cref{def:ComputableFcn}, of computable functions.
+the same as the $\TM$-based set of computable functions 
+given in \cref{def:ComputableFcn}.
 
 
 
@@ -7428,10 +7459,12 @@ of \str{1}'s).
 
 % ==================================
 \extra{Hardware}  \label{extra:Hardware}
-Following Turing, we've gone through a development based
-on transition tables.
-But given a table, is there sure to be a physical 
-implementation with that behavior?
+Following Turing's approach, 
+we've gone through a development of the definition of what is computable 
+based on transition tables.
+We produce a table of transitions and call that a mechanism. 
+However, given a table can we be sure that there is an associated actual
+mechanism, a physical implementation with the behavior that we desire?
 
 Put another way, in programming languages there are mathematical 
 operators that are constructed from other, simpler, mathematical operators.
@@ -7443,13 +7476,14 @@ For instance, \citetext{$\sin(x)$ may be calculated via its Taylor polynomial}{%
 from addition and multiplication.
 But how do the simplest operators work?
 
-We will show how to get any desired behavior.
+We will show how to start with any desired behavior and from it 
+produce a device with that behavior.
 For this, we will work with machines that take finite binary sequences,
 bitstrings,
 as inputs and outputs.
 The easiest approach is via propositional logic.
 
-\Cref{sec:PropLogic} has a review.
+\Cref{sec:PropLogic} has a review of propositional logic.
 Here,
 the tables write $0$ in place of~$F$ and $1$ in place of~$T$, 
 as is the convention in electronics.
@@ -7485,10 +7519,10 @@ stand for different voltage levels.
   \end{tabular}
 \end{center}
 
-Recall that with the three operators
+With the three operators
 `$\wedge$', `$\vee$' and `$\neg$', 
 we can go from a truth table to a 
-propositional logic expression with that table. 
+propositional logic expression having that table. 
 That is, we can
 specify an input-output behavior and then produce an expression
 having that behavior.
@@ -7527,10 +7561,11 @@ makes this row take on value~$1$ and every other row take on value~$0$.
 \end{center}
 For the table on 
 the right again focus on the rows with~$1$'s.
-Target the second row with the clause $\neg P\wedge \neg Q\wedge R$.
+Target the second row by considering the clause $\neg P\wedge \neg Q\wedge R$.
 The clause for the third row is~$\neg P\wedge Q\wedge \neg R$ and
 the fifth row's is~$P\wedge\neg Q\wedge\neg R$.
-Now put these parts together with $\vee$'s.
+Now put these parts together with $\vee$'s
+to get the statement with the above behavior.
 \begin{equation*}
 (\neg P\wedge \neg Q\wedge R)
   \vee(\neg P\wedge Q\wedge \neg R)
@@ -7547,7 +7582,9 @@ that perform logical operations on signals
 The observation that you can use this form of a propositional logic expression
 to systematically design logic circuits was made by
 \citetext{C~Shannon}{See this profile of him: \protect\url{http://www.newyorker.com/tech/elements/claude-shannon-the-father-of-the-information-age-turns-1100100}.} in his
-\citetext{master's thesis}{His paper on the subject was his master's thesis, , \protect\url{https://en.wikipedia.org/wiki/A_Symbolic_Analysis_of_Relay_and_Switching_Circuits}.}.
+\citetext{master's thesis}{%
+  His paper on the subject was his master's thesis, 
+  \protect\url{https://en.wikipedia.org/wiki/A_Symbolic_Analysis_of_Relay_and_Switching_Circuits}.}.
 On the left below is the schematic symbol for an 
 \textsc{and} gate
 with two input wires and one output wire, whose behavior is that 

@@ -43,8 +43,8 @@
     i))
 
 ;; Use gb-check to return predicate
-(define (gb-g n)
-  (if (gb-check (* 2 n))
+(define (gb-g y)
+  (if (gb-check (* 2 y))
       1
       0))
 

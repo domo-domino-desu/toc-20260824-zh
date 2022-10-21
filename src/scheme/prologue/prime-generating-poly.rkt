@@ -29,7 +29,7 @@
 (provide f)
 
 ;; Check if a number n is the sum of two primes
-;; returns i <= n such that i and n-i are prime; returns #f if no such i
+;; Returns minimal i < n such that i and n-i are prime; returns #f if no such i
 (define (gb-check n)
   (for/first ([i (in-range 2 (add1 n))]
               #:when (and (prime? i)

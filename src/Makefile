@@ -1,6 +1,8 @@
-# Makefile
-# For Linear Algebra by Jim Hefferon joshua.smcvt.edu/linearalgebra
+# Makefile-working-asy
+# For Theory of Computation by Jim Hefferon hefferon.net 
 # 2021-Jun-01 JH GPL 2
+# 2022-May-20 JH Got a working Asymptote, so need to clear out .pdf's
+#     that can be generated from source 
 
 # SRC_DIR  Full path for src/
 #  From http://timmurphy.org/2015/09/27/how-to-get-a-makefile-directory-path/
@@ -34,8 +36,12 @@ LATEX_CMD := $(TEXINPUTS) $(LATEX)
 #   -nosafe gets around GhostScript error when using opacity:
 #      https://github.com/vectorgraphics/asymptote/issues/77
 #  -vv makes it talk more
+# Note:
+#  If you get errors from Asymptote saying something about a stack then
+# you need to recompile the executable.  See ../INSTALL
 # ASYMPTOTE_CMD := $(TEXINPUTS) $(ASYMPTOTE_DIR) asy -nosafe
-ASYMPTOTE_CMD := asy -nosafe
+# ASYMPTOTE_CMD := asy -nosafe
+ASYMPTOTE_CMD := asy
 
 # Makeindex command line.
 MAKEINDEX_CMD := makeindex -s sty/book.isty
@@ -50,7 +56,11 @@ ZIP_CMD := zip
 # You might try ftpmaint@Alonzo:~/Documents/toc/src$ make all 2>&1 | tee makefile.log
 
 # .PHONY : all
-all : book.pdf answers.pdf
+all : fsm-exercises tm-exercises redo
+
+
+# .PHONY : redo
+redo : book.pdf answers.pdf slides
 
 
 # ============== cover ================
@@ -110,6 +120,17 @@ prologue/asy/tm/tm000.pdf : prologue/asy/tm/tm.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
+
+
+# .... TM_EXS start
+
+# This creates the .asy files.
+# (Also the pdf's so the rules below are redundant, but I want them
+# in the rules for prologue.tex.)
+.PHONY: tm-exercises
+tm-exercises:
+	cd prologue/asy/tm_exercises && $(MAKE)
+
 prologue/asy/tm_exercises/inverse/inverse000.pdf : prologue/asy/tm_exercises/inverse/inverse.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
@@ -117,10 +138,6 @@ prologue/asy/tm_exercises/inverse/inverse000.pdf : prologue/asy/tm_exercises/inv
 prologue/asy/tm_exercises/replicator/replicator000.pdf : prologue/asy/tm_exercises/replicator/replicator.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
-
-# .... TM_EXS start
-# These are in principle created by running the TM simulator, but to reduce the
-# difficulty of compiling the book, I've saved them in the git.
 
 prologue/asy/tm_exercises/pdfs/add000.pdf : prologue/asy/tm_exercises/pdfs/add.asy
 	cd $(@D); \
@@ -403,10 +420,9 @@ prologue/prologue.tex : | prologue/asy/xygraphs/xygraphs00.pdf \
 
 # ============== background ================
 
-# Currently Asymptote and gs versions don't allow creating this file on U20.
-# background/asy/3d/3d000.pdf : background/asy/3d/3d.asy
-# 	cd $(@D); \
-# 	$(ASYMPTOTE_CMD) "$(<F)"
+background/asy/3d/3d000.pdf : background/asy/3d/3d.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 background/asy/aristotle/aristotle1000.pdf : background/asy/aristotle/aristotle.asy
 	cd $(@D); \
@@ -416,10 +432,9 @@ background/asy/busybeaver/busybeaver00.pdf : background/asy/busybeaver/busybeave
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-# Omitted because of ASY/GS troubles; use PDF's in repo.
-# background/asy/correspondences/correspondences000.pdf : background/asy/correspondences/correspondences.asy
-# 	cd $(@D); \
-# 	$(ASYMPTOTE_CMD) "$(<F)"
+background/asy/correspondences/correspondences000.pdf : background/asy/correspondences/correspondences.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 background/asy/flowcharts/flowcharts00.pdf : background/asy/flowcharts/flowcharts.asy
 	cd $(@D); \
@@ -476,6 +491,10 @@ automata/asy/fsa/fsa00.pdf : automata/asy/fsa/fsa.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
+.PHONY: fsm-exercises
+fsm-exercises:
+	cd automata/asy/fsm_exercises && $(MAKE)
+	
 # .... FSM_EXERCISES start
 
 automata/asy/fsm_exercises/pdfs/endsinai000.pdf : automata/asy/fsm_exercises/pdfs/endsinai.asy
@@ -531,10 +550,9 @@ automata/automata.tex : | automata/asy/fsa/fsa00.pdf \
 
 # ============== complexity ================
 
-# Omitted because of ASY/GS troubles; use PDF's in repo.
-# complexity/asy/bigo/bigo00.pdf : complexity/asy/bigo/bigo.asy
-# 	cd $(@D); \
-# 	$(ASYMPTOTE_CMD) "$(<F)"
+complexity/asy/bigo/bigo00.pdf : complexity/asy/bigo/bigo.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 complexity/asy/circuit/circuit000.pdf : complexity/asy/circuit/circuit.asy
 	cd $(@D); \
@@ -548,25 +566,21 @@ complexity/asy/flowcharts/flowcharts000.pdf : complexity/asy/flowcharts/flowchar
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-# Omitted because of ASY/GS troubles; use PDF's in repo.
-# complexity/asy/ndtm/ndtm000.pdf : complexity/asy/ndtm/ndtm.asy
-# 	cd $(@D); \
-# 	$(ASYMPTOTE_CMD) "$(<F)"
+complexity/asy/ndtm/ndtm000.pdf : complexity/asy/ndtm/ndtm.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
 
-# Omitted because of ASY/GS troubles; use PDF's in repo.
-# complexity/asy/pnp/pnp00.pdf : complexity/asy/pnp/pnp.asy
-# 	cd $(@D); \
-# 	$(ASYMPTOTE_CMD) "$(<F)"
+complexity/asy/pnp/pnp00.pdf : complexity/asy/pnp/pnp.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
 
-# Omitted because of ASY/GS troubles; use PDF's in repo.
-# complexity/asy/problems/problems00.pdf : complexity/asy/problems/problems.asy
-# 	cd $(@D); \
-# 	$(ASYMPTOTE_CMD) "$(<F)"
+complexity/asy/problems/problems00.pdf : complexity/asy/problems/problems.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
 
-# Omitted because of ASY/GS troubles; use PDF's in repo.
-# complexity/asy/xygraphs/xygraphs00.pdf : complexity/asy/xygraphs/xygraphs.asy
-# 	cd $(@D); \
-# 	$(ASYMPTOTE_CMD) "$(<F)"
+complexity/asy/xygraphs/xygraphs00.pdf : complexity/asy/xygraphs/xygraphs.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 complexity/complexity.tex : | complexity/asy/bigo/bigo00.pdf \
   complexity/asy/circuit/circuit000.pdf \
@@ -587,7 +601,7 @@ appendix/asy/functions000.pdf : appendix/asy/functions.asy
 appendix/appendix.tex : | appendix/asy/functions000.pdf
 
 
-# ============== book ================
+# ============== book and answers ================
 
 book.pdf : book.tex \
   asy/share/tape1.pdf \
@@ -602,7 +616,78 @@ book.pdf : book.tex \
 	$(LATEX_CMD) book
 	makeindex -s book.ist -p odd book.idx
 	biber book
+	./strip-blank-bookmarks.sh
 	$(LATEX_CMD) book
 
 answers.pdf : book.pdf answers.tex
 	$(LATEX_CMD) answers
+
+# =============== slides ======================
+
+# .PHONY slides
+slides : slides/prologue/prologue.pdf \
+  slides/background/background.pdf \
+  slides/languages/languages.pdf \
+  slides/automata/automata.pdf \
+  slides/complexity/complexity.pdf
+
+slides/prologue/prologue.pdf : slides/prologue/prologue.tex \
+  book.pdf \
+  prologue/prologue.tex
+	cd $(@D); \
+	$(LATEX_CMD) "$(<D)/$(<F)"; \
+	$(LATEX_CMD) "$(<D)/$(<F)"
+
+slides/background/asy/background00.pdf : slides/background/asy/background.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
+slides/background/background.pdf : slides/background/background.tex \
+  book.pdf \
+  slides/background/asy/background00.pdf \
+  background/background.tex 
+	cd $(@D); \
+	$(LATEX_CMD) "$(<D)/$(<F)"; \
+	$(LATEX_CMD) "$(<D)/$(<F)"
+
+slides/languages/asy/grammar000.pdf : slides/languages/asy/grammar.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
+slides/languages/languages.pdf : slides/languages/languages.tex \
+  book.pdf \
+  slides/languages/asy/grammar000.pdf \
+  languages/languages.tex
+	cd $(@D); \
+	$(LATEX_CMD) "$(<D)/$(<F)"; \
+	$(LATEX_CMD) "$(<D)/$(<F)"
+
+slides/automata/asy/fsm00.pdf : slides/automata/asy/fsm.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
+slides/automata/asy/nfsm00.pdf : slides/automata/asy/nfsm.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
+slides/automata/automata.pdf : slides/automata/automata.tex \
+  book.pdf \
+  slides/automata/asy/fsm00.pdf \
+  slides/automata/asy/nfsm00.pdf \
+  automata/automata.tex 
+	cd $(@D); \
+	$(LATEX_CMD) "$(<D)/$(<F)"; \
+	$(LATEX_CMD) "$(<D)/$(<F)"
+
+slides/complexity/asy/complexity00.pdf : slides/complexity/asy/complexity.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
+slides/complexity/complexity.pdf : slides/complexity/complexity.tex \
+  book.pdf \
+  slides/complexity/asy/complexity00.pdf \
+  complexity/complexity.tex 
+	cd $(@D); \
+	$(LATEX_CMD) "$(<D)/$(<F)"; \
+	$(LATEX_CMD) "$(<D)/$(<F)"
+

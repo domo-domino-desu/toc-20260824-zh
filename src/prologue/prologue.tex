@@ -5866,6 +5866,7 @@ then $f(\vec{x})$ is undefined.
 %</def:MuRecursionii>
 
 \begin{example}
+%<*ex:PrimeProducingPoly>
 Euler noticed in 1772 that the polynomial $p(y)=y^2+y+41$ initially seems to  
 \citetext{output only primes}{%
   In fact, there is no one-input polynomial with integer coefficients that 
@@ -5909,6 +5910,7 @@ This tests for the primality of a quadratic polynomial's output.\footnotemark %
 \end{equation*}
 Then the search is 
 $f(\vec{x})=\least y\,\big[ g(\vec{x},y)=0 \big]$.
+%</ex:PrimeProducingPoly>
 
 Some code illustrates.
 Start with a test for primality
@@ -5943,6 +5945,7 @@ such a~$y$.
 In the next example no one currently knows whether the search will end.
 
 \begin{example}
+%<*ex:GoldbachConjecture>
 \definend{Goldbach's conjecture}\index{Goldbach's conjecture} 
 is that every even number can be written as the sum of at most two primes. 
 Here are the first few instances: $2=2$, $4=2+2$, $6=3+3$, $8=5+3$, $10=7+3$.
@@ -5966,6 +5969,7 @@ we get a version of the definition's $g$.
 \end{equation*} 
 The unbounded search is 
 $\operatorname{gb-f}()=\least y\,\big[ \operatorname{gb-g}(y)=0 \big]$.\footnotemark
+%</ex:GoldbachConjecture>
 
 The code for the auxillary
 \lstinputlisting[firstline=31, lastline=37]{\prfiles prime-generating-poly.rkt}
@@ -8140,9 +8144,9 @@ $n\times m$ patterns will result in any surviving cells after~$i$ generations.
 \extra{Ackermann's function is not primitive recursive}\index{Ackermann function|(}
 \label{sec:ComputableFunctionNotPrimitiveRecursive}
 
-We have see that the hyperoperation~$\hyperoperation$
-is the natural generalization of 
-successor, addition, multiplication, etc. 
+The hyperoperation~$\hyperoperation$
+is intuitively
+mechanically computable.
 \begin{equation*}
   \hyperoperation(n,x,y)=
   \begin{cases}
@@ -8153,22 +8157,17 @@ successor, addition, multiplication, etc.
     \hyperoperation(n-1, x, \hyperoperation(n, x, y-1)) &\case{otherwise}
   \end{cases}
 \end{equation*}
-% In place of $\hyperoperation(n,x,y)$ we often write $\hyperoperation_n(x,y)$  
-% and describe this as \definend{level~$n$} of the function~$\hyperoperation$.
-
 % \begin{wrapfigure}{R}{0.2\textwidth}
 % \centering
 % \includegraphics[width=0.2\textwidth]{background/peter.jpg} % http://www.agnesscott.edu/lriddle/women/peter.htm
 % \caption{\label{fig:peter}\href{http://www.agnesscott.edu/lriddle/women/peter.htm}{R\'ozsa P\'eter 1905--1977}}
 % \end{wrapfigure}
-We have cited that~$\hyperoperation$, while intuitively
-mechanically computable, is not primitive recursive.
-\citetext{We will show here}{%
+We have cited that it is not primitive recursive.
+\citetext{We will prove that here}{%
   This presentation is 
   based on that of \autocite{Hennie}, \autocite{Smorynski}, 
   and~\autocite{Robinson}.} 
-that a closely related variant
-is not primitive recursive.
+for a closely related variant.
 
 \margingraphic{0.17\textwidth}{prologue/pix/peter.jpg}{\label{fig:peter}\href{http://www.agnesscott.edu/lriddle/women/peter.htm}{R\'ozsa P\'eter 1905--1977}}\index{Peter, R@P\'eter, R!picture}
 In $\hyperoperation$'s `otherwise' line, while 
@@ -8185,13 +8184,13 @@ That, and tweaking the initial value of each level, gives this.
     y+1                &\case{if $k=0$}    \\
     \ackermann(k-1,1)  &\case{if $y=0$ and $k>0$}  \\
     \ackermann(k-1, \ackermann(k,y-1)) &\case{otherwise}
-  \end{cases}
-\end{equation*} \label{eq:PeterAckermann}
-Any function based on the recursion in the bottom line is 
-called an 
-\index{Ackermann function}\index{function!Ackermann}\definend{Ackermann function}.\footnote{There are many different
+  \end{cases} \label{eq:PeterAckermann}
+\end{equation*}
+Any function with the recursion in the bottom line is an 
+\citetext{\definend{Ackermann function}}{There are many different
   Ackermann functions in the literature.
-  A common one is the function of one variable $\ackermann(k,k)$.}
+  A common one is the function of one variable 
+  $\ackermann(k,k)$.}.\index{Ackermann function}\index{function!Ackermann}
 We will prove that $\ackermann$ is not primitive recursive. 
 
 Since the new function has only two variables we can show a table.
@@ -8249,41 +8248,47 @@ the others as exercises.
 They all proceed the same way, with 
 an induction inside of an induction.
 
-This is the first item.
+The first item is that for all~$k$ and for all~$y$ we have that
+$\ackermann(k,y)>y$.
 We will prove it by induction on~$k$.
+
+The $k=0$ base step holds because $\ackermann(0,y)=y+1$ 
+and thus $\ackermann(0,y)>y$.
+For the inductive step, assume that this holds for $k=0$, \ldots, $k=n$
 \begin{equation*}
-  \forall k\,\forall y\,\big[\ackermann(k,y)>y\big]
+  \forall y \bigl[\,\ackermann(k,y)>y\,\bigr]
   \tag{$*$}
 \end{equation*}
-The $k=0$ base step is $\ackermann(0,y)=y+1>y$.
-For the inductive step, assume that statement~($*$) 
-holds for $k=0$, \ldots, $k=n$ and consider the $k=n+1$ case.
-
-We must verify this statement, 
+and consider the $k=n+1$ case.
+We must verify this.
 \begin{equation*}
-  \forall y\,\big[\ackermann(n+1,y)>y\big]
-  \tag{$**$} 
+  \forall y \bigl[\,\ackermann(n+1,y)>y\,\bigr]
+  \tag{$**$}
 \end{equation*}
-which we will do by induction on~$y$.
+
+This verification we will do using induction on~$y$.
+So this is an induction argument inside of an induction argument.
 In the $y=0$ base step of this inside induction, the definition gives 
 $\ackermann(n+1,0)=\ackermann(n,1)$ and by the inductive hypothesis that 
-statement~($*$) is true when $k=n$ we have that
+statement~($*$) is true when $k=n$, we have
 $\ackermann(n,1)>1>y=0$.
 
-Finally, in the inductive step of the inside induction, assume that
+For the inductive step of the inside induction, assume that
 statement~($**$) holds for $y=0$, \ldots, $y=m$ and consider $y=m+1$.
 The definition gives
 $\ackermann(n+1,m+1)=\ackermann(n,\ackermann(n+1,m))$.
-By ($**$)'s inductive hypothesis, $\ackermann(n+1,m)>m$.
-By ($*$)'s inductive hypothesis, when $\ackermann(n,\ackermann(n+1,m))$ 
+By the inductive hypothesis of the inside induction, ($**$), 
+we have $\ackermann(n+1,m)>m$.
+Then by the inductive hypothesis of the outer induction, ($*$), 
+when $\ackermann(n,\ackermann(n+1,m))$ 
 has a second argument greater than~$m$ then it's result is greater than~$m$, 
 as required.
 \end{proof}
 
 We will abbreviate the function input list $x_0,\ldots,x_{n-1}$ 
 by the vector~$\vec{x}$.
-And we will write the maximum of the vector $\max(\vec{x})$ to mean the
-maximum of its components 
+And we will write the maximum of the vector, $\max(\vec{x})$, to mean the
+maximum of its components, 
 $\max(\set{x_0,\ldots,x_{n-1}})$.
 
 \begin{definition}

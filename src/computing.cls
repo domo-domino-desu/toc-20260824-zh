@@ -55,7 +55,7 @@
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}
-\include{colorscheme}  % change the color scheme
+\input{colorscheme.tex}  % change the color scheme
 \RequirePackage{graphicx}
 
 \usepackage{adjustbox} % for clipping pictures

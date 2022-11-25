@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Massage the .tex files to make them work better with LaTeXML
+Massage the .tex files to make them work with LaTeXML
 """
 __version__ = "0.0.1"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
+
+__TODO__ = """
+1) Add APPENDIX_SUBS, PREFACE_SUBS
+"""
 
 import sys
 import os, os.path
@@ -91,6 +95,7 @@ CHAPTER_DIRS = ["prologue",
                 "complexity"]
 ALL_DIRS = ["preface"] + CHAPTER_DIRS + ["appendix"]
 
+LATEXML = "latexml"  # used as a prefix for file names to make cleaning easier
 
 
 
@@ -176,60 +181,201 @@ PROLOGUE_RE_SUBS = {}  # map compiled regex -> substitution string
 
 # PDF's in src/asy/share
 INCLUDEGRAPHICS_ASY_SHARE_DIR = "(.*)\\\\includegraphics{asy/share/([^\\.]*)\\.pdf}(.*)"
-INCLUDEGRAPHICS_PROLOGUE_ASY_SHARE_DIR_RE = re.compile(INCLUDEGRAPHICS_ASY_SHARE_DIR)
+INCLUDEGRAPHICS_ASY_SHARE_DIR_RE = re.compile(INCLUDEGRAPHICS_ASY_SHARE_DIR)
 INCLUDEGRAPHICS_ASY_SHARE_DIR_REPLACEMENT = "\\1\\\\includegraphics{latexml/asy/share/\\2.svg}\\3"
-PROLOGUE_RE_SUBS[INCLUDEGRAPHICS_PROLOGUE_ASY_SHARE_DIR_RE]=INCLUDEGRAPHICS_ASY_SHARE_DIR_REPLACEMENT
+PROLOGUE_RE_SUBS[INCLUDEGRAPHICS_ASY_SHARE_DIR_RE]=INCLUDEGRAPHICS_ASY_SHARE_DIR_REPLACEMENT
 
 INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR = "(.*)\\\\includegraphics{prologue/asy/([^/]*)/([^\\.]*)\\.pdf}(.*)"
 INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_RE = re.compile(INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR)
-INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_REPLACEMENT = "\\1\\\\includegraphics{prologue/asy/\\2/\\3.pdf}\\4"
+INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_REPLACEMENT = "\\1\\\\includegraphics{latexml/prologue/asy/\\2/\\3.pdf}\\4"
 PROLOGUE_RE_SUBS[INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_RE] = INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_REPLACEMENT
 
 VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR = "(.*)\\\\vcenteredhbox{\\\\includegraphics{prologue/asy/([^/]*)/([^\\.]*)\\.pdf}}(.*)"
 VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_RE = re.compile(VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR)
-VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_REPLACEMENT = "\\1\\\\vcenteredhbox{\\\\includegraphics{prologue/asy/\\2/\\3\.svg}}\\4"
-PROLOGUE_RE_SUBS[VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_RE] = VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_REPLACEMENT
+VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASY_SUBDIR_REPLACEMENT = "\\1\\\\vcenteredhbox{\\\\includegraphics{latexml/prologue/asy/\\2/\\3.svg}}\\4"
+
+VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASYDIR = "(.*)\\\\vcenteredhbox{\\\\includegraphics{\\\\asydir\s* ([^/]*)/([^\\.]*)\\.pdf}}(.*)"
+VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASYDIR_RE = re.compile(VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASYDIR)
+VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASYDIR_REPLACEMENT = "\\1\\\\vcenteredhbox{\\\\includegraphics{latexml/prologue/asy/\\2/\\3.svg}}\\4"
+PROLOGUE_RE_SUBS[VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASYDIR_RE] = VCENTEREDHBOX_INCLUDEGRAPHICS_PROLOGUE_ASYDIR_REPLACEMENT
 
 TAPEGRAPHIC = "(.*)\\\\tapegraphic{\\\\tmexercises\\s* ([^\\.]*)\\.pdf}(.*)"
 TAPEGRAPHIC_RE = re.compile(TAPEGRAPHIC)
 TAPEGRAPHIC_REPLACEMENT = "\\\\includegraphics{latexml/prologue/asy/tm_exercises/pdfs/\\2.svg}}\\3"
 PROLOGUE_RE_SUBS[TAPEGRAPHIC_RE] = TAPEGRAPHIC_REPLACEMENT
 
-def asy_pdfs_to_latexml_svgs(fname):
-    """Change calls for a PDF graphic into a call for an SVG.
-         fname  Path to unopened file
+# ........... background .......................
+BACKGROUND_RE_SUBS = {}  # map compiled regex -> substitution string
+
+INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR = "(.*)\\\\includegraphics{background/asy/([^/]*)/([^\\.]*)\\.pdf}(.*)"
+INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR_RE = re.compile(INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR)
+INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR_REPLACEMENT = "\\1\\\\includegraphics{latexml/background/asy/\\2/\\3.pdf}\\4"
+BACKGROUND_RE_SUBS[INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR_RE] = INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR_REPLACEMENT
+
+VCENTEREDHBOX_INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR = "(.*)\\\\vcenteredhbox{\\\\includegraphics{background/asy/([^/]*)/([^\\.]*)\\.pdf}}(.*)"
+VCENTEREDHBOX_INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR_RE = re.compile(VCENTEREDHBOX_INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR)
+VCENTEREDHBOX_INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR_REPLACEMENT = "\\1\\\\vcenteredhbox{\\\\includegraphics{latexml/background/asy/\\2/\\3\.svg}}\\4"
+BACKGROUND_RE_SUBS[VCENTEREDHBOX_INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR_RE] = VCENTEREDHBOX_INCLUDEGRAPHICS_BACKGROUND_ASY_SUBDIR_REPLACEMENT
+
+# ........... languages .......................
+LANGUAGES_RE_SUBS = {}  # map compiled regex -> substitution string
+
+INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR = "(.*)\\\\includegraphics{languages/asy/([^/]*)/([^\\.]*)\\.pdf}(.*)"
+INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR_RE = re.compile(INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR)
+INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR_REPLACEMENT = "\\1\\\\includegraphics{latexml/languages/asy/\\2/\\3.pdf}\\4"
+LANGUAGES_RE_SUBS[INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR_RE] = INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR_REPLACEMENT
+
+VCENTEREDHBOX_INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR = "(.*)\\\\vcenteredhbox{\\\\includegraphics{languages/asy/([^/]*)/([^\\.]*)\\.pdf}}(.*)"
+VCENTEREDHBOX_INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR_RE = re.compile(VCENTEREDHBOX_INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR)
+VCENTEREDHBOX_INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR_REPLACEMENT = "\\1\\\\vcenteredhbox{\\\\includegraphics{latexml/languages/asy/\\2/\\3\.svg}}\\4"
+LANGUAGES_RE_SUBS[VCENTEREDHBOX_INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR_RE] = VCENTEREDHBOX_INCLUDEGRAPHICS_LANGUAGES_ASY_SUBDIR_REPLACEMENT
+
+# ........... automata .......................
+AUTOMATA_RE_SUBS = {}  # map compiled regex -> substitution string
+
+INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR = "(.*)\\\\includegraphics{automata/asy/([^/]*)/([^\\.]*)\\.pdf}(.*)"
+INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR_RE = re.compile(INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR)
+INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR_REPLACEMENT = "\\1\\\\includegraphics{latexml/automata/asy/\\2/\\3.pdf}\\4"
+AUTOMATA_RE_SUBS[INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR_RE] = INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR_REPLACEMENT
+
+VCENTEREDHBOX_INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR = "(.*)\\\\vcenteredhbox{\\\\includegraphics{automata/asy/([^/]*)/([^\\.]*)\\.pdf}}(.*)"
+VCENTEREDHBOX_INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR_RE = re.compile(VCENTEREDHBOX_INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR)
+VCENTEREDHBOX_INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR_REPLACEMENT = "\\1\\\\vcenteredhbox{\\\\includegraphics{latexml/automata/asy/\\2/\\3\.svg}}\\4"
+AUTOMATA_RE_SUBS[VCENTEREDHBOX_INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR_RE] = VCENTEREDHBOX_INCLUDEGRAPHICS_AUTOMATA_ASY_SUBDIR_REPLACEMENT
+
+# ........... complexity .......................
+COMPLEXITY_RE_SUBS = {}  # map compiled regex -> substitution string
+
+INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR = "(.*)\\\\includegraphics{complexity/asy/([^/]*)/([^\\.]*)\\.pdf}(.*)"
+INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR_RE = re.compile(INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR)
+INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR_REPLACEMENT = "\\1\\\\includegraphics{latexml/complexity/asy/\\2/\\3.pdf}\\4"
+COMPLEXITY_RE_SUBS[INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR_RE] = INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR_REPLACEMENT
+
+VCENTEREDHBOX_INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR = "(.*)\\\\vcenteredhbox{\\\\includegraphics{complexity/asy/([^/]*)/([^\\.]*)\\.pdf}}(.*)"
+VCENTEREDHBOX_INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR_RE = re.compile(VCENTEREDHBOX_INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR)
+VCENTEREDHBOX_INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR_REPLACEMENT = "\\1\\\\vcenteredhbox{\\\\includegraphics{latexml/complexity/asy/\\2/\\3\.svg}}\\4"
+COMPLEXITY_RE_SUBS[VCENTEREDHBOX_INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR_RE] = VCENTEREDHBOX_INCLUDEGRAPHICS_COMPLEXITY_ASY_SUBDIR_REPLACEMENT
+
+# Merge the maps together
+RE_SUBS = PROLOGUE_RE_SUBS \
+    | BACKGROUND_RE_SUBS \
+    | LANGUAGES_RE_SUBS \
+    | AUTOMATA_RE_SUBS \
+    | COMPLEXITY_RE_SUBS
+
+
+def convert_pdf_graphic_calls_to_svg_calls(fname):
+    """Starting with the file fname, return string with changed graphic calls.
+      fname  String path of LaTeX file 
     """
-    counter = 0
+    bname = os.path.basename(fname)
+    (root, ext) = os.path.splitext(bname)
+    if root.lower() == "preface":
+        sub_map = PREFACE_RE_SUBS
+    elif root.lower() == "prologue":
+        sub_map = PROLOGUE_RE_SUBS
+    elif root.lower() == "background":
+        sub_map = BACKGROUND_RE_SUBS
+    elif root.lower() == "languages":
+        sub_map = LANGUAGES_RE_SUBS
+    elif root.lower() == "automata":
+        sub_map = AUTOMATA_RE_SUBS
+    elif root.lower() == "complexity":
+        sub_map = COMPLEXITY_RE_SUBS
+    elif root.lower() == "appendix":
+        sub_map = APPENDIX_RE_SUBS
+    else:
+        critical("The file basename must be one of prologue.tex, background.tex, etc.")
+    changed_file = asy_pdfs_to_latexml_svgs(fname, sub_map)
+    write_to_latexml_file(fname, changed_file)
+
+
+def asy_pdfs_to_latexml_svgs(fname, sub_map):
+    """Inside the .tex file fname, change calls for a PDF graphic into calls 
+    for an SVG graphic.  Return a string that is file with changes made.
+         fname  Path to unopened file
+         sub_map  Dict compiled regex -> substitution string
+    """
+    if DEBUG:
+        log.debug("Converting {fname} PDF graphics calls to SVG calls".format(fname=fname))
+    with open(fname, 'r', encoding="utf-8") as fh:
+        newfile_string, counter =_asy_pdfs_to_latexml_svgs(fh, sub_map)
+        return(newfile_string)
+        
+
+def _asy_pdfs_to_latexml_svgs(fh, sub_map):
+    """Change calls for a PDF graphic into a call for an SVG.  Return string that
+    is file with changes made.
+         fname  Path to unopened file
+         sub_map  Dict compiled regex -> substitution string
+    """
+    counter = 0  # useful to tell if a change made any difference
     r = []
-    with open(fname) as file:
-        for line in file:
-            flag = False
-            for compiled_re in PROLOGUE_RE_SUBS:
-                m = compiled_re.match(line)
-                if m:
-                    flag = True
-                    print(">>> ",line)
-                    print("   m=",m)
-                    print("      proposed replacement: ",PROLOGUE_RE_SUBS[compiled_re])
-                    s = compiled_re.sub(PROLOGUE_RE_SUBS[compiled_re],line)
-                    print("      result: ",s)
-                    counter = counter+1
-                    r.append(s)
-                    break
-            if not(flag):
-                r.append(line)
-    return "".join(r)
+    for line in fh:
+        flag = False
+        for compiled_re in sub_map:
+            m = compiled_re.match(line)
+            if m:
+                flag = True
+                if DEBUG:
+                    log.debug(">>> "+line)
+                    log.debug("   m="+str(m))
+                    log.debug("      proposed replacement: "+sub_map[compiled_re])
+                s = compiled_re.sub(sub_map[compiled_re],line)
+                if DEBUG:
+                    log.debug("      result: "+s)
+                counter = counter+1
+                r.append(s)
+                break
+        if not(flag):
+            r.append(line)
+    return ("".join(r), counter)
     
 
+# === Handle latexml files ====================================
+
+def get_latexml_filename(fname):
+    """From the path fname, return the filename string that has the basename
+    prefixed with the constant LATEXML.
+      fname  String representing Path to file
+    """
+    (path_dir, path_basename) =  os.path.split(fname)
+    latexml_fname = os.path.join(path_dir,LATEXML+path_basename)
+    return latexml_fname
+
+def write_to_latexml_file(fname, s):
+    """Write the string to a file whose basename starts with "latexml".
+         fname  Path to a file whose name will be used
+         s String, encoded as UTF-8
+    """
+    latexml_fname = get_latexml_filename(fname)
+    with open(latexml_fname, 'w', encoding="utf-8") as fh:
+        fh.write(s)
+
+def read_from_latexml_file(fname):
+    """Return lines read from a file whose basename starts with "latexml".
+         fname  Path to a file whose name will be used
+    """
+    latexml_fname = get_latexml_filename(fname)
+    with open(latexml_fname, 'r', encoding="utf-8") as fh:
+        return fh.readlines()
+
+
+# ===========================================================
+# ===========================================================
 # ===========================================================
 def main(args):
     if args.debug:
         DEBUG=True
     if args.verbose:
         VERBOSE=True
-    book_file_contents = book_to_latexmlbook("../book.tex")
-    # file_contents = asy_pdfs_to_latexml_svgs(args.filename)
-    # print(book_file_contents)
+    if args.filename is None:
+        critical("You must give a filename")
+    else:
+        fname = args.filename
+    # book_file_contents = book_to_latexmlbook("../book.tex")
+    file_contents = convert_pdf_graphic_calls_to_svg_calls(args.filename)
+    # print(file_contents)
         
 # ===========================================================
 if __name__ == '__main__':
@@ -240,10 +386,10 @@ if __name__ == '__main__':
                                          "  Author: "+__author__
                                          +", Version: "+__version__
                                          +", License: "+__license__)
-        parser.add_argument('-f', '--filename',
-                            action='store',
-                            default=None,
-                            help="File name")
+        # parser.add_argument('-f', '--filename',
+        #                     action='store',
+        #                     default=None,
+        #                     help="File name")
         parser.add_argument('-D', '--debug',
                             action='store_true',
                             default=DEBUG,
@@ -261,10 +407,14 @@ if __name__ == '__main__':
                             action='store_true',
                             default=False,
                             help='Give verbose output. Default: {0!s}'.format(VERBOSE))
+        parser.add_argument("filename",
+                            type=str,
+                            default=None,
+                            help="LaTeX file to be massaged (won't be changed)")
         log.info("{0!s} Started".format(parser.prog))
         args = parser.parse_args()
         _set_log_level(log,args.log_level)        
-        if args.debug:
+        if DEBUG or args.debug:
             _set_log_level(log_fh,"DEBUG")
             _set_log_level(log,"DEBUG")
         elif args.verbose:

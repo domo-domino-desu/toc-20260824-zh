@@ -345,7 +345,7 @@ def get_latexml_filename(fname):
 
 def write_to_latexml_file(fname, s):
     """Write the string to a file whose basename starts with "latexml".
-         fname  Path to a file whose name will be used
+         fname  Path to a file whose name will be used (not prefixed with "latexml")
          s String, encoded as UTF-8
     """
     latexml_fname = get_latexml_filename(fname)
@@ -354,7 +354,7 @@ def write_to_latexml_file(fname, s):
 
 def read_from_latexml_file(fname):
     """Return lines read from a file whose basename starts with "latexml".
-         fname  Path to a file whose name will be used
+         fname  Path to a file whose name will be used (not prefixed with "latexml")
     """
     latexml_fname = get_latexml_filename(fname)
     with open(latexml_fname, 'r', encoding="utf-8") as fh:

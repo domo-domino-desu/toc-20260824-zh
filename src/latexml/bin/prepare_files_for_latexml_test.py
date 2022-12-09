@@ -108,6 +108,14 @@ class TestReadingWritingLatexmlFiles(unittest.TestCase):
         res = prepare.read_from_latexml_file(self.fn)
         self.assertEqual(res[0],self.test_string)
             
+    def test_write_to_latexml_file(self):
+        """Write to the modified file name"""
+        tmp_fn = uuid.uuid4().hex+".tex"  # Extremely likely to be unique name
+        s = "xyz xyz"
+        prepare.write_to_latexml_file(tmp_fn,s)
+        res = prepare.read_from_latexml_file(tmp_fn)
+        self.assertEqual(res[0],s)
+            
 
         
 # ===========================================================

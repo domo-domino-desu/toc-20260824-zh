@@ -335,7 +335,7 @@ def _asy_pdfs_to_latexml_svgs(fh, sub_map):
 # === Handle latexml files ====================================
 
 def get_latexml_filename(fname):
-    """From the path fname, return the filename string that has the basename
+    """From the path fname, return the path string that has the basename
     prefixed with the constant LATEXML.
       fname  String representing Path to file
     """

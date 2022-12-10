@@ -146,6 +146,54 @@ INCLUDEONLY_APPENDIX_RE = re.compile(INCLUDEONLY_APPENDIX)
 INCLUDEONLY_APPENDIX_REPLACEMENT = "\\1appendix/latexmlappendix\\2\\3\\4\\5"
 BOOK_RE_SUBS[INCLUDEONLY_APPENDIX_RE] = INCLUDEONLY_APPENDIX_REPLACEMENT
 
+
+def fname_list_build(arg):
+    """From command-line arg, produce the fname list
+      arg  String, either comma-separated list of chapters or 'all'
+    """
+    if arg.casefold() == 'all':
+        return ALL_DIRS
+    r = _fname_list_build(arg)
+    if not(r):
+        warning("List of chapters is empty")
+    return r
+
+def _fname_list_build(arg):
+    """Go through command-line arg to produce the fname list
+      arg  String, comma-separated list of chapters
+    """
+    alist = arg.split(",")
+    alist = [s.strip() for s in alist]  # strip leading and trailing blanks
+    r = []
+    for s in alist:
+        if not(s.casefold() in ALL_DIRS):
+            warning("No such chapter: "+s)
+        else:
+            r.append(s.lower())
+    return r
+        
+
+def includeonly_build(fname_list):
+    """Return the \includeonly{..} list that includes things on fname_list"""
+    includeonly_body = _includeonly_build(fname_list)
+    r = ["\includeonly{"] + includeonly_body + ["}"]
+    r.append("}")
+    return "\n".join(r)
+
+def _includeonly_build(fname_list):
+    """Return list of strings for \includeonly{..} from fname_list"""
+    r = []
+    for d in ALL_DIRS:
+        s = "{0}/{0}".format(d)
+        if not(d == ALL_DIRS[-1]):
+            s = s+","
+        if not(d in fname_list):
+            s = "% "+s
+        r.append(s)
+    return r
+
+
+
 def book_to_latexmlbook(fname):
     """Input book.tex, output latexmlbook.tex
          fname  Path to unopened file

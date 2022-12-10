@@ -40,6 +40,31 @@ def error(s):
     sys.stderr.flush()
     sys.exit(10)
 
+def critical(s, level=1):
+    t = 'CRITICAL ERROR: '+s+"\n"
+    log.critical(t,exc_info=True)
+    sys.exit(level)
+
+# Steal protect's warning, error, and critical functions for easier checking
+WARNING_STRING = ""
+def grab_warning(s):
+    global WARNING_STRING
+    WARNING_STRING = s
+prepare.warning = grab_warning
+
+ERROR_STRING = ""
+def grab_error(s, level=10):
+    global ERROR_STRING 
+    ERROR_STRING = s
+prepare.error = grab_error
+
+CRITICAL_STRING = ""
+def grab_critical(s, level=1):
+    global CRITICAL_STRING 
+    CRITICAL_STRING = s
+prepare.critical = grab_critical
+
+    
 import logging
 # create file handler which logs even debug messages
 log = logging.getLogger()
@@ -61,6 +86,8 @@ fh.setLevel(logging.ERROR)
 fh.setFormatter(formatter)
 log.addHandler(fh)
 
+
+# ============== LaTeXML files =======================
 
 class TestNamingLatexmlFiles(unittest.TestCase):
     """Test the naming of files intended for latexml processing"""
@@ -101,7 +128,10 @@ class TestReadingWritingLatexmlFiles(unittest.TestCase):
             critical("unable to open test latexml file "+self.latexml_fn+": "+str(e))
 
     def tearDown(self):
+        try:
             os.remove(self.latexml_fn)
+        except e:
+            critical("unable to remove latexml file "+self.latexml_fn+" because: "+str(e))
             
     def test_read_from_latexml_file(self):
         """Read with the modified file name"""
@@ -115,12 +145,88 @@ class TestReadingWritingLatexmlFiles(unittest.TestCase):
         prepare.write_to_latexml_file(tmp_fn,s)
         res = prepare.read_from_latexml_file(tmp_fn)
         self.assertEqual(res[0],s)
-            
+        os.remove(prepare.get_latexml_filename(tmp_fn))
+
+
+
+# ============== \includeonly =======================
+
+
+class TestFnameListBuild(unittest.TestCase):
+    """Test building list of chapters from the command line arg"""
+
+    def test_simple(self):
+        self.assertEqual(["prologue"],
+            prepare._fname_list_build("prologue"))
+
+    def test_list(self):
+        self.assertEqual(["prologue","background"],
+            prepare._fname_list_build("prologue,background"))
+        self.assertEqual(["prologue","background"],
+                         prepare._fname_list_build("prologue, background"),
+                         "Expected to strip space before 'background'")
+        self.assertEqual(["prologue","background"],
+                         prepare._fname_list_build("Prologue, Background"),
+                         "Expected chapter names to convert to lower case")
+        self.assertEqual(["prologue"],
+                         prepare._fname_list_build("prologue, backgroudn"),
+                         "Expected misspelled second chapter to not be included")
+        self.assertEqual("No such chapter: backgroudn",
+                         WARNING_STRING)
+        
+
+
+class TestIncludeonlyBuild(unittest.TestCase):
+    """Test building list of chapters to include from chapter list"""
+
+    def test_simple(self):
+        arg = "prologue"
+        fname_list = prepare._fname_list_build(arg)
+        self.assertIn("prologue/prologue,",
+            prepare._includeonly_build(fname_list))
+        print("RUNNUING!!!")
+
+    def test_list(self):
+        arg = "prologue, background"
+        fname_list = prepare._fname_list_build(arg)
+        includeonly_list = prepare._includeonly_build(fname_list)
+        self.assertIn("prologue/prologue,",
+                      includeonly_list)
+        self.assertIn("background/background,",
+                      includeonly_list)
+
+    def test_list_commented(self):
+        arg = "prologue, background"
+        fname_list = prepare._fname_list_build(arg)
+        includeonly_list = prepare._includeonly_build(fname_list)
+        self.assertIn("% automata/automata,",
+                      includeonly_list)
+
+    def test_list_end(self):
+        """Look for final list item to not have a comma"""
+        arg = "prologue, appendix"
+        fname_list = prepare._fname_list_build(arg)
+        includeonly_list = prepare._includeonly_build(fname_list)
+        self.assertIn("appendix/appendix",
+                      includeonly_list)
 
         
 # ===========================================================
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(TestFnameListBuild('test_simple'))
+    # unittest.defaultTestLoader.loadTestsFromTestCase(TestFnameListBuild)
+    # unittest.defaultTestLoader.loadTestsFromTestCase(TestIncludeonlyBuild)
+    suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(TestFnameListBuild))
+    suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(TestIncludeonlyBuild))
+    return suite
+
 def main(args):
-    unittest.main()
+    # Have Python run them all
+    # unittest.main()
+    # Have Python only run the ones I want.
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
 
 # ===========================================================
 if __name__ == '__main__':

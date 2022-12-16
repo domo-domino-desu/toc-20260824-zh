@@ -3,7 +3,7 @@
 """
 Make animations for the web rather than rely on animate.sty
 """
-__version__ = "0.1.0"
+__version__ = "0.9.0"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
 
@@ -20,8 +20,8 @@ import time
 import subprocess
 
 # Global variables spare me from putting them in the call of each fcn.
-VERBOSE = True
-DEBUG = True
+VERBOSE = False
+DEBUG = False
 
 PGM_ROOTNAME = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 PGM_DIR = os.path.dirname(__file__)
@@ -108,7 +108,16 @@ ANIMATE_RE = re.compile(ANIMATE_STR)
 # Full path to computing/src
 SRC_DIR = os.path.normpath(os.path.join(PGM_DIR,"../../","src"))
 
-def process_chapters(chapters):
+# ASY_DIR Map chapter name to the constant \asydir used in those files.
+# (This is used to allow the book and the slides to use the same graphics.)
+ASY_DIR = {'prologue': 'prologue/asy/',
+           # not used: 'background': ,
+           # not used: 'languages':
+           # not used 'automata':
+           'complexity': 'complexity/asy/'
+           } # dirs must end in '/'
+
+def process_chapters(chapters, verbose=VERBOSE):
     """Run through each chapter, converting the animations.
         chapters  list of strings of chapter names  
     """
@@ -119,6 +128,8 @@ def process_chapters(chapters):
     # Process them one at a time
     count = 0
     for c in chapters:
+        if verbose:
+            print("  chapter: "+c)
         count += process_chapter(c)
     return count
 
@@ -146,14 +157,13 @@ def process_chapter(chapter_rootname):
             if m:
                 count +=1
                 log.debug("process_chapter: Match="+line)
-                # print("    m.group(1): "+m.group(1))
-                # print("    m.group(2): "+m.group(2))
-                # print("    m.group(3): "+m.group(3))
-                # print("    m.group(4): "+m.group(4))
-                make_animations(m.group(1),
-                                m.group(2),
-                                m.group(3),
-                                m.group(4))
+                poster = m.group(1)
+                fn_prefix = m.group(2)
+                start_dex = m.group(3)  # not a number, a string
+                end_dex = m.group(4)
+                if fn_prefix.startswith(r'\asydir '):
+                    fn_prefix = ASY_DIR[chapter_rootname] + fn_prefix[len(r'\asydir '):]
+                make_animations(poster, fn_prefix, start_dex, end_dex)
     log.debug("process_chapter: matches found in "+tex_fname+" is "+str(count))
     return count
 
@@ -169,15 +179,18 @@ def make_animations(poster, fn_prefix, start_dex, end_dex):
     in that way. 
     """
     log.debug("make_animations: fn_prefix="+fn_prefix)
+    log.debug("make_animations: fn_prefix="+fn_prefix)
     prefix_path = os.path.join(SRC_DIR,fn_prefix)  # full path
+    if VERBOSE:
+        print("    making "+prefix_path+" from "+start_dex+" to "+end_dex)
     num_digits = len(start_dex)
     fn_list =[]
     for dex in range(int(start_dex), int(end_dex)+1):
         fn = prefix_path + str(dex).rjust(num_digits,'0') + '.pdf'
-        print("  make_animations: fn="+fn)
+        log.debug("  make_animations: fn="+fn)
         fn_list.append(fn)
     gif_fn = prefix_path+'.gif'
-    print("make_animations: gif_fn="+gif_fn)
+    log.debug("make_animations: gif_fn="+gif_fn)
     _make_animations(gif_fn, fn_list)
 
 def _make_animations(gif_fn, fn_list):
@@ -189,23 +202,24 @@ def _make_animations(gif_fn, fn_list):
     cmds += fn_list
     cmds += ['-loop 0',]
     cmds += [gif_fn,]
-    print("_make_animations: cmds="+str(cmds))
+    log.debug("_make_animations: cmds="+str(cmds))
     completed_process = subprocess.run(" ".join(cmds), shell=True, check=True)
         
 
 # ===========================================================
 def main(args):
     if args.debug:
-        DEBUG=True
+        global DEBUG
+        DEBUG = True
     if args.verbose:
-        VERBOSE=True
+        global VERBOSE
+        VERBOSE = True
     if args.chapter is None:
         chapters = CHAPTER_DIRS
     else:
         chapters = args.chapter
-    if DEBUG:
-        print("Chapters is "+str(chapters))
-    process_chapters(chapters)
+    log.debug("main: chapters is "+str(chapters))
+    process_chapters(chapters, args.verbose)
         
 # ===========================================================
 if __name__ == '__main__':
@@ -216,10 +230,6 @@ if __name__ == '__main__':
                                          "  Author: "+__author__
                                          +", Version: "+__version__
                                          +", License: "+__license__)
-        # parser.add_argument('-f', '--filename',
-        #                     action='store',
-        #                     default=None,
-        #                     help="File name")
         parser.add_argument('-D', '--debug',
                             action='store_true',
                             default=DEBUG,

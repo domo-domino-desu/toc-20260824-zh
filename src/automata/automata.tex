@@ -2415,35 +2415,55 @@ Contrast these definitions with the ones for deterministic machines.
 A 
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}$, where
-$q\in Q$ and $\tau\in\kleenestar{\Sigma}$.
+$q\in Q$ and $\tau\in\kleenestar{\Sigma}\!$.
 A machine starts with an
 \definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
 $\mathcal{C}_0=\sequence{q_0,\tau_0}$.
 The string~$\tau_0$ is
 the \definend{input}.\index{input string}\index{nondeterministic Finite State machine!input string} 
-
-Following the initial configuration there may be one or more sequences of 
-\definend{transitions}.
-Suppose that there is a machine configuration
+Following the initial configuration
+there may be a number of sequences of 
+\definend{transitions} denoted with 
+`$\yields$'.\index{yields@$\yields$, yields!for Finite State machines}
+(Because this machine is nondeterministic, there may be many such,
+or exactly one, or none at all.)
+Consider such a sequence,
+a 
+\definend{branch}\index{branch!of the computation tree}\index{computation tree!branch}
+of the computation tree, that starts with $\mathcal{C}_0$
+and goes through
 $\mathcal{C}_s=\sequence{q,\tau_s}$.
-For $s\in\N^+$, in the case where $\tau_s$ is not the empty string, 
-a
-transition pops the string's leading symbol~$c$ to get~$\tau_{s+1}$, 
-takes the machine's next state to be a member~$\hat{q}$ of the 
-set~$\Delta(q,c)$ and 
-then takes a subsequent configuration to be 
-$\mathcal{C}_{s+1}=\sequence{\hat{q},\tau_{s+1}}$.
-Denote that two configurations are connected by a transition
-with $\mathcal{C}_s\yields\mathcal{C}_{s+1}$.\index{yields@$\yields$, yields!nondeterministic Finite State machine}
-The other case is that~$\tau_s$ is the empty string.
-This is a 
-\definend{halting configuration}\index{halting configuration},\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
-$\mathcal{C}_h$.
-After~$\mathcal{C}_h$, no transitions follow.
+
+If $\tau_s$ is the empty string then
+$\mathcal{C}_s$ is a 
+\definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
+and no transitions follow.
+
+The other case is that $\tau_s$ is not empty.
+% There may be a number of
+% legal next configurations (or exactly one, or none at all).
+We will describe when some
+$\mathcal{C}_{s+1}=\sequence{\hat{q},\tau_{s+1}}$
+is a legal subsequent configuration, that is, under what circumstances
+there is a transition
+$\mathcal{C}_s\yields\mathcal{C}_{s+1}$.\index{yields@$\yields$, yields!nondeterministic Finite State machine}
+If there is such a transition then
+the relationship between the strings in the configurations 
+is straightforward:~$\tau_{s+1}$ comes from popping $\tau_s$'s leading character
+($\tau_s$ has a leading character because it is not empty),
+so that if $\tau_s=c\concat\alpha$ for $c\in\Sigma$
+then $\tau_{s+1}=\alpha$.
+As for a next state~$\hat{q}$, it can be any member of the 
+set~$\Delta(q,c)$.
+Observe that because this machine is nondeterministic, the set
+$\Delta(q,c)$ could be empty.
+If so, then there is no transition or next state and the branch containing 
+$\mathcal{C}_s$ fails without yielding any halting
+configuration.
 
 % The computation may eventually reache a halting configuration
 % $\mathcal{C}_h=\sequence{q,\emptystring}$.
-A 
+With that, a 
 \definend{nondeterministic Finite State machine computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
 is a sequence of transitions that ends in a halting configuration,
 $
@@ -2638,9 +2658,10 @@ $\map{\Delta}{Q\times(\Sigma\union\set{\emptystring})}{\powerset(Q)}$.\footnote{
   Assume $\varepsilon\notin\Sigma$}
 The associated behavior
 is that the machine can transition spontaneously, 
-without consuming any input.\footnote{%
-  Or, think of it as transitioning on 
-  consuming the empty string~$\emptystring$.}
+without consuming any input.
+% \footnote{%
+%   Or think of it as transitioning on 
+%   consuming the empty string.}
 %</discussion:epsilonTransitions>
 
 \begin{example}
@@ -2674,62 +2695,67 @@ $\lang=\set{\str{abc},\str{abd},\str{ac}, \str{ad}}$.
 We can give a precise definition of the action of 
 a nondeterministic Finite State machine with $\varepsilon$~transitions. 
 
-First we define the collection of states reachable by $\varepsilon$~moves
+First we find the collection of states reachable by $\varepsilon$~moves
 from a given state.
-For that we use
-$\map{E}{Q\times\N}{\powerset (Q)}$ where $E(q,i)$ is
+We define
+$\map{E}{Q\times\N}{\powerset (Q)}$ so that $E(q,i)$ is
 the set of states reachable from~$q$ within at most $i$-many 
 $\varepsilon$~transitions.
 That is, set $E(q,0)=\set{q}$ and where 
 $E(q,i)=\set{q_{i_0},\ldots q_{i_k}}$,
 set $E(q,i+1)=E(q,i)\cup \Delta(q_{i_0},\varepsilon)\cup
                          \cdots\cup\Delta(q_{i_k},\varepsilon)$.
-Observe that these are nested,
-$E(q,0)\subseteq E(q,1)\subseteq \cdots\,$ and that each is
+NOte that these are nested,
+$E(q,0)\subseteq E(q,1)\subseteq \cdots\,$, and that each is
 a subset of~$Q$.
 But~$Q$ has only finitely many states so there must be an $\hat{i}\in\N$
 where the sequence of sets stops growing,
 $E(q,\hat{i}\,)= E(q,\hat{i}+1)= \cdots\,$.
 Define the \definend{$\varepsilon$~closure} function 
-$\map{\hat{E}}{Q}{\powerset(Q)}$ by~$\hat{E}(q)=E(q,\hat{i}\,)$.
+$\map{\hat{E}}{Q}{\powerset(Q)}$ as~$\hat{E}(q)=E(q,\hat{i}\,)$.
 
 With that, we are ready to describe the machine's action.
-As before, a 
+As earlier, a 
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}$, where
-$q\in Q$ and $\tau\in\kleenestar{\Sigma}$.
+$q\in Q$ and $\tau\in\kleenestar{\Sigma}\!$.
 A machine starts with some 
 \definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
-$\mathcal{C}_0=\sequence{q_0,\tau_0}$, where the string~$\tau_0$.
-is the \definend{input}.\index{input string}\index{nondeterministic Finite State machine!input string} 
+$\mathcal{C}_0=\sequence{q_0,\tau_0}$, so that the string~$\tau_0$
+is the machine's
+\definend{input}.\index{input string}\index{nondeterministic Finite State machine!input string} 
 
 The key description is that of a
 \definend{transition}.
 Consider a configuration
-$\mathcal{C}_s=\sequence{q,\tau_s}$ for $s\in\N$ and suppose that
-$\tau_s$ is not the empty string.
-We will describe a configuration 
-$\mathcal{C}_{s+1}=\sequence{\hat{q},\tau_{s+1}}$ that is related to the
-given one by
-$\mathcal{C}_s\yields\mathcal{C}_{s+1}$.
-(As with the earlier description of nondeterministic machines without
-$\varepsilon$~transitions, there may be more than one configuration
-related in this way to $\mathcal{C}_s$.)
+$\mathcal{C}_s=\sequence{q,\tau_s}$ for $s\in\N$.
+If $\tau_s$ is the empty string then 
+this is a 
+\definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
+and no transition follows.
 
-The string is easy; just pop the leading character 
-to get $\tau_s=t\concat\tau_{s+1}$ where $t\in\Sigma$.
-To get a legal state~$\hat{q}$:
-(i)~find the $\varepsilon$~closure $\hat{E}(q)=\set{q_{s_0},\ldots q_{s_k}}$,
+Otherwise
+$\tau_s$ is not empty.
+As with the earlier description of nondeterministic machines that do not allow
+$\varepsilon$~transitions, there may be a number of possible next configurations
+and we will characterize what qualifies some
+$\mathcal{C}_{s+1}=\sequence{\hat{q},\tau_{s+1}}$ as
+a legal subsequent configuration,
+so that
+$\mathcal{C}_s\yields\mathcal{C}_{s+1}$.
+Get the string $\tau_{s+1}$ by popping $\tau_s$'s leading character,
+so that the relationship between the strings 
+is $\tau_s=t\concat\tau_{s+1}$ for $t\in\Sigma$.
+As to the state~$\hat{q}$:~(i) find 
+the $\varepsilon$~closure $\hat{E}(q)=\set{q_{s_0},\ldots q_{s_k}}$,
 (ii)~let $\bar{q}$ be an element of the set
 $\Delta(q_{s_0},t)\cup\Delta(q_{s_1},t)\cup\cdots\cup\Delta(q_{s_k},t)$,
 and (iii)~take $\hat{q}$ to be an element of the $\varepsilon$~closure
 $\hat{E}(\bar{q})$.
-
-If $\tau_s$ is the empty string then 
-this is a 
-\definend{halting configuration}\index{halting configuration},\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
-$\mathcal{C}_h$.
-No transitions follow~$\mathcal{C}_h$.
+(Notice that the set in step~(ii) may be empty.
+If this is so then there is no transition and the branch containing 
+$\mathcal{C}_s$ fails without yielding any halting
+configuration.)
 
 A 
 \definend{nondeterministic Finite State machine computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
@@ -2746,10 +2772,9 @@ the input~$\tau_0$,
 otherwise it 
 \definend{rejects}~$\tau_0$.\index{reject an input}\index{nondeterministic Finite State machine!reject string}
 
-With that,
-we will modify the definition of the extended transition 
+We can modify the definition of the extended transition 
 function~$\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$\index{extended transition function!for nondeterministic Finite State machines}\index{transition function!extended} 
-from \cpageref{discussion:NFSMStringAcceptance}.
+from \cpageref{discussion:NFSMStringAcceptance} to suit this situation.
 Begin by defining
 $\extended{\Delta}(\emptystring)=\hat{E}(q_0)$.
 Then the rule for going from a string to its extension is that 
@@ -2773,7 +2798,7 @@ Certainly these are an intricate set of definitions but they
 demonstrate something important.
 In the examples and the homework we 
 use informal terms such as ``guess'' and ``demon.''
-Nonetheless, 
+Nonwithstanding the imagery, 
 we can perfectly well give definitions and results with full precision.
 \end{remark}
 

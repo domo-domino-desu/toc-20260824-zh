@@ -2404,40 +2404,44 @@ In this nondeterministic machine
 the entries of the array are not states, they are sets of states.
 \end{example}
 
-Nondeterministic machines may seem
-conceptually fuzzy 
-so going through the formalities is a help.
-Compart these definitions to the ones for deterministic machines.
-%  on 
-% page~\pageref{page:DefnYieldsFiniteStateMachine}.
+The above introduction 
+uses informal terms such as ``guess'' and ``demon.''
+The imagery gives us a way to think about the ideas
+but may give a sense that those ideas
+are fuzzy.
+Consequently, going through the formalities is a help.
+We can perfectly well give 
+a precise definition. 
+% Compare these definitions with the ones for deterministic machines.
+% on page~\pageref{page:DefnYieldsFiniteStateMachine}.
 
 \label{page:DefnYieldsNondeterministicFSM}
 A 
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}$ where
 $q\in Q$ and $\tau\in\kleenestar{\Sigma}\!$.
-A machine starts with an
+A machine starts in some
 \definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
 $\mathcal{C}_0=\sequence{q_0,\tau_0}$.
 The string~$\tau_0$ is
 the \definend{input}.\index{input string}\index{nondeterministic Finite State machine!input string} 
-Following the initial configuration
+Following $\mathcal{C}_0$
 there may be a number of sequences of 
-\definend{transitions} denoted with 
-`$\yields$'.\index{yields@$\yields$, yields!for Finite State machines}
-(Because this machine is nondeterministic, there may be many such sequences,
+$\,\yields$\index{yields@$\yields$, yields!for Finite State machines}
+\definend{transitions}.
+(This machine is nondeterministic so there may be many such sequences,
 or one, or none.)
+
 Consider such a sequence,
 a 
 \definend{branch}\index{branch!of the computation tree}\index{computation tree!branch}
-of the computation tree, that starts with $\mathcal{C}_0$
-and goes through
+of the computation tree, that includes
 $\mathcal{C}_s=\sequence{q,\tau_s}$.
-
 If $\tau_s$ is the empty string then
 $\mathcal{C}_s$ is a 
 \definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
 and no transitions follow.
+
 The other case is that $\tau_s$ is not empty.
 We will describe when some
 $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$
@@ -2457,49 +2461,36 @@ If so, then there is no transition or next state and the branch containing
 $\mathcal{C}_s$ fails without yielding any halting
 configuration.
 
-% The computation may eventually reache a halting configuration
-% $\mathcal{C}_h=\sequence{q,\emptystring}$.
 With that, a 
 \definend{nondeterministic Finite State machine computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
-is a sequence of transitions that ends in a halting configuration,
+is a set containing all of the sequences of transitions that are legal
+in that they are described in the prior paragraph.
+If any sequence in that set ends in a halting configuration
 $
   \mathcal{C}_0=\sequence{q_0,\tau_0} 
    \yields \mathcal{C}_1 \yields \mathcal{C}_2
    \yields \cdots\, \mathcal{C}_h=\sequence{q,\emptystring}
-$.
-% Abbreviate this
-% with
-% $\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$. 
-From an initial configuration  
-there may be many such sequences.
-If at least one ends with a halting state, with $q\in F$,
+$
+such that the state is a halting state, that is, such that $q\in F$,
 then the machine \definend{accepts}\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
-the input~$\tau_0$,
-otherwise it 
+$\tau_0$.
+Otherwise, it 
 \definend{rejects}~$\tau_0$.\index{reject an input}\index{nondeterministic Finite State machine!reject string}
 
 \begin{example}
-In \cref{ex:NFSMInDiscussion}, there are 
+\Cref{ex:NFSMInDiscussion} shows
 a number of sequences of allowed transitions.
-Here are two.
-\begin{align*}
-  &\sequence{q_0,\str{00001}}
-  \yields \sequence{q_0,\str{0001}}
-  \yields \sequence{q_0,\str{001}}
-  \yields \sequence{q_0,\str{01}}    
-  \yields \sequence{q_0,\str{1}}    
-  \yields \sequence{q_0,\emptystring}   \\    
-  &\sequence{q_0,\str{00001}}
+Since at least one of them contains a configuration where the
+string is empty and the state is accepting,
+\begin{equation*}
+  \sequence{q_0,\str{00001}}
   \yields \sequence{q_0,\str{0001}}
   \yields \sequence{q_0,\str{001}}
   \yields \sequence{q_1,\str{01}}    
   \yields \sequence{q_2,\str{1}}    
   \yields \sequence{q_3,\emptystring}    
-\end{align*}
-% It does not matter that there are a number of sequences that are not successful.
-Because there is at least one sequence 
-that ends in an accepting state, the second one here, 
-the machine accepts \str{00001}.
+\end{equation*}
+the machine accepts the intial string \str{00001}.
 \end{example}
 
 %<*def:NFSMAccepted}
@@ -2697,14 +2688,6 @@ That is, the language of this machine is the four element set
 $\lang=\set{\str{abc},\str{abd},\str{ac}, \str{ad}}$.
 \end{example}
 
-In the above introduction and examples we 
-sometimes use informal terms such as ``guess'' and ``demon.''
-Nonwithstanding the imagery, 
-we can perfectly well give 
-a definition of the action of 
-a nondeterministic Finite State machine with $\varepsilon$~transitions
-that is completely precise. 
-
 For that we need to construct a function that starts with a state~$q$
 and returns
 the collection of states reachable by $\varepsilon$~moves
@@ -2763,24 +2746,24 @@ leaving a string $\hat{\tau}$.
 Then where the state $\hat{q}$ is a member of $\Delta(q,c)$, 
 we define the configuration
 $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$
-to be subsequent, that is,
+to be subsequent, that is, 
 $\mathcal{C}_{s}\yields\hat{\mathcal{C}}$.
 (Because this machine is nondeterministic, the set $\Delta(q,c)$
 could have many elements but also could have one, or none at all.
 If it has none then $\mathcal{C}_{s}$ has no configurations
 subsequent to it.)
 
-The second part of step~$s+1$
-takes the $\varepsilon$~closure.
-Fix some $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$ from the first part
-subsequent to $\mathcal{C}_s$.
+If the first part  of step~$s+1$ produces any 
+$\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$  
+then the second part is to take the $\varepsilon$~closure of its $\hat{q}$.
 For all $\bar{q}\in \hat{E}(\hat{q})$,  
 where $\bar{\mathcal{C}}=\sequence{\bar{q},\hat{\tau}}$
 we define
 $\hat{\mathcal{C}}\yields\bar{\mathcal{C}}$.
-(There may be many such $\bar{\mathcal{C}}$, or there may be exactly one, 
+(For any of the $\hat{q}$'s there may be many such 
+$\bar{\mathcal{C}}$'s, or there may be exactly one, 
 or there may be none.)
-Each of these can be a $\mathcal{C}_{s+1}$ to run the next step.
+Each of these will be a $\mathcal{C}_{s+1}$ when we run the next step.
 
 We left undone 
 the possibility is that in the configuration

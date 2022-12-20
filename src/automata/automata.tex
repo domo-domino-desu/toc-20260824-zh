@@ -2689,9 +2689,10 @@ $\lang=\set{\str{abc},\str{abd},\str{ac}, \str{ad}}$.
 \end{example}
 
 \medskip
-Now for a complete description of the action of these machines.
-As a preliminary
-we construct a function that starts with a state~$q$
+Before the description of the action of these machines
+we need a preliminary definition.
+%<*df:EpsilonClosure>
+We construct a function that starts with a state~$q$
 and returns
 the collection of states reachable from~$q$ by $\varepsilon$~moves.
 We build it in stages, defining
@@ -2704,14 +2705,40 @@ set $E(q,i+1)=E(q,i)\cup \Delta(q_{i_0},\varepsilon)\cup
                          \cdots\cup\Delta(q_{i_k},\varepsilon)$.
 These sets are nested,
 $E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\,$.
-But~$Q$ has only finitely many states so there must be an $i(q)\in\N$
+There are only finitely many states in~$Q$ so there must be an $i_q\in\N$
 where the sequence of sets stops growing,
-$E(q,i(q)\,)= E(q,i(q)+1)= \cdots\,$.
+$E(q,i_q\,)= E(q,i_q+1)= \cdots\,$.
 Define the \definend{$\varepsilon$~closure} function 
-$\map{\hat{E}}{Q}{\powerset(Q)}$ as~$\hat{E}(q)=E(q,i(q))$.
+$\map{\hat{E}}{Q}{\powerset(Q)}$ by~$\hat{E}(q)=E(q,i_q)$.
+%</df:EpsilonClosure>
 
-We are ready to describe the action of these machines.
-As earlier, a 
+\begin{example}
+This is a nondeterministic machine
+and its $\varepsilon$~closures.
+\begin{center}\small 
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm93.pdf}}
+  \quad
+\begin{tabular}{r|*{4}{c}}
+  \tabulartext{state~$q$} 
+     &$q_0$           &$q_1$          &$q_2$        &$q_3$  
+  \\ \cline{2-5}
+  \tabulartext{$\hat{E}(q)$}
+     &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
+\end{tabular}
+\end{center}
+% \begin{center}
+% \begin{tabular}{r|*{4}{c}}
+%   \tabulartext{state~$q$} 
+%      &$q_0$           &$q_1$          &$q_2$        &$q_3$  
+%   \\ \cline{2-5}
+%   \tabulartext{$\varepsilon$ closure $\hat{E}(q)$}
+%      &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
+% \end{tabular}
+% \end{center}
+\end{example}
+
+Wit that we are ready for the description.
+Again, a 
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}\!$.
 % The key is the description of a
@@ -2723,69 +2750,65 @@ is the
 \definend{input}.\index{input string}\index{nondeterministic Finite State machine!input string} 
 As with the earlier description of the action of nondeterministic machines, 
 we will proceed by specifying 
-when two configurations are related by $\yields$, 
-and finish by saying that a machine accepts the input if there is a 
-sequence that contains a halting configuration whose state is 
+when two configurations are related by $\yields$,
+and then finish by saying that a machine accepts the input 
+if there is at least one sequence with a halting configuration whose state is 
 accepting.
 
 From the initial configuration we next 
-take the $\varepsilon$~closure:~for all $q\in \hat{E}(q_0)$,  
-where $\bar{\mathcal{C}}=\sequence{q,\tau_0}$
-we specify that
+take the $\varepsilon$~closure:~for all $q\in \hat{E}(q_0)$,
+where $\bar{\mathcal{C}}=\sequence{q,\tau_0}$,
+if $q\neq q_0$
+then we specify that
 $\mathcal{C}_0\yields\bar{\mathcal{C}}$.
+That ends the initial phase.
 
-For the iteration, suppose that we enter step~$s+1$ with a configuration
-$\mathcal{C}_{s}=\sequence{q,\tau}$
-such that $\tau$ is not the empty string (we cover the possibility that
-$\tau$ is empty below),
-and which we have related to the inital configuration 
-via some sequence of $\yields$'s.
-This step will have two parts.
+For the iteration phase, suppose that we enter step~$s+1$ with a configuration
+$\mathcal{C}_{s}=\sequence{q,\tau}$.
+If $\tau$ is the empty string
+then $\mathcal{C}_s$ is a 
+\definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
+and there will be no subsequent configuration, no $\mathcal{C}$ 
+such that $\mathcal{C}_s\yields\mathcal{C}$.
 
-The first part is like the action of a nondeterministic machine
-described earlier.
-We pop $\tau_s$'s leading character~$c\in\Sigma$, 
-leaving a string $\hat{\tau}$. 
-Then for any state $\hat{q}$ that is a member of $\Delta(q,c)$, 
-we take $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$ and specify that
+Otherwise $\tau$ is not empty.
+Step~$s+1$ has two parts, one
+where we pop $\tau$'s leading character and act on it
+and the second where we take the $\varepsilon$~closure.
+The first part starts by decomposing $\tau_s=c\concat\hat{\tau}$, 
+so that $c\in\Sigma$ is the leading character. 
+For any state $\hat{q}$ that is a member of $\Delta(q,c)$, 
+let $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$ and we specify that
 $\mathcal{C}_{s}\yields\hat{\mathcal{C}}$.
-(Because this machine is nondeterministic, the set $\Delta(q,c)$
+Because this machine is nondeterministic, the set $\Delta(q,c)$
 could have many elements but also could have one, or none at all.
 If it has none then $\mathcal{C}_{s}$ has no configurations
-subsequent to it.)
+subsequent to it.
 
 If the first part  of step~$s+1$ produces any 
 $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$  
-then the second part is to take the $\varepsilon$~closure of its $\hat{q}$.
-For all $\bar{q}\in \hat{E}(\hat{q})$,  
-where $\bar{\mathcal{C}}=\sequence{\bar{q},\hat{\tau}}$
+then the second part is to take the $\varepsilon$~closure of those $\hat{q}$'s.
+For all $\bar{q}\in \hat{E}(\hat{q})$ with $\bar{q}\neq \hat{q}$,  
+let $\bar{\mathcal{C}}=\sequence{\bar{q},\hat{\tau}}$ and
 we specify that
 $\hat{\mathcal{C}}\yields\bar{\mathcal{C}}$.
-(For any of the $\hat{q}$'s there may be many such 
+(For any $\hat{q}$ there may be many such 
 $\bar{\mathcal{C}}$'s, or there may be exactly one, 
 or there may be none.)
 Each of these configurations will be a $\mathcal{C}_{s+1}$ 
 when we run the next step.
 
-We have left undone 
-the possibility that in the configuration
-$\mathcal{C}_s=\sequence{q,\tau_s}$,
-the string $\tau_s$ is empty. 
-In general, any configuration with an empty string is a 
-\definend{halting configuration}.\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
 A 
 \definend{nondeterministic Finite State machine computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
 is the set of sequences of transitions 
-starting from $\mathcal{C}_0$ that are legal in the sense that they 
-are described above.
+starting from $\mathcal{C}_0$ as described above.
 % $
 %   \mathcal{C}_0=\sequence{q_0,\tau_0} 
 %    \yields \mathcal{C}_1 \yields \mathcal{C}_2
 %    \yields \cdots\, \mathcal{C}_h=\sequence{q,\emptystring}
 % $.
-There may be many such sequences.
 If at least one contains a halting configuration whose state is final,
-that is, $\mathcal{C}_h=\sequence{q,\emptystring}$ and $q\in F$,
+a $\mathcal{C}_h=\sequence{q,\emptystring}$ with $q\in F$,
 then the machine \definend{accepts}\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
 the input~$\tau_0$.
 Otherwise it 
@@ -2793,24 +2816,24 @@ Otherwise it
 
 We can modify the definition of the extended transition 
 function~$\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$\index{extended transition function!for nondeterministic Finite State machines}\index{transition function!extended} 
-from \cpageref{discussion:NFSMStringAcceptance} to suit this situation.
+% from \cpageref{discussion:NFSMStringAcceptance} 
+to suit this setup.
 Begin by defining
 $\extended{\Delta}(\emptystring)=\hat{E}(q_0)$.
 Then the rule for going from a string to its extension is that 
 for $\tau\in\kleenestar{\Sigma}$ and 
-where $\extended{\Delta}(\tau)=\set{q_{i_0},q_{i_1},\ldots{} q_{i_k}}$. 
-\begin{equation*}
+where $\extended{\Delta}(\tau)=\set{q_{i_0},q_{i_1},\ldots{} q_{i_k}}$,
+we have 
+$
   \extended{\Delta}(\tau\concat t)=
   \hat{E}(\Delta(q_{i_0},t))\cup\cdots \cup\hat{E}(\Delta(q_{i_k},t))
-  \qquad
-  \text{for $t\in\Sigma$}
-  % \tag{*}
-\end{equation*}
-Observe that this nondeterministic machine with $\varepsilon$~transitions
+$
+for $t\in\Sigma$.
+A nondeterministic machine with $\varepsilon$~transitions
 accepts\index{accept an input}\index{Finite State machine!accept string}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
 a string $\sigma\in\kleenestar{\Sigma}$ 
-if any one of the states
-in $\extended{\Delta}(\sigma)$ is a final state.
+if any one of the members of
+$\extended{\Delta}(\sigma)$ is a final state.
 
 \begin{example}
 For the machine of \cref{ex:TwoOrMoreEpsilonTrans}, this sequence
@@ -2915,8 +2938,8 @@ $\set{(\str{ab})^n\suchthat n\in\N}$.
 % ........................................
 \subsection{Equivalence of the machine types}\label{sec:EquivDFSMAndNFSM}
 We next prove that
-nondeterminism does not change what we can do
-with Finite State machines. 
+nondeterminism does not change what
+Finite State machines can do. 
 
 %<*th:dfsmEquivndfsm>
 \begin{theorem}
@@ -2928,9 +2951,9 @@ with Finite State machines.
 \end{theorem}
 %</th:dfsmEquivndfsm>
 
-Inclusion in one direction is easy;~any deterministic machine is,
-basically, a nondeterministic machine.
-That is, in a deterministic machine the next-state function outputs
+Inclusion in one direction is easy;~any deterministic machine is, essentially,
+a nondeterministic machine.
+In a deterministic machine the next-state function outputs
 single states and
 to make it a nondeterministic machine just convert those states
 into singleton sets.
@@ -3007,34 +3030,13 @@ So does its transition graph.
 \end{example}
 
 We next extend the powerset construction to handle $\varepsilon$~transitions.
-Basically, we will follow the $\varepsilon$'s.
-%<*df:EpsilonClosure>
-For a state~$q$, the 
+% Basically, we will follow the $\varepsilon$'s.
+Recall that for a state~$q$, the 
 \definend{$\varepsilon$~closure $\hat{E}(q)$}\index{epsilon closure@$\varepsilon$ closure} 
 is the set of the states that
 are reachable from $q$ via some number of $\varepsilon$~transitions.
-This includes $q$ itself, as it is the result of zero-many
-transitions.
-The $\varepsilon$~closure of a set of states is the union of the 
+Define the $\varepsilon$~closure of a set of states to be the union of the 
 $\varepsilon$~closures of the members.
-%</df:EpsilonClosure>
-
-\begin{example}
-In this nondeterministic machine
-\begin{center}
-  \includegraphics{automata/asy/nfsm/nfsm93.pdf}
-\end{center}
-these are the $\varepsilon$~closures.
-\begin{center}
-\begin{tabular}{r|*{4}{c}}
-  \tabulartext{state~$q$} 
-     &$q_0$           &$q_1$          &$q_2$        &$q_3$  
-  \\ \cline{2-5}
-  \tabulartext{$\varepsilon$ closure $\hat{E}(q)$}
-     &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
-\end{tabular}
-\end{center}
-\end{example}
 
 %<*df:DFSMFromNFSM>
 We can now give the full algorithm for starting with a nondeterministic 
@@ -3073,10 +3075,9 @@ The next-state computation is involved, so the table includes
 intermediate steps.
 The column labeled $A_i$ holds the $\varepsilon$ closure
 of $s_i$'s states, $\cup_{q\in s_i}\hat{E}(q)$. 
-This is used for both inputs \str{a} and~\str{b},
-so listing it once is a savings.
-The column labeled $B_{i,\str{a}}$ holds $\cup_{q\in A}\Delta_{N}(q,a)$
-(note the \str{a}'s), while
+This is used for both inputs \str{a} and~\str{b}.
+Column $B_{i,\str{a}}$ holds $\cup_{q\in A}\Delta_{N}(q,a)$
+while
 $B_{i,\str{b}}$ holds $\cup_{q\in A}\Delta_{N}(q,b)$. 
 Rows have a dash when their $A_i$ is equal to an $A_j$ from an earlier row,
 so there is no need to repeat the computation. 
@@ -3152,7 +3153,11 @@ so there is no need to repeat the computation.
 \end{center}
 \end{example} 
 
-
+Note that if the nondeterministic machine
+has $n$ states then there is a
+deterministic machine with at most $2^n$ states.
+(In fact, for any $n$ there is an $n$~state nondeterministic machine requiring
+that the deterministic machine has $2^n$ states.)
 
 
 % .....................................

@@ -1,27 +1,11 @@
 \chapteropen[\href{https://www.hodinkee.com/articles/patek-philippe-caliber-89-easter-problem}{The astronomical clock in Notre-Dame-de-Strasbourg Cathedral, for computing the date of Easter.  Easter falls on the first Sunday after the full moon on or after the spring equinox. Calculation of this date was a great challenge for mechanisms of that time, 1843.}]{automata/pix/easterclock.jpg}{Automata} %https://commons.wikimedia.org/wiki/File:CIMA_mg_8332.jpg
 % Use as much of http://cstheory.stackexchange.com/a/14818/4731 as possible
 
-Our touchstone model of mechanical computation is the Turing machine.
-A Turing machine has two components, a CPU and a tape.
-We will now take the tape away and
-study the CPU alone.
-So we consider what can be done with states alone.
-
-Alternatively stated, a person could object to our characterization of
-Turing machines as the right model of what can be done by 
-an idealized discrete and deterministic device, on the following grounds:~While 
-each Turing Machine has finitely many states, 
-it can write to the tape.
-So there is a machine that writes a character, moves right, writes
-a character, moves right again, etc.
-This machines passes through infinitely many configurations.
-But no physical device can do that, even 
-\citetext{an idealized one}{%
-  Turing machines are `idealized' in that, for instance, the tape
-  length is
-  not bounded by the number of elementary 
-  particles in the universe.}.
-In this chapter we study \citetext{what can be done by a machine with a bounded number of possible configurations}{%
+Our touchstone model of computation is the Turing machine.
+It has two components, the CPU and the tape.
+In this chapter we will focus on the CPU\Dash
+we will consider what can be done with states alone, 
+\citetext{what can be done by a machine with a bounded number of possible configurations}{%
   From Rabin, Scott, Finite Automata and Their Decision Problems, 1959:
   \textit{Turing machines are widely considered to be the abstract prototype
   of digital computers; workers in the field, however, have felt more and more
@@ -39,8 +23,27 @@ In this chapter we study \citetext{what can be done by a machine with a bounded 
   but the advantage of being able to compute an arbitrary general recursive
   function is questionable, since very few of these functions come up in
   practical applications.} % http://cstheory.stackexchange.com/a/14816
-  }.
+  }.\footnote{%
+Sudying the parts of the machine is natural but there is
+another motivation. 
+A person could object that
+Turing machines are not the right model of what can be done by 
+an 
+\citetext{idealized discrete and deterministic device}{%
+  Turing machines are `idealized' in that, for instance, the tape
+  length is
+  not bounded by the number of elementary 
+  particles in the universe.} on the grounds that 
+because they write to the unbounded tape.
+So there is a machine that writes a character, moves right, writes
+a character, moves right again, etc., and thereby
+occupies infinitely many configurations.
+But, this person may say, no physical device can do that.
+Happily, these devices prove to be eminently practical, appearing
+frequently in everyday computing, so we needn't get tangled up in a
+justification for their study.}
 
+  
 
 
 \section{Finite State machines}\index{Finite State machine|(}
@@ -53,21 +56,18 @@ not as many as Turing machines.
 
 \subsection{Definition}
 We defined Turing machines as sets of instructions.
-We have occasionally referred to those instructions,
-and we will again soon, but what matters most about them is that
-they describe the machine's next-state function,~$\Delta$.
-It is this function that governs how the machine transitions from
-configuration to configuration durign a computation.
-
-For the definition of Finite State machines we will just give the
+We have occasionally referred to those instructions
+but what matters most about them is that
+they define the machine's next-state function,~$\Delta$.
+For the definition of Finite State machines we will cut right to giving the
 transition function.
-We will use the same type of transition tables and transition graphs
-as with Turing machines, as
-the preliminary examples below illustrate.
+% We will use the same type of transition tables and transition graphs
+% as with Turing machines.
+The examples below illustrate.
 
 \begin{example}  \label{ex:PowerSwitch}
-A power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$, and
-its input alphabet has one symbol, \str{toggle}.
+This power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$, and
+its input alphabet has one token, \str{toggle}.
 \begin{center}
   \newlength{\jhscratchheight}
   % \newsavebox{\scratchbox}
@@ -79,14 +79,17 @@ its input alphabet has one symbol, \str{toggle}.
 \end{center}
 \end{example}
 
-The state $q_{\text{on}}$ is drawn with a double circle.
-Without a way to write, Finite State machines need some way 
-to indicate the computational's outcome.
-We say that this is an 
+The state $q_{\text{on}}$ is drawn with a double circle,
+denoting that it is a different kind of state than $q_{\text{off}}$.
+Finite State machines 
+can't write to the tape so they need some other way 
+to declare the computation's outcome.
+We say that $q_{\text{on}}$ is an 
 \definend{accepting state}\index{accepting state}\index{final state}\index{state!accepting} 
 or 
-\definend{final state}\index{final state}\index{state!final} 
-(in the transition function tables we mark final states with `\acceptingstatemark').
+\definend{final state}.\index{final state}\index{state!final} 
+A computation accepts the input string if it ends with the machine in an
+accepting state.
 
 \begin{example} \label{ex:Turnstile}
 Operate this turnstile by putting in two tokens and then pushing through.
@@ -103,21 +106,21 @@ its input alphabet is $\Sigma=\set{\str{token},\str{push}}$.
 \end{center}
 \end{example}
 
-As we saw with Turing machines, the states are a limited form of memory.
+As with Turing machines, the states are a limited form of memory.
 For instance, $q_{\text{one}}$ is how the turnstile ``remembers'' that it
 has so far received one token.
 
 \begin{example} \label{ex:VendingMachine}
 This vending machine dispenses items that cost $30$~cents.\footnotemark[1]
 The picture is complex so we will show it in three layers.
-First are the arrows for nickels and pushing the dispense button.
+First are the arrows for nickels.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa02.pdf}
 \end{center}
 After receiving $30$~cents and getting another nickel,
 this machine does something not very sensible:~it stays in $q_{30}$.
 In practice a machine would have further states to keep track of
-overages so that we could give change, but here we ignore that.
+overages so that it could give change but here we ignore that.
 Next comes the arrows for dimes
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa03.pdf}
@@ -193,28 +196,31 @@ $\map{\Delta}{Q\times\Sigma}{Q}$}{%
 % we don't have a choice; we need some indicator.
 
 A full description of the action of a Finite State machine,
-like the one that we gave for Turing machines, comes below on
-page~\pageref{page:DefnYieldsFiniteStateMachine},
+% like the one that we gave for Turing machines, 
+comes below,
+%  on
+% page~\pageref{page:DefnYieldsFiniteStateMachine},
 after some more examples.
-But the basic idea is:~to work a Finite State machine, put the
+But basically, to work a machine put the
 finite-length input on the tape and press \texttt{Start}.\index{Start button@\texttt{Start} button}
 \begin{center}
   \includegraphics{asy/share/machine02.pdf}
 \end{center}
-The machine consumes the input, at each step reading, acting on, 
-and then deleting the present tape character.
-We've pictured that the final states turn on the red light.
-So once the string is fully consumed, 
-to find the computation's result see whether the light is on.
-If the light is on then we say that the machine 
+At each step the machine reads, acts on,
+and then deletes, one tape character.
+The picture shows a red light. 
+The idea that 
+when the machine stops, when the input string is fully consumed, if it is in
+a final state then the light comes on.
+We then say that the machine 
 \definend{accepts}\index{accepts}\index{string accepted!by deterministic Finite State machine} 
-the starting input string, otherwise it 
+the starting string, otherwise it 
 \definend{rejects}\index{rejects}\index{string rejected}
 that string.
 
 Here is a trace of the steps when
-\cref{ex:ModuloFourFSM}'s modulo~$4$ machine is started on
-\str{10110}.
+\cref{ex:ModuloFourFSM}'s modulo~$4$ machine is started with
+the input string \str{10110} on the tape.
 \begin{center}
 \begin{tapesequence}
   \begin{tapesequencetable}
@@ -231,17 +237,29 @@ Here is a trace of the steps when
 \end{tapesequence}
 \end{center}
 
-Because these machines consumes one character per step and stops once they are 
+Because these 
+machines consume one character per step and stop once all the characters are 
 gone, they are sure to halt\Dash 
 there is no \HP{} for Finite State machines.
 % Then, once it halts, the outcome is that
 % either the \texttt{Accept} light is on or it isn't. 
 
 \begin{example}  \label{ex:FSATwoAsEvenBs}
-This machine accepts a string if and only if it
+The machine below accepts a string if and only if it
 contains at least two \str{0}'s as well as an even number of \str{1}'s.
-% (The $\acceptingstatemark$ next to $q_2$ marks it
-% as an accepting state.)
+(In tables we denote accepting states 
+with `\acceptingstatemark', as here next to 
+$q_2$).\index{accepting state!in transition tables}\index{final state!in transition tables}\index{+@$+$!in transition tables}
+
+This is good opportunity to describe 
+the key to designing Finite State machines:~each state should have an 
+intuitive purpose, and it can be useful to specifically articulate that.
+The drawing below brings this out.
+Its first row has states where the machine has so far seen an even number of
+\str{1}'s, while the second row's states have seen an odd number.
+Its first column holds states where the machine has seen no \str{0}'s,
+the second column holds states where there has been one,
+and the third column has states where there have been two.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa11.pdf}}               
   \hspace{3em}
@@ -257,29 +275,20 @@ contains at least two \str{0}'s as well as an even number of \str{1}'s.
     $q_5$ &$q_5$ &$q_2$    \\
   \end{transitionfunction}
 \end{center}
-This machine illustrates the key to designing Finite State machines, that each
-state has an intuitive meaning.
-The state~$q_4$ means ``so far the machine has seen one~$0$ and an
-odd number of $1$'s.''
-And $q_5$ means ``so far the machine has
+Thus,~$q_4$ means ``so far the machine has seen one~$0$ and an
+odd number of $1$'s,''
+and $q_5$ means ``so far the machine has
 seen two \str{0}'s but an odd number of \str{1}'s.''
-
-The drawing brings out this principle.
-Its first row has states that have so far seen an even number of
-\str{1}'s, while the second row's states have seen an odd number.
-Its first column holds states have seen no \str{0}'s,
-the second column holds states have seen one,
-and the third column has states that have seen two \str{0}'s.
 \end{example}
 
 \begin{example}  \label{ex:FSAValidIntegers}
 %<*ex:FSAValidIntegers>
 This machine
 accepts strings that are valid as decimal representations of integers.
-Thus, it accepts `\str{21}' and `\str{-707}' but does not accept
-`\str{501-}'.
+Thus, it accepts the strings \str{21} and \str{-707} but does not accept
+\str{501-}.
 
-Both the transition graph and the table group some inputs together when
+The transition graph and the table both group some inputs together when
 they result in the same action.
 For instance, when in state~$q_0$ this machine does the same thing
 whether the input is \str{+} or \str{-}, namely it passes into
@@ -289,31 +298,33 @@ $q_1$.
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa07.pdf}}
   \hspace{3em}
   \begin{transitionfunction}
-      &\str{+}, \str{-} &\str{0}, \ldots{} \str{9} &\tabulartext{else}   \\
+      &\str{+}, \str{-} &\str{0}, \ldots{} \str{9} &\tabulartext{--other--}   \\
     \cline{2-4}
     $q_0$ &$q_1$ &$q_2$ &$e$   \\
     $q_1$ &$e$   &$q_2$ &$e$   \\
     \acceptingstate $q_2$ &$e$   &$q_2$ &$e$   \\
     $e$   &$e$   &$e$   &$e$   \\
   \end{transitionfunction}
-  \end{center}
-  Any bad input character sends the machine to the state.~$e$.
-  Finite State machines in practice often has such an error state,
-  which is a sink state in that once the machine enters that state,
-  it never leaves.
+\end{center}
+Any wrong input character sends the machine to the state~$e$.
+In practice Finite State machines often have such an error state,
+which is a sink state in that once the machine enters it,
+that machine never leaves.
 \end{example}
 
-Our Finite State machine descriptions will usually take that
-the alphabet is clear from the context.
+Our Finite State machine descriptions often take
+the alphabet to be clear from the context.
 For instance, \cref{ex:FSATwoAsEvenBs}'s alphabet is
-$\Sigma=\B=\set{\str{0},\str{1}}$. 
-The prior example just says `else'; 
-in machines designed for practice, the alphabet is the
-set of characters that someone could conceivably enter. 
-Often this includes letters such as \str{a} and~\str{A} or
-characters such as exclamation point or open parenthesis.
-Design of a machine up to a modern standard might use 
-all of \citetext{Unicode}{While in the early days of computers
+$\B=\set{\str{0},\str{1}}$. 
+The prior example just says `other'; 
+for in-practice machines, the alphabet is the
+set of characters that the machine could conceivably receive. 
+% Often this includes letters such as \str{a} and~\str{A} or
+% characters such as exclamation point or open p
+% parenthesis.
+For instance, design of a text-handling machine to a modern standard 
+might use all of \citetext{Unicode}{%
+  While in the early days of computers
   characters could be encoded with standards such as ASCII, which includes only
   upper and lower case unaccented letters, digits,
   a few punctuation marks, and a few
@@ -325,7 +336,7 @@ all of \citetext{Unicode}{While in the early days of computers
 But for the examples and exercises here, we will use small alphabets.\footnote{%
   We often use \protect\str{a}, \protect\str{b}, etc., in the alphabet because 
   saying `$\str{a}^2$' is less awkward than
-  `$\str{0}^2$' or even `two \protect\str{0}'s'.}
+  `$\str{0}^2$' or `two \protect\str{0}'s'.}
 
 \begin{example}  \label{ex:FSAGraphicalFileExtensions}
 This machine accepts strings that are members of the set
@@ -339,41 +350,43 @@ For instance, from state~$q_0$ any input character other than \str{j}
 or~\str{p} is an error.
 % The drawing below shows the extra edges for the top branch; putting in all the
 % edges would make a mess.
-(Putting in all the edges would make a mess.
+But putting in all the edges would make a mess.
 Cases such as this are where the transition table is better
 than the graph picture.
-But most of our machines are small
-so we typically prefer the picture.)
+However, most of our machines are small
+and we typically prefer a picture.
 % \begin{center}
 %   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa10.pdf}}
 % \end{center}
 
-This example illustrates that  
+This example shows that  
 for any finite language there is a Finite State machine that accepts
 a string if and only if it is a member of the language.
-The idea is:~for strings that have
+For strings that have
 common prefixes, the machine steps through the shared parts together,
 as here with \str{pdf} and \str{png}.
 \Cref{exer:FiniteLanguageAcceptedBySomeFSM} asks for a proof.
 \end{example}
 
 \begin{example} \label{ex:FSAMultOfThree}
-Although they have no scratch memory, some Finite State machines
-accomplish accomplish reasonably hard tasks, such as some kinds of arithmetic.
-This machine accepts strings representing a natural number
-that is a multiple of three, such as \str{15} and~\str{8013}.
+Although they don't have the scratch memory that a Turing machine has, 
+some Finite State machines
+accomplish reasonably hard tasks.
+This machine accepts strings representing natural numbers
+that are multiples of three, such as \str{15} and~\str{8013}.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa12.pdf}}
 \end{center}
 Because $q_0$ is an accepting state, this machine accepts the empty string.
-\Cref{exer:FSAModifyMultOFThreeMachine} asks for a modification of
-this machine to accept only non-empty strings.
+\Cref{exer:FSAModifyMultOFThreeMachine} asks for a modification 
+to accept only non-empty strings.
 \end{example}
 
 
 \begin{example}
 Finite State machines are easy to translate to code.
-Here is a Scheme version of the multiple of three machine. %\footnotemark[1]  
+Here is a Scheme version of the multiple of three machine
+(\str{memv} decides if the character is in the list). %\footnotemark[1]  
 \lstinputlisting{automata/scheme/mod3fsm.scm}
 % Here is a Python version of the multiple of three machine.
 % \begin{lstlisting}
@@ -415,7 +428,7 @@ Here is a Scheme version of the multiple of three machine. %\footnotemark[1]
 
 \begin{example}
 This is
-\citetext{how phone numbers were originally handled in North America}{%
+\citetext{how phone numbers were for many years handled in North America}{%
   See the description of the North America Numbering Plan
   \autocite{wiki:NANumbering}.}.
 Consider \str{1-802-555-0101}.
@@ -436,99 +449,92 @@ That office processes the line number of \str{0101} and makes the connection.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa13.pdf}
 \end{center}
-Today the picture is much more complicated.
+(Today switching is more complicated.
 For example, no longer are area codes required to
 have a middle digit of \str{0} or~\str{1}.
 This additional complication is possible because instead of
-\citetext{specialized devices}{%
+\citetext{physical devices}{%
   The devices to do the switching were invented in 1889 by an undertaker whose
   competitor's wife was the local telephone operator and routed calls to
   her husband's business.
   \autocite{wiki:Strowger}},
-today we do it in software.
+we now switch in software.)
 \end{example}
 
 \medskip
 After the definition of Turing machine we gave a formal
 description of the action of those machines.
-We next do the same here.
-% Finite State machines are easy to understand so this may seem 
-% unnecessary but in addition to the principle that it is always
-% good to have clearly stated rules,
-% it pays off later when we consider the variant of nondeterministic
-% Finite State machines, which are less easy to understand and
-% so having rules and being able to contrast them with these rules
-% is help.  
+We now do the same here.
 
 \label{page:DefnYieldsFiniteStateMachine}
 %<*discussion:FSMConfiguration>
 A 
 \definend{configuration}\index{configuration}\index{Finite State machine!configuration} 
 of a Finite State machine is 
-a pair $\mathcal{C}=\sequence{q,\tau}$, where
+a pair $\mathcal{C}=\sequence{q,\tau}$ where
 $q$ is a state, $q\in Q$, and $\tau$ is a (possibly empty) 
-string,~$\tau\in\kleenestar{\Sigma}$.
-We start a machine with some 
-\definend{input}\index{input string}\index{Finite State machine!input string} 
-string~$\tau_0$
-and say that the 
+string,~$\tau\in\kleenestar{\Sigma}\!$.
+We start a machine in some 
 \definend{initial configuration}\index{initial configuration}\index{Finite State machine!initial configuration}
-is~$\mathcal{C}_0=\sequence{q_0,\tau_0}$.
+$\mathcal{C}_0=\sequence{q_0,\tau_0}$
+and say that~$\tau_0$ is the
+\definend{input}\index{input string}\index{Finite State machine!input string} 
+(note also the convention that $q_0$ is the initial state).
 
-A Finite State machine acts by a sequence of \definend{transitions}    
+A machine acts by a sequence of \definend{transitions}    
 from one configuration to another.
-For $s\in\N^+$, the machine's configuration after the $s$-th transition 
+For $s\in\N^+$ the machine's configuration after the $s$-th transition 
 is its configuration at 
 \definend{step~$s$},\index{step}\index{Finite State machine!step} 
-$\mathcal{C}_s$.
+denoted $\mathcal{C}_s$.
+
 Here is the rule for making a transition
-(we sometimes say it is an 
-\definend{allowed} or \definend{legal} transition, for emphasis).
+(for emphasis we sometimes say that it is an 
+\definend{allowed} or \definend{legal} transition).
 Suppose that the machine is in the configuration
 $\mathcal{C}_s=\sequence{q,\tau_s}$.
-In the case that $\tau_s$ is not empty, pop the string's leading symbol~$c$.
-That is, where
-$c=\tau_s[0]$, take 
-$\tau_{s+1}=\sequence{\tau_s[1],\ldots \tau_s[k]}$ for
-$k=\lh{\tau_s}-1$.
-Then the machine's next state is $\hat{q}=\Delta(q,c)$ and its next
+Either $\tau_s$ is empty or it is not.
+If it is not empty then pop the leading character and denote it~$c$.
+That is, because $\tau_s$ is not empty we can decompose it into
+a first character and a remaining string $\tau_s=c\concat\tau_{s+1}$.
+With that, the machine's next state is $\hat{q}=\Delta(q,c)$ and its next
 configuration is $\mathcal{C}_{s+1}=\sequence{\hat{q},\tau_{s+1}}$.
-Denote this before-after relationship between configurations
+We denote this before-after relationship between configurations
 by $\mathcal{C}_s\yields\mathcal{C}_{s+1}$.\footnote{%
   As with Turing machines, read the symbol $\yields$ aloud 
   as ``yields in one step.''}\index{yields@$\yields$, yields!Finite State machine}
-The other case is that the string~$\tau_s$ is empty.
-This is the 
-\definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{Finite State machine!halting configuration} 
-$\mathcal{C}_h$.
-No transitions follow a halting configuration.
 
-At each transition the length of the tape string drops by one so every 
-computation eventually reaches a halting configuration
-$\mathcal{C}_h=\sequence{q,\emptystring}$.
+The other case is that~$\tau_s$ is empty.
+If so then $\mathcal{C}_s$ is a 
+\definend{halting configuration},\index{halting configuration}\index{configuration!halting}\index{Finite State machine!halting configuration} 
+sometimes denoted $\mathcal{C}_h$.
+No transitions follow a halting configuration.
+Every Finite State machine eventually reaches such a configuration
+because
+at each transition the tape string loses one character.
 A 
 \definend{Finite State machine computation}\index{computation!Finite State machine}\index{Finite State machine!computation}
 is a sequence 
 $
-  \mathcal{C}_0 \yields \mathcal{C}_1 \yields \mathcal{C}_2
+  \mathcal{C}_0 \yields \mathcal{C}_1 % \yields \mathcal{C}_2
    \yields \cdots\, \mathcal{C}_h
-$.
-We can abbreviate such a sequence
-with~$\kleenestar{\yields}$, as in
+$,
+which 
+we sometimes abbreviate
 $\mathcal{C}_0\mathrel{\kleenestar{\yields}}\mathcal{C}_h$.\footnote{%
   Read the symbol $\yields^*$ as ``yields eventually'' or simply ``yields.''}\index{yields@$\yields$, yields!Finite State machine}
- 
-If the ending state is a final state, $q\in F$,
+If $\mathcal{C}_h$'s state is a final state, tgat is, $q\in F$ where 
+$\mathcal{C}_h=\sequence{q,\tau}$,
 then the machine \definend{accepts}\index{accept an input}\index{Finite State machine!accept string}\index{accepts}\index{string accepted!by deterministic Finite State machine} 
 the input~$\tau_0$,
 otherwise it 
 \definend{rejects}~$\tau_0$.\index{reject an input}\index{Finite State machine!reject string}
 %</discussion:FSMConfiguration>
 
-Notice that, as with the formalism for Turing machines, 
-the heart of the definitions is the transition function~$\Delta$.
-It makes the machine move step-by-step, from configuration to configuration,
-in response to the input.
+% Notice that, as with the formalism for Turing machines, 
+% the heart of the definitions is the transition function~$\Delta$.
+% It makes the machine move step-by-step, from configuration to configuration,
+% in response to the input.
 
 \begin{example}  \label{ex:MultipleOfThreeFormal}
 The multiple of three machine of the prior example gives the computation.
@@ -2737,7 +2743,7 @@ and its $\varepsilon$~closures.
 % \end{center}
 \end{example}
 
-Wit that we are ready for the description.
+With that we are ready for the description.
 Again, a 
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}\!$.
@@ -6058,8 +6064,8 @@ Justify your answer.
 \end{exercise}
 
 \begin{exercise}
-If machines have $n_0$~states and $n_1$~states, then how many states 
-does the product have?
+If two machines have $n_0$~states and $n_1$~states, then how many states 
+does their product have?
 \begin{answer}
 The size of the set $Q_0\times Q_1$ is $n_0\cdot n_1$.
 \end{answer}
@@ -6073,7 +6079,7 @@ For these two machines,
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1042.pdf}}
 \end{center}
 give the transition table for the cross product.
-Sepcify the accepting states so that the result will accept
+Specify the accepting states so that the result will accept
 \begin{exparts*}
 \item
 the intersection of the languages of the two machines, and
@@ -6264,7 +6270,7 @@ $\set{s}\concat\lang_1$ gives a language that is not regular.
 \end{exercise}
 
 \begin{exercise}
-Where $\lang$ is a language, define $\lang+$\index{+@$+$ operation on a language}\index{language!+@$+$ operation}
+Where $\lang$ is a language, define $\lang+$\index{+@$+$!operation on a language}\index{language!+@$+$ operation}
 as the language
 $\lang\concat\kleenestar{\lang}$.
 Show that if $\lang$ is regular then so is $\lang+$.

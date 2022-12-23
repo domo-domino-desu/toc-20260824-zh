@@ -359,9 +359,38 @@ and we typically prefer a picture.
 %   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa10.pdf}}
 % \end{center}
 
+% \urldef\goldbachurl\url{https://en.wikipedia.org/wiki/Goldbach%27s_conjecture}
 This example shows that  
-for any finite language there is a Finite State machine that accepts
-a string if and only if it is a member of the language.
+\citetext{for any finite language there is a Finite State machine that accepts
+a string if and only if it is a member of the language}{%
+  In practice the suggestion that for any finite set of strings there is a 
+  Finite State machine that accepts it in the first paragraph to list
+  all the cases may not be reasonable.
+  For example,
+  there are finitely many people and each has finitely many
+  active phone numbers so
+  the set of all currently-active phone numbers
+  is a finite language. 
+  But constructing a machine for it
+  would be silly.
+  In addition, a finite language doesn't have to be large for it to be
+  difficult, in a sense.
+  Take
+  \definend{Goldbach's conjecture},
+  that every even number greater
+  than~$2$ is the sum of
+  two primes, as in $4=2+2$, $6=3+3$, $8=3+5$, \ldots{}
+  % (see \goldbachurl).
+  Computer testing shows that this pattern continues to hold up to very large
+  numbers but no one knows if it is true for all evens.
+  Now consider the set consisting of
+  the string~$\sigma\in\kleenestar{\set{\str{0},\ldots\,\str{9}}}$
+  representing in decimal the smallest even number
+  that is not the sum of two primes.
+  This set is finite since it has either
+  one member or none.
+  But while that set is tiny, we don't know what it contains.
+  }.
 For strings that have
 common prefixes, the machine steps through the shared parts together,
 as here with \str{pdf} and \str{png}.
@@ -5690,12 +5719,13 @@ suggests that there is something natural and important about them.\footnote{%
   This is like the fact that the equivalence of Turing machines,
   general recursive functions, and all kinds of other models suggests that the
   computable sets form a natural and important collection.
-  Neither collection is only a historical artifact of what happened to be first
+  None of these collections 
+  is only a historical artifact of what happened to be first
   explored.}
 
 %...................................
 \subsection{Definition}
-We will isolate and study these languages.
+We will isolate and study the languages in this collection.
 
 %<*def:RegularLangs>
 \begin{definition}
@@ -5707,50 +5737,21 @@ We will isolate and study these languages.
 %</def:RegularLangs>
 
 \begin{lemma} \label{lem:SetRegLangsIsCountable}
-The number of regular languages over an alphabet is countably infinite.
-The collection of languages over that alphabet is uncountable, 
+The set of regular languages over an alphabet is countably infinite.
+The collection of all languages over that alphabet is uncountable, 
 and consequently there
 are languages that are not regular.
 \end{lemma}
 
-\urldef\goldbachurl\url{https://en.wikipedia.org/wiki/Goldbach%27s_conjecture}
 \begin{proof}
 Fix an alphabet~$\Sigma$.
-Recall that, as defined in \Cref{sec:Strings}, 
+\Cref{sec:Strings} specifies that 
 any alphabet is nonempty and finite.
-Thus there are infinitely many regular languages over that alphabet,
-because every finite language
-is regular\Dash \citetext{just list all the cases}{%
-  In practice the suggestion in the first paragraph to list
-  all the cases may not be reasonable.
-  For example,
-  there are finitely many people and each has finitely many
-  active phone numbers so
-  the set of all currently-active phone numbers
-  is a regular language. 
-  But constructing a Finite State machine for it
-  is silly.
-  In addition, a finite
-  regular language doesn't have to be large for it to be
-  difficult, in a sense.
-  Take
-  \definend{Goldbach's conjecture},
-  that every even number greater
-  than~$2$ is the sum of
-  two primes, as in $4=2+2$, $6=3+3$, $8=3+5$, \ldots{}
-  (see \goldbachurl).
-  Computer testing shows that this pattern continues to hold up to very large
-  numbers but no one knows if it is true for all evens.
-  Now consider the set consisting of
-  the string~$\sigma\in\kleenestar{\set{\str{0},\ldots\,\str{9}}}$
-  representing the smallest even number
-  that is not the sum of two primes.
-  This set is finite since it has either
-  one member or none.
-  But while that set is tiny, we don't know what it contains.
-  } as in 
-\cref{ex:FSAGraphicalFileExtensions}\Dash and there are infinitely many finite
-languages.
+Thus there are infinitely many regular languages over the alphabet
+because where $x$ is a character from $\Sigma$, 
+each of these languages is finite and therefore regular:
+$\lang_0=\set{}$, $\lang_1=\set{x}$, $\lang_2=\set{xx}$
+\ldots\sentencespace
 
 Next we argue that the number of regular languages is countable. 
 This holds because
@@ -5762,33 +5763,35 @@ is countable.
 
 We finish by showing that the set of languages over~$\Sigma$,
 the set of all~$\lang\subseteq\kleenestar{\Sigma}\!$, is uncountable.
-The set~$\kleenestar{\Sigma}$ is countably infinite by the argument 
-of the prior two paragraphs. 
-The set of all~$\lang\subseteq\kleenestar{\Sigma}$ is the power set 
-of~$\kleenestar{\Sigma}$, and so has cardinality greater than the
-cardinality of~$\kleenestar{\Sigma}$, which makes it uncountable.
+By the same argument as in  
+the prior two paragraphs, $\kleenestar{\Sigma}$ is countably infinite
+(there are countably many $\sigma\in\kleenestar{\Sigma}$ of length
+zero, of length one, etc.). 
+In contrast, the set of all~$\lang\subseteq\kleenestar{\Sigma}$ is the power set 
+of~$\kleenestar{\Sigma}$ and so has cardinality greater than the
+cardinality of~$\kleenestar{\Sigma}\!$, which makes it uncountable.
 \end{proof}
 
 \subsection{Closure properties}
 In proving \cref{lem:KleenesThmRegexToMachine},
 the first half of Kleene's Theorem,
-we showed that if two languages $\lang_0, \lang_1$
+we showed that if $\lang_0$ and $\lang_1$
 are regular then their union $\lang\cup\lang_1$ is regular,
 their concatenation $\lang_0\concat\lang_1$ is regular,
 and the Kleene star $\kleenestar{\lang_0}$ is regular also. 
-Briefly, where $R_0$ is a regular expression describing
-the language $\lang_0$ and $R_1$ describes $\lang_1$ then
-the regular expression \re{$R_0$|$R_1$} describes $\lang_0\cup\lang_1$, 
-and \re{$R_0$$R_1$} describes the concatenation $\lang_0\concat\lang_1$,
-and \re{$R_0$*} describes $\kleenestar{\lang_0}\!$.
-
-Recall that a structure is \definend{closed} under an operation if
+% Briefly, where $R_0$ is a regular expression describing
+% the language $\lang_0$ and $R_1$ describes $\lang_1$ then
+% the regular expression \re{$R_0$|$R_1$} describes $\lang_0\cup\lang_1$, 
+% and \re{$R_0$$R_1$} describes the concatenation $\lang_0\concat\lang_1$,
+% and \re{$R_0$*} describes $\kleenestar{\lang_0}\!$.
+% 
+Recall that a set is said to be \definend{closed} under an operation if
 \citetext{performing that operation on its members always yields another member}{%
   Familiar examples are that adding two integers always gives an integer 
   so the integers are closed under the operation of addition, and 
   that squaring an integer always results in an integer
   so that the integers are closed under squaring.}.\index{closure under an operation}
-The next result restates the above paragraph in this language.
+This restates \cref{lem:KleenesThmRegexToMachine} in that language.
 
 %<*lem:RegLangsClosedUnderUnionConcatStar>
 \begin{lemma}  \label{lem:RegLangsClosedUnderUnionConcatStar}
@@ -5798,7 +5801,7 @@ The next result restates the above paragraph in this language.
 %</lem:RegLangsClosedUnderUnionConcatStar>
 
 We can ask about the closure of regular languages under other operations.
-We will use the 
+For this we will use the 
 \definend{product construction}.\index{product construction}\index{Finite State machine!product}
 
 \begin{example} \label{ex:ProductConstruction}
@@ -5835,14 +5838,14 @@ The transition tables contain the same information.
 \end{center}
 %</ex:RegLangsProductConstii>
 %<*ex:RegLangsProductConstiii>
-Consider a machine~$\FSM$ whose states are 
-\begin{equation*}
-  Q_0\times Q_1
-    =\set{ (q_0,s_0),\, (q_0,s_1),\, (q_1,s_0),\, (q_1,s_1),\, (q_2,s_0),\, (q_2,s_1) }
-\end{equation*}
+Consider a machine~$\FSM$ whose states are the members of the cross product
+$Q_0\times Q_1$ 
+% \begin{equation*}
+%   Q_0\times Q_1
+%     =\set{ (q_0,s_0),\, (q_0,s_1),\, (q_1,s_0),\, (q_1,s_1),\, (q_2,s_0),\, (q_2,s_1) }
+% \end{equation*}
 and whose transitions are given by 
-$\Delta(\,(q_i,r_j)\,)=(\,\Delta_0(q_i),\Delta_1(r_j)\,)$,
-as here.
+$\Delta\bigl(\,(q_i,r_j)\,\bigr)=\bigl(\,\Delta_0(q_i),\Delta_1(r_j)\,\bigr)$.
 \begin{center}
 \begin{tabular}{r|*{2}{c}}
   \multicolumn{1}{r}{$\Delta$}
@@ -5857,36 +5860,66 @@ as here.
 \end{tabular}
 \end{center}
 
-This machine runs $\FSM_0$ and $\FSM_1$ in parallel.
-For instance, if we feed the string \str{aba} to $\FSM$, 
+If we feed \str{aba} to $\FSM$ 
 then the machine's states go from 
-$(q_0,s_0)$ to $(q_1,s_0)$, then to $(q_1,s_1)$, and then to $(q_2,s_1)$.
+$(q_0,s_0)$ to $(q_1,s_0)$, to $(q_1,s_1)$, and then to $(q_2,s_1)$.
 This is simply because $\FSM_0$ passes from
-$q_0$ to~$q_1$, then to~$q_1$, and then~$q_2$, 
+$q_0$ to~$q_1$, to~$q_1$ again, and then to~$q_2$, 
 while $\FSM_1$ does
-$s_0$ to~$s_0$, then to~$s_1$, and finally to~$s_1$.
+$s_0$ to~$s_0$, to~$s_1$, and to~$s_1$.
+That is, we can view that this machine runs the machines
+$\FSM_0$ and $\FSM_1$ in parallel.
 
-The above table does not specify which states are accepting.
+We have not yet specified which states are accepting.
 Suppose that we
-say that the accepting states $(q_i,s_j)$ are the ones
+say, as on the left here, that the accepting states $(q_i,s_j)$ are the ones
 where both $q_i$ and $s_j$ are accepting.
-Then by the prior paragraph, $\FSM$ accepts a string~$\sigma$ if both
+Then because $\FSM$ runs the machines in parallel, 
+it accepts a string~$\sigma$ if and only if both
 $\FSM_0$ and~$\FSM_1$ accept it.
-That is, this specification of accepting states causes $\FSM$ to accept the 
-intersection of the language of $\FSM_0$ and the language of~$\FSM_1$.
+\begin{center}
+\begin{tabular}{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta$}
+    &\multicolumn{1}{c}{\str{a}} &\multicolumn{1}{c}{\str{b}}  
+  \\ \cline{2-3}
+  $(q_0,s_0)$  &$(q_1,s_0)$  &$(q_0,s_1)$  \rule{0em}{2ex} \\
+  \acceptingstate{} $(q_0,s_1)$  &$(q_1,s_1)$  &$(q_0,s_0)$  \\
+  $(q_1,s_0)$  &$(q_2,s_0)$  &$(q_1,s_1)$  \\
+  \acceptingstate{} $(q_1,s_1)$  &$(q_2,s_1)$  &$(q_1,s_0)$  \\
+  $(q_2,s_0)$  &$(q_2,s_0)$  &$(q_2,s_1)$  \\
+  $(q_2,s_1)$  &$(q_2,s_1)$  &$(q_2,s_0)$  \\
+\end{tabular}
+\qquad
+\begin{tabular}{r|*{2}{c}}
+  \multicolumn{1}{r}{$\Delta$}
+    &\multicolumn{1}{c}{\str{a}} &\multicolumn{1}{c}{\str{b}}  
+  \\ \cline{2-3}
+  \acceptingstate{} $(q_0,s_0)$  &$(q_1,s_0)$  &$(q_0,s_1)$  \rule{0em}{2ex} \\
+  $(q_0,s_1)$  &$(q_1,s_1)$  &$(q_0,s_0)$  \\
+  \acceptingstate{} $(q_1,s_0)$  &$(q_2,s_0)$  &$(q_1,s_1)$  \\
+  $(q_1,s_1)$  &$(q_2,s_1)$  &$(q_1,s_0)$  \\
+  $(q_2,s_0)$  &$(q_2,s_0)$  &$(q_2,s_1)$  \\
+  $(q_2,s_1)$  &$(q_2,s_1)$  &$(q_2,s_0)$  \\
+\end{tabular}
+\end{center}
+On the right the accepting states $(q_i,s_j)$ are the ones where $q_i$ is
+accepting but $s_j$ is not.
+By the same reasoning, this machine accepts strings that are in the language of
+$\FSM_0$ but not in the language of $\FSM_1$.
 %</ex:RegLangsProductConstiii>
 \end{example}
 
 %<*th:RegLangsClosedCompIntDiff>
 \begin{theorem}  \label{th:RegLangsClosedCompIntDiff}
-  The collection of regular languages is closed under
+  The regular languages are closed under
   the intersection of two sets, the difference of two sets, 
-  and set complement. 
+  and the complement of a set. 
 \end{theorem}
 %</th:RegLangsClosedCompIntDiff>
 
 %<*pf:RegLangsClosedCompIntDiff>
 \begin{proof}
+This proof is by construction.
 Start with two Finite State machines, $\FSM_0$ and~$\FSM_1$,
 which accept languages $\lang_0$ and $\lang_1$ over some~$\Sigma$.
 Perform the product construction to get~$\FSM$.
@@ -5899,9 +5932,9 @@ are those pairs where the first component state is accepting but the second
 is not,
 then $\FSM$ accepts the 
 set difference of the languages, $\lang_0-\lang_1$. 
-A special case of that is when $\lang_0$ is the set of all strings, 
-$\kleenestar{\Sigma}$, whereby
-$\FSM$ accepts the complement of~$\lang_1$.
+A special case of this second one is when $\lang_0$ is the set of all strings, 
+$\kleenestar{\Sigma}$, and in this case
+$\FSM$ accepts the complement,~$\setcomp{\lang_1}\!$.
 \end{proof}
 %</pf:RegLangsClosedCompIntDiff>
 
@@ -5916,16 +5949,16 @@ show that a language is regular.
                      and more than two \str{1}'s}}
   \end{equation*}
   is regular,
-  we could produce a machine that recognizes it,
-  or give a regular expression.
-  Or, we can instead
+  we could produce a machine that recognizes it
+  or exhibit a regular expression.
+  Or, we could instead
   note that~$\lang$ is this intersection,
   \begin{equation*}
     \set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has an even number of \str{0}'s}}
     \cap
     \set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has more than two \str{1}'s}}
   \end{equation*}
-  and producing machines for those two is easy.
+  and producing machines or regular expressions for those two is easy.
 \end{example}
 
 % -----------------------------------------------------------
@@ -5934,7 +5967,7 @@ show that a language is regular.
 \recommended
 \begin{exercise}
 True or false?
-Obviously you must justify each answer.
+You must justify each answer.
 \begin{exparts}
 \item Every regular language is finite.
 \item Over $\B$, the empty language is not regular.
@@ -5943,7 +5976,7 @@ Obviously you must justify each answer.
   $\kleenestar{\B}\!$, is not regular.
 \item Every Finite State machine accepts at least one string.
 \item For every Finite State machine there is one that has fewer
-  states but recognizes the same language.
+  states but that recognizes the same language.
 \end{exparts}
 \begin{answer}\verified
   \begin{exparts}
@@ -5973,29 +6006,7 @@ Obviously you must justify each answer.
 \end{exercise}
 
 \begin{exercise}
-One of these is true and one is false.
-Which is which?
-\begin{exparts*}
-\item Any finite language is regular.
-\item Any regular language is finite.
-\end{exparts*}
-\begin{answer}\verified
-  The first is true and the second is false.
-  \begin{exparts}
-  \item
-  If the language consists of the strings $\sigma_0$, \ldots $\sigma_{n-1}$
-  then a regular expression is
-  \re{$\sigma_0$|$\cdots\,$|$\sigma_{n-1}$}.
-  \item
-  The language over $\Sigma=\set{\str{a},\str{b}}$ described by the
-  regular expression \re{a*} is
-  $\set{\emptystring,\str{a},\str{aa},\ldots}$, and is infinite.
-  \end{exparts}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Is $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a power of $2$ in binary}}$ a regular language?
+Is $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents in binary a power of $2$}}$ a regular language?
 \begin{answer}
 Yes.
 To show this we need to show that this is the language of some Finite State
@@ -6022,11 +6033,33 @@ Is English a regular language?
   But which one? 
   Is ``Colorless green ideas sleep furiously'' a legal sentence even
   though it is not sensible?
-  Is ``My god, it is her'' allowed even though some would say it should 
-  be ``My god, it is she''?
+  Is ``My god, it is her.'' allowed even though some would say it should 
+  be ``My god, it is she.''?
 
   Really, it is not a sensible question.
   (See \url{https://cs.stackexchange.com/a/116178/67754}.)
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+One of these is true and one is false.
+Which is which?
+\begin{exparts*}
+\item Any finite language is regular.
+\item Any regular language is finite.
+\end{exparts*}
+\begin{answer}\verified
+  The first is true and the second is false.
+  \begin{exparts}
+  \item
+  If the language consists of the strings $\sigma_0$, \ldots $\sigma_{n-1}$
+  then a regular expression is
+  \re{$\sigma_0$|$\cdots\,$|$\sigma_{n-1}$}.
+  \item
+  The language over $\Sigma=\set{\str{a},\str{b}}$ described by the
+  regular expression \re{a*} is
+  $\set{\emptystring,\str{a},\str{aa},\ldots}$, and is infinite.
+  \end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -6046,26 +6079,24 @@ Show that each language over $\Sigma=\set{\str{a}, \str{b}}$ is regular.
 \end{answer}
 \end{exercise}
 
-\recommended
-\begin{exercise}
-True or false?
-Justify your answer.
-\begin{exparts}
-\item If $\lang_0$ is a regular languages and $\lang_1\subseteq \lang_0$ then
-  $\lang_1$ is also a regular language.
-\item  If $\lang_0$ is not regular and $\lang_0\subseteq \lang_1$ then
-  $\lang_1$ is also not regular.
-\item If $\lang_0\cap\lang_1$ is regular then each of the two is
-  regular.  
-\end{exparts}
-\begin{answer}
-  Each is false.
-  The same example suffices for all three.
-  For $\lang_0$ use the set of all bitstrings, $\kleenestar{\B}$.
-  For $\lang_1$ use any non-regular subset of it,
-  the existence of which is guaranteed by \cref{lem:SetRegLangsIsCountable}.
-\end{answer}
-\end{exercise}
+% \begin{exercise}
+% True or false:~all finite languages are regular, 
+% and there are countably many finite languages, 
+% and there are countably many regular sets,
+% so therefore all regular languages are finite.
+% \begin{answer}
+% The statement is false.
+% There are three premisses, that all finite languages are regular, 
+% that there are countably many finite languages, 
+% and that there are countably many regular sets.
+% All three are true.
+% However, the conculsion that all regular languages are finite does not
+% follow.
+% In addition, it is false:~the language 
+% $\lang\subseteq\kleenestar{\B}$ described by the regular expression
+% \re{0*} is regular and infinite.  
+% \end{answer}
+% \end{exercise}
 
 \recommended
 \begin{exercise}
@@ -6087,8 +6118,9 @@ The size of the set $Q_0\times Q_1$ is $n_0\cdot n_1$.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
-For these two machines,
+For these two,
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1041.pdf}}
   \qquad
@@ -6148,8 +6180,8 @@ $F=\set{(q_0,s_0),(q_0,s_1),(q_1,s_0),(q_1,s_1)}$
 \end{exercise}
 
 \begin{exercise}
-Find the machine that is the cross product of 
-the second machine, $\FSM_1$, from \cref{ex:ProductConstruction},
+Find the cross product of this machine,
+$\FSM_1$ from \cref{ex:ProductConstruction},
 with itself.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm92.pdf}}
@@ -6190,7 +6222,7 @@ construction, but it wouldn't matter because those are unreachable states.
 One of our first examples of Finite State machines, \cref{ex:FSATwoAsEvenBs},
 accepts a string when it contains at least two \str{0}'s as well as an
 even number of \str{1}'s.
-Make such a machine as a product of two simple machines.
+Make such a machine as a product of two simpler machines.
 \begin{answer}
 The machine on the left below accepts a string $\sigma\in\kleenestar{\B}$ if
 it contains at least two \str{0}'s.
@@ -6233,7 +6265,7 @@ We want the intersection of the two languages.
 \end{exercise}
 
 \begin{exercise}
-For each, state True or False and give a justification.
+For each, decide whether it is true or false, with justification.
 \begin{exparts}
 \item Every language is the subset of a regular language.
 \item The union of a regular language and a language that is not regular
@@ -6286,6 +6318,26 @@ $\set{s}\concat\lang_1$ gives a language that is not regular.
 \end{exercise}
 
 \begin{exercise}
+True or false?
+Justify your answer.
+\begin{exparts}
+\item If $\lang_0$ is a regular languages and $\lang_1\subseteq \lang_0$ then
+  $\lang_1$ is also a regular language.
+\item  If $\lang_0$ is not regular and $\lang_0\subseteq \lang_1$ then
+  $\lang_1$ is also not regular.
+\item If $\lang_0\cap\lang_1$ is regular then each of the two is
+  regular.  
+\end{exparts}
+\begin{answer}
+  Each is false.
+  The same example suffices for all three.
+  For $\lang_0$ use the set of all bitstrings, $\kleenestar{\B}$.
+  For $\lang_1$ use any non-regular subset of it,
+  the existence of which is guaranteed by \cref{lem:SetRegLangsIsCountable}.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 Where $\lang$ is a language, define $\lang+$\index{+@$+$!operation on a language}\index{language!+@$+$ operation}
 as the language
 $\lang\concat\kleenestar{\lang}$.
@@ -6295,52 +6347,6 @@ By \cref{lem:RegLangsClosedUnderUnionConcatStar}, regular languages
 are closed under Kleene star and concatenation.
 \end{answer}
 \end{exercise}
-
-\begin{exercise}
-True or false:~all finite languages are regular, 
-and there are countably many finite languages, 
-and there are countably many regular sets,
-so therefore all regular languages are finite.
-\begin{answer}
-The statement is false.
-There are three premisses, that all finite languages are regular, 
-that there are countably many finite languages, 
-and that there are countably many regular sets.
-All three are true.
-However, the conculsion that all regular languages are finite does not
-follow.
-In addition, it is false:~the language 
-$\lang\subseteq\kleenestar{\B}$ described by the regular expression
-\re{0*} is regular and infinite.  
-\end{answer}
-\end{exercise}
-
-% Perfectly good question, just have a lot of questions.
-% \begin{exercise}
-% \begin{credit}
-%   SE user jmite, \url{https://cs.stackexchange.com/a/67317/50343}.
-% \end{credit}
-% Show each.
-% \begin{exparts}
-% \item The collection of regular languages is not closed under the union
-% of infinitely many sets.
-% \item Nor is it closed under the intersection of infinitely many sets.
-% \end{exparts}
-% \begin{answer}
-% \begin{exparts}
-% \item For every word~$\sigma\in\kleenestar{\Sigma}$, the one-word language
-% $\lang=\set{\sigma}$ is regular.
-% But any non-regular language is the union of a collection of such languages.
-% \item
-% Similarly, 
-% for every word~$\sigma\in\kleenestar{\Sigma}$, the language
-% $\lang=\kleenestar{\Sigma}-\set{\sigma}$ is regular.
-% Any non-regular language~$\lang$ 
-% is the intersection of a collection of such languages,
-% namely the collection over all $\sigma\notin\lang$.
-% \end{exparts}
-% \end{answer}
-% \end{exercise}
 
 \begin{exercise}
 Use closure properties to show that if $\lang$ is regular then the
@@ -6388,7 +6394,6 @@ If $\lang_2$ were regular then because the intersection of regular languages
 is a regular language, $\lang_2\cap\lang_1$ would be regular.
 But that set is $\lang_0$, which was given as not regular. 
 \end{answer}
-
 \end{exercise}
  
 \begin{exercise}
@@ -6451,6 +6456,32 @@ If it accepts, then $e\in K$ and otherwise $e\notin K$.
 \end{exercise}
 
 \begin{exercise}
+\begin{credit}
+  SE user jmite, \url{https://cs.stackexchange.com/a/67317/50343}.
+\end{credit}
+Show each.
+\begin{exparts}
+\item The collection of regular languages is not closed under the union
+of infinitely many sets.
+\item Nor is it closed under the intersection of infinitely many sets.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item For every word~$\sigma\in\kleenestar{\Sigma}$, the one-word language
+$\lang=\set{\sigma}$ is regular.
+But any non-regular language is the union of a collection of such languages.
+\item
+Similarly, 
+for every word~$\sigma\in\kleenestar{\Sigma}$, the language
+$\lang=\kleenestar{\Sigma}-\set{\sigma}$ is regular.
+Any non-regular language~$\lang$ 
+is the intersection of a collection of such languages,
+namely the collection over all $\sigma\notin\lang$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 \cref{{lem:SetRegLangsIsCountable}} shows that the collection of 
 regular languages over $\B$ is countable.
 Show that not every individual language in it is countable.
@@ -6460,7 +6491,6 @@ Show that not every individual language in it is countable.
 \end{answer}
 \end{exercise}
   
-\recommended
 \begin{exercise}
 \begin{credit}
   \autocite{Rich}
@@ -6471,7 +6501,7 @@ one generated by a
 \mbox{X\produces{}\trm{t}Y}, or \mbox{X\produces{}\trm{t}}, 
 or \mbox{X\produces\emptystring}.
 That is, the rule head has one nonterminal and rule body 
-has a terminal followed by a nonterminal, or possibly a single nonterminal 
+has a terminal followed by a nonterminal, or possibly a single nonterminal, 
 or the empty string. 
 This is an example, with the language that it generates.
 \begin{center}
@@ -6520,6 +6550,7 @@ from~$q_X$ to~$\bar{q}$ labeled~\trm{t}.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 We can give an alternative proof of \cref{th:RegLangsClosedCompIntDiff}, that   the collection of regular languages is closed under
 set intersection, set difference, and set complement,

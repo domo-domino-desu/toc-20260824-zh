@@ -8018,20 +8018,18 @@ $\set{\sigma\in\kleenestar{\B}\suchthat
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa17.pdf}}
   \tag{$*$}
 \end{equation*}
-Informally, our experience is that to make 
-a properly designed machine,
-each state needs a meaning or job that is well-defined in terms of the machine's
-language, and that is different from 
+Informally, our experience is that to 
+correctly design a machine,
+each state needs a meaning that is well-defined in terms of the machine's
+language and that is different from 
 the meaning of all other states.
 For instance, on the left $q_2$ means
 ``have seen at least one \str{1} but still
 waiting for a~\str{0}.''
 
 The machine on the right doesn't meet this design principle because
-the meaning of $q_4$ is subsumed by that of~$q_2$ since in terms of 
-that machine's language,
-``have seen two \str{1}'s but still
-waiting for a~\str{0}'' is a subcase of $q_2$'s meaning.
+the meaning of $q_4$, ``have seen two \str{1}'s but still
+waiting for a~\str{0},''  is subsumed by the meaning of~$q_2$.
 Similarly, $q_5$'s meaning is subsumed by~$q_3$'s.
 % Restated in a suggestive way:~the pairs of states $q_2$ and~$q_4$
 % have the same future, as do $q_3$ and~$q_5$.
@@ -8080,13 +8078,13 @@ Otherwise they are \definend{indistinguishable},
 \end{example}
 
 \begin{example}
-More happens with the machine on the right above.
-This table gives the result of starting in each state and processing
+For the machine on the right above
+this table gives the result of starting in each state and processing
 each string of length~$0$, length~$1$, and length~$2$.
 It records whether the resulting state 
-is accepting or nonaccepting, denoted as $F$ or~$Q-F$.
+is accepting or nonaccepting, denoted by $F$ or~$Q-F$.
 \begin{equation*}
-  \begin{array}{r|c@{\hspace{2em}}*{2}{c}@{\hspace{2em}}*{4}{c}}
+  \begin{array}{r|c@{\hspace{2.5em}}*{2}{c}@{\hspace{2.5em}}*{4}{c}}
     \multicolumn{1}{r}{\ }
            &\multicolumn{1}{c}{\emptystring}  
            &\multicolumn{1}{c}{\str{0}}           
@@ -8105,13 +8103,12 @@ is accepting or nonaccepting, denoted as $F$ or~$Q-F$.
   \end{array}
   \tag{$**$}
 \end{equation*}
-The length~$0$ input string~$\emptystring$ 
-doesn't change the state here.
+The input~$\emptystring$ 
+doesn't change the state.
 So that column only records that
-there are two classes of 
-states:~members of $\set{q_0,q_1,q_2,q_4}$ 
-are the nonaccepting states 
-and members of $\set{q_3,q_5}$ are the accepting states. 
+members of $\set{q_0,q_1,q_2,q_4}$ 
+are nonaccepting states 
+and members of $\set{q_3,q_5}$ are accepting. 
 
 The two columns for the length~$1$ strings
 show all of the four possible behaviors.
@@ -8120,13 +8117,13 @@ that is, the columns say $Q-F$ and $Q-F$.
 For the state $q_1$ the columns say $Q-F,F$.
 The states $q_2$ and~$q_4$ both show $F,Q-F$.
 And $q_3$ and~$q_5$ both go to $F,F$. 
-Thus for instance, the definition gives that $q_0$ is $1$-distinguishable 
-from $q_1$.
+% Thus for instance, the definition gives that $q_0$ is $1$-distinguishable 
+% from $q_1$.
 In total we have four classes, $\set{q_0}$,
 $\set{q_1}$, $\set{q_2,q_4}$, and $\set{q_3,q_5}$, where states are in the
-same class if and only if they are $1$-distinguishable.
+same class if and only if they are not $1$-distinguishable.
 
-Now consider the length~$2$ strings. 
+Next, the length~$2$ strings. 
 The states $q_2$ and~$q_4$ 
 both have
 $F,F,F,Q-F$.
@@ -8201,41 +8198,51 @@ We now develop an algorithm, \citetext{Moore's algorithm}{%
   be aware that another algorithm, Hopcroft's algorithm, 
   is more efficient.
   See \protect\autocite{Knuutila}.},\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
-that first finds the $\sim_0$ classes, 
-then finds the $\sim_1$ classes, etc., 
+that finds the $\sim_0$ classes, 
+then the $\sim_1$ classes, 
+\ldots{}, 
 and at the end it has the $\sim$~classes.
-Then those classes serve as the states of the minimal machine.
+Those classes then serve as the states of the minimal machine.
 
-For that algorithm, consider
+As motivation for that algorithm consider
 what it takes for two states  $q$ and~$\hat{q}$ to be
 $n+1$-distinguishable but not $n$-distinguishable.
 Let them be distinguished by the length~$n+1$ string 
-$\sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$,
-which we will write as a decomposition of the prefix and the final
+$\sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$.
+Write that string as a decomposition of a prefix and the final
 character, $\sigma=\tau\concat s_n$.
 The states  $q$ and~$\hat{q}$ are not $n$-distinguishable so
-where $\tau$ brings the machine from $q$ to some state~$r$,
+where $\tau$ brings the machine from $q$ to some state~$r$
 and also brings the machine from $\hat{q}$ to some~$\hat{r}$,
-these two states $r$ and~$\hat{r}$ must be in the same
-class~$\eclass_{n,i}$.
-So the distinguishing happens with $\sigma$'s final character,~$s_n$.
-It must take the machine from state~$r$ to a state in one class~$\eclass_{n+1,j}$ 
+then these two states $r$ and~$\hat{r}$ must be in the same
+class,~$\eclass_{n,i}$.
+That is, the distinguishing must happen with $\sigma$'s final character,~$s_n$.
+It must take the machine from state~$r$ to a state in one 
+class,~$\eclass_{n+1,j}$, 
 and also take the machine from~$\hat{r}$ to 
 a state in another class,~$\eclass_{n+1,\hat{j}}\,$.
 
-When we built the table in ($**$) we listed all of the length one strings
-and all of the length two strings but we didn't need to do that.
+In the table~($**$) we listed all of the length one strings
+and all of the length two strings, but the prior paragraph
+shows that to $n+1$-distinguish classes 
+we don't need to list all of the $2^{n+1}$-many strings of length~$n+1$.
 % To find the $\sim_{n+1}$ classes we don't need to test whole strings, 
 % we need only test single characters. 
-If the $\sim_n$ classes, the $\eclass_{n,i}$'s, split 
+If the $\eclass_{n,i}$'s are going to split 
 then a single character suffices to split them.
 
-So consider again the machine we have been working with.
+So consider again the machine on the right in ($*$).
 Its $\sim_1$ classes are 
-$\eclass_{1,0}$, $\eclass_{1,1}$, $\eclass_{1,2}$, and~$\eclass_{1,3}$. 
+$\eclass_{1,0}=\set{q_0}$, 
+$\eclass_{1,1}=\set{q_1}$, 
+$\eclass_{1,2}=\set{q_2,q_4}$, 
+and~$\eclass_{1,3}=\set{q_3,q_5}$. 
 To check for additional splitting in going to the $\sim_2$ classes, 
 we only check if the states in $\eclass_{1,2}$ and $\eclass_{1,3}$  
 are sent to states in different $\sim_1$~classes on being fed single characters.
+(We need only test the classes with more than one member,
+$\eclass_{1,2}$ and $\eclass_{1,3}$, because the
+singleton classes cannot split.)
 \begin{center}
   \begin{tabular}{r|cc|cc}
     \multicolumn{1}{r}{$\eclass_{1,2}$}
@@ -8255,11 +8262,8 @@ are sent to states in different $\sim_1$~classes on being fed single characters.
     $q_5$   &$q_5$ &$q_5$  &$\eclass_{1,3}$    &$\eclass_{1,3}$    
   \end{tabular}
 \end{center}
-This is a considerable speedup over checking all possible length~$n$ strings.
-(We need only test the classes with more than one member,
-$\eclass_{1,2}$ and $\eclass_{1,3}$, because the
-singleton classes cannot split.)
-In both tables there is no split, because the right side of the rows 
+This is a considerable speedup over checking all possible strings.
+In both tables there is no split because the right side of the rows 
 are the same for all the classes members. 
 So we can stop\Dash the $\sim_1$ classes are the $\sim$ classes.
 

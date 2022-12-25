@@ -8222,7 +8222,7 @@ class,~$\eclass_{n+1,j}$,
 and also take the machine from~$\hat{r}$ to 
 a state in another class,~$\eclass_{n+1,\hat{j}}\,$.
 
-In the table~($**$) we listed all of the length one strings
+The table~($**$) lists all of the length one strings
 and all of the length two strings, but the prior paragraph
 shows that to $n+1$-distinguish classes 
 we don't need to list all of the $2^{n+1}$-many strings of length~$n+1$.
@@ -8236,40 +8236,43 @@ Its $\sim_1$ classes are
 $\eclass_{1,0}=\set{q_0}$, 
 $\eclass_{1,1}=\set{q_1}$, 
 $\eclass_{1,2}=\set{q_2,q_4}$, 
-and~$\eclass_{1,3}=\set{q_3,q_5}$. 
-To check for additional splitting in going to the $\sim_2$ classes, 
-we only check if the states in $\eclass_{1,2}$ and $\eclass_{1,3}$  
-are sent to states in different $\sim_1$~classes on being fed single characters.
-(We need only test the classes with more than one member,
-$\eclass_{1,2}$ and $\eclass_{1,3}$, because the
-singleton classes cannot split.)
+and~$\eclass_{1,3}=\set{q_3,q_5}$.
+We already know that there will be no  
+additional splitting in going to the $\sim_2$ classes, 
+but we will illustrate how the algorithm checks this. 
+We feed single characters to the states in the $\sim_1$~classes,
+and see if those classes split.
+This is a considerable speedup over checking all possible strings.
+(And singleton classes cannot split so we need only test classes with 
+more than one member,
+$\eclass_{1,2}$ and $\eclass_{1,3}$.)
 \begin{center}
-  \begin{tabular}{r|cc|cc}
+  \begin{tabular}{r|cc}
     \multicolumn{1}{r}{$\eclass_{1,2}$}
-         &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}}
          &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}} \\
-    \cline{2-5}
-    $q_2$    &$q_3$ &$q_4$  &$\eclass_{1,3}$    &$\eclass_{1,2}$    \\
-    $q_4$    &$q_5$ &$q_4$  &$\eclass_{1,3}$    &$\eclass_{1,2}$    
+    \cline{2-3}
+    $q_2$    &$q_3\in\eclass_{1,3}$ &$q_4\in\eclass_{1,2}$      \\
+    $q_4$    &$q_5\in\eclass_{1,3}$ &$q_4\in\eclass_{1,2}$      
   \end{tabular}
   \qquad  
-  \begin{tabular}{r|cc|cc}
+  \begin{tabular}{r|cc}
     \multicolumn{1}{r}{$\eclass_{1,3}$}
-         &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}}
          &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}} \\
-    \cline{2-5}
-    $q_3$   &$q_3$ &$q_5$  &$\eclass_{1,3}$    &$\eclass_{1,3}$    \\
-    $q_5$   &$q_5$ &$q_5$  &$\eclass_{1,3}$    &$\eclass_{1,3}$    
+    \cline{2-3}
+    $q_3$   &$q_3\in\eclass_{1,3}$ &$q_5\in\eclass_{1,3}$    \\
+    $q_5$   &$q_5\in\eclass_{1,3}$ &$q_5\in\eclass_{1,3}$    
   \end{tabular}
 \end{center}
-This is a considerable speedup over checking all possible strings.
-In both tables there is no split because the right side of the rows 
-are the same for all the classes members. 
-So we can stop\Dash the $\sim_1$ classes are the $\sim$ classes.
+The $\eclass_{1,2}$ table shows both $q_2$ and~$q_4$ 
+going to $\eclass_{1,3},\eclass_{1,2}$
+so there is no split there.
+The $\eclass_{1,3}$ likewise shows no split.
+So the algorithm stops:~the $\sim_1$ classes are the $\sim$ classes.
 
-The examples of this algorithm below show how to translate this into 
-a minimal machine, and add a table notation that simplifies the
-computation.
+The examples of the algorithm below systematize this calculation,
+including adding a bookkeeping table.
+They also show how to use the $\sim$~classes to make 
+a minimal machine.
 
 \begin{example}
   We will find a machine that recognizes the same language as this one but
@@ -8277,13 +8280,15 @@ computation.
   \begin{center}
     \includegraphics{automata/asy/min/min03.pdf}
   \end{center}
-  To do bookkeeping we will use triangular
+  To keep track of which states are distinguished we will use triangular
   tables that
   have an entry for 
   every two-element set $\set{i,j}$
   where $i\neq j$ are indices of states $q_i$ and~$q_j$.
-  
-  Start by checkmarking the $i,j$~entries
+  Checks mark state pairs that are distinguishable.
+
+  Start by checkmarking the $i,j$~entries that are 
+  $0$-distinguishable, that is,
   where one of $q_i$ and $q_j$ is accepting while the other is not.
   \begin{center} 
     \begin{minimizetable}{6}
@@ -8301,22 +8306,16 @@ computation.
       \cline{1-5}      
     \end{minimizetable}
    \end{center}
-   Checkmarked pairs denote states that are $0$-distinguishable.
-   Pairs with a blank are states that are $0$-indistinguishable.
-   Here are the $\sim_{0}$-equivalence classes.
+   Blank entries are state pairs that are $0$-indistinguishable.
+   We can read off the $\sim_{0}$-equivalence classes.
    \begin{equation*}
      \eclass_{0,0} =\set{q_0,q_3,q_4}
      \qquad
      \eclass_{0,1} =\set{q_1,q_2,q_5}        
    \end{equation*}
 
-  Next we investigate those classes 
-  to see if they can be split.
-  For each $\sim_0$~class, look at all pairs of states.
-  The table below lists them on the left.
-  For each single character input, see where that
-  character sends the two states in the pair; that's listed in the middle.
-  On the right the table lists associated $\sim_0$~classes.
+  Next we see if those classes split.
+  Here are the calculations.
   \begin{center} \small
     \begin{tabular}{r|ll|ll}
       \multicolumn{1}{c}{\ }
@@ -8355,21 +8354,29 @@ computation.
     %   \cline{1-5}      
     % \end{minimizetable}
   \end{center}
-  If any entry on the right is a pair consisting of two different classes 
-  then the two states are $1$-distinguishable.
-  To the 
-  triangular table add a 
-  checkmark in that entry.
+  In the left column are all pairs of
+  states from $\eclass_{0,0}$, and from $\eclass_{0,1}$.
+  In the middle, to each pair we feed all of the alphabet characters, 
+  \str{a} and~\str{b},
+  and list where the states in the pair are sent.
+  On the right are the associated $\sim_0$~classes.
 
-  For instance,
-  $q_1$ and $q_5$ are together in $\eclass_{0,1}$.
-  From the table under the character~\str{a} are two different classes, 
+  We look on the right for the sign
+  that two states are $1$-distinguishable,
+  a pair that consist of two different classes.
+  % Then to the triangular table we add a 
+  % checkmark in that entry.
+  We find that
+  $q_1$ and $q_5$ are together in $\eclass_{0,1}$
+  but on the right  
+  under the character~\str{a} are two different classes, 
   $\eclass_{0,0}$ and~$\eclass_{0,1}$.  
-  In the triangular table, we add a checkmark in entry $1,5$.
+  To the triangular table we add a checkmark in entry $1,5$.
   Similarly, $q_2$ and~$q_5$ are together in~$\eclass_{0,1}$ but
-  \str{b} takes them to different classes, $\eclass_{0,0}$ and~$\eclass_{0,1}$.
+  the character~\str{b} 
+  takes them to different classes, $\eclass_{0,0}$ and~$\eclass_{0,1}$.
   We add a checkmark in entry $2,5$.
-  Here is the table now.
+  Here is the updated table.
   \begin{center} \small
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{0}   &    &    &    &    &    \\
@@ -8394,9 +8401,14 @@ computation.
     \eclass_{1,2}=\set{q_5}   
   \end{equation*}
 
-  Iterate.
-  We now look to subdivide the $\sim_{1}$-equivalence classes.
-  The table list every pair of indices together in some $\eclass_{1,j}$.
+  The algorithm now iterates.
+  We ask whether any of the $\sim_{1}$-equivalence classes
+  subdivide to become $\sim_{2}$-equivalence classes.
+  The table list every pair of unequal states together in some $\eclass_{1,j}$.
+  We find that $q_0$ is $2$-distinguishable from $q_3$ and~$q_4$, but 
+  they are not distinguishable from each other.
+  We update the triangular table to have 
+  checkmarks in the $0,3$ and $0,4$ entries.
   \begin{center} \small
     \begin{tabular}{r|ll|ll}
       \multicolumn{1}{c}{\ }
@@ -8431,10 +8443,6 @@ computation.
       \cline{1-5}      
     \end{minimizetable}
   \end{center}
-  We have found that $q_0$ is $2$-distinguishable from $q_3$ and~$q_4$ (but 
-  they are not distinguishable from each other).
-  The triangular table shown has been updated to contain 
-  checkmarks in the $0,3$ and $0,4$ entries.
   In shory, the $\sim_1$ class $\eclass_{1,0}$ splits into two $\sim_2$ classes.
   \begin{equation*}
         \eclass_{2,0}=\set{q_0} \quad

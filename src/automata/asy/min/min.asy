@@ -277,9 +277,9 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node s0=ncircle("$s_0$"),
-  s1=ncircle("$s_1$"),
-s2=ncircle("$s_2$",ns_accepting);
+node s0=ncircle("$r_0$"),
+  s1=ncircle("$r_1$"),
+s2=ncircle("$r_2$",ns_accepting);
 
 // layout
 defaultlayoutrel = false;

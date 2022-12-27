@@ -10364,24 +10364,23 @@ Using induction to generalize this observation is straightforward.
 % "Stacks are overrated" Guy Steele https://www.youtube.com/watch?v=agw-wlHGi0E
 %<*discussion:StackIntroi>
 No Finite State machine can recognize the language of balanced parentheses.
-So this machine model is not powerful enough to use, for instance,
-to decide whether input strings are valid programs in a
-modern programming language.
+So this machine model is not powerful enough to, for instance,
+decide whether input strings are valid programs in a
+most programming languages.
 To handle nested parentheses, the natural data structure is a 
 pushdown stack.\index{stack}\index{pushdown stack}
-We will now supplement a Finite State
+We now supplement a Finite State
 machine by giving it access to a stack.
 %</discussion:StackIntroi>
 
 Like a Turing machine tape, a stack is unbounded storage.
 But it has restrictions that the tape does not.
-It is like the restaurant dish dispenser below.
-When you push a new dish on,
-its weight compresses a spring under the dishes, 
-so all the old ones move down and
+It is like the restaurant dish dispenser below:~when you push a new dish on,
+its weight compresses a spring under the dishes
+so the old ones move down and
 the latest dish is the only one that you can 
 reach.\index{stack!push}
-When you pop a dish off, a spring pushes the 
+When you pop the top dish off, a spring pushes the 
 remaining dishes up so you can reach the next one.\index{stack!pop}
 We say that this stack is 
 \definend{LIFO},~Last-In, 
@@ -10409,14 +10408,14 @@ To get at \str{g1} we  must first pop off
 \end{center}
 Once something is popped, it is gone.
 We could include in the machine a state whose intuitive meaning is
-that we have just popped~$\str{g0}$ but because there are finitely
-many states that strategy has limits.
+that we have just popped~$\str{g0}$. 
+However, as there are finitely
+many states but unboundedly many stack arrangements, that strategy has limits.
 
 
 % ...............................................
 \subsection{Definition}
-To define these machines
-we will extend the definition of Finite State machines.
+We will extend the definition of Finite State machines.
 
 %<*def:PushdownMachine>
 \begin{definition}
@@ -10430,22 +10429,23 @@ a nonempty
 a nonempty \definend{stack alphabet}~$\Gamma$,\index{stack!alphabet}\index{Pushdown machine!stack alphabet}
 and a 
 \definend{transition function}\index{transition function!Pushdown machine}\index{Pushdown machine!transition function}
-$\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\times\kleenestar{\Gamma}}\!$.
+$\map{\Delta}{Q\times (\Sigma\cup\set{\str{B},\varepsilon})\times \Gamma}{Q\times\kleenestar{\Gamma}}\!$ that is a partial function.
 \end{definition}
 %</def:PushdownMachine>
 
 %<*discussion:StackMachineTransitionsi>
 We assume that the stack alphabet~$\Gamma$ contains the 
 character that we use to mark the stack bottom,~$\bot$.\footnote{%
-  Read that character aloud as ``bottom.''}\index{bottom@bottom, $\bot$}\index{stack!bottom@bottom, $\bot$}
-The rest of $\Gamma$ is \str{g0}, \str{g1}, etc.
+  Read this character aloud as ``bottom.''}\index{bottom@bottom, $\bot$}\index{stack!bottom@bottom, $\bot$}
+We denote the other members of $\Gamma$ as \str{g0}, \str{g1}, etc.
 We also assume that the tape alphabet~$\Sigma$ does not contain the
 blank or the character~$\varepsilon$.\footnote{%
   The definition allows $\varepsilon$ to appear in two separate places,
   as the second component
   of $\Delta$'s inputs and 
   also as the empty string, from $\kleenestar{\Gamma}$.
-  However, one of those is in the inputs and the other is in the outputs
+  However, one of those appearances 
+  is in the inputs and the other is in the outputs
   so it isn't ambiguous.} 
 %</discussion:StackMachineTransitionsi>
 
@@ -10453,41 +10453,64 @@ blank or the character~$\varepsilon$.\footnote{%
   \includegraphics{asy/share/machine03.pdf}
 \end{center}
 
+We now describe the action of these machines (we've done this a
+number of times so we will tamp down some low-level details). 
 %<*discussion:StackMachineTransitionsii>
-The transition function describes how these machines act.\index{Pushdown machine!transition function}
-For the input
-$\sequence{q_i,s,g_j}\in Q\times(\Sigma\cup\set{\str{B},\varepsilon})\times\Gamma$
-there are two cases.
-When the character~$s$ is an element of $\Sigma\cup\set{B}$
-then an instruction
-$\Delta(q_i,s,g_j)=\sequence{q_k,\gamma}$
-applies when the machine is in state~$q_i$ with the tape head reading~$s$ 
-and with the character~$g_j$ on top of the stack.
-If there is no such instruction then the computation halts, with the
+Similarly to other machine descriptions, a \definend{configuration} 
+of a machine is a tuple listing the present state, the present 
+sequence of characters on the stack, and the present sequence of 
+characters on the tape,
+including saying where the tape head points. 
+The transition function specifies how the machine moves from configuration
+to configuration.\index{Pushdown machine!transition function}
+We can represent this information either as 
+$\Delta(q_i,s,g)=\sequence{q_k,\gamma}$
+or as $\sequence{q_i,s,g,q_k,\gamma}$,
+where $\gamma$ is a sequence of stack characters; the second one we call 
+a five-tuple \definend{instruction}.\index{instruction!stack machine} 
+The first form is more convenient, except that 
+we must remember that $\Delta$ is a
+partial function and so there may be some inputs without any
+associated output. 
+
+The starting configuration has the machine in state~$q_0$,
+reading the first character
+of the \definend{input string}~$\sigma\in\kleenestar{\Sigma}$,
+and with the stack containing only~$\bot$.
+
+To move to step~$s+1$, consider the input
+$\sequence{q_i,t,g}\in Q\times(\Sigma\cup\set{\str{B},\varepsilon})\times\Gamma$.
+There are two cases, where~$t$ is an element of $\Sigma\cup\set{\str{B}}$
+and where $t=\emptystring$.
+If $t\in\Sigma\cup\set{\str{B}}$ then
+$\Delta(q_i,t,g)$
+applies when the machine is in state~$q_i$ with the tape head reading~$t$ 
+and with~$g$ on top of the stack.
+If there is no associated output then the computation halts\Dash no
+configuration follows the current one\Dash with the
 input string not accepted.
-If there is such an instruction then
-the machine does this:~(i)~the read head moves one cell to the right,
-(ii)~the machine pops $g_j$ off the stack
-and pushes the characters of the string
-$\gamma=\sequence{g_{i_0},\ldots\,g_{i_m}}$ onto the stack in the order
-from $g_{i_m}$ first to $g_{i_0}$ last,
-and (iii)~the machine enters state $q_k$.
-The other case for the input $\sequence{q_i,s,g_j}$
-is when the character $s$ is $\varepsilon$.
-Everything is the same except that the tape head does not move.
-(We use this case to manipulate the stack without consuming any input.) 
+If there is associated output $\sequence{q_k,\gamma}$ 
+then:~\begin{parenum}
+\item the read head moves one cell to the right,
+\item the machine pops $g$ off the stack
+and pushes the characters of the sequence
+$\gamma=\sequence{g_{0},\ldots\,g_{m}}$ onto the stack, 
+from $g_{m}$ first to $g_{0}$ last (so that $g_0$ is now at the top of the stack),
+and \item the machine goes into state $q_k$.
+\end{parenum}
+
+The other case for the input $\sequence{q_i,t,g}$
+is when $t=\varepsilon$.
+Everything is the same except that the read head does not move.
+(We use this to manipulate the stack without consuming any input.) 
 %</discussion:StackMachineTransitionsii>
 
 As with Finite State machines, Pushdown machines don't write to the tape but
-only consume the tape characters.
+only consume tape characters.
 However, unlike Finite State machines they can fail to
-halt, see \cref{exer:PDANoHalt}.
+halt; see \cref{exer:PDANoHalt}.
 
 %<*discussion:StackMachineTransitionsiii>
-The starting configuration has the machine in state~$q_0$,
-reading the first character
-of~$\sigma\in\kleenestar{\Sigma}$,
-and with the stack containing only~$\bot$.
 A machine accepts its input~$\sigma$ if, after starting
 in its starting configuration and after scanning all of~$\sigma$,
 it eventually enters an accepting state $q\in F$.

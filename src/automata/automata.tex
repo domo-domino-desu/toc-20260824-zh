@@ -8597,46 +8597,59 @@ a minimal machine.
 
   No additional splitting happens on the next iteration, 
   which is easy to check.
-  The minimized machine has three states, one for each $\sim$ class.
   \begin{center}
     \includegraphics{automata/asy/min/min05.pdf}
   \end{center}
+  The minimized machine has three states, one for each $\sim$ class
+  $\eclass_{0}=\set{q_0}$,
+  $\eclass_{1}=\set{q_1,q_2}$,
+  and $\eclass_{2}=\set{q_3,q_4}$.
 \end{example}
 
-This section closes by proving that Moore's algorithm works.
-The proof will cover that the
-algorithm halts and that the machine it produces is minimal.
+\medskip
+We close with a result below proving that Moore's algorithm works.
+We will cover that the
+algorithm halts, 
+and that the machine it produces recognizes the same language and is minimal.
 
-But there is a third thing that is not obvious,
-namely that it produces a well-defined machine at all.
+But there is another thing to prove that may not be obvious,
+namely that the algorithm produces a well-defined machine at all.
 Consider the minimal machine in \cref{ex:FirstMinimization} and the arrows
 leaving its state $r_1=\eclass_1=\set{q_1,q_2}$.
 What if feeding an~\str{a} to $q_1$ and $q_2$ sends them to different places,
 specifically, to states in different $\sim$~classes?
 That would be trouble\Dash we 
-would not have a well-defined state~$r_j$ to send the 
-\str{a} arrow out of $r_1$.
+would have an ambiguity about which state~$r_j$ should get the 
+\str{a} arrow leaving $r_1$.
 
-Now, this trouble doesn't happen for \cref{ex:FirstMinimization}.
-In the starting machine,
+Now, \cref{ex:FirstMinimization} doesn't have this trouble.
+In its starting machine,
 $q_1$ is sent by \str{a} to $q_3\in\eclass_2$ and
-$q_2$ is sent by \str{a} to $q_4\in\eclass_2$, so the minimial
-machine has a well-defined action of \str{a} on~$r_1$,
-namely the arrow goes to~$r_2$.
+$q_2$ is sent by \str{a} to $q_4\in\eclass_2$, so in the minimial
+machine starting at $r_1$ and processing an~\str{a} has a well-defined result,
+namely the machine goes to~$r_2$.
 We can likewise check that $q_1$ and~$q_2$ are sent by \str{b}
 to states that are both in $\eclass_2$.
 And we can do a similar check for the other multiple-member class,
-the $q_3$ and~$q_4$ in $\eclass_3$.
+$\eclass_3=\set{q_3,q_4}$.
 
 But clearly this point generalizes.
-The proof will have to verify this effect for all machines produced by the
-algorithm.
+We need to argue that for the minimal machines produced by the
+algorithm, the transition function is well-defined.
+However, having seen that we need to check it, the actual check turns out to 
+be easy.
+The argument is by construction:~if there is a $\sim_n$ class where some
+character sends two states in that class to different classes then
+the algorithm does not terminate at that step, instead it splits that 
+$\sim_n$~class and goes on.
+So the algorithm cannot end with an ill-defined transition function for the
+minimal result. 
 
 \begin{remark}
-Before the proof we will briefly indulge in an expansion of this point.
-Consider
-the drawing below.
-Imagine that the states of the input machine
+Before the proof we briefly indulge in two restatements of this point
+on the relationship between the transition functions of the input and
+output machines.
+Imagine that the states of the input machine below
 project down onto the output machine's states:~$p(q_0)=r_0$, 
 $p(q_1)=p(q_2)=r_1$,
 $p(q_3)=p(q_4)=r_2$, 
@@ -8649,15 +8662,16 @@ and $p(q_5)=r_3$.
       &\vcenteredhbox{\includegraphics{automata/asy/min/min04.pdf}}
   \end{tabular}
 \end{center}
-The point is that $\FSM_O$'s arrows work\Dash~the 
+The point is that the 
 algorithm groups together $\FSM_I$'s states to make $\FSM_O$'s states
 in a way that respects the starting machine's transitions. 
 
-The tables below make the same point.
-On the left is the transition function of the starting 
+The tables below show the same effect.
+The left table is the transition function of the starting 
 machine,~$\Delta_{\FSM_I}$.
-The right table groups the $q$'s into $r$'s, showing $\Delta_{\FSM_O}$.
-The algorithm groups the states in a way that allows the transitions in $\FSM_O$ 
+The right table shows $\Delta_{\FSM_O}$, grouping the $q$'s into $r$'s.
+Again, the point is that
+the algorithm groups the states in a way that allows the transitions in $\FSM_O$ 
 to be derived from the transitions in $\FSM_I$.
 For instance, $q_1$ and~$q_2$ project to~$r_1$, and when presented with
 input~\str{a} they transition to states, 
@@ -8712,11 +8726,16 @@ recognizing the same language has the minimal number of states.
 
 \begin{proof}
 We will argue that the algorithm halts for all input machines,
-that the returned machine recognizes the same language,
+that there is a well-defined output machine,
+that this returned machine recognizes the same language,
 and that it has a minimal number of states.
 The first is easy:~the algorithm halts at a step where no class splits and
 since these machines have only finitely many states,
 that step must appear.
+
+In the discussion before the lemma statement we have already given
+the argument that the output machine's transition function is well-defined,
+namely that the algorithm cannot terminate until it is. 
 
 We next argue that the input machine and 
 the returned machine recognize the same language. 

@@ -9051,9 +9051,9 @@ Show your work.
   The answer is that they don't split.
   The process stops and here are the two $\sim$-equivalence classes.
    \begin{equation*}
-     \eclass_{1,0} =\set{q_0,q_2}=r_0
+     \eclass_{1,0} =\set{q_0,q_2}=\eclass_0=r_0
      \qquad
-     \eclass_{1,1} =\set{q_1}=r_1        
+     \eclass_{1,1} =\set{q_1}=\eclass_1=r_1        
    \end{equation*}
   Incorporating the arrow information from the original machine gives 
   this minimized one.
@@ -9262,13 +9262,13 @@ page~\pageref{fig:MachinesWithMinAndNoMinStates}.
    \end{equation*}
   There is no splitting; these are the $\sim$ classes.
    \begin{equation*}
-     r_0=\eclass_{2,0} =\set{q_0,q_2}
+     r_0=\eclass_0=\eclass_{2,0} =\set{q_0,q_2}
      \quad
-     r_1=\eclass_{2,1} =\set{q_1}        
+     r_1=\eclass_1=\eclass_{2,1} =\set{q_1}        
      \quad
-     r_2=\eclass_{2,2} =\set{q_2,q_4}        
+     r_2=\eclass_2=\eclass_{2,2} =\set{q_2,q_4}        
      \quad
-     r_3=\eclass_{2,3} =\set{q_3,q_5}        
+     r_3=\eclass+3=\eclass_{2,3} =\set{q_3,q_5}        
    \end{equation*}
    Bringing in the transition information from the original machine
    gives this minimized version.
@@ -9281,7 +9281,7 @@ page~\pageref{fig:MachinesWithMinAndNoMinStates}.
 \begin{exercise}
 What happens when you minimize a machine that is already minimal?
 \begin{answer}\verified
-  Not a hell of a lot.
+  Not a lot.
   You get back the original machine in that
   you get $r_0=\mathcal{E}_{n,0}=\set{q_0}$,
   $r_1=\mathcal{E}_{n,1}=\set{q_1}$, etc. 
@@ -10454,9 +10454,10 @@ blank or the character~$\varepsilon$.\footnote{%
 \end{center}
 
 We now describe the action of these machines (we've done this a
-number of times so we will tamp down some low-level details). 
+number of times and this will be very similar,
+so we will tamp down some low-level details). 
 %<*discussion:StackMachineTransitionsii>
-Similarly to other machine descriptions, a \definend{configuration} 
+A \definend{configuration} 
 of a machine is a tuple listing the present state, the present 
 sequence of characters on the stack, and the present sequence of 
 characters on the tape,
@@ -10466,7 +10467,7 @@ to configuration.\index{Pushdown machine!transition function}
 We can represent this information either as 
 $\Delta(q_i,s,g)=\sequence{q_k,\gamma}$
 or as $\sequence{q_i,s,g,q_k,\gamma}$,
-where $\gamma$ is a sequence of stack characters; the second one we call 
+where $\gamma$ is a sequence of stack characters; the second one is 
 a five-tuple \definend{instruction}.\index{instruction!stack machine} 
 The first form is more convenient, except that 
 we must remember that $\Delta$ is a
@@ -10475,72 +10476,78 @@ associated output.
 
 The starting configuration has the machine in state~$q_0$,
 reading the first character
-of the \definend{input string}~$\sigma\in\kleenestar{\Sigma}$,
+of the \definend{input string}~$\tau\in\kleenestar{\Sigma}$,
 and with the stack containing only~$\bot$.
 
-To move to step~$s+1$, consider the input
-$\sequence{q_i,t,g}\in Q\times(\Sigma\cup\set{\str{B},\varepsilon})\times\Gamma$.
-There are two cases, where~$t$ is an element of $\Sigma\cup\set{\str{B}}$
-and where $t=\emptystring$.
-If $t\in\Sigma\cup\set{\str{B}}$ then
-$\Delta(q_i,t,g)$
-applies when the machine is in state~$q_i$ with the tape head reading~$t$ 
+To move to step~$s+1$, 
+suppose that the machine's configuration 
+has it in state~$q_i$ with the tape head reading~$t$ 
 and with~$g$ on top of the stack.
+Look for the input
+$\sequence{q_i,t,g}\in Q\times(\Sigma\cup\set{\str{B},\varepsilon})\times\Gamma$.
 If there is no associated output then the computation halts\Dash no
 configuration follows the current one\Dash with the
 input string not accepted.
-If there is associated output $\sequence{q_k,\gamma}$ 
+
+Otherwise let the associated output be $\sequence{q_k,\gamma}$.
+There are two cases:~where $t$ is an element of 
+$\Sigma\cup\set{\str{B}}$ and where $t=\emptystring$.
+If $t\in\Sigma\cup\set{\str{B}}$ 
 then:~\begin{parenum}
-\item the read head moves one cell to the right,
+\item the machine's read head moves one cell to the right,
 \item the machine pops $g$ off the stack
 and pushes the characters of the sequence
 $\gamma=\sequence{g_{0},\ldots\,g_{m}}$ onto the stack, 
 from $g_{m}$ first to $g_{0}$ last (so that $g_0$ is now at the top of the stack),
 and \item the machine goes into state $q_k$.
 \end{parenum}
+(That is, the configuration at step~$s+1$ differs from the one at step~$s$
+in those ways.)
 
 The other case for the input $\sequence{q_i,t,g}$
-is when $t=\varepsilon$.
+is where $t=\varepsilon$.
 Everything is the same except that the read head does not move.
 (We use this to manipulate the stack without consuming any input.) 
 %</discussion:StackMachineTransitionsii>
 
-As with Finite State machines, Pushdown machines don't write to the tape but
-only consume tape characters.
-However, unlike Finite State machines they can fail to
-halt; see \cref{exer:PDANoHalt}.
-
 %<*discussion:StackMachineTransitionsiii>
-A machine accepts its input~$\sigma$ if, after starting
-in its starting configuration and after scanning all of~$\sigma$,
-it eventually enters an accepting state $q\in F$.
+\citetext{A Pushdown machine accepts its input~$\tau$}{%
+  An alternative to the final state definition of acceptance we are using is
+  to define that a machine accepts its input if after consuming that input,
+  it empties the stack.
+  The definitions are equivalent in that the same languages are accepted by
+  the two types of machines.}\index{Pushdown machine!halting} 
+if after processing all of~$\tau$ 
+its configuration is in an accepting state, $q\in F$.
 
 Notice that at each step the machine pops a character off the stack.
 If we want to leave the stack unchanged then as part of the instruction
 we must push that character back on.
 In addition, if the machine reaches a configuration where 
 the stack is empty then it will lock up and be unable to perform any more
-instructions.\footnote{%
-  An alternative to the final state definition of acceptance we are using is
-  to define that a machine accepts its input if after consuming that input,
-  it empties the stack.
-  The definitions are equivalent in that a string is accepted by
-  either type of machine if it is accepted by the other.}\index{Pushdown machine!halting}
+instructions.
 %</discussion:StackMachineTransitionsiii>
 
 \begin{example}  \label{ex:PDSAcceptBalencedParens}
-This grammar generates the language of balanced parentheses.
-\begin{equation*}
-\text{S \produces{} \trm{[} S \trm{]} \syntaxor SS \syntaxor \emptystring}
-\qquad
-  \lang_{\text{BAL}}=\set{\varepsilon,
-    \str{[]},
-    \str{[[]]},
-    \str{[][]},
-    \str{[[][]]},
-    \str{[[[]]]}, \ldots}
-\end{equation*}
-The Pumping Lemma shows that no Finite State machine recognizes this language. 
+% This grammar generates the language of balanced parentheses.
+% \begin{equation*}
+% \text{S \produces{} \trm{[} S \trm{]} \syntaxor SS \syntaxor \emptystring}
+% \qquad
+%   \lang_{\text{BAL}}=\set{\varepsilon,
+%     \str{[]},
+%     \str{[[]]},
+%     \str{[][]},
+%     \str{[[][]]},
+%     \str{[[[]]]}, \ldots}
+% \end{equation*}
+The Pumping Lemma shows that no Finite State machine recognizes the language
+of balanced parentheses
+$\lang_{\text{BAL}}=\set{\varepsilon,
+     \str{[]},
+     \str{[[]]},
+     \str{[][]},     
+     \str{[[][]]},
+     \str{[[[]]]}, \ldots}$ 
 But it is recognized by a
 Pushdown machine.
 %<*ex:BalancedParensAcceptedPushdown>
@@ -10563,7 +10570,7 @@ with the instructions numbered for ease of reference.
   $4$  &$q_o,\text{\str{B}},\bot$             &$q_1,\varepsilon$ \\
 \end{tabular}
 \end{center}
-It keeps a running tally of the number of
+This machine keeps a tally of the number of
 \str{[}'s minus the number of \str{]}'s, as 
 the number of \str{g0}'s on the stack.
 This computation starts with the input \str{[[]][]}
@@ -10582,6 +10589,10 @@ and ends in an accepting state.
   \end{tapesequencetable}
 \end{tapesequence}
 \end{example}
+
+As with Finite State machines, Pushdown machines don't write to the tape.
+However, unlike Finite State machines they can fail to
+halt; see \cref{exer:PDANoHalt}.
 
 \begin{example}  \label{ex:PDAPalindromesMithMidMarker}
 Recall that a palindrome

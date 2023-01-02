@@ -23,6 +23,7 @@
 (define ONE #\1)  ;;
 (provide A B ZERO ONE)
 (define INPUTEND #\B) ;; Mark end of input
+(provide INPUTEND)
 
 (define BOT #\$)  ;; Most common stack characters
 (define G0 #\Z)
@@ -36,6 +37,12 @@
 (provide HALT ERROR)
 
 ;; ================= Configuration making and reading ==============
+;; A tape ends with an input end marker
+(define (make-tape . tape-characters)
+  (append tape-characters (list INPUTEND)))
+
+(provide make-tape)
+
 ;; A configuration is a list of three things:
 ;;  the current state, as a natural number
 ;;  the contents of the tape under and to the right of the head, as a list of tape characters
@@ -152,20 +159,21 @@
 ;                           (string->list sigma))
 ;              0))
 
-(define (run fsm sigma)
+(define (run pdm sigma)
   (let* ([config (make-config 0
-                              (string->list sigma))]
+                              (string->list sigma)
+                              (list BOT))]
          [step-no 0])
     (show-step-config step-no config)
     (for ([current-symbol (get-tape-list config)])
       (set! step-no (+ 1 step-no))
-      (set! config (step fsm config))
+      (set! config (step pdm config))
       (show-step-config step-no config))
     (get-current-state config)))
 
 
-(define (decide fsm F sigma)
-  (if (member (run fsm sigma) F)
+(define (decide pdm F sigma)
+  (if (member (run pdm sigma) F)
       "accept"
       "reject"))
 

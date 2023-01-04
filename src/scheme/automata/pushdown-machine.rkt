@@ -14,25 +14,26 @@
 ;; Best is to use lower-case letters for alphabet.
 ;; After each step, the machine prints out a picture of the tape and the stack.
 ;; 
-;; At this moment, there is no a utility elsewhere in this repo that converts these pictures for
+;; At this moment, there is no utility elsewhere in this repo that converts these pictures for
 ;; use in Asymptote.
 
 (define A #\a)  ;; Most common tape characters
 (define B #\b)  ;; 
 (define ZERO #\0)  ;;
 (define ONE #\1)  ;;
-(provide A B ZERO ONE)
+(define EPSILON #\E)  ;; For instructions that only manipulate the stack
+(provide A B ZERO ONE EPSILON)
 (define INPUTEND #\B) ;; Mark end of input
 (provide INPUTEND)
 
-(define BOT #\$)  ;; Most common stack characters
-(define G0 #\Z)
+(define G0 #\Z)  ;; Most common stack characters
 (define G1 #\Y)
 (define G2 #\X)
 (define G3 #\W)
+(define BOT #\$)  ;; Stack bottom
 (provide BOT G0 G1 G2 G3)
 
-(define HALT -1) ;; 
+(define HALT -2) ;; 
 (define ERROR -1) ;; 
 (provide HALT ERROR)
 
@@ -85,6 +86,11 @@
 (define (stack-push ch stack-list)
   (cons ch stack-list))
 
+; character-list stack-list ->  stack-list
+; Push the characters onto the stack.
+(define (stack-push-list ch-list stack-list)
+  (append ch-list stack-list))
+
 ; stack-list -> bool
 ; Decide if the stack's top character is the bottom character.
 (define (stack-bot? stack-list)
@@ -94,6 +100,7 @@
          stack-pop
          stack-top
          stack-push
+         stack-push-list
          stack-bot?)
 
 
@@ -116,7 +123,7 @@
 ; Get the tape
 (define (get-tape-list config) (second config))
 
-; configuration  ->  list of characeters
+; configuration  ->  list of characters
 ; Get the stack
 (define (get-stack-list config) (third config))
 
@@ -154,14 +161,59 @@
          get-stack-top
          configuration->string)
 
+;; ======== Pushdown machine ======================
+;; A pushdown machine is a list of instructions.
+;; An instruction is a list of length five
+;;   (natural-number character character natural-number character-list)
+;; representing
+;;   (present state, present tape character, present stack character, next state,
+;;                                                            list of chars to push onto stack)
+
+; natural-number character character natural-number character-list  ->  list of five
+; Create one instruction 
+(define (make-instruction present-state tape-char stack-char next-state stack-char-list)
+  (list present-state tape-char stack-char next-state stack-char-list))
+
+(define (get-present-state inst)
+  (first inst))
+(define (get-present-tape-char inst)
+  (second inst))
+(define (get-present-stack-char inst)
+  (third inst))
+(define (get-next-state inst)
+  (fourth inst))
+(define (get-push-stack-list inst)
+  (fifth inst))
+
+
+; no input  ->  list
+; Create an empty pushdown machine
+(define (pdm-create)
+  (list))
+
+; pushdown-machine instruction  ->  pushdown-machine
+; Add the instruction to the machine 
+(define (pdm-add-to pdm instruction)
+  (reverse (cons instruction (reverse pdm)))) ; convenient for debugging to retain order
+
+(provide make-instruction
+         get-present-state
+         get-present-tape-char
+         get-present-stack-char
+         get-next-state
+         get-push-stack-list
+         pdm-create
+         pdm-add-to)
+
 
 ;; =============================
-;; delta  Find the applicable instruction, return next state
+; pushdown-machine natural-number character  ->  natural-number character-list, or ERROR
+; Find the applicable instruction, return output pair
 (define (delta pdm current-state current-symbol stack-top)
   (define (delta-test inst)
     (and (= current-state (first inst))
-         (equal? current-symbol (second inst))
-         (equal? stack-top third inst)))
+         (char=? current-symbol (second inst))
+         (char=? stack-top (third inst))))
   
   (let ([inst (findf delta-test pdm)])
     (if (not inst)
@@ -177,18 +229,20 @@
 ;; step  Do one step; from a config and the fsm, yield the next config
 (define (step pdm config)
   (let* ([current-state (get-current-state config)]
-         [tape-list (get-tape-list config)]
-         [stack-list (get-stack-list config)]
          [current-symbol (get-current-symbol config)]
          [stack-top (get-stack-top config)]
-         [output-pair (delta pdm current-state current-symbol stack-top)]
-         [next-state (first output-pair)]
-         [popped-stack (stack-pop stack-list)]
-         [new-stack (append (second output-pair) popped-stack)]
-         )
-    (make-config next-state
-                 (cdr tape-list)
-                 new-stack)))
+         [output-pair (delta pdm current-state current-symbol stack-top)])
+    (if (equal? output-pair ERROR)
+        HALT
+        (let* ([next-state (first output-pair)]
+               [push-stack-list (second output-pair)]
+               [tape-list (get-tape-list config)]
+               [popped-stack (stack-pop (get-stack-list config))]
+               [stack-list (stack-push-list push-stack-list popped-stack)])
+          (if (equal? current-symbol EPSILON)
+              (make-config next-state tape-list stack-list)
+          (make-config next-state (tape-shift tape-list) stack-list)))
+        )))
 
 (provide step)
 

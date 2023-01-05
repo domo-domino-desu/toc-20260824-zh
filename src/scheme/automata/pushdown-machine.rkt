@@ -17,20 +17,20 @@
 ;; At this moment, there is no utility elsewhere in this repo that converts these pictures for
 ;; use in Asymptote.
 
-(define A #\a)  ;; Most common tape characters
-(define B #\b)  ;; 
-(define ZERO #\0)  ;;
-(define ONE #\1)  ;;
-(define EPSILON #\E)  ;; For instructions that only manipulate the stack
+(define A "a")  ;; Most common tape characters
+(define B "b")  ;; 
+(define ZERO "0")  ;;
+(define ONE "1")  ;;
+(define EPSILON "epsilon")  ;; For instructions that only manipulate the stack
 (provide A B ZERO ONE EPSILON)
-(define INPUTEND #\B) ;; Mark end of input
+(define INPUTEND "END") ;; Mark end of input
 (provide INPUTEND)
 
-(define G0 #\Z)  ;; Most common stack characters
-(define G1 #\Y)
-(define G2 #\X)
-(define G3 #\W)
-(define BOT #\$)  ;; Stack bottom
+(define G0 "g0")  ;; Most common stack characters; strings are clearer than chars
+(define G1 "g1")
+(define G2 "g2")
+(define G3 "g3")
+(define BOT "BOT")  ;; Stack bottom
 (provide BOT G0 G1 G2 G3)
 
 (define HALT -2) ;; 
@@ -149,8 +149,8 @@
       "--"
       (let* ([state-number (get-current-state config)]
              [state-string (string-append "q" (number->string state-number))]
-             [tape-string (list->string (get-tape-list config))]
-             [stack-string (list->string (get-stack-list config))])
+             [tape-string (apply string-append (get-tape-list config))]
+             [stack-string (apply string-append (get-stack-list config))])
         (string-append state-string ": " tape-string "; " stack-string))))
 
 (provide make-config
@@ -212,8 +212,8 @@
 (define (delta pdm current-state current-symbol stack-top)
   (define (delta-test inst)
     (and (= current-state (first inst))
-         (char=? current-symbol (second inst))
-         (char=? stack-top (third inst))))
+         (equal? current-symbol (second inst))
+         (equal? stack-top (third inst))))
   
   (let ([inst (findf delta-test pdm)])
     (if (not inst)

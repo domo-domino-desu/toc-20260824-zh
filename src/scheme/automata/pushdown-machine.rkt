@@ -127,6 +127,11 @@
 ; Get the stack
 (define (get-stack-list config) (third config))
 
+; configuration -> boolean
+; Return True iff tape is empty, including that there is no INPUTEND
+(define (tape-empty? config)
+  (null? (get-tape-list config)))
+
 ; configuration -> character or ERROR
 ; Get the character pointed to by the read head
 (define (get-current-symbol config)
@@ -149,9 +154,9 @@
       "--"
       (let* ([state-number (get-current-state config)]
              [state-string (string-append "q" (number->string state-number))]
-             [tape-string (apply string-append (get-tape-list config))]
-             [stack-string (apply string-append (get-stack-list config))])
-        (string-append state-string ": " tape-string "; " stack-string))))
+             [tape-string (string-join (get-tape-list config))]
+             [stack-string (string-join (get-stack-list config))])
+        (string-append state-string ", tape=" tape-string ", stack=" stack-string))))
 
 (provide make-config
          get-current-state
@@ -226,23 +231,33 @@
 
 ;; ===================================================
 ;; Take one step
-;; step  Do one step; from a config and the fsm, yield the next config
+;; step  Do one step; from a config and the pdm, yield the next config
 (define (step pdm config)
-  (let* ([current-state (get-current-state config)]
-         [current-symbol (get-current-symbol config)]
-         [stack-top (get-stack-top config)]
-         [output-pair (delta pdm current-state current-symbol stack-top)])
-    (if (equal? output-pair ERROR)
-        HALT
-        (let* ([next-state (first output-pair)]
-               [push-stack-list (second output-pair)]
-               [tape-list (get-tape-list config)]
-               [popped-stack (stack-pop (get-stack-list config))]
-               [stack-list (stack-push-list push-stack-list popped-stack)])
-          (if (equal? current-symbol EPSILON)
-              (make-config next-state tape-list stack-list)
-          (make-config next-state (tape-shift tape-list) stack-list)))
-        )))
+  ;(printf "starting step: config is: ")
+  ;(write config)
+  ;(writeln "")
+  (if (tape-empty? config)
+      HALT
+      (let* ([current-state (get-current-state config)]
+             [current-symbol (get-current-symbol config)]
+             [stack-top (get-stack-top config)]
+             [output-pair (delta pdm current-state current-symbol stack-top)])
+        ;(printf "  current-state: ~a, current-symbol: ~a, stack-top: ~a\n" current-state current-symbol stack-top)
+        (if (equal? output-pair ERROR)
+            ERROR
+            (let* ([next-state (first output-pair)]
+                   [push-stack-list (second output-pair)]
+                   [tape-list (get-tape-list config)]
+                   [popped-stack (stack-pop (get-stack-list config))]
+                   [stack-list (stack-push-list push-stack-list popped-stack)])
+              ;(printf "  next-state: ~a, push-stack-list: ~a\n" next-state push-stack-list)
+              ;(printf "    now the stack is stack-list: ~a\n" stack-list)
+              ;(printf "    next the tape will be: ~a\n" (tape-shift tape-list))
+              ;(printf "    equal? current-symbol EPSILON ~a\n" (equal? current-symbol EPSILON))
+              (if (equal? current-symbol EPSILON)
+                  (make-config next-state tape-list stack-list)
+                  (make-config next-state (tape-shift tape-list) stack-list)))
+            ))))
 
 (provide step)
 
@@ -250,41 +265,66 @@
 ;;; ===================================================
 ;;; Run a computation
 ;
-;;; show-state-config  Print one line with state and current configuration information
-;(define (show-step-config s c)
-;  (printf "Step ~a: ~a\n" (number->string s)
-;          (configuration->string c))
-;  )
-;
-;;; run  Run a FSM computation
-;;(define (run fsm sigma)
-;;  (define (run-helper config step)
-;;    (let ([tape-list (get-tape-list config)]
-;;          [current-state (get-current-state config)])
-;;      (if (null? tape-list)
-;;                 current-state
-;;                 (begin
-;;                   (show-step-config step config)
-;;                   (run-helper (make-config (delta fsm current-state (car tape-list))
-;;                                          (cdr tape-list))
-;;                               (+ 1 step))
-;;                   ))))
-;;  ;
-;;  (run-helper (make-config 0
-;;                           (string->list sigma))
-;;              0))
-;
+;; show-state-config  Print one line with state and current configuration information
+(define (show-step-config s c)
+  (printf "Step ~a: ~a\n" (number->string s)
+          (configuration->string c))
+  )
+
+;; run  Run a computation
+
+; string  ->  list of strings
+; convert characters in a list of characters into strings
+(define (string->string-list s)
+  (map string (string->list s)))
+
+; pushdown-machine string  ->  integer
+; Run the steps in the computation of the pushdown machine
 ;(define (run pdm sigma)
-;  (let* ([config (make-config 0
-;                              (string->list sigma)
-;                              (list BOT))]
-;         [step-no 0])
+;  (writeln "starting run")
+;  (let ([config (make-config 0
+;                             (apply make-tape (string->string-list sigma))
+;                             (make-stack))]
+;        [step-no 0]
+;        [stop-flag #f])
+;    (writeln "initial config made")
 ;    (show-step-config step-no config)
-;    (for ([current-symbol (get-tape-list config)])
-;      (set! step-no (+ 1 step-no))
-;      (set! config (step pdm config))
-;      (show-step-config step-no config))
-;    (get-current-state config)))
+;    (for ([step-no (in-naturals 1)]
+;          #:break (or (equal? ERROR config)
+;                       (equal? HALT config)))
+;      (let ([prior-config config]
+;            [next-config (step pdm config)])
+;        (printf "Run:: step-no=~a  next-config:\n" step-no)
+;        (write next-config)(writeln "")
+;        ; (set! config (step pdm config))
+;        ; (write (step pdm config))
+;        (cond
+;          [(equal? config ERROR) (printf "Error. Last valid config: ~a\n" (configuration->string config))]
+;          [(equal? config HALT)  (printf "Halt.  Ending state: ~a\n" (get-current-state config))]
+;          [else (show-step-config step-no next-config)])
+;        ))
+;    ))
+;(define lagging-config '())
+(define (run pdm sigma)
+  ;(writeln "starting run-do")
+  (do
+      ([lagging-config '() config]
+       [config (make-config 0
+                            (apply make-tape (string->string-list sigma))
+                            (make-stack))
+               (step pdm config)]
+       [step-no 0 (+ 1 step-no)])
+    ((or (equal? HALT config)
+         (equal? ERROR config))
+     (if (equal? config HALT)
+         (printf "done: final state=~a\n" (get-current-state lagging-config))
+         (printf "done: error\n")))
+    ; (set! lagging-config config)
+    ;(writeln "lagging-config is ")(write lagging-config)(writeln "")
+    ;(writeln "config is ")(write config)(writeln "")
+    ;(printf "equal? lagging-config config) ~a\n" (equal? lagging-config config))
+    (show-step-config step-no config))
+    )
 ;
 ;
 ;(define (decide pdm F sigma)
@@ -292,7 +332,7 @@
 ;      "accept"
 ;      "reject"))
 ;
-;(provide run
+(provide run)
 ;         decide)
 ;
 ;;; ======================================================

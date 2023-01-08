@@ -180,12 +180,17 @@
 
 
 
-;;; ======================== run =====================
+;;; ======================== yield-star =====================
 (test-case
- "Test run, minimal functionality"
- (printf "===Doing run===\n")
+ "Test yield-star, minimal functionality"
+ (printf "===Doing yield-star===\n")
  (let ([tau "[[]]"])
-   (run pdm1 tau)))
+   (yield-star pdm1 tau)))
+
+(test-case
+ "Test show-yield-star"
+ (let ([tau "[[]]"])
+   (map writeln (show-yield-star pdm1 tau))))
 ;;
 ;(test-case
 ; "Test run, on a longer input string"

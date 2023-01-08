@@ -151,7 +151,10 @@
 ;; configuration-> string  Return a string representing the tape
 (define (configuration->string config)
   (if (not (list? config))
-      "--"
+      (cond
+        [(equal? config HALT) "Halt"]
+        [(equal? config ERROR) "Error"]
+        [else "unknown config"])
       (let* ([state-number (get-current-state config)]
              [state-string (string-append "q" (number->string state-number))]
              [tape-string (string-join (get-tape-list config))]
@@ -189,7 +192,6 @@
   (fourth inst))
 (define (get-push-stack-list inst)
   (fifth inst))
-
 
 ; no input  ->  list
 ; Create an empty pushdown machine
@@ -278,33 +280,25 @@
 (define (string->string-list s)
   (map string (string->list s)))
 
+(define (yield-star pdm tau)
+  (do
+      ([config (make-config 0
+                            (apply make-tape (string->string-list tau))
+                            (make-stack))
+               (step pdm config)]
+       [history '() (cons config history)])
+    ((or (equal? HALT config)
+         (equal? ERROR config)) (reverse history))
+    ; (printf "next config ~a\n" config)
+    ; (printf "  history ~a\n" history)
+    ))
+
+(define (show-yield-star pdm tau)
+  (let ([strs (map configuration->string (yield-star pdm tau))])
+    strs))
+
 ; pushdown-machine string  ->  integer
 ; Run the steps in the computation of the pushdown machine
-;(define (run pdm sigma)
-;  (writeln "starting run")
-;  (let ([config (make-config 0
-;                             (apply make-tape (string->string-list sigma))
-;                             (make-stack))]
-;        [step-no 0]
-;        [stop-flag #f])
-;    (writeln "initial config made")
-;    (show-step-config step-no config)
-;    (for ([step-no (in-naturals 1)]
-;          #:break (or (equal? ERROR config)
-;                       (equal? HALT config)))
-;      (let ([prior-config config]
-;            [next-config (step pdm config)])
-;        (printf "Run:: step-no=~a  next-config:\n" step-no)
-;        (write next-config)(writeln "")
-;        ; (set! config (step pdm config))
-;        ; (write (step pdm config))
-;        (cond
-;          [(equal? config ERROR) (printf "Error. Last valid config: ~a\n" (configuration->string config))]
-;          [(equal? config HALT)  (printf "Halt.  Ending state: ~a\n" (get-current-state config))]
-;          [else (show-step-config step-no next-config)])
-;        ))
-;    ))
-;(define lagging-config '())
 (define (run pdm sigma)
   ;(writeln "starting run-do")
   (do
@@ -332,7 +326,9 @@
 ;      "accept"
 ;      "reject"))
 ;
-(provide run)
+(provide run
+         yield-star
+         show-yield-star)
 ;         decide)
 ;
 ;;; ======================================================

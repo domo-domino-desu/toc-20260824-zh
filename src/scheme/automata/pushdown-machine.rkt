@@ -33,9 +33,10 @@
 (define BOT "BOT")  ;; Stack bottom
 (provide BOT G0 G1 G2 G3)
 
-(define HALT -2) ;; 
-(define ERROR -1) ;; 
-(provide HALT ERROR)
+(define LIMIT-REACHED -3) ;; more steps than allowed 
+(define ERROR -2) ;; some problem with computation
+(define HALT -1) ;; machine halted
+(provide HALT ERROR LIMIT-REACHED)
 
 
 ;; ======== Tape and stack =================
@@ -280,15 +281,21 @@
 (define (string->string-list s)
   (map string (string->list s)))
 
-(define (yield-star pdm tau)
+(define (yield-star pdm tau #:limit 500)
   (do
-      ([config (make-config 0
+      ([step 0 (add1 step)]
+       [config (make-config 0
                             (apply make-tape (string->string-list tau))
                             (make-stack))
                (step pdm config)]
        [history '() (cons config history)])
-    ((or (equal? HALT config)
-         (equal? ERROR config)) (reverse history))
+    ((or
+      (= step limit)
+      (equal? config HALT)
+      (equal? config ERROR)) (if (= step limit)
+                                 (cons LIMIT-REACHED history)
+                                 (cons config history))
+                               (reverse history)))
     ; (printf "next config ~a\n" config)
     ; (printf "  history ~a\n" history)
     ))

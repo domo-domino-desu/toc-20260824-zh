@@ -1,4 +1,4 @@
-# Makefile-working-asy
+# Makefile
 # For Theory of Computation by Jim Hefferon hefferon.net 
 # 2021-Jun-01 JH GPL 2
 # 2022-May-20 JH Got a working Asymptote, so need to clear out .pdf's
@@ -494,7 +494,7 @@ automata/asy/fsa/fsa00.pdf : automata/asy/fsa/fsa.asy
 .PHONY: fsm-exercises
 fsm-exercises:
 	cd automata/asy/fsm_exercises && $(MAKE)
-	
+
 # .... FSM_EXERCISES start
 
 automata/asy/fsm_exercises/pdfs/endsinai000.pdf : automata/asy/fsm_exercises/pdfs/endsinai.asy
@@ -599,6 +599,21 @@ appendix/asy/functions000.pdf : appendix/asy/functions.asy
 	$(ASYMPTOTE_CMD) "$(<F)"
 
 appendix/appendix.tex : | appendix/asy/functions000.pdf
+
+
+# ============= graphics =================
+# Just make the graphics, perhaps to run tex4ht
+.PHONY graphics
+graphics:  book.tex \
+  asy/share/tape1.pdf \
+  cover/cover.tex \
+  preface/preface.tex \
+  prologue/prologue.tex \
+  background/background.tex \
+  languages/languages.tex \
+  automata/automata.tex \
+  complexity/complexity.tex \
+  appendix/appendix.tex
 
 
 # ============== book and answers ================

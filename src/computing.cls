@@ -2,6 +2,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{computing}[2014/08/08 Class for computing book]
 
+
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions \relax
 \LoadClass[twoside]{book}
@@ -25,8 +26,7 @@
 % \usepackage[libertine,bigdelims,vvarbb,scaled=1.07]{newtxmath}
 % \usepackage[cal=boondoxo]{mathalfa}
 % \linespread{1.04}
-\usepackage{computingfonts}
-
+%\usepackage{computingfonts}
 
 % This must be early in the class file to avoid an option clash
 \usepackage[hyphens]{url}  % allow splitting at hyphens

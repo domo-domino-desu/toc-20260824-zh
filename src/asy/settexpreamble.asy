@@ -13,8 +13,10 @@ string get_repo_path() {
   // Instead, I want to figure out what is the repo dir, and then
   // do the path manipultations.
   // This function returns the path to the repo.  The repo must be named
-  // either "computing" or "toc".  If this function does not find either
-  // then it returns the empty string.
+  // either "computing" or "toc" or "toc-master".  (The last one is the
+  // dir used in the .zip file that GitLab offers for download.)
+  // If this function does not find any of the three then it returns the
+  // empty string.
   // It has the side effect of returning to the dir of the .asy file from
   // which it was invoked.
 
@@ -22,24 +24,84 @@ string get_repo_path() {
   // Get the current directory
   string current_dir = cd("");
   // Locate the two possible strings in that path.
+  //   If there is not such substring then rfind returns -1 
   int project_part_of_path_dex_computing = rfind(current_dir, "/computing/");
   int project_part_of_path_dex_toc = rfind(current_dir, "/toc/");
-  // write(stdout, "src/asy/settexpreamble.asy: project part of path index for computing is "+format("%d\n",project_part_of_path_dex_computing));
-  // write(stdout, "src/asy/settexpreamble.asy: project part of path index for toc is "+format("%d\n",project_part_of_path_dex_toc));
+  int project_part_of_path_dex_toc_master = rfind(current_dir, "/toc-master/");
+  write(stdout, "src/asy/settexpreamble.asy: project part of path index for computing is "+format("%d\n",project_part_of_path_dex_computing));
+  write(stdout, "src/asy/settexpreamble.asy: project part of path index for toc is "+format("%d\n",project_part_of_path_dex_toc));
+  write(stdout, "src/asy/settexpreamble.asy: project part of path index for toc-master is "+format("%d\n",project_part_of_path_dex_toc_master));
   // Find which is used as the repo dir
+  // There are eight cases
+  //           computing>=0  toc>=0  toc-master>=0  (what rfind returns)
+  //   case 0:     F           F        F
+  //   case 1:     F           F        T
+  //   case 2:     F           T        F
+  //   case 3:     F           T        T
+  //   case 4:     T           F        F
+  //   case 5:     T           F        T
+  //   case 6:     T           T        F
+  //   case 7:     T           T        T
   int project_part_of_path_dex;
-  if (project_part_of_path_dex_computing >= project_part_of_path_dex_toc) {
-    project_part_of_path_dex = project_part_of_path_dex_computing+length("/computing/src/");
-  } else {
+  if ((project_part_of_path_dex_toc < 0)
+      && (project_part_of_path_dex_toc_master < 0)) {
+    if (project_part_of_path_dex_computing < 0) {  // case 0
+      write(stdout, '!!! src/asy/settexpreamble.asy get_repo_path(): YOU MUST NAME LOCAL REPO EITHER computing/ OR toc/ OR toc-master/!!\n');
+      repo_path="";
+    } else {  // case 4
+      project_part_of_path_dex = project_part_of_path_dex_computing+length("/computing/src/");
+      repo_path = substr(current_dir, 0, project_part_of_path_dex);
+    }
+  } else if ((project_part_of_path_dex_computing < 0)
+	     && (project_part_of_path_dex_toc < 0)
+	     && (project_part_of_path_dex_toc_master > 0)) {  // case 1
+    project_part_of_path_dex = project_part_of_path_dex_toc_master+length("/toc-master/src/");
+    repo_path = substr(current_dir, 0, project_part_of_path_dex);
+  } else if ((project_part_of_path_dex_computing < 0)
+	     && (project_part_of_path_dex_toc > 0)
+	     && (project_part_of_path_dex_toc_master < 0)) {  // case 2
     project_part_of_path_dex = project_part_of_path_dex_toc+length("/toc/src/");
-  }
-  if (project_part_of_path_dex < 0) {
-    write(stdout, '!!! src/asy/settexpreamble.asy get_repo_path(): YOU MUST NAME LOCAL REPO EITHER computing/ or toc/!!\n');
-    repo_path="";
-  } else {
+    repo_path = substr(current_dir, 0, project_part_of_path_dex);
+  } else if ((project_part_of_path_dex_computing < 0)
+	     && (project_part_of_path_dex_toc > 0)
+	     && (project_part_of_path_dex_toc_master > 0)) {  // case 3
+    if (project_part_of_path_dex_toc > project_part_of_path_dex_toc_master) {
+      project_part_of_path_dex = project_part_of_path_dex_toc+length("/toc/src/");
+    } else {
+      project_part_of_path_dex = project_part_of_path_dex_toc_master+length("/toc-master/src/");
+    }
+    repo_path = substr(current_dir, 0, project_part_of_path_dex);
+  } else if ((project_part_of_path_dex_computing > 0)
+	     && (project_part_of_path_dex_toc < 0)
+	     && (project_part_of_path_dex_toc_master > 0)) {  // case 5
+    if (project_part_of_path_dex_computing > project_part_of_path_dex_toc_master) {
+      project_part_of_path_dex = project_part_of_path_dex_computing+length("/computing/src/");
+    } else {
+      project_part_of_path_dex = project_part_of_path_dex_toc_master+length("/toc-master/src/");
+    }
+    repo_path = substr(current_dir, 0, project_part_of_path_dex);
+  } else if ((project_part_of_path_dex_computing > 0)
+	     && (project_part_of_path_dex_toc > 0)
+	     && (project_part_of_path_dex_toc_master < 0)) {  // case 6
+    if (project_part_of_path_dex_computing > project_part_of_path_dex_toc) {
+      project_part_of_path_dex = project_part_of_path_dex_computing+length("/computing/src/");
+    } else {
+      project_part_of_path_dex = project_part_of_path_dex_toc+length("/toc/src/");
+    }
+    repo_path = substr(current_dir, 0, project_part_of_path_dex);
+  } else {  // case 7
+    if ((project_part_of_path_dex_computing > project_part_of_path_dex_toc)
+	&& (project_part_of_path_dex_computing > project_part_of_path_dex_toc_master)) {  // computing is the furthest right
+      project_part_of_path_dex = project_part_of_path_dex_computing+length("/computing/src/");
+    } else if ((project_part_of_path_dex_toc > project_part_of_path_dex_computing)
+	&& (project_part_of_path_dex_toc > project_part_of_path_dex_toc_master)) {  // toc is the furthest right
+      project_part_of_path_dex = project_part_of_path_dex_toc+length("/toc/src/");
+    } else {  // toc-master is the furthest right
+      project_part_of_path_dex = project_part_of_path_dex_toc_master+length("/toc-master/src/");
+    }
     repo_path = substr(current_dir, 0, project_part_of_path_dex);
   }
-  // write(stdout, 'src/asy/settexpreamble.asy get_repo_path(): repo_path is '+repo_path+'\n');
+  write(stdout, 'src/asy/settexpreamble.asy get_repo_path(): repo_path is '+repo_path+'\n');
   return(repo_path);
 }
 

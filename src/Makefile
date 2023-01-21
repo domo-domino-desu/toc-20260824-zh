@@ -603,7 +603,7 @@ appendix/appendix.tex : | appendix/asy/functions000.pdf
 
 # ============= graphics =================
 # Just make the graphics, perhaps to run tex4ht
-.PHONY graphics
+.PHONY: graphics
 graphics:  book.tex \
   asy/share/tape1.pdf \
   cover/cover.tex \

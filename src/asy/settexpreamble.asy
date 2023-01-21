@@ -28,9 +28,9 @@ string get_repo_path() {
   int project_part_of_path_dex_computing = rfind(current_dir, "/computing/");
   int project_part_of_path_dex_toc = rfind(current_dir, "/toc/");
   int project_part_of_path_dex_toc_master = rfind(current_dir, "/toc-master/");
-  write(stdout, "src/asy/settexpreamble.asy: project part of path index for computing is "+format("%d\n",project_part_of_path_dex_computing));
-  write(stdout, "src/asy/settexpreamble.asy: project part of path index for toc is "+format("%d\n",project_part_of_path_dex_toc));
-  write(stdout, "src/asy/settexpreamble.asy: project part of path index for toc-master is "+format("%d\n",project_part_of_path_dex_toc_master));
+  // write(stdout, "src/asy/settexpreamble.asy: project part of path index for computing is "+format("%d\n",project_part_of_path_dex_computing));
+  // write(stdout, "src/asy/settexpreamble.asy: project part of path index for toc is "+format("%d\n",project_part_of_path_dex_toc));
+  // write(stdout, "src/asy/settexpreamble.asy: project part of path index for toc-master is "+format("%d\n",project_part_of_path_dex_toc_master));
   // Find which is used as the repo dir
   // There are eight cases
   //           computing>=0  toc>=0  toc-master>=0  (what rfind returns)
@@ -101,7 +101,7 @@ string get_repo_path() {
     }
     repo_path = substr(current_dir, 0, project_part_of_path_dex);
   }
-  write(stdout, 'src/asy/settexpreamble.asy get_repo_path(): repo_path is '+repo_path+'\n');
+  // write(stdout, 'src/asy/settexpreamble.asy get_repo_path(): repo_path is '+repo_path+'\n');
   return(repo_path);
 }
 

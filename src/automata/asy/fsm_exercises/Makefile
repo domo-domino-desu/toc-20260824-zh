@@ -1,6 +1,7 @@
 # Makefile for computation/src/automata/asy/fsm_exercises
 # 2020-Jun-15 Jim Hefferon GPL 3
 #  Copied from the Turing machine scripts
+# 2023-Jan-22 JH Change from .asy to .pdf for the targets.
 
 # Directory where finite-state-machine.rkt lives
 FSM_DIR=../../../scheme/automata
@@ -47,9 +48,9 @@ all: textbody  seconeexercises
 
 ### ========= These are for the text body ===================
 
-textbody: pdfs/modfour.asy
+textbody: pdfs/modfour000.pdf
 
-pdfs/modfour.asy: ${MACHINE_DIR}/modfour.fsm
+pdfs/modfour000.pdf: ${MACHINE_DIR}/modfour.fsm
 	$(call create-pdfs-leavebs,modfour,"10110",modfour,"10110")
 
 
@@ -59,13 +60,13 @@ pdfs/modfour.asy: ${MACHINE_DIR}/modfour.fsm
 seconeexercises: pdfs/endsinai.asy \
 	pdfs/endsinaii.asy pdfs/endsinaiii.asy
 
-pdfs/endsinai.asy: ${MACHINE_DIR}/endsina.fsm
+pdfs/endsinai000.pdf: ${MACHINE_DIR}/endsina.fsm
 	$(call create-pdfs,endsina,"abba",endsinai,"abba")
 
-pdfs/endsinaii.asy: ${MACHINE_DIR}/endsina.fsm
+pdfs/endsinaii000.pdf: ${MACHINE_DIR}/endsina.fsm
 	$(call create-pdfs,endsina,"bab",endsinaii,"bab")
 
-pdfs/endsinaiii.asy: ${MACHINE_DIR}/endsina.fsm
+pdfs/endsinaiii000.pdf: ${MACHINE_DIR}/endsina.fsm
 	$(call create-pdfs,endsina,"bbaabbaa",endsinaiii,"bbaabbaa")
 
 

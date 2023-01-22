@@ -4,7 +4,7 @@
 Convert output from Finite State machine simulator finit-state-machine.rkt 
 for use in Asymptote.
 """
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
 
@@ -201,7 +201,8 @@ def asy(d_list, fn_prefix, replace_blanks = False):
        this routine adds "{:03d}" so three digits get appended to this prefix
      replace_blanks=False  boolean  Replace 'B' with ' '?
     """
-    asy_dir = rel_path_to_asy(os.path.abspath(os.path.dirname(fn_prefix)))
+    # asy_dir = rel_path_to_asy(os.path.abspath(os.path.dirname(fn_prefix)))
+    asy_dir = "../../../../asy"  # Directory where jh.asy, tape.asy live
     # print("fn_prefix is {0:s} asy_dir is {1:s}".format(fn_prefix,asy_dir))
     r = [ASY_HEAD.format(fn_prefix,asy_dir)]
     fn = os.path.basename(fn_prefix)+"{0:03d}"

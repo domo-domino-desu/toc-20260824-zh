@@ -57,8 +57,8 @@ pdfs/modfour000.pdf: ${MACHINE_DIR}/modfour.fsm
 
 ### ========= These are for section one exercises ===================
 
-seconeexercises: pdfs/endsinai.asy \
-	pdfs/endsinaii.asy pdfs/endsinaiii.asy
+seconeexercises: pdfs/endsinai000.pdf \
+	pdfs/endsinaii000.pdf pdfs/endsinaiii000.pdf
 
 pdfs/endsinai000.pdf: ${MACHINE_DIR}/endsina.fsm
 	$(call create-pdfs,endsina,"abba",endsinai,"abba")

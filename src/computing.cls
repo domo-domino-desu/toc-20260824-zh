@@ -26,7 +26,7 @@
 % \usepackage[libertine,bigdelims,vvarbb,scaled=1.07]{newtxmath}
 % \usepackage[cal=boondoxo]{mathalfa}
 % \linespread{1.04}
-%\usepackage{computingfonts}
+\usepackage{computingfonts}
 
 % This must be early in the class file to avoid an option clash
 \usepackage[hyphens]{url}  % allow splitting at hyphens
@@ -916,7 +916,10 @@
   \textbardbl    \|%
   \#\#%
   1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
-}%
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
+}%  lots of fn symbols, to avoid getting compilation error that are out of foonotes, because LaTeX doesn't know they are per-page until the second run. 
 \setfnsymbol{hefferon}
 \newlength{\footmarktotextglue}
 \global\footmarktotextglue=.1em plus .05em minus .02em %

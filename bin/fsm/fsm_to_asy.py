@@ -186,12 +186,55 @@ unitsize(1pt);
 ASY_TAIL = """
 """
 
+# Allowed strings for the top dir in the tree of files for the project.
+# Should match the project's INSTALL instructions.
+TOPDIR_NAMES = {'computing',
+                'toc',
+                'toc-master'}
+
+from pathlib import Path
+def _find_rightmost_dir(p=os.curdir, dirnames=TOPDIR_NAMES):
+    """Given a path, return a list of the path components starting
+    from one that is an element of dirnames.  If there is more than one 
+    pathname component that is an element of dirnames, then return 
+    a list starting at the rightmost such one.
+       p=os.curdir  path
+       dirnames=TOPDIR_NAMES  set or list of possible names for the directory 
+    """
+    s = list(Path(p).parts)
+    # Reverse the sequence, to look for the first element of dirnames
+    s.reverse()  # reverses in place
+    found_dirname, found_place = None, -1  
+    for i, path_part in enumerate(s):
+        if path_part in dirnames:
+            found_dirname, found_place = path_part, i
+            break
+    if found_place < 0:
+        return None
+    else:
+        t = s[:found_place+1]
+        t.reverse()
+        return t
+
 # Get the relative path from the current dir to the dir computing/src/asy
-def rel_path_to_asy(from_dir=os.curdir):
-    dex = from_dir.rfind(os.sep+"computing"+os.sep)
-    asy_dir = os.path.join(from_dir[:dex],'computing/src/asy/')
-    # print("rel_path_to_asy: from_dir is {0:s} asy_dir is {1:s}".format(from_dir,asy_dir))
-    return os.path.relpath(asy_dir,start=from_dir)
+def rel_path_to_asy(from_dir=os.curdir, dirnames=TOPDIR_NAMES):
+    """Return the relative path to the project's directory of asy setup files,
+    such as "../../computing/src/asy".  This is needed because the .asy files
+    have to read in those setup files, such as jh.asy, and so they need the dir.
+      from_dir=os.curdir string   directory where the .asy files live
+      dirnames=TOPDIR_NAMES
+    """
+    # Get list of the directory component such that one from dirnames
+    # starts it.
+    path_part_list = _find_rightmost_dir(from_dir, dirnames)
+    if path_part_list is None:
+        critical("Unable to find the top directory of the repo in the path "+from_dir+": repo must be below a directory name from the list "+(", ".join(dirnames)))
+    s = []
+    for i in range(len(path_part_list)):
+        s.append("..")
+    r = os.path.join(os.sep.join(s), path_part_list[0], 'src', 'asy')
+    # print("r is "+r)
+    return r
 
 # Create an .asy file
 def asy(d_list, fn_prefix, replace_blanks = False):
@@ -201,9 +244,9 @@ def asy(d_list, fn_prefix, replace_blanks = False):
        this routine adds "{:03d}" so three digits get appended to this prefix
      replace_blanks=False  boolean  Replace 'B' with ' '?
     """
-    # asy_dir = rel_path_to_asy(os.path.abspath(os.path.dirname(fn_prefix)))
-    asy_dir = "../../../../asy"  # Directory where jh.asy, tape.asy live
-    # print("fn_prefix is {0:s} asy_dir is {1:s}".format(fn_prefix,asy_dir))
+    asy_dir = rel_path_to_asy(os.path.abspath(os.path.dirname(fn_prefix)))
+    # asy_dir = "../../../../asy"  # Directory where jh.asy, tape.asy live
+    print("fn_prefix is {0:s} asy_dir is {1:s}".format(fn_prefix,asy_dir))
     r = [ASY_HEAD.format(fn_prefix,asy_dir)]
     fn = os.path.basename(fn_prefix)+"{0:03d}"
     for d,i in d_list:
@@ -258,7 +301,7 @@ if __name__ == '__main__':
         parser.add_argument('-o', '--output',
                             action='store',
                             default='fsm',
-                            help="Prefix of .asy filename. Default: fsm")
+                            help="Prefix of .asy filename, including location in the file tree. Default: (currentdir/)fsm")
         parser.add_argument('-b', '--blanks',
                             action='store_true',
                             default=False,

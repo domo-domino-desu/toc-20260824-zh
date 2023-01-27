@@ -4,11 +4,12 @@
 Convert output from Finite State machine simulator finit-state-machine.rkt 
 for use in Asymptote.
 """
-__version__ = "1.0.1"
+__version__ = "1.0.4"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
 
 # 2020-Jun-14 JH Simplified version of turing machine script
+# 2023-Jan-27 JH Fix directory handling.
 
 import sys
 import os, os.path
@@ -186,6 +187,7 @@ unitsize(1pt);
 ASY_TAIL = """
 """
 
+# ======= handling directory of input and output .asy files =====
 # Allowed strings for the top dir in the tree of files for the project.
 # Should match the project's INSTALL instructions.
 TOPDIR_NAMES = {'computing',
@@ -236,12 +238,14 @@ def rel_path_to_asy(from_dir=os.curdir, dirnames=TOPDIR_NAMES):
     # print("r is "+r)
     return r
 
-# Create an .asy file
+# ================ Create an .asy file ======================
 def asy(d_list, fn_prefix, replace_blanks = False):
     """Create an asy file and populate it with the tape_output lines
      d_list  list of dicts  Results of parsing a line
      fn_prefix  string  Prefix of name of file Asy will output to.  Note that
-       this routine adds "{:03d}" so three digits get appended to this prefix
+       this routine adds "{:03d}" so output pdf's will have three digits 
+       appended to this prefix, so the succession of tape snapshots
+       will be xxx000.pdf, xxx001.pdf ...
      replace_blanks=False  boolean  Replace 'B' with ' '?
     """
     asy_dir = rel_path_to_asy(os.path.abspath(os.path.dirname(fn_prefix)))

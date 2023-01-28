@@ -19,8 +19,16 @@ import time
 VERBOSE = False
 DEBUG = False
 
+# File name of this .py file
 PGM_ROOTNAME = os.path.splitext(os.path.basename(sys.argv[0]))[0]
-PGM_SRC_DIR = os.path.dirname(__file__)
+# Directory of this file; the realpath means it does not end in "." if
+# this .py is called from its home directory.
+PGM_SRC_DIR = os.path.realpath(os.path.dirname(__file__))
+
+# Import the library
+library_dir = os.path.realpath(os.path.join(os.path.dirname(PGM_SRC_DIR),'pythonlib'))
+sys.path.append(library_dir)
+from machine_output_to_asy import rel_path_to_asy
 
 class JHException(Exception):
     pass
@@ -260,11 +268,11 @@ ASY_TAIL = """
 """
 
 # Get the relative path from the current dir to the dir computing/src/asy
-def rel_path_to_asy(from_dir=os.curdir):
-    dex = from_dir.rfind(os.sep+"computing"+os.sep)
-    asy_dir = os.path.join(from_dir[:dex],'computing/src/asy/')
-    # print("rel_path_to_asy: from_dir is {0:s} asy_dir is {1:s}".format(from_dir,asy_dir))
-    return os.path.relpath(asy_dir,start=from_dir)
+# def rel_path_to_asy(from_dir=os.curdir):
+#     dex = from_dir.rfind(os.sep+"computing"+os.sep)
+#     asy_dir = os.path.join(from_dir[:dex],'computing/src/asy/')
+#     # print("rel_path_to_asy: from_dir is {0:s} asy_dir is {1:s}".format(from_dir,asy_dir))
+#     return os.path.relpath(asy_dir,start=from_dir)
 
 # Create an .asy file
 def asy(d_list, furthest_left, furthest_right, fn_prefix, replace_blanks = False):

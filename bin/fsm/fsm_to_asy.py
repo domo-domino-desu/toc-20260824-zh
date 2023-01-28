@@ -28,12 +28,10 @@ PGM_ROOTNAME = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 # Directory of this file; the realpath means it does not end in "." if
 # this .py is called from its home directory.
 PGM_SRC_DIR = os.path.realpath(os.path.dirname(__file__))
-# print("PGM_SRC_DIR is "+PGM_SRC_DIR)
 
 # Import the library
 library_dir = os.path.realpath(os.path.join(os.path.dirname(PGM_SRC_DIR),'pythonlib'))
 sys.path.append(library_dir)
-# pprint.pprint(sys.path)
 from machine_output_to_asy import rel_path_to_asy
 
 

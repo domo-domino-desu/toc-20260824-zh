@@ -1,3 +1,5 @@
+#lang racket
+
 (require-extension test)
 (include "loop.scm")
 

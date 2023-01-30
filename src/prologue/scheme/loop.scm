@@ -1,3 +1,5 @@
+#lang racket
+
 ;; Run programs in LOOP.
 ;; Adapted from _Computability in an Intro Course on Programming_
 ;; by Hans Jurgen Schnieder

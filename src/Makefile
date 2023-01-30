@@ -60,7 +60,7 @@ all : fsm-exercises tm-exercises redo
 
 
 # .PHONY : redo
-redo : book.pdf answers.pdf slides
+redo : book.pdf answers.pdf
 
 
 # ============== cover ================

@@ -655,7 +655,7 @@ slides/prologue/prologue.pdf : slides/prologue/prologue.tex \
 
 slides/background/asy/background00.pdf : slides/background/asy/background.asy
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
+	$(ASYMPTOTE_CMD) "background"
 
 slides/background/background.pdf : slides/background/background.tex \
   book.pdf \

@@ -195,9 +195,130 @@
   )
 
 
+;; ========= Interpret operations ==============
+(define interpret-operations-tests
+
+  (test-suite
+   "interpret operations"
+   
+   (test-case
+    "intr-zero"
+    (clear-regs!)
+    (letrec ([reg-five (make-reg-name 5)]
+             [pars (cons reg-five 42)])
+      (set-reg-value! reg-five 10)
+      (intr-zero pars)
+      (check-equal? 0 (get-reg-value reg-five))
+      )
+    ; Try on a register that doesn't yet exist
+    (clear-regs!)
+    (letrec ([reg-five (make-reg-name 5)]
+             [pars (cons reg-five 42)])
+      (intr-zero pars)
+      (check-equal? 0 (get-reg-value reg-five))
+      )
+     )
+   
+   (test-case
+    "intr-incr"
+    (clear-regs!)
+    (letrec ([reg-five (make-reg-name 5)]
+             [pars (cons reg-five 42)])
+      (set-reg-value! reg-five 10)
+      (intr-incr pars)
+      (check-equal? 11 (get-reg-value reg-five))
+      )
+    ; Try on a register that doesn't yet exist?
+    (clear-regs!)
+    (letrec ([reg-five (make-reg-name 5)]
+             [pars (cons reg-five 42)])
+      (intr-incr pars)  ; allocate it, then increment it
+      (check-equal? 1 (get-reg-value reg-five))
+      )
+    )
+   
+   (test-case
+    "intr-copy"
+    (clear-regs!)
+    (letrec ([reg-five (make-reg-name 5)]
+             [reg-six (make-reg-name 6)]
+             [pars (cons reg-five (cons reg-six 42))])
+      (set-reg-value! reg-six 10)
+      (intr-copy pars)
+      (check-equal? 10 (get-reg-value reg-five))
+      (check-equal? 10 (get-reg-value reg-six))
+      )
+    ; Try on a register that doesn't yet exist?
+    (clear-regs!)
+    (letrec ([reg-five (make-reg-name 5)]
+             [reg-six (make-reg-name 6)]
+             [pars (cons reg-five (cons reg-six 42))])
+      ; (set-reg-value! reg-six 10)
+      (intr-copy pars)
+      (check-equal? 0 (get-reg-value reg-five))
+      (check-equal? 0 (get-reg-value reg-six))
+      )
+ 
+    )
+
+   (test-case
+    "intr-loop"
+    (clear-regs!)
+    (letrec ([reg-five (make-reg-name 5)]
+             [reg-six (make-reg-name 6)]
+             [lp (list (list 'loop reg-five) (list (list 'incr reg-six) (list 'incr reg-six)))])
+      ;(write lp)(newline)
+      (set-reg-value! reg-five 2)
+      (set-reg-value! reg-six 10)
+      (intr-body lp)
+      (check-equal? 2 (get-reg-value reg-five))
+      (check-equal? 14 (get-reg-value reg-six))
+      )
+    )
+
+   )
+  )
+
+
+;; ============= ALGOL to scm =========
+(define algol-to-scm-tests
+  ; (printf "testing")
+
+  (test-suite
+   "ALGOL to Scheme"
+   
+;   (test-case
+;    "simplest"
+;    (clear-regs!) 
+;    (let ([pgm "r0 = r0 + 1"])
+;      (check-equal? (loop-without-parens pgm '(0)) 1)
+;      )
+;    )
+   
+;   (test-case
+;    "using loops"
+;    (clear-regs!)
+;    (let ([pgm "r1 = r1 + 1\nloop r1\n  r0 = r0 + 1\nend"])
+;      (check-equal? (loop-without-parens pgm '(1 2)) 4)
+;      )
+;    )
+   ; Nested loop
+   (clear-regs!)
+   (let ([pgm "loop r1\nloop r2\n  r0 = r0 + 1\nend\nend"])
+     (check-equal? (loop-without-parens pgm '(3 4 5)) 23)
+     )
+   (clear-regs!)
+   (let ([pgm "r1 = r1 + 1\nr1 = r1 + 1\nr2 = r2 + 2\nr2 = r2 + 1\nloop r1\nloop r2\n  r0 = r0 + 1\nend\nend"])
+     (check-equal? (loop-without-parens pgm '(0 0 0)) 4)
+     )
+   )
+  )
+
 ;; Run the tests
 ;; Uncomment the tests you are working on
 ; (run-tests pr-initial-functions-tests)
 ; (run-tests pr-derived-functions-tests)
 ; (run-tests register-tests)
-(run-tests register-operations-tests)
+; (run-tests register-operations-tests)
+; (run-tests interpret-operations-tests)
+(run-tests algol-to-scm-tests)

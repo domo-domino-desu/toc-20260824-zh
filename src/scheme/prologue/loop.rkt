@@ -7,110 +7,6 @@
 ;; Adapted from _Computability in an Intro Course on Programming_
 ;; by Hans Jurgen Schnieder
 
-;; ===== Primitive recursive functions
-;; Defns for primitive recursive functions, for fun
-
-;; integer -> integer
-;; Always return zero
-(define (Z x)
-  0)
-;(module+ test
-;  (require rackunit)
-;  (check-equal? 0 (Z 0))
-;  (check-equal? 0 (Z 1))
-;  )
-
-;; integer -> integer
-;; Return the successor of the input
-(define (successor x)
-  (+ 1 x))
-;(module+ test
-;  (require rackunit)
-;  (check-equal? 1 (successor 0))
-;  (check-equal? 2 (successor 1))
-;  )
-
-
-(define (i1_1 x0)  ;; projections 
-  x0)
-(define (i2_1 x0 x1) 
-  x0)
-(define (i2_2 x0 x1) 
-  x1)
-(define (i3_1 x0 x1 x2) 
-  x0)
-(define (i3_2 x0 x1 x2) 
-  x1)
-(define (i3_3 x0 x1 x2) 
-  x2)
-
-(provide Z
-         successor
-         i1_1
-         i2_1
-         i2_2
-         i3_1
-         i3_2
-         i3_3)
-
-;; Schema of primitive recursion, for arity 1 and 2
-
-(define (pred x)  ;; convenience for defn of schema of prim rec
-  (if (= x 0)
-      0
-      (- x 1)))
-
-(provide pred)
-
-;; prim-rec-1  Return a function of one variable computed by primitive recursion
-(define (prim-rec-1 g h)  ;; g fcn of 0 args, h fcn of 2 args
-  (define (f y)
-    (if (= y 0)
-	g
-	(h (f (pred y)) (pred y))))
-  f)
-
-;; prim-rec-2  Return a fcn of two variables computed by primitive recursion
-(define (prim-rec-2 g h)   ;; g fcn of 1 arg, h fcn of 3 args
-  (define (f x0 y)
-    (if (= y 0)
-	(g x0)
-	(h (f x0 (pred y))  x0 (pred y))))
-  f)
-
-(provide prim-rec-1
-         prim-rec-2)
-
-
-;; Some simple ones
-(define plus
-  (prim-rec-2 i1_1
-	      (lambda (w x0 z) (successor w))))
-
-(define product
-  (prim-rec-2 Z
-	      (lambda (w x0 z) (plus w x0))))
-
-(define (one x)
-  (successor (Z x)))
-
-(define power 
-  (prim-rec-2 one
-	      (lambda (w x0 z) (product w x0))))
-
-(define propersub
-  (prim-rec-2 i1_1
-	      (lambda (w x0 z) (pred w))))
-
-(provide plus
-         product
-         one
-         power
-         propersub)
-
-
-
-;; ==== LOOP programs ==============
 
 ;; ===== Registers 
 
@@ -136,7 +32,7 @@
          [sorted-list (sort st-lst string<=? #:key car)]
          [reg-strings (map (lambda (x) (format "~a=~a" (car x) (cadr x)))
                       sorted-list)])
-    (string-join reg-strings)))
+    (printf "  ~a\n" (string-join reg-strings))))
 
 ;; no input
 ;; Empty the registers, initialize r0 to be 0
@@ -217,8 +113,8 @@
 		    (else (intr-body body)
 			  (iter (- rep 1)))))])
     ; (printf "intr-loop: reps=~a body=~a\n" reps body)
-    (iter reps)
-    (show-regs)))
+    (show-regs)
+    (iter reps)))
 
 
 ;; intr-body  Interpret the body of loop programs
@@ -252,10 +148,10 @@
 ;; The data is a list of the values to put in registers r0 r1 r2 ..
 ;; Value of a program is the value remaining in r0 at end.
 (define (interpret progr data)
-  (printf "interpret: progr=~s\n    data=~s\n" progr data)
+  ; (printf "interpret: progr=~s\n    data=~s\n" progr data)
   (init-regs data)
   (intr-body progr)
-  (printf "  interpret: REGISTERS=~s\n" REGISTERS)
+  ; (printf "  interpret: REGISTERS=~s\n" REGISTERS)
  
   (get-reg-value (make-reg-name 0)))
 
@@ -366,10 +262,10 @@
 ;; loop-without-parens  Write loop programs in ALGOL-like syntax
 ;; (They are nested let's because if I do a letrec or a let* then Dr Racket freezes)
 (define (loop-without-parens pgm data)
-  (printf "loop-without-parens pgm=~s\n    data=~s\n" pgm data)
+  (printf "LOOP program=~s\n    data=~s\n" pgm data)
   (let ([ps (string-append "'" (parse-loop pgm))]) 
     (let ([pl (eval (read (open-input-string ps)) ns)])
-      ; (printf "  loop-without-parens pl=~s\n    ps=~s\n" pl ps)
+      (printf "  loop-without-parens pl=~s\n    ps=~s\n" pl ps)
       (interpret pl data)
       )
     )

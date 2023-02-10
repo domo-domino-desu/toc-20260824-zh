@@ -127,8 +127,16 @@
 
 ;; no input
 ;; Show the contents of the registers, for debugging
-(define (show-regs) 
-  (write REGISTERS) (newline))
+;(define (show-regs) 
+;  (write REGISTERS) (newline))
+(define (show-regs)
+  (let* ([lst (hash->list REGISTERS)]
+         [st-lst (map (lambda (x) (list (symbol->string (car x)) (cdr x)))
+                      lst)]
+         [sorted-list (sort st-lst string<=? #:key car)]
+         [reg-strings (map (lambda (x) (format "~a=~a" (car x) (cadr x)))
+                      sorted-list)])
+    (string-join reg-strings)))
 
 ;; no input
 ;; Empty the registers, initialize r0 to be 0
@@ -191,13 +199,16 @@
 
 ;; Implement each operation
 (define (intr-zero pars)
-  (set-reg-value! (car pars) 0))
+  (set-reg-value! (car pars) 0)
+  (show-regs))
 (define (intr-incr pars)
-  (increment-reg! (car pars)))
+  (increment-reg! (car pars))
+  (show-regs))
 (define (intr-copy pars)
-  (set-reg-value! (car pars) (get-reg-value (cadr pars))))
+  (set-reg-value! (car pars) (get-reg-value (cadr pars)))
+  (show-regs))
 (define (intr-loop pars)
-  (printf "intr-loop: pars=~a" pars)
+  ; (printf "intr-loop: pars=~a" pars)
   (letrec ([reps (get-reg-value (car pars))]
 	   [body (cdr pars)]
 	   [iter (lambda (rep)
@@ -205,14 +216,15 @@
 		    ((equal? rep 0) '())
 		    (else (intr-body body)
 			  (iter (- rep 1)))))])
-    (printf "intr-loop: reps=~a body=~a\n" reps body)
-    (iter reps)))
+    ; (printf "intr-loop: reps=~a body=~a\n" reps body)
+    (iter reps)
+    (show-regs)))
 
 
 ;; intr-body  Interpret the body of loop programs
 (define (intr-body body)
-  (printf "intr-body: body=~a\n" body)
-  (printf "intr-body: REGISTERS=~a\n" REGISTERS)
+  ; (printf "intr-body: body=~a\n" body)
+  ; (printf "intr-body: REGISTERS=~a\n" REGISTERS)
   (cond 
    [(null? body) '()]
    [else (let ([next-inst (car body)]

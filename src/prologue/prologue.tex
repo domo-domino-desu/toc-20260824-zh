@@ -8543,49 +8543,58 @@ Conclude that $\hyperoperation$ is not primitive recursive.
 The primitive recursive functions form a proper subset of the
 general recursive functions, that is, 
 of all of the functions that are mechanically computable.
-Here we will give a concrete way to understand the difference between the
+We will now give a concrete way to understand the difference between the
 two.
 
-Below is a sketch of  
-the familiar looping constructs 
-\codeinline!for! and \codeinline!while!
-from a C-like language.
-
-\begin{center}
-  \begin{minipage}[t]{0.4\linewidth}
-    \begin{lstlisting}
-for(i=1; i<10; i++){
-  ...
-}      
-    \end{lstlisting}
-  \end{minipage}
-  \quad
-  \begin{minipage}[t]{0.4\linewidth}
-    \begin{lstlisting}
-while(flag==1){
-  ...
-}      
-    \end{lstlisting}
-  \end{minipage}
-\end{center}
-% Racket While loop
-% (define i 0)                      ; i := 0
-% (do ()                            ; do 
-%   [(= i 5)]                       ;   until i=5
-%   (display i)                     ;       display i
-%   (set! i (+ i 1)))               ;       i := i +1
-In 
+Here is a simple 
+\codeinline!for! loop in Racket.
+\lstinputlisting[firstline=2, lastline=4]{\prfiles for-while.rkt}
+What happens is what you'd think would happen.
+\begin{lstlisting}
+> (show-numbers)
+123 
+\end{lstlisting}
+This is a Racket \codeinline!do! loop (which is like a 
+\codeinline!while! in some other languages).
+\lstinputlisting[firstline=6, lastline=10]{\prfiles for-while.rkt}
+The difference is that in 
 a \codeinline!for! loop you know in advance the number of times that the
 machine will go through the code inside the loop 
-(here, ten times),\footnote{%
+(here, three times),\footnote{%
   As long as you don't change the loop variable.}
-but in a \codeinline!while! loop the machine can go 
+but in a \codeinline!do! allows the machine to go 
 through its code an unbounded number of times.
+\begin{lstlisting}
+> (wait-until-yes)
+Please enter 'yes'
+yse
+Enter exactly the string 'yes'
+yes
+Thanks
+\end{lstlisting}
 
-% The next result says that \citetext{a function is primitive recursive}{%
-%   See the history at \autocite{brock}.}. 
-% if and only if it can be computed using only \codeinline!for!
-% loops.
+% \begin{center}
+%   \begin{minipage}[t]{0.4\linewidth}
+%     \begin{lstlisting}
+% for(i=1; i<10; i++){
+%   ...
+% }      
+%     \end{lstlisting}
+%   \end{minipage}
+%   \quad
+%   \begin{minipage}[t]{0.4\linewidth}
+%     \begin{lstlisting}
+% while(flag==1){
+%   ...
+% }      
+%     \end{lstlisting}
+%   \end{minipage}
+% \end{center}
+
+The next result says that \citetext{a function is primitive recursive}{%
+  See the history at \autocite{brock}.}
+if and only if it can be computed using only \codeinline!for!
+loops.
 
 \begin{theorem}[Meyer and Ritchie, 1967]\index{Ritchie, D}
 A function is primitive recursive if and only if it can be computed 
@@ -8598,32 +8607,34 @@ how many iterations will occur.
 % Picture: http://www.zdnet.com/article/without-dennis-ritchie-there-would-be-no-jobs/
 \margingraphic{0.21\textwidth}{prologue/pix/ritchie.jpg}{\label{fig:ritchie}\href{https://en.wikipedia.org/wiki/Dennis_Ritchie}{Dennis Ritchie 1941--2011, inventor of C}}\index{Ritchie, D!picture}
 We will show this by computing primitive recursive functions 
-in a language that lacks unbounded loops.
+in a language, \citetext{\definend{LOOP}}{%
+  \protect\autocite{MeyerRitchie}}\index{LOOP!language}
+, that lacks unbounded loops.
+
 Programs in this language execute on a machine model that has registers
 \codeinline{r0}, \codeinline{r1}, \ldots\,, 
 which hold natural numbers.
-
-A \citetext{\definend{LOOP program}}{\protect\autocite{MeyerRitchie}}\index{LOOP program} 
-is a sequence of instructions, which are of four kinds:~(i)~\codeinline{x = 0} 
+A LOOP program\index{LOOP!program}
+has four kinds of instructions, which
+we illustrate using the registers \codeinline{r0} and 
+\codeinline{r1}:~(i)~\codeinline{r0 = 0} 
 sets the contents of
-the register named~\codeinline{x} to zero,  
-(ii)~\codeinline{x = x + 1} increments the contents of 
-register~\codeinline{x}, 
-(iii)~\codeinline{x = y} copies the contents of  
-register~\codeinline{y} into register~\codeinline{x},
-leaving~\codeinline{y} unchanged, 
-and (iv)~\codeinline{loop x ... end}.
-
+the register to zero,  
+(ii)~\codeinline{r0 = r0 + 1} increments register's contents, 
+(iii)~\codeinline{r1 = r0} copies the contents of  
+register~\codeinline{r0} into register~\codeinline{r1},
+leaving~\codeinline{r0} unchanged, 
+and (iv)~\codeinline{loop r0 ... end}.
 For the last, the dots the middle 
-are replaced by a sequence of any of the four kinds of statements.
+represent a sequence of any of the four kinds of statements.
 In particular, it might contain a nested \codeinline{loop}.
-The semantics are that 
-the instructions of the inside program are executed repeatedly,
-with the number of repetitions given by the natural number in 
-register~\codeinline{x}. 
+The semantics are that the machine executes
+the instructions of the inside sequence repeatedly,
+with the number of repetitions given by the value in 
+register~\codeinline{r0}. 
 
 Running the program below results in the register~\codeinline{r0}
-getting the value of $6$ (the indenting is only for visual clarity).
+getting the value of $6$ (the indentation is for visual clarity).
 \begin{lstlisting}
 r1 = 0
 r1 = r1 + 1
@@ -8638,11 +8649,11 @@ loop r1
 end  
 \end{lstlisting}
 
-Very important:~in \codeinline{loop x ... end},
-changes in the contents of register~\codeinline{x} 
-while the inside code is run
-do not alter the number of times that the machine steps through that loop.
-Thus, when this loop ends the value in \codeinline{r0} will be twice 
+Very important:~in \codeinline{loop r0 ... end},
+changing the contents of register~\codeinline{r0} 
+inside the loop does not change 
+the number of times that the machine steps through that loop.
+Thus, when the loop below ends, the value in \codeinline{r0} will be twice 
 what it was at the start.
 \begin{lstlisting}
 loop r0 
@@ -8650,17 +8661,18 @@ loop r0
 end  
 \end{lstlisting}
 
-We want to interpret LOOP programs as computing functions 
-so we need a convention for input and output.
+We want to interpret LOOP programs as computing functions. 
+So we need a convention for input and output.
 Where the function takes $n$ inputs, 
 we will start the program after loading the inputs 
-into the registers numbered $0$ through $n-1$.
+into the registers numbered \codeinline{r0} through \codeinline{r}$n-1$.
 And where the function has $m$ outputs, 
-we take the values 
-to be the integers that remain in the registers numbered~$0$ through~$m-1$ 
+we take their values 
+to be the contents of the registers \codeinline{r0} through
+\codeinline{r}$m-1$ 
 when the program has finished.  
 For example, this LOOP program computes the two-input one-output function
-proper subtraction $f(x,y)=x \dotminus y$. 
+proper subtraction, $f(x,y)=x \dotminus y$. 
 \begin{lstlisting}
 loop r1
   r0 = 0

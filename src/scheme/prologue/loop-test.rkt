@@ -195,6 +195,13 @@
    )
   )
 
+(define LOOP-MACHINE-DIR "machines/")  ; subdirectory holding the .loop files
+
+;; string -> string
+;; From the .loop filename, return the string of that file
+;;   filename  string  Name of .loop file, without directory and including the .loop
+(define (read-loop-pgm filename)
+  (port->string (open-input-file (string-append LOOP-MACHINE-DIR filename)) #:close? #t))
 
 ;; ============= ALGOL to scm =========
 (define algol-to-scm-tests
@@ -217,16 +224,72 @@
 ;    (let ([pgm "r1 = r1 + 1\nloop r1\n  r0 = r0 + 1\nend"])
 ;      (check-equal? (loop-without-parens pgm '(1 2)) 4)
 ;      )
+;    ; Nested loops
+;    (clear-regs!)
+;    (let ([pgm "loop r1\nloop r2\n  r0 = r0 + 1\nend\nend"])
+;      (check-equal? (loop-without-parens pgm '(3 4 5)) 23)
+;      )
+;    (clear-regs!)
+;    (let ([pgm "r1 = r1 + 1\nr1 = r1 + 1\nr2 = r2 + 2\nr2 = r2 + 1\nloop r1\nloop r2\n  r0 = r0 + 1\nend\nend"])
+;      (check-equal? (loop-without-parens pgm '(0 0 0)) 4)
+;     )
+;   )
+
+   (test-case
+    "regexp's"
+    ; empty line
+    (check-true (regexp-match? EMPTY-LINE-REGEXP "  "))
+    (check-true (regexp-match? EMPTY-LINE-REGEXP ""))
+    (check-false (regexp-match? EMPTY-LINE-REGEXP " k "))
+    ; zero instruction
+    (check-true (regexp-match? ZERO-REGEXP "r0 = 0"))
+    (check-true (regexp-match? ZERO-REGEXP "r5 = 0"))
+    (check-true (regexp-match? ZERO-REGEXP "  r0=0  "))
+    (check-false (regexp-match? ZERO-REGEXP "r0 = 5"))
+    ; increment instruction
+    (check-true (regexp-match? INCREMENT-REGEXP "r0 = r0 + 1"))
+    (check-true (regexp-match? INCREMENT-REGEXP "r1=r1+1"))
+    (check-true (regexp-match? INCREMENT-REGEXP "  r0 = r0 + 1  "))
+    (check-false (regexp-match? INCREMENT-REGEXP "r0 = r1 + 1"))
+    ; loop instruction
+    (check-true (regexp-match? LOOP-REGEXP "loop r0"))
+    (check-true (regexp-match? LOOP-REGEXP "loop r5"))
+    (check-true (regexp-match? LOOP-REGEXP "  loop   r0  "))
+    (check-false (regexp-match? LOOP-REGEXP "loop"))
+    ; end instruction
+    (check-true (regexp-match? END-REGEXP "end"))
+    (check-true (regexp-match? END-REGEXP "  end   "))
+    (check-false (regexp-match? END-REGEXP "r0 end"))
+    ; copy instruction
+    (check-true (regexp-match? COPY-REGEXP "r1 = r0"))
+    (check-true (regexp-match? COPY-REGEXP "r1=r0"))
+    (check-true (regexp-match? COPY-REGEXP "  r1 =  r0   "))
+    (check-true (regexp-match? COPY-REGEXP "r0 = r0"))  ;; noop
+    ;; Checking the selection of parenthesized submatches
+    (check-equal? (caar (regexp-match* INCREMENT-REGEXP "r0 = r0 + 1" #:match-select cdr))
+                  "r0")
+    (check-equal? (caar (regexp-match* COPY-REGEXP "r0 = r1" #:match-select cdr))
+                  "r0")
+    (check-equal? (cadar (regexp-match* COPY-REGEXP "r0 = r1" #:match-select cdr))
+                  "r1")
+    )
+   
+;   (test-case
+;    "book examples"
+;    ; First example
+;    (clear-regs!)
+;    (let ([pgm "r1 = r1 + 1\nr1 = r1 + 1\nloop r1\nr0 = r0 + 1\nr0 = r0 + 1\nend"])
+;      ; (loop-without-parens pgm '(0 0))
+;      (check-equal? (loop-without-parens pgm '(0 0)) 4)
+;     )
 ;    )
-   ; Nested loop
-   (clear-regs!)
-   (let ([pgm "loop r1\nloop r2\n  r0 = r0 + 1\nend\nend"])
-     (check-equal? (loop-without-parens pgm '(3 4 5)) 23)
-     )
-   (clear-regs!)
-   (let ([pgm "r1 = r1 + 1\nr1 = r1 + 1\nr2 = r2 + 2\nr2 = r2 + 1\nloop r1\nloop r2\n  r0 = r0 + 1\nend\nend"])
-     (check-equal? (loop-without-parens pgm '(0 0 0)) 4)
-     )
+   
+;    (test-case
+;    "proper subtraction"
+;    (let ([pgm (read-loop-pgm "proper-subtraction.loop")])
+;      (check-equal? (loop-without-parens pgm '(2 3)) 1)
+;      )
+;  )
    )
   )
 

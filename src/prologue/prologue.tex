@@ -8608,52 +8608,56 @@ how many iterations will occur.
 \margingraphic{0.21\textwidth}{prologue/pix/ritchie.jpg}{\label{fig:ritchie}\href{https://en.wikipedia.org/wiki/Dennis_Ritchie}{Dennis Ritchie 1941--2011, inventor of C}}\index{Ritchie, D!picture}
 We will show this by computing primitive recursive functions 
 in a language, \citetext{\definend{LOOP}}{%
-  \protect\autocite{MeyerRitchie}}\index{LOOP!language}
-, that lacks unbounded loops.
+  \protect\autocite{MeyerRitchie}}\index{LOOP!language}, 
+that does not allow unbounded loops.
 
-Programs in this language execute on a machine model that has registers
-\codeinline{r0}, \codeinline{r1}, \ldots\,, 
-which hold natural numbers.
-A LOOP program\index{LOOP!program}
-has four kinds of instructions, which
-we illustrate using the registers \codeinline{r0} and 
+Programs in LOOP\index{LOOP!program} execute on a machine model with registers
+\codeinline{r0}, \codeinline{r1}, \ldots\ 
+that hold natural numbers.
+There are
+four kinds of instructions, which
+we illustrate using \codeinline{r0} and 
 \codeinline{r1}:~(i)~\codeinline{r0 = 0} 
 sets the contents of
 the register to zero,  
-(ii)~\codeinline{r0 = r0 + 1} increments register's contents, 
+(ii)~\codeinline{r0 = r0 + 1} increments the register's contents, 
 (iii)~\codeinline{r1 = r0} copies the contents of  
 register~\codeinline{r0} into register~\codeinline{r1},
 leaving~\codeinline{r0} unchanged, 
-and (iv)~\codeinline{loop r0 ... end}.
-For the last, the dots the middle 
-represent a sequence of any of the four kinds of statements.
-In particular, it might contain a nested \codeinline{loop}.
-The semantics are that the machine executes
-the instructions of the inside sequence repeatedly,
-with the number of repetitions given by the value in 
-register~\codeinline{r0}. 
+and (iv)~\codeinline{loop r0 ... end}
+executes a sequence of instructions
+repeatedly,
+with the number of repetitions given by the value of the register.
+For the last, the sequence represented by `\codeinline{...}'
+could contain any of the four kinds of statements,
+including that it could contain a nested \codeinline{loop}
+(which might in turn have its own \codeinline{loop}, etc.).
 
-Running the program below results in the register~\codeinline{r0}
-getting the value of $6$ (the indentation is for visual clarity).
-\begin{lstlisting}
-r1 = 0
-r1 = r1 + 1
-r1 = r1 + 1
-r2 = r1
-r2 = r2 + 1
-r0 = 0 
-loop r1
-  loop r2
-    r0 = r0 + 1
-  end
-end  
-\end{lstlisting}
+For example, the program below finishes with the register~\codeinline{r0}
+holding a value of $4$, 
+and with \codeinline{r1} holding $2$ (the indentation is for visual clarity).
+\lstinputlisting{\prfiles machines/simple.loop}
+Registers start with a value of zero, unless we preload the 
+machine.
 
-Very important:~in \codeinline{loop r0 ... end},
-changing the contents of register~\codeinline{r0} 
-inside the loop does not change 
+% \begin{lstlisting}
+% r1 = 0
+% r1 = r1 + 1
+% r1 = r1 + 1
+% r2 = r1
+% r2 = r2 + 1
+% r0 = 0 
+% loop r1
+%   loop r2
+%     r0 = r0 + 1
+%   end
+% end  
+% \end{lstlisting}
+
+Very important:~changing the contents of the loop register 
+inside of the loop does not change 
 the number of times that the machine steps through that loop.
-Thus, when the loop below ends, the value in \codeinline{r0} will be twice 
+Thus, when this loop ends, the value in \codeinline{r0} will be twice 
 what it was at the start.
 \begin{lstlisting}
 loop r0 
@@ -8661,18 +8665,20 @@ loop r0
 end  
 \end{lstlisting}
 
-We want to interpret LOOP programs as computing functions. 
-So we need a convention for input and output.
+To interpret LOOP programs as computing functions, 
+we need a convention for input and output.
 Where the function takes $n$ inputs, 
-we will start the program after loading the inputs 
-into the registers numbered \codeinline{r0} through \codeinline{r}$n-1$.
-And where the function has $m$ outputs, 
+we will preload those inputs 
+into the the first $n$ registers.
+Similarly, where the function has $m$ outputs, 
 we take their values 
-to be the contents of the registers \codeinline{r0} through
-\codeinline{r}$m-1$ 
-when the program has finished.  
-For example, this LOOP program computes the two-input one-output function
-proper subtraction, $f(x,y)=x \dotminus y$. 
+to be the contents of the first $m$ registers 
+when the program has finished.
+An example is that this LOOP program 
+computes the two-input one-output function
+proper subtraction, $f(x,y)=x \dotminus y$,
+after preloading the machine with $x$ in \codeinline{r0} and 
+$y$ in \codeinline{r1}. 
 \begin{lstlisting}
 loop r1
   r0 = 0

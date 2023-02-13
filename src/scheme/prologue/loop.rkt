@@ -32,7 +32,7 @@
          [sorted-list (sort st-lst string<=? #:key car)]
          [reg-strings (map (lambda (x) (format "~a=~a" (car x) (cadr x)))
                       sorted-list)])
-    (printf "  ~a\n" (string-join reg-strings))))
+    (printf "~a\n" (string-join reg-strings))))
 
 ;; no input
 ;; Empty the registers, initialize r0 to be 0
@@ -113,7 +113,8 @@
 		    (else (intr-body body)
 			  (iter (- rep 1)))))])
     ; (printf "intr-loop: reps=~a body=~a\n" reps body)
-    (show-regs)
+    ; (show-regs)
+    (printf "--start loop of ~a repetitions--\n" reps)
     (iter reps)))
 
 
@@ -152,7 +153,6 @@
   (init-regs data)
   (intr-body progr)
   ; (printf "  interpret: REGISTERS=~s\n" REGISTERS)
- 
   (get-reg-value (make-reg-name 0)))
 
 ;; init-regs  Initialize the registers r0, r1, r2, .. to the values in data 
@@ -183,33 +183,33 @@
 
 ;; drop-comment  omit anything in the line from COMMENT-CHARACTER on out
 (define COMMENT-CHARACTER #\#)
-(define (drop-comment ln)
-  (if (or (= (string-length ln) 0)
-	  (char=? (string-ref ln 0) COMMENT-CHARACTER))
-      ""  ; return empty string
-      (let ([split-ln (string-split ln (make-string 1 COMMENT-CHARACTER))])
-	(if (= (length split-ln) 1)   ; no comment char there
-	    ln
-	    (car split-ln)))))
+;(define (drop-comment ln)
+;  (if (or (= (string-length ln) 0)
+;	  (char=? (string-ref ln 0) COMMENT-CHARACTER))
+;      ""  ; return empty string
+;      (let ([split-ln (string-split ln (make-string 1 COMMENT-CHARACTER))])
+;	(if (= (length split-ln) 1)   ; no comment char there
+;	    ln
+;	    (car split-ln)))))
 
 ;; split-line-into-toks  return the tokens, with comments and whitespace removed
-(define (split-line-into-toks ln)
-  (printf "split-line-into-toks ln=~s\n" ln)
-  (let* ([without-comment (drop-comment ln)]
-         [trimmed (string-trim without-comment)]
-         ; was: [csi-split (string-split without-comment " \n\t")])
-         [csi-split (regexp-split #px"\\s" trimmed)])
-    (printf "  split-line-into-toks csi-split=~s\n" csi-split)
-    (if (null? csi-split)
-        '("")
-        csi-split)))
+;(define (split-line-into-toks ln)
+;  (printf "split-line-into-toks ln=~s\n" ln)
+;  (let* ([without-comment (drop-comment ln)]
+;         [trimmed (string-trim without-comment)]
+;         ; was: [csi-split (string-split without-comment " \n\t")])
+;         [csi-split (regexp-split #px"\\s" trimmed)])
+;    (printf "  split-line-into-toks csi-split=~s\n" csi-split)
+;    (if (null? csi-split)
+;        '("")
+;        csi-split)))
 
-(define EMPTY-LINE-REGEXP #px"^\\s*$")
-(define ZERO-REGEXP #px"^\\s*(r[\\d]?)\\s*=\\s*0\\s*$")
-(define INCREMENT-REGEXP #px"^\\s*(r[\\d]?)\\s*=\\s*\\1\\s*\\+\\s*1\\s*$")
-(define LOOP-REGEXP #px"^\\s*loop\\s*(r[\\d]?)\\s*$")
-(define END-REGEXP #px"^\\s*end\\s*$")
-(define COPY-REGEXP #px"^\\s*(r[\\d]?)\\s*=\\s*(r[\\d]?)\\s*$")
+(define EMPTY-LINE-REGEXP #px"^\\s*(\\#.*)?$")
+(define ZERO-REGEXP #px"^\\s*(r[\\d]+)\\s*=\\s*0\\s*(\\#.*)?$")
+(define INCREMENT-REGEXP #px"^\\s*(r[\\d]+)\\s*=\\s*\\1\\s*\\+\\s*1\\s*(\\#.*)?$")
+(define LOOP-REGEXP #px"^\\s*loop\\s*(r[\\d]+)\\s*(\\#.*)?$")
+(define END-REGEXP #px"^\\s*end\\s*(\\#.*)?$")
+(define COPY-REGEXP #px"^\\s*(r[\\d]+)\\s*=\\s*(r[\\d]+)\\s*(\\#.*)?$")
 (provide EMPTY-LINE-REGEXP
          ZERO-REGEXP
          INCREMENT-REGEXP
@@ -217,23 +217,31 @@
          END-REGEXP
          COPY-REGEXP)
 ;; one-line  Return a string translation of the one line, already in tokens
-(define (one-line tok-list lne)
-  (printf "one-line input: tok-list=~s\n  lne=~s\n" tok-list lne)
+(define (one-line lne)
+;   (printf "one-line input: tok-list=~s\n  lne=~s\n" tok-list lne)
 ;  (printf "  regexp-match? ~s\n" (regexp-match? INCREMENT-REGEXP lne))
 ;  (printf "    result of string-append: ~s\n" (string-append "(incr " (car tok-list) ")"))
   (cond
-   [(or (null? tok-list) (regexp-match? EMPTY-LINE-REGEXP lne))
+   [(regexp-match? EMPTY-LINE-REGEXP lne)
     ""]
-   [(regexp-match? LOOP-REGEXP lne) 
-    (string-append "(loop " (cadr tok-list) " ")]
+   [(regexp-match? LOOP-REGEXP lne)
+    (let ([m (regexp-match* LOOP-REGEXP lne #:match-select cdr)])
+      (format "(loop ~a " (caar m)))]
+    ; (string-append "(loop " (cadr tok-list) " ")]
    [(regexp-match? END-REGEXP lne) 
     ")"]
    [(regexp-match? INCREMENT-REGEXP lne) 
-    (string-append "(incr " (car tok-list) ")")]
+    (let ([m (regexp-match* INCREMENT-REGEXP lne #:match-select cdr)])
+      (format "(incr ~a )" (caar m)))]
+    ; (string-append "(incr " (car tok-list) ")")]
    [(regexp-match? COPY-REGEXP lne) 
-    (string-append "(copy " (car tok-list) " " (caddr tok-list) ")")]
+    (let ([m (regexp-match* COPY-REGEXP lne #:match-select cdr)])
+      (format "(copy ~a ~a)" (caar m) (cadar m)))]
+   ; (string-append "(copy " (car tok-list) " " (caddr tok-list) ")")]
    [(regexp-match? ZERO-REGEXP lne) 
-    (string-append "(zero " (car tok-list) ")")]
+    (let ([m (regexp-match* ZERO-REGEXP lne #:match-select cdr)])
+      (format "(zero ~a )" (caar m)))]
+   ; (string-append "(zero " (car tok-list) ")")]
    [else
     (begin
       (printf "ERROR: unable to parse line: ~s\n" lne)
@@ -261,12 +269,12 @@
 ;; parse-loop
 (define (parse-loop pgm)
   (define (parse-loop-helper v i)  ; i=index of line in vector, t=string so far
-    (printf "  parse-loop-helper v=~s\n    length=~s\n    line number i=~s\n" v (vector-length v) i)
-    ; (printf "    one-line returns: ~s\n"
-    ;        (one-line (split-line-into-toks (vector-ref v i)) (vector-ref v i)))
+;    (printf "  parse-loop-helper v=~s\n    length=~s\n    line number i=~s\n" v (vector-length v) i)
+;    (unless (>= i (vector-length v))
+;      (printf "    one-line returns: ~s\n" (one-line (vector-ref v i))))
     (if (>= i (vector-length v))
 	""
-	(string-append (one-line (split-line-into-toks (vector-ref v i)) (vector-ref v i))
+	(string-append (one-line (vector-ref v i))
 		       (parse-loop-helper v (+ i 1)))))
 
   (let ((lines (make-loop-program pgm)))
@@ -301,7 +309,7 @@
   (printf "TRANSLATES TO ~a\n\n" (parse-loop pgm))
   (let ([ps (string-append "'" (parse-loop pgm))]) 
     (let ([pl (eval (read (open-input-string ps)) ns)])
-      (printf "  loop-without-parens pl=~s\n    ps=~s\n" pl ps)
+      ; (printf "  loop-without-parens pl=~s\n    ps=~s\n" pl ps)
       (interpret pl data)
       )
     )
@@ -309,7 +317,7 @@
 (provide loop-without-parens)
 
 ;; ============= Running from the command line =========
-;; Gratitude for https://jackwarren.info/posts/guides/racket/racket-command-line/
+;; Gratitude to https://jackwarren.info/posts/guides/racket/racket-command-line/
 
 
 ;; Parameters with defaults

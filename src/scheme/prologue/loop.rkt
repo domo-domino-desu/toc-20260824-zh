@@ -96,13 +96,13 @@
 ;; Implement each operation
 (define (intr-zero pars)
   (set-reg-value! (car pars) 0)
-  (show-regs))
+  (when (show-registers?) (show-regs)))
 (define (intr-incr pars)
   (increment-reg! (car pars))
-  (show-regs))
+  (when (show-registers?) (show-regs)))
 (define (intr-copy pars)
   (set-reg-value! (car pars) (get-reg-value (cadr pars)))
-  (show-regs))
+  (when (show-registers?) (show-regs)))
 (define (intr-loop pars)
   ; (printf "intr-loop: pars=~a" pars)
   (letrec ([reps (get-reg-value (car pars))]
@@ -114,7 +114,8 @@
 			  (iter (- rep 1)))))])
     ; (printf "intr-loop: reps=~a body=~a\n" reps body)
     ; (show-regs)
-    (printf "--start loop of ~a repetitions--\n" reps)
+    (when (show-registers?)
+      (printf "--start loop of ~a repetitions--\n" reps))
     (iter reps)))
 
 
@@ -305,8 +306,9 @@
 ;; loop-without-parens  Write loop programs in ALGOL-like syntax
 ;; (They are nested let's because if I do a letrec or a let* then Dr Racket freezes)
 (define (loop-without-parens pgm data)
-  (printf "LOOP program=~s\n    data=~s\n" pgm data)
-  (printf "TRANSLATES TO ~a\n\n" (parse-loop pgm))
+  (when (display-list?)
+    (printf "LOOP program=~s\n  with data=~s\n" pgm data)
+    (printf "  ... translates to ~a\n" (parse-loop pgm)))
   (let ([ps (string-append "'" (parse-loop pgm))]) 
     (let ([pl (eval (read (open-input-string ps)) ns)])
       ; (printf "  loop-without-parens pl=~s\n    ps=~s\n" pl ps)
@@ -353,6 +355,11 @@
      [("-v" "--verbose") "Verbose mode" (verbose? #t)]
      #:args  () (void)))
 
+  (when (verbose?)
+    (begin
+      (show-registers? #t)
+      (display-list? #t)))
+  
   ;; Read the file with the LOOP program
   (define LOOP-LINES '())  ;; list of file lines, one string per instruction
   ; (printf "filename=~s\n" filename)
@@ -361,6 +368,6 @@
     (set! LOOP-LINES
           (port->string (open-input-file (filename)) #:close? #t)))
 
-  (printf "~a" (loop-without-parens LOOP-LINES '()))
+  (printf "~a\n" (loop-without-parens LOOP-LINES '()))
 )
 

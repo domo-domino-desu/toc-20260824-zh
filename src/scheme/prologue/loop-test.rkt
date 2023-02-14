@@ -272,6 +272,19 @@
     (check-equal? (cadar (regexp-match* COPY-REGEXP "r0 = r1" #:match-select cdr))
                   "r1")
     )
+
+   (test-case
+    "comments"
+    (let ([pgm "r0 = r0 + 1 # test comment"])
+      (let ([data '()])
+        (check-equal? (loop-without-parens pgm data) 1)))
+    (let ([pgm "# Test comment header\nr0 = r0 + 1"])
+      (let ([data '()])
+        (check-equal? (loop-without-parens pgm data) 1)))
+    (let ([pgm "r0 = r0 + 1\n# Test comment between commands\nr0 = r0 + 1"])
+      (let ([data '()])
+        (check-equal? (loop-without-parens pgm data) 2)))
+      ) ; close test-case
    
    (test-case
     "book examples"

@@ -4,8 +4,12 @@
 
 ;; loop.rkt
 ;; Run programs in LOOP.
-;; Adapted from _Computability in an Intro Course on Programming_
-;; by Hans Jurgen Schnieder
+;; 
+;; Code adapted from from Hans-Jurgen Schnieder "Computability in an Introductory
+;; course on Programming" Bulletin of the European Association for Theoretical Computer Science,
+;; EATCS 73 (2001), S. 153-164 ISSN: 0252–9742
+;;
+;; 2023-Feb-15 Jim Hefferon GPL v3
 
 
 ;; ===== Registers 
@@ -22,9 +26,7 @@
 (hash-set! REGISTERS (make-reg-name 0) 0)
 
 ;; no input
-;; Show the contents of the registers, for debugging
-;(define (show-regs) 
-;  (write REGISTERS) (newline))
+;; Show the contents of the registers
 (define (show-regs)
   (let* ([lst (hash->list REGISTERS)]
          [st-lst (map (lambda (x) (list (symbol->string (car x)) (cdr x)))
@@ -54,8 +56,6 @@
 (define (set-reg-value! r v)
   (hash-set! REGISTERS r v))
 
-;; If you get a reg, it creates it, containing 0
-
 ;; symbol -> pair
 ;; Return pair whose car is the given r; if no such reg, return (r . 0)
 ;; r  register, such as 'r5
@@ -78,7 +78,6 @@
          get-reg
          get-reg-value)
 
-
 ;; ===== Register operations
 
 ;; natural -> void
@@ -93,18 +92,26 @@
 (define (copy-reg! reg0 reg1)
   (set-reg-value! reg1 (get-reg-value reg0))) 
 
-;; Implement each operation
+;; ===== Interpreter
+
+;; list -> void
+;; Set the register that is the car of the list to zero
 (define (intr-zero pars)
   (set-reg-value! (car pars) 0)
-  (when (show-registers?) (show-regs)))
+  (when (show-registers?) (show-regs)))  ; for showing the step-by-step register changes 
+;; list -> void
+;; Increment the register that is the car of the list to zero
 (define (intr-incr pars)
   (increment-reg! (car pars))
-  (when (show-registers?) (show-regs)))
+  (when (show-registers?) (show-regs)))  ; for showing the step-by-step register changes 
+;; list -> void
+;; Copy the cadr register to the car register
 (define (intr-copy pars)
   (set-reg-value! (car pars) (get-reg-value (cadr pars)))
-  (when (show-registers?) (show-regs)))
+  (when (show-registers?) (show-regs)))  ; for showing the step-by-step register changes 
+;; list -> void
+;; Run through a loop, based on the car of the input 
 (define (intr-loop pars)
-  ; (printf "intr-loop: pars=~a" pars)
   (letrec ([reps (get-reg-value (car pars))]
 	   [body (cdr pars)]
 	   [iter (lambda (rep)
@@ -112,22 +119,17 @@
 		    ((equal? rep 0) '())
 		    (else (intr-body body)
 			  (iter (- rep 1)))))])
-    ; (printf "intr-loop: reps=~a body=~a\n" reps body)
-    ; (show-regs)
     (when (show-registers?)
       (printf "--start loop of ~a repetitions--\n" reps))
     (iter reps)))
 
-
-;; intr-body  Interpret the body of loop programs
+;; list -> void
+;; Interpret the body of loop programs
 (define (intr-body body)
-  ; (printf "intr-body: body=~a\n" body)
-  ; (printf "intr-body: REGISTERS=~a\n" REGISTERS)
   (cond 
    [(null? body) '()]
    [else (let ([next-inst (car body)]
 	       [tail (cdr body)])
-           ; (printf "  intr-body: next-inst=~a tail=~a\n" next-inst tail)
 	   (let ([key (car next-inst)]
 		 [pars (cdr next-inst)])
 	     (cond
@@ -143,15 +145,12 @@
          intr-loop
          intr-body)
 
-
-;; Code descends from Hans-Jurgen Schnieder "Computability in an Introductory
-;; course on Programming" Bulletin of the European Association for Theoretical Computer Science,
-;; EATCS 73 (2001), S. 153-164 ISSN: 0252–9742
 ;; The data is a list of the values to put in registers r0 r1 r2 ..
 ;; Value of a program is the value remaining in r0 at end.
 (define (interpret progr data)
   ; (printf "interpret: progr=~s\n    data=~s\n" progr data)
   (init-regs data)
+  (when (show-registers?) (printf "Preloaded: ~a\n" (show-regs)))  ; for showing intial preloaded registers 
   (intr-body progr)
   ; (printf "  interpret: REGISTERS=~s\n" REGISTERS)
   (get-reg-value (make-reg-name 0)))
@@ -171,8 +170,7 @@
 (provide increment-reg!
          copy-reg!)
 
-;; ===============================================
-;; parse functions; go from ALGOL syntax to LISP syntax
+;; ===== Parse ALGOL-like LOOP instructions to LISP-like ones
 
 ;; split-program-into-lines  split the string by newlines
 (define (split-program-into-lines p)
@@ -184,27 +182,8 @@
 
 ;; drop-comment  omit anything in the line from COMMENT-CHARACTER on out
 (define COMMENT-CHARACTER #\#)
-;(define (drop-comment ln)
-;  (if (or (= (string-length ln) 0)
-;	  (char=? (string-ref ln 0) COMMENT-CHARACTER))
-;      ""  ; return empty string
-;      (let ([split-ln (string-split ln (make-string 1 COMMENT-CHARACTER))])
-;	(if (= (length split-ln) 1)   ; no comment char there
-;	    ln
-;	    (car split-ln)))))
 
-;; split-line-into-toks  return the tokens, with comments and whitespace removed
-;(define (split-line-into-toks ln)
-;  (printf "split-line-into-toks ln=~s\n" ln)
-;  (let* ([without-comment (drop-comment ln)]
-;         [trimmed (string-trim without-comment)]
-;         ; was: [csi-split (string-split without-comment " \n\t")])
-;         [csi-split (regexp-split #px"\\s" trimmed)])
-;    (printf "  split-line-into-toks csi-split=~s\n" csi-split)
-;    (if (null? csi-split)
-;        '("")
-;        csi-split)))
-
+;; Regular expressions used to parse the lines in one-line routine
 (define EMPTY-LINE-REGEXP #px"^\\s*(\\#.*)?$")
 (define ZERO-REGEXP #px"^\\s*(r[\\d]+)\\s*=\\s*0\\s*(\\#.*)?$")
 (define INCREMENT-REGEXP #px"^\\s*(r[\\d]+)\\s*=\\s*\\1\\s*\\+\\s*1\\s*(\\#.*)?$")
@@ -217,101 +196,67 @@
          LOOP-REGEXP
          END-REGEXP
          COPY-REGEXP)
-;; one-line  Return a string translation of the one line, already in tokens
+
+;; string -> string
+;; one-line  Return a string translation of the one line, already in tokens, into
+;; part of the code that will be evaluated
 (define (one-line lne)
-;   (printf "one-line input: tok-list=~s\n  lne=~s\n" tok-list lne)
-;  (printf "  regexp-match? ~s\n" (regexp-match? INCREMENT-REGEXP lne))
-;  (printf "    result of string-append: ~s\n" (string-append "(incr " (car tok-list) ")"))
   (cond
    [(regexp-match? EMPTY-LINE-REGEXP lne)
     ""]
    [(regexp-match? LOOP-REGEXP lne)
     (let ([m (regexp-match* LOOP-REGEXP lne #:match-select cdr)])
       (format "(loop ~a " (caar m)))]
-    ; (string-append "(loop " (cadr tok-list) " ")]
    [(regexp-match? END-REGEXP lne) 
     ")"]
    [(regexp-match? INCREMENT-REGEXP lne) 
     (let ([m (regexp-match* INCREMENT-REGEXP lne #:match-select cdr)])
       (format "(incr ~a )" (caar m)))]
-    ; (string-append "(incr " (car tok-list) ")")]
    [(regexp-match? COPY-REGEXP lne) 
     (let ([m (regexp-match* COPY-REGEXP lne #:match-select cdr)])
       (format "(copy ~a ~a)" (caar m) (cadar m)))]
-   ; (string-append "(copy " (car tok-list) " " (caddr tok-list) ")")]
    [(regexp-match? ZERO-REGEXP lne) 
     (let ([m (regexp-match* ZERO-REGEXP lne #:match-select cdr)])
       (format "(zero ~a )" (caar m)))]
-   ; (string-append "(zero " (car tok-list) ")")]
    [else
     (begin
       (printf "ERROR: unable to parse line: ~s\n" lne)
       "")]
    )
   )
-;(define (one-line tok-list)
-;  (printf "one-line input: tok-list=~s\n" tok-list)
-;  (cond
-;   [(or (null? tok-list) (equal? "" (car tok-list)))
-;    ""]
-;   [(equal? "loop" (car tok-list)) 
-;    (string-append "(loop " (cadr tok-list) " ")]
-;   [(equal? "end" (car tok-list)) 
-;    ")"]
-;   [(= (length tok-list) 5) 
-;    (string-append "(incr " (car tok-list) ")")]
-;   [(eq? (string->number (caddr tok-list)) #f) 
-;    (string-append "(copy " (car tok-list) " " (caddr tok-list) ")")]
-;   [else 
-;    (string-append "(zero " (car tok-list) ")")]
-;    )
-;  )
 
-;; parse-loop
+;; string -> string
+;; Parse the ALGOL-like LOOP program into the Lisp-like string of code to be evaluated
+;;  pgm  string with LOOP lines 
 (define (parse-loop pgm)
-  (define (parse-loop-helper v i)  ; i=index of line in vector, t=string so far
-;    (printf "  parse-loop-helper v=~s\n    length=~s\n    line number i=~s\n" v (vector-length v) i)
-;    (unless (>= i (vector-length v))
-;      (printf "    one-line returns: ~s\n" (one-line (vector-ref v i))))
+  (define (parse-loop-helper v i)
+    ; i=index of line in vector, t=string so far
     (if (>= i (vector-length v))
 	""
 	(string-append (one-line (vector-ref v i))
 		       (parse-loop-helper v (+ i 1)))))
 
   (let ((lines (make-loop-program pgm)))
-    ; (printf "parse-loop pgm=~s\n  lines=~s\n" pgm lines)
     (string-append "(" (parse-loop-helper lines 0) ")")))
 
-;; interpret-string;  interpret a string as Scheme code
-; (define FN "fn.scm")
-; File name for temp file
-;(define FN (string-append "fn" (~r (random 1 9999) #:min-width 4 #:pad-string "0") ".scm"))
-;(printf "FN=~s\n" FN)
-;(define (interpret-string s)
-;  (printf "interpret-string s=~s\n" s)
-;  ; (eval (read (open-input-string s)) ns)
-;  ; (eval s ns)
-;  ; (printf "  interpreted string pe=~s\n" pe)
-;  (define myfile (open-output-file FN))
-;  (display s myfile)
-;  (close-output-port myfile)
-;;  (parameterize ([current-namespace (namespace-anchor->namespace a)])
-;  (load FN)
-;  )
+;; ===== Driver routine
+;; Run as with: (loop-without-parens "r0 = r0 + 1\nloop r0\n  r1 = r1 + 1\nend" '(3))
+;; For more examples see the testing cases and the machines/*.loop files 
 
-; Need a reasonable namespace for eval to work
+; Need a reasonable namespace for eval to work (contains definition of car, etc)
 (define-namespace-anchor a)
 (define ns (namespace-anchor->namespace a))
 
-;; loop-without-parens  Write loop programs in ALGOL-like syntax
-;; (They are nested let's because if I do a letrec or a let* then Dr Racket freezes)
+;; string, list -> number
+;; Write loop programs in ALGOL-like syntax, then interpret them.  This is the
+;; driver routine. Returns the contents of r0.
+;; (Coding note: They are nested let's because a letrec or a let* makes Dr Racket freeze.)
 (define (loop-without-parens pgm data)
   (when (display-list?)
     (printf "LOOP program=~s\n  with data=~s\n" pgm data)
     (printf "  ... translates to ~a\n" (parse-loop pgm)))
   (let ([ps (string-append "'" (parse-loop pgm))]) 
     (let ([pl (eval (read (open-input-string ps)) ns)])
-      ; (printf "  loop-without-parens pl=~s\n    ps=~s\n" pl ps)
       (interpret pl data)
       )
     )
@@ -321,35 +266,39 @@
 ;; ============= Running from the command line =========
 ;; Gratitude to https://jackwarren.info/posts/guides/racket/racket-command-line/
 
-
 ;; Parameters with defaults
-
-;; Name of file containing the LOOP program
-(define filename (make-parameter null))
-
-;; At each step show the registers, if true
-(define show-registers? (make-parameter #f))
 
 ;; Display the list translation of the LOOP program, if true
 (define display-list? (make-parameter #f))
 
+;; Name of file containing the LOOP program
+(define filename (make-parameter null))
+
+;; Preload these natural numbers into r0 r1 etc.
+(define preload (make-parameter null))
+
+;; At each step show the registers, if true
+(define show-registers? (make-parameter #f))
+
 ;; Talk a lot, if true
 (define verbose? (make-parameter #f))
 
-;; For running from the command line; this is the Racket construct to execute code from
-;; command line but not from an importing module
+;; For running from the command line; the "module+ main" is the Racket construct to execute code
+;; when running from the command line but not from an importing module
 (module+ main
 
   (define command-line-parser
     (command-line
      #:usage-help 
      "Simulate a LOOP machine."
-     "Put LOOP instructions on separate lines.  You can indent."
+     "Put LOOP instructions on separate lines.  You can indent, or use # as comment character."
      #:once-each
-     [("-d" "--display-list") "Display the string that the LOOP program is translated to"
+     [("-d" "--display-list") "Display the command string that the LOOP program is translated to"
                               (display-list? #t)]
-     [("-f" "--filename") loopfn "Name of file with the LOOP program"
+     [("-f" "--filename") loopfn "Name of file with the LOOP program, as in \"machines/simple.loop\""
                           (filename loopfn)]
+     [("-p" "--preload") preloadstring "List of natural numbers to preload registers, probably quoted as in \"3 2 1\""
+                          (preload (apply list (map string->number (string-split preloadstring))))]
      [("-s" "--show-registers") "Show the registers for each step"
                                 (show-registers? #t)]
      [("-v" "--verbose") "Verbose mode" (verbose? #t)]
@@ -364,10 +313,10 @@
   (define LOOP-LINES '())  ;; list of file lines, one string per instruction
   ; (printf "filename=~s\n" filename)
   (if (null? (filename))
-    (set! LOOP-LINES "")
+    (set! LOOP-LINES "") ;; should instead fail?
     (set! LOOP-LINES
           (port->string (open-input-file (filename)) #:close? #t)))
 
-  (printf "~a\n" (loop-without-parens LOOP-LINES '()))
+  (printf "~a\n" (loop-without-parens LOOP-LINES (preload)))  ; print the result to stdout
 )
 

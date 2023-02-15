@@ -8541,15 +8541,17 @@ Conclude that $\hyperoperation$ is not primitive recursive.
 \label{sec:LOOPPrograms}
 
 The primitive recursive functions form a proper subset of the
-general recursive functions, that is, 
-of all of the functions that are mechanically computable.
-We will now give a concrete way to understand the difference between the
-two.
+general recursive functions.
+The set of general recursive functions consists of  
+all functions that are mechanically computable (under Church's Thesis),
+so that collection is easy to understand.
+We will now give a concrete way to understand the
+partial recursive functions.
 
-Here is a simple 
-\codeinline!for! loop in Racket.
+Here is a 
+\codeinline!for! loop,
 \lstinputlisting[firstline=2, lastline=4]{\prfiles for-while.rkt}
-What happens is what you'd think would happen.
+and what happens is what you'd think would happen.
 \begin{lstlisting}
 > (show-numbers)
 123 
@@ -8557,12 +8559,12 @@ What happens is what you'd think would happen.
 This is a Racket \codeinline!do! loop (which is like a 
 \codeinline!while! in some other languages).
 \lstinputlisting[firstline=6, lastline=10]{\prfiles for-while.rkt}
-The difference is that in 
+The difference between the two loop types is that in 
 a \codeinline!for! loop you know in advance the number of times that the
 machine will go through the code inside the loop 
 (here, three times),\footnote{%
   As long as you don't change the loop variable.}
-but in a \codeinline!do! allows the machine to go 
+but a \codeinline!do! allows the machine to go 
 through its code an unbounded number of times.
 \begin{lstlisting}
 > (wait-until-yes)
@@ -8606,91 +8608,146 @@ how many iterations will occur.
 
 % Picture: http://www.zdnet.com/article/without-dennis-ritchie-there-would-be-no-jobs/
 \margingraphic{0.21\textwidth}{prologue/pix/ritchie.jpg}{\label{fig:ritchie}\href{https://en.wikipedia.org/wiki/Dennis_Ritchie}{Dennis Ritchie 1941--2011, inventor of C}}\index{Ritchie, D!picture}
-We will show this by computing primitive recursive functions 
-in a language, \citetext{\definend{LOOP}}{%
+We will show half of this, that if a function is primitive recursive
+then we can compute it using only bounded loops.
+We will do it by programming the primitive recursive functions 
+in a language, called \citetext{\definend{LOOP}}{%
   \protect\autocite{MeyerRitchie}}\index{LOOP!language}, 
-that does not allow unbounded loops.
+that does not have unbounded loops.
+(The converse is outside our scope.)
 
 Programs in LOOP\index{LOOP!program} execute on a machine model with registers
 \codeinline{r0}, \codeinline{r1}, \ldots\ 
 that hold natural numbers.
 There are
 four kinds of instructions, which
-we illustrate using \codeinline{r0} and 
+we describe using \codeinline{r0} and 
 \codeinline{r1}:~(i)~\codeinline{r0 = 0} 
 sets the contents of
 the register to zero,  
-(ii)~\codeinline{r0 = r0 + 1} increments the register's contents, 
-(iii)~\codeinline{r1 = r0} copies the contents of  
-register~\codeinline{r0} into register~\codeinline{r1},
+(ii)~\codeinline{r0 = r0 + 1} increments the contents of the register, 
+(iii)~\codeinline{r1 = r0} copies the contents of~\codeinline{r0} 
+into~\codeinline{r1},
 leaving~\codeinline{r0} unchanged, 
 and (iv)~\codeinline{loop r0 ... end}
 executes a sequence of instructions
 repeatedly,
 with the number of repetitions given by the value of the register.
-For the last, the sequence represented by `\codeinline{...}'
+For the last, the `\codeinline{...}' is a sequence that 
 could contain any of the four kinds of statements,
 including that it could contain a nested \codeinline{loop}
-(which might in turn have its own \codeinline{loop}, etc.).
+(which might in turn contain its own nested \codeinline{loop}, etc.).
 
-For example, the program below finishes with the register~\codeinline{r0}
+An example is that the program below finishes with the register~\codeinline{r0}
 holding a value of $4$, 
-and with \codeinline{r1} holding $2$ (the indentation is for visual clarity).
-\lstinputlisting{\prfiles machines/simple.loop}
-Registers start with a value of zero, unless we preload the 
+and with \codeinline{r1} holding~$2$ (the indentation in the loop
+is just for visual clarity).
+Note that registers start with a value of zero, unless we preload the 
 machine.
-
-% \begin{lstlisting}
-% r1 = 0
-% r1 = r1 + 1
-% r1 = r1 + 1
-% r2 = r1
-% r2 = r2 + 1
-% r0 = 0 
-% loop r1
-%   loop r2
-%     r0 = r0 + 1
-%   end
-% end  
-% \end{lstlisting}
+\lstinputlisting{\prfiles machines/simple.loop}
 
 Very important:~changing the contents of the loop register 
 inside of the loop does not change 
 the number of times that the machine steps through that loop.
-Thus, when this loop ends, the value in \codeinline{r0} will be twice 
-what it was at the start.
+Thus the loop show below is not an infinite loop.
+Instead, when it ends the value in \codeinline{r0} will be twice 
+what it was when the loop started.
 \begin{lstlisting}
 loop r0 
   r0 = r0 + 1
-end  
+  end  
 \end{lstlisting}
 
-To interpret LOOP programs as computing functions, 
-we need a convention for input and output.
+We want to interpret LOOP programs as computing functions. 
+So we need a convention for input and output.
 Where the function takes $n$ inputs, 
-we will preload those inputs 
-into the the first $n$ registers.
+we will preload those inputs into the the first $n$~registers.
 Similarly, where the function has $m$ outputs, 
-we take their values 
-to be the contents of the first $m$ registers 
-when the program has finished.
-An example is that this LOOP program 
-computes the two-input one-output function
-proper subtraction, $f(x,y)=x \dotminus y$,
-after preloading the machine with $x$ in \codeinline{r0} and 
-$y$ in \codeinline{r1}. 
+we take those values 
+to be the contents when the program has finished of the first $m$~registers.
+
+With that convention, this LOOP program computes the two-input, one output
+addition function $\plus(x,y)=x+y$. 
+\lstinputlisting{\prfiles machines/plus.loop}
+To help work through the examples, this book's distribution comes with
+\codeinline{loop.rkt}, a Racket program that interprets the code.
+Here is an invocation.\footnote{%
+  Running under Linux.}
 \begin{lstlisting}
-loop r1
-  r0 = 0
-  loop r0 
-    r1 = r0
-    r0 = r0 + 1
-  end
-end  
-\end{lstlisting}
-That is, if we load 
-$x$ into \codeinline{r0} and $y$ into \codeinline{r1}, and run the above
-routine, then the output $x \dotminus y$ will be in \codeinline{r0}.
+jim@millstone$ ./loop.rkt -f machines/plus.loop -p "3 2" -s
+r0=3 r1=2
+--start loop of 2 repetitions--
+r0=4 r1=2
+r0=5 r1=2
+5
+\end{lstlisting}  % $
+The \codeinline{p} option preloads the registers \codeinline{r0} 
+and~\codeinline{r1} with $3$ and $2$.
+The \codeinline{s} option shows the registers for each step of the computation.
+The simulator returns the value of \codeinline{r0}, which is~$5$.
+
+This LOOP program computes the 
+multiplication function $\product(x,y)=x\cdot y$. 
+\lstinputlisting{\prfiles machines/product.loop}
+It has a nested loop.
+\begin{lstlisting}
+jim@millstone:$ ./loop.rkt -f machines/product.loop -p "3 2" -s
+r0=3 r1=2
+--start loop of 2 repetitions--
+--start loop of 3 repetitions--
+r0=3 r1=2 r2=1
+r0=3 r1=2 r2=2
+r0=3 r1=2 r2=3
+--start loop of 3 repetitions--
+r0=3 r1=2 r2=4
+r0=3 r1=2 r2=5
+r0=3 r1=2 r2=6
+r0=6 r1=2 r2=6
+6
+\end{lstlisting}  % $
+
+Two more examples.
+This computes the predecessor function $\pred(x)$,
+\lstinputlisting{\prfiles machines/pred.loop}
+which equals $x-1$ unless $x$ equals~$0$, when it equals~$0$.
+\begin{lstlisting}
+jim@millstone:$ ./loop.rkt -f machines/pred.loop -p "3" -s
+r0=3
+--start loop of 3 repetitions--
+r0=3 r1=0 r2=0
+r0=3 r1=1 r2=0
+r0=3 r1=1 r2=1
+r0=3 r1=2 r2=1
+r0=3 r1=2 r2=2
+r0=3 r1=3 r2=2
+r0=2 r1=3 r2=2
+2
+\end{lstlisting}  % $
+And this uses predecessor to compute proper subtraction $x\dotminus y$,
+\lstinputlisting{\prfiles machines/proper-sub.loop}
+which equals $x-1$ unless $x$ equals~$0$, when it equals~$0$.
+\begin{lstlisting}
+jim@millstone:$ ./loop.rkt -f machines/proper-sub.loop -p "3 2" -s
+r0=3 r1=2
+--start loop of 2 repetitions--
+r0=3 r1=2 r3=0
+--start loop of 3 repetitions--
+r0=3 r1=2 r2=0 r3=0
+r0=3 r1=2 r2=0 r3=1
+r0=3 r1=2 r2=1 r3=1
+r0=3 r1=2 r2=1 r3=2
+r0=3 r1=2 r2=2 r3=2
+r0=3 r1=2 r2=2 r3=3
+r0=2 r1=2 r2=2 r3=3
+r0=2 r1=2 r2=2 r3=0
+--start loop of 2 repetitions--
+r0=2 r1=2 r2=0 r3=0
+r0=2 r1=2 r2=0 r3=1
+r0=2 r1=2 r2=1 r3=1
+r0=2 r1=2 r2=1 r3=2
+r0=1 r1=2 r2=1 r3=2
+1
+\end{lstlisting}  % $
 
 To show that for each primitive recursive function there is a
 LOOP program, we can show how to compute each initial function,

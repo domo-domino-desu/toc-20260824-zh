@@ -11,7 +11,6 @@
 ;;
 ;; 2023-Feb-15 Jim Hefferon GPL v3
 
-
 ;; ===== Registers 
 
 ;; natural -> symbol
@@ -150,7 +149,7 @@
 (define (interpret progr data)
   ; (printf "interpret: progr=~s\n    data=~s\n" progr data)
   (init-regs data)
-  (when (show-registers?) (printf "Preloaded: ~a\n" (show-regs)))  ; for showing intial preloaded registers 
+  (when (show-registers?) (show-regs))  ; for showing intial preloaded registers 
   (intr-body progr)
   ; (printf "  interpret: REGISTERS=~s\n" REGISTERS)
   (get-reg-value (make-reg-name 0)))

@@ -1359,6 +1359,7 @@
   % language=Octave,                % the language of the code
   basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
   columns=fullflexible,  % make code copy-and-pasteable
+  keepspaces=true,  % don't omit spaces inside a line
   % \stringstyle=\ttfamily,  % use typewriter type
   % numbers=left,                   % where to put the line-numbers
   % numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers

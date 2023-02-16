@@ -8751,12 +8751,12 @@ r0=1 r1=2 r2=1 r3=2
 \end{lstlisting}  % $
 
 Finally, this illustrates a routine with more than one output.
-\lstinputlisting{\prfiles machines/shift.loop}
+\lstinputlisting{\prfiles machines/rotate-shift-right.loop}
 The program's \codeinline{o} option lets us show three registers
 instead of the default one
 \begin{lstlisting}
-jim@millstone$ ./loop.rkt -f machines/shift.loop -p "1 2 3" -o "3"
-0 1 2
+jim@millstone:$ ./loop.rkt -f machines/rotate-shift-right.loop -p "1 2 3" -o 3
+3 1 2
 \end{lstlisting}  % $
 (we've avoided showing the computation's steps 
 by not using the \codeinline{s} option).
@@ -8805,8 +8805,11 @@ were we to load  the inputs $y_{0,0}$, \ldots{} $y_{n,m_n}$ into the registers
 \codeinline{r0}, \codeinline{r1}, \ldots{} and then immediately begin
 computing $h_0$, there would be a danger of
 overwriting the inputs for $h_1$.
-So we must take care to move those inputs out of the way.
-Specifically, let $P_f$, $P_{h_0}$, \ldots{} $P_{h_n}$ 
+(For instance, \codeinline{rotate-shift-right.loop}
+uses an extra register, \codeinline{r3}, beyond those used
+to store inputs.)
+So we must move those inputs out of the way.
+Let $P_f$, $P_{h_0}$, \ldots{} $P_{h_n}$ 
 be LOOP programs to compute the functions.
 Each uses a limited number of registers
 and thus there is an index~$j$ large enough that no program uses 
@@ -8818,10 +8821,10 @@ The first step is to copy these inputs to start in the register numbered~$j$.
 % the register numbered $(m_0+1)+\cdots+(m_n+1)$).
 Next, zero out the registers below register~$j$, copy $h_0$'s arguments down
 to begin at \codeinline{r0}, and run the program $P_{h_0}$.
-When it finishes, copy its output above the final register holding the inputs
-(that is, to the register numbered $j+(m_0+1)+\cdots+ (m_n+1)$).
-Repeat for the rest of the $h_i$'s.
-Finish by copying the outputs down to the initial registers, zeroing out
+When it finishes, copy its output to the register numbered 
+$j+m_0+\cdots+ m_n+1$.
+Do a similar thing for the other $h_i$'s.
+Finish by copying these outputs down to the initial registers, zeroing out
 the remaining registers, and running $P_f$.
 
 The other combiner operation is primitive recursion.
@@ -8835,7 +8838,7 @@ The other combiner operation is primitive recursion.
 \end{equation*}
 Suppose that we have LOOP programs $P_g$ and~$P_h$.
 The register swapping needed is similar to what happens for composition
-so we won't discuss it. 
+so we won't go through it. 
 The program $P_f$ starts by running $P_g$. 
 Then it sets a fresh register to $0$; call that register~\codeinline{t}.
 Now it enters a loop based on the register~\codeinline{y}
@@ -8885,20 +8888,53 @@ right-hand string.
 \begin{exercise}
 Write a LOOP program that inputs two numbers and swaps them,
 so that $x,y$ becomes $y,x$.   
+\begin{answer}
+Here is the code.
+\lstinputlisting{scheme/prologue/machines/swap-two.loop} 
+And here is a sample invocation.
+\begin{lstlisting}
+jim@millstone:$ ./loop.rkt -f machines/swap-two.loop -p "1 2 3" -o 2
+2 1
+\end{lstlisting}
+\end{answer} % $
 \end{exercise}
 
 \begin{exercise}
 Argue that the LOOP language would not gain strength if it were to
 allow statements like \codeinline{r0 = r0 + 2},    
 or statements like \codeinline{r0 = 1}.    
+\begin{answer}
+We can get the effect of the first with two increments in a row,
+and we can get the effect of the second by first zeroing and then
+incrementing.  
+\end{answer}
 \end{exercise}
 
 \begin{exercise}
-The program \codeinline{shift.loop} inputs three numbers and outputs three,
-and shifts the inputs right (with zero coming in from the left).
-Write an three input/three output program that shifts left.
+The program \codeinline{rotate-shift-right.loop} inputs 
+three numbers, outputs three,
+and shifts the inputs right (with the third number ending in the first 
+register).
+Write an three input/three output program that does a 
+rotate shift left.
 Also write the program that composes the two.
 What does it compute?
+\begin{answer}
+The rotate left code is an adaptation of the rotate right code.
+\lstinputlisting{scheme/prologue/machines/rotate-shift-left.loop} 
+And here is a sample invocation.
+\begin{lstlisting}
+jim@millstone:$ ./loop.rkt -f machines/rotate-shift-left.loop -p "1 2 3" -o 3
+2 3 1
+\end{lstlisting}  % $
+Putting the two together gives this.
+\lstinputlisting{scheme/prologue/machines/concatenate-rotations.loop} 
+Here is a sample invocation.
+\begin{lstlisting}
+jim@millstone:$ ./loop.rkt -f machines/concatenate-rotations.loop -p "1 2 3" -o 3
+1 2 3
+\end{lstlisting}  % $
+\end{answer} 
 \end{exercise}
 
 \begin{exercise}

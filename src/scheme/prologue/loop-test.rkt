@@ -335,7 +335,17 @@
       (let ([data '(1 3)])
         (check-equal? (loop-without-parens pgm data) "0"))
       )
-    ) ;; close test-case  
+    ) ;; close test-case
+
+   (test-case
+    "multiple outputs"
+    (clear-regs!)
+    (output 3)
+    (let ([pgm (read-loop-pgm "shift.loop")])
+      (let ([data '(1 2 3 4)])
+        (check-equal? (loop-without-parens pgm data) "0 1 2"))
+      )
+    ) ;; close test-case
    ) ;; close suite
   ) ;; close fcn
 

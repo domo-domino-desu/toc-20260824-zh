@@ -292,6 +292,8 @@
 ;; Talk a lot, if true
 (define verbose? (make-parameter #f))
 
+(provide output)
+
 ;; For running from the command line; the "module+ main" is the Racket construct to execute code
 ;; when running from the command line but not from an importing module
 (module+ main

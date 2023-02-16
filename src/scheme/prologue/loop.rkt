@@ -39,7 +39,8 @@
 ;; Empty the registers, initialize r0 to be 0
 (define (clear-regs!)
   (set! REGISTERS (make-hash))
-  (hash-set! REGISTERS (make-reg-name 0) 0))
+  ; (hash-set! REGISTERS (make-reg-name 0) 0)
+  )
 
 (provide make-reg-name
          REGISTERS
@@ -144,15 +145,21 @@
          intr-loop
          intr-body)
 
+;; natural number -> string
+;; Return a string showing the values of the first num-registers  
+(define (show-output-registers num-registers)
+  (let ([reg-value-lst null])
+    (for ([i (in-range num-registers)])
+      (set! reg-value-lst (cons (get-reg-value (make-reg-name i)) reg-value-lst)))
+    (string-join (map number->string (reverse reg-value-lst)))))
+
 ;; The data is a list of the values to put in registers r0 r1 r2 ..
 ;; Value of a program is the value remaining in r0 at end.
 (define (interpret progr data)
-  ; (printf "interpret: progr=~s\n    data=~s\n" progr data)
   (init-regs data)
   (when (show-registers?) (show-regs))  ; for showing intial preloaded registers 
   (intr-body progr)
-  ; (printf "  interpret: REGISTERS=~s\n" REGISTERS)
-  (get-reg-value (make-reg-name 0)))
+  (show-output-registers (output)))
 
 ;; init-regs  Initialize the registers r0, r1, r2, .. to the values in data 
 (define (init-regs data)
@@ -273,6 +280,9 @@
 ;; Name of file containing the LOOP program
 (define filename (make-parameter null))
 
+;; Output this many registers
+(define output (make-parameter 1))
+
 ;; Preload these natural numbers into r0 r1 etc.
 (define preload (make-parameter null))
 
@@ -296,6 +306,8 @@
                               (display-list? #t)]
      [("-f" "--filename") loopfn "Name of file with the LOOP program, as in \"machines/simple.loop\""
                           (filename loopfn)]
+     [("-o" "--output-registers") num-registers "At end of run, show contents of  this many registers (default 1)"
+                          (output (string->number num-registers))]
      [("-p" "--preload") preloadstring "List of natural numbers to preload registers, probably quoted as in \"3 2 1\""
                           (preload (apply list (map string->number (string-split preloadstring))))]
      [("-s" "--show-registers") "Show the registers for each step"

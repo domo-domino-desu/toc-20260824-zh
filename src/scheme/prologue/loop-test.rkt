@@ -182,13 +182,15 @@
     (clear-regs!)
     (letrec ([reg-five (make-reg-name 5)]
              [reg-six (make-reg-name 6)]
-             [lp (list (list 'loop reg-five) (list (list 'incr reg-six) (list 'incr reg-six)))])
-      ;(write lp)(newline)
+             [lp (list (list 'loop reg-five (list 'incr reg-six) (list 'incr reg-six)))])
+      ; (printf "intr-loop lp=~s\n" lp)
       (set-reg-value! reg-five 2)
       (set-reg-value! reg-six 10)
       (intr-body lp)
-      (check-equal? 2 (get-reg-value reg-five))
-      (check-equal? 14 (get-reg-value reg-six))
+      (check-equal? (get-reg-value reg-five)
+                    2)
+      (check-equal? (get-reg-value reg-six)
+                    14)
       )
     )
 
@@ -213,7 +215,7 @@
     "simplest"
     (clear-regs!) 
     (let ([pgm "r0 = r0 + 1"])
-      (check-equal? (loop-without-parens pgm '(0)) 1)
+      (check-equal? (loop-without-parens pgm '(0)) "1")
       )
     )
    
@@ -221,16 +223,16 @@
     "using loops"
     (clear-regs!)
     (let ([pgm "r1 = r1 + 1\nloop r1\n  r0 = r0 + 1\nend"])
-      (check-equal? (loop-without-parens pgm '(1 2)) 4)
+      (check-equal? (loop-without-parens pgm '(1 2)) "4")
       )
     ; Nested loops
     (clear-regs!)
     (let ([pgm "loop r1\nloop r2\n  r0 = r0 + 1\nend\nend"])
-      (check-equal? (loop-without-parens pgm '(3 4 5)) 23)
+      (check-equal? (loop-without-parens pgm '(3 4 5)) "23")
       )
     (clear-regs!)
     (let ([pgm "r1 = r1 + 1\nr1 = r1 + 1\nr2 = r2 + 1\nr2 = r2 + 1\nloop r1\nloop r2\n  r0 = r0 + 1\nend\nend"])
-      (check-equal? (loop-without-parens pgm '(0 0 0)) 4)
+      (check-equal? (loop-without-parens pgm '(0 0 0)) "4")
      )
    )
 
@@ -277,13 +279,13 @@
     "comments"
     (let ([pgm "r0 = r0 + 1 # test comment"])
       (let ([data '()])
-        (check-equal? (loop-without-parens pgm data) 1)))
+        (check-equal? (loop-without-parens pgm data) "1")))
     (let ([pgm "# Test comment header\nr0 = r0 + 1"])
       (let ([data '()])
-        (check-equal? (loop-without-parens pgm data) 1)))
+        (check-equal? (loop-without-parens pgm data) "1")))
     (let ([pgm "r0 = r0 + 1\n# Test comment between commands\nr0 = r0 + 1"])
       (let ([data '()])
-        (check-equal? (loop-without-parens pgm data) 2)))
+        (check-equal? (loop-without-parens pgm data) "2")))
       ) ; close test-case
    
    (test-case
@@ -292,46 +294,46 @@
     (clear-regs!)
     (let ([pgm "r1 = r1 + 1\nr1 = r1 + 1\nloop r1\nr0 = r0 + 1\nr0 = r0 + 1\nend"])
       ; (loop-without-parens pgm '(0 0))
-      (check-equal? (loop-without-parens pgm '(0 0)) 4))
+      (check-equal? (loop-without-parens pgm '(0 0)) "4"))
     ; Addition of r0 and r1
     (let ([pgm "loop r1\nr0 = r0 + 1\nend"])
       (let ([data '(3 5)])
-        (check-equal? (loop-without-parens pgm data) 8))
+        (check-equal? (loop-without-parens pgm data) "8"))
       (let ([data '(0 0)])
-        (check-equal? (loop-without-parens pgm data) 0))
+        (check-equal? (loop-without-parens pgm data) "0"))
       (let ([data '(10 0)])
-        (check-equal? (loop-without-parens pgm data) 10))
+        (check-equal? (loop-without-parens pgm data) "10"))
       )
     ; Multiplication of r0 and r1
     (let ([pgm "loop r1\nloop r0\nr2 = r2 + 1\nend\nend\nr0 = r2"])
       (let ([data '(2 3)])
-        (check-equal? (loop-without-parens pgm data) 6))
+        (check-equal? (loop-without-parens pgm data) "6"))
       (let ([data '(5 4)])
-        (check-equal? (loop-without-parens pgm data) 20))
+        (check-equal? (loop-without-parens pgm data) "20"))
       (let ([data '(0 0)])
-        (check-equal? (loop-without-parens pgm data) 0))
+        (check-equal? (loop-without-parens pgm data) "0"))
       (let ([data '(10 0)])
-        (check-equal? (loop-without-parens pgm data) 0))
+        (check-equal? (loop-without-parens pgm data) "0"))
       )
     ; Predecessor of r0 
     (let ([pgm "loop r0\nr2 = r1\nr1 = r1 + 1\nend\nr0 = r2"])
       (let ([data '(2)])
-        (check-equal? (loop-without-parens pgm data) 1))
+        (check-equal? (loop-without-parens pgm data) "1"))
       (let ([data '(5)])
-        (check-equal? (loop-without-parens pgm data) 4))
+        (check-equal? (loop-without-parens pgm data) "4"))
       (let ([data '(0)])
-        (check-equal? (loop-without-parens pgm data) 0))
+        (check-equal? (loop-without-parens pgm data) "0"))
       )
     ; Proper subtraction
     (let ([pgm "loop r1\nr3 = 0\nloop r0\nr2 = r3\nr3 = r3 + 1\nend\nr0 = r2\nend"])
       (let ([data '(3 1)])
-        (check-equal? (loop-without-parens pgm data) 2))
+        (check-equal? (loop-without-parens pgm data) "2"))
       (let ([data '(5 2)])
-        (check-equal? (loop-without-parens pgm data) 3))
+        (check-equal? (loop-without-parens pgm data) "3"))
       (let ([data '(3 3)])
-        (check-equal? (loop-without-parens pgm data) 0))
+        (check-equal? (loop-without-parens pgm data) "0"))
       (let ([data '(1 3)])
-        (check-equal? (loop-without-parens pgm data) 0))
+        (check-equal? (loop-without-parens pgm data) "0"))
       )
     ) ;; close test-case  
    ) ;; close suite
@@ -339,8 +341,6 @@
 
 ;; Run the tests
 ;; Uncomment the tests you are working on
-; (run-tests pr-initial-functions-tests)
-; (run-tests pr-derived-functions-tests)
 ; (run-tests register-tests)
 ; (run-tests register-operations-tests)
 ; (run-tests interpret-operations-tests)

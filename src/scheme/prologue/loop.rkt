@@ -24,6 +24,8 @@
 (define REGISTERS (make-hash))
 (hash-set! REGISTERS (make-reg-name 0) 0)
 
+
+(define SHOW-REGS-INDENT 0)
 ;; no input
 ;; Show the contents of the registers
 (define (show-regs)
@@ -33,7 +35,9 @@
          [sorted-list (sort st-lst string<=? #:key car)]
          [reg-strings (map (lambda (x) (format "~a=~a" (car x) (cadr x)))
                       sorted-list)])
-    (printf "~a\n" (string-join reg-strings))))
+    (printf "~a~a\n" (make-string (* 2 SHOW-REGS-INDENT) #\ )
+            (string-join reg-strings))
+    ))
 
 ;; no input
 ;; Empty the registers, initialize r0 to be 0
@@ -112,15 +116,20 @@
 ;; list -> void
 ;; Run through a loop, based on the car of the input 
 (define (intr-loop pars)
+  (set! SHOW-REGS-INDENT (+ 1 SHOW-REGS-INDENT))
   (letrec ([reps (get-reg-value (car pars))]
 	   [body (cdr pars)]
 	   [iter (lambda (rep)
 		   (cond 
-		    ((equal? rep 0) '())
-		    (else (intr-body body)
-			  (iter (- rep 1)))))])
+		    [(equal? rep 0) (begin
+                                      (when (show-registers?)
+                                        (printf "~a--end loop--\n" (make-string (* 2 SHOW-REGS-INDENT) #\ )))
+                                      (set! SHOW-REGS-INDENT (- SHOW-REGS-INDENT 1))
+                                      '())]
+		    [else (intr-body body)
+			  (iter (- rep 1))]))])
     (when (show-registers?)
-      (printf "--start loop of ~a repetitions--\n" reps))
+      (printf "~a--start loop of ~a repetitions--\n" (make-string (* 2 SHOW-REGS-INDENT) #\ ) reps))
     (iter reps)))
 
 ;; list -> void
@@ -302,7 +311,7 @@
     (command-line
      #:usage-help 
      "Simulate a LOOP machine."
-     "Put LOOP instructions on separate lines.  You can indent, or use # as comment character."
+     "Put LOOP instructions on separate lines.  You can indent, and also use # as comment character.  (Hint: an error messsage saying \"expected a ) to close (\" means you have a loop with no matching end.)"
      #:once-each
      [("-d" "--display-list") "Display the command string that the LOOP program is translated to"
                               (display-list? #t)]

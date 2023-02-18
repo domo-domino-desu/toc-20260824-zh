@@ -8649,7 +8649,7 @@ machine.
 Very important:~changing the contents of the loop register 
 inside of the loop does not change 
 the number of times that the machine steps through that loop.
-Thus the loop show below is not an infinite loop.
+Thus the loop below is not an infinite loop.
 Instead, when it ends the value in \codeinline{r0} will be twice 
 what it was when the loop started.
 \begin{lstlisting}
@@ -8674,11 +8674,12 @@ This book's source distribution comes with
 Here is an invocation running that code.\footnote{%
   Running under Linux.}
 \begin{lstlisting}
-jim@millstone$ ./loop.rkt -f machines/plus.loop -p "3 2" -s
+jim@millstone:$ ./loop.rkt -f machines/plus.loop -p "3 2" -s
 r0=3 r1=2
---start loop of 2 repetitions--
-r0=4 r1=2
-r0=5 r1=2
+  --start loop of 2 repetitions--
+  r0=4 r1=2
+  r0=5 r1=2
+  --end loop--
 5
 \end{lstlisting}  % $
 The program options are: \codeinline{p} preloads the registers \codeinline{r0} 
@@ -8693,16 +8694,21 @@ It has a nested loop.
 \begin{lstlisting}
 jim@millstone:$ ./loop.rkt -f machines/product.loop -p "3 2" -s
 r0=3 r1=2
---start loop of 2 repetitions--
---start loop of 3 repetitions--
-r0=3 r1=2 r2=1
 r0=3 r1=2 r2=2
-r0=3 r1=2 r2=3
---start loop of 3 repetitions--
-r0=3 r1=2 r2=4
-r0=3 r1=2 r2=5
-r0=3 r1=2 r2=6
-r0=6 r1=2 r2=6
+r0=3 r1=3 r2=2
+r0=0 r1=3 r2=2
+  --start loop of 2 repetitions--
+    --start loop of 3 repetitions--
+    r0=1 r1=3 r2=2
+    r0=2 r1=3 r2=2
+    r0=3 r1=3 r2=2
+    --end loop--
+    --start loop of 3 repetitions--
+    r0=4 r1=3 r2=2
+    r0=5 r1=3 r2=2
+    r0=6 r1=3 r2=2
+    --end loop--
+  --end loop--
 6
 \end{lstlisting}  % $
 
@@ -8713,13 +8719,14 @@ which equals $x-1$ unless $x$ equals~$0$, when it equals~$0$.
 \begin{lstlisting}
 jim@millstone:$ ./loop.rkt -f machines/pred.loop -p "3" -s
 r0=3
---start loop of 3 repetitions--
-r0=3 r1=0 r2=0
-r0=3 r1=1 r2=0
-r0=3 r1=1 r2=1
-r0=3 r1=2 r2=1
-r0=3 r1=2 r2=2
-r0=3 r1=3 r2=2
+  --start loop of 3 repetitions--
+  r0=3 r1=0 r2=0
+  r0=3 r1=1 r2=0
+  r0=3 r1=1 r2=1
+  r0=3 r1=2 r2=1
+  r0=3 r1=2 r2=2
+  r0=3 r1=3 r2=2
+  --end loop--
 r0=2 r1=3 r2=2
 2
 \end{lstlisting}  % $
@@ -8730,23 +8737,26 @@ when the outcome is~$0$.
 \begin{lstlisting}
 jim@millstone:$ ./loop.rkt -f machines/proper-sub.loop -p "3 2" -s
 r0=3 r1=2
---start loop of 2 repetitions--
-r0=3 r1=2 r3=0
---start loop of 3 repetitions--
-r0=3 r1=2 r2=0 r3=0
-r0=3 r1=2 r2=0 r3=1
-r0=3 r1=2 r2=1 r3=1
-r0=3 r1=2 r2=1 r3=2
-r0=3 r1=2 r2=2 r3=2
-r0=3 r1=2 r2=2 r3=3
-r0=2 r1=2 r2=2 r3=3
-r0=2 r1=2 r2=2 r3=0
---start loop of 2 repetitions--
-r0=2 r1=2 r2=0 r3=0
-r0=2 r1=2 r2=0 r3=1
-r0=2 r1=2 r2=1 r3=1
-r0=2 r1=2 r2=1 r3=2
-r0=1 r1=2 r2=1 r3=2
+  --start loop of 2 repetitions--
+  r0=3 r1=2 r3=0
+    --start loop of 3 repetitions--
+    r0=3 r1=2 r2=0 r3=0
+    r0=3 r1=2 r2=0 r3=1
+    r0=3 r1=2 r2=1 r3=1
+    r0=3 r1=2 r2=1 r3=2
+    r0=3 r1=2 r2=2 r3=2
+    r0=3 r1=2 r2=2 r3=3
+    --end loop--
+  r0=2 r1=2 r2=2 r3=3
+  r0=2 r1=2 r2=2 r3=0
+    --start loop of 2 repetitions--
+    r0=2 r1=2 r2=0 r3=0
+    r0=2 r1=2 r2=0 r3=1
+    r0=2 r1=2 r2=1 r3=1
+    r0=2 r1=2 r2=1 r3=2
+    --end loop--
+  r0=1 r1=2 r2=1 r3=2
+  --end loop--
 1
 \end{lstlisting}  % $
 
@@ -8792,7 +8802,7 @@ It starts with
  f(x_0,\ldots x_n),
  \quad
  h_0(y_{0,0},\ldots y_{0,m_0}),
- \quad\ldots\quad\text{and}\quad
+ \quad\ldots\quad
  h_n(y_{n,0},\ldots y_{n,m_n})
 \end{equation*}
 % $f(x_0,\ldots,x_n)$ 
@@ -8857,31 +8867,30 @@ It works by
 replacing the \textsc{C}-like syntax  used above 
 with a \textsc{LISP}-ish one.
 For instance, the interpreter 
-converts the string input on the left for a string on the right.
+converts the string input on the left to the string on the right.
 \begin{center}
   \begin{minipage}[t]{0.4\linewidth}
-    \begin{lstlisting}
+\begin{lstlisting}
 r1 = r1 + 1
 loop r1
   r0 = r0 + 1
   end
-    \end{lstlisting}
+\end{lstlisting}
   \end{minipage}
   \qquad
   \begin{minipage}[t]{0.4\linewidth}
-    \begin{lstlisting}
+\begin{lstlisting}
 ((incr r1) (loop r1 (incr r0)))      
-    \end{lstlisting}
+\end{lstlisting}
   \end{minipage}
 \end{center}
 The advantage of this switch is that the parentheses
-automatically match the beginning of a \codeinline{loop} with its 
-\codeinline{end}. 
-Thus the interpreter does not need a stack to keep track of 
-loop nesting (or at least not an explicit one).
-Then \codeinline{loop.rkt} computes the answer by 
-running the \codeinline{eval} command on the
-right-hand string. 
+automatically match the beginning of each \codeinline{loop} with its 
+\codeinline{end} and
+thus the interpreter code does not need a stack to keep track of 
+loop nesting.
+With the string on the right, \codeinline{loop.rkt} computes the answer by 
+running the \codeinline{eval} command on it. 
 
 
 \begin{exercises}
@@ -8938,10 +8947,23 @@ jim@millstone:$ ./loop.rkt -f machines/concatenate-rotations.loop -p "1 2 3" -o 
 \end{exercise}
 
 \begin{exercise}
-After the operations $\plus(x,y)$ and $\product(x,y)$
+In Ackermann's function,
+after the operations $\plus(x,y)$ and $\product(x,y)$
 comes $\power(x,y)$.
 Write a LOOP program for it.
+\begin{answer}
+Here is a program.
+\lstinputlisting{scheme/prologue/machines/power.loop} 
+And here are two sample invocations.
+\begin{lstlisting}
+jim@millstone:$ ./loop.rkt -f machines/power.loop -p "3 2"
+9
+jim@millstone:$ ./loop.rkt -f machines/power.loop -p "3 0"
+1
+\end{lstlisting}
+\end{answer} % $
 \end{exercise}
+
 \end{exercises}
 \index{LOOP program|)}
 

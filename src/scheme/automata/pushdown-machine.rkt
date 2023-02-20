@@ -281,24 +281,24 @@
 (define (string->string-list s)
   (map string (string->list s)))
 
-(define (yield-star pdm tau #:limit 500)
+(define (yield-star pdm tau [limit 500])
   (do
-      ([step 0 (add1 step)]
+      ([s 0 (add1 s)]
        [config (make-config 0
                             (apply make-tape (string->string-list tau))
                             (make-stack))
                (step pdm config)]
        [history '() (cons config history)])
     ((or
-      (= step limit)
+      (= s limit)
       (equal? config HALT)
-      (equal? config ERROR)) (if (= step limit)
+      (equal? config ERROR)) (if (= s limit)
                                  (cons LIMIT-REACHED history)
                                  (cons config history))
                                (reverse history)))
     ; (printf "next config ~a\n" config)
     ; (printf "  history ~a\n" history)
-    ))
+    )
 
 (define (show-yield-star pdm tau)
   (let ([strs (map configuration->string (yield-star pdm tau))])

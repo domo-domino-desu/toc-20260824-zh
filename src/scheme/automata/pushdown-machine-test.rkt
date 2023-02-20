@@ -190,7 +190,7 @@
 (test-case
  "Test show-yield-star"
  (let ([tau "[[]]"])
-   (map writeln (show-yield-star pdm1 tau))))
+   (display (string-join (map (lambda (x) (format "~a\n" x)) (show-yield-star pdm1 tau))))))
 ;;
 ;(test-case
 ; "Test run, on a longer input string"

@@ -8601,13 +8601,21 @@ loops.
 \begin{theorem}[Meyer and Ritchie, 1967]\index{Ritchie, D}
 A function is primitive recursive if and only if it can be computed 
 without using unbounded loops.
-More precisely, these are loops where we can compute in advance, 
+More precisely, it is limited to 
+loops where we can compute in advance, 
 using only primitive recursive functions,
 how many iterations will occur.
 \end{theorem}
 
 % Picture: http://www.zdnet.com/article/without-dennis-ritchie-there-would-be-no-jobs/
-\margingraphic{0.21\textwidth}{prologue/pix/ritchie.jpg}{\label{fig:ritchie}\href{https://en.wikipedia.org/wiki/Dennis_Ritchie}{Dennis Ritchie 1941--2011, inventor of C}}\index{Ritchie, D!picture}
+\begin{wrapfigure}{l}[3em]{0.21\textwidth}
+  \centering
+  \includegraphics[width=0.21\textwidth]{prologue/pix/MayerA_PortraitSimple152752.jpg}% 
+  \vspace*{1ex}
+  \includegraphics[width=0.21\textwidth]{prologue/pix/ritchie.jpg}% 
+  \caption{\label{fig:mayer}\href{https://en.wikipedia.org/wiki/Albert_R._Meyer}{Albert Meyer b~1941} and \label{fig:ritchie}\href{https://en.wikipedia.org/wiki/Dennis_Ritchie}{Dennis Ritchie 1941--2011 (inventor of C)}}\index{Ritchie, D!picture}\index{Meyer, A!picture}
+\end{wrapfigure}
+%\margingraphic[l]{0.21\textwidth}{prologue/pix/ritchie.jpg}{\label{fig:ritchie}\href{https://en.wikipedia.org/wiki/Dennis_Ritchie}{Dennis Ritchie 1941--2011, inventor of C}}\index{Ritchie, D!picture}
 We will show half of this, that if a function is primitive recursive
 then we can compute it using only bounded loops.
 We will do it by programming the primitive recursive functions 
@@ -8616,6 +8624,8 @@ in a language, called \citetext{\definend{LOOP}}{%
 that does not have unbounded loops.
 (Proof of the converse is outside our scope.)
 
+% Picture from web page https://people.csail.mit.edu/meyer/; permission from A Meyer via email 2023-Feb-20 
+%\margingraphic{0.21\textwidth}{prologue/pix/MayerA_PortraitSimple152752.jpg}{\label{fig:mayer}\href{https://en.wikipedia.org/wiki/Albert_R._Meyer}{Albert Meyer b~1941}}\index{Meyer, A!picture}
 Programs in LOOP\index{LOOP!program} execute on a machine model with registers
 \codeinline{r0}, \codeinline{r1}, \ldots\ 
 that hold natural numbers.
@@ -8649,20 +8659,21 @@ machine.
 Very important:~changing the contents of the loop register 
 inside of the loop does not change 
 the number of times that the machine steps through that loop.
-Thus the loop below is not an infinite loop.
-Instead, when it ends the value in \codeinline{r0} will be twice 
-what it was when the loop started.
+Thus what's below is not an infinite loop.
+Instead,
+when the loop ends the value in \codeinline{r0} will be twice 
+what it was when the loop began.
 \begin{lstlisting}
 loop r0 
   r0 = r0 + 1
   end  
 \end{lstlisting}
 
-We want to interpret LOOP programs as computing functions. 
-So we need a convention for input and output.
+To interpret LOOP programs as computing functions 
+we need a convention for input and output.
 Where the function takes $n$ inputs, 
-we will preload those inputs into the the first $n$~registers.
-Similarly, where the function has $m$ outputs, 
+we will preload those inputs into the the machine's first $n$~registers.
+Similarly, where the function has $m$ outputs 
 we take those 
 to be the final values of the first $m$~registers.
 
@@ -8785,8 +8796,8 @@ by the one-line \codeinline{r0 = r0 + 1}.
 Projection $\projection_i(x_0,\ldots x_i,\ldots x_{n-1})=x_i$
 is computed by \codeinline{r0 = r}$i$.
 
-The composition of two functions is straightforward.
-let $g(x_0,\ldots x_n)$ and $f(y_0,\ldots y_m)$ be  
+Composition is straightforward for two functions.
+Let $g(x_0,\ldots x_n)$ and $f(y_0,\ldots y_m)$ be  
 computed by LOOP programs $P_g$ and $P_f$. 
 Suppose that the bookkeeping of the composition $\composed{f}{g}$ is right, that
 $g$ is an $m$-output function to match the number of $f$'s inputs.
@@ -8796,8 +8807,7 @@ of $P_f$, gives the desired LOOP program for composition,
 since it uses the output of~$g$  
 as input to compute the action of~$f$.
 
-General composition is a little more involved.
-It starts with
+General composition starts with
 \begin{equation*}
  f(x_0,\ldots x_n),
  \quad
@@ -8809,24 +8819,25 @@ It starts with
 % and $h_0(y_{0,0},\ldots,y_{0,m_0})$, \ldots  $h_n(y_{n,0},\ldots,y_{n,m_n})$
 and produces
 $f(h_0(y_{0,0},\ldots y_{0,m_0}),\ldots h_n(y_{n,0},\ldots y_{n,m_n}))$.
+This needs a little more thought than the two-function case.
 
 The issue is that
 were we to load  the inputs $y_{0,0}$, \ldots{} $y_{n,m_n}$ into the registers
 \codeinline{r0}, \codeinline{r1}, \ldots{} and then immediately begin
 computing $h_0$, there would be a danger of
 overwriting the inputs for $h_1$.
-(For instance, \codeinline{rotate-shift-right.loop}
+(For instance, \codeinline{rotate-shift-right.loop} above
 uses an extra register, \codeinline{r3}, beyond those used
 to store inputs.)
 So we must move those inputs out of the way.
 Let $P_f$, $P_{h_0}$, \ldots{} $P_{h_n}$ 
 be LOOP programs to compute the functions.
 Each uses a limited number of registers
-and thus there is an index~$j$ large enough that no program uses 
+and thus there is a number~$j$ so large that no program uses 
 register~$j$.
-By definition, the program~$P$ to compute the composition will 
-be given the sequence of inputs starting in the register numbered~$0$.
-The first step is to copy these inputs to start in the register numbered~$j$.
+By definition, the program~$P$ to compute the composition  
+gets the sequence of inputs starting in the register numbered~$0$.
+The first step is to copy these inputs to start in the register~$j$.
 % (the final member will be copied to just before
 % the register numbered $(m_0+1)+\cdots+(m_n+1)$).
 Next, zero out the registers below register~$j$, copy $h_0$'s arguments down
@@ -8856,10 +8867,8 @@ Now it enters a loop based on the register~\codeinline{y}
 $y-1$, etc.).
 The body of the loop computes 
 $f(x_0,\ldots x_{k-1},t+1)=h(f(x_0,\ldots x_{k-1},t),\,x_0,\ldots x_{k-1},t)$
-by running~$P_h$, and then it increments \codeinline{t}. 
-
-Therefore, if a function is primitive recursive then it is computed by a LOOP
-program.
+by running~$P_h$, and then incrementing~\codeinline{t}. 
+That ends the argument.
 
 We close with a remark on an interesting aspect of \codeinline{loop.rkt},
 the interpreter for LOOP.
@@ -8887,10 +8896,10 @@ loop r1
 The advantage of this switch is that the parentheses
 automatically match the beginning of each \codeinline{loop} with its 
 \codeinline{end} and
-thus the interpreter code does not need a stack to keep track of 
-loop nesting.
+thus we don't have to write into the interpreter some code including 
+a stack to keep track of loop nesting.
 With the string on the right, \codeinline{loop.rkt} computes the answer by 
-running the \codeinline{eval} command on it. 
+running it through the \codeinline{eval} command. 
 
 
 \begin{exercises}

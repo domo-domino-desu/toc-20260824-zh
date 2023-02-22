@@ -338,73 +338,65 @@
          show-yield-star)
 ;         decide)
 ;
-;;; ======================================================
-;;; Read machine from a file
-;;; string->instruction  Convert a string, a line from the file, to a single instruction
-;(define (current-state-string->number s)
-;  (if (eq? #\( (string-ref s 0))   ;; allow instr to start with (
-;      (string->number (substring s 1))
-;      (string->number s)))
-;(define (current-symbol-string->char s)
-;  (string-ref s 0))
-;(define (next-state-string->number s)
-;  (if (eq? #\) (string-ref s (- (string-length s) 1))) ;; ends with )?
-;      (string->number (substring s 0 (- (string-length s) 1)))
-;      (string->number s)))
-;(define (string->instruction s)
-;  (let* ([instruction (string-split (string-trim s))]
-;         [current-state (current-state-string->number (first instruction))]
-;         [current-symbol (current-symbol-string->char (second instruction))]
-;         [next-state (next-state-string->number (third instruction))])
-;    (list current-state
-;          current-symbol
-;          next-state)))
-;
-;(provide string->instruction)
-;
-;;; ........................
-;;; Command line to invoke this program
-;
-;(define verbose? (make-parameter #f))
-;(define fsm-filename (make-parameter null))
-;(define inputstring (make-parameter ""))  
-;; (define statelimit (make-parameter "1000")) ;; max number of steps simulator runs
-;
-;(define command-line-parser
-;  (command-line
-;   #:usage-help 
-;   "Simulate a Finite State machine."
-;   "Put instructions like `state-number current-char next-state-number' on separate lines."
-;   #:once-each
-;   [("-v" "--verbose") "Verbose mode" (verbose? #t)]
-;   [("-f" "--filename") fsmfn "Name of file with the Finite State machine" (fsm-filename fsmfn)]
-;   [("-i" "--input-string") in-st "String giving nonblank tape contents" (inputstring in-st)]
-;   ; [("-s" "--statelimit") slmt "Number of steps to run" (statelimit slmt)]
-;   #:args  () (void)))
-;
-;(define FSM-LINES '())  ;; list of file lines, one string per instruction
-;;; This is for allowing input from the command line
-;(if (null? (fsm-filename))
-;    (set! FSM-LINES '())
-;    (set! FSM-LINES (file->lines (fsm-filename) #:mode 'text #:line-mode 'any)))
-;
-;;; for debugging:
-;;FSM-LINES
-;
-;;; Return the list with the last element omitted
-;(define (omit-last-element lst)
-;  (reverse (cdr (reverse lst))))
-;
-;;; Note that empty lines give an error in the TM
-;;(unless (non-empty-string? (last FSM-LINES))
-;;  (fprintf (current-output-port)
-;;           "File ~s: Trailing empty string will cause an error.  Delete it.\n"
-;;           (fsm-filename)))
-;
-;;; Return a list of instructions
-;(define FSM (for/list ([line FSM-LINES])
-;                 (string->instruction line)))
-;FSM
-;
-;
-;(run FSM (inputstring))
+;; ============= Running from the command line =========
+;; Gratitude to https://jackwarren.info/posts/guides/racket/racket-command-line/
+
+;; Parameters with defaults
+
+;; Name of file containing the program
+(define filename (make-parameter null))
+
+;; At each step show the registers, if true
+(define show-steps? (make-parameter #f))
+
+;; Input tape, list of instruction strings
+(define tape (make-parameter null))
+
+;; Talk a lot, if true
+(define verbose? (make-parameter #f))
+
+(provide tape)
+
+
+;; string -> list of strings
+(define (split-input-tape t)
+  (let* ([lines (string-split t "\n")]
+         [trimmed-lines (map string-trim lines)])
+    trimmed-lines))
+
+(provide split-input-tape)
+
+;; For running from the command line; the "module+ main" is the Racket construct to execute code
+;; when running from the command line but not from an importing module
+(module+ main
+
+  (define command-line-parser
+    (command-line
+     #:usage-help 
+     "Simulate a Pushdown machine."
+     "Put instructions on separate lines.  You can indent, and also use # as comment character.  (Hint: an error messsage saying \"expected a ) to close (\" means you have a loop with no matching end.)"
+     #:once-each
+     [("-f" "--filename") program-fn "Name of file with the program, as in \"machines/simple.pdm\""
+                          (filename program-fn)]
+     [("-s" "--show-steps") "Show the registers for each step"
+                                (show-steps? #t)]
+     [("-t" "--tape") tapelist "Input tape, string of space-separated tokens"
+                          (filename tapelist)]
+     [("-v" "--verbose") "Verbose mode" (verbose? #t)]
+     #:args  () (void)))
+
+  (when (verbose?)
+    (begin
+      (show-steps? #t)
+      ))
+  
+  ;; Read the file with the program
+  (define PDM-LINES '())  ;; list of file lines, one string per instruction
+  ; (printf "filename=~s\n" filename)
+  (if (null? (filename))
+    (set! PDM-LINES "") ;; should instead fail?
+    (set! PDM-LINES
+          (port->string (open-input-file (filename)) #:close? #t)))
+
+  (printf "~a\n" (run PDM-LINES (tape)))  ; print the result to stdout
+)

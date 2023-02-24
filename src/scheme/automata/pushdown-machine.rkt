@@ -351,19 +351,19 @@
 ;             members of Gamma union BOT as strings with at least one a-z, A-Z, 0-9, or _
 ;             members of Gamma * as a list "( ... )" where the ... is a space-separated list of members of Gamma 
 ; (define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([\\w]+)\\s*([\\d]+)\\s*\\((.*?)\\)\\s*(\\#.*)?$")
-(define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([\\d]+)\\s*\\(([a-zA-Z0-9 \\]\\[]+)\\)\\s*(\\#.*)?$")
+(define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([a-zA-Z0-9\\]\\[]+)\\s*([\\d]+)\\s*\\(([a-zA-Z0-9 \\]\\[]*)\\)\\s*(\\#.*)?$")
 
 ; list of strings -> instruction
 ; Turn the five-long list of strings m into an instruction
 (define (parse-make-instruction m)
-  (let ([present-state (string->number (first m))]
-        [present-tape-token (second m)]
-        [present-stack-token (third m)]
-        [next-state (string->number (fourth m))]
-        [next-stack-list (string-split (fifth m))])
+  (let ([present-state (string->number (first (car m)))]
+        [present-tape-token (second (car m))]
+        [present-stack-token (third (car m))]
+        [next-state (string->number (fourth (car m)))]
+        [next-stack-list (string-split (fifth (car m)))])
     (make-instruction present-state present-tape-token present-stack-token next-state next-stack-list)))
 
-;; string -> instruction or nil (if a comment line or a line that doesn't parse)
+;; string -> instruction or nil (if a comment line or a blank line or a line that doesn't parse)
 (define (parse-one-line lne)
   (let ([instruction '()])
     (cond
@@ -371,6 +371,7 @@
        '()]
       [(regexp-match? LINE-REGEXP lne)
        (let ([m (regexp-match* LINE-REGEXP lne #:match-select cdr)])
+         (printf "m=~s\n" m)
          (set! instruction (parse-make-instruction m)))]
       [else
        (printf "ERROR! line does not parse: ~s" lne)]
@@ -427,7 +428,8 @@
     (command-line
      #:usage-help 
      "Simulate a Pushdown machine."
-     "Put instructions on separate lines.  You can indent, and also use # as comment character.  (Hint: an error messsage saying \"expected a ) to close (\" means you have a loop with no matching end.)"
+     "Put instructions on separate lines.  You can indent, and also use # as comment character."
+     "An instruction is a five-tuple: natural number, tape symbol or B or EPSILON, stack symbol or BOT, natural number, list of stack symbols in parens.  Typical: 0 a G0 1 (G0 G1)."
      #:once-each
      [("-f" "--filename") program-fn "Name of file with the program, as in \"machines/simple.pdm\""
                           (filename program-fn)]

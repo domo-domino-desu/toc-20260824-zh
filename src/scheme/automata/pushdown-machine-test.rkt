@@ -245,9 +245,28 @@
     (regexp-match? EMPTY-LINE-REGEXP "# test comment line")
     (regexp-match? EMPTY-LINE-REGEXP "")
     (regexp-match? EMPTY-LINE-REGEXP "   ")
-    (let ([line "0 [ ] 1 (G0 G1)"])
+    (let ([line "0 [ G0 1 (G0 G1)"])
+      (check-true (regexp-match? LINE-REGEXP line)))
+    (let ([line "0 B  G0 (G0 G1)"])
+      (check-true (regexp-match? LINE-REGEXP line)))
+    (let ([line "0 [ ] 1 (G0 G1) # test of comment"])
+      (check-true (regexp-match? LINE-REGEXP line)))
+    (let ([line "0 [ ] 1 (G0) # length one stack push"])
+      (check-true (regexp-match? LINE-REGEXP line)))
+    (let ([line "0 [ ] 1 () # length zero stack push"])
       (check-true (regexp-match? LINE-REGEXP line)))
     )
+
+   (test-case
+    "Test parse-one-line"
+    (let* ([line "0 [ G0 1 (G0 G1)"]
+           [inst (parse-one-line line)])
+      (check-equal? (get-present-state inst) 0)
+      (check-equal? (get-present-tape-char inst) "[")
+      (check-equal? (get-present-stack-char inst) "G0")
+      (check-equal? (get-next-state inst) 1)
+      (check-equal? (get-push-stack-list inst) '("G0" "G1"))
+      ))
    
    )) ;; end parse file suite and tests
 

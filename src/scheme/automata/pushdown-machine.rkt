@@ -55,7 +55,7 @@
       (first tape-list)))
 
 ; list of characters  ->  list of characters
-; Return the tape with the read head moved.
+; Return the tape with the read head moved to the right.
 (define (tape-shift tape-list)
   (cdr tape-list))
 
@@ -160,7 +160,7 @@
              [state-string (string-append "q" (number->string state-number))]
              [tape-string (string-join (get-tape-list config))]
              [stack-string (string-join (get-stack-list config))])
-        (string-append state-string ", tape=" tape-string ", stack=" stack-string))))
+        (string-append state-string ", tape= " tape-string ", stack= " stack-string))))
 
 (provide make-config
          get-current-state
@@ -302,7 +302,7 @@
 
 (define (show-yield-star pdm tau)
   (let ([strs (map configuration->string (yield-star pdm tau))])
-    strs))
+    (map (lambda (x) (printf "~s\n" x)) strs)))
 
 ; pushdown-machine string  ->  integer
 ; Run the steps in the computation of the pushdown machine
@@ -337,6 +337,53 @@
          yield-star
          show-yield-star)
 ;         decide)
+
+;; ===== Parse file containing a machine
+
+;; Regular expressions used to parse the lines
+
+; ; Allow # as a comment character
+(define EMPTY-LINE-REGEXP #px"^\\s*(\\#.*)?$")
+
+; The defn says Delta maps Q x (Sigma union {B, epsilon}) x (Gamma union BOT) to Q x Gamma^*
+; I interpret members of Q as natural numbers,
+;             members of Sigma union {B, epsilon} as strings with at least one a-zA-Z or ] or [ or ) or (
+;             members of Gamma union BOT as strings with at least one a-z, A-Z, 0-9, or _
+;             members of Gamma * as a list "( ... )" where the ... is a space-separated list of members of Gamma 
+(define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([\\w]+)\\s*([\\d]+)\\s*\\((.*?)\\)\\s*(\\#.*)?$")
+
+; list of strings -> instruction
+; Turn the five-long list of strings m into an instruction
+(define (parse-make-instruction m)
+  (let ([present-state (string->number (first m))]
+        [present-tape-token (second m)]
+        [present-stack-token (third m)]
+        [next-state (string->number (fourth m))]
+        [next-stack-list (string-split (fifth m))])
+    (make-instruction present-state present-tape-token present-stack-token next-state next-stack-list)))
+
+;; string -> instruction or nil (if a comment line or a line that doesn't parse)
+(define (parse-one-line lne)
+  (let ([instruction '()])
+    (cond
+      [(regexp-match? EMPTY-LINE-REGEXP lne)
+       '()]
+      [(regexp-match? LINE-REGEXP lne)
+       (let ([m (regexp-match* LOOP-REGEXP lne #:match-select cdr)])
+         (set! instruction (parse-make-instruction m)))]
+      [else
+       (printf "ERROR! line does not parse: ~s" lne)]
+      )
+    instruction
+    ))
+  
+;; list of strings -> list of instructions
+(define (parse file-contents)
+  (let ([machine ()])
+    )
+  )
+
+
 ;
 ;; ============= Running from the command line =========
 ;; Gratitude to https://jackwarren.info/posts/guides/racket/racket-command-line/

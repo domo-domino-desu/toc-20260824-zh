@@ -230,29 +230,18 @@
    (test-case
     "Test show-yield-star"
     (let ([tau "[[]]"])
-      (display (string-join (map (lambda (x) (format "~a\n" x)) (show-yield-star pdm1 tau))))))
-;;
-;(test-case
-; "Test run, on a longer input string"
-; (printf "\n===Doing run===")
-; (let* ([sigma "10011"])
-;   (check = 3 (run fsm2 sigma))))
-;
-;(test-case
-; "Test run, on an empty input string"
-; (printf "\n===Doing run===")
-; (let* ([sigma ""])
-;   (check = 0 (run fsm1 sigma))))
+      (show-yield-star pdm1 tau)
+      ))
    )) ;; end yield-star suite and tests
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-(run-tests tape-making-tests)
-(run-tests stack-making-tests)
-(run-tests config-tests)
-(run-tests machine-making-tests)
-(run-tests delta-tests)
-(run-tests step-tests)
-(run-tests yield-star)
+;(run-tests tape-making-tests)
+;(run-tests stack-making-tests)
+;(run-tests config-tests)
+;(run-tests machine-making-tests)
+;(run-tests delta-tests)
+;(run-tests step-tests)
+(run-tests yield-star-tests)
 ;#|
 ;|#

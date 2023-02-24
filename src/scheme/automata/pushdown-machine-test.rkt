@@ -235,6 +235,23 @@
    )) ;; end yield-star suite and tests
 
 
+;; ===== parse file
+(define parse-file-tests
+  (test-suite
+   "test parsing a file"
+
+   (test-case
+    "Test regexp's"
+    (regexp-match? EMPTY-LINE-REGEXP "# test comment line")
+    (regexp-match? EMPTY-LINE-REGEXP "")
+    (regexp-match? EMPTY-LINE-REGEXP "   ")
+    (let ([line "0 [ ] 1 (G0 G1)"])
+      (check-true (regexp-match? LINE-REGEXP line)))
+    )
+   
+   )) ;; end parse file suite and tests
+
+
 ;; ===== Run the tests; comment out ones not being worked-on
 ;(run-tests tape-making-tests)
 ;(run-tests stack-making-tests)
@@ -242,6 +259,5 @@
 ;(run-tests machine-making-tests)
 ;(run-tests delta-tests)
 ;(run-tests step-tests)
-(run-tests yield-star-tests)
-;#|
-;|#
+; (run-tests yield-star-tests)
+(run-tests parse-file-tests)

@@ -350,7 +350,8 @@
 ;             members of Sigma union {B, epsilon} as strings with at least one a-zA-Z or ] or [ or ) or (
 ;             members of Gamma union BOT as strings with at least one a-z, A-Z, 0-9, or _
 ;             members of Gamma * as a list "( ... )" where the ... is a space-separated list of members of Gamma 
-(define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([\\w]+)\\s*([\\d]+)\\s*\\((.*?)\\)\\s*(\\#.*)?$")
+; (define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([\\w]+)\\s*([\\d]+)\\s*\\((.*?)\\)\\s*(\\#.*)?$")
+(define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([\\d]+)\\s*\\(([a-zA-Z0-9 \\]\\[]+)\\)\\s*(\\#.*)?$")
 
 ; list of strings -> instruction
 ; Turn the five-long list of strings m into an instruction
@@ -369,7 +370,7 @@
       [(regexp-match? EMPTY-LINE-REGEXP lne)
        '()]
       [(regexp-match? LINE-REGEXP lne)
-       (let ([m (regexp-match* LOOP-REGEXP lne #:match-select cdr)])
+       (let ([m (regexp-match* LINE-REGEXP lne #:match-select cdr)])
          (set! instruction (parse-make-instruction m)))]
       [else
        (printf "ERROR! line does not parse: ~s" lne)]
@@ -378,11 +379,16 @@
     ))
   
 ;; list of strings -> list of instructions
-(define (parse file-contents)
-  (let ([machine ()])
-    )
-  )
+;(define (parse file-contents)
+;  (let ([machine ()])
+;    )
+;  )
 
+
+(provide EMPTY-LINE-REGEXP
+         LINE-REGEXP
+         parse-make-instruction
+         parse-one-line)
 
 ;
 ;; ============= Running from the command line =========

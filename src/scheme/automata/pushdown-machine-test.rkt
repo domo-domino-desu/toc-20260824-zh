@@ -151,7 +151,7 @@
     "Make a nontrivial pushdown machine"
     (let* ([p (pdm-create)]
            [inst (make-instruction 0 A G0 1 (list G1 G2))]
-           [p1 (pdm-add-to p inst)])
+           [p1 (pdm-append p inst)])
       (check = 1 (length p1))
       ))
    )) ;; end machine making suite and tests
@@ -234,8 +234,17 @@
       ))
    )) ;; end yield-star suite and tests
 
-
 ;; ===== parse file
+;; string -> string
+;; From the .loop filename, return the string of that file
+;;   filename  string  Name of .loop file, without directory and including the .loop
+(define MACHINE-DIR "machines/")  ; subdirectory holding the .pdm files
+
+;; string -> string
+;; Get contents of file as one long string
+(define (read-pgm-file filename)
+  (port->string (open-input-file (string-append MACHINE-DIR filename)) #:close? #t))
+
 (define parse-file-tests
   (test-suite
    "test parsing a file"
@@ -266,7 +275,50 @@
       (check-equal? (get-present-stack-char inst) "G0")
       (check-equal? (get-next-state inst) 1)
       (check-equal? (get-push-stack-list inst) '("G0" "G1"))
-      ))
+      )
+    (let* ([line "0 [ G0 1 (G0 G1) # aba"]  ; with comment
+           [inst (parse-one-line line)])
+      (check-equal? (get-present-state inst) 0)
+      (check-equal? (get-present-tape-char inst) "[")
+      (check-equal? (get-present-stack-char inst) "G0")
+      (check-equal? (get-next-state inst) 1)
+      (check-equal? (get-push-stack-list inst) '("G0" "G1"))
+      )
+    (let* ([line "0 [ G0 1 (G0)"]  ; one thing in the list
+           [inst (parse-one-line line)])
+      (check-equal? (get-present-state inst) 0)
+      (check-equal? (get-present-tape-char inst) "[")
+      (check-equal? (get-present-stack-char inst) "G0")
+      (check-equal? (get-next-state inst) 1)
+      (check-equal? (get-push-stack-list inst) '("G0"))
+      )
+    (let* ([line "0 [ G0 1 ()"]   ; nothing in the list
+           [inst (parse-one-line line)])
+      (check-equal? (get-present-state inst) 0)
+      (check-equal? (get-present-tape-char inst) "[")
+      (check-equal? (get-present-stack-char inst) "G0")
+      (check-equal? (get-next-state inst) 1)
+      (check-equal? (get-push-stack-list inst) '())
+      )
+    )
+
+   (test-case
+    "Test parse"
+    (printf "pgm-file=~s\n" (read-pgm-file "balanced-parens.pdm"))
+    (printf "  (string-split pgm-file=~s\n" (string-split (read-pgm-file "balanced-parens.pdm") "\n"))
+    (let ([file-contents '("# balanced-parens.pdm  Pushdown machine to accept balanced parens"
+                           "0 [ BOT 0 (G0 BOT)"
+                           "0 [ G0  0 (G0 G0)"
+                           "0 ] G0  0 ()"
+                           "0 ] BOT 2 ()"
+                           "0 INPUTEND BOT 1 ()")])
+      (printf "  parse returns ~s\n" (parse file-contents)))
+;    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
+;           [pdm (parse file-contents)])
+;      ; (printf "~s\n" file-contents)
+;      (check-equal? (string-length pdm) 5))
+    )
+   
    
    )) ;; end parse file suite and tests
 
@@ -275,7 +327,7 @@
 ;(run-tests tape-making-tests)
 ;(run-tests stack-making-tests)
 ;(run-tests config-tests)
-;(run-tests machine-making-tests)
+; (run-tests machine-making-tests)
 ;(run-tests delta-tests)
 ;(run-tests step-tests)
 ; (run-tests yield-star-tests)

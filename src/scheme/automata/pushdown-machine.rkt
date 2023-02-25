@@ -201,7 +201,7 @@
 
 ; pushdown-machine instruction  ->  pushdown-machine
 ; Add the instruction to the machine 
-(define (pdm-add-to pdm instruction)
+(define (pdm-append pdm instruction)
   (reverse (cons instruction (reverse pdm)))) ; convenient for debugging to retain order
 
 (provide make-instruction
@@ -211,7 +211,7 @@
          get-next-state
          get-push-stack-list
          pdm-create
-         pdm-add-to)
+         pdm-append)
 
 
 ;; =============================
@@ -371,7 +371,6 @@
        '()]
       [(regexp-match? LINE-REGEXP lne)
        (let ([m (regexp-match* LINE-REGEXP lne #:match-select cdr)])
-         (printf "m=~s\n" m)
          (set! instruction (parse-make-instruction m)))]
       [else
        (printf "ERROR! line does not parse: ~s" lne)]
@@ -380,16 +379,23 @@
     ))
   
 ;; list of strings -> list of instructions
-;(define (parse file-contents)
-;  (let ([machine ()])
-;    )
-;  )
+(define (parse file-contents)
+  (let ([pdm (pdm-create)])
+    (printf "  parse: pdm=~s\n" pdm)
+    (for* ([line file-contents]
+           [inst (parse-one-line line)]
+           #:when (not (null? inst)))
+      (set! pdm (pdm-append pdm inst))
+      (printf "  parse: pdm=~s\n" pdm))
+    pdm)
+  )
 
 
 (provide EMPTY-LINE-REGEXP
          LINE-REGEXP
          parse-make-instruction
-         parse-one-line)
+         parse-one-line
+         parse)
 
 ;
 ;; ============= Running from the command line =========
@@ -429,14 +435,14 @@
      #:usage-help 
      "Simulate a Pushdown machine."
      "Put instructions on separate lines.  You can indent, and also use # as comment character."
-     "An instruction is a five-tuple: natural number, tape symbol or B or EPSILON, stack symbol or BOT, natural number, list of stack symbols in parens.  Typical: 0 a G0 1 (G0 G1)."
+     "An instruction is a five-tuple: natural number, tape symbol or B or epsilon, stack symbol or BOT, natural number, list of stack symbols in parens.  Typical: 0 a G0 1 (G0 G1)."
      #:once-each
      [("-f" "--filename") program-fn "Name of file with the program, as in \"machines/simple.pdm\""
                           (filename program-fn)]
      [("-s" "--show-steps") "Show the registers for each step"
                                 (show-steps? #t)]
      [("-t" "--tape") tapelist "Input tape, string of space-separated tokens"
-                          (filename tapelist)]
+                          (tape (split-input-tape tapelist))]
      [("-v" "--verbose") "Verbose mode" (verbose? #t)]
      #:args  () (void)))
 
@@ -453,5 +459,5 @@
     (set! PDM-LINES
           (port->string (open-input-file (filename)) #:close? #t)))
 
-  (printf "~a\n" (run PDM-LINES (tape)))  ; print the result to stdout
+  (printf "~a\n" (run (parse PDM-LINES) (tape)))  ; print the result to stdout
 )

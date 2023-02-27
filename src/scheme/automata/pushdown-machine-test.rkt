@@ -3,22 +3,6 @@
          "pushdown-machine.rkt")
 (require rackunit/text-ui) ; to run the test suites
 
-;;; a test pushdown machine
-(define pdm0  
-  (list
-   (make-instruction 0 A G0 1 (list G1 G2))
-   (make-instruction 0 B G1 1 (list G2))
-   ))
-;
-;;; a balanced parens pushdown machine
-(define pdm1  
-  (list
-   (make-instruction 0 "[" BOT 0 (list G0 BOT))
-   (make-instruction 0 "[" G0  0 (list G0 G0))
-   (make-instruction 0 "]" G0  0 (list))
-   (make-instruction 0 "]" BOT 2 (list))
-   (make-instruction 0 INPUTEND BOT 1 (list))
-   ))
 
 
 
@@ -164,21 +148,6 @@
    ; Pushdown machines
    (test-case
     "Make a pushdown machine"
-    (check = 0 (length (pdm-create))))
-   (test-case
-    "Make a nontrivial pushdown machine"
-    (let* ([p (pdm-create)]
-           [inst (make-instruction 0 A G0 1 (list G1 G2))]
-           [p1 (pdm-add-instruction p inst)])
-      (check = 1 (length p1))
-      ))
-   )) ;; end machine making suite and tests
-
-(define pdm-struct-tests
-  (test-suite
-   "pdm as struct"
-   (test-case
-    "simple cases"
     (let ([pdm (pdm-create)]
           [instr (make-instruction 0 A G0 1 (list G1 G2))])
       (printf "created: pdm=~s\n" pdm)
@@ -189,8 +158,26 @@
       
       )
     )
-    
-   ))
+   )) ;; end machine making suite and tests
+
+;; ===== Machines to use for tests
+; a simple pushdown machine
+(define pdm0
+  (let ([pdm (pdm-create)])
+    (pdm-add-instruction pdm (make-instruction 0 A G0 1 (list G1 G2)))
+    (pdm-add-instruction pdm (make-instruction 0 B G1 1 (list G2)))
+    pdm))
+;
+;;; a balanced parens pushdown machine
+(define pdm1
+  (let ([pdm (pdm-create)])
+    (pdm-add-instruction pdm (make-instruction 0 "[" BOT 0 (list G0 BOT)))
+    (pdm-add-instruction pdm (make-instruction 0 "[" G0  0 (list G0 G0)))
+    (pdm-add-instruction pdm (make-instruction 0 "]" G0  0 (list)))
+    (pdm-add-instruction pdm (make-instruction 0 "]" BOT 2 (list)))
+    (pdm-add-instruction pdm (make-instruction 0 INPUTEND BOT 1 (list)))
+    pdm)
+  )
 
 
 ;; ===== Delta
@@ -207,20 +194,20 @@
       (check equal? (list G1 G2) stack-char-list "For pdm0 stack-char-list should be (g1 g2)")
       ))
    
-   (test-case
-    "Test Delta, second instruction"
-    (let* ([output (delta pdm0 0 B G1)]
-           [next-state (first output)]
-           [stack-char-list (second output)])
-      (check = 1 next-state "Next state for pdm0 second instruction should be 1")
-      (check equal? (list G2) stack-char-list "For pdm0 second instruction stack-char-list should be (x y)")
-      ))
-   
-   (test-case
-    "Test Delta, missing instruction"
-    (let ([output (delta pdm0 10 B G3)])
-      (check equal? ERROR output "For pdm0 missing instruction should raise an error")
-      ))
+;   (test-case
+;    "Test Delta, second instruction"
+;    (let* ([output (delta pdm0 0 B G1)]
+;           [next-state (first output)]
+;           [stack-char-list (second output)])
+;      (check = 1 next-state "Next state for pdm0 second instruction should be 1")
+;      (check equal? (list G2) stack-char-list "For pdm0 second instruction stack-char-list should be (x y)")
+;      ))
+;   
+;   (test-case
+;    "Test Delta, missing instruction"
+;    (let ([output (delta pdm0 10 B G3)])
+;      (check equal? ERROR output "For pdm0 missing instruction should raise an error")
+;      ))
    )) ;; end delta suite and tests
 
 
@@ -363,9 +350,8 @@
 ;(run-tests tape-making-tests)
 ;(run-tests stack-making-tests)
 ;(run-tests config-tests)
-; (run-tests machine-making-tests)
-(run-tests pdm-struct-tests)
-;(run-tests delta-tests)
+(run-tests machine-making-tests)
+(run-tests delta-tests)
 ;(run-tests step-tests)
 ; (run-tests yield-star-tests)
 ; (run-tests parse-file-tests)

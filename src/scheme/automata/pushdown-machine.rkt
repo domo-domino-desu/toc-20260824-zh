@@ -261,7 +261,7 @@
          (equal? current-symbol (second inst))
          (equal? stack-top (third inst))))
   
-  (let ([inst (findf delta-test pdm)])
+  (let ([inst (findf delta-test (pushdownmachine-instructions pdm))])
     (if (not inst)
         ERROR     
         (list (fourth inst) (fifth inst)))))

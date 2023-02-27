@@ -141,7 +141,25 @@
       (check equal? G0 (get-present-stack-char inst))
       (check = 1 (get-next-state inst))
       (check equal? (list G1 G2) (get-push-stack-list inst))
-      ))
+      (check-pred string? (instruction->string inst))
+      (printf "~s\n" (instruction->string inst))))
+   
+   (test-case
+    "Test instruction->string"
+    (let ([inst (make-instruction 0 A G0 1 (list G1 G2))])
+      (check-pred string? (instruction->string inst)))
+    (let ([inst (make-instruction 0 A G0 1 (list G1))])
+      (check-pred string? (instruction->string inst)))
+    (let ([inst (make-instruction 0 A G0 1 (list))])
+      (check-pred string? (instruction->string inst)))
+    )
+
+   (test-case
+    "Test pdm->string"
+    (printf "(pdm->string pdm1)=~s\n" (pdm->string pdm1))
+    (check-pred string? (pdm->string pdm0))
+    (check-pred string? (pdm->string pdm1))
+    )
 
    ; Pushdown machines
    (test-case
@@ -151,10 +169,28 @@
     "Make a nontrivial pushdown machine"
     (let* ([p (pdm-create)]
            [inst (make-instruction 0 A G0 1 (list G1 G2))]
-           [p1 (pdm-append p inst)])
+           [p1 (pdm-add-instruction p inst)])
       (check = 1 (length p1))
       ))
    )) ;; end machine making suite and tests
+
+(define pdm-struct-tests
+  (test-suite
+   "pdm as struct"
+   (test-case
+    "simple cases"
+    (let ([pdm (pdm-create)]
+          [instr (make-instruction 0 A G0 1 (list G1 G2))])
+      (printf "created: pdm=~s\n" pdm)
+      (pdm-add-instruction pdm instr)
+      (printf "  instruction added: pdm=~s\n" pdm)
+      (pdm-add-accepting-state pdm 3)
+      (printf "  accepting state added: pdm=~s\n" pdm)
+      
+      )
+    )
+    
+   ))
 
 
 ;; ===== Delta
@@ -328,7 +364,8 @@
 ;(run-tests stack-making-tests)
 ;(run-tests config-tests)
 ; (run-tests machine-making-tests)
+(run-tests pdm-struct-tests)
 ;(run-tests delta-tests)
 ;(run-tests step-tests)
 ; (run-tests yield-star-tests)
-(run-tests parse-file-tests)
+; (run-tests parse-file-tests)

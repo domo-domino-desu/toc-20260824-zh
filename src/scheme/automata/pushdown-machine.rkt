@@ -173,12 +173,12 @@
 ;; ======== Pushdown machine ======================
 ;; A pushdown machine is a list of instructions.
 ;; An instruction is a list of length five
-;;   (natural-number character character natural-number character-list)
+;;   (natural-number nonempty-string nonempty-string natural-number list-of-nonempty-strings)
 ;; representing
 ;;   (present state, present tape character, present stack character, next state,
 ;;                                                            list of chars to push onto stack)
 
-; natural-number character character natural-number character-list  ->  list of five
+; natural-number string string natural-number list-of-strings  ->  list of five
 ; Create one instruction 
 (define (make-instruction present-state tape-char stack-char next-state stack-char-list)
   (list present-state tape-char stack-char next-state stack-char-list))
@@ -194,15 +194,50 @@
 (define (get-push-stack-list inst)
   (fifth inst))
 
-; no input  ->  list
-; Create an empty pushdown machine
+;; instruction (list of five) -> string
+;; return string that is printable depiction of an instruction
+(define (instruction->string inst)
+  (string-join (list (number->string (get-present-state inst))
+                     (get-present-tape-char inst)
+                     (get-present-stack-char inst)
+                     (number->string (get-next-state inst))
+                     (string-join (list "(" (string-join (get-push-stack-list inst)) ")")))))
+
+(define (pdm->string pdm)
+  (string-join (map instruction->string pdm) "\n"))
+
+; no input  ->  mutable hash
+; Create an empty pushdown machine.  Hash keys are "instructions" and "accepting states"
+(struct pushdownmachine (instructions acceptingstates) #:transparent #:mutable)
+
 (define (pdm-create)
-  (list))
+  (pushdownmachine '() (mutable-set)))
+;(define (pdm-create)
+;  (let ([pdm (make-hash)])
+;    (hash-set! pdm "instructions" '())
+;    (hash-set! pdm "accepting states" (set))
+;    pdm))
+
+; pushdown-machine natural-number  ->  pushdown-machine
+; Add the accepting state to the machine 
+;(define (pdm-add-accepting-state pdm state-number)
+;    (set-add! (hash-ref pdm "accepting states") state-number))
+(define (pdm-add-accepting-state pdm accepting-state)
+  (set-pushdownmachine-acceptingstates! pdm
+                                        (set-add!  (pushdownmachine-acceptingstates pdm) accepting-state)))
 
 ; pushdown-machine instruction  ->  pushdown-machine
-; Add the instruction to the machine 
-(define (pdm-append pdm instruction)
-  (reverse (cons instruction (reverse pdm)))) ; convenient for debugging to retain order
+; Add the instruction to the machine
+(define (pdm-add-instruction pdm instruction)
+  (set-pushdownmachine-instructions! pdm
+                                     (reverse (cons instruction (reverse (pushdownmachine-instructions pdm))))))
+
+;(define (pdm-add-instruction pdm instruction)
+;  (let ([instructions (hash-ref pdm "instructions")])
+;    (printf "pdm-add-instruction instructions=~s\n" instructions)
+;    (set! instructions (reverse (cons instruction (reverse instructions)))) ; convenient for debugging to retain order
+;    (hash-set! pdm "instructions" instructions)
+;  ))
 
 (provide make-instruction
          get-present-state
@@ -210,8 +245,11 @@
          get-present-stack-char
          get-next-state
          get-push-stack-list
+         instruction->string
+         pdm->string
          pdm-create
-         pdm-append)
+         pdm-add-accepting-state
+         pdm-add-instruction)
 
 
 ;; =============================
@@ -353,6 +391,9 @@
 ; (define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([\\w]+)\\s*([\\d]+)\\s*\\((.*?)\\)\\s*(\\#.*)?$")
 (define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([a-zA-Z0-9\\]\\[]+)\\s*([\\d]+)\\s*\\(([a-zA-Z0-9 \\]\\[]*)\\)\\s*(\\#.*)?$")
 
+; Need a way to describe some states as final, or accepting.
+(define FINAL-STATES-REGEXP #px"^\\s*FINAL[:]?\\s*([\\s*\\d+,?]*)\\s*(\\#.*)?$")
+
 ; list of strings -> instruction
 ; Turn the five-long list of strings m into an instruction
 (define (parse-make-instruction m)
@@ -385,7 +426,7 @@
     (for* ([line file-contents]
            [inst (parse-one-line line)]
            #:when (not (null? inst)))
-      (set! pdm (pdm-append pdm inst))
+      (set! pdm (pdm-add-instruction pdm inst))
       (printf "  parse: pdm=~s\n" pdm))
     pdm)
   )

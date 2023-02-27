@@ -203,8 +203,6 @@
                      (number->string (get-next-state inst))
                      (string-join (list "(" (string-join (get-push-stack-list inst)) ")")))))
 
-(define (pdm->string pdm)
-  (string-join (map instruction->string pdm) "\n"))
 
 ; no input  ->  mutable hash
 ; Create an empty pushdown machine.  Hash keys are "instructions" and "accepting states"
@@ -239,6 +237,10 @@
 ;    (hash-set! pdm "instructions" instructions)
 ;  ))
 
+(define (pdm->string pdm)
+  (string-join (map instruction->string (pushdownmachine-instructions pdm)) "\n"))
+
+
 (provide make-instruction
          get-present-state
          get-present-tape-char
@@ -246,6 +248,7 @@
          get-next-state
          get-push-stack-list
          instruction->string
+         pushdownmachine?
          pdm->string
          pdm-create
          pdm-add-accepting-state
@@ -392,10 +395,10 @@
 (define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([a-zA-Z0-9\\]\\[]+)\\s*([\\d]+)\\s*\\(([a-zA-Z0-9 \\]\\[]*)\\)\\s*(\\#.*)?$")
 
 ; Need a way to describe some states as final, or accepting.
-(define FINAL-STATES-REGEXP #px"^\\s*FINAL[:]?\\s*([\\s*\\d+,?]*)\\s*(\\#.*)?$")
+(define FINAL-STATES-REGEXP #px"^\\s*FINAL[:]?\\s*([\\s*\\d+]*)\\s*(\\#.*)?$")
 
-; list of strings -> instruction
-; Turn the five-long list of strings m into an instruction
+; list of five strings -> instruction
+; Turn the list of strings m into an instruction
 (define (parse-make-instruction m)
   (let ([present-state (string->number (first (car m)))]
         [present-tape-token (second (car m))]
@@ -404,19 +407,27 @@
         [next-stack-list (string-split (fifth (car m)))])
     (make-instruction present-state present-tape-token present-stack-token next-state next-stack-list)))
 
+(define (parse-final-states m)
+  (let ([token-list (car m)])
+    (map string->number (string-split m))))
+
 ;; string -> instruction or nil (if a comment line or a blank line or a line that doesn't parse)
 (define (parse-one-line lne)
-  (let ([instruction '()])
+  (let ([instruction '()]
+        [final-states '()])
     (cond
       [(regexp-match? EMPTY-LINE-REGEXP lne)
        '()]
       [(regexp-match? LINE-REGEXP lne)
        (let ([m (regexp-match* LINE-REGEXP lne #:match-select cdr)])
          (set! instruction (parse-make-instruction m)))]
+      [(regexp-match? FINAL-STATES-REGEXP lne)
+       (let ([m (regexp-match* LINE-REGEXP lne #:match-select cdr)])
+         (set! final-states (parse-final-states m)))]
       [else
        (printf "ERROR! line does not parse: ~s" lne)]
       )
-    instruction
+    (list instruction final-states)
     ))
   
 ;; list of strings -> list of instructions
@@ -424,9 +435,14 @@
   (let ([pdm (pdm-create)])
     (printf "  parse: pdm=~s\n" pdm)
     (for* ([line file-contents]
-           [inst (parse-one-line line)]
+           [inst-and-states (parse-one-line line)]
+           [inst (first inst-and-states)]
+           [state-list (second inst-and-states)]
            #:when (not (null? inst)))
-      (set! pdm (pdm-add-instruction pdm inst))
+      (if (not (null? inst))
+          (pdm-add-instruction pdm inst)
+          (for ([accepting-state state-list])
+            (pdm-add-accepting-state pdm accepting-state)))
       (printf "  parse: pdm=~s\n" pdm))
     pdm)
   )

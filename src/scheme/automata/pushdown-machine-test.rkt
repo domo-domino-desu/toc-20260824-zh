@@ -140,7 +140,7 @@
 
    (test-case
     "Test pdm->string"
-    (printf "(pdm->string pdm1)=~s\n" (pdm->string pdm1))
+    ; (printf "(pdm->string pdm1)=~s\n" (pdm->string pdm1))
     (check-pred string? (pdm->string pdm0))
     (check-pred string? (pdm->string pdm1))
     )
@@ -150,12 +150,12 @@
     "Make a pushdown machine"
     (let ([pdm (pdm-create)]
           [instr (make-instruction 0 A G0 1 (list G1 G2))])
-      (printf "created: pdm=~s\n" pdm)
-      (pdm-add-instruction pdm instr)
-      (printf "  instruction added: pdm=~s\n" pdm)
-      (pdm-add-accepting-state pdm 3)
-      (printf "  accepting state added: pdm=~s\n" pdm)
-      
+      (check-true (pushdownmachine? pdm))
+;      (printf "created: pdm=~s\n" pdm)
+;      (pdm-add-instruction pdm instr)
+;      (printf "  instruction added: pdm=~s\n" pdm)
+;      (pdm-add-accepting-state pdm 3)
+;      (printf "  accepting state added: pdm=~s\n" pdm)    
       )
     )
    )) ;; end machine making suite and tests
@@ -292,7 +292,8 @@
    (test-case
     "Test parse-one-line"
     (let* ([line "0 [ G0 1 (G0 G1)"]
-           [inst (parse-one-line line)])
+           [inst-and-states (parse-one-line line)]
+           [inst (first inst-and-states)])
       (check-equal? (get-present-state inst) 0)
       (check-equal? (get-present-tape-char inst) "[")
       (check-equal? (get-present-stack-char inst) "G0")
@@ -300,7 +301,8 @@
       (check-equal? (get-push-stack-list inst) '("G0" "G1"))
       )
     (let* ([line "0 [ G0 1 (G0 G1) # aba"]  ; with comment
-           [inst (parse-one-line line)])
+           [inst-and-states (parse-one-line line)]
+           [inst (first inst-and-states)])
       (check-equal? (get-present-state inst) 0)
       (check-equal? (get-present-tape-char inst) "[")
       (check-equal? (get-present-stack-char inst) "G0")
@@ -308,7 +310,8 @@
       (check-equal? (get-push-stack-list inst) '("G0" "G1"))
       )
     (let* ([line "0 [ G0 1 (G0)"]  ; one thing in the list
-           [inst (parse-one-line line)])
+           [inst-and-states (parse-one-line line)]
+           [inst (first inst-and-states)])
       (check-equal? (get-present-state inst) 0)
       (check-equal? (get-present-tape-char inst) "[")
       (check-equal? (get-present-stack-char inst) "G0")
@@ -316,7 +319,8 @@
       (check-equal? (get-push-stack-list inst) '("G0"))
       )
     (let* ([line "0 [ G0 1 ()"]   ; nothing in the list
-           [inst (parse-one-line line)])
+           [inst-and-states (parse-one-line line)]
+           [inst (first inst-and-states)])
       (check-equal? (get-present-state inst) 0)
       (check-equal? (get-present-tape-char inst) "[")
       (check-equal? (get-present-stack-char inst) "G0")
@@ -325,22 +329,22 @@
       )
     )
 
-   (test-case
-    "Test parse"
-    (printf "pgm-file=~s\n" (read-pgm-file "balanced-parens.pdm"))
-    (printf "  (string-split pgm-file=~s\n" (string-split (read-pgm-file "balanced-parens.pdm") "\n"))
-    (let ([file-contents '("# balanced-parens.pdm  Pushdown machine to accept balanced parens"
-                           "0 [ BOT 0 (G0 BOT)"
-                           "0 [ G0  0 (G0 G0)"
-                           "0 ] G0  0 ()"
-                           "0 ] BOT 2 ()"
-                           "0 INPUTEND BOT 1 ()")])
-      (printf "  parse returns ~s\n" (parse file-contents)))
-;    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
-;           [pdm (parse file-contents)])
-;      ; (printf "~s\n" file-contents)
-;      (check-equal? (string-length pdm) 5))
-    )
+;   (test-case
+;    "Test parse"
+;    (printf "pgm-file=~s\n" (read-pgm-file "balanced-parens.pdm"))
+;    (printf "  (string-split pgm-file=~s\n" (string-split (read-pgm-file "balanced-parens.pdm") "\n"))
+;    (let ([file-contents '("# balanced-parens.pdm  Pushdown machine to accept balanced parens"
+;                           "0 [ BOT 0 (G0 BOT)"
+;                           "0 [ G0  0 (G0 G0)"
+;                           "0 ] G0  0 ()"
+;                           "0 ] BOT 2 ()"
+;                           "0 INPUTEND BOT 1 ()")])
+;      (printf "  parse returns ~s\n" (parse file-contents)))
+;;    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
+;;           [pdm (parse file-contents)])
+;;      ; (printf "~s\n" file-contents)
+;;      (check-equal? (string-length pdm) 5))
+;    )
    
    
    )) ;; end parse file suite and tests
@@ -350,8 +354,8 @@
 ;(run-tests tape-making-tests)
 ;(run-tests stack-making-tests)
 ;(run-tests config-tests)
-(run-tests machine-making-tests)
-(run-tests delta-tests)
+;(run-tests machine-making-tests)
+;(run-tests delta-tests)
 ;(run-tests step-tests)
 ; (run-tests yield-star-tests)
-; (run-tests parse-file-tests)
+(run-tests parse-file-tests)

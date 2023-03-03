@@ -26,13 +26,14 @@
 (define INPUTEND "END") ;; Mark end of input
 (provide INPUTEND)
 
-(define G0 "g0")  ;; Most common stack characters; strings are clearer than chars
+(define G0 "g0")  ;; Most common stack tokens; strings are clearer than chars
 (define G1 "g1")
 (define G2 "g2")
 (define G3 "g3")
 (define BOT "BOT")  ;; Stack bottom
 (provide BOT G0 G1 G2 G3)
 
+;; Return codes
 (define LIMIT-REACHED -3) ;; more steps than allowed 
 (define ERROR -2) ;; some problem with computation
 (define HALT -1) ;; machine halted
@@ -42,19 +43,19 @@
 ;; ======== Tape and stack =================
 ;; A tape and stack are lists
 
-; list of characters  ->  tape-list
+; list of strings  ->  tape-list
 ; Make a tape list, ending with an input end marker
 (define (make-tape . tape-characters)
   (append tape-characters (list INPUTEND)))
 
-; list of characters  ->  character or ERROR
+; list of strings  ->  character or ERROR
 ; Get the first character on the tape.  Return ERROR if no such character.
 (define (tape-char tape-list)
   (if (null? tape-list)
       ERROR
       (first tape-list)))
 
-; list of characters  ->  list of characters
+; list of strings  ->  list of strings
 ; Return the tape with the read head moved to the right.
 (define (tape-shift tape-list)
   (cdr tape-list))
@@ -63,37 +64,37 @@
          tape-char
          tape-shift)
 
-; list of characters -> stack-list
+; list of strings -> stack-list
 ; Make a stack, ending with a bottom marker
 (define (make-stack . stack-characters)
   (append stack-characters (list BOT)))
 
 ; stack-list ->  stack-list or ERROR
-; Pop the top character off the stack.  Return ERROR if stack is empty.
+; Pop the top token off the stack.  Return ERROR if stack is empty.
 (define (stack-pop stack-list)
   (if (null? stack-list)
       ERROR
       (cdr stack-list)))
 
-; stack-list ->  character or ERROR
-; Name top character on the stack, without popping.  Return ERROR if stack is empty.
+; stack-list ->  string or ERROR
+; Name top token on the stack, without popping.  Return ERROR if stack is empty.
 (define (stack-top stack-list)
   (if (null? stack-list)
       ERROR
       (first stack-list)))
 
-; character stack-list ->  stack-list
-; Push a new top character onto the stack.
+; string stack-list ->  stack-list
+; Push a new top token onto the stack.
 (define (stack-push ch stack-list)
   (cons ch stack-list))
 
-; character-list stack-list ->  stack-list
-; Push the characters onto the stack.
+; string-list stack-list ->  stack-list
+; Push the tokens onto the stack.
 (define (stack-push-list ch-list stack-list)
   (append ch-list stack-list))
 
 ; stack-list -> bool
-; Decide if the stack's top character is the bottom character.
+; Decide if the stack's top token is BOT, that is, whether the stack is exhausted.
 (define (stack-bot? stack-list)
   (equal? BOT (car stack-list)))
 
@@ -108,23 +109,24 @@
 ;; ================= Configuration making and reading ==============
 ;; A configuration is a list of three things:
 ;;  the current state, as a natural number
-;;  the contents of the tape under and to the right of the head, as a list of tape characters
-;;  the contents of the stack, from the top down, including the BOT character.
+;;  the contents of the tape under and to the right of the head, as a list of tape tokens
+;;  the contents of the stack, from the top down, including the BOT token.
+;; Here, "tokens" means strings.
 
-; natural-number character-list character-list -> list
-; Make a configuration (no test performed, say that tape characters are as declared)
+; natural-number string-list string-list -> list
+; Make a configuration (no test performed, say that tape tokens are as declared)
 (define (make-config state tape-list stack-list)
   (list state tape-list stack-list))
 
-; configuration  ->  natural number
+; configuration ->  natural number
 ; Get the state number
 (define (get-current-state config) (first config))
 
-; configuration  -> list of characters
+; configuration -> list of strings
 ; Get the tape
 (define (get-tape-list config) (second config))
 
-; configuration  ->  list of characters
+; configuration -> list of strings
 ; Get the stack
 (define (get-stack-list config) (third config))
 
@@ -133,12 +135,12 @@
 (define (tape-empty? config)
   (null? (get-tape-list config)))
 
-; configuration -> character or ERROR
-; Get the character pointed to by the read head
+; configuration -> string  or ERROR
+; Get the token pointed to by the read head
 (define (get-current-symbol config)
   (tape-char (get-tape-list config)))
 
-; configuration -> character or ERROR
+; configuration -> string or ERROR
 (define (get-stack-top config)
   (stack-top (get-stack-list config)))
 
@@ -149,7 +151,8 @@
          get-current-symbol
          get-stack-top)
 
-;; configuration-> string  Return a string representing the tape
+;; configuration-> string
+;; Return a string representing the tape, for output and debugging
 (define (configuration->string config)
   (if (not (list? config))
       (cond
@@ -175,8 +178,8 @@
 ;; An instruction is a list of length five
 ;;   (natural-number nonempty-string nonempty-string natural-number list-of-nonempty-strings)
 ;; representing
-;;   (present state, present tape character, present stack character, next state,
-;;                                                            list of chars to push onto stack)
+;;   (present state, present tape token, present stack token, next state,
+;;                                                            list of tokens to push onto stack)
 
 ; natural-number string string natural-number list-of-strings  ->  list of five
 ; Create one instruction 
@@ -195,7 +198,7 @@
   (fifth inst))
 
 ;; instruction (list of five) -> string
-;; return string that is printable depiction of an instruction
+;; Return string that is printable depiction of an instruction, for display or debugging
 (define (instruction->string inst)
   (string-join (list (number->string (get-present-state inst))
                      (get-present-tape-char inst)
@@ -204,22 +207,17 @@
                      (string-join (list "(" (string-join (get-push-stack-list inst)) ")")))))
 
 
-; no input  ->  mutable hash
-; Create an empty pushdown machine.  Hash keys are "instructions" and "accepting states"
+;; structure
+;; A pushdownmachine is a structure consisting of instructions and accepting states.
 (struct pushdownmachine (instructions acceptingstates) #:transparent #:mutable)
 
+; no input  ->  pushdownmachine
+; Create an empty pushdown machine.
 (define (pdm-create)
   (pushdownmachine '() (mutable-set)))
-;(define (pdm-create)
-;  (let ([pdm (make-hash)])
-;    (hash-set! pdm "instructions" '())
-;    (hash-set! pdm "accepting states" (set))
-;    pdm))
 
 ; pushdown-machine natural-number  ->  pushdown-machine
 ; Add the accepting state to the machine 
-;(define (pdm-add-accepting-state pdm state-number)
-;    (set-add! (hash-ref pdm "accepting states") state-number))
 (define (pdm-add-accepting-state pdm accepting-state)
   (set-pushdownmachine-acceptingstates! pdm
                                         (set-add!  (pushdownmachine-acceptingstates pdm) accepting-state)))
@@ -230,13 +228,8 @@
   (set-pushdownmachine-instructions! pdm
                                      (reverse (cons instruction (reverse (pushdownmachine-instructions pdm))))))
 
-;(define (pdm-add-instruction pdm instruction)
-;  (let ([instructions (hash-ref pdm "instructions")])
-;    (printf "pdm-add-instruction instructions=~s\n" instructions)
-;    (set! instructions (reverse (cons instruction (reverse instructions)))) ; convenient for debugging to retain order
-;    (hash-set! pdm "instructions" instructions)
-;  ))
-
+;; pushdownmachine -> string
+;; Return string of the instructions, for display or debugging
 (define (pdm->string pdm)
   (string-join (map instruction->string (pushdownmachine-instructions pdm)) "\n"))
 
@@ -249,6 +242,8 @@
          get-push-stack-list
          instruction->string
          pushdownmachine?
+         pushdownmachine-instructions
+         pushdownmachine-acceptingstates
          pdm->string
          pdm-create
          pdm-add-accepting-state
@@ -256,7 +251,7 @@
 
 
 ;; =============================
-; pushdown-machine natural-number character  ->  natural-number character-list, or ERROR
+; pushdownmachine natural-number string  ->  (natural-number string-list), or ERROR
 ; Find the applicable instruction, return output pair
 (define (delta pdm current-state current-symbol stack-top)
   (define (delta-test inst)
@@ -309,13 +304,13 @@
 ;;; ===================================================
 ;;; Run a computation
 ;
-;; show-state-config  Print one line with state and current configuration information
+
+;; number configuration -> void
+;; Print one line with state and current configuration information
 (define (show-step-config s c)
   (printf "Step ~a: ~a\n" (number->string s)
           (configuration->string c))
   )
-
-;; run  Run a computation
 
 ; string  ->  list of strings
 ; convert characters in a list of characters into strings
@@ -395,7 +390,8 @@
 (define LINE-REGEXP #px"^\\s*([\\d]+)\\s*([a-zA-Z\\]\\[\\)\\(]+)\\s*([a-zA-Z0-9\\]\\[]+)\\s*([\\d]+)\\s*\\(([a-zA-Z0-9 \\]\\[]*)\\)\\s*(\\#.*)?$")
 
 ; Need a way to describe some states as final, or accepting.
-(define FINAL-STATES-REGEXP #px"^\\s*FINAL[:]?\\s*([\\s*\\d+]*)\\s*(\\#.*)?$")
+;(define FINAL-STATES-REGEXP #px"^\\s*((FINAL)|(ACCEPTING))[:]?\\s*([\\s*\\d+,?]*)\\s*(\\#.*)?$")
+(define FINAL-STATES-REGEXP #px"\\s*((FINAL)|(ACCEPTING))[:]?\\s*([\\s*\\d+,?]*)\\s*(\\#.*)?$")
 
 ; list of five strings -> instruction
 ; Turn the list of strings m into an instruction
@@ -407,50 +403,67 @@
         [next-stack-list (string-split (fifth (car m)))])
     (make-instruction present-state present-tape-token present-stack-token next-state next-stack-list)))
 
+;; string -> list of numbers
+;; Return the numbers given as a space-separated list in the string
+;; (An initial comma is allowed between numbers, as in "3, 4")
+(define FINAL-STATES-PARSE-REGEXP #px"(,\\s*)|(\\s+)")
 (define (parse-final-states m)
-  (let ([token-list (car m)])
-    (map string->number (string-split m))))
+  (let* ([token-list (car m)]
+         [digit-string (fourth token-list)])
+    (printf "parse-final-states token-list=~s\n    digit-string=~s\n" token-list digit-string)
+    (map string->number (string-split (string-trim digit-string) FINAL-STATES-PARSE-REGEXP))))
 
-;; string -> instruction or nil (if a comment line or a blank line or a line that doesn't parse)
+;; string -> list of two lists
+;;  Return either an instruction or a list of integers, not both.  It can be that both lists are empty.
 (define (parse-one-line lne)
-  (let ([instruction '()]
+  (let ([inst '()]
         [final-states '()])
+    (printf "parse-one-line: lne=~s\n" lne)
     (cond
       [(regexp-match? EMPTY-LINE-REGEXP lne)
-       '()]
+       (begin
+         (printf "    matches empty line\n")
+         (list inst final-states))]
       [(regexp-match? LINE-REGEXP lne)
        (let ([m (regexp-match* LINE-REGEXP lne #:match-select cdr)])
-         (set! instruction (parse-make-instruction m)))]
+         (list (parse-make-instruction m) final-states))]
       [(regexp-match? FINAL-STATES-REGEXP lne)
-       (let ([m (regexp-match* LINE-REGEXP lne #:match-select cdr)])
-         (set! final-states (parse-final-states m)))]
+       (let ([m (regexp-match* FINAL-STATES-REGEXP lne #:match-select cdr)])
+         (list inst (parse-final-states m)))]
       [else
-       (printf "ERROR! line does not parse: ~s" lne)]
-      )
-    (list instruction final-states)
-    ))
+       (begin
+         (printf "ERROR! line does not parse: ~s" lne)
+         (list inst final-states))]
+      )))
   
 ;; list of strings -> list of instructions
 (define (parse file-contents)
   (let ([pdm (pdm-create)])
-    (printf "  parse: pdm=~s\n" pdm)
-    (for* ([line file-contents]
-           [inst-and-states (parse-one-line line)]
-           [inst (first inst-and-states)]
-           [state-list (second inst-and-states)]
-           #:when (not (null? inst)))
-      (if (not (null? inst))
-          (pdm-add-instruction pdm inst)
-          (for ([accepting-state state-list])
-            (pdm-add-accepting-state pdm accepting-state)))
-      (printf "  parse: pdm=~s\n" pdm))
-    pdm)
+    ; (printf "  parse: pdm=~s\n" pdm)
+    (for* ([line file-contents])
+      (printf "parse: line=~s\n" line)
+      ; (printf "    parse-one-line=~s\n" (parse-one-line line))
+       (let* ([inst-and-states (parse-one-line line)]
+              [inst (first inst-and-states)]
+              [state-list (second inst-and-states)])
+        (printf "    parse: inst-and-states=~s\n" inst-and-states)
+        (printf "    parse: (first inst-and-states)=~s\n" (first inst-and-states))
+        (printf "    parse: inst=~s  state-list=~s\n" inst state-list)
+        (if (not (null? inst))
+            (pdm-add-instruction pdm inst)
+            (for ([accepting-state state-list])
+              (pdm-add-accepting-state pdm accepting-state)))
+        ; (printf "  parse: pdm=~s\n" pdm)))
+    )) pdm)
   )
 
 
 (provide EMPTY-LINE-REGEXP
          LINE-REGEXP
+         FINAL-STATES-REGEXP
+         FINAL-STATES-PARSE-REGEXP
          parse-make-instruction
+         parse-final-states
          parse-one-line
          parse)
 

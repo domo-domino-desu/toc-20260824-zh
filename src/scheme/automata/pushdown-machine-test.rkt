@@ -287,6 +287,31 @@
       (check-true (regexp-match? LINE-REGEXP line)))
     (let ([line "0 [ ] 1 () # length zero stack push"])
       (check-true (regexp-match? LINE-REGEXP line)))
+    (let ([line "FINAL 3 4"]) ;; final states
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([line "FINAL 3"]) 
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([line "FINAL 3  # add final state"]) 
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([line "FINAL: 3"]) 
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([line "FINAL: 3, 4"]) 
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([m '("3 4")]) 
+      (check-equal? (length (parse-final-states m)) 2)
+      (check-equal? (first (parse-final-states m)) 3)
+      (check-equal? (second (parse-final-states m)) 4))
+    (let ([m '("3")]) 
+      (check-equal? (length (parse-final-states m)) 1)
+      (check-equal? (first (parse-final-states m)) 3))
+;    (let ([line "3 4"])
+;      (printf "string-split=~s\n" (string-split (string-trim line) FINAL-STATES-PARSE-REGEXP))
+;      ; (check-true (regexp-match? FINAL-STATES-PARSE-REGEXP line))
+;      )
+;    (let ([line "3"])
+;      (printf "string-split=~s\n" (string-split (string-trim line) FINAL-STATES-PARSE-REGEXP))
+;      ; (check-true (regexp-match? FINAL-STATES-PARSE-REGEXP line))
+;      )
     )
 
    (test-case
@@ -329,22 +354,41 @@
       )
     )
 
-;   (test-case
-;    "Test parse"
-;    (printf "pgm-file=~s\n" (read-pgm-file "balanced-parens.pdm"))
-;    (printf "  (string-split pgm-file=~s\n" (string-split (read-pgm-file "balanced-parens.pdm") "\n"))
-;    (let ([file-contents '("# balanced-parens.pdm  Pushdown machine to accept balanced parens"
-;                           "0 [ BOT 0 (G0 BOT)"
-;                           "0 [ G0  0 (G0 G0)"
-;                           "0 ] G0  0 ()"
-;                           "0 ] BOT 2 ()"
-;                           "0 INPUTEND BOT 1 ()")])
-;      (printf "  parse returns ~s\n" (parse file-contents)))
-;;    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
-;;           [pdm (parse file-contents)])
-;;      ; (printf "~s\n" file-contents)
-;;      (check-equal? (string-length pdm) 5))
-;    )
+   (test-case
+    "Test parse"
+    (printf "pgm-file=~s\n" (read-pgm-file "balanced-parens.pdm"))
+    (printf "  (string-split pgm-file=~s\n" (string-split (read-pgm-file "balanced-parens.pdm") "\n"))
+    (let* ([file-contents '("# balanced-parens.pdm  Pushdown machine to accept balanced parens"
+                            "FINAL 0 1"
+                           "0 [ BOT 0 (G0 BOT)"
+                           "0 [ G0  0 (G0 G0)"
+                           "0 ] G0  0 ()"
+                           "0 ] BOT 2 ()"
+                           "0 INPUTEND BOT 1 ()")]
+           [pdm (parse file-contents)])
+;      (for ([line file-contents])
+;        (printf "  line=~s\n    parse-one-line=~s\n" line (parse-one-line line)))
+      (printf "  accepting states are ~s\n" (pushdownmachine-acceptingstates pdm))
+      (check-equal? (length (pushdownmachine-instructions pdm)) 5)
+      )
+    (let* ([file-contents '("# balanced-parens.pdm  Pushdown machine to accept balanced parens"
+                           "0 [ BOT 0 (G0 BOT)"
+                           "0 [ G0  0 (G0 G0)"
+                           "0 ] G0  0 ()"
+                           "0 ] BOT 2 ()"
+                           "0 INPUTEND BOT 1 ()")]
+           [pdm (parse file-contents)])
+;      (for ([line file-contents])
+;        (printf "  line=~s\n    parse-one-line=~s\n" line (parse-one-line line)))
+      ; (printf "  instructions are ~s\n" (pushdownmachine-instructions pdm))
+      (check-equal? (length (pushdownmachine-instructions pdm)) 5)
+      )
+    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
+           [pdm (parse file-contents)])
+      ; (printf "~s\n" file-contents)
+      (check-equal? (length (pushdownmachine-instructions pdm)) 5)
+      )
+    )
    
    
    )) ;; end parse file suite and tests
@@ -354,7 +398,7 @@
 ;(run-tests tape-making-tests)
 ;(run-tests stack-making-tests)
 ;(run-tests config-tests)
-;(run-tests machine-making-tests)
+; (run-tests machine-making-tests)
 ;(run-tests delta-tests)
 ;(run-tests step-tests)
 ; (run-tests yield-star-tests)

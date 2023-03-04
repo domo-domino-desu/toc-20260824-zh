@@ -220,10 +220,6 @@
 ; Add the accepting state to the machine 
 (define (pdm-add-accepting-state pdm accepting-state)
   (set-add! (pushdownmachine-acceptingstates pdm) accepting-state))
-;  (let ([new-state-set (set-add! (pushdownmachine-acceptingstates pdm) accepting-state)])
-;  (printf "pdm-add-accepting-state about to add accepting-state=~s\n    existing states=~s\n    new-state-set=~s\n"
-;          accepting-state (pushdownmachine-acceptingstates pdm) new-state-set)
-;    (set-pushdownmachine-acceptingstates! pdm new-state-set)))
 
 ; pushdown-machine instruction  ->  pushdown-machine
 ; Add the instruction to the machine
@@ -280,7 +276,7 @@
 ;; Take one step
 ;; step  Do one step; from a config and the pdm, yield the next config
 (define (step pdm config)
-  ;(printf "starting step: config is: ")
+  ; (printf "starting step: config is: ")
   ;(write config)
   ;(writeln "")
   (if (tape-empty? config)
@@ -289,7 +285,7 @@
              [current-symbol (get-current-symbol config)]
              [stack-top (get-stack-top config)]
              [output-pair (delta pdm current-state current-symbol stack-top)])
-        ;(printf "  current-state: ~a, current-symbol: ~a, stack-top: ~a\n" current-state current-symbol stack-top)
+        ; (printf "  current-state: ~a, current-symbol: ~a, stack-top: ~a\n" current-state current-symbol stack-top)
         (if (equal? output-pair ERROR)
             ERROR
             (let* ([next-state (first output-pair)]
@@ -297,10 +293,10 @@
                    [tape-list (get-tape-list config)]
                    [popped-stack (stack-pop (get-stack-list config))]
                    [stack-list (stack-push-list push-stack-list popped-stack)])
-              ;(printf "  next-state: ~a, push-stack-list: ~a\n" next-state push-stack-list)
-              ;(printf "    now the stack is stack-list: ~a\n" stack-list)
-              ;(printf "    next the tape will be: ~a\n" (tape-shift tape-list))
-              ;(printf "    equal? current-symbol EPSILON ~a\n" (equal? current-symbol EPSILON))
+              ; (printf "  next-state: ~a, push-stack-list: ~a\n" next-state push-stack-list)
+              ; (printf "    now the stack is stack-list: ~a\n" stack-list)
+              ; (printf "    next the tape will be: ~a\n" (tape-shift tape-list))
+              ; (printf "    equal? current-symbol EPSILON ~a\n" (equal? current-symbol EPSILON))
               (if (equal? current-symbol EPSILON)
                   (make-config next-state tape-list stack-list)
                   (make-config next-state (tape-shift tape-list) stack-list)))
@@ -323,9 +319,9 @@
 ; string  ->  list of strings
 ; convert characters in a list of characters into strings
 (define (string->string-list s)
-  (map string (string->list s)))
+  (string-split (string-trim s)))
 
-(define (yield-star pdm tau [limit 500])
+(define (yield-star pdm tau [limit 500] [show #t])
   (do
       ([s 0 (add1 s)]
        [config (make-config 0
@@ -339,19 +335,19 @@
       (equal? config ERROR)) (if (= s limit)
                                  (cons LIMIT-REACHED history)
                                  (cons config history))
-                               (reverse history)))
-    ; (printf "next config ~a\n" config)
-    ; (printf "  history ~a\n" history)
+                               (reverse history))
+    (when show
+        (printf "Step: ~a  Configuration: ~a\n" s (configuration->string config))))
     )
 
 (define (show-yield-star pdm tau)
   (let ([strs (map configuration->string (yield-star pdm tau))])
     (map (lambda (x) (printf "~s\n" x)) strs)))
 
-; pushdown-machine string  ->  integer
+; pushdown-machine list-of-strings  ->  integer
 ; Run the steps in the computation of the pushdown machine
 (define (run pdm sigma)
-  ;(writeln "starting run-do")
+  (printf "starting run-do sigma=~s\n" sigma)
   (do
       ([lagging-config '() config]
        [config (make-config 0
@@ -418,7 +414,7 @@
 (define (parse-final-states m)
   (let* ([token-list (car m)]
          [digit-string (fourth token-list)])
-    (printf "parse-final-states token-list=~s\n    digit-string=~s\n" token-list digit-string)
+    ;(printf "parse-final-states token-list=~s\n    digit-string=~s\n" token-list digit-string)
     (map string->number (string-split (string-trim digit-string) FINAL-STATES-PARSE-REGEXP))))
 
 ;; string -> list of two lists
@@ -426,11 +422,11 @@
 (define (parse-one-line lne)
   (let ([inst '()]
         [final-states '()])
-    (printf "parse-one-line: lne=~s\n" lne)
+    ;(printf "parse-one-line: lne=~s\n" lne)
     (cond
       [(regexp-match? EMPTY-LINE-REGEXP lne)
        (begin
-         (printf "    matches empty line\n")
+         ;(printf "    matches empty line\n")
          (list inst final-states))]
       [(regexp-match? LINE-REGEXP lne)
        (let ([m (regexp-match* LINE-REGEXP lne #:match-select cdr)])
@@ -449,14 +445,14 @@
   (let ([pdm (pdm-create)])
     ; (printf "  parse: pdm=~s\n" pdm)
     (for* ([line file-contents])
-      (printf "parse: line=~s\n" line)
+      ;(printf "parse: line=~s\n" line)
       ; (printf "    parse-one-line=~s\n" (parse-one-line line))
        (let* ([inst-and-states (parse-one-line line)]
               [inst (first inst-and-states)]
               [state-list (second inst-and-states)])
-        (printf "    parse: inst-and-states=~s\n" inst-and-states)
-        (printf "    parse: (first inst-and-states)=~s\n" (first inst-and-states))
-        (printf "    parse: inst=~s  state-list=~s\n" inst state-list)
+        ;(printf "    parse: inst-and-states=~s\n" inst-and-states)
+        ;(printf "    parse: (first inst-and-states)=~s\n" (first inst-and-states))
+        ;(printf "    parse: inst=~s  state-list=~s\n" inst state-list)
         (if (not (null? inst))
             (pdm-add-instruction pdm inst)
             (for ([accepting-state state-list])
@@ -488,7 +484,7 @@
 (define show-steps? (make-parameter #f))
 
 ;; Input tape, list of instruction strings
-(define tape (make-parameter null))
+(define tape (make-parameter ""))
 
 ;; Talk a lot, if true
 (define verbose? (make-parameter #f))
@@ -497,12 +493,10 @@
 
 
 ;; string -> list of strings
-(define (split-input-tape t)
-  (let* ([lines (string-split t "\n")]
-         [trimmed-lines (map string-trim lines)])
-    trimmed-lines))
-
-(provide split-input-tape)
+;(define (split-input-tape t)
+;  (string-split (string-trim t)))
+;
+;(provide split-input-tape)
 
 ;; For running from the command line; the "module+ main" is the Racket construct to execute code
 ;; when running from the command line but not from an importing module
@@ -520,7 +514,7 @@
      [("-s" "--show-steps") "Show the registers for each step"
                                 (show-steps? #t)]
      [("-t" "--tape") tapelist "Input tape, string of space-separated tokens"
-                          (tape (split-input-tape tapelist))]
+                          (tape tapelist)]
      [("-v" "--verbose") "Verbose mode" (verbose? #t)]
      #:args  () (void)))
 
@@ -531,11 +525,11 @@
   
   ;; Read the file with the program
   (define PDM-LINES '())  ;; list of file lines, one string per instruction
-  ; (printf "filename=~s\n" filename)
   (if (null? (filename))
     (set! PDM-LINES "") ;; should instead fail?
     (set! PDM-LINES
-          (port->string (open-input-file (filename)) #:close? #t)))
+          (string-split (port->string (open-input-file (filename)) #:close? #t) "\n")))
+  ; (printf "PDM-LINES=~s\n" PDM-LINES)
 
-  (printf "~a\n" (run (parse PDM-LINES) (tape)))  ; print the result to stdout
+  (printf "~a\n" (yield-star (parse PDM-LINES) (tape)))  ; print the result to stdout
 )

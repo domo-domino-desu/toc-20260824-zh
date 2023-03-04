@@ -207,7 +207,7 @@
                      (string-join (list "(" (string-join (get-push-stack-list inst)) ")")))))
 
 
-;; structure
+;; ----------------------
 ;; A pushdownmachine is a structure consisting of instructions and accepting states.
 (struct pushdownmachine (instructions acceptingstates) #:transparent #:mutable)
 
@@ -219,8 +219,11 @@
 ; pushdown-machine natural-number  ->  pushdown-machine
 ; Add the accepting state to the machine 
 (define (pdm-add-accepting-state pdm accepting-state)
-  (set-pushdownmachine-acceptingstates! pdm
-                                        (set-add!  (pushdownmachine-acceptingstates pdm) accepting-state)))
+  (set-add! (pushdownmachine-acceptingstates pdm) accepting-state))
+;  (let ([new-state-set (set-add! (pushdownmachine-acceptingstates pdm) accepting-state)])
+;  (printf "pdm-add-accepting-state about to add accepting-state=~s\n    existing states=~s\n    new-state-set=~s\n"
+;          accepting-state (pushdownmachine-acceptingstates pdm) new-state-set)
+;    (set-pushdownmachine-acceptingstates! pdm new-state-set)))
 
 ; pushdown-machine instruction  ->  pushdown-machine
 ; Add the instruction to the machine
@@ -231,7 +234,12 @@
 ;; pushdownmachine -> string
 ;; Return string of the instructions, for display or debugging
 (define (pdm->string pdm)
-  (string-join (map instruction->string (pushdownmachine-instructions pdm)) "\n"))
+  (let ([instruction-string
+         (string-join (map instruction->string (pushdownmachine-instructions pdm)) "\n")]
+        [state-string
+         (string-join (map number->string (sort (set->list (pushdownmachine-acceptingstates pdm)) <=)))])
+    (string-append "INSTRUCTIONS: " instruction-string
+                   "\nACCEPTING STATES: " state-string)))
 
 
 (provide make-instruction
@@ -436,7 +444,7 @@
          (list inst final-states))]
       )))
   
-;; list of strings -> list of instructions
+;; list of strings -> pushdownmachine
 (define (parse file-contents)
   (let ([pdm (pdm-create)])
     ; (printf "  parse: pdm=~s\n" pdm)

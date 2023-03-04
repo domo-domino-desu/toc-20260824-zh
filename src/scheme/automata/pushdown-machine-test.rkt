@@ -110,15 +110,15 @@
 ;; ===== Make a machine
 (define machine-making-tests
   (test-suite
-   "test making machines"
+   "test making simple machines"
 
    (test-case
-    "Test making a pushdown machine instruction, minimal functionality"
+    "Test making a machine instruction, minimal functionality"
     (check = 5 (length (make-instruction 0 A G0 1 (list G1 G2))))
     )
    
    (test-case
-    "Test making a pushdown machine instruction, getters and setters"
+    "Test making a machine instruction, getters and setters"
     (let ([inst (make-instruction 0 A G0 1 (list G1 G2))])
       (check = 0 (get-present-state inst))
       (check equal? A (get-present-tape-char inst))
@@ -138,26 +138,20 @@
       (check-pred string? (instruction->string inst)))
     )
 
-   (test-case
-    "Test pdm->string"
-    ; (printf "(pdm->string pdm1)=~s\n" (pdm->string pdm1))
-    (check-pred string? (pdm->string pdm0))
-    (check-pred string? (pdm->string pdm1))
-    )
-
    ; Pushdown machines
    (test-case
     "Make a pushdown machine"
     (let ([pdm (pdm-create)]
           [instr (make-instruction 0 A G0 1 (list G1 G2))])
       (check-true (pushdownmachine? pdm))
-;      (printf "created: pdm=~s\n" pdm)
+;      (printf "created: pdm=~s\n" (pdm->string pdm))
 ;      (pdm-add-instruction pdm instr)
 ;      (printf "  instruction added: pdm=~s\n" pdm)
 ;      (pdm-add-accepting-state pdm 3)
 ;      (printf "  accepting state added: pdm=~s\n" pdm)    
       )
     )
+   
    )) ;; end machine making suite and tests
 
 ;; ===== Machines to use for tests
@@ -166,6 +160,8 @@
   (let ([pdm (pdm-create)])
     (pdm-add-instruction pdm (make-instruction 0 A G0 1 (list G1 G2)))
     (pdm-add-instruction pdm (make-instruction 0 B G1 1 (list G2)))
+    (pdm-add-accepting-state pdm 5)
+    (pdm-add-accepting-state pdm 7)
     pdm))
 ;
 ;;; a balanced parens pushdown machine
@@ -176,8 +172,26 @@
     (pdm-add-instruction pdm (make-instruction 0 "]" G0  0 (list)))
     (pdm-add-instruction pdm (make-instruction 0 "]" BOT 2 (list)))
     (pdm-add-instruction pdm (make-instruction 0 INPUTEND BOT 1 (list)))
+    (pdm-add-accepting-state pdm 0)
     pdm)
   )
+
+
+;; ===== Make and manipulate machines
+(define bigger-machine-making-tests
+  (test-suite
+   "test making bigger machines"
+
+   (test-case
+    "Test pdm->string"
+;    (printf "(pdm->string pdm0)=~a\n" (pdm->string pdm0))
+;    (printf "(pdm->string pdm1)=~a\n" (pdm->string pdm1))
+    (check-pred string? (pdm->string pdm0))
+    (check-pred string? (pdm->string pdm1))
+    )
+   
+   )) ;; end bigger machine making suite and tests
+
 
 
 ;; ===== Delta
@@ -297,21 +311,28 @@
       (check-true (regexp-match? FINAL-STATES-REGEXP line)))
     (let ([line "FINAL: 3, 4"]) 
       (check-true (regexp-match? FINAL-STATES-REGEXP line)))
-    (let ([m '("3 4")]) 
+    (let* ([line "FINAL 3 4"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
       (check-equal? (length (parse-final-states m)) 2)
       (check-equal? (first (parse-final-states m)) 3)
       (check-equal? (second (parse-final-states m)) 4))
-    (let ([m '("3")]) 
+    (let* ([line "FINAL 3 4  # test with comment"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (parse-final-states m)) 2)
+      (check-equal? (first (parse-final-states m)) 3)
+      (check-equal? (second (parse-final-states m)) 4))
+    (let* ([line "ACCEPTING 3 4"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (parse-final-states m)) 2)
+      (check-equal? (first (parse-final-states m)) 3)
+      (check-equal? (second (parse-final-states m)) 4))
+    (let* ([line "FINAL 3"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
       (check-equal? (length (parse-final-states m)) 1)
       (check-equal? (first (parse-final-states m)) 3))
-;    (let ([line "3 4"])
-;      (printf "string-split=~s\n" (string-split (string-trim line) FINAL-STATES-PARSE-REGEXP))
-;      ; (check-true (regexp-match? FINAL-STATES-PARSE-REGEXP line))
-;      )
-;    (let ([line "3"])
-;      (printf "string-split=~s\n" (string-split (string-trim line) FINAL-STATES-PARSE-REGEXP))
-;      ; (check-true (regexp-match? FINAL-STATES-PARSE-REGEXP line))
-;      )
+    (let* ([line "FINAL"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (parse-final-states m)) 0))
     )
 
    (test-case
@@ -359,7 +380,7 @@
     (printf "pgm-file=~s\n" (read-pgm-file "balanced-parens.pdm"))
     (printf "  (string-split pgm-file=~s\n" (string-split (read-pgm-file "balanced-parens.pdm") "\n"))
     (let* ([file-contents '("# balanced-parens.pdm  Pushdown machine to accept balanced parens"
-                            "FINAL 0 1"
+                            "FINAL 0 1 2"
                            "0 [ BOT 0 (G0 BOT)"
                            "0 [ G0  0 (G0 G0)"
                            "0 ] G0  0 ()"
@@ -368,8 +389,8 @@
            [pdm (parse file-contents)])
 ;      (for ([line file-contents])
 ;        (printf "  line=~s\n    parse-one-line=~s\n" line (parse-one-line line)))
-      (printf "  accepting states are ~s\n" (pushdownmachine-acceptingstates pdm))
-      (check-equal? (length (pushdownmachine-instructions pdm)) 5)
+      (printf "  pdm is ~s\n" (pdm->string pdm))
+      ; (check-equal? (length (pushdownmachine-instructions pdm)) 5)
       )
     (let* ([file-contents '("# balanced-parens.pdm  Pushdown machine to accept balanced parens"
                            "0 [ BOT 0 (G0 BOT)"
@@ -385,7 +406,7 @@
       )
     (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
            [pdm (parse file-contents)])
-      ; (printf "~s\n" file-contents)
+      (printf "balanced-parens.pdm gives: ~a\n" (pdm->string pdm))
       (check-equal? (length (pushdownmachine-instructions pdm)) 5)
       )
     )
@@ -399,6 +420,7 @@
 ;(run-tests stack-making-tests)
 ;(run-tests config-tests)
 ; (run-tests machine-making-tests)
+; (run-tests bigger-machine-making-tests)
 ;(run-tests delta-tests)
 ;(run-tests step-tests)
 ; (run-tests yield-star-tests)

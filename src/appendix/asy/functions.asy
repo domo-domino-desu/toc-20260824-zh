@@ -574,3 +574,40 @@ for (int i; i<3; ++i) {
 }
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// ..............................................
+// parallel lines map, vertical
+int picnum = 11;
+picture pic;
+unitsize(pic,0.5cm);
+// Establish the stuff to draw
+real SEPARATION = 1.5;
+real xmin = -3;
+real xmax = 3;
+path domain, codomain;
+domain = (0,xmin-0.5)--(0,xmax+0.5);
+codomain = (SEPARATION,xmin-0.5)--(SEPARATION, xmax+0.5);
+// ticks ..
+real TICLENGTH = 0.15;
+for (int i=-3; i<4; ++i) {
+  draw(pic,(0,i)--(TICLENGTH,i), DARKPEN);
+  label(pic,format("\scriptsize $%d$",i),(0+TICLENGTH,i), 2W);
+  draw(pic,(SEPARATION,i)--(SEPARATION-TICLENGTH,i), DARKPEN);
+  label(pic,format("\scriptsize $%d$",i),(SEPARATION-TICLENGTH,i), 2E);
+}
+// draw the domain and codomain
+draw(pic,domain,Arrows(TeXHead));
+draw(pic,codomain,Arrows(TeXHead));
+
+for (int i=0; i<4; ++i) {
+  path a = (0,i)--(SEPARATION,abs(i));
+  draw(pic,subpath(a,0.20,0.80),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
+}
+for (int i=1; i<4; ++i) {
+  path a = (0,-1*i)--(SEPARATION,abs(i));
+  draw(pic,subpath(a,0.06,0.96),bar=BeginBar(2),arrow=EndArrow(TeXHead),LIGHTPEN+ARROWCOLOR);
+}
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

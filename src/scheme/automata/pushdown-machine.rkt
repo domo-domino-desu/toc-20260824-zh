@@ -23,7 +23,7 @@
 (define ONE "1")  ;;
 (define EPSILON "epsilon")  ;; For instructions that only manipulate the stack
 (provide A B ZERO ONE EPSILON)
-(define INPUTEND "END") ;; Mark end of input
+(define INPUTEND "INPUTEND") ;; Mark end of input
 (provide INPUTEND)
 
 (define G0 "g0")  ;; Most common stack tokens; strings are clearer than chars
@@ -321,7 +321,7 @@
 (define (string->string-list s)
   (string-split (string-trim s)))
 
-(define (yield-star pdm tau [limit 500] [show #t])
+(define (yield-star pdm tau #:limit [limit 500] #:silent [silent #f])
   (do
       ([s 0 (add1 s)]
        [config (make-config 0
@@ -336,8 +336,8 @@
                                  (cons LIMIT-REACHED history)
                                  (cons config history))
                                (reverse history))
-    (when show
-        (printf "Step: ~a  Configuration: ~a\n" s (configuration->string config))))
+    (when (not silent)
+        (show-step-config s config)))
     )
 
 (define (show-yield-star pdm tau)
@@ -481,7 +481,7 @@
 (define filename (make-parameter null))
 
 ;; At each step show the registers, if true
-(define show-steps? (make-parameter #f))
+(define silent? (make-parameter #f))
 
 ;; Input tape, list of instruction strings
 (define tape (make-parameter ""))
@@ -506,13 +506,17 @@
     (command-line
      #:usage-help 
      "Simulate a Pushdown machine."
-     "Put instructions on separate lines.  You can indent, and also use # as comment character."
-     "An instruction is a five-tuple: natural number, tape symbol or B or epsilon, stack symbol or BOT, natural number, list of stack symbols in parens.  Typical: 0 a G0 1 (G0 G1)."
+     "In the file describing the machine, put instructions on separate lines. An"
+     "instruction is a space-separated five-tuple: natural number, tape symbol or"
+     "\"B\" for blank or \"epsilon\", stack symbol or \"BOT\", natural number,"
+     "list of stack symbols in parens.  Typical: 0 a g0 1 (g0 g1). Enter accepting"
+     "states with a line beginning with \"ACCEPTING\".  You can indent, and also"
+     "use # as comment character."
      #:once-each
      [("-f" "--filename") program-fn "Name of file with the program, as in \"machines/simple.pdm\""
                           (filename program-fn)]
-     [("-s" "--show-steps") "Show the registers for each step"
-                                (show-steps? #t)]
+     [("-s" "--silent") "Silent; don't show the tape and stack for each step"
+                                (silent? #t)]
      [("-t" "--tape") tapelist "Input tape, string of space-separated tokens"
                           (tape tapelist)]
      [("-v" "--verbose") "Verbose mode" (verbose? #t)]
@@ -520,7 +524,7 @@
 
   (when (verbose?)
     (begin
-      (show-steps? #t)
+      (silent? #f)
       ))
   
   ;; Read the file with the program
@@ -531,5 +535,5 @@
           (string-split (port->string (open-input-file (filename)) #:close? #t) "\n")))
   ; (printf "PDM-LINES=~s\n" PDM-LINES)
 
-  (printf "~a\n" (yield-star (parse PDM-LINES) (tape)))  ; print the result to stdout
+  (printf "~a\n" (yield-star (parse PDM-LINES) (tape) #:silent (silent?)))  ; print the result to stdout
 )

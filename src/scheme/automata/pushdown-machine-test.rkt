@@ -260,7 +260,7 @@
 
    (test-case
     "Test yield-star, minimal functionality"
-    (printf "===Doing yield-star===\n")
+    ; (printf "===Doing yield-star===\n")
     (let ([tau "[ [ ] ]"])
       (yield-star pdm1 tau)))
    
@@ -276,12 +276,12 @@
    (test-case
     "Test decide"
     (let ([fake-history (list "error" (list "dummy"))])
-      (printf "~s\n" (decide pdm1 fake-history))
+      ; (printf "~s\n" (decide pdm1 fake-history))
       (check-equal? (decide pdm1 fake-history) "error")
       )
-;    (let* ([tau "[ [ ] ]"]
-;           [history (yield-star pdm1 tau)])
-;      (configuration->string (car history)))
+    (let* ([tau "[ [ ] ]"]
+           [history (yield-star pdm1 tau)])
+      (configuration->string (car history)))
     )
 
    )) ;; end yield-star suite and tests
@@ -429,6 +429,21 @@
    
    )) ;; end parse file suite and tests
 
+
+;; ===== test machines
+(define machine-tests
+  (test-suite
+   "test PDM machines"
+
+   (test-case
+    "test simple machine"
+    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
+           [pdm (parse file-contents)])
+      (printf "balanced-parens.pdm gives: ~a\n" (pdm->string pdm))
+      (check-equal? (length (pushdownmachine-instructions pdm)) 5)
+      ))
+
+   )) ;; end machines suite and tests
 
 ;; ===== Run the tests; comment out ones not being worked-on
 ; (run-tests tape-making-tests)

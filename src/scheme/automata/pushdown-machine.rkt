@@ -309,15 +309,8 @@
 ;;; Run a computation
 ;
 
-;; number configuration -> void
-;; Print one line with state and current configuration information
-(define (show-step-config s c)
-  (printf "Step ~a: ~a\n" (number->string s)
-          (configuration->string c))
-  )
-
 ; string  ->  list of strings
-; convert characters in a list of characters into strings
+; convert tokens in a string of space-separated tokens into a list of strings
 (define (string->string-list s)
   (string-split (string-trim s)))
 
@@ -336,47 +329,55 @@
                                  (cons LIMIT-REACHED history)
                                  (cons config history))
                                (reverse history))
-    (when (not silent)
-        (show-step-config s config)))
-    )
+    ))
 
-(define (show-yield-star pdm tau)
-  (let ([strs (map configuration->string (yield-star pdm tau))])
-    (map (lambda (x) (printf "~s\n" x)) strs)))
+;; number configuration -> string
+;; Print one line with state and current configuration information
+(define (step-config-string step-no config)
+  (format "Step ~a: ~a" step-no (configuration->string config)))
+
+(define (history->string-list history)
+  (if (equal? ERROR (car history))
+      "error"
+      (for/list ([config history]
+                 [step-no (in-naturals)])
+        (step-config-string step-no config))))
 
 ; pushdown-machine list-of-strings  ->  integer
 ; Run the steps in the computation of the pushdown machine
-(define (run pdm sigma)
-  (printf "starting run-do sigma=~s\n" sigma)
-  (do
-      ([lagging-config '() config]
-       [config (make-config 0
-                            (apply make-tape (string->string-list sigma))
-                            (make-stack))
-               (step pdm config)]
-       [step-no 0 (+ 1 step-no)])
-    ((or (equal? HALT config)
-         (equal? ERROR config))
-     (if (equal? config HALT)
-         (printf "done: final state=~a\n" (get-current-state lagging-config))
-         (printf "done: error\n")))
-    ; (set! lagging-config config)
-    ;(writeln "lagging-config is ")(write lagging-config)(writeln "")
-    ;(writeln "config is ")(write config)(writeln "")
-    ;(printf "equal? lagging-config config) ~a\n" (equal? lagging-config config))
-    (show-step-config step-no config))
-    )
+;(define (run pdm sigma)
+;  (printf "starting run-do sigma=~s\n" sigma)
+;  (do
+;      ([lagging-config '() config]
+;       [config (make-config 0
+;                            (apply make-tape (string->string-list sigma))
+;                            (make-stack))
+;               (step pdm config)]
+;       [step-no 0 (+ 1 step-no)])
+;    ((or (equal? HALT config)
+;         (equal? ERROR config))
+;     (if (equal? config HALT)
+;         (printf "done: final state=~a\n" (get-current-state lagging-config))
+;         (printf "done: error\n")))
+;    (show-step-config step-no config))
+;    )
 ;
 ;
-;(define (decide pdm F sigma)
-;  (if (member (run pdm sigma) F)
-;      "accept"
-;      "reject"))
-;
-(provide run
+(define (decide pdm history)
+  (let ([final-config (car history)])
+    ; (printf "decide: ~s\n" final-config)
+    (if (equal? "error" final-config)
+        "error"
+        (let ([final-state (get-current-state final-config)])
+          ; (printf "decide: final-state is ~s\n" final-state)
+          (if (set-member? (pushdownmachine-acceptingstates pdm) final-state)
+              "accept"
+              "reject")))))
+
+(provide
          yield-star
-         show-yield-star)
-;         decide)
+         history->string-list
+         decide)
 
 ;; ===== Parse file containing a machine
 
@@ -407,10 +408,12 @@
         [next-stack-list (string-split (fifth (car m)))])
     (make-instruction present-state present-tape-token present-stack-token next-state next-stack-list)))
 
+; The regular expression used to split the space-separated tokens inside the final states string
+(define FINAL-STATES-PARSE-REGEXP #px"(,\\s*)|(\\s+)")
+
 ;; string -> list of numbers
 ;; Return the numbers given as a space-separated list in the string
-;; (An initial comma is allowed between numbers, as in "3, 4")
-(define FINAL-STATES-PARSE-REGEXP #px"(,\\s*)|(\\s+)")
+;; (You can use a comma between numbers, as in "3, 4")
 (define (parse-final-states m)
   (let* ([token-list (car m)]
          [digit-string (fourth token-list)])
@@ -534,6 +537,11 @@
     (set! PDM-LINES
           (string-split (port->string (open-input-file (filename)) #:close? #t) "\n")))
   ; (printf "PDM-LINES=~s\n" PDM-LINES)
+  (let* ([pdm (parse PDM-LINES)]
+         [history (yield-star pdm (tape) #:silent #t)])
+    (when (not (silent?))
+      (writeln (string-join (history->string-list history) "\n")))
+    (decide pdm history))
 
-  (printf "~a\n" (yield-star (parse PDM-LINES) (tape) #:silent (silent?)))  ; print the result to stdout
+  ; (printf "~a\n" (yield-star (parse PDM-LINES) (tape) #:silent (silent?)))  ; print the result to stdout
 )

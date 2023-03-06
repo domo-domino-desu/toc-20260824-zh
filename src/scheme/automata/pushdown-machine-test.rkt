@@ -261,14 +261,29 @@
    (test-case
     "Test yield-star, minimal functionality"
     (printf "===Doing yield-star===\n")
-    (let ([tau "[[]]"])
+    (let ([tau "[ [ ] ]"])
       (yield-star pdm1 tau)))
    
    (test-case
-    "Test show-yield-star"
-    (let ([tau "[[]]"])
-      (show-yield-star pdm1 tau)
+    "Test history->string-list"
+    (let* ([tau "[ [ ] ]"]
+           [history (yield-star pdm1 tau)]
+           [h-strings (history->string-list history)])
+      (for ([s h-strings])
+        (check-pred string? s))
       ))
+ 
+   (test-case
+    "Test decide"
+    (let ([fake-history (list "error" (list "dummy"))])
+      (printf "~s\n" (decide pdm1 fake-history))
+      (check-equal? (decide pdm1 fake-history) "error")
+      )
+;    (let* ([tau "[ [ ] ]"]
+;           [history (yield-star pdm1 tau)])
+;      (configuration->string (car history)))
+    )
+
    )) ;; end yield-star suite and tests
 
 ;; ===== parse file
@@ -416,12 +431,12 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-;(run-tests tape-making-tests)
-;(run-tests stack-making-tests)
-;(run-tests config-tests)
+; (run-tests tape-making-tests)
+; (run-tests stack-making-tests)
+; (run-tests config-tests)
 ; (run-tests machine-making-tests)
 ; (run-tests bigger-machine-making-tests)
-;(run-tests delta-tests)
-;(run-tests step-tests)
-; (run-tests yield-star-tests)
-(run-tests parse-file-tests)
+; (run-tests delta-tests)
+; (run-tests step-tests)
+(run-tests yield-star-tests)
+; (run-tests parse-file-tests)

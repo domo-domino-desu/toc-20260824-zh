@@ -10464,9 +10464,10 @@ $\map{\Delta}{Q\times (\Sigma\cup\set{\blank,\varepsilon})\times (\Gamma\cup\set
   \includegraphics{asy/share/machine03.pdf}
 \end{center}
 
-We now give the action of these machines (we've done  
-descriptions like this a number of times
-so we will avoid some low-level details). 
+We now give the action of these machines.
+%  (we've done  
+% descriptions like this a number of times
+% so we will suppress some low-level details). 
 %<*discussion:StackMachineTransitionsii>
 A \definend{configuration} $\mathcal{C}$ 
 of a machine is a tuple listing the present state, the present sequence of 
@@ -10474,13 +10475,13 @@ characters on the tape, and the present
 sequence of characters on the stack. 
 The transition function specifies how the machine moves from configuration
 to configuration.\index{Pushdown machine!transition function}
-We can represent this information either as 
+We can represent this specification either as 
 $\Delta(q_i,t,g)=\sequence{q_k,\gamma}$
 or as $\sequence{q_i,t,g,q_k,\gamma}$
 (where $t\in\Sigma\cup\set{B,\varepsilon}$, $g\in\Gamma\cup\set{\bot}$, 
 and $\gamma\in\kleenestar{\Gamma}$); we call the second an  
 \definend{instruction}.\index{instruction!stack machine} 
-The first form is more convenient, except that 
+The first form is more convenient but
 we must remember that $\Delta$ is a
 partial function and so there may be some inputs without an
 associated output. 
@@ -10490,55 +10491,62 @@ reading the first character of $\tau_0\concat\blank$
 for the \definend{input string} $\tau_0\in\kleenestar{\Sigma}\!$,
 and with the stack containing only~$\bot$.
 
-To take step~$s+1$ 
+For a transition 
 suppose that the machine's configuration $\mathcal{C}_s$
 has it in state~$q_i$ with the tape head reading~$t$ 
 and with~$g$ on top of the stack.
 Look for the input
 $\sequence{q_i,t,g}\in Q\times(\Sigma\cup\set{\blank,\varepsilon})\times\Gamma$.
-Suppose that there is an associated output $\sequence{q_k,\gamma}$. 
-We handle $t\in\Sigma\cup\set{\blank}$ and $t=\emptystring$ separately.
+If there is no such input/output pair
+then the computation dead-ends\Dash there is no
+configuration $\mathcal{C}$ such that $\mathcal{C}_s\yields\mathcal{C}$.
+(The computation also dead-ends if~$\bot$ is popped off the stack
+and not replaced, since $\Delta$ has no way to allow a third input~$g$
+that signifies ``stack is empty.'')
 
-If $t\in\Sigma\cup\set{\blank}$ then define a subsequent configuration, a
-$\mathcal{C}_{s+1}$ such that $\mathcal{C}_s\yields\mathcal{C}_{s+1}$, where
+Alternatively, 
+suppose that there is an associated output $\sequence{q_k,\gamma}$. 
+% We handle $t\in\Sigma\cup\set{\blank}$ and $t=\emptystring$ separately.
+If $t\in\Sigma\cup\set{\blank}$ then define a 
+$\mathcal{C}_{s+1}$ such that $\mathcal{C}_s\yields\mathcal{C}_{s+1}$ where
 the new configuration differs the prior one in that:~\begin{parenum}
-\item the machine's read head consumes the present tape character~$t$,
-moving one cell to the right,
+\item the machine's read head
+moves one cell to the right,
 \item the machine pops~$g$ off the stack
 and pushes the characters of the sequence
 $\gamma=\sequence{g_{0},\ldots\,g_{m}}$ onto the stack, 
-so that $g_0$ is now at the stack top,
+in the order that leaves $g_0$ now at the stack top,
 and \item the machine goes into state $q_k$.
 \end{parenum}
 The other case for the input $\sequence{q_i,t,g}$
 is where $t=\varepsilon$.
-Everything is the same except that the read head does not move.
-(We use this to manipulate the stack without consuming any input.) 
-
-Alternatively,
-if the input $\sequence{q_i,t,g}$ has no
-associated output then the computation dead-ends\Dash there is no
-configuration $\mathcal{C}$ such that $\mathcal{C}_s\yields\mathcal{C}$.
+Everything is the same except that the read head does not move
+(we use this to manipulate the stack without consuming any input). 
 %</discussion:StackMachineTransitionsii>
 
 %<*discussion:StackMachineTransitionsiii>
-Finally, a Pushdown machine accepts the input
-$\tau_0$ when after processing
-that string, the machine ends in a final state.
-That is, there is a sequence of configurations 
+A Pushdown machine computation ends when the tape
+exhausted, $\tau=\emptystring$,
+meaning that the read head points to the input end-marking \str{B}.
+The machine accepts the initial string
+$\tau_0$ when after halting the machine is in a final state:
+there is a sequence of configurations 
 $\mathcal{C}_0\kleenestar{\yields}\mathcal{C}_h$ such that
-$\mathcal{C}_h$ has the tape string~$\emptystring$ and state 
-$q\in F$.\footnote{%
-  There are two common approaches to acceptance.
-  The other one accepts~$\tau$ when, again
-  after processing that string, the machine exhausts the stack, popping $\bot$.
-  That is,
-  $\mathcal{C}_0\kleenestar{\yields}\mathcal{C}_h$ where 
-  $\mathcal{C}_h$ has the tape string~$\emptystring$ and the stack is also 
-  empty. 
-  The two are equivalent in that for any language accepted by
-  a Pushdown machine by the first approach there is a
-  machine accepting that language by the second.}\index{Pushdown machine!string acceptance}
+$\mathcal{C}_0$ has tape~$\tau_0$,
+and $\mathcal{C}_h$ has the tape~$\emptystring$
+as well as state 
+$q\in F$.\index{Pushdown machine!string acceptance}
+% \footnote{%
+%   There are two common approaches to ending a computation.
+%   The other one halts the machine when, again
+%   after processing its input string, 
+%   the machine also exhausts its stack, popping $\bot$.
+%   That is, 
+%   $\mathcal{C}_h$ has the tape string~$\emptystring$ and the stack is 
+%   empty. 
+%   The two approaches are equivalent in that for any language accepted by
+%   a Pushdown machine by the first approach, our approach, there is a
+%   machine accepting that language by the second.}
 %</discussion:StackMachineTransitionsiii>
 
 \begin{example}  \label{ex:PDSAcceptBalencedParens}
@@ -10561,13 +10569,13 @@ $\lang_{\text{BAL}}=\set{\varepsilon,
      \str{[][]},     
      \str{[[][]]},
      \str{[[[]]]}, \ldots}$ 
-But it is recognized by the
+But that language is recognized by the
 Pushdown machine with this transition function $\Delta$
 %<*ex:BalancedParensAcceptedPushdown>
 (the instruction numbers are for ease of reference).
 \begin{center}
 \begin{tabular}{r|ll}
-  \multicolumn{1}{r}{\tabulartext{Instr no}}
+  \multicolumn{1}{r}{\tabulartext{Instruction}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \hline
@@ -10630,7 +10638,7 @@ $\Sigma=\set{\str{a},\str{b},\str{c}}$,
 and $\Gamma=\set{\str{g0},\str{g1}}$. 
 \begin{center}
 \begin{tabular}{r|ll}
-  \multicolumn{1}{r}{\tabulartext{Instr no}}
+  \multicolumn{1}{r}{\tabulartext{Instruction}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \hline
@@ -10646,7 +10654,7 @@ and $\Gamma=\set{\str{g0},\str{g1}}$.
 \end{tabular}
 \hspace{2em}
 \begin{tabular}{r|ll}
-  \multicolumn{1}{r}{\tabulartext{Instr no}}
+  \multicolumn{1}{r}{\tabulartext{Instruction}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \hline
@@ -10769,7 +10777,7 @@ provided that the popped stack character is~\str{g0}
 and if it reads~\str{1} then it only proceeds if it popped~\str{g1}.
 \begin{center}
 \begin{tabular}[t]{r|ll}
-  \multicolumn{1}{r}{\tabulartext{Instr no}}
+  \multicolumn{1}{r}{\tabulartext{Instruction}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \hline
@@ -10786,7 +10794,7 @@ and if it reads~\str{1} then it only proceeds if it popped~\str{g1}.
 \end{tabular}
 \hspace{3em}
 \begin{tabular}[t]{r|ll}
-  \multicolumn{1}{r}{\tabulartext{Instr no}}
+  \multicolumn{1}{r}{\tabulartext{Instruction}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \hline

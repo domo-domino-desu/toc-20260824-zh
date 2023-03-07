@@ -437,12 +437,23 @@
 
    (test-case
     "test simple machine"
-    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
+    (let* ([file-contents (string-split (read-pgm-file "push.pdm") "\n")]
            [pdm (parse file-contents)])
-      (printf "balanced-parens.pdm gives: ~a\n" (pdm->string pdm))
-      (check-equal? (length (pushdownmachine-instructions pdm)) 5)
-      ))
+      (printf "push.pdm gives: ~a\n" (pdm->string pdm))
+      (check-equal? (length (pushdownmachine-instructions pdm)) 4)
 
+      (let* ([tau "a a a a"]
+             [history (yield-star pdm tau)])
+        (printf "~a\n" (string-join (history->string-list history) "\n")))
+      (let* ([tau "a"]
+             [history (yield-star pdm tau)])
+        (printf "~a\n" (string-join (history->string-list history) "\n")))
+      (let* ([tau ""]
+             [history (yield-star pdm tau)])
+        (printf "~a\n" (string-join (history->string-list history) "\n")))
+       )
+    )
+   
    )) ;; end machines suite and tests
 
 ;; ===== Run the tests; comment out ones not being worked-on
@@ -453,5 +464,6 @@
 ; (run-tests bigger-machine-making-tests)
 ; (run-tests delta-tests)
 ; (run-tests step-tests)
-(run-tests yield-star-tests)
+; (run-tests yield-star-tests)
 ; (run-tests parse-file-tests)
+(run-tests machine-tests)

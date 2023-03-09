@@ -436,7 +436,7 @@
    "test PDM machines"
 
    (test-case
-    "test simple machine"
+    "test machine tht pushes a thing onto stack for every token on input tape"
     (let* ([file-contents (string-split (read-pgm-file "push.pdm") "\n")]
            [pdm (parse file-contents)])
       (printf "push.pdm gives: ~a\n" (pdm->string pdm))
@@ -444,16 +444,49 @@
 
       (let* ([tau "a a a a"]
              [history (yield-star pdm tau)])
-        (printf "~a\n" (string-join (history->string-list history) "\n")))
+        (printf "~a\n" (string-join (history->string-list history) "\n"))
+        ; (printf "history: ~s\n" history)
+        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   ; tape has only INPUTEND
+        (check-equal? (length (get-stack-list (car (reverse history)))) 5)) ; stack has four things plus BOT
       (let* ([tau "a"]
              [history (yield-star pdm tau)])
-        (printf "~a\n" (string-join (history->string-list history) "\n")))
+        ;(printf "~a\n" (string-join (history->string-list history) "\n"))
+        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+        (check-equal? (length (get-stack-list (car (reverse history)))) 2)) 
       (let* ([tau ""]
              [history (yield-star pdm tau)])
-        (printf "~a\n" (string-join (history->string-list history) "\n")))
+        ;(printf "~a\n" (string-join (history->string-list history) "\n"))
+        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+        (check-equal? (length (get-stack-list (car (reverse history)))) 1)) 
        )
     )
    
+   (test-case
+    "test machine that ends with two things on the stack, regardless of input"
+    (let* ([file-contents (string-split (read-pgm-file "pushtwo.pdm") "\n")]
+           [pdm (parse file-contents)])
+      (printf "pushtwo.pdm gives:\n ~a\n" (pdm->string pdm))
+      (check-equal? (length (pushdownmachine-instructions pdm)) 4)
+
+      (let* ([tau "a a a a"]
+             [history (yield-star pdm tau)])
+        ; (printf "~a\n" (string-join (history->string-list history) "\n"))
+        ; (printf "history: ~s\n" history)
+        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   ; tape empty
+        (check-equal? (length (get-stack-list (car (reverse history)))) 3)) ; stack has four things plus BOT
+      (let* ([tau "a"]
+             [history (yield-star pdm tau)])
+        (printf "~a\n" (string-join (history->string-list history) "\n"))
+        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+        (check-equal? (length (get-stack-list (car (reverse history)))) 3)) 
+      (let* ([tau ""]
+             [history (yield-star pdm tau)])
+        (printf "~a\n" (string-join (history->string-list history) "\n"))
+        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+        (check-equal? (length (get-stack-list (car (reverse history)))) 3))
+       )
+    )
+    
    )) ;; end machines suite and tests
 
 ;; ===== Run the tests; comment out ones not being worked-on

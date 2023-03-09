@@ -23,7 +23,7 @@
 (define ONE "1")  ;;
 (define EPSILON "epsilon")  ;; For instructions that only manipulate the stack
 (provide A B ZERO ONE EPSILON)
-(define INPUTEND "INPUTEND") ;; Mark end of input
+(define INPUTEND "B") ;; Mark end of input
 (provide INPUTEND)
 
 (define G0 "g0")  ;; Most common stack tokens; strings are clearer than chars

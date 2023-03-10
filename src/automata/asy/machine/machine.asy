@@ -172,10 +172,10 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// --------- Evolution of pda calculation ----------
-real tape_length = 100pt;
+// --------- Evolution of balanced-parens pdm calculation ----------
+real tape_length = 80pt;
 real stack_length = 60pt;
-real separator = 20pt;
+real separator = 35pt;
 
 picture pic;
 int picnum=6;
@@ -214,7 +214,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=13;
-pic=pda(" [[]][]B",8,"$q_1$", new string[] {},tape_length,stack_length,separator);
+pic=pda(" [[]][]B",8,"$q_1$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 

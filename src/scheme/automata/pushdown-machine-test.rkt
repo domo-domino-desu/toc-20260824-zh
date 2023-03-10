@@ -487,42 +487,93 @@
 ;       )
 ;    )
 
+;   (test-case
+;    "test machine that accepts if parens are balanced on input tape"
+;    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
+;           [pdm (parse file-contents)])
+;      (printf "balanced-parens.pdm gives: ~a\n" (pdm->string pdm))
+;
+;      (let* ([tau "[ [ ] ]"]
+;             [history (yield-star pdm tau)])
+;        ; (printf "~a\n" (string-join (history->string-list history) "\n"))
+;        ; (printf "history: ~s\n" history)
+;        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   ; tape has been consumed
+;        (check-equal? (length (get-stack-list (car (reverse history)))) 1)  ; stack has only a BOT
+;        (check-equal? (decide pdm history) "accept"))
+;      (let* ([tau "[ ["]
+;             [history (yield-star pdm tau)])
+;        ; printf "~a\n" (string-join (history->string-list history) "\n"))
+;        ; (printf "history: ~s\n" history)
+;        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+;        (check-equal? (length (get-stack-list (car (reverse history)))) 3) 
+;        (check-equal? (decide pdm history) "reject")) 
+;      (let* ([tau "[ [ ] [ ] ]"]
+;             [history (yield-star pdm tau)])
+;        ;(printf "~a\n" (string-join (history->string-list history) "\n"))
+;        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+;        (check-equal? (length (get-stack-list (car (reverse history)))) 1) 
+;        (check-equal? (decide pdm history) "accept")) 
+;      (let* ([tau "[ ] [ ]"]
+;             [history (yield-star pdm tau)])
+;        ;(printf "~a\n" (string-join (history->string-list history) "\n"))
+;        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+;        (check-equal? (length (get-stack-list (car (reverse history)))) 1) 
+;        (check-equal? (decide pdm history) "accept")) 
+;      (let* ([tau "[ [ ] ] [ ]"]
+;             [history (yield-star pdm tau)])
+;        (printf "~a\n" (string-join (history->string-list history) "\n"))
+;        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+;        (check-equal? (length (get-stack-list (car (reverse history)))) 1) 
+;        (check-equal? (decide pdm history) "accept")) 
+;      (let* ([tau ""]
+;             [history (yield-star pdm tau)])
+;        ;(printf "~a\n" (string-join (history->string-list history) "\n"))
+;        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
+;        (check-equal? (length (get-stack-list (car (reverse history)))) 1)
+;        (check-equal? (decide pdm history) "accept"))         
+;       )
+;    )
+
    (test-case
     "test machine that accepts if parens are balanced on input tape"
-    (let* ([file-contents (string-split (read-pgm-file "balanced-parens.pdm") "\n")]
+    (let* ([file-contents (string-split (read-pgm-file "mm-palindrome.pdm") "\n")]
            [pdm (parse file-contents)])
-      (printf "balanced-parens.pdm gives: ~a\n" (pdm->string pdm))
+      (printf "mm-palindrome.pdm gives: ~a\n" (pdm->string pdm))
 
-      (let* ([tau "[ [ ] ]"]
+      (let* ([tau "a b c b a"]
              [history (yield-star pdm tau)])
-        (printf "~a\n" (string-join (history->string-list history) "\n"))
-        (printf "history: ~s\n" history)
-        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   ; tape has only INPUTEND
+        ; (printf "~a\n" (string-join (history->string-list history) "\n"))
+        ; (printf "history: ~s\n" history)
+        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   ; tape has nothing
         (check-equal? (length (get-stack-list (car (reverse history)))) 1)  ; stack has only a BOT
         (check-equal? (decide pdm history) "accept"))
-      (let* ([tau "[ ["]
+
+      (let* ([tau "a b c a b"]
+             [history (yield-star pdm tau)])
+        ; (printf "~a\n" (string-join (history->string-list history) "\n"))
+        ; (printf "history: ~s\n" history)
+        (check-equal? (decide pdm history) "reject"))
+      
+      (let* ([tau "a b c"]
+             [history (yield-star pdm tau)])
+        ; (printf "~a\n" (string-join (history->string-list history) "\n"))
+        ; (printf "history: ~s\n" history)
+        (check-equal? (decide pdm history) "reject"))      
+      
+      (let* ([tau "c"]
+             [history (yield-star pdm tau)])
+        ; (printf "~a\n" (string-join (history->string-list history) "\n"))
+        ; (printf "history: ~s\n" history)
+        (check-equal? (decide pdm history) "accept"))      
+      
+      (let* ([tau "c b a"]
              [history (yield-star pdm tau)])
         (printf "~a\n" (string-join (history->string-list history) "\n"))
         ; (printf "history: ~s\n" history)
-        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
-        (check-equal? (length (get-stack-list (car (reverse history)))) 3) 
-        (check-equal? (decide pdm history) "reject")) 
-      (let* ([tau "[ [ ] [ ] ]"]
-             [history (yield-star pdm tau)])
-        ;(printf "~a\n" (string-join (history->string-list history) "\n"))
-        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
-        (check-equal? (length (get-stack-list (car (reverse history)))) 1) 
-        (check-equal? (decide pdm history) "accept")) 
-      (let* ([tau ""]
-             [history (yield-star pdm tau)])
-        ;(printf "~a\n" (string-join (history->string-list history) "\n"))
-        (check-equal? (length (get-tape-list (car (reverse history)))) 0)   
-        (check-equal? (length (get-stack-list (car (reverse history)))) 1)
-        (check-equal? (decide pdm history) "accept"))         
-       )
-    )
+        (check-equal? (decide pdm history) "reject"))      
 
-    
+      )) ;; close let* and test-case
+   
    )) ;; end machines suite and tests
 
 ;; ===== Run the tests; comment out ones not being worked-on

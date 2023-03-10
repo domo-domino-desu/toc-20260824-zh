@@ -364,7 +364,7 @@
 ;
 ;
 (define (decide pdm history)
-  (let ([final-config (car history)])
+  (let ([final-config (car (reverse history))])
     ; (printf "decide: ~s\n" final-config)
     (if (equal? "error" final-config)
         "error"

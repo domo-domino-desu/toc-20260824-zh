@@ -10487,9 +10487,9 @@ partial function and so there may be some inputs without an
 associated output. 
 
 The starting configuration $\mathcal{C}_0$ has the machine in state~$q_0$,
-reading the first character of $\tau_0\concat\blank$
+is reading the first character of $\tau_0\concat\blank$
 for the \definend{input string} $\tau_0\in\kleenestar{\Sigma}\!$,
-and with the stack containing only~$\bot$.
+and the stack contains only~$\bot$.
 
 As for transitions, 
 suppose that the machine's configuration $\mathcal{C}_s$
@@ -10501,8 +10501,8 @@ If that input is not defined for $\Delta$
 then the computation dead-ends\Dash there is no
 configuration $\mathcal{C}$ such that $\mathcal{C}_s\yields\mathcal{C}$.
 (The computation also dead-ends if there is nothing on the stack,
-including no~$\bot$, since $\Delta$ has no way to allow a third input~$g$
-that signifies ``stack is empty.'')
+not even~$\bot$, since $\Delta$ has no way to allow a third input~$g$
+that signifies ``stack is completely empty.'')
 
 Otherwise 
 suppose that there is such an input, with the associated output 
@@ -10537,17 +10537,6 @@ $\mathcal{C}_0$ has tape~$\tau_0$,
 and $\mathcal{C}_h$ has the tape~$\emptystring$
 as well as state 
 $q\in F$.\index{Pushdown machine!string acceptance}
-% \footnote{%
-%   There are two common approaches to ending a computation.
-%   The other one halts the machine when, again
-%   after processing its input string, 
-%   the machine also exhausts its stack, popping $\bot$.
-%   That is, 
-%   $\mathcal{C}_h$ has the tape string~$\emptystring$ and the stack is 
-%   empty. 
-%   The two approaches are equivalent in that for any language accepted by
-%   a Pushdown machine by the first approach, our approach, there is a
-%   machine accepting that language by the second.}
 %</discussion:StackMachineTransitionsiii>
 
 \begin{example}  \label{ex:PDSAcceptBalencedParens}
@@ -10570,8 +10559,12 @@ $\lang_{\text{BAL}}=\set{\varepsilon,
      \str{[][]},     
      \str{[[][]]},
      \str{[[[]]]}, \ldots}$ 
-But that language is recognized by the
-Pushdown machine with this transition function $\Delta$
+But that language is recognized by the 
+Pushdown machine, with
+$Q=\set{q_0,q_1}$, with $F=\set{q_1}$,
+with $\Sigma=\set{\text{\str{[}},\text{\str{]}}}$
+and $\Gamma=\set{\text{\str{g0}}}$, and with
+this transition function $\Delta$
 %<*ex:BalancedParensAcceptedPushdown>
 (the instruction numbers are for ease of reference).
 \begin{center}
@@ -10583,14 +10576,20 @@ Pushdown machine with this transition function $\Delta$
   $0$  &$q_o,\text{\str{[}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
   $1$  &$q_o,\text{\str{[}},\text{\str{g0}}$  &$q_0,\text{`\str{g0g0}'}$ \\
   $2$  &$q_o,\text{\str{]}},\text{\str{g0}}$  &$q_0,\varepsilon$ \\
-  $3$  &$q_o,\text{\str{]}},\bot$             &$q_2,\varepsilon$ \\
-  $4$  &$q_o,\text{\str{B}},\bot$             &$q_1,\varepsilon$ \\
+  $3$  &$q_o,\text{\str{]}},\bot$             &$q_0,\varepsilon$ \\
+  $4$  &$q_o,\text{\str{B}},\bot$             &$q_1,\text{`\str{$\bot$}'}$ \\
+  $5$  &$q_o,\text{\str{B}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}'}$ \\
 \end{tabular}
 \end{center}
-This machine has
-$Q=\set{q_0,q_1,q_2}$ with $F=\set{q_1}$,
-as well as $\Sigma=\set{\text{\str{[}},\text{\str{]}}}$
-and $\Gamma=\set{\text{\str{g0}}}$.
+The first two instructions respond to the open paren on the input
+tape by pushing a \str{g0} onto the stack.
+(Note that the machine always pops a token, so for instance instruction~1
+pushes two \str{g0}'s, one of which replaces the one popped.)
+Instructions 2 and~3 pop a token off the stack, although because 
+instruction~3 pops $\bot$, the computation will dead-end at the next
+step.
+Finally, if the machine runs instruction~4 then it will accept the input string,
+while if it runs instruction~5 then it will fail to accept.   
 %</ex:BalancedParensAcceptedPushdown>
 \begin{tapesequence}
   \begin{tapesequencetable}

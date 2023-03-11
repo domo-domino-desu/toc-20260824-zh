@@ -296,9 +296,9 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 // ------------- DPDA accepting palindromes with middle marker --------
-real tape_length = 90pt;
+real tape_length = 70pt;
 real stack_length = 40pt;
-real separator = 20pt;
+real separator = 35pt;
 
 picture pic;
 int picnum=25;
@@ -332,6 +332,6 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=31;
-pic=pda(" bacabB",7,"$q_3$", new string[] {},tape_length,stack_length,separator);
+pic=pda(" bacabB",7,"$q_3$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

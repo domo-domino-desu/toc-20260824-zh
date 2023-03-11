@@ -10464,7 +10464,15 @@ $\map{\Delta}{Q\times (\Sigma\cup\set{\blank,\varepsilon})\times (\Gamma\cup\set
   \includegraphics{asy/share/machine03.pdf}
 \end{center}
 
-We now give the action of these machines.
+We now precisely describe the action of these machines.
+Note that
+as with Finite State machines, Pushdown machines don't write to the tape
+(however, unlike Finite State machines they can fail to
+halt; see \cref{exer:PDANoHalt}).
+Note also that at each step the machine pops a character off the stack.
+If we want to leave the stack unchanged then as part of the instruction
+we must push that character back on.
+
 %  (we've done  
 % descriptions like this a number of times
 % so we will suppress some low-level details). 
@@ -10483,11 +10491,11 @@ and $\gamma\in\kleenestar{\Gamma}$); we call the second an
 \definend{instruction}.\index{instruction!stack machine} 
 The first form is more convenient but
 we must remember that $\Delta$ is a
-partial function and so there may be some inputs without an
+partial function and so there may be inputs with no
 associated output. 
 
 The starting configuration $\mathcal{C}_0$ has the machine in state~$q_0$,
-is reading the first character of $\tau_0\concat\blank$
+reading the first character of $\tau_0\concat\blank$
 for the \definend{input string} $\tau_0\in\kleenestar{\Sigma}\!$,
 and the stack contains only~$\bot$.
 
@@ -10582,9 +10590,7 @@ this transition function $\Delta$.
 \end{center}
 The first two instructions respond to a \str{[} on the input
 tape by pushing a \str{g0} onto the stack.
-(Note that the machine always pops a token, so for instance instruction~1
-pushes two \str{g0}'s, one of which replaces the popped \str{g0}.)
-Instructions 2 and~3 pop a token off the stack, although because 
+The next two pop a token off the stack, although because 
 instruction~3 pops $\bot$, the computation will dead-end at the next
 step.
 Finally, if the machine runs instruction~4 then it will accept the input string,
@@ -10602,22 +10608,10 @@ while if it runs instruction~5 then it will fail to accept.
     7 &\tapegraphic{automata/asy/machine/machine13.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-The machine's stack tracks of the number of
-\str{[}'s minus the number of \str{]}'s.
-After consuming the \str{[[]][]B}, the machine ends in an accepting state.
+% The machine's stack tracks of the number of
+% \str{[}'s minus the number of \str{]}'s.
+% After consuming the \str{[[]][]B}, the machine ends in an accepting state.
 \end{example}
-
-\medskip
-As with Finite State machines, Pushdown machines don't write to the tape.
-However, unlike Finite State machines they can fail to
-halt; see \cref{exer:PDANoHalt}.
-
-Note that at each step the machine pops a character off the stack.
-If we want to leave the stack unchanged then as part of the instruction
-we must push that character back on.
-Also, if the machine reaches a configuration where 
-the stack is empty then it will lock up and be unable to perform any 
-additional instructions.
 
 
 \begin{example}  \label{ex:PDAPalindromesMithMidMarker}
@@ -10639,32 +10633,38 @@ and $\Gamma=\set{\str{g0},\str{g1}}$.
   \multicolumn{1}{r}{\ }
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-  \hline
+  \cline{2-3}
   $0$  &$q_0,\text{\str{a}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
   $1$  &$q_0,\text{\str{b}},\bot$             &$q_0,\text{`\str{g1}$\bot$'}$ \\
-  $2$  &$q_0,\varepsilon,\bot$                &$q_3,\varepsilon$ \\
-  $3$  &$q_0,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g0}'}$ \\
-  $4$  &$q_0,\text{\str{a}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\str{g1}'}$ \\
-  $5$  &$q_0,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\str{g0}'}$ \\
-  $6$  &$q_0,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\str{g1}'}$ \\
-  $7$  &$q_0,\text{\str{c}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
-  $8$  &$q_0,\text{\str{c}},\text{\str{g1}}$   &$q_1,\text{`\str{g1}'}$ \\
+  $2$  &$q_0,\text{\str{c}},\bot$             &$q_1,\text{`$\bot$'}$ \\
+  $3$  &$q_0,\text{\str{B}},\bot$             &$q_3,\text{`$\bot$'}$ \\
+  $4$  &$q_0,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g0}'}$ \\
+  $5$  &$q_0,\text{\str{a}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\str{g1}'}$ \\
+  $6$  &$q_0,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\str{g0}'}$ \\
+  $7$  &$q_0,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\str{g1}'}$ \\
+  $8$  &$q_0,\text{\str{c}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
+  $9$  &$q_0,\text{\str{c}},\text{\str{g1}}$   &$q_1,\text{`\str{g1}'}$ \\
+  $10$  &$q_0,\text{\str{B}},\text{\str{g0}}$   &$q_2,\text{`\str{g0}'}$ \\
+  $11$  &$q_0,\text{\str{B}},\text{\str{g1}}$   &$q_2,\text{`\str{g1}'}$ \\
 \end{tabular}
 \hspace{2em}
 \begin{tabular}{r|ll}
   \multicolumn{1}{r}{\ }
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-  \hline
-  $9$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
-  $10$ &$q_1,\text{\str{a}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
-  $11$ &$q_1,\text{\str{a}},\bot$             &$q_2,\varepsilon$ \\
-  $12$ &$q_1,\text{\str{b}},\text{\str{g0}}$  &$q_2,\varepsilon$ \\
-  $13$ &$q_1,\text{\str{b}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
-  $14$  &$q_1,\text{\str{b}},\bot$            &$q_2,\varepsilon$ \\
-  $15$ &$q_1,\text{\str{B}},\text{\str{g0}}$  &$q_2,\varepsilon$ \\
-  $16$ &$q_1,\text{\str{B}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
-  $17$ &$q_1,\text{\str{B}},\bot$             &$q_3,\varepsilon$ \\
+  \cline{2-3}
+  $12$ &$q_1,\text{\str{a}},\bot$             &$q_2,\text{`$\bot$'}$ \\
+  $13$ &$q_1,\text{\str{b}},\bot$             &$q_2,\text{`$\bot$'}$ \\
+  $14$ &$q_1,\text{\str{c}},\bot$             &$q_2,\text{`$\bot$'}$ \\
+  $15$ &$q_1,\text{\str{B}},\bot$             &$q_3,\text{`$\bot$'}$ \\
+  $16$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
+  $17$ &$q_1,\text{\str{a}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
+  $18$ &$q_1,\text{\str{b}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
+  $19$ &$q_1,\text{\str{b}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
+  $20$ &$q_1,\text{\str{c}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
+  $21$ &$q_1,\text{\str{c}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
+  $22$ &$q_1,\text{\str{B}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
+  $23$ &$q_1,\text{\str{B}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
 \end{tabular}
 \end{center}
 %</ex:PalindromesUsingMiddleMarkeri>
@@ -10686,12 +10686,11 @@ when reading~\str{b} it checks for~\str{g1}.
     6 &\tapegraphic{automata/asy/machine/machine31.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-If the machine hits the stack bottom at the same moment that the input
-runs out then it goes into the accepting state~$q_3$.
+It ends in the accepting state~$q_3$.
 \end{example}
 
 \begin{remark}
-Stack machines are often used in practice, particularly for
+Stack machines models are often used in practice for
 running hardware.
 % The familiar printer file format PDF is based on the PostScript language,
 % which is based on a pushdown stack.
@@ -10708,7 +10707,7 @@ then on the second line pushes \str{20}
 on the stack.
 It then executes \str{selectfont}, which pops two things off the stack
 to set the font name and size.
-After that it moves the current point, and places the text on the page.
+After that it moves the current point and places the text on the page.
 Finally, it draws that page to paper.
 %
 % This language is quite efficient.
@@ -10737,8 +10736,8 @@ We now allow the same input to give different outputs,
   $\powerset (Q\times S)$
   for $S=\kleenestar{\Gamma}\cup (\kleenestar{\Gamma}\concat\set{\bot})$.
 }.
-(If the set of outputs is empty then we take the machine to freeze,
-resulting in a computation that does not accept the input.)
+(If the set of outputs is empty then we take the computation to dead-end
+and the machine does not accept the input.)
 % As always with nondeterminism, 
 % we can conceptualize this either as that the 
 % computation evolves as a tree or as that the machine guesses one
@@ -10753,14 +10752,15 @@ resulting in a computation that does not accept the input.)
 % \qquad
 % \lang_{\text{PAL}}=\set{\varepsilon, \str{0},\str{1},\str{00},\str{11},\str{000},\str{010},\str{101},\str{111},\ldots}
 % \end{equation*}
-The language 
+Consider the language 
 $\lang_{\text{PAL}}=\set{\varepsilon, \str{0},\str{1},\str{00},\str{11},\str{000},\str{010},\str{101},\str{111},\ldots}$
-of palindromes\index{palindrome} over $\kleenestar{\B}$
-is not recognized by any Finite State machine
+of palindromes\index{palindrome} over $\kleenestar{\B}$ which are
+not required to have a middle marker.
+This language is not recognized by any Finite State machine
 but it is recognized by a nondeterministic Pushdown machine.
 
 %<*ex:NondeterministicPushDownAcceptsPalindromes>
-This machine has
+The nondeterministic machine below has
 $Q=\set{q_0,q_1,q_2}$ with $F=\set{q_2}$,
 as well as $\Sigma=\B$
 and $\Gamma=\set{\text{\str{g0}},\str{g1}}$.

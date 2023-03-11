@@ -535,7 +535,7 @@
 ;    )
 
    (test-case
-    "test machine that accepts if parens are balanced on input tape"
+    "test machine that accepts if the string is a palindrome with a middle marker"
     (let* ([file-contents (string-split (read-pgm-file "mm-palindrome.pdm") "\n")]
            [pdm (parse file-contents)])
       (printf "mm-palindrome.pdm gives: ~a\n" (pdm->string pdm))
@@ -568,9 +568,15 @@
       
       (let* ([tau "c b a"]
              [history (yield-star pdm tau)])
+        ; (printf "~a\n" (string-join (history->string-list history) "\n"))
+        ; (printf "history: ~s\n" history)
+        (check-equal? (decide pdm history) "reject"))
+      
+      (let* ([tau "b a c a b"]   ; string from book example
+             [history (yield-star pdm tau)])
         (printf "~a\n" (string-join (history->string-list history) "\n"))
         ; (printf "history: ~s\n" history)
-        (check-equal? (decide pdm history) "reject"))      
+        (check-equal? (decide pdm history) "accept"))      
 
       )) ;; close let* and test-case
    

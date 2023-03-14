@@ -198,3 +198,54 @@
          stack-push
          stack-push-list
          stack-bot?)
+
+;; ===== history
+
+(define (make-history-node config)
+  (cons config (mutable-set)))
+
+(define (get-node-config n)
+  (car n))
+
+(define (get-child-nodes n)
+  (cdr n))
+
+(define (make-history initialconfig)
+  (make-history-node initialconfig))
+
+(define (add-history-node! existing-node new-node)
+  (set-add! (cdr existing-node) new-node)
+  new-node)
+
+(define (add-child-node! existing-node new-child-config)
+  (let ([child-node (make-history-node new-child-config)])
+    (set-add! (cdr existing-node) child-node)
+    child-node))
+
+(define (traverse-history-bfs level level-no fcn)
+  (let ([next-level '()])
+    (for ([node level])
+      fcn(node level-no)
+      (for ([child-node (get-child-nodes node)])
+        (cons child-node next-level)
+        ))
+    (when (not (null? next-level))
+      (traverse-history-bfs next-level (+ 1 level-no) fcn))))
+
+(define (traverse-history-dfs node rank fcn)
+  (fcn node rank)
+  (let ([children (get-child-nodes node)])
+    (for ([child children])
+      ;; (fcn child rank)
+      (traverse-history-dfs child (+ rank 1) fcn))))
+
+(provide make-history-node
+         get-node-config
+         get-child-nodes
+         make-history
+         add-history-node!
+         add-child-node!
+         traverse-history-bfs
+         traverse-history-dfs
+ )
+

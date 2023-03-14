@@ -10723,12 +10723,13 @@ Finally, it draws that page to paper.
 %<*discussion:NondeterminsticPushdown>
 To get nondeterminism
 we alter the definition in two ways.
-The first is minor: we don't need the input character blank,~\str{B},
+The first is that we don't need the~\str{B} marking the end of
+tape input
 because a nondeterministic machine can guess when
 the input string ends.
-The second alteration changes the
+The second changes the
 transition function~$\Delta$.
-We now allow the same input to give different outputs,
+We now allow the same input to give a set of different outputs,
 \citetext{$\map{\Delta}{Q\times (\Sigma\cup\set{\varepsilon})\times (\Gamma\cup\set{\bot})}{\powerset\bigl(Q\times\kleenestar{(\Gamma\cup\set{\bot})}\bigr)}$}{%
   Tape outputs consist of sequences of elements of $\Gamma$ that 
   optionally end in a $\bot$.
@@ -10738,10 +10739,6 @@ We now allow the same input to give different outputs,
 }.
 (If the set of outputs is empty then we take the computation to dead-end
 and the machine does not accept the input.)
-% As always with nondeterminism, 
-% we can conceptualize this either as that the 
-% computation evolves as a tree or as that the machine guesses one
-% of the branches in that tree.
 %</discussion:NondeterminsticPushdown>
 
 \begin{example} \label{ex:PDAForPalindromes}
@@ -10754,9 +10751,10 @@ and the machine does not accept the input.)
 % \end{equation*}
 Consider the language 
 $\lang_{\text{PAL}}=\set{\varepsilon, \str{0},\str{1},\str{00},\str{11},\str{000},\str{010},\str{101},\str{111},\ldots}$
-of palindromes\index{palindrome} over $\kleenestar{\B}$ which are
-not required to have a middle marker.
-This language is not recognized by any Finite State machine
+of palindromes\index{palindrome} over $\kleenestar{\B}$ (which are
+not required to have a middle marker).
+The Pumping Lemma shows that 
+this language is not recognized by any Finite State machine
 but it is recognized by a nondeterministic Pushdown machine.
 
 %<*ex:NondeterministicPushDownAcceptsPalindromes>
@@ -10781,14 +10779,14 @@ and if it reads~\str{1} then it only proceeds if it popped~\str{g1}.
   \hline
   $0$  &$q_o,\text{\str{0}},\bot$             &$q_0,\text{`\str{g0}$\bot$'}$ \\
   $1$  &$q_o,\text{\str{1}},\bot$             &$q_0,\text{`\str{g1}$\bot$'}$ \\
-  $2$  &$q_o,\varepsilon,\bot$                &$q_2,\varepsilon$ \\
+  $2$  &$q_o,\text{\str{B}},\bot$             &$q_1,\text{$\bot$}$ \\
   $3$  &$q_o,\text{\str{0}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\str{g0}'}$ \\
   $4$  &$q_o,\text{\str{1}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\str{g0}'}$ \\
   $5$  &$q_o,\text{\str{0}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\str{g1}'}$ \\
   $6$  &$q_o,\text{\str{1}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\str{g1}'}$ \\
-  $7$  &$q_o,\text{\str{0}},\text{\str{g0}}$  &$q_1,\text{`\str{g0}\str{g0}'}$ \\
-  $8$  &$q_o,\text{\str{0}},\text{\str{g1}}$  &$q_1,\text{`\str{g0}\str{g1}'}$ \\
-  $9$  &$q_o,\text{\str{1}},\text{\str{g0}}$  &$q_1,\text{`\str{g1}\str{g0}'}$ \\
+  $7$  &$q_o,\text{\str{0}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
+  $8$  &$q_o,\text{\str{1}},\text{\str{g0}}$  &$q_2,\text{`\str{g0}'}$ \\
+  $9$  &$q_o,\text{\str{0}},\text{\str{g1}}$  &$q_2,\text{`\str{g1}'}$ \\
 \end{tabular}
 \hspace{3em}
 \begin{tabular}[t]{r|ll}
@@ -10796,24 +10794,23 @@ and if it reads~\str{1} then it only proceeds if it popped~\str{g1}.
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \hline
-  $10$ &$q_o,\text{\str{1}},\text{\str{g1}}$  &$q_1,\text{`\str{g1}\str{g1}'}$ \\
-  $11$  &$q_o,\text{\str{0}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
-  $12$  &$q_o,\text{\str{0}},\text{\str{g1}}$  &$q_1,\text{`\str{g1}'}$ \\
-  $13$  &$q_o,\text{\str{1}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
-  $14$  &$q_o,\text{\str{1}},\text{\str{g1}}$  &$q_1,\text{`\str{g1}'}$ \\
-  $15$  &$q_1,\text{\str{0}},\text{\str{g0}}$  &$q_1,\varepsilon$ \\
-  $16$  &$q_1,\text{\str{1}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
-  $17$ &$q_1,\text{\str{0}},\text{\str{g0}}$   &$q_2,\varepsilon$ \\
-  $18$  &$q_1,\text{\str{1}},\text{\str{g1}}$  &$q_2,\varepsilon$ \\
+  $10$ &$q_o,\text{\str{1}},\text{\str{g1}}$  &$q_1,\varepsilon$ \\
+  $11$  &$q_1,\text{\str{0}},\text{\str{g0}}$   &$q_1,\varepsilon$ \\
+  $12$  &$q_1,\text{\str{0}},\text{\str{g1}}$   &$q_2,\text{`\str{g1}'}$ \\
+  $13$  &$q_1,\text{\str{1}},\text{\str{g0}}$   &$q_2,\text{`\str{g0}'}$ \\
+  $14$  &$q_1,\text{\str{1}},\text{\str{g1}}$   &$q_1,\varepsilon$ \\
+  $15$  &$q_1,\text{\str{B}},\text{\str{g0}}$   &$q_2,\text{`\str{g0}'}$ \\
+  $16$  &$q_1,\text{\str{B}},\text{\str{g1}}$  &$q_2,\text{`\str{g1}'}$ \\
+  $17$ &$q_1,\text{\str{B}},\bot$              &$q_3,\bot$ \\
 \end{tabular}
 \end{center}
-How does the machine, which has no scratch tape, 
+How does the machine
 know when it has finished reading the first half of the input and it should
 change from phase one to two?
 It is nondeterministic\Dash it guesses.
 For instance,
 compare instructions~$3$ and~$7$,
-which show the same input associated with
+which show the same input to~$\Delta$ associated with
 two different outputs.
 %</ex:NondeterministicPushDownAcceptsPalindromes>
 
@@ -10830,7 +10827,7 @@ uses instructions $0$, $9$, $16$, and~$17$.
     4 &\tapegraphic{automata/asy/machine/machine18.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-Here is the machine accepting \str{01010} using instructions
+Here is the machine accepting \str{01010}, using instructions
 $0$, $4$, $12$, $16$, and~$17$.
 \begin{tapesequence}
   \begin{tapesequencetable}

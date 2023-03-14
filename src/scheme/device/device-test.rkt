@@ -138,7 +138,7 @@
 
 
 ;; ===== Stack making
-(define stack-making-tests
+(define stack-tests
   (test-suite
    "stack making tests"
 
@@ -177,8 +177,68 @@
    )) ;; end stack-making suite and tests
 
 
+;; ===== History making
+(define (string-pad n)
+  (apply string-append (build-list n (lambda (x) "  "))))
+   
+(define history-tests
+  (test-suite
+   "history tests"
+
+   (test-case
+    "Test making a history"
+    (let* ([config (list "a" "b")]
+           [history (make-history config)])
+      ; (printf "~s\n" history)
+      (check-equal? (car history) config)
+      ))
+
+   (test-case
+    "Test building a history"
+    (let* ([config (list "a" "b")]
+           [history (make-history config)]
+           [new-config (list "c" "d")]
+           [new-history-node (make-history-node new-config)])
+      (add-history-node! history new-history-node)
+      (printf "~s\n" history)
+      (check-equal? (car history) config)
+      (check-true (set-member? (cdr history) new-history-node))
+      ))
+
+   (test-case
+    "Test building a history"
+    (let* ([config (list 1)]
+           [history (make-history config)]
+           ; rank 1
+           [node-2 (add-history-node! history (make-history-node '(2)))]
+           [node-3 (add-history-node! history (make-history-node '(3)))]
+           ; rank 2
+           [node-4 (add-history-node! node-2 (make-history-node '(4)))]
+           [node-5 (add-history-node! node-2 (make-history-node '(5)))]
+           [node-6 (add-history-node! node-2 (make-history-node '(6)))]
+           [node-7 (add-history-node! node-3 (make-history-node '(7)))]
+           ; rank 3
+           [node-8 (add-history-node! node-4 (make-history-node '(8)))]
+           [node-9 (add-history-node! node-4 (make-history-node '(9)))]
+           [node-10 (add-history-node! node-5 (make-history-node '(10)))]
+           [node-11 (add-history-node! node-6 (make-history-node '(11)))]
+           [node-12 (add-history-node! node-7 (make-history-node '(12)))]
+           [node-13 (add-history-node! node-7 (make-history-node '(13)))]
+           ; rank 4
+           [node-14 (add-history-node! node-11 (make-history-node '(14)))]
+           [node-15 (add-history-node! node-13 (make-history-node '(15)))]
+           )
+      (printf "history: ~s\n" history)
+      (traverse-history-dfs history 0 (lambda (x y) (printf "~a~s\n" (string-pad y) (caar x))))
+;      (check-equal? (car history) config)
+;      (check-true (set-member? (cdr history) new-history-node))
+      ))
+
+   )) ;; end history-making suite and tests
+
 
 ;; ===== Run the tests; comment out ones not being worked-on
-; (run-tests delta-tests)
-(run-tests tape-tests)
-; (run-tests stack-making-tests)
+;(run-tests delta-tests)
+;(run-tests tape-tests)
+;(run-tests stack-tests)
+(run-tests history-tests)

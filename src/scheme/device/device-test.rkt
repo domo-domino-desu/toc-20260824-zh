@@ -64,21 +64,35 @@
     );; end test-case
   
    (test-case
-    "Test get-epsilon-closure function"
-    (let ([delta-map (make-delta-map)]
-          [input (list 0 "a")]
-          [other-input (list 3 "b")]
-          [output (list "z" 1)]
-          [other-output (list "y" 1)])
+    "Test make-epsilon-closure hash"
+    (let ([delta-map (make-delta-map)])
       (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
       (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
       (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
       (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
-      (printf "delta-map: ~s\n" delta-map)
+      ; (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
+      (let ([e (make-epsilon-closure delta-map)])
+        (check-true (set-member? (hash-ref e 0) 0))
+        (check-true (set-member? (hash-ref e 0) 1))
+        (check-true (set-member? (hash-ref e 1) 1))
+        (check-true (set-member? (hash-ref e 2) 2))
+        )
+      )
+    (let ([delta-map (make-delta-map)])
+      (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
+      (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
+      (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
+      (set-delta-map! delta-map (list 1 "EPS") (list 2 "x"))
+      (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
       (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
-;      (check-true (list? (get-states delta-map)))
-;      (check-true (list? (member 0 (get-states delta-map))))
-;      (check-true (list? (member 3 (get-states delta-map))))
+      (let ([e (make-epsilon-closure delta-map)])
+        (check-true (set-member? (hash-ref e 0) 0))
+        (check-true (set-member? (hash-ref e 0) 1))
+        (check-true (set-member? (hash-ref e 0) 2))
+        (check-true (set-member? (hash-ref e 1) 1))
+        (check-true (set-member? (hash-ref e 1) 2))
+        (check-true (set-member? (hash-ref e 2) 2))
+        )
       )
     );; end test-case
 

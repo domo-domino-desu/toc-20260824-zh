@@ -66,34 +66,55 @@
 (define (dummy-get-value-state-fcn k)
   (first k))
 
-(define (make-epsilon-closure delta-map [get-state-fcn dummy-get-state-fcn] [get-token-fcn dummy-get-token-fcn] [get-value-state-fcn dummy-get-value-state-fcn])
+;; hash -> hash
+;; Return a map taking states from delta-map to their epsilon closure
+;; Optional:
+;;   get-state-fcn  key for delta-map -> state in that key
+;;   get-token-fcn  key for delta-map -> token in that key
+;;   get-value-state-fcn  value for delta-map -> state in that value
+(define (make-epsilon-closure delta-map
+                              [get-state-fcn dummy-get-state-fcn]
+                              [get-token-fcn dummy-get-token-fcn]
+                              [get-value-state-fcn dummy-get-value-state-fcn])
   (let ([epsilon-closure (make-hash)]  ; maps state number to set that is the epsilon closure
         [all-states (get-states delta-map)]
         [delta-keys (hash-keys delta-map)]
         [change-flag #t]) ; flags that sets changed during the iteration  
-    ; Initial step has the state in the set
+    ; Step 0: for all states s in the machine, define E-hat_0(s) = {s}
     (for ([s all-states])
       (hash-set! epsilon-closure s (mutable-set s)))
-    (printf "make-epsilon-closure: delta-map: ~s\n" delta-map)
-    (printf "   epsilon-closure initial: ~s\n" epsilon-closure)
-    (printf "   all-states=~s  delta-keys=~s\n" all-states delta-keys)
-    ; Now iterate
+;    (printf "make-epsilon-closure: delta-map: ~s\n" delta-map)
+;    (printf "   epsilon-closure initial: ~s\n" epsilon-closure)
+;    (printf "   all-states=~s  delta-keys=~s\n" all-states delta-keys)
+    ; Step 1: Besides that E-hat_0(s) subseteq E-hat_1(s), also throw all states t where s --EPS--> t in one hop
+;      (printf "    iterating: i=~s  change-flag=~s\n" i change-flag)
+    (for* ([key delta-keys]
+           [value (delta delta-map key)])
+      ;        (printf "    iterating: key=~s   value=~s\n" key value)
+      (let* ([key-state (get-state-fcn key)]
+             [key-token (get-token-fcn key)]
+             [key-state-eps-cl (hash-ref epsilon-closure key-state)]
+             [value-state (get-value-state-fcn value)])
+        ;          (printf "    let*: key-state=~s   key-token=~s  key-state-eps-cl=~s  value-state=~s\n" key-state key-token key-state-eps-cl value-state)
+        (when (and (equal? key-token EPSILON)
+                   (not (set-member? key-state-eps-cl value-state)))
+          ;            (printf "    not a member: key-state-eps-cl=~s   value-state=~s\n" key-state-eps-cl value-state)
+          (set-add! key-state-eps-cl value-state)
+          (set! change-flag #t)
+          )))
+    ; Step i+1: Besides that E-hat_i(a) subseteq E-hat_(i+1)(a), for all s in E-hat_i(a) look at any t that is
+    ;         in E-hat_i(s) and add it to E-hat_{i+1}(a)
     (do ([i 0 (+ 1 i)])
       ((or (> i (length all-states)) (not change-flag))
        '())
       (set! change-flag #f)
-      (printf "    iterating: i=~s  change-flag=~s\n" i change-flag)
-      (for* ([key delta-keys]
-             [value (delta delta-map key)])
-        (printf "    iterating: key=~s   value=~s\n" key value)
-        (let* ([key-state (get-state-fcn key)]
-               [key-state-eps-cl (hash-ref epsilon-closure key-state)]
-               [value-state (get-value-state-fcn value)])
-          (when (not (set-member? key-state-eps-cl value-state))
-            (printf "    not a member: key-state-eps-cl=~s   value-state=~s\n" key-state-eps-cl value-state)
-            (set-add! key-state-eps-cl value-state)
-            (set! change-flag #t)
-            ))))
+      (for* ([a all-states]
+             [s (hash-ref epsilon-closure a)]
+             [t (hash-ref epsilon-closure s)])
+        (when (not (set-member? (hash-ref epsilon-closure a) t))
+          (set-add! (hash-ref epsilon-closure a) t)
+          (set! change-flag #t))
+        ))
     epsilon-closure))
   
 

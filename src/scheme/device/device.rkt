@@ -14,6 +14,18 @@
          ERROR
          LIMIT-REACHED)
 
+;; Convenient constants
+(define BLANK #\B)  ;; Easier to read than space
+(define STROKE #\1)  ;;  
+(define LEFT #\L) ;; Move tape pointer left
+(define RIGHT #\R) ;; Move tape pointer right
+(define EPSILON "EPS") ;; symbol for Epsilon on tape and delta-map
+
+(provide BLANK
+         STROKE
+         LEFT
+         RIGHT
+         EPSILON)
 
 ;; ===== DELTA
 ;; Finite function mapping lists to sets.  The lists are input tuples, the
@@ -34,24 +46,71 @@
 ;; Signifies DELTA has no such key
 (define DELTA-NOKEY "No such key for delta map")
 
+;; delta-map -> list of integers
+;; From the delta map, get a list of all the machine's states
+(define (get-states d)
+  (sort (remove-duplicates (map first (hash-keys d))) <))
+
 ;; list -> list
 ;; Return value associated with k in DELTA, or DELTA-NOKEY
 (define (delta delta-map k)
   (hash-ref delta-map k (lambda () DELTA-NOKEY)))
 
+;; From the key to a delta-map, get the state number
+(define (dummy-get-state-fcn k)
+  (first k))
+;; From the key to a delta-map, get the token
+(define (dummy-get-token-fcn k)
+  (second k))
+;; From the value of a delta-map, get the state number
+(define (dummy-get-value-state-fcn k)
+  (first k))
+
+(define (make-epsilon-closure delta-map [get-state-fcn dummy-get-state-fcn] [get-token-fcn dummy-get-token-fcn] [get-value-state-fcn dummy-get-value-state-fcn])
+  (let ([epsilon-closure (make-hash)]  ; maps state number to set that is the epsilon closure
+        [all-states (get-states delta-map)]
+        [delta-keys (hash-keys delta-map)]
+        [change-flag #t]) ; flags that sets changed during the iteration  
+    ; Initial step has the state in the set
+    (for ([s all-states])
+      (hash-set! epsilon-closure s (mutable-set s)))
+    (printf "make-epsilon-closure: delta-map: ~s\n" delta-map)
+    (printf "   epsilon-closure initial: ~s\n" epsilon-closure)
+    (printf "   all-states=~s  delta-keys=~s\n" all-states delta-keys)
+    ; Now iterate
+    (do ([i 0 (+ 1 i)])
+      ((or (> i (length all-states)) (not change-flag))
+       '())
+      (set! change-flag #f)
+      (printf "    iterating: i=~s  change-flag=~s\n" i change-flag)
+      (for* ([key delta-keys]
+             [value (delta delta-map key)])
+        (printf "    iterating: key=~s   value=~s\n" key value)
+        (let* ([key-state (get-state-fcn key)]
+               [key-state-eps-cl (hash-ref epsilon-closure key-state)]
+               [value-state (get-value-state-fcn value)])
+          (when (not (set-member? key-state-eps-cl value-state))
+            (printf "    not a member: key-state-eps-cl=~s   value-state=~s\n" key-state-eps-cl value-state)
+            (set-add! key-state-eps-cl value-state)
+            (set! change-flag #t)
+            ))))
+    epsilon-closure))
+  
+
 (provide make-delta-map
          set-delta-map!
          DELTA-NOKEY
-         delta)
+         get-states
+         delta
+         dummy-get-state-fcn
+         dummy-get-token-fcn
+         make-epsilon-closure)
 
 
 ;; ===== tape
 
 ;; A tape is a struct.
 (struct tapestruct (left current right) #:transparent #:mutable)
-
-;; Sometimes it is convenient to have a B instead of just a blank space
-(define BLANK "B")
 
 ; list of strings  ->  tape structure
 ; Make a tape structure. The I/O head points to the first token (or BLANK)
@@ -199,6 +258,55 @@
          stack-push-list
          stack-bot?)
 
+
+;; ===== Machine
+;; A machine is a structure consisting of list of instructions and list of accepting states.
+(struct machinestruct (instructions acceptingstates) #:transparent #:mutable)
+
+; no input  ->  machinestruct
+; Create an empty machine.
+(define (machine-create)
+  (machinestruct '() (mutable-set)))
+
+; machinestruct, instruction  ->  machinestruct
+; Add the instruction to the machine
+(define (machine-add-instruction machine instruction)
+  (set-machinestruct-instructions! machine
+                                   (reverse (cons instruction (reverse (machinestruct-instructions machine))))))
+
+; machinestruct, natural-number  ->  machinestruct
+; Add the accepting state to the machine 
+(define (machine-add-accepting-state machine accepting-state)
+  (set-add! (machinestruct-acceptingstates machine) accepting-state))
+
+;; Dummy function to be replaced in calling file
+(define (instruction->string x)
+  (format "~s" x))
+
+;; machinestruct -> string
+;; Return string of the machine, for display or debugging
+(define (machine->string machine)
+  (let* ([instruction-string
+         (string-join (map instruction->string (machinestruct-instructions machine)) "\n")]
+         [state-string
+         (string-join (map number->string (sort (set->list (machinestruct-acceptingstates machine)) <=)))]
+         [first-half-string
+          (string-append "INSTRUCTIONS: " instruction-string)])
+    (printf "first-half-string=~s\n" first-half-string)
+    (if (set-empty? (machinestruct-acceptingstates machine))
+        first-half-string
+        (string-append first-half-string
+                       "\nACCEPTING STATES: " state-string))))
+
+(provide machine-create
+         machine-add-accepting-state
+         machine-add-instruction
+         machinestruct?
+         machinestruct-instructions
+         machinestruct-acceptingstates
+         machine->string)
+
+
 ;; ===== history
 
 (define (make-history-node config)
@@ -249,3 +357,57 @@
          traverse-history-dfs
  )
 
+
+;; ===== parsing
+
+;; A line with only comment, using # as a comment character
+(define EMPTY-LINE-REGEXP #px"^\\s*(\\#.*)?$")
+
+; Need a way to describe some states as final, or accepting.
+(define FINAL-STATES-REGEXP #px"\\s*((FINAL)|(ACCEPTING))[:]?\\s*([\\s*\\d+,?]*)\\s*(\\#.*)?$")
+
+; The regular expression used to split the space-separated tokens inside the final states string
+(define FINAL-STATES-PARSE-REGEXP #px"(,\\s*)|(\\s+)")
+
+;; string -> list of numbers
+;; Return the numbers given as a space-separated list in the string
+;; (You can use a comma between numbers, as in "3, 4")
+(define (parse-final-states m)
+  (let* ([token-list (car m)]
+         [digit-string (fourth token-list)])
+    ;(printf "parse-final-states token-list=~s\n    digit-string=~s\n" token-list digit-string)
+    (map string->number (string-split (string-trim digit-string) FINAL-STATES-PARSE-REGEXP))))
+
+
+;; string -> list of two lists
+;; Return either an instruction or a list of integers, not both.  It can be that both lists are empty.
+;; This is a dummy function to be replaced in calling file
+(define (parse-one-line lne)
+  (list '() '()))
+
+;; list of strings -> Turing machine
+(define (parse file-lines)
+  (let ([machine (machine-create)])
+    ; (printf "  parse: pdm=~s\n" pdm)
+    (for* ([line file-lines])
+      ;(printf "parse: line=~s\n" line)
+      ; (printf "    parse-one-line=~s\n" (parse-one-line line))
+       (let* ([inst-and-states (parse-one-line line)]
+              [inst (first inst-and-states)]
+              [state-list (second inst-and-states)])
+        ;(printf "    parse: inst-and-states=~s\n" inst-and-states)
+        ;(printf "    parse: (first inst-and-states)=~s\n" (first inst-and-states))
+        ;(printf "    parse: inst=~s  state-list=~s\n" inst state-list)
+        (if (not (null? inst))
+            (machine-add-instruction machine inst)
+            (for ([accepting-state state-list])
+              (machine-add-accepting-state machine accepting-state)))
+        ; (printf "  parse: pdm=~s\n" pdm)))
+    )) machine)
+  )
+
+
+(provide EMPTY-LINE-REGEXP
+         FINAL-STATES-REGEXP
+         parse-final-states
+         parse)

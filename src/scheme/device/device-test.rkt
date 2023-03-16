@@ -30,7 +30,7 @@
       (check-true (set-member? (delta delta-map other-input) output))
       )
     );; end test-case
-
+  
    (test-case
     "Test delta function"
     (let ([delta-map (make-delta-map)]
@@ -40,6 +40,45 @@
       (set-delta-map! delta-map input output)
       (check-true (set-member? (delta delta-map input) output))
       (check-equal? (delta delta-map other-input) DELTA-NOKEY)
+      )
+    );; end test-case
+  
+   (test-case
+    "Test get-states function"
+    (let ([delta-map (make-delta-map)]
+          [input (list 0 "a")]
+          [other-input (list 3 "b")]
+          [output (list "z" 1)]
+          [other-output (list "y" 1)])
+      (set-delta-map! delta-map input output)
+      (set-delta-map! delta-map other-input other-output)
+      ; (printf "get-states: ~s\n" (get-states delta-map))
+      (check-true (list? (get-states delta-map)))
+      (check-true (list? (member 0 (get-states delta-map))))
+      (check-true (list? (member 3 (get-states delta-map))))
+      )
+    (let ([delta-map (make-delta-map)])
+      ; (printf "get-states: ~s\n" (get-states delta-map))
+      (check-true (null? (get-states delta-map)))
+      )
+    );; end test-case
+  
+   (test-case
+    "Test get-epsilon-closure function"
+    (let ([delta-map (make-delta-map)]
+          [input (list 0 "a")]
+          [other-input (list 3 "b")]
+          [output (list "z" 1)]
+          [other-output (list "y" 1)])
+      (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
+      (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
+      (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
+      (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
+      (printf "delta-map: ~s\n" delta-map)
+      (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
+;      (check-true (list? (get-states delta-map)))
+;      (check-true (list? (member 0 (get-states delta-map))))
+;      (check-true (list? (member 3 (get-states delta-map))))
       )
     );; end test-case
 
@@ -177,6 +216,40 @@
    )) ;; end stack-making suite and tests
 
 
+;; ===== Machine making
+(define machine-tests
+  (test-suite
+   "machine making tests"
+
+   (test-case
+    "Test making the machine"
+    (let ([m (machine-create)])
+      (check equal? (machinestruct-instructions m) '())
+      ))
+
+   (test-case
+    "Test machine operations"
+    (let ([m (machine-create)]
+          [dummy-instruction (list "state" "token")]
+          [dummy-accepting-state 5])
+      (machine-add-instruction m dummy-instruction)
+      (check-equal? (machinestruct-instructions m) (list dummy-instruction))
+      (machine-add-accepting-state m dummy-accepting-state)
+      (check-true (set-member? (machinestruct-acceptingstates m) dummy-accepting-state))
+      ))
+      
+   (test-case
+    "Test machine->string"
+    (let ([m (machine-create)]
+          [dummy-instruction (list "state" "token")]
+          [dummy-accepting-state 5])
+      (machine-add-instruction m dummy-instruction)
+      (machine-add-accepting-state m dummy-accepting-state)
+      ; (printf "~a\n" (machine->string m))
+      ))
+   )) ;; end machine-making suite and tests
+
+
 ;; ===== History making
 (define (string-pad n)
   (apply string-append (build-list n (lambda (x) "  "))))
@@ -237,8 +310,66 @@
    )) ;; end history-making suite and tests
 
 
+;; ===== Parsing
+;; string -> string
+;; From the .loop filename, return the string of that file
+;;   filename  string  Name of .loop file, without directory and including the .loop
+(define MACHINE-DIR "machines/")  ; subdirectory holding the .pdm files
+
+;; string -> string
+;; Get contents of file as one long string
+(define (read-pgm-file filename)
+  (port->string (open-input-file (string-append MACHINE-DIR filename)) #:close? #t))
+
+(define parse-tests
+  (test-suite
+   "parse tests"
+
+   (test-case
+    "Test regexp's"
+    (regexp-match? EMPTY-LINE-REGEXP "# test comment line")
+    (regexp-match? EMPTY-LINE-REGEXP "")
+    (regexp-match? EMPTY-LINE-REGEXP "   ")
+    (let ([line "FINAL 3 4"]) ;; final states
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([line "FINAL 3"]) 
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([line "FINAL 3  # add final state"]) 
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([line "FINAL: 3"]) 
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let ([line "FINAL: 3, 4"]) 
+      (check-true (regexp-match? FINAL-STATES-REGEXP line)))
+    (let* ([line "FINAL 3 4"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (parse-final-states m)) 2)
+      (check-equal? (first (parse-final-states m)) 3)
+      (check-equal? (second (parse-final-states m)) 4))
+    (let* ([line "FINAL 3 4  # test with comment"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (parse-final-states m)) 2)
+      (check-equal? (first (parse-final-states m)) 3)
+      (check-equal? (second (parse-final-states m)) 4))
+    (let* ([line "ACCEPTING 3 4"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (parse-final-states m)) 2)
+      (check-equal? (first (parse-final-states m)) 3)
+      (check-equal? (second (parse-final-states m)) 4))
+    (let* ([line "FINAL 3"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (parse-final-states m)) 1)
+      (check-equal? (first (parse-final-states m)) 3))
+    (let* ([line "FINAL"]
+           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (parse-final-states m)) 0))
+    )
+
+   )) ;; end parse suite and tests
+
+
 ;; ===== Run the tests; comment out ones not being worked-on
-;(run-tests delta-tests)
+(run-tests delta-tests)
 ;(run-tests tape-tests)
 ;(run-tests stack-tests)
-(run-tests history-tests)
+; (run-tests history-tests)
+;(run-tests machine-tests)

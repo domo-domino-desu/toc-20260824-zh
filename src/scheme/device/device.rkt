@@ -106,7 +106,7 @@
     ;         in E-hat_i(s) and add it to E-hat_{i+1}(a)
     (do ([i 0 (+ 1 i)])
       ((or (> i (length all-states)) (not change-flag))
-       '())
+       (when change-flag (printf "WARNING: Epsilon closure took too many steps ~a\n" i)))
       (set! change-flag #f)
       (for* ([a all-states]
              [s (hash-ref epsilon-closure a)]
@@ -301,19 +301,19 @@
   (set-add! (machinestruct-acceptingstates machine) accepting-state))
 
 ;; Dummy function to be replaced in calling file
-(define (instruction->string x)
+(define (dummy-instruction->string x)
   (format "~s" x))
 
 ;; machinestruct -> string
 ;; Return string of the machine, for display or debugging
-(define (machine->string machine)
+(define (machine->string machine [instruction->string dummy-instruction->string])
   (let* ([instruction-string
          (string-join (map instruction->string (machinestruct-instructions machine)) "\n")]
          [state-string
          (string-join (map number->string (sort (set->list (machinestruct-acceptingstates machine)) <=)))]
          [first-half-string
           (string-append "INSTRUCTIONS: " instruction-string)])
-    (printf "first-half-string=~s\n" first-half-string)
+    ; (printf "first-half-string=~s\n" first-half-string)
     (if (set-empty? (machinestruct-acceptingstates machine))
         first-half-string
         (string-append first-half-string
@@ -378,6 +378,9 @@
          traverse-history-dfs
  )
 
+;; ===== Instruction
+(struct dummyinstructionstruct (presentstate presenttoken nexttoken nextstate))
+
 
 ;; ===== parsing
 
@@ -399,21 +402,50 @@
     ;(printf "parse-final-states token-list=~s\n    digit-string=~s\n" token-list digit-string)
     (map string->number (string-split (string-trim digit-string) FINAL-STATES-PARSE-REGEXP))))
 
+;; 
+(define DUMMY-INSTRUCTION-LINE-REGEXP #px"^\\s*(\\d+)\\s*([a-zB0-9\\]\\[\\)\\(]+|EPS)\\s*([a-zBLR0-9\\]\\[\\)\\(]+)\\s*(\\d+)\\s*(\\#.*)?$")
+
+; list of four strings -> instruction
+; Turn the list of strings m into an instruction
+(define (dummy-parse-make-instruction string-list [instructionstruct dummyinstructionstruct])
+  (let ([present-state (string->number (first string-list))]
+        [present-tape-token (second string-list)]
+        [next-token (third string-list)]
+        [next-state (string->number (fourth string-list))])
+    (instructionstruct present-state present-tape-token next-token next-state)))
 
 ;; string -> list of two lists
-;; Return either an instruction or a list of integers, not both.  It can be that both lists are empty.
-;; This is a dummy function to be replaced in calling file
-(define (parse-one-line lne)
-  (list '() '()))
+;;  Return either an instruction or a list of integers, not both.  It can be that both lists are empty.
+(define (parse-one-line lne
+                        [instruction-line-regexp DUMMY-INSTRUCTION-LINE-REGEXP]
+                        [parse-make-instruction dummy-parse-make-instruction]
+                        [instructionstruct dummyinstructionstruct])
+    ;(printf "parse-one-line: lne=~s\n" lne)
+    (cond
+      [(regexp-match? EMPTY-LINE-REGEXP lne)
+       (list '() '())]
+      [(regexp-match? instruction-line-regexp lne)
+       (let ([m (regexp-match* instruction-line-regexp lne #:match-select cdr)])
+         (list (parse-make-instruction (car m) instructionstruct) '()))]
+      [(regexp-match? FINAL-STATES-REGEXP lne)
+       (let ([m (regexp-match* FINAL-STATES-REGEXP lne #:match-select cdr)])
+         (list '() (parse-final-states (car m))))]
+      [else
+       (begin
+         (printf "ERROR! line does not parse: ~s\n" lne)
+         (list '() '()))]))
 
 ;; list of strings -> Turing machine
-(define (parse file-lines)
+(define (parse file-lines
+               [instruction-line-regexp DUMMY-INSTRUCTION-LINE-REGEXP]
+               [parse-make-instruction dummy-parse-make-instruction]
+               [instructionstruct dummyinstructionstruct] )
   (let ([machine (machine-create)])
     ; (printf "  parse: pdm=~s\n" pdm)
     (for* ([line file-lines])
       ;(printf "parse: line=~s\n" line)
       ; (printf "    parse-one-line=~s\n" (parse-one-line line))
-       (let* ([inst-and-states (parse-one-line line)]
+       (let* ([inst-and-states (parse-one-line line instruction-line-regexp parse-make-instruction instructionstruct)]
               [inst (first inst-and-states)]
               [state-list (second inst-and-states)])
         ;(printf "    parse: inst-and-states=~s\n" inst-and-states)
@@ -431,4 +463,5 @@
 (provide EMPTY-LINE-REGEXP
          FINAL-STATES-REGEXP
          parse-final-states
+         parse-one-line
          parse)

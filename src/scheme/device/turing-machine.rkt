@@ -14,11 +14,44 @@
 ;; 
 ;; There is a utility elsewhere in this repo that converts these pictures for use in Asymptote.
 
-(define (epsilon-closure I)
-  (make-hash))
+
+;; TODO: Execute for a fixed number of steps
 
 ;; ===== Instruction
-(struct instructionstruct (presentstate presenttoken nexttoken nextstate))
+(struct instructionstruct (presentstate presenttoken nexttoken nextstate) #:transparent #:mutable)
+
+;; instruction (list of four) -> string
+;; Return string that is printable depiction of an instruction, for display or debugging
+(define (instruction->string inst)
+  (let* ([presentstate-number (instructionstruct-presentstate inst)]
+         [presentstate-string (string-append "q" (number->string presentstate-number))]
+         [presenttoken (instructionstruct-presenttoken inst)]
+         [nexttoken (instructionstruct-nexttoken inst)]
+         [nextstate-number (instructionstruct-nextstate inst)]
+         [nextstate-string (string-append "q" (number->string nextstate-number))])
+    (string-join (list presentstate-string presenttoken nexttoken nextstate-string))))
+
+(provide instructionstruct
+         instruction->string)
+
+;; ===== Configuration
+(struct configurationstruct (state tape) #:transparent #:mutable)
+
+;; configuration-> string
+;; Return a string representing the tape, for output and debugging
+(define (configuration->string config)
+  (if (not (configurationstruct? config))
+      (cond
+        [(equal? config HALT) "Halt"]
+        [(equal? config ERROR) "Error"]
+        [else "unknown config"])
+      (let* ([state-number (configurationstruct-state config)]
+             [state-string (string-append "q" (number->string state-number))]
+             [tape (configurationstruct-tape config)]
+             [left-tape (list->string (get-tape-left tape))]
+             [current (string #\* (get-tape-current tape) #\*)]  ;; wrap *'s
+             [right-tape (list->string (get-tape-right tape))])
+        (string-append state-string ": " left-tape current right-tape))))
 
 
 ;; ===== Parse
@@ -31,7 +64,7 @@
 
 ; list of four strings -> instruction
 ; Turn the list of strings m into an instruction
-(define (parse-make-instruction string-list)
+(define (parse-make-instruction string-list  [instructionstruct instructionstruct])
   (let ([present-state (string->number (first string-list))]
         [present-tape-token (second string-list)]
         [next-token (third string-list)]
@@ -40,21 +73,21 @@
 
 ;; string -> list of two lists
 ;;  Return either an instruction or a list of integers, not both.  It can be that both lists are empty.
-(define (parse-one-line lne)
-    ;(printf "parse-one-line: lne=~s\n" lne)
-    (cond
-      [(regexp-match? EMPTY-LINE-REGEXP lne)
-       (list inst final-states)]
-      [(regexp-match? INSTRUCTION-LINE-REGEXP lne)
-       (let ([m (regexp-match* INSTRUCTION-LINE-REGEXP lne #:match-select cdr)])
-         (list (parse-make-instruction (car m)) '()))]
-      [(regexp-match? FINAL-STATES-REGEXP lne)
-       (let ([m (regexp-match* FINAL-STATES-REGEXP lne #:match-select cdr)])
-         (list '() (parse-final-states (car m))))]
-      [else
-       (begin
-         (printf "ERROR! line does not parse: ~s" lne)
-         (list '() '()))]))
+;(define (parse-one-line lne)
+;    ;(printf "parse-one-line: lne=~s\n" lne)
+;    (cond
+;      [(regexp-match? EMPTY-LINE-REGEXP lne)
+;       (list inst final-states)]
+;      [(regexp-match? INSTRUCTION-LINE-REGEXP lne)
+;       (let ([m (regexp-match* INSTRUCTION-LINE-REGEXP lne #:match-select cdr)])
+;         (list (parse-make-instruction (car m)) '()))]
+;      [(regexp-match? FINAL-STATES-REGEXP lne)
+;       (let ([m (regexp-match* FINAL-STATES-REGEXP lne #:match-select cdr)])
+;         (list '() (parse-final-states (car m))))]
+;      [else
+;       (begin
+;         (printf "ERROR! line does not parse: ~s" lne)
+;         (list '() '()))]))
   
 ;;; list of strings -> Turing machine
 ;(define (parse file-lines)
@@ -78,36 +111,25 @@
 ;  )
 
 
+(provide INSTRUCTION-LINE-REGEXP
+         parse-make-instruction)
+
 ;; ========================================================
 ;; Read command line.
 
 (define verbose? (make-parameter #f))
+(define silent? (make-parameter #f))
 (define filename (make-parameter null))
 (define startchar (make-parameter (make-string 1 BLANK)))  ;; string with one char, head points to this char first
 (define startleft (make-parameter ""))  ;; string giving tape left of the start char
 (define startright (make-parameter ""))  ;; string giving tape right of start char
 (define steplimit (make-parameter "-1")) ;; max number of steps simulator runs; a negative makes it run until done
 
-(define command-line-parser
-  (command-line
-   #:usage-help 
-   "Simulate a Turing machine."
-   "Put instructions of the form `state-number current-char action-char next-state-number' on separate lines."
-   #:once-each
-   [("-v" "--verbose") "Verbose mode" (verbose? #t)]
-   [("-f" "--filename") fn "Name of file with the Turing machine" (filename fn)]
-   [("-c" "--char") sc "Character the head points to at start" (startchar sc)]
-   [("-l" "--left") sl "String giving tape left of the start character" (startleft sl)]
-   [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
-   [("-s" "--steplimit") slmt "Number giving max number of steps to run (negative for run until halt)" (steplimit slmt)]
-   #:args  () (void)))
-
-
-;; Default initial configuration
-(define INITIAL-CONFIG (make-config 0
-                                    (current-symbol-string->char (startchar))
-                                    (string->list (startleft))
-                                    (string->list (startright))))  ;; TODO need the position?
+;; Initial configuration; always start at state 0
+(define INITIAL-TAPE  (tapestruct(string-split (startleft))
+                                 (startchar)
+                                 (string-split (startright))))
+(define INITIAL-CONFIG (configurationstruct 0 INITIAL-TAPE))
 
 ;; For running from the command line; this is the Racket construct to execute code from
 ;; command line but not from an importing module
@@ -117,48 +139,35 @@
   (command-line
    #:usage-help 
    "Simulate a Turing machine."
-   "Put instructions of the form `state-number current-char action-char next-state-number' on separate lines."
+   "Put instructions of the form `state-number current-char action-char next-state-number' on separate lines in the fil."
    #:once-each
    [("-v" "--verbose") "Verbose mode" (verbose? #t)]
-   [("-f" "--filename") tmfn "Name of file with the Turing machine" (tm-filename tmfn)]
+   [("-f" "--filename") fn "Name of file with the Turing machine" (filename fn)]
    [("-c" "--char") sc "Character the head points to at start" (startchar sc)]
    [("-l" "--left") sl "String giving tape left of the start character" (startleft sl)]
    [("-r" "--right") sr "String giving tape right of the start character" (startright sr)]
    [("-s" "--steplimit") slmt "Number giving max number of steps to run" (steplimit slmt)]
    #:args  () (void))
 
-  ;; Read the file with the TM instructions
-  (define TM-LINES '())  ;; list of file lines, one string per instruction
-  (if (null? (tm-filename))
-    (set! TM-LINES '())
-    (set! TM-LINES (file->lines (tm-filename) #:mode 'text #:line-mode 'any)))
+  (when (verbose?)
+    (begin
+      (silent? #f)
+      ))
+  
+  ;; Read the file with the program
+  (define INPUT-LINES '())  ;; list of file lines, one string per instruction
+  (if (null? (filename))
+    (set! INPUT-LINES "") ;; should instead fail?
+    (set! INPUT-LINES
+          (string-split (port->string (open-input-file (filename)) #:close? #t) "\n")))
+  ; (printf "INPUT-LINES=~s\n" INPUT-LINES)
+  (let* ([tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
+;          [history (yield-star tm INITIAL-TAPE #:silent #t)])
+;     (when (not (silent?))
+;       (writeln (string-join (history->string-list history) "\n")))
+;    (decide tm history)
+    (printf "tm=~s\n" tm)
+    )
 
-  ;; See if the line contains an instruction
-  (define (nontrivial-line? line)
-    (let ([trimmed-string (string-trim line #:repeat? #t)])
-      (if (or (= 0 (string-length trimmed-string))
-              (eqv? (string-ref trimmed-string 0) COMMENT-START))
-          #f
-          #t)))
-  
-  ;; Return a list of instructions
-  (define TM (for/list ([line TM-LINES]
-                        #:when (nontrivial-line? line))
-               (string->instruction line)))
-  
-  ;;(display TM)  ; temp for debugging
-  ;; Run the simulation
-  (define initial-config
-    (make-config 0
-                 (string-ref (startchar) 0)
-                 (string->list (startleft))
-                 (string->list (startright))))
-  
-  (define STEPLIMIT (string->number (steplimit)))
-  ; (display "STEPLIMIT is ")(display STEPLIMIT)(newline)
-  ; (define VERBOSE (string->number (steplimit)))
-  
-  (if (>= STEPLIMIT 0)
-      (execute-guarded TM initial-config STEPLIMIT)
-      (execute TM initial-config))
+  ; (printf "~a\n" (yield-star (parse PDM-LINES) (tape) #:silent (silent?)))  ; print the result to stdout
 )

@@ -53,6 +53,61 @@
              [right-tape (list->string (get-tape-right tape))])
         (string-append state-string ": " left-tape current right-tape))))
 
+;; ===== Run
+
+;; For Turing machines, Delta maps Q x Sigma -> (Sigma union {L,R}) x Q.
+(define (tm->delta-map tm)
+  (let ([delta-map (make-delta-map)]
+        [instructions (machinestruct-instructions tm)])
+    (for ([inst instructions])
+      (let ([key (list (instructionstruct-presentstate inst) (instructionstruct-presenttoken inst))]
+            [value (list (instructionstruct-nexttoken inst) (instructionstruct-nextstate inst))])
+        (set-delta-map! delta-map key value)))
+    delta-map))
+
+
+;; history-node, delta-map -> configuration
+;; Make one transition that is not an epsilon transition, or return DELTA-NOKEY if no applicable instruction
+(define (transition-non-epsilon history-node delta-map)
+  (let* ([config (car history-node)]
+         [present-state (configurationstruct-state config)]
+         [tape (configurationstruct-tape config)]
+         [present-token (get-tape-current tape)]
+         [next-action-and-state (delta delta-map (list present-state present-token))])
+    (if (equal? next-action-and-state DELTA-NOKEY)
+      DELTA-NOKEY
+      (let ([next-action (first next-action-and-state)]
+            [next-state (second next-action-and-state)])
+        (cond
+          [(equal? next-action LEFT)
+           (configurationstruct next-state (move-head-right tape))]
+          [(equal? next-action RIGHT)
+           (configurationstruct next-state (move-head-left tape))] 
+          [else
+           (configurationstruct next-state (change-head-token tape next-action))])
+          ))))
+
+;;
+;;
+(define (one-step-one-node history-node delta-map epsilon-closure)
+  (let* ([config (car history-node)]
+         [current-state (configurationstruct-state config)]
+         [tape (configurationstruct-tape config)]
+         [current-token (get-tape-current tape)]
+         [next-action-and-state (delta delta-map )])
+    ; Apply delta-map to get single transition
+    
+  ; Take epsilon transitions
+  ; add to the history a bunch of child nodes, one for each state in the epsilon-clousre
+    (let ([eps-states (hash-ref epsilon-closure state)]
+          [new-child-nodes '()])
+)
+    (for ([s eps-states])
+      (cons (add-child-node! history-node (configurationstruct s tape))
+            new-child-nodes))
+    )
+  )
+
 
 ;; ===== Parse
 ; The defn says Delta maps Q x (Sigma union {B, epsilon}) to  Q x Gamma^* (or Gamma for deterministic ones)
@@ -70,45 +125,6 @@
         [next-token (third string-list)]
         [next-state (string->number (fourth string-list))])
     (instructionstruct present-state present-tape-token next-token next-state)))
-
-;; string -> list of two lists
-;;  Return either an instruction or a list of integers, not both.  It can be that both lists are empty.
-;(define (parse-one-line lne)
-;    ;(printf "parse-one-line: lne=~s\n" lne)
-;    (cond
-;      [(regexp-match? EMPTY-LINE-REGEXP lne)
-;       (list inst final-states)]
-;      [(regexp-match? INSTRUCTION-LINE-REGEXP lne)
-;       (let ([m (regexp-match* INSTRUCTION-LINE-REGEXP lne #:match-select cdr)])
-;         (list (parse-make-instruction (car m)) '()))]
-;      [(regexp-match? FINAL-STATES-REGEXP lne)
-;       (let ([m (regexp-match* FINAL-STATES-REGEXP lne #:match-select cdr)])
-;         (list '() (parse-final-states (car m))))]
-;      [else
-;       (begin
-;         (printf "ERROR! line does not parse: ~s" lne)
-;         (list '() '()))]))
-  
-;;; list of strings -> Turing machine
-;(define (parse file-lines)
-;  (let ([tm (machine-create)])
-;    ; (printf "  parse: pdm=~s\n" pdm)
-;    (for* ([line file-lines])
-;      ;(printf "parse: line=~s\n" line)
-;      ; (printf "    parse-one-line=~s\n" (parse-one-line line))
-;       (let* ([inst-and-states (parse-one-line line)]
-;              [inst (first inst-and-states)]
-;              [state-list (second inst-and-states)])
-;        ;(printf "    parse: inst-and-states=~s\n" inst-and-states)
-;        ;(printf "    parse: (first inst-and-states)=~s\n" (first inst-and-states))
-;        ;(printf "    parse: inst=~s  state-list=~s\n" inst state-list)
-;        (if (not (null? inst))
-;            (machine-add-instruction tm inst)
-;            (for ([accepting-state state-list])
-;              (machine-add-accepting-state tm accepting-state)))
-;        ; (printf "  parse: pdm=~s\n" pdm)))
-;    )) tm)
-;  )
 
 
 (provide INSTRUCTION-LINE-REGEXP

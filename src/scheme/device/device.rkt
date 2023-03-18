@@ -14,11 +14,11 @@
          ERROR
          LIMIT-REACHED)
 
-;; Convenient constants
-(define BLANK #\B)  ;; Easier to read than space
-(define STROKE #\1)  ;;  
-(define LEFT #\L) ;; Move tape pointer left
-(define RIGHT #\R) ;; Move tape pointer right
+;; Convenient constants; strings are easier than characters
+(define BLANK "B")  ;; Easier to read than space
+(define STROKE "1")  ;;  
+(define LEFT "L") ;; Move tape pointer left
+(define RIGHT "R") ;; Move tape pointer right
 (define EPSILON "EPS") ;; symbol for Epsilon on tape and delta-map
 
 (provide BLANK
@@ -184,7 +184,7 @@
         [tape-right (get-tape-right tape)])
     (set-tape! tape (trim-left-tape tape-left) tape-current (trim-right-tape tape-right))))
 
-;; tape -> string
+;; tape -> tape
 ;; Move the head right on the tape structure.  Same as moving the tape left.  Return the changed tape.
 (define (move-head-right tape)
   (let* ([tape-left (get-tape-left tape)]
@@ -199,7 +199,7 @@
     (set-tape! tape new-tape-left new-tape-current new-tape-right)
     ))
 
-;; tape -> string
+;; tape -> tape
 ;; Move the head left on the tape structure.  Same as moving the tape right.  Return the changed tape.
 (define (move-head-left tape)
   (let* ([tape-left (get-tape-left tape)]
@@ -213,6 +213,14 @@
           (set! new-tape-current (car reversed-tape-left))
           (set! new-tape-left (reverse (cdr reversed-tape-left)))))
     (set-tape! tape new-tape-left new-tape-current new-tape-right)
+    ))
+
+;; tape -> tape
+;; Replace the token being pointed to by the I/O head
+(define (change-head-token tape new-tape-current)
+  (let* ([tape-left (get-tape-left tape)]
+         [tape-right (get-tape-right tape)])
+    (set-tape! tape tape-left new-tape-current tape-right)
     ))
 
 (provide tapestruct
@@ -328,7 +336,7 @@
          machine->string)
 
 
-;; ===== history
+;; ===== History
 
 (define (make-history-node config)
   (cons config (mutable-set)))

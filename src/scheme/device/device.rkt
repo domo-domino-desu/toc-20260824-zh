@@ -234,7 +234,8 @@
          trim-right-tape
          trim-tape
          move-head-left
-         move-head-right)
+         move-head-right
+         change-head-token)
 
 
 ;; ===== stack

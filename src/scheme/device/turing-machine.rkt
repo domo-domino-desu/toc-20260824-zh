@@ -53,6 +53,9 @@
              [right-tape (list->string (get-tape-right tape))])
         (string-append state-string ": " left-tape current right-tape))))
 
+(provide configurationstruct
+         configuration->string)
+
 ;; ===== Run
 
 ;; For Turing machines, Delta maps Q x Sigma -> (Sigma union {L,R}) x Q.
@@ -65,49 +68,52 @@
         (set-delta-map! delta-map key value)))
     delta-map))
 
+;; tapestruct, string, natural number -> configurationstruct
+;; Perform one transition on the Turing machine
+(define (tm-transition tape next-action next-state)
+  (cond
+    [(equal? next-action LEFT)
+     (configurationstruct next-state (move-head-right tape))]
+    [(equal? next-action RIGHT)
+     (configurationstruct next-state (move-head-left tape))] 
+    [else
+     (configurationstruct next-state (change-head-token tape next-action))])
+  )
 
-;; history-node, delta-map -> configuration
-;; Make one transition that is not an epsilon transition, or return DELTA-NOKEY if no applicable instruction
-(define (transition-non-epsilon history-node delta-map)
-  (let* ([config (car history-node)]
-         [present-state (configurationstruct-state config)]
-         [tape (configurationstruct-tape config)]
-         [present-token (get-tape-current tape)]
-         [next-action-and-state (delta delta-map (list present-state present-token))])
-    (if (equal? next-action-and-state DELTA-NOKEY)
-      DELTA-NOKEY
-      (let ([next-action (first next-action-and-state)]
-            [next-state (second next-action-and-state)])
-        (cond
-          [(equal? next-action LEFT)
-           (configurationstruct next-state (move-head-right tape))]
-          [(equal? next-action RIGHT)
-           (configurationstruct next-state (move-head-left tape))] 
-          [else
-           (configurationstruct next-state (change-head-token tape next-action))])
-          ))))
-
-;;
-;;
+;; history-node delta-map epsilon-closure
+;; From a history node, find all descendents via the delta-map, then take epsilon closure.  Return list of
+;;   the grandchild nodes, the ones post-epsilon moves.
 (define (one-step-one-node history-node delta-map epsilon-closure)
   (let* ([config (car history-node)]
          [current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
          [current-token (get-tape-current tape)]
-         [next-action-and-state (delta delta-map )])
+         [set-of-next-actions-and-states (delta delta-map)]
+         [non-epsilon-nodes '()])
     ; Apply delta-map to get single transition
-    
-  ; Take epsilon transitions
-  ; add to the history a bunch of child nodes, one for each state in the epsilon-clousre
-    (let ([eps-states (hash-ref epsilon-closure state)]
-          [new-child-nodes '()])
-)
-    (for ([s eps-states])
-      (cons (add-child-node! history-node (configurationstruct s tape))
-            new-child-nodes))
-    )
-  )
+    (if (equal? set-of-next-actions-and-states DELTA-NOKEY)
+        '()
+        (begin
+          (for ([next-action-and-state set-of-next-actions-and-states])
+            (let ([next-action (first next-action-and-state)]
+                  [next-state (second next-action-and-state)])
+              (cons (add-child-node! history-node (tm-transition tape next-action next-state))
+                    non-epsilon-nodes)))
+          ; Take epsilon transitions
+          ; add to the history a bunch of child nodes, one for each state in the epsilon-clousre
+          (for ([history-node non-epsilon-nodes])
+            (let* ([config (car history-node)]
+                   [current-state (configurationstruct-state config)]
+                   [tape (configurationstruct-tape config)]
+                   [eps-states (hash-ref epsilon-closure current-state)])
+              (for/list ([s eps-states])  
+                (cons (add-child-node! history-node (configurationstruct s tape))
+                      new-child-nodes))
+              ))))))
 
+(provide tm->delta-map
+         tm-transition
+         one-step-one-node)
 
 ;; ===== Parse
 ; The defn says Delta maps Q x (Sigma union {B, epsilon}) to  Q x Gamma^* (or Gamma for deterministic ones)

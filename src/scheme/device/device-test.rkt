@@ -44,6 +44,21 @@
     );; end test-case
   
    (test-case
+    "Test delta-map->string function"
+    (let ([delta-map (make-delta-map)]
+          [input (list 0 "a")]
+          [other-input (list 3 "b")]
+          [output (list 1 "z")]
+          [other-output (list 1 "x")]
+          )
+      (set-delta-map! delta-map input output)
+      (set-delta-map! delta-map input other-output)
+      (set-delta-map! delta-map other-input other-output)
+      (printf "DELTA: ~s\n" (delta-map->string delta-map))
+      )
+    );; end test-case
+  
+   (test-case
     "Test get-states function"
     (let ([delta-map (make-delta-map)]
           [input (list 0 "a")]
@@ -52,7 +67,7 @@
           [other-output (list "y" 1)])
       (set-delta-map! delta-map input output)
       (set-delta-map! delta-map other-input other-output)
-      ; (printf "get-states: ~s\n" (get-states delta-map))
+      ; (printf "get-states: ~a\n" (get-states delta-map))
       (check-true (list? (get-states delta-map)))
       (check-true (list? (member 0 (get-states delta-map))))
       (check-true (list? (member 3 (get-states delta-map))))

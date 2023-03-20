@@ -66,6 +66,11 @@
 (define (dummy-get-value-state-fcn k)
   (first k))
 
+(define (delta-map->string delta-map)
+  (let* ([keys (hash-keys delta-map)])
+    (apply string-append (for/list ([k (sort keys #:key car <)])
+                           (format "~a -> ~a\n" k (hash-ref delta-map k))))))
+
 ;; hash -> hash
 ;; Return a map taking states from delta-map to their epsilon closure
 ;; Optional:
@@ -125,6 +130,7 @@
          delta
          dummy-get-state-fcn
          dummy-get-token-fcn
+         delta-map->string
          make-epsilon-closure)
 
 

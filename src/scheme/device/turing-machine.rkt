@@ -54,6 +54,8 @@
         (string-append state-string ": " left-tape current right-tape))))
 
 (provide configurationstruct
+         configurationstruct-state
+         configurationstruct-tape
          configuration->string)
 
 ;; ===== Run
@@ -72,9 +74,9 @@
 ;; Perform one transition on the Turing machine
 (define (tm-transition tape next-action next-state)
   (cond
-    [(equal? next-action LEFT)
-     (configurationstruct next-state (move-head-right tape))]
     [(equal? next-action RIGHT)
+     (configurationstruct next-state (move-head-right tape))]
+    [(equal? next-action LEFT)
      (configurationstruct next-state (move-head-left tape))] 
     [else
      (configurationstruct next-state (change-head-token tape next-action))])
@@ -88,8 +90,10 @@
          [current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
          [current-token (get-tape-current tape)]
-         [set-of-next-actions-and-states (delta delta-map)]
+         [set-of-next-actions-and-states (delta delta-map (list current-state current-token))]
          [non-epsilon-nodes '()])
+    (printf "in one-step-one-node delta-map=~s\n" delta-map)
+    (printf "   (current-state current-token)=~s\n" (list current-state current-token))
     ; Apply delta-map to get single transition
     (if (equal? set-of-next-actions-and-states DELTA-NOKEY)
         '()
@@ -107,9 +111,9 @@
                    [tape (configurationstruct-tape config)]
                    [eps-states (hash-ref epsilon-closure current-state)])
               (for/list ([s eps-states])  
-                (cons (add-child-node! history-node (configurationstruct s tape))
-                      new-child-nodes))
-              ))))))
+                (add-child-node! history-node (configurationstruct s tape)))
+              )))
+        )))
 
 (provide tm->delta-map
          tm-transition
@@ -142,7 +146,7 @@
 (define verbose? (make-parameter #f))
 (define silent? (make-parameter #f))
 (define filename (make-parameter null))
-(define startchar (make-parameter (make-string 1 BLANK)))  ;; string with one char, head points to this char first
+(define startchar (make-parameter BLANK))  ;; string with one char, head points to this char first
 (define startleft (make-parameter ""))  ;; string giving tape left of the start char
 (define startright (make-parameter ""))  ;; string giving tape right of start char
 (define steplimit (make-parameter "-1")) ;; max number of steps simulator runs; a negative makes it run until done

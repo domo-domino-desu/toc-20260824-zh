@@ -9,6 +9,18 @@
 ;; License: GPL 3.0
 
 
+; return a delta-map
+; useful for test setups
+(define (trial-delta-map)
+  (let ([delta-map (make-delta-map)])
+    (set-delta-map! delta-map '(0 "a") '("b" 0))
+    (set-delta-map! delta-map '(0 "b") '("b" 1))
+    (set-delta-map! delta-map '(1 "a") '("b" 1)) ;; one input has two outputs
+    (set-delta-map! delta-map '(1 "a") '("b" 0))
+    (set-delta-map! delta-map '(1 "b") '("a" 0))
+    delta-map))
+
+
 ;; ===== delta tests
 (define delta-tests
   (test-suite
@@ -42,6 +54,14 @@
       (check-equal? (delta delta-map other-input) DELTA-NOKEY)
       )
     );; end test-case
+
+   (test-case
+    "Another test delta function"
+    (let ([delta-map (trial-delta-map)])
+      (check-true (set-member? (delta delta-map '(0 "a")) '("b" 0)))
+      (check-equal? (delta delta-map '(3 "a")) DELTA-NOKEY)
+      )
+    );; end test-case
   
    (test-case
     "Test delta-map->string function"
@@ -54,7 +74,8 @@
       (set-delta-map! delta-map input output)
       (set-delta-map! delta-map input other-output)
       (set-delta-map! delta-map other-input other-output)
-      (printf "DELTA: ~s\n" (delta-map->string delta-map))
+      ; (printf "DELTA: ~s\n" (delta-map->string delta-map))
+      (check-true (string? (delta-map->string delta-map)))
       )
     );; end test-case
   
@@ -107,6 +128,13 @@
         (check-true (set-member? (hash-ref e 1) 1))
         (check-true (set-member? (hash-ref e 1) 2))
         (check-true (set-member? (hash-ref e 2) 2))
+        )
+      )
+    (let ([delta-map (trial-delta-map)]) ; use one that looks like a Turing machine delta-map
+      (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
+      (let ([e (make-epsilon-closure delta-map)])
+        (check-true (set-member? (hash-ref e 0) 0))
+        (check-true (set-member? (hash-ref e 1) 1))
         )
       )
     );; end test-case
@@ -359,6 +387,19 @@
     (regexp-match? EMPTY-LINE-REGEXP "# test comment line")
     (regexp-match? EMPTY-LINE-REGEXP "")
     (regexp-match? EMPTY-LINE-REGEXP "   ")
+    (let ([line "EPSILON 0 1"]) ;; epsilon transition
+      (check-true (regexp-match? EPSILON-REGEXP line)))
+    (let ([line "EPS 0 1"]) 
+      (check-true (regexp-match? EPSILON-REGEXP line)))
+    (let ([line "EPS: 0 1"]) 
+      (check-true (regexp-match? EPSILON-REGEXP line)))
+    (let ([line "EPS: 0, 1"]) 
+      (check-true (regexp-match? EPSILON-REGEXP line)))
+    (let ([line "EPS 0"]) 
+      (check-false (regexp-match? EPSILON-REGEXP line)))
+    (let* ([line "EPSILON 0 1"]
+           [m (regexp-match* EPSILON-REGEXP line #:match-select cdr)]) 
+      (check-equal? (length (car m)) 4))
     (let ([line "FINAL 3 4"]) ;; final states
       (check-true (regexp-match? FINAL-STATES-REGEXP line)))
     (let ([line "FINAL 3"]) 
@@ -392,13 +433,25 @@
            [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
       (check-equal? (length (parse-final-states m)) 0))
     )
+   
+   (test-case
+    "parse-epsilon-transition test"
+    (let* ([line "EPSILON 0 1"]
+           [m (regexp-match* EPSILON-REGEXP line #:match-select cdr)])
+      (printf "(parse-epsilon-transition m)=~s\n" (parse-epsilon-transition m))
+      (check-equal? (length (parse-epsilon-transition m)) 2)
+      (check-equal? (first (parse-epsilon-transition m)) 0)
+      (check-equal? (second (parse-epsilon-transition m)) 1)
+      )
+    )
 
    )) ;; end parse suite and tests
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-(run-tests delta-tests)
+; (run-tests delta-tests)
 ;(run-tests tape-tests)
 ;(run-tests stack-tests)
 ; (run-tests history-tests)
 ;(run-tests machine-tests)
+(run-tests parse-tests)

@@ -66,10 +66,17 @@
 (define (dummy-get-value-state-fcn k)
   (first k))
 
+;; set -> string
+;; Show a set in a readable way
+(define (set->string s)
+  (string-join (map (lambda (x) (format "~a" x)) (set->list s)) #:before-first "{ " #:after-last " }"))
+
+;; hash -> string
+;; Show a delta-map in a readable way
 (define (delta-map->string delta-map)
   (let* ([keys (hash-keys delta-map)])
     (apply string-append (for/list ([k (sort keys #:key car <)])
-                           (format "~a -> ~a\n" k (hash-ref delta-map k))))))
+                           (format "~a -> ~a\n" k (set->string (hash-ref delta-map k)))))))
 
 ;; hash -> hash
 ;; Return a map taking states from delta-map to their epsilon closure
@@ -402,6 +409,19 @@
 ;; A line with only comment, using # as a comment character
 (define EMPTY-LINE-REGEXP #px"^\\s*(\\#.*)?$")
 
+; Need a way to describe epsilon transitions.
+(define EPSILON-REGEXP #px"\\s*(EPSILON|EPS)[:]?\\s*(\\d+,?)\\s+(\\d+)(\\#.*)?$")
+
+;; string -> list of two numbers
+;; Return the numbers that were given as a space-separated list in the string
+;; (You can use a comma between numbers, as in "3, 4")
+(define (parse-epsilon-transition m)
+  (let* ([token-list (car m)]
+         [state-from (string->number (second token-list))]
+         [state-to (string->number (third token-list))])
+    ; (printf "parse-epsilon-transition token-list=~s\n    state-from=~s  state-to=~s\n" token-list state-from state-to)
+    (list state-from state-to)))
+
 ; Need a way to describe some states as final, or accepting.
 (define FINAL-STATES-REGEXP #px"\\s*((FINAL)|(ACCEPTING))[:]?\\s*([\\s*\\d+,?]*)\\s*(\\#.*)?$")
 
@@ -476,6 +496,8 @@
 
 
 (provide EMPTY-LINE-REGEXP
+         EPSILON-REGEXP
+         parse-epsilon-transition
          FINAL-STATES-REGEXP
          parse-final-states
          parse-one-line

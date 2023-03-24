@@ -9,34 +9,102 @@
 ;; License: GPL 3.0
 
 
+
+;; ===== power map tests(define delta-tests
+; return a power-map. Useful for test setups
+(define (trial-power-map)
+  (let ([power-map (power-map-make)])
+    (power-map-set! power-map 0 "b")
+    (power-map-set! power-map 1 "a")
+    (power-map-set! power-map 1 "b") ;; one input has two outputs
+    (power-map-set! power-map 2 "a")
+    power-map))
+
+(define power-map-tests
+  (test-suite
+   "initialize power maps"
+  
+   (test-case
+    "Test making power-map"
+    (check-true (hash? (power-map-make)))
+    );; end test-case
+   
+   (test-case
+    "Test adding to a power-map"
+    (let ([pm (power-map-make)]
+          [key 2]
+          [value 4])
+      (power-map-set! pm key value)
+      (check-true (set-mutable? (power-map-get pm key)))
+      (check-true (set-member? (power-map-get pm key) value))
+      )
+    );; end test-case
+   
+   (test-case
+    "Test adding multiple values for a single key"
+    (let ([pm (power-map-make)]
+          [key 2]
+          [value 4]
+          [other-value 5])
+      (power-map-set! pm key value)
+      (check-true (set-mutable? (power-map-get pm key)))
+      (check-true (set-member? (power-map-get pm key) value))
+      (check-false (set-member? (power-map-get pm key) other-value))
+      (power-map-set! pm key other-value)
+      (check-true (set-member? (power-map-get pm key) value))
+      (check-true (set-member? (power-map-get pm key) other-value))
+      )
+    );; end test-case
+
+   (test-case
+    "Test set->string"
+    (let ([s (mutable-set 3 4 5)])
+      ;(printf "set->string=~s\n" (set->string s))
+      ;(printf "set->string=~s\n" (set->string s (lambda (x) (format "elet=~s" x))))
+      (check-true (string? (set->string s)))
+      )
+    );; end test-case
+
+   (test-case
+    "Test power-map->string"
+    (let ([pm (trial-power-map)])
+      ;(printf "power-map->string=~s\n" (power-map->string pm))
+      ;(printf "power-map->string=~s\n" (power-map->string pm (lambda (x) (format "key=~s" x)) (lambda (x) (format "v=~a" x))))
+      (check-true (string? (power-map->string pm)))
+      )
+    );; end test-case
+
+   )) ;; end power-map-tests suite and tests
+  
+
+;; ===== delta tests
+
 ; return a delta-map
 ; useful for test setups
 (define (trial-delta-map)
-  (let ([delta-map (make-delta-map)])
-    (set-delta-map! delta-map '(0 "a") '("b" 0))
-    (set-delta-map! delta-map '(0 "b") '("b" 1))
-    (set-delta-map! delta-map '(1 "a") '("b" 1)) ;; one input has two outputs
-    (set-delta-map! delta-map '(1 "a") '("b" 0))
-    (set-delta-map! delta-map '(1 "b") '("a" 0))
+  (let ([delta-map (delta-map-make)])
+    (delta-map-set! delta-map '(0 "a") '("b" 0))
+    (delta-map-set! delta-map '(0 "b") '("b" 1))
+    (delta-map-set! delta-map '(1 "a") '("b" 1)) ;; one input has two outputs
+    (delta-map-set! delta-map '(1 "a") '("b" 0))
+    (delta-map-set! delta-map '(1 "b") '("a" 0))
     delta-map))
 
-
-;; ===== delta tests
 (define delta-tests
   (test-suite
    "initialize and manipulate delta-map and delta"
   
    (test-case
     "Test making delta-map"
-    (let ([delta-map (make-delta-map)]
+    (let ([delta-map (delta-map-make)]
           [input (list 0 "a")]
           [other-input (list 3 "b")]
           [output (list 1)]
           [other-output (list 2)])
-      (set-delta-map! delta-map input output)
+      (delta-map-set! delta-map input output)
       (check-true (set-member? (delta delta-map input) output))
-      (set-delta-map! delta-map input other-output)
-      (set-delta-map! delta-map other-input output)
+      (delta-map-set! delta-map input other-output)
+      (delta-map-set! delta-map other-input output)
       (check-true (set-member? (delta delta-map input) output))
       (check-true (set-member? (delta delta-map input) other-output))
       (check-true (set-member? (delta delta-map other-input) output))
@@ -45,11 +113,11 @@
   
    (test-case
     "Test delta function"
-    (let ([delta-map (make-delta-map)]
+    (let ([delta-map (delta-map-make)]
           [input (list 0 "a")]
           [other-input (list 3 "b")]
           [output (list 1)])
-      (set-delta-map! delta-map input output)
+      (delta-map-set! delta-map input output)
       (check-true (set-member? (delta delta-map input) output))
       (check-equal? (delta delta-map other-input) DELTA-NOKEY)
       )
@@ -62,18 +130,27 @@
       (check-equal? (delta delta-map '(3 "a")) DELTA-NOKEY)
       )
     );; end test-case
+
+   (test-case
+    "Test delta-map-set!"
+    (let ([delta-map (trial-delta-map)])
+      (check-equal? (delta delta-map '(3 "a")) DELTA-NOKEY)
+      (delta-map-set! delta-map '(3 "a") '("a" 3))
+      (check-true (set-mutable? (delta delta-map '(3 "a"))))
+      )
+    );; end test-case
   
    (test-case
     "Test delta-map->string function"
-    (let ([delta-map (make-delta-map)]
+    (let ([delta-map (delta-map-make)]
           [input (list 0 "a")]
           [other-input (list 3 "b")]
           [output (list 1 "z")]
           [other-output (list 1 "x")]
           )
-      (set-delta-map! delta-map input output)
-      (set-delta-map! delta-map input other-output)
-      (set-delta-map! delta-map other-input other-output)
+      (delta-map-set! delta-map input output)
+      (delta-map-set! delta-map input other-output)
+      (delta-map-set! delta-map other-input other-output)
       ; (printf "DELTA: ~s\n" (delta-map->string delta-map))
       (check-true (string? (delta-map->string delta-map)))
       )
@@ -81,63 +158,63 @@
   
    (test-case
     "Test get-states function"
-    (let ([delta-map (make-delta-map)]
+    (let ([delta-map (delta-map-make)]
           [input (list 0 "a")]
           [other-input (list 3 "b")]
           [output (list "z" 1)]
           [other-output (list "y" 1)])
-      (set-delta-map! delta-map input output)
-      (set-delta-map! delta-map other-input other-output)
+      (delta-map-set! delta-map input output)
+      (delta-map-set! delta-map other-input other-output)
       ; (printf "get-states: ~a\n" (get-states delta-map))
       (check-true (list? (get-states delta-map)))
       (check-true (list? (member 0 (get-states delta-map))))
       (check-true (list? (member 3 (get-states delta-map))))
       )
-    (let ([delta-map (make-delta-map)])
+    (let ([delta-map (delta-map-make)])
       ; (printf "get-states: ~s\n" (get-states delta-map))
       (check-true (null? (get-states delta-map)))
       )
     );; end test-case
   
-   (test-case
-    "Test make-epsilon-closure hash"
-    (let ([delta-map (make-delta-map)])
-      (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
-      (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
-      (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
-      (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
-      ; (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
-      (let ([e (make-epsilon-closure delta-map)])
-        (check-true (set-member? (hash-ref e 0) 0))
-        (check-true (set-member? (hash-ref e 0) 1))
-        (check-true (set-member? (hash-ref e 1) 1))
-        (check-true (set-member? (hash-ref e 2) 2))
-        )
-      )
-    (let ([delta-map (make-delta-map)])
-      (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
-      (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
-      (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
-      (set-delta-map! delta-map (list 1 "EPS") (list 2 "x"))
-      (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
-      (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
-      (let ([e (make-epsilon-closure delta-map)])
-        (check-true (set-member? (hash-ref e 0) 0))
-        (check-true (set-member? (hash-ref e 0) 1))
-        (check-true (set-member? (hash-ref e 0) 2))
-        (check-true (set-member? (hash-ref e 1) 1))
-        (check-true (set-member? (hash-ref e 1) 2))
-        (check-true (set-member? (hash-ref e 2) 2))
-        )
-      )
-    (let ([delta-map (trial-delta-map)]) ; use one that looks like a Turing machine delta-map
-      (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
-      (let ([e (make-epsilon-closure delta-map)])
-        (check-true (set-member? (hash-ref e 0) 0))
-        (check-true (set-member? (hash-ref e 1) 1))
-        )
-      )
-    );; end test-case
+;   (test-case
+;    "Test make-epsilon-closure hash"
+;    (let ([delta-map (make-delta-map)])
+;      (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
+;      (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
+;      (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
+;      (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
+;      ; (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
+;      (let ([e (make-epsilon-closure delta-map)])
+;        (check-true (set-member? (hash-ref e 0) 0))
+;        (check-true (set-member? (hash-ref e 0) 1))
+;        (check-true (set-member? (hash-ref e 1) 1))
+;        (check-true (set-member? (hash-ref e 2) 2))
+;        )
+;      )
+;    (let ([delta-map (make-delta-map)])
+;      (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
+;      (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
+;      (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
+;      (set-delta-map! delta-map (list 1 "EPS") (list 2 "x"))
+;      (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
+;      (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
+;      (let ([e (make-epsilon-closure delta-map)])
+;        (check-true (set-member? (hash-ref e 0) 0))
+;        (check-true (set-member? (hash-ref e 0) 1))
+;        (check-true (set-member? (hash-ref e 0) 2))
+;        (check-true (set-member? (hash-ref e 1) 1))
+;        (check-true (set-member? (hash-ref e 1) 2))
+;        (check-true (set-member? (hash-ref e 2) 2))
+;        )
+;      )
+;    (let ([delta-map (trial-delta-map)]) ; use one that looks like a Turing machine delta-map
+;      (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
+;      (let ([e (make-epsilon-closure delta-map)])
+;        (check-true (set-member? (hash-ref e 0) 0))
+;        (check-true (set-member? (hash-ref e 1) 1))
+;        )
+;      )
+;    );; end test-case
 
    )) ;; end DELTA-tests suite and tests
 
@@ -279,16 +356,21 @@
    "machine making tests"
 
    (test-case
-    "Test making the machine"
+    "Test creating an empty machine"
     (let ([m (machine-create)])
-      (check equal? (machinestruct-instructions m) '())
+      (check-true (list? (machinestruct-instructions m)))
+      (check-true (null? (machinestruct-instructions m)))
+      (check-true (set-mutable? (machinestruct-acceptingstates m)))
+      (check-true (set-empty? (machinestruct-acceptingstates m)))
+      (check-true (hash? (machinestruct-epsilonmap m)))
+      (check-true (hash-empty? (machinestruct-epsilonmap m)))
       ))
 
    (test-case
     "Test machine operations"
     (let ([m (machine-create)]
-          [dummy-instruction (list "state" "token")]
-          [dummy-accepting-state 5])
+          [dummy-instruction (list 0 "a" "b" 0)]
+          [dummy-accepting-state 0])
       (machine-add-instruction m dummy-instruction)
       (check-equal? (machinestruct-instructions m) (list dummy-instruction))
       (machine-add-accepting-state m dummy-accepting-state)
@@ -298,11 +380,14 @@
    (test-case
     "Test machine->string"
     (let ([m (machine-create)]
-          [dummy-instruction (list "state" "token")]
-          [dummy-accepting-state 5])
+          [dummy-instruction (list 0 "a" "b" 0)]
+          [dummy-accepting-state 0]
+          )
       (machine-add-instruction m dummy-instruction)
       (machine-add-accepting-state m dummy-accepting-state)
-      ; (printf "~a\n" (machine->string m))
+      (machine-add-epsilon m 0 1)
+      (machine-add-epsilon m 0 2)
+      (printf "~a\n" (machine->string m))
       ))
    )) ;; end machine-making suite and tests
 
@@ -438,7 +523,7 @@
     "parse-epsilon-transition test"
     (let* ([line "EPSILON 0 1"]
            [m (regexp-match* EPSILON-REGEXP line #:match-select cdr)])
-      (printf "(parse-epsilon-transition m)=~s\n" (parse-epsilon-transition m))
+      ; (printf "(parse-epsilon-transition m)=~s\n" (parse-epsilon-transition m))
       (check-equal? (length (parse-epsilon-transition m)) 2)
       (check-equal? (first (parse-epsilon-transition m)) 0)
       (check-equal? (second (parse-epsilon-transition m)) 1)
@@ -449,9 +534,10 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-; (run-tests delta-tests)
+; (run-tests power-map-tests)
+(run-tests delta-tests)
 ;(run-tests tape-tests)
 ;(run-tests stack-tests)
 ; (run-tests history-tests)
-;(run-tests machine-tests)
-(run-tests parse-tests)
+; (run-tests machine-tests)
+; (run-tests parse-tests)

@@ -27,21 +27,72 @@
          RIGHT
          EPSILON)
 
+;; ===== POWER-MAP
+;; Both delta maps and epsilon maps sent keys to sets of values.
+
+;; void -> hash
+;; Make a new finite function key -> set of values
+(define (power-map-make)
+  (make-hash))
+
+;; list, list -> void
+;; Add the value to the set that is power-map[k], or if no set there create a new set containing v
+(define (power-map-set! power-map k v)
+  (if (member k (hash-keys power-map))
+      (set-add! (hash-ref power-map k) v)
+      (hash-set! power-map k (mutable-set v))))
+
+;; Signifies that a power-map has no such key
+(define POWER-MAP-NOKEY "No such key")
+
+;; list -> list
+;; Return value associated with k in the power-map, or POWER_MAP-NOKEY
+(define (power-map-get power-map k [error POWER-MAP-NOKEY])
+  (hash-ref power-map k (lambda () error)))
+
+;; set -> string
+;; Show a set in a readable way
+;; The optional argument allows you to format the elements 
+(define (set->string s [elet->string (lambda (x) (format "~a" x))])
+  (string-join (map elet->string (set->list s)) #:before-first "{ " #:after-last " }"))
+
+;; hash -> string
+;; Show a power-map in a readable way
+;; The optional arguments allow you to format the key and the value
+(define (power-map->string power-map [key->string (lambda (x) (format "~a" x))] [value->string (lambda (x) (format "~a" x))])
+  (let* ([keys (hash-keys power-map)])
+    (apply string-append (for/list ([k keys])
+                           (format "~a -> ~a\n"
+                                   (key->string k)
+                                   (set->string (hash-ref power-map k) value->string))))))
+
+(provide power-map-make
+         power-map-set!
+         POWER-MAP-NOKEY
+         power-map-get
+         set->string
+         power-map->string)
+
+
 ;; ===== DELTA
 ;; Finite function mapping lists to sets.  The lists are input tuples, the
 ;; sets contain output tuples 
 
 ;; void -> hash
 ;; Make a new delta be a new hash
-(define (make-delta-map)
-  (make-hash))
+;(define (make-delta-map)
+;  (make-hash))
+(define (delta-map-make)
+  (power-map-make))
 
 ;; list, list -> void
 ;; Add the value to the set that is DELTA[k], or create a new set if none there
-(define (set-delta-map! delta-map k v)
-  (if (member k (hash-keys delta-map))
-      (set-add! (hash-ref delta-map k) v)
-      (hash-set! delta-map k (mutable-set v))))
+;(define (set-delta-map! delta-map k v)
+;  (if (member k (hash-keys delta-map))
+;      (set-add! (hash-ref delta-map k) v)
+;      (hash-set! delta-map k (mutable-set v))))
+(define (delta-map-set! delta-map key value)
+  (power-map-set! delta-map key value))
 
 ;; Signifies DELTA has no such key
 (define DELTA-NOKEY "No such key for delta map")
@@ -53,8 +104,10 @@
 
 ;; list -> list
 ;; Return value associated with k in DELTA, or DELTA-NOKEY
+;(define (delta delta-map k)
+;  (hash-ref delta-map k (lambda () DELTA-NOKEY)))
 (define (delta delta-map k)
-  (hash-ref delta-map k (lambda () DELTA-NOKEY)))
+  (power-map-get delta-map k DELTA-NOKEY))
 
 ;; From the key to a delta-map, get the state number
 (define (dummy-get-state-fcn k)
@@ -68,15 +121,19 @@
 
 ;; set -> string
 ;; Show a set in a readable way
-(define (set->string s)
-  (string-join (map (lambda (x) (format "~a" x)) (set->list s)) #:before-first "{ " #:after-last " }"))
+;(define (set->string s)
+;  (string-join (map (lambda (x) (format "~a" x)) (set->list s)) #:before-first "{ " #:after-last " }"))
 
 ;; hash -> string
 ;; Show a delta-map in a readable way
-(define (delta-map->string delta-map)
-  (let* ([keys (hash-keys delta-map)])
-    (apply string-append (for/list ([k (sort keys #:key car <)])
-                           (format "~a -> ~a\n" k (set->string (hash-ref delta-map k)))))))
+;(define (delta-map->string delta-map)
+;  (let* ([keys (hash-keys delta-map)])
+;    (apply string-append (for/list ([k (sort keys #:key car <)])
+;                           (format "~a -> ~a\n" k (set->string (hash-ref delta-map k)))))))
+(define (delta-map->string delta-map
+                           [key->string (lambda (x) (format "~a" x))]
+                           [value->string (lambda (x) (format "~a" x))])
+  (power-map->string delta-map key->string value->string))
 
 ;; hash -> hash
 ;; Return a map taking states from delta-map to their epsilon closure
@@ -130,8 +187,8 @@
     epsilon-closure))
   
 
-(provide make-delta-map
-         set-delta-map!
+(provide delta-map-make
+         delta-map-set!
          DELTA-NOKEY
          get-states
          delta
@@ -140,6 +197,78 @@
          delta-map->string
          make-epsilon-closure)
 
+
+;; ===== EPSILON MAP
+;; Finite function mapping a state numbers to sets of state numbers.  The meaning is that there
+;; is an epsilon transision from the input state to all states in the output set.  
+
+;; void -> hash
+;; Make a new epsilon map
+(define (epsilon-map-make)
+  (power-map-make))
+
+;; list, list -> void
+;; Add the value to the set that is epsilon-map[k], or create a new set if none is there
+(define (epsilon-map-set! epsilon-map key value)
+  (power-map-set! epsilon-map key value))
+
+;; Signifies the epsilon map has no such key
+(define EPSILON-NOKEY "No such key for epsilon map")
+
+;; list -> list
+;; Return value associated with k in DELTA, or DELTA-NOKEY
+(define (epsilon-map-get epsilon-map key)
+  (power-map-get epsilon-map key EPSILON-NOKEY))
+
+;; From the key to a delta-map, get the state number
+;(define (dummy-get-epsilon-fcn k)
+;  (first k))
+;; From the key to a delta-map, get the token
+;(define (dummy-get-token-fcn k)
+;  (second k))
+;; From the value of a delta-map, get the state number
+;(define (dummy-get-value-state-fcn k)
+;  (first k))
+
+;; set -> string
+;; Show a set in a readable way
+;(define (set->string s)
+;  (string-join (map (lambda (x) (format "~a" x)) (set->list s)) #:before-first "{ " #:after-last " }"))
+
+;; hash -> string
+;; Show a epsilon-map in a readable way
+(define (epsilon-map->string epsilon-map)
+  (power-map->string epsilon-map))
+
+;; epsilon-map, list of natural numbers -> power-map
+;; Find the epsilon closure of the epsilon map
+(define (epsilon-closure-make epsilon-map all-states)
+  (let ([epsilon-closure (power-map-make)])
+    ; First start building E(q) with E(q,0)= { q }
+    (for ([q all-states])
+      (power-map-set! epsilon-closure q))
+    ; Now where E(q,i)={q_i0, .. q_ik}, set E(q,i+1)= E(q,i) union Delta(q_i0,epsilon) union ... Delta(q_ik,epsilon)
+    ; Keep it up until i is such that for all q we have E(q,i)=E(q,i+1)
+    (let ([change-flag #t])
+      (do ([i 1 (+ 1 i)])
+        ((or (> i (length all-states)) (not change-flag))
+         (when change-flag (printf "ERROR: Epsilon closure took too many steps ~a\n" i)))
+        (set! change-flag #f)
+        (for ([q all-states])
+          (let* ([E-q-i (power-map-get epsilon-closure q)]
+                 [E-q-iplus1 E-q-i])
+            (for ([s E-q-i])
+              (set-union! E-q-iplus1 (epsilon-map-get epsilon-map s))) ; cannot get EPSILON-NOKEY
+            (when (not (set=? E-q-i E-q-iplus1))
+              (set! change-flag #t))))))
+      epsilon-closure))
+
+(provide epsilon-map-make
+         epsilon-map-set!
+         EPSILON-NOKEY
+         epsilon-map-get
+         epsilon-map->string
+         epsilon-closure-get)
 
 ;; ===== tape
 
@@ -304,12 +433,12 @@
 
 ;; ===== Machine
 ;; A machine is a structure consisting of list of instructions and list of accepting states.
-(struct machinestruct (instructions acceptingstates) #:transparent #:mutable)
+(struct machinestruct (instructions acceptingstates epsilonmap) #:transparent #:mutable)
 
 ; no input  ->  machinestruct
 ; Create an empty machine.
 (define (machine-create)
-  (machinestruct '() (mutable-set)))
+  (machinestruct '() (mutable-set) (make-hash)))
 
 ; machinestruct, instruction  ->  machinestruct
 ; Add the instruction to the machine
@@ -322,6 +451,11 @@
 (define (machine-add-accepting-state machine accepting-state)
   (set-add! (machinestruct-acceptingstates machine) accepting-state))
 
+; machinestruct, natural-number, natural-number  ->  machinestruct
+; Add the key->value to the epsilon map 
+(define (machine-add-epsilon machine key value)
+  (hash-set! (machinestruct-epsilonmap machine) key value))
+
 ;; Dummy function to be replaced in calling file
 (define (dummy-instruction->string x)
   (format "~s" x))
@@ -333,20 +467,27 @@
          (string-join (map instruction->string (machinestruct-instructions machine)) "\n")]
          [state-string
          (string-join (map number->string (sort (set->list (machinestruct-acceptingstates machine)) <=)))]
-         [first-half-string
-          (string-append "INSTRUCTIONS: " instruction-string)])
+         [epsilon-string
+          (string-join (map (lambda (x) (format "~a->~a" (number->string (car x)) (number->string (cdr x))))
+                            (hash->list (machinestruct-epsilonmap machine))))]
+         [instructions-result
+          (string-append "INSTRUCTIONS: " instruction-string)])  
     ; (printf "first-half-string=~s\n" first-half-string)
-    (if (set-empty? (machinestruct-acceptingstates machine))
-        first-half-string
-        (string-append first-half-string
-                       "\nACCEPTING STATES: " state-string))))
+    (if (and (set-empty? (machinestruct-acceptingstates machine))
+             (hash-empty? (machinestruct-epsilonmap machine)))
+        instructions-result
+        (string-append instructions-result
+                       "\nACCEPTING STATES: " state-string
+                       "\nEPSILON TRANSITIONS: " epsilon-string))))
 
 (provide machine-create
          machine-add-accepting-state
          machine-add-instruction
+         machine-add-epsilon
          machinestruct?
          machinestruct-instructions
          machinestruct-acceptingstates
+         machinestruct-epsilonmap
          machine->string)
 
 
@@ -415,8 +556,9 @@
 ;; string -> list of two numbers
 ;; Return the numbers that were given as a space-separated list in the string
 ;; (You can use a comma between numbers, as in "3, 4")
-(define (parse-epsilon-transition m)
-  (let* ([token-list (car m)]
+(define (parse-epsilon-transition line)
+  (let* ([m (regexp-match* EPSILON-REGEXP line #:match-select cdr)]
+         [token-list (car m)]
          [state-from (string->number (second token-list))]
          [state-to (string->number (third token-list))])
     ; (printf "parse-epsilon-transition token-list=~s\n    state-from=~s  state-to=~s\n" token-list state-from state-to)
@@ -431,8 +573,9 @@
 ;; string -> list of numbers
 ;; Return the numbers given as a space-separated list in the string
 ;; (You can use a comma between numbers, as in "3, 4")
-(define (parse-final-states m)
-  (let* ([token-list (car m)]
+(define (parse-final-states line)
+  (let* ([m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]
+         [token-list (car m)]
          [digit-string (fourth token-list)])
     ;(printf "parse-final-states token-list=~s\n    digit-string=~s\n" token-list digit-string)
     (map string->number (string-split (string-trim digit-string) FINAL-STATES-PARSE-REGEXP))))
@@ -449,8 +592,9 @@
         [next-state (string->number (fourth string-list))])
     (instructionstruct present-state present-tape-token next-token next-state)))
 
-;; string -> list of two lists
-;;  Return either an instruction or a list of integers, not both.  It can be that both lists are empty.
+;; string -> list of three lists
+;;  Return a list perrtaining to an instruction, and a list of integers that are accepting states, and a list pertaining
+;; to epsilon transition.  At most one of these lists is not null.  It can be that all lists are null.
 (define (parse-one-line lne
                         [instruction-line-regexp DUMMY-INSTRUCTION-LINE-REGEXP]
                         [parse-make-instruction dummy-parse-make-instruction]
@@ -458,13 +602,14 @@
     ;(printf "parse-one-line: lne=~s\n" lne)
     (cond
       [(regexp-match? EMPTY-LINE-REGEXP lne)
-       (list '() '())]
+       (list '() '() '())]
+      [(regexp-match? EPSILON-REGEXP lne)
+       (list '() '() (parse-epsilon-transition lne))]
       [(regexp-match? instruction-line-regexp lne)
        (let ([m (regexp-match* instruction-line-regexp lne #:match-select cdr)])
-         (list (parse-make-instruction (car m) instructionstruct) '()))]
+         (list (parse-make-instruction (car m) instructionstruct) '() '()))]
       [(regexp-match? FINAL-STATES-REGEXP lne)
-       (let ([m (regexp-match* FINAL-STATES-REGEXP lne #:match-select cdr)])
-         (list '() (parse-final-states (car m))))]
+         (list '() (parse-final-states lne) '())]
       [else
        (begin
          (printf "ERROR! line does not parse: ~s\n" lne)
@@ -480,18 +625,23 @@
     (for* ([line file-lines])
       ;(printf "parse: line=~s\n" line)
       ; (printf "    parse-one-line=~s\n" (parse-one-line line))
-       (let* ([inst-and-states (parse-one-line line instruction-line-regexp parse-make-instruction instructionstruct)]
-              [inst (first inst-and-states)]
-              [state-list (second inst-and-states)])
+       (let* ([inst-states-eps (parse-one-line line instruction-line-regexp parse-make-instruction instructionstruct)]
+              [inst (first inst-states-eps)]
+              [state-list (second inst-states-eps)]
+              [eps-pair (third inst-states-eps)])
         ;(printf "    parse: inst-and-states=~s\n" inst-and-states)
         ;(printf "    parse: (first inst-and-states)=~s\n" (first inst-and-states))
         ;(printf "    parse: inst=~s  state-list=~s\n" inst state-list)
-        (if (not (null? inst))
-            (machine-add-instruction machine inst)
+        (cond
+          [(not (null? inst))
+            (machine-add-instruction machine inst)]
+          [(not (null? state-list))
             (for ([accepting-state state-list])
-              (machine-add-accepting-state machine accepting-state)))
+              (machine-add-accepting-state machine accepting-state))]
+          [(not (null? eps-pair))
+           (machine-add-epsilon machine eps-pair)]
         ; (printf "  parse: pdm=~s\n" pdm)))
-    )) machine)
+    ))) machine)
   )
 
 

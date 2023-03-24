@@ -81,8 +81,6 @@
 
 ;; void -> hash
 ;; Make a new delta be a new hash
-;(define (make-delta-map)
-;  (make-hash))
 (define (delta-map-make)
   (power-map-make))
 
@@ -94,25 +92,10 @@
 ;; Signifies delta map has no such key
 (define DELTA-NOKEY "No such key for delta map")
 
-;; delta-map -> list of integers
-;; From the delta map, get a list of all the machine's states
-(define (get-states d)
-  (sort (remove-duplicates (map first (hash-keys d))) <))
-
 ;; list -> list
 ;; Return value associated with k in DELTA, or DELTA-NOKEY
 (define (delta delta-map k)
   (power-map-get delta-map k DELTA-NOKEY))
-
-;;; From the key to a delta-map, get the state number
-;(define (dummy-get-state-fcn k)
-;  (first k))
-;;; From the key to a delta-map, get the token
-;(define (dummy-get-token-fcn k)
-;  (second k))
-;;; From the value of a delta-map, get the state number
-;(define (dummy-get-value-state-fcn k)
-;  (first k))
 
 ;; hash -> string
 ;; Show a delta-map in a readable way
@@ -125,10 +108,7 @@
 (provide delta-map-make
          delta-map-set!
          DELTA-NOKEY
-         get-states
          delta
-;         dummy-get-state-fcn
-;         dummy-get-token-fcn
          delta-map->string)
 
 
@@ -384,29 +364,22 @@
 (define (machine-add-epsilon machine key value)
   (hash-set! (machinestruct-epsilonmap machine) key value))
 
-;; Dummy function to be replaced in calling file
-(define (dummy-instruction->string x)
-  (format "~s" x))
-
 ;; machinestruct -> string
 ;; Return string of the machine, for display or debugging
-(define (machine->string machine [instruction->string dummy-instruction->string])
+(define (machine->string machine [instruction->string (lambda (x) (format "~a" x))])
   (let* ([instruction-string
-         (string-join (map instruction->string (machinestruct-instructions machine)) "\n")]
-         [state-string
-         (string-join (map number->string (sort (set->list (machinestruct-acceptingstates machine)) <=)))]
+          (string-join (map instruction->string (machinestruct-instructions machine)) "\n")]
+         [accepting-states-string
+          (set->string (machinestruct-acceptingstates machine))]
          [epsilon-string
-          (string-join (map (lambda (x) (format "~a->~a" (number->string (car x)) (number->string (cdr x))))
-                            (hash->list (machinestruct-epsilonmap machine))))]
-         [instructions-result
+          (epsilon-map->string (machinestruct-epsilonmap machine))]
+         [result
           (string-append "INSTRUCTIONS: " instruction-string)])  
-    ; (printf "first-half-string=~s\n" first-half-string)
-    (if (and (set-empty? (machinestruct-acceptingstates machine))
-             (hash-empty? (machinestruct-epsilonmap machine)))
-        instructions-result
-        (string-append instructions-result
-                       "\nACCEPTING STATES: " state-string
-                       "\nEPSILON TRANSITIONS: " epsilon-string))))
+    (when (not (set-empty? (machinestruct-acceptingstates machine)))
+        (set! result (string-append result "\nACCEPTING STATES: " accepting-states-string)))
+    (when (not (hash-empty? (machinestruct-epsilonmap machine))) 
+        (set! result (string-append result "\nEPSILON TRANSITIONS: " epsilon-string)))
+    result))
 
 (provide machine-create
          machine-add-accepting-state

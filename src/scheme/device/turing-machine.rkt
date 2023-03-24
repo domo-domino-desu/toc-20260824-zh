@@ -60,14 +60,22 @@
 
 ;; ===== Run
 
+;; delta-map -> list of integers
+;; From the delta map, get a list of all the machine's states.
+;; On the list are states used only in the output.
+(define (all-states-get delta-map)
+  (let ([input-states (map first (hash-keys d))]
+        [output-states (map second (hash-values d))])
+    (sort (remove-duplicates (append input-states output-states)) <)))
+
 ;; For Turing machines, Delta maps Q x Sigma -> (Sigma union {L,R}) x Q.
 (define (tm->delta-map tm)
-  (let ([delta-map (make-delta-map)]
+  (let ([delta-map (delta-map-make)]
         [instructions (machinestruct-instructions tm)])
     (for ([inst instructions])
       (let ([key (list (instructionstruct-presentstate inst) (instructionstruct-presenttoken inst))]
             [value (list (instructionstruct-nexttoken inst) (instructionstruct-nextstate inst))])
-        (set-delta-map! delta-map key value)))
+        (delta-map-set! delta-map key value)))
     delta-map))
 
 ;; tapestruct, string, natural number -> configurationstruct
@@ -115,7 +123,8 @@
               )))
         )))
 
-(provide tm->delta-map
+(provide all-states-get
+         tm->delta-map
          tm-transition
          one-step-one-node)
 
@@ -187,7 +196,9 @@
     (set! INPUT-LINES
           (string-split (port->string (open-input-file (filename)) #:close? #t) "\n")))
   ; (printf "INPUT-LINES=~s\n" INPUT-LINES)
-  (let* ([tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
+  (let* ([tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
+         [delta-map (tm->delta-map tm)]
+         [epsilon-closure (epsilon-closure-make (machinestruct-epsilonmap tm) (all-states-get delta-map))])
 ;          [history (yield-star tm INITIAL-TAPE #:silent #t)])
 ;     (when (not (silent?))
 ;       (writeln (string-join (history->string-list history) "\n")))

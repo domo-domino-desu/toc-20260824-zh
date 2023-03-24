@@ -72,18 +72,14 @@
            [current-state 0]
            [config (configurationstruct current-state tape)]
            [history-node (make-history config)]
-           [delta-map (make-delta-map)])
-      (set-delta-map! delta-map (list 0 "a") (list 1 "b"))
-      (set-delta-map! delta-map (list 0 "EPS") (list 0 "b"))
-      (set-delta-map! delta-map (list 0 "b") (list 1 "a"))
-      (set-delta-map! delta-map (list 1 "a") (list 2 "b"))
+           [delta-map (delta-map-make)])
+      (delta-map-set! delta-map (list 0 "a") (list 1 "b"))
+      (delta-map-set! delta-map (list 0 "EPS") (list 0 "b"))
+      (delta-map-set! delta-map (list 0 "b") (list 1 "a"))
+      (delta-map-set! delta-map (list 1 "a") (list 2 "b"))
       (printf "delta-map=~s\n" delta-map)
-      (let ([epsilon-closure (make-epsilon-closure delta-map)])
-        (printf "about to run ~s\n" epsilon-closure)
-        (one-step-one-node history-node delta-map epsilon-closure)
-        (printf "one-step-one-node=~s\n" (one-step-one-node history-node delta-map epsilon-closure))
-      ))
     )
+    ) ;; end test-case
    
    )) ;; end tape-making suite and tests
 

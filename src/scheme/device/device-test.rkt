@@ -176,47 +176,128 @@
       )
     );; end test-case
   
-;   (test-case
-;    "Test make-epsilon-closure hash"
-;    (let ([delta-map (make-delta-map)])
-;      (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
-;      (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
-;      (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
-;      (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
-;      ; (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
-;      (let ([e (make-epsilon-closure delta-map)])
-;        (check-true (set-member? (hash-ref e 0) 0))
-;        (check-true (set-member? (hash-ref e 0) 1))
-;        (check-true (set-member? (hash-ref e 1) 1))
-;        (check-true (set-member? (hash-ref e 2) 2))
-;        )
-;      )
-;    (let ([delta-map (make-delta-map)])
-;      (set-delta-map! delta-map (list 0 "a") (list 1 "z"))
-;      (set-delta-map! delta-map (list 0 "EPS") (list 1 "y"))
-;      (set-delta-map! delta-map (list 1 "b") (list 2 "x"))
-;      (set-delta-map! delta-map (list 1 "EPS") (list 2 "x"))
-;      (set-delta-map! delta-map (list 2 "a") (list 0 "w"))
-;      (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
-;      (let ([e (make-epsilon-closure delta-map)])
-;        (check-true (set-member? (hash-ref e 0) 0))
-;        (check-true (set-member? (hash-ref e 0) 1))
-;        (check-true (set-member? (hash-ref e 0) 2))
-;        (check-true (set-member? (hash-ref e 1) 1))
-;        (check-true (set-member? (hash-ref e 1) 2))
-;        (check-true (set-member? (hash-ref e 2) 2))
-;        )
-;      )
-;    (let ([delta-map (trial-delta-map)]) ; use one that looks like a Turing machine delta-map
-;      (printf "epsilon-closure: ~s\n" (make-epsilon-closure delta-map))
-;      (let ([e (make-epsilon-closure delta-map)])
-;        (check-true (set-member? (hash-ref e 0) 0))
-;        (check-true (set-member? (hash-ref e 1) 1))
-;        )
-;      )
-;    );; end test-case
-
    )) ;; end DELTA-tests suite and tests
+
+
+;; ===== epsilon-map tests
+
+; return an epsilon-map
+; useful for test setups
+(define (trial-epsilon-map)
+  (let ([epsilon-map (epsilon-map-make)])
+    (epsilon-map-set! epsilon-map 0 0)
+    (epsilon-map-set! epsilon-map 0 1)
+    (epsilon-map-set! epsilon-map 1 1)
+    (epsilon-map-set! epsilon-map 2 3)
+    epsilon-map))
+
+(define epsilon-tests
+  (test-suite
+   "initialize and manipulate epsilon-map and epsilon-closure"
+  
+   (test-case
+    "Test making epsilon-map"
+    (let ([epsilon-map (epsilon-map-make)]
+          [input 0]
+          [other-input 2]
+          [output 1]
+          [other-output 1])
+      (epsilon-map-set! epsilon-map input output)
+      (check-true (set-member? (epsilon-map-get epsilon-map input) output))
+      (epsilon-map-set! epsilon-map input other-output)
+      (epsilon-map-set! epsilon-map other-input output)
+      (check-true (set-member? (epsilon-map-get epsilon-map input) output))
+      (check-true (set-member? (epsilon-map-get epsilon-map input) other-output))
+      (check-true (set-member? (epsilon-map-get epsilon-map other-input) output))
+      )
+    );; end test-case
+  
+   (test-case
+    "Test epsilon function"
+    (let ([epsilon-map (epsilon-map-make)]
+          [input 0]
+          [other-input 1]
+          [output 2])
+      (epsilon-map-set! epsilon-map input output)
+      (check-true (set-member? (epsilon-map-get epsilon-map input) output))
+      (check-equal? (epsilon-map-get epsilon-map other-input) EPSILON-NOKEY)
+      )
+    );; end test-case
+
+   (test-case
+    "Another test epsilon function"
+    (let ([epsilon-map (trial-epsilon-map)])
+      (check-true (set-member? (epsilon-map-get epsilon-map 0) 1))
+      (check-equal? (epsilon-map-get epsilon-map 10) EPSILON-NOKEY)
+      )
+    );; end test-case
+
+   (test-case
+    "Test epsilon-map-set!"
+    (let ([epsilon-map (trial-epsilon-map)])
+      (check-equal? (epsilon-map-get epsilon-map 10) EPSILON-NOKEY)
+      (epsilon-map-set! epsilon-map 10 11)
+      (check-true (set-mutable? (epsilon-map-get epsilon-map 10)))
+      (check-true (set-member? (epsilon-map-get epsilon-map 10) 11))
+      )
+    );; end test-case
+  
+   (test-case
+    "Test epsilon-map->string function"
+    (let ([epsilon-map (epsilon-map-make)]
+          [input 0]
+          [other-input 1]
+          [output 1]
+          [other-output 2]
+          )
+      (epsilon-map-set! epsilon-map input output)
+      (epsilon-map-set! epsilon-map input other-output)
+      (epsilon-map-set! epsilon-map other-input other-output)
+      ; (printf "epsilon: ~s\n" (epsilon-map->string epsilon-map))
+      (check-true (string? (epsilon-map->string epsilon-map)))
+      )
+    );; end test-case
+  
+  
+   (test-case
+    "Test epsilon-closure-make"
+    ; No iteration needed
+    (let ([epsilon-map (epsilon-map-make)])
+      (epsilon-map-set! epsilon-map 0 1)  
+      (epsilon-map-set! epsilon-map 2 1)
+      ; (printf "epsilon-map: ~s\n" (epsilon-map->string epsilon-map))
+      (let ([e (epsilon-closure-make epsilon-map '(0 1 2))])
+        ; (printf "epsilon-closure: ~s\n" (epsilon-closure->string e))
+        (check-true (set-mutable? (power-map-get e 0)))
+        (check-true (set-mutable? (power-map-get e 1)))
+        (check-true (set-mutable? (power-map-get e 2)))
+        (check-true (set-member? (power-map-get e 0) 0))
+        (check-true (set-member? (power-map-get e 0) 1))
+        (check-true (set-member? (power-map-get e 1) 1))
+        (check-true (set-member? (power-map-get e 2) 1))
+        (check-true (set-member? (power-map-get e 2) 2))
+        )
+      )
+    ; Iteration needed
+    (let ([epsilon-map (epsilon-map-make)])
+      (epsilon-map-set! epsilon-map 0 1)  
+      (epsilon-map-set! epsilon-map 1 2)
+      (printf "epsilon-map: ~s\n" (epsilon-map->string epsilon-map))
+      (let ([e (epsilon-closure-make epsilon-map '(0 1 2))])
+        (printf "epsilon-closure: ~s\n" (epsilon-closure->string e))
+        (check-true (set-mutable? (power-map-get e 0)))
+        (check-true (set-mutable? (power-map-get e 1)))
+        (check-true (set-mutable? (power-map-get e 2)))
+        (check-true (set-member? (power-map-get e 0) 0))
+        (check-true (set-member? (power-map-get e 0) 1))
+        (check-true (set-member? (power-map-get e 0) 2))
+        (check-true (set-member? (power-map-get e 1) 1))
+        (check-true (set-member? (power-map-get e 2) 2))
+        )
+      )
+    );; end test-case
+
+   )) ;; end epsilon-map suite and tests
 
 
 ;; ===== tapestruct tests
@@ -495,38 +576,32 @@
       (check-true (regexp-match? FINAL-STATES-REGEXP line)))
     (let ([line "FINAL: 3, 4"]) 
       (check-true (regexp-match? FINAL-STATES-REGEXP line)))
-    (let* ([line "FINAL 3 4"]
-           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
-      (check-equal? (length (parse-final-states m)) 2)
-      (check-equal? (first (parse-final-states m)) 3)
-      (check-equal? (second (parse-final-states m)) 4))
-    (let* ([line "FINAL 3 4  # test with comment"]
-           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
-      (check-equal? (length (parse-final-states m)) 2)
-      (check-equal? (first (parse-final-states m)) 3)
-      (check-equal? (second (parse-final-states m)) 4))
-    (let* ([line "ACCEPTING 3 4"]
-           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
-      (check-equal? (length (parse-final-states m)) 2)
-      (check-equal? (first (parse-final-states m)) 3)
-      (check-equal? (second (parse-final-states m)) 4))
-    (let* ([line "FINAL 3"]
-           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
-      (check-equal? (length (parse-final-states m)) 1)
-      (check-equal? (first (parse-final-states m)) 3))
-    (let* ([line "FINAL"]
-           [m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]) 
-      (check-equal? (length (parse-final-states m)) 0))
+    (let* ([line "FINAL 3 4"]) 
+      (check-equal? (length (parse-final-states line)) 2)
+      (check-equal? (first (parse-final-states line)) 3)
+      (check-equal? (second (parse-final-states line)) 4))
+    (let* ([line "FINAL 3 4  # test with comment"]) 
+      (check-equal? (length (parse-final-states line)) 2)
+      (check-equal? (first (parse-final-states line)) 3)
+      (check-equal? (second (parse-final-states line)) 4))
+    (let* ([line "ACCEPTING 3 4"]) 
+      (check-equal? (length (parse-final-states line)) 2)
+      (check-equal? (first (parse-final-states line)) 3)
+      (check-equal? (second (parse-final-states line)) 4))
+    (let* ([line "FINAL 3"]) 
+      (check-equal? (length (parse-final-states line)) 1)
+      (check-equal? (first (parse-final-states line)) 3))
+    (let* ([line "FINAL"]) 
+      (check-equal? (length (parse-final-states line)) 0))
     )
    
    (test-case
     "parse-epsilon-transition test"
     (let* ([line "EPSILON 0 1"]
            [m (regexp-match* EPSILON-REGEXP line #:match-select cdr)])
-      ; (printf "(parse-epsilon-transition m)=~s\n" (parse-epsilon-transition m))
-      (check-equal? (length (parse-epsilon-transition m)) 2)
-      (check-equal? (first (parse-epsilon-transition m)) 0)
-      (check-equal? (second (parse-epsilon-transition m)) 1)
+      (check-equal? (length (parse-epsilon-transition line)) 2)
+      (check-equal? (first (parse-epsilon-transition line)) 0)
+      (check-equal? (second (parse-epsilon-transition line)) 1)
       )
     )
 
@@ -535,9 +610,10 @@
 
 ;; ===== Run the tests; comment out ones not being worked-on
 ; (run-tests power-map-tests)
-(run-tests delta-tests)
+; (run-tests delta-tests)
+; (run-tests epsilon-tests)
 ;(run-tests tape-tests)
 ;(run-tests stack-tests)
 ; (run-tests history-tests)
 ; (run-tests machine-tests)
-; (run-tests parse-tests)
+(run-tests parse-tests)

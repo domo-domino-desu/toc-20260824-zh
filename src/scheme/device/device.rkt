@@ -27,8 +27,9 @@
          RIGHT
          EPSILON)
 
+
 ;; ===== POWER-MAP
-;; Both delta maps and epsilon maps sent keys to sets of values.
+;; All three of delta maps, epsilon maps, and epsilon closure maps send keys to sets of values.
 
 ;; void -> hash
 ;; Make a new finite function key -> set of values
@@ -86,15 +87,11 @@
   (power-map-make))
 
 ;; list, list -> void
-;; Add the value to the set that is DELTA[k], or create a new set if none there
-;(define (set-delta-map! delta-map k v)
-;  (if (member k (hash-keys delta-map))
-;      (set-add! (hash-ref delta-map k) v)
-;      (hash-set! delta-map k (mutable-set v))))
+;; Add the value to the set that is delta-map[k], or create a new set if none there
 (define (delta-map-set! delta-map key value)
   (power-map-set! delta-map key value))
 
-;; Signifies DELTA has no such key
+;; Signifies delta map has no such key
 (define DELTA-NOKEY "No such key for delta map")
 
 ;; delta-map -> list of integers
@@ -104,98 +101,35 @@
 
 ;; list -> list
 ;; Return value associated with k in DELTA, or DELTA-NOKEY
-;(define (delta delta-map k)
-;  (hash-ref delta-map k (lambda () DELTA-NOKEY)))
 (define (delta delta-map k)
   (power-map-get delta-map k DELTA-NOKEY))
 
-;; From the key to a delta-map, get the state number
-(define (dummy-get-state-fcn k)
-  (first k))
-;; From the key to a delta-map, get the token
-(define (dummy-get-token-fcn k)
-  (second k))
-;; From the value of a delta-map, get the state number
-(define (dummy-get-value-state-fcn k)
-  (first k))
-
-;; set -> string
-;; Show a set in a readable way
-;(define (set->string s)
-;  (string-join (map (lambda (x) (format "~a" x)) (set->list s)) #:before-first "{ " #:after-last " }"))
+;;; From the key to a delta-map, get the state number
+;(define (dummy-get-state-fcn k)
+;  (first k))
+;;; From the key to a delta-map, get the token
+;(define (dummy-get-token-fcn k)
+;  (second k))
+;;; From the value of a delta-map, get the state number
+;(define (dummy-get-value-state-fcn k)
+;  (first k))
 
 ;; hash -> string
 ;; Show a delta-map in a readable way
-;(define (delta-map->string delta-map)
-;  (let* ([keys (hash-keys delta-map)])
-;    (apply string-append (for/list ([k (sort keys #:key car <)])
-;                           (format "~a -> ~a\n" k (set->string (hash-ref delta-map k)))))))
 (define (delta-map->string delta-map
                            [key->string (lambda (x) (format "~a" x))]
                            [value->string (lambda (x) (format "~a" x))])
   (power-map->string delta-map key->string value->string))
 
-;; hash -> hash
-;; Return a map taking states from delta-map to their epsilon closure
-;; Optional:
-;;   get-state-fcn  key for delta-map -> state in that key
-;;   get-token-fcn  key for delta-map -> token in that key
-;;   get-value-state-fcn  value for delta-map -> state in that value
-(define (make-epsilon-closure delta-map
-                              [get-state-fcn dummy-get-state-fcn]
-                              [get-token-fcn dummy-get-token-fcn]
-                              [get-value-state-fcn dummy-get-value-state-fcn])
-  (let ([epsilon-closure (make-hash)]  ; maps state number to set that is the epsilon closure
-        [all-states (get-states delta-map)]
-        [delta-keys (hash-keys delta-map)]
-        [change-flag #t]) ; flags that sets changed during the iteration  
-    ; Step 0: for all states s in the machine, define E-hat_0(s) = {s}
-    (for ([s all-states])
-      (hash-set! epsilon-closure s (mutable-set s)))
-;    (printf "make-epsilon-closure: delta-map: ~s\n" delta-map)
-;    (printf "   epsilon-closure initial: ~s\n" epsilon-closure)
-;    (printf "   all-states=~s  delta-keys=~s\n" all-states delta-keys)
-    ; Step 1: Besides that E-hat_0(s) subseteq E-hat_1(s), also throw all states t where s --EPS--> t in one hop
-;      (printf "    iterating: i=~s  change-flag=~s\n" i change-flag)
-    (for* ([key delta-keys]
-           [value (delta delta-map key)])
-      ;        (printf "    iterating: key=~s   value=~s\n" key value)
-      (let* ([key-state (get-state-fcn key)]
-             [key-token (get-token-fcn key)]
-             [key-state-eps-cl (hash-ref epsilon-closure key-state)]
-             [value-state (get-value-state-fcn value)])
-        ;          (printf "    let*: key-state=~s   key-token=~s  key-state-eps-cl=~s  value-state=~s\n" key-state key-token key-state-eps-cl value-state)
-        (when (and (equal? key-token EPSILON)
-                   (not (set-member? key-state-eps-cl value-state)))
-          ;            (printf "    not a member: key-state-eps-cl=~s   value-state=~s\n" key-state-eps-cl value-state)
-          (set-add! key-state-eps-cl value-state)
-          (set! change-flag #t)
-          )))
-    ; Step i+1: Besides that E-hat_i(a) subseteq E-hat_(i+1)(a), for all s in E-hat_i(a) look at any t that is
-    ;         in E-hat_i(s) and add it to E-hat_{i+1}(a)
-    (do ([i 0 (+ 1 i)])
-      ((or (> i (length all-states)) (not change-flag))
-       (when change-flag (printf "WARNING: Epsilon closure took too many steps ~a\n" i)))
-      (set! change-flag #f)
-      (for* ([a all-states]
-             [s (hash-ref epsilon-closure a)]
-             [t (hash-ref epsilon-closure s)])
-        (when (not (set-member? (hash-ref epsilon-closure a) t))
-          (set-add! (hash-ref epsilon-closure a) t)
-          (set! change-flag #t))
-        ))
-    epsilon-closure))
-  
 
 (provide delta-map-make
          delta-map-set!
          DELTA-NOKEY
          get-states
          delta
-         dummy-get-state-fcn
-         dummy-get-token-fcn
-         delta-map->string
-         make-epsilon-closure)
+;         dummy-get-state-fcn
+;         dummy-get-token-fcn
+         delta-map->string)
 
 
 ;; ===== EPSILON MAP
@@ -220,21 +154,6 @@
 (define (epsilon-map-get epsilon-map key)
   (power-map-get epsilon-map key EPSILON-NOKEY))
 
-;; From the key to a delta-map, get the state number
-;(define (dummy-get-epsilon-fcn k)
-;  (first k))
-;; From the key to a delta-map, get the token
-;(define (dummy-get-token-fcn k)
-;  (second k))
-;; From the value of a delta-map, get the state number
-;(define (dummy-get-value-state-fcn k)
-;  (first k))
-
-;; set -> string
-;; Show a set in a readable way
-;(define (set->string s)
-;  (string-join (map (lambda (x) (format "~a" x)) (set->list s)) #:before-first "{ " #:after-last " }"))
-
 ;; hash -> string
 ;; Show a epsilon-map in a readable way
 (define (epsilon-map->string epsilon-map)
@@ -246,7 +165,8 @@
   (let ([epsilon-closure (power-map-make)])
     ; First start building E(q) with E(q,0)= { q }
     (for ([q all-states])
-      (power-map-set! epsilon-closure q))
+      (power-map-set! epsilon-closure q q))
+    ; (printf "epsilon-closure-make epsilon-closure initial ~s\n" epsilon-closure)
     ; Now where E(q,i)={q_i0, .. q_ik}, set E(q,i+1)= E(q,i) union Delta(q_i0,epsilon) union ... Delta(q_ik,epsilon)
     ; Keep it up until i is such that for all q we have E(q,i)=E(q,i+1)
     (let ([change-flag #t])
@@ -255,20 +175,28 @@
          (when change-flag (printf "ERROR: Epsilon closure took too many steps ~a\n" i)))
         (set! change-flag #f)
         (for ([q all-states])
+          ; (printf "epsilon-closure-make q=~s\n  (power-map-get epsilon-closure q)=~s\n" q (power-map-get epsilon-closure q))
           (let* ([E-q-i (power-map-get epsilon-closure q)]
                  [E-q-iplus1 E-q-i])
             (for ([s E-q-i])
-              (set-union! E-q-iplus1 (epsilon-map-get epsilon-map s))) ; cannot get EPSILON-NOKEY
+              (when (set-mutable? (epsilon-map-get epsilon-map s))
+                (set-union! E-q-iplus1 (epsilon-map-get epsilon-map s)))) 
             (when (not (set=? E-q-i E-q-iplus1))
               (set! change-flag #t))))))
       epsilon-closure))
+
+;; epsilon-closure -> string
+;; Give a reasonable representation
+(define (epsilon-closure->string epsilon-closure)
+  (power-map->string epsilon-closure))
 
 (provide epsilon-map-make
          epsilon-map-set!
          EPSILON-NOKEY
          epsilon-map-get
          epsilon-map->string
-         epsilon-closure-get)
+         epsilon-closure-make
+         epsilon-closure->string )
 
 ;; ===== tape
 
@@ -572,7 +500,7 @@
 
 ;; string -> list of numbers
 ;; Return the numbers given as a space-separated list in the string
-;; (You can use a comma between numbers, as in "3, 4")
+;; You can use a comma between numbers, as in "3, 4".
 (define (parse-final-states line)
   (let* ([m (regexp-match* FINAL-STATES-REGEXP line #:match-select cdr)]
          [token-list (car m)]
@@ -615,7 +543,7 @@
          (printf "ERROR! line does not parse: ~s\n" lne)
          (list '() '()))]))
 
-;; list of strings -> Turing machine
+;; list of strings -> machine
 (define (parse file-lines
                [instruction-line-regexp DUMMY-INSTRUCTION-LINE-REGEXP]
                [parse-make-instruction dummy-parse-make-instruction]

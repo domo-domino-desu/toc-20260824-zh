@@ -394,52 +394,52 @@
 
 ;; ===== History
 
-(define (make-history-node config)
+(define (history-node-make config)
   (cons config (mutable-set)))
 
-(define (get-node-config n)
+(define (history-node-config n)
   (car n))
 
-(define (get-child-nodes n)
+(define (history-node-get-children n)
   (cdr n))
 
-(define (make-history initialconfig)
-  (make-history-node initialconfig))
+(define (history-create initialconfig)
+  (history-node-make initialconfig))
 
-(define (add-history-node! existing-node new-node)
+(define (history-node-add! existing-node new-node)
   (set-add! (cdr existing-node) new-node)
   new-node)
 
-(define (add-child-node! existing-node new-child-config)
-  (let ([child-node (make-history-node new-child-config)])
+(define (child-node-add! existing-node new-child-config)
+  (let ([child-node (history-node-make new-child-config)])
     (set-add! (cdr existing-node) child-node)
     child-node))
 
-(define (traverse-history-bfs level level-no fcn)
+(define (history-traverse-bfs level level-no fcn)
   (let ([next-level '()])
     (for ([node level])
-      fcn(node level-no)
-      (for ([child-node (get-child-nodes node)])
+      (fcn node level-no)
+      (for ([child-node (history-node-get-children node)])
         (cons child-node next-level)
         ))
     (when (not (null? next-level))
-      (traverse-history-bfs next-level (+ 1 level-no) fcn))))
+      (history-traverse-bfs next-level (+ 1 level-no) fcn))))
 
-(define (traverse-history-dfs node rank fcn)
+(define (history-traverse-dfs node rank fcn)
   (fcn node rank)
-  (let ([children (get-child-nodes node)])
+  (let ([children (history-node-get-children node)])
     (for ([child children])
       ;; (fcn child rank)
-      (traverse-history-dfs child (+ rank 1) fcn))))
+      (history-traverse-dfs child (+ rank 1) fcn))))
 
-(provide make-history-node
-         get-node-config
-         get-child-nodes
-         make-history
-         add-history-node!
-         add-child-node!
-         traverse-history-bfs
-         traverse-history-dfs
+(provide history-node-make
+         history-node-config
+         history-node-get-children
+         history-create
+         history-node-add!
+         child-node-add!
+         history-traverse-bfs
+         history-traverse-dfs
  )
 
 ;; ===== Instruction

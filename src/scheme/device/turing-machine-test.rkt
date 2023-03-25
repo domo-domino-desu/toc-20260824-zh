@@ -81,6 +81,35 @@
 
 
 ;; ===== one step, one node tests
+(define history-tests
+  (test-suite
+   "History tests"
+  
+   (test-case
+    "Test building a history"
+    (let* ([tape0 (make-tape "a" "b" "B")]
+           [config0 (configurationstruct 0 tape0)]
+           [history (history-create config0)]
+           [tape1 (make-tape "x" "y" "z")]
+           [config1 (configurationstruct 0 tape1)]
+           [node1 (history-node-make config1)]
+           [tape2 (make-tape "m" "n")]
+           [config2 (configurationstruct 1 tape2)]
+           [node2 (history-node-make config2)])
+      (history-node-add! history node1)
+      (history-node-add! history node2)
+      ; (printf "~s\n" history)
+      (check-equal? (car history) config0)
+      (check-true (set-member? (cdr history) node1))
+      (printf "history=~a\n" (history-print history))
+      )
+    ) ;; end test-case
+   
+   )) ;; end history suite and tests
+
+
+
+;; ===== one step, one node tests
 (define one-step-one-node-tests
   (test-suite
    "One step for one node tests"
@@ -90,7 +119,7 @@
     (let* ([tape (make-tape "a" "b" "B")] ; curent token is "a", right tape is ("b" "B")
            [current-state 0]
            [config (configurationstruct current-state tape)]
-           [history-node (make-history config)]
+           [history-node (history-create config)]
            [delta-map (delta-map-make)])
       (delta-map-set! delta-map (list 0 "a") (list 1 "b"))
       (delta-map-set! delta-map (list 0 "EPS") (list 0 "b"))
@@ -104,6 +133,7 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-(run-tests parse-tests)
+; (run-tests parse-tests)
 ; (run-tests tm-transition-tests)
+(run-tests history-tests)
 ; (run-tests one-step-one-node-tests)

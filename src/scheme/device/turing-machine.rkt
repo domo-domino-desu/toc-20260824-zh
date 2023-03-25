@@ -48,15 +48,43 @@
       (let* ([state-number (configurationstruct-state config)]
              [state-string (string-append "q" (number->string state-number))]
              [tape (configurationstruct-tape config)]
-             [left-tape (list->string (get-tape-left tape))]
-             [current (string #\* (get-tape-current tape) #\*)]  ;; wrap *'s
-             [right-tape (list->string (get-tape-right tape))])
+             [left-tape (apply string-append (get-tape-left tape))]
+             [current (string-append "*" (get-tape-current tape) "*")]  ;; wrap in *'s
+             [right-tape (apply string-append (get-tape-right tape))])
         (string-append state-string ": " left-tape current right-tape))))
 
 (provide configurationstruct
          configurationstruct-state
          configurationstruct-tape
          configuration->string)
+
+;; ===== History
+
+(define (node->string node rank)
+  (printf "node->string  node=~s  rank=~s\n" node rank)
+  (let ([r (for/list ([i (in-range 0 (- rank 1))]) " |  ")]
+        [prefix (if (= rank 0) "" " +--")])
+    (printf "    r=~s\n" r)
+    (printf "    (history-node-config node)=~s\n" (history-node-config node))
+    (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
+    (apply string-append (append r
+                                 (list prefix (configuration->string (history-node-config node)))))
+    ))
+(define (node-print node rank)
+  ; (printf "node->string  node=~s  rank=~s\n" node rank)
+  (let ([result (for/list ([i (in-range (- rank 1))]) " |  ")]
+        [prefix (if (= rank 0) "" " +--")])
+    ;(printf "    result=~s\n" result)
+    ;(printf "    (history-node-config node)=~s\n" (history-node-config node))
+    ;(printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
+    (writeln (apply string-append (append result
+                                          (list prefix (configuration->string (history-node-config node))))))
+    ))
+
+(define (history-print h)
+  (history-traverse-dfs h 0 node-print))
+
+(provide history-print)
 
 ;; ===== Run
 
@@ -109,7 +137,7 @@
           (for ([next-action-and-state set-of-next-actions-and-states])
             (let ([next-action (first next-action-and-state)]
                   [next-state (second next-action-and-state)])
-              (cons (add-child-node! history-node (tm-transition tape next-action next-state))
+              (cons (child-node-add! history-node (tm-transition tape next-action next-state))
                     non-epsilon-nodes)))
           ; Take epsilon transitions
           ; add to the history a bunch of child nodes, one for each state in the epsilon-clousre
@@ -119,7 +147,7 @@
                    [tape (configurationstruct-tape config)]
                    [eps-states (hash-ref epsilon-closure current-state)])
               (for/list ([s eps-states])  
-                (add-child-node! history-node (configurationstruct s tape)))
+                (child-node-add! history-node (configurationstruct s tape)))
               )))
         )))
 

@@ -346,7 +346,7 @@
 ; no input  ->  machinestruct
 ; Create an empty machine.
 (define (machine-create)
-  (machinestruct '() (mutable-set) (make-hash)))
+  (machinestruct '() (mutable-set) (epsilon-map-make)))
 
 ; machinestruct, instruction  ->  machinestruct
 ; Add the instruction to the machine
@@ -362,7 +362,7 @@
 ; machinestruct, natural-number, natural-number  ->  machinestruct
 ; Add the key->value to the epsilon map 
 (define (machine-add-epsilon machine key value)
-  (hash-set! (machinestruct-epsilonmap machine) key value))
+  (epsilon-map-set! (machinestruct-epsilonmap machine) key value))
 
 ;; machinestruct -> string
 ;; Return string of the machine, for display or debugging
@@ -540,7 +540,7 @@
             (for ([accepting-state state-list])
               (machine-add-accepting-state machine accepting-state))]
           [(not (null? eps-pair))
-           (machine-add-epsilon machine eps-pair)]
+           (machine-add-epsilon machine (first eps-pair) (second eps-pair))]
         ; (printf "  parse: pdm=~s\n" pdm)))
     ))) machine)
   )

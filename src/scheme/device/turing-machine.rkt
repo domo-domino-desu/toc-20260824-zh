@@ -64,8 +64,8 @@
 ;; From the delta map, get a list of all the machine's states.
 ;; On the list are states used only in the output.
 (define (all-states-get delta-map)
-  (let ([input-states (map first (hash-keys d))]
-        [output-states (map second (hash-values d))])
+  (let ([input-states (map first (hash-keys delta-map))]
+        [output-states (map second (hash-values delta-map))])
     (sort (remove-duplicates (append input-states output-states)) <)))
 
 ;; For Turing machines, Delta maps Q x Sigma -> (Sigma union {L,R}) x Q.

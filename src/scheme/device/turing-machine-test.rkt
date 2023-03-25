@@ -11,10 +11,29 @@
    "parse tests"
   
    (test-case
-    "Test simple machine"
+    "Test machine instructions only"
     (let* ([INPUT-LINES (list "0 a R 1" "0 b R 1")]
            [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
-      (printf "tm=~a\n" (machine->string tm instruction->string))
+      ; (printf "tm=~a\n" (machine->string tm instruction->string))
+      (check-equal? (length (machinestruct-instructions tm)) 2)
+      ))
+   (test-case
+    "Test machine instructions and accepting states"
+    (let* ([INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1" "ACCEPTING 1 0")]
+           [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
+      ; (printf "tm=~a\n" (machine->string tm instruction->string))
+      (check-equal? (length (machinestruct-instructions tm)) 3)
+      (check-equal? (set-count (machinestruct-acceptingstates tm)) 2)
+      ))
+   (test-case
+    "Test machine instructions and accepting states and epsilon transitions"
+    (let* ([INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1" "ACCEPTING 1 0" "EPSILON 1 0" "EPSILON 2 1")]
+           [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
+      ; (printf "tm=~a\n" (machine->string tm instruction->string))
+      (check-equal? (length (machinestruct-instructions tm)) 3)
+      (check-equal? (set-count (machinestruct-acceptingstates tm)) 2)
+      (check-true (not (null? (member 1 (hash-keys (machinestruct-epsilonmap tm))))))
+      (check-true (not (null? (member 2 (hash-keys (machinestruct-epsilonmap tm))))))
       ))
    )) ;; end tape-making suite and tests
 
@@ -85,6 +104,6 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-; (run-tests parse-tests)
+(run-tests parse-tests)
 ; (run-tests tm-transition-tests)
-(run-tests one-step-one-node-tests)
+; (run-tests one-step-one-node-tests)

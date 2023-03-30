@@ -81,19 +81,32 @@
                                           (list prefix (configuration->string (history-node-config node))))))
     ))
 
-(define (history-print h)
-  (history-traverse-dfs h 0 node-print))
+(define (history-print h #:maxrank [maximumrank MAXIMUM-RANK])
+  (history-traverse-dfs h 0 node-print  #:maxrank maximumrank))
 
 (provide history-print)
 
 ;; ===== Run
 
+;; machinestruct -> string
+;; Return a representation of the Turing machine
+(define (tm->string tm)
+  (machine->string tm instruction->string))
+
 ;; delta-map -> list of integers
 ;; From the delta map, get a list of all the machine's states.
 ;; On the list are states used only in the output.
-(define (all-states-get delta-map)
+(define (all-states-get delta-map epsilon-map)
+  (printf "all-states-get delta-map=~s\n" delta-map)
   (let ([input-states (map first (hash-keys delta-map))]
-        [output-states (map second (hash-values delta-map))])
+        [delta-range-sets (hash-values delta-map)]
+        [epsilon-range-sets (hash-values epsilon-map)]
+        [output-states (mutable-set)])
+    (for* ([range-set delta-range-sets]
+           [tuple range-set])
+      (set-add! output-states (second tuple)))
+    (for ([range-set epsilon-range-sets])
+      (set-union! output-states range-set))
     (sort (remove-duplicates (append input-states output-states)) <)))
 
 ;; For Turing machines, Delta maps Q x Sigma -> (Sigma union {L,R}) x Q.
@@ -122,37 +135,47 @@
 ;; From a history node, find all descendents via the delta-map, then take epsilon closure.  Return list of
 ;;   the grandchild nodes, the ones post-epsilon moves.
 (define (one-step-one-node history-node delta-map epsilon-closure)
-  (let* ([config (car history-node)]
+  (printf "in one-step-one-node history-node=~s\n" history-node)
+  (let* ([config (history-node-config history-node)]
          [current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
          [current-token (get-tape-current tape)]
-         [set-of-next-actions-and-states (delta delta-map (list current-state current-token))]
+         [next (delta delta-map (list current-state current-token))] ; a set or DELTA-NOKEY
          [non-epsilon-nodes '()])
     (printf "in one-step-one-node delta-map=~s\n" delta-map)
     (printf "   (current-state current-token)=~s\n" (list current-state current-token))
     ; Apply delta-map to get single transition
-    (if (equal? set-of-next-actions-and-states DELTA-NOKEY)
+    (if (equal? next DELTA-NOKEY)
         '()
         (begin
-          (for ([next-action-and-state set-of-next-actions-and-states])
-            (let ([next-action (first next-action-and-state)]
-                  [next-state (second next-action-and-state)])
-              (cons (child-node-add! history-node (tm-transition tape next-action next-state))
-                    non-epsilon-nodes)))
+          ; Take all delta transitions
+          ; Add to the history-node a bunch of child nodes, one for each next state in the delta map
+          (for ([next-action-and-state next])
+            (printf "one-step-one-node next-action-and-state=~s\n" next-action-and-state)
+            (let* ([next-action (first next-action-and-state)]
+                   [next-state (second next-action-and-state)]
+                   [next-config (tm-transition tape next-action next-state)]
+                   [next-node (history-node-make next-config)])
+              (history-node-add! history-node next-node) 
+              (cons next-node non-epsilon-nodes)))
           ; Take epsilon transitions
-          ; add to the history a bunch of child nodes, one for each state in the epsilon-clousre
-          (for ([history-node non-epsilon-nodes])
-            (let* ([config (car history-node)]
+          ; add to the next-nodes from the prior step a bunch of child nodes, one for each state in the epsilon-clousre
+          (for ([next-node non-epsilon-nodes])
+            (let* ([config (history-node-config next-node)]
                    [current-state (configurationstruct-state config)]
                    [tape (configurationstruct-tape config)]
                    [eps-states (hash-ref epsilon-closure current-state)])
-              (for/list ([s eps-states])  
-                (child-node-add! history-node (configurationstruct s tape)))
+              (for/list ([s eps-states])
+                (let* ([epsilon-config (configurationstruct s tape)]
+                       [epsilon-node (history-node-make epsilon-config)])
+                  (history-node-add! next-node epsilon-node)
+                  epsilon-node)
               )))
-        )))
+        ))))
 
 (provide all-states-get
          tm->delta-map
+         tm->string
          tm-transition
          one-step-one-node)
 

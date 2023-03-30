@@ -2,6 +2,7 @@
 % the same \includefile{\asydir ...} call
 % It is relative to computability/src/ and it ends in a /.
 \renewcommand{\asydir}{complexity/asy/}
+\newcommand{\schemedir}{scheme/complexity/}
 
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as more important than gravity. Similarly, finding an algorithm that changes the time that it takes to solve a problem from $n^2$ to $n\cdot \lg n$ can make something easy that was previously not practical.\label{fig:WaterStrider}}]{complexity/pix/waterstrider.jpg}{Computational Complexity}%https://commons.wikimedia.org/wiki/Filefigure:Gerris_by_webrunner.JPG
 
@@ -1073,43 +1074,62 @@ Is there more to say?
 \end{credit}
 
 True, that is the essence.
-Nonetheless, experience shows that there are points about Big~$\bigOh$
+Nevertheless, experience shows that there are points about Big~$\bigOh$
 that can puzzle learners.
-Here we will elaborate on those.
+We will elaborate on those.
 
-The first is that Big~$\bigOh$ is for algorithms, not programs.
-Contrast these two
-Racket functions.
+The first point is that Big~$\bigOh$
+is not the right tool 
+for characterizing fine coding details.
+Contrast these Racket functions.
 \begin{center}\vspace{-2ex}
 \begin{minipage}[t]{0.4\linewidth}%
-\begin{lstlisting}
-(define (g0 n)
-  (for ([i '(0 1 2 3 4)])
-    (let ([x (* n n)])
-      (display (+ i x)) (newline))))
-\end{lstlisting}
+\lstinputlisting[firstline=2,lastline=5]{\schemedir g0-g1.rkt}
+% \begin{lstlisting}
+% (define (g0 n)
+%   (for ([i '(0 1 2 3 4)])
+%     (let ([x (* n n)])
+%       (display (+ i x)) (newline))))
+% \end{lstlisting}
 \end{minipage}%
 \hspace{0.075\linewidth}%
 \begin{minipage}[t]{0.4\linewidth}%
-\begin{lstlisting}
-(define (g1 n)
-  (let ([x (* n n)])
-    (for ([i '(0 1 2 3 4)])
-      (display (+ i x)) (newline))))
-\end{lstlisting}
+\lstinputlisting[firstline=7,lastline=10]{\schemedir g0-g1.rkt}
+% \begin{lstlisting}
+% (define (g1 n)
+%   (let ([x (* n n)])
+%     (for ([i '(0 1 2 3 4)])
+%       (display (+ i x)) (newline))))
+% \end{lstlisting}
 \end{minipage}%
 \end{center}
+They do the same thing.
+% \begin{center}\vspace{-2ex}
+% \begin{minipage}[t]{0.4\linewidth}%
+% \begin{lstlisting}
+% > (g0 6)
+% 36 37 38 39 40 
+% \end{lstlisting}
+% \end{minipage}%
+% \hspace{0.075\linewidth}%
+% \begin{minipage}[t]{0.4\linewidth}%
+% \begin{lstlisting}
+% > (g1 6)
+% 36 37 38 39 40 
+% \end{lstlisting}
+% \end{minipage}%
+% \end{center}
+But their runtime behavior is different.
 On the left \codeinline{g0}
 sets the local variable \codeinline{x} 
 inside the loop.
-That makes it
+That makes the code on the left
 \citetext{slower than the right by four assignments}{%
   Assuming that the compiler does not optimize it out of the loop.}.
-But Big~$\bigOh$ disregards this constant time difference.
-That is, Big~$\bigOh$ is not the right tool 
-for characterizing fine coding details.
+However, Big~$\bigOh$ disregards this constant time difference.
 Big~$\bigOh$ works at a higher level,
-such as for comparing running times among algorithms.
+so that it is good at comparing running times among algorithms but not
+so much for comparing running times among programs.
 
 That fits with our second point about Big~$\bigOh$.
 We use it to help pick the best algorithm, 
@@ -1360,15 +1380,38 @@ but whose behavior as a function of the bit size of the input is
 exponential is said to be 
 \definend{pseudopolynomial}.\index{pseudopolynomial}
 
-A fifth and final point about Big~$\bigOh\!$.
-When we are analyzing an algorithm
+A final point about Big~$\bigOh$. 
+When analyzing an algorithm
 we can consider the behavior that is the worst case 
-for any input of that size (as in \cref{def:TMTime}), 
-or the behavior that is the average over all inputs of that size.
+for any input of that size as in \cref{def:TMTime}, 
+or the behavior that is the average over all inputs of that size
+(worst-case analysis is much more common).
 For instance, the quicksort algorithm
 takes quadratic time $\bigOh(n^2)$ at worst
 but on average is $\bigOh(n\lg n)$.
-Note, though, that worst-case analysis is the most common.
+
+Related to that,
+imagine a machine with this runtime behavior, where $n$ is the length
+of its input.
+\begin{equation*}
+  f(n)=
+  \begin{cases}
+    n!      &\case{$n$ is a power of ten}  \\
+    n       &\case{otherwise}
+  \end{cases}
+\end{equation*}
+Almost always this machine runs in linear time but it runs in
+superexponential time for rare inputs (sometimes called ``black holes'').
+The definition gives that this machine runs in time $\bigOh(n!)$, 
+although it would be quite fast for most inputs.
+So the point is that
+usually algorithm analysis states a worst-case result, not just on
+a per-$n$ basis as in the prior paragraph but also across $n$'s,
+and that may not be an accurate guide to what you typically see when you run the
+algorithm at a terminal.\footnote{%
+  An example is that the simplex algorithm, which is very widely used
+  in linear optimization problems, runs in exponential time in the 
+  worst case but in practice seems to run in polynomial time.}
 
 
 
@@ -2592,11 +2635,11 @@ a cyclic path that includes each vertex once and only once.
 \end{problem}
 %</problem:HamiltonianProblem>
 
-This is stated as a type of problem called a decision problem 
-because it asks for a `yes' or `no' answer.
-% In this section we will see a
-% a variety of types of problems.
-The next section will say more about problem types. 
+% This is stated as a type of problem called a decision problem 
+% because it asks for a `yes' or `no' answer.
+% % In this section we will see a
+% % a variety of types of problems.
+% The next section will say more about problem types. 
 
 %<*discussion:KnightsTouri>
 A special case
@@ -3373,7 +3416,7 @@ these are said to be `feasible' points.
 \begin{center}
    \includegraphics{\complexityproblemsdir problems44.pdf}
 \end{center}
-\noindent The level lines of~$F$ show that the maximum is 
+\noindent The level lines of~$F$ indicate that the maximum is 
 at $(x_0,x_1)=(3,4)$.
 \end{example}
 %</ex:LinearProgramming>
@@ -3572,7 +3615,7 @@ their opinions have value, nonetheless they can be wrong.
 People producing a result that gainsays established orthodoxy
 has happened before and will happen again.
 In short,
-one correct proof outweighs any number of expert opinions.
+one correct proof outweighs any number of opinions.
 
   
 % ------------------

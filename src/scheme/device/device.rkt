@@ -415,22 +415,26 @@
     (set-add! (cdr existing-node) child-node)
     child-node))
 
-(define (history-traverse-bfs level level-no fcn)
-  (let ([next-level '()])
-    (for ([node level])
-      (fcn node level-no)
-      (for ([child-node (history-node-get-children node)])
-        (cons child-node next-level)
-        ))
-    (when (not (null? next-level))
-      (history-traverse-bfs next-level (+ 1 level-no) fcn))))
+;; Default for the deepest a history traversal will go
+(define MAXIMUM-RANK 100)
 
-(define (history-traverse-dfs node rank fcn)
-  (fcn node rank)
-  (let ([children (history-node-get-children node)])
-    (for ([child children])
-      ;; (fcn child rank)
-      (history-traverse-dfs child (+ rank 1) fcn))))
+(define (history-traverse-bfs level rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+  (when (< rank maximumrank)
+    (let ([next-level '()])
+      (for ([node level])
+        (fcn node rank)
+        (for ([child-node (history-node-get-children node)])
+          (cons child-node next-level)
+          ))
+      (when (not (null? next-level))
+        (history-traverse-bfs next-level (+ 1 rank) fcn)))))
+
+(define (history-traverse-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+  (when (< rank maximumrank)
+    (fcn node rank)
+    (let ([children (history-node-get-children node)])
+      (for ([child children])
+        (history-traverse-dfs child (+ rank 1) fcn)))))
 
 (provide history-node-make
          history-node-config
@@ -438,6 +442,7 @@
          history-create
          history-node-add!
          child-node-add!
+         MAXIMUM-RANK
          history-traverse-bfs
          history-traverse-dfs
  )
@@ -446,7 +451,7 @@
 (struct dummyinstructionstruct (presentstate presenttoken nexttoken nextstate))
 
 
-;; ===== parsing
+;; ===== Parsing
 
 ;; A line with only comment, using # as a comment character
 (define EMPTY-LINE-REGEXP #px"^\\s*(\\#.*)?$")

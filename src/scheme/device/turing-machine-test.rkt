@@ -38,6 +38,24 @@
    )) ;; end tape-making suite and tests
 
 
+
+;; ===== tm->string tests
+(define tm->string-tests
+  (test-suite
+   "tm->string tests"
+  
+   (test-case
+    "Test simple cases"
+    (let* ([INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1" "ACCEPTING 1 0" "EPSILON 1 0" "EPSILON 2 1")]
+           [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
+      (check-true (string? (tm->string tm)))
+      ;(printf "turing machine=~a\n" (tm->string tm))
+    )
+    ) ;; end test-case
+   
+   )) ;; end tm->string suite and tests
+
+
 ;; ===== tm-transition tests
 (define tm-transition-tests
   (test-suite
@@ -80,7 +98,7 @@
    )) ;; end tape-making suite and tests
 
 
-;; ===== one step, one node tests
+;; ===== history tests
 (define history-tests
   (test-suite
    "History tests"
@@ -108,7 +126,6 @@
    )) ;; end history suite and tests
 
 
-
 ;; ===== one step, one node tests
 (define one-step-one-node-tests
   (test-suite
@@ -120,12 +137,18 @@
            [current-state 0]
            [config (configurationstruct current-state tape)]
            [history-node (history-create config)]
-           [delta-map (delta-map-make)])
-      (delta-map-set! delta-map (list 0 "a") (list 1 "b"))
-      (delta-map-set! delta-map (list 0 "EPS") (list 0 "b"))
-      (delta-map-set! delta-map (list 0 "b") (list 1 "a"))
-      (delta-map-set! delta-map (list 1 "a") (list 2 "b"))
-      (printf "delta-map=~s\n" delta-map)
+           [INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1" "ACCEPTING 1 0" "EPSILON 1 0" "EPSILON 2 1")]
+           [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
+           [delta-map (tm->delta-map tm)]
+           [test (printf "got here ~s\n" 9)]
+           [all-states (all-states-get delta-map)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)])
+      (printf "turing machine=~a\n" (tm->string tm))
+      (printf "delta-map=~s\n" (delta-map->string delta-map))
+      (printf "all-states=~s\n" (set->string all-states))
+      (printf "epsilon-map=~s\n" (epsilon-map->string epsilon-map))
+      (printf "epsilon-closure=~s\n" (epsilon-closure->string epsilon-closure))
     )
     ) ;; end test-case
    
@@ -134,6 +157,7 @@
 
 ;; ===== Run the tests; comment out ones not being worked-on
 ; (run-tests parse-tests)
+; (run-tests tm->string-tests)
 ; (run-tests tm-transition-tests)
-(run-tests history-tests)
-; (run-tests one-step-one-node-tests)
+; (run-tests history-tests)
+(run-tests one-step-one-node-tests)

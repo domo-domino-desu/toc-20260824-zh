@@ -28,6 +28,13 @@
          EPSILON)
 
 
+;; set -> string
+;; Show a set in a readable way
+;; The optional argument allows you to format the elements 
+(define (set->string s [elet->string (lambda (x) (format "~a" x))])
+  (string-join (map elet->string (set->list s)) #:before-first "{ " #:after-last " }"))
+
+
 ;; ===== POWER-MAP
 ;; All three of delta maps, epsilon maps, and epsilon closure maps send keys to sets of values.
 
@@ -50,12 +57,6 @@
 ;; Return value associated with k in the power-map, or POWER_MAP-NOKEY
 (define (power-map-get power-map k [error POWER-MAP-NOKEY])
   (hash-ref power-map k (lambda () error)))
-
-;; set -> string
-;; Show a set in a readable way
-;; The optional argument allows you to format the elements 
-(define (set->string s [elet->string (lambda (x) (format "~a" x))])
-  (string-join (map elet->string (set->list s)) #:before-first "{ " #:after-last " }"))
 
 ;; hash -> string
 ;; Show a power-map in a readable way
@@ -183,8 +184,9 @@
 ;; A tape is a struct.
 (struct tapestruct (left current right) #:transparent #:mutable)
 
-; list of strings  ->  tape structure
-; Make a tape structure. The I/O head points to the first token (or BLANK)
+; list of strings  ->  tapestruct
+; Make a tape structure. If there are tape tokens then the I/O head points to the first one
+; while the rest are on the right tape.  Otherwise the I/O head points to BLANK.
 (define (make-tape . tape-tokens)
   ; (printf "make-tape: tape-tokens are ~s\n" tape-tokens)
   (let ([tape (tapestruct '() BLANK '())])
@@ -273,6 +275,29 @@
     (set-tape! tape tape-left new-tape-current tape-right)
     ))
 
+; tapestruct -> string
+; Show the tape with characters space-separated.  The I/O head's location is surrounded by *'s.
+(define (tape->string tape
+                      #:show-current-blank [show-current-blank #t] ; if current is " " then show B
+                      #:show-all-blank [show-all-blank #f])   ; translate all " "'s to B's
+  (let* ([left-string (apply string-append (tapestruct-left tape))]
+         [right-string (apply string-append (tapestruct-right tape))]
+         [current-string (tapestruct-current tape)])
+    (cond
+      [show-current-blank
+       (when (equal? current-string " ")
+         (set! current-string BLANK))]
+      [show-all-blank
+       (set! left-string (apply string-append (map (lambda (x) (if (equal? x " ") BLANK x))
+                                                   (tapestruct-left tape))))
+       (set! right-string (apply string-append (map (lambda (x) (if (equal? x " ") BLANK x))
+                                                    (tapestruct-right tape))))
+       (when (equal? current-string " ")
+         (set! current-string BLANK))])
+    (string-append left-string
+                   (string-append "*" current-string "*")
+                   right-string)))
+
 (provide tapestruct
          BLANK
          make-tape
@@ -285,7 +310,8 @@
          trim-tape
          move-head-left
          move-head-right
-         change-head-token)
+         change-head-token
+         tape->string)
 
 
 ;; ===== stack
@@ -418,7 +444,7 @@
 ;; Default for the deepest a history traversal will go
 (define MAXIMUM-RANK 100)
 
-(define (history-traverse-bfs level rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+(define (history-traverse-bfs-helper level rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
   (when (< rank maximumrank)
     (let ([next-level '()])
       (for ([node level])
@@ -429,12 +455,16 @@
       (when (not (null? next-level))
         (history-traverse-bfs next-level (+ 1 rank) fcn)))))
 
+(define (history-traverse-bfs node fcn #:maxrank [maximumrank MAXIMUM-RANK])
+  (history-traverse-bfs [node] 0 fcn #:maximumrank maximumrank))
+
 (define (history-traverse-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
   (when (< rank maximumrank)
     (fcn node rank)
     (let ([children (history-node-get-children node)])
       (for ([child children])
         (history-traverse-dfs child (+ rank 1) fcn)))))
+
 
 (provide history-node-make
          history-node-config

@@ -155,27 +155,7 @@
       (check-true (string? (delta-map->string delta-map)))
       )
     );; end test-case
-  
-   (test-case
-    "Test get-states function"
-    (let ([delta-map (delta-map-make)]
-          [input (list 0 "a")]
-          [other-input (list 3 "b")]
-          [output (list "z" 1)]
-          [other-output (list "y" 1)])
-      (delta-map-set! delta-map input output)
-      (delta-map-set! delta-map other-input other-output)
-      ; (printf "get-states: ~a\n" (get-states delta-map))
-      (check-true (list? (get-states delta-map)))
-      (check-true (list? (member 0 (get-states delta-map))))
-      (check-true (list? (member 3 (get-states delta-map))))
-      )
-    (let ([delta-map (delta-map-make)])
-      ; (printf "get-states: ~s\n" (get-states delta-map))
-      (check-true (null? (get-states delta-map)))
-      )
-    );; end test-case
-  
+    
    )) ;; end DELTA-tests suite and tests
 
 
@@ -322,6 +302,25 @@
       (check-equal? (get-tape-right tape) '())
       (check-equal? (get-tape-left tape) '())
       (check-equal? (get-tape-current tape) "a")
+      )
+    );; end test-case
+  
+   (test-case
+    "Test tape->string"
+    (let ([tape (make-tape "a" "b" "B")])
+      (check-true (string? (tape->string tape)))
+      ; (printf "tape: ~s\n" (tape->string tape))
+      (check-equal? (tape->string tape) "*a*bB")
+      )
+    (let ([tape (make-tape)])
+      (check-true (string? (tape->string tape)))
+      ; (printf "tape: ~s\n" (tape->string tape))
+      (check-equal? (tape->string tape) "*B*")
+      )
+    (let ([tape (make-tape "a")])
+      (check-true (string? (tape->string tape)))
+      ; (printf "tape: ~s\n" (tape->string tape))
+      (check-equal? (tape->string tape) "*a*")
       )
     );; end test-case
   
@@ -484,7 +483,7 @@
    (test-case
     "Test making a history"
     (let* ([config (list "a" "b")]
-           [history (make-history config)])
+           [history (history-create config)])
       ; (printf "~s\n" history)
       (check-equal? (car history) config)
       ))
@@ -492,10 +491,10 @@
    (test-case
     "Test building a history"
     (let* ([config (list "a" "b")]
-           [history (make-history config)]
+           [history (history-create config)]
            [new-config (list "c" "d")]
-           [new-history-node (make-history-node new-config)])
-      (add-history-node! history new-history-node)
+           [new-history-node (history-node-make new-config)])
+      (history-node-add! history new-history-node)
       (printf "~s\n" history)
       (check-equal? (car history) config)
       (check-true (set-member? (cdr history) new-history-node))
@@ -504,28 +503,28 @@
    (test-case
     "Test building a history"
     (let* ([config (list 1)]
-           [history (make-history config)]
+           [history (history-create config)]
            ; rank 1
-           [node-2 (add-history-node! history (make-history-node '(2)))]
-           [node-3 (add-history-node! history (make-history-node '(3)))]
+           [node-2 (history-node-add! history (history-node-make '(2)))]
+           [node-3 (history-node-add! history (history-node-make '(3)))]
            ; rank 2
-           [node-4 (add-history-node! node-2 (make-history-node '(4)))]
-           [node-5 (add-history-node! node-2 (make-history-node '(5)))]
-           [node-6 (add-history-node! node-2 (make-history-node '(6)))]
-           [node-7 (add-history-node! node-3 (make-history-node '(7)))]
+           [node-4 (history-node-add! node-2 (history-node-make '(4)))]
+           [node-5 (history-node-add! node-2 (history-node-make '(5)))]
+           [node-6 (history-node-add! node-2 (history-node-make '(6)))]
+           [node-7 (history-node-add! node-3 (history-node-make '(7)))]
            ; rank 3
-           [node-8 (add-history-node! node-4 (make-history-node '(8)))]
-           [node-9 (add-history-node! node-4 (make-history-node '(9)))]
-           [node-10 (add-history-node! node-5 (make-history-node '(10)))]
-           [node-11 (add-history-node! node-6 (make-history-node '(11)))]
-           [node-12 (add-history-node! node-7 (make-history-node '(12)))]
-           [node-13 (add-history-node! node-7 (make-history-node '(13)))]
+           [node-8 (history-node-add! node-4 (history-node-make '(8)))]
+           [node-9 (history-node-add! node-4 (history-node-make '(9)))]
+           [node-10 (history-node-add! node-5 (history-node-make '(10)))]
+           [node-11 (history-node-add! node-6 (history-node-make '(11)))]
+           [node-12 (history-node-add! node-7 (history-node-make '(12)))]
+           [node-13 (history-node-add! node-7 (history-node-make '(13)))]
            ; rank 4
-           [node-14 (add-history-node! node-11 (make-history-node '(14)))]
-           [node-15 (add-history-node! node-13 (make-history-node '(15)))]
+           [node-14 (history-node-add! node-11 (history-node-make '(14)))]
+           [node-15 (history-node-add! node-13 (history-node-make '(15)))]
            )
       (printf "history: ~s\n" history)
-      (traverse-history-dfs history 0 (lambda (x y) (printf "~a~s\n" (string-pad y) (caar x))))
+      (history-traverse-dfs history 0 (lambda (x y) (printf "~a~s\n" (string-pad y) (caar x))))
 ;      (check-equal? (car history) config)
 ;      (check-true (set-member? (cdr history) new-history-node))
       ))
@@ -612,8 +611,8 @@
 ; (run-tests power-map-tests)
 ; (run-tests delta-tests)
 ; (run-tests epsilon-tests)
-;(run-tests tape-tests)
+(run-tests tape-tests)
 ;(run-tests stack-tests)
 ; (run-tests history-tests)
 ; (run-tests machine-tests)
-(run-tests parse-tests)
+; (run-tests parse-tests)

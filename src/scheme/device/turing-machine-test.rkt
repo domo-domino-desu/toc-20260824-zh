@@ -5,6 +5,38 @@
 (require rackunit/text-ui) ; to run the test suites
 
 
+;; ===== instruction tests
+(define instruction-tests
+  (test-suite
+   "instruction tests"
+  
+   (test-case
+    "Test machine instructions simple"
+    (let* ([ps 4]
+           [pt "c"]
+           [nt "d"]
+           [ns 5]
+           [i (instructionstruct ps pt nt ns)])
+      (check-equal? (instructionstruct-presentstate i) ps)
+      (check-equal? (instructionstruct-presenttoken i) pt)
+      (check-equal? (instructionstruct-nexttoken i) nt)
+      (check-equal? (instructionstruct-nextstate i) ns)
+      )) ; end test-case and let*
+   (test-case
+    "Test string conversion"
+    (let* ([ps 4]
+           [pt "c"]
+           [nt "d"]
+           [ns 5]
+           [i (instructionstruct ps pt nt ns)])
+      ; (printf "instruction->string=~s\n" (instruction->string i))
+      (check-true (string? (instruction->string i)))
+      )) ; end test-case and let*
+   )) ;; end instruction suite and tests
+
+
+
+
 ;; ===== parse tests
 (define parse-tests
   (test-suite
@@ -141,14 +173,16 @@
            [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
            [delta-map (tm->delta-map tm)]
            [test (printf "got here ~s\n" 9)]
-           [all-states (all-states-get delta-map)]
            [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
            [epsilon-closure (epsilon-closure-make epsilon-map all-states)])
       (printf "turing machine=~a\n" (tm->string tm))
       (printf "delta-map=~s\n" (delta-map->string delta-map))
-      (printf "all-states=~s\n" (set->string all-states))
       (printf "epsilon-map=~s\n" (epsilon-map->string epsilon-map))
+      (printf "all-states=~s\n" (set->string all-states))
       (printf "epsilon-closure=~s\n" (epsilon-closure->string epsilon-closure))
+      (one-step-one-node history-node delta-map epsilon-closure)
+      (printf "after: node=~s\n" history-node)
     )
     ) ;; end test-case
    
@@ -156,8 +190,9 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
+(run-tests instruction-tests)
 ; (run-tests parse-tests)
 ; (run-tests tm->string-tests)
 ; (run-tests tm-transition-tests)
 ; (run-tests history-tests)
-(run-tests one-step-one-node-tests)
+; (run-tests one-step-one-node-tests)

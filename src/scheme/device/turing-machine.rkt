@@ -32,6 +32,10 @@
     (string-join (list presentstate-string presenttoken nexttoken nextstate-string))))
 
 (provide instructionstruct
+         instructionstruct-presentstate
+         instructionstruct-presenttoken
+         instructionstruct-nexttoken
+         instructionstruct-nextstate
          instruction->string)
 
 ;; ===== Configuration
@@ -60,16 +64,6 @@
 
 ;; ===== History
 
-(define (node->string node rank)
-  (printf "node->string  node=~s  rank=~s\n" node rank)
-  (let ([r (for/list ([i (in-range 0 (- rank 1))]) " |  ")]
-        [prefix (if (= rank 0) "" " +--")])
-    (printf "    r=~s\n" r)
-    (printf "    (history-node-config node)=~s\n" (history-node-config node))
-    (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
-    (apply string-append (append r
-                                 (list prefix (configuration->string (history-node-config node)))))
-    ))
 (define (node-print node rank)
   ; (printf "node->string  node=~s  rank=~s\n" node rank)
   (let ([result (for/list ([i (in-range (- rank 1))]) " |  ")]
@@ -84,6 +78,20 @@
 (define (history-print h #:maxrank [maximumrank MAXIMUM-RANK])
   (history-traverse-dfs h 0 node-print  #:maxrank maximumrank))
 
+(define (node->string node rank)
+  ; (printf "node->string  node=~s  rank=~s\n" node rank)
+  (let ([r (for/list ([i (in-range 0 (- rank 1))]) " |  ")]
+        [prefix (if (= rank 0) "" " +--")])
+    ; (printf "    r=~s\n" r)
+    ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
+    ; (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
+    (apply string-append (append r
+                                 (list prefix (configuration->string (history-node-config node)))))
+    ))
+(define (history->string history-node #:maxrank [maximumrank MAXIMUM-RANK])
+  (let ([h-string ""])
+    (history-traverse-dfs history-node 0 node->string  #:maxrank maximumrank)))
+
 (provide history-print)
 
 ;; ===== Run
@@ -97,7 +105,7 @@
 ;; From the delta map, get a list of all the machine's states.
 ;; On the list are states used only in the output.
 (define (all-states-get delta-map epsilon-map)
-  (printf "all-states-get delta-map=~s\n" delta-map)
+  (printf "all-states-get delta-map=~s\n" (delta-map->string delta-map))
   (let ([input-states (map first (hash-keys delta-map))]
         [delta-range-sets (hash-values delta-map)]
         [epsilon-range-sets (hash-values epsilon-map)]
@@ -105,9 +113,12 @@
     (for* ([range-set delta-range-sets]
            [tuple range-set])
       (set-add! output-states (second tuple)))
+    (printf "all-states-get output-states=~s\n" (set->string output-states))
     (for ([range-set epsilon-range-sets])
+      (printf "    all-states range-set=~s\n" (set->string range-set))
       (set-union! output-states range-set))
-    (sort (remove-duplicates (append input-states output-states)) <)))
+      (printf "        now: output-states=~s\n" (set->string output-states))
+    (sort (remove-duplicates (append input-states (set->list output-states))) <)))
 
 ;; For Turing machines, Delta maps Q x Sigma -> (Sigma union {L,R}) x Q.
 (define (tm->delta-map tm)
@@ -161,6 +172,7 @@
           ; Take epsilon transitions
           ; add to the next-nodes from the prior step a bunch of child nodes, one for each state in the epsilon-clousre
           (for ([next-node non-epsilon-nodes])
+            (printf "one-step-one-node next-node=~s\n" next-node)
             (let* ([config (history-node-config next-node)]
                    [current-state (configurationstruct-state config)]
                    [tape (configurationstruct-tape config)]
@@ -249,7 +261,8 @@
   ; (printf "INPUT-LINES=~s\n" INPUT-LINES)
   (let* ([tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
          [delta-map (tm->delta-map tm)]
-         [epsilon-closure (epsilon-closure-make (machinestruct-epsilonmap tm) (all-states-get delta-map))])
+         [epsilon-map (machinestruct-epsilonmap tm)]
+         [epsilon-closure (epsilon-closure-make epsilon-map (all-states-get delta-map epsilon-map))])
 ;          [history (yield-star tm INITIAL-TAPE #:silent #t)])
 ;     (when (not (silent?))
 ;       (writeln (string-join (history->string-list history) "\n")))

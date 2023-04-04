@@ -320,8 +320,37 @@
     (let ([tape (make-tape "a")])
       (check-true (string? (tape->string tape)))
       ; (printf "tape: ~s\n" (tape->string tape))
-      (check-equal? (tape->string tape) "*a*")
-      )
+      (check-equal? (tape->string tape) "*a*"))
+    (let* ([tape (make-tape)]
+           [tape (set-tape! tape '("a" " " "b") " " '("c" " "))])
+      (check-true (string? (tape->string tape)))
+      (check-equal? (tape->string tape) "a b* *c ")
+      (check-equal? (tape->string tape #:show-current-blank #t) "a b*B*c ")      
+      (check-equal? (tape->string tape #:show-all-blank #t) "aBb*B*cB"))
+    (let* ([tape (make-tape)]
+           [tape (set-tape! tape '() " " '("c" " "))])
+      (check-true (string? (tape->string tape)))
+      (check-equal? (tape->string tape) "* *c ")
+      (check-equal? (tape->string tape #:show-current-blank #t) "*B*c ")      
+      (check-equal? (tape->string tape #:show-all-blank #t) "*B*cB"))
+    (let* ([tape (make-tape)]
+           [tape (set-tape! tape '("a" " " "b") " " '())])
+      (check-true (string? (tape->string tape)))
+      (check-equal? (tape->string tape) "a b* *")
+      (check-equal? (tape->string tape #:show-current-blank #t) "a b*B*")      
+      (check-equal? (tape->string tape #:show-all-blank #t) "aBb*B*"))
+    (let* ([tape (make-tape)]
+           [tape (set-tape! tape '() " " '())])
+      (check-true (string? (tape->string tape)))
+      (check-equal? (tape->string tape) "* *")
+      (check-equal? (tape->string tape #:show-current-blank #t) "*B*")      
+      (check-equal? (tape->string tape #:show-all-blank #t) "*B*"))
+    (let* ([tape (make-tape)]
+           [tape (set-tape! tape '("a" " " "b") "d" '("c" " "))])
+      (check-true (string? (tape->string tape)))
+      (check-equal? (tape->string tape) "a b*d*c ")
+      (check-equal? (tape->string tape #:show-current-blank #t) "a b*d*c ")      
+      (check-equal? (tape->string tape #:show-all-blank #t) "aBb*d*cB"))
     );; end test-case
   
    (test-case

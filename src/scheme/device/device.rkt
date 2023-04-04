@@ -199,7 +199,9 @@
 ;; Set the tape to have the given left, current, and right
 (define (set-tape! tape left current right)
   (set-tapestruct-left! tape left)
-  (set-tapestruct-current! tape current)
+  (if (equal? current "")
+        (set-tapestruct-current! tape BLANK)
+        (set-tapestruct-current! tape current))
   (set-tapestruct-right! tape right)
   tape)
 
@@ -278,7 +280,7 @@
 ; tapestruct -> string
 ; Show the tape with characters space-separated.  The I/O head's location is surrounded by *'s.
 (define (tape->string tape
-                      #:show-current-blank [show-current-blank #t] ; if current is " " then show B
+                      #:show-current-blank [show-current-blank #f] ; if current is " " then show B
                       #:show-all-blank [show-all-blank #f])   ; translate all " "'s to B's
   (let* ([left-string (apply string-append (tapestruct-left tape))]
          [right-string (apply string-append (tapestruct-right tape))]
@@ -458,12 +460,14 @@
 (define (history-traverse-bfs node fcn #:maxrank [maximumrank MAXIMUM-RANK])
   (history-traverse-bfs [node] 0 fcn #:maximumrank maximumrank))
 
-(define (history-traverse-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+(define (history-traverse-dfs node rank fcn s #:maxrank [maximumrank MAXIMUM-RANK])
+  (printf "history-traverse-dfs: node ~s  rank=~s\n" node rank)
   (when (< rank maximumrank)
-    (fcn node rank)
     (let ([children (history-node-get-children node)])
       (for ([child children])
-        (history-traverse-dfs child (+ rank 1) fcn)))))
+        (printf "   child is ~s\n" child)
+        (history-traverse-dfs child (+ rank 1) (set! s (string-append s (fcn node rank))) fcn))
+      s)))
 
 
 (provide history-node-make

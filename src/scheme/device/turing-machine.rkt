@@ -43,7 +43,9 @@
 
 ;; configuration-> string
 ;; Return a string representing the tape, for output and debugging
-(define (configuration->string config)
+(define (configuration->string config
+                               #:show-current-blank [show-current-blank #f] ; on tape if current is " " then show B
+                               #:show-all-blank [show-all-blank #f])   ; on tape show all " "'s to B's
   (if (not (configurationstruct? config))
       (cond
         [(equal? config HALT) "Halt"]
@@ -51,11 +53,10 @@
         [else "unknown config"])
       (let* ([state-number (configurationstruct-state config)]
              [state-string (string-append "q" (number->string state-number))]
-             [tape (configurationstruct-tape config)]
-             [left-tape (apply string-append (get-tape-left tape))]
-             [current (string-append "*" (get-tape-current tape) "*")]  ;; wrap in *'s
-             [right-tape (apply string-append (get-tape-right tape))])
-        (string-append state-string ": " left-tape current right-tape))))
+             [tape (configurationstruct-tape config)])
+        (string-append state-string ": " (tape->string tape
+                                                       #:show-current-blank show-current-blank
+                                                       #:show-all-blank show-all-blank)))))
 
 (provide configurationstruct
          configurationstruct-state
@@ -63,37 +64,57 @@
          configuration->string)
 
 ;; ===== History
-
-(define (node-print node rank)
-  ; (printf "node->string  node=~s  rank=~s\n" node rank)
-  (let ([result (for/list ([i (in-range (- rank 1))]) " |  ")]
-        [prefix (if (= rank 0) "" " +--")])
-    ;(printf "    result=~s\n" result)
-    ;(printf "    (history-node-config node)=~s\n" (history-node-config node))
-    ;(printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
-    (writeln (apply string-append (append result
-                                          (list prefix (configuration->string (history-node-config node))))))
-    ))
-
-(define (history-print h #:maxrank [maximumrank MAXIMUM-RANK])
-  (history-traverse-dfs h 0 node-print  #:maxrank maximumrank))
-
 (define (node->string node rank)
-  ; (printf "node->string  node=~s  rank=~s\n" node rank)
-  (let ([r (for/list ([i (in-range 0 (- rank 1))]) " |  ")]
+  (printf "node->string  node=~s  rank=~s\n" node rank)
+  (let ([r (for/list ([i (in-range 0 rank)]) " |  ")]
         [prefix (if (= rank 0) "" " +--")])
-    ; (printf "    r=~s\n" r)
+    (printf "    r=~s\n" r)
     ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
-    ; (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
+    (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
     (apply string-append (append r
                                  (list prefix (configuration->string (history-node-config node)))))
     ))
+
 (define (history->string history-node #:maxrank [maximumrank MAXIMUM-RANK])
   (let ([h-string ""])
-    (history-traverse-dfs history-node 0 node->string  #:maxrank maximumrank)))
+    (history-traverse-dfs history-node 0 node->string h-string)))
 
-(provide history-print)
+(define (history-print h #:maxrank [maximumrank MAXIMUM-RANK])
+  (printf "~a\n" (history->string h #:maxrank maximumrank)))
 
+(define ACCUMULATOR '())
+(define (history->s history #:maxrank [maximumrank MAXIMUM-RANK])
+  (define (node->s node rank)
+   (printf "    node->s  node=~s  rank=~s\n" (configuration->string (history-node-config node)) rank)
+   (let ([r (for/list ([i (in-range 0 rank)]) " |  ")]
+          [prefix (if (= rank 0) "" " +--")])
+     ; (printf "    r=~s\n" r)
+     ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
+     ; (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
+     (apply string-append (append r
+                                 (list prefix (configuration->string (history-node-config node)))))
+     ))
+  (define (h->s node rank #:maxrank [maximumrank MAXIMUM-RANK])
+    ;(printf "  h->s: node ~s  rank=~s\n    accumulator=~s\n"
+    ;        (configuration->string (history-node-config node)) rank accumulator)
+    (when (< rank maximumrank)
+      (let ([children (history-node-get-children node)])
+        (for ([child children])
+          (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
+          (set! ACCUMULATOR (cons (node->s child (+ rank 1)) ACCUMULATOR))
+          (h->s child (+ rank 1 ) #:maxrank maximumrank)))))
+  
+    (set! ACCUMULATOR (list (node->s history 0)))
+    (h->s history 0 #:maxrank maximumrank)
+    (string-join (reverse ACCUMULATOR) "\n"))
+  
+  
+
+(provide history->string
+         history->s
+         history-print)
+
+  
 ;; ===== Run
 
 ;; machinestruct -> string

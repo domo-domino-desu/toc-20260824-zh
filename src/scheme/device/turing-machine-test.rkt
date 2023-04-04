@@ -36,6 +36,41 @@
 
 
 
+;; ===== configuration tests
+(define configuration-tests
+  (test-suite
+   "configuration tests"
+  
+   (test-case
+    "Test machine configuration simple"
+    (let* ([s 4]
+           [tape (make-tape "a" "b" "B")]
+           [c (configurationstruct s tape)])
+      (check-equal? (configurationstruct-state c) s)
+      (check-equal? (configurationstruct-tape c) tape)
+      )) ; end test-case and let*
+   (test-case
+    "Test string conversion"
+    (let* ([s 0]
+           [tape (make-tape)]
+           [c (configurationstruct s tape)])
+      (set-tape! tape '("a" "b") "c" '("d" "e"))
+      ; (printf "configuration->string=~s\n" (configuration->string c))
+      (check-true (string? (configuration->string c)))
+      (check-equal? (configuration->string c) "q0: ab*c*de")
+      (check-equal? (configuration->string c #:show-current-blank #t) "q0: ab*c*de")
+      (check-equal? (configuration->string c #:show-all-blank #t) "q0: ab*c*de")
+      ; try with some blanks so options do something
+      (set-tape! tape '("a" " ") " " '(" " "e"))
+      (check-true (string? (configuration->string c)))
+      (check-equal? (configuration->string c) "q0: a * * e")
+      (check-equal? (configuration->string c #:show-current-blank #t) "q0: a *B* e")
+      (check-equal? (configuration->string c #:show-all-blank #t) "q0: aB*B*Be")
+      )) ; end test-case and let*
+   )) ;; end instruction suite and tests
+
+
+
 
 ;; ===== parse tests
 (define parse-tests
@@ -135,25 +170,64 @@
   (test-suite
    "History tests"
   
+;   (test-case
+;    "Test building a history"
+;    (let* ([tape0 (make-tape "a" "b" "B")]
+;           [config0 (configurationstruct 0 tape0)]
+;           [history (history-create config0)]
+;           [tape1 (make-tape "x" "y" "z")]
+;           [config1 (configurationstruct 0 tape1)]
+;           [node1 (history-node-make config1)]
+;           [tape2 (make-tape "m" "n")]
+;           [config2 (configurationstruct 1 tape2)]
+;           [node2 (history-node-make config2)])
+;      (history-node-add! history node1)
+;      (history-node-add! history node2)
+;      ; (printf "~s\n" history)
+;      (check-equal? (car history) config0)
+;      (check-true (set-member? (cdr history) node1))
+;      (printf "history=~a\n" (history-print history))
+;      )
+;    ) ;; end test-case
+  
    (test-case
-    "Test building a history"
-    (let* ([tape0 (make-tape "a" "b" "B")]
-           [config0 (configurationstruct 0 tape0)]
+    "Test machine history simple"
+    (let* ([s0 0]
+           [tape0 (make-tape)]
+           [config0 (configurationstruct s0 tape0)]
+           [s1 1]
+           [tape1 (make-tape)]
+           [config1 (configurationstruct s1 tape1)]
+           [s2 2]
+           [tape2 (make-tape)]
+           [config2 (configurationstruct s2 tape2)]
            [history (history-create config0)]
-           [tape1 (make-tape "x" "y" "z")]
-           [config1 (configurationstruct 0 tape1)]
-           [node1 (history-node-make config1)]
-           [tape2 (make-tape "m" "n")]
-           [config2 (configurationstruct 1 tape2)]
-           [node2 (history-node-make config2)])
-      (history-node-add! history node1)
-      (history-node-add! history node2)
+           [history-node1 (history-node-make config1)]
+           [history-node2 (history-node-make config2)])
+      (history-node-add! history history-node1)
+      (history-node-add! history history-node2)
       ; (printf "~s\n" history)
-      (check-equal? (car history) config0)
-      (check-true (set-member? (cdr history) node1))
-      (printf "history=~a\n" (history-print history))
-      )
-    ) ;; end test-case
+      (printf "history->s is: ~s\n" (history->s history))
+      )) ; end test-case and let*
+   
+;   (test-case
+;    "Test string conversion"
+;    (let* ([s 0]
+;           [tape (make-tape)]
+;           [c (configurationstruct s tape)])
+;      (set-tape! tape '("a" "b") "c" '("d" "e"))
+;      ; (printf "configuration->string=~s\n" (configuration->string c))
+;      (check-true (string? (configuration->string c)))
+;      (check-equal? (configuration->string c) "q0: ab*c*de")
+;      (check-equal? (configuration->string c #:show-current-blank #t) "q0: ab*c*de")
+;      (check-equal? (configuration->string c #:show-all-blank #t) "q0: ab*c*de")
+;      ; try with some blanks so options do something
+;      (set-tape! tape '("a" " ") " " '(" " "e"))
+;      (check-true (string? (configuration->string c)))
+;      (check-equal? (configuration->string c) "q0: a * * e")
+;      (check-equal? (configuration->string c #:show-current-blank #t) "q0: a *B* e")
+;      (check-equal? (configuration->string c #:show-all-blank #t) "q0: aB*B*Be")
+;      )) ; end test-case and let*
    
    )) ;; end history suite and tests
 
@@ -190,9 +264,10 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-(run-tests instruction-tests)
+; (run-tests instruction-tests)
+; (run-tests configuration-tests)
 ; (run-tests parse-tests)
 ; (run-tests tm->string-tests)
 ; (run-tests tm-transition-tests)
-; (run-tests history-tests)
+(run-tests history-tests)
 ; (run-tests one-step-one-node-tests)

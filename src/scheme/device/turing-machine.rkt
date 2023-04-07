@@ -64,54 +64,50 @@
          configuration->string)
 
 ;; ===== History
-(define (node->string node rank)
+(define (node->string node rank #:deterministic [deterministic #t])
   (printf "node->string  node=~s  rank=~s\n" node rank)
-  (let ([r (for/list ([i (in-range 0 rank)]) " |  ")]
-        [prefix (if (= rank 0) "" " +--")])
+  (let* ([r (for/list ([i (in-range 0 (- rank 1))]) " |  ")]
+         [prefix (if (= rank 0) "" " +--")]
+;         [test0 (printf "--> r=~s\n" r)]
+;         [test1 (printf "--> prefix=~s\n" prefix)]
+;         [test2 (printf "--> (append prefix (list r))=~s\n" (append prefix (list r)))]
+         [nesting (if deterministic "" (apply string-append (append r (list prefix))))])
     (printf "    r=~s\n" r)
     ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
     (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
-    (apply string-append (append r
-                                 (list prefix (configuration->string (history-node-config node)))))
-    ))
+    (apply string-append (list nesting (configuration->string (history-node-config node)))))
+    )
 
-(define (history->string history-node #:maxrank [maximumrank MAXIMUM-RANK])
-  (let ([h-string ""])
-    (history-traverse-dfs history-node 0 node->string h-string)))
-
-(define (history-print h #:maxrank [maximumrank MAXIMUM-RANK])
-  (printf "~a\n" (history->string h #:maxrank maximumrank)))
-
-(define ACCUMULATOR '())
-(define (history->s history #:maxrank [maximumrank MAXIMUM-RANK])
-  (define (node->s node rank)
-   (printf "    node->s  node=~s  rank=~s\n" (configuration->string (history-node-config node)) rank)
-   (let ([r (for/list ([i (in-range 0 rank)]) " |  ")]
-          [prefix (if (= rank 0) "" " +--")])
-     ; (printf "    r=~s\n" r)
-     ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
-     ; (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
-     (apply string-append (append r
-                                 (list prefix (configuration->string (history-node-config node)))))
-     ))
-  (define (h->s node rank #:maxrank [maximumrank MAXIMUM-RANK])
+(define ACCUMULATOR '())  ; must be a better way to do this
+(define (history->string history
+                         #:maxrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
+                         #:fullstep-only [fullstep-only #f]  ; don't show odd-numbered ranks   
+                         #:deterministic [deterministic #t])  ; don't show nesting and don't show odd-numbered ranks 
+ (define (h->s node rank
+               #:maxrank [maximumrank MAXIMUM-RANK]
+               #:fullstep-only [fullstep-only #f]
+               #:deterministic [deterministic #t])
     ;(printf "  h->s: node ~s  rank=~s\n    accumulator=~s\n"
     ;        (configuration->string (history-node-config node)) rank accumulator)
     (when (< rank maximumrank)
       (let ([children (history-node-get-children node)])
         (for ([child children])
-          (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
-          (set! ACCUMULATOR (cons (node->s child (+ rank 1)) ACCUMULATOR))
+          (when (even? rank)
+            ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
+            (set! ACCUMULATOR (cons (node->string child (+ rank 1) #:deterministic deterministic) ACCUMULATOR)))
           (h->s child (+ rank 1 ) #:maxrank maximumrank)))))
   
-    (set! ACCUMULATOR (list (node->s history 0)))
-    (h->s history 0 #:maxrank maximumrank)
+    (set! ACCUMULATOR (list (node->string history 0)))
+    (h->s history 0 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
     (string-join (reverse ACCUMULATOR) "\n"))
   
-  
+ 
+(define (history-print h #:maxrank [maximumrank MAXIMUM-RANK])
+  (printf "~a\n" (history->string h #:maxrank maximumrank)))
+ 
 
-(provide history->string
-         history->s
+(provide node->string
+         history->string
          history-print)
 
   

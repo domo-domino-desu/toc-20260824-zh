@@ -207,7 +207,7 @@
       (history-node-add! history history-node1)
       (history-node-add! history history-node2)
       ; (printf "~s\n" history)
-      (printf "history->s is: ~s\n" (history->s history))
+      (printf "history->string is: \n~a\n" (history->string history #:deterministic #f))
       )) ; end test-case and let*
    
 ;   (test-case

@@ -64,21 +64,31 @@
          configuration->string)
 
 ;; ===== History
+
+;; history-node -> string
+;; Generate string to show one history node.
+;;  #:deterministic  Boolean  Do not show tree nesting  
 (define (node->string node rank #:deterministic [deterministic #t])
-  (printf "node->string  node=~s  rank=~s\n" node rank)
-  (let* ([r (for/list ([i (in-range 0 (- rank 1))]) " |  ")]
+  ; (printf "node->string  node=~s  rank=~s\n" node rank)
+  (let* ([r (for/list ([i (in-range 2 (+ 1 rank))]) " |  ")]
          [prefix (if (= rank 0) "" " +--")]
-;         [test0 (printf "--> r=~s\n" r)]
-;         [test1 (printf "--> prefix=~s\n" prefix)]
-;         [test2 (printf "--> (append prefix (list r))=~s\n" (append prefix (list r)))]
+         ; [test0 (printf "  node->string r=~s\n" r)]
+         ; [test1 (printf "  node->string prefix=~s\n" prefix)]
+         ; [test2 (printf "  node->string (append prefix (list r))=~s\n" (append r (list prefix)))]
          [nesting (if deterministic "" (apply string-append (append r (list prefix))))])
-    (printf "    r=~s\n" r)
+    ; (printf "    node->string nesting=~s\n" nesting)
     ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
-    (printf "    (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
+    ; (printf "    node->string (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
     (apply string-append (list nesting (configuration->string (history-node-config node)))))
     )
 
-(define ACCUMULATOR '())  ; must be a better way to do this
+;; history tree node -> string
+;;  Return reasonable description of tree
+;; #:maxrank  Integer  Don't go into any node deeper than this
+;; #:fullstep-only  Boolean  Don't show the half steps from following epsilon maps
+;; #:deterministic  Boolean  Don't show tree nesting
+(define ACCUMULATOR '())  ; Store list of node strings (There must be a better way to do this)
+
 (define (history->string history
                          #:maxrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
                          #:fullstep-only [fullstep-only #f]  ; don't show odd-numbered ranks   
@@ -87,28 +97,24 @@
                #:maxrank [maximumrank MAXIMUM-RANK]
                #:fullstep-only [fullstep-only #f]
                #:deterministic [deterministic #t])
-    ;(printf "  h->s: node ~s  rank=~s\n    accumulator=~s\n"
-    ;        (configuration->string (history-node-config node)) rank accumulator)
+    ; (printf "  h->s: node ~s  rank=~s\n"
+            (configuration->string (history-node-config node)) rank)
     (when (< rank maximumrank)
       (let ([children (history-node-get-children node)])
         (for ([child children])
-          (when (even? rank)
+          (when (or (and fullstep-only (even? rank))
+                    (not fullstep-only))
             ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
-            (set! ACCUMULATOR (cons (node->string child (+ rank 1) #:deterministic deterministic) ACCUMULATOR)))
-          (h->s child (+ rank 1 ) #:maxrank maximumrank)))))
+            (set! ACCUMULATOR (cons (node->string child rank #:deterministic deterministic) ACCUMULATOR)))
+          (h->s child (+ rank 1 ) #:maxrank maximumrank #:deterministic deterministic)))))
   
     (set! ACCUMULATOR (list (node->string history 0)))
-    (h->s history 0 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
+    (h->s history 1 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
     (string-join (reverse ACCUMULATOR) "\n"))
   
  
-(define (history-print h #:maxrank [maximumrank MAXIMUM-RANK])
-  (printf "~a\n" (history->string h #:maxrank maximumrank)))
- 
-
 (provide node->string
-         history->string
-         history-print)
+         history->string)
 
   
 ;; ===== Run
@@ -122,19 +128,19 @@
 ;; From the delta map, get a list of all the machine's states.
 ;; On the list are states used only in the output.
 (define (all-states-get delta-map epsilon-map)
-  (printf "all-states-get delta-map=~s\n" (delta-map->string delta-map))
+  ; (printf "all-states-get delta-map=~s\n" (delta-map->string delta-map))
   (let ([input-states (map first (hash-keys delta-map))]
         [delta-range-sets (hash-values delta-map)]
         [epsilon-range-sets (hash-values epsilon-map)]
-        [output-states (mutable-set)])
+        [output-states (mutable-seteq)])
     (for* ([range-set delta-range-sets]
            [tuple range-set])
       (set-add! output-states (second tuple)))
-    (printf "all-states-get output-states=~s\n" (set->string output-states))
+    ; (printf "all-states-get output-states=~s\n" (set->string output-states))
     (for ([range-set epsilon-range-sets])
-      (printf "    all-states range-set=~s\n" (set->string range-set))
+      ; (printf "    all-states range-set=~s\n" (set->string range-set))
       (set-union! output-states range-set))
-      (printf "        now: output-states=~s\n" (set->string output-states))
+      ; (printf "        now: output-states=~s\n" (set->string output-states))
     (sort (remove-duplicates (append input-states (set->list output-states))) <)))
 
 ;; For Turing machines, Delta maps Q x Sigma -> (Sigma union {L,R}) x Q.
@@ -159,19 +165,20 @@
      (configurationstruct next-state (change-head-token tape next-action))])
   )
 
-;; history-node delta-map epsilon-closure
+;; history-node delta-map epsilon-closure -> list of nodes
 ;; From a history node, find all descendents via the delta-map, then take epsilon closure.  Return list of
 ;;   the grandchild nodes, the ones post-epsilon moves.
 (define (one-step-one-node history-node delta-map epsilon-closure)
-  (printf "in one-step-one-node history-node=~s\n" history-node)
+  (printf "in one-step-one-node history=~a\n" (history->string history-node))
+  (printf "in one-step-one-node delta-map=~s\n" (delta-map->string delta-map))
   (let* ([config (history-node-config history-node)]
          [current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
          [current-token (get-tape-current tape)]
          [next (delta delta-map (list current-state current-token))] ; a set or DELTA-NOKEY
          [non-epsilon-nodes '()])
-    (printf "in one-step-one-node delta-map=~s\n" delta-map)
     (printf "   (current-state current-token)=~s\n" (list current-state current-token))
+    (printf "    about to do delta map history-node=~a\n" (history->string history-node))
     ; Apply delta-map to get single transition
     (if (equal? next DELTA-NOKEY)
         '()
@@ -180,26 +187,44 @@
           ; Add to the history-node a bunch of child nodes, one for each next state in the delta map
           (for ([next-action-and-state next])
             (printf "one-step-one-node next-action-and-state=~s\n" next-action-and-state)
+            (printf "        about to let* history-node=~a\n" (history->string history-node))
             (let* ([next-action (first next-action-and-state)]
                    [next-state (second next-action-and-state)]
+                   ; [kkk (printf "        about to define next-config history-node=~a\n" (history->string history-node))]
                    [next-config (tm-transition tape next-action next-state)]
+                   ; [kkk (printf "        about to define next-node history-node=~a\n" (history->string history-node))]
                    [next-node (history-node-make next-config)])
+              (printf "        next-config=~s\n" (configuration->string next-config))
+              (printf "        about to do history-node-add! history-node=~a\n" (history->string history-node))
               (history-node-add! history-node next-node) 
-              (cons next-node non-epsilon-nodes)))
+              (set! non-epsilon-nodes (cons next-node non-epsilon-nodes))))
+          (printf "   about to do epsilon transitions, history-node is ~a\n" (history->string history-node #:deterministic #f))
           ; Take epsilon transitions
           ; add to the next-nodes from the prior step a bunch of child nodes, one for each state in the epsilon-clousre
-          (for ([next-node non-epsilon-nodes])
-            (printf "one-step-one-node next-node=~s\n" next-node)
+          (printf "    non-epsilon-nodes=~s\n" (map (lambda (x) (configuration->string (history-node-config x))) non-epsilon-nodes))
+          (for/list ([next-node non-epsilon-nodes])
+            (printf "        next-node=~s\n" (configuration->string (history-node-config next-node)))
+            (printf "        next-node as string=~s\n" (history->string next-node))
+            (printf "        (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
             (let* ([config (history-node-config next-node)]
                    [current-state (configurationstruct-state config)]
                    [tape (configurationstruct-tape config)]
                    [eps-states (hash-ref epsilon-closure current-state)])
-              (for/list ([s eps-states])
-                (let* ([epsilon-config (configurationstruct s tape)]
-                       [epsilon-node (history-node-make epsilon-config)])
-                  (history-node-add! next-node epsilon-node)
-                  epsilon-node)
-              )))
+              (printf "        config=~s\n" (configuration->string config))
+              (list config
+                    (for/list ([s eps-states])
+                      (printf "            epsilon state s=~s\n" s)
+                      (let* ([epsilon-config (configurationstruct s tape)]
+                             [epsilon-node (history-node-make epsilon-config)])
+                        (printf "            before history-node-add! (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
+                        (history-node-add! next-node epsilon-node)
+                        (printf "            after history-node-add! (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
+                        (printf "            after adding, next-node is ~s\n" (history->string next-node #:deterministic #f))
+                        (printf "            after adding, history-node is ~s\n" (history->string history-node #:deterministic #f))
+                        ; (history-node-config next-node)
+                        )))
+              )
+            )
         ))))
 
 (provide all-states-get

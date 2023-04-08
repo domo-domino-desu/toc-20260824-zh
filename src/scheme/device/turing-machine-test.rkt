@@ -201,33 +201,20 @@
            [s2 2]
            [tape2 (make-tape)]
            [config2 (configurationstruct s2 tape2)]
+           [s3 3]
+           [tape3 (make-tape)]
+           [config3 (configurationstruct s3 tape3)]
            [history (history-create config0)]
            [history-node1 (history-node-make config1)]
-           [history-node2 (history-node-make config2)])
+           [history-node2 (history-node-make config2)]
+           [history-node3 (history-node-make config3)])
       (history-node-add! history history-node1)
       (history-node-add! history history-node2)
+      (history-node-add! history-node2 history-node3)
       ; (printf "~s\n" history)
-      (printf "history->string is: \n~a\n" (history->string history #:deterministic #f))
+      (printf "!!history->string is: \n~a\n" (history->string history #:deterministic #f))
+      ; (printf "history->string history-node2 is: \n~a\n" (history->string history-node2 #:deterministic #f))
       )) ; end test-case and let*
-   
-;   (test-case
-;    "Test string conversion"
-;    (let* ([s 0]
-;           [tape (make-tape)]
-;           [c (configurationstruct s tape)])
-;      (set-tape! tape '("a" "b") "c" '("d" "e"))
-;      ; (printf "configuration->string=~s\n" (configuration->string c))
-;      (check-true (string? (configuration->string c)))
-;      (check-equal? (configuration->string c) "q0: ab*c*de")
-;      (check-equal? (configuration->string c #:show-current-blank #t) "q0: ab*c*de")
-;      (check-equal? (configuration->string c #:show-all-blank #t) "q0: ab*c*de")
-;      ; try with some blanks so options do something
-;      (set-tape! tape '("a" " ") " " '(" " "e"))
-;      (check-true (string? (configuration->string c)))
-;      (check-equal? (configuration->string c) "q0: a * * e")
-;      (check-equal? (configuration->string c #:show-current-blank #t) "q0: a *B* e")
-;      (check-equal? (configuration->string c #:show-all-blank #t) "q0: aB*B*Be")
-;      )) ; end test-case and let*
    
    )) ;; end history suite and tests
 
@@ -237,8 +224,31 @@
   (test-suite
    "One step for one node tests"
   
+;   (test-case
+;    "Test simple cases"
+;    (let* ([tape (make-tape "a" "b" "B")] ; curent token is "a", right tape is ("b" "B")
+;           [current-state 0]
+;           [config (configurationstruct current-state tape)]
+;           [history-node (history-create config)]
+;           [INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1" "ACCEPTING 1 0" "EPSILON 1 0" "EPSILON 2 1")]
+;           [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
+;           [delta-map (tm->delta-map tm)]
+;           ; [test (printf "got here ~s\n" 9)]
+;           [epsilon-map (machinestruct-epsilonmap tm)]
+;           [all-states (all-states-get delta-map epsilon-map)]
+;           [epsilon-closure (epsilon-closure-make epsilon-map all-states)])
+;      (printf "turing machine=~a\n" (tm->string tm))
+;      (printf "delta-map=~s\n" (delta-map->string delta-map))
+;      (printf "epsilon-map=~s\n" (epsilon-map->string epsilon-map))
+;      (printf "all-states=~s\n" (set->string all-states))
+;      (printf "epsilon-closure=~s\n" (epsilon-closure->string epsilon-closure))
+;      (one-step-one-node history-node delta-map epsilon-closure)
+;      (printf "after: node=~s\n" (history->string history-node))
+;    )
+;    ) ;; end test-case
+   
    (test-case
-    "Test simple cases"
+    "Test deterministic cases"
     (let* ([tape (make-tape "a" "b" "B")] ; curent token is "a", right tape is ("b" "B")
            [current-state 0]
            [config (configurationstruct current-state tape)]
@@ -246,17 +256,20 @@
            [INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1" "ACCEPTING 1 0" "EPSILON 1 0" "EPSILON 2 1")]
            [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
            [delta-map (tm->delta-map tm)]
-           [test (printf "got here ~s\n" 9)]
+           ; [test (printf "got here ~s\n" 9)]
            [epsilon-map (machinestruct-epsilonmap tm)]
            [all-states (all-states-get delta-map epsilon-map)]
-           [epsilon-closure (epsilon-closure-make epsilon-map all-states)])
-      (printf "turing machine=~a\n" (tm->string tm))
-      (printf "delta-map=~s\n" (delta-map->string delta-map))
-      (printf "epsilon-map=~s\n" (epsilon-map->string epsilon-map))
-      (printf "all-states=~s\n" (set->string all-states))
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [next-config-list (one-step-one-node history-node delta-map epsilon-closure)])
+;      (printf "turing machine=~a\n" (tm->string tm))
+;      (printf "delta-map=~s\n" (delta-map->string delta-map))
+;      (printf "epsilon-map=~s\n" (epsilon-map->string epsilon-map))
+;      (printf "all-states=~s\n" (set->string all-states))
       (printf "epsilon-closure=~s\n" (epsilon-closure->string epsilon-closure))
-      (one-step-one-node history-node delta-map epsilon-closure)
-      (printf "after: node=~s\n" history-node)
+      (printf "after: \n~a\n" (history->string history-node #:deterministic #f))
+      (printf "======\n")
+      (printf "next-config-list=~s\n"
+              next-config-list)
     )
     ) ;; end test-case
    
@@ -269,5 +282,5 @@
 ; (run-tests parse-tests)
 ; (run-tests tm->string-tests)
 ; (run-tests tm-transition-tests)
-(run-tests history-tests)
-; (run-tests one-step-one-node-tests)
+; (run-tests history-tests)
+(run-tests one-step-one-node-tests)

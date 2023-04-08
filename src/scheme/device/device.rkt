@@ -48,7 +48,7 @@
 (define (power-map-set! power-map k v)
   (if (member k (hash-keys power-map))
       (set-add! (hash-ref power-map k) v)
-      (hash-set! power-map k (mutable-set v))))
+      (hash-set! power-map k (mutable-seteq v))))
 
 ;; Signifies that a power-map has no such key
 (define POWER-MAP-NOKEY "No such key")
@@ -196,7 +196,7 @@
     tape))
 
 ;; tape structure, list of strings, string, list of strings -> tape structure
-;; Set the tape to have the given left, current, and right
+;; Change the tape to have the given left, current, and right
 (define (set-tape! tape left current right)
   (set-tapestruct-left! tape left)
   (if (equal? current "")
@@ -239,7 +239,7 @@
     (set-tape! tape (trim-left-tape tape-left) tape-current (trim-right-tape tape-right))))
 
 ;; tape -> tape
-;; Move the head right on the tape structure.  Same as moving the tape left.  Return the changed tape.
+;; Return a new tape where the head has been moved right on the tape structure.  Same as moving the tape left.
 (define (move-head-right tape)
   (let* ([tape-left (get-tape-left tape)]
          [tape-current (get-tape-current tape)]
@@ -250,11 +250,11 @@
     (when (not (null? tape-right))
       (set! new-tape-current (car tape-right))
       (set! new-tape-right (cdr tape-right)))
-    (set-tape! tape new-tape-left new-tape-current new-tape-right)
+    (tapestruct new-tape-left new-tape-current new-tape-right)
     ))
 
 ;; tape -> tape
-;; Move the head left on the tape structure.  Same as moving the tape right.  Return the changed tape.
+;; Return a new tape where the head has been moved left on the tape structure.  Same as moving the tape right.
 (define (move-head-left tape)
   (let* ([tape-left (get-tape-left tape)]
          [tape-current (get-tape-current tape)]
@@ -266,15 +266,15 @@
         (let ([reversed-tape-left (reverse tape-left)])
           (set! new-tape-current (car reversed-tape-left))
           (set! new-tape-left (reverse (cdr reversed-tape-left)))))
-    (set-tape! tape new-tape-left new-tape-current new-tape-right)
+    (tapestruct new-tape-left new-tape-current new-tape-right)
     ))
 
 ;; tape -> tape
-;; Replace the token being pointed to by the I/O head
+;; Return a new tape where there is a new token being pointed to by the I/O head
 (define (change-head-token tape new-tape-current)
   (let* ([tape-left (get-tape-left tape)]
          [tape-right (get-tape-right tape)])
-    (set-tape! tape tape-left new-tape-current tape-right)
+    (tapestruct tape-left new-tape-current tape-right)
     ))
 
 ; tapestruct -> string
@@ -374,7 +374,7 @@
 ; no input  ->  machinestruct
 ; Create an empty machine.
 (define (machine-create)
-  (machinestruct '() (mutable-set) (epsilon-map-make)))
+  (machinestruct '() (mutable-seteq) (epsilon-map-make)))
 
 ; machinestruct, instruction  ->  machinestruct
 ; Add the instruction to the machine
@@ -423,7 +423,7 @@
 ;; ===== History
 
 (define (history-node-make config)
-  (cons config (mutable-set)))
+  (cons config (mutable-seteq)))
 
 (define (history-node-config n)
   (car n))
@@ -460,14 +460,15 @@
 (define (history-traverse-bfs node fcn #:maxrank [maximumrank MAXIMUM-RANK])
   (history-traverse-bfs [node] 0 fcn #:maximumrank maximumrank))
 
-(define (history-traverse-dfs node rank fcn s #:maxrank [maximumrank MAXIMUM-RANK])
-  (printf "history-traverse-dfs: node ~s  rank=~s\n" node rank)
+(define (history-traverse-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+  ; (printf "history-traverse-dfs: node ~s  rank=~s\n" node rank)
+  (fcn node rank)
   (when (< rank maximumrank)
     (let ([children (history-node-get-children node)])
       (for ([child children])
-        (printf "   child is ~s\n" child)
-        (history-traverse-dfs child (+ rank 1) (set! s (string-append s (fcn node rank))) fcn))
-      s)))
+        ; (printf "   child is ~s\n" child)
+        (history-traverse-dfs child (+ rank 1) fcn #:maxrank maximumrank))
+      )))
 
 
 (provide history-node-make

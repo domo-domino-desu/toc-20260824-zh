@@ -98,7 +98,7 @@
                #:fullstep-only [fullstep-only #f]
                #:deterministic [deterministic #t])
     ; (printf "  h->s: node ~s  rank=~s\n"
-            (configuration->string (history-node-config node)) rank)
+    ;         (configuration->string (history-node-config node)) rank)
     (when (< rank maximumrank)
       (let ([children (history-node-get-children node)])
         (for ([child children])
@@ -226,6 +226,31 @@
               )
             )
         ))))
+
+
+(define MAXIMUM-TURING-MACHINE-RANK 100)
+
+(define (computation-history-helper level-nodelist rank-number delta-map epsilon-closure #:maxrank [maximumrank MAXIMUM-TURING-MACHINE-RANK])
+  (when (< rank-number maximumrank)
+    (let ([next-level '()])
+      (for ([node level-nodelist])
+        (for ([child-node (history-node-get-children node)])
+          (append (one-step-one-node child-node delta-map epsilon-closure) next-level) ; side-effect runs computations 
+          ))
+      (when (not (null? next-level))
+        (computation-history-helper next-level (+ 1 rank-number) delta-map epsilon-closure #:maxrank maximumrank)))))
+
+(define (computation-history-make turing-machine initial-tape #:maxrank [maximumrank MAXIMUM-RANK])
+  (let* ([delta-map (tm->delta-map turing-machine)]
+         [epsilon-map (machinestruct-epsilonmap turing-machine)]
+         [all-states (all-states-get delta-map epsilon-map)]
+         [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+         [current-state 0]
+         [initial-config (configurationstruct current-state initial-tape)]
+         [initial-history-node (history-create initial-config)])
+  (computation-history-helper (list initial-history-node) 0  delta-map epsilon-closure #:maxrank maximumrank)))
+
+
 
 (provide all-states-get
          tm->delta-map

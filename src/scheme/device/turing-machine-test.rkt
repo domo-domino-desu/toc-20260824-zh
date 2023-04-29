@@ -273,26 +273,39 @@
 ;    )
 ;    ) ;; end test-case
    
+;   (test-case
+;    "Test deterministic doubler"
+;    (let* ([filename "../prologue/machines/doubler.tm"]
+;           [input-lines (string-split (port->string (open-input-file filename) #:close? #t) "\n")]
+;           [tm (parse input-lines INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
+;           [delta-map (tm->delta-map tm)]
+;           [epsilon-map (machinestruct-epsilonmap tm)]
+;           [all-states (all-states-get delta-map epsilon-map)]
+;           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+;           [tape (make-tape "1" "1")] ; current token is "1", right tape is ("1"))
+;           [current-state 0]
+;           [config (configurationstruct current-state tape)]
+;           [history-node (history-create config)]
+;           [next-config-list (one-step-one-node history-node delta-map epsilon-closure)]
+;           ;; [third-config-list (one-step-one-node history-node delta-map epsilon-closure)]
+;           )
+;;      (printf "turing machine=~a\n" (tm->string tm))
+;;      (printf "delta-map=~s\n" (delta-map->string delta-map))
+;;      (printf "epsilon-map=~s\n" (epsilon-map->string epsilon-map))
+;;      (printf "all-states=~s\n" (set->string all-states))
+;;       (printf "epsilon-closure=~s\n" (epsilon-closure->string epsilon-closure))
+;      (printf "after: \n~a\n" (history->string history-node #:deterministic #f))
+;      (printf "after: next-config-list: ~s\n" next-config-list)
+;      )) ;; end test-case
+   
    (test-case
-    "Test deterministic doubler"
+    "Test full run of deterministic doubler"
     (let* ([filename "../prologue/machines/doubler.tm"]
            [input-lines (string-split (port->string (open-input-file filename) #:close? #t) "\n")]
            [tm (parse input-lines INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
-           [delta-map (tm->delta-map tm)]
-           [epsilon-map (machinestruct-epsilonmap tm)]
-           [all-states (all-states-get delta-map epsilon-map)]
-           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
-           [tape (make-tape "1" "1")] ; cureent token is "1", right tape is ("1"))
-           [current-state 0]
-           [config (configurationstruct current-state tape)]
-           [history-node (history-create config)]
-           [next-config-list (one-step-one-node history-node delta-map epsilon-closure)])
-;      (printf "turing machine=~a\n" (tm->string tm))
-;      (printf "delta-map=~s\n" (delta-map->string delta-map))
-;      (printf "epsilon-map=~s\n" (epsilon-map->string epsilon-map))
-;      (printf "all-states=~s\n" (set->string all-states))
-;       (printf "epsilon-closure=~s\n" (epsilon-closure->string epsilon-closure))
-      (printf "after: \n~a\n" (history->string history-node #:deterministic #f))
+           [tape (make-tape "1" "1")] ; current token is "1", right tape is ("1"))
+           )
+      (computation-history-make tm tape)
       )) ;; end test-case
    
    )) ;; end tape-making suite and tests

@@ -169,16 +169,18 @@
 ;; From a history node, find all descendents via the delta-map, then take epsilon closure.  Return list of
 ;;   the grandchild nodes, the ones post-epsilon moves.
 (define (one-step-one-node history-node delta-map epsilon-closure)
+  (printf "======== one-step-one-node called\n")
   (printf "in one-step-one-node history=~a\n" (history->string history-node))
-  (printf "in one-step-one-node delta-map=~s\n" (delta-map->string delta-map))
+  (printf "                     delta-map=~s\n" (delta-map->string delta-map))
   (let* ([config (history-node-config history-node)]
          [current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
          [current-token (get-tape-current tape)]
          [next (delta delta-map (list current-state current-token))] ; a set or DELTA-NOKEY
-         [non-epsilon-nodes '()])
-    (printf "   (current-state current-token)=~s\n" (list current-state current-token))
-    (printf "    about to do delta map history-node=~a\n" (history->string history-node))
+         [non-epsilon-nodes '()]
+         [epsilon-nodes '()])
+    (printf "                     (current-state current-token)=~s\n" (list current-state current-token))
+    (printf "                     about to do delta map history-node=~a\n" (history->string history-node))
     ; Apply delta-map to get single transition
     (if (equal? next DELTA-NOKEY)
         '()
@@ -186,57 +188,63 @@
           ; Take all delta transitions
           ; Add to the history-node a bunch of child nodes, one for each next state in the delta map
           (for ([next-action-and-state next])
-            (printf "one-step-one-node next-action-and-state=~s\n" next-action-and-state)
-            (printf "        about to let* history-node=~a\n" (history->string history-node))
+            (printf "  delta transitions: next-action-and-state=~s\n" next-action-and-state)
+            (printf "  delta transitions: about to let* history-node=\n~a\n" (history->string history-node))
             (let* ([next-action (first next-action-and-state)]
                    [next-state (second next-action-and-state)]
                    ; [kkk (printf "        about to define next-config history-node=~a\n" (history->string history-node))]
                    [next-config (tm-transition tape next-action next-state)]
                    ; [kkk (printf "        about to define next-node history-node=~a\n" (history->string history-node))]
                    [next-node (history-node-make next-config)])
-              (printf "        next-config=~s\n" (configuration->string next-config))
-              (printf "        about to do history-node-add! history-node=~a\n" (history->string history-node))
+              (printf "  delta transitions:next-config=~s\n" (configuration->string next-config))
+              (printf "  delta transitions:about to do history-node-add! history-node=\n~a\n" (history->string history-node))
               (history-node-add! history-node next-node) 
               (set! non-epsilon-nodes (cons next-node non-epsilon-nodes))))
-          (printf "   about to do epsilon transitions, history-node is ~a\n" (history->string history-node #:deterministic #f))
+          (printf "   about to do epsilon transitions, history-node is \n~a\n" (history->string history-node #:deterministic #f))
           ; Take epsilon transitions
           ; add to the next-nodes from the prior step a bunch of child nodes, one for each state in the epsilon-clousre
-          (printf "    non-epsilon-nodes=~s\n" (map (lambda (x) (configuration->string (history-node-config x))) non-epsilon-nodes))
-          (for/list ([next-node non-epsilon-nodes])
-            (printf "        next-node=~s\n" (configuration->string (history-node-config next-node)))
-            (printf "        next-node as string=~s\n" (history->string next-node))
-            (printf "        (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
+          (printf "    taking epsilon transistions: non-epsilon-nodes=~s\n" (map (lambda (x) (configuration->string (history-node-config x))) non-epsilon-nodes))
+          (for ([next-node non-epsilon-nodes])
+            (printf "        taking epsilon transistions: next-node=~s\n" (configuration->string (history-node-config next-node)))
+            (printf "        taking epsilon transistions: next-node as string=~s\n" (history->string next-node))
+            (printf "        taking epsilon transistions: (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
             (let* ([config (history-node-config next-node)]
                    [current-state (configurationstruct-state config)]
                    [tape (configurationstruct-tape config)]
                    [eps-states (hash-ref epsilon-closure current-state)])
-              (printf "        config=~s\n" (configuration->string config))
-              (list config
-                    (for/list ([s eps-states])
-                      (printf "            epsilon state s=~s\n" s)
-                      (let* ([epsilon-config (configurationstruct s tape)]
-                             [epsilon-node (history-node-make epsilon-config)])
-                        (printf "            before history-node-add! (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
-                        (history-node-add! next-node epsilon-node)
-                        (printf "            after history-node-add! (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
-                        (printf "            after adding, next-node is ~s\n" (history->string next-node #:deterministic #f))
-                        (printf "            after adding, history-node is ~s\n" (history->string history-node #:deterministic #f))
-                        ; (history-node-config next-node)
-                        )))
+              (printf "        taking epsilon transistions: config=~s\n" (configuration->string config))
+              (for ([s eps-states])
+                (printf "            taking epsilon transistions: epsilon state s=~s\n" s)
+                (let* ([epsilon-config (configurationstruct s tape)]
+                       [epsilon-node (history-node-make epsilon-config)])
+                  (printf "            taking epsilon transistions: before history-node-add! (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
+                  (history-node-add! next-node epsilon-node)
+                  ;(printf "            taking epsilon transistions: after history-node-add! (set-member? (cdr history-node) next-node)=~s\n" (set-member? (cdr history-node) next-node))
+                  ;(printf "            taking epsilon transistions: after adding, next-node is \n~s\n" (history->string next-node #:deterministic #f))
+                  ;(printf "            taking epsilon transistions: after adding, history-node is \n~s\n" (history->string history-node #:deterministic #f))
+                  (set! epsilon-nodes (cons epsilon-node epsilon-nodes))
+                  ))
               )
             )
-        ))))
+        ))
+    epsilon-nodes))
 
 
 (define MAXIMUM-TURING-MACHINE-RANK 100)
 
 (define (computation-history-helper level-nodelist rank-number delta-map epsilon-closure #:maxrank [maximumrank MAXIMUM-TURING-MACHINE-RANK])
+  (printf "******> calling computation-history-helper\n")
+  (printf "  level-nodelist=~s\n  rank-number=~s\n" level-nodelist rank-number)
   (when (< rank-number maximumrank)
     (let ([next-level '()])
       (for ([node level-nodelist])
+        (printf "     ** node is ~s\n" node)
         (for ([child-node (history-node-get-children node)])
-          (append (one-step-one-node child-node delta-map epsilon-closure) next-level) ; side-effect runs computations 
+          (printf "     **   child-node is ~s\n" child-node)
+          (set! next-level
+                (append (one-step-one-node child-node delta-map epsilon-closure) next-level)) ; side-effect runs computations 
           ))
+      (printf "  next-level=~s\n" next-level)
       (when (not (null? next-level))
         (computation-history-helper next-level (+ 1 rank-number) delta-map epsilon-closure #:maxrank maximumrank)))))
 
@@ -248,7 +256,8 @@
          [current-state 0]
          [initial-config (configurationstruct current-state initial-tape)]
          [initial-history-node (history-create initial-config)])
-  (computation-history-helper (list initial-history-node) 0  delta-map epsilon-closure #:maxrank maximumrank)))
+    (computation-history-helper (list initial-history-node) 0  delta-map epsilon-closure #:maxrank maximumrank)
+    initial-history-node))
 
 
 
@@ -256,7 +265,8 @@
          tm->delta-map
          tm->string
          tm-transition
-         one-step-one-node)
+         one-step-one-node
+         computation-history-make)
 
 ;; ===== Parse
 ; The defn says Delta maps Q x (Sigma union {B, epsilon}) to  Q x Gamma^* (or Gamma for deterministic ones)

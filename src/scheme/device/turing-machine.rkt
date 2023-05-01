@@ -99,18 +99,20 @@
                #:deterministic [deterministic #t])
     ; (printf "  h->s: node ~s  rank=~s\n"
     ;         (configuration->string (history-node-config node)) rank)
-    (when (< rank maximumrank)
-      (let ([children (history-node-get-children node)])
-        (for ([child children])
-          (when (or (and fullstep-only (even? rank))
-                    (not fullstep-only))
-            ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
-            (set! ACCUMULATOR (cons (node->string child rank #:deterministic deterministic) ACCUMULATOR)))
-          (h->s child (+ rank 1 ) #:maxrank maximumrank #:deterministic deterministic)))))
+   (when deterministic
+     (set! fullstep-only #t))
+   (when (< rank maximumrank)
+     (let ([children (history-node-get-children node)])
+       (for ([child children])
+         (when (or (and fullstep-only (even? rank))
+                   (not fullstep-only))
+           ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
+           (set! ACCUMULATOR (cons (node->string child rank #:deterministic deterministic) ACCUMULATOR)))
+         (h->s child (+ rank 1 ) #:maxrank maximumrank #:deterministic deterministic)))))
   
-    (set! ACCUMULATOR (list (node->string history 0)))
-    (h->s history 1 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
-    (string-join (reverse ACCUMULATOR) "\n"))
+  (set! ACCUMULATOR (list (node->string history 0)))
+  (h->s history 1 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
+  (string-join (reverse ACCUMULATOR) "\n"))
   
  
 (provide node->string
@@ -170,8 +172,8 @@
 ;;   the grandchild nodes, the ones post-epsilon moves.
 (define (one-step-one-node history-node delta-map epsilon-closure)
   (printf "======== one-step-one-node called\n")
-  (printf "in one-step-one-node history=~a\n" (history->string history-node))
-  (printf "                     delta-map=~s\n" (delta-map->string delta-map))
+  ;(printf "in one-step-one-node history=~a\n" (history->string history-node))
+  ;(printf "                     delta-map=~s\n" (delta-map->string delta-map))
   (let* ([config (history-node-config history-node)]
          [current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
@@ -239,11 +241,9 @@
     (let ([next-level '()])
       (for ([node level-nodelist])
         (printf "     ** node is ~s\n" node)
-        (for ([child-node (history-node-get-children node)])
-          (printf "     **   child-node is ~s\n" child-node)
-          (set! next-level
-                (append (one-step-one-node child-node delta-map epsilon-closure) next-level)) ; side-effect runs computations 
-          ))
+        (set! next-level
+              (append (one-step-one-node node delta-map epsilon-closure) next-level)) ; side-effect runs computations 
+          )
       (printf "  next-level=~s\n" next-level)
       (when (not (null? next-level))
         (computation-history-helper next-level (+ 1 rank-number) delta-map epsilon-closure #:maxrank maximumrank)))))

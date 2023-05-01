@@ -304,8 +304,10 @@
            [input-lines (string-split (port->string (open-input-file filename) #:close? #t) "\n")]
            [tm (parse input-lines INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
            [tape (make-tape "1" "1")] ; current token is "1", right tape is ("1"))
+           [initial-history-node '()]
            )
-      (computation-history-make tm tape)
+      (set! initial-history-node (computation-history-make tm tape))
+      (printf "\n\n\nafter: \n~a\n" (history->string initial-history-node #:deterministic #t))
       )) ;; end test-case
    
    )) ;; end tape-making suite and tests

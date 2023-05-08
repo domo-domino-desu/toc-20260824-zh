@@ -519,7 +519,7 @@ shipout(format("hp%02d",picnum),pic,format="pdf");
 
 // ---- doubler is unsolvable, after s-m-n
 picture pic;
-picnum = picnum+1;
+picnum = picnum+1;  // 11
 
 // define nodes
 node start=nroundbox("Start");
@@ -561,13 +561,13 @@ shipout(format("hp%02d",picnum),pic,format="pdf");
 
 // ---- Rice's Thm, before s-m-n
 picture pic;
-picnum = picnum+1;
+picnum = picnum+1;  // 12
 
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x,y$");
 node sim1=nbox("Run $\TM_x$ on~$x$");
-node sim2=nbox("Run $\TM_{e_1}$ on~$y$");
+node sim2=nbox("Run $\TM_{\hat{e}}$ on~$y$");
 node ending=nroundbox("End");
 
 // layout
@@ -603,13 +603,13 @@ shipout(format("hp%02d",picnum),pic,format="pdf");
 
 // ---- Rice's Thm, after s-m-n
 picture pic;
-picnum = picnum+1;
+picnum = picnum+1;  // 13
 
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
 node sim1=nbox("Run $\TM_x$ on~$x$");
-node sim2=nbox("Run $\TM_{e_1}$ on~$y$");
+node sim2=nbox("Run $\TM_{\hat{e}}$ on~$y$");
 node ending=nroundbox("End");
 
 // layout

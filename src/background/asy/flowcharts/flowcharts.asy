@@ -1150,7 +1150,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $e$, $x$");
-node test=nrounddiamond("$s(\hat{e},e,x)\in\text{oracle}$?");
+node test=nrounddiamond("$s(e_0,e,x)\in\text{oracle}$?");
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");
 node ending=nroundbox("End");

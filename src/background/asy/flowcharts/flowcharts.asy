@@ -1051,7 +1051,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $k$");
-node test=nrounddiamond("$s(e,k)\in\text{oracle}$?");
+node test=nrounddiamond("$s(e_0,k)\in\text{oracle}$?");
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");
 node ending=nroundbox("End");
@@ -1199,7 +1199,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node test=nrounddiamond("$s(e,x)\in\text{oracle}$?");
+node test=nrounddiamond("$s(e_0,x)\in\text{oracle}$?");
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");
 node ending=nroundbox("End");
@@ -2696,7 +2696,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$, $y$");
-node run=nbox("Run $\TM_x$ on $3$");
+node run=nbox("Run $\TM_x$ on $x$");
 node print=nbox("Print $42$");
 node ending=nroundbox("End");
 
@@ -2740,7 +2740,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
-node run=nbox("Run $\TM_x$ on $3$");
+node run=nbox("Run $\TM_x$ on $x$");
 node print=nbox("Print $42$");
 node ending=nroundbox("End");
 

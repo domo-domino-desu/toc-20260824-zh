@@ -57,7 +57,7 @@ picture draw_memboxes(int boxx, int boxy, int boxp0, int boxp1, bool showaddress
   if (showaddress) {
     label(pic,"\textit{Address}",(0,2*MEMHGT),W,highlightcolor);
   }
-  label(pic,"\makebox[0.5in][r]{$\vdots$}",(0.75*MEMWIDTH,2.25*MEMHGT),W,fontsize(7pt)+highlightcolor);
+  label(pic,"\makebox[0.5in][r]{$\vdots$}",(0.75*MEMWIDTH,2.25*MEMHGT),W,fontsize(7pt)+black);
   draw(pic,shift(0,0)*box123,boldcolor);
     if (showaddress) {
       label(pic,"\textsc{123}",(0,0.5*MEMHGT),W,fontsize(7pt)+highlightcolor);
@@ -76,7 +76,7 @@ picture draw_memboxes(int boxx, int boxy, int boxp0, int boxp1, bool showaddress
     } else {
       // label(pic,"\makebox[0.35in][c]{\textit{--junk--}}",(MEMWIDTH,-0.5*MEMHGT),W,fontsize(7pt)+lightcolor);
     }
-  label(pic,"\makebox[0.5in][r]{$\vdots$}",(0.75*MEMWIDTH,-1.75*MEMHGT),W,fontsize(7pt)+highlightcolor);
+  label(pic,"\makebox[0.5in][r]{$\vdots$}",(0.75*MEMWIDTH,-1.75*MEMHGT),W,fontsize(7pt)+black);
   draw(pic,shift(0,-4.0*MEMHGT)*box901,boldcolor);
     if (showaddress) {
       label(pic,"\textsc{901}",(0,-3.5*MEMHGT),W,fontsize(7pt)+highlightcolor);

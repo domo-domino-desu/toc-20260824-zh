@@ -11092,7 +11092,7 @@ computes the $n$-th function on the diagonal.
   \hspace{1em}
   \TMfcn_{s(e_0,n)}(x)=
   \begin{cases}
-    \TMfcn_{\TMfcn_e(n)}(x)  &\case{if $\TMfcn_n(n)\converges$} \\
+    \TMfcn_{\TMfcn_n(n)}(x)  &\case{if $\TMfcn_n(n)\converges$} \\
     \uparrow                &\case{otherwise}
   \end{cases}
 \end{equation*}
@@ -11273,7 +11273,7 @@ occur in any sufficiently powerful computation system.
 For instance, since a Turing machine's index is source-equivalent, 
 the prior result corollary the question of whether there
 is a program that prints its own source, that self-reproduces.
-In addition to the discussion below, \cref{sec:SelfReproduction} has more.
+See \cref{sec:SelfReproduction}.
 \end{remark}
 
 
@@ -11286,17 +11286,15 @@ The Fixed Point Theorem and its proof are often
   For example, ``The recursion theorem \ldots{} has one of the most
   unintuitive proofs where I cannot explain why it works, only that it
   does.'' \autocite{blog:ComputationalComplexityRecursionThm}}.
-Here we will expand on a few points.
+Here we will develop a point about names.
 
 \margingraphic{0.29\textwidth}{background/pix/xkcdpointers.png}{\label{fig:xkcdpointers}\href{https://xkcd.com/138/}{Courtesy \url{xkcd.com}}}
-One aspect that bears explication is the theorem's relation to
-the use-mention distinction.\index{use-mention distinction}
 Compare the sentence \textit{Atlantis is a mythical city}  
 to 
-\textit{There are  two t's in ``Atlantis''}.
-In the first, we say that `Atlantis' is
-\definend{used} because it has a value, it points to something. 
-In the second, `Atlantis' is not referring to something\Dash its
+\textit{There are  two t's in `Atlantis'}.
+In the first we say that `Atlantis' is
+\definend{used} because it has a value, it names something. 
+In the second `Atlantis' is not referring to something\Dash its
 value is itself\Dash so 
 \citetext{we say that it is \definend{mentioned}}{%
   We can have a lot of fun with the use-mention distinction.
@@ -11320,126 +11318,146 @@ value is itself\Dash so
   % (This is quoted because it mentions a mention.)}
 % This difference is the reason for the second sentence's
 % quotation marks.
-We are using the same the same word `Atlantis' on two different levels.
+This is
+the \definend{use-mention distinction};\index{use-mention distinction}
+We are using `Atlantis' on two different levels.
 
-A version of this happens in computer programming,
-with pointers.\index{pointer, in C}
+A version of this happens in computer programming.
 The C language program below illustrates.
 The second line's 
-asterisk means that \codeinline{x} and~\codeinline{y} are pointers.
-% While the compiler associates
-% \codeinline{x} and \codeinline{y} with memory cells, 
-% we are not so much interested in the contents of these cells
-% as in the contents of the memory cells that they name.
-The first of the four vertical array diagrams
-imagines that the compiler happens to associate~\codeinline{x}
-with memory address~$123$ and~\codeinline{y} with~$124$.
-It further imagines that the contents of cell~$123$ is the number~$901$
-and the contents of cell~$124$ is~$902$.
-We say that \codeinline{x} points to $901$ and \codeinline{y} points to~$902$.
+asterisk means that \codeinline{x} and~\codeinline{y} are 
+pointers.\index{pointer, in C}
+The four vertical array diagrams show memory cells.
+The first
+imagines that the compiler associates~\codeinline{x}
+with register~$123$ and~\codeinline{y} with~$124$.
+It further imagines that cell~$123$ holds the number~$901$
+and cell~$124$ is~$902$.
+% We say that \codeinline{x} points to $901$ and that \codeinline{y} 
+% points to~$902$.
 
-The second vertical array in the sequence shows the effect of
+When a compiler associates a variable with a cell, the variable becomes
+a name for that cell. 
+If there were an ordinary 
+variable~\codeinline{a} (not a pointer) that the compiler associated with
+cell~$122$ then the statement \codeinline{a=5} would result in memory 
+location~$122$ receiving a value of~$5$.
+So \codeinline{x} and \codeinline{y} are 
+names for their cells.
+But because these variables are pointers,
+we have declared interest 
+in the contents of the memory cells that they point to: cell~$123$ 
+is itself a name for location~$901$,
+and $124$ names~$902$.
+The second vertical array in the sequence illustrates, showing the effect of
 running the \codeinline{*x = 42} statement. 
 The system 
-puts $42$ where \codeinline{x} points:~it does not put $42$ in location~$123$, 
+does not put $42$ into $123$, 
 rather it
-puts $42$ in the location referred to by the contents of~$123$,
-namely, cell~$901$.\footnote{%
+puts $42$ into $901$.\footnote{%
   Using the \,\codeinline{*} operator to access the value stored at a pointer
   is called dereferencing that pointer.
-  There is a matching referencing operator, \codeinline{&},
-  that gives the address of an existing variable.
+  % There is a matching referencing operator, \codeinline{&},
+  % that gives the address of an existing variable.
   % Both allow a programmer to control the indirection that pointers provide.
   }
-Next the code sets \codeinline{y} to point to the same
-address as~\codeinline{x}, namely address~$901$.
-Finally, it puts $13$ where \codeinline{y} points, which is at this moment
+Next, with \codeinline{y=x} the system sets the cell named by \codeinline{y} 
+to point to the same address as~\codeinline{x}'s cell, address~$901$.
+Finally, the last line puts $13$ where \codeinline{y} points, 
+which is at this moment
 the same cell to which~\codeinline{x} points.
 \begin{animatedfigure}{Pointers in a C program.}
 \vcenteredhbox{\animategraphics[poster=last]{1}{background/asy/memory/memory}{00}{04}}
 \end{animatedfigure}
-\noindent Here the \codeinline{x} and~\codeinline{y} variables are being used
-with two different levels of meaning.
-On one level,
-\codeinline{x} refers to the contents of $123$,
-but on another level it is used to refer to
-the contents of those contents,
-what's in address~$901$.
 
-As to the role played by the use-mention distinction in the
+The \codeinline{x} and~\codeinline{y} variables are being used
+at two different levels of meaning.
+On one level,
+\codeinline{x} refers to the contents of register $123$, it names~$123$.
+But the other level is that the system is set up to refer to
+the contents of the contents, that is,
+to what's in address~$901$.
+On this level \codeinline{x} and~\codeinline{y} are names for names.
+
+As to the role played by names in the
 Fixed Point Theorem, 
-the proof starts by taking 
-$g(e)$ to be the name of this procedure.
+the proof takes 
+$g(n)$ to be this.
 \begin{equation*}
-  \TMfcn_{g(e)}(x)=
-  \TMfcn_{s(e_0,e)}(x)=
+  \TMfcn_{g(n)}(x)=
+  \TMfcn_{s(e_0,n)}(x)=
   \begin{cases}
-    \TMfcn_{\TMfcn_e(e)}(x)  &\case{if $\TMfcn_e(e)\converges$}  \\
+    \TMfcn_{\TMfcn_n(n)}(x)  &\case{if $\TMfcn_n(n)\converges$}  \\
     \uparrow                &\case{otherwise}
   \end{cases}
+  \tag{$*$}
 \end{equation*}
 It is not the case that 
-$g(e)$ must equal $\TMfcn_e(e)$. 
-Instead, $g(e)$ is an index of the 
-flowchart on the right in the proof, describing the procedure that
+$g(n)$ must equal $\TMfcn_n(n)$. 
+Instead, $g(n)$ is an index of what is sketched in the right-hand of the 
+pair of flowcharts in the proof.
+It is a name for the procedure that
 computes the function above.
-Regardless of whether 
-$\TMfcn_e(e)\converges$, we can nonetheless compute the index~$g(n)$
-and from it the instructions for the function.
-There is an analogy here with `Atlantis'\Dash despite that the referred-to
-city doesn't exist we
-can still sensibly assert things about its name.
-  
-Informally, what $g(e)$ names is,
-``Given input~$x$, run $\TM_e$ on input~$e$ and if it halts with
-output~$w$ then run $\TM_w$ on input~$x$.''
-Shorter:~``Produce $\TMfcn_e(e)$ and then do $\TMfcn_e(e)$.''
 
-Next, from~$f$ we consider the composition and give it a name
+Informally, what $g(n)$ names is,
+``Given input~$x$, run $\TM_n$ on input~$n$ and if it halts with
+output~$w$ then run $\TM_w$ on input~$x$.''
+Shorter:~``Produce $\TMfcn_n(n)$ and then do $\TMfcn_n(n)$.''
+
+Next, from~$f$ the proof considers the composition and gives it a name
 $\composed{f}{g}=\TMfcn_v$.
-Substituting $v$ into the prior paragraph gives that $g(v)$ names, 
+Putting $v$ into the prior paragraph has $g(v)$ naming, 
 ``Compute $\TMfcn_v(v)$ and then do $\TMfcn_v(v)$.''
 That's the same as
 ``Compute $\composed{f}{g}\,(v)$ and then do $\composed{f}{g}\,(v)$.''
-Note the self-reference; it may naively appear that to compute $g(v)$ we need 
-to compute~$g(v)$,
+Note the self-reference:~it may at first glance 
+appear that to compute $g(v)$ we need to compute~$g(v)$,
 that the instructions for $g(v)$ paradoxically
 contains itself as a subpart.
 
-Then $g(v)$ first computes the name of $\composed{f}{g}\,(v)$ and after that
+However, that first glance is wrong.
+Instead, $g(v)$ first computes the name, the index $s(e_0,v)$,
+of $\composed{f}{g}\,(v)$ and after that
 runs the machine numbered $\composed{f}{g}\,(v)$.
 So $g(v)$ and $\composed{f}{g}\,(v)$ are names for machines that
 compute the same function.
 Thus $g(v)$ does not contain itself; more precisely, the set of instructions for
 computing $g(v)$ does not contain itself.
 Instead, it contains a name for the instructions for computing itself.
+
+In particular, in~($*$), regardless of whether 
+$\TMfcn_n(n)\converges$ we can nonetheless compute the index~$g(n)$
+and from it the instructions for the function.
+There is an analogy here with `Atlantis'\Dash despite that the referred-to
+city doesn't exist we
+can still sensibly assert things about its name.
 \index{Fixed point theorem!discussion|)}
 
 % ................................................
 \begin{exercises}
 % Exercises from https://ehshive.com/1105/uncategorized/teacher-feature-eric-langevin/?
 
-\recommended
-\begin{exercise}
-Your friend asks you about the proof of the Fixed Point Theorem, 
-\cref{th:FixedPointThm}.
-``The last line says $\TMfcn_{g(v)}=\TMfcn_{\TMfcn_v(v)}$; isn't this just
-saying that  $g(v)=\TMfcn_v(v)$?
-Why the circumlocution?''
-What can you say?
-\begin{answer}\verified
-  Saying that the two are the same function,  
-  that $\TMfcn_{g(v)}=\TMfcn_{\TMfcn_v(v)}$, is very different than
-  saying that the indices are the same,
-  that  $g(v)=\TMfcn_v(v)$.
-  (That is, we can easily write two different programs to compute the same
-  function.)
-  In particular, the Padding Lemma, \cref{lem:EveryCompFcnHasInfManyIndices}
-  on page~\pageref{lem:EveryCompFcnHasInfManyIndices},
-  says that every computable function (including the partial functions) has many
-  indices.
-\end{answer}
-\end{exercise}
+% \recommended
+% \begin{exercise}
+% Your friend asks you about the proof of the Fixed Point Theorem, 
+% \cref{th:FixedPointThm}.
+% ``The last line says $\TMfcn_{g(v)}=\TMfcn_{\TMfcn_v(v)}$; isn't this just
+% saying that  $g(v)=\TMfcn_v(v)$?
+% Why the circumlocution?''
+% What can you say?
+% \begin{answer}\verified
+%   Saying that the two are the same function,  
+%   that $\TMfcn_{g(v)}=\TMfcn_{\TMfcn_v(v)}$, is very different than
+%   saying that the indices are the same,
+%   that  $g(v)=\TMfcn_v(v)$.
+%   (That is, we can easily write two different programs to compute the same
+%   function.)
+%   In particular, the Padding Lemma, \cref{lem:EveryCompFcnHasInfManyIndices}
+%   on page~\pageref{lem:EveryCompFcnHasInfManyIndices},
+%   says that every computable function (including the partial functions) has many
+%   indices.
+% \end{answer}
+% \end{exercise}
 
 \recommended
 \begin{exercise}
@@ -11590,7 +11608,7 @@ $W_m=\set{x\suchthat \TMfcn_m(x)\converges}=\set{m^2}$.
 We will show there is an index~$m$ so that 
 $W_m=\set{y\suchthat \TMfcn_m(y)\converges}$ is the set consisting
 of one element, the $m$-th prime number.
-\begin{exparts}
+\begin{exparts*}
 \item Argue that $\map{p}{\N}{\N}$ such that $p(x)$ is the
   $x$-th prime is computable.
 \item Use it and the \smn{} Theorem to get that this family of 
@@ -11604,7 +11622,7 @@ of one element, the $m$-th prime number.
   %   \end{cases}
   % \end{equation*}
   \item Draw the desired conclusion.
-\end{exparts}
+\end{exparts*}
 \begin{answer}\verified
   \begin{exparts}
   \item 
@@ -12018,7 +12036,7 @@ One such set is $\R$.\footnote{%
 \begin{credit}
   \url{https://www.ias.edu/ideas/2016/pires-hilbert-hotel}
 \end{credit}
-Imagine the hotel is empty.
+Imagine that the hotel is empty.
 A hundred buses arrive, where bus $B_i$ contains passengers
 $b_{i,0}$, $b_{i,1}$, etc.
 Give a scheme for putting them in rooms.
@@ -12117,7 +12135,7 @@ and the invention of the electric light in
   This is not to 
   say that this perception is justified.
   Disease and poverty were rampant, colonialism and imperialism 
-  ruined the lives of millions, 
+  ruined the lives of millions around the world, 
   for much of the time the horrors of industrial slavery in the US south
   went unchecked, and Europe was hardly an oasis of calm, 
   with for instance the revolutions of 1848. 
@@ -12207,10 +12225,10 @@ Overall, seventeen million people died.
 With universal conscription, probably the men in this picture 
 did not want to be here.
 They were killed
-by someone who probably also did not want to be here,
+by someone who probably also did not want to be there,
 who never knew that he killed them,
 and who simply entered coordinates into a firing mechanism.
-If you were at those coordinates,
+If you were at those coordinates then
 it didn't matter how brave you were, or how strong, or 
 how right was your cause\Dash you died. 
 % All that stuff about your people and honor and god, 
@@ -12276,17 +12294,17 @@ Fitzgerald, Hemingway, and Stein\Dash
 became known as the  Lost Generation.
 They expressed their experience through themes of alienation, 
 isolation, and dismay.
-In music, composers such as Debussy and Mahler, broke with the
+In music, composers such as Debussy and Mahler broke with the
 traditional forms in ways that were often hard for listeners\Dash Stravinsky's 
 \textit{Rite of Spring} caused a near riot at its premiere in 1913. 
 As for visual arts, the painting here shows the same themes.
 
-\margingraphic[l]{0.27\textwidth}{background/pix/einsteingodel.jpg}{\label{fig:einsteingodel}\href{http://www.newyorker.com/magazine/2005/02/28/time-bandits-2}{G\"odel and his friend}}\index{Godel, K@G\"odel, K!picture with Einstein}
+\margingraphic[l]{0.27\textwidth}{background/pix/einsteingodel.jpg}{\label{fig:einsteingodel}\href{http://www.newyorker.com/magazine/2005/02/28/time-bandits-2}{G\"odel and friend, 1947}}\index{Godel, K@G\"odel, K!picture with Einstein}
 In mathematics, much the same inversion of the standing order
 happened in 1930 with K~G\"odel's announcement of
 the Incompleteness Theorem.
 This says that if we fix a 
-sufficiently strong formal system such as the elementary number theory
+sufficiently strong formal system such as the elementary theory
 of $\N$ with addition and multiplication then there are  
 statements that, while true in the system, 
 cannot be proved in that system.\footnote{%
@@ -12296,13 +12314,12 @@ cannot be proved in that system.\footnote{%
   in the natural numbers.
   So it must be true.
   But then it, indeed, is true but cannot be proved to be so.}
-The theorem is clearly about what cannot be done\Dash
-there are things that are true that
-can never be proved.
+The theory of $\N$ and proving are both at the heart of 
+mathematics, and the theorem says that they are somehow wanting.
 
 This statement of hard limits
-seemed to many observers to be especially striking in
-mathematics, which had held a traditional place as the most solid of
+seemed to many to be especially striking in
+mathematics, which held a traditional place as the most solid of
 knowledge.
 For example, I~Kant said, ``I assert that in any particular natural science, 
 one encounters genuine scientific substance only to the extent that 
@@ -12383,10 +12400,10 @@ Projecting backwards, they posited a \textit{homunculus},
 a small human-like figure that
 when given life swells to become a person.
 
-One issue with this hypothesis
+One issue
 is that the person may become a parent.
-So inside each homunculus are its children?
-And the grandchildren?
+So each homunculus contains its children?
+And grandchildren?
 That is, one problem is \citetext{infinite regress}{%
   This line of thinking often depends on the
   suggestion that all organisms were created at the same
@@ -12399,7 +12416,7 @@ contain DNA, code to create bodies.
 
 
 \subsection*{Paley's watch}
-In 1802, W~Paley famously argued for the existence of a god  
+In 1802, W~Paley argued for the existence of a god  
 from a perception of unexplained order in the natural world.
 
 \begin{quotation}\small
@@ -12475,8 +12492,8 @@ modification through natural selection}{%
 It shows that from among all the things in the natural
 world to marvel
 at\Dash the graceful shell of a nautilus, the precision of an eagle's eye,
-or consciousness\Dash the greatest wonder for
-many observers was self-reproduction.
+or consciousness\Dash for many observers the greatest wonder 
+was self-reproduction.
 
 Many thinkers contended that self-reproduction had a special position,
 that mechanisms cannot self-reproduce.
@@ -12490,7 +12507,7 @@ seemed plausible that this is possible only because
   See \emuskquoteurl.}.
 In this line of reasoning, machines are only able to produce things that are
 less complex than themselves.
-But, that contention is wrong.
+But that contention is wrong.
 The Fixed Point Theorem gives self-reproducing
 mechanisms.
 
@@ -12602,10 +12619,10 @@ char *e="main(){printf("char*e="");printf(e); printf("";\n");printf(e);"
 main(){printf("char *e="");printf(e); printf("";\n");printf(e);}
 \end{lstlisting}
 This is close.
-Just escape some newlines and quotation marks.\footnote{%
+Escaping some newlines and quotation marks\footnote{%
   The $10$ is the ASCII encoding for newline and
   34 is ASCII for a double quotation mark.}   
-This program, \codeinline{try3.c}, works.
+leads to this program, \codeinline{try3.c}, which works.
 \begin{lstlisting}
 char *e="char*e="%c %s %c; %c main() {printf(e,34,e,34,10,10);}%c";
 main(){printf(e,34,e,34,10,10);}
@@ -12619,161 +12636,155 @@ computation; the exercises ask for them in a few languages.
 
 
 
-\subsection*{Know thyself}
-A program that prints itself can seem to be a parlor trick.
-But 
-\citetext{for routines to have access to their code}{%
-  \definend{Introspection} is the ability to inspect code in the system,
-  such as to inspect the type of objects.
-  \definend{Reflection} is the ability to make modifications at runtime.} 
-is useful.
-For example, to write a \codeinline{toString(obj)} method you probably 
-want your method to ask \codeinline{obj} for its source. 
-% Another example is a plugin architecture to extend applications at runtime. 
-Another example, more nefarious, 
-is a computer virus that transmits copies 
-of its code to other machines.
+% \subsection*{Know thyself}
+% A program that prints itself can seem to be a parlor trick.
+% But 
+% \citetext{for routines to have access to their code}{%
+%   \definend{Introspection} is the ability to inspect code in the system,
+%   such as to inspect the type of objects.
+%   \definend{Reflection} is the ability to make modifications at runtime.} 
+% is useful.
+% For example, to write a method \codeinline{toString(obj)}, you probably 
+% want your method to ask \codeinline{obj} for its source. 
+% Another example, more nefarious, 
+% is a computer virus that transmits copies 
+% of its code to other machines.
 
-\citetext{We will show how a routine can know its source}{%
-  This is derived from the wonderful presentation 
-  in \autocite{Sipser}.}.
-We will start with an alternate
-presentation of a machine that prints itself.
+% \citetext{We will show how a routine can know its source}{%
+%   This is derived from the wonderful presentation 
+%   in \autocite{Sipser}.}.
+% We will start with an alternate
+% presentation of a machine that prints itself.
 
-First, two technical points.
-One is that given two programs we can combine them into one, so that
-we run the first and then run the second.
-(Similarly, given
-we can combine  two Turing  machines by
-renumbering the states so they do not conflict 
-and then changing the final states in the first machine
-to have the number of the starting state in the second.)
+% First, two technical points.
+% One is that given two programs we can combine them into one, so that
+% we run the first and then run the second.
+% (Similarly,
+% we can combine  two Turing  machines by
+% renumbering the states so they do not conflict 
+% and then changing the final states in the first machine
+% to have the number of the start state in the second.)
 
-The other point is
-that we have fixed a numbering of Turing machines that is
-`acceptable', meaning that there is a computable function from indices
-to machines and another computable function back.
-Write $\mathcal{T}$ for the set of Turing machines and 
-let the function $\map{\strng}{\mathcal{T}}{\kleenestar{\B}}$ 
-input a Turing machine and return 
-a standard bitstring representation of that machine (i.e., its source),
-let $\map{\mach}{\N}{\mathcal{T}}$ 
-input an index~$e$ and return the machine~$\TM_e$,  
-and let $\map{\idx}{\kleenestar{\B}}{\N}$ 
-input the string representation of~$\TM_e$ 
-and returns the index of that machine,~$e$
-(if the input string doesn't represent a Turing machine 
-then it doesn't matter what this function does).
-Do this in such a way 
-that $\idx$ is the inverse of the function $\composed{\strng}{\mach}$.
+% The other point is
+% that we have fixed a numbering of Turing machines that is
+% `acceptable', meaning that there is a computable function from indices
+% to machines and another computable function back.
+% Write $\mathcal{T}$ for the set of Turing machines and 
+% let the function $\map{\strng}{\mathcal{T}}{\kleenestar{\B}}$ 
+% input a Turing machine and return 
+% a standard bitstring representation of that machine (i.e., its source),
+% let $\map{\mach}{\N}{\mathcal{T}}$ 
+% input an index~$e$ and return the machine~$\TM_e$,  
+% and let $\map{\idx}{\kleenestar{\B}}{\N}$ 
+% input the string representation of~$\TM_e$ 
+% and return the index of that machine,~$e$
+% (if the input string doesn't represent a Turing machine 
+% then it doesn't matter what this function does).
+% Do this in such a way 
+% that $\idx$ is the inverse of the function $\composed{\strng}{\mach}$.
 
-Consider the machines sketched below.
-The first computes the
-function $\operatorname{echo}(\sigma)=\sigma$.
-Let it have index~$e_0$ and apply the \smn~Theorem to get the
-family of machines sketched in the middle,  $\TM_{s(e_0,\sigma)}$, 
-each of which ignores its input and just prints~$\sigma$.
-\begin{equation*}
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts13.pdf}}
-  \qquad
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts14.pdf}}
-  \qquad
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts15.pdf}}
-\end{equation*}
-On the right,
-$s(e_0,\sigma)$ is the index of the middle machine so
-$\composed{\strng}{\mach}(s(e_0,\sigma))$ is the standard string representation
-of the middle machine for~$\sigma$.
-Thus, if~$\sigma$ is the standard representation of a Turing machine~$\TM$ then
-when the machine on the right is done, the tape will contain only the standard
-representation of the middle machine for~$\sigma$, the machine that ignores
-its input and prints out~$\sigma$.
-Call the machine on the right~$\TM[Q]$ and call the function that it computes 
-$\map{q}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$.
+% Consider the machines sketched below.
+% The first computes the
+% function $\operatorname{echo}(\sigma,y)=\sigma$.
+% Let it have index~$e_0$ and apply the \smn~theorem to get the
+% family of machines sketched in the middle,  $\TM_{s(e_0,\sigma)}$, 
+% each of which ignores its input and just prints~$\sigma$.
+% \begin{equation*}
+%   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts13.pdf}}
+%   \qquad
+%   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts14.pdf}}
+%   \qquad
+%   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts15.pdf}}
+% \end{equation*}
+% On the right,
+% $s(e_0,\sigma)$ is the index of the middle machine so
+% $\composed{\strng}{\mach}(s(e_0,\sigma))$ is the standard string representation
+% of the middle machine for~$\sigma$.
+% Thus, if~$\sigma$ is the standard representation of a Turing machine~$\TM$ then
+% when the machine on the right is done, the tape will contain only the standard
+% representation of the middle machine for~$\sigma$, the machine that ignores
+% its input and prints out~$\sigma$.
+% Call the machine on the right~$\TM[Q]$ and call the function that it computes 
+% $\map{q}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$.
 
-The machine that prints itself is a combination of two machines, 
-$\TM[A]$ and~$\TM[B]$.
-Here's~$\TM[B]$.
-\begin{center}
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts16.pdf}}
-\end{center}
-The other machine is $\TM[A]=\TM_{s(e_0,\strng(\TM[B]))}$, 
-which ignores anything on the tape and prints out  
-the string representation of~$\TM[B]$.
+% The machine that prints itself is a combination of two machines, 
+% $\TM[A]$ and~$\TM[B]$.
+% Here's~$\TM[B]$.
+% \begin{center}
+%   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts16.pdf}}
+% \end{center}
+% The other machine is $\TM[A]=\TM_{s(e_0,\strng(\TM[B]))}$, 
+% which ignores anything on the tape and prints out  
+% the string representation of~$\TM[B]$.
 
-The action of the combination on an empty tape is that
-first the $\TM[A]$ part prints out the standard string representation 
-$\strng(\TM[B])$. 
-Then $\TM[B]$ reads it in as~$\beta$, computes
-$\alpha=\strng(\TM[A])$, concatenates the two string
-representations $\alpha\concat\beta$, and prints it.
-This is the string representation of itself, of the combination of
-$\TM[A]$ with~$\TM[B]$.
+% The action of the combination on an empty tape is that
+% first the $\TM[A]$ part prints out the standard string representation 
+% $\strng(\TM[B])$. 
+% Then $\TM[B]$ reads it in as~$\beta$, computes
+% $\alpha=\strng(\TM[A])$, concatenates the two string
+% representations $\alpha\concat\beta$, and prints it.
+% This is the string representation of itself, of the combination of
+% $\TM[A]$ with~$\TM[B]$.
 
-To get a machine that computes with its own source
-we will extend this approach.
-The idea is to start with a machine~$\TM[C]$ that takes two inputs,
-a string representation of a machine and a string, and then 
-get the desired machine~$\TM[D]$ that uses its own representation.
+% To get a machine that computes with its own source
+% we will extend this approach.
+% The idea is to start with a machine~$\TM[C]$ that takes two inputs,
+% a string representation of a machine and a string, and then 
+% get the desired machine~$\TM[D]$ that uses its own representation.
 
-\begin{theorem}
-For any Turing machine $\TM[C]$ that computes a two-input function
-$\map{c}{\kleenestar{\Sigma}\times\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
-there is a machine~$\TM[D]$ that computes a one-input function
-$\map{d}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
-where $d(\omega)=c(\strng(\TM[D]),\omega)$.
-\end{theorem}
+% \begin{theorem}
+% For any Turing machine $\TM[C]$ that computes a two-input function
+% $\map{c}{\kleenestar{\Sigma}\times\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
+% there is a machine~$\TM[D]$ that computes a one-input function
+% $\map{d}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$
+% where $d(\omega)=c(\strng(\TM[D]),\omega)$.
+% \end{theorem}
 
-The machine~$\TM[D]$ is the combination of three machines, $\TM[A]$, $\TM[B]$, 
-and~$\TM[C]$.
-First, as shown on the left,
-modify $\TM[Q]$ to write its output after a string already
-on the tape, because we need to leave the input~$\omega$ on the tape.
-\begin{center}
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts19.pdf}}
-  \qquad
-  \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts20.pdf}}
-\end{center}
-Second, modify~$\TM[A]$ to be 
-$\TM_{s(e_0,\strng(\TM[B])\concat\strng(\TM[C]))}$, 
-which ignores anything on the tape and prints out  
-the string representation
-of the combination of machines $\TM[B]$ and~$\TM[C]$.
+% The machine~$\TM[D]$ is the combination of three machines, $\TM[A]$, $\TM[B]$, 
+% and~$\TM[C]$.
+% First, as shown on the left,
+% modify $\TM[Q]$ to write its output after a string already
+% on the tape, because we need to leave the input~$\omega$ on the tape.
+% \begin{center}
+%   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts19.pdf}}
+%   \qquad
+%   \vcenteredhbox{\includegraphics{background/asy/flowcharts/flowcharts20.pdf}}
+% \end{center}
+% Second, modify~$\TM[A]$ to be 
+% $\TM_{s(e_0,\strng(\TM[B])\concat\strng(\TM[C]))}$, 
+% which ignores anything on the tape and prints out  
+% the string representation
+% of the combination of machines $\TM[B]$ and~$\TM[C]$.
 
-Next, 
-as shown on the right, modify~$\TM[B]$ to
-input two strings, $\omega$ and~$\tau$.
-Apply~$q$ to the second to compute $\TM[A]$'s 
-standard representation~$\alpha$.
-Print out the concatenation of $\alpha$ and~$\tau$, then a blank,
-and then the input~$\omega$.
-That has the form of two inputs;~finish by running the machine~$\TM[C]$ on 
-them. 
-
+% Next, 
+% as shown on the right, modify~$\TM[B]$ to
+% input two strings, $\omega$ and~$\tau$.
+% Apply~$q$ to the second to compute $\TM[A]$'s 
+% standard representation~$\alpha$.
+% Print out the concatenation of $\alpha$ and~$\tau$, then a blank,
+% and then the input~$\omega$.
+% That has the form of two inputs;~finish by running the machine~$\TM[C]$ on 
+% them. 
 
 
-\subsection*{Verbing}
-English can accomplish a self-reference
-with,
-``This sentence has 32 characters.''
-But formal languages such as programming languages usually don't have
-a self-reference operator like `this sentence'.
-The above discussion shows that no such operator is necessary.
-We can also use those techniques in English, as here.
-\begin{quotation}
-  Print out two copies of the following, the second in quotes:
-  ``Print out two copies of the following, the second in quotes:''
-\end{quotation}
 
+\subsection*{Quining}
 \citetext{The verb `to quine'}{%
-  Invented by D~Hofstadter \index{Hofstadter, D}.} 
+  Invented by D~Hofstadter \index{Hofstadter, D}.
+  It follows the statement
+  due to the philosopher W~Quine:
+  \textit{``yields falsehood when preceded by its quotation''
+  yields falsehood when preceded by its quotation}
+  which has the paradoxical quality that if true it asserts its own falsehood,
+  and if false it must be true.
+  And it accomplishes that without direct self-reference.} 
 means
 ``to write a sentence fragment a first time, 
 and then to write it a second time, but with quotation marks around it''
 For example, from `say' we get ``say `say'''.
 And, quining `quine' gives ``quine `quine'.''
 
-In this linguistic analogy of the self-reproducing programs, the word 
+This is a linguistic analogy of the self-reproducing programs where the word 
 plays the role of the data,
 % http://www.madore.org/~david/computers/quine.html
 the part played by the machine~$\TM[A]$
@@ -12824,19 +12835,19 @@ should read it.
 % ...........................................
 \begin{exercises}
 \begin{exercise}
-Produce a Scheme quine.
+Produce a Racket quine.
 \begin{credit}
   \url{https://research.swtch.com/zip}
   and
   \href{http://cs.brown.edu/courses/gs019/asgn/hw3.sol.pdf}{Kevin Matulef}
 \end{credit}
 \begin{answer}
-Here is a classic. 
-\begin{lstlisting}
-((lambda (x) `(,x ',x))
-'(lambda (x) `(,x ',x)))
-\end{lstlisting}
-
+% Here is a classic. 
+% \begin{lstlisting}
+% ((lambda (x) `(,x ',x))
+% '(lambda (x) `(,x ',x)))
+% \end{lstlisting}
+%
 % This is due to Kevin Matulef.  % http://cs.brown.edu/courses/gs019/asgn/hw3.sol.pdf
 \begin{lstlisting}
 (define self
@@ -12891,37 +12902,37 @@ print(s%s)
 \end{answer}
 \end{exercise}
 
-\begin{exercise}  %  p 75
-\begin{credit}
-  J~Avigad Computability and Incompleteness Lecture notes, % p 75
-  \url{https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf}
-\end{credit}
-Consider a Scheme function \codeinline{diag} that is given a
-string~$\sigma$ and returns a string with each instance of \str{x} in
-$\sigma$ replaced with a quoted version of $\sigma$.
-Thus \codeinline{diag("hello x world")} returns
-\str{hello 'hello x world' world}.
-Show that \codeinline{print(diag('print(diag(x))'))} is a quine.
-\begin{answer}
-\begin{lstlisting}
-(define (diag s)
-      (regexp-replace #rx"x" s s))
-\end{lstlisting}
-\end{answer}
-\end{exercise}
+% \begin{exercise}  %  p 75
+% \begin{credit}
+%   J~Avigad Computability and Incompleteness Lecture notes, % p 75
+%   \url{https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf}
+% \end{credit}
+% Consider a Scheme function \codeinline{diag} that is given a
+% string~$\sigma$ and returns a string with each instance of \str{x} in
+% $\sigma$ replaced with a quoted version of $\sigma$.
+% Thus \codeinline{diag("hello x world")} returns
+% \str{hello 'hello x world' world}.
+% Show that \codeinline{print(diag('print(diag(x))'))} is a quine.
+% \begin{answer}
+% \begin{lstlisting}
+% (define (diag s)
+%       (regexp-replace #rx"x" s s))
+% \end{lstlisting}
+% \end{answer}
+% \end{exercise}
 
-\begin{exercise}
-Write a program that defines a function 
-$f$ taking a string as input, and produces its output by applying 
-$f$ to its source code. For example, if $f$
-reverses the given string, then the program should outputs its source code 
-backwards.
-\end{exercise}
+% \begin{exercise}
+% Write a program that defines a function 
+% $f$ taking a string as input, and produces its output by applying 
+% $f$ to its source code. For example, if $f$
+% reverses the given string, then the program should outputs its source code 
+% backwards.
+% \end{exercise}
 
-\begin{exercise}
-Write a two-level polyglot quine, a program in one language
-that outputs a program in a second language, which outputs the original program.
-\end{exercise}
+% \begin{exercise}
+% Write a two-level polyglot quine, a program in one language
+% that outputs a program in a second language, which outputs the original program.
+% \end{exercise}
 \end{exercises}
 \index{self reproduction|)}
 
@@ -12965,29 +12976,20 @@ that outputs a program in a second language, which outputs the original program.
 Here is a try at solving the \HP.
 For
 any~$n\in\N$, the set
-of Turing machines having $n$~many tuples or fewer is finite.
+of Turing machines having $n$~many tuples or fewer 
+(and using states no larger than $q_n$) is finite.
 For some members of this set
 $\TM_e$ halts on input~$e$
 and for some members it does not, but because the set is finite the list
-of which Turing machines halt is also finite.
+of which machines halt is also finite.
 Finite sets are computable.
-So to solve the \HP, given a Turing Machine~$\TM$, 
-find how many instructions it has and
-just compute the associated finite halting information set.
-
-The problem with this plan is uniformity, or rather lack of it\Dash
-there is no single computable function that
-accepts inputs of the form~$\sequence{n,e}$ and that 
-outputs~$1$ if the $n$-instruction machine $\TM_e(e)$ halts,
-or~$0$ otherwise.
-
-The natural adjustment, the uniform attack,
-is to start all of the machines having $n$ or fewer instructions
+So to solve the \HP, start all of the machines having $n$ or fewer instructions
 and dovetail their computations until no more of them will ever converge.
 That is, consider $\map{D}{\N}{\N}$, where
 $D(n)$ is the minimal number of steps 
-                   after which all of the $n$-instruction machines 
-                   that will ever converge have done so.
+after which all of the $n$-instruction machines 
+that will ever converge have done so.
+
 We can prove that $D$ is not computable.
 For, assume otherwise.
 Then to compute whether $\TM_e$ halts on input~$e$, 
@@ -13002,7 +13004,7 @@ Observe that if a function $\hat{D}$ has values larger than $D$,
 if $\hat{D}(n)\geq D(n)$ for all sufficiently large~$n$,
 then $\hat{D}$ is also not computable.
 This gives us an insight into one way that functions can fail to be 
-computable:~they can grow too fast.\footnote{%
+computable, that they can grow faster than any computable function.\footnote{%
   Note the connection with the Ackermann function:~we
   showed that it is not primitive recursive because it grows
   faster than any primitive recursive function.}
@@ -13047,7 +13049,8 @@ computable:~they can grow too fast.\footnote{%
 
 \margingraphic[l]{0.25\textwidth}{background/pix/beaver.jpg}{\label{fig:beaver}\href{http://commons.wikimedia.org/wiki/File:Beaver_\%28PSF\%29.jpg}{Rare moment of rest}}
 So,
-which $n$-line program is the most productive? 
+which $n$-line program takes the longest?
+Which does the most? 
 The 
 \definend{Busy Beaver problem}\index{Busy Beaver} 
 is:~\citetext{which $n$-state Turing Machine leaves the most $1$'s after halting}{%
@@ -13068,7 +13071,7 @@ Think of this as a competition\Dash who can write the busiest machine?
 To have a competition we need precise rules,
 which differ in unimportant ways from the conventions we have adopted
 in this book.
-So we fix a definition of Turing Machines where there is
+So in this discussion fix a definition of Turing Machines where there is
 a single tape that is unbounded at one end,
 there are two tape symbols \str{1} and~\str{B}, 
 and where transitions are of the form
@@ -13219,14 +13222,28 @@ Here are the current world records.
       $\geq 4\,098$ \\
       $\geq 47\,176\,870$
     \end{tabular}
+    % &\rule{0em}{2.25ex}\begin{tabular}[t]{@{}l@{}}
+    %   $\geq 3.5\times 10^{18\,267}$ \\
+    %   $\geq 7.4\times 10^{36\,534}$
+    % \end{tabular}                 
     &\rule{0em}{2.25ex}\begin{tabular}[t]{@{}l@{}}
-      $\geq 3.5\times 10^{18\,267}$ \\
-      $\geq 7.4\times 10^{36\,534}$
+      $\geq 10\uparrow\uparrow 15$ \\
+      $\geq 10\uparrow\uparrow 15$
     \end{tabular}                 
   \end{tabular}
 \end{center}
-
-% For more, see \autocite{baez}.
+The notation $10\uparrow\uparrow 15$ means $10$ raised to the $10$ raised to the
+$10$ \ldots, a total of $15$ times,
+that is, $10\text{\^{}}(10\text{\^{}}({10\text{\^{}}}\cdots)))$ with fifteen 
+$10$'s.
+This result is the most recent, from 2022.
+For more, there are a number of websites that cover the topic, 
+including the latest results.
+These may involve variations on machine standards such as restricting
+to two-symbol machines
+but even without getting into details
+certainly the size of the number is compelling.
+% see \autocite{baez}.
 
 Not only are Busy Beaver numbers very hard to compute, at some
 point they become impossible.
@@ -13251,9 +13268,13 @@ so we believe that this machine doesn’t halt.
 However, G\"{o}del's Second Incompleteness Theorems shows that
 there is no way to prove the axioms are consistent
 using the axioms themselves, so $\Sigma(n)$ is unknowable in that
-even if we were given the number~$n$, 
+even if we were given the number~$n$ 
 we could not use our axioms to prove that it is right, to prove that
 this machine halts.
+% (They also produced an explicit
+% Turing machine that halts if and only if there is a counterexample to Goldbach’s
+% conjecture, and one that halts if and only if the Riemann hypothesis
+% is false.) 
 
 So one way for a function to fail to be computable is if it grows faster than
 any computable function.

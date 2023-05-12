@@ -678,7 +678,7 @@ setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $\sigma$");
+node read=nbox("Read $\sigma$, $y$");
 node print=nbox("Print $\sigma$");
 node ending=nroundbox("End");
 
@@ -716,6 +716,7 @@ setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
+node read=nbox("Read $y$");
 node print=nbox("Print $\sigma$");
 node ending=nroundbox("End");
 
@@ -725,18 +726,20 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-vlayout(1.0*v,start,print);
+vlayout(1.0*v,start,read,print);
 vlayout(1.0*v,print,ending);
 
 // draw edges
 draw(pic,
-     (start--print),
+     (start--read),
+     (read--print),
      (print--ending)
 );
 
 // draw nodes
 draw(pic,
      start,
+     read,
      print,
      ending
      );
@@ -754,7 +757,7 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $\sigma$");
 node erase=nbox("Erase $\sigma$");
-node print=nbox("Print $\composed{\strng}{\mach}\,(s(e_0,\sigma))$");
+node print=nbox("Output $\composed{\strng}{\mach}\,(s(e_0,\sigma))$");
 node ending=nroundbox("End");
 
 // layout
@@ -763,14 +766,13 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-vlayout(1.0*v,start,read,erase,print);
+vlayout(1.0*v,start,read,print);
 vlayout(1.0*v,print,ending);
 
 // draw edges
 draw(pic,
      (start--read),
-     (read--erase),
-     (erase--print),
+     (read--print),
      (print--ending)
 );
 
@@ -778,7 +780,6 @@ draw(pic,
 draw(pic,
      start,
      read,
-     erase,
      print,
      ending
      );

@@ -259,10 +259,12 @@ The
 is the 
 language consisting of the concatenation of any number of strings.
 \begin{equation*}
-\kleenestar{\lang}=\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \text{$k\in\N$ and $\sigma_0,\ldots,\sigma_{k-1}\in\lang$}}
+\kleenestar{\lang}
+  =\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \text{$k\in\N$ and $\sigma_0,\ldots,\sigma_{k-1}\in\lang$}}
+  % =\lang^0\cup\lang^1\cup\lang^2\cup\cdots
 \end{equation*}
 This includes the concatenation of $0$-many strings, 
-so that $\emptystring\in\kleenestar{\lang}$ if $\lang\neq \emptyset$. 
+so $\emptystring\in\kleenestar{\lang}$ even if $\lang= \emptyset$. 
 
 The 
 \definend{reversal $\reversal{\lang}$}\index{reversal of a language}\index{language!reversal} 
@@ -270,8 +272,13 @@ of a language~$\lang$ is
 the language of reversals,
 $\reversal{\lang}=\set{\reversal{\sigma}\suchthat \sigma\in\lang}$.
 \end{definition}\footnotetext[1]{%
-  For technical convenience we take $\lang^0=\set{\emptystring}$ even when
-  $\lang=\emptyset$; see \cref{exer:WhyEmptysetZeroPowerNotEmpty}.
+  We take $\lang^0=\set{\emptystring}$ even when
+  $\lang=\emptyset$. For one thing, $\sigma^0=\emptystring$ for the same 
+  reason that page~\pageref{page:PrimitiveRecursion} defines the sum of
+  zero-many numbers to be~$0$ and the product of zero-many numbers to be~$1$,
+  which is that these are the identity elements with respect to the operations.
+  The identity element with respect to string concatenation is $\emptystring$.
+  Also see \cref{exer:WhyEmptysetZeroPowerNotEmpty}.
 }
 %</def:LangOps>
 
@@ -293,8 +300,6 @@ Its Kleene star is this.
 \end{example}
 %</ex:KleeneStar>
 
-\begin{remark}
-Here are two points about Kleene star.
 Earlier, for an alphabet~$\Sigma$ we defined 
 $\kleenestar{\Sigma}$ to be the set of strings
 over that alphabet, of any length.
@@ -303,28 +308,30 @@ we take each character in the alphabet to be a length-one string.
 
 Also, we have two choices to define the operation of
 repeatedly choosing strings.
-We could choose a string~$\sigma$ and then replicate,
-getting the $\sigma^k$'s.
+We could choose a string~$\sigma$ and then replicate it,
+getting the $\sigma^p$'s.
 Or, we could repeat choosing strings, getting
-$\sigma_0\concat\sigma_1\concat\cdots\concat\sigma_{k-1}$'s.
+$\sigma_0\concat\sigma_1\concat\cdots\concat\sigma_{k}$'s.
 The second is more useful and that's the definition of
-$\kleenestar{\lang}$.
-\end{remark}
+$\lang^k$ and $\kleenestar{\lang}\!$.
 
 \label{discuss:LanguageDecidesRecognizes}
-We close with a comment that bears on how we will use languages
+We close with a comment about how we will use languages
 in later chapters.
 %<*discussion:DecidingVsRecognizing>
 We have defined that a machine 
 `decides'\index{decide a language}\index{language!decide}
 a language
 if it computes whether or not its input is a language member.
-However, we have seen the distinction between computable
+However, we have since then seen the distinction between computable
 and computably enumerable, that for some sets, for all inputs 
 there is a machine that determines in a finite time
 whether the input is a member of that set, but
-the machine cannot determine in a finite time  
+the machine may not be able to determine in a finite time  
 that the input is not in the set.
+For instance there is a machine $\TM$ that can determine in a finite time
+whether an input~$e$ is in the \HP{} set $K$ but no machine can also
+determine when $e$ is not in~$K$ for all~$e$.
 We will say that a machine 
 \definend{recognizes}\index{recognize a language}\index{language!recognize}
 (or \definend{accepts},\index{accept a language}\index{language!accept} 
@@ -337,9 +344,9 @@ incorrectly report that it is.
 simply fail to report a conclusion, for example by failing to halt.)
 %</discussion:DecidingVsRecognizing>
 In short, deciding means that on any input the machine
-correctly computes all `yes' and all `no' answers,
+correctly computes both all `yes' and all `no' answers,
 while recognizing requires only that it correctly 
-computes all `yes' answers and never incorrectly compute a 'no'. 
+computes all `yes' answers and never incorrectly computes a 'no'. 
 
 %.....................................
 \begin{exercises}
@@ -716,6 +723,7 @@ achieves this upper bound.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Prove that $\kleenestar{\lang}=\lang^0\union\lang^1\union\lang^2\union\cdots\,$.
 \begin{answer}
@@ -1133,7 +1141,7 @@ also have syntax rules, usually
   a syntax violation.}. 
 
 A grammar a set of rules for the formation of strings in a language,
-that is, it is an analysis of the structure of a language.
+that is, it is an analysis of the structure of its language.
 In an aphorism, 
 \citetext{grammars are the language of languages.}{%
   From Matt Swift,
@@ -1201,15 +1209,18 @@ There are also two rules for \synt{noun} but
 we have abbreviated by combining 
 the bodies using the 
 \index{pipe symbol@pipe symbol, \syntaxor}`\grammarorsymbol'~pipe symbol.\footnote{%
- Read aloud as ``or.''}
+ Read the vertical bar aloud as ``or.''}
 
 The rules use two different components.
 The ones written in typewriter type, such as
 \trm{young},
 are from the alphabet~$\Sigma$ of the language.
 These are 
-\definend{terminals}.\index{terminal}\index{grammar!terminal}  
-The ones written with angle brackets and in italics, such as \ntrm{article}, 
+\definend{terminals}.\footnote{%
+  So the alphabet $\Sigma$ is not the set of twenty six letters, 
+  it is
+  the dictionary of allowed English words.}\index{terminal}\index{grammar!terminal}  
+The ones with angle brackets and italics, such as \ntrm{article}, 
 are 
 \definend{nonterminals}.\index{nonterminal}\index{grammar!nonterminal}
 These are like variables and are
@@ -1260,7 +1271,7 @@ we could substitute for any nonterminal.
 %<*discussion:DerivationTree>
 The \definend{derivation tree}\index{derivation tree}
 or \definend{parse tree}\index{parse tree} is an alternative representation.\footnote{%
-  The terms
+  The words
   `terminal' and `nonterminal' come from where the components lie in this tree.}
 %</discussion:DerivationTree>
 \begin{center}
@@ -1271,20 +1282,21 @@ or \definend{parse tree}\index{parse tree} is an alternative representation.\foo
 \begin{definition}
 A \definend{context-free grammar}\index{context free!grammar}\index{grammar!context free}\index{grammar}\index{language!grammar}
 is a four-tuple $\mathcal{G}=\sequence{\Sigma,N,S,P}$.
-First, $\Sigma$ is an alphabet, whose elements are the
-\definend{terminal symbols}.\index{terminal}
-Second, $N$ is a set of \definend{nonterminals}\index{nonterminal} 
+The set $\Sigma$ is an alphabet, whose elements are the
+\definend{terminal symbols},\index{terminal}
+and the elements of the set $N$ are the 
+\definend{nonterminals}\index{nonterminal} 
 or \definend{syntactic categories}.\index{syntactic category}\index{grammar!syntactic category}
 (We assume that $\Sigma$ and~$N$ are disjoint and that
 neither contains metacharacters.)
-Third, $S\in N$ is the \definend{start symbol}.\index{start symbol}\index{grammar!start symbol} 
-Fourth, $P$ is a set of 
+The symbol $S\in N$ is the \definend{start symbol}.\index{start symbol}\index{grammar!start symbol} 
+Finally, $P$ is a set of 
 \definend{productions}\index{production}\index{grammar!production}
 or \definend{rewrite rules}.\index{rewrite rule}\index{grammar!rewrite rule}
 \end{definition}
 %</def:Grammar>
 
-\noindent We will take the start symbol to be 
+\noindent Our convention is to indicate the start symbol by making it  
 the head of the first rule.
 
 \begin{example} \label{ex:GrammarOfTerms}
@@ -1331,11 +1343,12 @@ you can find a terminating derivation.
 In the prior example the nonterminals such as \synt{expr} or \synt{term} 
 describe the role of those components in the language, as did
 the English grammar fragment's \synt{noun phrase} and \synt{article}.
-But in the examples and exercises below we often use small grammars whose 
+That is why nonterminals are sometimes called `syntatic categories'.
+But our examples often use small grammars whose 
 terminals and nonterminals do not have any particular meaning.
-For these cases, we often move from the verbose notation like
-`\ntrm{sentence} \produces{} \ntrm{noun phrase} \ntrm{verb phrase}'
-to writing single letters, with nonterminals in upper case and terminals
+For these we often instead
+write productions using single letters, 
+with nonterminals in upper case and terminals
 in lower case.
 
 \begin{example}  \label{ex:GrammarOfanbn}
@@ -1358,7 +1371,7 @@ Similarly,
   \derives\trm{aa}S\trm{bb}            
   \derives\trm{aaa}S\trm{bbb}            
   \derives\trm{aaa}\emptystring\trm{bbb}
-  \derives\trm{aaabbb}  
+  =\trm{aaabbb}  
 is a derivation of $\str{a}^3\str{b}^3$.
 For this grammar, derivable strings have the form
 $\str{a}^n\str{b}^n$ for $n\in\N$.
@@ -1386,7 +1399,7 @@ Where $\sigma_0,\sigma_1$ are sequences of terminals and nonterminals,
 if they are related by a sequence of derivation steps then
 we may write $\sigma_0\kleenestar{\derivessymbol}\,\sigma_1$.
 Where $\sigma_0=S$ is the start symbol, 
-if there is a derivation $\sigma_0\;\kleenestar{\derivessymbol}\;\sigma_1$ that
+if there is a sequence $\sigma_0\;\kleenestar{\derivessymbol}\;\sigma_1$ that
 finishes with 
 a string of terminals $\sigma_1\in\kleenestar{\Sigma}$ then we say
 that $\sigma_1$ \definend{has a derivation}\index{derivation}
@@ -1425,7 +1438,7 @@ that $\sigma_1$ \definend{has a derivation}\index{derivation}
   These grammars describe more languages than the context free ones that
   we are using.
   But our definition satisfies our needs and is
-  the class of grammars that you will see in practice. 
+  the class of grammars that you most often see in practice. 
   % because it is a good balance of convenience and power. 
   } 
 

@@ -2695,3 +2695,118 @@ draw(p,outer[0],outer[1],outer[2],outer[3],outer[4],
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 
+
+
+// ============ DAG ===========
+int picnum = 27;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+nodestyle whitebox = nodestyle(xmargin=1pt, ymargin=1pt, drawfn=FillDrawer(white,white));
+defaultdrawstyle=directededgestyle;
+
+node empty=nbox("$\set{}$", whitebox),
+  zero=nbox("$\set{0}$", whitebox),
+  one=nbox("$\set{1}$", whitebox),
+  two=nbox("$\set{2}$", whitebox),
+  zeroone=nbox("$\set{0,1}$", whitebox),
+  zerotwo=nbox("$\set{0,2}$", whitebox),
+  onetwo=nbox("$\set{1,2}$", whitebox),
+  all=nbox("$\set{0,1,2}$", whitebox);
+
+// calculate nodes position
+real u=0.7cm;
+real v=u;
+defaultlayoutskip=u;
+
+vlayout(1*v, empty, one, zerotwo, all);
+hlayout(-2*u, one, zero);
+hlayout(2*u, one, two);
+hlayout(-2*u, zerotwo, zeroone);
+hlayout(2*u, zerotwo, onetwo);
+
+// draw edges
+draw(pic,
+     (empty--zero),
+     (empty--one),
+     (empty--two),
+     (zero--zeroone),
+     (zero--zerotwo),
+     (one--zeroone),
+     (one--onetwo),
+     (two--zerotwo),
+     (one--onetwo),
+     (two--onetwo),
+     (zeroone--all),
+     (zerotwo--all),
+     (onetwo--all)
+);
+
+// draw nodes, after edges
+draw(pic,
+     empty,
+     zero, one, two,
+     zeroone, zerotwo, onetwo,
+     all
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============ DAG ===========
+int picnum = 27;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+defaultnodestyle = nodestyle(xmargin=1pt, ymargin=1pt, drawfn=FillDrawer(white,white));
+defaultdrawstyle=directededgestyle;
+
+node empty=nbox("$\set{}$"),
+  zero=nbox("$\set{0}$"),
+  one=nbox("$\set{1}$"),
+  two=nbox("$\set{2}$"),
+  zeroone=nbox("$\set{0,1}$"),
+  zerotwo=nbox("$\set{0,2}$"),
+  onetwo=nbox("$\set{1,2}$"),
+  all=nbox("$\set{0,1,2}$");
+
+// calculate nodes position
+real u=0.7cm;
+real v=u;
+defaultlayoutskip=u;
+
+vlayout(1*v, empty, one, zerotwo, all);
+hlayout(-2*u, one, zero);
+hlayout(2*u, one, two);
+hlayout(-2*u, zerotwo, zeroone);
+hlayout(2*u, zerotwo, onetwo);
+
+// draw edges
+draw(pic,
+     (empty--zero),
+     (empty--one),
+     (empty--two),
+     (zero--zeroone),
+     (zero--zerotwo),
+     (one--zeroone),
+     (one--onetwo),
+     (two--zerotwo),
+     (one--onetwo),
+     (two--onetwo),
+     (zeroone--all),
+     (zerotwo--all),
+     (onetwo--all)
+);
+
+// draw nodes, after edges
+draw(pic,
+     empty,
+     zero, one, two,
+     zeroone, zerotwo, onetwo,
+     all
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

@@ -1,4 +1,5 @@
 // jhnode.asy Asymptote common definitions
+// for https://github.com/taoari/asy-graphtheory/blob/master/Usage.md
 
 // node.asy seems to cause graph3 to give output with a truncated viewport
 // So I need to import my settings for it separately 

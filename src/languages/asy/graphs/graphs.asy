@@ -2755,58 +2755,166 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============ DAG ===========
-int picnum = 27;
+// ============ Tree for bredth-first traversal ===========
+int picnum = 28;
 picture pic;
 
 setdefaultgraphstyles();
 defaultlayoutrel = false;
-defaultnodestyle = nodestyle(xmargin=1pt, ymargin=1pt, drawfn=FillDrawer(white,white));
-defaultdrawstyle=directededgestyle;
 
-node empty=nbox("$\set{}$"),
-  zero=nbox("$\set{0}$"),
-  one=nbox("$\set{1}$"),
-  two=nbox("$\set{2}$"),
-  zeroone=nbox("$\set{0,1}$"),
-  zerotwo=nbox("$\set{0,2}$"),
-  onetwo=nbox("$\set{1,2}$"),
-  all=nbox("$\set{0,1,2}$");
+node a=ncircle("\rule{0pt}{7pt}"),
+  b=ncircle("\rule{0pt}{7pt}"),
+  c=ncircle("\rule{0pt}{7pt}"),
+  d=ncircle("\rule{0pt}{7pt}"),
+  e=ncircle("\rule{0pt}{7pt}"),
+  f=ncircle("\rule{0pt}{7pt}"),
+  g=ncircle("\rule{0pt}{7pt}"),
+  h=ncircle("\rule{0pt}{7pt}"),
+  i=ncircle("\rule{0pt}{7pt}"),
+  j=ncircle("\rule{0pt}{7pt}");
 
 // calculate nodes position
-real u=0.7cm;
+real u=0.75cm;
 real v=u;
 defaultlayoutskip=u;
 
-vlayout(1*v, empty, one, zerotwo, all);
-hlayout(-2*u, one, zero);
-hlayout(2*u, one, two);
-hlayout(-2*u, zerotwo, zeroone);
-hlayout(2*u, zerotwo, onetwo);
+b.pos = new_node_pos(a,-120,-1*v);
+c.pos = new_node_pos(a,-90,-1*v);
+d.pos = new_node_pos(a,-60,-1*v);
+e.pos = new_node_pos(b,-110,-1*v);
+f.pos = new_node_pos(b,-80,-1*v);
+g.pos = new_node_pos(d,-110,-1*v);
+h.pos = new_node_pos(d,-80,-1*v);
+i.pos = new_node_pos(g,-110,-1*v);
+j.pos = new_node_pos(g,-80,-1*v);
 
 // draw edges
 draw(pic,
-     (empty--zero),
-     (empty--one),
-     (empty--two),
-     (zero--zeroone),
-     (zero--zerotwo),
-     (one--zeroone),
-     (one--onetwo),
-     (two--zerotwo),
-     (one--onetwo),
-     (two--onetwo),
-     (zeroone--all),
-     (zerotwo--all),
-     (onetwo--all)
+     (a--b),
+     (a--c),
+     (a--d),
+     (b--e),
+     (b--f),
+     (d--g),
+     (d--h),
+     (g--i),
+     (g--j)
 );
 
 // draw nodes, after edges
 draw(pic,
-     empty,
-     zero, one, two,
-     zeroone, zerotwo, onetwo,
-     all
+     a, b, c, d, e, f, g, h, i, j
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ...... Breadth-first
+int picnum = 29;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node a=ncircle("$0$"),
+  b=ncircle("$1$"),
+  c=ncircle("$2$"),
+  d=ncircle("$3$"),
+  e=ncircle("$4$"),
+  f=ncircle("$5$"),
+  g=ncircle("$6$"),
+  h=ncircle("$7$"),
+  i=ncircle("$8$"),
+  j=ncircle("$9$");
+
+// calculate nodes position
+real u=0.75cm;
+real v=u;
+defaultlayoutskip=u;
+
+b.pos = new_node_pos(a,-120,-1*v);
+c.pos = new_node_pos(a,-90,-1*v);
+d.pos = new_node_pos(a,-60,-1*v);
+e.pos = new_node_pos(b,-110,-1*v);
+f.pos = new_node_pos(b,-80,-1*v);
+g.pos = new_node_pos(d,-110,-1*v);
+h.pos = new_node_pos(d,-80,-1*v);
+i.pos = new_node_pos(g,-110,-1*v);
+j.pos = new_node_pos(g,-80,-1*v);
+
+// draw edges
+draw(pic,
+     (a--b),
+     (a--c),
+     (a--d),
+     (b--e),
+     (b--f),
+     (d--g),
+     (d--h),
+     (g--i),
+     (g--j)
+);
+
+// draw nodes, after edges
+draw(pic,
+     a, b, c, d, e, f, g, h, i, j
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ...... Depth-first
+int picnum = 30;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node a=ncircle("$0$"),
+  b=ncircle("$1$"),
+  c=ncircle("$4$"),
+  d=ncircle("$5$"),
+  e=ncircle("$2$"),
+  f=ncircle("$3$"),
+  g=ncircle("$6$"),
+  h=ncircle("$9$"),
+  i=ncircle("$7$"),
+  j=ncircle("$8$");
+
+// calculate nodes position
+real u=0.75cm;
+real v=u;
+defaultlayoutskip=u;
+
+b.pos = new_node_pos(a,-120,-1*v);
+c.pos = new_node_pos(a,-90,-1*v);
+d.pos = new_node_pos(a,-60,-1*v);
+e.pos = new_node_pos(b,-110,-1*v);
+f.pos = new_node_pos(b,-80,-1*v);
+g.pos = new_node_pos(d,-110,-1*v);
+h.pos = new_node_pos(d,-80,-1*v);
+i.pos = new_node_pos(g,-110,-1*v);
+j.pos = new_node_pos(g,-80,-1*v);
+
+// draw edges
+draw(pic,
+     (a--b),
+     (a--c),
+     (a--d),
+     (b--e),
+     (b--f),
+     (d--g),
+     (d--h),
+     (g--i),
+     (g--j)
+);
+
+// draw nodes, after edges
+draw(pic,
+     a, b, c, d, e, f, g, h, i, j
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

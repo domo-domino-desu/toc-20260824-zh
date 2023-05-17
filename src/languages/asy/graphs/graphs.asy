@@ -2755,23 +2755,23 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============ Tree for bredth-first traversal ===========
+// ============ Tree for breadth-first traversal ===========
 int picnum = 28;
 picture pic;
 
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-node a=ncircle("\rule{0pt}{7pt}"),
-  b=ncircle("\rule{0pt}{7pt}"),
-  c=ncircle("\rule{0pt}{7pt}"),
-  d=ncircle("\rule{0pt}{7pt}"),
-  e=ncircle("\rule{0pt}{7pt}"),
-  f=ncircle("\rule{0pt}{7pt}"),
-  g=ncircle("\rule{0pt}{7pt}"),
-  h=ncircle("\rule{0pt}{7pt}"),
-  i=ncircle("\rule{0pt}{7pt}"),
-  j=ncircle("\rule{0pt}{7pt}");
+node a=ncircle("a"),  // \rule{0pt}{7pt}
+  b=ncircle("b"),
+  c=ncircle("c"),
+  d=ncircle("d"),
+  e=ncircle("e"),
+  f=ncircle("f"),
+  g=ncircle("g"),
+  h=ncircle("h"),
+  i=ncircle("i"),
+  j=ncircle("j");
 
 // calculate nodes position
 real u=0.75cm;
@@ -2909,6 +2909,69 @@ draw(pic,
      (d--h),
      (g--i),
      (g--j)
+);
+
+// draw nodes, after edges
+draw(pic,
+     a, b, c, d, e, f, g, h, i, j
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ...... Cantor's traversal
+int picnum = 31;
+picture pic;
+
+setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
+defaultlayoutrel = false;
+
+node a=ncircle("$\sequence{0,0}$"),
+  b=ncircle("$\sequence{0,1}$"),
+  c=ncircle("$\sequence{1,0}$"),
+  d=ncircle("$\sequence{0,2}$"),
+  e=ncircle("$\sequence{1,1}$"),
+  f=ncircle("$\sequence{2,0}$"),
+  g=ncircle("$\sequence{0,3}$"),
+  h=ncircle("$\sequence{1,2}$"),
+  i=ncircle("$\sequence{2,1}$"),
+  j=ncircle("$\sequence{3,0}$");
+
+// calculate nodes position
+real u=1.1cm;
+real v=u;
+defaultlayoutskip=u;
+
+real leftangle = -120;
+real rightangle = -60;
+
+b.pos = new_node_pos(a,leftangle,-1*v);
+c.pos = new_node_pos(a,rightangle,-1*v);
+d.pos = new_node_pos(b,leftangle,-1*v);
+e.pos = new_node_pos(b,rightangle,-1*v);
+f.pos = new_node_pos(c,rightangle,-1*v);
+g.pos = new_node_pos(d,leftangle,-1*v);
+h.pos = new_node_pos(d,rightangle,-1*v);
+i.pos = new_node_pos(f,leftangle,-1*v);
+j.pos = new_node_pos(f,rightangle,-1*v);
+
+// draw edges
+draw(pic,
+     (a--b),
+     (a--c),
+     (b--d),
+     (b--e),
+     (c--e),
+     (c--f),
+     (d--g),
+     (d--h),
+     (e--h),
+     (e--i),
+     (f--i),
+     (f--j)
 );
 
 // draw nodes, after edges

@@ -6,14 +6,7 @@
 ;; Graph traversal for Jim Hefferon's _Theory of Computation_
 ;; License: GPL 3.0
 
-
-;; set -> string
-;; Show a set in a readable way
-;; The optional argument allows you to format the elements 
-(define (set->string s [elet->string (lambda (x) (format "~a" x))])
-  (string-join (map elet->string (set->list s)) #:before-first "{ " #:after-last " }"))
-
-;; ===== Tree, made of nodes
+;; ===== A tree is made of nodes
 
 ;; Structure: create a number of routines including
 ;;  constructor (node ..) that takes two arguments 
@@ -80,14 +73,28 @@
 ;;   fcn  Function to apply to each node
 ;;   #:maxrank  Natural number, the max rank that is traversed
 (define (tree-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
-  ; (printf "history-traverse-dfs: node ~s  rank=~s\n" node rank)
   (fcn node rank)
   (when (< rank maximumrank)
     (let ([children (node-children node)])
       (for ([child children])
-        ; (printf "   child is ~s\n" child)
         (tree-dfs child (+ rank 1) fcn #:maxrank maximumrank))
       )))
+
+;; void --> tree of nodes
+;; Make a tree to experiment on.
+(define (sample-tree-make)
+  (let* ([t (tree-create "a")]
+         [nb (node-add-child! t "b")]
+         [nc (node-add-child! t "c")]
+         [nd (node-add-child! t "d")]
+         [ne (node-add-child! nb "e")]
+         [nf (node-add-child! nb "f")]
+         [ng (node-add-child! nd "g")]
+         [nh (node-add-child! nd "h")]
+         [ni (node-add-child! ng "i")]
+         [nj (node-add-child! ng "j")]
+         )
+    t))
 
 (provide node
          node?

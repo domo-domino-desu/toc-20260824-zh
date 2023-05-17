@@ -3438,30 +3438,6 @@ that are not isomorphic.)
 \index{graph!isomorphism|)}
 
 
-\subsection{Traversal}\index{graph!traversal|(}
-We sometimes need to visit each vertex in a graph.
-% Often that graph is a tree.
-%
-On the left below is a tree with ten nodes.
-In the middle we visit the nodes in 
-\definend{breadth-first}\index{breadth-first traversal}\index{graph!traversal!breadth-first} 
-order, where
-we cover all nodes that are at rank~$k$ before visiting any nodes of
-rank $k+1$ (a node is \definend{rank}~$k$\index{graph!node!rank}\index{rank} 
-when a minimal path 
-to the tree's root has~$k$ edges). 
-\begin{center}
-  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1028.pdf}}
-  \qquad
-  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1029.pdf}}
-  \qquad
-  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1030.pdf}}
-\end{center}
-On the right we visit the nodes in 
-\definend{depth-first}\index{depth-first traversal}\index{graph!traversal!depth-first} order, where
-we visit child nodes before going on to visit sibling nodes.
-\index{graph!traversal|)}
-
 
 % .............................................
 \begin{exercises}
@@ -5255,6 +5231,207 @@ Give a derivation of these strings:
 \end{exercises}
 \index{BNF|)}
 
+
+
+
+
+
+\extra{Tree traversal}\index{tree!traversal|(}
+We sometimes need to visit each vertex in a graph.
+An example is that when we described Cantor's correspondence enumerating 
+the set $\N\times\N$,
+we drew this array. 
+\begin{equation*}
+  \begin{array}{cccccc}
+    \vdots          &\vdots         &\vdots         &\vdots         \\
+    \sequence{0,3}  &\sequence{1,3} &\sequence{2,3} &\sequence{3,3} &\cdots  \\
+    \sequence{0,2}  &\sequence{1,2} &\sequence{2,2} &\sequence{3,2} &\cdots  \\ 
+    \sequence{0,1}  &\sequence{1,1} &\sequence{2,1} &\sequence{3,1} &\cdots  \\ 
+    \sequence{0,0}  &\sequence{1,0} &\sequence{2,0} &\sequence{3,0} &\cdots
+  \end{array}
+\end{equation*}
+And, the enumeration starts like this.
+\begin{center}
+  \begin{tabular}{r|ccccccc@{\hspace{6pt}}c}
+    \tabulartext{Number}  
+       &$0$    &$1$   &$2$  &$3$  &$4$  &$5$  &$6$ &\ldots   
+   \\ \cline{2-9}
+    \tabulartext{Pair} 
+               &$\sequence{0,0}$\rule{0pt}{10pt}  
+               &$\sequence{0,1}$ 
+               &$\sequence{1,0}$ 
+               &$\sequence{0,2}$  
+               &$\sequence{1,1}$ 
+               &$\sequence{2,0}$ 
+               &$\sequence{0,3}$  
+               &\ldots 
+     \end{tabular}
+\end{center}   
+To view that as a graph traversal, below we  
+connected each pair in the array to two of its neighbors, 
+above and to the right.\footnote{%
+  If we only did above or only to the right then the 
+  graph would not be connected.}
+We also redrew it with the array's lower-left rotated to the top.
+\begin{center}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1031.pdf}}
+\end{center}
+With this presentation, Cantor's enumeration lists the nodes in order of
+how far they are from the top: first the top node, then the nodes that are
+one away, then those that are two away, etc.\footnote{%
+  A traversal does not have to follow the edges, it just has to reach
+  all the nodes.}
+
+We will present Racket code to traverse trees.
+The above graph isn't a tree because trees aren't directed.
+Instead it is a DAG, a directed acyclic graph.
+But the two share the key feature that they have no cycles and 
+for our purposes that is all that we need.
+
+On the left below is a tree with ten nodes.
+In the middle we visit the nodes in 
+\definend{breadth-first}\index{breadth-first traversal}\index{graph!traversal!breadth-first} 
+order, where
+we cover all nodes that are at rank~$k$ before visiting any nodes of
+rank $k+1$ (a node is \definend{rank}~$k$\index{graph!node!rank}\index{rank} 
+when a minimal path 
+to the tree's root has~$k$ edges). 
+On the right we visit the nodes in 
+\definend{depth-first}\index{depth-first traversal}\index{graph!traversal!depth-first} order, where
+we visit child nodes before going on to visit sibling nodes.
+\begin{center}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1028.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1029.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1030.pdf}}
+\end{center}
+
+A tree is a graph and thus is collection of connected nodes.
+We first define a \codeinline{node}.
+Essentially it is an ordered pair.
+\lstinputlisting[firstline=15,lastline=15]{\traversefile}
+The \codeinline{struct} construct has the system automatically define
+a number of useful functions. 
+One is a creator function \codeinline{(node n s)}.
+We use that to make the next function, which knows that 
+\codeinline{children} is a set.
+\lstinputlisting[firstline=21,lastline=22]{\traversefile}
+It is a mutable set because to create the tree we will want to add children
+to that set, so we will want to change it.
+In turn, we use that routine to create new trees.
+\lstinputlisting[firstline=27,lastline=28]{\traversefile}
+
+Another thing the \codeinline{struct} construct does is create accessor
+functions.
+This adds a child to the set of children of the given node. 
+\lstinputlisting[firstline=34,lastline=37]{\traversefile}
+Note the \codeinline{node-children} routine.
+We didn't separately write that, 
+it is created  from the two names when we declare the \codeinline{struct}.
+(Note the convention of using an exclamation mark for 
+the names of procedures whose main purpose is to cause side effects, 
+that is, whose main role is not in what it returns.)
+
+With that,
+This makes the tree with ten nodes from the above diagram.
+\begin{lstlisting}
+(define (sample-tree-make)
+  (let* ([t (tree-create "a")]
+         [nb (node-add-child! t "b")]
+         [nc (node-add-child! t "c")]
+         [nd (node-add-child! t "d")]
+         [ne (node-add-child! nb "e")]
+         [nf (node-add-child! nb "f")]
+         [ng (node-add-child! nd "g")]
+         [nh (node-add-child! nd "h")]
+         [ni (node-add-child! ng "i")]
+         [nj (node-add-child! ng "j")]
+         )
+    t))
+\end{lstlisting}
+
+We are ready for the traversal code.
+At each node we will just print out the node name, 
+\lstinputlisting[firstline=41,lastline=42]{\traversefile}
+indented by some spaces
+to indicate the rank.
+\lstinputlisting[firstline=46,lastline=47]{\traversefile}
+
+First, breadth-first.
+\lstinputlisting[firstline=56,lastline=68]{\traversefile}
+It comes in two routines, \codeinline{tree-bfs} and
+\codeinline{tree-bfs-helper}.
+In Scheme-derived languages such as Racket, 
+routines are often organized with a caller and a helper.
+This is because the helper function is
+\definend{tail-recursive}.\index{tail recursion}
+Its very last thing is a recursion
+and in a Scheme language the compiler knows that such a routine can be 
+translated into interative executable code.
+Thus, by using helper routines, such a language combines 
+the expressiveness of recursion with the memory conservation of iteration.
+
+There is a parameter \codeinline{MAXIMUM-RANK} which is defined elsewhere in the
+file.
+\lstinputlisting[firstline=50,lastline=50]{\traversefile}
+This is handy for testing, to keep the routine from running out of control.
+The \codeinline{#:maxrank [maxrank MAXIMUM-RANK]} syntax makes it an 
+optional keyword argument.
+
+The calling routine \codeinline{tree-bfs} takes as input the
+node that is the top of the tree, naturally, but also has a
+\codeinline{fcn} input.
+Racket and other LISP derived languages allow you to pass functions.
+We will pass \codeinline{show-node-name}, defined above, and it gets
+called on the \codeinline{(fcn node rank)} line. 
+
+The strategy of \codeinline{tree-bfs-helper} is that when
+\codeinline{rank} is~$k$ then the routine traverses all nodes at that rank,
+which it gets from the list
+\codeinline{level}.
+As it traverses that list, it stores all of the children of those nodes in 
+the list \codeinline{next-level}.
+
+Here is the result of running the routine.
+\begin{lstlisting}
+> (define t (sample-tree-make))
+> (tree-bfs t show-node-name)
+a
+  c
+  d
+  b
+    e
+    f
+    g
+    h
+      i
+      j
+\end{lstlisting}
+The children are stored in a set, not a list.
+So they come out in a different order than how they 
+went in.
+Nonetheless, this is breadth-first traversal.
+
+The depth-first routine in some ways is more 
+natural in Racket.
+\lstinputlisting[firstline=75,lastline=81]{\traversefile}
+For example, there is no need for a helper function.
+Here is the result of running it.
+\begin{lstlisting}
+> (tree-dfs t 0 show-node-name)
+a
+  b
+    f
+    e
+  d
+    h
+    g
+      j
+      i
+  c
+\end{lstlisting}
+\index{tree!traversal|)}
 
 
 

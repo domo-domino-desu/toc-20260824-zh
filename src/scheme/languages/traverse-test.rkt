@@ -14,7 +14,7 @@
 ;; void --> node
 ;; Make a tree to test on
 
-(define (stm)
+(define (sample-tree-make)
   (let* ([t (tree-create "a")]
          [nb (node-add-child! t "b")]
          [nc (node-add-child! t "c")]
@@ -70,14 +70,14 @@
 
    (test-case
     "Test breadth-first search"
-    (let* ([t (stm)]
+    (let* ([t (sample-tree-make)]
            )
       (tree-bfs t show-node-name)
       ))
 
    (test-case
     "Test depth-first search"
-    (let* ([t (stm)]
+    (let* ([t (sample-tree-make)]
            )
       (tree-dfs t 0 show-node-name)
       ))

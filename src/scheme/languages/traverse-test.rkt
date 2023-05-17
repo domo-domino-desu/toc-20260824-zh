@@ -11,8 +11,22 @@
 
 
 ;; ===== Tree making
-(define (string-pad n)
-  (apply string-append (build-list n (lambda (x) "  "))))
+;; void --> node
+;; Make a tree to test on
+
+(define (stm)
+  (let* ([t (tree-create "a")]
+         [nb (node-add-child! t "b")]
+         [nc (node-add-child! t "c")]
+         [nd (node-add-child! t "d")]
+         [ne (node-add-child! nb "e")]
+         [nf (node-add-child! nb "f")]
+         [ng (node-add-child! nd "g")]
+         [nh (node-add-child! nd "h")]
+         [ni (node-add-child! ng "i")]
+         [nj (node-add-child! ng "j")]
+         )
+    t))
    
 (define tree-tests
   (test-suite
@@ -23,64 +37,52 @@
     (let ([n (node "a" (mutable-seteq))])
       (check-true (node? n))))
 
-;   (test-case
-;    "Test making a history"
-;    (let* ([config (list "a" "b")]
-;           [history (history-create config)])
-;      ; (printf "~s\n" history)
-;      (check-equal? (car history) config)
-;      ))
+   (test-case
+    "Test creating a tree"
+    (let* ([t (tree-create "a")])
+      (check-true (node? t))
+      (check-equal? (node-name t) "a")
+      (check-true (set-empty? (node-children t)))
+      ))
 
-;   (test-case
-;    "Test building a history"
-;    (let* ([config (list "0" "b")]
-;           [history (history-create config)]
-;           [config1 (list "1" "d")]
-;           [node1 (history-node-make config1)]
-;           [config2 (list "2" "f")]
-;           [node2 (history-node-make config2)])
-;      (history-node-add! history node1)
-;      (printf "~s\n" history)
-;      (check-equal? (car history) config)
-;      (check-true (set-member? (cdr history) node1))
-;      (history-node-add! node1 node2)
-;      (printf "~s\n" history)
-;      (check-equal? (car node1) config1)
-;      (check-true (set-member? (cdr node1) node2))
-;      ))
+   (test-case
+    "Test building a tree"
+    (let* ([t (tree-create "a")]
+           [naa (node-create "aa")]
+           [saa (set-add! (node-children t) naa)]
+           [nab (node-create "ab")]
+           [sab (set-add! (node-children t) nab)]
+           )
+      (check-true (node? t))
+      (check-equal? (node-name t) "a")
+      (check-true (set-member? (node-children t) naa))
+      (check-true (set-member? (node-children t) nab))
+      (let* ([naaa (node-create "aaa")]
+             [saaa (set-add! (node-children naa) naaa)]
+             [naba (node-create "aba")]
+             [saba (set-add! (node-children nab) naba)]
+             )
+        (check-true (set-member? (node-children naa) naaa))
+        (check-true (set-member? (node-children nab) naba))
+        )
+      ))
 
-;   (test-case
-;    "Test building a history"
-;    (let* ([config (list 1)]
-;           [history (history-create config)]
-;           ; rank 1
-;           [node-2 (history-node-add! history (history-node-make '(2)))]
-;           [node-3 (history-node-add! history (history-node-make '(3)))]
-;           ; rank 2
-;           [node-4 (history-node-add! node-2 (history-node-make '(4)))]
-;           [node-5 (history-node-add! node-2 (history-node-make '(5)))]
-;           [node-6 (history-node-add! node-2 (history-node-make '(6)))]
-;           [node-7 (history-node-add! node-3 (history-node-make '(7)))]
-;           ; rank 3
-;           [node-8 (history-node-add! node-4 (history-node-make '(8)))]
-;           [node-9 (history-node-add! node-4 (history-node-make '(9)))]
-;           [node-10 (history-node-add! node-5 (history-node-make '(10)))]
-;           [node-11 (history-node-add! node-6 (history-node-make '(11)))]
-;           [node-12 (history-node-add! node-7 (history-node-make '(12)))]
-;           [node-13 (history-node-add! node-7 (history-node-make '(13)))]
-;           ; rank 4
-;           [node-14 (history-node-add! node-11 (history-node-make '(14)))]
-;           [node-15 (history-node-add! node-13 (history-node-make '(15)))]
-;           )
-;      ; (printf "history: ~s\n" history)
-;      (history-traverse-dfs history 0 (lambda (x y) (printf "~a~s\n" (string-pad y) (caar x))))
-;;      (check-equal? (car history) config)
-;;      (check-true (set-member? (cdr history) new-history-node))
-;      ))
+
+   (test-case
+    "Test breadth-first search"
+    (let* ([t (stm)]
+           )
+      (tree-bfs t show-node-name)
+      ))
+
+   (test-case
+    "Test depth-first search"
+    (let* ([t (stm)]
+           )
+      (tree-dfs t 0 show-node-name)
+      ))
 
    )) ;; end traverse suite and tests
-
-
 
 
 ;; ===== Run the tests; comment out ones not being worked-on

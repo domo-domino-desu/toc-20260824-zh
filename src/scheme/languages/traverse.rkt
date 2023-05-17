@@ -21,22 +21,37 @@
 ;;  selectors (node-name ..) and (node-children ..)
 (struct node (name children))
 
-;; Create a node
+;; string -> node
+;; Create a node.
 ;;   name  string
 ;; The children are in a set.
 (define (node-create name)
   (node name (mutable-seteq)))
 
-;; Create a new tree
+;; string -> node
+;; Create a new tree.
 ;;  root-node-name   string  Name of root node
 (define (tree-create root-node-name)
   (node-create root-node-name))
 
-;; Add a child to the node's children
-;;  n  instance of structure node
+;; node, string --> node
+;; To the node n's children create and add a child node.  Return child node.
+;;  parent  instance of structure node
 ;;  c  instance of structure node
-(define (node-add-child! n c)
-  (set-add! (node-children n) c))
+(define (node-add-child! parent child-name)
+  (let ([n (node-create child-name)])
+    (set-add! (node-children parent) n)
+    n))
+
+;; natual number --> string
+;; Return a string with 2*n spaces 
+(define (string-pad n)
+  (apply string-append (build-list n (lambda (x) "  "))))
+
+;; node, natural number --> print a string
+;; Print a represenation of the node
+(define (show-node-name n r)
+  (printf "~a~a\n" (string-pad r) (node-name n)))
 
 ;; Default for the deepest a traversal will go
 (define MAXIMUM-RANK 100)
@@ -45,16 +60,16 @@
 ;;   node  Root node of tree
 ;;   fcn  Function to apply to each node
 ;;   #:maxrank  Natural number, the max rank that is traversed
-(define (tree-bfs node fcn #:maxrank [maximumrank MAXIMUM-RANK])
-  (tree-bfs-helper [node] 0 fcn #:maximumrank maximumrank))
+(define (tree-bfs node fcn #:maxrank [maxrank MAXIMUM-RANK])
+  (tree-bfs-helper (list node) 0 fcn #:maxrank maxrank))
 
-(define (tree-bfs-helper level rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
-  (when (< rank maximumrank)
+(define (tree-bfs-helper level rank fcn #:maxrank [maxrank MAXIMUM-RANK])
+  (when (< rank maxrank)
     (let ([next-level '()])
       (for ([node level])
         (fcn node rank)
         (for ([child-node (node-children node)])
-          (cons child-node next-level)
+          (set! next-level (cons child-node next-level))
           ))
       (when (not (null? next-level))
         (tree-bfs-helper next-level (+ 1 rank) fcn)))))
@@ -76,9 +91,12 @@
 
 (provide node
          node?
+         node-name
+         node-children
          node-create
          tree-create
          node-add-child!
+         show-node-name
          MAXIMUM-RANK
          tree-bfs
          tree-dfs

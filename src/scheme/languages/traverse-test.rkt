@@ -27,7 +27,25 @@
          [nj (node-add-child! ng "j")]
          )
     t))
-   
+
+
+(define (cantor-tree-make)
+  (let* ([t (tree-create "0,0")]
+         [nb (node-add-child! t "0,1")]
+         [nc (node-add-child! t "1,0")]
+         [nd (node-add-child! nb "0,2")]
+         [ne (node-add-child! nb "1,1")]
+         [v0 (set-add! (node-children nc) ne)]
+         [nf (node-add-child! nb "2,0")]
+         [ng (node-add-child! nd "0,3")]
+         [nh (node-add-child! nd "1,2")]
+         [v1 (set-add! (node-children ne) nh)]
+         [ni (node-add-child! ne "2,1")]
+         [v2 (set-add! (node-children nf) ni)]
+         [nj (node-add-child! nf "3,0")]
+         )
+    t))
+
 (define tree-tests
   (test-suite
    "tree tests"
@@ -70,6 +88,7 @@
 
    (test-case
     "Test breadth-first search"
+    (displayln "+++++ Breadth-first below here")
     (let* ([t (sample-tree-make)]
            )
       (tree-bfs t show-node-name)
@@ -77,9 +96,18 @@
 
    (test-case
     "Test depth-first search"
+    (displayln "+++++ Depth-first below here")
     (let* ([t (sample-tree-make)]
            )
       (tree-dfs t 0 show-node-name)
+      ))
+
+   (test-case
+    "Test breadth-first search on DAG"
+    (displayln "+++++ Breadth-first on DAG below here")
+    (let* ([t (cantor-tree-make)]
+           )
+      (tree-bfs-set t show-node-name)
       ))
 
    )) ;; end traverse suite and tests

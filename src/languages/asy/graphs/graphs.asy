@@ -2981,3 +2981,56 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+// ============ Exercises for breadth-first traversal ===========
+int picnum = 32;
+picture pic;
+
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node a=ncircle("a"),  // \rule{0pt}{7pt}
+  b=ncircle("b"),
+  c=ncircle("c"),
+  d=ncircle("d"),
+  e=ncircle("e"),
+  f=ncircle("f"),
+  g=ncircle("g"),
+  h=ncircle("h"),
+  i=ncircle("i");
+
+// calculate nodes position
+real u=0.75cm;
+real v=u;
+defaultlayoutskip=u;
+
+b.pos = new_node_pos(a,-120,-1*v);
+c.pos = new_node_pos(a,-60,-1*v);
+d.pos = new_node_pos(b,-110,-1*v);
+e.pos = new_node_pos(b,-80,-1*v);
+f.pos = new_node_pos(c,-110,-1*v);
+g.pos = new_node_pos(c,-80,-1*v);
+h.pos = new_node_pos(g,-110,-1*v);
+i.pos = new_node_pos(g,-80,-1*v);
+
+// draw edges
+draw(pic,
+     (a--b),
+     (a--c),
+     (b--d),
+     (b--e),
+     (c--f),
+     (c--g),
+     (g--h),
+     (g--i)
+);
+
+// draw nodes, after edges
+draw(pic,
+     a, b, c, d, e, f, g, h, i
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

@@ -19,7 +19,7 @@
 ;;   name  string
 ;; The children are in a set.
 (define (node-create name)
-  (node name (mutable-seteq)))
+  (node name (mutable-set)))
 
 ;; string -> node
 ;; Create a new tree.
@@ -67,6 +67,24 @@
       (when (not (null? next-level))
         (tree-bfs-helper next-level (+ 1 rank) fcn)))))
 
+;; Traverse the tree or DAG breadth first
+;;   node  Root node of tree
+;;   fcn  Function to apply to each node
+;;   #:maxrank  Natural number, the max rank that is traversed
+(define (tree-bfs-set node fcn #:maxrank [maxrank MAXIMUM-RANK])
+  (tree-bfs-set-helper (mutable-set node) 0 fcn #:maxrank maxrank))
+
+(define (tree-bfs-set-helper level rank fcn #:maxrank [maxrank MAXIMUM-RANK])
+  (when (< rank maxrank)
+    (let ([next-level (mutable-set)])
+      (for ([node level])
+        (fcn node rank)
+        (for ([child-node (node-children node)])
+          (set-add! next-level child-node)
+          ))
+      (when (not (set-empty? next-level))
+        (tree-bfs-set-helper next-level (+ 1 rank) fcn)))))
+
 ;; Traverse the tree depth first
 ;;   node  Root node of tree
 ;;   rank  Natural number  Depth of this node in the tree
@@ -96,6 +114,41 @@
          )
     t))
 
+;; void --> tree of nodes
+;; Make a binary tree.
+(define (exercise-tree-make)
+  (let* ([t (tree-create "a")]
+         [nb (node-add-child! t "b")]
+         [nc (node-add-child! t "c")]
+         [nd (node-add-child! nb "d")]
+         [ne (node-add-child! nb "e")]
+         [nf (node-add-child! nc "f")]
+         [ng (node-add-child! nc "g")]
+         [nh (node-add-child! ng "h")]
+         [ni (node-add-child! ng "i")]
+         )
+    t))
+
+;; void --> DAG of nodes
+;; Make the Cantor graph.
+(define (cantor-DAG-make)
+  (let* ([t (tree-create "0,0")]
+         [nb (node-add-child! t "0,1")]
+         [nc (node-add-child! t "1,0")]
+         [nd (node-add-child! nb "0,2")]
+         [ne (node-add-child! nb "1,1")]
+         [v0 (set-add! (node-children nc) ne)]
+         [nf (node-add-child! nb "2,0")]
+         [ng (node-add-child! nd "0,3")]
+         [nh (node-add-child! nd "1,2")]
+         [v1 (set-add! (node-children ne) nh)]
+         [ni (node-add-child! ne "2,1")]
+         [v2 (set-add! (node-children nf) ni)]
+         [nj (node-add-child! nf "3,0")]
+         )
+    t))
+
+
 (provide node
          node?
          node-name
@@ -106,6 +159,7 @@
          show-node-name
          MAXIMUM-RANK
          tree-bfs
+         tree-bfs-set
          tree-dfs
  )
 

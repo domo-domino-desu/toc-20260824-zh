@@ -4773,17 +4773,19 @@ For instance, we could replace the this use of Kleene star
 \noindent But these constructs come up often enough
 that adopting an abbreviation is a significant convenience.
 
-\begin{remark}
 Passing from the grammar to a parser for that grammar is mechanical.
 There are programs that take as input a grammar,
-for example in BNF, and give as output source code that will
+often one in BNF, and give as output source code that will
 parse files following that grammar's format.
 Such a program is a \definend{parser-generator}\index{parser-generator} 
 (sometimes instead called a 
 \definend{compiler-compiler},\index{compiler-compiler}
-which is a fun term but is a bit misleading because a parser 
+which is a fun term but is misleading because a parser 
 is only part of a compiler).
-\end{remark}
+
+In closing, Backus-Naur form for grammars is widely used.
+It is used for describing programming languages, 
+formats for documents or files, and communication protocols.
 
 
 \begin{exercises}
@@ -5322,16 +5324,17 @@ to that set, so we will want to change it.
 In turn, we use that routine to create new trees.
 \lstinputlisting[firstline=27,lastline=28]{\traversefile}
 
-Another thing the \codeinline{struct} construct does is create accessor
-functions.
 This adds a child to the set of children of the given node. 
 \lstinputlisting[firstline=34,lastline=37]{\traversefile}
 Note the \codeinline{node-children} routine.
-We didn't separately write that, 
-it is created  from the two names when we declare the \codeinline{struct}.
+Another thing that \codeinline{struct} does is to create accessor
+functions\Dash
+we didn't write \codeinline{node-children}, 
+the system creates it 
+from the two names when we declared the \codeinline{struct}.
 (Note the convention of using an exclamation mark for 
-the names of procedures whose main purpose is to cause side effects, 
-that is, whose main role is not in what it returns.)
+the names of procedures whose main role is to cause side effects, 
+that is, whose main purpose is not to return what it returns.)
 
 With that,
 This makes the tree with ten nodes from the above diagram.
@@ -5409,15 +5412,15 @@ a
       j
 \end{lstlisting}
 The children are stored in a set, not a list.
-So they come out in a different order than how they 
+So they can come out in a different order than how they 
 went in.
 Nonetheless, this is breadth-first traversal.
 
-The depth-first routine in some ways is more 
+The depth-first routine is in some ways more 
 natural in Racket.
-\lstinputlisting[firstline=75,lastline=81]{\traversefile}
+\lstinputlisting[firstline=93,lastline=99]{\traversefile}
 For example, there is no need for a helper function.
-Here is the result of running it.
+Here it is in action.
 \begin{lstlisting}
 > (tree-dfs t 0 show-node-name)
 a
@@ -5431,6 +5434,116 @@ a
       i
   c
 \end{lstlisting}
+
+\begin{exercises}
+\begin{exercise}
+This is a \definend{binary tree}\index{tree!binary}\index{binary tree} 
+because each node has either two children or none
+(in the definition some authors also allow one child).
+\begin{center}
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1032.pdf}}
+\end{center}
+\begin{exparts}
+\item Give the Racket code to define this tree.
+\item Perform a breadth-first traversal.
+\item Do depth-first. 
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item Here is the code.
+\lstinputlisting[firstline=119,lastline=130]{\traversefile}
+\item From the interpreter after running the definitions we get this.
+\begin{lstlisting}
+> (define t (exercise-tree-make))
+> (tree-bfs t show-node-name)
+a
+  c
+  b
+    e
+    d
+    g
+    f
+      i
+      h
+\end{lstlisting}
+\item We get this.
+\begin{lstlisting}
+> (tree-dfs t 0 show-node-name)
+a
+  b
+    d
+    e
+  c
+    f
+    g
+      h
+      i
+\end{lstlisting}
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+We've noted that the graph for the Cantor enumeration is not a tree,
+it is a directed acyclic graph.
+\begin{exparts}
+\item Give the Racket code to define this graph.  
+\item What happens if you run the \codeinline{tree-bfs} routine on it?
+\item Adjust the \codeinline{tree-bfs} code.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item The difference with this graph is that some nodes have more than
+one parent.
+This will do.    
+\lstinputlisting[firstline=134,lastline=149]{\traversefile}
+\item In the result, nodes with multiple parents are visited multiple times.
+\begin{lstlisting}
+> (define t (cantor-DAG-make))
+> (tree-bfs t show-node-name)
+0,0
+  1,0
+  0,1
+    2,0
+    1,1
+    0,2
+    1,1
+      2,1
+      1,2
+      0,3
+      1,2
+      2,1
+      1,2
+      2,1
+      3,0    
+\end{lstlisting}
+\item The issue is that \codeinline{next-level} is a list.
+When nodes get added to that list multiple times, they then show up 
+multiple times.
+We can fix this by making it a set, and adjusting the related code.
+\lstinputlisting[firstline=74,lastline=86]{\traversefile}
+Here is the result at the interpreter.
+\begin{lstlisting}
+> (tree-bfs-set t show-node-name)
+0,0
+  0,1
+  1,0
+    0,2
+    1,1
+    2,0
+      3,0
+      1,2
+      2,1
+      0,3  
+\end{lstlisting}
+\end{exparts}
+\end{answer}
+  
+\end{exercise}
+
+
+\end{exercises}
+
 \index{tree!traversal|)}
 
 

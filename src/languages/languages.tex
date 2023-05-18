@@ -5285,8 +5285,8 @@ one away, then those that are two away, etc.\footnote{%
   all the nodes.}
 
 We will present Racket code to traverse trees.
-The above graph isn't a tree because trees aren't directed.
-Instead it is a DAG, a directed acyclic graph.
+The above graph isn't a tree, 
+instead it is a DAG, a directed acyclic graph.
 But the two share the key feature that they have no cycles and 
 for our purposes that is all that we need.
 
@@ -5309,7 +5309,7 @@ we visit child nodes before going on to visit sibling nodes.
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1030.pdf}}
 \end{center}
 
-A tree is a graph and thus is collection of connected nodes.
+A tree is a graph, and thus is collection of connected nodes.
 We first define a \codeinline{node}.
 Essentially it is an ordered pair.
 \lstinputlisting[firstline=15,lastline=15]{\traversefile}
@@ -5319,7 +5319,7 @@ One is a creator function \codeinline{(node n s)}.
 We use that to make the next function, which knows that 
 \codeinline{children} is a set.
 \lstinputlisting[firstline=21,lastline=22]{\traversefile}
-It is a mutable set because to create the tree we will want to add children
+It is a mutable set because as we create the tree we will add children
 to that set, so we will want to change it.
 In turn, we use that routine to create new trees.
 \lstinputlisting[firstline=27,lastline=28]{\traversefile}
@@ -5329,15 +5329,20 @@ This adds a child to the set of children of the given node.
 Note the \codeinline{node-children} routine.
 Another thing that \codeinline{struct} does is to create accessor
 functions\Dash
-we didn't write \codeinline{node-children}, 
+we didn't separately write \codeinline{node-children}, 
 the system creates it 
 from the two names when we declared the \codeinline{struct}.
-(Note the convention of using an exclamation mark for 
-the names of procedures whose main role is to cause side effects, 
-that is, whose main purpose is not to return what it returns.)
+(LISP-derived languages have a convention of using an exclamation mark for 
+the names of procedures whose main role is to cause side effects,
+not to return something.)\footnote{%
+  The code here has a way to tie from parent to child but no direct way
+  to tie back.
+  So we could consider that this isn't a tree because trees aren't directed.
+  But below this won't matter so we will ignore it.
+}
 
 With that,
-This makes the tree with ten nodes from the above diagram.
+this makes the tree with ten nodes from the above diagram.
 \begin{lstlisting}
 (define (sample-tree-make)
   (let* ([t (tree-create "a")]
@@ -5356,14 +5361,14 @@ This makes the tree with ten nodes from the above diagram.
 
 We are ready for the traversal code.
 At each node we will just print out the node name, 
-\lstinputlisting[firstline=41,lastline=42]{\traversefile}
+\lstinputlisting[firstline=46,lastline=47]{\traversefile}
 indented by some spaces
 to indicate the rank.
-\lstinputlisting[firstline=46,lastline=47]{\traversefile}
+\lstinputlisting[firstline=41,lastline=42]{\traversefile}
 
-First, breadth-first.
+The first traversal is breadth-first.
 \lstinputlisting[firstline=56,lastline=68]{\traversefile}
-It comes in two routines, \codeinline{tree-bfs} and
+It comes in two functions, \codeinline{tree-bfs} and
 \codeinline{tree-bfs-helper}.
 In Scheme-derived languages such as Racket, 
 routines are often organized with a caller and a helper.
@@ -5385,8 +5390,8 @@ optional keyword argument.
 The calling routine \codeinline{tree-bfs} takes as input the
 node that is the top of the tree, naturally, but also has a
 \codeinline{fcn} input.
-Racket and other LISP derived languages allow you to pass functions.
-We will pass \codeinline{show-node-name}, defined above, and it gets
+Racket and other LISP-derived languages allow you to pass functions.
+We will pass \codeinline{show-node-name} and it gets
 called on the \codeinline{(fcn node rank)} line. 
 
 The strategy of \codeinline{tree-bfs-helper} is that when
@@ -5412,7 +5417,7 @@ a
       j
 \end{lstlisting}
 The children are stored in a set, not a list.
-So they can come out in a different order than how they 
+So they can come out in an order that is different than how they 
 went in.
 Nonetheless, this is breadth-first traversal.
 
@@ -5489,7 +5494,7 @@ it is a directed acyclic graph.
 \begin{exparts}
 \item Give the Racket code to define this graph.  
 \item What happens if you run the \codeinline{tree-bfs} routine on it?
-\item Adjust the \codeinline{tree-bfs} code.
+\item Adjust the \codeinline{tree-bfs} code to make it work.
 \end{exparts}
 \begin{answer}
 \begin{exparts}

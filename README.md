@@ -56,8 +56,8 @@ you can see INSTALL.  But really, just use the supplied PDF.
 2019-Dec-31  JH Developing for third in-class use.  
 2020-Nov-11  JH Major revision in preparation for 1.0.  Added
   many exercises, provide full answers for each.  
-2021-Nov-15  JH Writing Jupyter notebooks.
+2021-Nov-15  JH Writing Jupyter notebooks.  
 2022-Jan-21  JH Text is getting a final in-class use before being
-  set to version 1.0.
-2022-May-20  JH Run-up to 1.0: got asy to work on recent OS install.
-2022-Jul-19  JH Version 1.0.
+  set to version 1.0.  
+2022-May-20  JH Run-up to 1.0: got asy to work on recent OS install.  
+2022-Jul-19  JH Version 1.0.  

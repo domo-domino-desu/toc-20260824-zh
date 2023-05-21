@@ -296,9 +296,11 @@ vlayout(v, q2, e);
 // draw edges
 draw(pic,
      (q0--q1).l("\str{+},\str{-}"),
-     (q1--q2).l("\str{1},...,\str{9}"),
-     (q0..bendleft..q2).l("\str{1},...,\str{9}").style("leftside"),
+     (q1--q2).l("\str{0},...,\str{9}"),
+     (q0..bendleft..q2).l("\str{0},...,\str{9}").style("leftside"),
      (q0..bend(10)..e).l("other"),
+     // (q1..loop(S)).l("\str{0}"),
+     (q2..loop(E)).l("\str{0},..,\str{9}"),
      (q1--e).l("other").style("leftside"),
      (q2--e).l("other").style("leftside"),
      (q2..loop(E)).l("\str{0},..,\str{9}"),

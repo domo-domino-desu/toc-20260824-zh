@@ -2590,7 +2590,7 @@ $\set{\sigma\in\kleenestar{\B}\suchthat
 
 \begin{example}
 This is a
-garage door opener listener that waits to hear the remote control send
+remote control  listener that waits to hear
 the signal \str{0101110}.
 That is, it recognizes the language
 $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
@@ -2603,7 +2603,7 @@ $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
 \begin{remark}
 Having seen a couple of examples we pause
 to again acknowledge, as we did when we discussed the angel and the
-demon, that something about nondeterminism is weird.
+demon, that something about nondeterminism is odd.
 If we feed $\tau=\str{010101110}$ to the prior example's listener
 then it accepts.
 After all, this is a sequence of allowed transitions.
@@ -2625,10 +2625,10 @@ sets of \str{01}'s,  while~$\tau$ begins with three.
 How can a mechanism guess that it should ignore
 the first~\str{01} but act on the second?\index{guessing by a machine}
 Of course, in mathematics
-we can consider whatever we can define precisely.
-But we have so far stuck to
-devices that are in principle physically realizable
-and so this may seem to be a shift. 
+we can consider whatever we can define precisely
+nut we have so far stuck to
+devices that are in principle physically realizable.
+So this may seem to be a shift. 
 
 It is not.
 We will close this section by showing 
@@ -2664,9 +2664,9 @@ without consuming any input.
 
 \begin{example}
 This machine recognizes valid integer representations.
-Note the $\varepsilon$ between $q_0$ and~$q_1$.
-It means that the machine can jump from the state~$q_0$ 
-to~$q_1$ without
+The $\varepsilon$ between $q_0$ and~$q_1$
+means that the machine can jump from the state~$q_0$ 
+to~$q_1$ without consuming
 any input.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm12.pdf}
@@ -2675,9 +2675,9 @@ The practical effect of the $\varepsilon$
 is that this machine 
 can accept strings that do not start with a \str{+} or \str{-}~sign.
 For instance, with input~\str{123} the machine 
-can begin by following the $\varepsilon$
+can begin as below by following the $\varepsilon$
 transition to state~$q_1$, then read the \str{1} and transition
-to $q_2$, and stay there while processing the \str{2} and \str{3}, as below.
+to $q_2$, and stay there while processing the \str{2} and \str{3}.
 This is a branch of the computation tree accepting the input
 and so the string \str{123} is in the machine's language.
 \begin{equation*}
@@ -2698,31 +2698,56 @@ all without consuming any input.
   \includegraphics{automata/asy/nfsm/nfsm83.pdf}
 \end{center}
 The language of this machine is the four element set
-$\lang=\set{\str{abc},\str{abd},\str{ac}, \str{ad}}$.
+$\lang=\set{\str{abc},\str{abd},\str{c}, \str{d}}$.
 \end{example}
 
-\medskip
-Before the description of the action of these machines
+% \medskip
+To describe of the action of these machines
 we need a preliminary definition.
 %<*df:EpsilonClosure>
-We construct a function that starts with a state~$q$
-and returns
-the collection of states reachable from~$q$ by $\varepsilon$~moves.
-We build it in stages, defining
-$\map{E}{Q\times\N}{\powerset (Q)}$ so that $E(q,i)$ is
-the set of states reachable from~$q$ within at most $i$-many 
-$\varepsilon$~transitions.
-That is, set $E(q,0)=\set{q}$ and where 
-$E(q,i)=\set{q_{i_0},\ldots q_{i_k}}$,
-set $E(q,i+1)=E(q,i)\cup \Delta(q_{i_0},\varepsilon)\cup
-                         \cdots\cup\Delta(q_{i_k},\varepsilon)$.
-These sets are nested,
+The \definend{$\varepsilon$~closure} 
+function~$\hat{E}$\index{epsilon closure@$\varepsilon$ closure} 
+inputs a state~$q$ and returns
+the collection of states reachable from~$q$ without consuming
+any input.
+This table uses the prior example's machine to illustrate how we compute
+it.
+\begin{center}
+  \begin{tabular}{r|*{4}{c}|c}
+    \multicolumn{1}{r}{\ }
+      &\multicolumn{1}{c}{$m=0$}
+      &\multicolumn{1}{c}{$1$}
+      &\multicolumn{1}{c}{$2$}
+      &\multicolumn{1}{c}{$3$}  
+      &\multicolumn{1}{c}{$\hat{E}(q)$}  \\
+     \cline{2-6}
+     $q_0$ &$\set{q_0}$ &$\set{q_0,q_2}$ &$\set{q_0,q_2,q_3,q_5}$ 
+           &$\set{q_0,q_2,q_3,q_5}$ &$\set{q_0,q_2,q_3,q_5}$ \\
+     $q_1$ &$\set{q_1}$ &$\set{q_1}$ &$\set{q_1}$ 
+           &$\set{q_1}$ &$\set{q_1}$ \\
+     $q_2$ &$\set{q_2}$ &$\set{q_2,q_3,q_5}$ &$\set{q_2,q_3,q_5}$ 
+           &$\set{q_2,q_3,q_5}$ &$\set{q_2,q_3,q_5}$ \\
+     $q_3$ &$\set{q_3}$ &$\set{q_3}$ &$\set{q_3}$ 
+           &$\set{q_3}$ &$\set{q_3}$ \\
+     $q_4$ &$\set{q_4}$ &$\set{q_4}$ &$\set{q_4}$ 
+           &$\set{q_4}$ &$\set{q_4}$ \\
+     $q_5$ &$\set{q_5}$ &$\set{q_5}$ &$\set{q_5}$ 
+           &$\set{q_5}$ &$\set{q_5}$ \\
+  \end{tabular}
+\end{center}
+More formally, construct
+$\map{E}{Q\times\N}{\powerset (Q)}$ by starting with 
+$E(q,0)=\set{q}$ and then where  
+$E(q,m)=\set{q_{m_0},\ldots q_{m_k}}$,
+set $E(q,m+1)=E(q,m)\cup \Delta(q_{m_0},\varepsilon)\cup
+                         \cdots\cup\Delta(q_{m_k},\varepsilon)$.
+These are nested,
 $E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\,$.
-There are only finitely many states in~$Q$ so there must be an $i_q\in\N$
+There are only finitely many states in~$Q$ so there must be an $m_q\in\N$
 where the sequence of sets stops growing,
-$E(q,i_q\,)= E(q,i_q+1)= \cdots\,$.
-Define the \definend{$\varepsilon$~closure} function 
-$\map{\hat{E}}{Q}{\powerset(Q)}$ by~$\hat{E}(q)=E(q,i_q)$.\index{epsilon closure@$\varepsilon$ closure}
+$E(q,m_q\,)= E(q,m_q+1)= \cdots\,$ (in the example above, $m_{q_0}=2$).
+Define the $\varepsilon$~closure as the limit,
+$\hat{E}(q)=E(q,m_q)$.\index{epsilon closure@$\varepsilon$ closure}
 %</df:EpsilonClosure>
 
 \begin{example}

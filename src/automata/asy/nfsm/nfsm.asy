@@ -793,7 +793,7 @@ hlayout(u, q0, q1, q2, q3, q4, q5, q6, q7);
 // edges
 draw(pic, 
      (q0--q1).l("\str{+},\str{-},$\varepsilon$"), 
-     (q1--q2).l("\str{1},...,\str{9}"), 
+     (q1--q2).l("\str{0},...,\str{9}"), 
      (q2..loop(E)).l("\str{0},...\str{9}") 
     );
 

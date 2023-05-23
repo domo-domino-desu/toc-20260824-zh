@@ -2705,17 +2705,44 @@ $\lang=\set{\str{abc},\str{abd},\str{c}, \str{d}}$.
 To describe of the action of these machines
 we need a preliminary definition.
 %<*df:EpsilonClosure>
-The \definend{$\varepsilon$~closure} 
-function~$\hat{E}$\index{epsilon closure@$\varepsilon$ closure} 
+The \definend{$\varepsilon$~closure} function 
+$\map{\hat{E}}{Q}{\powerset (Q)}$\index{epsilon closure@$\varepsilon$ closure} 
 inputs a state~$q$ and returns
-the collection of states reachable from~$q$ without consuming
+the set of states reachable from~$q$ without consuming
 any input.
-This table uses the prior example's machine to illustrate how we compute
-it.
+
+\begin{example}
+This is a nondeterministic machine
+and the $\varepsilon$~closures of its states.
+\begin{center}\small 
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm93.pdf}}
+  \quad
+\begin{tabular}{r|*{4}{c}} 
+  \tabulartext{state~$q$} 
+     &$q_0$           &$q_1$          &$q_2$        &$q_3$  
+  \\ \cline{2-5}
+  \tabulartext{$\hat{E}(q)$}
+     &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
+\end{tabular}
+\end{center}
+% \begin{center}
+% \begin{tabular}{r|*{4}{c}}
+%   \tabulartext{state~$q$} 
+%      &$q_0$           &$q_1$          &$q_2$        &$q_3$  
+%   \\ \cline{2-5}
+%   \tabulartext{$\varepsilon$ closure $\hat{E}(q)$}
+%      &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
+% \end{tabular}
+% \end{center}
+\end{example}
+
+\begin{example}
+This uses \cref{ex:TwoOrMoreEpsilonTrans}'s 
+machine to illustrate how to compute the $\varepsilon$~closure.
 \begin{center}
   \begin{tabular}{r|*{4}{c}|c}
     \multicolumn{1}{r}{\ }
-      &\multicolumn{1}{c}{$m=0$}
+      &\multicolumn{1}{c}{$0$}
       &\multicolumn{1}{c}{$1$}
       &\multicolumn{1}{c}{$2$}
       &\multicolumn{1}{c}{$3$}  
@@ -2735,6 +2762,14 @@ it.
            &$\set{q_5}$ &$\set{q_5}$ \\
   \end{tabular}
 \end{center}
+To go from column $m=0$ to $1$ add the states reachable with one 
+$\varepsilon$ move from the starting state.
+Then to get column~$2$, add the states reachable with
+a second consecutive move.
+Doing the same for the third column does not change any of the sets
+so we are done. 
+\end{example}
+
 More formally, construct
 $\map{E}{Q\times\N}{\powerset (Q)}$ by starting with 
 $E(q,0)=\set{q}$ and then where  
@@ -2742,38 +2777,15 @@ $E(q,m)=\set{q_{m_0},\ldots q_{m_k}}$,
 set $E(q,m+1)=E(q,m)\cup \Delta(q_{m_0},\varepsilon)\cup
                          \cdots\cup\Delta(q_{m_k},\varepsilon)$.
 These are nested,
-$E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\,$.
-There are only finitely many states in~$Q$ so there must be an $m_q\in\N$
+$E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\;$.
+There are only finitely many states in~$Q$ so 
+for any $q$ there must be an $m_q\in\N$
 where the sequence of sets stops growing,
-$E(q,m_q\,)= E(q,m_q+1)= \cdots\,$ (in the example above, $m_{q_0}=2$).
+$E(q,m_q\,)= E(q,m_q+1)= \cdots\,$ (in the example above, this happens
+at~$m=2$).
 Define the $\varepsilon$~closure as the limit,
 $\hat{E}(q)=E(q,m_q)$.\index{epsilon closure@$\varepsilon$ closure}
 %</df:EpsilonClosure>
-
-\begin{example}
-This is a nondeterministic machine
-and its $\varepsilon$~closures.
-\begin{center}\small 
-  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm93.pdf}}
-  \quad
-\begin{tabular}{r|*{4}{c}}
-  \tabulartext{state~$q$} 
-     &$q_0$           &$q_1$          &$q_2$        &$q_3$  
-  \\ \cline{2-5}
-  \tabulartext{$\hat{E}(q)$}
-     &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
-\end{tabular}
-\end{center}
-% \begin{center}
-% \begin{tabular}{r|*{4}{c}}
-%   \tabulartext{state~$q$} 
-%      &$q_0$           &$q_1$          &$q_2$        &$q_3$  
-%   \\ \cline{2-5}
-%   \tabulartext{$\varepsilon$ closure $\hat{E}(q)$}
-%      &$\set{q_0,q_1}$ &$\set{q_1}$ &$\set{q_1,q_2,q_3}$ &$\set{q_1,q_3}$ 
-% \end{tabular}
-% \end{center}
-\end{example}
 
 With that we are ready for the description.
 Again, a 
@@ -2781,25 +2793,25 @@ Again, a
 is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}\!$.
 % The key is the description of a
 % \definend{transition}, of the `$\yields$' relation between configurations.
-A machine starts in the 
+A machine starts in an
 \definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
-$\mathcal{C}_0=\sequence{q_0,\tau_0}$, so that~$\tau_0$
-is the
-\definend{input}.\index{input string}\index{nondeterministic Finite State machine!input string} 
+$\mathcal{C}_0=\sequence{q_0,\tau_0}$, with
+\definend{initial state}~$q_0$\index{initial state}\index{nondeterministic Finite State machine!initial state} 
+and 
+\definend{input}~$\tau_0$.\index{input string}\index{nondeterministic Finite State machine!input string} 
 As with the earlier description of the action of nondeterministic machines, 
 we will proceed by specifying 
-when two configurations are related by $\yields$,
+when two configurations are related by `$\yields$'
 and then finish by saying that a machine accepts the input 
-if there is at least one sequence with a halting configuration whose state is 
+if there is at least one sequence of related configurations
+that has a halting configuration whose state is 
 accepting.
 
-From the initial configuration we next 
+First, from the initial configuration we next 
 take the $\varepsilon$~closure:~for all $q\in \hat{E}(q_0)$,
-where $\bar{\mathcal{C}}=\sequence{q,\tau_0}$,
-if $q\neq q_0$
-then we specify that
-$\mathcal{C}_0\yields\bar{\mathcal{C}}$.
-That ends the initial phase.
+we have $\mathcal{C}_0\yields\bar{\mathcal{C}}$ 
+where $\bar{\mathcal{C}}=\sequence{q,\tau_0}$.
+This ends the initial phase.
 
 For the iteration phase, suppose that we enter step~$s+1$ with a configuration
 $\mathcal{C}_{s}=\sequence{q,\tau}$.
@@ -2813,25 +2825,24 @@ Otherwise $\tau$ is not empty.
 Step~$s+1$ has two parts, one
 where we pop $\tau$'s leading character and act on it
 and the second where we take the $\varepsilon$~closure.
-The first part starts by decomposing $\tau_s=c\concat\hat{\tau}$, 
-so that $c\in\Sigma$ is the leading character. 
-For any state $\hat{q}$ that is a member of $\Delta(q,c)$, 
-let $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$ and we specify that
+The first part starts with $\tau_s=c\concat\hat{\tau}$, 
+so that $c\in\Sigma$. 
+For any state $\hat{q}\in\Delta(q,c)$, 
+let $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$ and then
 $\mathcal{C}_{s}\yields\hat{\mathcal{C}}$.
 Because this machine is nondeterministic, the set $\Delta(q,c)$
-could have many elements but also could have one, or none at all.
-If it has none then $\mathcal{C}_{s}$ has no configurations
-subsequent to it.
+could have elements but also be empty.
+If it is empty then $\mathcal{C}_{s}$ has no subsequent configurations.
 
 If the first part  of step~$s+1$ produces any 
 $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$  
 then the second part is to take the $\varepsilon$~closure of those $\hat{q}$'s.
-For all $\bar{q}\in \hat{E}(\hat{q})$ with $\bar{q}\neq \hat{q}$,  
+For all $\bar{q}\in \hat{E}(\hat{q})$ % with $\bar{q}\neq \hat{q}$,  
 let $\bar{\mathcal{C}}=\sequence{\bar{q},\hat{\tau}}$ and
 we specify that
 $\hat{\mathcal{C}}\yields\bar{\mathcal{C}}$.
 (For any $\hat{q}$ there may be many such 
-$\bar{\mathcal{C}}$'s, or there may be exactly one, 
+$\bar{\mathcal{C}}$'s, or there may be one, 
 or there may be none.)
 Each of these configurations will be a $\mathcal{C}_{s+1}$ 
 when we run the next step.

@@ -986,19 +986,23 @@ real u=1.75cm;  // horiz scale
 real v=0.9*u;   // vert scale
 s0.pos = (0*u, 0*v);
 s3.pos = new_node_pos_h(s0, -45, 1*u);
-s6.pos = new_node_pos_h(s3, 30, 0.75*u);
+// s6.pos = new_node_pos_h(s3, 30, 0.75*u);
+s6.pos = new_node_pos_h(s3, 40, 0.60*u);
 s4.pos = new_node_pos_h(s3, 0, 1*u);
 hlayout(-1*u, s3, s2);
-// s2.pos = new_node_pos(s3, -90, -0.75*v);
 s1.pos = new_node_pos_h(s4, 40, 1*u);
 s5.pos = new_node_pos_h(s4, 25, 1*u);
-s7.pos = new_node_pos_h(s4, -5, 1*u);
+hlayout(0.8*u, s6, s5, s1); 
+// s5.pos = new_node_pos(s4, 40, 1*v);
+// s1.pos = new_node_pos_h(s4, 40, 1*u);
+// s7.pos = new_node_pos_h(s4, -5, 1*u);
+hlayout(1*u, s4, s7);
 
 
 // draw edges
 draw(pic,
      (s0..loop(W)).l("\str{a},\str{b}"),
-     (s1..bend(10)..s0).l("\str{b}"),
+     (s1..bend(15)..s0).l("\str{b}"),
      (s1--s4).l("\str{a}"),
      (s2--s0).l("\str{a}").style("leftside"),
      // (s2..bend(-30)..s3).l(Label("\str{b}",Relative(0.75))).style("leftside"),
@@ -1011,7 +1015,7 @@ draw(pic,
      (s6--s0).l("\str{a}"),
      (s6--s3).l("\str{b}"),
      (s7--s4).l("\str{a}"),
-     (s7..bend(-40)..s3).l("\str{b}").style("leftside")
+     (s7..bend(-43)..s3).l("\str{b}").style("leftside")
 );
 
 // draw nodes after edges

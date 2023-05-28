@@ -5408,6 +5408,47 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ========== Graph of nondeterministic machine with epsilons converted to determinsitic
+
+picture pic;
+int picnum = 43;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node s0=ncircle("$s_0$"); 
+node s4=ncircle("$s_4$");  
+node s7=ncircle("$s_7$");  
+node s10=ncircle("$s_{10}$");  
+node s12=ncircle("$s_{12}$",ns_accepting);  
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, s7, s12);
+vlayout(1*v, s12, s10);
+hlayout(1*u, s10, s4, s0);
+
+// draw edges
+draw(pic,
+     (s7--s12).l("\str{b}").style("leftside"),
+     (s12..loop(E)).l("\str{b}"),
+     (s7..bend(15)..s10).l("\str{a}"),
+     (s10..bend(15)..s7).l("\str{b}"),
+     (s12--s10).l("\str{a}").style("leftside"),
+     (s10--s4).l("\str{a}"),
+     (s4..loop(N)).l("\str{a}"),
+     (s4--s0).l("\str{b}"),
+     (s0..loop(E)).l("\str{a},\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     s0, s4, s7, s10, s12
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

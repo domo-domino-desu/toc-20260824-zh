@@ -4282,16 +4282,13 @@ In 1951, S~Kleene\footnote{%
   ``As far as I am aware this pronunciation is incorrect in all known languages.
   I believe that this novel pronunciation was invented by my father.''
   \autocite{fodc:Kleene}}.
-  He was a student of Church.} 
+  Like Turing, he was a student of Church.} 
 was studying a
 \citetext{mathematical model of neurons}{\autocite{wiki:ArtificialNeuron}}.
 These are a kind of Finite State machine in that they 
 do not have scratch memory.
 He noted patterns to the languages that they recognize.
-For instance, this Finite State machine
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa15.pdf}
-\end{center}
+For instance, the Finite State machine below
 accepts strings that
 have some number of \str{b}'s (perhaps zero many) 
 followed by at least one~\str{a},
@@ -4302,6 +4299,9 @@ Kleene introduced a convenient way, called regular expressions, to
 denote constructs such as `any number of' and `followed by'.
 He gave the definition in the first subsection below
 and supported it with the theorem in the second subsection.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa15.pdf}
+\end{center}
 
 
 \subsection{Definition}
@@ -4321,12 +4321,12 @@ and supported it with the theorem in the second subsection.
 %
 A regular expression is a string that describes a language.
 We will introduce these with 
-a few examples
-(these use the alphabet $\Sigma=\set{\str{a},\ldots \str{z}}$).
+a few examples.
+These use the alphabet $\Sigma=\set{\str{a},\ldots \str{z}}$.
 
 %<*ex:RegexOne>
 \begin{example}
-The regular expression \re{h(a|e|i|o|u)t}
+The regular expression \re{p(a|e|i|o|u)t}
 describes the language of strings that start with~\str{h},
 \citetext{have a vowel in the middle}{%
   Most speakers of American English cite the vowels as `a', `e', `i',
@@ -4335,7 +4335,7 @@ describes the language of strings that start with~\str{h},
 and end with~\str{t}.
 That is, this regular expression
 describes the language consisting of five words, 
-$\lang=\set{\str{hat}, \str{het}, \str{hit},\str{hot}, \str{hut}}$.
+$\lang=\set{\str{pat}, \str{pet}, \str{pit},\str{pot}, \str{put}}$.
 \end{example}
 
 % \medskip
@@ -4344,9 +4344,9 @@ parentheses, which provide grouping,
 are not part of the strings being described;~they
 are \definend{metacharacters}.\index{metacharacter}
 
-Besides the pipe operator and parentheses,
+Besides the pipe and parentheses,
 the regular expression in that example also describes concatenation since
-the language consists of strings where the initial \str{h} 
+the language consists of strings where the initial \str{p} 
 is concatenated with a vowel,
 which in turn is concatenated with \str{t}.
 %</ex:RegexOne>
@@ -4389,7 +4389,7 @@ use the regular expression \re{a(b*|c*)}.
 \end{example}
 
 \index{regular expression!operator precedence}
-In general, the rules for operator
+The rules for operator
 precedence are:~star binds most tightly, then concatenation, and then
 the pipe alternation operator,~\re{|}.
 To get another order, use parentheses.
@@ -4407,17 +4407,16 @@ To get another order, use parentheses.
   Let $\Sigma$ be an alphabet not containing any of the metacharacters
   `\re{)}', `\re{(}', `\re{|}', or `\re{*}'.
   A \definend{regular expression}\index{regular expression!syntax}
-  over~$\Sigma$ is a string that can be derived from this grammar,
+  over~$\Sigma$ is a string that can be derived from the grammar
 \begin{grammar}
 \ntrm{regex} \produces{} \ntrm{concat}
-                    \othersyntax \ntrm{regex} `\trm{|}' \ntrm{concat}
+                    \othersyntax \trm{(} \ntrm{regex} `\trm{|}' \ntrm{concat} \trm{)}
 
 \ntrm{concat} \produces{} \ntrm{simple}
-                         \othersyntax \ntrm{concat} \ntrm{simple}
+                         \othersyntax \trm{(} \ntrm{concat} \ntrm{simple} \trm{)}
 
 \ntrm{simple} \produces{} \ntrm{char}
-                       \othersyntax  \ntrm{simple} \trm{*}
-                       \othersyntax \trm{(} \ntrm{regex} \trm{)}
+                       \othersyntax  \trm{(} \ntrm{simple} \trm{*} \trm{)}
                        
 \ntrm{char} \produces{} $\emptyset$ \syntaxor \emptystring   
                     \syntaxor $x_0$ \syntaxor $x_1$ \syntaxor \ldots{}
@@ -4451,39 +4450,52 @@ then the language that it describes contains only one string and that
 string has only that single character, 
 as in $\lang(\str{a})=\set{\str{a}}$.
 
-We finish by defining the semantics of the operations.
+We finish by doing the operations.
 Start with regular expressions $R_0$ and~$R_1$
 describing languages $\lang(R_0)$ and~$\lang(R_1)$.
 Then the pipe symbol describes the union of the languages, so that
 $\lang(R_0|R_1)=\lang(R_0)\cup\lang(R_1)$.
 Concatenation of the regular expressions
 describes concatenation of the languages,
-$\lang(R_0\concat R_1)=\lang(R_0)\concat\lang(R_1)$.
-And the Kleene star\index{Kleene star!regular expression} 
+$\lang(R_0R_1)=\lang(R_0)\concat\lang(R_1)$.
+And $\lang(\kleenestar{R_0})=\kleenestar{\lang(R_0)}\!$, 
+so the Kleene star\index{Kleene star!regular expression} 
 of the regular expression  
-describes the star of the language,
-$\lang(\kleenestar{R_0})=\kleenestar{\lang(R_0)}\!$.
+describes the star of the language.\footnote{%
+  We usually omit parentheses unless we absolutely need them.
+  Thus here we wrote $\lang(R_0|R_1)$ without parentheses, 
+  that is, not as $\lang((R_0|R_1))$, and we
+  did the same with $\lang(R_0 R_1)$ and $\lang(\kleenestar{R_0})$.
+  But there are expression such as $\kleenestar{(R_0|R_1)}$ 
+  where the parentheses matter
+  because in general that represents a different language
+  than $R_0|(\kleenestar{R_1})$.
+  }
 %</discussion:RESemantics>
 
 \begin{example}
-Consider the regular expression \re{aba*} over $\Sigma=\set{\str{a},\str{b}}$.  
-It is the concatenation of \re{a}, \re{b}, 
-and \re{a*}.
+Consider the regular expression \re{ab} over $\Sigma=\set{\str{a},\str{b}}$.  
+It is the concatenation of \re{a} and \re{b}.
 The first describes a single-element language $\lang(\str{a})=\set{\str{a}}$
 and likewise the second describes $\lang(\str{b})=\set{\str{b}}$.
 Thus, the string \re{ab} describes the concatenation of the two,
-another one-element language,
-$\lang(\str{ab})=\lang(\str{a})\concat \lang(\str{b})=\set{\str{ab}}$.
+another language
+$\lang(\str{ab})=\lang(\str{a})\concat \lang(\str{b})=\set{\str{ab}}$
+with only one element.
 % \begin{align*}
 %   \lang(\str{ab})=\lang(\str{a})\concat \lang(\str{b})
 %   &=\set{\sigma\in\kleenestar{\Sigma}\suchthat
 %     \text{$\sigma=\sigma_0\concat\sigma_1$ where $\sigma_0\in\lang(\str{a})$ and $\sigma_1\in\lang(\str{b})$}}          \\
 %   &=\set{\str{ab}}
 % \end{align*}
+\end{example}
+
+\begin{example}
+Now consider \re{aba*}.
 The regular expression \re{a*} describes the star of the language
 $\lang(\str{a})$, namely
-$\lang(\re{a*})=\set{\str{a}^n\suchthat n\in\N}$.
-Concatenating it with $\lang(\str{ab})$ gives this.
+$\lang(\re{a*})=\set{\str{a}^n\suchthat n\in\N}$=\set{\emptystring,\str{a},\str{aa},\ldots}.
+Concatenating $\lang(\re{ab})$ with $\lang(\re{a*})$ gives this.
 \begin{align*}
   \lang(\re{aba*})
   &=\set{\sigma\in\kleenestar{\Sigma}\suchthat
@@ -4576,7 +4588,7 @@ those to deterministic machines, the result holds for them also.
 %<*lem:KleenesThmRegexToMachine>
 \begin{lemma} \label{lem:KleenesThmRegexToMachine}
   If a language is described by a regular expression
-  then there is a Finite State machine that recognizes that language.
+  then there is a Finite State machine recognizing that language.
 \end{lemma}
 %</lem:KleenesThmRegexToMachine>
 
@@ -4584,8 +4596,8 @@ those to deterministic machines, the result holds for them also.
 % \cref{ex:NFSM:JoinSerial}, and \cref{ex:EpsilonTransMakeKleeneStar}.
 
 \begin{proof}
-  We will show that for any regular expression~$R$ there is a machine that
-  accepts strings matching that expression.
+  We will show that for any regular expression~$R$ there is a machine
+  accepting exactly the strings matching that expression.
   We use induction on the structure of regular expressions.
 
 %<*pf:KleenesThmRegexToMachinei>
@@ -4619,7 +4631,7 @@ those to deterministic machines, the result holds for them also.
   a new state $s$ and use $\varepsilon$
   transitions to connect~$s$ to the start states of $\FSM_0$ and $\FSM_1$. 
 %</pf:KleenesThmRegexToMachineiia>
-  See \cref{ex:NFSMJoinParallel} above.
+  See \cref{ex:NFSMJoinParallel} in the prior section.
 
 %<*pf:KleenesThmRegexToMachineiib>
   Next consider concatenation, 
@@ -4627,7 +4639,7 @@ those to deterministic machines, the result holds for them also.
   Join the two machines serially:~for
   each accepting state in $\FSM_0$, make
   an $\varepsilon$ transition to the start state of $\FSM_1$
-  and then convert all those accepting states of $\FSM_0$ to be
+  and then convert all of the accepting states of $\FSM_0$ to be
   non-accepting states. 
 %</pf:KleenesThmRegexToMachineiib>
   See \cref{ex:NFSM:JoinSerial}.
@@ -4650,7 +4662,7 @@ starts with machines for the single characters.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm71.pdf}}
   \hspace{1em}
-  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm71.pdf}}
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm72.pdf}}
   \hspace{1em}\ldots{}\hspace{1em}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm76.pdf}}
 \end{center}
@@ -4666,9 +4678,8 @@ to get the complete machine.
 \begin{center}
 \includegraphics{automata/asy/nfsm/nfsm82.pdf}
 \end{center}
-This machine is nondeterministic.
-To get a deterministic one use the powerset construction
-from the prior section.
+This is a nondeterministic machine with $\varepsilon$~transitions.
+If you want a deterministic machine then use the powerset construction.
 \end{example}
 
 %<*lem:KleenesThmMachineToRegex>
@@ -4689,17 +4700,16 @@ where we eliminate the state~$q$.
 \end{center}
 In the after picture the edge is labeled~\re{ab}, with more
 than just one character.
-For the proof we will generalize transition graphs to allow
+For this proof we will generalize transition graphs to allow
 edge labels that are regular expressions.
-As we eliminate states, we keep the recognized language the same.
-We will be done when only two states remain, with one edge
+As we eliminate states, we keep the recognized language of the machines the same.
+We will be done when what remains is two states, with one edge
 between them. 
-That edge's label is the desired regular expression.
+The desired regular expression will be 
+that edge's label.
 
 Before the proof, one more illustration.
 Start with the machine on the left.
-% Take \re{a}, \re{b}, \re{c}, and~\re{d} to be
-% regular expressions.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm64.pdf}}
   \hspace{3em}
@@ -4719,15 +4729,16 @@ starting one.
   Call the machine~$\FSM$.
   If it has no accepting states then
   the regular expression is \re{$\emptyset$} and we are done.
-  Otherwise, we will transform $\FSM$ to a new machine,
-  $\hat{\FSM}$, with the same language, which is ready for
+  Otherwise, we start by transforming $\FSM$ to a new machine,
+  $\hat{\FSM}$, that has the same language and that is ready for
   the state-elimination strategy.
 
   First we arrange that
-  $\hat{\FSM}$ has a single accepting state.
+  $\smash{\hat{\FSM}}$ has a single accepting state.
   Create a new state $f$ and
-  for each of $\FSM$'s accepting states make a $\varepsilon$~transition to~$f$
-  (by the prior paragraph there is at least one such accepting state). 
+  for each of $\FSM$'s accepting states make an $\varepsilon$~transition to~$f$
+  (by the prior paragraph there is at least one such accepting state
+  so $f$ is connected to the rest of $\hat{M}$). 
   Change all the accepting states to non-accepting ones 
   and then make~$f$ accepting.
   Clearly this does not change the language of accepted strings.
@@ -4737,14 +4748,14 @@ starting one.
   Make a $\varepsilon$~transition from it to~$q_0$,
   again leaving the language of the machine unchanged.
   (Putting~$e$ in $\hat{\FSM}$ allows us to uniformily eliminate 
-  each state in~$\FSM$, where we say below, 
+  each state in~$\FSM$ when we say below, 
   ``Pick any~$q$ not equal to $e$ or~$f$.'')
 
   Because the edge labels are regular expressions, we can arrange
   that from any~$q_i$ to any~$q_j$
-  is at most one edge, since
+  there is at most one edge, since
   if $\FSM$ has more than one edge then in~$\hat{\FSM}$ 
-  use the pipe,~\re{|}, to combine the labels, as here.
+  we can use the pipe,~\re{|}, to combine the labels.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm39.pdf}}
     \hspace{3em}
@@ -4764,14 +4775,15 @@ starting one.
   if a state node  is not reachable from the start~$e$ then
   drop that node along with its incoming and outgoing edges.
   (The idea of useless states is clear but it has some technical aspects.
-  In particular, omitting a node with no outgoing edges can result in 
-  another node now having no outgoing edges, and so it in turn needs 
+  Omitting a no-outgoing-edges node, along with its incoming edges, can 
+  result in another node now having no outgoing edges, which in turn needs 
   the same treatment.
-  Unreachable is similar; 
-  for a full definition of it see \Cref{exer:UnreachableStates}.)
+  But these machine have only finitely many nodes and so this omitting process
+  must run out eventually. 
+  For a full definition of unreachability see \Cref{exer:UnreachableStates}.)
   
-  With that, $\hat{\FSM}$ is ready for state elimination.
-  Pick any~$q$ not equal to $e$ or~$f$.
+  With that, $\smash{\hat{\FSM}}$ is ready for state elimination.
+  Pick any~$q$ not equal to $e$ or~$f\!$.
   Below are 
   \citetext{before and after pictures}{%
     This diagram is derived from \autocite{HopcroftUllman}.}.
@@ -4790,7 +4802,7 @@ starting one.
   possibly some of the states shown on the
   left equal some shown on the right.
   For example, possibly $q_{i_0}$ equals~$q_{o_0}$, in which case 
-  the edge $R_{i_0,o_0}$ is a loop.)
+  the edge shown as $R_{i_0,o_0}$ is a loop.)
 
   Eliminate $q$ and the associated edges by making the replacements
   shown in the after picture.
@@ -4798,10 +4810,10 @@ starting one.
   state~$q_i$ to any outgoing state~$q_o$ is unchanged and consequently
   the language recognized by the machine is unchanged.
   
-  Keep eliminating until the only states remaining are $e$ and~$f$.
-  (The machine has finitely many states so this procedure must 
-  eventually stop.)
-  Since the language of the machines is constant, 
+  Each iteration of this elimination procedure reduces the number of states 
+  by one.
+  Keep going until the only states remaining are $e$ and~$f\!$.
+  Since the language of the machines never changes, 
   the desired regular expression is the one labeling the edge between them.
 \end{proof}
 
@@ -4837,7 +4849,7 @@ starting one.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm51.pdf}}    
   \end{center}
-  All that remains from $\FSM$ is~$q_0$.
+  Final step.
   The sole incoming node is $e=q_{i_0}$
   and the sole outgoing node is $f=q_{o_0}$,
   and so $R_{i_0}=\re{$\varepsilon$}$,
@@ -4847,8 +4859,9 @@ starting one.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm52.pdf}}    
   \end{center}
-  This regular expression simplifies.
-  For instance, \re{a$\varepsilon$}=\re{a}.
+  This regular expression describes the language of the starting machine
+  (note that it simplifies; 
+  for instance, \re{a$\varepsilon$}=\re{a}).
 \end{example}
 \index{Kleene's theorem|)}
 

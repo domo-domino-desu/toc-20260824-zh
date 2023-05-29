@@ -2999,14 +2999,14 @@ starting with nondeterministic machines and
 building deterministic machines that recognize the same language.
 The two examples below show the 
 \definend{powerset construction}.\index{powerset construction}\index{Finite State machine!powerset construction}
-We will give a complete description of the algorithm just before the 
-second example.
-We won't give a proof that it works simply because
+We will give a complete description of the algorithm after the 
+first example.
+We won't give a proof that this construction works simply because
 the examples
 are entirely convincing.
 
-\begin{example}\index{nondeterministic Finite State machine!convert to a deterministic machine}
-This nondeterministic machine, $\FSM_N$,
+\begin{example}\index{nondeterministic Finite State machine!convert to a deterministic machine} \label{ex:NondeterminsiticMachineWithoutEpsilon}
+This nondeterministic machine $\FSM_N$
 has no $\varepsilon$ transitions.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm16.pdf}
@@ -3108,7 +3108,6 @@ of the associated deterministic machine.
 The start state is $\hat{E}(q_0)=\set{q_0,q_3}=s_7$.
 A state is accepting if it contains $q_1$. 
 
-% The table includes intermediate steps.
 For example, for the computation of 
 what happens when the machine is in state $s_1=\set{q_0}$
 and the head reads~\str{b},
@@ -3181,7 +3180,8 @@ In the deterministic machine
 many of the nodes are unreachable from the starting state~$s_7$.
 As an example, looking through the table shows that never is $s_2$
 the output of $\Delta_D$. 
-When we drop those, what's left is below.
+In \cref{ex:NondeterminsiticMachineWithoutEpsilon}'s machine diagram
+we left in the unreachable states but below we drop them.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm1043.pdf}  
 \end{center}
@@ -3293,13 +3293,13 @@ Your class has someone who asks,
 ``I get that it is interesting, but 
 isn't all this machine-guessing stuff just mathematical
 abstractions that are not real?''
-How should the prof respond?
+How might the prof respond?
 \begin{answer}
-  In the first place, someone in this class saying something 
+  Someone in this class saying that a topic
   is ``just mathematical abstraction'' is
-  like someone objecting in an electrodynamics class that this is all 
-  ``just electricity.''
-  That's exactly what we are doing here.
+  like someone objecting in an aerodynamics class that this is all 
+  ``just air.''
+  Yes, that's what we are doing.
 
   Said another way, if someone compares
   what we are thinking about here with a course on data structures, 
@@ -3363,19 +3363,107 @@ How should the prof respond?
 
 \recommended
 \begin{exercise}
-  Give the transition graph of a nondeterministic Finite State machine
-  that accepts valid North American local phone numbers, strings of the form
-  $d^3\str{-}d^4$, with three digits, a hyphen,
-  and then four digits.
-  \begin{answer}\verified
-    This is the graph of the nondeterministic machine.
-    (It is nondeterministic in that the edges don't list every 
-    element of the alphabet $\set{\str{-},\str{0},\ldots\,\str{9}}$.)
-    \begin{center}
-      \includegraphics{automata/asy/nfsm/nfsm20.pdf}
-    \end{center}
-  \end{answer}
+With \cref{ex:NFSMEpsilonClosure}'s nondeterminisitic and deterministic
+machines, verify that they agree on whether to accept or reject these 
+input strings
+\begin{exparts*}
+\item the empty string
+\item \str{a}  
+\item \str{b}
+\item \str{aa}
+\item \str{ab}
+\item \str{ba}
+\item \str{bb}.
+\end{exparts*}
+\begin{answer}
+To show that a nondeterminstic machine accepts the input we need only exhibit
+an accepting branch of the computation tree.
+But here we will walk through unproductive branches just for the exercise.
+(In any case, to show that a nondeterministc machine does not accept we need to
+check all the branches.)
+\begin{exparts}
+\item After processing the empty string as input, 
+that is, at the moment we press the Start button, the nondeterministic machine
+is in states $q_0$ and~$q_3$.
+The deterministic machine is in state~$s_7$.
+Both result in the input being rejected.
+\item For the nondterministic machine, processing the input \str{a} will
+leave the machine in $\set{q_2,q_3}$.
+The deterministic machine ends in $s_{10}$.
+In both cases the machine rejects the input.
+\item Here is what happens for the nondeterministic machine with
+input string~\str{b}.
+If the machine follows the $\varepsilon$~transition before processing the 
+\str{b} then it results in a dead end branch because 
+when in state~$q_3$ and reading \str{b}, 
+the machine has no next state.
+However a branch that does not start by following the $\varepsilon$~transition
+will then pass to $q_1$ on processing the \str{b} character.
+The $\varepsilon$~closure of $q_1$ is $\set{q_0,q_1,q_3}$,
+so that's where the nondeterministic machine ends.
+It accepts the input because $q_1$ is an accepting state.
+The deterministic machine passes from $s_7$ to $s_{12}$, which is an accepting
+state.
+\item % \str{aa}
+As given in an earlier item, on processing the first~\str{a} the 
+nondeterministic  machine is in $\set{q_2,q_3}$.
+In processing the second~\str{a}, the branch in $q_2$ dead ends,
+while the branch in~$q_3$ returns to~$q_3$.
+Thus this machine ends in $\set{q_3}$.
+The deterministic machine processes $\str{aa}$ by passing from $s_7$ to~$s_{10}$
+and then to~$s_4$.
+Both machines reject the input.
+\item % \str{ab}
+Again, processing the first~\str{a} character takes the 
+nondeterministic  machine to $\set{q_2,q_3}$.
+Then the \str{b} takes it to $\set{q_0,q_3}$.
+The deterministic machine passes from the start state of
+$s_7$ to $s_{10}$ and then back to $s_7=\set{q_0,q_3}$.
+Both nondeterministic and deterministic machines reject the input.
+\item % \str{ba}
+An earlier item says that in consuming the initial \str{b} character
+the nondeterministic machine ends in states $q_0$, $q_1$, and~$q_3$.
+In processing the \str{a} character there is a branch from $q_0$ 
+that passes to~$q_2$.
+There is another branch from $q_0$ that first takes the $\varepsilon$~move
+to $q_3$, and then the \str{a} character has the machine loop back to~$q_3$.
+Finally there is a branch that starts in $q_3$ and loops around to
+$q_3$ again.
+Thus, taken together, this nondeterministic machine ends in $\set{q_2,q_3}$.
+Neither is an accepting state so this machine rejects the input.
+
+The deterministic machine passes from $s_7$ to $s_{12}$ and then to~$s_{10}$,
+which is not an accepting state.
+\item % \str{ba}
+Again, an earlier item says that after processing the \str{b} character
+the nondeterministic machine ends in $\set{q_0,q_1,q_3}$.
+Then a branch follows the $\varepsilon$~transition to $q_3$ but dead-ends there
+because in $q_3$ there is no outward arrow labeled \str{b}.
+From $q_1$ no outward arrow is labeled \str{b} either.
+So the only branch that does not die is the one passing from $q_0$ to $q_1$, 
+and thus this machine ends the processing of this input in $\set{q_1}$.
+That means it accepts the input.
+
+The deterministic machine goes from $s_7$ to $s_{12}$, and then loops around 
+to $s_{12}$ again, which is an accepting state.
+\end{exparts}
+\end{answer}
 \end{exercise}
+% \begin{exercise}
+%   Give the transition graph of a nondeterministic Finite State machine
+%   that accepts valid North American local phone numbers, strings of the form
+%   $d^3\str{-}d^4$, with three digits, a hyphen,
+%   and then four digits.
+%   \begin{answer}\verified
+%     This is the graph of the nondeterministic machine.
+%     (It is nondeterministic in that the edges don't list every 
+%     element of the alphabet $\set{\str{-},\str{0},\ldots\,\str{9}}$.)
+%     \begin{center}
+%       \includegraphics{automata/asy/nfsm/nfsm20.pdf}
+%     \end{center}
+%   \end{answer}
+% \end{exercise}
+
 
 \begin{exercise}  \label{exer:MFSMWithEpsilonTrans}
 This machine has $\Sigma=\set{\str{a},\str{b}}$.

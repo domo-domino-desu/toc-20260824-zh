@@ -7245,14 +7245,14 @@ machines cannot recognize other arithmetic relations.
 \begin{example}
 The language
 $  \lang  =\set{\str{a}^n\suchthat \text{$n$ is a perfect square} } 
-         =\set{\emptystring, \str{a}, \str{a}^4, \str{a}^9,\str{a}^{16}
+         =\set{\emptystring, \str{a}, \str{a}^4\!, \str{a}^9\!,\str{a}^{16}\!,
                  \ldots}$
 is not regular.
 For, suppose otherwise.  
-Let the pumping length be~$p$ and consider $\smash{\sigma=\str{a}^{(p^2)}}$,
+Denote the pumping length by~$p$ and consider $\smash{\sigma=\str{a}^{(p^2)}}\!$,
 so that $\sigma\in\lang$ and $\lh{\sigma}\geq p$.
 
-By the Pumping Lemma, $\sigma$ decomposes into
+By the Pumping Lemma, $\sigma$ decomposes as
 $\alpha\beta\gamma$, subject to the
 three conditions.
 Condition~(1) 
@@ -8147,9 +8147,15 @@ For deterministic machines that is not so.
 
 % ...................................................
 \section{Minimization}\index{minimization of a Finite State machine|(}\index{Finite State machine!minimization|(}
-Contrast these two Finite State machines.
-For each, the language of accepted strings is
-$\set{\sigma\in\kleenestar{\B}\suchthat
+We will give an algorithm
+that starts with a Finite State machine and
+then finds the smallest machine, the machine with the fewest states, 
+that recognizes the same language.
+This algorithm collapses together redundant states.
+
+Compare these two.
+Each has that the language of accepted strings is
+$\lang=\set{\sigma\in\kleenestar{\B}\suchthat
   \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
 \begin{equation*} \label{fig:MachinesWithMinAndNoMinStates}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
@@ -8163,57 +8169,100 @@ each state needs a meaning that is well-defined in terms of the machine's
 language and that is different from 
 the meaning of all other states.
 For instance, on the left $q_2$ means
-``have seen at least one \str{1} but still
+``have seen the required \str{1} but still
 waiting for a~\str{0}.''
 
 The machine on the right doesn't meet this design principle because
-the meaning of $q_4$, ``have seen two \str{1}'s but still
-waiting for a~\str{0},''  is subsumed by the meaning of~$q_2$.
+the meaning of $q_4$, ``have seen the required \str{1}, and another~\str{1}, 
+but still waiting for a~\str{0},''  
+is subsumed by the meaning of~$q_2$, with respect 
+to~$\lang$.
 Similarly, $q_5$'s meaning is subsumed by~$q_3$'s.
 % Restated in a suggestive way:~the pairs of states $q_2$ and~$q_4$
 % have the same future, as do $q_3$ and~$q_5$.
 This machine has redundant states.
 
-We will give an algorithm
-that starts with a Finite State machine and
-then finds the smallest machine, the machine with the fewest number of states, 
-that recognizes the same language.
-This algorithm collapses together redundant states.
+Expanding on that, the table below lists what happens if the machine
+is now in state~$q_2$ or~$q_4$ and now on the tape is the given string.
+An entry says `A' if running the machine will end in an accepting state,
+or `R' otherwise. 
+\begin{center}
+  \begin{tabular}{r|*{10}{c}}
+    \multicolumn{1}{r|}{$\sigma$} 
+      &\multicolumn{1}{c}{$\varepsilon$} 
+      &\multicolumn{1}{c}{\str{0}}
+      &\multicolumn{1}{c}{\str{1}}
+      &\multicolumn{1}{c}{\str{00}}
+      &\multicolumn{1}{c}{\str{01}}
+      &\multicolumn{1}{c}{\str{10}}
+      &\multicolumn{1}{c}{\str{11}}
+      &\multicolumn{1}{c}{\str{000}}  
+      &\multicolumn{1}{c}{\str{001}}  
+      &\multicolumn{1}{c}{\str{010}}  
+    \\ \cline{2-11}
+    $q_2$ &R &A &R &A &A &A &R &A &A &A  \\
+    $q_4$ &R &A &R &A &A &A &R &A &A &A  \\
+  \end{tabular}
+\end{center}
+The two states behave the same;
+simply, if $\sigma$ contains a~\str{0} then both states give~`A',
+otherwise they give `R'.
 
-\begin{definition}  \label{def:distinguishable}
-In a Finite State machine over~$\Sigma$,
-where $n\in\N$ we say that two states $q,\hat{q}$ are
-\definend{$n$-distinguishable}\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
-if there is a string $\sigma\in\kleenestar{\Sigma}$ with
-$\lh{\sigma}\leq n$ such that starting the machine
-in state~$q$ and giving it input~$\sigma$ ends in an accepting state
-while starting it in~$\hat{q}$ and giving it~$\sigma$ does not,
-or vice versa.
-Otherwise the states are 
-\definend{$n$-indistinguishable}, 
-\definend{$q\sim_{n}\hat{q}$}.\index{n indistinguishable states@$n$-indistinguishable states}\index{states!n indistinguishable@$n$-indistinguishable}
+As a contrast, if in the right-hand machine we give the string
+$\sigma=\str{0}$ to the state $q_2$ then the machine ends in an accepting state, 
+while if we give the same $\sigma$ to~$q_0$ then the machine
+rejects.
+So these two states play different roles in the machine; they are not
+redundant.
 
-Two states $q,\hat{q}$ are \definend{distinguishable}\index{distinguishable states}\index{states!distinguishable}
-if there is an~$n$ for which they are $n$-distinguishable.
-Otherwise they are \definend{indistinguishable}, 
-\definend{$q\sim\hat{q}$}.\index{distinguishable states}\index{states!distinguishable}
+\begin{definition}\label{def:distinguishable}
+In a Finite State machine over $\Sigma$, two states $q,\hat{q}$ are
+\definend{indistinguishable},\index{indistinguishable states}\index{states!indistinguishable} 
+\definend{$q\sim\hat{q}$},
+if for every string $\sigma\in\kleenestar{\Sigma}$,
+the two cases of starting the machine in $q$ while giving it~$\sigma$
+and starting the machine in~$\hat{q}$ while giving it~$\sigma$ always
+result in the same outcome: either the machine ends in an accepting
+state in both cases or it ends in a rejecting state in both.
+States that are not indistinguishable are 
+\definend{distinguishable}.\index{distinguishable states}\index{states!distinguishable}
 \end{definition}
 
+We will compute when states are indistinguishable by checking whether they 
+can be distinguished by strings of length~$0$, strings of length~$1$, etc.
+Fix a Finite State machine over an alphabet~$\Sigma$
+and a string length $n\in\N$.
+We say that $q$ and~$\hat{q}$
+are \definend{$n$-indistinguishable}, 
+\definend{$q\sim_{n}\hat{q}$},\index{n indistinguishable states@$n$-indistinguishable states}\index{states!n indistinguishable@$n$-indistinguishable}
+if for every string $\sigma\in\kleenestar{\Sigma}$ of length at most~$n$,
+starting the machine in $q$ while giving it~$\sigma$
+and starting the machine in~$\hat{q}$ while giving it~$\sigma$
+results in the same outcome, that either the machine ends in an accepting
+state in both cases or it ends in a rejecting state in both.
+States are
+\definend{$n$-distinguishable}\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
+if they are not $n$-indistinguishable, that is, 
+if there is a string $\sigma\in\kleenestar{\Sigma}$ with
+$\lh{\sigma}\leq n$ such that starting the machine
+in one of the states and giving it input~$\sigma$ ends in an accepting state
+while starting it in the other and giving it~$\sigma$ does not.
+
+Observe that for the $n=0$ case,
+states are $0$-indistinguishable if either both are accepting or
+both are not accepting states.
+
 \begin{example}
-  Consider the machine on the left in ($*$)
-  above and the two states $q_0$ and $q_2$.
-  Starting in state~$q_0$
-  and processing~$\sigma=\str{0}$ ends
-  in the non-accepting state~$q_1$,
-  but starting in~$q_2$ and processing the same input ends
-  in the accepting state~$q_3$.
-  So $q_0$ and~$q_2$ are $1$-distinguishable, and therefore are
-  distinguishable.
-  
-  Another example is that the states
-  $q_2$ and $q_3$ are $0$-distinguishable, via~$\sigma=\emptystring$.
-  That is, a state that is not accepting is $0$-distinguishable from a
-  state that is accepting.
+Consider the machine on the left in ($*$)
+above and its $q_0$ and $q_2$.
+Take the length one string $\sigma=\str{0}$.
+Starting in state~$q_0$
+and processing~$\sigma$ ends
+in the rejecting state~$q_1$,
+but starting in~$q_2$ and processing the same input ends
+in the accepting state~$q_3$.
+So $q_0$ and~$q_2$ are $1$-distinguishable, and therefore are
+distinguishable.
 \end{example}
 
 \begin{example}
@@ -8221,53 +8270,57 @@ For the machine on the right above
 this table gives the result of starting in each state and processing
 each string of length~$0$, length~$1$, and length~$2$.
 It records whether the resulting state 
-is accepting or nonaccepting, denoted by $F$ or~$Q-F$.
+is accepting or rejecting.
 \begin{equation*}
-  \begin{array}{r|c@{\hspace{2.5em}}*{2}{c}@{\hspace{2.5em}}*{4}{c}}
+  \begin{array}{r|c@{\hspace{1.5em}}*{2}{c}@{\hspace{1.5em}}*{4}{c}}
     \multicolumn{1}{r}{\ }
-           &\multicolumn{1}{c}{\emptystring}  
+           &\multicolumn{1}{c@{\hspace{1.5em}}}{\emptystring}  
            &\multicolumn{1}{c}{\str{0}}           
-           &\multicolumn{1}{c}{\str{1}}           
+           &\multicolumn{1}{c@{\hspace{1.5em}}}{\str{1}}           
            &\multicolumn{1}{c}{\str{00}}           
            &\multicolumn{1}{c}{\str{01}}           
            &\multicolumn{1}{c}{\str{10}}           
            &\multicolumn{1}{c}{\str{11}}           
             \\ \cline{2-8}
-    q_0  &Q-F &Q-F &Q-F &Q-F &F &F &Q-F  \\
-    q_1  &Q-F &Q-F &F   &Q-F &F &F &F  \\
-    q_2  &Q-F &F   &Q-F &F   &F &F &Q-F  \\
-    q_3  &F   &F   &F   &F   &F &F &F  \\
-    q_4  &Q-F &F   &Q-F &F   &F &F &Q-F  \\
-    q_5  &F   &F   &F   &F   &F &F &F  \\      
+    q_0  &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
+    q_1  &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
+    q_2  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
+    q_3  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
+    q_4  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
+    q_5  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\      
   \end{array}
   \tag{$**$}
 \end{equation*}
 The input~$\emptystring$ 
 doesn't change the state.
-So that column only records that
+So that initial column just records that
 members of $\set{q_0,q_1,q_2,q_4}$ 
-are nonaccepting states 
-and members of $\set{q_3,q_5}$ are accepting. 
+are rejecting states and members of $\set{q_3,q_5}$ are accepting. 
+We write $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$ along with 
+$\eclass_{0,1}=\set{q_3,q_5}$.
 
 The two columns for the length~$1$ strings
 show all of the four possible behaviors.
-The state $q_0$ is sent to a nonaccepting result for both inputs,
-that is, the columns say $Q-F$ and $Q-F$.
-For the state $q_1$ the columns say $Q-F,F$.
-The states $q_2$ and~$q_4$ both show $F,Q-F$.
-And $q_3$ and~$q_5$ both go to $F,F$. 
-% Thus for instance, the definition gives that $q_0$ is $1$-distinguishable 
-% from $q_1$.
-In total we have four classes, $\set{q_0}$,
-$\set{q_1}$, $\set{q_2,q_4}$, and $\set{q_3,q_5}$, where states are in the
-same class if and only if they are not $1$-distinguishable.
+The state $q_0$ is sent to a rejecting result for both inputs,
+that is, the columns say $R$ and $R$.
+For $q_1$ we have $R,A$.
+Both $q_2$ and~$q_4$ show $A,R$.
+And $q_3$ and~$q_5$  go to $A,A$. 
+So in total we have four classes, $\eclass_{1,0}=\set{q_0}$,
+$\eclass_{1,1}=\set{q_1}$, 
+$\eclass_{1,2}=\set{q_2,q_4}$, 
+and $\eclass_{1,3}=\set{q_3,q_5}$, where states are in the
+same class if and only if they are $1$-indistinguishable.
+The class $\eclass_{0,1}$ from the prior paragraph has split into three,
+$\eclass_{1,0}$ and $\eclass_{1,1}$ and~$\eclass_{1,2}$.
+The other class does not split, $\eclass_{0,1}=\eclass_{1,3}$.
 
 Next, the length~$2$ strings. 
 The states $q_2$ and~$q_4$ 
 both have
-$F,F,F,Q-F$.
+$A,A,A,R$.
 And the states $q_3$ and~$q_5$ both have
-$F,F,F,F$.
+$A,A,A,A$.
 So going to these longer strings   
 does not further divide the classes of states\Dash
 the
@@ -8290,12 +8343,12 @@ as does the relation of $1$-distinguishable.
   \cref{exer:NEquivIsEquivRel}.  
 \end{proof}
 
-Consider again
-the machine on the right in ($*$)~above, the one with redundant states.
-We denote the $\sim_0$ equivalence classes with 
-$\eclass_{0,0}$ and~$\eclass_{0,1}$,
-we denote the $\sim_1$ classes with $\eclass_{1,0}$, \ldots{}, $\eclass_{1,3}$,
-etc.\sentencespace
+This summarizes the prior example about 
+the machine on the right in ($*$)~above.
+The $\sim_0$ equivalence classes are
+$\eclass_{0,0}$ and~$\eclass_{0,1}$.
+The $\sim_1$ classes are $\eclass_{1,0}$, \ldots{}, $\eclass_{1,3}$,
+etc.
 \begin{equation*}
   \begin{array}{r|l}
   \multicolumn{1}{c}{n}
@@ -8339,7 +8392,7 @@ We now develop an algorithm, \citetext{Moore's algorithm}{%
   See \protect\autocite{Knuutila}.},\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
 that finds the $\sim_0$ classes, 
 then the $\sim_1$ classes, 
-\ldots{}, 
+\ldots{}
 and at the end it has the $\sim$~classes.
 Those classes then serve as the states of the minimal machine.
 
@@ -8348,14 +8401,13 @@ what it takes for two states  $q$ and~$\hat{q}$ to be
 $n+1$-distinguishable but not $n$-distinguishable.
 Let them be distinguished by the length~$n+1$ string 
 $\sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$.
-Write that string as a decomposition of a prefix and the final
-character, $\sigma=\tau\concat s_n$.
+Write that string as $\sigma=\tau\concat s_n$.
 The states  $q$ and~$\hat{q}$ are not $n$-distinguishable so
 where $\tau$ brings the machine from $q$ to some state~$r$
 and also brings the machine from $\hat{q}$ to some~$\hat{r}$,
 then these two states $r$ and~$\hat{r}$ must be in the same
 class,~$\eclass_{n,i}$.
-That is, the distinguishing must happen with $\sigma$'s final character,~$s_n$.
+In short, the distinguishing must happen with $\sigma$'s final character,~$s_n$.
 It must take the machine from state~$r$ to a state in one 
 class,~$\eclass_{n+1,j}$, 
 and also take the machine from~$\hat{r}$ to 
@@ -8365,8 +8417,6 @@ The table~($**$) lists all of the length one strings
 and all of the length two strings, but the prior paragraph
 shows that to $n+1$-distinguish classes 
 we don't need to list all of the $2^{n+1}$-many strings of length~$n+1$.
-% To find the $\sim_{n+1}$ classes we don't need to test whole strings, 
-% we need only test single characters. 
 If the $\eclass_{n,i}$'s are going to split 
 then a single character suffices to split them.
 
@@ -8406,7 +8456,9 @@ The $\eclass_{1,2}$ table shows both $q_2$ and~$q_4$
 going to $\eclass_{1,3},\eclass_{1,2}$
 so there is no split there.
 The $\eclass_{1,3}$ likewise shows no split.
-So the algorithm stops:~the $\sim_1$ classes are the $\sim$ classes.
+So they will never split and algorithm stops\Dash the 
+$\sim_1$ classes equal the $\sim_2$ classes, \ldots{},
+which equal the $\sim$ classes.
 
 The examples of the algorithm below systematize this calculation,
 including adding a bookkeeping table.

@@ -760,119 +760,16 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 // ============== example motivation for myhill nerode ================
-// picture pic;
-// int picnum = 16;
-// unitsize(pic,1pt);
-// setdefaultstatediagramstyles() ;
-
-// // define nodes
-// node q0=ncircle("$q_0$"); 
-// node q1=ncircle("$q_1$"); 
-// node q2=ncircle("$q_2$"); 
-// node q3=ncircle("$q_3$"); 
-// node q4=ncircle("$q_4$"); 
-// node q5=ncircle("$q_5$",ns_accepting); 
-
-// // calculate nodes position
-// // layout
-// defaultlayoutrel = false;
-// defaultlayoutskip = 1.5cm;
-// real u = defaultlayoutskip;
-// real v = 0.9*u;
-
-// hlayout(1*u, q0, q3);
-// vlayout(1*v, q0, q1);
-// hlayout(1*u, q1, q4);
-// vlayout(1*v, q1, q2);
-// hlayout(1*u, q2, q5);
-
-// // draw edges
-// draw(pic,
-//      (q0--q1).l("\str{0}"),
-//      (q0..bend..q3).l("\str{1}"),
-//      (q1--q2).l("\str{0}"),
-//      (q1..bend..q4).l("\str{1}"),
-//      (q2..loop(W)).l("\str{1}"),
-//      (q2..bend..q5).l("\str{1}"),
-//      (q3..bend..q0).l("\str{1}"),
-//      (q3--q4).l("\str{0}"),
-//      (q4..bend..q1).l("\str{1}"),
-//      (q4--q5).l("\str{0}"),
-//      (q5..bend..q2).l("\str{1}"),
-//      (q5..loop(E)).l("\str{0}")
-// );
-
-// // draw nodes
-// draw(pic,
-//      q0, q1, q2, q3, q4, q5);
-
-// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
-
-
-
-// // ============== example motivation for myhill nerode ================
-// picture pic;
-// int picnum = 17;
-// unitsize(pic,1pt);
-// setdefaultstatediagramstyles() ;
-
-// // define nodes
-// node q0=ncircle("$q_0$"); 
-// node q1=ncircle("$q_1$"); 
-// node q2=ncircle("$q_2$"); 
-// node q3=ncircle("$q_3$"); 
-// node q4=ncircle("$q_4$"); 
-// node q5=ncircle("$q_5$",ns_accepting); 
-
-// // calculate nodes position
-// // layout
-// defaultlayoutrel = false;
-// defaultlayoutskip = 1.5cm;
-// real u = defaultlayoutskip;
-// real v = 0.9*u;
-
-// hlayout(1*u, q0, q3);
-// vlayout(1*v, q0, q1);
-// hlayout(1*u, q1, q4);
-// vlayout(1*v, q1, q2);
-// hlayout(1*u, q2, q5);
-
-// // draw edges
-// draw(pic,
-//      (q0--q1).l("\str{0}"),
-//      (q0..bend..q3).l("\str{1}"),
-//      (q1--q2).l("\str{0}"),
-//      (q1..bend..q4).l("\str{1}"),
-//      (q2..loop(W)).l("\str{1}"),
-//      (q2..bend..q5).l("\str{1}"),
-//      (q3..bend..q0).l("\str{1}"),
-//      (q3--q4).l("\str{0}"),
-//      (q4..bend..q1).l("\str{1}"),
-//      (q4--q5).l("\str{0}"),
-//      (q5..bend..q2).l("\str{1}"),
-//      (q5..loop(E)).l("\str{0}")
-// );
-
-// // draw nodes
-// draw(pic,
-//      q0, q1, q2, q3, q4, q5);
-
-// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
-
-
-
-
-// ============== example motivation for myhill nerode ================
 picture pic;
 int picnum = 16;
 unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$q_0$"); 
-node q1=ncircle("$q_1$"); 
-node q2=ncircle("$q_2$"); 
-node q3=ncircle("$q_3$",ns_accepting); 
+node q0=ncircle("$s_0$"); 
+node q1=ncircle("$s_1$"); 
+node q2=ncircle("$s_2$"); 
+node q3=ncircle("$s_3$",ns_accepting); 
 
 // calculate nodes position
 // layout
@@ -1171,120 +1068,19 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+
 // ============== example motivation for myhill nerode ================
-// picture pic;
-// int picnum = 16;
-// unitsize(pic,1pt);
-// setdefaultstatediagramstyles() ;
-
-// // define nodes
-// node q0=ncircle("$q_0$"); 
-// node q1=ncircle("$q_1$"); 
-// node q2=ncircle("$q_2$"); 
-// node q3=ncircle("$q_3$"); 
-// node q4=ncircle("$q_4$"); 
-// node q5=ncircle("$q_5$",ns_accepting); 
-
-// // calculate nodes position
-// // layout
-// defaultlayoutrel = false;
-// defaultlayoutskip = 1.5cm;
-// real u = defaultlayoutskip;
-// real v = 0.9*u;
-
-// hlayout(1*u, q0, q3);
-// vlayout(1*v, q0, q1);
-// hlayout(1*u, q1, q4);
-// vlayout(1*v, q1, q2);
-// hlayout(1*u, q2, q5);
-
-// // draw edges
-// draw(pic,
-//      (q0--q1).l("\str{0}"),
-//      (q0..bend..q3).l("\str{1}"),
-//      (q1--q2).l("\str{0}"),
-//      (q1..bend..q4).l("\str{1}"),
-//      (q2..loop(W)).l("\str{1}"),
-//      (q2..bend..q5).l("\str{1}"),
-//      (q3..bend..q0).l("\str{1}"),
-//      (q3--q4).l("\str{0}"),
-//      (q4..bend..q1).l("\str{1}"),
-//      (q4--q5).l("\str{0}"),
-//      (q5..bend..q2).l("\str{1}"),
-//      (q5..loop(E)).l("\str{0}")
-// );
-
-// // draw nodes
-// draw(pic,
-//      q0, q1, q2, q3, q4, q5);
-
-// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
-
-
-
-// // ============== example motivation for myhill nerode ================
-// picture pic;
-// int picnum = 17;
-// unitsize(pic,1pt);
-// setdefaultstatediagramstyles() ;
-
-// // define nodes
-// node q0=ncircle("$q_0$"); 
-// node q1=ncircle("$q_1$"); 
-// node q2=ncircle("$q_2$"); 
-// node q3=ncircle("$q_3$"); 
-// node q4=ncircle("$q_4$"); 
-// node q5=ncircle("$q_5$",ns_accepting); 
-
-// // calculate nodes position
-// // layout
-// defaultlayoutrel = false;
-// defaultlayoutskip = 1.5cm;
-// real u = defaultlayoutskip;
-// real v = 0.9*u;
-
-// hlayout(1*u, q0, q3);
-// vlayout(1*v, q0, q1);
-// hlayout(1*u, q1, q4);
-// vlayout(1*v, q1, q2);
-// hlayout(1*u, q2, q5);
-
-// // draw edges
-// draw(pic,
-//      (q0--q1).l("\str{0}"),
-//      (q0..bend..q3).l("\str{1}"),
-//      (q1--q2).l("\str{0}"),
-//      (q1..bend..q4).l("\str{1}"),
-//      (q2..loop(W)).l("\str{1}"),
-//      (q2..bend..q5).l("\str{1}"),
-//      (q3..bend..q0).l("\str{1}"),
-//      (q3--q4).l("\str{0}"),
-//      (q4..bend..q1).l("\str{1}"),
-//      (q4--q5).l("\str{0}"),
-//      (q5..bend..q2).l("\str{1}"),
-//      (q5..loop(E)).l("\str{0}")
-// );
-
-// // draw nodes
-// draw(pic,
-//      q0, q1, q2, q3, q4, q5);
-
-// shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
-
-
-
-
-// ============== example motivation for myhill nerods ================
 picture pic;
 int picnum = 16;
 unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$q_0$"); 
-node q1=ncircle("$q_1$"); 
-node q2=ncircle("$q_2$"); 
-node q3=ncircle("$q_3$",ns_accepting); 
+node q0=ncircle("$s_0$"); 
+node q1=ncircle("$s_1$"); 
+node q2=ncircle("$s_2$"); 
+node q3=ncircle("$s_3$",ns_accepting); 
 
 // calculate nodes position
 // layout

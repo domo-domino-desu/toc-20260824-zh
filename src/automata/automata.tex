@@ -8148,13 +8148,14 @@ For deterministic machines that is not so.
 % ...................................................
 \section{Minimization}\index{minimization of a Finite State machine|(}\index{Finite State machine!minimization|(}
 We will give an algorithm
-that starts with a Finite State machine and
-then finds the smallest machine, the machine with the fewest states, 
-that recognizes the same language.
-This algorithm collapses together redundant states.
+that inputs a Finite State machine and
+the machine with the fewest states that also
+recognizes the same language.
 
-Compare these two.
-Each has that the language of accepted strings is
+The algorithm collapses together redundant states
+so we begin with an example of that.
+Compare these two machines.
+Each has the language
 $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
   \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
 \begin{equation*} \label{fig:MachinesWithMinAndNoMinStates}
@@ -8163,16 +8164,13 @@ $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa17.pdf}}
   \tag{$*$}
 \end{equation*}
-Informally, our experience is that to 
-correctly design a machine,
+Our experience in designing machines is that
 each state needs a meaning that is well-defined in terms of the machine's
-language and that is different from 
-the meaning of all other states.
-For instance, on the left $q_2$ means
+language, and that is unique.
+For instance, on the left $s_2$ means
 ``have seen the required \str{1} but still
 waiting for a~\str{0}.''
-
-The machine on the right doesn't meet this design principle because
+The machine on the right doesn't satisfy this design principle because
 the meaning of $q_4$, ``have seen the required \str{1}, and another~\str{1}, 
 but still waiting for a~\str{0},''  
 is subsumed by the meaning of~$q_2$, with respect 
@@ -8183,10 +8181,10 @@ Similarly, $q_5$'s meaning is subsumed by~$q_3$'s.
 This machine has redundant states.
 
 Expanding on that, the table below lists what happens if the machine
-is now in state~$q_2$ or~$q_4$ and now on the tape is the given string.
-An entry says `A' if running the machine will end in an accepting state,
-or `R' otherwise. 
-\begin{center}
+is now in state~$q_2$ or~$q_4$ and  the given string is now on the tape.
+An entry says A if running the machine will end in an accepting state
+and R otherwise. 
+\begin{center}\small
   \begin{tabular}{r|*{10}{c}}
     \multicolumn{1}{r|}{$\sigma$} 
       &\multicolumn{1}{c}{$\varepsilon$} 
@@ -8204,22 +8202,21 @@ or `R' otherwise.
     $q_4$ &R &A &R &A &A &A &R &A &A &A  \\
   \end{tabular}
 \end{center}
-The two states behave the same;
-simply, if $\sigma$ contains a~\str{0} then both states give~`A',
-otherwise they give `R'.
+The two states behave the same;~if 
+$\sigma$ contains a~\str{0} then both states give~A,
+otherwise both give R.
 
-As a contrast, if in the right-hand machine we give the string
+As a contrast, if we give the string
 $\sigma=\str{0}$ to the state $q_2$ then the machine ends in an accepting state, 
 while if we give the same $\sigma$ to~$q_0$ then the machine
 rejects.
-So these two states play different roles in the machine; they are not
-redundant.
+These two states are not redundant.
 
 \begin{definition}\label{def:distinguishable}
 In a Finite State machine over $\Sigma$, two states $q,\hat{q}$ are
 \definend{indistinguishable},\index{indistinguishable states}\index{states!indistinguishable} 
 \definend{$q\sim\hat{q}$},
-if for every string $\sigma\in\kleenestar{\Sigma}$,
+if for every string $\sigma\in\kleenestar{\Sigma}\!$,
 the two cases of starting the machine in $q$ while giving it~$\sigma$
 and starting the machine in~$\hat{q}$ while giving it~$\sigma$ always
 result in the same outcome: either the machine ends in an accepting
@@ -8231,52 +8228,50 @@ States that are not indistinguishable are
 We will compute when states are indistinguishable by checking whether they 
 can be distinguished by strings of length~$0$, strings of length~$1$, etc.
 Fix a Finite State machine over an alphabet~$\Sigma$
-and a string length $n\in\N$.
+and a length $n\in\N$.
 We say that $q$ and~$\hat{q}$
 are \definend{$n$-indistinguishable}, 
 \definend{$q\sim_{n}\hat{q}$},\index{n indistinguishable states@$n$-indistinguishable states}\index{states!n indistinguishable@$n$-indistinguishable}
 if for every string $\sigma\in\kleenestar{\Sigma}$ of length at most~$n$,
 starting the machine in $q$ while giving it~$\sigma$
 and starting the machine in~$\hat{q}$ while giving it~$\sigma$
-results in the same outcome, that either the machine ends in an accepting
-state in both cases or it ends in a rejecting state in both.
+results in the same outcome, either that for both the machine ends in an 
+accepting state or that for both it ends in a rejecting state.
 States are
 \definend{$n$-distinguishable}\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
 if they are not $n$-indistinguishable, that is, 
-if there is a string $\sigma\in\kleenestar{\Sigma}$ with
+if there exists a string $\sigma\in\kleenestar{\Sigma}$ with
 $\lh{\sigma}\leq n$ such that starting the machine
 in one of the states and giving it input~$\sigma$ ends in an accepting state
 while starting it in the other and giving it~$\sigma$ does not.
 
-Observe that for the $n=0$ case,
-states are $0$-indistinguishable if either both are accepting or
+Observe that 
+states are $0$-indistinguishable if either both are accepting states or
 both are not accepting states.
 
 \begin{example}
 Consider the machine on the left in ($*$)
-above and its $q_0$ and $q_2$.
+above and its $s_0$ and $s_2$.
 Take the length one string $\sigma=\str{0}$.
-Starting in state~$q_0$
+Starting in state~$s_0$
 and processing~$\sigma$ ends
-in the rejecting state~$q_1$,
-but starting in~$q_2$ and processing the same input ends
-in the accepting state~$q_3$.
-So $q_0$ and~$q_2$ are $1$-distinguishable, and therefore are
+in the rejecting state~$s_1$,
+but starting in~$s_2$ and processing the same input ends
+in the accepting state~$s_3$.
+So $s_0$ and~$s_2$ are $1$-distinguishable and therefore are
 distinguishable.
 \end{example}
 
-\begin{example}
+\begin{example} \label{ex:MinimizationInitial}
 For the machine on the right above
 this table gives the result of starting in each state and processing
 each string of length~$0$, length~$1$, and length~$2$.
-It records whether the resulting state 
-is accepting or rejecting.
-\begin{equation*}
-  \begin{array}{r|c@{\hspace{1.5em}}*{2}{c}@{\hspace{1.5em}}*{4}{c}}
+\begin{equation*}\small
+  \begin{array}{r|c*{2}{c}*{4}{c}}
     \multicolumn{1}{r}{\ }
-           &\multicolumn{1}{c@{\hspace{1.5em}}}{\emptystring}  
+           &\multicolumn{1}{c}{\emptystring}  
            &\multicolumn{1}{c}{\str{0}}           
-           &\multicolumn{1}{c@{\hspace{1.5em}}}{\str{1}}           
+           &\multicolumn{1}{c}{\str{1}}           
            &\multicolumn{1}{c}{\str{00}}           
            &\multicolumn{1}{c}{\str{01}}           
            &\multicolumn{1}{c}{\str{10}}           
@@ -8289,66 +8284,68 @@ is accepting or rejecting.
     q_4  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
     q_5  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\      
   \end{array}
-  \tag{$**$}
+  % \tag{$**$}
 \end{equation*}
-The input~$\emptystring$ 
-doesn't change the state.
-So that initial column just records that
+The initial column just records that
 members of $\set{q_0,q_1,q_2,q_4}$ 
-are rejecting states and members of $\set{q_3,q_5}$ are accepting. 
-We write $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$ along with 
-$\eclass_{0,1}=\set{q_3,q_5}$.
+are rejecting states while members of $\set{q_3,q_5}$ are accepting. 
+We write $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$ and 
+$\eclass_{0,1}=\set{q_3,q_5}$ to 
+denote that states are in the same class $\eclass_{0,i}$ if they are
+$0$-indistinguishable.
 
 The two columns for the length~$1$ strings
-show all of the four possible behaviors.
-The state $q_0$ is sent to a rejecting result for both inputs,
-that is, the columns say $R$ and $R$.
-For $q_1$ we have $R,A$.
-Both $q_2$ and~$q_4$ show $A,R$.
-And $q_3$ and~$q_5$  go to $A,A$. 
-So in total we have four classes, $\eclass_{1,0}=\set{q_0}$,
+show all four possible behaviors.
+The state $q_0$ goes to a rejecting result for both inputs,
+that is, the columns say R and~R.
+For $q_1$ we have R,A.
+Both $q_2$ and~$q_4$ show A,R.
+And $q_3$ and~$q_5$  go to A,A. 
+So there are four classes for 
+$1$-indistinguishability: $\eclass_{1,0}=\set{q_0}$,
 $\eclass_{1,1}=\set{q_1}$, 
 $\eclass_{1,2}=\set{q_2,q_4}$, 
-and $\eclass_{1,3}=\set{q_3,q_5}$, where states are in the
-same class if and only if they are $1$-indistinguishable.
-The class $\eclass_{0,1}$ from the prior paragraph has split into three,
+and $\eclass_{1,3}=\set{q_3,q_5}$.
+Note that the prior paragraph's
+class $\eclass_{0,1}$ has split into three,
 $\eclass_{1,0}$ and $\eclass_{1,1}$ and~$\eclass_{1,2}$.
-The other class does not split, $\eclass_{0,1}=\eclass_{1,3}$.
+The other class did not split, $\eclass_{0,1}=\eclass_{1,3}$.
 
-Next, the length~$2$ strings. 
-The states $q_2$ and~$q_4$ 
-both have
-$A,A,A,R$.
-And the states $q_3$ and~$q_5$ both have
-$A,A,A,A$.
+Next, the length~$2$ strings.
+The only classes that could split are $\eclass_{1,2}=\set{q_2,q_4}$, 
+and $\eclass_{1,3}=\set{q_3,q_5}$. 
+Both $q_2$ and~$q_4$ have
+A,A,A,R,
+while both $q_3$ and~$q_5$ have
+A,A,A,A.
 So going to these longer strings   
-does not further divide the classes of states\Dash
-the
-relation of $2$-distinguishable gives the same classes of states
-as does the relation of $1$-distinguishable.
+does not further divide the classes.
+% \Dash
+% the
+% relation of $2$-distinguishable gives the same classes
+% as does the relation of $1$-distinguishable.
 \end{example}
 
 \begin{lemma} \label{lemma:StateEquivIsEquivRel}
   The relations $\sim_0$, $\sim_1$, \ldots{} and $\sim$
-  are equivalence relations.
+  are equivalences.
   As such, they partition a machine's states into
   the  
-  \definend{$1$-distinguishable classes},\index{1-distinguishable classes@$1$-distinguishable classes}\index{n-distinguishable classes@$n$-distinguishable classes}
-  the \definend{$2$-distinguishable classes},\index{2-distinguishable classes@$2$-distinguishable classes}
-  \ldots
-  and the \definend{distinguishable classes}.\index{distinguishable classes}
+  \definend{$0$-distinguishable classes},\index{n-distinguishable classes@$n$-distinguishable classes}
+  the \definend{$1$-distinguishable classes},
+  \ldots{}
+  along with the \definend{distinguishable classes}.\index{distinguishable classes}
 \end{lemma}
 
 \begin{proof}
   \cref{exer:NEquivIsEquivRel}.  
 \end{proof}
 
-This summarizes the prior example about 
-the machine on the right in ($*$)~above.
-The $\sim_0$ equivalence classes are
-$\eclass_{0,0}$ and~$\eclass_{0,1}$.
-The $\sim_1$ classes are $\eclass_{1,0}$, \ldots{}, $\eclass_{1,3}$,
-etc.
+This summarizes the prior example by listing the equivalence classes.
+When we first saw this machine we 
+spotted that $q_2$ and~$q_4$ are redundant.
+Notice that all three lines in this table have them together in their class. 
+The same holds for $q_3$ and~$q_5$.
 \begin{equation*}
   \begin{array}{r|l}
   \multicolumn{1}{c}{n}
@@ -8379,89 +8376,92 @@ etc.
   \end{array}
 \end{equation*}
 
-When we first considered this machine, we 
-spotted that $q_2$ and~$q_4$ do the same thing.
-Notice that all three lines in that table have them together in their class. 
-The same holds for $q_3$ and~$q_5$.
 We now develop an algorithm, \citetext{Moore's algorithm}{%
-  Moore's algorithm
   It is easy and suitable for
   small calculations but if you are writing code then 
-  be aware that another algorithm, Hopcroft's algorithm, 
-  is more efficient.
+  be aware that another algorithm,
+    Hopcroft's algorithm, is more efficient.
   See \protect\autocite{Knuutila}.},\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
-that finds the $\sim_0$ classes, 
+based on this pattern.
+Given a machine, it finds the $\sim_0$ classes, 
 then the $\sim_1$ classes, 
 \ldots{}
-and at the end it has the $\sim$~classes.
-Those classes then serve as the states of the minimal machine.
+until the classes stop splitting.
+At that point the classes are the $\sim$~classes,
+and they serve as the states of the minimal machine.
 
-As motivation for that algorithm consider
-what it takes for two states  $q$ and~$\hat{q}$ to be
-$n+1$-distinguishable but not $n$-distinguishable.
+There is just one difficulty to overcome.
+As presented in \cref{ex:MinimizationInitial},
+at each stage we considered all length~$n$ string inputs.
+Of course there are $2^n$-many such inputs to check,
+which would make an algorithm intolerably slow.
+Moore's algorithm refines that example,
+reducing the number of things to check.
+
+For that, consider
+what we need for a splitting, that is,
+consider two states $q$ and~$\hat{q}$ that are not
+$n$-distinguishable but that are $n+1$-distinguishable.
 Let them be distinguished by the length~$n+1$ string 
-$\sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$.
-Write that string as $\sigma=\tau\concat s_n$.
-The states  $q$ and~$\hat{q}$ are not $n$-distinguishable so
+$\sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$, which we can 
+write as $\sigma=\tau\concat s_n$.
+Because they are not $n$-distinguishable,
 where $\tau$ brings the machine from $q$ to some state~$r$
 and also brings the machine from $\hat{q}$ to some~$\hat{r}$,
-then these two states $r$ and~$\hat{r}$ must be in the same
+then $r$ and~$\hat{r}$ are in the same $n$-equivalence
 class,~$\eclass_{n,i}$.
-In short, the distinguishing must happen with $\sigma$'s final character,~$s_n$.
+Therefore, the distinguishing between these two states
+must happen with $\sigma$'s final character,~$s_n$.
 It must take the machine from state~$r$ to a state in one 
 class,~$\eclass_{n+1,j}$, 
 and also take the machine from~$\hat{r}$ to 
-a state in another class,~$\eclass_{n+1,\hat{j}}\,$.
+a state in a different class,~$\eclass_{n+1,\hat{j}}\,$.
+In short, if there is going to be a split in passing from the 
+$n$-distinguishability classes
+to the $n+1$-distinguishability classes 
+then a single character suffices to produce such a split.
 
-The table~($**$) lists all of the length one strings
-and all of the length two strings, but the prior paragraph
-shows that to $n+1$-distinguish classes 
-we don't need to list all of the $2^{n+1}$-many strings of length~$n+1$.
-If the $\eclass_{n,i}$'s are going to split 
-then a single character suffices to split them.
+% So consider again the machine on the right in ($*$).
+% Its $\sim_1$ classes are 
+% $\eclass_{1,0}=\set{q_0}$, 
+% $\eclass_{1,1}=\set{q_1}$, 
+% $\eclass_{1,2}=\set{q_2,q_4}$, 
+% and~$\eclass_{1,3}=\set{q_3,q_5}$.
+% We already know that there will be no  
+% additional splitting in going to the $\sim_2$ classes, 
+% but we will illustrate how the algorithm checks this. 
+% We feed single characters to the states in the $\sim_1$~classes
+% and see if those classes split.
+% This is a considerable speedup over checking all possible strings.
+% (And singleton classes cannot split so we need only test classes with 
+% more than one member,
+% $\eclass_{1,2}$ and $\eclass_{1,3}$.)
+% \begin{center}
+%   \begin{tabular}{r|cc}
+%     \multicolumn{1}{r}{$\eclass_{1,2}$}
+%          &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}} \\
+%     \cline{2-3}
+%     $q_2$    &$q_3\in\eclass_{1,3}$ &$q_4\in\eclass_{1,2}$      \\
+%     $q_4$    &$q_5\in\eclass_{1,3}$ &$q_4\in\eclass_{1,2}$      
+%   \end{tabular}
+%   \qquad  
+%   \begin{tabular}{r|cc}
+%     \multicolumn{1}{r}{$\eclass_{1,3}$}
+%          &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}} \\
+%     \cline{2-3}
+%     $q_3$   &$q_3\in\eclass_{1,3}$ &$q_5\in\eclass_{1,3}$    \\
+%     $q_5$   &$q_5\in\eclass_{1,3}$ &$q_5\in\eclass_{1,3}$    
+%   \end{tabular}
+% \end{center}
+% The $\eclass_{1,2}$ table shows both $q_2$ and~$q_4$ 
+% going to $\eclass_{1,3},\eclass_{1,2}$
+% so there is no split there.
+% The $\eclass_{1,3}$ likewise shows no split.
+% So they will never split and algorithm stops\Dash the 
+% $\sim_1$ classes equal the $\sim_2$ classes, \ldots{},
+% which equal the $\sim$ classes.
 
-So consider again the machine on the right in ($*$).
-Its $\sim_1$ classes are 
-$\eclass_{1,0}=\set{q_0}$, 
-$\eclass_{1,1}=\set{q_1}$, 
-$\eclass_{1,2}=\set{q_2,q_4}$, 
-and~$\eclass_{1,3}=\set{q_3,q_5}$.
-We already know that there will be no  
-additional splitting in going to the $\sim_2$ classes, 
-but we will illustrate how the algorithm checks this. 
-We feed single characters to the states in the $\sim_1$~classes,
-and see if those classes split.
-This is a considerable speedup over checking all possible strings.
-(And singleton classes cannot split so we need only test classes with 
-more than one member,
-$\eclass_{1,2}$ and $\eclass_{1,3}$.)
-\begin{center}
-  \begin{tabular}{r|cc}
-    \multicolumn{1}{r}{$\eclass_{1,2}$}
-         &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}} \\
-    \cline{2-3}
-    $q_2$    &$q_3\in\eclass_{1,3}$ &$q_4\in\eclass_{1,2}$      \\
-    $q_4$    &$q_5\in\eclass_{1,3}$ &$q_4\in\eclass_{1,2}$      
-  \end{tabular}
-  \qquad  
-  \begin{tabular}{r|cc}
-    \multicolumn{1}{r}{$\eclass_{1,3}$}
-         &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}} \\
-    \cline{2-3}
-    $q_3$   &$q_3\in\eclass_{1,3}$ &$q_5\in\eclass_{1,3}$    \\
-    $q_5$   &$q_5\in\eclass_{1,3}$ &$q_5\in\eclass_{1,3}$    
-  \end{tabular}
-\end{center}
-The $\eclass_{1,2}$ table shows both $q_2$ and~$q_4$ 
-going to $\eclass_{1,3},\eclass_{1,2}$
-so there is no split there.
-The $\eclass_{1,3}$ likewise shows no split.
-So they will never split and algorithm stops\Dash the 
-$\sim_1$ classes equal the $\sim_2$ classes, \ldots{},
-which equal the $\sim$ classes.
-
-The examples of the algorithm below systematize this calculation,
-including adding a bookkeeping table.
+The examples of Moore's algorithm that follow leverage this reasoning.
 They also show how to use the $\sim$~classes to make 
 a minimal machine.
 
@@ -8471,16 +8471,17 @@ a minimal machine.
   \begin{center}
     \includegraphics{automata/asy/min/min03.pdf}
   \end{center}
-  To keep track of which states are distinguished we will use triangular
-  tables that
-  have an entry for 
-  every two-element set $\set{i,j}$
-  where $i\neq j$ are indices of states $q_i$ and~$q_j$.
-  Checks mark state pairs that are distinguishable.
+  For bookkeeping we will use triangular tables that
+  have an entry for every pair of different states $q_i$ and~$q_j$.
+  Checkmarks show state pairs that are distinguishable.
 
   Start by checkmarking the $i,j$~entries that are 
   $0$-distinguishable, that is,
   where one of $q_i$ and $q_j$ is accepting while the other is not.
+  An example is that the table below 
+  has a check denoting that state~$q_0$
+  is distinguishable from state~$q_1$,
+  because $q_0$ is not accepting while $q_1$ is accepting.
   \begin{center} 
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{0}   &    &    &    &    &    \\
@@ -8497,16 +8498,26 @@ a minimal machine.
       \cline{1-5}      
     \end{minimizetable}
    \end{center}
-   Blank entries are state pairs that are $0$-indistinguishable.
-   We can read off the $\sim_{0}$-equivalence classes.
+   Blank entries in this initial table 
+   mark state pairs that are $0$-indistinguishable.
+   For instance, $q_1$ and~$q_2$ are $0$-indistinguishable.
+   By eye we can read off the $\sim_{0}$-equivalence classes.
    \begin{equation*}
      \eclass_{0,0} =\set{q_0,q_3,q_4}
      \qquad
      \eclass_{0,1} =\set{q_1,q_2,q_5}        
    \end{equation*}
 
-  Next we see if those classes split.
-  Here are the calculations.
+  Next the algorithm determines whether these classes split.
+  We check each pair $q_i,q_j$ that are together in a $\sim_{0}$~class.
+  We take the characters from the alphabet and see where that character
+  sends $q_i$ and~$q_j$.
+  We see splitting when they are sent to members of unequal
+  $\sim_{0}$~classes.
+  For instance, on the $q_0,q_3$ line, the character~\str{a} takes
+  $q_0$ to~$q_1$ and takes $q_3$ to~$q_5$.
+  The two outcomes, $q_1$ and~$q_5$, are both members of $\eclass_{0,1}$,
+  so we have not yet seen splitting.
   \begin{center} \small
     \begin{tabular}{r|ll|ll}
       \multicolumn{1}{c}{\ }
@@ -8529,42 +8540,20 @@ a minimal machine.
       \splitclasses{$q_2,q_5$}  &$q_4,q_5$     &$q_3,q_5$   
              &$\eclass_{0,0},\eclass_{0,1}$     &$\eclass_{0,0},\eclass_{0,1}$ \\
     \end{tabular}
-    % \qquad
-    % \begin{minimizetable}{6}
-    %   \multicolumn{1}{c}{0}   &    &    &    &    &    \\
-    %   \cline{1-1}
-    %   \ck &\multicolumn{1}{|c}{1}   &    &    &    &    \\
-    %   \cline{2-2}
-    %   \ck &    &\multicolumn{1}{|c}{2}   &    &    &    \\
-    %   \cline{3-3}
-    %       &\ck &\ck &\multicolumn{1}{|c}{3}   &    &    \\
-    %   \cline{4-4}
-    %       &\ck &\ck &    &\multicolumn{1}{|c}{4}   &    \\
-    %   \cline{5-5}
-    %   \ck &\ck    &\ck    &\ck &\ck &\multicolumn{1}{|c}{5}    \\ 
-    %   \cline{1-5}      
-    % \end{minimizetable}
   \end{center}
-  In the left column are all pairs of
-  states from $\eclass_{0,0}$, and from $\eclass_{0,1}$.
-  In the middle, to each state in the pair we feed the characters 
-  \str{a} and~\str{b}
-  and list the result.
-  On the right are the $\sim_0$~classes containing those results.
-
-  The right will show whether
-  the two states are $1$-distinguishable,
-  by having an entry with different $\sim_0$~classes.
-  For instance, 
-  $q_1$ and $q_5$ are together in $\eclass_{0,1}$
+  But the table does show class splitting.
+  One example is in the $q_1,q_5$ line. 
+  Those two states are together in $\eclass_{0,1}$
   but on the right the entry under~\str{a} has two different classes, 
-  $\eclass_{0,0}$ and~$\eclass_{0,1}$.  
-  To the triangular table we add a checkmark in location $1,5$.
-  Similarly, $q_2$ and~$q_5$ are together in~$\eclass_{0,1}$ but
-  the character~\str{b} 
-  takes them to different classes, $\eclass_{0,0}$ and~$\eclass_{0,1}$.
-  We add a checkmark at $2,5$.
-  Here is the update.
+  $\eclass_{0,0}$ and~$\eclass_{0,1}$.
+  Therefore at least one of the $\sim_{0}$~classes splits and  
+  the algorithm goes on to find $\sim_{1}$~classes.   
+    
+  We refine that triangular table to make the next one.
+  Because of the $q_1,q_5$ splitting in the prior paragraph
+  we add a checkmark in location $1,5$.
+  Similarly, the prior table shows a $q_2,q_5$ splitting so
+  we add a checkmark at $2,5$.
   \begin{center} \small
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{0}   &    &    &    &    &    \\
@@ -8581,22 +8570,20 @@ a minimal machine.
       \cline{1-5}      
     \end{minimizetable}
   \end{center}
-  In short, the $\sim_0$ class $\eclass_{0,1}=\set{q_1,q_2,q_5}$ splits 
-  into two $\sim_1$~classes. 
+  We can read off the  $\sim_{1}$~classes.
   \begin{equation*}
     \eclass_{1,0}=\set{q_0,q_3,q_4} \quad
     \eclass_{1,1}=\set{q_1,q_2}   \quad
     \eclass_{1,2}=\set{q_5}   
   \end{equation*}
+  The $\sim_0$ class $\eclass_{0,1}=\set{q_1,q_2,q_5}$ has split
+  into two $\sim_1$~classes. 
 
-  The algorithm now iterates.
-  We ask whether any of the $\sim_{1}$-equivalence classes
-  splits into more than one $\sim_{2}$-equivalence classe.
-  In the calculation below, on the left are all pairs of unequal states 
-  together in some $\sim_1$ class.
-  The right side shows that $q_0$ is $2$-distinguishable from $q_3$ and~$q_4$, 
-  but that $q_3$ and~$q_4$ are not $2$-distinguishable from each other.
-  We update the triangular table with 
+  Now iterate.
+  Obviously $\eclass_{1,2}$ can't split so we only consider state pairs
+  from the other two classes.
+  The right side shows that $q_0$ is $2$-distinguishable from $q_3$ and~$q_4$. 
+  The next triangular table adds 
   checkmarks in the $0,3$ and $0,4$ entries.
   \begin{center} \small
     \begin{tabular}{r|ll|ll}
@@ -8671,9 +8658,8 @@ a minimal machine.
       \cline{1-5}      
     \end{minimizetable}
   \end{center}
-  The calculation shows no splitting.
-  The triangular table is unchanged from the prior iteration and 
-  so the algorithm stops with these $\sim$ equivalence classes.
+  That calculation shows no more splitting.
+  The algorithm terminates.
   \begin{equation*}
         \eclass_0=\set{q_0} \quad
         \eclass_1=\set{q_1,q_2}   \quad
@@ -8681,19 +8667,20 @@ a minimal machine.
         \eclass_{3}=\set{q_5}   
   \end{equation*}
 
-  We finish by producing the minimal machine.
-  The algorithm has shown that in the original machine states $q_1$
-  and~$q_2$ are in a sense the same and in the same sense states $q_3$ and~$q_4$
-  are the same.
-  So we collapse those pairs, as drawn in
-  the diagram below. 
-  Take
+  To finish we exhibit the minimal machine.
+  % The algorithm has found that states $q_1$
+  % and~$q_2$ are redundant and $q_3$ is redundant with~$q_4$
+  % as well.
+  % So we collapse those pairs. 
+  For the states, take
   $r_0$ as a name for $\eclass_{0}$, 
-  take $r_1$ for $\eclass_{1}$, etc.
-  The start state of this machine is the one containing $q_0$,
+  take $r_1$ for $\eclass_{1}$, 
+  $r_2$ for $\eclass_{2}$, 
+  and $r_3$ for $\eclass_{3}$.
+  The start state is the one containing $q_0$,
   namely~$r_0$. 
-  This machine's final states are the ones containing final states of the
-  original machine, $r_1=\eclass_1$ and $r_3=\eclass_3$.
+  The final states are the ones containing final states of the
+  original machine, $r_1$ and $r_3$.
   \begin{center}
     \includegraphics{automata/asy/min/min04.pdf}
   \end{center}
@@ -8701,9 +8688,10 @@ a minimal machine.
   consider what happens when we feed the character~\str{a} to
   $r_0=\eclass_0=\set{q_0}$. 
   In the original machine, $q_0$ under input~\str{a} goes to~$q_1$.
-  Since $q_1$ is an element of~$\eclass_{1}=r_1$, the \str{a}~arrow 
+  Since $q_1$ is an element of~$\eclass_{1}=r_1$, 
+  in the minimal machine the \str{a}~arrow 
   out of $r_0$ goes to~$r_1$.
-  The other connections work the same way.
+  Other connections work the same way.
 \end{example}
 
 \begin{example}  \label{ex:SecondMinimization}
@@ -8717,14 +8705,10 @@ a minimal machine.
   but does come up here.
   This machine has an unreachable state,~$q_5$.
   Drop it.
-  That leaves these $\sim_0$ classes, the non-final states and 
-  the final states,
+
+  That leaves these $\sim_0$ classes
   and this initial triangular table.
   \begin{center} 
-    $\eclass_{0,0}=\set{q_0,q_1,q_2} 
-      \quad
-     \eclass_{0,1}=\set{q_3,q_4}$
-    \qquad
     \begin{minimizetable}{5}
       \multicolumn{1}{c}{0}   &    &    &    &    \\
       \cline{1-1}
@@ -8737,15 +8721,19 @@ a minimal machine.
       \ck &\ck &\ck &    &\multicolumn{1}{|c}{4}   \\
       \cline{1-4}      
     \end{minimizetable}
+    \qquad
+    $\eclass_{0,0}=\set{q_0,q_1,q_2} 
+      \quad
+     \eclass_{0,1}=\set{q_3,q_4}$
   \end{center}
 
-  The first iteration is to see if the $\sim_0$~classes split.
-  Below, the calculation's first row shows  
-  that on being fed a \str{1} the
-  states $q_0$ and~$q_1$ go to resulting states, $q_2$ and~$q_3$,
-  that are in different $\sim_0$~classes.
-  Its second row shows a similar thing, and we've updated
-  the triangular table.
+  The algorithm calls for us to check whether the $\sim_0$~classes split.
+  Below, the calculation's $q_0,q_1$ row shows  
+  that on being fed a~\str{1} the
+  outcomes, $q_2$ and~$q_3$,
+  are in different $\sim_0$~classes,
+  and its second row shows a similar thing. 
+  We've included the updated triangular table.
   \begin{center} \small
     \begin{tabular}{r|ll|ll}
       \multicolumn{1}{c}{\ }
@@ -8764,7 +8752,7 @@ a minimal machine.
       $q_3,q_4$  &$q_3,q_4$  &$q_3,q_4$
              &$\eclass_{0,1},\eclass_{0,1}$     &$\eclass_{0,1},\eclass_{0,1}$  \\
     \end{tabular}
-    \qquad
+    \hspace{3em}
     \begin{minimizetable}{5}
       \multicolumn{1}{c}{0}   &    &    &    &    \\
       \cline{1-1}
@@ -8778,30 +8766,46 @@ a minimal machine.
       \cline{1-4}      
     \end{minimizetable}
   \end{center}
-  In short, $\eclass_{0,0}=\set{q_0,q_1,q_2}$ splits in two
-  to give these $\sim_1$ classes.
+  That is, $\eclass_{0,0}=\set{q_0,q_1,q_2}$ splits, and  
+  these are the $\sim_1$~classes.
    \begin{equation*}
         \eclass_{1,0}=\set{q_0} \quad
         \eclass_{1,1}=\set{q_1,q_2} \quad
         \eclass_{1,2}=\set{q_3,q_4}
    \end{equation*}
 
-  No additional splitting happens on the next iteration, 
-  which is easy to check,
-  \begin{center}
-    \includegraphics{automata/asy/min/min05.pdf}
-  \end{center}
-  So the minimized machine has three states, one for each $\sim$ class,
+  On the next iteration 
+\begin{center}
+    \begin{tabular}{r|ll|ll}
+      \multicolumn{1}{c}{\ }
+                  &\multicolumn{1}{c}{\str{0}}
+                  &\multicolumn{1}{c}{\str{1}}  
+                  &\multicolumn{1}{c}{\str{0}}
+                  &\multicolumn{1}{c}{\str{1}}  \\
+      \cline{2-5}
+      $q_1,q_2$  &$q_2,q_2$  &$q_3,q_4$
+             &$\eclass_{1,1},\eclass_{1,1}$     &$\eclass_{1,2},\eclass_{1,2}$  \\
+      \cline{2-5}
+      $q_3,q_4$  &$q_3,q_4$  &$q_3,q_4$
+             &$\eclass_{1,2},\eclass_{1,2}$     &$\eclass_{1,},\eclass_{1,2}$  \\
+    \end{tabular}
+\end{center}
+no more splitting happens.
+  The minimized machine has three states, one for each~$\sim$ class,
   $\eclass_{0}=\set{q_0}$,
   $\eclass_{1}=\set{q_1,q_2}$,
   and $\eclass_{2}=\set{q_3,q_4}$.
+  \begin{center}
+    \includegraphics{automata/asy/min/min05.pdf}
+  \end{center}
 \end{example}
 
 \medskip
-We close with a result below proving that Moore's algorithm works.
+We end with a lemma verifying that Moore's algorithm works.
 We will cover that the
 algorithm halts, 
-and that the machine it produces recognizes the same language and is minimal.
+and that the machine it produces recognizes the same language,
+and is minimal.
 
 But there is another thing to prove that may not be obvious,
 namely that the algorithm produces a well-defined machine at all.

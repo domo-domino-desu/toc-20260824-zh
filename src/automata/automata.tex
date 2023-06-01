@@ -8694,6 +8694,76 @@ a minimal machine.
   Other connections work the same way.
 \end{example}
 
+\begin{remark}
+Before the next example we pause to give two illustrations of
+the relationship between the transition functions of the machines.
+Imagine that we connect the states of the input machine
+with the states of the output machine via the projection below:~$p(q_0)=r_0$, 
+$p(q_1)=p(q_2)=r_1$,
+$p(q_3)=p(q_4)=r_2$, 
+and $p(q_5)=r_3$.
+\begin{center}
+  \begin{tabular}{rc}
+    \tabulartext{Input $\FSM_I$:}
+      &\vcenteredhbox{\includegraphics{automata/asy/min/min03.pdf}} \\[5.25ex]
+    \tabulartext{Output $\FSM_O$:}
+      &\vcenteredhbox{\includegraphics{automata/asy/min/min04.pdf}}
+  \end{tabular}
+\end{center}
+Moore's algorithm groups $\FSM_I$'s states to make $\FSM_O$'s states
+in a way that respects the input machine's transitions. 
+
+The tables below show the same effect in a different way.
+The left is the transition function of the starting 
+machine,~$\Delta_{\FSM_I}$.
+The right shows $\Delta_{\FSM_O}$, grouping the $q$'s into $r$'s.
+Again,
+the algorithm combines the states such that 
+the transitions in $\FSM_O$ respect\Dash that is, fit with\Dash
+the transitions in $\FSM_I$.
+For instance, $q_1$ and~$q_2$ project to~$r_1$, and when presented with
+input~\str{a} they transition to states, 
+$q_3$ and~$q_4$, that project to~$r_2$.
+\begin{center}
+\begin{tabular}{c|cc}
+  \multicolumn{1}{c}{$\Delta_{\FSM_I}$}
+    &\str{a}  &\str{b}  \\
+  \cline{2-3}
+  $q_0$  &$q_1$  &$q_2$  \\ 
+  \cline{2-3}
+  $q_1$  &$q_3$  &$q_4$ \\ 
+  $q_2$  &$q_4$  &$q_3$ \\ 
+  \cline{2-3}
+  $q_3$  &$q_5$  &$q_5$  \\ 
+  $q_4$  &$q_5$  &$q_5$ \\ 
+  \cline{2-3}
+  $q_5$  &$q_5$  &$q_5$  \\ 
+\end{tabular}
+\qquad
+\begin{tabular}{c|cc}
+  \multicolumn{1}{c}{$\Delta_{\FSM_O}$}
+    &\str{a}  &\str{b}  \\
+  \cline{2-3}
+  \multirow{1}{*}{$r_0$} &$r_1$ &$r_1$  \\ 
+  \cline{2-3}
+  \multirow{2}{*}{$r_1$} &\multirow{2}{*}{$r_2$} &\multirow{2}{*}{$r_2$}  \\ 
+  \\
+  \cline{2-3}
+  \multirow{2}{*}{$r_2$} &\multirow{2}{*}{$r_3$} &\multirow{2}{*}{$r_3$}  \\
+  \\ 
+  \cline{2-3}
+  \multirow{1}{*}{$r_3$} &\multirow{1}{*}{$r_3$} &\multirow{1}{*}{$r_3$}  \\ 
+\end{tabular}
+\end{center}
+\citetext{Stated precisely}{%
+  The technical term is that $p$ is a homomorphism between
+  the automata.}, 
+the projection~$\map{p}{\FSM_I}{\FSM_O}$
+satisfies that 
+$\Delta_{\FSM_O}(p(q),x)=p(\,\Delta_{\FSM_I}(q,x)\,)$ for all
+$q\in\FSM_I$ and $x\in\Sigma$.
+\end{remark}
+
 \begin{example}  \label{ex:SecondMinimization}
   Minimize this machine.
   \begin{center}
@@ -8813,104 +8883,17 @@ namely that the algorithm produces a machine whose
 $\Delta$ function is well-defined.
 Consider the minimal machine in \cref{ex:FirstMinimization} and the arrows
 leaving its state $r_1=\eclass_1=\set{q_1,q_2}$.
-What if feeding an~\str{a} to $q_1$ and an~\str{a} to $q_2$ 
+What if feeding an~\str{a} to $q_1$ and $q_2$ 
 sends them to states in different $\sim$~classes?
 That would be trouble\Dash which state~$r_j$ should get the 
 \str{a} arrow leaving $r_1$?
-
 Now, \cref{ex:FirstMinimization} doesn't have this trouble.
-Its state
-$q_1$ is sent by \str{a} to $q_3\in\eclass_2$ and
-$q_2$ is sent by \str{a} to $q_4\in\eclass_2$, so in the minimial
-machine starting at $r_1$ and processing an~\str{a} has a well-defined result,
-namely the minimal machine goes to~$r_2$.
-We can likewise check that $q_1$ and~$q_2$ are sent by \str{b}
-to states that are both in $\eclass_2$.
-And we can do a similar check for the other multiple-member class,
-$\eclass_3=\set{q_3,q_4}$.
-
-Nonetheless, as part of the lemma
+Its states
+$q_1$ and~$q_s$ are both sent by \str{a} to states in $\eclass_2$
+(namely $q_3$ and~$q_4$).
+Nonetheless, 
 we need to argue that for the machines produced by the
 algorithm, the transition function is well-defined.
-% However, once we spot that we need to check it, the actual check turns out to 
-% be easy.
-% Simply, if there is a $\sim_n$ class where some
-% character sends two states in that class to different classes then
-% the algorithm does not terminate at that step, instead it splits that 
-% $\sim_n$~class and goes to a next step.
-% So the algorithm cannot end with an ill-defined transition function. 
-
-\begin{remark}
-Before the proof we give two illustrations of
-the relationship between the transition functions of the input and
-output machines.
-Imagine that the states of the input machine below
-project down onto the output machine's states:~$p(q_0)=r_0$, 
-$p(q_1)=p(q_2)=r_1$,
-$p(q_3)=p(q_4)=r_2$, 
-and $p(q_5)=r_3$.
-\begin{center}
-  \begin{tabular}{rc}
-    \tabulartext{algorithm input $\FSM_I$:}
-      &\vcenteredhbox{\includegraphics{automata/asy/min/min03.pdf}} \\[5.25ex]
-    \tabulartext{output $\FSM_O$:}
-      &\vcenteredhbox{\includegraphics{automata/asy/min/min04.pdf}}
-  \end{tabular}
-\end{center}
-The 
-algorithm groups together $\FSM_I$'s states to make $\FSM_O$'s states
-in a way that respects the starting machine's transitions. 
-
-The tables below show in a different way the same effect.
-The left is the transition function of the starting 
-machine,~$\Delta_{\FSM_I}$.
-The right shows $\Delta_{\FSM_O}$, grouping the $q$'s into $r$'s.
-Again,
-the algorithm combines the states such that 
-the transitions in $\FSM_O$ respect\Dash that is, fit with\Dash
-the transitions in $\FSM_I$.
-For instance, $q_1$ and~$q_2$ project to~$r_1$, and when presented with
-input~\str{a} they transition to states, 
-$q_3$ and~$q_4$, that project to~$r_2$.
-\begin{center}
-\begin{tabular}{c|cc}
-  \multicolumn{1}{c}{$\Delta_{\FSM_I}$}
-    &\str{a}  &\str{b}  \\
-  \cline{2-3}
-  $q_0$  &$q_1$  &$q_2$  \\ 
-  \cline{2-3}
-  $q_1$  &$q_3$  &$q_4$ \\ 
-  $q_2$  &$q_4$  &$q_3$ \\ 
-  \cline{2-3}
-  $q_3$  &$q_5$  &$q_5$  \\ 
-  $q_4$  &$q_5$  &$q_5$ \\ 
-  \cline{2-3}
-  $q_5$  &$q_5$  &$q_5$  \\ 
-\end{tabular}
-\qquad
-\begin{tabular}{c|cc}
-  \multicolumn{1}{c}{$\Delta_{\FSM_O}$}
-    &\str{a}  &\str{b}  \\
-  \cline{2-3}
-  \multirow{1}{*}{$r_0$} &$r_1$ &$r_1$  \\ 
-  \cline{2-3}
-  \multirow{2}{*}{$r_1$} &\multirow{2}{*}{$r_2$} &\multirow{2}{*}{$r_2$}  \\ 
-  \\
-  \cline{2-3}
-  \multirow{2}{*}{$r_2$} &\multirow{2}{*}{$r_3$} &\multirow{2}{*}{$r_3$}  \\
-  \\ 
-  \cline{2-3}
-  \multirow{1}{*}{$r_3$} &\multirow{1}{*}{$r_3$} &\multirow{1}{*}{$r_3$}  \\ 
-\end{tabular}
-\end{center}
-\citetext{Stated precisely}{%
-  The technical term is that $p$ is a homomorphism between
-  the automata.}, 
-the projection~$\map{p}{\FSM_I}{\FSM_O}$
-satisfies that 
-$\Delta_{\FSM_O}(p(q),x)=p(\,\Delta_{\FSM_I}(q,x)\,)$ for all
-$q\in\FSM_I$ and $x\in\Sigma$.
-\end{remark}
 
 \begin{lemma}
 Moore's algorithm 
@@ -8921,47 +8904,51 @@ recognizing the same language has the minimal number of states.
 \end{lemma}
 
 \begin{proof}
-We will argue that the algorithm halts for all input machines,
-that there is a well-defined output machine,
-that this returned machine recognizes the same language as the starting machine,
-and that it has a minimal number of states.
-The first is easy:~the algorithm halts at a step where no class splits and
+We first argue that the algorithm halts for all input machines.
+This is easy:~the algorithm halts at a step when no class splits and
 since these machines have only finitely many states,
 that step must eventually appear.
 
-In the discussion before the lemma statement we have already given
-the argument that the output machine's transition function is well-defined,
-namely that by definition the algorithm does not 
-terminate until $\Delta_{\FSM_O}$ is defined. 
+We next argue that $\FSM_O$'s transition function is well defined.
+Simply, if there is a $\sim_n$ class where some
+character sends two states in that class to different $\sim_n$~classes then
+the algorithm does not terminate at that step. 
+Instead it splits that class and goes to the next step.
+So the algorithm cannot end with an ill-defined~$\Delta$. 
 
-We next verify that the input machine and 
-the returned machine recognize the same language. 
-Start both machines on the same string, $\sigma\in\kleenestar{\Sigma}\!$. 
-The input machine~$\FSM_I$ starts in~$q_0$ while the output machine $\FSM_O$ 
+Next we verify that $\FSM_I$ and $\FSM_O$ recognize the same language. 
+The input machine $\FSM_I$ starts in~$q_0$ while the output machine $\FSM_O$ 
 starts in a state $r_0=\eclass_0$ that contains~$q_0$.
-The first character of~$\sigma$ moves~$\FSM_I$ to a state~$\hat{q}$
-and moves~$\FSM_O$ to a state that contains~$\hat{q}$.
-The processing by the two machines 
-proceeds in this way until the string runs out.
-Then $\FSM_I$ is in a final state if and only if 
+Feed both machines the same string, $\sigma\in\kleenestar{\Sigma}\!$. 
+The first character of~$\sigma$ moves~$\FSM_I$ from $q_0$ to some state~$q_{i_1}$
+and moves~$\FSM_O$ from a state that contains~$q_0$ 
+to a state that contains~$q_{i_1}$.
+The second character of~$\sigma$ moves~$\FSM_I$ from $q_{i_1}$
+to some~$q_{i_2}$
+and moves~$\FSM_O$ from a state that contains $q_{i_1}$ 
+to a state that contains~$q_{i_2}$.
+The machines 
+proceed in this way until the string runs out.
+At the end $\FSM_I$ is in a final state if and only if 
 $\FSM_O$ is in a state that contains that final state, which is itself
 a final state of~$\FSM_O$.
 Thus the two machines accept the same set of strings.
 
-\citetext{The final verification is that $\FSM_O$ has a minimal number of states}{%
+\citetext{The last verification is that $\FSM_O$ has a minimal number of states}{%
   This is derived from the presentation in \autocite{HopcroftUllman}.
 }.
 Let~$\hat{\FSM}$ recognize
 the same language as~$\FSM_O$;
 we will show that it has at least as many states. 
-We will associate
+We will do this by associating
 each state in~$\FSM_O$ with at least one state 
-in~$\hat{\FSM}$, such that never are different states in~$\FSM_O$ associated
+in~$\hat{\FSM}$ in such a way 
+that never are different states in~$\FSM_O$ associated
 with the same state in~$\hat{\FSM}$.
 
 Consider the union of the sets of states of the two machines 
-(assume that they have no states in common).
-Like we did with Moore's algorithm, 
+(assume that they have no states in common, or else rename).
+As we did with Moore's algorithm, 
 begin by saying that two states in the union are
 $0$-indistinguishable if both are final in their own machine 
 or if neither is final.
@@ -8977,19 +8964,19 @@ When we reach a step with no splitting
 then we know which states are indistinguishable and
 these form the $\sim$~classes.
 
-Notice that, because $\lang(\FSM_O)=\lang(\hat{\FSM})$, 
+Because $\lang(\FSM_O)=\lang(\hat{\FSM})$, 
 the start states in the two machines are indistinguishable
 and are in the same $\sim$~class.
-In addition, if two states are indistinguishable then their successor states
+Also, if two states are indistinguishable then their successor states
 on any one input symbol $x\in\Sigma$ are also indistinguishable
 from each other,
 since if a string~$\sigma$ distinguishes between the successors 
-then $x\concat\sigma$
+then $\sigma\concat x$
 distinguishes between the original two states.
 In turn, the successors of these successors are indistinguishable, etc.
 
-Now for the association. 
-Say that states in~$\FSM_O$ and $\hat{\FSM}$ are associated
+We are ready to define the association:~states 
+in~$\FSM_O$ and $\hat{\FSM}$ are associated
 if they are in the same $\sim$~class.
 We first show that every state~$q$ of $\FSM_O$ is associated with 
 at least one state of~$\hat{\FSM}$.
@@ -9011,12 +8998,17 @@ other.
 \end{proof}
 
 In this chapter we have seen that when we have a problem to solve
-with a Finite State machine, a nondeterministic machine answer
-is often easier and more natural to produce.
+with a Finite State machine, 
+often a nondeterministic machine
+is easier and more natural.
+(An example is the problem that inputs a regular expression
+and outputs a machine recognizing that expression.) 
 But our algorithm for converting it to a deterministic machine results in
-one with an exponential number of states.
-Now though we can tackle that difficulty.
-We now have a three-step process that gives good results in practice:~from 
+an exponential number of states.
+
+This section's result alleviates that.
+We now have a three-step process, 
+which gives good results in practice:~from 
 a problem we start with a nondeterministic
 answer, convert that to an equivalent deterministic machine,
 and then minimize to get a reasonably-sized final answer.

@@ -8694,76 +8694,6 @@ a minimal machine.
   Other connections work the same way.
 \end{example}
 
-\begin{remark}
-Before the next example we pause to give two illustrations of
-the relationship between the transition functions of the machines.
-Imagine that we connect the states of the input machine
-with the states of the output machine via the projection below:~$p(q_0)=r_0$, 
-$p(q_1)=p(q_2)=r_1$,
-$p(q_3)=p(q_4)=r_2$, 
-and $p(q_5)=r_3$.
-\begin{center}
-  \begin{tabular}{rc}
-    \tabulartext{Input $\FSM_I$:}
-      &\vcenteredhbox{\includegraphics{automata/asy/min/min03.pdf}} \\[5.25ex]
-    \tabulartext{Output $\FSM_O$:}
-      &\vcenteredhbox{\includegraphics{automata/asy/min/min04.pdf}}
-  \end{tabular}
-\end{center}
-Moore's algorithm groups $\FSM_I$'s states to make $\FSM_O$'s states
-in a way that respects the input machine's transitions. 
-
-The tables below show the same effect in a different way.
-The left is the transition function of the starting 
-machine,~$\Delta_{\FSM_I}$.
-The right shows $\Delta_{\FSM_O}$, grouping the $q$'s into $r$'s.
-Again,
-the algorithm combines the states such that 
-the transitions in $\FSM_O$ respect\Dash that is, fit with\Dash
-the transitions in $\FSM_I$.
-For instance, $q_1$ and~$q_2$ project to~$r_1$, and when presented with
-input~\str{a} they transition to states, 
-$q_3$ and~$q_4$, that project to~$r_2$.
-\begin{center}
-\begin{tabular}{c|cc}
-  \multicolumn{1}{c}{$\Delta_{\FSM_I}$}
-    &\str{a}  &\str{b}  \\
-  \cline{2-3}
-  $q_0$  &$q_1$  &$q_2$  \\ 
-  \cline{2-3}
-  $q_1$  &$q_3$  &$q_4$ \\ 
-  $q_2$  &$q_4$  &$q_3$ \\ 
-  \cline{2-3}
-  $q_3$  &$q_5$  &$q_5$  \\ 
-  $q_4$  &$q_5$  &$q_5$ \\ 
-  \cline{2-3}
-  $q_5$  &$q_5$  &$q_5$  \\ 
-\end{tabular}
-\qquad
-\begin{tabular}{c|cc}
-  \multicolumn{1}{c}{$\Delta_{\FSM_O}$}
-    &\str{a}  &\str{b}  \\
-  \cline{2-3}
-  \multirow{1}{*}{$r_0$} &$r_1$ &$r_1$  \\ 
-  \cline{2-3}
-  \multirow{2}{*}{$r_1$} &\multirow{2}{*}{$r_2$} &\multirow{2}{*}{$r_2$}  \\ 
-  \\
-  \cline{2-3}
-  \multirow{2}{*}{$r_2$} &\multirow{2}{*}{$r_3$} &\multirow{2}{*}{$r_3$}  \\
-  \\ 
-  \cline{2-3}
-  \multirow{1}{*}{$r_3$} &\multirow{1}{*}{$r_3$} &\multirow{1}{*}{$r_3$}  \\ 
-\end{tabular}
-\end{center}
-\citetext{Stated precisely}{%
-  The technical term is that $p$ is a homomorphism between
-  the automata.}, 
-the projection~$\map{p}{\FSM_I}{\FSM_O}$
-satisfies that 
-$\Delta_{\FSM_O}(p(q),x)=p(\,\Delta_{\FSM_I}(q,x)\,)$ for all
-$q\in\FSM_I$ and $x\in\Sigma$.
-\end{remark}
-
 \begin{example}  \label{ex:SecondMinimization}
   Minimize this machine.
   \begin{center}
@@ -8895,6 +8825,80 @@ Nonetheless,
 we need to argue that for the machines produced by the
 algorithm, the transition function is well-defined.
 
+\begin{remark}
+Before the proof we pause to 
+suggest where this well-definedness comes from, with a
+couple of illustrations.
+Consider again the machines from \cref{ex:FirstMinimization}.
+Below we picture the connection between their states as a projection,
+$p(q_0)=r_0$, 
+$p(q_1)=p(q_2)=r_1$,
+$p(q_3)=p(q_4)=r_2$, 
+and $p(q_5)=r_3$.
+\begin{center}
+  \begin{tabular}{rc}
+    \tabulartext{Input $\FSM_I$:}
+      &\vcenteredhbox{\includegraphics{automata/asy/min/min03.pdf}} \\[6.0ex]
+    \tabulartext{Output $\FSM_O$:}
+      &\vcenteredhbox{\includegraphics{automata/asy/min/min04.pdf}}
+  \end{tabular}
+\end{center}
+When the algorithm collapses $q_2$ and~$q_1$ into the 
+single~$r_1$, it ensures that the two arrows from~$q_0$ to those redundant 
+states become the single $\str{a},\str{b}$ arrow from~$r_0$ to~$r_1$.
+We say that the transformation from $\FSM_I$ to $\FSM_O$ \definend{respects}
+the starting machine's operation, and of course that operation is
+well-defined.
+
+The other way we picture machines is with tables.
+Here the map associating states in $\FSM_I$ with states in $\FSM_O$
+groups the $q$'s into $r$'s.
+Again, Moore's algorithm combines the states such that 
+the transitions in $\FSM_O$ respect\Dash that is, fit with\Dash
+the transitions in $\FSM_I$.
+By this we mean that, for instance, $q_1\mapsto r_1$ and when presented with
+input~\str{a} those transition to $q_3$ and~$r_2$, 
+and the map respects the transition because $q_3\mapsto r_2$.
+\begin{center}
+\begin{tabular}{c|cc}
+  \multicolumn{1}{c}{$\Delta_{\FSM_I}$}
+    &\str{a}  &\str{b}  \\
+  \cline{2-3}
+  $q_0$  &$q_1$  &$q_2$  \\ 
+  \cline{2-3}
+  $q_1$  &$q_3$  &$q_4$ \\ 
+  $q_2$  &$q_4$  &$q_3$ \\ 
+  \cline{2-3}
+  $q_3$  &$q_5$  &$q_5$  \\ 
+  $q_4$  &$q_5$  &$q_5$ \\ 
+  \cline{2-3}
+  $q_5$  &$q_5$  &$q_5$  \\ 
+\end{tabular}
+\qquad
+\begin{tabular}{c|cc}
+  \multicolumn{1}{c}{$\Delta_{\FSM_O}$}
+    &\str{a}  &\str{b}  \\
+  \cline{2-3}
+  \multirow{1}{*}{$r_0$} &$r_1$ &$r_1$  \\ 
+  \cline{2-3}
+  \multirow{2}{*}{$r_1$} &\multirow{2}{*}{$r_2$} &\multirow{2}{*}{$r_2$}  \\ 
+  \\
+  \cline{2-3}
+  \multirow{2}{*}{$r_2$} &\multirow{2}{*}{$r_3$} &\multirow{2}{*}{$r_3$}  \\
+  \\ 
+  \cline{2-3}
+  \multirow{1}{*}{$r_3$} &\multirow{1}{*}{$r_3$} &\multirow{1}{*}{$r_3$}  \\ 
+\end{tabular}
+\end{center}
+\citetext{In a formula}{%
+  The technical term is that $p$ is a homomorphism between
+  the automata.}, 
+the map~$\map{p}{\FSM_I}{\FSM_O}$
+satisfies that 
+$\Delta_{\FSM_O}(p(q),x)=p(\,\Delta_{\FSM_I}(q,x)\,)$ for all
+$q\in\FSM_I$ and $x\in\Sigma$.
+\end{remark}
+
 \begin{lemma}
 Moore's algorithm 
 returns a machine that recognizes the same language as the input machine,
@@ -9001,8 +9005,8 @@ In this chapter we have seen that when we have a problem to solve
 with a Finite State machine, 
 often a nondeterministic machine
 is easier and more natural.
-(An example is the problem that inputs a regular expression
-and outputs a machine recognizing that expression.) 
+An example is the problem that inputs a regular expression
+and outputs a machine recognizing that expression.
 But our algorithm for converting it to a deterministic machine results in
 an exponential number of states.
 

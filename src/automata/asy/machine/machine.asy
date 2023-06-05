@@ -98,9 +98,9 @@ real stack_separator = 0.0*u;
 path stack = (-0.6*u,0*v) -- (-0.6*u,-3.6*v) -- (0.6*u,-3.6*v) -- (0.6*u,0*v) -- cycle;  
 fill(pic, stack, lightcolor);
 
-draw_stackchar(pic, (0,0*v), "\str{g3}");
+draw_stackchar(pic, (0,0*v), "\str{g2}");
 // draw_stackchar(pic, (0,(-1*v)-stack_separator), "\str{g0}");
-draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g2}");
+draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g3}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -119,9 +119,9 @@ path stack = (-0.6*u,0*v) -- (-0.6*u,-3.6*v) -- (0.6*u,-3.6*v) -- (0.6*u,0*v) --
 fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,(0*v)), "\str{g1}");
-draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g3}");
+draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g2}");
 // draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g0}");
-draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g2}");
+draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g3}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -141,9 +141,9 @@ fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,(0*v)), "\str{g0}");
 draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g1}");
-draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g3}");
+draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g2}");
 // draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g0}");
-draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g2}");
+draw_stackchar(pic, (0,-3*v-stack_separator), "\str{g3}");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -162,9 +162,9 @@ path stack = (-0.6*u,0*v) -- (-0.6*u,-3.6*v) -- (0.6*u,-3.6*v) -- (0.6*u,0*v) --
 fill(pic, stack, lightcolor);
 
 draw_stackchar(pic, (0,(0*v)), "\str{g1}");
-draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g3}");
+draw_stackchar(pic, (0,-1*v-stack_separator), "\str{g2}");
 // draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g0}");
-draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g2}");
+draw_stackchar(pic, (0,-2*v-stack_separator), "\str{g3}");
 // draw_stackchar(pic, (0,4*v+stack_separator), "$g_1$");
 // dot(pic,(0,-4.5*v),invisible);  // keep all stacks same hgt
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -179,42 +179,42 @@ real separator = 35pt;
 
 picture pic;
 int picnum=6;
-pic=pda(" [[]][]B",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda("[[]][]B",0,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=7;
-pic=pda(" [[]][]B",2,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("[]][]B",0,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=8;
-pic=pda(" [[]][]B",3,"$q_0$", new string[] {"\str{g0}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("]][]B",0,"$q_0$", new string[] {"\str{g0}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=9;
-pic=pda(" [[]][]B",4,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("][]B",0,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=10;
-pic=pda(" [[]][]B",5,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda("[]B",0,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=11;
-pic=pda(" [[]][]B",6,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("]B",0,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=12;
-pic=pda(" [[]][]B",7,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda("B",0,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=13;
-pic=pda(" [[]][]B",8,"$q_1$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda(" ",0,"$q_1$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -227,31 +227,31 @@ real separator = 20pt;
 // ------ even length input
 picture pic;
 int picnum=14;
-pic=pda(" 0110",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda("0110",0,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 picture pic;
 int picnum=15;
-pic=pda(" 0110",2,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("110",0,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 picture pic;
 int picnum=16;
-pic=pda(" 0110",3,"$q_1$", new string[] {"\str{g1}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("10",0,"$q_1$", new string[] {"\str{g1}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 picture pic;
 int picnum=17;
-pic=pda(" 0110",4,"$q_1$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("0",0,"$q_1$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 picture pic;
 int picnum=18;
-pic=pda(" 0110",5,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda(" ",0,"$q_2$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
@@ -302,36 +302,36 @@ real separator = 35pt;
 
 picture pic;
 int picnum=25;
-pic=pda(" bacabB",1,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda("bacabB",0,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=26;
-pic=pda(" bacabB",2,"$q_0$", new string[] {"\str{g1}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("acabB",0,"$q_0$", new string[] {"\str{g1}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=27;
-pic=pda(" bacabB",3,"$q_0$", new string[] {"\str{g0}", "\str{g1}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("cabB",0,"$q_0$", new string[] {"\str{g0}", "\str{g1}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=28;
-pic=pda(" bacabB",4,"$q_1$", new string[] {"\str{g0}", "\str{g1}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("abB",0,"$q_1$", new string[] {"\str{g0}", "\str{g1}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=29;
-pic=pda(" bacabB",5,"$q_1$", new string[] {"\str{g1}", "$\bot$"},tape_length,stack_length,separator);
+pic=pda("bB",0,"$q_1$", new string[] {"\str{g1}", "$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=30;
-pic=pda(" bacabB",6,"$q_1$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda("B",0,"$q_1$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 picture pic;
 int picnum=31;
-pic=pda(" bacabB",7,"$q_3$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+pic=pda("",0,"$q_3$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

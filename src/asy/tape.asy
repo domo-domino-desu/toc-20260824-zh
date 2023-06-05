@@ -131,14 +131,31 @@ path tape_label_path(real start_x, real end_x) {
 // tape_output("tape3","101",2,"$q_1$");
 
 // ======= STACK ROUTINES ==============
-
 real STACK_LENGTH=100pt;
 real STACK_WIDTH=TAPE_WIDTH;
+
+path stack_end_path(pair bottom) {
+  pair stack_end_top=(0,STACK_WIDTH);
+  pair stack_end_bot=(0,0);
+  path stack_end=stack_end_top
+    ..(-0.1*STACK_WIDTH,(2/3)*STACK_WIDTH)
+    ..(0.1*STACK_WIDTH,(1/3)*STACK_WIDTH)
+    ..stack_end_bot;
+  return shift(bottom)*stack_end;
+}
+
 path stack_path(real stack_length=STACK_LENGTH) {
-  path stack=(0pt,0pt)--(stack_length,0pt)
-    --(stack_length,STACK_WIDTH)--(0pt,STACK_WIDTH)--cycle;
+  path stack=(0pt,1pt)--(0pt,0pt)--(stack_length,0pt)
+    ..reverse(stack_end_path((stack_length,0)))
+    --(stack_length,STACK_WIDTH)--(0pt,STACK_WIDTH)
+    --(0pt,STACK_WIDTH-1pt);
   return stack;
 }
+// path stack_path(real stack_length=STACK_LENGTH) {
+//   path stack=(0pt,0pt)--(stack_length,0pt)
+//     --(stack_length,STACK_WIDTH)--(0pt,STACK_WIDTH)--cycle;
+//   return stack;
+// }
 
 
 // write the string to the stack, with character i at position x=i (positions
@@ -157,7 +174,8 @@ void stack_write(picture p, string[] S) {
 void stack_draw(picture p, string[] S, real stack_length=STACK_LENGTH) {
   // filldraw(p, stack_path(stack_length),drawpen=TAPE_PEN+light_color,fillpen=white);
   path sp = stack_path(stack_length);
-  draw(p,point(sp,0)--point(sp,1)--point(sp,2)--point(sp,3),TAPE_PEN+light_color);
+  //draw(p,point(sp,0)--point(sp,1)--point(sp,2)--point(sp,3),TAPE_PEN+light_color);
+  draw(p,sp,TAPE_PEN+light_color);
   draw(p,point(sp,3)--point(sp,3.1),TAPE_PEN+light_color);
   draw(p,point(sp,3.9)--point(sp,4),TAPE_PEN+light_color);
   stack_write(p,S);
@@ -175,7 +193,7 @@ void stack_output(string prefix, string[] S,  real stack_length=STACK_LENGTH) {
 picture pda(string tape_contents, real head_pos, string head_label="", string[] stack_contents, real tape_length=DEFAULT_TAPE_LENGTH, real stack_length=STACK_LENGTH, real separation=20pt) {
   picture p_tape;
   unitsize(p_tape,1pt);
-  tape_draw(p_tape, tape_contents, head_pos, head_label, tape_length);
+  tape_draw_withend(p_tape, tape_contents, head_pos, head_label, tape_length);
   picture p_stack;
   unitsize(p_stack,1pt);
   stack_draw(p_stack,stack_contents,stack_length);

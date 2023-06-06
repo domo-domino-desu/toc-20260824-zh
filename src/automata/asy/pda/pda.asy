@@ -116,7 +116,10 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // ============== Computation history for first NPDA ================
 picture pic;
 int picnum = 1;
-unitsize(pic,1.5cm,0.8cm);
+
+real u = 2.75cm;
+real v = 0.618*u;
+unitsize(pic,u,v);
 
 pen p;
 pen GRAYPEN = gray(0.8);
@@ -124,71 +127,252 @@ pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
 
 transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
 transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
 setdefaultparsetreestyles();
 
 p=MAINPEN;
 // Action to left of first input
-label(pic, "$q_0,\text{`$\bot$'}$",(0,0),p);
-// draw(pic, (0.5,4.85)--(0.5,-1),GRAYSTRIPE);
-// label(pic, yield_t_down*"$\vdash$",(0.5,-0.25),p);
-label(pic, yield_t_up*"$\vdash$",(0.15,0.45),p);
-label(pic, "\makebox[\width][l]{$q_1,\text{`$\bot$'}$}",(0.30,1.00),p);
-label(pic, yield_t_up*"$\vdash$",(0.50,1.50),p);
-label(pic, "\makebox[\width][l]{$q_1,\text{`$\bot$'}$}",(0.60,2.10),p);
+label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.4),p);
+//  label(pic, "\scriptsize 2", (0.60,0.4), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.8),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,1.20),p);
+//  label(pic, "\scriptsize 11", (0.60,1.20), background_color);
+label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.6),p);
+draw(pic, (1,-0.25)--(1,1.85),GRAYSTRIPE);
 
 // // Add action up to second input
+// label(pic, "$\vdash$",(1.00,0),p);
+//   label(pic, "\scriptsize 0", (1.00,-0.15), background_color);
+// label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p);
+// label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+//   label(pic, "\scriptsize 7", (1.60,0.5), background_color);
+// label(pic, "\makebox[\width][l]{$q_1,\text{$\str{g0}\bot$}$}",(1.50,1.00),p);
+// draw(pic, (2,-0.25)--(2,1.85),GRAYSTRIPE);
+
+// // Add action after second input
+// label(pic, "$\vdash$",(2.00,0),p);
+//   label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+// label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.00),p);
+// label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
+//   label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+// label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.50),p);
+// label(pic, "$\vdash$",(2.00,1.00),p);
+//   label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+// label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(2.50,1.00),p);
+// label(pic, yield_t_north*"$\vdash$",(2.50,1.25),p);
+//   label(pic, "\scriptsize 11", (2.60,1.25), background_color);
+// label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(2.50,1.50),p);
+
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(0,1.95));
+label(pic, "\str{0}",(1,1.95));
+label(pic, "\str{0}",(2,1.95));
+draw(pic, (0, 1.85)--(3.00, 1.85),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0,-0.25)--(3.00,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.35));
+label(pic, "$1$",(1.5, -0.35));
+label(pic, "$2$",(2.5, -0.35));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(0,-0.35));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ..................................
+picture pic;
+int picnum = 2;
+
+real u = 2.75cm;
+real v = 0.618*u;
+unitsize(pic,u,v);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
+setdefaultparsetreestyles();
+
+p=MAINPEN;
+// Action to left of first input
+label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.4),p);
+//  label(pic, "\scriptsize 2", (0.60,0.4), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.8),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,1.20),p);
+//  label(pic, "\scriptsize 11", (0.60,1.20), background_color);
+label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.6),p);
+draw(pic, (1,-0.25)--(1,1.85),GRAYSTRIPE);
+
+// Add action up to second input
 label(pic, "$\vdash$",(1.00,0),p);
-label(pic, "\makebox[\width][l]{$q_0,\text{`\str{g0}$\bot$'}$}",(1.75,0.00),p);
-// label(pic, "$q_0$",(1,1),p);
-// label(pic, "$q_1$",(1,-0.5),p);
-// draw(pic, (1.5,4.85)--(1.5,-1),GRAYSTRIPE);
-// label(pic, yield_t_down*"$\vdash$",(1.5,(1-0.25)),p);
-// label(pic, yield_t_up*"$\vdash$",(1.5,(1+0.45)),p);
-// label(pic, "$\vdash$",(1.5,-0.5),p);
+//  label(pic, "\scriptsize 0", (1.00,-0.15), background_color);
+label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+//  label(pic, "\scriptsize 7", (1.60,0.5), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\str{g0}\bot$}$}",(1.50,1.00),p);
+draw(pic, (2,-0.25)--(2,1.85),GRAYSTRIPE);
 
-// // Add action up to third input
-// label(pic, "$q_0$",(2,2),p);
-// label(pic, "$q_1$",(2,0.5),p);
-// label(pic, "$q_2$",(2,-0.5),p);
-// draw(pic, (2.5,4.85)--(2.5,-1),GRAYSTRIPE);
-// label(pic, yield_t_down*"$\vdash$",(2.5,(2-0.25)),p);
-// label(pic, yield_t_up*"$\vdash$",(2.5,(2+0.45)),p);
-// label(pic, "$\vdash$",(2.5,0.5),p);
+// // Add action after second input
+// label(pic, "$\vdash$",(2.00,0),p);
+//   label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+// label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.00),p);
+// label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
+//   label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+// label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.50),p);
+// label(pic, "$\vdash$",(2.00,1.00),p);
+//   label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+// label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(2.50,1.00),p);
+// label(pic, yield_t_north*"$\vdash$",(2.50,1.25),p);
+//   label(pic, "\scriptsize 11", (2.60,1.25), background_color);
+// label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(2.50,1.50),p);
 
-// // Add action up to fourth input
-// label(pic, "$q_0$",(3,3),p);
-// label(pic, "$q_1$",(3,1.5),p);
-// label(pic, "$q_2$",(3,0.5),p);
-// draw(pic, (3.5,4.85)--(3.5,-1),GRAYSTRIPE);
-// label(pic, yield_t_down*"$\vdash$",(3.5,(3-0.25)),p);
-// label(pic, yield_t_up*"$\vdash$",(3.5,(3+0.45)),p);
-// label(pic, "$\vdash$",(3.5,1.5),p);
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(0,1.95));
+label(pic, "\str{0}",(1,1.95));
+label(pic, "\str{0}",(2,1.95));
+draw(pic, (0, 1.85)--(3.00, 1.85),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0,-0.25)--(3.00,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.35));
+label(pic, "$1$",(1.5, -0.35));
+label(pic, "$2$",(2.5, -0.35));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(0,-0.35));
 
-// // Add action up to fifth (final) input
-// label(pic, "$q_0$",(4,4),p);
-// label(pic, "$q_1$",(4,2.5),p);
-// label(pic, "$q_2$",(4,1.5),p);
-// draw(pic, (4.5,4.85)--(4.5,-1),GRAYSTRIPE);  // was down to -0.75
-// label(pic, rotate(35)*"$\vdash$",(4.5,(4+0.25)),p);
-// label(pic, "$\vdash$",(4.5,1.5),p);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
-// // States after final input
-// label(pic, "$q_0$",(5,4.5),p);
-// label(pic, "$q_3$",(5,1.5),p);
 
-// legend at top of graphic
-label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
-// draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
-label(pic, "\str{0}",(0.5, 5));
-label(pic, "\str{0}",(1.5, 5));
-draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
-// at bottom of graphic
-draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
-label(pic, "$0$",(0, -1.3));
-label(pic, "$1$",(1, -1.3));
-label(pic, "$2$",(2, -1.3));
-label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
-//draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+// ..................................
+picture pic;
+int picnum = 3;
+
+real u = 2.75cm;
+real v = 0.618*u;
+unitsize(pic,u,v);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
+setdefaultparsetreestyles();
+
+p=MAINPEN;
+// Action to left of first input
+label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.4),p);
+//  label(pic, "\scriptsize 2", (0.60,0.4), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.8),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,1.20),p);
+//  label(pic, "\scriptsize 11", (0.60,1.20), background_color);
+label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.6),p);
+draw(pic, (1,-0.25)--(1,1.85),GRAYSTRIPE);
+
+// Add action up to second input
+label(pic, "$\vdash$",(1.00,0),p);
+//  label(pic, "\scriptsize 0", (1.00,-0.15), background_color);
+label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+//  label(pic, "\scriptsize 7", (1.60,0.5), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\str{g0}\bot$}$}",(1.50,1.00),p);
+draw(pic, (2,-0.25)--(2,1.85),GRAYSTRIPE);
+
+// Add action after second input
+label(pic, "$\vdash$",(2.00,0),p);
+//  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
+//  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.50),p);
+label(pic, "$\vdash$",(2.00,1.00),p);
+//  label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(2.50,1.00),p);
+label(pic, yield_t_north*"$\vdash$",(2.50,1.25),p);
+//  label(pic, "\scriptsize 11", (2.60,1.25), background_color);
+label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(2.50,1.50),p);
+
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(0,1.95));
+label(pic, "\str{0}",(1,1.95));
+label(pic, "\str{0}",(2,1.95));
+draw(pic, (0, 1.85)--(3.00, 1.85),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0,-0.25)--(3.00,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.35));
+label(pic, "$1$",(1.5, -0.35));
+label(pic, "$2$",(2.5, -0.35));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(0,-0.35));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ....... With the instruction numbers ...........................
+picture pic;
+int picnum = 4;
+
+real u = 2.75cm;
+real v = 0.618*u;
+unitsize(pic,u,v);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
+setdefaultparsetreestyles();
+
+p=MAINPEN;
+// Action to left of first input
+label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.4),p);
+  label(pic, "\scriptsize 2", (0.60,0.4), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.8),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,1.20),p);
+  label(pic, "\scriptsize 11", (0.60,1.20), background_color);
+label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.6),p);
+draw(pic, (1,-0.25)--(1,1.85),GRAYSTRIPE);
+
+// Add action up to second input
+label(pic, "$\vdash$",(1.00,0),p);
+  label(pic, "\scriptsize 0", (1.00,-0.15), background_color);
+label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+  label(pic, "\scriptsize 7", (1.60,0.5), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\str{g0}\bot$}$}",(1.50,1.00),p+highlightcolor);
+draw(pic, (2,-0.25)--(2,1.85),GRAYSTRIPE);
+
+// Add action after second input
+label(pic, "$\vdash$",(2.00,0),p);
+  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
+  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.50),p);
+label(pic, "$\vdash$",(2.00,1.00),p);
+  label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(2.50,1.00),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(2.50,1.25),p);
+  label(pic, "\scriptsize 11", (2.60,1.25), background_color);
+label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(2.50,1.50),p+highlightcolor);
+
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(0,1.95));
+label(pic, "\str{0}",(1,1.95));
+label(pic, "\str{0}",(2,1.95));
+draw(pic, (0, 1.85)--(3.00, 1.85),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0,-0.25)--(3.00,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.35));
+label(pic, "$1$",(1.5, -0.35));
+label(pic, "$2$",(2.5, -0.35));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(0,-0.35));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

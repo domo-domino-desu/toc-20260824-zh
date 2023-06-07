@@ -335,3 +335,32 @@ int picnum=31;
 pic=pda("",0,"$q_3$", new string[] {"$\bot$"},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+
+// --------- Rejecting by balanced-parens pdm calculation on []] ----------
+real tape_length = 80pt;
+real stack_length = 60pt;
+real separator = 35pt;
+
+picture pic;
+int picnum=32;
+pic=pda("[]]B",0,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=33;
+pic=pda("]]B",0,"$q_0$", new string[] {"\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=34;
+pic=pda("]B",0,"$q_0$", new string[] {"$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+picture pic;
+int picnum=35;
+pic=pda("B",0,"$q_0$", new string[] {" "},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

@@ -10565,10 +10565,6 @@ We now supplement a Finite State
 machine by giving it access to a stack.
 %</discussion:StackIntroi>
 
-\begin{center}
-  \includegraphics{asy/share/machine03.pdf}
-\end{center}
-
 A stack is like the restaurant dish dispenser below:~when you push a new dish on,
 its weight compresses a spring underneath,
 so that the old ones move down and
@@ -10579,6 +10575,10 @@ remaining dishes up and now you can reach the next one.\index{stack!pop}
 We say that this stack is 
 \definend{LIFO},~Last-In, 
 First-Out.\index{LIFO stack}\index{last in, first out (LIFO) stack}\index{stack!LIFO, Last-In, First-Out}
+
+\begin{center}
+  \includegraphics{asy/share/machine03.pdf}
+\end{center}
 
 %<*discussion:StackIntroii>
 Below on the right is a sequence of views of a stack.
@@ -10606,7 +10606,7 @@ But it has restrictions that the tape does not.
 Once something is popped, it is gone.
 We could include in the machine a state whose intuitive meaning is
 that we have just popped~$\str{g0}$
-but, as there are finitely
+but as there are finitely
 many states and unboundedly many stack arrangements, that strategy has limits.
 
 
@@ -10647,24 +10647,24 @@ This stack holds tokens from an alphabet,
 $\Gamma=\set{\str{g0}, \str{g1}, \ldots}$\sentencespace 
 A \citetext{reserved character}{%
   We use it only to mark the stack bottom, never
-  in the middle of the stack.}~$\bot$\footnote{%
+  in the middle of the stack.},~$\bot$,\footnote{%
   Read aloud as ``bottom.''}\index{bottom@bottom, $\bot$}\index{stack!bottom@bottom, $\bot$} 
 marks the stack bottom
 and so we stipulate that it is not a member of $\Gamma\!$.
 Similarly, we will use a single~\blank{} 
 to mark the end of the tape input, and so assume it is not a member
-of the tape alphabet.\footnote{%
+of the tape alphabet $\Sigma$.\footnote{%
   These machines sometimes need to
   do final work triggered by the end of the input.
   This doesn't happen for Finite State machines and
   so for them we don't mark the input end in the same way.}  
 And, because the variety of Finite State machine that we will extend 
 is the nondeterministic machine with $\varepsilon$~moves,
-we also assume that the tape alphabet $\Sigma$ 
+we also assume that the tape alphabet
 does not contain the character~$\varepsilon$.
 %</discussion:StackMachineTransitionsi>
 
-We start with an example and later give a full description.
+We start with an example.
 
 \begin{example}  \label{ex:PDSAcceptBalencedParens}
 % This grammar generates the language of balanced parentheses.
@@ -10696,21 +10696,21 @@ The Pumping Lemma shows that no Finite State machine recognizes
 $\lang_{\text{BAL}}$.
 But it is recognized by a Pushdown machine.
 This machine has two states
-$Q=\set{q_0,q_1}$, including just one accepting state, $F=\set{q_1}$.
-Its tape alphabet is 
+$Q=\set{q_0,q_1}$, including one accepting state, $F=\set{q_1}$.
+Its tape alphabet has two characters,  
 $\Sigma=\set{\text{\str{[}}\,,\text{\str{]}}}$.
-The alphabet that it uses on its stack has only one token,
+The stack alphabet has only one member,
 $\Gamma=\set{\text{\str{g0}}}$.
 
 The table below gives the transition function~$\Delta$.
 For instance, consider line~$0$.
 For every step, the machine begins by popping the top character off the stack. 
-With that,
+Next,
 if the machine is in state~$q_0$, is reading \str{[} on the 
 tape, and that character from the stack is~$\bot$, then line~$0$ 
 applies.
-The result is that machine goes into state~$q_0$ (which is not a change),
-and pushes the two-character string \mbox{\str{g0}\,$\bot$} onto
+The result is that machine goes into state~$q_0$ (which is not a change)
+and pushes the two-token string \mbox{\str{g0}\,$\bot$} onto
 the stack.
 Because the machine had just popped the stack, this $\bot$ only replaces what
 was there already, 
@@ -10731,7 +10731,7 @@ but the \str{g0} makes the new stack top.
 \end{tabular}
 \end{center}
 %</ex:BalancedParensAcceptedPushdown>
-Here is an example computation accepting a string.
+Here is an example computation accepting the string \str{[[]][]}.
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{automata/asy/machine/machine06.pdf} \\
@@ -10754,9 +10754,10 @@ Next comes line~$1$ and line~$2$, after which the stack
 again shows that the parentheses seen so far were nested.
 Finally, the machine runs instruction~4.
 It now has an empty tape and is in an accepting state, so it
-accepts its initial string \str{[[]][]}.   
+accepts its input string.   
 
-Here is a rejection example.
+Here is a rejection example, whose initial string does not have
+balanced parentheses.
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{automata/asy/machine/machine32.pdf} \\
@@ -10765,17 +10766,17 @@ Here is a rejection example.
     3 &\tapegraphic{automata/asy/machine/machine35.pdf} 
   \end{tapesequencetable}
 \end{tapesequence}
-At this point the stack is empty and so
-the machine cannot pop its top character.
-The computation dies, without accepting the
+At this point although the tape still has content, the stack is empty. 
+The machine cannot start the next step by popping the top character,
+so the computation dies, without accepting the
 input string.
 \end{example}
 
 \medskip
-We now are ready to fully describe the action of these machines.
+We now are ready for the definition.
 
 \begin{remark}
-There are different definitions of Pushdown machines.  
+There are a variety of definitions for Pushdown machines.  
 For instance, here we have the machine accept if it is in an accepting 
 state and its tape is empty
 but a variant requires that its stack be empty.
@@ -10795,7 +10796,7 @@ a nonempty
 a nonempty \definend{stack alphabet}~$\Gamma\!$,\index{stack!alphabet}\index{Pushdown machine!stack alphabet}
 and a 
 \definend{transition function}\index{transition function!Pushdown machine}\index{Pushdown machine!transition function}
-\citetext{$\map{\Delta}{Q\times (\Sigma\cup\set{\varepsilon})\times (\Gamma\cup\set{\bot})}{\powerset\bigl(Q\times\kleenestar{(\Gamma\cup\set{\bot})}\bigr)}$}{%
+\citetext{$\map{\Delta}{Q\times (\Sigma\cup\set{\blank,\varepsilon})\times (\Gamma\cup\set{\bot})}{\powerset\bigl(Q\times\kleenestar{(\Gamma\cup\set{\bot})}\bigr)}$}{%
   Tape outputs consist of sequences of elements of $\Gamma$ that 
   optionally end in a $\bot$.
   So a more precise codomain is 
@@ -10820,7 +10821,7 @@ We can represent this specification either as
 $\Delta(q_i,t,g)=S$ where $S$ is a set of pairs $\sequence{q_k,\gamma}$
 or as a set of $5$-tuple $\sequence{q_i,t,g,q_k,\gamma}$
 \definend{instructions},\index{instruction!stack machine}
-where $t\in\Sigma\cup\set{B,\varepsilon}$, $g\in\Gamma\cup\set{\bot}$, 
+where $t\in\Sigma\cup\set{\blank,\varepsilon}$, $g\in\Gamma\cup\set{\bot}$, 
 and $\gamma\in\kleenestar{\Gamma}\!$.
  
 The starting configuration $\mathcal{C}_0$ has the machine in state~$q_0$,
@@ -10834,7 +10835,7 @@ has it in state~$q_i$ with the tape head reading~$t$.
 If there is nothing on the stack,
 including not even~$\bot$, then the computation dead-ends\Dash there is no
 configuration $\mathcal{C}$ such that $\mathcal{C}_s\yields\mathcal{C}$
-and the input string~$\tau_0$ is not accepted.
+and the the machine does not accept the input string~$\tau_0$.
 
 Otherwise let~$g$ be the token at the top of the stack.
 Suppose that one of the outputs that $\Delta$ associates with
@@ -10851,23 +10852,22 @@ and
 \item the machine's read head consumes one tape cell.
 \end{parenum}
 The other case for the input $\sequence{q_i,t,g}$
-is where $t=\varepsilon$.
+is where $t=\varepsilon$ (that is, $t$ is the single character~`$\varepsilon$').
 Everything is the same except the last item, 
 so that the read head does not consume its cell
-(we use this to manipulate the stack alone). 
+(we use this to manipulate the stack without consuming the tape). 
 %</discussion:StackMachineTransitionsii>
 
 %<*discussion:StackMachineTransitionsiii>
 A Pushdown machine computation ends when the tape is
-exhausted, when
-the read head has consumed every character including 
+exhausted, when every character is gone, including 
 the input end-marking \str{B}.
 The machine accepts its initial string
-$\tau_0$ when after halting the machine is in a final state.
+$\tau_0$ if after halting it is in a final state.
 Restated, this means that
 there is a sequence of configurations 
 $\mathcal{C}_0\kleenestar{\yields}\mathcal{C}_h$ such that
-$\mathcal{C}_0$ has tape~$\tau_0$
+$\mathcal{C}_0$ has tape~$\tau_0$,
 and $\mathcal{C}_h$ has an empty tape, and
 the state $q$ is a member of $F$.\index{Pushdown machine!string acceptance}
 %</discussion:StackMachineTransitionsiii>
@@ -10879,20 +10879,21 @@ the state $q$ is a member of $F$.\index{Pushdown machine!string acceptance}
 %<*ex:PalindromesUsingMiddleMarkeri>
 Palindromes that are odd length have a character in the middle that
 acts as its own reverse.
-That is, they have the form $\sigma\concat s\concat\reversal{\sigma}\!$.
+That is, they have the form $\sigma\concat s\concat\reversal{\sigma}$ for
+$s\in\Sigma$.
 The language $\lang_{\text{MM}}$ uses $\sigma\in\kleenestar{\set{\str{a},\str{b}}}$
-along with the character $s=\str{c}$ as a middle marker,
+along with the character $s=\str{c}$ as a middle marker so that
 $\lang_{\text{MM}}=
    \set{\sigma\in\kleenestar{\set{\str{a},\str{b},\str{c}}}\suchthat
    \text{$\sigma=\tau\concat\str{c}\concat\reversal{\tau}$ for some $\tau\in\kleenestar{\set{\str{a},\str{b}}}$}}
 $.
 
 The machine below accepts this language.
-It has $Q=\set{q_0,q_1,q_2,q_3}$, $F=\set{q_3}$,
+It has $Q=\set{q_0,q_1,q_2}$, $F=\set{q_2}$,
 $\Sigma=\set{\str{a},\str{b},\str{c}}$, 
 and $\Gamma=\set{\str{g0},\str{g1}}$. 
 \begin{center}\small
-\begin{tabular}{r|ll}
+\begin{tabular}[t]{r|ll}
   \multicolumn{1}{r}{\tabulartext{Inst}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
@@ -10905,52 +10906,90 @@ and $\Gamma=\set{\str{g0},\str{g1}}$.
   $5$  &$q_0,\text{\str{a}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\,\str{g1}'}$ \\
   $6$  &$q_0,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\,\str{g0}'}$ \\
   $7$  &$q_0,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\,\str{g1}'}$ \\
-  $8$  &$q_0,\text{\str{c}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
-  $9$  &$q_0,\text{\str{c}},\text{\str{g1}}$   &$q_1,\text{`\str{g1}'}$ \\
-  $10$  &$q_0,\text{\str{B}},\text{\str{g0}}$   &$q_2,\text{`\str{g0}'}$ \\
-  $11$  &$q_0,\text{\str{B}},\text{\str{g1}}$   &$q_2,\text{`\str{g1}'}$ \\
 \end{tabular}
 \hspace{2em}
-\begin{tabular}{r|ll}
+\begin{tabular}[t]{r|ll}
   \multicolumn{1}{r}{\tabulartext{Inst}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \cline{2-3}
-  $12$ &$q_1,\text{\str{a}},\bot$             &$q_2,\text{`$\bot$'}$ \\
-  $13$ &$q_1,\text{\str{b}},\bot$             &$q_2,\text{`$\bot$'}$ \\
-  $14$ &$q_1,\text{\str{c}},\bot$             &$q_2,\text{`$\bot$'}$ \\
-  $15$ &$q_1,\text{\str{B}},\bot$             &$q_3,\text{`$\bot$'}$ \\
-  $16$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\text{`\,'}$ \\
-  $17$ &$q_1,\text{\str{a}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
-  $18$ &$q_1,\text{\str{b}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
-  $19$ &$q_1,\text{\str{b}},\text{\str{g1}}$  &$q_1,\text{`\,'}$ \\
-  $20$ &$q_1,\text{\str{c}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
-  $21$ &$q_1,\text{\str{c}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
-  $22$ &$q_1,\text{\str{B}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
-  $23$ &$q_1,\text{\str{B}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
+  $8$  &$q_0,\text{\str{c}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
+  $9$  &$q_0,\text{\str{c}},\text{\str{g1}}$   &$q_1,\text{`\str{g1}'}$ \\
+  $10$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\text{`\,'}$ \\
+  $11$ &$q_1,\text{\str{b}},\text{\str{g1}}$   &$q_1,\text{`\,'}$ \\
+  $12$ &$q_1,\text{\str{B}},\bot$              &$q_2,\text{`$\bot$'}$ \\
 \end{tabular}
+% \begin{tabular}{r|ll}
+%   \multicolumn{1}{r}{\tabulartext{Inst}}
+%   &\multicolumn{1}{c}{\tabulartext{Input}}
+%   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+%   \cline{2-3}
+%   $0$  &$q_0,\text{\str{a}},\bot$             &$q_0,\text{`\str{g0}\,$\bot$'}$ \\
+%   $1$  &$q_0,\text{\str{b}},\bot$             &$q_0,\text{`\str{g1}\,$\bot$'}$ \\
+%   $2$  &$q_0,\text{\str{c}},\bot$             &$q_1,\text{`$\bot$'}$ \\
+%   $3$  &$q_0,\text{\str{B}},\bot$             &$q_3,\text{`$\bot$'}$ \\
+%   $4$  &$q_0,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\,\str{g0}'}$ \\
+%   $5$  &$q_0,\text{\str{a}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\,\str{g1}'}$ \\
+%   $6$  &$q_0,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\,\str{g0}'}$ \\
+%   $7$  &$q_0,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\,\str{g1}'}$ \\
+%   $8$  &$q_0,\text{\str{c}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
+%   $9$  &$q_0,\text{\str{c}},\text{\str{g1}}$   &$q_1,\text{`\str{g1}'}$ \\
+%   $10$  &$q_0,\text{\str{B}},\text{\str{g0}}$   &$q_2,\text{`\str{g0}'}$ \\
+%   $11$  &$q_0,\text{\str{B}},\text{\str{g1}}$   &$q_2,\text{`\str{g1}'}$ \\
+% \end{tabular}
+% \hspace{2em}
+% \begin{tabular}{r|ll}
+%   \multicolumn{1}{r}{\tabulartext{Inst}}
+%   &\multicolumn{1}{c}{\tabulartext{Input}}
+%   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+%   \cline{2-3}
+%   $12$ &$q_1,\text{\str{a}},\bot$             &$q_2,\text{`$\bot$'}$ \\
+%   $13$ &$q_1,\text{\str{b}},\bot$             &$q_2,\text{`$\bot$'}$ \\
+%   $14$ &$q_1,\text{\str{c}},\bot$             &$q_2,\text{`$\bot$'}$ \\
+%   $15$ &$q_1,\text{\str{B}},\bot$             &$q_3,\text{`$\bot$'}$ \\
+%   $16$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\text{`\,'}$ \\
+%   $17$ &$q_1,\text{\str{a}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
+%   $18$ &$q_1,\text{\str{b}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
+%   $19$ &$q_1,\text{\str{b}},\text{\str{g1}}$  &$q_1,\text{`\,'}$ \\
+%   $20$ &$q_1,\text{\str{c}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
+%   $21$ &$q_1,\text{\str{c}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
+%   $22$ &$q_1,\text{\str{B}},\text{\str{g0}}$  &$q_2,\text{`$\str{g0}$'}$ \\
+%   $23$ &$q_1,\text{\str{B}},\text{\str{g1}}$  &$q_2,\text{`$\str{g1}$'}$ \\
+% \end{tabular}
 \end{center}
 %</ex:PalindromesUsingMiddleMarkeri>
 It acts in three phases.
 Before reading the \str{c}, it is in state $q_0$. 
-In that state when the read head sees~\str{a} then the machine pushes \str{g0} 
+In that state when the read head sees~\str{a} on the tape 
+then the machine pushes \str{g0} 
 onto the stack, and for~\str{b} it pushes \str{g1}.
-The second phase is when it reads the \str{c}, which moves it out of pushing
-and into popping.
 This takes place in lines $0$ and~$1$, as well as $4$--$7$.
 
-When it starts popping, it enters $q_1$.
-If the read head is on~\str{a} then it checks that the character 
-on top of the stack is~\str{g0},
-while
-if the read head is on~\str{b} then it checks that the character 
-on top of the stack is~\str{g1}.
-This happens in line $16$ and~$19$.
+Reading the \str{c} converts the machine from pushing
+to popping.
+The relevant instructions are in lines $2$, $8$, and $9$.
 
-There are other instructions but the most important is on line~$15$,
-where if the machine reaches the end of the string at the same moment it
-reaches the bottom of the stack then it goes to state~$q_3$,
+In this second phase, which happens in state~$q_1$, the machine compares the
+string after~\str{c} with the tokens stored on the stack,
+where they are in reverse order of how they were read before
+the~\str{c}. 
+If the read head is on~\str{a} and the character 
+on top of the stack is~\str{g0} then it consumes the \str{a}, pops the~\str{g0},
+and goes on.
+The same happens if it reads~\str{b} and the stack top is~\str{g1}.
+The instructions for these are $10$ and~$11$.
+But if on the tape is~\str{a} while on the stack is~\str{g1},
+or the tape has~\str{b} while the stack has~\str{g0},
+then there is no matching instruction.
+This dead-ends the computation and the machine
+rejects the initial string~$\tau_0$.
+
+Finally, if the machine reaches the end of the input string 
+at the same moment that it
+reaches the bottom of the stack then it goes to state~$q_2$,
 which is accepting.
+
+Here is an example computation accepting the input \str{bacab}.
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{automata/asy/machine/machine25.pdf} \\
@@ -10962,36 +11001,11 @@ which is accepting.
     6 &\tapegraphic{automata/asy/machine/machine31.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-It ends in the accepting state~$q_3$.
 \end{example}
 
-
-
-% .......................
-% \subsection{Nondeterministic Pushdown machines}
-%<*discussion:NondeterminsticPushdown>
-% To get nondeterminism
-% we alter the definition in two ways.
-% The first is small, that we don't need the~\str{B} marking the end of
-% tape input because a nondeterministic machine can guess when
-% the input string ends.
-% The second changes the
-% transition function~$\Delta$.
-% For nondeterminism the outputs will not be pairs, but sets of pairs.
-% Also, we will allow $\varepsilon$~transitions so that in the input triples the
-% second entry could be the single character `$\varepsilon$'
-% (which we assume is not an element of~$\Sigma$). 
-% Thus we have
-% \citetext{$\map{\Delta}{Q\times (\Sigma\cup\set{\varepsilon})\times (\Gamma\cup\set{\bot})}{\powerset\bigl(Q\times\kleenestar{(\Gamma\cup\set{\bot})}\bigr)}$}{%
-%   Tape outputs consist of sequences of elements of $\Gamma$ that 
-%   optionally end in a $\bot$.
-%   So a more precise codomain is 
-%   $\powerset (Q\times S)$
-%   for $S=\kleenestar{\Gamma}\cup (\kleenestar{\Gamma}\concat\set{\bot})$.
-% }.
-% (If the set of outputs is empty then we take the computation to dead-end
-% and the machine does not accept the input.)
-%</discussion:NondeterminsticPushdown>
+\medskip
+The final example makes essential use of guessing, by 
+relying on $\varepsilon$~transitions.
 
 \begin{example} \label{ex:PDAForPalindromes}
 % This grammar generates the language of all palindromes\index{palindrome}
@@ -11003,7 +11017,7 @@ It ends in the accepting state~$q_3$.
 % \end{equation*}
 Consider the language of all even-length palindromes\index{palindrome} 
 over $\kleenestar{\B}\!$,
-$\lang_{\text{WWR}}=\set{\sigma\reversal{\sigma}\suchthat\sigma\in\kleenestar{\B}}=\set{\varepsilon,\str{00},\str{11},\str{0000},\str{0110},\str{1001},\str{1111},\ldots}$.
+$\lang_{\text{ELP}}=\set{\sigma\reversal{\sigma}\suchthat\sigma\in\kleenestar{\B}}=\set{\varepsilon,\str{00},\str{11},\str{0000},\str{0110},\str{1001},\str{1111},\ldots}$.
 The Pumping Lemma shows that 
 this language is not recognized by any Finite State machine.
 But the nondeterministic Pushdown machine below does recognize it.
@@ -11013,7 +11027,7 @@ This machine has three states,
 $Q=\set{q_0,q_1,q_2}$ with $F=\set{q_2}$,
 as well as $\Sigma=\B$
 and $\Gamma=\set{\text{\str{g0}},\str{g1}}$.
-\begin{center}\small
+\begin{center}
 \begin{tabular}[t]{r|ll}
   \multicolumn{1}{r}{\tabulartext{Inst}}
   &\multicolumn{1}{c}{\tabulartext{Input}}
@@ -11041,22 +11055,23 @@ and $\Gamma=\set{\text{\str{g0}},\str{g1}}$.
 \end{tabular}
 \end{center}
 
-It runs in two phases.
+Before we start, we make a point about how we put the input on the
+tape.
+Because this machine can guess, we can have it guess whether the input is 
+finished.
+So we will omit the terminating \blank{} from the two earlier examples.
+
+The machine runs in two phases.
 Where the input is $\sigma\reversal{\sigma}\!$, the first phase works 
 with~$\sigma$.
 If the character under the head is~\str{0} 
-then the machine remembers this by pushing \str{g0} onto the stack, 
+then the machine pushes the token \str{g0} onto the stack, 
 while if the head sees~\str{1} then the machine pushes~\str{g1}. 
-This is done by instruction numbers $3$--$6$, while in state~$q_0$.
-% (Recall that before acting at each step the machine pops its top character 
-% off the stack. 
-% So to save that character's
-% information for the second phase we must push this character 
-% back on in addition to the latest character.)
+This is done by instructions $3$ through~$6$, while in state~$q_0$.
 
 The second phase works with~$\reversal{\sigma}\!$.
-It compares what's under the head with what's on the stack.
-If they are \str{0} and \str{g0}, or~\str{1} and~\str{g1},
+If \str{0} is on the tape and \str{g0} tops the stack, 
+or~\str{1} and~\str{g1},
 then it proceeds.
 Otherwise there is no matching instruction and the 
 computation branch dies.
@@ -11095,8 +11110,8 @@ This is done by instructions $9$ and~$10$, while in state~$q_1$.
 %   $17$ &$q_1,\text{\str{B}},\bot$              &$q_3,\bot$ \\
 % \end{tabular}
 % \end{center}
-How does the machine
-know when it has finished reading the first half of the input and should
+Without a middle marker how does the machine
+know when it should
 change from phase one to two, from pushing to popping?
 It is nondeterministic\Dash it guesses.
 That happens in lines $7$ and~$8$.
@@ -11106,15 +11121,19 @@ input means that the machine can spontaneously transition from $q_0$ to~$q_1$.
 There are four more instructions.
 Numbers $0$--$2$ cover the computation's initial step, when the stack
 character is~$\bot$.
-Instruction number~$11$ says that if the machine is in state~$q_1$ and
+Instruction~$11$ says that if the machine is in state~$q_1$ and
 stack has only $\bot$ then the machine can spontaneously transition to~$q_2$,
 which is the only accepting state. 
 So if this happens after the input string has run out then
 the computation succeeds.
 %</ex:NondeterministicPushDownAcceptsPalindromes>
 
-Here are three example computations.
-The first has the input \str{0110}.
+Next are three example computations.
+For the first,
+we exhibit a successful branch of the 
+computation tree.
+Here the final configuration has both an empty string and an accepting state,
+so this machine accepts the input~\str{0110}.
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{automata/asy/machine/machine14.pdf} \\
@@ -11124,15 +11143,11 @@ The first has the input \str{0110}.
     4 &\tapegraphic{automata/asy/machine/machine18.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
-We can show that the machine accepts by exhibiting a successful branch of the 
-computation tree.
-(Between these configurations the machine applies instructions
+(Between these configurations the machine has applied instructions
 $0$, $5$, $8$, $10$, $9$, and~$11$.)
-The final configuration has an empty string and an accepting state,
-so this machine accepts the~\str{0110}.
 
-For the next example computation example 
-we give the entire computation tree.
+For the next example computation
+we show the entire computation tree.
 The $\varepsilon$~transitions are drawn vertically
 (note the diference between the vertical `yields' and the bottom symbol).
 The machine accepts the string~\str{00} because the highlighted branch 
@@ -11147,7 +11162,7 @@ ends with an empty tape and in the accepting state~$q_2$.
 
 The third example computation is a rejection.
 The input is \str{100}, which isn't an even-length palindrome, and none
-of the branches ends with an empty string and in an accepting state.
+of the branches end both with an empty string and in an accepting state.
 \begin{animatedfigure}{Computation tree rejecting the input \str{100}.} 
   \animategraphics[poster=last]{3}{automata/asy/pda/pda}{05}{09}
   \label{anim:NondeterministicPushdownTreeZeroZero}

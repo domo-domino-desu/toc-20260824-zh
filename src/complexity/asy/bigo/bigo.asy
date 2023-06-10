@@ -25,7 +25,7 @@ real axis_tick_size = 0.75mm;
 // ============== compare sqrt(x) and 10*lg(x) on small scale ================
 picture pic;
 int picnum = 0;
-size(pic,6cm,0);
+size(pic,6cm,0,IgnoreAspect);
 real scalefactor = 3.2;
 scale(pic,Linear,Linear(scalefactor));
 
@@ -73,11 +73,8 @@ xequals(pic, 0,
 	ticks=NoTicks,
         arrow=Arrow(TeXHead,axis_arrow_size));
 
-dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
-for (int i=ceil(xmin);i<=floor(xmax); ++i) {
-  dot(pic, Scale(pic,(i,f(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-  dot(pic, Scale(pic,(i,g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-}
+draw(pic,graph(pic,f,xmin,xmax,operator ..),FCNPEN_SOLID);
+draw(pic,graph(pic,g,xmin,xmax,operator ..),FCNPEN_SOLID);
 // label the curves
 label(pic,"$\sqrt{n}$",Scale(pic,(900,f(900))),1.5S,TICLABELPEN);
 label(pic,"$10\lg(n)$",Scale(pic,(800,g(800))),2S,TICLABELPEN);

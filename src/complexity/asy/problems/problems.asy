@@ -3330,6 +3330,297 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======================== max cut =============
+
+int picnum = 46;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{\strut$v_0$}"),
+  v1=ncircle("\nodebox{\strut$v_1$}"),
+  v2=ncircle("\nodebox{\strut$v_2$}"),
+  v3=ncircle("\nodebox{\strut$v_3$}"),
+  v4=ncircle("\nodebox{\strut$v_4$}"),
+  v5=ncircle("\nodebox{\strut$v_5$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.75*u;
+defaultlayoutskip=u;
+
+layout(30.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
+layout(-30.0, v0, v2);
+hlayout(1.0*u, v1, v3);
+hlayout(1.0*u, v2, v4);
+layout(-30.0, v3, v5);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v1--v2),
+     (v1--v3),
+     (v2--v4),
+     (v3--v4),
+     (v3--v5),
+     (v4--v5)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ..........................................
+int picnum = 47;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{\strut$v_0$}"),
+  v1=ncircle("\nodebox{\strut$v_1$}"),
+  v2=ncircle("\nodebox{\strut$v_2$}"),
+  v3=ncircle("\nodebox{\strut$v_3$}"),
+  v4=ncircle("\nodebox{\strut$v_4$}"),
+  v5=ncircle("\nodebox{\strut$v_5$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.75*u;
+defaultlayoutskip=u;
+
+layout(30.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
+layout(-30.0, v0, v2);
+hlayout(1.0*u, v1, v3);
+hlayout(1.0*u, v2, v4);
+layout(-30.0, v3, v5);
+
+path cut;
+cut = v0.pos-(0,1*v)
+  ..interp(v0.pos,v2.pos,0.5)
+  ..interp(v1.pos,v3.pos,0.5)
+  ..{E}v3.pos+(0,0.75*v)
+  ..interp(v3.pos,v5.pos,0.5)
+  ..interp(v3.pos,v4.pos,0.5)
+  ..interp(v2.pos,v4.pos,0.5)
+  ..(interp(v2.pos,v4.pos,0.5)-(0.10*u,0.30*v));
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v1--v2),
+     (v1--v3),
+     (v2--v4),
+     (v3--v4),
+     (v3--v5),
+     (v4--v5)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5);
+
+draw(pic, cut, highlightcolor);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ..........................................
+int picnum = 48;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{\strut$v_0$}", ns_bleachedbg),
+  v1=ncircle("\nodebox{\strut$v_1$}", ns_bleachedbg),
+  v2=ncircle("\nodebox{\strut$v_2$}", ns_bleachedbold),
+  v3=ncircle("\nodebox{\strut$v_3$}", ns_bleachedbold),
+  v4=ncircle("\nodebox{\strut$v_4$}", ns_bleachedbg),
+  v5=ncircle("\nodebox{\strut$v_5$}", ns_bleachedbg);
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.75*u;
+defaultlayoutskip=u;
+
+layout(30.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
+layout(-30.0, v0, v2);
+hlayout(1.0*u, v1, v3);
+hlayout(1.0*u, v2, v4);
+layout(-30.0, v3, v5);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v1--v2),
+     (v1--v3),
+     (v2--v4),
+     (v3--v4),
+     (v3--v5),
+     (v4--v5)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// .......... misleading cut for exercise ..................
+int picnum = 49;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{\strut$v_0$}"),
+  v1=ncircle("\nodebox{\strut$v_1$}"),
+  v2=ncircle("\nodebox{\strut$v_2$}"),
+  v3=ncircle("\nodebox{\strut$v_3$}"),
+  v4=ncircle("\nodebox{\strut$v_4$}"),
+  v5=ncircle("\nodebox{\strut$v_5$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.75*u;
+defaultlayoutskip=u;
+
+layout(30.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
+layout(-30.0, v0, v2);
+hlayout(1.0*u, v1, v3);
+hlayout(1.0*u, v2, v4);
+layout(-30.0, v3, v5);
+
+path cut;
+cut = v0.pos+(0.5*u,0)
+  ..interp(v0.pos,v1.pos,0.5)
+  ..v0.pos-(0.5*u,0.0*v){S}
+  ..interp(v0.pos,v2.pos,0.5)
+  ..interp(v1.pos,v3.pos,0.5)
+  ..{E}v3.pos+(0,0.50*v)
+  ..interp(v3.pos,v5.pos,0.5)
+  ..interp(v3.pos,v4.pos,0.5)
+  ..interp(v2.pos,v4.pos,0.5)
+  ..v4.pos-(0.0*u,0.5*v){E}
+  ..interp(v4.pos,v5.pos,0.5)
+  ..interp(v4.pos,v5.pos,0.5)-(0.05*u,-0.10*v);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v1--v2),
+     (v1--v3),
+     (v2--v4),
+     (v3--v4),
+     (v3--v5),
+     (v4--v5)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5);
+
+draw(pic, cut, highlightcolor);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ========= Max cut exercise =============
+int picnum = 50;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{\strut$v_0$}"),
+  v1=ncircle("\nodebox{\strut$v_1$}"),
+  v2=ncircle("\nodebox{\strut$v_2$}"),
+  v3=ncircle("\nodebox{\strut$v_3$}"),
+  v4=ncircle("\nodebox{\strut$v_4$}"),
+  v5=ncircle("\nodebox{\strut$v_5$}");
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.75*u;
+defaultlayoutskip=u;
+
+hlayout(1*u, v0, v2, v4);
+vlayout(1*v, v0, v1);
+hlayout(1*u, v1, v3, v5);
+
+// draw edges
+draw(pic,
+     (v0--v2),
+     (v0--v3),
+     (v1--v2),
+     (v1--v3),
+     (v2--v4),
+     (v2--v5),
+     (v3--v4),
+     (v3--v5)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............ answer .............
+int picnum = 51;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{\strut$v_0$}", ns_bleachedbg),
+  v1=ncircle("\nodebox{\strut$v_1$}", ns_bleachedbg),
+  v2=ncircle("\nodebox{\strut$v_2$}", ns_bleachedbold),
+  v3=ncircle("\nodebox{\strut$v_3$}", ns_bleachedbold),
+  v4=ncircle("\nodebox{\strut$v_4$}", ns_bleachedbg),
+  v5=ncircle("\nodebox{\strut$v_5$}", ns_bleachedbg);
+
+// calculate nodes position
+real u=1.0cm;
+real v=0.75*u;
+defaultlayoutskip=u;
+
+hlayout(1*u, v0, v2, v4);
+vlayout(1*v, v0, v1);
+hlayout(1*u, v1, v3, v5);
+
+// draw edges
+draw(pic,
+     (v0--v2),
+     (v0--v3),
+     (v1--v2),
+     (v1--v3),
+     (v2--v4),
+     (v2--v5),
+     (v3--v4),
+     (v3--v5)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3, v4, v5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

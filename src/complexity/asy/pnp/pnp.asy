@@ -981,12 +981,12 @@ draw(pic, re_arc, base_region_pen);
 real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.68*UNIVERSE_HT;
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{Rec}}",(label_x,0.5*label_y),E); 
 
 real label_x = -0.65*UNIVERSE_WD;
 real label_y = 0.77*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{RE}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{RE}}",(label_x,0.5*label_y),W); 
 
 // Draw points
 // for(int i=0; i<pts.length; ++i){
@@ -1021,7 +1021,7 @@ draw(pic, P_arc, base_region_pen);
 real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.30*UNIVERSE_HT;
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
 
 // Draw points
 // for(int i=0; i<pts.length; ++i){
@@ -1231,7 +1231,7 @@ real label_y_bot = 0.37*UNIVERSE_HT;
 real label_y_top = 0.70*UNIVERSE_HT;
 draw(pic,// (label_x+0.5*WHISKER_WD,label_y_top)--
      (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
-label(pic,"{\scriptsize $\probname{NP Hard}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
+label(pic,"{\scriptsize \compclass{NP} hard}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
 
 // Locate NP Complete
 pair np_complete = (0,0.38*UNIVERSE_HT);
@@ -1343,7 +1343,7 @@ label(pic,"\makebox[\width][l]{\scriptsize $\P$}",(label_x,0.5*label_y),E);
 real label_x = -0.70*UNIVERSE_WD;
 real label_y = 0.68*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{Rec}}",(label_x,0.5*label_y),W); 
 
 // Draw points
 for(int i=0; i<pts.length; ++i){
@@ -1554,21 +1554,21 @@ real label_y_bot = 0.37*UNIVERSE_HT;
 real label_y_top = 0.70*UNIVERSE_HT;
 draw(pic,// (label_x+0.5*WHISKER_WD,label_y_top)--
      (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
-label(pic,"{\scriptsize $\probname{NP Hard}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
+label(pic,"{\scriptsize \compclass{NP} hard}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
 
 real label_x = -1.5*UNIVERSE_WD;
 real label_y_bot = 0.00*UNIVERSE_HT;
 real label_y_top = 0.70*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y_top)--
      (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
-label(pic,"{\scriptsize $\probname{Rec}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
+label(pic,"{\scriptsize $\compclass{Rec}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
 
 real label_x = -1.95*UNIVERSE_WD;
 real label_y_bot = 0.00*UNIVERSE_HT;
 real label_y_top = 0.77*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y_top)--
      (label_x,label_y_top)--(label_x,label_y_bot)--(label_x+0.5*WHISKER_WD,label_y_bot), squarebraces_label_pen);
-label(pic,"{\scriptsize $\probname{RE}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
+label(pic,"{\scriptsize $\compclass{RE}$}",(label_x,0.5*(label_y_top-label_y_bot)+label_y_bot),W); 
 
 // Locate NP Complete
 pair np_complete = (0,0.38*UNIVERSE_HT);
@@ -1790,12 +1790,12 @@ draw(pic, re_arc, base_region_pen);
 real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.68*UNIVERSE_HT;
 draw(pic,(label_x-0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x-0.5*WHISKER_WD,0), squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{Rec}}",(label_x,0.5*label_y),E); 
 
 real label_x = -0.65*UNIVERSE_WD;
 real label_y = 0.77*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{RE}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{RE}}",(label_x,0.5*label_y),W); 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -1829,7 +1829,7 @@ real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -1873,14 +1873,14 @@ real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
 
 // Put in the NP line with bars and label it
 real label_x = -0.65*UNIVERSE_WD;
 real label_y = 0.325*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{NP}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{NP}}",(label_x,0.5*label_y),W); 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -1914,7 +1914,7 @@ real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{P}=\probname{NP}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}=\compclass{NP}}",(label_x,0.5*label_y),E); 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -1962,21 +1962,21 @@ real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
 
 // Put in the NP line with bars and label it
 real label_x = -0.6*UNIVERSE_WD;
 real label_y = 0.3*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{NP}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{NP}}",(label_x,0.5*label_y),W); 
 
 // Put in the EXP line with bars and label it
 real label_x = -1.0*UNIVERSE_WD;
 real label_y = 0.38*UNIVERSE_HT;
 path exp_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
 draw(pic,exp_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{EXP}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{EXP}}",(label_x,0.5*label_y),W); 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -2039,14 +2039,14 @@ real label_x = 0.55*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
 
 // Put in the NP line with bars and label it
 real label_x = 0.9*UNIVERSE_WD;
 real label_y = 0.325*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{NP}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{NP}}",(label_x,0.5*label_y),E); 
 
 // Put in the NP hard line with bars and label it
 real label_x = -0.65*UNIVERSE_WD;
@@ -2054,7 +2054,7 @@ real label_y_top = 1.0*UNIVERSE_HT;
 real label_y_bot = 0.275*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y_top)--(label_x,label_y_bot),(0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W); 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -2162,13 +2162,13 @@ real label_x = -0.70*UNIVERSE_WD;
 real label_y = 0.68*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{Rec}}",(label_x,0.5*label_y),W); 
 
 real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
 
 
 // Draw points
@@ -2221,14 +2221,14 @@ real label_x = 0.55*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{P}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
 
 // Put in the NP line with bars and label it
 real label_x = 0.9*UNIVERSE_WD;
 real label_y = 0.325*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{NP}}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{NP}}",(label_x,0.5*label_y),E); 
 
 // Put in the NP hard line with bars and label it
 real label_x = -0.65*UNIVERSE_WD;
@@ -2236,21 +2236,21 @@ real label_y_top = 1.0*UNIVERSE_HT;
 real label_y_bot = 0.275*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y_top)--(label_x,label_y_bot),(0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W);
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W);
 
 // Rec label
 real label_x = -1.55*UNIVERSE_WD;
 real label_y = 0.68*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \probname{Rec}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{Rec}}",(label_x,0.5*label_y),W); 
 
 // RE label
 real label_x = -2.0*UNIVERSE_WD;
 real label_y = 0.77*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \probname{RE}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{RE}}",(label_x,0.5*label_y),W); 
 
 
 // Cover stubs extending into boundary

@@ -1966,9 +1966,9 @@ picture pic;
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-node Tnode = ncircle("$T$",ns_bleachedbg);
-node Fnode = ncircle("$F$",ns_light);
-node Gnode = ncircle("$G$",ns_gray);
+node Tnode = ncircle("$T$");
+node Fnode = ncircle("$F$");
+node Gnode = ncircle("$G$");
 node cnode = ncircle("$z$");
 node n0 = ncircle("\rule{0pt}{5pt} ");
 node n1 = ncircle("\rule{0pt}{5pt} ");
@@ -2260,9 +2260,9 @@ picture pic;
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-node Tnode = ncircle("$T$",ns_bleachedbg);
-node Fnode = ncircle("$F$",ns_light);
-node Gnode = ncircle("$G$",ns_gray);
+node Tnode = ncircle("$T$");
+node Fnode = ncircle("$F$");
+node Gnode = ncircle("$G$");
 node anode = ncircle("$a$\strut");
 node bnode = ncircle("$b$\strut");
 node cnode = ncircle("$c$\strut");

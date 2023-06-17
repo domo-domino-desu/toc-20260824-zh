@@ -94,20 +94,40 @@ label(pic,"$(1\,000\,000,78\,498)$",Scale(pic,(1000000,78498)),N,TICLABELPEN);
 // axes
 xaxis(pic,YZero,
       xmin-1, xmax+75000,
-      RightTicks(Label("$%2.0f$",TICLABELPEN), Step=500000, step=100000,
+      RightTicks(Label("%",TICLABELPEN), Step=500000, step=100000,
 		 beginlabel=false, endlabel=true,
 		 Size=axis_tick_size, size=0.5*axis_tick_size,
 		 extend=false, begin=false),
       p=AXISPEN,
       Arrow(TeXHead,axis_arrow_size));
+label(pic,"$1\,000\,000$",Scale(pic,(1000000,0)),1.5*S,TICLABELPEN);
+label(pic,"$500\,000$",Scale(pic,(500000,0)),1.5*S,TICLABELPEN);
+// xaxis(pic,YZero,
+//       xmin-1, xmax+75000,
+//       RightTicks(Label("$%2.0f$",TICLABELPEN), Step=500000, step=100000,
+// 		 beginlabel=false, endlabel=true,
+// 		 Size=axis_tick_size, size=0.5*axis_tick_size,
+// 		 extend=false, begin=false),
+//       p=AXISPEN,
+//       Arrow(TeXHead,axis_arrow_size));
 yaxis(pic,XZero,
       ymin, ymax+10000-1,
-      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=50000, step=10000,
+      LeftTicks(Label("%",TICLABELPEN), Step=50000, step=10000,
 		beginlabel=false, endlabel=true,
 		Size=axis_tick_size, size=0.5*axis_tick_size,
 		extend=false, begin=false),
       p=AXISPEN,
       Arrow(TeXHead,axis_arrow_size));
+label(pic,"$100\,000$",Scale(pic,(0,100000)),1.5*W,TICLABELPEN);
+label(pic,"$50\,000$",Scale(pic,(0,50000)),1.5*W,TICLABELPEN);
+// yaxis(pic,XZero,
+//       ymin, ymax+10000-1,
+//       LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=50000, step=10000,
+// 		beginlabel=false, endlabel=true,
+// 		Size=axis_tick_size, size=0.5*axis_tick_size,
+// 		extend=false, begin=false),
+//       p=AXISPEN,
+//       Arrow(TeXHead,axis_arrow_size));
 
 // draw the curves
 // dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html

@@ -1509,12 +1509,13 @@ xaxis(pic,YZero,
 // yaxis
 yaxis(pic, XZero,
       ymin=ymin, ymax=ymax+7000,
-      LeftTicks(Label("$%2.0f$",TICLABELPEN), Step=100000, step=10000,
+      LeftTicks(Label("%",TICLABELPEN), Step=100000, step=10000,
 		beginlabel=false, endlabel=true,
 		Size=axis_tick_size, size=0.5*axis_tick_size,
 		extend=false, begin=false),
       p=AXISPEN,
       arrow=Arrow(TeXHead,axis_arrow_size));
+label(pic,"$100\,000$",Scale(pic,(0,100000)),1.5*W,TICLABELPEN);
 // xequals(pic, 0,   
 // 	ymin=0, ymax=ymax+15,
 //         p=AXISPEN,

@@ -53,6 +53,7 @@ pen verylightcolor=white_color;
 
 // for places where the highlight color is too bold or dark, as with a colored node
 pen highlight_light = rgb(248/255, 145/255, 157/255); // from: http://hslpicker.com/#f67987
+pen highlight_fcn = rgb("CB0022");
 pen bold_light = rgb(165/255, 155/255, 131/255);
 
 // grayed-out such as the edge of a graph

@@ -1379,52 +1379,51 @@ defaultlayoutskip = 1.25cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-s0.pos = (1*u,3.5*v);
-s1.pos = (0.75*u,0.5*v);
-s2.pos = (1.5*u,2*v);
-s3.pos = (4*u,4*v);
-s4.pos = (3*u,3*v);
-s5.pos = (2*u,1*v);
-s6.pos = (4*u,1*v);
-s7.pos = (2.5*u,2*v);
-s8.pos = (5*u,4*v);
-s9.pos = (2*u,3*v);
-s10.pos = (6*u,4*v);
-s11.pos = (0.5*u,-0.5*v);
-s12.pos = (3.75*u,2.25*v);
-s13.pos = (5*u,1*v);
-s14.pos = (5.5*u,2.5*v);
-s15.pos = (3*u,0*v);
+s0.pos = (0*u,2.75*v);
+s1.pos = (0*u,4*v);
+s2.pos = (0.75*u,1.75*v);
+s3.pos = (5*u,4*v);
+s4.pos = (1*u,3.25*v);
+s5.pos = (2*u,1.25*v);
+s6.pos = (3.75*u,1*v);
+s7.pos = (3*u,4*v);
+s8.pos = (2*u,4*v);
+s9.pos = (2.5*u,2.5*v);
+s10.pos = (3.65*u,4*v);
+s11.pos = (3*u,1*v);
+s12.pos = (4.25*u,2*v);
+s13.pos = (5*u,1.5*v);
+s14.pos = (3*u,3*v);
+s15.pos = (4*u,0*v);
 
 // edges
 draw(pic,
      (s0..loop(W)).l("\str{0},\str{1}"), 
-     (s1--s15).l("\str{0}"), 
-     (s1--s5).l("\str{1}"), 
+     (s1--s14).l(Label("\str{0}",Relative(0.15))).style("leftside"), 
+     (s1--s5).l(Label("\str{1}",Relative(0.15))), 
      (s2--s5).l("\str{0}"),
      (s2..loop(W)).l("\str{1}"), 
-     (s3--s12).l("\str{0}"), 
-     (s3--s14).l(Label("\str{1}",Relative(0.15))), 
-     (s4--s12).l("\str{0}"), 
-     (s4--s2).l(Label("\str{1}",Relative(0.20))), 
-     (s5--s15).l("\str{0}"), 
-     (s5..loop(E)).l("\str{1}"), 
+     (s3--s5).l(Label("\str{0}",Relative(0.15))), 
+     (s3..bend(20)..s14).l(Label("\str{1}",Relative(0.15))), 
+     (s4--s9).l(Label("\str{0}",Relative(0.20))), 
+     (s4--s0).l(Label("\str{1}",Relative(0.20))), 
+     (s5..bend(10)..s15).l("\str{0}"), 
+     (s5..loop(S)).l("\str{1}"), 
      (s6--s15).l(Label("\str{0},\str{1}",Relative(0.25))), 
-     (s7..bend(-20)..s15).l("\str{0}"), 
-     (s7--s5).l("\str{1}"), 
-     (s8--s12).l("\str{0}"), 
+     (s7--s14).l(Label("\str{0},\str{1}",Relative(0.20))), 
+     (s8--s5).l(Label("\str{0}",Relative(0.10))), 
      (s8--s14).l(Label("\str{1}",Relative(0.15))), 
-     (s9..bend..s12).l("\str{0}"), 
+     (s9--s12).l("\str{0}"), 
      (s9--s2).l("\str{1}"), 
      (s10--s12).l(Label("\str{0}",Relative(0.15))),
-     (s10--s14).l("\str{1}"), 
-     (s11--s15).l("\str{0},\str{1}"), 
+     (s10..bend(20)..s14).l(Label("\str{1}",Relative(0.15))), 
+     (s11--s15).l(Label("\str{0},\str{1}",Relative(0.15))), 
      (s12--s15).l("\str{0}"), 
      (s12--s5).l(Label("\str{1}",Relative(0.30))).style("leftside"), 
      (s13--s15).l(Label("\str{0},\str{1}",Relative(0.25))).style("leftside"), 
      (s14--s12).l("\str{0}"), 
      (s14..loop(E)).l("\str{1}"), 
-     (s15..loop(S)).l("\str{0},\str{1}") 
+     (s15..loop(E)).l("\str{0},\str{1}") 
      );
 
 // draw nodes after edges so arrows are OK

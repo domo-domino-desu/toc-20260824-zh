@@ -1,3 +1,5 @@
+\renewcommand{\asydir}{automata/asy/}
+
 \chapteropen[\href{https://www.hodinkee.com/articles/patek-philippe-caliber-89-easter-problem}{The astronomical clock in Notre-Dame-de-Strasbourg Cathedral, for computing the date of Easter.  Easter falls on the first Sunday after the first full moon on or after March~21, the nominal spring equinox. Calculation of this date was a great challenge for mechanisms of that time, 1843.}]{automata/pix/easterclock.jpg}{Automata} %https://commons.wikimedia.org/wiki/File:CIMA_mg_8332.jpg
 % Use as much of http://cstheory.stackexchange.com/a/14818/4731 as possible
 
@@ -2697,7 +2699,7 @@ From~$q_0$ this machine may stay in that state, or
 transition to $q_{2}$, or $q_3$, or~$q_5$,
 all without consuming any input.
 \begin{center}
-  \includegraphics{automata/asy/nfsm/nfsm83.pdf}
+  \includegraphics{\asydir nfsm/nfsm83.pdf}
 \end{center}
 This sequence
 shows that it accepts~\str{abc}
@@ -2873,17 +2875,19 @@ these machines which uses two definitions that we are going to need anyway.
 It is an enlightening addition so 
 we will include it after we next give those definitions.
 
-%<*df:EpsilonClosure>
+%<*df:EpsilonClosurei>
 The \definend{$\varepsilon$~closure} function 
 $\map{\hat{E}}{Q}{\powerset (Q)}$\index{epsilon closure@$\varepsilon$ closure} 
 inputs a state~$q$ and returns
 the set of states that are reachable from~$q$ without consuming
 any input.
+%</df:EpsilonClosurei>
 
 \begin{example}  \label{ex:FindEpsilonClosureInSteps}
 We can compute a state's $\varepsilon$~closure by proceeding in steps.
 The table below illustrates, using \cref{ex:TwoOrMoreEpsilonTrans}'s 
 machine.
+%<*df:EpsilonClosureii>
 Its initial column's set contains the state.
 To go from column $m=0$ to $1$, add the states reachable with one 
 $\varepsilon$ move from the row's state.
@@ -2916,10 +2920,11 @@ so we are done.
            &$\set{q_5}$ &$\set{q_5}$ \\
   \end{tabular}
 \end{center}
+%</df:EpsilonClosureii>
 \end{example}
-%</df:EpsilonClosure>
 
 \medskip
+%<*disc:EpsilonClosurei>
 More formally, construct $\hat{E}$ by first defining
 $\map{E}{Q\times\N}{\powerset (Q)}$, where the above table shows $E(q,m)$
 for its machine. 
@@ -2938,8 +2943,10 @@ $E(q,m_q\,)= E(q,m_q+1)= \cdots\,$ (in the example above, for $q=q_0$
 this happens at~$m=2$).
 Then the $\varepsilon$~closure is the limit,
 $\hat{E}(q)=E(q,m_q)$.\index{epsilon closure@$\varepsilon$ closure}
+%</disc:EpsilonClosurei>
 
-Using that we can adapt the definition of the 
+%<*disc:EpsilonClosureii>
+Using that, we can adapt the definition of the 
 \definend{extended transition function~$\map{\extended{\Delta}}{Q\times\kleenestar{\Sigma}}{Q}$}\index{extended transition function!for nondeterministic Finite State machines}\index{transition function!extended} 
 % from \cpageref{discussion:NFSMStringAcceptance} 
 to suit the new machine type.
@@ -2961,6 +2968,7 @@ accepts\index{accept an input}\index{Finite State machine!accept string}\index{n
 a string $\tau_0\in\kleenestar{\Sigma}$ 
 if any of the members of
 $\extended{\Delta}(q_0,\tau_0)$ is a final state.
+%</disc:EpsilonClosureii>
 
 
 \index{epsilon transitions@$\varepsilon$ transitions|)}
@@ -3081,20 +3089,24 @@ machine~$\FSM_N$ and constructing a
 deterministic machine~$\FSM_D$ with the same behavior,
 whether or not $\FSM_N$ has $\varepsilon$~transitions.
 Elements of $\FSM_D$ are sets of states from~$\FSM_N$.
-The start state of $\FSM_D$ is the  $\varepsilon$~closure of $q_0$.
-A state of $\FSM_D$ is accepting if it  
-contains any of $\FSM_N$'s accepting states.
 
-As to the transition function $\Delta_D$,
-consider a state $s_i\in\FSM_D$, that is, 
-consider a subset $\set{q_{k_0},\ldots q_{k_i}}$ of $\FSM_N$'s states, 
+The transition function $\Delta_D$ inputs
+a state $s_i\in\FSM_D$, that is, 
+a subset $\set{q_{k_0},\ldots q_{k_i}}$ of $\FSM_N$'s states, 
 along with a tape character~$c\in\Sigma$.
 % We will compute the next state of $\FSM_D$ in two steps. 
-First apply $\FSM_N$'s next state function to $s_i$'s elements to get
-$\hat{s}_{i,c}=\Delta_{N}(q_{k_0},c)\cup\cdots \Delta_{N}(s_{k_i},c)$.
-Then where $\hat{s}_{i,c}=\set{q_{j_0}, \ldots{} q_{j_i}}$, 
+First, apply $\FSM_N$'s next state function to $s_i$'s elements to get
+$\hat{s}_{i,c}=\Delta_{N}(q_{k_0},c)\cup\cdots \Delta_{N}(q_{k_i},c)$.
+Second, where $\hat{s}_{i,c}=\set{q_{j_0}, \ldots{} q_{j_i}}$, 
 finish by taking the $\varepsilon$~closure of all of $\hat{s}$'s elements, 
 $\Delta_D(s_i,c)=\hat{E}(q_{j_0})\cup\cdots \hat{E}(q_{j_i})$.
+
+The start state of $\FSM_D$ is the  $\varepsilon$~closure of $q_0$.
+A state of $\FSM_D$ is accepting if it  
+contains any of $\FSM_N$'s accepting states
+(by the prior paragraph, if the machine ends the first
+step in a state whose $\varepsilon$~closure contains an accepting
+state then the second step includes that state).
 %</df:DFSMFromNFSM>
 
 \begin{example}  \label{ex:NFSMEpsilonClosure}
@@ -10731,18 +10743,20 @@ but the \str{g0} makes the new stack top.
 \end{center}
 %</ex:BalancedParensAcceptedPushdown>
 Here is an example computation accepting the string \str{[[]][]}.
+%<*ex:BalancedParensAcceptedPushdownAccept>
 \begin{tapesequence}
   \begin{tapesequencetable}
-    0 &\tapegraphic{automata/asy/machine/machine06.pdf} \\
-    1 &\tapegraphic{automata/asy/machine/machine07.pdf} \\
-    2 &\tapegraphic{automata/asy/machine/machine08.pdf} \\
-    3 &\tapegraphic{automata/asy/machine/machine09.pdf} \\
-    4 &\tapegraphic{automata/asy/machine/machine10.pdf} \\
-    5 &\tapegraphic{automata/asy/machine/machine11.pdf} \\
-    6 &\tapegraphic{automata/asy/machine/machine12.pdf} \\
-    7 &\tapegraphic{automata/asy/machine/machine13.pdf} \\
+    0 &\tapegraphic{\asydir machine/machine06.pdf} \\
+    1 &\tapegraphic{\asydir machine/machine07.pdf} \\
+    2 &\tapegraphic{\asydir machine/machine08.pdf} \\
+    3 &\tapegraphic{\asydir machine/machine09.pdf} \\
+    4 &\tapegraphic{\asydir machine/machine10.pdf} \\
+    5 &\tapegraphic{\asydir machine/machine11.pdf} \\
+    6 &\tapegraphic{\asydir machine/machine12.pdf} \\
+    7 &\tapegraphic{\asydir machine/machine13.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
+%</ex:BalancedParensAcceptedPushdownAccept>
 The machine first executes the instruction on line~$0$ and then line~$1$.
 At this point there are two \str{g0}'s on the stack, which is how the 
 machine remembers that it has consumed two \str{[}'s.
@@ -10755,20 +10769,22 @@ Finally, the machine runs instruction~4.
 It now has an empty tape and is in an accepting state, so it
 accepts its input string.   
 
+%<*ex:BalancedParensAcceptedPushdownReject>
 Here is a rejection example, whose initial string does not have
 balanced parentheses.
 \begin{tapesequence}
   \begin{tapesequencetable}
-    0 &\tapegraphic{automata/asy/machine/machine32.pdf} \\
-    1 &\tapegraphic{automata/asy/machine/machine33.pdf} \\
-    2 &\tapegraphic{automata/asy/machine/machine34.pdf} \\
-    3 &\tapegraphic{automata/asy/machine/machine35.pdf} 
+    0 &\tapegraphic{\asydir machine/machine32.pdf} \\
+    1 &\tapegraphic{\asydir machine/machine33.pdf} \\
+    2 &\tapegraphic{\asydir machine/machine34.pdf} \\
+    3 &\tapegraphic{\asydir machine/machine35.pdf} 
   \end{tapesequencetable}
 \end{tapesequence}
 At this point although the tape still has content, the stack is empty. 
 The machine cannot start the next step by popping the top character
 so the computation dies, without accepting the
 input string.
+%</ex:BalancedParensAcceptedPushdownReject>
 \end{example}
 
 \medskip
@@ -10776,16 +10792,16 @@ We now are ready for the definition.
 
 \begin{remark}
 There are a variety of definitions for Pushdown machines.  
-For instance, here we have the machine accept if it is in an accepting 
-state and its tape is empty
+For instance, here we have the machine accept if its tape is empty and
+it is in an accepting state,
 but a variant requires that its stack be empty.
-However, all of these models (that extend
+However, all of these variants (that extend
 nondeterministic machines) accept the same set of languages. 
 \end{remark}
 
 %<*def:PushdownMachine>
 \begin{definition}
-A nodeterministic \definend{Pushdown machine}\index{Pushdown machine} % \index{Pushdown automata}
+A nondeterministic \definend{Pushdown machine}\index{Pushdown machine} % \index{Pushdown automata}
 $\sequence{Q,q_0,F,\Sigma,\Gamma,\Delta}$
 consists of a finite set of \definend{states} $Q=\set{q_0,\ldots q_{n-1}}$,
 including a \definend{start state}~$q_0$,\index{start state!Pushdown machine}
@@ -10988,18 +11004,20 @@ at the same moment that it
 reaches the bottom of the stack then it goes to state~$q_2$,
 which is accepting.
 
+%<*ex:PalindromesUsingMiddleMarkerii>
 Here is an example computation accepting the input \str{bacab}.
 \begin{tapesequence}
   \begin{tapesequencetable}
-    0 &\tapegraphic{automata/asy/machine/machine25.pdf} \\
-    1 &\tapegraphic{automata/asy/machine/machine26.pdf} \\
-    2 &\tapegraphic{automata/asy/machine/machine27.pdf} \\
-    3 &\tapegraphic{automata/asy/machine/machine28.pdf} \\
-    4 &\tapegraphic{automata/asy/machine/machine29.pdf} \\
-    5 &\tapegraphic{automata/asy/machine/machine30.pdf} \\
-    6 &\tapegraphic{automata/asy/machine/machine31.pdf} \\
+    0 &\tapegraphic{\asydir machine/machine25.pdf} \\
+    1 &\tapegraphic{\asydir machine/machine26.pdf} \\
+    2 &\tapegraphic{\asydir machine/machine27.pdf} \\
+    3 &\tapegraphic{\asydir machine/machine28.pdf} \\
+    4 &\tapegraphic{\asydir machine/machine29.pdf} \\
+    5 &\tapegraphic{\asydir machine/machine30.pdf} \\
+    6 &\tapegraphic{\asydir machine/machine31.pdf} \\
   \end{tapesequencetable}
 \end{tapesequence}
+%</ex:PalindromesUsingMiddleMarkerii>
 \end{example}
 
 \medskip

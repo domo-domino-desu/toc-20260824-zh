@@ -1384,7 +1384,7 @@ the string $\sigma=\str{acbc}$ is a member of $\lang$.)
 
 
 % ========================================================
-\section{Non-regular languages}
+\section{Languages that are not regular}
 
 \begin{frame}{Periodicity}
 \ExecuteMetaData[\catchfilefn]{ex:FSMLoopingi}
@@ -1397,7 +1397,7 @@ the string $\sigma=\str{acbc}$ is a member of $\lang$.)
 \begin{frame}{Pumping lemma}
 \ExecuteMetaData[\catchfilefn]{th:PumpingLemma}
 
-\proofname.\hspace{0.6em}
+\proofname. %\hspace{0.6em}
 \ExecuteMetaData[\catchfilefn]{pf:PumpingLemmai}
 \end{frame}
 
@@ -1407,16 +1407,17 @@ the string $\sigma=\str{acbc}$ is a member of $\lang$.)
 
 \begin{frame}
   % \frametitle{Using the Pumping Lemma}
-When we use the Pumping Lemma, typically it is to show that a language
+Usually we use the Pumping Lemma to show that a language
 is not regular.
 
 \begin{example}
 Show that this language over $\Sigma=\set{\str{a},\str{b}}$ is not regular:
 $\lang=\set{\str{a}^n\str{b}\str{a}^n\suchthat n\in\N}$.
 
-First, here are a few members of $\lang$: \str{aabaa}, 
+First, here are five members of $\lang$: \str{aba}, \str{aabaa}, \str{aaabaaa}, 
 $\str{a}^5\str{b}\str{a}^5$, and \str{b}.
-Two non-members are $\str{a}^5\str{b}\str{a}^4$ and $\str{a}\str{b}$.
+Five non-members are \str{aabaaa}, $\str{a}^5\str{b}\str{a}^4$,
+\str{a}, \str{aa}, and $\str{a}\str{b}$.
 
 The proof is by contradiction.
 Suppose that $\lang$ is regular.
@@ -1442,25 +1443,68 @@ With that, consider condition~(3).
 It says that all of the strings 
 $\alpha\gamma$, $\alpha\beta^2\gamma$, $\alpha\beta^3\gamma$, etc., are members
 of $\lang$.
-But now, compared with $\sigma$,
-the string $\alpha\gamma$ has at least one fewer \str{a} before the \str{b}, 
-but the same number of \str{a}'s after the \str{b}.
+We will find the contradiction in $\alpha\gamma$.
+Compared with $\sigma$,
+the string $\alpha\gamma$ has at least one fewer \str{a} before the \str{b}
+(because it omits the string $\beta$), 
+but the same number of \str{a}'s after the~\str{b}.
 Therefore, $\alpha\gamma$ does not have the same number of \str{a}'s before the
 \str{b} as after.
-It is thus not a member of~$\lang$, contradicting the Pumping Lemma.   
+It is thus not a member of~$\lang$, 
+which is a contradiction.   
+\end{example}
+\end{frame}
+
+
+\begin{frame}
+\begin{example}
+Consider this language.
+\begin{equation*}
+  \lang=\set{\tau\concat\tau\suchthat \tau\in\kleenestar{\B}}
+\end{equation*}
+Name five members and five nonmembers.
+Then use the Pumping Lemma to prove that it is not a regular language.
+
+\pause
+Five members are
+\str{001001}, \str{11011101}, \str{00}, \str{1111}, and $\varepsilon$.
+Five nonmembers are \str{000}, \str{1}, \str{0110}, \str{001000}, and 
+\str{01}.
+
+For the proof, assume that $\lang$ is regular. 
+Then it has a pumping length, which we will denote~$p$.
+Consider the string $\sigma=\str{0}^p\str{1}\str{0}^p\str{1}$.
+
+It is a member of~$\lang$ and $\sizeof{\sigma}\geq p$ so it decomposes
+into three substrings $\sigma=\alpha\beta\gamma$ in a way that satisfies
+the three conditions.
+
+Condition~(1) is that $\alpha$ and $\beta$ together have length
+no greater than the pumping length, $\sizeof{\alpha\beta}\leq p$.
+Because the first $p$-many characters in $\sigma$ are all \str{a}'s,
+this means that substring $\alpha$ and substring $\beta$ consist solely of
+\str{0}'s.
+Condition~(2) says that $\beta$ is not empty,
+and so $\beta$ consists of at least one \str{0}.
+Condition~(3) says that the strings 
+$\alpha\gamma$, $\alpha\beta^2\gamma$, $\alpha\beta^3\gamma$, etc., are members
+of $\lang$.
+But compared with $\sigma$,
+the string $\alpha\beta^2\gamma$ has at least one more \str{0} before 
+its first~\str{1}, 
+but the same number of \str{0}'s before its second\str{1}.
+Therefore, $\alpha\beta^2\gamma$ does not have the form $\tau\concat\tau$
+and is not a member of~$\lang$.
+That's a contradiction.   
+    
 \end{example}
 
 \pause
 \begin{example}
 Show that each language over $\Sigma=\set{\str{a},\str{b}}$ is not regular.
 \begin{enumerate}
-\item $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
-
-\pause
 \item $\set{\str{a}^n\str{b}^m\suchthat n=m+1}$
-
-\pause
-\item the set of palindromes.
+\item the set of palindromes
 \end{enumerate}
 \end{example}
 \end{frame}
@@ -1499,15 +1543,19 @@ We will give a couple of examples.
 \begin{frame}
 \begin{example}
 This gives the machine as a set of instructions.
-\ExecuteMetaData[\catchfilefn]{ex:BalancedParensAcceptedPushdown}
 (We could instead take it to 
 give the inputs and outputs for~$\Delta$.)
+\ExecuteMetaData[\catchfilefn]{ex:BalancedParensAcceptedPushdown}
 The only accepting state is $q_1$.
 
 These machines always pop the stack before they make a transition.
 So Instruction~$0$ must push $\bot$ back on the stack, and then it adds \str{g0}
 on top of that.
 Instruction~$2$ pops the \str{g0} off and doesn't replace it.
+
+These machines sometimes need to do some action when the tape is exhausted,
+so we put a \blank{} to mark the end of the input 
+(and assume the input does not contain that character).
 \end{example}
 \end{frame}
 
@@ -1534,16 +1582,30 @@ Instruction~$2$ pops the \str{g0} off and doesn't replace it.
 
 
 
-\begin{frame}
+\begin{frame}{Pushdown machines with $\varepsilon$ transitions}
 \begin{example}
-\ExecuteMetaData[\catchfilefn]{ex:NondeterministicPushDownAcceptsPalindromes}
+This machine accepts the language of even length palindromes.
+\begin{equation*}
+\lang_{\text{ELP}}=\set{\sigma\reversal{\sigma}\suchthat\sigma\in\kleenestar{\B}}=\set{\varepsilon,\str{00},\str{11},\str{0000},\str{0110},\str{1001},\str{1111},\ldots}
+\end{equation*}
+It has $F=\set{q_2}$
+as well as $\Gamma=\set{\text{\str{g0}},\str{g1}}$.
+\ExecuteMetaData[\catchfilefn]{ex:NondeterministicPushDownAcceptsPalindromesi}
+
+Because this machine can guess, we can have it guess whether the input is 
+finished.
+So we will omit the terminating \blank{} that we used in the 
+two prior examples.
 \end{example}
 \end{frame}
 
 \begin{frame}
-Here the machine
-accepts the string \str{0110},
-using instructions $0$, $9$, $16$, and~$17$.
+\ExecuteMetaData[\catchfilefn]{ex:NondeterministicPushDownAcceptsPalindromesii}  
+\end{frame}
+
+\begin{frame}
+Here is the branch of the computation tree where the machine
+accepts the even-length palindrome string \str{0110}.
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{\asydir machine/machine14.pdf} \\
@@ -1554,20 +1616,37 @@ using instructions $0$, $9$, $16$, and~$17$.
   \end{tapesequencetable}
 \end{tapesequence}
 \end{frame}
+
 \begin{frame}
-Here is the machine accepting \str{01010}.
-\begin{tapesequence}
-  \begin{tapesequencetable}
-    0 &\tapegraphic{\asydir machine/machine19.pdf} \\
-    1 &\tapegraphic{\asydir machine/machine20.pdf} \\
-    2 &\tapegraphic{\asydir machine/machine21.pdf} \\
-    3 &\tapegraphic{\asydir machine/machine22.pdf} \\
-    4 &\tapegraphic{\asydir machine/machine23.pdf} \\
-    5 &\tapegraphic{\asydir machine/machine24.pdf} \\
-  \end{tapesequencetable}
-  \end{tapesequence}
+Here is the machine's computation tree on input \str{00}.
+The $\varepsilon$~transitions go up.
+(The relevant instructions are written next to the $\yields$ symbols.)
+\begin{center}
+  \includegraphics{\asydir pda/pda04.pdf}
+\end{center}
+As the highlighted branch shows, it accepts.
 \end{frame}
 
+\begin{frame}
+Here is the machine's full computation tree on input \str{100}.
+\begin{center}
+  \includegraphics{\asydir pda/pda09.pdf}
+\end{center}
+None
+of the branches end both with an empty string and in an accepting state,
+so it rejects the input.
+\end{frame}
+
+
+\begin{frame}{Deterministic Pushdown machines}
+The definition that we gave earlier is of a nondeterministic
+Pushdown machine.
+For the next slide we need to describe deterministic ones.
+
+\ExecuteMetaData[\catchfilefn]{disc:ChomskyHierarchy} 
+
+This section's first two example Pushdown machines are both deterministic. 
+\end{frame}
 
 \begin{frame}{Relation between machine types and languages}
 Below, the box includes all languages.
@@ -1586,13 +1665,15 @@ the universe consists of every subset of $\kleenestar{\Sigma}\!$.
     $D$ &Turing \\
   \end{tabular}
 \end{center}
-Area~$A$ encloses the languages that are regular, those decided by
+Class~$A$ consists of the languages that are regular, those decided by
 some Finite State machine.
-Area~$B$ enclosed the languages that are decided by some deterministic
+Class~$B$ holds the languages that are decided by some deterministic
 Pushdown machine.
-Area~$C$ contains the languages decided by some nondeterministic
+Class~$C$ is the languages decided by some nondeterministic
 Pushdown machine.
-In area~$D$ are the languages decided by some Turing machine.
+Finally, class~$D$ consists of the languages decided by some Turing machine.
+(These are all proper subsets but proof of that 
+lies outside of our scope.)
 \end{frame}
 
 
@@ -1619,7 +1700,7 @@ We shall refer to the in-practice expressions as
 \end{frame}
 
 
-\begin{frame}{Conveniences}
+\begin{frame}{Convenience extensions}
 Our theory alphabets had two or three characters.
 In practice we need at least ASCII's
 printable characters:~\str{a}\dash \str{z}, \str{A}\dash \str{Z},
@@ -1772,7 +1853,7 @@ Match the text inside a single set of parentheses with
 \begin{example}
 We next match a URL, a web address such as
 \url{https://hefferon.net/computation}.
-It breaks URL's into~a
+The regex breaks URL's into~a
 scheme such as `\str{http}' along with
 a colon and two forward slashes,
 a host such as \str{hefferon.net} followed by a slash, and then
@@ -1811,7 +1892,7 @@ and end of line.
 
 
 
-\begin{frame}{Genuine extensions}
+\begin{frame}{Extensions beyond convenience alone}
 \begin{example}
 The web language HTML uses tags such as
 \str{<b>boldface text</b>} and \str{<i>italicized text</i>}.

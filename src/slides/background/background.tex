@@ -365,12 +365,12 @@ so $\sizeof{S}\leq\sizeof{T}$.
 
 \begin{example}
 Let $S=\set{0,2,4,\ldots{}}$ be the even numbers.
-The injection map $\map{f}{S}{\N}$ given by $s\mapsto s$ is one-to-one.
+The inclusion map $\map{f}{S}{\N}$ given by $s\mapsto s$ is one-to-one.
 So $\sizeof{S}\leq\sizeof{\N}$.
 \end{example}
 
 \begin{example}
-Similarly, $|\N|\leq |\R|$ via the natural injection map $f(x)=x$.
+Similarly, $|\N|\leq |\R|$ via the inclusion map $f(x)=x$.
 Since $\R$ is uncountable, this less-than relation between
 cardinalities is strict.
 \end{example}
@@ -382,19 +382,19 @@ be intervals of real numbers.
 The function $\map{f}{\R}{\R}$ given by $f(x)=3x+10$
 is one-to-one, so $\sizeof{S}\leq\sizeof{T}$.
 
-(The function $\map{g}{\R}{\R}$ given by $g(y)=(y-10)/6$ is one-to-one
+(Also one-to-one is the function $\map{g}{\R}{\R}$ given by $g(y)=(y-10)/6$
 and so we also have $\sizeof{T}\leq\sizeof{S}$.
-A result that we cover only in the exercises 
+A result that we cover in the exercises 
 says that if there is a one-to-one
 function both ways then the two sets correspond, so
-$\sizeof{T}\leq\sizeof{S}$.)
+$\sizeof{T}=\sizeof{S}$.)
 \end{example}
 \end{frame}
 
 
 
 \begin{frame}
-  \frametitle{Cantor's Theorem}
+  \frametitle{Cantor's Theorem}\vspace*{-1ex}
 \ExecuteMetaData[\catchfilefn]{recall:CharFcn}
 
 \ExecuteMetaData[\catchfilefn]{th:CantorsThm}
@@ -446,20 +446,23 @@ has a larger cardinality than does the set~$\N$.
 Turing machines compute functions from $\N$ to $\N$.
 There are uncountably many such functions, but only countably many 
 Turing machines.
-Thus there are function that are not computed by any Turing machine.
+Consequently, there are function that are not computed by any Turing machine.
+
+This is like the child's game of Musical Chairs.
+In the game there are more children than chairs 
+and so some child is left without a chair.
+Here, there are more functions from $\N$ to~$\N$
+than there are Turing machines and similarly
+there must be a function without a machine to compute it.
 
 \pause
-This is like the child's game of Musical Chairs.
-There are a smaller number of chairs (Turing machines) than children
-(functions from $\N$ to~$\N$).
-Just as some children are consequently left without a chair, similarly
-some functions have no associated Turing machine.
+\textcolor{highlightcolor}{In the light of Church's Thesis we interpret 
+this to say that there are jobs 
+that no computer can do.}
 
-  In the light of Church's Thesis we interpret this as:~there are jobs 
-  that no computer can do.
+We started the course by asking ``What can be done?''
+We now have part of the answer:~not everything.
 \end{frame}
-
-
 
 % ====================================================
 \section{Universality}
@@ -468,26 +471,20 @@ some functions have no associated Turing machine.
   \frametitle{Universal Turing machine}
 \ExecuteMetaData[\catchfilefn]{th:UniversalTM}
 
-Thus there is an all-powerful Turing machine,~$\UTM$. 
-We can tell it,
-``Consider the Turing machine~$\TM_e$. 
-Have the same output
-behavior as this machine 
-would on receiving input~$x$.''
 This machine will fail to halt if $\TM_e$ fails to halt on~$x$
-and otherwise will halt and yield the correct output.
+and otherwise will halt and yield the matching output.
 
-It is universal in that it can be made to have any desired computable behavior,
-so we don't need infinitely many different Turing machines, 
+\pause
+This machine is in a sense an all-powerful Turing machine,~$\UTM$. 
+It is a \definend{Universal Turing Machine}
+in that this one device can be made to have any desired computable behavior.
+So we don't need infinitely many different Turing machines, 
 we just need this one.
 
 \begin{itemize}
-\pause
 \item A universal machine $\UTM$ is like an interpreter, 
   or like an operating system. 
-\pause
 \item This converts from doing jobs in hardware to doing them in software.
-\pause
 \item The universal machine does not get as input a Turing machine, it gets
   the index of a Turing machine, which is computationally equivalent to
   a representation of that machine.
@@ -498,36 +495,31 @@ we just need this one.
 
 
 
-
-% \section{The \protect\smn~Theorem}
-
-
 \begin{frame}[fragile]
-  \frametitle{Parametrization: partial evaluation}
-We next consider freezing some of a machine's inputs.
-
-Here is an example.
-Start with a two-input function.
-
-\begin{lstlisting}
-def power(base, exponent):
-    return base ** exponent  
-\end{lstlisting}
-
-Freezing
-one if the arguments gives a family of functions.
+  \frametitle{Parametrization}
+\definend{Partial evaluation} is the freezing of some of a machine's inputs.
+An example is to 
+start with this two-input function.
 
 \begin{lstlisting}
-def power_1(base):    # identity function
-    return power(base, 1)
-def power_2(base):    # squaring function
-    return power(base, 2)
-def power_3(base):    # cubing function
-    return power(base, 3)
+(define (power base exponent) ; Def is a bit silly because 
+  (expt base exponent))       ; expt does the same and is built in
 \end{lstlisting}
 
-We say that the family is
-\alert{parametrized} by the exponent. 
+Get a family of functions by  
+\alert{parametrizing} the exponent.
+
+\begin{lstlisting}
+(define (identity_fcn base) 
+  (power base 1))
+
+(define (square_fcn base)
+  (power base 2))
+
+(define (cube_fcn base)
+  (power base 3))
+\end{lstlisting}
+
 
 % \pause
 % \begin{remark}
@@ -557,7 +549,7 @@ let the index of that machine be~$e$.
 \end{center}
 On the right we have frozen the first two inputs.
 The \smn~Theorem, which we are about to see,
-says that we can do this uniformly:~there is a program that takes in
+says that we can do this uniformly, that there is a program which takes in
 $e$, $5$, and~$7$ and outputs the index of the Turing machine 
 on the right. 
 
@@ -566,7 +558,7 @@ freeze-two-inputs-and-leave-one-as-is situations.
 We can write $s_{2,1}$ for the computable function that does this.
 We usually just call it~$s$.
   
-In short:~where $e$ is the index of the 
+In short, where $e$ is the index of the 
   Turing machine outlined on the left,
   the index of the machine on the right is $s(e,5,7)$.
 \end{frame}
@@ -581,6 +573,7 @@ Universality says that there is a computable
 function $\map{U}{\N^2}{\N}$ such that
 $U(e,x)=\phi_e(x)$.
 There, the letter~$e$ travels from the function's argument to an index.
+In the next result we go from the argument to being part of the index.
 
 \ExecuteMetaData[\catchfilefn]{th:smn}
 
@@ -745,7 +738,7 @@ The program on the right does not halt, for all inputs.
 \vspace*{-\ht\strutbox}
 \begin{minipage}[t]{0.4\linewidth}%
 \begin{lstlisting}
-(define (print-no)
+(define (print-zero)
   (read)
   (display 0))
 \end{lstlisting}%
@@ -757,7 +750,7 @@ The program on the right does not halt, for all inputs.
   (define (grow x)
     (grow (+ 1 x)))
   
-  (read)
+  (read)  ; don't start before user input
   (grow 0))
 \end{lstlisting}%
 \end{minipage}%
@@ -789,7 +782,6 @@ correctly computes in a finite time whether $\TM_e$ halts on~$e$.
 \begin{minipage}[t]{0.4\linewidth}%
 \begin{lstlisting}
 (define (print-no)
-  (read)
   (display 0))
 \end{lstlisting}%
 \end{minipage}%
@@ -797,7 +789,6 @@ correctly computes in a finite time whether $\TM_e$ halts on~$e$.
 \begin{minipage}[t]{0.4\linewidth}%
 \begin{lstlisting}
 (define (print-yes)
-  (read)
   (display 1))
 \end{lstlisting}%
 \end{minipage}%
@@ -850,30 +841,30 @@ $\TMfcn_x(x)\converges$.
 So we can turn the `does $\TMfcn_x(x)\converges$?' questions
 into questions that $\computablefunction{halts\_on\_one\_decider}$
 can answer.
-The proof involves recognizing that we can switch uniformily to questions 
+The proof involves recognizing that we can switch uniformly to questions 
 of the second kind.
 
 For that proof, here are the flowcharts again.
 On the left is a sketch of a single machine.
-We can write it as a program (using universality for the third box), so by 
+We can write it as a program, using universality for the third box, so by 
 Church's Thesis there is a Turing machine with this behavior.
-Let that machine's index be~$e$.
+Let that machine's index be~$e_0$.
 \begin{center}
   \includegraphics{\asydir hp/hp06.pdf}
   \hspace*{4em}
   \includegraphics{\asydir hp/hp07.pdf}
 \end{center}
 Then the \smn~Theorem gives what's on the right, 
-the family of machines, $\TM_{s(e,x)}$.
+the family of machines, $\TM_{s(e_0,x)}$.
 We have already observed that $\TMfcn_x(x)\converges$ if and only if 
-$\computablefunction{halts\_on\_one\_decider}(s(e,x))=1$.
+$\computablefunction{halts\_on\_one\_decider}(s(e_0,x))=1$.
 So if we could mechanically check whether a machine halts on~$1$
 then we could mechanically solve the \HP.
 We can't solve the \HP, so $\computablefunction{halts\_on\_one\_decider}$
 is not a mechanically computable function. 
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Similar examples}
 Each of these is unsolvable.
 For each, show that by using the \HP{}.
 \begin{enumerate}
@@ -929,7 +920,8 @@ and (3)~$\set{e\in\N\suchthat
 \end{center}
 \ExecuteMetaData[\catchfilefn]{pf:RicesTheoremii}\qedsymbol
 \end{frame}
-\begin{frame}
+
+\begin{frame}{Similar examples}
 Show each of these is unsolvable using Rice's Theorem.
 
 \begin{enumerate}
@@ -963,7 +955,7 @@ Show each of these is unsolvable using Rice's Theorem.
 \ExecuteMetaData[\catchfilefn]{def:ComputablyEnumerable}
 
 The `enumerable' comes from the 
-idea of a computable function generating the set 
+mental image of a computable function generating the set 
 elements as a stream of numbers.
 \begin{equation*}
 \TMfcn_e(0),\,\TMfcn_e(1),\,\TMfcn_e(2),\, \ldots{}

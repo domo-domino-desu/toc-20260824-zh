@@ -460,7 +460,8 @@
   % \pdfbookmark[1]{Beginning of Document}{beg}
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
   \renewcommand{\thesection}{\arabic{section}}% set theorem numbering to be as outside Extra sections
-  \renewcommand{\thesubsection}{\arabic{subsection}}%
+  % \renewcommand{\thesubsection}{\arabic{subsection}}%
+  \renewcommand{\thesubsection}{\relax}%
   \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % Extra sections change this so change it back
   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
@@ -1160,7 +1161,7 @@
 % ========== Bibliography =============
 % biblatex 
 % \AtEndPreamble{\let\murray@saved@addtocontents\addtocontents} % see https://tex.stackexchange.com/a/513586/339
-\usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+\usepackage[backend=biber,style=authoryear,sorting=nyt,firstinits=true]{biblatex}
 % \AtEndPreamble{\let\addtocontents\murray@saved@addtocontents} % see https://tex.stackexchange.com/a/513586/339
   \renewcommand*{\bibfont}{\small}  % Use \small font for the body
 \addbibresource{computing.bib}
@@ -1342,16 +1343,16 @@
 \usepackage{tocloft}
 \tocloftpagestyle{empty}
 \setlength{\cftchapindent}{0em}
-\setlength{\cftchapnumwidth}{1.25em}  % see also \printnotes
+% \setlength{\cftchapnumwidth}{1.25em}  % see also \printnotes
+\setlength{\cftchapnumwidth}{0.5em}  % see also \printnotes
 \setlength{\cftsecindent}{1em}
 \setlength{\cftsecnumwidth}{1.25em}
 \setlength{\cftsubsecindent}{2.5em}
 \setlength{\cftsubsecnumwidth}{1em}
 
-\setlength{\cftbeforetoctitleskip}{0ex plus 0.05ex}
-\setlength{\cftaftertoctitleskip}{3ex plus 0.05ex minus 0.01ex}
+\setlength{\cftbeforetoctitleskip}{2ex plus 0.05ex}
+\setlength{\cftaftertoctitleskip}{4ex plus 0.05ex minus 0.01ex}
 \renewcommand{\cfttoctitlefont}{\Large\bfseries}
-
 
 % from tocloft.sty; hack to make it print roman chapter number
 % I can't figure out how to have jhchapter work, so I am putting a

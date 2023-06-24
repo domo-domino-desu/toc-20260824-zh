@@ -260,12 +260,12 @@ hlayout(1*u, lowerleft, lowerright);
 
 // draw edges
 draw(pic=p,
-     (upperleft..bend(20)..upperright).style(directededgestyle),
-     (upperleft..bend(-20)..upperright).style(directededgestyle),
-     (upperright--lowerleft).style(directededgestyle),
-     (upperright..bend(20)..lowerright).style(directededgestyle),
-     (lowerright..bend(20)..upperright).style(directededgestyle),
-     (lowerleft--upperleft).style(directededgestyle)
+     (upperleft..bend(20)..upperright).l("$e_1$").style(directededgestyle),
+     (upperleft..bend(-20)..upperright).l("$e_0$").style(directededgestyle),
+     (upperright--lowerleft).l("$e_3$").style(directededgestyle),
+     (upperright..bend(20)..lowerright).l("$e_4$").style(directededgestyle),
+     (lowerright..bend(20)..upperright).l("$e_5$").style(directededgestyle),
+     (lowerleft--upperleft).l("$e_2$").style(directededgestyle)
      );
 
 // draw nodes

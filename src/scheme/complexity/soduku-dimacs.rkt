@@ -31,9 +31,9 @@
 
 ;; triple->varnum  Find the variable number associated with the row, column, and value
 ;;  row-number column-number  integers, counting starts at 1
-;;  variable-value  integer  value of the entry in row-number, column-number.  If negative, then
+;;  variable-value  integer  value of the entry.  If negative, then
 ;;   the predicate is to be negated. 
-;;   If variable-value < 0 then this routine uses the absolute value to compute the basic varnum,
+;;   If variable-value < 0 then use the absolute value for the basic varnum,
 ;;   but returns the negative of the polynomial (indicating that the predicate is negated).
 (define (triple->varnum row-number column-number variable-value)
   (let ([a-value (+ (* 81 (- (abs variable-value) 1))

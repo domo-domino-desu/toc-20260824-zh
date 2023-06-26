@@ -347,11 +347,11 @@
   \thispagestyle{bookemptypage}%
   \vspace*{\stretch{1}}  % vertically center on the page
   % {\noindent\hspace*{-\jh@eventotaloutermargin}% Move everything left by \evensi
-  {\noindent\hspace*{-0.8\jh@eventotaloutermargin}% Move everything left by \evensidemargin
+  % {\noindent\hspace*{-0.8\jh@eventotaloutermargin}% Move everything left by \evensidemargin
   % The graphicx package will pick the smaller of the height and width
-  \makebox[\linewidth][l]{\includegraphics[height=\paperheight,
-                   width=\paperwidth,
-                   keepaspectratio]{#2}}}%
+  {\centering\makebox[0em][c]{\includegraphics[height=0.9\paperheight,
+                   width=0.9\paperwidth,
+                   keepaspectratio]{#2}}\par}% center image on line
   \vspace*{\stretch{1}} % vertically center
   \clearpage
   \chapterwrapper{#3}\imagecredit{#1}%

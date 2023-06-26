@@ -34,7 +34,7 @@
 ;;  variable-value  integer  value of the entry.  If negative, then
 ;;   the predicate is to be negated. 
 ;;   If variable-value < 0 then use the absolute value for the basic varnum,
-;;   but returns the negative of the polynomial (indicating that the predicate is negated).
+;;   but return the negative of the polynomial (indicating that the predicate is negated).
 (define (triple->varnum row-number column-number variable-value)
   (let ([a-value (+ (* 81 (- (abs variable-value) 1))
                     (* 9 (- row-number 1))

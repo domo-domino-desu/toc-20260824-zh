@@ -7,6 +7,10 @@
 \ProcessOptions \relax
 \LoadClass[twoside]{book}
 
+\usepackage{etoolbox}
+% Look in here for flag to make paper copies
+\input{papercopyflag}
+
 % Use UTF-8
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -60,7 +64,6 @@
 
 \usepackage{adjustbox} % for clipping pictures
 
-\usepackage{etoolbox}
 % \usepackage{trace}  % for debugging
 
 
@@ -345,14 +348,14 @@
 \newcommand{\chapteropen}[3][\relax]{%
   \cleartoleftpage
   \thispagestyle{bookemptypage}%
-  \vspace*{\stretch{1}}  % vertically center on the page
+  \vspace*{\stretch{1}}% vertically center on the page
   % {\noindent\hspace*{-\jh@eventotaloutermargin}% Move everything left by \evensi
   % {\noindent\hspace*{-0.8\jh@eventotaloutermargin}% Move everything left by \evensidemargin
   % The graphicx package will pick the smaller of the height and width
   {\centering\makebox[0em][c]{\includegraphics[height=0.9\paperheight,
                    width=0.9\paperwidth,
                    keepaspectratio]{#2}}\par}% center image on line
-  \vspace*{\stretch{1}} % vertically center
+  \vspace*{\stretch{1}}% vertically center
   \clearpage
   \chapterwrapper{#3}\imagecredit{#1}%
   \Writetofile{\answerbodyfilename}{\protect\chapter{Chapter \Roman{chapter}: #3}}%
@@ -414,6 +417,7 @@
 \newcounter{jhchapter}
   \newcommand{\thejhcounter}{\Roman{jhchapter}}
 \titleclass{\jhchapter}{straight}[\part]
+% \ifbool{MakingPaperCopy}{%
 \titleformat{\jhchapter}[display]%
   {\normalfont\Large\bfseries}%  title format
   {}% label
@@ -425,6 +429,20 @@
   {4.85ex plus 1.5ex minus 0.3ex}% before sep
   {1.0ex plus 0.3ex minus 0.06ex}% after sep
   % [] % right sep
+% }{%  If not making paper copy
+% \titleformat{\jhchapter}[display]%
+%   {\normalfont\Large\bfseries}%  title format
+%   {}% label
+%   {0em}% sep
+%   {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \Roman{chapter}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
+%   %[] % after-code
+%}
+\titlespacing*{\jhchapter}
+  {0pt}% left
+  {4.85ex plus 1.5ex minus 0.3ex}% before sep
+  {1.0ex plus 0.3ex minus 0.06ex}% after sep
+  % [] % right sep
+
 
 % jhchapter for notes and biblio  
 \newcounter{jhchapterstarred}

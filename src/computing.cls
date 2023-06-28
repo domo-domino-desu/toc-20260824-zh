@@ -49,7 +49,8 @@
 
 \usepackage{calc}
 \RequirePackage[papersize={7.5in,9.25in},
-                textwidth=345pt, % textheight=550pt,  % LaTeX defaults
+                textwidth=345pt,    % LaTeX default 4.744 inches
+                % textheight=550pt,  % LaTeX default
                 inner=.8in,
                 top=57.07pt, % 72.27-15.2 (lower down head height is 15.2)
                 bottom=1in, % 72.27 - 24.29494 pt (from \the\footskip)
@@ -205,7 +206,6 @@
 % This is the main complication; I want that inside an Extra things
 % are numbered less formally, etc.
 %   You can find this section by searching for "EXTRA SECTION TOGGLE"
-\usepackage{etoolbox}
 \newtoggle{insideextrasection} % True if inside an extra section, false ow. 
 % Notes
 % 1) This is set to false in a chapter command, and true in an extra command;
@@ -412,36 +412,41 @@
 % Extra
 \usepackage{titlesec}
 
+% If making paper copy, have "Chapter" and "Section" butt left into the
+% margin by this amount
+\newlength{\MakePaperChapterSectionNameLeftShift}
+  \setlength{\MakePaperChapterSectionNameLeftShift}{-1.6em}
+
 % Chapter
 % Main part chapters
 \newcounter{jhchapter}
   \newcommand{\thejhcounter}{\Roman{jhchapter}}
 \titleclass{\jhchapter}{straight}[\part]
-% \ifbool{MakingPaperCopy}{%
-\titleformat{\jhchapter}[display]%
-  {\normalfont\Large\bfseries}%  title format
-  {}% label
-  {0em}% sep
-  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \Roman{chapter}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
-  %[] % after-code
-\titlespacing*{\jhchapter}
-  {0pt}% left
-  {4.85ex plus 1.5ex minus 0.3ex}% before sep
-  {1.0ex plus 0.3ex minus 0.06ex}% after sep
-  % [] % right sep
-% }{%  If not making paper copy
-% \titleformat{\jhchapter}[display]%
-%   {\normalfont\Large\bfseries}%  title format
-%   {}% label
-%   {0em}% sep
-%   {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \Roman{chapter}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
-%   %[] % after-code
-%}
-\titlespacing*{\jhchapter}
-  {0pt}% left
-  {4.85ex plus 1.5ex minus 0.3ex}% before sep
-  {1.0ex plus 0.3ex minus 0.06ex}% after sep
-  % [] % right sep
+\ifbool{MakingPaperCopy}{%
+  \titleformat{\jhchapter}[display]%
+    {\normalfont\Large\bfseries}%  title format
+    {}% label
+    {0em}% sep
+   {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}\Roman{chapter}\\[-0.15ex] \ \end{tabular}\hspace*{\margin@numberingspace}}\makebox[0em][l]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \ \end{tabular}\hspace*{\margin@numberingspace}}}% before code
+    %[] % after-code
+  \titlespacing*{\jhchapter}
+    {0pt}% left
+    {4.85ex plus 1.5ex minus 0.3ex}% before sep
+    {1.0ex plus 0.3ex minus 0.06ex}% after sep
+    % [] % right sep
+}{%  If not making paper copy
+  \titleformat{\jhchapter}[display]%
+    {\normalfont\Large\bfseries}%  title format
+    {}% label
+    {0em}% sep
+    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Chapter\\[-0.15ex] \Roman{chapter}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
+    %[] % after-code
+  \titlespacing*{\jhchapter}
+    {0pt}% left
+    {4.85ex plus 1.5ex minus 0.3ex}% before sep
+    {1.0ex plus 0.3ex minus 0.06ex}% after sep
+    % [] % right sep
+}
 
 
 % jhchapter for notes and biblio  
@@ -505,18 +510,32 @@
 \renewcommand{\thechapter}{\Roman{chapter}}
 
 % Section
-\titleformat{\section}[hang]%
-  {\normalfont\large\bfseries}%  title format
-  {}% label
-  {0em}% sep
-  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Section\\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
-  %[] % after-code
-
-\titlespacing*{\section}
-  {0pt}% left
-  {3.5ex plus 1.5ex minus 0.3ex}% before sep
-  {1.8ex plus 0.3ex minus 0.05ex}% after sep
-  % [] % right sep
+\ifbool{MakingPaperCopy}{%
+  \titleformat{\section}[hang]%
+    {\normalfont\large\bfseries}%  title format
+    {}% label
+    {0em}% sep
+    %{\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Section\\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
+    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}\Roman{chapter}.\arabic{section}\\ \ \end{tabular}\hspace*{\margin@numberingspace}}\makebox[0em][l]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Section\\ \ \end{tabular}\hspace*{\margin@numberingspace}}}% before code
+    %[] % after-code
+  \titlespacing*{\section}
+    {0pt}% left
+    {3.5ex plus 1.5ex minus 0.3ex}% before sep
+    {1.8ex plus 0.3ex minus 0.05ex}% after sep
+    % [] % right sep
+}{%
+  \titleformat{\section}[hang]%
+    {\normalfont\large\bfseries}%  title format
+    {}% label
+    {0em}% sep
+    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Section\\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
+    %[] % after-code
+  \titlespacing*{\section}
+    {0pt}% left
+    {3.5ex plus 1.5ex minus 0.3ex}% before sep
+    {1.8ex plus 0.3ex minus 0.05ex}% after sep
+    % [] % right sep
+}
 
 % Subsection
 \titleformat{\subsection}[runin]%
@@ -536,16 +555,27 @@
 \titleclass{\extrasection}{straight}[\chapter]
 \newcounter{extrasection}[chapter]
   \renewcommand{\theextrasection}{\Alph{extra}}
-\titleformat{\extrasection}[hang]
-  {\normalfont\bfseries}% title format
-  {}% label
-  {0em}% sep
-  {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
-  
-\titlespacing*{\extrasection}%
-  {0pt}% left margin
-  {3.25ex plus 1ex minus 0.2ex}% before sep
-  {0.6em plus 0.1em}% aftersep
+\ifbool{MakingPaperCopy}{%
+  \titleformat{\extrasection}[hang]
+    {\normalfont\bfseries}% title format
+    {}% label
+    {0em}% sep
+    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}\Roman{chapter}.\Alph{extra}\\ \ \end{tabular}\hspace*{\margin@numberingspace}}\makebox[0em][l]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \ \end{tabular}\hspace*{\margin@numberingspace}}}% before code  
+  \titlespacing*{\extrasection}%
+    {0pt}% left margin
+    {3.25ex plus 1ex minus 0.2ex}% before sep
+    {0.6em plus 0.1em}% aftersep
+}{%
+  \titleformat{\extrasection}[hang]
+    {\normalfont\bfseries}% title format
+    {}% label
+    {0em}% sep
+    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\margin@numberingspace}}}% before code  
+  \titlespacing*{\extrasection}%
+    {0pt}% left margin
+    {3.25ex plus 1ex minus 0.2ex}% before sep
+    {0.6em plus 0.1em}% aftersep
+}
 
 % \newcommand{\extrasectionautorefname}{extra}
 
@@ -612,15 +642,27 @@
   \pagestyle{endmatter}
   \setcounter{section}{0}
   \renewcommand{\thesection}{\Alph{section}}
-  \titleformat{\section}[hang]
-     {\normalfont\scshape}
-     {\makebox[0em][r]{Appendix \thesection\hspace*{1em}}}
-     {0em}
-     {\Large\bfseries}
-  \titlespacing*{\section}
-    {0pt}  % increase of left margin
-    {3.5ex plus 1.5ex minus 0.3ex}% before sep
-    {1.8ex plus 0.3ex minus 0.05ex}% after sep
+  \ifbool{MakingPaperCopy}{%
+    \titleformat{\section}[hang]
+       {\normalfont\scshape}
+       {\llap{\thesection\hspace*{\margin@numberingspace}}Appendix\hspace*{1em}}
+       {0em}
+       {\Large\bfseries}
+    \titlespacing*{\section}
+      {0pt}  % increase of left margin
+      {3.5ex plus 1.5ex minus 0.3ex}% before sep
+      {1.8ex plus 0.3ex minus 0.05ex}% after sep
+  }{%
+    \titleformat{\section}[hang]
+       {\normalfont\scshape}
+       {\makebox[0em][r]{Appendix \thesection\hspace*{1em}}}
+       {0em}
+       {\Large\bfseries}
+    \titlespacing*{\section}
+      {0pt}  % increase of left margin
+      {3.5ex plus 1.5ex minus 0.3ex}% before sep
+      {1.8ex plus 0.3ex minus 0.05ex}% after sep
+  }
  \def\exercisecounterstart{\relax}
 }
 
@@ -1183,6 +1225,8 @@
 % \AtEndPreamble{\let\addtocontents\murray@saved@addtocontents} % see https://tex.stackexchange.com/a/513586/339
   \renewcommand*{\bibfont}{\small}  % Use \small font for the body
 \addbibresource{computing.bib}
+\renewcommand{\bibsetup}{\thispagestyle{empty}\pagestyle{empty}}
+
 % 2022-Jun-05 From xurl docs, to minimize bad lines
 \setcounter{biburllcpenalty}{100}
 \setcounter{biburlucpenalty}{200}
@@ -1283,7 +1327,7 @@
   \begingroup
   \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
                 % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
-                textwidth=6in,
+                textwidth=5.8in,
                 inner=.8in, top=1in, bottom=1in, %
                 headsep=12pt,
                 bindingoffset=0.4in,

@@ -1246,13 +1246,17 @@
 \usepackage{endnotes} %, endheads}
    
 \newlength{\jh@endnotesoutdent} \setlength{\jh@endnotesoutdent}{1.5em}
+% \newcommand{\citetext}[2]{#1%
+%   \endnote{\protect\hspace*{-\jh@endnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}
 \newcommand{\citetext}[2]{#1%
+  \writetoentfile{#1}{#2}}
+\newcommand{\writetoentfile}[2]{%
   \endnote{\protect\hspace*{-\jh@endnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}
 \renewcommand{\makeenmark}{\relax} % leave no mark
 \newcommand{\citeadd}[1]{\addtoendnotes{#1}}
 
-% \renewcommand{\notesname}{Notes}
-\renewcommand{\notesname}{\relax}
+\renewcommand{\notesname}{End notes}
+% \renewcommand{\notesname}{\relax}
 
 \usepackage{hanging} % make cited text be in hanging indented paragraphs
 % \def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%
@@ -1310,7 +1314,7 @@
 
 
   \newcommand{\jhendnoteshook}{%
-  These are citations or discussions that
+  These are citations, sources, or discussions that
   supplement the text body.
   Each refers to a word or phrase from that text body, in italics, and 
   then the note is in plain text.

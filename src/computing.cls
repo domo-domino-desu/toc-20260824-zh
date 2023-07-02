@@ -57,6 +57,7 @@
                 headsep=12pt,
                 bindingoffset=0.4in,
                 % includeheadfoot
+                % showframe,  % show lines for the margins
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}
@@ -345,6 +346,11 @@
 \newlength{\jh@eventotaloutermargin}
 \setlength{\jh@eventotaloutermargin}{\evensidemargin}
 \addtolength{\jh@eventotaloutermargin}{1in}
+% This is Amazon KDP's Safe area (#3 in the picture)
+\newlength{\heightamazon}
+  \setlength{\heightamazon}{9in}
+\newlength{\widthamazon}
+  \setlength{\widthamazon}{7.375in}
 \newcommand{\chapteropen}[3][\relax]{%
   \cleartoleftpage
   \thispagestyle{bookemptypage}%
@@ -352,8 +358,8 @@
   % {\noindent\hspace*{-\jh@eventotaloutermargin}% Move everything left by \evensi
   % {\noindent\hspace*{-0.8\jh@eventotaloutermargin}% Move everything left by \evensidemargin
   % The graphicx package will pick the smaller of the height and width
-  {\centering\makebox[0em][c]{\includegraphics[height=0.9\paperheight,
-                   width=0.9\paperwidth,
+  {\centering\makebox[0em][c]{\includegraphics[height=1.2\textheight,
+                   width=1.2\textwidth,
                    keepaspectratio]{#2}}\par}% center image on line
   \vspace*{\stretch{1}}% vertically center
   \clearpage
@@ -1259,9 +1265,7 @@
 % \renewcommand{\notesname}{\relax}
 
 \usepackage{hanging} % make cited text be in hanging indented paragraphs
-% \def\enoteformat{\rightskip\z@ \leftskip 2em \parindent=0em\hangpara{2em}{1}%
-%   \leavevmode\llap{\makeenmark}}
-\def\enoteformat{\rightskip\z@ \leftskip 1.6em \parindent=0em% \hangpara{2em}{1}%
+\def\enoteformat{\rightskip 4pt \leftskip 1.4em \parindent=0em% \hangpara{2em}{1}%
   \leavevmode\llap{\makeenmark}\ }
 % \usepackage{needspace}   % prevent a page break between a chapter announcement and the citations on that chapter
 
@@ -1331,8 +1335,8 @@
   \begingroup
   \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
                 % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
-                textwidth=5.8in,
-                inner=.8in, top=1in, bottom=1in, %
+                textwidth=5.25in,
+                inner=1.1in, top=1in, bottom=1in, %
                 headsep=12pt,
                 bindingoffset=0.4in,
                 left=\jh@endnotesoutdent, % change the left margin

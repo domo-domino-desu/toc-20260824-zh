@@ -1229,9 +1229,9 @@
 % \AtEndPreamble{\let\murray@saved@addtocontents\addtocontents} % see https://tex.stackexchange.com/a/513586/339
 \usepackage[backend=biber,style=authoryear,sorting=nyt,firstinits=true]{biblatex}
 % \AtEndPreamble{\let\addtocontents\murray@saved@addtocontents} % see https://tex.stackexchange.com/a/513586/339
-  \renewcommand*{\bibfont}{\small}  % Use \small font for the body
+  \renewcommand*{\bibfont}{\raggedright\small}  % Use \small font for the body
 \addbibresource{computing.bib}
-\renewcommand{\bibsetup}{\thispagestyle{empty}\pagestyle{empty}}
+\renewcommand{\bibsetup}{\thispagestyle{endmatter}\pagestyle{endmatter}}
 
 % 2022-Jun-05 From xurl docs, to minimize bad lines
 \setcounter{biburllcpenalty}{100}
@@ -1251,13 +1251,13 @@
 
 \usepackage{endnotes} %, endheads}
    
-\newlength{\jh@endnotesoutdent} \setlength{\jh@endnotesoutdent}{1.5em}
+\newlength{\jhendnotesoutdent} \setlength{\jhendnotesoutdent}{1.5em}
 % \newcommand{\citetext}[2]{#1%
 %   \endnote{\protect\hspace*{-\jh@endnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}
 \newcommand{\citetext}[2]{#1%
   \writetoentfile{#1}{#2}}
 \newcommand{\writetoentfile}[2]{%
-  \endnote{\protect\hspace*{-\jh@endnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}
+  \endnote{\protect\hspace*{-\jhendnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}
 \renewcommand{\makeenmark}{\relax} % leave no mark
 \newcommand{\citeadd}[1]{\addtoendnotes{#1}}
 
@@ -1333,14 +1333,14 @@
   % \addtocontents{toc}{\protect\setlength{\protect\cftchapnumwidth}{0em}}
   \newpage
   \begingroup
-  \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
-                % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
-                textwidth=5.25in,
-                inner=1.1in, top=1in, bottom=1in, %
-                headsep=12pt,
-                bindingoffset=0.4in,
-                left=\jh@endnotesoutdent, % change the left margin
-                includeheadfoot}
+  % \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
+  %               % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
+  %               textwidth=5.25in,
+  %               inner=1.1in, top=1in, bottom=1in, %
+  %               headsep=12pt,
+  %               bindingoffset=0.6in,
+  %               left=\jhendnotesoutdent, % change the left margin
+  %               includeheadfoot}
   \setlength{\headwidth}{\textwidth}
   \parindent 0pt
   \parskip=1ex plus 0.2ex minus 0.1ex %
@@ -1376,14 +1376,14 @@
 % Use a wide page and empty headers and footers.
 \newcommand{\outputcredits}[1]{
   \begingroup
-  \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
-                % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
-                textwidth=6in,
-                inner=.8in, top=1in, bottom=1in, %
-                headsep=12pt,
-                bindingoffset=0.4in,
-                left=\jh@endnotesoutdent, % change the left margin
-                includeheadfoot}
+  % \newgeometry{% papersize={7.5in,9.25in},  not allowed in newgeometry
+  %               % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
+  %               textwidth=6in,
+  %               inner=.8in, top=1in, bottom=1in, %
+  %               headsep=12pt,
+  %               bindingoffset=0.4in,
+  %               left=\jhendnotesoutdent, % change the left margin
+  %               includeheadfoot}
   \setlength{\headwidth}{\textwidth}
   \parindent 0pt
   \parskip=1ex plus 0.2ex minus 0.1ex %

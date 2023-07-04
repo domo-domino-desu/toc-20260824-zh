@@ -52,12 +52,15 @@
                 textwidth=345pt,    % LaTeX default 4.744 inches
                 % textheight=550pt,  % LaTeX default
                 inner=.8in,
-                top=57.07pt, % 72.27-15.2 (lower down head height is 15.2)
-                bottom=1in, % 72.27 - 24.29494 pt (from \the\footskip)
+                top=60pt, % 72.27-15.2\approx 60 (lower down head height is 15.2)
+                % bottom=57.07pt,
+                % top=1in,
+                % bottom=1in, % 72.27 - 24.29494 pt (from \the\footskip)
+                footskip=\dimexpr\headsep+\ht\strutbox\relax,
+                textheight=\dimexpr9.25in-2\dimexpr60pt\relax,
                 headsep=12pt,
                 bindingoffset=0.4in,
-                % includeheadfoot
-                % showframe,  % show lines for the margins
+                showframe,  % show lines for the margins
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}

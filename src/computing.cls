@@ -57,7 +57,7 @@
                 % top=1in,
                 % bottom=1in, % 72.27 - 24.29494 pt (from \the\footskip)
                 footskip=\dimexpr\headsep+\ht\strutbox\relax,
-                textheight=\dimexpr9.25in-2\dimexpr60pt\relax,
+                textheight=\dimexpr9.25in-2\dimexpr60pt\relax, % \paperheight and \topmargin don't work here
                 headsep=12pt,
                 bindingoffset=0.4in,
                 showframe,  % show lines for the margins

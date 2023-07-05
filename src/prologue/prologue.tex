@@ -3646,7 +3646,7 @@ $\composed{f}{g}\,(x)=f(x)$ is not computable.
 
 \begin{exercise}
 The computers that we use are binary.
-Use Church's Thesis to argue that if they were ternary,
+Argue that if they were ternary,
 where instead of bits with two values they used trits with three,
 then they would compute exactly the same set of functions.
 \begin{answer}
@@ -3737,9 +3737,9 @@ halt.
 
 \recommended
 \begin{exercise} % http://www.ivanociardelli.altervista.org/wp-content/uploads/2016/09/Solutions-to-exercises.pdf
-Suppose that $\map{f}{\N}{\N}$ is a total computable function.  Use
-Church's Thesis to argue that this function is computable:
-$h(n)=0$ if~$n$ is in the range of~$f$, and 
+Suppose that $\map{f}{\N}{\N}$ is a total computable function.  Argue 
+that this function is computable:
+$h(n)=0$ if~$n$ is in the range of~$f$\!, and 
 $h(n)\diverges$ otherwise.
 % \begin{equation*}
 %   h(n) =
@@ -3943,18 +3943,19 @@ cannot happen.)
 % In the 1930's a number of researchers besides Turing 
 % also saw the need to make precise 
 % the notion of mechanically computable function.
-We will outline an approach to making precise 
-the notion of `mechanically computable' that is different than Turing's, 
+We will outline an approach to defining computability
+that is different than Turing's, 
 both to give a sense of another approach and because 
 it is useful.\footnote{%
-  Some ideas arise more naturally here than with Turing machines.
-  Also, this approach 
-  has the advantage of not needing the codings discussed
+  % Some ideas arise more naturally here than with Turing machines.
+  One advantage of this approach 
+  is that it does not need the codings discussed
   for Turing machines as it works directly
   with the functions.}
-This approach has a classical mathematics flavor:~it 
-lists initial functions that are intuitively mechanically computable
-and also describes ways to combine existing functions to make new ones,
+% It has a classical mathematics flavor:~i
+It 
+lists some initial functions that are intuitively computable
+and then describes ways to combine existing functions to make new ones,
 where if the existing ones are intuitively computable then so is the new one.
 An example of
 an intuitively computable initial function is
@@ -3968,7 +3969,7 @@ is also intuitively mechanically computable.
 We now introduce another effectiveness-preserving combiner. 
    
 
-\margingraphic{.16\textwidth}{prologue/pix/grassmann.jpg}{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}\index{Grassmann, H!picture}
+\margingraphic{.15\textwidth}{prologue/pix/grassmann.jpg}{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}\index{Grassmann, H!picture}
 \subsection{Primitive recursion}\index{primitive recursion|(}\label{page:PrimitiveRecursion}
 %<*discussion:PrimReci>
 Grade school students learn addition and 
@@ -7002,23 +7003,20 @@ XKCD has something to say about the Collatz conjecture.
 
 
 
-
-
-
 % ==================================
 \extra{Turing machine simulator}\index{Turing machine!simulator|(} \label{extra:TuringMachineSimilator}
 
-Writing code to simulate a Turing Machine is a reasonable 
-programming project.
-Here we exhibit an implementation.
-\citetext{One of its design goals}{%
-  Secondary goals are to output a picture of the configuration after each step,
-  and to be easy to understand for a reader new to Racket.}
-is to track closely the 
+The source repository for this book includes a program, written in Racket, 
+to simulate a Turing machine. 
+It is in the directory
+\lstinline{src/scheme/prologue}.
+Here we will show how to run this simulator.
+(The implementation
+tracks closely the 
 description of the action of a Turing machine given 
-on page~\pageref{DefnConfiguration}.
+on page~\pageref{DefnConfiguration}.)
 
-We earlier saw this 
+\Cref{ex:MPred} gives a 
 Turing machine that computes
 the predecessor function.
 \begin{equation*}
@@ -7031,71 +7029,21 @@ the predecessor function.
         \tminstruction{2}{1}{L}{2} 
       }
 \end{equation*}
-To simulate it, the program will use this file.
+The simulation program will use this file, called \lstinline{pred.tm}.
 \lstinputlisting{\tmfiles pred.tm}
 Thus the simulator for any particular Turing machine is really the pair
-consisting of the code shown below along with the machine's file description,
+consisting of the Racket code along with the machine's description,
 as above.
 
-The data structure for a Turing machine is the simplest one,
-a list of instructions.
-For the instructions, the program converts each line like the six ones above 
-into a list with four members:~a number, two characters, and a number.
-That is, a Turing machine is stored as a list of lists.
-The above machine is this.
-\begin{lstlisting}
-'((0 #\B #\L 1) (0 #\1 #\R 0) (1 #\B #\L 2) (1 #\1 #\B 1) (2 #\B #\R 3) (2 #\1 #\L 2))
-\end{lstlisting}
-
-Now for the code.
-After some convenience constants,
-\lstinputlisting[firstline=15,lastline=18]{\tmfile turing-machine.rkt}
-we define a configuration.
-\lstinputlisting[firstline=27,lastline=42]{\tmfile turing-machine.rkt}
-Note that \codeinline{get-current-symbol} translates any blank character
-to a \str{B}.
-
-The heart of a Turing machine is its 
-transition function~$\Delta$,\index{transition function}\index{function!transition}\index{Turing machine!transition function}\index{next-state function}\index{function!next-state}\index{Turing machine!next-state function} 
-which inputs the current state and current tape symbol and returns
-the action to be taken\Dash either \str{L}, or~\str{R}, or a character
-from the tape alphabet\Dash and the next state.
-\lstinputlisting[firstline=62,lastline=71]{\tmfile turing-machine.rkt}
-(The function \codeinline{findf} searches through \codeinline{tm}
-for a member on which \codeinline{delta-test} returns true.)
-
-Turing machines work discretely, step by step.
-If there is no relevant instruction then the machine halts. 
-Otherwise it moves one cell left, one cell right, or writes one symbol.
-\lstinputlisting[firstline=130,lastline=148]{\tmfile turing-machine.rkt}
-Because moving left and right are more complicated, they are
-in separate routines.
-\lstinputlisting[firstline=78,lastline=118]{\tmfile turing-machine.rkt} 
-
-Finally, the implementation executes the machine by iterating the
-operation of a single step
-(\codeinline{verbose} is a optional argument with default \codeinline{#t}).
-\lstinputlisting[firstline=154,lastline=176]{\tmfile turing-machine.rkt}
-
-The \codeinline{execute} routine 
-calls the following one to give a simple picture of the machine,
-showing the state number and the tape contents, with the current symbol
-displayed between asterisks.
-\lstinputlisting[firstline=50,lastline=57]{\tmfile turing-machine.rkt}
-
-Besides the prior routine, the implementation has other code 
-to do dull things such
-as reading the lines from the file and converting them to instruction lists. 
-\lstinputlisting[firstline=267,lastline=288]{\tmfile turing-machine.rkt}
-There is a bit more code
-for getting the file name from the command line, etc., that does not 
-bear on simulating a Turing machine, so we will leave it aside. 
-
-Below is a run of the simulator, with its command line invocation.
-It takes input from the file \codeinline{pred.tm} shown earlier.
-When the machine starts the input is \str{111}, with 
-a current symbol of \str{1} and the tape to the right 
-of \str{11} (the tape to the left is empty). 
+Below is a run of the simulator, showing its command line invocation.
+It takes input from the file \codeinline{machines/pred.tm}.
+The machine starts with 
+a current symbol of \str{1} and with 
+the tape to the right of the current symbol
+containing \str{11} (the tape to the left is empty). 
+Thus, the entire tape input is $\tau=\str{111}$.
+Since the predecessor of $3$ is~$2$, we expect that when it finishes
+the tape will contain \str{11}, with the rest blank. 
 \begin{lstlisting}
 $ ./turing-machine.rkt -f machines/pred.tm -c "1" -r "11"
 step 0: q0: *1*11
@@ -7111,9 +7059,8 @@ step 9: q3: B*1*1BB
 step 10: HALT
 \end{lstlisting}  % $
 The output is crude but good enough for small experiments.
-The lack of complications also makes it easy to parse, 
-and then to translate into inputs for
-sophisticated graphics creation programs.
+The command line \lstinline{turing-machine.rkt --help} will tell you 
+the simulator's options.
 
 \begin{exercises}
 \begin{exercise}
@@ -7187,7 +7134,7 @@ and the matching sequence of tape diagrams.
 \end{exercise}
 
 \begin{exercise}
-Run the simulator % on Example~\ref{ex:MAdd}'s 
+Run the simulator on Example~\ref{ex:MAdd}'s 
 $\TM_{\text{add}}$ to do
 $1+2$.
 Also simulate $0+2$ and $0+0$.    
@@ -7472,18 +7419,504 @@ The four states $q_7$, $q_8$, $q_9$, and $q_{10}$ mark a success.
 % that yields $x-y$ if $x\geq y$ and~$0$ otherwise. 
 % Run it on the simulator to compute $5\dotminus 3$ and $3\dotminus 5$.
 
-\begin{exercise}
-Modify the simulator so that it can run for a limited number of steps.
-\begin{exparts}
-\item Modify it so that, given~$k\in\N$, if the Turing machine hasn't halted
-after $k$ steps then the simulator stops.
-\item Do the same, but replace $k$ with a function \codeinline{(k n)} where
-\str{n} is the input number (assume the machine's input is a string
-of \str{1}'s). 
-\end{exparts}
-\end{exercise}
+% \begin{exercise}
+% Modify the simulator so that it can run for a limited number of steps.
+% \begin{exparts}
+% \item Modify it so that, given~$k\in\N$, if the Turing machine hasn't halted
+% after $k$ steps then the simulator stops.
+% \item Do the same, but replace $k$ with a function \codeinline{(k n)} where
+% \str{n} is the input number (assume the machine's input is a string
+% of \str{1}'s). 
+% \end{exparts}
+% \end{exercise}
 
 \end{exercises}
+\index{Turing machine!simulator|)}
+
+
+
+
+
+
+% % ==================================
+% \extra{Turing machine simulator}\index{Turing machine!simulator|(} \label{extra:TuringMachineSimilator}
+
+% Writing code to simulate a Turing Machine is a reasonable 
+% programming project.
+% Here we exhibit an implementation.
+% \citetext{One of its design goals}{%
+%   Secondary goals are to output a picture of the configuration after each step,
+%   and to be easy to understand for a reader new to Racket.}
+% is to track closely the 
+% description of the action of a Turing machine given 
+% on page~\pageref{DefnConfiguration}.
+
+% We earlier saw this 
+% Turing machine that computes
+% the predecessor function.
+% \begin{equation*}
+%  \TM_{\text{pred}}=
+%   \set{ \tminstruction{0}{B}{L}{1},\,
+%         \tminstruction{0}{1}{R}{0},\,
+%         \tminstruction{1}{B}{L}{2},\,
+%         \tminstruction{1}{1}{B}{1},\,
+%         \tminstruction{2}{B}{R}{3},\,
+%         \tminstruction{2}{1}{L}{2} 
+%       }
+% \end{equation*}
+% To simulate it, the program will use this file.
+% \lstinputlisting{\tmfiles pred.tm}
+% Thus the simulator for any particular Turing machine is really the pair
+% consisting of the code shown below along with the machine's file description,
+% as above.
+
+% The data structure for a Turing machine is the simplest one,
+% a list of instructions.
+% For the instructions, the program converts each line like the six ones above 
+% into a list with four members:~a number, two characters, and a number.
+% That is, a Turing machine is stored as a list of lists.
+% The above machine is this.
+% \begin{lstlisting}
+% '((0 #\B #\L 1) (0 #\1 #\R 0) (1 #\B #\L 2) (1 #\1 #\B 1) (2 #\B #\R 3) (2 #\1 #\L 2))
+% \end{lstlisting}
+
+% Now for the code.
+% After some convenience constants,
+% \lstinputlisting[firstline=15,lastline=18]{\tmfile turing-machine.rkt}
+% we define a configuration.
+% \lstinputlisting[firstline=27,lastline=42]{\tmfile turing-machine.rkt}
+% Note that \codeinline{get-current-symbol} translates any blank character
+% to a \str{B}.
+
+% The heart of a Turing machine is its 
+% transition function~$\Delta$,\index{transition function}\index{function!transition}\index{Turing machine!transition function}\index{next-state function}\index{function!next-state}\index{Turing machine!next-state function} 
+% which inputs the current state and current tape symbol and returns
+% the action to be taken\Dash either \str{L}, or~\str{R}, or a character
+% from the tape alphabet\Dash and the next state.
+% \lstinputlisting[firstline=62,lastline=71]{\tmfile turing-machine.rkt}
+% (The function \codeinline{findf} searches through \codeinline{tm}
+% for a member on which \codeinline{delta-test} returns true.)
+
+% Turing machines work discretely, step by step.
+% If there is no relevant instruction then the machine halts. 
+% Otherwise it moves one cell left, one cell right, or writes one symbol.
+% \lstinputlisting[firstline=130,lastline=148]{\tmfile turing-machine.rkt}
+% Because moving left and right are more complicated, they are
+% in separate routines.
+% \lstinputlisting[firstline=78,lastline=118]{\tmfile turing-machine.rkt} 
+
+% Finally, the implementation executes the machine by iterating the
+% operation of a single step
+% (\codeinline{verbose} is a optional argument with default \codeinline{#t}).
+% \lstinputlisting[firstline=154,lastline=176]{\tmfile turing-machine.rkt}
+
+% The \codeinline{execute} routine 
+% calls the following one to give a simple picture of the machine,
+% showing the state number and the tape contents, with the current symbol
+% displayed between asterisks.
+% \lstinputlisting[firstline=50,lastline=57]{\tmfile turing-machine.rkt}
+
+% Besides the prior routine, the implementation has other code 
+% to do dull things such
+% as reading the lines from the file and converting them to instruction lists. 
+% \lstinputlisting[firstline=267,lastline=288]{\tmfile turing-machine.rkt}
+% There is a bit more code
+% for getting the file name from the command line, etc., that does not 
+% bear on simulating a Turing machine, so we will leave it aside. 
+
+% Below is a run of the simulator, with its command line invocation.
+% It takes input from the file \codeinline{pred.tm} shown earlier.
+% When the machine starts the input is \str{111}, with 
+% a current symbol of \str{1} and the tape to the right 
+% of \str{11} (the tape to the left is empty). 
+% \begin{lstlisting}
+% $ ./turing-machine.rkt -f machines/pred.tm -c "1" -r "11"
+% step 0: q0: *1*11
+% step 1: q0: 1*1*1
+% step 2: q0: 11*1*
+% step 3: q0: 111*B*
+% step 4: q1: 11*1*B
+% step 5: q1: 11*B*B
+% step 6: q2: 1*1*BB
+% step 7: q2: *1*1BB
+% step 8: q2: *B*11BB
+% step 9: q3: B*1*1BB
+% step 10: HALT
+% \end{lstlisting}  % $
+% The output is crude but good enough for small experiments.
+% The lack of complications also makes it easy to parse, 
+% and then to translate into inputs for
+% sophisticated graphics creation programs.
+
+% \begin{exercises}
+% \begin{exercise}
+% Run the simulator on $\TM_{\text{pred}}$
+% starting with \str{11111}.
+% Also start with an empty tape.
+% \begin{answer}
+% This command line run starts with five \str{1}'s.
+% \begin{lstlisting}
+% $ ./turing-machine.rkt -f machines/pred.tm -c "1" -r "1111"
+% step 0: q0: *1*1111
+% step 1: q0: 1*1*111
+% step 2: q0: 11*1*11
+% step 3: q0: 111*1*1
+% step 4: q0: 1111*1*
+% step 5: q0: 11111*B*
+% step 6: q1: 1111*1*B
+% step 7: q1: 1111*B*B
+% step 8: q2: 111*1*BB
+% step 9: q2: 11*1*1BB
+% step 10: q2: 1*1*11BB
+% step 11: q2: *1*111BB
+% step 12: q2: *B*1111BB
+% step 13: q3: B*1*111BB
+% step 14: HALT
+% \end{lstlisting}  % $
+% Here it is looking like the tape.
+% \begin{tapesequence}
+%   \begin{tapesequencetable}
+%     0 &\tapegraphic{\tmexercises pred_five000.pdf} \\
+%     1 &\tapegraphic{\tmexercises pred_five001.pdf} \\
+%     2 &\tapegraphic{\tmexercises pred_five002.pdf} \\
+%     3 &\tapegraphic{\tmexercises pred_five003.pdf} \\
+%     4 &\tapegraphic{\tmexercises pred_five004.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     5 &\tapegraphic{\tmexercises pred_five005.pdf} \\
+%     6 &\tapegraphic{\tmexercises pred_five006.pdf} \\
+%     7 &\tapegraphic{\tmexercises pred_five007.pdf} \\
+%     8 &\tapegraphic{\tmexercises pred_five008.pdf} \\
+%     9 &\tapegraphic{\tmexercises pred_five009.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%    10 &\tapegraphic{\tmexercises pred_five010.pdf} \\
+%    11 &\tapegraphic{\tmexercises pred_five011.pdf} \\
+%    12 &\tapegraphic{\tmexercises pred_five012.pdf} \\
+%    13 &\tapegraphic{\tmexercises pred_five013.pdf} \\
+%   \end{tapesequencetable}
+% \end{tapesequence}
+% This is the command line invocation for an empty tape,
+% \begin{lstlisting}
+% $ ./turing-machine.rkt -f machines/pred.tm -c " "
+% step 0: q0: *B*
+% step 1: q1: *B*B
+% step 2: q2: *B*BB
+% step 3: q3: B*B*B
+% step 4: HALT
+% \end{lstlisting}  % $
+% and the matching sequence of tape diagrams.
+% \begin{tapesequence}
+%   \begin{tapesequencetable}
+%     0 &\tapegraphic{\tmexercises pred_empty000.pdf} \\
+%     1 &\tapegraphic{\tmexercises pred_empty001.pdf} \\
+%     2 &\tapegraphic{\tmexercises pred_empty002.pdf} \\
+%     3 &\tapegraphic{\tmexercises pred_empty003.pdf} \\
+%   \end{tapesequencetable}
+% \end{tapesequence}
+% \end{answer}
+% \end{exercise}
+
+% \begin{exercise}
+% Run the simulator % on Example~\ref{ex:MAdd}'s 
+% $\TM_{\text{add}}$ to do
+% $1+2$.
+% Also simulate $0+2$ and $0+0$.    
+% \begin{answer}
+% This simulates $1+2$.
+% \begin{lstlisting}
+% $ ./turing-machine.rkt -f machines/pred.tm -c "1" -r " 11"
+% step 0: q0: *1* 11
+% step 1: q0: 1*B*11
+% step 2: q1: 1*B*11
+% step 3: q1: 1*1*11
+% step 4: q2: 1*1*11
+% step 5: q2: *1*111
+% step 6: q2: *B*1111
+% step 7: q3: *B*1111
+% step 8: q3: B*1*111
+% step 9: q4: B*B*111
+% step 10: q5: BB*1*11
+% step 11: HALT
+% \end{lstlisting}  % $
+% and this is the matching tape diagram.
+% \begin{tapesequence}
+%   \begin{tapesequencetable}
+%     0 &\tapegraphic{\tmexercises addonetwo000.pdf} \\
+%     1 &\tapegraphic{\tmexercises addonetwo001.pdf} \\
+%     2 &\tapegraphic{\tmexercises addonetwo002.pdf} \\
+%     3 &\tapegraphic{\tmexercises addonetwo003.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     4 &\tapegraphic{\tmexercises addonetwo004.pdf} \\
+%     5 &\tapegraphic{\tmexercises addonetwo005.pdf} \\
+%     6 &\tapegraphic{\tmexercises addonetwo006.pdf} \\
+%     7 &\tapegraphic{\tmexercises addonetwo007.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     8 &\tapegraphic{\tmexercises addonetwo008.pdf} \\
+%     9 &\tapegraphic{\tmexercises addonetwo009.pdf} \\
+%    10 &\tapegraphic{\tmexercises addonetwo010.pdf} \\
+%   \end{tapesequencetable}
+% \end{tapesequence}
+% The command line for $0+2$
+% \begin{lstlisting}
+% $ ./turing-machine.rkt -f machines/pred.tm -c " " -r "11"
+% \end{lstlisting}  % $
+% gives these tape diagrams.
+% \begin{tapesequence}
+%   \begin{tapesequencetable}
+%     0 &\tapegraphic{\tmexercises addzerotwo000.pdf} \\
+%     1 &\tapegraphic{\tmexercises addzerotwo001.pdf} \\
+%     2 &\tapegraphic{\tmexercises addzerotwo002.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     3 &\tapegraphic{\tmexercises addzerotwo003.pdf} \\
+%     4 &\tapegraphic{\tmexercises addzerotwo004.pdf} \\
+%     5 &\tapegraphic{\tmexercises addzerotwo005.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     6 &\tapegraphic{\tmexercises addzerotwo006.pdf} \\
+%     7 &\tapegraphic{\tmexercises addzerotwo007.pdf} \\
+%     8 &\tapegraphic{\tmexercises addzerotwo008.pdf} \\
+%   \end{tapesequencetable}
+% \end{tapesequence}
+% The command line for $0+0$
+% \begin{lstlisting}
+% $ ./turing-machine.rkt -f machines/pred.tm -c " " 
+% \end{lstlisting}  % $
+% gives this sequence of tape diagrams.
+% \begin{tapesequence}
+%   \begin{tapesequencetable}
+%     0 &\tapegraphic{\tmexercises addzerozero000.pdf} \\
+%     1 &\tapegraphic{\tmexercises addzerozero001.pdf} \\
+%     2 &\tapegraphic{\tmexercises addzerozero002.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     3 &\tapegraphic{\tmexercises addzerozero003.pdf} \\
+%     4 &\tapegraphic{\tmexercises addzerozero004.pdf} \\
+%     5 &\tapegraphic{\tmexercises addzerozero005.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     6 &\tapegraphic{\tmexercises addzerozero006.pdf} \\
+%     7 &\tapegraphic{\tmexercises addzerozero007.pdf} \\
+%     8 &\tapegraphic{\tmexercises addzerozero008.pdf} \\
+%   \end{tapesequencetable}
+% \end{tapesequence}
+% \end{answer}
+% \end{exercise}
+
+% \begin{exercise}
+% Write a Turing machine to perform the operation of adding~$3$,
+% so that given as input a tape containing only a string of $n$ consecutive
+% \str{1}'s, it returns a tape with a string of $n+3$ consecutive \str{1}'s.
+% Follow our convention that when the program starts and ends
+% the head is under the first \str{1}.
+% Run it on the simulator, with an input of $4$ consecutive \str{1}'s,
+% and also with an empty tape.
+% \begin{answer}
+% This ten-instruction machine
+% \begin{align*}
+%   \TM_{\text{addthree}} 
+%   &=
+%   \{\hspace{\setspacing} \tminstruction{0}{1}{R}{0},\,
+%         \tminstruction{0}{B}{B}{1},\,
+%         \tminstruction{1}{B}{1}{1},\,
+%         \tminstruction{1}{1}{R}{2},\,
+%         \tminstruction{2}{B}{1}{2},\,
+%         \tminstruction{2}{1}{R}{3},\,        \\
+%         &\qquad\;\tminstruction{3}{B}{1}{3},\,
+%         \tminstruction{3}{1}{1}{4},\,          
+%         \tminstruction{4}{1}{L}{4},\,
+%         \tminstruction{4}{B}{R}{5} 
+%       \hspace{\setspacing}\}
+% \end{align*}
+% \noindent matches the source for the simulator.
+% \lstinputlisting{\tmfiles addthree.tm}
+% \noindent This command line for input~$4$
+% \begin{lstlisting}
+% $ ./turing-machine.rkt -f machines/addthree.tm -c "1" -r "111"
+% \end{lstlisting}  % $
+% \noindent gives these tape diagrams.
+% \begin{tapesequence}
+%   \begin{tapesequencetable}
+%     0  &\tapegraphic{\tmexercises addthree_four000.pdf} \\
+%     1  &\tapegraphic{\tmexercises addthree_four001.pdf} \\
+%     2  &\tapegraphic{\tmexercises addthree_four002.pdf} \\
+%     3  &\tapegraphic{\tmexercises addthree_four003.pdf} \\
+%     4  &\tapegraphic{\tmexercises addthree_four004.pdf} \\
+%     5  &\tapegraphic{\tmexercises addthree_four005.pdf} \\
+%     6  &\tapegraphic{\tmexercises addthree_four006.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     7  &\tapegraphic{\tmexercises addthree_four007.pdf} \\
+%     8  &\tapegraphic{\tmexercises addthree_four008.pdf} \\
+%     9  &\tapegraphic{\tmexercises addthree_four009.pdf} \\
+%    10  &\tapegraphic{\tmexercises addthree_four010.pdf} \\
+%    11  &\tapegraphic{\tmexercises addthree_four011.pdf} \\
+%    12  &\tapegraphic{\tmexercises addthree_four012.pdf} \\
+%    13  &\tapegraphic{\tmexercises addthree_four013.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%    14  &\tapegraphic{\tmexercises addthree_four014.pdf} \\
+%    15  &\tapegraphic{\tmexercises addthree_four015.pdf} \\
+%    16  &\tapegraphic{\tmexercises addthree_four016.pdf} \\
+%    17  &\tapegraphic{\tmexercises addthree_four017.pdf} \\
+%    18  &\tapegraphic{\tmexercises addthree_four018.pdf} \\
+%    19  &\tapegraphic{\tmexercises addthree_four019.pdf} \\
+%   \end{tapesequencetable}
+% \end{tapesequence}
+% The command line for $0$
+% \begin{lstlisting}
+% $ ./turing-machine.rkt -f machines/addthree.tm -c " " 
+% \end{lstlisting}  % $
+% \noindent gives this sequence of tape diagrams.
+% \begin{tapesequence}
+%   \begin{tapesequencetable}
+%     0  &\tapegraphic{\tmexercises addthree_zero000.pdf} \\
+%     1  &\tapegraphic{\tmexercises addthree_zero001.pdf} \\
+%     2  &\tapegraphic{\tmexercises addthree_zero002.pdf} \\
+%     3  &\tapegraphic{\tmexercises addthree_zero003.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     4  &\tapegraphic{\tmexercises addthree_zero004.pdf} \\
+%     5  &\tapegraphic{\tmexercises addthree_zero005.pdf} \\
+%     6  &\tapegraphic{\tmexercises addthree_zero006.pdf} \\
+%     7  &\tapegraphic{\tmexercises addthree_zero007.pdf} \\
+%   \end{tapesequencetable}
+%   \hspace*{2em}
+%   \begin{tapesequencetable}
+%     8  &\tapegraphic{\tmexercises addthree_zero008.pdf} \\
+%     9  &\tapegraphic{\tmexercises addthree_zero009.pdf} \\
+%    10  &\tapegraphic{\tmexercises addthree_zero010.pdf} \\
+%    11  &\tapegraphic{\tmexercises addthree_zero011.pdf} \\
+%   \end{tapesequencetable}
+% \end{tapesequence}
+% \end{answer}
+% \end{exercise}
+
+% \begin{exercise}
+% Write a machine to decide if the input contains the substring~\str{010}.
+% Fix $\Sigma=\set{\str{0}, \str{1}, \str{B}}$.
+% The machine starts with the tape blank except for a 
+% contiguous string of \str{0}'s and \str{1}'s,
+% and with the head under the first non-blank symbol.
+% When it finishes, the tape will have either just a~\str{1} 
+% if the input contained the desired substring,
+% or otherwise just a~\str{0}.
+% We will do this in stages, building a few of  
+% what amounts to subroutines.
+% \begin{exparts}
+% \item Write instructions, starting in state~$q_{10}$, so
+% that if initially the machine's head is under the first of a sequence of 
+% non-blank entries then at the end the head will be to the 
+% right of the final such entry.
+% \item Write a sequence of instructions, starting in state~$q_{20}$,
+% so that if initially the head is just to the right of a sequence
+% of non-blank entries, then at the end all entries are blank.
+% \item Write the full machine, including linking in the prior items.
+% \end{exparts}
+% \begin{answer}
+% \begin{exparts}
+% \item
+% Something like this will do.
+% \begin{equation*}
+%   \TM_0=\set{\tminstruction{10}{0}{R}{10},\,
+%        \tminstruction{10}{1}{R}{10},\,
+%        \tminstruction{10}{B}{B}{100} }
+% \end{equation*}
+% \item
+% This will back up, blanking out cells.
+% \begin{equation*}
+%   \TM_1=\set{ 
+%        \tminstruction{20}{0}{B}{21},\,
+%        \tminstruction{20}{1}{B}{21},\,
+%        \tminstruction{20}{B}{B}{100},\,   
+%        \tminstruction{21}{0}{L}{20},\,
+%        \tminstruction{21}{1}{L}{20},\,
+%        \tminstruction{21}{B}{L}{20} 
+%       }
+% \end{equation*}
+% \item Here, roughly $q_0$ is where none of the substring is matched,
+% $q_1$ is where \str{0} has been seen and the machine is looking for 
+% the~\str{1}, 
+% and~$q_2$ is where \str{01} has been seen and the machine is looking for 
+% the~\str{0}.
+% Then the four states $q_3$, $q_4$, $q_5$, and $q_6$ mark a failure
+% (they end with $q_6$ writing~\str{0} on a blank tape).
+% The four states $q_7$, $q_8$, $q_9$, and $q_{10}$ mark a success.
+% \begin{align*}
+%   \TM_{\text{decide010}} 
+%   &=
+%   \{\hspace{\setspacing} \tminstruction{0}{0}{R}{1},\,
+%         \tminstruction{0}{1}{R}{0},\,
+%         \tminstruction{0}{B}{B}{3},\,
+%         \tminstruction{1}{0}{R}{1},\,
+%         \tminstruction{1}{1}{R}{2},\,
+%         \tminstruction{1}{B}{B}{3},\,        
+%         \tminstruction{2}{0}{R}{7},\,
+%         \tminstruction{2}{1}{1}{0},\,
+%         \tminstruction{2}{B}{B}{3},\,        \\
+%         &\qquad\;
+%         \tminstruction{3}{0}{R}{3},\,
+%         \tminstruction{3}{1}{R}{3},\,          
+%         \tminstruction{3}{B}{L}{4},\,
+%         \tminstruction{4}{0}{B}{5},\,
+%         \tminstruction{4}{1}{B}{5},\,       
+%         \tminstruction{4}{B}{B}{6},\,   \\  % too big to fit on one line
+%         &\qquad\qquad\tminstruction{5}{0}{L}{4},\,
+%         \tminstruction{5}{1}{L}{4},\,          
+%         \tminstruction{5}{B}{L}{4},\,
+%         \tminstruction{6}{0}{0}{100},\,
+%         \tminstruction{6}{1}{0}{100},\,          
+%         \tminstruction{6}{B}{0}{100},\,      \\
+%         &\qquad\;
+%         \tminstruction{7}{0}{R}{7},\,
+%         \tminstruction{7}{1}{R}{7},\,          
+%         \tminstruction{7}{B}{L}{8},\,
+%         \tminstruction{8}{0}{B}{9},\,
+%         \tminstruction{8}{1}{B}{9},\,          
+%         \tminstruction{8}{B}{B}{10},\,      \\  % too big
+%         &\qquad\qquad\tminstruction{9}{0}{L}{8},\,
+%         \tminstruction{9}{1}{L}{8},\,          
+%         \tminstruction{9}{B}{L}{8},\,
+%         \tminstruction{10}{0}{1}{100},\,
+%         \tminstruction{10}{1}{1}{100},\,          
+%         \tminstruction{10}{B}{1}{100}      
+%       \hspace{\setspacing}\}
+% \end{align*}
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
+
+% % Write a Turing machine to perform the proper subtraction
+% % operation on two inputs, often denoted $x\dotminus y$,
+% % that yields $x-y$ if $x\geq y$ and~$0$ otherwise. 
+% % Run it on the simulator to compute $5\dotminus 3$ and $3\dotminus 5$.
+
+% \begin{exercise}
+% Modify the simulator so that it can run for a limited number of steps.
+% \begin{exparts}
+% \item Modify it so that, given~$k\in\N$, if the Turing machine hasn't halted
+% after $k$ steps then the simulator stops.
+% \item Do the same, but replace $k$ with a function \codeinline{(k n)} where
+% \str{n} is the input number (assume the machine's input is a string
+% of \str{1}'s). 
+% \end{exparts}
+% \end{exercise}
+
+% \end{exercises}
 \index{Turing machine!simulator|)}
 
 
@@ -7730,7 +8163,7 @@ Draw the circuit.
 \end{exercise}
 
 \begin{exercise}
-Produce the disjunctive normal form expression with five inputs.
+Produce the disjunctive normal form expression with five inputs
 for this behavior: the output is~$1$ 
   if a majority of the inputs are~$1$'s.
 Draw the circuit.
@@ -7757,20 +8190,20 @@ One propositional logic operator that was not covered in the description
 is \definend{Exclusive Or, \textsc{XOR}}.\index{exclusive or}\index{XOR@\textsc{XOR}}\index{Propositional logic!exclusive or}
 It is defined by: $P\mathbin{\textsc{XOR}}Q$ is $1$ if $P\neq Q$,
 and is $0$ otherwise.
-\begin{exparts}
+\begin{exparts*}
 \item Specify a truth table and from it 
   construct a disjunctive normal form propositional logic expression.
 \item Use that to make a circuit.
-\end{exparts}
+\end{exparts*}
 \end{exercise}
 
 \begin{exercise}
 For the tables below, construct a disjunctive normal form
 propositional logic expression and use that to make a circuit
-\begin{exparts}
+\begin{exparts*}
 \item for the table on the left,
 \item for the one on the right.
-\end{exparts}
+\end{exparts*}
 \begin{center} \small
   \begin{tabular}[t]{ccc|c}
     \multicolumn{1}{c}{$P$}
@@ -7818,6 +8251,25 @@ $Q$ is~$0$.
 \end{exercise}
 
 \begin{exercise}
+The most natural way to add two binary numbers 
+works like the grade school addition algorithm.
+Start at the right with the one's column.  
+Add those two and possibly carry a~$1$ to the
+next column.
+Then add down the next column, including any carry.
+Repeat this from right to left.
+\begin{exparts}
+\item Use this method to add the two binary numbers $1011$ and $1101$.
+\item Make a truth table giving the desired behavior in adding 
+  the numbers in a column.
+  It must have three inputs because of the possibility of a carry.
+  It must also have two output columns, one for the total and one for 
+  the carry. 
+\item Draw the circuits. 
+\end{exparts}
+\end{exercise}
+
+\begin{exercise}
 Construct a circuit with the behavior specified in the tables below:
 \begin{exparts*}
 \item the table on the left,
@@ -7859,25 +8311,6 @@ Construct a circuit with the behavior specified in the tables below:
 % \begin{exercise}
 % Do the prior exercise using conjunctive normal form.  
 % \end{exercise}
-
-\begin{exercise}
-The most natural way to add two binary numbers 
-works like the grade school addition algorithm.
-Start at the right with the one's column.  
-Add those two and possibly carry a~$1$ to the
-next column.
-Then add down the next column, including any carry.
-Repeat this from right to left.
-\begin{exparts}
-\item Use this method to add the two binary numbers $1011$ and $1101$.
-\item Make a truth table giving the desired behavior in adding 
-  the numbers in a column.
-  It must have three inputs because of the possibility of a carry.
-  It must also have two output columns, one for the total and one for 
-  the carry. 
-\item Draw the circuits. 
-\end{exparts}
-\end{exercise}
 \end{exercises}
 
 
@@ -7895,7 +8328,7 @@ Repeat this from right to left.
 %First national meeting of the Association for Computing Machinery, 19471
 % Alt, F. L. Archaeology of computers: reminiscences, 1945–1947. Commun. ACM 15, 693–694 (1972).
 
-\margingraphic{0.23\textwidth}{prologue/pix/vonneumann.jpg}{\label{fig:vonneumann}\href{https://en.wikipedia.org/wiki/John_von_Neumann}{John von Neumann 1903-1957}}\index{von Neumann, J!picture}
+\margingraphic{0.18\textwidth}{prologue/pix/vonneumann.jpg}{\label{fig:vonneumann}\href{https://en.wikipedia.org/wiki/John_von_Neumann}{John von Neumann 1903-1957}}\index{von Neumann, J!picture}
 John von Neumann was one of the twentieth century's 
 most prolific and influential mathematicians.
 One of the many things he studied was
@@ -8587,7 +9020,7 @@ so that collection is easy to understand.
 We will now give a concrete way to understand the
 partial recursive functions.
 
-Here is a 
+Here is a Racket
 \codeinline!for! loop,
 \lstinputlisting[firstline=2, lastline=4]{\prfiles for-while.rkt}
 and what happens is what you'd think would happen.

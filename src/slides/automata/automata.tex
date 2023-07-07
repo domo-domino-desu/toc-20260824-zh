@@ -9,7 +9,7 @@
   \setbeamercovered{invisible}
   \setbeamertemplate{navigation symbols}{} 
 }
-\hypersetup{colorlinks=true,linkcolor=blue} 
+\hypersetup{colorlinks=true,linkcolor=blue, urlcolor=blue} 
 \definecolor{alertcolor}{RGB}{203, 0 , 34}
 \setbeamercolor{alerted text}{fg=alertcolor}
 
@@ -83,14 +83,14 @@
 \begin{frame}
   \frametitle{Motivation}
 
-Turing and other researchers tried to capture what is computable in principle.
+Turing and other researchers tried to define what is computable in principle.
 Church's Thesis is that their definitions do indeed capture the intuitive 
 idea of effectively computable, of computable by an unbounded mechanism.
 
-A person can object to the characterization with something like,
+A person could object,
 ``Although a Turing machine has only finitely many states, it can write to
 the tape.
-There are Turing machines that write arbitrarily many times
+Consequently there are Turing machines that write arbitrarily many times
 to the tape, and so have unboundedly many configurations.
 But the physical universe cannot support unboundedly many configurations.''
 
@@ -111,7 +111,6 @@ input string was accepted or that it was not accepted.
 \begin{center}
   \includegraphics{\generalasydir share/machine02.pdf}
 \end{center}
-Our convention is that the start state is $q_0$.
 
 \pause{\color{blue}\textit{Remark:}}
 Recall that Turing machines are defined to be
@@ -332,8 +331,7 @@ $\lang=\set{\emptystring,\str{HEF}, \str{HEFHEF}, (\str{HEF})^3,\ldots}$.
 
 \begin{example}
 This machine recognizes a natural number
-that is a multiple of three (that is, it accepts strings 
-representing such a number in base 10 such as \str{15} or~\str{5013}.
+that is a multiple of three, such as \str{15} or~\str{5013}.
 \begin{center}
   \vcenteredhbox{\includegraphics{\asydir fsa/fsa12.pdf}}
 \end{center}
@@ -412,12 +410,16 @@ there are seven strings of length less than three.
 
 % ===========================================
 \section{Nondeterminism}
-\begin{frame}{Recall: deterministic computation} 
-The Turing machine definition gives that it is a
-set of instructions  $q_pT_pT_nq_n$.
-This set must be deterministic, meaning  
+\begin{frame}{Recall: determinism} 
+The Turing machine definition gives that the
+set of instructions  $q_pT_pT_nq_n$
+must be deterministic, meaning  
 that no two instructions can begin with the same pair $q_pT_p$.
-Consequently, over the $q_pT_pT_nq_n\in\TM$
+For instance the definition outlaws that both $q_0\str{10}q_1$
+and  $q_0\str{11}q_2$ are in the same machine because they both
+start with $q_0\str{1}$.
+
+Consequently, over the four-tuples $q_pT_pT_nq_n$ in a machine,
 the association of present pair $q_pT_p$ with next pair $T_nq_n$
 defines a function, the next-state function.
 \begin{equation*}
@@ -430,7 +432,7 @@ from configuration to configuration.
 Finite State machines work the same way. 
 The definition gives them as also deterministic.
 
-\pause
+\pause\medskip
 We now drop determinism.
 We will 
 do it here for Finite State machines and in the next chapter
@@ -487,10 +489,11 @@ or $\sigma_1=\str{baab}$.
   \end{tabular}
 \end{center}
 Derivation is a computation in that it is pushing symbols by following
-effective rules.
+rigid rules.
 
 \pause
-It is nondeterministic in that while doing a sequence of $\derives$~steps,
+This computation is nondeterministic in the sense that while doing 
+a sequence of $\derives$~steps,
 we often find that more than one $\rightarrow$~rule applies.
 So there is more than one next thing to do, not just a unique next string.
 \end{frame}
@@ -528,18 +531,18 @@ here are the first few levels for the grammar on the prior slide.
   \end{picture}
 \end{center}
 \only<4>{The second way, 
-the way that we actually solve these problems for instance on the Grammar
+the way that we actually solve these problems, for instance on the Grammar
 section's homework, is to guess.
 Then we verify that guess by exhibiting a derivation.}
 \end{frame}
 
 
 \begin{frame}{Nondeterminism: a machine}\vspace*{-1ex}
-This machine is nondeterministic: for a given 
+This machine is nondeterministic: for a given pair
 $\sequence{\textrm{present state}, \textrm{input character}}$ 
-pair there may be one next state, or more than one, or none.
+there may be one next state, or more than one, or none.
 For instance, leaving $q_0$ are two different arrows labeled~\str{0}.
-And leaving $q_1$ with the label~\str{1} is no arrow at all.\vspace*{-1ex}
+And there is no arrow at all leaving $q_1$ with the label~\str{1}.
 \begin{center}\small
   \vcenteredhbox{\includegraphics{\asydir nfsm/nfsm00.pdf}}
 \end{center}
@@ -566,7 +569,7 @@ First, we can trace out every possible branch.
 
 \begin{frame}
 As with the grammar,
-we are picturing that when the machine is called on to do two things, 
+we are picturing that when the machine is asked to do two things, 
 it does them both.
 And when there is no next state, the branch dies.
 So the computation history is not straight-line but instead is a tree.
@@ -602,7 +605,7 @@ We could say that the machine has correctly guessed.
 \begin{frame}{First mental model for nondeterminism: spawning}
 For the grammar example, we made a branch each time a
 production rule applied to a string.
-For the machine, we also branched each time there was a
+For the machine example, we also branched each time there was a
 possible thing to do.
 
 Another example of this branching is 
@@ -610,10 +613,9 @@ the Travelling Salesman problem.
 Suppose that we want a cyclic trip 
 that visits every state capitol in the forty eight contiguous US~states
 in less than $16\,000$ kilometers.
-This is nondeterminism in that if we start at Montpelier, Vermont 
-then there are multiple possible next cities. 
-A natural approach is to spawn forty seven child processes, 
-one for each potential next city.
+If we start at Montpelier, Vermont 
+then there are forty seven possible next cities. 
+A reasonable approach is to spawn forty seven child processes.
 The process assigned Albany, 
 for instance, would know that the trip so far is $126$~kilometers. 
 After that, each child would fork its own set of children, forty six of them.
@@ -623,8 +625,12 @@ Note that we consider
 the overall computation a success if there exists 
 even one process that is a success.
 
+The first mental model for nondeterminism is that when presented with 
+multiple things to do, the machine does them all.
+Think of it as an unboundedly parallelizable device.
+
 This model 
-is a natural approach when called on to do multiple things.
+is natural.
 In everyday computing, we are all used to having lots of windows open 
 on the screen, doing lots of things.
 Under the hood, the operating system forks child processes to cover each
@@ -640,14 +646,14 @@ For example, we described the nondeterministic machine as guessing when
 to stop going around $q_0$'s loop
 and start following the tail to the right.
 
+\pause
 Saying ``guessing'' is jarring because 
 our experience with computers in programming class is that
 they don't guess.
-An alternate characterization is to imagine that the machine is
+An alternate way to state this model is that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
 it only has to verify that answer.
-Often, the furnisher is personified as a demon.
-\pause
+Often the furnisher is personified as a demon.
 \begin{center}\small
   \vcenteredhbox{\includegraphics[height=1.25in]{../../automata/pix/flauros.jpg}}
   \\
@@ -675,15 +681,18 @@ answer.
 \begin{frame}
 \frametitle{Definition of a Nondeterministic Finite State machine}
 
-To make a nondeterministic Finite State machine,
+To make the definition of a nondeterministic Finite State machine,
 we change one thing from the definition of Finite State machine,
-namely the codomain of $\Delta$.
+namely we change the codomain of $\Delta$ from 
+$Q$ to the power set $\powerset(Q)$.
 
 \ExecuteMetaData[\catchfilefn]{def:NondeterministicFiniteStateMachine}
 \ExecuteMetaData[\catchfilefn]{def:NFSMAccepted}
 
-Note that the codomain is the power set $\powerset(Q)$.
-\pause
+The machine accepts its input if there 
+exists at least one sequence of configurations that ends
+in acceptance.
+
 \begin{example}
 This nondeterministic
 listener waits to hear the remote signal
@@ -693,14 +702,12 @@ $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
 \begin{center}
   \includegraphics{\asydir nfsm/nfsm11.pdf}
 \end{center}
-For example, this listener will end in an accepting 
-state if it 
+For example, if this listener 
 hears a string $\sigma=\str{010101110}$, with three \str{01}'s in the prefix
-instead of two.
+instead of two then it ends in an accepting 
+state.
 In terms of our second framing, it guesses that it should ignore
 the first \str{01} but not the second.
-(More precisely stated, there exists a sequence of configuations that leads
-to acceptance of $\sigma$.)
 \end{example}
 \end{frame}
 
@@ -916,76 +923,78 @@ $\Delta_{\FSM_{D}}(s_3,\str{1})=\set{q_1,q_2,q_3}=s_{14}$.
 \end{frame}
 
 \begin{frame}
-The start state is $\hat{E}(\set{q_0})=\set{q_0, q_1}=s_5$.
+The start state is $\hat{E}(\set{q_0})=\set{q_0, q_3}=s_7$.
 The only accepting state of $\FSM_N$ is $q_1$ 
 so a state of $\FSM_D$ is accepting if and only if it contains $q_1$.
-\begin{center}\small
-\begin{tabular}{@{}r|cc|cc@{}}
-   \multicolumn{1}{r}{$\Delta_{\FSM_D}$}
-    &\multicolumn{1}{c}{$\hat{s}_{i,\str{0}}$}
-    &\multicolumn{1}{c}{$\Delta_{\FSM_D(s_i,\str{0})}$}
-    &\multicolumn{1}{c}{$\hat{s}_{i,\str{1}}$}
-    &\multicolumn{1}{c}{$\Delta_{\FSM_D(s_i,\str{1})}$}
-    \\
-    \cline{2-5}
-  $s_0=\set{}$          
-                          &\onslide<2>{$\set{}$}   &\onslide<2>{$s_0$}  
-                          &\onslide<2>{$\set{}$}  &\onslide<2>{$s_0$}  \\[0.75ex]
-  $s_1=\set{q_0}$       
-                          &\onslide<2>{$\set{q_2}$}   &\onslide<2>{$s_{14}$} 
-                          &\onslide<2>{$\set{q_0}$}  &\onslide<2>{$s_{5}$}  \\
-  \acceptingstate 
-  $s_2=\set{q_1}$    
-                        &\onslide<2>{$\set{q_0,q_1}$}   &\onslide<2>{$s_{5}$}
-                        &\onslide<2>{$\set{q_1}$}  &\onslide<2>{$s_{2}$}  \\
-  $s_3=\set{q_2}$      
-                        &\onslide<2>{$\set{q_0}$}  &\onslide<2>{$s_{5}$}  
-                        &\onslide<2>{$\set{q_2}$}    &\onslide<2>{$s_{14}$}  \\
-  $s_4=\set{q_3}$      
-                        &\onslide<2>{$\set{q_3}$}  &\onslide<2>{$s_{9}$}  
-                        &\onslide<2>{$\set{}$}     &\onslide<2>{$s_{0}$}  \\[0.75ex]
-  \acceptingstate 
-  $s_5=\set{q_0,q_1}$   
-                        &\onslide<2>{$\set{q_0,q_1,q_2}$} &\onslide<2>{$s_{15}$}  
-                        &\onslide<2>{$\set{q_0,q_1}$}  &\onslide<2>{$s_{5}$}  \\
-  $s_6=\set{q_0,q_2}$     
-                        &\onslide<2>{$\set{q_0,q_2}$}  &\onslide<2>{$s_{15}$} 
-                        &\onslide<2>{$\set{q_0,q_2}$}  &\onslide<2>{$s_{15}$}  \\
-  $s_7=\set{q_0,q_3}$     
-                        &\onslide<2>{$\set{q_2,q_3}$}   &\onslide<2>{$s_{14}$}
-                        &\onslide<2>{$\set{q_0}$} &\onslide<2>{$s_{5}$} \\
-  \acceptingstate 
-  $s_8=\set{q_1,q_2}$   
-                        &\onslide<2>{$\set{q_0,q_1}$}   &\onslide<2>{$s_{5}$}  
-                        &\onslide<2>{$\set{q_1,q_2}$}  &\onslide<2>{$s_{14}$}  \\
-  \acceptingstate 
-  $s_9=\set{q_1,q_3}$   
-                         &\onslide<2>{$\set{q_0,q_1,q_3}$}&\onslide<2>{$s_{12}$}  
-                         &\onslide<2>{$\set{q_1}$}  &\onslide<2>{$s_{2}$}  \\
-  $s_{10}=\set{q_2,q_3}$    
-                          &\onslide<2>{$\set{q_0,q_3}$}  &\onslide<2>{$s_{12}$}                 
-                          &\onslide<2>{$\set{q_2}$}   &\onslide<2>{$s_{14}$}  \\[0.75ex]
-  \acceptingstate 
-  $s_{11}=\set{q_0,q_1,q_2}$    
-                             &\onslide<2>{$\set{q_0,q_1,q_2}$} &\onslide<2>{$s_{15}$}  
-                             &\onslide<2>{$\set{q_0,q_1,q_2}$} &\onslide<2>{$s_{15}$}  \\
-  \acceptingstate 
-  $s_{12}=\set{q_0,q_1,q_3}$     
-                              &\onslide<2>{$\set{q_0,q_1,q_2,q_3}$}  &\onslide<2>{$s_{15}$}  
-                              &\onslide<2>{$\set{q_0,q_1}$}  &\onslide<2>{$s_{5}$}  \\
-  $s_{13}=\set{q_0,q_2,q_3}$    
-                              &\onslide<2>{$\set{q_0,q_2,q_3}$}  &\onslide<2>{$s_{15}$}  
-                              &\onslide<2>{$\set{q_0,q_2}$}  &\onslide<2>{$s_{15}$}  \\
-  \acceptingstate 
-  $s_{14}=\set{q_1,q_2,q_3}$     
-                              &\onslide<2>{$\set{q_0,q_1,q_3}$}   &\onslide<2>{$s_{12}$}  
-                              &\onslide<2>{$\set{q_1,q_2}$}  &\onslide<2>{$s_{14}$}  \\[0.75ex]
-  \acceptingstate 
-  $s_{15}=\set{q_0,q_1,q_2,q_3}$    
-                                 &\onslide<2>{\set{q_0,q_1,q_2,q_3}}    &\onslide<2>{$s_{15}$}  
-                                 &\onslide<2>{\set{q_0,q_1,q_2}}  &\onslide<2>{$s_{15}$}  \\
-  \end{tabular}
-\end{center}
+\ExecuteMetaData[\catchfilefn]{ex:DFSMFromNFSMWithEpsilon}
+
+% \begin{center}\small
+% \begin{tabular}{@{}r|cc|cc@{}}
+%    \multicolumn{1}{r}{$\Delta_{\FSM_D}$}
+%     &\multicolumn{1}{c}{$\hat{s}_{i,\str{0}}$}
+%     &\multicolumn{1}{c}{$\Delta_{\FSM_D(s_i,\str{0})}$}
+%     &\multicolumn{1}{c}{$\hat{s}_{i,\str{1}}$}
+%     &\multicolumn{1}{c}{$\Delta_{\FSM_D(s_i,\str{1})}$}
+%     \\
+%     \cline{2-5}
+%   $s_0=\set{}$          
+%                           &\onslide<2>{$\set{}$}   &\onslide<2>{$s_0$}  
+%                           &\onslide<2>{$\set{}$}  &\onslide<2>{$s_0$}  \\[0.75ex]
+%   $s_1=\set{q_0}$       
+%                           &\onslide<2>{$\set{q_2}$}   &\onslide<2>{$s_{14}$} 
+%                           &\onslide<2>{$\set{q_0}$}  &\onslide<2>{$s_{5}$}  \\
+%   \acceptingstate 
+%   $s_2=\set{q_1}$    
+%                         &\onslide<2>{$\set{q_0,q_1}$}   &\onslide<2>{$s_{5}$}
+%                         &\onslide<2>{$\set{q_1}$}  &\onslide<2>{$s_{2}$}  \\
+%   $s_3=\set{q_2}$      
+%                         &\onslide<2>{$\set{q_0}$}  &\onslide<2>{$s_{5}$}  
+%                         &\onslide<2>{$\set{q_2}$}    &\onslide<2>{$s_{14}$}  \\
+%   $s_4=\set{q_3}$      
+%                         &\onslide<2>{$\set{q_3}$}  &\onslide<2>{$s_{9}$}  
+%                         &\onslide<2>{$\set{}$}     &\onslide<2>{$s_{0}$}  \\[0.75ex]
+%   \acceptingstate 
+%   $s_5=\set{q_0,q_1}$   
+%                         &\onslide<2>{$\set{q_0,q_1,q_2}$} &\onslide<2>{$s_{15}$}  
+%                         &\onslide<2>{$\set{q_0,q_1}$}  &\onslide<2>{$s_{5}$}  \\
+%   $s_6=\set{q_0,q_2}$     
+%                         &\onslide<2>{$\set{q_0,q_2}$}  &\onslide<2>{$s_{15}$} 
+%                         &\onslide<2>{$\set{q_0,q_2}$}  &\onslide<2>{$s_{15}$}  \\
+%   $s_7=\set{q_0,q_3}$     
+%                         &\onslide<2>{$\set{q_2,q_3}$}   &\onslide<2>{$s_{14}$}
+%                         &\onslide<2>{$\set{q_0}$} &\onslide<2>{$s_{5}$} \\
+%   \acceptingstate 
+%   $s_8=\set{q_1,q_2}$   
+%                         &\onslide<2>{$\set{q_0,q_1}$}   &\onslide<2>{$s_{5}$}  
+%                         &\onslide<2>{$\set{q_1,q_2}$}  &\onslide<2>{$s_{14}$}  \\
+%   \acceptingstate 
+%   $s_9=\set{q_1,q_3}$   
+%                          &\onslide<2>{$\set{q_0,q_1,q_3}$}&\onslide<2>{$s_{12}$}  
+%                          &\onslide<2>{$\set{q_1}$}  &\onslide<2>{$s_{2}$}  \\
+%   $s_{10}=\set{q_2,q_3}$    
+%                           &\onslide<2>{$\set{q_0,q_3}$}  &\onslide<2>{$s_{12}$}                 
+%                           &\onslide<2>{$\set{q_2}$}   &\onslide<2>{$s_{14}$}  \\[0.75ex]
+%   \acceptingstate 
+%   $s_{11}=\set{q_0,q_1,q_2}$    
+%                              &\onslide<2>{$\set{q_0,q_1,q_2}$} &\onslide<2>{$s_{15}$}  
+%                              &\onslide<2>{$\set{q_0,q_1,q_2}$} &\onslide<2>{$s_{15}$}  \\
+%   \acceptingstate 
+%   $s_{12}=\set{q_0,q_1,q_3}$     
+%                               &\onslide<2>{$\set{q_0,q_1,q_2,q_3}$}  &\onslide<2>{$s_{15}$}  
+%                               &\onslide<2>{$\set{q_0,q_1}$}  &\onslide<2>{$s_{5}$}  \\
+%   $s_{13}=\set{q_0,q_2,q_3}$    
+%                               &\onslide<2>{$\set{q_0,q_2,q_3}$}  &\onslide<2>{$s_{15}$}  
+%                               &\onslide<2>{$\set{q_0,q_2}$}  &\onslide<2>{$s_{15}$}  \\
+%   \acceptingstate 
+%   $s_{14}=\set{q_1,q_2,q_3}$     
+%                               &\onslide<2>{$\set{q_0,q_1,q_3}$}   &\onslide<2>{$s_{12}$}  
+%                               &\onslide<2>{$\set{q_1,q_2}$}  &\onslide<2>{$s_{14}$}  \\[0.75ex]
+%   \acceptingstate 
+%   $s_{15}=\set{q_0,q_1,q_2,q_3}$    
+%                                  &\onslide<2>{\set{q_0,q_1,q_2,q_3}}    &\onslide<2>{$s_{15}$}  
+%                                  &\onslide<2>{\set{q_0,q_1,q_2}}  &\onslide<2>{$s_{15}$}  \\
+%   \end{tabular}
+% \end{center}
 \begin{center}\small
   $\FSM_N$:\qquad\vcenteredhbox{\includegraphics{\asydir nfsm/nfsm93.pdf}} 
 \end{center}
@@ -994,13 +1003,13 @@ so a state of $\FSM_D$ is accepting if and only if it contains $q_1$.
 \begin{frame}
 Here is the deterministic machine as a graph.
 \begin{center}
-  \includegraphics{asy/nfsm21.pdf}
+  \includegraphics{\asydir nfsm/nfsm1043.pdf}
 \end{center}
-The start state is $s_5$.
-Many of the states are superfluous;
-the only reachable states are $s_5$ and $s_{15}$.
-Both are accepting states so the minimization of this has only a single
-state and accepts all inputs.
+The prior slide shows that many of the states of $\FSM_D$ 
+are unreachable from the start state~$s_7$.
+As an example, looking through the table shows that never is $s_2$
+the output of $\Delta_D$. 
+We have omitted these states from the diagram.
 \end{frame}
 
 

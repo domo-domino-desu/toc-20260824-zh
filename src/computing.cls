@@ -1424,7 +1424,7 @@
 \setlength{\cftsubsecnumwidth}{1em}
 
 \setlength{\cftbeforetoctitleskip}{2ex plus 0.05ex}
-\setlength{\cftaftertoctitleskip}{4ex plus 0.05ex minus 0.01ex}
+\setlength{\cftaftertoctitleskip}{2ex plus 0.05ex minus 0.01ex}
 \renewcommand{\cfttoctitlefont}{\Large\bfseries}
 
 % from tocloft.sty; hack to make it print roman chapter number

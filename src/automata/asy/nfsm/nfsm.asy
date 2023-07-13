@@ -142,23 +142,25 @@ label(pic, "$q_0$",(0,0),p);
 // label(pic, "$q_3$",(5,1.5),p);
 
 // legend at top of graphic
-label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
+// label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.75,5));
 label(pic, "\str{0}",(0.5, 5));
 label(pic, "\str{0}",(1.5, 5));
 label(pic, "\str{0}",(2.5, 5));
 label(pic, "\str{0}",(3.5, 5));
 label(pic, "{1}",(4.5, 5));
-draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+draw(pic, (-0.75, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
-draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
+draw(pic, (-0.75,-1)--(5.5,-1),black+linewidth(0.4));
 label(pic, "$0$",(0, -1.3));
 label(pic, "$1$",(1, -1.3));
 label(pic, "$2$",(2, -1.3));
 label(pic, "$3$",(3, -1.3));
 label(pic, "$4$",(4, -1.3));
 label(pic, "$5$",(5, -1.3));
-label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.75,-1.3));
+//label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
 //draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -222,23 +224,25 @@ label(pic, "$q_1$",(1,-0.5),p);
 // label(pic, "$q_3$",(5,1.5),p);
 
 // legend at top of graphic
-label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
+// label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.75,5));
 label(pic, "\str{0}",(0.5, 5));
 label(pic, "\str{0}",(1.5, 5));
 label(pic, "\str{0}",(2.5, 5));
 label(pic, "\str{0}",(3.5, 5));
 label(pic, "\str{1}",(4.5, 5));
-draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+draw(pic, (-0.75, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
-draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
+draw(pic, (-0.75,-1)--(5.5,-1),black+linewidth(0.4));
 label(pic, "$0$",(0, -1.3));
 label(pic, "$1$",(1, -1.3));
 label(pic, "$2$",(2, -1.3));
 label(pic, "$3$",(3, -1.3));
 label(pic, "$4$",(4, -1.3));
 label(pic, "$5$",(5, -1.3));
-label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.75,-1.3));
+// label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
 //draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -303,23 +307,25 @@ label(pic, "$q_2$",(2,-0.5),p);
 // label(pic, "$q_3$",(5,1.5),p);
 
 // legend at top of graphic
-label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
+// label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.75,5));
 label(pic, "\str{0}",(0.5, 5));
 label(pic, "\str{0}",(1.5, 5));
 label(pic, "\str{0}",(2.5, 5));
 label(pic, "\str{0}",(3.5, 5));
 label(pic, "\str{1}",(4.5, 5));
-draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+draw(pic, (-0.75, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
-draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
+draw(pic, (-0.75,-1)--(5.5,-1),black+linewidth(0.4));
 label(pic, "$0$",(0, -1.3));
 label(pic, "$1$",(1, -1.3));
 label(pic, "$2$",(2, -1.3));
 label(pic, "$3$",(3, -1.3));
 label(pic, "$4$",(4, -1.3));
 label(pic, "$5$",(5, -1.3));
-label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.75,-1.3));
+// label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
 //draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -385,23 +391,25 @@ label(pic, "$q_2$",(3,0.5),p);
 // label(pic, "$q_3$",(5,1.5),p);
 
 // legend at top of graphic
-label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
+// label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.75,5));
 label(pic, "\str{0}",(0.5, 5));
 label(pic, "\str{0}",(1.5, 5));
 label(pic, "\str{0}",(2.5, 5));
 label(pic, "\str{0}",(3.5, 5));
 label(pic, "\str{1}",(4.5, 5));
-draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+draw(pic, (-0.75, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
-draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
+draw(pic, (-0.75,-1)--(5.5,-1),black+linewidth(0.4));
 label(pic, "$0$",(0, -1.3));
 label(pic, "$1$",(1, -1.3));
 label(pic, "$2$",(2, -1.3));
 label(pic, "$3$",(3, -1.3));
 label(pic, "$4$",(4, -1.3));
 label(pic, "$5$",(5, -1.3));
-label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.75,-1.3));
+// label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
 //draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -467,23 +475,25 @@ label(pic, "$q_2$",(4,1.5),p);
 // label(pic, "$q_3$",(5,1.5),p);
 
 // legend at top of graphic
-label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
+// label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.75,5));
 label(pic, "\str{0}",(0.5, 5));
 label(pic, "\str{0}",(1.5, 5));
 label(pic, "\str{0}",(2.5, 5));
 label(pic, "\str{0}",(3.5, 5));
 label(pic, "\str{1}",(4.5, 5));
-draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+draw(pic, (-0.75, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
-draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
+draw(pic, (-0.75,-1)--(5.5,-1),black+linewidth(0.4));
 label(pic, "$0$",(0, -1.3));
 label(pic, "$1$",(1, -1.3));
 label(pic, "$2$",(2, -1.3));
 label(pic, "$3$",(3, -1.3));
 label(pic, "$4$",(4, -1.3));
 label(pic, "$5$",(5, -1.3));
-label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.75,-1.3));
+// label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
 //draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -548,23 +558,25 @@ label(pic, "$q_0$",(5,4.5),p);
 label(pic, "$q_3$",(5,1.5),p);
 
 // legend at top of graphic
-label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
+// label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.75,5));
 label(pic, "\str{0}",(0.5, 5));
 label(pic, "\str{0}",(1.5, 5));
 label(pic, "\str{0}",(2.5, 5));
 label(pic, "\str{0}",(3.5, 5));
 label(pic, "\str{1}",(4.5, 5));
-draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+draw(pic, (-0.75, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
-draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
+draw(pic, (-0.75,-1)--(5.5,-1),black+linewidth(0.4));
 label(pic, "$0$",(0, -1.3));
 label(pic, "$1$",(1, -1.3));
 label(pic, "$2$",(2, -1.3));
 label(pic, "$3$",(3, -1.3));
 label(pic, "$4$",(4, -1.3));
 label(pic, "$5$",(5, -1.3));
-label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.75,-1.3));
+// label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
 //draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -629,23 +641,25 @@ label(pic, "$q_0$",(5,4.5),p);
 label(pic, "$q_3$",(5,1.5),p+highlightcolor);
 
 // legend at top of graphic
-label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
+// label(pic, "\makebox[0pt][c]{\textit{Input}}",(2.5,5.45));
 // draw(pic, (-0.5,5.15)--(5.5,5.15),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.75,5));
 label(pic, "\str{0}",(0.5, 5));
 label(pic, "\str{0}",(1.5, 5));
 label(pic, "\str{0}",(2.5, 5));
 label(pic, "\str{0}",(3.5, 5));
 label(pic, "\str{1}",(4.5, 5));
-draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
+draw(pic, (-0.75, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 // at bottom of graphic
-draw(pic, (-0.5,-1)--(5.5,-1),black+linewidth(0.4));
+draw(pic, (-0.75,-1)--(5.5,-1),black+linewidth(0.4));
 label(pic, "$0$",(0, -1.3));
 label(pic, "$1$",(1, -1.3));
 label(pic, "$2$",(2, -1.3));
 label(pic, "$3$",(3, -1.3));
 label(pic, "$4$",(4, -1.3));
 label(pic, "$5$",(5, -1.3));
-label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.75,-1.3));
+// label(pic, "\makebox[0pt][c]{\textit{Step}}",(2.5,-1.65));
 //draw(pic, (-0.5, 4.75)--(5.5, 4.75),black+linewidth(0.4));
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
@@ -5756,23 +5770,23 @@ label(pic, "$q_1$",(0.5,1.0),p);
 draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
 
 // Add action up to second input
-label(pic, "$\vdash$",(1.00,0),p+highlightcolor);
+label(pic, "$\vdash$",(1.00,0),p);
 label(pic, "$q_0$",(1.50,0.00),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
 label(pic, "$q_1$",(1.50,1.0),p);
 draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
 
 // Add action up to the third input
-label(pic, "$\vdash$",(2.00,0),p+highlightcolor);
+label(pic, "$\vdash$",(2.00,0),p);
 label(pic, "$q_0$",(2.50,0.00),p+highlightcolor);
-label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
 label(pic, "$q_1$",(2.50,1.0),p+highlightcolor);
 draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
 
 // Add action after the third input
-label(pic, "$\vdash$",(3.00,1.0),p+highlightcolor);
+label(pic, "$\vdash$",(3.00,1.0),p);
 label(pic, "$q_2$",(3.50,1.0),p+highlightcolor);
-label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
 label(pic, "$q_0$",(3.50,2.00),p+highlightcolor);
 
 // Legend at top of graphic

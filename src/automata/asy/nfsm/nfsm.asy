@@ -5452,4 +5452,344 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ========== Computation tree for NFSM with epsilon transitions
+
+picture pic;
+int picnum = 44;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$");  
+node q2=ncircle("$q_2$");  
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=1.0*u;  // vertical
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(W)).l("\str{a}"),
+     (q0--q1).l("$\varepsilon$"),
+     (q1--q2).l("\str{b}"),
+     (q2..bend..q0).l("$\varepsilon$")
+     );
+
+// draw nodes after edges
+draw(pic,
+     q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ....... Computation history tree
+
+picture pic;
+int picnum = 45;
+
+real u = 1.5cm;
+real v = 0.8cm;
+unitsize(pic,u,v);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
+setdefaultparsetreestyles();
+
+p=MAINPEN;
+// Action to left of first input
+label(pic, "$q_0$",(0.5,0),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
+label(pic, "$q_1$",(0.5,1.0),p);
+draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+
+// // Add action up to second input
+// label(pic, "$\vdash$",(1.00,0),p);
+// label(pic, "$q_0$",(1.50,0.00),p);
+// label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+// label(pic, "$q_1$",(1.50,1.0),p);
+// draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+
+// // Add action up to the third input
+// label(pic, "$\vdash$",(2.00,0),p);
+// label(pic, "$q_0$",(2.50,0.00),p);
+// label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
+// label(pic, "$q_1$",(2.50,1.0),p);
+// draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+
+// // Add action after the third input
+// label(pic, "$\vdash$",(3.00,1.0),p);
+// label(pic, "$q_2$",(3.50,1.0),p);
+// label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
+// label(pic, "$q_0$",(3.50,2.00),p);
+
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
+label(pic, "\str{a}",(1,2.50));
+label(pic, "\str{a}",(2,2.50));
+label(pic, "\str{b}",(3,2.50));
+draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.55));
+label(pic, "$1$",(1.5, -0.55));
+label(pic, "$2$",(2.5, -0.55));
+label(pic, "$3$",(3.5, -0.55));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.25,-0.55));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ....... 
+
+picture pic;
+int picnum = 46;
+
+real u = 1.5cm;
+real v = 0.8cm;
+unitsize(pic,u,v);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
+setdefaultparsetreestyles();
+
+p=MAINPEN;
+// Action to left of first input
+label(pic, "$q_0$",(0.5,0),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
+label(pic, "$q_1$",(0.5,1.0),p);
+draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+
+// Add action up to second input
+label(pic, "$\vdash$",(1.00,0),p);
+label(pic, "$q_0$",(1.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+label(pic, "$q_1$",(1.50,1.0),p);
+draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+
+// // Add action up to the third input
+// label(pic, "$\vdash$",(2.00,0),p);
+// label(pic, "$q_0$",(2.50,0.00),p);
+// label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
+// label(pic, "$q_1$",(2.50,1.0),p);
+// draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+
+// // Add action after the third input
+// label(pic, "$\vdash$",(3.00,1.0),p);
+// label(pic, "$q_2$",(3.50,1.0),p);
+// label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
+// label(pic, "$q_0$",(3.50,2.00),p);
+
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
+label(pic, "\str{a}",(1,2.50));
+label(pic, "\str{a}",(2,2.50));
+label(pic, "\str{b}",(3,2.50));
+draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.55));
+label(pic, "$1$",(1.5, -0.55));
+label(pic, "$2$",(2.5, -0.55));
+label(pic, "$3$",(3.5, -0.55));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.25,-0.55));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ....... 
+
+picture pic;
+int picnum = 47;
+
+real u = 1.5cm;
+real v = 0.8cm;
+unitsize(pic,u,v);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
+setdefaultparsetreestyles();
+
+p=MAINPEN;
+// Action to left of first input
+label(pic, "$q_0$",(0.5,0),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
+label(pic, "$q_1$",(0.5,1.0),p);
+draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+
+// Add action up to second input
+label(pic, "$\vdash$",(1.00,0),p);
+label(pic, "$q_0$",(1.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+label(pic, "$q_1$",(1.50,1.0),p);
+draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+
+// Add action up to the third input
+label(pic, "$\vdash$",(2.00,0),p);
+label(pic, "$q_0$",(2.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
+label(pic, "$q_1$",(2.50,1.0),p);
+draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+
+// // Add action after the third input
+// label(pic, "$\vdash$",(3.00,1.0),p);
+// label(pic, "$q_2$",(3.50,1.0),p);
+// label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
+// label(pic, "$q_0$",(3.50,2.00),p);
+
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
+label(pic, "\str{a}",(1,2.50));
+label(pic, "\str{a}",(2,2.50));
+label(pic, "\str{b}",(3,2.50));
+draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.55));
+label(pic, "$1$",(1.5, -0.55));
+label(pic, "$2$",(2.5, -0.55));
+label(pic, "$3$",(3.5, -0.55));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.25,-0.55));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ....... 
+
+picture pic;
+int picnum = 48;
+
+real u = 1.5cm;
+real v = 0.8cm;
+unitsize(pic,u,v);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
+setdefaultparsetreestyles();
+
+p=MAINPEN;
+// Action to left of first input
+label(pic, "$q_0$",(0.5,0),p);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
+label(pic, "$q_1$",(0.5,1.0),p);
+draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+
+// Add action up to second input
+label(pic, "$\vdash$",(1.00,0),p);
+label(pic, "$q_0$",(1.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+label(pic, "$q_1$",(1.50,1.0),p);
+draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+
+// Add action up to the third input
+label(pic, "$\vdash$",(2.00,0),p);
+label(pic, "$q_0$",(2.50,0.00),p);
+label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
+label(pic, "$q_1$",(2.50,1.0),p);
+draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+
+// Add action after the third input
+label(pic, "$\vdash$",(3.00,1.0),p);
+label(pic, "$q_2$",(3.50,1.0),p);
+label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
+label(pic, "$q_0$",(3.50,2.00),p);
+
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
+label(pic, "\str{a}",(1,2.50));
+label(pic, "\str{a}",(2,2.50));
+label(pic, "\str{b}",(3,2.50));
+draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.55));
+label(pic, "$1$",(1.5, -0.55));
+label(pic, "$2$",(2.5, -0.55));
+label(pic, "$3$",(3.5, -0.55));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.25,-0.55));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+// ....... 
+
+picture pic;
+int picnum = 49;
+
+real u = 1.5cm;
+real v = 0.8cm;
+unitsize(pic,u,v);
+
+pen p;
+pen GRAYPEN = gray(0.8);
+pen GRAYSTRIPE = linewidth(0.5cm)+squarecap+gray(0.95);
+
+transform yield_t_down=shift(-1.65pt,-0.33pt)*rotate(-22.5)*shift(1.65pt,0.33pt);
+transform yield_t_up=shift(-1.65pt,-0.33pt)*rotate(60)*shift(1.65pt,0.33pt);
+transform yield_t_north=shift(0pt,0pt)*rotate(90)*shift(0pt,0pt);
+setdefaultparsetreestyles();
+
+p=MAINPEN;
+// Action to left of first input
+label(pic, "$q_0$",(0.5,0),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
+label(pic, "$q_1$",(0.5,1.0),p);
+draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+
+// Add action up to second input
+label(pic, "$\vdash$",(1.00,0),p+highlightcolor);
+label(pic, "$q_0$",(1.50,0.00),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
+label(pic, "$q_1$",(1.50,1.0),p);
+draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+
+// Add action up to the third input
+label(pic, "$\vdash$",(2.00,0),p+highlightcolor);
+label(pic, "$q_0$",(2.50,0.00),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p+highlightcolor);
+label(pic, "$q_1$",(2.50,1.0),p+highlightcolor);
+draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+
+// Add action after the third input
+label(pic, "$\vdash$",(3.00,1.0),p+highlightcolor);
+label(pic, "$q_2$",(3.50,1.0),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p+highlightcolor);
+label(pic, "$q_0$",(3.50,2.00),p+highlightcolor);
+
+// Legend at top of graphic
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
+label(pic, "\str{a}",(1,2.50));
+label(pic, "\str{a}",(2,2.50));
+label(pic, "\str{b}",(3,2.50));
+draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+// At bottom of graphic
+draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
+label(pic, "$0$",(0.5, -0.55));
+label(pic, "$1$",(1.5, -0.55));
+label(pic, "$2$",(2.5, -0.55));
+label(pic, "$3$",(3.5, -0.55));
+label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.25,-0.55));
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 

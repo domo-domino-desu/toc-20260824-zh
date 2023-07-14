@@ -5806,4 +5806,42 @@ label(pic, "\makebox[0pt][l]{\textit{Step:}}",(-0.25,-0.55));
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ========== NFSM without epsilon transitions to DFSM, minimized
+
+picture pic;
+int picnum = 50;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes 
+node s0=ncircle("$s_0$"); 
+node s1=ncircle("$s_1$",ns_accepting);  
+node s4=ncircle("$s_4$",ns_accepting);  
+node s3=ncircle("$s_3$",ns_accepting);  
+
+// calculate nodes position
+real u=1.25cm;  // horizontal  
+real v=0.8*u;  // vertical
+hlayout(1*u, s1, s4, s3);
+vlayout(-1*v, s4, s0);
+
+// draw edges
+draw(pic,
+     (s0..loop(N)).l("\str{a},\str{b}"),
+     (s1--s0).l("\str{b}"),
+     (s1--s4).l("\str{a}"),
+     (s4..loop(S)).l("\str{a}"),
+     (s4--s3).l("\str{b}"),
+     (s3--s0).l("\str{a},\str{b}")
+     );
+
+// draw nodes after edges
+draw(pic,
+     s0, s1, s4, s3
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 

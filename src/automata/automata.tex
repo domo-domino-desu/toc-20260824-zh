@@ -2614,40 +2614,41 @@ $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
 
 \begin{remark}
 Having seen a couple of examples we pause
-to again acknowledge, as we did when we discussed the angel and the
-demon, that something about nondeterminism is odd.
+to again acknowledge that something about nondeterminism is perplexing.
 If we feed $\tau=\str{010101110}$ to the prior example's listener
 then it accepts.
-After all, this is a sequence of allowed transitions.
-\begin{multline*}
-  \sequence{q_0,\str{010101110}}
-  \yields \sequence{q_0,\str{10101110}}
-  \yields \sequence{q_0,\str{0101110}}
-  \yields \sequence{q_1,\str{101110}}     \\
-  \yields \sequence{q_2,\str{01110}}    
-  \yields \sequence{q_3,\str{1110}}    
-  \yields \sequence{q_4,\str{110}}    
-  \yields \sequence{q_5,\str{10}}    
-  \yields \sequence{q_6,\str{0}}
-  \yields \sequence{q_7,\emptystring}
-\end{multline*}
-But the machine's chain of states
-is set up for the string \str{0101110} that begins with two
+% After all, this is a sequence of allowed transitions.
+% \begin{multline*}
+%   \sequence{q_0,\str{010101110}}
+%   \yields \sequence{q_0,\str{10101110}}
+%   \yields \sequence{q_0,\str{0101110}}
+%   \yields \sequence{q_1,\str{101110}}     \\
+%   \yields \sequence{q_2,\str{01110}}    
+%   \yields \sequence{q_3,\str{1110}}    
+%   \yields \sequence{q_4,\str{110}}    
+%   \yields \sequence{q_5,\str{10}}    
+%   \yields \sequence{q_6,\str{0}}
+%   \yields \sequence{q_7,\emptystring}
+% \end{multline*}
+But it
+is set up for a string that begins with two
 sets of \str{01}'s,  while~$\tau$ begins with three.
 How can a mechanism guess that it should ignore
 the first~\str{01} but act on the second?
-Of course, in mathematics
-we can consider whatever we can define precisely
-nut we have so far stuck to
+In mathematics
+we can consider whatever we can make precise,
+but we have so far stuck to
 devices that are in principle physically realizable.
 So this may seem to be a shift. 
 
 It is not.
-We will close this section by showing 
+After doing one more machine variation, this section closes
+by showing 
 how to convert any nondeterministic Finite State
 machine into a deterministic one that does the same job.
 So we can take a nondeterministic Finite State machine
-to be an abbreviation, a shorthand, a convenience.
+to be an abbreviation, a shorthand, a convenience, a way of 
+alternatively specifying a deterministic machine.
 This obviates at least some of the paradox of guessing.
 \end{remark}
 
@@ -2713,26 +2714,55 @@ all without consuming any input.
 \end{center}
 This sequence
 shows that it accepts~\str{abc}
-(note the $\varepsilon$~transition between $q_2$ and~$q_3$).
+(note the $\varepsilon$~transition between $q_2$ and~$q_3$),
+and also~\str{d}.
 \begin{equation*}
+  \begin{array}{l}
   \sequence{q_0,\str{abc}}
   \yields \sequence{q_1,\str{bc}}
   \yields \sequence{q_2,\str{c}}
   \yields \sequence{q_3,\str{c}}
-  \yields \sequence{q_4,\emptystring}     
-\end{equation*}
-It also accepts the input string~\str{d}.
-\begin{equation*}
+  \yields \sequence{q_4,\emptystring}   \\[0.75ex]     
   \sequence{q_0,\str{d}}
   \yields \sequence{q_5,\str{d}}
-  \yields \sequence{q_6,\emptystring}     
+  \yields \sequence{q_6,\emptystring}    
+  \end{array}
 \end{equation*}
 This machine's language is
 $\lang=\set{\str{abc},\str{abd},\str{c}, \str{d}}$.
 \end{example}
 
+\begin{example}
+For this nondeterministic
+Finite State machine with $\varepsilon$ transitions
+% \begin{center}
+%     \includegraphics{automata/asy/nfsm/nfsm1044.pdf}
+% \end{center}
+the computation tree on input \str{aab} is below.
+\ifbool{MakingPaperCopy}{%
+  \begin{fig}{Computation tree for a nondeterministic machine with $\varepsilon$ moves.} 
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1049.pdf}}
+    \label{anim:NondeterministicWithEpsilonComputationTree}
+  \end{fig}
+}{%
+  \begin{animatedfigure}{Computation tree for a nondeterministic machine with $\varepsilon$ moves.} 
+    \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1044.pdf}}
+    \qquad
+    \vcenteredhbox{\animategraphics[poster=last]{3}{automata/asy/nfsm/nfsm}{1045}{1049}}
+    \label{anim:NondeterministicWithEpsilonComputationTree}
+  \end{animatedfigure}
+}
+At each step we can think of the machine as being in all of the states inside
+of the white stripe.
+So at step~$0$ the machine is in both $q_0$ and~$q_1$.
+At step~$3$ it is in both $q_0$ and~$q_2$.
+That step exhausts the tape and $q_0$ is accepting so
+the machine accepts its input. 
+\end{example}
+
+\medskip
 One reason to consider $\varepsilon$~transitions is that
-they can make manipulating Finite State machines much easier.
+they can simplify building Finite State machines.
 
 \begin{example}  \label{ex:NFSMJoinParallel}
 An $\varepsilon$ transition can put two machines together with a
@@ -2814,15 +2844,89 @@ $\set{(\str{ab})^n\suchthat n\in\N}$.
 \end{example}
 
 \medskip
-We now describe the action of these machines.
-This differs from from
-page~\pageref{page:DefnYieldsNondeterministicFSM}'s description 
-of the action of nondeterministic machines without $\varepsilon$~transitions 
-only a little, so we will be brief.
+Before we describe the action of these machines we first need 
+a definition.
+%<*df:EpsilonClosurei>
+The \definend{$\varepsilon$~closure} function 
+$\map{\hat{E}}{Q}{\powerset (Q)}$\index{epsilon closure@$\varepsilon$ closure} 
+inputs a state~$q$ and returns
+the set of states that are reachable from~$q$ without consuming
+any input.
+%</df:EpsilonClosurei>
+
+\begin{example}  \label{ex:FindEpsilonClosureInSteps}
+We can compute a state's $\varepsilon$~closure in steps.
+This uses \cref{ex:TwoOrMoreEpsilonTrans}'s 
+machine.
+%<*df:EpsilonClosureii>
+\begin{center} \small
+  \begin{tabular}{r|*{4}{c}c}
+    \multicolumn{1}{r}{\ }
+      &\multicolumn{1}{c}{$m=0$}
+      &\multicolumn{1}{c}{$1$}
+      &\multicolumn{1}{c}{$2$}
+      &\multicolumn{1}{c}{$3$}  
+      &\multicolumn{1}{c}{$\hat{E}(q)$}  \\
+     \cline{2-6}
+     $q_0$ &$\set{q_0}$ &$\set{q_0,q_2}$ &$\set{q_0,q_2,q_3,q_5}$ 
+           &$\set{q_0,q_2,q_3,q_5}$ &$\set{q_0,q_2,q_3,q_5}$ \\
+     $q_1$ &$\set{q_1}$ &$\set{q_1}$ &$\set{q_1}$ 
+           &$\set{q_1}$ &$\set{q_1}$ \\
+     $q_2$ &$\set{q_2}$ &$\set{q_2,q_3,q_5}$ &$\set{q_2,q_3,q_5}$ 
+           &$\set{q_2,q_3,q_5}$ &$\set{q_2,q_3,q_5}$ \\
+     $q_3$ &$\set{q_3}$ &$\set{q_3}$ &$\set{q_3}$ 
+           &$\set{q_3}$ &$\set{q_3}$ \\
+     $q_4$ &$\set{q_4}$ &$\set{q_4}$ &$\set{q_4}$ 
+           &$\set{q_4}$ &$\set{q_4}$ \\
+     $q_5$ &$\set{q_5}$ &$\set{q_5}$ &$\set{q_5}$ 
+           &$\set{q_5}$ &$\set{q_5}$ \\
+  \end{tabular}
+\end{center}
+The initial column's set contains only the row's state.
+To move to column $1$, add the states reachable with one 
+$\varepsilon$ move from the initial state.
+For example, 
+for the first and second entries in the first row, that machine
+has an $\varepsilon$~move from $q_0$ to~$q_2$ so to the set we've added~$q_2$. 
+To move to column~$2$, add states reachable with
+an $\varepsilon$~move from any element of column~$1$'s set
+(which are thus at most two $\varepsilon$ moves away from the initial state).
+Doing the same for the third column does not change the sets in any row,
+so we are done. 
+%</df:EpsilonClosureii>
+\end{example}
+
+%<*disc:EpsilonClosurei>
+More formally, construct $\hat{E}$ by first defining
+$\map{E}{Q\times\N}{\powerset (Q)}$, where the above table shows $E(q,m)$
+for its machine. 
+Start with 
+$E(q,0)=\set{q}$. 
+Then for $m>0$, where  
+$E(q,m)=\set{q_{m_0},\ldots q_{m_k}}$,
+set $E(q,m+1)=E(q,m)\cup \Delta(q_{m_0},\varepsilon)\cup
+                         \cdots\cup\Delta(q_{m_k},\varepsilon)$.
+The resulting sets are nested,
+$E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\;$.
+There are only finitely many states in~$Q$ so 
+for any initial $q$ there must be an $m_q\in\N$
+where the sequence of sets stops growing,
+$E(q,m_q\,)= E(q,m_q+1)= \cdots\,$ (in the example above, for $q=q_0$ 
+this happens at~$m=2$).
+Then the $\varepsilon$~closure is the limit,
+$\hat{E}(q)=E(q,m_q)$.\index{epsilon closure@$\varepsilon$ closure}
+%</disc:EpsilonClosurei>
+
+%<*disc:EpsilonClosureii>
+With that definition we can detail the action of these machines.
+% This differs from
+% page~\pageref{page:DefnYieldsNondeterministicFSM}'s description 
+% of the action of nondeterministic machines without $\varepsilon$~transitions 
+% only a little, so we will be brief.
 A
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
-is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}$ and
-machines start in an
+is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}$. 
+Machines start in an
 \definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
 $\mathcal{C}_0=\sequence{q_0,\tau_0}$, with
 \definend{initial state}~$q_0$\index{initial state}\index{nondeterministic Finite State machine!initial state} 
@@ -2851,8 +2955,10 @@ where
   A fine point, to be sure.},
 and $\hat{q}$ is a member of $\Delta(q,c)$.
 (2)~This differs from the earlier description:~$\hat{\tau}=\tau$ 
-and $\hat{q}$ is a member of $\Delta(q,\varepsilon)$ 
-(in particular, with $\hat{\tau}=\tau$, no character of the input is consumed).
+and $\hat{q}$ is a member of the $\varepsilon$ closure $\hat{E}(q)$
+with $\hat{q}\neq q$ 
+(the significance of $\hat{\tau}=\tau$ is that the machine doesn't consume 
+any input characters).
 
 Now assume that in  $\mathcal{C}_s=\sequence{q,\tau_s}$ 
 the string $\tau_s$ is empty. 
@@ -2880,83 +2986,21 @@ if there is at least one such sequence where $q_h$ is an element of~$F$.
 If there is no such sequence then the machine  
 \definend{rejects}~$\tau_0$.\index{reject an input}\index{nondeterministic Finite State machine!reject string}
 
-There is an alternative way to describe of the action of 
-these machines which uses two definitions that we are going to need anyway.
-It is an enlightening addition so 
-we will include it after we next give those definitions.
+% \begin{remark}
+% We can define when a string is accepted is a way that is different than 
+% the prior paragraph.
+% Its disadvantage is that it may seem disconnected from the computational
+% details but it can nontheless
+% be enlightening:~a
+% nondeterministic machine with $\varepsilon$~transitions
+% accepts\index{accept an input}\index{Finite State machine!accept string}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
+% a string $\tau_0\in\kleenestar{\Sigma}$ 
+% if any of the members of
+% $\extended{\Delta}(q_0,\tau_0)$ is a final state.
+% \end{remark}
+%</disc:EpsilonClosureii>
 
-%<*df:EpsilonClosurei>
-The \definend{$\varepsilon$~closure} function 
-$\map{\hat{E}}{Q}{\powerset (Q)}$\index{epsilon closure@$\varepsilon$ closure} 
-inputs a state~$q$ and returns
-the set of states that are reachable from~$q$ without consuming
-any input.
-%</df:EpsilonClosurei>
-
-\begin{example}  \label{ex:FindEpsilonClosureInSteps}
-We can compute a state's $\varepsilon$~closure by proceeding in steps.
-The table uses \cref{ex:TwoOrMoreEpsilonTrans}'s 
-machine.
-%<*df:EpsilonClosureii>
-\begin{center} \small
-  \begin{tabular}{r|*{4}{c}c}
-    \multicolumn{1}{r}{\ }
-      &\multicolumn{1}{c}{$m=0$}
-      &\multicolumn{1}{c}{$1$}
-      &\multicolumn{1}{c}{$2$}
-      &\multicolumn{1}{c}{$3$}  
-      &\multicolumn{1}{c}{$\hat{E}(q)$}  \\
-     \cline{2-6}
-     $q_0$ &$\set{q_0}$ &$\set{q_0,q_2}$ &$\set{q_0,q_2,q_3,q_5}$ 
-           &$\set{q_0,q_2,q_3,q_5}$ &$\set{q_0,q_2,q_3,q_5}$ \\
-     $q_1$ &$\set{q_1}$ &$\set{q_1}$ &$\set{q_1}$ 
-           &$\set{q_1}$ &$\set{q_1}$ \\
-     $q_2$ &$\set{q_2}$ &$\set{q_2,q_3,q_5}$ &$\set{q_2,q_3,q_5}$ 
-           &$\set{q_2,q_3,q_5}$ &$\set{q_2,q_3,q_5}$ \\
-     $q_3$ &$\set{q_3}$ &$\set{q_3}$ &$\set{q_3}$ 
-           &$\set{q_3}$ &$\set{q_3}$ \\
-     $q_4$ &$\set{q_4}$ &$\set{q_4}$ &$\set{q_4}$ 
-           &$\set{q_4}$ &$\set{q_4}$ \\
-     $q_5$ &$\set{q_5}$ &$\set{q_5}$ &$\set{q_5}$ 
-           &$\set{q_5}$ &$\set{q_5}$ \\
-  \end{tabular}
-\end{center}
-The initial column's set contains the state.
-To go from column $m=0$ to $1$, add the states reachable with one 
-$\varepsilon$ move from the row's state.
-Thus, for the first and second entries in the table's first row, that machine
-has an $\varepsilon$~move from $q_0$ to~$q_2$. 
-To get to column~$2$, add the states reachable with
-an $\varepsilon$~move from any element of column~$1$'s set.
-Doing the same for the third column does not change the sets in any row,
-so we are done. 
-%</df:EpsilonClosureii>
-\end{example}
-
-\medskip
-%<*disc:EpsilonClosurei>
-More formally, construct $\hat{E}$ by first defining
-$\map{E}{Q\times\N}{\powerset (Q)}$, where the above table shows $E(q,m)$
-for its machine. 
-Start with 
-$E(q,0)=\set{q}$. 
-Then for $m>0$, where  
-$E(q,m)=\set{q_{m_0},\ldots q_{m_k}}$,
-set $E(q,m+1)=E(q,m)\cup \Delta(q_{m_0},\varepsilon)\cup
-                         \cdots\cup\Delta(q_{m_k},\varepsilon)$.
-The resulting sets are nested,
-$E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\;$.
-There are only finitely many states in~$Q$ so 
-for any $q$ there must be an $m_q\in\N$
-where the sequence of sets stops growing,
-$E(q,m_q\,)= E(q,m_q+1)= \cdots\,$ (in the example above, for $q=q_0$ 
-this happens at~$m=2$).
-Then the $\varepsilon$~closure is the limit,
-$\hat{E}(q)=E(q,m_q)$.\index{epsilon closure@$\varepsilon$ closure}
-%</disc:EpsilonClosurei>
-
-%<*disc:EpsilonClosureii>
-Using that, we can adapt the definition of the 
+To finish we can define the 
 \definend{extended transition function~$\map{\extended{\Delta}}{Q\times\kleenestar{\Sigma}}{Q}$}\index{extended transition function!for nondeterministic Finite State machines}\index{transition function!extended} 
 % from \cpageref{discussion:NFSMStringAcceptance} 
 to suit the new machine type.
@@ -2970,17 +3014,6 @@ $
   \extended{\Delta}(q,\tau\concat c)=
   \hat{E}(\Delta(q_{i_0},c))\cup\cdots \cup\hat{E}(\Delta(q_{i_k},c))
 $.
-
-With those two definitions, an alternate way to define which strings 
-these machines accept is:~a
-nondeterministic machine with $\varepsilon$~transitions
-accepts\index{accept an input}\index{Finite State machine!accept string}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
-a string $\tau_0\in\kleenestar{\Sigma}$ 
-if any of the members of
-$\extended{\Delta}(q_0,\tau_0)$ is a final state.
-%</disc:EpsilonClosureii>
-
-
 \index{epsilon transitions@$\varepsilon$ transitions|)}
 
 

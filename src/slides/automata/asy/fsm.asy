@@ -438,6 +438,115 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== DFSM from NFSM ================
+picture pic;
+int picnum = 10;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$s_0$");
+node q1=ncircle("$s_1$");
+node q2=ncircle("$s_2$");
+node q3=ncircle("$s_3$",ns_accepting);
+node q4=ncircle("$s_4$");
+node q5=ncircle("$s_5$",ns_accepting);
+node q6=ncircle("$s_6$",ns_accepting);
+node q7=ncircle("$s_7$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v, q1, q7);
+layout(-30.0, 1*u, q1, q4);
+hlayout(2*u, q7, q5);
+hlayout(1*u, q5, q2);
+vlayout(-1*v, q4, q0);
+hlayout(1*u, q0, q3, q6);
+
+// edges
+draw(pic,
+     (q0..loop(W)).l("\str{0},\str{1}"),
+     (q1..loop(W)).l("\str{0}"),
+     (q1--q4).l("\str{1}"),
+     (q2--q0).l("\str{0}"),
+     (q2--q5).l("\str{1}"),
+     (q3..loop(N)).l("\str{0}"),
+     (q3--q0).l("\str{1}"),
+     (q4..bend..q1).l("\str{0}"),
+     (q4--q7).l("\str{1}"),
+     (q5..loop(S)).l("\str{0}"),
+     (q5--q4).l("\str{1}"),
+     (q6--q3).l("\str{0}"),
+     (q6--q5).l("\str{1}"),
+     (q7--q5).l("\str{0}"),
+     (q7..loop(W)).l("\str{1}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, q3, q4, q5, q6, q7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ......... Only reachable states ......
+picture pic;
+int picnum = 11;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+// node q0=ncircle("$s_0$");
+// node q1=ncircle("$s_1$");
+// node q2=ncircle("$s_2$");
+// node q3=ncircle("$s_3$",ns_accepting);
+// node q4=ncircle("$s_4$");
+// node q5=ncircle("$s_5$",ns_accepting);
+// node q6=ncircle("$s_6$",ns_accepting);
+// node q7=ncircle("$s_7$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v, q1, q7);
+layout(-30.0, 1*u, q1, q4);
+hlayout(2*u, q7, q5);
+// hlayout(1*u, q5, q2);
+// vlayout(-1*v, q4, q0);
+// hlayout(1*u, q0, q3, q6);
+
+// edges
+draw(pic,
+     // (q0..loop(W)).l("\str{0},\str{1}"),
+     (q1..loop(W)).l("\str{0}"),
+     (q1--q4).l("\str{1}"),
+     // (q2--q0).l("\str{0}"),
+     // (q2--q5).l("\str{1}"),
+     // (q3..loop(N)).l("\str{0}"),
+     // (q3--q0).l("\str{1}"),
+     (q4..bend..q1).l("\str{0}"),
+     (q4--q7).l("\str{1}"),
+     (q5..loop(S)).l("\str{0}"),
+     (q5--q4).l("\str{1}"),
+     // (q6--q3).l("\str{0}"),
+     // (q6--q5).l("\str{1}"),
+     (q7--q5).l("\str{0}"),
+     (q7..loop(W)).l("\str{1}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q1, q4, q5, q7);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

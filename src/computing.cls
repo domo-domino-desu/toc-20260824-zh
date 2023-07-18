@@ -60,7 +60,7 @@
                 textheight=\dimexpr9.25in-2\dimexpr60pt\relax, % \paperheight and \topmargin don't work here
                 headsep=12pt,
                 bindingoffset=0.4in,
-                % showframe,  % show lines for the margins
+                showframe,  % show lines for the margins
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}
@@ -276,13 +276,13 @@
 %%%%%%%%%%%%%%%%%
 % Parts 
 \renewcommand{\part}[1]{\clearemptydoublepage\thispagestyle{bookemptypage}%
-  \vspace*{\fill}%
+  \vspace*{\stretch{1}}%
   \refstepcounter{part}
   \begin{center}
     \normalfont\Large{\color{boldcolor}Part \thepart} \\[1.25ex]
     \LARGE #1
   \end{center}
-  \vspace*{\fill}%
+  \vspace*{\stretch{1.5}}%
 }
 \usepackage{fmtcount}  % Display the part number as an English word "One"
 \renewcommand{\thepart}{\Numberstring{part}}
@@ -1389,14 +1389,14 @@
   %               includeheadfoot}
   \setlength{\headwidth}{\textwidth}
   \parindent 0pt
-  \parskip=1ex plus 0.2ex minus 0.1ex %
+  \parskip=0.25ex plus 0.1ex minus 0.05ex %
   % \def\enotesize{\normalsize}
   % \renewcommand{\sectiontitlecontents}[1]{\relax} % Cause the "Section One.II" not to printed.
   \vspace*{0.25ex plus 0.02ex}
   \pagestyle{endmatter}\thispagestyle{bookemptypage}%
   % \cleartoleftpage
   {\small\input{#1}}
-  \restoregeometry  % Matches the \newgeometry after the \begingroup
+  % \restoregeometry  % Matches the \newgeometry after the \begingroup
   \endgroup
 }
 

@@ -34,7 +34,8 @@
 
 % This must be early in the class file to avoid an option clash
 \usepackage[hyphens]{url}  % allow splitting at hyphens
-% \usepackage[hyphens]{xurl}  % 2022-Jun-05
+% \g@addto@macro{\UrlBreaks}{\UrlOrds} % allow break at ord chars; https://tex.stackexchange.com/a/10419/339 
+\usepackage[hyphens]{xurl}  % 2022-Jun-05; allow break at any char
 
 % Get RaggedRight
 \usepackage{ragged2e}
@@ -60,7 +61,7 @@
                 textheight=\dimexpr9.25in-2\dimexpr60pt\relax, % \paperheight and \topmargin don't work here
                 headsep=12pt,
                 bindingoffset=0.4in,
-                showframe,  % show lines for the margins
+                % showframe,  % show lines for the margins
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}
@@ -1264,7 +1265,7 @@
 \renewcommand{\makeenmark}{\relax} % leave no mark
 \newcommand{\citeadd}[1]{\addtoendnotes{#1}}
 
-\renewcommand{\notesname}{End notes}
+\renewcommand{\notesname}{Endnotes}
 % \renewcommand{\notesname}{\relax}
 
 \usepackage{hanging} % make cited text be in hanging indented paragraphs

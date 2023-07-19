@@ -1,22 +1,22 @@
 % \chapteropen[\href{http://en.wikipedia.org/wiki/Plimpton_322}{Babylonian tablet, 1800~BCE, showing a set of Pythagorean triples.  The set of all such triples is a language of great interest.}]{languages/pix/plimpton322.png}{Languages}
-\chapteropen[\href{https://en.wikipedia.org/wiki/Tower_of_Babel}{\textit{The Tower of Babel}, by Pieter Bruegel the Elder (1563)}]{languages/pix/babel.jpg}{Languages}
+\chapteropen[\href{https://en.wikipedia.org/wiki/Tower_of_Babel}{\textit{The Tower of Babel}, by Pieter Bruegel the Elder (1563)}]{languages/pix/babel.jpg}{Languages and graphs}
 % https://upload.wikimedia.org/wikipedia/commons/5/50/Pieter_Bruegel_the_Elder_-_The_Tower_of_Babel_%28Vienna%29_-_Google_Art_Project.jpg
 Turing machines input strings and output strings, sequences of tape symbols.
 So a natural way to work is to represent a problem as a string,
 put it on the tape, run a computation, and end with
 the solution as a string.
-
-Everyday computers work the same way.
-Consider a program that finds the shortest driving distance
-between cities.   
-% Perhaps it works with a map of the country idealized as a
-% a collection of nodes and edges, intersections and the roads joining them.
-Probably we work by inputting the map distances as a strings of symbols,
-probably bitstrings, and
-inputting the desired two cities as two strings,
-and after running the program we have the output
+The same happens in everyday programming.
+A program to finds the shortest driving distance
+between cities   
+probably inputs the map distances as a bitstrings,
+does the same for the desired two cities,
+and then gives the
 directions as a string.
-So strings, and collections of strings, are essential.
+
+As to graphs, they are the vocabulary in which 
+we will state many of the problems that we 
+look to solve.
+
 
 
 % ===============================================================
@@ -3154,8 +3154,10 @@ If it contains all of the vertices then it is a
 %</def:GraphCircuit>
 
 \begin{example}
-The graph on the right of \cref{ex:TwoWalkGraphs} is a Hamiltonian circuit
-but not an Euler circuit.
+In \cref{ex:TwoWalkGraphs}
+the path in the graph on the left is not a circuit because it is not closed. 
+The path in the graph on the right is a Hamiltonian circuit
+but it is not an Euler circuit.
 \end{example}
 
 %<*def:Subgraph>
@@ -3191,33 +3193,28 @@ $\mathcal{E}\cup\set{u_0u_3}$.
 % of a computation by a machine.
 % Such a graph may have infinitely many nodes, for instance if there 
 % is a branch that does not halt.
-We will need this result in Chapter Five.
+We will need the next result in Chapter Five.
 
 \begin{lemma}[K\"{o}nig's lemma]\index{Konig's lemma@K\"{o}nig's lemma}\label{lem:KonigsLemma}
-  Suppose that in a connected tree each
+  Suppose that in a connected graph each vertex
   is adjacent to only finitely many
   other vertices.
-  If it has infinitely many vertices then
+  If the graph has infinitely many vertices then
   it has an infinite path.  % converse as exercise?
 \end{lemma}
 
 \begin{proof}
 Fix a vertex~$v_0$.
-The tree is connected so starting at $v_0$ we can reach every other vertex via
+The graph is connected, so starting at $v_0$ we can reach every other vertex via
 some path.
-For each of $v_0$'s neighbors $v$, let the set of vertices
-that can be reached by a path from~$v$ that does not go through~$v_0$
-be~$R_v$.
-At least one of these $R_v$ must contain infinitely many such vertices
-or else the set of graph nodes 
-would be the union of the finitely many finite sets~$R_v$ 
-(along with $\set{v_0}$).
-Pick one such neighbor and call it~$v_1$.
-Iterating gives an infinite path 
-$\sequence{v_0,v_1,\ldots{}}$.  
+For each of $v_0$'s neighbors $v$, there is a set of vertices
+that can be reached from $v_0$ via a path through~$v$.
+The graph has infinitely many vertices so for at least one such
+$v$ this set is infinite.
+Call one such neighbor~$v_1$. 
+Iterate to find a similar $v_2$ adjacent to $v_1$, etc.,\ 
+to get the infinite path $\sequence{v_0,v_1,v_2,\ldots{}}$.  
 \end{proof}
-
-
 \index{graph!traversal|)}
 
 
@@ -3227,17 +3224,18 @@ $\sequence{v_0,v_1,\ldots{}}$.
 
 
 \subsection{Graph representation}\index{graph!representation|(}
-We can represent graphs in a computer with reasonable efficiency.
-A common way to 
-\citetext{represent a graph}{%
+We can 
+\citetext{represent graphs}{%
   \Cref{ex:SimpleGraphFiveVert} make the point that a graph 
   is about the connections between vertices, not about how it is drawn. 
   This graph representation via a matrix
   also illustrates that point because it is, after all, not drawn.} 
+in a computer with reasonable efficiency.
+A simple and common way
 is with a matrix.
 This example represents \cref{ex:SimpleGraphFiveVert}'s graph:
 it has a~$1$ in the $i,j$~entry if the graph has an edge from $v_i$ to~$v_j$
-and a~$0$ otherwise.
+and a~$0$ if there is no such edge.
 \begin{equation*}
   \mathcal{M}(\mathcal{G})=
   \begin{blockarray}{*{6}{c}}
@@ -3253,6 +3251,20 @@ and a~$0$ otherwise.
   \tag{$*$}
 \end{equation*}
 
+We can extend this to cover other graph variants that were listed earlier.
+For instance, the graph represented in ($*$)
+is a simple graph because the matrix has only $0$ and~$1$ entries,
+because all the diagonal entries are~$0$,
+and because the matrix is symmetric, meaning that the $i,j$ entry has 
+a~$1$ if and only if the $j,i$ entry is also~$1$.
+If the graph is directed and has a one-way edge from $v_i$ to~$v_j$
+then the $i,j$ entry records that edge but the $j,i$ entry does not. 
+If the graph is 
+a multigraph, where there can be multiple edges from one vertex to 
+another, the associated entry can be larger than~$1$.
+And, if the graph has a loop then the matrix has 
+a diagonal entry that is an integer larger than zero.
+
 %<*def:AdjacencyMatrix>
 \begin{definition}
 For a graph~$\mathcal{G}$, the
@@ -3262,19 +3274,6 @@ representing the graph has $i,j$ entries equal to
 the number of edges from $v_i$ to~$v_j$.
 \end{definition}
 %</def:AdjacencyMatrix>
-
-This definition covers graph variants that were listed earlier.
-For instance, the graph represented in ($*$)
-is a simple graph because the matrix has only $0$ and~$1$ entries,
-because all the diagonal entries are~$0$,
-and because the matrix is symmetric, meaning that the $i,j$ entry has 
-a~$1$ if and only if the $j,i$ entry is also~$1$.
-If a graph has a loop then the matrix has 
-a diagonal entry that is a positive integer.
-If the graph is directed and has a one-way edge from $v_i$ to~$v_j$
-then the $i,j$ entry records that edge but the $j,i$ entry does not. 
-And for a multigraph, where there are multiple edges from one vertex to 
-another, the associated entry will be larger than~$1$.
 
 %<*lem:MatrixPowersAdjacencyMatrix>
 \begin{lemma} \label{lem:MatPowerPatahsLengthN}

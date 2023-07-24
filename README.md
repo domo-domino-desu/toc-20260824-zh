@@ -22,11 +22,15 @@ their own.
 You can download [the book](https://joshua.smcvt.edu/computation/book.pdf)
 and [the answers](https://joshua.smcvt.edu/computation/answers.pdf).
 
+You can also get a paper copy from Amazon.  See the homepage.
+
 
 
 ## Status
 
-This is version 1.0. I have used it in class from 2018 through 2022.
+This is version 1.10. I have used it in class from 2018 through 2022 and a
+couple of other people have used it in their class.  I have uploaded a
+version to Amazon.
 
 
 
@@ -60,4 +64,6 @@ you can see INSTALL.  But really, just use the supplied PDF.
 2022-Jan-21  JH Text is getting a final in-class use before being
   set to version 1.0.  
 2022-May-20  JH Run-up to 1.0: got asy to work on recent OS install.  
-2022-Jul-19  JH Version 1.0.  
+2022-Jul-19  JH Version 1.0.
+2023-Jul-24  JH Version 1.10, incorporating feedback from other teachers
+  and includes paper copy.

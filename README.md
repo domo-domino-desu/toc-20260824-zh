@@ -49,7 +49,8 @@ bug reports.  Reach me via the contact link on the home page.
 ## Source
 
 This is made with LaTeX and related programs.  To compile the source files
-you can see INSTALL.  But really, just use the supplied PDF.
+you can see INSTALL.  But the chance is 99.999% that you just want the
+supplied PDF; see the home page.
 
 
 ## History
@@ -64,6 +65,6 @@ you can see INSTALL.  But really, just use the supplied PDF.
 2022-Jan-21  JH Text is getting a final in-class use before being
   set to version 1.0.  
 2022-May-20  JH Run-up to 1.0: got asy to work on recent OS install.  
-2022-Jul-19  JH Version 1.0.
+2022-Jul-19  JH Version 1.0. 
 2023-Jul-24  JH Version 1.10, incorporating feedback from other teachers
-  and includes paper copy.
+  and providing a paper copy.

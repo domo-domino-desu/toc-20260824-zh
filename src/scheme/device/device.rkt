@@ -32,11 +32,15 @@
 ;; Show a set in a readable way
 ;; The optional argument allows you to format the elements 
 (define (set->string s [elet->string (lambda (x) (format "~a" x))])
-  (string-join (map elet->string (set->list s)) #:before-first "{ " #:after-last " }"))
+  (string-join (map elet->string (set->list s))
+               #:before-first "{ "
+               #:after-last " }"))
 
 
 ;; ===== POWER-MAP
-;; All three of delta maps, epsilon maps, and epsilon closure maps send keys to sets of values.
+;; All three of delta maps, epsilon maps, and epsilon closure maps send keys
+;;   to sets of values.
+
 
 ;; void -> hash
 ;; Make a new finite function key -> set of values
@@ -44,7 +48,8 @@
   (make-hash))
 
 ;; list, list -> void
-;; Add the value to the set that is power-map[k], or if no set there create a new set containing v
+;; Add the value to the set that is power-map[k], or if no set there
+;; create a new set containing v
 (define (power-map-set! power-map k v)
   (if (member k (hash-keys power-map))
       (set-add! (hash-ref power-map k) v)
@@ -61,12 +66,15 @@
 ;; hash -> string
 ;; Show a power-map in a readable way
 ;; The optional arguments allow you to format the key and the value
-(define (power-map->string power-map [key->string (lambda (x) (format "~a" x))] [value->string (lambda (x) (format "~a" x))])
+(define (power-map->string power-map
+                           [key->string (lambda (x) (format "~a" x))]
+                           [value->string (lambda (x) (format "~a" x))])
   (let* ([keys (hash-keys power-map)])
     (apply string-append (for/list ([k keys])
                            (format "~a -> ~a\n"
                                    (key->string k)
-                                   (set->string (hash-ref power-map k) value->string))))))
+                                   (set->string (hash-ref power-map k)
+                                                value->string))))))
 
 (provide power-map-make
          power-map-set!
@@ -86,7 +94,8 @@
   (power-map-make))
 
 ;; list, list -> void
-;; Add the value to the set that is delta-map[k], or create a new set if none there
+;; Add the value to the set that is delta-map[k], or create a new set if
+;; none there
 (define (delta-map-set! delta-map key value)
   (power-map-set! delta-map key value))
 
@@ -114,8 +123,9 @@
 
 
 ;; ===== EPSILON MAP
-;; Finite function mapping a state numbers to sets of state numbers.  The meaning is that there
-;; is an epsilon transision from the input state to all states in the output set.  
+;; Finite function mapping a state numbers to sets of state numbers.  The
+;; meaning is that there is an epsilon transision from the input state to
+;; all states in the output set.  
 
 ;; void -> hash
 ;; Make a new epsilon map
@@ -148,12 +158,15 @@
     (for ([q all-states])
       (power-map-set! epsilon-closure q q))
     ; (printf "epsilon-closure-make epsilon-closure initial ~s\n" epsilon-closure)
-    ; Now where E(q,i)={q_i0, .. q_ik}, set E(q,i+1)= E(q,i) union Delta(q_i0,epsilon) union ... Delta(q_ik,epsilon)
+    ; Now where E(q,i)={q_i0, .. q_ik}, set
+    ;   E(q,i+1)= E(q,i) union Delta(q_i0,epsilon)
+    ;                    union ... Delta(q_ik,epsilon)
     ; Keep it up until i is such that for all q we have E(q,i)=E(q,i+1)
     (let ([change-flag #t])
       (do ([i 1 (+ 1 i)])
         ((or (> i (length all-states)) (not change-flag))
-         (when change-flag (printf "ERROR: Epsilon closure took too many steps ~a\n" i)))
+         (when change-flag
+           (printf "ERROR: Epsilon closure took too many steps ~a\n" i)))
         (set! change-flag #f)
         (for ([q all-states])
           ; (printf "epsilon-closure-make q=~s\n  (power-map-get epsilon-closure q)=~s\n" q (power-map-get epsilon-closure q))
@@ -185,8 +198,9 @@
 (struct tapestruct (left current right) #:transparent #:mutable)
 
 ; list of strings  ->  tapestruct
-; Make a tape structure. If there are tape tokens then the I/O head points to the first one
-; while the rest are on the right tape.  Otherwise the I/O head points to BLANK.
+; Make a tape structure. If there are tape tokens then the I/O head points
+; to the first one while the rest are on the right tape.  Otherwise the
+; I/O head points to BLANK.
 (define (make-tape . tape-tokens)
   ; (printf "make-tape: tape-tokens are ~s\n" tape-tokens)
   (let ([tape (tapestruct '() BLANK '())])
@@ -236,7 +250,10 @@
   (let ([tape-left (get-tape-left tape)]
         [tape-current (get-tape-current tape)]
         [tape-right (get-tape-right tape)])
-    (set-tape! tape (trim-left-tape tape-left) tape-current (trim-right-tape tape-right))))
+    (set-tape! tape
+               (trim-left-tape tape-left)
+               tape-current
+               (trim-right-tape tape-right))))
 
 ;; tape -> tape
 ;; Return a new tape where the head has been moved right on the tape structure.  Same as moving the tape left.
@@ -270,7 +287,8 @@
     ))
 
 ;; tape -> tape
-;; Return a new tape where there is a new token being pointed to by the I/O head
+;; Return a new tape where there is a new token being pointed to by the
+;; I/O head
 (define (change-head-token tape new-tape-current)
   (let* ([tape-left (get-tape-left tape)]
          [tape-right (get-tape-right tape)])
@@ -278,7 +296,8 @@
     ))
 
 ; tapestruct -> string
-; Show the tape with characters space-separated.  The I/O head's location is surrounded by *'s.
+; Show the tape with characters space-separated.  The I/O head's location
+; is surrounded by *'s.
 (define (tape->string tape
                       #:show-current-blank [show-current-blank #f] ; if current is " " then show B
                       #:show-all-blank [show-all-blank #f])   ; translate all " "'s to B's
@@ -290,10 +309,12 @@
        (when (equal? current-string " ")
          (set! current-string BLANK))]
       [show-all-blank
-       (set! left-string (apply string-append (map (lambda (x) (if (equal? x " ") BLANK x))
-                                                   (tapestruct-left tape))))
-       (set! right-string (apply string-append (map (lambda (x) (if (equal? x " ") BLANK x))
-                                                    (tapestruct-right tape))))
+       (set! left-string (apply string-append
+                                (map (lambda (x) (if (equal? x " ") BLANK x))
+                                     (tapestruct-left tape))))
+       (set! right-string (apply string-append
+                                 (map (lambda (x) (if (equal? x " ") BLANK x))
+                                      (tapestruct-right tape))))
        (when (equal? current-string " ")
          (set! current-string BLANK))])
     (string-append left-string
@@ -336,7 +357,8 @@
       (cdr stack-list)))
 
 ; stack-list ->  string or STACK-EXHAUSTED
-; Name top token on the stack, without popping.  Return STACK-EXHAUSTED if stack is empty.
+; Name top token on the stack, without popping.  Return STACK-EXHAUSTED if
+; stack is empty.
 (define (stack-top stack-list)
   (if (null? stack-list)
       STACK-EXHAUSTED
@@ -353,7 +375,8 @@
   (append token-list stack-list))
 
 ; stack-list -> bool
-; Decide if the stack's top token is BOT, that is, whether the stack is exhausted.
+; Decide if the stack's top token is BOT, that is, whether the stack is
+; exhausted.
 (define (stack-bot? stack-list)
   (equal? BOT (car stack-list)))
 
@@ -368,8 +391,10 @@
 
 
 ;; ===== Machine
-;; A machine is a structure consisting of list of instructions and list of accepting states.
-(struct machinestruct (instructions acceptingstates epsilonmap) #:transparent #:mutable)
+;; A machine is a structure consisting of list of instructions and list of
+;; accepting states.
+(struct machinestruct (instructions acceptingstates epsilonmap)
+  #:transparent #:mutable)
 
 ; no input  ->  machinestruct
 ; Create an empty machine.
@@ -379,8 +404,10 @@
 ; machinestruct, instruction  ->  machinestruct
 ; Add the instruction to the machine
 (define (machine-add-instruction machine instruction)
-  (set-machinestruct-instructions! machine
-                                   (reverse (cons instruction (reverse (machinestruct-instructions machine))))))
+  (set-machinestruct-instructions!
+   machine
+   (reverse (cons instruction
+                  (reverse (machinestruct-instructions machine))))))
 
 ; machinestruct, natural-number  ->  machinestruct
 ; Add the accepting state to the machine 
@@ -394,9 +421,11 @@
 
 ;; machinestruct -> string
 ;; Return string of the machine, for display or debugging
-(define (machine->string machine [instruction->string (lambda (x) (format "~a" x))])
+(define (machine->string machine
+                         [instruction->string (lambda (x) (format "~a" x))])
   (let* ([instruction-string
-          (string-join (map instruction->string (machinestruct-instructions machine)) "\n")]
+          (string-join (map instruction->string
+                            (machinestruct-instructions machine)) "\n")]
          [accepting-states-string
           (set->string (machinestruct-acceptingstates machine))]
          [epsilon-string
@@ -404,9 +433,15 @@
          [result
           (string-append "INSTRUCTIONS: " instruction-string)])  
     (when (not (set-empty? (machinestruct-acceptingstates machine)))
-        (set! result (string-append result "\nACCEPTING STATES: " accepting-states-string)))
+        (set! result
+              (string-append result
+                             "\nACCEPTING STATES: "
+                             accepting-states-string)))
     (when (not (hash-empty? (machinestruct-epsilonmap machine))) 
-        (set! result (string-append result "\nEPSILON TRANSITIONS: " epsilon-string)))
+        (set! result
+              (string-append result
+                             "\nEPSILON TRANSITIONS: "
+                             epsilon-string)))
     result))
 
 (provide machine-create
@@ -446,7 +481,8 @@
 ;; Default for the deepest a history traversal will go
 (define MAXIMUM-RANK 100)
 
-(define (history-traverse-bfs-helper level rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+(define (history-traverse-bfs-helper level rank fcn
+                                     #:maxrank [maximumrank MAXIMUM-RANK])
   (when (< rank maximumrank)
     (let ([next-level '()])
       (for ([node level])
@@ -460,7 +496,8 @@
 (define (history-traverse-bfs node fcn #:maxrank [maximumrank MAXIMUM-RANK])
   (history-traverse-bfs [node] 0 fcn #:maximumrank maximumrank))
 
-(define (history-traverse-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+(define (history-traverse-dfs node rank fcn
+                              #:maxrank [maximumrank MAXIMUM-RANK])
   ; (printf "history-traverse-dfs: node ~s  rank=~s\n" node rank)
   (fcn node rank)
   (when (< rank maximumrank)
@@ -492,7 +529,8 @@
 (define EMPTY-LINE-REGEXP #px"^\\s*(\\#.*)?$")
 
 ; Need a way to describe epsilon transitions.
-(define EPSILON-REGEXP #px"\\s*(EPSILON|EPS)[:]?\\s*(\\d+,?)\\s+(\\d+)(\\#.*)?$")
+(define EPSILON-REGEXP
+  #px"\\s*(EPSILON|EPS)[:]?\\s*(\\d+,?)\\s+(\\d+)(\\#.*)?$")
 
 ;; string -> list of two numbers
 ;; Return the numbers that were given as a space-separated list in the string
@@ -506,7 +544,8 @@
     (list state-from state-to)))
 
 ; Need a way to describe some states as final, or accepting.
-(define FINAL-STATES-REGEXP #px"\\s*((FINAL)|(ACCEPTING))[:]?\\s*([\\s*\\d+,?]*)\\s*(\\#.*)?$")
+(define FINAL-STATES-REGEXP
+  #px"\\s*((FINAL)|(ACCEPTING))[:]?\\s*([\\s*\\d+,?]*)\\s*(\\#.*)?$")
 
 ; The regular expression used to split the space-separated tokens inside the final states string
 (define FINAL-STATES-PARSE-REGEXP #px"(,\\s*)|(\\s+)")
@@ -519,23 +558,32 @@
          [token-list (car m)]
          [digit-string (fourth token-list)])
     ;(printf "parse-final-states token-list=~s\n    digit-string=~s\n" token-list digit-string)
-    (map string->number (string-split (string-trim digit-string) FINAL-STATES-PARSE-REGEXP))))
+    (map string->number
+         (string-split (string-trim digit-string)
+                       FINAL-STATES-PARSE-REGEXP))))
 
 ;; 
-(define DUMMY-INSTRUCTION-LINE-REGEXP #px"^\\s*(\\d+)\\s*([a-zB0-9\\]\\[\\)\\(]+|EPS)\\s*([a-zBLR0-9\\]\\[\\)\\(]+)\\s*(\\d+)\\s*(\\#.*)?$")
+(define DUMMY-INSTRUCTION-LINE-REGEXP
+  #px"^\\s*(\\d+)\\s*([a-zB0-9\\]\\[\\)\\(]+|EPS)\\s*([a-zBLR0-9\\]\\[\\)\\(]+)\\s*(\\d+)\\s*(\\#.*)?$")
 
 ; list of four strings -> instruction
 ; Turn the list of strings m into an instruction
-(define (dummy-parse-make-instruction string-list [instructionstruct dummyinstructionstruct])
+(define (dummy-parse-make-instruction
+         string-list
+         [instructionstruct dummyinstructionstruct])
   (let ([present-state (string->number (first string-list))]
         [present-tape-token (second string-list)]
         [next-token (third string-list)]
         [next-state (string->number (fourth string-list))])
-    (instructionstruct present-state present-tape-token next-token next-state)))
+    (instructionstruct present-state
+                       present-tape-token
+                       next-token
+                       next-state)))
 
 ;; string -> list of three lists
-;;  Return a list perrtaining to an instruction, and a list of integers that are accepting states, and a list pertaining
-;; to epsilon transition.  At most one of these lists is not null.  It can be that all lists are null.
+;;  Return a list pertaining to an instruction, and a list of integers
+;; that are accepting states, and a list pertaining to epsilon transition.
+;; At most one of these lists is not null.  It can be that all lists are null.
 (define (parse-one-line lne
                         [instruction-line-regexp DUMMY-INSTRUCTION-LINE-REGEXP]
                         [parse-make-instruction dummy-parse-make-instruction]
@@ -547,7 +595,8 @@
       [(regexp-match? EPSILON-REGEXP lne)
        (list '() '() (parse-epsilon-transition lne))]
       [(regexp-match? instruction-line-regexp lne)
-       (let ([m (regexp-match* instruction-line-regexp lne #:match-select cdr)])
+       (let ([m (regexp-match*
+                 instruction-line-regexp lne #:match-select cdr)])
          (list (parse-make-instruction (car m) instructionstruct) '() '()))]
       [(regexp-match? FINAL-STATES-REGEXP lne)
          (list '() (parse-final-states lne) '())]
@@ -566,7 +615,10 @@
     (for* ([line file-lines])
       ;(printf "parse: line=~s\n" line)
       ; (printf "    parse-one-line=~s\n" (parse-one-line line))
-       (let* ([inst-states-eps (parse-one-line line instruction-line-regexp parse-make-instruction instructionstruct)]
+       (let* ([inst-states-eps (parse-one-line line
+                                               instruction-line-regexp
+                                               parse-make-instruction
+                                               instructionstruct)]
               [inst (first inst-states-eps)]
               [state-list (second inst-states-eps)]
               [eps-pair (third inst-states-eps)])

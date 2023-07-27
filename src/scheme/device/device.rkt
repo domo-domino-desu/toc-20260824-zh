@@ -53,7 +53,7 @@
 (define (power-map-set! power-map k v)
   (if (member k (hash-keys power-map))
       (set-add! (hash-ref power-map k) v)
-      (hash-set! power-map k (mutable-seteq v))))
+      (hash-set! power-map k (mutable-set v))))
 
 ;; Signifies that a power-map has no such key
 (define POWER-MAP-NOKEY "No such key")
@@ -262,11 +262,15 @@
          [tape-current (get-tape-current tape)]
          [tape-right (get-tape-right tape)]
          [new-tape-left (reverse (cons tape-current (reverse tape-left)))]
-         [new-tape-current BLANK]
-         [new-tape-right '()])
-    (when (not (null? tape-right))
-      (set! new-tape-current (car tape-right))
-      (set! new-tape-right (cdr tape-right)))
+         [new-tape-current (if (null? tape-right) BLANK (car tape-right))]
+         [new-tape-right (if (null? tape-right) '() (cdr tape-right))])
+;    (printf "in move-head-right: tape-current=~s\n" tape-current)
+;    (printf "in move-head-right: new-tape-left=~s\n" new-tape-left)
+;    (printf "in move-head-right: new-tape-current=~s\n" new-tape-current)
+;    (printf "in move-head-right: new-tape-right=~s\n" new-tape-right)
+;    (when (not (null? tape-right))
+;      (set! new-tape-current (car tape-right))
+;      (set! new-tape-right (cdr tape-right)))
     (tapestruct new-tape-left new-tape-current new-tape-right)
     ))
 
@@ -456,23 +460,38 @@
 
 
 ;; ===== History
+;; A history is a tree of nodes.  Each node is a configuration, along with a
+;; collection of child nodes that is a set.
 
+; config  ->  history node
+; Make a new node
 (define (history-node-make config)
   (cons config (mutable-seteq)))
 
+; history node  ->  config
+; Get the node's config
 (define (history-node-config n)
   (car n))
 
+; history node  ->  set of child nodes
+; Get the node's children.  The set may be empty.
 (define (history-node-get-children n)
   (cdr n))
 
+; config  ->  root node of new history tree
+; Make a node; the connotation is that it is at the top of a history tree
 (define (history-create initialconfig)
   (history-node-make initialconfig))
 
+; history node, history node  ->  history node
+; To the first node, add the second node as a child
 (define (history-node-add! existing-node new-node)
   (set-add! (cdr existing-node) new-node)
   new-node)
 
+; history node, config  ->  history node
+; Use the configuration to create a new node, then add it as a child
+; of the first node
 (define (child-node-add! existing-node new-child-config)
   (let ([child-node (history-node-make new-child-config)])
     (set-add! (cdr existing-node) child-node)
@@ -481,6 +500,8 @@
 ;; Default for the deepest a history traversal will go
 (define MAXIMUM-RANK 100)
 
+; list of nodes, natural number, function  ->  void 
+; Helper for history-traverse-bfs
 (define (history-traverse-bfs-helper level rank fcn
                                      #:maxrank [maximumrank MAXIMUM-RANK])
   (when (< rank maximumrank)
@@ -493,9 +514,16 @@
       (when (not (null? next-level))
         (history-traverse-bfs next-level (+ 1 rank) fcn)))))
 
+; history node, function  ->  void
+; Do a breadth first traversal of the nodes below the given one, applying
+; the function to each.  Optionally limit the depth of the traversal  
 (define (history-traverse-bfs node fcn #:maxrank [maximumrank MAXIMUM-RANK])
   (history-traverse-bfs [node] 0 fcn #:maximumrank maximumrank))
 
+; history node, natural number, function  ->  void
+; Do a depth first traversal of the nodes below the given one (which has
+; the given rank), applying the function to each.  Optionally limit the
+; depth of the traversal  
 (define (history-traverse-dfs node rank fcn
                               #:maxrank [maximumrank MAXIMUM-RANK])
   ; (printf "history-traverse-dfs: node ~s  rank=~s\n" node rank)

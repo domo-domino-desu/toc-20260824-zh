@@ -154,7 +154,7 @@
            [next-action "c"]
            [next-state 3]
            [next-config (tm-transition tape next-action next-state)])
-      (printf "tm next config is=~a\n" next-config)
+      ; (printf "tm next config is=~a\n" next-config)
       (check-equal? (configurationstruct-state next-config) 3)
       (check-equal? (get-tape-right (configurationstruct-tape next-config)) (list "b" BLANK))
       (check-equal? (get-tape-current (configurationstruct-tape next-config)) "c")
@@ -170,51 +170,58 @@
   (test-suite
    "History tests"
   
-;   (test-case
-;    "Test building a history"
-;    (let* ([tape0 (make-tape "a" "b" "B")]
-;           [config0 (configurationstruct 0 tape0)]
-;           [history (history-create config0)]
-;           [tape1 (make-tape "x" "y" "z")]
-;           [config1 (configurationstruct 0 tape1)]
-;           [node1 (history-node-make config1)]
-;           [tape2 (make-tape "m" "n")]
-;           [config2 (configurationstruct 1 tape2)]
-;           [node2 (history-node-make config2)])
-;      (history-node-add! history node1)
-;      (history-node-add! history node2)
-;      ; (printf "~s\n" history)
-;      (check-equal? (car history) config0)
-;      (check-true (set-member? (cdr history) node1))
-;      (printf "history=~a\n" (history-print history))
-;      )
-;    ) ;; end test-case
-  
    (test-case
-    "Test machine history simple"
-    (let* ([s0 0]
-           [tape0 (make-tape)]
-           [config0 (configurationstruct s0 tape0)]
-           [s1 1]
-           [tape1 (make-tape)]
-           [config1 (configurationstruct s1 tape1)]
-           [s2 2]
-           [tape2 (make-tape)]
-           [config2 (configurationstruct s2 tape2)]
-           [s3 3]
-           [tape3 (make-tape)]
-           [config3 (configurationstruct s3 tape3)]
+    "Test building a history"
+    (let* ([tape0 (make-tape "a" "b" "B")]
+           [config0 (configurationstruct 0 tape0)]
            [history (history-create config0)]
-           [history-node1 (history-node-make config1)]
-           [history-node2 (history-node-make config2)]
-           [history-node3 (history-node-make config3)])
-      (history-node-add! history history-node1)
-      (history-node-add! history history-node2)
-      (history-node-add! history-node2 history-node3)
+           [tape1 (make-tape "x" "y" "z")]
+           [config1 (configurationstruct 0 tape1)]
+           [node1 (history-node-make config1)]
+           [tape2 (make-tape "m" "n")]
+           [config2 (configurationstruct 1 tape2)]
+           [node2 (history-node-make config2)])
+      (history-node-add! history node1)
+      (history-node-add! history node2)
+      (printf "~s\n" history)
+      (check-equal? (car history) config0)
+      (check-true (set-member? (cdr history) node1))
+      (printf "history=~a\n" (history->string history))
+      (let ([s0 "q0: *a*bB\n +--q0: *x*yz\n +--q1: *m*n"]
+            [s1 "q0: *a*bB\n +--q1: *m*n\n +--q0: *x*yz"]
+            [r (history->string history)])
+        ;(printf "r=~s\n" r)
+        ;(printf "(list s0 s1)=~s\n" (list s0 s1))
+        (check-true (if (member r (list s0 s1)) #t #f))
+        )
+      )
+    ) ;; end test-case
+  
+;   (test-case
+;    "Test machine history simple"
+;    (let* ([s0 0]
+;           [tape0 (make-tape)]
+;           [config0 (configurationstruct s0 tape0)]
+;           [s1 1]
+;           [tape1 (make-tape)]
+;           [config1 (configurationstruct s1 tape1)]
+;           [s2 2]
+;           [tape2 (make-tape)]
+;           [config2 (configurationstruct s2 tape2)]
+;           [s3 3]
+;           [tape3 (make-tape)]
+;           [config3 (configurationstruct s3 tape3)]
+;           [history (history-create config0)]
+;           [history-node1 (history-node-make config1)]
+;           [history-node2 (history-node-make config2)]
+;           [history-node3 (history-node-make config3)])
+;      (history-node-add! history history-node1)
+;      (history-node-add! history history-node2)
+;      (history-node-add! history-node2 history-node3)
       ; (printf "~s\n" history)
-      (printf "!!history->string is: \n~a\n" (history->string history #:deterministic #f))
+      ; (printf "!!history->string is: \n~a\n" (history->string history #:deterministic #f))
       ; (printf "history->string history-node2 is: \n~a\n" (history->string history-node2 #:deterministic #f))
-      )) ; end test-case and let*
+;      )) ; end test-case and let*
    
    )) ;; end history suite and tests
 
@@ -314,10 +321,10 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-; (run-tests instruction-tests)
-; (run-tests configuration-tests)
-; (run-tests parse-tests)
-; (run-tests tm->string-tests)
-; (run-tests tm-transition-tests)
-; (run-tests history-tests)
-(run-tests one-step-one-node-tests)
+;(run-tests instruction-tests)
+;(run-tests configuration-tests)
+;(run-tests parse-tests)
+;(run-tests tm->string-tests)
+;(run-tests tm-transition-tests)
+(run-tests history-tests)
+; (run-tests one-step-one-node-tests)

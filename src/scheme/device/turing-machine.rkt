@@ -70,7 +70,7 @@
 ;;  #:deterministic  Boolean  Do not show tree nesting  
 (define (node->string node rank #:deterministic [deterministic #t])
   ; (printf "node->string  node=~s  rank=~s\n" node rank)
-  (let* ([r (for/list ([i (in-range 2 (+ 1 rank))]) " |  ")]
+  (let* ([r (for/list ([i (in-range 2 (+ 1 rank))]) " |  ")] ; indentation for rank
          [prefix (if (= rank 0) "" " +--")]
          ; [test0 (printf "  node->string r=~s\n" r)]
          ; [test1 (printf "  node->string prefix=~s\n" prefix)]
@@ -83,7 +83,9 @@
     )
 
 ;; history tree node -> string
-;;  Return reasonable description of tree
+;;  Return reasonable description of tree.  Divide the rank in the tree by 2
+;; to get the TM's step (because steps have two parts, a delta map and
+;; then epsilon transitions).
 ;; #:maxrank  Integer  Don't go into any node deeper than this
 ;; #:fullstep-only  Boolean  Don't show the half steps from following epsilon maps
 ;; #:deterministic  Boolean  Don't show tree nesting
@@ -92,13 +94,13 @@
 (define (history->string history
                          #:maxrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
                          #:fullstep-only [fullstep-only #f]  ; don't show odd-numbered ranks   
-                         #:deterministic [deterministic #t])  ; don't show nesting and don't show odd-numbered ranks 
+                         #:deterministic [deterministic #f])  ; don't show nesting and don't show odd-numbered ranks 
  (define (h->s node rank
                #:maxrank [maximumrank MAXIMUM-RANK]
                #:fullstep-only [fullstep-only #f]
-               #:deterministic [deterministic #t])
-    ; (printf "  h->s: node ~s  rank=~s\n"
-    ;         (configuration->string (history-node-config node)) rank)
+               #:deterministic [deterministic #f])
+   (printf "  h->s: node ~s  rank=~s\n"
+           (configuration->string (history-node-config node)) rank)
    (when deterministic
      (set! fullstep-only #t))
    (when (< rank maximumrank)

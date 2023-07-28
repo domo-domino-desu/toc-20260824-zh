@@ -197,31 +197,39 @@
       )
     ) ;; end test-case
   
-;   (test-case
-;    "Test machine history simple"
-;    (let* ([s0 0]
-;           [tape0 (make-tape)]
-;           [config0 (configurationstruct s0 tape0)]
-;           [s1 1]
-;           [tape1 (make-tape)]
-;           [config1 (configurationstruct s1 tape1)]
-;           [s2 2]
-;           [tape2 (make-tape)]
-;           [config2 (configurationstruct s2 tape2)]
-;           [s3 3]
-;           [tape3 (make-tape)]
-;           [config3 (configurationstruct s3 tape3)]
-;           [history (history-create config0)]
-;           [history-node1 (history-node-make config1)]
-;           [history-node2 (history-node-make config2)]
-;           [history-node3 (history-node-make config3)])
-;      (history-node-add! history history-node1)
-;      (history-node-add! history history-node2)
-;      (history-node-add! history-node2 history-node3)
-      ; (printf "~s\n" history)
-      ; (printf "!!history->string is: \n~a\n" (history->string history #:deterministic #f))
-      ; (printf "history->string history-node2 is: \n~a\n" (history->string history-node2 #:deterministic #f))
-;      )) ; end test-case and let*
+   (test-case
+    "Test machine history simple"
+    (let* ([s0 0]
+           [tape0 (make-tape)]
+           [config0 (configurationstruct s0 tape0)]
+           [s1 1]
+           [tape1 (make-tape)]
+           [config1 (configurationstruct s1 tape1)]
+           [s2 2]
+           [tape2 (make-tape)]
+           [config2 (configurationstruct s2 tape2)]
+           [s3 3]
+           [tape3 (make-tape)]
+           [config3 (configurationstruct s3 tape3)]
+           [history (history-create config0)]
+           [history-node1 (history-node-make config1)]
+           [history-node2 (history-node-make config2)]
+           [history-node3 (history-node-make config3)])
+      (history-node-add! history history-node1)
+      (history-node-add! history history-node2)
+      (history-node-add! history-node2 history-node3)
+      (printf "history->string=~s\n" (history->string history))
+      (let ([s0 "q0: *B*\n +--q1: *B*\n +--q2: *B*\n |   +--q3: *B*"]
+            [s1 "q0: *B*\n +--q2: *B*\n |   +--q3: *B*\n +--q1: *B*"]
+            [r (history->string history)])
+;        (printf "history->string=~s\n" r)
+;        (printf "             s0=~s\n" s0)
+;        (printf "             s1=~s\n" s1)
+        (check-true (if (member r (list s0 s1)) #t #f))
+        )
+;       (printf "!!history->string is: \n~s\n" (history->string history #:deterministic #f))
+;       (printf "history->string history-node2 is: \n~a\n" (history->string history-node2 #:deterministic #f))
+      )) ; end test-case and let*
    
    )) ;; end history suite and tests
 

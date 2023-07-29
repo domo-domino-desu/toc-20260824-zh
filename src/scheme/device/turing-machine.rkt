@@ -84,8 +84,8 @@
 
 ;; history tree node -> string
 ;;  Return reasonable description of tree.  Divide the rank in the tree by 2
-;; to get the TM's step (because steps have two parts, a delta map and
-;; then epsilon transitions).
+;; to get the TM's step, because steps have two halves, a delta map and
+;; then epsilon transitions.
 ;; #:maxrank  Integer  Don't go into any node deeper than this
 ;; #:fullstep-only  Boolean  Don't show the half steps from following epsilon maps
 ;; #:deterministic  Boolean  Don't show tree nesting

@@ -504,65 +504,138 @@
 ;; ===== History making
 (define (string-pad n)
   (apply string-append (build-list n (lambda (x) "  "))))
-   
+
+; Make a simple sample history
+; q0
+;   | q1
+;   | q2
+(define (history-make-test0)
+  (let* ([config (list "q0")]
+         [history (history-create config)]
+         [config1 (list "q1")]
+         [node1 (child-node-add! history config1)]
+         [config2 (list "q2")]
+         [node2 (child-node-add! history config2)])
+  history))
+
+; Make a deeper sample history
+; q0
+;   | q1
+;   | q2
+;   |   | q3
+(define (history-make-test1)
+  (let* ([config (list "q0")]
+         [history (history-create config)]
+         [config1 (list "q1")]
+         [node1 (child-node-add! history config1)]
+         [config2 (list "q2")]
+         [node2 (child-node-add! history config2)]
+         [config3 (list "q3")]
+         [node5 (child-node-add! node2 config3)])
+  history))
+
+; Make a deep sample history
+; q0
+;   | q1
+;      | q3
+;        | q4
+;           |q5
+;   | q2
+(define (history-make-test2)
+  (let* ([config (list "q0")]
+         [history (history-create config)]
+         [config1 (list "q1")]
+         [node1 (child-node-add! history config1)]
+         [config2 (list "q2")]
+         [node2 (child-node-add! history config2)]
+         [config3 (list "q3")]
+         [node3 (child-node-add! node1 config3)]
+         [config4 (list "q4")]
+         [node4 (child-node-add! node3 config4)]
+         [config5 (list "q5")]
+         [node5 (child-node-add! node3 config5)]
+         [config6 (list "q6")]
+         [node6 (child-node-add! node4 config6)]
+         )
+  history))
+
+; Make a big sample history
+(define (history-make-test4)
+  (let* ([config (list "q0")]
+         [history (history-create config)]
+         ; rank 1
+         [node-1 (history-node-add! history (history-node-make '("q1")))]
+         [node-2 (history-node-add! history (history-node-make '("q2")))]
+         ; rank 2
+         [node-3 (history-node-add! node-1 (history-node-make '("q3")))]
+         [node-4 (history-node-add! node-1 (history-node-make '("q4")))]
+         [node-5 (history-node-add! node-1 (history-node-make '("q5")))]
+         [node-6 (history-node-add! node-2 (history-node-make '("q6")))]
+         ; rank 3
+         [node-7 (history-node-add! node-3 (history-node-make '("q7")))]
+         [node-8 (history-node-add! node-3 (history-node-make '("q8")))]
+         [node-9 (history-node-add! node-4 (history-node-make '("q9")))]
+         [node-10 (history-node-add! node-5 (history-node-make '("q10")))]
+         [node-11 (history-node-add! node-6 (history-node-make '("q11")))]
+         [node-12 (history-node-add! node-6 (history-node-make '("q12")))]
+         ; rank 4
+         [node-13 (history-node-add! node-10 (history-node-make '("q13")))]
+         [node-14 (history-node-add! node-12 (history-node-make '("q14")))]
+         )
+    history))
+
 (define history-tests
   (test-suite
    "history tests"
 
-;   (test-case
-;    "Test making a history"
-;    (let* ([config (list "a" "b")]
-;           [history (history-create config)])
-;      ; (printf "~s\n" history)
-;      (check-equal? (car history) config)
-;      ))
+   (test-case
+    "Test building a simple history"
+    (let ([history (history-make-test0)])
+      ; (printf "~s\n" history)
+      (check-equal? (history-node-config history) (list "q0"))
+      (let* ([kids (history-node-get-children history)]
+             [kids-configs (for/list ([i kids])
+                             (history-node-config i))])
+        (for ([c kids-configs])
+          ; (printf "c=~s\n" c)
+          (check-true (or (equal? c (list "q0"))
+                          (equal? c (list "q1"))
+                          (equal? c (list "q2")))))
+      ))
+    )
+   
+   (test-case
+    "Test building a deeper history"
+    (let ([history (history-make-test1)])
+      ; (printf "~s\n" history)
+      (check-equal? (history-node-config history) (list "q0"))
+      (let* ([kids1 (history-node-get-children history)]
+             [kids1-configs (for/list ([i kids1])
+                             (history-node-config i))])
+        (for ([c kids1-configs])
+          ; (printf "c=~s\n" c)
+          (check-true (or (equal? c (list "q1"))
+                          (equal? c (list "q2")))))
+        (for ([k1 kids1])
+          (let* ([k1-children (history-node-get-children k1)])
+            (for ([k2 k1-children])
+              (when (equal? (history-node-config k1) '("q1"))
+                (check-equal? (history-node-config k2) '("q3"))))))
+        ))
+    )
 
    (test-case
-    "Test building a history"
-    (let* ([config (list "0" "b")]
-           [history (history-create config)]
-           [config1 (list "1" "d")]
-           [node1 (history-node-make config1)]
-           [config2 (list "2" "f")]
-           [node2 (history-node-make config2)])
-      (history-node-add! history node1)
-      (printf "~s\n" history)
-      (check-equal? (car history) config)
-      (check-true (set-member? (cdr history) node1))
-      (history-node-add! node1 node2)
-      (printf "~s\n" history)
-      (check-equal? (car node1) config1)
-      (check-true (set-member? (cdr node1) node2))
+    "Test depth first traversal"
+    (let* ([acc '()] ; accumulator
+           [tack-fcn (lambda (x y) (printf "~s" (car (history-node-config x))))]
+           [history (history-make-test0)])
+      (history-traverse-dfs history
+                            0
+                            tack-fcn)
+      (printf "\n")
+;      (check-equal? (car history) config)
+;      (check-true (set-member? (cdr history) new-history-node))
       ))
-
-;   (test-case
-;    "Test building a history"
-;    (let* ([config (list 1)]
-;           [history (history-create config)]
-;           ; rank 1
-;           [node-2 (history-node-add! history (history-node-make '(2)))]
-;           [node-3 (history-node-add! history (history-node-make '(3)))]
-;           ; rank 2
-;           [node-4 (history-node-add! node-2 (history-node-make '(4)))]
-;           [node-5 (history-node-add! node-2 (history-node-make '(5)))]
-;           [node-6 (history-node-add! node-2 (history-node-make '(6)))]
-;           [node-7 (history-node-add! node-3 (history-node-make '(7)))]
-;           ; rank 3
-;           [node-8 (history-node-add! node-4 (history-node-make '(8)))]
-;           [node-9 (history-node-add! node-4 (history-node-make '(9)))]
-;           [node-10 (history-node-add! node-5 (history-node-make '(10)))]
-;           [node-11 (history-node-add! node-6 (history-node-make '(11)))]
-;           [node-12 (history-node-add! node-7 (history-node-make '(12)))]
-;           [node-13 (history-node-add! node-7 (history-node-make '(13)))]
-;           ; rank 4
-;           [node-14 (history-node-add! node-11 (history-node-make '(14)))]
-;           [node-15 (history-node-add! node-13 (history-node-make '(15)))]
-;           )
-;      ; (printf "history: ~s\n" history)
-;      (history-traverse-dfs history 0 (lambda (x y) (printf "~a~s\n" (string-pad y) (caar x))))
-;;      (check-equal? (car history) config)
-;;      (check-true (set-member? (cdr history) new-history-node))
-;      ))
 
    )) ;; end history-making suite and tests
 
@@ -643,11 +716,11 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-(run-tests power-map-tests)
-(run-tests delta-tests)
-(run-tests epsilon-tests)
-(run-tests tape-tests)
-(run-tests stack-tests)
+;(run-tests power-map-tests)
+;(run-tests delta-tests)
+;(run-tests epsilon-tests)
+;(run-tests tape-tests)
+;(run-tests stack-tests)
 (run-tests history-tests)
-(run-tests machine-tests)
-(run-tests parse-tests)
+;(run-tests machine-tests)
+;(run-tests parse-tests)

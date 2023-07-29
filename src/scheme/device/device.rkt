@@ -500,7 +500,7 @@
 ;; Default for the deepest a history traversal will go
 (define MAXIMUM-RANK 100)
 
-; list of nodes, natural number, function  ->  void 
+; list of nodes, natural number, function of two inputs ->  void 
 ; Helper for history-traverse-bfs
 (define (history-traverse-bfs-helper level rank fcn
                                      #:maxrank [maximumrank MAXIMUM-RANK])
@@ -514,13 +514,13 @@
       (when (not (null? next-level))
         (history-traverse-bfs next-level (+ 1 rank) fcn)))))
 
-; history node, function  ->  void
+; history node, function of two inputs ->  void
 ; Do a breadth first traversal of the nodes below the given one, applying
 ; the function to each.  Optionally limit the depth of the traversal  
 (define (history-traverse-bfs node fcn #:maxrank [maximumrank MAXIMUM-RANK])
   (history-traverse-bfs [node] 0 fcn #:maximumrank maximumrank))
 
-; history node, natural number, function  ->  void
+; history node, natural number, function of two args ->  void
 ; Do a depth first traversal of the nodes below the given one (which has
 ; the given rank), applying the function to each.  Optionally limit the
 ; depth of the traversal  
@@ -535,6 +535,38 @@
         (history-traverse-dfs child (+ rank 1) fcn #:maxrank maximumrank))
       )))
 
+;; history tree node, function of one argument -> string
+;;  Return reasonable description of tree.  Note: divide the rank in the tree
+;; by 2 to get the machine's step because steps have two halves, a delta map
+;; half and then an epsilon transitions half.
+;; #:maxrank  Integer  Don't go into any node deeper than this
+;; #:fullstep-only  Boolean  Don't show the half steps from following epsilon maps
+;; #:deterministic  Boolean  Don't show tree nesting
+(define (history->string history node->string
+                         #:maxrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
+                         #:fullstep-only [fullstep-only #f]  ; don't show odd-numbered ranks   
+                         #:deterministic [deterministic #f])  ; don't show nesting and don't show odd-numbered ranks 
+
+  (define (h->s node rank accumulator
+               #:maxrank [maximumrank MAXIMUM-RANK]
+               #:fullstep-only [fullstep-only #f]
+               #:deterministic [deterministic #f])
+   (printf "  h->s: node ~s  rank=~s\n"
+           (node->string (history-node-config node)) rank)
+   (when deterministic
+     (set! fullstep-only #t))
+   (when (< rank maximumrank)
+     (let ([children (history-node-get-children node)])
+       (for ([child children])
+         (when (or (and fullstep-only (even? rank))
+                   (not fullstep-only))
+           ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
+           (set! accumulator (cons (node->string child rank #:deterministic deterministic) accumulator)))
+         (h->s child (+ rank 1 ) accumulator #:maxrank maximumrank #:deterministic deterministic)))))
+  
+  (let ([accumulator (list (node->string history 0))]); List of node strings
+    (h->s history 1 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
+    (string-join (reverse accumulator) "\n")))
 
 (provide history-node-make
          history-node-config
@@ -545,6 +577,7 @@
          MAXIMUM-RANK
          history-traverse-bfs
          history-traverse-dfs
+         history->string
  )
 
 ;; ===== Instruction

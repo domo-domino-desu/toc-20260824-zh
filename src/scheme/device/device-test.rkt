@@ -539,7 +539,8 @@
 ;   | q1
 ;      | q3
 ;        | q4
-;           |q5
+;           | q5
+;           | q6
 ;   | q2
 (define (history-make-test2)
   (let* ([config (list "q0")]
@@ -626,17 +627,66 @@
 
    (test-case
     "Test depth first traversal"
-    (let* ([acc '()] ; accumulator
-           [tack-fcn (lambda (x y) (printf "~s" (car (history-node-config x))))]
-           [history (history-make-test0)])
-      (history-traverse-dfs history
+    (let* ([acc ""] ; accumulator
+           [tack-fcn (lambda (x y) (set!
+                                    acc
+                                    (string-append
+                                     acc
+                                     (~a (car (history-node-config x))))))])
+      ; side effect: change acc
+      (history-traverse-dfs (history-make-test0)
                             0
-                            tack-fcn)
-      (printf "\n")
-;      (check-equal? (car history) config)
-;      (check-true (set-member? (cdr history) new-history-node))
+                            tack-fcn) ; side effect: change acc
+      (check-true (if (member acc '("q0q1q2" "q0q2q1")) #t #f))
+      ; side effect: change acc
+      (set! acc "")
+      (history-traverse-dfs (history-make-test1)
+                            0
+                            tack-fcn) ; side effect: change acc
+      ; (printf "~s\n" acc)
+      (check-true (if (member acc '("q0q1q2q3" "q0q2q3q1")) #t #f))
+      ; side effect: change acc
+      (set! acc "")
+      (history-traverse-dfs (history-make-test2)
+                            0
+                            tack-fcn) ; side effect: change acc
+      ; (printf "~s\n" acc)
+      (check-true (if (member acc '("q0q1q3q5q4q6q2"
+                                    "q0q1q3q4q6q5q2"
+                                    "q0q2q1q3q4q6q5"
+                                    "q0q2q1q3q5q4q6")) #t #f))
       ))
 
+   (test-case
+    "Test breadth first traversal"
+    (let* ([acc ""] ; accumulator
+           [tack-fcn (lambda (x y) (set!
+                                    acc
+                                    (string-append
+                                     acc
+                                     (~a (car (history-node-config x))))))])
+      ; side effect: change acc
+      (history-traverse-bfs (history-make-test0)
+                            tack-fcn)
+      ; (printf "~s\n" acc)
+      (check-true (if (member acc '("q0q1q2" "q0q2q1")) #t #f))
+      ; side effect: change acc
+      (set! acc "")
+      (history-traverse-bfs (history-make-test1)
+                            tack-fcn)
+      ; (printf "~s\n" acc)
+      (check-true (if (member acc '("q0q1q2q3" "q0q2q1q3")) #t #f))
+      ; side effect: change acc
+      (set! acc "")
+      (history-traverse-bfs (history-make-test2)
+                            tack-fcn)
+      (printf "~s\n" acc)
+      (check-true (if (member acc '("q0q1q2q3q4q5q6"
+                                    "q0q2q1q3q4q5q6"
+                                    "q0q1q2q3q4q6q5"
+                                    "q0q2q1q3q4q6q5")) #t #f))
+      ))
+   
    )) ;; end history-making suite and tests
 
 

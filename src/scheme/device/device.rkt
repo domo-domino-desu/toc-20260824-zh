@@ -503,22 +503,22 @@
 ; list of nodes, natural number, function of two inputs ->  void 
 ; Helper for history-traverse-bfs
 (define (history-traverse-bfs-helper level rank fcn
-                                     #:maxrank [maximumrank MAXIMUM-RANK])
+                                     #:maximumrank [maximumrank MAXIMUM-RANK])
   (when (< rank maximumrank)
     (let ([next-level '()])
       (for ([node level])
         (fcn node rank)
         (for ([child-node (history-node-get-children node)])
-          (cons child-node next-level)
+          (set! next-level (cons child-node next-level))
           ))
       (when (not (null? next-level))
-        (history-traverse-bfs next-level (+ 1 rank) fcn)))))
+        (history-traverse-bfs-helper next-level (+ 1 rank) fcn)))))
 
 ; history node, function of two inputs ->  void
 ; Do a breadth first traversal of the nodes below the given one, applying
 ; the function to each.  Optionally limit the depth of the traversal  
 (define (history-traverse-bfs node fcn #:maxrank [maximumrank MAXIMUM-RANK])
-  (history-traverse-bfs [node] 0 fcn #:maximumrank maximumrank))
+  (history-traverse-bfs-helper (list node) 0 fcn #:maximumrank maximumrank))
 
 ; history node, natural number, function of two args ->  void
 ; Do a depth first traversal of the nodes below the given one (which has

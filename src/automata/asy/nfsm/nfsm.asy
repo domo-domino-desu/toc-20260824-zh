@@ -5522,34 +5522,36 @@ p=MAINPEN;
 label(pic, "$q_0$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
 label(pic, "$q_1$",(0.5,1.0),p);
-draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+draw(pic, (1,-0.25)--(1,3.25),GRAYSTRIPE);
 
 // // Add action up to second input
 // label(pic, "$\vdash$",(1.00,0),p);
 // label(pic, "$q_0$",(1.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
 // label(pic, "$q_1$",(1.50,1.0),p);
-// draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+// draw(pic, (2,-0.25)--(2,3.25),GRAYSTRIPE);
 
 // // Add action up to the third input
 // label(pic, "$\vdash$",(2.00,0),p);
 // label(pic, "$q_0$",(2.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
 // label(pic, "$q_1$",(2.50,1.0),p);
-// draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+// draw(pic, (3,-0.25)--(3,3.25),GRAYSTRIPE);
 
 // // Add action after the third input
 // label(pic, "$\vdash$",(3.00,1.0),p);
 // label(pic, "$q_2$",(3.50,1.0),p);
 // label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
 // label(pic, "$q_0$",(3.50,2.00),p);
+// label(pic, yield_t_north*"$\vdash$",(3.50,2.5),p);
+// label(pic, "$q_1$",(3.50,3.00),p);
 
 // Legend at top of graphic
-label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
-label(pic, "\str{a}",(1,2.50));
-label(pic, "\str{a}",(2,2.50));
-label(pic, "\str{b}",(3,2.50));
-draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,3.50));
+label(pic, "\str{a}",(1,3.50));
+label(pic, "\str{a}",(2,3.50));
+label(pic, "\str{b}",(3,3.50));
+draw(pic, (-0.25, 3.25)--(3.75, 3.25),black+linewidth(0.4));
 // At bottom of graphic
 draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
 label(pic, "$0$",(0.5, -0.55));
@@ -5584,34 +5586,36 @@ p=MAINPEN;
 label(pic, "$q_0$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
 label(pic, "$q_1$",(0.5,1.0),p);
-draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+draw(pic, (1,-0.25)--(1,3.25),GRAYSTRIPE);
 
 // Add action up to second input
 label(pic, "$\vdash$",(1.00,0),p);
 label(pic, "$q_0$",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
 label(pic, "$q_1$",(1.50,1.0),p);
-draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+draw(pic, (2,-0.25)--(2,3.25),GRAYSTRIPE);
 
 // // Add action up to the third input
 // label(pic, "$\vdash$",(2.00,0),p);
 // label(pic, "$q_0$",(2.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
 // label(pic, "$q_1$",(2.50,1.0),p);
-// draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+// draw(pic, (3,-0.25)--(3,3.25),GRAYSTRIPE);
 
 // // Add action after the third input
 // label(pic, "$\vdash$",(3.00,1.0),p);
 // label(pic, "$q_2$",(3.50,1.0),p);
 // label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
 // label(pic, "$q_0$",(3.50,2.00),p);
+// label(pic, yield_t_north*"$\vdash$",(3.50,2.5),p);
+// label(pic, "$q_1$",(3.50,3.00),p);
 
 // Legend at top of graphic
-label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
-label(pic, "\str{a}",(1,2.50));
-label(pic, "\str{a}",(2,2.50));
-label(pic, "\str{b}",(3,2.50));
-draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,3.50));
+label(pic, "\str{a}",(1,3.50));
+label(pic, "\str{a}",(2,3.50));
+label(pic, "\str{b}",(3,3.50));
+draw(pic, (-0.25, 3.25)--(3.75, 3.25),black+linewidth(0.4));
 // At bottom of graphic
 draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
 label(pic, "$0$",(0.5, -0.55));
@@ -5645,34 +5649,36 @@ p=MAINPEN;
 label(pic, "$q_0$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
 label(pic, "$q_1$",(0.5,1.0),p);
-draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+draw(pic, (1,-0.25)--(1,3.25),GRAYSTRIPE);
 
 // Add action up to second input
 label(pic, "$\vdash$",(1.00,0),p);
 label(pic, "$q_0$",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
 label(pic, "$q_1$",(1.50,1.0),p);
-draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+draw(pic, (2,-0.25)--(2,3.25),GRAYSTRIPE);
 
 // Add action up to the third input
 label(pic, "$\vdash$",(2.00,0),p);
 label(pic, "$q_0$",(2.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
 label(pic, "$q_1$",(2.50,1.0),p);
-draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+draw(pic, (3,-0.25)--(3,3.25),GRAYSTRIPE);
 
 // // Add action after the third input
 // label(pic, "$\vdash$",(3.00,1.0),p);
 // label(pic, "$q_2$",(3.50,1.0),p);
 // label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
 // label(pic, "$q_0$",(3.50,2.00),p);
+// label(pic, yield_t_north*"$\vdash$",(3.50,2.5),p);
+// label(pic, "$q_1$",(3.50,3.00),p);
 
 // Legend at top of graphic
-label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
-label(pic, "\str{a}",(1,2.50));
-label(pic, "\str{a}",(2,2.50));
-label(pic, "\str{b}",(3,2.50));
-draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,3.50));
+label(pic, "\str{a}",(1,3.50));
+label(pic, "\str{a}",(2,3.50));
+label(pic, "\str{b}",(3,3.50));
+draw(pic, (-0.25, 3.25)--(3.75, 3.25),black+linewidth(0.4));
 // At bottom of graphic
 draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
 label(pic, "$0$",(0.5, -0.55));
@@ -5706,34 +5712,36 @@ p=MAINPEN;
 label(pic, "$q_0$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
 label(pic, "$q_1$",(0.5,1.0),p);
-draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+draw(pic, (1,-0.25)--(1,3.25),GRAYSTRIPE);
 
 // Add action up to second input
 label(pic, "$\vdash$",(1.00,0),p);
 label(pic, "$q_0$",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
 label(pic, "$q_1$",(1.50,1.0),p);
-draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+draw(pic, (2,-0.25)--(2,3.25),GRAYSTRIPE);
 
 // Add action up to the third input
 label(pic, "$\vdash$",(2.00,0),p);
 label(pic, "$q_0$",(2.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
 label(pic, "$q_1$",(2.50,1.0),p);
-draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+draw(pic, (3,-0.25)--(3,3.25),GRAYSTRIPE);
 
 // Add action after the third input
 label(pic, "$\vdash$",(3.00,1.0),p);
 label(pic, "$q_2$",(3.50,1.0),p);
 label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
 label(pic, "$q_0$",(3.50,2.00),p);
+label(pic, yield_t_north*"$\vdash$",(3.50,2.5),p);
+label(pic, "$q_1$",(3.50,3.00),p);
 
 // Legend at top of graphic
-label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
-label(pic, "\str{a}",(1,2.50));
-label(pic, "\str{a}",(2,2.50));
-label(pic, "\str{b}",(3,2.50));
-draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,3.50));
+label(pic, "\str{a}",(1,3.50));
+label(pic, "\str{a}",(2,3.50));
+label(pic, "\str{b}",(3,3.50));
+draw(pic, (-0.25, 3.25)--(3.75, 3.25),black+linewidth(0.4));
 // At bottom of graphic
 draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
 label(pic, "$0$",(0.5, -0.55));
@@ -5767,34 +5775,36 @@ p=MAINPEN;
 label(pic, "$q_0$",(0.5,0),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.5),p);
 label(pic, "$q_1$",(0.5,1.0),p);
-draw(pic, (1,-0.25)--(1,2.25),GRAYSTRIPE);
+draw(pic, (1,-0.25)--(1,3.25),GRAYSTRIPE);
 
 // Add action up to second input
 label(pic, "$\vdash$",(1.00,0),p);
 label(pic, "$q_0$",(1.50,0.00),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
 label(pic, "$q_1$",(1.50,1.0),p);
-draw(pic, (2,-0.25)--(2,2.25),GRAYSTRIPE);
+draw(pic, (2,-0.25)--(2,3.25),GRAYSTRIPE);
 
 // Add action up to the third input
 label(pic, "$\vdash$",(2.00,0),p);
 label(pic, "$q_0$",(2.50,0.00),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.5),p);
 label(pic, "$q_1$",(2.50,1.0),p+highlightcolor);
-draw(pic, (3,-0.25)--(3,2.25),GRAYSTRIPE);
+draw(pic, (3,-0.25)--(3,3.25),GRAYSTRIPE);
 
 // Add action after the third input
 label(pic, "$\vdash$",(3.00,1.0),p);
 label(pic, "$q_2$",(3.50,1.0),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(3.50,1.5),p);
 label(pic, "$q_0$",(3.50,2.00),p+highlightcolor);
+label(pic, yield_t_north*"$\vdash$",(3.50,2.5),p);
+label(pic, "$q_1$",(3.50,3.00),p);
 
 // Legend at top of graphic
-label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,2.50));
-label(pic, "\str{a}",(1,2.50));
-label(pic, "\str{a}",(2,2.50));
-label(pic, "\str{b}",(3,2.50));
-draw(pic, (-0.25, 2.25)--(3.75, 2.25),black+linewidth(0.4));
+label(pic, "\makebox[0pt][l]{\textit{Input:}}",(-0.25,3.50));
+label(pic, "\str{a}",(1,3.50));
+label(pic, "\str{a}",(2,3.50));
+label(pic, "\str{b}",(3,3.50));
+draw(pic, (-0.25, 3.25)--(3.75, 3.25),black+linewidth(0.4));
 // At bottom of graphic
 draw(pic, (-0.25,-0.25)--(3.75,-0.25),black+linewidth(0.4));
 label(pic, "$0$",(0.5, -0.55));

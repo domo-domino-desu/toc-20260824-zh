@@ -535,38 +535,82 @@
         (history-traverse-dfs child (+ rank 1) fcn #:maxrank maximumrank))
       )))
 
-;; history tree node, function of one argument -> string
+
+;; history-node -> string
+;; Generate string to show one history node.
+;;  #:deterministic  Boolean  Do not show tree nesting  
+(define (node->string node
+                      rank
+                      #:configuration->string [configuration->string (lambda (x) (~s x))]
+                      #:deterministic [deterministic #f])
+  ; (printf "node->string  node=~s  rank=~s deterministic=~s\n" node rank deterministic)
+  (let* ([r (for/list ([i (in-range 2 (+ 1 rank))]) " |  ")] ; indentation for rank
+         [prefix (if (= rank 0) "" " +--")]
+;         [test0 (printf "  node->string r=~s\n" r)]
+;         [test1 (printf "  node->string prefix=~s\n" prefix)]
+;         [test2 (printf "  node->string (append prefix (list r))=~s\n" (append r (list prefix)))]
+         [nesting (if deterministic
+                      ""
+                      (apply string-append (append r (list prefix))))])
+    ; (printf "    node->string nesting=~s\n" nesting)
+    ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
+    ; (printf "    node->string (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
+    (apply string-append
+           (list nesting (configuration->string (history-node-config node)))))
+    )
+
+;; history tree node -> string
 ;;  Return reasonable description of tree.  Note: divide the rank in the tree
 ;; by 2 to get the machine's step because steps have two halves, a delta map
 ;; half and then an epsilon transitions half.
 ;; #:maxrank  Integer  Don't go into any node deeper than this
-;; #:fullstep-only  Boolean  Don't show the half steps from following epsilon maps
+;; #:fullstep-only  Boolean  Don't show the half steps from epsilon moves
 ;; #:deterministic  Boolean  Don't show tree nesting
-(define (history->string history node->string
-                         #:maxrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
+(define ACCUMULATOR '())
+
+(define (history->string history
+                         #:configuration->string [configuration->string (lambda (x) (~s x))]
+                         #:maximumrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
                          #:fullstep-only [fullstep-only #f]  ; don't show odd-numbered ranks   
                          #:deterministic [deterministic #f])  ; don't show nesting and don't show odd-numbered ranks 
 
-  (define (h->s node rank accumulator
-               #:maxrank [maximumrank MAXIMUM-RANK]
-               #:fullstep-only [fullstep-only #f]
-               #:deterministic [deterministic #f])
-   (printf "  h->s: node ~s  rank=~s\n"
-           (node->string (history-node-config node)) rank)
-   (when deterministic
-     (set! fullstep-only #t))
-   (when (< rank maximumrank)
-     (let ([children (history-node-get-children node)])
-       (for ([child children])
-         (when (or (and fullstep-only (even? rank))
-                   (not fullstep-only))
-           ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
-           (set! accumulator (cons (node->string child rank #:deterministic deterministic) accumulator)))
-         (h->s child (+ rank 1 ) accumulator #:maxrank maximumrank #:deterministic deterministic)))))
+  (define (h->s node rank
+                #:configuration->string [configuration->string (lambda (x) (format "~s" x))]
+                #:maximumrank [maximumrank MAXIMUM-RANK]
+                #:fullstep-only [fullstep-only #f]
+                #:deterministic [deterministic #f])
+    ; (printf "  h->s: node=~s  rank=~s\n" node rank)
+    ; (printf "  h->s (car node)=~s\n" (car node))
+    (printf "  h->s: node=~s  rank=~s acc=~s\n" node rank ACCUMULATOR)
+    (when deterministic
+      (set! fullstep-only #t))
+    (when (< rank maximumrank)
+      (let ([children (history-node-get-children node)])
+        (for ([child children])
+          (when (or (and fullstep-only (even? rank))
+                    (not fullstep-only))
+            (printf "   h->s: child is ~s rank is ~s\n" (history-node-config child) rank)
+            (set! ACCUMULATOR
+                  (cons (node->string child
+                                      (+ 1 rank)
+                                      #:configuration->string configuration->string 
+                                      #:deterministic deterministic)
+                        ACCUMULATOR)))
+          (h->s child
+                (+ rank 1)
+                #:configuration->string configuration->string
+                #:maximumrank maximumrank
+                #:deterministic deterministic))))
+    ACCUMULATOR)
   
-  (let ([accumulator (list (node->string history 0))]); List of node strings
-    (h->s history 1 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
-    (string-join (reverse accumulator) "\n")))
+  (set! ACCUMULATOR (list (node->string history 0))); List of node strings
+  (string-join (reverse
+                (h->s history
+                      0
+                      #:configuration->string configuration->string
+                      #:maximumrank maximumrank
+                      #:fullstep-only fullstep-only
+                      #:deterministic deterministic)) "\n"))
 
 (provide history-node-make
          history-node-config
@@ -577,6 +621,7 @@
          MAXIMUM-RANK
          history-traverse-bfs
          history-traverse-dfs
+         node->string
          history->string
  )
 

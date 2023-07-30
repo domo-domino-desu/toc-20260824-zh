@@ -539,8 +539,8 @@
 ;   | q1
 ;      | q3
 ;        | q4
-;           | q5
 ;           | q6
+;        | q5
 ;   | q2
 (define (history-make-test2)
   (let* ([config (list "q0")]
@@ -584,6 +584,10 @@
          [node-14 (history-node-add! node-12 (history-node-make '("q14")))]
          )
     history))
+
+; Test function for history->string
+(define (configuration->string c)
+  (~s (car c)))
 
 (define history-tests
   (test-suite
@@ -680,12 +684,29 @@
       (set! acc "")
       (history-traverse-bfs (history-make-test2)
                             tack-fcn)
-      (printf "~s\n" acc)
+      ; (printf "~s\n" acc)
       (check-true (if (member acc '("q0q1q2q3q4q5q6"
+                                    "q0q1q2q3q5q4q6"
                                     "q0q2q1q3q4q5q6"
-                                    "q0q1q2q3q4q6q5"
-                                    "q0q2q1q3q4q6q5")) #t #f))
+                                    "q0q2q1q3q5q4q6")) #t #f))
       ))
+
+   (test-case
+    "Test history->string"
+    ; simple tree
+;    (let ([s (history->string (history-make-test0))])
+;      (printf "~a\n" s)
+;      )
+    ; simple tree
+;    (let ([s (history->string (history-make-test1))])
+;      (printf "~a\n" s)
+;;      ; (check-true (if (member acc '("q0q1q2" "q0q2q1")) #t #f))
+;      )
+    (let ([s (history->string (history-make-test2))])
+      (printf "~a\n" s)
+;      ; (check-true (if (member acc '("q0q1q2" "q0q2q1")) #t #f))
+      )
+    )
    
    )) ;; end history-making suite and tests
 

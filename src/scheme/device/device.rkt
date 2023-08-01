@@ -395,8 +395,8 @@
 
 
 ;; ===== Machine
-;; A machine is a structure consisting of list of instructions and list of
-;; accepting states.
+;; A machine is a structure consisting of list of instructions, a list of
+;; accepting states, and an epsilon map.
 (struct machinestruct (instructions acceptingstates epsilonmap)
   #:transparent #:mutable)
 
@@ -406,7 +406,7 @@
   (machinestruct '() (mutable-seteq) (epsilon-map-make)))
 
 ; machinestruct, instruction  ->  machinestruct
-; Add the instruction to the machine
+; Add the instruction to the machine, at end of the list
 (define (machine-add-instruction machine instruction)
   (set-machinestruct-instructions!
    machine
@@ -559,6 +559,8 @@
            (list nesting (configuration->string (history-node-config node)))))
     )
 
+(define ACCUMULATOR '()) ; store the intermediate strings
+
 ;; history tree node -> string
 ;;  Return reasonable description of tree.  Note: divide the rank in the tree
 ;; by 2 to get the machine's step because steps have two halves, a delta map
@@ -566,8 +568,6 @@
 ;; #:maxrank  Integer  Don't go into any node deeper than this
 ;; #:fullstep-only  Boolean  Don't show the half steps from epsilon moves
 ;; #:deterministic  Boolean  Don't show tree nesting
-(define ACCUMULATOR '())
-
 (define (history->string history
                          #:configuration->string [configuration->string (lambda (x) (~s x))]
                          #:maximumrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
@@ -581,18 +581,19 @@
                 #:deterministic [deterministic #f])
     ; (printf "  h->s: node=~s  rank=~s\n" node rank)
     ; (printf "  h->s (car node)=~s\n" (car node))
-    (printf "  h->s: node=~s  rank=~s acc=~s\n" node rank ACCUMULATOR)
+    ; (printf "  h->s: node=~s  rank=~s acc=~s\n" node rank ACCUMULATOR)
     (when deterministic
       (set! fullstep-only #t))
     (when (< rank maximumrank)
-      (let ([children (history-node-get-children node)])
+      (let ([children (history-node-get-children node)]
+            [childs-rank (+ 1 rank)])
         (for ([child children])
-          (when (or (and fullstep-only (even? rank))
+          (when (or (and fullstep-only (even? childs-rank))
                     (not fullstep-only))
-            (printf "   h->s: child is ~s rank is ~s\n" (history-node-config child) rank)
+            ; (printf "   h->s: child is ~s rank is ~s\n" (history-node-config child) rank)
             (set! ACCUMULATOR
                   (cons (node->string child
-                                      (+ 1 rank)
+                                      childs-rank
                                       #:configuration->string configuration->string 
                                       #:deterministic deterministic)
                         ACCUMULATOR)))
@@ -603,7 +604,10 @@
                 #:deterministic deterministic))))
     ACCUMULATOR)
   
-  (set! ACCUMULATOR (list (node->string history 0))); List of node strings
+  (set! ACCUMULATOR (list (node->string history
+                                        0
+                                        #:configuration->string configuration->string 
+                                        #:deterministic deterministic))); List of node strings
   (string-join (reverse
                 (h->s history
                       0

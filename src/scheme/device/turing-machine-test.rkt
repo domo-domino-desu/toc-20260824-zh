@@ -4,6 +4,21 @@
          "turing-machine.rkt")
 (require rackunit/text-ui) ; to run the test suites
 
+; Example delta map.  Nondeterministic.  Copied from device-test.rkt
+(define (trial-delta-map)
+  (let ([delta-map (delta-map-make)])
+    (delta-map-set! delta-map '(0 "a") '("b" 0))
+    (delta-map-set! delta-map '(0 "b") '("b" 1))
+    (delta-map-set! delta-map '(1 "a") '("b" 1)) ;; one input has two outputs
+    (delta-map-set! delta-map '(1 "a") '("b" 0))
+    (delta-map-set! delta-map '(1 "b") '("a" 0))
+    delta-map))
+
+; Example epsilon-map.  Modified from device-test.rkt
+(define (trial-epsilon-map)
+  (let ([epsilon-map (epsilon-map-make)])
+    (epsilon-map-set! epsilon-map 0 1)
+    epsilon-map))
 
 ;; ===== instruction tests
 (define instruction-tests
@@ -166,9 +181,44 @@
 
 
 ;; ===== history tests
+
+; Make a deep sample history (copied from device-test)
+; q0
+;   | q1
+;      | q3
+;        | q4
+;           | q6
+;        | q5
+;   | q2
+(define (history-make-test2)
+  (let* ([config (list "q0")]
+         [history (history-create config)]
+         [config1 (list "q1")]
+         [node1 (child-node-add! history config1)]
+         [config2 (list "q2")]
+         [node2 (child-node-add! history config2)]
+         [config3 (list "q3")]
+         [node3 (child-node-add! node1 config3)]
+         [config4 (list "q4")]
+         [node4 (child-node-add! node3 config4)]
+         [config5 (list "q5")]
+         [node5 (child-node-add! node3 config5)]
+         [config6 (list "q6")]
+         [node6 (child-node-add! node4 config6)]
+         )
+  history))
+(define (c->s c)
+  (string-append "K" (car c))) ; K is just to make it stand out
+
 (define history-tests
   (test-suite
    "History tests"
+
+   (test-case
+    "Test history->string with different config->string"
+    (let ([history (history-make-test2)])
+      )
+    )
   
    (test-case
     "Test building a history"

@@ -42,7 +42,7 @@
 (struct configurationstruct (state tape) #:transparent #:mutable)
 
 ;; configuration-> string
-;; Return a string representing the tape, for output and debugging
+;; Return a string representing the configuration, for output and debugging
 (define (configuration->string config
                                #:show-current-blank [show-current-blank #f] ; on tape if current is " " then show B
                                #:show-all-blank [show-all-blank #f])   ; on tape show all " "'s to B's
@@ -65,60 +65,60 @@
 
 ;; ===== History
 
-;; history-node -> string
-;; Generate string to show one history node.
-;;  #:deterministic  Boolean  Do not show tree nesting  
-(define (node->string node rank #:deterministic [deterministic #t])
-  ; (printf "node->string  node=~s  rank=~s\n" node rank)
-  (let* ([r (for/list ([i (in-range 2 (+ 1 rank))]) " |  ")] ; indentation for rank
-         [prefix (if (= rank 0) "" " +--")]
-         ; [test0 (printf "  node->string r=~s\n" r)]
-         ; [test1 (printf "  node->string prefix=~s\n" prefix)]
-         ; [test2 (printf "  node->string (append prefix (list r))=~s\n" (append r (list prefix)))]
-         [nesting (if deterministic "" (apply string-append (append r (list prefix))))])
-    ; (printf "    node->string nesting=~s\n" nesting)
-    ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
-    ; (printf "    node->string (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
-    (apply string-append (list nesting (configuration->string (history-node-config node)))))
-    )
-
-;; history tree node -> string
-;;  Return reasonable description of tree.  Divide the rank in the tree by 2
-;; to get the TM's step, because steps have two halves, a delta map and
-;; then epsilon transitions.
-;; #:maxrank  Integer  Don't go into any node deeper than this
-;; #:fullstep-only  Boolean  Don't show the half steps from following epsilon maps
-;; #:deterministic  Boolean  Don't show tree nesting
-(define ACCUMULATOR '())  ; Store list of node strings (There must be a better way to do this)
-
-(define (history->string history
-                         #:maxrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
-                         #:fullstep-only [fullstep-only #f]  ; don't show odd-numbered ranks   
-                         #:deterministic [deterministic #f])  ; don't show nesting and don't show odd-numbered ranks 
- (define (h->s node rank
-               #:maxrank [maximumrank MAXIMUM-RANK]
-               #:fullstep-only [fullstep-only #f]
-               #:deterministic [deterministic #f])
-   (printf "  h->s: node ~s  rank=~s\n"
-           (configuration->string (history-node-config node)) rank)
-   (when deterministic
-     (set! fullstep-only #t))
-   (when (< rank maximumrank)
-     (let ([children (history-node-get-children node)])
-       (for ([child children])
-         (when (or (and fullstep-only (even? rank))
-                   (not fullstep-only))
-           ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
-           (set! ACCUMULATOR (cons (node->string child rank #:deterministic deterministic) ACCUMULATOR)))
-         (h->s child (+ rank 1 ) #:maxrank maximumrank #:deterministic deterministic)))))
-  
-  (set! ACCUMULATOR (list (node->string history 0)))
-  (h->s history 1 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
-  (string-join (reverse ACCUMULATOR) "\n"))
+;;; history-node -> string
+;;; Generate string to show one history node.
+;;;  #:deterministic  Boolean  Do not show tree nesting  
+;(define (node->string node rank #:deterministic [deterministic #t])
+;  ; (printf "node->string  node=~s  rank=~s\n" node rank)
+;  (let* ([r (for/list ([i (in-range 2 (+ 1 rank))]) " |  ")] ; indentation for rank
+;         [prefix (if (= rank 0) "" " +--")]
+;         ; [test0 (printf "  node->string r=~s\n" r)]
+;         ; [test1 (printf "  node->string prefix=~s\n" prefix)]
+;         ; [test2 (printf "  node->string (append prefix (list r))=~s\n" (append r (list prefix)))]
+;         [nesting (if deterministic "" (apply string-append (append r (list prefix))))])
+;    ; (printf "    node->string nesting=~s\n" nesting)
+;    ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
+;    ; (printf "    node->string (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
+;    (apply string-append (list nesting (configuration->string (history-node-config node)))))
+;    )
+;
+;;; history tree node -> string
+;;;  Return reasonable description of tree.  Divide the rank in the tree by 2
+;;; to get the TM's step, because steps have two halves, a delta map and
+;;; then epsilon transitions.
+;;; #:maxrank  Integer  Don't go into any node deeper than this
+;;; #:fullstep-only  Boolean  Don't show the half steps from following epsilon maps
+;;; #:deterministic  Boolean  Don't show tree nesting
+;(define ACCUMULATOR '())  ; Store list of node strings (There must be a better way to do this)
+;
+;(define (history->string history
+;                         #:maxrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
+;                         #:fullstep-only [fullstep-only #f]  ; don't show odd-numbered ranks   
+;                         #:deterministic [deterministic #f])  ; don't show nesting and don't show odd-numbered ranks 
+; (define (h->s node rank
+;               #:maxrank [maximumrank MAXIMUM-RANK]
+;               #:fullstep-only [fullstep-only #f]
+;               #:deterministic [deterministic #f])
+;   (printf "  h->s: node ~s  rank=~s\n"
+;           (configuration->string (history-node-config node)) rank)
+;   (when deterministic
+;     (set! fullstep-only #t))
+;   (when (< rank maximumrank)
+;     (let ([children (history-node-get-children node)])
+;       (for ([child children])
+;         (when (or (and fullstep-only (even? rank))
+;                   (not fullstep-only))
+;           ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
+;           (set! ACCUMULATOR (cons (node->string child rank #:deterministic deterministic) ACCUMULATOR)))
+;         (h->s child (+ rank 1 ) #:maxrank maximumrank #:deterministic deterministic)))))
+;  
+;  (set! ACCUMULATOR (list (node->string history 0)))
+;  (h->s history 1 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
+;  (string-join (reverse ACCUMULATOR) "\n"))
   
  
-(provide node->string
-         history->string)
+;(provide node->string
+;         history->string)
 
   
 ;; ===== Run
@@ -174,8 +174,10 @@
 ;;   the grandchild nodes, the ones post-epsilon moves.
 (define (one-step-one-node history-node delta-map epsilon-closure)
   (printf "======== one-step-one-node called\n")
-  ;(printf "in one-step-one-node history=~a\n" (history->string history-node))
-  ;(printf "                     delta-map=~s\n" (delta-map->string delta-map))
+  (printf "in one-step-one-node history=~a\n" (history->string
+                                               history-node
+                                               #:configuration->string configuration->string))
+  (printf "                     delta-map=~a\n" (delta-map->string delta-map))
   (let* ([config (history-node-config history-node)]
          [current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
@@ -250,7 +252,7 @@
       (when (not (null? next-level))
         (computation-history-helper next-level (+ 1 rank-number) delta-map epsilon-closure #:maxrank maximumrank)))))
 
-(define (computation-history-make turing-machine initial-tape #:maxrank [maximumrank MAXIMUM-RANK])
+(define (computation-history-make turing-machine initial-tape #:maximumrank [maximumrank MAXIMUM-RANK])
   (let* ([delta-map (tm->delta-map turing-machine)]
          [epsilon-map (machinestruct-epsilonmap turing-machine)]
          [all-states (all-states-get delta-map epsilon-map)]

@@ -534,7 +534,7 @@
          [node5 (child-node-add! node2 config3)])
   history))
 
-; Make a deep sample history
+; Make a deep sample history (copied from device-test)
 ; q0
 ;   | q1
 ;      | q3
@@ -585,9 +585,26 @@
          )
     history))
 
+; Make a deterministic history
+(define (history-make-test5)
+  (let* ([config (list "q0")]
+         [history (history-create config)]
+         ; rank 1
+         [node-1 (history-node-add! history (history-node-make '("q0a")))]
+         ; rank 2
+         [node-2 (history-node-add! node-1 (history-node-make '("q1")))]
+         ; rank 3
+         [node-3 (history-node-add! node-2 (history-node-make '("q1a")))]
+         ; rank 4
+         [node-4 (history-node-add! node-3 (history-node-make '("q2")))]
+         ; rank 5
+         [node-5 (history-node-add! node-4 (history-node-make '("q2a")))]
+         )
+    history))
+
 ; Test function for history->string
-(define (configuration->string c)
-  (~s (car c)))
+(define (c->s c)
+  (string-append "K" (car c))) ; The K is just testable
 
 (define history-tests
   (test-suite
@@ -693,20 +710,39 @@
 
    (test-case
     "Test history->string"
-    ; simple tree
-;    (let ([s (history->string (history-make-test0))])
-;      (printf "~a\n" s)
+    ; simple sample history tree
+    (let ([s (history->string (history-make-test0))])
+      ; (printf "~s\n" s)
+      (check-true (if (member s '("(\"q0\")\n +--(\"q1\")\n +--(\"q2\")"
+                                  "(\"q0\")\n +--(\"q2\")\n +--(\"q1\")"))
+                      #t #f))
+      )
+    ; deeper sample history tree
+    (let ([s (history->string (history-make-test1))])
+      ; (printf "~s\n" s)
+      (check-true (if (member s '("(\"q0\")\n +--(\"q1\")\n +--(\"q2\")\n |   +--(\"q3\")"
+                                  "(\"q0\")\n +--(\"q2\")\n |   +--(\"q3\")\n +--(\"q1\")"))
+                      #t #f))      
+      )
+;    (let ([s (history->string (history-make-test2))])
+;      (printf "~s\n" s)
 ;      )
-    ; simple tree
-;    (let ([s (history->string (history-make-test1))])
-;      (printf "~a\n" s)
-;;      ; (check-true (if (member acc '("q0q1q2" "q0q2q1")) #t #f))
-;      )
-    (let ([s (history->string (history-make-test2))])
-      (printf "~a\n" s)
-;      ; (check-true (if (member acc '("q0q1q2" "q0q2q1")) #t #f))
+    ; determinstic sample history tree, deterministic flag on
+    (let ([s (history->string (history-make-test5) #:deterministic #t)])
+      ; (printf "~s\n" s)
+      (check-true (if (member s '("(\"q0\")\n(\"q1\")\n(\"q2\")"
+                                  ))
+                      #t #f))      
+      )
+    ; change the configuation->string function
+    (let ([s (history->string (history-make-test0) #:configuration->string c->s)])
+      ; (printf "~s\n" s)
+      (check-true (if (member s '("Kq0\n +--Kq1\n +--Kq2"
+                                  "Kq0\n +--Kq2\n +--Kq1"))
+                      #t #f))
       )
     )
+   
    
    )) ;; end history-making suite and tests
 

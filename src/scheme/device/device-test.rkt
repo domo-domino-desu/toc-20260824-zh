@@ -941,7 +941,7 @@
 
 ;; ===== Run the tests; comment out ones not being worked-on
 (run-tests power-map-tests)
-;(run-tests delta-tests)
+(run-tests delta-tests)
 ;(run-tests epsilon-tests)
 ;(run-tests tape-tests)
 ;(run-tests stack-tests)

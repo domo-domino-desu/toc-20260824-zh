@@ -101,13 +101,13 @@
 
 ;; set of lists, set of lists  ->  set of lists
 ;; Apply the power map to a set of inputs
-(define (power-multimap power-map input-set)
+(define (power-multimap power-map input-set [errorflag POWER-MAP-NOKEY])
   (if (power-multimap-keys? power-map input-set)
       (let ([output-set (mutable-set)])
         (for ([k input-set])
           (set-union! output-set (power-map-get power-map k)))
         output-set)
-      POWER-MAP-NOKEY))
+      errorflag))
 
 
 (provide power-map-make
@@ -167,19 +167,12 @@
 ;; set of lists, key  ->  boolean
 ;; Is every key in the set of inputs a delta-map key?
 (define (delta-multimap-keys? delta-map input-set)
-  (andmap identity (for/list ([k input-set])
-                     (delta-map-key? delta-map k))  ; apply `and' to the list
-          ))
+  (power-multimap-keys? delta-map input-set))
 
 ;; set of lists  ->  set of lists
 ;; Apply the delta map to a set of inputs
 (define (delta-multimap delta-map input-set)
-  (if (delta-multimap-keys? delta-map input-set)
-      (let ([output-set (mutable-set)])
-        (for ([k input-set])
-          (set-union! output-set (delta delta-map k)))
-        output-set)
-      DELTA-NOKEY))
+  (power-multimap delta-map input-set DELTA-NOKEY))
 
 
 

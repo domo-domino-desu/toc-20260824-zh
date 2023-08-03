@@ -34,7 +34,13 @@
     (let ([pm (power-map-make)]
           [key 2]
           [value 4])
+      (power-map-add-key! pm 12)
+      (check-true (power-map-key? pm 12))
+      (check-true (set-mutable? (power-map-get pm 12)))
+      (check-true (set=? (power-map-get pm 12) (mutable-set))) ; empty set
       (power-map-set! pm key value)
+      (check-true (power-map-key? pm key))
+      (check-false (power-map-key? pm (- key 1)))
       (check-true (set-mutable? (power-map-get pm key)))
       (check-true (set-member? (power-map-get pm key) value))
       )
@@ -58,24 +64,97 @@
 
    (test-case
     "Test set->string"
-    (let ([s (mutable-set 3 4 5)])
-      ;(printf "set->string=~s\n" (set->string s))
-      ;(printf "set->string=~s\n" (set->string s (lambda (x) (format "elet=~s" x))))
+    (let ([s (mutable-set 3 4)])
       (check-true (string? (set->string s)))
+      ; (printf "set->string=~s\n" (set->string s))
+      (check-true (if (member (set->string s) (list "{ 4 3 }"
+                                                    "{ 3 4 }")) #t #f))
+      )
+    (let ([s (mutable-set 2)])
+      (check-true (string? (set->string s)))
+      ; (printf "set->string=~s\n" (set->string s))
+      (check-true (string=? (set->string s) "{ 2 }"))
+      )
+    (let ([s (mutable-set)])
+      (check-true (string? (set->string s)))
+      ; (printf "set->string=~s\n" (set->string s))
+      (check-true (string=? (set->string s) "{  }"))
       )
     );; end test-case
 
    (test-case
     "Test power-map->string"
     (let ([pm (trial-power-map)])
-      ;(printf "power-map->string=~s\n" (power-map->string pm))
-      ;(printf "power-map->string=~s\n" (power-map->string pm (lambda (x) (format "key=~s" x)) (lambda (x) (format "v=~a" x))))
+      ; (printf "power-map->string=~s\n" (power-map->string pm))
       (check-true (string? (power-map->string pm)))
+      (check-true (if (member (power-map->string pm)
+                              (list "0 -> { b }\n1 -> { b a }\n2 -> { a }\n"
+                                    "0 -> { b }\n1 -> { a b }\n2 -> { a }\n"))
+                      #t
+                      #f))
+      )
+    (let ([pm (trial-power-map)])
+      (power-map-add-key! pm 3)  ; empty value
+      ; (printf "power-map->string=~s\n" (power-map->string pm))
+      (check-true (if (member
+                       (power-map->string pm)
+                       (list "0 -> { b }\n1 -> { b a }\n2 -> { a }\n3 -> {  }\n"
+                             "0 -> { b }\n1 -> { a b }\n2 -> { a }\n3 -> {  }\n"))
+                      #t
+                      #f))
+      )
+    (let ([pm (power-map-make)])  ; empty power map
+      ; (printf "power-map->string=~s\n" (power-map->string pm))
+      (check-true (if (string=? (power-map->string pm) "") #t #f))
       )
     );; end test-case
 
+   (test-case
+    "Test power-multimap-keys?"
+    (let ([power-map (trial-power-map)]
+          [input-set (mutable-set 0 2)]) ; 
+      (check-true (power-multimap-keys? power-map input-set))
+      (check-true (power-multimap-keys? power-map (mutable-set))) ; no bad keys in empty set
+      (check-false (power-multimap-keys? power-map (mutable-set 3))) ;
+      )
+    );; end test-case
+
+   (test-case
+    "Test power-multimap"
+    (let* ([power-map (trial-power-map)] ; generic case
+           [input-set (mutable-set 0 1)]
+           [output-set (power-multimap power-map input-set)])
+      ; (printf "output set=~s\n" output-set)
+      (check-true (set=? (mutable-set "a" "b")
+                         output-set))
+      )
+    (let* ([power-map (trial-power-map)] ; one element input 
+           [input-set (mutable-set 0)]
+           [output-set (power-multimap power-map input-set)])
+      ; (printf "output set=~s\n" output-set)
+      (check-true (set=? (mutable-set "b")
+                         output-set))
+      )
+    (let* ([power-map (trial-power-map)] ; empty set input 
+           [input-set (mutable-set)]
+           [output-set (power-multimap power-map input-set)])
+      ; (printf "output set=~s\n" output-set)
+      (check-true (set=? (mutable-set)
+                         output-set))
+      )
+    (let* ([power-map (trial-power-map)] ; bad key
+           [input-set (mutable-set 3)]
+           [output (power-multimap power-map input-set)])
+      ; (printf "output=~s\n" output)
+      (check-true (equal? POWER-MAP-NOKEY
+                          output))
+      )
+    );; end test-case
+    
+
    )) ;; end power-map-tests suite and tests
   
+
 
 ;; ===== delta tests
 
@@ -109,6 +188,12 @@
       (check-true (set-member? (delta delta-map input) other-output))
       (check-true (set-member? (delta delta-map other-input) output))
       )
+    (let ([delta-map (delta-map-make)] ; small delta map
+          [input 42])
+      (delta-map-add-key! delta-map input)
+      (check-true (delta-map-key? delta-map input))
+      (check-true (set=? (delta delta-map input) (mutable-set)))
+      )
     );; end test-case
   
    (test-case
@@ -126,8 +211,6 @@
    (test-case
     "Another test delta function"
     (let ([delta-map (trial-delta-map)])
-      (printf "delta-map=~s\n" delta-map)
-      (printf "delta delta-map '(0 \"a\")=~s\n" (delta delta-map '(0 "a")))
       (check-true (set-member? (delta delta-map '(0 "a")) '("b" 0)))
       (check-equal? (delta delta-map '(3 "a")) DELTA-NOKEY)
       )
@@ -153,8 +236,42 @@
       (delta-map-set! delta-map input output)
       (delta-map-set! delta-map input other-output)
       (delta-map-set! delta-map other-input other-output)
-      ; (printf "DELTA: ~s\n" (delta-map->string delta-map))
       (check-true (string? (delta-map->string delta-map)))
+      ; (printf "delta map: ~s\n" (delta-map->string delta-map))
+      (check-true (if (member
+                       (delta-map->string delta-map)
+                       (list "(0 a) -> { (1 z) (1 x) }\n(3 b) -> { (1 x) }\n"
+                             "(0 a) -> { (1 x) (1 z) }\n(3 b) -> { (1 x) }\n"))
+                      #t
+                      #f))
+      )
+    );; end test-case
+
+   (test-case
+    "Test delta-multimap-keys?"
+    (let ([delta-map (trial-delta-map)]
+          [input-set (mutable-set (list 0 "a") (list 0 "b"))]) ; 
+      (check-true (delta-multimap-keys? delta-map input-set))
+      (check-true (delta-multimap-keys? delta-map (mutable-set))) ; no bad keys in empty set
+      (check-false (delta-multimap-keys? delta-map (mutable-set '(0 "c")))) ;
+      )
+    );; end test-case
+
+   (test-case
+    "Test delta-multimap"
+    (let* ([delta-map (trial-delta-map)]
+           [input-set (mutable-set (list 0 "a") (list 0 "b"))]
+           [output-set (delta-multimap delta-map input-set)])
+      ; (printf "output set=~s\n" output-set)
+      (check-true (set=? (mutable-set '("b" 0) '("b" 1))
+                         output-set))
+      )
+    (let* ([delta-map (trial-delta-map)]
+           [input-set (mutable-set (list 0 "a") (list 0 "b"))]
+           [output-set (delta-multimap delta-map input-set)])
+      ; (printf "output set=~s\n" output-set)
+      (check-true (set=? (mutable-set '("b" 0) '("b" 1))
+                         output-set))
       )
     );; end test-case
     
@@ -823,11 +940,11 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-;(run-tests power-map-tests)
+(run-tests power-map-tests)
 ;(run-tests delta-tests)
 ;(run-tests epsilon-tests)
 ;(run-tests tape-tests)
 ;(run-tests stack-tests)
-(run-tests history-tests)
+;(run-tests history-tests)
 ;(run-tests machine-tests)
 ;(run-tests parse-tests)

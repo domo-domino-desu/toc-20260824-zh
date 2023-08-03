@@ -47,13 +47,26 @@
 (define (power-map-make)
   (make-hash))
 
+;; list  ->  boolean
+;; Is the input in the domain of the power map?
+(define (power-map-key? power-map k)
+  (if (member k (hash-keys power-map))
+      #t
+      #f))
+
+;; hash, key  ->  void
+;; Make sure the power map has the given key
+(define (power-map-add-key! power-map k)
+  (when (not (power-map-key? power-map k))
+    (hash-set! power-map k (mutable-set))))
+
 ;; list, list -> void
 ;; Add the value to the set that is power-map[k], or if no set there
 ;; create a new set containing v
 (define (power-map-set! power-map k v)
-  (if (member k (hash-keys power-map))
-      (set-add! (hash-ref power-map k) v)
-      (hash-set! power-map k (mutable-set v))))
+  (if (power-map-key? power-map k)
+      (set-add! (hash-ref power-map k) v)  ; add to existing set
+      (hash-set! power-map k (mutable-set v)))) ; put in new set
 
 ;; Signifies that a power-map has no such key
 (define POWER-MAP-NOKEY "No such key")
@@ -76,12 +89,37 @@
                                    (set->string (hash-ref power-map k)
                                                 value->string))))))
 
+;; ... power-multimap ...
+;; Maps sets of inputs to sets of outputs
+
+;; set of lists, key  ->  boolean
+;; Is every key in the set of inputs a delta-map key?
+(define (power-multimap-keys? power-map input-set)
+  (andmap identity (for/list ([k input-set])
+                     (power-map-key? power-map k))  ; apply `and' to the list
+          ))
+
+;; set of lists, set of lists  ->  set of lists
+;; Apply the power map to a set of inputs
+(define (power-multimap power-map input-set)
+  (if (power-multimap-keys? power-map input-set)
+      (let ([output-set (mutable-set)])
+        (for ([k input-set])
+          (set-union! output-set (power-map-get power-map k)))
+        output-set)
+      POWER-MAP-NOKEY))
+
+
 (provide power-map-make
+         power-map-key?
+         power-map-add-key!
          power-map-set!
          POWER-MAP-NOKEY
          power-map-get
          set->string
-         power-map->string)
+         power-map->string
+         power-multimap-keys?
+         power-multimap)
 
 
 ;; ===== DELTA
@@ -93,7 +131,18 @@
 (define (delta-map-make)
   (power-map-make))
 
-;; list, list -> void
+;; list, key
+;; Is the key in the domain of the delta-map?
+(define (delta-map-key? delta-map key)
+  (power-map-key? delta-map key))
+
+;; hash, key  ->  void
+;; Ensure that the delta map has the given key.  If it does not already
+;; have that key then make the value be the empty set.
+(define (delta-map-add-key! delta-map key)
+  (power-map-add-key! delta-map key))
+
+;; list, key, value -> void
 ;; Add the value to the set that is delta-map[k], or create a new set if
 ;; none there
 (define (delta-map-set! delta-map key value)
@@ -115,11 +164,34 @@
   (power-map->string delta-map key->string value->string))
 
 
+;; set of lists, key  ->  boolean
+;; Is every key in the set of inputs a delta-map key?
+(define (delta-multimap-keys? delta-map input-set)
+  (andmap identity (for/list ([k input-set])
+                     (delta-map-key? delta-map k))  ; apply `and' to the list
+          ))
+
+;; set of lists  ->  set of lists
+;; Apply the delta map to a set of inputs
+(define (delta-multimap delta-map input-set)
+  (if (delta-multimap-keys? delta-map input-set)
+      (let ([output-set (mutable-set)])
+        (for ([k input-set])
+          (set-union! output-set (delta delta-map k)))
+        output-set)
+      DELTA-NOKEY))
+
+
+
 (provide delta-map-make
+         delta-map-key?
+         delta-map-add-key!
          delta-map-set!
          DELTA-NOKEY
          delta
-         delta-map->string)
+         delta-map->string
+         delta-multimap-keys?
+         delta-multimap)
 
 
 ;; ===== EPSILON MAP

@@ -23,7 +23,24 @@
 (define power-map-tests
   (test-suite
    "initialize power maps"
-  
+
+;   (test-case
+;    "Create a power map as a procedure"
+;    (check-true (hash? (power-map-hash-initialize)))
+;    (check-true (hash? (power-map-hash-initialize '(1 2 3))))
+;    (let* ([pm-hash (power-map-hash-initialize)])
+;      (check-true (procedure? (power-map-create pm-hash "Test0"))))
+;    (let* ([pm-hash (power-map-hash-initialize)]
+;           [kk (hash-set! pm-hash 0 (mutable-set 1))])
+;      (check-true (procedure? (power-map-create pm-hash "Test1"))))
+;    (let* ([pm-hash (power-map-hash-initialize)]
+;           [kk (hash-set! pm-hash 0 (mutable-set 1))]
+;           [pm (power-map-create pm-hash "Test2")]) 
+;      (check-true (procedure? pm))
+;      (printf "pm 0=~s pm-hash=~s\n" (pm 0) pm-hash)
+;      (check-true (set=? (pm 0) (mutable-set 1))))
+;    ) ; end test-case
+   
    (test-case
     "Test making power-map"
     (check-true (hash? (power-map-make)))
@@ -123,28 +140,28 @@
     "Test power-multimap"
     (let* ([power-map (trial-power-map)] ; generic case
            [input-set (mutable-set 0 1)]
-           [output-set (power-multimap power-map input-set)])
+           [output-set (power-multimap-get power-map input-set)])
       ; (printf "output set=~s\n" output-set)
       (check-true (set=? (mutable-set "a" "b")
                          output-set))
       )
     (let* ([power-map (trial-power-map)] ; one element input 
            [input-set (mutable-set 0)]
-           [output-set (power-multimap power-map input-set)])
+           [output-set (power-multimap-get power-map input-set)])
       ; (printf "output set=~s\n" output-set)
       (check-true (set=? (mutable-set "b")
                          output-set))
       )
     (let* ([power-map (trial-power-map)] ; empty set input 
            [input-set (mutable-set)]
-           [output-set (power-multimap power-map input-set)])
+           [output-set (power-multimap-get power-map input-set)])
       ; (printf "output set=~s\n" output-set)
       (check-true (set=? (mutable-set)
                          output-set))
       )
     (let* ([power-map (trial-power-map)] ; bad key
            [input-set (mutable-set 3)]
-           [output (power-multimap power-map input-set)])
+           [output (power-multimap-get power-map input-set)])
       ; (printf "output=~s\n" output)
       (check-true (equal? POWER-MAP-NOKEY
                           output))
@@ -283,11 +300,20 @@
 ; return an epsilon-map
 ; useful for test setups
 (define (trial-epsilon-map)
+  ; 0 -> {0,1}  1 -> {1}  2 -> {3}
   (let ([epsilon-map (epsilon-map-make)])
     (epsilon-map-set! epsilon-map 0 0)
     (epsilon-map-set! epsilon-map 0 1)
     (epsilon-map-set! epsilon-map 1 1)
     (epsilon-map-set! epsilon-map 2 3)
+    epsilon-map))
+(define (trial-epsilon-map1)
+  ; 0 -> {0,1}  1 -> {3}  2 -> {0}
+  (let ([epsilon-map (epsilon-map-make)])
+    (epsilon-map-set! epsilon-map 0 0)
+    (epsilon-map-set! epsilon-map 0 1)
+    (epsilon-map-set! epsilon-map 1 3)
+    (epsilon-map-set! epsilon-map 2 0)
     epsilon-map))
 
 (define epsilon-tests
@@ -356,8 +382,7 @@
       (check-true (string? (epsilon-map->string epsilon-map)))
       )
     );; end test-case
-  
-  
+    
    (test-case
     "Test epsilon-closure-make"
     ; No iteration needed
@@ -393,6 +418,64 @@
         (check-true (set-member? (power-map-get e 1) 1))
         (check-true (set-member? (power-map-get e 2) 2))
         )
+      )
+    (let* ([epsilon-map (trial-epsilon-map)]
+           [e (epsilon-closure-make epsilon-map '(0 1 2 3))])
+      ; (printf "epsilon-map: ~s\n" (epsilon-map->string epsilon-map))
+      ; (printf "epsilon-closure: ~s\n" (epsilon-closure->string e))
+      (check-true (set=? (epsilon-closure-get e 0)
+                         (mutable-set 0 1)))
+      (check-true (set=? (epsilon-closure-get e 1)
+                         (mutable-set 1)))
+      (check-true (set=? (epsilon-closure-get e 2)
+                         (mutable-set 2 3)))
+      (check-true (set=? (epsilon-closure-get e 3)
+                         (mutable-set 3)))
+      (check-equal? (epsilon-closure-get e 4) EPSILON-NOKEY)
+      )
+    (let* ([epsilon-map (trial-epsilon-map1)]
+           [e (epsilon-closure-make epsilon-map '(0 1 2 3))])
+      ; (printf "epsilon-map: ~s\n" (epsilon-map->string epsilon-map))
+      ; (printf "epsilon-closure: ~s\n" (epsilon-closure->string e))
+      (check-true (set=? (epsilon-closure-get e 0)
+                         (mutable-set 0 1 3)))
+      (check-true (set=? (epsilon-closure-get e 1)
+                         (mutable-set 1 3)))
+      (check-true (set=? (epsilon-closure-get e 2)
+                         (mutable-set 0 1 2 3)))
+      (check-true (set=? (epsilon-closure-get e 3)
+                         (mutable-set 3)))
+      (check-equal? (epsilon-closure-get e 4) EPSILON-NOKEY)
+      )
+    );; end test-case
+
+   (test-case
+    "Test epsilon-closure-multimap-keys?"
+    (let* ([epsilon-map (trial-epsilon-map1)]
+           [e (epsilon-closure-make epsilon-map '(0 1 2 3))])
+      ; (printf "epsilon-map: ~s\n" (epsilon-map->string epsilon-map))
+      ; (printf "epsilon-closure: ~s\n" (epsilon-closure->string e))
+      (check-true (epsilon-closure-multimap-keys? e (mutable-set 0 1)))
+      (check-true (epsilon-closure-multimap-keys? e (mutable-set))) ; no bad keys in empty set
+      (check-false (epsilon-closure-multimap-keys? e (mutable-set 1 4))) ;
+      )
+    );; end test-case
+
+   (test-case
+    "Test epsilon-closure-multimap"
+    (let* ([epsilon-map (trial-epsilon-map)]
+           [input-set (mutable-set 0 3)]
+           [output-set (epsilon-closure-multimap epsilon-map input-set)])
+      (printf "output set=~s\n" output-set)
+      (check-true (set=? (mutable-set 0 1 3)
+                         output-set))
+      )
+    (let* ([epsilon-closure-map (trial-epsilon-map)]
+           [input-set (mutable-set 1 2)]
+           [output-set (epsilon-closure-multimap epsilon-closure-map input-set)])
+      (printf "output set=~s\n" output-set)
+      (check-true (set=? (mutable-set 0 1 2 3)
+                         output-set))
       )
     );; end test-case
 
@@ -940,9 +1023,9 @@
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
-(run-tests power-map-tests)
-(run-tests delta-tests)
-;(run-tests epsilon-tests)
+;(run-tests power-map-tests)
+;(run-tests delta-tests)
+(run-tests epsilon-tests)
 ;(run-tests tape-tests)
 ;(run-tests stack-tests)
 ;(run-tests history-tests)

@@ -236,6 +236,23 @@
     epsilon-nodes))
 
 
+(define (delta-yields delta-map history-node)
+  (printf "======== delta-yields called\n")
+  (printf "  history-node=~a\n" (history->string
+                                 history-node
+                                 #:configuration->string configuration->string))
+  (let* ([config (history-node-config history-node)]
+         [current-state (configurationstruct-state config)]
+         [tape (configurationstruct-tape config)]
+         [current-token (get-tape-current tape)]
+         [next-set (delta
+                    delta-map
+                    (list current-state current-token))] ; a set or DELTA-NOKEY
+         )
+    next-set))
+
+(define (epsilon-yields epsilon-closure ))
+
 (define MAXIMUM-TURING-MACHINE-RANK 100)
 
 (define (computation-history-helper level-nodelist rank-number delta-map epsilon-closure #:maxrank [maximumrank MAXIMUM-TURING-MACHINE-RANK])

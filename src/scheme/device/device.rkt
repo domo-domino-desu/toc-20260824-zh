@@ -41,6 +41,32 @@
 ;; All three of delta maps, epsilon maps, and epsilon closure maps send keys
 ;;   to sets of values.
 
+;  These make the power-map into a function, but then you don't have
+; easy access to the keys, which you want for multimaps
+;; optional list or set  ->  hash
+;; Create a power map, with all domain elets associated with a mutable set
+;(define (power-map-hash-initialize [domain '()])
+;  (let ([pm-hash (make-hash)])
+;    (for ([d domain])
+;      (hash-set! pm-hash d (mutable-set)))
+;    pm-hash))
+;
+;;; hash, key, mutable-set  ->  hash
+;;; Functionally add the k->v binding to the hash
+;(define (power-map-hash-set h k v)
+;  (cond
+;    [(not (hash? h)) "ERROR: power-map-hash-set! h is not a hash"]
+;    [(not (set-mutable? v)) "ERROR: power-map-hash-set! v is not a mutable set"]
+;    [else (hash-set h k v)]))
+;
+;;; hash, string, optional set or list  ->  procedure of one arg  
+;(define (power-map-create hash-set error-value [domain '()])
+;  (let ([pm-hash (power-map-hash-initialize domain)])
+;    (for ([d (hash-keys hash-set)])
+;      (hash-set! pm-hash d (hash-ref hash-set d)))
+;    (lambda (input)
+;      (printf "  power-map-create input=~s pm-hash=~s\n" input pm-hash)
+;      (hash-ref pm-hash input error-value))))
 
 ;; void -> hash
 ;; Make a new finite function key -> set of values
@@ -90,7 +116,8 @@
                                                 value->string))))))
 
 ;; ... power-multimap ...
-;; Maps sets of inputs to sets of outputs
+;; Maps sets of inputs to sets of outputs, by taking the union
+;; of the outputs
 
 ;; set of lists, key  ->  boolean
 ;; Is every key in the set of inputs a delta-map key?
@@ -101,7 +128,7 @@
 
 ;; set of lists, set of lists  ->  set of lists
 ;; Apply the power map to a set of inputs
-(define (power-multimap power-map input-set [errorflag POWER-MAP-NOKEY])
+(define (power-multimap-get power-map input-set [errorflag POWER-MAP-NOKEY])
   (if (power-multimap-keys? power-map input-set)
       (let ([output-set (mutable-set)])
         (for ([k input-set])
@@ -110,7 +137,8 @@
       errorflag))
 
 
-(provide power-map-make
+(provide
+         power-map-make
          power-map-key?
          power-map-add-key!
          power-map-set!
@@ -119,7 +147,7 @@
          set->string
          power-map->string
          power-multimap-keys?
-         power-multimap)
+         power-multimap-get)
 
 
 ;; ===== DELTA
@@ -172,7 +200,7 @@
 ;; set of lists  ->  set of lists
 ;; Apply the delta map to a set of inputs
 (define (delta-multimap delta-map input-set)
-  (power-multimap delta-map input-set DELTA-NOKEY))
+  (power-multimap-get delta-map input-set DELTA-NOKEY))
 
 
 
@@ -219,7 +247,7 @@
 ;; Find the epsilon closure of the epsilon map
 (define (epsilon-closure-make epsilon-map all-states)
   (let ([epsilon-closure (power-map-make)])
-    ; First start building E(q) with E(q,0)= { q }
+    ; Start building E(q) with E(q,i)= { q } for i=0
     (for ([q all-states])
       (power-map-set! epsilon-closure q q))
     ; (printf "epsilon-closure-make epsilon-closure initial ~s\n" epsilon-closure)
@@ -234,7 +262,7 @@
            (printf "ERROR: Epsilon closure took too many steps ~a\n" i)))
         (set! change-flag #f)
         (for ([q all-states])
-          ; (printf "epsilon-closure-make q=~s\n  (power-map-get epsilon-closure q)=~s\n" q (power-map-get epsilon-closure q))
+          ; (printf "epsilon-closure-make state q=~s\n  (power-map-get epsilon-closure q)=~s\n" q (power-map-get epsilon-closure q))
           (let* ([E-q-i (power-map-get epsilon-closure q)]
                  [E-q-iplus1 E-q-i])
             (for ([s E-q-i])
@@ -244,10 +272,31 @@
               (set! change-flag #t))))))
       epsilon-closure))
 
+;; epsilon-clusure, key  ->  set of values
+;; Get the values for which there is an epsilon move from the input
+(define (epsilon-closure-get epsilon-closure input)
+  (power-map-get epsilon-closure input EPSILON-NOKEY))
+
 ;; epsilon-closure -> string
 ;; Give a reasonable representation
 (define (epsilon-closure->string epsilon-closure)
   (power-map->string epsilon-closure))
+
+;; set of lists, key  ->  boolean
+;; Is every key in the set of inputs a delta-map key?
+(define (epsilon-closure-multimap-keys? epsilon-closure-map input-set)
+  (power-multimap-keys? epsilon-closure-map input-set))
+
+;; set of lists  ->  set of lists
+;; Apply the delta map to a set of inputs
+(define (epsilon-closure-multimap epsilon-closure-map input-set)
+  (power-multimap-get epsilon-closure-map input-set EPSILON-NOKEY))
+
+;; set of lists  ->  set of lists
+;; Apply the delta map to a set of inputs
+(define (epsilon-closure-multimap-get epsilon-closure-multimap input)
+  (power-multimap-get epsilon-closure-multimap input EPSILON-NOKEY))
+
 
 (provide epsilon-map-make
          epsilon-map-set!
@@ -255,7 +304,11 @@
          epsilon-map-get
          epsilon-map->string
          epsilon-closure-make
-         epsilon-closure->string )
+         epsilon-closure-get
+         epsilon-closure->string
+         epsilon-closure-multimap-keys?
+         epsilon-closure-multimap
+         )
 
 ;; ===== tape
 

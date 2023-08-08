@@ -521,7 +521,7 @@
 ; no input  ->  machinestruct
 ; Create an empty machine.
 (define (machine-create)
-  (machinestruct '() (mutable-seteq) (epsilon-map-make)))
+  (machinestruct '() (mutable-set) (epsilon-map-make)))
 
 ; machinestruct, instruction  ->  machinestruct
 ; Add the instruction to the machine, at end of the list

@@ -63,65 +63,27 @@
          configurationstruct-tape
          configuration->string)
 
-;; ===== History
+;; ========= Turing machines
 
-;;; history-node -> string
-;;; Generate string to show one history node.
-;;;  #:deterministic  Boolean  Do not show tree nesting  
-;(define (node->string node rank #:deterministic [deterministic #t])
-;  ; (printf "node->string  node=~s  rank=~s\n" node rank)
-;  (let* ([r (for/list ([i (in-range 2 (+ 1 rank))]) " |  ")] ; indentation for rank
-;         [prefix (if (= rank 0) "" " +--")]
-;         ; [test0 (printf "  node->string r=~s\n" r)]
-;         ; [test1 (printf "  node->string prefix=~s\n" prefix)]
-;         ; [test2 (printf "  node->string (append prefix (list r))=~s\n" (append r (list prefix)))]
-;         [nesting (if deterministic "" (apply string-append (append r (list prefix))))])
-;    ; (printf "    node->string nesting=~s\n" nesting)
-;    ; (printf "    (history-node-config node)=~s\n" (history-node-config node))
-;    ; (printf "    node->string (configuration->string (history-node-config node))=~s\n" (configuration->string (history-node-config node)))
-;    (apply string-append (list nesting (configuration->string (history-node-config node)))))
-;    )
-;
-;;; history tree node -> string
-;;;  Return reasonable description of tree.  Divide the rank in the tree by 2
-;;; to get the TM's step, because steps have two halves, a delta map and
-;;; then epsilon transitions.
-;;; #:maxrank  Integer  Don't go into any node deeper than this
-;;; #:fullstep-only  Boolean  Don't show the half steps from following epsilon maps
-;;; #:deterministic  Boolean  Don't show tree nesting
-;(define ACCUMULATOR '())  ; Store list of node strings (There must be a better way to do this)
-;
-;(define (history->string history
-;                         #:maxrank [maximumrank MAXIMUM-RANK]  ; don't go deeper than this
-;                         #:fullstep-only [fullstep-only #f]  ; don't show odd-numbered ranks   
-;                         #:deterministic [deterministic #f])  ; don't show nesting and don't show odd-numbered ranks 
-; (define (h->s node rank
-;               #:maxrank [maximumrank MAXIMUM-RANK]
-;               #:fullstep-only [fullstep-only #f]
-;               #:deterministic [deterministic #f])
-;   (printf "  h->s: node ~s  rank=~s\n"
-;           (configuration->string (history-node-config node)) rank)
-;   (when deterministic
-;     (set! fullstep-only #t))
-;   (when (< rank maximumrank)
-;     (let ([children (history-node-get-children node)])
-;       (for ([child children])
-;         (when (or (and fullstep-only (even? rank))
-;                   (not fullstep-only))
-;           ; (printf "   h->s: child is ~s\n" (configuration->string (history-node-config child)))
-;           (set! ACCUMULATOR (cons (node->string child rank #:deterministic deterministic) ACCUMULATOR)))
-;         (h->s child (+ rank 1 ) #:maxrank maximumrank #:deterministic deterministic)))))
-;  
-;  (set! ACCUMULATOR (list (node->string history 0)))
-;  (h->s history 1 #:maxrank maximumrank #:fullstep-only fullstep-only #:deterministic deterministic)
-;  (string-join (reverse ACCUMULATOR) "\n"))
-  
- 
-;(provide node->string
-;         history->string)
+;; void  -> void
+;; Create a new machine
+(define (tm-create)
+  (machine-create))
 
-  
-;; ===== Run
+;; machinestruct, list  ->  void
+;; Add an instruction to the list in the machine
+(define (tm-add-instruction tm instruction)
+  (machine-add-instruction tm instruction))
+
+;; machinestruct, natural number  ->  void
+;; Add an accepting state to the list inside the machine
+(define (tm-add-accepting-state tm accepting-state)
+  (machine-add-accepting-state tm accepting-state))
+
+;; machinestruct, natural number, natural number
+;; Add the epsilon move to the list inside the machine
+(define (tm-add-epsilon tm key value)
+  (machine-add-epsilon tm key value))
 
 ;; machinestruct -> string
 ;; Return a representation of the Turing machine
@@ -168,6 +130,8 @@
     [else
      (configurationstruct next-state (change-head-token tape next-action))])
   )
+  
+;; ===== Run
 
 ;; history-node delta-map epsilon-closure -> list of nodes
 ;; From a history node, find all descendents via the delta-map, then take epsilon closure.  Return list of
@@ -235,23 +199,34 @@
         ))
     epsilon-nodes))
 
-
-(define (delta-yields delta-map history-node)
-  (printf "======== delta-yields called\n")
-  (printf "  history-node=~a\n" (history->string
-                                 history-node
-                                 #:configuration->string configuration->string))
-  (let* ([config (history-node-config history-node)]
-         [current-state (configurationstruct-state config)]
+;; hash, list  ->  list
+;; Return list of next configurations related to the input config by `yields'
+;; via the delta map (without epsilon)
+;; If there is an error in applying the delta map then return string
+;; DELTA-NOKEY
+(define (delta-yields delta-map config)
+  (let* ([current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
          [current-token (get-tape-current tape)]
          [next-set (delta
                     delta-map
-                    (list current-state current-token))] ; a set or DELTA-NOKEY
-         )
-    next-set))
+                    (list current-state current-token))]) ; a set or DELTA-NOKEY
+    (if (equal? next-set DELTA-NOKEY)
+        DELTA-NOKEY
+        (for/list ([next-action-and-state next-set])
+          (tm-transition tape
+                         (first next-action-and-state)
+                         (second next-action-and-state))))))
 
-(define (epsilon-yields epsilon-closure ))
+;; hash, list  ->  list
+;; Return list of next configurations related to the input config by `yields'
+;; via epsilon moves.
+(define (epsilon-yields epsilon-closure config)
+  (let* ([current-state (configurationstruct-state config)]
+         [tape (configurationstruct-tape config)]
+         [eps-states (epsilon-closure-get epsilon-closure current-state)])
+    (for/list ([next-state eps-states])
+      (configurationstruct next-state tape))))
 
 (define MAXIMUM-TURING-MACHINE-RANK 100)
 

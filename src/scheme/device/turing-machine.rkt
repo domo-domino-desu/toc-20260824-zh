@@ -7,10 +7,15 @@
 ;; A Turing machine simulation, for Theory of Computation by Hefferon
 ;; Author: Jim Hefferon  License: GPL
 ;;
-;; Input format: One line per instruction.  Instruction is a space-separated list of four elements:
-;; natural number for current state, character for what the head is point to, character for the action (any alphabet
-;; character and L or R), natural number for the next state.  Best is to use digits or lower-case letters for alphabet.
-;; After each step, the machine prints out a picture of the tape with the current char between asterisks.
+;; Input format: One line per instruction.  Instruction is a space-separated
+;; list of four elements:
+;;   0) natural number for current state,
+;;   1) character for what the head is pointing to on the tape,
+;;   2) character for the action (any letter although lower case is best,
+;;      or digit, or paren meaning "(" or ")", or "L" or "R" or "EPS"),
+;;   3) natural number for the next state.
+;; After each step, the machine prints out a picture of the tape with the
+;; current char between asterisks.
 ;; 
 ;; There is a utility elsewhere in this repo that converts these pictures for use in Asymptote.
 
@@ -130,7 +135,48 @@
     [else
      (configurationstruct next-state (change-head-token tape next-action))])
   )
-  
+
+;; hash, list  ->  list
+;; Return list of next configurations related to the input config by `yields'
+;; via the delta map (without epsilon)
+;; If there is an error in applying the delta map then return string
+;; DELTA-NOKEY
+(define (delta-yields delta-map config)
+  (let* ([current-state (configurationstruct-state config)]
+         [tape (configurationstruct-tape config)]
+         [current-token (get-tape-current tape)]
+         [next-set (delta
+                    delta-map
+                    (list current-state current-token))]) ; a set or DELTA-NOKEY
+    (if (equal? next-set DELTA-NOKEY)
+        '()
+        (for/list ([next-action-and-state next-set])
+          (tm-transition tape
+                         (first next-action-and-state)
+                         (second next-action-and-state))))))
+
+;; hash, list  ->  list
+;; Return list of next configurations related to the input config by `yields'
+;; via epsilon moves.
+(define (epsilon-yields epsilon-closure config)
+  (let* ([current-state (configurationstruct-state config)]
+         [tape (configurationstruct-tape config)]
+         [eps-states (epsilon-closure-get epsilon-closure current-state)])
+    (for/list ([next-state eps-states])
+      (configurationstruct next-state tape))))
+
+(provide tm-create
+         tm-add-instruction
+         tm-add-accepting-state
+         tm-add-epsilon
+         tm->string
+         all-states-get
+         tm->delta-map
+         tm-transition
+         delta-yields
+         epsilon-yields
+         )
+
 ;; ===== Run
 
 ;; history-node delta-map epsilon-closure -> list of nodes
@@ -199,34 +245,6 @@
         ))
     epsilon-nodes))
 
-;; hash, list  ->  list
-;; Return list of next configurations related to the input config by `yields'
-;; via the delta map (without epsilon)
-;; If there is an error in applying the delta map then return string
-;; DELTA-NOKEY
-(define (delta-yields delta-map config)
-  (let* ([current-state (configurationstruct-state config)]
-         [tape (configurationstruct-tape config)]
-         [current-token (get-tape-current tape)]
-         [next-set (delta
-                    delta-map
-                    (list current-state current-token))]) ; a set or DELTA-NOKEY
-    (if (equal? next-set DELTA-NOKEY)
-        DELTA-NOKEY
-        (for/list ([next-action-and-state next-set])
-          (tm-transition tape
-                         (first next-action-and-state)
-                         (second next-action-and-state))))))
-
-;; hash, list  ->  list
-;; Return list of next configurations related to the input config by `yields'
-;; via epsilon moves.
-(define (epsilon-yields epsilon-closure config)
-  (let* ([current-state (configurationstruct-state config)]
-         [tape (configurationstruct-tape config)]
-         [eps-states (epsilon-closure-get epsilon-closure current-state)])
-    (for/list ([next-state eps-states])
-      (configurationstruct next-state tape))))
 
 (define MAXIMUM-TURING-MACHINE-RANK 100)
 
@@ -255,13 +273,7 @@
     (computation-history-helper (list initial-history-node) 0  delta-map epsilon-closure #:maxrank maximumrank)
     initial-history-node))
 
-
-
-(provide all-states-get
-         tm->delta-map
-         tm->string
-         tm-transition
-         one-step-one-node
+(provide one-step-one-node
          computation-history-make)
 
 ;; ===== Parse

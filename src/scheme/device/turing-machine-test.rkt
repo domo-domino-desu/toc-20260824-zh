@@ -85,8 +85,6 @@
    )) ;; end instruction suite and tests
 
 
-
-
 ;; ===== parse tests
 (define parse-tests
   (test-suite
@@ -178,6 +176,139 @@
     )
    
    )) ;; end tape-making suite and tests
+
+
+;; Sample Turing machine for tests
+(define (trial-tm0)
+  (let* ([tm (tm-create)]
+         )
+    (tm-add-instruction tm (instructionstruct 0 "0" "1" 1))
+    (tm-add-instruction tm (instructionstruct 0 "1" "1" 1))
+    (tm-add-instruction tm (instructionstruct 1 "0" "0" 0))
+    (tm-add-instruction tm (instructionstruct 1 "1" "0" 0))
+    tm))
+(define (trial-tm1) ; move left and right
+  (let* ([tm (tm-create)]
+         )
+    (tm-add-instruction tm (instructionstruct 0 "0" "R" 0))
+    (tm-add-instruction tm (instructionstruct 0 "1" "L" 0))
+    tm))
+(define (trial-tm2) ;; nondeterminstic
+  (let* ([tm (tm-create)]
+         )
+    (tm-add-instruction tm (instructionstruct 0 "0" "1" 1))
+    (tm-add-instruction tm (instructionstruct 0 "0" "0" 1))
+    (tm-add-instruction tm (instructionstruct 0 "1" "1" 1))
+    ; (tm-add-instruction tm (instructionstruct 1 "0" "0" 0))
+    (tm-add-instruction tm (instructionstruct 1 "1" "0" 0))
+    tm))
+
+;; ===== yields tests
+(define yields-tests
+  (test-suite
+   "Turing machine yields function tests"
+  
+   (test-case
+    "Test simple case of delta-yields"
+    (let* ([tm (trial-tm0)]
+           [tape (make-tape "0" "0")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           )
+      ; (printf "tm=~a\n" (tm->string tm))
+      ; (printf "delta-map=~a\n" (delta-map->string delta-map))
+      (check-true (list? (delta-yields delta-map initial-config)))
+      (check-equal? 1 (configurationstruct-state
+                       (first (delta-yields delta-map initial-config))))
+      (check-equal? "1" (get-tape-current
+                         (configurationstruct-tape
+                          (first (delta-yields delta-map initial-config)))))
+      )
+    )
+   (test-case
+    "Test delta-yields"
+    (let* ([tm (trial-tm0)]
+           [tape (make-tape "1" "1")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [output-config-list (delta-yields delta-map initial-config)]
+           )
+      ; (printf "tm=~a\n" (tm->string tm))
+      ; (printf "delta-map=~a\n" (delta-map->string delta-map))
+      (check-equal? 1 (configurationstruct-state
+                       (first output-config-list)))
+      (check-equal? "1" (get-tape-current
+                         (configurationstruct-tape
+                          (first output-config-list))))
+      )
+    )
+   (test-case
+    "Test delta-yields left and right tape motion"
+    (let* ([tm (trial-tm1)]
+           [tape (make-tape "0" "1" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [output-config-list1 (delta-yields delta-map initial-config)]
+           [output-config-list2 (delta-yields delta-map (first output-config-list1))]
+           )
+      ; (printf "tm=~a\n" (tm->string tm))
+      ; (printf "delta-map=~a\n" (delta-map->string delta-map))
+      (check-equal? 0 (configurationstruct-state
+                       (first output-config-list1)))
+      (check-equal? "1" (get-tape-current
+                         (configurationstruct-tape
+                          (first output-config-list1))))
+      (check-equal? 0 (configurationstruct-state
+                       (first output-config-list2)))
+      (check-equal? "0" (get-tape-current
+                         (configurationstruct-tape
+                          (first output-config-list2))))
+      )
+    )
+   (test-case
+    "Test delta-yields for nondeterministic machine"
+    (let* ([tm (trial-tm2)]
+           [tape (make-tape "0" "1" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [output-config-list (delta-yields delta-map initial-config)]
+           [first-output (first output-config-list)]
+           [second-output (second output-config-list)]
+           )
+      ; (printf "tm=~a\n" (tm->string tm))
+      ; (printf "delta-map=~a\n" (delta-map->string delta-map))
+      (check-true (or
+                   (and
+                    (equal? 1 (configurationstruct-state first-output))
+                    (equal? "1" (get-tape-current
+                                 (configurationstruct-tape first-output)))
+                   (equal? 1 (configurationstruct-state second-output))
+                   (equal? "0" (get-tape-current
+                                (configurationstruct-tape second-output))))
+                   (and
+                    (equal? 1 (configurationstruct-state first-output))
+                    (equal? "0" (get-tape-current
+                                 (configurationstruct-tape first-output)))
+                   (equal? 1 (configurationstruct-state second-output))
+                   (equal? "1" (get-tape-current
+                                (configurationstruct-tape second-output))))
+                   ))
+      )
+    (let* ([tm (trial-tm2)]  ; machine has no instruction for q1, "0"
+           [tape (make-tape "0" "B")]
+           [initial-config (configurationstruct 1 tape)]
+           [delta-map (tm->delta-map tm)]
+           [output-config-list (delta-yields delta-map initial-config)]
+           )
+      (printf "tm=~a\n" (tm->string tm))
+      (printf "delta-map=~a\n" (delta-map->string delta-map))
+      (printf "output config list ~s\n" output-config-list)
+      (check-true (null? output-config-list)
+      )
+    )
+    )
+   
+   )) ;; end yield-tests suite and tests
 
 
 ;; ===== history tests
@@ -344,4 +475,5 @@
 ;(run-tests tm->string-tests)
 ;(run-tests tm-transition-tests)
 ; (run-tests history-tests)
-(run-tests one-step-one-node-tests)
+(run-tests yields-tests)
+;(run-tests one-step-one-node-tests)

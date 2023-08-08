@@ -553,7 +553,7 @@
          [epsilon-string
           (epsilon-map->string (machinestruct-epsilonmap machine))]
          [result
-          (string-append "INSTRUCTIONS: " instruction-string)])  
+          (string-append "INSTRUCTIONS:\n" instruction-string)])  
     (when (not (set-empty? (machinestruct-acceptingstates machine)))
         (set! result
               (string-append result

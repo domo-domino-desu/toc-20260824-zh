@@ -168,7 +168,6 @@
       )
     );; end test-case
     
-
    )) ;; end power-map-tests suite and tests
   
 

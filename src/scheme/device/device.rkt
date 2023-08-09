@@ -203,7 +203,6 @@
   (power-multimap-get delta-map input-set DELTA-NOKEY))
 
 
-
 (provide delta-map-make
          delta-map-key?
          delta-map-add-key!
@@ -309,6 +308,7 @@
          epsilon-closure-multimap-keys?
          epsilon-closure-multimap
          )
+
 
 ;; ===== tape
 

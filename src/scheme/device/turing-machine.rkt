@@ -149,8 +149,8 @@
                     delta-map
                     (list current-state current-token))]) ; a set or DELTA-NOKEY
     (if (equal? next-set DELTA-NOKEY)
-        '()
-        (for/list ([next-action-and-state next-set])
+        (mutable-set)  ; nondeterministic can have no key, return empty set
+        (for/mutable-set ([next-action-and-state next-set])
           (tm-transition tape
                          (first next-action-and-state)
                          (second next-action-and-state))))))
@@ -162,8 +162,9 @@
   (let* ([current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
          [eps-states (epsilon-closure-get epsilon-closure current-state)])
-    (for/list ([next-state eps-states])
+    (for/mutable-set ([next-state eps-states])
       (configurationstruct next-state tape))))
+
 
 (provide tm-create
          tm-add-instruction

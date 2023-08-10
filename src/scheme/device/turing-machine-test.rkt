@@ -356,7 +356,84 @@
                     (mutable-set (configurationstruct 1 tape)))
       )
     )
-   
+   (test-case
+    "Test yields for simple machine"
+    (let* ([tm (trial-tm0)]
+           [tape (make-tape "0" "1" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           )
+      ;(printf "tm=~a\n" (tm->string tm))
+      ;(printf "delta-map=~a\n" (delta-map->string delta-map))
+      ;(printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      ;(printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      ;(printf "yields: ~s\n " (yields initial-config delta-map epsilon-closure))
+      (check-true (set-mutable? (yields initial-config
+                                        delta-map
+                                        epsilon-closure)))
+      (check-equal? (set-first
+                      (yields initial-config delta-map epsilon-closure))
+                    (configurationstruct 1 (make-tape "1" "1" "B")))
+      )
+    )
+   (test-case
+    "Test yields for nondeterministic machine without epsilon moves"
+    (let* ([tm (trial-tm2)]
+           [tape (make-tape "0" "1" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [y-set (yields initial-config delta-map epsilon-closure)]
+           )
+      ;(printf "tm=~a\n" (tm->string tm))
+      ;(printf "delta-map=~a\n" (delta-map->string delta-map))
+      ;(printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      ;(printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      ;(printf "yields: ~s\n " (yields initial-config delta-map epsilon-closure))
+      (check-true (set-mutable? y-set))
+      (check-equal? 2 (set-count y-set))
+      (check-true (set=? y-set
+                         (mutable-set (configurationstruct
+                                       1
+                                       (make-tape "0" "1" "B"))
+                                      (configurationstruct
+                                       1
+                                       (make-tape "1" "1" "B")))))
+      )
+    )
+   (test-case
+    "Test yields for deterministic machine with epsilon moves"
+    (let* ([tm (trial-tm3)]
+           [tape (make-tape "1" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [y-set (yields initial-config delta-map epsilon-closure)]
+           )
+      (printf "tm=~a\n" (tm->string tm))
+      (printf "delta-map=~a\n" (delta-map->string delta-map))
+      (printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      (printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      (printf "yields: ~s\n " y-set)
+      (check-true (set-mutable? y-set))
+      (check-equal? 2 (set-count y-set))
+      (check-true (set=? y-set
+                         (mutable-set (configurationstruct
+                                       0
+                                       (make-tape "0" "B"))
+                                      (configurationstruct
+                                       1
+                                       (make-tape "0" "B")))))
+      )
+    )
+    
    )) ;; end yield-tests suite and tests
 
 

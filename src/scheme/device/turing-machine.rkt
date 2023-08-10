@@ -139,8 +139,6 @@
 ;; hash, list  ->  list
 ;; Return list of next configurations related to the input config by `yields'
 ;; via the delta map (without epsilon)
-;; If there is an error in applying the delta map then return string
-;; DELTA-NOKEY
 (define (delta-yields delta-map config)
   (let* ([current-state (configurationstruct-state config)]
          [tape (configurationstruct-tape config)]
@@ -165,6 +163,13 @@
     (for/mutable-set ([next-state eps-states])
       (configurationstruct next-state tape))))
 
+(define (yields config delta-map epsilon-closure)
+  (let* ([delta-config-set (delta-yields delta-map config)]
+         [config-set (mutable-set)])
+    (for ([delta-config delta-config-set])
+      (set-union! config-set (epsilon-yields epsilon-closure delta-config)))
+    config-set))
+
 
 (provide tm-create
          tm-add-instruction
@@ -176,6 +181,7 @@
          tm-transition
          delta-yields
          epsilon-yields
+         yields
          )
 
 ;; ===== Run

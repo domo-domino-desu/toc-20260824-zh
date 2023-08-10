@@ -93,29 +93,99 @@
    (test-case
     "Test machine instructions only"
     (let* ([INPUT-LINES (list "0 a R 1" "0 b R 1")]
-           [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
-      ; (printf "tm=~a\n" (machine->string tm instruction->string))
+           [tm (parse INPUT-LINES
+                      INSTRUCTION-LINE-REGEXP
+                      parse-make-instruction
+                      instructionstruct)]
+           [inst0 (instructionstruct 0 "a" "R" 1)] ; parse target
+           [inst1 (instructionstruct 0 "b" "R" 1)])
+      ; (printf "tm=~a\n" (tm->string tm))
       (check-equal? (length (machinestruct-instructions tm)) 2)
+      (for ([inst (machinestruct-instructions tm)])
+        ; (printf "~a\n" (instruction->string inst))
+        (check-true (or (equal? inst inst0) (equal? inst inst1))))
       ))
    (test-case
     "Test machine instructions and accepting states"
     (let* ([INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1" "ACCEPTING 1 0")]
-           [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
-      ; (printf "tm=~a\n" (machine->string tm instruction->string))
+           [tm (parse INPUT-LINES
+                      INSTRUCTION-LINE-REGEXP
+                      parse-make-instruction
+                      instructionstruct)]
+           [inst0 (instructionstruct 0 "a" "R" 1)] ; parse target
+           [inst1 (instructionstruct 0 "b" "R" 1)]
+           [inst2 (instructionstruct 1 "a" "b" 1)])
+      ; (printf "tm=~a\n" (tm->string tm))
       (check-equal? (length (machinestruct-instructions tm)) 3)
+      (for ([inst (machinestruct-instructions tm)])
+        ; (printf "~a\n" (instruction->string inst))
+        (check-true (or (equal? inst inst0)
+                        (equal? inst inst1)
+                        (equal? inst inst2))))
       (check-equal? (set-count (machinestruct-acceptingstates tm)) 2)
+      (check-true (set=? (machinestruct-acceptingstates tm) (mutable-set 0 1)))
       ))
    (test-case
     "Test machine instructions and accepting states and epsilon transitions"
-    (let* ([INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1" "ACCEPTING 1 0" "EPSILON 1 0" "EPSILON 2 1")]
-           [tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)])
-      ; (printf "tm=~a\n" (machine->string tm instruction->string))
+    (let* ([INPUT-LINES (list "0 a R 1" "0 b R 1" "1 a b 1"
+                              "ACCEPTING 1 0"
+                              "EPSILON 1 0"
+                              "EPSILON 2 1")]
+           [tm (parse INPUT-LINES
+                      INSTRUCTION-LINE-REGEXP
+                      parse-make-instruction
+                      instructionstruct)]
+           [epsilon-map (machinestruct-epsilonmap tm)])
+      ; (printf "tm=~a\n" (tm->string tm))
       (check-equal? (length (machinestruct-instructions tm)) 3)
       (check-equal? (set-count (machinestruct-acceptingstates tm)) 2)
-      (check-true (not (null? (member 1 (hash-keys (machinestruct-epsilonmap tm))))))
-      (check-true (not (null? (member 2 (hash-keys (machinestruct-epsilonmap tm))))))
+      (check-equal? (mutable-set 0) (epsilon-map-get epsilon-map 1))
+      (check-equal? (mutable-set 1) (epsilon-map-get epsilon-map 2))
       ))
-   )) ;; end tape-making suite and tests
+   (test-case
+    "Test comments"
+    (let* ([INPUT-LINES (list "0 a R 1 # xxx" "0 b R 1")]
+           [tm (parse INPUT-LINES
+                      INSTRUCTION-LINE-REGEXP
+                      parse-make-instruction
+                      instructionstruct)]
+           [inst0 (instructionstruct 0 "a" "R" 1)] ; parse target
+           [inst1 (instructionstruct 0 "b" "R" 1)])
+      ; (printf "tm=~a\n" (tm->string tm))
+      (check-equal? (length (machinestruct-instructions tm)) 2)
+      (for ([inst (machinestruct-instructions tm)])
+        ; (printf "~a\n" (instruction->string inst))
+        (check-true (or (equal? inst inst0) (equal? inst inst1))))
+      )
+    (let* ([INPUT-LINES (list "# machine name" "0 a R 1" "0 b R 1")]
+           [tm (parse INPUT-LINES
+                      INSTRUCTION-LINE-REGEXP
+                      parse-make-instruction
+                      instructionstruct)]
+           [inst0 (instructionstruct 0 "a" "R" 1)] ; parse target
+           [inst1 (instructionstruct 0 "b" "R" 1)])
+      ; (printf "tm=~a\n" (tm->string tm))
+      (check-equal? (length (machinestruct-instructions tm)) 2)
+      (for ([inst (machinestruct-instructions tm)])
+        ; (printf "~a\n" (instruction->string inst))
+        (check-true (or (equal? inst inst0) (equal? inst inst1))))
+      )
+    (let* ([INPUT-LINES (list "  # machine name" "0 a R 1" "0 b R 1")] ; space
+           [tm (parse INPUT-LINES
+                      INSTRUCTION-LINE-REGEXP
+                      parse-make-instruction
+                      instructionstruct)]
+           [inst0 (instructionstruct 0 "a" "R" 1)] ; parse target
+           [inst1 (instructionstruct 0 "b" "R" 1)])
+      ; (printf "tm=~a\n" (tm->string tm))
+      (check-equal? (length (machinestruct-instructions tm)) 2)
+      (for ([inst (machinestruct-instructions tm)])
+        ; (printf "~a\n" (instruction->string inst))
+        (check-true (or (equal? inst inst0) (equal? inst inst1))))
+      )
+    )
+   
+   )) ;; end parsing suite and tests
 
 
 
@@ -597,9 +667,9 @@
 ;; ===== Run the tests; comment out ones not being worked-on
 ;(run-tests instruction-tests)
 ;(run-tests configuration-tests)
-;(run-tests parse-tests)
+(run-tests parse-tests)
 ;(run-tests tm->string-tests)
 ;(run-tests tm-transition-tests)
 ; (run-tests history-tests)
-(run-tests yields-tests)
+;(run-tests yields-tests)
 ;(run-tests one-step-one-node-tests)

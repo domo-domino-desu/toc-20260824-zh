@@ -584,7 +584,7 @@
 ; config  ->  history node
 ; Make a new node
 (define (history-node-make config)
-  (cons config (mutable-seteq)))
+  (cons config (mutable-set)))
 
 ; history node  ->  config
 ; Get the node's config

@@ -103,7 +103,7 @@
   (let ([input-states (map first (hash-keys delta-map))]
         [delta-range-sets (hash-values delta-map)]
         [epsilon-range-sets (hash-values epsilon-map)]
-        [output-states (mutable-seteq)])
+        [output-states (mutable-set)])
     (for* ([range-set delta-range-sets]
            [tuple range-set])
       (set-add! output-states (second tuple)))

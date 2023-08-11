@@ -11,12 +11,15 @@
 ;; list of four elements:
 ;;   0) natural number for current state,
 ;;   1) character for what the head is pointing to on the tape,
-;;   2) character for the action (any letter although lower case is best,
-;;      or digit, or paren meaning "(" or ")", or "L" or "R" or "EPS"),
+;;   2) character for the action (any lower case letter,
+;;      or digit, or paren "[" or "]", or "L" or "R" or "EPS"),
 ;;   3) natural number for the next state.
+;; The comment character is #.  You can have a line that is just a comment,
+;; or you can end a valid line with a comment.  You can also indent lines
+;; with whitespace.
+;;
 ;; After each step, the machine prints out a picture of the tape with the
 ;; current char between asterisks.
-;; 
 ;; There is a utility elsewhere in this repo that converts these pictures for use in Asymptote.
 
 
@@ -163,12 +166,36 @@
     (for/mutable-set ([next-state eps-states])
       (configurationstruct next-state tape))))
 
-(define (yields config delta-map epsilon-closure)
-  (let* ([delta-config-set (delta-yields delta-map config)]
-         [config-set (mutable-set)])
-    (for ([delta-config delta-config-set])
-      (set-union! config-set (epsilon-yields epsilon-closure delta-config)))
-    config-set))
+; It is easier to follow if I connect parent and child
+;(define (yields config delta-map epsilon-closure)
+;  (let* ([delta-config-set (delta-yields delta-map config)]
+;         [config-set (mutable-set)])
+;    (for ([delta-config delta-config-set])
+;      (set-union! config-set (epsilon-yields epsilon-closure delta-config)))
+;    config-set))
+
+;; history-node, hash, hash  ->  set of history-nodes
+;; To the history node add children whose config is related 
+;; by a yields relation using delta (no epsilons; this is a half-step)
+;; followed by epsilon moves (this is a full-step).
+;; Return the set of those full-step history nodes.
+(define (one-step! history-node delta-map epsilon-closure)
+  (let ([half-step-node-set (mutable-set)]  ; nodes after delta map
+        [full-step-node-set (mutable-set)]) ; nodes after epsilon map
+    ; First half: apply delta-yields to history node's config, add as child
+    (let* ([config (history-node-config history-node)]
+           [delta-config-set (delta-yields delta-map config)])
+      (for ([delta-config delta-config-set])
+        (set-add! half-step-node-set
+                  (child-node-add! history-node delta-config))))
+    ; Second half: for each derived node apply epsilon-yields, add as child
+    (for ([half-step-node half-step-node-set])
+      (let* ([config (history-node-config half-step-node)]
+             [epsilon-yields-set (epsilon-yields epsilon-closure config)])
+        (for ([epsilon-config epsilon-yields-set])
+          (set-add! full-step-node-set
+                    (child-node-add! half-step-node epsilon-config)))))
+    full-step-node-set))
 
 
 (provide tm-create
@@ -181,7 +208,8 @@
          tm-transition
          delta-yields
          epsilon-yields
-         yields
+         ; yields
+         one-step!
          )
 
 ;; ===== Run

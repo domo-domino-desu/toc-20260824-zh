@@ -602,6 +602,12 @@
    
    )) ;; end history suite and tests
 
+(define (trial-tm10) ; go to halting state
+  (let* ([tm (tm-create)]
+         )
+    (tm-add-instruction tm (instructionstruct 0 "0" "L" 1))
+    (tm-add-instruction tm (instructionstruct 0 "1" "L" 1))
+    tm))
 
 ;; ===== one step, one node tests
 (define one-step-tests
@@ -651,8 +657,83 @@
       (check-equal? 1 (set-count final-nodes))
       )
     )
+   (test-case
+    "Test one-step! for machine without epsilon moves, going to blank"
+    (let* ([tm (trial-tm10)]
+           [tape (make-tape "0" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [history-root (history-create initial-config)]
+           [final-nodes (one-step! history-root delta-map epsilon-closure)]
+           )
+      ;(printf "tm=~a\n" (tm->string tm))
+      ;(printf "delta-map=~a\n" (delta-map->string delta-map))
+      ;(printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      ;(printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      (check-true (set-mutable? final-nodes))
+      (check-equal? 1 (set-count final-nodes))
+      ; (printf "final node: ~s\n" (set-first final-nodes))
+      (check-equal? (get-tape-current
+                     (configurationstruct-tape (history-node-config
+                                                (set-first final-nodes))))
+                    BLANK)
+      (check-equal? (configurationstruct-state (history-node-config
+                                                 (set-first final-nodes)))
+                    1)
+      )
+    )
+   (test-case
+    "Test one-step! for machine without epsilon moves, at a halt state"
+    (let* ([tm (trial-tm10)]
+           [tape (make-tape "B" "0" "B")]
+           [initial-config (configurationstruct 1 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [history-root (history-create initial-config)]
+           [final-nodes (one-step! history-root delta-map epsilon-closure)]
+           )
+      ;(printf "tm=~a\n" (tm->string tm))
+      ;(printf "delta-map=~a\n" (delta-map->string delta-map))
+      ;(printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      ;(printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      (check-equal? 0 (set-count final-nodes))
+      )
+    )
+   (test-case
+    "Test one-step! for machine with epsilon moves"
+    (let* ([tm (trial-tm3)]
+           [tape (make-tape "0" "B")]
+           [initial-config (configurationstruct 1 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [history-root (history-create initial-config)]
+           [final-nodes (one-step! history-root delta-map epsilon-closure)]
+           )
+      ;(printf "tm=~a\n" (tm->string tm))
+      ;(printf "delta-map=~a\n" (delta-map->string delta-map))
+      ;(printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      ;(printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      (check-equal? 2 (set-count final-nodes))
+      (for ([n final-nodes])
+        (let ([cfg (history-node-config n)])
+          ; (printf "final node=~s\n" (configuration->string cfg))
+          (check-not-false (or (equal? cfg (configurationstruct
+                                            0
+                                            (make-tape "1" "B")))
+                               (equal? cfg (configurationstruct
+                                            1
+                                            (make-tape "1" "B"))))
+                               )))
+      )
+    )
   
-   
    )) ;; end tape-making suite and tests
 
 

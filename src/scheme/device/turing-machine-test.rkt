@@ -609,7 +609,7 @@
     (tm-add-instruction tm (instructionstruct 0 "1" "L" 1))
     tm))
 
-;; ===== one step, one node tests
+;; ===== one step tests
 (define one-step-tests
   (test-suite
    "Tests of one-step!"
@@ -734,7 +734,76 @@
       )
     )
   
-   )) ;; end tape-making suite and tests
+   )) ;; end one-step suite and tests
+
+
+;; ===== computation history tests
+;; Sample Turing machine for tests
+(define (trial-tm20)
+  (let* ([tm (tm-create)]
+         )
+    (tm-add-instruction tm (instructionstruct 0 "a" "b" 1))
+    (tm-add-instruction tm (instructionstruct 0 "b" "b" 1))
+    (tm-add-instruction tm (instructionstruct 1 "a" "a" 0))
+    (tm-add-instruction tm (instructionstruct 1 "b" "a" 0))
+    tm))
+(define (trial-tm21) ; move left and right
+  (let* ([tm (tm-create)]
+         )
+    (tm-add-instruction tm (instructionstruct 0 "a" "R" 0))
+    (tm-add-instruction tm (instructionstruct 0 "b" "L" 0))
+    tm))
+(define (trial-tm22) ;; nondeterminstic
+  (let* ([tm (tm-create)]
+         )
+    (tm-add-instruction tm (instructionstruct 0 "a" "b" 1))
+    (tm-add-instruction tm (instructionstruct 0 "a" "a" 1))
+    (tm-add-instruction tm (instructionstruct 0 "b" "b" 1))
+    ; (tm-add-instruction tm (instructionstruct 1 "a" "a" 0))
+    (tm-add-instruction tm (instructionstruct 1 "b" "a" 0))
+    tm))
+(define (trial-tm23)  ; epsilon moves
+  (let* ([tm (tm-create)]
+         )
+    (tm-add-instruction tm (instructionstruct 0 "0" "1" 1))
+    (tm-add-instruction tm (instructionstruct 0 "1" "0" 0))
+    (tm-add-instruction tm (instructionstruct 1 "0" "1" 0))
+    (tm-add-instruction tm (instructionstruct 1 "1" "0" 1))
+    (tm-add-epsilon tm 0 1)
+    tm))
+
+(define computation-history-tests
+  (test-suite
+   "Tests of computation-history-make"
+
+   (test-case
+    "Test computation-history-make for simple machine without epsilon moves"
+    (let* ([tm (trial-tm20)]
+           [tape (make-tape "a" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [history-root '()]
+           )
+      (printf "tm=~a\n" (tm->string tm))
+      (printf "delta-map=~a\n" (delta-map->string delta-map))
+      (printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      (printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      (set! history-root
+            (computation-history-make tm
+                                      tape
+                                      #:maximumrank 2))
+      (printf "tree-root=\n~a\n" (history->string
+                                  history-root
+                                  #:configuration->string configuration->string))
+      )
+    )
+  
+   )) ;; end computation-history-make suite and tests
+
+
 
 
 ;; ===== Run the tests; comment out ones not being worked-on
@@ -745,4 +814,5 @@
 ;(run-tests tm-transition-tests)
 ; (run-tests history-tests)
 ;(run-tests yields-tests)
-(run-tests one-step-tests)
+;(run-tests one-step-tests)
+(run-tests computation-history-tests)

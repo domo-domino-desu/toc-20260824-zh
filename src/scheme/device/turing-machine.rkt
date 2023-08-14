@@ -213,23 +213,33 @@
          )
 
 
-;; ===== Run
+;; ===== Run a computation
 
-(define MAXIMUM-TURING-MACHINE-RANK 100)
+(define MAXIMUM-TURING-MACHINE-RANK 10)
 
-(define (computation-history-helper level-nodelist rank-number delta-map epsilon-closure #:maxrank [maximumrank MAXIMUM-TURING-MACHINE-RANK])
-  (printf "******> calling computation-history-helper\n")
-  (printf "  level-nodelist=~s\n  rank-number=~s\n" level-nodelist rank-number)
-  (when (< rank-number maximumrank)
+(define (computation-history-helper level-nodelist
+                                    rank-number
+                                    delta-map
+                                    epsilon-closure
+                                    #:maxrank [maximumrank MAXIMUM-TURING-MACHINE-RANK])
+  ;(printf "******> calling computation-history-helper\n")
+  ;(printf "  level-nodelist=~s\n  rank-number=~s\n" level-nodelist rank-number)
+  (when (and (< rank-number maximumrank)
+             (not (null? level-nodelist)))
     (let ([next-level '()])
       (for ([node level-nodelist])
-        (printf "     ** node is ~s\n" node)
+        ;(printf "     ** node is ~s\n" node)
         (set! next-level
-              (append (one-step-one-node node delta-map epsilon-closure) next-level)) ; side-effect runs computations 
+              (append (set->list (one-step! node delta-map epsilon-closure))
+                      next-level)) ; side-effect of one-step! runs computations 
           )
-      (printf "  next-level=~s\n" next-level)
+      ;(printf "  next-level=~s\n" next-level)
       (when (not (null? next-level))
-        (computation-history-helper next-level (+ 1 rank-number) delta-map epsilon-closure #:maxrank maximumrank)))))
+        (computation-history-helper next-level
+                                    (+ 1 rank-number)
+                                    delta-map
+                                    epsilon-closure
+                                    #:maxrank maximumrank)))))
 
 (define (computation-history-make turing-machine initial-tape #:maximumrank [maximumrank MAXIMUM-RANK])
   (let* ([delta-map (tm->delta-map turing-machine)]
@@ -238,11 +248,20 @@
          [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
          [current-state 0]
          [initial-config (configurationstruct current-state initial-tape)]
-         [initial-history-node (history-create initial-config)])
-    (computation-history-helper (list initial-history-node) 0  delta-map epsilon-closure #:maxrank maximumrank)
+         [initial-history-node (history-create initial-config)]
+         [epsilon-yields-set (epsilon-yields epsilon-closure initial-config)]
+         [full-step-nodes '()]) ; nodes for eps clo of init node
+    ; Take the epsilon closure of the initial config
+    (for ([epsilon-config epsilon-yields-set])
+      (set! full-step-nodes
+            (cons (child-node-add! initial-history-node epsilon-config)
+                  full-step-nodes)))
+    ; Iterate the one-step! operation until machine halts on all branches
+    (computation-history-helper full-step-nodes 0  delta-map epsilon-closure #:maxrank maximumrank)
     initial-history-node))
 
-(provide computation-history-make)
+(provide computation-history-make
+         computation-history-helper)
 
 ;; ===== Parse
 ; The defn says Delta maps Q x (Sigma union {B, epsilon}) to  Q x Gamma^* (or Gamma for deterministic ones)

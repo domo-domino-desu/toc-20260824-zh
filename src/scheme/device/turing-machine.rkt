@@ -62,11 +62,17 @@
       (let* ([state-number (configurationstruct-state config)]
              [state-string (string-append "q" (number->string state-number))]
              [tape (configurationstruct-tape config)])
+        (printf "though the let*\n")
+        (printf "  tape is ~s\n" tape)
+        (printf "  tape is ~s\n" (tape->string tape
+                                               #:show-current-blank show-current-blank
+                                               #:show-all-blank show-all-blank))
         (string-append state-string ": " (tape->string tape
                                                        #:show-current-blank show-current-blank
                                                        #:show-all-blank show-all-blank)))))
 
 (provide configurationstruct
+         configurationstruct?
          configurationstruct-state
          configurationstruct-tape
          configuration->string)
@@ -126,6 +132,19 @@
             [value (list (instructionstruct-nexttoken inst) (instructionstruct-nextstate inst))])
         (delta-map-set! delta-map key value)))
     delta-map))
+
+; turing-machine, configuration  ->  Boolean
+; Return True if the configuration is a halting one, False otherwise.
+(define (tm-halt? tm config)
+  (let* ([delta-map (tm->delta-map tm)]
+         [state (configurationstruct-state config)]
+         [token (get-tape-current (configurationstruct-tape config))]
+         [next-set (delta
+                    delta-map
+                    (list state token))])
+    (if (equal? next-set DELTA-NOKEY)
+        #t
+        #f)))
 
 ;; tapestruct, string, natural number -> configurationstruct
 ;; Perform one transition on the Turing machine
@@ -205,6 +224,7 @@
          tm->string
          all-states-get
          tm->delta-map
+         tm-halt?
          tm-transition
          delta-yields
          epsilon-yields

@@ -423,9 +423,11 @@
 (define (tape->string tape
                       #:show-current-blank [show-current-blank #f] ; if current is " " then show B
                       #:show-all-blank [show-all-blank #f])   ; translate all " "'s to B's
-  (let* ([left-string (apply string-append (tapestruct-left tape))]
-         [right-string (apply string-append (tapestruct-right tape))]
+  ;(printf "tape->string in function\n")
+  (let* ([left-string (string-join (tapestruct-left tape) "")]
+         [right-string (string-join (tapestruct-right tape) "")]
          [current-string (tapestruct-current tape)])
+    ;(printf "tape->string about to cond\n")
     (cond
       [show-current-blank
        (when (equal? current-string " ")
@@ -439,11 +441,13 @@
                                       (tapestruct-right tape))))
        (when (equal? current-string " ")
          (set! current-string BLANK))])
+    ;(printf "tape->string past the cond\n  left-string=~s  current-string=~s  right-string=~s\n" left-string current-string right-string)
     (string-append left-string
                    (string-append "*" current-string "*")
                    right-string)))
 
 (provide tapestruct
+         tapestruct?
          BLANK
          make-tape
          set-tape!

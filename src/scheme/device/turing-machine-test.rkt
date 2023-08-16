@@ -765,10 +765,10 @@
 (define (trial-tm23)  ; epsilon moves
   (let* ([tm (tm-create)]
          )
-    (tm-add-instruction tm (instructionstruct 0 "0" "1" 1))
-    (tm-add-instruction tm (instructionstruct 0 "1" "0" 0))
-    (tm-add-instruction tm (instructionstruct 1 "0" "1" 0))
-    (tm-add-instruction tm (instructionstruct 1 "1" "0" 1))
+    (tm-add-instruction tm (instructionstruct 0 "a" "b" 1))
+    (tm-add-instruction tm (instructionstruct 0 "b" "a" 0))
+    (tm-add-instruction tm (instructionstruct 1 "a" "b" 0))
+    (tm-add-instruction tm (instructionstruct 1 "b" "a" 1))
     (tm-add-epsilon tm 0 1)
     tm))
 
@@ -787,17 +787,65 @@
            [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
            [history-root '()]
            )
-      (printf "tm=~a\n" (tm->string tm))
-      (printf "delta-map=~a\n" (delta-map->string delta-map))
-      (printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
-      (printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      ;(printf "tm=~a\n" (tm->string tm))
+      ;(printf "delta-map=~a\n" (delta-map->string delta-map))
+      ;(printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      ;(printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
       (set! history-root
             (computation-history-make tm
                                       tape
                                       #:maximumrank 2))
-      (printf "tree-root=\n~a\n" (history->string
-                                  history-root
-                                  #:configuration->string configuration->string))
+      ;(printf "tree-root=\n~a\n" (history->string
+      ;                            history-root
+      ;                            #:configuration->string configuration->string))
+      )
+    )
+   (test-case
+    "Test computation-history-make for simple machine without epsilon moves"
+    (let* ([tm (trial-tm22)]
+           [tape (make-tape "a" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [history-root '()]
+           )
+      ;(printf "tm=~a\n" (tm->string tm))
+      ;(printf "delta-map=~a\n" (delta-map->string delta-map))
+      ;(printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      ;(printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      (set! history-root
+            (computation-history-make tm
+                                      tape
+                                      #:maximumrank 2))
+      ;(printf "tree-root=\n~a\n" (history->string
+      ;                            history-root
+      ;                            #:configuration->string configuration->string))
+      )
+    )
+   (test-case
+    "Test computation-history-make for machine with epsilon moves"
+    (let* ([tm (trial-tm23)]
+           [tape (make-tape "a" "B")]
+           [initial-config (configurationstruct 0 tape)]
+           [delta-map (tm->delta-map tm)]
+           [epsilon-map (machinestruct-epsilonmap tm)]
+           [all-states (all-states-get delta-map epsilon-map)]
+           [epsilon-closure (epsilon-closure-make epsilon-map all-states)]
+           [history-root '()]
+           )
+      ;(printf "tm=~a\n" (tm->string tm))
+      ;(printf "delta-map=~a\n" (delta-map->string delta-map))
+      ;(printf "epsilon-map=~a\n" (epsilon-map->string epsilon-map))
+      ;(printf "epsilon-closure=~a\n" (epsilon-closure->string epsilon-closure))
+      (set! history-root
+            (computation-history-make tm
+                                      tape
+                                      #:maximumrank 2))
+      ;(printf "tree-root=\n~a\n" (history->string
+      ;                            history-root
+      ;                            #:configuration->string configuration->string))
       )
     )
   

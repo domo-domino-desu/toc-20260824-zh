@@ -10055,7 +10055,7 @@ we adapt many-one reduction by restricting the translation function to run in
 polytime.
 
 %<*def:PolyTimeReduction>
-\begin{definition}
+\begin{definition}\label{def:PolytimeReducibility}
 Let $\lang_0,\lang_1$ be languages, subsets of $\kleenestar{\B}\!$.
 Then 
 \definend{$\lang_1$ is polynomial time reducible to $\lang_0$},\index{polynomial time reducibility}\index{reducibility!polynomial time}\index{reducibility!polytime}
@@ -11607,20 +11607,26 @@ $P_i=F$).
 \recommended
 \begin{exercise}
 We can do reductions between problems of types other than language 
-decision problems, including optimizations.
-The \definend{\probname{Assignment} problem}\index{Assignment problem@\probname{Assignment} problem} inputs two same-sized sets, of workers 
-$W=\set{w_0,\ldots{}w_{n-1}}$ and tasks
-$T=\set{t_0,\ldots{} t_{n-1}}$. 
-For each worker-task pair there is a cost $C(w_i,t_j)$.
-The goal is to assign each of the tasks, one per worker,
-at minimal total cost.
-The \probname{Traveling Salesman} problem,\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
-of course, asks for circuit of minimal total cost in a weighted graph.
+decision problems, such as optimizations.
+A
+\definend{reduction between optimizations}\index{reducibility!between optimization problems}\index{optimization problem reducibility}
+is a pair of
+polytime computable functions $\seq{f,g}$
+mapping bitstrings to bitstrings, where $f$ is a reduction function as in
+\cref{def:PolytimeReducibility}, taking instances to instances, 
+and $g$ takes optimal solutions to optimal solutions.
 \begin{exparts}
-\item By eye, solve this \probname{Assignment} problem instance.
+\item
+The \definend{\probname{Assignment} problem}\index{Assignment problem@\probname{Assignment} problem} inputs a set of workers 
+$W=\set{w_0,\ldots{}w_{n-1}}$ and a set of tasks
+$T=\set{t_0,\ldots{} t_{n-1}}$, of equal sizes. 
+For each worker and task there is a cost $C(w_i,t_j)$.
+The goal is to assign each task, one per worker,
+for minimal total cost.
+By eye, solve this \probname{Assignment} problem instance.
 \begin{center}\small
 \begin{tabular}{r|*{4}{r}}
-  \multicolumn{1}{r}{\tabulartext{Cost $C(t_i,w_j)$}}
+  \multicolumn{1}{r}{\tabulartext{Cost $C(w_i,t_j)$}}
     &\multicolumn{1}{r}{\tabulartext{$w_0$}}
     &\multicolumn{1}{r}{\tabulartext{$w_1$}}
     &\multicolumn{1}{r}{\tabulartext{$w_2$}}
@@ -11632,18 +11638,23 @@ of course, asks for circuit of minimal total cost in a weighted graph.
   \tabulartext{$t_3$} &$1$  &$3$  &$5$  &$9$  \\
 \end{tabular}
 \end{center}
-\item  Consider this bipartite graph.
+\item The \definend{\probname{Asymmetric Traveling Salesman}}
+problem\index{Asymmetric Traveling Salesman problem@\probname{Asymmetric Traveling Salesman} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem!Asymmetric@\probname{Asymmetric}}
+asks for circuit of minimal total cost in a graph that is both weighted
+and directed.
+Show that 
+  $\probname{Assignment}\leq_p\probname{Asymmetric Traveling Salesman}$.
+  \hint~the reduction function~$f$ inputs an assignment table.
+  Have it output a bipartite graph as shown here, where 
+  each worker is connected to each task.
   \begin{center}
     \includegraphics{complexity/asy/complexity/complexity23.pdf}
   \end{center}
-  Each $t_i$ is shown connected to each $w_j$.
-  As edge weights, add the costs from the table.
-  In addition, connect each pair of $w$'s with an edge of weight~$0$,
-  and similarly connect each pair of $t$'s.
-  Restate the \probname{Assignment} problem as that of finding a circuit
-  in this graph. 
-  Use this to show that 
-  $\probname{Assignment}\leq_p\probname{Traveling Salesman}$.
+  Modify that to a directed graph so that between each worker and task
+  there is an edge in each direction.
+  Use the given assignment cost table to make appropriate edge weights.
+  Finish by verifying that there is a polytime computable function~$g$
+  that associates optimal assignments with optimal circuits.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -11665,26 +11676,28 @@ of course, asks for circuit of minimal total cost in a weighted graph.
 shows that the optimum solution is to pair
 $t_0,w_1$, along with $t_1,w_3$, and $t_2,w_2$, and finally $t_3,w_0$.
 The total cost is~$11$.
-\item Because all pairs of $w$'s are connected by edges of cost zero, 
-as are all pairs of $t$'s, the cost of the circuit is just the cost of
-passing between the top and bottom.
-That happens twice in each direction, and making that cost be less than 
-or equal to the bound is the \probname{Assignment} problem.
+\item
+As in the hint,
+the reduction function~$f$
+inputs a triple $\sequence{W,T,C}$ of the set of workers,
+the same-sized set of tasks, and the table of costs. 
+It outputs a graph $f(\sequence{W,T,C})=\mathcal{G}$ that is bipartite,
+meaning that there are no inter-$w$ edges or inter-$t$ edges.
+For each $w$ and~$t$ there is a directed edge in each direction.
 
-To show that $\probname{Assignment}\leq_p\probname{Traveling Salesman}$,
-we construct a reduction function~$f$.
-It inputs a triple $\sequence{W,T,C}$ of workers, tasks, and the costs.
-It constructs the bipartite graph with a bank of $w$'s on one side, and
-a bank of $t$'s on the other.
-Every pair of $w$'s is connected by an edge of cost zero, as is
-every pair of $t$'s.
-Between each $t_i$ and~$w_j$ is an edge of cost $C(t_i,w_j)$.
-The output of the reduction function is 
-$f(\sequence{W,T,C})=\mathcal{G}$.
-This is computable in polytime, and 
-also an optimum solution for the \probname{Assignment} problem instance
-corresponds to an optimum solution to the 
-\probname{Traveling Salesman} problem instance. 
+For each $i$ and~$j$ give the edge from $w_i$ to $t_j$ the weight~$C(w_i,t_j)$.
+Give the edge from $t_j$ to~$w_i$ the weight~$0$.
+(If you want all weights to be positive then these can
+be $C(w_i,t_j)+1$ and~$1$.)
+This function~$f$ is clearly computable in polytime.
+
+The function~$g$ inputs an assignment of workers to tasks,
+$w_{0}\mapsto t_{i_0},\,w_{1}\mapsto t_{i_1}\,\ldots\,$
+and outputs an associated circuit through~$\mathcal{G}$.
+That circuit starts at the vertex $w_0$, then travels to vertex~$t_{i_0}$, then
+to $w_1$ and~$t_{i_1}$, etc, until returning back to $w_0$.
+Clearly this map~$g$ is polytime computable and
+also clearly its input is optimal if and only if its output is also optimal.
 \end{exparts}
 \end{answer}
 \end{exercise}

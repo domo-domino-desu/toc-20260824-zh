@@ -3620,6 +3620,38 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ======= asymmetric travelling salesman ====
+int picnum = 52;
+picture pic;
+setdefaultdirectedgraphstyles();
+defaultlayoutrel = false;
+
+node[] nodes=ncircles("$v_0$",
+  "$v_1$",
+  "$v_2$");
+
+// calculate nodes position
+real u=1cm;
+real v=0.7*u;
+circularlayout(0.8*u, startangle=90, nodes);
+
+// draw edges
+draw(pic,
+     (nodes[0]..bend(10)..nodes[1]).l("1"),
+     (nodes[0]..bend(10)..nodes[2]).l("2"),
+     (nodes[1]..bend(10)..nodes[0]).l("6"),
+     (nodes[1]..bend(10)..nodes[2]).l("3"),
+     (nodes[2]..bend(10)..nodes[0]).l("5"),
+     (nodes[2]..bend(10)..nodes[1]).l("4")
+);
+
+// draw nodes
+draw(pic,
+     nodes[0], nodes[1], nodes[2]);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

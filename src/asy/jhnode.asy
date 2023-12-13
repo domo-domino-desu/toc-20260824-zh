@@ -171,6 +171,24 @@ void setdefaultgraphstyles() {
     // 				    arrow=Arrow(6,filltype=FillDraw(white,boldcolor)));
 }
 
+void setdefaultdirectedgraphstyles() {
+  // If you declare structures then you won't see the changes outside the fcn
+  // NODEPEN=fontsize(7pt);
+  // EDGEPEN=linewidth(0.75bp)+fontsize(7pt); // +boldcolor; 
+  // EDGEPEN_TT=EDGEPEN+fontcommand("\ttfamily");
+  defaultnodestyle=nodestyle(xmargin=0.4pt,
+			     textpen=NODEPEN,
+			     drawfn=FillDrawer(white,boldcolor));
+  // edge style
+  // defaultdrawstyle=drawstyle(p=EDGEPEN_TT+backgroundcolor, arrow=None);
+  defaultdrawstyle=directededgestyle;
+
+  // for directed graphs 
+  drawstyle directedstyle=directededgestyle;
+    // drawstyle(p=EDGEPEN_TT,
+    // 				    arrow=Arrow(6,filltype=FillDraw(white,boldcolor)));
+}
+
 
 // Set defaults for parsetrees
 void setdefaultparsetreestyles() {

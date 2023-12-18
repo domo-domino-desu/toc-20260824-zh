@@ -4195,6 +4195,9 @@ Traversing the path has an one and only one edge leaving each vertex.
 \end{exercise}
 
 \begin{exercise}
+\begin{credit}
+    Private communication from Puck Rombach.
+\end{credit}
 On some \probname{Traveling Salesman} problem graphs we can
 change the edge weights to ensure that an edge is used but on
 some we cannot.  
@@ -4216,7 +4219,7 @@ the \probname{Traveling Salesman} problem includes~$e$.
 \begin{exparts}
 \item This graph has a Hamiltonian circuit, around the outside. 
 \begin{center}
-  \includegraphics{\asydir problems/problems053.pdf}
+  \includegraphics{complexity/asy/problems/problems53.pdf}
 \end{center}
 To include the vertices $v_0$ and~$v_3$, any 
 circuit must include those four outside edges.
@@ -11693,6 +11696,111 @@ $P_i=F$).
 \end{answer}
 \end{exercise}
 
+
+\begin{exercise}
+Our definition of the \probname{Traveling Salesman} 
+problem\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
+is based on an undirected graph.
+The \definend{\probname{Asymmetric Traveling Salesman}}
+problem\index{Asymmetric Traveling Salesman problem@\probname{Asymmetric Traveling Salesman} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem!Asymmetric@\probname{Asymmetric}}
+takes place on a directed graph.
+(The problem name comes from the fact that the graph's matrix is asymmetric.)
+\begin{equation*}\small
+  \vcenteredhbox{\includegraphics{\asydir problems/problems52.pdf}}
+  \hspace*{3em}
+  M=
+  \begin{blockarray}{*{4}{c}}
+           &v_0 &v_1 &v_2    \\
+    \begin{block}{c(*{3}{c})}
+      v_0  &\text{--}   &1   &2    \\
+      v_1  &3    &\text{--}  &4    \\
+      v_2  &5    &6   &\text{--}    \\
+    \end{block}
+  \end{blockarray}
+\end{equation*}
+An example of such a problem is when nodes are cities and edges are flights, 
+with the weight of an edge being the flight's cost.
+\begin{exparts}
+\item Show that $\text{\probname{Traveling Salesman}}\leq_p\text{\probname{Asymmetric Traveling Salesman}}$. 
+\item We will develop the converse.
+  An asymmetric problem instance is a directed graph $\mathcal{G}$
+  with vertices $g_0,\ldots{} g_n$. 
+  From it make a new graph~$\mathcal{H}$ with twice as many vertices,
+  which come in two colors,
+  $h_0,\ldots{}h_{n},\hat{h}_0,\ldots{}\hat{h}_n$.  
+  This graph only has connections between different-colored vertices.
+  Where $i\neq j$, if vertex $g_i$ is connected to~$g_j$ by an edge with weight
+  $w$ then 
+  vertex $\hat{h}_i$ is connected to $h_j$ and
+  vertex $h_i$ is connected to $\hat{h}_j$, both by an edge with weight~$w$. 
+  Using the graph~$\mathcal{G}$ pictured above, produce the graph
+  matrix for~$\mathcal{H}$ and verify that it is symmetric.
+\item To finish, let~$W$ be the product of $\mathcal{G}$'s maximum edge weight 
+  with its number of vertices.
+  In the graph~$H$, for all indices~$i$ 
+  use an edge of weight~$-W-1$ to connect
+  $h_i$ with~$\hat{h}_i$, in both directions.
+  Modify the matrix from the prior part and verify that the modified
+  matrix is symmetric.
+\item Find the connection between solution circuits in $\mathcal{H}$
+  and those in~$\mathcal{G}$.
+  Argue that
+  with a \probname{Traveling Salesman} oracle
+  we could, given an asymmetric instance $\mathcal{G}$,
+  translate that to a symmetric instance~$\mathcal{H}$ and use the
+  oracle to derive a solution to $\mathcal{G}$, all in polytime. 
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item A symmetric instance is a special case of an asymmetric instance.
+\item This is the matrix. 
+It is clearly symmetric.   
+\begin{equation*}\small
+  \begin{blockarray}{*{7}{c}}
+           &h_0 &h_1 &h_2 &\hat{h}_0 &\hat{h}_1 &\hat{h}_2    \\
+    \begin{block}{c(*{6}{c})}
+      h_0        &0         &0          &0         &\text{--} &3         &5 \\
+      h_1        &0         &0          &0         &1         &\text{--} &6 \\
+      h_2        &0         &0          &0         &2         &4         &\text{--} \\
+      \hat{h}_0  &\text{--} &1          &2         &0         &0         &0\\
+      \hat{h}_1  &3         &\text{--}  &4         &0         &0         &0\\
+      \hat{h}_2  &5         &6          &\text{--} &0         &0         &0\\
+    \end{block}
+  \end{blockarray}
+\end{equation*}
+\item The adjusted matrix is also symmetric.    
+\begin{equation*}\small
+  \begin{blockarray}{*{7}{c}}
+           &h_0 &h_1 &h_2 &\hat{h}_0 &\hat{h}_1 &\hat{h}_2    \\
+    \begin{block}{c(*{6}{c})}
+      h_0        &0         &0          &0         &-19       &3         &5 \\
+      h_1        &0         &0          &0         &1         &-19       &6 \\
+      h_2        &0         &0          &0         &2         &4         &-19 \\
+      \hat{h}_0  &-19       &1          &2         &0         &0         &0\\
+      \hat{h}_1  &3         &-19        &4         &0         &0         &0\\
+      \hat{h}_2  &5         &6          &-19       &0         &0         &0\\
+    \end{block}
+  \end{blockarray}
+\end{equation*}
+\item 
+The solution for $\mathcal{G}$ is $g_0\to g_i\to g_2\to g_0$, of total
+length~$10$.
+For $\mathcal{H}$ the solution is 
+$h_0\to \hat{h}_0\to h_1\to\hat{h}_1\to h_2\to\hat{h}_2\to\hat{h}_2\to h_0$.
+The large negative weights ensure that those edges must be part of a
+circuit.
+(Any circuit must have a number of edges equal to the number of vertices,
+and within that limit 
+substituting larger numbers for the $-19$'s must increase the total.)
+The solution thus alternates between edges of the form $h_i\hat{h}_i$
+and those of the form $\hat{h}_ih_j$, 
+where $g_ig_j$ are in $\mathcal{G}$'s optimal circuit. 
+These reductions can clearly be done in polytime.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+
 \recommended
 \begin{exercise}
 We can do reductions between problems of types other than language 
@@ -11727,7 +11835,7 @@ By eye, solve this \probname{Assignment} problem instance.
   \tabulartext{$t_3$} &$1$  &$3$  &$5$  &$9$  \\
 \end{tabular}
 \end{center}
-\item The \definend{\probname{Asymmetric Traveling Salesman}}
+\item The \probname{Asymmetric Traveling Salesman}
 problem\index{Asymmetric Traveling Salesman problem@\probname{Asymmetric Traveling Salesman} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem!Asymmetric@\probname{Asymmetric}}
 asks for circuit of minimal total cost in a weighted graph that is
 directed.

@@ -3639,10 +3639,10 @@ circularlayout(0.8*u, startangle=90, nodes);
 draw(pic,
      (nodes[0]..bend(10)..nodes[1]).l("1"),
      (nodes[0]..bend(10)..nodes[2]).l("2"),
-     (nodes[1]..bend(10)..nodes[0]).l("6"),
-     (nodes[1]..bend(10)..nodes[2]).l("3"),
+     (nodes[1]..bend(10)..nodes[0]).l("3"),
+     (nodes[1]..bend(10)..nodes[2]).l("4"),
      (nodes[2]..bend(10)..nodes[0]).l("5"),
-     (nodes[2]..bend(10)..nodes[1]).l("4")
+     (nodes[2]..bend(10)..nodes[1]).l("6")
 );
 
 // draw nodes

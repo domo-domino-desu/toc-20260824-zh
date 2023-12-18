@@ -3652,6 +3652,42 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+// ======= TSP with edge that cannot be part of any solution =======
+int picnum = 53;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node v0=ncircle("\nodebox{$v_0$}"),
+  v1=ncircle("\nodebox{$v_1$}"),
+  v2=ncircle("\nodebox{$v_2$}"),
+  v3=ncircle("\nodebox{$v_3$}");
+
+// calculate node positions
+real u=0.9cm;
+real v=0.75*u;
+defaultlayoutskip=u;
+
+hlayout(1*u, v0, v1);
+vlayout(1*v, v0, v2);
+hlayout(1*u, v2, v3);
+
+// draw edges
+draw(pic,
+     (v0--v1),
+     (v0--v2),
+     (v1--v2),
+     (v1--v3),
+     (v2--v3)
+);
+
+// draw nodes, after edges
+draw(pic,
+     v0, v1, v2, v3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 
 

@@ -1591,7 +1591,7 @@ node kevinbacon=nbox("\scriptsize Kevin Bacon",ns_noborder),
   johnkennedy=nbox("\scriptsize John Kennedy",ns_noborder),
   andiemacdowell=nbox("\scriptsize Andie MacDowell",ns_noborder),
   jayosanders=nbox("\scriptsize Jay O Sanders",ns_noborder),
-  taraoreilley=nbox("\scriptsize Tara O'Reilley",ns_noborder),
+taraoreilley=nbox("\scriptsize Tara O'Reilley",ns_noborder), // Tara Ariella O'Reilley
   jimhefferon=nbox("\scriptsize Jim Hef{}feron",ns_noborder);
 
 // calculate nodes position

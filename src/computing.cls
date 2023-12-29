@@ -720,7 +720,7 @@
     pdfstartview={FitH},    % fits the width of the page to the window
     pdfpagemode=None,       % None, or UseOutlines, or UseThumbs, or FullScreen
     pdftitle={Computing},    % title
-    pdfauthor={Jim Hefferon, Saint Michael's College},     % author
+    pdfauthor={Jim Hefferon, University of Vermont},     % author
     pdfsubject={Theory of Computation},   % subject of the document
     pdfcreator={LaTeX, Asymptote},   % creator of the document; see https://tex.stackexchange.com/a/590921/339
     % pdfproducer={pdflatex}, % producer of the document; default is current pdflatex version

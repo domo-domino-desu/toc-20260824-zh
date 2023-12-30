@@ -170,7 +170,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node test=nrounddiamond("$\TMfcn^K_e(x)=1$?");
+node test=nrounddiamond("$\TMfcn^K_e(x)=0\,$?");
 node printout=nbox("Print $42$");
 node loop=nbox("Infinite loop");
 node ending=nroundbox("End");
@@ -183,8 +183,8 @@ real v = 0.85*u;
 
 vlayout(1*v,start,read);
 vlayout(1.35*v,read,test);
-loop.pos = test.pos + (-2.75*u,-0.75*v);
-printout.pos = test.pos + (2.75*u,-0.75*v);
+loop.pos = test.pos + (2.75*u,-0.75*v);
+printout.pos = test.pos + (-2.75*u,-0.75*v);
 // hlayout(-3.25*u,test,printout);
 // hlayout(3.75*u,test,loop);
 vlayout(1.1*v,printout,ending);
@@ -193,8 +193,8 @@ vlayout(1.1*v,printout,ending);
 draw(pic,
      (start--read),
      (read--test),
-     (test..HV..printout).l(Label("N",Relative(0.25))).style("leftside"),
-     (test..HV..loop).l(Label("Y",Relative(0.25))),
+     (test..HV..printout).l(Label("Y",Relative(0.25))),
+     (test..HV..loop).l(Label("N",Relative(0.25))).style("leftside"),
      (printout--ending)
 );
 
@@ -1213,8 +1213,8 @@ real v = 0.85*u;
 
 vlayout(0.8*v,start,read);
 vlayout(1.25*v,read,test);
-yes.pos = test.pos + (-2.75*u,-0.75*v);
-no.pos = test.pos + (2.75*u,-0.75*v);
+yes.pos = test.pos + (-3*u,-0.75*v);
+no.pos = test.pos + (3*u,-0.75*v);
 vlayout(2*v,test,ending);
 
 // draw edges

@@ -369,7 +369,7 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $n,x$");
 node getindex=nbox("Run $\TM_n$ on $n$");
-node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on input $x$"));
+node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on $x$"));
 node end=nroundbox("End");
 
 // layout
@@ -412,7 +412,7 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
 node getindex=nbox("Run $\TM_n$ on $n$");
-node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on input $x$"));
+node simulate=nbox(minipage_snug("With the result $w$,\\run $\TM_w$ on $x$"));
 node end=nroundbox("End");
 
 // layout

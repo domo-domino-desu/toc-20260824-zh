@@ -18,7 +18,7 @@ string[] PGM = {"void main() \{",
 		"\ \   x = malloc(sizeof(int));",
 		"\ \   y = malloc(sizeof(int));",
 		"\ \   *x = 42;",
-		"\ \   y=x;",
+		"\ \   y = x;",
 		"\ \   *y = 13;",
 		"\}"
 };

@@ -2774,19 +2774,19 @@ node a=ncircle("a"),  // \rule{0pt}{7pt}
   j=ncircle("j");
 
 // calculate nodes position
-real u=0.75cm;
-real v=u;
+real u=1cm;
+real v=0.75*u;
 defaultlayoutskip=u;
 
-b.pos = new_node_pos(a,-120,-1*v);
+b.pos = new_node_pos(a,-130,-1*v);
 c.pos = new_node_pos(a,-90,-1*v);
-d.pos = new_node_pos(a,-60,-1*v);
+d.pos = new_node_pos(a,-50,-1*v);
 e.pos = new_node_pos(b,-110,-1*v);
-f.pos = new_node_pos(b,-80,-1*v);
+f.pos = new_node_pos(b,-70,-1*v);
 g.pos = new_node_pos(d,-110,-1*v);
-h.pos = new_node_pos(d,-80,-1*v);
+h.pos = new_node_pos(d,-70,-1*v);
 i.pos = new_node_pos(g,-110,-1*v);
-j.pos = new_node_pos(g,-80,-1*v);
+j.pos = new_node_pos(g,-70,-1*v);
 
 // draw edges
 draw(pic,
@@ -2829,19 +2829,19 @@ node a=ncircle("$0$"),
   j=ncircle("$9$");
 
 // calculate nodes position
-real u=0.75cm;
-real v=u;
+real u=1cm;
+real v=0.75*u;
 defaultlayoutskip=u;
 
-b.pos = new_node_pos(a,-120,-1*v);
+b.pos = new_node_pos(a,-130,-1*v);
 c.pos = new_node_pos(a,-90,-1*v);
-d.pos = new_node_pos(a,-60,-1*v);
+d.pos = new_node_pos(a,-50,-1*v);
 e.pos = new_node_pos(b,-110,-1*v);
-f.pos = new_node_pos(b,-80,-1*v);
+f.pos = new_node_pos(b,-70,-1*v);
 g.pos = new_node_pos(d,-110,-1*v);
-h.pos = new_node_pos(d,-80,-1*v);
+h.pos = new_node_pos(d,-70,-1*v);
 i.pos = new_node_pos(g,-110,-1*v);
-j.pos = new_node_pos(g,-80,-1*v);
+j.pos = new_node_pos(g,-70,-1*v);
 
 // draw edges
 draw(pic,
@@ -2884,19 +2884,19 @@ node a=ncircle("$0$"),
   j=ncircle("$8$");
 
 // calculate nodes position
-real u=0.75cm;
-real v=u;
+real u=1cm;
+real v=0.75*u;
 defaultlayoutskip=u;
 
-b.pos = new_node_pos(a,-120,-1*v);
+b.pos = new_node_pos(a,-130,-1*v);
 c.pos = new_node_pos(a,-90,-1*v);
-d.pos = new_node_pos(a,-60,-1*v);
+d.pos = new_node_pos(a,-50,-1*v);
 e.pos = new_node_pos(b,-110,-1*v);
-f.pos = new_node_pos(b,-80,-1*v);
+f.pos = new_node_pos(b,-70,-1*v);
 g.pos = new_node_pos(d,-110,-1*v);
-h.pos = new_node_pos(d,-80,-1*v);
+h.pos = new_node_pos(d,-70,-1*v);
 i.pos = new_node_pos(g,-110,-1*v);
-j.pos = new_node_pos(g,-80,-1*v);
+j.pos = new_node_pos(g,-70,-1*v);
 
 // draw edges
 draw(pic,

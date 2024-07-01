@@ -1460,16 +1460,16 @@ pair F(real x) {
 
 // log base 2
 real lg(real x) {
-  return(log10(x)/log10(2));
+  return (log10(x)/log10(2));
 }
 
 // causes a runtime overflow 
-// real g(real x) {
-//   return x**(lg(x));
-// }
 real g(real x) {
-  return x**(4);
+  return x**(lg(x));
 }
+// real g(real x) {
+//   return x**(4);
+// }
 pair G(real x) {
   return (x,g(x));
 }
@@ -1516,6 +1516,9 @@ yaxis(pic, XZero,
       p=AXISPEN,
       arrow=Arrow(TeXHead,axis_arrow_size));
 label(pic,"$100\,000$",Scale(pic,(0,100000)),1.5*W,TICLABELPEN);
+label(pic,"$200\,000$",Scale(pic,(0,200000)),1.5*W,TICLABELPEN);
+label(pic,"$300\,000$",Scale(pic,(0,300000)),1.5*W,TICLABELPEN);
+label(pic,"$400\,000$",Scale(pic,(0,400000)),1.5*W,TICLABELPEN);
 // xequals(pic, 0,   
 // 	ymin=0, ymax=ymax+15,
 //         p=AXISPEN,
@@ -1524,7 +1527,8 @@ label(pic,"$100\,000$",Scale(pic,(0,100000)),1.5*W,TICLABELPEN);
 
 dotfactor=2; // http://asymptote.sourceforge.net/FAQ/section3.html
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
-for (int i=ceil(xmin); i<=floor(xmax); ++i) {
+for (int i=1; i<=floor(xmax); ++i) {
+  // write(format("i=%d",i));
   if (remainder(i,5)==0) {
     dot(pic, Scale(pic,G(i)), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
   } else {

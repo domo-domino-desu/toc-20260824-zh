@@ -2,14 +2,17 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{computing}[2014/08/08 Class for computing book]
 
+% This dir name allows using this .cls file from other dirs,  such as complexity/
+\providecommand{\computingClsDir}{.}  
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions \relax
 \LoadClass[twoside]{book}
 
 \usepackage{etoolbox}
-% Look in here for flag to make paper copies
-\input{papercopyflag}
+
+% Look in the file papercopyflag for about whether this is making paper copies
+\input{\computingClsDir/papercopyflag}
 
 % Use UTF-8
 \usepackage[utf8]{inputenc}
@@ -30,7 +33,7 @@
 % \usepackage[libertine,bigdelims,vvarbb,scaled=1.07]{newtxmath}
 % \usepackage[cal=boondoxo]{mathalfa}
 % \linespread{1.04}
-\usepackage{computingfonts}
+\usepackage{\computingClsDir/computingfonts}
 
 % This must be early in the class file to avoid an option clash
 \usepackage[hyphens]{url}  % allow splitting at hyphens
@@ -42,7 +45,7 @@
 
 
 % Get some file directories in this layout, such as where graphics are
-\input{directory.tex}
+\input{\computingClsDir/directory.tex}
 % Define where the asy/ directory is, which will change from chapter 
 % to chapter, for the slides
 \newcommand{\asydir}{} 
@@ -65,7 +68,7 @@
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}
-\input{colorscheme.tex}  % change the color scheme
+\input{\computingClsDir/colorscheme.tex}  % change the color scheme
 \RequirePackage{graphicx}
 
 \usepackage{adjustbox} % for clipping pictures
@@ -1904,7 +1907,7 @@
 % This goes here rather than contentmacros because Asy's settexpreamble
 % doesn't look in the src directory when running contentmacros, so I 
 % handle it as a separate job 
-\usepackage{grammar}
+\usepackage{\computingClsDir/grammar}
 
 % Env to indent text
 \newenvironment{clip}{%
@@ -1942,7 +1945,7 @@
 % ==== Remaining content macros ======
 % Broken out separately so they can be used in the
 % Asymptotegraphics
-\usepackage{contentmacros}
+\usepackage{\computingClsDir/contentmacros}
 
 
 % =================

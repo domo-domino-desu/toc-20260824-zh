@@ -248,6 +248,196 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============ Nondeterministic Bounded Halting problem ===================
+picture pic;
+int picnum = 4;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$");
+node guess=nbox("Guess $\omega$");
+node test=nrounddiamond("$V(\sigma,\omega)$ accepts?");
+node yesbox=nbox("Halt");
+node nobox=nbox("Inf loop");
+node dummy=nbox("");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.15*v,read,guess);
+vlayout(1.5*v,guess,test);
+vlayout(0.75*v,test,dummy);
+hlayout(-3.1*u,dummy,yesbox);
+hlayout(3.1*u,dummy,nobox);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--guess),
+     (guess--test),
+     (test..HV..yesbox).l("Y"),
+     (test..HV..nobox).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     guess,
+     test,
+     yesbox,
+     nobox
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ......... parametrize sigma .................
+picture pic;
+int picnum = 5;
+setdefaultflowchartstyles();
+
+// define nodes
+// node start=nroundbox("Start");
+// node read=nbox("Read $\sigma$");
+// node guess=nbox("Guess $\omega$");
+// node test=nrounddiamond("$V(\sigma,\omega)$ accepts?");
+// node yesbox=nbox("Halt");
+// node nobox=nbox("Inf loop");
+// node dummy=nbox("");
+
+// // layout
+// defaultlayoutrel = false;
+// defaultlayoutskip = 0.75cm;
+// real u = defaultlayoutskip;
+// real v = 0.85*u;
+
+vlayout(1.15*v,start,guess);
+vlayout(1.5*v,guess,test);
+vlayout(0.75*v,test,dummy);
+hlayout(-3.1*u,dummy,yesbox);
+hlayout(3.1*u,dummy,nobox);
+
+// draw edges
+draw(pic,
+     (start--guess),
+     (guess--test),
+     (test..HV..yesbox).l("Y"),
+     (test..HV..nobox).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     guess,
+     test,
+     yesbox,
+     nobox
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ============ Bounded Halting problem =======================
+picture pic;
+int picnum = 6;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node test=nrounddiamond("$V(\sigma,\omega)$ accepts?");
+node nobox=nbox("Halt");
+node yesbox=nbox("Inf loop");
+node dummy=nbox("");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.5*v,read,test);
+vlayout(0.75*v,test,dummy);
+hlayout(3.1*u,dummy,nobox);
+hlayout(-3.1*u,dummy,yesbox);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..yesbox).l("Y"),
+     (test..HV..nobox).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     yesbox,
+     nobox
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ......... parametrize sigma .................
+picture pic;
+int picnum = 7;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\omega$");
+node test=nrounddiamond("$V(\sigma,\omega)$ accepts?");
+node nobox=nbox("Halt");
+node yesbox=nbox("Inf loop");
+node dummy=nbox("");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.5*v,read,test);
+vlayout(0.75*v,test,dummy);
+hlayout(3.1*u,dummy,nobox);
+hlayout(-3.1*u,dummy,yesbox);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..yesbox).l("Y"),
+     (test..HV..nobox).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     yesbox,
+     nobox
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 
 

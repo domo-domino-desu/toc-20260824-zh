@@ -13262,37 +13262,41 @@ print(s%s)
 % Here is a try at solving the \HP.
 For
 any~$n\in\N$, the set
-of Turing machines having $n$ or fewer instructions 
-(and using states no larger than $q_n$) is finite.
-For some members of this set
-$\TM_e$ halts on input~$e$
-and for some members it does not 
-but because the set is finite, the list
+of Turing machines having no more than $n$ instructions 
+and no more than $n$~states is finite.
+For some machines in this set,
+$\TM_e$ halts on input~$e$,
+and for some it does not. 
+Because the set is finite, the list
 of which machines halt is also finite.
 Finite sets are computable.
-So we are thinking about  
-starting all of the machines having~$n$ or fewer instructions
+So we can think about  
+starting all of these machines
 and dovetailing their computations until no more of them will ever converge.
 That is, consider $\map{D}{\N}{\N}$, where
 $D(n)$ is the minimal number of steps 
 after which all of the $n$-instruction machines 
 that will ever converge have done so.
 
-We can prove that $D$ is not computable.
+The function $D$ is not computable.
 For, assume otherwise.
 Then to compute whether $\TM_e$ halts on input~$e$, 
-find how many instructions~$n$ are in the machine $\TM_e$, compute $D(n)$,
-and run $\TM_{e}(e)$ for $D(n)$-many steps.
-If $\TM_{e}(e)$ has not halted by then, it never will.
-Of course, this contradicts the unsolvability of the \HP.
+look up how many instructions and states are in the machine, 
+for that number~$n$ compute $D(n)$,
+and then run $\TM_{e}(e)$ for $D(n)$-many steps.
+If $\TM_{e}(e)$ has not halted by step~$D(n)$ then it never will.
+So computability of $D$ would contradict the unsolvability of the \HP.
 
-Now, $D$ may seem to be just another uncomputable function;~why is it
-especially enlightening? It has the property that 
-any function $\hat{D}$ that grows faster than $D$,
-where if $\hat{D}(n)\geq D(n)$ for all sufficiently large~$n$,
-is also not computable, for the same reason that $D$ is not computable.
-This gives us an insight into one way that functions can fail to be 
-computable:~they can grow faster than any computable function.\footnote{%
+Now, this $D$ may seem to be just another uncomputable function among many;
+why is it especially enlightening? 
+It has the property that for any function $\hat{D}$ that grows faster 
+than $D$\Dash
+where $\hat{D}(n)\geq D(n)$ for all sufficiently large~$n$\Dash
+the function $\hat{D}$ also not computable 
+by the argument of the prior paragraph.
+This gives us an insight, that
+one way a function can be uncomputable
+is that it grows faster than any computable function.\footnote{%
   Note the connection with the Ackermann function:~we
   showed that it is not primitive recursive because it grows
   faster than any primitive recursive function.}
@@ -13338,9 +13342,9 @@ $\Delta(\text{state}, \text{tape symbol})
 Write \definend{$\Sigma(n)$} for the largest number of \str{1}'s that any 
 $n$~state machine, when started on a blank tape, 
 leaves on the tape after halting.
-Write \definend{$S(n)$} for the most moves, that is, transitions.
+Write \definend{$\BB(n)$} for the most moves, that is, transitions.
 
-\margingraphic{0.18\textwidth}{background/pix/rado.jpg}{\label{fig:rado}\href{https://en.wikipedia.org/wiki/Tibor_Rad\%C3\%B3}{Tibor Rad\'o 1895--1965}}\index{Rado, T@Rad\'o, T!picture} % https://math.osu.edu/about-us/history/tibor-rad%C3%B3
+\margingraphic{0.18\textwidth}{background/pix/rado1.jpg}{\label{fig:rado}\href{https://en.wikipedia.org/wiki/Tibor_Rad\%C3\%B3}{Tibor Rad\'o 1895--1965}}\index{Rado, T@Rad\'o, T!picture} % https://math.osu.edu/about-us/history/tibor-rad%C3%B3
 Why isn't $\Sigma$ computable?
 The obvious thing is to do a breadth-first search:~there 
 are finitely many $n$-state machines,
@@ -13357,10 +13361,12 @@ But there is no algorithm to decide the question for an arbitrary
 number of states. 
 
 \begin{theorem}[Rad\'o, 1962]
-The function $\Sigma$ is not computable.  
+The functions $\Sigma$ and $\BB$ are not computable.  
 \end{theorem}
 
 \begin{proof}
+We will do $\Sigma$; that the function $\BB$ is not computable 
+follows immediately.
 Let $\map{f}{\N}{\N}$ be computable.
 We will show that $\Sigma\neq f$ by showing that
 $\Sigma(n)>f(n)$ for infinitely many~$n$.
@@ -13441,16 +13447,30 @@ This is the three state Busy Beaver machine.
 \end{transitionfunction}
 \end{center}
 \end{example}
-In 1983 A~Brady showed that $\Sigma(4)=107$.
-As to $\Sigma(5)$, even today no one knows.
+In 1983 A~Brady showed that $\Sigma(4)=13$ and $\BB(4)=107$.
 
-Here are the current world records.
+\citetext{In 2024, a team of researchers}{%
+  See \autocite{Brubaker}} working together over the
+Internet and using the Coq proof verification system showed that
+$\Sigma(5)=4\,098$ and  $\BB(5)=47\,176\,870$.
+Their machine computes $g(0)$, $g(g(0))$, \ldots{} until it halts, where
+$g$ is this function.
+\begin{equation*}
+  g(n)=
+  \begin{cases}
+    (5n+18)/3  &\case{if $n$ leaves a remainder of $0$ on division by $3$}  \\
+    (5n+22)/3  &\case{if $n$ leaves a remainder of $1$}  \\ 
+    \text{Halt}&\case{otherwise}  
+ \end{cases}
+\end{equation*}
+
+This summarizes the current world records.
  \begin{center}
   \begin{tabular}{r|cccccc}
     $n$         &$1$  &$2$  &$3$  &$4$   &$5$           &$6$ \\ \cline{2-7}
     \begin{tabular}[t]{@{}r@{}}
       $\Sigma(n)$ \\
-      $S(n)$
+      $\BB(n)$
     \end{tabular}
     &\begin{tabular}[t]{@{}r@{}}
       $1$ \\
@@ -13468,9 +13488,9 @@ Here are the current world records.
       $13$ \\
       $107$
     \end{tabular}
-    &\begin{tabular}[t]{@{}l@{}}
-      $\geq 4\,098$ \\
-      $\geq 47\,176\,870$
+    &\begin{tabular}[t]{@{}r@{}}
+      $4\,098$ \\
+      $47\,176\,870$
     \end{tabular}
     % &\rule{0em}{2.25ex}\begin{tabular}[t]{@{}l@{}}
     %   $\geq 3.5\times 10^{18\,267}$ \\
@@ -13482,11 +13502,9 @@ Here are the current world records.
     \end{tabular}                 
   \end{tabular}
 \end{center}
-The notation $10\uparrow\uparrow 15$ means $10$ raised to the $10$ raised to the
-$10$ \ldots, a total of $15$ times,
-that is, $10\text{\^{}}(10\text{\^{}}({10\text{\^{}}}\cdots)))$ with fifteen 
+The notation $10\uparrow\uparrow 15$ means 
+$10\text{\^{}}(10\text{\^{}}({10\text{\^{}}}\cdots)))$ with fifteen 
 $10$'s.
-This result is the most recent, from 2023.
 For more, there are \citetext{a number of websites that cover the topic}{%
   The canonical one is \url{https://bbchallenge.org}.}, 
 including the latest results.
@@ -13506,7 +13524,7 @@ Not only are Busy Beaver numbers very hard to compute, at some
 point they become impossible.
 In 2016, A~Yedida and S~Aaronson obtained an~$n$ for which
 \citetext{$\Sigma(n)$ is unknowable}{%
-  See \autocite{Aaronson16}.
+  See \autocite{Aaronson16} and the excellent summary \autocite{Aaronson20}.
   See also \url{https://www.quantamagazine.org/the-busy-beaver-game-illuminates-the-fundamental-limits-of-math-20201210/}.}.
 To do that, they created a programming language where programs
 compile down to Turing machines.
@@ -13535,7 +13553,8 @@ this machine halts.
 % conjecture, and one that halts if and only if the Riemann hypothesis
 % is false.) 
 
-So one way for a function to fail to be computable is if it grows faster than
+In summary, 
+one way for a function to fail to be computable is if it grows faster than
 any computable function.
 Note, however, that this is not the only way.  
 There are functions that grow slower than some computable function but
@@ -13549,6 +13568,34 @@ are nonetheless not computable.
 Give the computation history, the sequence of configurations, that come from
 running the three-state Busy Beaver machine.
 \hint~you can run it on the Turing machine simulator.
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Write a routine to compute $g(0)$, $g(g(0))$, \ldots.
+\begin{answer}
+This Racket code in \figureref{fig:RacketBB5} computes it.
+\begin{figure}
+  \centering
+  \lstinputlisting[firstline=3]{background/scheme/BB5.rkt}
+  \caption{Racket code producing values found during computation of $\BB (5)$.}
+  \label{fig:RacketBB5}
+\end{figure}
+The values are $6$,
+$16$,
+$34$,
+$64$,
+$114$,
+$196$,
+$334$,
+$564$,
+$946$,
+$1584$,
+$2646$,
+$4416$, 
+$7366$,
+and $12284$.
+\end{answer}
 \end{exercise}
 
 % \recommended

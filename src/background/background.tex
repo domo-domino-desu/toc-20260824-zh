@@ -13249,35 +13249,105 @@ print(s%s)
 
 % =======================================================
 \extra{Busy Beaver}\index{Busy Beaver|(}
-
+Here is a naive attempt at  solving the \HP.
 For
 any~$n\in\N$, the set
 of Turing machines having no more than $n$~states is finite.
 There are machines $\TM_e$ in this set that halt on their index~$e$
 and machines that do not. 
-The set is finite so
+As the set is finite
 we can think about  
 starting all of these machines
-and dovetailing their computations until no more of them will ever converge.
-That is, consider the function $\map{D}{\N}{\N}$, where
-$D(n)$ is the minimal number of steps 
+and dovetailing their computations until no more of them will ever converge. 
+
+We define the function $\map{\definend{\BB}}{\N}{\N}$ to
+give the minimal number of steps 
 after which all of these size~$n$ machines 
 that will ever converge have done so.
+We also define 
+to be $\map{\definend{\Sigma}}{\N}{\N}$ 
+to be the largest number of \str{1}'s left 
+on the tape by any $n$-state Turing machine after halting.
 
-This function is not computable.
-For, assume otherwise.
-To compute whether $\TM_e$ halts on input~$e$, 
+\begin{theorem}[Rad\'o, 1962]
+The functions $\BB$ and $\Sigma$ are not computable.  
+\end{theorem}
+
+\begin{proof}
+The function $\Sigma is an exercise below.$
+For~$\BB$, assume otherwise.
+To compute whether some $\TM_e$ halts on input~$e$, 
 look up how many states are in the machine, 
-for that number~$n$ compute $D(n)$,
-and then run $\TM_{e}(e)$ for $D(n)$-many steps.
-If $\TM_{e}(e)$ has not halted by step~$D(n)$, it never will.
-So computability of $D$ would contradict the unsolvability of the \HP.
+for that number~$n$ compute $\BB(n)$,
+and then run $\TM_{e}(e)$ for $\BB(n)$-many steps.
+If $\TM_{e}(e)$ has not halted by step~$\BB(n)$, it never will.
+So computability of $\BB$ would contradict the unsolvability of the \HP.
+\end{proof}
+% For $\Sigma$,
+% let $\map{f}{\N}{\N}$ be any total computable function.
+% We will show that 
+% $\Sigma(n)>f(n)$ for infinitely many~$n$,
+% and so $\Sigma\neq f$.
+%
+% First note that there is a Turing Machine $\TM[M]_j$
+% having $j$~many states that writes $j$-many \str{1}'s to a blank tape.
+% For instance, here is $\TM[M]_4$.
+% \begin{center}
+%   \includegraphics{background/asy/busybeaver/busybeaver00.pdf}
+% \end{center}
+% Also note that we can compose two Turing machines.
+% The illustration below shows two machines on the left.
+% On the right, we have combined the final states 
+% of the first machine with the start state of the second.
+% \begin{center}
+%   \vcenteredhbox{\includegraphics{background/asy/busybeaver/busybeaver01.pdf}}
+%   \hspace{2.5em}
+%   \vcenteredhbox{\includegraphics{background/asy/busybeaver/busybeaver02.pdf}}
+% \end{center}
+%
+% Let $\map{F}{\N}{\N}$ be this function.
+% \begin{equation*}
+%   F(m) % = \sum_{0\leq i< m+1} f(i)+i^2  % using \Sigma so omit summation 
+%        = (f(0)+0^2)+(f(1)+1^2)+(f(2)+2^2)+\cdots+(f(m)+m^2)
+% \end{equation*}
+% It has the properties:~if $0<m$ then $f(m)<F(m)$,
+% and $m^2\leq F(m)$,
+% and $F(m)<F(m+1)$.
+% It is intuitively computable so Church's Thesis says there is a 
+% Turing machine $\TM[M]_F$ that computes it.
+% Let that machine have $n_F$~many states.
+%
+% Now consider the Turing machine $\TM$
+% that performs $\TM[M]_j$ and follows that with the machine 
+% $\TM[M]_F$, and then follows that with another copy of the machine 
+% $\TM[M]_F$. 
+% If started on a blank tape this machine will first produce $j$-many \str{1}'s,
+% then produce $F(j)$-many \str{1}'s, and finally will leave the tape with 
+% $F(F(j))$-many \str{1}'s.
+% Thus its productivity is 
+% $F(F(j))$.
+% It has $j+2n_F$ many states.
 
-This $D$ may seem to be just another uncomputable function among many;~why 
-is it especially enlightening? 
-It has the property that any function $\hat{D}$ which grows faster 
-than $D$\Dash
-where $\hat{D}(n)\geq D(n)$ for all sufficiently large~$n$\Dash
+% Compare that with the $j+2n_F$-state Busy Beaver machine.
+% By definition
+% $F(F(j))\leq \Sigma(j+2n_F)$.
+% Because $n_F$ is constant (it is the number of states in
+% the machine $\TM[M]_F$), the relation $j+2n_F\leq j^2< F(j)$
+% holds for sufficiently large~$j$.
+% Since $F$ is strictly increasing, $F(j+2n_F)<F(F(j))$.
+% Combining gives
+% $
+%    f(j+2n_F) <
+%    F(j+2n_F) <
+%    F(F(j))
+%    \leq \Sigma(j+2n_F)$,
+% as required. 
+
+These may seem to be just more uncomputable functions among many;~why 
+are they especially of interest? 
+Obsreve that $\BB$ has the property that any function $h$ which grows faster 
+than it\Dash
+where $h(n)\geq \BB(n)$ for all sufficiently large~$n$\Dash
 is also not computable, 
 by the same argument as in the prior paragraph.
 This gives us an insight about
@@ -13310,120 +13380,55 @@ is:~\citetext{which $n$-state Turing Machine does the most computational work be
   and
   \href{https://www.youtube.com/watch?v=jlh21U2texo}{\textit{What happens at the Boundary of Computation?}}
   from YouTube contributer Mutual Information.}
-to produce the machine that sets the limit~$D(n)$?
-One attracion is that it is powered by brains, not by any algorithm.
+to produce the machine that sets the limit~$\BB(n)$.
 A computation needs rules and here 
-tradition fixes a definition of Turing Machines where there is
+tradition fixes a definition of Turing machines where there is
 a single tape that is unbounded at one end,
 there are two tape symbols \str{1} and~\str{B},
-where the machine is started on a tape that is empty, 
+there is a separate halt state that is not counted in the number
+of machine states,
+the machine is started on an empty tape,
 and where transitions are of the form
 $\Delta(\text{state}, \text{tape symbol})
   =\sequence{\text{state}, \text{tape symbol}, \text{head shift}}$.
 
-Write \definend{$\Sigma(n)$} for the largest number of \str{1}'s that any 
-$n$~state machine, when started on a blank tape, 
-leaves on the tape after halting.
-Write \definend{$\BB(n)$} for the most moves, that is, transitions.
-For many years after the problem was originally stated by T~Rad\'o 
-the competition was about getting the largest $\Sigma$, 
-but recently it has become more common to discuss getting the largest
-$\BB$. 
+Besides $\BB$ we can instead take `most computational work' 
+to be \definend{$\Sigma(n)$}, the largest number of \str{1}'s left 
+on the tape by any $n$-state machine after halting.
+For many years after the problem was originally stated by T~Rad\'o, 
+the competition was about $\Sigma$
+but recently it is more common to discuss $\BB$. 
 In any event, the two are very closely related.
 
 
 
 \subsection*{Busy Beaver is unsolvable}
 % \urldef{\radourl}{\url{https://math.osu.edu/about-us/history/tibor-rad%C3%B3}}
-\margingraphic{0.18\textwidth}{background/pix/rado1.jpg}{\label{fig:rado}\href{https://en.wikipedia.org/wiki/Tibor_Rad\%C3\%B3}{Tibor Rad\'o 1895--1965}}\index{Rado, T@Rad\'o, T!picture} % https://math.osu.edu/about-us/history/tibor-rad%C3%B3
+\margingraphic{0.18\textwidth}{background/pix/rado1.png}{\label{fig:rado}\href{https://en.wikipedia.org/wiki/Tibor_Rad\%C3\%B3}{Tibor Rad\'o 1895--1965}}\index{Rado, T@Rad\'o, T!picture} % https://math.osu.edu/about-us/history/tibor-rad%C3%B3
 To compute $\Sigma$ or $\BB$ 
 the obvious thing is to do a breadth-first search:~there 
 are finitely many size~$n$ machines so
 start them all on a blank tape, dovetail,
 and await developments.
 
-But that won't work because some of the machines won't halt.
+But that won't work because some of them won't halt.
 At any moment some machines have halted and we can see
-how many \str{1}'s are on each such tape, so we know the longest so far.
+the maximum number of \str{1}'s or the most transitions so far.
 But as to the not-yet-halted ones, who knows?
-We can by looking into the source of individual machines
-hope to figure out that this one or that one will never halt,
-and so by exhaustion find the answer for all small-sized machine.
-But we have the concern that we will eventually find a machine 
+If we get down to just a few such machines then we can by looking into 
+their source,
+hope to figure them out
+and so by exhaustion find the answer for this~$n$.
+But what we if we eventually find a machine 
 that computes something where we don't know whether it halts or 
-not (for instance, one that searches for 
+not, for instance, a machine that searches for 
 \citetext{odd perfect numbers}{%
   A number is perfect if it is the sum of its divisors.
   For instance, $6$ is $1+2+3$.
-  Even perfect numbers exist but we do not know if odd ones do.}),
-and in any event there is no algorithm to decide the question for an arbitrary
-sized machine. 
+  Even perfect numbers exist but we do not know if odd ones do.}?
+The next result says that this exhaustion method appears to be best, in that
+there is no algorithm.
 
-\begin{theorem}[Rad\'o, 1962]
-The functions $\Sigma$ and $\BB$ are not computable.  
-\end{theorem}
-
-\begin{proof}
-We will do $\Sigma$; that the function $\BB$ is not computable 
-follows immediately.
-Let $\map{f}{\N}{\N}$ be computable.
-We will show that $\Sigma\neq f$ by showing that
-$\Sigma(n)>f(n)$ for infinitely many~$n$.
-
-First note that there is a Turing Machine $\TM[M]_j$
-having $j$~many states that writes $j$-many \str{1}'s to a blank tape.
-For instance, here is $\TM[M]_4$.
-\begin{center}
-  \includegraphics{background/asy/busybeaver/busybeaver00.pdf}
-\end{center}
-Also note that we can compose two Turing machines.
-The illustration below shows two machines on the left.
-On the right, we have combined the final states 
-of the first machine with the start state of the second.
-\begin{center}
-  \vcenteredhbox{\includegraphics{background/asy/busybeaver/busybeaver01.pdf}}
-  \hspace{2.5em}
-  \vcenteredhbox{\includegraphics{background/asy/busybeaver/busybeaver02.pdf}}
-\end{center}
-
-Let $\map{F}{\N}{\N}$ be this function.
-\begin{equation*}
-  F(m) % = \sum_{0\leq i< m+1} f(i)+i^2  % using \Sigma so omit summation 
-       = (f(0)+0^2)+(f(1)+1^2)+(f(2)+2^2)+\cdots+(f(m)+m^2)
-\end{equation*}
-It has the properties:~if $0<m$ then $f(m)<F(m)$,
-and $m^2\leq F(m)$,
-and $F(m)<F(m+1)$.
-It is intuitively computable so Church's Thesis says there is a 
-Turing machine $\TM[M]_F$ that computes it.
-Let that machine have $n_F$~many states.
-
-Now consider the Turing machine $\TM$
-that performs $\TM[M]_j$ and follows that with the machine 
-$\TM[M]_F$, and then follows that with another copy of the machine 
-$\TM[M]_F$. 
-If started on a blank tape this machine will first produce $j$-many \str{1}'s,
-then produce $F(j)$-many \str{1}'s, and finally will leave the tape with 
-$F(F(j))$-many \str{1}'s.
-Thus its productivity is 
-$F(F(j))$.
-It has $j+2n_F$ many states.
-
-Compare that with the $j+2n_F$-state Busy Beaver machine.
-By definition
-$F(F(j))\leq \Sigma(j+2n_F)$.
-Because $n_F$ is constant (it is the number of states in
-the machine $\TM[M]_F$), the relation $j+2n_F\leq j^2< F(j)$
-holds for sufficiently large~$j$.
-Since $F$ is strictly increasing, $F(j+2n_F)<F(F(j))$.
-Combining gives
-$
-   f(j+2n_F) <
-   F(j+2n_F) <
-   F(F(j))
-   \leq \Sigma(j+2n_F)$,
-as required.
-\end{proof}
 
 
 \subsection*{What is known}
@@ -13571,7 +13576,7 @@ running the three-state Busy Beaver machine.
 
 \recommended
 \begin{exercise}
-Write a routine to compute $g(0)$, $g(g(0))$, \ldots.
+Write and run a routine to compute $g(0)$, $g(g(0))$, \ldots.
 \begin{answer}
 This Racket code in \figureref{fig:RacketBB5} computes it.
 \begin{figure}
@@ -13617,6 +13622,115 @@ and $12284$.
 % $\bigl( 2(c+1)(n+2) \bigr)^{(c+1)n}$
 % \end{answer}
 % \end{exercise}
+
+\begin{exercise}
+We show that $\Sigma$ is not computable.
+Let $\map{f}{\N}{\N}$ be any total computable function.
+We will show that 
+$\Sigma(n)>f(n)$ for infinitely many~$n$,
+and so $\Sigma\neq f$.
+\begin{exparts}
+\item  
+Show that there is a Turing Machine $\TM[M]_j$
+having $j$~many states that writes $j$-many \str{1}'s to a blank tape.
+\item
+Let $\map{F}{\N}{\N}$ be this function.
+\begin{equation*}
+  F(m) % = \sum_{0\leq i< m+1} f(i)+i^2  % using \Sigma so omit summation 
+       = (f(0)+0^2)+(f(1)+1^2)+(f(2)+2^2)+\cdots+(f(m)+m^2)
+\end{equation*}
+Argue that it has the properties:~if $0<m$ then $f(m)<F(m)$,
+and $m^2\leq F(m)$,
+and $F(m)<F(m+1)$.
+\item
+Note that we can compose two Turing machines.
+The illustration below shows two machines on the left.
+On the right, we have combined the final states 
+of the first machine with the start state of the second.
+\begin{center}
+  \vcenteredhbox{\includegraphics{background/asy/busybeaver/busybeaver01.pdf}}
+  \hspace{2.5em}
+  \vcenteredhbox{\includegraphics{background/asy/busybeaver/busybeaver02.pdf}}
+\end{center}
+Consider the Turing machine $\TM$
+that performs $\TM[M]_j$ and followed by the machine 
+$\TM[M]_F$, and then follows by another copy of the machine 
+$\TM[M]_F$. 
+Show that its productivity is 
+$F(F(j))$.
+It has $j+2n_F$ many states.
+
+
+
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item     
+For instance, here is $\TM[M]_4$.
+\begin{center}
+  \includegraphics{background/asy/busybeaver/busybeaver00.pdf}
+\end{center}
+\item
+
+\item
+If started on a blank tape this machine will first produce $j$-many \str{1}'s,
+then produce $F(j)$-many \str{1}'s, and finally will leave the tape with 
+$F(F(j))$-many \str{1}'s.
+Thus its productivity is 
+$F(F(j))$.
+
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+
+% Let $\map{F}{\N}{\N}$ be this function.
+% \begin{equation*}
+%   F(m) % = \sum_{0\leq i< m+1} f(i)+i^2  % using \Sigma so omit summation 
+%        = (f(0)+0^2)+(f(1)+1^2)+(f(2)+2^2)+\cdots+(f(m)+m^2)
+% \end{equation*}
+% It has the properties:~if $0<m$ then $f(m)<F(m)$,
+% and $m^2\leq F(m)$,
+% and $F(m)<F(m+1)$.
+% It is intuitively computable so Church's Thesis says there is a 
+% Turing machine $\TM[M]_F$ that computes it.
+% Let that machine have $n_F$~many states.
+
+% Now consider the Turing machine $\TM$
+% that performs $\TM[M]_j$ and follows that with the machine 
+% $\TM[M]_F$, and then follows that with another copy of the machine 
+% $\TM[M]_F$. 
+% If started on a blank tape this machine will first produce $j$-many \str{1}'s,
+% then produce $F(j)$-many \str{1}'s, and finally will leave the tape with 
+% $F(F(j))$-many \str{1}'s.
+% Thus its productivity is 
+% $F(F(j))$.
+% It has $j+2n_F$ many states.
+
+% Compare that with the $j+2n_F$-state Busy Beaver machine.
+% By definition
+% $F(F(j))\leq \Sigma(j+2n_F)$.
+% Because $n_F$ is constant (it is the number of states in
+% the machine $\TM[M]_F$), the relation $j+2n_F\leq j^2< F(j)$
+% holds for sufficiently large~$j$.
+% Since $F$ is strictly increasing, $F(j+2n_F)<F(F(j))$.
+% Combining gives
+% $
+%    f(j+2n_F) <
+%    F(j+2n_F) <
+%    F(F(j))
+%    \leq \Sigma(j+2n_F)$,
+% as required.
+
+
+
+
+\begin{exercise}
+Give $\TM[M]_1$ and $\TM[M]_2$, the Turing machines
+having $1$ and~$2$ states that write $1$ and $2$-many \str{1}'s to a blank tape.
+\end{exercise}
+
+
 
 \begin{exercise}
 Show that there are uncomputable functions that grow slower than some

@@ -957,9 +957,13 @@
 {\llap{\thmnumber{#2}\hspace*{\margin@numberingspace}}\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
  
 
-\usepackage{mdframed}
-\mdfsetup{skipabove=1.5pt plus 0.2pt minus 0.1pt,
-          skipbelow=1.5pt plus 0.2pt minus 0.1pt}  % small whitespace between theorems
+% \usepackage{mdframed}
+% \mdfsetup{skipabove=1.5pt plus 0.2pt minus 0.1pt,
+%           skipbelow=1.5pt plus 0.2pt minus 0.1pt}  % small whitespace between theorems
+
+\usepackage{tcolorbox}
+\tcbset{beforeafter skip=1.5pt plus 0.2pt minus 0.1pt}
+
 % \usepackage{tablefootnote} % print footnotes at bottom of page https://tex.stackexchange.com/a/113693/121234
 
 % \newcounter{mdFootnoteValueSaver}
@@ -1018,35 +1022,35 @@
 %================================================================
 % THEOREM ENVIRONMENTS
 
-\mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %
-  leftmargin = 0pt, %
-  rightmargin = 0pt, %
-  innerleftmargin = \lrmarginaroundshadedtheorems, %
-  innerrightmargin = \lrmarginaroundshadedtheorems, %
-  innertopmargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
-  innerbottommargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
-  % innertopmargin = \tbmarginaroundshadedtheorems, %
-  % innerbottommargin = \tbmarginaroundshadedtheorems, %
-  skipabove= 4pt plus 1pt minus 1pt, % 0.5\topsep
-  skipbelow= 4pt plus 1pt minus 1pt, % 0.5\topsep
-  % skipabove= \resttbaroundshadedtheorems, %
-  % skipbelow= \resttbaroundshadedtheorems, %
-  splittopskip = 2pt, % 
-  splitbottomskip = 2pt, % 
-  topline=false,bottomline=false,leftline=false,rightline=false,}
+% \mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %
+%   leftmargin = 0pt, %
+%   rightmargin = 0pt, %
+%   innerleftmargin = \lrmarginaroundshadedtheorems, %
+%   innerrightmargin = \lrmarginaroundshadedtheorems, %
+%   innertopmargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
+%   innerbottommargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
+%   % innertopmargin = \tbmarginaroundshadedtheorems, %
+%   % innerbottommargin = \tbmarginaroundshadedtheorems, %
+%   skipabove= 4pt plus 1pt minus 1pt, % 0.5\topsep
+%   skipbelow= 4pt plus 1pt minus 1pt, % 0.5\topsep
+%   % skipabove= \resttbaroundshadedtheorems, %
+%   % skipbelow= \resttbaroundshadedtheorems, %
+%   splittopskip = 2pt, % 
+%   splitbottomskip = 2pt, % 
+%   topline=false,bottomline=false,leftline=false,rightline=false,}
 
-\mdfdefinestyle{whitestyle}{backgroundcolor=white, %
-  leftmargin = 0pt, %
-  rightmargin = 0pt, %
-  innerleftmargin = 0pt, %
-  innerrightmargin = 0pt, %
-  innertopmargin = 0pt, %
-  innerbottommargin = 0pt, %
-  skipabove= 6pt plus 1.5pt minus 1pt, % 0.75\topsep
-  skipbelow= 6pt plus 1.5pt minus 1pt, % 0.75\topsep
-  splittopskip = 0pt, % 
-  splitbottomskip = 0pt, % 
-  topline=false,bottomline=false,leftline=false,rightline=false,}
+% \mdfdefinestyle{whitestyle}{backgroundcolor=white, %
+%   leftmargin = 0pt, %
+%   rightmargin = 0pt, %
+%   innerleftmargin = 0pt, %
+%   innerrightmargin = 0pt, %
+%   innertopmargin = 0pt, %
+%   innerbottommargin = 0pt, %
+%   skipabove= 6pt plus 1.5pt minus 1pt, % 0.75\topsep
+%   skipbelow= 6pt plus 1.5pt minus 1pt, % 0.75\topsep
+%   splittopskip = 0pt, % 
+%   splitbottomskip = 0pt, % 
+%   topline=false,bottomline=false,leftline=false,rightline=false,}
 
 % \newshadedtheorem{theorem}{Theorem}[section]
 % \newshadedtheorem{lemma}[theorem]{Lemma}
@@ -1059,19 +1063,28 @@
 % \newshadedtheorem{problem}[theorem]{Problem}
 
 \theoremstyle{coloredstyle}
-\newmdtheoremenv[style=coloredstyle]{theorem}{Theorem}[section]
+\newtheorem{theorem}{Theorem}[section]
 \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % don't include the chapter
-\newmdtheoremenv[style=coloredstyle]{lemma}[theorem]{Lemma}
-\newmdtheoremenv[style=coloredstyle]{corollary}[theorem]{Corollary}
-\newmdtheoremenv[style=coloredstyle]{definition}[theorem]{Definition}
-\newmdtheoremenv[style=coloredstyle]{churchsthesis}[theorem]{Church's Thesis}
-\newmdtheoremenv[style=coloredstyle]{problem}[theorem]{Problem}
+% \newmdtheoremenv[style=coloredstyle]{lemma}[theorem]{Lemma}
+% \newmdtheoremenv[style=coloredstyle]{corollary}[theorem]{Corollary}
+% \newmdtheoremenv[style=coloredstyle]{definition}[theorem]{Definition}
+% \newmdtheoremenv[style=coloredstyle]{churchsthesis}[theorem]{Church's Thesis}
+% \newmdtheoremenv[style=coloredstyle]{problem}[theorem]{Problem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{churchsthesis}[theorem]{Church's Thesis}
+\newtheorem{problem}[theorem]{Problem}
 
 \theoremstyle{whitestyle}
-\newmdtheoremenv[style=whitestyle]{example}[theorem]{Example}
-\newmdtheoremenv[style=whitestyle]{remark}[theorem]{Remark}
-\newmdtheoremenv[style=whitestyle]{remarks}[theorem]{Remarks}
-\newmdtheoremenv[style=whitestyle]{discussion}[theorem]{Discussion}
+% \newmdtheoremenv[style=whitestyle]{example}[theorem]{Example}
+% \newmdtheoremenv[style=whitestyle]{remark}[theorem]{Remark}
+% \newmdtheoremenv[style=whitestyle]{remarks}[theorem]{Remarks}
+% \newmdtheoremenv[style=whitestyle]{discussion}[theorem]{Discussion}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{remarks}[theorem]{Remarks}
+\newtheorem{discussion}[theorem]{Discussion}
 
 \AtBeginEnvironment{theorem}{%
   \setcounter{mpfootnote}{\value{footnote}}}
@@ -1089,6 +1102,51 @@
   \setcounter{mpfootnote}{\value{footnote}}}
 \AtBeginEnvironment{remark}{%
   \setcounter{mpfootnote}{\value{footnote}}}
+
+
+\tcolorboxenvironment{theorem}{colback=backgroundcolor, 
+  colframe=backgroundcolor,
+  boxrule=0pt,
+  arc=0pt,
+  width=\textwidth,
+  left=0pt,
+  right=0pt,
+  boxsep=2pt,
+  bottom=0pt,
+  top=0pt,
+  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+}
+\tcolorboxenvironment{lemma}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+}
+\tcolorboxenvironment{corollary}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+}
+\tcolorboxenvironment{definition}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+}
+\tcolorboxenvironment{churchsthesis}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+}
+\tcolorboxenvironment{problem}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+}
+
 
 % Proofs
 % Too much space between proof and thm before it.

@@ -24,7 +24,7 @@
 \usepackage{amsmath}
 % Fix some font-loading error
 \let\Bbbk\relax
-\usepackage{amssymb, amsthm} % no amsthm; use ntheorem because of margin numbering
+\usepackage{amssymb, amsthm} 
 
 % M Sharpe's XCharter
 % \usepackage[scaled=.98,sups,osf]{XCharter}% lining figures in math, osf in text
@@ -298,44 +298,6 @@
 % (actually a marginnote that has been hacked to always be on the left).
 \newcommand{\chapterwrapper}{%
   \@ifstar{\jhchapter@star}{\jhchapter@nostar}}%
-% \newcommand{\jhchapter@nostar}{
-%   % Record that we are not inside an Extra section.
-%   % For more info search for "EXTRA SECTION TOGGLE".
-%   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
-%   \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
-%   \renewcommand{\thesubsection}{\arabic{subsection}}
-%   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
-%   % 
-%   \pagestyle{bookbody}
-%   \thispagestyle{bookemptypage}
-%   %
-%   \@startsection{chapter}{0}%
-%   {0em}%
-%   {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
-%   {1ex plus .3ex minus .06ex}% *1 from titlesec
-%   {\marginnote{\smash{\normalfont\Large\color{boldcolor}\begin{tabular}[b]{@{}r@{}} Chapter \\[-0.15ex] \thechapter\end{tabular}}}[1.4ex]\normalfont\Large\bfseries}%
-% }
-
-% \newcommand{\jhchapter@star}{%
-%   % Record that we are not inside an Extra section.
-%   % For more info search for "EXTRA SECTION TOGGLE".
-%   \global\togglefalse{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
-%   \renewcommand{\thesection}{\arabic{section}}  % set theorem numbering to be as outside Extra sections
-%   \renewcommand{\thesubsection}{\arabic{subsection}}
-%   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}} % put in the margin to count exercises env
-%   % 
-%   \pagestyle{bookfront}
-%   \thispagestyle{bookemptypage}
-%   %
-%   \setcounter{chapter}{-1}
-%   \@startsection{chapter}{0}%
-%   {0em}%
-%   {-5ex plus -1.5ex minus -.3ex}% *5 from titlesec
-%   {1ex plus .3ex minus .06ex}% *1 from titlesec
-%   {\normalfont\Large\bfseries}%
-% }
-
-% \renewcommand{\thechapter}{\Roman{chapter}}
 
 % imagecredit  Give credit in a footnote-like entry for an image
 %  #1  text of image credit
@@ -398,28 +360,6 @@
 \renewcommand\@seccntformat[1]{\relax} % no numbering inside section title
 \newlength{\jh@margintxttobodytext}
   \setlength{\jh@margintxttobodytext}{0.0em}
-% Section
-% \renewcommand{\section}{%
-%   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
-%   \@startsection{section}{1}%
-%   {0em}%
-%   {-3.5ex plus -1ex minus -0.2ex}%
-%   {1.8ex plus .2ex}%
-%   {\sectiontitlecontents{\marginnote{\raisebox{-0.55ex}{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Section \\ \Roman{chapter}.\arabic{section}\end{tabular}\hspace*{\jh@margintxttobodytext}}}}}\normalfont\large\bfseries}%
-% }
-% \renewcommand{\thesection}{\arabic{section}}
-
-
-% Subsections
-% \renewcommand{\subsection}{%
-%   \@startsection{subsection}{2}%
-%   {0em}%
-%   {-1.3ex plus -0.4ex minus -0.1ex}%
-%   {-0.6em plus -0.1em}%  negative makes it a run-in header
-%   % {\marginnote{\normalfont\scshape \arabic{section}.\arabic{subsection}}\normalfont\bfseries}%
-%   {\normalfont\bfseries}%
-% }
-% \renewcommand{\thesubsection}{\arabic{subsection}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Extra
@@ -614,35 +554,7 @@
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
   \markright{Extra \thesection{}. #1}%
 \extrasection{#1}}
-% These are optional topics that are covered at the end of each chapter.  The
-% formatting of theorems, exercises, etc. is a bit looser.
-% \newcounter{extra}[chapter]
-% \renewcommand{\theextra}{\Alph{extra}}
-% \newcommand{\extra}{%
-%   % Record that we are now inside an Extra section.
-%   % For more info search for "EXTRA SECTION TOGGLE".
-%   \global\toggletrue{insideextrasection} % find this by searching for: EXTRA TOGGLE RESET
-%   \setcounter{theorem}{0}
-%   \setcounter{section}{\the\numexpr\value{extra}+1\relax}
-%   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
-%   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
-%   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
-%   % For headers
-%   % \let\sectionmark=\extramark %
-%   %
-%   \stepcounter{extra}%
-%   \@startsection{extra}{2}%
-%   {0em}%
-%   {-3.25ex plus -1ex minus -0.2ex}%
-%   {-0.6em plus -0.1em}%  negative makes it a run-in header
-%   {\marginnote{\smash{\normalfont\scshape\begin{tabular}[b]{@{}r@{}} Extra \\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\jh@margintxttobodytext}}}\normalfont\bfseries}%
-% }
-% % Table of contents
-% \newcommand*\l@extra{\@dottedtocline{1}{1.5em}{2.3em}}% for toc
-% \newcommand{\toclevel@extra}{0}
-% % \let\stdl@extra\l@extra  % save for later
-% % \renewcommand*{\l@extra}[2]{%
-% %   \stdl@extra{\textsc{Extra} {#1}\@dottedtocline{6}{10em}{5em}#2}}% for toc
+
 \newcommand{\extramark}[1]{
   \markright{Extra\ \thesubsection.\ #1}}% for page headers
 
@@ -848,33 +760,7 @@
 }{%
   \end{list}
 }
-% \newenvironment{exercises}[1][]{%
-%   \vspace{2.5ex plus 0.8ex minus 0.2ex}%
-%   \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
-%   \nolisttopbreak%
-%   \begin{list}{\@exercisecounterlabel}%
-%      {\usecounter{@exercisenumber}
-%       \setcounter{@exercisenumber}{\value{theorem}}
-%       \renewcommand{\makelabel}[1]{\normalfont\scshape ##1}
-%       \setlength{\leftmargin}{\jh@widthofchar}
-%       \setlength{\labelwidth}{\leftmargin}
-%       \setlength{\labelsep}{0em}
-%       \setlength{\itemindent}{0em}
-%       \setlength{\listparindent}{0.8\parindent}
-%       \setlength{\topsep}{\jh@listtopsep}
-%       \setlength{\parsep}{0ex}
-%       \setlength{\itemsep}{0.6ex plus 0.25ex minus 0.05ex}
-%       \setlength{\rightmargin}{0em}
-%       % Encourage a page break betweeen items; LaTeX book.cls has
-%       % \@itempenalty     -\@lowpenalty
-%       \@itempenalty-\@medpenalty %
-%       % Also discourage clubs and widows
-%       \clubpenalty6000 % % discourage breaking after first line
-%       \widowpenalty6000 % discourage breaking before last line
-%     }
-% }{%
-%   \end{list}
-% }
+
 \newenvironment{exercise}{%
   \item %
   \Writetofile{\answerbodyfilename}{\@percentchar}%  Give line number of source, for editing
@@ -924,21 +810,18 @@
 % These need to be numbered all as one, and the numbering in the margin
 
 % The cleveref package requires that theorems be made with either amsthm
-% or ntheorem.  I couldn't get the first to put numbering in the margins,
-% whereas the second had that built in, so I went with it (ntheorem is loaded
-% earlier in this .cls file, before cleveref).
-% \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+% or ntheorem.  
 
 \newlength{\lrmarginaroundshadedtheorems}
 \newlength{\tbmarginaroundshadedtheorems}
 \newlength{\resttbaroundshadedtheorems}
 \setlength{\lrmarginaroundshadedtheorems}{2pt}
-\setlength{\tbmarginaroundshadedtheorems}{0pt plus 0.4pt}
+\setlength{\tbmarginaroundshadedtheorems}{2pt plus 0.5pt}
 % \setlength{\tbmarginaroundshadedtheorems}{\lrmarginaroundshadedtheorems}
 \setlength{\resttbaroundshadedtheorems}{\topsep-\tbmarginaroundshadedtheorems}
 \newtheoremstyle{whitestyle}
 {2pt plus 0.5pt}               %space above
-{4pt plus 0.5pt}               %space below
+{2pt plus 0.5pt}               %space below
 {}                      %bodyfont
 {0pt}                   %indent
 {\scshape}              %headfont
@@ -962,23 +845,7 @@
 %           skipbelow=1.5pt plus 0.2pt minus 0.1pt}  % small whitespace between theorems
 
 \usepackage{tcolorbox}
-\tcbset{beforeafter skip=1.5pt plus 0.2pt minus 0.1pt}
-
-% \usepackage{tablefootnote} % print footnotes at bottom of page https://tex.stackexchange.com/a/113693/121234
-
-% \newcounter{mdFootnoteValueSaver}
-% \AfterEndEnvironment{mdframed}{%
-%   \tfn@tablefootnoteprintout%
-%  \gdef\tfn@fnt{0}% 
-%  }
-% \AtBeginEnvironment{example}{%
-%  \setcounter{mdFootnoteValueSaver}{\value{footnote}}}
-% \AtBeginEnvironment{example}{%
-%   \setcounter{mpfootnote}{\value{footnote}}}
-% \AtBeginEnvironment{definition}{%
-%   \setcounter{mpfootnote}{\value{footnote}}}
-% \AtEndEnvironment{example}{%
-%  \setcounter{footnote}{\value{mpfootnote}}}
+\tcbset{beforeafter skip=2pt plus 0.2pt minus 0.1pt}
 
 
 %================================================================
@@ -1022,54 +889,9 @@
 %================================================================
 % THEOREM ENVIRONMENTS
 
-% \mdfdefinestyle{coloredstyle}{backgroundcolor=backgroundcolor, %
-%   leftmargin = 0pt, %
-%   rightmargin = 0pt, %
-%   innerleftmargin = \lrmarginaroundshadedtheorems, %
-%   innerrightmargin = \lrmarginaroundshadedtheorems, %
-%   innertopmargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
-%   innerbottommargin = 4pt plus 1pt minus 1pt, % 0.5\topsep
-%   % innertopmargin = \tbmarginaroundshadedtheorems, %
-%   % innerbottommargin = \tbmarginaroundshadedtheorems, %
-%   skipabove= 4pt plus 1pt minus 1pt, % 0.5\topsep
-%   skipbelow= 4pt plus 1pt minus 1pt, % 0.5\topsep
-%   % skipabove= \resttbaroundshadedtheorems, %
-%   % skipbelow= \resttbaroundshadedtheorems, %
-%   splittopskip = 2pt, % 
-%   splitbottomskip = 2pt, % 
-%   topline=false,bottomline=false,leftline=false,rightline=false,}
-
-% \mdfdefinestyle{whitestyle}{backgroundcolor=white, %
-%   leftmargin = 0pt, %
-%   rightmargin = 0pt, %
-%   innerleftmargin = 0pt, %
-%   innerrightmargin = 0pt, %
-%   innertopmargin = 0pt, %
-%   innerbottommargin = 0pt, %
-%   skipabove= 6pt plus 1.5pt minus 1pt, % 0.75\topsep
-%   skipbelow= 6pt plus 1.5pt minus 1pt, % 0.75\topsep
-%   splittopskip = 0pt, % 
-%   splitbottomskip = 0pt, % 
-%   topline=false,bottomline=false,leftline=false,rightline=false,}
-
-% \newshadedtheorem{theorem}{Theorem}[section]
-% \newshadedtheorem{lemma}[theorem]{Lemma}
-% \newshadedtheorem{corollary}[theorem]{Corollary}
-% \newshadedtheorem{definition}[theorem]{Definition}
-% \newtheorem{example}[theorem]{Example}
-% \newtheorem{remark}[theorem]{Remark}
-% % \newtheorem{proof}[theorem]{proof}
-% \newshadedtheorem{churchsthesis}[theorem]{Church's Thesis}
-% \newshadedtheorem{problem}[theorem]{Problem}
-
 \theoremstyle{coloredstyle}
 \newtheorem{theorem}{Theorem}[section]
 \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % don't include the chapter
-% \newmdtheoremenv[style=coloredstyle]{lemma}[theorem]{Lemma}
-% \newmdtheoremenv[style=coloredstyle]{corollary}[theorem]{Corollary}
-% \newmdtheoremenv[style=coloredstyle]{definition}[theorem]{Definition}
-% \newmdtheoremenv[style=coloredstyle]{churchsthesis}[theorem]{Church's Thesis}
-% \newmdtheoremenv[style=coloredstyle]{problem}[theorem]{Problem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{definition}[theorem]{Definition}
@@ -1077,10 +899,6 @@
 \newtheorem{problem}[theorem]{Problem}
 
 \theoremstyle{whitestyle}
-% \newmdtheoremenv[style=whitestyle]{example}[theorem]{Example}
-% \newmdtheoremenv[style=whitestyle]{remark}[theorem]{Remark}
-% \newmdtheoremenv[style=whitestyle]{remarks}[theorem]{Remarks}
-% \newmdtheoremenv[style=whitestyle]{discussion}[theorem]{Discussion}
 \newtheorem{example}[theorem]{Example}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{remarks}[theorem]{Remarks}
@@ -1103,7 +921,6 @@
 \AtBeginEnvironment{remark}{%
   \setcounter{mpfootnote}{\value{footnote}}}
 
-
 \tcolorboxenvironment{theorem}{colback=backgroundcolor, 
   colframe=backgroundcolor,
   boxrule=0pt,
@@ -1114,44 +931,41 @@
   boxsep=2pt,
   bottom=0pt,
   top=0pt,
-  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{lemma}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{corollary}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{definition}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{churchsthesis}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{problem}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=1.5pt plus 0.2pt minus 0.1pt,
+  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
 }
 
 
 % Proofs
-% Too much space between proof and thm before it.
-% \expandafter\let\expandafter\oldproof\csname\string\proof\endcsname %
-% \let\oldendproof\endproof % 
 % Forget amsthm's proof environment
 \let\proof\relax % 
 \let\endproof\relax %
@@ -1173,45 +987,6 @@
   ]{proof}
 
 
-% +++++++++ expmt with mdframed on +++++++++
-% \setlength{\topsep}{4pt}  % bk10.clo has it set to 8pt
-
-% \def\theoremframecommand{\colorbox{shadecolor}}
-% % \def\theoremframecommand{}
-% \colorlet{shadecolor}{backgroundcolor}  % Use this as the background color for theorems
-% % % Make thmstyle with numbers in margin; see https://tex.stackexchange.com/a/59267/121234
-% \newlength{\jh@thmtotextspace}  % horiz space between "Theorem" and "Let x .."
-%   \setlength{\jh@thmtotextspace}{0.45em plus 0.05em minus 0.05em}
-% \newtheoremstyle{marginnumbers}%
-% {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1}\hspace{\jh@thmtotextspace}}%
-% {\item[\theorem@headerfont\llap{##2\hspace*{0.5em}}]{\theorem@headerfont ##1\ (##3)}\hspace{\jh@thmtotextspace}}%
-% \theoremstyle{marginnumbers}
-% \theoremheaderfont{\scshape}
-% \theorembodyfont{}    
-% \theoremsymbol{}
-% \theoremseparator{}
-% \theoremprework{}
-% \theorempostwork{}
-% % \theorempreskip{.5\topsep}
-% % \theoremframepreskip{.35ex plus .1ex minus .02ex}
-% \theoremframepreskip{0.5\topsep}
-% \theoreminframepreskip{0.25\topsep}
-% \theoreminframepostskip{0.25\topsep}
-% \theoremframepostskip{0.5\topsep}
-% % \theorempostskip{.5\topsep}
-% % \usepackage{thmtools}
-% \newshadedtheorem{theorem}{Theorem}[section]
-% \newshadedtheorem{lemma}[theorem]{Lemma}
-% \newshadedtheorem{corollary}[theorem]{Corollary}
-% \newshadedtheorem{definition}[theorem]{Definition}
-% \newtheorem{example}[theorem]{Example}
-% \newtheorem{remark}[theorem]{Remark}
-% % \newtheorem{proof}[theorem]{proof}
-% \newshadedtheorem{churchsthesis}[theorem]{Church's Thesis}
-% \newshadedtheorem{problem}[theorem]{Problem}
-% +++++++++ expmt with mdframed off +++++++++
-
-
 
 \crefname{theorem}{Theorem}{Theorems}
 \Crefname{theorem}{Theorem}{Theorems}
@@ -1231,12 +1006,6 @@
 \Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
 \crefname{tablefigure}{Table}{Table}
 \Crefname{tablefigure}{Table}{Table}
-% Proofs are unnumbered
-% \theoremheaderfont{\sc}\theorembodyfont{\upshape}
-% \theoremstyle{nonumberplain}
-% \theoremseparator{}
-% \theoremsymbol{$\Box$} % {\rule{1ex}{1ex}}
-% \newtheorem{proof}[theorem]{Proof} 
 
 \newcommand{\probleminput}{\textit{Input:}}
 \newcommand{\problemoutput}{\textit{Output:}}
@@ -1975,30 +1744,6 @@
   \end{list}%
 }
 
-% % Used for derivations; gives a raggedright block of indented text
-% % \begin{displayedsteps}
-% %  \initialstep\syntax{<start>}
-% %   ..
-% % \end{displayedsteps}
-% \newenvironment{displayedsteps}{%
-%   \begin{list}{}%
-%       {\listparindent 1em%
-%        %\itemindent    \listparindent
-%        % \leftmargin 2em%
-%        \rightmargin 1em%
-%        \parsep        \z@ \@plus\p@}%
-%        \item\relax \raggedright
-% }{%
-%   \end{list}
-% }
-% \newcommand{\initialstep}{\hspace*{-1em}}
-
-
-% \renewenvironment{grammar}{%
-% \begin{lstlisting}[style=grammar]  
-% }{%
-% \end{lstlisting}
-% }
 
 % ==== Remaining content macros ======
 % Broken out separately so they can be used in the

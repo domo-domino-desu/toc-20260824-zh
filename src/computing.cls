@@ -931,37 +931,37 @@
   boxsep=2pt,
   bottom=0pt,
   top=0pt,
-  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{lemma}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{corollary}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{definition}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{churchsthesis}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
 }
 \tcolorboxenvironment{problem}{colback=backgroundcolor,colframe=backgroundcolor,
   boxrule=0pt,arc=0pt,
   width=\textwidth,
   left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  beforeafter skip=2pt plus 0.5pt minus 0.1pt,
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
 }
 
 

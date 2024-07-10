@@ -240,7 +240,7 @@ For instance, can it multiply?
 We don't need to include a special facility for multiplication 
 because we can in principle multiply via repeated addition.
 We don't even need addition because we can  
-repeat the successor operation, the add-one operation.
+repeat the add-one operation.
 In this way Turing pared the computing agent down until it is 
 quite basic, quite easy to understand,
 until the operations \citetext{are so elementary that we cannot easily
@@ -1637,9 +1637,9 @@ Here is the machine acting on an input of~$2$.
 \recommended
 \begin{exercise}
 Produce a Turing machine that computes the 
-successor function,\index{successor function}\index{function!successor} 
-that
-takes as input a number~$n$ 
+\definend{successor} 
+function,\index{successor function}\index{function!successor} 
+that takes as input a number~$n$ 
 and gives as output the number~$n+1$ (in unary). 
 \begin{answer}
 This machine computes successor.
@@ -3944,6 +3944,9 @@ cannot happen.)
 
 
 
+
+
+
 %================================================
 \section{Recursion}\index{recursion|(}
 % In the 1930's a number of researchers besides Turing 
@@ -3951,7 +3954,7 @@ cannot happen.)
 % the notion of mechanically computable function.
 We will outline an approach to defining computability
 that is different than Turing's, 
-both to give a sense of another approach and because 
+both to give a sense of another way to do this and because 
 it is useful.\footnote{%
   % Some ideas arise more naturally here than with Turing machines.
   One advantage of this approach 
@@ -3959,30 +3962,31 @@ it is useful.\footnote{%
   for Turing machines as it works directly
   with the functions.}
 % It has a classical mathematics flavor:~i
-It 
-lists some initial functions that are intuitively computable
-and then describes ways to combine existing functions to make new ones,
+We will
+list some initial functions that are intuitively computable.
+We will also describe ways to combine existing functions to make new ones,
 where if the existing ones are intuitively computable then so is the new one.
 An example of
 an intuitively computable initial function is
 successor~$\map{\successor}{\N}{\N}$,\index{successor function}\index{function!successor} 
-described by~$\successor(x)=x+1$,
-and a combiner that preserves effectiveness is function composition.
-Thus the composition 
-$\composed{\successor}{\successor}$, the plus-two operation,
+described by~$\successor(x)=x+1$, and
+a combiner that preserves effectiveness is function composition.
+Using those, the operation 
+$\composed{\successor}{\successor}\,(x)=x+2$
 is also intuitively mechanically computable.
 
-We now introduce another effectiveness-preserving combiner. 
    
 
 \margingraphic{.15\textwidth}{prologue/pix/grassmann.jpg}{\label{fig:grassmann}\href{http://en.wikipedia.org/wiki/Hermann_Grassmann}{Hermann Grassmann 1809-1877}}\index{Grassmann, H!picture}
 \subsection{Primitive recursion}\index{primitive recursion|(}\label{page:PrimitiveRecursion}
+We now introduce another effectiveness-preserving combiner. 
+
 %<*discussion:PrimReci>
 Grade school students learn addition and 
-multiplication as mildly complicated algorithms 
-(multiplication, for example, 
-involves arranging the digits into a table, doing partial
-products from right to left, and then adding).
+multiplication as mildly involved algorithms. 
+They multiply, for example, 
+by arranging the digits into a table, doing partial
+products, and then adding.
 In 1861, 
 \citetext{H~Grassmann produced a more elegant definition}{In 1888
   Dedekind used this definition to give the first rigorous 
@@ -4015,8 +4019,8 @@ This is definition by \definend{recursion}.\index{recursion}
 Whereas
 the grade school definition of addition is prescriptive in that it
 gives a procedure,
-this recursive definition has the advantage 
-of being descriptive because 
+this recursive definition 
+is descriptive because 
 \citetext{it specifies the meaning, the semantics, of the operation}{%
   A~Perl's epigram,
   ``Recursion is the root of computation since it trades description for time''
@@ -4026,8 +4030,8 @@ of being descriptive because
   But it does not include them in preference to what they are about.}.
 %</discussion:PrimRecii>
 
-A common reaction on first seeing recursion is to wonder 
-whether it is \citetext{logically problematic}{% 
+On first seeing recursion, many people wonder 
+whether it might be \citetext{logically problematic}{% 
   The sense that there is something perplexing about recursion
   is often expressed with a story.
   \begin{quote}
@@ -4065,12 +4069,12 @@ whether it is \citetext{logically problematic}{%
   \href{https://www.youtube.com/watch?v=WJj_NMhYwf0}{\textit{Room 8}},
   winner of the 2014 short film award from 
   the British Academy of Film and Television Arts.}\Dash isn't
-it a fallacy to define something in terms of itself?
-The expansion above exposes that this reaction is confused, since 
+defining something in terms of itself a fallacy?
+However, in the example above 
 $\plus(3,2)$ is not defined in terms of itself,
 it is defined in terms of $\plus(3,1)$ (and the successor function).
 Similarly, $\plus(3,1)$ is defined in terms of $\plus(3,0)$. 
-And clearly the definition of $\plus(3,0)$ is not a problem.
+And, clearly the definition of $\plus(3,0)$ is not a problem.
 The key here is to
 \citetext{define the function on higher-numbered inputs 
   using only its values on lower-numbered ones}{%
@@ -4104,7 +4108,7 @@ reduces to a sum of three $2$'s.
 %</discussion:PrimReciii>
 
 %<*discussion:PrimReciv>
-\noindent And exponentiation works the same way.
+\noindent Exponentiation works the same way.
 \begin{equation*}
   \power (x,y) =\begin{cases}
                 1                 &\case{if $y=0$}  \\
@@ -4113,10 +4117,10 @@ reduces to a sum of three $2$'s.
 \end{equation*}
 %</discussion:PrimReciv>
 
-Our interest in
-Grassmann's definition is that it is effective\Dash it 
+We are interested in
+Grassmann's definition because it is effective\Dash it 
 translates immediately into a program.
-Starting with a successor operation, 
+Starting with a successor operation 
 % \begin{lstlisting}
 % (define (successor x)
 %   (+ x 1))
@@ -4159,7 +4163,7 @@ The same is true for $\product$ and $\power$.
 
 %<*def:PrimRec>
 \begin{definition}  \label{def:PrimitiveRecursion}
-A function~$f$ is defined by the schema\footnotemark[2] 
+A function~$f$ is defined by the schema\footnotemark 
 of \definend{primitive recursion}\index{primitive recursion}\index{schema of primitive recursion}
 from the functions $g$ and~$h$ when this holds.
 \begin{equation*}
@@ -4170,10 +4174,9 @@ from the functions $g$ and~$h$ when this holds.
       &\case{if $y=\successor(z)$}
   \end{cases}
 \end{equation*}
-\end{definition}
-\footnotetext[2]{A `schema' is an underlying organizational pattern or structure.}
-
-The bookkeeping is that the arity\index{primitive recursion!arity} 
+\end{definition}\footnotetext{A schema is an underlying organizational pattern or structure.}
+\noindent Here 
+the bookkeeping is that the arity\index{primitive recursion!arity} 
 of~$f\!$, the number of inputs, is 
 one more than the arity of~$g$ and one less than the arity of~$h$.
 %</def:PrimRec>
@@ -4191,8 +4194,8 @@ $g(x_0)=1$ and $h(w,x_0,z)=\product(w,x_0)$.
 
 The computer code above makes evident that 
 primitive recursion fits into the plan of 
-specifying combiners that preserve the property of effectiveness:
-if $g$ and~$h$ are intuitively computable then so is~$f$\!.
+using combiners that preserve the property of effectiveness:~if 
+$g$ and~$h$ are intuitively computable then so is~$f$\!.
 
 Primitive recursion, along with function composition, 
 suffices to define many familiar functions. 
@@ -4200,32 +4203,34 @@ suffices to define many familiar functions.
 %<*ex:PrimRecii>
 \begin{example}
 The predecessor function is like an inverse to successor.
-However, since we use
-the natural numbers we can't give a predecessor of zero, so
-instead we describe
-$\map{\pred}{\N}{\N}$ by:~$\pred(y)$ equals
-$y-1$ if $y>0$ and equals~$0$ if $y=0$.
-This definition fits the primitive recursive schema.
+But since we use
+the natural numbers we can't give a predecessor of zero. 
+So instead we take the special case that if the input is zero
+then the output is zero also.
+We can define this function $\map{\pred}{\N}{\N}$  
+using the primitive recursive schema.
 \begin{equation*}
   \pred(y)=\begin{cases}
               0  &\case{if $y=0$}  \\
               z  &\case{if $y=\successor(z)$}
             \end{cases}
 \end{equation*}
-The arity bookkeeping
-is that $\pred$ has no $x_i$'s so $g$ is a function of zero-many inputs 
-and is therefore constant, $g(\mskip 2mu)=0$,
-while $h$ has two inputs,~$h(a,b)=b$
-(the first input gets ignored, that is, $a$ is just a dummy variable). 
+Matching this with the definition,
+$\pred$ has no $x_i$'s.
+Thus the bookkeeping is that $g$ has an arity 
+of zero and having no inputs it   
+is a constant function, $g(\mskip 2mu)=0$.
+As to $h$, 
+its arity is two although the first input is ignored,~$h(a,b)=b$.
 \end{example}
 
 \begin{example}  \label{ex:ProperSub}
-Consider
-\definend{proper subtraction}, denoted $x\dotminus y$,
-described by:~ if $x\geq y$ then $x\dotminus y$ equals $x-y$ and otherwise 
-$x\dotminus y$ equals~$0$.
-This definition of that function 
-fits the primitive recursion schema.
+For subtraction we must also special-case negatives.
+We take
+\definend{proper subtraction},\index{proper subtraction} 
+denoted $x\dotminus y$,
+to equal $x-y$ unless it is negative, in which case it equals~$0$.
+This defines that function using primitive recursion.
 \begin{equation*}
   \operatorname{propersub}(x,y)
                =\begin{cases}
@@ -4235,25 +4240,33 @@ fits the primitive recursion schema.
                \end{cases}
 \end{equation*}
 In the terms of \cref{def:PrimitiveRecursion},
-$g(x_0)=x_0$ and $h(w,x_0,z)=\pred(w)$;~the bookkeeping works 
-since the arity of~$g$ is one less
-than the arity of~$f\!$, and, because~$h$ has dummy arguments, its arity is
-one more than the arity of~$f\!$.
+$f$ has inputs~$x_0$ and~$y$, so it is of arity two. 
+That makes the arity of $g$ be one, meaning that $g(x_0)=x_0$.
+And, the arity of $h$ is three so $h(w,x_0,z)=\pred(w)$, with two
+dummy inputs.
 \end{example}
 %</ex:PrimRecii>
 
 We sometimes abbreviate a sequence of inputs $x_0,\ldots,x_{k-1}$ as $\vec{x}$.
 
+Here is the promised collection of initial functions and function
+combiners.
+Note that the initial functions are all clearly effective.
+Note also that the combiners are such that if the parts
+are effective then so is their combination. 
+Hence every function in this set is of interest to us, 
+as it is intuitively mechanically computable.
+
 %<*def:PrimRecFcns>
 \begin{definition} \label{def:PrimitiveRecursive}
 The set of 
 \definend{primitive recursive functions}\index{primitive recursive functions} 
-consists of those that can be derived 
+consists of those that can be derived
 from the initial operations of 
-the \definend{zero}\index{zero function}\index{function!zero} function~$\zero(\vec{x})=\zero(x_0,\ldots x_{k-1})=0$,\footnotemark[1]
+the \definend{zero}\index{zero function}\index{function!zero} function~$\zero(\vec{x})=0$,\footnotemark[1]
 the \definend{successor}\index{successor function}\index{function!successor} function~$\successor(\vec{x})=x+1$,
 and the \index{projection function}\index{function!projection}\definend{projection} 
-functions~$\projection_i(\vec{x})=x_i$ where $i\in\set{0,\ldots{}k-1}$,
+functions~$\projection_i(\vec{x})=\projection_i(x_0,\ldots x_{k-1})=x_i$,
 by a finite number of applications of the combining operations of 
 function composition and primitive recursion. 
 \end{definition}
@@ -4261,33 +4274,40 @@ function composition and primitive recursion.
 % distinguishes these from another set of functions that we will see soon.}
 \footnotetext[1]{%
   There are actually infinitely many zero functions, one for each 
-  natural number $k$, despite that we called it ``the'' zero function.
-  The same holds for the other initial functions.
-  Also, projection is a generalization of the identity function, which 
+  natural number arity $k$, despite that we called it ``the'' zero function.
+  The same holds for successor.
+  For projection, for each~$k$ there is a projection for each
+  $i\in\set{0,\ldots{}k-1}$.
+  Also, projection generalizes the identity function, which 
   is why we use the letter~$\projection$.}
 
 Function composition covers not just the simple case of two functions 
 $f$ and~$g$ whose composition is defined by 
 $\composed{f}{g}\,(\vec{x})=f(g(\vec{x}))$.
 It also covers simultaneous substitution, where from
-$f(x_0,\ldots,x_n)$ 
-and $h_0(y_{0,0},\ldots,y_{0,{m_0}})$, \ldots, and $h_n(y_{n,0},\ldots,y_{n,m_n})$,
-we get $f(\,h_0(y_{0,0},\ldots,y_{0,m_0}),\ldots{} h_n(y_{n,0},\ldots,y_{n,m_n})\,)$,
-which is a function with $(m_0+1)+\cdots+(m_n+1)$-many inputs.
+$f(x_0,\ldots x_n)$ 
+and $h_0(y_{0,0},\ldots y_{0,{m_0}})$, \ldots{} and $h_n(y_{n,0},\ldots y_{n,m_n})$
+we get $f(\,h_0(y_{0,0},\ldots y_{0,m_0}),\ldots{} h_n(y_{n,0},\ldots y_{n,m_n})\,)$.
+% which is a function with $(m_0+1)+\cdots+(m_n+1)$-many inputs.
 %</def:PrimRecFcns>
 
-Besides the ones given above, many other everyday mathematical operations are 
-primitive recursive.
+Besides the ones in the above examples, 
+many other familiar mathematical operations are 
+in the set of primitive recursive functions.
 They include 
-testing whether one number is less than another,
-finding remainders,
-and, given a number and a prime, finding the largest power of that
+the boolean function that tests whether one number is less than another,
+the elementary arithmetic function that finds the remainder left when one number
+is divided by another,
+and, the number-theoretic function that iniputs 
+a number and a prime and returns the largest power of the
 prime that divides the number.
-See the exercises.
 
-The list is so extensive that we may wonder
-whether every mechanically computed function is
-primitive recursive.
+We have noted that
+every primitive recursive function is mechanically computable.
+The list of primitive recursive functions given 
+in the exercises is so extensive that we may wonder
+whether every mechanically computable functions is in the set of 
+primitive recursive functions.
 The next section shows that the answer is no\Dash 
 although primitive recursion is very powerful, nonetheless there are
 intuitively mechanically computable functions that are not
@@ -4316,22 +4336,6 @@ The construction shows that $f(x_0,x_1)=3$ is primitive recursive, but
 that construction does not use the schema of primitive recursion.  
 So primitive recursion is one of the ways to build up functions that are 
 primitive recursive, but composition is another allowed constructor.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-What is the difference between total recursive and primitive recursive?
-\begin{answer}
-A total recursive function is any computable function~$\TMfcn$ that terminates
-on all inputs.
-A primitive recursive function is one that can be derived as in
-\cref{def:PrimitiveRecursive}.
-
-Every primitive recursive function is a total recursive function.
-The converse does not hold\Dash there are total recursive functions that 
-are not primitive recursive\Dash but at this point in the book you have
-not yet see that.
-It is covered in the next section.
 \end{answer}
 \end{exercise}
 
@@ -6024,7 +6028,9 @@ While that is not a proof, it is nonetheless striking.
 
 \begin{example}
 Imagine that you have a mathematical theorem that you want to prove, perhaps
-Goldbach's Conjecture.
+\citetext{Goldbach's conjecture}{%
+  Goldbach's conjecture is that 
+  every even integer greater than two is the sum of two primes.}.
 Here is a sketch of a way to proceed.
 A proof is a sequence of statements in a suitable formal language
 whose final statement is the desired theorem.
@@ -6078,6 +6084,21 @@ given in \cref{def:ComputableFcn}.
   tedious to compute.
   It may help to use a computer, for instance by writing a Racket program 
   or using Sage.}
+
+\begin{exercise}
+What is the difference between total recursive and primitive recursive?
+\begin{answer}
+A total recursive function is any computable function~$\TMfcn$ that terminates
+on all inputs.
+A primitive recursive function is one that can be derived as in
+\cref{def:PrimitiveRecursive}.
+
+Every primitive recursive function is a total recursive function.
+The converse does not hold\Dash there are total recursive functions that 
+are not primitive recursive, such as Ackermann's.
+It is covered in the next section.
+\end{answer}
+\end{exercise}
 
 \recommended
 \begin{exercise}

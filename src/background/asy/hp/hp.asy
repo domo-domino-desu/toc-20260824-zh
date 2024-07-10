@@ -2370,7 +2370,7 @@ picnum = 50;
 node start=nroundbox("Start");
 node read=nbox("Read $x$, $y$");
 node test=nbox("Run $\TM_x$ on~$x$");
-node printout=nbox("\_\_(3)\_\_");
+node printout=nbox("\_\_(4)\_\_");
 node ending=nroundbox("End");
 
 // layout
@@ -2411,7 +2411,7 @@ picnum = 51;
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
 node test=nbox("Run $\TM_x$ on~$x$");
-node printout=nbox("\_\_(3)\_\_");
+node printout=nbox("\_\_(4)\_\_");
 node ending=nroundbox("End");
 
 // layout

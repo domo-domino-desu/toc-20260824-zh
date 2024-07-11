@@ -1637,8 +1637,7 @@ Here is the machine acting on an input of~$2$.
 \recommended
 \begin{exercise}
 Produce a Turing machine that computes the 
-\definend{successor} 
-function,\index{successor function}\index{function!successor} 
+successor function,\index{successor function}\index{function!successor} 
 that takes as input a number~$n$ 
 and gives as output the number~$n+1$ (in unary). 
 \begin{answer}
@@ -3971,7 +3970,7 @@ an intuitively computable initial function is
 successor~$\map{\successor}{\N}{\N}$,\index{successor function}\index{function!successor} 
 described by~$\successor(x)=x+1$, and
 a combiner that preserves effectiveness is function composition.
-Using those, the operation 
+Using those, the plus-two operation 
 $\composed{\successor}{\successor}\,(x)=x+2$
 is also intuitively mechanically computable.
 
@@ -3992,7 +3991,7 @@ In 1861,
   Dedekind used this definition to give the first rigorous 
   proof of the laws of elementary school arithmetic.}.\index{Grassmann, H}
 Here is the formula for addition, $\map{\plus}{\N^2}{\N}$, 
-which takes as given the successor map, $\successor(n)=n+1$.
+which takes as given the successor map.
 \begin{equation*}
   \plus (x,y) =\begin{cases}
                 x                 &\case{if $y=0$}  \\
@@ -4012,8 +4011,8 @@ This finds the sum of $3$ and~$2$.
 \end{equation*}
 \end{example}
 
-Besides being compact, this has a very interesting feature:
-`$\plus$' recurs in
+Besides being compact, this approach has a very interesting 
+feature:~`$\plus$' recurs in
 its own definition.\footnote{That is, this is a discrete form of feedback.}
 This is definition by \definend{recursion}.\index{recursion}
 Whereas
@@ -4097,7 +4096,7 @@ Multiplication has the same form.
 \end{equation*}
 \begin{example}
 The expansion of $\product(2,3)$
-reduces to a sum of three $2$'s.
+gives a sum of three $2$'s.
 \begin{align*}
   \product(2,3) &=\plus(\product(2,2),2)     \\
                 &=\plus(\plus(\product(2,1),2),2)  \\
@@ -4115,11 +4114,23 @@ reduces to a sum of three $2$'s.
                 \product(\power(x,z),x) &\case{if $y=\successor(z)$}
                \end{cases}
 \end{equation*}
+
+\begin{example}
+Similarly, the expansion of $\power(2,3)$
+gives a product of three $2$'s.
+\begin{align*}
+  \power(2,3) &=\product(\power(2,2),2)    
+              =\product(\product(\power(2,1),2),2)  \\
+              &=\product(\product(\product(\power(2,0),2),2),2) \\
+              &=\product(\product(\product(1,2),2),2)
+              =8
+\end{align*}
+\end{example}
 %</discussion:PrimReciv>
 
 We are interested in
 Grassmann's definition because it is effective\Dash it 
-translates immediately into a program.
+translates directly into a program.
 Starting with a successor operation 
 % \begin{lstlisting}
 % (define (successor x)
@@ -4131,7 +4142,7 @@ this code implements the definition given above of $\plus$.\footnote{%
   every general purpose programming language, comes with a
   built in addition operator,
   as in \protect\codeinline!(+ 3 2)!, along with a multiplication operator, 
-  as in \protect\codeinline!(* 3 2)!, and with other common arithmetic 
+  as in \protect\codeinline!(* 3 2)!, and with many other arithmetic 
   operators.}
 \lstinputlisting[firstline=13, lastline=17]{\prfiles primitive-recursive.rkt}
 % \begin{lstlisting}
@@ -4142,7 +4153,7 @@ this code implements the definition given above of $\plus$.\footnote{%
 %     <@\color{highlightcolor}(successor (plus x z)))@>))  
 % \end{lstlisting}
 (The \codeinline!(let ..)! creates the local variable
-\codeinline!z!.)
+\codeinline!z!, and sets it to $y-1$.)
 The same is true for $\product$ and $\power$.
 \lstinputlisting[firstline=22, lastline=26]{\prfiles primitive-recursive.rkt}
 \lstinputlisting[firstline=31, lastline=35]{\prfiles primitive-recursive.rkt}
@@ -4192,20 +4203,16 @@ $g(x_0)=1$ and $h(w,x_0,z)=\product(w,x_0)$.
 \end{example}
 %</ex:PrimReci>
 
-The computer code above makes evident that 
-primitive recursion fits into the plan of 
-using combiners that preserve the property of effectiveness:~if 
-$g$ and~$h$ are intuitively computable then so is~$f$\!.
-
 Primitive recursion, along with function composition, 
 suffices to define many familiar functions. 
 
 %<*ex:PrimRecii>
 \begin{example}
-The predecessor function is like an inverse to successor.
-But since we use
-the natural numbers we can't give a predecessor of zero. 
-So instead we take the special case that if the input is zero
+The predecessor function\index{predecessor function}\index{function!predecessor}
+is like an inverse to successor except that we are using
+the natural numbers and so we can't allow the predecessor of zero to be 
+negative. 
+We instead take the special case that if the input is zero
 then the output is zero also.
 We can define this function $\map{\pred}{\N}{\N}$  
 using the primitive recursive schema.
@@ -4215,13 +4222,13 @@ using the primitive recursive schema.
               z  &\case{if $y=\successor(z)$}
             \end{cases}
 \end{equation*}
-Matching this with the definition,
+Comparing this with \cref{def:PrimitiveRecursion},
 $\pred$ has no $x_i$'s.
 Thus the bookkeeping is that $g$ has an arity 
-of zero and having no inputs it   
-is a constant function, $g(\mskip 2mu)=0$.
+of zero and, having no inputs, it   
+is therfore the constant function $g(\mskip 2mu)=0$.
 As to $h$, 
-its arity is two although the first input is ignored,~$h(a,b)=b$.
+its arity is two although it ignores its first input,~$h(a,b)=b$.
 \end{example}
 
 \begin{example}  \label{ex:ProperSub}
@@ -4230,7 +4237,7 @@ We take
 \definend{proper subtraction},\index{proper subtraction} 
 denoted $x\dotminus y$,
 to equal $x-y$ unless it is negative, in which case it equals~$0$.
-This defines that function using primitive recursion.
+This defines that function via primitive recursion.
 \begin{equation*}
   \operatorname{propersub}(x,y)
                =\begin{cases}
@@ -4240,9 +4247,9 @@ This defines that function using primitive recursion.
                \end{cases}
 \end{equation*}
 In the terms of \cref{def:PrimitiveRecursion},
-$f$ has inputs~$x_0$ and~$y$, so it is of arity two. 
-That makes the arity of $g$ be one, meaning that $g(x_0)=x_0$.
-And, the arity of $h$ is three so $h(w,x_0,z)=\pred(w)$, with two
+$f$ is of arity two. 
+That makes  $g$ of arity one, $g(x_0)=x_0$.
+And the arity of $h$ is three so $h(w,x_0,z)=\pred(w)$, with two
 dummy inputs.
 \end{example}
 %</ex:PrimRecii>
@@ -4251,11 +4258,6 @@ We sometimes abbreviate a sequence of inputs $x_0,\ldots,x_{k-1}$ as $\vec{x}$.
 
 Here is the promised collection of initial functions and function
 combiners.
-Note that the initial functions are all clearly effective.
-Note also that the combiners are such that if the parts
-are effective then so is their combination. 
-Hence every function in this set is of interest to us, 
-as it is intuitively mechanically computable.
 
 %<*def:PrimRecFcns>
 \begin{definition} \label{def:PrimitiveRecursive}
@@ -4281,8 +4283,17 @@ function composition and primitive recursion.
   Also, projection generalizes the identity function, which 
   is why we use the letter~$\projection$.}
 
+Note that the initial functions are all clearly effective.
+Note also that the combiners are such that if the parts
+are effective then so is their combination. 
+In particular, the computer code above makes evident that 
+primitive recursion preserves effectiveness:~if 
+$g$ and~$h$ are intuitively computable then so is~$f$\!.
+Hence every function in that set is of interest to us 
+as it is intuitively mechanically computable.
+
 Function composition covers not just the simple case of two functions 
-$f$ and~$g$ whose composition is defined by 
+$f$ and~$g$ that combine as
 $\composed{f}{g}\,(\vec{x})=f(g(\vec{x}))$.
 It also covers simultaneous substitution, where from
 $f(x_0,\ldots x_n)$ 
@@ -4298,13 +4309,13 @@ They include
 the boolean function that tests whether one number is less than another,
 the elementary arithmetic function that finds the remainder left when one number
 is divided by another,
-and, the number-theoretic function that iniputs 
+and, the number-theoretic function that inputs 
 a number and a prime and returns the largest power of the
 prime that divides the number.
 
 We have noted that
 every primitive recursive function is mechanically computable.
-The list of primitive recursive functions given 
+The list of primitive recursive functions given above and
 in the exercises is so extensive that we may wonder
 whether every mechanically computable functions is in the set of 
 primitive recursive functions.

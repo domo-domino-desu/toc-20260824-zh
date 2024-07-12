@@ -5915,9 +5915,8 @@ then $f(\vec{x})$ is undefined.
 
 \begin{example}
 %<*ex:PrimeProducingPoly>
-Euler noticed that the polynomial $p(y)=y^2+y+41$ at least at first seems
-to  
-\citetext{outputs only primes}{%
+Euler noticed that the polynomial $p(y)=y^2+y+41$ at least at first 
+\citetext{output only primes}{%
   In fact, there is no one-input polynomial with integer coefficients that 
   outputs a prime for all integer inputs, except if the polynomial is constant.
   This was shown in 1752 by C~Goldbach.
@@ -5940,15 +5939,15 @@ to
   the constant polynomial.~$\qedsymbol$
 }.
 \begin{center}
-\begin{tabular}{r|*{10}{c}}
-  $y$    &$0$  &$1$  &$2$  &$3$  &$4$  &$5$  &$6$  &$7$  &$8$  &$9$ 
-    \\ \cline{2-11}
-  $p(y)$ &$41$ &$43$ &$47$ &$53$ &$61$ &$71$ &$83$ &$97$ &$113$ &$131$ 
+\begin{tabular}{r|*{11}{c}}
+  $y$    &$0$  &$1$  &$2$  &$3$  &$4$  &$5$  &$6$  &$7$  &$8$  &$9$ &\ldots 
+    \\ \cline{2-12}
+  $p(y)$ &$41$ &$43$ &$47$ &$53$ &$61$ &$71$ &$83$ &$97$ &$113$ &$131$ &\ldots
 \end{tabular}
 \end{center}
 Here is a way
 to do an unbounded search for non-prime output on a quadratic.
-Start with this (Euler's~$p$ will take $x_0=1$, $x_1=1$, and $x_2=41$).
+Start with this (Euler's~$p$ will use $x_0=1$, $x_1=1$, and $x_2=41$).
 \begin{equation*}
   g(x_0,x_1,x_2,y)=
   % g(\vec{x},y)=
@@ -5964,104 +5963,77 @@ $f(\vec{x})=\least y\,\big[ g(\vec{x},y)=0 \big]$.
 This code illustrates.
 Racket comes with a test for primality. 
 \lstinputlisting[firstline=4, lastline=4]{\prfiles prime-generating-poly.rkt}
-Use it to define~$g$.
+Use it to define~$g$, which tests whether the quadratic is prime.
 \lstinputlisting[firstline=13, lastline=16]{\prfiles prime-generating-poly.rkt}
 With that, the search function 
 \lstinputlisting[firstline=21, lastline=27]{\prfiles prime-generating-poly.rkt}
 calls \codeinline!(f-helper 0)!, then  \codeinline!(f-helper 1)!, etc.
 It 
-finds that~$p$ first returns a non-prime for input~$40$.
+finds that Euler's quadratic~$p$ eventually returns a non-prime, $f(1,1,41)=40$.
 \begin{lstlisting}
 > (f 1 1 41)
 40
 \end{lstlisting}
-A by-hand check shows that $p(40)=1681$, which is not prime because $1681=41^2\!$.
 \end{example}
-% \footnotetext{%
-%   We are using $x_0y^2+x_1y+x_2$ rather than just 
-%   $y^2+y+41$ so that the inputs to $g$ include $\vec{x}$, to
-%   better illustrate the definition.}
 
 Using the minimization operator we can get functions whose output 
-value is undefined for some inputs.
-
-\begin{example}
-If $g(x,y)=1$ for all~$x,y\in\N$  
+value is undefined for some or all inputs.
+For instance, if $g(x,y)=1$ for all~$x,y\in\N$  
 then $f(x)=\least y[g(x,y)=0]$ is undefined
 for all~$x$.
-\end{example}
-
-In that example we imagine $f$ searching and searching but it will never find
+We can imagine $f$ searching and searching but it will never find
 such a~$y$.
 In the next example no one currently knows whether the search will end.
 
 \begin{example}
 %<*ex:GoldbachConjecture>
 \definend{Goldbach's conjecture}\index{Goldbach's conjecture} 
-is that every even number can be written as the sum of at most two primes. 
-Here are the first few instances: $2=2$, $4=2+2$, $6=3+3$, $8=5+3$, $10=7+3$.
-No one knows if it is true.
+is that every even number greater than two
+is the sum of two primes. 
+The first few instances are $4=2+2$, $6=3+3$, $8=3+5$, and~$10=3+7$.
+No one knows if this conjecture is true.
 A natural attack is to search for a counterexample.
-With this auxillary function
-\begin{equation*}
-  \operatorname{gb-check}(n)=
-  \begin{cases}
-    i  &\case{the numbers $i$ and $n-i$ are both prime, and $i\leq n-i$}  \\
-    0  &\case{otherwise}
-  \end{cases}
-\end{equation*}
-we get a version of the definition's $g$ (here $\vec{x}$ is empty).
-\begin{equation*}
-  \operatorname{gb-g}(y)
-  \begin{cases}
-    1  &\case{if $\operatorname{gb-check}(2y)\neq 0$}  \\
-    0  &\case{otherwise}
-  \end{cases}
-\end{equation*} 
-The unbounded search is 
-$\operatorname{gb-f}()=\least y\,\big[ \operatorname{gb-g}(y)=0 \big]$.\footnotemark
+From this auxillary function
+\lstinputlisting[firstline=37, lastline=42]{\prfiles prime-generating-poly.rkt}
+we get the definition's boolean function~$g$.
+\lstinputlisting[firstline=53, lastline=59]{\prfiles prime-generating-poly.rkt}
+It returns $0$ if the input is even and greater than~$2$ but
+\codeinline!gb-check! does not find a pair of primes.
+Then here is the unbounded search
+$\operatorname{gb-f}()=\least y\,\big[ \operatorname{gb-g}(y)=0 \big]$.
+\lstinputlisting[firstline=64, lastline=70]{\prfiles prime-generating-poly.rkt}
 %</ex:GoldbachConjecture>
-
-The code for the auxillary
-\lstinputlisting[firstline=31, lastline=37]{\prfiles prime-generating-poly.rkt}
-immediately gives the code for $\operatorname{gb-g}$
-\lstinputlisting[firstline=46, lastline=49]{\prfiles prime-generating-poly.rkt}
-and $\operatorname{gb-f}$.
-\lstinputlisting[firstline=51, lastline=57]{\prfiles prime-generating-poly.rkt}
-The $\operatorname{gb-f}$ routine just runs and runs, without halting.
-This is not an infinite loop because $\operatorname{gb-f}$ 
-is trying different numbers each time, 
-but the experience of executing it is that it fails to halt 
-until the user runs out of patience and pulls the plug.
-Researchers have gone past $4\times 10^{18}$ without
-finding a counterexample.
-While that is not a proof, it is nonetheless striking.
-\end{example}\footnotetext{%
-  Here, the vector of parameters $\vec{x}=x_0,\ldots x_{n-1}$ is not 
-  present, that is, $n=0$.}
+(Researchers have gone past $y=4\times 10^{18}$ without
+finding a counterexample.)
+\end{example}
 
 \begin{example}
-Imagine that you have a mathematical theorem that you want to prove, perhaps
-\citetext{Goldbach's conjecture}{%
-  Goldbach's conjecture is that 
-  every even integer greater than two is the sum of two primes.}.
-Here is a sketch of a way to proceed.
-A proof is a sequence of statements in a suitable formal language
-whose final statement is the desired theorem.
-You could run a search as:~for each~$n$, 
+Imagine that you want to use a computer to settle
+\definend{Legendre's conjecture},\index{Legendre's conjecture} 
+that for every natural number $n>0$
+there is a prime number~$p$ with $n^2< p< (n+1)^2\!$.
+Here is a way to proceed.
+First, start an unbounded search for a counterexample.
+Second, at the same time doing an unbounded
+search for a proof. 
+After all, a proof is a sequence of statements in a suitable formal language
+where each statement is either an axiom or follows from the prior ones, 
+and where the final statement is the desired theorem.
+You could run a computer search as:~for each~$n$, 
 interpret it as a string (perhaps convert it to binary and 
 interpret the binary as a string) and check
 whether that string is a proof of the theorem.
-If this search halts then you are done.
-Obviously this relates to the 
-\textit{Entscheidungsproblem}.\index{Entscheidungsproblem@\textit{Entscheidungsproblem}}\index{decision problem} 
+Now wait for one or the other to halt.
+Obviously 
+\citetext{this relates unbounded search to the \textit{Entscheidungsproblem}}{%
+  It is possible that neither search will halt. 
+  It is
+  possible that the conjecture is true but not provable from
+  the axiom system that you are using.}.\index{Entscheidungsproblem@\textit{Entscheidungsproblem}}\index{decision problem} 
 \end{example}
 
-These examples show that unbounded search is a natural computational construct.
-It is also a theme in this book.
-For instance, we will later consider the question of which
-programs halt and a natural way to think about a computation not halting is
-as a search for a step where it halts.
+We now extend the definition of the set of primitive recursive functions
+by adding the minimization operator.
 
 %<*def:GeneralRecursive>
 \begin{definition} \label{def:Recursive}
@@ -6076,7 +6048,7 @@ function~$\zero(\vec{x})=0$,
 the \definend{successor}\index{successor function}\index{function!successor} 
 function~$\successor(x)=x+1$,
 and the \definend{projection}\index{projection function}\index{function!projection} 
-functions $\projection_i(x_0,\ldots,x_i\ldots x_{k-1})=x_i$ 
+functions $\projection_i(\vec{x})=x_i$ 
 by a finite number of applications of 
 function composition, the schema of 
 primitive recursion,\index{primitive recursion}
@@ -6085,9 +6057,16 @@ and minimization.\index{minimization, unbounded}
 %</def:GeneralRecursive>
 
 S~Kleene\index{Kleene, S} 
-showed that the set of functions satisfying this definition is
-the same as the Turing machine-based set of computable functions 
-given in \cref{def:ComputableFcn}.
+showed that this set of functions is
+the same as the Turing machine-based set of computable functions. 
+
+We have seen that unbounded search is a natural computational construct.
+It is also a theme in this book.
+For instance, we will later consider the question of which
+programs halt.
+A natural way to think about this is
+as a search for a halting step.
+
 
 
 
@@ -6110,7 +6089,6 @@ A primitive recursive function is one that can be derived as in
 Every primitive recursive function is a total recursive function.
 The converse does not hold\Dash there are total recursive functions that 
 are not primitive recursive, such as Ackermann's.
-It is covered in the next section.
 \end{answer}
 \end{exercise}
 
@@ -6304,7 +6282,7 @@ $.
 \end{exercise}
 
 \begin{exercise}
-This variant of $\hyperoperation$ is often labeled ``the''  
+This variant of $\hyperoperation$ is often called ``the''  
 Ackermann function.\index{Ackermann function} 
 \begin{equation*} 
   \ackermann(k,y)=
@@ -6316,8 +6294,7 @@ Ackermann function.\index{Ackermann function}
 \end{equation*} 
 It has different boundary conditions but the same recursion,
 the same bottom line. 
-(In general, any function with that recursion is an Ackermann function.
-\Cref{eq:PeterAckermann} has more about this variant.)
+(\Cref{eq:PeterAckermann} has more about this variant.)
 Compute $\ackermann(k,y)$ for $0\leq k <4$ and $0\leq y< 6$.
 \begin{answer}
 Writing a small script makes the job of computing easier.

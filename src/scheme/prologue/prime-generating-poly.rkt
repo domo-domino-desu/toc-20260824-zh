@@ -28,13 +28,20 @@
 
 (provide f)
 
+
+
+;; =============
+;; Goldbach's conjecture
+
 ;; Check if a number n is the sum of two primes
-;; Returns minimal i < n such that i and n-i are prime; returns #f if no such i
+;; Returns minimal i <= n such that i and n-i are prime; returns #f if no such i
 (define (gb-check n)
   (for/first ([i (in-range 2 (add1 n))]
               #:when (and (prime? i)
                           (prime? (- n i))))
     i))
+
+(provide gb-check)
 
 ;; demonstrate that for/first returns #f if when is never triggered
 (define (test-never)
@@ -42,16 +49,24 @@
               #:when (< i 0))
     i))
 
-;; Use gb-check to return predicate
+;; Return 0 iff input is even and greater than 2, and not the sum of two primes
 (define (gb-g y)
-  (if (gb-check (* 2 y))
+  (if (or (odd? y)
+           (< y 3))
       1
-      0))
+      (if (gb-check y)
+          1
+          0)))
 
+(provide gb-g)
+
+;; Unbounded search for violation of Goldbach's conjecture
 (define (gb-f)
   (define (gb-f-helper y)
     (if (= 0 (gb-g y))
         y
         (gb-f-helper (add1 y))))
   
-    (gb-f-helper 2)) ;; start with 4
+    (gb-f-helper 0))
+
+(provide gb-f)

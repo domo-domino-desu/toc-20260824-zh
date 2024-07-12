@@ -1,7 +1,7 @@
 #lang racket
 ;; prime-generating-poly.rkt
 
-(require math/number-theory)  ;; provides the routine prime? 
+(require math/number-theory)  ;; provides predicate: prime? 
 
 ;; p  Compute the value of the function y |->  x0 * y^2 + x1 * y + x2
 (define (p x0 x1 x2 y)
@@ -17,9 +17,9 @@
 
 (provide g)
 
-;; f  Unbounded search to test if quadratic poly generates only primes
+;; f  Unbounded search to find least y where quad poly is not prime
 (define (f x0 x1 x2)
-  (define (f-helper y)
+  (define (f-helper y)   ; x0, x1, x2 inherited from enclosing def of f
     (if (= 0 (g x0 x1 x2 y))
         y
         (f-helper (add1 y))))
@@ -34,7 +34,7 @@
   (for/first ([i (in-range 2 (add1 n))]
               #:when (and (prime? i)
                           (prime? (- n i))))
-    i)))
+    i))
 
 ;; demonstrate that for/first returns #f if when is never triggered
 (define (test-never)

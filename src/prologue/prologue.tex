@@ -4315,13 +4315,14 @@ The function defined by the recurrence
 \end{equation*}
 has a first few values of $f(0)=2$, $f(1)=f(0)+3\cdot 1+2=7$, 
 and $f(2)=f(1)+3\cdot 2+2=15$.
-We will put it into a form showing that it is primitive recursive
+We will show that it is primitive recursive
 by verifying that it is built from the initial functions using only the two 
 combiners.  
 
 On the outermost level it looks like a primitive recursion. 
 Because $f$ is a function of one input, the bookkeeping says
 that $g$ has no inputs and $h$ has two.
+We want this.
 \begin{equation*}
   f(y)=
   \begin{cases}
@@ -4329,9 +4330,9 @@ that $g$ has no inputs and $h$ has two.
   h(f(z),z)  &\case{if $y=\successor(z)$}
   \end{cases}
 \end{equation*}
-Since $g$ is a function of no arguments, it is therefore constant. 
+As a function of no arguments, $g$ is constant. 
 So we use $g(\,)=\successor(\successor(Z(\,)))=2$.
-As to $h$, it is a function of two arguments and we need that 
+For $h$ we need that 
 $h(f(z),z)=f(y-1)+3y+2=f(z)+3(z+1)+2$.
 We can use this.
 \begin{equation*}
@@ -4436,10 +4437,10 @@ Consider this function.
 \item
 Find $F(0)$, \ldots{} $F(10)$.
 \item Show that $F$ is primitive recursive by describing it in the form
-given in \cref{def:PrimitiveRecursion},
+of \cref{def:PrimitiveRecursion},
 giving suitable functions $g$ and~$h$
-(\hint~$g$ is a function of no arguments, a constant).
-You can use functions already defined in this section.
+You can use functions already shown in this section to be 
+primitive recursive.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -4480,8 +4481,6 @@ Show that it is a primitive recursive function.
 \begin{answer}
 One way is to note that it is the composition 
 $\operatorname{plus\_three}=\composed{\successor}{(\composed{\successor}{\successor})}\,(x)$.
-% Another way is to use the addition function with a second argument
-% of three, or with the constant function $f(x)=3$.
 \end{answer}
 \end{exercise}
 
@@ -4490,8 +4489,8 @@ The Boolean function $\operatorname{is\_zero}$ inputs a natural number
 and returns~$T$ if the input is zero, and~$F$ otherwise.
 Give a definition by primitive recursion, representing $T$ with~$1$ 
 and $F$ with~$0$.
-\hint~you only need a zero function, successor, and the schema of
-primitive recursion.
+% \hint~you only need a zero function, successor, and the schema of
+% primitive recursion.
 \begin{answer}
 Starting with this
 \begin{equation*}
@@ -4502,9 +4501,9 @@ Starting with this
   \end{cases}
 \end{equation*}
 we take $g$ to be 
-the function of no arguments
+the zero input function composition
 $g(\,)=\successor(Z(\,))$ and take
-$h$ to be the two-argument zero function $h(a,b)=Z(a,b)=0$.
+$h$ to be the two-input zero function $h(a,b)=Z(a,b)=0$.
 \end{answer}
 \end{exercise}
 
@@ -4528,8 +4527,8 @@ Find $s(0)$, \ldots{} $s(10)$.
 Verify that $s$ is primitive recursive by putting it in the form
 given in \cref{def:PrimitiveRecursion},
 giving suitable functions $g$ and~$h$.
-You can use functions already defined in this section.
-\hint~$g$ is a function of no arguments, a constant.
+You can use functions already shown in this section to be primitive 
+recursive.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -4578,7 +4577,7 @@ $t(n)$.
 \item Show that $t$ is primitive recursive by describing it in the form
 given in \cref{def:PrimitiveRecursion}.
 For $g$ and~$h$
-you can use functions already defined in this section.
+you can use functions already verified in this section to be prmitive recursive.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
@@ -4625,13 +4624,12 @@ Consider this recurrence.
 Find $d(0)$, \ldots{} $d(5)$.
 \item 
 Verify that $d$ is primitive recursive by putting it in the form
-given in \cref{def:PrimitiveRecursion},
-giving suitable functions $g$ and~$h$.
-You can use functions already defined in this section.
+given in \cref{def:PrimitiveRecursion}.
+You can use functions already shown in this section to be primitive recursive.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item These are the first six values.
+\item These are the first six values, suggesting that $d(n)=n^3\!$.
 \begin{center}
 \begin{tabular}{r|*{11}{r}}
   $n$
@@ -4641,16 +4639,28 @@ You can use functions already defined in this section.
     &$0$ &$1$ &$8$ &$27$ &$64$ &$125$  
 \end{tabular}
 \end{center}
-\item The given $d$ is a function of one input so this is the arity bookkeeping.
+\item The given $d$ is a function of one input so the arity bookkeeping
+has $g$ be a function of no inputs and $h$ be a function of two.
 \begin{equation*}
   d(y)=
   \begin{cases}
-  g(\,)  &\case{if $y=0$}  \\
+  g(\,)      &\case{if $y=0$}  \\
   h(d(z),z)  &\case{if $y=\successor(z)$}
   \end{cases}
 \end{equation*}
-Take $g$ to be the constant $g(\,)=Z(\,)=0$. 
-$h(d(z),z)=\successor(\plus(d(z),\plus(\product(3,\successor(z)),\product(3,\product(\successor(z),\successor(z))))))$.
+Take $g$ to be the constant $g(\,)=Z(\,)=0$.
+To get $h(d(z),z)=d(z)+3(z+1)^2+3(z+1)+1$
+only requires some (perhaps a little tedious) translaton into low-level
+functions.
+Write $d(z)+3(z+1)^2+3(z+1)+1$ as $s+t+u+v$.
+Then $h(a,b)=\plus(s, \plus(t, \plus(u,v)))$
+where $s(a,b)=a$,
+and $u(a,b)=\product( \successor(\successor(\successor(Z(\,)))), \plus(b, \successor(Z(\,))))$,
+and $v(a,b)=\successor(Z(\,))$,
+and $t(a,b)$ is this.
+\begin{equation*}
+\product( \successor(\successor(\successor(Z(\,)))), \product( \plus(b,\successor(Z(\,))), \plus(b,\successor(Z(\,)))))
+\end{equation*}
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -4695,14 +4705,12 @@ The \index{Towers of Hanoi}\citetext{Towers of Hanoi}{%
 Compute the values for $n=1$, \ldots, $10$.
 \item
 Verify that $H$ is primitive recursive by putting it in the form
-given in \cref{def:PrimitiveRecursion},
-giving suitable functions $g$ and~$h$
-(\hint~$g$ is a function of no arguments, a constant).
-You can use functions already defined in this section.
+given in \cref{def:PrimitiveRecursion}.
+You can use functions already shown in this section to be primitive recursive.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item
+\item Here are the ten values.
 \begin{center}
 \begin{tabular}{r|cccccccccc}
   $n$    &$1$ &$2$ &$3$ &$4$  &$5$  &$6$  &$7$   &$8$   &$9$   &$10$    \\
@@ -4710,7 +4718,8 @@ You can use functions already defined in this section.
   $h(n)$ &$1$ &$3$ &$7$ &$15$ &$31$ &$63$ &$127$ &$255$ &$511$ &$1023$  \\
 \end{tabular}
 \end{center}
-\item Write
+\item This is a function of one input so the arity bookkeeping 
+gives that we want this.
 \begin{equation*}
   H(y)=
   \begin{cases}
@@ -4718,25 +4727,27 @@ You can use functions already defined in this section.
   h(H(z),z)  &\case{if $y=\successor(z)$}
   \end{cases}
 \end{equation*}
-where $g$ is the constant $g(\;)=1$ and 
-$h(H(z),z)=\successor(\product(H(z),2))$.
+Take $g$ to be the constant function $g(\;)=1=\successor(Z(\,))$.
+To get  $h(H(z),z)=2\cdot H(z)+1$ take
+$h(a,b)=\successor(\product(a,\successor(\successor(Z(\,)))))$.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 Define the factorial function $\factorial(y)=y\cdot(y-1)\cdots 1$
-by primitive recursion, using product and a constant function.
-% Translate your definition into Scheme.
+by primitive recursion, using functions that this section has already
+shown are primitive recursive.
 \begin{answer}
 The derivation for factorial is this.
 \begin{equation*}
   \factorial(y)=\begin{cases}
-              1                  &\text{if $y=0$}  \\
-              \product(\factorial(z),\successor(z))) &\text{if $y=\successor(z)$}
+              g(\,)                  &\text{if $y=0$}  \\
+              h(\factorial(z),\successor(z))) &\text{if $y=\successor(z)$}
             \end{cases}
 \end{equation*}
-Here $g$ is a function of no inputs~$g(\,)=1$ and 
+Here $g$ is a function of no inputs~$g(\,)=1=\successor(Z(\,))$ 
+and $h$ is a function of two variables 
 $h(a,b)=\product(a,\successor(b))$.  
 \end{answer}
 \end{exercise}

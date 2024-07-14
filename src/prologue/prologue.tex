@@ -4754,109 +4754,142 @@ $h(a,b)=\product(a,\successor(b))$.
 
 \recommended
 \begin{exercise}
-Recall that the greatest common divisor of two positive integers is the
-largest integer that divides both.
-We can compute the greatest common divisor using Euclid's recursion
+Recall that a natural number $d$ is a divisor\index{divisor} 
+of the natural number~$a$
+if there is a natural~$k$ so that $k\cdot d=a$.
+A natural number is common divisor\index{common divisor}\index{divisor!common} 
+of $a,b\in\N$ if it divides them both.
+The greatest common divisor\index{greatest common divisor}\index{divisor!greatest common}\index{gcd@$\gcd$|see{greatest common divisor}}
+of the two is the largest of their common divisors.
+\begin{exparts}
+\item Euclid observed that for $a>b$ then any common divisor of the two is also
+a common divisor of $a-b$ and~$b$.
+Thus, if $a>b$ then to find $\gcd(a,b)$
+we can reduce to finding $\gcd(a-b,b)$ (this is a reduction because the 
+first number is smaller).
+Use that to produce a recursion that computes $\gcd(a,b)$ for any
+$a,b\in\N$. 
+\item Compute $\gcd(28,12)$,
+$\gcd(104,20)$,
+and $\gcd(300009,25)$ using that method.
+\item Euclid also produced this reduction.
 \begin{equation*}
-  \gcd(n,m)=
+  \gcd(a,b)=
   \begin{cases}
-  n                 &\case{if $m=0$}  \\
-  \gcd(m,\rem(n,m)) &\case{if $m>0$}
+  a                 &\case{if $b=0$}  \\
+  \gcd(b,\rem(b,a)) &\case{if $b>0$}
   \end{cases}
 \end{equation*}
 where $\rem(a,b)$ is the remainder when $a$ is divided by~$b$.
-Note that this fits the schema of primitive recursion.
-Use Euclid's method to compute these. 
-\begin{exparts*}
-\item $\gcd(28,12)$
-\item $\gcd(104,20)$
-\item $\gcd(309,25)$
-\end{exparts*}
+Note that it has the form of the schema of primitive recursion
+(however, this does not show that it is primitive recursive because
+we have not yet verified that the remainder function
+is primitive recursive).
+Use this method to compute $\gcd(28,12)$,
+$\gcd(104,20)$,
+and $\gcd(300009,25)$.
+\end{exparts}
 \begin{answer}
-These are easy to compute by hand.
-But for fun we can write a program.
-\lstinputlisting[firstline=4, lastline=7]{\prfiles gcd.rkt}
-This version of the same program will mechanically give us the recursive calls.
-\lstinputlisting[firstline=9, lastline=16]{\prfiles gcd.rkt}
 \begin{exparts}
-\item This only takes two steps.
+\item Assume both are greater than zero.
+We know what to do if $a>b>0$.
+For the $a<b$ case we can switch the order of the two, $\gcd(a,b)=\gcd(b,a)$,
+because for both sides of the equation we just find all of the common
+divisors and take the maximum.
+And for $a=b$, the greatest common divisor is $a$.
+\begin{equation*}
+  \gcd(a,b)=
+  \begin{cases}
+  0                 &\case{if $a=b=0$} \\
+  a                 &\case{if $b=0$ and $a\neq 0$}  \\
+  b                 &\case{if $a=0$ and $b\neq 0$}  \\
+  a                 &\case{if $a=b$}  \\
+  \gcd(b,a)         &\case{if $a<b$}  \\
+  \gcd(a-b,b)       &\case{if $a>b$}
+  \end{cases}
+\end{equation*}
+For fun we can write a program  (it collapses some of the above cases).
+\lstinputlisting[firstline=7, lastline=12]{\prfiles gcdalt.rkt}
+\item These are easy to compute by hand but here they came from the program
 \begin{lstlisting}
-> (gcd-euclid-verbose 28 12)
-  call (gcd-euclid 12 4)
-  call (gcd-euclid 4 0)
-  return 4
+> (gcd-first 28 12)
 4
+> (gcd-first 104 20)
+4
+> (gcd-first 300009 25)
+1
 \end{lstlisting} %
-\item This also happens quickly.
+\item Again, for fun we did this as  Racket script.
+\lstinputlisting[firstline=23, lastline=26]{\prfiles gcdalt.rkt}
+Here is the result.
 \begin{lstlisting}
-> (gcd-euclid-verbose 104 20)
-  call (gcd-euclid 20 4)
-  call (gcd-euclid 4 0)
-  return 4
+> (gcd-second 28 12)
 4
-\end{lstlisting}
-\item These two are relatively prime.
-\begin{lstlisting}
-> (gcd-euclid-verbose 309 25)
-  call (gcd-euclid 25 9)
-  call (gcd-euclid 9 7)
-  call (gcd-euclid 7 2)
-  call (gcd-euclid 2 1)
-  call (gcd-euclid 1 0)
-  return 1
+> (gcd-second 104 20) 
+4
+> (gcd-second 300009 25)
 1
 \end{lstlisting}
 \end{exparts}
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-As in the prior exercise,
-recall that the greatest common divisor of two positive integers is the
-largest integer that divides both.
-These properties are clear: 
-$\gcd(a,1)=1$, $\gcd(a,a)=a$, $\gcd(a,b)=\gcd(b,a)$, 
-and $\gcd(a+b,b)=\gcd(a,b)$.
-From them produce a recursion and use it to compute these. 
-\begin{exparts*}
-\item $\gcd(28,12)$
-\item $\gcd(104,20)$
-\item $\gcd(309,25)$
-\end{exparts*}
-\begin{answer}
-The properties give this recursion to 
-compute the greatest common divisor.
-\begin{equation*}
-  \gcd(a,b)=
-  \begin{cases}
-  a                 &\case{if $b=a$}  \\
-  1                 &\case{if $b=1$}  \\
-  \gcd(b,a)         &\case{if $b>a$}  \\
-  \gcd(a-b,b)       &\case{otherwise}
-  \end{cases}
-\end{equation*}
-These are easy to compute by hand.
-For fun we can write a program.
-\lstinputlisting[firstline=9, lastline=18]{\prfiles gcdalt.rkt}
-\begin{exparts}
-\item this is easy to check by hand.
-\begin{lstlisting}
-> (gcd 28 12)
-4
-\end{lstlisting} %
-\item Here also.
-\begin{lstlisting}
-> (gcd 104 20)
-4
-\end{lstlisting}
-\item These two are relatively prime.
-\begin{lstlisting}
-> (gcd 309 25)
-1
-\end{lstlisting}
-\end{exparts}
-\end{answer}
-\end{exercise}
+% \begin{exercise}
+% Recall that the greatest common divisor of two positive integers is the
+% largest integer that divides both.
+% We can compute the greatest common divisor using Euclid's recursion
+% \begin{equation*}
+%   \gcd(n,m)=
+%   \begin{cases}
+%   n                 &\case{if $m=0$}  \\
+%   \gcd(m,\rem(n,m)) &\case{if $m>0$}
+%   \end{cases}
+% \end{equation*}
+% where $\rem(a,b)$ is the remainder when $a$ is divided by~$b$.
+% Note that this fits the schema of primitive recursion.
+% Use Euclid's method to compute these. 
+% \begin{exparts*}
+% \item $\gcd(28,12)$
+% \item $\gcd(104,20)$
+% \item $\gcd(309,25)$
+% \end{exparts*}
+% \begin{answer}
+% These are easy to compute by hand.
+% But for fun we can write a program.
+% \lstinputlisting[firstline=4, lastline=7]{\prfiles gcd.rkt}
+% This version of the same program will mechanically give us the recursive calls.
+% \lstinputlisting[firstline=9, lastline=16]{\prfiles gcd.rkt}
+% \begin{exparts}
+% \item This only takes two steps.
+% \begin{lstlisting}
+% > (gcd-euclid-verbose 28 12)
+%   call (gcd-euclid 12 4)
+%   call (gcd-euclid 4 0)
+%   return 4
+% 4
+% \end{lstlisting} %
+% \item This also happens quickly.
+% \begin{lstlisting}
+% > (gcd-euclid-verbose 104 20)
+%   call (gcd-euclid 20 4)
+%   call (gcd-euclid 4 0)
+%   return 4
+% 4
+% \end{lstlisting}
+% \item These two are relatively prime.
+% \begin{lstlisting}
+% > (gcd-euclid-verbose 309 25)
+%   call (gcd-euclid 25 9)
+%   call (gcd-euclid 9 7)
+%   call (gcd-euclid 7 2)
+%   call (gcd-euclid 2 1)
+%   call (gcd-euclid 1 0)
+%   return 1
+% 1
+% \end{lstlisting}
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
 
 \item[\hspace{0pt plus 1fil}] \textit{The following four exercises
 list functions and predicates.

@@ -4762,9 +4762,9 @@ of $a,b\in\N$ if it divides them both.
 The greatest common divisor\index{greatest common divisor}\index{divisor!greatest common}\index{gcd@$\gcd$|see{greatest common divisor}}
 of the two is the largest of their common divisors.
 \begin{exparts}
-\item Euclid observed that for $a>b$ then any common divisor of the two is also
+\item Euclid observed that if $a>b$ then any common divisor of the two is also
 a common divisor of $a-b$ and~$b$.
-Thus, if $a>b$ then to find $\gcd(a,b)$
+Thus, to find $\gcd(a,b)$
 we can reduce to finding $\gcd(a-b,b)$ (this is a reduction because the 
 first number is smaller).
 Use that to produce a recursion that computes $\gcd(a,b)$ for any
@@ -4780,7 +4780,7 @@ and $\gcd(300009,25)$ using that method.
   \gcd(b,\rem(b,a)) &\case{if $b>0$}
   \end{cases}
 \end{equation*}
-where $\rem(a,b)$ is the remainder when $a$ is divided by~$b$.
+where $\rem(b,a)$ is the remainder when $b$ is divided by~$a$.
 Note that it has the form of the schema of primitive recursion
 (however, this does not show that it is primitive recursive because
 we have not yet verified that the remainder function
@@ -4905,12 +4905,9 @@ or in a prior exercise item or subitem.}
 \begin{exercise}  \label{exer:ShowFcnsPrimRec}
 See the note above.
 \begin{exparts}
-\item  Constant function:~for~$k\in\N$,
-  $\mathcal{C}_k(\vec{x})=\mathcal{C}_k(x_0,\ldots{} x_{n-1})=k$.
-  \hint~instead of doing the general case with~$k$, try $C_4(x_0,x_1)$, 
-  the function that returns~$4$ for all input pairs.
-  Also, for this you need only use 
-  the zero function, successor, and function composition. 
+\item  Constant 
+  function:~$\mathcal{C}_k(\vec{x})=\mathcal{C}_k(x_0,\ldots{} x_{n-1})=k$
+  for a fixed~$k\in\N$. 
 
 \item Maximum and minimum of two numbers:
   $\max(x,y)$ and $\min(x,y)$.
@@ -4920,24 +4917,36 @@ See the note above.
 $\operatorname{absdiff}(x,y)=\sizeof{x-y}$.
 \end{exparts}  
 \begin{answer}
+These answers use familiar notation.
+For instance, we write $x+y$ instead of $\plus(x,y)$.
 \begin{exparts}
-\item The constant function that always returns zero 
-$\mathcal{C}_0(\vec{x})$
+\item The constant function that always returns zero, 
+$\mathcal{C}_0(\vec{x})$,
 is included the definition of primitive 
 recursion, \cref{def:PrimitiveRecursive}, as $\zero(\vec{x})=0$.
 The function that always returns~$1$ is then
-$\mathcal{C}_1(\vec{x})=\succ(\mathcal{C}_0(\vec{x}))$,
+$\mathcal{C}_1(\vec{x})=\successor(Z(\vec{x}))$,
 the function that returns~$2$ is
-$\mathcal{C}_2(\vec{x})=\succ(\succ(\mathcal{C}_0(\vec{x})))$, etc.
+$\mathcal{C}_2(\vec{x})=\successor(\successor(Z(\vec{x})))$, etc.
+Because successor, zero, and composition are all permitted in the construction
+of a primitive recursive function, each $\mathcal{C}_k$ is primitive recursive.
 
-\item Since the parts of the right-hand side of
-  $\max(\set{x,y})=y+(x\propersub y)$ are all primitive recursive, 
-  then the $\max$ function is also primitive recursive.
-  Similarly for $\min(\set{x,y})=x+y\propersum\max(\set{x,y})$.
+\item Use proper subtraction to define $\max(\set{x,y})=y+(x\propersub y)$.
+  If $x\geq y$ then it reduces to $\max(\set{x,y})=y+(x-y)=x$,
+  while if $x<y$ then it is $\max(\set{x,y})=y+0=y$.
+  The parts of the right-hand side of $\max(\set{x,y})=y+(x\propersub y)$
+  are all primitive recursive, 
+  so the $\max$ function is also primitive recursive.
+  Similarly $\min(\set{x,y})=x+(y\propersub\max(\set{x,y}))$.
 
-\item For any $x,y\in\N$ either $x-y\geq 0$ or $y-x\geq 0$.
-Thus
-$\operatorname{absdiff}(x,y)=\operatorname{propersub}(x,y)+\operatorname{propersub}(y,x)$ and since addition is primitive recursive, 
+\item 
+Let
+$\operatorname{absdiff}(x,y)=(x\propersub y)+ (y\propersub x)$.
+If $x\geq y$ then only the second term is zero and
+$\operatorname{absdiff}(x,y)=x-y$, as desired.
+The $y> x$ case is similar. 
+Since this expression is made from primitive recursive parts put
+together using primitive recursive combiners,  
 $\operatorname{absdiff}(x,y)$ is therefore primitive recursive.
 \end{exparts}
 \end{answer}
@@ -4947,45 +4956,52 @@ $\operatorname{absdiff}(x,y)$ is therefore primitive recursive.
 See the note before \cref{exer:ShowFcnsPrimRec}.
 \begin{exparts}
 \item Sign predicate:
-$\operatorname{sign}(y)$, which gives~$1$ if $y$ is greater than zero
-and~$0$ otherwise. 
+$\sgn(y)$, which gives~$0$ if $y=0$ and gives $1$ if $y$ is greater than zero. 
 
 \item Negation of the sign predicate:
 $\operatorname{negsign}(y)$, which gives~$0$ if $y$ is greater than zero
-and~$1$ otherwise. 
+and~$1$ if $y=0$. 
 
 \item Less-than predicate:
-$\operatorname{lessthan}(x,y)=1$ if $x$ is less than $y$,
+$\operatorname{lessthan}(x,y)=1$ if $x$ is less than~$y$,
 and~$0$ otherwise.
-(The greater-than predicate is similar.)
+The greater-than predicate is similar.
 \end{exparts}  
 \begin{answer}
+These answers use familiar notation.
+For instance, we write $x+y$ instead of $\plus(x,y)$.
+We will also omit explicit mention that the expressions are
+made from primitive recursive parts put
+together using primitive recursive combiners,  
+and therefore the function is primitive recursive.
 \begin{exparts}
 \item This primitive recursion defines $\operatorname{sign}$.
 \begin{equation*}
-  \operatorname{sign}(y)=
+  \sgn(y)=
     \begin{cases}
       0   &\case{\text{if $y=0$}}  \\
-      1   &\case{\text{if $y=\succ(z)$}}
+      1   &\case{\text{if $y=\successor(z)$}}
     \end{cases}
 \end{equation*}
+Note that in the first clause we write $0$ as an abbreviation for $Z(y)$,
+and we write $1$ to abbreviate $\successor(Z(y))$.
 
-\item A primitive recursion will do
+\item A primitive recursion will do.
 \begin{equation*}
   \operatorname{negsign}(y)=
     \begin{cases}
       1   &\case{\text{if $y=0$}}  \\
-      0   &\case{\text{if $y=\succ(z)$}}
+      0   &\case{\text{if $y=\successor(z)$}}
     \end{cases}
 \end{equation*}
-but we can also observe that 
-$\operatorname{negsign}(y)=1-\operatorname{sign}(y)$, that is,
-$\operatorname{negsign}(y)=\operatorname{propersub}(1,\operatorname{sign}(y))$.
+But also note that 
+$\operatorname{negsign}(y)=1-\sgn(y)$, that is,
+$\operatorname{negsign}(y)=1\propersub\sgn(y)$.
 
-\item The one is 
-$\operatorname{lessthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(y,x))$ 
+\item The first is 
+$\operatorname{lessthan}(x,y)=\sgn(y\propersub x)$ 
 while the other is 
-$\operatorname{greaterthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(x,y))$.
+$\operatorname{greaterthan}(x,y)=\sgn(x\propersub y)$.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -4995,8 +5011,11 @@ $\operatorname{greaterthan}(x,y)=\operatorname{sign}(\operatorname{propersub}(x,
 See the note before \cref{exer:ShowFcnsPrimRec}.
 \begin{exparts}
 \item
-Boolean functions: where $x,y$ are inputs with values $0$ or~$1$ 
-there is the standard one-input function
+Boolean functions:~we have the convention that we represent `true' with~$1$
+and `false' with~$0$, and that holds for the outputs here.  
+But for inputs, while we still take $0$ for `false', 
+we take any positive input to mean `true'. 
+There is the standard one-input function
 \begin{equation*}
   \operatorname{not}(x)=
   \begin{cases}
@@ -5004,7 +5023,7 @@ there is the standard one-input function
     0  &\case{\text{otherwise}}
   \end{cases}
 \end{equation*}
-and two-input functions.
+and the two-input functions.
 \begin{equation*}
   \operatorname{and}(x,y)=
   \begin{cases}
@@ -5018,20 +5037,28 @@ and two-input functions.
     1  &\case{\text{otherwise}}
   \end{cases}
 \end{equation*}
+(To avoid being tedious, in the output of the clauses we write~$0$ 
+to abbreviate $Z(\,)$ while~$1$ abbreviates $\successor(Z(\,))$.)
 
 \item Equality predicate:
 $\operatorname{equal}(x,y)=1$ if $x=y$
 and~$0$ otherwise.
 \end{exparts}
 \begin{answer}
+These answers use familiar notation.
+For instance, we write $x+y$ instead of $\plus(x,y)$.
+We will also omit explicit mention that the expressions are
+made from primitive recursive parts put
+together using primitive recursive combiners  
+and therefore the function is primitive recursive.
 \begin{exparts}
 \item
-We have $\operatorname{not}(x)=1-x=\operatorname{propersub}(1,x)$.
+We have $\operatorname{not}(x)=1\propersub x$.
 For the two-input ones,
-$\operatorname{and}(x,y)=x\cdot y=\product(x,y)$
+$\operatorname{and}(x,y)=\sgn(x)\cdot \sgn(y)=\product(\sgn(x),\sgn(y))$
 and
-$\operatorname{or}(x,y)=\operatorname{sign}(x+y)$
-(an alternative is $\operatorname{or}(x,y)=1-((1-x)\cdot (1-y))$).
+$\operatorname{or}(x,y)=\sgn(x+y)$
+(an alternative is $\operatorname{or}(x,y)=1\propersub((1\propersub x)\cdot (1\propersub y))$).
 
 \item 
 $\operatorname{equal}(x,y)=\operatorname{negsign}(\operatorname{lessthan}(x,y)+\operatorname{greaterthan}(x,y))$
@@ -5053,7 +5080,7 @@ finite and fixed number of cases, as with these.
   m(x)=\begin{cases}
           7    &\text{if $x=1$}  \\
           9    &\text{if $x=5$}  \\
-          0    &\text{otherwise}
+          2    &\text{otherwise}
         \end{cases}
   \qquad
   n(x,y)=\begin{cases}
@@ -5064,6 +5091,12 @@ finite and fixed number of cases, as with these.
 \end{equation*}
 \end{exparts}
 \begin{answer}
+These answers use familiar notation.
+For instance, we write $x+y$ instead of $\plus(x,y)$.
+We will also omit explicit mention that the expressions are
+made from primitive recursive parts put
+together using primitive recursive combiners,  
+and therefore the function is primitive recursive.
 \begin{exparts}
 \item 
 $\operatorname{notequal}(x,y)=\operatorname{sign}(\operatorname{lessthan}(x,y)+\operatorname{greaterthan}(x,y))$
@@ -5071,10 +5104,9 @@ $\operatorname{notequal}(x,y)=\operatorname{sign}(\operatorname{lessthan}(x,y)+\
 \item
 The first is
 $m(x)=7\cdot\operatorname{equal}(x,1)
-      +9\cdot\operatorname{equal}(x,5)$
-(note the use of addition and multiplication, which were shown to be
-primitive recursive in the subsection body).
-The second is similar
+      +9\cdot\operatorname{equal}(x,5)
+      +2\cdot(\operatorname{and}(\operatorname{notequal}(x,1)),\operatorname{notequal}(x,5))$.
+The second is similar,
 $n(x,y)=7\cdot\operatorname{equal}(x,1)\cdot\operatorname{equal}(y,2)
         +9\cdot\operatorname{equal}(x,5)\cdot\operatorname{equal}(y,5)$.
 \end{exparts}
@@ -5089,12 +5121,12 @@ the section body, in the prior exercise, or in a prior item.
 \begin{exparts}
 
 \item Bounded sum function:
-the partial sums of a series whose terms $g(i)$ are given by 
-a primitive recursive function,
+the partial sums of a series where the terms $g(i)$ are specified by 
+a single primitive recursive function~$g$, so that
 $S_g(y)=\sum_{0\leq i<y} g(i)=g(0)+g(1)+\cdots+g(y-1)$
 (the sum of zero-many terms is $S_g(0)=0$).
-Contrast this with the final item of the prior question; 
-here the number of summands is finite but not fixed.
+In comparison with the final item of the prior question, 
+while the number of summands is also finite, here it varies with~$y$.
 
 \item Bounded product function:
 the partial products of a series whose terms $g(i)$ are given by 
@@ -5105,25 +5137,39 @@ $P_g(y)=\prod_{0\leq i<y} g(i)=g(0)\cdot g(1)\cdots g(y-1)$
 \item Bounded minimization:
 let $m\in\N$ and let $p(\vec{x},i)$ be a predicate.
 Then the minimization operator $M(\vec{x},i)$, 
-typically written $\mu^{m}i[p(\vec{x},i)]$,
+often written $\mu^{m}i[p(\vec{x},i)]$,
 returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
 or else returns~$m$.
 \hint{} Consider the bounded sum of the bounded products of the
 predicates.
 \end{exparts}
 \begin{answer}
+These answers use familiar notation.
+For instance, we write $x+y$ instead of $\plus(x,y)$.
+We will also omit explicit mention that the expressions are
+made from primitive recursive parts put
+together using primitive recursive combiners  
+and therefore the function is primitive recursive.
 \begin{exparts}
 \item Since $g$ is given as primitive recursive,
-this function is also primitive recursive 
-$h(a,b)=\plus(a,g(b))$ because it uses composition.
+the function $h(a,b)=a+g(b)$ is also primitive recursive.
 With that, this primitive recursion will do the bounded sum.
 \begin{equation*}
   f(y)=
     \begin{cases}
-      0          &\case{\text{if $y=0$}}  \\
-      h(f(z),z)  &\case{\text{if $y=\succ(z)$}}
+      0         &\case{\text{if $y=0$}}  \\
+      h(f(z),z)    &\case{\text{if $y=\successor(z)$}}
     \end{cases}
 \end{equation*}
+An example is called for.
+We will expand $f(4)$.
+\begin{align*}
+  f(4)
+  &=h(f(3),3)=f(3)+g(3)   \\
+  &=h(f(2),2)+g(3)=f(2)+g(2)+g(3)  \\
+  &=h(f(1),1)+g(2)+g(3)=f(1)+g(1)+g(2)+g(3)\\
+  &=h(f(0),0)+g(1)+g(2)+g(3)=f(0)+g(0)+g(1)+g(2)+g(3)=g(0)+\cdots +g(4)
+\end{align*}
 
 \item 
 This is similar to bounded sum.
@@ -5131,19 +5177,28 @@ This is similar to bounded sum.
 \item 
 Consider the bounded product function.
 \begin{equation*}
-  P_p(\vec{x},m)=\prod_{0\leq i<m} p(\vec{x},i)
+  P_p(\vec{x},m)
+  =p(\vec{x},0)\cdot p(\vec{x},1)\cdots p(\vec{x},m-1)
+  =\prod_{0\leq i<m} p(\vec{x},i)
 \end{equation*}
-Note that (i)~if $P_p(\vec{x},m)=1$ then $P_p(\vec{x},i)=1$ for all $i<m$,
-and (ii)~if $P_p(\vec{x},m)=0$ then $P_p(\vec{x},i)=0$ for all~$i\geq m$.
+There are two things to note here.
+First, if $P_p(\vec{x},m)=1$ then $P_p(\vec{x},i)=1$ for all $i<m$.
+Second, if there is an~$m$ where $P_p(\vec{x},m)=0$ 
+then $P_p(\vec{x},n)=0$ for all~$m\leq n$.
+Thus the sequence $P_p(\vec{x},0)$, $P_p(\vec{x},1)$, $P_p(\vec{x},2)$, \ldots{}
+consists of a number of $1$'s followed by all $0$'s.
+The initial $1$'s go until the first $n$ for which the predicate 
+$p(\vec{x},n)$ gives~$0$. 
 
 Next consider the bounded sum function.
 \begin{equation*}
   S_{P_p}(\vec{x},m)=\sum_{0\leq i<m} P_p(\vec{x},m)  
 \end{equation*}
-Because of (i) and~(ii), $S_{P_p}(\vec{x},m)$ is the least number~$i$ such that
-$p(\vec{x},i)=0$, as desired.
+The prior paragraph gives that $S_{P_p}(\vec{x},m)$ 
+is the least number~$n$ with $n<m$ such that
+$p(\vec{x},n)=0$.
 
-Now just define $M(\vec{x},m)$ by cases.
+Now define $M(\vec{x},m)$ by cases.
 \begin{equation*}
   M(\vec{x},m)=
   \begin{cases}
@@ -5192,6 +5247,12 @@ $\operatorname{prime}(y)$ if
 $y$ has no nontrivial divisor.
 \end{exparts}
 \begin{answer}
+These answers use familiar notation.
+For instance, we write $x+y$ instead of $\plus(x,y)$.
+We will also omit explicit mention that the expressions are
+made from primitive recursive parts put
+together using primitive recursive combiners  
+and therefore the function is primitive recursive.
 \begin{exparts}
 \item This is the idea.
 \begin{equation*}
@@ -5263,6 +5324,12 @@ $a$ is divided by~$b$ is primitive recursive.
    is primitive recursive.
 \end{exparts}
 \begin{answer}
+These answers use familiar notation.
+For instance, we write $x+y$ instead of $\plus(x,y)$.
+We will also omit explicit mention that the expressions are
+made from primitive recursive parts put
+together using primitive recursive combiners  
+and therefore the function is primitive recursive.
 \begin{exparts}
 \item The table is straightforward.
 \begin{display}
@@ -5332,6 +5399,12 @@ Thus, $\div(5,3)=1$ and $\div(10,3)=3$.
 \item Show that $\div(a,b)$ is primitive recursive.
 \end{exparts}
 \begin{answer}
+These answers use familiar notation.
+For instance, we write $x+y$ instead of $\plus(x,y)$.
+We will also omit explicit mention that the expressions are
+made from primitive recursive parts put
+together using primitive recursive combiners  
+and therefore the function is primitive recursive.
 \begin{exparts}
 \item The division is easy.
 \begin{display}

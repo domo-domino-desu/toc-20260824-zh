@@ -7,5 +7,6 @@ makeindex -s book.ist -p odd book.idx
 biber book
 pdflatex book
 pdflatex answers
+biber answers
 pdflatex answers
 

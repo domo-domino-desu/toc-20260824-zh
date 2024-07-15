@@ -5139,7 +5139,7 @@ $P_g(y)=\prod_{0\leq i<y} g(i)=g(0)\cdot g(1)\cdots g(y-1)$
 \item Bounded minimization:
 let $m\in\N$ and let $p(\vec{x},i)$ be a predicate for all $i<m$.
 The minimization operator $M(\vec{x},i)$, 
-often written $\min_{i<m}\,[p(\vec{x},i)]$ or $\mu i<m\,[p(\vec{x},i)]$,
+often written $\min_{i<m}\,[p(\vec{x},i)]$ or $\mu i_{i<m}\,[p(\vec{x},i)]$,
 returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
 or else returns~$m$.
 \hint{} Consider the bounded sum of the bounded products of the
@@ -5895,7 +5895,8 @@ The pattern is especially striking when
 we express these functions using the 
 schema of primitive recursion. 
 For that, start by defining $\hyperoperation_0$ to be the 
-successor function, $\hyperoperation_0=\successor$.
+successor function, $\hyperoperation_0=\successor$,
+and then we define these other $\hyperoperation_i$'s.
 \begin{align*}
   \plus(x,y)=
   \hyperoperation_1(x,y)&=\begin{cases}
@@ -5913,19 +5914,18 @@ successor function, $\hyperoperation_0=\successor$.
              \hyperoperation_2(x,\hyperoperation_3(x,y-1))    &\case{otherwise}
            \end{cases}
 \end{align*}
-The key is in the `otherwise' lines.
-Each one satisfies that
+The pattern is in the `otherwise' lines.
+Each one is
 $\hyperoperation_n(x,y)=\hyperoperation_{n-1}(x,\hyperoperation_n(x,y-1))$.
 
 Because of this pattern we call each $\hyperoperation_n$ 
 the \definend{level~$n$} function, so that 
-successor is level~$0$, addition is the level~$1$
-operation, multiplication is the level~$2$ operation, and 
+successor is the level~$0$ operation, addition is level~$1$, 
+multiplication is level~$2$, and 
 exponentiation is level~$3$.
-% These `otherwise' lines step the function up from level to level.
 The definition below  
-writes $\hyperoperation(n,x,y)$ in place of $\hyperoperation_n(x,y)$,
-to get all of the levels into one formula.
+writes $\hyperoperation(n,x,y)$ in place of $\hyperoperation_n(x,y)$
+to bring all of the levels into one formula.
 %</discussion:Ackermanniii>
 
 %<*def:Hyperoperation>
@@ -5955,19 +5955,21 @@ $\hyperoperation_3(x,y)=x^y\!$.
 \end{lemma}
 
 \begin{proof}
-The level~$0$ statement $\hyperoperation_0(x,y)=y+1$ is in the definition of
-$\hyperoperation$.
+The level~$0$ statement $\hyperoperation_0(x,y)=\hyperoperation(0,x,y)=y+1$ 
+is in the definition of $\hyperoperation$.
 
-We prove the level~$1$ statement $\hyperoperation_1(x,y)=x+y$ by 
+We prove the level~$1$ statement 
+$\hyperoperation_1(x,y)=\hyperoperation(1,x,y)=x+y$ by 
 induction on~$y$.
 For the $y=0$ base step, the definition 
 is that $\hyperoperation(1,x,0)=x$, which equals $x+0=x+y$.
-For the inductive step, assume that the statement holds for $y=0$, \ldots, $y=k$
+For the inductive step, assume that the statement holds for 
+$y=0$, \ldots{} $y=k$
 and consider the $y=k+1$ case.
-The definition is
-$\hyperoperation_1(x,k+1)=\hyperoperation_0(x,\hyperoperation_1(x,k))$.
-Apply the inductive hypothesis to get
-$\hyperoperation_0(x,x+k)$.
+The `otherwise' line says
+$\hyperoperation_1(x,k+1)=\hyperoperation(1,x,k+1)=\hyperoperation(0,x,\hyperoperation_1(x,k))=\hyperoperation_0(x,\hyperoperation_1(x,k))$.
+The inductive hypothesis gives
+$\hyperoperation_0(x,\hyperoperation_1(x,k))=\hyperoperation_0(x,x+k)$.
 By the prior paragraph this equals
 $x+k+1=x+y$.
 
@@ -5977,7 +5979,7 @@ are \cref{exer:HTwoHThree}.
 %</lem:Hyperoperation>
 
 \begin{remark}
-Level $n=4$ 
+Level four 
 is \definend{tetration}.\index{tetration}
 The first few values are
 $\hyperoperation_4(x,0)=1$,
@@ -5995,17 +5997,13 @@ This is a \definend{power tower}.
 To evaluate these,
 recall that in exponentiation the parentheses are significant, so for instance
 these two are unequal:
-% \begin{equation*}
 $(3^3)^3=27^3=3^9=19\,683$
-and
-%   \qquad
+while
 $3^{(3^3)}=3^{27}=7\,625\,597\,484\,987$.
-% \end{equation*}
 Tetration does it in the second, larger, way.
-The rapid growth of the output values is a striking aspect of tetration, and
-of the hyperoperation in general.
+The rapid growth of the output values is a striking aspect of tetration.
 For instance,
-\citetext{$\hyperoperation_3(4,4)=4^{4^4}$ is much greater than the number of elementary particles in the universe}{%
+\citetext{$\hyperoperation_4(4,3)=4^{4^4}$ is much greater than the number of elementary particles in the universe}{%
   The radius of the universe if about $45\times 10^{9}$~light years.
   That's about $10^{62}$~Plank units.
   A system of much more than $r^{1.5}$ particles packed in $r$~Plank units
@@ -6032,16 +6030,15 @@ does not fit the form of primitive recursion.
 \end{equation*}
 The problem is not that the arguments are in a different order; 
 that is cosmetic.
-The reason that $\hyperoperation$ 
-does not work as $h$ is that 
+The problem is that 
 the definition of primitive recursive function, \cref{def:PrimitiveRecursion},
 requires that
 $h$ be a function for which we already have a primitive recursive
-derivation.
+derivation, but here $h$ is the function that we are defining, $H$.
 
 Of course, just because one definition has the wrong
 form doesn't mean that
-there is no definition with the right form.
+no definition with the right form exists.
 However, Ackermann\footnote{%
   We have seen Ackermann already as one of the people who stated the 
   \protect\textit{Entscheidungsproblem}.
@@ -6066,11 +6063,12 @@ than any primitive recursive function.
 More precisely, for any primitive recursive function~$f$ of three inputs,
 there is a sufficiently large $N\in\N$ such that for all 
 $n,x,y\in\N$, if $n,x,y> N$ then $\hyperoperation(n,x,y)>f(n,x,y)$. 
-This proof is about uniformity:~at
-every level the function $\hyperoperation_n$ is primitive recursive,
-but no primitive recursive function encompasses all levels at once\Dash
-there is no one
-primitive recursive way to compute all primitive recursive functions.
+This proof is about uniformity, or rather lack of it:~while at each
+level~$n$ the function $\hyperoperation_n$ is primitive recursive,
+no primitive recursive function encompasses all levels at once\Dash
+there is no 
+primitive recursive way to 
+uniformily compute all primitive recursive functions.
 
 This relates to a point from the discussion of Church's Thesis.
 We have observed that if a function is primitive recursive then it is
@@ -6085,8 +6083,8 @@ we now have an effective function that is not primitive recursive.
 So the set of primitive recursive functions fails the `coverage' test from 
 the Church's Thesis discussion.
 
-We next will expand from the set of primitive recursive
-functions to a larger collection, which will prove to be 
+Consequently we next will expand from the set of primitive recursive
+functions to a larger collection, which proves to be 
 the same as the set of Turing-computable functions.
 \index{Ackermann function|)}
 
@@ -6103,9 +6101,12 @@ the same as the set of Turing-computable functions.
 % So we will define a bigger class. 
 % 
 The right direction is suggested in the prior section's 
-\Cref{exer:PrimRecBoundedOps} and \cref{exer:PrimRecBoundedOpsB}.
+\cref{exer:PrimRecBoundedOps}.
 Primitive recursion does operations that are bounded, such as
-bounded sum $\sum_{0\leq i<y}g(i)=g(0)+\cdots+g(y-1)$. 
+bounded sum $\sum_{0\leq i<y}g(i)=g(0)+\cdots+g(y-1)$
+and bounded minimization 
+$\min_{i<m}\,[p(\vec{x},i)]=\mu i_{i<m}\,[p(\vec{x},i)]$,
+which returns the smallest~$i< m$ such that $p(\vec{x},i)=0$. 
 % One example is bounded minimization $\mu^{m}i[p(\vec{x},i)]$
 % defined by:
 % where $m\in\N$ and where $p(\vec{x},i)$ is a predicate, a function
@@ -6160,8 +6161,7 @@ defined from $g$ by
 \definend{minimization}\index{minimization}\index{unbounded minimization}
 or \definend{$\mu$-recursion},\index{mu recursion@$\mu$-recursion (mu recursion)}
 written $f(\vec{x})=\least y\,\big[ g(\vec{x},y)=0 \big]$, %\footnotemark[2]
-if $f(\vec{x})$ is the the least number~$y$ such that $g(\vec{x},y)=0$.
-% (and is defined).
+if $f(\vec{x})$ is the minimum number~$y$ such that $g(\vec{x},y)=0$.
 \end{definition}
 %\footnotetext[2]{The vector $\vec{x}$ abbreviates $x_0,\dotso x_{n-1}$.}
 %</def:MuRecursioni>
@@ -6173,7 +6173,7 @@ examining  $g(\vec{x},0)$, then $g(\vec{x},1)$, etc.,
 looking for one of them to give the output~$0$.
 If that ever happens, so that $g(\vec{x},n)=0$ for some least~$n$,
 then $f(\vec{x})=n$.
-If not
+If there is no such~$y$
 then $f(\vec{x})$ is undefined.
 %</def:MuRecursionii>
 
@@ -6245,8 +6245,6 @@ value is undefined for some or all inputs.
 For instance, if $g(x,y)=1$ for all~$x,y\in\N$  
 then $f(x)=\least y[g(x,y)=0]$ is undefined
 for all~$x$.
-We can imagine $f$ searching and searching but it will never find
-such a~$y$.
 In the next example no one currently knows whether the search will end.
 
 \begin{example}
@@ -6255,37 +6253,36 @@ In the next example no one currently knows whether the search will end.
 is that every even number greater than two
 is the sum of two primes. 
 The first few instances are $4=2+2$, $6=3+3$, $8=3+5$, and~$10=3+7$.
-No one knows if this conjecture is true.
-A natural attack is to search for a counterexample.
-From this auxillary function
+No one knows if this conjecture is true, although researchers have confirmed 
+it for all evens up to $y=4\times 10^{18}\!$.
+
+Here we do an unbounded search for a counterexample.
+This auxillary function
 \lstinputlisting[firstline=37, lastline=42]{\prfiles prime-generating-poly.rkt}
-we get the definition's boolean function~$g$.
+helps us get the definition's boolean function~$g$.
 \lstinputlisting[firstline=53, lastline=59]{\prfiles prime-generating-poly.rkt}
-It returns $0$ if the input is even and greater than~$2$ but
-\codeinline!gb-check! does not find a pair of primes.
+It returns~$0$ if the input is even and greater than~$2$ but
+there is no a pair of primes.
 Then here is the unbounded search
-$\operatorname{gb-f}()=\least y\,\big[ \operatorname{gb-g}(y)=0 \big]$.
+$\operatorname{gb-f}()=\least y\,\big[\operatorname{gb-g}(y)=0 \big]$.
 \lstinputlisting[firstline=64, lastline=70]{\prfiles prime-generating-poly.rkt}
 %</ex:GoldbachConjecture>
-(Researchers have gone past $y=4\times 10^{18}$ without
-finding a counterexample.)
 \end{example}
 
 \begin{example}
-Imagine that you want to use a computer to settle
-\definend{Legendre's conjecture},\index{Legendre's conjecture} 
+Expanding on that approach,
+imagine that you want to settle
+\definend{Legendre's conjecture}\index{Legendre's conjecture} 
 that for every natural number $n>0$
 there is a prime number~$p$ with $n^2< p< (n+1)^2\!$.
-Here is a way to proceed.
-First, start an unbounded search for a counterexample.
-Second, at the same time doing an unbounded
-search for a proof. 
+Start an unbounded search for a counterexample,
+but at the same time also run an unbounded search for a proof. 
 After all, a proof is a sequence of statements in a suitable formal language
-where each statement is either an axiom or follows from the prior ones, 
+where each statement is either an axiom or follows from the prior statements, 
 and where the final statement is the desired theorem.
-You could run a computer search as:~for each~$n$, 
-interpret it as a string (perhaps convert it to binary and 
-interpret the binary as a string) and check
+You could run a computer search for a proof as:~for each~$n$, 
+interpret it as a string (perhaps convert~$n$ to binary and 
+interpret that binary as a string) and check
 whether that string is a proof of the theorem.
 Now wait for one or the other to halt.
 Obviously 
@@ -6327,8 +6324,8 @@ the same as the Turing machine-based set of computable functions.
 We have seen that unbounded search is a natural computational construct.
 It is also a theme in this book.
 For instance, we will later consider the question of which
-programs halt.
-A natural way to think about this is
+programs halt and
+a natural way to think about this is
 as a search for a halting step.
 
 

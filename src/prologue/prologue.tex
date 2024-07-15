@@ -5135,9 +5135,9 @@ $P_g(y)=\prod_{0\leq i<y} g(i)=g(0)\cdot g(1)\cdots g(y-1)$
 (the product of zero-many terms is $P_g(0)=1$).
 
 \item Bounded minimization:
-let $m\in\N$ and let $p(\vec{x},i)$ be a predicate.
-Then the minimization operator $M(\vec{x},i)$, 
-often written $\mu^{m}i[p(\vec{x},i)]$,
+let $m\in\N$ and let $p(\vec{x},i)$ be a predicate for all $i<m$.
+The minimization operator $M(\vec{x},i)$, 
+often written $\min_{i<m}\,[p(\vec{x},i)]$ or $\mu i<m\,[p(\vec{x},i)]$,
 returns the smallest~$i\leq m$ such that $p(\vec{x},i)=0$,
 or else returns~$m$.
 \hint{} Consider the bounded sum of the bounded products of the
@@ -5219,7 +5219,7 @@ or in a prior exercise, or a prior item.
 Bounded universal quantification:~where $m\in\N$, 
 for each $i < m$ let $p(\vec{x},i)$ be a predicate. 
 Then $U(\vec{x},m)$, typically written
-$\forall_{i< m}\,p(\vec{x},i)$, has value~$1$ if
+$\forall i< m\,[p(\vec{x},i)]$, has value~$1$ if
 $p(\vec{x},0)=1$ and \ldots{} and $p(\vec{x},m-1)=1$. 
 Otherwise, if even one $p(\vec{x},i)$ is non-$1$ for $0\leq i<m$
 then $U(\vec{x},m)=0$.
@@ -5228,8 +5228,8 @@ then $U(\vec{x},m)=0$.
 Bounded existential quantification:~where $m\in\N$, 
 for each $i < m$ let $p(\vec{x},i)$ be a predicate.
 Then $E(\vec{x},m)$, typically written
-$\exists_{i\leq m}\,p(\vec{x},i)$, has value~$1$ if
-$p(\vec{x},0)=0, \ldots, p(\vec{x},m)=0$ is not true,
+$\exists i\leq m\,[p(\vec{x},i)]$, has value~$1$ if 
+$p(\vec{x},0)=1$ or \ldots{} or $p(\vec{x},m-1)=1$,
 and has value~$0$ otherwise.
 
 \item Divides predicate: where $x,y\in\N$ we have
@@ -5267,8 +5267,8 @@ For instance, here is the computation of $U(\vec{x},3)$.
 \item First an example with $m=3$.
 Consider this.
 \begin{equation*}
-  \hat{E}(\vec{x},3)=1\propersub\bigl[ (1\propersub p(\vec{x},0))\cdot
-                       (1\propersub p(\vec{x},1))\cdot(1\propersub p(\vec{x},2)) 
+  \hat{E}(\vec{x},3)=1\propersub\bigl[ (1\propersub p(\vec{x},2))\cdot
+                       (1\propersub p(\vec{x},1))\cdot(1\propersub p(\vec{x},0)) 
                                   \bigr]
 \end{equation*}
 If any $p(\vec{x},i)$ is~$1$ then the entire expression in square brackets
@@ -5290,7 +5290,7 @@ function is below.
 \item This follows straight from the definition on noting that one suitable 
 bound on the quotient~$k$ is the dividend~$y$, that is,
 $\operatorname{divides}(x,y)=
-\exists d\leq y[y=x\cdot d]$.
+\exists d\leq y\,[y=x\cdot d]$.
 
 \item As in the prior item, we need only find a suitable bound.
 Here, $\operatorname{prime}(y)=1$ if and only if
@@ -5402,8 +5402,9 @@ Thus, $\div(5,3)=1$ and $\div(10,3)=3$.
   Under what circumstance does it not happen?
 \item Show that $\div(a,3)$ is primitive recursive.
    You can use the prior exercise, along with any functions shown to be
-   primitive recursive in the section body, \cref{exer:ShowFcnsPrimRec}
-   and \cref{exer:ShowFcnsPrimRecB}.
+   primitive recursive in the section body, or a prior exercise such as
+   \cref{exer:ShowFcnsPrimRec}
+   or \cref{exer:ShowFcnsPrimRecB}.
    (Compared with \cref{def:PrimitiveRecursion}, here the two arguments are
    switched, which is only a difference of appearance.)
 \item Show that $\div(a,b)$ is primitive recursive.
@@ -5453,21 +5454,23 @@ primitive recursion (again, the order of the two inputs is not important).
 \end{exercise}
 
 \begin{exercise}
-The floor function $f(x/y)=\floor{x/y}$ returns the 
+The floor function $f(x,y)=\floor{x/y}$ returns the 
 largest natural number less than or equal to $x/y$.
 Show that it is primitive recursive.
-\hint~you may use any function defined in the section or stated in a 
-prior exercise but bounded minimization is the place to start.
+\hint~bounded minimization from \cref{exer:PrimRecBoundedOps}
+is a good place to start.
 \begin{answer}
 This starts with bounded minimization.
 \begin{equation*}
-  \floor{x/y}
+  f(x,y)=\floor{x/y} 
   =\min_{t\leq x}\,[(t+1)\cdot y>x]
 \end{equation*}
-For instance, $\floor{9/2}=\min_{t\leq 9}[(t+1)\cdot 2>9]$ gives $t+1=5$, so 
-$t=4$. 
+For instance, $f(9,2)=\floor{9/2}=\min_{t\leq 9}[(t+1)\cdot 2>9]$ gives $t+1=5$, 
+so $t=4$. 
+Another example is that $f(8,2)=\floor{8/2}=\min_{t\leq 8}[(t+1)\cdot 2>9]$ 
+also gives $t+1=$ and so $t=4$. 
 Putting it in terms of previously defined functions, for instance
-changing the multiplication dot to a call to the $\plus$ function,
+changing the multiplication dot to a call to the $\product$ function,
 is routine.
 \end{answer}
 \end{exercise}
@@ -5498,128 +5501,221 @@ is routine.
 % \end{exparts}
 % \end{exercise}
 
-\begin{exercise}
-In 1202 Fibonacci\index{Fibonacci numbers} asked:
-\textit{A certain man put a pair of rabbits in a place surrounded on all sides
-  by a wall. How many pairs of rabbits can be produced from that
-  pair in a year if it is supposed that every month each pair begets a
-  new pair which from the second month on becomes productive?}
-This leads to a recurrence.
+\begin{exercise} % https://planetmath.org/courseofvaluesrecursion
+The examples of primitive recursion in this section and earlier exercises
+all have $f(y)$ use only one prior value, $f(z)=f(y-1)$.
+But some recursions use more than one, such as the Fibonacci recursion
+$F(y)=F(y-1)+F(y-2)$ that uses two
+(for Fibonacci, we get started by defining $F(0)=1$ and $F(1)=1$).
+%  or the Pascal's Triangle recursion that also uses two.
+% \begin{equation*}
+%   P(n,m)=
+%   \begin{cases}
+%   0                   &\case{if $m>n$}           \\
+%   1                   &\case{if $m=0$ or $m=n$}  \\
+%   P(n-1,m)+P(n-1,m-1) &\case{otherwise}
+%   \end{cases}
+% \end{equation*}
+In a \definend{course-of-values recursion}\index{course-of-values recursion}\index{recursion!course-of-values} 
+$f(y)$ depends on some or 
+all of $f(y-1)$, \ldots{} $f(0)$.
+To do these, we get access to the sequence of all prior values
+by encoding them into a single number.
+ 
+Consider a finite sequence of natural numbers $A=\sequence{a_0,\ldots a_{k-1}}$.
+\definend{G\"{o}del's multiplicative encoding}\index{Godel's multiplicative encoding@G\"{o}del's multiplicative encoding}
+of $a$ is the natural number 
+computed by multiplying factors, where each factor
+is the $i$-th prime number raised to 
+the  successor of the $i$-th sequence element.
 \begin{equation*}
-  F(n)=
+  G(A)=2^{\successor(a_0)}\cdot 3^{\successor(a_1)}\cdot \,5^{\successor(a_2)}
+        \cdots p_{k-1}^{\successor(a_{k-1})}
+\end{equation*}
+For the empty sequence, $G(\sequence{\,})=1$.
+We will show that $G$ is primitive recursive.
+\begin{exparts}
+\item Find $G(A)$ for 
+$A_0=\sequence{3,1}$  
+and
+$A_1=\sequence{2,2,2}$.
+\item For each number~$n$, find the sequence $A$ where $n=G(A)$,
+or find that no such sequence exists: $n_0=10800$,
+$n_1=12$, and
+$n_2=343$.
+\item Why does the encoding use the successor function?
+\item Where $\map{f}{\N^{k+1}}{\N}$ the \definend{course of values function}
+  $\map{\bar{f}}{\N^{k+1}}{\N}$ is defined as here for any $\vec{x}\in\N^k$.
+\begin{equation*}
+  \bar{f}(\vec{x},y)=
   \begin{cases}
-    1              &\case{if $n=0$ or $n=1$}  \\
-    F(n-1)+F(n-2)  &\case{otherwise}
+    G(\sequence{\,})  &\case{if $y=0$}    \\
+    G(\sequence{f(\vec{x},0),\ldots f(\vec{x},z)})  &\case{if $z=\successor(y)$}     
   \end{cases}
 \end{equation*}
-\begin{exparts}
-\item
-Compute $F(0)$ through~$F(10)$.
-(\textit{Note:} this is not now in a form that matches the primitive recursion
-schema, although we could rewrite it that way using \cref{exer:ShowFcnsPrimRec}
-and \cref{exer:PrimRecBoundedOps}.)
-\item Show that $F$ is primitive recursive.
-  You may use the results from earlier, including \cref{exer:ShowFcnsPrimRec}, 
-  \cref{exer:ShowFcnsPrimRecB}, \cref{exer:PrimRecBoundedOps}, and
-  \cref{exer:PrimRecBoundedOpsB}.
+Where $F(n)$ is the $n$-th Fibonacci number, find
+$\bar{F}(0)$, $\bar{F}(1)$, $\bar{F}(2)$, and $\bar{F}(3)$.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item Here are the first eleven values of $F$.
-\begin{display}
-\begin{tabular}{r|*{11}{c}}
-  $n$    &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$  &$7$  &$8$  &$9$  &$10$    \\
-  \cline{2-12}
-  $F(n)$ &$1$ &$1$ &$2$ &$3$ &$5$ &$8$ &$13$ &$21$ &$34$ &$55$ &$89$   \\
-\end{tabular}
-\end{display}
+\item $G(\sequence{3,1})=2^4\cdot 3^2=144$,
+$G(\sequence{2,2,2})=2^3\cdot 3^3\cdot 5^3=27\,000$.
+% sage: def G3(a0,a1,a2):
+% ....:     return 2^(a0+1) * 3^(a1+1) * 5^(a2+1)
+% ....: 
+% sage: def G2(a0,a1):
+% ....:     return 2^(a0+1) * 3^(a1+1)
+% ....: 
+% sage: G2(3,1)
+% 144
+% sage: G3(2,2,2)
+% 27000
+\item The first two are $A_0=\sequence{3,2,1}$ and
+$A_1=\sequence{1,0}$.
+For the third, the prime factorization is $343=7^3$. 
+Since there is no factor of~$2$ (or~$3$ or~$5$), there is no such sequence~$A_2$.
+% sage: 2^4 * 3^3 * 5^2
+% 10800
+% sage: 2^2 * 3^1
+% 12
+% sage: 7^3
+% 343
+\item If it did not use successor then $A_0\sequence{1,0}$
+and $A_1=\sequence{1}$ would have the same encoding.
+\item The first is easy, $\bar{F}(0)=G(\sequence{\,})=1$.
+Because $F(0)=1$ we have $\bar{F}(1)=G(\sequence(F(0)))=2^2=4$.
+Then $F(1)=1$ so $\bar{F}(2)=G(\sequence(F(0),F(1)))=2^2\cdot 3^2=36$.
+Finally, $F(2)=2$ so $\bar{F}(3)=G(\sequence(F(0),F(1),F(2)))=2^2\cdot 3^2\cdot 5^3=4500$.
+% sage: 2^2 * 3^2
+% 36
+% sage: 2^2 * 3^2 * 5^3
+% 4500
 \end{exparts}
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Let $C(x,y)=0+1+2+\dotsb +(x+y)+y$.
-\begin{exparts}
-\item Make a table of the values of $C(x,y)$ for $0\leq x\leq 4$ and 
-$0\leq y\leq 4$.
-% \begin{center}
+% \begin{exercise}
+% In 1202 Fibonacci\index{Fibonacci numbers} asked:
+% \textit{A certain man put a pair of rabbits in a place surrounded on all sides
+%   by a wall. How many pairs of rabbits can be produced from that
+%   pair in a year if it is supposed that every month each pair begets a
+%   new pair which from the second month on becomes productive?}
+% This leads to a recurrence.
+% \begin{equation*}
+%   F(n)=
+%   \begin{cases}
+%     1              &\case{if $n=0$ or $n=1$}  \\
+%     F(n-1)+F(n-2)  &\case{otherwise}
+%   \end{cases}
+% \end{equation*}
+% \begin{exparts}
+% \item
+% Compute $F(0)$ through~$F(10)$.
+% (\textit{Note:} this is not now in a form that matches the primitive recursion
+% schema, although we could rewrite it that way using \cref{exer:ShowFcnsPrimRec}
+% and \cref{exer:PrimRecBoundedOps}.)
+% \item Show that $F$ is primitive recursive.
+%   You may use the results from earlier, including \cref{exer:ShowFcnsPrimRec}, 
+%   \cref{exer:ShowFcnsPrimRecB}, \cref{exer:PrimRecBoundedOps}, and
+%   \cref{exer:PrimRecBoundedOpsB}.
+% \end{exparts}
+% \begin{answer}
+% \begin{exparts}
+% \item Here are the first eleven values of $F$.
+% \begin{display}
+% \begin{tabular}{r|*{11}{c}}
+%   $n$    &$0$ &$1$ &$2$ &$3$ &$4$ &$5$ &$6$  &$7$  &$8$  &$9$  &$10$    \\
+%   \cline{2-12}
+%   $F(n)$ &$1$ &$1$ &$2$ &$3$ &$5$ &$8$ &$13$ &$21$ &$34$ &$55$ &$89$   \\
+% \end{tabular}
+% \end{display}
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
+
+% \begin{exercise}
+% Let $C(x,y)=0+1+2+\dotsb +(x+y)+y$.
+% \begin{exparts}
+% \item Make a table of the values of $C(x,y)$ for $0\leq x\leq 4$ and 
+% $0\leq y\leq 4$.
+% % \begin{center}
+% % \begin{tabular}{rr|*{5}{c}}
+% %   \multicolumn{2}{c}{\ } 
+% %               &\multicolumn{5}{c}{$x$}   \\ % \cline{3-7}
+% %   \multicolumn{2}{c}{\ }  %&$C(x,y)$ 
+% %               &$0$ &$1$ &$2$ &$3$ &$4$   \\ \cline{3-7}
+% %         &$0$  &                                        \\ 
+% %         &$1$  &                                        \\ 
+% %     $y$ &$2$  &                                        \\ 
+% %         &$3$  &                                        \\ 
+% %         &$4$  &                                        \\ 
+% % \end{tabular}
+% % \end{center}
+% \item Show that $C(x,y)$ is primitive recursive.
+%    You can use the functions shown to be primitive recursive in the 
+%    section body,
+%    along with \cref{exer:ShowFcnsPrimRec},
+%    \cref{exer:ShowFcnsPrimRec}, \cref{exer:PrimRecBoundedOpsB}, 
+%    and \cref{exer:PrimRecBoundedOpsB}.
+% \end{exparts}
+% \begin{answer}
+% \begin{exparts}
+% \item The arithmetic is straightforward.
+% Note the anti-diagonals.
+% \begin{display}
 % \begin{tabular}{rr|*{5}{c}}
 %   \multicolumn{2}{c}{\ } 
 %               &\multicolumn{5}{c}{$x$}   \\ % \cline{3-7}
 %   \multicolumn{2}{c}{\ }  %&$C(x,y)$ 
-%               &$0$ &$1$ &$2$ &$3$ &$4$   \\ \cline{3-7}
-%         &$0$  &                                        \\ 
-%         &$1$  &                                        \\ 
-%     $y$ &$2$  &                                        \\ 
-%         &$3$  &                                        \\ 
-%         &$4$  &                                        \\ 
+%               &$0$  &$1$  &$2$  &$3$  &$4$   \\ \cline{3-7}
+%         &$0$  &$0$  &$1$  &$3$  &$6$  &$10$        \\  
+%         &$1$  &$2$  &$4$  &$7$  &$11$ &$16$        \\ 
+%     $y$ &$2$  &$5$  &$8$  &$12$ &$17$ &$23$        \\ 
+%         &$3$  &$9$  &$13$ &$18$ &$24$ &$31$        \\ 
+%         &$4$  &$14$ &$19$ &$25$ &$32$ &$40$        \\ 
 % \end{tabular}
-% \end{center}
-\item Show that $C(x,y)$ is primitive recursive.
-   You can use the functions shown to be primitive recursive in the 
-   section body,
-   along with \cref{exer:ShowFcnsPrimRec},
-   \cref{exer:ShowFcnsPrimRec}, \cref{exer:PrimRecBoundedOpsB}, 
-   and \cref{exer:PrimRecBoundedOpsB}.
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item The arithmetic is straightforward.
-Note the anti-diagonals.
-\begin{display}
-\begin{tabular}{rr|*{5}{c}}
-  \multicolumn{2}{c}{\ } 
-              &\multicolumn{5}{c}{$x$}   \\ % \cline{3-7}
-  \multicolumn{2}{c}{\ }  %&$C(x,y)$ 
-              &$0$  &$1$  &$2$  &$3$  &$4$   \\ \cline{3-7}
-        &$0$  &$0$  &$1$  &$3$  &$6$  &$10$        \\  
-        &$1$  &$2$  &$4$  &$7$  &$11$ &$16$        \\ 
-    $y$ &$2$  &$5$  &$8$  &$12$ &$17$ &$23$        \\ 
-        &$3$  &$9$  &$13$ &$18$ &$24$ &$31$        \\ 
-        &$4$  &$14$ &$19$ &$25$ &$32$ &$40$        \\ 
-\end{tabular}
-\end{display}
-\item In $C(x,y)=0+1+2+\dotsb +(x+y)+y$, the sum $x+y$ is primitive recursive
-from the section body.
-It then follows that the function
-$0+1+\dotso (x+y)$ is primitive recursive, since it is a bounded sum.
-With that, adding~$y$ shows that $C$ is primitive recursive.  
-\end{exparts}
-\end{answer}
-\end{exercise}
+% \end{display}
+% \item In $C(x,y)=0+1+2+\dotsb +(x+y)+y$, the sum $x+y$ is primitive recursive
+% from the section body.
+% It then follows that the function
+% $0+1+\dotso (x+y)$ is primitive recursive, since it is a bounded sum.
+% With that, adding~$y$ shows that $C$ is primitive recursive.  
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
 
-\begin{exercise}
-Pascal's Triangle gives the coefficients of the powers of~$x$ in the expansion
-of $(x+1)^n$.
-For example, $(x+1)^2=x^2+2x+1$ and row two of the triangle is
-$\sequence{1,2,1}$.
-This recurrence gives the value at row~$n$, entry~$m$,
-where $m, n\in\N$. 
-\begin{equation*}
-  P(n,m)=
-  \begin{cases}
-  0                   &\case{if $m>n$}           \\
-  1                   &\case{if $m=0$ or $m=n$}  \\
-  P(n-1,m)+P(n-1,m-1) &\case{otherwise}
-  \end{cases}
-\end{equation*}
-\begin{exparts*}
-\item Compute $P(3,2)$.
-\item Compute the other entries from row three:~$P(3,0)$, $P(3,1)$,
-  and~$P(3,3)$.
-\item Compute the entries in row four.
-\item Show that this is primitive recursive.
-  You may use the results from \cref{exer:ShowFcnsPrimRec} and
-  \cref{exer:PrimRecBoundedOps}.
-\end{exparts*}
-\begin{answer}
-\begin{exparts}
-\item $P(3,2)=P(2,2)+P(2,1)=P(1,2)+P(1,1)+P(1,1)+P(0,0)=0+1+1+1=3$.
-\item $P(3,0)=1$, $P(3,1)=3$, $P(3,3)=1$
-\item The row is $\sequence{1,4,6,4,1}$.
-\end{exparts}
-\end{answer}
-\end{exercise}
+% \begin{exercise}
+% Pascal's Triangle gives the coefficients of the powers of~$x$ in the expansion
+% of $(x+1)^n$.
+% For example, $(x+1)^2=x^2+2x+1$ and row two of the triangle is
+% $\sequence{1,2,1}$.
+% This recurrence gives the value at row~$n$, entry~$m$,
+% where $m, n\in\N$. 
+% \begin{equation*}
+%   P(n,m)=
+%   \begin{cases}
+%   0                   &\case{if $m>n$}           \\
+%   1                   &\case{if $m=0$ or $m=n$}  \\
+%   P(n-1,m)+P(n-1,m-1) &\case{otherwise}
+%   \end{cases}
+% \end{equation*}
+% \begin{exparts*}
+% \item Compute $P(3,2)$.
+% \item Compute the other entries from row three:~$P(3,0)$, $P(3,1)$,
+%   and~$P(3,3)$.
+% \item Compute the entries in row four.
+% \item Show that this is primitive recursive.
+%   You may use the results from \cref{exer:ShowFcnsPrimRec} and
+%   \cref{exer:PrimRecBoundedOps}.
+% \end{exparts*}
+% \begin{answer}
+% \begin{exparts}
+% \item $P(3,2)=P(2,2)+P(2,1)=P(1,2)+P(1,1)+P(1,1)+P(0,0)=0+1+1+1=3$.
+% \item $P(3,0)=1$, $P(3,1)=3$, $P(3,3)=1$
+% \item The row is $\sequence{1,4,6,4,1}$.
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
 
 \recommended
 \begin{exercise}
@@ -5637,8 +5733,8 @@ What is the output for inputs $x\in\set{0, \ldots 101}$?
 For larger inputs?
 (You may want to write a small script.)
 \item 
-Use the prior item to show that this function is primitive recursive.
-You may use the results from \cref{exer:ShowFcnsPrimRec}.
+Show that this function is primitive recursive.
+You may use the results from this section or from prior exercises.
 \end{exparts*}
 \begin{answer}
 This is an implementation.
@@ -5648,6 +5744,8 @@ This is an implementation.
        (M (M (+ x 11)))
        (- x 10)))  
 \end{lstlisting}
+\begin{exparts}
+\item
 These are the output values.
 \begin{equation*}
   M(x)=
@@ -5656,8 +5754,11 @@ These are the output values.
     x-10  &\case{otherwise}
   \end{cases}
 \end{equation*}
+\item
 That this function is primitive recursive follows from 
+\cref{exer:ShowFcnsPrimRecC} and 
 \cref{exer:ShowFcnsPrimRec}.
+\end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -5696,46 +5797,46 @@ That this function is primitive recursive follows from
 \begin{exercise}
 Show that every primitive recursive function is total.
 \begin{answer}
-We use induction.
 Every initial function in \cref{def:PrimitiveRecursive} is total.
 Every primitive recursive function is derived from 
 the initial functions using a finite number of applications of 
 function composition and primitive recursion. 
 Both of these combiners yield total function outputs from
 total function inputs.
+(Technically, the last two sentences use induction.)
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Let $g,h$ be natural number functions (that are total).
-Where $f$ is defined by primitive recursion from $g$ and~$h$,
-show that $f$ is well-defined.
-That is, show that if two functions both    
-satisfy \cref{def:PrimitiveRecursion} then
-they are equal, 
-so the same inputs will yield the same outputs.
-\begin{answer}
-\autocite{Davis}  
-Suppose that if two functions $\map{f,\hat{f}}{\N^{n+1}}{\N}$ both    
-satisfy \cref{def:PrimitiveRecursion}.
-We will show that for all $\sequence{x_0,\ldots,x_{n-1},y}\in\N^{n+1}$
-the two are equal $f(x_0,\ldots,x_{n-1},y)=\hat{f}(x_0,\ldots,x_{n-1},y)$,
-by induction on~$y$.
+% \begin{exercise}
+% Let $g,h$ be natural number functions (that are total).
+% Where $f$ is defined by primitive recursion from $g$ and~$h$,
+% show that $f$ is well-defined.
+% That is, show that if two functions both    
+% satisfy \cref{def:PrimitiveRecursion} then
+% they are equal, 
+% so the same inputs will yield the same outputs.
+% \begin{answer}
+% \autocite{Davis}  
+% Suppose that if two functions $\map{f,\hat{f}}{\N^{n+1}}{\N}$ both    
+% satisfy \cref{def:PrimitiveRecursion}.
+% We will show that for all $\sequence{x_0,\ldots,x_{n-1},y}\in\N^{n+1}$
+% the two are equal $f(x_0,\ldots,x_{n-1},y)=\hat{f}(x_0,\ldots,x_{n-1},y)$,
+% by induction on~$y$.
 
-For the base step,
-they are equal when $y=0$ because they both equal $g(x_0,\ldots,x_{n-1})$.
-For the inductive step,
-suppose that they are equal for $y=0$, \ldots, $y=k$ and consider 
-the $y=k+1$ case. 
-\begin{align*}
-  f(x_0,\ldots,x_{n-1},k+1)
-  &=g(f(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)  \\
-  &=g(\hat{f}(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)
-   =\hat{f}(x_0,\ldots,x_{n-1},k+1)
-\end{align*}
-The second equality follows from the induction hypothesis.
-\end{answer}
-\end{exercise}
+% For the base step,
+% they are equal when $y=0$ because they both equal $g(x_0,\ldots,x_{n-1})$.
+% For the inductive step,
+% suppose that they are equal for $y=0$, \ldots, $y=k$ and consider 
+% the $y=k+1$ case. 
+% \begin{align*}
+%   f(x_0,\ldots,x_{n-1},k+1)
+%   &=g(f(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)  \\
+%   &=g(\hat{f}(x_0,\ldots,x_{n-1},k),\,x_0,\ldots,x_{n-1},\,k)
+%    =\hat{f}(x_0,\ldots,x_{n-1},k+1)
+% \end{align*}
+% The second equality follows from the induction hypothesis.
+% \end{answer}
+% \end{exercise}
 \end{exercises}
 \index{primitive recursion|)}
 

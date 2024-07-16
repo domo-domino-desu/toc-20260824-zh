@@ -1,6 +1,6 @@
 #lang racket
 
-;; hyperopertion  Ackermann's original function generalizing successor, etc.
+;; hyperoperation  Ackermann's original function generalizing successor, etc.
 (define (H n x y)
   (cond
       [(= n 0) (+ y 1)]

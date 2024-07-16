@@ -73,15 +73,15 @@ pair [] H3pts = {
 };
 
 // draw the points
-dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
+dotfactor=3.5; // http://asymptote.sourceforge.net/FAQ/section3.html
 for(pair pt: H1pts) {
-  dot(pic, Scale(pic,pt), FCNPEN_SOLID+highlightcolor, Fill(black));
+  dot(pic, Scale(pic,pt), FCNPEN_SOLID+black, Fill(white));
 }
 for(pair pt: H2pts) {
-  dot(pic, Scale(pic,pt), FCNPEN_SOLID+black, Fill(black));
+  dot(pic, Scale(pic,pt), FCNPEN_SOLID+black, Fill(white));
 }
 for(pair pt: H3pts) {
-  dot(pic, Scale(pic,pt), FCNPEN_SOLID+backgroundcolor, Fill(black));
+  dot(pic, Scale(pic,pt), FCNPEN_SOLID+black, Fill(white));
 }
 // labels 
 label(pic,"$H_3$",Scale(pic,(9,450)),3*W,TICLABELPEN);

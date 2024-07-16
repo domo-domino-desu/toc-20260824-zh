@@ -707,8 +707,22 @@
 \newlength{\recommendation@length}  % Put the mark this far into margin
   \setlength{\recommendation@length}{1.25em}
 
-% Note that you can mark an exercise answer as verified with the \verified
-% macro, which is defined in answers.cls 
+% Mark an answer as verified by putting \verified in the source,
+% before \begin{exercise}
+% I may just go with marking the answer as verified after \begin{answer};
+% see answer.cls.
+\newtoggle{@showverified}  % Set to true to put something on the book.pdf page
+\toggletrue{@showverified}  % comment out one of these two
+% \togglefalse{@showverified} %
+% This handles the logic; don't set by hand
+\newtoggle{@verified}
+\togglefalse{@verified}
+\newcommand{\verified}{\toggletrue{@verified}}
+\newcommand{\verifiedmark}{{\color{green}V}}
+\newlength{\verified@length}  % Put the mark this far into margin
+  \setlength{\verified@length}{2.25em}
+
+% \newcommand{\verified}{\relax}
 
 % Count the total number of exercises
 \newcounter{numberofexercises}
@@ -719,10 +733,17 @@
 \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
 \newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
 \newcommand{\@exercisecounterlabel}{%
-  \iftoggle{@recommended}{%
+  \iftoggle{@recommended}{% put recommended mark in margin
     \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
   }{%
   }\global\togglefalse{@recommended}%
+  \iftoggle{@showverified}{%
+    \iftoggle{@verified}{% put verified mark in margin
+        \llap{\makebox[\verified@length][l]{\verifiedmark}}%
+      }{%
+      }
+    \global\togglefalse{@verified}%
+  }{}
   \addtocounter{numberofexercises}{1}
   % \typeout{!!! Exercise target is exercise.\thechapter.\the@exercisenumber}
   \hyperref{answers.pdf}{exercise}{\thechapter.\the@exercisenumber}{\the@exercisenumber}\hypertarget{exercise.\thechapter.\the@exercisenumber}{}\hspace*{0.6em plus 0.1em minus 0.05em}}

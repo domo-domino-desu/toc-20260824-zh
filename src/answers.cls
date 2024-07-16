@@ -403,10 +403,15 @@
    \leftskip1em\par\noindent\hspace{-1em}\textbf{#1}\ }%
   {}
 
-% Mark an answer as verified by putting this in the source, and it gets 
-% carried through to answerbody.tex
-% \newcommand{\verified}{\noindent\makebox[0in][r]{\textcolor{Fuchsia}{Verified}\hspace*{0.6in}}}
-\newcommand{\verified}{\relax}
+
+% Mark an answer as verified by putting "\verified" in the source
+% inside the \begin{exercise} .. \end{exercise}
+\newtoggle{@showverified}  % Set true to put something on the answwers.pdf page
+\toggletrue{@showverified}  % comment out one of these two
+% \togglefalse{@showverified} %
+\newcommand{\verified}{\iftoggle{@showverified}{%
+         \llap{\makebox[5em][l]{{\color{ForestGreen}V}}}%
+        }{}}
 
 
 \renewcommand{\chapter}[1]{\clearemptydoublepage\vspace*{0.15in}\begin{center}\Large\textbf{#1}\end{center}\vspace*{0.5in}}

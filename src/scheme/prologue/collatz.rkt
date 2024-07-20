@@ -7,7 +7,6 @@
       (/ n 2)
       (+ (* 3 n) 1)))
 
-;; Collatz numer calculator: use unbounded search to find it
 (define (C n)
   (define (C-helper n k)
     (if (= 1 n)

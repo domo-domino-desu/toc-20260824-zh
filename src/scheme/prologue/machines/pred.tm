@@ -1,3 +1,5 @@
+% pred.tm
+% Compute predecessor fcn: pred(0)=0 and pred(n)=n-1
 0 B L 1
 0 1 R 0
 1 B L 2

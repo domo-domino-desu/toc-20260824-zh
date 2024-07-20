@@ -755,9 +755,10 @@
 % The optional argument is for notes.
 \newenvironment{exercises}[1][]{%
   \vspace{2.5ex plus 0.8ex minus 0.2ex}%
+% \vspace{\jh@listtopsep}\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}\par\nobreak\@afterheading
   \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
   \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
-  %\nolisttopbreak % causes a \nobreak to appear after the first item
+  % \nolisttopbreak % causes a \nobreak to appear after the first item
   \begin{list}{\@exercisecounterlabel}%
      {\usecounter{@exercisenumber}
       \setcounter{@exercisenumber}{\value{theorem}}

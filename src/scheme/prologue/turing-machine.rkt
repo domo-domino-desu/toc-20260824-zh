@@ -332,7 +332,6 @@
 ;; For running from the command line; this is the Racket construct to execute code from
 ;; command line but not from an importing module
 (module+ main
-  ; (display "Running main\n")
   ;; Read command line arguments  
   (command-line
    #:usage-help 

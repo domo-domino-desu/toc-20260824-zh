@@ -807,7 +807,7 @@
 % environment.
 
 \newlist{exerciselist}{enumerate}{1}
-\setlist[exerciselist]{label=\thechapter.\arabic*,
+\setlist[exerciselist]{label=\thesection.\arabic*,
                        beginpenalty=10000, % Keep "Exercises" line with this list
                        midpenalty=-51,  % Good place for a page break here
                        endpenalty=-51,  % Also good place for a page break
@@ -893,6 +893,8 @@
 
 \crefname{@exercisenumber}{Exercise}{Exercises}
 \Crefname{@exercisenumber}{Exercise}{Exercises}
+\crefname{exerciselisti}{Exercise}{Exercises}
+\Crefname{exerciselisti}{Exercise}{Exercises}
 
 % For naming a part of an exercise, as in \item \expartsname{Commutativity}
 \newcommand{\expartsname}[1]{\textsc{(#1)}} 

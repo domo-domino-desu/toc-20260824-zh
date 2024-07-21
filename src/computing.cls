@@ -790,28 +790,106 @@
 }{%
 }
 
+
+% New exercises code
+% exercises environment  Contents are
+%      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}
+% Each \begin{exercise} .. \end{exercise} calls \item and writes the line number
+% to the answer file to make it easier to find bugs in answers 
+%
+% That \item comes from a \begin{exerciselist} .. \end{exerciselist}.  Each
+% of those is a modified enumerate environment, modified under enumitem.
+% A key aspect there is that the top of the exerciselist list issues a 
+% penalty so that the prior line (which says "Exercises") is not on a 
+% separate page.
+%
+% That prior line comes from the \begin{exercises} .. \end{exercises} 
+% environment.
+
+\newlist{exerciselist}{enumerate}{1}
+\setlist[exerciselist]{label=\thechapter.\arabic*,
+                       beginpenalty=10000, % Keep "Exercises" line with this list
+                       midpenalty=-51,  % Good place for a page break here
+                       endpenalty=-51,  % Also good place for a page break
+                       topsep=\jh@listtopsep,
+                       parsep=0ex,
+                       itemsep=0.6ex plus 0.25ex minus 0.05ex,
+                       leftmargin=0pt,
+                       labelwidth=0pt,
+                       labelsep=0ex, % \fakeitem includes spacing
+                       itemindent=0em,
+                       font=\normalfont\scshape,
+                       before=\setcounter{exerciselisti}{\value{theorem}}\let\realitem\item\let\item\fakeitem,
+}  % counter is exerciselisti
+
+
+\newcommand\fakeitem[1][\relax]{% argument defaults to \relax
+   \refstepcounter{exerciselisti}%  increment label counter
+   \realitem[\iftoggle{@recommended}{% put recommended mark in margin
+       \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
+     }{%
+     }]\global\togglefalse{@recommended}%
+     \addtocounter{numberofexercises}{1}% Count for a whole-book number 
+     \hyperref{answers.pdf}{exercise}{\thechapter.\theexerciselisti}{\theexerciselisti}\hypertarget{exercise.\thechapter.\theexerciselisti}{}\hspace*{0.6em plus 0.1em minus 0.05em}}
+
+\renewenvironment{exercises}[1][]{%      
+  \clubpenalty6000% discourage breaking after first line of a para
+  \widowpenalty6000% discourage breaking before last line of a para
+  \vspace{2.5ex plus 0.8ex minus 0.2ex}% space between text and "Exercises"  
+  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
+  \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
+  \begin{exerciselist}
+}{%
+  \end{exerciselist}
+}
+
+
+\newlist{exparts}{enumerate}{2}
+\setlist[exparts]{beginpenalty=10000, % Keep "Exercises" line with this list
+  midpenalty=-51,  % Good place for a page break here
+  endpenalty=-51,  % Also good place for a page break
+  topsep=0ex,
+  itemsep=0ex,
+  parsep=0ex,
+  leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
+  before=\setcounter{expartsii}{0}\let\item\realitem,
+  label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}
+}  % 
+
+\newlist{exparts*}{enumerate*}{2}
+\setlist[exparts*]{label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
+  itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
+  itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[2]},
+  before=\setcounter{expartsii}{0}\let\item\realitem,
+  beginpenalty=10000, % Keep "Exercises" line with this list
+  midpenalty=-51,  % Good place for a page break here
+  endpenalty=-51,  % Also good place for a page break
+}  % 
+
+
+
 % Exparts
 % Some exercises have multiple parts: (1) .. (2) ..
 % This can be on separate lines.
-\newenvironment{exparts}{%
-  \begin{enumerate}[topsep=0ex,
-                    itemsep=0ex, parsep=0ex,
-                    leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
-                    label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
-}{%
-  \end{enumerate}
-}
+% \newenvironment{exparts}{%
+%   \begin{enumerate}[topsep=0ex,
+%                     itemsep=0ex, parsep=0ex,
+%                     leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
+%                     label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
+% }{%
+%   \end{enumerate}
+% }
 
-% .. or inline
-\newenvironment{exparts*}{%
-  \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
-                     itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
-                     itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[2]},
-                     % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
-                     ]
-}{%
-  \end{enumerate*}
-}
+% % .. or inline
+% \newenvironment{exparts*}{%
+%   \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
+%                      itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
+%                      itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[2]},
+%                      % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
+%                      ]
+% }{%
+%   \end{enumerate*}
+% }
 
 \crefname{@exercisenumber}{Exercise}{Exercises}
 \Crefname{@exercisenumber}{Exercise}{Exercises}

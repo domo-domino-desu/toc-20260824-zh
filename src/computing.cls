@@ -784,7 +784,9 @@
 }
 
 \newenvironment{exercise}{%
+  \let\item\fakeitem %  Make only the following \item be a \fakeitem so trivlists such as center don't fail
   \item %
+  \let\item\realitem %
   \Writetofile{\answerbodyfilename}{\@percentchar}%  Give line number of source, for editing
   \Writetofile{\answerbodyfilename}{\@percentchar\space\showlineno\space is the exercise source}%
 }{%
@@ -820,6 +822,7 @@
                        itemindent=0em,
                        font=\normalfont\scshape,
                        before=\setcounter{exerciselisti}{\value{theorem}}\let\realitem\item\let\item\fakeitem,
+                       after=\let\item\realitem,
 }  % counter is exerciselisti
 
 

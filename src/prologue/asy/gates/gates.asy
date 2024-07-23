@@ -452,6 +452,9 @@ real top_top_wire_ht = top_gate_center_ht+0.5*wire_spacing;
 real top_bot_wire_ht = top_gate_center_ht-0.5*wire_spacing;
 draw(pic, (p_x,top_top_wire_ht)--(layer1_x,top_top_wire_ht));
 draw(pic, (q_x,top_bot_wire_ht)--(layer1_x,top_bot_wire_ht));
+// not gates
+add(pic,shift(layer1_nots_x-0.25,top_top_wire_ht)*notgate_pic(not_gate_size));
+add(pic,shift(layer1_nots_x,top_bot_wire_ht)*notgate_pic(not_gate_size));
 
 // bottom wires
 real bot_gate_center_ht = 0.5;
@@ -459,9 +462,6 @@ real bot_top_wire_ht = bot_gate_center_ht+0.5*wire_spacing;
 real bot_bot_wire_ht = bot_gate_center_ht-0.5*wire_spacing;
 draw(pic,(p_x,bot_top_wire_ht)--(layer1_x,bot_top_wire_ht));
 draw(pic,(q_x,bot_bot_wire_ht)--(layer1_x,bot_bot_wire_ht));
-// not gates
-add(pic,shift(layer1_nots_x-0.25,bot_top_wire_ht)*notgate_pic(not_gate_size));
-add(pic,shift(layer1_nots_x,bot_bot_wire_ht)*notgate_pic(not_gate_size));
 
 // solder dots
 pen solderpen = linewidth(2pt); 
@@ -566,10 +566,7 @@ real frt_bot_wire_ht = frt_gate_center_ht-wire_spacing;
 draw(pic, (p_x,frt_top_wire_ht)--(layer1_x,frt_top_wire_ht));
 draw(pic, (q_x,frt_mid_wire_ht)--(layer1_x,frt_mid_wire_ht));
 draw(pic, (r_x,frt_bot_wire_ht)--(layer1_x,frt_bot_wire_ht));
-// not gates
-add(pic,shift(layer1_nots_x-0.25,frt_top_wire_ht)*notgate_pic(not_gate_size));
-add(pic,shift(layer1_nots_x,frt_mid_wire_ht)*notgate_pic(not_gate_size));
-add(pic,shift(layer1_nots_x+0.25,frt_bot_wire_ht)*notgate_pic(not_gate_size));
+// no not gates
 
 // solder dots
 pen solderpen = linewidth(2pt); 
@@ -1004,14 +1001,14 @@ shipout(format("gates%02d",picnum),pic,format="pdf");
 
 
 
-// .............. `partial sum' circuit ...............
+// .............. `full adder' circuit ...............
 picture pic;
 int picnum = 12;
 unitsize(pic,1cm);
 
 // bus
-real p_x=0, q_x=0.33;  // horiz location of p wire, q wire, r wire
-real bus_ht = 2;  // hgt, that is, length of the bus (prob num clauses)
+real p_x=0, q_x=0.33, r_x=0.67;  // horiz location of p wire, q wire, r wire
+real bus_ht = 4;  // hgt, that is, length of the bus
 real wire_spacing = 0.175;  // how far apart are the three wires
 real layer1_x = 2.5;  // where are the layer1 gates, horizontally?
 real layer1_nots_x = 0.65*layer1_x;  // the not's before them?
@@ -1025,52 +1022,98 @@ real not_gate_size = 0.2;
 
 path p_bus = (p_x,0) -- (p_x,bus_ht);
 path q_bus = (q_x,0) -- (q_x,bus_ht);
+path r_bus = (r_x,0) -- (r_x,bus_ht);
 
-draw(pic,p_bus, circuitpen); label(pic,"$\smash[b]{P}$",(p_x,bus_ht),N);
-draw(pic,q_bus, circuitpen); label(pic,"$\smash[b]{Q}$",(q_x,bus_ht),N);
+draw(pic,p_bus, circuitpen); label(pic,"$\smash[b]{I}$",(p_x,bus_ht),N);
+draw(pic,q_bus, circuitpen); label(pic,"$\smash[b]{P}$",(q_x,bus_ht),N);
+draw(pic,r_bus, circuitpen); label(pic,"$\smash[b]{Q}$",(r_x,bus_ht),N);
 
 // top wire group
-real top_gate_center_ht = 1.5;
-real top_top_wire_ht = top_gate_center_ht+0.5*wire_spacing;
-real top_bot_wire_ht = top_gate_center_ht-0.5*wire_spacing;
+real top_gate_center_ht = 3.5;
+real top_top_wire_ht = top_gate_center_ht+wire_spacing;
+real top_mid_wire_ht = top_gate_center_ht;
+real top_bot_wire_ht = top_gate_center_ht-wire_spacing;
 draw(pic, (p_x,top_top_wire_ht)--(layer1_x,top_top_wire_ht));
-draw(pic, (q_x,top_bot_wire_ht)--(layer1_x,top_bot_wire_ht));
+draw(pic, (q_x,top_mid_wire_ht)--(layer1_x,top_mid_wire_ht));
+draw(pic, (r_x,top_bot_wire_ht)--(layer1_x,top_bot_wire_ht));
 // not gates
-add(pic,shift(layer1_nots_x,top_top_wire_ht)*notgate_pic(not_gate_size));
+add(pic,shift(layer1_nots_x-0.5*not_gate_size,top_top_wire_ht)*notgate_pic(not_gate_size));
+add(pic,shift(layer1_nots_x,top_mid_wire_ht)*notgate_pic(not_gate_size));
 
-// second wires
-real sec_gate_center_ht = 0.5;
-real sec_top_wire_ht = sec_gate_center_ht+0.5*wire_spacing;
-real sec_bot_wire_ht = sec_gate_center_ht-0.5*wire_spacing;
-draw(pic,(p_x,sec_top_wire_ht)--(layer1_x,sec_top_wire_ht));
-draw(pic,(q_x,sec_bot_wire_ht)--(layer1_x,sec_bot_wire_ht));
+// second wire group
+real sec_gate_center_ht = 2.5;
+real sec_top_wire_ht = sec_gate_center_ht+wire_spacing;
+real sec_mid_wire_ht = sec_gate_center_ht;
+real sec_bot_wire_ht = sec_gate_center_ht-wire_spacing;
+draw(pic, (p_x,sec_top_wire_ht)--(layer1_x,sec_top_wire_ht));
+draw(pic, (q_x,sec_mid_wire_ht)--(layer1_x,sec_mid_wire_ht));
+draw(pic, (r_x,sec_bot_wire_ht)--(layer1_x,sec_bot_wire_ht));
 // not gates
+add(pic,shift(layer1_nots_x,sec_top_wire_ht)*notgate_pic(not_gate_size));
 add(pic,shift(layer1_nots_x,sec_bot_wire_ht)*notgate_pic(not_gate_size));
+
+// third wire group
+real trd_gate_center_ht = 1.5;
+real trd_top_wire_ht = trd_gate_center_ht+wire_spacing;
+real trd_mid_wire_ht = trd_gate_center_ht;
+real trd_bot_wire_ht = trd_gate_center_ht-wire_spacing;
+draw(pic, (p_x,trd_top_wire_ht)--(layer1_x,trd_top_wire_ht));
+draw(pic, (q_x,trd_mid_wire_ht)--(layer1_x,trd_mid_wire_ht));
+draw(pic, (r_x,trd_bot_wire_ht)--(layer1_x,trd_bot_wire_ht));
+// not gates
+add(pic,shift(layer1_nots_x-0.5*not_gate_size,trd_mid_wire_ht)*notgate_pic(not_gate_size));
+add(pic,shift(layer1_nots_x,trd_bot_wire_ht)*notgate_pic(not_gate_size));
+
+// fourth wire group
+real frt_gate_center_ht = 0.5;
+real frt_top_wire_ht = frt_gate_center_ht+wire_spacing;
+real frt_mid_wire_ht = frt_gate_center_ht;
+real frt_bot_wire_ht = frt_gate_center_ht-wire_spacing;
+draw(pic, (p_x,frt_top_wire_ht)--(layer1_x,frt_top_wire_ht));
+draw(pic, (q_x,frt_mid_wire_ht)--(layer1_x,frt_mid_wire_ht));
+draw(pic, (r_x,frt_bot_wire_ht)--(layer1_x,frt_bot_wire_ht));
+// no not gates
+
 
 // solder dots
 pen solderpen = linewidth(2pt); 
 dot(pic,(p_x,top_top_wire_ht),solderpen);
-dot(pic,(q_x,top_bot_wire_ht),solderpen);
+dot(pic,(q_x,top_mid_wire_ht),solderpen);
+dot(pic,(r_x,top_bot_wire_ht),solderpen);
 dot(pic,(p_x,sec_top_wire_ht),solderpen);
-dot(pic,(q_x,sec_bot_wire_ht),solderpen);
+dot(pic,(q_x,sec_mid_wire_ht),solderpen);
+dot(pic,(r_x,sec_bot_wire_ht),solderpen);
+dot(pic,(p_x,trd_top_wire_ht),solderpen);
+dot(pic,(q_x,trd_mid_wire_ht),solderpen);
+dot(pic,(r_x,trd_bot_wire_ht),solderpen);
+dot(pic,(p_x,frt_top_wire_ht),solderpen);
+dot(pic,(q_x,frt_mid_wire_ht),solderpen);
+dot(pic,(r_x,frt_bot_wire_ht),solderpen);
 
 // .... level 2 ...
-real or_center_ht = (top_gate_center_ht+sec_gate_center_ht)/2;
+real or_center_ht = (top_gate_center_ht+frt_gate_center_ht)/2;
 
 // right wires
 draw(pic,(layer1_x,top_gate_center_ht)--(layer2_turn_x,top_gate_center_ht)
-     --(layer2_turn_x,or_center_ht+0.25*or_gate_size)--(layer2_x,or_center_ht+0.25*or_gate_size),circuitpen);
-draw(pic,(layer1_x,trd_gate_center_ht)--(layer2_turn_x,trd_gate_center_ht)
-     --(layer2_turn_x,or_center_ht-0.25*or_gate_size)--(layer2_x,or_center_ht-0.25*or_gate_size),circuitpen);
+     --(layer2_turn_x,or_center_ht+0.30*or_gate_size)--(layer2_x,or_center_ht+0.30*or_gate_size),circuitpen);
+draw(pic,(layer1_x,sec_gate_center_ht)--(layer2_turn_x-0.1,sec_gate_center_ht)
+     --(layer2_turn_x-0.1,or_center_ht+0.10*or_gate_size)--(layer2_x,or_center_ht+0.10*or_gate_size),circuitpen);
+draw(pic,(layer1_x,trd_gate_center_ht)--(layer2_turn_x-0.1,trd_gate_center_ht)
+     --(layer2_turn_x-0.1,or_center_ht-0.10*or_gate_size)--(layer2_x,or_center_ht-0.10*or_gate_size),circuitpen);
+draw(pic,(layer1_x,frt_gate_center_ht)--(layer2_turn_x,frt_gate_center_ht)
+     --(layer2_turn_x,or_center_ht-0.30*or_gate_size)--(layer2_x,or_center_ht-0.30*or_gate_size),circuitpen);
 
 // final wire
 draw(pic,(layer2_x,or_center_ht)--(layer2_x+1.0,or_center_ht));
+label(pic,"$\smash[b]{L}$",(layer2_x+1.0,or_center_ht),N);
 
 // Draw gates after wires so filldraw covers wire stubs
 
 // and gates, level 1
 filldraw(pic,shift(layer1_x,top_gate_center_ht)*andgate(and_gate_size),fillpen=white,drawpen=circuitpen); 
 filldraw(pic,shift(layer1_x,sec_gate_center_ht)*andgate(and_gate_size),fillpen=white,drawpen=circuitpen);
+filldraw(pic,shift(layer1_x,trd_gate_center_ht)*andgate(and_gate_size),fillpen=white,drawpen=circuitpen);
+filldraw(pic,shift(layer1_x,frt_gate_center_ht)*andgate(and_gate_size),fillpen=white,drawpen=circuitpen);
 
 // or gate, level 2
 filldraw(pic,shift(layer2_x,or_center_ht)*orgate(or_gate_size),fillpen=white,drawpen=circuitpen);
@@ -1085,8 +1128,8 @@ int picnum = 13;
 unitsize(pic,1cm);
 
 // bus
-real p_x=0, q_x=0.33;  // horiz location of p wire, q wire, r wire
-real bus_ht = 1;  // hgt, that is, length of the bus (prob num clauses)
+real p_x=0, q_x=0.33, r_x=0.67;  // horiz location of p wire, q wire, r wire
+real bus_ht = 4;  // hgt, that is, length of the bus
 real wire_spacing = 0.175;  // how far apart are the three wires
 real layer1_x = 2.5;  // where are the layer1 gates, horizontally?
 real layer1_nots_x = 0.65*layer1_x;  // the not's before them?
@@ -1100,35 +1143,97 @@ real not_gate_size = 0.2;
 
 path p_bus = (p_x,0) -- (p_x,bus_ht);
 path q_bus = (q_x,0) -- (q_x,bus_ht);
+path r_bus = (r_x,0) -- (r_x,bus_ht);
 
-draw(pic,p_bus, circuitpen); label(pic,"$\smash[b]{P}$",(p_x,bus_ht),N);
-draw(pic,q_bus, circuitpen); label(pic,"$\smash[b]{Q}$",(q_x,bus_ht),N);
+draw(pic,p_bus, circuitpen); label(pic,"$\smash[b]{I}$",(p_x,bus_ht),N);
+draw(pic,q_bus, circuitpen); label(pic,"$\smash[b]{P}$",(q_x,bus_ht),N);
+draw(pic,r_bus, circuitpen); label(pic,"$\smash[b]{Q}$",(r_x,bus_ht),N);
 
 // top wire group
-real top_gate_center_ht = 0.5;
-real top_top_wire_ht = top_gate_center_ht+0.5*wire_spacing;
-real top_bot_wire_ht = top_gate_center_ht-0.5*wire_spacing;
+real top_gate_center_ht = 3.5;
+real top_top_wire_ht = top_gate_center_ht+wire_spacing;
+real top_mid_wire_ht = top_gate_center_ht;
+real top_bot_wire_ht = top_gate_center_ht-wire_spacing;
 draw(pic, (p_x,top_top_wire_ht)--(layer1_x,top_top_wire_ht));
-draw(pic, (q_x,top_bot_wire_ht)--(layer1_x,top_bot_wire_ht));
+draw(pic, (q_x,top_mid_wire_ht)--(layer1_x,top_mid_wire_ht));
+draw(pic, (r_x,top_bot_wire_ht)--(layer1_x,top_bot_wire_ht));
+// not gates
+add(pic,shift(layer1_nots_x,top_top_wire_ht)*notgate_pic(not_gate_size));
+
+// second wire group
+real sec_gate_center_ht = 2.5;
+real sec_top_wire_ht = sec_gate_center_ht+wire_spacing;
+real sec_mid_wire_ht = sec_gate_center_ht;
+real sec_bot_wire_ht = sec_gate_center_ht-wire_spacing;
+draw(pic, (p_x,sec_top_wire_ht)--(layer1_x,sec_top_wire_ht));
+draw(pic, (q_x,sec_mid_wire_ht)--(layer1_x,sec_mid_wire_ht));
+draw(pic, (r_x,sec_bot_wire_ht)--(layer1_x,sec_bot_wire_ht));
+// not gates
+add(pic,shift(layer1_nots_x,sec_mid_wire_ht)*notgate_pic(not_gate_size));
+
+// third wire group
+real trd_gate_center_ht = 1.5;
+real trd_top_wire_ht = trd_gate_center_ht+wire_spacing;
+real trd_mid_wire_ht = trd_gate_center_ht;
+real trd_bot_wire_ht = trd_gate_center_ht-wire_spacing;
+draw(pic, (p_x,trd_top_wire_ht)--(layer1_x,trd_top_wire_ht));
+draw(pic, (q_x,trd_mid_wire_ht)--(layer1_x,trd_mid_wire_ht));
+draw(pic, (r_x,trd_bot_wire_ht)--(layer1_x,trd_bot_wire_ht));
+// not gates
+add(pic,shift(layer1_nots_x,trd_bot_wire_ht)*notgate_pic(not_gate_size));
+
+// fourth wire group
+real frt_gate_center_ht = 0.5;
+real frt_top_wire_ht = frt_gate_center_ht+wire_spacing;
+real frt_mid_wire_ht = frt_gate_center_ht;
+real frt_bot_wire_ht = frt_gate_center_ht-wire_spacing;
+draw(pic, (p_x,frt_top_wire_ht)--(layer1_x,frt_top_wire_ht));
+draw(pic, (q_x,frt_mid_wire_ht)--(layer1_x,frt_mid_wire_ht));
+draw(pic, (r_x,frt_bot_wire_ht)--(layer1_x,frt_bot_wire_ht));
+// no not gates
 
 // solder dots
 pen solderpen = linewidth(2pt); 
 dot(pic,(p_x,top_top_wire_ht),solderpen);
-dot(pic,(q_x,top_bot_wire_ht),solderpen);
+dot(pic,(q_x,top_mid_wire_ht),solderpen);
+dot(pic,(r_x,top_bot_wire_ht),solderpen);
+dot(pic,(p_x,sec_top_wire_ht),solderpen);
+dot(pic,(q_x,sec_mid_wire_ht),solderpen);
+dot(pic,(r_x,sec_bot_wire_ht),solderpen);
+dot(pic,(p_x,trd_top_wire_ht),solderpen);
+dot(pic,(q_x,trd_mid_wire_ht),solderpen);
+dot(pic,(r_x,trd_bot_wire_ht),solderpen);
+dot(pic,(p_x,frt_top_wire_ht),solderpen);
+dot(pic,(q_x,frt_mid_wire_ht),solderpen);
+dot(pic,(r_x,frt_bot_wire_ht),solderpen);
 
 // .... level 2 ...
-real or_center_ht = top_gate_center_ht;
+real or_center_ht = (top_gate_center_ht+frt_gate_center_ht)/2;
 
+// right wires
+draw(pic,(layer1_x,top_gate_center_ht)--(layer2_turn_x,top_gate_center_ht)
+     --(layer2_turn_x,or_center_ht+0.30*or_gate_size)--(layer2_x,or_center_ht+0.30*or_gate_size),circuitpen);
+draw(pic,(layer1_x,sec_gate_center_ht)--(layer2_turn_x-0.1,sec_gate_center_ht)
+     --(layer2_turn_x-0.1,or_center_ht+0.10*or_gate_size)--(layer2_x,or_center_ht+0.10*or_gate_size),circuitpen);
+draw(pic,(layer1_x,trd_gate_center_ht)--(layer2_turn_x-0.1,trd_gate_center_ht)
+     --(layer2_turn_x-0.1,or_center_ht-0.10*or_gate_size)--(layer2_x,or_center_ht-0.10*or_gate_size),circuitpen);
+draw(pic,(layer1_x,frt_gate_center_ht)--(layer2_turn_x,frt_gate_center_ht)
+     --(layer2_turn_x,or_center_ht-0.30*or_gate_size)--(layer2_x,or_center_ht-0.30*or_gate_size),circuitpen);
 
 // final wire
-draw(pic,(layer1_x,or_center_ht)--(layer1_x+1.0,or_center_ht));
+draw(pic,(layer2_x,or_center_ht)--(layer2_x+1.0,or_center_ht));
+label(pic,"$\smash[b]{C}$",(layer2_x+1.0,or_center_ht),N);
 
 // Draw gates after wires so filldraw covers wire stubs
 
 // and gates, level 1
 filldraw(pic,shift(layer1_x,top_gate_center_ht)*andgate(and_gate_size),fillpen=white,drawpen=circuitpen); 
+filldraw(pic,shift(layer1_x,sec_gate_center_ht)*andgate(and_gate_size),fillpen=white,drawpen=circuitpen);
+filldraw(pic,shift(layer1_x,trd_gate_center_ht)*andgate(and_gate_size),fillpen=white,drawpen=circuitpen);
+filldraw(pic,shift(layer1_x,frt_gate_center_ht)*andgate(and_gate_size),fillpen=white,drawpen=circuitpen);
+
+// or gate, level 2
+filldraw(pic,shift(layer2_x,or_center_ht)*orgate(or_gate_size),fillpen=white,drawpen=circuitpen);
 
 shipout(format("gates%02d",picnum),pic,format="pdf");
-
-
 

@@ -7857,11 +7857,11 @@ Following Turing's approach,
 we've gone through a development of the definition of what is computable 
 based on transitions.
 We produce a table of transition instructions and call that a machine. 
-However, given a table can we be sure that there is an associated actual
-mechanism, a physical implementation with the behavior that we want?
+However, given the table, can we be sure that there is an associated actual
+mechanism, a physical implementation with that behavior?
 
-Put another way, in programming languages there are mathematical 
-operators that are constructed from other, simpler, mathematical operators.
+Put another way, in programming languages there are 
+operators that are constructed from other, simpler, operators.
 For instance, a value for
 \citetext{$\sin(x)$ may be calculated via its Taylor polynomial}{%
   The Taylor series is $\sin(x)=x-x^3/3!+x^5/5!-x^7/7!+\cdots$.
@@ -7869,8 +7869,8 @@ For instance, a value for
   that a sufficiently good approximation is to terminate that
   series at the $x^5$~term, giving a Taylor polynomial.} 
 from addition and multiplication.
-But the very simplest operations such as addition must happen on the 
-hardware;~how does that work?
+But the very simplest operations must happen on the 
+hardware;~how does that get implemented?
 
 We will show how to start with any desired behavior and from it 
 produce a device with that behavior.
@@ -7880,11 +7880,9 @@ as inputs and outputs.
 The easiest approach is via propositional logic.
 (\Cref{sec:PropLogic} has a review.)
 
-Here are the three basic logic operators.
-These tables use $0$ in place of~$F$ and $1$ in place of~$T$, 
-as is the convention in electronics\Dash 
-in an electronic device these would typically 
-stand for different voltage levels.
+Below are the three basic logic operators.
+These tables use $0$ in place of~$F$ and $1$ in place of~$T\!$, 
+as is the convention in electronics.
 \begin{center}\small % \vspace{0.5ex}
   \begin{tabular}[t]{c|c}
     \multicolumn{1}{c}{\ }    
@@ -7913,18 +7911,18 @@ stand for different voltage levels.
   \end{tabular}
 \end{center}
 
-That is all we need.
-The three operators
-`$\neg$', `$\wedge$', and `$\vee$', 
-are enough for us to go from a
+Those three logic operators are all we need.
+We will show how to go
+from a
 specified input-output behavior, a desired truth table, to 
-a propositional logic expression having that table,
-having that behavior. 
+a propositional logic expression having that behavior
+that uses only `$\neg$', `$\wedge$', and `$\vee$'.
+Then we will sketch how to implement that with electronic components.
 
 The two tables below show how.
-On the left, 
+Start with the one on the left and 
 focus on the row with output~$1$. 
-Obviously the expression $\neg P\wedge \neg Q$ 
+The expression $\neg P\wedge \neg Q$ 
 makes this row take on value~$1$ and every other row take on value~$0$.
 \begin{center} \small
   \begin{tabular}[t]{cc|c}
@@ -7954,12 +7952,16 @@ makes this row take on value~$1$ and every other row take on value~$0$.
   \end{tabular}  
 \end{center}
 For the table on 
-the right, again focus on the rows with~$1$'s.
-Target the second row by considering the clause $\neg P\wedge \neg Q\wedge R$.
-The clause for the third row is~$\neg P\wedge Q\wedge \neg R$ and
-the fifth row's is~$P\wedge\neg Q\wedge\neg R$.
+the right, again focus on the rows ending in~$1$'s.
+For the second row the clause is $\neg P\wedge \neg Q\wedge R$.
+Target the third row with~$\neg P\wedge Q\wedge \neg R$ and
+the fifth row with~$P\wedge\neg Q\wedge\neg R$.
 Now put these clauses together with $\vee$'s
 to get the statement with the given table.
+(A statement consisting of clauses using $\wedge$'s 
+that are joined with $\vee$'s
+is in Disjunctive Normal Form, DNF.
+See \Cref{sec:PropLogic}.)\index{Disjunctive Normal form, DNF}\index{DNF}\index{Propositional logic!Disjunctive Normal form}
 \begin{equation*}
 (\neg P\wedge \neg Q\wedge R)
   \vee(\neg P\wedge Q\wedge \neg R)
@@ -7972,14 +7974,16 @@ to get the statement with the given table.
 Next we translate those expressions into physical devices.
 The observation that you can use this form of a propositional logic expression
 to systematically design logic circuits was made by
-\citetext{C~Shannon}{See this profile of him: \protect\url{http://www.newyorker.com/tech/elements/claude-shannon-the-father-of-the-information-age-turns-1100100}.} in his
+\citetext{C~Shannon}{See this profile of him: \protect\url{http://www.newyorker.com/tech/elements/claude-shannon-the-father-of-the-information-age-turns-1100100}.} in his 1937
 \citetext{master's thesis}{%
   His paper on the subject was his master's thesis, 
   \protect\url{https://en.wikipedia.org/wiki/A_Symbolic_Analysis_of_Relay_and_Switching_Circuits}.}.
 We can get electronic devices, called 
 \definend{gates},\index{gate}\index{logic gate} 
-that perform logical operations on signals
-(for this discussion we take a signal to be the presence of $5$~volts).
+that perform logical operations on signals.
+(For this discussion we take a $1$ to be 
+signaled by the presence of $5$~volts
+and a~$0$ to be $0$~volts).
 On the left below is the schematic symbol for an 
 \textsc{and} gate
 with two input wires and one output wire, whose behavior is that 
@@ -8005,18 +8009,20 @@ and the~$R$ signals.
 The second and third clauses are implemented in the other two \textsc{and} 
 gates.
 Then the output of the \textsc{and} gates goes through the \textsc{or} gate.
-(These \textsc{and} and \textsc{or} gates are engineered to take three inputs.)
+(These \textsc{and} and \textsc{or} gates are engineered to take three 
+inputs;~we won't worry about what types of these devices are 
+commercially available.)
 \begin{center}
   \includegraphics{prologue/asy/gates/gates03.pdf}
 \end{center}
 
 Clearly by following this procedure we can in principle build a
 physical device with any desired input/output behavior.
-In particular, we can build a Turing machine in this way.
+In particular, we can in this way build a Turing machine.
 
 We will close with an aside.
-A person can wonder how these gates are constructed
-and in particular can wonder how a \textsc{not} gate is possible\Dash 
+A person can wonder how these gates are constructed,
+and especially can wonder how a \textsc{not} gate is possible\Dash 
 isn't having
 voltage out when there is no voltage in creating something out of nothing?
 
@@ -8042,47 +8048,46 @@ with the property that if there is enough voltage between~\textsf{G}
 and~\textsf{S} then this component allows current from the battery to flow
 between \textsf{D} and \textsf{S}.
 (Because it is sometimes open and sometimes closed it is depicted as
-a switch, although it has no mechanical moving parts.)
+a switch, although a semiconductor has no moving parts.)
 This transistor is manufactured such that an 
 input voltage~$V_{\text{in}}$
 of $5$~volts will trigger this event.
 
 To verify that this circuit inverts the signal, 
 assume first that $V_{\text{in}}=0$. 
-Then there is is a gap between
-\textsf{D} and~\textsf{S} so no current flows.
-With no current the resistor provides no voltage drop.
+Then there is no current flow between
+\textsf{D} and~\textsf{S}.
+With no current the resistor provides no voltage drop and
 Consequently the output voltage~$V_{\text{out}}$ across the gap
 is all of the voltage supplied by the battery, $5$~volts.
 So $V_{\text{in}}=0$ results in~$V_{\text{out}}=5$.
 
 Conversely, assume that $V_{\text{in}}=5$. 
-Then the gap disappears so that
-the current flows between \textsf{D} and~\textsf{S}, 
-the resistor drops the voltage, 
-and the output is~$V_{\text{out}}=0$.
+Then current flows between \textsf{D} and~\textsf{S}, 
+and so the resistor drops the voltage, 
+meaning that the output is~$V_{\text{out}}=0$.
 
 Thus, for this device
 the voltage out $V_{\text{out}}$ is the opposite of
 the voltage in~$V_{\text{in}}$.
-And, when $V_{\text{in}}=0$ the output voltage of~$5$ doesn't come from 
-nowhere; it is from the battery.
+% When $V_{\text{in}}=0$ the output voltage of~$5$ doesn't come from 
+% nowhere;~it comes from the battery.
 
 
 \begin{exercises}
 \begin{exercise}
-One propositional logic operator that was not covered in the description
+A propositional logic operator that is often used
 is \definend{Exclusive Or, \textsc{XOR}}.\index{exclusive or}\index{XOR@\textsc{XOR}}\index{Propositional logic!exclusive or}
 It is defined by:~$P\mathbin{\textsc{XOR}}Q=1$ if and only if $P\neq Q$.
 \begin{exparts*}
 \item Specify a truth table and from it 
-  construct a disjunctive normal form propositional logic expression.
+  construct a DNF propositional logic expression.
 \item Use that to make a circuit.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item Here is the table.
-\begin{center}
+\begin{display}
   \begin{tabular}[t]{cc|c}
     \multicolumn{1}{c}{$P$}      
         &\multicolumn{1}{c}{$Q$}      
@@ -8093,10 +8098,10 @@ It is defined by:~$P\mathbin{\textsc{XOR}}Q=1$ if and only if $P\neq Q$.
        $1$  &$0$  &$1$  \\
        $1$  &$1$  &$0$  
   \end{tabular}    
-\end{center}
+\end{display}
 The statement is 
-$(P\wedge Q)
-  \vee(\neg P\wedge \neg Q)$.
+$(\neg P\wedge \neg Q)
+  \vee(P\wedge Q)$.
 \item  \figureref{fig:PxorQCircuit} gives the circuit.
 \begin{figure} 
   \centering
@@ -8108,166 +8113,49 @@ $(P\wedge Q)
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Make a table with inputs $P$, $Q$, and $R$ for the behavior that
-the output is~$1$ if the input~$P$ equals the input~$R$.
-Produce the associated disjunctive normal form expression.
-Draw the circuit.
-\begin{answer}
-Here is the specified behavior.
-\begin{center}
-  \begin{tabular}[t]{ccc|c}
-    \multicolumn{1}{c}{$P$}
-    &\multicolumn{1}{c}{$Q$}
-    &\multicolumn{1}{c}{$R$}
-    &\multicolumn{1}{c}{}     \\ \hline
-    $0$  &$0$  &$0$  &$1$    \\
-    $0$  &$0$  &$1$  &$0$    \\
-    $0$  &$1$  &$0$  &$1$    \\
-    $0$  &$1$  &$1$  &$0$    \\[.5ex]
-    $1$  &$0$  &$0$  &$0$    \\
-    $1$  &$0$  &$1$  &$1$    \\
-    $1$  &$1$  &$0$  &$0$    \\
-    $1$  &$1$  &$1$  &$1$    
-  \end{tabular}  
-\end{center}
-This is a disjunctive normal form expression.
-\begin{equation*}
-(\neg P\wedge \neg Q\wedge \neg R)
-  \vee(\neg P\wedge Q\wedge \neg R)
-  \vee(P\wedge\neg Q\wedge R)
-  \vee(P\wedge Q\wedge R)
-\end{equation*}
-\figureref{fig:PEqualsRCircuit} gives the circuit.
-\begin{figure} 
-  \centering
-  \includegraphics{prologue/asy/gates/gates05.pdf}  \\
-  \caption{Circuit for $P=R$.}
-  \label{fig:PEqualsRCircuit}
-\end{figure}
-\end{answer}
-\end{exercise}
 
 \begin{exercise}
-Make a three-input table for the behavior: the output is~$1$ 
-  if a majority of the inputs are~$1$'s.
-Produce the associated disjunctive normal form expression.
-Draw the circuit.
-\begin{answer}
-Here a line has a $1$ in the output column if and only if two or three of
-the inputs are $1$'s.
-\begin{center}
-  \begin{tabular}[t]{ccc|c}
-    \multicolumn{1}{c}{$P$}
-    &\multicolumn{1}{c}{$Q$}
-    &\multicolumn{1}{c}{$R$}
-    &\multicolumn{1}{c}{}     \\ \hline
-    $0$  &$0$  &$0$  &$0$    \\
-    $0$  &$0$  &$1$  &$0$    \\
-    $0$  &$1$  &$0$  &$0$    \\
-    $0$  &$1$  &$1$  &$1$    \\[.5ex]
-    $1$  &$0$  &$0$  &$0$    \\
-    $1$  &$0$  &$1$  &$1$    \\
-    $1$  &$1$  &$0$  &$1$    \\
-    $1$  &$1$  &$1$  &$1$    
-  \end{tabular}  
-\end{center}
-This is a disjunctive normal form expression.
-\begin{equation*}
-(\neg P\wedge Q\wedge R)
-  \vee(P\wedge \neg Q\wedge R)
-  \vee(P\wedge Q\wedge \neg R)
-  \vee(P\wedge Q\wedge R)
-\end{equation*}
-\figureref{fig:MajorityInputsCircuit} gives the circuit.
-\begin{figure} 
-  \centering
-  \includegraphics{prologue/asy/gates/gates07.pdf}  \\
-  \caption{Circuit for the majority operator.}
-  \label{fig:MajorityInputsCircuit}
-\end{figure}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
+The propositional logic operator 
+\definend{Implication}, 
+\definend{$\rightarrow$},\index{Propositional logic!Implication}\index{Implication}
+is given by:~$P\rightarrow Q$ is $1$ except when $P$ is~$1$ and
+$Q$ is~$0$.
 \begin{exparts}
-\item Make a four-input table for the behavior: the output is~$1$ 
-  if a majority of the inputs are~$1$'s (this does not allow ties).
-Produce the associated disjunctive normal form expression.
-% Draw the circuit.
-\item 
-Produce the disjunctive normal form expression with five inputs
-for the behavior that the output is~$1$ 
-if a majority of the inputs are~$1$'s.
+\item Make a truth table and from it 
+  construct a Disjunctive Normal Form expression.
+\item Use that to make a circuit.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
-\item Here a line has a $1$ in the output column if and only if three or four of
-the inputs are~$1$'s.
-\begin{center}
-  \begin{tabular}[t]{cccc|c}
+\item The definition gives this input/output behavior
+\begin{display} \small
+  \begin{tabular}[t]{cc|c}
     \multicolumn{1}{c}{$P$}
     &\multicolumn{1}{c}{$Q$}
-    &\multicolumn{1}{c}{$R$}
-    &\multicolumn{1}{c}{$S$}
-    &\multicolumn{1}{c}{}     \\ \hline
-    $0$  &$0$  &$0$  &$0$  &$0$    \\
-    $0$  &$0$  &$0$  &$1$  &$0$    \\
-    $0$  &$0$  &$1$  &$0$  &$0$    \\
-    $0$  &$0$  &$1$  &$1$  &$0$    \\[.5ex]
-    $0$  &$1$  &$0$  &$0$  &$0$    \\
-    $0$  &$1$  &$0$  &$1$  &$0$    \\
-    $0$  &$1$  &$1$  &$0$  &$0$    \\
-    $0$  &$1$  &$1$  &$1$  &$1$    \\[.5ex]
-    $1$  &$0$  &$0$  &$0$  &$0$    \\
-    $1$  &$0$  &$0$  &$1$  &$0$    \\
-    $1$  &$0$  &$1$  &$0$  &$0$    \\
-    $1$  &$0$  &$1$  &$1$  &$1$    \\[.5ex]
-    $1$  &$1$  &$0$  &$0$  &$0$    \\
-    $1$  &$1$  &$0$  &$1$  &$1$    \\
-    $1$  &$1$  &$1$  &$0$  &$1$    \\
-    $1$  &$1$  &$1$  &$1$  &$1$    \\
+    &\multicolumn{1}{c}{$P\rightarrow Q$}     \\ \hline
+    $0$  &$0$  &$1$    \\
+    $0$  &$1$  &$1$    \\
+    $1$  &$0$  &$0$    \\
+    $1$  &$1$  &$1$    
   \end{tabular}  
-\end{center}
-This disjunctive normal form expression contains all the clauses where
-at least three of the variables are without negations.
-\begin{equation*}
-(\neg P\wedge Q\wedge R\wedge S)
-  \vee(P\wedge \neg Q\wedge R\wedge S)
-  \vee(P\wedge Q\wedge \neg R\wedge S)
-  \vee(P\wedge Q\wedge R\wedge \neg S)
-  \vee(P\wedge Q\wedge R\wedge S)
-\end{equation*}
-\item The disjunctive normal form expression must consist of 
-the clauses where at least three of the variables are not negated.
-There are $\binom{5}{3}=10$ such clauses with exactly three non-negated 
-variables,
-$\binom{5}{4}=5$ clauses with one negated variable, 
-and $\binom{5}{5}=1$ with no negated variables. 
-\begin{align*}
-&(\neg P\wedge \neg Q\wedge R\wedge S\wedge T)
- \vee (\neg P\wedge Q\wedge \neg R\wedge S\wedge T)
- \vee (\neg P\wedge Q\wedge R\wedge \neg S\wedge T)
- \vee (\neg P\wedge Q\wedge R\wedge S\wedge \neg T)  \\
- &\quad\vee (P\wedge \neg Q\wedge \neg R\wedge S\wedge T)
- \vee (P\wedge \neg Q\wedge R\wedge \neg S\wedge T)
- \vee (P\wedge \neg Q\wedge R\wedge S\wedge \neg T)  \\
- &\quad\vee (P\wedge Q\wedge \neg R\wedge \neg S\wedge T)
- \vee (P\wedge Q\wedge \neg R\wedge S\wedge \neg T)
- \vee (P\wedge Q\wedge R\wedge \neg S\wedge \neg T)  \\
- &\vee (\neg P\wedge Q\wedge R\wedge S\wedge T)
- \vee (P\wedge \neg Q\wedge R\wedge S\wedge T)
- \vee (P\wedge Q\wedge \neg R\wedge S\wedge T)  \\
- &\quad\vee (P\wedge Q\wedge R\wedge \neg S\wedge T)
- \vee (P\wedge Q\wedge R\wedge S\wedge \neg T)  \\
- &\vee (P\wedge Q\wedge R\wedge S\wedge T)
-\end{align*}
+\end{display}
+so a Boolean expression is 
+$(\neg P\wedge \neg Q)
+  \vee(\neg P\wedge Q)
+  \vee(P\wedge Q)$.
+\item \figureref{fig:ImpliesCircuit} gives the circuit.
+\begin{figure} 
+  \centering
+  \includegraphics{prologue/asy/gates/gates11.pdf}  \\
+  \caption{Circuit for the implication operation.}
+  \label{fig:ImpliesCircuit}
+\end{figure}
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
-For the table below, construct a disjunctive normal form
+For the table below, construct a DNF
 propositional logic expression and use that to make a circuit.
 \begin{center} \small
   \begin{tabular}[t]{cc|c}
@@ -8280,7 +8168,7 @@ propositional logic expression and use that to make a circuit.
     $1$  &$1$  &$1$    
   \end{tabular}  
 \end{center}
-\begin{answer}
+\begin{answer}\verified
 The statement is 
 $(\neg P\wedge Q)
   \vee(P\wedge Q)$.
@@ -8295,8 +8183,9 @@ $(\neg P\wedge Q)
 \end{exercise}
 
 \begin{exercise}
-Construct a disjunctive normal form
-propositional logic expression and use that to make a circuit
+Construct a 
+propositional logic expression in Disjunctive Normal Form
+and use that to make a circuit
 \begin{exparts*}
 \item for the table on the left,
 \item for the one on the right.
@@ -8332,7 +8221,7 @@ propositional logic expression and use that to make a circuit
     $1$  &$1$  &$1$  &$1$    
   \end{tabular}  
 \end{center}
-\begin{answer}
+\begin{answer}\verified
 The two circuits are in \figureref{fig:BothTableCircuits}.
 \begin{figure} 
   \centering
@@ -8362,63 +8251,179 @@ output.
 \end{exercise}
 
 \begin{exercise}
-A propositional logic operator that was not covered above
-is \definend{implication}, 
-\definend{$\rightarrow$}.\index{Propositional logic!implication}\index{implies}
-It is defined by: $P\rightarrow Q$ is $1$ unless $P$ is~$1$ and
-$Q$ is~$0$.
-\begin{exparts}
-\item Make a truth table and from it 
-  construct a disjunctive normal form propositional logic expression.
-\item Use that to make a circuit.
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item The definition gives this input/output behavior
-\begin{center} \small
-  \begin{tabular}[t]{cc|c}
+Make a table with inputs $P$, $Q$, and $R$ for the behavior that
+the output is~$1$ if $P$ equals~$R$.
+Produce the associated DNF expression.
+Draw the circuit.
+\begin{answer}\verified
+Here is the input/output behavior.
+\begin{display}
+  \begin{tabular}[t]{ccc|c}
     \multicolumn{1}{c}{$P$}
     &\multicolumn{1}{c}{$Q$}
+    &\multicolumn{1}{c}{$R$}
     &\multicolumn{1}{c}{}     \\ \hline
-    $0$  &$0$  &$1$    \\
-    $0$  &$1$  &$1$    \\
-    $1$  &$0$  &$0$    \\
-    $1$  &$1$  &$1$    
+    $0$  &$0$  &$0$  &$1$    \\
+    $0$  &$0$  &$1$  &$0$    \\
+    $0$  &$1$  &$0$  &$1$    \\
+    $0$  &$1$  &$1$  &$0$    \\[.5ex]
+    $1$  &$0$  &$0$  &$0$    \\
+    $1$  &$0$  &$1$  &$1$    \\
+    $1$  &$1$  &$0$  &$0$    \\
+    $1$  &$1$  &$1$  &$1$    
   \end{tabular}  
-\end{center}
-so a Boolean expression is 
-$(\neg P\wedge \neg Q)
-  \vee(\neg P\wedge Q)
-  \vee(P\wedge Q)$.
-\item \figureref{fig:ImpliesCircuit} gives the circuit.
+\end{display}
+That table immediately gives the Disjunctive Normal Form expression.
+\begin{equation*}
+(\neg P\wedge \neg Q\wedge \neg R)
+  \vee(\neg P\wedge Q\wedge \neg R)
+  \vee(P\wedge\neg Q\wedge R)
+  \vee(P\wedge Q\wedge R)
+\end{equation*}
+\figureref{fig:PEqualsRCircuit} gives the circuit.
 \begin{figure} 
   \centering
-  \includegraphics{prologue/asy/gates/gates11.pdf}  \\
-  \caption{Circuit for the implication operation.}
-  \label{fig:ImpliesCircuit}
+  \includegraphics{prologue/asy/gates/gates05.pdf}  \\
+  \caption{Circuit for $P=R$.}
+  \label{fig:PEqualsRCircuit}
 \end{figure}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Make a three-input table for the behavior: the output is~$1$ 
+  if a majority of the inputs are~$1$'s.
+Produce the associated DNF expression.
+Draw the circuit.
+\begin{answer}\verified
+Here a line has a $1$ in the output column if and only if two or three of
+the inputs are $1$'s.
+\begin{display}
+  \begin{tabular}[t]{ccc|c}
+    \multicolumn{1}{c}{$P$}
+    &\multicolumn{1}{c}{$Q$}
+    &\multicolumn{1}{c}{$R$}
+    &\multicolumn{1}{c}{}     \\ \hline
+    $0$  &$0$  &$0$  &$0$    \\
+    $0$  &$0$  &$1$  &$0$    \\
+    $0$  &$1$  &$0$  &$0$    \\
+    $0$  &$1$  &$1$  &$1$    \\[.5ex]
+    $1$  &$0$  &$0$  &$0$    \\
+    $1$  &$0$  &$1$  &$1$    \\
+    $1$  &$1$  &$0$  &$1$    \\
+    $1$  &$1$  &$1$  &$1$    
+  \end{tabular}  
+\end{display}
+This is a Disjunctive Normal Form expression.
+\begin{equation*}
+(\neg P\wedge Q\wedge R)
+  \vee(P\wedge \neg Q\wedge R)
+  \vee(P\wedge Q\wedge \neg R)
+  \vee(P\wedge Q\wedge R)
+\end{equation*}
+\figureref{fig:MajorityInputsCircuit} gives the circuit.
+\begin{figure} 
+  \centering
+  \includegraphics{prologue/asy/gates/gates07.pdf}  \\
+  \caption{Circuit for the three-input majority operator.}
+  \label{fig:MajorityInputsCircuit}
+\end{figure}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Consider the input/output behavior that the output is~$1$ 
+if a majority of the inputs are~$1$'s (this does not allow ties).
+\begin{exparts}
+\item Make a four-input table for the behavior.
+Produce the associated Disjunctive Normal Form expression.
+\item 
+Also produce the DNF expression for this behavior with five inputs.
+\end{exparts}
+\begin{answer}\verified
+\begin{exparts}
+\item Here a line has a $1$ in the output column if and only if three or four of
+the inputs are~$1$'s.
+\begin{display}
+  \begin{tabular}[t]{cccc|c}
+    \multicolumn{1}{c}{$P$}
+    &\multicolumn{1}{c}{$Q$}
+    &\multicolumn{1}{c}{$R$}
+    &\multicolumn{1}{c}{$S$}
+    &\multicolumn{1}{c}{}     \\ \hline
+    $0$  &$0$  &$0$  &$0$  &$0$    \\
+    $0$  &$0$  &$0$  &$1$  &$0$    \\
+    $0$  &$0$  &$1$  &$0$  &$0$    \\
+    $0$  &$0$  &$1$  &$1$  &$0$    \\[.5ex]
+    $0$  &$1$  &$0$  &$0$  &$0$    \\
+    $0$  &$1$  &$0$  &$1$  &$0$    \\
+    $0$  &$1$  &$1$  &$0$  &$0$    \\
+    $0$  &$1$  &$1$  &$1$  &$1$    \\[.5ex]
+    $1$  &$0$  &$0$  &$0$  &$0$    \\
+    $1$  &$0$  &$0$  &$1$  &$0$    \\
+    $1$  &$0$  &$1$  &$0$  &$0$    \\
+    $1$  &$0$  &$1$  &$1$  &$1$    \\[.5ex]
+    $1$  &$1$  &$0$  &$0$  &$0$    \\
+    $1$  &$1$  &$0$  &$1$  &$1$    \\
+    $1$  &$1$  &$1$  &$0$  &$1$    \\
+    $1$  &$1$  &$1$  &$1$  &$1$    \\
+  \end{tabular}  
+\end{display}
+This DNF expression contains all the clauses where
+at least three of the variables are without negations.
+\begin{equation*}
+(\neg P\wedge Q\wedge R\wedge S)
+  \vee(P\wedge \neg Q\wedge R\wedge S)
+  \vee(P\wedge Q\wedge \neg R\wedge S)
+  \vee(P\wedge Q\wedge R\wedge \neg S)
+  \vee(P\wedge Q\wedge R\wedge S)
+\end{equation*}
+\item The DNF expression must consist of 
+the clauses where at least three of the variables are not negated.
+There are $\binom{5}{3}=10$ such clauses with exactly three non-negated 
+variables,
+$\binom{5}{4}=5$ clauses with one negated variable, 
+and $\binom{5}{5}=1$ with no negated variables. 
+\begin{align*}
+&(\neg P\wedge \neg Q\wedge R\wedge S\wedge T)
+ \vee (\neg P\wedge Q\wedge \neg R\wedge S\wedge T)
+ \vee (\neg P\wedge Q\wedge R\wedge \neg S\wedge T)
+ \vee (\neg P\wedge Q\wedge R\wedge S\wedge \neg T)  \\
+ &\quad\vee (P\wedge \neg Q\wedge \neg R\wedge S\wedge T)
+ \vee (P\wedge \neg Q\wedge R\wedge \neg S\wedge T)
+ \vee (P\wedge \neg Q\wedge R\wedge S\wedge \neg T)  \\
+ &\quad\vee (P\wedge Q\wedge \neg R\wedge \neg S\wedge T)
+ \vee (P\wedge Q\wedge \neg R\wedge S\wedge \neg T)
+ \vee (P\wedge Q\wedge R\wedge \neg S\wedge \neg T)  \\
+ &\vee (\neg P\wedge Q\wedge R\wedge S\wedge T)
+ \vee (P\wedge \neg Q\wedge R\wedge S\wedge T)
+ \vee (P\wedge Q\wedge \neg R\wedge S\wedge T)  \\
+ &\quad\vee (P\wedge Q\wedge R\wedge \neg S\wedge T)
+ \vee (P\wedge Q\wedge R\wedge S\wedge \neg T)  \\
+ &\vee (P\wedge Q\wedge R\wedge S\wedge T)
+\end{align*}
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
-The most natural way to add two binary numbers 
-works like the grade school addition algorithm.
+To add two binary numbers the most natural approach 
+works like the grade school decimal addition algorithm.
 Start at the right with the one's column.  
-Add those two and possibly carry a~$1$ to the
+Add those two bits and possibly carry a~$1$ to the
 next column.
 Then add down the next column, including any carry.
 Repeat this from right to left.
 \begin{exparts}
-\item Use this method to add the two binary numbers $1011$ and $1101$.
+\item Use this method to add the two binary numbers $1011$ and $1001$.
 \item Make a truth table giving the desired behavior in adding 
-  the numbers in a column.
+  the numbers in one column.
   It must have three inputs because of the possibility of a carry.
-  It must also have two output columns, one for the total and one for 
-  the carry. 
+  It must also have two output columns, one for the least significant bit of
+  the sum along with one for any carry. 
 \item Draw the circuits. 
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item Here is the tabular version. 
 The carrys are in the second, third, and fifth
@@ -8426,46 +8431,49 @@ columns from the right.
 \begin{equation*}
   \begin{array}{*{5}{r}}
   {}^1 &1   &{}^10  &{^1}1  &1  \\
-  +    &1   &1      &0      &1  \\ \cline{1-5}
-  1    &1   &0      &0      &0  \\
+  +    &1   &0      &0      &1  \\ \cline{1-5}
+  1    &0   &1      &0      &0  \\
   \end{array}
 \end{equation*}
-\item The definition gives these two behaviors.
-(What is here called a parital sum is usually in the literature called
-a `half adder'.)
-\begin{center} \small
-  \begin{tabular}[t]{cc|c}
-    \multicolumn{1}{c}{$P$}
+\item The definition gives these two input/output behaviors.
+What is called the Least significant bit here 
+is often called a `full adder'.  
+(Also common is a `half adder' which does not take a Carry in, so it only has 
+two inputs.)
+\begin{display} \small
+  \begin{tabular}[t]{ccc|cc}
+    \multicolumn{1}{c}{Carry in $I$}
+    &\multicolumn{1}{c}{$P$}
     &\multicolumn{1}{c}{$Q$}
-    &\multicolumn{1}{c}{\text{partial sum}}     \\ \hline
-    $0$  &$0$  &$0$    \\
-    $0$  &$1$  &$1$    \\
-    $1$  &$0$  &$1$    \\
-    $1$  &$1$  &$0$    
+    &\multicolumn{1}{c}{\text{Least significant bit $L$}}     
+    &\multicolumn{1}{c}{\text{Carry out $C$}}     \\ \hline
+    $0$  &$0$  &$0$  &$0$ &$0$    \\
+    $0$  &$0$  &$1$  &$1$ &$0$    \\
+    $0$  &$1$  &$0$  &$1$ &$0$    \\
+    $0$  &$1$  &$1$  &$0$ &$1$    \\[0.5ex]
+    $1$  &$0$  &$0$  &$1$ &$0$    \\
+    $1$  &$0$  &$1$  &$0$ &$1$    \\
+    $1$  &$1$  &$0$  &$0$ &$1$    \\
+    $1$  &$1$  &$1$  &$1$ &$1$    \\[0.5ex]
   \end{tabular}  
-  \qquad
-  \begin{tabular}[t]{cc|c}
-    \multicolumn{1}{c}{$P$}
-    &\multicolumn{1}{c}{$Q$}
-    &\multicolumn{1}{c}{\text{carry}}     \\ \hline
-    $0$  &$0$  &$0$    \\
-    $0$  &$1$  &$0$    \\
-    $1$  &$0$  &$0$    \\
-    $1$  &$1$  &$1$    
-  \end{tabular}  
-\end{center}
-A Boolean expression for the partial sum is  
-$(\neg P\wedge Q)
-  \vee(P\wedge \neg Q)$.
-For the carry we have   
-$(P\wedge Q)$.
+\end{display}
+A Boolean expression for~$L$ is  
+$(\neg I\wedge \neg P\wedge Q)
+  \vee(\neg I\wedge P\wedge \neg Q)
+  \vee(I\wedge \neg P\wedge \neg Q)
+  \vee(I\wedge P\wedge Q)$.
+For~$C$ a DNF expression is   
+$(\neg I\wedge P\wedge Q)
+  \vee(I\wedge \neg P\wedge Q)
+  \vee(I\wedge P\wedge \neg Q)
+  \vee(I\wedge P\wedge Q)$.
 \item \figureref{fig:AdderCircuits} gives the circuits.
 \begin{figure} 
   \centering
   \vcenteredhbox{\includegraphics{prologue/asy/gates/gates12.pdf}}  
   \qquad
   \vcenteredhbox{\includegraphics{prologue/asy/gates/gates13.pdf}}  \\
-  \caption{Partial addition and carry circuits for one addition column.}
+  \caption{Partial sum and carry circuits for one addition column.}
   \label{fig:AdderCircuits}
 \end{figure}
 \end{exparts}

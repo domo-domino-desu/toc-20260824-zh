@@ -5,7 +5,7 @@
 ;; "An R6RS Scheme implementation of Conway's Game of Life --- assumes
 ;; all cells outside the defined grid are dead"
 
-;; If n is outside bounds of list, return 0 else value at n
+;; If n is outside bounds of list, return 0 else return value at n
 (define (nth n lst)
   (cond ((> n (length lst)) 0)
         ((< n 1) 0)
@@ -109,8 +109,8 @@
 ;; read-universe
 ;;   Read DEAD and ALIVE characters from a file, return a universe
 (define (read-universe fn)
-  (let* ((in (open-input-file fn))
-	 (input-file-lines (read-lines in)))
+  (let* ((infile (open-input-file fn))
+	 (input-file-lines (read-lines infile)))
     (read-universe-helper input-file-lines)))
 
 ;; read-universe-helper

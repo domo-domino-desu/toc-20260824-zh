@@ -5,30 +5,89 @@
 (define ALIVE-CH #\*)
 (define DEAD-CH #\.)
 
-;; ======================================
-;; Grid
-;;  Array of 1's and 0's
-;; In grid, 1 means alive and 0 means dead 1's and 0's
+;; In grid, 1 means alive and 0 means dead
 (define ALIVE 1)
 (define DEAD 0)
 
-;; Create a grid filled with dead cells
+(define (grid-ch->grid-val ch)
+  (if (eq? ch ALIVE-CH)
+      ALIVE
+      DEAD))
+(define (grid-val->grid-ch v)
+  (if (eq? v ALIVE)
+      ALIVE-CH
+      DEAD-CH))
+
+;; Whether a cell will be alive or dead in the next generation 
+(define (cell-next-gen cell-val nbr-lst)
+  (let ([tot (apply + nbr-lst)])
+    (if (eq? cell-val ALIVE)
+        (if (or (= tot 2) (= tot 3))
+            ALIVE
+            DEAD)
+        (if (= tot 3)
+            ALIVE
+            DEAD))))
+
+;; ======================================
+;; Grid
+;;  Array of ALIVE's and DEAD's
+
+;; Create a grid, filled with dead cells
 (define (grid-create num-rows num-cols)
   (build-vector num-rows (lambda (y) (make-vector num-cols DEAD))))
 
+;; Get number of rows, number of cols
 (define (grid-size grid)
   (if (empty? grid)
       '()
       (list (vector-length grid)
         (vector-length (vector-ref grid 0)))))
 
+;; Get x,y entry (zero offset) 
 (define (grid-get grid x y)
   (let ([size (grid-size grid)])
     (if (and (< x (car size))
              (< y (cadr size)))
         (vector-ref (vector-ref grid x) y)
-        0)))
+        DEAD)))
 
+;; Grid as string
+(define (grid->string grid)
+  (let* ([size (grid-size grid)]
+         [num-rows (first size)]
+         [num-cols (second size)]
+         [s (make-vector (+ num-cols (* num-rows num-cols)))])
+    (let ([i 0])
+      (for ([col (in-range num-cols)])
+        (for ([row (in-range num-rows)])
+          (vector-set! s
+                       i
+                       (grid-val->grid-ch (grid-get grid row col)))
+          (set! i (+ i 1)))
+        (vector-set! s i "\n")
+        (set! i (+ i 1))))
+    (apply ~a (vector->list s))))
+
+;; Display grid to terminal
+(define (grid-display grid)
+  (displayln (grid->string grid)))
+
+;; Get list of values of neighbors values of grid cell x,y pair
+(define (grid-neighbor-vals-get g c)
+  (let ([x (first c)]
+        [y (second c)])
+    (list (grid-get g (- x 1) (- y 1)) ;  top left
+          (grid-get g x (- y 1))  ; top
+          (grid-get g (+ x 1) (- y 1))  ; top right
+          (grid-get g (+ x 1) y)  ; right
+          (grid-get g (+ x 1) (+ y 1))  ; bottom right
+          (grid-get g x (+ y 1))  ; bottom
+          (grid-get g (- x 1) (+ y 1))  ; bottom left
+          (grid-get g (- x 1) y)  ; left
+          )))
+
+;; Change x,y entry in grid (zero offset)
 (define (grid-set! grid x y val)
   (let ([size (grid-size grid)])
     (if (and (< x (first size))
@@ -39,6 +98,7 @@
                                "x" x
                                "y" y))))
 
+;; Copy contents of grid from src to dest, where (0,0) in src is at upper-left in dest
 (define (grid-copy g-src g-dest upper-left)
   (let* ([g-src-size (grid-size g-src)]
          [g-src-numrows (first g-src-size)]
@@ -48,13 +108,18 @@
          [uleft-col (second upper-left)])
     (for* ([row (in-range g-src-numrows)]
            [col (in-range g-src-numcols)])
-      (grid-set! g-dest (+ row uleft-row) (+ col uleft-col)))))
+      (grid-set! g-dest
+                 (+ row uleft-row)
+                 (+ col uleft-col)
+                 (grid-get g-src row col)))))
 
 (provide ALIVE
          DEAD
          grid-create
          grid-size
          grid-get
+         grid->string
+         grid-display
          grid-set!
          grid-copy)
 

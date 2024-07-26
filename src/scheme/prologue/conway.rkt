@@ -18,17 +18,6 @@
       ALIVE-CH
       DEAD-CH))
 
-;; Whether a cell will be alive or dead in the next generation 
-(define (cell-next-gen cell-val nbr-lst)
-  (let ([tot (apply + nbr-lst)])
-    (if (eq? cell-val ALIVE)
-        (if (or (= tot 2) (= tot 3))
-            ALIVE
-            DEAD)
-        (if (= tot 3)
-            ALIVE
-            DEAD))))
-
 ;; ======================================
 ;; Grid
 ;;  Array of ALIVE's and DEAD's
@@ -76,7 +65,7 @@
 (define (grid-display grid)
   (displayln (grid->string grid)))
 
-;; Get list of values of neighbors values of grid cell x,y pair
+;; Get list of values of neighbors of grid cell (x,y) pair
 (define (grid-neighbor-vals-get g c)
   (let ([row (first c)]
         [col (second c)])
@@ -86,7 +75,7 @@
           (grid-get g row (+ col 1))  ; right
           (grid-get g (+ row 1) (+ col 1))  ; bottom right
           (grid-get g (+ row 1) col)  ; bottom
-          (grid-get g (+ row 1) (+ col 1))  ; bottom left
+          (grid-get g (+ row 1) (- col 1))  ; bottom left
           (grid-get g row (- col 1))  ; left
           )))
 
@@ -128,10 +117,54 @@
          grid-copy)
 
 ;; ==========================================
+;; Life cycle
+
+;; Whether a cell will be alive or dead in the next generation 
+(define (cell-next-gen cell-val nbr-val-lst)
+  (let ([tot (apply + nbr-val-lst)])
+    (if (eq? cell-val ALIVE)
+        (if (or (= tot 2) (= tot 3))
+            ALIVE
+            DEAD)
+        (if (= tot 3)
+            ALIVE
+            DEAD))))
+
+;;  Go through grid, updating cells.
+(define (grid-generation g-old)
+  (let* ([size (grid-size g-old)]
+         [num-rows (first size)]
+         [num-cols (second size)]
+         [g-new (grid-create num-rows num-cols)])
+    (for* ([row (in-range num-rows)]
+           [col (in-range num-cols)])
+      (when (and (= row 0) (= col 0))
+          (display (~a " get values=" (grid-neighbor-vals-get g-old (list row col)))))
+      (grid-set! g-new row col
+                 (cell-next-gen (grid-get g-old row col)
+                                (grid-neighbor-vals-get g-old (list row col)))))
+      g-new))
+
+(provide cell-next-gen
+         grid-generation
+         )
+
+
+;; ==========================================
 ;; Universe
 ;;  grid of cells  vector of vectors of 1's and 0's
 ;;  offset   universe-offset giving how far (x,y) from this universe's uppper left to upper left of starting uni
 (struct universe (grid offset) #:transparent)
+
+(define (universe-generation u)
+  (let* ([g-start (universe-grid u)]
+         [size (grid-size g-start)]
+         [num-rows (first size)]
+         [num-cols (second size)]
+         [f (universe-offset u)]
+         [g-new (grid-create num-rows num-cols)])
+    '()
+    ))
 
 (define (universe-set! u x y value)
   (let* ([g (universe-grid u)]
@@ -146,16 +179,6 @@
         (universe-set-resize! g oset x y value)
         (universe (grid-set! x y value) oset))))
 
-;(define (grid-copy g-src g-dest upper-left)
-;  (let* ([g-src-size (grid-size g-src)]
-;         [g-src-numrows (first g-src-size)]
-;         [g-src-numcols (second g-src-size)]
-;         [g-dest-size (grid-size g-dest)]
-;         [uleft-row (car upper-left)]
-;         [uleft-col (second upper-left)])
-;    (for* ([row (in-range g-src-numrows)]
-;           [col (in-range g-src-numcols)])
-;      (grid-set! g-dest (+ row uleft-row) (+ col uleft-col)))))
 
 (define (universe-set-resize! grid offset x y value)
   '())
@@ -169,31 +192,6 @@
          universe-set!)
 
 
-;(define rows vector-length)
-;
-;(define (cols grid)
-;  (vector-length (vector-ref grid 0)))
-;
-;(define (make-grid m n living-cells)
-;  (let loop ([grid (make-empty-grid m n)]
-;             [cells living-cells])
-;    (if (empty? cells)
-;        grid
-;        (loop (2d-set! grid (caar cells) (cadar cells) 1) (cdr cells)))))
-;
-;(define (2d-ref grid i j)
-;  (cond [(< i 0) 0]
-;        [(< j 0) 0]
-;        [(>= i (rows grid)) 0]
-;        [(>= j (cols grid)) 0]
-;        [else (vector-ref (vector-ref grid i) j)]))
-;
-;(define (2d-refs grid indices)
-;  (map (lambda (ind) (2d-ref grid (car ind) (cadr ind))) indices))
-;
-;(define (2d-set! grid i j val)
-;  (vector-set! (vector-ref grid i) j val)
-;  grid)
 
 
 

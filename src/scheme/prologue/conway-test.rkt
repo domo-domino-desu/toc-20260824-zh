@@ -5,7 +5,7 @@
 (require rackunit/text-ui) ; to run the test suites
 
 
-;; ===== instruction tests
+;; ===== Creation and get/set of grids
 (define creation-tests
   (test-suite
    "Grid creation tests"
@@ -74,19 +74,62 @@
       (check-eq? (length (grid-neighbor-vals-get g '(2 0))) 8 "grid-neighbor-vals-get list is not length 8 ")
       (check-equal? (grid-neighbor-vals-get g '(2 0)) '(0 1 0 1 0 0 0 0) "grid-neighbor-vals-get unexpected returned list")
       ))
-;   (test-case
-;    "Grid copy"
-;    (let ([g-src (grid-create 3 5)]
-;          [g-dest (grid-create 5 10)])
-;      (for* ([row (in-range 2)]
-;             [col (in-range 4)])
-;        ; (displayln (~a "row=" row " col=" col))
-;        (when (odd? (+ row col))
-;          (grid-set! g-src row col ALIVE)))
-;      ; Copy src to dest
-;      (grid-copy g-src g-dest (list 1 2))
-;      ; (displayln g-dest)
-;      ))
+   (test-case
+    "Grid copy"
+    (let ([g-src (grid-create 2 4)]
+          [g-dest (grid-create 4 7)])
+      (for* ([row (in-range 2)]
+             [col (in-range 4)])
+        ; (displayln (~a "row=" row " col=" col))
+        (when (odd? (+ row col))
+          (grid-set! g-src row col ALIVE)))
+      ; Copy src to dest
+      (grid-copy g-src g-dest (list 1 2))
+      ; (displayln (~a "destination grid is\n" (grid->string g-dest)))
+      (check-true (string=? (grid->string g-dest) ".......\n...*.*.\n..*.*..\n.......") "grid->copydidn't produce expected string")
+      ))
    )) ;; end suite and tests
 
-(run-tests creation-tests)
+
+;; ===== Generation of grids
+(define generation-tests
+  (test-suite
+   "Grid generation tests"
+  
+   (test-case
+    "Next generation of a cell"
+    (let ([cell-val ALIVE]
+          [nbr-val-list (list ALIVE DEAD ALIVE DEAD DEAD DEAD DEAD DEAD)])
+      (check-equal? (cell-next-gen cell-val nbr-val-list) ALIVE "cell alive, two neighbors alive, should yield alive")
+      ) 
+    (let ([cell-val ALIVE]
+          [nbr-val-list (list ALIVE DEAD DEAD DEAD DEAD DEAD DEAD DEAD)])
+      (check-equal? (cell-next-gen cell-val nbr-val-list) DEAD "cell alive, one neighbors alive, should yield dead")
+      ) 
+    (let ([cell-val DEAD]
+          [nbr-val-list (list ALIVE DEAD ALIVE DEAD ALIVE DEAD DEAD DEAD)])
+      (check-equal? (cell-next-gen cell-val nbr-val-list) ALIVE "cell alive, two neighbors alive, should yield alive")
+      ) 
+    (let ([cell-val DEAD]
+          [nbr-val-list (list ALIVE DEAD DEAD DEAD DEAD DEAD DEAD DEAD)])
+      (check-equal? (cell-next-gen cell-val nbr-val-list) DEAD "cell alive, two neighbors alive, should yield dead")
+      ) 
+    )
+
+   (test-case
+    "Do a grid generation"
+    (let ([g-old (grid-create 3 3)])
+      (grid-set! g-old 1 0 ALIVE) 
+      (grid-set! g-old 1 1 ALIVE) 
+      (grid-set! g-old 1 2 ALIVE)
+      (let ([g-new (grid-generation g-old)])
+        (display (~a "New grid: " (grid->string g-new)))
+        (check-true (string=? (grid->string g-new) ".*.\n.*.\n.*.") "grid->generation didn't produce expected new grid")
+       ) 
+    )
+
+   )) ;; end suite and tests
+
+
+(run-tests ; creation-tests
+           generation-tests)

@@ -48,7 +48,9 @@
 (define (grid-get grid x y)
   (let ([size (grid-size grid)])
     (if (and (< x (car size))
-             (< y (cadr size)))
+             (< y (cadr size))
+             (>= x 0)
+             (>= y 0))
         (vector-ref (vector-ref grid x) y)
         DEAD)))
 
@@ -57,17 +59,18 @@
   (let* ([size (grid-size grid)]
          [num-rows (first size)]
          [num-cols (second size)]
-         [s (make-vector (+ num-cols (* num-rows num-cols)))])
+         [s (make-vector (+ num-rows (* num-rows num-cols)))])  ; put extra \n on, then strip at end 
     (let ([i 0])
-      (for ([col (in-range num-cols)])
-        (for ([row (in-range num-rows)])
+      (for ([row (in-range num-rows)])
+        (for ([col (in-range num-cols)])
           (vector-set! s
                        i
                        (grid-val->grid-ch (grid-get grid row col)))
           (set! i (+ i 1)))
         (vector-set! s i "\n")
         (set! i (+ i 1))))
-    (apply ~a (vector->list s))))
+    ; Return the concatenation of all the vector elets, with final "\n" stripped
+    (apply ~a (vector->list (vector-copy s 0 (- (vector-length s) 1))))))
 
 ;; Display grid to terminal
 (define (grid-display grid)
@@ -75,16 +78,16 @@
 
 ;; Get list of values of neighbors values of grid cell x,y pair
 (define (grid-neighbor-vals-get g c)
-  (let ([x (first c)]
-        [y (second c)])
-    (list (grid-get g (- x 1) (- y 1)) ;  top left
-          (grid-get g x (- y 1))  ; top
-          (grid-get g (+ x 1) (- y 1))  ; top right
-          (grid-get g (+ x 1) y)  ; right
-          (grid-get g (+ x 1) (+ y 1))  ; bottom right
-          (grid-get g x (+ y 1))  ; bottom
-          (grid-get g (- x 1) (+ y 1))  ; bottom left
-          (grid-get g (- x 1) y)  ; left
+  (let ([row (first c)]
+        [col (second c)])
+    (list (grid-get g (- row 1) (- col 1)) ;  top left
+          (grid-get g (- row 1) col)  ; top
+          (grid-get g (- row 1) (+ col 1))  ; top right
+          (grid-get g row (+ col 1))  ; right
+          (grid-get g (+ row 1) (+ col 1))  ; bottom right
+          (grid-get g (+ row 1) col)  ; bottom
+          (grid-get g (+ row 1) (+ col 1))  ; bottom left
+          (grid-get g row (- col 1))  ; left
           )))
 
 ;; Change x,y entry in grid (zero offset)
@@ -120,6 +123,7 @@
          grid-get
          grid->string
          grid-display
+         grid-neighbor-vals-get
          grid-set!
          grid-copy)
 

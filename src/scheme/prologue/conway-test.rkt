@@ -21,6 +21,7 @@
              [col (in-range 5)])
         (check-eq? (vector-ref (vector-ref g row) col) DEAD))  
       )) 
+
    (test-case
     "Grid getters and setters simple"
     (let* ([g (grid-create 3 5)])
@@ -33,6 +34,7 @@
       ; (displayln (vector-ref (vector-ref g 1) 2))
       (check-eq? (grid-get g 1 3) ALIVE "Simple grid-get retrieval failed")
       )) 
+
    (test-case
     "Grid as string"
     (let* ([num-rows 3]
@@ -49,6 +51,7 @@
       ; (displayln (~a "string is \n" (grid->string g) "<---"))
       (check-true (string=? (grid->string g) ".*.*.\n*.*.*\n.*.*.") "grid->string didn't produce expected string")
       ))
+
    (test-case
     "Getting the values of the neighbors of a grid cell"
     (let ([g (grid-create 3 5)])
@@ -74,6 +77,7 @@
       (check-eq? (length (grid-neighbor-vals-get g '(2 0))) 8 "grid-neighbor-vals-get list is not length 8 ")
       (check-equal? (grid-neighbor-vals-get g '(2 0)) '(0 1 0 1 0 0 0 0) "grid-neighbor-vals-get unexpected returned list")
       ))
+
    (test-case
     "Grid copy"
     (let ([g-src (grid-create 2 4)]
@@ -86,8 +90,27 @@
       ; Copy src to dest
       (grid-copy g-src g-dest (list 1 2))
       ; (displayln (~a "destination grid is\n" (grid->string g-dest)))
-      (check-true (string=? (grid->string g-dest) ".......\n...*.*.\n..*.*..\n.......") "grid->copydidn't produce expected string")
+      (check-true (string=? (grid->string g-dest) ".......\n...*.*.\n..*.*..\n.......") "grid-copy didn't produce expected string")
       ))
+
+   (test-case
+    "Copy row and column vectors"
+    (let ([src-vector (make-vector 6 ALIVE)]
+          [g-dest (grid-create 2 7)])
+      ; Copy src to dest
+      (grid-copy-row src-vector g-dest (list 0 1))
+      ; (displayln (~a "destination grid is\n" (grid->string g-dest)))
+      (check-true (string=? (grid->string g-dest) ".******\n.......") "grid-copy-row didn't produce expected string")
+      )
+    (let ([src-vector (make-vector 3 ALIVE)]
+          [g-dest (grid-create 4 2)])
+      ; Copy src to dest
+      (grid-copy-col src-vector g-dest (list 1 0))
+      ; (displayln (~a "destination grid is\n" (grid->string g-dest)))
+      (check-true (string=? (grid->string g-dest) "..\n*.\n*.\n*.") "grid-copy-col didn't produce expected string")
+      )
+    )
+
    )) ;; end suite and tests
 
 
@@ -125,11 +148,39 @@
       (let ([g-new (grid-generation g-old)])
         (display (~a "New grid: " (grid->string g-new)))
         (check-true (string=? (grid->string g-new) ".*.\n.*.\n.*.") "grid->generation didn't produce expected new grid")
-       ) 
+       )
+      )
     )
 
    )) ;; end suite and tests
 
 
-(run-tests ; creation-tests
-           generation-tests)
+
+;; ===== Evolution of a universe
+(define universe-tests
+  (test-suite
+   "Test universe functions"
+  
+   (test-case
+    "Make a universe"
+    (let* ([g (grid-create 3 3)]
+           [oset (list 0 0)]
+           [u (universe g oset)])
+      (check-pred universe? u "universe created")
+      ) 
+    )
+
+
+   )) ;; end suite and tests
+
+
+;; ===================================================
+
+;; Tests for creation and manipulation of grids
+(run-tests creation-tests)
+
+;;  Tests for getting the next generation of a grid
+(run-tests generation-tests)
+
+;;  Tests for the evolution of a universe
+(run-tests universe-tests)

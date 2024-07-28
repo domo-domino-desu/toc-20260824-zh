@@ -105,6 +105,26 @@
                  (+ col uleft-col)
                  (grid-get g-src row col)))))
 
+;; Copy a row vector src to the destination dest, starting at (row,col)
+(define (grid-copy-row src dest start)
+  (let* ([start-row (first start)]
+         [start-col (second start)])
+    (for ([col (in-range (vector-length src))])
+      (grid-set! dest
+                 start-row
+                 (+ col start-col)
+                 (vector-ref src col)))))
+
+;; Copy a column vector src to the destination dest, starting at (row,col)
+(define (grid-copy-col src dest start)
+  (let* ([start-row (first start)]
+         [start-col (second start)])
+    (for ([row (in-range (vector-length src))])
+      (grid-set! dest
+                 (+ row start-row)
+                 start-col
+                 (vector-ref src row)))))
+
 (provide ALIVE
          DEAD
          grid-create
@@ -114,7 +134,9 @@
          grid-display
          grid-neighbor-vals-get
          grid-set!
-         grid-copy)
+         grid-copy
+         grid-copy-row
+         grid-copy-col)
 
 ;; ==========================================
 ;; Life cycle
@@ -138,8 +160,6 @@
          [g-new (grid-create num-rows num-cols)])
     (for* ([row (in-range num-rows)]
            [col (in-range num-cols)])
-      (when (and (= row 0) (= col 0))
-          (display (~a " get values=" (grid-neighbor-vals-get g-old (list row col)))))
       (grid-set! g-new row col
                  (cell-next-gen (grid-get g-old row col)
                                 (grid-neighbor-vals-get g-old (list row col)))))
@@ -156,15 +176,64 @@
 ;;  offset   universe-offset giving how far (x,y) from this universe's uppper left to upper left of starting uni
 (struct universe (grid offset) #:transparent)
 
+; Have the universe evolve for one generation
 (define (universe-generation u)
-  (let* ([g-start (universe-grid u)]
-         [size (grid-size g-start)]
+  (let* ([g-old (universe-grid u)]
+         [size (grid-size g-old)]
          [num-rows (first size)]
          [num-cols (second size)]
-         [f (universe-offset u)]
-         [g-new (grid-create num-rows num-cols)])
-    '()
-    ))
+         [f-old (universe-offset u)]
+         [g-new (grid-generation g-old)])
+    ; Any cells come alive outside the starting grid?
+    (let ([left-side (grid-create num-rows 1)]
+          [right-side (grid-create num-rows 1)]
+          [top-side (grid-create 1 num-cols)]
+          [bot-side (grid-create 1 num-cols)])
+      (for ([row (in-range num-rows)])
+        (grid-set! left-side row 0
+                   (cell-next-gen DEAD
+                                  (grid-neighbor-vals-get g-old (list row -1))))
+        (grid-set! right-side row 0
+                   (cell-next-gen DEAD
+                                  (grid-neighbor-vals-get g-old (list row num-cols)))))
+      (for ([col (in-range num-cols)])
+        (grid-set! top-side 0 col
+                   (cell-next-gen DEAD
+                                  (grid-neighbor-vals-get g-old (list -1 col))))
+        (grid-set! bot-side 0 col
+                   (cell-next-gen DEAD
+                                  (grid-neighbor-vals-get g-old (list num-rows col)))))
+      ; Flag if need to add any sides to new universe's grid
+      (let ([left-side-flag (positive? (apply + (vector->list left-side)))]
+            [right-side-flag (positive? (apply + (vector->list right-side)))]
+            [top-side-flag (positive? (apply + (vector->list top-side)))]
+            [bot-side-flag (positive? (apply + (vector->list bot-side)))]
+            [u-new-width num-cols]  ; Will be width of ending universe's grid
+            [u-new-hgt num-rows]
+            [u-new-f-increment (list 0 0)])  ; Will add to offset at end
+        ; With the flags, figure the width and height of new grid
+        (when left-side-flag
+          (set! u-new-width (+ u-new-width 1))
+          (set! u-new-f-increment (list (+ (first u-new-f-increment) 1) (second u-new-f-increment))))  ; also adjust offset
+        (when right-side-flag
+          (set! u-new-width (+ u-new-width 1)))
+        (when top-side-flag
+          (set! u-new-hgt (+ u-new-hgt 1))
+          (set! u-new-f-increment (list (first u-new-f-increment) (+ (second u-new-f-increment) 1))))
+        (when bot-side-flag
+          (set! u-new-hgt (+ u-new-hgt 1)))
+        (let ([u-new-g (grid-create u-new-width u-new-hgt)])
+          (grid-copy g-new u-new-g u-new-f-increment)  ; copy changes inside grid, with increment offset
+          (when left-side-flag
+            (grid-copy-col left-side g-new (list 1 0)))
+          (when right-side-flag
+            (grid-copy-col right-side g-new (list 1 num-cols)))
+          (when top-side-flag
+            (grid-copy top-side g-new (list 0 1)))
+          (when bot-side-flag
+            (grid-copy bot-side g-new (list 0 1)))
+          (universe u-new-g (list (+ (first u-new-f-increment) (first f-old))
+                                  (+ (second u-new-f-increment (second f-old))))))))))
 
 (define (universe-set! u x y value)
   (let* ([g (universe-grid u)]

@@ -289,13 +289,14 @@
       (max (length (first list-of-lists))
            (longest-list (rest list-of-lists)))))
 
-; list of lines -> grid
+;; list of lines -> grid
+;; Parse the list of input files lines and return the grid
 (define (parse-lines-to-grid line-lst)
   (when (empty? line-lst)
     (error "No non-comment lines in the input file"))
   (let* ([parsed-list (parse-lines line-lst)]
          [num-rows (length parsed-list)]
-         [num-cols (longest-list parsed-list)]
+         [num-cols (longest-list parsed-list)]  ; The longest of the input lines defines the number of cols 
          [g (grid-create num-rows num-cols)])
     (for ([row parsed-list]
           [x (in-range num-rows)])
@@ -309,13 +310,22 @@
          parse-lines-to-grid)
 
 ;; =============================================
+;;  Run a game for a number of steps
+(define (run u fn-out steps verbose)
+  (displayln (~a "RUN: universe=" (universe->string u)
+                 "\n output-filename=" fn-out
+                 "\n steps=" steps
+                 "\n verbose=" verbose)))
+
+
+;; =============================================
 ;;  Run from the command line
 
 ; Define the command line parameters
 (define verbose? (make-parameter #f))  
 (define input-filename (make-parameter null))
-(define output-filename (make-parameter null))
-(define steps (make-parameter "-1")) ;; number of steps to run
+(define output-filename (make-parameter "game"))
+(define steps (make-parameter 1)) ;; number of steps to run
 
 ;; Output files have this extension so Asymtote knows what to expect
 (define OUTPUT-FILE-EXTENSION ".life")
@@ -326,34 +336,24 @@
   (command-line
    #:usage-help 
    "Simulate a Game of Life."
-   "Put the starting rectangular grid in a file with . for dead and * for alive."
+   "Put the starting rectangular grid in a file, with . for dead and * for alive."
+   "Comment character is # at the start of a line."
    #:once-each
    [("-v" "--verbose") "Verbose mode" (verbose? #t)]
    [("-f" "--filename") fn "Name of file with the starting grid" (input-filename fn)]
    [("-o" "--output-filename") outfile "Prefix of basename of file with output grid" (output-filename outfile)]
-   [("-s" "--steps") slmt "Number of generations" (steps slmt)]
+   [("-s" "--steps") st "Number of generations" (steps (string->number st))]
    #:args  () (void))
-  
+   ; #:args (input-filename) ; expect one command-line argument: <filename>
+  ;(void))
   ;; Read the file with the program
-  (define INPUT-LINES '())  ;; list of file lines, one string per instruction
   (if (null? (input-filename))
-    (set! INPUT-LINES "") ;; should instead fail?
-    (set! INPUT-LINES
-          (string-split (port->string (open-input-file (input-filename)) #:close? #t) "\n")))
-  ; (printf "INPUT-LINES=~s\n" INPUT-LINES)
-;  (let* ([tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
-;         [delta-map (tm->delta-map tm)]
-;         [epsilon-map (machinestruct-epsilonmap tm)]
-;         [epsilon-closure (epsilon-closure-make epsilon-map (all-states-get delta-map epsilon-map))])
-;;          [history (yield-star tm INITIAL-TAPE #:silent #t)])
-;;     (when (not (silent?))
-;;       (writeln (string-join (history->string-list history) "\n")))
-;;    (decide tm history)
-;    (printf "tm=~s\n" tm)
-;    )
-
-  ; (printf "~a\n" (yield-star (parse PDM-LINES) (tape) #:silent (silent?)))  ; print the result to stdout
-)
+      (error "No input file name given") 
+      (let* ([input-lines (string-split (port->string (open-input-file (input-filename)) #:close? #t) "\n")]
+             [g (parse-lines-to-grid input-lines)]
+             [initial-u (universe g (list 0 0))])
+        (run initial-u (output-filename) (steps) (verbose?))))
+  )
 
 
 

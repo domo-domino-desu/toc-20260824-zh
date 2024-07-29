@@ -114,6 +114,14 @@
    )) ;; end suite and tests
 
 
+;; Convenience grid for testing
+(define (blinker-make)  ; horizontal blinker
+  (let* ([g (grid-create 3 3)])
+    (grid-set! g 1 0 ALIVE) 
+    (grid-set! g 1 1 ALIVE) 
+    (grid-set! g 1 2 ALIVE)
+    g))
+
 ;; ===== Generation of grids
 (define generation-tests
   (test-suite
@@ -138,13 +146,10 @@
       (check-equal? (cell-next-gen cell-val nbr-val-list) DEAD "cell alive, two neighbors alive, should yield dead")
       ) 
     )
-
+   
    (test-case
     "Do a grid generation"
-    (let ([g-old (grid-create 3 3)])
-      (grid-set! g-old 1 0 ALIVE) 
-      (grid-set! g-old 1 1 ALIVE) 
-      (grid-set! g-old 1 2 ALIVE)
+    (let ([g-old (blinker-make)])
       (let ([g-new (grid-generation g-old)])
         (display (~a "New grid: " (grid->string g-new)))
         (check-true (string=? (grid->string g-new) ".*.\n.*.\n.*.") "grid->generation didn't produce expected new grid")
@@ -167,6 +172,15 @@
            [oset (list 0 0)]
            [u (universe g oset)])
       (check-pred universe? u "universe created")
+      (displayln (universe->string u)))
+    )
+  
+   (test-case
+    "Run a universe for a generation"
+    (let* ([g (blinker-make)]
+           [oset (list 0 0)]
+           [u (universe g oset)])
+      (displayln (universe->string (universe-generation u)))
       ) 
     )
 
@@ -174,13 +188,84 @@
    )) ;; end suite and tests
 
 
+
+;; ===== Parsing lines from input file
+(define parse-tests
+  (test-suite
+   "Test line-parsing functions"
+  
+   (test-case
+    "Parse single lines"
+    (let* ([lne ".*."]
+           [r (parse-line lne)])
+      ;(displayln r)
+      (check-pred list? r "parse-line should return a list")
+      (check-eqv? (length r) (string-length lne) "parse-line should return a list as long as the string"))
+    ; Put a newline on the end
+    (let* ([lne ".*.\n"]  
+           [r (parse-line lne)])
+      (check-pred list? r "parse-line should return a list")
+      (check-eqv? (length r) 3 "parse-line should return a list as long as the string, without the newline"))
+     )
+    (let* ([lne ".*."]
+           [r (parse-line lne)])
+      ;(displayln r)
+      (check-equal? r (list DEAD ALIVE DEAD) "parse-line should return list with DEAD's and ALIVE's"))
+
+   (test-case
+    "Parse multiple lines"
+    (let* ([lnes (list ".*." "**.")]
+           [r (parse-lines lnes)])
+      ;(displayln r)
+      (check-pred list? r "parse-lines should return a list")
+      (check-eqv? (length r) (length lnes) "parse-lines should return a list as long as the number of lines"))
+    )
+    (let* ([lnes (list ".*." "  # comment" "**.")]
+           [r (parse-lines lnes)])
+      ;(displayln r)
+      (check-pred list? r "parse-lines should return a list")
+      (check-eqv? (length r) 2 "parse-lines should not count comment lines")
+    )
+
+   (test-case
+    "Parse lines to a grid"
+    (let* ([lnes (list ".*." "**.")]
+           [g (parse-lines-to-grid lnes)])
+      ; (displayln (grid->string g))
+      (check-true (string=? (grid->string g) ".*.\n**.") "parse-lines-to-grid didn't produce expected grid")
+      )
+    ; Include a comment line
+    (let* ([lnes (list "# comment" ".*." "**.")]
+           [g (parse-lines-to-grid lnes)])
+      (check-true (string=? (grid->string g) ".*.\n**.") "parse-lines-to-grid didn't produce expected grid")
+      )
+    ; Later line shorter
+    (let* ([lnes (list "# comment" ".*." ".")]
+           [g (parse-lines-to-grid lnes)])
+      (check-true (string=? (grid->string g) ".*.\n...") "parse-lines-to-grid didn't produce expected grid for mixed-length lines")
+      (check-equal? (second (grid-size g)) 3 "Expected grid to have total of three cols")
+      )
+    ; Earlier line shorter
+    (let* ([lnes (list "# comment" "." "**.")]
+           [g (parse-lines-to-grid lnes)])
+      (check-true (string=? (grid->string g) "...\n**.") "parse-lines-to-grid didn't produce expected grid for earlier line shorter")
+      (check-equal? (second (grid-size g)) 3 "Expected grid to have three cols")
+      )
+    )
+
+    )) ;; end suite and tests
+
+
 ;; ===================================================
 
 ;; Tests for creation and manipulation of grids
-(run-tests creation-tests)
+; (run-tests creation-tests)
 
 ;;  Tests for getting the next generation of a grid
-(run-tests generation-tests)
+;(run-tests generation-tests)
 
 ;;  Tests for the evolution of a universe
-(run-tests universe-tests)
+; (run-tests universe-tests)
+
+;;  Tests for parsing lines from the input file
+(run-tests parse-tests)

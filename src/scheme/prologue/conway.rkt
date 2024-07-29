@@ -1,5 +1,11 @@
+#! /usr/bin/env racket
 #lang racket
 ;; Conway's Game of Life
+
+;; Run from the command line
+(require racket/cmdline)
+
+
 
 ;; I/O files are plain text with arrays of *'s and .'s for alive cell and dead cell
 (define ALIVE-CH #\*)
@@ -176,33 +182,42 @@
 ;;  offset   universe-offset giving how far (x,y) from this universe's uppper left to upper left of starting uni
 (struct universe (grid offset) #:transparent)
 
+(define (universe->string u)
+  (let* ([g (universe-grid u)]
+         [oset (universe-offset u)]
+         [s ""])
+    (~a "grid: " (grid->string g) "\noffset: (" (first oset) ", " (second oset) ")")))
+
+
 ; Have the universe evolve for one generation
 (define (universe-generation u)
+  (displayln "entering universe-generation\n")
   (let* ([g-old (universe-grid u)]
          [size (grid-size g-old)]
          [num-rows (first size)]
          [num-cols (second size)]
          [f-old (universe-offset u)]
          [g-new (grid-generation g-old)])
+    (displayln (~a "  g-new=" (grid->string g-new) "\n"))
     ; Any cells come alive outside the starting grid?
-    (let ([left-side (grid-create num-rows 1)]
-          [right-side (grid-create num-rows 1)]
-          [top-side (grid-create 1 num-cols)]
-          [bot-side (grid-create 1 num-cols)])
+    (let ([left-side (make-vector num-rows)]
+          [right-side (make-vector num-rows)]
+          [top-side (make-vector num-cols)]
+          [bot-side (make-vector num-cols)])
       (for ([row (in-range num-rows)])
-        (grid-set! left-side row 0
-                   (cell-next-gen DEAD
-                                  (grid-neighbor-vals-get g-old (list row -1))))
-        (grid-set! right-side row 0
-                   (cell-next-gen DEAD
-                                  (grid-neighbor-vals-get g-old (list row num-cols)))))
+        (vector-set! left-side row
+                     (cell-next-gen DEAD
+                                    (grid-neighbor-vals-get g-old (list row -1))))
+        (vector-set! right-side row
+                     (cell-next-gen DEAD
+                                    (grid-neighbor-vals-get g-old (list row num-cols)))))
       (for ([col (in-range num-cols)])
-        (grid-set! top-side 0 col
-                   (cell-next-gen DEAD
-                                  (grid-neighbor-vals-get g-old (list -1 col))))
-        (grid-set! bot-side 0 col
-                   (cell-next-gen DEAD
-                                  (grid-neighbor-vals-get g-old (list num-rows col)))))
+        (vector-set! top-side col
+                     (cell-next-gen DEAD
+                                    (grid-neighbor-vals-get g-old (list -1 col))))
+        (vector-set! bot-side col
+                     (cell-next-gen DEAD
+                                    (grid-neighbor-vals-get g-old (list num-rows col)))))
       ; Flag if need to add any sides to new universe's grid
       (let ([left-side-flag (positive? (apply + (vector->list left-side)))]
             [right-side-flag (positive? (apply + (vector->list right-side)))]
@@ -212,6 +227,7 @@
             [u-new-hgt num-rows]
             [u-new-f-increment (list 0 0)])  ; Will add to offset at end
         ; With the flags, figure the width and height of new grid
+        (displayln (~a "  figuring new width and hgt"))
         (when left-side-flag
           (set! u-new-width (+ u-new-width 1))
           (set! u-new-f-increment (list (+ (first u-new-f-increment) 1) (second u-new-f-increment))))  ; also adjust offset
@@ -233,33 +249,111 @@
           (when bot-side-flag
             (grid-copy bot-side g-new (list 0 1)))
           (universe u-new-g (list (+ (first u-new-f-increment) (first f-old))
-                                  (+ (second u-new-f-increment (second f-old))))))))))
-
-(define (universe-set! u x y value)
-  (let* ([g (universe-grid u)]
-         [g-size (grid-size g)]
-         [oset (universe-offset u)]
-         [oset-x (car oset)]
-         [oset-y (cadr oset)])
-    (if (or (negative? x)
-            (negative? y)
-            (>= x (first g-size))
-            (>= y (second g-size)))
-        (universe-set-resize! g oset x y value)
-        (universe (grid-set! x y value) oset))))
-
-
-(define (universe-set-resize! grid offset x y value)
-  '())
-
-
+                                                   (+ (second u-new-f-increment) (second f-old)))))
+          ))))
 
 (provide universe
          universe?
          universe-grid
          universe-offset
-         universe-set!)
+         universe->string
+         universe-generation)
 
+
+;; ===== Parse
+; Input file has a number of lines of the form "periods and stars then \n"
+
+
+; string of '.'s and *'s -> vector of 0's and 1's
+; Turn the string into its internal representation
+(define (parse-line s)
+  (for/list ([ch (in-string s)]
+             #:unless (char=? ch #\newline))
+    (if (eqv? ch ALIVE-CH)
+        ALIVE
+        DEAD)))
+; Comments start a line with the # character
+(define COMMENT-LINE-REGEXP #px"^\\s*#")
+
+; list of strings -> list of list of values
+(define (parse-lines line-lst)
+  (for/list ([line line-lst]
+             #:unless (regexp-match COMMENT-LINE-REGEXP line))
+      (parse-line line)))
+
+;; list of lists -> natural number
+;; Return length of longest constituient lists
+(define (longest-list list-of-lists)
+  (if (null? list-of-lists)
+      0
+      (max (length (first list-of-lists))
+           (longest-list (rest list-of-lists)))))
+
+; list of lines -> grid
+(define (parse-lines-to-grid line-lst)
+  (when (empty? line-lst)
+    (error "No non-comment lines in the input file"))
+  (let* ([parsed-list (parse-lines line-lst)]
+         [num-rows (length parsed-list)]
+         [num-cols (longest-list parsed-list)]
+         [g (grid-create num-rows num-cols)])
+    (for ([row parsed-list]
+          [x (in-range num-rows)])
+      (for ([row-col-entry row]
+            [y (in-range num-cols)])
+        (grid-set! g x y row-col-entry)))
+    g))
+
+(provide parse-line
+         parse-lines
+         parse-lines-to-grid)
+
+;; =============================================
+;;  Run from the command line
+
+; Define the command line parameters
+(define verbose? (make-parameter #f))  
+(define input-filename (make-parameter null))
+(define output-filename (make-parameter null))
+(define steps (make-parameter "-1")) ;; number of steps to run
+
+;; Output files have this extension so Asymtote knows what to expect
+(define OUTPUT-FILE-EXTENSION ".life")
+
+;; This is the Racket construct to execute code from command line but not from an importing module
+(module+ main
+  ;; Read command line arguments  
+  (command-line
+   #:usage-help 
+   "Simulate a Game of Life."
+   "Put the starting rectangular grid in a file with . for dead and * for alive."
+   #:once-each
+   [("-v" "--verbose") "Verbose mode" (verbose? #t)]
+   [("-f" "--filename") fn "Name of file with the starting grid" (input-filename fn)]
+   [("-o" "--output-filename") outfile "Prefix of basename of file with output grid" (output-filename outfile)]
+   [("-s" "--steps") slmt "Number of generations" (steps slmt)]
+   #:args  () (void))
+  
+  ;; Read the file with the program
+  (define INPUT-LINES '())  ;; list of file lines, one string per instruction
+  (if (null? (input-filename))
+    (set! INPUT-LINES "") ;; should instead fail?
+    (set! INPUT-LINES
+          (string-split (port->string (open-input-file (input-filename)) #:close? #t) "\n")))
+  ; (printf "INPUT-LINES=~s\n" INPUT-LINES)
+;  (let* ([tm (parse INPUT-LINES INSTRUCTION-LINE-REGEXP parse-make-instruction instructionstruct)]
+;         [delta-map (tm->delta-map tm)]
+;         [epsilon-map (machinestruct-epsilonmap tm)]
+;         [epsilon-closure (epsilon-closure-make epsilon-map (all-states-get delta-map epsilon-map))])
+;;          [history (yield-star tm INITIAL-TAPE #:silent #t)])
+;;     (when (not (silent?))
+;;       (writeln (string-join (history->string-list history) "\n")))
+;;    (decide tm history)
+;    (printf "tm=~s\n" tm)
+;    )
+
+  ; (printf "~a\n" (yield-star (parse PDM-LINES) (tape) #:silent (silent?)))  ; print the result to stdout
+)
 
 
 

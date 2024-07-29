@@ -186,19 +186,18 @@
   (let* ([g (universe-grid u)]
          [oset (universe-offset u)]
          [s ""])
-    (~a "grid: " (grid->string g) "\noffset: (" (first oset) ", " (second oset) ")")))
-
+    (~a "grid:\n" (grid->string g) "\noffset: (" (first oset) ", " (second oset) ")")))
 
 ; Have the universe evolve for one generation
 (define (universe-generation u)
-  (displayln "entering universe-generation\n")
+  ;(displayln "entering universe-generation\n")
   (let* ([g-old (universe-grid u)]
          [size (grid-size g-old)]
          [num-rows (first size)]
          [num-cols (second size)]
          [f-old (universe-offset u)]
          [g-new (grid-generation g-old)])
-    (displayln (~a "  g-new=" (grid->string g-new) "\n"))
+    ;(displayln (~a "  g-new=" (grid->string g-new) "\n"))
     ; Any cells come alive outside the starting grid?
     (let ([left-side (make-vector num-rows)]
           [right-side (make-vector num-rows)]
@@ -227,7 +226,7 @@
             [u-new-hgt num-rows]
             [u-new-f-increment (list 0 0)])  ; Will add to offset at end
         ; With the flags, figure the width and height of new grid
-        (displayln (~a "  figuring new width and hgt"))
+        ;(displayln (~a "  figuring new width and hgt"))
         (when left-side-flag
           (set! u-new-width (+ u-new-width 1))
           (set! u-new-f-increment (list (+ (first u-new-f-increment) 1) (second u-new-f-increment))))  ; also adjust offset
@@ -239,17 +238,23 @@
         (when bot-side-flag
           (set! u-new-hgt (+ u-new-hgt 1)))
         (let ([u-new-g (grid-create u-new-width u-new-hgt)])
+          ;(displayln (~a "  copying the new grid to the  new universe's grid"))
           (grid-copy g-new u-new-g u-new-f-increment)  ; copy changes inside grid, with increment offset
+          ;(displayln (~a "  .. done copying"))
           (when left-side-flag
-            (grid-copy-col left-side g-new (list 1 0)))
+            (grid-copy-col left-side u-new-g (list 1 0)))
+          ;(displayln (~a "  .. done left-side"))
           (when right-side-flag
-            (grid-copy-col right-side g-new (list 1 num-cols)))
+            (grid-copy-col right-side u-new-g (list 1 num-cols)))
+          ;(displayln (~a "  .. done right-side"))
           (when top-side-flag
-            (grid-copy top-side g-new (list 0 1)))
+            (grid-copy top-side u-new-g (list 0 1)))
+          ;(displayln (~a "  .. done top-side"))
           (when bot-side-flag
-            (grid-copy bot-side g-new (list 0 1)))
-          (universe u-new-g (list (+ (first u-new-f-increment) (first f-old))
-                                                   (+ (second u-new-f-increment) (second f-old)))))
+            (grid-copy bot-side u-new-g (list 0 1)))
+          ;(displayln (~a "  .. done bot-side"))
+         (universe u-new-g (list (+ (first u-new-f-increment) (first f-old))
+                                 (+ (second u-new-f-increment) (second f-old)))))
           ))))
 
 (provide universe
@@ -312,10 +317,17 @@
 ;; =============================================
 ;;  Run a game for a number of steps
 (define (run u fn-out steps verbose)
-  (displayln (~a "RUN: universe=" (universe->string u)
+  (when verbose
+    (displayln (~a "RUN: universe=" (universe->string u)
                  "\n output-filename=" fn-out
                  "\n steps=" steps
                  "\n verbose=" verbose)))
+  (let ([new-universe u])
+    (displayln (~a "Initial universe " (universe->string new-universe) "\n"))
+    (for ([step (in-range steps)])
+      (set! new-universe (universe-generation new-universe))
+      (displayln (~a "\n ===== step " step "\n" (universe->string new-universe) "\n"))
+  )))
 
 
 ;; =============================================

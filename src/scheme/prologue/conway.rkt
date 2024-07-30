@@ -5,8 +5,6 @@
 ;; Run from the command line
 (require racket/cmdline)
 
-
-
 ;; I/O files are plain text with arrays of *'s and .'s for alive cell and dead cell
 (define ALIVE-CH #\*)
 (define DEAD-CH #\.)
@@ -322,12 +320,59 @@
                  "\n output-filename=" fn-out
                  "\n steps=" steps
                  "\n verbose=" verbose)))
-  (let ([new-universe u])
-    (displayln (~a "Initial universe " (universe->string new-universe) "\n"))
-    (for ([step (in-range steps)])
-      (set! new-universe (universe-generation new-universe))
-      (displayln (~a "\n ===== step " step "\n" (universe->string new-universe) "\n"))
-  )))
+    (for/list ([step (in-range steps)])
+      (set! u (universe-generation u))
+      (when verbose
+        (displayln (~a "\n ===== step " step "\n" (universe->string u) "\n")))
+      u
+  ))
+
+
+;; =============================================
+;; list of universes -> list of grids
+;;  Adjust the list of universes so all have the same size, return list of grids
+(define (adjust list-of-universes verbose)
+  (let* ([size (grid-size (universe-grid (last list-of-universes)))]  ; all universes will be this size
+         [num-rows (first size)]
+         [num-cols (second size)])  
+    (for/list ([u list-of-universes])
+      (let ([g (grid-create num-rows num-cols)])
+        (grid-copy (universe-grid u) g (universe-offset u))
+        g
+      ))
+    )
+  )
+
+;; =============================================
+;; print-generations
+;; Output the list of same-sized grids to a sequence of files
+;;   fn  Input file name.  Format is a sequence of same-length lines, each
+;;          composed of `.' for "dead" and `*' for "alive"
+;;  output-fn-prefix  String.  The output files will have form -string-xx.life
+;;  reps  Natural number.  Number of outputs in the sequence.
+;; Output files have this extension so Asymtote knows what to expect
+(define OUTPUT-FILE-SUBDIR "life/")
+(define OUTPUT-FILE-EXTENSION ".life")
+
+(define (print-generations list-of-generations output-fn-prefix)
+  (define (make-output-filename output-filename-prefix dex)
+    (~a OUTPUT-FILE-SUBDIR output-filename-prefix (~r dex #:min-width 3 #:pad-string "0") OUTPUT-FILE-EXTENSION)
+    )
+
+  (define (print-generations-helper grid output-fn-prefix dex)
+    (displayln (~a "print-generations-helper grid=" grid))
+    (let ([outfile (open-output-file
+                    (make-output-filename output-fn-prefix dex)
+                    #:mode 'text #:exists 'replace)])
+      (display (grid->string grid) outfile)
+      (close-output-port outfile)))
+  
+  (displayln (~a "print-generations list-of-generations=" list-of-generations))
+  (for ([g list-of-generations]
+        [dex (in-range (length list-of-generations))])
+    (displayln (~a "g=" g "  dex=" dex))
+    (print-generations-helper g output-fn-prefix dex)))
+
 
 
 ;; =============================================
@@ -336,11 +381,8 @@
 ; Define the command line parameters
 (define verbose? (make-parameter #f))  
 (define input-filename (make-parameter null))
-(define output-filename (make-parameter "game"))
+(define output-filename (make-parameter null))
 (define steps (make-parameter 1)) ;; number of steps to run
-
-;; Output files have this extension so Asymtote knows what to expect
-(define OUTPUT-FILE-EXTENSION ".life")
 
 ;; This is the Racket construct to execute code from command line but not from an importing module
 (module+ main
@@ -352,19 +394,31 @@
    "Comment character is # at the start of a line."
    #:once-each
    [("-v" "--verbose") "Verbose mode" (verbose? #t)]
-   [("-f" "--filename") fn "Name of file with the starting grid" (input-filename fn)]
+   ; [("-f" "--filename") fn "Name of file with the starting grid" (input-filename fn)]
    [("-o" "--output-filename") outfile "Prefix of basename of file with output grid" (output-filename outfile)]
    [("-s" "--steps") st "Number of generations" (steps (string->number st))]
-   #:args  () (void))
-   ; #:args (input-filename) ; expect one command-line argument: <filename>
-  ;(void))
+   ; #:args  () (void))
+   #:args (fn) ; expect one command-line argument: <filename>
+  (input-filename fn)
+  (when (null? (output-filename))
+    (output-filename (last (string-split (input-filename) "/"))))
+  (when (verbose?)
+    (displayln (~a "input filename=" (input-filename)
+                   "\noutput filename=" OUTPUT-FILE-SUBDIR (output-filename)
+                   "\nsteps=" (steps)
+                   "\nverbose=" (verbose?))))
+  )
+  
   ;; Read the file with the program
   (if (null? (input-filename))
       (error "No input file name given") 
       (let* ([input-lines (string-split (port->string (open-input-file (input-filename)) #:close? #t) "\n")]
              [g (parse-lines-to-grid input-lines)]
-             [initial-u (universe g (list 0 0))])
-        (run initial-u (output-filename) (steps) (verbose?))))
+             [initial-u (universe g (list 0 0))]
+             [list-of-universes (run initial-u (output-filename) (steps) (verbose?))])
+        (print-generations (adjust list-of-universes (verbose?)) (output-filename))
+        (void)
+        ))
   )
 
 

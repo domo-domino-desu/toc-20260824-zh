@@ -1,7 +1,7 @@
 #lang racket
-;; conway-test.rkt
+;; life-test.rkt
 (require rackunit
-         "conway.rkt")
+         "life.rkt")
 (require rackunit/text-ui) ; to run the test suites
 
 
@@ -151,7 +151,7 @@
     "Do a grid generation"
     (let ([g-old (blinker-make)])
       (let ([g-new (grid-generation g-old)])
-        (display (~a "New grid: " (grid->string g-new)))
+        ; (display (~a "New grid: " (grid->string g-new)))
         (check-true (string=? (grid->string g-new) ".*.\n.*.\n.*.") "grid->generation didn't produce expected new grid")
        )
       )
@@ -172,7 +172,8 @@
            [oset (list 0 0)]
            [u (universe g oset)])
       (check-pred universe? u "universe created")
-      (displayln (universe->string u)))
+      ; (displayln (universe->string u)))
+    )
     )
   
    (test-case
@@ -180,7 +181,8 @@
     (let* ([g (blinker-make)]
            [oset (list 0 0)]
            [u (universe g oset)])
-      (displayln (universe->string (universe-generation u)))
+      ; (displayln (universe->string (universe-generation u))
+      (check-pred universe? u "universe created")
       ) 
     )
 
@@ -259,13 +261,13 @@
 ;; ===================================================
 
 ;; Tests for creation and manipulation of grids
-; (run-tests creation-tests)
+(run-tests creation-tests)
 
 ;;  Tests for getting the next generation of a grid
-;(run-tests generation-tests)
+(run-tests generation-tests)
 
 ;;  Tests for the evolution of a universe
-; (run-tests universe-tests)
+(run-tests universe-tests)
 
 ;;  Tests for parsing lines from the input file
 (run-tests parse-tests)

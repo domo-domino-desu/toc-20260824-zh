@@ -5,6 +5,27 @@
 ;; Run from the command line
 (require racket/cmdline)
 
+; Basic calling under Linux
+;   ./life.rkt -s 5 blinker.init
+; This runs five generations of the game specified in the initial file, storing the output in five files
+; blinker000.life .. blinker004.life
+;
+; = Code Details =
+;
+; Making a life simulation is easy, if you ignore that the grid can grow from one generation to another.
+; This code allows for growth.  At each step it checks if any cells surrounding the current grid come alive.  If so,
+; it adds a line of surrounding cells.  At the end it goes back and adjusts all the grids to the same size.
+;
+; To do the adjustment, a _universe_ consists of a grid and a pair offset.   The offset keeps track of whether
+; extra cells were added on the top, bottom, left, or right of the current grid, and accumulates over the
+; list of universe generations.
+;
+; = History =
+; 2024-Aug-01 Jim Hefferon CC-BY-SA 4.0  Written
+
+
+;; ===========================
+;; Characters 
 ;; I/O files are plain text with arrays of *'s and .'s for alive cell and dead cell
 (define ALIVE-CH #\*)
 (define DEAD-CH #\.)
@@ -314,18 +335,22 @@
 
 ;; =============================================
 ;;  Run a game for a number of steps
-(define (run u fn-out steps verbose)
+(define (run initial-u fn-out steps verbose)
   (when verbose
-    (displayln (~a "RUN: universe=" (universe->string u)
+    (displayln (~a "RUN: universe=" (universe->string initial-u)
                  "\n output-filename=" fn-out
                  "\n steps=" steps
                  "\n verbose=" verbose)))
-    (for/list ([step (in-range steps)])
-      (set! u (universe-generation u))
-      (when verbose
-        (displayln (~a "\n ===== step " step "\n" (universe->string u) "\n")))
-      u
-  ))
+  (let* ([u initial-u]
+        [list-of-generations 
+         (for/list ([step (in-range steps)])
+           (set! u (universe-generation u))
+           (when verbose
+             (displayln (~a "\n ===== step " step "\n" (universe->string u) "\n")))
+           u
+           )])
+    (cons initial-u list-of-generations))  ;; initial-u is first on list
+  )
 
 
 ;; =============================================
@@ -356,21 +381,21 @@
 
 (define (print-generations list-of-generations output-fn-prefix)
   (define (make-output-filename output-filename-prefix dex)
-    (~a OUTPUT-FILE-SUBDIR output-filename-prefix (~r dex #:min-width 3 #:pad-string "0") OUTPUT-FILE-EXTENSION)
+    (~a output-filename-prefix (~r dex #:min-width 3 #:pad-string "0") OUTPUT-FILE-EXTENSION)
     )
 
   (define (print-generations-helper grid output-fn-prefix dex)
-    (displayln (~a "print-generations-helper grid=" grid))
+    ; (displayln (~a "print-generations-helper grid=" grid))
     (let ([outfile (open-output-file
                     (make-output-filename output-fn-prefix dex)
                     #:mode 'text #:exists 'replace)])
       (display (grid->string grid) outfile)
       (close-output-port outfile)))
   
-  (displayln (~a "print-generations list-of-generations=" list-of-generations))
+  ; (displayln (~a "print-generations list-of-generations=" list-of-generations))
   (for ([g list-of-generations]
         [dex (in-range (length list-of-generations))])
-    (displayln (~a "g=" g "  dex=" dex))
+    ; (displayln (~a "g=" g "  dex=" dex))
     (print-generations-helper g output-fn-prefix dex)))
 
 
@@ -389,19 +414,24 @@
   ;; Read command line arguments  
   (command-line
    #:usage-help 
-   "Simulate a Game of Life."
+   "Simulate Conway's Game of Life."
    "Put the starting rectangular grid in a file, with . for dead and * for alive."
    "Comment character is # at the start of a line."
    #:once-each
-   [("-v" "--verbose") "Verbose mode" (verbose? #t)]
-   ; [("-f" "--filename") fn "Name of file with the starting grid" (input-filename fn)]
-   [("-o" "--output-filename") outfile "Prefix of basename of file with output grid" (output-filename outfile)]
+   [("-o" "--output-filename") outfile "Prefix of basename of file with output grid (default matches input filename)"
+                               (output-filename outfile)]
    [("-s" "--steps") st "Number of generations" (steps (string->number st))]
+   [("-v" "--verbose") "Verbose mode" (verbose? #t)]
    ; #:args  () (void))
    #:args (fn) ; expect one command-line argument: <filename>
   (input-filename fn)
-  (when (null? (output-filename))
-    (output-filename (last (string-split (input-filename) "/"))))
+  (when (null? (output-filename))  ; default is chosen from input but with .life ending
+    (let* ([basename (last (string-split (input-filename) "/"))]
+           [prefix-parts (string-split basename ".")])
+      (if (null? (cdr prefix-parts))
+          (output-filename (car prefix-parts))
+          (output-filename (string-join (drop-right prefix-parts 1) ".")))
+      ))
   (when (verbose?)
     (displayln (~a "input filename=" (input-filename)
                    "\noutput filename=" OUTPUT-FILE-SUBDIR (output-filename)

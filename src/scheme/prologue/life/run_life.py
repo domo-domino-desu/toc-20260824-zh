@@ -89,82 +89,89 @@ def critical(s, level=1):
 # ============================================
 
 GAMES = [("beacon.init",10),
-         ("beehive.init",1),
-         ("blinker.init",2),
-         ("block.init",1),
-         ("eater.init",0),
-         ("eateranim.init",35),
-         ("glider.init",0),
-         ("glideranim.init",16),
-         ("glideranimr.init",16),
-         ("lonely.init",1),
-         ("mwss.init",0),
-         ("mwssanim.init",28),
-         ("rabbits.init",0),
          ]
+         # ("beehive.init",1),
+         # ("blinker.init",2),
+         # ("block.init",1),
+         # ("eater.init",0),
+         # ("eateranim.init",35),
+         # ("glider.init",0),
+         # ("glideranim.init",16),
+         # ("glideranimr.init",16),
+         # ("lonely.init",1),
+         # ("mwss.init",0),
+         # ("mwssanim.init",28),
+         # ("rabbits.init",0),
+         # ]
 
+PROLOGUE_ASY_LIFE_RELATIVE_DIR = "../../../prologue/asy/life/"
+    
 
-""" Run all the Game of Life simulations, giving output gameboards as files.
-  fn  string Initial gameboard, such as blinker.init
-  num_steps  integer  Number of generations to run.
-  verbose=False
-Output file names will be like: blinker000.life, .. blinker008.life if
-num_steps=8.  The 000 file is the init file (stripped of comments).
-"""
-def run_all_inits(games, verbose=False):
+def run_all_games(games, verbose=False):
+    """ Run all the Game of Life simulations, giving output gameboards as files.
+    fn  string Initial gameboard. If using `blinker.init' then fn=`blinker'
+    num_steps  integer  Number of generations to run.
+    verbose=False
+    Output file names will be like: blinker000.life, .. blinker008.life if
+    num_steps=8.  The 000 file is the init file stripped of comments.
+    """
     for (fn,num_steps) in games:
-        # Copy the file over
+        # Copy the file from src/prologue/asy/life to here
         try:
-            retcode = call("cp" + " ../../../prologue/asy/life/"+fn+ " .", shell=True)
-            if retcode < 0:
+            r = subprocess.run(["cp", PROLOGUE_ASY_LIFE_RELATIVE_DIR+fn, "."], shell=True)
+            if r.returncode < 0:
                 print("File cp was terminated by signal", -retcode, file=sys.stderr)
             else:
-                if retcode!=0:
-                    print("cp returned", retcode, file=sys.stderr)
+                if r.returncode !=0:
+                    print("cp returned nonzero code:", r.returncode, file=sys.stderr)
         except OSError as e:
             print("cp execution failed:", e, file=sys.stderr)
         # Run the simulator
         run_one_init(fn, num_steps, verbose=verbose)
-        args=["./life.rkt"]
-        # Create Asymptote file
+        # Create Asymptote file to get num_steps-many .pdf outputs
         make_asy_file(fn, num_steps, verbose=verbose)
-        # Run Asymptote 
+        # Copy the resulting files from here to src/prologue/asy/life
         try:
-            retcode = call("asy" + ASY_FN, shell=True)
-            if retcode < 0:
-                print("Asymptote run was terminated by signal", -retcode, file=sys.stderr)
+            r = subprocess.run(["cp", fn_without_dot_init+".*", PROLOGUE_ASY_LIFE_RELATIVE_DIR], shell=True)
+            if r.returncode < 0:
+                print("File cp back was terminated by signal", -retcode, file=sys.stderr)
             else:
-                if retcode!=0:
-                    print("Asymptote run returned", retcode, file=sys.stderr)
+                if r.returncode !=0:
+                    print("cp back returned nonzero code:", r.returncode, file=sys.stderr)
         except OSError as e:
-            print("Asymptote execution failed:", e, file=sys.stderr)
+            print("cp back execution failed:", e, file=sys.stderr)
     return None
 
 
-""" Run one Game of Life simulation, giving output gameboards as files.
-  fn  string Initial gameboard, such as blinker.init
-  num_steps  integer  Number of generations to run.
-  verbose=False
-Output file names will be like: blinker000.life, .. blinker008.life if
-num_steps=8.  The 000 file is the init file (stripped of comments).
-"""
-def run_one_init(fn, num_steps, verbose=False):
+def run_one_game(fn, num_steps, verbose=False):
+    """ Run one Game of Life simulation, giving output gameboards as files.
+    fn  string Initial gameboard, such as blinker.init
+    num_steps  integer  Number of generations to run.
+    verbose=False
+    Output file names will be like: blinker000.life, .. blinker008.life if
+    num_steps=8.  The 000 file is the init file (stripped of comments).
+    """
     args=["./life.rkt"]
     args.append("-s"+str(num_steps))
     args.append(fn)
     # Run the command
-    output = subprocess.run(args,capture_output=True)
-    if verbose:
-        print("\n===== Result of command "," ".join(args),"\n")
-        print('Return code:', str(output.returncode), "\n")
-        print('Output:',output.stdout.decode("utf-8"),"\n")
-    return output.returncode
+    try:
+        r = subprocess.run([args, shell=True, capture_output=True)
+        if r.returncode < 0:
+            print("Run one Life game was terminated by signal", -retcode, file=sys.stderr)
+        else:
+            if r.returncode !=0:
+                print("Run one Life game returned nonzero code:", r.returncode, file=sys.stderr)
+    except OSError as e:
+        print("Run one Life game execution failed:", e, file=sys.stderr)
+    return r.returncode
 
-ASY_FN = "life_file.asy"
-ASY_FILE_HEAD="""// life_file.asy
+ASY_FILE_CONTENTS="""// life_file.asy
 // Make a graphic for the Game of Life topic
+// This file generated by src/scheme/prologue/life/run_life.py
+
 // Set up defaults
-settings.outformat = \"pdf\"
+settings.outformat = \"pdf\";
 
 // Set up LaTeX defaults 
 import settexpreamble;
@@ -173,25 +180,38 @@ settexpreamble();
 import jh;
 
 import life;
+
+string fn = \"{0}\";
+for (int dex=0; dex<={1}; ++dex) {{
+  picture p = one_gameboard({0},fn,dex,0.25cm);
+  shipout(fn+format(\"%02d\",dex), p);
+}}
 """
 def make_asy_file(fn, num_steps, verbose=False):
-    with open(ASY_FN, 'w', encoding="utf-8") as f:
-        f.write(ASY_FILE_HEAD)
-        f.write("// === code for this file ==")
-        f.write("string fn = \"{0}\";".format(fn))
-        f.write("for (int dex=0; dex<={0}; ++dex) {".format(num_steps))
-        f.write("  picture p = one_gameboard({0},fn,dex,0.25cm);".format(fn))
-        f.write("  shipout(fn+format(\"%02d\",dex), p);")
-        f.write("]")
+    with open(fn+"_all.asy", 'w', encoding="utf-8") as f:
+        f.write(ASY_FILE_CONTENTS.format(fn, num_steps))
 
 
 # ===========================================================
 def main(args):
-    if args.debug:
-        DEBUG=True
     if args.verbose:
         VERBOSE=True
-    make_asy_file('test',42,verbose)
+    if args.filename and args.steps:
+        fn = args.filename
+        if fn.endswith('.init'):
+            fn = fn[:5]
+        steps = int(args.steps)
+        games = [(filename, steps)]
+    elif args.filename:
+        log.info("If you give a filename you must give a number of steps (it canbe 0)")
+        os._exit(2)
+    elif args.steps:
+        log.info("If you give a number of steps then you must give a filename")
+        os._exit(2)
+    else:
+        games = GAMES
+    run_all_games(games, True)
+    # make_asy_file('test',42)
         
 # ===========================================================
 if __name__ == '__main__':
@@ -206,10 +226,10 @@ if __name__ == '__main__':
                             action='store',
                             default=None,
                             help="File name")
-        parser.add_argument('-D', '--debug',
-                            action='store_true',
-                            default=DEBUG,
-                            help="Run debugging code. Default: {0!s}".format(DEBUG))
+        parser.add_argument('-s', '--steps',
+                            action='store',
+                            default=None,
+                            help="Number of generations to run")
         parser.add_argument('-L', '--log_level',
                             action='store',
                             type=str,
@@ -226,12 +246,10 @@ if __name__ == '__main__':
         log.info("{0!s} Started".format(parser.prog))
         args = parser.parse_args()
         _set_log_level(log,args.log_level)        
-        if args.debug:
+        if args.verbose:
             _set_log_level(log_fh,"DEBUG")
+            _set_log_level(log_sh,"DEBUG")
             _set_log_level(log,"DEBUG")
-        elif args.verbose:
-            _set_log_level(log_fh,"INFO")
-            _set_log_level(log,"INFO")
         main(args)
         _set_log_level(log,"INFO")
         log.info("{0!s} Ended.  Elapsed time {1:0.2f} sec".format(parser.prog,time.time() - start_time))

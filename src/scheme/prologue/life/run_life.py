@@ -58,7 +58,7 @@ _set_log_level(log)
 # Log errors to the console
 log_sh = logging.StreamHandler(stream=sys.stderr)
 log_sh.setFormatter(logging.Formatter('%(levelname)s - Line: %(lineno)d\n  %(message)s'))
-_set_log_level(log_sh,"ERROR")
+_set_log_level(log_sh,"WARNING")
 log.addHandler(log_sh)
 # Log most everything to a file
 log_fh = logging.FileHandler(os.path.abspath(os.path.join(
@@ -88,7 +88,7 @@ def critical(s, level=1):
 
 # ============================================
 
-GAMES = [("beacon.init",10),
+GAMES = [("beacon",10),
          ]
          # ("beehive.init",1),
          # ("blinker.init",2),
@@ -109,8 +109,7 @@ PROLOGUE_ASY_LIFE_RELATIVE_DIR = "../../../prologue/asy/life/"
 
 def run_all_games(games, verbose=False):
     """ Run all the Game of Life simulations, giving output gameboards as files.
-    fn  string Initial gameboard. If using `blinker.init' then fn=`blinker'
-    num_steps  integer  Number of generations to run.
+    games list of pairs (fn,num_steps)
     verbose=False
     Output file names will be like: blinker000.life, .. blinker008.life if
     num_steps=8.  The 000 file is the init file stripped of comments.
@@ -118,52 +117,51 @@ def run_all_games(games, verbose=False):
     for (fn,num_steps) in games:
         # Copy the file from src/prologue/asy/life to here
         try:
-            r = subprocess.run(["cp", PROLOGUE_ASY_LIFE_RELATIVE_DIR+fn, "."], shell=True)
+            s = " ".join(["cp", PROLOGUE_ASY_LIFE_RELATIVE_DIR+fn+'.init', "."])
+            log.info("Issued subprocess: "+s)
+            r = subprocess.run(s, shell=True)
             if r.returncode < 0:
-                print("File cp was terminated by signal", -retcode, file=sys.stderr)
-            else:
-                if r.returncode !=0:
-                    print("cp returned nonzero code:", r.returncode, file=sys.stderr)
+                log.error("File cp was terminated by signal "+str(-retcode))
+            elif r.returncode != 0:
+                log.error("cp returned nonzero code: "+str(r.returncode))
         except OSError as e:
-            print("cp execution failed:", e, file=sys.stderr)
+            log.error("cp execution failed: "+str(e))
         # Run the simulator
-        run_one_init(fn, num_steps, verbose=verbose)
+        run_one_game(fn, num_steps, verbose=verbose)
         # Create Asymptote file to get num_steps-many .pdf outputs
         make_asy_file(fn, num_steps, verbose=verbose)
-        # Copy the resulting files from here to src/prologue/asy/life
+        # Move the resulting files from here to src/prologue/asy/life
         try:
-            r = subprocess.run(["cp", fn_without_dot_init+".*", PROLOGUE_ASY_LIFE_RELATIVE_DIR], shell=True)
+            s = " ".join(["mv", fn+"*", PROLOGUE_ASY_LIFE_RELATIVE_DIR])
+            log.info("Issued subprocess: "+s)
+            r = subprocess.run(s, shell=True)
             if r.returncode < 0:
-                print("File cp back was terminated by signal", -retcode, file=sys.stderr)
-            else:
-                if r.returncode !=0:
-                    print("cp back returned nonzero code:", r.returncode, file=sys.stderr)
+                log.error("File mv back was terminated by signal "+str(-retcode))
+            elif r.returncode != 0:
+                log.error("mv back returned nonzero code: "+str(r.returncode))
         except OSError as e:
-            print("cp back execution failed:", e, file=sys.stderr)
+            log.error("mv back execution failed: "+str(e))
     return None
 
 
 def run_one_game(fn, num_steps, verbose=False):
     """ Run one Game of Life simulation, giving output gameboards as files.
-    fn  string Initial gameboard, such as blinker.init
+    fn  string Initial gameboard. If using `blinker.init' then fn=`blinker'
     num_steps  integer  Number of generations to run.
     verbose=False
     Output file names will be like: blinker000.life, .. blinker008.life if
     num_steps=8.  The 000 file is the init file (stripped of comments).
     """
-    args=["./life.rkt"]
-    args.append("-s"+str(num_steps))
-    args.append(fn)
-    # Run the command
     try:
-        r = subprocess.run([args, shell=True, capture_output=True)
+        s = " ".join(["./life.rkt", "-s "+str(num_steps), fn+".init"]) 
+        log.info("Issued subprocess: "+s)
+        r = subprocess.run(s, shell=True, capture_output=True)
         if r.returncode < 0:
-            print("Run one Life game was terminated by signal", -retcode, file=sys.stderr)
-        else:
-            if r.returncode !=0:
-                print("Run one Life game returned nonzero code:", r.returncode, file=sys.stderr)
+            log.error("Run one Life game was terminated by signal "+str(-retcode))
+        elif r.returncode !=0:
+            log.error("Run one Life game returned nonzero code: "+str(r.returncode))
     except OSError as e:
-        print("Run one Life game execution failed:", e, file=sys.stderr)
+        log.error("Run one Life game execution failed: "+str(e))
     return r.returncode
 
 ASY_FILE_CONTENTS="""// life_file.asy
@@ -183,11 +181,12 @@ import life;
 
 string fn = \"{0}\";
 for (int dex=0; dex<={1}; ++dex) {{
-  picture p = one_gameboard({0},fn,dex,0.25cm);
+  picture p = one_gameboard(\"{0}\",fn,dex,0.25cm);
   shipout(fn+format(\"%02d\",dex), p);
 }}
 """
 def make_asy_file(fn, num_steps, verbose=False):
+    log.info("make_asy_file: fn="+fn)
     with open(fn+"_all.asy", 'w', encoding="utf-8") as f:
         f.write(ASY_FILE_CONTENTS.format(fn, num_steps))
 
@@ -225,7 +224,7 @@ if __name__ == '__main__':
         parser.add_argument('-f', '--filename',
                             action='store',
                             default=None,
-                            help="File name")
+                            help="File name, usually with .init")
         parser.add_argument('-s', '--steps',
                             action='store',
                             default=None,

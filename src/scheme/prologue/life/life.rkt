@@ -220,8 +220,45 @@
                                 (grid-neighbor-vals-get g-old (list row col)))))
       g-new))
 
+;; Test cells bordering the grid
+;; Return four vectors the left, right, top, and bottom cells (cornercells can't turn on)
+(define (outside-cells g)
+  (let* ([s-pair (grid-size g)]
+         [num-rows (first s-pair)]
+         [num-cols (second s-pair)]
+         [v-left (make-vector num-rows)]
+         [v-right (make-vector num-rows)]
+         [v-top (make-vector num-cols)]
+         [v-bot (make-vector num-cols)])
+         (for ([row (in-range num-rows)])
+           (vector-set! v-left row
+                        (cell-next-gen DEAD
+                                       (grid-neighbor-vals-get g (list row -1))))
+           (vector-set! v-right row
+                        (cell-next-gen DEAD
+                                       (grid-neighbor-vals-get g (list row num-cols)))))
+         (for ([col (in-range num-cols)])
+           (vector-set! v-top col
+                        (cell-next-gen DEAD
+                                       (grid-neighbor-vals-get g (list -1 col))))
+           (vector-set! v-bot col
+                        (cell-next-gen DEAD
+                                       (grid-neighbor-vals-get g (list num-rows col)))))
+  (list v-left v-right v-top v-bot)))
+
+;; Look for alive cells in a vector
+(define (any-alive-cells? v)
+  (let ([flag #f])
+    (for ([c v])
+      (when (not (equal? c DEAD))
+        (set! flag #t)))
+    flag))
+
+
 (provide cell-next-gen
          grid-generation
+         outside-cells
+         any-alive-cells?
          )
 
 

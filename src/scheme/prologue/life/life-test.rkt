@@ -185,6 +185,19 @@
        )
       )
     )
+     
+   (test-case
+    "Check for outside cells"
+    (let* ([g-old (blinker-make)]
+           [g-new (grid-generation g-old)]
+           [out-cells (outside-cells g-new)])
+      (display (~a "New grid:\n" (grid->string g-new)))
+      (check-false (any-alive-cells? (first out-cells)) "Shoud be no alive cells on the left")
+      (check-false (any-alive-cells? (second out-cells)) "Shoud be no alive cells on the right")
+      (check-false (any-alive-cells? (third out-cells)) "Shoud be no alive cells on the top")
+      (check-false (any-alive-cells? (fourth out-cells)) "Shoud be no alive cells on the bot")
+      )
+    )
 
    )) ;; end suite and tests
 
@@ -318,10 +331,10 @@
 ; (run-tests creation-tests)
 
 ;;  Tests for getting the next generation of a grid
-; (run-tests generation-tests)
+(run-tests generation-tests)
 
 ;;  Tests for the evolution of a universe
-(run-tests universe-tests)
+; (run-tests universe-tests)
 
 ;;  Tests for parsing lines from the input file
 ; (run-tests parse-tests)

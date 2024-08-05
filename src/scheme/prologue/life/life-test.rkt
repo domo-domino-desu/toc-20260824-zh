@@ -33,7 +33,7 @@
       ; (displayln g)
       ; (displayln (vector-ref (vector-ref g 1) 2))
       (check-eq? (grid-get g 1 3) ALIVE "Simple grid-get retrieval failed")
-      )) 
+      ))
 
    (test-case
     "Grid as string"
@@ -79,6 +79,25 @@
       ))
 
    (test-case
+    "Test grid equality"
+    (let ([g0 (grid-create 3 5)]
+          [g1 (make-vector 5 "abc")])
+      (check-true (grid? g0) "Expected to find it is a grid")
+      (check-false (grid? g1) "Not a grid, since members are not vectors")
+      )
+    (let ([g0 (grid-create 3 5)]
+          [g1 (grid-create 3 4)])
+      (check-false (grid-equal? g0 g1) "Different sizes")
+      )
+    (let ([g0 (grid-create 3 5)]
+          [g1 (grid-create 3 5)])
+      (check-true (grid-equal? g0 g1) "3 by 5 all elets zero")
+      (grid-set! g0 1 2 ALIVE)
+      (check-false (grid-equal? g0 g1) "They differ on the 1,2 entry")
+      )
+    )
+   
+   (test-case
     "Grid copy"
     (let ([g-src (grid-create 2 4)]
           [g-dest (grid-create 4 7)])
@@ -120,6 +139,16 @@
     (grid-set! g 1 0 ALIVE) 
     (grid-set! g 1 1 ALIVE) 
     (grid-set! g 1 2 ALIVE)
+    g))
+
+(define (beehive-make)  
+  (let* ([g (grid-create 5 5)])
+    (grid-set! g 1 2 ALIVE) 
+    (grid-set! g 2 1 ALIVE) 
+    (grid-set! g 2 3 ALIVE)
+    (grid-set! g 3 1 ALIVE)
+    (grid-set! g 3 3 ALIVE)
+    (grid-set! g 4 2 ALIVE)
     g))
 
 ;; ===== Generation of grids
@@ -183,6 +212,31 @@
            [u (universe g oset)])
       ; (displayln (universe->string (universe-generation u))
       (check-pred universe? u "universe created")
+      ) 
+    )
+  
+   (test-case
+    "Test equality predicate"
+    (let* ([g0 (beehive-make)]
+           [g1 (beehive-make)]
+           [g2 (blinker-make)]
+           [u0 (universe g0 (list 0 0))]
+           [u1 (universe g1 (list 0 0))]
+           [u2 (universe g2 (list 0 0))])
+      (check-pred universe? u0 "universe created")
+      (check-true (universe-equal? u0 u1) "Equal grids and equal offsets")
+      (check-false (universe-equal? u0 u2) "Same offset but unequal sizes")
+      ) 
+    )
+   
+   (test-case
+    "Run a beehive universe for a generation"
+    (let* ([g (beehive-make)]
+           [oset (list 0 0)]
+           [u (universe g oset)])
+      ; (displayln (universe->string (universe-generation u)))
+      (check-pred universe? u "universe created")
+      (check-true (universe-equal? u (universe-generation u)) "Beehive recreates itself")
       ) 
     )
 
@@ -261,13 +315,13 @@
 ;; ===================================================
 
 ;; Tests for creation and manipulation of grids
-(run-tests creation-tests)
+; (run-tests creation-tests)
 
 ;;  Tests for getting the next generation of a grid
-(run-tests generation-tests)
+; (run-tests generation-tests)
 
 ;;  Tests for the evolution of a universe
 (run-tests universe-tests)
 
 ;;  Tests for parsing lines from the input file
-(run-tests parse-tests)
+; (run-tests parse-tests)

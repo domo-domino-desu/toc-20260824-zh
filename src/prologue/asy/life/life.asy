@@ -13,7 +13,7 @@ path cell = box((0,0), (1,1));
 
 // Open/close gameboard file
 string makerelfn(string subdir, string fn, int dex) {
-  return subdir+'/'+fn+format("%02d",dex)+".life";
+  return subdir+'/'+fn+format("%03d",dex)+".life";
 }
 
 file gameboard(string subdir, string fn, int dex) {

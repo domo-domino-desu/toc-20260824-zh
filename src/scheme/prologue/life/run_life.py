@@ -3,10 +3,10 @@
 """
 run_life.py
 
-Generate the PDF's for the Game of Life topic in the Theory of Computation
+Generate the .asy files for the Game of Life topic in the Theory of Computation
 text.
 """
-__version__ = "0.0.1"
+__version__ = "0.95.0"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
 
@@ -17,6 +17,9 @@ import re, string
 import traceback, pprint
 import argparse
 import time
+
+import platform # Check Python version
+from pathlib import Path # Create gameboards dir without race cond
 
 # Global variables spare me from putting them in the call of each fcn.
 VERBOSE = False
@@ -88,24 +91,27 @@ def critical(s, level=1):
 
 # ============================================
 
+# The defaults (game,num_steps)
 GAMES = [("beacon",10),
+         ("beehive",1),
+         ("blinker",2),
+         ("block",1),
+         ("eater",0),
+         ("eateranim",35),
+         ("glider",0),
+         ("glideranim",16),
+         ("glideranimr",16),
+         ("lonely",1),
+         ("mwss",0),
+         ("mwssanim",28),
+         ("rabbits",0),
          ]
-         # ("beehive.init",1),
-         # ("blinker.init",2),
-         # ("block.init",1),
-         # ("eater.init",0),
-         # ("eateranim.init",35),
-         # ("glider.init",0),
-         # ("glideranim.init",16),
-         # ("glideranimr.init",16),
-         # ("lonely.init",1),
-         # ("mwss.init",0),
-         # ("mwssanim.init",28),
-         # ("rabbits.init",0),
-         # ]
 
+# Where the .asy files will be compiled
 PROLOGUE_ASY_LIFE_RELATIVE_DIR = "../../../prologue/asy/life/"
-    
+# Put the gameboards somewhere else, to make the dir more readable
+GAMEBOARDS_DIRNAME = "gameboards"
+PROLOGUE_ASY_LIFE_GAMEBOARDS_DIR = PROLOGUE_ASY_LIFE_RELATIVE_DIR+GAMEBOARDS_DIRNAME
 
 def run_all_games(games, verbose=False):
     """ Run all the Game of Life simulations, giving output gameboards as files.
@@ -123,29 +129,53 @@ def run_all_games(games, verbose=False):
             if r.returncode < 0:
                 log.error("File cp was terminated by signal "+str(-retcode))
             elif r.returncode != 0:
-                log.error("cp returned nonzero code: "+str(r.returncode))
+                log.error("cp command "+s+" returned nonzero code: "+str(r.returncode))
         except OSError as e:
             log.error("cp execution failed: "+str(e))
         # Run the simulator
         run_one_game(fn, num_steps, verbose=verbose)
         # Create Asymptote file to get num_steps-many .pdf outputs
         make_asy_file(fn, num_steps, verbose=verbose)
-        # Move the resulting files from here to src/prologue/asy/life
+        # Move the resulting files from here to src/prologue/asy/life/gameboards
         try:
-            s = " ".join(["mv", fn+"*", PROLOGUE_ASY_LIFE_RELATIVE_DIR])
+            fn_gameboard = fn+"[0-9][0-9][0-9].life"
+            s = " ".join(["mv", fn_gameboard, PROLOGUE_ASY_LIFE_GAMEBOARDS_DIR])
             log.info("Issued subprocess: "+s)
             r = subprocess.run(s, shell=True)
             if r.returncode < 0:
-                log.error("File mv back was terminated by signal "+str(-retcode))
+                error("File mv "+fn_gameboard+" terminated by signal "+str(-retcode))
             elif r.returncode != 0:
-                log.error("mv back returned nonzero code: "+str(r.returncode))
+                error("mv "+fn_gameboard+" returned nonzero code: "+str(r.returncode))
         except OSError as e:
-            log.error("mv back execution failed: "+str(e))
+            error("command "+s+" execution failed: "+str(e))
+        # Move the Asymptote driver file to one dir up
+        try:
+            fn_all = fn+"_all.asy"
+            s = " ".join(["mv", fn_all, PROLOGUE_ASY_LIFE_RELATIVE_DIR])
+            log.info("Issued subprocess: "+s)
+            r = subprocess.run(s, shell=True)
+            if r.returncode < 0:
+                error("mv "+fn_all+" terminated by signal "+str(-retcode))
+            elif r.returncode != 0:
+                error("mv "+fn_all+" returned nonzero code: "+str(r.returncode))
+        except OSError as e:
+            error("command "+s+" execution failed: "+str(e))
+        # Run Asymptote
+        # try:
+        #     s = " ".join(["asy", fn+"_all.asy"])
+        #     log.info("Issued subprocess: "+s)
+        #     r = subprocess.run(s, shell=True)
+        #     if r.returncode < 0:
+        #         log.error("asy process was terminated by signal "+str(-retcode))
+        #     elif r.returncode != 0:
+        #         log.error("asy process returned nonzero code: "+str(r.returncode))
+        # except OSError as e:
+        #     log.error("asy process execution failed: "+str(e))
     return None
 
 
 def run_one_game(fn, num_steps, verbose=False):
-    """ Run one Game of Life simulation, giving output gameboards as files.
+    """Run one Game of Life simulation, giving output gameboards as files.
     fn  string Initial gameboard. If using `blinker.init' then fn=`blinker'
     num_steps  integer  Number of generations to run.
     verbose=False
@@ -157,16 +187,17 @@ def run_one_game(fn, num_steps, verbose=False):
         log.info("Issued subprocess: "+s)
         r = subprocess.run(s, shell=True, capture_output=True)
         if r.returncode < 0:
-            log.error("Run one Life game was terminated by signal "+str(-retcode))
+            error("Run one Life game "+s+" was terminated by signal "+str(-retcode))
         elif r.returncode !=0:
-            log.error("Run one Life game returned nonzero code: "+str(r.returncode))
+            error("Run one Life game "+s+" returned nonzero code: "+str(r.returncode))
     except OSError as e:
-        log.error("Run one Life game execution failed: "+str(e))
+        error("Run one Life game "+s+" execution failed: "+str(e))
     return r.returncode
 
 ASY_FILE_CONTENTS="""// life_file.asy
-// Make a graphic for the Game of Life topic
-// This file generated by src/scheme/prologue/life/run_life.py
+// Running Asymptote on this file will make a graphic or a sequence 
+// of graphics {{0}}000.pdf, {{0}}001.pdf, etc. for the Game of Life topic
+// This file is generated by src/scheme/prologue/life/run_life.py
 
 // Set up defaults
 settings.outformat = \"pdf\";
@@ -177,18 +208,19 @@ settexpreamble();
 // Set up Asy defaults
 import jh;
 
+// Get routine one_gameboard(..) that reads a plain text gameboard
 import life;
 
 string fn = \"{0}\";
 for (int dex=0; dex<={1}; ++dex) {{
-  picture p = one_gameboard(\"{0}\",fn,dex,0.25cm);
-  shipout(fn+format(\"%02d\",dex), p);
+  picture p = one_gameboard(\"{2}\",fn,dex,0.25cm);
+  shipout(fn+format(\"%03d\",dex), p);
 }}
 """
 def make_asy_file(fn, num_steps, verbose=False):
     log.info("make_asy_file: fn="+fn)
     with open(fn+"_all.asy", 'w', encoding="utf-8") as f:
-        f.write(ASY_FILE_CONTENTS.format(fn, num_steps))
+        f.write(ASY_FILE_CONTENTS.format(fn, num_steps, GAMEBOARDS_DIRNAME))
 
 
 # ===========================================================
@@ -200,15 +232,21 @@ def main(args):
         if fn.endswith('.init'):
             fn = fn[:5]
         steps = int(args.steps)
-        games = [(filename, steps)]
+        games = [(fn, steps)]
     elif args.filename:
-        log.info("If you give a filename you must give a number of steps (it canbe 0)")
-        os._exit(2)
+        error("If you give a filename you must give a number of steps (it canbe 0)", 2)
     elif args.steps:
-        log.info("If you give a number of steps then you must give a filename")
-        os._exit(2)
+        error("If you give a number of steps then you must give a filename", 2)
     else:
         games = GAMES
+    # If not there, create gameboards dir
+    try:
+        Path(PROLOGUE_ASY_LIFE_GAMEBOARDS_DIR).mkdir(parents=False, exist_ok=True)
+    except FileNotFoundError as e:
+        error("run_life.py: Parent directories of "+PROLOGUE_ASY_LIFE_GAMEBOARDS_DIR+" not found: "+str(e))
+    except FileExistsError as e:
+        error("run_life.py: Cannot make directory "+PROLOGUE_ASY_LIFE_GAMEBOARDS_DIR+" because a file by that name exists already: "+str(e))
+    # Step through all the games
     run_all_games(games, True)
     # make_asy_file('test',42)
         
@@ -220,11 +258,13 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser(description=__doc__+
                                          "  Author: "+__author__
                                          +", Version: "+__version__
-                                         +", License: "+__license__)
+                                         +", License: "+__license__
+                                         +". Filenames and steps come in pairs so if you give one then you must give both"
+                                         +". Best is to give neither, which rund  the defaults: so just $ ./run_life.py.")
         parser.add_argument('-f', '--filename',
                             action='store',
                             default=None,
-                            help="File name, usually with .init")
+                            help="File name, usually ending with .init")
         parser.add_argument('-s', '--steps',
                             action='store',
                             default=None,
@@ -244,11 +284,21 @@ if __name__ == '__main__':
                             help='Give verbose output. Default: {0!s}'.format(VERBOSE))
         log.info("{0!s} Started".format(parser.prog))
         args = parser.parse_args()
-        _set_log_level(log,args.log_level)        
+        _set_log_level(log,args.log_level)
+        # Check the Python version
+        (python_version_major,python_version_minor,python_version_patchlevel) = platform.python_version_tuple()
+        (major,minor)=(int(python_version_major),int(python_version_minor))
+        if major < 3:
+            error("Python version must be 3.5 or more; this is Python "+python_version_major)
+        elif ((major == 3)
+              and (minor < 5)): 
+            error("Python version must be 3.5 or more; this is Python "+python_version_major+"."+python_version_minor)
+        # If debug expected, log everythong
         if args.verbose:
             _set_log_level(log_fh,"DEBUG")
             _set_log_level(log_sh,"DEBUG")
             _set_log_level(log,"DEBUG")
+        # Call the normal running
         main(args)
         _set_log_level(log,"INFO")
         log.info("{0!s} Ended.  Elapsed time {1:0.2f} sec".format(parser.prog,time.time() - start_time))

@@ -51,6 +51,15 @@
 (define (grid-create num-rows num-cols)
   (build-vector num-rows (lambda (y) (make-vector num-cols DEAD))))
 
+(define (grid? g)
+  (if (not (vector? g))
+      #f
+      (let ([flag #t])
+        (for ([i g])
+          (when (not (vector? i))
+            (set! flag #f)))
+        flag)))
+
 ;; Get number of rows, number of cols
 (define (grid-size grid)
   (if (empty? grid)
@@ -113,7 +122,26 @@
         (raise-arguments-error 'jh-write-outside-grid
                                "writing outside the grid"
                                "x" x
-                               "y" y))))
+                               "y" y
+                               "size" size))))
+
+;; Decide if two grids are equal
+(define (grid-equal? g0 g1)
+  (cond
+    [(not (and (grid? g0)
+               (grid? g1))) #f]
+    [(not (equal? (grid-size g0)
+                  (grid-size g1))) #f]
+    [else (let* ([s (grid-size g0)]
+                 [num-rows (first s)]
+                 [num-cols (second s)]
+                 [flag #t])
+            (for* ([r (in-range num-rows)]
+                   [c (in-range num-cols)])
+              (when (not (equal? (grid-get g0 r c)
+                                 (grid-get g1 r c)))
+                (set! flag #f)))
+            flag)]))
 
 ;; Copy contents of grid from src to dest, where (0,0) in src is at upper-left in dest
 (define (grid-copy g-src g-dest upper-left)
@@ -153,10 +181,12 @@
 (provide ALIVE
          DEAD
          grid-create
+         grid?
          grid-size
          grid-get
          grid->string
          grid-display
+         grid-equal?
          grid-neighbor-vals-get
          grid-set!
          grid-copy
@@ -207,16 +237,32 @@
          [s ""])
     (~a "grid:\n" (grid->string g) "\noffset: (" (first oset) ", " (second oset) ")")))
 
+;; Decide if the universes are equal
+(define (universe-equal? u0 u1)
+;  (displayln (~a "entering universe-equal? u0=" (universe->string u0) "\n u1=" (universe->string u1)))
+;  (displayln (~a (or (not (universe? u0)
+;             (not (universe? u1))))))
+;  (displayln "entering cond")
+  (cond [(or (not (universe? u0))
+             (not (universe? u1))) #f]
+        [(not (equal? (universe-offset u0)
+                      (universe-offset u1))) #f]
+;        [else "kkk"]))
+        [else (grid-equal? (universe-grid u0)
+                           (universe-grid u1))]))
+
 ; Have the universe evolve for one generation
-(define (universe-generation u)
-  ;(displayln "entering universe-generation\n")
+(define (universe-generation u [verbose #f])
+  (when verbose
+    (displayln "\n ... entering universe-generation\n"))
   (let* ([g-old (universe-grid u)]
          [size (grid-size g-old)]
          [num-rows (first size)]
          [num-cols (second size)]
          [f-old (universe-offset u)]
          [g-new (grid-generation g-old)])
-    ;(displayln (~a "  g-new=" (grid->string g-new) "\n"))
+    (when verbose 
+      (displayln (~a "  universe-generation: g-new=" (grid->string g-new) "\n")))
     ; Any cells come alive outside the starting grid?
     (let ([left-side (make-vector num-rows)]
           [right-side (make-vector num-rows)]
@@ -257,7 +303,11 @@
         (when bot-side-flag
           (set! u-new-hgt (+ u-new-hgt 1)))
         (let ([u-new-g (grid-create u-new-width u-new-hgt)])
-          ;(displayln (~a "  copying the new grid to the  new universe's grid"))
+          (when verbose
+            (displayln (~a "  universe-generration: copying the new grid to the  new universe's grid"
+                           "\n   g-new=" (grid->string g-new)
+                           "\n   u-new-g=" (grid->string u-new-g)
+                           "\n   u-new-f-increment" u-new-f-increment)))
           (grid-copy g-new u-new-g u-new-f-increment)  ; copy changes inside grid, with increment offset
           ;(displayln (~a "  .. done copying"))
           (when left-side-flag
@@ -281,6 +331,7 @@
          universe-grid
          universe-offset
          universe->string
+         universe-equal?
          universe-generation)
 
 
@@ -337,16 +388,16 @@
 ;;  Run a game for a number of steps
 (define (run initial-u fn-out steps verbose)
   (when verbose
-    (displayln (~a "RUN: universe=" (universe->string initial-u)
-                 "\n output-filename=" fn-out
-                 "\n steps=" steps
-                 "\n verbose=" verbose)))
+    (displayln (~a "ENTERING RUN: universe=" (universe->string initial-u)
+                   "steps=" steps)))
   (let* ([u initial-u]
         [list-of-generations 
          (for/list ([step (in-range steps)])
-           (set! u (universe-generation u))
            (when verbose
-             (displayln (~a "\n ===== step " step "\n" (universe->string u) "\n")))
+             (displayln (~a "\n   === about to run step=" step "\n  universe=" (universe->string initial-u))))
+           (set! u (universe-generation u verbose))
+           (when verbose
+             (displayln (~a "\n  === just ran step=" step "\n  universe=" (universe->string u) "\n")))
            u
            )])
     (cons initial-u list-of-generations))  ;; initial-u is first on list
@@ -434,7 +485,7 @@
       ))
   (when (verbose?)
     (displayln (~a "input filename=" (input-filename)
-                   "\noutput filename=" OUTPUT-FILE-SUBDIR (output-filename)
+                   "\noutput filename=" (output-filename)
                    "\nsteps=" (steps)
                    "\nverbose=" (verbose?))))
   )
@@ -446,6 +497,9 @@
              [g (parse-lines-to-grid input-lines)]
              [initial-u (universe g (list 0 0))]
              [list-of-universes (run initial-u (output-filename) (steps) (verbose?))])
+        (when (verbose?)
+          (for ([u list-of-universes])
+            displayln (~a "next universe:\n" (universe->string u))))
         (print-generations (adjust list-of-universes (verbose?)) (output-filename))
         (void)
         ))

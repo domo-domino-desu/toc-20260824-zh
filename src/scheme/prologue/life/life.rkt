@@ -294,7 +294,7 @@
 ; Have the universe evolve for one generation
 (define (universe-generation u [verbose #f])
   (when verbose
-    (displayln "\n ... entering universe-generation\n"))
+    (displayln (~a "\n ... entering universe-generation ...\n   u=" (universe->string u))))
   (let* ([g-old (universe-grid u)]
          [size (grid-size g-old)]
          [num-rows (first size)]
@@ -317,7 +317,7 @@
            [u-new-hgt num-rows]
            [u-new-f-increment (list 0 0)])  ; Will add to offset at end
       ; Figure the width and height of new grid
-      ;(displayln (~a "  figuring new width and hgt"))
+      (displayln (~a "  figuring new width and hgt: u-new-width=" u-new-width " u-new-hgt=" u-new-hgt))
       (when left-side-flag
         (when verbose 
           (displayln (~a "    left-side-flag: left-side=" left-side "\n")))
@@ -337,7 +337,7 @@
           (displayln (~a "    bot-side-flag: bot-side=" bot-side "\n")))
         (set! u-new-hgt (+ u-new-hgt 1)))
       ; Make output grid
-      (let ([u-new-g (grid-create u-new-width u-new-hgt)])
+      (let ([u-new-g (grid-create u-new-hgt u-new-width)])
         (when verbose
           (displayln (~a "  universe-generation: about to copy the new grid to the new universe's grid"
                          "\n   g-new=" (grid->string g-new)

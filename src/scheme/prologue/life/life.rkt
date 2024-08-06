@@ -168,7 +168,7 @@
                  (+ col start-col)
                  (vector-ref src col)))))
 
-;; Copy a column vector src to the destination dest, starting at (row,col)
+;; Copy a column vector src to the grid destination dest, starting at (row,col)
 (define (grid-copy-col src dest start)
   (let* ([start-row (first start)]
          [start-col (second start)])
@@ -221,11 +221,11 @@
       g-new))
 
 ;; Test cells bordering the grid
-;; Return four vectors the left, right, top, and bottom cells (cornercells can't turn on)
+;; Return four vectors the left, right, top, and bottom cells (corner cells can't turn on)
 (define (outside-cells g)
-  (let* ([s-pair (grid-size g)]
-         [num-rows (first s-pair)]
-         [num-cols (second s-pair)]
+  (let* ([size-pair (grid-size g)]
+         [num-rows (first size-pair)]
+         [num-cols (second size-pair)]
          [v-left (make-vector num-rows)]
          [v-right (make-vector num-rows)]
          [v-top (make-vector num-cols)]
@@ -248,8 +248,11 @@
 
 ;; Look for alive cells in a vector
 (define (any-alive-cells? v)
+  ; (display (~a "entering any-alive-cells?"))
   (let ([flag #f])
-    (for ([c v])
+    (for ([c v]
+          #:break flag)
+      ; (displayln (~a "\n  cell=" c " flag=" flag))
       (when (not (equal? c DEAD))
         (set! flag #t)))
     flag))
@@ -301,67 +304,62 @@
     (when verbose 
       (displayln (~a "  universe-generation: g-new=" (grid->string g-new) "\n")))
     ; Any cells come alive outside the starting grid?
-    (let ([left-side (make-vector num-rows)]
-          [right-side (make-vector num-rows)]
-          [top-side (make-vector num-cols)]
-          [bot-side (make-vector num-cols)])
-      (for ([row (in-range num-rows)])
-        (vector-set! left-side row
-                     (cell-next-gen DEAD
-                                    (grid-neighbor-vals-get g-old (list row -1))))
-        (vector-set! right-side row
-                     (cell-next-gen DEAD
-                                    (grid-neighbor-vals-get g-old (list row num-cols)))))
-      (for ([col (in-range num-cols)])
-        (vector-set! top-side col
-                     (cell-next-gen DEAD
-                                    (grid-neighbor-vals-get g-old (list -1 col))))
-        (vector-set! bot-side col
-                     (cell-next-gen DEAD
-                                    (grid-neighbor-vals-get g-old (list num-rows col)))))
-      ; Flag if need to add any sides to new universe's grid
-      (let ([left-side-flag (positive? (apply + (vector->list left-side)))]
-            [right-side-flag (positive? (apply + (vector->list right-side)))]
-            [top-side-flag (positive? (apply + (vector->list top-side)))]
-            [bot-side-flag (positive? (apply + (vector->list bot-side)))]
-            [u-new-width num-cols]  ; Will be width of ending universe's grid
-            [u-new-hgt num-rows]
-            [u-new-f-increment (list 0 0)])  ; Will add to offset at end
-        ; With the flags, figure the width and height of new grid
-        ;(displayln (~a "  figuring new width and hgt"))
+    (let* ([out-cells (outside-cells g-new)]
+           [left-side (first out-cells)]
+           [right-side (second out-cells)]
+           [top-side (third out-cells)]
+           [bot-side (fourth out-cells)]
+           [left-side-flag (any-alive-cells? left-side)]
+           [right-side-flag (any-alive-cells? right-side)]
+           [top-side-flag (any-alive-cells? top-side)]
+           [bot-side-flag (any-alive-cells? bot-side)]
+           [u-new-width num-cols]  ; Will be width of output universe's grid
+           [u-new-hgt num-rows]
+           [u-new-f-increment (list 0 0)])  ; Will add to offset at end
+      ; Figure the width and height of new grid
+      ;(displayln (~a "  figuring new width and hgt"))
+      (when left-side-flag
+        (when verbose 
+          (displayln (~a "    left-side-flag: left-side=" left-side "\n")))
+        (set! u-new-width (+ u-new-width 1))
+        (set! u-new-f-increment (list (+ (first u-new-f-increment) 1) (second u-new-f-increment))))  ; also adjust offset
+      (when right-side-flag
+        (when verbose 
+          (displayln (~a "    right-side-flag: right-side=" right-side "\n")))
+        (set! u-new-width (+ u-new-width 1)))
+      (when top-side-flag
+        (when verbose 
+          (displayln (~a "    top-side-flag: top-side=" top-side "\n")))
+        (set! u-new-hgt (+ u-new-hgt 1))
+        (set! u-new-f-increment (list (first u-new-f-increment) (+ (second u-new-f-increment) 1))))
+      (when bot-side-flag
+        (when verbose 
+          (displayln (~a "    bot-side-flag: bot-side=" bot-side "\n")))
+        (set! u-new-hgt (+ u-new-hgt 1)))
+      ; Make output grid
+      (let ([u-new-g (grid-create u-new-width u-new-hgt)])
+        (when verbose
+          (displayln (~a "  universe-generation: about to copy the new grid to the new universe's grid"
+                         "\n   g-new=" (grid->string g-new)
+                         "\n   u-new-g=" (grid->string u-new-g)
+                         "\n   u-new-f-increment=" u-new-f-increment)))
+        (grid-copy g-new u-new-g u-new-f-increment)  ; copy changes inside grid, with increment offset
+        ;(displayln (~a "  .. done copying"))
         (when left-side-flag
-          (set! u-new-width (+ u-new-width 1))
-          (set! u-new-f-increment (list (+ (first u-new-f-increment) 1) (second u-new-f-increment))))  ; also adjust offset
+          (grid-copy-col left-side u-new-g (list 1 0)))
+        ;(displayln (~a "  .. done left-side"))
         (when right-side-flag
-          (set! u-new-width (+ u-new-width 1)))
+          (grid-copy-col right-side u-new-g (list 1 num-cols)))
+        ;(displayln (~a "  .. done right-side"))
         (when top-side-flag
-          (set! u-new-hgt (+ u-new-hgt 1))
-          (set! u-new-f-increment (list (first u-new-f-increment) (+ (second u-new-f-increment) 1))))
+          (grid-copy-row top-side u-new-g (list 0 1)))
+        ;(displayln (~a "  .. done top-side"))
         (when bot-side-flag
-          (set! u-new-hgt (+ u-new-hgt 1)))
-        (let ([u-new-g (grid-create u-new-width u-new-hgt)])
-          (when verbose
-            (displayln (~a "  universe-generration: copying the new grid to the  new universe's grid"
-                           "\n   g-new=" (grid->string g-new)
-                           "\n   u-new-g=" (grid->string u-new-g)
-                           "\n   u-new-f-increment" u-new-f-increment)))
-          (grid-copy g-new u-new-g u-new-f-increment)  ; copy changes inside grid, with increment offset
-          ;(displayln (~a "  .. done copying"))
-          (when left-side-flag
-            (grid-copy-col left-side u-new-g (list 1 0)))
-          ;(displayln (~a "  .. done left-side"))
-          (when right-side-flag
-            (grid-copy-col right-side u-new-g (list 1 num-cols)))
-          ;(displayln (~a "  .. done right-side"))
-          (when top-side-flag
-            (grid-copy top-side u-new-g (list 0 1)))
-          ;(displayln (~a "  .. done top-side"))
-          (when bot-side-flag
-            (grid-copy bot-side u-new-g (list 0 1)))
-          ;(displayln (~a "  .. done bot-side"))
-         (universe u-new-g (list (+ (first u-new-f-increment) (first f-old))
-                                 (+ (second u-new-f-increment) (second f-old)))))
-          ))))
+          (grid-copy-row bot-side u-new-g (list num-rows 1)))
+        ;(displayln (~a "  .. done bot-side"))
+        (universe u-new-g (list (+ (first u-new-f-increment) (first f-old))
+                                (+ (second u-new-f-increment) (second f-old)))))
+          )))
 
 (provide universe
          universe?

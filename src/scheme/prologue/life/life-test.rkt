@@ -107,10 +107,22 @@
         (when (odd? (+ row col))
           (grid-set! g-src row col ALIVE)))
       ; Copy src to dest
+      (displayln (~a "source grid is\n" (grid->string g-src)))
       (grid-copy g-src g-dest (list 1 2))
-      ; (displayln (~a "destination grid is\n" (grid->string g-dest)))
+      (displayln (~a "destination grid is\n" (grid->string g-dest)))
       (check-true (string=? (grid->string g-dest) ".......\n...*.*.\n..*.*..\n.......") "grid-copy didn't produce expected string")
-      ))
+      )
+    
+    (let* ([g-src (beehive-make)]
+           [g-src-size (grid-size g-src)]
+           [g-dest (grid-create (first g-src-size) (second g-src-size))])
+      ; Copy src to dest
+      (displayln (~a "source grid is\n" (grid->string g-src)))
+      (grid-copy g-src g-dest (list 0 0))
+      (displayln (~a "destination grid is\n" (grid->string g-dest)))
+      (check-true (grid-equal? g-src g-dest) "grid-copy should give equal grids")
+      )
+    )
 
    (test-case
     "Copy row and column vectors"
@@ -133,7 +145,7 @@
    )) ;; end suite and tests
 
 
-;; Convenience grid for testing
+;; .... Convenience grids for testing ....
 (define (blinker-make)  ; horizontal blinker
   (let* ([g (grid-create 3 3)])
     (grid-set! g 1 0 ALIVE) 
@@ -149,6 +161,26 @@
     (grid-set! g 3 1 ALIVE)
     (grid-set! g 3 3 ALIVE)
     (grid-set! g 4 2 ALIVE)
+    g))
+
+(define (full-grid-make)  ; all cells alive
+  (let* ([g (grid-create 3 3)])
+    (grid-set! g 0 0 ALIVE) 
+    (grid-set! g 0 1 ALIVE) 
+    (grid-set! g 0 2 ALIVE)
+    (grid-set! g 1 0 ALIVE) 
+    (grid-set! g 1 1 ALIVE) 
+    (grid-set! g 1 2 ALIVE)
+    (grid-set! g 2 0 ALIVE) 
+    (grid-set! g 2 1 ALIVE) 
+    (grid-set! g 2 2 ALIVE)
+    g))
+
+(define (full-left-grid-make)  ; all cells alive
+  (let* ([g (grid-create 3 3)])
+    (grid-set! g 0 0 ALIVE) 
+    (grid-set! g 1 0 ALIVE) 
+    (grid-set! g 2 0 ALIVE)
     g))
 
 ;; ===== Generation of grids
@@ -188,17 +220,37 @@
      
    (test-case
     "Check for outside cells"
-    (let* ([g-old (blinker-make)]
+    (let* ([g-old (blinker-make)]  ;;  expect no outside alive cells
            [g-new (grid-generation g-old)]
            [out-cells (outside-cells g-new)])
-      (display (~a "New grid:\n" (grid->string g-new)))
+      ; (display (~a "New grid:\n" (grid->string g-new)))
       (check-false (any-alive-cells? (first out-cells)) "Shoud be no alive cells on the left")
       (check-false (any-alive-cells? (second out-cells)) "Shoud be no alive cells on the right")
       (check-false (any-alive-cells? (third out-cells)) "Shoud be no alive cells on the top")
       (check-false (any-alive-cells? (fourth out-cells)) "Shoud be no alive cells on the bot")
       )
+    (let* ([g (full-grid-make)]  
+           [out-cells (outside-cells g)])
+      ; (display (~a "Full grid:\n" (grid->string g)))
+      (check-true (any-alive-cells? (first out-cells)) "Shoud be all alive cells on the left")
+      (check-true (any-alive-cells? (second out-cells)) "Shoud be all alive cells on the right")
+      (check-true (any-alive-cells? (third out-cells)) "Shoud be all alive cells on the top")
+      (check-true (any-alive-cells? (fourth out-cells)) "Shoud be all alive cells on the bot")
+      )
+    (let* ([g (full-left-grid-make)]  
+           [out-cells (outside-cells g)])
+;      (display (~a "Full left grid:\n" (grid->string g)))
+;      (display (~a "\n  .. left vector:\n" (first out-cells)))
+;      (display (~a "\n  .. right vector:\n" (second out-cells)))
+;      (display (~a "\n  .. top vector:\n" (third out-cells)))
+;      (display (~a "\n  .. bot vector:\n" (fourth out-cells)))
+      (check-true (any-alive-cells? (first out-cells)) "Shoud be all alive cells on the left")
+      (check-false (any-alive-cells? (second out-cells)) "Shoud be all dead cells on the right")
+      (check-false (any-alive-cells? (third out-cells)) "Shoud be all dead cells on the top")
+      (check-false (any-alive-cells? (fourth out-cells)) "Shoud be all dead cells on the bot")
+      )
     )
-
+   
    )) ;; end suite and tests
 
 
@@ -328,10 +380,10 @@
 ;; ===================================================
 
 ;; Tests for creation and manipulation of grids
-; (run-tests creation-tests)
+(run-tests creation-tests)
 
 ;;  Tests for getting the next generation of a grid
-(run-tests generation-tests)
+; (run-tests generation-tests)
 
 ;;  Tests for the evolution of a universe
 ; (run-tests universe-tests)

@@ -59,12 +59,13 @@ picture one_gameboard(string subdir, string fn, int dex, real usize) {
     fill(p, shift(cur_col,cur_row)*cell, color);
   }
   closegameboard(f);
-  // draw the lines bordering cells
+  // write(stdout, format("rows=%d",rows)+format(' cols=%d\n',cols));
+   // draw the lines bordering cells
   for (int i=1; i>rows; --i) { // side-to-side
     draw(p, (0,i)--(cols+1,i), MAINPEN+extendcap+light_color);
   }
   for (int j=0; j<=cols+1; ++j) { // up and down
-    draw(p, (j,1)--(j,rows+1), MAINPEN+extendcap+light_color);
+    draw(p, (j,1)--(j,rows), MAINPEN+extendcap+light_color);
   }
   return p;
 }

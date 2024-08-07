@@ -12,9 +12,10 @@
 ;
 ; = Code Details =
 ;
-; Making a life simulation is easy, if you ignore that the grid can grow from one generation to another.
+; Making a life simulation is easy, if you ignore that the non-dead grid can grow from one generation to another.
 ; This code allows for growth.  At each step it checks if any cells surrounding the current grid come alive.  If so,
-; it adds a line of surrounding cells.  At the end it goes back and adjusts all the grids to the same size.
+; it adds a line of surrounding cells.  At the end it goes back and adjusts the sequence of grids to all be the same
+; size.
 ;
 ; To do the adjustment, a _universe_ consists of a grid and a pair offset.   The offset keeps track of whether
 ; extra cells were added on the top, bottom, left, or right of the current grid, and accumulates over the
@@ -145,6 +146,7 @@
 
 ;; Copy contents of grid from src to dest, where (0,0) in src is at upper-left in dest
 (define (grid-copy g-src g-dest upper-left)
+  ; (displayln (~a "Entering grid-copy g-src=" (grid->string g-src) "\n dest=" (grid->string g-dest)))
   (let* ([g-src-size (grid-size g-src)]
          [g-src-numrows (first g-src-size)]
          [g-src-numcols (second g-src-size)]
@@ -153,6 +155,7 @@
          [uleft-col (second upper-left)])
     (for* ([row (in-range g-src-numrows)]
            [col (in-range g-src-numcols)])
+      ; (displayln (~a "  row=" row " col=" col))
       (grid-set! g-dest
                  (+ row uleft-row)
                  (+ col uleft-col)
@@ -317,7 +320,7 @@
            [u-new-hgt num-rows]
            [u-new-f-increment (list 0 0)])  ; Will add to offset at end
       ; Figure the width and height of new grid
-      (displayln (~a "  figuring new width and hgt: u-new-width=" u-new-width " u-new-hgt=" u-new-hgt))
+      ; (displayln (~a "  figuring new width and hgt: u-new-width=" u-new-width " u-new-hgt=" u-new-hgt))
       (when left-side-flag
         (when verbose 
           (displayln (~a "    left-side-flag: left-side=" left-side "\n")))
@@ -442,17 +445,27 @@
 ;; =============================================
 ;; list of universes -> list of grids
 ;;  Adjust the list of universes so all have the same size, return list of grids
-(define (adjust list-of-universes verbose)
-  (let* ([size (grid-size (universe-grid (last list-of-universes)))]  ; all universes will be this size
+(define (adjust list-of-universes [verbose #t])  
+  ; (displayln (~a "Enter adjust"))
+  (let* ([reversed-list (reverse list-of-universes)]  ; Where u_i=(grid_i,offset_i) want to apply offset_i to grid_{i-1}
+         [ending-universe (first reversed-list)]  ; grids monotomicaly grow so this is the size all will be adjusted to
+         [size (grid-size (universe-grid ending-universe))] 
          [num-rows (first size)]
-         [num-cols (second size)])  
-    (for/list ([u list-of-universes])
-      (let ([g (grid-create num-rows num-cols)])
-        (grid-copy (universe-grid u) g (universe-offset u))
-        g
-      ))
+         [num-cols (second size)]
+         [offsets (for/list ([u reversed-list])  ; get list containing the offsets to apply 
+                    (universe-offset u))]
+         [all-but-one-list  (for/list ([u (cdr reversed-list)] ; Get list containing all but the last grid
+                                       [oset offsets])
+                              ; (displayln (~a "    u=" (universe->string u)))
+                              (let ([g (grid-create num-rows num-cols)])
+                                (grid-copy (universe-grid u) g oset)
+                                g
+                                ))])
+    (reverse (cons (universe-grid ending-universe) all-but-one-list)) ; Add on the last grid, then reverse back to orig order
     )
   )
+
+(provide adjust)
 
 ;; =============================================
 ;; print-generations

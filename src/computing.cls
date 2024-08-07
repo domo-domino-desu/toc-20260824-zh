@@ -75,6 +75,9 @@
 
 % \usepackage{trace}  % for debugging
 
+% Get the name of the file into the error message https://tex.stackexchange.com/q/724002/339
+\usepackage{currfile} 
+\def\on@line{ on input line \the\inputlineno\space in \currfilepath}
 
 % ========== lengths on which others are set =============
 \setlength{\topsep}{8.0pt plus 2.0pt minus 2.0pt}  % bk10.clo has it set to 8pt

@@ -107,9 +107,9 @@
         (when (odd? (+ row col))
           (grid-set! g-src row col ALIVE)))
       ; Copy src to dest
-      (displayln (~a "source grid is\n" (grid->string g-src)))
+      ; (displayln (~a "source grid is\n" (grid->string g-src)))
       (grid-copy g-src g-dest (list 1 2))
-      (displayln (~a "destination grid is\n" (grid->string g-dest)))
+      ; (displayln (~a "destination grid is\n" (grid->string g-dest)))
       (check-true (string=? (grid->string g-dest) ".......\n...*.*.\n..*.*..\n.......") "grid-copy didn't produce expected string")
       )
     
@@ -117,9 +117,9 @@
            [g-src-size (grid-size g-src)]
            [g-dest (grid-create (first g-src-size) (second g-src-size))])
       ; Copy src to dest
-      (displayln (~a "source grid is\n" (grid->string g-src)))
+      ; (displayln (~a "source grid is\n" (grid->string g-src)))
       (grid-copy g-src g-dest (list 0 0))
-      (displayln (~a "destination grid is\n" (grid->string g-dest)))
+      ; (displayln (~a "destination grid is\n" (grid->string g-dest)))
       (check-true (grid-equal? g-src g-dest) "grid-copy should give equal grids")
       )
     )
@@ -305,6 +305,38 @@
       ) 
     )
 
+   (test-case
+    "Test adjusting finished list of universes to be list of same sized grids"
+    (let* ([g0 (beehive-make)]
+           [size0 (grid-size g0)]
+           [g1 (grid-create (first size0) (second size0))]
+           [u0 (universe g0 (list 0 0))]
+           [u1 (universe g1 (list 0 0))]
+           [list-of-universes (list u0 u1)]
+           [adjusted-list-of-grids (adjust list-of-universes)])
+      (check-true (grid? (first adjusted-list-of-grids)) "Expect the list to contain grids")
+      (check-true (grid? (second adjusted-list-of-grids)) "Expect the list to contain grids")
+      (check-equal? (grid-size (first adjusted-list-of-grids))
+                    (grid-size (second adjusted-list-of-grids))"Expect the grids to be equal-sized")
+      ) 
+
+    (let* ([g0 (beehive-make)]
+           [size0 (grid-size g0)]
+           [g1 (grid-create (+ 1 (first size0)) (+ 1 (second size0)))]
+           [u0 (universe g0 (list 0 0))]
+           [u1 (universe g1 (list 1 0))]
+           [list-of-universes (list u0 u1)]
+           [adjusted-list-of-grids (adjust list-of-universes)])
+      (check-true (grid? (first adjusted-list-of-grids)) "Expect the list to contain grids")
+      (check-true (grid? (second adjusted-list-of-grids)) "Expect the list to contain grids")
+      (check-equal? (grid-size (first adjusted-list-of-grids))
+                    (grid-size (second adjusted-list-of-grids))"Expect the grids to be equal-sized")
+;      (displayln (~a "Grid list is first=" (grid->string (first adjusted-list-of-grids)) "\n"
+;                     " second=" (grid->string (second adjusted-list-of-grids))))
+      (check-true (string=? (grid->string (first adjusted-list-of-grids))
+                            "......\n......\n..*...\n.*.*..\n.*.*..\n..*...") "Check the first one got adjusted")
+      ) 
+     )
 
    )) ;; end suite and tests
 
@@ -383,10 +415,10 @@
 (run-tests creation-tests)
 
 ;;  Tests for getting the next generation of a grid
-; (run-tests generation-tests)
+(run-tests generation-tests)
 
 ;;  Tests for the evolution of a universe
-; (run-tests universe-tests)
+(run-tests universe-tests)
 
 ;;  Tests for parsing lines from the input file
-; (run-tests parse-tests)
+(run-tests parse-tests)

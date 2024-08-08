@@ -145,8 +145,11 @@
             flag)]))
 
 ;; Copy contents of grid from src to dest, where (0,0) in src is at upper-left in dest
-(define (grid-copy g-src g-dest upper-left)
-  ; (displayln (~a "Entering grid-copy g-src=" (grid->string g-src) "\n dest=" (grid->string g-dest)))
+(define (grid-copy g-src g-dest upper-left [verbose #f])
+  (when verbose
+    (displayln (~a "Entering grid-copy g-src=" (grid->string g-src)
+                   "\n g-dest=" (grid->string g-dest)
+                   "\n upper-left" upper-left)))
   (let* ([g-src-size (grid-size g-src)]
          [g-src-numrows (first g-src-size)]
          [g-src-numcols (second g-src-size)]
@@ -155,7 +158,10 @@
          [uleft-col (second upper-left)])
     (for* ([row (in-range g-src-numrows)]
            [col (in-range g-src-numcols)])
-      ; (displayln (~a "  setting g-dest's r=" (+ row uleft-row) ", c=" (+ col uleft-col) " to " (grid-get g-src row col)))
+      (when verbose
+        (displayln (~a "  setting g-dest's r=" (+ row uleft-row)
+                       ", c=" (+ col uleft-col)
+                       " to " (grid-get g-src row col))))
       (grid-set! g-dest
                  (+ row uleft-row)
                  (+ col uleft-col)
@@ -326,7 +332,7 @@
         (when verbose 
           (displayln (~a "    left-side-flag: left-side=" left-side "\n")))
         (set! u-new-width (+ u-new-width 1))
-        (set! u-new-f-increment (list (+ (first u-new-f-increment) 1) (second u-new-f-increment))))  ; also adjust offset
+        (set! u-new-f-increment (list (first u-new-f-increment) (add1 (second u-new-f-increment)))))  ; also adjust offset
       (when right-side-flag
         (when verbose 
           (displayln (~a "    right-side-flag: right-side=" right-side "\n")))
@@ -335,7 +341,7 @@
         (when verbose 
           (displayln (~a "    top-side-flag: top-side=" top-side "\n")))
         (set! u-new-hgt (+ u-new-hgt 1))
-        (set! u-new-f-increment (list (first u-new-f-increment) (+ (second u-new-f-increment) 1))))
+        (set! u-new-f-increment (list (add1 (first u-new-f-increment)) (second u-new-f-increment))))
       (when bot-side-flag
         (when verbose 
           (displayln (~a "    bot-side-flag: bot-side=" bot-side "\n")))
@@ -349,7 +355,7 @@
                          "\n   g-new=" (grid->string g-new)
                          "\n   u-new-g=" (grid->string u-new-g)
                          "\n   u-new-f-increment=" u-new-f-increment)))
-        (grid-copy g-new u-new-g u-new-f-increment)  ; copy changes inside grid, with increment offset
+        (grid-copy g-new u-new-g u-new-f-increment verbose)  ; copy changes inside grid, with increment offset
         (when verbose 
           (displayln (~a "  .. done copying")))
         (when left-side-flag

@@ -184,6 +184,13 @@
     (grid-set! g 2 2 ALIVE)
     g))
 
+(define (two-ninety-two-grid-make)  ; alive cells make binary 292
+  (let* ([g (grid-create 3 3)])
+    (grid-set! g 0 0 ALIVE) 
+    (grid-set! g 1 0 ALIVE) 
+    (grid-set! g 2 0 ALIVE)  
+    g))
+
 (define (one-seventy-eight-grid-make)  ; alive cells make binary 178
   (let* ([g (grid-create 3 3)])
     (grid-set! g 0 1 ALIVE) 
@@ -355,6 +362,31 @@
       (check-equal? (grid-get next-grid 2 0) ALIVE "bottom row expected to be **.")
       (check-equal? (grid-get next-grid 2 1) ALIVE "bottom row expected to be **.")
       (check-equal? (grid-get next-grid 2 2) DEAD "bottom row expected to be **.")
+      ) 
+    )
+   
+   (test-case
+    "Run a universe for a generation that gave an error"
+    (let* ([g (two-ninety-two-grid-make)]
+           [oset (list 0 0)]
+           [u (universe g oset)]
+           [next-grid (universe-grid (universe-generation u #f))]
+           )
+      ;(displayln (~a "starting grid=" (grid->string g)
+      ;               "\n one generation grid=" (grid->string (universe-grid (universe-generation u #t)))))
+      (check-equal? (grid-size next-grid) (list 3 4) "universe adds a new left column")
+      (check-equal? (grid-get next-grid 0 0) DEAD "top row expected to be ....")
+      (check-equal? (grid-get next-grid 0 1) DEAD "top row expected to be ....")
+      (check-equal? (grid-get next-grid 0 2) DEAD "top row expected to be ....")
+      (check-equal? (grid-get next-grid 0 3) DEAD "top row expected to be ....")
+      (check-equal? (grid-get next-grid 1 0) ALIVE "middle row expected to be ***.")
+      (check-equal? (grid-get next-grid 1 1) ALIVE "middle row expected to be ***.")
+      (check-equal? (grid-get next-grid 1 2) ALIVE "middle row expected to be ***.")
+      (check-equal? (grid-get next-grid 1 3) DEAD "middle row expected to be ***.")
+      (check-equal? (grid-get next-grid 2 0) DEAD "bottom row expected to be ....")
+      (check-equal? (grid-get next-grid 2 1) DEAD "bottom row expected to be ....")
+      (check-equal? (grid-get next-grid 2 2) DEAD "bottom row expected to be ....")
+      (check-equal? (grid-get next-grid 2 3) DEAD "bottom row expected to be ....")
       ) 
     )
 

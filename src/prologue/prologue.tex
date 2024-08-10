@@ -8975,7 +8975,7 @@ That, and tweaking the initial value of each level, gives this.
   \ackermann(k,y)=
   \begin{cases}
     y+1                &\case{if $k=0$}    \\
-    \ackermann(k-1,1)  &\case{if $y=0$ and $k>0$}  \\
+    \ackermann(k-1,1)  &\case{if $k>0$ and $y=0$}  \\
     \ackermann(k-1, \ackermann(k,y-1)) &\case{otherwise}
   \end{cases} \label{eq:PeterAckermann}
 \end{equation*}
@@ -9011,6 +9011,25 @@ grows very fast indeed.
   \ackermann(4,3)=2^{(2^{65536})}-3
 \end{equation*}
 % Those are big numbers.
+
+We will prove that this is not primitive recursive 
+by showing that each primitive recursive function has a level, but
+$\ackermann$ does not.
+For that, 
+recall that if a function has multiple inputs $x_0,\ldots x_{n-1}$ then we
+sometimes abbreviate that sequence with the vector~$\vec{x}$.
+And, we will write $\max(\vec{x})$ for 
+$\max(\set{x_0,\ldots x_{n-1}})$.
+
+\begin{definition}
+Where $k\in\N$, a function~$f$ is \definend{level}~$k$  if 
+$\ackermann(k,\max(\vec{x}))>f(\vec{x})$ for all~$\vec{x}$.
+\end{definition}
+
+By \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg}
+below, if 
+a function is level~$k$ then it is also level~$\hat{k}$ for any $\hat{k}>k$.
+% define dominated?
 
 % \crefalias{enumi}{extratheorem}
 \begin{lemma} \label{lem:GrowthOfAckermann}
@@ -9075,30 +9094,67 @@ has a second argument greater than~$m$, it's result is greater than~$m$.
 Hence $\ackermann(n+1,m+1)>m+1$.
 \end{proof}
 
-Recall that if a function has multiple inputs $x_0,\ldots x_{n-1}$ then we
-sometimes abbreviate with the vector~$\vec{x}$.
-And, we will write $\max(\vec{x})$ for 
-$\max(\set{x_0,\ldots x_{n-1}})$.
+\begin{theorem}[Ackermann, 1925]
+For each primitive recursive function~$f$ there is a~$k\in\N$ 
+such that $f$ is level~$k$.  
+% For each primitive recursive function~$f$ of $n$ input variables
+% there is a level~$k\in\N$ such that
+% $\ackermann(k,\max(\vec{v}))>f(\vec{x})$
+% for all $x_0,x_1,\ldots\,x_{n-1}\in\N$.  
+\end{theorem}
 
-\begin{definition}
-A function~$s$ is \definend{level}~$k$, where $k\in\N$, if 
-$\ackermann(k,\max(\vec{x}))>s(\vec{x})$ for all~$\vec{x}$.
-\end{definition}
+We shall prove this by 
+\citetext{structural induction}{%
+  This proof is taken from \autocite{Hennie}'s classic exposition.}. 
+That is, every such~$f$ is derived from a finite number of initial functions via
+a finite number of applications of the operations of composition
+and primitive recursion. 
+We will show that there is such a~$k$ for each initial function.
+We will show that if there is a level number for each function in
+a composition then the result also has a level number.
+And, we will also show that if there is a level number for the functions 
+used in a primitive recursion then the result also has a level number.  
+The proof involves three lemmas.
 
-By \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg}, if 
-a function is level~$k$ then it is also level~$\hat{k}$ for any $\hat{k}>k$.
-% define dominated?
-
-\begin{lemma} \label{lem:CompositionLevelKIsLevelKPlusTwo}
-If for some $k\in\N$ each function $g_0,\ldots g_{m-1},h$ is level~$k$,  
-and if the function~$f$ is obtained by composition as
-$f(\vec{x})=h(g_0(\vec{x}),\ldots g_{m-1}(\vec{x}))$,
-then $f$ is level~$k+2$.
+\begin{lemma}
+Each of these initial functions has a level:
+\begin{parenum}
+\item the zero\index{zero function}\index{function!zero} 
+functions~$\zero(\vec{x})=0$,
+\item 
+the successor\index{successor function}\index{function!successor} functions 
+$\successor(\vec{x})=x+1$,
+and 
+\item 
+the projection\index{projection function}\index{function!projection} 
+functions $\projection_i(\vec{x})=\projection_i(x_0,\ldots x_{k-1})=x_i$. 
+\end{parenum}
 \end{lemma}
 
 \begin{proof}
-Apply \cref{lem:GrowthOfAckermann}'s \cref{lem:AckermannCrossArg}, 
-and then the third clause in $\ackermann$'s definition.
+For item~(1), $k=0$ suffices by the first clause of the definition 
+of~$\ackermann$ since $\ackermann(0,y)=y+1>\zero(y)=0$.  
+For item~(2), $k=1$ works because $\ackermann(1,y)>\ackermann(0,y)=y+1$ 
+by \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg}.
+Finally, for~(3) take $k=0$ because by the definition's first clause
+$\ackermann(0,\max{\vec{x}})=\max(\vec{x})+1$ and that is larger than
+the projection $\projection_i(\vec{x})$ as we are taking a maximum.
+\end{proof}
+
+\begin{lemma}  \label{lem:CompositionLevelKIsLevelKPlusTwo}
+Let each primitive recursive function $g_0,\ldots\, g_{m-1},h$ have a level,
+$k_0,\ldots\,k_{m-1},k_m$.
+Let~$f$ be the composition
+$f(\vec{x})=h(g_0(\vec{x}),\ldots g_{m-1}(\vec{x}))$.
+Then $f$ is level~$\max(\set{k_0,\ldots\,k_{m-1},k_m})+2$.
+\end{lemma}
+
+\begin{proof}
+Take $k=\max(\set{k_0,\ldots\,k_{m-1},k_m})$. 
+Then all of the functions $g_0,\ldots\,g_{m-1},h$ are level~$k$.
+
+\cref{lem:GrowthOfAckermann}'s \cref{lem:AckermannCrossArg} 
+and then the third clause in $\ackermann$'s definition gives this.
 \begin{equation*}
   \ackermann(k+2,\max(\vec{x})) 
     \geq \ackermann(k+1,\max(\vec{x})+1)             
@@ -9131,12 +9187,13 @@ $\ackermann(k+1,\max(\vec{x}))$ gives the first inequality here.
   = f(\vec{x})
 \end{align*}
 The second inequality holds because
-the function~$h$ is level~$k$.
+the function~$h$ is level~$k$.  
 \end{proof}
 
-\begin{lemma}  \label{lem:PrimRecOfLevelKIsLevelKPlusThree}
-If for some $k\in\N$ the functions $g$ and~$h$ are level~$k$,  
-and if the function~$f$ is obtained by the schema of primitive recursion,
+
+\begin{lemma} \label{lem:PrimRecOfLevelKIsLevelKPlusThree}
+Assume that
+the function~$f$ is obtained by the schema of primitive recursion
 \begin{equation*}
   f(\vec{x},y)=
   \begin{cases}
@@ -9144,30 +9201,34 @@ and if the function~$f$ is obtained by the schema of primitive recursion,
     h(f(\vec{x},z),\,\vec{x},\,z)  &\case{if $y=\successor(z)$}
   \end{cases}
 \end{equation*}
-then $f$ is level~$k+3$.
+where $g$ has level~$k_g$ and 
+$h$ has level~$k_h$.
+Then $f$ has level~$\max(\set{k_g,k_{h}})+3$.
 \end{lemma}
 
 \begin{proof}
-Let $n$ be such that 
-$\map{g}{\N^{n}}{\N}$ and $\map{h}{\N^{n+2}}{\N}$ are the level~$k$ 
-functions, so that $\map{f}{\N^{n+1}}{\N}$.
-We will first show this, by induction on~$y$.
+As in the prior argument
+take $k=\max(\set{k_g,k_n})$. 
+Then the functions $g$ and~$h$ are level~$k$.
+  
+We will first show this.
 \begin{equation*}
-  \ackermann(k,\max(\vec{x})+y)>f(\vec{x},y)
+  \ackermann(k+1,\max(\vec{x})+y)>f(\vec{x},y)
   \tag{$*$}
 \end{equation*}
+We will use induction on~$y$.
 The $y=0$ base step is that 
-$\ackermann(k,\max(\vec{x})+0)=\ackermann(k,\max(\vec{x}))$ is 
+$\ackermann(k+1,\max(\vec{x})+0)=\ackermann(k+1,\max(\vec{x}))$ is 
 greater than
 $f(\vec{x},0)=g(\vec{x})$, because $g$ is level~$k$.
 
 For the inductive step assume that~($*$) holds for 
 $y=0,\ldots\, z$ and consider the $y=z+1$ case.
 The third clause of $A$'s definition is that
-$\ackermann(k,\max(\vec{x})+y)
-  =\ackermann(k-1,\,\ackermann(k,\max(\vec{x})+z))$.
+$\ackermann(k+1,\max(\vec{x})+y)
+  =\ackermann(k,\,\ackermann(k+1,\max(\vec{x})+z))$.
 The second argument
-$\ackermann(k+1,\,\max(\vec{x})+z)$ is larger than $\max(\vec{x})+z$ 
+$\ackermann(k+1,\max(\vec{x})+z)$ is larger than $\max(\vec{x})+z$ 
 by \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannLargerThanSecondArg},
 and so
 is larger than any~$x_i$ and larger than~$z$.
@@ -9181,13 +9242,128 @@ With that, the first inequality below follows from
 monotonicity of~$\ackermann$ in its second argument.
 The second holds because $h$ is a level~$k$ function.
 \begin{align*}
-  \ackermann(k+1,\max(\vec{x})+z+1)
+  \ackermann(k+1,\max(\vec{x})+y)
     &=\ackermann(k,\,\ackermann(k+1,\max(\vec{x})+z))  \\
     &> \ackermann(k,\,\max(\set{f(\vec{x},z),\,x_0,\ldots,x_{n-1},\,z})) \\
     &> h(f(\vec{x},z),\vec{x},z)  
-    = f(\vec{x},z+1) 
+    = f(\vec{x},y) 
 \end{align*}
 That ends the inductive verification of~($*$).
+
+To finish the proof, 
+\cref{lem:GrowthOfAckermann}.\ref{lem:AckermannFirstArgMoreImportant}
+gives the first inequality below.
+\begin{align*}
+  \ackermann(k+3,\max(\set{x_0,\ldots\,x_{m-1},y}))
+  &>\ackermann(k+1,2\cdot\max(\set{x_0,\ldots\,x_{m-1},y}))  \\
+  &\geq\ackermann(k+1,\max(\vec{x}+y))  \\
+  &>f(\vec{x},y)
+\end{align*}
+The second inequality follows from 
+$2\cdot\max(\set{x_0,\ldots\,x_{m-1},y})\geq \max(\vec{x})+y$,
+and the third is~($*$).
+\end{proof}
+
+
+% \begin{lemma} \label{lem:CompositionLevelKIsLevelKPlusTwo}
+% If for some $k\in\N$ each function $g_0,\ldots g_{m-1},h$ is level~$k$,  
+% and if the function~$f$ is obtained by composition as
+% $f(\vec{x})=h(g_0(\vec{x}),\ldots g_{m-1}(\vec{x}))$,
+% then $f$ is level~$k+2$.
+% \end{lemma}
+
+% \begin{proof}
+% Apply \cref{lem:GrowthOfAckermann}'s \cref{lem:AckermannCrossArg}, 
+% and then the third clause in $\ackermann$'s definition.
+% \begin{equation*}
+%   \ackermann(k+2,\max(\vec{x})) 
+%     \geq \ackermann(k+1,\max(\vec{x})+1)             
+%     = \ackermann(k,\ackermann(k+1,\max(\vec{x})))
+%   \tag{$*$}
+% \end{equation*}
+% Focusing on the second argument of the right-hand expression,
+% use \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg} 
+% and the assumption that each function $g_0,\ldots g_{m-1}$ is level~$k$ to get
+% that for each index $i\in\set{1,\ldots m-1}$
+% we have $
+%   \ackermann(k+1,\max(\vec{x})) 
+%     > \ackermann(k,\max(\vec{x}))  
+%     > g_i(\vec{x})
+% $.
+% Thus
+% $
+%   \ackermann(k+1,\max(\vec{x})) 
+%     > \max(\set{\,g_1(\vec{x}),\ldots\,g_{m-1}(\vec{x})\,})
+% $.
+
+% \Cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInSecondArg} 
+% says that $\ackermann$ is monotone in the
+% second argument, so returning to equation~($*$) and swapping out
+% $\ackermann(k+1,\max(\vec{x}))$ gives the first inequality here.
+% \begin{align*}
+%   \ackermann(k+2,\max(\vec{x}))
+%   &> \ackermann(k,\max(\set{ g_1(\vec{x}), \ldots  g_{m-1}(\vec{x})}))  \\
+%   &> h(g_0({\vec{x}}),\ldots g_{m-1}(\vec{x}))
+%   = f(\vec{x})
+% \end{align*}
+% The second inequality holds because
+% the function~$h$ is level~$k$.
+% \end{proof}
+
+% \begin{lemma}  \label{lem:PrimRecOfLevelKIsLevelKPlusThree}
+% If for some $k\in\N$ the functions $g$ and~$h$ are level~$k$,  
+% and if the function~$f$ is obtained by the schema of primitive recursion,
+% \begin{equation*}
+%   f(\vec{x},y)=
+%   \begin{cases}
+%     g(\vec{x})  &\case{if $y=0$}  \\
+%     h(f(\vec{x},z),\,\vec{x},\,z)  &\case{if $y=\successor(z)$}
+%   \end{cases}
+% \end{equation*}
+% then $f$ is level~$k+3$.
+% \end{lemma}
+
+% \begin{proof}
+% Let $n$ be such that 
+% $\map{g}{\N^{n}}{\N}$ and $\map{h}{\N^{n+2}}{\N}$ are the level~$k$ 
+% functions, so that $\map{f}{\N^{n+1}}{\N}$.
+% We will first show this, by induction on~$y$.
+% \begin{equation*}
+%   \ackermann(k,\max(\vec{x})+y)>f(\vec{x},y)
+%   \tag{$*$}
+% \end{equation*}
+% The $y=0$ base step is that 
+% $\ackermann(k,\max(\vec{x})+0)=\ackermann(k,\max(\vec{x}))$ is 
+% greater than
+% $f(\vec{x},0)=g(\vec{x})$, because $g$ is level~$k$.
+
+% For the inductive step assume that~($*$) holds for 
+% $y=0,\ldots\, z$ and consider the $y=z+1$ case.
+% The third clause of $A$'s definition is that
+% $\ackermann(k,\max(\vec{x})+y)
+%   =\ackermann(k-1,\,\ackermann(k,\max(\vec{x})+z))$.
+% The second argument
+% $\ackermann(k,\,\max(\vec{x})+z)$ is larger than $\max(\vec{x})+z$ 
+% by \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannLargerThanSecondArg},
+% and so
+% is larger than any~$x_i$ and larger than~$z$.
+% It is also larger than $f(\vec{x},z)$ by the inductive hypothesis. 
+% \begin{equation*}
+%   \ackermann(k,\max(\vec{x})+z)
+%   > \max(\set{f(\vec{x},z),\,x_0,\ldots\,x_{n-1},z})
+% \end{equation*}
+% With that, the first inequality below follows from
+% \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInSecondArg},
+% monotonicity of~$\ackermann$ in its second argument.
+% The second holds because $h$ is a level~$k$ function.
+% \begin{align*}
+%   \ackermann(k,\max(\vec{x})+z+1)
+%     &=\ackermann(k-1,\,\ackermann(k,\max(\vec{x})+z))  \\
+%     &> \ackermann(k,\,\max(\set{f(\vec{x},z),\,x_0,\ldots,x_{n-1},\,z})) \\
+%     &> h(f(\vec{x},z),\vec{x},z)  
+%     = f(\vec{x},z+1) 
+% \end{align*}
+% That ends the inductive verification of~($*$).
 
 % For the inductive step assume that~($*$) holds for 
 % $y=0,\ldots\, z$ and consider the $y=z+1$ case.
@@ -9217,53 +9393,55 @@ That ends the inductive verification of~($*$).
 % \end{align*}
 % That ends the inductive verification of~($*$).
 
-To finish the argument, 
-\cref{lem:GrowthOfAckermann}.\ref{lem:AckermannFirstArgMoreImportant}
-gives that for all $x_0,\ldots x_{n-1},y$
-\begin{align*}
-  \ackermann(k+3,\,\max(\set{x_0,\ldots y}))
-    &> \ackermann(k+1,\,2\cdot\max(\set{x_0,\ldots y}))  \\
-    &\geq \ackermann(k+1,\max(\vec{x})+y)    
-\end{align*}
-(the latter holds because $2\cdot\max(\vec{x},y)\geq \max(\vec{x})+y$
-and because of 
-\cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInSecondArg}).
-In turn, by the first part of this proof, that is greater than
-$f(\vec{x},y)$.
-\end{proof}
+% To finish the argument, 
+% \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannFirstArgMoreImportant}
+% gives that for all $x_0,\ldots x_{n-1},y$
+% \begin{align*}
+%   \ackermann(k+3,\,\max(\set{x_0,\ldots y}))
+%     &> \ackermann(k+1,\,2\cdot\max(\set{x_0,\ldots y}))  \\
+%     &\geq \ackermann(k+1,\max(\vec{x})+y)    
+% \end{align*}
+% (the latter holds because $2\cdot\max(\vec{x},y)\geq \max(\vec{x})+y$
+% and because of 
+% \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInSecondArg}).
+% In turn, by the first part of this proof, that is greater than
+% $f(\vec{x},y)$.
+% \end{proof}
 
-\begin{theorem}[Ackermann, 1925]
-For each primitive recursive function~$f$ there is a number~$k\in\N$ 
-such that $f$ is level~$k$.  
-\end{theorem}
+% \begin{theorem}[Ackermann, 1925]
+% For each primitive recursive function~$f$ there is a number~$k\in\N$ 
+% such that $f$ is level~$k$.  
+% \end{theorem}
 
-\begin{proof}
-The definition of primitive recursive functions \cref{def:PrimitiveRecursive}
-specifies that each~$f$ is
-built from a set of initial function by the operations of
-composition and primitive recursion.
-With \cref{lem:CompositionLevelKIsLevelKPlusTwo} 
-and \cref{lem:PrimRecOfLevelKIsLevelKPlusThree} we need only show that
-each initial operation is of some level.
+% \begin{proof}
+% The definition of primitive recursive functions \cref{def:PrimitiveRecursive}
+% specifies that each~$f$ is
+% built from a set of initial function by the operations of
+% composition and primitive recursion.
+% With \cref{lem:CompositionLevelKIsLevelKPlusTwo} 
+% and \cref{lem:PrimRecOfLevelKIsLevelKPlusThree} we need only show that
+% each initial operation is of some level.
 
-The zero function $\zero(x)=0$ is level~$0$ since $\ackermann(0,x)=x+1>0$.
-The successor function $\successor(x)=x+1$ is level~$1$
-since $\ackermann(1,x)>\ackermann(0,x)=x+1$ by 
-\cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg}.
-Each projection function $\projection_i(x_0,\ldots,x_i\ldots,x_{n-1})=x_i$ is
-level~$0$ since $\ackermann(0,\max(\vec{x}))=\max(\vec{x})+1$ is greater than
-$\max(\vec{x})$, which is greater than or equal to~$x_i$.
-\end{proof}
+% The zero function $\zero(x)=0$ is level~$0$ since $\ackermann(0,x)=x+1>0$.
+% The successor function $\successor(x)=x+1$ is level~$1$
+% since $\ackermann(1,x)>\ackermann(0,x)=x+1$ by 
+% \cref{lem:GrowthOfAckermann}.\ref{lem:AckermannMonotoneInFirstArg}.
+% Each projection function $\projection_i(x_0,\ldots,x_i\ldots,x_{n-1})=x_i$ is
+% level~$0$ since $\ackermann(0,\max(\vec{x}))=\max(\vec{x})+1$ is greater than
+% $\max(\vec{x})$, which is greater than or equal to~$x_i$.
+% \end{proof}
 
 \begin{corollary}
 The function~$\ackermann$ is not primitive recursive.  
 \end{corollary}
 
 \begin{proof}
-If $\ackermann$ were primitive recursive then it would be of some level,~$k_0$,
-so $\ackermann(k_0,\max(\set{x,y}))>\ackermann(x,y)$ for all~$x,y$.
-Taking $x$ and~$y$ to be $k_0$ gives a contradiction.  
+If $\ackermann$ were primitive recursive then it would be of some level,~$k$,
+so $\ackermann(k,\max(\set{x,y}))>\ackermann(x,y)$ for all~$x,y$.
+Taking $x$ and~$y$ to be $k$ gives a contradiction.  
 \end{proof}
+
+
 
 \begin{exercises}
 \begin{exercise}

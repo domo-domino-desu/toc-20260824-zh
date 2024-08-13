@@ -779,8 +779,8 @@
       % \@itempenalty     -\@lowpenalty
       \@itempenalty-\@medpenalty %
       % Also discourage clubs and widows
-      \clubpenalty6000 % % discourage breaking after first line
-      \widowpenalty6000 % discourage breaking before last line
+      \clubpenalty600 % % discourage breaking after first line
+      \widowpenalty600 % discourage breaking before last line
     }
 }{%
   \end{list}

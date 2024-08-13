@@ -2324,7 +2324,6 @@ We can imagine programming by calling a function, some
 that guesses a successful sequence if there is one to 
 guess.\index{guessing!by a machine}
 
-\margingraphic{0.22\textwidth}{automata/pix/flauros.jpg}{\label{fig:Flauros}\href{https://en.wikipedia.org/wiki/List_of_demons_in_the_Ars_Goetia}{Flauros, Duke of Hell}}\index{Flauros, Duke of Hell!picture} %, gives true answers of all things past, present, and future}} % https://commons.wikimedia.org/wiki/File%3AIll_dict_infernal_p0294-278_flauros_demon.jpg Louis Le Breton [Public domain], via Wikimedia Commons
 % \margingraphic{0.25\textwidth}{automata/demon.jpg}{\label{fig:Demon}\href{https://en.wikipedia.org/wiki/The_Nightmare}{\textit{The Nightmare} H~Fuseli, 1781}} % https://upload.wikimedia.org/wikipedia/commons/5/56/John_Henry_Fuseli_-_The_Nightmare.JPG  Henry Fuseli [Public domain], via Wikimedia Commons  (https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror)
 Saying that a mechanism guesses is jarring.
 Based on programming classes,
@@ -2337,6 +2336,8 @@ not mechanically accomplishable.
 As an alternative, we can imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
 only has to check it.
+
+\margingraphic{0.22\textwidth}{automata/pix/flauros.jpg}{\label{fig:Flauros}\href{https://en.wikipedia.org/wiki/List_of_demons_in_the_Ars_Goetia}{Flauros, Duke of Hell}}\index{Flauros, Duke of Hell!picture} %, gives true answers of all things past, present, and future}} % https://commons.wikimedia.org/wiki/File%3AIll_dict_infernal_p0294-278_flauros_demon.jpg Louis Le Breton [Public domain], via Wikimedia Commons
 This way of expressing the second mental model is  
 \citetext{demonic}{%
   The term `demon' arose from Maxwell's demon.
@@ -10714,33 +10715,6 @@ but as there are finitely
 many states and unboundedly many stack arrangements, that strategy has limits.
 
 
-\begin{remark}
-Stack machines models are often used in practice for
-running hardware.
-% The familiar printer file format PDF is based on the PostScript language,
-% which is based on a pushdown stack.
-Here is a `Hello World' program in the PostScript printer language.
-\begin{lstlisting}
-/Courier               % name the font
-20 selectfont          % font size in points, 1/72 of an inch 
-72 500 moveto          % position the cursor
-(Hello world!) show    % stroke the text
-showpage               % print the page
-\end{lstlisting}
-The interpreter pushes \str{Courier} on the stack, and
-then on the second line pushes \str{20}
-on the stack.
-It then executes \str{selectfont}, which pops two things off the stack
-to set the font name and size.
-After that it moves the current point and places the text on the page.
-Finally, it draws that page to paper.
-%
-% This language is quite efficient.
-% But it is more suited to
-% situations where the code is written by a program, such as with 
-% a word processor or \LaTeX{}, than to situations where a person is writing it.
-\end{remark}
-
 
 % ...............................................
 \subsection{Definition}
@@ -10749,7 +10723,7 @@ a stack.
 %<*discussion:StackMachineTransitionsi>
 This stack holds tokens from an alphabet,
 $\Gamma=\set{\str{g0}, \str{g1}, \ldots}$\sentencespace 
-We \citetext{reserved a character}{%
+We \citetext{reserve a character}{%
   We use it only to mark the stack bottom, never
   in the middle of the stack.},~$\bot$,\footnote{%
   Read aloud as ``bottom.''}\index{bottom@bottom, $\bot$}\index{stack!bottom@bottom, $\bot$} 
@@ -10768,7 +10742,7 @@ we also assume that the tape alphabet
 does not contain the character~$\varepsilon$.
 %</discussion:StackMachineTransitionsi>
 
-We start with an example.
+Before the definition we will give an example.
 
 \begin{example}  \label{ex:PDSAcceptBalencedParens}
 % This grammar generates the language of balanced parentheses.
@@ -10785,26 +10759,21 @@ We start with an example.
 We will give a Pushdown machine that recognizes the language of 
 balanced parentheses, 
 $\lang_{\text{BAL}}$,\index{parentheses!balanced}\index{balanced parentheses}
-where
-each \str{[} has a matching \str{]} and these matched pairs are nested.
-Some members of this language are of the form $\str{[}^n\str{]}^n\!$,
-including \str{[]} and \str{[[]]}.
-But there are other members not of this form, 
-such as \str{[[][]]} and \str{[][]}. 
+containing strings such as \str{[]} and \str{[[]]}, as well as 
+\str{[[][]]} and \str{[][]}. 
 Precisely stated, $\sigma\in\lang_{\text{BAL}}$ if it contains the same number
-of \str{[}'s as \str{]}'s and further, no prefix of $\sigma$ 
+of \str{[}'s as \str{]}'s and no prefix of $\sigma$ 
 contains more \str{]}'s than \str{[}'s.
 
 The Pumping Lemma shows that no Finite State machine recognizes
 $\lang_{\text{BAL}}$.
-But it is recognized by a Pushdown machine.
-This machine has two states
-$Q=\set{q_0,q_1}$, including one accepting state, $F=\set{q_1}$.
-Its tape alphabet has two characters,  
-$\Sigma=\set{\text{\str{[}}\,,\text{\str{]}}}$.
-The stack alphabet has only one member,
+But it is recognized by this Pushdown machine.
+It has two states
+$Q=\set{q_0,q_1}$, one of which is an accepting state, $F=\set{q_1}$.
+Its tape alphabet is  
+$\Sigma=\set{\text{\str{[}}\,,\text{\str{]}}}$
+and its stack alphabet is
 $\Gamma=\set{\text{\str{g0}}}$.
-
 The table below gives~$\Delta$.
 Instruction numbers are for ease of reference.
 %<*ex:BalancedParensAcceptedPushdown>
@@ -10823,18 +10792,17 @@ Instruction numbers are for ease of reference.
 \end{tabular}
 \end{center}
 %</ex:BalancedParensAcceptedPushdown>
-Consider line~$0$.
-Every computation step 
+In a Pushdown machine every computation step 
 begins with the machine popping the top character off the stack. 
-After that,
-if the machine is in state~$q_0$, is reading \str{[} on the 
-tape, and the stack character is~$\bot$, then this instruction applies.
-The result is that machine goes into state~$q_0$ (which is not a change)
-and pushes the two-token string \mbox{\str{g0}\,$\bot$} onto
+There that character is~$\bot$.
+The machine is then in state~$q_0$, is reading \str{[} on the 
+tape, and the popped character is~$\bot$, so instruction~$0$ applies.
+The machine goes into state~$q_0$ (which is not a change)
+and pushes the two-token string \mbox{\str{g0}$\bot$} onto
 the stack.
-Because the machine had just popped the stack, this $\bot$ only replaces what
+The $\bot$ only replaces what
 was there already, 
-but the \str{g0} makes the new stack top. 
+but the \str{g0} makes a new stack top character. 
 
 Here is an example computation accepting the string \str{[[]][]}.
 %<*ex:BalancedParensAcceptedPushdownAccept>
@@ -11355,6 +11323,35 @@ Pushdown machines
 that recognize languages that
 cannot be recognized by any Finite State machine.
 
+
+\begin{remark}
+Stack machines models are often used in practice for
+running hardware.
+% The familiar printer file format PDF is based on the PostScript language,
+% which is based on a pushdown stack.
+Here is a `Hello World' program in the PostScript printer language.
+\begin{lstlisting}
+/Courier               % name the font
+20 selectfont          % font size in points, 1/72 of an inch 
+72 500 moveto          % position the cursor
+(Hello world!) show    % stroke the text
+showpage               % print the page
+\end{lstlisting}
+The interpreter pushes \str{Courier} on the stack, and
+then on the second line pushes \str{20}
+on the stack.
+It then executes \str{selectfont}, which pops two things off the stack
+to set the font name and size.
+After that it moves the current point and places the text on the page.
+Finally, it draws that page to paper.
+%
+% This language is quite efficient.
+% But it is more suited to
+% situations where the code is written by a program, such as with 
+% a word processor or \LaTeX{}, than to situations where a person is writing it.
+\end{remark}
+
+
 We close this section with
 a number of related results that together make a bigger picture,
 that the machine models form a linear hierarchy. 
@@ -11580,12 +11577,12 @@ The computation stops, with the input rejected.
 \begin{exercise}
 Produce a Pushdown machine to accept each language over
 $\Sigma=\set{\str{a},\str{b},\str{c}}$.
-\begin{exparts}
+\begin{exparts*}
 \item
 $\set{\str{a}^n\str{c}\str{b}^{2n}\suchthat n\in\N}$
 \item
 $\set{\str{a}^n\str{c}\str{b}^{n-1}\suchthat n>0}$
-\end{exparts}
+\end{exparts*}
 \begin{answer}
 \begin{exparts}
 \item
@@ -11805,12 +11802,12 @@ is not recognized by any Finite State machine.
 % \recommended
 \begin{exercise}
 Fix an alphabet $\Sigma$.
-\begin{exparts}
+\begin{exparts*}
 \item  Show that the set of Pushdown machines over $\Sigma$ is countable.
 \item Show that the collection of languages accepted by Pushdown machines
   is countable.
 \item Conclude that there are languages that no Pushdown machine accepts. 
-\end{exparts}
+\end{exparts*}
 \begin{answer}
 \begin{exparts}
 \item
@@ -11900,26 +11897,28 @@ which we will call
 These go beyond the
 small-scale theory examples that we saw earlier.
 
-As an example, imagine a system administrator
+As an example, a system administrator
 searching a web server log for
 the PDF's downloaded from a directory.
 They might give this command.
-\begin{center}
-\str{grep "/linearalgebra/.*\textbackslash .pdf" /var/log/apache2/access.log}
-\end{center}
+\begin{lstlisting}
+$ grep "/linearalgebra/.*\textbackslash .pdf" /var/log/apache2/access.log
+\end{lstlisting} % $
+% \codeinline{grep "/linearalgebra/.*\textbackslash .pdf" /var/log/apache2/access.log}
 The \str{grep} utility program looks through the log file line by line.
 If a line has a substring
-matching the regex pattern then \str{grep} prints that line.
+matching the regex then \str{grep} prints that line.
 
-Different languages have small variations on the syntax of 
-their regexes.
-Below, we will use Racket regexes.
-As a prototype to experiment with those regexes, 
-\codeinline{(regexp-match? #px"^[A-Z][A-Z][0-9][A-Z][A-Z]\$" "KE1AZ")} returns  % $
-\codeinline{#t}.
+We will illustrate with Racket regexes.
+As a prototype, 
+\begin{lstlisting}
+> (regexp-match? #px"^[A-Z][A-Z][0-9][A-Z][A-Z]\$" "KE1AZ")
+\end{lstlisting}
+% \codeinline{(regexp-match? #px"^[A-Z][A-Z][0-9][A-Z][A-Z]\$" "KE1AZ")} 
+returns \codeinline{#t}.
 Note the caret \codeinline{^} at the start of the string and the 
 dollar sign at the end.
-They are anchors, making Racket match the entire string from start to finish.
+These are anchors, making Racket match the entire string from start to finish.
 They are needed because the most common use case is for
 programmers to want to find the expression anywhere in the string.
 Thus for instance,
@@ -12739,12 +12738,12 @@ Give a regex.
 \recommended
 \begin{exercise}
 \Cref{ex:NAPhoneNumber} gives a regex for North American phone numbers.
-\begin{exparts}
+\begin{exparts*}
 \item They are sometimes written with parentheses around the area code.
   Extend the regex to cover this case.
 \item Sometimes phone numbers do not include the area code.
   Extend to cover this also.  
-\end{exparts}
+\end{exparts*}
 \begin{answer}
 \begin{exparts}
 \item \re{(\textbackslash d\{3\}|\textbackslash (\textbackslash d\{3\}\textbackslash )) \textbackslash d\{3\}-\textbackslash d\{4\}}
@@ -12762,7 +12761,7 @@ For instance, on Linux it may be at \str{/usr/share/dict/words}.
 % in any event you can find it by running
 % \str{locate words | grep dict}.
 Use that file to find how many words fit the criteria.
-\begin{exparts}
+\begin{exparts*}
 \item contains the letter \str{a}
 \item starts with~\str{A}
 \item contains \str{a} or~\str{A}
@@ -12775,7 +12774,7 @@ Use that file to find how many words fit the criteria.
   or~\str{u}
 \item contains all the usual vowels
 \item contains all the usual vowels, in ascending order
-\end{exparts}
+\end{exparts*}
 \end{exercise}
 
 \recommended
@@ -12807,7 +12806,7 @@ One is \re{[-\textbackslash +]?(\textbackslash d)+\textbackslash .?|\textbacksla
 \recommended
 \begin{exercise}
 Give a suitable regex.
-\begin{exparts}
+\begin{exparts*}
 \item All Visa card numbers start with a \str{4}.
 New cards have 16 digits. Old cards have 13.
 \item MasterCard numbers either start with \str{51} through \str{55},
@@ -12815,7 +12814,7 @@ or with the numbers \str{2221} through \str{2720}.
 All have 16 digits.
 \item American Express card numbers start with \str{34}
   or~\str{37} and have 15 digits. 
-\end{exparts}
+\end{exparts*}
 \begin{answer}
 \begin{exparts}
 \item \re{4(\textbackslash d{15}|\textbackslash d{12})}
@@ -12835,10 +12834,10 @@ They are: (i)~\str{A11 1AA},
 (v)~\str{AA1 1AA},
 and (vi)~\str{AA1A 1AA}, where
 \str{A} stands for a capital ASCII letter and \str{1} stands for a digit.
-\begin{exparts}
+\begin{exparts*}
 \item Give a regex.
 \item Shorten it.
-\end{exparts}
+\end{exparts*}
 \begin{answer}
 \begin{exparts}
 \item
@@ -12914,13 +12913,17 @@ Give a regular expression for valid Roman numerals less than 5000.
 \end{exercise}
 
 \begin{exercise}  \label{exer:LangSquares}
-\Cref{ex:LangSquares} says that the language of square strings
-over $\Sigma=\set{\str{a},\str{b}}$
-\begin{equation*}
-  \lang=
+\Cref{ex:LangSquares} says that 
+$  \lang=
   \set{\sigma\in\kleenestar{\Sigma}
-         \suchthat \text{$\sigma=\tau\concat\tau$ for some $\tau\in\kleenestar{\Sigma}$}}
-\end{equation*}
+         \suchthat \text{$\sigma=\tau\concat\tau$ for some $\tau\in\kleenestar{\Sigma}$}}$,
+the language of square strings
+over $\Sigma=\set{\str{a},\str{b}}$,
+% \begin{equation*}
+%   \lang=
+%   \set{\sigma\in\kleenestar{\Sigma}
+%          \suchthat \text{$\sigma=\tau\concat\tau$ for some $\tau\in\kleenestar{\Sigma}$}}
+% \end{equation*}
 is not regular.
 Verify that.
 \begin{answer}
@@ -13498,7 +13501,6 @@ $\sigma_0,\sigma_1\in\eclass_{\lang,i}$ and make a common extension
 by the one-element string~$\beta=\sequence{x}$
 so the results are in the same part $\sigma_0\sim_{\lang}\sigma_1$.
 
-
 Finally, we must verify that the language recognized by this machine
 is~$\lang$.
 For any string $\sigma\in\kleenestar{\Sigma}$, starting this machine
@@ -13507,15 +13509,44 @@ containing~$\sigma$; this is what the prior paragraph says.
 This string will be accepted by this machine if and only if $\sigma\in\lang$.
 \end{proof}
 
-The Myhill–Nerode theorem gives a necessary and sufficient condition 
-for a language to be regular. 
-So it is in some sense the ``right''
+% Use wrapfig not margin graphic so get two pics
+\begin{wrapfigure}{l}[3em]{0.16\textwidth}  % "l" for left side so they look into page
+  \centering
+  \includegraphics[width=0.16\textwidth]{automata/pix/myhill.png}% 
+  \vspace*{1ex}
+  \includegraphics[width=0.16\textwidth]{automata/pix/nerode.png}% 
+  \caption{\protect\citetext{\label{fig:myhill}\href{https://en.wikipedia.org/wiki/John_Myhill}{John Myhill Sr\ 1923--1987} and \label{fig:nerode}\href{https://en.wikipedia.org/wiki/Anil_Nerode}{Anil Nerode b~1932}}{Photo credits Paul Halmos, Jason Koski/Cornell University}}\index{Myhill, J!picture}\index{Nerode, A!picture}
+\end{wrapfigure} % Photo credits Paul Halmos, Jason Koski/Cornell University
+% (Some authors refer to $\sim_{\lang}$ as Nerode congruence, 
+% after A~Nerode.) 
+%
+As an example of using this result, we will show that the language
+$\lang=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ the same number of \str{0}'s and \str{1}'s}}$ 
+is not regular.
+We will do this by showing that there are infinitely many non-equivalent
+strings.
+Consider the strings of the form~$\str{0}^n$.
+We claim that no two are equivalent.
+Take $\sigma_2=\str{00}$ and $\sigma_3=\str{000}$.
+If we extend each with the string~$\tau=\str{111}$ 
+then $\sigma_2\concat\tau$ is an element of~$\lang$
+but $\sigma_3\concat\tau$ is not.
+So the two are not equivalent, and obviously other strings like this are
+all mutually inequivalent.
+So there are infinitely many $\sim_{\lang}$ equivalence classes and
+so~$\lang$ is not regular.
+
+\smallskip
+Because the Myhill–Nerode theorem gives a necessary and sufficient condition 
+for a language to be regular, 
+it is in some sense the ``right''
 way to think about what makes a language regular.
 
-For instance, to show that some languages are not regular 
-we have used the Pumping Lemma, but we have no reason to suppose that 
-it works in all cases
-(in fact, it does not).
+In particular, contrast it with the Pumping lemma.
+We have now used both to show that languages are not regular.
+But the Pumping lemma gives an implication, not an if and only if equivalence.
+It says that if it is regular then it can be pumped, but it does not
+say that if it can be pumped then it is regular.
 However, the Myhill–Nerode theorem says that we can 
 always depend on the number of equivalence
 classes to distinguish regular languages from non-regular ones.
@@ -13555,19 +13586,31 @@ The language of palindromes
 $\lang=\set{\sigma\in\kleenestar{\str{a},\str{b}}\suchthat \reversal{\sigma}=\sigma}$
 is not regular.
 Find infinitely many $\lang$~equivalence classes.
-\end{exercise}
-
-\recommended
-\begin{exercise}
-Show that the language
-$\lang=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$ is not regular
-by using the Myhill-Nerode Theorem.
 \begin{answer}
-If $k\neq n$ then $\str{a}^k\str{b}^k\in\lang$
-but $\str{a}^m\str{b}^k\notin\lang$, so
-there are infinitely many classes. 
+We will show there are infinitely many $\sim_{\lang}$ equivalence classes
+by showing that there are infinitely many non-equuivalent strings.
+We claim that no two unequal strings of the form $\str{a}^n$
+are equivalent.
+As an example consider $\sigma_2=\str{aa}$ and $\sigma_3=\str{aaa}$.
+Take $\tau=\str{baa}$.
+Because $\sigma_2\concat\tau\in\lang$ and $\sigma_3\concat\tau\notin\lang$,
+the two are not equivalent.
+Clearly this works for any two such strings, so there are infinitely 
+many equvalence classes.  
 \end{answer}
 \end{exercise}
+
+% \recommended
+% \begin{exercise}
+% Show that the language
+% $\lang=\set{\str{a}^n\str{b}^n\suchthat n\in\N}$ is not regular
+% by using the Myhill-Nerode Theorem.
+% \begin{answer}
+% If $k\neq n$ then $\str{a}^k\str{b}^k\in\lang$
+% but $\str{a}^m\str{b}^k\notin\lang$, so
+% there are infinitely many classes. 
+% \end{answer}
+% \end{exercise}
 
 % \begin{exercise}
 % https://cs.stackexchange.com/a/30722

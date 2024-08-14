@@ -108,9 +108,65 @@ prologue/asy/gates/gates00.pdf : prologue/asy/gates/gates.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-prologue/asy/life/beacon00.pdf : prologue/asy/life/lifegraphics.asy
+prologue/asy/life/beacon000.pdf : prologue/asy/life/beacon_all.asy prologue/asy/life/gameboards/beacon000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/beehive000.pdf : prologue/asy/life/beehive_all.asy prologue/asy/life/gameboards/beehive000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/blinker000.pdf : prologue/asy/life/blinker_all.asy prologue/asy/life/gameboards/blinker000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/block000.pdf : prologue/asy/life/block_all.asy prologue/asy/life/gameboards/block000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/eater000.pdf : prologue/asy/life/eater_all.asy prologue/asy/life/gameboards/eater000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/eateranim000.pdf : prologue/asy/life/_all.asy prologue/asy/life/gameboards/000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/glider000.pdf : prologue/asy/life/glider_all.asy prologue/asy/life/gameboards/glider000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/glideranim000.pdf : prologue/asy/life/glideranim_all.asy prologue/asy/life/gameboards/glideranim000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/glideranimr000.pdf : prologue/asy/life/glideranimr_all.asy prologue/asy/life/gameboards/glideranimr000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/lonely000.pdf : prologue/asy/life/lonely_all.asy prologue/asy/life/gameboards/lonely000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/mwss000.pdf : prologue/asy/life/mwss_all.asy prologue/asy/life/gameboards/mwss000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/mwssanim000.pdf : prologue/asy/life/mwssanim_all.asy prologue/asy/life/gameboards/mwssanim000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/rabbits000.pdf : prologue/asy/life/rabbits_all.asy prologue/asy/life/gameboards/rabbits000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/toad000.pdf : prologue/asy/life/toad_all.asy prologue/asy/life/gameboards/toad000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
+
+prologue/asy/life/tub000.pdf : prologue/asy/life/tub_all.asy prologue/asy/life/gameboards/tub000.life
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)" 
 
 prologue/asy/tape/tapeadd00.pdf : prologue/asy/tape/tapeadd.asy
 	cd $(@D); \
@@ -358,7 +414,21 @@ prologue/prologue.tex : | prologue/asy/xygraphs/xygraphs00.pdf \
   prologue/asy/circlediagram/circlediagram00.pdf \
   prologue/asy/circlediagram/infloop.pdf \
   prologue/asy/gates/gates00.pdf \
-  prologue/asy/life/beacon00.pdf \
+  prologue/asy/life/beacon000.pdf \
+  prologue/asy/life/beehive000.pdf \
+  prologue/asy/life/blinker000.pdf \
+  prologue/asy/life/block000.pdf \
+  prologue/asy/life/eater000.pdf \
+  prologue/asy/life/eateranim000.pdf \
+  prologue/asy/life/glider000.pdf \
+  prologue/asy/life/glideranim000.pdf \
+  prologue/asy/life/glideranimr000.pdf \
+  prologue/asy/life/lonely000.pdf \
+  prologue/asy/life/mwss000.pdf \
+  prologue/asy/life/mwssanim000.pdf \
+  prologue/asy/life/rabbits000.pdf \
+  prologue/asy/life/toad000.pdf \
+  prologue/asy/life/tub000.pdf \
   prologue/asy/tape/tapeadd00.pdf \
   prologue/asy/tm/tm000.pdf \
   prologue/asy/tm_exercises/inverse/inverse000.pdf \

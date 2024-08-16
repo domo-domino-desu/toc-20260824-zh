@@ -773,7 +773,7 @@
       \setlength{\listparindent}{0.8\parindent}
       \setlength{\topsep}{\jh@listtopsep}
       \setlength{\parsep}{0ex}
-      \setlength{\itemsep}{0.6ex plus 0.25ex minus 0.05ex}
+      \setlength{\itemsep}{0.56x plus 0.25ex minus 0.05ex}
       \setlength{\rightmargin}{0em}
       % Encourage a page break betweeen items; LaTeX book.cls has
       % \@itempenalty     -\@lowpenalty

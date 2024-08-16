@@ -407,8 +407,8 @@
 % Mark an answer as verified by putting "\verified" in the source
 % inside the \begin{exercise} .. \end{exercise}
 \newtoggle{@showverified}  % Set true to put something on the answwers.pdf page
-% \toggletrue{@showverified}  % comment out one of these two
-\togglefalse{@showverified} %
+\toggletrue{@showverified}  % comment out one of these two
+% \togglefalse{@showverified} %
 \newcommand{\verified}{\iftoggle{@showverified}{%
          \llap{\makebox[5em][l]{{\color{ForestGreen}V}}}%
         }{}}

@@ -297,7 +297,7 @@ real[] yMinorTicks={0,2,4,6,8,10};
 arrowbar axisarrow = Arrows(TeXHead);
 
 path g = graph(pic, f0,xmin,xmax);
-draw(pic, g, FCNPEN+highlightcolor);
+draw(pic, g, FCNPEN_NOCOLOR+highlightcolor);
 xaxis(pic, "$x$",YZero(extend=false),
       xmin=xmin-0.5, xmax=xmax+0.5,
       RightTicks(xMajorTicks,xMinorTicks),
@@ -337,7 +337,7 @@ real[] yMinorTicks={0,2,4,6,8,10};
 arrowbar axisarrow = Arrows(TeXHead);
 
 path g = graph(pic, f1,xmin,xmax);
-draw(pic, g, FCNPEN+highlightcolor);
+draw(pic, g, FCNPEN_NOCOLOR+highlightcolor);
 xaxis(pic, "$x$",YZero(extend=false),
       xmin=xmin-0.5, xmax=xmax+0.5,
       RightTicks(xMajorTicks,xMinorTicks),
@@ -380,7 +380,7 @@ arrowbar axisarrow = Arrows(TeXHead);
 
 path grph = graph(pic, f,xmin,xmax);
 draw(pic, Scale(pic,(0+0.5,1))--Scale(pic,(20,1)), DASHPEN);
-draw(pic, grph, FCNPEN+highlightcolor);
+draw(pic, grph, FCNPEN_NOCOLOR+highlightcolor);
 xaxis(pic, Label("\raisebox{10pt}[0pt][0pt]{\makebox[0em][l]{\hspace*{2.5pt}$x$}}",E),YZero(extend=false),
       xmin=xmin, xmax=xmax+0.5,
       RightTicks(xMajorTicks,xMinorTicks),
@@ -423,7 +423,7 @@ arrowbar axisarrow = Arrows(TeXHead);
 
 path grph = graph(pic, f,xmin,xmax);
 draw(pic, Scale(pic,(xmin,1))--Scale(pic,(xmax,1)), DASHPEN);
-draw(pic, grph, FCNPEN+highlightcolor);
+draw(pic, grph, FCNPEN_NOCOLOR+highlightcolor);
 xaxis(pic, Label("\setlength{\unitlength}{1cm}\begin{picture}(0,0)\put(0,0.35){$x$}\end{picture}"),YZero(extend=false),
       xmin=xmin, xmax=xmax,
       RightTicks(xMajorTicks,xMinorTicks),

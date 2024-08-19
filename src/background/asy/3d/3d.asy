@@ -13,7 +13,7 @@ import jh;
 
 import settings;
 settings.outformat="pdf";
-settings.render=0;   // Not PDF PRC just a pdf file
+settings.render=0; 
 import graph3;
 
 // ========= Prefix of output file names =================================
@@ -25,7 +25,7 @@ string OUTPUT_FN = "3d%03d";
 int picnum = 0;
 
 picture pic;
-size3(pic, 2.0cm,0);
+size3(pic, 1.0cm,0);
 
 
 real cantor(pair z) {
@@ -35,13 +35,14 @@ real cantor(pair z) {
 real xmin = 0;
 real xmax = 2;
 real ymin = -6;
-real ymax = 3;
+real ymax = 4;
 
-currentprojection=orthographic(5,-5,15);
+// currentprojection=orthographic(5,-5,15);
+currentprojection=orthographic(5,2,2.5);
 currentlight=(0,0,10);
 
 // rectangle in xy plane over which surface is drawn
-draw(pic, (xmin,ymin,0)--(xmin,ymax,0)--(xmax,ymax,0)--(xmax,ymin,0)--cycle, DASHPEN);
+draw(pic, (xmin,ymin,0)--(xmin,ymax,0)--(xmax,ymax,0)--(xmax,ymin,0)--cycle, gray(0.5));
 
 // For the horizontal line where we find the y values
 triple neg_intersection = (1,-5.27491721763537,8);

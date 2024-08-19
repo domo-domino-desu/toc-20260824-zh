@@ -3235,6 +3235,14 @@ and~$c_3(3,3,3)$.
 \end{exparts*}
 \begin{answer}\verified
 A way to be confident about these is to write a small script. 
+\begin{lstlisting}
+sage: def cantor(x,y):
+....:     return x+ ( (x+y)*(x+y+1)/2 )
+....: 
+sage: def cantor3(x,y,z):
+....:     return cantor(cantor(x,y),z)
+....:   
+\end{lstlisting}
 \begin{exparts}
 \item $c_3(0,0,0)=0$, $c_3(1,2,3)=62$, $c_3(3,3,3)=402$
 % sage: def cantor(x,y):
@@ -3273,9 +3281,12 @@ $c_3(1,0,0)=5$
            &=\frac{1}{8}\cdot\bigl((x + y + 1)(x + y) + 2x + 2z + 2\bigr)\cdot\bigl((x + y + 1)(x + y) + 2x + 2z\bigr)  \\
            &\quad + \frac{1}{2}\cdot(x + y + 1)(x + y) + x
 \end{align*}
+That last is computed by machine, not by hand.
+\begin{lstlisting}
 sage: x,y,z = var('x,y,z')
 sage: cantor3(x,y,z)
-1/8*((x + y + 1)*(x + y) + 2*x + 2*z + 2)*((x + y + 1)*(x + y) + 2*x + 2*z) + 1/2*(x + y + 1)*(x + y) + x
+1/8*((x + y + 1)*(x + y) + 2*x + 2*z + 2)*((x + y + 1)*(x + y) + 2*x + 2*z) + 1/2*(x + y + 1)*(x + y) + x  
+\end{lstlisting}
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -3310,7 +3321,7 @@ the number of equivalent binary sequences is countably infinite.
 Fix~$b$.
 For $n\in\N$, let $S_N$ be the set of sequences
 that are equivalent to~$b$ because the
-two are equal from $N$ on. 
+two are equal from place~$N$ on. 
 This set is finite because the only way some $\hat{b}\in S_N$ varies
 from~$b$ is in the first $N$ places, so the set $S_N$ has
 $2^N$ elements.
@@ -3333,17 +3344,17 @@ Let $S_0$, $S_1$, and~$S_2$ be countably infinite and
 suppose that
 $\map{f_0}{\N}{S_0}$, $\map{f_1}{\N}{S_1}$ and~$\map{f_2}{\N}{S_2}$ 
 are onto.
-Then $\map{\hat{f}}{\N}{S_0\cup S_1\cup S_2}$ given by  
+Then $\map{\hat{f}}{\N}{S_0\cup S_1\cup S_2}$ is given by  
 \begin{equation*}
   \hat{f}(n)=
   \begin{cases}
     f_0(n/3)     &\case{if $n$ is a multiple of $3$, that is, $n\bmod 3=0$}  \\
-    f_1((n-1)/3) &\case{if $n$ leaves a remainder of $1$ on division by $3$, so  $n\bmod 3=1$} \\
-    f_2((n-2)/3) &\case{if $n$ leaves a remainder of $2$ on division by $3$, so  $n\bmod 3=2$}
+    f_1((n-1)/3) &\case{if $n\bmod 3=1$} \\
+    f_2((n-2)/3) &\case{if $n\bmod 3=2$}
   \end{cases}
 \end{equation*}
-(briefly, $\hat{f}(n)=f_{n\bmod 3}(\floor{n/3})$) 
-and illustrated by
+(briefly, $\hat{f}(n)=f_{n\bmod 3}(\floor{n/3})$). 
+This tabular illustration
 \begin{equation*}
 \begin{array}{r|*{8}{c}}
   n          &0      &1      &2      &3      &4     &5      &6     &\ldots  \\
@@ -3351,7 +3362,7 @@ and illustrated by
   \hat{f}(n) &f_0(0) &f_1(0) &f_2(0) &f_0(1) &f_1(1) &f_2(1) &f_3(0) &\ldots\rule{0em}{12pt}  
 \end{array}
 \end{equation*}
-is clearly onto.
+shows why the function is onto.
 \Cref{lem:CountableIffOntomap} applies, and so the union is countable.
 \end{answer}
 \end{exercise}
@@ -3359,10 +3370,14 @@ is clearly onto.
 \begin{exercise}
 Show that the set of all functions from $\set{0,1}$ to $\N$ is countable.
 \begin{answer}\verified
-Think of a function $\map{f}{\set{0,1}}{\N}$ as a pair
+A function $\map{f}{\set{0,1}}{\N}$ is two pieces of information,
+$f(0)$ and~$f(1)$. 
+So we can take it to be a pair
 $\sequence{f(0),f(1)}$.
-That is, there is a natural correspondence between $\set{0,1}$ and
-$\N\times\N$, which is countable.
+Restated, there is a natural correspondence between 
+the set of functions $\set{f\suchthat \map{f}{\set{0,1}}{\N}}$
+and the set of pairs
+$\N\times\N$, the latter of which we know to be countable.
 \end{answer}
 \end{exercise}
 
@@ -3389,26 +3404,28 @@ The cross product of two finites sets is finite
 because the number of elements in the
 cross product equals the product of the number of elements in the sets.
 
-Next we do a finite set, $S=\set{s_0,\ldots s_{m-1}}$,
+Next consider a finite set, $S=\set{s_0,\ldots\, s_{m-1}}$,
 and a countably infinite set, $T=\set{t_0,t_1,\ldots}$.
-Consider $S\times T$ (the $T\times S$ argument is similar).
+We will show that $S\times T$ is countable 
+(the $T\times S$ argument is similar).
 Enumerate it row-wise, 
 so that where $n=d\cdot m+r$ is the usual quotient-remainder
 relationship then $f(n)=\sequence{s_{r},t_{d}}$.
-(This initial portion of the $m=3$ case
+(For illustration, this initial portion of the $m=3$ case
 \begin{equation*}
 \begin{array}{r|*{8}{c}}
   n    &0              &1           &2           
          &3              &4              &5           
          &6           &\ldots \\
   \cline{1-9}
-  f(n) &\sequence{0,0} &\sequence{1,0} &\sequence{2,0} 
-         &\sequence{0,1} &\sequence{1,1} &\sequence{2,1} 
-         &\sequence{0,2} &\ldots \\
+  f(n) &\sequence{s_0,t_0} &\sequence{s_1,t_0} &\sequence{s_2,t_0} 
+         &\sequence{s_0,t_1} &\sequence{s_1,t_1} &\sequence{s_2,t_1} 
+         &\sequence{s_0,t_2} &\ldots \\
 \end{array}
 \end{equation*}
-illustrates that 
-an equivalent formula is $f(n)=\sequence{s_{n\bmod m},t_{\floor{n/m}}}$.)
+has the first entries cycle $s_0,s_1,s_2,s_0,\ldots$
+while the second entries ratchet up through the infinite set.)   
+% an equivalent formula is $f(n)=\sequence{s_{n\bmod m},t_{\floor{n/m}}}$.)
 Clearly this function is a correspondence.
 \end{answer}
 \end{exercise}
@@ -3464,7 +3481,7 @@ Show that $g$ is a correspondence.
 The box enumeration goes:
 $(0,0)$, then $(0,1)$, $(1,1)$, $(1,0)$,
 then $(0,2)$, $(1,2)$, $(2,2)$, $(2,1)$, $(2,0)$, etc.
-% Produce code for this.
+Produce a table of $B(x,y)$ for $0\leq x,y\leq 4$. 
 To what value does $(3,4)$ correspond?
 \end{exparts}
 \begin{answer}\verified
@@ -3509,8 +3526,10 @@ To what value does $(3,4)$ correspond?
 Every natural number greater than zero is
 a unique product of primes, $2^{e_2}3^{e_3}\cdots p^{e_p}$.
 So every such number is
-the product of a power of two,~$2^{n}$, with an odd number,~$2m+1$,
-and so corresponds to the pair~$\sequence{n,m}$.
+the product of a maximal power of two,~$2^{n}$, with an odd number,~$2m+1$.
+Thus the pair~$\sequence{n,m}$ corresponds to $2^n\cdot(2m+1)$, and therfore 
+the map $g$ with domain $\N\times\N$ given by
+$g(n,m)=2^n\cdot(2m+1)-1$ is a correspondence, with range~$\N$.
 \item This table shows that under the box enumeration $\sequence{3,4}$
 corresponds with $19$.
 \begin{equation*}
@@ -3568,7 +3587,7 @@ What about for real number input?
 \begin{figure}
   \centering
   \vcenteredhbox{\includegraphics{background/asy/3d/3d000.pdf}}
-  \caption{Cantor's unpairing function, along with the line where $x=1$ and $z=8$.}
+  \caption{Cantor's unpairing function, with the line where $x=1$ and $z=8$.}
   \label{fig:CantorRTwoToR}
 \end{figure}
 \end{exparts}

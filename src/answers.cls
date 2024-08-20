@@ -427,7 +427,7 @@
   \IfFileExists{#1}{}{\typeout{No file #1.}}
 }
 \newcommand*{\myexternaldocument}[1]{%
-    \externaldocument{#1}[file://book.pdf]%
+    \externaldocument{#1}[file://book.pdf]% opt arg stops pointing to, e.g., background/background.pdf
     \addFileDependency{#1.tex}%
     \addFileDependency{#1.aux}%
 }

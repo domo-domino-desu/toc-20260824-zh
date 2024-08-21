@@ -438,3 +438,43 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ======== Correspondence [0,1] and (0,1) ============================
+int picnum = 5;
+picture pic;
+unitsize(pic,2cm);
+real u=1;
+real v=u; 
+
+real idfcn(real x) {
+  return x;
+}
+
+real xmin = 0;
+real xmax = 1;
+real ymin = 0;
+real ymax = 1;
+
+dotfactor = 5;
+for (int n=0; n<8; ++n) {
+  dot(pic, (1/2^n, 1/2^(n+2)), highlightcolor);
+  draw(pic, graph(pic, idfcn, 1/2^n, 1/2^(n+1)), highlightcolor);
+  dot(pic, (1/2^n, 1/2^n), p=highlightcolor, filltype=Fill(white));
+}
+dot(pic, (0,1/2), highlightcolor);
+dot(pic, (0,0), p=highlightcolor, filltype=Fill(white));
+label(pic, "\small$(0,\frac{1}{2})$", (0,1/2), W);
+label(pic, "\small$(1,\frac{1}{4})$", (1,1/4), N);
+xaxis(pic,
+      xmin=xmin-0.1, xmax=xmax+0.1,
+      RightTicks(Step=1,step=0,OmitTick(0),Size=2pt),
+      Arrow(TeXHead));        
+yaxis(pic,
+      ymin=ymin-0.1, ymax=ymax+0.1,
+      LeftTicks(Step=1,step=0,OmitTick(0),Size=2pt),
+      Arrow(TeXHead));
+
+// label(pic, "{\footnotesize $f(x)=(\arctan(x)+(\pi/2))/\pi$}", Scale(pic,(2.25,1.4)), E);
+shipout(format(OUTPUT_FN,picnum),pic);
+
+
+

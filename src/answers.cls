@@ -410,7 +410,7 @@
 \toggletrue{@showverified}  % comment out one of these two
 % \togglefalse{@showverified} %
 \newcommand{\verified}{\iftoggle{@showverified}{%
-         \llap{\makebox[5em][l]{{\color{ForestGreen}V}}}%
+         \llap{\makebox[5.5em][l]{{\color{ForestGreen}V}}}%
         }{}}
 
 

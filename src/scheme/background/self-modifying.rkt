@@ -1,8 +1,8 @@
 #! /usr/bin/env racket
 #lang racket
-(define COUNTER 5)
+(define COUNTER 11)
 
-;; Add one to the counter defined in the third line of the file
+;; Get list of file lines, where the counter defined in the third line is incremented
 (define (intake fn)
   (let* ([contents (port->string (open-input-file fn) #:close? #t)]
          [lines-in (string-split contents "\n")]
@@ -21,7 +21,12 @@
                             later-lines-in)])
     lines-out))
 
+;; Output the strings in a list to the named file
 (define (update fn str-list)
-  (let ([out-port (open-output-file fn #:exists 'replace)])
+  (let ([out-port (open-output-file fn #:exists 'replace #:permissions #o664)])  ; permit rw-rw-r--
     (write-string (string-join str-list "\n") out-port)
     (close-output-port out-port)))
+
+;; When this file is called from the command line it runs these commands 
+(update "self-modifying.rkt" (intake "self-modifying.rkt"))
+(displayln (~a "Counter=" COUNTER))

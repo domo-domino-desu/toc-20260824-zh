@@ -76,8 +76,8 @@ draw(pic,
      (read--initial),
      (initial--test),
      (iterate--VH--middle(initial,test)),
-     (test--printout).l("Yes").style("leftside"),
-     (test--iterate).l("No").style("leftside"),
+     (test--printout).l("Y").style("leftside"),
+     (test--iterate).l("N").style("leftside"),
      (printout--ending)
 );
 

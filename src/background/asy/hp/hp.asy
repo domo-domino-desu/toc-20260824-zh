@@ -1888,8 +1888,8 @@ int picnum = 27;
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $x$");
-node run=nbox("Run $\TM_x$ on $x$");
+node read=nbox("Read $e$");
+node run=nbox("Run $\TM_e$ on $e$");
 node output=nbox("Print $42$");
 node ending=nroundbox("End");
 

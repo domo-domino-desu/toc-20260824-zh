@@ -7888,23 +7888,27 @@ You needn't give a proof, just decide.
 
 \begin{exercise}
 In some ways a more natural set than 
-$K=\set{x\in\N\suchthat \TMfcn_x(x)\converges}$
+$K=\set{e\in\N\suchthat \TMfcn_e(e)\converges}$
 is $K_0=\set{\sequence{e,x}\in\N^2\suchthat \TMfcn_e(x)\converges}$.\index{K0, set of halting pairs@$K_0$, set of halting pairs}
-Use the fact that $K$ is not computable to prove that $K_0$ is not computable.
-\begin{answer}
+Use the fact that $K$ is not computable to prove that $K_0$ is 
+also not computable.
+\begin{answer}\verified
 Suppose that we could compute $K_0$.
 That is, suppose that there is a Turing machine~$\TM_{e_0}$ such that 
 $\TMfcn_{e_0}(\sequence{e,x})=1$ if $\TMfcn_e(x)\converges$ and 
 $\TMfcn_{e_0}(\sequence{e,x})=0$ if $\TMfcn_e(x)\diverges$.
-Then we could solve the \HP{} by just applying~$\TM_{e_0}$ to the 
-input~$\sequence{x,x}$.
+Then we could solve the \HP, we could determine membership in~$K$,
+just by applying~$\TM_{e_0}$ to the 
+input~$\sequence{e,e}$.
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 The \HP{} of determining membership in the set 
-$K=\set{x\suchthat \TMfcn_x(x)\converges}$ cuts across all 
-Turing machines.
+$K=\set{e\suchthat \TMfcn_e(e)\converges}$ appears to be an aggregate, 
+or to cut across all Turing machines,
+in that for every Turing machine a piece of information about that
+machine forms part of~$K$.
 \begin{exparts}
 \item
 Produce a single Turing machine,~$\TM_e$, such that
@@ -7912,24 +7916,29 @@ the question of determining membership in
 $\set{y\suchthat \TMfcn_{e}(y)\converges}$ is undecidable.
 \item
 Fix a number~$y$.
-Show that the question of whether $\TM$ halts on~$y$ is decidable.
+Show that the question of whether $\TM_e$ halts on~$y$ is decidable.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item
-One such machine takes input~$x$, uses a Universal Turing machine to 
-run $\TM_x$ on input~$x$,
+One such machine takes input~$e$, uses a Universal Turing machine to 
+run $\TM_e$ on input~$e$,
 and then exits.
 \figureref{fig:SingleMachineHP} has a flowchart.
   \begin{figure}
     \centering
     \vcenteredhbox{\includegraphics{background/asy/hp/hp1027.pdf}}
-    \caption{A single machine that reflects the \HP.}
+    \caption{A single machine whose domain is undecidable.}
     \label{fig:SingleMachineHP}
   \end{figure}
+To see that computing the domain of the associated computable function 
+is not
+mechanically computable, observe that if we could 
+compute its domain then we could compute the solution to the \HP.
 \item
-For a fixed input~$y$, one of these two machines works:~(1) for all input,
-print~$1$, or (2)~for all inputs, print~$0$.
+For any Turing machine $\TM_e$ and any fixed input~$y$, 
+The answer is either ``yes it halts on~$y$'' or ``no it does not.''
+We can write two programs, one for each, and one of the programs is right.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -7940,21 +7949,30 @@ For each, if it is mechanically solvable
 then sketch a algorithm to solve it.
 If it is unsolvable then show that.
 \begin{exparts}
-\item Given $e$, determine the number of states in $\TM_e$.
+\item Given $e\in\N$, determine the number of states in $\TM_e$.
 \item Given $e$, determine whether $\TM_e$ halts when the input is the
   empty string.
 \item Given $e$, determine if $\TM_e$ halts on input~$n$ within one
   hundred steps. 
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
   \begin{exparts}
   \item This is solvable.
-  Given the index~$e$, start by translating it to the set of 
-  Turing machine instructions, $\TM_e$
-  (remember that we are using numberings that are acceptable in 
-  the sense defined on page~\pageref{def:AcceptableNumbering}).
-  Now count the number of states that appear in that Turing machine.
-  \item This is not solvable; $\computablefunction{halts\_on\_empty}$
+  The index~$e$ is computationally equivalent to the source
+  because we are using machine numberings that are acceptable in 
+  the sense defined on page~\pageref{def:AcceptableNumbering}.
+  So given~$e$, start by translating it to the set of 
+  Turing machine instructions, $\TM_e$.
+  Finish by counting the number of states that appear in that Turing machine
+  source.
+  \item This is not solvable; this function 
+    \begin{equation*}
+      \computablefunction{halts\_on\_empty\_decider}(e)=
+      \begin{cases}
+         1  &\case{if $\TM_e$ halts when started on an empty tape}   \\
+         0  &\case{otherwise}
+       \end{cases}
+    \end{equation*}
   is not mechanically computable.
   For, consider this function. 
   \begin{equation*}
@@ -7964,7 +7982,7 @@ If it is unsolvable then show that.
       \uparrow    &\case{otherwise}
     \end{cases}
   \end{equation*} 
-  It is intuitively mechanically computable, and so by Church's Thesis 
+  It is intuitively mechanically computable and so by Church's Thesis 
   there is a Turing machine that computes it.
   Let the index of that machine be~$e_0$.
   Apply the \smn~theorem to parametrize~$x$,
@@ -7973,10 +7991,13 @@ If it is unsolvable then show that.
   associated Turing machine simply does not read any input from the tape.)
 
   Then $\TMfcn_x(x)\converges$ if and only if 
-  $\computablefunction{halts\_on\_empty}(s(e_0,x))=1$.
-  If $\computablefunction{halts\_on\_empty}$ were mechanically computable
-  then we could mechanically solve the \HP,
-  so $\computablefunction{halts\_on\_empty}$ is not mechanically computable.
+  $\computablefunction{halts\_on\_empty\_decider}(s(e_0,x))=1$.
+  If $\computablefunction{halts\_on\_empty\_decider}$ 
+  were mechanically computable
+  then we could mechanically solve the \HP.
+  Therefore 
+  $\computablefunction{halts\_on\_empty\_decider}$ 
+  is not mechanically computable.
   \item This is solvable.
   From the index~$e$, use a Universal Turing machine to run~$\TM_e$
   on input~$e$ for one hundred steps. 

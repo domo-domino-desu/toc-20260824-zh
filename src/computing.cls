@@ -773,7 +773,7 @@
       \setlength{\listparindent}{0.8\parindent}
       \setlength{\topsep}{\jh@listtopsep}
       \setlength{\parsep}{0ex}
-      \setlength{\itemsep}{0.56x plus 0.15ex minus 0.05ex}
+      \setlength{\itemsep}{0.5ex plus 0.15ex minus 0.05ex}
       \setlength{\rightmargin}{0em}
       % Encourage a page break betweeen items; LaTeX book.cls has
       % \@itempenalty     -\@lowpenalty
@@ -794,6 +794,14 @@
   \Writetofile{\answerbodyfilename}{\@percentchar\space\showlineno\space is the exercise source}%
 }{%
 }
+
+% Insert instructions that apply to a number of consecutive exercises into
+% the middle of an exercises environment
+\newcommand{\exerciseinstructions}[1]{%
+  % ? not enough vertical space
+  % \vspace{0.5ex plus 0.15ex minus 0.05ex}% \itemsep + \parsep
+  \medskip %
+  \parbox{\textwidth}{\it #1}}
 
 
 % New exercises code

@@ -89,7 +89,7 @@ shipout(format(OUTPUT_FILE,picnum),pic);
 
 
 
-// Seed the random number generator
+// Seed the random number generator to place the points
 // Comment the next two lines and comment the seconds_seed setting,
 // then run a few until you get one you like.  Then install it as
 // the fixed seconds_seed.
@@ -98,38 +98,40 @@ int seconds_seed = 1725571541;
 // write(format("Seed for srand is %d",seconds_seed));
 srand(seconds_seed);
 
-// =================== Universe with Turing machine dots =========
-picture pic;
-int picnum = 1;
-
+// Find positions for the points
+pair[] pts_in_tile;
 int num_pts_in_tile;
-// Draw the points
 for(int r=0; r<num_rows; ++r) {
   for(int c=0; c<num_cols; ++c){
     path tile;
-    tile = get_tile(classes,r,c);
+    // tile = get_tile(classes,r,c);
+    transform t = shift((num_cols-1-c)*horiz_size,(num_rows-1-r)*vert_size);
     if (unitrand() < 0.5) {
       num_pts_in_tile = 3;
     } else {
       num_pts_in_tile = 4;
     }
-    // filldraw(pic,get_tile(classes,r,c), MAINPEN+LIGHTPEN+grayed,fillpen=fp);
-    pair[] pts_in_tile;
     if (num_pts_in_tile==3) {
-      pts_in_tile.push( (horiz_size*(0.1+0.23*unitrand()), vert_size*(0.1+0.8*unitrand())) );  // 0.33-0.075=0.255
-      pts_in_tile.push( (horiz_size*(0.33+0.33*unitrand()), vert_size*(0.1+0.8*unitrand())) );  // 
-      pts_in_tile.push( (horiz_size*(0.67+0.23*unitrand()), vert_size*(0.1+0.8*unitrand())) );  // 0.33-0.075=0.255
+      pts_in_tile.push( t* (horiz_size*(0.1+0.23*unitrand()), vert_size*(0.1+0.8*unitrand())) );  // 0.33-0.075=0.255
+      pts_in_tile.push( t* (horiz_size*(0.33+0.33*unitrand()), vert_size*(0.1+0.8*unitrand())) );  // 
+      pts_in_tile.push( t* (horiz_size*(0.67+0.23*unitrand()), vert_size*(0.1+0.8*unitrand())) );  // 0.33-0.075=0.255
     } else {
-      pts_in_tile.push( (horiz_size*(0.075+0.425*unitrand()), vert_size*(0.0075+0.425*unitrand())) ); // 0.5-0.075=0.425
-      pts_in_tile.push( (horiz_size*(0.075+0.425*unitrand()), vert_size*(0.5+0.425*unitrand())) ); // 
-      pts_in_tile.push( (horiz_size*(0.5+0.425*unitrand()), vert_size*(0.0075+0.425*unitrand())) ); // 
-      pts_in_tile.push( (horiz_size*(0.5+0.425*unitrand()), vert_size*(0.5+0.425*unitrand())) ); //
-    }
-    dotfactor = 2;
-    for (pair p: pts_in_tile) {
-      dot(pic, shift((num_cols-1-c)*horiz_size,(num_rows-1-r)*vert_size)*p, black);
+      pts_in_tile.push( t* (horiz_size*(0.075+0.425*unitrand()), vert_size*(0.0075+0.425*unitrand())) ); // 0.5-0.075=0.425
+      pts_in_tile.push( t* (horiz_size*(0.075+0.425*unitrand()), vert_size*(0.5+0.425*unitrand())) ); // 
+      pts_in_tile.push( t* (horiz_size*(0.5+0.425*unitrand()), vert_size*(0.0075+0.425*unitrand())) ); // 
+      pts_in_tile.push( t* (horiz_size*(0.5+0.425*unitrand()), vert_size*(0.5+0.425*unitrand())) ); //
     }
   }
+}
+
+// =================== Universe with Turing machine dots =========
+picture pic;
+int picnum = 1;
+
+// Draw the points
+dotfactor = 2;
+for (pair p: pts_in_tile) {
+  dot(pic, p, highlightcolor);
 }
 
 label(pic, "$\cdots$",(wd-0.5cm,ht/2.0));
@@ -144,34 +146,18 @@ shipout(format(OUTPUT_FILE,picnum),pic);
 picture pic;
 int picnum = 2;
 
-int num_pts_in_tile;
+path tile;
 // Draw the points
 for(int r=0; r<num_rows; ++r) {
   for(int c=0; c<num_cols; ++c){
-    path tile;
     tile = get_tile(classes,r,c);
-    if (unitrand() < 0.5) {
-      num_pts_in_tile = 3;
-    } else {
-      num_pts_in_tile = 4;
-    }
-    filldraw(pic,get_tile(classes,r,c), MAINPEN+LIGHTPEN+highlightcolor,fillpen=fp);
-    pair[] pts_in_tile;
-    if (num_pts_in_tile==3) {
-      pts_in_tile.push( (horiz_size*(0.1+0.23*unitrand()), vert_size*(0.125+0.75*unitrand())) );  // 0.33-0.075=0.255
-      pts_in_tile.push( (horiz_size*(0.33+0.33*unitrand()), vert_size*(0.125+0.75*unitrand())) );  // 
-      pts_in_tile.push( (horiz_size*(0.67+0.23*unitrand()), vert_size*(0.125+0.75*unitrand())) );  // 0.33-0.075=0.255
-    } else {
-      pts_in_tile.push( (horiz_size*(0.075+0.425*unitrand()), vert_size*(0.0075+0.425*unitrand())) ); // 0.5-0.075=0.425
-      pts_in_tile.push( (horiz_size*(0.075+0.425*unitrand()), vert_size*(0.5+0.425*unitrand())) ); // 
-      pts_in_tile.push( (horiz_size*(0.5+0.425*unitrand()), vert_size*(0.0075+0.425*unitrand())) ); // 
-      pts_in_tile.push( (horiz_size*(0.5+0.425*unitrand()), vert_size*(0.5+0.425*unitrand())) ); //
-    }
-    dotfactor = 2;
-    for (pair p: pts_in_tile) {
-      dot(pic, shift((num_cols-1-c)*horiz_size,(num_rows-1-r)*vert_size)*p, black);
-    }
+    filldraw(pic, get_tile(classes,r,c), MAINPEN+LIGHTPEN+grayed,fillpen=fp);
   }
+}
+// Add the points
+dotfactor = 2;
+for (pair p: pts_in_tile) {
+  dot(pic, p, highlightcolor);
 }
 
 label(pic, "$\cdots$",(wd-0.5cm,ht/2.0));

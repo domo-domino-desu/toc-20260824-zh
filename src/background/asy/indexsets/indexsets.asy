@@ -147,11 +147,43 @@ picture pic;
 int picnum = 2;
 
 path tile;
-// Draw the points
+// Draw the tiles
 for(int r=0; r<num_rows; ++r) {
   for(int c=0; c<num_cols; ++c){
     tile = get_tile(classes,r,c);
     filldraw(pic, get_tile(classes,r,c), MAINPEN+LIGHTPEN+grayed,fillpen=fp);
+  }
+}
+// Add the points
+dotfactor = 2;
+for (pair p: pts_in_tile) {
+  dot(pic, p, highlightcolor);
+}
+
+label(pic, "$\cdots$",(wd-0.5cm,ht/2.0));
+
+clip(pic, universe);
+draw(pic, universe,MAINPEN+LIGHTPEN+miterjoin);
+
+shipout(format(OUTPUT_FILE,picnum),pic);
+
+
+
+
+//  .............. color some tiles ..............
+picture pic;
+int picnum = 3;
+
+path tile;
+// Draw the points
+for(int r=0; r<num_rows; ++r) {
+  for(int c=0; c<num_cols; ++c){
+    tile = get_tile(classes,r,c);
+    if (unitrand()<=0.1) {  // Color a few of the index sets
+      filldraw(pic, get_tile(classes,r,c), MAINPEN+LIGHTPEN+grayed,fillpen=lightcolor);
+    } else {
+      filldraw(pic, get_tile(classes,r,c), MAINPEN+LIGHTPEN+grayed,fillpen=white);
+    }
   }
 }
 // Add the points

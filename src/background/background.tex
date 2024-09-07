@@ -9290,23 +9290,34 @@ The problem of deciding, given $e\in\N$, whether $\TM_e$ accepts the string
 \end{exercise}
 
 \begin{exercise}
+As in the prior exercise, a Turing machine 
+accepts
+a set of bit strings $\lang\subseteq\kleenestar{\B}$
+if it inputs bit strings, halts on all inputs, and 
+it outputs~$1$ if input is a member of~$\lang$, and $0$ otherwise.
+Show that this problem is unsolvable: given~$e$,
+determine if $\TM_e$ accepts $\kleenestar{\B}$ itself.
 Show that this problem is mechanically unsolvable: give~$e$, determine whether
 there is an input~$x$ so that~$\TMfcn_e(x)\converges$.
-\begin{answer}
+\begin{answer}\verified
   We will use Rice's Theorem so consider
-  $\mathcal{I}=\set{e\suchthat  \text{$\TMfcn_e(x)\converges $ for some $x\in\N$}}$.
-  This set is not empty because we can write a Turing machine that halts on all
-  inputs.
-  This set is not equal to~$\N$ because we can write a Turing machine that
-  fails to halt for any input.
+  $\mathcal{I}=\set{e\suchthat  \text{$\TM_e$ accepts every $\sigma\in\kleenestar{\B}$}}$.
 
-  To show this is an index set suppose that $e\in\mathcal{I}$ and that
+  First, we can write a Turing machine that halts on all
+  inputs and outputs~$1$, and the index of this machine is a member 
+  of~$\mathcal{I}$, so that is not the empty set.
+
+  Second, we can write a Turing machine that halts on all inputs and 
+  outputs~$0$, and the index of that machine is not a member of~$\mathcal{I}$,
+  so $\mathcal{I}\neq\N$.
+
+  To show that $\mathcal{I}$ is an index set, 
+  suppose that $e\in\mathcal{I}$ and that
   the number~$\hat{e}$ is such that $\TMfcn_e\samebehavior\TMfcn_{\hat{e}}$.
-  Because $e\in\mathcal{I}$ there is a number~$x_0$ such that 
-  $\TMfcn_{e}(x_0)\converges$.
-  Then $\TMfcn_{\hat{e}}(x_0)\converges$ also, 
-  because $\TMfcn_e\samebehavior\TMfcn_{\hat{e}}$.
-  Thus $\hat{e}\in\mathcal{I}$ and this is an index set.
+  Because $e\in\mathcal{I}$, machine $\TM_e$ accepts all bitstrings.
+  Because $\TMfcn_e\samebehavior\TMfcn_{\hat{e}}$, machine $\TM_{\hat{e}}$ also
+  accepts all bitstrings.
+  Thus $\hat{e}\in\mathcal{I}$, and $\mathcal{I}$ is a nontrivial index set.
 \end{answer}
 \end{exercise}
 
@@ -9316,19 +9327,25 @@ We say that a Turing machine has an
 if for all inputs, during the course of the computation the machine never
 enters that state.
 Show that 
-$\mathcal{J}=\set{e\suchthat \text{$\TM_e$ has an unreachable state}}$
+$\mathcal{I}=\set{e\suchthat \text{$\TM_e$ has an unreachable state}}$
 is not an index set.
-\begin{answer}
+\begin{answer}\verified
 We can produce two Turing machines, $\TM_e$ and~$\TM_{\hat{e}}$ 
 that have the same behavior, $\TMfcn_e\samebehavior\TMfcn_{\hat{e}}$,
-but $e\in\mathcal{J}$ and $\hat{e}\notin\mathcal{J}$.
+but $e\in\mathcal{I}$ while $\hat{e}\notin\mathcal{I}$.
 Here are two such machines.  
-\begin{align*}
-  \TM_e &=
-  \set{\tminstruction{0}{B}{B}{0},\tminstruction{0}{1}{1}{0},\tminstruction{1}{B}{B}{0}}        \\
-  \TM_{\hat{e}} &=
+\begin{equation*}
+  \TM_e =
+  \set{\tminstruction{0}{B}{B}{0},
+       \tminstruction{0}{1}{1}{0},
+       \tminstruction{1}{B}{B}{1},
+       \tminstruction{1}{1}{1}{1}
+      }        
+  \qquad
+  \TM_{\hat{e}} =
   \set{\tminstruction{0}{B}{B}{0},\tminstruction{0}{1}{1}{0}}
-\end{align*}
+\end{equation*}
+The first has the unreachable state of $q_1$.
 \end{answer}
 \end{exercise}
 
@@ -9337,17 +9354,23 @@ Here are two such machines.
   \href{https://cs.stackexchange.com/q/86660}{SE user Rajesh R} 
   % https://cs.stackexchange.com/users/78255/rajesh-r), Whether TM accepts epsilon?, URL (version: 2018-01-13): 
 \end{credit}
-Your classmate says, ``Here is a problem that is about the behavior of
+Your classmate says, ``The section ends with `Rice’s Theorem is about 
+those properties of machines
+that extend to be properties of the functions that those machines compute.'
+But here is a problem that is about the properties of
 machines but is also solvable:~given~$e$, determine whether $\TM_e$ only halts
 on an empty input tape.
 To solve this problem, give machine~$\TM_e$ an empty input and
-see whether it goes on.''
+see whether it halt or it goes on.''
 Where are they mistaken?
-\begin{answer}
-  Briefly, we cannot tell anything by whether the machine `goes on'.
-  It can go on to do quite complex things.
+\begin{answer}\verified
+  This problem is not solvable.
+  We cannot tell anything by whether the machine `goes on',
+  that is, does not stop immediately.
+  It can go on to do quite complex things and then stop eventually,
+  or do complex things and never stop.
 
-  For more, we can reduce this problem to the \HP.
+  For more, we can reduce the \HP{} to this problem.
   Consider this $\map{\psi}{\N^2}{\N}$.
   \begin{equation*}
     \psi(x,y)=
@@ -9388,10 +9411,10 @@ Where are they mistaken?
 
 \begin{exercise}
 Show that no set that is nonempty and finite is an index set.
-\begin{answer}
-The Padding Lemma, \cref{lem:EveryCompFcnHasInfManyIndices}, 
+\begin{answer}\verified
+The Padding Lemma, I.\ref{lem:EveryCompFcnHasInfManyIndices}, 
 says that every computable function has infinitely many indices.
-So if the set contains $e$ then it must contain the infinitely many
+So if the set contains an $e\in\N$ then it must contain the infinitely many
 indices~$\hat{e}$ such that $\TMfcn_e\samebehavior\TMfcn_{\hat{e}}$.
 \end{answer}
 \end{exercise}

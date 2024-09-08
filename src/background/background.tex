@@ -9691,12 +9691,13 @@ domain~$\N$ `enumerates' its range.
 \begin{definition}  \label{def:ComputablyEnumerable}
 A set of natural numbers is 
 \definend{computably enumerable}\index{computably enumerable set}\index{set!computably enumerable}\index{set!c.e.} 
-(or \definend{c.e.})\index{c.e. set|see{computably enumerable}} 
-if it is effectively listable, so that it is
-the range of a total computable function, or it is the empty set.
-Alternate terms are  
+(or \definend{c.e.})\@\index{c.e. set|see{computably enumerable}} 
+if it is effectively listable, that is, if it is
+the range of a computable function.
+(That function may be total or it may be partial.)
+Alternate terms for the same thing are:  
 \definend{recursively enumerable}\index{recursively enumerable set|see{computably enumerable set}}\index{set!recursively enumerable|see{computably enumerable set}}\index{set!r.e.|see{computably enumerable set}} 
-(or \definend{r.e.}),\index{r.e. set|see{computably enumerable set}}
+(or \definend{r.e.}),\@\index{r.e. set|see{computably enumerable set}}
 or \definend{semicomputable},\index{semicomputable set}\index{set!semicomputable}
 or \definend{semidecidable}.\index{semidecidable set}\index{set!semidecidable}
 \end{definition}
@@ -9706,8 +9707,10 @@ Picture
 the stream 
 $\TMfcn(0)$, $\TMfcn(1)$, $\TMfcn(2)$,~\ldots{} gradually filling 
 out the set.
-(That stream may contain repeats and the numbers may appear 
-in some not-ascending order.)
+(It may be that the stream may contain repeats, 
+or it may be that the numbers may appear 
+in some willy-nilly order, not necessarily ascending,
+or perhaps some of the $\TMfcn(i)$'s diverge.)
 
 \begin{remark}
 Here is a particularly interesting stream.
@@ -9731,63 +9734,98 @@ Suppose that we have a statement from this topic that we are interested in,
 such as \definend{Goldbach's conjecture}\index{Goldbach's conjecture} 
 that every even number is the sum of at most two primes.
 We could watch the process as it enumerates the theorems.
-If our statement is provable then its number will eventually appear.
+If the statement is provable then its number will eventually appear.
 \end{remark}
-
 
 %<*lem:CEIffDomainOfComputableFcn>
 \begin{lemma} \label{lem:CEIffDomainOfComputableFcn}
 The following are equivalent for a set of natural numbers.
 \begin{thmparts}
-\item It is computably enumerable, that is, either it is empty or it is
-  the range of a total computable function.
-\item It is the domain of a partial computable function.
-\item It is the range of a partial computable function.
+\item It is computably enumerable, that is, 
+  it is the range of a computable function.\label{itemA:lem:CEIffDomainOfComputableFcn}
+\item It is the range of a total computable function, or it is empty.\label{itemB:lem:CEIffDomainOfComputableFcn}
+\item It is the domain of a computable function.
 \end{thmparts}
 \end{lemma}
 %</lem:CEIffDomainOfComputableFcn>
 
 \begin{proof}
-We will show that the first two are equivalent.
+We will show that the first and second are equivalent.
 That the second and third are equivalent is 
 \cref{exer:CEIffDomainOfComputableFcn}.
 
-Assume first that a set $S$ is computably enumerable.
-If it is empty then it is the domain of the partial computable function that 
-diverges on all inputs.
-The other possibility is that $S$ is the range of a total computable~$f\!$,
-and we will describe a partial computable~$g$ with domain~$S$.
-To compute $g$:~given the input~$x\in\N$, 
-enumerate $f(0)$, $f(1)$, \ldots{} 
-and wait for~$x$ to appear as one of these values.
-If~$x$ does appear then halt the computation of~$g$, with some nominal output
-(such as $42$).
-If~$x$ never appears in this stream then the computation of $g(x)$ never halts.
-The domain of~$g$ is~$S$.
+As usual, one of the two directions is easy.
+Here it is (\ref{itemB:lem:CEIffDomainOfComputableFcn})
+implies~(\ref{itemA:lem:CEIffDomainOfComputableFcn}).
+If the set~$S$ is the range of a total computable function then it
+is the range of a computable function.
+If $S$ is empty then it is the range of the computable function
+that never converges.
 
-For the other direction,
-assume that $S$ is the domain of a partial computable function~$\hat{g}$, 
-to show that $S$ is computably enumerable.
-If $S$ is empty then it is computably enumerable by definition.
-Otherwise
-we must produce a total computable~$\hat{f}$ whose range is~$S$.
-Fix some $s_0\in S$.
-Given $n\in \N$, run the computations of
-$\hat{g}(0)$, $\hat{g}(1)$, \ldots{} $\hat{g}(n)$, each for $n$-many steps.
+Now for (\ref{itemA:lem:CEIffDomainOfComputableFcn})
+implies (\ref{itemB:lem:CEIffDomainOfComputableFcn}).
+Assume first that the set $S$ is computably enumerable 
+so that it is the range of
+a computable function~$\TMfcn_e$ (which may be non-total).
+We 
+must produce a total computable~$f$ whose range is~$S$.
+If $\TMfcn_e$ diverges for all inputs then $S=\emptyset$, which is one 
+of the cases in~(\ref{itemB:lem:CEIffDomainOfComputableFcn}).
+Otherwise there is an input~$y$ where $\TMfcn(y)_e\converges$;~let
+$\TMfcn(y)_e=s_0$.
+Define $f(n)$ by:~given $n\in\N$, run the computations of
+$\TM_e$ on inputs~$0$, $1$, \ldots~$n$, each for $n$-many steps.
 Possibly some of these halt.
-Define $\hat{f}(n)$ to be the least $k$ where $\hat{g}(k)$ halts within~$n$ 
-steps and so 
-that $k\notin\set{\hat{f}(0),\hat{f}(1),\ldots\, \hat{f}(n-1)}$.
-If no such~$k$ exists then define $\hat{f}(n)=s_0$ (this makes 
-$\hat{f}$ a total function).
+Let $f(n)$ be the least $k$ where $\TM_e$ halts on some input~$i$ within~$n$ 
+steps and outputs~$k$, and also where
+$k\notin\set{f(0),f(1),\ldots\, f(n-1)}$.
+If no such~$k$ exists then define $f(n)=s_0$.
 
-We finish by verifying that $\hat{f}$ is the desired enumeration.
-If $t\notin S$ then $\hat{g}(t)$ never converges 
-and so~$t$ is never enumerated by~$\hat{f}\!$.
-If $t\in S$ then eventually $\hat{g}(t)$ must converge,
-in some number of steps,~$n_t$.
-The number~$t$ is then queued for output by~$\hat{f}$ in the sense that
-it will be enumerated as, at most, $\hat{f}(n_t+t)$. 
+By the prior paragraph's final sentence, $f$ is total.
+We must verify that the range of~$f$ equals~$S$.
+For $t\in\N$, if $t\notin S$ then $\TM_e$ never outputs it 
+and so~$t$ is never defined as~$f(n)$.
+If $t\in S$ then there must be an~$n$ large enough that
+$\TM_e$ halts on some input~$i\leq n$ within~$n$ steps and outputs~$t$.
+The number~$t$ is then queued for output by~$f$ in the sense that
+it will be enumerated as, at most, $f(n+t)$. 
+% Assume first that a set $S$ is empty, 
+% or is the range of a total computable function.
+% If it is empty then it is the domain of the partial computable function that 
+% diverges on all inputs.
+% The other possibility is that $S$ is the range of a total computable~$f\!$,
+% and we will describe a partial computable~$g$ with domain~$S$.
+% To compute $g$:~given the input~$x\in\N$, 
+% enumerate $f(0)$, $f(1)$, \ldots{} 
+% and wait for~$x$ to appear as one of these values.
+% If~$x$ does appear then halt the computation of~$g$, with some nominal output
+% (such as $42$).
+% If~$x$ never appears in this stream then the computation of $g(x)$ never halts.
+% The domain of~$g$ is~$S$.
+%
+% For the other direction,
+% assume that $S$ is the domain of a partial computable function~$\hat{g}$, 
+% to show that $S$ is computably enumerable.
+% If $S$ is empty then it is computably enumerable by definition.
+% Otherwise
+% we must produce a total computable~$\hat{f}$ whose range is~$S$.
+% Fix some $s_0\in S$.
+% Given $n\in \N$, run the computations of
+% $\hat{g}(0)$, $\hat{g}(1)$, \ldots{} $\hat{g}(n)$, each for $n$-many steps.
+% Possibly some of these halt.
+% Define $\hat{f}(n)$ to be the least $k$ where $\hat{g}(k)$ halts within~$n$ 
+% steps and so 
+% that $k\notin\set{\hat{f}(0),\hat{f}(1),\ldots\, \hat{f}(n-1)}$.
+% If no such~$k$ exists then define $\hat{f}(n)=s_0$ (this makes 
+% $\hat{f}$ a total function).
+%
+% We finish by verifying that $\hat{f}$ is the desired enumeration.
+% If $t\notin S$ then $\hat{g}(t)$ never converges 
+% and so~$t$ is never enumerated by~$\hat{f}\!$.
+% If $t\in S$ then eventually $\hat{g}(t)$ must converge,
+% in some number of steps,~$n_t$.
+% The number~$t$ is then queued for output by~$\hat{f}$ in the sense that
+% it will be enumerated as, at most, $\hat{f}(n_t+t)$. 
 \end{proof}
 
 Thus, the collection of effectively listable sets is the same as the collection
@@ -9919,16 +9957,23 @@ Is that right?
   Not completely right.
   It is right that 
   a set is computably enumerable if it can be enumerated by a Turing machine.
-  That is, a Turing machine exists that, when started on a blank tape, will
-  print all of the sets members on the tape. 
-  (This machine just outputs $f(0)$, $f(1)$, \ldots\@ 
-  It may run forever if there are
-  infinitely many elements in the set.)
   However, the ``but is not computable'' is wrong.
-  Any computable set is computably enumerable (although there are 
-  computably enumerable sets that are not computable).
-  For instance, the set of even numbers is computably enumerable and also
-  computable. 
+  For instance, the set of even numbers is computably enumerable,
+  since it is clearly effectively listable, and is also computable. 
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Your study partner asks the group, ``One computably enumerable
+set is the empty set.
+But the empty set seems to me to not be effectively listable, because you
+can't list nothing.''
+Where are they mis-thinking?
+\begin{answer}
+The idea of `effectively listable' is that a machine process
+gives this as its set of outputs.
+Some Turing machines never halt, no matter the input,
+so these machines list the empty set.    
 \end{answer}
 \end{exercise}
 
@@ -9974,8 +10019,8 @@ For each, produce a function that enumerates it
   \item The association $n\mapsto\text{$n$-th prime}$ is a function.
     Clearly we can write a program that computes it, so by Church's Thesis
     it is effective.
-  \item To compute this function one approach is brute 
-    force:~generate the $n$-th one by 
+  \item To compute this function we can use brute 
+    force: given~$n$, 
     searching through the natural numbers, $0$, $1$, \ldots{}\,, checking
     each to see if its digits appear in non-increasing order.
     Output the $n$-th such number.
@@ -9991,12 +10036,12 @@ All of the natural numbers?
 \begin{answer}
 Yes to all four.
 For the first and fourth, 
-we can easily write a Turing machine that halts on all
+we can write a Turing machine that halts on all
 numbers, so the set of all natural numbers is computably
 enumerable.
-For the second and third, in the first section of the first 
-chapter we saw a Turing machine for which there are no inputs
-that result in it halting, so the empty set is computably enumerable.
+
+For the second and third, the definition of computably enumerable includes
+the empty set.
 \end{answer}
 \end{exercise}
 

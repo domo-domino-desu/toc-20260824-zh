@@ -10,8 +10,13 @@ proved.  But what sets it apart is that the presentation is liberal,
 highlighting the ideas in the work and making connections with things
 from the background that students bring to the class.
 
-There are more than eight hundred exercises, each with a fully-worked
-answer.  There are PDF slides for classroom use.  And, there are video
+The presentation is for US undergraduate sophmores.  It
+expects that the reader has some background in programming and in
+Discrete Math, about one course in each.  It is suitable for
+a course's main text, for a supplemental text, or for self-study.
+
+There are about eight hundred and fifty exercises, with fully-worked
+answers.  There are PDF slides for classroom use.  And, there are video
 lectures on YouTube that are particularly useful for those working on
 their own.
 

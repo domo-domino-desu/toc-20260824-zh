@@ -3893,3 +3893,134 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ========= Exercise: P_e(3)\leq_T K converges ======
+picture pic;
+int picnum = 56;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node run=nbox("Run $\TM_x$ on $3$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............ After s-m-n ..................
+picture pic;
+int picnum = 57;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node run=nbox("Run $\TM_x$ on $3$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1*v,start,read);
+vlayout(1*v,read,run);
+vlayout(1*v,run,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--run),
+     (run--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     run,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ........ oracle TM for P_e(3) \leq_T K ..........
+picture pic;
+int picnum = 58;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$");
+node test=nrounddiamond("$s(e_0,x)\in\text{oracle}$?");
+node yes=nbox("Print $1$");
+node no=nbox("Print $0$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(0.8*v,start,read);
+vlayout(1.25*v,read,test);
+yes.pos = test.pos + (-2.75*u,-0.75*v);
+no.pos = test.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..yes).l(Label("Y",Relative(0.25))),
+     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (yes..VHV..ending),
+     (no..VHV..ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     yes,
+     no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

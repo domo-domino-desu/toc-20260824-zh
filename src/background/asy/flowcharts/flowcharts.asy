@@ -2900,11 +2900,11 @@ vlayout(1.5*v,test,setflag);
 draw(pic,
      (start--initialize),
      (initialize--whilebox),
-     (whilebox--ending).l(Label("Else",Relative(0.15))).style("leftside"),
+     (whilebox--ending).l(Label("Else",Relative(0.25))).style("leftside"),
      (whilebox..VHV..increment),
      (increment--forbox),
      (forbox..VHV..run),
-     // (forbox..HVHd(2*u)..increment),
+     (forbox..HVHd(-1*u)..increment).l(Label("Done",Relative(0.15))).style("leftside"),
      (run--test),
      (test--setflag).l("Y"),
      (test..HVHd(-6.5*u)..forbox).l(Label("N",Relative(0.1))).style("leftside"),
@@ -3222,8 +3222,8 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $x$, $y$");
 node run=nbox("Run $\TM_x$ on input $x$");
-node run2=nbox("Return $\operatorname{steps}(y)$");
-node print=nbox("Print output");
+node run2=nbox("Run $\operatorname{steps}(y)$");
+node print=nbox("Print that");
 node ending=nroundbox("End");
 
 // layout
@@ -3266,10 +3266,10 @@ setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $x$, $y$");
+node read=nbox("Read $y$");
 node run=nbox("Run $\TM_x$ on input $x$");
-node run2=nbox("Return $\operatorname{steps}(y)$");
-node print=nbox("Print output");
+node run2=nbox("Run $\operatorname{steps}(y)$");
+node print=nbox("Print that");
 node ending=nroundbox("End");
 
 // layout
@@ -3561,7 +3561,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $k$");
-node test=nrounddiamond("$s(e,k)\notin\text{oracle}$?");
+node test=nrounddiamond("$s(e_0,k)\in\text{oracle}$?");  // \notin doesnt work
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");
 node ending=nroundbox("End");
@@ -3582,8 +3582,8 @@ vlayout(2*v,test,ending);
 draw(pic,
      (start--read),
      (read--test),
-     (test..HV..yes).l(Label("Y",Relative(0.25))),
-     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (test..HV..yes).l(Label("N",Relative(0.25))),
+     (test..HV..no).l(Label("Y",Relative(0.25))).style("leftside"),
      (yes..VHV..ending),
      (no..VHV..ending)
 );

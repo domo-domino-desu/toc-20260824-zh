@@ -3798,11 +3798,9 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-// node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
-node run=nbox("Compute some $f(x)$");
-node test=nrounddiamond("$f(x)\in\text{oracle}$?");
-node yes=nbox("Print $0$");  // Note it is switched from 1
-node no=nbox("Print $1$");   // likewise, switched
+// node run=nbox(minipage_snug("\centering Determine $A(x)$ using oracle \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
+node run=nbox("Determine $A(x)$ using oracle");
+node print=nbox("Print $1-\text{result}$");
 node ending=nroundbox("End");
 
 // layout
@@ -3812,21 +3810,16 @@ real u = defaultlayoutskip;
 real v = 0.85*u;
 
 vlayout(1*v,start,read);
-vlayout(1*v,read,run);
-vlayout(1.35*v,run,test);
-yes.pos = test.pos + (-2.75*u,-0.75*v);
-no.pos = test.pos + (2.75*u,-0.75*v);
-vlayout(2*v,test,ending);
+vlayout(1.1*v,read,run);
+vlayout(1.1*v,run,print);
+vlayout(1*v,print,ending);
 
 // draw edges
 draw(pic,
      (start--read),
      (read--run),
-     (read--test),
-     (test..HV..yes).l(Label("Y",Relative(0.25))),
-     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
-     (yes..VHV..ending),
-     (no..VHV..ending)
+     (run--print),
+     (print--ending)
 );
 
 // draw nodes
@@ -3834,9 +3827,7 @@ draw(pic,
      start,
      read,
      run,
-     test,
-     yes,
-     no,
+     print,
      ending
      );
 

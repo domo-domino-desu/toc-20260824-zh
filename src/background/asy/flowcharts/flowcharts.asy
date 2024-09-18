@@ -3839,14 +3839,19 @@ int picnum = 55;
 setdefaultflowchartstyles();
 
 // define nodes
-node start=nroundbox("Start");
-node read=nbox("Read $x$");
+// node start=nroundbox("Start");
+// node read=nbox("Read $x$");
 // node run=nbox(minipage_snug("\centering \raisebox{1ex}{$\vdots$}\\Compute some $f(x)$\\\raisebox{1.5ex}{$\vdots$}"));
-node run=nbox("Compute some $f(x)$");
-node test=nrounddiamond("$f(x)\notin\text{oracle}$?");
-node yes=nbox("Print $1$");
-node no=nbox("Print $0$");
-node ending=nroundbox("End");
+// node run=nbox("Compute some $f(x)$");
+node empty_top=nbox(" ",ns_noborder);
+node empty_bot=nbox(" ",ns_noborder);
+node test_top=nrounddiamond("$x\in\text{oracle}$?");
+node test_bot=nrounddiamond("$x\in\text{oracle}$?");
+node yes_top=nbox("Do thing one");
+node no_top=nbox("Do thing two");
+node yes_bot=nbox("Do thing one");
+node no_bot=nbox("Do thing two");
+// node ending=nroundbox("End");
 
 // layout
 defaultlayoutrel = false;
@@ -3854,33 +3859,34 @@ defaultlayoutskip = 0.75cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-vlayout(1*v,start,read);
-vlayout(1*v,read,run);
-vlayout(1.35*v,run,test);
-yes.pos = test.pos + (-2.75*u,-0.75*v);
-no.pos = test.pos + (2.75*u,-0.75*v);
-vlayout(2*v,test,ending);
+vlayout(1.25*v, empty_top, test_top);
+yes_top.pos = test_top.pos + (-2.75*u,-0.75*v);
+no_top.pos = test_top.pos + (2.75*u,-0.75*v);
+vlayout(2*v,test_top,empty_bot);
+vlayout(1.25*v, empty_bot, test_bot);
+yes_bot.pos = test_bot.pos + (-2.75*u,-0.75*v);
+no_bot.pos = test_bot.pos + (2.75*u,-0.75*v);
 
 // draw edges
 draw(pic,
-     (start--read),
-     (read--run),
-     (read--test),
-     (test..HV..yes).l(Label("Y",Relative(0.25))),
-     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
-     (yes..VHV..ending),
-     (no..VHV..ending)
+     (empty_top--test_top),
+     (test_top..HV..yes_top).l(Label("Y",Relative(0.25))),
+     (test_top..HV..no_top).l(Label("N",Relative(0.25))).style("leftside"),
+     (empty_bot--test_bot),
+     (test_bot..HV..yes_bot).l(Label("N",Relative(0.25))),
+     (test_bot..HV..no_bot).l(Label("Y",Relative(0.25))).style("leftside")
 );
 
 // draw nodes
 draw(pic,
-     start,
-     read,
-     run,
-     test,
-     yes,
-     no,
-     ending
+     empty_top,
+     test_top,
+     yes_top,
+     no_top,
+     empty_bot,
+     test_bot,
+     yes_bot,
+     no_bot
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

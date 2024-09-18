@@ -498,7 +498,7 @@ setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $x,m$");
+node read=nbox("Read $m,x$");
 node test=nrounddiamond("$x=m$?");
 node printzero=nbox("Print $42$");
 node loop=nbox("Loop");

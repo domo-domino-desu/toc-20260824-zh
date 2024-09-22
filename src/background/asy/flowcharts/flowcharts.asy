@@ -1003,7 +1003,6 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-
 // ============== Oracle machines ================
 
 // ========= just the oracle query box ============
@@ -1235,6 +1234,84 @@ draw(pic,
      test,
      yes,
      no,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ======= Exercise section II.9: Machine that prints its index ===========
+picture pic;
+int picnum = 26;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $x$, $y$");
+node print=nbox("Print $x$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
+     ending
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ........... after s-m-n ..................
+picture pic;
+int picnum = 27;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $y$");
+node print=nbox("Print $x$");
+node ending=nroundbox("End");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read,print,ending);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--print),
+     (print--ending)
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     print,
      ending
      );
 

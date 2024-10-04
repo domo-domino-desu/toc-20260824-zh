@@ -989,36 +989,20 @@ countable.
 \end{exercise}
 
 \begin{exercise}
-Another way of defining the powers of a language 
-is:~$\lang^0=\set{\emptystring}$,
-and $\lang^{k+1}=\lang^k\concat\lang$.
-Show this is equivalent to the one given in \Cref{def:LangOps}.
+  The description of the powers of a language in \cref{def:LangOps}
+  writes $\sigma_0\concat\cdots\concat\sigma_{k-1}$, without
+  parentheses, and so doesn't specify a construction for the set.
+  For that construction the natural approach 
+  is:~$\lang^0=\set{\emptystring}$,
+  and $\lang^{k+1}=\lang^k\concat\lang$.
+  Verify that this gives the same set as in the definition.
 \begin{answer}\verified
+  We are askled to verify that any two parenthesizations of 
+  concatenation yield the same string.
   To prevent confusion between the two forms, 
   for this argument only denote 
   $\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \sigma_i\in\lang}$
   as ${}^k\!\lang\!$.
-
-  \textit{Comment}.
-  The defininition 
-  ${}^k\!\lang=\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \sigma_i\in\lang}$
-  does not use parentheses in the strings.
-  It relies on the fact that the string concatenation operation is associative,
-  that it, all ways to parenthesize a concatenation give the same result.
-  For instance, with $\Sigma=\B$ these strings
-  \begin{equation*}
-    \str{1}\concat(\str{0}\concat\str{1})
-    \quad
-    (\str{1}\concat\str{0})\concat\str{1}
-  \end{equation*}
-  give the same result, which we write as $\str{101}$.
-  Thus the definition is that we just fix some parenthesization scheme and 
-  use it, but leave it unspecified.
-  In contrast, this exercise gives a construction of the set.
-  That construction is the natural one, building strings by making them
-  longer to the right, that is, by parenthesizing from the left.
-  So this exercise is to verify that
-  whatever scheme we use is consistent with parenthesizing from the left.
 
   We first show that any element of ${}^k\!\lang$ is an element of 
   $\lang^{k}\!$.
@@ -1335,10 +1319,11 @@ every derivation starts with \ntrm{sentence}.
 During a derivation, intermediate strings contain a mix of nonterminals and 
 terminals.
 In our grammars every rule has a head with a single nonterminal. 
-So to get the 
-next string
-pick a nonterminal in the present string and substitute a matching body for 
-which that nonterminal is a head.
+To get the 
+next string,
+pick a nonterminal in the present string, 
+find a rule where that nonterminal is a head, and 
+then substitute that rule's body.
 
 Below is one such derivation.
 Note that while the single line arrow \productionsymbol{} is for  rules, 
@@ -1358,20 +1343,19 @@ we use the double line arrow \derivessymbol{} for derivations.\footnote{%
     &\derives \str{the} \str{young} \str{man} \str{caught} \str{the} \str{ball}  
   \end{tabular}
 \end{center}
-The derivation above always substitutes for the leftmost nonterminal,
+This is a a \definend{leftmost derivation}\index{derivation}\index{leftmost derivation} always substitutes for the leftmost nonterminal,
 in that it first substitutes for the leftmost nonterminal on the right side
 of the first 
 line, \ntrm{noun phrase},
 then substitutes for the leftmost nonterminal on the second line,
-\ntrm{article}, etc. 
-Consequently, this is a \definend{leftmost derivation}.\index{derivation}\index{leftmost derivation}
+\ntrm{article}, etc.
 However, in general 
 we could substitute for any nonterminal.
 %</discussion:DerivationVocabulary>
 
 %<*discussion:DerivationTree>
-An alternative representation of the same derivation is
-the \definend{derivation tree}\index{derivation tree}\index{parse tree}
+An alternative representation % of the same derivation 
+is the \definend{derivation tree}\index{derivation tree}\index{parse tree}
 or \definend{parse tree}.\footnote{%
   The words `terminal' and `nonterminal' come from the position 
   of those components in this tree.}
@@ -1382,7 +1366,7 @@ or \definend{parse tree}.\footnote{%
 
 %<*def:Grammar>
 \begin{definition}
-A \definend{context-free grammar}\index{context free!grammar}\index{grammar!context free}\index{grammar}\index{language!grammar}
+A \definend{context-free grammar}\footnotemark[3]\index{context free!grammar}\index{grammar!context free}\index{grammar}\index{language!grammar}
 is a four-tuple $\mathcal{G}=\sequence{\Sigma,N,S,P}$.
 The set $\Sigma$ is an alphabet, whose elements are the
 \definend{terminal symbols},\index{terminal}
@@ -1395,14 +1379,52 @@ The symbol $S\in N$ is the \definend{start symbol}.\index{start symbol}\index{gr
 Finally, $P$ is a set of 
 \definend{productions}\index{production}\index{grammar!production}
 or \definend{rewrite rules}.\index{rewrite rule}\index{grammar!rewrite rule}
-\end{definition}
+\end{definition}\footnotetext[3]{%
+  This definition of rules, grammars, and derivations suffices for us
+  but it is not the most general one.
+  One more general definition allows heads of the form
+  $\sigma_0X\sigma_1$, where $\sigma_0$ and~$\sigma_1$ are 
+  strings of terminals.
+  % In that ruls
+  % that provide a context
+  % for the nonterminal~$S$, and substitutions for $S$ are only allowed in context.
+  (The $\sigma_i$'s can be empty.)
+  \protect\label{ex:anbncnGrammar}
+  For example, consider
+  \citetext{this grammar}{%
+  Taken from \protect\url{https://en.wikipedia.org/wiki/Formal_grammar}.}:  
+  (i)~S\produces{} \str{a}BS\str{c} | \str{abc},
+  (ii)~B\str{a}\produces{}\str{a}B,
+  (iii)~B\str{b}\produces{}\str{bb}.
+  Rule~(ii) says that if you see a string 
+  with something followed by \str{a} then you
+  can replace that string with \str{a} followed by that thing.
+  For instance, in the derivation
+  S 
+  \derives\str{a}BS\str{c}
+  \derives\str{a}B\str{abcc}
+  \derives\str{aa}B\str{bcc}
+  \derives\str{aabbcc}
+  the third step uses~(ii)
+  and the fourth step uses~(iii).
+  Such grammars  % with heads of the form $\sigma_0X\sigma_1$  
+  are \protect\definend{context sensitive}
+  because we can only
+  substitute for~X in the context of $\sigma_0$ and~$\sigma_1$.
+  Context sensitive grammars describe more languages than 
+  the context free ones that
+  we are using, and there are grammar classes even more general.
+  But our definition satisfies our needs and is
+  the class of grammars that appear most often in practice. 
+  % because it is a good balance of convenience and power. 
+  } 
 %</def:Grammar>
 
 \noindent In this book we use the convention that the start symbol is  
 the head of the first rule.
 
 \begin{example} \label{ex:GrammarOfTerms}
-This context free grammar describes algebraic expressions that 
+This grammar describes algebraic expressions that 
 involve only addition, multiplication, and parentheses.
 \begin{grammar}
 \ntrm{expr} \produces{} \ntrm{term} \trm{+} \ntrm{expr} \syntaxor \ntrm{term}
@@ -1412,7 +1434,7 @@ involve only addition, multiplication, and parentheses.
 \ntrm{factor} \produces \trm{(} \ntrm{expr} \trm{)} \syntaxor 
   \trm{a} \syntaxor \trm{b} \syntaxor \ldots{} \syntaxor \trm{z}
 \end{grammar}
-Here is a derivation of the string \str{x*(y+z)}. 
+Here is a derivation of the string \str{x*(y+z)}, along with its tree. 
 \begin{center}
   \begin{tabular}{r@{}l}
     \ntrm{expr}
@@ -1434,20 +1456,20 @@ Here is a derivation of the string \str{x*(y+z)}.
 \end{example}
 
 % \begin{remark}
-Notice that in that example 
+In that example 
 the rules for \ntrm{expr} and \ntrm{term} are recursive.
 But we don't get stuck in an infinite regress because 
 the question is not whether we could perversely 
 keep expanding \synt{expr} forever.
-Instead, given a string such as \str{x*(y+z)}, 
-the question is whether we can find a terminating derivation. 
+Instead, the question is whether, given a string such as \str{x*(y+z)}, 
+we can find a terminating derivation. 
 % \end{remark}
 
 In the prior example the nonterminals such as \synt{expr} or \synt{term} 
 describe the role of those components in the language, as did
 the English grammar fragment's \synt{noun phrase} and \synt{article}.
 That is why nonterminals are sometimes called `syntatic categories'.
-But with examples we may use small grammars whose 
+But for examples and exercises we often use small grammars whose 
 terminals and nonterminals do not have any particular meaning.
 For these, a common convention is to
 write productions using single letters, 
@@ -1480,8 +1502,8 @@ For this grammar, derivable strings have the form
 $\str{a}^n\str{b}^n$ for $n\in\N$.
 \end{example}
 
-We now give a complete description of how the production rules, as used in this
-book, govern the derivations.
+We now give a complete description of how the production rules 
+govern the derivations.
 Each rule in a context free grammar 
 has the form \mbox{`head\produces{}body'} where
 the head consists of a single nonterminal.
@@ -1489,7 +1511,7 @@ The body is a sequence of terminals and nonterminals.
 % (such a string is a 
 % \definend{sentential form}).\index{sentential form}
 Each step of a derivation has the form below,
-where $\tau_0$ and $\tau_1$ are sequences of terminals and non-terminals.
+where $\tau_0$ and $\tau_1$ are strings of terminals and non-terminals.
 \begin{center}
   $\tau_0\concat\text{head}\concat\tau_1$
   \quad\derives\quad
@@ -1498,7 +1520,7 @@ where $\tau_0$ and $\tau_1$ are sequences of terminals and non-terminals.
 That is, if there is a match for the rule's head
 then we can replace it with the body.
 
-Where $\sigma_0,\sigma_1$ are sequences of terminals and nonterminals,
+Where $\sigma_0,\sigma_1$ are strings of terminals and nonterminals,
 if they are related by a sequence of derivation steps then
 we write $\sigma_0\;\kleenestar{\derivessymbol}\;\sigma_1$.
 Where $\sigma_0=S$ is the start symbol, 
@@ -1506,62 +1528,20 @@ if there is a sequence $\sigma_0\;\kleenestar{\derivessymbol}\;\sigma_1$ that
 finishes with 
 a string of terminals $\sigma_1\in\kleenestar{\Sigma}$ then we say
 that $\sigma_1$ \definend{has a derivation}\index{derivation}
-from the grammar.\footnote{%
-  This definition of rules, grammars, and derivations suffices for us
-  but it is not the most general one.
-  One more general definition allows heads of the form
-  $\sigma_0X\sigma_1$, where $\sigma_0$ and~$\sigma_1$ are 
-  strings of terminals.
-  % In that ruls
-  % that provide a context
-  % for the nonterminal~$S$, and substitutions for $S$ are only allowed in context.
-  (The $\sigma_i$'s can be empty.)
-  \protect\label{ex:anbncnGrammar}
-  For example, consider
-  \citetext{this grammar}{%
-  Taken from \protect\url{https://en.wikipedia.org/wiki/Formal_grammar}.}:  
-  (i)~S\produces{} \str{a}BS\str{c} | \str{abc},
-  (ii)~B\str{a}\produces{}\str{a}B,
-  (iii)~B\str{b}\produces{}\str{bb}.
-  Rule~(ii) says that if you see a string 
-  with something followed by \str{a} then you
-  can replace that string with \str{a} followed by that thing.
-  % For instance, in the derivation
-  % S 
-  % \derives\str{a}BS\str{c}
-  % \derives\str{a}B\str{abcc}
-  % \derives\str{aa}B\str{bcc}
-  % \derives\str{aabbcc}
-  % the third step uses~(ii)
-  % and the fourth step uses~(iii).
-  Grammars with heads of the form
-  $\sigma_0X\sigma_1$  are \protect\definend{context sensitive}
-  because we can only
-  substitute for~X in the context of $\sigma_0$ and~$\sigma_1$.
-  Context sensitive grammars describe more languages than 
-  the context free ones that
-  we are using, and there are grammar classes even more general.
-  But our definition satisfies our needs and is
-  the class of grammars that you most often see in practice. 
-  % because it is a good balance of convenience and power. 
-  } 
+from the grammar.
 
-This description is like the one on 
-page~\pageref{text:DescriptionOfTMAction}
-detailing how 
+This description is like the one detailing how 
 a Turing machine's instructions determine the evolution of the
-sequence of configurations that is a computation.
+sequence of configurations that is a computation,  on 
+page~\pageref{text:DescriptionOfTMAction}.
 That is, production rules are like a program, directing a 
 derivation.
-
-However, one difference from that page's description is that
+However, one difference is that
 Turing machines are deterministic, so that from a given
 input string there is a determined sequence of configurations.
-Here, from a given start symbol a derivation can branch out to 
+However here the sequence of derivation steps is nondeterministic in that 
+from a given start symbol a derivation can branch out to 
 go to many different ending strings.
-
-% We can go beyond derivations of individual strings and consider all possible
-% derivations.
 
 %<*def:LanguageOfGrammar>
 \begin{definition}
@@ -1643,33 +1623,21 @@ by using the nonterminals to keep count.
 \begin{credit}
   SE user \href{https://cs.stackexchange.com/a/75423/67754}{Rick Decker}
 \end{credit}
-For this grammar 
-\begin{grammar}
-  S \produces{} \trm{a}S\trm{b} \syntaxor T \syntaxor U
- 
-  T \produces{} \trm{a}S \syntaxor \trm{a}
-
-  U \produces{} S\trm{b} \syntaxor \trm{b} 
-\end{grammar}
-an alternative is to replace 
-T and U by their
-expansions to get this.
-
+This grammar 
 \begin{grammar}
 S \produces{} \trm{a}S\trm{b} \syntaxor \trm{a}S 
          \syntaxor \trm{a} \syntaxor S\trm{b} \syntaxor \trm{b}
 \end{grammar}
-
-\noindent It generates the language
+generates the language
 $\lang=\set{\str{a}^i\str{b}^j\in\kleenestar{\set{\str{a},\str{b}}} \suchthat\text{$i\neq0$ or $j\neq 0$}}$.
 
-This grammar is the first that we have seen
+This is the first grammar that we have seen
 where the generated language is not clear,
-so we will do a formal verification. 
+so we will do a verification. 
 We will show mutual containment, first that the generated language is a 
 subset of~$\lang$ and then that it is also a superset.
 
-The rules in the second grammar 
+The rules
 show that any derivation step 
 $\tau_0\concat\text{head}\concat\tau_1$
   \derives~$\tau_0\concat\text{body}\concat\tau_1$

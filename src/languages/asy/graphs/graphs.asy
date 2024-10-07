@@ -1411,6 +1411,9 @@ shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 // ======= Divisibility up to 12 ==========
 int picnum = 1;
 picture p;
+// Make directed arrows
+defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundcolor,
+			     arrow=Arrow(6,filltype=FillDraw(white,backgroundcolor)));
 
 // define nodes
 node v12=ncircle("\strut $12$"),
@@ -1428,7 +1431,7 @@ node v12=ncircle("\strut $12$"),
 
 // layout
 defaultlayoutrel = false;
-defaultlayoutskip = 1.25cm;
+defaultlayoutskip = 1.75cm;
 real u = defaultlayoutskip;
 real v = 0.75*u;
 
@@ -1439,32 +1442,39 @@ v4.pos = (3*u,2*v);
 hlayout(1*u, v4, v6, v9, v10);
 v8.pos = (3*u,3*v);
 hlayout(1*u,v8,v12);
-// layout(-40.0, VT, MA);
-// layout(-120.0, MA, CT);
-// hlayout(1*u, CT, RI);
 
 // draw edges
 draw(p,
-     (v2--v1), 
-     (v3--v1), 
-     (v5--v1), 
-     (v7--v1), 
-     (v11--v1), 
-     (v4--v2), 
-     (v6--v2), 
-     (v6--v3), 
-     (v8--v4), 
-     (v9--v3), 
-     (v10--v2), 
-     (v10--v5), 
-     (v12--v6), 
-     (v12--v4)
+     (v1--v2),
+     (v1--v3),
+     (v1..bend(-65)..v4),
+     (v1--v5),
+     (v1..bend(-35)..v6),
+     (v1--v7),
+     (v1..bend(-75)..v8),
+     (v1--v9),
+     (v1..bend(15)..v10),
+     (v1--v11),
+     (v1..bend(-37.5)..v12),
+     (v2--v4),
+     (v2--v6),
+     (v2..bend(-25)..v8),
+     (v2--v10),
+     (v2..bend(-10)..v12),
+     (v3--v6),
+     (v3--v9),
+     (v3..bend(25)..v12),
+     (v4--v8),
+     (v4--v12),
+     (v5--v10),
+     (v6--v12)
     );
 
 // draw nodes
 draw(p, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1);
 
 shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+defaultdrawstyle = standarddrawstyle;
 
 
 

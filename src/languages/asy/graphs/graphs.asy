@@ -2308,7 +2308,7 @@ node n0=ncircle("$n_0$"),
   n2=ncircle("$n_2$");
 
 // calculate nodes position
-real u=0.8cm;
+real u=1.0cm;
 real v=u;
 defaultlayoutskip=u;
 
@@ -2349,6 +2349,7 @@ hlayout(1*u, n0, n1);
 
 // draw edges
 draw(pic,
+     (n0--n1),  //bug in node.asy requires drawing twice
      (n0--n1)
 );
 

@@ -720,7 +720,7 @@ hlayout(1*u, w2, w1, w3);
 // draw edges
 draw(p,
      (w0--w1),
-     (w1..bend(20)..w3),
+     (w1--w3),
      (w1..loop(S)),
      (w2--w4),
      (w2..loop(S)),
@@ -1290,12 +1290,12 @@ int picnum = 21;
 picture p;
 
 // define nodes
-node v0=ncircle("\strut$v_0$"),
-     v1=ncircle("\strut$v_1$"),
-     v2=ncircle("\strut$v_2$"),
-     v3=ncircle("\strut$v_3$"),
-     v4=ncircle("\strut$v_4$"),
-     v5=ncircle("\strut$v_5$");
+node v0=ncircle("$v_0$"),
+     v1=ncircle("$v_1$"),
+     v2=ncircle("$v_2$"),
+     v3=ncircle("$v_3$"),
+     v4=ncircle("$v_4$"),
+     v5=ncircle("$v_5$");
 
 // layout
 defaultlayoutrel = false;
@@ -1329,12 +1329,12 @@ int picnum = 22;
 picture p;
 
 // define nodes
-node v0=ncircle("\strut$w_0$"),
-     v1=ncircle("\strut$w_1$"),
-     v2=ncircle("\strut$w_2$"),
-     v3=ncircle("\strut$w_3$"),
-     v4=ncircle("\strut$w_4$"),
-     v5=ncircle("\strut$w_5$");
+node v0=ncircle("$w_0$"),
+     v1=ncircle("$w_1$"),
+     v2=ncircle("$w_2$"),
+     v3=ncircle("$w_3$"),
+     v4=ncircle("$w_4$"),
+     v5=ncircle("$w_5$");
 
 // layout
 defaultlayoutrel = false;
@@ -2070,25 +2070,25 @@ picture pic;
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-node n0=ncircle("\nodebox{\strut$v_0$}"),
-  n1=ncircle("\nodebox{\strut$v_1$}"),
-  n2=ncircle("\nodebox{\strut$v_2$}"),
-  n3=ncircle("\nodebox{\strut$v_3$}"),
-  n4=ncircle("\nodebox{\strut$v_4$}"),
-  n5=ncircle("\nodebox{\strut$v_5$}"),
-  n6=ncircle("\nodebox{\strut$v_6$}"),
-  n7=ncircle("\nodebox{\strut$v_7$}");
+node n0=ncircle("\nodebox{$v_0$}"),
+  n1=ncircle("\nodebox{$v_1$}"),
+  n2=ncircle("\nodebox{$v_2$}"),
+  n3=ncircle("\nodebox{$v_3$}"),
+  n4=ncircle("\nodebox{$v_4$}"),
+  n5=ncircle("\nodebox{$v_5$}"),
+  n6=ncircle("\nodebox{$v_6$}"),
+  n7=ncircle("\nodebox{$v_7$}");
 
 // calculate nodes position
-real u=0.7cm;
+real u=0.6cm;
 real v=u;
 defaultlayoutskip=u;
 
 hlayout(3*u, n0, n1);
-n4.pos = new_node_pos_h(n0, -45, 1*u);
-hlayout(1*u, n4, n5);
-vlayout(1*v, n4, n6);
-hlayout(1*u, n6, n7);
+n4.pos = new_node_pos_h(n0, -45, 0.875*u);
+hlayout(1.25*u, n4, n5);
+vlayout(1.25*v, n4, n6);
+hlayout(1.25*u, n6, n7);
 vlayout(3*v, n0, n2);
 hlayout(3*u, n2, n3);
 
@@ -2120,25 +2120,25 @@ picture pic;
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-node n0=ncircle("\nodebox{\strut$n_0$}"),
-  n1=ncircle("\nodebox{\strut$n_1$}"),
-  n2=ncircle("\nodebox{\strut$n_2$}"),
-  n3=ncircle("\nodebox{\strut$n_3$}"),
-  n4=ncircle("\nodebox{\strut$n_4$}"),
-  n5=ncircle("\nodebox{\strut$n_5$}"),
-  n6=ncircle("\nodebox{\strut$n_6$}"),
-  n7=ncircle("\nodebox{\strut$n_7$}");
+node n0=ncircle("\nodebox{$n_0$}"),
+  n1=ncircle("\nodebox{$n_1$}"),
+  n2=ncircle("\nodebox{$n_2$}"),
+  n3=ncircle("\nodebox{$n_3$}"),
+  n4=ncircle("\nodebox{$n_4$}"),
+  n5=ncircle("\nodebox{$n_5$}"),
+  n6=ncircle("\nodebox{$n_6$}"),
+  n7=ncircle("\nodebox{$n_7$}");
 
 // calculate nodes position
-real u=0.7cm;
+real u=0.6cm;
 real v=u;
 defaultlayoutskip=u;
 
 hlayout(3*u, n6, n2);
-n5.pos = new_node_pos_h(n0, -45, 1*u);
-hlayout(1*u, n5, n1);
-vlayout(1*v, n5, n0);
-hlayout(1*u, n0, n4);
+n5.pos = new_node_pos_h(n0, -45, 0.875*u);
+hlayout(1.25*u, n5, n1);
+vlayout(1.25*v, n5, n0);
+hlayout(1.25*u, n0, n4);
 vlayout(3*v, n6, n7);
 hlayout(3*u, n7, n3);
 

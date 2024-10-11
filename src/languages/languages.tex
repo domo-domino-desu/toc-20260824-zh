@@ -5471,9 +5471,8 @@ Give a derivation of these strings:
 
 
 
-\extra{Tree traversal}\index{tree!traversal|(} \label{extra:TreeTraversal}
-We sometimes need to visit each vertex in a graph.
-An example is that when we described Cantor's correspondence enumerating 
+\extra{Breadth first traversal}\index{DAG!traversal|(}\index{tree!traversal} \label{extra:Traversal}
+When we described Cantor's correspondence enumerating 
 the set $\N\times\N$,
 we drew this array. 
 \begin{equation*}
@@ -5501,63 +5500,59 @@ The enumeration starts like this.
                &$\sequence{0,3}$  
                &\ldots 
      \end{tabular}
-\end{center}   
-To view this as a graph traversal, below we  
-make a graph by connecting each pair in the array to two of its neighbors, 
-above and to the right.\footnote{%
-  If we only did above or only to the right then the 
-  graph would not be connected.}
-This redraws the graph with the array's lower-left rotated to the top.
+\end{center} 
+  
+We can  
+make a graph by connecting each pair in the array to its neighbor above, 
+and the one to the right.
+This redraws the array, 
+with the lower left rotated to the top.
 \begin{center}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1031.pdf}}
 \end{center}
-With this presentation, Cantor's enumeration lists the nodes in order of
-how far they are from the top: first the top node, then the nodes that are
-one away, then those that are two away, etc.\footnote{%
-  A traversal does not have to follow the edges, it just has to reach
-  all the nodes.}
+That graph isn't a tree because there are vertices that are connected 
+by more than one path, for instance $\sequence{0,0}$ and~$\sequence{1,1}$.  
+Instead it is a directed acyclic graph, a DAG.
 
-We will present Racket code to traverse trees.
-The above graph isn't a tree, 
-instead it is a DAG, a directed acyclic graph.
-But the two share the key feature that they have no cycles and 
-for our purposes that is enough.
-
-On the left below is a tree with ten nodes.
+On the left below is a tree with ten nodes
+(trees and DAG's are alike in that they have no cycles).
 In the middle we visit the nodes in 
-\definend{breadth-first}\index{breadth-first traversal}\index{graph!traversal!breadth-first} 
-order, where
-we cover all nodes that are at rank~$k$ before visiting any nodes of
+\definend{depth-first}\index{depth-first traversal}\index{graph!traversal!depth-first} order, where
+we visit a node's children before going on to visit its siblings.
+On the right the traversal is 
+\definend{breadth-first},\index{breadth-first traversal}\index{graph!traversal!breadth-first} 
+where we cover all nodes that are at rank~$k$ before visiting any nodes of
 rank $k+1$ (a node is \definend{rank}~$k$\index{graph!node!rank}\index{rank} 
 when a minimal path 
-to the tree's root has~$k$ edges). 
-On the right we visit the nodes in 
-\definend{depth-first}\index{depth-first traversal}\index{graph!traversal!depth-first} order, where
-we visit child nodes before going on to visit sibling nodes.
+to the root has~$k$ edges). 
 \begin{center}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1028.pdf}}
   \qquad
-  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1029.pdf}}
-  \qquad
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1030.pdf}}
+  \qquad
+  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1029.pdf}}
 \end{center}
+Cantor's enumeration is a breadth first traversal of the above DAG.
+Here we will show Racket code to traverse trees and DAG's.
 
-A tree is a graph, and thus is collection of connected nodes.
-We first define a \codeinline{node}.
-Essentially it is an ordered pair.
+We first define a \codeinline{node},
+essentially as an ordered pair.
 \lstinputlisting[firstline=15,lastline=15]{\traversefile}
-The \codeinline{struct} construct has the system automatically define
+The Racket \codeinline{struct} construct has the system automatically define
 a number of useful functions. 
-One is a creator function \codeinline{(node n s)}.
-We use that to make the next function, which knows that 
+One is a creator function \codeinline{(node n s)}, which
+we use that to make the next function, that knows that 
 \codeinline{children} is a set.
 \lstinputlisting[firstline=21,lastline=22]{\traversefile}
-It is a mutable set because as we create the tree we will add children
-to that set, so we will want to change it.
-In turn, we use that routine to create new trees.
+We use a set that is mutable because as we create the tree we will add children
+to that set, so we must be able to change it.
+In turn, we use that routine to create new trees and DAG's.
 \lstinputlisting[firstline=27,lastline=28]{\traversefile}
 
-This adds a child to the set of children of the given node. 
+The next routine inputs a node and adds a child to its set of children. 
+(LISP-derived languages have a convention of using an exclamation mark for 
+the names of procedures whose main role is to cause side effects,
+not to return something.)
 \lstinputlisting[firstline=34,lastline=37]{\traversefile}
 Note the \codeinline{node-children} routine.
 Another thing that \codeinline{struct} does is to create accessor
@@ -5565,13 +5560,13 @@ functions\Dash
 we didn't separately write \codeinline{node-children}, 
 the system creates it 
 from the two names when we declared the \codeinline{struct}.
-(LISP-derived languages have a convention of using an exclamation mark for 
-the names of procedures whose main role is to cause side effects,
-not to return something.)\footnote{%
+\footnote{%
   The code here has a way to tie from parent to child but no direct way
   to tie back.
-  So we could consider that this isn't a tree because trees aren't directed.
-  But below this won't matter so we will ignore it.
+  So this tree is directed.
+  We can also 
+  write code for breadth-first traversals of undeirected trees
+  but here we will stick with what we have.
 }
 
 This makes the ten-node tree drawn above.
@@ -5785,8 +5780,7 @@ Here is the result at the interpreter.
 
 
 \end{exercises}
-
-\index{tree!traversal|)}
+\index{DAG!traversal|)}
 
 
 

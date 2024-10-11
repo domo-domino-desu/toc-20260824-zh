@@ -15,7 +15,7 @@
 ;; Make a tree to test on
 
 (define (sample-tree-make)
-  (let* ([t (tree-create "a")]
+  (let* ([t (graph-create "a")]
          [nb (node-add-child! t "b")]
          [nc (node-add-child! t "c")]
          [nd (node-add-child! t "d")]
@@ -30,7 +30,7 @@
 
 
 (define (cantor-tree-make)
-  (let* ([t (tree-create "0,0")]
+  (let* ([t (graph-create "0,0")]
          [nb (node-add-child! t "0,1")]
          [nc (node-add-child! t "1,0")]
          [nd (node-add-child! nb "0,2")]
@@ -57,7 +57,7 @@
 
    (test-case
     "Test creating a tree"
-    (let* ([t (tree-create "a")])
+    (let* ([t (graph-create "a")])
       (check-true (node? t))
       (check-equal? (node-name t) "a")
       (check-true (set-empty? (node-children t)))
@@ -65,7 +65,7 @@
 
    (test-case
     "Test building a tree"
-    (let* ([t (tree-create "a")]
+    (let* ([t (graph-create "a")]
            [naa (node-create "aa")]
            [saa (set-add! (node-children t) naa)]
            [nab (node-create "ab")]
@@ -104,10 +104,18 @@
 
    (test-case
     "Test breadth-first search on DAG"
-    (displayln "+++++ Breadth-first on DAG below here")
+    (displayln "+++++ Traverse breadth-first on DAG below here")
     (let* ([t (cantor-tree-make)]
            )
-      (tree-bfs-set t show-node-name)
+      (traverse-bfs t show-node-name)
+      ))
+
+   (test-case
+    "Test breadth-first search on DAG"
+    (displayln "+++++ Traverse breadth-first on tree below here")
+    (let* ([t (sample-tree-make)]
+           )
+      (traverse-bfs t show-node-name)
       ))
 
    )) ;; end traverse suite and tests

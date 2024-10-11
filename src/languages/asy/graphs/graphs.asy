@@ -2940,19 +2940,29 @@ setdefaultgraphstyles();
 defaultdrawstyle=directededgestyle;
 defaultlayoutrel = false;
 
-node a=ncircle("$\sequence{0,0}$"),
-  b=ncircle("$\sequence{0,1}$"),
-  c=ncircle("$\sequence{1,0}$"),
-  d=ncircle("$\sequence{0,2}$"),
-  e=ncircle("$\sequence{1,1}$"),
-  f=ncircle("$\sequence{2,0}$"),
-  g=ncircle("$\sequence{0,3}$"),
-  h=ncircle("$\sequence{1,2}$"),
-  i=ncircle("$\sequence{2,1}$"),
-  j=ncircle("$\sequence{3,0}$");
+node a=ncircle("\tiny $0,0$"),
+  b=ncircle("\tiny$0,1$"),
+  c=ncircle("\tiny$1,0$"),
+  d=ncircle("$0,2$"),
+  e=ncircle("$1,1$"),
+  f=ncircle("$2,0$"),
+  g=ncircle("$0,3$"),
+  h=ncircle("$1,2$"),
+  i=ncircle("$2,1$"),
+  j=ncircle("$3,0$");
+// node a=ncircle("$\sequence{0,0}$"),
+//   b=ncircle("$\sequence{0,1}$"),
+//   c=ncircle("$\sequence{1,0}$"),
+//   d=ncircle("$\sequence{0,2}$"),
+//   e=ncircle("$\sequence{1,1}$"),
+//   f=ncircle("$\sequence{2,0}$"),
+//   g=ncircle("$\sequence{0,3}$"),
+//   h=ncircle("$\sequence{1,2}$"),
+//   i=ncircle("$\sequence{2,1}$"),
+//   j=ncircle("$\sequence{3,0}$");
 
 // calculate nodes position
-real u=1.1cm;
+real u=0.9cm;
 real v=u;
 defaultlayoutskip=u;
 

@@ -3,10 +3,10 @@
 
 ;; traverse.rkt
 ;;
-;; Graph traversal for Jim Hefferon's _Theory of Computation_
+;; DAG traversal for Jim Hefferon's _Theory of Computation_
 ;; License: GPL 3.0
 
-;; ===== A tree is made of nodes
+;; ===== A graph is made of nodes
 
 ;; Structure: create a number of routines including
 ;;  constructor (node ..) that takes two arguments 
@@ -22,10 +22,10 @@
   (node name (mutable-set)))
 
 ;; string -> node
-;; Create a new tree.
-;;  root-node-name   string  Name of root node
-(define (tree-create root-node-name)
-  (node-create root-node-name))
+;; Create a new graph.
+;;  first-node-name   string  Name of first, or root, node
+(define (graph-create first-node-name)
+  (node-create first-node-name))
 
 ;; node, string --> node
 ;; To the node n's children create and add a child node.  Return child node.
@@ -50,7 +50,7 @@
 (define MAXIMUM-RANK 100)
 
 ;; Traverse the tree breadth first
-;;   node  Root node of tree
+;;   node  Root node 
 ;;   fcn  Function to apply to each node
 ;;   #:maxrank  Natural number, the max rank that is traversed
 (define (tree-bfs node fcn #:maxrank [maxrank MAXIMUM-RANK])
@@ -68,13 +68,13 @@
         (tree-bfs-helper next-level (+ 1 rank) fcn)))))
 
 ;; Traverse the tree or DAG breadth first
-;;   node  Root node of tree
+;;   node  Starting node
 ;;   fcn  Function to apply to each node
 ;;   #:maxrank  Natural number, the max rank that is traversed
-(define (tree-bfs-set node fcn #:maxrank [maxrank MAXIMUM-RANK])
-  (tree-bfs-set-helper (mutable-set node) 0 fcn #:maxrank maxrank))
+(define (traverse-bfs node fcn #:maxrank [maxrank MAXIMUM-RANK])
+  (traverse-bfs-helper (mutable-set node) 0 fcn #:maxrank maxrank))
 
-(define (tree-bfs-set-helper level rank fcn #:maxrank [maxrank MAXIMUM-RANK])
+(define (traverse-bfs-helper level rank fcn #:maxrank [maxrank MAXIMUM-RANK])
   (when (< rank maxrank)
     (let ([next-level (mutable-set)])
       (for ([node level])
@@ -83,7 +83,7 @@
           (set-add! next-level child-node)
           ))
       (when (not (set-empty? next-level))
-        (tree-bfs-set-helper next-level (+ 1 rank) fcn)))))
+        (traverse-bfs-helper next-level (+ 1 rank) fcn)))))
 
 ;; Traverse the tree depth first
 ;;   node  Root node of tree
@@ -101,7 +101,7 @@
 ;; void --> tree of nodes
 ;; Make a tree to experiment on.
 (define (sample-tree-make)
-  (let* ([t (tree-create "a")]
+  (let* ([t (graph-create "a")]
          [nb (node-add-child! t "b")]
          [nc (node-add-child! t "c")]
          [nd (node-add-child! t "d")]
@@ -117,7 +117,7 @@
 ;; void --> tree of nodes
 ;; Make a binary tree.
 (define (exercise-tree-make)
-  (let* ([t (tree-create "a")]
+  (let* ([t (graph-create "a")]
          [nb (node-add-child! t "b")]
          [nc (node-add-child! t "c")]
          [nd (node-add-child! nb "d")]
@@ -132,7 +132,7 @@
 ;; void --> DAG of nodes
 ;; Make the Cantor graph.
 (define (cantor-DAG-make)
-  (let* ([t (tree-create "0,0")]
+  (let* ([t (graph-create "0,0")]
          [nb (node-add-child! t "0,1")]
          [nc (node-add-child! t "1,0")]
          [nd (node-add-child! nb "0,2")]
@@ -154,12 +154,12 @@
          node-name
          node-children
          node-create
-         tree-create
+         graph-create
          node-add-child!
          show-node-name
          MAXIMUM-RANK
          tree-bfs
-         tree-bfs-set
+         traverse-bfs
          tree-dfs
  )
 

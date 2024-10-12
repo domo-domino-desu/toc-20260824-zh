@@ -5502,10 +5502,10 @@ The enumeration starts like this.
      \end{tabular}
 \end{center} 
   
-We can  
+From this array 
 make a graph by connecting each pair in the array to its neighbor above, 
 and the one to the right.
-This redraws the array, 
+This shows the result 
 with the lower left rotated to the top.
 \begin{center}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1031.pdf}}
@@ -5513,13 +5513,15 @@ with the lower left rotated to the top.
 That graph isn't a tree because there are vertices that are connected 
 by more than one path, for instance $\sequence{0,0}$ and~$\sequence{1,1}$.  
 Instead it is a directed acyclic graph, a DAG.
-
-On the left below is a tree with ten nodes
+Cantor's enumeration is a breadth first traversal of the DAG.
+Here we will show Racket code to traverse trees and DAG's
 (trees and DAG's are alike in that they have no cycles).
-In the middle we visit the nodes in 
+
+On the left below is a tree with ten nodes.
+The table illustrates visiting the nodes in 
 \definend{depth-first}\index{depth-first traversal}\index{graph!traversal!depth-first} order, where
 we visit a node's children before going on to visit its siblings.
-On the right the traversal is 
+It also illustrates 
 \definend{breadth-first},\index{breadth-first traversal}\index{graph!traversal!breadth-first} 
 where we cover all nodes that are at rank~$k$ before visiting any nodes of
 rank $k+1$ (a node is \definend{rank}~$k$\index{graph!node!rank}\index{rank} 
@@ -5528,12 +5530,19 @@ to the root has~$k$ edges).
 \begin{center}
   \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1028.pdf}}
   \qquad
-  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1030.pdf}}
-  \qquad
-  \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1029.pdf}}
+  \begin{tabular}{r|l}
+    \multicolumn{1}{c}{\tabulartext{Traversal}}
+      &\multicolumn{1}{c}{\tabulartext{Node order}}  \\
+    \hline 
+    Depth first\rule{0pt}{11pt}
+      &$a$-$b$-$e$-$f$-$c$-$d$-$g$-$i$-$j$-$h$ \\
+    Breadth first
+      &$a$-$b$-$c$-$d$-$e$-$f$-$g$-$h$-$i$-$j$ \\
+  \end{tabular}
+  % \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1030.pdf}}
+  % \qquad
+  % \vcenteredhbox{\includegraphics{languages/asy/graphs/graphs1029.pdf}}
 \end{center}
-Cantor's enumeration is a breadth first traversal of the above DAG.
-Here we will show Racket code to traverse trees and DAG's.
 
 We first define a \codeinline{node},
 essentially as an ordered pair.
@@ -5541,10 +5550,15 @@ essentially as an ordered pair.
 The Racket \codeinline{struct} construct has the system automatically define
 a number of useful functions. 
 One is a creator function \codeinline{(node n s)}, which
-we use that to make the next function, that knows that 
-\codeinline{children} is a set.
+brings nodes into existence.
+Another thing that \codeinline{struct} does is to make accessor
+functions \codeinline{node-name} and \codeinline{node-children}
+that we see below.
+
+We use that creator to make the next function.
 \lstinputlisting[firstline=21,lastline=22]{\traversefile}
-We use a set that is mutable because as we create the tree we will add children
+Note that \codeinline{children} is a set so we can quickly access its members.
+This set is mutable because as we create the tree we will add children
 to that set, so we must be able to change it.
 In turn, we use that routine to create new trees and DAG's.
 \lstinputlisting[firstline=27,lastline=28]{\traversefile}
@@ -5553,21 +5567,15 @@ The next routine inputs a node and adds a child to its set of children.
 (LISP-derived languages have a convention of using an exclamation mark for 
 the names of procedures whose main role is to cause side effects,
 not to return something.)
-\lstinputlisting[firstline=34,lastline=37]{\traversefile}
-Note the \codeinline{node-children} routine.
-Another thing that \codeinline{struct} does is to create accessor
-functions\Dash
-we didn't separately write \codeinline{node-children}, 
-the system creates it 
-from the two names when we declared the \codeinline{struct}.
 \footnote{%
   The code here has a way to tie from parent to child but no direct way
   to tie back.
   So this tree is directed.
-  We can also 
-  write code for breadth-first traversals of undeirected trees
-  but here we will stick with what we have.
+  We can of course
+  write code for breadth-first traversals of undirected trees
+  but for our purposes this suffices.
 }
+\lstinputlisting[firstline=34,lastline=37]{\traversefile}
 
 This makes the ten-node tree drawn above.
 \begin{lstlisting}
@@ -5593,7 +5601,25 @@ indented by some spaces
 to indicate the rank.
 \lstinputlisting[firstline=41,lastline=42]{\traversefile}
 
-The first traversal is breadth-first.
+The first traversal method is depth first.
+It is in some ways more natural than breadth first.
+\lstinputlisting[firstline=93,lastline=99]{\traversefile}
+Here it is in action.
+\begin{lstlisting}
+> (graph-dfs t 0 show-node-name)
+a
+  b
+    f
+    e
+  d
+    h
+    g
+      j
+      i
+  c
+\end{lstlisting}
+
+Now for breadth-first traversal.
 \lstinputlisting[firstline=56,lastline=68]{\traversefile}
 It comes in two functions, \codeinline{tree-bfs} and
 \codeinline{tree-bfs-helper}.
@@ -5635,7 +5661,7 @@ the list \codeinline{next-level}.
 Here is the result of running the routine.
 \begin{lstlisting}
 > (define t (sample-tree-make))
-> (tree-bfs t show-node-name)
+> (graph-bfs t show-node-name)
 a
   c
   d
@@ -5653,24 +5679,6 @@ went in, which is why it says \codeinline{c}, then~\codeinline{d},
 and then~\codeinline{b}.
 Nonetheless, this is breadth first because it traverses one level at a time.
 
-The depth first routine is in some ways more 
-natural in Racket.
-\lstinputlisting[firstline=93,lastline=99]{\traversefile}
-For example, there is no need for a helper function.
-Here it is in action.
-\begin{lstlisting}
-> (tree-dfs t 0 show-node-name)
-a
-  b
-    f
-    e
-  d
-    h
-    g
-      j
-      i
-  c
-\end{lstlisting}
 
 \begin{exercises}
 \begin{exercise}
@@ -5692,7 +5700,7 @@ because each node has either two children or none
 \item From the interpreter after running the definitions we get this.
 \begin{lstlisting}
 > (define t (exercise-tree-make))
-> (tree-bfs t show-node-name)
+> (graph-bfs t show-node-name)
 a
   c
   b
@@ -5705,7 +5713,7 @@ a
 \end{lstlisting}
 \item We get this.
 \begin{lstlisting}
-> (tree-dfs t 0 show-node-name)
+> (graph-dfs t 0 show-node-name)
 a
   b
     d
@@ -5737,7 +5745,7 @@ This will do.
 \item In the result, nodes with multiple parents are visited multiple times.
 \begin{lstlisting}
 > (define t (cantor-DAG-make))
-> (tree-bfs t show-node-name)
+> (graph-bfs t show-node-name)
 0,0
   1,0
   0,1
@@ -5761,7 +5769,7 @@ We can fix this by making it a set, and adjusting the related code.
 \lstinputlisting[firstline=74,lastline=86]{\traversefile}
 Here is the result at the interpreter.
 \begin{lstlisting}
-> (tree-bfs-set t show-node-name)
+> (graph-bfs-set t show-node-name)
 0,0
   0,1
   1,0

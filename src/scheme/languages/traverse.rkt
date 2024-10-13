@@ -85,17 +85,17 @@
       (when (not (set-empty? next-level))
         (traverse-bfs-helper next-level (+ 1 rank) fcn)))))
 
-;; Traverse the tree depth first
+;; Traverse the graph depth first
 ;;   node  Root node of tree
 ;;   rank  Natural number  Depth of this node in the tree
 ;;   fcn  Function to apply to each node
 ;;   #:maxrank  Natural number, the max rank that is traversed
-(define (tree-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+(define (traverse-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
   (fcn node rank)
   (when (< rank maximumrank)
     (let ([children (node-children node)])
       (for ([child children])
-        (tree-dfs child (+ rank 1) fcn #:maxrank maximumrank))
+        (traverse-dfs child (+ rank 1) fcn #:maxrank maximumrank))
       )))
 
 ;; void --> tree of nodes
@@ -116,7 +116,7 @@
 
 ;; void --> tree of nodes
 ;; Make a binary tree.
-(define (exercise-tree-make)
+(define (binary-tree-make)
   (let* ([t (graph-create "a")]
          [nb (node-add-child! t "b")]
          [nc (node-add-child! t "c")]
@@ -160,6 +160,6 @@
          MAXIMUM-RANK
          tree-bfs
          traverse-bfs
-         tree-dfs
+         traverse-dfs
  )
 

@@ -87,11 +87,11 @@
 
 
    (test-case
-    "Test breadth-first search"
-    (displayln "+++++ Breadth-first below here")
+    "Test depth-first search"
+    (displayln "+++++ Depth-first below here")
     (let* ([t (sample-tree-make)]
            )
-      (tree-bfs t show-node-name)
+      (traverse-dfs t 0 show-node-name)
       ))
 
    (test-case
@@ -99,7 +99,23 @@
     (displayln "+++++ Depth-first below here")
     (let* ([t (sample-tree-make)]
            )
-      (tree-dfs t 0 show-node-name)
+      (traverse-dfs t 0 show-node-name)
+      ))
+
+   (test-case
+    "Test depth-first search on a DAG"
+    (displayln "+++++ Depth-first on a DAG below here")
+    (let* ([t (cantor-tree-make)]
+           )
+      (traverse-dfs t 0 show-node-name)
+      ))
+
+   (test-case
+    "Test breadth-first search"
+    (displayln "+++++ Breadth-first below here")
+    (let* ([t (sample-tree-make)]
+           )
+      (tree-bfs t show-node-name)
       ))
 
    (test-case

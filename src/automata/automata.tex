@@ -1,11 +1,11 @@
 \renewcommand{\asydir}{automata/asy/}
 
-\chapteropen[\href{https://www.hodinkee.com/articles/patek-philippe-caliber-89-easter-problem}{The astronomical clock in Notre-Dame-de-Strasbourg Cathedral, for computing the date of Easter.  Easter falls on the first Sunday after the first full moon on or after March~21, the nominal spring equinox. Calculation of this date was a great challenge for mechanisms of that time, 1843.}]{automata/pix/easterclock.jpg}{Automata} %https://commons.wikimedia.org/wiki/File:CIMA_mg_8332.jpg
+\chapteropen[\href{https://www.hodinkee.com/articles/patek-philippe-caliber-89-easter-problem}{The astronomical clock in Notre-Dame-de-Strasbourg Cathedral, for computing the date of Easter.  Easter falls on the first Sunday after the first full moon on or after the nominal spring equinox of March~21. Calculation of this date was a great challenge for mechanisms of that time, 1843.}]{automata/pix/easterclock.jpg}{Automata} %https://commons.wikimedia.org/wiki/File:CIMA_mg_8332.jpg
 % Use as much of http://cstheory.stackexchange.com/a/14818/4731 as possible
 
 Our touchstone model of computation is the Turing machine.
-It has two components, the CPU and the tape.
-In this chapter we will focus on the CPU\Dash
+It has two components, the box and the tape.
+In this chapter we will focus on the box:~we
 we will consider what can be done with states alone, 
 \citetext{what can be done by a machine having a number of possible configurations that is  bounded}{%
   From Rabin, Scott, Finite Automata and Their Decision Problems, 1959:
@@ -28,7 +28,7 @@ we will consider what can be done with states alone,
   }.\footnote{%
 Studying the parts of the machine is natural but there is
 another motivation. 
-A person could object to Turing's model that
+A person could object to Turing's model by observing that
 % Turing machines are not the right model of what can be done by 
 % an 
 % \citetext{idealized discrete and deterministic device}{%
@@ -38,15 +38,15 @@ A person could object to Turing's model that
 %   particles in the universe.} on the grounds that 
 % they write to the unbounded tape.
 there is a machine that iterates writing a character and then moving right, 
-and thereby occupies unboundedly many configurations,
-but no physical device can do that.
+and thereby goes through unboundedly many configurations,
+while no physical device can do that.
 A rejoinder is that we for instance define a 
-`book' to be pages with writing
-and don't worry whether physics limits the number of pages.
+`book' to be pages with words
+and don't worry whether physics limits the number of possible pages.
 Happily, we don't need to go into this to justify 
 our interest. 
-For one thing, Finite State machines are quite practical and appear
-often in everyday computing.}
+Tapeless machines are quite practical, appearing
+often in everyday computing, which is justification enough.}
 
   
 
@@ -65,6 +65,7 @@ We begin with some examples.
 \begin{example}  \label{ex:PowerSwitch}
 This power switch has two states, $q_{\text{off}}$ and $q_{\text{on}}$, and
 its input alphabet has one token, \str{toggle}.
+(Its standard symbol is on the right.)
 \begin{center}
   \newlength{\jhscratchheight}
   % \newsavebox{\scratchbox}
@@ -176,8 +177,9 @@ $\map{\Delta}{Q\times\Sigma}{Q}$}{%
   That is, some authors allow that for some state-symbol pairs
   there is no next state.
   This choice by an author is a matter of convenience, as for any such
-  machine you can create an \definend{error state} $q_{\text{error}}$ 
-  or \definend{dead state},
+  machine you can create an \definend{error state}\index{state!error}\index{error state}
+  $q_{\text{error}}$ 
+  or \definend{dead state},\index{dead state}\index{state!dead}
   that is not an accepting state and that transitions only to itself, 
   and send all such pairs there.
   This transition function is total, and the new machine has the same
@@ -185,13 +187,13 @@ $\map{\Delta}{Q\times\Sigma}{Q}$}{%
 \end{definition}
 %</def:FSM>
 
-A full description of the action of these machines
-comes
+A full description of the action of these machines comes
 after a few more examples.
-But basically, to work a machine just load a
+But basically, to work a machine, load a
 string input on the tape and press \texttt{Start}.\index{Start button@\texttt{Start} button}
-At each step the machine consumes one tape token, that is, it reads, acts on,
-and deletes that token, and then the head moves to the next token.
+At each step the machine consumes one tape token:~it reads, acts on,
+and deletes it, and then moves so that the head points to the next 
+tape cell.
 \begin{center}
   \includegraphics{asy/share/machine02.pdf}
 \end{center}
@@ -208,6 +210,7 @@ that string.
 Here is a trace of the steps when
 \cref{ex:ModuloFourFSM}'s modulo~$4$ machine is started with
 the input string $\tau=\str{10110}$ on the tape.
+Since $q_3$ is not an accepting state the machine rejects~$\tau$ .
 \begin{center}
 \begin{tapesequence}
   \begin{tapesequencetable}
@@ -223,14 +226,10 @@ the input string $\tau=\str{10110}$ on the tape.
   \end{tapesequencetable}
 \end{tapesequence}
 \end{center}
-It rejects~$\tau$ since $q_3$ is not an accepting state.
-
-Because these 
+These 
 machines consume one character per step and stop once all the characters are 
-gone, they are sure to halt\Dash 
-there is no \HP{} for Finite State machines.
-% Then, once it halts, the outcome is that
-% either the \texttt{Accept} light is on or it isn't. 
+gone so they are sure to halt.  
+There is no \HP{} for Finite State machines.
 
 \begin{example}  \label{ex:FSATwoAsEvenBs}
 The machine below accepts a string if and only if it
@@ -256,20 +255,22 @@ $q_2$).\index{accepting state!in transition tables}\index{final state!in transit
 \end{example}
 
 \begin{remark}
-This is a chance to articulate 
-the key to designing Finite State machines, that each state should have an 
-intuitive purpose that is directed at the machine's purpose, and that is
+We take this chance to describe
+the key to designing Finite State machines. 
+Each state should have an 
+intuitive function that is directed to the machine's purpose, and that is
 unique.
 The drawing from that example brings this out.
 Its top row has states where the machine has so far seen an even number of
 \str{1}'s (possibly zero many), 
 while its states in the bottom row have seen an odd number.
 Its first column holds states where the machine has seen no \str{0}'s,
-the second column holds states where there has been one,
-and the third has states where there have been two.
-Thus~$q_4$ means ``so far the machine has seen one~$0$ and an
-odd number of $1$'s,''
-and $q_5$ means ``so far the machine has
+its second column holds states where there has been one,
+and its third has states where there have been two.
+Thus we can articulate that $q_4$ means, 
+``so far the machine has seen one~\str{0} and an
+odd number of \str{1}'s,''
+while $q_5$ means, ``so far the machine has
 seen two \str{0}'s but an odd number of \str{1}'s.''
 \end{remark}
 
@@ -293,16 +294,16 @@ might well accept all of \citetext{Unicode}{%
 But for the examples and exercises in this book 
 we will use small alphabets.\footnote{%
   We often use \protect\str{a}, \protect\str{b}, \protect\str{c}, etc., 
-  in the alphabet because something like 
+  because something like 
   `$\str{c}^2$' is clearer than
-  `$\str{0}^2$' or `two \protect\str{0}'s'.}
+  `$\str{0}^2$'.}
 
 \begin{example}  \label{ex:FSAValidIntegers}
 %<*ex:FSAValidIntegers>
 This machine
 accepts strings that are valid decimal representations of integers.
-So it accepts the strings \str{21} and \str{-707} but does not accept
-\str{501-}.
+So it accepts the strings \str{21} and \str{-7} and  \str{+37} 
+but does not accept \str{501-}.
 
 The transition graph and the table both group some inputs together when
 they result in the same action.
@@ -323,7 +324,7 @@ $q_1$.
   \end{transitionfunction}
 \end{center}
 Any wrong input character sends the machine to the state~$e$.
-Finite State machines often have an error state,
+Finite State machines often have an \definend{error state},\index{error state}
 which is a sink in that once the machine enters that state
 then it never leaves.
 \end{example}
@@ -331,7 +332,7 @@ then it never leaves.
 \begin{example}  \label{ex:FSAGraphicalFileExtensions}
 This machine accepts strings that are members of the set
 $\set{\str{jpg},\str{pdf},\str{png}}$.
-It is our first example with more than one final state.
+It is our first example with more than one accepting state.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa09.pdf}}
 \end{center}
@@ -341,9 +342,9 @@ or~\str{p} is an error.
 % The drawing below shows the extra edges for the top branch; putting in all the
 % edges would make a mess.
 We omit all of these edges because they would make the drawing hard to read.
-This illustrates that for complex machines 
-a transition table presentation is better
-than a picture.
+This illustrates that while pictures are better for simple machines,
+past some point of complexity, 
+a transition table presentation is better than a picture.
 \end{example}
 
 % \urldef\goldbachurl\url{https://en.wikipedia.org/wiki/Goldbach%27s_conjecture}
@@ -352,7 +353,7 @@ That example points out that
 a string if and only if it is a member of that language}{%
   In practice the suggestion that for any finite set of strings there is a 
   Finite State machine that accepts it, simply by listing
-  all of the cases may not be reasonable.
+  all of the cases, may not be reasonable.
   For example,
   there are finitely many people and each has finitely many
   active phone numbers so
@@ -378,10 +379,6 @@ a string if and only if it is a member of that language}{%
   one member or none.
   But while that set is tiny, we don't know what it contains.
   }.
-% If strings have
-% common prefixes, the machine steps through the shared parts together,
-% as with \str{pdf} and \str{png}.
-% \Cref{exer:FiniteLanguageAcceptedBySomeFSM} asks for a proof.
 
 \begin{example} \label{ex:FSAMultOfThree}
 Finite State machines can
@@ -413,20 +410,19 @@ and a helper.
 \end{example} 
 
 \begin{example}
-For many years
-\citetext{this was how phone dialing was handled in North America}{%
-  See the description of the North America Numbering Plan
-  \autocite{wiki:NANumbering}.}.
-In the 1940's call connections were handled by simple 
-\citetext{physical devices}{%
+In the 1940's, phone call connections were handled by 
+\citetext{simple devices}{%
   The devices to do the switching were invented in 1889 by an undertaker whose
   competitor's wife was the local telephone operator and routed calls to
   her husband's business.
   \autocite{wiki:Strowger}}
-for local calls or by operators for long distance calls.
-This plan worked within that hardware limitation, to change to 
-allowing customers to directly dial long distance. 
-Consider \str{1-802-555-0101}.
+for local calls but required operator intervention for long distance.
+That changed with the adoption of the Finite State machine here,
+which 
+\citetext{allowed users to directly dial long distance in North America}{%
+  See the description of the North America Numbering Plan
+  \autocite{wiki:NANumbering}.}.
+Consider dialing \str{1-802-555-0101}.
 The initial \str{1} means that 
 the call leaves the local office.
 The \str{802} is an area code; the system can tell that this is not a 
@@ -434,13 +430,14 @@ The \str{802} is an area code; the system can tell that this is not a
   Initially, large states, those divided into multiple numbering plan areas, 
   were assigned area codes with a \str{1} in the second position. 
   Areas that covered entire states or provinces got codes with 
-  \str{0} as the middle digit. This was abandoned by the early 1950s.
+  \str{0} as the middle digit. 
+  That was abandoned by the early 1950's.
   \autocite{wiki:NANumbering}.}
 because
 its second digit is~\str{0} or~\str{1}.
 Next, the \str{555}
 routes the call to a local office.
-Then that office makes the connection to line \str{0101}.
+Then that office's device makes the connection to line \str{0101}.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa13.pdf}
 \end{center}
@@ -450,7 +447,7 @@ This additional flexibility is possible because
 switching now happens entirely in software.
 \end{example}
 
-After the definition of Turing machine we gave a formal
+After the definition of Turing machine we gave a complete
 description of the action of those machines.
 We will do the same here for Finite State machines.\label{page:DefnYieldsFiniteStateMachine}
 %<*discussion:FSMConfiguration>
@@ -537,14 +534,22 @@ or the language
 \definend{recognized}\index{recognized language!of a Finite State machine}\index{language!recognized by a Finite State machine}
 or \definend{decided},\index{decided language}\index{language!decided by a Finite State machine}
 or \definend{accepted}, by the machine.\footnotemark[3]\index{accepted language|see{recognized}}\index{language!accepted by a Finite State machine|see{language, recognized by a Finite State machine}}
-\end{definition}\footnotetext[3]{For Finite State machines, 
-  deciding a language is 
-  equivalent to recognizing it, because the machine must halt.
-  `Recognized' is more the common term.}
-
+\end{definition}\footnotetext[3]{A Turing machines decides a language if
+  for all strings in the language it halts and accepts (perhaps signaled by 
+  ending with just a \protect{\str{1}} on the tape) and for all strings 
+  not in the language it halts and rejects (perhaps ending with just a 
+  \protect\str{0}).\index{Turing machine!deciding a language}\index{language!decided by a Turing machine}\index{deciding!a language}
+  A Turing machine recognizes a language if for all strings members of 
+  the language
+  it halts and accepts (and it never halts and accepts a nonmember),
+  but for nonmembers it might fail to 
+  halt.\index{Turing machine!recognizing a language}\index{language!recognized by a Turing machine}\index{recognizing!a language}
+  Finite State machines must halt
+  so there is no notion like computably enumerable,
+  and so deciding a language is the same as
+  recognizing it.
+  For these machines, `recognized' is the more common term.}
 %</def:FSMLanguage>
-% We close with a definition that emphasizes the role played
-% by determinism.
 
 \begin{example} 
 The language of the power switch machine from \cref{ex:PowerSwitch} is the set

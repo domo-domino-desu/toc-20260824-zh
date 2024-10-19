@@ -2137,15 +2137,15 @@ hlayout(1*u, q0, q1, q2, q3, q4, q5);
 // draw edges
 draw(pic,
      (q0--q1).l("\str{A}"),
-     (q0..loop(S)).l("other"),
+     (q0..loop(S)).l("not \str{A}"),
      (q1--q2).l("\str{E}"),
-     (q1..loop(S)).l("other"),
+     (q1..loop(S)).l("not \str{E}"),
      (q2--q3).l("\str{I}"),
-     (q2..loop(S)).l("other"),
+     (q2..loop(S)).l("not \str{I}"),
      (q3--q4).l("\str{O}"),
-     (q3..loop(S)).l("other"),
+     (q3..loop(S)).l("not \str{O}"),
      (q4--q5).l("\str{U}"),
-     (q4..loop(S)).l("other"),
+     (q4..loop(S)).l("not \str{U}"),
      (q5..loop(S)).l("any")
      );
 

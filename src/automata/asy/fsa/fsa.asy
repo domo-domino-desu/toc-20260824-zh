@@ -3009,3 +3009,74 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ========== wolf-goat-cabbage-crossing ==============
+int picnum = 58;
+picture pic;
+
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"),
+     q1=ncircle("$q_1$"),
+     q2=ncircle("$q_2$"),
+     q3=ncircle("$q_3$"),
+     q4=ncircle("$q_4$"),
+     q5=ncircle("$q_5$"),
+     q6=ncircle("$q_6$"),
+     q7=ncircle("$q_7$"),
+     q8=ncircle("$q_8$"),
+     q9=ncircle("$q_9$",ns_accepting),
+     error=ncircle("$e$");
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = u;
+
+hlayout(u, q0, q5, q2, q6, q1, q7, q4);
+vlayout(1*v, q2, q8);
+// q3.pos = new_node_pos(q7, -120, -0.75*v);
+vlayout(1*v, q7, q3);
+vlayout(1*v, q4, q9);
+vlayout(1*v, q0, error);
+
+// edges
+draw(pic,
+     (q0..bend..q5).l("\str{g}"),
+     (q5..bend..q0).l("\str{g}"),
+     (q5..bend..q2).l("$\str{n}$"),
+     (q2..bend..q5).l("$\str{n}$"),
+     (q2..bend..q6).l("$\str{c}$"),
+     (q6..bend..q2).l("$\str{c}$"),
+     (q6..bend..q1).l("$\str{g}$"),
+     (q1..bend..q6).l("$\str{g}$"),
+     (q1..bend..q7).l("$\str{w}$"),
+     (q7..bend..q1).l("$\str{w}$"),
+     (q7..bend..q4).l("$\str{n}$"),
+     (q4..bend..q7).l("$\str{n}$"),
+     (q2..bend..q8).l("$\str{w}$"),
+     (q8..bend..q2).l("$\str{w}$"),
+     (q7..bend..q3).l("$\str{c}$"),
+     (q3..bend..q7).l("$\str{c}$"),
+     (q4--q9).l("$\str{g}$"),
+     (q9..loop(E)).l("$\str{w,g,c,n}$"),
+     (error..loop(E)).l("$\str{w,g,c,n}$"),
+     (q8--q6).l("$\str{n}$"),
+     (q3..bend(15)..q8).l("$\str{g}$"),
+     (q8..bend(15)..q3).l("$\str{g}$")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, q0, q1, q2, 
+     q3, q4, q5,
+     q6, q7, q8,
+     q9, error
+       );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+

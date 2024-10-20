@@ -554,12 +554,11 @@ $\lang=\set{\str{toggle}^{2k}\suchthat k\in\N}$.
 The language of the turnstile machine, \cref{ex:Turnstile} is the set
 of strings from the alphabet
 $\Sigma=\set{\str{token},\str{push}}$ of the form
-$\sigma_0\concat\sigma_1$ where
-\begin{align*}
-  \sigma_0 &=(\str{push})^{k_0}\,\str{token}\,(\str{push})^{k_1}\,\str{token}\,(\str{token})^{k_2}  \\
-  \sigma_1 &=\bigl(\,(\str{push})^{k_3}\,\str{token}\,(\str{push})^{k_4}\,\str{token}\,(\str{token})^{k_5}\,\bigr)^n
-\end{align*}
-for $k_3\in\N^+$ and $n, k_1, k_2,k_4,k_5\in\N$.
+\begin{equation*}
+  (\str{push})^{k_0}\,\str{token}\,(\str{push})^{k_1}\,(\str{token})^{k_2}
+    \,\bigl(\,(\str{push})^{k_3}\,\str{token}\,(\str{push})^{k_4}\,(\str{token})^{k_5}\,\bigr)^n
+\end{equation*}
+for $k_2,k_3,k_5\in\N^+$ and $n, k_0,k_1,k_4\in\N$.
 \end{example}
 
 %<*def:ExtendedTransitionFcn>
@@ -1811,8 +1810,8 @@ What if we distinguish between machines with different sets of final states?
 \recommended
 \begin{exercise}
 \textit{Propositiones ad acuendos iuvenes} (problems to sharpen
-the young) is the oldest collection
-of mathematical problems in Latin.
+the young) is one of the oldest collection
+of mathematical problems.
 It is by 
 \citetext{Alcuin of York (735--804)}{%
   See \url{https://www.bbc.co.uk/programmes/m000dqy8}.}, royal advisor
@@ -1831,55 +1830,102 @@ Readers of the 700's would have known that a wolf cannot be left
 alone with a goat, nor can a goat be left alone with cabbages.
 Construct the relevant Finite State machine and use it to solve the problem.
 \begin{answer}\verified
-  We can have the man, the wolf, the goat, and the cabbage,
+  The states that we can be in involve having the man, the wolf, the goat, 
+  and the cabbage,
   on the near or far side.
   The allowed transitions are: man crosses with wolf,
   man crosses with goat, man crosses with cabbage, and man crosses alone.
-  If the man leaves the wolf with the goat then that is an error state, 
-  as is leaving the goat with the cabbage.
 
-  In the Finite State machine shown in \figureref{fig:WolfGoatCabbage}
-  the start state is $s_0$ and the only accepting state is~$s_{15}$.
+  The Finite State machine shown in \figureref{fig:WolfGoatCabbage}
+  covers these possibilities.
+  For example, the line labeled `n:~mwg,f:~c' means that the man is on the
+  near side with the wolf and goat, while the cabbage is alone on the
+  far side. 
+  (Having the wolf with the goat is not an error because the man
+  is with them.) 
+  A number of the possibilities do not appear as line labels because
+  they are errors.
+  If the man leaves the wolf alone with the goat then that is an error state
+  (on either near or far side), 
+  as is leaving the goat alone with the cabbage.
+  So for instance the table has no line labeled `n:~wg,f:~mc'. 
+  The start state is $q_0$ and the only accepting state is~$q_{9}$.
+
+  In addition to the two errors in the prior paragraph, it is an error
+  to transition with the wolf if the man does not start with the wolf,
+  and likewise for the goat and cabbage.
+  % \begin{figure}
+  %   \centering
+  %   \begin{tabular}{rl|cccc}
+  %     \multicolumn{1}{c}{\tabulartext{state}}
+  %     &\multicolumn{1}{c}{\tabulartext{meaning}}
+  %                             &\str{with wolf}
+  %                             &\str{with goat}
+  %                             &\str{with cabbage}
+  %                             &\str{with nothing}  \\  
+  %     \hline   
+  %      $s_0$  &n:~mwgc, f:~-- &$s_{12}$ &$s_{10}$  &$s_9$    &$s_8$      \\
+  %      $s_1$  &n:~mwg, f:~c    &$s_{13}$ &$s_{11}$  &$e$      &$s_9$   \\
+  %      $s_2$  &n:~mwc, f:~g    &$s_{14}$ &$e$       &$s_{11}$ &$s_{10}$     \\
+  %      $s_3$  &n:~mw, f:~gc    &$e$      &$e$       &$e$     &$e$     \\
+  %      $s_4$  &n:~mgc, f:~w    &$e$      &$s_{14}$  &$s_{13}$ &$s_{12}$      \\
+  %      $s_5$  &n:~mg, f:~wc    &$e$      &$s_{15}$  &$e$      &$s_{13}$      \\
+  %      $s_6$  &n:~mc, f:~wg    &$e$      &$e$       &$e$     &$e$        \\
+  %      $s_7$  &n:~m, f:~wgc    &$e$      &$e$       &$e$     &$e$       \\
+  %      $s_8$  &n:~wgc, f:~m--  &$e$      &$e$       &$e$     &$e$     \\
+  %      $s_9$  &n:~wg, f:~mc    &$e$      &$e$       &$e$     &$e$     \\
+  %      $s_{10}$  &n:~wc, f:~mg &$e$      &$s_0$     &$e$     &$s_2$       \\
+  %      $s_{11}$  &n:~w, f:~mgc &$e$      &$s_1$     &$s_{10}$ &$s_3$        \\
+  %      $s_{12}$  &n:~gc, f:~mw &$e$      &$e$       &$e$     &$e$        \\
+  %      $s_{13}$  &n:~g, f:~mwc &$s_1$    &$e$       &$s_4$    &$s_5$         \\
+  %      $s_{14}$  &n:~c, f:~mwg &$s_2$    &$s_4$     &$e$      &$s_6$         \\
+  %      \acceptingstate
+  %      $s_{15}$  &n:~--, f:~mwgc  &$s_{15}$   &$s_{15}$   &$s_{15}$   &$s_{15}$\\
+  %      $e$    &error           &$e$     &$e$       &$e$      &$e$   \\
+  %   \end{tabular}
+  %   \caption{Finite state machine for Wolf-Goat-Cabbage.}
+  %   \label{fig:WolfGoatCabbage}
+  % \end{figure}
   \begin{figure}
     \centering
     \begin{tabular}{rl|cccc}
       \multicolumn{1}{c}{\tabulartext{state}}
-      &\multicolumn{1}{c}{\tabulartext{meaning}}
+      &\multicolumn{1}{c}{\tabulartext{near and far}}
                               &\str{with wolf}
                               &\str{with goat}
                               &\str{with cabbage}
                               &\str{with nothing}  \\  
       \hline   
-       $s_0$  &n:~mwgc, f:~-- &$s_{12}$ &$s_{10}$  &$s_9$    &$s_8$      \\
-       $s_1$  &n:~mwg, f:~c    &$s_{13}$ &$s_{11}$  &$e$      &$s_9$   \\
-       $s_2$  &n:~mwc, f:~g    &$s_{14}$ &$e$       &$s_{11}$ &$s_{10}$     \\
-       $s_3$  &n:~mw, f:~gc    &$e$      &$e$       &$e$     &$e$     \\
-       $s_4$  &n:~mgc, f:~w    &$e$      &$s_{14}$  &$s_{13}$ &$s_{12}$      \\
-       $s_5$  &n:~mg, f:~wc    &$e$      &$s_{15}$  &$e$      &$s_{13}$      \\
-       $s_6$  &n:~mc, f:~wg    &$e$      &$e$       &$e$     &$e$        \\
-       $s_7$  &n:~m, f:~wgc    &$e$      &$e$       &$e$     &$e$       \\
-       $s_8$  &n:~wgc, f:~m--  &$e$      &$e$       &$e$     &$e$     \\
-       $s_9$  &n:~wg, f:~mc    &$e$      &$e$       &$e$     &$e$     \\
-       $s_{10}$  &n:~wc, f:~mg &$e$      &$s_0$     &$e$     &$s_2$       \\
-       $s_{11}$  &n:~w, f:~mgc &$e$      &$s_1$     &$s_{10}$ &$s_3$        \\
-       $s_{12}$  &n:~gc, f:~mw &$e$      &$e$       &$e$     &$e$        \\
-       $s_{13}$  &n:~g, f:~mwc &$s_1$    &$e$       &$s_4$    &$s_5$         \\
-       $s_{14}$  &n:~c, f:~mwg &$s_2$    &$s_4$     &$e$      &$s_6$         \\
+       $q_0$    &n:~mwgc, f:~--  &$e$     &$q_{5}$   &$e$    &$e$      \\
+       $q_1$    &n:~mwg, f:~c    &$q_{7}$  &$q_{6}$   &$e$    &$e$   \\
+       $q_2$    &n:~mwc, f:~g    &$q_{8}$  &$e$      &$q_{6}$ &$q_{5}$     \\
+       $q_3$    &n:~mgc, f:~w    &$e$     &$q_{8}$   &$q_{7}$ &$e$      \\
+       $q_4$    &n:~mg, f:~wc    &$e$     &$q_{9}$   &$e$    &$q_{7}$      \\
+       $q_{5}$  &n:~wc, f:~mg    &$e$     &$q_0$    &$e$    &$q_2$       \\
+       $q_{6}$  &n:~w, f:~mgc    &$e$     &$q_1$    &$q_{2}$ &$e$        \\
+       $q_{7}$  &n:~g, f:~mwc    &$q_1$   &$e$      &$q_3$  &$q_4$         \\
+       $q_{8}$  &n:~c, f:~mwg    &$q_2$   &$q_3$    &$e$    &$e$         \\
        \acceptingstate
-       $s_{15}$  &n:~--, f:~mwgc  &$s_{15}$   &$s_{15}$   &$s_{15}$   &$s_{15}$\\
-       $e$    &error           &$e$     &$e$       &$e$      &$e$   \\
-    \end{tabular}
-    \caption{Finite state machine for Wolf-Goat-Cabbage.}
+       $q_{9}$  &n:~--, f:~mwgc  &$q_{9}$ &$q_{9}$   &$q_{9}$   &$q_{9}$\\
+       $e$    &error            &$e$     &$e$       &$e$      &$e$   \\
+    \end{tabular}  \\[1ex]
+    \includegraphics{automata/asy/fsa/fsa58.pdf}
+    \caption{Finite state machine for the Wolf-Goat-Cabbage problem.}
     \label{fig:WolfGoatCabbage}
   \end{figure}
-  In words:
-  The man first brings the goat to the far side and leaves it there.
-  He goes back and brings the wolf with him, leaving it on the far side,
-  and brings back the goat.
-  He leaves the goat on the initial side, takes the cabbage and brings it
+
+  The circle and arrow diagram does not show the error arrows, as it would
+  clog up the picture.
+  With that diagram, finding a solution is easy.
+  One path through the graph is $q_0$-$q_5$-$q_2$-$q_8$-$q_3$-$q_7$-$q_4$-$q_9$.
+  In words:~the man first brings the goat to the far side and leaves it there.
+  He goes back to the near side alone.
+  He then brings the wolf with him from the near to the far side.
+  Next he brings back the goat to the near side.
+  He leaves the goat on the near side and takes the cabbage and brings it
   to the far side.
-  Finally, he goes back to the original shore, and takes the goat to bring
-  it to the far side.
+  Finally, he goes back alone to the near side, 
+  and finishes by taking the goat to the far side.
 \end{answer}
 \end{exercise}
 

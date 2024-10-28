@@ -2561,8 +2561,8 @@ That function does not output states, it outputs sets of states.
 \end{center}
 \end{example}
 
-The imagery that we used with informal terms such as ``guess'' and ``demon''
-helps introduce the ideas,
+The imagery in informal terms such as ``guess'' and ``demon''
+helps introduce the ideas
 but may also give an impression that those ideas are fuzzy.
 So when we next step through the description of the action of these
 machines, note that it is precise. 
@@ -2570,8 +2570,9 @@ machines, note that it is precise.
 \begin{remark}
 When we described the action of deterministic Finite State machines 
 on page~\pageref{page:DefnYieldsFiniteStateMachine}, we laid out how to 
-construct the sequence of configurations, with the transitions between them.
-But for nondeterministic machines there needn't be one sequence.
+construct the sequence of configurations, by transitioning from each to the
+succeeding one until the tape is empty.
+But for nondeterministic machines there needn't be one and only one sequence.
 That makes a non-constructive description be the clearer choice.
 \end{remark}
 
@@ -2594,7 +2595,7 @@ Then where
 $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$,
 we write 
 $\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-or say that $\hat{\mathcal{C}}$ follows $\mathcal{C}_s$
+or say that $\hat{\mathcal{C}}$ succeeds $\mathcal{C}_s$
 if two conditions hold.
 First, it must be that
 $\hat{\tau}$ comes from removing $\tau_s$'s leading 
@@ -2606,7 +2607,7 @@ set~$\Delta(q,c)$.
 
 By the prior paragraph, a configuration with an empty string,
 $\mathcal{C}_h=\sequence{q_h,\emptystring}$,
-has no configuration following it.
+has no configuration succeeding it.
 It is a
 \definend{halting configuration}.\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
 
@@ -2630,7 +2631,7 @@ is the set containing all of the branches.\footnote{%
 If in that set there exists a branch ending in a halting configuration,
 $
   \mathcal{C}_0=\sequence{q_0,\tau_0} 
-   \yields \mathcal{C}_1 \yields \mathcal{C}_2
+   \yields \mathcal{C}_1
    \yields \cdots\, \mathcal{C}_h=\sequence{q,\emptystring}
 $
 such that $q\in F$,
@@ -2655,6 +2656,10 @@ ends in a halting configuration whose state is accepting,
 the machine accepts \str{00001}.
 \end{example}
 
+As with deterministic Finite State machines, at each step 
+the machine consumes one character.
+There is no \HP{} for these machines. 
+
 %<*def:NFSMAccepted}
 \begin{definition}\label{def:NFSMAccepted}
 For a nondeterministic Finite State machine~$\FSM$, the set of accepted strings
@@ -2664,27 +2669,27 @@ or the language
 \definend{recognized}\index{recognized language!of a nondeterministic Finite State machine}\index{nondeterministic Finite State machine!language recognized}
 % or 
 % \definend{decided}\index{decided!by a nondeterministic Finite State machine}\index{nondeterministic Finite State machine!language decided}
-or \definend{accepted},
-by that machine.\footnotemark[2]
-\end{definition}\footnotetext[2]{Below we will define something called
-  $\varepsilon$ transitions that make `recognized' the right idea here,
-  rather than `decided'.}
+by that machine. %\footnotemark[2]
+\end{definition}
+% \footnotetext[2]{Below we will define something called
+%   $\varepsilon$ transitions that make `recognized' the right idea here,
+%   rather than `decided'.}
 %</def:NFSMAccepted>
 
 \label{discussion:NFSMStringAcceptance}
-We will also adapt the definition 
+We can also adapt the definition 
 of the 
-\definend{extended transition function}\index{extended transition function!nondeterministic Finite State machine} 
-$\map{\extended{\Delta}}{\kleenestar{\Sigma}}{Q}$.
+extended transition function\index{extended transition function!nondeterministic Finite State machine} 
+so that it outputs sets,
+$\map{\extended{\Delta}}{\kleenestar{\Sigma}}{\powerset(Q)}$.
 Fix a nondeterministic~$\FSM$ with
 transition function $\map{\Delta}{Q\times \Sigma}{Q}$.
 Start with $\extended{\Delta}(\emptystring)=\set{q_0}$.
-Where
-$\extended{\Delta}(\tau)=\set{q_{i_0},q_{i_1},\ldots{} q_{i_k}}$,
-for $\tau\in\kleenestar{\Sigma}$ define
+For $\tau\in\kleenestar{\Sigma}\!$, where
+$\extended{\Delta}(\tau)=\set{q_{i_0},q_{i_1},\ldots{} q_{i_k}}$
+and $t\in\Sigma$, define
 $\extended{\Delta}(\tau\concat t)$ to be
-$\Delta(q_{i_0},t)\cup\Delta(q_{i_1},t)\cup\cdots \cup\Delta(q_{i_k},t)$
-for any $t\in\Sigma$. 
+$\Delta(q_{i_0},t)\cup\Delta(q_{i_1},t)\cup\cdots \cup\Delta(q_{i_k},t)$. 
 Then the machine accepts
 $\sigma\in\kleenestar{\Sigma}$ if and only if any element of
 $\extended{\Delta}(\sigma)$ is a final state.
@@ -2699,16 +2704,15 @@ For instance, the machine accepts \str{abaaba}
 % where the 
 % matching substring starts at index~$2$, 
 because there is a
-sequence of allowed transitions ending in an accepting state,
-namely this one.
+sequence of allowed transitions ending in an accepting state.
 \begin{equation*}
   \sequence{q_0,\str{abaaba}}
   \yields \sequence{q_0,\str{baaba}}
   \yields \sequence{q_0,\str{aaba}}
   \yields \sequence{q_1,\str{aba}}
-  \yields \sequence{q_2,\str{ba}}
-  \yields \sequence{q_2,\str{a}}
-  \yields \sequence{q_2,\emptystring}
+  \yields \sequence{q_3,\str{ba}}
+  \yields \sequence{q_3,\str{a}}
+  \yields \sequence{q_3,\emptystring}
 \end{equation*}
 \end{example}
 
@@ -2729,7 +2733,7 @@ easier to write than a deterministic machine that
 does the same job.
 
 \begin{example}
-These machines accept any string
+These machines both accept any string
 whose next to last character is~\str{a}.
 The nondeterministic one on the left is simpler than the deterministic 
 one.

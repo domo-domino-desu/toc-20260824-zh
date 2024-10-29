@@ -2827,9 +2827,7 @@ $\map{\Delta}{Q\times(\Sigma\union\set{\emptystring})}{\powerset(Q)}$.\footnote{
 The associated behavior
 is that the machine can transition spontaneously, 
 without consuming any input.
-% \footnote{%
-%   Or think of it as transitioning on 
-%   consuming the empty string.}
+We start with a number of examples.
 %</discussion:epsilonTransitions>
 
 \begin{example}
@@ -2888,15 +2886,10 @@ $\lang=\set{\str{abc},\str{abd},\str{c}, \str{d}}$.
 \end{example}
 
 \begin{example}
-  For this
-  % nondeterministic Finite State
-  machine this is
-%with $\varepsilon$ transitions
-% \begin{center}
-%     \includegraphics{automata/asy/nfsm/nfsm1044.pdf}
-% \end{center}
-the computation tree on input \str{aab}.
-The $\varepsilon$ moves are in the white stripes.
+Below is a machine that is nondeterministic and with 
+$\varepsilon$~moves, along with 
+its computation tree on input \str{aab}.
+The $\varepsilon$ moves are inside the white stripes.
 \ifbool{MakingPaperCopy}{%
   \begin{fig}{Computation tree for a nondeterministic machine with $\varepsilon$ moves.} 
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1044.pdf}}
@@ -2912,44 +2905,41 @@ The $\varepsilon$ moves are in the white stripes.
     \label{anim:NondeterministicWithEpsilonComputationTree}
   \end{animatedfigure}
 }
-At each step, the machine is in all of the states that 
-are inside of the stripe.
+\noindent At each step, the machine is in all of the states that 
+are inside of the step's stripe.
 For instance, at step~$0$ the machine is in both $q_0$ and~$q_1$.
 After exhausting the tape, at step~$3$ it is in both $q_0$ and~$q_2$
-and $q_0$ is an accepting state, so it accepts the input \str{aab}. 
+and because $q_0$ is an accepting state, it accepts the input \str{aab}. 
 \end{example}
 
-One reason to consider $\varepsilon$~transitions is that
-they can simplify building Finite State machines.
+The $\varepsilon$~transitions simplify building Finite State machines.
 
 \begin{example}  \label{ex:NFSMJoinParallel}
 An $\varepsilon$ transition can put two machines together with a
 parallel connection.
-This shows a machine whose states are named with $q$'s combined with
+Here is a machine whose states are named with $q$'s combined in parallel with
 one whose states are named with~$r$'s.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm14.pdf}
 \end{center}
-The top nondeterministic machine's language is
-$\set{\sigma\in\kleenestar{\Sigma}\suchthat \text{$\sigma$ ends in \str{ab}}}$
-and the bottom machine's language is
-$\set{\sigma\in\kleenestar{\Sigma}\suchthat \text{$\sigma=(\str{ac})^n$ for some $n\in\N$}}$,
-where $\Sigma=\set{\str{a},\str{b},\str{c}}$.
-The language for the entire machine is the union.
+The top machine's language is
+$\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma$ ends in \str{ab}}}$
+and the bottom's is
+$\set{\sigma\in\kleenestar{\set{\str{a},\str{c}}}\suchthat \text{$\sigma=(\str{ac})^n$ for some $n\in\N$}}$.
+This is the language for the entire machine.
 \begin{equation*}
   \lang=\set{\sigma\in\kleenestar{\Sigma}\suchthat
    \text{either $\sigma$ ends in \str{ab} or $\sigma=(\str{ac})^n$ for $n\in\N$}}
 \end{equation*}
+We can take the alphabet for the entire machine to be the union,
+$\Sigma=\set{\str{a},\str{b},\str{c}}$.
 \end{example}
 
 \begin{example} \label{ex:NFSM:JoinSerial}
-An $\varepsilon$ transition can also make a serial connection 
-between machines.
-The machine on the left below recognizes the language
-of repetitions of the string \str{aab}, 
+An $\varepsilon$ transition can also connect machines serially.
+The machine on the left below recognizes 
 $\lang_0=\set{(\str{aab})^i\suchthat i\in\N}$.
-The machine on the right recognizes repetitions of either \str{a}
-or \str{aba},
+The one on the right recognizes
 $\lang_1=\set{\sigma_0\concat\cdots\,\sigma_{j-1}\suchthat \text{$j\in\N$ and $\sigma_k=\str{a}$ or $\sigma_k=\str{aba}$ for $0\leq k\leq j-1$}}$.
 \begin{center} % align graphics on top https://tex.stackexchange.com/a/126919/121234
   % Get width of first graphic
@@ -2972,7 +2962,7 @@ If we insert an $\varepsilon$~bridge
 to the right side's initial state 
 from
 each of the left side's final states 
-(here there happens to be only one such final state), 
+(here there is only one such state), 
 and de-finalize those states on the left,
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm13.pdf}
@@ -2991,18 +2981,20 @@ For example, it accepts \str{aabaababa}, and
 
 %<*ex:EpsilonGivesKleeneStar>
 \begin{example} \label{ex:EpsilonTransMakeKleeneStar}
+We can also use $\varepsilon$ transitions to get the Kleene star of
+a language.
 Without the $\varepsilon$~edge this machine's language is
 $\lang=\set{\emptystring, \str{ab}}$,
-while with it the language is  
-$\kleenestar{\lang}=\set{(\str{ab})^n\suchthat n\in\N}$.
 \begin{center}
   \includegraphics{\asydir nfsm/nfsm15.pdf}
 \end{center}
+but with that edge the language is  
+$\kleenestar{\lang}=\set{(\str{ab})^n\suchthat n\in\N}$.
 \end{example}
 %</ex:EpsilonGivesKleeneStar>
 
-To describe the action of these machines we first need 
-a definition.
+We will next describe the action of these machines. 
+For it we need a function.
 %<*df:EpsilonClosurei>
 The \definend{$\varepsilon$~closure} function 
 $\map{\hat{E}}{Q}{\powerset (Q)}$\index{epsilon closure@$\varepsilon$ closure} 
@@ -3013,12 +3005,11 @@ any input, that is, via $\varepsilon$ moves alone.
 
 \begin{example}  \label{ex:FindEpsilonClosureInSteps}
 We can compute a state's $\varepsilon$~closure in steps.
-This uses \cref{ex:TwoOrMoreEpsilonTrans}'s 
-machine.
+This uses the machine of \cref{ex:TwoOrMoreEpsilonTrans}.
 %<*df:EpsilonClosureii>
 \begin{center} \small
-  \begin{tabular}{r|*{4}{c}c}
-    \multicolumn{1}{r}{\ }
+  \begin{tabular}{r|*{4}{c}|c}
+    \multicolumn{1}{r}{$E(q,m)$}
       &\multicolumn{1}{c}{$m=0$}
       &\multicolumn{1}{c}{$1$}
       &\multicolumn{1}{c}{$2$}
@@ -3039,33 +3030,31 @@ machine.
            &$\set{q_5}$ &$\set{q_5}$ \\
   \end{tabular}
 \end{center}
-The initial column's set contains only the row's state.
+The $m=0$ column's set is a singleton, containing only that row's state.
 To move to column $1$, add the states reachable with one 
-$\varepsilon$ move from the initial state.
-Thus for the top row, that machine
-has an $\varepsilon$~move from $q_0$ to~$q_2$ so the $m=1$ set adds~$q_2$
-to the $m=0$ set. 
+$\varepsilon$ move.
+Thus for the top row, \cref{ex:TwoOrMoreEpsilonTrans}'s machine
+has an $\varepsilon$~move from $q_0$ to~$q_2$ so the column~$1$ set gains~$q_2$
+over the column~$0$ set. 
 To move to column~$2$, add states reachable with
-an $\varepsilon$~move from any element of column~$1$'s set
-(which are thus at most two $\varepsilon$ moves away from the initial state).
-Doing the same for the third column does not change the sets in any row,
-so we are done. 
+an $\varepsilon$~move from any element of column~$1$'s set.
+Doing the same for the third column for this machine  
+does not change the set in any row, so we are done. 
 %</df:EpsilonClosureii>
 \end{example}
 
 %<*disc:EpsilonClosurei>
-In words, construct $\hat{E}$ by first defining
-$\map{E}{Q\times\N}{\powerset (Q)}$, as in the above table. 
-Start with 
-$E(q,0)=\set{q}$. 
-For $m>0$, where  
-$E(q,m)=\set{q_{m_0},\ldots q_{m_k}}$,
+In words, start by defining
+$\map{E}{Q\times\N}{\powerset (Q)}$ as in the above table. 
+Column~$0$ lets $E(q,0)=\set{q}$. 
+For later columns, $m>0$, where  
+$E(q,m)=\set{q_{m_0},\ldots\, q_{m_k}}$,
 let $E(q,m+1)=E(q,m)\cup \Delta(q_{m_0},\varepsilon)\cup
-                         \cdots\cup\Delta(q_{m_k},\varepsilon)$.
+                         \cdots\,\Delta(q_{m_k},\varepsilon)$.
 The resulting sets are nested,
 $E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\;$.
 There are only finitely many states in~$Q$ so 
-for any initial $q$ there must be an $m_q\in\N$
+for any initial $q$ there must be a column $m_q\in\N$
 where the sequence of sets stops growing,
 $E(q,m_q\,)= E(q,m_q+1)= \cdots\,$ (in the example above, for $q=q_0$ 
 this happens at~$m=2$).
@@ -3077,49 +3066,34 @@ With that, we can describe the action.
 %<*disc:EpsilonClosureii>
 A
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
-is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}$. 
+is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}\!$. 
 These machines start in an
 \definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
 $\mathcal{C}_0=\sequence{q_0,\tau_0}$, with
-\definend{initial state}~$q_0$\index{initial state}\index{nondeterministic Finite State machine!initial state} 
-and 
+% \definend{initial state}~$q_0$\index{initial state}\index{nondeterministic Finite State machine!initial state} 
+% and 
 \definend{input}~$\tau_0$.\index{input string}\index{nondeterministic Finite State machine!input string} 
-As earlier, 
-we will specify 
-when two configurations are related by `$\yields$' and
-then we will say that a machine accepts its input 
-if there is at least one sequence of related configurations
-that ends in a halting configuration whose state is accepting.
+% As earlier, 
+% we will specify 
+% when a configuration is related to a succeeding one, and
+% then we will say that a machine accepts its input 
+% if there is at least one sequence of related configurations
+% that ends in a halting configuration whose state is accepting.
 
-Consider a configuration $\mathcal{C}_s=\sequence{q,\tau_s}$,
+Fix $\mathcal{C}_s=\sequence{q,\tau_s}$,
 in order to describe under what circumstances 
 $\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-for some next $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
-% The first case is that $\tau_s$ is not empty.
+for some succeeding $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
 There are two possibilities.
 The first is the same as for any nondeterministic machine:~$\tau$ is not 
 empty and $\hat{\tau}$
 comes from popping $\tau$'s leading character, $\tau=c\concat\hat{\tau}$
-where 
-\citetext{$c\in\Sigma$}{%
-  Here we see that to denote a $\varepsilon$~transition we use 
-  the character `$\varepsilon$', where it does not represent the empty string.
-  % note use-mention distinction?
-  A fine point, to be sure.},
-and $\hat{q}$ is a member of $\Delta(q,c)$.
+where $\hat{q}$ is a member of $\Delta(q,c)$.
 The second possibility differs from the description for machines without
-$\varepsilon$ moves:~$\hat{\tau}=\tau$ 
+$\varepsilon$ moves:~$\hat{\tau}=\tau$ (so the machine doesn't consume 
+any input characters)
 and $\hat{q}$ is a member of the $\varepsilon$ closure $\hat{E}(q)$
-with $\hat{q}\neq q$ 
-(the significance of $\hat{\tau}=\tau$ is that the machine doesn't consume 
-any input characters).
-
-% The second case is that in  $\mathcal{C}_s=\sequence{q,\tau_s}$, 
-% the string $\tau_s$ is empty. 
-% In this case 
-% $\mathcal{C}_s\yields\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$ happens 
-% only if $\hat{\tau}$ is the empty string and 
-% $\hat{q}$ is a member of $\hat{E}(q)$.
+with $\hat{q}\neq q$.
 
 With that, a 
 \definend{computation of a nondeterministic Finite State machine with $\varepsilon$~transitions}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}

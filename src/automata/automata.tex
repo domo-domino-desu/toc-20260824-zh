@@ -2733,7 +2733,7 @@ easier to write than a deterministic machine that
 does the same job.
 
 \begin{example}
-These machines both accept any string
+Both of these machines accept any string
 whose next to last character is~\str{a}.
 The nondeterministic one on the left is simpler than the deterministic 
 one.
@@ -2743,6 +2743,20 @@ one.
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm88.pdf}}
 \end{center}
 \end{example}
+% The deterministic one gave me more trouble than is reasonable.
+% To be sure, I converted the nondterministic one.
+%                 a   b
+%               +-------
+% {}=s0         | s0  s0
+% {q0}=s1       | s3  s1
+% {q1}=s2       | s4  s4
+% {q1,q0}=s3    | s7  s5
+% {q2}=s4       | s0  s0
+% {q2,q0}=s5    | s3  s1
+% {q2,q1}=s6    | s4  s4
+% {q2,q1,q0}=s7 | s7  s5
+% I made up asy/nfsm/next-to-last-a.dot and drew the picture,
+% and then converted asy/nfsm/nfsm88 to look like it.
 
 \begin{example}
 This machine accepts
@@ -2755,7 +2769,7 @@ $\set{\sigma\in\kleenestar{\B}\suchthat
 
 \begin{example}  \label{ex:ListenerMachine}
 This is a
-remote control  listener that waits to hear
+remote control listener that waits to hear
 the signal \str{0101110}.
 That is, it recognizes the language
 $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
@@ -2767,23 +2781,23 @@ $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
 
 \begin{remark}
 Having seen a couple of examples we pause
-to again acknowledge that something about nondeterminism is perplexing.
-If we feed $\tau=\str{010101110}$ to the prior example's machine
+to reflect on something perplexing about our second model of
+nondeterminism:~how can devices guess?.
+If we feed the input $\tau=\str{010101110}$ to the prior example's machine
 then it accepts.
-But it
+But this machine
 is set up for a string that begins with two
-sets of \str{01}'s,  while~$\tau$ begins with three.
-How can a mechanism guess that it should ignore
-the first~\str{01} but act on the second?
+blocks of \str{01}'s,  while~$\tau$ begins with three.
+How can it guess, without peeking ahead, that it should ignore
+the first block but act on the second?
 In mathematics
-we can consider whatever we can make precise,
+we can consider whatever we can make precise
 but we have so far stuck to
-devices that are in principle physically realizable.
+devices that are physically realizable at least in principle.
 So this may seem to be a shift. 
 
-It is not.
-This section will close
-by showing 
+It is not a shift.
+This section will close by showing 
 how to convert any nondeterministic Finite State
 machine into a deterministic one that does the same job.
 So we can take a nondeterministic Finite State machine
@@ -2806,7 +2820,8 @@ the definition of a nondeterministic Finite State machine
 so that instead of $\map{\Delta}{Q\times\Sigma}{\powerset(Q)}$
 the transition function's signature is
 $\map{\Delta}{Q\times(\Sigma\union\set{\emptystring})}{\powerset(Q)}$.\footnote{%
-  The `$\varepsilon$' is a character, not a representation of the
+  For this purpose 
+  the `$\varepsilon$' is a character, not a representation of the
   empty string.
   Assume that it is not an element of $\Sigma$.}
 The associated behavior
@@ -2819,22 +2834,19 @@ without consuming any input.
 
 \begin{example}
 This machine recognizes valid integer representations.
-The $\varepsilon$ between $q_0$ and~$q_1$
-means that the machine can jump from the state~$q_0$ 
-to~$q_1$ without consuming
-any input.
+The $\varepsilon$ on the first arrow
+means that the machine can jump from~$q_0$ 
+to~$q_1$ without reading the tape.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm12.pdf}
 \end{center}
-The practical effect of the $\varepsilon$
-is that this machine 
-can accept strings that do not start with a \str{+} or \str{-}~sign.
 For instance, with input~\str{123} the machine 
 can begin as below by following the $\varepsilon$
-transition to state~$q_1$, then read the \str{1} and transition
-to $q_2$, and stay there while processing the \str{2} and \str{3}.
-This is a branch of the computation tree accepting the input
-and so the string \str{123} is in the machine's language.
+transition to state~$q_1$ without reading and deleting the leading~\str{1}.
+It next reads that \str{1} and transitions
+to $q_2$, and then stays there while processing the \str{2} and \str{3}.
+This branch of the machine's computation tree accepting its input
+and so \str{123} is in the machine's language.
 \begin{equation*}
   \sequence{q_0,\str{123}}
   \yields \sequence{q_1,\str{123}}
@@ -2842,32 +2854,36 @@ and so the string \str{123} is in the machine's language.
   \yields \sequence{q_2,\str{3}}    
   \yields \sequence{q_2,\emptystring}
 \end{equation*}
+The practical effect of the $\varepsilon$
+is that this machine
+can accept strings that do not start with a \str{+} or \str{-}~sign.
 \end{example}
 
 \begin{example}  \label{ex:TwoOrMoreEpsilonTrans}
-A machine may follow two or more $\varepsilon$ transitions.
-From~$q_0$ this machine may stay in that state, or
-transition to $q_{2}$, or $q_3$, or~$q_5$,
-all without consuming any input.
+This machine has a number of $\varepsilon$ transitions.
 \begin{center}
   \includegraphics{\asydir nfsm/nfsm83.pdf}
 \end{center}
-These two sequences
-show that the machine accepts~\str{abc},
-and also~\str{d}.
+Here it accepts~\str{abc}
+by following the $\varepsilon$ transition between $q_2$ and~$q_3$.
 \begin{equation*}
-  \begin{array}{l}
   \sequence{q_0,\str{abc}}
   \yields \sequence{q_1,\str{bc}}
   \yields \sequence{q_2,\str{c}}
   \yields \sequence{q_3,\str{c}}
-  \yields \sequence{q_4,\emptystring}   \\[0.75ex]     
+  \yields \sequence{q_4,\emptystring}    
+\end{equation*}
+A machine may also, in a single step,
+follow two or more $\varepsilon$ transitions in succession.
+Here, it accepts~\str{d}
+by transitioning from~$q_0$
+to~$q_5$ without consuming any input.
+\begin{equation*}
   \sequence{q_0,\str{d}}
   \yields \sequence{q_5,\str{d}}
   \yields \sequence{q_6,\emptystring}    
-  \end{array}
 \end{equation*}
-This machine's language is
+The language is
 $\lang=\set{\str{abc},\str{abd},\str{c}, \str{d}}$.
 \end{example}
 
@@ -2880,6 +2896,7 @@ $\lang=\set{\str{abc},\str{abd},\str{c}, \str{d}}$.
 %     \includegraphics{automata/asy/nfsm/nfsm1044.pdf}
 % \end{center}
 the computation tree on input \str{aab}.
+The $\varepsilon$ moves are in the white stripes.
 \ifbool{MakingPaperCopy}{%
   \begin{fig}{Computation tree for a nondeterministic machine with $\varepsilon$ moves.} 
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1044.pdf}}
@@ -2895,14 +2912,11 @@ the computation tree on input \str{aab}.
     \label{anim:NondeterministicWithEpsilonComputationTree}
   \end{animatedfigure}
 }
-The $\varepsilon$ moves are in the white stripes.
-At each step, think of the machine as being in all of the states inside
-of the white stripe.
-So at step~$0$ the machine is in both $q_0$ and~$q_1$.
-% and the same holds for steps~$1$ and~$2$.
-At step~$3$ it is in both $q_0$ and~$q_2$.
-That exhausts the tape and $q_0$ is accepting so
-the machine accepts its input. 
+At each step, the machine is in all of the states that 
+are inside of the stripe.
+For instance, at step~$0$ the machine is in both $q_0$ and~$q_1$.
+After exhausting the tape, at step~$3$ it is in both $q_0$ and~$q_2$
+and $q_0$ is an accepting state, so it accepts the input \str{aab}. 
 \end{example}
 
 One reason to consider $\varepsilon$~transitions is that

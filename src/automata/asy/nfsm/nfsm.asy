@@ -3567,7 +3567,8 @@ setdefaultstatediagramstyles() ;
 // define nodes
 node q0=ncircle("$q_0$"),
   q1=ncircle("$q_1$"),
-  q2=ncircle("$q_2$", ns_accepting);
+  q2=ncircle("$q_2$", ns_accepting),
+  q3=ncircle("$q_3$", ns_accepting);
 
 // layout
 defaultlayoutrel = false;
@@ -3575,20 +3576,24 @@ defaultlayoutskip = 1.25cm;
 real u = defaultlayoutskip;
 real v = .9u;
 
-hlayout(u, q0, q1, q2);
+hlayout(u, q0, q1);
+q2.pos = new_node_pos_h(q1, 20, u);
+q3.pos = new_node_pos_h(q1, -20, u);
 
 // edges
 draw(pic,
      (q0..loop(W)).l("\str{b}"), 
-     (q0..bend(10)..q1).l("\str{a}"),
-     (q1..bend(20)..q0).l("\str{b}"),
-     (q1..bend(-20)..q2).l("\str{a},\str{b}").style("leftside"),
-     (q2..bend(-30)..q1).l("\str{a}"),
-     (q2..bend(-35)..q0).l("\str{b}").style("leftside") 
+     (q0..bend(-20)..q1).l("\str{a}"),
+     (q1..bend(-20)..q2).l("\str{a}").style("leftside"),
+     (q1..bend(15)..q3).l("\str{b}").style("leftside"),
+     (q2..loop(E)).l("\str{a}"),
+     (q2..bend(-20)..q3).l("\;\str{b}").style("leftside"), 
+     (q3..bend(15)..q1).l("\str{a}"),
+     (q3..bend(-20)..q0).l("\str{b}").style("leftside") 
     );
 
 // draw nodes after edges so arrows are OK
-draw(pic, q0, q1, q2);
+draw(pic, q0, q1, q2, q3);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

@@ -2782,7 +2782,7 @@ $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
 \begin{remark}
 Having seen a couple of examples we pause
 to reflect on something perplexing about our second model of
-nondeterminism:~how can devices guess?.
+nondeterminism:~how can devices guess?
 If we feed the input $\tau=\str{010101110}$ to the prior example's machine
 then it accepts.
 But this machine
@@ -2993,20 +2993,42 @@ $\kleenestar{\lang}=\set{(\str{ab})^n\suchthat n\in\N}$.
 \end{example}
 %</ex:EpsilonGivesKleeneStar>
 
-We will next describe the action of these machines. 
-For it we need a function.
+We next describe the action of these machines. 
+For that we need a function.
 %<*df:EpsilonClosurei>
-The \definend{$\varepsilon$~closure} function 
+The \definend{$\varepsilon$~closure} 
 $\map{\hat{E}}{Q}{\powerset (Q)}$\index{epsilon closure@$\varepsilon$ closure} 
 inputs a state~$q$ and returns
-the set of states that are reachable from~$q$ without consuming
-any input, that is, via $\varepsilon$ moves alone.
+the set of states that are reachable from~$q$ via $\varepsilon$ moves alone.
 %</df:EpsilonClosurei>
 
+%<*disc:EpsilonClosurei>
+We will iteratively follow the $\varepsilon$'s. 
+We capture the stages by constructing a function
+$\map{E}{Q\times\N}{\powerset (Q)}$. 
+Fix a state~$q$. 
+For $m=0$, take $E(q,m)$ to be the singleton set $\set{q}$. 
+For $m>0$, where  
+$E(q,m)=\set{q_{m_0},\ldots\, q_{m_k}}$,
+take $E(q,m+1)=E(q,m)\cup \Delta(q_{m_0},\varepsilon)\cup
+                         \cdots\,\Delta(q_{m_k},\varepsilon)$.
+The resulting sets are nested,
+$E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\;$.
+There are only finitely many states so 
+for any initial $q$ there must be an $m_q\in\N$
+where the sequence of sets stops growing,
+$E(q,m_q\,)= E(q,m_q+1)= \cdots\,$.
+Finally, define the $\varepsilon$~closure as the limit,
+$\hat{E}(q)=E(q,m_q)$.\index{epsilon closure@$\varepsilon$ closure}
+%</disc:EpsilonClosurei>
+
 \begin{example}  \label{ex:FindEpsilonClosureInSteps}
-We can compute a state's $\varepsilon$~closure in steps.
-This uses the machine of \cref{ex:TwoOrMoreEpsilonTrans}.
 %<*df:EpsilonClosureii>
+Recall the machine from \cref{ex:TwoOrMoreEpsilonTrans}.
+\begin{center}
+  \includegraphics{\asydir nfsm/nfsm83.pdf}
+\end{center}
+This table finds the epsilon closure for each state.
 \begin{center} \small
   \begin{tabular}{r|*{4}{c}|c}
     \multicolumn{1}{r}{$E(q,m)$}
@@ -3018,8 +3040,8 @@ This uses the machine of \cref{ex:TwoOrMoreEpsilonTrans}.
      \cline{2-6}
      $q_0$ &$\set{q_0}$ &$\set{q_0,q_2}$ &$\set{q_0,q_2,q_3,q_5}$ 
            &$\set{q_0,q_2,q_3,q_5}$ &$\set{q_0,q_2,q_3,q_5}$ \\
-     $q_1$ &$\set{q_1}$ &$\set{q_1}$ &$\set{q_1}$ 
-           &$\set{q_1}$ &$\set{q_1}$ \\
+     $q_1$ &$\set{q_1}$ &$\set{q_1}$
+           &$\set{q_1}$  &$\set{q_1}$ &$\set{q_1}$ \\
      $q_2$ &$\set{q_2}$ &$\set{q_2,q_3,q_5}$ &$\set{q_2,q_3,q_5}$ 
            &$\set{q_2,q_3,q_5}$ &$\set{q_2,q_3,q_5}$ \\
      $q_3$ &$\set{q_3}$ &$\set{q_3}$ &$\set{q_3}$ 
@@ -3030,37 +3052,17 @@ This uses the machine of \cref{ex:TwoOrMoreEpsilonTrans}.
            &$\set{q_5}$ &$\set{q_5}$ \\
   \end{tabular}
 \end{center}
-The $m=0$ column's set is a singleton, containing only that row's state.
-To move to column $1$, add the states reachable with one 
-$\varepsilon$ move.
-Thus for the top row, \cref{ex:TwoOrMoreEpsilonTrans}'s machine
-has an $\varepsilon$~move from $q_0$ to~$q_2$ so the column~$1$ set gains~$q_2$
-over the column~$0$ set. 
-To move to column~$2$, add states reachable with
-an $\varepsilon$~move from any element of column~$1$'s set.
-Doing the same for the third column for this machine  
-does not change the set in any row, so we are done. 
+For instance for $q_0$'s row, the inital entry is $\set{q_0}$.
+Next, the machine
+has an $\varepsilon$~move from $q_0$ to~$q_2$ 
+so the next column's set gains a~$q_2$ over the initial column's.
+As to $E(q_0,2)$, following the two additional 
+$\varepsilon$ transitations adds $q_3$ and~$q_5$.
+Further steps don't add anything 
+so the epsilon closure of $q_0$ is 
+$\hat{E}(q_0)=E(q_0,2)$. 
 %</df:EpsilonClosureii>
 \end{example}
-
-%<*disc:EpsilonClosurei>
-In words, start by defining
-$\map{E}{Q\times\N}{\powerset (Q)}$ as in the above table. 
-Column~$0$ lets $E(q,0)=\set{q}$. 
-For later columns, $m>0$, where  
-$E(q,m)=\set{q_{m_0},\ldots\, q_{m_k}}$,
-let $E(q,m+1)=E(q,m)\cup \Delta(q_{m_0},\varepsilon)\cup
-                         \cdots\,\Delta(q_{m_k},\varepsilon)$.
-The resulting sets are nested,
-$E(q,0)=\set{q}\subseteq E(q,1)\subseteq \cdots\;$.
-There are only finitely many states in~$Q$ so 
-for any initial $q$ there must be a column $m_q\in\N$
-where the sequence of sets stops growing,
-$E(q,m_q\,)= E(q,m_q+1)= \cdots\,$ (in the example above, for $q=q_0$ 
-this happens at~$m=2$).
-Then the $\varepsilon$~closure is the limit,
-$\hat{E}(q)=E(q,m_q)$.\index{epsilon closure@$\varepsilon$ closure}
-%</disc:EpsilonClosurei>
 
 With that, we can describe the action.
 %<*disc:EpsilonClosureii>
@@ -3083,17 +3085,17 @@ $\mathcal{C}_0=\sequence{q_0,\tau_0}$, with
 Fix $\mathcal{C}_s=\sequence{q,\tau_s}$,
 in order to describe under what circumstances 
 $\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-for some succeeding $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
+for a succeeding $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
 There are two possibilities.
 The first is the same as for any nondeterministic machine:~$\tau$ is not 
 empty and $\hat{\tau}$
-comes from popping $\tau$'s leading character, $\tau=c\concat\hat{\tau}$
-where $\hat{q}$ is a member of $\Delta(q,c)$.
-The second possibility differs from the description for machines without
-$\varepsilon$ moves:~$\hat{\tau}=\tau$ (so the machine doesn't consume 
-any input characters)
+comes from popping $\tau$'s leading character, $\tau=c\concat\hat{\tau}$,
+and where $\hat{q}$ is a member of $\Delta(q,c)$.
+The second possibility applies only to machines with
+$\varepsilon$ moves:~$\hat{\tau}=\tau$, so the machine doesn't consume 
+any input,
 and $\hat{q}$ is a member of the $\varepsilon$ closure $\hat{E}(q)$
-with $\hat{q}\neq q$.
+(with $\hat{q}\neq q$).
 
 With that, a 
 \definend{computation of a nondeterministic Finite State machine with $\varepsilon$~transitions}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}

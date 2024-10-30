@@ -2622,7 +2622,7 @@ All of those definitions apply to any Finite State machine, deterministic or
 not.
 But for the machines in this section  
 there may be many such branches, or one, or none at all.
-A 
+The 
 \definend{computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
 for a nondeterministic Finite State machine~$\FSM$ 
 is the set containing all of the branches.\footnote{%
@@ -3082,55 +3082,67 @@ $\mathcal{C}_0=\sequence{q_0,\tau_0}$, with
 % if there is at least one sequence of related configurations
 % that ends in a halting configuration whose state is accepting.
 
-Fix $\mathcal{C}_s=\sequence{q,\tau_s}$,
+Fix $\mathcal{C}_s=\sequence{q,\tau_s}$
 in order to describe under what circumstances 
 $\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
 for a succeeding $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
 There are two possibilities.
 The first is the same as for any nondeterministic machine:~$\tau$ is not 
-empty and $\hat{\tau}$
-comes from popping $\tau$'s leading character, $\tau=c\concat\hat{\tau}$,
-and where $\hat{q}$ is a member of $\Delta(q,c)$.
+empty and results
+from popping $\tau$'s leading character, $\tau=c\concat\hat{\tau}$,
+and also $\hat{q}$ is a member of $\Delta(q,c)$.
 The second possibility applies only to machines with
 $\varepsilon$ moves:~$\hat{\tau}=\tau$, so the machine doesn't consume 
 any input,
-and $\hat{q}$ is a member of the $\varepsilon$ closure $\hat{E}(q)$
-(with $\hat{q}\neq q$).
+and also $\hat{q}$ is a member of the $\varepsilon$ closure $\hat{E}(q)$.
+% (with $\hat{q}\neq q$; we disallow an $\varepsilon$ transition from
+% a state to itself).
 
-With that, a 
-\definend{computation of a nondeterministic Finite State machine with $\varepsilon$~transitions}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
-is the set containing all of the sequences of transitions that are 
-as described.
-A sequence ends in a 
-\definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
-if its final pair has an empty tape string, so that the
-sequence has the form 
-$
-  \mathcal{C}_0=\sequence{q_0,\tau_0} 
-   \yields \mathcal{C}_1 
-   \yields \cdots\, \mathcal{C}_h=\sequence{q_h,\emptystring}
-$.
-The machine 
-\definend{accepts}~$\tau_0$\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine}
-if there is at least one such sequence where $q_h$ is an element of~$F$.
-If there is no such sequence then the machine  
-\definend{rejects}~$\tau_0$.\index{reject an input}\index{nondeterministic Finite State machine!reject string}
-%</disc:EpsilonClosureii>
-
-In addition, we can define the 
-\definend{extended transition function~$\map{\extended{\Delta}}{Q\times\kleenestar{\Sigma}}{Q}$}\index{extended transition function!for nondeterministic Finite State machines}\index{transition function!extended} 
-% from \cpageref{discussion:NFSMStringAcceptance} 
+That definition of transitions allows us to define the 
+\definend{extended transition function~$\map{\extended{\Delta}}{Q\times\kleenestar{\Sigma}}{Q}$}\index{extended transition function!for nondeterministic Finite State machines}\index{transition function!extended}  
 to suit this new machine type.
-Begin by defining
-$\extended{\Delta}(q,\emptystring)=\hat{E}(q)$ for all $q\in Q$.
-The inductive step is that 
+For all $q\in Q$, begin with 
+$\extended{\Delta}(q,\emptystring)=\hat{E}(q)$.
+Then
 for $\tau\in\kleenestar{\Sigma}$ and  $c\in\Sigma$,
-where $\extended{\Delta}(q,\tau)=\set{q_{i_0},q_{i_1},\ldots{} q_{i_k}}$
-we have 
+where $\extended{\Delta}(q,\tau)=\set{q_{i_0},q_{i_1},\ldots\, q_{i_k}}$
+define 
 $
   \extended{\Delta}(q,\tau\concat c)=
-  \hat{E}(\Delta(q_{i_0},c))\cup\cdots \cup\hat{E}(\Delta(q_{i_k},c))
+  \hat{E}(\Delta(q_{i_0},c))\cup\cdots \,\hat{E}(\Delta(q_{i_k},c))
 $.
+
+Then the nondeterministic Finite State machine with $\varepsilon$~transitions
+$\FSM$\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
+\definend{accepts}~$\tau_0$\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine}
+if $\extended{\Delta}(q_0,\tau_0)\intersection F$ is not empty.
+Otherwise $\FSM$ 
+\definend{rejects}~$\tau_0$.\footnote{%
+  In contrast with the definition of machines without $\varepsilon$ transitions
+  on page~\protect\pageref{page:DefnYieldsNondeterministicFSM},
+  this definition doesn't rely on branches, sequences of configurations
+  that are maximally long, because one of these machines 
+  can have a cycle of $\varepsilon$ transitions and
+  so get branches that are infinitely long.
+}\index{reject an input}\index{nondeterministic Finite State machine!reject string}
+
+% A \definend{branch}\index{branch!of the computation tree}\index{computation tree!branch}
+% is a sequence of configurations starting with $\mathcal{C}_0$
+% that is maximally long.
+% The
+% \definend{computation} 
+% for the nondeterministic Finite State machine with $\varepsilon$~transitions
+% $\FSM$\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
+% is the set containing all of the branches.
+% If at least one branch ends in a
+% \definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
+% $\mathcal{C}_h=\sequence{q_h,\emptystring}$ such that $q_h\in F$
+% then the machine 
+% \definend{accepts}~$\tau_0$.\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine}
+% Otherwise it 
+% \definend{rejects}~$\tau_0$.\index{reject an input}\index{nondeterministic Finite State machine!reject string}
+%</disc:EpsilonClosureii>
+
 \index{epsilon transitions@$\varepsilon$ transitions|)}
 
 

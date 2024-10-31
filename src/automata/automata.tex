@@ -3099,7 +3099,7 @@ Where  $c\in\Sigma$, to define
 $\extended{\Delta}(q,\tau\concat c)$ first
 make the set of all states reachable without $\varepsilon$ moves from
 a state in $\extended{\Delta}(q,\tau)$ with
-$S=\Delta(q_{i_0},c))\cup\cdots \,\hat{E}(\Delta(q_{i_k},c)$.
+$S=\Delta(q_{i_0},c)\cup\cdots \,\Delta(q_{i_k},c)$.
 Then include $\varepsilon$ moves:
 $
   \extended{\Delta}(q,\tau\concat c)=
@@ -3219,7 +3219,7 @@ That's~$s_4$.
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm17.pdf}}
 \end{center}
 
-Naming the sets of states as $s_i$'s is a notatoinal convenience but
+Naming the sets of states as $s_i$'s is a notational convenience but
 it also makes clear that
 $\FSM_D$ is deterministic.
 So does its transition graph.
@@ -3233,33 +3233,29 @@ Again, the start state is $s_1$.
 \end{example}
 
 %<*df:DFSMFromNFSM>
-Now we state the algorithm for starting with a nondeterministic 
-machine~$\FSM_N$ and constructing a 
-deterministic machine~$\FSM_D$ with the same behavior,
+Now we state the algorithm for constructing a 
+deterministic machine~$\FSM_D$ with the same behavior
+as a nondeterministic machine~$\FSM_N$,
 whether or not $\FSM_N$ has $\varepsilon$~transitions.
-Elements of $\FSM_D$ are sets of states from~$\FSM_N$.
-% Define the $\varepsilon$~closure of a set of states to be the union of the 
-% $\varepsilon$~closures of its members.
 
-The transition function $\Delta_D$ inputs
-a state $s_i\in\FSM_D$, that is, 
-$s_i=\set{q_{k_0},\ldots q_{k_i}}$, 
-along with a tape character~$c\in\Sigma$. 
-First apply $\FSM_N$'s next state function to $s_i$'s elements to get
-$\hat{s}_{i,c}=\Delta_{N}(q_{k_0},c)\cup\cdots \Delta_{N}(q_{k_i},c)$.
-Second, where $\hat{s}_{i,c}=\set{q_{j_0}, \ldots{} q_{j_i}}$, 
-finish by taking the $\varepsilon$~closure of all of $\hat{s}$'s elements, 
-$\Delta_D(s_i,c)=\hat{E}(q_{j_0})\cup\cdots \hat{E}(q_{j_i})$.
-(For machines without $\varepsilon$ transitions this second part has no effect.)
-
-The start state of $\FSM_D$ is the  $\varepsilon$~closure of $q_0$
+States in $\FSM_D$ are sets of states from~$\FSM_N$.
+The start state of $\FSM_D$ is the  $\varepsilon$~closure $\hat{E}(q_0)$
 (for machines without $\varepsilon$ moves
 this is $\set{q_0}$).
 A state of $\FSM_D$ is accepting if it  
 contains any of $\FSM_N$'s accepting states.
-% (by the prior paragraph, if the machine ends a
-% step in a state whose $\varepsilon$~closure contains an accepting
-% state then the next step includes that state).
+
+The transition function $\Delta_D$ inputs
+a state $s_i\in\FSM_D$, that is, 
+$s_i=\set{q_{k_0},\ldots\, q_{k_i}}$, 
+along with a character~$c\in\Sigma$. 
+First apply $\FSM_N$'s next state function to $s_i$'s elements to get a set
+$S=\Delta_{N}(q_{k_0},c)\cup\cdots\, \Delta_{N}(q_{k_i},c)$.
+Then include $\varepsilon$ moves:~where 
+$S=\set{q_{j_0}, \ldots\, q_{j_i}}$, 
+let 
+$\Delta_D(s_i,c)=\hat{E}(q_{j_0})\cup\cdots\, \hat{E}(q_{j_i})$.
+(For machines without $\varepsilon$ transitions this second part has no effect.)
 %</df:DFSMFromNFSM>
 
 \begin{example}  \label{ex:NFSMEpsilonClosure}
@@ -3268,20 +3264,21 @@ with $\varepsilon$ transitions.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm18.pdf}
 \end{center}
-The table below goes through the computation
-of the associated deterministic machine.
+The table below computes
+the associated deterministic machine.
 The start state is $\hat{E}(q_0)=\set{q_0,q_3}=s_7$.
 A state is accepting if it contains $q_1$. 
 
-For example, when the machine is in state $s_1=\set{q_0}$
-and the head reads~\str{b}
-then the above diagram shows that the machine goes to $\set{q_1}$.
+We can walk through the above algorithm. 
+Suppose that the machine is in state $s_7=\set{q_0,q_3}$
+and is reading~\str{b}.
 In the terms used in the powerset algorithm
-description, $\hat{s}_{0,\str{b}}=\set{q_1}$.
-The $\varepsilon$~closure  is $\hat{E}(\set{q_1})=\set{q_0,q_1,q_3}$,
-because from $q_1$ the machine can reach those three states without consuming
-any input.
-Thus $\Delta_D(s_1,\str{b})=\set{q_0,q_1,q_3}=s_{12}$.
+description, applying $\Delta_N$ to each element of $s_7$
+gives 
+$S=\Delta_N(q_0,\str{b})\union\Delta_N(q_3,\str{b})=\set{q_1}\union\set{}
+=\set{q_1}$.
+Taking the $\varepsilon$ closure gives
+$\Delta_D(s_7,\str{b})=\set{q_0,q_1,q_3}=s_{12}$.
 
 Another example is the computation of $\Delta_D(s_8,\str{a})$.
 Since $s_8=\set{q_1,q_2}$, and in the machine above neither member has a 

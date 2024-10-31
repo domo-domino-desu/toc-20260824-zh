@@ -996,7 +996,7 @@ node s6=ncircle("$s_6$",ns_accepting);
 node s7=ncircle("$s_7$",ns_accepting);  
 
 // calculate nodes position
-real u=1.75cm;  // horiz scale
+real u=1.65cm;  // horiz scale
 real v=0.9*u;   // vert scale
 s0.pos = (0*u, 0*v);
 s3.pos = new_node_pos_h(s0, -45, 1*u);
@@ -1016,7 +1016,7 @@ hlayout(1*u, s4, s7);
 // draw edges
 draw(pic,
      (s0..loop(W)).l("\str{a},\str{b}"),
-     (s1..bend(15)..s0).l("\str{b}"),
+     (s1..bend(17.5)..s0).l("\str{b}"),
      (s1--s4).l("\str{a}"),
      (s2--s0).l("\str{a}").style("leftside"),
      // (s2..bend(-30)..s3).l(Label("\str{b}",Relative(0.75))).style("leftside"),
@@ -1029,7 +1029,7 @@ draw(pic,
      (s6--s0).l("\str{a}"),
      (s6--s3).l("\str{b}"),
      (s7--s4).l("\str{a}"),
-     (s7..bend(-43)..s3).l("\str{b}").style("leftside")
+     (s7..bend(-45)..s3).l("\str{b}").style("leftside")
 );
 
 // draw nodes after edges

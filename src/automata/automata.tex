@@ -2784,32 +2784,7 @@ $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
 \end{center}
 \end{example}
 
-\begin{remark}
-Having seen a couple of examples we pause
-to reflect on something perplexing about our second model of
-nondeterminism:~how can devices guess?
-If we feed the input $\tau=\str{010101110}$ to the prior example's machine
-then it accepts.
-But this machine
-is set up for a string that begins with two
-blocks of \str{01}'s,  while~$\tau$ begins with three.
-How can it guess, without peeking ahead, that it should ignore
-the first block but act on the second?
-In mathematics
-we can consider whatever we can make precise
-but we have so far stuck to
-devices that are physically realizable at least in principle.
-So this may seem to be a shift. 
 
-It is not a shift.
-This section will close by showing 
-how to convert any nondeterministic Finite State
-machine into a deterministic one that does the same job.
-So we can take a nondeterministic Finite State machine
-to be an abbreviation, a shorthand, a convenience, a way of 
-alternatively specifying a deterministic machine.
-This obviates at least some of the paradox of guessing.
-\end{remark}
 
 
 % The \texorpdfstring avoids a hyperref error from math in the bookmarks
@@ -2975,11 +2950,6 @@ and de-finalize those states on the left,
 then the 
 combined machine accepts strings in the concatenation of those languages,
 $\mathcal{L}(\FSM)=\lang_0\concat\lang_1$.
-% \begin{equation*}
-%   \mathcal{L}(\FSM)=\lang_0\concat\lang_1
-%   =\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
-%     \suchthat \text{$\sigma=(\str{aab})^m(\str{a}|\str{aba})^n$ for $m,n\in\N$}}
-% \end{equation*}
 For example, it accepts \str{aabaababa}, and
 \str{aabaa}, as well as \str{abaa}.
 \end{example}
@@ -3149,9 +3119,33 @@ rejects~$\tau_0$.
 
 % ........................................
 \subsection{Equivalence of the machine types}\label{sec:EquivDFSMAndNFSM}
-We next prove that
-nondeterminism does not change what
-Finite State machines can do. 
+
+In this section we have apparently extended the capabilities of
+Finite State machines, including by 
+adding nondeterminism.
+This can be puzzling.
+For instance, if we feed the input $\tau=\str{010101110}$ to the machine
+from \cref{ex:ListenerMachine} then it accepts,
+but that machine is set up to accept strings that begin with two
+blocks of \str{01}'s, while~$\tau$ begins with three.
+How can it know, without peeking ahead, that it should ignore
+the first block but transition on the second?
+How can it guess?
+
+In mathematics
+we can consider whatever we can make precise
+but we have so far stuck to
+models of machines that are in principle physically realizable.
+So this may seem to be a shift. 
+
+It is not a shift.
+We finish this section by showing 
+how to convert any nondeterministic Finite State
+machine into a deterministic one that does the same job.
+So we can take nondeterminism
+to be an abbreviation, a shorthand, a convenience, a way of 
+alternatively specifying a deterministic machine.
+This obviates at least some of the paradox of guessing.
 
 %<*th:dfsmEquivndfsm>
 \begin{theorem}
@@ -3164,9 +3158,7 @@ Finite State machines can do.
 %</th:dfsmEquivndfsm>
 
 %<*pf:dfsmEquivndfsm>
-Inclusion in one direction is easy because
-any deterministic machine is, essentially,
-a nondeterministic machine.
+Inclusion in one direction is easy.
 In a deterministic machine the next-state function outputs
 single states and
 to make it a nondeterministic machine, just convert those states
@@ -3189,27 +3181,27 @@ the examples are entirely convincing.
 \begin{example}\index{nondeterministic Finite State machine!convert to a deterministic machine} \label{ex:NondeterminsiticMachineWithoutEpsilon}
 This nondeterministic machine $\FSM_N$
 has no $\varepsilon$ transitions.
+Its language is 
+$\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
+     \suchthat\text{$\sigma=\str{a}^n$ or $\sigma=\str{a}^n\str{ab}$ for $n\in\N$}}$.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm16.pdf}
 \end{center}
 The associated deterministic machine $\FSM_D$
-is show below. 
-Each member of $\FSM_D$ is a set of $\FSM_N$'s states,  
-$s_i=\set{q_{i_1}, \ldots{}\, q_{i_k}}$.
-See below.
-% Thus, if a nondeterministic machine has~$k$-many states then
-% under this construction the deterministic machine has $2^k$-many states.
-The start state of $\FSM_D$ is $s_1=\set{q_0}$, and
+is below. 
+Each member of this machine is a set of $\FSM_N$'s states.
+The start state of $\FSM_D$ is the one-element set $\set{q_0}=s_1$ containing
+the start state of $\FSM_N$, and
 a state of $\FSM_D$ is accepting
 if any of its elements are accepting states in $\FSM_N$.
 
-As an illustration of constructing $\FSM_D$'s transition table,
-suppose that $\FSM_N$ is in $s_5=\set{q_0,q_2}$ and its 
-read head is pointing to~\str{a}.
-The next state combines the next states due to~$q_0$
-with those due to~$q_2$.
-Thus in total, $\Delta_D(s_5,\str{a})=\set{q_0,q_1}$, 
-which in the table is~$s_4$.
+As an illustration of constructing the transition table,
+suppose that we are in $s_5=\set{q_0,q_2}$ and are 
+reading~\str{a}.
+Combine the above machine's next states due to~$q_0$
+with those due to~$q_2$, that is,
+$\Delta_D(s_5,\str{a})=\set{q_0,q_1}\union\set{}=\set{q_0,q_1}$.
+That's~$s_4$.
 \begin{center}\small
   \begin{transitionfunction}[\Delta_D]
       &\str{a}   &\str{b}         \\
@@ -3223,41 +3215,31 @@ which in the table is~$s_4$.
     \acceptingstate $s_6=\set{q_1,q_2}$      &$s_0$  &$s_3$  \\
     \acceptingstate $s_7=\set{q_0,q_1,q_2}$  &$s_4$  &$s_3$  \\
   \end{transitionfunction}
+  \quad
+  \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm17.pdf}}
 \end{center}
 
-Besides the notational convenience,
-naming the sets of states as $s_i$'s makes clear that
+Naming the sets of states as $s_i$'s is a notatoinal convenience but
+it also makes clear that
 $\FSM_D$ is deterministic.
 So does its transition graph.
+Many of the states are unreachable; for example, $s_6$ 
+has only outgoing arrows.
+Below is the machine with those stated removed.
 Again, the start state is $s_1$.
-\begin{center}
-  \includegraphics{automata/asy/nfsm/nfsm17.pdf}
-\end{center}
-Many of those states are unreachable; here is the pared down picture.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm1050.pdf}
 \end{center}
 \end{example}
 
-% We next extend the powerset construction to handle $\varepsilon$~transitions.
-% Basically, we will follow the $\varepsilon$'s.
-% The 
-% $\varepsilon$~closure $\hat{E}(q)$\index{epsilon closure@$\varepsilon$ closure} 
-% is the set of the states that
-% are reachable from $q$ without consuming any input.
-% Even on a machine without $\varepsilon$~moves this is a set,
-% namely $\hat{E}(q)=\set{q}$.
-% Define the $\varepsilon$~closure of a set of states to be the union of the 
-% $\varepsilon$~closures of the members.
-
 %<*df:DFSMFromNFSM>
-Now we give the algorithm for starting with a nondeterministic 
+Now we state the algorithm for starting with a nondeterministic 
 machine~$\FSM_N$ and constructing a 
 deterministic machine~$\FSM_D$ with the same behavior,
 whether or not $\FSM_N$ has $\varepsilon$~transitions.
 Elements of $\FSM_D$ are sets of states from~$\FSM_N$.
-Define the $\varepsilon$~closure of a set of states to be the union of the 
-$\varepsilon$~closures of its members.
+% Define the $\varepsilon$~closure of a set of states to be the union of the 
+% $\varepsilon$~closures of its members.
 
 The transition function $\Delta_D$ inputs
 a state $s_i\in\FSM_D$, that is, 
@@ -3281,8 +3263,8 @@ contains any of $\FSM_N$'s accepting states.
 %</df:DFSMFromNFSM>
 
 \begin{example}  \label{ex:NFSMEpsilonClosure}
-This nondeterministic machine
-has $\varepsilon$ transitions.
+We next do a nondeterministic machine
+with $\varepsilon$ transitions.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm18.pdf}
 \end{center}

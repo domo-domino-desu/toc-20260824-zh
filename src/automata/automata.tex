@@ -2995,6 +2995,12 @@ where the sequence of sets stops growing,
 $E(q,m_q\,)= E(q,m_q+1)= \cdots\,$.
 Define the $\varepsilon$~closure as the limit,
 $\hat{E}(q)=E(q,m_q)$.\index{epsilon closure@$\varepsilon$ closure}
+
+We will find it convenient to extend
+this definition of the epsilon closure of a state to
+the epsilon closure of a set of states.
+Where $S=\set{q_{i_0},\ldots\,q_{i_j}}$,
+let $\hat{E}(S)=\hat{E}(q_{i_0})\cup\hat{E}(q_{i_1})\cup\ldots\,\hat{E}(q_{i_j})$. 
 %</disc:EpsilonClosurei>
 
 \begin{example}  \label{ex:FindEpsilonClosureInSteps}
@@ -3250,9 +3256,9 @@ a state $s_i\in\FSM_D$, that is,
 $s_i=\set{q_{k_0},\ldots\, q_{k_i}}$, 
 along with a character~$c\in\Sigma$. 
 First apply $\FSM_N$'s next state function to $s_i$'s elements to get a set
-$S=\Delta_{N}(q_{k_0},c)\cup\cdots\, \Delta_{N}(q_{k_i},c)$.
+$S_{i,c}=\Delta_{N}(q_{k_0},c)\cup\cdots\, \Delta_{N}(q_{k_i},c)$.
 Then include $\varepsilon$ moves:~where 
-$S=\set{q_{j_0}, \ldots\, q_{j_i}}$, 
+$S_{i,c}=\set{q_{j_0}, \ldots\, q_{j_i}}$, 
 let 
 $\Delta_D(s_i,c)=\hat{E}(q_{j_0})\cup\cdots\, \hat{E}(q_{j_i})$.
 (For machines without $\varepsilon$ transitions this second part has no effect.)
@@ -3269,21 +3275,22 @@ the associated deterministic machine.
 The start state is $\hat{E}(q_0)=\set{q_0,q_3}=s_7$.
 A state is accepting if it contains $q_1$. 
 
-We can walk through the above algorithm. 
-Suppose that the machine is in state $s_7=\set{q_0,q_3}$
-and is reading~\str{b}.
-In the terms used in the powerset algorithm
-description, applying $\Delta_N$ to each element of $s_7$
-gives 
-$S=\Delta_N(q_0,\str{b})\union\Delta_N(q_3,\str{b})=\set{q_1}\union\set{}
-=\set{q_1}$.
+We will do two examples walking through the powerset algorithm. 
+First, let the machine be in state $s_7=\set{q_0,q_3}$
+and reading~\str{b}.
+In the terms of the algorithm's description, 
+applying $\Delta_N$ to each element of $s_7$ gives 
+$S_{7,\str{b}}
+  =\Delta_N(q_0,\str{b})\union\Delta_N(q_3,\str{b})=\set{q_1}\union\set{}
+  =\set{q_1}$.
 Taking the $\varepsilon$ closure gives
 $\Delta_D(s_7,\str{b})=\set{q_0,q_1,q_3}=s_{12}$.
 
-Another example is the computation of $\Delta_D(s_8,\str{a})$.
-Since $s_8=\set{q_1,q_2}$, and in the machine above neither member has a 
-leaving arrow labeled `\str{a}', we get that 
-$\hat{s}_{s_8,\str{a}}$ is the empty set.
+The second example is $\Delta_D(s_8,\str{a})$.
+Since $s_8=\set{q_1,q_2}$, and in the machine $\FSM_N$ 
+above neither state has a 
+leaving arrow labeled `\str{a}',
+$S_8$ is the empty set.
 The $\varepsilon$~closure of the empty set is the empty set, $\set{}=s_0$.
 Thus $\Delta_D(s_8,\str{a})=s_0$.
 
@@ -3291,9 +3298,9 @@ Thus $\Delta_D(s_8,\str{a})=s_0$.
 \begin{center}\small
 \begin{tabular}{r|*{2}{c}|*{2}{c}}
    \multicolumn{1}{r}{\ }
-    &$\hat{s}_{i,\str{a}}$\rule{0pt}{12pt}  
+    &$S_{i,\str{a}}$\rule{0pt}{12pt}  
       &\multicolumn{1}{c}{$\Delta_D(s_i,\str{a})$}   
-    &$\hat{s}_{i,\str{b}}$ 
+    &$S_{i,\str{b}}$ 
      &\multicolumn{1}{c}{$\Delta_D(s_i,\str{b})$}   
     \\
     \cline{2-5}
@@ -3341,27 +3348,30 @@ Thus $\Delta_D(s_8,\str{a})=s_0$.
 \end{center}
 %</ex:DFSMFromNFSMWithEpsilon>
 The machine diagram for this deterministic machine is below.
-Although this machine has sixteen states,
+The start state is~$s_7=\hat{E}(q_0)$.
+Although the machine's table shows has sixteen states,
 many of those are unreachable from the starting state.
-One example is that looking through the table shows that never is $s_2$
+One example is that never is $s_2$
 the output of $\Delta_D$.
 The diagram omits these nodes.
-
-Again, the start state is~$s_7$.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm1043.pdf}  
 \end{center}
 \end{example} 
 
-The powerset construction shows that if the nondeterministic machine
-has $n$ states then there is a
-deterministic machine with at most $2^n$ states.
-In fact, $2^n$ is the best that we can do in that for 
+The powerset construction shows that 
+for any nondeterministic machine there is a deterministic machine
+that recognizes the same language.
+
+We can say more:~if the nondeterministic machine
+has $n$ states then the
+deterministic machine has at most $2^n$ states.
+(It turns out that $2^n$ is the best that we can do in that for 
 any $n$ there is an $n$~state nondeterministic machine requiring
-that the deterministic machine has $2^n$ states.
+a deterministic machine with $2^n$ states.
 However, in practice it does often happen that the deterministic machine
 is not too big, once we minimize the number of states
-(\Cref{sec:Minimization} below shows how to minimize).
+\Cref{sec:Minimization} shows how to minimize).
 
 
 % .....................................

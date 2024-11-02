@@ -6150,8 +6150,8 @@ label(pic, "$q_3$",(1.50,2.0),p);
 draw(pic, (2,-0.25)--(2,topline_y),GRAYSTRIPE);
 
 // Add action up to third input
-label(pic, "$\vdash$",(2.00,0),p);
-label(pic, "$q_2$",(2.50,0.00),p);
+label(pic, "$\vdash$",(2.00,1),p);
+label(pic, "$q_2$",(2.50,1.00),p);
 label(pic, "$\vdash$",(2.00,2),p);
 label(pic, "$q_3$",(2.50,2.0),p);
 

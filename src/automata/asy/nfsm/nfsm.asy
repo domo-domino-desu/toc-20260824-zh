@@ -4333,16 +4333,17 @@ hlayout(1*u, q0, q1, q2, q3, q4, q5, q6);
 
 // edges
 draw(pic,
-     (q0..loop(S)).l("\str{1}"),
+     (q0..loop(S)).l("\str{0},\str{1}"),
      (q0--q1).l("\str{0}"),
-     (q1..bend(-35)..q0).l("$\varepsilon$").style("leftside"),
+     // (q1..bend(-35)..q0).l("$\varepsilon$").style("leftside"),
      (q1--q2).l("\str{0}"),
      (q2--q3).l("\str{0}"),
      (q3..loop(S)).l("\str{0},\str{1}"),
      (q3--q4).l("\str{0}"),
      (q4--q5).l("\str{0}"),
      (q5--q6).l("\str{1}"),
-     (q6..bend(15)..q0).l("$\varepsilon$") 
+     // (q6..bend(15)..q0).l("$\varepsilon$") 
+     (q6..loop(S)).l("\str{0},\str{1}")
     );
 
 // draw nodes after edges
@@ -4363,19 +4364,26 @@ setdefaultstatediagramstyles() ;
 node q0=ncircle("$q_0$"),
   q1=ncircle("$q_1$"),
   q2=ncircle("$q_2$", ns_accepting),
-  q3=ncircle("$q_3$", ns_accepting),
+  q3=ncircle("$q_3$", ns_accepting), // 00 or 000
   q4=ncircle("$q_4$"),
   q5=ncircle("$q_5$"),
   q6=ncircle("$q_6$"),
-  q7=ncircle("$q_7$", ns_accepting),
+  q7=ncircle("$q_7$", ns_accepting), //00.*00
   q8=ncircle("$q_8$"),
   q9=ncircle("$q_9$"),
   q10=ncircle("$q_{10}$"),
-  q11=ncircle("$q_{11}$", ns_accepting),
+  q11=ncircle("$q_{11}$", ns_accepting), // 01.*01
   q12=ncircle("$q_{12}$"),
   q13=ncircle("$q_{13}$"),
   q14=ncircle("$q_{14}$"),
-  q15=ncircle("$q_{15}$", ns_accepting);
+  q15=ncircle("$q_{15}$", ns_accepting), // 10.*10
+  q16=ncircle("$q_{16}$"),
+  q17=ncircle("$q_{17}$"),
+  q18=ncircle("$q_{18}$"),
+  q19=ncircle("$q_{19}$", ns_accepting), // 11.*11
+  q20=ncircle("$q_{20}$"),
+  q21=ncircle("$q_{21}$", ns_accepting),
+  q22=ncircle("$q_{22}$", ns_accepting); // 11 or 111
 
 // layout
 defaultlayoutrel = false;
@@ -4383,42 +4391,61 @@ defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
 real v = .9u;
 
-q1.pos = new_node_pos_h(q0, 45,  1*u);
+q1.pos = new_node_pos_h(q0, 67,  1*u);
 hlayout(1*u, q1, q2, q3);
-q4.pos = new_node_pos_h(q0, 25,  1*u);
+q4.pos = new_node_pos_h(q0, 60,  1*u);
 hlayout(1*u, q4, q5, q6, q7);
-q8.pos = new_node_pos_h(q0, -22.5,  1*u);
+q8.pos = new_node_pos_h(q0, 38,  1*u);
 hlayout(1*u, q8, q9, q10, q11);
-q12.pos = new_node_pos_h(q0, -55,  1*u);
+q12.pos = new_node_pos_h(q0, -6,  1*u);
 hlayout(1*u, q12, q13, q14, q15);
+q16.pos = new_node_pos_h(q0, -46,  1*u);
+hlayout(1*u, q16, q17, q18, q19);
+q20.pos = new_node_pos_h(q0, -63.5,  1*u);
+hlayout(1*u, q20, q21, q22);
 
 // edges
 draw(pic,
-     (q0--q1).l("\str{0}"),
+     (q0--q1).l("\str{0}").style("leftside"),
      (q1--q2).l("\str{0}"),
-     (q2--q3).l("\str{0}"),
+     (q2--q3).l("\str{0}"),  // 00 or 000
      (q0--q4).l("\str{0}"),
-     (q4--q5).l("\str{1}"),
-     (q5..loop(S)).l("\str{0},\str{1}"),
+     (q4--q5).l("\str{0}"),
+     (q5..loop(S)).l("\str{0},\str{1}"), 
      (q5--q6).l("\str{0}"),
-     (q6--q7).l("\str{1}"),
-     (q0--q8).l("\str{1}"),
-     (q8--q9).l("\str{0}"),
-     (q9..loop(S)).l("\str{0},\str{1}"),
-     (q9--q10).l("\str{1}"), 
-     (q10--q11).l("\str{0}"), 
+     (q6--q7).l("\str{0}"), // 00.*00
+     (q0--q8).l("\str{0}"),
+     (q8--q9).l("\str{1}"),
+     (q9..loop(S)).l("\str{0},\str{1}"), 
+     (q9--q10).l("\str{0}"), 
+     (q10--q11).l("\str{1}"), // 01.*01
+     (q0--q12).l("\str{1}"),
+     (q12--q13).l("\str{0}"),
+     (q13..loop(S)).l("\str{0},\str{1}"),
+     (q13--q14).l("\str{1}"), 
+     (q14--q15).l("\str{0}"),  //10.*10
      (q0--q12).l("\str{1}"),
      (q12--q13).l("\str{1}"),
      (q13..loop(S)).l("\str{0},\str{1}"),
      (q13--q14).l("\str{1}"), 
-     (q14--q15).l("\str{1}")
+     (q14--q15).l("\str{1}"), // 11.*11
+     (q0--q16).l("\str{1}"),
+     (q16--q17).l("\str{1}"),
+     (q17..loop(S)).l("\str{0},\str{1}"),
+     (q17--q18).l("\str{1}"),   
+     (q18--q19).l("\str{1}"),   
+     (q0--q20).l("\str{1}"),
+     (q20--q21).l("\str{1}"),
+     (q21--q22).l("\str{1}")      
     );
 
 // draw nodes after edges
 draw(pic, q0, q1, q2, q3,
               q4, q5, q6, q7,
               q8, q9, q10, q11,
-              q12, q13, q14, q15
+              q12, q13, q14, q15,
+              q16, q17, q18, q19,
+              q20, q21, q22
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

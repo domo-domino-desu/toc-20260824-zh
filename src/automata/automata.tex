@@ -4200,7 +4200,8 @@ gives the next-state function for a nondeterministic Finite State machine.
 
 \recommended
 \begin{exercise}
-  For each give a nondeterministic Finite State machine over
+  For each give a nondeterministic Finite State machine without 
+  $\varepsilon$ transitions over
   $\Sigma=\set{\str{0},\str{1}, \str{2}}$.
   \begin{exparts*}
   \item The machine recognizing the language of strings whose final character
@@ -4225,11 +4226,9 @@ gives the next-state function for a nondeterministic Finite State machine.
 
 \recommended
 \begin{exercise}
-  For each give a nondeterministic Finite State machine with 
-  $\varepsilon$~transitions
+  For each give a nondeterministic Finite State machine, possibly with 
+  $\varepsilon$~transitions,
   that recognizes the language with alphabet $\B$.
-  % (Some of these illustrate that sometimes deterministic machines are
-  % harder.)
   \begin{exparts*}
   \item In each string, every \str{0} is followed immediately 
     by a~\str{1}.
@@ -4276,17 +4275,14 @@ gives the next-state function for a nondeterministic Finite State machine.
       \hspace{4em}
       \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm27.pdf}}
     \end{display}
-    The machine on the left, the one that accepts only the empty string,
-    has this table.  
+    The machines have these tables.
     \begin{display}
     \begin{transitionfunction}[\Delta]
                               &\str{a}  &\str{b}  &\str{c}  \\
                       \cline{2-4}
       \acceptingstate $q_0$   &$\set{}$    &$\set{}$    &$\set{}$  \\
     \end{transitionfunction}
-    \end{display}
-    The machine on the right has this.  
-    \begin{display}
+    \qquad
     \begin{transitionfunction}[\Delta]
                               &\str{a}  &\str{b}  &\str{c}  \\
                              \cline{2-4}
@@ -4334,14 +4330,7 @@ B \produces{} \trm{b} B \syntaxor b
 \begin{exparts*}
 \item Give three strings from the language of the grammar
 and show that they are accepted by the machine.
-% \item Give three strings from the language of the machine,
-% different than the ones produced for the prior part,
-% and show that they are in the language of the grammar.
-\item Describe the language of the grammar and the machine.
-% \item Give a right linear grammar for the language of the machine below.
-% \begin{center}
-%   \includegraphics{automata/asy/nfsm/nfsm69.pdf}
-% \end{center}
+\item Describe that language.
 \end{exparts*}
 \begin{answer}\verified
   \begin{exparts}
@@ -4374,7 +4363,29 @@ and show that they are accepted by the machine.
         \derives \trm{a}\trm{b}\trm{b}\trm{b} 
     \end{tabular}       
     \end{display}
-    Verifying that they are accepted by the machine is routine.
+    This verifies that the first is accepted by the machine.
+    \begin{equation*}
+      \sequence{S,\str{abb}}
+      \yields\sequence{A,\str{bb}}
+      \yields\sequence{B,\str{b}}
+      \yields\sequence{F,\emptystring}
+    \end{equation*}
+    The second is here.
+    \begin{equation*}
+      \sequence{S,\str{aabb}}
+      \yields\sequence{A,\str{abb}}
+      \yields\sequence{A,\str{bb}}
+      \yields\sequence{B,\str{b}}
+      \yields\sequence{F,\emptystring}
+    \end{equation*}
+    The third is similar.
+    \begin{equation*}
+      \sequence{S,\str{abbb}}
+      \yields\sequence{A,\str{bbb}}
+      \yields\sequence{B,\str{bb}}
+      \yields\sequence{B,\str{b}}
+      \yields\sequence{F,\emptystring}
+    \end{equation*}
   \item The language of the machine and the grammar is 
     $\lang=\set{\str{a}^i\str{b}^j\suchthat i>0, j>1}$.
   \end{exparts}
@@ -4398,16 +4409,20 @@ unsolvable by a Turing machine.
   \begin{exparts}
   \item Clearly we can write a simulator for deterministic Finite
   State machines.
+  This simulator is uniform in that it takes in the $\Delta$ table and
+  the input string.
   By Church's Thesis since we can write it on a modern computer, we
   can write one for a Turing machine.
   When given an input~$\sigma$, the machine will consume it in
-  no more than $\sizeof{\sigma}$ steps, and so 
+  no more than $\sizeof{\sigma}$ transitions, and so 
   the simulation is sure to halt.
-  Then just check whether the ending state is an accepting state.
+  Then we can just check whether the ending state is an accepting state.
   \item   
   The section body discusses how to simulate a nondeterministic computation,
   by dovetailing (that is, time-slicing).
-  With that we can answer questions about whether this machine accepts 
+  Or, we can use the ppowerset algorithm to convert it to a deterministic 
+  machine and then simulate that.
+  We can then answer questions about whether this machine accepts 
   a given input~$\sigma$ just as in the prior item.
   \end{exparts}
 \end{answer}
@@ -4475,7 +4490,7 @@ unsolvable by a Turing machine.
   %   E_{i+1}(q)=E_i(q)\cup \Delta(q_{I_0},\varepsilon)\cup\,\cdots\,
   %                        \Delta(q_{i_j},\varepsilon)
   % \end{equation*}
-  \begin{exparts}
+  \begin{exparts*} 
   \item For the machine of \cref{ex:NFSMEpsilonClosure},
     for each $q\in Q$ produce $E(q,0)$,
     $E(q,1)$, $E(q,2)$, and~$E(q,3)$.
@@ -4489,38 +4504,38 @@ unsolvable by a Turing machine.
   %   $q\in Q$?
   % \item Prove that for every machine, $\hat{E}(q)$ is 
   %   defined for every $q\in Q$.
-  \end{exparts}
-\begin{answer}
+  \end{exparts*}
+\begin{answer}\verified
 \begin{exparts}
 \item Here is the list.
 \begin{display}
 \begin{tabular}{r|*{4}{c}}
-  \multicolumn{1}{r}{\tabulartext{step $i$}} 
-                         &\tabulartext{$E(q_0,i)$}  
-                         &\tabulartext{$E(q_1,i)$}  
-                         &\tabulartext{$E(q_2,i)$}  
-                         &\tabulartext{$E(q_3,i)$}  
+  \multicolumn{1}{r}{\tabulartext{$E(q,m)$}} 
+                         &\tabulartext{$m=0$}  
+                         &\tabulartext{$1$}  
+                         &\tabulartext{$2$}  
+                         &\tabulartext{$3$}  
   \\ \cline{2-5}
-  $0$               &$\set{q_0}$ &$\set{q_1}$ &$\set{q_2}$ &$\set{q_3}$  \\
-  $1$               &$\set{q_0,q_3}$ &$\set{q_0,q_1}$ &$\set{q_2}$ &$\set{q_3}$  \\
-  $2$               &$\set{q_0,q_3}$ &$\set{q_0,q_1}$ &$\set{q_2}$ &$\set{q_3}$   \\
-  $3$               &$\set{q_0,q_3}$ &$\set{q_0,q_1}$ &$\set{q_2}$ &$\set{q_3}$   \\
+  $q_0$        &$\set{q_0}$ &$\set{q_0,q_3}$ &$\set{q_0,q_3}$ &$\set{q_0,q_3}$  \\
+  $q_1$        &$\set{q_1}$ &$\set{q_0,q_1}$ &$\set{q_0,q_1,q_3}$ &$\set{q_0,q_1,q_3}$  \\
+  $q_2$        &$\set{q_2}$ &$\set{q_2}$ &$\set{q_2}$ &$\set{q_2}$   \\
+  $q_3$        &$\set{q_3}$ &$\set{q_3}$ &$\set{q_3}$ &$\set{q_3}$   \\
 \end{tabular}
 \end{display}
-So, $\hat{E}(q_0)=\set{q_0,q_3}$, $\hat{E}(q_1)=\set{q_0,q_1}$,
+So, $\hat{E}(q_0)=\set{q_0,q_3}$, $\hat{E}(q_1)=\set{q_0,q_1,q_3}$,
 $\hat{E}(q_2)=\set{q_2}$, and~$\hat{E}(q_3)=\set{q_3}$. 
 \item This is similar.
 \begin{display}
-\begin{tabular}{r|*{3}{c}}
-  \multicolumn{1}{r}{\tabulartext{step $i$}} 
-                         &\tabulartext{$E(q_0,i)$}  
-                         &\tabulartext{$E(q_1,i)$}  
-                         &\tabulartext{$E(q_2,i)$}  
-  \\ \cline{2-4}
-  $0$               &$\set{q_0}$ &$\set{q_1}$ &$\set{q_2}$  \\
-  $1$               &$\set{q_0}$ &$\set{q_1,q_2}$ &$\set{q_2}$ \\
-  $2$               &$\set{q_0}$ &$\set{q_1,q_2}$ &$\set{q_2}$   \\
-  $3$               &$\set{q_0}$ &$\set{q_1,q_2}$ &$\set{q_2}$  \\
+\begin{tabular}{r|*{4}{c}}
+  \multicolumn{1}{r}{\tabulartext{$E(q,m)$}} 
+                         &\tabulartext{$m=0$}  
+                         &\tabulartext{$1$}  
+                         &\tabulartext{$2$}  
+                         &\tabulartext{$3$}  
+  \\ \cline{2-5}
+  $q_0$         &$\set{q_0}$ &$\set{q_0}$     &$\set{q_0}$     &$\set{q_0}$ \\
+  $q_1$         &$\set{q_1}$ &$\set{q_1,q_2}$ &$\set{q_1,q_2}$ &$\set{q_1,q_2}$\\
+  $q_2$         &$\set{q_2}$ &$\set{q_2}$     &$\set{q_2}$     &$\set{q_2}$   \\
 \end{tabular}
 \end{display}
 So, $\hat{E}(q_0)=\set{q_0}$, $\hat{E}(q_1)=\set{q_1, q_2}$,

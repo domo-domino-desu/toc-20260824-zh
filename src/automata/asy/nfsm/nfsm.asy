@@ -2209,7 +2209,7 @@ hlayout(-1*u, q0, e);
 // draw edges
 draw(pic,
      (e--q0).l("$\varepsilon$"),
-     (q0..loop(N)).l("\re{$\varepsilon$|a(b|ab*b)}"),
+     (q0..loop(N)).l("\re{a(b|ab*b)}"),
      (q0--f).l("\re{$\varepsilon$|a$\varepsilon$}")
      );
 
@@ -2242,8 +2242,8 @@ hlayout(4*u, e, f);
 
 // draw edges
 draw(pic,
-     (e--f).l("$\varepsilon$($\varepsilon$|(a(b|ab*b)))*($\varepsilon$|a$\varepsilon$)"),
-     (e--f).l("$\varepsilon$($\varepsilon$|(a(b|ab*b)))*($\varepsilon$|a$\varepsilon$)")  // have to repeat because of a bug in asy-graphtheory
+     (e--f).l("$\varepsilon$(a(b|ab*b))*($\varepsilon$|a$\varepsilon$)"),
+     (e--f).l("$\varepsilon$(a(b|ab*b))*($\varepsilon$|a$\varepsilon$)")  // have to repeat because of a bug in asy-graphtheory
      );
 
 // draw nodes after edges

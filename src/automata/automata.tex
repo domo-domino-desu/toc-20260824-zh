@@ -4612,13 +4612,14 @@ describes the language consisting of five words,
 $\lang=\set{\str{pat}, \str{pet}, \str{pit},\str{pot}, \str{put}}$.
 \end{example}
 
-The pipe operator, `|', which is a kind of `or',\footnote{%
-  Sometimes called alternation.} %
+The \definend{alternation}\index{alternation} operator, `|',\footnote{%
+  This symbol is called `pipe'.}\index{pipe@| pipe alternation operator} 
+denoting `or',
 and the parentheses, which provide grouping, 
 are not part of the strings being described;~they
 are \definend{metacharacters}.\index{metacharacter}
 
-Besides the pipe and parentheses,
+Besides alternation and parentheses,
 the regular expression in that example also includes concatenation since
 the language consists of strings where the initial \str{p} 
 is concatenated with a vowel,
@@ -4672,29 +4673,26 @@ over~$\Sigma$ is a string in the language of this grammar.
   As we have done with other grammars,
   here we use the pipe symbol~\re{|} as a metacharacter,
   to collapse rules with the same left side.
-  But pipe also appears in regular expressions.
+  But this symbol also appears in regular expressions.
   For that usage
   the grammar wraps it in single quotes, as \protect\smash{`\protect\trm{|}'}.}
 In words, any of the single character strings 
 $\emptyset$ or \emptystring{} or $x_0$, \ldots{} or $x_n$ 
 are regular expressions. 
-And, where $R$ and $S$ are regular expressions then so also
-are \re{($R$|$S$)} and \re{($RS$)}, 
-and \re{($R$)*}. 
+And, where $R_0$ and $R_1$ are regular expressions then so also
+are \re{($R_0$|$R_1$)}, and \re{($R_0R_1$)}, 
+and \re{($R_0$)*}. 
 Thus these four strings are regular 
 expressions over $\Sigma=\set{ \str{a},\str{b} }$:
 \trm{(}\str{ab}\trm{)}, and \trm{(}\str{a}\trm{|}\str{b}\trm{)},
 and \str{b}, and \trm{(}\str{a}\trm{(}\str{b}\trm{)*)}.
-(Below we will discuss the conventions for omitting some parentheses.)
+(Below we will discuss conventions for omitting some parentheses.)
 
 That definition gives the syntax of regular expressions, the rules for
-the formation of valid strings.
+the structure of valid strings.
 As to their semantics, 
 what they mean,\index{regular expression!semantics}
-a regular expression describes a language and
-we will recursively describe which language.
-% This recursion tracks the syntax, so 
-% its base is the single-character regular expressions.
+a regular expression describes a language.
 %<*discussion:RESemantics>
 The language described by the
 one-character regular expression \re{$\emptyset$} is
@@ -4710,26 +4708,26 @@ consists of only that single character,
 as in $\lang(\str{a})=\set{\str{a}}$.
 
 We finish the semantics by doing the operations.
-Start with regular expressions $R$ and~$S$
-describing languages $\lang(R)$ and~$\lang(S)$.
-The pipe of two regular expressions \re{($R$|$S$)} describes the union of 
-their languages, $\lang(R)\cup\lang(S)$.
-Concatenation \re{($RS$)}
+Start with regular expressions $R_0$ and~$R_1$
+describing languages $\lang(R_0)$ and~$\lang(R_1)$.
+The alternation of two regular expressions \re{($R_0$|$R_1$)} 
+describes the union of 
+their languages, $\lang(R_0)\cup\lang(R_1)$.
+Concatenation \re{($_0R_1$)}
 describes concatenation of the languages,
-$\lang(R)\concat\lang(S)$.
+$\lang(R_0)\concat\lang(R_1)$.
 And, the Kleene star\index{Kleene star!regular expression} 
-\re{($R$)*} describes the star of the language 
+\re{($R_0$)*} describes the star of the language 
 $\kleenestar{\lang(R)}\!$.
 %</discussion:RESemantics>
 
 \begin{example}
-Consider the regular expression \re{ab} over $\Sigma=\set{\str{a},\str{b}}$.  
+Consider the regular expression \re{(ab)} over $\Sigma=\set{\str{a},\str{b}}$.  
 It is the concatenation of the regular expression~\re{a} with 
 the regular expression~\re{b}.
 The first describes a single-element language $\lang(\str{a})=\set{\str{a}}$
 and likewise the second describes $\lang(\str{b})=\set{\str{b}}$.
-Thus, the string \re{ab} describes the concatenation of the two languages,
-$\lang(\str{ab})=\lang(\str{a})\concat \lang(\str{b})=\set{\str{ab}}$,
+Thus $\lang(\str{(ab)})=\lang(\str{a})\concat \lang(\str{b})=\set{\str{ab}}$,
 another language with only one element.
 % \begin{align*}
 %   \lang(\str{ab})=\lang(\str{a})\concat \lang(\str{b})
@@ -4743,13 +4741,13 @@ another language with only one element.
 As formally defined, the syntax rules call for lots of parentheses.
 We cut down on the annoyance by adopting a convention for operator
 precedence:~star binds most tightly, then concatenation, and then
-the pipe alternation operator,~\re{|}, binds least tightly.
+the alternation operator,~\re{|}, binds least tightly.
 
 \begin{example}
 Instead of \re{(a(b(a)*))} we write \re{aba*}.
 The precedence rules give that the star applies only to the \str{a} before it,
 as in \re{ab(a*)}.
-(If concatenation bound more tightly than star then we would instead have
+(If concatenation bound more tightly than star then \re{aba*} would instead mean
 \re{(aba)*}.) 
 The described language is
 $\lang(\re{aba*})
@@ -4758,12 +4756,12 @@ $\lang(\re{aba*})
 \end{example}
 
 \begin{remark}  \label{ex:RegexABOrCStar}
-There is an interaction between pipe and star.
-Consider the the regular expression \re{(b|c)*}.
+There is an interaction between alternation and star.
+Consider the regular expression \re{(b|c)*}.
 It could mean either
 `any number of repetitions of picking \str{b} or~\str{c}'
 or `pick \str{b} or~\str{c} and repeat that character any number of times'.
-It is more convenient to have it mean the first.
+The first of those two is more convenient.
 Thus the language described by \re{(b|c)*} is
 $\lang=\set{\emptystring, \str{b}, \str{c}, 
              \str{bb}, \str{bc}, \str{cb}, \str{cc}, \ldots}$.
@@ -4788,7 +4786,8 @@ is described by \re{(aaa)*}.
 %</ex:RegexThree>
 
 Note that the empty string is a member of that language.
-A common mistake is to forget that star includes zero-many repetitions.
+A common mistake is to forget that star includes 
+the possibility of zero-many repetitions.
 
 \begin{example}
 %<*ex:RegexFive>
@@ -4803,8 +4802,7 @@ The regular expression \re{(a|b|c)bc} describes it.
 
 %<*ex:RegexFour>
 \begin{example}
-The empty string character~\re{$\emptystring$} is handy 
-to mark things as optional.
+Use~\re{$\emptystring$} to mark things as optional.
 Thus \re{a*($\emptystring$|b)} describes the language 
 of strings that have any number
 of \str{a}'s and optionally end in one~\str{b},
@@ -4864,8 +4862,10 @@ those to deterministic machines, the result holds for them also.
 % \cref{ex:NFSM:JoinSerial}, and \cref{ex:EpsilonTransMakeKleeneStar}.
 
 \begin{proof}
-  We will show that for any regular expression~$R$ there is a machine
-  accepting exactly the strings matching that expression.
+  Fix an alphabet~$\Sigma$.
+  We will show that for any regular expression~$R$ over $\Sigma$
+  there is a machine with alphabet~$\Sigma$
+  accepting exactly the strings matching the expression.
   We use induction on the structure of regular expressions.
 
 %<*pf:KleenesThmRegexToMachinei>
@@ -4926,7 +4926,7 @@ those to deterministic machines, the result holds for them also.
 
 \begin{example}
 Building a machine for the regular expression \re{ab(c|d)(ef)*}
-starts with machines for the single characters. 
+starts with machines for each of the single characters. 
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm71.pdf}}
   \hspace{1em}
@@ -4947,7 +4947,7 @@ to get the complete machine.
 \includegraphics{automata/asy/nfsm/nfsm82.pdf}
 \end{center}
 This is a nondeterministic machine with $\varepsilon$~transitions.
-If you want a deterministic machine then use the powerset construction.
+To get a deterministic machine use the powerset construction.
 \end{example}
 
 %<*lem:KleenesThmMachineToRegex>
@@ -5011,9 +5011,8 @@ starting one.
   and then make~$f$ accepting.
   Clearly this does not change the language of accepted strings.
 
-  Next 
-  introduce a new start state,~$e$.
-  Make a $\varepsilon$~transition from it to~$q_0$,
+  Next introduce a new start state,~$e$.
+  Connect it to~$q_0$ with an $\varepsilon$~transition,
   again leaving the language of the machine unchanged.
   (Putting~$e$ in $\hat{\FSM}$ allows us to uniformily eliminate 
   each state in~$\FSM$ when we say below, 
@@ -5023,7 +5022,7 @@ starting one.
   that from any~$q_i$ to any~$q_j$
   there is at most one edge, since
   if $\FSM$ has more than one edge then in~$\hat{\FSM}$ 
-  we can use the pipe,~\re{|}, to combine the labels.
+  we can use alternation,~`\re{|}', to combine the labels.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm39.pdf}}
     \hspace{3em}
@@ -5043,97 +5042,114 @@ starting one.
   if a state node  is not reachable from the start~$e$ then
   drop that node along with its incoming and outgoing edges.
   (The idea of useless states is clear but it has some technical aspects.
-  Omitting a no-outgoing-edges node, along with its incoming edges, can 
-  result in another node now having no outgoing edges, which in turn needs 
+  For instance, omitting a no-outgoing-edges node along with its incoming edges
+  can result in another node now having no outgoing edges, which in turn needs 
   the same treatment.
   But these machine have only finitely many nodes and so this omitting process
-  must run out eventually. 
-  For a full definition of unreachability see \Cref{exer:UnreachableStates}.)
+  must eventually finish. 
+  For a definition of unreachability see \Cref{exer:UnreachableStates}.)
   
   With that, $\smash{\hat{\FSM}}$ is ready for state elimination.
   Pick any~$q$ not equal to $e$ or~$f\!$.
   Below are 
-  \citetext{before and after pictures}{%
-    This diagram is derived from \autocite{HopcroftUllman}.}.
-  There are states $q_{i_0}$, \ldots{} $q_{i_j}$ with an edge leading into~$q$, 
+  \citetext{before and after diagrams}{%
+    This is derived from \autocite{HopcroftUllman}.}.
+  By the setup work above, $q$ has at least one incoming and at least one 
+  outgoing edge.
+  So there are states $q_{i_0}$, \ldots{} $q_{i_j}$ with an edge leading into~$q$, 
   and states $q_{o_0}$, \ldots{} $q_{o_k}$ that receive an edge leading out
   of~$q$. 
-  (By the setup work above, $q$ has at least one incoming and at least one 
-  outgoing edge.)
   In addition, $q$ may have a loop.
-  (Here is a fine point of the diagrams:~in each, 
+  (A fine point is that 
   possibly some of the states shown on the
-  left equal some shown on the right.
-  For example, possibly $q_{i_0}$ equals~$q_{o_0}$, in which case 
-  the edge shown as $R_{i_0,o_0}$ is a loop.)
+  left of each diagram equal some shown on the right.
+  For example, possibly $q_{i_0}$ equals~$q_{o_0}$, and
+  the edge on the top of each diagram is a loop.)
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm37.pdf}}
     \hspace{2.5em}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm38.pdf}}
   \end{center}
-
   Eliminate $q$ and the associated edges by making the replacements
-  shown in the after picture.
-  Observe that the set of strings taking the machine from any incoming
-  state~$q_i$ to any outgoing state~$q_o$ is unchanged and consequently
-  the language recognized by the machine is unchanged.
+  shown on the after diagram.
+  (If an edge is not present then don't include any regular expression in
+  the replacement.
+  For instance, if there is no $R_{\ell}$ edge then the right's top edge should
+  be \re{$R_{i_0,o_0}$|$R_{i_0}R_{o_0}$}.)
+  By construction for any two states in the after machine,
+  $q_i$ and~$q_o$, in passing from the before diagram to the after, the set 
+  of strings taking the machine from the first to the second is unchanged.
+  Thus languages of the before and after machines are equal.
   
-  Each iteration of this elimination procedure reduces the number of states 
-  by one.
-  Keep going until the only states remaining are $e$ and~$f\!$.
-  Since the language of the machines never changes, 
-  the desired regular expression is the one labeling the edge between them.
+  Repeat this procedure until the only states left are $e$ and~$f\!$. 
+  The desired regular expression is on the 
+  sole remaining edge.
 \end{proof}
 
 \begin{example}
-  Consider~$\FSM$ on the left below.
-  Introduce $e$ and~$f$ to get $\hat{\FSM}$ on the right.
+  We want a regular expression describing the 
+  language of the machine~$\FSM$ on the left below.
+  Introduce $e$ and~$f$ as on the right.
+  There are no useless states so this is $\hat{\FSM}$.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm48.pdf}}
     \hspace{3em}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm49.pdf}}
   \end{center}
-  We start by eliminating $q_2$.
-  (We could have instead done $q_0$ or $q_1$ first, but just picked this 
-  one to start somewhere.)
-  In the notation used in the proof's key step, $q_1=q_{i_0}$
+  We will eliminate $q_2$, then~$q_1$, then~$q_0$
+  (this choice is arbitrary;~we could have instead done any other order).
+  For the first, in the notation used in the proof's diagram, $q_1=q_{i_0}$
   and $q_0=q_{o_0}$.
-  The regular expressions are $R_{i_0}=\re{a}$,
-  $R_{o_0}=\re{b}$,
-  $R_{i_0,o_0}=\re{b}$,
-  and $R_{\ell}=\re{b}$.
-  That gives this machine.
+  The regular expressions are $R_{i_0,o_0}=\re{b}$,
+  $R_{i_0}=\re{a}$,
+  $R_{\ell}=\re{b}$,
+  and $R_{o_0}=\re{b}$.
+  Elimination leaves the resulting machine with an arrow from 
+  $q_{i_0}=q_1$ to~$q_{o_0}=q_0$ labeled
+  \re{$R_{i_0,o_0}$|($R_{i_0}R_{\ell}$*$R_{o_0}$)},
+  which is \re{b|(ab*b)}.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm50.pdf}}
   \end{center}
-  Next eliminate $q_1$.
-  (Again, we could have instead done $q_0$ next.)
-  There is one incoming node
-  $q_0=q_{i_0}$
-  and there are two outgoing nodes $q_0=q_{o_0}$ and~$f=q_{o_1}$.
-  Note that $q_0$ is both an incoming and outgoing node; this is the
-  ``fine point'' mentioned in the proof.
-  The regular expressions are
+  Next~$q_1$.
+  There is one node giving an incoming arrow,
+  $q_0=q_{i_0}$,
+  and two nodes associated with outgoing arrows, $q_0=q_{o_0}$ and~$f=q_{o_1}$.
+  (Note that $q_0$ is both an incoming and outgoing node; this is the
+  ``fine point'' mentioned in the proof.)
+  The regular expressions are:
+  there is no arrow for $R_{i_0,o_0}$,
+  $R_{i_0,o_1}=\re{\emptystring}$, 
   $R_{i_0}=\re{a}$,
   $R_{o_0}=\re{b|(ab*b)}$,
+  there is also no arrow for $R_{\ell}$,  
   and $R_{o_1}=\re{$\varepsilon$}$.
+  Eliminating $q_1$ means that the next machine
+  has an arrow from $q_{i_0}=q_0$ to $q_{o_0}=q_0$ labeled
+  \re{$R_{i_0,o_0}$|($R_{i_0}R_{\ell}$*$R_{o_0}$)},
+  which is \re{a(b|ab*b)}.
+  It also means that the machine
+  has an arrow from $q_{i_0}=q_0$ to $q_{o_1}=q_f$ labeled
+  \re{$R_{i_0,o_1}$|($R_{i_0}R_{\ell}$*$R_{o_1}$)},
+  which is \re{\emptystring|(a\emptystring)}.
+  
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm51.pdf}}    
   \end{center}
   Final step.
   The sole incoming node is $e=q_{i_0}$
-  and the sole outgoing node is $f=q_{o_0}$,
-  and so $R_{i_0}=\re{$\varepsilon$}$,
+  and the sole outgoing node is $f=q_{o_0}$.
+  As well, $R_{i_0}=\re{$\varepsilon$}$,
   $R_{o_0}=\re{$\varepsilon$|a$\varepsilon$}$,
   and
-  $R_{\ell}=\re{$\varepsilon$|a(b|ab*b)}$.
+  $R_{\ell}=\re{a(b|ab*b)}$.
   \begin{center}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm52.pdf}}    
   \end{center}
   This regular expression describes the language of the starting machine
-  (it simplifies; 
-  for instance, \re{a$\varepsilon$}=\re{a}
-  so the final parenthesis becomes \re{($\varepsilon$|a)}).
+  (we can simplify it; 
+  for instance, 
+  in the final parenthesis we can replace \re{a$\varepsilon$} with~\re{a}).
 \end{example}
 \index{Kleene's theorem|)}
 
@@ -5149,7 +5165,8 @@ Decide if the string~$\sigma$ matches the regular expression~$R$.
 \item $\sigma=\str{101}$, $R=\re{1*(0|1)*}$
 \item $\sigma=\str{01}$, $R=\re{1*01*}$
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
+Each one illustrates the match using underbars.
   \begin{exparts}
   \item Yes.
     One match is 
@@ -5158,12 +5175,15 @@ Decide if the string~$\sigma$ matches the regular expression~$R$.
     This works: 
     $\underbracket{\str{1}}_{\re{1*}}\underbracket{\str{0}}_{\re{0}}\underbracket{\str{1}}_{\re{1}}$.
   \item No.
-    To match, the~\str{0} must be a final character.
+    To match a string with a \str{0}, that~\str{0} must be the final character.
   \item Yes.
     A match is 
     $\underbracket{\str{1}}_{\re{1*}}\underbracket{\str{01}}_{\re{(0|1)*}}$.
-  \item Yes.
-    Here is a match: 
+  \item Yes; this is a case where the star means `zero' in `zeroor more'.
+    The concatenation of the empty string \emptystring{} with the string
+    \str{01} equals the given string \str{01}.
+    So we can write \str{01} as $\emptystring\concat\str{01}$ and 
+    recognize this match: 
     $\underbracket{\emptystring}_{\re{1*}}\underbracket{\str{0}}_{\re{0}}\underbracket{\str{1}}_{\re{1*}}$.
   \end{exparts}
 \end{answer}
@@ -5180,7 +5200,7 @@ Decide if the string~$\sigma$ matches the regular expression~$R$.
   \item \re{(0|1)($\emptystring$|1)0*}
   \item \re{$\emptyset$}
   \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item 
 Five that match are \str{0}, \str{01}, \str{011}, \str{0111}, 
@@ -5189,10 +5209,11 @@ Five that do not are \emptystring, \str{1}, \str{10}, \str{11},
 and~\str{100}. 
 \item
 Five matching strings are \emptystring, \str{01}, \str{0101}, \str{010101},
-and~$(\str{01})^4$.
+and~$(\str{01})^4\!$.
 Five that don't match are \str{0}, \str{1}, \str{00}, \str{10}, and~\str{11}.
 \item 
-Matches are \str{101} and~\str{111}.
+There are only two 
+matches, \str{101} and~\str{111}.
 Five that do not match are \emptystring, \str{0}, \str{1}, \str{00}, \str{01},
 and~\str{10}.
 \item
@@ -5214,24 +5235,24 @@ for each regular expression.
 \item \re{aa*}
 \item \re{a(a|b)*bb}
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
   \begin{exparts}
   \item The language consists of strings with some number of \str{a}'s 
   (that number may be zero), followed by a single~\str{c},
   followed by some number of \str{b}'s.
   \item The language consists of strings of at least one~\str{a}.
-  \item Strings in this language start with an~\str{a}, followed by
-  any number of characters, and end with two \str{b}'s.
+  \item Each string in this language starts with an~\str{a}, followed by
+  any number of \str{a}'s and \str{b}'s, and ends with two \str{b}'s.
   \end{exparts}
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-For these regular expressions and for each element of
+For each string in
   $\kleenestar{\set{\str{a},\str{b}}}$ that is of length 
   less than or equal to~$3$,
-  decide if it is a match.
+  decide if the string is a match.
   \begin{exparts*}
   \item \re{a*b}
   \item \re{a*}
@@ -5248,21 +5269,21 @@ For these regular expressions and for each element of
       \multicolumn{1}{c}{\ } &\re{a*b} &\re{a*} &\re{$\emptyset$}
         &\re{$\emptystring$} &\re{b(a|b)a} &\re{(a|b)($\emptystring$|a)a}  
       \\ \cline{2-7}
-      \emptystring &F &T &F &T &F &F  \\[1ex]
-      \str{a}      &F &T &F &F &F &F  \\
-      \str{b}      &T &F &F &F &F &F  \\[1ex]
-      \str{aa}     &F &T &F &F &F &T  \\
-      \str{ab}     &T &F &F &F &F &F  \\
-      \str{ba}     &F &F &F &F &F &T  \\
-      \str{bb}     &F &F &F &F &F &F  \\[1ex]
-      \str{aaa}    &F &T &F &F &F &T  \\
-      \str{aab}    &T &F &F &F &F &F  \\
-      \str{aba}    &F &F &F &F &F &F  \\
-      \str{abb}    &F &F &F &F &F &F  \\
-      \str{baa}    &F &F &F &F &T &T  \\
-      \str{bab}    &F &F &F &F &F &F  \\
-      \str{bba}    &F &F &F &F &T &F  \\
-      \str{bbb}    &F &F &F &F &F &F  \\
+      \emptystring &\false &\true &\false &\true &\false &\false  \\[1ex]
+      \str{a}      &\false &\true &\false &\false &\false &\false  \\
+      \str{b}      &\true &\false &\false &\false &\false &\false  \\[1ex]
+      \str{aa}     &\false &\true &\false &\false &\false &\true  \\
+      \str{ab}     &\true &\false &\false &\false &\false &\false  \\
+      \str{ba}     &\false &\false &\false &\false &\false &\true  \\
+      \str{bb}     &\false &\false &\false &\false &\false &\false  \\[1ex]
+      \str{aaa}    &\false &\true &\false &\false &\false &\true  \\
+      \str{aab}    &\true &\false &\false &\false &\false &\false  \\
+      \str{aba}    &\false &\false &\false &\false &\false &\false  \\
+      \str{abb}    &\false &\false &\false &\false &\false &\false  \\
+      \str{baa}    &\false &\false &\false &\false &\true &\true  \\
+      \str{bab}    &\false &\false &\false &\false &\false &\false  \\
+      \str{bba}    &\false &\false &\false &\false &\true &\false  \\
+      \str{bbb}    &\false &\false &\false &\false &\false &\false  \\
     \end{tabular}
     \caption{String matching test.}
     \label{fig:StringsMatchRegularExprs}
@@ -5309,26 +5330,25 @@ For these regular expressions and for each element of
       \multicolumn{1}{c}{\ } &\re{0*1} &\re{1*0} &\re{$\emptyset$}
         &\re{$\emptystring$} &\re{0(0|1)*} &\re{(100)($\emptystring$|1)0*}  
       \\ \cline{2-7}
-      \emptystring &F &F &F &T &F &F  \\[1ex]
-      \str{0}      &F &T &F &F &T &F  \\
-      \str{1}      &T &F &F &F &F &F  \\[1ex]
-      \str{00}     &F &F &F &F &T &F  \\
-      \str{01}     &T &F &F &F &T &F  \\
-      \str{10}     &F &T &F &F &F &F  \\
-      \str{11}     &F &F &F &F &F &F  \\[1ex]
-      \str{000}    &F &F &F &F &T &F  \\
-      \str{001}    &T &F &F &F &T &F  \\
-      \str{010}    &F &F &F &F &T &F  \\
-      \str{011}    &F &F &F &F &T &F  \\
-      \str{100}    &F &F &F &F &F &T  \\
-      \str{101}    &F &F &F &F &F &F  \\
-      \str{110}    &F &T &F &F &F &F  \\
-      \str{111}    &F &F &F &F &F &F  \\
+      \emptystring &\false &\false &\false &\true &\false &\false  \\[1ex]
+      \str{0}      &\false &\true &\false &\false &\true &\false  \\
+      \str{1}      &\true &\false &\false &\false &\false &\false  \\[1ex]
+      \str{00}     &\false &\false &\false &\false &\true &\false  \\
+      \str{01}     &\true &\false &\false &\false &\true &\false  \\
+      \str{10}     &\false &\true &\false &\false &\false &\false  \\
+      \str{11}     &\false &\false &\false &\false &\false &\false  \\[1ex]
+      \str{000}    &\false &\false &\false &\false &\true &\false  \\
+      \str{001}    &\true &\false &\false &\false &\true &\false  \\
+      \str{010}    &\false &\false &\false &\false &\true &\false  \\
+      \str{011}    &\false &\false &\false &\false &\true &\false  \\
+      \str{100}    &\false &\false &\false &\false &\false &\true  \\
+      \str{101}    &\false &\false &\false &\false &\false &\false  \\
+      \str{110}    &\false &\true &\false &\false &\false &\false  \\
+      \str{111}    &\false &\false &\false &\false &\false &\false  \\
     \end{tabular}
-    \caption{String matching test.}
+    \caption{String matching tests.}
     \label{fig:StringsMatchRegularExprsii}
   \end{figure}
-  Note that the regular expression \re{$\emptyset$} never matches.
 \end{answer}
 \end{exercise}
 % Using regular-expressions.rkt
@@ -5355,27 +5375,30 @@ For these regular expressions and for each element of
 \begin{exercise}
 A friend says to you, ``The point of parentheses is that you first do inside the
 parentheses and then do what's outside.
-So Kleene star means `match the inside and repeat', and 
-the regular expression \re{(0*1)*} matches
-the strings \str{001001} and~\str{010101} 
-but not \str{01001} and~\str{00000101}, where the substrings 
-are unequal.''
+So Kleene star must mean `match the inside and repeat'.
+So I think that \re{(0*1)*} should match
+the strings \str{001001} and~\str{010101}, 
+but not the strings \str{01001} and~\str{00000101}, 
+because you can't write those two as $\sigma^n$ for any substring~$\sigma$.''
 Straighten them out.
 \begin{answer}\verified
-  The definition is  
-  $
-  \kleenestar{\lang(R)}
-    =\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \text{$k\in\N$ and $\sigma_0,\ldots,\sigma_{k-1}\in\lang(R)$}}
-  $.
-  That is, the language of the
+  First, \re{(0*1)*} matches \str{01001} because
+  we can decompose it into
+  $\str{01001}=\str{01}\concat\str{001}$, and both
+  \str{01} and~\str{001} match \re{(0*1)}.
+  Second,  \re{(0*1)*} matches \str{00000101} because
+  $\str{00000101}=\str{000001}\concat\str{01}$, and both of 
+  those match \re{(0*1)}.
+  Thus, Kleene star means more like
+  ``repeatedly match the inside.''
+
+  In terms of the definitions, the language of the
   star is the star of the 
   language:~$\lang(\kleenestar{R})=\kleenestar{(\lang(R))}$.
-
-  As an example, \re{(0*1)*} matches \str{01001} because
-  $\str{01001}=\str{01}\concat\str{001}$, and both of 
-  \str{01} and~\str{001} matches \re{(0*1)}.
-  Thus, Kleene star means something more like
-  ``repeatedly match the inside.''
+  The definition of the latter is about decomposition, 
+  $
+  \kleenestar{\lang(R)}
+    =\set{\sigma_0\concat\cdots\concat\sigma_{k-1}\suchthat \text{$k\in\N$ and $\sigma_0,\ldots,\sigma_{k-1}\in\lang(R)$}}$.
 \end{answer}
 \end{exercise}
 % Using regular-expressions.rkt
@@ -5389,19 +5412,11 @@ Straighten them out.
 %  00000101 #t
 
 \begin{exercise}
-  Produce a regular expression for the language of bitstrings
-  with a substring consisting of at least three consecutive \str{1}'s.
-\begin{answer}\verified
-  One is \re{(0|1)*111(0|1)*}.  
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Someone who sits behind you in class says, ``I don't get it. 
+The person behind you in class says, ``I don't get it. 
 I got a regular expression that I am sure is right.
-But the book got a different one.''
+But I looked in the answers and the book got a different one.''
 Explain what is up.
-\begin{answer}
+\begin{answer}\verified
   Regular expressions are not unique.
   For instance, here are two regular expressions for the language 
   of strings over $\Sigma=\set{\str{a},\str{b}}$ that have a substring
@@ -5411,20 +5426,30 @@ Explain what is up.
 \end{exercise}
 
 \begin{exercise}
+  Produce a regular expression for the language of bitstrings
+  that have a substring consisting of at least three consecutive \str{1}'s.
+\begin{answer}\verified
+  One is \re{(0|1)*111(0|1)*}.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 For each language, give five strings that are in the language and five that 
 are not.
 Then give a regular expression describing the language.
-Finally, give a Finite State machine that accepts the language.
+Finally, give a Finite State machine that accepts the language
+(a nondeterministic machine is acceptable).
 \begin{exparts*}
 \item $\lang_0=\set{\str{a}^n\str{b}^{2m}\suchthat m,n\geq 1}$
-\item $\lang_0=\set{\str{a}^n\str{b}^{3m}\suchthat m,n\geq 1}$
+\item $\lang_1=\set{\str{a}^n\str{b}^{3m}\suchthat m,n\geq 1}$
 \end{exparts*}
 \begin{answer}
+For each, many sets of five strings are possible answers.
+We list here one set out of many.
 \begin{exparts}
-\item Of course, many sets of strings are possible answers.
-Here are five members of~$\lang_0$: 
-\str{abb}, \str{aabb}, $\str{a}\str{b}^4$,  $\str{aa}\str{b}^4$,
- $\str{a}\str{b}^6$.
+\item Here are five members of~$\lang_0$: 
+\str{abb}, \str{aabb}, $\str{a}\str{b}^4\!$,  $\str{aa}\str{b}^4\!$,
+ $\str{a}\str{b}^6\!$.
 Here are five that are not: \emptystring,
 \str{a}, \str{b}, \str{ab}, \str{abba}, \str{ba}. 
 A regular expression is \re{aa*bb(bb)*}.
@@ -5435,10 +5460,10 @@ this language.
 \end{display}
 \item 
 Five members of~$\lang_1$ are: 
-\str{abbb}, \str{aabbb}, $\str{a}\str{b}^6$,  $\str{aa}\str{b}^6$,
- $\str{a}\str{b}^9$.
+\str{abbb}, \str{aabbb}, $\str{a}\str{b}^6\!$,  $\str{aa}\str{b}^6\!$,
+ $\str{a}\str{b}^9\!$.
 Five that are not are: \emptystring,
-\str{a}, \str{b}, \str{abbb}, \str{abbba}, \str{ba}. 
+\str{a}, \str{b}, \str{abbbb}, \str{abbba}, \str{ba}. 
 A regular expression is \re{aa*bbb(bbb)*}.
 This is a nondeterministic Finite State machine that accepts~$\lang_1$.
 \begin{display}
@@ -5452,9 +5477,9 @@ This is a nondeterministic Finite State machine that accepts~$\lang_1$.
   Give a regular expression for the language over
   $\Sigma=\set{\str{a},\str{b},\str{c}}$
   whose strings are missing at least one letter,
-  that is, the strings that are either without any \str{a}'s,
+  that is, whose strings are either without any \str{a}'s,
   or without any \str{b}'s, or without any \str{c}'s.
-\begin{answer}
+\begin{answer}\verified
 \re{((a|b)*)|((a|c)*)|((b|c)*)}  
 \end{answer}
 \end{exercise}
@@ -5470,7 +5495,7 @@ This is a nondeterministic Finite State machine that accepts~$\lang_1$.
   
 \begin{exercise}  % HMU p 88
 Give a regular expression for each language.
-Use $\Sigma=\kleenestar{\set{\str{a},\str{b}}}$.
+Use $\Sigma=\set{\str{a},\str{b}}$.
 \begin{exparts*}
 \item The set of strings starting with \str{b}. 
 \item The set of strings whose second-to-last character is \str{a}.
@@ -5478,16 +5503,16 @@ Use $\Sigma=\kleenestar{\set{\str{a},\str{b}}}$.
 \item The strings where the number of \str{a}'s is divisible by three.
 % \item The strings with at most one set of consecutive \str{a}'s.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item \re{b(a|b)*}
 \item \re{(a|b)*a(a|b)}
 \item The two characters could come in the order 
-$\ldots{}\str{a}\ldots{}\str{b}\ldots{}$ or the order
-$\ldots{}\str{a}\ldots{}\str{b}\ldots{}$.
+$\sigma=\ldots{}\str{a}\ldots{}\str{b}\ldots{}$ or the order
+$\sigma=\ldots{}\str{a}\ldots{}\str{b}\ldots{}$\sentencespace
 So this works:
 \re{(a|b)*((a(a|b)*b)|(b(a|b)*a))(a|b)*}.
-\item The \str{a}'s must come in triplets: \re{(b*ab*ab*ab*)*b*}.
+\item The \str{a}'s must come in triplets: \re{(b*ab*ab*a)*b*}.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -5518,13 +5543,13 @@ Give a regular expression to describe each language over $\B$.
 \item The set of strings where no two adjacent characters are equal.
 \item The set of strings representing in binary multiples of eight.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
   \begin{exparts}
   \item There must be at least one~\str{1}, and more \str{1}'s must come in 
   pairs:~\re{(0*10*1)*0*10*}.
   \item The regular expression \re{(\emptystring|1)(01)*(\emptystring|0)}
   will do.
-  Note that it matches the empty string, as well as the string~\str{0}
+  In particular, it matches the empty string as well as the string~\str{0}
   and the string~\str{1}.
   \item A multiple of eight in binary ends in three \str{0}'s:~\re{(0|1)*000}.
   That expression matches binary numbers with leading \str{0}'s and won't match
@@ -5540,16 +5565,17 @@ Give a regular expression to describe each language over
 the alphabet $\Sigma=\set{\str{a},\str{b}}$.
 \begin{exparts*}
 \item Every \str{a} is both immediately preceded and immediately followed
-  by a~\str{b} character.
+  by a~\str{b}.
 \item Each string has at least two \str{b}'s that are not followed by an
   \str{a}.
 % \item Each string has no more than one pair of consecutive \str{a}'s
 %   and no more than one pair of consecutive \str{b}'s.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
   \begin{exparts}
   \item This is an answer: \re{((ba)*bb*)*}.
-  Notice that it matches the empty string, and that it matches \str{babab}.
+  Notice that it matches the empty string, and that it matches \str{babab}
+  and \str{bbbbab} and \re{b}.
   \item \re{(a|b)*((bba*bb)|(bbb))(a|b)*}
   % \item \re{}
   \end{exparts}
@@ -5564,15 +5590,16 @@ the alphabet $\Sigma=\set{\str{a},\str{b}}$.
   \item The number of \str{0}'s is even and 
    there are more than two \str{1}'s.
   \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
   \begin{exparts}
   \item Here the \str{0}'s come in pairs:~\re{(1*01*01*)*1*}.
-  \item Here two of the \str{1}'s have no 
-    Kleene star's: \re{0*10*10*1*(0|1)*}.
-  \item One that will do is to start with the expression from the prior item
-  and replace all the \str{0}'s with the expression from the first item.
+    Note that it matches \emptystring{} as well as~\re{1}.
+  \item Here are three \str{1}'s without 
+    Kleene star's: \re{0*10*10*1(0|1)*}.
+  \item We can start with the expression from the prior item
+  and for the \str{0}'s, substitute the expression from the first item.
   \begin{display}
-    \re{((1*01*01*)*1*)*1((1*01*01*)*1*)*1((1*01*01*)*1*)*1*(((1*01*01*)*1*)|1)*}
+    \re{((1*01*01*)*1*)*1((1*01*01*)*1*)*1((1*01*01*)*1*)*1(((1*01*01*)*1*)|1)*}
   %     (1*01*01*)*(1|010)1*(1*01*01*)*(1|010)1*(1*01*01*)*(1|010)1*((1*01*01*)*(1|010)1*)*
   \end{display}
   \end{exparts}
@@ -5584,12 +5611,12 @@ the alphabet $\Sigma=\set{\str{a},\str{b}}$.
   \begin{exparts}
   \item
     $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
-      \text{$\sigma$ ends with the same symbol it began with, and $\sigma\neq\emptystring$}}$    
+      \text{$\sigma$ ends with the same symbol that it began with, and $\sigma\neq\emptystring$}}$    
   \item
     $\set{\str{a}^i\str{b}\str{a}^j\suchthat
       \text{$i$ and $j$ leave the same remainder on division by three}}$
   \end{exparts}
-\begin{answer}
+\begin{answer}\verified
   \begin{exparts}
   \item \re{(a(a|b)*a)|(b(a|b)*b)}
   \item \re{((aaa)*b(aaa)*)|(a(aaa)*ba(aaa)*)|(aa(aaa)*baa(aaa)*)}
@@ -7233,7 +7260,7 @@ and $h(\emptystring)=\emptystring$.
   $\lang(\reversal{R})
   =\lang(\reversal{(R_0|R_1)})
   =\lang(\reversal{R_0}|\reversal{R_1})$ by condition~(v).
-  By the definition of the language associated with a pipe regular
+  By the definition of the language associated with a pipe, regular
   expression following \cref{def:RESyntax} that gives
   $=\lang(\reversal{R_0})\cup\lang(\reversal{R_1})$.
   The inductive hypothesis gives 
@@ -12438,7 +12465,7 @@ Matching any one tag is straightforward, for instance
 \re{<b>[\textasciicircum<]*</b>}.
 But for a single expression that matches them all,
 you would seem to have to do each as a separate
-case and then combine cases with a pipe.
+case and then combine cases with n alternation operator.
 However, instead we can have the system remember what it finds
 at the start and look for that again at the end.
 Thus, the regex

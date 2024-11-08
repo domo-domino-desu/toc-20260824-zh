@@ -5740,17 +5740,18 @@ For each machine, use that definition to find the set of unreachable states.
 
 % \recommended
 \begin{exercise}
-Here is a gramamr for regular expressions that is an 
-alternative to \cref{def:RESyntax}.
+Here is a grammar for regular expressions that reflects the operator
+precedence rules. 
+% alternative to \cref{def:RESyntax}.
 \begin{grammar}
-\ntrm{reg-exp} \produces{} \ntrm{concat} \syntaxor \trm{(} \ntrm{reg-exp} `\trm{|}' \ntrm{concat} \trm{)} 
+\ntrm{reg-exp} \produces{} \ntrm{concat} \syntaxor \ntrm{reg-exp} `\trm{|}' \ntrm{concat} 
 
-\ntrm{concat} \produces{} \trm{(} \ntrm{concat} \ntrm{simple} \trm{)} \syntaxor \ntrm{simple}
+\ntrm{concat} \produces{}  \ntrm{simple} \syntaxor \ntrm{concat} \ntrm{simple}
 
-\ntrm{simple} \produces{} \trm{(} \ntrm{reg-exp} \trm{)} \syntaxor \trm{(} \ntrm{simple} \trm{*)} \syntaxor $\emptyset$ \syntaxor \emptystring \syntaxor  $x_0$ \syntaxor \ldots{} \syntaxor $x_n$
+\ntrm{simple} \produces{} \trm{(} \ntrm{reg-exp} \trm{)} \syntaxor \ntrm{simple} \trm{*} \syntaxor $\emptyset$ \syntaxor \emptystring \syntaxor  $x_0$ \syntaxor \ldots{} \syntaxor $x_n$
 \end{grammar}
-  Construct the parse tree for these regular expressions over
-  $\Sigma=\set{\str{a},\str{b}}$.
+  Derive and construct the parse tree for each regular expressions over
+  $\Sigma=\set{\str{a},\str{b}, \str{c}}$.
   \begin{exparts*}
   \item \re{a(b|c)}
   \item \re{ab*(a|c)}  
@@ -5765,11 +5766,51 @@ alternative to \cref{def:RESyntax}.
     \caption{Parse trees for \re{a(b|c)} and \re{ab*(a|c)}.}
     \label{fig:ParseRegularExprsI}
   \end{figure}
+\begin{exparts}
+\item Here is the derivation.
+\begin{display}
+  \begin{tabular}{r@{}l}
+  \synt{reg-exp} &\derives \synt{concat}  \\
+    &\derives \synt{concat} \synt{simple}  \\
+    &\derives \synt{concat} \str{(} \synt{reg-exp} \str{)}  \\
+    &\derives \synt{concat} \str{(} \synt{reg-exp} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \synt{concat} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \synt{simple} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \str{(} \synt{simple} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \str{(} \str{b} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \str{(} \str{b} `\str{|}' \synt{simple} \str{)} \\
+    &\derives \str{a} \str{(} \str{b} `\str{|}' \str{c} \str{)}
+  \end{tabular}
+\end{display}
+\item This derivation is similar.
+\begin{display}
+  \begin{tabular}{r@{}l}
+  \synt{reg-exp} &\derives \synt{concat}  \\
+    &\derives \synt{concat} \synt{simple}  \\
+    &\derives \synt{concat} \str{(} \synt{reg-exp} \str{)}  \\
+    &\derives \synt{concat} \str{(} \synt{reg-exp} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \synt{concat} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \synt{concat} \synt{simple} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \synt{simple} \synt{simple} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \synt{simple} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \synt{simple} \str{*} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \str{b} \str{*} \str{(} \synt{concat} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \str{b} \str{*} \str{(} \synt{simple} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \str{b} \str{*} \str{(} \str{a} `\str{|}' \synt{concat} \str{)} \\
+    &\derives \str{a} \str{b} \str{*} \str{(} \str{a} `\str{|}' \synt{simple} \str{)} \\
+    &\derives \str{a} \str{b} \str{*} \str{(} \str{a} `\str{|}' \str{c} \str{)} 
+  \end{tabular}
+\end{display}
+    
+\end{exparts}
+
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
-  Using \cref{def:RESyntax}, parse \cref{ex:RegexABOrCStar}'s \re{a(b|c)*}
+  Use the grammar in the prior exercise to parse \cref{ex:RegexABOrCStar}'s 
+  \re{a(b|c)*}
   and \re{a(b*|c*)}.
 \begin{answer}
   \figureref{fig:ParseRegularExprsII} shows the two trees.

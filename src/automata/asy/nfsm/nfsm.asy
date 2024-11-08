@@ -4548,15 +4548,16 @@ node f=ncircle("$f$",ns_accepting);
 
 // calculate nodes position
 real u=1.5cm;  // horizontal  
-real v=1.0*u;  // vertical
-hlayout(1*u, e, q0, q1, f);
+real v=0.85*u;  // vertical
+hlayout(1*u, e, q0, q1);
+vlayout(1*v, q0, f);
 
 // draw edges
 draw(pic,
      (e--q0).l("$\varepsilon$"),
      (q0..bend..q1).l("\re{a}").style("leftside"),
      (q0..loop(N)).l("\re{a|b}"),
-     (q0..bend..f).l("$\varepsilon$"),
+     (q0--f).l("$\varepsilon$"),
      (q1..bend..q0).l("\re{b}") 
      );
 

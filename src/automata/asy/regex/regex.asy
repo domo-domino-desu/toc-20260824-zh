@@ -53,15 +53,15 @@ node a=nbox("\strut\terminal{a}",ns_noborder),
      star=nbox("\strut\terminal{*}",ns_noborder),
      openparen=nbox("\strut\terminal{(}",ns_noborder),
      closeparen=nbox("\strut\terminal{)}",ns_noborder),
-     regex1=nbox("\strut\nonterminal{regex}",ns_noborder),
+     regex1=nbox("\strut\nonterminal{reg-exp}",ns_noborder),
      concat1=nbox("\strut\nonterminal{concat}",ns_noborder),
      concat2=nbox("\strut\nonterminal{concat}",ns_noborder),
      simple1=nbox("\strut\nonterminal{simple}",ns_noborder),
      simple2=nbox("\strut\nonterminal{simple}",ns_noborder),
      simple3=nbox("\strut\nonterminal{simple}",ns_noborder),
      char1=nbox("\strut\nonterminal{char}",ns_noborder),
-     regex2=nbox("\strut\nonterminal{regex}",ns_noborder),
-     regex3=nbox("\strut\nonterminal{regex}",ns_noborder),
+     regex2=nbox("\strut\nonterminal{reg-exp}",ns_noborder),
+     regex3=nbox("\strut\nonterminal{reg-exp}",ns_noborder),
      concat3=nbox("\strut\nonterminal{concat}",ns_noborder),
      concat4=nbox("\strut\nonterminal{concat}",ns_noborder),
      simple4=nbox("\strut\nonterminal{simple}",ns_noborder),
@@ -79,47 +79,28 @@ regex1.pos=(0*u,0*v);
 concat1.pos=(0*u,-1*v);
 // rank 2
 concat2.pos=(-1*u,-2*v);
-// simple1.pos=(2*u,-2*v);
-//  simple1.pos=(find_horiz(-45.0,-1*v) + concat1.pos.x,concat1.pos.y-1*v);
 simple1.pos=new_node_pos(concat1, -30, -1*v);
 // rank 3
-// simple2.pos=(-1*u,-3*v);
 simple2.pos=new_node_pos(concat2, -90, -1*v);
-// simple3.pos=(1.5*u,-3*v);
 simple3.pos=new_node_pos(simple1, -135.0, -1*v);
-// star.pos=(2.5*u,-3*v);
 star.pos=new_node_pos(simple1, -45.0, -1*v);
 // rank 4
-// vlayout(1*v, simple2, char1);
-// char1.pos=(-1*u,-4*v);
-char1.pos=new_node_pos(simple2, -90, -1*v);
-// openparen.pos=(1*u,-4*v);
-openparen.pos=new_node_pos(simple3, -135, -1*v);
-// regex2.pos=(1.5*u,-4*v);
+a.pos=new_node_pos(simple2, -90, -1*v);
+openparen.pos=new_node_pos(simple3, -150, -1*v);
 regex2.pos=new_node_pos(simple3, -90, -1*v);
-// closeparen.pos=(2*u,-4*v);
-closeparen.pos=new_node_pos(simple3, -45, -1*v);
+closeparen.pos=new_node_pos(simple3, -30, -1*v);
 // rank 5
-// a.pos=(-1*u,-5*v);
-a.pos=new_node_pos(char1, -90, -1*v);
-// regex3.pos=(1*u,-5*v);
 regex3.pos=new_node_pos(regex2, -135, -1*v);
-// pipe.pos=(1.5*u,-5*v);
 pipe.pos=new_node_pos(regex2, -90, -1*v);
-// concat3.pos=(2*u,-5*v);
 concat3.pos=new_node_pos(regex2, -45, -1*v);
 // rank 6
-// concat4.pos=(1*u,-6*v);
 concat4.pos=new_node_pos(regex3, -90, -1*v);
-// simple4.pos=(2*u,-6*v);
 simple4.pos=new_node_pos(concat3, -90, -1*v);
 // rank 7
 // simple5.pos=(1*u,-7*v);
 simple5.pos=new_node_pos(concat4, -90, -1*v);
-// c.pos=(2*u,-7*v);
 c.pos=new_node_pos(simple4, -90, -1*v);
 // rank 8
-// b.pos=(1*u,-8*v);
 b.pos=new_node_pos(simple5, -90, -1*v);
 
 // draw edges
@@ -129,10 +110,9 @@ draw(pic,
      (concat2--simple2),
      (simple1--simple3), (simple1--star),
      (concat2--simple2),
-     (simple2--char1),
+     (simple2--a),
      (simple3--openparen), (simple3--regex2), (simple3--closeparen),
      (regex2--regex3), (regex2--pipe), (regex2--concat3),
-     (char1--a),
      (regex3--concat4),
      (concat3--simple4),
      (concat4--simple5),
@@ -156,7 +136,6 @@ draw(pic,
      simple1,
      simple2,
      simple3,
-     char1,
      regex2,
      regex3,
      concat3,
@@ -178,28 +157,25 @@ picture pic;
 
 // define nodes
 node
-     regex1=nbox("\strut\nonterminal{regex}",ns_noborder),
+     regex1=nbox("\strut\nonterminal{reg-exp}",ns_noborder),
      concat1=nbox("\strut\nonterminal{concat}",ns_noborder),
      concat2=nbox("\strut\nonterminal{concat}",ns_noborder),
      simple1=nbox("\strut\nonterminal{simple}",ns_noborder),
      simple2=nbox("\strut\nonterminal{simple}",ns_noborder),
      openparen=nbox("\strut\terminal{(}",ns_noborder),
-     regex2=nbox("\strut\nonterminal{regex}",ns_noborder),
+     regex2=nbox("\strut\nonterminal{reg-exp}",ns_noborder),
      closeparen=nbox("\strut\terminal{)}",ns_noborder),
-     char1=nbox("\strut\nonterminal{char}",ns_noborder),
-     regex3=nbox("\strut\nonterminal{regex}",ns_noborder),
+     regex3=nbox("\strut\nonterminal{reg-exp}",ns_noborder),
      pipe=nbox("\strut\terminal{|}",ns_noborder), 
      concat3=nbox("\strut\nonterminal{concat}",ns_noborder),
      a=nbox("\strut\terminal{a}",ns_noborder),
      concat4=nbox("\strut\nonterminal{concat}",ns_noborder),
      simple3=nbox("\strut\nonterminal{simple}",ns_noborder),
      simple4=nbox("\strut\nonterminal{simple}",ns_noborder),
-simple5=nbox("\strut\nonterminal{simple}",ns_noborder),
+     simple5=nbox("\strut\nonterminal{simple}",ns_noborder),
      star1=nbox("\strut\terminal{*}",ns_noborder),
-simple6=nbox("\strut\nonterminal{simple}",ns_noborder),
+     simple6=nbox("\strut\nonterminal{simple}",ns_noborder),
      star2=nbox("\strut\terminal{*}",ns_noborder),
-     char2=nbox("\strut\nonterminal{char}",ns_noborder),
-     char3=nbox("\strut\nonterminal{char}",ns_noborder),
      c=nbox("\strut\terminal{c}",ns_noborder),
      b=nbox("\strut\terminal{b}",ns_noborder);
 
@@ -218,16 +194,15 @@ concat2.pos=(-1*u,-2*v);
 simple1.pos=new_node_pos(concat1, -30, -1*v);
 // rank 3
 simple2.pos=new_node_pos(concat2, -90, -1*v);
-openparen.pos=new_node_pos(simple1, -135.0, -1*v);
+openparen.pos=new_node_pos(simple1, -150.0, -1*v);
 regex2.pos=new_node_pos(simple1, -90.0, -1*v);
-closeparen.pos=new_node_pos(simple1, -45.0, -1*v);
+closeparen.pos=new_node_pos(simple1, -30.0, -1*v);
 // rank 4
-char1.pos=new_node_pos(simple2, -90, -1*v);
+a.pos=new_node_pos(simple2, -90, -1*v);
 regex3.pos=new_node_pos(regex2, -150, -1*v);
 pipe.pos=new_node_pos(regex2, -90, -1*v);
 concat3.pos=new_node_pos(regex2, -30, -1*v);
 // rank 5
-a.pos=new_node_pos(char1, -90, -1*v);
 concat4.pos=new_node_pos(regex3, -90, -1*v);
 simple3.pos=new_node_pos(concat3, -90, -1*v);
 // rank 6
@@ -237,12 +212,9 @@ star1.pos=new_node_pos(simple3, -45, -1*v);
 // rank 7
 simple6.pos=new_node_pos(simple4, -135, -1*v);
 star2.pos=new_node_pos(simple4, -45, -1*v);
-char2.pos=new_node_pos(simple5, -90, -1*v);
+c.pos=new_node_pos(simple5, -90, -1*v);
 // rank 8
-char3.pos=new_node_pos(simple6, -90, -1*v);
-c.pos=new_node_pos(char2, -90, -1*v);
-// rank 9
-b.pos=new_node_pos(char3, -90, -1*v);
+b.pos=new_node_pos(simple6, -90, -1*v);
 
 // draw edges
 draw(pic,
@@ -254,10 +226,9 @@ draw(pic,
      (concat2--simple2),
      (simple1--openparen), (simple1--regex2), (simple1--closeparen),
      // rank 3-4
-     (simple2--char1),
+     (simple2--a),
      (regex2--regex3), (regex2--pipe), (regex2--concat3),
      // rank 4-5
-     (char1--a),
      (regex3--concat4),
      (concat3--simple3),
      // rank 5-6
@@ -265,12 +236,9 @@ draw(pic,
      (simple3--simple5), (simple3--star1),
      // rank 6-7
      (simple4--simple6), (simple4--star2),
-     (simple5--char2),
+     (simple5--c),
      // rank 7-8
-     (simple6--char3),
-     (char2--c),
-     // rank 8-9
-     (char3--b)
+     (simple6--b)
      );
 
 
@@ -284,7 +252,6 @@ draw(pic,
      openparen,
      regex2,
      closeparen,
-     char1,
      regex3,
      pipe, 
      concat3,
@@ -296,8 +263,6 @@ draw(pic,
      star1,
      simple6,
      star2,
-     char2,
-     char3,
      c,
      b
      );
@@ -328,15 +293,11 @@ node
      regex3=nbox("\strut\nonterminal{reg-exp}",ns_noborder),
      pipe=nbox("\strut\terminal{|}",ns_noborder), 
      concat3=nbox("\strut\nonterminal{concat}",ns_noborder),
-     char1=nbox("\strut\nonterminal{char}",ns_noborder),
-     char2=nbox("\strut\nonterminal{char}",ns_noborder),
      concat4=nbox("\strut\nonterminal{concat}",ns_noborder),
      simple5=nbox("\strut\nonterminal{simple}",ns_noborder),
      a1=nbox("\strut\terminal{a}",ns_noborder),
      b=nbox("\strut\terminal{b}",ns_noborder),
      simple6=nbox("\strut\nonterminal{simple}",ns_noborder),
-     char3=nbox("\strut\nonterminal{char}",ns_noborder),
-     char4=nbox("\strut\nonterminal{char}",ns_noborder),
      c=nbox("\strut\terminal{c}",ns_noborder),
      a2=nbox("\strut\terminal{a}",ns_noborder);
 
@@ -366,24 +327,15 @@ regex3.pos=new_node_pos(regex2, -130, -1*v);
 pipe.pos=new_node_pos(regex2, -90, -1*v);
 concat3.pos=new_node_pos(regex2, -50, -1*v);
 // rank 4
-// char1.pos=new_node_pos(simple3, -90, -1*v);
 a1.pos=new_node_pos(simple3, -90, -1*v);
-// char2.pos=new_node_pos(simple4, -90, -1*v);
 b.pos=new_node_pos(simple4, -90, -1*v);
 concat4.pos=new_node_pos(regex3, -90, -1*v);
 simple5.pos=new_node_pos(concat3, -90, -1*v);
 // rank 5
-// a1.pos=new_node_pos(char1, -90, -1*v);
-// b.pos=new_node_pos(char2, -90, -1*v);
 simple6.pos=new_node_pos(concat4, -90, -1*v);
-// char3.pos=new_node_pos(simple5, -90, -1*v);
 c.pos=new_node_pos(simple5, -90, -1*v);
 // rank 6
-// char4.pos=new_node_pos(simple6, -90, -1*v);
 a2.pos=new_node_pos(simple6, -90, -1*v);
-// c.pos=new_node_pos(char3, -90, -1*v);
-// rank 7
-// a2.pos=new_node_pos(char4, -90, -1*v);
 
 // draw edges
 draw(pic,
@@ -399,24 +351,15 @@ draw(pic,
      (simple2--simple4), (simple2--star),
      (regex2--regex3), (regex2--pipe), (regex2--concat3),     
      // rank 3-4
-     // (simple3--char1),
      (simple3--a1),
-     // (simple4--char2),
      (simple4--b),
      (regex3--concat4),
      (concat3--simple5),
      // rank 4-5
-     // (char1--a1),
-     // (char2--b),
      (concat4--simple6),
-     // (simple5--char3),
      (simple5--c),
      // rank 5-6
-     // (simple6--char4),
      (simple6--a2)
-     // (char3--c),
-     // rank 6-7
-     // (char4--a2)
      );
 
 
@@ -441,24 +384,15 @@ draw(pic,
      pipe,
      concat3,
 // rank 4
-     // char1,
      a1,
-     // char2,
      b,
      concat4,
      simple5,
 // rank 5
-     // a1,
-     // b,
      simple6,
-     // char3,
      c,
 // rank 6
       a2
-     // char4,
-     // c,
-// rank 7
-// a2
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

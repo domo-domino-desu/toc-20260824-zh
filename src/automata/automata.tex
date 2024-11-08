@@ -4613,7 +4613,8 @@ $\lang=\set{\str{pat}, \str{pet}, \str{pit},\str{pot}, \str{put}}$.
 \end{example}
 
 The \definend{alternation}\index{alternation} operator, `|',\footnote{%
-  This symbol is called `pipe'.}\index{pipe@| pipe alternation operator} 
+  This symbol is called `pipe'.
+  Other notations for alternation are `$+$' and `$\cup$'.}\index{pipe@| pipe alternation operator} 
 denoting `or',
 and the parentheses, which provide grouping, 
 are not part of the strings being described;~they
@@ -5626,18 +5627,19 @@ the alphabet $\Sigma=\set{\str{a},\str{b}}$.
 
 \recommended
 \begin{exercise}
-Give a regular expression for each language over $\kleenestar{\B}$.
+Give a regular expression describing each language over $\kleenestar{\B}\!$.
 \begin{exparts}
-\item The strings representing a binary number that is a multiple of eight.
+\item The strings representing a binary number that is a multiple of two.
 \item The bitstrings where the first character differs from the final
-one.
+  one.
 \item The bitstrings where no two adjacent characters are equal.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
-\item \re{1(0|1)*000}
-\item \re{1(01)*0|0(10)*1}
-\item \re{$\emptystring$|0|1|0(10*)(1|$\emptystring$)|1(01)*(0|$\emptystring$)}
+\item This requires the number to have a leading \str{1}: \re{1(0|1)*0}.
+  To also allow the number $0$ we can use the expression \re{(1(0|1)*0)|0}.
+\item \re{(1(01)*0)|(0(10)*1)}
+\item \re{$\emptystring$|0|1|(0(10)*(1|\emptystring))|(1(01)*(0|\emptystring))}
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -5650,7 +5652,7 @@ by each regular expression.
 \item \re{a*ba}
 \item \re{ab*(a|b)*a}
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item A nondeterministic Finite State machine is 
 on the left in \figureref{fig:FSMForStarab}.
@@ -5667,7 +5669,7 @@ If you prefer a deterministic machine, use the one on the right.
 \begin{figure}
   \centering
   \vcenteredhbox{\includegraphics{automata/asy/regex/regex06.pdf}}
-  \caption{Finite State machine for \re{ab*(a|b)*a}.}
+  \caption{Finite State machine for \re{ab*(a|b)*a}, which describes the same language as \re{a(a|b)*a}.}
   \label{fig:FSMForaabStara}
 \end{figure}
 Note that \re{b*(a|b)*} collapses to \re{(a|b)*}, so that is what the
@@ -5677,49 +5679,6 @@ machine to a deterministic one,
 so if you prefer a deterministic one then take the above nondeterministic 
 machine as an abbreviation. 
 \end{exparts}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}\autocite{GATE21}
-Let $\lang\subseteq\kleenestar{\B}$ be accepted by a deterministic 
-Finiite State machine having exactly $k$ states.
-One of these must also be accepted by such a machine with $k$ states, while for
-the other that is not necessarily right.
-Which is which?
-\begin{exparts*}
-\item The complement, $\setcomp{\lang}$
-\item $\lang\cup\set{\str{01}}$  
-% \item $\lang^k$
-\end{exparts*}
-\begin{answer}
-The first will be accepted by the machine with the accepting states switched
-to nonaccepting, and the nonaccepting states switched to accepting.  
-The second will not work if $\lang=\emptyset$ and $k=1$.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-  Fix a Finite State machine~$\FSM$.
-  Kleene's Theorem shows that the set of strings taking $\FSM$ from the
-  start state to the set of final states is regular.
-  \begin{exparts}
-    \item
-      Show that for any set of states $S\subseteq Q_{\FSM}$ the set of
-      strings taking $\FSM$ from the start state to one of the states in~$S$
-      is regular.
-    \item
-      Show that the set of strings taking $\FSM$ from any single
-      state to any other single state is regular.
-  \end{exparts}
-\begin{answer}
-  \begin{exparts}
-  \item Transform the machine~$\FSM$ to a new machine~$\hat{\FSM}$ by making
-  the set of final states of~$\hat{\FSM}$ be~$S$.
-  \item Transform the machine~$M$ to~$\hat{\FSM}$ by making
-  the start state be the given first single state, and also 
-  make the set~$S$ of the prior item contain only the ending state.
-  Then apply the argument given for the prior item. 
-  \end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -5739,14 +5698,13 @@ is the set~$S_{i+1}$.
 Stop when $S_i=S_{i+1}$, 
 at which point it is the set of ever-reachable states.
 The unreachable states are the others.
-
-For each machine use that definition to find the set of unreachable states.
-\vspace{0.5ex}\par % little vertical room for graphic
+For each machine, use that definition to find the set of unreachable states.
+\vspace{0.5ex}\par\noindent % little vertical room for graphic
 \begin{exparts*}
 \item \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm60.pdf}}
 \item \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm61.pdf}}
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
   We will construct the reachable states, and then the unreachable ones are
   the others.
   \begin{exparts}
@@ -5780,25 +5738,18 @@ For each machine use that definition to find the set of unreachable states.
 \end{answer}
 \end{exercise}
 
-\recommended
-\begin{exercise}
-Show that the set of languages over $\Sigma$ that are
-described by a regular expression is countable.
-Conclude that there are languages not recognized by any Finite State machine.
-\begin{answer}
-  Alphabets are finite, as defined in \cref{sec:Strings}.
-  So the set of length~$n$ strings over~$\Sigma$ is finite, 
-  and therefore countable.
-  Chapter~II's \cref{th:UnionFiniteNumberCtbleSets} shows that the countable
-  union of countable sets is countable, and so the union over all~$n$ 
-  of length~$n$ strings is countable.
-\end{answer}
-\end{exercise}
-
 % \recommended
 \begin{exercise}
-  For the grammar of \cref{def:RESyntax},
-  construct the parse tree for these regular expressions over
+Here is a gramamr for regular expressions that is an 
+alternative to \cref{def:RESyntax}.
+\begin{grammar}
+\ntrm{reg-exp} \produces{} \ntrm{concat} \syntaxor \trm{(} \ntrm{reg-exp} `\trm{|}' \ntrm{concat} \trm{)} 
+
+\ntrm{concat} \produces{} \trm{(} \ntrm{concat} \ntrm{simple} \trm{)} \syntaxor \ntrm{simple}
+
+\ntrm{simple} \produces{} \trm{(} \ntrm{reg-exp} \trm{)} \syntaxor \trm{(} \ntrm{simple} \trm{*)} \syntaxor $\emptyset$ \syntaxor \emptystring \syntaxor  $x_0$ \syntaxor \ldots{} \syntaxor $x_n$
+\end{grammar}
+  Construct the parse tree for these regular expressions over
   $\Sigma=\set{\str{a},\str{b}}$.
   \begin{exparts*}
   \item \re{a(b|c)}
@@ -5808,9 +5759,9 @@ Conclude that there are languages not recognized by any Finite State machine.
   \figureref{fig:ParseRegularExprsI} shows the two trees.
   \begin{figure}
     \centering
-    \vcenteredhbox{\includegraphics{automata/asy/regex/regex02.pdf}}
-    \hspace{3em}
     \vcenteredhbox{\includegraphics{automata/asy/regex/regex03.pdf}}
+    \hspace{3em}
+    \vcenteredhbox{\includegraphics{automata/asy/regex/regex02.pdf}}
     \caption{Parse trees for \re{a(b|c)} and \re{ab*(a|c)}.}
     \label{fig:ParseRegularExprsI}
   \end{figure}
@@ -6066,6 +6017,90 @@ described in the proof's comment on the subtle point.
     \hspace{3em}
     \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm1022.pdf}}
   \end{display}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}\autocite{GATE21}
+Let $\lang\subseteq\kleenestar{\B}$ be accepted by a deterministic 
+Finite State machine having exactly $k$ states.
+One of these must also be accepted by such a machine with $k$ states, while for
+the other that is not necessarily right.
+Which is which?
+\begin{exparts*}
+\item The complement, $\setcomp{\lang}$
+\item $\lang\cup\set{\str{01}}$  
+% \item $\lang^k$
+\end{exparts*}
+\begin{answer}\verified
+The first is recognized by the same $k$-state machine, but with the accepting 
+states switched to nonaccepting and the nonaccepting states switched to 
+accepting.  
+The second will not be recognized by a $k$-state machine 
+if $\lang=\emptyset$ and $k=1$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+  Fix a Finite State machine~$\FSM$.
+  Kleene's Theorem shows that the set of strings taking $\FSM$ from the
+  start state to the set of final states is regular.
+  \begin{exparts}
+    \item
+      Show that for any set of states $S\subseteq Q_{\FSM}$ the set of
+      strings taking $\FSM$ from the start state to one of the states in~$S$
+      is regular.
+    \item
+      Show that the set of strings taking $\FSM$ from any single
+      state to any other single state is regular.
+  \end{exparts}
+\begin{answer}\verified
+  \begin{exparts}
+  \item Transform the machine~$\FSM$ to a new machine~$\hat{\FSM}$ by making
+  the set of final states of~$\hat{\FSM}$ be~$S$.
+  \item Transform the machine~$M$ to~$\hat{\FSM}$ by making
+  the start state be the given first single state, and also 
+  make the set~$S$ of the prior item contain only the ending state.
+  Then apply the argument given for the prior item. 
+  \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that the set of languages over a nonempty $\Sigma$ that are
+described by a regular expression is countably infinite.
+Conclude that there are languages over $\Sigma$
+not recognized by any Finite State machine.
+\begin{answer}\verified
+  We will show this in two halves:~that the set of languages is infinite, 
+  and that it is at most countable.
+
+  To see that the number of languagers is infinite, recall that
+  alphabets are finite, as defined in \cref{sec:Strings}.
+  So the set of length~$n$ strings over~$\Sigma$ is finite.
+  We can make a regular expression that describes the language of
+  length~$n$ strings over~$\Sigma$ just by taking the `|' of those
+  finitely many strings.
+  The described laguage consists of exactly those strings, so for each~$n$
+  the described language is different.
+  Over all~$n$, that makes infinitely many different languages.
+
+  We finish by showing that it is countable.
+  Every regular expression is associated with only one language and so
+  if we show that there are countably
+  many regular expressions then we will be done.
+  A regular expression is a string over
+  $\Sigma\cup\set{\str{)},\str{)},\str{|},\str{*}}$,
+  which is a finite set.
+  So for any number~$n\in\N$ there are finitely many regular expressions
+  of length~$n$.
+  Recall Chapter~II's \cref{th:UnionFiniteNumberCtbleSets}, which
+  shows that the countable union of countable sets is countable.
+  Because a finite set is countable, the union over all~$n$ of the length~$n$
+  regular expressions is therefore countable.
+
+  As to the conclusion, we have already seen that the number of 
+  languages over~$\Sigma$ is uncountable, so there are languages that
+  are not described by any regular expression.
 \end{answer}
 \end{exercise}
 

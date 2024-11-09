@@ -2795,6 +2795,7 @@ hlayout(1*u, q0, q1, q2);
 // draw edges
 draw(pic,
      (q0..bend(-20)..q1).l("\str{A}").style("leftside"),
+     (q0..loop(N)).l("\str{F}"),
      (q1..loop(N)).l("\str{B}"),
      (q1..bend(-20)..q2).l("\str{C}").style("leftside"),
      (q2..bend(-20)..q1).l("\str{D}").style("leftside"),
@@ -4774,6 +4775,7 @@ hlayout(1*u, e, q0, q1, q2, f);
 draw(pic,
      (e--q0).l("$\varepsilon$"),
      (q0..bend(-20)..q1).l("\re{A}").style("leftside"),
+     (q0..loop(N)).l("\re{F}"),
      (q1..loop(N)).l("\re{B}"),
      (q1..bend(-20)..q2).l("\re{C}").style("leftside"),
      (q2..bend(-20)..q1).l("\re{D}").style("leftside"),
@@ -4812,7 +4814,7 @@ hlayout(1*u, q2, f);
 draw(pic,
      (e--q0).l("$\varepsilon$"),
      (q0..bend(-20)..q2).l("\re{AB*C}").style("leftside"),
-     (q0..loop(N)).l("\re{AB*E}"),
+     (q0..loop(N)).l("\re{F|(AB*E)}"),
      (q2..bend(-20)..q0).l("\re{DB*E}").style("leftside"),
      (q2..loop(N)).l("\re{DB*C}"),
      (q2--f).l("$\varepsilon$")

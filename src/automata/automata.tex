@@ -5033,16 +5033,17 @@ starting one.
   These adjustments do not change the language of accepted strings.
   
   The last part of transforming to $\hat{\FSM}$ is to
-  drop useless states.
+  drop states that are useless in that they don't affect which strings are
+  accepted.
   If a state node other than~$f$ has no outgoing edges then
   omit it, along with the edges into it.
   The language of the machine will not change because this state
   is not itself accepting as only~$f$ is accepting, and
   cannot lead to an accepting state since it doesn't lead anywhere.
   Along the same lines, 
-  if a state node  is not reachable from the start~$e$ then
+  if a state node  is unreachable from the start~$e$ then
   drop that node along with its incoming and outgoing edges.
-  (The idea of useless states is clear but it has some technical aspects.
+  (The idea behind useless states has some technical aspects.
   For instance, omitting a no-outgoing-edges node along with its incoming edges
   can result in another node now having no outgoing edges, which in turn needs 
   the same treatment.
@@ -6805,15 +6806,15 @@ $F=\set{(q_0,s_0),(q_0,s_1),(q_1,s_0),(q_1,s_1)}$.
 
 \begin{exercise}
 Find the cross product of this machine,
-$\FSM_0$ from \cref{ex:ProductConstruction},
+$\FSM$ from \cref{ex:ProductConstruction},
 with itself.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm92.pdf}}
 \end{center}
-Set the accepting states so that it accepts the same language,
-$\lang_0$.
-\begin{answer}
-This is the transition table for~$\FSM_0$.
+Set the accepting states so that it accepts the same language as
+$\FSM$.
+\begin{answer}\verified
+This is the transition table for~$\FSM$.
 \begin{center}
 \begin{tabular}[t]{r|*{2}{c}}
   \multicolumn{1}{r}{$\Delta_0$}
@@ -6835,9 +6836,11 @@ The product of this machine with itself has four states.
   \acceptingstate{} $(s_1,s_1)$  &$(s_1,s_1)$  &$(s_0,s_0)$   
 \end{tabular}
 \end{center}
-The accepting state is set for the intersection, to only $(s_1,s_1)$.
-For the union we could also include the states $(s_0,s_1)$ and $(s_1,s_0)$ 
-but it wouldn't matter because those states are unreachable.
+As shown, the set of accepting states is defined as for the 
+intersection, to $F_{\intersection}=\set{(s_1,s_1)}$.
+We could have instead used the set 
+for union, $F_{\union}=\set{(s_1,s_1),(s_0,s_1),(s_1,s_0)}$ 
+(although the two additional states are unreachable).
 \end{answer}
 \end{exercise}
 
@@ -6846,7 +6849,7 @@ One of our first examples of Finite State machines, \cref{ex:FSATwoAsEvenBs},
 accepts a string when it contains at least two \str{0}'s as well as an
 even number of \str{1}'s.
 Make such a machine as a product of two simpler machines.
-\begin{answer}
+\begin{answer}\verified
 The machine on the left below accepts a string $\sigma\in\kleenestar{\B}$ if
 it contains at least two \str{0}'s.
 The one on the right accepts a string if it contains an even number of 
@@ -6870,7 +6873,8 @@ The one on the right accepts a string if it contains an even number of
 \end{tabular}
 \end{center}
 The product construction gives this.
-We want the intersection of the two languages.
+The set of accepting states is arranged for 
+the intersection of the two languages.
 \begin{center}
 \begin{tabular}[t]{r|*{2}{c}}
   \multicolumn{1}{r}{$\Delta$}
@@ -6887,30 +6891,33 @@ We want the intersection of the two languages.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
-For each, decide whether it is true or false, with justification.
+For each, decide whether it is true or false. 
+Briefly justify.
 \begin{exparts}
 \item Every language is the subset of a regular language.
+\item Every language has a subset that is not regular.
 \item The union of a regular language and a language that is not regular
  must be not regular.
-\item Every language has a subset that is not regular.
 \item The union of two regular languages is regular, without
   exception.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item
 True.
-Every language is a subset of the language $\kleenestar{\Sigma}$.
-\item 
-False.
-Take $\lang_0$ to be not regular, and take $\lang_1$ to be the empty
-language, which is regular.
-Their union is $\lang_0$.
+Every language is a subset of the language $\kleenestar{\Sigma}\!$.
 \item
 False.
-A language with one element is regular, and its only subset is the 
+For any alphabet, 
+a language with one element is regular and its only subset is the 
 empty language, which is also regular.
+\item 
+False.
+Take $\lang_0$ to be not regular and take $\lang_1$ to be the empty
+language, $\lang_1=\set{}$, which is regular.
+Their union is $\lang_0$.
 \item
 True.
 This is part of \cref{lem:RegLangsClosedUnderUnionConcatStar}.
@@ -6919,42 +6926,44 @@ This is part of \cref{lem:RegLangsClosedUnderUnionConcatStar}.
 \end{exercise}
 
 \begin{exercise}
-Fill in the blank (with justification):~The 
-concatenation of a regular language with a not-regular language
+Choose the right letter to fill in the blank 
+(with justification):~the 
+concatenation of a regular language with a language that is not regular
 \fillinblankLabelled{} regular.
 \begin{exparts*}
 \item must be
 \item might be, or might be not
 \item cannot be
 \end{exparts*}
-\begin{answer}
-It might be regular, or might be not regular.
-First note that the language
-of all strings $\lang=\kleenestar{\Sigma}$ is regular.
-Now assume that $\lang_1$ is not regular.
-The concatenation $\kleenestar{\Sigma}\concat\lang_1=\kleenestar{\Sigma}$
-gives a language that is regular.
-Also, where the alphabet is $\Sigma$ and $s\in\Sigma$ then 
-the concatenation
-$\set{s}\concat\lang_1$ gives a language that is not regular.
+\begin{answer}\verified
+The answer is (B):~it might be regular, or might be not regular.
+Fix an alphabet~$\Sigma$
+and a language $\lang$ over $\Sigma$ that is not regular.
+A concatenation of a regular language with a non-regular one 
+that gives a regular outcome is 
+$\kleenestar{\Sigma}\concat\lang=\kleenestar{\Sigma}\!$.
+A language concatenation that gives an outcome that is not regular is
+$\set{s}\concat\lang$ where $s\in\Sigma$
+(an easy argument gives that regularity of this language 
+implies regularity of $\lang$).
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 True or false?
-Justify your answer.
+Briefly justify.
 \begin{exparts}
-\item If $\lang_0$ is a regular language and $\lang_1\subseteq \lang_0$ then
-  $\lang_1$ is also a regular language.
-\item  If $\lang_0$ is not regular and $\lang_0\subseteq \lang_1$ then
-  $\lang_1$ is also not regular.
-\item If $\lang_0\cap\lang_1$ is regular then each of the two is
-  regular.  
+\item Regularity is inherited by subsets:~if $\lang_0$ is a regular language 
+and $\lang_1\subseteq \lang_0$ then $\lang_1$ is also regular.
+\item Non-regularity is inherited by supersets:~if $\lang_1$ is not regular 
+and $\lang_1\subseteq \lang_0$ then $\lang_0$ is also not regular.
+% \item If $\lang_0\cap\lang_1$ is regular then each of the two is
+%   regular.  
 \end{exparts}
-\begin{answer}
-  Each is false.
-  The same example suffices for all three.
-  For $\lang_0$ use the set of all bitstrings, $\kleenestar{\B}$.
+\begin{answer}\verified
+  Both are false.
+  The same example suffices for both.
+  For $\lang_0$ use the set of all bitstrings, $\kleenestar{\B}\!$.
   For $\lang_1$ use any non-regular subset of it,
   the existence of which is guaranteed by \cref{lem:SetRegLangsIsCountable}.
 \end{answer}
@@ -6963,21 +6972,23 @@ Justify your answer.
 \begin{exercise}
 Where $\lang$ is a language, define $\lang+$\index{+@$+$!operation on a language}\index{language!+@$+$ operation}
 as the language
-$\lang\concat\kleenestar{\lang}$.
+$\lang\concat\kleenestar{\lang}\!$.
 Show that if $\lang$ is regular then so is $\lang+$.
-\begin{answer}
+\begin{answer}\verified
 By \cref{lem:RegLangsClosedUnderUnionConcatStar}, regular languages
 are closed under Kleene star and concatenation.
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
-Use closure properties to show that if $\lang$ is regular then the
+Use closure properties in showing that if $\lang$ is regular then the
 set of even-length strings in~$\lang$ is also regular.
-\begin{answer}
-  Let $\Sigma$ be the alphabet of the language~$\lang$.
+\begin{answer}\verified
+  Let $\Sigma$ be the alphabet of~$\lang$.
   The collection of even length strings over~$\Sigma$ is regular since there is
-  clearly a Finite State machine that accepts only those strings.
+  clearly a Finite State machine that accepts only those strings
+  (or, a regular expression is \re{$((s_0s_0$)|($s_0s_1$)|$\ldots$\, ($s_ns_n$))*}
+  where $\Sigma=\set{s_0,\ldots\,s_n}$).
   The intersection of~$\lang$ with this collection is an intersection of
   two regular languages, so it is regular. 
 \end{answer}
@@ -7061,11 +7072,12 @@ But that set is $\lang_0$, which was given as not regular.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 \cref{lem:SetRegLangsIsCountable} gives a counting argument, a pure existence
 proof, that
 there are languages that are not regular.
-But we can also exhibit one.
+But we can also exhibit such a language.
 Prove that $\lang=\set{\str{1}^k\suchthat k\in K}$ is not regular,
 where $K$ is the \HP{} set, 
 $K=\set{e\in\N\suchthat\TMfcn_e(e)\converges}$.
@@ -7173,11 +7185,10 @@ from~$q_X$ to~$\bar{q}$ labeled~\trm{t}.
 \end{answer}
 \end{exercise}
 
-\recommended
 \begin{exercise}
 We can give an alternative proof of \cref{th:RegLangsClosedCompIntDiff}, that   the collection of regular languages is closed under
 set intersection, set difference, and set complement,
-that does not rely on a vague ``by construction.''
+that does not rely on ``by construction.''
 \begin{exparts}
 \item Observe that the identity
 $S\cap T=\setcomp{(\setcomp{S}\cup\setcomp{T})}$
@@ -7452,7 +7463,7 @@ The prior section gave a counting argument to show that there are languages
 that are not regular.
 We now cover a technique to show that 
 specific languages are not regular.\footnote{%
-  This is like in the second chapter, where we first used a counting argument
+  This is similar to the second chapter, where we first used a counting argument
   to prove that there are
   unsolvable problems and later showed that
   the \protect\HP{} and related problems are unsolvable.} 
@@ -8169,7 +8180,7 @@ regular.
 \begin{exercise}
 One of these is regular and one is not.
 Which is which?
-You must prove your assertions.
+(Prove your assertions.)
 \begin{exparts}
 \item $\set{\str{a}^n\str{b}^m\in\kleenestar{\set{\str{a},\str{b}}}\suchthat n=m^2}$
 \item $\set{\str{a}^n\str{b}^m\in\kleenestar{\set{\str{a},\str{b}}}\suchthat 3<m,n}$
@@ -8244,7 +8255,7 @@ One of these is regular, one is not:
 $\set{\str{0}^m\str{1}\str{0}^n\suchthat m,n\in\N}$ and
 $\set{\str{0}^n\str{1}\str{0}^n\suchthat n\in\N}$.
 Which is which?
-Of course, you must prove your assertions.
+(Prove the assertions.)
 \begin{answer}
   The first is regular, and is described by the regular expression \re{0*10*}.
   The second is not regular.

@@ -6263,3 +6263,37 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+
+// ====== Exercise, alpha=gamma=emptystring ========
+picture pic;
+int picnum = 58;
+
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.8*u;
+
+// draw edges
+draw(pic,
+     (q0..loop(E)).l("\str{0},\str{1}"),
+     (q0..loop(E)).l("\str{0},\str{1}")
+);
+
+// draw nodes
+draw(pic,
+     q0);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+

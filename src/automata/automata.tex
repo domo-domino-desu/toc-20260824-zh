@@ -7587,16 +7587,6 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   Let $\alpha=\sequence{s_0,\,\ldots, s_i}$,
   let $\beta=\sequence{s_{i+1},\,\ldots s_j}$, 
   and let $\gamma=\sequence{s_{j+1},\,\ldots s_k}$.
-  (Think of $\alpha$ as the initial substring of $\sigma$ that transitions the 
-  machine up to the loop's start,
-  think of $\beta$ as the substring that takes the machine around the loop once,
-  and then $\gamma$ is the rest of~$\sigma$.
-  Possibly $\alpha$ is empty. 
-  Possibly also $\gamma$ is empty.
-  For the machine in ($*$) above, with $\sigma=\str{a}\str{abb}\str{bc}$
-  we have $\alpha=\str{a}$, $\beta=\str{abb}$, and $\gamma=\str{bc}$.
-  With \str{a}\str{abbabb}\str{bc}
-  we have $\alpha=\str{a}$, $\beta=\str{abb}$, and $\gamma=\str{abbbc}$.)
 
   These strings satisfy conditions~(1) and~(2).
   In particular, choosing $q$, $i$, and~$j$ to be minimal
@@ -7624,6 +7614,23 @@ $\alpha\beta^3\gamma$, \ldots{} are also members of the language~$\lang$.
   and finally $\gamma$ brings it to the same ending state as did $\sigma$.
 %</pf:PumpingLemmaii>
 \end{proof}
+
+% \begin{remark}
+  % Think of $\alpha$ as the initial substring of $\sigma$ that transitions the 
+  % machine up to the loop's start,
+  % think of $\beta$ as the substring that takes the machine around the loop once,
+  % and then $\gamma$ is the rest of~$\sigma$.
+  % It can be in the decomposition of some $\sigma$ that $\alpha$ is empty 
+  % or $\gamma$ is empty.
+  For the machine in ($*$) above, with $\sigma=\str{a}\str{abb}\str{bc}$
+  such a decomposition is 
+  $\alpha=\str{a}$, $\beta=\str{abb}$, and $\gamma=\str{bc}$.
+  With \str{a}\str{abbabb}\str{bc},
+  a decomposition that satisfies the three conditions is 
+  $\alpha=\str{a}$, $\beta=\str{abb}$, and $\gamma=\str{abbbc}$
+  (another decomposition that works is 
+  $\alpha=\str{a}$, $\beta=\str{abb}^2$, and $\gamma=\str{bc}$)).
+% \end{remark}
 
 We typically use the Pumping Lemma to show that a language is
 not regular through an argument by contradiction.
@@ -7677,6 +7684,13 @@ not regular through an argument by contradiction.
   But the Pumping Lemma says that it must be a member of~$\lang$, 
   and thus the assumption that $\lang$ is regular leads to a contadiction.
 \end{example}
+
+The Pumping Lemma says that there is a pumping length such that any 
+longer input 
+has a decomposition satisfying the three conditions.
+So fix a longer input and then we must 
+argue from the conditions\Dash we cannot assume a particular
+decomposition and then argue from that. 
 
 \begin{example}
   Recall that a palindrome
@@ -7862,13 +7876,20 @@ problems.
 \recommended
 \begin{exercise}
 \Cref{ex:FSMCannotRecognizePlusOne} shows that
-$\set{\str{0}^m\str{1}^n\in\kleenestar{\B}\suchthat m=n+1}$
+$\lang=\set{\str{0}^m\str{1}^n\in\kleenestar{\B}\suchthat m=n+1}$
 is not regular but your friend doesn't get it and asks you,
 ``What's wrong with the regular expression \re{$\str{0}^{n+1}\str{1}^n$}?''
 Explain it to them.
 \begin{answer}\verified
   There is no such regular expression.
-  \Cref{def:RESyntax} just does not have the capacity for that construct.
+  The syntax of \Cref{def:RESyntax} 
+  does not have the capacity for that construct.
+
+  If we fix, say, $n=2$, then we can make a regular expression 
+  $\str{0}^3\str{1}^2\!$.
+  We can use alternation to connect a finite number of such
+  expressions, as in \re{\str{0}|\str{001}|$\str{0}^3\str{1}^2$|$\ldots$\,$\str{0}^{10}\str{1}^9\!$}.
+  But no regular expression describes all of the strings in the language~$\lang$.
 \end{answer}
 \end{exercise}
 
@@ -7882,8 +7903,9 @@ $\alpha\gamma$ is not a member of the language.
   Compared with $\sigma=\alpha\beta\gamma$, the string $\alpha\gamma$ has 
   had~$\beta$ omitted.
   By definition $\sigma$ has balanced parentheses.
-  Because~$\beta$ consists of at least one open parentheses,~\str{(},
-  its omission of $\beta$ means that in $\alpha\gamma$ the number of 
+  Because~$\beta$ consists of at least one open parenthesis and has no
+  closed parentheses,
+  the omission of $\beta$ means that in $\alpha\gamma$ the number of 
   open parentheses is at least one fewer than the number of 
   closed parentheses.
 \end{answer}
@@ -7895,12 +7917,13 @@ They say, ``Hey, the diagram ($*$) before \cref{th:PumpingLemma} doesn't apply
 unless the language is infinite.
 Sometimes languages are regular because they only have like three or
 four strings.
-So the Pumping Lemma is wrong.''
+But the Pumping Lemmas third condition requires that infinitely
+many strings be in the language, so the Pumping Lemma is wrong.''
 In what way do they need to further refine their thinking?
 \begin{answer}\verified
-  If a language is finite, $\lang=\set{\sigma_0,\ldots{} \sigma_n}$,
+  If a language is finite, $\lang=\set{\sigma_0,\ldots{}\, \sigma_n}$,
   then the conclusion of the Pumping Lemma holds by taking the pumping
-  length to be $p>\max(\lh{\sigma_0},\ldots{} \lh{\sigma_n})$.
+  length to be $p>\max(\lh{\sigma_0},\ldots\, \lh{\sigma_n})$.
 \end{answer}
 \end{exercise}
 
@@ -7915,9 +7938,9 @@ It is not correct.
 
 The first problem is that it is not sensible.
 There may be many Finite State machines that recognize the language, so
-there is no well-defined number of states for the language.
+``number of states'' for a language is not well-defined.
 
-Even if you figure that they meant to fix a particular machine, saying
+Even if we grant that they meant to fix a particular machine, saying
 something like, ``where $\FSM$ accepts the language, if that language has a 
 string of length greater than the number of states in $\FSM$ then it cannot be a regular language''
 then it still isn't sensible because if there is a Finite State machine
@@ -7932,7 +7955,7 @@ a string that is longer than the number of states in that machine,
 then we  have the desired contradiction'' then this statement, while now
 technically sensible, is wrong.
 For example, there is a Finite State machine that accepts strings
-described by \re{a*},and there certainly are strings of that form
+described by \re{a*}, and there certainly are strings of that form
 whose length is greater than the number of states in the machine.
 \end{answer}
 \end{exercise}

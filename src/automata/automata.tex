@@ -8518,7 +8518,7 @@ loop like below then you'd need a longer decomposition.''
 \end{center}
 \begin{answer}\verified
   The proof of the Pumping Lemma uses the Pigeonhole Principle to show that 
-  there is at least one loop and 
+  there is at least one loop, and 
   it then reasons with that loop.
   It is unaffected by there being a later loop.
 \end{answer}
@@ -8530,23 +8530,24 @@ $\set{\sigma\in\kleenestar{\B}\suchthat
 \text{$\sigma=\str{1}^n$ where $n$ is prime}}$
 is not a regular language.
 \hint~the third condition's sequence has a 
-constant positive length difference. 
-\begin{answer}
-  Let $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
-                 \text{$\sigma=\str{1}^n$ where $n$ is prime}}$.
-  Assume for contradiction that it is regular and fix a pumping length~$p$.
+constant difference in string lengths. 
+\begin{answer}\verified
+  Assume for contradiction that this language is regular 
+  and fix a pumping length~$p$.
   Consider condition~(3)'s list.
   \begin{equation*}
     \alpha\gamma, \alpha\beta^2\gamma, \alpha\beta^3\gamma,
-    \ldots{},  \alpha\beta^n\gamma, \ldots{} 
+    \ldots{}\,  \alpha\beta^n\gamma, \ldots{} 
+    \qquad n\geq 2
   \end{equation*}
-  Except for the first one, all of the gaps between list items 
-  have the same width,~$\lh{\beta}$.
-  So the length of the general item $\alpha\beta^n\gamma$ is
-  $\lh{\alpha\beta^2\gamma}+(n-2)\cdot\lh{\beta}$, for $n\geq 2$.
-  Take $n$ to be $\lh{\alpha\beta^2\gamma}+2$ and that length is
-  not prime.
-  So not every string in condition~(3)'s list is a member of~$\lang$,
+  All of the gaps between strings on this list (except for the first gap) 
+  have the same size,
+  $\lh{\alpha\beta^{n+1}\gamma}-\lh{\alpha\beta^n\gamma}=\lh{\beta}$.
+  So for $n\geq 2$ the length of $\alpha\beta^n\gamma$ is
+  $\lh{\alpha\beta^2\gamma}+(n-2)\cdot\lh{\beta}$.
+  Take $n$ to be $\lh{\alpha\beta^2\gamma}+2$ and note that 
+  the length of $\alpha\beta^n\gamma$ is not prime.
+  Thus not every string in condition~(3)'s list is a member of the language,
   which is the desired contradiction.
 \end{answer}
 \end{exercise}
@@ -8559,31 +8560,42 @@ let $\lang_0=\set{\str{a}\str{b}^n\str{c}^n\suchthat n\in\N}$
 and $\lang_1=\set{\str{a}^k\concat\tau\suchthat \text{$k\neq 1$ and $\tau\in\kleenestar{\set{\str{b},\str{c}}}$}}$.
 We will show that $\lang=\lang_0\union\lang_1$ is not regular,
 although it satisfies the Pumping Lemma in that it has a 
-pumping length~$p\in\N$ (we take $p=3$) such that every string
-$\sigma\in\lang$ decomposes as $\sigma=\alpha\beta\gamma$, subject to the
+pumping length~$p\in\N$  such that every string 
+$\sigma\in\lang$ with $\lh{\sigma}\geq p$
+decomposes as $\sigma=\alpha\beta\gamma$, subject to the
 familiar three conditions.  
 \begin{exparts}
 \item Show that $\lang_1$ is regular.
 \item Show that $\lang_0$ is not regular.
 \item Conclude from the prior two that $\lang$ is not regular.
-\item Verify that for a string of the form
+\item Fix $p=3$.
+  Verify that for a string of the form
   $\sigma=\str{a}\str{b}^n\str{c}^n$ there is a decomposition
   $\sigma=\alpha\beta\gamma$ where $\lh{\alpha\beta}\leq p$ and
-  every string $\alpha\gamma$, $\alpha\beta^2\gamma$, \ldots{}
+  $\lh{\beta}>0$ and
+  every string in $\alpha\gamma,\alpha\beta^2\gamma, \ldots{}$
   is also a member of~$\lang$.
-\item Verify the same for a string starting with zero-many \str{a}'s
+\item Again taking $p=3$, 
+  verify the same for a string starting with zero-many \str{a}'s
   that is, of the form
   $\sigma=\tau\in\kleenestar{\set{\str{b},\str{c}}}\!$.
 \item Verify it also for a string of the form
   $\sigma=\str{a}^k\concat\tau$ for $k\geq 2$.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
+Recall the notation defined in \Cref{sec:Strings}
+that $\tau[j]$ is the $j$-th character in~$\tau$,
+where $j=0,1,\ldots\,$,
+while $\tau[j\mathord{:}]$ is the portion of the string 
+starting with the $j$-th character and going to the end.
+Thus, where $\tau=\str{012345}$, we have $\tau[0]=\str{0}$ while
+$\tau[1\mathord{:}]=\str{12345}$.
 \begin{exparts}
 \item This regular expression describes the language:
   \re{(b|c)*|((aaa*)(b|c)*)}.
 \item Assume that $\lang_0$ is regular and fix some pumping length
-  $p>1$ (the footnote on the Pumping Lemma allows us to set a pumping length 
-  to be larger if convenient).
+  $p>1$ (the footnote on the Pumping Lemma allows us to set the pumping length 
+  to be at least one).
   Consider $\sigma=\str{a}\str{b}^p\str{c}^p\!$.
   It decomposes into $\sigma=\alpha\beta\gamma$ subject to the conditions.
   The first condition gives that $\alpha$ and $\beta$ contain only \str{a}'s
@@ -8591,21 +8603,21 @@ familiar three conditions.
   The second condition gives that $\beta$ consists of at least one
   character, necessarily not a~\str{c}.
   The third condition then gives a contradiction on considering $\alpha\gamma$,
-  which contains the same number of $\str{c}'s$ as~$\sigma$ but 
+  which contains the same number of $\str{c}$'s as~$\sigma$ but 
   either no \str{a} or fewer~\str{b}'s.
-\item If $\lang$ were regular then the set difference $\lang-\lang_0$ would 
-  be regular, but the prior item shows that it is not.
+\item If $\lang$ were regular then the set difference $\lang-\lang_1=\lang_0$ 
+  would be regular, but the prior item shows that it is not.
 \item For a string $\sigma$ of the form $\str{a}\str{b}^n\str{c}^n$ to satisfy 
-  $\lh{\sigma}\geq p=3$ we need $n\geq 1$.
-  In that case, one such decomposition is $\alpha=\emptystring$, 
+  $\lh{\sigma}\geq p=3$ requires that $n\geq 1$.
+  With that, we can show that one such decomposition is $\alpha=\emptystring$, 
   and $\beta=\str{a}$,
   and $\gamma=\str{b}^n\str{c}^n\!$.
   Observe that $\lh{\alpha\beta}\leq 3=p$
   and that $\beta$ is not the empty string. 
   To finish we must verify that every string on the list
-  $\alpha\gamma,\alpha\beta^2\gamma,\, \ldots$ is an element of~$\lang$.
-  The first is $\alpha\gamma=\str{b}^n\str{c}^n$ which is an element 
-  of~$\lang_1$ (where $k=0$, that is, there are no \str{a}'s).
+  $\alpha\gamma,\alpha\beta^2\gamma,\ldots$ is an element of~$\lang$.
+  The first is $\alpha\gamma=\str{b}^n\str{c}^n\!$, which is an element 
+  of~$\lang_1$ (where $k=0$, that is, where there are no \str{a}'s at the start).
   Next is $\alpha\beta^2\gamma=\str{aa}\str{b}^n\str{c}^n\!$, which is an
   element of~$\lang_1$ with $k=2$.
   The rest, $\alpha\beta^i\gamma=\str{a}^i\str{b}^n\str{c}^n$ with $i>2$,
@@ -8614,24 +8626,24 @@ familiar three conditions.
   $\sigma=\tau\in\kleenestar{\set{\str{b},\str{c}}}$ 
   to satisfy $\lh{\sigma}\geq p=3$ we need $\lh{\tau}\geq 3$.
   Here one such decomposition is $\alpha=\emptystring$, 
-  and $\beta=\tau[1]=x$ where $x=\str{b}$ or $x=\str{c}$,
-  and $\gamma=\tau[1:]$.
+  and $\beta=\tau[0]=x$ where $x=\str{b}$ or $x=\str{c}$,
+  and $\gamma=\tau[1\mathord{:}]$.
   Then the first two conditions are satsified: $\lh{\alpha\beta}\leq 3=p$
   and $\beta\neq\emptystring$. 
   To finish we verify that every string on the list
   $\alpha\gamma,\alpha\beta^2\gamma,\, \ldots$ is an element of~$\lang$.
-  The first is $\alpha\gamma=\tau[1:]$ which is an element 
-  of~$\lang_1$, where $k=0$.
-  The rest, $\alpha\beta^i\gamma=x^i\concat\tau[1:]$ with $i\geq2$,
+  The first is $\alpha\gamma=\tau[1\mathord{:}]$ which is an element 
+  of~$\lang_1$ where $k=0$.
+  The rest, $\alpha\beta^i\gamma=x^i\concat\tau[1\mathord{:}]$ with $i\geq2$,
   are similarly elements of~$\lang_1$ with $k=0$.
-\item Finally we consider strings of the form 
+\item Consider strings of the form 
   $\sigma=\str{a}^k\concat\tau$ where $k\geq 2$ and
   $\tau\in\kleenestar{\set{\str{b},\str{c}}}\!$. 
   The Pumping Lemma requires only that we consider strings~$\sigma$ with
   $\lh{\sigma}\geq p=3$.
   One decomposition that works is $\alpha=\str{aa}$, 
   and $\beta=x$ where $x$ is the third character in the string,
-  that is, $x=\sigma[2]$, and $\gamma=\sigma[3:]$.
+  that is, $x=\sigma[2]$, and $\gamma=\sigma[3\mathord{:}]$.
   Then the first two conditions are satsified: $\lh{\alpha\beta}\leq 3=p$
   and $\beta\neq\emptystring$. 
   To finish we will verify that every string on the list
@@ -8641,12 +8653,12 @@ familiar three conditions.
   If $\beta$'s character $x$ is \str{a}
   then $\alpha\gamma$ consists of at least two \str{a}'s 
   (one fewer \str{a} than in $\sigma$) followed
-  by some $\tau\in\kleenestar{\set{\str{b},\str{c}}}$.
+  by some $\tau\in\kleenestar{\set{\str{b},\str{c}}}\!$.
   That is an element 
   of~$\lang_1$ where $k\geq 3$.
   If $\beta$'s character $x$ is not \str{a}
   then $\alpha\gamma$ consists of two \str{a}'s 
-  followed by $\tau=\sigma[2:]$, which is an element 
+  followed by $\tau=\sigma[2\mathord{:}]$, which is an element 
   of~$\lang_1$ where $k=2$.
 
   The remaining strings on the list are $\alpha\beta^i\gamma$ with $i\geq2$.
@@ -8657,7 +8669,7 @@ familiar three conditions.
   of~$\lang_1$ where $k\geq 2+i$.
   If $\beta$'s character $x$ is not \str{a}
   then $\alpha\beta^i\gamma$ consists of two \str{a}'s 
-  followed by $\tau=x^i\concat\sigma[3:]$, which is an element 
+  followed by $\tau=x^i\concat\sigma[3\mathord{:}]$, which is an element 
   of~$\lang_1$ where $k=2$.
 \end{exparts}
 \end{answer}

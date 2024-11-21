@@ -8941,67 +8941,64 @@ a machine that recognizes the same language
 and has the fewest possible number of states.
 
 The algorithm collapses together redundant states
-so we begin with an example of a machine that has those.
-Compare these two machines, one with $s_i$'s and one with $q_i$'s.
-Each recognizes
+so we begin with an example of that.
+This recognizes
 $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
   \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
-\begin{equation*} \label{fig:MachinesWithMinAndNoMinStates}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
-  \hspace{3em}
+\begin{equation*} 
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa17.pdf}}
-  \tag{$*$}
+  \tag{$*$} \label{fig:MachinesWithRedundantStates}
 \end{equation*}
-Our experience in designing machines is that
-each state needs a meaning that is well-defined in terms of the machine's
-language, and that is unique.
-For instance, on the left $s_2$ means
+Our experience in machine design is that we expect
+each state to have an articulatable meaning for what it does in recognizing the
+language, and that its role is unique.
+This machine doesn't satisfy that principle.
+The meaning of $q_2$,
 ``have seen the required \str{1} but still
-waiting for a~\str{0}.''
-The machine on the right doesn't satisfy this design principle because
-the meaning of $q_4$, ``have seen the required \str{1} (and another~\str{1}) 
+waiting for a~\str{0},''
+and the meaning of $q_4$, 
+``have seen the required \str{1} (and another~\str{1}) 
 but still waiting for a~\str{0},''  
-is already taken by state~$q_2$ since a second~\str{1}
-is not in the definition of~$\lang$.
+overlap since a second~\str{1}
+is not a requirement for membership in~$\lang$.
 Similarly, $q_5$'s meaning is subsumed by~$q_3$'s.
-The machine on the right has redundant states.
+This machine has two pairs of redundant states.
 
-Restated:~the states $q_2$ and~$q_4$
+Said another way, the states $q_2$ and~$q_4$
 have the same future, in that they will lead to an accepting state if and only
-if what remains on the tape contains at least one~\str{0}.
-This table lists what happens if the machine on the right
-is now in state~$q_2$ or~$q_4$, and is then fed the
-given string.
-An entry says `A' if running the machine will end in an accepting state
-and `R' otherwise. 
-The two states $q_2$ and~$q_4$ behave the same;~if 
-$\sigma$ contains a~\str{0} then both states give~A,
-otherwise both give R.
-\begin{center}\small
-  \begin{tabular}{r|*{10}{c}c}
-    \multicolumn{1}{r|}{$\sigma$} 
-      &\multicolumn{1}{c}{$\varepsilon$} 
-      &\multicolumn{1}{c}{\str{0}}
-      &\multicolumn{1}{c}{\str{1}}
-      &\multicolumn{1}{c}{\str{00}}
-      &\multicolumn{1}{c}{\str{01}}
-      &\multicolumn{1}{c}{\str{10}}
-      &\multicolumn{1}{c}{\str{11}}
-      &\multicolumn{1}{c}{\str{000}}  
-      &\multicolumn{1}{c}{\str{001}}  
-      &\multicolumn{1}{c}{\str{010}}  
-      &\multicolumn{1}{c}{\ldots}  
-    \\ \cline{2-12}
-    $q_2$ &R &A &R &A &A &A &R &A &A &A &\ldots \\
-    $q_4$ &R &A &R &A &A &A &R &A &A &A &\ldots \\
-  \end{tabular}
-\end{center}
+if the string remaining on the tape contains at least one~\str{0}.
+% This table lists what happens if the machine on the right
+% is now in state~$q_2$ or~$q_4$, and is then fed the
+% given string.
+% An entry says `A' if running the machine will end in an accepting state
+% and `R' otherwise. 
+% The two states $q_2$ and~$q_4$ behave the same;~if 
+% $\sigma$ contains a~\str{0} then both states give~A,
+% otherwise both give R.
+% \begin{center}\small
+%   \begin{tabular}{r|*{10}{c}c}
+%     \multicolumn{1}{r|}{$\sigma$} 
+%       &\multicolumn{1}{c}{$\varepsilon$} 
+%       &\multicolumn{1}{c}{\str{0}}
+%       &\multicolumn{1}{c}{\str{1}}
+%       &\multicolumn{1}{c}{\str{00}}
+%       &\multicolumn{1}{c}{\str{01}}
+%       &\multicolumn{1}{c}{\str{10}}
+%       &\multicolumn{1}{c}{\str{11}}
+%       &\multicolumn{1}{c}{\str{000}}  
+%       &\multicolumn{1}{c}{\str{001}}  
+%       &\multicolumn{1}{c}{\str{010}}  
+%       &\multicolumn{1}{c}{\ldots}  
+%     \\ \cline{2-12}
+%     $q_2$ &R &A &R &A &A &A &R &A &A &A &\ldots \\
+%     $q_4$ &R &A &R &A &A &A &R &A &A &A &\ldots \\
+%   \end{tabular}
+% \end{center}
 Likewise, $q_3$ and~$q_5$ have the same future.
 
 As a contrast, $q_0$ and~$q_2$ are not redundant because if we give the string
-$\sigma=\str{0}$ to the state $q_2$ then the machine ends in an accepting state, 
-while if we give $\sigma$ to~$q_0$ then the machine
-rejects.
+$\sigma=\str{0}$ to those two states then for the first the machine rejects,
+while for the second the machine accepts.
 
 \begin{definition}\label{def:distinguishable}
 In a Finite State machine over $\Sigma$, two states $q,\hat{q}$ are
@@ -9010,8 +9007,8 @@ written \definend{$q\sim\hat{q}$},
 if for every string $\sigma\in\kleenestar{\Sigma}\!$,
 starting the machine in $q$ while giving it~$\sigma$
 and starting the machine in~$\hat{q}$ while giving it~$\sigma$ always
-results in the same outcome: either for both the machine ends in an accepting
-state or forboth it ends in a rejecting state.
+results in the same outcome:~either for both the machine ends in an accepting
+state or for both it ends in a rejecting state.
 States that are not indistinguishable are 
 \definend{distinguishable}.\index{distinguishable states}\index{states!distinguishable}
 \end{definition}
@@ -9027,47 +9024,45 @@ are \definend{$n$-indistinguishable},
 if for every $\sigma$ of length at most~$n$,
 starting the machine in $q$ while giving it~$\sigma$
 and starting in~$\hat{q}$ while giving it~$\sigma$
-results in the same outcome, either both lead to an 
+results in the same outcome, that either both lead to an 
 accepting state or both lead to a rejecting state.
 Otherwise $q$ and~$\hat{q}$ are
 \definend{$n$-distinguishable}\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
-%  that is, 
-% if there exists a string $\sigma\in\kleenestar{\Sigma}$ with
-% $\lh{\sigma}\leq n$ such that starting the machine
-% in one of the states and giving it input~$\sigma$ ends in an accepting state
-% while starting it in the other and giving it~$\sigma$ does not.
 
 Observe that 
-states are $0$-indistinguishable if either both are accepting states or
-both are not accepting states.
+states are $0$-indistinguishable if both are accepting states or
+if both are rejecting states.
 
-\begin{example}
-Consider the machine on the left in ($*$)
-above and its $s_0$ and $s_2$.
+\begin{example} \label{ex:MachinesWithMinNoStates}
+Consider this machine's $q_0$ and $q_2$.
+\begin{equation*} 
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
+  \tag{$**$}
+\end{equation*}
 Take the length one string $\sigma=\str{0}$.
-Starting in state~$s_0$
+Starting in $q_0$
 and processing~$\sigma$ ends
-in the rejecting state~$s_1$,
-but starting in~$s_2$ and processing the same input ends
-in the accepting state~$s_3$.
-So $s_0$ and~$s_2$ are $1$-distinguishable and therefore are
-distinguishable.
+in the rejecting state~$q_1$.
+However, starting in~$q_2$ and processing $\sigma$ ends
+in the accepting state~$q_3$.
+So $q_0$ and~$q_2$ are $1$-distinguishable, 
+and therefore distinguishable.
 \end{example}
 
 \begin{example} \label{ex:MinimizationInitial}
-For the machine on the right above
-this table gives the result of starting in each state and processing
+For the machine in (\ref{fig:MachinesWithRedundantStates}) above,
+this gives the result of starting in each state and processing
 each string of length~$0$, length~$1$, and length~$2$.
 \begin{equation*}\small
-  \begin{array}{r|c*{2}{c}*{4}{c}}
+  \begin{array}{r|c @{\hspace{1.75em}} cc @{\hspace{1.75em}} cccc}
     \multicolumn{1}{r}{\ }
-           &\multicolumn{1}{c}{\emptystring}  
-           &\multicolumn{1}{c}{\str{0}}           
-           &\multicolumn{1}{c}{\str{1}}           
-           &\multicolumn{1}{c}{\str{00}}           
-           &\multicolumn{1}{c}{\str{01}}           
-           &\multicolumn{1}{c}{\str{10}}           
-           &\multicolumn{1}{c}{\str{11}}           
+           &\emptystring  
+           &\str{0}           
+           &\str{1}           
+           &\str{00}           
+           &\str{01}           
+           &\str{10}           
+           &\str{11}           
             \\ \cline{2-8}
     q_0  &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
     q_1  &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
@@ -9811,6 +9806,27 @@ and then minimize to get a reasonably-sized final answer.
 In practice, this gives good results.
 
 \begin{exercises}
+\begin{exercise}
+Check that in \cref{ex:MachinesWithMinNoStates}
+all of the pairs of unequal states 
+are $1$-distinguishable.
+\begin{answer}\verified
+Here is a suitable string
+of length less than or equal to one for each $q_i,q_j$ with $i<j$.
+\begin{equation*}
+  \begin{array}{r|*{4}{c}}
+    \multicolumn{1}{c}{\ }  
+      &q_0 &q_1 &q_2 &q_3 \\
+      \cline{2-5}
+    q_0 &\text{--} &\str{1}    &\str{0}   &\emptystring \\
+    q_1 &          &\text{--}  &\str{0}   &\emptystring \\
+    q_2 &          &           &\text{--} &\emptystring \\
+    q_3 &          &           &          &\text{--} 
+  \end{array}
+\end{equation*}
+\end{answer}
+\end{exercise}
+
 \begin{exercise}
 From the triangular table find the $\sim_i$ classes.
 \begin{center}\small

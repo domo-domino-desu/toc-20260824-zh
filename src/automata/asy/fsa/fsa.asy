@@ -766,10 +766,10 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$s_0$"); 
-node q1=ncircle("$s_1$"); 
-node q2=ncircle("$s_2$"); 
-node q3=ncircle("$s_3$",ns_accepting); 
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
 
 // calculate nodes position
 // layout
@@ -786,11 +786,11 @@ hlayout(1*u, q1, q3);
 draw(pic,
      (q0--q1).l("\str{0}"),
      (q0--q2).l("\str{1}"),
-     (q1..loop(S)).l("\str{0}"),
+     (q1..loop(W)).l("\str{0}"),
      (q1--q3).l("\str{1}"),
      (q2..loop(E)).l("\str{1}"),
      (q2--q3).l("\str{0}"),
-     (q3..loop(S)).l("\str{0},\str{1}")
+     (q3..loop(E)).l("\str{0},\str{1}")
 );
 
 // draw nodes
@@ -1077,10 +1077,10 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$s_0$"); 
-node q1=ncircle("$s_1$"); 
-node q2=ncircle("$s_2$"); 
-node q3=ncircle("$s_3$",ns_accepting); 
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
 
 // calculate nodes position
 // layout
@@ -1097,11 +1097,11 @@ hlayout(1*u, q1, q3);
 draw(pic,
      (q0--q1).l("\str{0}"),
      (q0--q2).l("\str{1}"),
-     (q1..loop(S)).l("\str{0}"),
+     (q1..loop(W)).l("\str{0}"),
      (q1--q3).l("\str{1}"),
      (q2..loop(E)).l("\str{1}"),
      (q2--q3).l("\str{0}"),
-     (q3..loop(S)).l("\str{0},\str{1}")
+     (q3..loop(E)).l("\str{0},\str{1}")
 );
 
 // draw nodes

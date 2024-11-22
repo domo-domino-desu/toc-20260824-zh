@@ -8935,10 +8935,15 @@ But~$p$ can be smaller than that.
 
 % ...................................................
 \section{Minimization}\index{minimization of a Finite State machine|(}\index{Finite State machine!minimization|(}\label{sec:Minimization}
-We will give an algorithm
+We will give an algorithm, Moore's algorithm,\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
 that inputs a Finite State machine and outputs
 a machine that recognizes the same language
-and has the fewest possible number of states.
+and has the fewest possible number of states.\footnote{%
+  This algorithm is easy to understand and is suitable for
+  small calculations but if you are writing code then 
+  be aware that another,
+    \protect\citetext{Hopcroft's algorithm}{See \protect\autocite{Knuutila}}, 
+  is more efficient.}
 
 The algorithm collapses together redundant states
 so we begin with an example of that.
@@ -8950,23 +8955,26 @@ $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
   \tag{$*$} \label{fig:MachinesWithRedundantStates}
 \end{equation*}
 Our experience in machine design is that we expect
-each state to have an articulatable meaning for what it does in recognizing the
-language, and that its role is unique.
-This machine doesn't satisfy that principle.
-The meaning of $q_2$,
-``have seen the required \str{1} but still
+each state to have an articulatable meaning for its role in 
+helping the machine recognize the language.
+In this machine 
+the meaning of $q_2$,
+``have seen a \str{1} but still
 waiting for a~\str{0},''
 and the meaning of $q_4$, 
-``have seen the required \str{1} (and another~\str{1}) 
+``have seen a \str{1} (and another~\str{1}) 
 but still waiting for a~\str{0},''  
 overlap since a second~\str{1}
 is not a requirement for membership in~$\lang$.
 Similarly, $q_5$'s meaning is subsumed by~$q_3$'s.
 This machine has two pairs of redundant states.
 
-Said another way, the states $q_2$ and~$q_4$
-have the same future, in that they will lead to an accepting state if and only
-if the string remaining on the tape contains at least one~\str{0}.
+Said another way, if the machine is in state~$q_2$ then it will accept
+its input if and only if the string remaining on the tape contains at 
+least one~\str{0}.
+The state~$q_4$ is in exactly the same position.
+We might say that these states are redundant because in this way they
+have the same future.
 % This table lists what happens if the machine on the right
 % is now in state~$q_2$ or~$q_4$, and is then fed the
 % given string.
@@ -8994,44 +9002,42 @@ if the string remaining on the tape contains at least one~\str{0}.
 %     $q_4$ &R &A &R &A &A &A &R &A &A &A &\ldots \\
 %   \end{tabular}
 % \end{center}
-Likewise, $q_3$ and~$q_5$ have the same future.
+Likewise, $q_3$ and~$q_5$ have the same future, that any string at all
+on the tape will result in an accepting state.
 
 As a contrast, $q_0$ and~$q_2$ are not redundant because if we give the string
 $\sigma=\str{0}$ to those two states then for the first the machine rejects,
 while for the second the machine accepts.
 
 \begin{definition}\label{def:distinguishable}
-In a Finite State machine over $\Sigma$, two states $q,\hat{q}$ are
+In a Finite State machine over $\Sigma$, the states $q$ and~$\hat{q}$ are
 \definend{indistinguishable},\index{indistinguishable states}\index{states!indistinguishable} 
 written \definend{$q\sim\hat{q}$},
-if for every string $\sigma\in\kleenestar{\Sigma}\!$,
-starting the machine in $q$ while giving it~$\sigma$
-and starting the machine in~$\hat{q}$ while giving it~$\sigma$ always
-results in the same outcome:~either for both the machine ends in an accepting
+if for all strings $\sigma\in\kleenestar{\Sigma}\!$,
+the same outcome results from 
+starting the machine in state~$q$ with~$\sigma$ on the tape
+and starting in~$\hat{q}$ with~$\sigma$ on the tape:~either 
+for both the machine ends in an accepting
 state or for both it ends in a rejecting state.
 States that are not indistinguishable are 
 \definend{distinguishable}.\index{distinguishable states}\index{states!distinguishable}
 \end{definition}
 
-We will compute when states are indistinguishable by checking whether they 
-can be distinguished by strings of length~$0$, 
-then by strings of length~$1$, etc.
+We will compute whether states are indistinguishable by checking whether they 
+are distinguished by strings of length~$0$, 
+or by strings of length~$1$, etc.
 % Fix a Finite State machine over an alphabet~$\Sigma$
 % and a length $n\in\N$.
 Two states $q$ and~$\hat{q}$
 are \definend{$n$-indistinguishable}, 
 \definend{$q\sim_{n}\hat{q}$},\index{n indistinguishable states@$n$-indistinguishable states}\index{states!n indistinguishable@$n$-indistinguishable}
 if for every $\sigma$ of length at most~$n$,
-starting the machine in $q$ while giving it~$\sigma$
-and starting in~$\hat{q}$ while giving it~$\sigma$
-results in the same outcome, that either both lead to an 
-accepting state or both lead to a rejecting state.
-Otherwise $q$ and~$\hat{q}$ are
-\definend{$n$-distinguishable}\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
-
-Observe that 
-states are $0$-indistinguishable if both are accepting states or
-if both are rejecting states.
+starting the machine in $q$ with~$\sigma$ on the tape
+and starting in~$\hat{q}$ with~$\sigma$
+results in the same outcome, that either both result in an 
+accepting state or both result in a rejecting state.
+Otherwise, $q$ and~$\hat{q}$ are
+\definend{$n$-distinguishable}.\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
 
 \begin{example} \label{ex:MachinesWithMinNoStates}
 Consider this machine's $q_0$ and $q_2$.
@@ -9049,12 +9055,16 @@ So $q_0$ and~$q_2$ are $1$-distinguishable,
 and therefore distinguishable.
 \end{example}
 
+Observe that two
+states are $0$-indistinguishable if both are accepting states or
+if both are rejecting states.
+
 \begin{example} \label{ex:MinimizationInitial}
 For the machine in (\ref{fig:MachinesWithRedundantStates}) above,
 this gives the result of starting in each state and processing
-each string of length~$0$, length~$1$, and length~$2$.
+each string of length~$0$, of length~$1$, and of length~$2$.
 \begin{equation*}\small
-  \begin{array}{r|c @{\hspace{1.75em}} cc @{\hspace{1.75em}} cccc}
+  \begin{array}{r|c @{\hspace{2.25em}} cc @{\hspace{2.25em}} cccc}
     \multicolumn{1}{r}{\ }
            &\emptystring  
            &\str{0}           
@@ -9073,38 +9083,35 @@ each string of length~$0$, length~$1$, and length~$2$.
   \end{array}
   % \tag{$**$}
 \end{equation*}
-The initial column just records that
-members of $\set{q_0,q_1,q_2,q_4}$ 
-are rejecting states while members of $\set{q_3,q_5}$ are accepting. 
-We write $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$ and 
-$\eclass_{0,1}=\set{q_3,q_5}$ to 
-denote that states are in the same class $\eclass_{0,i}$ if they are
-$0$-indistinguishable.
+The initial column simply $0$-distinguishes the class of
+rejecting states, $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$, 
+from the class of accepting states,  
+$\eclass_{0,1}=\set{q_3,q_5}$.
 
-The two columns for the length~$1$ strings
-show all four possible behaviors.
-The state $q_0$ goes to a rejecting result for both inputs,
-that is, the columns say R and~R.
-For $q_1$ we have R,A.
-Both $q_2$ and~$q_4$ show A,R.
-And $q_3$ and~$q_5$  go to A,A. 
+The columns for the two length~$1$ strings
+show all of the possibilities.
+For $q_0$ the columns say R and~R,
+for $q_1$ they say R and~A,
+both $q_2$ and~$q_4$ show A and~R,
+and $q_3$ and~$q_5$  show A and~A. 
 So there are four classes for 
 $1$-indistinguishability: $\eclass_{1,0}=\set{q_0}$,
 $\eclass_{1,1}=\set{q_1}$, 
 $\eclass_{1,2}=\set{q_2,q_4}$, 
 and $\eclass_{1,3}=\set{q_3,q_5}$.
 Note that the prior paragraph's
-class $\eclass_{0,1}$ has split into three,
+class $\eclass_{0,1}$ has split into three classes,
 $\eclass_{1,0}$ and $\eclass_{1,1}$ and~$\eclass_{1,2}$.
-The other class did not split, $\eclass_{0,1}=\eclass_{1,3}$.
+The other $0$-distinguishability class did not split:~$\eclass_{0,1}=\eclass_{1,3}$.
 
 Next, the length~$2$ strings.
-The only classes that could split are $\eclass_{1,2}=\set{q_2,q_4}$, 
+One-element classes can't split so
+the only classes that could split are $\eclass_{1,2}=\set{q_2,q_4}$, 
 and $\eclass_{1,3}=\set{q_3,q_5}$. 
-Both $q_2$ and~$q_4$ have
-A,A,A,R,
+Both $q_2$ and~$q_4$ have columns saying
+\mbox{A,A,A,R},
 while both $q_3$ and~$q_5$ have
-A,A,A,A.
+\mbox{A,A,A,A}.
 So going to these longer strings   
 does not further divide the classes.
 % \Dash
@@ -9112,6 +9119,7 @@ does not further divide the classes.
 % relation of $2$-distinguishable gives the same classes
 % as does the relation of $1$-distinguishable.
 \end{example}
+
 
 \begin{lemma} \label{lemma:StateEquivIsEquivRel}
   The relations $\sim_0$, $\sim_1$, \ldots{} and $\sim$
@@ -9128,7 +9136,9 @@ does not further divide the classes.
   \cref{exer:NEquivIsEquivRel}.  
 \end{proof}
 
-This summarizes the prior example by listing the equivalence classes.
+\begin{example}
+This lists the equivalence classes from the above example about
+the machine~(\ref{fig:MachinesWithRedundantStates}).
 \begin{equation*}
   \begin{array}{r|l}
   \multicolumn{1}{c}{n}
@@ -9158,23 +9168,17 @@ This summarizes the prior example by listing the equivalence classes.
   \eclass_{2,3}=\set{q_3,q_5}
   \end{array}
 \end{equation*}
-When we first saw this machine we 
+When we first saw that machine, we
 spotted that $q_2$ and~$q_4$ are redundant.
 Notice that all three lines in this table have them together in their class. 
 The same holds for $q_3$ and~$q_5$.
+\end{example}
 
-We now develop an algorithm, \citetext{Moore's algorithm}{%
-  It is easy and suitable for
-  small calculations but if you are writing code then 
-  be aware that another algorithm,
-    Hopcroft's algorithm, is more efficient.
-  See \protect\autocite{Knuutila}.},\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
-based on this pattern.
-Given a machine, it finds the $\sim_0$ classes, 
-then the $\sim_1$ classes, 
-\ldots{}
+Moore's algorithm is:~given a machine, 
+find the $\sim_0$ classes, 
+then the $\sim_1$ classes, etc.,
 until the classes stop splitting.
-At that point the classes are the $\sim$~classes,
+The remaining classes are the $\sim$~classes,
 and they serve as the states of the minimal machine.
 
 There is just one difficulty to overcome.

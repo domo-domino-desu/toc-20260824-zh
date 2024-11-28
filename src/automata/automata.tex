@@ -8936,8 +8936,8 @@ But~$p$ can be smaller than that.
 % ...................................................
 \section{Minimization}\index{minimization of a Finite State machine|(}\index{Finite State machine!minimization|(}\label{sec:Minimization}
 We will give an algorithm, Moore's algorithm,\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
-that inputs a Finite State machine and outputs
-a machine with the fewest possible number of states
+that inputs a deterministic Finite State machine and outputs
+a deterministic machine with the fewest possible number of states
 that recognizes the same language.\footnote{%
   This algorithm is easy to understand and is suitable for
   small calculations but if you are writing code then 
@@ -8972,7 +8972,7 @@ Said another way, if the machine is in state~$q_2$ then it will accept
 its input if and only if the string remaining on the tape contains at 
 least one~\str{0}.
 The state~$q_4$ is in exactly the same position.
-We might say that these states are redundant because in this way they
+We might say that these states
 have the same future.
 % This table lists what happens if the machine on the right
 % is now in state~$q_2$ or~$q_4$, and is then fed the
@@ -9039,18 +9039,18 @@ Otherwise, $q$ and~$\hat{q}$ are
 \definend{$n$-distinguishable}.\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
 
 \begin{example} \label{ex:MachinesWithMinNoStates}
-Consider this machine's $q_0$ and $q_2$,
-and the length one string $\sigma=\str{0}$.
+Consider this machine's $r_0$ and $r_2$,
+with the length one string $\sigma=\str{0}$.
 \begin{equation*} 
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
   % \tag{$**$}
 \end{equation*}
-Starting in $q_0$
+Starting in $r_0$
 and processing~$\sigma$ ends
-in the rejecting state~$q_1$.
-Starting in~$q_2$ and processing $\sigma$ ends
-in the accepting state~$q_3$.
-So $q_0$ and~$q_2$ are $1$-distinguishable, 
+in the rejecting state~$r_1$.
+Starting in~$r_2$ and processing $\sigma$ ends
+in the accepting state~$r_3$.
+So $r_0$ and~$r_2$ are $1$-distinguishable, 
 and therefore distinguishable.
 \end{example}
 
@@ -9704,39 +9704,64 @@ $\FSM_O$ is in a state that contains that final state, which is itself
 a final state of~$\FSM_O$.
 Thus the two machines accept the same set of strings.
 
-\citetext{Finally, we verify that $\FSM_O$ has a minimal number of states}{%
+\citetext{Finally, we verify that $\FSM_O$ has the minimal number of states}{%
   This is derived from the presentation in \autocite{HopcroftUllman}.
 }.
 Let~$\hat{\FSM}$ recognize
 the same language as~$\FSM_O$;
 we will show that it has at least as many states. 
-We will do this by associating
-each state in~$\FSM_O$ with at least one state 
-in~$\hat{\FSM}$ in such a way 
-that never are different states in~$\FSM_O$ associated
-with the same state in~$\hat{\FSM}$.
 
-Consider the union of the sets of states of the two machines 
-(assume that they have no states in common, or else we will rename them).
-As we did with the algorithm, 
-begin by saying that two states in the union are
+Start by arranging that $\hat{\FSM}$ and $\FSM_{O}$ don't share any states,
+for example by renaming so that the states of $\FSM_O$ are  
+$r_0,r_1,\,\ldots$ and those of $\hat{\FSM}$ are 
+$q_0,q_1,\,\ldots$\sentencespace 
+Consider the union of the two sets of states.
+Perform Moore's algorithm on it:~initialize
+with two states being
 $0$-indistinguishable if both are final in their own machine 
 or if neither is final.
-Step~$n+1$ of this process starts with
+Iteration~$n+1$ starts with
 the $\sim_n$~classes 
 $\eclass_{n,0},\ldots{}\,\eclass_{n,k}$ of states from the union.
-For each such class $\eclass_{n,i}$, see if it splits.
-That is, see if there 
-are two states in $\eclass_{n,i}$ that are sent by a character
+For each such class $\eclass_{n,i}$,
+compute whether it has
+two states that are sent by a character
 $x\in\Sigma$ to different $\sim_n$~classes. 
 If so then the $\sim_{n}$ class splits into different $\sim_{n+1}$ classes. 
-When we reach a step with no splitting 
-then we know which states are indistinguishable and
+The process ends with a step having no splitting,  
+so that we know which states are indistinguishable and
 these form the $\sim$~classes.
 
-Because $\lang(\FSM_O)=\lang(\hat{\FSM})$, 
-the start states in the two machines are indistinguishable
-and are in the same $\sim$~class.
+
+
+
+% We will do this by associating
+% each state in~$\FSM_O$ with at least one state 
+% in~$\hat{\FSM}$ in such a way 
+% that never are different states in~$\FSM_O$ associated
+% with the same state in~$\hat{\FSM}$.
+
+% Consider the union of the sets of states of the two machines 
+% (assume that they have no states in common, or else we will rename them).
+% As we did with the algorithm, 
+% begin by saying that two states in the union are
+% $0$-indistinguishable if both are final in their own machine 
+% or if neither is final.
+% Step~$n+1$ of this process starts with
+% the $\sim_n$~classes 
+% $\eclass_{n,0},\ldots{}\,\eclass_{n,k}$ of states from the union.
+% For each such class $\eclass_{n,i}$, see if it splits.
+% That is, see if there 
+% are two states in $\eclass_{n,i}$ that are sent by a character
+% $x\in\Sigma$ to different $\sim_n$~classes. 
+% If so then the $\sim_{n}$ class splits into different $\sim_{n+1}$ classes. 
+% When we reach a step with no splitting 
+% then we know which states are indistinguishable and
+% these form the $\sim$~classes.
+
+The hypothesis $\lang(\FSM_O)=\lang(\hat{\FSM})$ 
+implies that the start states in the two machines are indistinguishable
+and so are in the same $\sim$~class.
 Also, if two states are indistinguishable then their successor states
 on any one input symbol $x\in\Sigma$ are also indistinguishable
 from each other,
@@ -9745,8 +9770,8 @@ then $\sigma\concat x$
 distinguishes between the original two states.
 In turn, the successors of these successors are indistinguishable, etc.
 
-We are ready to define the association:~states 
-in~$\FSM_O$ and $\hat{\FSM}$ are associated
+We now have an association between states 
+in~$\FSM_O$ and those in $\hat{\FSM}$: they are associated
 if they are in the same $\sim$~class.
 We first show that every state~$q$ of $\FSM_O$ is associated with 
 at least one state of~$\hat{\FSM}$.
@@ -13771,43 +13796,6 @@ You have to find strings for those rows and columns that meet the constraints.\\
 \index{regular expression!in practice|)}
 
 
-% \extra{Neural nets}
-% \margingraphic{0.2\textwidth}{automata/mccullochpitts.png}{\label{fig:mcculloghpitts}\href{http://nautil.us/issue/21/information/the-man-who-tried-to-redeem-the-world-with-logic}{Warren McCulloch 1898--1969, Walter Pitts 1923--1969}}
-% \begin{exercise}
-% % Exercise http://djm.cc/fsquad/firing.html
-% Myhill posed the firing squad synchronization problem in 1957.
-% You are given a row of soldiers, each of which can be in a finite number
-% of states.
-% A clock provides a sequence of time steps, $0$, $1$, $2$, \ldots\,.
-% At each positive time step, the state of each soldier is set to a function,
-% the \textit{transition function},
-% of its previous state and the state of each adjacent soldier.
-% This function is identical for all soldiers not at the ends of the row;
-% the end soldiers, however, may have different transition functions.
-% (This is a \textit{cellular automaton}.)
-
-% Three of the soldiers' states are called the
-% \textit{quiescent},
-% \textit{excited},
-% and \textit{firing} states.
-% At time $0$, all soldiers are in their quiescent states,
-% except for one soldier at an end, who is in his excited state.
-% The problem is to arrange the state sets of the soldiers and
-% the transition functions such that for this starting position,
-% no matter how many soldiers you start with, all soldiers will,
-% at some future time, enter their firing states simultaneously. 
-
-% \begin{answer}  
-% % Ans
-% One way to solve the problem is to have the excited state shoot out two projectiles, one of which moves at speed 1 and one of which moves at speed 1/3. If the speed 1 projectile is made to bounce off the row's end, these projectiles will meet in the middle of the row. The row can then be bisected, and this bisection step can be repeated to quadrisect, 8-sect, etc., the row. When all these segments vanish (which will happen simultaneously), the soldiers should enter their firing state.
-
-% Here is such a solution, with 13 states, and here is an illustration of the solution running for 20, 40, 80, and 160 soldiers. (In these pictures, and all succeeding pictures, the quiescent state is black, the excited state is yellow, and the firing state is white.) Bisecting a row of length N by this method will take around 3N/2 time steps, so the whole solution will take about 3N/2+3N/4+...=3N time steps.
-
-% How little time can a solution take? It takes 2N-2 time steps just for a signal to pass from one end of the row to the other and back, so any solution must take at least this much time. In fact there are solutions that take just 2N-2 time steps. Here is a minimal-time solution by Abraham Waksman (Information and Control 9 (1966), 66-78), and here are runs of it for 48, 96, 192, 384, and 768 soldiers.
-
-% Waksman's solution uses 16 states. Here is a minimal-time solution with 11 states (David Karr, 1999) and runs of it for 20, 40, 80, and 160 soldiers; and here is a minimal-time solution by Robert Balzer with 8 states (Information and Control 10 (1967), 22-42) and runs of it for 20, 40, 80, and 160 soldiers. Finally, here is a minimal-time solution with just six states by Jacques Mazoyer (Theoretical Computer Science 50 (1987), 183-238), and runs of it for 40, 200, 500, and 1000 soldiers.
-% \end{answer}
-% \end{exercise}
 
 % \extra{XML} %  SEE https://www.w3.org/TR/xml/#sec-notation
 % \begin{center} % https://xkcd.com/1144/
@@ -13817,8 +13805,8 @@ You have to find strings for those rows and columns that meet the constraints.\\
 
 \extra{The Myhill-Nerode Theorem}\label{extra:MyhillNerode}
 We defined regular languages in terms of Finite State machines.
-Here we will give a characterization that does not depend on
-that.
+Here we will give a characterization that instead depends on
+the properties of the language.
 
 This deterministic Finite State machine accepts strings that end in \str{ab}.
 \begin{center}
@@ -13869,7 +13857,8 @@ to~$q_1$, and those that bring the machine to~$q_2$.
   Let $\FSM$ be a Finite State machine with alphabet~$\Sigma$.
   Two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$ are
   \definend{$\FSM$-related}\index{M-related@$\FSM$-related} 
-  if starting the machine with input~$\sigma_0$
+  if $\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$, 
+  that is, if starting the machine with input~$\sigma_0$
   ends with it in the same state as does starting the machine
   with input~$\sigma_1$.
 \end{definition}
@@ -13916,22 +13905,23 @@ how to make the machine from the partition.
 
 \begin{definition}
   Let $\lang$ be a language over $\Sigma$.
-  Two strings $\sigma,\hat{\sigma}\in\kleenestar{\Sigma}$
+  Two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$
   are \definend{$\lang$-related}\index{L-related@$\lang$-related}
   or \definend{$\lang$-indistinguishable},\index{L-indistinguishable@$\lang$-indistinguishable}
-  denoted \definend{$\sigma\sim_{\lang}\hat{\sigma}$},
-  when for every suffix $\tau\in\kleenestar{\Sigma}$ we have
-  $\sigma\concat\tau\in\lang$ if and only if
-  $\hat{\sigma}\concat\tau\in\lang$.
-  Otherwise, the two strings are \definend{$\lang$-distinguishable}.\index{L-distinguishable@$\lang$-distinguishable}
+  denoted \definend{$\sigma_0\sim_{\lang}\sigma_1$},
+  when 
+  $\sigma_0\concat\tau\in\lang$ if and only if
+  $\sigma_1\concat\tau\in\lang$
+  for every suffix $\tau\in\kleenestar{\Sigma}$.
+  Otherwise, if there is a distinguishing extension~$\tau$ then
+  the two strings are \definend{$\lang$-distinguishable}.\index{L-distinguishable@$\lang$-distinguishable}
 \end{definition}
 
-Said another way, the two strings $\sigma$ and~$\hat{\sigma}$
-can be $\lang$-distinguished when there is a
-suffix $\tau$ that separates them:~of the two
-$\sigma\concat\tau$ and $\hat{\sigma}\concat\tau$, one
+Said another way, the two strings $\sigma_0$ and~$\sigma_1$
+can be $\lang$-distinguished when they have different futures\Dash there is a
+suffix $\tau$ that separates them in that of 
+$\sigma_0\concat\tau$ and $\sigma_1\concat\tau$, one
 is an element of~$\lang$ while the other is not.
-
 
 \begin{lemma}
   For any language~$\lang$,
@@ -13957,14 +13947,16 @@ is an element of~$\lang$ while the other is not.
 \begin{example}
   Let $\lang$ be the set
   $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ has an even number of \str{1}'s}}$.
-  We can find the parts of the partition.
   If two strings $\sigma_0,\sigma_1$ both have an even number of \str{1}'s
   then they are $\lang$-related.
-  That's because for any $\tau\in\kleenestar{\B}$, if $\tau$ has an even number of \str{1}'s then $\sigma_0\concat\tau\in\lang$ and  $\sigma_0\concat\tau\in\lang$, while if $\tau$ has an odd number of \str{1}'s then the concatenations will not be members of~$\lang$.  
-  Similarly, two strings both have an odd number of
-  $1$'s then they are $\lang$-related.
-  So the relationship $\sim_{\lang}$ gives rise to this partition
-  of $\kleenestar{\B}\!$.
+  That's because for any $\tau\in\kleenestar{\B}$, 
+  if $\tau$ has an even number of \str{1}'s then 
+  $\sigma_0\concat\tau\in\lang$ and  $\sigma_0\concat\tau\in\lang$, 
+  while if $\tau$ has an odd number of \str{1}'s then the concatenations 
+  will not be members of~$\lang$.  
+  Similarly, two strings with an odd number of
+  $1$'s are $\lang$-related.
+  This is the partition.
   \begin{equation*}
     \eclass_{\lang,0}=\set{\emptystring, \str{0},\str{00},\str{11},\str{000},\str{011},\str{101},\str{110},\,\ldots}
     \quad
@@ -14193,17 +14185,6 @@ containing~$\sigma$; this is what the prior paragraph says.
 This string will be accepted by this machine if and only if $\sigma\in\lang$.
 \end{proof}
 
-% Use wrapfig not margin graphic so get two pics
-\begin{wrapfigure}{l}[3em]{0.16\textwidth}  % "l" for left side so they look into page
-  \centering
-  \includegraphics[width=0.16\textwidth]{automata/pix/myhill.png}% 
-  \vspace*{1ex}
-  \includegraphics[width=0.16\textwidth]{automata/pix/nerode.png}% 
-  \caption{\protect\citetext{\label{fig:myhill}\href{https://en.wikipedia.org/wiki/John_Myhill}{John Myhill Sr\ 1923--1987} and \label{fig:nerode}\href{https://en.wikipedia.org/wiki/Anil_Nerode}{Anil Nerode b~1932}}{Photo credits Paul Halmos, Jason Koski/Cornell University}}\index{Myhill, J!picture}\index{Nerode, A!picture}
-\end{wrapfigure} % Photo credits Paul Halmos, Jason Koski/Cornell University
-% (Some authors refer to $\sim_{\lang}$ as Nerode congruence, 
-% after A~Nerode.) 
-%
 As an example of using this result, we will show that the language
 $\lang=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ the same number of \str{0}'s and \str{1}'s}}$ 
 is not regular.
@@ -14220,12 +14201,19 @@ all mutually inequivalent.
 So there are infinitely many $\sim_{\lang}$ equivalence classes and
 so~$\lang$ is not regular.
 
-\smallskip
+% \smallskip
+% Use wrapfig not margin graphic so get two pics
+\begin{wrapfigure}{l}[3em]{0.40\textwidth}  % "l" for left side so they look into page
+  \centering
+  \includegraphics[height=2cm]{automata/pix/myhill.png}% 
+  \quad %\vspace*{1ex}
+  \includegraphics[height=2cm]{automata/pix/nerode.png}% 
+  \caption{\protect\citetext{\label{fig:myhill}\href{https://en.wikipedia.org/wiki/John_Myhill}{John Myhill Sr\ 1923--1987} and \label{fig:nerode}\href{https://en.wikipedia.org/wiki/Anil_Nerode}{Anil Nerode b~1932}}{Photo credits Paul Halmos, Jason Koski/Cornell University}}\index{Myhill, J!picture}\index{Nerode, A!picture}
+\end{wrapfigure} % Photo credits Paul Halmos, Jason Koski/Cornell University
 Because the Myhill–Nerode theorem gives a necessary and sufficient condition 
 for a language to be regular, 
 it is in some sense the ``right''
 way to think about what makes a language regular.
-
 In particular, contrast it with the Pumping lemma.
 We have now used both to show that languages are not regular.
 But the Pumping lemma gives an implication, not an if and only if equivalence.
@@ -14300,6 +14288,136 @@ many equvalence classes.
 % https://cs.stackexchange.com/a/30722
 % \end{exercise}
 \end{exercises}
+
+
+\extra{M-L}
+We have defined regular languages in terms of Finite State machines.
+Here we will give a characterization that instead relies directly on
+the properties of the language.
+
+Recall "same future."
+
+
+\begin{definition}
+  Fix a language $\lang$ over an alphabet $\Sigma$, and 
+  two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}\!$.
+  Then $\tau\in\kleenestar{\Sigma}$ is a 
+  \definend{distinguishing extension} when of the two strings
+  $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$, one
+  is an element of~$\lang$ and the other is not.
+  If such an extension exists then the strings are 
+  \definend{$\lang$-distinguishable},\index{L-distinguishable@$\lang$-distinguishable}
+  otherwise they are
+  \definend{$\lang$-indistinguishable}\index{L-indistinguishable@$\lang$-indistinguishable}
+  or\definend{$\lang$-related},\index{L-related@$\lang$-related}
+  denoted \definend{$\sigma_0\sim_{\lang}\sigma_1$}.
+\end{definition}
+
+\begin{lemma}
+  For any language~$\lang$,
+  the binary relation $\sim_{\lang}$
+  is an equivalence, and therefore partitions the universe of all strings
+  into equivalence classes $\eclass_{\lang,j}$.
+\end{lemma}
+
+\begin{proof}
+Exercise.  
+\end{proof}
+
+\begin{example}
+Let $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \lh{\sigma}=3}$,
+with $\sigma_0=\str{a}$ and $\sigma_1=\str{aa}$.
+Then  $\tau=\str{bb}$ is a distinguishing extension
+because $\sigma_0\concat\tau=\str{abb}\in\lang$ but 
+$\sigma_1\concat\tau=\str{aabb}\notin\lang$.
+
+In general, two strings $\sigma$ are $\lang$-distinguishable if and only
+if they have different lengths.
+So the equivalence classes, the collections of strings that cannot be 
+distinguished, are  
+$\eclass_{\lang,0}=\set{\emptystring}$,
+and
+$\eclass_{\lang,1}=\set{\str{a},\str{b}}$,
+and
+$\eclass_{\lang,2}=\set{\str{aa},\str{ab},\str{ba},\str{bb}}$,
+and
+$\eclass_{\lang,3}=\set{\str{aaa},\str{aab},\,\ldots\,\str{bbb}}$,
+along with the class of all longer strings
+$\eclass_{\lang,4}=\set{\sigma\suchthat\lh{\sigma}\geq 4}$.
+This pictures the partitioned universe of all strings.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa59.pdf}
+\end{center}
+\end{example}
+
+
+\begin{example}  \label{ex:MNMachineComparePartitions}
+  Consider
+  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+    \text{$\sigma$ has even length}}$.
+  % \begin{center}
+  %   \includegraphics{automata/asy/fsa/fsa19.pdf}
+  % \end{center}
+  % We will compare the partitions induced by the two relations
+  % above.
+  % The $\FSM$-related relation breaks $\kleenestar{\set{\str{a},\str{b}}}$
+  % into five parts, one for each state (since each state in $\FSM$ is
+  % reachable).
+  % \begin{align*}
+  %   \eclass_{\FSM,0} &=\set{\emptystring}  \\
+  %   \eclass_{\FSM,1} &=\set{\str{a},\str{aaa},\str{aab},\str{aba},\str{abb},\str{aaaaa},\str{aaaab},\,\ldots}
+  %   \\
+  %   \eclass_{\FSM,2} &=\set{\str{b},\str{baa},\str{bab},\str{bba},\str{bbb},\str{baaaa},\str{baaab},\,\ldots}
+  %   \\
+  %   \eclass_{\FSM,3} &=\set{\str{aa},\str{ab},\str{aaaa},\str{aaab},\str{aaba},\str{aabb},\str{abaa},\str{abab},\str{abba},\str{abbb},\str{aaaaaa},\,\ldots{}}
+  %   \\
+  %   \eclass_{\FSM,4} &=\set{\str{ba},\str{bb},\str{baaa},\str{baab},\str{baba},\str{babb},\str{bbaa},\str{bbab},\str{bbba},\str{bbbb},\str{baaaaa},\,\ldots{}}
+  % \end{align*}
+  % Make the following an exercise? 
+  % \begin{align*}
+  %   \eclass_{\FSM,0} &=\set{\emptystring}  \\
+  %   \eclass_{\FSM,1} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{a((b|a)(b|a))*}}}
+  %   \\
+  %   \eclass_{\FSM,2} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{b((b|a)(b|a))*}}}
+  %   \\
+  %   \eclass_{\FSM,3} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{(aa|ab)((b|a)(b|a))*}}}
+  %   \\
+  %   \eclass_{\FSM,4} &=\set{\sigma\suchthat \text{$\sigma$ matches \re{(ba|bb)((b|a)(b|a))*}}}
+  % \end{align*}
+  The $\sim_{\lang}$ relation breaks 
+  $\kleenestar{\set{\str{a},\str{b}}}$
+  into two parts,
+  $\eclass_{\lang,0} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is even}}$
+  and
+  $\eclass_{\lang,1} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is odd}}$.
+  For instance, if $\sigma$ has even length then $\sigma\concat\tau\in\lang$
+  if and only if the length of $\tau$ is even, so there is no distinguishing
+  extension for $\sigma_0,\sigma_1\in\eclass_{\lang,0}$.
+  Similar reasoning holds for
+  $\eclass_{\lang,1}$ and odd-length $\tau$'s.
+  The sketch below shows the partitioned universe
+  $\kleenestar{\set{\str{a},\str{b}}}$.
+  % $\kleenestar{\set{\str{a},\str{b}}}$, partitioned in two ways.
+  % There are two $\lang$-related parts, the left and right halves.
+  % The five $\FSM$-related parts are subsets of the $\lang$-related parts.
+  \begin{center}
+    \includegraphics{automata/asy/fsa/fsa61.pdf}
+  \end{center}
+  % That is, the $\FSM$-related partition is finer than the
+  % $\lang$-related partition
+  % (`fine' in the sense that sand is finer than gravel).
+\end{example}
+
+% This recognizes
+% $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
+%   \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
+% \begin{center} 
+%   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa17.pdf}}
+% \end{center}
+
+\begin{center} 
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa60.pdf}}
+\end{center}
 
 
 % \extra{Derivatives}

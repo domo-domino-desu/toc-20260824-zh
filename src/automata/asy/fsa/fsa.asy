@@ -3360,5 +3360,91 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Myhill-Nerode  partition of strings into five parts =======
+picture pic;
+int picnum = 64;
+unitsize(pic,1cm);
+
+real wth=4, hgt=2; 
+
+pair ll=(0,0), lr=(wth,0), ur=(wth,hgt), ul=(0,hgt);
+
+// pens to draw inside borders
+real borderpenwidth = 1pt;
+pen borderpen = squarecap+linejoin(0)+linewidth(Lborderpenwidth)+highlightcolor; // or lightcolor?
+pen universe_borderpen = squarecap+linejoin(0)+linewidth(0.4)+black;
+
+// grid to help placing
+// for (int row=1; row<10; ++row) {
+//   draw(pic, (0,row*hgt/10)--(wth,row*hgt/10), blue+linewidth(0.2pt));
+// }
+// for (int col=1; col<10; ++col) {
+//   draw(pic, (col*wth/10,0)--(col*wth/10,hgt), blue+linewidth(0.2pt));    
+// }
+
+// boundaries of regions
+path universe_border = ll--lr--ur--ul--cycle;
+path r0_border = point(universe_border,3.35){E}
+      :: point(universe_border,2.6)-(0.1*wth,0.3*hgt)
+      :: {N}point(universe_border,2.6);
+path r1_border = point(r0_border,1.65)
+  ..(0.46*wth,0.45*hgt)
+  .. point(universe_border,0.42);
+//dot(pic, (0.46*wth,0.45*hgt), green);
+
+// Draw borders
+draw(pic, r0_border, borderpen);
+draw(pic, r1_border, borderpen);
+
+// Draw the outside border
+draw(pic,universe_border,universe_borderpen);
+
+// Labels
+label(pic,"$\eclass_{\lang,0}$",(0.175wth,0.85hgt));
+label(pic,"$\eclass_{\lang,1}$",(0.25wth,0.35hgt));
+label(pic,"$\eclass_{\lang,2}$",(0.75wth,0.5hgt));
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............. resulting machine .........................
+picture pic;
+int picnum = 65;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$\eclass_{\lang,0}$"); 
+node q1=ncircle("$\eclass_{\lang,1}$",ns_accepting); 
+node q2=ncircle("$\eclass_{\lang,2}$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 2.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1);
+layout(-30.0, 0.5*(1/Cos(-30.0))*u, q0, q2);
+
+// draw edges
+draw(pic,
+     (q0..bend(-15)..q1).l("\str{a}").style("leftside"),
+     (q0..bend..q2).l("\str{b}"),
+     (q1..bend(-15)..q2).l("\str{a}").style("leftside"),
+     (q1..loop(E)).l("\str{b}"),
+     (q2..loop(S)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1,
+     q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 

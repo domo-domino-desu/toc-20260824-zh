@@ -8953,7 +8953,7 @@ Recall "same future."
   denoted \definend{$\sigma_0\sim_{\lang}\sigma_1$}.
 \end{definition}
 
-\begin{lemma}
+\begin{lemma} \label{lem:SimSubLangIsEquivalence}
   For any language~$\lang$,
   the binary relation $\sim_{\lang}$
   is an equivalence, and therefore partitions the universe of all strings
@@ -8962,7 +8962,7 @@ Recall "same future."
 
 
 \begin{proof}
-Exercise.  
+\Cref{exer:SimSubLangIsEquivalence}.  
 \end{proof}
 
 \begin{example}
@@ -9124,14 +9124,14 @@ $\lang$-related partition.\footnote{%
   with input~$\sigma_1$.
 \end{definition}
 
-\begin{lemma}
+\begin{lemma}  \label{lem:SimSubFSMIsEquivalence}
   The binary relation of $\FSM$-related is an equivalence
   and so partitions the collection of all strings $\kleenestar{\Sigma}$
   into equivalence classes.
 \end{lemma}
 
 \begin{proof}
-Exercise.  
+\Cref{exer:SimSubFSMIsEquivalence}.  
 \end{proof}
 
 \begin{lemma}  \label{lem:MRelatedImpliesLRelated}
@@ -9166,33 +9166,26 @@ and appending \str{a} gives $\str{aa}\in\eclass_{\FSM,3}$.
 This way of thinking of the $\FSM$~classes as a machine
 suggests extending to also think of 
 the $\lang$~classes as a machine.
-It is the two-states machine on the right below.
-One state, $\eclass_{\lang,0}$, is accepting because
-it contains strings from the language~$\lang$.
-The other, $\eclass_{\lang,1}$, does not contain strings from the language
-so it is not an accepting state.
-Also, the class $\eclass_{\lang,0}$ contains the string~\emptystring{} 
-so it is 
-the $\lang$~machine's start state.  
-
-The workings of the transitions on the $\eclass_{\FSM,i}$ classes suggest 
+% The state $\eclass_{\lang,0}$ is accepting because
+% it contains strings from the language~$\lang$.
+% The other state, $\eclass_{\lang,1}$, does not contain strings from~$\lang$ and
+% so it is not accepting.
+% Also, the class $\eclass_{\lang,0}$ contains \emptystring{} 
+% so it is 
+% the $\lang$-machine's start state.  
+% 
+In particular, 
+the workings of the transitions on the $\eclass_{\FSM,i}$ classes suggest 
 how to define the transitions in this machine.
-% For instance, every string $\sigma\in\eclass_{\lang,0}$,
-% on being given an \str{a},
-% results in a string $\sigma\concat\str{a}\in\eclass_{\lang,1}$.  
-% Thus, the even length $\str{bb}\in\eclass_{\lang,0}$ leads to
-% the odd length $\str{bba}\in\eclass_{\lang,1}$.
-% Similarly, to define the transition from $\eclass_{\lang,0}$ 
-% on the input character~\str{b}, 
-% every member of that class when given that character 
-% will yield a member of $\eclass_{\lang,1}$.  
-% However, for other languages the correct definition of transitions 
-% may be less clear, so we now make it explicit.
 
 \begin{definition}
 Let $\lang$ be a language over $\Sigma$ and let the collection of
 $\sim_{\lang}$ equivalence classes $\eclass_{\lang,i}$ be $E$.
-The \definend{transition operation} on the classes, 
+The \definend{$\lang$-machine}
+has states that are the classes, 
+where the start state is the one containing~\emptystring.
+Its accepting states are the ones containing strings from~$\lang$.
+The transition operation, 
 $\map{\Delta}{E\times\Sigma}{E}$,
 is:~given input $\eclass_{\lang,i}$ and $x\in\Sigma$,
 choose a $\sigma$ in the class, and  
@@ -9200,11 +9193,15 @@ then $\sigma\concat x$ is an element of some class $\eclass_{\lang,j}$.
 Set $\Delta(\eclass_{\lang,i},x)=\eclass_{\lang,j}$.
 \end{definition}
 
-This definition allows us to choose any string~$\sigma$ 
+For example the machine for the language
+of \cref{ex:MNMachineComparePartitions} is the two-state machine in  
+(\ref{fig:MMachineCollapsesToLMachine}) below.
+
+As stated, the definition allows us to choose any string~$\sigma$ 
 at all from $\eclass_{\lang,i}$. 
 We must establish that   
-choosing two different elements of the input class
-does not result in two different output classes.
+choosing two different strings of the input class
+does not give two different outputs.
 
 \begin{lemma} \label{lem:MNPriorThm}
   Fix a language $\lang$.
@@ -9215,9 +9212,6 @@ does not result in two different output classes.
     character~$x\in\Sigma$ gives strings that are also
     $\lang$-related,
     $(\sigma_0\concat x)\sim_{\lang}(\sigma_1\concat x)$.
-    % More generally, adjoining any common
-    % extension~$\beta$ gives strings that are related,
-    % $(\sigma_0\concat \beta)\sim_{\lang}(\sigma_1\concat \beta)$.
   \item The choice of accepting states is well-defined:~if one member 
     of a class $\sigma_0\in\eclass_{\lang,i}$
     is an element of~$\lang$ then every member
@@ -9229,18 +9223,6 @@ does not result in two different output classes.
 \end{lemma}
 
 \begin{proof}
-  % For the first item, we verify the more general statement.
-  % Assume that
-  % $\sigma_0$ and $\sigma_1$ are $\lang$-related.
-  % Then no extension~$\tau$ will $\lang$-distinguish the
-  % two, that is, it is not the case that one of
-  % $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$
-  % is in $\lang$ while the other is not.
-  % Taking the special case that $\beta$ is a prefix of $\tau$, 
-  % so $\tau=\beta\concat\hat{\tau}$, gives that for the two strings
-  % $\sigma_0\concat \beta$ and $\sigma_1\concat \beta$,
-  % no extension~$\hat{\tau}$ will $\lang$-distinguish the two.
-  % So these two strings are also $\lang$-related.
   For the first item, if $\sigma_0\concat x$ were not 
   $\lang$-related to $\sigma_1\concat x$ then the single-character string~$x$
   would be a distinguishing extension.
@@ -9264,13 +9246,12 @@ suggests that we are collapsing the
 $\FSM$ classes to get the $\lang$~machine, 
 and it also recognizes the language~$\lang$,
 but does so with a minimal number of states.
-\begin{center}
+\begin{equation*}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa19.pdf}}
   \qquad\text{$\Longrightarrow$}\qquad
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa63.pdf}}
-\end{center}
-
-
+  \tag{$**$} \label{fig:MMachineCollapsesToLMachine}
+\end{equation*}
 
 \begin{example}
 Let $\lang=\set{\str{a}\str{b}^n\suchthat n\in\N}=\set{\str{a},\str{ab},\str{abb},\,\ldots}$.  
@@ -9377,82 +9358,66 @@ and finding the resulting class.
 
 \begin{theorem}[Myhill-Nerode]
 A language~$\lang$ is regular if and only if the relation
-$\sim_{\lang}$ has only finitely many equivalence classes.
+$\sim_{\lang}$ gives only finitely many equivalence classes.
 \end{theorem}
 
 \begin{proof}
-One direction is easy.
-Suppose that $\lang$ is a regular language.
-Then it is recognized by a Finite State machine $\FSM$.
-By \cref{lem:MRelatedImpliesLRelated}
-the number of element in the partition induced by
-$\sim_{\lang}$ is finite,
-because the number of elements in the partition
-associated with being $\FSM$-related is finite, as there is one part for
+For the first direction suppose that $\lang$ is a regular language,
+recognized by a Finite State machine $\FSM$.
+The number of elements in the partition
+associated with $\sim_{\FSM}$ is finite, as there is one part for
 each of $\FSM$'s reachable states.
+Consequently the number of element in the partition induced by
+$\sim_{\lang}$ is finite
+because 
+by \cref{lem:MRelatedImpliesLRelated}, $\sim_{\lang}$'s partition 
+has fewer elements than does $\sim_{\FSM}$'s
+(as illustrated in \cref{ex:MNMachineComparePartitions}'s
+(\ref{ex:MNMachineComparePartitionsGraphic}) diagram). 
 
 For the other direction
 suppose that the number of elements in the partition
-associated with being $\lang$-related is finite.
-We will verify that $\lang$ is regular
-by producing a Finite State machine
-that recognizes~$\lang$.
+induced by $\sim_{\lang}$ is finite.
+Then the $\lang$~machine described above is a Finite State machine.
+If we show that it recognizes~$\lang$
+then we will have verified that $\lang$ is regular.
 
-The machine's states are the partition's elements, the  $\eclass_{\lang,i}$'s.
-That is, $s_i$ is $\eclass_{\lang,i}$.
-The start state is the part containing the empty
-string~$\emptystring$.
-A state is final if that part contains 
-strings from the language~$\lang$.
-
-The transition function is:~for any state~$s_i=\eclass_{\lang,i}$
-and alphabet element~$x$,
-compute the next state $\Delta(s_i,x)$ by starting with any string in that part
-$\sigma\in \eclass_{\lang,i}$,
-appending the character to get a new string~$\hat{\sigma}=\sigma\concat x$,
-and then finding the part containing that
-string, the $\eclass_{\lang,j}$ such that
-$\hat{\sigma}\in\eclass_{\lang,j}$.
-Then $\Delta(s_i,x)=s_j$.
-(Here is an equivalent way to describe $\Delta$.
-For the part containing $\sigma$ we can use the notation $\eqclass{\sigma}$.
-Then our definition of the transition function becomes
-$\Delta(\eqclass{\sigma},x)=\eqclass{\sigma\concat{x}}$.)
-% Then a simple induction shows that the extended transition function
-% in the new machine is $\extended{\Delta}(\alpha)=\eqclass{\alpha}$.
-
-We must verify that this transition function is well-defined.
-That is, the definition of $\Delta(s_i,x)$ as given potentially depends on
-which string $\sigma$ you choose from $s_i=\eclass_{\lang,i}$. 
-We must
-check that choosing a different string
-cannot lead to a different resulting part.
-This follows from~(1) in \cref{lem:MNPriorThm}:~take 
-two starting strings from the same part
-$\sigma_0,\sigma_1\in\eclass_{\lang,i}$ and make a common extension
-by the one-element string~$\beta=\sequence{x}$
-so the results are in the same part $\sigma_0\sim_{\lang}\sigma_1$.
-
-Finally, we must verify that the language recognized by this machine
-is~$\lang$.
-For any string $\sigma\in\kleenestar{\Sigma}$, starting this machine
-with $\sigma$ as input will cause the machine to end in the partition
-containing~$\sigma$; this is what the prior paragraph says.
-This string will be accepted by this machine if and only if $\sigma\in\lang$.
+Starting with a string $\sigma\in\kleenestar{\Sigma}$
+as input will cause the machine to end in the partition
+containing~$\sigma$.
+By definition of this machine's accepting states, $\sigma$
+will be accepted by this machine if and only if $\sigma\in\lang$.
 \end{proof}
 
 \begin{lemma}
-The machine is minimal.  
+The machine is minimal,
+meaning that from among all the Finite State machines that recognize
+the language~$\lang$, it has a minimal number of states.  
 \end{lemma}
 
+\begin{proof}
+Let a Finite State machine~$\FSM$ recognize~$\lang$.
+Consider two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$.
+If those two take $\FSM$ to the same state, 
+$\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$,
+then any common extension does the same,
+$\extended{\Delta}(\sigma_0\concat\tau)=\extended{\Delta}(\sigma_1\concat\tau)$.
+
+This implies that if $\sigma_0\not\sim_{\lang}\sigma_1$ then 
+$\extended{\Delta}(\sigma_0)\neq\extended{\Delta}(\sigma_1)$.
+If there are $k$-many $\eclass_{\lang,i}$ classes then there is a set
+of $k$-many strings that all must end in different states.
+So any machine recognizing~$\lang$ must have at least that many states.  
+\end{proof}
+
 We finish with a reflection.
-At the chapter's start we constructed the machines by hand, 
+At the chapter's start we constructed machines by hand, 
 perhaps sometimes struggling a bit.
 In contrast, the Myhill-Nerode result
 starts with the desired language~$\lang$, 
 considers the relation $\sim_{\lang}$, and
-if there are finitely many equivalence classes 
-then auatomatically gives a Finite State machine
+if there are finitely many associated classes 
+then gives a machine
 that recognizes the language.
 
 In short,
@@ -9467,9 +9432,26 @@ This is a deep kind of wizardry.
 
 % https://cs.stackexchange.com/a/136195/50343
 
+\begin{exercise}
+Let $\lang$ be the set of strings from $\kleenestar{\set{\str{a},\str{b}}}$
+ending in~\str{a}.
+\begin{exparts}
+\item Show that $\lang$ is an equivalence class $\eclass_{\lang,1}$ for 
+the relation~$\sim_{\lang}$.
+\item Show that the compl;ement $\eclass_{\lang,0}=\setcomp{\lang}$ is also
+an equvalence class.
+\item What is the initial state of this $\lang$-machine?
+\item What are the accepting states?
+\item Give the transition table and the diagram.
+\item Which of the strings~\emptystring,
+\str{a}, \str{b}, \str{abba}, and \str{bba} are accepted by the machine?
+\end{exparts}
+\end{exercise}
+
 \recommended
 \begin{exercise}
-Find the $\lang$ equivalence classes for each regular set.
+Each language is regular.
+Find the $\sim_{\lang}$ equivalence classes.
 The alphabet is $\Sigma=\set{\str{a},\str{b}}$.
 \begin{exparts}
 \item $\lang_0=\set{\str{a}^n\str{b}\suchthat n\in\N}$
@@ -9510,10 +9492,41 @@ many equvalence classes.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Show that the equivalence classes for $\lang$ are the same as for
-its complement $\setcomp{\lang}$.  
+\begin{exercise} \label{exer:SimSubLangIsEquivalence}
+Prove \cref{lem:SimSubLangIsEquivalence}.  
 \end{exercise}
+
+\begin{exercise} \label{exer:SimSubFSMIsEquivalence}
+Prove \cref{lem:SimSubFSMIsEquivalence}.  
+\end{exercise}
+
+
+\begin{exercise}
+Show that the equivalence classes for the language~$\lang$ are the same as for
+the language that is its complement, $\setcomp{\lang}\!$.  
+\end{exercise}
+
+\begin{exercise}
+Generalize the first item in \cref{lem:MNPriorThm} to:~~if two strings 
+$\sigma_0,\sigma_1$ are $\lang$-related,
+$\sigma_0\sim_{\lang}\sigma_1$, then adjoining any common
+extension~$\beta$ gives strings that are related,
+$(\sigma_0\concat \beta)\sim_{\lang}(\sigma_1\concat \beta)$.
+\begin{answer}
+Assume that
+$\sigma_0$ and $\sigma_1$ are $\lang$-related.
+Then no extension~$\tau$ will $\lang$-distinguish the
+two, that is, it is not the case that one of
+$\sigma_0\concat\tau$ and $\sigma_1\concat\tau$
+is in $\lang$ while the other is not.
+Taking the special case that $\beta$ is a prefix of $\tau$, 
+so $\tau=\beta\concat\hat{\tau}$, gives that for the two strings
+$\sigma_0\concat \beta$ and $\sigma_1\concat \beta$,
+no extension~$\hat{\tau}$ will $\lang$-distinguish the two.
+So these two strings are also $\lang$-related.
+\end{answer}
+\end{exercise}
+
 
 % \recommended
 % \begin{exercise}

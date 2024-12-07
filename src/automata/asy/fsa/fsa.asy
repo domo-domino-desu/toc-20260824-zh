@@ -3527,4 +3527,83 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ===== Myhill-Nerode exercise: machine for length three strings ========
+picture pic;
+int picnum = 68;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$\eclass_{\lang,0}$"); 
+node q1=ncircle("$\eclass_{\lang,1}$"); 
+node q2=ncircle("$\eclass_{\lang,2}$"); 
+node q3=ncircle("$\eclass_{\lang,3}$",ns_accepting); 
+node q4=ncircle("$\eclass_{\lang,4}$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2, q3, q4);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a},\str{b}"),
+     (q1--q2).l("\str{a},\str{b}"),
+     (q2--q3).l("\str{a},\str{b}"),
+     (q3--q4).l("\str{a},\str{b}"),
+     (q4..loop(E)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ===== Myhill-Nerode exercise: strings that end in a ========
+picture pic;
+int picnum = 69;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$\eclass_{\lang,0}$"); 
+node q1=ncircle("$\eclass_{\lang,1}$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0..loop(W)).l("\str{b}"),
+     (q0..bend..q1).l("\str{a}"),
+     (q1..loop(E)).l("\str{a}"),
+     (q1..bend..q0).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

@@ -3605,5 +3605,82 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ===== Myhill-Nerode exercise: strings that end in 01 ========
+picture pic;
+int picnum = 70;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(W)).l("\str{1}"),
+     (q0..bend(-20)..q1).l("\str{0}").style("leftside"),
+     (q1..loop(N)).l("\str{0}"),
+     (q1..bend(-20)..q2).l("\str{1}").style("leftside"),
+     (q2..bend(-20)..q1).l("\str{0}"),
+     (q2..bend(-30)..q0).l("\str{1}").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+// ===== Myhill-Nerode exercise: strings of form a^{n}b ========
+picture pic;
+int picnum = 71;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+
+// draw edges
+draw(pic,
+     (q0..loop(W)).l("\str{a}"),
+     (q0..bend(-20)..q1).l("\str{b}").style("leftside"),
+     (q1..bend(-20)..q2).l("\str{a},\str{b}").style("leftside"),
+     (q2..loop(E)).l("\str{0},\str{1}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 

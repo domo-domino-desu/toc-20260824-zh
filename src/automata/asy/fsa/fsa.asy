@@ -3473,9 +3473,9 @@ hlayout(1*u, q3, q2);
 // draw edges
 draw(pic,
      (q0..loop(W)).l("\str{0}"),
-     (q0--q1).l("\str{1}"),
+     (q0--q1).l("\str{1}").style("leftside"),
      (q1..loop(E)).l("\str{0}"),
-     (q1--q2).l("\str{1}"),
+     (q1--q2).l("\str{1}").style("leftside"),
      (q2..loop(E)).l("\str{0}"),
      (q2--q3).l("\str{1}"),
      (q3..loop(W)).l("\str{0}"),
@@ -3489,6 +3489,41 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+
+// ===== Myhill-Nerode exercise: machine for even length strings ========
+picture pic;
+int picnum = 67;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$\eclass_{\lang,0}$",ns_accepting); 
+node q1=ncircle("$\eclass_{\lang,1}$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0..bend..q1).l("\str{a},\str{b}"),
+     (q1..bend..q0).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 

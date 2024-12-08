@@ -3670,12 +3670,52 @@ draw(pic,
      (q0..loop(W)).l("\str{a}"),
      (q0..bend(-20)..q1).l("\str{b}").style("leftside"),
      (q1..bend(-20)..q2).l("\str{a},\str{b}").style("leftside"),
-     (q2..loop(E)).l("\str{0},\str{1}")
+     (q2..loop(E)).l("\str{a},\str{b}")
 );
 
 // draw nodes
 draw(pic,
      q0, q1, q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ===== Myhill-Nerode exercise: strings of form aab^{n} ========
+picture pic;
+int picnum = 72;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$",ns_accepting); 
+node q3=ncircle("$q_3$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2, q3);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{a}").style("leftside"),
+     (q0..bend..q3).l("\str{b}"),
+     (q1..bend(-20)..q2).l("\str{a}").style("leftside"),
+     (q1..bend..q3).l("\str{b}").style("leftside"),
+     (q2..loop(N)).l("\str{b}"),
+     (q2..bend(-20)..q3).l("\str{a}").style("leftside"),
+     (q3..loop(N)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

@@ -254,24 +254,24 @@ $q_2$).\index{accepting state!in transition tables}\index{final state!in transit
 \end{center}
 \end{example}
 
-\begin{remark}
-We take this chance to describe
+\begin{remark} \label{rem:HowToDesignFSM}
+We pause to briefly address
 the key to designing Finite State machines. 
-Each state should have an 
-intuitive function that is directed to the machine's purpose, and that is
-unique.
-The drawing from that example brings this out.
-Its top row has states where the machine has so far seen an even number of
-\str{1}'s (possibly zero many), 
-while its states in the bottom row have seen an odd number.
-Its first column holds states where the machine has seen no \str{0}'s,
-its second column holds states where there has been one,
-and its third has states where there have been two.
-Thus we can articulate that $q_4$ means, 
-``so far the machine has seen one~\str{0} and an
-odd number of \str{1}'s,''
-while $q_5$ means, ``so far the machine has
-seen two \str{0}'s but an odd number of \str{1}'s.''
+Often people new to them 
+put down a $q_0$, think of some input strings and 
+then add states accounting for those inputs.
+That can give haphazard results.
+
+Proceeding in this way is thinking of a state as about what happened to 
+get there.
+Better is to think of states as about the future. 
+That future should be directed to the machine's purpose.
+The prior example brings this out:~articulating the role of 
+state~$q_1$ gives something like, ``waiting for a \str{0}''
+(or possibly ``waiting for at least one \str{0}'').
+Similarly $q_5$ is ``waiting for a \str{1}.''
+Another example is that state $q_4$ is looking for at least one \str{0} 
+followed by a~\str{1}.
 \end{remark}
 
 Our Finite State machine descriptions often take
@@ -7551,7 +7551,7 @@ and $h(\emptystring)=\emptystring$.
 
 
 % ================================================
-\section{Languages that are not regular}\index{language!non-regular|(}
+\section{Non-regular languages}\index{language!non-regular|(}
 The prior section show that there are languages
 that are not regular via a counting argument.
 We now see a technique to show that 
@@ -8927,1234 +8927,6 @@ But~$p$ can be smaller than that.
 
 \end{exercises}
 \index{language!non-regular|)}
-
-
-
-\section{The Myhill-Nerode theorem}
-We have defined regular languages in terms of Finite State machines.
-Here we will give a characterization that instead directly applies
-the properties of the language.
-
-Recall "same future."
-
-
-\begin{definition}
-  Fix a language $\lang$ over an alphabet $\Sigma$, and 
-  two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}\!$.
-  Then $\tau\in\kleenestar{\Sigma}$ is a 
-  \definend{distinguishing extension} when of the two strings
-  $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$, one
-  is an element of~$\lang$ and the other is not.
-  If such an extension exists then the strings are 
-  \definend{$\lang$-distinguishable},\index{L-distinguishable@$\lang$-distinguishable}
-  otherwise they are
-  \definend{$\lang$-indistinguishable}\index{L-indistinguishable@$\lang$-indistinguishable}
-  or \definend{$\lang$-related},\index{L-related@$\lang$-related}
-  denoted \definend{$\sigma_0\sim_{\lang}\sigma_1$}.
-\end{definition}
-
-\begin{lemma} \label{lem:SimSubLangIsEquivalence}
-  For any language~$\lang$,
-  the binary relation $\sim_{\lang}$
-  is an equivalence, and therefore partitions the universe of all strings
-  into equivalence classes $\eclass_{\lang,j}$.
-\end{lemma}
-
-
-\begin{proof}
-This is \cref{exer:VerifyEquivRels}'s item~\ref{exer:SimSubLangIsEquivalence}.  
-\end{proof}
-
-\begin{example}  \label{ex:MyhillNerodeExampleLangFiveClasses}
-Let $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \lh{\sigma}=3}$,
-with $\sigma_0=\str{aa}$ and $\sigma_1=\str{a}$.\footnote{%
-  Here, $\protect\sigma_1=\protect\str{a}$ is not a character, 
-  it is a length one string containing
-  the character \protect\str{a}.
-  We won't worry too much about the distinction.}
-Then  $\tau=\str{bb}$ is a distinguishing extension
-because $\sigma_0\concat\tau=\str{aabb}\in\lang$ but 
-$\sigma_1\concat\tau=\str{abb}\notin\lang$.
-
-As with the prior paragraph, two strings can be distinguished if and only
-if they they have different lengths.
-So the equivalence classes, the collections of strings that cannot be 
-distinguished, are  
-$\eclass_{\lang,0}=\set{\emptystring}$,
-and
-$\eclass_{\lang,1}=\set{\str{a},\str{b}}$,
-and
-$\eclass_{\lang,2}=\set{\str{aa},\str{ab},\str{ba},\str{bb}}$,
-and
-$\eclass_{\lang,3}=\set{\str{aaa},\str{aab},\,\ldots\,\str{bbb}}$,
-along with the class of all longer strings,
-$\eclass_{\lang,4}=\set{\sigma\suchthat\lh{\sigma}\geq 4}$.
-This pictures the universe of all strings $\kleenestar{\Sigma}\!$.
-It is partitioned into the equivalence classes, with every string 
-a member of one and only one class. 
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa59.pdf}
-\end{center}
-\end{example}
-
-
-\begin{example}  \label{ex:LangOfMNMachineComparePartitions}
-  Consider
-  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
-    \text{$\sigma$ has even length}}$.
-  For instance, if $\sigma$ has even length then $\sigma\concat\tau\in\lang$
-  if and only if the length of $\tau$ is even, so there is no distinguishing
-  extension for two strings $\sigma_0,\sigma_1$ of even length.
-  Similar reasoning holds for
-  two odd-length $\sigma$'s.
-  In short, the $\sim_{\lang}$ relation breaks 
-  $\kleenestar{\set{\str{a},\str{b}}}$
-  into two parts,
-  $\eclass_{\lang,0} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is even}}$
-  and
-  $\eclass_{\lang,1} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is odd}}$.
-  The sketch below shows the partitioned universe
-  $\kleenestar{\set{\str{a},\str{b}}}\!$.
-  \begin{center}
-    \includegraphics{automata/asy/fsa/fsa61.pdf}
-  \end{center}
-\end{example}
-
-\begin{example}
-The above examples have finitely many  $\sim_{\lang}$ classes.
-We now see that there are languages with infinitely many.
-Consider \cref{ex:BalancedParensIsNotRegularLang}'s
-$\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma=\str{a}^n\str{b}^n$ for some $n\in\N$}}$.
-To show that the number of classes is ininite 
-we need not produce all of them;~it is enough to just
-exhibit infinitely many unequal ones
-(or for that matter, infinitely many mutually distinguishable strings).
-\begin{equation*}
-  \eclass_{\lang,i_0}=\set{\emptystring}
-  \quad
-  \eclass_{\lang,i_1}=\set{\str{a}}
-  \quad
-  \eclass_{\lang,i_2}=\set{\str{aa}}
-  \quad
-  \eclass_{\lang,i_3}=\set{\str{aaa}}
-  \quad
-  \ldots
-\end{equation*}
-For the argument that these singleton sets are equivalence classes, 
-consider $\sigma=\str{a}^n\!$.
-Because $\sigma\concat\str{b}^n\in\lang$,
-the only candidates for strings that are $\lang$-indistinguishable from $\sigma$
-but unequal to it
-have the form $\alpha=\str{a}^{n+j}\str{b}^{j}$ with $j>0$.
-If $n=0$ then $\sigma=\emptystring$ and a distinguishing extension between
-$\emptystring$ and $\alpha=\str{b}^j$ is $\str{ab}$.
-% If $j=0$ then $\alpha=\emptystring$
-% but $\sigma\not\sim_{\lang}\emptystring$ because
-% $\str{b}^n$ is a distinguishing extension.
-If $n>0$ then $\str{a}^n\not\sim_{\lang}\str{a}^{n+j}\str{b}^{j}$ 
-because
-$\tau=\str{a}\str{b}^{n+1}$ is a distinguishing extension.
-\end{example}
-
-We next connect Finite State machines that recognize a language~$\lang$ 
-with the $\sim_{\lang}$ relationship.
-
-\begin{example} \label{ex:MNMachineComparePartitions}
-This machine recognizes 
-  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
-    \text{$\sigma$ has even length}}$,
-the language of \cref{ex:LangOfMNMachineComparePartitions}.
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa19.pdf}
-\end{center}
-Consider other string inputs,
-not just the accepted ones,
-and see where they bring the machine.
-\begin{center}  \small\setlength{\tabcolsep}{0.85\tabcolsep}
-  \begin{tabular}{r|*{13}{c}}
-    \tabulartext{Input string $\sigma$}
-    &$\emptystring$ &\str{a} &\str{b}
-      &\str{aa} &\str{ab} &\str{ba} &\str{bb}
-      &\str{aaa} &\str{aab} &\str{aba} &\str{abb} &$\ldots$        \\
-    \cline{2-13}
-    \tabulartext{Ending state $\extended{\Delta}(\sigma)$}
-    &$q_0$ &$q_1$ &$q_2$
-      &$q_3$ &$q_3$ &$q_4$ &$q_4$
-      &$q_1$ &$q_1$ &$q_1$ &$q_1$ &$\ldots$                \\
-  \end{tabular}
-\end{center}
-The collection of input strings breaks into five sets,
-those that bring the machine to~$q_0$,
-those that bring the machine to~$q_1$, etc.
-This is another kind of partition, which
-will prove to be related to but different than the partition above.
-Denote the $i$-th class of this $\FSM$-related partition with 
-$\eclass_{\FSM,i}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \extended{\Delta}(\sigma)=q_i}$.
-\begin{center}
-  \begin{tabular}{l}
-    $\eclass_{\FSM,0}=\set{\varepsilon}$
-    \\
-    $\eclass_{\FSM,1}=\set{\str{a}, \str{aaa},\,\ldots}$
-    \\
-    $\eclass_{\FSM,2}=\set{\str{b}, \str{baa},\,\ldots}$
-    \\
-    $\eclass_{\FSM,3}=\set{\str{aa}, \str{ab},\,\ldots}$
-    \\
-    $\eclass_{\FSM,4}=\set{\str{ba}, \str{bb},\,\ldots}$
-  \end{tabular}
-  \qquad
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa62.pdf}}
-\end{center}
-Below we lay the language-related partition, with two parts, on top of
-the machine-related one with five.
-\begin{equation*}
-    \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa20.pdf}}
-    \tag{$*$}\label{ex:MNMachineComparePartitionsGraphic}
-\end{equation*}
-The $\FSM$-related parts are subsets of the $\lang$-related parts.
-That is, the $\FSM$-related partition is finer than the
-$\lang$-related partition.\footnote{%
-  `Finer' in the sense that sand is finer than gravel.}
-\end{example}
-
-\begin{definition}
-  Let $\FSM$ be a Finite State machine with alphabet~$\Sigma$.
-  Two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$ are
-  \definend{$\FSM$-related}\index{M-related@$\FSM$-related} 
-  if $\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$, 
-  that is, if starting the machine with input~$\sigma_0$
-  ends with it in the same state as does starting the machine
-  with input~$\sigma_1$.
-\end{definition}
-
-\begin{lemma}  \label{lem:SimSubFSMIsEquivalence}
-  The binary relation of $\FSM$-related is an equivalence
-  and so partitions the collection of all strings $\kleenestar{\Sigma}$
-  into equivalence classes.
-\end{lemma}
-
-\begin{proof}
-See \cref{exer:VerifyEquivRels}'s item~\ref{exer:SimSubFSMIsEquivalence}.  
-\end{proof}
-
-\begin{lemma}  \label{lem:MRelatedImpliesLRelated}
-  Let $\FSM$ be a Finite State machine that recognizes~$\lang$.
-  If two strings are $\FSM$-related then they are $\lang$-related.
-\end{lemma}
-
-\begin{proof}
-Assume that $\sigma_0$ and $\sigma_1$ are  $\FSM$-related, so that  
-starting $\FSM$ with input $\sigma_0$
-causes it to end in the same state as starting it with input~$\sigma_1$.
-Thus for any suffix~$\tau$, giving $\FSM$ the input $\sigma_0\concat\tau$
-causes it to end in the same state as does the input  $\sigma_1\concat\tau$.
-In particular, $\sigma_0\concat\tau$ takes $\FSM$
-to a final state if and only if $\sigma_1\concat\tau$ does.
-So the two strings are $\lang$-related.  
-\end{proof}
-
-Naturally, the $\eclass_{\FSM,i}$ classes reflect $\FSM$'s states.
-For instance, the strings in
-$\eclass_{\FSM,1}=\set{\str{a}, \str{aaa},\,\ldots}$
-reflect the state $q_1$, and the strings in
-$\eclass_{\FSM,3}=\set{\str{aa}, \str{ab},\,\ldots}$
-reflect the state~$q_3$.
-Specificially:~just as when the machine is in~$q_1$ and reads an~\str{a} 
-then it transitions to~$q_3$,
-so also if we choose any string $\sigma\in\eclass_{\FSM,1}$ and append an~\str{a}
-then $\sigma\concat\str{a}$ is an element of~$\eclass_{\FSM,3}$.
-An example is that choosing $\sigma=\str{a}\in\eclass_{\FSM,1}$ 
-and appending \str{a} gives $\str{aa}\in\eclass_{\FSM,3}$.
-
-This way of thinking of the $\FSM$~classes as a machine
-suggests extending to also think of 
-the $\lang$~classes as a machine.
-% The state $\eclass_{\lang,0}$ is accepting because
-% it contains strings from the language~$\lang$.
-% The other state, $\eclass_{\lang,1}$, does not contain strings from~$\lang$ and
-% so it is not accepting.
-% Also, the class $\eclass_{\lang,0}$ contains \emptystring{} 
-% so it is 
-% the $\lang$-machine's start state.  
-% 
-In particular, 
-the workings of the transitions on the $\eclass_{\FSM,i}$ classes suggest 
-how to define the transitions in this machine.
-
-\begin{definition}  \label{def:LMachine}
-Let $\lang$ be a language over $\Sigma$ and let the collection of
-$\sim_{\lang}$ equivalence classes $\eclass_{\lang,i}$ be $E$.
-The \definend{$\lang$-machine}
-has states that are the classes, 
-where the start state is the one containing~\emptystring.
-Its accepting states are the ones containing strings from~$\lang$.
-The transition operation, 
-$\map{\Delta}{E\times\Sigma}{E}$,
-is:~given input $\eclass_{\lang,i}$ and $x\in\Sigma$,
-choose a $\sigma$ in the class, and  
-then $\sigma\concat x$ is an element of some class $\eclass_{\lang,j}$.
-Set $\Delta(\eclass_{\lang,i},x)=\eclass_{\lang,j}$.
-\end{definition}
-
-For example the machine for the language
-of \cref{ex:MNMachineComparePartitions} is the two-state machine in  
-(\ref{fig:MMachineCollapsesToLMachine}) below.
-
-As stated, the definition allows us to choose any string~$\sigma$ 
-at all from $\eclass_{\lang,i}$. 
-We must establish that   
-choosing two different strings of the input class
-does not give two different outputs.
-
-\begin{lemma} \label{lem:MNPriorThm}
-  Fix a language $\lang$.
-  \begin{parenum}
-  \item The transition operation is well-defined:~if two strings 
-    $\sigma_0,\sigma_1$ are $\lang$-related,
-    $\sigma_0\sim_{\lang}\sigma_1$, then adjoining a common
-    character~$x\in\Sigma$ gives strings that are also
-    $\lang$-related,
-    $(\sigma_0\concat x)\sim_{\lang}(\sigma_1\concat x)$.
-    \label{lem:MNPriorThmTransitionWellDefined}
-  \item If one member \label{lem:MNPriorThmLangCount}
-    of a class $\sigma_0\in\eclass_{\lang,i}$
-    is an element of~$\lang$ then every member
-    of that class $\sigma_1\in\eclass_{\lang,i}$ is also an element
-    of~$\lang$.
-  \item There is one and only
-    one class containing the empty string.
-  \end{parenum}
-\end{lemma}
-
-\begin{proof}
-  For the first item, if $\sigma_0\concat x$ were not 
-  $\lang$-related to $\sigma_1\concat x$ then the single-character string~$x$
-  would be a distinguishing extension.
-  But $\sigma_0\sim_{\lang}\sigma_1$ so they have no distinguishing extension.
-
-  The second item is:~if $\sigma_0\sim_{\lang}\sigma_1$
-  and $\sigma_0\in\lang$
-  but $\sigma_1\notin\lang$ then they are distinguished by the empty string,
-  which contradicts that they are $\lang$-related.
-
-  The third item is trivial since for any string, empty or not,
-  there is one and only 
-  equivalence class containing that string. 
-\end{proof}
-
-\begin{example}  \label{ex:LMachineWithThreeClasses}
-Let $\lang=\set{\str{a}\str{b}^n\suchthat n\in\N}=\set{\str{a},\str{ab},\str{abb},\,\ldots}$.  
-We will first find the equivalence classes and then
-determine the $\lang$-machine's transitions.
-
-There are three classes.
-First, $\eclass_{\lang,0}=\set{\emptystring}$ because for any string 
-$\sigma\in\kleenestar{\set{\str{a},\str{b}}}\!$, a distinguishing extension 
-between $\sigma$ and $\emptystring$ is the single-character string~\str{a}.
-
-The second class is $\eclass_{\lang,1}=\lang$.
-To see that any two elements of this set, 
-$\str{a}\str{b}^{i},\str{a}\str{b}^{j}\in\lang$, are 
-$\lang$-related, suppose that $\tau\in\kleenestar{\Sigma}\!$.
-If $\tau$ has the form $\str{b}^k$ then both extensions 
-$\str{a}\str{b}^i\concat\tau$ and $\str{a}\str{b}^j\concat\tau$ 
-are members of~$\lang$,
-while if $\tau$ has at least one~\str{a} then both extensions are not members 
-(because they have at least two \str{a}'s).
-It remains to show that if $\sigma_0\in\lang$ and $\sigma_1\notin\lang$ then
-they are not $\lang$-related.
-That's because they have a distinguishing extension of~\emptystring.
-
-The final class contains all remaining strings, 
-$\eclass_{\lang,2}=\kleenestar{\Sigma}-(\eclass_{\lang,0}\union\eclass_{\lang,1})$.
-We will show that any two elements of this set are $\lang$-related
-(there is no need to argue that elements are not $\lang$-related to 
-strings outside the set becuase we have already shown that in the 
-prior paragraphs).
-An element~$\sigma\in\eclass_{\lang,2}$ must have at least one character
-and must fall into at least one of two cases:~either its 
-first item is not~\str{a},
-or the rest of the string contains at least
-one~\str{a}.
-In both cases any extension $\tau$ yields a string $\sigma\concat\tau$
-that is not an element of~$\lang$, so there are no distinguishing extensions. 
-
-We have this partition of the strings.
-\begin{equation*}
-  % \begin{array}{l}
-  %   \eclass_{\lang,0}=\set{\emptystring}  \\
-  %   \eclass_{\lang,1}=\set{\str{a},\str{ab},\str{abb},\ldots}  \\
-  %   \eclass_{\lang,2}=\set{\str{b},\str{aa},\str{ba},\str{bb},\ldots}  \\
-  % \end{array}
-  % \qquad
-  % \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa64.pdf}}
-    \eclass_{\lang,0}=\set{\emptystring}  \quad
-    \eclass_{\lang,1}=\set{\str{a},\str{ab},\str{abb},\ldots}  \quad
-    \eclass_{\lang,2}=\set{\str{b},\str{aa},\str{ba},\str{bb},\ldots}  
-\end{equation*}
-To compute the transitions, for each class choose one representative element,
-append each of \str{a} and \str{b},
-and find the resulting class.
-Below we choose the one-character strings $\str{a}\in\eclass_{\lang,1}$ 
-and $\str{b}\in\eclass_{\lang,2}$.
-\begin{equation*}
-  \begin{array}{r|rr}
-    \multicolumn{1}{r}{\Delta}
-      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
-    \cline{2-3}
-    \emptystring\in\eclass_{\lang,0}
-       &\str{a}\in\eclass_{\lang,1}  &\str{b}\in\eclass_{\lang,2}  \\
-    \acceptingstate\,\str{a}\in\eclass_{\lang,1}
-       &\str{aa}\in\eclass_{\lang,2}  &\str{ab}\in\eclass_{\lang,1}  \\
-    \str{b}\in\eclass_{\lang,2}
-       &\str{ba}\in\eclass_{\lang,2}  &\str{bb}\in\eclass_{\lang,2}  
-  \end{array}
-  \hspace*{4em}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa65.pdf}}
-\end{equation*}
-\end{example}
-
-\begin{example} \label{ex:MyhillNerodeNumOnesMultOfFour}
-Let 
-$\lang=\set{\sigma\in\kleenestar{\B}\suchthat\text{the number of \str{1}'s is a multiple of four}}$.  
-There are four equivalence classes: $\eclass_{\lang,0}$ contains the strings where
-the number of \str{1}'s is divisible by~$4$ without remainder,
-$\eclass_{\lang,1}$ contains the strings where the number of \str{1}'s 
-leaves a remainder of~$1$ on division by~$4$, etc.
-(The argument that these are the equivalence classes is an exercise.)
-
-Compute the transitions by choosing a representative element from each class,
-appending in turn each character of the alphabet,
-and finding the resulting class.
-\begin{equation*}
-  \begin{array}{r|rr}
-    \multicolumn{1}{r}{\Delta}
-      &\multicolumn{1}{c}{\str{0}}      &\multicolumn{1}{c}{\str{1}}  \\ 
-     \cline{2-3}
-    \acceptingstate\,\emptystring\in\eclass_{\lang,0}
-       &\str{0}\in\eclass_{\lang,1}  &\str{1}\in\eclass_{\lang,1}  \\
-    \str{1}\in\eclass_{\lang,1}
-       &\str{10}\in\eclass_{\lang,2}  &\str{11}\in\eclass_{\lang,2}  \\
-    \str{11}\in\eclass_{\lang,2}
-       &\str{110}\in\eclass_{\lang,2}  &\str{111}\in\eclass_{\lang,3} \\ 
-    \str{111}\in\eclass_{\lang,3}
-       &\str{1110}\in\eclass_{\lang,3}  &\str{1111}\in\eclass_{\lang,0}  
-  \end{array}
-  \hspace*{4em}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa66.pdf}}
-\end{equation*}
-\end{example}
-
-\begin{theorem}[Myhill-Nerode]
-A language~$\lang$ is regular if and only if the relation
-$\sim_{\lang}$ gives only finitely many equivalence classes.
-\end{theorem}
-
-\begin{proof}
-For the first direction suppose that $\lang$ is a regular language,
-recognized by a Finite State machine $\FSM$.
-The number of elements in the partition
-associated with $\sim_{\FSM}$ is finite, as there is one part for
-each of $\FSM$'s reachable states.
-Consequently the number of element in the partition induced by
-$\sim_{\lang}$ is finite
-because 
-by \cref{lem:MRelatedImpliesLRelated}, $\sim_{\lang}$'s partition 
-has fewer elements than does $\sim_{\FSM}$'s
-(as illustrated in \cref{ex:MNMachineComparePartitions}'s
-(\ref{ex:MNMachineComparePartitionsGraphic}) diagram). 
-
-For the other direction
-suppose that the number of elements in the partition
-induced by $\sim_{\lang}$ is finite.
-Then the $\lang$~machine described above is a Finite State machine.
-If we show that it recognizes~$\lang$
-then we will have verified that $\lang$ is regular.
-
-Starting with a string $\sigma\in\kleenestar{\Sigma}$
-as input will cause the machine to end in the partition
-containing~$\sigma$.
-By definition of this machine's accepting states, $\sigma$
-will be accepted by this machine if and only if $\sigma\in\lang$.
-\end{proof}
-
-Returning to \cref{ex:MNMachineComparePartitions},
-the way that the $\lang$~classes fit the $\FSM$~classes in  
-diagram~(\ref{ex:MNMachineComparePartitionsGraphic})
-suggests that we are collapsing the 
-$\FSM$ classes to get the $\lang$~machine, 
-and that machine also recognizes the language~$\lang$,
-but does so with a minimal number of states.
-\begin{equation*}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa19.pdf}}
-  \qquad\text{$\Longrightarrow$}\qquad
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa63.pdf}}
-  \tag{$**$} \label{fig:MMachineCollapsesToLMachine}
-\end{equation*}
-
-\begin{lemma} \label{lem:LMachineIsMinimal}
-If there are finitely many equivalence classes then the
-$\lang$-machine recognizes the language.
-Consequently, the $\lang$-machine is minimal,
-meaning that from among all the Finite State machines that recognize
-the language~$\lang$, it has a minimal number of states.  
-\end{lemma}
-
-\begin{proof}
-Let a Finite State machine~$\FSM$ recognize~$\lang$.
-Consider two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$.
-If those two take $\FSM$ to the same state, 
-$\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$,
-then any common extension does the same,
-$\extended{\Delta}(\sigma_0\concat\tau)=\extended{\Delta}(\sigma_1\concat\tau)$.
-
-This implies that if $\sigma_0\not\sim_{\lang}\sigma_1$ then 
-$\extended{\Delta}(\sigma_0)\neq\extended{\Delta}(\sigma_1)$.
-If there are $k$-many $\eclass_{\lang,i}$ classes then there is a set
-of $k$-many strings that all must end in different states.
-So any machine recognizing~$\lang$ must have at least that many states.  
-\end{proof}
-
-
-\medskip
-We finish with a reflection.
-At the chapter's start we constructed machines by hand, 
-perhaps sometimes struggling a bit.
-In contrast, the Myhill-Nerode result
-starts with the desired language~$\lang$, 
-considers the relation $\sim_{\lang}$, and
-if there are finitely many associated classes 
-then gives a machine
-that recognizes the language.
-
-That is,
-by seeing the patterns inside~$\lang$ given by $\sim_{\lang}$, 
-we don't have to make a machine recognizing that language, 
-the mathematics gives it to us.
-For free, it is minimal.
-This is a deep kind of wizardry\Dash these problems are solved automatically.
-
-
-% ...............................
-\begin{exercises}[Some of these give a language~$\lang$ and
-ask for the set of $\sim_{\lang}$ equivalence classes.
-One hint is that
-\cref{lem:MNPriorThm}'s part \ref{lem:MNPriorThmLangCount}
-says that while it may be that more than one class contains strings from~$\lang$,
-if a class contains even one such string then it consists entirely of them.
-Another hint is that if the given language is recognized by some  
-Finite State machine then with our experience often
-we see how to build it and can understand the $\sim_{\FSM}$ classes.
-\cref{lem:MRelatedImpliesLRelated} says that the $\sim_{\lang}$ classes
-are groupings of $\sim_{\FSM}$ classes.
-In addition, if our machine is minimal then by \cref{lem:LMachineIsMinimal} 
-the $\sim_{\FSM}$ classes are the $\sim_{\lang}$ classes.]
-% https://cs.stackexchange.com/q/89689/78536
-
-% https://cs.stackexchange.com/a/136195/50343
-
-\recommended
-\begin{exercise}
-Use the machine from \cref{ex:LMachineWithThreeClasses}.
-\begin{exparts*}
-\item What class contains \str{bba}? 
-\item \str{abba}?
-\item \str{babab}?  
-\item \str{abbbb}?
-\end{exparts*}
-\begin{answer}
-Every string in the language 
-$\lang=\set{\str{a}\str{b}^n\suchthat n\in\N}=\set{\str{a},\str{ab},\str{abb},\,\ldots}$
-is a member of $\eclass_{\lang,1}$.
-Of the other strings,
-the only member of $\eclass_{\lang,0}$ is \emptystring{}
-and all other strings are in $\eclass_{\lang,2}$.
-\begin{exparts}
-\item $\eclass_{\lang,2}$
-\item $\eclass_{\lang,2}$
-\item $\eclass_{\lang,2}$
-\item $\eclass_{\lang,1}$
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Use the machine from \cref{ex:LMachineWithThreeClasses}.
-For each string, identify the string's class, and 
-then append the character~\str{a} and identify the ending class for the 
-machine's transition.
-\begin{exparts*}
-\item \str{bba}
-\item \emptystring
-\item \str{abbb}
-\item \str{aa} 
-\end{exparts*}
-\begin{answer}
-\begin{exparts}
-\item The string's class is $\str{bba}\in\eclass_{\lang,2}$.
-  After appending to get the string
-  $\str{bba}\concat\str{a}=\str{bbaa}$ we have $\str{bbaa}\in\eclass_{\lang,2}$.
-  This fits with the lower-left entry in the $\Delta$ table given in 
-  \cref{ex:LMachineWithThreeClasses} (that is, with the bottom entry in
-  the column headed `\str{a}').
-\item The class is $\emptystring\in\eclass_{\lang,0}$.
-  Appending gives the string $\emptystring\concat\str{a}=\str{a}$
-  which is in $\str{a}\in\eclass_{\lang,1}$.
-  This fits the upper-left entry in the $\Delta$ table.
-\item The class is $\str{abbb}\in\eclass_{\lang,1}$.
-  Appending results in $\str{abbba}\in\eclass_{\lang,2}$,
-  which matches the middle-left entry in the transition table.
-\item The class is $\str{aaa}\in\eclass_{\lang,2}$.
-  Appending results in $\str{aaaa}\in\eclass_{\lang,2}$,
-  which fits the table's middle-left entry.
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-This illustrates the point about `well-defined' in 
-\cref{lem:MNPriorThm}'s part~\ref{lem:MNPriorThmTransitionWellDefined}.
-Consider the machine of \cref{ex:MyhillNerodeNumOnesMultOfFour}.  
-\begin{exparts}
-\item
-Three representative strings from $\eclass_{\lang,0}$ are
-$\sigma_0=\str{00}$,
-$\sigma_1=\str{11011}$,
-and $\sigma_2=\str{00}\str{11111111}$.
-Append \str{0} to each and name the class of the resulting string.
-Verify that all three lead to a single class, and that
-in the machine the state $\eclass_{\lang,0}$ transitions
-on input \str{0} to that class.
-\item
-Using the same three strings,
-to each append \str{1} and name the class of the resulting string.  
-Verify that the three lead to the same class, and that
-in the machine the state $\eclass_{\lang,0}$ transitions
-on input \str{1} to it.
-\item 
-Repeat that for three strings from $\eclass_{\lang,1}$, for both
-\str{0} and~\str{1}.
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item Appending to the three strings gives  
-$\sigma_0\concat\str{0}=\str{000}$,
-$\sigma_1\concat\str{0}=\str{110110}$,
-and $\sigma_2\concat\str{0}=\str{00}\str{1}^8\str{0}\!$.
-All three are members of~$\eclass_{\lang,0}$.
-Looking at the machine's transition table, 
-that is indeed the result of starting with the class
-$\eclass_{\lang,0}$ and transitioning on input~\str{0}.
-\item Appending gives  
-$\sigma_0\concat\str{1}=\str{001}$,
-$\sigma_1\concat\str{1}=\str{110111}$,
-and $\sigma_2\concat\str{1}=\str{00}\str{1}^8\str{1}\!$.
-All three are members of~$\eclass_{\lang,1}$.
-The machine's transition table shows that this 
-the result of starting with the class
-$\eclass_{\lang,0}$ and transitioning on input~\str{1}.
-\item Of course, many answers are possible but
-just plucking three class members out of the air for illustration can give 
-$\sigma_0=\str{100}$,
-and $\sigma_1=\str{010}$,
-and $\sigma_2=\str{111101}$.
-Concatenating \str{0} gives
-$\sigma_0\concat\str{0}=\str{1000}$,
-and $\sigma_1\concat\str{0}=\str{0100}$,
-as well as $\sigma_2\concat\str{0}=\str{1111010}$.
-All three are members of~$\eclass_{\lang,1}$.
-The machine's transition table shows that this 
-the result of starting with the class
-$\eclass_{\lang,1}$ and transitioning on input~\str{0}.
-
-As to concatenating \str{1}, we get
-$\sigma_0\concat\str{1}=\str{1001}\in\eclass_{\lang,2}$,
-$\sigma_1\concat\str{1}=\str{0101}\in\eclass_{\lang,2}$,
-and $\sigma_2\concat\str{1}=\str{1111011}\in\eclass_{\lang,2}$. 
-The machine's transition table shows that this 
-the result of starting with the class
-$\eclass_{\lang,1}$ and transitioning on input~\str{1}.
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-\cref{ex:LangOfMNMachineComparePartitions} gives a language  
-  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
-    \text{$\sigma$ has even length}}$
-with two classes.
-Produce the transition table and arrow diagram for the associated 
-$\lang$-machine.
-\begin{answer}
-That example gives the classes as
-$\eclass_{\lang,0} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is even}}$
-and
-$\eclass_{\lang,1} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is odd}}$.
-We can pick any string from a class to represent that class.
-As a representative of $\eclass_{\lang,0}$ we can use 
-the length zero string \emptystring. 
-As a representative of $\eclass_{\lang,1}$ we can use the length one 
-string~\str{a}. 
-The only accepting state is $\eclass_{\lang,0}$ because it contains all
-of the strings from~$\lang$.
-It is also the start state because it contains the empty string.
-\begin{equation*}
-  \begin{array}{r|rr}
-    \multicolumn{1}{r}{\Delta}
-      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
-    \cline{2-3}
-    \acceptingstate\,\emptystring\in\eclass_{\lang,0}
-       &\str{a}\in\eclass_{\lang,1}  &\str{b}\in\eclass_{\lang,1}  \\
-    \str{a}\in\eclass_{\lang,1}
-       &\str{aa}\in\eclass_{\lang,0}  &\str{ab}\in\eclass_{\lang,0}  \\
-  \end{array}
-  \qquad
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa67.pdf}}
-\end{equation*}  
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-\cref{ex:MyhillNerodeExampleLangFiveClasses} gives a language  
-  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \lh{\sigma}=3}$
-with five classes.
-Produce the transition table and arrow diagram for the associated 
-machine.
-\begin{answer}
-That example gives the classes as
-$\eclass_{\lang,0}=\set{\emptystring}$,
-and
-$\eclass_{\lang,1}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \lh{\sigma}=1}=\set{\str{a},\str{b}}$,
-and
-$\eclass_{\lang,2}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \lh{\sigma}=2}=\set{\str{aa},\str{ab},\str{ba},\str{bb}}$,
-and
-$\eclass_{\lang,3}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \lh{\sigma}=3}$,
-along with
-$\eclass_{\lang,4}=\set{\sigma\suchthat\lh{\sigma}\geq 4}$.
-From each class we can
-pick any string to represent its class.
-As a representative of $\eclass_{\lang,0}$ we must use \emptystring. 
-As a representative of $\eclass_{\lang,1}$ we can use the length one 
-string~\str{a}. 
-To represent $\eclass_{\lang,2}$ we can use~\str{aa},
-to represent $\eclass_{\lang,3}$ we can use~\str{aaa},
-and to represent $\eclass_{\lang,4}$ we can use~\str{aaaa}. 
-\begin{equation*}
-  \begin{array}{r|rr}
-    \multicolumn{1}{r}{\Delta}
-      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
-    \cline{2-3}
-    \emptystring\in\eclass_{\lang,0}
-       &\str{a}\in\eclass_{\lang,1}  &\str{b}\in\eclass_{\lang,1}  \\
-    \str{a}\in\eclass_{\lang,1}
-       &\str{aa}\in\eclass_{\lang,2}  &\str{ab}\in\eclass_{\lang,2}  \\
-    \str{aa}\in\eclass_{\lang,2}
-       &\str{aaa}\in\eclass_{\lang,3}  &\str{aab}\in\eclass_{\lang,3}  \\
-    \acceptingstate\,\str{aaa}\in\eclass_{\lang,3}
-       &\str{aaaa}\in\eclass_{\lang,4}  &\str{aaab}\in\eclass_{\lang,4}  \\
-    \str{aaaa}\in\eclass_{\lang,4}
-       &\str{aaaaa}\in\eclass_{\lang,4}  &\str{aaaab}\in\eclass_{\lang,4}  \\
-  \end{array}
-  \qquad
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa68.pdf}}
-\end{equation*}  
-Because it contains all
-of the strings from~$\lang$ the sole accepting state is $\eclass_{\lang,3}$.
-The start state is the class containing \emptystring, 
-namely~$\eclass_{\lang,0}$.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Let $\lang$ be the set of strings from $\kleenestar{\set{\str{a},\str{b}}}$
-ending in~\str{a}.
-\begin{exparts}
-\item Show that $\lang$ is an equivalence class, $\eclass_{\lang,1}$, for 
-the relation~$\sim_{\lang}$.
-\item Show that the complement $\eclass_{\lang,0}=\setcomp{\lang}$ is also
-an equvalence class.
-\item What is the initial state of this $\lang$-machine?
-\item What are the accepting states?
-\item Give the transition table and the diagram.
-\item Which of the strings~\emptystring,
-\str{a}, \str{b}, \str{abba}, and \str{bba} are accepted by the machine?
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item All strings $\sigma\in\lang$ are equivalent since $\sigma\concat\tau$
-if and only if $\tau$ is empty or ends in~\str{a}.
-No string $\sigma\in\lang$ is equivalent to a string $\alpha\notin\lang$ 
-since $\sigma$ ends in~\str{a} and $\alpha$ does not, and therefore 
-a distinguishing extension is \emptystring.     
-\item All strings in $\setcomp{\lang}$ are equivalent.
-If $\sigma_0,\sigma_1\in\setcomp{\lang}$ then neither ends in~\str{a}
-(it may be that one or both is \emptystring).
-Then for any string~$\tau$, including $\tau=\emptystring$, we have
-both $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$ are elements of~$\lang$
-if and only if $\tau$ ends in~\str{a}.
-(We do not need to establish that no string in $\setcomp{\lang}$ is equivalent
-to a string in~$\lang$ since we did that in the prior item.)
-\item The empty string is an element of $\eclass_{\lang,0}$.
-\item The only class that contains a string from~$\lang$ is $\eclass_{\lang,1}$.
-\item As class representatives we can choose $\emptystring\in\eclass_{\lang,0}$
-and the length~one string $\str{a}\in\eclass_{\lang,1}$.
-\begin{equation*}
-  \begin{array}{r|rr}
-    \multicolumn{1}{r}{\Delta}
-      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
-    \cline{2-3}
-    \emptystring\in\eclass_{\lang,0}
-       &\str{a}\in\eclass_{\lang,1}  &\str{b}\in\eclass_{\lang,0}  \\
-    \acceptingstate\,\str{a}\in\eclass_{\lang,1}
-       &\str{aa}\in\eclass_{\lang,1}  &\str{ab}\in\eclass_{\lang,0}  \\
-  \end{array}
-  \qquad
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa69.pdf}}
-\end{equation*} 
-The accepted strings are those that end in \str{a}, namely
-\str{a}, \str{abba}, and~\str{bba}. 
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-For the language
-$\lang=\set{\str{a}^2\str{b}^n\suchthat n\in\N}$
-with alphabet $\Sigma=\set{\str{a},\str{b}}$ this is a minimal
-Finite State machine.
-\begin{center}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa72.pdf}}
-\end{center}
-List the $\sim_{\lang}$ equivalence classes.
-\begin{answer}
-We follow the hint given at the start of these exercises, that where the
-machine is minimal, the $\sim_{\FSM}$ classes equal the $\sim_{\lang}$ classes.
-These four implications are clear.
-\begin{align*}
-  &\extended{\Delta}(\sigma)=q_0
-   \quad\Longrightarrow\quad
-   \sigma=\emptystring           \\
-  &\extended{\Delta}(\sigma)=q_1
-   \quad\Longrightarrow\quad
-   \sigma=\str{a}           \\
-  &\extended{\Delta}(\sigma)=q_2
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ has the form $\str{aa}\str{b}^n$ for $n\in\N$}    \\
-  &\extended{\Delta}(\sigma)=q_3
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ has the form $\str{aa}\str{b}^na\concat\beta$ for $n\in\N$ and $\beta\in\kleenestar{\Sigma}$}
-\end{align*}
-Consequently, these are the four $\sim_{\lang}$ classes.
-\begin{display}
-  \begin{tabular}{c|l} 
-      \multicolumn{1}{c}{\tabulartext{Associated with}} 
-      &\multicolumn{1}{c}{\tabulartext{Class}}  \\ \hline
-    $q_0$ 
-                      &$\eclass_{\lang,0}=\set{\emptystring}$  \\
-    $q_1$ 
-                      &$\eclass_{\lang,1}=\set{\str{a}}$  \\
-    $q_2$ 
-                      &$\eclass_{\lang,2}=\lang$  \\
-    $q_3$ 
-                      &$\eclass_{\lang,3}=\set{\sigma\in\kleenestar{\Sigma}\suchthat\text{$\sigma\notin(\eclass_{\lang,0}\union\eclass_{\lang,1}\union\eclass_{\lang,2})$}}$  
-  \end{tabular}
-\end{display}
-The classs $\eclass_{\lang,2}$ contains strings from $\lang$ 
-so it is a final state.
-The class $\eclass_{\lang,0}$ contains the empty string so it is the initial 
-state.
-\end{answer}
-\end{exercise}
-
-
-\recommended
-\begin{exercise}
-The language $\lang=\set{\str{a}^n\str{b}\suchthat n\in\N}$ is regular.
-Find the $\sim_{\lang}$ equivalence classes.
-The alphabet is $\Sigma=\set{\str{a},\str{b}}$.
-\begin{answer}
-We follow the hint given at the start of these exercises.
-Here is the natural Finite State machine to recognize this language.  
-\begin{display}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa71.pdf}}
-\end{display}
-It is clearly minimal, which means that 
-the $\sim_{\FSM}$ classes equal the $\sim_{\lang}$ classes.
-These implications are straightforward.
-\begin{align*}
-  &\extended{\Delta}(\sigma)=q_0
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ has the form $\str{a}^n$ for $n\in\N$}      \\
-  &\extended{\Delta}(\sigma)=q_1
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ has the form $\str{a}^n\str{b}$ for $n\in\N$}      \\
-  &\extended{\Delta}(\sigma)=q_2
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ has the form $\str{a}^n\str{b}\concat\beta$ for $n\in\N$ and $\beta\in\kleenestar{\Sigma}$ with $\beta\neq\emptystring$}  
-\end{align*}
-These are the $\sim_{\lang}$ classes.
-\begin{display}
-  \begin{tabular}{c|l} 
-      \multicolumn{1}{c}{\tabulartext{Associated with}} 
-      &\multicolumn{1}{c}{\tabulartext{Class}}  \\ \hline
-    $q_0$ 
-                      &$\eclass_{\lang,0}=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma=\str{a}^n$ for $n\in\N$}}$  \\
-    $q_1$ 
-                      &$\eclass_{\lang,1}=\lang=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma=\str{a}^n\str{b}$ for $n\in\N$}}$  \\
-    $q_2$ 
-                      &$\eclass_{\lang,2}=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma=\str{a}^n\str{b}\concat\beta$ for $n\in\N$ and $\beta\neq\emptystring$}}$  
-  \end{tabular}
-\end{display}
-The classs $\eclass_{\lang,1}$ contains strings from $\lang$ 
-so it is a final state.
-The class $\eclass_{\lang,0}$ contains the empty string so it is the initial 
-state.
-
-\textit{Comment:}~while the Finite State machine given certainly appears 
-minimal, strictly speaking we have not shown it to be minimal.
-(We could show that using Extra~\ref{sec:Minimization}.)
-We can verify that these are the equivalence classes
-without relying on minimality as follows.
-
-Consider first the collection~$\lang$, which we can call $\eclass_{\lang,1}$.
-Suppose that $\sigma_0,\sigma_1\in\lang$.
-Then for any string~$\tau$ we have that $\sigma_0\concat\tau$ and 
-$\sigma_1\concat\tau$ are elements of~$\lang$ if and only if $\tau$ is the
-empty string.
-So they are equivalent.
-To show that any such string is not equivalent to some $\sigma_2\notin\lang$,
-note that a distinguishing extension is the empty string. 
-
-Next consider the collection of strings of the form $\sigma=\str{a}^n\!$, which
-we will call $\eclass_{\lang,0}$ since it contains the empty string.
-For any extension~$\tau$, the string $\sigma\concat\tau$ is in the 
-language if and only if $\tau$ has the form $\str{a}^i\str{b}$ for some 
-$i\in\N$.
-So any two elements of $\eclass_{\lang,0}$ are equivalent.
-
-To show that any $\sigma\in\eclass_{\lang,0}$ is not equivalent to a string 
-$\alpha\notin(\eclass_{\lang,0}\union\eclass_{\lang,1})$,
-note that $\alpha$ has the form $\str{a}^n\str{b}\concat\beta$ for some 
-string~$\beta$ (in the above Finite State machine it is associated with $q_2$).
-In particular, $\alpha$ contains at least one~\str{b}.
-Hence for every extension~$\tau$ we have $\alpha\concat\tau\notin\lang$.
-It follows that any $\sigma\in\eclass_{\lang,0}$ is distinguished from 
-such an $\alpha$
-with the one-character string $\tau=\str{b}$.
-
-Finally, consider 
-$\eclass_{\lang,2}=\kleenestar{\Sigma}-(\eclass_{\lang,0}\union\eclass_{\lang,1})$.
-As covered in the prior paragraph,
-every string~$\sigma$ in this collection 
-has the form $\str{a}^n\str{b}\concat\beta$ for some 
-string~$\beta$, and therefore there is no extension~$\tau$ with
-$\sigma\concat\tau\in\lang$.
-Thus there is no extension that distinguishes betwee two members of this
-set, and so they are all equivalent.
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-For the language consisting of the set of strings ending in \str{01},
-describe the $\lang$~equivalence classes.
-The alphabet is $\B$.
-\begin{answer}
-This is a regular language and the natural Finite State machine
-to recognize it is below.
-\begin{display}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa70.pdf}}
-\end{display}
-So we are looking for three equivalence classes.
-We are thinking that one of them, here named~$q_2$, is $\lang$.
-Another, here named~$q_1$, holds those strings that end in~\str{0},
-and the other must contain all of the others.
-
-So first we argue that $\eclass_{\lang,2}=\lang$ is a $\sim_{\lang}$
-equivalence class.
-If $\sigma_0,\sigma_1\in\lang$ then they both end in \str{01}.
-Consider an extension~$\tau\in\kleenestar{\B}$.
-If $\tau=\emptystring$ then $\sigma_0\concat\tau\in\lang$
-and $\sigma_i\concat\tau\in\lang$.
-If $\tau\neq\emptystring$ then $\sigma_0\concat\tau$ and
-and $\sigma_i\concat\tau$ are both elements of $\lang$ if and only if
-$\tau$ ends in \str{01}, so they have no distinguishing extension.
-(To see that no string element of~$\lang$ is $\sim_{\lang}$ equivalent
-to a string element of $\setcomp{\lang}$, note that \emptystring.
-is a distinguishing extension.)
-
-Next we argue that the set of strings ending in~\str{0} is an
-equivalence class, $\eclass_{\lang,1}$.
-Two such strings $\sigma_0$ and~$\sigma_1$ are not elements of~$\lang$.
-Consider an extension~$\tau$.
-If $\tau=\emptystring$ then both $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$
-are not elements of~$\lang$.
-If $\tau$ has length one then both $\sigma_0\concat\tau$ 
-and $\sigma_1\concat\tau$ are elements of~$\lang$ if and only if 
-$\tau=\str{1}$.
-If $\tau$ has length greater than one then both $\sigma_0\concat\tau$ 
-and $\sigma_1\concat\tau$ are elements of~$\lang$ if and only if 
-$\tau$ ends in \str{01}.
-Thus any two such strings are equivalent.
-No such string, no string ending in~\str{0}, is equivalent to a string
-not ending in~\str{0}, because a distinguishing extension is $\tau=\str{1}$.
-
-Finally, consider the collection of strings that do not end with~\str{01}
-and do not end with~\str{0}.
-For any string $\sigma$ in this collection the extension $\sigma\concat\tau$
-is in the language if and only if $\tau$ ends with \str{01}.
-So they are mutually equivalent. 
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Describe the $\lang$~equivalence classes
-for the set of strings where every \str{0} is immediately followed by two
-\str{1}'s.
-The alphabet is $\B$.
-\begin{answer}
-We follow the hint from the start of these exercises.
-Here is the natural Finite State machine to recognize this language.  
-\begin{display}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa73.pdf}}
-\end{display}
-It is clearly minimal, which means that 
-the $\sim_{\FSM}$ classes equal the $\sim_{\lang}$ classes.
-These implications are straightforward.
-\begin{align*}
-  &\extended{\Delta}(\sigma)=q_0
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ matches the regular expression \re{(1|011)*}}      \\
-  &\extended{\Delta}(\sigma)=q_1
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ matches the regular expression \re{(1|011)*0}}      \\
-  &\extended{\Delta}(\sigma)=q_2
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ matches the regular expression \re{(1|011)*01}}     \\ 
-  &\extended{\Delta}(\sigma)=q_3
-   \quad\Longrightarrow\quad
-   \text{$\sigma$ does not match \re{(1|011)*(\emptystring|0|01)}}  
-\end{align*}
-These are the $\sim_{\lang}$ classes.
-\begin{display}
-  \begin{tabular}{c|l} 
-      \multicolumn{1}{c}{\tabulartext{Associated with}} 
-      &\multicolumn{1}{c}{\tabulartext{Class}}  \\ \hline
-    $q_0$ 
-                      &$\eclass_{\lang,0}=\lang$  \\
-    $q_1$ 
-                      &$\eclass_{\lang,1}=\lang=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma$ matches \re{(1|011)*0}}}$  \\
-    $q_2$ 
-                      &$\eclass_{\lang,2}=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma$ matches \re{(1|011)*01}}}$      \\ 
-    $q_3$ 
-                      &$\eclass_{\lang,2}=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma$ does not match \re{(1|011)*(\emptystring|0|01)}}}$  
-  \end{tabular}
-\end{display}
-The class $\eclass_{\lang,0}$ contains strings from $\lang$ 
-so it is a final state.
-The class $\eclass_{\lang,0}$ contains the empty string so it is the initial 
-state.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Produce a language~$\lang$ that is divided by the $\sim_{\lang}$ 
-relation into more than one equivalence class.   
-\begin{answer}
-There are of course many possible answers.
-A reasonable approach is to
-think of a regular language where to to make the Finite State machine there
-are two or more natural accepting states.    
-
-Consider $\lang\subseteq\kleenestar{\set{\str{a},\str{b}}}$ containing
-all strings that end in~\str{a}, and all strings of length two.
-Then the strings \str{a} and \str{bb} are both members of~$\lang$
-but they have a distinguishing extension $\tau=\str{b}$,
-so the set $\lang$ splits into at least two equivalence classes.
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-The language of palindromes  
-$\lang=\set{\sigma\in\kleenestar{\str{a},\str{b}}\suchthat \reversal{\sigma}=\sigma}$
-is not regular.
-Find infinitely many $\lang$~equivalence classes.
-\begin{answer}
-We will show there are infinitely many $\sim_{\lang}$ equivalence classes
-by showing that there are infinitely many non-equuivalent strings.
-We claim that no two unequal strings of the form $\str{a}^n$
-are equivalent.
-As an example consider $\sigma_2=\str{aa}$ and $\sigma_3=\str{aaa}$.
-Take $\tau=\str{baa}$.
-Because $\sigma_2\concat\tau\in\lang$ and $\sigma_3\concat\tau\notin\lang$,
-the two are not equivalent.
-Clearly this works for any two such strings, so there are infinitely 
-many equvalence classes.  
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-Show that the language of strings $\sigma\in\kleenestar{\B}$
-where the number of \str{0}'s in $\sigma$ is the same as the number of \str{1}'s
-is not regular
-by using the Myhill-Nerode Theorem.
-\begin{answer}
-We will show that there are infinitely many non-equivalent strings.
-\begin{display}
-  \emptystring
-  \quad \str{0}
-  \quad \str{00}
-  \quad \str{000}
-  \quad \ldots
-\end{display}
-If $i\neq j$ then $\str{0}^i\not\sim_{\lang}\str{0}^j$ since 
-$\tau=\str{1}^i$ is a distinguishing extension.
-That's true because $\str{0}^i\concat\str{1}^i$ is a member of~$\lang$
-but $\str{0}^j\concat\str{1}^i$ is not.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Show that the language of strings of the form
-$\str{0}^{2^j}\!$, that is, 
-$\lang=\set{\str{0},\str{0}^2,\str{0}^4,\ldots}$, 
-is not regular.
-\begin{answer}
-We will show that every string in the language is in its own $\sim_{\lang}$
-equivalance class, and so there are infinitely many such classes.
-Consider $\sigma_0=\str{0}^{2^n}$ and $\sigma_1=\str{0}^{2^m}$ where $n\neq m$.
-One of them must be smaller;~suppose that $n<m$.
-Then the extension string $\tau=\str{0}^{2^n}$ gives
-$\sigma_0\concat\tau=\str{0}^{2^n}\concat\str{0}^{2^n}=\str{0}^{2^{n+1}}$ is an 
-element of the language.
-But because $m$ is greater than~$n$ the string $\sigma_0\concat\tau$ is not 
-an element of the language.
-So they have a distinguishing extension.  
-\end{answer}
-\end{exercise}
-
-\begin{exercise} \label{exer:VerifyEquivRels}
-Recall that a binary relation~$\sim$ is an equivalence if it
-has three properties:
-\begin{parenum}
-\item reflexivity, that $x\sim x$ for all~$x$,
-\item symmetry, that if $x\sim y$ then $y\sim x$, and
-\item transitivity, that if $x\sim y$ and $y\sim z$ then also $x\sim z$.   
-\end{parenum}
-\begin{exparts}
-\item \label{exer:SimSubLangIsEquivalence}
-Verify \cref{lem:SimSubLangIsEquivalence}.  
-\item \label{exer:SimSubFSMIsEquivalence}
-Verify \cref{lem:SimSubFSMIsEquivalence}.
-\end{exparts}
-\begin{answer}
-For both arguments write the language as $\lang$ and the alphabet
-as~$\Sigma$.
-\begin{exparts}
-\item By definition, $\sigma_0\sim_{\lang}\sigma_1$ if there is no distinguishing
-extension~$\tau$.
-That holds if and only if either both of $\sigma_0\concat\tau$ and 
-$\sigma_1\concat\tau$ are members $\lang$ or both are not.
-
-The relation $\sim_{\lang}$ is reflexive
-because for any string $\sigma\in\kleenestar{\Sigma}\!$,
-where $\tau\in\kleenestar{\Sigma}$
-either both of $\sigma\concat\tau$ and  $\sigma\concat\tau$ are in the 
-language or both are not.
-
-To verify that the relation is symmetric assume that $\sigma_0\sim\sigma_1$.
-For any $\tau\in\kleenestar{\Sigma}\!$,
-either both of $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$ 
-are in the language or both are not.
-That is equivalent to the statement that $\sigma_1\sim\sigma_0$.
-
-Finally, for transitivity assume that $\sigma_0\sim\sigma_1$ and 
-$\sigma_1\sim\sigma_2$.
-Let $\tau$ be a string.
-Either $\sigma_1\concat\tau\in\lang$ or not.
-If $\sigma_1\concat\tau\in\lang$ 
-then $\sigma_0\sim\sigma_1$ implies that $\sigma_0\concat\tau\in\lang$,
-and $\sigma_1\sim\sigma_2$ implies that $\sigma_2\concat\tau\in\lang$,
-and therefore both of $\sigma_0\concat\tau$ and  
-$\sigma_2\concat\tau$ are members of the language.
-Similarly if $\sigma_1\concat\tau\notin\lang$  
-then both of  both of $\sigma_0\concat\tau$ and  
-$\sigma_2\concat\tau$ are not members of the language.
-Consequently, $\sigma_0\sim_{\lang}\sigma_2$.
-\item By definition, $\sigma_0\sim_{\FSM}\sigma_1$ if 
-$\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$.
-The relation $\sim_{\FSM}$ is reflexive
-because
-$\extended{\Delta}(\sigma)=\extended{\Delta}(\sigma)$
-for any string $\sigma\in\kleenestar{\Sigma}\!$.
-
-To verify that the relation is symmetric, assume that 
-$\sigma_0\sim_{\FSM}\sigma_1$.
-Then $\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$
-and so by symmetry of equality, 
-$\extended{\Delta}(\sigma_1)=\extended{\Delta}(\sigma_0)$.
-Thus $\sigma_1\sim_{\FSM}\sigma_0$.
-
-For transitivity assume that $\sigma_0\sim_{\FSM}\sigma_1$ and 
-$\sigma_1\sim_{\FSM}\sigma_2$.
-The first gives $\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$
-while the second gives
-$\extended{\Delta}(\sigma_1)=\extended{\Delta}(\sigma_2)$.
-Therefore
-$\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_2)$
-and $\sigma_0\sim_{\FSM}\sigma_2$.
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Generalize the first item in \cref{lem:MNPriorThm} to:~~if two strings 
-$\sigma_0,\sigma_1$ are $\lang$-related,
-$\sigma_0\sim_{\lang}\sigma_1$, then adjoining any common
-extension~$\beta$ gives strings that are related,
-$(\sigma_0\concat \beta)\sim_{\lang}(\sigma_1\concat \beta)$.
-\begin{answer}
-Assume that
-$\sigma_0$ and $\sigma_1$ are $\lang$-related.
-Then no extension~$\tau$ will $\lang$-distinguish the
-two, that is, it is not the case that one of
-$\sigma_0\concat\tau$ and $\sigma_1\concat\tau$
-is in $\lang$ while the other is not.
-Taking the special case that $\beta$ is a prefix of $\tau$, 
-so $\tau=\beta\concat\hat{\tau}$, gives that for the two strings
-$\sigma_0\concat \beta$ and $\sigma_1\concat \beta$,
-no extension~$\hat{\tau}$ will $\lang$-distinguish the two.
-So these two strings are also $\lang$-related.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Show that the equivalence classes for the language~$\lang$ are the same as for
-the language that is its complement, $\setcomp{\lang}\!$.  
-\begin{answer}
-Two strings $\sigma_0,\sigma_1\kleenestar{\Sigma}$ 
-are $\lang$-indistinguishable if
-and only if for every extension~$\tau$, 
-either both of $\sigma_0\concat\tau$ and  $\sigma_0\concat\tau$
-are elements of $\lang$
-or both of them are elements of $\setcomp{\lang}\!$.
-That's equivalent to being  $\setcomp{\lang}$-indistinguishable.  
-\end{answer}
-\end{exercise}
-
-% \begin{exercise}
-% https://cs.stackexchange.com/a/30722
-% \end{exercise}
-\end{exercises}
-
-
-
 
 
 
@@ -12595,6 +11367,1233 @@ You have to find strings for those rows and columns that meet the constraints.\\
 % \begin{center} % https://xkcd.com/1144/
 %   \includegraphics[scale=0.50]{automata/xkcdtags.png}
 % \end{center}
+
+
+
+
+
+
+
+\extra{The Myhill-Nerode theorem}\index{Myhill-Nerode theorem|(}
+We have defined regular languages in terms of Finite State machines.
+Here we will give a characterization that instead directly applies
+the properties of the language.
+
+In this chapter's first section, \cref{rem:HowToDesignFSM} said
+that the key to designing Finite State machines is to think of each
+state as about its future, about the input strings to come. 
+
+\begin{definition}
+  Fix a language $\lang$ over an alphabet $\Sigma$, and 
+  two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}\!$.
+  Then $\tau\in\kleenestar{\Sigma}$ is a 
+  \definend{distinguishing extension} when of the two strings
+  $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$, one
+  is an element of~$\lang$ and the other is not.
+  If such an extension exists then the strings are 
+  \definend{$\lang$-distinguishable},\index{L-distinguishable@$\lang$-distinguishable}
+  otherwise they are
+  \definend{$\lang$-indistinguishable}\index{L-indistinguishable@$\lang$-indistinguishable}
+  or \definend{$\lang$-related},\index{L-related@$\lang$-related}
+  denoted \definend{$\sigma_0\sim_{\lang}\sigma_1$}.
+\end{definition}
+
+\begin{lemma} \label{lem:SimSubLangIsEquivalence}
+  For any language~$\lang$,
+  the binary relation $\sim_{\lang}$
+  is an equivalence, and therefore partitions the universe of all strings
+  into equivalence classes $\eclass_{\lang,j}$.
+\end{lemma}
+
+
+\begin{proof}
+This is \cref{exer:VerifyEquivRels}'s item~\ref{exer:SimSubLangIsEquivalence}.  
+\end{proof}
+
+\begin{example}  \label{ex:MyhillNerodeExampleLangFiveClasses}
+Let $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \lh{\sigma}=3}$,
+with $\sigma_0=\str{aa}$ and $\sigma_1=\str{a}$.\footnote{%
+  Here, $\protect\sigma_1=\protect\str{a}$ is not a character, 
+  it is a length one string containing
+  the character \protect\str{a}.
+  We won't worry too much about the distinction.}
+Then  $\tau=\str{bb}$ is a distinguishing extension
+because $\sigma_0\concat\tau=\str{aabb}\in\lang$ but 
+$\sigma_1\concat\tau=\str{abb}\notin\lang$.
+
+As with the prior paragraph, two strings can be distinguished if and only
+if they they have different lengths.
+So the equivalence classes, the collections of strings that cannot be 
+distinguished, are  
+$\eclass_{\lang,0}=\set{\emptystring}$,
+and
+$\eclass_{\lang,1}=\set{\str{a},\str{b}}$,
+and
+$\eclass_{\lang,2}=\set{\str{aa},\str{ab},\str{ba},\str{bb}}$,
+and
+$\eclass_{\lang,3}=\set{\str{aaa},\str{aab},\,\ldots\,\str{bbb}}$,
+along with the class of all longer strings,
+$\eclass_{\lang,4}=\set{\sigma\suchthat\lh{\sigma}\geq 4}$.
+This pictures the universe of all strings $\kleenestar{\Sigma}\!$.
+It is partitioned into the equivalence classes, with every string 
+a member of one and only one class. 
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa59.pdf}
+\end{center}
+\end{example}
+
+
+\begin{example}  \label{ex:LangOfMNMachineComparePartitions}
+  Consider
+  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+    \text{$\sigma$ has even length}}$.
+  For instance, if $\sigma$ has even length then $\sigma\concat\tau\in\lang$
+  if and only if the length of $\tau$ is even, so there is no distinguishing
+  extension for two strings $\sigma_0,\sigma_1$ of even length.
+  Similar reasoning holds for
+  two odd-length $\sigma$'s.
+  In short, the $\sim_{\lang}$ relation breaks 
+  $\kleenestar{\set{\str{a},\str{b}}}$
+  into two parts,
+  $\eclass_{\lang,0} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is even}}$
+  and
+  $\eclass_{\lang,1} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is odd}}$.
+  The sketch below shows the partitioned universe
+  $\kleenestar{\set{\str{a},\str{b}}}\!$.
+  \begin{center}
+    \includegraphics{automata/asy/fsa/fsa61.pdf}
+  \end{center}
+\end{example}
+
+\begin{example}
+The above examples have finitely many  $\sim_{\lang}$ classes.
+We now see that there are languages with infinitely many.
+Consider \cref{ex:BalancedParensIsNotRegularLang}'s
+$\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma=\str{a}^n\str{b}^n$ for some $n\in\N$}}$.
+To show that the number of classes is ininite 
+we need not produce all of them;~it is enough to just
+exhibit infinitely many unequal ones
+(or for that matter, infinitely many mutually distinguishable strings).
+\begin{equation*}
+  \eclass_{\lang,i_0}=\set{\emptystring}
+  \quad
+  \eclass_{\lang,i_1}=\set{\str{a}}
+  \quad
+  \eclass_{\lang,i_2}=\set{\str{aa}}
+  \quad
+  \eclass_{\lang,i_3}=\set{\str{aaa}}
+  \quad
+  \ldots
+\end{equation*}
+For the argument that these singleton sets are equivalence classes, 
+consider $\sigma=\str{a}^n\!$.
+Because $\sigma\concat\str{b}^n\in\lang$,
+the only candidates for strings that are $\lang$-indistinguishable from $\sigma$
+but unequal to it
+have the form $\alpha=\str{a}^{n+j}\str{b}^{j}$ with $j>0$.
+If $n=0$ then $\sigma=\emptystring$ and a distinguishing extension between
+$\emptystring$ and $\alpha=\str{b}^j$ is $\str{ab}$.
+% If $j=0$ then $\alpha=\emptystring$
+% but $\sigma\not\sim_{\lang}\emptystring$ because
+% $\str{b}^n$ is a distinguishing extension.
+If $n>0$ then $\str{a}^n\not\sim_{\lang}\str{a}^{n+j}\str{b}^{j}$ 
+because
+$\tau=\str{a}\str{b}^{n+1}$ is a distinguishing extension.
+\end{example}
+
+We next connect Finite State machines that recognize a language~$\lang$ 
+with the $\sim_{\lang}$ relationship.
+
+\begin{example} \label{ex:MNMachineComparePartitions}
+This machine recognizes 
+  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+    \text{$\sigma$ has even length}}$,
+the language of \cref{ex:LangOfMNMachineComparePartitions}.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa19.pdf}
+\end{center}
+Consider other string inputs,
+not just the accepted ones,
+and see where they bring the machine.
+\begin{center}  \small\setlength{\tabcolsep}{0.85\tabcolsep}
+  \begin{tabular}{r|*{13}{c}}
+    \tabulartext{Input string $\sigma$}
+    &$\emptystring$ &\str{a} &\str{b}
+      &\str{aa} &\str{ab} &\str{ba} &\str{bb}
+      &\str{aaa} &\str{aab} &\str{aba} &\str{abb} &$\ldots$        \\
+    \cline{2-13}
+    \tabulartext{Ending state $\extended{\Delta}(\sigma)$}
+    &$q_0$ &$q_1$ &$q_2$
+      &$q_3$ &$q_3$ &$q_4$ &$q_4$
+      &$q_1$ &$q_1$ &$q_1$ &$q_1$ &$\ldots$                \\
+  \end{tabular}
+\end{center}
+The collection of input strings breaks into five sets,
+those that bring the machine to~$q_0$,
+those that bring the machine to~$q_1$, etc.
+This is another kind of partition, which
+will prove to be related to but different than the partition above.
+Denote the $i$-th class of this $\FSM$-related partition with 
+$\eclass_{\FSM,i}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \extended{\Delta}(\sigma)=q_i}$.
+\begin{center}
+  \begin{tabular}{l}
+    $\eclass_{\FSM,0}=\set{\varepsilon}$
+    \\
+    $\eclass_{\FSM,1}=\set{\str{a}, \str{aaa},\,\ldots}$
+    \\
+    $\eclass_{\FSM,2}=\set{\str{b}, \str{baa},\,\ldots}$
+    \\
+    $\eclass_{\FSM,3}=\set{\str{aa}, \str{ab},\,\ldots}$
+    \\
+    $\eclass_{\FSM,4}=\set{\str{ba}, \str{bb},\,\ldots}$
+  \end{tabular}
+  \qquad
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa62.pdf}}
+\end{center}
+Below we lay the language-related partition, with two parts, on top of
+the machine-related one with five.
+\begin{equation*}
+    \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa20.pdf}}
+    \tag{$*$}\label{ex:MNMachineComparePartitionsGraphic}
+\end{equation*}
+The $\FSM$-related parts are subsets of the $\lang$-related parts.
+That is, the $\FSM$-related partition is finer than the
+$\lang$-related partition.\footnote{%
+  `Finer' in the sense that sand is finer than gravel.}
+\end{example}
+
+\begin{definition}
+  Let $\FSM$ be a Finite State machine with alphabet~$\Sigma$.
+  Two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$ are
+  \definend{$\FSM$-related}\index{M-related@$\FSM$-related} 
+  if $\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$, 
+  that is, if starting the machine with input~$\sigma_0$
+  ends with it in the same state as does starting the machine
+  with input~$\sigma_1$.
+\end{definition}
+
+\begin{lemma}  \label{lem:SimSubFSMIsEquivalence}
+  The binary relation of $\FSM$-related is an equivalence
+  and so partitions the collection of all strings $\kleenestar{\Sigma}$
+  into equivalence classes.
+\end{lemma}
+
+\begin{proof}
+See \cref{exer:VerifyEquivRels}'s item~\ref{exer:SimSubFSMIsEquivalence}.  
+\end{proof}
+
+\begin{lemma}  \label{lem:MRelatedImpliesLRelated}
+  Let $\FSM$ be a Finite State machine that recognizes~$\lang$.
+  If two strings are $\FSM$-related then they are $\lang$-related.
+\end{lemma}
+
+\begin{proof}
+Assume that $\sigma_0$ and $\sigma_1$ are  $\FSM$-related, so that  
+starting $\FSM$ with input $\sigma_0$
+causes it to end in the same state as starting it with input~$\sigma_1$.
+Thus for any suffix~$\tau$, giving $\FSM$ the input $\sigma_0\concat\tau$
+causes it to end in the same state as does the input  $\sigma_1\concat\tau$.
+In particular, $\sigma_0\concat\tau$ takes $\FSM$
+to a final state if and only if $\sigma_1\concat\tau$ does.
+So the two strings are $\lang$-related.  
+\end{proof}
+
+Naturally, the $\eclass_{\FSM,i}$ classes reflect $\FSM$'s states.
+For instance, the strings in
+$\eclass_{\FSM,1}=\set{\str{a}, \str{aaa},\,\ldots}$
+reflect the state $q_1$, and the strings in
+$\eclass_{\FSM,3}=\set{\str{aa}, \str{ab},\,\ldots}$
+reflect the state~$q_3$.
+Specificially:~just as when the machine is in~$q_1$ and reads an~\str{a} 
+then it transitions to~$q_3$,
+so also if we choose any string $\sigma\in\eclass_{\FSM,1}$ and append an~\str{a}
+then $\sigma\concat\str{a}$ is an element of~$\eclass_{\FSM,3}$.
+An example is that choosing $\sigma=\str{a}\in\eclass_{\FSM,1}$ 
+and appending \str{a} gives $\str{aa}\in\eclass_{\FSM,3}$.
+
+This way of thinking of the $\FSM$~classes as a machine
+suggests extending to also think of 
+the $\lang$~classes as a machine.
+% The state $\eclass_{\lang,0}$ is accepting because
+% it contains strings from the language~$\lang$.
+% The other state, $\eclass_{\lang,1}$, does not contain strings from~$\lang$ and
+% so it is not accepting.
+% Also, the class $\eclass_{\lang,0}$ contains \emptystring{} 
+% so it is 
+% the $\lang$-machine's start state.  
+% 
+In particular, 
+the workings of the transitions on the $\eclass_{\FSM,i}$ classes suggest 
+how to define the transitions in this machine.
+
+\begin{definition}  \label{def:LMachine}
+Let $\lang$ be a language over $\Sigma$ and let the collection of
+$\sim_{\lang}$ equivalence classes $\eclass_{\lang,i}$ be $E$.
+The \definend{$\lang$-machine}
+has states that are the classes, 
+where the start state is the one containing~\emptystring.
+Its accepting states are the ones containing strings from~$\lang$.
+The transition operation, 
+$\map{\Delta}{E\times\Sigma}{E}$,
+is:~given input $\eclass_{\lang,i}$ and $x\in\Sigma$,
+choose a $\sigma$ in the class, and  
+then $\sigma\concat x$ is an element of some class $\eclass_{\lang,j}$.
+Set $\Delta(\eclass_{\lang,i},x)=\eclass_{\lang,j}$.
+\end{definition}
+
+For example the machine for the language
+of \cref{ex:MNMachineComparePartitions} is the two-state machine in  
+(\ref{fig:MMachineCollapsesToLMachine}) below.
+
+As stated, the definition allows us to choose any string~$\sigma$ 
+at all from $\eclass_{\lang,i}$. 
+We must establish that   
+choosing two different strings of the input class
+does not give two different outputs.
+
+\begin{lemma} \label{lem:MNPriorThm}
+  Fix a language $\lang$.
+  \begin{parenum}
+  \item The transition operation is well-defined:~if two strings 
+    $\sigma_0,\sigma_1$ are $\lang$-related,
+    $\sigma_0\sim_{\lang}\sigma_1$, then adjoining a common
+    character~$x\in\Sigma$ gives strings that are also
+    $\lang$-related,
+    $(\sigma_0\concat x)\sim_{\lang}(\sigma_1\concat x)$.
+    \label{lem:MNPriorThmTransitionWellDefined}
+  \item If one member \label{lem:MNPriorThmLangCount}
+    of a class $\sigma_0\in\eclass_{\lang,i}$
+    is an element of~$\lang$ then every member
+    of that class $\sigma_1\in\eclass_{\lang,i}$ is also an element
+    of~$\lang$.
+  \item There is one and only
+    one class containing the empty string.
+  \end{parenum}
+\end{lemma}
+
+\begin{proof}
+  For the first item, if $\sigma_0\concat x$ were not 
+  $\lang$-related to $\sigma_1\concat x$ then the single-character string~$x$
+  would be a distinguishing extension.
+  But $\sigma_0\sim_{\lang}\sigma_1$ so they have no distinguishing extension.
+
+  The second item is:~if $\sigma_0\sim_{\lang}\sigma_1$
+  and $\sigma_0\in\lang$
+  but $\sigma_1\notin\lang$ then they are distinguished by the empty string,
+  which contradicts that they are $\lang$-related.
+
+  The third item is trivial since for any string, empty or not,
+  there is one and only 
+  equivalence class containing that string. 
+\end{proof}
+
+\begin{example}  \label{ex:LMachineWithThreeClasses}
+Let $\lang=\set{\str{a}\str{b}^n\suchthat n\in\N}=\set{\str{a},\str{ab},\str{abb},\,\ldots}$.  
+We will first find the equivalence classes and then
+determine the $\lang$-machine's transitions.
+
+There are three classes.
+First, $\eclass_{\lang,0}=\set{\emptystring}$ because for any string 
+$\sigma\in\kleenestar{\set{\str{a},\str{b}}}\!$, a distinguishing extension 
+between $\sigma$ and $\emptystring$ is the single-character string~\str{a}.
+
+The second class is $\eclass_{\lang,1}=\lang$.
+To see that any two elements of this set, 
+$\str{a}\str{b}^{i},\str{a}\str{b}^{j}\in\lang$, are 
+$\lang$-related, suppose that $\tau\in\kleenestar{\Sigma}\!$.
+If $\tau$ has the form $\str{b}^k$ then both extensions 
+$\str{a}\str{b}^i\concat\tau$ and $\str{a}\str{b}^j\concat\tau$ 
+are members of~$\lang$,
+while if $\tau$ has at least one~\str{a} then both extensions are not members 
+(because they have at least two \str{a}'s).
+It remains to show that if $\sigma_0\in\lang$ and $\sigma_1\notin\lang$ then
+they are not $\lang$-related.
+That's because they have a distinguishing extension of~\emptystring.
+
+The final class contains all remaining strings, 
+$\eclass_{\lang,2}=\kleenestar{\Sigma}-(\eclass_{\lang,0}\union\eclass_{\lang,1})$.
+We will show that any two elements of this set are $\lang$-related
+(there is no need to argue that elements are not $\lang$-related to 
+strings outside the set becuase we have already shown that in the 
+prior paragraphs).
+An element~$\sigma\in\eclass_{\lang,2}$ must have at least one character
+and must fall into at least one of two cases:~either its 
+first item is not~\str{a},
+or the rest of the string contains at least
+one~\str{a}.
+In both cases any extension $\tau$ yields a string $\sigma\concat\tau$
+that is not an element of~$\lang$, so there are no distinguishing extensions. 
+
+We have this partition of the strings.
+\begin{equation*}
+  % \begin{array}{l}
+  %   \eclass_{\lang,0}=\set{\emptystring}  \\
+  %   \eclass_{\lang,1}=\set{\str{a},\str{ab},\str{abb},\ldots}  \\
+  %   \eclass_{\lang,2}=\set{\str{b},\str{aa},\str{ba},\str{bb},\ldots}  \\
+  % \end{array}
+  % \qquad
+  % \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa64.pdf}}
+    \eclass_{\lang,0}=\set{\emptystring}  \quad
+    \eclass_{\lang,1}=\set{\str{a},\str{ab},\str{abb},\ldots}  \quad
+    \eclass_{\lang,2}=\set{\str{b},\str{aa},\str{ba},\str{bb},\ldots}  
+\end{equation*}
+To compute the transitions, for each class choose one representative element,
+append each of \str{a} and \str{b},
+and find the resulting class.
+Below we choose the one-character strings $\str{a}\in\eclass_{\lang,1}$ 
+and $\str{b}\in\eclass_{\lang,2}$.
+\begin{equation*}
+  \begin{array}{r|rr}
+    \multicolumn{1}{r}{\Delta}
+      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
+    \cline{2-3}
+    \emptystring\in\eclass_{\lang,0}
+       &\str{a}\in\eclass_{\lang,1}  &\str{b}\in\eclass_{\lang,2}  \\
+    \acceptingstate\,\str{a}\in\eclass_{\lang,1}
+       &\str{aa}\in\eclass_{\lang,2}  &\str{ab}\in\eclass_{\lang,1}  \\
+    \str{b}\in\eclass_{\lang,2}
+       &\str{ba}\in\eclass_{\lang,2}  &\str{bb}\in\eclass_{\lang,2}  
+  \end{array}
+  \hspace*{4em}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa65.pdf}}
+\end{equation*}
+\end{example}
+
+\begin{example} \label{ex:MyhillNerodeNumOnesMultOfFour}
+Let 
+$\lang=\set{\sigma\in\kleenestar{\B}\suchthat\text{the number of \str{1}'s is a multiple of four}}$.  
+There are four equivalence classes: $\eclass_{\lang,0}$ contains the strings where
+the number of \str{1}'s is divisible by~$4$ without remainder,
+$\eclass_{\lang,1}$ contains the strings where the number of \str{1}'s 
+leaves a remainder of~$1$ on division by~$4$, etc.
+(The argument that these are the equivalence classes is an exercise.)
+
+Compute the transitions by choosing a representative element from each class,
+appending in turn each character of the alphabet,
+and finding the resulting class.
+\begin{equation*}
+  \begin{array}{r|rr}
+    \multicolumn{1}{r}{\Delta}
+      &\multicolumn{1}{c}{\str{0}}      &\multicolumn{1}{c}{\str{1}}  \\ 
+     \cline{2-3}
+    \acceptingstate\,\emptystring\in\eclass_{\lang,0}
+       &\str{0}\in\eclass_{\lang,1}  &\str{1}\in\eclass_{\lang,1}  \\
+    \str{1}\in\eclass_{\lang,1}
+       &\str{10}\in\eclass_{\lang,2}  &\str{11}\in\eclass_{\lang,2}  \\
+    \str{11}\in\eclass_{\lang,2}
+       &\str{110}\in\eclass_{\lang,2}  &\str{111}\in\eclass_{\lang,3} \\ 
+    \str{111}\in\eclass_{\lang,3}
+       &\str{1110}\in\eclass_{\lang,3}  &\str{1111}\in\eclass_{\lang,0}  
+  \end{array}
+  \hspace*{4em}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa66.pdf}}
+\end{equation*}
+\end{example}
+
+\begin{theorem}[Myhill-Nerode]
+A language~$\lang$ is regular if and only if the relation
+$\sim_{\lang}$ gives only finitely many equivalence classes.
+\end{theorem}
+
+\begin{proof}
+For the first direction suppose that $\lang$ is a regular language,
+recognized by a Finite State machine $\FSM$.
+The number of elements in the partition
+associated with $\sim_{\FSM}$ is finite, as there is one part for
+each of $\FSM$'s reachable states.
+Consequently the number of element in the partition induced by
+$\sim_{\lang}$ is finite
+because 
+by \cref{lem:MRelatedImpliesLRelated}, $\sim_{\lang}$'s partition 
+has fewer elements than does $\sim_{\FSM}$'s
+(as illustrated in \cref{ex:MNMachineComparePartitions}'s
+(\ref{ex:MNMachineComparePartitionsGraphic}) diagram). 
+
+For the other direction
+suppose that the number of elements in the partition
+induced by $\sim_{\lang}$ is finite.
+Then the $\lang$~machine described above is a Finite State machine.
+If we show that it recognizes~$\lang$
+then we will have verified that $\lang$ is regular.
+
+Starting with a string $\sigma\in\kleenestar{\Sigma}$
+as input will cause the machine to end in the partition
+containing~$\sigma$.
+By definition of this machine's accepting states, $\sigma$
+will be accepted by this machine if and only if $\sigma\in\lang$.
+\end{proof}
+
+Returning to \cref{ex:MNMachineComparePartitions},
+the way that the $\lang$~classes fit the $\FSM$~classes in  
+diagram~(\ref{ex:MNMachineComparePartitionsGraphic})
+suggests that we are collapsing the 
+$\FSM$ classes to get the $\lang$~machine, 
+and that machine also recognizes the language~$\lang$,
+but does so with a minimal number of states.
+\begin{equation*}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa19.pdf}}
+  \qquad\text{$\Longrightarrow$}\qquad
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa63.pdf}}
+  \tag{$**$} \label{fig:MMachineCollapsesToLMachine}
+\end{equation*}
+
+\begin{lemma} \label{lem:LMachineIsMinimal}
+If there are finitely many equivalence classes then the
+$\lang$-machine recognizes the language.
+Consequently, the $\lang$-machine is minimal,
+meaning that from among all the Finite State machines that recognize
+the language~$\lang$, it has a minimal number of states.  
+\end{lemma}
+
+\begin{proof}
+Let a Finite State machine~$\FSM$ recognize~$\lang$.
+Consider two strings $\sigma_0,\sigma_1\in\kleenestar{\Sigma}$.
+If those two take $\FSM$ to the same state, 
+$\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$,
+then any common extension does the same,
+$\extended{\Delta}(\sigma_0\concat\tau)=\extended{\Delta}(\sigma_1\concat\tau)$.
+
+This implies that if $\sigma_0\not\sim_{\lang}\sigma_1$ then 
+$\extended{\Delta}(\sigma_0)\neq\extended{\Delta}(\sigma_1)$.
+If there are $k$-many $\eclass_{\lang,i}$ classes then there is a set
+of $k$-many strings that all must end in different states.
+So any machine recognizing~$\lang$ must have at least that many states.  
+\end{proof}
+
+
+\medskip
+We finish with a reflection.
+At the chapter's start we constructed machines by hand, 
+perhaps sometimes struggling a bit.
+In contrast, the Myhill-Nerode result
+starts with the desired language~$\lang$, 
+considers the relation $\sim_{\lang}$, and
+if there are finitely many associated classes 
+then gives a machine
+that recognizes the language.
+
+That is,
+by seeing the patterns inside~$\lang$ given by $\sim_{\lang}$, 
+we don't have to make a machine recognizing that language, 
+the mathematics gives it to us.
+For free, it is minimal.
+This is a deep kind of wizardry\Dash these problems are solved automatically.
+
+
+% ...............................
+\begin{exercises}[Some of these give a language~$\lang$ and
+ask for the set of $\sim_{\lang}$ equivalence classes.
+One hint is that
+\cref{lem:MNPriorThm}'s part \ref{lem:MNPriorThmLangCount}
+says that while it may be that more than one class contains strings from~$\lang$,
+if a class contains even one such string then it consists entirely of them.
+Another hint is that if the given language is recognized by some  
+Finite State machine then with our experience often
+we see how to build it and can understand the $\sim_{\FSM}$ classes.
+\cref{lem:MRelatedImpliesLRelated} says that the $\sim_{\lang}$ classes
+are groupings of $\sim_{\FSM}$ classes.
+In addition, if our machine is minimal then by \cref{lem:LMachineIsMinimal} 
+the $\sim_{\FSM}$ classes are the $\sim_{\lang}$ classes.]
+% https://cs.stackexchange.com/q/89689/78536
+
+% https://cs.stackexchange.com/a/136195/50343
+
+\recommended
+\begin{exercise}
+Use the machine from \cref{ex:LMachineWithThreeClasses}.
+\begin{exparts*}
+\item What class contains \str{bba}? 
+\item \str{abba}?
+\item \str{babab}?  
+\item \str{abbbb}?
+\end{exparts*}
+\begin{answer}
+Every string in the language 
+$\lang=\set{\str{a}\str{b}^n\suchthat n\in\N}=\set{\str{a},\str{ab},\str{abb},\,\ldots}$
+is a member of $\eclass_{\lang,1}$.
+Of the other strings,
+the only member of $\eclass_{\lang,0}$ is \emptystring{}
+and all other strings are in $\eclass_{\lang,2}$.
+\begin{exparts}
+\item $\eclass_{\lang,2}$
+\item $\eclass_{\lang,2}$
+\item $\eclass_{\lang,2}$
+\item $\eclass_{\lang,1}$
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Use the machine from \cref{ex:LMachineWithThreeClasses}.
+For each string, identify the string's class, and 
+then append the character~\str{a} and identify the ending class for the 
+machine's transition.
+\begin{exparts*}
+\item \str{bba}
+\item \emptystring
+\item \str{abbb}
+\item \str{aa} 
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item The string's class is $\str{bba}\in\eclass_{\lang,2}$.
+  After appending to get the string
+  $\str{bba}\concat\str{a}=\str{bbaa}$ we have $\str{bbaa}\in\eclass_{\lang,2}$.
+  This fits with the lower-left entry in the $\Delta$ table given in 
+  \cref{ex:LMachineWithThreeClasses} (that is, with the bottom entry in
+  the column headed `\str{a}').
+\item The class is $\emptystring\in\eclass_{\lang,0}$.
+  Appending gives the string $\emptystring\concat\str{a}=\str{a}$
+  which is in $\str{a}\in\eclass_{\lang,1}$.
+  This fits the upper-left entry in the $\Delta$ table.
+\item The class is $\str{abbb}\in\eclass_{\lang,1}$.
+  Appending results in $\str{abbba}\in\eclass_{\lang,2}$,
+  which matches the middle-left entry in the transition table.
+\item The class is $\str{aaa}\in\eclass_{\lang,2}$.
+  Appending results in $\str{aaaa}\in\eclass_{\lang,2}$,
+  which fits the table's middle-left entry.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+This illustrates the point about `well-defined' in 
+\cref{lem:MNPriorThm}'s part~\ref{lem:MNPriorThmTransitionWellDefined}.
+Consider the machine of \cref{ex:MyhillNerodeNumOnesMultOfFour}.  
+\begin{exparts}
+\item
+Three representative strings from $\eclass_{\lang,0}$ are
+$\sigma_0=\str{00}$,
+$\sigma_1=\str{11011}$,
+and $\sigma_2=\str{00}\str{11111111}$.
+Append \str{0} to each and name the class of the resulting string.
+Verify that all three lead to a single class, and that
+in the machine the state $\eclass_{\lang,0}$ transitions
+on input \str{0} to that class.
+\item
+Using the same three strings,
+to each append \str{1} and name the class of the resulting string.  
+Verify that the three lead to the same class, and that
+in the machine the state $\eclass_{\lang,0}$ transitions
+on input \str{1} to it.
+\item 
+Repeat that for three strings from $\eclass_{\lang,1}$, for both
+\str{0} and~\str{1}.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item Appending to the three strings gives  
+$\sigma_0\concat\str{0}=\str{000}$,
+$\sigma_1\concat\str{0}=\str{110110}$,
+and $\sigma_2\concat\str{0}=\str{00}\str{1}^8\str{0}\!$.
+All three are members of~$\eclass_{\lang,0}$.
+Looking at the machine's transition table, 
+that is indeed the result of starting with the class
+$\eclass_{\lang,0}$ and transitioning on input~\str{0}.
+\item Appending gives  
+$\sigma_0\concat\str{1}=\str{001}$,
+$\sigma_1\concat\str{1}=\str{110111}$,
+and $\sigma_2\concat\str{1}=\str{00}\str{1}^8\str{1}\!$.
+All three are members of~$\eclass_{\lang,1}$.
+The machine's transition table shows that this 
+the result of starting with the class
+$\eclass_{\lang,0}$ and transitioning on input~\str{1}.
+\item Of course, many answers are possible but
+just plucking three class members out of the air for illustration can give 
+$\sigma_0=\str{100}$,
+and $\sigma_1=\str{010}$,
+and $\sigma_2=\str{111101}$.
+Concatenating \str{0} gives
+$\sigma_0\concat\str{0}=\str{1000}$,
+and $\sigma_1\concat\str{0}=\str{0100}$,
+as well as $\sigma_2\concat\str{0}=\str{1111010}$.
+All three are members of~$\eclass_{\lang,1}$.
+The machine's transition table shows that this 
+the result of starting with the class
+$\eclass_{\lang,1}$ and transitioning on input~\str{0}.
+
+As to concatenating \str{1}, we get
+$\sigma_0\concat\str{1}=\str{1001}\in\eclass_{\lang,2}$,
+$\sigma_1\concat\str{1}=\str{0101}\in\eclass_{\lang,2}$,
+and $\sigma_2\concat\str{1}=\str{1111011}\in\eclass_{\lang,2}$. 
+The machine's transition table shows that this 
+the result of starting with the class
+$\eclass_{\lang,1}$ and transitioning on input~\str{1}.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+\cref{ex:LangOfMNMachineComparePartitions} gives a language  
+  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
+    \text{$\sigma$ has even length}}$
+with two classes.
+Produce the transition table and arrow diagram for the associated 
+$\lang$-machine.
+\begin{answer}
+That example gives the classes as
+$\eclass_{\lang,0} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is even}}$
+and
+$\eclass_{\lang,1} =\set{\sigma\suchthat\text{$\lh{\sigma}$ is odd}}$.
+We can pick any string from a class to represent that class.
+As a representative of $\eclass_{\lang,0}$ we can use 
+the length zero string \emptystring. 
+As a representative of $\eclass_{\lang,1}$ we can use the length one 
+string~\str{a}. 
+The only accepting state is $\eclass_{\lang,0}$ because it contains all
+of the strings from~$\lang$.
+It is also the start state because it contains the empty string.
+\begin{equation*}
+  \begin{array}{r|rr}
+    \multicolumn{1}{r}{\Delta}
+      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
+    \cline{2-3}
+    \acceptingstate\,\emptystring\in\eclass_{\lang,0}
+       &\str{a}\in\eclass_{\lang,1}  &\str{b}\in\eclass_{\lang,1}  \\
+    \str{a}\in\eclass_{\lang,1}
+       &\str{aa}\in\eclass_{\lang,0}  &\str{ab}\in\eclass_{\lang,0}  \\
+  \end{array}
+  \qquad
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa67.pdf}}
+\end{equation*}  
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+\cref{ex:MyhillNerodeExampleLangFiveClasses} gives a language  
+  $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \lh{\sigma}=3}$
+with five classes.
+Produce the transition table and arrow diagram for the associated 
+machine.
+\begin{answer}
+That example gives the classes as
+$\eclass_{\lang,0}=\set{\emptystring}$,
+and
+$\eclass_{\lang,1}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \lh{\sigma}=1}=\set{\str{a},\str{b}}$,
+and
+$\eclass_{\lang,2}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \lh{\sigma}=2}=\set{\str{aa},\str{ab},\str{ba},\str{bb}}$,
+and
+$\eclass_{\lang,3}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \lh{\sigma}=3}$,
+along with
+$\eclass_{\lang,4}=\set{\sigma\suchthat\lh{\sigma}\geq 4}$.
+From each class we can
+pick any string to represent its class.
+As a representative of $\eclass_{\lang,0}$ we must use \emptystring. 
+As a representative of $\eclass_{\lang,1}$ we can use the length one 
+string~\str{a}. 
+To represent $\eclass_{\lang,2}$ we can use~\str{aa},
+to represent $\eclass_{\lang,3}$ we can use~\str{aaa},
+and to represent $\eclass_{\lang,4}$ we can use~\str{aaaa}. 
+\begin{equation*}
+  \begin{array}{r|rr}
+    \multicolumn{1}{r}{\Delta}
+      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
+    \cline{2-3}
+    \emptystring\in\eclass_{\lang,0}
+       &\str{a}\in\eclass_{\lang,1}  &\str{b}\in\eclass_{\lang,1}  \\
+    \str{a}\in\eclass_{\lang,1}
+       &\str{aa}\in\eclass_{\lang,2}  &\str{ab}\in\eclass_{\lang,2}  \\
+    \str{aa}\in\eclass_{\lang,2}
+       &\str{aaa}\in\eclass_{\lang,3}  &\str{aab}\in\eclass_{\lang,3}  \\
+    \acceptingstate\,\str{aaa}\in\eclass_{\lang,3}
+       &\str{aaaa}\in\eclass_{\lang,4}  &\str{aaab}\in\eclass_{\lang,4}  \\
+    \str{aaaa}\in\eclass_{\lang,4}
+       &\str{aaaaa}\in\eclass_{\lang,4}  &\str{aaaab}\in\eclass_{\lang,4}  \\
+  \end{array}
+  \qquad
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa68.pdf}}
+\end{equation*}  
+Because it contains all
+of the strings from~$\lang$ the sole accepting state is $\eclass_{\lang,3}$.
+The start state is the class containing \emptystring, 
+namely~$\eclass_{\lang,0}$.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Let $\lang$ be the set of strings from $\kleenestar{\set{\str{a},\str{b}}}$
+ending in~\str{a}.
+\begin{exparts}
+\item Show that $\lang$ is an equivalence class, $\eclass_{\lang,1}$, for 
+the relation~$\sim_{\lang}$.
+\item Show that the complement $\eclass_{\lang,0}=\setcomp{\lang}$ is also
+an equvalence class.
+\item What is the initial state of this $\lang$-machine?
+\item What are the accepting states?
+\item Give the transition table and the diagram.
+\item Which of the strings~\emptystring,
+\str{a}, \str{b}, \str{abba}, and \str{bba} are accepted by the machine?
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item All strings $\sigma\in\lang$ are equivalent since $\sigma\concat\tau$
+if and only if $\tau$ is empty or ends in~\str{a}.
+No string $\sigma\in\lang$ is equivalent to a string $\alpha\notin\lang$ 
+since $\sigma$ ends in~\str{a} and $\alpha$ does not, and therefore 
+a distinguishing extension is \emptystring.     
+\item All strings in $\setcomp{\lang}$ are equivalent.
+If $\sigma_0,\sigma_1\in\setcomp{\lang}$ then neither ends in~\str{a}
+(it may be that one or both is \emptystring).
+Then for any string~$\tau$, including $\tau=\emptystring$, we have
+both $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$ are elements of~$\lang$
+if and only if $\tau$ ends in~\str{a}.
+(We do not need to establish that no string in $\setcomp{\lang}$ is equivalent
+to a string in~$\lang$ since we did that in the prior item.)
+\item The empty string is an element of $\eclass_{\lang,0}$.
+\item The only class that contains a string from~$\lang$ is $\eclass_{\lang,1}$.
+\item As class representatives we can choose $\emptystring\in\eclass_{\lang,0}$
+and the length~one string $\str{a}\in\eclass_{\lang,1}$.
+\begin{equation*}
+  \begin{array}{r|rr}
+    \multicolumn{1}{r}{\Delta}
+      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
+    \cline{2-3}
+    \emptystring\in\eclass_{\lang,0}
+       &\str{a}\in\eclass_{\lang,1}  &\str{b}\in\eclass_{\lang,0}  \\
+    \acceptingstate\,\str{a}\in\eclass_{\lang,1}
+       &\str{aa}\in\eclass_{\lang,1}  &\str{ab}\in\eclass_{\lang,0}  \\
+  \end{array}
+  \qquad
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa69.pdf}}
+\end{equation*} 
+The accepted strings are those that end in \str{a}, namely
+\str{a}, \str{abba}, and~\str{bba}. 
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+For the language
+$\lang=\set{\str{a}^2\str{b}^n\suchthat n\in\N}$
+with alphabet $\Sigma=\set{\str{a},\str{b}}$ this is a minimal
+Finite State machine.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa72.pdf}}
+\end{center}
+List the $\sim_{\lang}$ equivalence classes.
+\begin{answer}
+We follow the hint given at the start of these exercises, that where the
+machine is minimal, the $\sim_{\FSM}$ classes equal the $\sim_{\lang}$ classes.
+These four implications are clear.
+\begin{align*}
+  &\extended{\Delta}(\sigma)=q_0
+   \quad\Longrightarrow\quad
+   \sigma=\emptystring           \\
+  &\extended{\Delta}(\sigma)=q_1
+   \quad\Longrightarrow\quad
+   \sigma=\str{a}           \\
+  &\extended{\Delta}(\sigma)=q_2
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ has the form $\str{aa}\str{b}^n$ for $n\in\N$}    \\
+  &\extended{\Delta}(\sigma)=q_3
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ has the form $\str{aa}\str{b}^na\concat\beta$ for $n\in\N$ and $\beta\in\kleenestar{\Sigma}$}
+\end{align*}
+Consequently, these are the four $\sim_{\lang}$ classes.
+\begin{display}
+  \begin{tabular}{c|l} 
+      \multicolumn{1}{c}{\tabulartext{Associated with}} 
+      &\multicolumn{1}{c}{\tabulartext{Class}}  \\ \hline
+    $q_0$ 
+                      &$\eclass_{\lang,0}=\set{\emptystring}$  \\
+    $q_1$ 
+                      &$\eclass_{\lang,1}=\set{\str{a}}$  \\
+    $q_2$ 
+                      &$\eclass_{\lang,2}=\lang$  \\
+    $q_3$ 
+                      &$\eclass_{\lang,3}=\set{\sigma\in\kleenestar{\Sigma}\suchthat\text{$\sigma\notin(\eclass_{\lang,0}\union\eclass_{\lang,1}\union\eclass_{\lang,2})$}}$  
+  \end{tabular}
+\end{display}
+The classs $\eclass_{\lang,2}$ contains strings from $\lang$ 
+so it is a final state.
+The class $\eclass_{\lang,0}$ contains the empty string so it is the initial 
+state.
+\end{answer}
+\end{exercise}
+
+
+\recommended
+\begin{exercise}
+The language $\lang=\set{\str{a}^n\str{b}\suchthat n\in\N}$ is regular.
+Find the $\sim_{\lang}$ equivalence classes.
+The alphabet is $\Sigma=\set{\str{a},\str{b}}$.
+\begin{answer}
+We follow the hint given at the start of these exercises.
+Here is the natural Finite State machine to recognize this language.  
+\begin{display}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa71.pdf}}
+\end{display}
+It is clearly minimal, which means that 
+the $\sim_{\FSM}$ classes equal the $\sim_{\lang}$ classes.
+These implications are straightforward.
+\begin{align*}
+  &\extended{\Delta}(\sigma)=q_0
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ has the form $\str{a}^n$ for $n\in\N$}      \\
+  &\extended{\Delta}(\sigma)=q_1
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ has the form $\str{a}^n\str{b}$ for $n\in\N$}      \\
+  &\extended{\Delta}(\sigma)=q_2
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ has the form $\str{a}^n\str{b}\concat\beta$ for $n\in\N$ and $\beta\in\kleenestar{\Sigma}$ with $\beta\neq\emptystring$}  
+\end{align*}
+These are the $\sim_{\lang}$ classes.
+\begin{display}
+  \begin{tabular}{c|l} 
+      \multicolumn{1}{c}{\tabulartext{Associated with}} 
+      &\multicolumn{1}{c}{\tabulartext{Class}}  \\ \hline
+    $q_0$ 
+                      &$\eclass_{\lang,0}=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma=\str{a}^n$ for $n\in\N$}}$  \\
+    $q_1$ 
+                      &$\eclass_{\lang,1}=\lang=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma=\str{a}^n\str{b}$ for $n\in\N$}}$  \\
+    $q_2$ 
+                      &$\eclass_{\lang,2}=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma=\str{a}^n\str{b}\concat\beta$ for $n\in\N$ and $\beta\neq\emptystring$}}$  
+  \end{tabular}
+\end{display}
+The classs $\eclass_{\lang,1}$ contains strings from $\lang$ 
+so it is a final state.
+The class $\eclass_{\lang,0}$ contains the empty string so it is the initial 
+state.
+
+\textit{Comment:}~while the Finite State machine given certainly appears 
+minimal, strictly speaking we have not shown it to be minimal.
+(We could show that using Extra~\ref{sec:Minimization}.)
+We can verify that these are the equivalence classes
+without relying on minimality as follows.
+
+Consider first the collection~$\lang$, which we can call $\eclass_{\lang,1}$.
+Suppose that $\sigma_0,\sigma_1\in\lang$.
+Then for any string~$\tau$ we have that $\sigma_0\concat\tau$ and 
+$\sigma_1\concat\tau$ are elements of~$\lang$ if and only if $\tau$ is the
+empty string.
+So they are equivalent.
+To show that any such string is not equivalent to some $\sigma_2\notin\lang$,
+note that a distinguishing extension is the empty string. 
+
+Next consider the collection of strings of the form $\sigma=\str{a}^n\!$, which
+we will call $\eclass_{\lang,0}$ since it contains the empty string.
+For any extension~$\tau$, the string $\sigma\concat\tau$ is in the 
+language if and only if $\tau$ has the form $\str{a}^i\str{b}$ for some 
+$i\in\N$.
+So any two elements of $\eclass_{\lang,0}$ are equivalent.
+
+To show that any $\sigma\in\eclass_{\lang,0}$ is not equivalent to a string 
+$\alpha\notin(\eclass_{\lang,0}\union\eclass_{\lang,1})$,
+note that $\alpha$ has the form $\str{a}^n\str{b}\concat\beta$ for some 
+string~$\beta$ (in the above Finite State machine it is associated with $q_2$).
+In particular, $\alpha$ contains at least one~\str{b}.
+Hence for every extension~$\tau$ we have $\alpha\concat\tau\notin\lang$.
+It follows that any $\sigma\in\eclass_{\lang,0}$ is distinguished from 
+such an $\alpha$
+with the one-character string $\tau=\str{b}$.
+
+Finally, consider 
+$\eclass_{\lang,2}=\kleenestar{\Sigma}-(\eclass_{\lang,0}\union\eclass_{\lang,1})$.
+As covered in the prior paragraph,
+every string~$\sigma$ in this collection 
+has the form $\str{a}^n\str{b}\concat\beta$ for some 
+string~$\beta$, and therefore there is no extension~$\tau$ with
+$\sigma\concat\tau\in\lang$.
+Thus there is no extension that distinguishes betwee two members of this
+set, and so they are all equivalent.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+For the language consisting of the set of strings ending in \str{01},
+describe the $\lang$~equivalence classes.
+The alphabet is $\B$.
+\begin{answer}
+This is a regular language and the natural Finite State machine
+to recognize it is below.
+\begin{display}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa70.pdf}}
+\end{display}
+So we are looking for three equivalence classes.
+We are thinking that one of them, here named~$q_2$, is $\lang$.
+Another, here named~$q_1$, holds those strings that end in~\str{0},
+and the other must contain all of the others.
+
+So first we argue that $\eclass_{\lang,2}=\lang$ is a $\sim_{\lang}$
+equivalence class.
+If $\sigma_0,\sigma_1\in\lang$ then they both end in \str{01}.
+Consider an extension~$\tau\in\kleenestar{\B}$.
+If $\tau=\emptystring$ then $\sigma_0\concat\tau\in\lang$
+and $\sigma_i\concat\tau\in\lang$.
+If $\tau\neq\emptystring$ then $\sigma_0\concat\tau$ and
+and $\sigma_i\concat\tau$ are both elements of $\lang$ if and only if
+$\tau$ ends in \str{01}, so they have no distinguishing extension.
+(To see that no string element of~$\lang$ is $\sim_{\lang}$ equivalent
+to a string element of $\setcomp{\lang}$, note that \emptystring.
+is a distinguishing extension.)
+
+Next we argue that the set of strings ending in~\str{0} is an
+equivalence class, $\eclass_{\lang,1}$.
+Two such strings $\sigma_0$ and~$\sigma_1$ are not elements of~$\lang$.
+Consider an extension~$\tau$.
+If $\tau=\emptystring$ then both $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$
+are not elements of~$\lang$.
+If $\tau$ has length one then both $\sigma_0\concat\tau$ 
+and $\sigma_1\concat\tau$ are elements of~$\lang$ if and only if 
+$\tau=\str{1}$.
+If $\tau$ has length greater than one then both $\sigma_0\concat\tau$ 
+and $\sigma_1\concat\tau$ are elements of~$\lang$ if and only if 
+$\tau$ ends in \str{01}.
+Thus any two such strings are equivalent.
+No such string, no string ending in~\str{0}, is equivalent to a string
+not ending in~\str{0}, because a distinguishing extension is $\tau=\str{1}$.
+
+Finally, consider the collection of strings that do not end with~\str{01}
+and do not end with~\str{0}.
+For any string $\sigma$ in this collection the extension $\sigma\concat\tau$
+is in the language if and only if $\tau$ ends with \str{01}.
+So they are mutually equivalent. 
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Describe the $\lang$~equivalence classes
+for the set of strings where every \str{0} is immediately followed by two
+\str{1}'s.
+The alphabet is $\B$.
+\begin{answer}
+We follow the hint from the start of these exercises.
+Here is the natural Finite State machine to recognize this language.  
+\begin{display}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa73.pdf}}
+\end{display}
+It is clearly minimal, which means that 
+the $\sim_{\FSM}$ classes equal the $\sim_{\lang}$ classes.
+These implications are straightforward.
+\begin{align*}
+  &\extended{\Delta}(\sigma)=q_0
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ matches the regular expression \re{(1|011)*}}      \\
+  &\extended{\Delta}(\sigma)=q_1
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ matches the regular expression \re{(1|011)*0}}      \\
+  &\extended{\Delta}(\sigma)=q_2
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ matches the regular expression \re{(1|011)*01}}     \\ 
+  &\extended{\Delta}(\sigma)=q_3
+   \quad\Longrightarrow\quad
+   \text{$\sigma$ does not match \re{(1|011)*(\emptystring|0|01)}}  
+\end{align*}
+These are the $\sim_{\lang}$ classes.
+\begin{display}
+  \begin{tabular}{c|l} 
+      \multicolumn{1}{c}{\tabulartext{Associated with}} 
+      &\multicolumn{1}{c}{\tabulartext{Class}}  \\ \hline
+    $q_0$ 
+                      &$\eclass_{\lang,0}=\lang$  \\
+    $q_1$ 
+                      &$\eclass_{\lang,1}=\lang=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma$ matches \re{(1|011)*0}}}$  \\
+    $q_2$ 
+                      &$\eclass_{\lang,2}=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma$ matches \re{(1|011)*01}}}$      \\ 
+    $q_3$ 
+                      &$\eclass_{\lang,2}=\set{\sigma\in\kleenestar{\Sigma} \suchthat \text{$\sigma$ does not match \re{(1|011)*(\emptystring|0|01)}}}$  
+  \end{tabular}
+\end{display}
+The class $\eclass_{\lang,0}$ contains strings from $\lang$ 
+so it is a final state.
+The class $\eclass_{\lang,0}$ contains the empty string so it is the initial 
+state.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Produce a language~$\lang$ that is divided by the $\sim_{\lang}$ 
+relation into more than one equivalence class.   
+\begin{answer}
+There are of course many possible answers.
+A reasonable approach is to
+think of a regular language where to to make the Finite State machine there
+are two or more natural accepting states.    
+
+Consider $\lang\subseteq\kleenestar{\set{\str{a},\str{b}}}$ containing
+all strings that end in~\str{a}, and all strings of length two.
+Then the strings \str{a} and \str{bb} are both members of~$\lang$
+but they have a distinguishing extension $\tau=\str{b}$,
+so the set $\lang$ splits into at least two equivalence classes.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+The language of palindromes  
+$\lang=\set{\sigma\in\kleenestar{\str{a},\str{b}}\suchthat \reversal{\sigma}=\sigma}$
+is not regular.
+Find infinitely many $\lang$~equivalence classes.
+\begin{answer}
+We will show there are infinitely many $\sim_{\lang}$ equivalence classes
+by showing that there are infinitely many non-equuivalent strings.
+We claim that no two unequal strings of the form $\str{a}^n$
+are equivalent.
+As an example consider $\sigma_2=\str{aa}$ and $\sigma_3=\str{aaa}$.
+Take $\tau=\str{baa}$.
+Because $\sigma_2\concat\tau\in\lang$ and $\sigma_3\concat\tau\notin\lang$,
+the two are not equivalent.
+Clearly this works for any two such strings, so there are infinitely 
+many equvalence classes.  
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Show that the language of strings $\sigma\in\kleenestar{\B}$
+where the number of \str{0}'s in $\sigma$ is the same as the number of \str{1}'s
+is not regular
+by using the Myhill-Nerode Theorem.
+\begin{answer}
+We will show that there are infinitely many non-equivalent strings.
+\begin{display}
+  \emptystring
+  \quad \str{0}
+  \quad \str{00}
+  \quad \str{000}
+  \quad \ldots
+\end{display}
+If $i\neq j$ then $\str{0}^i\not\sim_{\lang}\str{0}^j$ since 
+$\tau=\str{1}^i$ is a distinguishing extension.
+That's true because $\str{0}^i\concat\str{1}^i$ is a member of~$\lang$
+but $\str{0}^j\concat\str{1}^i$ is not.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that the language of strings of the form
+$\str{0}^{2^j}\!$, that is, 
+$\lang=\set{\str{0},\str{0}^2,\str{0}^4,\ldots}$, 
+is not regular.
+\begin{answer}
+We will show that every string in the language is in its own $\sim_{\lang}$
+equivalance class, and so there are infinitely many such classes.
+Consider $\sigma_0=\str{0}^{2^n}$ and $\sigma_1=\str{0}^{2^m}$ where $n\neq m$.
+One of them must be smaller;~suppose that $n<m$.
+Then the extension string $\tau=\str{0}^{2^n}$ gives
+$\sigma_0\concat\tau=\str{0}^{2^n}\concat\str{0}^{2^n}=\str{0}^{2^{n+1}}$ is an 
+element of the language.
+But because $m$ is greater than~$n$ the string $\sigma_0\concat\tau$ is not 
+an element of the language.
+So they have a distinguishing extension.  
+\end{answer}
+\end{exercise}
+
+\begin{exercise} \label{exer:VerifyEquivRels}
+Recall that a binary relation~$\sim$ is an equivalence if it
+has three properties:
+\begin{parenum}
+\item reflexivity, that $x\sim x$ for all~$x$,
+\item symmetry, that if $x\sim y$ then $y\sim x$, and
+\item transitivity, that if $x\sim y$ and $y\sim z$ then also $x\sim z$.   
+\end{parenum}
+\begin{exparts}
+\item \label{exer:SimSubLangIsEquivalence}
+Verify \cref{lem:SimSubLangIsEquivalence}.  
+\item \label{exer:SimSubFSMIsEquivalence}
+Verify \cref{lem:SimSubFSMIsEquivalence}.
+\end{exparts}
+\begin{answer}
+For both arguments write the language as $\lang$ and the alphabet
+as~$\Sigma$.
+\begin{exparts}
+\item By definition, $\sigma_0\sim_{\lang}\sigma_1$ if there is no distinguishing
+extension~$\tau$.
+That holds if and only if either both of $\sigma_0\concat\tau$ and 
+$\sigma_1\concat\tau$ are members $\lang$ or both are not.
+
+The relation $\sim_{\lang}$ is reflexive
+because for any string $\sigma\in\kleenestar{\Sigma}\!$,
+where $\tau\in\kleenestar{\Sigma}$
+either both of $\sigma\concat\tau$ and  $\sigma\concat\tau$ are in the 
+language or both are not.
+
+To verify that the relation is symmetric assume that $\sigma_0\sim\sigma_1$.
+For any $\tau\in\kleenestar{\Sigma}\!$,
+either both of $\sigma_0\concat\tau$ and $\sigma_1\concat\tau$ 
+are in the language or both are not.
+That is equivalent to the statement that $\sigma_1\sim\sigma_0$.
+
+Finally, for transitivity assume that $\sigma_0\sim\sigma_1$ and 
+$\sigma_1\sim\sigma_2$.
+Let $\tau$ be a string.
+Either $\sigma_1\concat\tau\in\lang$ or not.
+If $\sigma_1\concat\tau\in\lang$ 
+then $\sigma_0\sim\sigma_1$ implies that $\sigma_0\concat\tau\in\lang$,
+and $\sigma_1\sim\sigma_2$ implies that $\sigma_2\concat\tau\in\lang$,
+and therefore both of $\sigma_0\concat\tau$ and  
+$\sigma_2\concat\tau$ are members of the language.
+Similarly if $\sigma_1\concat\tau\notin\lang$  
+then both of  both of $\sigma_0\concat\tau$ and  
+$\sigma_2\concat\tau$ are not members of the language.
+Consequently, $\sigma_0\sim_{\lang}\sigma_2$.
+\item By definition, $\sigma_0\sim_{\FSM}\sigma_1$ if 
+$\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$.
+The relation $\sim_{\FSM}$ is reflexive
+because
+$\extended{\Delta}(\sigma)=\extended{\Delta}(\sigma)$
+for any string $\sigma\in\kleenestar{\Sigma}\!$.
+
+To verify that the relation is symmetric, assume that 
+$\sigma_0\sim_{\FSM}\sigma_1$.
+Then $\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$
+and so by symmetry of equality, 
+$\extended{\Delta}(\sigma_1)=\extended{\Delta}(\sigma_0)$.
+Thus $\sigma_1\sim_{\FSM}\sigma_0$.
+
+For transitivity assume that $\sigma_0\sim_{\FSM}\sigma_1$ and 
+$\sigma_1\sim_{\FSM}\sigma_2$.
+The first gives $\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_1)$
+while the second gives
+$\extended{\Delta}(\sigma_1)=\extended{\Delta}(\sigma_2)$.
+Therefore
+$\extended{\Delta}(\sigma_0)=\extended{\Delta}(\sigma_2)$
+and $\sigma_0\sim_{\FSM}\sigma_2$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Generalize the first item in \cref{lem:MNPriorThm} to:~~if two strings 
+$\sigma_0,\sigma_1$ are $\lang$-related,
+$\sigma_0\sim_{\lang}\sigma_1$, then adjoining any common
+extension~$\beta$ gives strings that are related,
+$(\sigma_0\concat \beta)\sim_{\lang}(\sigma_1\concat \beta)$.
+\begin{answer}
+Assume that
+$\sigma_0$ and $\sigma_1$ are $\lang$-related.
+Then no extension~$\tau$ will $\lang$-distinguish the
+two, that is, it is not the case that one of
+$\sigma_0\concat\tau$ and $\sigma_1\concat\tau$
+is in $\lang$ while the other is not.
+Taking the special case that $\beta$ is a prefix of $\tau$, 
+so $\tau=\beta\concat\hat{\tau}$, gives that for the two strings
+$\sigma_0\concat \beta$ and $\sigma_1\concat \beta$,
+no extension~$\hat{\tau}$ will $\lang$-distinguish the two.
+So these two strings are also $\lang$-related.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show that the equivalence classes for the language~$\lang$ are the same as for
+the language that is its complement, $\setcomp{\lang}\!$.  
+\begin{answer}
+Two strings $\sigma_0,\sigma_1\kleenestar{\Sigma}$ 
+are $\lang$-indistinguishable if
+and only if for every extension~$\tau$, 
+either both of $\sigma_0\concat\tau$ and  $\sigma_0\concat\tau$
+are elements of $\lang$
+or both of them are elements of $\setcomp{\lang}\!$.
+That's equivalent to being  $\setcomp{\lang}$-indistinguishable.  
+\end{answer}
+\end{exercise}
+\end{exercises}
+\index{Myhill-Nerode theorem|)}
 
 
 

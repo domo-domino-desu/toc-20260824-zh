@@ -3722,5 +3722,48 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ===== Myhill-Nerode exercise: strings where every 0 is followed by 11 =======
+picture pic;
+int picnum = 73;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$",ns_accepting); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1, q2);
+vlayout(-1*v, q2, q3);
+
+// draw edges
+draw(pic,
+     (q0..bend(-20)..q1).l("\str{0}").style("leftside"),
+     (q0..loop(W)).l("\str{1}"),
+     (q1--q3).l("\str{0}").style("leftside"),
+     (q1..bend(-20)..q2).l("\str{1}").style("leftside"),
+     (q2..bend(-20)..q0).l("\str{1}").style("leftside"),
+     (q2--q3).l("\str{0}").style("leftside"),
+     (q3..loop(E)).l("\str{0},\str{1}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2,
+     q3
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 

@@ -11631,7 +11631,7 @@ The transition operation,
 $\map{\Delta}{E\times\Sigma}{E}$,
 is:~given input $\eclass_{\lang,i}$ and $x\in\Sigma$,
 choose a $\sigma$ in the class and  
-then $\sigma\concat x$ is an element of some class $\eclass_{\lang,j}$.
+then $\sigma\concat x$ is an element of some $\eclass_{\lang,j}$.
 Set $\Delta(\eclass_{\lang,i},x)=\eclass_{\lang,j}$.
 \end{definition}
 
@@ -11655,7 +11655,7 @@ does not give two different outputs.
     $\lang$-related,
     $(\sigma_0\concat x)\sim_{\lang}(\sigma_1\concat x)$.
     \label{lem:MNPriorThmTransitionWellDefined}
-  \item If one member \label{lem:MNPriorThmLangCount}
+  \item If one member \label{lem:MNPriorThmLangCount}  
     of a class % $\sigma_0\in\eclass_{\lang,i}$
     is an element of~$\lang$ then every other member
     of that class % $\sigma_1\in\eclass_{\lang,i}$ 
@@ -11702,7 +11702,10 @@ while if $\tau$ has at least one~\str{a} then both extensions are not members
 (because they have at least two \str{a}'s).
 It remains to show that if $\sigma_0\in\lang$ and $\sigma_1\notin\lang$ then
 they are not $\lang$-related.
-That's because they have a distinguishing extension of~\emptystring.
+That's because,
+as in 
+\cref{lem:MNPriorThm}'s \cref{lem:MNPriorThmLangCount},
+they have a distinguishing extension of~\emptystring.
 
 The final class contains all remaining strings, 
 $\eclass_{\lang,2}=\kleenestar{\Sigma}-(\eclass_{\lang,0}\union\eclass_{\lang,1})$.
@@ -11720,12 +11723,6 @@ that is not an element of~$\lang$, so there are no distinguishing extensions.
 
 We have this partition of the strings.
 \begin{equation*}
-  % \begin{array}{l}
-  %   \eclass_{\lang,0}=\set{\emptystring}  \\
-  %   \eclass_{\lang,1}=\set{\str{a},\str{ab},\str{abb},\ldots}  \\
-  %   \eclass_{\lang,2}=\set{\str{b},\str{aa},\str{ba},\str{bb},\ldots}  \\
-  % \end{array}
-  % \qquad
   % \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa64.pdf}}
     \eclass_{\lang,0}=\set{\emptystring}  \quad
     \eclass_{\lang,1}=\set{\str{a},\str{ab},\str{abb},\ldots}  \quad
@@ -11733,7 +11730,7 @@ We have this partition of the strings.
 \end{equation*}
 To compute the transitions, for each class choose one representative element,
 append each of \str{a} and \str{b},
-and find the resulting class.
+and find the resulting classes.
 Below we choose the one-character strings $\str{a}\in\eclass_{\lang,1}$ 
 and $\str{b}\in\eclass_{\lang,2}$.
 \begin{equation*}
@@ -11750,37 +11747,6 @@ and $\str{b}\in\eclass_{\lang,2}$.
   \end{array}
   \hspace*{4em}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa65.pdf}}
-\end{equation*}
-\end{example}
-
-\begin{example} \label{ex:MyhillNerodeNumOnesMultOfFour}
-Let 
-$\lang=\set{\sigma\in\kleenestar{\B}\suchthat\text{the number of \str{1}'s is a multiple of four}}$.  
-There are four equivalence classes: $\eclass_{\lang,0}$ contains the strings where
-the number of \str{1}'s is divisible by~$4$ without remainder,
-$\eclass_{\lang,1}$ contains the strings where the number of \str{1}'s 
-leaves a remainder of~$1$ on division by~$4$, etc.
-(The argument that these are the equivalence classes is an exercise.)
-
-Compute the transitions by choosing a representative element from each class,
-appending in turn each character of the alphabet,
-and finding the resulting class.
-\begin{equation*}
-  \begin{array}{r|rr}
-    \multicolumn{1}{r}{\Delta}
-      &\multicolumn{1}{c}{\str{0}}      &\multicolumn{1}{c}{\str{1}}  \\ 
-     \cline{2-3}
-    \acceptingstate\,\emptystring\in\eclass_{\lang,0}
-       &\str{0}\in\eclass_{\lang,1}  &\str{1}\in\eclass_{\lang,1}  \\
-    \str{1}\in\eclass_{\lang,1}
-       &\str{10}\in\eclass_{\lang,2}  &\str{11}\in\eclass_{\lang,2}  \\
-    \str{11}\in\eclass_{\lang,2}
-       &\str{110}\in\eclass_{\lang,2}  &\str{111}\in\eclass_{\lang,3} \\ 
-    \str{111}\in\eclass_{\lang,3}
-       &\str{1110}\in\eclass_{\lang,3}  &\str{1111}\in\eclass_{\lang,0}  
-  \end{array}
-  \hspace*{4em}
-  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa66.pdf}}
 \end{equation*}
 \end{example}
 
@@ -11854,6 +11820,69 @@ of $k$-many strings that all must end in different states.
 So any machine recognizing~$\lang$ must have at least that many states.  
 \end{proof}
 
+To analyze a language with the Myhill-Nerode theorem, the challenge lies 
+in finding the $\sim_{\lang}$ equivalence classes.
+One helpful point is that
+\cref{lem:MNPriorThm}'s part \ref{lem:MNPriorThmLangCount}
+says that while it may be that more than one class contains strings from~$\lang$,
+if a class contains even one such string then it consists entirely of them.
+Another point is that if the given language is recognized by some  
+Finite State machine then with our experience often
+we see how to build it. 
+That can give us insight into 
+the $\sim_{\FSM}$ classes, since
+\cref{lem:MRelatedImpliesLRelated} says that the $\sim_{\lang}$ classes
+are groupings of $\sim_{\FSM}$ classes.
+In particular, if the machine that we build
+is minimal then by \cref{lem:LMachineIsMinimal} 
+the $\sim_{\lang}$ classes equal the $\sim_{\FSM}$ classes.
+
+\begin{example} \label{ex:MyhillNerodeNumOnesMultOfFour}
+In this chapter's first section, \cref{ex:ModuloFourFSM} discusses 
+the language of strings $\sigma\in\kleenestar{\B}$ where
+the number of \str{1}'s is a multiple of four. 
+It recognizes~$\lang$ using this machine, which is clearly minimal.
+(We could prove that using the material of Extra~\ref{sec:Minimization}.)
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa06.pdf}
+\end{center}
+ 
+There are four $\FSM$~equivalence classes,
+$\eclass_{\FSM,0}=\set{\sigma\suchthat\extended{\Delta}(\sigma)=q_0}$,
+and
+$\eclass_{\FSM,1}=\set{\sigma\suchthat\extended{\Delta}(\sigma)=q_1}$, etc.
+They are also the
+$\lang$~equivalence classes, 
+$\eclass_{\FSM,0}=\eclass_{\FSM,0}$, etc.
+The class $\eclass_{\lang,0}$ contains the strings where
+the number of \str{1}'s is divisible by~$4$ without remainder,
+the class $\eclass_{\lang,1}$ contains the strings where the number of \str{1}'s 
+leaves a remainder of~$1$, etc.
+
+For the $\lang$-machine 
+compute the transitions by choosing a representative element from each class,
+appending in turn each character of the alphabet,
+and finding the resulting class.
+\begin{equation*}
+  \begin{array}{r|rr}
+    \multicolumn{1}{r}{\Delta}
+      &\multicolumn{1}{c}{\str{0}}      &\multicolumn{1}{c}{\str{1}}  \\ 
+     \cline{2-3}
+    \acceptingstate\,\emptystring\in\eclass_{\lang,0}
+       &\str{0}\in\eclass_{\lang,1}  &\str{1}\in\eclass_{\lang,1}  \\
+    \str{1}\in\eclass_{\lang,1}
+       &\str{10}\in\eclass_{\lang,2}  &\str{11}\in\eclass_{\lang,2}  \\
+    \str{11}\in\eclass_{\lang,2}
+       &\str{110}\in\eclass_{\lang,2}  &\str{111}\in\eclass_{\lang,3} \\ 
+    \str{111}\in\eclass_{\lang,3}
+       &\str{1110}\in\eclass_{\lang,3}  &\str{1111}\in\eclass_{\lang,0}  
+  \end{array}
+  \hspace*{4em}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa66.pdf}}
+\end{equation*}
+Of course, \citetext{the two machines are essentially the same}{%
+  The two machines are said to be `isomorphic'.}.
+\end{example}
 
 \medskip
 We finish with a reflection.
@@ -11875,19 +11904,7 @@ This is a deep kind of wizardry\Dash these problems are solved automatically.
 
 
 % ...............................
-\begin{exercises}[Some of these give a language~$\lang$ and
-ask for the set of $\sim_{\lang}$ equivalence classes.
-One hint is that
-\cref{lem:MNPriorThm}'s part \ref{lem:MNPriorThmLangCount}
-says that while it may be that more than one class contains strings from~$\lang$,
-if a class contains even one such string then it consists entirely of them.
-Another hint is that if the given language is recognized by some  
-Finite State machine then with our experience often
-we see how to build it and can understand the $\sim_{\FSM}$ classes.
-\cref{lem:MRelatedImpliesLRelated} says that the $\sim_{\lang}$ classes
-are groupings of $\sim_{\FSM}$ classes.
-In addition, if our machine is minimal then by \cref{lem:LMachineIsMinimal} 
-the $\sim_{\FSM}$ classes are the $\sim_{\lang}$ classes.]
+\begin{exercises}
 % https://cs.stackexchange.com/q/89689/78536
 
 % https://cs.stackexchange.com/a/136195/50343
@@ -12616,16 +12633,13 @@ $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
   \tag{$*$} \label{fig:MachinesWithRedundantStates}
 \end{equation*}
 Our experience in machine design is that we look to 
-articulate each state's role in 
+articulate the future of each state's in 
 helping the machine recognize the language.
-Here, the meaning of $q_2$,
-``have seen a \str{1} but still
-waiting for a~\str{0},''
+With this machine, the meaning of $q_2$,
+``waiting for a~\str{0},''
 and the meaning of $q_4$, 
-``have seen a \str{1} (and another~\str{1}) 
-but still waiting for a~\str{0},''  
-overlap because a second~\str{1}
-is not a requirement for membership in~$\lang$.
+``still waiting for a~\str{0},''  
+overlap.
 Similarly, $q_5$'s meaning is subsumed by~$q_3$'s.
 This machine has two pairs of redundant states.
 

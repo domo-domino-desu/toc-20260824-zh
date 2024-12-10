@@ -254,9 +254,9 @@ vlayout(v, q0, q3);
 
 // edges
 draw(pic,
-     (q0--q1).l("$\str{1}$"),
+     (q0--q1).l("$\str{1}$").style("leftside"),
      (q0..loop(W)).l("\str{0}"),
-     (q1--q2).l("$\str{1}$"),
+     (q1--q2).l("$\str{1}$").style("leftside"),
      (q1..loop(E)).l("\str{0}"),
      (q2--q3).l("$\str{1}$"),
      (q2..loop(E)).l("\str{0}"),

@@ -12621,10 +12621,12 @@ That's equivalent to being  $\setcomp{\lang}$-indistinguishable.
 
 % ...................................................
 \extra{Machine minimization}\index{minimization of a Finite State machine|(}\index{Finite State machine!minimization|(}\label{sec:Minimization}
-We will give an algorithm, Moore's algorithm,\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
+We will give an algorithm, Moore's algorithm\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
+(sometimes instead called the table-filling algorithm),\index{table-filling algorithm}
 that inputs a deterministic Finite State machine and outputs
-a deterministic machine with the fewest possible number of states
-that recognizes the same language.\footnote{%
+a deterministic machine that is minimal, that recognizes the same language 
+while having the fewest possible 
+number of states.\footnote{%
   This algorithm is easy to understand and is suitable for
   small calculations but if you are writing code then 
   be aware that another,
@@ -12640,90 +12642,109 @@ $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa17.pdf}}
   \tag{$*$} \label{fig:MachinesWithRedundantStates}
 \end{equation*}
-Our experience in machine design is that we look to 
-articulate the future of each state's in 
-helping the machine recognize the language.
-With this machine, the meaning of $q_2$,
+In this chapter's first section, \cref{rem:HowToDesignFSM} discussed
+designing Finite State machines by thinking of each
+state's future, as about anticipating inputs to come. 
+With an eye toward that, in this machine the meaning of $q_2$,
 ``waiting for a~\str{0},''
 and the meaning of $q_4$, 
 ``still waiting for a~\str{0},''  
-overlap.
+coincide.
+This machine has redundant states.
 Similarly, $q_5$'s meaning is subsumed by~$q_3$'s.
-This machine has two pairs of redundant states.
 
-Said another way, if the machine is in state~$q_2$ then it will accept
-its input if and only if the string remaining on the tape contains at 
-least one~\str{0}.
-The state~$q_4$ is in exactly the same position.
-We might say that these states
-have the same future.
-% This table lists what happens if the machine on the right
-% is now in state~$q_2$ or~$q_4$, and is then fed the
-% given string.
-% An entry says `A' if running the machine will end in an accepting state
-% and `R' otherwise. 
-% The two states $q_2$ and~$q_4$ behave the same;~if 
-% $\sigma$ contains a~\str{0} then both states give~A,
-% otherwise both give R.
-% \begin{center}\small
-%   \begin{tabular}{r|*{10}{c}c}
-%     \multicolumn{1}{r|}{$\sigma$} 
-%       &\multicolumn{1}{c}{$\varepsilon$} 
-%       &\multicolumn{1}{c}{\str{0}}
-%       &\multicolumn{1}{c}{\str{1}}
-%       &\multicolumn{1}{c}{\str{00}}
-%       &\multicolumn{1}{c}{\str{01}}
-%       &\multicolumn{1}{c}{\str{10}}
-%       &\multicolumn{1}{c}{\str{11}}
-%       &\multicolumn{1}{c}{\str{000}}  
-%       &\multicolumn{1}{c}{\str{001}}  
-%       &\multicolumn{1}{c}{\str{010}}  
-%       &\multicolumn{1}{c}{\ldots}  
-%     \\ \cline{2-12}
-%     $q_2$ &R &A &R &A &A &A &R &A &A &A &\ldots \\
-%     $q_4$ &R &A &R &A &A &A &R &A &A &A &\ldots \\
-%   \end{tabular}
-% \end{center}
-Likewise, $q_3$ and~$q_5$ have the same future, that any string at all
-on the tape will result in an accepting state.
+% As a contrast, $q_0$ and~$q_2$ are not redundant because if we 
+% start the machine in those states with the string
+% $\sigma=\str{0}$ on the tape then for the first the machine rejects,
+% while for the second the machine accepts.
 
-As a contrast, $q_0$ and~$q_2$ are not redundant because if we give the string
-$\sigma=\str{0}$ to those two states then for the first the machine rejects,
-while for the second the machine accepts.
+To be more concrete,
+this table lists what happens if the machine 
+is started in the given state and the
+given string is on the tape.
+Entries say `+' 
+if the machine then ends in an accepting state,
+and otherwise are blank. 
+The two states $q_2$ and~$q_4$ have the same rows, at least for the strings
+listed, as do the two states $q_3$ and~$q_5$. 
+\begin{equation*}\small
+  \begin{tabular}{r|*{7}{c}c}
+    \multicolumn{1}{r}{\ } 
+      &\multicolumn{1}{c}{$\varepsilon$} 
+      &\multicolumn{1}{c}{\str{0}}
+      &\multicolumn{1}{c}{\str{1}}
+      &\multicolumn{1}{c}{\str{00}}
+      &\multicolumn{1}{c}{\str{01}}
+      &\multicolumn{1}{c}{\str{10}}
+      &\multicolumn{1}{c}{\str{11}}
+      &\multicolumn{1}{c}{\ldots}  
+    \\ \cline{2-9}
+    $q_0$ &  &  &  &  &+ &+ &  &\ldots \\
+    $q_1$ &  &  &+ &  &+ &+ &+ &\ldots \\
+    $q_2$ &  &+ &  &+ &+ &+ &  &\ldots \\
+    $q_3$ &+ &+ &+ &+ &+ &+ &+ &\ldots \\
+    $q_4$ &  &+ &  &+ &+ &+ &  &\ldots \\
+    $q_5$ &+ &+ &+ &+ &+ &+ &+ &\ldots \\
+  \end{tabular}
+  \tag{$**$} \label{ex:MinimizationInitial}
+  % \begin{tabular}{r|*{10}{c}c}
+  %   \multicolumn{1}{r}{\ } 
+  %     &\multicolumn{1}{c}{$\varepsilon$} 
+  %     &\multicolumn{1}{c}{\str{0}}
+  %     &\multicolumn{1}{c}{\str{1}}
+  %     &\multicolumn{1}{c}{\str{00}}
+  %     &\multicolumn{1}{c}{\str{01}}
+  %     &\multicolumn{1}{c}{\str{10}}
+  %     &\multicolumn{1}{c}{\str{11}}
+  %     &\multicolumn{1}{c}{\str{000}}  
+  %     &\multicolumn{1}{c}{\str{001}}  
+  %     &\multicolumn{1}{c}{\str{010}}  
+  %     &\multicolumn{1}{c}{\ldots}  
+  %   \\ \cline{2-12}
+  %   $q_0$ &  &  &  &  &+ &+ &  &  &+ &+ &\ldots \\
+  %   $q_1$ &  &  &+ &  &+ &+ &+ &  &+ &+ &\ldots \\
+  %   $q_2$ &  &+ &  &+ &+ &+ &  &+ &+ &+ &\ldots \\
+  %   $q_3$ &+ &+ &+ &+ &+ &+ &+ &+ &+ &+ &\ldots \\
+  %   $q_4$ &  &+ &  &+ &+ &+ &  &+ &+ &+ &\ldots \\
+  %   $q_5$ &+ &+ &+ &+ &+ &+ &+ &+ &+ &+ &\ldots \\
+  % \end{tabular}
+\end{equation*}
+In contrast, $q_0$ does not have the same row as any other state,
+nor does $q_1$.
 
 \begin{definition}\label{def:distinguishable}
-In a Finite State machine over $\Sigma$, the states $q$ and~$\hat{q}$ are
+Fix a Finite State machine over an alphabet $\Sigma$. 
+For two states $q$ and~$\hat{q}$, a $\sigma\in\kleenestar{\Sigma}$ 
+is a \definend{distinguishing string}
+if starting the machine in $q$ with $\sigma$ on the tape
+and starting it in $\hat{q}$ with $\sigma$ on the tape results
+in two different outcomes:~in one case the machine ends in an
+accepting state while in the other it rejects. 
+Two states for which there is a distinguishing string are 
+\definend{distinguishable},\index{distinguishable states}\index{states!distinguishable}
+otherwise they are
 \definend{indistinguishable},\index{indistinguishable states}\index{states!indistinguishable} 
 written \definend{$q\sim\hat{q}$},
-if for all strings $\sigma\in\kleenestar{\Sigma}\!$,
-the same outcome results from 
-starting the machine in state~$q$ with~$\sigma$ on the tape
-and starting it in~$\hat{q}$ with~$\sigma$ on the tape:~either 
-for both the machine ends in an accepting
-state or for both it ends in a rejecting state.
-States that are not indistinguishable are 
-\definend{distinguishable}.\index{distinguishable states}\index{states!distinguishable}
 \end{definition}
 
+States that are indistinguishable are redundant.
 We will compute whether states are indistinguishable by checking whether they 
 are distinguished by strings of length~$0$, 
 or by strings of length~$1$, etc.
-% Fix a Finite State machine over an alphabet~$\Sigma$
-% and a length $n\in\N$.
 Two states $q$ and~$\hat{q}$
 are \definend{$n$-indistinguishable}, 
 \definend{$q\sim_{n}\hat{q}$},\index{n indistinguishable states@$n$-indistinguishable states}\index{states!n indistinguishable@$n$-indistinguishable}
-if for every $\sigma$ of length at most~$n$,
-starting the machine in $q$ with~$\sigma$ on the tape
-and starting it in~$\hat{q}$ with~$\sigma$
-gives the same outcome, that either both result in an 
-accepting state or both result in a rejecting state.
-Otherwise, $q$ and~$\hat{q}$ are
+if there is no distinguishing string of length at most~$n$.
+If there is such a string then they are
 \definend{$n$-distinguishable}.\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
+
+Observe that a pair $q$ and~$\hat{q}$
+are $0$-indistinguishable if and only if both are accepting states or
+both are rejecting states.
 
 \begin{example} \label{ex:MachinesWithMinNoStates}
 Consider this machine's $r_0$ and $r_2$,
-with the length one string $\sigma=\str{0}$.
+and the length one string $\sigma=\str{0}$.
 \begin{equation*} 
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
   % \tag{$**$}
@@ -12737,75 +12758,71 @@ So $r_0$ and~$r_2$ are $1$-distinguishable,
 and therefore distinguishable.
 \end{example}
 
-Observe that two
-states are $0$-indistinguishable if both are accepting states or
-if both are rejecting states.
+% \begin{example} \label{ex:MinimizationInitial}
+% For the machine in (\ref{fig:MachinesWithRedundantStates}) above,
+% this gives the result of starting in each state and processing
+% each string of length~$0$, of length~$1$, and of length~$2$.
+% \begin{equation*}\small
+%   \begin{array}{r|c @{\hspace{2.25em}} cc @{\hspace{2.25em}} cccc}
+%     \multicolumn{1}{r}{\ }
+%            &\emptystring  
+%            &\str{0}           
+%            &\str{1}           
+%            &\str{00}           
+%            &\str{01}           
+%            &\str{10}           
+%            &\str{11}           
+%             \\ \cline{2-8}
+%     q_0  &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
+%     q_1  &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
+%     q_2  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
+%     q_3  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
+%     q_4  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
+%     q_5  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\      
+%   \end{array}
+%   % \tag{$**$}
+% \end{equation*}
+% The initial column simply $0$-distinguishes the class of
+% rejecting states, $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$, 
+% from the class of accepting states,  
+% $\eclass_{0,1}=\set{q_3,q_5}$.
 
-\begin{example} \label{ex:MinimizationInitial}
-For the machine in (\ref{fig:MachinesWithRedundantStates}) above,
-this gives the result of starting in each state and processing
-each string of length~$0$, of length~$1$, and of length~$2$.
-\begin{equation*}\small
-  \begin{array}{r|c @{\hspace{2.25em}} cc @{\hspace{2.25em}} cccc}
-    \multicolumn{1}{r}{\ }
-           &\emptystring  
-           &\str{0}           
-           &\str{1}           
-           &\str{00}           
-           &\str{01}           
-           &\str{10}           
-           &\str{11}           
-            \\ \cline{2-8}
-    q_0  &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
-    q_1  &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
-    q_2  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
-    q_3  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
-    q_4  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
-    q_5  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\      
-  \end{array}
-  % \tag{$**$}
-\end{equation*}
-The initial column simply $0$-distinguishes the class of
-rejecting states, $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$, 
-from the class of accepting states,  
-$\eclass_{0,1}=\set{q_3,q_5}$.
+% The columns for the two length~$1$ strings
+% show all of the possibilities.
+% For $q_0$ the columns say R and~R,
+% for $q_1$ they say R and~A,
+% both $q_2$ and~$q_4$ show A and~R,
+% and both $q_3$ and~$q_5$  show A and~A. 
+% So there are four classes for 
+% $1$-indistinguishability: $\eclass_{1,0}=\set{q_0}$,
+% $\eclass_{1,1}=\set{q_1}$, 
+% $\eclass_{1,2}=\set{q_2,q_4}$, 
+% and $\eclass_{1,3}=\set{q_3,q_5}$.
+% Note that the prior paragraph's
+% class $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$ has split into three classes,
+% $\eclass_{1,0}$ and $\eclass_{1,1}$ and~$\eclass_{1,2}$.
+% The other $0$-distinguishability class, $\eclass_{0,1}=\set{q_3,q_5}$, 
+% did not split.
 
-The columns for the two length~$1$ strings
-show all of the possibilities.
-For $q_0$ the columns say R and~R,
-for $q_1$ they say R and~A,
-both $q_2$ and~$q_4$ show A and~R,
-and both $q_3$ and~$q_5$  show A and~A. 
-So there are four classes for 
-$1$-indistinguishability: $\eclass_{1,0}=\set{q_0}$,
-$\eclass_{1,1}=\set{q_1}$, 
-$\eclass_{1,2}=\set{q_2,q_4}$, 
-and $\eclass_{1,3}=\set{q_3,q_5}$.
-Note that the prior paragraph's
-class $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$ has split into three classes,
-$\eclass_{1,0}$ and $\eclass_{1,1}$ and~$\eclass_{1,2}$.
-The other $0$-distinguishability class, $\eclass_{0,1}=\set{q_3,q_5}$, 
-did not split.
-
-Next, the length~$2$ strings.
-One-element classes can't split so
-the only classes to consider are $\eclass_{1,2}=\set{q_2,q_4}$, 
-and $\eclass_{1,3}=\set{q_3,q_5}$. 
-Both $q_2$ and~$q_4$ have columns saying
-\mbox{A,A,A,R},
-while both $q_3$ and~$q_5$ have
-\mbox{A,A,A,A}.
-Going to these longer strings   
-does not further divide the classes.
-\end{example}
+% Next, the length~$2$ strings.
+% One-element classes can't split so
+% the only classes to consider are $\eclass_{1,2}=\set{q_2,q_4}$, 
+% and $\eclass_{1,3}=\set{q_3,q_5}$. 
+% Both $q_2$ and~$q_4$ have columns saying
+% \mbox{A,A,A,R},
+% while both $q_3$ and~$q_5$ have
+% \mbox{A,A,A,A}.
+% Going to these longer strings   
+% does not further divide the classes.
+% \end{example}
 
 
 \begin{lemma} \label{lemma:StateEquivIsEquivRel}
-  The relations $\sim_0$, $\sim_1$, \ldots{} and $\sim$
-  are equivalences.
-  As such, they partition a machine's states into
-  the  
-  \definend{$0$-distinguishable classes},\index{n-distinguishable classes@$n$-distinguishable classes}
+  The relations $\sim_0$, $\sim_1$, \ldots{}
+  are equivalences, as is $\sim$, and so
+  partitions the states into
+  equivalences classes,
+  the \definend{$0$-distinguishable classes},\index{n-distinguishable classes@$n$-distinguishable classes}
   the \definend{$1$-distinguishable classes},
   \ldots{}
   along with the \definend{distinguishable classes}.\index{distinguishable classes}
@@ -12816,8 +12833,9 @@ does not further divide the classes.
 \end{proof}
 
 \begin{example}
-Here are the equivalence classes from the above example 
-about~(\ref{fig:MachinesWithRedundantStates}).
+Here are the equivalence classes from the 
+machine~(\ref{fig:MachinesWithRedundantStates}), using the information in the
+table~(\ref{ex:MinimizationInitial}).
 \begin{equation*}
   \begin{array}{r|l}
   \multicolumn{1}{c}{n}
@@ -12847,108 +12865,84 @@ about~(\ref{fig:MachinesWithRedundantStates}).
   \eclass_{2,3}=\set{q_3,q_5}
   \end{array}
 \end{equation*}
-We have earlier spotted that $q_2$ and~$q_4$ are redundant.
-Notice that all three lines in this table have them together in their class. 
-The same is true for $q_3$ and~$q_5$.
+The $0$-distinguishable classes separate 
+rejecting states from the accepting ones.
+
+The $1$-distinguishable classes subdivide those,
+based on the length one strings.
+Specifically, starting with $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$,
+we can next distinguish $q_0$ from~$q_1$ because they
+differ on the string \str{1}.
+Also, $q_0$ differs from $q_2$ and~$q_4$ on the string~\str{0},
+as does~$q_2$.
+So where there was one class there are now three,
+$\eclass_{1,0}=\set{q_0}$,
+$\eclass_{1,1}=\set{q_1}$, 
+and $\eclass_{1,2}=\set{q_2,q_4}$. 
+
+At the next stage, using the length two strings
+the $2$-distinguishability classes do not find 
+any way to subdivide.
+Obviously the singleton sets cannot split. 
+We have earlier spotted that $q_2$ and~$q_4$ are redundant, and their two
+rows are equal. 
+The same holds for the pair of states $q_3$ and~$q_5$.
 \end{example}
 
 Moore's algorithm is:~given a machine, 
 find the $\sim_0$ classes, 
 then the $\sim_1$ classes, etc.,
 until the classes stop splitting.
-The remaining classes are the $\sim$~classes,
-and they serve as the states of the minimal machine.
+What remains are the $\sim$~classes,
+and they serve as states of a minimal machine.
 
-There is just one difficulty to overcome.
-As presented in \cref{ex:MinimizationInitial},
-at each stage we considered all length~$n$ string inputs.
-Of course there are $2^n$-many such inputs to check,
-which would take a long time.
-Moore's algorithm 
-reduces the number of things to check.
+There is one difficulty.
+In the prior example,
+at each stage we checked all length~$n$ string inputs,
+which is exponentially many inputs.
+Moore's algorithm reduces the number of things to check.
 
-For that,
-consider two states $q$ and~$\hat{q}$ that are not
+Consider two states $q$ and~$\hat{q}$ that are not
 $n$-distinguishable but that are $n+1$-distinguishable.
-Let them be distinguished by the length~$n+1$ string, 
-% $\sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$, 
+Let a distinguishing string be 
+$\sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$, 
 which we can 
 write as $\sigma=\tau\concat s_n$.
-Because $q$ and~$\hat{q}$ are not $n$-distinguishable,
+The key point is that
+because $q$ and~$\hat{q}$ are not $n$-distinguishable,
 where $\tau$ brings the machine from $q$ to some state~$r$
 and also brings the machine from $\hat{q}$ to some~$\hat{r}$,
-then $r$ and~$\hat{r}$ are in the same $n$-equivalence
-class,~$\eclass_{n,i}$.
-Therefore, the distinguishing between these two states
-must happen with $\sigma$'s final character,~$s_n$.
+then $r$ and~$\hat{r}$ are equivalent, $r,\hat{r}\in\eclass_{n,i}$.
+Therefore, distinguishing between $q$ and $\hat{q}$
+must happen with the final character,~$s_n$.
 It must take the machine from state~$r$ to a state in one 
 class,~$\eclass_{n+1,j}$, 
 and also take the machine from~$\hat{r}$ to 
-a state in a different class,~$\eclass_{n+1,\hat{j}}\,$.
-In short, if there is going to be a split in passing from the 
+a state in a different class,~$\eclass_{n+1,\hat{j}}$.
+In short, in looking for a split in passing from the 
 $n$-distinguishability classes
-to the $n+1$-distinguishability classes 
-then a single character suffices to produce such a split.
+to the $n+1$-distinguishability classes, 
+we need only look at single characters.
 
-% So consider again the machine on the right in ($*$).
-% Its $\sim_1$ classes are 
-% $\eclass_{1,0}=\set{q_0}$, 
-% $\eclass_{1,1}=\set{q_1}$, 
-% $\eclass_{1,2}=\set{q_2,q_4}$, 
-% and~$\eclass_{1,3}=\set{q_3,q_5}$.
-% We already know that there will be no  
-% additional splitting in going to the $\sim_2$ classes, 
-% but we will illustrate how the algorithm checks this. 
-% We feed single characters to the states in the $\sim_1$~classes
-% and see if those classes split.
-% This is a considerable speedup over checking all possible strings.
-% (And singleton classes cannot split so we need only test classes with 
-% more than one member,
-% $\eclass_{1,2}$ and $\eclass_{1,3}$.)
-% \begin{center}
-%   \begin{tabular}{r|cc}
-%     \multicolumn{1}{r}{$\eclass_{1,2}$}
-%          &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}} \\
-%     \cline{2-3}
-%     $q_2$    &$q_3\in\eclass_{1,3}$ &$q_4\in\eclass_{1,2}$      \\
-%     $q_4$    &$q_5\in\eclass_{1,3}$ &$q_4\in\eclass_{1,2}$      
-%   \end{tabular}
-%   \qquad  
-%   \begin{tabular}{r|cc}
-%     \multicolumn{1}{r}{$\eclass_{1,3}$}
-%          &\multicolumn{1}{c}{\str{0}}  &\multicolumn{1}{c}{\str{1}} \\
-%     \cline{2-3}
-%     $q_3$   &$q_3\in\eclass_{1,3}$ &$q_5\in\eclass_{1,3}$    \\
-%     $q_5$   &$q_5\in\eclass_{1,3}$ &$q_5\in\eclass_{1,3}$    
-%   \end{tabular}
-% \end{center}
-% The $\eclass_{1,2}$ table shows both $q_2$ and~$q_4$ 
-% going to $\eclass_{1,3},\eclass_{1,2}$
-% so there is no split there.
-% The $\eclass_{1,3}$ likewise shows no split.
-% So they will never split and algorithm stops\Dash the 
-% $\sim_1$ classes equal the $\sim_2$ classes, \ldots{},
-% which equal the $\sim$ classes.
-
-Moore's algorithm leverages this reasoning.
-We will describe it in the next two examples.
-These also show how to use the $\sim$~classes to make 
-a minimal machine.
+Moore's algorithm leverages this.
+The next two examples describe
+and also show how to use the $\sim$~classes to make 
+minimal machines.
 
 \begin{example}  \label{ex:FirstMinimization}
   We will find a machine that recognizes the same language as this one but
-  that has a minimum number of states.
+  that is minimal.
   \begin{center}
     \includegraphics{automata/asy/min/min03.pdf}
   \end{center}
   For bookkeeping we will use triangular tables. 
   These
-  have an entry for every pair of different states $q_i$ and~$q_j$.
+  have an entry for every pair of different states.
   Checkmarks will show pairs that are distinguishable.
   From step to step in the computation we fill in more marks,
   first doing $0$-distinguishibility,
   then refining it to $1$-distinguishibility, etc.
-  We are done when we reach a step where the table does not change. 
+  When we reach a step where the table does not change then we are done. 
 
   Start by checkmarking the $i,j$~entries that are 
   $0$-distinguishable,
@@ -12972,8 +12966,12 @@ a minimal machine.
    % Blank entries in this initial table 
    % mark state pairs that are $0$-indistinguishable.
    % For instance, $q_1$ and~$q_2$ are $0$-indistinguishable.
-   By eye we can read off the $\sim_{0}$-equivalence classes:~the
-   blank boxes show a cluster for $q_0$, $q_3$, and~$q_4$, for instance. 
+   We can read off the $\sim_{0}$-equivalence classes.
+   For instance, there are
+   blank boxes in entries $0,3$ and $0,4$ and~$3,4$ 
+   and this cluster is the first equivalence class, because the blankness
+   means that these are mutually $1$-indistinguishable.
+   Similarly there is a cluster of blank entries in $1,2$ and $1,5$ and~$2,5$. 
    \begin{equation*}
      \eclass_{0,0} =\set{q_0,q_3,q_4}
      \qquad
@@ -12996,22 +12994,43 @@ a minimal machine.
                   &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}  \\
       \cline{2-5}
-      $q_0,q_3$  &$q_1,q_5$   &$q_2,q_5$  
-             &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
-      $q_0,q_4$  &$q_1,q_5$      &$q_2,q_5$  
-             &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
-      $q_3,q_4$  &$q_5,q_5$       &$q_5,q_5$                              
-             &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
+      $q_0,q_3$  &$q_1\in\eclass_{0,1},q_5\in\eclass_{0,1}$   
+                 &$q_2\in\eclass_{0,1},q_5\in\eclass_{0,1}$      \\ 
+      $q_0,q_4$  &$q_1\in\eclass_{0,1},q_5\in\eclass_{0,1}$      
+                &$q_2\in\eclass_{0,1},q_5\in\eclass_{0,1}$       \\ 
+      $q_3,q_4$  &$q_5\in\eclass_{0,1},q_5\in\eclass_{0,1}$       
+                &$q_5\in\eclass_{0,1},q_5\in\eclass_{0,1}$       \\ 
       \cline{2-5}       
-      $q_1,q_2$  &$q_3,q_4$                    &$q_4,q_3$  
-             &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_1,q_5$}  &$q_3,q_5$     &$q_4,q_5$   
-             &$\eclass_{0,0},\eclass_{0,1}$     &$\eclass_{0,0},\eclass_{0,1}$ \\
-      \splitclasses{$q_2,q_5$}  &$q_4,q_5$     &$q_3,q_5$   
-             &$\eclass_{0,0},\eclass_{0,1}$     &$\eclass_{0,0},\eclass_{0,1}$ \\
+      $q_1,q_2$  &$q_3\in\eclass_{0,0},q_4\in\eclass_{0,0}$    
+                &$q_4\in\eclass_{0,0},q_3\in\eclass_{0,0}$       \\ 
+      $q_1,q_5$  &$q_3\in\eclass_{0,0},q_5\in\eclass_{0,1}$     
+                &$q_4\in\eclass_{0,0},q_5\in\eclass_{0,1}$       \\  
+      $q_2,q_5$  &$q_4\in\eclass_{0,0},q_5\in\eclass_{0,1}$     
+                &$q_3\in\eclass_{0,0},q_5\in\eclass_{0,1}$   
     \end{tabular}
+    % \begin{tabular}{r|ll|ll}
+    %   \multicolumn{1}{c}{\ }
+    %               &\multicolumn{1}{c}{\str{a}}
+    %               &\multicolumn{1}{c}{\str{b}} 
+    %               &\multicolumn{1}{c}{\str{a}}
+    %               &\multicolumn{1}{c}{\str{b}}  \\
+    %   \cline{2-5}
+    %   $q_0,q_3$  &$q_1,q_5$   &$q_2,q_5$  
+    %          &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
+    %   $q_0,q_4$  &$q_1,q_5$      &$q_2,q_5$  
+    %          &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
+    %   $q_3,q_4$  &$q_5,q_5$       &$q_5,q_5$                              
+    %          &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
+    %   \cline{2-5}       
+    %   $q_1,q_2$  &$q_3,q_4$                    &$q_4,q_3$  
+    %          &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,0},\eclass_{0,0}$  \\
+    %   $q_1,q_5$  &$q_3,q_5$     &$q_4,q_5$   
+    %          &$\eclass_{0,0},\eclass_{0,1}$     &$\eclass_{0,0},\eclass_{0,1}$ \\
+    %   $q_2,q_5$  &$q_4,q_5$     &$q_3,q_5$   
+    %          &$\eclass_{0,0},\eclass_{0,1}$     &$\eclass_{0,0},\eclass_{0,1}$ \\
+    % \end{tabular}
   \end{center} 
-  For instance, in the $q_1,q_5$ line, 
+  In the $q_1,q_5$ line, 
   we have that \str{a} takes $q_1$ to $q_3\in\eclass_{0,0}$ and
   takes $q_5$ to $q_5\in\eclass_{0,1}$. 
   Those classes are different.
@@ -13206,9 +13225,9 @@ a minimal machine.
                   &\multicolumn{1}{c}{\str{0}}
                   &\multicolumn{1}{c}{\str{1}}  \\
       \cline{2-5}
-      \splitclasses{$q_0,q_1$}  &$q_1,q_2$  &$q_2,q_3$ 
+      $q_0,q_1$  &$q_1,q_2$  &$q_2,q_3$ 
              &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_0,q_2$}  &$q_1,q_2$  &$q_2,q_4$ 
+      $q_0,q_2$  &$q_1,q_2$  &$q_2,q_4$ 
              &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,0},\eclass_{0,1}$  \\
       $q_1,q_2$  &$q_2,q_2$  &$q_3,q_4$
              &$\eclass_{0,0},\eclass_{0,0}$     &$\eclass_{0,1},\eclass_{0,1}$  \\
@@ -13660,17 +13679,17 @@ from the machine you compute this table.
                 &\multicolumn{1}{c}{\str{a}}
                 &\multicolumn{1}{c}{\str{b}}  \\
     \cline{2-5}
-    \splitclasses{$q_0,q_1$}  &$q_1,q_1$                    &$q_2,q_3$  
+    $q_0,q_1$  &$q_1,q_1$                    &$q_2,q_3$  
            &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-    \splitclasses{$q_0,q_2$}  &$q_1,q_2$                    &$q_2,q_4$  
+    $q_0,q_2$  &$q_1,q_2$                    &$q_2,q_4$  
            &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
     $q_0,q_5$  &$q_1,q_5$                    &$q_2,q_5$  
            &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
     $q_1,q_2$  &$q_1,q_2$                    &$q_3,q_4$  
            &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
-    \splitclasses{$q_1,q_5$}  &$q_1,q_5$                    &$q_3,q_5$  
+    $q_1,q_5$  &$q_1,q_5$                    &$q_3,q_5$  
            &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,0}$  \\
-    \splitclasses{$q_2,q_5$}  &$q_2,q_5$                    &$q_4,q_5$  
+    $q_2,q_5$  &$q_2,q_5$                    &$q_4,q_5$  
            &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,0}$  \\
     \cline{2-5}
     $q_3,q_4$  &$q_3,q_4$                    &$q_5,q_5$  
@@ -13861,15 +13880,15 @@ page~\pageref{fig:MachinesWithMinAndNoMinStates}.
                   &\multicolumn{1}{c}{\str{0}}
                   &\multicolumn{1}{c}{\str{1}}  \\
       \cline{2-5}
-      \splitclasses{$q_0,q_1$}  &$q_1,q_1$                    &$q_2,q_3$  
+      $q_0,q_1$  &$q_1,q_1$                    &$q_2,q_3$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_0,q_2$}  &$q_1,q_3$                    &$q_2,q_4$  
+      $q_0,q_2$  &$q_1,q_3$                    &$q_2,q_4$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_0,q_4$}  &$q_1,q_5$                    &$q_2,q_4$  
+      $q_0,q_4$  &$q_1,q_5$                    &$q_2,q_4$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_1,q_2$}  &$q_1,q_3$                    &$q_3,q_4$  
+      $q_1,q_2$  &$q_1,q_3$                    &$q_3,q_4$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,0}$  \\
-      \splitclasses{$q_1,q_4$}  &$q_1,q_5$                    &$q_3,q_4$  
+      $q_1,q_4$  &$q_1,q_5$                    &$q_3,q_4$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,0}$  \\
       $q_2,q_4$  &$q_3,q_5$                    &$q_4,q_4$  
              &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
@@ -14027,17 +14046,17 @@ showing the work.
                   &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}  \\
       \cline{2-5}
-      \splitclasses{$q_1,q_3$}  &$q_4,q_0$                    &$q_2,q_4$  
+      $q_1,q_3$  &$q_4,q_0$                    &$q_2,q_4$  
              &$\eclass_{0,1},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_1,q_4$}  &$q_4,q_4$                    &$q_2,q_4$  
+      $q_1,q_4$  &$q_4,q_4$                    &$q_2,q_4$  
              &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_1,q_5$}  &$q_4,q_2$                    &$q_2,q_4$  
+      $q_1,q_5$  &$q_4,q_2$                    &$q_2,q_4$  
              &$\eclass_{0,1},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_3,q_4$}  &$q_0,q_4$                    &$q_4,q_4$  
+      $q_3,q_4$  &$q_0,q_4$                    &$q_4,q_4$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
       $q_3,q_5$  &$q_0,q_2$                    &$q_4,q_4$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
-      \splitclasses{$q_4,q_5$}  &$q_4,q_2$                    &$q_4,q_4$  
+      $q_4,q_5$  &$q_4,q_2$                    &$q_4,q_4$  
              &$\eclass_{0,1},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
       \cline{2-5}
       $q_0,q_2$  &$q_1,q_1$                    &$q_3,q_5$  
@@ -14179,14 +14198,14 @@ Minimize this machine.
                   &\multicolumn{1}{c}{\str{0}}
                   &\multicolumn{1}{c}{\str{1}}  \\
       \cline{2-5}
-      \splitclasses{$q_0,q_1$}  &$q_1,q_2$                    &$q_3,q_4$  
+      $q_0,q_1$  &$q_1,q_2$                    &$q_3,q_4$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_0,q_3$}  &$q_1,q_2$                    &$q_3,q_4$  
+      $q_0,q_3$  &$q_1,q_2$                    &$q_3,q_4$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
       $q_1,q_3$  &$q_2,q_2$                    &$q_4,q_4$  
              &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
       \cline{2-5}
-      \splitclasses{$q_2,q_4$}  &$q_1,q_4$                    &$q_4,q_4$  
+      $q_2,q_4$  &$q_1,q_4$                    &$q_4,q_4$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
     \end{tabular}
     \hspace{3em}
@@ -14225,7 +14244,7 @@ Minimize this machine.
                   &\multicolumn{1}{c}{\str{0}}
                   &\multicolumn{1}{c}{\str{1}}  \\
       \cline{2-5}
-      \splitclasses{$q_1,q_3$}  &$q_1,q_2$                    &$q_3,q_4$  
+      $q_1,q_3$  &$q_1,q_2$                    &$q_3,q_4$  
              &$\eclass_{1,1},\eclass_{1,2}$    &$\eclass_{1,1},\eclass_{1,3}$  \\
     \end{tabular}
     \hspace{3em}
@@ -14302,17 +14321,17 @@ Show the work, including producing the diagram of the minimized machine.
                   &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}  \\
       \cline{2-5}
-      \splitclasses{$q_0,q_1$}  &$q_1,q_1$                    &$q_2,q_3$  
+      $q_0,q_1$  &$q_1,q_1$                    &$q_2,q_3$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_0,q_2$}  &$q_1,q_2$                    &$q_2,q_4$  
+      $q_0,q_2$  &$q_1,q_2$                    &$q_2,q_4$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
       $q_0,q_5$  &$q_1,q_5$                    &$q_2,q_5$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
       $q_1,q_2$  &$q_1,q_2$                    &$q_3,q_4$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
-      \splitclasses{$q_1,q_5$}  &$q_1,q_5$                    &$q_3,q_5$  
+      $q_1,q_5$  &$q_1,q_5$                    &$q_3,q_5$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,0}$  \\
-      \splitclasses{$q_2,q_5$}  &$q_2,q_5$                    &$q_4,q_5$  
+      $q_2,q_5$  &$q_2,q_5$                    &$q_4,q_5$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,0}$  \\
       \cline{2-5}
       $q_3,q_4$  &$q_3,q_4$                    &$q_5,q_5$  
@@ -14353,7 +14372,7 @@ Show the work, including producing the diagram of the minimized machine.
                   &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}  \\
       \cline{2-5}
-      \splitclasses{$q_0,q_5$}  &$q_1,q_5$                    &$q_2,q_5$  
+      $q_0,q_5$  &$q_1,q_5$                    &$q_2,q_5$  
              &$\eclass_{1,1},\eclass_{1,0}$    &$\eclass_{1,1},\eclass_{1,0}$  \\
       $q_1,q_2$  &$q_1,q_2$                    &$q_3,q_4$  
              &$\eclass_{1,1},\eclass_{1,1}$    &$\eclass_{1,2},\eclass_{1,2}$  \\
@@ -14565,20 +14584,20 @@ Minimize this machine.
                   &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}  \\
       \cline{2-5}
-      \splitclasses{$q_0,q_2$}  &$q_1,q_1$                    &$q_0,q_4$  
+      $q_0,q_2$  &$q_1,q_1$                    &$q_0,q_4$  
              &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_0,q_3$}  &$q_1,q_5$                    &$q_0,q_2$  
+      $q_0,q_3$  &$q_1,q_5$                    &$q_0,q_2$  
              &$\eclass_{0,1},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_0,q_5$}  &$q_1,q_4$                    &$q_0,q_1$  
+      $q_0,q_5$  &$q_1,q_4$                    &$q_0,q_1$  
              &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
-      \splitclasses{$q_2,q_3$}  &$q_1,q_5$                    &$q_4,q_2$  
+      $q_2,q_3$  &$q_1,q_5$                    &$q_4,q_2$  
              &$\eclass_{0,1},\eclass_{0,0}$    &$\eclass_{0,1},\eclass_{0,0}$  \\
       $q_2,q_5$  &$q_1,q_4$                    &$q_4,q_1$  
              &$\eclass_{0,1},\eclass_{0,1}$    &$\eclass_{0,1},\eclass_{0,1}$  \\
-      \splitclasses{$q_3,q_5$}  &$q_5,q_4$                    &$q_2,q_1$  
+      $q_3,q_5$  &$q_5,q_4$                    &$q_2,q_1$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
       \cline{2-5}
-      \splitclasses{$q_1,q_4$}  &$q_3,q_3$                    &$q_0,q_4$  
+      $q_1,q_4$  &$q_3,q_3$                    &$q_0,q_4$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,1}$  \\
     \end{tabular}
     \hspace{3em}
@@ -14717,13 +14736,13 @@ Minimize this machine.
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
       $q_0,q_2$  &$q_1,q_3$                    &$q_0,q_2$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_0,q_3$}  &$q_1,q_4$                    &$q_0,q_3$  
+      $q_0,q_3$  &$q_1,q_4$                    &$q_0,q_3$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
       $q_1,q_2$  &$q_2,q_3$                    &$q_1,q_2$  
              &$\eclass_{0,0},\eclass_{0,0}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_1,q_3$}  &$q_2,q_4$                    &$q_1,q_3$  
+      $q_1,q_3$  &$q_2,q_4$                    &$q_1,q_3$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_2,q_3$}  &$q_3,q_4$                    &$q_2,q_3$  
+      $q_2,q_3$  &$q_3,q_4$                    &$q_2,q_3$  
              &$\eclass_{0,0},\eclass_{0,1}$    &$\eclass_{0,0},\eclass_{0,0}$  \\
     \end{tabular}
     \hspace{3em}
@@ -14762,9 +14781,9 @@ Minimize this machine.
       \cline{2-5}
       $q_0,q_1$  &$q_1,q_2$                    &$q_0,q_1$  
              &$\eclass_{1,0},\eclass_{0,0}$    &$\eclass_{1,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_0,q_2$}  &$q_1,q_3$                    &$q_0,q_2$  
+      $q_0,q_2$  &$q_1,q_3$                    &$q_0,q_2$  
              &$\eclass_{1,0},\eclass_{0,1}$    &$\eclass_{1,0},\eclass_{0,0}$  \\
-      \splitclasses{$q_1,q_2$}  &$q_2,q_3$                    &$q_1,q_2$  
+      $q_1,q_2$  &$q_2,q_3$                    &$q_1,q_2$  
              &$\eclass_{1,0},\eclass_{0,1}$    &$\eclass_{1,0},\eclass_{0,0}$  \\
     \end{tabular}
     \hspace{3em}
@@ -14802,7 +14821,7 @@ Minimize this machine.
                   &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}  \\
       \cline{2-5}
-      \splitclasses{$q_0,q_1$}  &$q_1,q_2$                    &$q_0,q_1$  
+      $q_0,q_1$  &$q_1,q_2$                    &$q_0,q_1$  
              &$\eclass_{2,0},\eclass_{2,1}$    &$\eclass_{2,0},\eclass_{2,0}$  \\
     \end{tabular}
     \hspace{3em}

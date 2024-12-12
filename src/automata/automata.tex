@@ -12624,9 +12624,10 @@ That's equivalent to being  $\setcomp{\lang}$-indistinguishable.
 We will give an algorithm, Moore's algorithm\index{Moore's algorithm}\index{minimization of a Finite State machine!Moore's algorithm}
 (sometimes instead called the table-filling algorithm),\index{table-filling algorithm}
 that inputs a deterministic Finite State machine and outputs
-a deterministic machine that is minimal, that recognizes the same language 
-while having the fewest possible 
-number of states.\footnote{%
+a deterministic machine that is \definend{minimal}, 
+that recognizes the same language 
+and that from among all of the machines recognizing the same
+language has the fewest possible states.\footnote{%
   This algorithm is easy to understand and is suitable for
   small calculations but if you are writing code then 
   be aware that another,
@@ -12651,7 +12652,7 @@ and the meaning of $q_4$,
 ``still waiting for a~\str{0},''  
 coincide.
 This machine has redundant states.
-Similarly, $q_5$'s meaning is subsumed by~$q_3$'s.
+Likewise, $q_5$'s future matches~$q_3$'s.
 
 % As a contrast, $q_0$ and~$q_2$ are not redundant because if we 
 % start the machine in those states with the string
@@ -12727,24 +12728,9 @@ otherwise they are
 written \definend{$q\sim\hat{q}$},
 \end{definition}
 
-States that are indistinguishable are redundant.
-We will compute whether states are indistinguishable by checking whether they 
-are distinguished by strings of length~$0$, 
-or by strings of length~$1$, etc.
-Two states $q$ and~$\hat{q}$
-are \definend{$n$-indistinguishable}, 
-\definend{$q\sim_{n}\hat{q}$},\index{n indistinguishable states@$n$-indistinguishable states}\index{states!n indistinguishable@$n$-indistinguishable}
-if there is no distinguishing string of length at most~$n$.
-If there is such a string then they are
-\definend{$n$-distinguishable}.\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
-
-Observe that a pair $q$ and~$\hat{q}$
-are $0$-indistinguishable if and only if both are accepting states or
-both are rejecting states.
-
 \begin{example} \label{ex:MachinesWithMinNoStates}
 Consider this machine's $r_0$ and $r_2$,
-and the length one string $\sigma=\str{0}$.
+along with the length one string $\sigma=\str{0}$.
 \begin{equation*} 
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
   % \tag{$**$}
@@ -12754,73 +12740,29 @@ and processing~$\sigma$ ends
 in the rejecting state~$r_1$.
 Starting in~$r_2$ and processing $\sigma$ ends
 in the accepting state~$r_3$.
-So $r_0$ and~$r_2$ are $1$-distinguishable, 
-and therefore distinguishable.
+So $r_0$ and~$r_2$ are distinguishable.
+Similarly, $r_0$ and~$r_1$ are distinguished by the length one string~\str{1}.
+As well, $r_0$ is distinguished from~$r_3$ by the empty string.
 \end{example}
 
-% \begin{example} \label{ex:MinimizationInitial}
-% For the machine in (\ref{fig:MachinesWithRedundantStates}) above,
-% this gives the result of starting in each state and processing
-% each string of length~$0$, of length~$1$, and of length~$2$.
-% \begin{equation*}\small
-%   \begin{array}{r|c @{\hspace{2.25em}} cc @{\hspace{2.25em}} cccc}
-%     \multicolumn{1}{r}{\ }
-%            &\emptystring  
-%            &\str{0}           
-%            &\str{1}           
-%            &\str{00}           
-%            &\str{01}           
-%            &\str{10}           
-%            &\str{11}           
-%             \\ \cline{2-8}
-%     q_0  &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
-%     q_1  &\mathrm{R} &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
-%     q_2  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
-%     q_3  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\
-%     q_4  &\mathrm{R} &\mathrm{A} &\mathrm{R} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{R}  \\
-%     q_5  &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A} &\mathrm{A}  \\      
-%   \end{array}
-%   % \tag{$**$}
-% \end{equation*}
-% The initial column simply $0$-distinguishes the class of
-% rejecting states, $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$, 
-% from the class of accepting states,  
-% $\eclass_{0,1}=\set{q_3,q_5}$.
+States that are indistinguishable are redundant.
+We will compute whether states are indistinguishable by checking whether they 
+are distinguished by strings of length~$0$, 
+or by strings of length~$1$, etc.
+Two states $q$ and~$\hat{q}$
+are \definend{$n$-distinguishable}\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
+if there is a distinguishing string of length at most~$n$,
+otherwise the are \definend{$n$-indistinguishable}, 
+denoted \definend{$q\sim_{n}\hat{q}$}.\index{n indistinguishable states@$n$-indistinguishable states}\index{states!n indistinguishable@$n$-indistinguishable}
 
-% The columns for the two length~$1$ strings
-% show all of the possibilities.
-% For $q_0$ the columns say R and~R,
-% for $q_1$ they say R and~A,
-% both $q_2$ and~$q_4$ show A and~R,
-% and both $q_3$ and~$q_5$  show A and~A. 
-% So there are four classes for 
-% $1$-indistinguishability: $\eclass_{1,0}=\set{q_0}$,
-% $\eclass_{1,1}=\set{q_1}$, 
-% $\eclass_{1,2}=\set{q_2,q_4}$, 
-% and $\eclass_{1,3}=\set{q_3,q_5}$.
-% Note that the prior paragraph's
-% class $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$ has split into three classes,
-% $\eclass_{1,0}$ and $\eclass_{1,1}$ and~$\eclass_{1,2}$.
-% The other $0$-distinguishability class, $\eclass_{0,1}=\set{q_3,q_5}$, 
-% did not split.
-
-% Next, the length~$2$ strings.
-% One-element classes can't split so
-% the only classes to consider are $\eclass_{1,2}=\set{q_2,q_4}$, 
-% and $\eclass_{1,3}=\set{q_3,q_5}$. 
-% Both $q_2$ and~$q_4$ have columns saying
-% \mbox{A,A,A,R},
-% while both $q_3$ and~$q_5$ have
-% \mbox{A,A,A,A}.
-% Going to these longer strings   
-% does not further divide the classes.
-% \end{example}
-
+Observe that $q$ and~$\hat{q}$
+are $0$-indistinguishable if and only if both are accepting states or
+both are rejecting states.
 
 \begin{lemma} \label{lemma:StateEquivIsEquivRel}
   The relations $\sim_0$, $\sim_1$, \ldots{}
   are equivalences, as is $\sim$, and so
-  partitions the states into
+  partition the states into
   equivalences classes,
   the \definend{$0$-distinguishable classes},\index{n-distinguishable classes@$n$-distinguishable classes}
   the \definend{$1$-distinguishable classes},
@@ -12833,7 +12775,7 @@ and therefore distinguishable.
 \end{proof}
 
 \begin{example}
-Here are the equivalence classes from the 
+Here are some $n$-equivalence classes for the 
 machine~(\ref{fig:MachinesWithRedundantStates}), using the information in the
 table~(\ref{ex:MinimizationInitial}).
 \begin{equation*}
@@ -12865,7 +12807,7 @@ table~(\ref{ex:MinimizationInitial}).
   \eclass_{2,3}=\set{q_3,q_5}
   \end{array}
 \end{equation*}
-The $0$-distinguishable classes separate 
+The $0$-distinguishable classes divide the
 rejecting states from the accepting ones.
 
 The $1$-distinguishable classes subdivide those,
@@ -12873,20 +12815,20 @@ based on the length one strings.
 Specifically, starting with $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$,
 we can next distinguish $q_0$ from~$q_1$ because they
 differ on the string \str{1}.
-Also, $q_0$ differs from $q_2$ and~$q_4$ on the string~\str{0},
-as does~$q_2$.
-So where there was one class there are now three,
+Similarly, $q_0$ differs from $q_2$ and~$q_4$ on the string~\str{0}.
+And, $q_1$ differs from $q_2$ and~$q_4$ on the string~\str{0}.
+So where there was one  $\sim_0$ class there are now three $\sim_1$ classes,
 $\eclass_{1,0}=\set{q_0}$,
 $\eclass_{1,1}=\set{q_1}$, 
 and $\eclass_{1,2}=\set{q_2,q_4}$. 
 
 At the next stage, using the length two strings
 the $2$-distinguishability classes do not find 
-any way to subdivide.
+any further subdivisions.
 Obviously the singleton sets cannot split. 
 We have earlier spotted that $q_2$ and~$q_4$ are redundant, and their two
 rows are equal. 
-The same holds for the pair of states $q_3$ and~$q_5$.
+The same holds for the pair $q_3$ and~$q_5$.
 \end{example}
 
 Moore's algorithm is:~given a machine, 
@@ -12924,8 +12866,21 @@ $n$-distinguishability classes
 to the $n+1$-distinguishability classes, 
 we need only look at single characters.
 
-Moore's algorithm leverages this.
-The next two examples describe
+Restated, nodes $q$ and~$\hat{q}$ are $n+1$-indistinguishable
+if and only if they are $n$-indistinguishable and also
+$\Delta(q,x)$ is $n$-indistinguishable from $\Delta(\hat{q},x)$
+for all characters $x\in\Sigma$.
+
+Moore's algorithm leverages this observation.
+It starts with the states partitioned into the two $\sim_0$ classes, 
+that is, into accepting states and rejecting states.
+It then proceeds in steps,
+where at step~$n+1$ for each $\sim_n$ class~$\eclass$
+we look at all pairs $q,\hat{q}\in\eclass$ 
+for a character where $\Delta(q,x)$ and $\Delta(\hat{q},x)$
+are in different $\sim_n$~classes.
+
+The next two examples illustrate, 
 and also show how to use the $\sim$~classes to make 
 minimal machines.
 
@@ -13210,7 +13165,7 @@ minimal machines.
 
 \begin{example}  \label{ex:SecondMinimization}
   We will minimize the machine below.
-  The algorithm has an additional point:~this
+  The algorithm has one additional point:~this
   machine has an unreachable state,~$q_5$.
   Start by omitting it.
   \begin{center}
@@ -13347,8 +13302,8 @@ Which $r_j$
 should get the \str{a} arrow leaving $r_i$?
 
 \begin{remark}
-Before the lemma, we 
-reflect on where the well-definedness comes from, using 
+Before the lemma, we note a point
+about the well-definedness, using 
 \cref{ex:FirstMinimization}.
 Consider again \cref{ex:FirstMinimization}'s .
 Below we picture the relationship between the states 
@@ -13419,29 +13374,31 @@ $q\in\FSM_I$ and $x\in\Sigma$.
 
 \begin{lemma}
 Moore's algorithm 
-returns a machine that recognizes the same language as the input machine,
-$\lang(\FSM_O)=\lang(\FSM_I)$, and 
-that from among all of the machine
-recognizing the same language has the minimal number of states. 
+outputs a machine that recognizes the same language as the input machine
+and that is minimal.
 \end{lemma}
 
 \begin{proof}
-First, the algorithm halts for all input machines.
-The arument is easy:~the algorithm halts at a step when no class splits and
-that must happen
-since these machines have only finitely many states.
+We write the input and output machines as $\FSM_I$ and $\FSM_O$.
 
-Second, we argue that $\FSM_O$'s transition function is well defined.
+First, the algorithm halts for all input machines.
+The argument is easy:~the algorithm halts at a step when no class splits and
+such a step must happen since these machines have only finitely many states.
+
+Second, we argue that $\FSM_O$'s transition function is well-defined.
 Simply put, if there is a $\sim_n$ class where some
 character sends two states in that class to different $\sim_n$~classes then
 the algorithm does not terminate at that step. 
 Instead it splits that class and goes to the next step.
 So the algorithm cannot end with an ill-defined~$\Delta$. 
 
-Next we verify that $\FSM_I$ and $\FSM_O$ recognize the same language. 
-The input machine $\FSM_I$ starts in~$q_0$ while the output machine $\FSM_O$ 
+Next we verify that the machines recognize the same language. 
+Consider a string, $\sigma\in\kleenestar{\Sigma}\!$;~we 
+will show that it is accepted by one machine if and only if it is accepted
+by the other.  
+The argument is by induction, although we will present it informally.
+The input machine starts in~$q_0$ while the output machine 
 starts in a state $r_0=\eclass_0$ that contains~$q_0$.
-Feed both machines the same string, $\sigma\in\kleenestar{\Sigma}\!$. 
 The first character of~$\sigma$ moves~$\FSM_I$ from $q_0$ to some state~$q_{i_1}$
 and moves~$\FSM_O$ from a state that contains~$q_0$ 
 to a state that contains~$q_{i_1}$.
@@ -13449,30 +13406,28 @@ The second character of~$\sigma$ moves~$\FSM_I$ from $q_{i_1}$
 to some~$q_{i_2}$,
 and moves~$\FSM_O$ from a state that contains $q_{i_1}$ 
 to a state that contains~$q_{i_2}$.
-The machines 
-proceed in this way until the string runs out.
-At the end $\FSM_I$ is in a final state if and only if 
+The machines proceed in this way until the string runs out.
+At the end, $\FSM_I$ is in a final state if and only if 
 $\FSM_O$ is in a state that contains that final state, which is itself
 a final state of~$\FSM_O$.
-Thus the two machines accept the same set of strings.
 
-\citetext{Finally, we verify that $\FSM_O$ has the minimal number of states}{%
+\citetext{Finally, we verify that the output machine has the minimal number of states}{%
   This is derived from the presentation in \autocite{HopcroftUllman}.
 }.
-Let~$\hat{\FSM}$ recognize
-the same language as~$\FSM_O$;
-we will show that it has at least as many states. 
+Let~$\hat{\FSM}$ recognize the same language as~$\FSM_O$;~we 
+will show that it has at least as many states. 
 
-Start by arranging that $\hat{\FSM}$ and $\FSM_{O}$ don't share any states,
-for example by renaming so that the states of $\FSM_O$ are  
+As a preliminary, arrange that $\hat{\FSM}$ and $\FSM_{O}$ 
+don't share any states
+(rename so that the states of $\FSM_O$ are  
 $r_0,r_1,\,\ldots$ and those of $\hat{\FSM}$ are 
-$q_0,q_1,\,\ldots$\sentencespace 
+$q_0,q_1,\,\ldots$)\sentencespace 
 Consider the union of the two sets of states.
 Perform Moore's algorithm on it:~initialize
 with two states being
 $0$-indistinguishable if both are final in their own machine 
 or if neither is final.
-Iteration~$n+1$ starts with
+Step~$n+1$ starts with
 the $\sim_n$~classes 
 $\eclass_{n,0},\ldots{}\,\eclass_{n,k}$ of states from the union.
 For each such class $\eclass_{n,i}$,
@@ -13484,36 +13439,9 @@ The process ends with a step having no splitting,
 so that we know which states are indistinguishable and
 these form the $\sim$~classes.
 
-
-
-
-% We will do this by associating
-% each state in~$\FSM_O$ with at least one state 
-% in~$\hat{\FSM}$ in such a way 
-% that never are different states in~$\FSM_O$ associated
-% with the same state in~$\hat{\FSM}$.
-
-% Consider the union of the sets of states of the two machines 
-% (assume that they have no states in common, or else we will rename them).
-% As we did with the algorithm, 
-% begin by saying that two states in the union are
-% $0$-indistinguishable if both are final in their own machine 
-% or if neither is final.
-% Step~$n+1$ of this process starts with
-% the $\sim_n$~classes 
-% $\eclass_{n,0},\ldots{}\,\eclass_{n,k}$ of states from the union.
-% For each such class $\eclass_{n,i}$, see if it splits.
-% That is, see if there 
-% are two states in $\eclass_{n,i}$ that are sent by a character
-% $x\in\Sigma$ to different $\sim_n$~classes. 
-% If so then the $\sim_{n}$ class splits into different $\sim_{n+1}$ classes. 
-% When we reach a step with no splitting 
-% then we know which states are indistinguishable and
-% these form the $\sim$~classes.
-
-The hypothesis $\lang(\FSM_O)=\lang(\hat{\FSM})$ 
-implies that the start states in the two machines are indistinguishable
-and so are in the same $\sim$~class.
+The assumption that $\lang(\FSM_O)=\lang(\hat{\FSM})$ 
+implies that the start states in the two machines are indistinguishable,
+and thus are in the same $\sim$~class.
 Also, if two states are indistinguishable then their successor states
 on any one input symbol $x\in\Sigma$ are also indistinguishable
 from each other,
@@ -13523,42 +13451,42 @@ distinguishes between the original two states.
 In turn, the successors of these successors are indistinguishable, etc.
 
 We now have an association between states 
-in~$\FSM_O$ and those in $\hat{\FSM}$: they are associated
+in~$\FSM_O$ and those in $\hat{\FSM}$, namely they are associated
 if they are in the same $\sim$~class.
-We first show that every state~$q$ of $\FSM_O$ is associated with 
-at least one state of~$\hat{\FSM}$.
-Because~$\FSM_O$ is the output of the minimization process, it has
+We finish by showing that every state $\FSM_O$ is associated with 
+one and only one state of~$\hat{\FSM}$.
+
+To see that every $q$ of $\FSM_O$ is associated with 
+at least one state of~$\hat{\FSM}$, note first that
+because~$\FSM_O$ is the output of the minimization process, it has
 no inaccessible state.
 So there is a string
 that takes the start state of~$\FSM_O$ to~$q$.
-This string takes the start state of~$\hat{\FSM}$ to some~$\hat{q}$, and the 
+That string takes the start state of~$\hat{\FSM}$ to some~$\hat{q}$, and the 
 prior paragraph applies to give that $q\sim\hat{q}$.
 
-We finish by showing that there cannot be 
-two different states of~$\FSM_O$ that are both associated with the same 
-state of~$\hat{\FSM}$. 
-If there were two such states then by \cref{lemma:StateEquivIsEquivRel} they
-would be indistinguishable from each other.
-But that's impossible because $\FSM_O$ is the output of the minimization
+To see that 
+every state of~$\hat{\FSM}$ is associate with at most one state of~$\FSM_O$,
+observe that by \cref{lemma:StateEquivIsEquivRel} two such states 
+of~$\FSM_O$ would be indistinguishable from each other.
+That's impossible because $\FSM_O$ is the output of the minimization
 process, which ensures that all of its states are distinguishable from each
 other.
 \end{proof}
 
+We close by describing a common use for minimization.
 In this chapter we have seen that when we have a problem to solve
 with a Finite State machine, 
-often a nondeterministic machine
-is easier and more natural.
+often a nondeterministic machine is easier and more natural.
 An example is the algorithm that inputs a regular expression
 and outputs a machine recognizing that expression.
-
 But our algorithm for converting a nondeterministic machine 
-to a deterministic machine has a problem.
-Where the nondeterministic machine has $n$~states, 
+to a deterministic machine has the problem
+that where the nondeterministic machine has $n$~states, 
 the deterministic machine has $2^n$.
-
-This section's result alleviates that.
+This section's result alleviates that exponential blow-up.
 We now have a three-step process:~from 
-a problem we start with a nondeterministic
+a problem, we start with a nondeterministic
 answer, convert that to an equivalent deterministic machine,
 and then minimize to get a reasonably-sized final answer.
 In practice, this gives good results.
@@ -15384,5 +15312,3 @@ Using induction to generalize this observation is straightforward.
 
 
 % \extra{Derivatives}
-
-% HOMEWORK: p 8 of https://web.stanford.edu/class/archive/cs/cs103/cs103.1142/lectures/16/Small16.pdf

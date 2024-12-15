@@ -13373,7 +13373,13 @@ $q\in\FSM_I$ and $x\in\Sigma$.
 \end{remark}
 
 \begin{example}
-Example of calculation.
+This shows input and output machines for a minimization.
+\begin{center}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa74.pdf}}
+  \quad    
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa75.pdf}}    
+\end{center}
+To illustrate the proof that the algorithm works.
 \begin{center} 
   \begin{minimizetable}{9}
     \multicolumn{1}{c}{$q_0$}   &    &    &    &    \\
@@ -13494,125 +13500,128 @@ and that is minimal.
 \end{lemma}
 
 \begin{proof}
-We write the input and output machines as $\FSM_I$ and $\FSM_O$.
-
-First, the algorithm halts for all input machines.
-The argument is easy:~the algorithm halts at a step when no class splits and
-such a step must happen since these machines have only finitely many states.
-
-Second, we argue that $\FSM_O$'s transition function is well-defined.
-Simply put, if there is a $\sim_n$ class where some
-character sends two states in that class to different $\sim_n$~classes then
-the algorithm does not terminate at that step. 
-Instead it splits that class and goes to the next step.
-So the algorithm cannot end with an ill-defined~$\Delta$. 
-
-Next we verify that the machines recognize the same language. 
-Consider a string, $\sigma\in\kleenestar{\Sigma}\!$;~we 
-will show that it is accepted by one machine if and only if it is accepted
-by the other.  
-The argument is by induction, although we will present it informally.
-The input machine starts in~$q_0$ while the output machine 
-starts in a state $r_0=\eclass_0$ that contains~$q_0$.
-The first character of~$\sigma$ moves~$\FSM_I$ from $q_0$ to some state~$q_{i_1}$
-and moves~$\FSM_O$ from a state that contains~$q_0$ 
-to a state that contains~$q_{i_1}$.
-The second character of~$\sigma$ moves~$\FSM_I$ from $q_{i_1}$
-to some~$q_{i_2}$,
-and moves~$\FSM_O$ from a state that contains $q_{i_1}$ 
-to a state that contains~$q_{i_2}$.
-The machines proceed in this way until the string runs out.
-At the end, $\FSM_I$ is in a final state if and only if 
-$\FSM_O$ is in a state that contains that final state, which is itself
-a final state of~$\FSM_O$.
-
-\citetext{Finally, we verify that the output machine has the minimal number of states}{%
-  This is derived from the presentation in \autocite{HopcroftUllman}.
-}.
-Let~$\hat{\FSM}$ recognize the same language as~$\FSM_O$;~we 
-will show that it has at least as many states. 
-
-As a preliminary, arrange that $\hat{\FSM}$ and $\FSM_{O}$ 
-don't share any states
-(rename so that the states of $\FSM_O$ are  
-$r_0,r_1,\,\ldots$ and those of $\hat{\FSM}$ are 
-$q_0,q_1,\,\ldots$)\sentencespace 
-Consider the union of the two sets of states.
-Perform Moore's algorithm on it:~initialize
-with two states being
-$0$-indistinguishable if both are final in their own machine 
-or if neither is final.
-Step~$n+1$ starts with
-the $\sim_n$~classes 
-$\eclass_{n,0},\ldots{}\,\eclass_{n,k}$ of states from the union.
-For each such class $\eclass_{n,i}$,
-compute whether it has
-two states that are sent by a character
-$x\in\Sigma$ to different $\sim_n$~classes. 
-If so then the $\sim_{n}$ class splits into different $\sim_{n+1}$ classes. 
-The process ends with a step having no splitting,  
-so that we know which states are indistinguishable and
-these form the $\sim$~classes.
-
-% The assumption that $\lang(\FSM_O)=\lang(\hat{\FSM})$ 
-% implies that the start states in the two machines are indistinguishable,
-% and thus are in the same $\sim$~class.
-% Also, if two states are indistinguishable then their successor states
-% on any one input symbol $x\in\Sigma$ are also indistinguishable
-% from each other,
-% since if a string~$\sigma$ distinguishes between the successors 
-% then $\sigma\concat x$
-% distinguishes between the original two states.
-% In turn, the successors of these successors are indistinguishable, etc.
-
-% We now have an association between states 
-% in~$\FSM_O$ and those in $\hat{\FSM}$, namely they are associated
-% if they are in the same $\sim$~class.
-% We finish by showing that every state $\FSM_O$ is associated with 
-% at least one state of~$\hat{\FSM}$.
-
-The two machines recognize the same language, so starting both with 
-any string $\tau\in\kleenestar{\Sigma}$ on the tape results always in 
-the same outcome:~either both machines end in an accepting state or
-both end in a rejecting state.
-Thus there is no distinguishing extension between $q_0$ and~$r_0$, that
-is, the start states are indistinguishable. 
-
-For an induction argument, suppose that states $q$ and~$r$ are indistinguishable.
-We claim that for all $x\in\Sigma$, the state 
-$\Delta_{\mathcal{N}}(q,x)$ is indistinguishable from $\Delta_{\FSM}(r,x)$.
-The reason is that if $\tau$ were a distinguishing string between these
-two, then $x\concat\tau$ would distinguish between $q$ and~$r$.
-
-This implies that every state $r\in\mathcal{N}$ is indistinguishable
-from at least one $q\in\FSM$.
-The reason is that in a minimal machine all states must be reachable,
-or else we could eliminate the state and get a smaller machine that 
-recognizes the same language.
-So there is some string $\sigma\in\kleenestar{\Sigma}$ such that
-$\extended{\Delta}_{\mathcal{N}}(\sigma)=r$.
-Then $\sigma$ takes the machine~$\FSM$ to some state:
-$\extended{\Delta}_{\FSM}(\sigma)$ is a state in~$\FSM$, and by the prior 
-paragraph it is indistinguishable from~$r$.
-
-
-% To see that every $q$ of $\FSM_O$ is associated with 
-% at least one state of~$\hat{\FSM}$, note first that
-% because~$\FSM_O$ is the output of the minimization process, it has
-% no inaccessible state.
-% So there is a string
-% that takes the start state of~$\FSM_O$ to~$q$.
-% That string takes the start state of~$\hat{\FSM}$ to some~$\hat{q}$, and the 
-% prior paragraph applies to give that $q\sim\hat{q}$.
-
-% To see that 
-% every state of~$\hat{\FSM}$ is associate with at most one state of~$\FSM_O$,
-% observe that by \cref{lemma:StateEquivIsEquivRel} two such states 
-% of~$\FSM_O$ would be indistinguishable from each other.
-% That's impossible because $\FSM_O$ is the output of the minimization
-% process, which ensures that all of its states are distinguishable from each
-% other.
+See \cref{exer:ProofMooresAlgorithm}.
 \end{proof}
+
+% We write the input and output machines as $\FSM_I$ and $\FSM_O$.
+
+% First, the algorithm halts for all input machines.
+% The argument is easy:~the algorithm halts at a step when no class splits and
+% such a step must happen since these machines have only finitely many states.
+
+% Second, we argue that $\FSM_O$'s transition function is well-defined.
+% Simply put, if there is a $\sim_n$ class where some
+% character sends two states in that class to different $\sim_n$~classes then
+% the algorithm does not terminate at that step. 
+% Instead it splits that class and goes to the next step.
+% So the algorithm cannot end with an ill-defined~$\Delta$. 
+
+% Next we verify that the machines recognize the same language. 
+% Consider a string, $\sigma\in\kleenestar{\Sigma}\!$;~we 
+% will show that it is accepted by one machine if and only if it is accepted
+% by the other.  
+% The argument is by induction, although we will present it informally.
+% The input machine starts in~$q_0$ while the output machine 
+% starts in a state $r_0=\eclass_0$ that contains~$q_0$.
+% The first character of~$\sigma$ moves~$\FSM_I$ from $q_0$ to some state~$q_{i_1}$
+% and moves~$\FSM_O$ from a state that contains~$q_0$ 
+% to a state that contains~$q_{i_1}$.
+% The second character of~$\sigma$ moves~$\FSM_I$ from $q_{i_1}$
+% to some~$q_{i_2}$,
+% and moves~$\FSM_O$ from a state that contains $q_{i_1}$ 
+% to a state that contains~$q_{i_2}$.
+% The machines proceed in this way until the string runs out.
+% At the end, $\FSM_I$ is in a final state if and only if 
+% $\FSM_O$ is in a state that contains that final state, which is itself
+% a final state of~$\FSM_O$.
+
+% \citetext{Finally, we verify that the output machine has the minimal number of states}{%
+%   This is derived from the presentation in \autocite{HopcroftUllman}.
+% }.
+% Let~$\hat{\FSM}$ recognize the same language as~$\FSM_O$;~we 
+% will show that it has at least as many states. 
+
+% As a preliminary, arrange that $\hat{\FSM}$ and $\FSM_{O}$ 
+% don't share any states
+% (rename so that the states of $\FSM_O$ are  
+% $r_0,r_1,\,\ldots$ and those of $\hat{\FSM}$ are 
+% $q_0,q_1,\,\ldots$)\sentencespace 
+% Consider the union of the two sets of states.
+% Perform Moore's algorithm on it:~initialize
+% with two states being
+% $0$-indistinguishable if both are final in their own machine 
+% or if neither is final.
+% Step~$n+1$ starts with
+% the $\sim_n$~classes 
+% $\eclass_{n,0},\ldots{}\,\eclass_{n,k}$ of states from the union.
+% For each such class $\eclass_{n,i}$,
+% compute whether it has
+% two states that are sent by a character
+% $x\in\Sigma$ to different $\sim_n$~classes. 
+% If so then the $\sim_{n}$ class splits into different $\sim_{n+1}$ classes. 
+% The process ends with a step having no splitting,  
+% so that we know which states are indistinguishable and
+% these form the $\sim$~classes.
+
+% % The assumption that $\lang(\FSM_O)=\lang(\hat{\FSM})$ 
+% % implies that the start states in the two machines are indistinguishable,
+% % and thus are in the same $\sim$~class.
+% % Also, if two states are indistinguishable then their successor states
+% % on any one input symbol $x\in\Sigma$ are also indistinguishable
+% % from each other,
+% % since if a string~$\sigma$ distinguishes between the successors 
+% % then $\sigma\concat x$
+% % distinguishes between the original two states.
+% % In turn, the successors of these successors are indistinguishable, etc.
+
+% % We now have an association between states 
+% % in~$\FSM_O$ and those in $\hat{\FSM}$, namely they are associated
+% % if they are in the same $\sim$~class.
+% % We finish by showing that every state $\FSM_O$ is associated with 
+% % at least one state of~$\hat{\FSM}$.
+
+% The two machines recognize the same language, so starting both with 
+% any string $\tau\in\kleenestar{\Sigma}$ on the tape results always in 
+% the same outcome:~either both machines end in an accepting state or
+% both end in a rejecting state.
+% Thus there is no distinguishing extension between $q_0$ and~$r_0$, that
+% is, the start states are indistinguishable. 
+
+% For an induction argument, suppose that states $q$ and~$r$ are indistinguishable.
+% We claim that for all $x\in\Sigma$, the state 
+% $\Delta_{\mathcal{N}}(q,x)$ is indistinguishable from $\Delta_{\FSM}(r,x)$.
+% The reason is that if $\tau$ were a distinguishing string between these
+% two, then $x\concat\tau$ would distinguish between $q$ and~$r$.
+
+% This implies that every state $r\in\mathcal{N}$ is indistinguishable
+% from at least one $q\in\FSM$.
+% The reason is that in a minimal machine all states must be reachable,
+% or else we could eliminate the state and get a smaller machine that 
+% recognizes the same language.
+% So there is some string $\sigma\in\kleenestar{\Sigma}$ such that
+% $\extended{\Delta}_{\mathcal{N}}(\sigma)=r$.
+% Then $\sigma$ takes the machine~$\FSM$ to some state:
+% $\extended{\Delta}_{\FSM}(\sigma)$ is a state in~$\FSM$, and by the prior 
+% paragraph it is indistinguishable from~$r$.
+
+
+% % To see that every $q$ of $\FSM_O$ is associated with 
+% % at least one state of~$\hat{\FSM}$, note first that
+% % because~$\FSM_O$ is the output of the minimization process, it has
+% % no inaccessible state.
+% % So there is a string
+% % that takes the start state of~$\FSM_O$ to~$q$.
+% % That string takes the start state of~$\hat{\FSM}$ to some~$\hat{q}$, and the 
+% % prior paragraph applies to give that $q\sim\hat{q}$.
+
+% % To see that 
+% % every state of~$\hat{\FSM}$ is associate with at most one state of~$\FSM_O$,
+% % observe that by \cref{lemma:StateEquivIsEquivRel} two such states 
+% % of~$\FSM_O$ would be indistinguishable from each other.
+% % That's impossible because $\FSM_O$ is the output of the minimization
+% % process, which ensures that all of its states are distinguishable from each
+% % other.
+% \end{proof}
 
 We close by describing a common use for minimization.
 In this chapter we have seen that when we have a problem to solve
@@ -15248,6 +15257,84 @@ Minimize this machine.
       \item It is an equivalence because it is $\sim_k$ for some~$k$.
     \end{exparts}
   \end{answer}
+\end{exercise}
+
+% !!!!!!!!!!!!!!!!
+\begin{exercise}  \label{exer:ProofMooresAlgorithm}
+We will verify that Moore's algorithm halts on any input machine~$\FSM$ and
+outputs an~$\mathcal{N}$ that recognizes the same language,
+and that is minimal.
+\begin{exparts}
+\item Prove that the algorithm always halts. 
+\item Prove that the transition function of $\mathcal{N}$ is well-defined.
+\item Verify that the two machines recognize the same language.
+\item Show that $\mathcal{N}$ is minimal:~any~$\hat{\FSM}$ 
+that recognize the same language as~$\mathcal{N}$ 
+has at least as many states as $\mathcal{N}$. 
+\hint~follow the example above, then show that the start states of the
+two are indistinguishable, and if two states $q$ and~$r$ are indistinguishable
+then so are the states they transistion to on a character input.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item The algorithm halts at a step when no class splits. 
+Such a step must happen eventually
+since these machines have only finitely many states.
+\item If there is a $\sim_n$ class where some
+character sends two states in that class to different $\sim_n$~classes then
+the algorithm does not terminate at that step. 
+Instead it splits that class and goes to the next step.
+So the algorithm cannot end with an ill-defined transition function. 
+\item Consider a string, $\sigma\in\kleenestar{\Sigma}\!$;~we 
+will show that it is accepted by one machine if and only if it is accepted
+by the other.  
+The argument is by induction, although we will present it informally.
+The input machine starts in~$q_0$ while the output machine 
+starts in a state $r_0=\eclass_0$ that contains~$q_0$.
+The first character of~$\sigma$ moves~$\FSM_I$ from $q_0$ to some state~$q_{i_1}$
+and moves~$\FSM_O$ from a state that contains~$q_0$ 
+to a state that contains~$q_{i_1}$.
+The second character of~$\sigma$ moves~$\FSM_I$ from $q_{i_1}$
+to some~$q_{i_2}$,
+and moves~$\FSM_O$ from a state that contains $q_{i_1}$ 
+to a state that contains~$q_{i_2}$.
+The machines proceed in this way until the string runs out.
+At the end, $\FSM_I$ is in a final state if and only if 
+$\FSM_O$ is in a state that contains that final state, which is itself
+a final state of~$\FSM_O$.
+\item As a preliminary, arrange that $\hat{\FSM}$ and $\FSM_{O}$ 
+don't share any states, by 
+renaming so that the states of $\FSM$ are  
+$q_0,q_1,\,\ldots$ and the states of $\mathcal{N}$ are
+$r_0,r_1,\,\ldots$\sentencespace 
+Then perform Moore's algorithm on the union of the two sets of states,
+as in the example.
+    
+The two machines recognize the same language, so starting both with 
+any string $\tau\in\kleenestar{\Sigma}$ on the tape results always in 
+the same outcome:~either both machines end in an accepting state or
+both end in a rejecting state.
+Thus there is no distinguishing extension between $q_0$ and~$r_0$, that
+is, the start states are indistinguishable. 
+
+For an induction argument, suppose that states $q$ and~$r$ are indistinguishable.
+We claim that for all $x\in\Sigma$, the state 
+$\Delta_{\mathcal{N}}(q,x)$ is indistinguishable from $\Delta_{\FSM}(r,x)$.
+The reason is that if $\tau$ were a distinguishing string between these
+two, then $x\concat\tau$ would distinguish between $q$ and~$r$.
+
+This implies that every state $r\in\mathcal{N}$ is indistinguishable
+from at least one $q\in\FSM$.
+The reason is that in a minimal machine all states must be reachable,
+or else we could eliminate the state and get a smaller machine that 
+recognizes the same language.
+So there is some string $\sigma\in\kleenestar{\Sigma}$ such that
+$\extended{\Delta}_{\mathcal{N}}(\sigma)=r$.
+Then $\sigma$ takes the machine~$\FSM$ to some state:
+$\extended{\Delta}_{\FSM}(\sigma)$ is a state in~$\FSM$, and by the prior 
+paragraph it is indistinguishable from~$r$.
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 \begin{exercise}

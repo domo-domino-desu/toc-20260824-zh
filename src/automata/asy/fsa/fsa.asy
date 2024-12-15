@@ -3766,4 +3766,95 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ===== Minimization Moore's algorithm proof example input =======
+picture pic;
+int picnum = 74;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+node q4=ncircle("$q_4$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+layout(15.0, (1/Cos(15.0))*u, q0, q1);
+layout(-15.0, (1/Cos(-15.0))*u, q0, q2);
+hlayout(1*u, q1, q3);
+hlayout(1*u, q2, q4);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}").style("leftside"),
+     (q0--q2).l("\str{A}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1--q3).l("\str{A}").style("leftside"),
+     (q2..loop(S)).l("\str{A}"),
+     (q2--q4).l("\str{a}"),
+     (q3..loop(E)).l("\str{a},\str{A}"),
+     (q4..loop(E)).l("\str{a},\str{A}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q3,
+     q2, q4
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ............... minimized machine ...............
+picture pic;
+int picnum = 75;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$r_0$"); 
+node q1=ncircle("$r_1$"); 
+node q2=ncircle("$r_2$"); 
+node q3=ncircle("$r_3$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+layout(15.0, (1/Cos(15.0))*u, q0, q1);
+layout(-15.0, (1/Cos(-15.0))*u, q0, q2);
+hlayout(2*u, q0, q3);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}").style("leftside"),
+     (q0--q2).l("\str{A}"),
+     (q1..loop(N)).l("\str{a}"),
+     (q1--q3).l("\str{A}").style("leftside"),
+     (q2..loop(S)).l("\str{A}"),
+     (q2--q3).l("\str{a}"),
+     (q3..loop(E)).l("\str{a},\str{A}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q3,
+     q2
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 

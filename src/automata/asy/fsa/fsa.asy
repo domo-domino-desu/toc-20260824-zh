@@ -3793,14 +3793,14 @@ hlayout(1*u, q2, q4);
 
 // draw edges
 draw(pic,
-     (q0--q1).l("\str{a}").style("leftside"),
-     (q0--q2).l("\str{A}"),
-     (q1..loop(N)).l("\str{a}"),
-     (q1--q3).l("\str{A}").style("leftside"),
-     (q2..loop(S)).l("\str{A}"),
-     (q2--q4).l("\str{a}"),
-     (q3..loop(E)).l("\str{a},\str{A}"),
-     (q4..loop(E)).l("\str{a},\str{A}")
+     (q0--q1).l("\str{a} .. \str{z}\,").style("leftside"),
+     (q0--q2).l("\str{A} .. \str{Z}\;"),
+     (q1..loop(N)).l("\str{a} .. \str{z}"),
+     (q1--q3).l("\str{A} .. \str{Z}").style("leftside"),
+     (q2..loop(S)).l("\str{A} .. \str{Z}"),
+     (q2--q4).l("\str{a} .. \str{z}"),
+     (q3..loop(E)).l("any"),
+     (q4..loop(E)).l("any")
 );
 
 // draw nodes
@@ -3837,13 +3837,13 @@ hlayout(2*u, q0, q3);
 
 // draw edges
 draw(pic,
-     (q0--q1).l("\str{a}").style("leftside"),
-     (q0--q2).l("\str{A}"),
-     (q1..loop(N)).l("\str{a}"),
-     (q1--q3).l("\str{A}").style("leftside"),
-     (q2..loop(S)).l("\str{A}"),
-     (q2--q3).l("\str{a}"),
-     (q3..loop(E)).l("\str{a},\str{A}")
+     (q0--q1).l("\str{a} .. \str{z}\;").style("leftside"),
+     (q0--q2).l("\str{A} .. \str{Z}\;"),
+     (q1..loop(N)).l("\str{a} .. \str{z}"),
+     (q1--q3).l("\;\str{A} .. \str{Z}").style("leftside"),
+     (q2..loop(S)).l("\str{A} .. \str{Z}"),
+     (q2--q3).l("\;\str{a} .. \str{z}"),
+     (q3..loop(E)).l("any")
 );
 
 // draw nodes

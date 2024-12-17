@@ -93,20 +93,20 @@ defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-q1.pos = new_node_pos_h(q0, 45, 1*u);
+q1.pos = new_node_pos_h(q0, 35, 1*u);
 q2.pos = new_node_pos_h(q0, 0, 1*u);
-q3.pos = new_node_pos_h(q0, -45, 1*u);
+q3.pos = new_node_pos_h(q0, -35, 1*u);
 hlayout(1.0*u, q2, q4);
 
 // edges
 draw(pic,
      (q0--q1).l("\str{0}").style("leftside"),
      (q0--q3).l("\str{1}"),
-     (q1..bend(30)..q2).l(Label("\str{0}",Relative(0.7))),
+     (q1..bend(30)..q2).l(Label("\str{0}",Relative(0.5))),
      (q2..bend(30)..q1).l(Label("\str{0}",Relative(0.3))),
      (q1--q4).l("\str{1}").style("leftside"),
      (q2--q4).l("\str{1}"),
-     (q3--q2).l("\str{0}"),
+     (q3--q2).l(Label("\str{0}",Relative(0.3))),
      (q3--q4).l("\str{1}"),
      (q4..loop(E)).l("\str{0},\str{1}")
     );

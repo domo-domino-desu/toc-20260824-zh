@@ -971,11 +971,11 @@ draw(pic,
      (u2--u7).l("\str{a}"),
      (u2..loop(N)).l("\str{b}"),
      (u3..bend..u0).l("\str{a}"),
-     (u3--u1).l("\str{b}"),
+     (u3--u5).l("\str{b}"),
      (u4--u7).l("\str{a}"),
      (u4--u2).l("\str{b}"),
      (u5--u0).l("\str{a}"),
-     (u5--u3).l("\str{b}"),
+     (u5..loop(E)).l("\str{b}"),
      (u6..bend(-25)..u7).l("\str{a},\str{b}").style("leftside"),
      (u7..loop(W)).l("\str{a},\str{b}")
     );
@@ -1048,6 +1048,7 @@ vlayout(0.85*v, w2, init);
 // edges
 draw(pic,
      (init--w2).l(""),
+     (w0..loop(W)).label("\str{a},\str{b}"), 
      (w1--w0).l("\str{a}"),
      (w1..loop(E)).l("\str{b}"),
      (w2..loop(W)).l("\str{b}"),

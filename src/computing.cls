@@ -623,6 +623,8 @@
 
 
 %======================== hyperref ===========
+
+% Depreciated?  Doc on CTAN says in next LaTeX release
 \usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
 % \usepackage[draft]{hyperref}  % remove the draft option at the end.
 \usepackage{hyperref}  % remove the draft option at the end.
@@ -670,10 +672,12 @@
 % \setlength{\fboxsep}{0ex}
 % \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
 % \usepackage{amsthm}
-% \usepackage{thmtools}
+
+% Must come before cleveref:
+\usepackage{thmtools}
 
 
-\usepackage{cleveref} % after hyperref, apparently
+\usepackage{cleveref} % after hyperref
 \def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
   \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
   \ifcsname #2refname\endcsname
@@ -926,7 +930,7 @@
 % These need to be numbered all as one, and the numbering in the margin
 
 % The cleveref package requires that theorems be made with either amsthm
-% or ntheorem.  
+% or ntheorem.  \newheorem's must come after cleveref is loaded. 
 
 \newlength{\lrmarginaroundshadedtheorems}
 \newlength{\tbmarginaroundshadedtheorems}
@@ -1088,7 +1092,7 @@
 % Halmos symbol
 \renewcommand\qedsymbol{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.7pt}%
   \fcolorbox{boldcolor}{white}{\color{white}\rule{4pt}{8.5pt}}}}
-\usepackage{thmtools}
+%  comes before cleveref: \usepackage{thmtools}
 \declaretheoremstyle[%
   spaceabove=0.5\topsep,%
   spacebelow=0.5\topsep,%

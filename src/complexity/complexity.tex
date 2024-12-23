@@ -6,16 +6,16 @@
 
 \chapteropen[\href{https://en.wikipedia.org/wiki/Surface_tension}{Striders can walk on water because they are five orders of magnitude smaller than us. This change of scale changes the world\Dash bugs see surface tension as more important than gravity. Similarly, finding an algorithm that changes the time that it takes to solve a problem from $n^2$ to $n\cdot \lg n$ can make something easy that was previously not practical.\label{fig:WaterStrider}}]{complexity/pix/waterstrider.jpg}{Computational Complexity}%https://commons.wikimedia.org/wiki/Filefigure:Gerris_by_webrunner.JPG
 
-Earlier, we asked what can be done with a mechanism 
+We started this book by asking what can be done with a mechanism 
 at all.
 This 
 \citetext{mirrors the subject's history}{%
   This is like the slogan ``ontogeny recapitulates phylogeny''
   for the now-discredited biological theory that the development of an embryo, 
   which is called ontogeny, goes through same stages as the
-  adult stages in the evolution of the animal's ancestors, which is 
+  the evolution of the animal's ancestors, which is 
   phylogeny.}:~when the Theory of Computing began 
-there were no physical computers.
+there were no matching mechanisms.
 Researchers were driven by considerations such as the
 \textit{Entscheidungsproblem}.
 The subject was interesting, the questions compelling, and there were
@@ -31,20 +31,20 @@ the initial phase had a theory-driven feel.
   in Turing’s sense; the real
   question is which problems are \emph{efficiently} or \emph{feasibly} 
   computable.'' \autocite{Aaronson11a}}.
-When physical computers became widely available, that's exactly what
+When computering machines became widely available that's exactly what
 happened. 
 Today, the Theory of Computing has incorporated many
-questions that at least originate in applied fields, and that
-need answers that are
-feasible.
+questions that at least originate in applied fields and that
+need answers that are feasible.
 
 We will review how we determine the practicality of algorithms,
 the order of growth of functions.
 Then we will see a collection of the kinds of problems that 
 drive the field today.
-By the end of this chapter we will be at the 
-research frontier and we will state some things without
-proof, as well as discuss some things about which we are not sure.  
+By the chapter's end we will be able to understand some topics of current  
+research. 
+% and we will state some things without
+% proof, as well as discuss some things about which we are not sure.  
 In particular, we will consider the celebrated question of $\P$ versus~$\NP$.
 
 
@@ -53,8 +53,8 @@ In particular, we will consider the celebrated question of $\P$ versus~$\NP$.
 % =============================================
 % The \texorpdfstring avoids a hyperref error from math in the bookmarks
 \section{Big \texorpdfstring{$\bigOh$}{O}}\index{order of growth|(}
-We begin by reviewing the definition of the order of growth of functions.
-We will study this because it measures how algorithms consume 
+First we review the definition of the order of growth of functions.
+It measures how algorithms consume 
 computational resources.
 
 First, an anecdote.
@@ -70,15 +70,17 @@ Here is a grade school multiplication.
    28476
 \end{array}
 \end{equation*}
-The algorithm combines
+This familiar algorithm combines
 each digit of the multiplier~$42$ with
 each digit of the multiplicand~$678$,
 in a nested loop.
+
 A person could sensibly feel that this is the 
-right way to compute multiplication\Dash indeed, the only reasonable way\Dash 
+right way to compute multiplication\Dash and indeed, 
+the only reasonable way\Dash 
 and that in general, 
 to multiply two $n$~digit numbers
-requires about $n^2$-many operations.
+requires at least $n^2$-many operations.
 
 % https://commons.wikimedia.org/wiki/File:Andrej_Nikolajewitsch_Kolmogorov.jpg
 % See also https://www.wired.com/story/mathematicians-discover-the-perfect-way-to-multiply/amp
@@ -108,9 +110,11 @@ He produced a
 that used only 
 $n^{\lg(3)}\approx n^{1.585}$ operations.
 At the next meeting Kolmogorov explained the result 
-and closed the seminar.
+and 
+\citetext{closed the seminar}{%
+  See also \url{https://www.wired.com/story/mathematicians-discover-the-perfect-way-to-multiply/}.}.
 
-And this continues.
+This pattern continues.
 Every day researchers
 produce results saying, ``for this problem, 
 here is a way to solve it in less time,
@@ -125,47 +129,47 @@ But we are not as good at finding lower bounds, at proving
 such and such.'' 
 This is one reason that we will
 compare the growth rates of resources consumed
-by algorithms using a tool, 
-Big~$\bigOh$, that is
-like `less than or equal to'. 
+by algorithms using a tool 
+% Big~$\bigOh$, 
+that is like `less than or equal to'. 
 
 
 
 
 
 \subsection{Motivation}
-% \begin{TODO}
-% Illustrate lookup times
-% \url{https://funcall.blogspot.com/2016/01/alist-vs-hash-table.html}
-% \end{TODO}
 To compare algorithms
-we need a way to measure how they perform.
-Typically, an algorithm takes longer on longer input.
-So we describe performance by using a function
-whose argument is the input size and whose value is the maximum
-time that the algorithm takes on all inputs of at most that size.
+we need to measure how they perform.
+Typically, algorithms take longer on longer input.
+So we describe performance by determining the relationship between
+the size of the algorithm's input 
+and the maximum
+time that the algorithm takes on all inputs of at most that size.\footnote{%
+  We must time it on some model of computation.
+  Turing machines are a good standard for this.}
 
-Next we develop the criteria for the definition of Big~$\bigOh$,
-the tool that we use to compare performance functions.
-Suppose that we have two algorithms. 
+We now develop the criteria for the definition of this comparison tool,
+Big~$\bigOh$.
+% the tool that we use to compare performance functions.
+First suppose that we have two algorithms. 
 When the input is size~$n\in\N$, 
 one takes $\sqrt{n}$~many ticks 
-while the other takes $10\cdot \lg(n)$.\footnote{%
+while the other takes $10\lg(n)$.\footnote{%
   We write $\lg(n)$ for $\log_2(n)$. 
-  That is, compute $\lg(n)$ 
-  by finding the power of $2$
-  that produces~$n$, so 
-  if $n=8$ then $\lg(n)=3$, while 
+  Thus $\lg(n)$ 
+  is the power of $2$ that produces~$n$, so 
+  if $n=8$ then $\lg(n)=3$ while 
   if $n=10$ then $\lg(n)\approx 3.32$.}
 Initially, $\sqrt{n}$ looks better.
 For instance, $\sqrt{1\,000}\approx 31.62$
-and $10 \lg(1\,000)\approx 99.66$.\footnote{
-   These graphs show functions where the domain is the real numbers.
-   Turing machines are
-   discrete devices so it may seem more natural
-   to have the domain be the natural numbers.
-   But we will see that real functions are much more convenient 
-   for complexity measures.}
+and $10 \lg(1\,000)\approx 99.66$.
+% \footnote{
+%    These graphs show functions where the domain is the real numbers.
+%    Turing machines are
+%    discrete devices so it may seem more natural
+%    to have the domain be the natural numbers.
+%    But we will see that real functions are much more convenient 
+%    for complexity measures.}
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo00.pdf}
 \end{center}
@@ -176,43 +180,37 @@ $10\lg(1\,000\,000)\approx 199.32$.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo01.pdf}
 \end{center}
-Thus the first criteria is that big~$\bigOh$
-must focus on what happens in the long run.
+The first criteria for the definition of big~$\bigOh$ is that it
+should give the relationship between input size and output time 
+in the long run.
 
 The second criteria is more subtle.
 The next four examples illustrate.
 
 \begin{example}  \label{ex:FirstBigOMotivation}
-  These graphs compare $f(n)=n^2+5n+6$ with $g(n)=n^2$.
-  The graph on the right compares them in ratio, $f/g$.
+  The graph on the left compares $f(n)=n^2+5n+6$ with $g(n)=n^2\!$.
+  The one on the right shows the ratio~$f/g$.
   \begin{center}
     \includegraphics{complexity/asy/bigo/bigo14.pdf}
     \hspace{3em}
     \includegraphics{complexity/asy/bigo/bigo15.pdf}  
   \end{center}
   On the left we are struck that $n^2+5n+6$ is ahead of $n^2$.
-  But on the right the ratios show that this is misleading.
-  For large $n$'s, $f$'s $5n$ and $6$
-  are swamped by the $n^2$.
-  Consequently in the long run these two functions
+  But on the right the ratios show that this visual is misleading.
+  For large $n$'s, $f$'s terms $5n$ and $6$
+  are swamped by its $n^2$ term.
+  Consequently, in the long run these two functions
   track together\Dash by far the biggest ingredient in their behavior
   is that they are both quadratic.
-  \end{example}% \footnotetext[1]{
-%    These graphs are discrete;
-%    they picture functions of natural numbers, not of real numbers.
-%    This is because the performance functions take inputs that are
-%    natural numbers. 
-%    The earlier graphs of
-%    $\sqrt{n}$ and $10\lg n$ are also discrete but 
-%    they have so many dots that they appear to be 
-%    continuous.}
+  \end{example}
 
   \begin{example}  \label{ex:CompareCubicToQuad}
-  Next compare the quadratic $g(n)=n^2+5n+6$ with the cubic $f(x)=n^3+2n+3$.
-  In contrast to the prior example,
+  Next compare the same quadratic $g(n)=n^2+5n+6$ 
+  with the cubic $f(x)=n^3+2n+3$.
+  Unlike the prior example,
   these two don't track together.
-  Initially $g$ is larger, with $g(0)=6 > f(0)=3$ and
-  $g(1)=12 > f(1)=6$.
+  Initially $g$ is larger, with $g(0)=6>f(0)=3$ and
+  $g(1)=12>f(1)=6$.
   But then the cubic accelerates ahead of the quadratic, so much that
   at the scale of the image, the graph of~$g$ 
   doesn't rise much above the axis.
@@ -228,27 +226,27 @@ The next four examples illustrate.
   \end{example}
 
   \begin{example}  \label{ex:DisregardConstMults}
-  Now compare the quadratics $f(x)=2n^2+3n+4$ and
-  $g(n)=n^2+5n+6$.
-  We've already seen, as described above, 
-  that the function comparison definition
-  needs to discount the initial behavior that
+  Now compare the same quadratic  $g(n)=n^2+5n+6$ with $f(x)=2n^2+3n+4$.
+  Again there is some initial slop that
   $f(0)=4<g(0)=6$
-  and $f(1)=9<g(1)=12$, and instead focus on the long run. 
+  and $f(1)=9<g(1)=12$, 
+  but we discount that and focus on the long run. 
   \begin{center}
     \includegraphics{complexity/asy/bigo/bigo18.pdf}
     \hspace{3em}
     \includegraphics{complexity/asy/bigo/bigo19.pdf}  
   \end{center}
-  This example differs from \cref{ex:FirstBigOMotivation} in that 
-  in the long run, 
-  $f$ stays ahead of~$g$ and also gains in an absolute sense, because of
-  $f$'s dominant term $2n^2\!$ is twice as large as $g$'s~$n^2\!$.
-  So it may appear that we should view~$g$'s rate as less than~$f$'s.
-  However unlike in \cref{ex:CompareCubicToQuad}, 
-  $f$ does not accelerate away.
-  Instead, the ratio between the two is bounded.
-  We will take $g$ to be equivalent to~$f\!$.
+  In that long run this example differs from \cref{ex:FirstBigOMotivation} 
+  since $f$ stays ahead of~$g$ and also gains in an absolute sense.
+  This is because
+  $f$'s dominant term $2n^2$ is twice as large as $g$'s~$n^2\!$.
+  So it may seem that we should view~$f$'s rate as greater than~$g$'s.
+  However, unlike in \cref{ex:CompareCubicToQuad}, 
+  $f$ does not accelerate away in that
+  the ratio between the two is bounded.
+  The definition of $\bigOh$ 
+  will disregard constant factors such as the $2$ here, 
+  and take these two functions to have growth rates that are equivalent.
 \end{example}
 
 \begin{example}  \label{ex:BitsToRepresentANumber}
@@ -306,36 +304,34 @@ $\lg(n)$, the power of $2$ that equals~$n$.
   \end{tabular}
 \end{tabular}
 \end{center}
-Here is a graph of $\bits (n)$, 
-the table's third line, for $n\in\set{1,\ldots 30}$.
-\begin{center}
-  \includegraphics{complexity/asy/bigo/bigo02.pdf}
-\end{center}
+% Here is a graph of $\bits (n)$, 
+% the table's third line, for $n\in\set{1,\ldots 30}$.
+% \begin{center}
+%   \includegraphics{complexity/asy/bigo/bigo02.pdf}
+% \end{center}
 The relationship between the third and fourth lines 
-is that $\bits (n)=1+\floor{\lg(n)}$, 
-except for the boundary value that $\bits(0)=1$
-($\lg(0)$ is undefined). 
+is that $\bits (n)=1+\floor{\lg(n)}$ 
+(except for the boundary value at input~$0$,
+where $\lg$ is undefined). 
 The graph below compares $\bits (n)$ with
 $\lg(n)$.
-Note the change in the horizontal and vertical scales.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo03.pdf}
 \end{center}
-This illustrates that in the formula  $\bits (n)=1+\floor{\lg(n)}$,
-over the long run the `$1+$' and the floor don't matter much.
+This illustrates that the formula's the `$1+$' 
+and the floor $\floor{\cdot}$ don't matter much over the long run.
 A reasonable summary is
-that the base~$2$
-logarithm,~$\lg n$, describes
-the number of bits required to represent the number~$n$.
+that the number of bits required to represent the number~$n$ is roughly~$\lg n$.
 
-Further, the formula for converting among logarithmic functions 
-with other bases, 
-$\log_c(x)=\log_b(x)/\log_{b}(c)$, shows that they differ
-only by the constant factor $1/\log_{b}(c)$.
-As \cref{ex:DisregardConstMults} notes, with the
-function comparison definition given below we will disregard constant 
+One further point about $\bits (n)$. 
+The formula for converting among logarithmic functions 
+with different bases, 
+$\log_c(x)=\log_b(x)/\log_{b}(c)$, says that they differ
+only by a constant factor, $1/\log_{b}(c)$.
+As \cref{ex:DisregardConstMults} notes, the
+definition given below we will disregard constant 
 factors.
-So even the base does not matter\Dash another reasonable summary is 
+So another reasonable summary is 
 that the number of bits
 is ``a'' logarithmic function.
 \end{example}
@@ -355,7 +351,7 @@ However, above we have already found useful
 a function, $\lg$,  that inputs and outputs reals.
 So instead we will consider a subset of the functions from $\R$ 
 to~$\R$.\footnote{%
-  Using real functions has the disadvantage that it can seem to leave out
+  Using real functions may seem to have the disadvantage of leaving out
   natural number functions such as $n!$. 
   One way to deal with this is to extend these natural number functions
   to take real number arguments,
@@ -365,16 +361,14 @@ to~$\R$.\footnote{%
 
 %<*def:ComplexityFcn>
 \begin{definition}
-A \definend{complexity function}~$f$\index{complexity function} 
-is one that inputs real number arguments and outputs real 
-number values, and
-\begin{parenum}
-\item has an \definend{unbounded domain}, so that there is a number~$N\in\R^+$
-such that $x\geq N$ implies that $f(x)$ is defined, and
-\item is \definend{eventually nonnegative}, so that
-there is a number~$M\in\R^+$ so that
-$x\geq M$ implies that $f(x)\geq 0$.
-\end{parenum}
+A function~$f$ that inputs and outputs real numbers is  
+a \definend{complexity function}\index{complexity function} 
+if it
+has an unbounded domain
+and is eventually nonnegative.
+That is, 
+there is an $N\in\R$ such that
+$x\geq N$ implies that $f(x)$ is defined and that $f(x)\geq 0$.
 \end{definition}
 %</def:ComplexityFcn>
 
@@ -411,42 +405,40 @@ $x\geq M$ implies that $f(x)\geq 0$.
       of equality, such as that 
       $f=\bigOh(g)$ does not allow
       us to write `$\bigOh(g)=f$\kern1pt'.
-      Another is that 
-      $x=\bigOh(x^2)$ and $x^2=\bigOh(x^2)$ together do not
+      Another awkwardness is that 
+      $x=\bigOh(x^2)$ and $x^2=\bigOh(x^2)$ does not
       imply that $x=x^2\!$.
     \item
-      Some authors do something a little different, 
-      they allow negative real outputs and write the
+      Some authors allow negative real outputs and write the
       inequality with absolute values, 
       $f(x)\leq C\cdot |g(x)|$.
     \item
-      Sometimes you see `$f$ is $\bigOh(g)$' stated as
+      Sometimes `$f$ is $\bigOh(g)$' is stated as
       `$f(x)$ is $\bigOh(g(x))$'.
-      Speaking strictly, this is
-      wrong because $f(x)$ and $g(x)$ are numbers, not functions.
+      This is
+      sloppy because $f(x)$ and $g(x)$ are numbers, not functions.
   \end{parenum}
   \end{remarks}
 
-Think of `$f$ is $\bigOh(g)$' as meaning that
-$f$'s growth rate is less than or equal to $g$'s rate.
+Think of $\bigOh$ as about `less than or equal to', so that
+`$f$ is $\bigOh(g)$' means
+`$f$'s growth rate is less than or equal to $g$'s'.
 The sketches below illustrate the two possibilities.
 \begin{center}
   \includegraphics{complexity/asy/bigo/bigo10.pdf}
   \hspace{3em}
   \includegraphics{complexity/asy/bigo/bigo11.pdf}  
 \end{center}
-On the left, $g$ appears to accelerate away,
-suggesting that $f$'s rate of growth is strictly less than $g$'s.
-On the right the two seem to track together 
-so that they have the same rate of growth,
-that is, $f$ is $\bigOh(g)$ and also $g$ is $\bigOh(f)$.
+On the left, $f$'s growth rate of growth appears to be strictly less than $g$'s.
+On the right they appear to have equivalent rates
+so that $f$ is $\bigOh(g)$ and also $g$ is $\bigOh(f)$.
 
 The definition requires that to show~$f$ is $\bigOh(g)$, 
 we must produce
 suitable $N$ and~$C$ and verify that they work.
 
 \begin{example} \label{ex:BigOFromDefn}
-  Let $f(x)=x^2$ and $g(x)=x^3$.
+  Let $f(x)=x^2$ and $g(x)=x^3\!$.
   Then $f$ is~$\bigOh(g)$, as witnessed by $N=2$ and $C=1$.
   The verification is: $x>N=2$ implies that $g(x)=x^3=x\cdot x^2$ is greater
   than $2\cdot x^2$, which in turn is greater than 
@@ -457,17 +449,19 @@ suitable $N$ and~$C$ and verify that they work.
   If $f(x)=5x^2$ and $g(x)=x^4$ then to show $f$ is $\bigOh(g)$
   take $N=2$ and $C=2$.
   The verification is that
-  $x> N=2$ implies that $C\cdot x^4=2\cdot x^2\cdot x^2\geq 8x^2> 5 x^2$.
+  $x> N=2$ implies that $C\cdot x^4=2\cdot x^2\cdot x^2\geq 8x^2> 5 x^2\!$.
 \end{example}
 
+\begin{example}
 Don't confuse a function having smaller values with it 
 having a smaller growth rate.
-Take $g(x)=x^2$ and $f(x)=x^2+1$, so that $g(x)<f(x)$ for all~$x$.
-But $g$'s growth rate is not smaller;~rather,
-$f$ is~$\bigOh(g)$.
-To verify, take $N=2$ and~$C=2$. 
-Then $x\geq N=2$ gives
-$C\cdot g(x)=2x^2=x^2+x^2>x^2+1=f(x)$.
+Let $g(x)=x^2$ and $f(x)=x^2+1$. 
+Then $g$'s values are smaller than $f$'s since $g(x)<f(x)$ for all~$x$.
+But $g$'s growth rate is not smaller;~rather, the two rates are equivalent.
+In particular, to verify that $f$ is~$\bigOh(g)$, take $N=1$ and~$C=2$. 
+Then $x\geq N=1$ gives
+$C\cdot g(x)=2x^2=x^2+x^2\geq x^2+1=f(x)$.
+\end{example}
 
 \begin{example}
 As noted above, all logarithmic functions differ by only a constant
@@ -13377,8 +13371,9 @@ the sense that perhaps $\P=\NP$ could be right.
 have noted that  
 there are cases where everyone ``knew'' that some algorithm was the 
 fastest but in the end it proved not to be so.
-The section on Big-$\bigOh$ begins with one, the grade school algorithm for
-multiplication.
+This chapter began with a story about A~Kolmogorov trying to show that
+multiplication requires $n^2$ steps only to have a student in the seminar,
+A~Karatsuba, find a faster way.
 Another is the problem of solving systems
 of linear equations.
 The Gauss's Method algorithm, which runs in time $\bigOh(n^3)$, is 
@@ -13392,7 +13387,7 @@ V~Strassen found a \citetext{$\bigOh(n^{\lg 7})$ method
   It is a \definend{galactic algorithm} because while runs faster than any 
   other known algorithm when the problem is sufficiently large, 
   but the first such problem is so big that we never use the algorithm.
-  For other examples see \autocite{wiki:Galactic}. 
+  For other examples of this happening see \autocite{wiki:Galactic}. 
 }.\footnote{%
   Here is an analogy:
   consider the problem of evaluating $2p^3+3p^2+4p+5$.
@@ -13432,7 +13427,7 @@ that runs in polytime.
 %</discussion:PvsNPiv>
 
 %<*discussion:PvsNPv>
-Every day  on the 
+And every day  on the 
 \citetext{Theory of Computing blog feed}{\autocite{blog:TOC}} 
 there are examples of researchers producing
 algorithms faster than the ones previously known.

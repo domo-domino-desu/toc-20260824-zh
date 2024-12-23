@@ -1430,7 +1430,7 @@ yaxis(pic, XZero,
 // asymptote at y=2
 yequals(pic, 2,   
 	xmin=xmin, xmax=xmax,
-        p=AXISPEN+linetype(new real[] {6,6}),
+        p=AXISPEN+linetype(new real[] {6,6}, offset=6),
 	ticks=NoTicks,
         arrow=None);
 

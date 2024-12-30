@@ -826,15 +826,6 @@ Therefore since $f$ as a whole approaches the limit~$L$, the restriction
 $g$ must also approach that limit.
 \end{proof}
 
-
-
-
-
-
-
-% -------------------------------
-\subsection{Tractable vs intractable}\index{tractable|(}
-
 The table below lists the orders of growth
 that \citetext{are most common in practice}{%
   Sometimes in practice intermediate powers are notable.
@@ -842,8 +833,11 @@ that \citetext{are most common in practice}{%
   is $\bigOh(n^{2.373})$, approximately.
   But most often we work with natural number expressions.
   }.
-% Faster-growing functions are in classes closer to the 
-% bottom of the table.
+Faster-growing functions are in classes closer to the 
+bottom of the table.
+Many of the rankings are justified by the L'H\^{o}pital's Rule calculations
+done earlier.
+
 % For instance, $f(n)=n^{100}$ is a member of $\bigOh(n^n)$ but
 % not of $\bigOh(1)$.
 
@@ -857,16 +851,18 @@ that \citetext{are most common in practice}{%
     $\bigOh(1)$        &Bounded    &$f(n)=15$  \\ 
     $\bigOh(\lg(\lg(n)))$  &Double logarithmic  &$f(n)=\ln(\ln(n))$    \\ 
     $\bigOh(\lg(n))$  &Logarithmic  &$f_0(n)=\ln(n)$, $f_1(n)=\lg(n^3)$  \\ 
-    $\bigOh\bigl(\,(\lg(n))^c\,\bigr)$ &Polylogarithmic  &$f(n)=(\lg(n))^3$ \\ 
+    $\bigOh\bigl(\,(\lg(n))^2\,\bigr)$ &Polylogarithmic  &$f(n)=(\lg(n))^2+\lg(n)$ \\ 
+    $\bigOh\bigl(\,(\lg(n))^3\,\bigr)$ &Also polylogarithmic  &$f(n)=(\lg(n))^3+(\lg(n))^2+5$ \\ 
+    \quad\rule{0pt}{11pt}$\smash\vdots$  &   &   \\
     $\bigOh(n)$    &Linear  &$f(n)=3n+4$  \\ 
     $\bigOh(n\lg(n))$    &Log-linear  &$f_0(n)=5n\lg(n)+n, f_1(n)=\lg(n!)$  \\ 
-    $\bigOh(n^2)$  &Polynomial (quadratic)  &$f(n)=5n^2+2n+12$  \\ 
-    $\bigOh(n^3)$  &Polynomial (cubic)  &$f(n)=2n^3+12n^2+5$ \\
+    $\bigOh(n^2)$  &Quadratic  &$f(n)=5n^2+2n+12$  \\ 
+    $\bigOh(n^3)$  &Cubic  &$f(n)=2n^3+12n^2+5$ \\
     \quad\rule{0pt}{11pt}$\smash\vdots$  &   &   \\
     $\bigOh(2^{\operatorname{poly}(\lg(n))})$   &Quasipolynomial  &$f_0(n)=2^{(\lg(n))^2+3\lg(n)}\!, f_1(n)=n^{\lg(n)}$  \\ 
     \quad\rule{0pt}{11pt}$\smash\vdots$  &   &   \\
     $\bigOh(2^n)$   &Exponential  &$f(n)=10\cdot 2^n$  \\ 
-    $\bigOh(3^n)$   &Exponential  &$f(n)=6\cdot 3^n+n^2$  \\ 
+    $\bigOh(3^n)$   &Also exponential  &$f(n)=6\cdot 3^n+n^2$  \\ 
     \quad\rule{0pt}{11pt}$\smash\vdots$  &   &   \\
     $\bigOh(n!)$  &Factorial  &$f(n)=5\cdot n!+n^{15}-7$  \\  
     $\bigOh(n^n)$  &--No standard name--  &$f(n)=2\cdot n^n+3\cdot 2^n$  \\  
@@ -874,6 +870,22 @@ that \citetext{are most common in practice}{%
   \label{table:HardyHierarchy}
 %</table:HardyHierarchy>
 \end{tablefigure}
+
+\begin{example}
+We can use this benchmark table as a quick way to do many
+of the function comparisons that arise in everyday computing.
+Suppose that we have an algorithm that runs in time $f(x)=5x+3x\lg(x)$
+and another that runs in time $g(x)=3+7(\lg x)^3\!$.
+\Cref{lem:BigOAlgProps} gives that $f$ is~$\bigTheta(x\lg x)$
+while $g$ is $\bigTheta((\lg x)^3)$.
+The table then gives that $(\lg x)^3$ is~$\bigOh(x\lg x)$,
+but $x\lg x$ is not $\bigOh((\lg x)^3)$.
+We conclude that $g$ is~$\bigOh(f)$ but 
+$f$ is not~$\bigOh(g)$.
+That is, the table and the lemma save us having to do a separate 
+l'H\^{o}pital's Rule calculation for every function comparison.   
+\end{example}
+
 
 % If $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$ then 
 % $f$ grows at a strictly slower rate than~$g$.
@@ -888,23 +900,41 @@ that \citetext{are most common in practice}{%
 % slow-growing function of its input, so functions near the list's start
 % are desirable.
 
-The most important distinction is between the polynomial
+
+
+
+
+% -------------------------------
+\subsection{Tractable vs intractable}\index{tractable|(}
+The motivation behind the development of $\bigOh$ is to understand
+the resource consumption, and in particular the runtime, of 
+in-practice algorithms.
+Our main worry is that an algorithm will just take too long,
+or use too much of some other resource.
+
+That means that for the above table
+the most important distinction is between the polynomial
 and exponential functions.
 The
 \citetext{next table shows why}{%
   This table is adapted from \autocite{GareyJohnson}.}.
 It lists how long a job would take if we used an algorithm
 that runs in time $\lg n$, time~$n$, etc.
+
+%<*table:TractibleAndIntractible>
 \begin{tablefigure}{Time taken in years 
   by algorithms whose behavior 
   is given by a few functions, 
   on a few input size~$n$'s.
-  Based on a computer running at $10$~GHz,
-  $10\,000$ million ticks per second, and using that 
+  The number entries assume
+  a computer running at $10$~GHz,
+  $10\,000$ million ticks per second, 
+  which is reasonable for a modern machine.
+  They also use that 
   \protect\citetext{there are $\scinot{3.16}{7}$~seconds in a year}{%
-  The easy way to remember this is the bumper sticker slogan by Tom Duff from
-  Bell Labs: ``$\pi$ seconds is a nanocentury.''}.}
-%<*table:TractibleAndIntractible>
+    The easy way to remember this is the bumper sticker slogan by Tom Duff from
+    Bell Labs: ``$\pi$ seconds is a nanocentury.''}.
+}
   \begin{tabular}{r|*{3}{l}}
     \multicolumn{1}{c}{\ }
       &\multicolumn{1}{c}{\tabulartext{$n=1$}}
@@ -991,14 +1021,15 @@ that runs in time $\lg n$, time~$n$, etc.
 % n= 50  fi(n)=3.56e-03
 % n= 100  fi(n)=4.01e+12
 In the rightmost column,
-between the first few rows the relative change is an order of
+for the first few rows the relative change is an order of
 magnitude but the absolute times are small.
-Then we get to the final row.
-That's not a typo\Dash the last entry really is on order of $10^{12}$~years.
+Then we get to the bottom row.
+That's not a typo\Dash the final entry really is on the
+order of $10^{12}$~years.
 The universe is $14\times 10^{9}$ years old
 so this computation, even with 
 \citetext{input size of only~$100$}{%
-  Basically, the number of bits that 
+  Basically, one hundred bits is what 
   it takes to encode ``Jim Hefferon'' in UTF-8.},
 would take longer than the age of the universe.
 %</disc:TractibleAndIntractible>
@@ -1117,8 +1148,8 @@ will take double the time.
   limit as the input size goes to infinity, so here we stick with it.}\index{tractable}\index{problems!tractable}
 problems\Dash the ones 
 that are at least conceivably solvable in practice\Dash are
-those for which there is an algorithm whose resource
-consumption is at most polynomial.\footnote{%
+those for which 
+\citetext{there is an algorithm whose resource consumption is at most polynomial}{%
   Cobham's Thesis is not universally accepted.
   Some researchers object that if an algorithm
   runs in time $Cn^{k}$ but with an enormous~$k$ or
@@ -1129,12 +1160,13 @@ consumption is at most polynomial.\footnote{%
   a large exponent or large constant then typically
   the approach gets refined over time, shrinking the number.
   In any event, polynomial time is significantly better than exponential time. 
-  Here
-  we accept Cobham's thesis because it gives 
-  technical meaning to the informal `tractable'.}
+  In this book
+  we accept Cobham's thesis because it is the most common view and because
+  it gives 
+  technical meaning to the informal `tractable'.}.
 For instance, if a problem's best available algorithm runs in exponential time
-then we may say that as we understand it today,
-the problem appears 
+then we may say that as we understand things today,
+the problem is 
 \definend{intractable}.\index{tractable}
 \index{tractable|)}
 
@@ -1156,8 +1188,7 @@ Is there more to say?
 Certainly that is the essence.
 But we will nonetheless pause to elaborate on five points
 that often cause confusion.
-
-For the first point, contrast these.
+For the first, contrast these.
 \begin{center}\vspace{-2ex}
 \begin{minipage}[t]{0.4\linewidth}%
 \lstinputlisting[firstline=2,lastline=5]{\schemedir g0-g1.rkt}
@@ -1168,15 +1199,15 @@ For the first point, contrast these.
 \end{minipage}%
 \end{center}
 They have the same output
-but their run times are different.
+but different run times.
 On the left the code
 sets the local variable \codeinline{x} 
 inside the loop, which
 makes it
-\citetext{worse code than what's on the right}{%
+\citetext{four assignments slower than what's on the right}{%
   We won't consider whether the compiler optimizes it out of the loop.}.
-Big~$\bigOh$ disregards this difference, meaning that they have the same 
-runtime order of growth.
+But our definition assigns them the same 
+runtime order of growth because this difference is disregarded by Big~$\bigOh$. 
 Its strength is not in 
 capturing fine implementation details.
 
@@ -1210,9 +1241,8 @@ then on the Turing machine it can be $\bigOh(n^5)$}{%
   is that addition of two $n\times n$ matrices
   on a RAM model takes time that is $\bigOh(n^2)$, but
   on an unboundedly parallel machine model it takes constant time,~$\bigOh(1)$.}.
-Thus, to understand the cost of an algorithm, 
-we must first fix a model
-and then the following definition lets us discuss the Big~$\bigOh$.
+Thus, the cost of an algorithm is fixed to a model.
+% and then the following definition lets us discuss the Big~$\bigOh$.
 (\citetext{The most commonly used model is the Turing machine}{%
   This observaton is from A~Wigderson's Turing Award lecture,
   \url{https://www.youtube.com/watch?v=f2NiGO8zC1c}, 
@@ -1235,17 +1265,11 @@ inputs~$\sigma\in\kleenestar{\Sigma}$ of length~$n$.
 if $\hat{t}_{\mathcal{M}}$ is~$\bigOh(f)$. 
 \end{definition}
 
-\begin{credit}
-  Discussion of the third point started as 
-  \url{https://cs.stackexchange.com/questions/9957/justification-for-neglecting-constants-in-big-o}.  
-\end{credit}
-We have already, in relation to Cobham's Thesis, 
-brought up our third point about Big~$\bigOh\!$.
-\citetext{Its definition ignores constant factors}{%
+Our third point to discuss about Big~$\bigOh\!$
+\citetext{is that its definition ignores constant factors}{%
   This discussion originated as \autocite{SE:IgnoreConstants}.}:~does 
-that reduce its value 
-for comparing algorithms?
-Suppose that we are told that an algorithm takes time
+that reduce its value for comparing algorithms?
+Suppose that an algorithm takes time
 given by $C n^2$ for inputs~$n>N$.
 One of the roles of theory is to be a guide to practice and we
 can worry that there is a big in-practice difference 
@@ -1647,11 +1671,11 @@ from page~\pageref{discussion:SimplifyPrinciples}.
 \end{answer}
 \end{exercise}
 
-\recommended
 \begin{exercise}
-For each pair, find the limit of the ratio $f/g$
-to decide if $f$ is $\bigOh(g)$, or 
-$g$ is $\bigOh(f)$, or both, or neither.
+For each pair of functions, 
+decide whether $f$ is $\bigOh(g)$, or 
+$g$ is $\bigOh(f)$, or both, or neither, by using L'H\^{o}pital's Rule
+on the ratio~$f/g$.
 \begin{exparts*}
 \item
 $f(n)=3n^3+2n+4$, $g(n)=\lg(n)+6$
@@ -1767,48 +1791,6 @@ $g$ is not~$\bigOh(f)$.
 \end{answer}
 \end{exercise}
 
-\recommended
-\begin{exercise}
-  For each pair of functions simplify using \cref{lem:BigOAlgProps}
-  to decide if $f$ is $\bigOh(g)$, 
-  or $g$ is $\bigOh(f)$, or both, or neither.
-  \begin{exparts*}
-    \item $f(n)=4n^2+3$, $g(n)=(1/2)n^2-n$
-    \item $f(n)=53n^3$, $g(n)=\ln n$
-    \item $f(n)=2n^2$, $g(n)=\sqrt{n}$
-    \item $f(n)=n^{1.2}+\lg n$, $g(n)=n^{\sqrt{2}}+2n$
-    \item $f(n)=n^6$, $g(n)=2^{n/6}$
-    \item $f(n)=3^n$, $g(n)=3\cdot 2^n$
-    \item $f(n)=\lg(3n)$, $g(n)=\lg(n)$
-  \end{exparts*}
-\begin{answer}
-We follow the principles for simplifying Big~$\bigOh$ expressions.
-\begin{exparts}
-\item Both of these are $\bigOh(n^2)$.
-  So both $f$ is $\bigOh(g)$ and also $g$ is $\bigOh(f)$, that is,
-  $f$ is $\bigTheta(g)$.
-\item Here, $g$ is a logarithmic function and $f$ is a cubic,
-  so $g$ is~$\bigOh(f)$ but it is not the case that 
-  $f$ is $\bigOh(g)$.
-\item The function~$f$ is quadratic, while $g$ is a square root, 
-  so $g$ is~$\bigOh(f)$ but $f$ is not~$\bigOh(g)$.
-\item The function~$f$ is $\bigOh(n^{1.2})$ while the function~$g$
-  is $\bigOh(n^{\sqrt{2}})$, which is approximately $\bigOh(n^{1.414})$.
-  Consequently, $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
-\item The exponential function $2^{(1/6)n}$ grows faster than  the
-  polynomial function~$n^6$.
-  So $f$ is~$\bigOh(g)$ but it is not the case the 
-  $g$ is~$\bigOh(f)$.
-\item As is shown in \cref{table:HardyHierarchy}, the function
-  $2^n$ is $\bigOh(3^n)$, while $3^n$ is not~$\bigOh(2^n)$.
-  Thus, $g$ is~$\bigOh(f)$ but $f$ is not~$\bigOh(g)$.
-\item Recall the logarithm rule that $\lg(3n)=\lg(3)+\lg(n)$.
-  From this it follows that the two have equivalent growth rates,
-  so $f$ is~$\bigTheta(g)$.    
-\end{exparts}
-\end{answer}
-\end{exercise}
-
   % \begin{exercise}
   % For each, decide if $f$ is~$\bigOh(g)$ or if~$f$ is~$\bigTheta(g)$,
   % or both, or neither.
@@ -1843,7 +1825,7 @@ We follow the principles for simplifying Big~$\bigOh$ expressions.
 
 \begin{exercise}\autocite{GATE21}
 Consider the functions $f_1=10^n$, $f_2=n^{\log n}$, 
-and $f_3=n^{\sqrt{n}}$.
+and $f_3=n^{\sqrt{n}}\!$.
 Which of these arranges the functions in increasing order of asymptotic
 growth rate?
 \begin{exparts*}
@@ -1852,7 +1834,7 @@ growth rate?
 \item $f_1$, $f_2$, $f_3$,  
 \item $f_2$, $f_3$, $f_1$.  
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 It is \textsc{(D)}.
 This shows that $\bigOh(f_2)<\bigOh(f_3)$
 \begin{equation*}
@@ -1860,17 +1842,20 @@ This shows that $\bigOh(f_2)<\bigOh(f_3)$
   =\lim_{x\to\infty}x^{\log x-\sqrt{x}}=0
 \end{equation*}
 as $\lim_{x\to\infty}(\log x-\sqrt{x})=-\infty$.
+
 For $\bigOh(f_3)<\bigOh(f_1)$ 
-we take the limit of the logarithm of the numerator and denominator.
-Because the logarithm is an increasing function, this proves the result.
+take the limit of the natural logarithm of the numerator and denominator.
+Because the natural logarithm is an increasing function, this proves the result.
 \begin{equation*}
-  \lim_{x\to\infty}\frac{\log(x^{\sqrt{x}})}{\log(10^x)}
-  =\lim_{x\to\infty}\frac{\sqrt{x}\log(x)}{x\log(10)}
-  =\lim_{x\to\infty}\frac{1}{\log(10)}\cdot\frac{\log(x)}{\sqrt{x}}
+  \lim_{x\to\infty}\frac{\ln(f_3(x))}{\ln(f_1(x))}
+  =\lim_{x\to\infty}\frac{\ln(x^{\sqrt{x}})}{\ln(10^x)}
+  =\lim_{x\to\infty}\frac{\sqrt{x}\ln(x)}{x\ln(10)}
+  =\lim_{x\to\infty}\frac{1}{\ln(10)}\cdot\frac{\ln(x)}{\sqrt{x}}
 \end{equation*}
-By L'H\^{o}pital's Rule that equals this.
+This is an ``$\infty/\infty$'' type limit.
+Apply L'H\^{o}pital.
 \begin{equation*}
-  =\lim_{x\to\infty}\frac{1/x}{(1/2)(1/\sqrt{x})}
+  \lim_{x\to\infty}\frac{1/x}{(1/2)(1/\sqrt{x})}
   =2\cdot\lim_{x\to\infty}\frac{\sqrt{x}}{x}
   =2\cdot\lim_{x\to\infty}\frac{1}{\sqrt{x}}
   =0
@@ -1887,18 +1872,18 @@ By L'H\^{o}pital's Rule that equals this.
   \item $10+4n^2+\floor{\cos(n^3)}$
   \item $\lg(5^n)$
   \end{exparts*}
-\begin{answer}
-Observe that $\cos(t)$ varies between $-1$ and~$1$.
-Observe also that by the rules of logarithms $\lg(5^n)=n\cdot\lg(5)$.
-Thus, the ones with a growth rate that is less than or equal to~$n^2$'s are
+\begin{answer}\verified
+First, $\cos(t)$ varies between $-1$ and~$1$.
+Also, by the rules of logarithms $\lg(5^n)=n\cdot\lg(5)$.
+Thus, the ones with a growth rate less than or equal to~$n^2$'s are
 the first, second, fourth, and fifth.
-The third one has a growth rate that is $\bigTheta(n^3)$.
+The third one has a growth rate that is $\bigTheta(n^3)$, bigger than $n^2$'s.
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-  For each, state true or false.
+  State true or false.
   \begin{exparts*}
   \item $5n^2+2n$ is $\bigOh(n^3)$
   \item $2+4n^3$ is $\bigOh(\lg n)$
@@ -1906,26 +1891,43 @@ The third one has a growth rate that is $\bigTheta(n^3)$.
   \item $n^3+n^2+n$ is $\bigOh(n^3)$
   \item $n^3+n^2+n$ is $\bigOh(2^n)$
   \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item True.
-  By the simplifying principles from
-  page~\pageref{discussion:SimplifyPrinciples},
-  its growth rate is dominated by the quadratic term, 
-  so $5n^2+2n$ is $\bigOh(n^2)$, which on the order of growth hierarchy 
-  lies below $n^3$.
+  L'H\^{o}pital's Rule gives that $5n^2+2n$ is $\bigTheta(n^2)$.
+  \begin{equation*}
+    \lim_{x\to\infty}\frac{5n^2+2n}{n^2}
+    =
+    \lim_{x\to\infty}\frac{10n+2}{2n}
+    =
+    \lim_{x\to\infty}\frac{10}{2}
+    =5
+  \end{equation*}
+  In the order of growth hierarchy that lies below $n^3$.
+\item False.
+  L'H\^{o}pital's Rule shows that $2+4n^3$ is $\bigTheta(n^3)$.
+  \begin{equation*}
+    \lim_{x\to\infty}\frac{2+4n^3}{n^3}
+    =
+    \lim_{x\to\infty}\frac{12n^2}{3n^2}
+    =4
+  \end{equation*}
+  But in the order of growth hierarchy \cref{table:HardyHierarchy} that
+  is above $\lg n$.  
 \item True.
   As discussed in the section, all logarithmic functions grow at the same 
   rate.  
-  So $\ln n$ is~$\bigTheta(\lg n)$, and hence 
+  So $\ln n$ is~$\bigTheta(\lg n)$ and hence 
   $\ln n$ is~$\bigOh(\lg n)$.
 \item True.
   Where $f(n)=n^3+n^2+n$, by the simplifying principles from
   page~\pageref{discussion:SimplifyPrinciples}, 
   $f$ is $\bigOh(n^3)$.
+  (We could also use L'H\^{o}pital's Rule to establish this.)
 \item True.
   For any polynomial function~$p$, we have that $p$ is~$\bigOh(2^n)$,
   by \cref{lem:PolySlowerThanExp}.
+  (We could also use L'H\^{o}pital's Rule.)
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -1950,6 +1952,63 @@ For each we use the simplifying principles.
 \item $k=12$
 \item This is $\bigOh(n^{7/2})$ but since the question specifies that
   $k\in\N$, the answer is $k=4$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+  For each pair of functions,decide if $f$ is $\bigOh(g)$, 
+  or $g$ is $\bigOh(f)$, or both, or neither, by simplifying using 
+  \cref{lem:BigOAlgProps}
+  and \cref{table:HardyHierarchy}.
+  \begin{exparts*}
+    \item $f(n)=4n^2+3$, $g(n)=(1/2)n^2-n$
+    \item $f(n)=53n^3$, $g(n)=\ln n$
+    \item $f(n)=2n^2$, $g(n)=\sqrt{n}$
+    \item $f(n)=n^{1.2}+\lg n$, $g(n)=n^{\sqrt{2}}+2n$
+  \end{exparts*}
+\begin{answer}
+We follow the principles for simplifying Big~$\bigOh$ expressions.
+\begin{exparts}
+\item Both of these are $\bigOh(n^2)$.
+  So both $f$ is $\bigOh(g)$ and also $g$ is $\bigOh(f)$, that is,
+  $f$ is $\bigTheta(g)$.
+\item Here, $g$ is a logarithmic function and $f$ is a cubic,
+  so $g$ is~$\bigOh(f)$ but it is not the case that 
+  $f$ is $\bigOh(g)$.
+\item The function~$f$ is quadratic, while $g$ is a square root, 
+  so $g$ is~$\bigOh(f)$ but $f$ is not~$\bigOh(g)$.
+\item The function~$f$ is $\bigOh(n^{1.2})$ while the function~$g$
+  is $\bigOh(n^{\sqrt{2}})$, which is approximately $\bigOh(n^{1.414})$.
+  Consequently, $f$ is~$\bigOh(g)$ but $g$ is not~$\bigOh(f)$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+  For each pair, decide whether $f$ is $\bigOh(g)$, 
+  or $g$ is $\bigOh(f)$, or both, or neither, by simplifying 
+  using \cref{lem:BigOAlgProps}
+  and \cref{table:HardyHierarchy}.
+  \begin{exparts*}
+    \item $f(n)=n^6$, $g(n)=2^{n/6}$
+    \item $f(n)=3^n$, $g(n)=3\cdot 2^n$
+    \item $f(n)=\lg(3n)$, $g(n)=\lg(n)$
+  \end{exparts*}
+\begin{answer}
+We follow the principles for simplifying Big~$\bigOh$ expressions.
+\begin{exparts}
+\item The exponential function $2^{(1/6)n}$ grows faster than  the
+  polynomial function~$n^6$.
+  So $f$ is~$\bigOh(g)$ but it is not the case the 
+  $g$ is~$\bigOh(f)$.
+\item As is shown in \cref{table:HardyHierarchy}, the function
+  $2^n$ is $\bigOh(3^n)$, while $3^n$ is not~$\bigOh(2^n)$.
+  Thus, $g$ is~$\bigOh(f)$ but $f$ is not~$\bigOh(g)$.
+\item Recall the logarithm rule that $\lg(3n)=\lg(3)+\lg(n)$.
+  From this it follows that the two have equivalent growth rates,
+  so $f$ is~$\bigTheta(g)$.    
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -2519,8 +2578,8 @@ no polynomial of higher degree is a member of~$\bigOh(f)$.
 \end{exercise}
   
 \begin{exercise} \label{exer:OrdersBetweenPolyAndExp}
-There are orders of growth between polynomial and exponential.
-Specifically, $f(x)=x^{\lg x}$ is one.
+We will show that the order of growth of the function $f(x)=x^{\lg x}$ 
+is between polynomial and exponential.
 \begin{exparts*}
 \item Show that $\lg(x)\in\bigOh((\lg(x))^2)$ but
   $(\lg(x))^2\notin\bigOh(\lg(x))$.

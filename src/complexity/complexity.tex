@@ -355,14 +355,14 @@ So to describe the performance of algorithms
 we may initially think to focus on functions that input and output
 natural numbers.
 However, above we have already found useful
-a function, $\lg$,  that inputs and outputs reals.\footnote{%
-  Using real functions may seem to have the disadvantage of leaving out
-  natural number functions such as $n!$. 
-  One way to deal with this is to extend these natural number functions
-  to take real number arguments,
-  for instance, extending the factorial to
-  $\floor{x}!$, whose domain is the set of 
-  nonnegative reals (or to the more advanced $\Gamma$ function).}
+a function, $\lg$,  that inputs and outputs reals.% \footnote{%
+  % Using real functions may seem to have the disadvantage of leaving out
+  % natural number functions such as $n!$. 
+  % One way to deal with this is to extend these natural number functions
+  % to take real number arguments,
+  % for instance, extending the factorial to
+  % $\floor{x}!$, whose domain is the set of 
+  % nonnegative reals (or to the more advanced $\Gamma$ function).}
 
 %<*def:ComplexityFcn>
 \begin{definition}
@@ -379,22 +379,24 @@ $x\geq N$ implies that $f(x)$ is defined and that $f(x)\geq 0$.
 
 %<*def:BigO>
 \begin{definition}  \label{def:BigO}
-  Let $g$ be a complexity function.
-  Then \definend{Big~$\bigOh$} of $g$, 
-  \definend{$\bigOh(g)$},\index{Big O@Big $\bigOh$}\index{function!Big O@Big $\bigOh$}
-  is the set of complexity functions~$f$
-  satisfying that there are constants $N,C\in \R^+$ so that 
-  if $x\geq N$ then both $g(x)$ and~$f(x)$ are defined
-  and $f(x)\leq C\cdot g(x)$. 
-  We say that \definend{$f$ is $\bigOh(g)$},
-  or that \definend{$f\in \bigOh(g)$},
-  or that
+  Let $f$ and $g$ be complexity functions.
+  Then \definend{$f$ is Big~$\bigOh(g)$}\footnotemark\ %
+  when there are constants $N,C\in\R$ such that 
+  if $x\geq N$ then both $g(x)$ and~$f(x)$ are defined,
+  and $\sizeof{f(x)}\leq C\cdot \sizeof{g(x)}$.
+  Other terminology is that \definend{$f\in \bigOh(g)$},
+  or
   \definend{$f$ is of order at most~$g$},\index{function!order of growth}\index{order of growth!function}
-  or that \definend{$f=\bigOh(g)$}.
-\end{definition}
+  or \definend{$f=\bigOh(g)$}. 
+  The set 
+  \definend{$\bigOh(g)$}\index{Big O@Big $\bigOh$}\index{function!Big O@Big $\bigOh$}
+  is the collection of complexity functions~$f$
+  where $f$ is $\bigOh(g)$.
+\end{definition}\footnotetext{%
+  Read aloud as ``$f$ is Big Oh of $g$.''}
 %</def:BigO>
 
-\begin{remarks}
+\begin{remarks}% 
 \begin{parenum}
     \item
       We use the letter `$\bigOh$' because this is about the order of growth.
@@ -406,19 +408,22 @@ $x\geq N$ implies that $f(x)$ is defined and that $f(x)\geq 0$.
     \item
       \citetext{The `$f=\bigOh(g)$' notation is very common}{%
          See also \url{https://whystartat.xyz/wiki/Big_O_notation}.}.
-      However it does not follow the usual rules
+      But it does not follow the usual rules
       of equality, such as that 
       $f=\bigOh(g)$ does not allow
-      us to write `$\bigOh(g)=f$\kern1pt'.
-      Another awkwardness is that 
-      $x=\bigOh(x^2)$ and $x^2=\bigOh(x^2)$ does not
+      us to write `$\bigOh(g)=f\kern1pt$'
+      and that 
+      $x=\bigOh(x^2)$ and $x^2=\bigOh(x^2)$ do not
       imply that $x=x^2\!$.
     \item
-      Some authors allow negative real outputs and write the
-      inequality with absolute values, 
-      $f(x)\leq C\cdot |g(x)|$.
+      The absolute values in 
+      $\sizeof{f(x)}\leq C\cdot \sizeof{g(x)}$
+      are standard but can be an annoyance in doing algebra.
+      Complexity functions are eventually nonnegative so if convenient
+      we assume that $x$ is large enough to justify dropping the
+      absolute values.
     \item
-      Sometimes `$f$ is $\bigOh(g)$' is stated as
+      Sometimes people say
       `$f(x)$ is $\bigOh(g(x))$'.
       This is
       sloppy because $f(x)$ and $g(x)$ are numbers, not functions.
@@ -496,17 +501,17 @@ when $\floor{x}$ is even.
 Let % $f$, $g$, $f_0$, $f_1$, $g_0$ and~$g_1$ 
 these be complexity functions.
 \begin{thmparts}
-\item
+\item \label{lem:BigOAlgPropsItemConstMult}
   If $f$ is $\bigOh(g)$ then 
   for any constant $a\in\R^+\!$, the function $a\cdot f$ is $\bigOh(g)$.
-\item  
+\item  \label{lem:BigOAlgPropsItemAdd}
   If $f_0$ is $\bigOh(g_0)$ and $f_1$ is $\bigOh(g_1)$
   then the sum $f_0+f_1$ is $\bigOh(g)$ where
   $g(x)=\max(g_0(x),g_1(x))$.  
   So if
   both $f_0$ and $f_1$ are $\bigOh(g)$
   then $f_0+f_1$ is also $\bigOh(g)$.
-\item
+\item \label{lem:BigOAlgPropsItemProd}
   If $f_0$ is $\bigOh(g_0)$ and $f_1$ is $\bigOh(g_1)$
   then the product $f_0f_1$ is $\bigOh(g_0g_1)$.
 \end{thmparts}
@@ -519,12 +524,11 @@ See \cref{exer:BigOAlgProps}.
 
 \label{discussion:SimplifyPrinciples}
 That result gives us two  principles for simplifying Big~$\bigOh$ expressions.
-First, we can drop constants,
-factors that do not depend on the input.
+First, we can drop positive constant factors.
 Second, if an expression is a sum of finitely many 
-terms then we can drop every term except for the one 
+positive terms then we can drop all but the one 
 with the largest growth rate. 
-These two are often used to come up with a natural growth rate for an expression.
+Often these two principles lead to a natural growth rate for an expression.
 
 \begin{example}
 Consider $f(n)=5x^3+3x^2+12x$.
@@ -538,7 +542,7 @@ is intuitively clear and will follow from
 Then the lemma's first item with $a=1/5$ lets us drop the 
 constant~$5$, giving that $f$ is $\bigOh(x^3)$.
 
-It is also true that $f$ is $\bigOh(x^4)$, and $\bigOh(x^5)$, etc., but
+While $f$ is also $\bigOh(x^4)$, and $\bigOh(x^5)$, etc.,
 characterizing it as $\bigOh(x^3)$ is natural. 
 \end{example}
 
@@ -591,10 +595,11 @@ characterizing it as $\bigOh(x^3)$ is natural.
   \definend{same order of growth}\index{same order of growth}\index{functions!same order of growth}
   if $f$ is~$\bigOh(g)$ and also
   $g$ is~$\bigOh(f)$.
-  We say that \definend{$f$ is $\bigTheta(g)$}
-  (read `$f$ is Big-Theta of $g$'), or, what is the same thing,
+  We say that \definend{$f$ is $\bigTheta(g)$}\footnotemark\
+  or, what is the same thing,
   that $g$ is~$\bigTheta(f)$.
-\end{definition}
+\end{definition}\footnotetext{%
+  Read aloud as ``$f$ is Big Theta of $g$.}
 %</def:BigTheta>
 
 %<*lem:BigThetaEquivalence>
@@ -628,9 +633,7 @@ See \cref{exer:BigThetaEquivalence}
 
 The next result eases Big~$\bigOh$  
 calculations 
-for most of the functions that we encounter, 
-including polynomial, exponential,
-and logarithmic functions.
+for most of the functions that we encounter.
 
 %<*lem:LHBigO>
 \begin{theorem}  \label{lem:LHBigO}
@@ -660,6 +663,10 @@ and logarithmic functions.
   \protect\definend{asymptotically equivalent}.}\index{asymptotically equivalent}
 %</lem:LHBigO>
 
+\begin{proof}
+See \cref{exer:LHBigO}.
+\end{proof}
+
 \noindent It pairs well with this result, familiar 
 from Calculus~I.
 
@@ -680,7 +687,7 @@ $\lim_{x\to\infty}f(x)/g(x)$ also exists and also equals~$L$.
 \begin{example} \label{ex:LHopitalFirstExample}
   Let $f(x)=x^2+5x+6$ and $g(x)=x^3+2x+3$.
   As often happens, here we get the limit by applying 
-  L'H\^{o}pital's Rule multiple times.
+  L'H\^{o}pital's Rule more than once.
   \begin{equation*}
     \lim_{x\to\infty}\frac{f(x)}{g(x)}
     =\lim_{x\to\infty}\frac{x^2+5x+6}{x^3+2x+3}
@@ -703,52 +710,47 @@ $\lim_{x\to\infty}f(x)/g(x)$ also exists and also equals~$L$.
   That is, $f$ is~$\bigTheta(g)$.
 \end{example}
 \begin{example}
-  For $f(x)=5x^4+15$ and $g(x)=x^2-3x$, this
-  $\lim_{x\to\infty}(5x^4+15)/(x^2-3x)
-   =\lim_{x\to\infty}20x^3/(2x-3)
-   =\lim_{x\to\infty}60x^2/2
+  For $f(x)=5x^4+15$ and $g(x)=x^2$, the limit
+  $\lim_{x\to\infty}(5x^4+15)/x^2
+   =\lim_{x\to\infty}20x^3/2x
+   =\lim_{x\to\infty}10x^2
    =\infty$
-  % \begin{equation*}
-  %   \lim_{x\to\infty}\frac{5x^4+15}{x^2-3x}
-  %   =\lim_{x\to\infty}\frac{20x^3}{2x-3}
-  %   =\lim_{x\to\infty}\frac{60x^2}{2}
-  %   =\infty
-  % \end{equation*}
   shows that $f$'s growth rate is strictly greater than~$g$'s rate\Dash
   $g$ is~$\bigOh(f)$ but $f$ is not~$\bigOh(g)$.
 \end{example}
 
 \begin{example} \label{ex:CompareLogToPower}
-The logarithmic function $f(x)=\log_b(x)$ grows very slowly:
-$\log_b(x)$ is~$\bigOh(x)$, and
+The logarithmic function $f(x)=\log_b x$ grows very slowly:
+$\log_b x$ is~$\bigOh(x)$, and
 is~$\bigOh(x^{0.1})$,
 and is~$\bigOh(x^{0.01})$.
 In fact, for any $d>0$ no matter how small,
-$\log_b(x)$ is~$\bigOh(x^d)$ and $x^d$ is not~$\bigOh(\log_b(x))$.
+$\log_b x$ is~$\bigOh(x^d)$ and $x^d$ is not~$\bigOh(\log_b x)$.
 \begin{equation*}
-  \lim_{x\to\infty}\frac{\log_b(x)}{x^d}
-  =\lim_{x\to\infty}\frac{1/(x\ln(b))}{dx^{d-1}}
-  =\frac{1}{d\ln(b)}\cdot\lim_{x\to\infty}\frac{1}{x^d}
+  \lim_{x\to\infty}\frac{\log_b x}{x^d}
+  =\lim_{x\to\infty}\frac{1/(x\ln b)}{dx^{d-1}}
+  =\frac{1}{d\ln b}\cdot\lim_{x\to\infty}\frac{1}{x^d}
   =0
 \end{equation*}
 
 The difference in growth rates between logarithmic and polynomial functions
 is even more marked than that.
 L'H\^{o}pital's Rule % , along with the Chain Rule,
-gives that $(\log_b(x))^2$ is $\bigOh(x)$.
+gives that $(\log_b x)^2$ is $\bigOh(x)$.
 \begin{multline*}
-\lim_{x\to\infty}\frac{(\log_b(x))^2}{x}
-=\lim_{x\to\infty}\frac{2\ln(x)/(x\ln(b))}{1}      \\
-=\frac{2}{\ln(b)}\cdot\lim_{x\to\infty}\frac{\ln(x)}{x}
-=\frac{2}{\ln(b)}\cdot\lim_{x\to\infty}\frac{1/x}{1}=0
+\lim_{x\to\infty}\frac{(\log_b x)^2}{x}
+=\lim_{x\to\infty}\frac{2(\log_b x)\cdot 1/(x\ln b)}{1}     
+=\lim_{x\to\infty}\frac{2(\ln x /\ln b )/(x\ln b)}{1}     \\    
+=\frac{2}{(\ln b)^2}\cdot\lim_{x\to\infty}\frac{\ln x}{x}
+=\frac{2}{(\ln b)^2}\cdot\lim_{x\to\infty}\frac{1/x}{1}=0
 \end{multline*}
 Further, \Cref{exer:PowersOfLogSmallerThanAnyPoly}
-shows that for every power~$k$ the function $(\log_b(x))^k$ is $\bigOh(x^d)$ for
+shows that for every power~$k$ the function $(\log_b x)^k$ is $\bigOh(x^d)$ for
 any~$d>0$.
 \end{example}
 
 \begin{example}
-The log-linear function $x\cdot\lg(x)$ has a similar relationship to the
+The log-linear function $x\cdot\lg x$ has a similar relationship to the
 polynomial $x^d$ where $d>1$.
 % Starting with $\lim_{x\to\infty}(x\lg(x))/x^d\!$,
 % the derivative gives
@@ -756,11 +758,11 @@ polynomial $x^d$ where $d>1$.
 % and the second derivative gives
 % $\bigl(1/d(d-1)\bigr)\cdot\lim_{x\to\infty}1/x^{d-1}\!$, which is zero.
 \begin{multline*}
-  \lim_{x\to\infty}\frac{x\lg(x)}{x^d}
-  =\lim_{x\to\infty}\frac{x\cdot (1/x\ln(2))+1\cdot\ln(x)}{dx^{d-1}}
-  =\frac{1}{d}\cdot\lim_{x\to\infty}\frac{(1/\ln(2))+\ln(x)}{x^{d-1}}          \\
-  =\frac{1}{d(d-1)}\cdot\lim_{x\to\infty}\frac{(1/x)}{x^{d-2}}
-  =\frac{1}{d(d-1)}\cdot\lim_{x\to\infty}\frac{1}{x^{d-1}}
+  \lim_{x\to\infty}\frac{x\lg x}{x^d}
+  =\lim_{x\to\infty}\frac{x\cdot (1/x\ln 2)+\lg x\cdot 1}{dx^{d-1}}
+  =\frac{1}{d}\cdot\lim_{x\to\infty}\frac{(1/\ln 2)+\lg x}{x^{d-1}}          \\
+  =\frac{1}{d}\cdot\lim_{x\to\infty}\frac{1/(x\ln 2)}{(d-1)x^{d-2}}
+  =\frac{1}{d(d-1)\ln 2}\cdot\lim_{x\to\infty}\frac{1}{x^{d-1}}
   =0
 \end{multline*}
 \end{example}
@@ -876,13 +878,13 @@ We can use this benchmark table as a quick way to do many
 of the function comparisons that arise in everyday computing.
 Suppose that we have an algorithm that runs in time $f(x)=5x+3x\lg(x)$
 and another that runs in time $g(x)=3+7(\lg x)^3\!$.
-\Cref{lem:BigOAlgProps} gives that $f$ is~$\bigTheta(x\lg x)$
-while $g$ is $\bigTheta((\lg x)^3)$.
-The table then gives that $(\lg x)^3$ is~$\bigOh(x\lg x)$,
+\Cref{lem:BigOAlgProps} and the table give that $f$ is~$\bigTheta(x\lg x)$
+while $g$ is $\bigTheta((\lg x)^3)$. 
+By the table $(\lg x)^3$ is~$\bigOh(x\lg x)$
 but $x\lg x$ is not $\bigOh((\lg x)^3)$.
 We conclude that $g$ is~$\bigOh(f)$ but 
 $f$ is not~$\bigOh(g)$.
-That is, the table and the lemma save us having to do a separate 
+In this way we don't have to do a separate 
 l'H\^{o}pital's Rule calculation for every function comparison.   
 \end{example}
 
@@ -1321,17 +1323,18 @@ much more important than knowing the values of the constants.
 
 \margingraphic[l]{0.17\textwidth}{complexity/pix/knuth.jpg}{\label{fig:Knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938}}\index{Knuth, D!picture}
 We could imagine, instead of analyzing particular commercial machines, agreeing 
-on specifications for a reference architecture\Dash
-this is the approach taken by D~Knuth in the monumental
+on specifications for a reference architecture.
+This is D~Knuth's approach in the monumental
 \textit{Art of Computer Programming} series.
 But as in the commercial case there is a risk that
 \citetext{the standard gets updated}{%
   Even Knuth had to update standards, from his machine model MIX to MMIX.}.
 Then published results longer apply, and it is all to do again.
-For this reason the analysis that we do to find the Big~$\bigOh$ behavior of an
+Instead, the analysis that we do to find the Big~$\bigOh$ behavior of an
 algorithm usually refers to an abstract computer model, such as a 
-Turing machine or a RAM model, and it usually does not go to the 
-extent of finding the constants. 
+Turing machine or a RAM model.
+% , and it usually does not go to the 
+% extent of finding the constants. 
 Being reference independent has advantages, especially in a
 quickly changing area.
 
@@ -1933,20 +1936,65 @@ The third one has a growth rate that is $\bigTheta(n^3)$, bigger than $n^2$'s.
 \end{exercise}
   
 \begin{exercise}
-  For each find the smallest $k\in\N$ so that the given function is
+  Find the smallest power $k\in\N$ so that the given function is
   $\bigOh(n^k)$.
   \begin{exparts*}
   \item $n^3+(n^4/10\,000\,000)$
-  \item $(n+2)(n+3)(n^2-\lg n)$
+  \item $(n+2)(n+3)(n^2+\lg n)$
   \item $5n^3+25+\ceiling{\cos(n)}$
   \item $9\cdot (n^2+n^3)^4$
   \item $\floor{\sqrt{5n^7+2n^2}}$
   \end{exparts*}
 \begin{answer}
-For each we use the simplifying principles.
+\textit{Comment:}~In 
+doing these we may have the option of using the algebraic properties in 
+\cref{lem:BigOAlgProps} to simplify, or of using L'H\^{o}pital's Rule.
+The lemma gives more of a sense of using how the expressions are constructed.
+For instance, in the first item we strictly speaking do not need the first
+paragraph because the second paragraph suffices to show $k=4$ is correct. 
+But for some problems like this, including only the second paragraph could give a
+sense to a person who had trouble with the question that the $k=4$ was plucked
+out of the air.
 \begin{exparts}
-\item $k=4$
-\item $k=4$
+\item The smallest power is $k=4$.
+  By the lemma's \cref{lem:BigOAlgPropsItemConstMult}
+  the function $(1/10\,000\,000)n^4$ is $\bigOh(n^4)$.
+  By \cref{lem:BigOAlgPropsItemAdd} the function $n^3+(1/10\,000\,000)n^4$
+  is~$\bigOh(n^4)$. 
+  
+  One way to see that no smaller power $k\in\N$ will do is to consider
+  $\lim_{x\to\infty}x^3/(x^3+(x^4/10\,000\,000))$.
+  \begin{multline*}
+    \lim_{x\to\infty}\frac{x^4}{x^3+(x^4/10\,000\,000)}
+    =
+    \lim_{x\to\infty}\frac{x}{1+(x/10\,000\,000)}
+    =
+    \lim_{x\to\infty}\frac{x}{(10\,000\,000+x)/10\,000\,000)}  \\
+    =
+    \lim_{x\to\infty}\frac{10\,000\,000x}{10\,000\,000+x}
+    =
+    \lim_{x\to\infty}\frac{10\,000\,000}{1}
+    =10\,000\,000
+  \end{multline*}
+  (the next to last equality is from L'H\^{o}pital's Rule).
+  So $n^3+(n^4/10\,000\,000)$ is $\bigTheta(n^4)$.
+  Thus $k=4$ is the minimum possible.
+\item The smallest power is $k=4$.
+Multiplying through gives 
+$n^4+5n^3+6n^2-n^2\lg n-5n\lg n-6\lg n$.
+\cref{lem:BigOAlgProps}'s \cref{lem:BigOAlgPropsItemAdd} says that the
+entire expression is $\bigOh(g)$ where $g$ is the term with the largest 
+order of growth.
+In this expression that is the $n^4$.
+
+To check that no smaller power suffices, compare the functions with the limit.
+\begin{equation*}
+  \lim_{x\to\infty}\frac{x^4+5x^3+6x^2-x^2\lg x-5x\lg x-6\lg x}{x^4}
+  =
+  \lim_{x\to\infty}\frac{x^4}{x^4}+\frac{5x^3}{x^4}+\frac{6x^2}{x^4}-\frac{x^2\lg x}{x^4}-\frac{5x\lg x}{x^4}-\frac{6\lg x}{x^4}
+\end{equation*}
+
+
 \item $k=3$ 
   (The cosine function is bounded between $-1$ and~$1$.)
 \item $k=12$
@@ -2714,41 +2762,60 @@ $\hat{C}\cdot f_2(x)\geq C_0\cdot f_1(x) \geq f_0(x)$.
 % https://math.stackexchange.com/questions/925053/using-limits-to-determine-big-o-big-omega-and-big-theta
 % (given an example where the limit doesn't exist?)
 % http://web.mit.edu/broder/Public/asymptotics-cheatsheet.pdf
-\begin{exercise}
+\begin{exercise}  \label{exer:LHBigO}
 \begin{credit}
   Stack Exchange user Ilmari Karonen,
   \url{https://math.stackexchange.com/questions/925053/using-limits-to-determine-big-o-big-omega-and-big-theta}
 \end{credit}
-  % \Cref{lem:LHBigO} says that if the limit of the ratio of two functions
-  % exists then 
-  % we can determine the $\bigOh$ relationship between the two.
-  Assume that $f$ and~$g$ are complexity functions.
+  We will prove the first of \Cref{lem:LHBigO}'s three items;~the other two 
+  are similar.
+  (This requires the precise definition of a limit, which may be 
+  outside of the prerequisites for this course:~$\lim_{x\to\infty}h(x)=0$ if for
+  all $\varepsilon>0$ there is an $M\in\R$ such that 
+  $x\geq M$ implies that $|h(x)|<\varepsilon$.)
+  Assume that
+  $\lim_{x\to\infty}f(x)/g(x)$ exists and equals~$0$.
   \begin{exparts*} 
-    \item Let
-      $\lim_{x\to\infty}f(x)/g(x)$ exist and equal~$0$.
+    \item 
       Show that $f$ is $\bigOh(g)$.
-      (\hint~this requires a rigorous definition of the limit.)
-    \item We can give an example where $f$ is~$\bigOh(g)$ 
-       even though $\lim_{x\to\infty}f(x)/g(x)$
-       does not exist.
-       Verify that, where $g(x)=x$ and where
-       $f(x)=x$ when $\floor{x}$ is odd and
-       $f(x)=2x$ when $\floor{x}$ is even.
+    \item Show that $g$ is not $\bigOh(f)$.
+    % \item We can give an example where $f$ is~$\bigOh(g)$ 
+    %    even though $\lim_{x\to\infty}f(x)/g(x)$
+    %    does not exist.
+    %    Verify that, where $g(x)=x$ and where
+    %    $f(x)=x$ when $\floor{x}$ is odd and
+    %    $f(x)=2x$ when $\floor{x}$ is even.
   \end{exparts*}
 \begin{answer}\verified
+Recall that by definition $f$ is $\bigOh(g)$ if and only if there exists
+numbers $N,C\in\R$ such that if $x\geq N$ then
+$|f(x)|\leq C\cdot|g(x)|$.
 \begin{exparts}
 \item If $\lim_{x\to\infty}f(x)/g(x)$ exists and equals~$0$ then 
-  for any $\varepsilon>0$ there is an~$N\in\R$ such that $x\geq N$ implies that 
-  $f(x)/g(x)<\varepsilon$.
-  That gives $f(x)<\varepsilon\cdot g(x)$.
-  Fix $\varepsilon=1/2$ and $C=2$. 
-  Take inverses to get that $x\geq N$ implies 
-  $C\cdot g(x)=2g(x)\geq f(x)$. 
-\item To show that $f$ is~$\bigOh(g)$, take $N=1$ and~$C=4$.
+  for any $\varepsilon>0$ there is an~$M\in\R$ such that $x\geq M$ implies that 
+  $|f(x)/g(x)|<\varepsilon$, and therefore
+  $|f(x)|<\varepsilon\cdot |g(x)|$.
+  Taking $N$ to be~$M$ and $C$ to be $\varepsilon$, this 
+  is exactly what is required to conclude that $f$ is~$\bigOh(g)$.
+\item
+  Suppose otherwise, that $g$ is~$\bigOh(f)$.
+  Then by definition there are constants $K,P\in\R$ such that
+  if $x\geq K$ then $|g(x)|\leq P\cdot |f(x)|$, which gives
+  $1/P\leq |f(x)/g(x)|$.
 
-  On the other hand, 
-  the limit doesn't exist, as the ratio oscillates between $1$
-  and~$2$.
+  The question's assumption is that
+  $\lim_{x\to\infty}f(x)/g(x)$ exists and equals~$0$.
+  Fix $\varepsilon=1/(P+1)$.
+  Then there exists a constant $M\in\R$ so that if $x\geq M$ then
+  $|f(x)/g(x)|\leq 1/(P+1)$.
+
+  Those two paragraphs conflict for $x$'s larger than the maximum of $K$ 
+  and~$M$.
+% \item To show that $f$ is~$\bigOh(g)$, take $N=1$ and~$C=4$.
+
+%   On the other hand, 
+%   the limit doesn't exist, as the ratio oscillates between $1$
+%   and~$2$.
 \end{exparts}
 \end{answer}
 \end{exercise}

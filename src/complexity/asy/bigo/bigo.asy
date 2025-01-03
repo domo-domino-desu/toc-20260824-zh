@@ -121,18 +121,10 @@ yaxis(pic,XZero,
       Arrow(TeXHead,axis_arrow_size));
 
 // draw the graphs
-real xbreak = 100;  // where shift from dots to curves
-dotfactor=1.5; // http://asymptote.sourceforge.net/FAQ/section3.html
-for (int i=ceil(xmin);i<=floor(xbreak); ++i) {
-  dot(pic, Scale(pic,(i,f(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-  dot(pic, Scale(pic,(i,g(i))), FCNPEN_SOLID, Fill(FCNPEN_SOLID));
-}
-// Curves for part of the graph
-//   because 1 000 000 was too many dots for Asymptote
-path f=graph(pic,f,xbreak,xmax,n=400);
-path g=graph(pic,g,xbreak,xmax,n=400);
-draw(pic,f,FCNPEN_SOLID+linewidth(2.5pt));
-draw(pic,g,FCNPEN_SOLID+linewidth(2.5pt));
+path f=graph(pic,f,xmin,xmax,n=400);
+path g=graph(pic,g,xmin,xmax,n=400);
+draw(pic,f,FCNPEN_SOLID); 
+draw(pic,g,FCNPEN_SOLID); 
 // label the curves
 label(pic,"$\sqrt{n}$",Scale(pic,(700000,f(700000))),2N,TICLABELPEN);
 label(pic,"$10\lg(n)$",Scale(pic,(700000,g(700000))),2N,TICLABELPEN);

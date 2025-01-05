@@ -534,6 +534,10 @@
 \Crefname{@exercisenumber}{Exercise}{Exercises}
 \crefname{figure}{Figure}{Figures}
 \Crefname{figure}{Figure}{Figures}
+\crefname{tablefigure}{Table}{Table}
+\Crefname{tablefigure}{Table}{Table}
+\crefname{tablehere}{Table}{Tables}
+\Crefname{tablehere}{Table}{Tables}
 
 % \renewcommand{\cref}[1]{REF:~\textit{#1}}
 % \renewcommand{\Cref}[1]{REF:~\textit{#1}}

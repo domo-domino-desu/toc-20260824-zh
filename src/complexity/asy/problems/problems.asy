@@ -3345,8 +3345,8 @@ node v0=ncircle("\nodebox{\strut$v_0$}"),
   v5=ncircle("\nodebox{\strut$v_5$}");
 
 // calculate nodes position
-real u=1.0cm;
-real v=0.75*u;
+real u=1.25cm;
+real v=0.60*u;  // results in 0.75
 defaultlayoutskip=u;
 
 layout(30.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
@@ -3390,8 +3390,8 @@ node v0=ncircle("\nodebox{\strut$v_0$}"),
   v5=ncircle("\nodebox{\strut$v_5$}");
 
 // calculate nodes position
-real u=1.0cm;
-real v=0.75*u;
+real u=1.25cm;
+real v=0.60*u;
 defaultlayoutskip=u;
 
 layout(30.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
@@ -3446,8 +3446,8 @@ node v0=ncircle("\nodebox{\strut$v_0$}", ns_bleachedbg),
   v5=ncircle("\nodebox{\strut$v_5$}", ns_bleachedbg);
 
 // calculate nodes position
-real u=1.0cm;
-real v=0.75*u;
+real u=1.25cm;
+real v=0.60*u;
 defaultlayoutskip=u;
 
 layout(30.0, v0, v1); // layout(real angle or pair dir, real skip=defaultlayoutskip, bool rel=defaultlayoutrel, node[] nds)
@@ -3457,15 +3457,16 @@ hlayout(1.0*u, v2, v4);
 layout(-30.0, v3, v5);
 
 // draw edges
+// draw edges
 draw(pic,
-     (v0--v1),
-     (v0--v2),
-     (v1--v2),
-     (v1--v3),
-     (v2--v4),
-     (v3--v4),
-     (v3--v5),
-     (v4--v5)
+     (v0--v1).l("$e_0$").style("leftside"),
+     (v0--v2).l("$e_1$"),
+     (v1--v2).l("$e_2$"),
+     (v1--v3).l("$e_3$").style("leftside"),
+     (v2--v4).l("$e_4$"),
+     (v3--v4).l("$e_5$").style("leftside"),
+     (v3--v5).l("$e_6$").style("leftside"),
+     (v4--v5).l("$e_7$")
 );
 
 // draw nodes, after edges

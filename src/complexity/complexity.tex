@@ -6069,20 +6069,24 @@ algorithm as a whole is polytime.
 \end{example}
 
 One more point.
-Sometimes
-selecting the problem type requires judgment.
+Some shifts between problem types are not as smooth as the ones
+mentinoed above.
 Consider the task of finding rational number roots of a polynomial.
 As a function problem it is
-`given a polynomial~$p$, return its rational roots',
-but in restating it as a decision problem 
-its most natural language is 
-$\set{\sequence{p,r}\suchthat\text{$p$ is a polynomial, $r$ is rational, 
-and $p(r)=0$}}$.
-But determining membership in this language
-just ask us to
-plug $r$ into~$p$, and that does not seem to
-capture the essential difficulty.
-
+`given a polynomial~$p$, return its rational roots'.
+In restating it as a decision problem 
+perhaps its most natural language is something like this.
+\begin{equation*}
+  \lang=
+  \set{\sequence{p,r}\suchthat\text{$p$ is a polynomial, $r$ is rational, 
+                               and $p(r)=0$}}
+\end{equation*}
+However, determining membership in this language
+just asks us to
+plug $r$ into~$p$. 
+That does not seem to
+capture the essential difficulty in the first statement, which is to 
+come up with the root rather than just to verify that it works.
 
 
 
@@ -6092,13 +6096,13 @@ capture the essential difficulty.
 To be complete, the description of a problem must include the form of the
 inputs and outputs.
 For instance, if we state a problem 
-as:~`\citetext{input two numbers and output their midpoint}{% 
+as:~`\citetext{input two numbers and output their average}{% 
   See \protect\url{https://hal.archives-ouvertes.fr/file/index/docid/576641/filename/computing-midpoint.pdf}.}'
 then we have not fully specified what needs to be done.
 The input or output might use 
 strings representing decimal numbers, 
 or might be floating point representations,
-or even might be in unary.
+or even might be integers written in unary.
 % \footnote{%
 % % where the number $n$ is represented with $n$-many \str{1}'s.
 %   An experienced programmer may have the reaction that unary is
@@ -6130,14 +6134,19 @@ if and only if in its
   Decimal representation is not much harder since
   a decimal number is divisible by four if and only if the final two digits
   are in the set $\set{\str{00},\str{04}, \,\ldots\,\str{96}}$.}.\footnote{%
-    Thus, on a Turing machine, if when the machine starts the head is under
-    the final character, then the machine does not even need to read the
-    entire input to decide the question.
-    The algorithm runs in time independent of the input length.
+    An interesting point about this case is that on a Turing machine, 
+    if the machine starts with its I/O head under
+    the final character then the machine only needs to read the final two 
+    characters.
+    This is an algorithm for a nontrivial problem that does not read its
+    entire input to come to a decision.
+    It runs in time independent of the input length, time that is $\bigOh(1)$.
   }
-In contrast, if it is in unary then we may 
-scan the \str{1}'s, keeping track of the current remainder modulo~$4$.
+If the input is in unary then we have a different algorithm
+entirely.  
 
+\ifbool{MakingPaperCopy}{}{%
+  \margingraphic{0.22\textwidth}{complexity/pix/norm.png}{\label{fig:xkcdnorm}\href{https://xkcd.com/2116/}{Courtesy \url{xkcd.com}}} }
 On the other hand, the representation doesn't matter in the sense that 
 if we have an algorithm for one representation
 then we can solve the problem for other representations by translating.
@@ -6145,12 +6154,11 @@ For example,
 we could do the divisible-by-four problem with unary input by converting
 to binary and then applying the binary algorithm.\footnote{%
   That is, the unary case reduces to the binary one.}
-% \margingraphic{0.2\textwidth}{complexity/pix/norm.png}{\label{fig:xkcdnorm}\href{https://xkcd.com/2116/}{Courtesy \url{xkcd.com}}}
 % Another way in which the representation doesn't matter is that
-Typically the costs of different representations
+Typically in practice the costs of different representations
 don't change the Big~$\bigOh$ runtime behavior.
 For example we might have a graph algorithm whose run time is~$\bigOh(n\lg n)$.
-Even for this minimal time, we  can find a 
+Even for this minimal runtime behavior, typically we  can find a 
 representation for the input graphs,
 such as where inputting takes $\bigOh(n)$ time,
 that leaves the algorithm analysis conclusion unchanged
@@ -6190,7 +6198,7 @@ or an exquisite Old Master.\footnote{
 \end{fig}
 }{%
 \begin{fig}[basketoffruit]{\textit{Basket of Fruit} by Caravaggio (1571--1610)} % https://upload.wikimedia.org/wikipedia/commons/e/e5/Basket_of_Fruit-Caravaggio_%28c.1595%29.jpg
-  \includegraphics[width=0.80\textwidth]{complexity/pix/caravaggio.jpg}  % best is .9\textwidth
+  \includegraphics[width=0.85\textwidth]{complexity/pix/caravaggio.jpg}  % best is .9\textwidth
 \end{fig}
 }
 Consequently, in practice  
@@ -6219,7 +6227,7 @@ bitstring representation of~$x$.\footnote{%
   brackets to stand for a representation,
   as in `$\sequence{\mathcal{G},v_0,v_1}$'.
   Here, we reserve diamond brackets for sequences.})
-Basically, the representation details do not affect the outcome of our analysis,
+Basically, the representation details do not affect the outcome of the analysis,
 much.
 
 \begin{remark}
@@ -6227,7 +6235,7 @@ There is a caveat.
 We have seen that conflating 
 $\set{n\in\N\suchthat \text{$n$ is prime}}$
 with  
-$\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime number}}$
+$\set{\sigma\in\smash{\kleenestar{\B}}\suchthat \text{$\sigma$ represents a prime number}}$
 can cause confusion.
 The distinction between thinking of an algorithm
 as inputting a number and thinking of it as inputting the 
@@ -6263,26 +6271,30 @@ difference between them and an algorithm.
 \item an executable
 \item a process
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \textit{Note:}~the meanings give here are common usage.
 But because these terms are not formally defined, different authors
-may use them in different ways.
+may use them in slightly different ways.
 \begin{exparts}
 \item A heuristic is a shortcut, 
-an approach to a problem that is faster than a full solution,
-or at least more reliable than simple guessing.
+an approach to a problem that is more reliable than simple guessing
+and is faster than a full solution
+(or perhaps no full solution is possible).
+But usually the heuristic is not a theoretically correct full solution.
 
 One example is approaching the Travelling Salesman problem 
 by using a greedy algorithm, that is, always going next to the nearest
-city.
+not-yet-visited city.
 Another example is that antivirus programs use heuristics to try
 and determine if an executable is malicious, such as comparing the
 first few bytes to a list of known-bad ones.
+
 A third example is based on the data 
 in \figureref{fig:USPresidentsHeights}.
 In the contests for US President since 1900, the taller candidate
-has won $20$ out of $30$ times, for a sample proportion of~$0.67$.
-The chance of such a result by happenstance is less than $0.02$.
+has won $21$ out of $31$ times, for a sample proportion of~$0.68$
+(not counting 1992).
+The chance of such a result by happenstance is less than four percent. % 0.03538
 You could decide to bet in the next election on the taller candidate.
 This isn't logical, but it is a method and it is used in practice.
 \begin{figure}
@@ -6332,15 +6344,16 @@ This isn't logical, but it is a method and it is used in practice.
       2012 &B Obama     &M Romney    &N    \\
       2016 &D Trump     &H Clinton   &Y    \\
       2020 &J Biden     &D Trump     &N    \\
+      2024 &D Trump     &K Harris    &Y    \\
     \end{tabular}
     \caption{Height comparison of US Presidential winner and main opponent, 
              since 1900.} 
     \label{fig:USPresidentsHeights}
 \end{figure}
 
-That is, a heuristic is a method that, while it may be used in practice, 
-is not guaranteed to be optimal, perfect, logical, or even rational.
-An algorithm for a problem is guaranteed to solve the problem.
+So, a heuristic is a method that, while it may be used in practice, 
+is not guaranteed to be optimal, perfect, or even rational.
+In contrast, an algorithm for a problem is guaranteed to solve that problem.
 \item 
 Pseudocode is a description of an algorithm. 
 It gives
@@ -6376,9 +6389,19 @@ is_prime(n)
 \end{lstlisting}
   \end{minipage}
 \end{display}
-We have seen many other examples in this book, including 
-the descriptions in the proof of Chapter Two's
-\cref{lem:CEIffDomainOfComputableFcn}.
+We have seen many other examples in this book, often given as flowcharts.
+% including 
+% the descriptions in the proof of Chapter Two's
+% \cref{lem:CEIffDomainOfComputableFcn}.
+
+So pseudocode is close to a specification of an algorithm.
+But in ordinary usage, an algorithm is completely specified so that an 
+implementing programmer does not need to work out any significant details,
+while pseudocode may leave some details unspecified.
+(An analogy:~an experienced cook may describe making Scalloped Potatoes as,
+``bake thin-sliced potatoes a white sauce with breadcrumbs on top.''
+That is not complete in that it depends on the implementator understanding 
+a number of details, but it is headed in the direction of a recipe.)
 \item 
 Of course, in the first section of the first chapter we saw a number
 of Turing machines, such as one that computes the predecessor function,
@@ -6386,31 +6409,33 @@ another that computes the sum of two inputs, and a third that never halts.
 
 A Turing machine is more like a program than an algorithm, in that
 it is an implementation of an algorithm.
-For instance, you may have the Bubble Sort algorithm in mind and 
-then you implement it on a Turing machine.
+For instance, a programmer may have the Bubble Sort algorithm in mind and 
+then implement it as a Turing machine.
 \item A flowchart is graphical pseudocode.
-They describe an algorithm, often at a high level
-(perhaps even higher than used for pseudocode).
+It describes an algorithm, typically at a high level
+(often even higher than that used for pseudocode).
 We have seen a number of flowcharts in this book, including in this chapter.
-They differ from an algorithm in the same way that pseudocode does.
-\item Source code is an implementation of an algorithm
+Flowcharts differ from algorithms in the same way that pseudocode does.
+\item Source code differs from an algorithm in that is an
+implementation of an algorithm
 (sometimes a number of algorithms are bundled together to make one source).
-It is targeted at a specific compiler or interpreter, and perhaps at a
+Source is targeted at a specific compiler or interpreter, and perhaps at a
 specific hardware and software platform.
 
-For example, there is source code that compiles to make a 
-simple ``Hello World!'' program in C,
-source code in Racket that is interpreted to determine if an input
-natural number is prime,
-and source code that gives this book on compilation with
-\LaTeX and related programs. 
+For example, there is
+source code in Racket that implements the algorithm
+to determine if an input
+natural number~$n$ is prime by trying to divide by all numbers less than~$n$.
+% Another example is that
+% there is source that gives this book as output, on compilation with
+% \LaTeX{} and related programs. 
 \item An executable is a binary file that can be run on an operating system.
 It is usually the result of compiling source code, and so is an implementation
 of an algorithm.
 Three examples are the executable that results from compiling
 (and linking) the ``Hello World!'' program in C, 
 the executable for your browser, and
-the executable that performs \LaTeX. 
+the executable that performs the typesetting code in \LaTeX. 
 \item A process is an instance of a program that has been 
 has been loaded into a machine's memory for execution.
 As such, it is an implementation of an algorithm (or perhaps a number
@@ -6418,7 +6443,7 @@ of algorithms).
 Three examples are the result of calling the executable of 
 the ``Hello World!'' program, 
 of calling the executable for your browser, and
-the of invoking the executable for \LaTeX. 
+of invoking the executable for \LaTeX. 
 
 Some processes, such as an operating system shell or a web server, are 
 be designed to run forever, while

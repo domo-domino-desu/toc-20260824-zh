@@ -3042,7 +3042,7 @@ city once and only once.
 But it did get him associated with a great problem.
 
 %<*problem:HamiltonianProblem>
-\begin{problem}[\definend{\probname{Hamiltonian Circuit}}]\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem}
+\begin{problem}[\definend{\probname{Hamiltonian Circuit}}]\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem}\label{prob:HamCircuit}
 Given a graph, decide if it contains 
 a cyclic path that includes each vertex once and only once.
 \end{problem}
@@ -3116,11 +3116,11 @@ $\text{Montpelier}\rightarrow\text{Albany}\rightarrow\text{Harrisburg}\rightarro
 As stated, this is an optimization problem.
 However we can recast it as a `yes' or `no' decision 
 problem.
-Introduce a parameter bound $B\in\N$ and change the problem statement 
+Introduce a parameter bound number~$B$ and change the problem statement 
 to:~decide if
 there is a circuit of total distance less than~$B$.
 If we had an algorithm to quickly solve this decision problem
-then we could also solve the optimization problem by first asking 
+then we could also quickly solve the optimization problem, by first asking 
 whether there is a trip bounded by length $B=1$, then asking if there is a 
 trip of length $B=2$, etc.
 When we eventually get a `yes', we know the shortest length.
@@ -6876,6 +6876,32 @@ problem, or an optimization problem.
 \end{exercise}
 
 \begin{exercise}
+Each of these inputs a square matrix~$M$
+with at least $3$~rows, and relates to a $3\times 3$ submatrix 
+(form the submatrix by picking three rows and three columns, which need
+not be adjacent).
+Characterize each as a function problem, 
+a decision problem, a search
+problem, or an optimization problem.
+\begin{exparts*}
+\item Find a submatrix that is invertible.
+\item Decide if there is an invertible submatrix.
+\item Return a submatrix 
+that is invertible, or the string `\str{None}'.
+\item Return a submatrix 
+whose determinant has the largest absolute value.
+\end{exparts*}
+\begin{answer}\verified
+\begin{exparts}
+\item Search problem.
+\item Decision problem.
+\item Search problem.
+\item Optimization problem.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
 Express each task as a language decision problem.
 Include in the description explicit mention of the string
 representation.
@@ -6993,24 +7019,45 @@ $\set{\sequence{\TM_e,e}\suchthat e\in\N}$.
 \end{answer}
 \end{exercise}
 
+\begin{exercise}
+Recast each function problem as a decision problem.
+\begin{exparts}
+\item The problem that inputs two natural numbers and returns their
+product.
+\item The \probname{Nearest Neighbor}\index{Nearest Neighbor@\probname{Nearest Neighbor} problem} 
+problem,
+that inputs a weighted graph and a vertex and
+returns the vertex nearest the given one, but not equal to it. 
+\end{exparts}
+\begin{answer}\verified
+Note that this exercise does not call explictly for language decision
+problems.
+It calls for decision problems.
+\begin{exparts}
+\item Given a triple $\sequence{n_0,n_1,p}\in\N^3$, decide if $p=n_0\cdot n_1$.
+\item Given a triple
+$\sequence{\mathcal{G},v_0,v_1}$, where $\mathcal{G}$ is a weighted graph 
+and $v_0\neq v_1$ are vertices in that graph,
+decide if $v_1$ is a vertex that is
+nearest to~$v_0$. 
+\end{exparts}
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 As stated, the \probname{Shortest Path}\index{Shortest Path problem@\probname{Shortest Path} problem}
 problem, \cref{prob:ShortestPath}, 
 is an optimization problem.
-Convert it into a parametrized family of decision problems.
-\hint~use the technique outlined following the
+Convert it into a parametrized family of language decision problems.
+using the technique outlined following the
 \probname{Traveling Salesman} problem, \cref{ex:TravellingSalesman}.
-\begin{answer}
-Take $B\in\N$ as a bound and consider this family.
+\begin{answer}\verified
+This family 
 \begin{equation*}
-  \lang_{B}=\set{\sequence{\mathcal{G},v_0,v_1}\suchthat\text{There is a path from $v_0$ to $v_1$ of distance less than or equal to~$B$}}
+  \lang_{B}=\set{\sequence{\mathcal{G},v_0,v_1}\suchthat\text{There is a path in $\mathcal{G}$ from $v_0$ to $v_1$ of total weight less than or equal to~$B$}}
 \end{equation*}
-Given a graph and two vertices we can solve the \probname{Shortest Path} 
-problem for it
-by searching through $\lang_1$, $\lang_2$, \ldots until we find the 
-smallest bound~$B$ for which our triple is 
-a member of the language~$\lang_{B}$. 
+is parametrized by the bound~$B$.
 \end{answer}
 \end{exercise}
 
@@ -7026,145 +7073,85 @@ solve it.
 to solve it.
 \item Given a list of jobs that must be accomplished to assemble a car,
 along with how long each job takes and which jobs must be done before
-other jobs, find the shortest time to finish the entire car.
+which other jobs, find the shortest time to finish the entire car.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
-\item Take~$B\in\N$ to be a bound and suppose that we can solve
-this language decision problem, where $\mathcal{B}$ is a game board.
+\item We use $\mathcal{B}$ to denote a game board, a $4\times 4$
+array containing the numbers $1$ through $14$ along with a blank.
+Take~$B\in\N$ as the parameter.
 \begin{equation*}
   \lang_B=\set{\mathcal{B}\suchthat
                \text{$\mathcal{B}$ can be solved in fewer than $B$ slide moves}}
 \end{equation*}
-Given a board, 
-to find the minimum number of moves, iterate through $B=0$, $B=1$, etc.,
-looking to see if the given board is a member of~$\lang_B$.
-Stop at the first~$B$ where it is in the language. 
-That is the minimum.
 \item Take~$B\in\N$ as a bound. 
-Suppose that we have an algorithm to solve 
-this language decision problem, where $\mathcal{R}$ is a Rubik's cube 
-arrangement.
+Write $\mathcal{R}$ for a Rubik's cube arrangement, a sequence of six $3\times3$
+arrays populated by nine members of the set $C_0$, \ldots{}
+nine members of the set $C_5$.
 \begin{equation*}
   \lang_B=\set{\mathcal{R}\suchthat
-               \text{$\mathcal{R}$ can be solved in fewer than $B$ cube moves}}
+               \text{$\mathcal{R}$ can be solved in fewer than $B$ moves}}
 \end{equation*}
-Given a cube, to find its minimum number of moves, 
-iterate through $B=0$, $B=1$, etc., until a $B$ appears so that
-the given cube is in~$\lang_B$.
-That is the minimum number of moves.
-\item Take~$B\in\N$. 
-Suppose that we have an algorithm to solve 
-this language decision problem, where $\mathcal{S}$ is a specification
-a car's assembly jobs. 
+\item Take~$B\in\R^+\cup\set{0}$. 
+We can denote a way to finish a car with a sequence whose
+elements are jobs $C=\set{j_0,\ldots\,j_k}$.
+With every such sequence there is a total time~$t(C)$.
 \begin{equation*}
-  \lang_B=\set{\mathcal{S}\suchthat
-               \text{$\mathcal{S}$ can be accomplished in less time than $B$}}
+  \lang_B=\set{C\suchthat
+               \text{$t(C)\leq B$}}
 \end{equation*}
-Given a specification, find the minimum time by  
-iterating through $B=0$, $B=1$, etc., until a $B$ appears so that
-the give specification is in~$\lang_B$.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 As stated, the 
-\probname{Hamiltonian Circuit}\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem}
-problem is a decision problem.
-Give a function version of this problem.
-Also give an optimization version.
-\begin{answer}
-A function version would input a graph and
-output a circuit (if there is no circuit then it would output something
-like the string \str{None}).
+\probname{Hamiltonian Circuit} problem,\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem}
+\cref{prob:HamCircuit},
+is a decision problem.
+Give a function version of this problem, a search version, and
+an optimization version.
+\begin{answer}\verified
+A function version inputs a graph and
+outputs the set of every Hamiltonian circuit.
+A search version inputs a graph and
+outputs a Hamiltonian circuit, if one exists,
+and some nominal value such as \str{0} if no circuit exists.
 
-An optimization version would return a circuit that is best by some
+An optimization version outputs a circuit that is best by some
 criterion.
-For instance, in a weighted graph it would return the circuit
+For instance, in a weighted graph it returns the circuit
 of least weight; this is the \probname{Traveling Salesman} problem.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-The different problem types are related.
-Each of these inputs a square matrix~$M$
-with more than $3$~rows, and relates to a $3\times 3$ submatrix 
-(form the submatrix by picking three rows and three columns, which need
-not be adjacent).
-Characterize each as a function problem, 
-a decision problem, a search
-problem, or an optimization problem.
-\begin{exparts*}
-\item Find a submatrix that is invertible.
-\item Decide if there is an invertible submatrix.
-\item Return a submatrix 
-that is invertible, or the string `\str{None}'.
-\item Return a submatrix 
-whose determinant has the largest absolute value.
-\end{exparts*}
-Also give a language for an associated language decision problem.
-\begin{answer}
-\begin{exparts}
-\item Search problem
-\item Decision problem
-\item Function problem
-\item Optimization problem
-\end{exparts}
-A language suitable for an associated language problem is
-$\set{M\suchthat \text{$M$ has a $3\times 3$ invertible submatrix}}$.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Recast each function problem as a decision problem.
-\begin{exparts}
-\item The problem that inputs two natural numbers and returns their
-product.
-\item The \probname{Nearest Neighbor}\index{Nearest Neighbor@\probname{Nearest Neighbor} problem} 
-problem,
-that inputs a weighted graph and a vertex and
-returns the vertex nearest the given one, but not equal to it. 
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item Given a triple $\sequence{n_0,n_1,p}\in\N^3$, decide if $p=n_0\cdot n_1$.
-\item Given a triple
-$\sequence{\mathcal{G},v_0,v_1}$, where $\mathcal{G}$ is a weighted graph 
-and $v_0\neq v_1$ are vertices in that graph,
-decide if $v_1$ is a vertex that is as
-near as possible to~$v_0$, 
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}\index{Linear Programming language decision problem@\probname{Linear Programming} language decision problem}
-The \probname{Linear Programming} problem
-is described on page~\pageref{prob:LinearProgramming}.
-Give a version that is a
-\begin{exparts*}
-\item language decision problem,
-\item search problem,
-\item function problem,
-and
-\item optimization problem.
-(For some parts there is more than one sensible answer.)
-\end{exparts*}
-\begin{answer}
-\begin{exparts}
-\item Use the language
-  $\set{\sequence{s_0,\ldots{} s_{n-1}}\in\Q^n\suchthat 
-      \text{$a_{i,0}s_0+\cdots+a_{i,n-1}s_{n-1}\leq b_i$ for all $i$}}$.
-\item It is a search problem as it is stated.
-  We need only find one feasible sequence, if there is one.
-\item The function could produce one feasible sequence, if one exists.
-\item To make it an optimization function, the natural thing is to 
-  optimize a linear function 
-  $P(x_0,\ldots{} x_{n-1})=c_0x_0+\cdots+c_{n-1}x_{n-1}$,
-  for some $c_0,\ldots{}c_{n-1}\in\Q$. 
-\end{exparts}
-\end{answer}
-\end{exercise}
+% \begin{exercise}\index{Linear Programming language decision problem@\probname{Linear Programming} language decision problem}
+% The \probname{Linear Programming} problem, \cref{prob:LinearProgramming},
+% is given as an optimization problem.
+% Give a version that is a
+% \begin{exparts*}
+% \item language decision problem,  % reals?
+% \item search problem,
+% \item function problem,
+% and
+% \item optimization problem.
+% (For some parts there is more than one sensible answer.)
+% \end{exparts*}
+% \begin{answer}
+% \begin{exparts}
+% \item Use the language
+%   $\set{\sequence{s_0,\ldots{} s_{n-1}}\in\Q^n\suchthat 
+%       \text{$a_{i,0}s_0+\cdots+a_{i,n-1}s_{n-1}\leq b_i$ for all $i$}}$.
+% \item It is a search problem as it is stated.
+%   We need only find one feasible sequence, if there is one.
+% \item The function could produce one feasible sequence, if one exists.
+% \item To make it an optimization function, the natural thing is to 
+%   optimize a linear function 
+%   $P(x_0,\ldots{} x_{n-1})=c_0x_0+\cdots+c_{n-1}x_{n-1}$,
+%   for some $c_0,\ldots{}c_{n-1}\in\Q$. 
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
 
 \begin{exercise}
 An \definend{independent set} in a graph is a collection of vertices
@@ -7181,21 +7168,24 @@ and
 \item optimization problem.
 \end{exparts*}
 (For some parts there is more than one reasonable answer.)
-\begin{answer}
-A set with one vertex is independent, as is the empty set.
+\begin{answer}\verified
+The empty set of vertices is independent and so is a set with one vertex.
 So every graph has a subset of its vertices that is independent.
-Because of that, these answers at least state a version for
-some number of vertices $k\in\N$.
 \begin{exparts}
-\item Given a graph, decide if it has an independent set with $k$~vertices. 
+\item 
+Because of the observation we can't sensibly say, 
+``Given a graph, decide if it has an independent set.''
+The answer would always be `Yes'.
+We can instead use a parameter~$B$:~given a graph, 
+decide if it has an independent set with $B$~vertices. 
 \item Use the language
-  $\set{\mathcal{G}\suchthat
-        \text{$\mathcal{G}$ has $k$ vertices that do not share an edge}}$.
-\item Given a graph~$G$, find an independent set with $k$-many vertices.
-  (There may be more than one, or none, but we only look for one.)
-\item Given a graph, return an independent set of size~$k$
+  $\lang_B=\set{\mathcal{G}\suchthat
+        \text{$\mathcal{G}$ has $B$ vertices that do not share an edge}}$.
+\item Given a graph~$G$, find an independent set with $B$-many vertices.
+  (There may be more than one, or none, but if we find one then we are done.)
+\item Given a graph, return all independent sets of size~$B$,
   or the string \str{None}.
-\item Given a graph, return an independent set that is maximal, in that
+\item Given a graph, return an independent set that is maximal, that
   it is as large as possible for the graph.
 \end{exparts}
 \end{answer}
@@ -7203,11 +7193,44 @@ some number of vertices $k\in\N$.
 
 \begin{exercise}
 Give an example of a problem 
-where the decision variant is solvable quickly
-but the search variant is not.
+where the decision variant is solvable much more quickly
+than the search variant.
+\begin{answer}\verified
+Consider the problem of finding the maximum integer in a nonempty list.
+The natural decision problem, ``Decide if the list has a maximum'' is trivial
+since every list has a maximum (there may be a tie).
+But the natural search variant, ``Find the maximum'' 
+appears to require looking through the list.
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+Show how to use an algorithm that solves 
+\probname{Vertex-to-Vertex Path}\index{Vertex-to-Vertex Path problem@\probname{Vertex-to-Vertex Path} problem}
+problem to solve the 
+\probname{Graph Connectedness}\index{Graph Connectedness problem@\probname{Graph Connectedness} problem} 
+problem, 
+which inputs a graph
+and decides whether that graph is connected, meaning that
+for any two vertices there is a path between them.
 \begin{answer}
-Ever list of numbers has a maximum, but finding it appears to mean 
-at least looking through the list.
+With an algorithm that can check any two vertices, we could check all pairs.
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Show how to use an algorithm that solves the 
+\probname{Shortest Path}\index{Shortest Path problem@\probname{Shortest Path} problem} 
+problem
+to solve the 
+\probname{Vertex-to-Vertex Path}\index{Vertex-to-Vertex Path problem@\probname{Vertex-to-Vertex Path} problem} 
+problem.
+\begin{answer}
+Imagine that we have a routine \texttt{shortest\_path} that takes in a 
+weighted graph and two vertices, and returns the shortest path between them.
+As a side effect, 
+that solves the decision problem of whether there is any path at all.
 \end{answer}
 \end{exercise}
 
@@ -7221,59 +7244,38 @@ and consider its language decision problem.
 Show that $\sequence{d,B}\in\lang_{F}$ if and only if $B$ is greater
 than or equal to the least prime factor of $d$.
 \item
-Conclude that you can use a solution to the language recognition problem
-to solve the search problem that is given a number and returns a
+Conclude that you can use a polytime solution to the language recognition problem
+to in polytime solve the search problem that is given a number and returns a
 prime factor of that number.
 \end{exparts*}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-Show how to use an algorithm that solves the 
-\probname{Shortest Path}\index{Shortest Path problem@\probname{Shortest Path} problem} 
-problem
-to solve the 
-\probname{Vertex-to-Vertex Path}\index{Vertex-to-Vertex Path problem@\probname{Vertex-to-Vertex Path} problem} 
-problem.
-How to use it on graphs that are not weighted?
-\begin{answer}
-Imagine that we have a routine \texttt{shortest\_path} that takes in a 
-weighted graph and two vertices, and returns the shortest path between them.
-That also solves the decision problem of whether there is any path at all.
-
-If the graph is not weighted, convert it to a weighted graph by 
-taking each edge to be of weight~$1$.
+\begin{answer}\verified
+\begin{exparts}
+\item  The smallest nontrivial divisor of a number is its smallest prime 
+  divisor.  
+\item The search problem can return the smallest prime, so just take 
+  $B$ to be~$n$.
+\end{exparts}
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-Show that with an algorithm that quickly 
+Show that with an algorithm that in polytime 
 solves the 
 \probname{Subset Sum}\index{Subset Sum problem@\probname{Subset Sum} problem} 
 problem,
-\cref{prob:SubsetSumDecision}, we can quickly solve the associated function
-problem of finding the subset.
-\begin{answer}
-By taking the numbers in the set $S=\set{s_0,\ldots\,s_{n-1}}$ one at a 
-time:~$S_0=\set{s_0}$, then $S_1=\set{s_0,s_1}$, \ldots\,,
-you can figure out from the decision problem solver
-what is the largest number~$s_j$ in the sum.
-Subtract that from the goal and then iterate using $S-\set{s_j}$.
-\end{answer}
-\end{exercise}
+\cref{prob:SubsetSumDecision}, we could in polytime 
+solve the associated function problem of producing the subset.
+\begin{answer}\verified
+The decision variant takes in a set and answers `Yes' or `No' whether there
+is a subset that adds to the target~$T$.
+Take the numbers in the set $S=\set{s_0,\ldots\,s_{n-1}}$ one at a 
+time by considering the sequence $S_0=\set{s_0}$, then $S_1=\set{s_0,s_1}$, \ldots\sentencespace
+When the decision variant finds a subset of $S_j=\set{s_0,\ldots\,s_j}$ on
+which it is able to say `Yes', we know that one of the numbers in a solution
+set is~$s_j$.
 
-\begin{exercise}
-Show how to use an algorithm that solves 
-\probname{Vertex-to-Vertex Path}\index{Vertex-to-Vertex Path problem@\probname{Vertex-to-Vertex Path} problem}
-problem to solve the 
-\probname{Graph Connectedness}\index{Graph Connectedness problem@\probname{Graph Connectedness} problem} 
-problem, 
-which inputs a graph
-and decides whether that graph is connected, so that
-for any two vertices there is a path between them.
-\begin{answer}
-Check all pairs of vertices.
+Iterate, using $\hat{S}=S-\set{s_j}$ and $\hat{T}=T-s_j$.
 \end{answer}
 \end{exercise}
 \end{exercises}
@@ -11448,10 +11450,62 @@ Prove that this reduces to the \probname{Shortest Path} problem.
 (First express them as language decision problems.)
 \item
 The \probname{Longest Path} problem\index{Longest Path problem@\probname{Longest Path} problem} takes the same input 
-and finds a greatest-weight path.
+and finds a greatest-weight path (containing no repeated edges).
 Prove that the second reduces to the first.
 (First express them as language decision problems.)
 \end{exparts}
+\end{exercise}
+
+
+\recommended
+\begin{exercise}
+Show that $\probname{Hamiltonian Circuit}\leq_p\probname{Traveling Salesman}$.\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
+\begin{exparts*}
+\item State each as a language decision problem.
+\item Produce the reduction function.  
+\end{exparts*}
+\begin{answer}
+\begin{exparts}
+\item
+The \probname{Hamiltonian Circuit} problem is the decision problem for this language.
+\begin{equation*}
+  \lang_0=\set{\mathcal{H}\suchthat
+                \text{the graph contains a circuit that includes each vertex exactly once}}
+\end{equation*}
+The \probname{Traveling Salesman} problem is this decision problem.
+\begin{equation*}
+  \lang_1=\set{\sequence{\mathcal{G},B}\suchthat
+          \text{some circuit of $\mathcal{G}$ that includes each vertex has total cost less than or equal to $B$}}
+\end{equation*}
+\item
+The reduction function 
+inputs an instance of \probname{Hamiltonian Circuit}, a graph
+$\mathcal{H}=\sequence{\mathcal{N},\mathcal{E}}$
+whose edges are unweighted.
+It returns
+the instance of \probname{Traveling Salesman} that uses the vertex set
+$\mathcal{N}$ as cities and that takes the distances between the cities
+to be: $d(v_i,v_j)=1$ if $v_iv_j$ is an edge of $\mathcal{G}$ and
+$d(v_i,v_j)=2$ if $v_iv_j\notin\mathcal{E}$,
+and such that the bound~$B$ is the number of vertices~$|\mathcal{N}|$.
+
+The bound means that there will be a \probname{Traveling Salesman} solution
+if and only if there is a \probname{Hamiltonian Circuit} solution, namely
+the \probname{Traveling Salesman} solution uses the edges of 
+the Hamiltonian circuit.
+
+Clearly $\mathcal{H}\in\lang_0$ if and only if
+$f(\mathcal{H})\in\lang_1$.
+What remains is to show that $f$ runs in polytime. 
+The number of
+edges is less than twice the number of vertices, so that polytime in the
+input graph size is the same as polytime in the number of vertices.
+To output the \probname{Traveling Salesman} instance, the algorithm examines
+all the pairs of vertices, which is a nested loop and so takes time that
+is quadratic in the number of vertices.
+So $f$ runs in polytime.
+\end{exparts}
+\end{answer}
 \end{exercise}
 
 
@@ -11654,57 +11708,6 @@ $f(\sequence{\mathcal{G},B})=\sequence{S,S_{v_0},\ldots{} B}$.
 Clearly we can compute this function in polytime, and clearly
 also $\sequence{\mathcal{G},B}\in\lang_0$ if and only if
 $\sequence{S,S_{v_0},\ldots{} B}\in\lang_1$. 
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}
-Show that $\probname{Hamiltonian Circuit}\leq_p\probname{Traveling Salesman}$.\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
-\begin{exparts*}
-\item State each as a language decision problem.
-\item Produce the reduction function.  
-\end{exparts*}
-\begin{answer}
-\begin{exparts}
-\item
-The \probname{Hamiltonian Circuit} problem is the decision problem for this language.
-\begin{equation*}
-  \lang_0=\set{\mathcal{H}\suchthat
-                \text{the graph contains a circuit that includes each vertex exactly once}}
-\end{equation*}
-The \probname{Traveling Salesman} problem is this decision problem.
-\begin{equation*}
-  \lang_1=\set{\sequence{\mathcal{G},B}\suchthat
-          \text{some circuit of $\mathcal{G}$ that includes each vertex has total cost less than or equal to $B$}}
-\end{equation*}
-\item
-The reduction function 
-inputs an instance of \probname{Hamiltonian Circuit}, a graph
-$\mathcal{H}=\sequence{\mathcal{N},\mathcal{E}}$
-whose edges are unweighted.
-It returns
-the instance of \probname{Traveling Salesman} that uses the vertex set
-$\mathcal{N}$ as cities and that takes the distances between the cities
-to be: $d(v_i,v_j)=1$ if $v_iv_j$ is an edge of $\mathcal{G}$ and
-$d(v_i,v_j)=2$ if $v_iv_j\notin\mathcal{E}$,
-and such that the bound~$B$ is the number of vertices~$|\mathcal{N}|$.
-
-The bound means that there will be a \probname{Traveling Salesman} solution
-if and only if there is a \probname{Hamiltonian Circuit} solution, namely
-the \probname{Traveling Salesman} solution uses the edges of 
-the Hamiltonian circuit.
-
-Clearly $\mathcal{H}\in\lang_0$ if and only if
-$f(\mathcal{H})\in\lang_1$.
-What remains is to show that $f$ runs in polytime. 
-The number of
-edges is less than twice the number of vertices, so that polytime in the
-input graph size is the same as polytime in the number of vertices.
-To output the \probname{Traveling Salesman} instance, the algorithm examines
-all the pairs of vertices, which is a nested loop and so takes time that
-is quadratic in the number of vertices.
-So $f$ runs in polytime.
 \end{exparts}
 \end{answer}
 \end{exercise}

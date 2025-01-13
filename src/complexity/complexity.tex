@@ -7919,40 +7919,43 @@ it all happens in polytime.
 \end{answer}
 \end{exercise}
 
-\recommended
 \begin{exercise}
-Prove that each problem is in $\P$ by citing the runtime of an
-algorithm that suits.
+Show that each problem is in $\P$ by giving an algorithm.
+Briefly justify that the algorithm runs in polytime.
 \begin{exparts}
 \item 
 $\set{\sigma\in\kleenestar{\set{\str{a},\ldots \str{z}}}\suchthat \text{$\sigma$ is in alphabetical order}}$
-\item 
-$\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$
-\item 
-$\set{\sequence{A,B,C}\suchthat\text{the matrices are such that $AB=C$}}$
+% \item 
+% $\set{\sequence{a,b,c}\in\N^3\suchthat a+b=c}$
+% \item 
+% $\set{\sequence{A,B,C}\suchthat\text{the matrices are such that $AB=C$}}$
 \item 
 $\set{\str{1}^k\suchthat\text{$k$ is prime}}$
 \item \probname{Vertex-to-Vertex Path}:\index{Vertex-to-Vertex Path problem@\probname{Vertex-to-Vertex Path} problem}
 $\set{\sequence{\mathcal{G},v_0,v_1}\suchthat\text{the graph $\mathcal{G}$ has a path from $v_0$ to $v_1$}}$.  
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item To determine whether the string is
 in alphabetical order, a single pass through it suffices.
-We can assume that each comparison takes constant time.
-So, overall this one-pass algorithm takes polytime.
-\item The elementary school algorithm of adding in columns from the least 
-significant digit (or bit) and then off to the left shows that
-the runtime of addition is proportional to the number of digits
-in the larger of the two input numbers
-(or the number of bits, which is $\lg(10)$~times the number of digits).
-We can do addition of individual digits (or bits) with a lookup table, so
-that step happens in constant time. 
-Therefore, overall, addition takes time proportional to the length of the 
-input representation, which is polytime.
-\item The naive algorithm for matrix multiplication gives a triply nested loop,
-and so is $\bigOh(n^3)$ where~$n$ is the largest of the number of rows or
-columns in either of $A$ or~$B$.
+For each item except the initial one, we compare it to the prior one.
+Since the alphabet is given as $\Sigma=\set{\str{a},\ldots \str{z}}$, 
+comparisons are possible in polytime (for instance, a $26\times 26$ lookup
+table is enough), and thus
+overall this one-pass algorithm takes polytime.
+% \item Given $a$ and~$b$, using 
+% the elementary school algorithm of adding columns from the least 
+% significant digit (or bit) shows that
+% the runtime of addition is proportional to the number of digits
+% in the larger of the two input numbers
+% (or the number of bits, which is $\lg(10)$~times the number of digits).
+% We can do addition of individual digits (or bits) with a lookup table, so
+% that step happens in constant time. 
+% Therefore, overall, addition takes time proportional to the length of the 
+% input representation, which is polytime.
+% \item The naive algorithm for matrix multiplication gives a triply nested loop,
+% and so is $\bigOh(n^3)$ where~$n$ is the largest of the number of rows or
+% columns in either of $A$ or~$B$.
 \item As mentioned in \cref{prob:Composite}, determining whether a 
 number is composite or prime is known to be possible in polytime.
 \item We can give an algorithm that runs in time polynomial in the 
@@ -7961,11 +7964,11 @@ Fix the set~$S_0=\set{v_0}$.
 Next, follow each edge leading out of~$v_0$, to get 
 the set of vertices that 
 are connected to~$v_0$ in at most one step,
-$S_1=S_0\cup \set{v\suchthat \sequence{v_0,v}\in\mathcal{E}}$.
+$S_1=S_0\cup \set{v\suchthat \set{v_0,v}\in\mathcal{E}}$.
 After that, for all the vertices in~$S_1$, follow all the edges to get 
 the 
-set~$S_2=S_1\cup \set{v\suchthat \text{$\sequence{\hat{v},v}\in\mathcal{E}$ where $\hat{v}\in S_1$}}$
-of all vertices that are connected to~$v$ in at most two steps.
+set~$S_2=S_1\cup \set{v\suchthat \text{$\set{\hat{v},v}\in\mathcal{E}$ where $\hat{v}\in S_1$}}$
+of all vertices that are connected to~$v_0$ in at most two steps.
 This process must stop at some point, with 
 $S_{i-1}=S_i$, because the graph is finite.
 Then, either $v_1\in\S_i$ or not, which determines whether there is a path from
@@ -7977,10 +7980,11 @@ is polynomial in the size of the graph representation.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
-Find which of these are currently known to be in~$\P$
+Report which of these are currently known to be in~$\P$
 and which are not.
-\hint~you may need to look up the fastest known algorithm.
+You may need to look up the fastest known algorithm.
 \begin{exparts*}
 \item
 \probname{Shortest Path}
@@ -7996,13 +8000,15 @@ and which are not.
 \item By Dijkstra's algorithm, the \probname{Shortest Path} problem 
 can be done in polynomial time.
   So the problem is in~$\P$.
-\item \probname{Knapsack} is believed to be quite hard.
+\item \probname{Knapsack} is believed to be quite hard
+  (in a later section we will see that it is $\NP$~complete).
   No one knows of a polynomial algorithm.
 \item \probname{Euler Path} is easy; we just need to check whether each
   node has even degree.
   There are algorithms that are linear.
 \item No one knows of a polynomial algorithm for 
   \probname{Hamiltonian Circuit}.  
+  (In a later section we will see that it is $\NP$~complete.)
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -8015,78 +8021,52 @@ The algorithm that takes in a single input and returns~$0$ computes the
 characteristic function of the empty language, and clearly runs in 
 polytime. 
 \end{answer}
-
 \end{exercise}
 
-\begin{exercise}
-The problem of \probname{Graph Connectedness} is:~given a finite graph, 
-decide if there is a path from any vertex to any other.
-Sketch an argument that this problem is in~$\P\mkern-1mu$.
-\begin{answer}\verified
-To show it is in~$\P$ we must product a solution algorithm for it
-that runs in polytime.
-For that, start by picking a vertex,~$v$.
-Let the set~$S_0$ equal $\set{v}$.
-Follow each edge leading out of~$v$ to get all of the vertices that 
-are connected to~$v$ in at most one step, and call that set~$S_1\supseteq S_0$.
-Iterate:~for all the vertices in~$S_1$, follow all the edges to get 
-the set~$S_2$ of all 
-of the vertices that are connected to~$v$ in at most two steps.
-Clearly this process must stop at some point, with 
-$S_{i-1}=S_i$, because the graph is finite.
+% \begin{exercise}
+% The problem of \probname{Graph Connectedness} is:~given a finite graph, 
+% decide if there is a path from any vertex to any other.
+% Sketch an argument that this problem is in~$\P\mkern-1mu$.
+% \begin{answer}\verified
+% To show it is in~$\P$ we must product a solution algorithm for it
+% that runs in polytime.
+% For that, start by picking a vertex,~$v$.
+% Let the set~$S_0$ equal $\set{v}$.
+% Follow each edge leading out of~$v$ to get all of the vertices that 
+% are connected to~$v$ in at most one step, and call that set~$S_1\supseteq S_0$.
+% Iterate:~for all the vertices in~$S_1$, follow all the edges to get 
+% the set~$S_2$ of all 
+% of the vertices that are connected to~$v$ in at most two steps.
+% Clearly this process must stop at some point, with 
+% $S_{i-1}=S_i$, because the graph is finite.
 
-This algorithm takes a number of steps, $i$, that is bounded by the
-number of vertices in the graph, and
-so the algorithm is polynomial in the size of the graph.
-% Specifically, it will take $\bigOh(|\mathcal{N}|^2\cdot|\mathcal{E}|)$.
-% But since every edge consists of two vertices,
-% $|\mathcal{E}|\leq|\mathcal{N}|^2$.
-% Thus this algorithm is $\bigOh(|\mathcal{N}|^4)$
-\end{answer}
-\end{exercise}
+% This algorithm takes a number of steps, $i$, that is bounded by the
+% number of vertices in the graph, and
+% so the algorithm is polynomial in the size of the graph.
+% % Specifically, it will take $\bigOh(|\mathcal{N}|^2\cdot|\mathcal{E}|)$.
+% % But since every edge consists of two vertices,
+% % $|\mathcal{E}|\leq|\mathcal{N}|^2$.
+% % Thus this algorithm is $\bigOh(|\mathcal{N}|^4)$
+% \end{answer}
+% \end{exercise}
 
 \begin{exercise}
-Following the definition of complexity class, \cref{def:ComplexityClass}, 
-is a discussion of the additional condition of being computed by some machine
-under a resource specification, 
-such as a Big~$\bigOh$ constraint on time or space.
-\begin{exparts}
-\item
-Show that the set of regular languages forms a complexity class,
-and that it meets this additional constraint.
-\item
-The definition of~$\P$ uses Turing machines.
-We can view a Finite State machine as 
-a kind of Turing machine, one that consumes its input one character at a time,
-never writes to the tape,
-and, depending on the state that the machine is in when the input is finished, 
-prints \str{0} or~\str{1}.
-With that, argue that any regular language is an element of~$\P\mkern-1mu$.
-\end{exparts}
+Does the set of regular languages form a complexity class?
+Is it in $\P$?
 \begin{answer}\verified
-\begin{exparts}
-\item
 Our definition of complexity class is completely general\Dash it is a
 collection of languages.
 So under the definition that we gave, 
 the collection of regular languages is a complexity class. 
 
-As to the additional condition, 
+As to the runtime condition, 
 a language is regular if it is accepted by a Finite State machine.
-So the regular languages are
-computed by a device.
-Further, 
-a Finite State machine meets the constraint that it runs in a 
-number of steps that is
-equal to the length of its input,~$\sigma$.
-\item
-The question notes that we can define regular languages 
-using a type of Turing machine.
-What remains is to show that each regular language is computable in polytime.
-As in the prior item, 
-the fact that such a machine consumes its input and never writes to the
-tape means that it runs in linear time,~$\bigOh(\lh{\sigma})$. 
-\end{exparts}
+Given a regular language we can make a Turing machine that simulates
+that machine, and returns \str{0} or~\str{1} to signal rejection or
+acceptance of strings.
+Each input string~$\sigma$ is processed by its Finite State machine in time
+$\bigOh(\sizeof{\sigma})$,
+so the collection of regular languages is in~$\P$.
 \end{answer}
 \end{exercise}
 

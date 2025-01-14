@@ -530,7 +530,7 @@ node b0=ncircle("$b_0$"),
 
 // calculate nodes position
 real u=1.25cm;
-real v=0.7*u;
+real v=0.65*u;
 
 vlayout(2*v, clause1_and1,  clause2_and1, clause3_and1, clause4_and1);
 clause1_and2.pos = clause1_and1.pos+(1*u,-1*v);
@@ -540,7 +540,7 @@ hlayout(2*u, clause3_and2, or2);
 hlayout(3*u, clause4_and2, or3);
 hlayout(1*u, or3, exit);
 b0.pos = clause2_and1.pos-(1.5*u,-0.5*v);
-vlayout(2*v, b0, b1, b2);
+vlayout(2.25*v, b0, b1, b2);
 
 // draw edges
 draw(pic,
@@ -579,6 +579,93 @@ draw(pic,
      );
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ......... sum of bits is even ....................
+// some gates have three inputs
+int picnum = 7;
+picture pic;
+unitsize(pic,1cm);
+// horiz and vert units
+real u = 1.4;
+real v = 0.6*u;
+
+// size of gates
+// real and_gate_size = 0.65;
+real and_gate_size = 1.0;
+real or_gate_size = (4/3)*and_gate_size;  // four wires in, instead of three
+real not_gate_size = 0.35;
+real source_gate_size = 0.55; // circle radius for b_2, b_1, and b_0
+
+// wires
+real sep = 0.3*and_gate_size; // how far apart on the gate to make the wires (this is half)
+real not_offset = 0.20*u; // horiz distance between NOTs that would otherwise overlap
+// layer 0 to layer 2
+// bus wires
+path x0_bus=(0*u,7*v)--(0*u,0*v-2*sep*and_gate_size);   
+   draw(pic,x0_bus,circuitpen);
+path x1_bus=(-0.5*u,7*v)--(-0.5*u,0*v-2*sep*and_gate_size);
+   draw(pic,x1_bus,circuitpen);
+path x2_bus=(-1*u,7*v)--(-1*u,0*v-2*sep*and_gate_size);
+   draw(pic,x2_bus,circuitpen);
+filldraw(pic,shift(-1*u,7*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$b_2$}",(-1*u,7*v));
+filldraw(pic,shift(-0.5*u,7*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$b_1$}",(-0.5*u,7*v));
+filldraw(pic,shift(0*u,7*v)*sourcegate(source_gate_size),drawpen=circuitpen,fillpen=white);
+  label(pic,"\smash[b]{$b_0$}",(0*u,7*v));
+
+
+// ..... OR to gather together the four ....
+real or_hgt = 3*v;
+
+// AND-to-OR wires
+path clause1_to_or = (2.0*u,6*v)--(3*u,6*v)--(3*u,or_hgt+1.5*sep)--(4*u,or_hgt+1.5*sep);
+draw(pic, clause1_to_or, circuitpen);
+path clause2_to_or = (2.0*u,4*v)--(3*u-not_offset,4*v)--(3*u-not_offset,or_hgt+0.5*sep)--(4*u,or_hgt+0.5*sep);
+draw(pic, clause2_to_or, circuitpen);
+path clause3_to_or = (2.0*u,2*v)--(3*u-not_offset,2*v)--(3*u-not_offset,or_hgt-0.5*sep)--(4*u,or_hgt-0.5*sep);
+draw(pic, clause3_to_or, circuitpen);
+path clause4_to_or = (2.0*u,0*v)--(3*u,0*v)--(3*u,or_hgt-1.5*sep)--(4*u,or_hgt-1.5*sep);
+draw(pic, clause4_to_or, circuitpen);
+
+path output = (4.25*u,or_hgt)--(5.5*u,or_hgt); // from the final OR to infinity
+draw(pic, output, circuitpen);  
+filldraw(pic,shift(4*u,or_hgt)*orgate(or_gate_size),drawpen=circuitpen,fillpen=white);
+
+
+// Starting layer of AND gates and wires leading to them (no NOTs)
+for(int wire=0; wire<4; ++wire) {
+  real gate_hgt = 2*wire*v;
+  path x0_to_clause=(0*u,gate_hgt-sep)--(2*u,gate_hgt-sep);
+  draw(pic,x0_to_clause,circuitpen);
+  dot(pic,(0*u,gate_hgt-sep));
+  path x1_to_clause=(-0.5*u,gate_hgt)--(2*u,gate_hgt);
+  draw(pic,x1_to_clause,circuitpen);
+  dot(pic,(-0.5*u,gate_hgt));
+  path x2_to_clause=(-1*u,gate_hgt+sep)--(2*u,gate_hgt+sep);
+  draw(pic,x2_to_clause,circuitpen);
+  dot(pic,(-1*u,gate_hgt+sep));
+  filldraw(pic,shift(2*u,gate_hgt)*andgate(and_gate_size),drawpen=circuitpen,fillpen=white);
+}
+
+// NOT gates between bus and first layer of AND gates
+// first clause
+filldraw(pic,shift(1*u,6*v+sep)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+filldraw(pic,shift(1*u-not_offset,6*v)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+// second clause
+filldraw(pic,shift(1*u,4*v-sep)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+filldraw(pic,shift(1*u,4*v+sep)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+// third clause
+filldraw(pic,shift(1*u,2*v)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+filldraw(pic,shift(1*u-not_offset,2*v-sep)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+// fourth clause --nothing needed--
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
 
 
 

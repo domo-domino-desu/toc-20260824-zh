@@ -7852,17 +7852,18 @@ so it takes $\sizeof{\sigma}^2$ steps.
 \end{answer}
 \end{exercise}
 
-% \begin{exercise}
-% Prove that this problem is in~$\P$:~the 
-% problem of deciding if two natural numbers are relatively prime.
-% \begin{answer}\verified
-% First, we express this problem as the language decision problem for
-% $\lang=\set{\sequence{m,n}\suchthat\text{the two are relatively prime}}$.
-% To solve that,
-% use Euclid's algorithm to find wheher their greatest common divisor is~$1$.
-% It runs in polynomial time (in fact, logarithmic time).
-% \end{answer}
-% \end{exercise}
+\begin{exercise}
+Prove that the 
+problem of deciding if two natural numbers are relatively prime
+is in~$\P$.
+\begin{answer}\verified
+We can express this problem as the language decision problem for
+$\lang=\set{\sequence{m,n}\suchthat\text{the two are relatively prime}}$.
+One way to solve it is to 
+use Euclid's algorithm to find wheher their greatest common divisor is~$1$.
+That algorithm runs in polynomial time (in fact, logarithmic time).
+\end{answer}
+\end{exercise}
 
 \recommended
 \begin{exercise}
@@ -8433,143 +8434,147 @@ where $m=1+\max(\set{n_0,n_1})$.
 \end{answer}
 \end{exercise}
 
+% Too hard?  \begin{exercise}
+% Show that $\P$ is closed under 
+% Kleene star, meaning that if $\lang\in\P$ then $\kleenestar{\lang}\in\P$.
+% (\hint~$\sigma\in\kleenestar{\lang}$ if
+% $\sigma=\emptystring$, or $\sigma\in\lang$, 
+% or $\sigma=\alpha\concat\beta$ for some $\alpha\in\kleenestar{\lang}$.)
+% \begin{answer}
+% We are given a language~$\lang\in\powerset(\kleenestar{\B})$ such that
+% there is a Turing machine,~$\TM_{\lang}$, that decides the language
+% in polytime, in time that is some power, $n\in\N$, of the length of the 
+% input string.
+
+% We will follow the hint that 
+% $\sigma\in\kleenestar{\lang}$ if
+% $\sigma=\emptystring$, or $\sigma\in\lang$, 
+% or $\sigma=\alpha\concat\beta$ for some $\alpha,\beta\in\kleenestar{\lang}$. 
+% Rather than present a flowchart of pseudocode, 
+% we will work through the example of $\sigma=\sequence{s_0,s_1,s_2,s_3}$.
+% This table lists the substrings~$\sigma[i:j]$.
+% \begin{display}\def\arraystretch{1.1}
+% \begin{tabular}{r|*{4}{c}}
+%   \multicolumn{1}{r}{\ }
+%     &\multicolumn{1}{c}{$j=0$}
+%     &\multicolumn{1}{c}{$j=1$}
+%     &\multicolumn{1}{c}{$j=2$}
+%     &\multicolumn{1}{c}{$j=3$}  \\
+%   \cline{2-5}
+%   $i=0$ &$\sequence{s_0}$ &$\sequence{s_0s_1}$ &$\sequence{s_0s_1s_2}$ &$\sequence{s_0s_1s_2s_3}=\sigma$  \\
+%   $i=1$ &                &$\sequence{s_1}$    &$\sequence{s_1s_2}$    &$\sequence{s_1s_2s_3}$  \\
+%   $i=2$ &                &                    &$\sequence{s_2}$      &$\sequence{s_2s_3}$  \\
+%   $i=3$ &                &                    &                      &$\sequence{s_3}$  \\
+% \end{tabular}
+% \end{display}
+
+% We start on the main diagonal, which holds all of the length one substrings.
+% We can determine whether each of these 
+% is a member of~$\lang$ by using~$\TM_{\lang}$.
+% If it is a member, put a checkmark next to the substring.
+
+% Next we move to the diagonal above, with the length two substrings.
+% We can determine whether each is a member of~$\lang$ by using~$\TM_{\lang}$,
+% or, taking the hint, by knowing whether both length~one substrings are members 
+% of~$\kleenestar{\lang}$ (which we can do quickly using the checkmarks).
+% Again, when a substring in this diagonal is a member then checkmark it.
+
+% Now iterate.
+% On the diagonal containing the length three substrings, we 
+% can determine whether each is a member of~$\kleenestar{\lang}$ by first asking
+% $\TM_{\lang}$ if it is a member of~$\lang$.
+% If not, we then determine whether
+% it is the concatenation of two substrings.
+% We've already checked or not~checked all the members of 
+% both of the earlier diagonals, so determining that is very fast.
+
+% In this way, we proceed through diagonals 
+% until we get to the table's upper right.
+% It holds the given string, $\sigma$, so we can determine whether
+% $\sigma\in\kleenestar{\lang}$ in the same way.
+
+% Now for the runtime analysis.
+% Let $m=\sizeof{\sigma}$.
+% This is a triply-nested loop. 
+% The outer loop moves through the diagonals, from the length
+% one substrings to the length~$m$ substring~$\sigma$.
+% Inside that is a loop that moves through a particular diagonal, 
+% starting at $i=0$, and covering at most~$m$ substrings.
+% Finally, inside of that is a loop that 
+% runs the machine $\TM_{\lang}$ and then possibly loops through the 
+% substring pairs.
+% The runtime on this inner loop is $\bigOh(m^n)+\bigOh(m)$, 
+% and so in total we have $\bigOh(m)\cdot\bigOh(m)\cdot(\bigOh(m^n)+\bigOh(m))$,
+% which is polynomial in~$m=\sizeof{\sigma}$.
+
+% % Here is pseudocode.
+% % It uses the table~$T$, whose $(i,j)$ entry keeps track of whether 
+% % $\sigma[i:j]\in\kleenestar{\lang}$.
+% % \begin{lstlisting}
+% % for i in (0 ... n-1):
+% %     for j in (0 ... n-1):
+% %         T[i,j] = False
+
+% % if sigma == EMPTYSTRING:
+% %     print ACCEPT
+% % else:
+% %     for lh in (1 ... n):
+% %         for i in (0 ... n-1-lh):
+% %             j = i+lh-1
+% %             if TM_L(sigma[i:j]) == ACCEPT:
+% %                 T[i,j] = True
+% %             else:
+% %                 for k in (i ... j-1):
+% %                     if (T[i,k] == True) and (T[k+1,j] == True):
+% %                         T[i,j] = True
+
+% % if T[i,1] == True:
+% %     return ACCEPT
+% % else:
+% %     return REJECT
+% % \end{lstlisting}
+% % Credit: gasarch https://www.cs.umd.edu/~gasarch/COURSES/452/F14/poly.pdf
+% \end{answer}
+% \end{exercise}
+
+% \begin{exercise}
+% Show that this problem is unsolvable:~give a Turing machine~$\TM$,
+% decide whether it runs in polytime on the empty input.
+% \hint~if you could solve this problem then you could solve
+% the \HP.
+% \begin{answer}\verified
+% The problem is to decide, given $\P$, whether $\P$ halts in polytime.
+% We will show that if we could solve this problem then we could solve 
+% the \HP.
+% % , that 
+% % there is a Turing machine that, given~$\TM$ as input, decides whether
+% % it runs in polytime on the empty input. 
+% % We will show how to, from $\TM$, construct a 
+% % new machine~$\mathcal{N}_{\TM}$ that runs in
+% % polynomial time if and only if $\TM$ does not halt.
+% % That is a contradiction, because then being able to  
+% % test machines for running in polytime allows us to
+% % solve the \HP.
+
+% Given~$\P$, we make a new machine $\mathcal{N}_{\TM}$.
+% It takes as input bitstrings.
+% with the bitstring input~$\sigma$, this new machine
+% uses a universal Turing machine to run~$\TM$ on the empty tape.
+% If $\TM$ does not halt within $\sizeof{\sigma}$ steps,
+% then $\mathcal{N}_{\TM}$ halts.
+% If $\TM$ does halts within that time then $\mathcal{N}_{\TM}$ will run
+% for $2^{\sizeof{\sigma}}$ many steps.
+% Clearly, if $\TM$ halts then $\mathcal{N}_{\TM}$ 
+% runs in exponential time,
+% and if $\TM$ does not halt then $\mathcal{N}_{\TM}$ runs in polynomial time, 
+% as required.
+% \end{answer}
+% \end{exercise}
+
 \begin{exercise}
-Show that $\P$ is closed under 
-Kleene star, meaning that if $\lang\in\P$ then $\kleenestar{\lang}\in\P$.
-(\hint~$\sigma\in\kleenestar{\lang}$ if
-$\sigma=\emptystring$, or $\sigma\in\lang$, 
-or $\sigma=\alpha\concat\beta$ for some $\alpha\in\kleenestar{\lang}$.)
-\begin{answer}
-We are given a language~$\lang\in\powerset(\kleenestar{\B})$ such that
-there is a Turing machine,~$\TM_{\lang}$, that decides the language
-in polytime, in time that is some power, $n\in\N$, of the length of the 
-input string.
-
-We will follow the hint that 
-$\sigma\in\kleenestar{\lang}$ if
-$\sigma=\emptystring$, or $\sigma\in\lang$, 
-or $\sigma=\alpha\concat\beta$ for some $\alpha,\beta\in\kleenestar{\lang}$. 
-Rather than present a flowchart of pseudocode, 
-we will work through the example of $\sigma=\sequence{s_0,s_1,s_2,s_3}$.
-This table lists the substrings~$\sigma[i:j]$.
-\begin{display}\def\arraystretch{1.1}
-\begin{tabular}{r|*{4}{c}}
-  \multicolumn{1}{r}{\ }
-    &\multicolumn{1}{c}{$j=0$}
-    &\multicolumn{1}{c}{$j=1$}
-    &\multicolumn{1}{c}{$j=2$}
-    &\multicolumn{1}{c}{$j=3$}  \\
-  \cline{2-5}
-  $i=0$ &$\sequence{s_0}$ &$\sequence{s_0s_1}$ &$\sequence{s_0s_1s_2}$ &$\sequence{s_0s_1s_2s_3}=\sigma$  \\
-  $i=1$ &                &$\sequence{s_1}$    &$\sequence{s_1s_2}$    &$\sequence{s_1s_2s_3}$  \\
-  $i=2$ &                &                    &$\sequence{s_2}$      &$\sequence{s_2s_3}$  \\
-  $i=3$ &                &                    &                      &$\sequence{s_3}$  \\
-\end{tabular}
-\end{display}
-
-We start on the main diagonal, which holds all of the length one substrings.
-We can determine whether each of these 
-is a member of~$\lang$ by using~$\TM_{\lang}$.
-If it is a member, put a checkmark next to the substring.
-
-Next we move to the diagonal above, with the length two substrings.
-We can determine whether each is a member of~$\lang$ by using~$\TM_{\lang}$,
-or, taking the hint, by knowing whether both length~one substrings are members 
-of~$\kleenestar{\lang}$ (which we can do quickly using the checkmarks).
-Again, when a substring in this diagonal is a member then checkmark it.
-
-Now iterate.
-On the diagonal containing the length three substrings, we 
-can determine whether each is a member of~$\kleenestar{\lang}$ by first asking
-$\TM_{\lang}$ if it is a member of~$\lang$.
-If not, we then determine whether
-it is the concatenation of two substrings.
-We've already checked or not~checked all the members of 
-both of the earlier diagonals, so determining that is very fast.
-
-In this way, we proceed through diagonals 
-until we get to the table's upper right.
-It holds the given string, $\sigma$, so we can determine whether
-$\sigma\in\kleenestar{\lang}$ in the same way.
-
-Now for the runtime analysis.
-Let $m=\sizeof{\sigma}$.
-This is a triply-nested loop. 
-The outer loop moves through the diagonals, from the length
-one substrings to the length~$m$ substring~$\sigma$.
-Inside that is a loop that moves through a particular diagonal, 
-starting at $i=0$, and covering at most~$m$ substrings.
-Finally, inside of that is a loop that 
-runs the machine $\TM_{\lang}$ and then possibly loops through the 
-substring pairs.
-The runtime on this inner loop is $\bigOh(m^n)+\bigOh(m)$, 
-and so in total we have $\bigOh(m)\cdot\bigOh(m)\cdot(\bigOh(m^n)+\bigOh(m))$,
-which is polynomial in~$m=\sizeof{\sigma}$.
-
-% Here is pseudocode.
-% It uses the table~$T$, whose $(i,j)$ entry keeps track of whether 
-% $\sigma[i:j]\in\kleenestar{\lang}$.
-% \begin{lstlisting}
-% for i in (0 ... n-1):
-%     for j in (0 ... n-1):
-%         T[i,j] = False
-
-% if sigma == EMPTYSTRING:
-%     print ACCEPT
-% else:
-%     for lh in (1 ... n):
-%         for i in (0 ... n-1-lh):
-%             j = i+lh-1
-%             if TM_L(sigma[i:j]) == ACCEPT:
-%                 T[i,j] = True
-%             else:
-%                 for k in (i ... j-1):
-%                     if (T[i,k] == True) and (T[k+1,j] == True):
-%                         T[i,j] = True
-
-% if T[i,1] == True:
-%     return ACCEPT
-% else:
-%     return REJECT
-% \end{lstlisting}
-% Credit: gasarch https://www.cs.umd.edu/~gasarch/COURSES/452/F14/poly.pdf
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Show that this problem is unsolvable:~give a Turing machine~$\TM$,
-decide whether it runs in polytime on the empty input.
-\hint~if you could solve this problem then you could solve
-the \HP.
-\begin{answer}\verified
-Suppose for contradiction that we could solve this problem, that 
-there is a Turing machine that, given~$\TM$ as input, decides whether
-it runs in polytime on the empty input. 
-We will show how to, from $\TM$, construct a 
-new machine~$\mathcal{N}_{\TM}$ that runs in
-polynomial time if and only if $\TM$ does not halt.
-That is a contradiction, because then being able to  
-test machines for running in polytime allows us to
-solve the \HP.
-
-The machine~$\mathcal{N}_{\TM}$ takes as input bitstrings.
-For input~$\sigma$, it uses a universal Turing machine to run~$\TM$ 
-on the empty tape.
-If $\TM$ does not halt within $\sizeof{\sigma}$ steps,
-then $\mathcal{N}_{\TM}$ halts.
-If $\TM$ does halts within that time then $\mathcal{N}_{\TM}$ will run
-for $2^{\sizeof{\sigma}}$ many steps.
-Clearly, if $\TM$ halts then $\mathcal{N}_{\TM}$ 
-runs in exponential time,
-and if $\TM$ does not halt then $\mathcal{N}_{\TM}$ runs in polynomial time, 
-as required.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-There are studied complexity classes besides those associated with language
-decision problems. 
-The class $\compclass{FP}$ consists of the binary 
+There are complexity classes besides those associated with language
+decision problems that have been studied. 
+One is the class $\compclass{FP}$ consists of the binary 
 relations~$R\subseteq\N^2$ where there is a Turing machine that, 
 given input~$x\in\N$, can in polytime find a 
 $y\in\N$ where $\sequence{x,y}\in R$.

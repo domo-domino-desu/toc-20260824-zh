@@ -7463,58 +7463,36 @@ This problem is a member of~$\P$.
 \end{example}
 
 \begin{example}
-Although polytime is a restriction, nonetheless $\P$ is a very large
-collection.
+The collection $\P$ is a very large.
 % It contains all problems with a practical solution algorithm. 
 More example members:
 \begin{parenum} 
 % \item determine if a number is prime,
 % $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime}}$,
-\item matrix multiplication, taken as a language decision problem for
-$\set{\sequence{\sigma_0,\sigma_1,\sigma_2}\suchthat\text{they represent matrices with $M_0\cdot M_1=M_2$}}$
 \item minimal spanning tree,
   $\set{\sequence{\mathcal{G},T}\suchthat\text{$T$ is a minimal spanning tree in~$\mathcal{G}$}}$
+\item matrix multiplication, taken as 
+$\set{\sequence{M_0,M_1,M_2}\suchthat \text{they are matrices with $M_0\cdot M_1=M_2$}}$
 and \item edit distance, the number of
-single-character removals, insertions, or substitutions needed to transform
+character removals, insertions, or substitutions needed to transform
 between strings,
   $\set{\sequence{\sigma_0,\sigma_1,n}\suchthat \text{$\sigma_0$ transforms to $\sigma_1$ in at most $n$ edits}}$.
 \end{parenum}
 \end{example}
 
 % This shows the class~$\P$ as a subset of the collection of all languages.
-\begin{fig}[alllanguagedecisionproblems]{The large blob holds all language
+\begin{fig}[alllanguagedecisionproblems]{The blob holds all language
 decision problems, all $\lang\subseteq\kleenestar{\B}\!$.
 Shaded is~$\P$.}
   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp2003.pdf}}
 \end{fig}
 
-\begin{lemma}  \label{lem:PClosure}
-The class $\P$ is closed under union, intersection, and concatenation.
-That is, if two languages are members of~$\P$ then so is their union,
-their intersection, and their concatenation.  
-\end{lemma}
-
-\begin{proof}
-We will do union and leave the other two for \cref{exer:PClosure}.
-% For more see \cref{exer:PClosureUnionFinitelyMany}.
-Suppose that $\lang_0\in\P$ has the characteristic function
-$\TMfcn_{e_0}$ that runs in time $\bigOh(x^{k_0})$,
-and similarly suppose that
-$\lang_1$'s characteristic function
-$\TMfcn_{e_1}$ runs in time $\bigOh(x^{k_1})$.
-The natural algorithm for the union $\lang_0\cup\lang_1$ is
-to first test the input for membership in $\lang_0$ and,
-if that fails, then test for membership in~$\lang_1$.
-It is in $\bigOh(x^k)$ where $k=\max(\set{k_0,k_1})$, so it is
-polytime.  
-\end{proof}
-
 Two final points.
 First, if a problem has an algorithm that is $\bigOh(\lg n)$
 then that problem is in~$\P$.
-Second, the members of~$\P$ are problems (actually, 
-languages that represent problems), so 
-it is wrong to say that an algorithm is in~$\P$.
+Second, the members of~$\P$ are problems so 
+it is wrong to say that an algorithm or Turing machine is in~$\P$\Dash
+instead, it may be that the problem that the algorithm solves is in~$\P$.
 
 
 
@@ -7625,7 +7603,7 @@ it is the best candidate for the collection
 of tractable problems.
 We close this section with a discussion of those.
 
-The first reason echos the prior subsection.
+The first reason comes from the prior subsection.
 There are many models of computation,
 including Turing machines, RAM machines, and Racket programs.
 All of them compute the same set of functions as Turing machines.
@@ -7636,19 +7614,52 @@ That makes $\P$ invariant under the choice of
 computing model:~if a problem is in~$\P$ for any of these models
 then it is in~$\P$ for all.
 The fact that Turing machines are our standard is in some ways a 
-historical accident but is also because arguments to change lose 
-some of their force
+historical accident, but calls to change lose 
+some of their persuasive force
 when differences between the runtime behavior of
 any of these models is lost in the general polynomial sloppiness.
 
-Another reason that $\P$ is natural
-is that we'd like that if two things are easy to 
-compute then a simple combination of the two is also easy.
+The second reason is related:~suppose that we try to restrict 
+our interpretation of `tractible' to, say, $\bigOh(x^4)$. 
+We may then find ourselves doing a loop where inside the loop is a $\bigOh(x^4)$
+function, and so our new algorithm is $\bigOh(x^5)$.
+That is, an appeal of $\P$ is that it has natural closure properties.
+
+\begin{lemma}  \label{lem:PClosure}
+The class $\P$ is closed under union, intersection, and set complement.
+\end{lemma}
+
+\begin{proof}
+We are asked to show that if two languages are members of~$\P$ then so 
+is their union and intersection, as well as the complement of each.  
+We will demonstrate how to do union 
+and leave the other two for \cref{exer:PClosure}.
+
+Suppose that $\lang_0\in\P$ has the characteristic function
+$\TMfcn_{e_0}$ that runs in time $\bigOh(x^{k_0})$,
+and similarly suppose that
+$\lang_1$'s characteristic function
+$\TMfcn_{e_1}$ runs in time $\bigOh(x^{k_1})$.
+The natural algorithm for the union $\lang_0\cup\lang_1$ is
+to first test the input for membership in $\lang_0$ and,
+if that fails, then test for membership in~$\lang_1$.
+That algorithm is in $\bigOh(x^k)$ where $k=\max(\set{k_0,k_1})$, so it is
+polytime.  
+\end{proof}
+
+There are a number of other important language operations, 
+including concatenation and Kleene star, under which $\P$ is closed.
+See the exercises.
+
+In addition, a property we'd expect from things that
+we think of as easy to compute
+is that if two things are easy  
+then a simple combination is also easy.
 %<*discussion:PClosure>
-More precisely, fix two total functions $\map{f,g}{\N}{\N}$ and consider
+Fix two total computable functions $\map{f,g}{\N}{\N}$ and consider
 this recasting of them as languages.\footnote{%
   Recall that $\strng(\ldots)$ means that we represent 
-  the argument reasonably efficiently as a bitstring.}
+  the argument reasonably efficiently.}
 % \begin{align*}
 %   \prob_f&=\set{\strng(\sequence{n,f(n)})\in\kleenestar{\B}\times\kleenestar{\B}\suchthat n\in\N}  \\
 %   %\hspace{0.4em}
@@ -7663,38 +7674,26 @@ Under this formulation,
 $\P$ is closed under function addition,
 scalar multiplication,
 subtraction, multiplication, and composition.
-It is also closed under language concatenation
-and the Kleene star operator.
-It is the smallest nontrivial class with these appealing properties.
 %</discussion:PClosure>
+The class $\P$ is the smallest nontrivial one with these appealing properties.
 
-But the main reason that $\P$ is our candidate is Cobham's Thesis, the
+But the main reason that $\P$ is of such great interest is Cobham's Thesis, the
 contention that a problem is  
-tractable if it has a solution algorithm that runs 
+tractable if and only if it has a solution algorithm that runs 
 in polytime.
 % We discussed this on page~\pageref{discussion:CobhamsThesis}; 
 Recall the objection to the Thesis 
 that 
-a problem whose solution algorithms cannot be improved  
-below a runtime of~$\bigOh(n^{1\,000\,000})$
-is not really tractable.
-% \footnote{%
-%   Even if the argument is right that $\P$ is too broad, 
-%   it would still be a relevant and useful class because showing that a 
-%   problem is not in~$\P$ would show that no
-%   algorithm for its solution is practical.
-%   % (This is like in the first and second chapter where we assumed considered
-%   % Turing machine computations that are unbounded.
-%   % Showing that something is not solvable even for an unbounded computation
-%   % shows it is not solvable within bounds.)  
-%   }
-We know such problems exist because we can artificially produce them 
+there are problems whose solution algorithms cannot be improved  
+beyond some huge exponent, such as~$\bigOh(n^{1\,000\,000})$,
+and these problems are not really tractable.
+We know such problems exist because we can artificially produce some 
 using diagonalization.
 However, our
 empirical experience over close to a century of computing 
 is that problems with solution algorithms of 
 very large degree polynomial time complexity
-do not seem to arise often in practice.
+do not seem to arise in practice.
 We see plenty of problems with solution algorithms that are $\bigOh(n\lg n)$
 or $\bigOh(n^3)$, and we see plenty that are exponential,
 but we just do not see much of~$\bigOh(n^{1\,000\,000})$.

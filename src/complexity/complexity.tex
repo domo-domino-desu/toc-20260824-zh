@@ -1179,7 +1179,8 @@ those for which
 If a problem's best available algorithm runs in exponential time
 then, as we understand things today,
 the problem is 
-\definend{intractable}.\index{tractable}
+\definend{intractable}.\footnote{%
+  More discussion on Cobham's Thesis is on page~\protect\pageref{disc:CobhamsThesis}.}\index{tractable}
 \index{tractable|)}
 
 
@@ -7293,7 +7294,7 @@ Iterate, using $\hat{S}=S-\set{s_j}$ and $\hat{T}=T-s_j$.
 % So to express that we are studying problems
 % of a certain type we may say we are studying languages.
 
-When we discussed Cobham's Thesis, we were talking about all
+When we discussed Cobham's Thesis, we were talking about the collection of
 languages that have polytime algorithms.
 
 %<*def:ComplexityClass>
@@ -7318,7 +7319,7 @@ like Cobham's requirement of computability in polytime.\footnote{%
 \begin{example}
 One complexity class is 
 the collection of languages for which there is a Turing machine decider
-that runs in time $\bigOh(n^{2})$.
+that runs in time $\bigOh(n^{4})$.
 % Thus
 % $\mathcal{C}=\set{\lang_0,\lang_1, \ldots}$, where 
 % each $\lang_j$ is decided by some machine~$\TM_{i_j}$,
@@ -7338,29 +7339,23 @@ string of that length is logarithmic, $f\in\bigOh(\lg)$.
 \end{example}
 %</def:ComplexityClass>
 
-
 Two points bear explication.
 As to the computing machine, 
-researchers study not just Turing machines but other types of machines 
+researchers may study not just Turing machines but other types of machines 
 as well,  
-including nondeterministic Turing machines
+including nondeterministic Turing machines (see the next section)
 and Turing machines with access to an oracle for random numbers.
-And as for the resource specification, it often 
+As to the resource specification, it often 
 involve bounds on 
 \citetext{the time or space behavior}{%
-  We will concentrate our attention resource bounds in the range from
-  logarithmic and exponential, because these are the most useful 
+  We will concentrate our attention on resource bounds in the range from
+  logarithmic to exponential, because these are the most useful 
   for understanding problems that arise in practice.
   % https://cse.buffalo.edu/~regan/papers/pdf/ALRch27.pdf
   }.
 But a class could instead be, for instance, 
-the complement of $\bigOh(n^2)$, so the specification 
+the complement of $\bigOh(n^4)$, so the specification 
 isn't always a bound.
-% \footnote{%
-%     At this writing there are 547 studied classes % 2025-Jan-12 
-%    but the number changes frequently;
-%    see the Complexity Zoo, 
-%    \protect\url{https://complexityzoo.net/}.\protect\index{Complexity Zoo}}
 
 
 
@@ -7372,13 +7367,17 @@ is the most important one.
 
 %<*def:P>
 \begin{definition}\label{def:P}
-A language decision problem $\lang$ is a member of the class 
+The class 
 \definend{$\P$}\index{P@$\P$}\index{polytime}\index{polynomial time}\index{complexity class!polytime}\index{complexity class!P@$\P$} 
-if there is an algorithm to decide membership in $\lang$
-that on a deterministic Turing machine runs in
-polynomial time.
+consists of those language decision problems~$\lang$ where
+there is a deterministic Turing machine to decide membership in $\lang$
+that runs in polynomial time.
 \end{definition}
 %</def:P>
+
+Ths  class is very broad, containing almost every problem we can in practice
+solve with an algorithm.
+The following examples illustrate that.
 
 \begin{example}
 The language
@@ -7387,14 +7386,14 @@ $
 $
 expresses the 
 \probname{Graph Connectedness} problem.\index{Graph Connectedness problem@\probname{Graph Connectedness} problem}
-It is a member of $\P$.
-To verify this, we must produce an algorithm that decides membership
-in this language, and that runs in polynomial time.
+It is a member of $\P\!$.
+To verify this we exhibit an algorithm that decides membership
+in this language and that runs in polynomial time.
 One is to do a breadth first search of the graph, which 
-has a runtime that is cubic in the number of nodes.
-(Strictly, we need to name the target platform, here Turing machines,
-and the algorithm description should include the representation,
-but we will not give those details.)
+has a runtime that is $\bigOh(\sizeof{\mathcal{V}}+\sizeof{\mathcal{E}})$.
+% (Strictly speaking, we need to name the target platform, here Turing machines.
+% Also, the algorithm description should include the representation details
+% but we will leave those unspecfied.)
 \end{example}
 
 \begin{example}
@@ -7405,8 +7404,7 @@ $
   \set{\sequence{n_0,n_1}\in\N^2\suchthat\text{their greatest common divisor is~$1$}}
 $.
 % \end{equation*}
-For the algorithm,
-Euclid's fits the bill since it has runtime 
+Euclid's  algorithm fits the bill here since it has runtime 
 $\bigOh(\lg(\max(n_0,n_1)))$.
 \end{example}
 
@@ -7426,14 +7424,11 @@ while $\sigma$ is short and is the \definend{needle}.)\index{needle}
 The algorithm that 
 first tests $\sigma$ at the initial character of~$\tau$, 
 then at the next character, etc., 
-has a runtime of $\bigOh(\sizeof{\sigma}\cdot\sizeof{\tau})$, which 
-is~$\bigOh(\max(\sizeof{\sigma},\sizeof{\tau})^2)$, and so is polytime.
+has a runtime of $\bigOh(\sizeof{\sigma}\cdot\sizeof{\tau})$. 
+% which 
+% is % ~$\bigOh(\max(\sizeof{\sigma},\sizeof{\tau})^2)$, and so is 
+% polytime.
 \end{example}
-
-% Those examples are collections of very different things.
-% They have in common that
-% the members of $\P$ are problems, essentially languages,
-% and for each of which there is a decision algorithm that is sufficiently fast.
 
 \begin{example}
 A \definend{circuit}\index{circuit} 
@@ -7453,8 +7448,38 @@ and $\equiv$ returns~\str{1} if and only if its two inputs are the same.
 \begin{center}
   \includegraphics{complexity/asy/circuit/circuit005.pdf}
 \end{center}
-This circuit returns \str{1} if the sum of the input bits is a multiple
-of~$3$.
+\citetext{This circuit returns \str{1} if the sum of the input bits is $0$ or $1$}{%
+This is the circuit's truth table.
+\begin{center}\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{*{1}{c}|*{7}{c}}
+  \multicolumn{1}{c}{$b_3b_2b_1b_0$} 
+     &$b_0\oplus b_1=s$ 
+     &$b_0\wedge b_1=t$ 
+     &$b_2\oplus b_3=u$ 
+     &$b_2\wedge b_3=v$ 
+     &$s\wedge u=w$ 
+     &$t\vee v=x$ 
+     &$w\equiv x$  \\ \hline
+  $0000$ &$0$ &$0$ &$0$ &$0$ &$0$ &$0$ &$1$  \\
+  $0001$ &$1$ &$0$ &$0$ &$0$ &$0$ &$0$ &$1$  \\
+  $0010$ &$1$ &$0$ &$0$ &$0$ &$0$ &$0$ &$1$  \\
+  $0011$ &$0$ &$1$ &$0$ &$0$ &$0$ &$1$ &$0$  \\[0.75ex]
+  $0100$ &$0$ &$0$ &$1$ &$0$ &$0$ &$0$ &$1$  \\
+  $0101$ &$1$ &$0$ &$1$ &$0$ &$1$ &$0$ &$0$  \\
+  $0110$ &$1$ &$0$ &$1$ &$0$ &$1$ &$0$ &$0$  \\
+  $0111$ &$0$ &$1$ &$1$ &$0$ &$0$ &$1$ &$0$  \\[0.75ex]
+  $1000$ &$0$ &$0$ &$1$ &$0$ &$0$ &$0$ &$1$  \\
+  $1001$ &$1$ &$0$ &$1$ &$0$ &$1$ &$0$ &$0$  \\
+  $1010$ &$1$ &$0$ &$1$ &$0$ &$1$ &$0$ &$0$  \\
+  $1011$ &$0$ &$1$ &$1$ &$0$ &$0$ &$1$ &$0$  \\[0.75ex]
+  $1100$ &$0$ &$0$ &$0$ &$1$ &$0$ &$1$ &$0$  \\
+  $1101$ &$1$ &$0$ &$0$ &$1$ &$0$ &$1$ &$0$  \\
+  $1110$ &$1$ &$0$ &$0$ &$1$ &$0$ &$1$ &$0$  \\
+  $1111$ &$0$ &$1$ &$0$ &$1$ &$0$ &$1$ &$0$  \\
+\end{tabular}
+\end{center}
+The rightmost column gives the output $f(b_0,b_1,b_2,b_3)$.
+It contains $1$ if and only if the sum of the input bits is $0$ or~$1$.}.
 The 
 \definend{\probname{Circuit Evaluation}}\index{Circuit Evaluation problem@\probname{Circuit Evaluation} problem} 
 problem inputs a circuit like this one
@@ -7463,16 +7488,16 @@ This problem is a member of~$\P$.
 \end{example}
 
 \begin{example}
-The collection $\P$ is a very large.
+% The collection $\P$ is a very large.
 % It contains all problems with a practical solution algorithm. 
-More example members:
+More example members of $\P$ are:
 \begin{parenum} 
 % \item determine if a number is prime,
 % $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents a prime}}$,
-\item minimal spanning tree,
-  $\set{\sequence{\mathcal{G},T}\suchthat\text{$T$ is a minimal spanning tree in~$\mathcal{G}$}}$
 \item matrix multiplication, taken as 
-$\set{\sequence{M_0,M_1,M_2}\suchthat \text{they are matrices with $M_0\cdot M_1=M_2$}}$
+$\set{\sequence{M_0,M_1,M_2}\suchthat \text{they are matrices with $M_0\cdot M_1=M_2$}}$,
+\item minimal spanning tree,
+  $\set{\sequence{\mathcal{G},T}\suchthat\text{$T$ is a minimal spanning tree in~$\mathcal{G}$}}$,
 and \item edit distance, the number of
 character removals, insertions, or substitutions needed to transform
 between strings,
@@ -7510,7 +7535,7 @@ close analysis with a wide range of alternative computational models
 proposed over the years shows that while
 Turing machine algorithms 
 are indeed often slower than related algorithms for other natural models,
-it is only by a factor of between $n^2$ and~$n^4$, depending on the 
+it is only by a factor of between $n^2$ and~$n^4\!$, depending on the 
 model.\footnote{%
   We take a model to be `natural' if it
   was not invented in order to be a counterexample to this.}
@@ -7524,8 +7549,8 @@ So no, changing the model doesn't change whether the problem is in~$\P$.
 A variation of Church's thesis, the 
 \definend{Extended Church's Thesis},\index{Extended Church's Thesis}\index{Church's Thesis!Extended} 
 posits that not only are
-all models of mechanical computation of equal power\Dash that is,
-by Church's Thesis they compute the same functions\Dash 
+all models of mechanical computation of equal power\Dash
+Church's Thesis asserts that they compute the same functions\Dash 
 but in addition that they are of equivalent speed in that we can simulate any
 reasonable model of computation\footnote{%
   One definition of `reasonable' is ``in principle physically realizable''
@@ -7538,7 +7563,7 @@ also falls in that class using any other reasonable models.
 
 However, this thesis does not enjoy anything like
 the support of Church's original one.
-For one thing, we know of several problems
+Most importantly, we know of several problems
 that under the Quantum Computing\index{Quantum Computing model} 
 model have algorithms with polytime solutions
 but for which we do not know of any polytime solution in a
@@ -7548,7 +7573,7 @@ One is the familiar \probname{Prime Factorization} problem.\index{Prime Factoriz
 As to whether the Quantum Computing model is reasonable,
 in recent years\footnote{%
   The first published result was from 2019.}
- a number of researchers claimed to have built devices that
+a number of researchers claimed to have built devices that
 achieved 
 \definend{quantum advantage},\index{quantum advantage}\index{quantum computing!quantum advantage}\index{quantum supremecy|seealso{quantum advantage}} 
 to have solved a problem
@@ -7571,22 +7596,24 @@ RAM machine-model device in
   \protect\url{https://gilkalai.wordpress.com/2019/11/13/gils-collegial-quantum-supremacy-skepticism-faq/}.
   % \url{https://gilkalai.wordpress.com/2019/09/23/quantum-computers-amazing-progress-google-ibm-and-extraordinary-but-probably-false-supremacy-claims-google/}
 }.
-For one thing, the advantage depends both on there being a quantum device that
-accomplishes the task and also on there not being
+For one thing, the advantage depends not only 
+on there being a quantum device that
+accomplishes the task but also on there not being
 a classical algorithm that is fast.
 In fact, soon after the original claim
-was made other researchers produced an algorithm for a 
+was made, other researchers produced an algorithm for a 
 traditional device that is near parity.
-Another reservation is that on its face, 
-this claim is not about general purpose computing;~the problem solved
-is exotic and especially suitable to the instruments 
+Another reservation is that  
+these claim are not about general purpose computing;~the problems solved
+are exotic and especially suitable to the instruments 
 that researchers have available.
 There are sound reasons to wonder
 whether quantum computers will ever be practical physical devices 
 used for everyday problems. 
+
 However, scientists and engineers are making
 great progress.
-We will put this question aside in this text for being as-yet unsettled, 
+In this text we will put this question aside for being as-yet unsettled, 
 but it is worth monitoring developments closely.
 \end{remark}
 
@@ -7599,7 +7626,7 @@ but it is worth monitoring developments closely.
   \autocite{AllenderLouiRegan}.
   This includes several direct quotations.}
 because there are reasons to suppose that 
-it is the best candidate for the collection  
+it is the best candidate to take as the collection  
 of tractable problems.
 We close this section with a discussion of those reasons.
 
@@ -7612,25 +7639,29 @@ run within polytime of each other.\footnote{%
   All of the models, that is, that are natural and non-quantum.} 
 That makes $\P$ invariant under the choice of
 computing model\Dash if a problem is in~$\P$ for any of these models
-then it is in~$\P$ for all.
-The fact that Turing machines are our standard is in some ways a 
-historical accident, but calls to change lose 
-some persuasive force
-when differences between the runtime behavior of
-any of these models is lost in the general polynomial sloppiness.
+then it is in~$\P$ for all.\footnote{%
+  This explains why we may sometime casually say that 
+  an algorithm runs in polytime,
+  instead of the strictly speaking correct statement 
+  that the Turing machine implementing it runs in polytime.
+  The machine model does not change whether the runtime is polytime,
+  for natural and non-quantum models.}
+% The fact that Turing machines are our standard is in some ways a 
+% historical accident, but calls to change are a little less
+% persuasive when polytime is the same everywhere.
 
 The second reason is related:~suppose that we try to restrict 
-our interpretation of `tractible' to, say, $\bigOh(x^4)$. 
+our interpretation of `tractable' to, say, $\bigOh(x^4)$. 
 We may well then find ourselves doing a loop whose interior has a $\bigOh(x^4)$
 function, and so our new algorithm is $\bigOh(x^5)$.
-That is, an appeal of $\P$ is that it has natural closure properties.
+That is, a strength of $\P$ is that it has natural closure properties.
 
 \begin{lemma}  \label{lem:PClosure}
 The class $\P$ is closed under union, intersection, and set complement.
 \end{lemma}
 
 \begin{proof}
-We are asked to show that if two languages are members of~$\P$ then so 
+We must show that if two languages are members of~$\P$ then so 
 is their union and intersection, as well as each's complement.  
 We will do union 
 and leave the other two for \cref{exer:PClosure}.
@@ -7641,8 +7672,8 @@ and similarly suppose that
 $\lang_1$'s characteristic function
 $\TMfcn_{e_1}$ runs in time $\bigOh(x^{k_1})$.
 The natural algorithm for the union $\lang_0\cup\lang_1$ is
-to first test the input for membership in $\lang_0$ and,
-if that fails, then test for membership in~$\lang_1$.
+to first test the input for membership in $\lang_0$ and
+if that fails then test for membership in~$\lang_1$.
 That algorithm is in $\bigOh(x^k)$ where $k=\max(\set{k_0,k_1})$, so it runs in
 polytime.  
 \end{proof}
@@ -7677,49 +7708,53 @@ subtraction, multiplication, and composition.
 %</discussion:PClosure>
 The class $\P$ is the smallest nontrivial one with these appealing properties.
 
+\label{disc:CobhamsThesis}
 But the main reason that $\P$ is of such great interest is Cobham's Thesis, the
 contention that a problem is  
 tractable if and only if it has a solution algorithm that runs 
 in polytime.
+
 % We discussed this on page~\pageref{discussion:CobhamsThesis}; 
-Recall the objection to the Thesis 
-that 
+Some researchers have objected to this thesis, saying that 
 there are problems whose solution algorithms cannot be improved  
 beyond some huge exponent, such as~$\bigOh(n^{1\,000\,000})$,
 and these problems are not really tractable.
+(They point out a similar possibility of large constant multiples.)
 We know such problems exist because we can artificially produce some 
 using diagonalization.
 However, our
 empirical experience over close to a century of computing 
-is that problems with solution algorithms of 
+has been that problems with solution algorithms of 
 very large degree polynomial time complexity
 do not seem to arise in practice.
 We see plenty of problems with solution algorithms that are $\bigOh(n\lg n)$
 or $\bigOh(n^3)$, and we see plenty that are exponential,
 but we just do not see much of~$\bigOh(n^{1\,000\,000})$.
 
-Moreover, often in the past
+Moreover, in the past
 when a researcher has produced an algorithm for a problem with 
 a runtime that has even a moderately large degree
 then, with this foot in the door,
-over the next few years the community brings to bear  
+the community brings to bear  
 an array of mathematical and algorithmic techniques that 
 lower the runtime degree to reasonable size.
 
-In addition, 
-even if the objection to Cobham's Thesis is right and $\P$ is too broad, 
+Finally, 
+even if these objections to Cobham's Thesis are right and $\P$ is too broad, 
 the class would still be useful because if we could show that a 
 problem is not in~$\P$ then we would have shown that it has no
 general solution algorithm that is practical.\footnote{%
-  This argument has lost some of force in recent years with the
+  The contention that if a problem is not in $\P$ then it is not
+  solvable in practice has lost some of force in recent years with the
   rise of $\SAT$ solvers.
   These attack problems that are believed to not be in~$\P$
-  and can solve instances of the problems of moderately large size,
+  and can solve instances of moderately large size,
   using only moderately large computing resources.
   See \protect\cref{extra:SATSolvers}.
 }
 
-In summary, those reasons explain why researchers continue to 
+\medskip
+In summary, researchers continue to 
 use~$\P$ as a baseline for comparisons with other complexity classes.
 
 
@@ -7727,7 +7762,7 @@ use~$\P$ as a baseline for comparisons with other complexity classes.
 \recommended
 \begin{exercise}
 True or False: if the language is finite then the language decision problem 
-is in $\P\mkern-1mu$.
+is in $\P$.
 \begin{answer}\verified
 True.
 Such problems have solution algorithms that are basically a fixed number 
@@ -7742,12 +7777,16 @@ Your coworker says something mistaken, ``I've got a problem
 whose algorithm is in~$\P\mkern-1mu$.''
 They are being a little sloppy with terms; how?
 \begin{answer}\verified
-Technically, algorithms are not in $\P$; rather, problems are in~$\P\mkern-1mu$.
+The two `runs in polytime' and `is in $\P\mkern+2mu$' are different.
+Confusing them is a type error\Dash the type of thing that runs in polytime
+is different than the type of thing that is in~$\P$.
+Algorithms are not in $\P$; rather, problems are in~$\P\mkern-1mu$.
+
 Specifically, a problem is in~$\P$ if from among all
-the algorithms that solves it, at least one runs in polynomial time,
+the algorithms that solve it, at least one runs in polynomial time, so that it
 is $\bigOh(n^c)$ for some constant~$c$.
-So, better is to say something like, ``I've got a problem 
-whose solution algorithm takes polytime.''
+Thus, better than what your coworker said is is to say something like, 
+``I've got a problem whose solution algorithm takes polytime.''
 \end{answer}
 \end{exercise}
 
@@ -7784,12 +7823,12 @@ not of the number of circuit elements.
 \begin{credit}
   \url{https://cs.stackexchange.com/q/57518}
 \end{credit}
-In class, someone says to the professor, 
+In class, someone asks the professor, 
 ``Why aren't all languages in~$\P$?
-I'll design a Turing machine so that no matter what the input is, 
+I'll produce a Turing machine so that no matter what the input is, 
 it outputs~$1$.
 So it accepts every member of the language, and it
-runs in polytime, for sure.''
+runs in polytime for sure.''
 Explain the mistake.
 \begin{answer}\verified
 The student's machine accepts all inputs.

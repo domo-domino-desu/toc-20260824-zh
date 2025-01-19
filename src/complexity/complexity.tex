@@ -1086,13 +1086,9 @@ Exponential growth is \citetext{very, very large}{%
 
 Another way to understand this
 is to
-consider the effect of appending one more character to an input string, 
-for example passing from the length ten string  
-$\sigma_{10}=\str{11\,0100\,1010}$ to the length eleven
-$\sigma_{11}=\str{110\,1001\,0101}$.
+consider the effect of appending one more character to an input string~$\sigma$. 
 An algorithm that loops through the characters and so runs in $\lh{\sigma}$ time
-must do one more loop, which in this example
-is about ten percent more time.
+must do one more loop, about $\sizeof{\sigma}$ more ticks.
 But an algorithm that takes $2^{\lh{\sigma}}$~time
 will take about double the time.
 
@@ -8833,56 +8829,64 @@ branch highlighted.
 
 \subsection{Nondeterministic Turing machines}
 We modify the definition of a Turing machine by 
-dropping the restriction that $\TM$ must be deterministic.
+omitting the restriction that $\TM$ must be deterministic.\footnote{%
+  Recall that determinism is the requirement different 
+  four-tuples instructions cannot begin with the same $q_pT_p$.
+}
 
 %<*def:NondeterministicTM>
 \begin{definition}  \label{def:NondeterministicTuringMachine}
 A \definend{nondeterministic Turing machine}~$\TM$\index{nondeterministic Turing machine!definition} 
 is a finite set of
 instructions\index{instruction}\index{nondeterministic Turing machine!instruction} 
-$q_pT_pT_nq_n\in Q\times \Sigma\times(\Sigma\cup\set{\str{L},\str{R}})\times Q$,
-where
-% In an instruction the 
-% \definend{present state}~$q_p$\index{present state}\index{Turing machine!present state} and 
-% \definend{next state}~$q_n$\index{next state}\index{Turing machine!next state} are elements of a
-$Q$ is a finite set of states and % ~$Q$.\index{states!set of} 
-% The \definend{input symbol}\index{input symbol}\index{symbol!input}\index{Turing machine!input symbol} 
-% or \definend{current symbol}\index{current symbol}\index{symbol!current}\index{Turing machine!current symbol} 
-% $T_p$ is an element of the 
-% \definend{tape alphabet}\index{tape alphabet}\index{alphabet!tape}\index{Turing machine!tape alphabet} 
-$\Sigma$ is a finite set of tape alphabet characters,
-which contains at least two members, including
+$q_pT_pT_nq_n\in Q\times \Sigma\times(\Sigma\cup\set{\str{L},\str{R}})\times Q$.
+The set~$Q$ of \definend{states}\index{states!set of} is finite.
+Some of them, $F\subseteq Q$, are \definend{accepting states}\index{accepting state}\index{state!accepting}\index{nondeterministic Turing machine!accepting state}.
+The \definend{tape alphabet}\index{tape alphabet}\index{alphabet!tape}\index{Turing machine!tape alphabet}
+set $\Sigma$ is finite, 
+contains at least two members, including
 blank\index{blank},
 and does not contain the characters $\str{L}$ or~$\str{R}$.
-Some of the states, $F\subseteq Q$, are \definend{accepting states}\index{accepting state}\index{state!accepting}\index{nondeterministic Turing machine!accepting state}.
 \end{definition}
 %</def:NondeterministicTM>
 
-After the Turing machine definition
-we gave a full description how they act
-as a sequence of `$\yields$'~steps, starting with an initial configuration.
-\cref{exer:DefnYieldsNondeterministicTM}
-asks for the same for these machines. 
-The association between the pair 
-$\sequence{\text{present state},\text{present character}}$
-and what the machine does next is given by the 
+As with deterministic machines, the association between the 
+present state and input character,
+% pair $\sequence{\text{present state},\text{present character}}$
+and what the machine does next is given by the machine's
 \definend{transition function},\index{transition function}\index{function!transition}\index{nondeterministic Turing machine!transition function}
 % or \definend{next-state function}\index{next-state function}\index{function!next-state}\index{Turing machine!next-state function}
 $\map{\Delta}{Q\times \Sigma}{\powerset((\Sigma\cup\set{\str{L},\str{R}})\times Q)}$.
-Compared to deterministic machines, the 
-difference here is that the transition function outputs sets of pairs instead
-of a single pair.
+The 
+difference here is that the transition function outputs a set of pairs 
+$\sequence{\text{action},\text{next state}}$, instead of just one pair.
 
-Adding nondeterminism to Turing machines
-\citetext{adds some wrinkles}{%
+After the deterministic Turing machine definition
+we gave a full description of how they act
+as a sequence of `$\yields$'~steps.
+\cref{exer:DefnYieldsNondeterministicTM}
+asks for the same for these machines. 
+As illustrated above, the key difference is that here the computation
+is not a single line, it is a tree.\index{nondeterministic Turing machine!computation tree}
+The nodes are configurations~$\mathcal{C}$,
+where the root node is the initial configuration~$\mathcal{C}_0$.
+This tree is a directed graph, where $\mathcal{C}\yields\hat{\mathcal{C}}$
+means that the second one succeeds the first, or is a child of the first. 
+A \definend{branch}\index{branch}\index{computation tree!branch} 
+is a sequence $\mathcal{C}_0\yields \cdots\,\mathcal{C}$
+(it may be that $\mathcal{C}$ is not a terminal node, so it may have
+successors).
+
+Having a computation tree instead of a line 
+\citetext{adds a wrinkle}{%
   But it avoids a wrinkle that we needed for Finite State machines
   and Pushdown machines,
   $\varepsilon$ transitions, since Turing machines are not 
   required to consume their input one character at a time.}.
-The main one is that the computation tree might have some branches that 
-halt and some that don't, or maybe one outputs~$1$ while another outputs~$101$.
-The simplest approach is not to 
-define a
+A tree might have some branches that 
+halt and some that don't, or maybe one ends with~$1$ on the tape 
+while another ends with~$101$.
+The simplest approach is not to define a
 \citetext{function computed by a nondeterministic machine}{%
   One thing that we can do is to 
   define that the nondeterministic machine computes
@@ -8892,18 +8896,8 @@ define a
   Otherwise, the value is undefined, $f(\sigma)\diverges$.
   }
 but instead to follow the strategy for Finite State machines
-and describe when the input string is accepted, so that
-these machines are language deciders.
-
-% Fix $\sigma\in\kleenestar{\Sigma}$.
-% Start the nondeterministic Turing machine in an initial configuration,
-% in state $q_0$, with the tape consisting of $\sigma$, 
-% and with the I/O head pointing to $\sigma$'s first character.
-% This machine  \definend{accepts}~$\sigma$
-% if there is a sequence of `$\yields$' transitions ending with
-% the machine halting in some state that is accepting.
-% That is, the accepts $\sigma$ if the computation tree contains 
-% at least one accepting branch.
+and describe when the input string is accepted.
+That is, we will use these machines as language deciders.
 
 From the Finite State machine discussion we 
 inherit two mental models for how nondeterministic machines act.
@@ -8916,8 +8910,6 @@ then deterministically verifies that branch.
 For both models, the machine accepts an input string if at least one
 branch ends in an accepting state, and does not accept the
 input if no branch ends in an accepting state.
-
-%<*def:NondeterministicDecidersAllBranchesFinite>
 The ``no branch ends'' seemingly could mean that 
 in a non-accepting computation some branches do not accept
 because their computation fails to halt.
@@ -8927,12 +8919,25 @@ including how long they take to not accept.
 So we will only define machines to be language-deciders when  
 all branches halt.
 
+\begin{lemma}
+If in a computation tree every branch is finite then the tree
+contains only finitely many nodes. 
+\end{lemma}
+
+\begin{proof}
+In a computation tree every vertex has only finitely many immediate 
+successors because the number of machine instructions is finite.
+K\"{o}nig's Lemma\index{Konig's lemma@K\"{o}nig's lemma} 
+on \cpageref{lem:KonigsLemma} says that for such a 
+graph to have infinitely many vertices, it must have an infinite path.
+\end{proof}
+
+%<*def:NondeterministicDecidersAllBranchesFinite>
 \begin{definition} \label{def:NondeterministicAccepts}
 Let $\TM$ be a nondeterministic Turing machine such that
-every branch in the computation tree,
-every sequence of valid transitions from the starting configuration, is finite.
+every branch in the computation tree is finite.
 Then $\TM$ \definend{accepts} an input string
-if at least one branch ends in an accepting state and otherwise
+if at least one branch ends in an accepting state, and otherwise
 \definend{rejects} it.
 The machine
 % \definend{recognizes}\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language} 
@@ -8948,24 +8953,22 @@ while if $\sigma\notin\lang$ then~$\TM$ rejects it.
 \end{definition}
 %</def:NondeterministicDecidersAllBranchesFinite>
 
-For Finite State machines, nondeterminism does not make any
-difference in that a language is decided by 
+For Finite State machines nondeterminism does not make a
+difference, in that a language is decided by 
 some nondeterministic Finite State machine if and only if it is 
-decided by a deterministic
-Finite State machine.
-But Pushdown machines are different:~there are languages that
+decided by a deterministic Finite State machine.
+Pushdown machines are the opposite:~there are languages that
 a nondeterministic Pushdown machine can decide but that cannot be decided by any
-deterministic one. %\footnote{%
-%    One is the language of palindromes.}
+deterministic one. 
 So what about Turing machines?
-Does adding nondeterminism to Turing machines add any new capabilities?
+Does adding nondeterminism add any new capabilities?
 
 %<*lem:DeterministicAndNondeterministicTMsDoTheSame>
-\begin{lemma}  \label{lem:NonDeterAndDeterTMsHaveSameLangs}
+\begin{theorem}  \label{lem:NonDeterAndDeterTMsHaveSameLangs}
 For Turing machines, deterministic and nondeterministic machines 
-decide the same languages.
+decide the same set of languages.
 % They also recognize the same languages.
-\end{lemma}
+\end{theorem}
 %</lem:DeterministicAndNondeterministicTMsDoTheSame>
 
 %<*pf:DeterministicAndNondeterministicTMsDoTheSame>
@@ -8978,76 +8981,53 @@ then a nondeterministic one does also.
 
 Conversely, let the nondeterministic Turing
 machine~$\TM$ decide the language~$\lang$.
+Fix an input~$\sigma$.
 Consider a deterministic machine~$\TM[Q]$ that 
 does a breadth-first search of $\TM$'s computation tree.
-We will show that it
-decides the same language.
-Fix an input~$\sigma$.
-If $\TM$ accepts~$\sigma$ then the search done by~$\TM[Q]$ will
-eventually find that node in the computation tree 
-and then $\TM[Q]$ accepts~$\sigma$.
+If $\TM$ accepts~$\sigma$ there is a terminal node in the tree where
+the state is accepting, and~$\TM[Q]$ will
+eventually find that node.
 If $\TM$ does not accept~$\sigma$ then every branch in its computation tree
-halts in a state that is not accepting.
-There is a longest such branch by
-K\"{o}nig's lemma.\index{Konig's lemma@K\"{o}nig's lemma}
-So the breadth-first search will
-eventually exhaust all branches and then $\TM[Q]$ rejects~$\sigma$.
+halts in a rejecting state.
+Every branch is finite so
+the search will
+eventually exhaust all vertices and then $\TM[Q]$ rejects~$\sigma$.
 \end{proof}
 %</pf:DeterministicAndNondeterministicTMsDoTheSame>
 
 That proof is, basically, time-slicing.
-In everyday computing
+Every day on a computer
 we simulate an unboundedly-parallel machine
-by having its CPU cycle among processes.
-For example, if on a machine's screen we have a window open to edit a
-program and another window showing a video,
-the computer may do the two tasks by updating the editor for a time, then
-updating the video, then back to the editor, etc.
-When we use a such a system we perceive that many things
-are happening at once although actually there is only one, or
-at least 
-a limited number of simultaneous physical computations.\footnote{%
-  Depending on how many cores are in the CPU.}
+by having the CPU cycle among processes.
+For example, if we are editing a
+program and also showing a video,
+then the computer may update the editor for a time, 
+the update the video, then switch back to the editor, etc.
+% It seems like these things
+% are happening together although actually there is only one, or
+% at least 
+% a limited number of, simultaneous physical computations.\footnote{%
+%   Depending on how many cores are in the CPU.}
 This is a kind of dovetailing, 
-a way of doing a breadth-first traversal of the computation branches.
+a way of doing a breadth-first traversal of the computation's branches.
 
 So adding nondeterminism
-doesn't expand what Turing machines can compute.
-% Nevertheless, these machines have several interesting aspects.
-% We saw that nondeterministic Finite State machines
-% are a good impedence match for many problems and
-% similarly, nondeterministic Turing machines 
-% will help in thinking about some problems that on a serial device
-% are hard to conceptualize.
-% But that is not the most interesting thing.
-% The most interesting thing is how fast they work.
-Nonetheless, nondeterministic Turing machines are of interest.
-The reason is that they at least appear to be fast.
+doesn't give us anything new that we can compute.
 
-% The 
-% \probname{Traveling Salesman} problem\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
-% is an example.
-% A nondeterministic machine just guesses the
-% salesman's best circuit,
-% or is given a circuit by some oracular demon, 
-% and then deterministically 
-% checks whether the length is shorter than a specified bound.
-% So for some problems nondeterminism shortcuts the details of going from the
-% problem to a solution.
 
 
 % ..................
 \subsection{Speed}
-The real excitement is that 
-a nondeterministic Turing machine % , if we had one,
+The excitement about 
+nondeterministic Turing machines is that they
 \citetext{might be much faster}{%
   R~Hamming gives this example to demonstrate that an order of magnitude change
-  in speed can change the world, can change what can be done:~we 
+  in speed can change what can be done:~we 
   walk at $4$~mph, 
-  a car goes at $40$~mph, 
-  and an airplane goes at~$400$~mph. 
-  This relates to the bug picture that opens this chapter.  
-} than a deterministic one.
+  we drive at $40$~mph, 
+  and we fly at~$400$~mph. 
+  This relates to the picture that opens this chapter.  
+} than deterministic ones.
 
 \begin{example}  \label{ex:SatisfiabilityfastOnNDTM}
 Recall that the \probname{Satisfiability} problem\index{Satisfiability problem@\probname{Satisfiability} problem!on a nondeterministic Turing machine}
@@ -9085,7 +9065,7 @@ ends in a~$T$.
 %<*discussion:SpeedOfNFSMii>
 As to runtime, the number of table rows grows  
 exponentially:~it is $2$ raised to the number of input variables.
-Going through the rows one at a time would be very slow.
+Going through the rows sequentially is a very slow way to get an answer.
 %</discussion:SpeedOfNFSMii>
 
 %<*discussion:SpeedOfNFSMiii>
@@ -9097,43 +9077,32 @@ Each of these children is done quickly, certainly in polytime,
 and if they are working in parallel then the whole thing is polytime.
 If at the end any child is holding a \true{} then 
 the expression as a whole is satisfiable.
-That is, while a serial machine appears to require
+Thus, while a serial machine appears to require
 exponential time, a nondeterministic machine does this job in polytime.
 %</discussion:SpeedOfNFSMiii>
 
+\begin{example}
 The same potential speedup happens with the 
 \probname{Traveling Salesman} problem.\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
-Checking every potential circuit one at a time 
+Checking every circuit in turn 
 to see if it is shorter than a specified bound would be slow.
 But we can think of a nondeterministic machine 
 either as doing all circuits in parallel, or as 
 just guessing the best circuit
 (or being given it by some oracular demon) and then checking it,
 which would be fast. 
-
-% %<*def:NFSMAcceptsLang>
-% \begin{definition}\index{language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!language}
-% Where $\map{t}{\N}{\N}$, a nondeterministic Turing machine
-% \definend{recognizes a language in time $t$} 
-% if for any
-% input $\sigma\in\lang$ the machine computes at least one accepting branch
-% in time $t(\mspace{2mu}|\sigma|\mspace{2mu})$.
-% \end{definition} 
-% %</def:NFSMAcceptsLang>
+\end{example}
 
 So while adding nondeterminism to Turing machines doesn't
-allow them to compute anything new, we might reasonably
-conjecture that it does allow them to compute those things faster.
+allow them to compute anything new, we can reasonably
+conjecture that it does compute those things faster.
 
 
 
 
 \subsection{Definition}
-Next we name a class of language decision problems
-associated with nondeterministic 
-Turing machines.
-% (Recall that we do not distinguish much between a language decision problem
-% and the language itself.)
+Next we name the most important class of language decision problems
+associated with nondeterministic Turing machines.
 
 %<*def:NP>
 \begin{definition} \label{def:NP}
@@ -9176,7 +9145,7 @@ a definition that is conceptually clear,
 followed by a result that 
 is what we use in practice to 
 determine whether the definition applies.
-We now give that result.
+We now give that second result.
 %<*intro:Verifieri>
 This is where we use the mental model
 of the machine guessing, or of being told an answer.
@@ -9184,17 +9153,16 @@ of the machine guessing, or of being told an answer.
 Consider \probname{Satisfiability}.
 Imagine that in \cref{ex:SatisfiabilityfastOnNDTM} above the demon whispers, 
 ``Psst! Try $\str{TTF}$.'' 
-With that hint we can quickly verify with a deterministic machine.
-For that example's language of satisfiable expressions, 
-here is the verifier.
+We can quickly verify the correctness of that hint
+using a deterministic machine.
+Here is the hint verifier.
 \begin{equation*}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts000.pdf}}
   \tag{$**$}
 \end{equation*}
-We start with the expression $\sigma=E$ from that example's ($*$),
-and also feed it the demon's hint $\omega=\str{TTF}$.
-It accepts, certainly in polytime, which verifies that
-$E$ is satisfiable.
+It inputs the expression $\sigma=E$ from~($*$),
+and also the demon's hint $\omega=\str{TTF}$.
+It certainly reaches the `\texttt{Accept}' box in polytime.
 %</intro:Verifier>
 
 %<*def:Verifier>

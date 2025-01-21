@@ -8870,35 +8870,75 @@ asks for the same for these machines.
 As illustrated above, the key difference is that here the computation
 is not a single line, it is a tree.\index{nondeterministic Turing machine!computation tree}
 The nodes are configurations~$\mathcal{C}$,
-where the root node is the initial configuration~$\mathcal{C}_0$.
+and the root node is the initial configuration~$\mathcal{C}_0$.
 This tree is a directed graph, where $\mathcal{C}\yields\hat{\mathcal{C}}$
-means that the second one succeeds the first, or is a child of the first. 
+means that the second one immediattely succeeds the first, 
+or is a child of the first. 
 A \definend{branch}\index{branch}\index{computation tree!branch} 
-is a sequence $\mathcal{C}_0\yields \cdots\,\mathcal{C}$
-(it may be that $\mathcal{C}$ is not a terminal node, so it may have
-successors).
+is a sequence $\mathcal{C}_0\yields \cdots\,\mathcal{C}$, where
+$\mathcal{C}$ is a terminal vertex, that is, it has no successors.
 
-Having a computation tree instead of a line 
+Having a computation tree instead of a sequence 
 \citetext{adds a wrinkle}{%
   But it avoids a wrinkle that we needed for Finite State machines
   and Pushdown machines,
   $\varepsilon$ transitions, since Turing machines are not 
   required to consume their input one character at a time.}.
-A tree might have some branches that 
-halt and some that don't, or maybe one ends with~$1$ on the tape 
-while another ends with~$101$.
+A tree might have some infinite sequences 
+$\mathcal{C}_0\yields\mathcal{C}_1\yields\cdots$, 
+or maybe some branches end with~$1$ on the tape 
+while others end with~$101$.
 The simplest approach is not to define a
 \citetext{function computed by a nondeterministic machine}{%
-  One thing that we can do is to 
+  One thing that we could do is to 
   define that the nondeterministic machine computes
   $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ is that if 
   on an input $\sigma$, all branches halt and they all leave the
   same value on the tape, which we call $f(\sigma)$.
   Otherwise, the value is undefined, $f(\sigma)\diverges$.
   }
-but instead to follow the strategy for Finite State machines
-and describe when the input string is accepted.
-That is, we will use these machines as language deciders.
+but instead to use these machines as language deciders.
+
+% \begin{definition} \label{def:NondeterministicRecognizes}
+% A nondeterministic Turing machine
+% \definend{accepts} an input string % $\sigma\in\kleenestar{\Sigma}$
+% if at least one branch ends in an accepting state, and otherwise
+% \definend{rejects} that string.
+% This machine
+% \definend{recognizes} a language~$\lang$\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language} 
+% when for~$\sigma\in\kleenestar{\Sigma}$, 
+% if $\sigma\in\lang$ then $\TM$ accepts it
+% while if $\sigma\notin\lang$ then $\TM$ does not accept it.
+% \end{definition}
+
+% \begin{lemma}  \label{lem:NondeterministicAndDeterministicTMsRecognizeSameLangs}
+% Determinstic Turing machines and nondeterministic Turing machines 
+% recognize the same set of languages.
+% % They also recognize the same languages.
+% \end{lemma}
+% %</lem:DeterministicAndNondeterministicTMsDoTheSame>
+
+% %<*pf:DeterministicAndNondeterministicTMsDoTheSame>
+% \begin{proof}
+% One direction is easy.
+% A deterministic Turing machine is a special case of a
+% nondeterministic one. 
+% So if a deterministic machine decides a language
+% then a nondeterministic one does also.
+
+% For the converse let the nondeterministic Turing
+% machine~$\TM$ decide the language~$\lang$.
+% Fix an input~$\sigma$.
+% Consider a deterministic machine~$\TM[Q]$ that 
+% does a breadth-first search of $\TM$'s computation tree.
+% If $\TM$ accepts~$\sigma$ then there is a terminal configuration 
+% in the tree where the state is accepting and~$\TM[Q]$ will find it.
+% If $\TM$ does not accept~$\sigma$ then every branch
+% halts in a rejecting state.
+% Because every branch is finite, the search will
+% eventually exhaust all vertices and then $\TM[Q]$ rejects~$\sigma$.
+% \end{proof}
+% %</pf:DeterministicAndNondeterministicTMsDoTheSame>
 
 From the Finite State machine discussion we 
 inherit two mental models for how nondeterministic machines act.
@@ -8909,20 +8949,20 @@ follow\Dash
 or is told by some demon\Dash and
 then deterministically verifies that branch.
 For both models, the machine accepts an input string if at least one
-branch ends in an accepting state, and does not accept the
-input if no branch ends in an accepting state.
-The ``no branch ends'' seemingly could mean that 
-in a non-accepting computation some branches do not accept
-because their computation fails to halt.
-But we are using these machines as language deciders 
-and we shall want to time them, 
+branch ends in a configuration with an accepting state, 
+and otherwise does not accept the input.
+The ``otherwise'' seemingly could mean that 
+in a non-accepting computation the tree contains some sequences of configurations
+that don't terminate.
+However, to use these machines as language deciders 
+we shall want to time them, 
 including how long they take to not accept.
-So we will only define machines to be language-deciders when  
-all branches halt.
+So we will require of language deciders that  
+their trees have no sequences of configurations that are infinite.
 
 \begin{lemma}
-If in a computation tree every branch is finite then the tree
-contains only finitely many nodes. 
+If a computation tree has no infinte sequence of configurations then
+it contains only finitely many nodes. 
 \end{lemma}
 
 \begin{proof}
@@ -8934,16 +8974,18 @@ graph to have infinitely many vertices, it must have an infinite path.
 \end{proof}
 
 %<*def:NondeterministicDecidersAllBranchesFinite>
-\begin{definition} \label{def:NondeterministicAccepts}
-Let $\TM$ be a nondeterministic Turing machine such that
-every branch in the computation tree is finite.
-Then $\TM$ \definend{accepts} an input string
-if at least one branch ends in an accepting state, and otherwise
-\definend{rejects} it.
-The machine
-\definend{decides a language}~$\lang$\index{decided language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!decided language} 
-when for every input string~$\sigma$, 
-if $\sigma\in\lang$ then $\TM$ accepts it
+\begin{definition} \label{def:NondeterministicDecides}
+A nondeterministic Turing machine $\TM$ \definend{accepts} an input string
+if at least one branch ends in an accepting state,
+otherwise it \definend{rejects} that input.
+Let $\TM$ be
+such that for any
+input $\sigma\in\kleenestar{\Sigma}\!$,
+the computation tree has no infinte sequence of configurations.
+Then it
+\definend{decides} the language~$\lang$\index{decided language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!decided language} 
+when 
+if $\sigma\in\lang$ then $\TM$ accepts it,
 while if $\sigma\notin\lang$ then~$\TM$ rejects it.\footnotemark
 \end{definition}\footnotetext{%
   Recall how we have been handling having deterministic Turing machines act
@@ -8956,15 +8998,18 @@ while if $\sigma\notin\lang$ then~$\TM$ rejects it.\footnotemark
   and don't make a crucial difference.}
 %</def:NondeterministicDecidersAllBranchesFinite>
 
+% \noindent (The point of the `no infinite sequence of configurations' 
+% requirement is to ensure that we know in a finite time when a 
+% string is rejected.)
 
-For Finite State machines nondeterminism does not make a
-difference, in that a language is decided by 
+For Finite State machines, nondeterminism does not make a
+difference in that a language is decided by 
 some nondeterministic Finite State machine if and only if it is 
 decided by a deterministic Finite State machine.
-Pushdown machines are the opposite:~there are languages that
-a nondeterministic Pushdown machine can decide but that cannot be decided by any
-deterministic one. 
-So does adding nondeterminism add any new capabilities to Turing machines?
+Pushdown machines are the opposite since there are languages that
+a nondeterministic Pushdown machine can decide but that no deterministic one
+can. 
+What about Turing machines?
 
 %<*lem:DeterministicAndNondeterministicTMsDoTheSame>
 \begin{theorem}  \label{lem:NonDeterAndDeterTMsHaveSameLangs}
@@ -8989,10 +9034,11 @@ Consider a deterministic machine~$\TM[Q]$ that
 does a breadth-first search of $\TM$'s computation tree.
 If $\TM$ accepts~$\sigma$ then there is a terminal configuration 
 in the tree where the state is accepting and~$\TM[Q]$ will find it.
-If $\TM$ does not accept~$\sigma$ then every branch
-halts in a rejecting state.
-Because every branch is finite, the search will
-eventually exhaust all vertices and then $\TM[Q]$ rejects~$\sigma$.
+If $\TM$ does not accept~$\sigma$ then every terminal configuration
+has a rejecting state.
+In a nondeterministic decider the computation tree has only
+finitely many vertices so the search will
+eventually exhaust all of them, and then $\TM[Q]$ rejects~$\sigma$.
 \end{proof}
 %</pf:DeterministicAndNondeterministicTMsDoTheSame>
 
@@ -9001,19 +9047,12 @@ Every day on a computer
 we simulate an unboundedly-parallel machine
 by having the CPU cycle among processes.
 For example, if we are editing a
-program and also showing a video,
+program and also showing a video
 then the computer may update the editor for a time, 
 the update the video, then switch back to the editor, etc.
-% It seems like these things
-% are happening together although actually there is only one, or
-% at least 
-% a limited number of, simultaneous physical computations.\footnote{%
-%   Depending on how many cores are in the CPU.}
 This is a kind of dovetailing, 
 a way of doing a breadth-first traversal of the computation's branches.
 
-% So adding nondeterminism
-% doesn't give us anything new that we can compute.
 
 
 
@@ -9033,8 +9072,8 @@ nondeterministic Turing machines is that they
 \begin{example}  \label{ex:SatisfiabilityfastOnNDTM}
 Recall that the \probname{Satisfiability} problem\index{Satisfiability problem@\probname{Satisfiability} problem!on a nondeterministic Turing machine}
 inputs a Propositional Logic expression and determines whether there 
-are truth value that we can substitute for the variables to make
-the expression \true.
+are truth values that we can substitute for the variables to make
+the expression evaluate to~\true\!.
 
 %<*discussion:SpeedOfNFSMi>
 Is this propositional logic expression satisfiable?
@@ -9045,8 +9084,8 @@ Is this propositional logic expression satisfiable?
   \tag{$*$}
 \end{equation*} 
 The natural approach is to compute a truth table.
-The table below shows that it is satisfiable, because the $TTF$ row 
-ends in a~$T$.
+The one below shows that~$E$ is satisfiable because the $\true\true\false$ row 
+ends in~$\true\!$.
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
 \begin{tabular}{ccc|ccccc|c}
@@ -9113,7 +9152,7 @@ is the set of languages for which there is a
 nondeterministic Turing machine decider~$\TM$ that runs
 in polytime, 
 meaning that there is a polynomial~$p$ such that on input $\sigma$,
-all branches of $\TM$'s computation halt in time~$p(\lh{\sigma})$.
+all branches of $\TM$'s computation terminate in at most~$p(\lh{\sigma})$ steps.
 \end{definition}
 %</def:NP>
 
@@ -9566,7 +9605,7 @@ we don't know of any candidates.\footnote{%
   %  } 
   suggest that quantum computers can try all potential
   solutions in parallel. 
-  That is, they miss the point about interference.)} %
+  They miss the point about interference.)} %
 But that doesn't mean that thinking about them 
 is a purely academic 
 exercise.\footnote{%
@@ -9620,52 +9659,54 @@ whether the two classes $\P$ and~$\NP$ differ.
 % \end{exercise}
 
 \recommended
-\begin{exercise} % https://math.stackexchange.com/q/49509
-Your study partner asks, 
+\begin{exercise} 
+\begin{credit}
+  SE user Simone, https://math.stackexchange.com/q/49509
+\end{credit}
+Someone asks, 
 ``In \cref{lem:VerifierAndGuesserEquiv}, since the witness~$\omega$ is not
 required to be effectively computable, 
-why can't I just take it to be the bit~\str{1} if
+why can't I just take it to be exactly the problem solution, the bit~\str{1} if
 $\sigma\in\lang$, and \str{0} if not?
-Then writing the verifier is easy:~just ignore $\sigma$ and follow
+Then the verifier can just ignore $\sigma$ and follow
 the bit.''
 They are confused.
 Straighten them out.
 \begin{answer}\verified
 That lemma requires that the verifier have the property 
 that if $\sigma\in\lang$ then there is a witness leading to acceptance, 
-while if $\sigma\notin\lang$ then there exists no witness that would
+while if $\sigma\notin\lang$ then there does not exists a witness that would
 cause the verifier to accept.
+The proposed verifier will accept an input $\sigma$ if the bit tells it to,
+even if $\sigma$ is not in the language.
 
-For instance, 
+For a concrete instance, 
 consider the problem $\lang=\set{n\in\N\suchthat \text{$n$ is even}}$.
-Your study partner's proposed verifier inputs a pair $\sequence{\sigma,\omega}$,
+The proposed verifier inputs a pair $\sequence{\sigma,\omega}$,
 where $\sigma$ is a number and $\omega$ is a bit, and then
 accepts the pair if $\omega=\str{1}$.
-Absolutely, if you give your verifier the pair $\sequence{\str{101},\str{0}}$
-then it will not accept (here, \str{101} represents the number~$5$, and is
-not an element of~$\lang$).
+Absolutely, given the pair $\sequence{5,\str{0}}$,
+the verifier will not accept, which is correct here because $5\notin \lang$.
 However, 
-give it $\sequence{\str{101},\str{1}}$ and your verifier will accept.
-So, for $\sigma=\str{101}$ there exists an~$\omega$ leading to acceptance. 
-Consequently, your verifier is wrong.
+given $\sequence{5,\str{1}}$, the verifier will accept.
+So, for $\sigma=5$ there exists an~$\omega$ leading to acceptance,
+which violates the definition of a verifier.
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
-Which is the negation of
+In the context of all branches being finite,
+which is the negation of
 `at least one branch accepts'?
-\begin{exparts}
+\begin{exparts*}
 \item Every branch accepts.
 \item At least one branch rejects.
 \item Every branch rejects.
 \item At least one branch fails to reject.
 \item None of these.
-\end{exparts}
+\end{exparts*}
 \begin{answer}
-It is none.
-The negation is that every branch fails to accept.
-That does not mean that every branch rejects; some of them could
-be computations that never halt.
+It is `Every branch rejects'.
 \end{answer}
 \end{exercise}
 
@@ -9677,8 +9718,9 @@ Decide if it is satisfiable.
 \item $(P\to Q)\wedge \neg((P\wedge Q)\vee \neg P)$
 \end{exparts}
 \begin{answer}\verified
+The easiest way to check satisfiability is to make a truth table.
 \begin{exparts}
-\item This formula is satisfiable. 
+\item The expression $(P\wedge Q)\vee(\neg Q\wedge R)$ is satisfiable. 
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
 \begin{tabular}{ccc|ccc|c}
@@ -9693,24 +9735,41 @@ Decide if it is satisfiable.
   $T$  &$T$  &$T$  &$T$ &$F$ &$F$ &$T$      
 \end{tabular}
 \end{center}
-\item This formula is not satisfiable. 
+\item The expression $(P\to Q)\wedge \neg((P\wedge Q)\vee \neg P)$
+is not satisfiable. 
 \begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
 \small
-\begin{tabular}{ccc|ccccc|c}
-  $P$  &$Q$  &$R$  &$P\to Q$ &$P\wedge Q$ &$\neg P$ &$(P\wedge Q)\vee \neg P$ &$\neg((P\wedge Q)\vee \neg P)$  &$(P\to Q)\wedge \neg((P\wedge Q)\vee \neg P)$  \\ \hline    
-  $F$  &$F$  &$F$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\     
-  $F$  &$F$  &$T$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\     
-  $F$  &$T$  &$F$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\     
-  $F$  &$T$  &$T$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\[1ex]     
-  $T$  &$F$  &$F$  &$F$ &$F$ &$F$ &$F$  &$T$  &$F$ \\     
-  $T$  &$F$  &$T$  &$F$ &$F$ &$F$ &$F$  &$T$  &$F$ \\     
-  $T$  &$T$  &$F$  &$T$ &$T$ &$F$ &$T$  &$F$  &$F$ \\     
-  $T$  &$T$  &$T$  &$T$ &$T$ &$F$ &$T$  &$F$  &$F$      
+\begin{tabular}{cc|ccccc|c}
+  $P$  &$Q$  &$P\to Q$ &$P\wedge Q$ &$\neg P$ &$(P\wedge Q)\vee \neg P$ &$\neg((P\wedge Q)\vee \neg P)$  &$(P\to Q)\wedge \neg((P\wedge Q)\vee \neg P)$  \\ \hline    
+  $F$  &$F$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\     
+  $F$  &$T$  &$T$ &$F$ &$T$ &$T$  &$F$  &$F$ \\     
+  $T$  &$F$  &$F$ &$F$ &$F$ &$F$  &$T$  &$F$ \\     
+  $T$  &$T$  &$T$ &$T$ &$F$ &$T$  &$F$  &$F$ 
 \end{tabular}
 \end{center}
 \end{exparts}
 \end{answer}
 \end{exercise}
+% sage: import sage.logic.propcalc as propcalc
+% sage: s = propcalc.formula("(p&q)|(~q&r)")
+% sage: s.truthtable()
+% p      q      r      value
+% False  False  False  False  
+% False  False  True   True   
+% False  True   False  False  
+% False  True   True   False  
+% True   False  False  False  
+% True   False  True   True   
+% True   True   False  True   
+% True   True   True   True   
+% sage: s = propcalc.formula("(p->q)&~((p&q)|~p)")
+% sage: s.truthtable()
+% p      q      value
+% False  False  False  
+% False  True   False  
+% True   False  False  
+% True   True   False  
+
 
 \begin{exercise}
 True or false?  
@@ -9728,8 +9787,8 @@ and one rejects.
 Some branches don't halt at all.
 What is the upshot?
 \begin{answer}\verified
-The machine accepts~$\sigma$ because there is at least one accepting
-branch.
+This machine does not decide any language,
+.
 \end{answer}
 \end{exercise}
 

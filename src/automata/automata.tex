@@ -2362,7 +2362,7 @@ input then it passes to no state at all.
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm00.pdf}}
 \end{center}
 The graphic below shows what happens with input \str{00001}. 
-It pictures the computation history as a tree.
+It pictures the computation history as a tree.\index{computation tree}
 For instance, on the first \str{0} the computation splits in two
 so the machine is now in two states at once.
 \ifbool{MakingPaperCopy}{%
@@ -2385,8 +2385,13 @@ the Traveling Salesman problem,
 we observed that if a solution exists then there is at least one child process 
 that finds it.
 The same happens here:~there is a
-branch of the computation tree that accepts the input string.
-There are also branches that are not successful.
+maximal path\footnote{%
+  It is tempting to call this a `branch' but that term has a technical 
+  meaning of maximal subtree, so that for instance a branch containing
+  the state $q_0$ in the column for Step~$1$ must contain all of the maximal 
+  paths above the bottom one.}\index{maximal path}\index{computation tree!maximal path} 
+of the computation tree that accepts the input string.
+There are also maximal paths that are not successful.
 The one at the bottom dies after step~$2$
 because when the present
 state is~$q_2$ and the input is~\str{0} then this machine passes to 
@@ -2404,12 +2409,12 @@ state is~$q_2$ and the input is~\str{0} then this machine passes to
   Perhaps the machines go there.}.\footnote{%
   No-state cannot be an accepting state, since it isn't a state at all.
 }
-The branch at the top does not die early but it
+The maximal path at the top does not die early but it
 also does not accept the input.
-However, we don't care if there are dozens of unsuccessful branches,
+However, we don't care if there are dozens of unsuccessful maximal paths,
 we only care that there is at least one success.
 Consequently, we will define that a nondeterministic machine accepts an input
-if the computation tree has at least one branch that accepts.
+if the computation tree has at least one maximal path that accepts.
 
 The machine in the above example
 accepts any string that ends in two~\str{0}'s and a~\str{1}.
@@ -2506,8 +2511,8 @@ because they somehow know answers that cannot otherwise be found
 but also because we must be suspicious and check that the 
 answer is not a trick.
 Under this model, a nondeterministic computation
-accepts the input if there exists a branch of the computation tree
-that a deterministic machine, if told what branch to take, could verify.
+accepts the input if there exists a maximal path of the computation tree
+that a deterministic machine, if told what path to take, could verify.
 
 Below we shall describe nondeterminism using both paradigms:~as a
 machine being in multiple states at once, and also as a machine guessing
@@ -2540,14 +2545,14 @@ $\map{\Delta}{Q\times\Sigma}{\powerset (Q)}$.
 %</def:NondeterministicFiniteStateMachine>
 
 We will use these machines in three ways.
-First, they are useful in practice;~many tasks 
+They are useful in practice;~many tasks 
 are more easily solved with nondeterministic
 machines than with deterministic ones.
-We will use them to prove Kleene's Theorem,
+We will also use them to prove Kleene's Theorem,
 \cref{th:KleenesTheorem}.
 And, they give us an initial encounter with
 nondeterminism, which is a critical concept
-for this book's fifth chapter. 
+for our final chapter. 
 
 \begin{example}  \label{ex:NDFMFromDiscussion}
 This is \cref{ex:NFSMInDiscussion}'s nondeterministic Finite State machine,
@@ -2576,26 +2581,31 @@ machines, note that it is precise.
 \begin{remark}
 When we described the action of deterministic Finite State machines 
 on page~\pageref{page:DefnYieldsFiniteStateMachine}, we laid out how to 
-construct the sequence of configurations, by transitioning from each to the
-succeeding one until the tape is empty.
+construct the sequence of configurations by transitioning from each to its
+successor until the tape is empty.
 But for nondeterministic machines there needn't be one and only one sequence.
-That makes a description that is non-constructive the clearer choice.
+So the description is more complex.
 \end{remark}
 
 \label{page:DefnYieldsNondeterministicFSM}
-A 
+As with deterministic machines, a 
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}$ where
 $q\in Q$ and $\tau\in\kleenestar{\Sigma}\!$.
 A machine starts in an
 \definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
 $\mathcal{C}_0=\sequence{q_0,\tau_0}$, so that
-$\tau_0$ is
-the \definend{input}.\index{input string}\index{nondeterministic Finite State machine!input string} 
+$\tau_0$ is the 
+\definend{input}.\index{input string}\index{nondeterministic Finite State machine!input string} 
+A configuration with an empty tape,
+$\mathcal{C}_h=\sequence{q_h,\emptystring}$,
+is a
+\definend{halting configuration}.\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
 
-Two configurations may be related by a \definend{transition}, denoted
+We next describe when two configurations are related by a 
+\definend{transition}, denoted
 $\,\yields$.\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-In the configuration $\mathcal{C}_s=\sequence{q,\tau_s}$,
+In the first configuration $\mathcal{C}_s=\sequence{q,\tau_s}$,
 let the string $\tau_s$ be not empty.
 Then where
 $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$,
@@ -2608,41 +2618,41 @@ $\hat{\tau}$ comes from removing $\tau_s$'s leading
 character,
 so that $\tau_s=c\concat\hat{\tau}$ for $c\in\Sigma$.
 Second, using that leading character~$c$,
-it must also be that the next state~$\hat{q}$ is a member of the 
+it must also be that~$\hat{q}$ is a member of the 
 set~$\Delta(q,c)$.
 
 So far the definitions apply to any Finite State machine, deterministic or
 not.
 But for the machines in this section  
-there may be many such branches, or one, or none at all.
-
-A configuration with an tape empty string,
-$\mathcal{C}_h=\sequence{q_h,\emptystring}$,
-is a
-\definend{halting configuration}.\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
-Consider the sequences of configurations related by transitions 
-and starting with $\mathcal{C}_0$.
-A \definend{branch}\index{branch!of the computation tree}\index{computation tree!branch}
-is a sequence that is maximally long.
-(In this machine type 
-a halting configuration has no configuration succeeding it, 
-so if a branch has one then it comes last.
-But as in \cref{ex:NFSMInDiscussion},
-branches can also terminate without ending in a halting configuration.)
-
-The 
+a configuration may have more than one configuration as its $\yields$~child, 
+or only one, or none at all.
+Consider all of the sequences of configurations 
+that are related by $\yields$~transitions 
+and that start with $\mathcal{C}_0$.
+Put together, these form a directed graph 
+that is a tree rooted at~$\mathcal{C}_0$.
+This is the 
 \definend{computation tree}\index{computation tree!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation tree}
 or just
-\definend{computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
-for a nondeterministic Finite State machine~$\FSM$ 
-is the set containing all of the branches.
-If in that set there exists a branch ending in a halting configuration,
+\definend{computation}.\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
+
+In that tree a 
+\definend{maximal path}\index{maximal path!of the computation tree}\index{computation tree!maximal path}
+is a sequence of `$\yields$' edges that is not contained in any longer path.
+(In this machine type 
+a halting configuration has no configuration succeeding it, 
+so if a path has one then it comes last in that path.
+But
+maximal paths can also terminate in a final configuration 
+that is not a halting configuration.)
+If the computation tree contains 
+at least one maximal path ending in a halting configuration,
 $
   \mathcal{C}_0=\sequence{q_0,\tau_0} 
    \yields \mathcal{C}_1
    \yields \cdots\, \mathcal{C}_h=\sequence{q_h,\emptystring}
-$
-whose state is accepting, $q_h\in F\!$,
+$,
+where the last state is accepting, $q_h\in F\!$,
 then $\FSM$ \definend{accepts}\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
 the input~$\tau_0$.
 Otherwise, it 
@@ -2650,8 +2660,8 @@ Otherwise, it
 
 \begin{example}
 \Cref{ex:NFSMInDiscussion} shows
-a number branches.
-Since this branch
+a number of maximal paths.
+Since this one
 \begin{equation*}
   \sequence{q_0,\str{00001}}
   \yields \sequence{q_0,\str{0001}}
@@ -2826,7 +2836,7 @@ can begin as below by following the $\varepsilon$
 transition to state~$q_1$ without reading and deleting the leading~\str{1}.
 It next reads that \str{1} and transitions
 to $q_2$, and then stays there while processing the \str{2} and \str{3}.
-This branch of the machine's computation tree accepting its input
+This maximal path of the machine's computation tree accepting its input
 and so \str{123} is in the machine's language.
 \begin{equation*}
   \sequence{q_0,\str{123}}
@@ -3049,7 +3059,7 @@ This table finds the epsilon closure for each state.
 
 We can now describe the action.
 %<*disc:EpsilonClosureii>
-A
+As earlier, a
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}\!$. 
 A machine starts in an
@@ -3058,34 +3068,35 @@ $\mathcal{C}_0=\sequence{q_0,\tau_0}$, with
 \definend{input}~$\tau_0$.\index{input string}\index{nondeterministic Finite State machine!input string} 
 
 Fix $\mathcal{C}_s=\sequence{q,\tau_s}$
-in order to describe under what circumstances 
+to describe under what circumstances 
 $\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
 for $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
 There are two possibilities.
-The first is the same as for any nondeterministic machine:~$\tau$ is not 
-empty and $\hat{\tau}$ results
+The first is the same as earlier:~$\tau$ is not the 
+empty string and $\hat{\tau}$ results
 from popping $\tau$'s leading character, $\tau=c\concat\hat{\tau}$,
-and also $\hat{q}$ is a member of $\Delta(q,c)$.
-The second possibility applies only to machines with
-$\varepsilon$ moves:~$\hat{\tau}=\tau$, so the machine doesn't consume 
-any input,
+and also $\hat{q}$ is a member of the set $\Delta(q,c)$.
+The second possibility is new for these new machines:~$\hat{\tau}=\tau$, so 
+the machine doesn't consume any input,
 and also $\hat{q}$ is a member of the $\varepsilon$ closure $\hat{E}(q)$.
-% (with $\hat{q}\neq q$; we disallow an $\varepsilon$ transition from
-% a state to itself).
 
-Consider the sequences of configurations related by transitions.
-A \definend{branch}\index{branch!of the computation tree}\index{computation tree!branch}
-is a sequence starting with $\mathcal{C}_0$ that is of maximal length.
-(In this machine type there can be cycles of $\varepsilon$ moves and 
-so branches can be infinite.)
-
-The 
+Consider all of the sequences of configurations 
+that are related by $\yields$~transitions 
+and that start with $\mathcal{C}_0$.
+Put together, these form a directed graph 
+that is a tree rooted at~$\mathcal{C}_0$.
+This is the  
 \definend{computation tree}\index{computation tree!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation tree}
 or just
-\definend{computation}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
-for a nondeterministic Finite State machine with $\varepsilon$ moves~$\FSM$ 
-is the set containing all of the branches.
-If in that set there exists a branch containing a
+\definend{computation}.\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
+
+In that tree a 
+\definend{maximal path}\index{maximal path!of the computation tree}\index{computation tree!maximal path}
+is a sequence that is not properly contained in 
+any other path.
+(In this machine type there can be cycles of $\varepsilon$ moves and 
+so paths can be infinite.)
+If there exists at least one maximal path containing a
 \definend{halting configuration},\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
 $\mathcal{C}_h=\sequence{q_h,\emptystring}$,
 and its state is accepting, $q_h\in F\!$,

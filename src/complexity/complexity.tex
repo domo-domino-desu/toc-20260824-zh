@@ -8804,7 +8804,7 @@ machine by doing the
 same.\index{nondeterminism!for Turing machines}\index{Turing machine!nondeterminism}  
 Here is one having
 two instructions starting
-with $q_0$ and~\str{0}
+with $q_0$ and~\str{0},
 so if the machine is in $q_0$ and it reads a~\str{0} on the tape then
 it is legal both to go to state~$q_2$ and to state~$q_1$.
 \begin{equation*}
@@ -8819,8 +8819,16 @@ it is legal both to go to state~$q_2$ and to state~$q_1$.
 \end{equation*}
 For such a machine the computational history 
 can be more than a line, it can be a tree.
-Below is part of the tree for machine $\TM$ and input \str{00}, with the middle
-branch highlighted.
+Below is part of that tree for machine $\TM$ and input \str{00}. 
+It is directed, meaning that edges point from left to right.
+The picture shows three maximal paths.\footnote{%
+  It is tempting to call these `branches' but that term has a technical 
+  meaning of maximal subtree, so that for instance a branch containing
+  the configuration where the machine is in state $q_1$ and 
+  \str{00} is on the tape must contain both the top and middle maximal paths.}
+The middle one is highlighted.
+The top and middle one are finite, while the bottom one has infintiely many 
+nodes.
 \begin{center}
   \includegraphics{complexity/asy/ndtm/ndtm001.pdf}
 \end{center}
@@ -8831,7 +8839,7 @@ branch highlighted.
 \subsection{Nondeterministic Turing machines}
 We modify the definition of a Turing machine by 
 omitting the restriction that $\TM$ must be deterministic.\footnote{%
-  Recall that determinism is the requirement different 
+  Recall that determinism is the requirement that different 
   four-tuples instructions cannot begin with the same $q_pT_p$.
 }
 
@@ -8860,7 +8868,7 @@ and what the machine does next is given by the machine's
 $\map{\Delta}{Q\times \Sigma}{\powerset((\Sigma\cup\set{\str{L},\str{R}})\times Q)}$.
 The 
 difference here is that the transition function outputs a set of pairs 
-$\sequence{\text{action},\text{next state}}$, instead of just one pair.
+$\sequence{\text{action},\text{next state}}$ instead of just one.
 
 After the deterministic Turing machine definition
 we gave a full description of how they act
@@ -8869,14 +8877,15 @@ as a sequence of `$\yields$'~steps.
 asks for the same for these machines. 
 As illustrated above, the key difference is that here the computation
 is not a single line, it is a tree.\index{nondeterministic Turing machine!computation tree}
-The nodes are configurations~$\mathcal{C}$,
+The nodes are configurations~$\mathcal{C}$
 and the root node is the initial configuration~$\mathcal{C}_0$.
 This tree is a directed graph, where $\mathcal{C}\yields\hat{\mathcal{C}}$
-means that the second one immediattely succeeds the first, 
-or is a child of the first. 
-A \definend{branch}\index{branch}\index{computation tree!branch} 
-is a sequence $\mathcal{C}_0\yields \cdots\,\mathcal{C}$, where
-$\mathcal{C}$ is a terminal vertex, that is, it has no successors.
+means that the second one immediately succeeds the first.
+A maximal path\index{maximal path}\index{computation tree!maximal path} 
+has the form $\mathcal{C}_0\yields \cdots\,\mathcal{C}$, where
+$\mathcal{C}$ is a terminal vertex,
+or of the form $\mathcal{C}_0\yields\mathcal{C}_1\yields\cdots\,$,
+with infinitely many vertices.
 
 Having a computation tree instead of a sequence 
 \citetext{adds a wrinkle}{%
@@ -8884,9 +8893,9 @@ Having a computation tree instead of a sequence
   and Pushdown machines,
   $\varepsilon$ transitions, since Turing machines are not 
   required to consume their input one character at a time.}.
-A tree might have some infinite sequences 
-$\mathcal{C}_0\yields\mathcal{C}_1\yields\cdots$, 
-or maybe some branches end with~$1$ on the tape 
+In addition to the possibility that some maximal paths terminate while others
+do not,
+a tree might have some maximal paths that terminate with~$1$ on the tape 
 while others end with~$101$.
 The simplest approach is not to define a
 \citetext{function computed by a nondeterministic machine}{%
@@ -8943,13 +8952,13 @@ but instead to use these machines as language deciders.
 From the Finite State machine discussion we 
 inherit two mental models for how nondeterministic machines act.
 One is that the machine is unboundedly parallel and simultaneously 
-computes all of the branches.
-The other is that the machine guesses which branch to 
+computes all of the paths.
+The other is that the machine guesses which maximal path to 
 follow\Dash
 or is told by some demon\Dash and
-then deterministically verifies that branch.
+then deterministically verifies that one.
 For both models, the machine accepts an input string if at least one
-branch ends in a configuration with an accepting state, 
+path ends in a configuration with an accepting state, 
 and otherwise does not accept the input.
 The ``otherwise'' seemingly could mean that 
 in a non-accepting computation the tree contains some sequences of configurations
@@ -9248,7 +9257,7 @@ $\sequence{\sigma,\omega}$.
 % If our verifier runs in polytime then $\lang\in\NP$.
 
 Before the proof we will comment on
-some aspects of both the definition and lemma.
+some aspects of both the definition and lemma, and give a few examples.
 
 % \begin{example}
 %<*ex:SATIsNPi>
@@ -9275,19 +9284,25 @@ if $\sigma=P\wedge\neg P$, then no $\omega$ will cause $\TM[V]$ to accept.
 %</ex:SATIsNPiii>
 % \end{example}
 
-% Before the next example, a few comments.
+%<*disc:Vefierv>
+Thus, the lemma elucidates something about
+$\NP$\kern+0.5pt:~while $\P$ contains problems 
+where we can deterministically find the answer
+in polytime, $\NP$ contains the problems where we can at least deterministically 
+verify answers polytime.
+%</disc:Vefierv>
 
 %<*disc:Vefieri>
 The second comment is to note
 the most striking thing about the definition, that 
-it says `there exists' a witness~$\omega$
+it says there exists a witness~$\omega$
 but it does not say where it comes from.
 A person with a computational mindset may well ask, 
 ``but how will we calculate the~$\omega$'s?'' 
-The point is not how to find them. 
+The point is not how to compute them. 
 The point is whether there exists a deterministic 
-Turing machine $\TM[V]$ that can leverage the hint or guess~$\omega$ 
-when one is given, to verify that $\sigma\in\lang$ (in polytime).
+Turing machine $\TM[V]$ that can leverage a hint or guess~$\omega$ 
+when one is given, to verify that $\sigma\in\lang$.
 \citetext{The verifier $\TM[V]$ doesn't find the $\omega$'s, it just uses them}{%
   This is like a Mechanical Turk
   \url{https://en.wikipedia.org/wiki/Mechanical_Turk}
@@ -9324,7 +9339,7 @@ Verifying requires stepping through
 the responses to each move, and responses to the
 responses, etc., so there is lots of branching.
 To check that the strategy is unbeatable 
-it seems as though
+it seems that
 \citetext{a deterministic verifier must take exponential time}{%
   In fact, in the terminology of a later section, chess is known to be 
   $\EXP$ complete.
@@ -9378,24 +9393,16 @@ contains the complements of languages from $\NP$,
 we suspect that $\NP\neq\compclass{coNP}$.
 %</disc:Vefieriv>
 
-%<*disc:Vefierv>
-Thus, the lemma elucidates something about
-the class $\NP$\kern+0.5pt:~while $\P$ contains problems where we can find the answer
-in polytime, $\NP$ contains the problems whose answers are useful
-in that we can at least verify
-them in polytime.
-%</disc:Vefierv>
-
 %<*disc:Vefiervi>
-The final comment is to note that
-the lemma requires that the runtime of the verifier is polynomial in 
+Finally, note that
+the lemma requires that the verifier runs in time polynomial in 
 $\lh{\sigma}$,
 not polynomial in the length of its input, $\sequence{\sigma,\omega}$.
 If it said the latter then we could check 
 the chess strategy just by using a witness that is exponentially long, 
-which consequently makes $\sequence{\sigma,\omega}$ exponentially long.
-Also observe that because $\TM[V]$ runs in time polynomial in $\lh{\sigma}$,
-for the verifier to accept there must exist a witness
+which would make $\sequence{\sigma,\omega}$ exponentially long.
+Also observe that assuming that $\TM[V]$ runs in time polynomial in 
+$\lh{\sigma}$ implies that there must exist a witness
 whose length is at most polynomial in $\lh{\sigma}$, because
 with $\omega$'s that are too long 
 \citetext{the verifier cannot even input them before its runtime bound expires}{%
@@ -9405,11 +9412,11 @@ with $\omega$'s that are too long
   must be polynomial in~$\sizeof{\sigma}$.}.
 %</disc:Vefiervi>
 
-% In summary, the definition says that if $\sigma\in\lang$ 
-% then $\omega$ certifies 
-% that and the verifier deterministically validates the certificate (in polytime),
-% while if $\sigma\notin\lang$ then there is no certificate that the 
-% verifier can validate.
+In summary, the definition says that if $\sigma\in\lang$ 
+then $\omega$ certifies 
+that and the verifier deterministically validates the certificate (in polytime),
+while if $\sigma\notin\lang$ then there is no certificate that the 
+verifier can validate.
 
 %<*ex:HamPathIsNPi>
 \begin{example}
@@ -9423,15 +9430,15 @@ it inputs two vertices.
 It is the problem of determining membership in this set. 
 \begin{equation*}
   \lang=\set{\sequence{\mathcal{G},v,\hat{v}}\suchthat 
-             \text{a path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex exactly once}}
+             \text{some path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex exactly once}}
 \end{equation*}
-We will show that this problem is in the class~$\NP$.
-We must produce a
+Toshow that this problem is in the class~$\NP$
+we must produce a
 deterministic Turing machine verifier~$\TM[V]$.
 It is sketched below. 
-It takes as input $\sequence{\sigma,\omega}$, 
-where the candidate for membership in $\lang$ 
-is $\sigma=\sequence{\mathcal{G},v,\hat{v}}$.
+In its input $\sequence{\sigma,\omega}$, the first item is 
+the candidate for membership in $\lang$, 
+$\sigma=\sequence{\mathcal{G},v,\hat{v}}$.
 The verifier interprets the witness to be a path, 
 $\omega=\sequence{v,v_1,\ldots{} \hat{v}}$.
 %</ex:HamPathIsNPi>

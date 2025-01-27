@@ -9920,32 +9920,6 @@ it just needs to be possible to have a guess that checks out.
 \end{answer}
 \end{exercise}
 
-\recommended
-\begin{exercise}
-Outline a nondeterministic algorithm that inputs a finite planar graph 
-and outputs \str{Yes} if and only if the graph has a four-coloring.
-Describe it both in terms of unbounded parallelism and in terms of a demon
-providing a witness.
-\begin{answer}\verified
-First the unbounded parallelism description, which works by brute force.
-Where the number of vertices in the graph is $k$,
-the number of colorings is bounded by $4^k\!$.
-The computation tree has a single root node with that many branches.
-Each branch tries its coloring and then checks to see whether it is correct, 
-that is, whether all connected vertices are different colors.
-If there is a correct coloring then this algorithm will find it
-and output \str{Yes}.
-
-In the second model, the machine does not spawn lots of branches.
-Instead, the demon gives the machine a branch and the machine just verifies that
-all connected vertices are different colors. 
-If a correct coloring exists for this graph then there 
-exists a hint that
-results in the machine verifying a correct coloring and outputting \str{Yes},
-so this satisfies the definition of a guessing algorithm working.
-\end{answer}
-\end{exercise}
-
 \begin{exercise}
 The \probname{Linear Programming} problem
 is described on page~\pageref{prob:LinearProgramming}.\index{Linear Programming language decision problem@\probname{Linear Programming} language decision problem}
@@ -10078,12 +10052,13 @@ So by the definition, this machine recognizes the language~$\lang$.
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 Sketch a nondeterministic algorithm that inputs a planar graph and
 a bound $B\in\N$ and decides whether the graph is $B$-colorable,
 described both in terms of unbounded parallelism and also in terms of
 guessing.
-\begin{answer}
+\begin{answer}\verified
 For unbounded parallelism, we can try every possible $B$-coloring
 of the graph's nodes.
 There are a large but finite number of those
@@ -10094,9 +10069,10 @@ since we just have to check every pair of vertices
 to see if they are the same color.
 If any of the child nodes is OK, then there is a $B$-coloring.
 
-For guessing, the machine nondeterministically selects one coloring
-(that is, it guesses one or is given one by a demon).
-It then checks, by iterating through every vertex pair to see if they
+For guessing, the machine does not spawn lots of branches.
+Instead, it nondeterministically selects one coloring
+(that is, it guesses one, or is given one by a demon).
+It then verifies the guess by iterating through every vertex pair to see if they
 are the same color.
 If there is a way to correctly nondeterministically guess then by 
 definition this algorithm succeeds.
@@ -10184,50 +10160,53 @@ and
 
 \recommended
 \begin{exercise}
-In the game show 
+In the British game show 
 \citetext{\textit{Countdown}}{%
   For a brief description see \url{https://en.wikipedia.org/wiki/Countdown_(game_show)}.
-  A version that you may find fun, worth searching for the videos, is 
+  A version that you may find fun, and worth searching for the videos, is 
   \url{https://en.wikipedia.org/wiki/8_Out_of_10_Cats_Does_Countdown}.}, 
-players get a target integer~$T\in\closed{100}{999}$ and six numbers from
-$S=\set{1,2,\ldots{} 10, 25, 50, 75, 100}$ (these can be repeated).
-They make an arithmetic expression that evaluates to the target,
-using each given number at most once.
-The expression can use addition, subtraction, 
+players are given a multiset of
+six numbers from
+$S=\set{1,2,\ldots{} 10, 25, 50, 75, 100}$,
+along with a target integer~$T$ from the set
+$I=\set{100.\ldots\,999}$.
+They must make an arithmetic expression that evaluates to the target.
+They can use addition, subtraction, 
 multiplication, and division without remainder.
-Show that the decision problem for 
-$  \text{\definend{\probname{Countdown}}}=
+Their expression can fail to use some of the given numbers, but cannot
+use one more than the number of times that it 
+appears in the multiset.
+Show that the \definend{\probname{Countdown}}\index{Countdown problem@\probname{Countdown} problem}
+problem
+$  \lang_{\text{CD}}=
   \set{\sequence{s_0,\ldots{} s_5,T}\in S^6\times I
     \suchthat \text{a combination of the $s_i$ gives $T$}}$
-is in $\NP$.
-% \begin{equation*}
-% \end{equation*}
-% Use \cref{lem:VerifierAndGuesserEquiv}.
+is a member of $\NP$.
 \begin{answer}\verified
 \cref{lem:VerifierAndGuesserEquiv}
-requires that we product a deterministic Turing machine verifier, $\TM[V]$.
+requires that we produce a deterministic Turing machine verifier, $\TM[V]$.
 It must input pairs of the form $\sequence{\sigma,\omega}$, where 
-$\sigma=\sequence{s_0,\ldots{} s_5,T}$.
+$\sigma=\sequence{s_0,\ldots{}\, s_5,T}$.
 It must have the property that if
-$\sigma\in\probname{CD}$ then there is a~$\omega$ such that~$\TM[V]$  
-accepts the input, while if $\sigma\notin\probname{Countdown}$ then there is no 
-such witness~$\omega$.
+$\sigma\in\lang_{\text{CD}}$ then there is a witness~$\omega$ such that~$\TM[V]$  
+accepts the input, while if $\sigma\notin\lang_{\text{CD}}$ then there is no 
+such witness.
 And it must run in time polynomial in~$\sizeof{\sigma}$.
 
-The witness~$\omega$ is an arithmetic expression (or, more precisely,
+The witness~$\omega$ is an arithmetic expression (more precisely,
 a string representation of an arithmetic expression) that evaluates
-to the target~$T$ and that involves a subset of the six 
-numbers~$s_0$, \ldots{} $s_5$, each used at most once.
+to the target~$T$ and that involves a sub-multiset of the six 
+numbers~$s_0$, \ldots{} $s_5$.
 The verifier checks that the expression does indeed evaluate to the target,
 and does indeed use each of the six numbers at most once.
 Clearly those checks can be done in polytime.
 
 If 
-$\sigma\in\probname{CD}$ then by definition there is an
+$\sigma\in\lang_{\text{CD}}$ then by definition there is an
 arithmetic expression, and so a witness~$\omega$ exists 
 that will cause~$\TM[V]$ to 
 accept the input.
-If $\sigma\notin\probname{CD}$ then there is no such arithmetic expression,
+If $\sigma\notin\lang_{\text{CD}}$ then there is no such arithmetic expression,
 and therefore no witness~$\omega$ will cause~$\TM[V]$ to accept.
 \end{answer}
 \end{exercise}
@@ -10239,7 +10218,7 @@ as a language decision problem for a family of languages.
 Show that each such language 
 is in $\NP$ by applying \cref{lem:VerifierAndGuesserEquiv},
 sketching a verifier that works with a suitable witness.
-\begin{answer}\verified
+\begin{answer}
 We recast the \probname{Traveling Salesman} problem from an optimization 
 problem by using bounds~$B\in\N$ to get this 
 parametrized set of bitstrings.

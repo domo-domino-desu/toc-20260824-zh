@@ -10492,28 +10492,30 @@ and there are countably many such machines.
 Show that this problem is in $\NP$.
 A company has two delivery trucks.
 They work with a weighted graph called the `road map'.
-(Some vertex is distinguished as the start/finish.) 
-Each morning the company gets a set of vertices, $V$.
-They must decide if there are two cycles such that every vertex in~$V$
-is on at least one of the two cycles, and each cycle has total weight at
+Some vertex is distinguished as the start/finish. 
+Each morning the company gets a set of vertices $V\!$, 
+which may be a proper subset of the map's vertices.
+They must decide if there are two cycles such that every member of~$V$
+is on at least one of the two cycles, 
+and each cycle has total weight at
 most~$B\in\N$.
-\begin{answer}
+\begin{answer}\verified
 We use \cref{lem:VerifierAndGuesserEquiv}.
-This is a suitable language
-(where the road map is $\mathcal{G}=\sequence{\mathcal{N},\mathcal{E}}$).
+This is an appropriate language,
+where the road map is the weighted 
+graph~$\mathcal{G}=\sequence{\mathcal{V},\mathcal{E}}$.
 \begin{equation*}
-  \lang=\set{N\subseteq\mathcal{N}\suchthat
-       \text{$N$ is a set of vertices where there are two suitable cycles}}
+  \lang_B=\set{\mathcal{V}\subseteq\mathcal{V}\suchthat
+       \text{there are two suitable cycles}}
 \end{equation*}
 
 To use \cref{lem:VerifierAndGuesserEquiv}, 
 we must produce a verifier and suitable witnesses.
-The verifier inputs $\sequence{\sigma,\omega}$, where $\sigma=N$
-(technically, $\sigma$ is a string representation of a
-set~$N\subseteq\mathcal{N}$).
+The verifier inputs $\sequence{\sigma,\omega}$, where $\sigma=V$
+(technically, $\sigma$ is a string representation of~$V$).
 A witness is the two cycles, $\omega=\sequence{c_0,c_1}$.
-The verifier checks that every vertex $v\in V$ is on at least one
-of the two cycles, and that each of the cycles is of length at most~$B$.
+The verifier checks that every vertex is a member of at least one
+of the two cycles, and that each cycle is of total weight at most~$B$.
 Clearly that check can be done in time polynomial in~$\sizeof{\sigma}$.
 
 If $\sigma\in\lang$ then there is a pair of cycles, so there exists a 
@@ -10526,35 +10528,41 @@ verifier will not accept for any such~$\omega$.
 \end{exercise}
 
 \begin{exercise}
+The definition of when a nondeterministic machine decides a language,
+\cref{def:NondeterministicDecides}, requires that every branch in the 
+computation tree is finite.
+For recognition of languages we drop that condition.
 A nondeterministic Turing machine
 \definend{recognizes} a language~$\lang$\index{recognized language!of a nondeterministic Turing machine}\index{nondeterministic Turing machine!recognized language} 
-when for~$\sigma\in\kleenestar{\Sigma}$, 
-if $\sigma\in\lang$ then $\TM$ accepts it
-while if $\sigma\notin\lang$ then $\TM$ does not accept it.
+when if $\sigma\in \lang$ then
+there is at least one maximal path 
+in the computation tree that accepts~$\sigma$,
+while if $\sigma\notin\lang$ then no maximal path 
+in the computation tree accepts
+(some may fail to accept because they are infinite).  
 Show that the nondeterministic Turing machines recognize the same set of
 languages as deterministic Turing machines.
-(This differs from \cref{def:NondeterministicDecides} because we have dropped
-the requirement of `no infinite sequence of configurations'.)
-\begin{answer}
-The proof is much like \cref{def:NondeterministicDecides}'s.
-One direction is easy.
-A deterministic Turing machine is a special case of a
-nondeterministic one. 
-So if a deterministic machine recognizes a language
+\begin{answer}\verified
+The proof is much like \cref{lem:NonDeterAndDeterTMsHaveSameLangs}'s.
+Here also one direction is easy because
+a deterministic Turing machine is a special case of a
+nondeterministic one,
+so if a deterministic machine recognizes a language
 then a nondeterministic one does also.
 
-For the converse let the nondeterministic Turing
-machine~$\TM$ decide the language~$\lang$.
+For the converse 
+suppose that a nondeterministic Turing
+machine~$\TM$ recognizes a language~$\lang$.
+We will describe a deterministic machine~$\TM[Q]$ that does the same.
+
 Fix an input~$\sigma$.
-Consider a deterministic machine~$\TM[Q]$ that 
-does a breadth-first search of $\TM$'s computation tree.
-If $\TM$ accepts~$\sigma$ then there is a terminal configuration 
-in the tree where the state is accepting and~$\TM[Q]$ will find it.
-If $\TM$ does not accept~$\sigma$ then every sequence of configurations that
-does terminate will have a non-accepting state so $\TM[Q]$ ignores them
-and keeps searching.
-If there are infinite sequences of configurations then the search never ends,
-and in particular does not end with acceptance.
+Have the deterministic machine~$\TM[Q]$  
+do a breadth-first search of $\TM$'s computation tree.
+If $\TM$ accepts~$\sigma$ then there is a maximal path whose
+terminal configuration has an accepting state, and~$\TM[Q]$ 
+will eventually find that configuration because the search is breadth-first.
+If the tree has no accepting maximal path then~$\TM[Q]$ will never find one, 
+and so will not accept~$\sigma$.
 \end{answer}
 \end{exercise}
 
@@ -10597,37 +10605,6 @@ verify.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}  \label{exer:NonDeterAndDeterTMsHaveSameLangs}
-% Finishing the proof of 
-% \cref{lem:NonDeterAndDeterTMsHaveSameLangs} requires
-% a proof that if 
-The definition of when a nondeterministic machine decides a language,
-\Cref{def:NondeterministicAccepts}, requires that every branch in the 
-computation tree is finite.
-For recognition of languages we can drop that.
-We say that
-a nondeterministic Turing machine~$P$ 
-\definend{recognizes}\index{nondeterministic machine!recognizes a language} %\index{recognizes a language!nondeterministic machine}
-a language~$\lang$ when if $\sigma\in \lang$ then
-there is at least one branch in the computation tree that accepts~$\sigma$,
-while if $\sigma\notin\lang$ then no branch in the computation tree accepts
-(some branches may fail to accept because they are infinite).  
-Show that if there is a nondeterministic machine that recognizes a language
-then there is a deterministic machine that also
-recognizes it. 
-\begin{answer}\verified
-Suppose that a nondeterministic Turing
-machine~$\TM$ recognizes a language~$\lang$.
-We will describe a deterministic machine~$\TM[Q]$ that does the same.
-Given an input~$\sigma$, 
-the nondeterministic machine~$\TM$ generates a computation tree
-and~$\TM[Q]$ can do a breadth-first traversal of that tree.
-If the tree triggered by~$\sigma$ has an accepting branch then~$\TM[Q]$ will
-eventually reach it, and will accept that input.
-If the tree has no accepting branch then~$\TM[Q]$ will never find one, 
-and so will not accept~$\sigma$.
-\end{answer}
-\end{exercise}
 
 \begin{exercise}  \label{exer:DefnYieldsNondeterministicTM}
 Following the definition of Turing machine,

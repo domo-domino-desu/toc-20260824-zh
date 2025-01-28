@@ -10568,7 +10568,8 @@ and so will not accept~$\sigma$.
 
 \recommended
 \begin{exercise}
-Two graphs $\mathcal{G}_0,\mathcal{G}_1$ are isomorphic if there is a
+Two graphs $\mathcal{G}_0,\mathcal{G}_1$ are 
+isomorphic\index{graph!isomorphism} if there is a
 one-to-one and onto function $\map{f}{\mathcal{N}_0}{\mathcal{N}_1}$ such
 that $\set{v,\hat{v}}$ is an edge of~$\mathcal{G}_0$ if and only if
 $\set{f(v),f(\hat{v})}$ is an edge of~$\mathcal{G}_1$.
@@ -10578,7 +10579,7 @@ Consider the problem of computing whether two graphs are isomorphic.
 \item Show that the language membership problem
   is in $\NP$.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item The natural language is
 $\lang=\set{\sequence{\mathcal{G}_0,\mathcal{G}_1}\suchthat
@@ -10586,15 +10587,15 @@ $\lang=\set{\sequence{\mathcal{G}_0,\mathcal{G}_1}\suchthat
 \item
 We use \cref{lem:VerifierAndGuesserEquiv}, 
 so we must produce a verifier and suitable witnesses.
-The verifier inputs pairs $\sequence{\sigma,\omega}$ where 
-$\sigma$ is a pair $\sequence{\mathcal{G}_0,\mathcal{G}_1}$.
+The verifier inputs $\sequence{\sigma,\omega}$ where 
+$\sigma$ is a pair of graphs,
+$\sequence{\mathcal{G}_0,\mathcal{G}_1}$.
 The witness is a function, a set of ordered pairs $\sequence{v,f(v)}$.
-The verifier checks that the function satisfies the conditions, that it
+The verifier checks that this function satisfies the conditions, that it
 is one-to-one and onto, and that 
 $\set{v,\hat{v}}$ is an edge of~$\mathcal{G}_0$ if and only if
 $\set{f(v),f(\hat{v})}$ is an edge of~$\mathcal{G}_1$
-That check takes time polynomial in~$\sizeof{\sigma}$, 
-because it depends only on the size of the two graphs.
+That check clearly takes time polynomial in~$\sizeof{\sigma}$.
 
 If $\sigma\in\lang$ then there is such a function, so
 there exists a hint~$\omega$ that will allow the verifier to accept
@@ -10602,78 +10603,6 @@ the pair $\sequence{\sigma,\omega}$.
 If the two graphs are not isomorphic then no witness~$\omega$ will 
 verify. 
 \end{exparts}
-\end{answer}
-\end{exercise}
-
-
-\begin{exercise}  \label{exer:DefnYieldsNondeterministicTM}
-Following the definition of Turing machine,
-on page~\pageref{text:DescriptionOfTMAction},
-we gave a formal description of how these machines act.
-We did the same for Finite State machines on
-page~\pageref{page:DefnYieldsFiniteStateMachine},
-and for nondeterministic Finite State machines on 
-page~\pageref{page:DefnYieldsNondeterministicFSM}.
-Give a formal description of the action of a nondeterministic 
-Turing machine.
-\begin{answer}
-A 
-configuration
-of a nondeterministic Turing machine~$\TM$
-is a set of four-tuples, $\sequence{q,s,\tau_L,\tau_R}$, where
-$q\in Q$,
-$s\in\Sigma$,
-and where $\tau_L$ and~$\tau_R$ are strings of elements 
-from the tape alphabet, $\tau_L,\tau_R\in\kleenestar{\Sigma}$.
-These signify the current state, the character under the read/write head, and
-the tape contents to the left and right of the head.
-We write $\configuration(t)$ for the machine's configuration after
-the $t$-th transition, and say that this is the configuration
-at step~$t$.
-The 
-initial configuration has the form
-$\configuration(0)=\set{\sequence{q_0,s,\alpha,\emptystring}}$. 
-We say that
-$\alpha\concat \sequence{s}$ is the machine's input.
-
-We next describe how the machine~$\TM$ transitions 
-from being in configuration
-$\configuration(t)$ to being in the next configuration, 
-$\configuration(t+1)$.
-Start with an empty set and then get $\configuration(t+1)$ by adding 
-instructions to it as follows.
- 
-For each $\sequence{q,s,\tau_L,\tau_R}\in \configuration(t)$, 
-compute the set~$\Delta(q,s)$.
-That set may be empty, but if not then 
-for each instruction $I=q_pT_pT_nq_n$ in that set,
-there are three possibilities.
-(1)~If $T_n\in\Sigma$ then write that character to the tape, so that
-$\sequence{q_n,T_n,\tau_L,\tau_R}\in \configuration(t+1)$.
-We say that $I\yields \sequence{q_n,T_n,\tau_L,\tau_R}$.
-(2)~If $T_n=\str{L}$ then the machine moves the tape head to the left,
-that is, 
-$\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}\in \configuration(t+1)$,
-where $\hat{s}$ is the rightmost character of the string~$\tau_L$ (if
-$\tau_L=\emptystring$ then $\hat{s}$ is the blank character),
-where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
-(if $\tau_L=\emptystring$ then $\hat{\tau}_L=\emptystring$ also),
-and where $\hat{\tau}_R$ is the concatenation of $\sequence{s}$ and $\tau_R$.
-We say that $I\yields \sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$.
-(3)~If $T_n=\str{R}$ then the machine moves the tape head to the right.
-This is like~(2) so we omit the details.
-
-A computation tree branch
-is a sequence of configurations
-$
-  I_0 \yields \configuration(1) \yields 
-    \cdots \yields \configuration(h)  
-$,
-starting with the initial configuration $\configuration(0)$,
-and such that there is no instruction~$I$ where $I_k\yields I$.          
-If the instruction $I_k=\sequence{\hat{q},\hat{s},\beta,\gamma}$
-is such that its state is accepting, $\hat{q}\in A$,
-then we say the machine~$\TM$ accepts the input.
 \end{answer}
 \end{exercise}
 
@@ -10702,6 +10631,84 @@ so it is not in $\NP$.
 There is no polynomial bound on the number of steps, 
 and consequently on the length of~$\omega$.
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}  \label{exer:DefnYieldsNondeterministicTM}
+Following the definition of Turing machine,
+on page~\pageref{text:DescriptionOfTMAction},
+we gave a formal description of how those machines act.
+We did the same for Finite State machines on
+page~\pageref{page:DefnYieldsFiniteStateMachine},
+and for nondeterministic Finite State machines on 
+page~\pageref{page:DefnYieldsNondeterministicFSM}.
+Give a formal description of the action of a nondeterministic 
+Turing machine.
+\begin{answer}\verified
+\textit{Comment:~there are a number of possible different approaches 
+but rather than give no answer here we give one of those.}
+
+A 
+configuration
+of a nondeterministic Turing machine~$\TM$
+is a four-tuple, 
+$\sequence{q,s,\tau_L,\tau_R}\in Q\times\Sigma\times\kleenestar{\Sigma}\times\kleenestar{\Sigma}\!$.
+The items signify the current state~$q$, 
+the character under the read/write head~$s$, and
+the tape contents to the left and right of the head~$\tau_L$ and~$\tau_R$.
+Where the machine's input is the string
+$\sigma$ whose first character is $s$, so that
+$\sigma=\sequence{s}\concat\alpha$,
+the computation's initial configuration is
+$\configuration_0=\sequence{q_0,s,\emptystring,\alpha}$.
+
+We next describe under what circumstances a configuration~$\hat{\configuration}$
+succeeds~$\configuration$, 
+denoted $\configuration\yields\hat{\configuration}$.
+Suppose that $\configuration=\sequence{q,s,\tau_L,\tau_R}$. 
+Compute the set~$\Delta(q,s)$.
+If that set is empty then there is no next configuration~$\hat{\configuration}$.
+
+Otherwise that set is not empty. 
+For every instruction $\sequence{q_pT_pT_nq_n}\in\Delta(q,s)$ 
+there are three possibilities.
+Exactly one of those three holds and it defines a 
+succeding configuration~$\hat{\configuration}\!$.
+\begin{parenum}
+\item
+If the action symbol~$T_n$ is a member of the tape alphabet, $T_n\in\Sigma$, 
+then write it to the tape,
+$\hat{\configuration}=\sequence{q_n,T_n,\tau_L,\tau_R}$.
+\item
+If $T_n$ is the character $\str{L}$ 
+then move the tape head to the left.
+That is,
+$\hat{C}=\sequence{q_n,\hat{s},\hat{\tau}_L,\hat{\tau}_R}$
+where $\hat{s}$ is the rightmost character of the string~$\tau_L$ (if
+$\tau_L=\emptystring$ then $\hat{s}$ is the blank character, \blank),
+where $\hat{\tau}_L$ is $\tau_L$ with its rightmost character omitted
+(if $\tau_L=\emptystring$ then $\hat{\tau}_L=\emptystring$ also),
+and where $\hat{\tau}_R$ is the 
+string formed by pushing the tape character~$s$ 
+onto the front of~$\tau_R$, giving
+$\hat{\tau}_R=\sequence{s}\concat\tau_R$.
+\item
+If $T_n=\str{R}$ then move the tape head to the right.
+This is so much like the prior item that we omit the details.
+\end{parenum}
+
+A computation path
+is a sequence of configurations
+$
+  \configuration_0 \yields \configuration_1 \yields \cdots\,  
+$,
+starting with the initial configuration.
+The union of all such paths forms a directed graph called the 
+computation tree, or simply the computation.
+If for a given input~$\sigma$ at least one maximal path in that 
+tree ends in a configuation
+whose state is accepting then we say that the machine accepts~$\sigma$.
+If the machine does not accept $\sigma$ then it rejects~$\sigma$.
 \end{answer}
 \end{exercise}
 

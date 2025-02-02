@@ -2161,8 +2161,8 @@ draw(pic,UNIVERSE, AXISPEN);
 real label_x = -0.70*UNIVERSE_WD;
 real label_y = 0.68*UNIVERSE_HT;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
-draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \compclass{Rec}}",(label_x,0.5*label_y),W); 
+// draw(pic,p_halfbar,squarebraces_label_pen);
+// label(pic,"\makebox[\width][r]{\scriptsize \compclass{Rec}}",(label_x,0.5*label_y),W); 
 
 real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.225*UNIVERSE_HT;

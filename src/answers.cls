@@ -538,6 +538,11 @@
 \Crefname{tablefigure}{Table}{Table}
 \crefname{tablehere}{Table}{Tables}
 \Crefname{tablehere}{Table}{Tables}
+\crefname{Item}{Item}{Items}
+\Crefname{Item}{Item}{Items}
+
+% For naming a part of an exercise, as in \item \expartsname{Commutativity}
+\newcommand{\expartsname}[1]{\textsc{(#1)}} 
 
 % \renewcommand{\cref}[1]{REF:~\textit{#1}}
 % \renewcommand{\Cref}[1]{REF:~\textit{#1}}

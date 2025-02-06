@@ -10920,7 +10920,7 @@ as a special case of the second.
 First, express them as language decision problems.
 \begin{align*}
   \lang_0&=\set{\sequence{\mathcal{G},v_0,v_1,B}\suchthat
-               \text{there is path from $v_0$ to $v_1$ of length less than~$B$}} \\
+               \text{there is path from $v_0$ to $v_1$ of total weight at most~$B$}} \\
   \lang_1&=\set{\sequence{\mathcal{H},w_0,w_1}\suchthat
                \text{there is path between $w_0$ and $w_1$}}
 \end{align*}
@@ -11297,7 +11297,7 @@ runs in time that is~$\bigOh(n^{\max(i,j)})$, which is polynomial.
 \end{proof}
 
 By the lemma, because
-\cref{ex:GraphColorabilityReducesToSatisfiability}
+\cref{ex:GraphColoringReducesToSatisfiability}
 shows $\probname{Graph Colorability}\leq_p\probname{Satisfiability}$
 and \cref{ex:SatReducesToClique} gives
 $\probname{Satisfiability}\leq_p\probname{Clique}$,
@@ -11626,13 +11626,72 @@ without any reference to~$B$ at all; in fact, deciding $A$ is $\bigOh(1)$.
 \end{answer}
 \end{exercise}
 
+
+
+\recommended
+\begin{exercise}
+The \probname{Substring} problem\index{Substring problem@\probname{Substring} problem} 
+inputs two strings and decides if the second is a substring of the first.
+The \definend{\probname{Cyclic Shift}} problem\index{Cyclic Shift problem@\probname{Cyclic Shift} problem}
+inputs two strings and decides if the second is a cyclic shift of the first.
+(If $\alpha=a_0a_1\ldots{}a_{n-1}$ and
+$\beta=b_0b_1\ldots{}b_{n-1}$ are length~$n$ strings,
+then $\beta$ is a cyclic shift of $\alpha$ when there is an 
+index $k\in\set{0,\ldots n-1}$ such that $a_i=b_{(k+i)\bmod n}$ for 
+all~$i<n$.
+Thus, where $\alpha=\str{abcde}$, the cyclic shifts are $\str{bcdea}$,
+$\str{cdeab}$, \ldots\,)
+\begin{exparts}
+\item Name three cyclic shifts of $\alpha=\str{0110010}$.
+\item Decide whether $\beta=\str{101001101}$ is a cyclic shift of 
+  $\alpha=\str{001101101}$.
+\item State the \probname{Substring} problem as a language decision problem.
+\item State \probname{Cyclic Shift} as a
+  language decision problem. 
+\item Show that $\probname{Cyclic Shift}\leq_p\probname{Substring}$.
+  \hint~for same length strings, 
+  $\beta$ is a cyclic shift of $\alpha$ if and only if 
+  $\beta$ is a substring of $\alpha\concat\alpha$.
+\end{exparts}
+\begin{answer}\verified
+\begin{exparts}
+\item Three are: 
+$\beta_0=\alpha=\str{0110010}$,
+$\beta_1=\str{1100100}$,
+and $\beta_2=\str{1001001}$.
+\item It is a cyclic shift starting from index $k=6$.
+\item It is the decision problem for this language.
+\begin{equation*}
+  \lang_0=\set{\sequence{\sigma,\tau}\in\Sigma^2\suchthat
+                        \text{$\tau$ is a substring of $\sigma$}}
+\end{equation*}
+\item It is the decision problem for this.
+\begin{equation*}
+  \lang_1=\set{\sequence{\alpha,\beta}\in\Sigma^2\suchthat
+               \text{$\beta$ is a cyclic shift of $\alpha$}}
+\end{equation*}
+\item Following the hint,
+  the reduction function~$f$ inputs $\sequence{\alpha,\beta}$
+  and if the two are the same length then 
+  it outputs $\sequence{\alpha\concat\alpha,\beta}$ (else it outputs
+  some pair sure to fail, such as $\sequence{\emptystring,\str{0}}$).
+  Clearly~$f$ 
+  and $\sequence{\alpha,\beta}\in\lang_1$ if and only if 
+  $f(\sequence{\alpha,\beta})\in\lang_0$.
+  Also, $f$ is clearly computable in polytime.
+  Therefore $\lang_1\leq_p\lang_0$.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 The \probname{Shortest Path} problem, \cref{prob:ShortestPath}, inputs a 
 weighted graph and two vertices and finds a least-weight path between them
 (or that no such path exists).
 \begin{exparts}
-\item The \probname{Unweighted Shortest Path} problem\index{Unweighted Shortest Path problem@\probname{Unweighted Shortest Path} problem} takes 
+\item The \definend{\probname{Unweighted Shortest Path}} problem\index{Unweighted Shortest Path problem@\probname{Unweighted Shortest Path} problem} 
+takes 
 as input an unweighted graph and two of its vertices, and finds a
 path between the two with the fewest number of edges
 (or that no such path exists).
@@ -11640,18 +11699,19 @@ Express it as language decision problem.
 Prove that it reduces to the \probname{Shortest Path} problem.
 (How does it differ from the \probname{Vertex-to-Vertex Path} problem?)
 \item
-The \probname{Longest Path} problem\index{Longest Path problem@\probname{Longest Path} problem} takes as input a weighted graph and two vertices 
+The \definend{\probname{Longest Path}} problem\index{Longest Path problem@\probname{Longest Path} problem} 
+takes as input a weighted graph and two vertices 
 and finds a greatest-weight path containing no repeated edges
 (or that no such path exists).
 Express it as language decision problem.
 Prove that this problem reduces to the one in the first item.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 In \cref{ex:PathLeShortestPath} this is the language given for
 the \probname{Shortest Path} problem.
 \begin{equation*}
   \lang_0=\set{\sequence{\mathcal{G},v_0,v_1,B}\suchthat
-               \text{there is path from $v_0$ to $v_1$ of length less than~$B$}} 
+               \text{there is path from $v_0$ to $v_1$ of total weight at most~$B$}} 
 \end{equation*}
 \begin{exparts}
 \item The \probname{Unweighted Shortest Path} problem is an optimization
@@ -11678,10 +11738,10 @@ $\sequence{\mathcal{H}_1,v_0,v_1,B_1}$.
 If there is a path from $\mathcal{H}_1$'s vertex $v_0$ to its~$v_1$ of total
 weight~$B_1$ then there is an unweighted path with at most $B_1$-many edges.  
 \item
-It is an optimization problem so here is the canonical language.
+It is an optimization problem so this is the canonical language.
 \begin{equation*}
   \lang_2=\set{\sequence{\mathcal{G},v_0,v_1,B_2}\suchthat
-               \text{there is path from $v_0$ to $v_1$ having weight at least as large as than~$B_2$}} 
+               \text{there is path from $v_0$ to $v_1$ having total weight at least as large as~$B_2$}} 
 \end{equation*}
 
 The reduction function inputs $\sequence{\mathcal{G},v_0,v_1,B_2}$, where
@@ -11691,30 +11751,33 @@ the weights of all edges have been made the negative of the weight of
 $\mathcal{G}$'s edges.
 Then the output of the reduction function is   
 $\sequence{\mathcal{H},v_0,v_1,-B_2}$.
+The idea is that a path that is short for the negatives of the weights 
+is long for the original weights.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 
-\recommended
+% \recommended
 \begin{exercise}
 Show that $\probname{Hamiltonian Circuit}\leq_p\probname{Traveling Salesman}$.\index{Hamiltonian Circuit problem@\probname{Hamiltonian Circuit} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
 \begin{exparts*}
 \item State each as a language decision problem.
-\item Produce the reduction function.  
+\item Produce the reduction function.
+\item Argue that it runs in polytime.  
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item
 The \probname{Hamiltonian Circuit} problem is the decision problem for this language.
 \begin{equation*}
   \lang_0=\set{\mathcal{H}\suchthat
-                \text{the graph contains a circuit that includes each vertex exactly once}}
+                \text{the unweighted graph contains a circuit that includes each vertex exactly once}}
 \end{equation*}
 The \probname{Traveling Salesman} problem is this decision problem.
 \begin{equation*}
   \lang_1=\set{\sequence{\mathcal{G},B}\suchthat
-          \text{some circuit of $\mathcal{G}$ that includes each vertex has total cost less than or equal to $B$}}
+          \text{some circuit of the weighted graph $\mathcal{G}$ that includes each vertex has total cost at most $B$}}
 \end{equation*}
 \item
 The reduction function 
@@ -11728,14 +11791,13 @@ to be: $d(v_i,v_j)=1$ if $v_iv_j$ is an edge of $\mathcal{G}$ and
 $d(v_i,v_j)=2$ if $v_iv_j\notin\mathcal{E}$,
 and such that the bound~$B$ is the number of vertices~$|\mathcal{N}|$.
 
-The bound means that there will be a \probname{Traveling Salesman} solution
+Because of this bound, there will be a \probname{Traveling Salesman} solution
 if and only if there is a \probname{Hamiltonian Circuit} solution, namely
 the \probname{Traveling Salesman} solution uses the edges of 
 the Hamiltonian circuit.
-
-Clearly $\mathcal{H}\in\lang_0$ if and only if
+That is, $\mathcal{H}\in\lang_0$ if and only if
 $f(\mathcal{H})\in\lang_1$.
-What remains is to show that $f$ runs in polytime. 
+\item 
 The number of
 edges is less than twice the number of vertices, so that polytime in the
 input graph size is the same as polytime in the number of vertices.
@@ -11747,67 +11809,14 @@ So $f$ runs in polytime.
 \end{answer}
 \end{exercise}
 
-
-\recommended
-\begin{exercise}
-The \probname{Substring} problem\index{Substring problem@\probname{Substring} problem} 
-inputs two strings and decides if the second is a substring of the first.
-The \definend{\probname{Cyclic Shift}} problem\index{Cyclic Shift problem@\probname{Cyclic Shift} problem}
-inputs two strings and decides if the second is a cyclic shift of the first.
-(Where $\alpha=\str{abcde}$, one cyclic shift is $\beta=\str{deabc}$.
-More precisely, if $\alpha=a_0a_1\ldots{}a_{n-1}$ and
-$\beta=b_0b_1\ldots{}b_{n-1}$ are length~$n$ strings,
-then $\beta$ is a cyclic shift of $\alpha$ when there is an 
-index $k\in\set{0,\ldots n-1}$ such that $a_i=b_{(k+i)\bmod n}$ for 
-all~$i<n$.)
-\begin{exparts}
-\item Name three cyclic shifts of $\alpha=\str{0110010}$.
-\item Decide whether $\beta=\str{101001101}$ is a cyclic shift of 
-  $\alpha=\str{001101101}$.
-\item State the \probname{Substring} problem as a language decision problem.
-\item Also state the \probname{Cyclic Shift} problem as a
-  language decision problem. 
-\item Show that $\probname{Cyclic Shift}\leq_p\probname{Substring}$.
-  \hint~for same length strings, 
-  $\beta$ is a cyclic shift of $\alpha$ if and only if 
-  $\beta$ is a substring of $\alpha\concat\alpha$.
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item Three are: $\beta_2=\str{1001001}$, $\beta_1=\str{1100100}$,
-  and $\beta_0=\str{0110010}$.
-\item It is a cyclic shift, starting from index $k=6$.
-\item It is the decision problem for this language.
-\begin{equation*}
-  \lang_0=\set{\sequence{\sigma,\tau}\in\Sigma^2\suchthat
-                        \text{$\tau$ is a substring of $\sigma$}}
-\end{equation*}
-\item It is the decision problem for this.
-\begin{equation*}
-  \lang_1=\set{\sequence{\alpha,\beta}\in\Sigma^2\suchthat
-               \text{$\beta$ is a cyclic shift of $\alpha$}}
-\end{equation*}
-\item Following the hint,
-  the reduction function~$f$ inputs $\sequence{\alpha,\beta}$
-  and if the two are the same length then 
-  it outputs $\sequence{\alpha\alpha,\beta}$ (else it outputs
-  some pair sure to fail, such as $\sequence{\emptystring,\str{0}}$).
-  Clearly~$f$ is computable in polytime,
-  and $\sequence{\alpha,\beta}\in\lang_1$ if and only if 
-  $f(\sequence{\alpha,\beta})\in\lang_0$.
-  Therefore $\lang_1\leq_p\lang_0$.
-\end{exparts}
-\end{answer}
-\end{exercise}
-
 \recommended
 \begin{exercise}\label{exer:IndSetLeqVertexCover}\label{exer:DefVertexCover}
 The \probname{Independent Set} problem\index{Independent Set problem@\probname{Independent Set} problem} 
 inputs a graph and a bound, and
-decides if there is a set of vertices, of size at least equal to the bound,
+decides if there is a set of vertices of size at least equal to the bound,
 that are not connected by any edge.
 The \probname{Vertex Cover} problem\index{Vertex Cover problem@\probname{Vertex Cover} problem}
-inputs a graph and a bound and decides if there is a vertex set, 
+inputs a graph and a bound and decides if there is a vertex set 
 of size less than or equal to the bound, 
 such that every edge contains at least one vertex in the set.
 \begin{exparts}
@@ -11835,8 +11844,8 @@ this language.
 \begin{equation*}
   \lang_0=\set{\sequence{\mathcal{G,B}}\suchthat
                \text{there is $I\subseteq\mathcal{N}(\mathcal{G})$ with 
-                    $\sizeof{I}\leq B$
-                     such that every edge contains a vertex from~$I$}}
+                    $B\leq \sizeof{I}$
+                    no edge contains two vertices from~$I$}}
 \end{equation*}
 \probname{Vertex Cover} is the decision problem for 
 this language.

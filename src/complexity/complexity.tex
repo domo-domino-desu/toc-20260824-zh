@@ -11811,6 +11811,7 @@ So $f$ runs in polytime.
 
 \recommended
 \begin{exercise}\label{exer:IndSetLeqVertexCover}\label{exer:DefVertexCover}
+Consider graphs without loops.
 The \probname{Independent Set} problem\index{Independent Set problem@\probname{Independent Set} problem} 
 inputs a graph and a bound, and
 decides if there is a set of vertices of size at least equal to the bound,
@@ -11832,43 +11833,50 @@ find an independent set with six elements.
 \item Show that in a graph, $S$ is an independent set if and only if
   $\mathcal{N}-S$ is a vertex cover, where $\mathcal{N}$ is the
   set of vertices.
-\item Conclude that $\probname{Vertex Cover}\leq_p\probname{Independent Set}$.
-\item Also conclude that 
-  $\probname{Independent Set}\leq_p \probname{Vertex Cover}$.
+\item Conclude that $\probname{Independent Set}\leq_p \probname{Vertex Cover}$
+and that $\probname{Vertex Cover}\leq_p\probname{Independent Set}$.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item
 The \probname{Independent Set} problem is the decision problem for 
 this language.
 \begin{equation*}
   \lang_0=\set{\sequence{\mathcal{G,B}}\suchthat
-               \text{there is $I\subseteq\mathcal{N}(\mathcal{G})$ with 
+               \text{there is $I\subseteq\mathcal{N}(_{\mathcal{G}}$ with 
                     $B\leq \sizeof{I}$
-                    no edge contains two vertices from~$I$}}
+                    such that no edge contains two vertices from~$I$}}
 \end{equation*}
 \probname{Vertex Cover} is the decision problem for 
 this language.
 \begin{equation*}
   \lang_1=\set{\sequence{\mathcal{H},D}\suchthat
-               \text{there is $C\subseteq\mathcal{N}(\mathcal{H})$ 
+               \text{there is $C\subseteq\mathcal{N}_{\mathcal{H}}$ 
                      with $\sizeof{C}\leq D$
-                     such that every edge contains a vertex from~$C$}}
+                     such that every edge contains at least one vertex from~$C$}}
 \end{equation*}
 \item A vertex cover with $k=4$ elements is $S=\set{q_2,q_5,q_8,q_9}$.
 \item An independent set with $\hat{k}=6$ elements is 
   $\hat{S}=\set{q_0,q_1,q_3,q_4,q_6,q_7}$.
-\item For any edge, if it has at least one endpoint in
-$S$ then it has at most one endpoint in the complement $\hat{S}=\mathcal{N}-S$.
-Conversely, if an edge has at most one endpoint in~$\hat{S}$ 
-then it has at least one endpoint in the complement~$S=\mathcal{N}-\hat{S}$. 
+\item By definition, a set~$I$ of vertices is independent if every edge contains
+either zero elements or one element of~$I$.
+Also by definition, a set $C$ of vertices is a vertex cover if every edge
+contains either one element or two elements of~$C$.
+Thus a set~$S$ of vertices is independent if and only if its complement
+$\mathcal{N}-S$ is a vertex cover.
 \item We will do $\probname{Independent Set}\leq_p\probname{Vertex Cover}$; the 
 other reduction is similar.
+By the prior item, there is a relationship between independent sets and
+vertex covers.
+In particular, if there is an independent set of size~$\hat{k}$ then there is a 
+vertex cover of size $\sizeof{\mathcal{N}}-\hat{k}$.
+
 The definition requires that we produce a polytime computable
-function~$f$.
+function~$f\!$.
 Given an instance of \probname{Independent Set} 
 $\sigma=\sequence{\mathcal{G},\hat{k}}$,
-then we convert that to an instance of  \probname{Vertex Cover}
+the function converts it to an instance of  \probname{Vertex Cover}
+by adjusting the bound, 
 $f(\sigma)=\sequence{\mathcal{G},\lh{\mathcal{G}}-\hat{k}}$.
 \end{exparts}
 \end{answer}
@@ -11877,8 +11885,8 @@ $f(\sigma)=\sequence{\mathcal{G},\lh{\mathcal{G}}-\hat{k}}$.
 
 \begin{exercise}
 The \probname{Vertex Cover} problem\index{Vertex Cover problem@\probname{Vertex Cover} problem}
-inputs a graph and a bound and decides if there is a vertex set, 
-of size less than or equal to the bound, 
+inputs a graph and a bound and decides if there is a vertex set 
+of size at most equal to the bound
 such that every edge contains at least one vertex in the set.
 The \definend{\probname{Set Cover}} problem\index{Set Cover problem@\probname{Set Cover} problem} 
 inputs a set~$S$, a collection of subsets $S_0\subseteq S$, \ldots{}  
@@ -11888,7 +11896,7 @@ equal to the bound,
 whose union is~$S$.
 \begin{exparts}
 \item State each as a language decision problem.
-\item Find a vertex cover for this graph.
+\item Find a vertex cover of size six for this graph.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity27.pdf}
 \end{center}
@@ -11898,7 +11906,7 @@ whose union is~$S$.
   Find a set cover.
 \item Show that $\probname{Vertex Cover}\leq_p\probname{Set Cover}$.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item 
 \probname{Vertex Cover} is the decision problem for 
@@ -11920,7 +11928,7 @@ this language.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity28.pdf}
 \end{center}
-\item The set of edges is $S=\set{a,b,\ldots{} n}$.
+\item The set of edges is $S=\set{a,b,\ldots{}\, n}$.
 The subsets are these.
 \begin{align*}
   &S_0=\set{a,b},\;
@@ -11936,19 +11944,20 @@ The subsets are these.
   S_8=\set{l,m,n},\;
   S_9=\set{n}
 \end{align*}
-The union of the subsets associated with vertices in the
-vertex cover
+To find a set cover we can take 
+the subsets associated with vertices in the
+vertex cover.
 \begin{equation*}
   S_{q_0}\cup S_{q_3}\cup S_{q_4}\cup S_{q_6}\cup S_{q_7}\cup S_{q_9}
   =\set{a,b}\cup\set{c,d,f,g}\cup\set{e,h,i}\cup\set{f,j,l}
      \cup\set{i,k,m}\cup\set{n}
+  =S
 \end{equation*}
-equals~$S$.
-\item We must produce a reduction function,~$f$.
+\item We must produce a reduction function~$f\!$.
 It inputs an instance $\sequence{\mathcal{G},B}$ of the
 \probname{Vertex Cover} problem.
-The computation is:~construct the set~$S$ of all edges, and 
-for each vertex~$v$, construct $S_v\subseteq S$ consisting of the
+The computation is:~let~$S=\mathcal{E}$, the set of of all edges.  
+For each vertex~$v$, construct $S_v\subseteq S$ consisting of the
 edges incident on~$v$.
 Then the output of the function is an instance of the \probname{Set Cover}
 problem, 
@@ -11964,7 +11973,7 @@ $\sequence{S,S_{v_0},\ldots{} B}\in\lang_1$.
 \begin{exercise} \label{exer:DefMaxFlow}
 In this network, each edge is labeled
 with a capacity.
-(Imagine railroad lines going from $q_0$ to~$q_6$.)
+% (Imagine railroad lines going from $q_0$ to~$q_6$.)
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity25.pdf}
 \end{center}
@@ -11972,7 +11981,7 @@ The
 \definend{\probname{Max-Flow}} problem\index{Max-Flow problem@\probname{Max-Flow} problem} 
 is to find the maximum total amount that can flow across the 
 network,
-usually by using many paths at once.
+typically by using many paths at once.
 That is, we will find a \definend{flow}~$F_{q_i,q_j}$\index{flow} 
 for each edge, 
 subject to the constraints that the flow through an edge must not exceed
@@ -11980,14 +11989,18 @@ its capacity and that the flow into a vertex must equal the flow out
 (except for the source~$q_0$ and the sink~$q_6$).
 % The problem is to find the edge flows so that the source and sink get maximal
 % total flow. 
-The \probname{Linear Programming} problem
-is described on page~\pageref{prob:LinearProgramming}.\index{Linear Programming language decision problem@\probname{Linear Programming} language decision problem}
+The \probname{Linear Programming} problem,
+described on page~\pageref{prob:LinearProgramming},\index{Linear Programming language decision problem@\probname{Linear Programming} language decision problem}
+is to optimize a linear function 
+$F(x_0,\ldots x_n)=c_0x_0+\cdots+c_{n}x_n$ % (either maximize or minimize it),
+subject to linear constraints, ones of the form 
+$a_{i,0}x_0+\cdots+a_{i,n}x_{n}\leq b_i$ 
+or
+$a_{i,0}x_0+\cdots+a_{i,n}x_{n}\geq b_i$.
 \begin{exparts}
-\item Express each as a language decision problem, 
-  remembering the technique of converting optimization problems using
-  bounds.
-\item By eye, find the maximum flow for the above network.
-\item For each edge $v_iv_j$, define a variable $x_{i,j}$.
+\item Express each as a language decision problem.
+\item For the above network, find the maximum flow by eye.
+\item For each edge $v_iv_j$ in that network, define a variable $x_{i,j}$.
 Describe the constraints on that variable imposed by the edge's capacity.
 Also describe the constraints on the set of variables imposed 
 by the limitation that for many vertices the flow in must equal
@@ -11997,7 +12010,7 @@ in order to get maximum flow.
 \item Show that 
   $\probname{Max-Flow}\leq_p\probname{Linear Programming}$.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item \probname{Max-Flow} has this language.
 \begin{equation*}
@@ -12006,9 +12019,9 @@ in order to get maximum flow.
 \end{equation*}
 This is the language for the \probname{Linear Programming} optimization problem.
 \begin{equation*}
-  \lang_1=\set{\sequence{\vec{x},C,Z,B}\suchthat
+  \lang_1=\set{\sequence{\vec{x},C,Z,D}\suchthat
                 \text{the point~$\vec{x}$ meets the constraints~$C$ and
-                     makes~$Z(\vec{x})\geq B$}}
+                     makes~$Z(\vec{x})\geq D$}}
 \end{equation*}
 \item There are algorithms to solve these problems, but for small ones we
 can do it by eye.
@@ -12017,7 +12030,7 @@ given in parentheses.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity26.pdf}  
 \end{center}
-\item The variables are $x_{0,1}, \ldots{}x_{5,6}$.
+\item The variables are $x_{0,1}, \ldots{}\,x_{5,6}$.
 These are the capacity constraints.
 \begin{align*}
   &0\leq x_{0,1}\leq 3,\quad 
@@ -12035,6 +12048,10 @@ These are the capacity constraints.
   0\leq x_{4,6}\leq 1,\quad\text{and}\quad
   0\leq x_{5,6}\leq 2
 \end{align*}
+(These fit the definition of the problem because each is 
+a combination of two linear constraints.
+For instance, $0\leq x_{0,1}\leq 3$ is a combination of 
+$0\leq x_{0,1}$ and $x_{0,1}\leq 3$.)  
 These are the flow constraints.
 \begin{align*}
   &x_{0,1}=x_{1,3}+x_{1,4},\quad
@@ -12044,17 +12061,20 @@ These are the flow constraints.
   x_{1,4}+x_{3,4}=x_{4,6},\quad\text{and}\quad
   x_{2,5}+x_{3,5}=x_{5,6}
 \end{align*}
+(Here also, these fit the definition of the problem because each is 
+a combination of two linear constraints.
+For instance, $x_{0,1}=x_{1,3}+x_{1,4}$ is a combination of 
+$0\leq x_{0,1}-x_{1,3}-x_{1,4}$ and $x_{0,1}-x_{1,3}-x_{1,4}\leq 0$.)  
 We want to maximize $Z=x_{3,6}+x_{4,6}+x_{5,6}$.
-Observe that all of these equations and inequalities are
-linear.
-\item We must construct a reduction function~$f$.
+\item We must construct a reduction function~$f\!$.
 The input is a triple $\sequence{F,\mathcal{G},B}$.
-Use that information to make variables, construct capacity constraints and
-flow constraints~$C$, and produce an optimization expression~$Z$.
+Use that information to construct variables,  capacity constraints and
+flow constraints~$C$, and an optimization expression~$Z$.
 In particular, the flow~$F$ (shown in parentheses in the network above) 
 gives an associated point~$\vec{x}$ 
 in the \probname{Linear Programming} instance.
-Clearly that can be done in polytime.
+
+Clearly we can do that construction in polytime.
 Clearly also $\sequence{F,\mathcal{G},B}\in\lang_0$
 if and only if $\sequence{\vec{x},C,Z,B}\in\lang_1$.
 \end{exparts}

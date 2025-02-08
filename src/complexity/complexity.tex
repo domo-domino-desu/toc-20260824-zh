@@ -12087,17 +12087,18 @@ The
 inputs a directed graph where each edge is labeled with a capacity,
 and the task is to find a 
 the maximum amount that can flow from the source node to the sink node
-(for more, see \cref{exer:DefMaxFlow}).
+(a diagram is in \cref{exer:DefMaxFlow}).
 The \citetext{\definend{\probname{Drummer}} problem}{%
-  This is often called the \probname{Marriage} problem,
-  where the men pick suitable women. 
-  But perhaps it is time for
-  a new paradigm.}\index{Drummer problem@\probname{Drummer} problem}\index{Marriage problem@\probname{Marriage} problem|see{\probname{Drummer} problem or \probname{Matching} problem}}
+  This is traditionally called the \probname{Marriage} problem,
+  where the women list men that they would accept and men accept any match. 
+  But perhaps 
+  a recasting suits the times.}\index{Drummer problem@\probname{Drummer} problem}\index{Marriage problem@\probname{Marriage} problem|see{\probname{Drummer} problem or \probname{Matching} problem}}
 starts with two same-sized sets, the rock bands,~$B$, and 
 potential drummers,~$D$.
 Each band $b\in B$ has a set $S_b\subseteq D$ of drummers
 that they would agree to take on. 
-The goal is to make the most number of matches.
+Drummers will go anywhere that there is employment.
+The goal is to make the most matches.
 \begin{exparts}
 \item Consider four bands $B=\set{b_0,b_1,b_2,b_3}$ and
   drummers $D=\set{d_0,d_1,d_2,d_3}$.
@@ -12106,56 +12107,60 @@ The goal is to make the most number of matches.
   $b_2$ also likes only~$d_1$.
   Band~$b_3$ like the sound of both $d_2$ and~$d_3$.
   What is the largest number of matches?
-\item Express each as a language decision problem.
 \item Draw a graph with the bands on the left and the drummers on the right.
-  Make an arrow from a band to a drummer if there is a connection.
+  Make an arrow from a band to a drummer if there is a potential match.
   Now add a source and a sink node to make a flow diagram.
+\item Express each as a language decision problem.
 \item Show that 
   $\probname{Drummer}\leq_p\probname{Max-Flow}$.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item The maximum number of matches is three, as in 
   $(b_0,d_0)$, $(b_1,d_1)$, and $(b_3,d_2)$.
+\item Here is a network diagram.
+Each edge has weight~$1$.
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity29.pdf}
+\end{center}
 \item The \probname{Max-Flow} problem has this language, where $W$ is a bound.
 \begin{equation*}
   \lang_0=\set{\sequence{F,\mathcal{G},W}\suchthat
                \text{the flow~$F$ meets the constraints of $\mathcal{G}$ and the flow into the sink is at least~$W$}}
 \end{equation*}
 The \probname{Drummer} problem has this, where $X$ is a bound.
+The pairs $(b_j,d_{i_j})$ are band-drummer matches.
 \begin{equation*}
   \lang_1=\set{\sequence{B_0,\ldots{}B_k,(b_0,d_{i_0}),\ldots{}(b_m,d_{i_m}),X}\suchthat
             \text{each $d_{i_j}\in B_j$ and $m\geq X$}}
 \end{equation*}
-\item Here is a network diagram (note the weights of~$1$ on each edge).
-\begin{center}
-  \includegraphics{complexity/asy/complexity/complexity29.pdf}
-\end{center}
 \item A reduction function~$f$
 is given a sequence 
 $\sequence{B_0,\ldots{}B_k,(b_0,d_{i_0}),\ldots{}(b_m,d_{i_m}),X}$.
 It constructs a network that, from left to right, has a source node,
 a bank of band nodes, a bank of drummer nodes, and a sink node.
 Every edge is directed, and every edge has weight~$1$.
-The pairs $(b,d)$ in the input give a flow~$F$.
+The pairs $(b,d)$ in the input give a flow~$F\!$.
 So the output is the triple
 $f(\sequence{B_0,\ldots{}B_k,(b_0,d_{i_0}),\ldots{}(b_m,d_{i_m}),X})=\sequence{F,\mathcal{G},X}$.
 Clearly we can compute this~$f$ in polytime.
-And also clearly, 
+Also clearly, 
 $\sequence{B_0,\ldots{}B_k,(b_0,d_{i_0}),\ldots{}(b_m,d_{i_m}),X}\in\lang_1$ if and only if $\sequence{F,\mathcal{G},X}\in\lang_0$.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \begin{exercise} \label{exer:3SATmixedBelow3SATstrict}
-% \definend{\probname{$3$-Satisfiability} problem}\index{Relaxed 3-Satisfiability problem@\probname{Relaxed $3$-Satisfiability}}\index{3-Satisfiability problem@$3$-\probname{Satisfiability}!Relaxed variant}
 The \ThreeSAT{} problem\index{3-Satisfiability problem@\ThreeSAT{} problem}\index{3-SAT@3-\SAT|see{\probname{3-Satisfiability} problem}}
-is to decide the satisfiability of CNF propositional logic expressions
+is to decide the satisfiability of 
+Conjunctive Normal Form\index{CNF}\index{Propositional logic!Conjunctive Normal form}
+propositional logic expressions
 where every clause has at most three literals. 
 The \definend{\probname{Strict 3-Satisfiability} problem}\index{Strict 3-Satisfiability problem@\probname{Strict 3-Satisfiability}}\index{3-Satisfiability problem@\probname{3-Satisfiability}!Strict variant}
 requires that each clause has exactly three unequal literals.
-We will show that the two are inter-reducible.
+We will show that the two problems are inter-reducible.
 \begin{exparts}
+\item Express each as a language decision problem.
 \item Show the easy half, that 
 $\probname{Strict 3-Satisfiability}\leq_p \ThreeSAT$.
 \item
@@ -12173,72 +12178,84 @@ $\probname{Strict 3-Satisfiability}\leq_p \ThreeSAT$.
 Show
 $\ThreeSAT\leq_p \probname{Strict 3-Satisfiability}$.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
+\item This is the language for the \ThreeSAT{} problem.
+\begin{equation*}
+  \set{E\suchthat \text{$E$ is a satisfiable Boolean expression in CNF where each clause has at most three literals}}    
+\end{equation*}
+This is the language for \probname{Strict 3-Satisfiability}.
+\begin{equation*}
+  \set{E\suchthat \text{$E$ is a satisfiable Boolean expression in CNF where each clause has exactly three literals}}    
+\end{equation*}
 \item
 Any instance of \probname{Strict 3-Satisfiability} is an instance
 of \ThreeSAT.
 So the reduction function is the identity function.
 \item
-The most straightforward thing is to compare truth tables.
-Here, for all assignments of the variables the
-results agree between the expression $P\vee Q$ and
+We are asked to show that the two-literal Propositional Logic expression
+$E_0=P\vee Q$ is equivalent to the 
 the expression
-  $(P\vee Q\vee R)\wedge(P\vee Q\vee\neg R)$.
-So they are equivalent.
+$E_1=(P\vee Q\vee R)\wedge(P\vee Q\vee\neg R)$
+where each clause has three literals.
+
+The most straightforward thing is to use a truth table
+to compare the two expressions.
 \begin{display}
 \begin{tabular}[t]{*{3}{c}|*{4}{c}}
   \multicolumn{1}{c}{$P$} 
      &\multicolumn{1}{c}{$Q$} &\multicolumn{1}{c}{$R$} 
-     &$P\vee Q$ &$P\vee Q\vee R$ &$P\vee Q\vee\neg R$ 
-       &$(P\vee Q\vee R)\wedge(P\vee Q\vee\neg R)$   \\
+     &$E_0$ &$P\vee Q\vee R$ &$P\vee Q\vee\neg R$ 
+       &$E_1$   \\
   \hline
   $F$ &$F$ &$F$ &$F$ &$F$ &$T$ &$F$   \\
   $F$ &$F$ &$T$ &$F$ &$T$ &$F$ &$F$   \\
   $F$ &$T$ &$F$ &$T$ &$T$ &$T$ &$T$   \\
-  $F$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$   \\
+  $F$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$   \\[1ex]
   $T$ &$F$ &$F$ &$T$ &$T$ &$T$ &$T$   \\
   $T$ &$F$ &$T$ &$T$ &$T$ &$T$ &$T$   \\
   $T$ &$T$ &$F$ &$T$ &$T$ &$T$ &$T$   \\
   $T$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$   
 \end{tabular}
 \end{display}
-This gives the equivalence of the expression $P$
-and the expression
-  $E=(P\vee Q\vee R)
+
+The same technique works for the one-literal expression $E_2=P$.
+It is equivalent to the expression
+  $E_3=(P\vee Q\vee R)
   \wedge (P\vee \neg Q\vee R)
   \wedge (P\vee Q\vee \neg R)
-  \wedge (P\vee \neg Q\vee \neg R)$.
+  \wedge (P\vee \neg Q\vee \neg R)$
+where each clause has three literals.
 \begin{display}
 \begin{tabular}[t]{*{3}{c}|*{6}{c}}
   \multicolumn{1}{c}{$P$} 
      &\multicolumn{1}{c}{$Q$} &\multicolumn{1}{c}{$R$} 
-     &$P$
+     &$E_2$
        &$(P\vee Q\vee R)$
        &$(P\vee \neg Q\vee R)$   
        &$(P\vee Q\vee \neg R)$   
        &$(P\vee \neg Q\vee \neg R)$
-       &$E$   
+       &$E_3$   
   \\
   \hline
   $F$ &$F$ &$F$ &$F$ &$F$ &$T$ &$T$ &$T$ &$F$   \\
   $F$ &$F$ &$T$ &$F$ &$T$ &$T$ &$F$ &$T$ &$F$   \\
   $F$ &$T$ &$F$ &$F$ &$T$ &$F$ &$T$ &$T$ &$F$   \\
-  $F$ &$T$ &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ &$F$   \\
+  $F$ &$T$ &$T$ &$F$ &$T$ &$T$ &$T$ &$F$ &$F$   \\[1ex]
   $T$ &$F$ &$F$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$   \\
   $T$ &$F$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$   \\
   $T$ &$T$ &$F$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$   \\
   $T$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$ &$T$   \\
 \end{tabular}
 \end{display}
-\item The reduction function inputs propositional logic expressions
-in Conjunctive Normal form $\sigma=\sigma_0\wedge \sigma_1\wedge \ldots$,
-where the clauses are disjunctions of three or fewer literals.
-It must output propositional logic expressions again in 
+\item The reduction function inputs expressions
+in Conjunctive Normal form 
+$E=\sigma_0\wedge \sigma_1\wedge \ldots\,\sigma_k$,
+where the $\sigma_i$ clauses are disjunctions of three or fewer literals.
+It must output equivalent propositional logic expressions that also are in 
 Conjunctive Normal form but where the clauses are disjunctions of 
 exactly three literals.
-The prior item shows how to do that, so that the output and input
-expressions are equivalent.
+The prior item shows how the function converts the one to the other.
 Obviously the function can run in polytime.
 \end{exparts}
 \end{answer}
@@ -12253,7 +12270,7 @@ the \ThreeSAT{} problem,\index{3-Satisfiability problem@\ThreeSAT{} problem}\ind
 $\ThreeSAT$,
 is inter-reducible with 
 \SAT.\index{Satisfiability problem@\probname{Satisfiability} problem}
-(We will assume that instances of $\SAT$
+(Assume that the expressions that are instances of $\SAT$
 are in Conjunctive Normal form.)\index{CNF}\index{Propositional logic!Conjunctive Normal form}
 \begin{exparts}
 \item Show the easy half, that 

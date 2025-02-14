@@ -3627,9 +3627,9 @@ picture pic;
 setdefaultdirectedgraphstyles();
 defaultlayoutrel = false;
 
-node[] nodes=ncircles("$v_0$",
-  "$v_1$",
-  "$v_2$");
+node[] nodes=ncircles("$g_0$",
+  "$g_1$",
+  "$g_2$");
 
 // calculate nodes position
 real u=1cm;

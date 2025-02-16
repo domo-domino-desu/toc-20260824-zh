@@ -27,6 +27,8 @@ pen WALK_PEN = linewidth(0.75bp) + highlight_color;
 labelstyle edgelabel=labelstyle(fontsize(5pt)+fontcommand("\ttfamily")+GRAYPEN);
 drawstyle directededgestyle=drawstyle(edgelabel, p=EDGEPEN_TT,
 				      arrow=Arrow(6,filltype=FillDraw(backgroundcolor,GRAYPEN)));
+drawstyle directededgesstyle=drawstyle(edgelabel, p=EDGEPEN_TT,
+				      arrow=Arrows(6,filltype=FillDraw(backgroundcolor,GRAYPEN)));
 defaultdrawstyle=directededgestyle;
 // // Edge with no arrow
 drawstyle undirectededgestyle=drawstyle(edgelabel, p=EDGEPEN_TT, arrow=None);

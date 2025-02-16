@@ -2422,3 +2422,97 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+// ========= Travelling Salesman equiv Asymmetric TS =============
+
+int picnum = 43;
+picture pic;
+setdefaultgraphstyles();
+defaultdrawstyle=directededgesstyle;
+
+node h0=ncircle("\nodebox{$h_0$}"),
+  h1=ncircle("\nodebox{$h_1$}"),
+  h2=ncircle("\nodebox{$h_2$}"),
+  h0hat=ncircle("\nodebox{$\hat{h}_0$}"),
+  h1hat=ncircle("\nodebox{$\hat{h}_1$}"),
+  h2hat=ncircle("\nodebox{$\hat{h}_2$}");
+
+// calculate nodes position
+real u=1.2cm;
+real v=0.8*u;
+hlayout(2.0*u, h0, h1, h2);
+vlayout(1.5*v, h0, h0hat);
+hlayout(2.0*u, h0hat, h1hat, h2hat);
+
+// draw edges
+draw(pic,
+     (h0--h1hat).l(Label("$3$",Relative(0.25))),
+     // (h1hat--h0).l("$3$"),
+     (h0--h2hat).l(Label("$5$",Relative(0.15))).style("leftside"),
+     // (h2hat--h0).l("$5$"),
+     (h1--h0hat).l(Label("$1$",Relative(0.2))),
+     // (h0hat--h1).l("$1$"),
+     (h1--h2hat).l(Label("$6$",Relative(0.225))).style("leftside"),
+     // (h2hat--h1).l("$6$"),
+     (h2--h0hat).l(Label("$2$",Relative(0.15))),
+     // (h0hat--h2).l("$2$"),
+     (h2--h1hat).l(Label("$4$",Relative(0.25))).style("leftside")
+     // (h1hat--h2).l("$4$")
+);
+
+// draw nodes, after edges
+draw(pic,
+     h0, h1, h2,
+     h0hat, h1hat, h2hat);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ................... adjusted graph .................
+int picnum = 44;
+picture pic;
+setdefaultgraphstyles();
+defaultdrawstyle=directededgesstyle;
+
+node h0=ncircle("\nodebox{$h_0$}"),
+  h1=ncircle("\nodebox{$h_1$}"),
+  h2=ncircle("\nodebox{$h_2$}"),
+  h0hat=ncircle("\nodebox{$\hat{h}_0$}"),
+  h1hat=ncircle("\nodebox{$\hat{h}_1$}"),
+  h2hat=ncircle("\nodebox{$\hat{h}_2$}");
+
+// calculate nodes position
+real u=1.2cm;
+real v=0.8*u;
+hlayout(2.0*u, h0, h1, h2);
+vlayout(1.5*v, h0, h0hat);
+hlayout(2.0*u, h0hat, h1hat, h2hat);
+
+// draw edges
+draw(pic,
+     (h0--h1hat).l(Label("$3$",Relative(0.25))),
+     // (h1hat--h0).l("$3$"),
+     (h0--h2hat).l(Label("$5$",Relative(0.15))).style("leftside"),
+     // (h2hat--h0).l("$5$"),
+     (h1--h0hat).l(Label("$1$",Relative(0.2))),
+     // (h0hat--h1).l("$1$"),
+     (h1--h2hat).l(Label("$6$",Relative(0.225))).style("leftside"),
+     // (h2hat--h1).l("$6$"),
+     (h2--h0hat).l(Label("$2$",Relative(0.15))),
+     // (h0hat--h2).l("$2$"),
+     (h2--h1hat).l(Label("$4$",Relative(0.25))).style("leftside"),
+     // (h1hat--h2).l("$4$")
+     (h0--h0hat).l(Label("$-19$",Relative(0.6))),
+     (h1--h1hat).l(Label("$-19$",Relative(0.8))).style("leftside"),
+     (h2--h2hat).l(Label("$-19$",Relative(0.6))).style("leftside")
+);
+
+// draw nodes, after edges
+draw(pic,
+     h0, h1, h2,
+     h0hat, h1hat, h2hat);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

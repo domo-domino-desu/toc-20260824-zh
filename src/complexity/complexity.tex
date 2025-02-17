@@ -12702,7 +12702,7 @@ with the weight of an edge being the flight's cost.
   then connect $\hat{h}_i$ to~$h_j$, and also 
   $h_i$ to~$\hat{h}_j$, with weight~$w$. 
   Using $\mathcal{G}$ shown above, produce the matrix for this graph,
-  verify that it is symmetric and draw it.
+  verify that it is symmetric, and draw it.
 \item For the second stage of defining $\mathcal{H}$,
   let~$w$ be the product of $\mathcal{G}$'s maximum edge weight 
   and twice the number of its vertices.
@@ -12717,9 +12717,13 @@ with the weight of an edge being the flight's cost.
 \end{exparts}
 \begin{answer}\verified
 \begin{exparts}
-\item A symmetric instance is a special case of an asymmetric instance.
-\item This is the graph matrix for $\mathcal{H}$. 
-It is clearly symmetric, again along the upper left to lower right
+\item The reduction function must take in an instance of the symmetric
+problem and return an instance of the asymmetric problem.
+But a symmetric instance is a special case of an asymmetric instance.
+So the reduction function can be the identity function.
+\item This is the graph matrix for the first stage of 
+constructing~$\mathcal{H}$. 
+It is symmetric along the upper left to lower right
 diagonal.   
 \begin{equation*}\small
   \begin{blockarray}{*{7}{c}}
@@ -12758,8 +12762,9 @@ is also symmetric.
   \vcenteredhbox{ \includegraphics{complexity/asy/complexity/complexity44.pdf} }
 \end{equation*}
 \item 
-We first cover the connection between the pictured graph~$\mathcal{G}$
-and the derived graph~$\mathcal{H}$.
+We first cover the case where the asymmetric instance is 
+the pictured graph~$\mathcal{G}$
+and the symetric instance is the derived graph~$\mathcal{H}$.
 To make a circuit in
 $\mathcal{G}$, the only possibilities are going clockwise and going
 counterclockwise.
@@ -12774,8 +12779,8 @@ For $\mathcal{H}$,
 the large negative weights of $-w-1$ ensure that those edges must be part of a
 circuit.
 
-To argue for that assertion,
-first observe that a circuit must have a number of 
+To prove that,
+first observe that a to visit every vertex, a circuit must have a number of 
 edges equal to the number of vertices, which here is six edges.
 A circuit that does not use a edge with weight $-37$ has 
 total weight at least $6\cdot 1$.
@@ -12786,18 +12791,29 @@ From there, every circuit with one $-37$ edge
 has total weight at least $(-37)\cdot 1+1\cdot 5=-32$, while
 replacing another positive weight edge means that the most a
 circuit can weigh is $(-37)\cdot 2+6\cdot 4=-50$,
-so that is an improvement.
+an improvement.
 Finally, every circuit containing two $-37$ edges totals at 
 least $(-37)\cdot 2+1\cdot 4=-70$,
 while replacing a positive weight edge means that a circuit can weigh 
 at most $(-37)\cdot 3+6\cdot 3=-93$.
 So three $-37$'s is unbeatable, and by inspection there is such a circuit.
+% sage: (-37)*1+6*5
+% -7
+% sage: (-37)*1+1*5
+% -32
+% sage: (-37)*2+6*4
+% -50
+% sage: (-37)*2+1*4
+% -70
+% sage: (-37)*3+6*3
+% -93
 
-So $\mathcal{H}$'s optimal solution is 
+Therefore $\mathcal{H}$'s optimal solution is 
 $h_0\to \hat{h}_0\to h_1\to\hat{h}_1\to h_2\to\hat{h}_2\to\hat{h}_2\to h_0$.
-The solution thus alternates between edges of the form $h_i\hat{h}_i$
+It alternates between edges of the form $h_i\hat{h}_i$
 and those of the form $\hat{h}_ih_j$, 
-where edges $g_ig_j$ are in $\mathcal{G}$'s optimal circuit. 
+where edges with matching subscripts
+$g_ig_j$ are in $\mathcal{G}$'s optimal circuit. 
 
 The argument generalizes to any number of edges in~$\mathcal{G}$.
 Let $v$ be the number of vertices in $\mathcal{G}$
@@ -12806,6 +12822,7 @@ Replacing a positive weight edge will change what a circuit
 can weight by $-w-1=-vm-1$, and the remaining edges in any circuit using
 this replaced edge have a total weight less than $vm$, 
 so there is a net decrease. 
+And there is a circuit using $v$-may edges of weight $-w-1$.
 
 The reduction function can clearly do the change 
 from $\mathcal{G}$ to $\mathcal{H}$ in polytime.
@@ -12816,7 +12833,7 @@ from $\mathcal{G}$ to $\mathcal{H}$ in polytime.
 
 \begin{exercise}
 We can do reductions between problems of types other than language 
-decision problems, such as optimizations.
+decision problems.
 A
 \definend{reduction between optimization problems}\index{reducibility!between optimization problems}\index{optimization problem reducibility}
 is a pair of
@@ -12827,10 +12844,10 @@ and $g$ takes optimal solutions to optimal solutions.
 \begin{exparts}
 \item
 The \definend{\probname{Assignment} problem}\index{Assignment problem@\probname{Assignment} problem} inputs a set of workers 
-$W=\set{w_0,\ldots{}w_{n-1}}$ and a set of tasks
-$T=\set{t_0,\ldots{} t_{n-1}}$, of equal sizes. 
-For each worker and task there is a cost $C(w_i,t_j)$.
-The goal is to assign each task, one per worker,
+$W=\set{w_0,\ldots{}\,w_{n-1}}$ and a same-sized set of tasks
+$T=\set{t_0,\ldots{}\, t_{n-1}}$. 
+For each pair there is a cost $C(w_i,t_j)$.
+We want to assign a tasks to each worker
 for minimal total cost.
 By eye, solve this \probname{Assignment} problem instance.
 \begin{center}\small
@@ -12849,8 +12866,7 @@ By eye, solve this \probname{Assignment} problem instance.
 \end{center}
 \item The \probname{Asymmetric Traveling Salesman}
 problem\index{Asymmetric Traveling Salesman problem@\probname{Asymmetric Traveling Salesman} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem!Asymmetric@\probname{Asymmetric}}
-asks for circuit of minimal total cost in a weighted graph that is
-directed.
+asks for circuit of minimal total cost in a directed weighted graph.
 Show that 
   $\probname{Assignment}\leq_p\probname{Asymmetric Traveling Salesman}$.
   \hint~the reduction function~$f$ inputs an assignment table.
@@ -12884,7 +12900,13 @@ Show that
 \end{center}
 shows that the optimum solution is to pair
 $t_0,w_1$, along with $t_1,w_3$, and $t_2,w_2$, and finally $t_3,w_0$.
+We can check that with a routine.
+\lstinputlisting[firstline=6]{scheme/complexity/assignment.rkt}
 The total cost is~$11$.
+\begin{lstlisting}
+> (minimize-assignment cost-table)
+11  
+\end{lstlisting}
 \item
 As in the hint,
 the reduction function~$f$

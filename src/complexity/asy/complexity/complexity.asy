@@ -2504,9 +2504,9 @@ draw(pic,
      // (h0hat--h2).l("$2$"),
      (h2--h1hat).l(Label("$4$",Relative(0.25))).style("leftside"),
      // (h1hat--h2).l("$4$")
-     (h0--h0hat).l(Label("$-19$",Relative(0.6))),
-     (h1--h1hat).l(Label("$-19$",Relative(0.8))).style("leftside"),
-     (h2--h2hat).l(Label("$-19$",Relative(0.6))).style("leftside")
+     (h0--h0hat).l(Label("$-37$",Relative(0.6))),
+     (h1--h1hat).l(Label("$-37$",Relative(0.8))).style("leftside"),
+     (h2--h2hat).l(Label("$-37$",Relative(0.6))).style("leftside")
 );
 
 // draw nodes, after edges

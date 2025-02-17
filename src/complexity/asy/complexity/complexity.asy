@@ -1230,6 +1230,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 picture pic;
 int picnum = 23;
 setdefaultgraphstyles();
+defaultdrawstyle=directededgestyle;
 
 // define nodes
 node w0=ncircle("$w_0$");
@@ -1243,32 +1244,37 @@ node t3=ncircle("$t_3$");
 
 // layout
 defaultlayoutrel = false;
-defaultlayoutskip = 1.0cm;
+defaultlayoutskip = 1.15cm;
 real u = defaultlayoutskip;
-real v = 1.1*u;
+real v = 1*u;
 
-hlayout(1*u, w0, w1, w2, w3);
-vlayout(1*v, w0, t0);
-hlayout(1*u, t0, t1, t2, t3);
+hlayout(1.15*u, w0, w1, w2, w3);
+vlayout(1.25*v, w0, t0);
+hlayout(1.15*u, t0, t1, t2, t3);
 
 // draw edges
+real bend_angle = 10; // degrees
 draw(pic,
-     (w0--t0),
-     (w0--t1),
-     (w0--t2),
-     (w0--t3),
-     (w1--t0),
-     (w1--t1),
-     (w1--t2),
-     (w1--t3),
-     (w2--t0),
-     (w2--t1),
-     (w2--t2),
-     (w2--t3),
-     (w3--t0),
-     (w3--t1),
-     (w3--t2),
-     (w3--t3)
+     (w0..bend(bend_angle)..t0),
+     (t0..bend(bend_angle)..w0),
+     (w0..bend(bend_angle-2)..t1),
+     (t1..bend(bend_angle-2)..w0),
+     (w0..bend(bend_angle-4)..t2),
+     (t2..bend(bend_angle-4)..w0),
+     (w0..bend(bend_angle-6)..t3),
+     (t3..bend(bend_angle-6)..w0)
+     // (w1--t0),
+     // (w1--t1),
+     // (w1--t2),
+     // (w1--t3),
+     // (w2--t0),
+     // (w2--t1),
+     // (w2--t2),
+     // (w2--t3),
+     // (w3--t0),
+     // (w3--t1),
+     // (w3--t2),
+     // (w3--t3)
 );
 
 // draw nodes

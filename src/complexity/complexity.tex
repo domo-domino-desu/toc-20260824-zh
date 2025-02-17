@@ -12660,7 +12660,7 @@ $P_i=F$).
 
 \begin{exercise}
 \begin{credit}
-  Thanks to P~Rombach of UVM for help with this.    
+  Thanks to P~Rombach of the University of Vermont for help with this.    
 \end{credit}
 Our definition of the \probname{Traveling Salesman} 
 problem\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
@@ -12832,23 +12832,15 @@ from $\mathcal{G}$ to $\mathcal{H}$ in polytime.
 
 
 \begin{exercise}
-We can do reductions between problems of types other than language 
-decision problems.
-A
-\definend{reduction between optimization problems}\index{reducibility!between optimization problems}\index{optimization problem reducibility}
-is a pair of
-polytime computable functions $\seq{f,g}$
-mapping bitstrings to bitstrings, where $f$ is a reduction function as in
-\cref{def:PolytimeReducibility}, taking instances to instances, 
-and $g$ takes optimal solutions to optimal solutions.
-\begin{exparts}
-\item
 The \definend{\probname{Assignment} problem}\index{Assignment problem@\probname{Assignment} problem} inputs a set of workers 
 $W=\set{w_0,\ldots{}\,w_{n-1}}$ and a same-sized set of tasks
 $T=\set{t_0,\ldots{}\, t_{n-1}}$. 
-For each pair there is a cost $C(w_i,t_j)$.
-We want to assign a tasks to each worker
-for minimal total cost.
+For each pair there is a cost $C(w_i,t_j)$, and the problem is 
+to assign a task to each worker for minimal total cost.
+The \probname{Asymmetric Traveling Salesman}
+problem\index{Asymmetric Traveling Salesman problem@\probname{Asymmetric Traveling Salesman} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem!Asymmetric@\probname{Asymmetric}}
+asks for a minimal cost circuit in a directed weighted graph.\begin{exparts}
+\item
 By eye, solve this \probname{Assignment} problem instance.
 \begin{center}\small
 \begin{tabular}{r|*{4}{r}}
@@ -12864,24 +12856,22 @@ By eye, solve this \probname{Assignment} problem instance.
   \tabulartext{$t_3$} &$1$  &$3$  &$5$  &$9$  \\
 \end{tabular}
 \end{center}
-\item The \probname{Asymmetric Traveling Salesman}
-problem\index{Asymmetric Traveling Salesman problem@\probname{Asymmetric Traveling Salesman} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem!Asymmetric@\probname{Asymmetric}}
-asks for circuit of minimal total cost in a directed weighted graph.
-Show that 
-  $\probname{Assignment}\leq_p\probname{Asymmetric Traveling Salesman}$.
-  \hint~the reduction function~$f$ inputs an assignment table.
-  Have it output a bipartite graph as shown here, where 
-  each worker is connected to each task,
-  \begin{center}
-    \includegraphics{complexity/asy/complexity/complexity23.pdf}
-  \end{center}
-  but make it a directed graph where between each worker and task
-  there is an edge in each direction.
-  Use the given assignment cost table to make appropriate edge weights.
-  Finish by verifying that there is a polytime computable function~$g$
-  that associates optimal assignments with optimal circuits.
+\item 
+Show that
+$\probname{Assignment}\leq_p\probname{Asymmetric Traveling Salesman}$.
+\hint~have the reduction function output a graph that is bipartite, 
+i.e, $2$-colorable, where 
+each worker is connected to each task by an edge in each direction
+(this shows only the paired edges for $w_0$ because showing them 
+all is less clear).
+\begin{center}
+  \includegraphics{complexity/asy/complexity/complexity23.pdf}
+\end{center}
+Use the reduction function's input, the assignment cost table,
+to make edge weights
+that result in associating optimal assignments with optimal circuits.
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item A little time playing with the table numbers
 \begin{center}\small
@@ -12908,98 +12898,90 @@ The total cost is~$11$.
 11  
 \end{lstlisting}
 \item
-As in the hint,
-the reduction function~$f$
-inputs a triple $\sequence{W,T,C}$ of the set of workers,
-the same-sized set of tasks, and the table of costs. 
-It outputs a graph $f(\sequence{W,T,C})=\mathcal{G}$ that is bipartite,
-meaning that there are no inter-$w$ edges or inter-$t$ edges.
-For each $w$ and~$t$ there is a directed edge in each direction.
+The language for the \probname{Assignment} problem is this.
+\begin{align*}
+  \lang_0=
+  \{\,\sequence{W,T,C,B} 
+   &\suchthat 
+   \text{$W$ and $T$ are same-sized sets and $\map{C}{W\times T}{\R}$,} \\
+   &\qquad\text{and there is an assignment $\map{a}{W}{T}$ costing no more than~$B$}\,\}
+\end{align*}
+This is the language for the \probname{Asymmetric Traveling Salesman} problem.
+\begin{equation*}
+  \lang_1=
+  \set{\sequence{\mathcal{G},D} \suchthat 
+       \text{$\mathcal{G}$ is a directed weighted graph having a circuit having total weight no more than~$D$}}
+\end{equation*}
 
-For each $i$ and~$j$ give the edge from $w_i$ to $t_j$ the weight~$C(w_i,t_j)$.
-Give the edge from $t_j$ to~$w_i$ the weight~$0$.
-(If you want all weights to be positive then these can
-be $C(w_i,t_j)+1$ and~$1$.)
-This function~$f$ is clearly computable in polytime.
+A reduction function
+inputs a $\sequence{W,T,C,B}$  
+and outputs a $\sequence{\mathcal{G},D}$. 
+As in the hint, take the output graph
+$\mathcal{G}$ to have vertices labeled with each $w_i$ and $t_j$,
+but there are no inter-$w$ edges or inter-$t$ edges.
+For each pair $w_i,t_j$ there is a directed edge in each direction.
+Give the edge from $w_i$ to $t_j$ a weight of~$C(w_i,t_j)$.
+Give the edge from $t_j$ to~$w_i$ a weight of~$0$.
 
-The function~$g$ inputs an assignment of workers to tasks,
-$w_{0}\mapsto t_{i_0},\,w_{1}\mapsto t_{i_1}\,\ldots\,$
-and outputs an associated circuit through~$\mathcal{G}$.
-That circuit starts at the vertex $w_0$, then travels to vertex~$t_{i_0}$, then
-to $w_1$ and~$t_{i_1}$, etc, until returning back to $w_0$.
-Clearly this map~$g$ is polytime computable and
-also clearly its input is optimal if and only if its output is also optimal.
+If the input $\sequence{W,T,C,B}$ is an element of $\lang_0$
+then the total cost of some assignment~$a$ does not exceed~$B$.
+Let that assignment be
+$w_{0}\mapsto t_{i_0}$,
+$w_{1}\mapsto t_{i_1}$, \ldots\sentencespace
+Then in $\mathcal{G}$ the circuit starting at the vertex labeled 
+$w_0$ and traveling to the vertex~$t_{i_0}$, then
+to $w_1$ and~$t_{i_1}$, etc.\, until returning back to $w_0$,
+will be of total weight less than $D=B$.
+That is, $\sequence{\mathcal{G},B}$ is an element of~$\lang_1$.
+
+Clearly we can write reduction function associating this input and output
+to run in polytime.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
-% \begin{exercise}
-% The \probname{Traveling Salesman} problem as
-% defined in \cref{ex:TravellingSalesman} is about undirected graphs.
-% We can ask the same about directed graphs.
-% The graph and representations below show why this is the 
-% \definend{\probname{Asymmetric Traveling Salesman}}
-% problem.\index{Asymmetric Traveling Salesman problem@\probname{Asymmetric Traveling Salesman} problem}\index{Traveling Salesman problem@\probname{Traveling Salesman} problem!Asymmetric@\probname{Asymmetric}}
-% \begin{center}\small
-%   \vcenteredhbox{\includegraphics{\asydir problems/problems52.pdf}}%
-%   \qquad
-%   \begin{tabular}{r|*{3}{c}}
-%     \multicolumn{1}{c}{\ }
-%       &\multicolumn{1}{c}{$v_0$}
-%       &\multicolumn{1}{c}{$v_1$}
-%       &\multicolumn{1}{c}{$v_2$}  \\ \cline{2-4}
-%     $v_0$ &-- &$1$ &$2$  \\
-%     $v_1$ &$6$ &-- &$3$  \\
-%     $v_2$ &$5$ &$4$ &--  \\
-%   \end{tabular}
-% \end{center}
-% \begin{exparts}
-% \item Show that the symmetric problem is polytime reducible to the
-% asymmetric version. 
-% \item Show the converse.
-% \hint~given a directed graph~$\mathcal{G}$, we create an undirected 
-% graph~$\hat{\mathcal{G}}$ where a solution to the Traveling Salesman Problem
-% on  $\hat{\mathcal{G}}$ gives one on~$\mathcal{G}$.
-% To make $\hat{\mathcal{G}}$, first add to $\mathcal{G}$ a new vertex
-% $\hat{v}_i$ for each $v_i\in\mathcal{G}$.
-% These are connected as 
-% we put two vertices $w_i,\hat{w}_i$ in~$\hat{\mathcal{G}}$. 
-% \begin{center}\small
-%   \begin{tabular}{r|*{3}{c}|*{3}{c}}
-%     \multicolumn{1}{c}{\ }
-%       &\multicolumn{1}{c}{\ }
-%       &\multicolumn{1}{c}{\ }
-%       &\multicolumn{1}{c}{\ }
-%       &\multicolumn{1}{c}{\ }
-%       &\multicolumn{1}{c}{\ }
-%       &\multicolumn{1}{c}{\ }  \\ \cline{2-7}
-%    $v_0$       & & & &$-W$ &$1$ &$2$ \\ 
-%    $v_1$       & & & &$6$ &$-W$ &$3$ \\ 
-%    $v_2$       & & & &$5$ &$4$ &$-W$ \\ \cline{2-7}
-%    $\hat{v}_0$ &$-W$ &$6$ &$5$ & & & \\ 
-%    $\hat{v}_1$ &$1$ &$-W$ &$4$ & & & \\ 
-%    $\hat{v}_2$ &$2$ &3$$ &$-W$ & & & \\ 
-%   \end{tabular}
-  
-% \end{center}
-% \end{exparts}
-% \end{exercise}
+
+\begin{exercise}  \label{exer:TReducableDiffersFromMReducible}
+As discussed at the start of the section,
+$B\leq_T A$
+if there is an oracle~$A$ Turing machine that computes~$B$, so that 
+$\TMfcn_e^A=\charfcn{B}$.
+And, $B\leq_mA$ if there is a total computable function so that
+$x\in B$ if and only if $f(x)\in A$.
+We will show that the two reductions $\leq_T$ and $\leq_m$ differ.
+\begin{exparts}
+\item 
+Let $B$ be the nonempty computable set $\set{2n\suchthat n\in\N}$
+of even numbers and let $A$ be the empty set.
+Show that $B\leq_T A$ but it is not the case that $B\leq_m A$.
+\item
+Observe that $A\leq_T \setcomp{A}$ for all sets, and so $K\leq_T \setcomp{K}$.
+Show that if $B\leq_m A$ and $B$ is computably enumerable then 
+so is $A$, and conclude that $K$ is not many-one reducible to its complement.
+\end{exparts}
+\begin{answer}
+\begin{exparts}
+\item The oracle machine $\TM^A$ can just ignore the oracle and compute
+membership in the set~$B$.
+(By the way, note that this computation happens in polytime.)
+But for $B\leq_m A$, no function giving $x\in B\Leftrightarrow f(x)\in A$
+exists because never is $f(x)$ an element of $A=\emptyset$. 
+\item 
+Suppose that $B\leq_m A$ and that $B$ is computably enumerable.
+As we enumerate $B=\set{b_0,b_1 \ldots}$ we can also enumerate
+$A=\set{f(b_0),f(b_1)\ldots}$, and therefore $A$ is computably enumerable.
+As to the conclusion, if a set and its complement are both
+computably enumerable then both are computable.
+But of course $K$ is not computable. 
+\end{exparts}
+\end{answer}
+\end{exercise}
+
 
 \begin{exercise}
 \begin{credit}
 Neal E Young, University of Calfornia Riverside
 \end{credit}
-% Let \probname{Fin} be the language decision problem for this language.
-% \begin{equation*}
-%   F=\set{i\in\N\suchthat \text{the language decided by $\TM_i$ is finite}}
-% \end{equation*}
-% (As \cref{def:langDecidedByTM} says, this means that $\TM_i$ halts on all 
-% inputs and acts as the characteristic function of a set that is finite.)
-% Also let \probname{Reg} be the decision problem for this language.
-% \begin{equation*}
-%   R=\set{x\in\N\suchthat \text{the language decided by $\TM_x$ is regular}}
-% \end{equation*}
-% We will show that $\probname{Fin}\leq_p\probname{Reg}$.
 We will show that 
 $\probname{Fin}\leq_p\probname{Reg}$,\index{Fin problem@\probname{Fin} problem}\index{Reg problem@\probname{Reg} problem} 
 where they are 
@@ -13105,42 +13087,6 @@ then because $i\notin F$,
 the language decided by $\TM_{s(e,i)}$ is an infinite subset 
 of $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$, and so is not 
 regular.
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}  \label{exer:TReducableDiffersFromMReducible}
-As discussed at the start of the section,
-$B\leq_T A$
-if there is an oracle~$A$ Turing machine that computes~$B$, so that 
-$\TMfcn_e^A=\charfcn{B}$.
-And, $B\leq_mA$ if there is a total computable function so that
-$x\in B$ if and only if $f(x)\in A$.
-We will show that the two reductions $\leq_T$ and $\leq_m$ differ.
-\begin{exparts}
-\item 
-Let $B$ be the nonempty computable set $\set{2n\suchthat n\in\N}$
-of even numbers and let $A$ be the empty set.
-Show that $B\leq_T A$ but it is not the case that $B\leq_m A$.
-\item
-Observe that $A\leq_T \setcomp{A}$ for all sets, and so $K\leq_T \setcomp{K}$.
-Show that if $B\leq_m A$ and $B$ is computably enumerable then 
-so is $A$, and conclude that $K$ is not many-one reducible to its complement.
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item The oracle machine $\TM^A$ can just ignore the oracle and compute
-membership in the set~$B$.
-(By the way, note that this computation happens in polytime.)
-But for $B\leq_m A$, no function giving $x\in B\Leftrightarrow f(x)\in A$
-exists because never is $f(x)$ an element of $A=\emptyset$. 
-\item 
-Suppose that $B\leq_m A$ and that $B$ is computably enumerable.
-As we enumerate $B=\set{b_0,b_1 \ldots}$ we can also enumerate
-$A=\set{f(b_0),f(b_1)\ldots}$, and therefore $A$ is computably enumerable.
-As to the conclusion, if a set and its complement are both
-computably enumerable then both are computable.
-But of course $K$ is not computable. 
 \end{exparts}
 \end{answer}
 \end{exercise}

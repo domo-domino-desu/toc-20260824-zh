@@ -8379,7 +8379,7 @@ membership in $\lang_1$.
 This algorithm is in $\bigOh(x^k)$ where $k=\max(\set{k_0,k_1})$.  
 \item
 We must prove that if a language~$\lang$ is in~$\P$ then so is its
-set complement~$\setcomp{\lang}$.
+set complement~$\setcomp{\lang}\!$.
 If $\lang\in\P$
 then there is a deterministic Turing machine~$\TM$ 
 that runs in polynomial time,
@@ -11253,7 +11253,7 @@ imply that $\lang_2\leq_p\lang_0$.
 \item  \label{lem:BasicFactsAboutPolytimeRedItemPMinimal}
 If $\lang_1\in\P$ then
 every language $\lang_0$ that is nontrivial, where 
-$\lang_0\neq\emptyset$ and $\lang_0\neq\N$,
+$\lang_0\neq\emptyset$ and $\lang_0\neq\kleenestar{\Sigma}\!$,
 satisfies that $\lang_1\leq_p\lang_0$.
 \item \label{lem:BasicFactsAboutPolytimeRedItemPClosedDown}
 The class $\P$ is closed downward:~if
@@ -11277,7 +11277,7 @@ Let $\lang_0$ be nontrivial
 so that it has a member $\sigma\in\lang_0$ and a nonmember $\tau\notin\lang_0$.
 We will give a polytime reduction function~$f$ 
 showing that $\lang_1\leq_p\lang_0$.
-Where $\alpha\in\kleenestar{\B}\!$,
+Where $\alpha\in\kleenestar{\Sigma}\!$,
 computing whether $\alpha\in\lang_1$ can be done in polytime.
 If it is a member of $\lang_1$ then let $f(\alpha)=\sigma$
 while if not then let $f(\alpha)=\tau$.
@@ -12941,6 +12941,67 @@ to run in polytime.
 \end{exercise}
 
 
+\recommended
+\begin{exercise}\label{exer:BasicFactsAboutPolytimeRed}
+\Cref{lem:BasicFactsAboutPolytimeRed} leaves a couple of points undone.
+\begin{exparts}
+\item
+Show that $\leq_p$ is reflexive and transitive.
+\item
+It says that if $\lang_1\in\P$ then
+every language $\lang_0$ that is nontrivial, 
+where $\lang_0\neq\emptyset$ and $\lang_0\neq\kleenestar{\Sigma}\!$, 
+satisfies that $\lang_1 \leq_p \lang_0$.
+What about trivial languages:~which languages reduce to the empty set?
+to $\kleenestar{\Sigma}$?
+\item Show that $\NP$ is downward closed, that  
+if $\lang_1\leq_p\lang_0$ and $\lang_0\in\NP$ then 
+$\lang_1\in\NP$ also.
+\end{exparts}
+\begin{answer}\verified
+\begin{exparts}
+\item Reflexivity is easy;~we must show that $\lang\leq_p\lang$ for any 
+$\lang\in\powerset(\kleenestar{\Sigma})$.
+Take the reduction function to be the identity, $f(\sigma)=\sigma$.
+Clearly it can be computed in polytime, and just as clearly
+$\sigma\in\lang$ if and only if $f(\sigma)\in\lang$.
+
+For transitivity let $\lang_0\leq_p\lang_1$ via the function~$f$
+and let $\lang_1\leq_p\lang_2$ via the function~$g$,
+which are polytime computable.
+Then for all $\sigma\in\kleenestar{\Sigma}$ we have 
+$\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$,
+and $f(\sigma)\in\lang_1$ if and only if $\composed{g}{f}(\sigma)\in\lang_2$.
+Because the two functions are polytime, so is their composition.
+\item
+Suppose that $\lang\leq_p\emptyset$.
+Then there is a function~$f$ such that
+$\sigma\in\lang$ if and only if $f(\sigma)\in\emptyset$.
+Since $f(\sigma)$ is never an element of the empty set, 
+$\sigma$ is never an element of~$\lang$.
+That is, any language that polytime reduces to the empty set is empty.
+
+The argument that $\lang\leq_p\kleenestar{\B}$ implies that
+$\lang=\kleenestar{\B}$ is just as easy.
+\item 
+  Assume that $\lang_0\leq_p\lang_1$, so that there is a polytime function 
+  $\map{f}{\kleenestar{\Sigma}}{\kleenestar{\Sigma}}$ such that 
+  $\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$.
+  We will use this reduction function to show that $\lang_1\in\NP$ implies that
+  $\lang_0\in\NP$.
+
+  Assume that $\lang_1\in\NP$. 
+  Then there is a nondeterministic Turing machine~$\TM_1$
+  that decides~$\lang_1$.
+  For a machine~$\TM_0$ that decides~$\lang_0$, 
+  start with an input candidate string~$\tau\in\kleenestar{\Sigma}$.
+  Compute~$f(\tau)$.
+  Run $\TM_1$ on input~$f(\tau)$.
+  If it accepts then $\TM_0$ accepts, while if it rejects then $\TM_0$ rejects.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
 \begin{exercise}  \label{exer:TReducableDiffersFromMReducible}
 Recall that $B$ is Turing reducible to~$A$, denoted $B\leq_T A$,
 if there is a Turing machine using oracle~$A$ that computes~$B$, so that 
@@ -12973,7 +13034,7 @@ $f(x)\in A$, and then returning the result of that call.
 \item 
 Suppose that $B\leq_m A$ via the total computable function~$f$,
 and suppose also that $B$ is computably enumerable.
-As we enumerate $B=\set{b_0,b_1 \ldots}$ we can also enumerate
+As we enumerate $B=\set{b_0,b_1 \ldots}$, we can also enumerate
 $A=\set{f(b_0),f(b_1)\ldots}$. 
 Therefore $A$ is computably enumerable.
 
@@ -12987,6 +13048,7 @@ $K\not\leq_m\setcomp{K}\!$.
 \end{exercise}
 
 
+
 \begin{exercise}
 \begin{credit}
 Neal E Young, University of Calfornia Riverside
@@ -12995,22 +13057,16 @@ We will show that
 $\probname{Fin}\leq_p\probname{Reg}$,\index{Fin problem@\probname{Fin} problem}\index{Reg problem@\probname{Reg} problem} 
 where they are 
 the decision problems for the language
-%\begin{equation*}
 $
-  R=\set{x\in\N\suchthat \text{the language decided by $\TM_x$ is regular}}
+  F=\set{i\in\N\suchthat \text{$\TMfcn_i$ is the characteristic function of a finite set}}
 $
-%\end{equation*}
-and also for the language 
-%\begin{equation*}
+and the language 
 $
-  F=\set{i\in\N\suchthat \text{the language decided by $\TM_i$ is finite}}
-$
-%\end{equation*}
-(this means that $\TM_i$ halts on all 
-inputs and acts as the characteristic function of a set that is finite).
+  R=\set{x\in\N\suchthat \text{$\TMfcn_x$ is the characteristic function of a regular set}}
+$.
 \begin{exparts}
 \item Adapt \cref{ex:BalancedParensIsNotRegularLang} from Chapter Four
-to show that any infinite subset of 
+to show that any infinite subset of the set of strings
 $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$
 is not regular.
 \item Argue that there is a Turing machine with the behavior below.
@@ -13018,12 +13074,14 @@ Then apply the \smn~lemma to parameterize~$x$.
 \begin{center}
   \includegraphics{complexity/asy/flowcharts/flowcharts002.pdf}
 \end{center}
-\item Using the prior item, produce the reduction function.
+(By `$\TM_x$ accepts a $\tau$ of length~$n$?' we mean that there exists
+a string of that length where the machine halts and outputs~$1$.)
+\item Use the prior item to produce the reduction function.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item The tweaks are small, but here is the entire argument.
-  Let $\lang$ be an infinite subset of 
+\item 
+  Let $\lang$ be an infinite subset of the set of strings 
   $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$.
   For contradiction, assume that it is regular.
   Then the Pumping Lemma says that $\lang$ has a pumping length,~$p$.
@@ -13035,7 +13093,7 @@ Then apply the \smn~lemma to parameterize~$x$.
   It is an element of~$\lang$ and 
   its length is greater than or equal to~$p$ so
   the Pumping Lemma applies.
-  So~$\sigma$
+  The string~$\sigma$
   decomposes into substrings $\sigma=\alpha\concat\beta\concat\gamma$
   satisfying the three conditions.
   Condition~(1) is that
@@ -13057,8 +13115,7 @@ Then apply the \smn~lemma to parameterize~$x$.
   without adding any balancing~\str{b}'s.
   In short, $\alpha\beta^2\gamma$ has more \str{a}'s than \str{b}'s and 
   is therefore not a member of~$\lang$. 
-  But the Pumping Lemma says that it must be a member of~$\lang$, and 
-  therefore the assumption that $\lang$ is regular is incorrect.
+  Therefore the assumption that $\lang$ is regular is incorrect.
 \item
 The flowchart makes clear that this behavior can be programmed on an
 everyday computer.
@@ -13074,13 +13131,13 @@ $x$-th.
 \item
 The reduction function~$f$ must have domain~$\N$ and codomain~$\N$.
 It must have the property that $i\in F$ if and only if
-$x\in R$.
+$j\in R$.
 And it must run in polynomial time.
 
-The function~$f$ is $i\mapsto s(e,i)$.
+Take~$f$ to be $i\mapsto s(e,i)$.
 Suppose that $i\in F$.
-Note first that the machine 
-$\TM_i$ is a language decider, and so halts
+Then the machine 
+$\TM_i$ is a language decider and so it halts
 on all inputs~$\tau$.
 Because the language of $\TM_i$ is finite, the language of $\TM_{s(e,i)}$
 is finite also.
@@ -13088,73 +13145,14 @@ Any finite language is regular, so the language of $\TM_{s(e,i)}$ is regular.
 
 Now suppose that $i\notin F$.
 If the machine $\TM_{s(e,x)}$ has even one input~$\sigma$ where
-the second test box fails to halt on some~$\tau$ then this machine is
+$\TM_x$ fails to halt on some~$\tau$ then this machine is
 not a language decider, and so $s(e,i)\notin R$.
 If, on the other hand, for all input~$\sigma$, 
-the second test box halts on all relevant $\tau$'s
+$\TM_x$ halts on all relevant $\tau$'s
 then because $i\notin F$, 
 the language decided by $\TM_{s(e,i)}$ is an infinite subset 
 of $\set{\str{a}^n\str{b}^n\suchthat n\in\N}$, and so is not 
 regular.
-\end{exparts}
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}\label{exer:BasicFactsAboutPolytimeRed}
-\Cref{lem:BasicFactsAboutPolytimeRed} leaves a couple of points undone.
-\begin{exparts}
-\item
-Show that $\leq_p$ is reflexive and transitive.
-\item
-It says that nontrivial languages are $\P$~hard.
-What about trivial ones?
-Which languages reduce to the empty set?
-To $\kleenestar{\B}$?
-\item Show that $\NP$ is downward closed, that  
-if $\lang_1\leq_p\lang_0$ and $\lang_0\in\NP$ then 
-$\lang_1\in\NP$ also.
-\end{exparts}
-\begin{answer}
-\begin{exparts}
-\item
-We must show that $\lang\leq_p\lang$ for any 
-$\lang\in\powerset(\kleenestar(\Sigma))$.
-Take the reduction function to be the identity, $f(\sigma)=\sigma$.
-Clearly it can be computed in polytime, and just as clearly
-$\sigma\in\lang$ if and only if $f(\sigma)\in\lang$.
-
-For transitivity, let $\lang_0\leq_p\lang_1$ via the function~$f$,
-and let $\lang_1\leq_p\lang_2$ via the function~$g$,
-which are polytime computable.
-Then for all $\sigma\in\kleenestar{\B}$ we have 
-$\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$,
-and $f(\sigma)\in\lang_1$ if and only if $\composed{g}{f}(\sigma)\in\lang_2$.
-Because $f,g$ are polytime, $\composed{g}{f}$ is polytime also.
-\item
-Suppose that $\lang\leq_p\emptyset$.
-Then there is a function~$f$ such that
-$\sigma\in\lang$ if and only if $f(\sigma)\in\emptyset$.
-Since $f(\sigma)$ is never an element of the empty set, 
-$\sigma$ is never an element of~$\lang$.
-That is, $\lang$ is empty.
-
-The argument that $\lang\leq_p\kleenestar{\B}$ implies that
-$\lang=\kleenestar{\B}$ is just as easy.
-\item 
-  Assume that $\lang_0\leq_p\lang_1$, so that there is a polytime function 
-  $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ such that 
-  $\sigma\in\lang_0$ if and only if $f(\sigma)\in\lang_1$.
-  We will use this reduction to show that $\lang_1\in\NP$ implies that
-  $\lang_0\in\NP$.
-
-  If $\lang_1\in\NP$ then there is a nondeterministic Turing machine~$\TM_1$
-  that decides~$\lang_1$.
-  For the nondeterministic machine~$\TM_0$ that decided~$\lang_0$, 
-  start with an input candidate string~$\tau$.
-  Compute~$f(\tau)$.
-  Run $\TM_1$ on input~$f(\tau)$. 
-  If it accepts then $\TM_0$ accepts, and if it rejects then $\TM_0$ rejects.
 \end{exparts}
 \end{answer}
 \end{exercise}

@@ -2007,9 +2007,15 @@ unitsize(pic,1cm);
 // Draw the universe of all langugaes
 filldraw(pic,UNIVERSE, white, AXISPEN);
 
+// Make top of NP area unioed P area
+pair P_NP_arc_t = intersect(P_arc,NP_arc)[0];   
+path NP_arc_full = NP_arc&subpath(P_arc,P_NP_arc_t.x,length(P_arc));
+
 // Fill before draw
-path NP_area = buildcycle(NP_arc,P_arc,UNIVERSE);
-fill(pic,NP_area,backgroundcolor+gray(0.1));
+// path NP_area = buildcycle(NP_arc,P_arc,UNIVERSE);
+// fill(pic,NP_area,backgroundcolor);
+path NP_area = buildcycle(NP_arc_full,UNIVERSE);
+fill(pic,NP_area,backgroundcolor);
 
 // Fill before draw
 path p_area = buildcycle(P_arc,UNIVERSE);
@@ -2022,7 +2028,7 @@ real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
 pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
 // radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
 // 	                     white,NP_hard_min,0.45*UNIVERSE_HT);
-fill(pic,NP_hard_area,backgroundcolor);
+fill(pic,NP_hard_area,backgroundcolor+gray(0.1));
 
 // Color NP complete area highlight color
 path NP_complete_area = buildcycle(NP_hard_arc,NP_arc);
@@ -2030,19 +2036,21 @@ fill(pic,NP_complete_area,backgroundcolor+highlightcolor);
 
 // Draw region boundaries
 draw(pic, NP_hard_arc, base_region_pen);
-draw(pic, NP_arc, base_region_pen);
-draw(pic, P_arc, base_region_pen);
+// draw(pic, P_arc,gray(0.5));
+// pair P_NP_arc_t = intersect(P_arc,NP_arc)[0]; // adjoin NP_arc to rt of P_arc  
+draw(pic, NP_arc_full, base_region_pen);
 // (note that we cover the stubs below)
 
 // Put in the P line with bars and label it
-real label_x = 0.55*UNIVERSE_WD;
-real label_y = 0.225*UNIVERSE_HT;
-path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
-draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
+// real label_x = 0.55*UNIVERSE_WD;
+// real label_y = 0.225*UNIVERSE_HT;
+// path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+// draw(pic,p_halfbar,squarebraces_label_pen);
+// label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
 
 // Put in the NP line with bars and label it
-real label_x = 0.9*UNIVERSE_WD;
+//  was: real label_x = 0.9*UNIVERSE_WD;
+real label_x = 0.60*UNIVERSE_WD;
 real label_y = 0.325*UNIVERSE_HT;
 path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,np_halfbar,squarebraces_label_pen);

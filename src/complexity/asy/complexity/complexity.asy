@@ -1933,29 +1933,6 @@ drawgnd(pic, bnode.pos-gnd_offset, u, v);
 drawgnd(pic, cnode.pos-gnd_offset, u, v);
   draw(pic,cnode.pos--(cnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
 
-// trying to draw all the lines
-// draw(pic,
-//      (anode.pos.x,anode.pos.y)--(anode.pos.x,anode_below_left.pos.y)
-//           --(anode_below_left.pos.x,anode_below_left.pos.y)
-//           --(anode_above_left.pos.x,anode_above_left.pos.y)
-//            --(Gnode.pos.x,anode_above_left.pos.y)
-//      // (bnode.pos.x,bnode.pos.y)--(bnode.pos.x,bnode_below_left.pos.y)
-//      //      --(bnode_below_left.pos.x,bnode_below_left.pos.y)
-//      //      --(bnode_above_left.pos.x,bnode_above_left.pos.y)
-//      //       --(Gnode.pos.x,bnode_above_left.pos.y),
-//      // (cnode.pos.x,cnode.pos.y)--(cnode.pos.x,cnode_below_left.pos.y)
-//      //      --(cnode_below_left.pos.x,cnode_below_left.pos.y)
-//      //      --(cnode_above_left.pos.x,cnode_above_left.pos.y)
-//      //       --(Gnode.pos.x,cnode_above_left.pos.y)
-//      //anode--VH--anode_below_left,
-//      // bnode--VH--bnode_below_left,
-//      // cnode--VH--cnode_below_left,
-//      // anode_below_left.pos--VH--Gnode,
-//      // bnode_below_left--VH--Gnode,
-//      // cnode_below_left--VH--Gnode
-//      );
-
-
 // draw nodes
 draw(pic,
      Tnode, Fnode, Gnode,
@@ -2067,20 +2044,61 @@ draw(pic,
      (m5--znode).style(highlightstyle)
 );
 
+// Draw connections to G
+real offset = 0.1*u;
+real y_loc_G_path =  xnode.pos.y-0.5*v;
+real x_loc_G_path = n3.pos.x-0.3*u;
+real x_gather_loc = Gnode.pos.x-2*u;
+path xnode_to_G = xnode.pos--(xnode.pos.x,y_loc_G_path)
+  --(x_loc_G_path,y_loc_G_path)--(x_loc_G_path,Gnode.pos.y-2*offset)
+  --(x_gather_loc,Gnode.pos.y-2*offset)--Gnode.pos;
+path negxnode_to_G = negxnode.pos--(negxnode.pos.x,y_loc_G_path-1*offset)
+  --(x_loc_G_path-1*offset,y_loc_G_path-1*offset)
+  --(x_loc_G_path-1*offset,Gnode.pos.y-1*offset)
+  --(x_gather_loc,Gnode.pos.y-1*offset)--Gnode.pos;
+path ynode_to_G = ynode.pos--(ynode.pos.x,y_loc_G_path-2*offset)
+  --(x_loc_G_path-2*offset,y_loc_G_path-2*offset)
+  --(x_loc_G_path-2*offset,Gnode.pos.y-0*offset)
+  --(x_gather_loc,Gnode.pos.y-0*offset)--Gnode.pos;
+path negynode_to_G = negynode.pos--(negynode.pos.x,y_loc_G_path-3*offset)
+  --(x_loc_G_path-3*offset,y_loc_G_path-3*offset)
+  --(x_loc_G_path-3*offset,Gnode.pos.y+1*offset)
+  --(x_gather_loc,Gnode.pos.y+1*offset)--Gnode.pos;
+path znode_to_G = znode.pos--(znode.pos.x,y_loc_G_path-4*offset)
+  --(x_loc_G_path-4*offset,y_loc_G_path-4*offset)
+  --(x_loc_G_path-4*offset,Gnode.pos.y+2*offset)
+  --(x_gather_loc,Gnode.pos.y+2*offset)--Gnode.pos;
+path negznode_to_G = negznode.pos--(negznode.pos.x,y_loc_G_path-5*offset)
+  --(x_loc_G_path-5*offset,y_loc_G_path-5*offset)
+  --(x_loc_G_path-5*offset,Gnode.pos.y+3*offset)
+  --(x_gather_loc,Gnode.pos.y+3*offset)--Gnode.pos;
+ 
+draw(pic,xnode_to_G,EDGEPEN_TT+squarecap);
+draw(pic,negxnode_to_G,EDGEPEN_TT+squarecap);
+draw(pic,ynode_to_G,EDGEPEN_TT+squarecap);
+draw(pic,negynode_to_G,EDGEPEN_TT+squarecap);
+draw(pic,znode_to_G,EDGEPEN_TT+squarecap);
+draw(pic,negznode_to_G,EDGEPEN_TT+squarecap);
+
 // draw extra paths
-pair gnd_offset = (0*u,0.75*v);
-drawgnd(pic, xnode.pos-gnd_offset, u, v);
-  draw(pic,xnode.pos--(xnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, negxnode.pos-gnd_offset, u, v);
-  draw(pic,negxnode.pos--(negxnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, ynode.pos-gnd_offset, u, v);
-  draw(pic,ynode.pos--(ynode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, negynode.pos-gnd_offset, u, v);
-  draw(pic,negynode.pos--(negynode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, znode.pos-gnd_offset, u, v);
-  draw(pic,znode.pos--(znode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-drawgnd(pic, negznode.pos-gnd_offset, u, v);
-  draw(pic,negznode.pos--(negznode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+// pair gnd_offset = (0*u,1*v);
+// drawgnd(pic, xnode.pos-gnd_offset, u, v);
+//   draw(pic,xnode.pos--(xnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+// drawgnd(pic, negxnode.pos-gnd_offset, u, v);
+//   draw(pic,negxnode.pos--(negxnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+// drawgnd(pic, ynode.pos-gnd_offset, u, v);
+//   draw(pic,ynode.pos--(ynode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+// drawgnd(pic, negynode.pos-gnd_offset, u, v);
+//   draw(pic,negynode.pos--(negynode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+// drawgnd(pic, znode.pos-gnd_offset, u, v);
+//   draw(pic,znode.pos--(znode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+// drawgnd(pic, negznode.pos-gnd_offset, u, v);
+//   draw(pic,negznode.pos--(negznode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
+// // Draw ground connection to G
+// picture G_gnd_pic;
+// drawgnd(G_gnd_pic, (0,0), u, v);
+// add(pic, G_gnd_pic, Gnode.pos-(2*u,0.5*v));
+// draw(pic, Gnode.pos--(Gnode.pos.x-2*u,Gnode.pos.y)--(Gnode.pos.x-2*u,Gnode.pos.y-0.5v), dashedgepen+EDGEPEN_TT+squarecap);
 
 // draw nodes
 draw(pic,
@@ -2337,41 +2355,34 @@ draw(pic,
      (n5--cnode)
 );
 
+real offset = 0.1*u;
+real y_loc_G_path =  anode.pos.y-0.5*v;
+real x_loc_G_path = n3.pos.x-0.5*u;
+real x_gather_loc = Gnode.pos.x-1*u;
+path anode_to_G = anode.pos--(anode.pos.x,y_loc_G_path)
+  --(x_loc_G_path,y_loc_G_path)--(x_loc_G_path,Gnode.pos.y-1*offset)
+  --(x_gather_loc,Gnode.pos.y-1*offset)--Gnode.pos;
+path bnode_to_G = bnode.pos--(bnode.pos.x,y_loc_G_path-1*offset)
+  --(x_loc_G_path-1*offset,y_loc_G_path-1*offset)
+  --(x_loc_G_path-1*offset,Gnode.pos.y-0*offset)
+  --(x_gather_loc,Gnode.pos.y-0*offset)--Gnode.pos;
+path cnode_to_G = cnode.pos--(cnode.pos.x,y_loc_G_path-2*offset)
+  --(x_loc_G_path-2*offset,y_loc_G_path-2*offset)
+  --(x_loc_G_path-2*offset,Gnode.pos.y+1*offset)
+  --(x_gather_loc,Gnode.pos.y+1*offset)--Gnode.pos;
+
+draw(pic,anode_to_G,EDGEPEN_TT+squarecap);
+draw(pic,bnode_to_G,EDGEPEN_TT+squarecap);
+draw(pic,cnode_to_G,EDGEPEN_TT+squarecap);
+
+
 // draw extra paths
-pair gnd_offset = (0*u,0.75*v);
-// drawgnd(pic, anode.pos-gnd_offset, u, v);
-//   draw(pic,anode.pos--(anode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-// drawgnd(pic, bnode.pos-gnd_offset, u, v);
-//   draw(pic,bnode.pos--(bnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-// drawgnd(pic, cnode.pos-gnd_offset, u, v);
-//   draw(pic,cnode.pos--(cnode.pos-gnd_offset),dashedgepen+EDGEPEN_TT+squarecap);
-draw(pic,anode.pos{dir(180)}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
-// draw(pic,bnode.pos..(anode.pos-(0,0.5*v))..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
-draw(pic,bnode.pos..(interp(anode.pos,bnode.pos,0.5)-(0,0.5*v))..(anode.pos-(0,0.5*v)){W}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
-draw(pic,cnode.pos..(bnode.pos-(0,0.75*v))..(anode.pos-(0,0.75*v)){W}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
+// pair gnd_offset = (0*u,0.75*v);
+// draw(pic,anode.pos{dir(180)}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
+// // draw(pic,bnode.pos..(anode.pos-(0,0.5*v))..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
+// draw(pic,bnode.pos..(interp(anode.pos,bnode.pos,0.5)-(0,0.5*v))..(anode.pos-(0,0.5*v)){W}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
+// draw(pic,cnode.pos..(bnode.pos-(0,0.75*v))..(anode.pos-(0,0.75*v)){W}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
 
-
-// trying to draw all the lines
-// draw(pic,
-//      (anode.pos.x,anode.pos.y)--(anode.pos.x,anode_below_left.pos.y)
-//           --(anode_below_left.pos.x,anode_below_left.pos.y)
-//           --(anode_above_left.pos.x,anode_above_left.pos.y)
-//            --(Gnode.pos.x,anode_above_left.pos.y)
-//      // (bnode.pos.x,bnode.pos.y)--(bnode.pos.x,bnode_below_left.pos.y)
-//      //      --(bnode_below_left.pos.x,bnode_below_left.pos.y)
-//      //      --(bnode_above_left.pos.x,bnode_above_left.pos.y)
-//      //       --(Gnode.pos.x,bnode_above_left.pos.y),
-//      // (cnode.pos.x,cnode.pos.y)--(cnode.pos.x,cnode_below_left.pos.y)
-//      //      --(cnode_below_left.pos.x,cnode_below_left.pos.y)
-//      //      --(cnode_above_left.pos.x,cnode_above_left.pos.y)
-//      //       --(Gnode.pos.x,cnode_above_left.pos.y)
-//      //anode--VH--anode_below_left,
-//      // bnode--VH--bnode_below_left,
-//      // cnode--VH--cnode_below_left,
-//      // anode_below_left.pos--VH--Gnode,
-//      // bnode_below_left--VH--Gnode,
-//      // cnode_below_left--VH--Gnode
-//      );
 
 
 // draw nodes

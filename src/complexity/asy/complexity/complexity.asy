@@ -1965,12 +1965,12 @@ node m2 = ncircle("\rule{0pt}{5pt} ");
 node m3 = ncircle("\rule{0pt}{5pt} ");
 node m4 = ncircle("\rule{0pt}{5pt} ");
 node m5 = ncircle("\rule{0pt}{5pt} ");
-node xnode = ncircle("$x$\strut");
-node negxnode = ncircle("$\neg x$");
-node ynode = ncircle("$y$\strut");
-node negynode = ncircle("$\neg y$");
-node znode = ncircle("$z$\strut");
-node negznode = ncircle("$\neg z$");
+node xnode = ncircle("$P$\strut");
+node negxnode = ncircle("$\neg P$");
+node ynode = ncircle("$Q$\strut");
+node negynode = ncircle("$\neg Q$");
+node znode = ncircle("$R$\strut");
+node negznode = ncircle("$\neg R$");
 node bottomcenternode =ncircle("o");  // locate the center of the bottom line
 
 // calculate nodes position
@@ -2325,15 +2325,6 @@ n5.pos = new_node_pos_h(n1, -45, 0.5*u);
 vlayout(1*v, n3, anode);
 vlayout(1*v, n4, bnode);
 vlayout(1*v, n5, cnode);
-// Nodes for lines from a, b, c
-// real dist_below =0.75*v;
-// real dist_epsilon = 0.10*v;
-// anode_below_left.pos=anode.pos-(1*u,dist_below);
-// bnode_below_left.pos=anode_below_left.pos-(dist_epsilon,dist_epsilon);
-// cnode_below_left.pos=anode_below_left.pos-(2*dist_epsilon,2*dist_epsilon);
-// anode_above_left.pos=(anode_below_left.pos.x,Gnode.pos.y+dist_epsilon);
-// bnode_above_left.pos=anode_above_left.pos-(dist_epsilon,0);
-// cnode_above_left.pos=anode_above_left.pos-(2*dist_epsilon,dist_epsilon);
 
 // draw edges
 draw(pic,
@@ -2374,16 +2365,6 @@ path cnode_to_G = cnode.pos--(cnode.pos.x,y_loc_G_path-2*offset)
 draw(pic,anode_to_G,EDGEPEN_TT+squarecap);
 draw(pic,bnode_to_G,EDGEPEN_TT+squarecap);
 draw(pic,cnode_to_G,EDGEPEN_TT+squarecap);
-
-
-// draw extra paths
-// pair gnd_offset = (0*u,0.75*v);
-// draw(pic,anode.pos{dir(180)}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
-// // draw(pic,bnode.pos..(anode.pos-(0,0.5*v))..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
-// draw(pic,bnode.pos..(interp(anode.pos,bnode.pos,0.5)-(0,0.5*v))..(anode.pos-(0,0.5*v)){W}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
-// draw(pic,cnode.pos..(bnode.pos-(0,0.75*v))..(anode.pos-(0,0.75*v)){W}..{dir(0)}Gnode.pos,dashedgepen+EDGEPEN_TT+squarecap);
-
-
 
 // draw nodes
 draw(pic,

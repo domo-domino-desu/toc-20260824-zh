@@ -2019,7 +2019,7 @@ draw(pic,
      (n1--n5),
      (n2--n5),
      (n3--n4),
-     (Fnode..bend(-20)..m2),
+     (Fnode..bend(-20)..m2),  // matches the bend in the first gadget
      (Gnode--m0), // .style(dashedstyle),
      (Gnode--m2), // .style(dashedstyle),
      (m0--m1),

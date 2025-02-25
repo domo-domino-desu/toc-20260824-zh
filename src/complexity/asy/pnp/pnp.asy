@@ -1991,13 +1991,14 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 // NP hard arc
 // Make longer arc, then cut it off at intersection with UNIVERSE
-path NP_hard_arc_full = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.5){(0.5,1.0)}..(point(NP_arc,0.5).x+0.125*UNIVERSE_WD,UNIVERSE_HT);
+// 2025-Feb-25 was: path NP_hard_arc_full = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.5){(0.5,1.0)}..(point(NP_arc,0.5).x+0.125*UNIVERSE_WD,UNIVERSE_HT);
+path NP_hard_arc_full = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.45){(0.5,2.0)}..(point(NP_arc,0.45).x+0.125*UNIVERSE_WD,UNIVERSE_HT);
 real[][] hard_arc_times = intersections(NP_hard_arc_full,subpath(UNIVERSE,0,3));
 // write(format("first time is %f", hard_arc_times[1][0]));
 // write(format("  second time is %f", hard_arc_times[1][1]));
 path NP_hard_arc = subpath(NP_hard_arc_full, 0, hard_arc_times[1][0]);
 
-
+// https://cs.stackexchange.com/questions/90659/what-is-the-relation-between-np-np-hard-problems-and-recursive-r-e-languages-an
 
 // .............NP hard ...............
 picture pic;
@@ -2315,6 +2316,7 @@ path NP_complete_area = buildcycle(NP_hard_arc,NP_arc);
 fill(pic,NP_complete_area,backgroundcolor+highlightcolor);
 
 // Draw region boundaries
+// draw(pic, NP_hard_arc, base_region_pen);
 draw(pic, NP_hard_arc, base_region_pen);
 draw(pic, NP_arc, base_region_pen);
 draw(pic, P_arc, base_region_pen);
@@ -2359,29 +2361,29 @@ draw(pic,p_halfbar,squarebraces_label_pen);
 label(pic,"\makebox[\width][l]{\scriptsize \compclass{RE}}",(label_x,0.5*label_y),W); 
 
 // Four sets given in the problem
-pair K = point(re_arc,0.325);
-pair SAT = point(NP_arc,0.3);
-pair L = (0,0.25);  // Dijkstra's algorithm is sub-quadratic
-pair emptyset = point(UNIVERSE,0);
+pair K_loc = point(re_arc,0.325);
+pair SAT_loc = point(NP_arc,0.275);
+pair L_loc = (0,0.25);  // Dijkstra's algorithm is sub-quadratic
+pair E_loc = point(UNIVERSE,0);
 
 real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.90*UNIVERSE_HT;
 pair K_pt = (label_x,label_y);
 pair SAT_pt = (label_x,label_y-0.33);
 pair L_pt = (label_x,label_y-0.67);
-pair emptyset_pt = (label_x,label_y-1.00);
-label(pic,"\makebox[\width][r]{\scriptsize $K$}", K_pt,E); 
-label(pic,"\makebox[\width][r]{\scriptsize $\SAT$}", SAT_pt,E); 
-label(pic,"\makebox[\width][r]{\scriptsize $\lang$}", L_pt,E); 
-label(pic,"\makebox[\width][r]{\scriptsize $\emptyset$}", emptyset_pt,E); 
-path K_curve = trim_ends(K_pt{W}..{SW}K, 0.0, 0.1); 
-path SAT_curve = trim_ends(SAT_pt{W}..{SW}SAT, 0.0, 0.1); 
-path L_curve = trim_ends(L_pt{W}..{SW}L, 0.0, 0.1); 
-path emptyset_curve = trim_ends(emptyset_pt{W}..{SW}emptyset, 0.0, 0.1); 
+pair E_pt = (label_x,label_y-1.00);
+label(pic,"\makebox[0pt][l]{\scriptsize $K$}", K_pt,E); 
+label(pic,"\makebox[0pt][l]{\scriptsize $\SAT$}", SAT_pt,E); 
+label(pic,"\makebox[0pt][l]{\scriptsize $\lang$}", L_pt,E); 
+label(pic,"\makebox[0pt][l]{\scriptsize $E$}", E_pt,E); 
+path K_curve = trim_ends(K_pt{W}..{SW}K_loc, 0.0, 0.1); 
+path SAT_curve = trim_ends(SAT_pt{W}..{SW}SAT_loc, 0.0, 0.1); 
+path L_curve = trim_ends(L_pt{W}..{SW}L_loc, 0.0, 0.1); 
+path E_curve = trim_ends(E_pt{W}..{SW}E_loc, 0.0, 0.1); 
 draw(pic,K_curve,gray(0.7));
 draw(pic,SAT_curve,gray(0.7));
 draw(pic,L_curve,gray(0.7));
-draw(pic,emptyset_curve,gray(0.7));
+draw(pic,E_curve,gray(0.7));
 // dotfactor = 4;
 // dot(pic,K,black);
 // dot(pic,SAT,black);
@@ -2391,10 +2393,10 @@ draw(pic,emptyset_curve,gray(0.7));
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
 
-filldraw(pic, circle(K, 0.03), white, black);
-filldraw(pic, circle(SAT, 0.03), white, black);
-filldraw(pic, circle(L, 0.03), white, black);
-filldraw(pic, circle(emptyset, 0.03), white, black);
+filldraw(pic, circle(K_loc, 0.03), white, black);
+filldraw(pic, circle(SAT_loc, 0.03), white, black);
+filldraw(pic, circle(L_loc, 0.03), white, black);
+filldraw(pic, circle(E_loc, 0.03), white, black);
 
 // Locate NP Complete, make a path to the tag
 // pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);

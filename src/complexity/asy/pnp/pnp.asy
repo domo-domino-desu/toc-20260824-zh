@@ -2274,6 +2274,138 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+path trim_ends(path p, real trim_start, real trim_end) {
+  path start_circle = circle( point(p,0), trim_start );
+  path end_circle = circle( point(p,length(p)), trim_end );
+  real start_t = intersections(p, start_circle)[0][0];
+  real[][] int_times = intersections(p, end_circle); 
+  real end_t = int_times[int_times.length-1][0];
+  return subpath(p, start_t, end_t);
+}
+
+
+
+
+// ............. Exercise to locate languages ...............
+picture pic;
+int picnum=13;
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+
+// Fill before draw
+path NP_area = buildcycle(NP_arc,P_arc,UNIVERSE);
+fill(pic,NP_area,backgroundcolor+gray(0.1));
+
+// Fill before draw
+path p_area = buildcycle(P_arc,UNIVERSE);
+fill(pic,p_area,backgroundcolor);
+
+// NP hard area
+real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
+pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
+path NP_hard_area = buildcycle(subpath(UNIVERSE,0,3),NP_hard_arc_full);
+// radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
+// 	                     white,NP_hard_min,0.45*UNIVERSE_HT);
+fill(pic,NP_hard_area,backgroundcolor);
+
+// Color NP complete area highlight color
+path NP_complete_area = buildcycle(NP_hard_arc,NP_arc);
+fill(pic,NP_complete_area,backgroundcolor+highlightcolor);
+
+// Draw region boundaries
+draw(pic, NP_hard_arc, base_region_pen);
+draw(pic, NP_arc, base_region_pen);
+draw(pic, P_arc, base_region_pen);
+draw(pic, rec_arc, base_region_pen);
+draw(pic, re_arc, base_region_pen);
+// (note that we cover the stubs at end)
+
+// Put in the P line with bars and label it
+real label_x = 0.55*UNIVERSE_WD;
+real label_y = 0.225*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
+
+// Put in the NP line with bars and label it
+real label_x = 0.9*UNIVERSE_WD;
+real label_y = 0.325*UNIVERSE_HT;
+path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+draw(pic,np_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{NP}}",(label_x,0.5*label_y),E); 
+
+// Put in the NP hard line with bars and label it
+real label_x = -0.65*UNIVERSE_WD;
+real label_y_top = 1.0*UNIVERSE_HT;
+real label_y_bot = 0.275*UNIVERSE_HT;
+path np_halfbar = halfbar((label_x,label_y_top)--(label_x,label_y_bot),(0.5*WHISKER_WD,0));
+draw(pic,np_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W);
+
+// Rec label
+real label_x = -1.55*UNIVERSE_WD;
+real label_y = 0.68*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{Rec}}",(label_x,0.5*label_y),W); 
+
+// RE label
+real label_x = -2.0*UNIVERSE_WD;
+real label_y = 0.77*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{RE}}",(label_x,0.5*label_y),W); 
+
+// Four sets given in the problem
+pair K = point(re_arc,0.325);
+pair SAT = point(NP_arc,0.3);
+pair L = (0,0.25);  // Dijkstra's algorithm is sub-quadratic
+pair emptyset = point(UNIVERSE,0);
+
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = 0.90*UNIVERSE_HT;
+pair K_pt = (label_x,label_y);
+pair SAT_pt = (label_x,label_y-0.33);
+pair L_pt = (label_x,label_y-0.67);
+pair emptyset_pt = (label_x,label_y-1.00);
+label(pic,"\makebox[\width][r]{\scriptsize $K$}", K_pt,E); 
+label(pic,"\makebox[\width][r]{\scriptsize $\SAT$}", SAT_pt,E); 
+label(pic,"\makebox[\width][r]{\scriptsize $\lang$}", L_pt,E); 
+label(pic,"\makebox[\width][r]{\scriptsize $\emptyset$}", emptyset_pt,E); 
+path K_curve = trim_ends(K_pt{W}..{SW}K, 0.0, 0.1); 
+path SAT_curve = trim_ends(SAT_pt{W}..{SW}SAT, 0.0, 0.1); 
+path L_curve = trim_ends(L_pt{W}..{SW}L, 0.0, 0.1); 
+path emptyset_curve = trim_ends(emptyset_pt{W}..{SW}emptyset, 0.0, 0.1); 
+draw(pic,K_curve,gray(0.7));
+draw(pic,SAT_curve,gray(0.7));
+draw(pic,L_curve,gray(0.7));
+draw(pic,emptyset_curve,gray(0.7));
+// dotfactor = 4;
+// dot(pic,K,black);
+// dot(pic,SAT,black);
+// dot(pic,L,black);
+// dot(pic,emptyset,black);
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+filldraw(pic, circle(K, 0.03), white, black);
+filldraw(pic, circle(SAT, 0.03), white, black);
+filldraw(pic, circle(L, 0.03), white, black);
+filldraw(pic, circle(emptyset, 0.03), white, black);
+
+// Locate NP Complete, make a path to the tag
+// pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);
+// path NP_complete_tag = np_complete{(-1,-0.1)} .. {W}(np_complete+(-0.45*UNIVERSE_WD,-0.175*UNIVERSE_HT));
+// draw(pic,NP_complete_tag,THINPEN);
+// label(pic,"{\scriptsize $\NP$ complete}",np_complete+(-0.45*UNIVERSE_WD,-0.17*UNIVERSE_HT),W); 
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

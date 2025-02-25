@@ -2514,3 +2514,53 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// ============= jigsaw puzzle ====================== 
+int picnum = 45;
+picture pic;
+unitsize(pic,5cm);
+
+int secs = seconds();
+write(format("Seed for srand is %d",secs));
+srand(secs);
+//srand(5);
+
+// Return a puzzle piece edge of length 1.
+path make_edge(pair s) {
+  real up_or_down = 1;  // does the cut go up or down?
+  if ( unitrand()<0.5 ){
+    up_or_down = -1;
+  }
+  pair bump_start = (0.40-0.1*(unitrand()-0.5),0.05*(unitrand()-0.5));
+  pair bump_end = (0.60-0.1*(unitrand()-0.5),0.05*(unitrand()-0.5));
+  pair bump_top = (0.5*(bump_start.x+bump_end.x)+0.05*(unitrand()-0.5),up_or_down*(0.20+0.02*(unitrand()-0.5)));
+  pair bump_start_mid = (bump_start.x-0.05*(unitrand()-0.5), up_or_down*(0.8*abs(bump_top.y)+0.05*(unitrand()-0.5)));
+  pair bump_end_mid = (bump_end.x+0.05*(unitrand()-0.5), up_or_down*(0.8*abs(bump_top.y)+0.05*(unitrand()-0.5)));
+  dotfactor = 4;
+  dot(pic,shift(s)*bump_start,green);
+  dot(pic,shift(s)*bump_start_mid,blue);
+  dot(pic,shift(s)*bump_top,black);
+  dot(pic,shift(s)*bump_end_mid,blue);
+  dot(pic,shift(s)*bump_end,green);
+  
+  path e = (0,0) .. // bump_start
+    bump_start // .. bump_start_mid
+    .. {E} bump_top // ..
+	     // bump_end_mid
+	     // .. bump_end 
+    .. bump_end .. (1,0);
+  return e;
+  // draw(pic, shift*e, red);
+}
+
+// path p = make_edge((0,0))
+//   .. shift((1,0))*make_edge((1,0))
+//   .. shift((2,0))*make_edge((2,0))
+//   .. shift((3,0))*make_edge((3,0));
+
+path p = (0,0) .. (3,0.1) {up} .. (2.9,1) .. (4,1.1){right} .. (4.9,1) .. (5,0.1){down} .. (8,0); 
+draw(pic, p, red);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

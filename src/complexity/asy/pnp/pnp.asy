@@ -1991,7 +1991,6 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 // NP hard arc
 // Make longer arc, then cut it off at intersection with UNIVERSE
-// 2025-Feb-25 was: path NP_hard_arc_full = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.5){(0.5,1.0)}..(point(NP_arc,0.5).x+0.125*UNIVERSE_WD,UNIVERSE_HT);
 path NP_hard_arc_full = point(NP_arc, 0){(1,0.05)}::point(NP_arc,0.45){(0.5,2.0)}..(point(NP_arc,0.45).x+0.125*UNIVERSE_WD,UNIVERSE_HT);
 real[][] hard_arc_times = intersections(NP_hard_arc_full,subpath(UNIVERSE,0,3));
 // write(format("first time is %f", hard_arc_times[1][0]));
@@ -2184,6 +2183,81 @@ label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y)
 for(int i=0; i<pts.length; ++i){
   filldraw(pic, make_pt_path(pts[i]), boldcolor, fillpen=white);
 } 
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ===== NP, showing NP complete =============
+picture pic;
+int picnum=9;
+unitsize(pic,1cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+
+// Make top of NP area unioed P area
+pair P_NP_arc_t = intersect(P_arc,NP_arc)[0];   
+path NP_arc_full = NP_arc&subpath(P_arc,P_NP_arc_t.x,length(P_arc));
+
+// Fill before draw
+path NP_area = buildcycle(NP_arc_full,UNIVERSE);
+fill(pic,NP_area,backgroundcolor);
+
+// Fill before draw
+path p_area = buildcycle(P_arc,UNIVERSE);
+fill(pic,p_area,backgroundcolor);
+
+// Have NP hard area fade out near rec boundary
+// path NP_hard_area = buildcycle(subpath(UNIVERSE,0,2),rec_arc,NP_hard_arc);
+path NP_hard_area = buildcycle(subpath(UNIVERSE,0,3),NP_hard_arc_full);
+real NP_hard_min_time = dirtime(NP_hard_arc,(1,0));
+pair NP_hard_min = point(NP_hard_arc,NP_hard_min_time); 
+// radialshade(pic,NP_hard_area,backgroundcolor,NP_hard_min,0,
+// 	                     white,NP_hard_min,0.45*UNIVERSE_HT);
+// fill(pic,NP_hard_area,backgroundcolor+gray(0.1));
+
+// Color NP complete area highlight color
+path NP_complete_area = buildcycle(NP_hard_arc,NP_arc);
+fill(pic,NP_complete_area,backgroundcolor+highlightcolor);
+
+// Draw region boundaries
+// draw(pic, NP_hard_arc, base_region_pen);
+ 
+draw(pic, NP_arc_full, base_region_pen);
+draw(pic, P_arc, base_region_pen);
+// (note that we cover the stubs below)
+
+// Put in the P line with bars and label it
+real label_x = 0.55*UNIVERSE_WD;
+real label_y = 0.225*UNIVERSE_HT;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{P}}",(label_x,0.5*label_y),E); 
+
+// Put in the NP line with bars and label it
+real label_x = 0.90*UNIVERSE_WD;
+real label_y = 0.325*UNIVERSE_HT;
+path np_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+draw(pic,np_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{NP}}",(label_x,0.5*label_y),E); 
+
+// // Put in the NP hard line with bars and label it
+// real label_x = -0.65*UNIVERSE_WD;
+// real label_y_top = 1.0*UNIVERSE_HT;
+// real label_y_bot = 0.275*UNIVERSE_HT;
+// path np_halfbar = halfbar((label_x,label_y_top)--(label_x,label_y_bot),(0.5*WHISKER_WD,0));
+// draw(pic,np_halfbar,squarebraces_label_pen);
+// label(pic,"\makebox[\width][r]{\scriptsize \compclass{NP} hard}",(label_x,0.5*(label_y_top+label_y_bot)),W); 
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+// Locate NP Complete, make a path to the tag
+pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);
+path NP_complete_tag = np_complete{(-1,-0.1)} .. {W}(np_complete+(-0.45*UNIVERSE_WD,-0.175*UNIVERSE_HT));
+draw(pic,NP_complete_tag,THINPEN);
+label(pic,"{\scriptsize $\NP$ complete}",np_complete+(-0.45*UNIVERSE_WD,-0.17*UNIVERSE_HT),W); 
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

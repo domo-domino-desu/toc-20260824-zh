@@ -6174,9 +6174,21 @@ or even might be integers written in unary.
 % % the single number $2^23^15^3=1500$ and then we represent that in a string of
 % % decimal digits.
 
+% Typically in practice the costs of different representations
+% don't change the Big~$\bigOh$ runtime behavior.
+% For example we might have a graph algorithm whose run time is~$\bigOh(n\lg n)$.
+% Even for this minimal runtime behavior, typically we  can find a 
+% representation for the input graphs,
+% such as where inputting takes $\bigOh(n)$ time,
+% that leaves the algorithm analysis conclusion unchanged
+% at~$\bigOh(n\lg n)$.
+
+
+\ifbool{MakingPaperCopy}{}{%
+  \margingraphic{0.22\textwidth}{complexity/pix/norm.png}{\label{fig:xkcdnorm}\href{https://xkcd.com/2116/}{Courtesy \url{xkcd.com}}} }
 This 
 matters in that the input's form can change the algorithm
-that we choose or its runtime behavior.
+that we choose.
 Suppose that we must decide whether a number is
 divisible by four.
 If the input is in binary then 
@@ -6197,26 +6209,22 @@ if and only if in its
 If the input is in unary then we have a different algorithm
 entirely.  
 
-\ifbool{MakingPaperCopy}{}{%
-  \margingraphic{0.22\textwidth}{complexity/pix/norm.png}{\label{fig:xkcdnorm}\href{https://xkcd.com/2116/}{Courtesy \url{xkcd.com}}} }
-On the other hand, the representation doesn't matter in the sense that 
+The representation doesn't matter in the sense that 
 if we have an algorithm for one representation
 then we can solve the problem for other representations by translating.
 For example, 
 we could do the divisible-by-four problem with unary input by converting
 to binary and then applying the binary algorithm.\footnote{%
   That is, the unary case reduces to the binary one.}
-% Another way in which the representation doesn't matter is that
-Typically in practice the costs of different representations
-don't change the Big~$\bigOh$ runtime behavior.
-For example we might have a graph algorithm whose run time is~$\bigOh(n\lg n)$.
-Even for this minimal runtime behavior, typically we  can find a 
-representation for the input graphs,
-such as where inputting takes $\bigOh(n)$ time,
-that leaves the algorithm analysis conclusion unchanged
-at~$\bigOh(n\lg n)$.
 
-With this in mind, we will take the view,
+However,
+the representation can significantly change the runtime behavior.
+Supppose that a Turing machine inputs and outputs numbers.
+If the input representation is binary and the output representation is unary
+then the time that the machine takes to write its output to the tape 
+is exponential in the input size.\label{disc:BinaryInputUnaryOutputRunsExp}
+
+With these points in mind we will take the view,
 which we call \definend{Lipton's Thesis},\index{Lipton's Thesis} that 
 \citetext{everything of interest can be represented with reasonable efficiency by bitstrings}{%
   See
@@ -6253,21 +6261,25 @@ or an exquisite Old Master.\footnote{
   \includegraphics[width=0.85\textwidth]{complexity/pix/caravaggio.jpg}  % best is .9\textwidth
 \end{fig}
 }
-Basically, the representation details do not affect the outcome of the analysis,
-much.\footnote{%
-  A caveat:~we have seen that 
-  % conflating 
-  % $\protect\set{n\in\N\suchthat \protect\text{$n$ is prime}}$
-  % with  
-  % $\protect\set{\sigma\in\protect\smash{\protect\kleenestar{\B}}\protect\suchthat \protect\text{$\sigma$ represents a prime number}}$
-  % can cause confusion.
-  the distinction between thinking of an algorithm
-  as inputting a number and thinking of it as inputting the 
-  string representation of a number is the basis for describing 
-  the Big~$\protect\bigOh$ behavior of that algorithm as
-  pseudopolynomial.
-  This is because the binary representation of
-  a number~$n$ takes $\protect\bigOh(\protect\lg n)$ bits.}
+Basically, if we are circumspect about representations 
+then we usually will not see something like exponential blowup.
+Most notably, our default is to represent integers in binary 
+and rational numbers as pairs of integers.
+% the representation details do not affect the outcome of the analysis,
+% much.\footnote{%
+%   A caveat:~we have seen that 
+%   % conflating 
+%   % $\protect\set{n\in\N\suchthat \protect\text{$n$ is prime}}$
+%   % with  
+%   % $\protect\set{\sigma\in\protect\smash{\protect\kleenestar{\B}}\protect\suchthat \protect\text{$\sigma$ represents a prime number}}$
+%   % can cause confusion.
+%   the distinction between thinking of an algorithm
+%   as inputting a number and thinking of it as inputting the 
+%   string representation of a number is the basis for describing 
+%   the Big~$\protect\bigOh$ behavior of that algorithm as
+%   pseudopolynomial.
+%   This is because the binary representation of
+%   a number~$n$ takes $\protect\bigOh(\protect\lg n)$ bits.}
 Consequently, in practice  
 \citetext{researchers often do not mention representations}{%
   This is like a programmer saying, ``My program
@@ -10924,7 +10936,7 @@ $\sigma\in\lang_1$ if and only if~$f(\sigma)\in\lang_0$.\footnotemark
   under Cook reduction a problem and its complement are equivalent but 
   \citetext{that's not true under Karp reduction}{%
     The \HP{} set $K$ and its complement
-    are not Karp reducible.   
+    are not Karp reducible to each other.   
     For, we already know that $K$ is computably enumerable.
     If $\setcomp{K}\leq_p K$ then 
     $x\in\setcomp{K}$ implies that $f(x)\in K$, and
@@ -13428,8 +13440,17 @@ A problem~$\prob$ is \citetext{\definend{$\NP$~complete}}{%
   \url{blog.computationalcomplexity.org/2010/11/by-any-other-name-would-be-just-as-hard.html}.}\index{NP complete@$\NP$ complete}\index{complete!NP@$\NP$}
 if it is a member of~$\NP$ and every problem in $\NP$ reduces to it, 
 that is,
-$\hat{\lang}\in \NP$ implies that $\hat{\lang}\leq_p\lang$.
-\end{definition}
+$\hat{\lang}\in \NP$ implies that $\hat{\lang}\leq_p\lang$.\footnotemark %
+\end{definition}\footnotetext{%
+  The relationship that the
+  $\NP$~complete problems have with the class~$\NP$
+  is like the relationship that the problems 
+  Turing-equivalent to the \HP{} set~$K$
+  have with the computably enumerable sets.
+  In both cases elements of the subset sit at the top of the entire
+  collection:~an $\NP$~complete set is $\geq_p$ every problem in $\NP$,
+  and a set Turing-equivalent to~$K$ is $\geq_T$ every 
+  computably enumerable set.}
 %</def:NPComplete>
 
 % This sketch illustrates.
@@ -13484,16 +13505,8 @@ where lots of smart people had for years
 been unable find efficient algorithms.
 He showed that all of these problems are $\NP$~complete, so
 that if we could efficiently solve any then we could
-efficiently solve them all.\footnote{%
-  The relationship that the
-  $\NP$~complete problems have with the class~$\NP$
-  is like the relationship that the problems 
-  Turing-equivalent to the \HP{} set~$K$
-  have with the computably enumerable sets.
-  In both cases elements of the subset sit at the top of the entire
-  collection:~any member of $\NP$ is $\leq_p$ an $\NP$~complete set,
-  and any computably enumerable set is $\leq_T$ any set
-  Turing-equivalent to~$K$.} % Based on 
+efficiently solve them all. 
+% Based on 
 % Karp's Turing award statement 
 % http://amturing.acm.org/award_winners/karp_3256708.cfm
 %</discussion:KarpsProblems>
@@ -13884,7 +13897,7 @@ is $\NP$~hard.  (Here, $\TM_n$ is a deterministic Turing machine.)
 \begin{proof}
 Fix $\lang\in\NP$.  
 We will produce a reduction 
-function that inputs a string $\sigma\in\kleenestar{\Sigma}$ and
+function~$f$ that inputs a string $\sigma\in\kleenestar{\Sigma}$ and
 outputs a representation~$\hat{n}$ of an integer,
 such that $\sigma\in\lang$ if and only if $\hat{n}\in\hat{K}$.
 
@@ -13899,14 +13912,18 @@ and uses $e_0$ to deterministically simulate running $\TM_{e_0}$ on that input.
 If the simulation accepts~$\sigma$ then this computation halts, 
 while if the simulation rejects then this computation does not halt.
 
-This reduction function runs in polytime.
+This reduction function runs in polytime.\footnotemark %
 (A computation of $\TMfcn_n(n)$ may well take more than
 polytime, because it simulates the nondeterministic machine  $\TM_{e_0}$,
 or might not halt at all.
 But going from the input~$\sigma$ to the output~$\hat{n}$ index of that 
 computation takes at most polytime.)
 Clearly $\sigma\in\lang$ if and only if $\hat{n}\in\hat{K}$.
-\end{proof}
+\end{proof}\footnotetext{%
+  As discussed on \cpageref{disc:BinaryInputUnaryOutputRunsExp},
+  the numbers in $\hat{K}$ are represented in binary because
+  If the input was in binary and the output was in unary then
+  $f$ could have exponential runtime.}
 
 Before leaving this discussion, we address a
 natural question:~there are lots of problems that are $\NP$~complete but
@@ -14128,9 +14145,9 @@ where the final statement is the conclusion
 and where each statement either is an axiom or
 else follows from the statements before it
 by an application
-of a rule of deduction 
-(a typical rule allows the simultaneous replacement of all
-$x$'s with $y+4$'s).
+of a rule of deduction. 
+% (a typical rule allows the simultaneous replacement of all
+% `$x$' with a `$y+4$').
 A computer could brute-force the question of
 whether a given statement is provable by
 doing a dovetail, a breadth-first search of all derivations.
@@ -14226,7 +14243,7 @@ can be reduced with respect to simple exhaustive search.
 Again, this brings up back to this book's beginning.
 Again, we are asking, ``What can be done?''
 But here we are asking about what can be done feasibly,
-what can be done in a reasonable time.
+what can be done in a reasonable time (or reasonable space, etc).
 Taking more time than the lifetime of the universe is not reasonable.
 
 In summary, we can compare $\P$~versus~$\NP$ with the \HP.
@@ -14264,10 +14281,10 @@ This subsection outlines some of the intuition.
 
 \margingraphic[l]{0.25\textwidth}{complexity/pix/license_plate_alan_selman.jpg}{A~Selman's plate, courtesy S~Selman} % {\protect\citetext{A~Selman's plate}{Photo courtesy of S~Selman.}} % https://rjlipton.wordpress.com/2021/01/29/alan-selman-1941-2021/
 %<*discussion:PvsNPiii>
-First we address the intuition around the conjecture that $\P\neq\NP$.
+% First we address the intuition around the conjecture that $\P\neq\NP$.
 One way to think about the question is that
-a problem is in $\P$ if finding a solution is fast,
-while a problem is in $\NP$ if verifying the correctness of a given
+a problem is in $\P$ if finding a solution is fast
+whereas a problem is in $\NP$ if verifying the correctness of a given
 witness is fast.
 Then $\P\subseteq\NP$
 becomes the observation that if a problem is
@@ -14295,8 +14312,9 @@ Here is the first paragraph of that paper.
 All the general methods presently known for computing the chromatic number of
 a graph, 
 deciding whether a graph has a Hamiltonian circuit,
-or solving a system of linear inequalities in which the variables are
-constrained to be $0$ or~$1$,
+\ldots{}
+% or solving a system of linear inequalities in which the variables are
+% constrained to be $0$ or~$1$,
 require a combinatorial search for which the worst case time requirement
 grows exponentialy with the length of the input.
 In this paper we give theorems which strongly suggest
@@ -14341,18 +14359,18 @@ have extended this way of thinking beyond the narrow bounds of
 Theoretical Computer Science.
 One is \citetext{A~Wigderson}{%
   See \autocite{Wigderson}.}, 
-``[$\P=\NP$ would be] utopia for the quest for knowledge
-and technological development by humans.
-There would be a short program that, for every mathematical statement
-and given page limit, would quickly generate a proof of that length, if one
-exists!
-There would be a short program which, given detailed constraints on
-any engineering task, would quickly generate a design which meets the given
-criteria, if one exists. The design of new drugs, cheap energy, better strains
-of food, safer transportation, and robots that would release us from all
-unpleasant chores, would become a triviality.''
-He continues,
-``\ldots{} most people revolt against the idea that such amazing discoveries 
+% ``[$\P=\NP$ would be] utopia for the quest for knowledge
+% and technological development by humans.
+% There would be a short program that, for every mathematical statement
+% and given page limit, would quickly generate a proof of that length, if one
+% exists!
+% There would be a short program which, given detailed constraints on
+% any engineering task, would quickly generate a design which meets the given
+% criteria, if one exists. The design of new drugs, cheap energy, better strains
+% of food, safer transportation, and robots that would release us from all
+% unpleasant chores, would become a triviality.''
+% He continues,
+``[M]ost people revolt against the idea that such amazing discoveries 
 like Wiles's proof of Fermat, Einstein's relativity, Darwin's evolution,
 Edison's inventions, as well as all the ones we are awaiting, could be produced
 in succession quickly by a mindless robot.
@@ -14367,7 +14385,7 @@ such as designing airplane wings, creating
 physical theories, or even composing music.
 The question in each case is to what
 extent an efficient algorithm for recognizing a good result can be found.''
-Perhaps it is a bit of hyperbole to say that if $\P=\NP$ then writing
+Perhaps it seems to be hyperbole to say that if $\P=\NP$ then writing
 great symphonies would
 be a job for mechanisms,
 but it is correct to say that if $\P=\NP$ and if we can write
@@ -14386,7 +14404,7 @@ have noted that
 there are cases where everyone ``knew'' that some algorithm was the 
 fastest but in the end it proved not to be so.
 This chapter began with a story about A~Kolmogorov trying to show that
-multiplication requires $n^2$ steps only to have a student in the seminar,
+multiplication requires $n^2$ steps only to have a student,
 A~Karatsuba, find a faster way.
 Another is the problem of solving systems
 of linear equations.
@@ -14425,7 +14443,7 @@ and such that pairs of vertices are connected if those people are compatible.
 We want a set of edges that is maximal, and such that no 
 two edges share a vertex.
 The naive algorithm tries all possible match sets, which takes
-$2^m$ checks, where~$m$ is the number of edges.
+$2^m$ checks where~$m$ is the number of edges.
 Even with only a hundred people there are 
 \citetext{more things to try than
 atoms in the universe}{%
@@ -14514,7 +14532,7 @@ look to settle the question with proof.\footnote{%
 % https://cs.stackexchange.com/a/19884/50343
 
 \begin{exercise}
-This diagram is an extension of one we saw earlier as 
+This diagram is an extension of one from
 \cref{fig:LangDecisionProblemsWithNPHard}. 
 It orders the universe of problems by $\leq_p$
 (recall that if $A\leq_p B$ then $A\leq_T B$), and assumes that $\P\neq\NP$. 
@@ -14523,8 +14541,8 @@ It orders the universe of problems by $\leq_p$
 \end{center}
 On that, locate these languages.
 \begin{exparts}
-\item $K=\set{\sigma\suchthat \text{$\sigma$ represents $x\in\N$ where $\TMfcn_x(x)\converges$}}$
-\item $E=\set{\sigma\suchthat \text{$\sigma$ represents an even number}}$
+\item $K=\set{\sigma\suchthat \text{$\sigma$ represents in binary $x\in\N$ where $\TMfcn_x(x)\converges$}}$
+\item $E=\set{\sigma\suchthat \text{$\sigma$ represents in binary an even number}}$
 \item $\lang=\set{\sequence{\mathcal{G},v_0,v_1,B}\suchthat\text{there is a path from $v_0$ to $v_1$ of length at most $B$}}$
 \item $\SAT$
 \end{exparts}
@@ -14537,7 +14555,7 @@ Here is the figure with the sets.
 \begin{exparts}
 \item Every computably enumerable set reduces to~$K$.
   So the language~$K$ is at the top of \probname{RE}.
-\item Every set can compute The set~$E$ of (representations of) even numbers
+\item Every set can compute the set~$E$ of (representations of) even numbers
 in the time that it takes to read in the input
 (for that matter, just in the time it takes to read in the least significant
 bit of the input).
@@ -14713,7 +14731,7 @@ so we don't know the other direction.
 \end{exercise}
 
 \begin{exercise}
-Fill in each blank with a set.
+Fill in each blank with a set satisfying the condition.
 \begin{exparts}
 \item \fillinblankLabelled{} A member of $\NP$ and $\NP$ complete.
 \item \fillinblankLabelled{} A member of $\NP$ but not $\NP$ complete.
@@ -14722,15 +14740,17 @@ Fill in each blank with a set.
 \item \fillinblankLabelled{} Not computably enumerable but $\NP$~hard.  
 \item \fillinblankLabelled{} Solvable but not $\NP$~hard.  
 \end{exparts}
-\begin{answer}
-These each have many answers but we just give one.
+\begin{answer}\verified
+We just give one answer for each but other answers might be correct.
+(If $\P=\NP$ then all nontrivial sets are $\NP$ hard, but these answers
+apply also if $\P\neq\NP$.)
 \begin{exparts}
 \item $\SAT$
-\item $E=\set{\str{1}^n\suchthat \text{$n$ is even}}$
+\item $E=\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents in binary an even number}}$
 \item $\SAT$
-\item $\set{\str{1}^n\suchthat \TMfcn_n(n)\converges}$
+\item $\set{\sigma\in\kleenestar{\B}\suchthat \text{$\sigma$ represents in binary a number $n$ where $\TMfcn_n(n)\converges$}}$
 \item The complement of the set in the prior item.
-\item $E=\set{\str{1}^n\suchthat \text{$n$ is even}}$    
+\item $E=\set{\sigma^n\in\kleenestar{\B}\suchthat \text{$\sigma$ represents in binary an even number}}$    
 \end{exparts}
 \end{answer}
 \end{exercise}

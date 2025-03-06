@@ -3691,5 +3691,113 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Ham Circuit \leq_p Ham Path ===========
+int picnum = 54;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node a=ncircle("\nodebox{\strut$a$}"),
+  b=ncircle("\nodebox{\strut$b$}"),
+  c=ncircle("\nodebox{\strut$c$}"),
+  d=ncircle("\nodebox{\strut$d$}"),
+  e=ncircle("\nodebox{\strut$e$}"),
+  f=ncircle("\nodebox{\strut$f$}"),
+  g=ncircle("\nodebox{\strut$g$}");
+
+// calculate nodes position
+real u=1.5cm;
+real v=0.5*u;
+defaultlayoutskip=u;
+
+hlayout(1*u, a, b, c);
+vlayout(1*v, b, d);
+vlayout(2*v, a, g);
+hlayout(1*u, g, f, e);
+
+// draw edges
+draw(pic,
+     (a--b),
+     (a--d),
+     (a--f),
+     (a--g),
+     (b--c),
+     (b--d),
+     (c--d),
+     (c--e),
+     (c--f),
+     (e--f),
+     (f--g)
+);
+
+// draw nodes, after edges
+draw(pic,
+     a, b, c,
+     d,
+     g, e, f);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+// ...... add vertices ................
+int picnum = 55;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node a=ncircle("\nodebox{\strut$a$}"),
+  b=ncircle("\nodebox{\strut$b$}"),
+  c=ncircle("\nodebox{\strut$c$}"),
+  d=ncircle("\nodebox{\strut$d$}"),
+  e=ncircle("\nodebox{\strut$e$}"),
+  f=ncircle("\nodebox{\strut$f$}"),
+  g=ncircle("\nodebox{\strut$g$}"),
+  g_hat=ncircle("\nodebox{\strut$\hat{g}$}"),
+  w=ncircle("\nodebox{\strut$w$}"),
+  w_hat=ncircle("\nodebox{\strut$\hat{w}$}");
+
+// calculate nodes position
+real u=1.5cm;
+real v=0.5*u;
+defaultlayoutskip=u;
+
+hlayout(1*u, a, b, c);
+vlayout(1*v, b, d);
+vlayout(2*v, a, g);
+hlayout(1*u, g, f, e);
+hlayout(-0.5*u, g, g_hat);
+// g_hat.pos = new_node_pos_h(g, 225, -0.5*u);
+w.pos = new_node_pos_h(g, 45, 0.30*u);
+hlayout(-0.5*u, g_hat, w_hat);
+
+// draw edges
+draw(pic,
+     (a--b),
+     (a--d),
+     (a--f),
+     (a--g),
+     (b--c),
+     (b--d),
+     (c--d),
+     (c--e),
+     (c--f),
+     (e--f),
+     (f--g),
+     (g_hat--a),
+     (g_hat..bend(30)..f),
+     (g_hat--w_hat),
+     (g--w)
+);
+
+// draw nodes, after edges
+draw(pic,
+     a, b, c,
+     d,
+     g, e, f,
+     g_hat, w, w_hat);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 

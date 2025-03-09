@@ -1750,12 +1750,12 @@ picture pic;
 setdefaultgraphstyles();
 defaultlayoutrel = false;
 
-node v0 = ncircle("$v_0$");
-node v1 = ncircle("$\overline{v}_1$");
-node v2 = ncircle("$\overline{v}_2$");
-node w1 = ncircle("$w_1$");
-node w2 = ncircle("$w_2$");
-node w3 = ncircle("$\overline{w}_3$");
+node v0 = ncircle("$v_{0,0}$");
+node v1 = ncircle("$\overline{v}_{0,1}$");
+node v2 = ncircle("$\overline{v}_{0,2}$");
+node w1 = ncircle("$v_{1,1}$");
+node w2 = ncircle("$v_{1,2}$");
+node w3 = ncircle("$\overline{v}_{1,3}$");
 
 // calculate nodes position
 real u=1cm;

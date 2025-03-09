@@ -15124,6 +15124,12 @@ So it is $\NP$ complete.
 The \definend{\probname{Longest Path}}\index{Longest Path problem@\probname{Longest Path} problem} 
 problem inputs a graph and finds the longest path that is simple,
 that does not repeat any vertices.
+The \probname{Hamiltonian Path} problem\index{Hamiltonian Path problem@\probname{Hamiltonian Path} problem} 
+is like the
+\probname{Hamiltonian Circuit} problem
+except that 
+instead of requiring that the starting vertex equals the ending one,
+it inputs two vertices. 
 \begin{exparts}
 \item Find the longest path in this graph.
 \begin{center}
@@ -15134,13 +15140,13 @@ to a language decision problem by using bounds, state
 this as a language decision problem.
 Show that $\probname{Longest Path}\in\NP$.
 \item Show that the 
-\probname{Hamiltonian Path} problem\index{Hamiltonian Path problem@\probname{Hamiltonian Path} problem} 
+\probname{Hamiltonian Path} problem
 reduces to \probname{Longest Path}.
 \hint~leverage the bound from the prior item.
 \item Use the prior exercise to conclude that the 
 \probname{Longest Path} problem is $\NP$~complete. 
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item There is a Hamiltonian path:
   $\sequence{q_3, q_6, q_4, q_7, q_8, q_5, q_0, q_1, q_2}$.
@@ -15150,28 +15156,15 @@ family of languages.
   \lang=\set{\sequence{\mathcal{G},B}\suchthat
                 \text{$\mathcal{G}$ has a simple path of length at least $B$}}
 \end{equation*}
-% \item
-% For the reduction, the witness~$\omega$ is the path.
-% That is, consider a Turing machine verifier~$\TM[V]$ that inputs 
-% $\sequence{\mathcal{G},B,\omega}$.
-% It accepts the triple if and only 
-% if $\omega$ represents a path a simple path through the 
-% graph, of length at least~$B$.
-% Clearly that can be done in polytime.
-% If $\sequence{\mathcal{G},B}\in\lang_B$ then there is such a witness~$\omega$,
-% so $\TM[V]$ accepts the input.
-% If $\sequence{\mathcal{G},B}\notin\lang_B$ then there is no such 
-% witness, and so the verifier $\TM[V]$ does not accept the triple. 
 \item
 Given an instance $\mathcal{G}$ of the \probname{Hamiltonian Path} problem,
 let the reduction function convert it into the pair
 $\sequence{G,\sizeof{G}-1}$ (where $\sizeof{\mathcal{G}}$ is the number of
 vertices in~$\mathcal{G}$).
+A simple path containing $\sizeof{G}-1$ edges must be Hamiltonian.
 Obviously that computation can be done in polytime.
-Further, where a graph has $n$-many vertices, a simple path containing
-$\sizeof{G}-1$ edges must be Hamiltonian.
 \item The prior exercise shows that the \probname{Hamiltonian Path} problem
-is $\NP$ complete, and that, along with the other parts of this
+is $\NP$ complete and that, along with the other parts of this
 exercise, gives that \probname{Longest Path} is $\NP$ complete.
 \end{exparts}
 \end{answer}
@@ -15196,9 +15189,11 @@ Find an independent set in this graph.
   \includegraphics{complexity/asy/complexity/complexity30.pdf}
 \end{center}
 \item State \probname{Independent Set} as a language decision problem.
+\item State \probname{$3$-Satisfiability}, \ThreeSAT, 
+  as a language decision 
+  problem.\index{3-Satisfiability problem@\ThreeSAT{} problem}
 \item Decide if $E=(P_0\vee\neg P_1\vee\neg P_2)\wedge(P_1\vee P_2\vee\neg P_3)$
   is satisfiable.
-\item State \probname{$3$-Satisfiability} as a language decision problem.
 \item With the expression~$E$, 
   make a triangle for each of the two clauses, where the vertices of the
   first are labeled $v_0$, $\overline{v}_1$, and~$\overline{v}_2$, 
@@ -15221,15 +15216,81 @@ Find an independent set in this graph.
 \item This is the language.
 \begin{equation*}
   \lang_0=\set{\sequence{\mathcal{G},B}\suchthat
-          \text{$\mathcal{G}$ has at least $B$-many disconnected vertices}}
+          \text{$\mathcal{G}$ has at least $B$-many vertices that do not share an edge}}
 \end{equation*}
-\item One way to satisfy it is by taking $P_0=\true$, 
-$P_1=P_2=P_3=\false$.
-\item This is the language.
+\item This is the language for \ThreeSAT.
 \begin{equation*}
-  \lang_1=\set{E\suchthat 
-                \text{$E$ is a satisfiable expression with at most $3$ literals per clause}}
+  \lang_1=\set{\sequence{E}\suchthat 
+                \text{$E$ is a satisfiable CNF expression with at most $3$ literals per clause}}
 \end{equation*}
+\item See \figureref{fig:TruthTableForE} for $E$'s truth table.
+\begin{figure}
+  \centering\small
+\begin{tabular}{cccc|ccc}
+  $P_0$  &$P_1$  &$P_2$  &$P_3$ &$P_0\vee\neg P_1\vee\neg P_2$ &$P_1\vee P_2\vee\neg P_3$ &$E$ \\ \hline    
+  $F$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$  \\     
+  $F$  &$F$  &$F$  &$T$ &$T$ &$F$ &$F$  \\     
+  $F$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$  \\     
+  $F$  &$F$  &$T$  &$T$ &$T$ &$T$ &$T$  \\[1ex]     
+  $F$  &$T$  &$F$  &$F$ &$T$ &$T$ &$T$  \\     
+  $F$  &$T$  &$F$  &$T$ &$T$ &$T$ &$T$  \\     
+  $F$  &$T$  &$T$  &$F$ &$F$ &$T$ &$F$  \\     
+  $F$  &$T$  &$T$  &$T$ &$F$ &$T$ &$F$  \\[1ex]     
+  $T$  &$F$  &$F$  &$F$ &$T$ &$T$ &$T$  \\     
+  $T$  &$F$  &$F$  &$T$ &$T$ &$F$ &$F$  \\     
+  $T$  &$F$  &$T$  &$F$ &$T$ &$T$ &$T$  \\     
+  $T$  &$F$  &$T$  &$T$ &$T$ &$T$ &$T$  \\[1ex]     
+  $T$  &$T$  &$F$  &$F$ &$T$ &$T$ &$T$  \\     
+  $T$  &$T$  &$F$  &$T$ &$T$ &$T$ &$T$  \\     
+  $T$  &$T$  &$T$  &$F$ &$T$ &$T$ &$T$  \\     
+  $T$  &$T$  &$T$  &$T$ &$T$ &$T$ &$T$  \\[1ex]     
+\end{tabular}
+\caption{Truth table for $E=(P_0\vee\neg P_1\vee\neg P_2)\wedge(P_1\vee P_2\vee\neg P_3)$.}
+\label{fig:TruthTableForE}
+\end{figure}
+One way to satisfy $E$ is by taking $P_0=\true$ and 
+$P_1=P_2=P_3=\false\!$.
+% sage: e = propcalc.formula("(p0|~p1|~p2)&(p1|p2|~p3)")
+% sage: e.truthtable()
+% p0     p1     p2     p3     value
+% False  False  False  False  True   
+% False  False  False  True   False  
+% False  False  True   False  True   
+% False  False  True   True   True   
+% False  True   False  False  True   
+% False  True   False  True   True   
+% False  True   True   False  False  
+% False  True   True   True   False  
+% True   False  False  False  True   
+% True   False  False  True   False  
+% True   False  True   False  True   
+% True   False  True   True   True   
+% True   True   False  False  True   
+% True   True   False  True   True   
+% True   True   True   False  True   
+% True   True   True   True   True   
+% sage: e1 = propcalc.formula("(p0|~p1|~p2)")
+% sage: e1.truthtable()
+% p0     p1     p2     value
+% False  False  False  True   
+% False  False  True   True   
+% False  True   False  True   
+% False  True   True   False  
+% True   False  False  True   
+% True   False  True   True   
+% True   True   False  True   
+% True   True   True   True   
+% sage: e2 = propcalc.formula("(p1|p2|~p3)")
+% sage: e2.truthtable()
+% p1     p2     p3     value
+% False  False  False  True   
+% False  False  True   False  
+% False  True   False  True   
+% False  True   True   True   
+% True   False  False  True   
+% True   False  True   True   
+% True   True   False  True   
+% True   True   True   True   
 \item The graph associated with the expression is this.
 \begin{center}
   \includegraphics{complexity/asy/complexity/complexity34.pdf}
@@ -15238,26 +15299,30 @@ $P_1=P_2=P_3=\false$.
 It inputs an instance of the \probname{$3$-Satisfiability} problem, 
 $E$.
 It constructs a graph~$\mathcal{G}$ as in the prior item.
-That is, for the $j$-th clause it adds three vertices, labeling with
-$v_{j,i}$ if the literal is~$P_i$, and with $\overline{v}_{j,i}$ if the literal 
+That is, for the $j$-th clause it adds three vertices, labeled with
+$v_{j,i}$ if the literal is~$P_i$ and with $\overline{v}_{j,i}$ if the literal 
 is~$\neg P_i$.
-It connects there three vertices completely, making a triangle. 
-Further, the reduction function connects any two vertices labeled with
-the same index~$i$ and where one has an overline and the other does not, 
-that is, it connects all pairs of $v_{j_0,i}$ and~$\overline{v}_{j_1,i}$.
+It connects these three vertices completely, making a triangle. 
+The reduction function also connects any two vertices labeled with
+the same index~$i$ and where one has an overline and the other does not. 
 Clearly this construction can happen in polytime.
 
+We claim that for an expression~$E$ using $B$-many Boolean variables
+(and with at most three literals per clause) 
+is satisfiable if and only $\sequence{\mathcal{G},B}\in\lang_0$
+where $\mathcal{G}=f(E)$.
+
 The expression~$E$ is satisfiable if and only if in each clause at least one
-one literal evaluates to \true. 
-Let $S$ be a minimal such set of literals.
-Consider the associated vertices 
-in the graph~$\mathcal{G}$.
-In each triangle there must be at least one vertex associated with a
-literal from~$S$ because in each clause there must be a literal from~$S$ that
-evaluates to \true.
-Further, for each literal in~$S$, the negation evaluates to \false,
-and so each associated vertex is not connected to an associated vertex
-in another triangle.
+one literal that evaluates to \true\!. 
+Let $S$ be a minimal such set of literals, $S=\set{L_0,\ldots\,L_k}$
+(there may be more than one such set).
+Consider the associated vertices in the graph~$\mathcal{G}$.
+Matching that in each clause there must be a literal from~$S$ that
+evaluates to \true, there must in each triangle 
+be at least one vertex associated with a literal from~$S$.
+Further, for each literal in~$S$ the negation evaluates to \false
+and so each vertex associated with that literal 
+is not connected to the associated overbar vertex in another triangle.
 Thus this forms an independent set of vertices.
 The converse works the same way.
 \end{exparts}

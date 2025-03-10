@@ -15207,7 +15207,7 @@ Find an independent set in this graph.
 \item Sketch an argument that
   $\probname{$3$-Satisfiability}\leq_p\probname{Independent Set}$.\index{3-Satisfiability problem@\ThreeSAT problem}\index{3-SAT@3-\SAT|see{\ThreeSAT problem}}
 \end{exparts}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item The natural independent set is this.
 \begin{center}
@@ -15223,6 +15223,8 @@ Find an independent set in this graph.
   \lang_1=\set{\sequence{E}\suchthat 
                 \text{$E$ is a satisfiable CNF expression with at most $3$ literals per clause}}
 \end{equation*}
+(The role played by the parameter~$B$ in $\lang_0$ will be played here
+by the number of clauses in the expression~$E$.)
 \item See \figureref{fig:TruthTableForE} for $E$'s truth table.
 \begin{figure}
   \centering\small
@@ -15297,34 +15299,55 @@ $P_1=P_2=P_3=\false\!$.
 \end{center}
 \item We must produce a reduction function,~$f\!$.
 It inputs an instance of the \probname{$3$-Satisfiability} problem, 
-$E$.
-It constructs a graph~$\mathcal{G}$ as in the prior item.
+$E$, and
+constructs a graph~$\mathcal{G}$ as in the prior item.
 That is, for the $j$-th clause it adds three vertices, labeled with
 $v_{j,i}$ if the literal is~$P_i$ and with $\overline{v}_{j,i}$ if the literal 
 is~$\neg P_i$.
 It connects these three vertices completely, making a triangle. 
-The reduction function also connects any two vertices labeled with
-the same index~$i$ and where one has an overline and the other does not. 
-Clearly this construction can happen in polytime.
+The reduction function also includes an edge for any two vertices labeled with
+the same second index~$i$ and where one has an overline and the other does not,
+and thus possibly making inter-triangular edges. 
+Clearly this construction of~$\mathcal{G}$ can happen in polytime.
 
-We claim that for an expression~$E$ using $B$-many Boolean variables
+We claim that an expression~$E$ with $B$-many clauses
 (and with at most three literals per clause) 
 is satisfiable if and only $\sequence{\mathcal{G},B}\in\lang_0$
 where $\mathcal{G}=f(E)$.
 
-The expression~$E$ is satisfiable if and only if in each clause at least one
-one literal that evaluates to \true\!. 
-Let $S$ be a minimal such set of literals, $S=\set{L_0,\ldots\,L_k}$
-(there may be more than one such set).
-Consider the associated vertices in the graph~$\mathcal{G}$.
-Matching that in each clause there must be a literal from~$S$ that
-evaluates to \true, there must in each triangle 
-be at least one vertex associated with a literal from~$S$.
-Further, for each literal in~$S$ the negation evaluates to \false
-and so each vertex associated with that literal 
-is not connected to the associated overbar vertex in another triangle.
-Thus this forms an independent set of vertices.
-The converse works the same way.
+First suppose that $E$ is satisfiable.
+Then in every clause of~$E$ there is at least one literal that is \true\!.
+Pick one such literal from each clause, denote the one from clause~$i$
+with~$\ell(i)$ 
+and consider the set of associated vertices.
+\begin{display}
+  S=\set{\text{$v_{i,\ell(i)}$ or $\overline{v}_{i,\ell(i)}$}\suchthat 
+           \text{the associated literal in clause~$i$ is \true}}
+\end{display}
+We must verify that $S$ has~$B$ distince elements and is an independent set.
+It has $B$ elements because each member is associated with 
+a different clause of~$E$, and so falls into a different triangle.
+It is an independent set because no two members are connected by an edge:~in 
+the construction there are two kinds of edges, those within a triangle
+and inter-triangular ones.
+No two members of $S$ are in the same triangle so the first case is out.
+As for inter-triangular ones, they are between vertices associated with a 
+literal and its negation.
+But a literal and its negation cannot both be \true, so the associated
+vertices are not both members of~$S$.
+
+To finish, suppose that $\sequence{\mathcal{G},B}\in\lang_0$ and
+so $\mathcal{G}$ contains a size~$B$ independent set of vertices~$\hat{S}$.
+We claim that taking the associated set of literals to be~\true{} will
+satisfy the expression~$E$.
+Note that because the construction of $\mathcal{G}$ is such that
+there is an edge between vertices associated with a 
+literal and its negation, we can set all of the associated literals to 
+be~\true\!.
+Also note that because all vertices inside a triangle are connected, the
+$B$~many members of $\hat{S}$ come from different triangles and so are
+associated with literals from the $B$~many different clauses.
+So each clause has a literal that evaluates to~\true, and thus $E$ is satisfied.
 \end{exparts}
 \end{answer}
 \end{exercise}

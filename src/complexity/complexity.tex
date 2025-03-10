@@ -9681,7 +9681,7 @@ questions about nondeterministic machines as
 questions about deterministic ones, the verifiers.
 \end{remark}
 
-\begin{corollary}
+\begin{corollary} \label{co:NPProbsTakeEXPtime}
 Every problem in $\NP$ can be solved in exponential time.  
 \end{corollary}
 
@@ -13891,11 +13891,13 @@ upward.
 The equivalent of the \HP, the decision problem for
 $\hat{K}=\set{\hat{n}\in\kleenestar{\B}\suchthat 
    \text{$\hat{n}$ represents $n$ in binary and $\TM_n$ halts on~$n$}}$,
-is $\NP$~hard.  (Here, $\TM_n$ is a deterministic Turing machine.)
+is $\NP$~hard but not $\NP$.  
+(Here, $\TM_n$ is a deterministic Turing machine.)
 \end{lemma}
 
 \begin{proof}
-Fix $\lang\in\NP$.  
+It is not~$\NP$ because it is not decidable.
+For $\NP$~hard fix $\lang\in\NP$.  
 We will produce a reduction 
 function~$f$ that inputs a string $\sigma\in\kleenestar{\Sigma}$ and
 outputs a representation~$\hat{n}$ of an integer,
@@ -14323,15 +14325,15 @@ as well as many others, will remain
 intractible perpetually.
 \end{quotation}
 
+\margingraphic*{0.26\textwidth}{complexity/pix/jigsaw.png}
+\begin{credit}
+  By Psyon (Own work) CC BY-SA 3.0 \url{https://commons.wikimedia.org/wiki/File:Jigsaw_Puzzle.svg}
+\end{credit}
 This intuition comes from a number of sources but an important one is the 
 everyday experience that there is a genuine difference between the difficulty of
 finding a solution and that of verifying that an existing solution is 
 correct.
 
-\margingraphic*{0.26\textwidth}{complexity/pix/jigsaw.png}
-\begin{credit}
-  By Psyon (Own work) CC BY-SA 3.0 \url{https://commons.wikimedia.org/wiki/File:Jigsaw_Puzzle.svg}
-\end{credit}
 Imagine a jigsaw puzzle. 
 We perceive that
 if a demon gave us an assembled puzzle~$\omega$,
@@ -14869,7 +14871,7 @@ apply also if $\P\neq\NP$.)
 \end{exercise}
 
 \begin{exercise}
-Show that if $\P=\NP$ then every nontrivial language in~$\P$ is 
+Show that if $\P=\NP\,$ then every nontrivial language in~$\P$ is 
 $\NP$~complete.
 \begin{answer}\verified
 Assume that $\P=\NP$.
@@ -14916,6 +14918,32 @@ vertices in~$\mathcal{G}$.
 \end{answer}
 \end{exercise}
 
+
+\recommended
+\begin{exercise}
+The difficulty in settling $\P=\NP$ is to prove lower
+bounds. 
+That is, the trouble lies in showing, for a given problem, that
+any algorithm at all must use such-and-such many steps. 
+One common mistake is to reason that any algorithm must take
+at least as many steps as the length of the input, thinking that to 
+compute the output the algorithm must at least read its input.
+
+Sow how to compute the successor function
+on a Turing machine without reading all of the input.
+More, show how to compute it in constant time,
+that it has an algorithm whose
+running time when the input is large is
+the same as the running time when the input is small.
+Assume that the algorithm is given the input~$n$ in unary 
+with the head under the leftmost \str{1}, and that it ends
+with $n+1$-many \str{1}'s and with the head under the leftmost~$1$.
+\begin{answer}\verified
+Move the head left, write a \str{1}, and halt. 
+This is a constant time algorithm.
+\end{answer}
+\end{exercise}
+
 \recommended
 \begin{exercise}
 The section notes that the 
@@ -14933,109 +14961,6 @@ It inputs a clause with at most three literals, and outputs the same clause
 (which trivially has at most four literals).
 Clearly the input is satisfiable if and only if the output is satisfiable. 
 Clearly also this reduction function runs in polytime.
-\end{answer}
-\end{exercise}
-
-\recommended
-\begin{exercise}  % see https://en.wikipedia.org/wiki/Hamiltonian_path_problem
-\label{exer:HamCircuitHamPath}
-The \probname{Hamiltonian Path}\index{Hamiltonian Path problem@\probname{Hamiltonian Path} problem} 
-problem inputs a graph and decides if there are two vertices in that
-graph such that there is a path between those two that contains 
-all the vertices.
-\begin{exparts}
-\item Show that $\probname{Hamiltonian Path}$ is in $\NP$.
-\item This graph has a Hamiltonian path from $v_0$ to~$v_8$.
-  Find it.
-  \begin{center}
-    \includegraphics{complexity/asy/complexity/complexity33.pdf}
-  \end{center}
-  Why must those two be the endpoints?
-\item In this graph find a Hamiltonian circuit 
-  that begins and ends with node~$g$.
-  \begin{center}
-    \includegraphics{complexity/asy/problems/problems54.pdf}
-  \end{center}
-  Add a node~$\hat{g}$ with the same connections as~$g$, and also add
-  a node~$\hat{w}$ that connects only to~$\hat{g}$ along with a node~$w$
-  that connects only to~$g$.
-  In that graph find a Hamiltonian path from $w$ to~$\hat{w}$. 
-\item Show that $\probname{Hamiltonian Circuit}\leq_p\probname{Hamiltonian Path}$.
-\item Conclude that the \probname{Hamiltonian Path} problem is 
-  $\NP$~complete.
-\end{exparts}
-\begin{answer}\verified
-\begin{exparts}
-\item 
-In short, the witness~$\omega$ is the path.
-
-At greater length, 
-to apply \cref{lem:VerifierAndGuesserEquiv}, we will produce a  
-deterministic Turing machine verifier, $\TM[V]$.
-It inputs pairs $\sequence{\mathcal{G},\omega}$, and 
-must satisfy that if $\mathcal{G}$ has a Hamiltonian path then 
-there is a witness~$\omega$ such that $\TM[V]$ accepts the input pair,
-while if $\mathcal{G}$ does not have a Hamiltonian path then no witness
-will result in the pair being accepted.
-The verifier must run in polytime.
-
-The verifier here interprets the witness~$\omega$ to be a Hamiltonian path
-through the graph,
-so it checks that it is indeed a path in the given graph and that
-every vertex is in the path.
-If there is such a path then there is a witness that the routine can verify.
-If there is no such path then no string~$\omega$ will suffice.
-The verifier clearly runs in polytime (the size of a graph 
-is polynomial in the number of vertices since the number of edges
-is $\bigOh(\sizeof{\mathcal{N}})$).  
-\item A Hamiltonian path is $\sequence{v_0,v_7,v_1,v_2,v_3, v_6, v_5,v_4, v_8}$.
-The two $v_0$ and~$v_8$ must be the start and end of the path 
-because they have degree~$1$.
-\item In the starting graph a Hamiltonian circuit is 
-$\sequence{g,a,d,b,c,e,f,g}$.
-Here is the enhanced graph.
-\begin{display}
-    \includegraphics{complexity/asy/problems/problems55.pdf}
-\end{display}
-A Hamiltonian path is $\sequence{w,g,a,d,b,c,e,f,\hat{g},\hat{w}}$.
-\item We must produce a reduction function~$f\!$.
-It inputs a graph~$\mathcal{G}$ and outputs a graph~$f(\mathcal{G})=\mathcal{H}$
-with the property that 
-$\mathcal{G}$ has a Hamiltonian circuit if and only if
-$\mathcal{H}$ has a Hamiltonian path.
-
-As in the prior item,
-given $\mathcal{G}$, we form $\mathcal{H}$ by adding three vertices.
-First, fix a vertex $v\in\mathcal{G}$.
-Add a new vertex~$\hat{v}\in\mathcal{H}$ that has the same connections
-as~$v$, meaning
-that for every edge $v_iv$ add $\hat{v}v_i$ and for every edge of 
-the form $vv_j$ add~$\hat{v}v_j$.
-Also add two vertices of degree one:~$w$ connects only to~$v$, 
-and $\hat{w}$ connects only to~$\hat{v}$.
-
-We must show that there is a Hamiltonian path in~$\mathcal{H}$ if and only
-if there is a Hamiltonian circuit in~$\mathcal{G}$.
-If there is a Hamiltonian circuit in~$\mathcal{G}$ then
-the Hamiltonian path in~$\mathcal{H}$ is derived by splitting the circuit
-at~$v$, and hooking it to a path in~$\mathcal{H}$ that starts at~$w$,
-goes to~$v$, then through the circuit, out to~$\hat{v}$, and then to~$\hat{w}$.
-
-For the other direction suppose that there is a Hamiltonian path in~$H$.
-Then its start and end must be $w$ and~$\hat{w}$ because these vertices
-have degree~$1$.
-It must then proceed to $v$ and~$\hat{v}$.
-Because $\hat{v}$ is a copy of~$v$, a Hamiltonian path in~$\mathcal{H}$ 
-that starts off at these vertices corresponds to 
-a Hamiltonian circuit in~$\mathcal{G}$. 
-\item The \probname{Hamiltonian Circuit} problem is on the 
-list of Basic $\NP$ Complete Problems, so the fact that it reduces to
-\probname{Hamiltonian Path} means that \probname{Hamiltonian Path} is
-$\NP$~hard.
-Because this exercise's first item shows that
-\probname{Hamiltonian Path} is a member of~$\NP$, 
-it is $\NP$~complete.
-\end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -15166,6 +15091,109 @@ Obviously that computation can be done in polytime.
 \item The prior exercise shows that the \probname{Hamiltonian Path} problem
 is $\NP$ complete and that, along with the other parts of this
 exercise, gives that \probname{Longest Path} is $\NP$ complete.
+\end{exparts}
+\end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}  % see https://en.wikipedia.org/wiki/Hamiltonian_path_problem
+\label{exer:HamCircuitHamPath}
+The \probname{Hamiltonian Path}\index{Hamiltonian Path problem@\probname{Hamiltonian Path} problem} 
+problem inputs a graph and decides if there are two vertices in that
+graph such that there is a path between those two that contains 
+all the vertices.
+\begin{exparts}
+\item Show that $\probname{Hamiltonian Path}$ is in $\NP$.
+\item This graph has a Hamiltonian path from $v_0$ to~$v_8$.
+  Find it.
+  \begin{center}
+    \includegraphics{complexity/asy/complexity/complexity33.pdf}
+  \end{center}
+  Why must those two be the endpoints?
+\item In this graph find a Hamiltonian circuit 
+  that begins and ends with node~$g$.
+  \begin{center}
+    \includegraphics{complexity/asy/problems/problems54.pdf}
+  \end{center}
+  Add a node~$\hat{g}$ with the same connections as~$g$, and also add
+  a node~$\hat{w}$ that connects only to~$\hat{g}$ along with a node~$w$
+  that connects only to~$g$.
+  In that graph find a Hamiltonian path from $w$ to~$\hat{w}$. 
+\item Show that $\probname{Hamiltonian Circuit}\leq_p\probname{Hamiltonian Path}$.
+\item Conclude that the \probname{Hamiltonian Path} problem is 
+  $\NP$~complete.
+\end{exparts}
+\begin{answer}\verified
+\begin{exparts}
+\item 
+In short, the witness~$\omega$ is the path.
+
+At greater length, 
+to apply \cref{lem:VerifierAndGuesserEquiv}, we will produce a  
+deterministic Turing machine verifier, $\TM[V]$.
+It inputs pairs $\sequence{\mathcal{G},\omega}$, and 
+must satisfy that if $\mathcal{G}$ has a Hamiltonian path then 
+there is a witness~$\omega$ such that $\TM[V]$ accepts the input pair,
+while if $\mathcal{G}$ does not have a Hamiltonian path then no witness
+will result in the pair being accepted.
+The verifier must run in polytime.
+
+The verifier here interprets the witness~$\omega$ to be a Hamiltonian path
+through the graph,
+so it checks that it is indeed a path in the given graph and that
+every vertex is in the path.
+If there is such a path then there is a witness that the routine can verify.
+If there is no such path then no string~$\omega$ will suffice.
+The verifier clearly runs in polytime (the size of a graph 
+is polynomial in the number of vertices since the number of edges
+is $\bigOh(\sizeof{\mathcal{N}})$).  
+\item A Hamiltonian path is $\sequence{v_0,v_7,v_1,v_2,v_3, v_6, v_5,v_4, v_8}$.
+The two $v_0$ and~$v_8$ must be the start and end of the path 
+because they have degree~$1$.
+\item In the starting graph a Hamiltonian circuit is 
+$\sequence{g,a,d,b,c,e,f,g}$.
+Here is the enhanced graph.
+\begin{display}
+    \includegraphics{complexity/asy/problems/problems55.pdf}
+\end{display}
+A Hamiltonian path is $\sequence{w,g,a,d,b,c,e,f,\hat{g},\hat{w}}$.
+\item We must produce a reduction function~$f\!$.
+It inputs a graph~$\mathcal{G}$ and outputs a graph~$f(\mathcal{G})=\mathcal{H}$
+with the property that 
+$\mathcal{G}$ has a Hamiltonian circuit if and only if
+$\mathcal{H}$ has a Hamiltonian path.
+
+As in the prior item,
+given $\mathcal{G}$, we form $\mathcal{H}$ by adding three vertices.
+First, fix a vertex $v\in\mathcal{G}$.
+Add a new vertex~$\hat{v}\in\mathcal{H}$ that has the same connections
+as~$v$, meaning
+that for every edge $v_iv$ add $\hat{v}v_i$ and for every edge of 
+the form $vv_j$ add~$\hat{v}v_j$.
+Also add two vertices of degree one:~$w$ connects only to~$v$, 
+and $\hat{w}$ connects only to~$\hat{v}$.
+
+We must show that there is a Hamiltonian path in~$\mathcal{H}$ if and only
+if there is a Hamiltonian circuit in~$\mathcal{G}$.
+If there is a Hamiltonian circuit in~$\mathcal{G}$ then
+the Hamiltonian path in~$\mathcal{H}$ is derived by splitting the circuit
+at~$v$, and hooking it to a path in~$\mathcal{H}$ that starts at~$w$,
+goes to~$v$, then through the circuit, out to~$\hat{v}$, and then to~$\hat{w}$.
+
+For the other direction suppose that there is a Hamiltonian path in~$H$.
+Then its start and end must be $w$ and~$\hat{w}$ because these vertices
+have degree~$1$.
+It must then proceed to $v$ and~$\hat{v}$.
+Because $\hat{v}$ is a copy of~$v$, a Hamiltonian path in~$\mathcal{H}$ 
+that starts off at these vertices corresponds to 
+a Hamiltonian circuit in~$\mathcal{G}$. 
+\item The \probname{Hamiltonian Circuit} problem is on the 
+list of Basic $\NP$ Complete Problems, so the fact that it reduces to
+\probname{Hamiltonian Path} means that \probname{Hamiltonian Path} is
+$\NP$~hard.
+Because this exercise's first item shows that
+\probname{Hamiltonian Path} is a member of~$\NP$, 
+it is $\NP$~complete.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -15352,43 +15380,16 @@ So each clause has a literal that evaluates to~\true, and thus $E$ is satisfied.
 \end{answer}
 \end{exercise}
 
-\recommended
 \begin{exercise}
-The difficulty in settling $\P=\NP$ is to prove lower
-bounds. 
-That is, the trouble lies in showing, for a given problem, that
-any algorithm at all must use such-and-such many steps. 
-One common mistake is to reason that any algorithm for the problem must take
-at least as many steps as the length of the input, thinking that to 
-compute the output the algorithm must at least read all
-of the input.
-We will exhibit a familiar problem for which this isn't true.
-
-Consider the successor function. 
-Show that it can be computed 
-on a Turing machine without reading all of the input.
-More, show how to compute it in constant time,
-that it has an algorithm whose
-running time when the input is large is
-the same as the running time when the input is small.
-Assume that the algorithm is given the input~$n$ in unary 
-with the head under the leftmost \str{1}, and that it ends
-with $n+1$-many \str{1}'s and with the head under the leftmost~$1$.
-\begin{answer}
-Move the head left, write a \str{1}, and halt. 
-This is a constant time algorithm.
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-Do we know of any problems in $\NP$ and not in $\P$, and that are 
+Do we know of any problems in $\NP-\P$ and that are 
 not $\NP$ complete?
-\begin{answer}
+\begin{answer}\verified
 No. 
 If we knew of a problem in $\NP-\P$ then we'd know that $\P\neq\NP$.
 We don't know that.
-(Experts suspect that some problems are in this area, such as 
-the \probname{Vertex-to-Vertex Path} problem, but this is guesswork.)
+(Experts do suspect that some problems are in this area, including
+the \probname{Vertex-to-Vertex Path} problem.
+But until it is proved, that remains speculation.)
 \end{answer}
 \end{exercise}
 
@@ -15398,20 +15399,22 @@ the \probname{Vertex-to-Vertex Path} problem, but this is guesswork.)
 \end{credit} 
 Find three languages so that $\lang_2\subset\lang_1\subset\lang_0$,
 and $\lang_2,\lang_0$ are $\NP$ complete, while $\lang_1\in\P$.
-\begin{answer}
-Let $\lang$ be any $\NP$ complete language of bitstrings.
-Take $\lang_2=\set{\str{0}\concat\sigma\suchthat \sigma\in\lang}$,
-and $\lang_1=\set{\str{0}\concat\sigma\suchthat \sigma\in\kleenestar{\Sigma}}$,
+\begin{answer}\verified
+Take $\lang_1=\set{\str{0}\concat\sigma\suchthat \sigma\in\kleenestar{\Sigma}}$.
+Deciding membership in this language is just a matter of 
+deciding whether the first character 
+is \str{0}, so $\lang_1$ is an element of~$P$.
+
+For the other two, 
+let $\lang$ be any $\NP$ complete language of bitstrings.
+Take $\lang_2=\set{\str{0}\concat\sigma\suchthat \sigma\in\lang}$
 and $\lang_0=\lang_1\cup\set{\str{1}\concat\sigma\suchthat \sigma\in\lang}$.
-(The language~$\lang_1$ is an element of~$P$ because
-testing membership is as simple as testing whether the first character 
-is \str{0}.)
 \end{answer}
 \end{exercise}
 
 \begin{exercise} \label{exer:ProveInteractionNPCompleteAndReduction}
 Prove \cref{lem:InteractionNPCompleteAndReduction}.
-\begin{answer}
+\begin{answer}\verified
 Assume that $\lang_0$ is~$\NP$ complete. 
 Assume also that $\lang_0\leq_p\lang_1$ and $\lang_1\in\NP$.
 To verify that $\lang_1$ is $NP$ complete we must show that it is 
@@ -15443,7 +15446,7 @@ gives that $\lang\leq_p\lang_1$.
 % \end{exercises}
 
 \begin{exercise}
-The class~$\P$ has some nice closure properties, and so does~$\NP$.
+The class~$\NP$ has some nice closure properties.
 \begin{exparts*}
 \item Prove that $\NP$ is closed under union, so that if
 $\lang,\hat{\lang}\in\NP$ then $\lang\cup\hat{\lang}\in\NP$.
@@ -15451,29 +15454,30 @@ $\lang,\hat{\lang}\in\NP$ then $\lang\cup\hat{\lang}\in\NP$.
 \item Argue that no one can prove that $\NP$ is not closed
 under set complement.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item
 Fix $\lang,\hat{\lang}\in\NP$.
 There are associated polytime verifiers $\TM[V]$
-and $\hat{\TM[V]}$.
+and $\hat{\TM[V]}\!$.
 A verifier for the union can just run those two on the input, and 
 accept if either accepts.
 \item
 Fix $\lang,\hat{\lang}\in\NP$.
 There are associated polytime verifiers $\TM[V]$
-and $\hat{\TM[V]}$.
+and $\hat{\TM[V]}\!$.
 A verifier for the concatenation inputs a string~$\sigma$,
 and loops over splitting it into substrings 
 $\sigma=\sigma[0:i]\concat\sigma[i:]$ for 
 $i\in\leftclosed{0}{\sizeof{\sigma}}$,
 testing whether both verifiers accept.
-Each verifier is polytime, and running the loop still keeps the
-overall algorithm inside of polytime. 
+Each verifier is polytime, and running the loop keeps the
+overall algorithm runtime inside of polytime. 
 \item
 The class $\P$ is closed under complement.
 Consequently, if $\NP$ is not closed under complement then $\P\neq\NP$.
-(But it is possible that $\NP$ is closed under complement
+(But our present state of knowledge is that 
+it is possible that $\NP$ is closed under complement
 but is still different than $\P$).)
 \end{exparts}
 \end{answer}
@@ -15489,36 +15493,36 @@ and there are countably many such machines.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-We will sketch a proof that the \HP{} is $\NP$~hard but not~$\NP$.
-Consider the language 
-$\prob[HP]=\set{\sequence{\TM_e,x}\suchthat \TMfcn_e(x)\converges}$.
-\begin{exparts*}
-\item Show that $\prob[HP]\notin\NP$.
-\item Sketch an argument that for any problem $\prob\in\NP$,
-  there is a polynomial time computable verifier, 
-  $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$, such that
-  $\sigma\in\prob$ if and only if $f(\sigma)\in\prob[HP]$.
-\end{exparts*}
-\begin{answer}
-\begin{exparts}
-\item It is not a member of~$\NP$ because it is not decidable.
-\item Since $\prob\in\NP$ there is an associated nondeterministic
-  machine $\TM$ that decides membership.
-  Consider the Turing machine $\hat{\TM}_{\prob}$ that, given an input~$\tau$,
-  constructs the computation
-  tree of $\TM_{\prob}$ on input~$\tau$ and halts if and only if
-  $\TM_{\prob}$ accepts~$\tau$.
+% \begin{exercise}
+% We will sketch a proof that the \HP{} is $\NP$~hard but not~$\NP$.
+% Consider the language 
+% $\prob[HP]=\set{\sequence{\TM_e,x}\suchthat \TMfcn_e(x)\converges}$.
+% \begin{exparts*}
+% \item Show that $\prob[HP]\notin\NP$.
+% \item Sketch an argument that for any problem $\prob\in\NP$,
+%   there is a polynomial time computable verifier, 
+%   $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$, such that
+%   $\sigma\in\prob$ if and only if $f(\sigma)\in\prob[HP]$.
+% \end{exparts*}
+% \begin{answer}
+% \begin{exparts}
+% \item It is not a member of~$\NP$ because it is not decidable.
+% \item Since $\prob\in\NP$ there is an associated nondeterministic
+%   machine $\TM$ that decides membership.
+%   Consider the Turing machine $\hat{\TM}_{\prob}$ that, given an input~$\tau$,
+%   constructs the computation
+%   tree of $\TM_{\prob}$ on input~$\tau$ and halts if and only if
+%   $\TM_{\prob}$ accepts~$\tau$.
   
-  The reduction $\prob\leq_p\prob[HP]$ will be done by a function $f_{\prob}$.
-  This function will, given~$\sigma$, return
-  the pair $\hat{\TM},\sigma$ where $\hat{\TM}$.
-  (Note that this function is polynomial since,
-  while running $\hat{\TM}_{\prob}$ may not be polynomial, 
-  constructing it from $\TM$ is polynomial.)
-\end{exparts}
-\end{answer}
-\end{exercise}
+%   The reduction $\prob\leq_p\prob[HP]$ will be done by a function $f_{\prob}$.
+%   This function will, given~$\sigma$, return
+%   the pair $\hat{\TM},\sigma$ where $\hat{\TM}$.
+%   (Note that this function is polynomial since,
+%   while running $\hat{\TM}_{\prob}$ may not be polynomial, 
+%   constructing it from $\TM$ is polynomial.)
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
 
 % \begin{exercise}
 % A problem is $\P$~complete if it maximally hard among problems in~$\P$.
@@ -15564,19 +15568,11 @@ The next class is quite natural.
 \subsection{\texorpdfstring{$\EXP$}{EXP}}\index{EXP@$\EXP$|(}
 The \probname{Satisfiability} problem is a touchstone
 result among problems in $\NP$.
-We have discussed computing it using a nondeterministic
-Turing machine that is unboundedly parallel, or alternatively
-using a witness and verifier.
-But, naively, in the familiar computational setting
-of a deterministic machine, it appears that 
-to solve it, we must go through the
+On a deterministic machine, it appears that 
+to solve it we must go through the
 truth table line by line. 
 That is, $\SAT$ appears to take exponential time.
 
-In this chapter's first section we included 
-$\bigOh(2^n)$
-and~$\bigOh(3^n)$, and by extension other exponentials, in the list
-of common orders of growth.
 
 %<*def:EXP>
 \begin{definition}\index{complexity class!EXP@$\EXP$}
@@ -15617,25 +15613,15 @@ $\P\subseteq\NP\subseteq\EXP$
 
 %<*pf:PSubNPSubEXP>
 \begin{proof}
-Fix $\prob\in\NP$.
-We can verify $\prob$ on a deterministic Turing machine~$\TM$
-in polynomial time using a witness whose length is bounded by the
-same polynomial.
-Let this problem's bound be $n^c$. 
-
-We will decide $\prob$ in exponential time by brute-forcing it:~we
-will use~$\TM$ to run every possible verification. 
-Trying any single witness requires polynomial time, $n^c$.
-Witnesses are in binary so for length~$\ell$ there
-are $\sum_{0\leq i\leq\ell}2^{i}=2^{\ell+1}-1$~many possible ones;
-In total then, brute force requires $\bigOh(n^c 2^{n^c})$ operations.
-Finish by observing that $n^c 2^{n^c}$ is in $\bigOh(2^{n^c})$. 
+The first inclusion is \cref{lem:PSubsetNP}.
+The second is \cref{co:NPProbsTakeEXPtime}.
 \end{proof}
 %</pf:PSubNPSubEXP>
 
-We know by a result called the Time Hierarchy Theorem
+We know by a result called the Time Hierarchy Theorem\footnote{%
+  This result is outside of our scope.}
 that the three classes are not all equal.
-But where the division is, we don't know.
+But where the division is, or divisions are, we don't know.
 Just as we don't today have a proof that $\P$ is a proper subset
 of~$\NP$, 
 we also don't know whether or not there are $\compclass{NP}$~complete 
@@ -15643,8 +15629,8 @@ problems that absolutely require exponential time.
 The class $\compclass{NP}$ could conceivably be 
 contained in a smaller deterministic time complexity class\Dash for instance, 
 maybe \probname{Satisfiability}
-can be solved in less than exponential time.
-But we just don't know.
+can be solved in time that is super-polynomial but sub-exponential.
+We just don't know.
 
 \begin{fig}[fig:BeanWithExp]{The blob encloses all problems.
    Shaded are the three classes $\P$, $\NP$, and $\EXP$.
@@ -15672,11 +15658,11 @@ For instance, the impediment that a programmer runs across first is time.
 
 \begin{definition}
 Let $\map{f}{\N}{\N}$.
-A decision problem for a language is an element of 
+A decision problem $\lang$ is an element of 
 \definend{$\DTIME(f)$}\index{DTIME@$\DTIME$}
-if it is decided by a deterministic
+if $\lang$ is decided by a deterministic
 Turing machine that runs in time~$\bigOh(f)$.
-A problem is an element of \definend{$\NTIME(f)$}\index{NTIME@$\NTIME$}
+It is an element of \definend{$\NTIME(f)$}\index{NTIME@$\NTIME$}
 if it is decided by a nondeterministic
 Turing machine that runs in time~$\bigOh(f)$. 
 \end{definition}
@@ -15700,17 +15686,15 @@ $\compclass{NP}$ and $\EXP$.
 \end{lemma}
 
 \begin{proof}
-The only equality that is not immediate is the last one.
-Recall that a problem is in $\EXP$ if an
-algorithm for it that runs in time $\bigOh(b^{p(n)})$ for some
+The only equality that is not immediate is the final one.
+The issue is the base of~$2$, since a problem is in $\EXP$ if an
+algorithm for it that runs in time $\bigOh(b^{p(n)})$ for any
 constant base~$b$ and polynomial~$p$.
-The equality above only uses the base~$2$.
 To cover the discrepancy, we will show that
-$3^n\in\bigOh(2^{(n^2)})$.
+$3^n\in\bigOh(2^{(n^2)})$ (this argument works for any base $b>2$).
 Consider $\lim_{x\to\infty}2^{(x^2)}/3^x$.
 Rewrite the fraction as $(2^x/3)^x$, which when $x>2$ is larger than
-$(4/3)^x$, which goes to infinity. 
-This argument works for any base, not just $b=3$.
+$(4/3)^x\!$, which goes to infinity. 
 \end{proof}
 
 \begin{remark}
@@ -15719,7 +15703,7 @@ as we saw earlier,
 the characterization that proves to be most useful in practice
 is that a problem~$\prob$ is in $\NP$ if there is a deterministic
 Turing machine $\TM[V]$ such that for each input~$\sigma$
-there is a polynomial length witness~$\omega$ and the verification
+there is a witness~$\omega$ and the verification
 on~$\TM[V]$ for~$\sigma$ using~$\omega$ takes polytime.
 \end{remark}
 
@@ -15728,8 +15712,12 @@ on~$\TM[V]$ for~$\sigma$ using~$\omega$ takes polytime.
 
 
 \subsection{Space Complexity}
-We can consider how much space
-is used in solving a problem.
+We can also consider how much space
+is used in a computation.\footnote{%
+  There are other resources that we could study; for instance we might consider
+  the number of disk reads or writes, as distinct to the number of cells 
+  used in total, but these are beyond our scope.}
+
 
 \begin{definition}
 A deterministic Turing machine
@@ -15742,7 +15730,7 @@ if for all but finitely many inputs~$\sigma$, every computation path on that
 input takes less than or equal to $s(|\sigma|)$-many cells.
 \end{definition}
 
-The machine must use less than or equal to $s(|\sigma|)$-many
+Note that the machine must use at most $s(|\sigma|)$-many
 cells even on non-accepting computations.
 % The class of problems solvable in a finite amount of memory is just the class of regular languages. 
 
@@ -15760,8 +15748,6 @@ Turing machine that runs in space~$\bigOh(s)$.
 
 The definitions arise from a sense we have of a symmetry between time and
 space, that they are both examples of computational resources.
-(There are other resources; for instance we may want to minimize
-disk reading or writing, which may be quite different than space usage.)
 But space is not just like time.
 For one thing, while a program can take a long time but
 use only a little space, the opposite is not possible.

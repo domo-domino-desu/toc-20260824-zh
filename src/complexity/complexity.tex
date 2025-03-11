@@ -15714,41 +15714,47 @@ on~$\TM[V]$ for~$\sigma$ using~$\omega$ takes polytime.
 \subsection{Space Complexity}
 We can also consider how much space
 is used in a computation.\footnote{%
-  There are other resources that we could study; for instance we might consider
-  the number of disk reads or writes, as distinct to the number of cells 
-  used in total, but these are beyond our scope.}
+  There are still other resources that we could study. 
+  One is 
+  the number of reads or writes, as distinct from the total number of cells 
+  used. 
+  But these others are beyond our scope.}
 
 
 \begin{definition}
 A deterministic Turing machine
-\definend{runs in space~$\map{s}{\kleenestar{\B}}{\R^+}$}
+\definend{runs in space~$\map{s}{\N}{\R^+\cup\set{0}}$}\footnotemark %
 if for all but finitely many inputs~$\sigma$, the computation on that
-input uses less than or equal to $s(|\sigma|)$-many cells on the tape.
+input uses fewer than $s(|\sigma|)$-many cells on the tape.
 A nondeterministic Turing machine
 \definend{runs in space~$s$}
 if for all but finitely many inputs~$\sigma$, every computation path on that
-input takes less than or equal to $s(|\sigma|)$-many cells.
-\end{definition}
+input takes no more than $s(|\sigma|)$-many cells.
+\end{definition}\footnotetext{%
+  It might seem natural to have the space function output
+  natural numbers, $\map{s}{\N}{\N}$.
+  But as with the complexity functions in this chapter's first section,
+  we often find real functions convenient, particularly logarithms.}
 
 Note that the machine must use at most $s(|\sigma|)$-many
 cells even on non-accepting computations.
 % The class of problems solvable in a finite amount of memory is just the class of regular languages. 
 
 \begin{definition}
-Let $\map{s}{\N}{\N}$.
+Let $\map{s}{\N}{\R^+\cup\set{0}}$.
 A language decision problem is an element of 
 \definend{$\DSPACE(s)$},\index{DSPACE@$\DSPACE$}
 or \definend{$\SPACE(s)$},\index{SPACE@$\SPACE$}
 if that languages is decided by a deterministic
 Turing machine that runs in space~$\bigOh(s)$.
-A problem is an element of \definend{$\NSPACE(s)$}\index{NSPACE@$\NSPACE$}
-if the languages is decided by a nondeterministic
+It is an element of \definend{$\NSPACE(s)$}\index{NSPACE@$\NSPACE$}
+if it is decided by a nondeterministic
 Turing machine that runs in space~$\bigOh(s)$. 
 \end{definition}
 
-The definitions arise from a sense we have of a symmetry between time and
-space, that they are both examples of computational resources.
-But space is not just like time.
+The definitions arise from a sense of a symmetry between time and
+space.
+But they are not completely symmetric.
 For one thing, while a program can take a long time but
 use only a little space, the opposite is not possible.
 
@@ -15764,21 +15770,50 @@ $\NTIME(f)\subseteq\NSPACE(f)$.
 A machine can use at most one cell per step.
 \end{proof}
 
+
+
 \begin{definition}
-\begin{align*}
-  \PSPACE &= \cup_{c\in\N}\DSPACE(n^c)          
-     =\DSPACE(n)\cup\DSPACE(n^2)\cup\,\cdots \\
-  \NPSPACE &=\cup_{c\in\N}\NSPACE(n^c)          
-     =\NSPACE(n)\cup\NSPACE(n^2)\cup\,\cdots
-\end{align*}
+These are the most essential space complexity classes.
+\begin{thmdescription}
+\item[\definend{Deterministic logarithmic space}] 
+  $\compclass{L}=\DSPACE(\lg n)$\index{Deterministic logarithmic space} 
+
+\item[\definend{Nondeterministic Logarithmic space}] 
+  $\compclass{NL}=\NSPACE(\lg n)$\index{Nondeterministic logarithmic space}  
+
+\item[\definend{Polynomial space}]\index{Deterministic polynomial space}
+  % \begin{equation*}
+    $\PSPACE=\DSPACE(n)\cup\DSPACE(n^2)\cup\,\cdots$
+  % \end{equation*}
+
+% \item[\definend{Nondeterministic polynomial space}]\index{Nondeterministic polynomial space}
+%   $\NPSPACE=\NSPACE(n)\cup\NSPACE(n^2)\cup\,\cdots$
+
+\item[\definend{Exponential space}]\index{Deterministic exponential space}
+  % \begin{equation*}
+   $\compclass{EXPSPACE}=\DSPACE(2^n)\cup\DSPACE(2^{n^2})\cup\cdots$ 
+  % \end{equation*}
+
+% \item[\definend{Nondeterministic exponential space}]\index{Nondeterministic exponential space}
+%   $\compclass{NEXPSPACE}$     
+\end{thmdescription}
 \end{definition}
 
-So $\PSPACE$ is the class of
+% \begin{definition}
+% \begin{align*}
+%   \PSPACE &= \cup_{c\in\N}\DSPACE(n^c)          
+%      =\DSPACE(n)\cup\DSPACE(n^2)\cup\,\cdots \\
+%   \NPSPACE &=\cup_{c\in\N}\NSPACE(n^c)          
+%      =\NSPACE(n)\cup\NSPACE(n^2)\cup\,\cdots
+% \end{align*}
+% \end{definition}
+
+So for instance, $\PSPACE$ is the class of
 problems that can be solved by a deterministic Turing machine using
 only a polynomially-bounded amount of space,
 regardless of how long the computation takes.
 
-As even those preliminary results suggest,
+As even the few results that we have seen suggest,
 restricting by space instead of time allows for a lot more power.
 
 \begin{lemma}
@@ -15788,54 +15823,68 @@ $\P\subseteq\NP\subseteq\PSPACE $
 \begin{proof}
 For any problem in $\NP$, check all possible witness strings~$\omega$.
 These take at most polynomial space.
-If any proof string works then the answer to the problem is `yes'.
+If any such string works then the answer to the problem is `yes'.
 Otherwise, the answer is `no'.
 \end{proof}
 
 Note that the method in the proof
 may take exponential time but it takes only polynomial space.
 
-Here is a result whose proof is beyond our scope, but that
-serves as a caution that time and space are very different.
+In the definition of the essential space classes there are 
+two natural classes that are not mentioned.
+The next result explains their absence.
+
+\begin{theorem}[Savitch's Theorem]
+For any $\map{f}{\N}{\R^+\cup\set{0}}$
+such that $f(n)\geq\lg(n)$, we have
+$\NSPACE(f)\subseteq\DSPACE(f^2)$.
+Consequently, deterministic polynomial space equals nondeterministic
+polynomial space, $\PSPACE=\NPSPACE$, and
+deterministic exponential space equals nondeterministic exponential space,
+$\EXPSPACE=\NEXPSPACE$.
+\end{theorem}
+
+The proof of that result is beyond our scope, but it
+serves as another caution that time and space are very different.
 We don't know whether deterministic polynomial time equals
 nondeterministic polynomial time, but we do know the answer for space.
 
-\begin{theorem}[Savitch's Theorem]
-$\PSPACE=\NPSPACE$
-\end{theorem}
+
 % and EXPSPACE
 
 % TODO:
 %  NL\subseteq P
 
-We finish with a list of the most natural complexity classes.
+% We finish with a list of natural complexity classes.
 
-\begin{definition} % credit https://cse.buffalo.edu/~regan/papers/pdf/ALRch27.pdf
-These are the 
-\definend{canonical complexity classes}\index{complexity class!canonical} 
-\begin{enumerate}
-\item $\compclass{L}=\DSPACE(\lg n)$, \definend{deterministic log space}
-  and $\compclass{NL}=\NSPACE(\lg n)$, \definend{nondeterministic log space}
-% \item $\P=\cup_{k=1,2,\ldots}\DTIME(n^k)$
-%   \definend{deterministic poynomial time}
-%   and $\NP=\cup_{k=1,2,\ldots}\NTIME(n^k)$ 
+% \begin{definition} % credit https://cse.buffalo.edu/~regan/papers/pdf/ALRch27.pdf
+% These are the 
+% \definend{canonical complexity classes}.\index{complexity class!canonical} 
+% \begin{enumerate}
+% \item $\compclass{L}=\DSPACE(\lg n)$, \definend{deterministic log space}
+%   and $\compclass{NL}=\NSPACE(\lg n)$, \definend{nondeterministic log space}
+% % \item $\P=\cup_{k=1,2,\ldots}\DTIME(n^k)$
+% %   \definend{deterministic poynomial time}
+% %   and $\NP=\cup_{k=1,2,\ldots}\NTIME(n^k)$ 
+% %   \definend{nondeterministic polynomial time}
+% \item $\P$,
+%   \definend{deterministic polynomial time}
+%   and $\NP$, 
 %   \definend{nondeterministic polynomial time}
-\item $\P$,
-  \definend{deterministic polynomial time}
-  and $\NP$, 
-  \definend{nondeterministic polynomial time}
-\item $\compclass{E}=\cup_{k=1,2,\ldots}\DTIME(k^n)$
-  and $\compclass{NE}=\cup_{k=1,2,\ldots}\NTIME(k^n)$
-\item $\compclass{EXP}=\cup_{k=1,2,\ldots}\DTIME(2^{n^k})$, 
-  \definend{deterministic exponential time}
-  and $\compclass{NEXP}=\cup_{k=1,2,\ldots}\NTIME(2^{n^k})$, 
-  \definend{nondeterministic exponential time}
-\item $\compclass{PSPACE}$, 
-  \definend{deterministic polynomial space}
-\item $\compclass{EXPSPACE}=\cup_{k=1,2,\ldots}\DSPACE(2^{n^k})$, 
-  \definend{deterministic exponential space}
-\end{enumerate}
-\end{definition}
+% % Not closed under \leq_p https://en.wikipedia.org/wiki/E_(complexity)
+% % \item $\compclass{E}=\cup_{k=1,2,\ldots}\DTIME(k^n)$
+% %   and $\compclass{NE}=\cup_{k=1,2,\ldots}\NTIME(k^n)$
+% \item $\compclass{EXP}=\cup_{k=1,2,\ldots}\DTIME(2^{n^k})$, 
+%   \definend{deterministic exponential time}
+%   and $\compclass{NEXP}=\cup_{k=1,2,\ldots}\NTIME(2^{n^k})$, 
+%   \definend{nondeterministic exponential time}
+% \item $\compclass{PSPACE}$, 
+%   \definend{deterministic polynomial space}
+% \item $\compclass{EXPSPACE}=\cup_{k=1,2,\ldots}\DSPACE(2^{n^k})$, 
+%   \definend{deterministic exponential space}
+% \end{enumerate}
+% \end{definition}
+
 
 
 \subsection{The Zoo}\index{Zoo, Complexity}\index{Complexity Zoo}

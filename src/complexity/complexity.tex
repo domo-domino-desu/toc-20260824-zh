@@ -15975,60 +15975,66 @@ discoverer.
 
 In this chapter we have built up the sense that there are functions that
 are intractible to compute.
-Here we see how we can try to leverage this to engineering advantage.
-% For instance, schemes for holding elections are notoriously prone to
-% manipulation and there are theorems saying that they must be.
-% But we can hope to use system that, while manipulatable in principle,
-% is constructed so that it is in practice infeasible to
-% compute how to do the manipulation.
+Here we see how to leverage this to engineering advantage.
 We will describe the celebrated
 RSA encryption system.  
 
-One of the great things about the interwebs,
-besides that you can get free books,
-is that you can buy stuff.
-You send a credit card number and a couple of days later
+One of the great things about the interwebs\Dash
+besides the free books\Dash
+is that we can buy stuff.
+We input a credit card number and a couple of days later
 the stuff appears.
-For this to be practical, your credit card number must be 
+For this to be practical, the credit card number must be 
 encrypted.
 
-When you visit a web site using a \url{https}
-address, that site sends you information, called a key, that your browser
-uses to encrypt your card number.
-The web site then uses a different key to decrypt.
-This is an important point:~the decrypter must differ from
+This encryption scheme is subject to a number of constraints.
+One is that when we visit a web site using a \url{https}
+address, that site sends information, called an 
+\definend{encryption key}, that our browser
+uses to encrypt the card number.
+The web site then uses a different key, the \definend{decryption key},
+to get back the original number.
+It is is critical that the decrypter differs from
 the encrypter since
-people on the net can see the encrypter information that the site sent you.
-But the site keeps the decrypter information private.
+people on the net can see the encryption information that the site sent,
+but the site keeps the decrypter information private.
 These two, encrypter and decrypter, form a matched pair.
 We will describe the mathematical technologies that make this work.
 
 
 
 \subsection*{The arithmetic}
-We can take the view that everything on a computer is numbers.
+% We can take the view that everything on a computer is numbers.
 Consider the message `send money'. 
-Its ASCII encoding is \str{115} \str{101} \str{110} \str{100} \str{32}
-\str{109} \str{111} \str{110} \str{101} \str{121}.
-Converting to a bitstring gives
-\str{01110011}\, \str{01100101}\, \str{01101110}\, \str{01100100}\,
-\str{00100000}\, \str{01101101}\, \str{01101111}\, \str{01101110}\,
-\str{01100101}\, \str{01111001}.
+% Its ASCII encoding is \str{115} \str{101} \str{110} \str{100} \str{32}
+% \str{109} \str{111} \str{110} \str{101} \str{121}.
+As a bitstring\footnote{In UTF-8.} 
+it is this (the linebreak is after the space).
+\begin{center}\small
+  \str{01110011}\, \str{01100101}\, \str{01101110}\, \str{01100100}\,
+  \str{00100000}  \\ 
+  \qquad\str{01101101}\, \str{01101111}\, \str{01101110}\, 
+      \str{01100101}\, \str{01111001}
+\end{center}
 In decimal that's
-% $544943221199950100456825$
+% sage: int('011100110110010101101110011001000010000001101101011011110110111001100
+% ....: 10101111001',2)
+% 544943221199950100456825
 $544\,943\,221\,199\,950\,100\,456\,825$.
 So there is no loss in generality in
-viewing everything we do, including encryption systems, as numerical operations.
+viewing everything that we do on a computer, 
+including encryption systems, as numerical operations.
 
 To make encryption systems, mathematicians and computer scientists have
 leveraged that there are
 there are things we can do easily but that we do not know how to easily
-undo\Dash
-there are operations we can use for encryption that are fast,
-but such that the operations needed to decrypt
+undo.
+That is,
+there are operations that we can use for encryption that are fast,
+but such that the operations needed for decryption 
 (without the decrypter)
 are believed to be so slow that they are completely impractical.
-So this is the engineering of Big-$\bigOh$.
+% This is the engineering of Big-$\bigOh$.
 
 \margingraphic{0.30\textwidth}{complexity/pix/rsa.png}{\href{https://en.wikipedia.org/wiki/Adi_Shamir}{Adi Shamir (b~1952)}, \href{https://en.wikipedia.org/wiki/Ron_Rivest}{Ron Rivest (b~1947)}, \href{https://en.wikipedia.org/wiki/Leonard_Adleman}{Leonard Adleman (b~1945)}}\index{Shamir, A!picture}\index{Rivest, R!picture}\index{Adleman, L!picture} % source unknown; believed OK because very widely available
 We will describe an algorithm based on the 
@@ -16038,16 +16044,17 @@ We have algorithms for multiplying numbers that are fast.
 By comparison, the algorithms that
 we have for starting with a number and decomposing it into factors
 are quite slow.
-To illustrate this, you might contrast the time it takes you to multiply
-two four-digit numbers by hand with the time it takes you to factor an
-eight-digit number chosen at random.
+To illustrate this, contrast the time that it takes to multiply
+two randomly chosen four-digit numbers by hand 
+with the time that it takes to factor a randomly chosen
+eight-digit number.
 For that second job set aside an afternoon; it'll take a while.
 
-The algorithm that we shall describe \citetext{exploits this difference}{%
+The algorithm \citetext{exploits this difference}{%
   Recent versions of the algorithm used in practice incorporate
   refinements that we shall not discuss.
   The core idea is unchanged.}.
-It was invented in 1976 by three graduate students,
+It was invented in 1976 by
 R~Rivest, A~Shamir, and L~Adleman.
 Rivest read a paper proposing the idea of key pairs and decided to
 develop an implementation.
@@ -16066,18 +16073,18 @@ problem would break it and no one knew how to do that.
   insisted on being listed last.
   He said later, ``I remember thinking that this is probably the least
   interesting paper I will ever write.''},
-was first announced in Martin Gardner's \textit{Mathematical Games} column in
+was first announced in M~Gardner's \textit{Mathematical Games} column in
 the August~1977 issue of \textit{Scientific American}.
 It generated a
 \citetext{tremendous amount of interest and excitement}{%
-  In his 1977 column, Martin Gardner posed a \$100 challenge,
+  In his 1977 column, Gardner posed a \$100 challenge,
   to crack this message:
   \str{9686 9613 7546 2206 1477 1409 2225 4355
 8829 0575 9991 1245 7431 9874 6951 2093
 0816 2982 2514 5708 3569 3147 6622 8839
 8962 8013 3919 9055 1829 9451 5781 5254}
   The ciphertext was generated by the MIT team from a plaintext (English)
-  message using $e = 9007$ and this number $n$ (which is too long to fit on
+  message using $e = 9007$ and this number $n$ (that is too long to fit on
   one line).
   \begin{equation*}\begin{split}
   &114,381,625,757,888,867,669,235,779,976,146,612,010,218,296,721,242,\\
@@ -16118,9 +16125,9 @@ The encrypted message is $m^e\bmod{n}$.
 To decrypt it, to recover~$m$, calculate $(m^e)^d\bmod{n}$.
 These three are chosen so that
 knowing $e$ and~$n$, or even~$m$, still leaves a potential secret-cracker 
-who is looking for~$d$ with an extremely difficult job.
+who is looking for~$d$ with what we believe is an an extremely difficult job.
 
-To choose them,
+To choose the three $n$, $e$, and~$d$,
 first choose distinct prime numbers $p$ and~$q$.
 Pick these at random so they are of about equal bit-lengths.
 Compute $n=pq$ and $\varphi(n)=(p-1)\cdot(q-1)$.
@@ -16136,7 +16143,7 @@ Most experts consider a key length of $2\,048$ bits to be
 secure for the mid-term future, until 2030 or so,
 when computers will have grown in power enough that they may be able
 to use an exhaustive brute-force search to find~$d$.
-Quite cautious people might use $3\,072$ bits.
+Cautious people might use $3\,072$ bits.
 
 \begin{example}
 Alice chooses the primes $p=101$ and~$q=113$
@@ -16145,7 +16152,7 @@ illustration) and then calculates
 $n=pq=11\,413$ and $\varphi(n)=(p-1)(q-1)=11\,200$.
 To get the encrypter she randomly picks numbers $1<e<11\,200$ until she
 gets one that is
-relatively prime to $11\,200$, choosing $e=3533$.
+relatively prime to $11\,200$, choosing $e=3\,533$.
 She publishes her public key $\sequence{n,e}=\sequence{11\,413, 3\,533}$
 on her home page.
 She computes the decrypter $d=e^{-1}\bmod{11\,200}=6\,597$, and
@@ -16153,17 +16160,17 @@ finds a safe place to store her private key
 $\sequence{n,d}=\sequence{11\,413,6\,597}$.
 
 Bob wants to say `Hi'.
-In ASCII that's \str{01001000} \str{01101001}.
-If he converted that string into a single decimal number it would be bigger
+In a bitstring that's `\str{01001000}\,\str{01101001}'.
+If he converted that into a decimal number it would be bigger
 than~$n$ so he breaks it into
-two substrings, getting the decimals \str{72} and \str{105}.
-Using her public key he computes
+two substrings, getting the numbers \str{72} and \str{105}.
+With Alice's public key he computes
 \begin{equation*}
   72^{3533}\bmod{11413}=10496
   \qquad
   105^{35333}\bmod{11413}=4861
 \end{equation*}
-and sends Alice the sequence $\sequence{10496,4861}$.
+and sends her the sequence $\sequence{10496,4861}$.
 Alice recovers his message by using her private key.
 \begin{equation*}
   10496^{6597}\bmod{11413} = 72
@@ -16177,20 +16184,20 @@ Alice recovers his message by using her private key.
 \subsection*{The arithmetic, fast}
 We've just illustrated that RSA uses invertible operations.
 There are lots of ways to get invertible operations
-so our understanding of RSA is incomplete unless we know why it uses these
-particular operations.
-As discussed above, the important point is that they can be done quickly,
-but undoing them, finding the decrypter, is believed to take a very
-long time.
+so our understanding of RSA is incomplete unless we know what 
+the advantage is of these particular operations.
+The important point is that they can be done quickly.
+But undoing them, decrypting, is believed to take a very
+long time without the key.
 
-We start with a classic, beautiful, result from Number Theory.
+To illustrate we show that we can quickly test for primality. 
+We begin with a classic, beautiful, result from Number Theory.
 
 \begin{theorem}[Prime Number Theorem]
 The number of primes less than $n\in\N$ is approximately
 $n/\ln(n)$. 
-That is, this limit is~$1$.
 \begin{equation*} 
-  \lim_{n\to\infty}\frac{\text{number of primes less than $n$}}{(n/\ln n)}
+  \lim_{n\to\infty}\frac{\text{number of primes less than $n$}}{(n/\ln n)}=1
 \end{equation*}
 \end{theorem}
 This shows the number of primes less than~$n$ for some values up to a million.
@@ -16202,7 +16209,7 @@ For example, the number of primes less than $2^{1024}$ is about
 $2^{1024}/\ln(2^{1024})
   \approx 2^{1024}/709.78
   \approx 2^{1024}/2^{9.47}
-  \approx 2^{1015}$.
+  \approx 2^{1015}\!$.
 % sage: 1024*ln(2)
 % 1024*log(2)
 % sage: 1024*ln(2).n()
@@ -16236,19 +16243,18 @@ Multiplying $3\,915\,421$ by $52\,567\,004$
 modulo~$3$ looks hard.
 The naive approach is to first take their product and then 
 divide by~$3$ to find the remainder.
-But there is a more efficient way.
-Rather than multiply first and then reduce modulo~$m$, reduce first
+A more efficient way is to reduce first
 and then multiply.
 That is, we know that if $a\equiv b\pmod{m}$ and 
-$c\equiv d\pmod{m}$ then $ac\equiv bd\pmod{m}$ and so
+$c\equiv d\pmod{m}$ then $ac\equiv bd\pmod{m}$, and
 since $3\,915\,421\equiv 1\pmod{3}$
 and $52\,567\,004\equiv 2\pmod{3}$ we have this.
+% Putting \pmod inside equation* without the \text{$ ... $} is too much hspace 
 \begin{equation*}
-  3\,915\,421\cdot 52\,567\,004 
+  \text{$3\,915\,421\cdot 52\,567\,004 
   \equiv 1\cdot 2\pmod{3} 
-  \equiv 2\pmod{3} 
+  \equiv 2\pmod{3}$} 
 \end{equation*}
-% In this way, multiplication modulo~$m$ is efficient in both time and space.
 \end{example}
 
 Similarly, exponentiation modulo $m$ is also efficient,
@@ -16256,21 +16262,18 @@ both in time and in space.
 
 \begin{example}
 Consider raising $4$ to the $13$-th power, modulo~$m=497$.
-The naive approach would be to raise $4$ to the $13$-th power,
-which is a very large number, and then reduce
-modulo~$497$.  
-But there is a better way. 
-
-Start by expressing the power~$13$ in base~$2$ as $13=8+4+1=1101_2$.
-So, $4^{13}=4^{8}\cdot 4^4\cdot 4^1$.
+The naive approach of computing $4^{13}$ and then reducing
+produces a very large number along the way.
+Better is to express the power~$13$ in base~$2$ as $13=8+4+1=1101_2$.
+So, $4^{13}=4^{8}\cdot 4^4\cdot 4^1\!$.
 If we can efficiently get those powers
 then the prior example says that we can multiply them modulo~$m$ efficiently,
 and we will be all set.
 
 Get these powers by repeated squaring, modulo~$m$.
 Start with $p=1$.
-Squaring gives $4^2$, then squaring again gives $4^4$, and
-squaring again gives $4^8$.
+Squaring gives $4^2\!$, then squaring again gives $4^4\!$, and
+squaring again gives $4^8\!$.
 Squaring modulo~$m$ is just a multiplication,
 which we can do efficiently.
 \end{example}
@@ -16282,6 +16285,22 @@ Recall that two numbers are
 if their greatest common divisor is~$1$.
 For example, $15=3\cdot 5$ and $22=2\cdot 11$ are relatively prime.
 
+\begin{example}
+Recall Euclid's Algorithm that uses division with remainder 
+to find the greatest common divisor of two numbers.
+Here we find $\gcd(1071,462)$.
+Start with $1071=2\cdot 462+147$, 
+then compute $462=3\cdot 147+21$,
+then $147=7\cdot 21+0$.
+This shows that the greatest common divisor is $21$.
+
+Reversing the final equation gives $21=462-3\cdot(147)$.
+Substituting for $147$ from the equation before the last gives 
+$21=462-3\cdot(1071-2\cdot 462)=-3\cdot 1071+3\cdot 462$.
+This expresses the greatest common divisor as a linear combination
+of the two starting numbers.
+\end{example}
+
 \begin{lemma}
 If $a$ and~$m$ are relatively prime then there is an inverse for~$a$ 
 modulo~$m$, a number~$k$ such that $a\cdot k\equiv 1\pmod{m}$
@@ -16289,22 +16308,21 @@ modulo~$m$, a number~$k$ such that $a\cdot k\equiv 1\pmod{m}$
 
 \begin{proof}
 Because the greatest common divisor of $a$ and~$m$ is~$1$, Euclid's algorithm 
-produces a linear combination of the two, a $sa+tm$ for some $s,t\in\Z$, 
+produces a linear combination of the two, $sa+tm$ for some $s,t\in\Z$, 
 that adds to~$1$.
 Doing the operations modulo~$m$ gives $sa+tm\equiv 1\pmod{m}$.
 Since $tm$ is a multiple of~$m$, we have $tm\equiv 0\pmod m$, leaving 
-$sa\equiv 1\pmod m$, and
-$s$ is the inverse of~$a$ modulo~$m$.
+$sa\equiv 1\pmod m$, making
+$s$ the modulo~$m$ inverse of~$a$.
 \end{proof}
 
 Euclid's algorithm is efficient, both in time and space,
 so finding an inverse modulo~$m$ is efficient.
 
-With that we can efficiently test for primes.
-The simplest way to test whether a number is prime is to try  
-dividing it by all possible factors.
-But that is very slow.
-There is a faster way, 
+With that, we are ready to efficiently test whether a number is prime.
+The naive way is to try  
+dividing the number by all possible factors.
+A faster way is 
 \citetext{based on the next result}{%
   It is called Fermat's Little Theorem in contrast with his
   celebrated assertion that $a^n+b^n=c^n$ for $n>2$.}.
@@ -16316,37 +16334,38 @@ is not divisible by~$p$ then $a^{p-1}\equiv 1\pmod p$.
 \begin{proof}
 Let $a$ be an integer not divisible by the prime~$p$.
 Multiply~$a$ by each number $i\in\set{1,\ldots\,p-1}$ and
-reduce modulo~$p$ to get the numbers $r_i=ia\bmod{p}$.
+reduce modulo~$p$ to get numbers $r_i=ia\bmod{p}$.
 
 We will show that the set $R=\set{r_1,\ldots\,r_{p-1}}$
 equals the set $P=\set{1,\ldots\,p-1}$.
-First, $R\subseteq P$.
+First we argue that $R\subseteq P$.
 Because $p$ is prime and does not divide $i$ or~$a$, it does not divide their
 product~$ia$.
-Thus $r_i\not\equiv 0\pmod{p}$ and so all the $r_i$ are members of the
-set $\set{1,\ldots\,p-1}$.
+Thus each $r_i$ is not equivalent modulo~$p$ to $0$,
+and so each $r_i$ is a member of $\set{1,\ldots\,p-1}$.
 
-To get inclusion the other way, $P\subseteq R$, we show that
-if $i_0\neq i_1$ then $r_{i_0}\neq r_{i_1}$.
-For, with $r_0-r_1=i_0a-i_1a=(i_0-i_1)a$, because $p$ is prime and
-does not divide $i_0-i_1$ or~$a$ as each is smaller in absolute value
-than~$p$, it does not divide their product.
-That means that the two sets have the same number of elements, so
-$P\subseteq R$.
+We finish by claiming that the two sets have the same number of elements, 
+that $r_{i_0}\neq r_{i_1}$ for any unequal two numbers $i_0,i_1\in P$.
+Write $r_{i_0}-r_{i_1}=i_0a-i_1a=(i_0-i_1)a$. 
+Because $p$ is prime and
+does not divide $i_0-i_1$ or~$a$, as each is smaller in absolute value
+than~$p$, it therefore does not divide their product.
+So $r_{i_0}-r_{i_1}$ is not zero.
 
-To finish, multiply together the elements of that set.
+Finish by taking the product, modulo~$p$, of the numbers
+$a$, $2a$, \ldots{}\,$(p-1)a$.
 \begin{align*}
   a\cdot 2a\cdots (p-1) a
     &\equiv 1\cdot 2\cdots\,(p-1)\pmod{p} \\
   (p-1)!\cdot a^{p-1}
     &\equiv (p-1)!\pmod{p} 
 \end{align*}
-Canceling the $(p-1)!$'s gives the result.
+Cancel the $(p-1)!$'s to get the result.
 \end{proof}
 
 \begin{example}
 Let the prime be $p=7$.
-Of course, any natural number $a$ with $0<a<p$ is not divisible by~$p$.
+Of course, all natural numbers $a$ with $0<a<p$ are not divisible by~$p$.
 This list verifies that $a^{p-1}-1$ is divisible by~$p$.
 \begin{center}  \small
   \begin{tabular}{r|rrrrrr}
@@ -16372,7 +16391,7 @@ This list verifies that $a^{p-1}-1$ is divisible by~$p$.
 %For instance, $15\,625=7\cdot 2\,232+1$.
 \end{example}
 
-By Fermat's Little Theorem, given~$n$, 
+Fermat's Little Theorem gives a test for non-primality: given~$n$, 
 if we find a base~$a$ with~$0<a<n$ so that 
 $a^{n-1}\bmod{n}$ is not~$1$ then $n$ is not prime.
 
@@ -16386,32 +16405,30 @@ so $n$ is not prime.
 So if we are given~$n$ and try to show it is not prime with a number of 
 such $a$'s,
 and each time find that $a^{n-1}\bmod{n}=1$, 
-then we may start to think that $n$ is prime after all.
-Now, there are composite numbers $n$ where 
-$a^{n-1}\equiv 1\pmod{n}$ but $n$ is not prime.
-Such a number is a \definend{Fermat liar} or \definend{Fermat pseudoprime}
-with base~$a$.
-One is $n = 341=11\cdot 31$ for base $a=2$, since 
-$2^{340}\equiv 1\pmod{341}$.
-% sage: R = IntegerModRing(341)
-% sage: R(2)^(340)
-% 1
-However, \citetext{computer searches suggest that these are very rare}{%
-  Among the numbers less than $2.5\times 10^{10}$ 
-  there are only $21\,853\approx 2.2\times 10^{4}$ pseudoprimes base $2$.
-  That's six orders of magnitude less.}.
+then we may start to think that $n$ is prime after all.\footnote{%
+  There are composite numbers $n$ where 
+  $a^{n-1}\equiv 1\pmod{n}$ but $n$ is not prime.
+  Such a number is a \protect\definend{Fermat liar}\protect\index{Fermat liar} 
+  or \protect\definend{Fermat pseudoprime}\protect\index{Fermat pseudoprime}
+  with base~$a$.
+  One is $n = 341=11\cdot 31$ for base $a=2$, since 
+  $2^{340}\equiv 1\pmod{341}$.
+  % sage: R = IntegerModRing(341)
+  % sage: R(2)^(340)
+  % 1
+  However, \protect\citetext{these are rare}{%
+    Among the numbers less than $2.5\times 10^{10}$ 
+    there are only $21\,853\approx 2.2\times 10^{4}$ pseudoprimes base $2$.
+    That's six orders of magnitude less.}.}
 
-The rarity of exceptions suggests that we can use a
+This suggests a
 \definend{probabilistic primality test}:~given $n\in\N$ to test for
 primality,
 pick at random a base~$a$ with $0<a<n$ and calculate whether
 $a^{n-1}\equiv 1\pmod{n}$.
-If it is not true then $n$ is not prime and we stop testing.
+If this is not true then $n$ is not prime and we stop testing.
 But if it is true then we have evidence that~$n$ is prime.
-% \footnote{%
-%   In this case $a$ is a witness to
-%   the fact that~$n$ is not prime.}
-Now we iterate until we reach the desired level of confidence.
+Iterate until we reach the desired level of confidence.
 
 As to the relationship between number of iterations and the
 confidence level, 
@@ -16535,16 +16552,6 @@ into the decrypter~$d$.
 That's why~$n$ is taken to be the product of two large primes; it makes
 factoring as hard as possible.
 
-% So a fast algorithm to solve the Factoring problem would put RSA,
-% the most widely used method for encryption on the Internet, at risk.
-% There are published algorithms that are subexponential,
-% that for $b$-bit numbers and for any $\varepsilon>0$
-% are faster than $\bigOh((1+\varepsilon)^b)$.
-% No published algorithm can factor all integers in polynomial
-% time, i.e.\ in time $\bigOh(b^n)$ for some constant power~$n$.
-% Most experts suspect that no such algorithm is possible, but there
-% are no proofs.
-
 There is a factoring algorithm that takes only $\bigOh(b^3)$~time
 (and $\bigOh((b)$~space), called
 Shor's algorithm. 
@@ -16556,36 +16563,13 @@ For the moment, RSA seems safe.
 
 
 
-% While $\bigOh(n)$ is linear in the order of the group,
-% what matters is actually the computational difference between the
-% exponentiation and the discrete logarithm.
-% The exponentiation is not in $\bigOh(n)$ but instead in
-% $\bigOh(\log(n))=\bigOh(|n|)\bigOh(\log⁡(n))=\bigOh(|n|)$
-% (e.g. expoentiation with square and multiply has $|n|$
-% multiplications and at most $|n|$ squaring operations).
-
-% Therefore, the basic consideration for nn should not be the number of group
-% elements, but its logarithm (which is linear to the length of the numbers).
-% In order to avoid the question:
-% This is valid for any numeral system, regardless of its base).
-% So if we have numbers of a group $G$, we should set
-% $n=\lg (|G|n)=\lg (⁡|G|)$,
-% and brute force algorithms require $\bigOh(2n)$ operations.
-
-% Short version with less algebra:
-% Encrypting or signing something uses exponentiation as operation,
-% and there are algorithms with complexity linear to the length of the numbers
-% (in binary representation), and let's call the length $n$.
-% If you want to test all possible values then there are about $2n$
-% values to test, and this is exponential in the parameter $n$.
-% % https://crypto.stackexchange.com/a/12887
 
 \begin{exercises}
 \recommended
 \begin{exercise}
 There are twenty five primes less than or equal to~$100$.
 Find them.
-\begin{answer}
+\begin{answer}\verified
 They are
 $2$, $3$, $5$, $7$, $11$, $13$, $17$, $19$, $23$, $29$, $31$, $37$, $41$,
 $43$, $47$, $53$, $59$, $61$, $67$, $71$, $73$, $79$, $83$, $89$, and~$97$.
@@ -16608,16 +16592,23 @@ Find the decoder~$d$, the multiplicative inverse of $e$ modulo~$n$.
 \item Take the message to be represented as the number~$m=9$.
 Encrypt it and decrypt it.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item $n=pq=134$, $(p-1)\cdot(q-1)=120$
-\item Use $e=7$ (the three $2$, $3$, and~$5$ are not relatively prime).
+\item Use $e=7$ (the prior three $2$, $3$, and~$5$ are not relatively prime).
 \item The multiplicative inverse of $e=7$ modulo~$n=134$ is $d=103$.
 \item The encryption is $m^e\bmod{n}=9^7\bmod{143}=48$.
   The decryption is $48^{103}\bmod{143}=9$.
 \end{exparts}
 \end{answer}
-
+% sage: n = 143
+% sage: R =  Integers(n)
+% sage: m = R(9)
+% sage: m^7
+% 48
+% sage: m = R(48)
+% sage: m^(103)
+% 9
 \end{exercise}
 
 \begin{exercise}
@@ -16635,7 +16626,7 @@ For input~$n=10^{12}$ how many numbers would you need to test?
 Show that this is a terrible algorithm since it is exponential in the
 size of the input.
 \end{exparts*}
-\begin{answer}
+\begin{answer}\verified
 \begin{exparts}
 \item
 With two factors $n=k_0\cdot k_1$ if one is greater than $\sqrt{n}$ then
@@ -16647,16 +16638,16 @@ $k=\sqrt{n}$.
 The square root of $10^{12}$ is $10^6=1\,000\,000$, a million.
 \item
 The input~$n$ has size about $\lg(n)$~bits.
-Thus $\sqrt{n}\approx\sqrt{2^{\text{size of $n$}}}
-  \approx ^{(1/2)\cdot\text{size of $n$}}$.
+Thus $\sqrt{n}\approx\sqrt{2^{\text{number digits of $n$}}}
+  \approx 2^{(1/2)\cdot\text{number digits of $n$}}$.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-Show that the probability that a random $b$-bit number is prime is
-about $1/b$.
-\end{exercise}
+% \begin{exercise}
+% Show that the probability that a random $b$-bit number is prime is
+% about $1/b$.
+% \end{exercise}
 \end{exercises}
 \index{RSA Encryption|)}
 

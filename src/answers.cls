@@ -301,6 +301,7 @@
 % Don't want \lstinline!..! because it comes out too small.
 \usepackage{relsize}
 \newcommand\codeinline{\lstinline[basicstyle=\smaller\ttfamily]}
+\newcommand\pathname[1]{\lstinline[basicstyle=\smaller\ttfamily]{#1}}
 
 % Note: you can refine the choices with something like:
 % \lstset{language=C,caption={Descriptive Caption Text},label=DescriptiveLabel}

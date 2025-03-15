@@ -34,7 +34,7 @@
 ;;  variable-value  integer  value of the entry.  If negative, then
 ;;   the predicate is to be negated. 
 ;;   If variable-value < 0 then use the absolute value for the basic varnum,
-;;   but return the negative of the polynomial (indicating that the predicate is negated).
+;;   but return the negative of the polynomial (saying that the predicate is negated).
 (define (triple->varnum row-number column-number variable-value)
   (let ([a-value (+ (* 81 (- (abs variable-value) 1))
                     (* 9 (- row-number 1))
@@ -44,7 +44,7 @@
             (* -1 a-value)
             a-value)))
         
-;; varnum->triple  From the variable number, return the associated row, column, and value
+;; varnum->triple  Return the associated row, column, and value
 (define (varnum->triple v)
   (let* ([offset (- (abs v) 1)]
          [variable-value (quotient offset 81)]
@@ -58,27 +58,36 @@
 (provide triple->varnum
          varnum->triple)
 
-;; produce-clauses  Given a list of lists of triples, produce the matching set of strings
-;;   for the DIMACS file
+;; produce-clauses  Given a list of lists of triples, produce the matching set of
+;;   strings for the DIMACS file
 (define (produce-clauses list-of-lists)
-  (define (one-line-of-one variable-in-clause) ; produce line from a list of one number
+  (define (one-line-of-one variable-in-clause) ; produce line from list of one num
     (apply format "~a 0\n" variable-in-clause))
-  (define (one-line-of-two variables-in-clause) ; produce line from a list of two numbers
+  (define (one-line-of-two variables-in-clause) ; a line from list of two nums
     (apply format "~a ~a 0\n" variables-in-clause))
-  (define (one-line-of-nine variables-in-clause) ; produce line from a list of nine numbers
+  (define (one-line-of-nine variables-in-clause) ; a line from list of nine nums
     (apply format "~a ~a ~a ~a ~a ~a ~a ~a ~a 0\n" variables-in-clause))
 
   (for/list ([clause-list list-of-lists])
     (display clause-list)(newline)
     (cond [(= 9 (length clause-list))
-           (one-line-of-nine (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
-                                  clause-list))]
+           (one-line-of-nine (map
+                              (lambda (x) (triple->varnum (first x)
+                                                          (second x)
+                                                          (third x)))
+                              clause-list))]
           [(= 1 (length clause-list))
-           (one-line-of-one (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
-                                 clause-list))]
+           (one-line-of-one (map
+                             (lambda (x) (triple->varnum (first x)
+                                                         (second x)
+                                                         (third x)))
+                             clause-list))]
           [(= 2 (length clause-list))
-           (one-line-of-two (map (lambda (x) (triple->varnum (first x) (second x) (third x)))
-                                 clause-list))])))
+           (one-line-of-two (map
+                             (lambda (x) (triple->varnum (first x)
+                                                         (second x)
+                                                         (third x)))
+                             clause-list))])))
 
 
 ;; entry-restrictions    Return list of list of triples, each list of triples meaning
@@ -131,7 +140,8 @@
              ([variable-value ONETONINE]
               [box-row-list BOX-INDICES]
               [box-column-list BOX-INDICES])
-    (cons (one-box-one-value box-row-list box-column-list variable-value) accumulator)))
+    (cons (one-box-one-value box-row-list box-column-list variable-value)
+          accumulator)))
 
 
 ;; ======= write to file =======
@@ -142,45 +152,74 @@
 
 ;; INITIAL-CLAUSES  The given layout of the board.  Each row is a list with a
 ;; triple: row number, column number, integer.
+;(define INITIAL-CLAUSES
+;  (list (list '(1 3 9)) ; there is a 9 in position (1,3)
+;        (list '(1 8 1))
+;        (list '(1 9 5))
+;        (list '(2 1 5))
+;        (list '(2 4 4))
+;        (list '(2 6 9))
+;        (list '(2 7 7))
+;        (list '(3 1 4))
+;        (list '(3 2 7))
+;        (list '(3 3 3))
+;        (list '(3 4 5))
+;        (list '(3 5 6))
+;        (list '(3 6 1))
+;        (list '(3 7 9))
+;        (list '(4 4 7))
+;        (list '(4 5 4))
+;        (list '(4 8 9))
+;        (list '(4 9 6))
+;        (list '(5 8 8))
+;        (list '(6 3 4))
+;        (list '(6 4 8))
+;        (list '(6 5 3))
+;        (list '(6 7 1))
+;        (list '(6 8 5))
+;        (list '(7 1 1))
+;        (list '(7 2 3))
+;        (list '(7 3 5))
+;        (list '(7 4 9))
+;        (list '(7 9 2))
+;        (list '(8 3 6))
+;        (list '(8 4 2))
+;        (list '(8 5 5))
+;        (list '(8 6 7))
+;        (list '(8 8 3))
+;        (list '(9 1 7))
+;        (list '(9 2 2))
+;        (list '(9 5 1))
+;        (list '(9 9 9))
+;           ))
+
+; Exercise 
 (define INITIAL-CLAUSES
-  (list (list '(1 3 9)) ; there is a 9 in position (1,3)
-        (list '(1 8 1))
-        (list '(1 9 5))
-        (list '(2 1 5))
+  (list (list '(1 2 3)) ; there is a 3 in position (1,2)
+        (list '(1 3 4))
+        (list '(1 4 5))
+        (list '(1 6 6))
+        (list '(1 7 9))
+        (list '(2 3 5))
         (list '(2 4 4))
-        (list '(2 6 9))
-        (list '(2 7 7))
-        (list '(3 1 4))
-        (list '(3 2 7))
-        (list '(3 3 3))
-        (list '(3 4 5))
-        (list '(3 5 6))
-        (list '(3 6 1))
-        (list '(3 7 9))
-        (list '(4 4 7))
-        (list '(4 5 4))
-        (list '(4 8 9))
-        (list '(4 9 6))
-        (list '(5 8 8))
-        (list '(6 3 4))
-        (list '(6 4 8))
-        (list '(6 5 3))
-        (list '(6 7 1))
-        (list '(6 8 5))
-        (list '(7 1 1))
-        (list '(7 2 3))
-        (list '(7 3 5))
-        (list '(7 4 9))
-        (list '(7 9 2))
-        (list '(8 3 6))
-        (list '(8 4 2))
-        (list '(8 5 5))
-        (list '(8 6 7))
-        (list '(8 8 3))
-        (list '(9 1 7))
-        (list '(9 2 2))
-        (list '(9 5 1))
-        (list '(9 9 9))
+        (list '(3 5 8))
+        (list '(3 8 1))
+        (list '(4 4 8))
+        (list '(4 5 2))
+        (list '(4 6 3))
+        (list '(4 9 7))
+        (list '(5 1 1))
+        (list '(5 3 8))
+        (list '(5 4 7))
+        (list '(5 7 3))
+        (list '(6 6 9))
+        (list '(7 2 8))
+        (list '(7 3 7))
+        (list '(8 6 8))
+        (list '(8 8 7))
+        (list '(8 9 2))
+        (list '(9 1 4))
+        (list '(9 3 9))
            ))
 
 ;; CLAUSES  The list of all clauses, including those auto generated.

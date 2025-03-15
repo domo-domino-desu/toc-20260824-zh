@@ -38,6 +38,7 @@
 % This must be early in the class file to avoid an option clash
 \usepackage[hyphens]{url}  % allow splitting at hyphens
 % \g@addto@macro{\UrlBreaks}{\UrlOrds} % allow break at ord chars; https://tex.stackexchange.com/a/10419/339 
+% \DeclareUrlCommand\pathname{\urlstyle{tt}}
 \usepackage[hyphens]{xurl}  % 2022-Jun-05; allow break at any char
 
 % Get RaggedRight
@@ -1436,6 +1437,7 @@
 \usepackage{relsize}
 % \newcommand\codeinline{\lstinline[basicstyle=\smaller\ttfamily]}
 \newcommand\codeinline{\lstinline[basicstyle=\ttfamily]}
+\newcommand\pathname{\lstinline[basicstyle=\small\ttfamily]}
 
 
 

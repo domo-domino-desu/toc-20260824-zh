@@ -443,6 +443,7 @@
   % \renewcommand{\thesubsection}{\arabic{subsection}}%
   \renewcommand{\thesubsection}{\relax}%
   \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % Extra sections change this so change it back
+  \renewcommand{\theproblem}{\arabic{section}.\arabic{theorem}} % 
   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
   % 
@@ -554,6 +555,7 @@
   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
   \setcounter{subsection}{0}
   \renewcommand{\thetheorem}{\Alph{section}.\arabic{theorem}} 
+  \renewcommand{\theproblem}{\Alph{section}.\arabic{theorem}} 
   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
   \markright{Extra \thesection{}. #1}%

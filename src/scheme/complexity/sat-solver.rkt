@@ -34,7 +34,7 @@
           [data-line (read-line input-port)])
       (list head-line data-line)))
   
-  (call-with-input-file "test.out" get-two-lines))
+  (call-with-input-file "soduku.out" get-two-lines))
 
 (define (process-minisat-output pr)
   (let* ([data-line (second pr)]

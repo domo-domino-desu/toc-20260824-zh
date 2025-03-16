@@ -17389,7 +17389,7 @@ Memory used           : 11.00 MB
 CPU time              : 0.052668 s
 
 SATISFIABLE    
-\end{lstlisting}
+\end{lstlisting} % $
 
 Finally, in the file sat-solver.rkt are some more routines, including this one.
 \begin{lstlisting}
@@ -17414,69 +17414,72 @@ Finally, in the file sat-solver.rkt are some more routines, including this one.
 \extra{The \probname{Bounded Halting} problem}  \label{extra:BoundedHalting}
 % Cite Ege Erdil https://www.lesswrong.com/posts/8Af3X8b7f5piqtqZx/computability-and-complexity
 
-This chapter's final section develops the intuition that the class
-of \NP~complete problems forms a transition or bridge
+This chapter's final section developed the intuition that the class
+of \NP~complete problems forms a transition
 between the solvable problems and the unsolvable ones.
-Here we support that with some results.
+\citetext{Here we support that view}{%
+  This material developed from a post by Ege Erdil, 
+  \url{https://www.lesswrong.com/posts/8Af3X8b7f5piqtqZx/computability-and-complexity}.}.
 
 The signature unsolvable problem is \HP.
-Here is a variant that is easy.
+This is an easily-solved variant.
 
 \begin{problem} % [\definend{\probname{Simulation} problem}]\index{Simulation problem@\probname{Similation} problem}
-Given an index, an input, and a step limit, 
+Given an index, an input, and a step bound, 
 $\sequence{e,x,S}\in \N\times\kleenestar{\B}\times\N$,
-decide if Turing machine $\TM_e$ halts on~$x$ within $S$ steps.
+decide whether Turing machine $\TM_e$ halts on~$x$ within $S$ steps.
 \end{problem}
 
-This problem is clearly solvable since we can just run the machine to see
-if it halts within $S$~steps.
-Consider a version that is not so trivial.
+We can solve this by just running the machine for $S$~steps to see
+if it halts.
+The next variant is not so trivial.
 
 \begin{problem}[\definend{\probname{Nondeterministic Bounded Halting} problem}]\index{Nondeterministic Bounded Halting problem@\probname{Nondeterministic Bounded Halting} problem}
-Given an index and a step limit, $\sequence{e,S}$ 
-(where $S$ is specified in unary notation),
-decide if on an empty tape, the nondeterministic Turing machine $\TM_e$ 
-halts within $S$~steps.
-That is, decide if $\TM_e$'s computation history contains a branch that 
+Given an index and a step bound, $\sequence{e,S}$, 
+where $S$ is specified in unary,
+decide whether the nondeterministic Turing machine $\TM_e$ 
+halts on an empty tape within $S$~steps.
+That is, decide whether $\TM_e$'s computation tree contains a 
+maximal path that 
 reaches a halting state in no more than $S$~many transitions.
 \end{problem}
 
 This problem is also solvable.
 For instance,  we could use a deterministic machine to 
 simulate all of the nondeterministic machine's
-at most $2^S$ possible branches, and just check each for a halting state.
+at most $2^S$ possible paths and just check each for a halting state.
 Thus, on a serial machine the naive approach to this problem is exponential.  
-Can we do better?
+Naturally we ask if we can find a faster way.
 
 \begin{theorem}  \label{th:BHPIsNPComplete}
 The \probname{Nondeterministic Bounded Halting} problem is \NP{} complete. 
 \end{theorem}
 
 \begin{proof}
-Write $\lang[B]$ for the \probname{Nondeterministic Bounded Halting} problem's 
-language. 
+Denote the \probname{Nondeterministic Bounded Halting} problem's 
+language with $\lang[B]$. 
 
 We first argue that $\lang[B]$ is in~\NP.
 We can write a verifier that inputs a problem instance 
-$\sequence{e,S}$ and a witness,
-which represents a halting branch 
+$\sequence{e,S}$ and a witness
+that represents a halting branch 
 (it might be a bitstring, where \str{0} and \str{1} describe the
 two ways that the branch can go).
-Obviously $\sequence{e,S}$ is in~$\lang[B]$ if and only if
+Clearly $\sequence{e,S}$ is in~$\lang[B]$ if and only if
 there exists such a witness.
-Also clear is that the verifier can run in time polynomial 
-in~$\lh{\sigma}$, since $S$ is given in unary.
+Also, the verifier can run in time polynomial 
+in~$\lh{\sequence{e,S}}$ because $S$ is given in unary
+(in time~$S$ there can be at most $\sizeof{S}$ branchings).
 
 What remains is to argue that $\lang[B]$ is \NP~hard.
-We will show that any problem $\prob\in\NP$ reduces to it,
-that $\prob\leq_p\lang[B]$.
+We will show that any $\prob\in\NP$ has $\prob\leq_p\lang[B]$.
 Each such $\prob$ has an associated polytime verifier,
 a deterministic Turing machine~$\TM[V]$
 where $\sigma\in\lang$
 if and only if
 there exists an~$\omega$ so that
 $\TM[V]$ accepts $\sequence{\sigma,\omega}$
-and where $\TM[V]$ runs in time bounded $p(\lh{\sigma})$ 
+and where $\TM[V]$ runs in time bounded by $p(\lh{\sigma})$ 
 for some polynomial~$p$.  
 
 For the reduction we need a computable function~$f$ so that
@@ -17499,10 +17502,10 @@ We can also consider the following serial variant of the \HP.
 
 \begin{problem}[\definend{\probname{Bounded Halting} problem}]\index{Bounded Halting problem@\probname{Bounded Halting} problem}
 Given an index and a step limit, $\sequence{e,S}$,
-decide if on every input, Turing machine $\TM_e$ halts within $S$~steps.
+decide whether on every input, Turing machine $\TM_e$ halts within $S$~steps.
 \end{problem}
 
-This problem too is solvable.
+This problem is also solvable.
 We don't need to check all of the infinitely many inputs $x\in\kleenestar{\B}$ 
 because in $S$~steps the machine can read at most $S$~many bits off the tape.
 So we need only generate the $2^S$~many tape inputs that are relevant,

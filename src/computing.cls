@@ -624,70 +624,42 @@
 
 
 
-
-%======================== hyperref ===========
-
-% Depreciated?  Doc on CTAN says in next LaTeX release
-\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
-% \usepackage[draft]{hyperref}  % remove the draft option at the end.
-\usepackage{hyperref}  % remove the draft option at the end.
-  % It is there to prevent errors like
-  % "\pdfendlink ended up in different nesting level than \pdfstartlink";
-  % see https://tex.stackexchange.com/a/154184/121234
-\hypersetup{
-%  warning says it is already set:    bookmarks=true,         % show bookmarks bar?
-    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
-    pdftoolbar=true,        % show Acrobat’s toolbar?
-    pdfmenubar=true,        % show Acrobat’s menu?
-    pdffitwindow=false,     % window fit to page when opened
-    pdfstartview={FitH},    % fits the width of the page to the window
-    pdfpagemode=None,       % None, or UseOutlines, or UseThumbs, or FullScreen
-    pdftitle={Computing},    % title
-    pdfauthor={Jim Hefferon, University of Vermont},     % author
-    pdfsubject={Theory of Computation},   % subject of the document
-    pdfcreator={LaTeX, Asymptote},   % creator of the document; see https://tex.stackexchange.com/a/590921/339
-    % pdfproducer={pdflatex}, % producer of the document; default is current pdflatex version
-    pdfdisplaydoctitle=true, % show document title in window title
-    pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
-    pdfnewwindow=true,      % links in new window
-    colorlinks=true,       % false: boxed links; true: colored links
-    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
-    citecolor=black,        % color of links to bibliography
-    filecolor=black,      % color of file links
-    urlcolor=black,           % color of external links
-    plainpages=false   % prevent "destination with the same identifier" error
+%================================================================
+% FOOTNOTES
+% Footnotes: Use footnote symbols (not numbers) on a per-page basis.
+% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
+\setlength{\footnotemargin}{-1em}
+\DefineFNsymbolsTM*{hefferon}{%
+  \textdagger    \dagger
+  \textdaggerdbl \ddagger
+  \#  \#%
+  \textsection   \mathsection
+  a a
+  b b
+  c c
+  d d
+  e e 
+  f f 
+  g g
+  h h
+  i i
+  j j
+  k k
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
+  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
+}%  lots of fn symbols, to avoid getting compilation error that are out of foonotes, because LaTeX doesn't know they are per-page until the second run. 
+\setfnsymbol{hefferon}
+\newlength{\footmarktotextglue}
+\global\footmarktotextglue=.1em plus .05em minus .02em %
+\global\footglue=0.65em plus.2em minus.1em % space between footnotes
+\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
+\smash{\@makefnmark}\nobreak
+\hskip\footmarktotextglue\relax#1% was .5em
 }
-% \newcommand\href[2]{\relax}
-% \newcommand\hyperref[2][\relax]{#2}
-
-% These prevent annoying log messages like "
-%  Package hyperref Info: bookmark level for unknown animatefigure defaults to 0 on input line 7949.
-\providecommand*{\toclevel@animatefigure}{0}%
-
-% 2022-Jun-05
-\usepackage{breakurl}
-
-
-
-% ======== clever references ===============
-% This must come before cleveref
-\usepackage{framed}
-% \setlength{\fboxsep}{0ex}
-% \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
-% \usepackage{amsthm}
-
-% Must come before cleveref:
-\usepackage{thmtools}
-
-
-\usepackage{cleveref} % after hyperref
-\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
-  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
-  \ifcsname #2refname\endcsname
-    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
-  \fi
-}
-
+\renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
 
 
 
@@ -912,10 +884,6 @@
 %   \end{enumerate*}
 % }
 
-\crefname{@exercisenumber}{Exercise}{Exercises}
-\Crefname{@exercisenumber}{Exercise}{Exercises}
-\crefname{exerciselisti}{Exercise}{Exercises}
-\Crefname{exerciselisti}{Exercise}{Exercises}
 
 % For naming a part of an exercise, as in \item \expartsname{Commutativity}
 \newcommand{\expartsname}[1]{\textsc{(#1)}} 
@@ -970,47 +938,11 @@
 \usepackage{tcolorbox}
 \tcbset{beforeafter skip=2pt plus 0.2pt minus 0.1pt}
 
-
-%================================================================
-% FOOTNOTES
-% Footnotes: Use footnote symbols (not numbers) on a per-page basis.
-% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
-\setlength{\footnotemargin}{-1em}
-\DefineFNsymbolsTM*{hefferon}{%
-  \textdagger    \dagger
-  \textdaggerdbl \ddagger
-  \#  \#%
-  \textsection   \mathsection
-  a a
-  b b
-  c c
-  d d
-  e e 
-  f f 
-  g g
-  h h
-  i i
-  j j
-  k k
-  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
-  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
-  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
-  1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
-}%  lots of fn symbols, to avoid getting compilation error that are out of foonotes, because LaTeX doesn't know they are per-page until the second run. 
-\setfnsymbol{hefferon}
-\newlength{\footmarktotextglue}
-\global\footmarktotextglue=.1em plus .05em minus .02em %
-\global\footglue=0.65em plus.2em minus.1em % space between footnotes
-\long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
-\smash{\@makefnmark}\nobreak
-\hskip\footmarktotextglue\relax#1% was .5em
-}
-\renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
-
-
 %================================================================
 % THEOREM ENVIRONMENTS
+% Must come before cleveref:
+\usepackage{thmtools}
+
 
 \theoremstyle{coloredstyle}
 \newtheorem{theorem}{Theorem}[section]
@@ -1110,25 +1042,6 @@
   ]{proof}
 
 
-
-\crefname{theorem}{Theorem}{Theorems}
-\Crefname{theorem}{Theorem}{Theorems}
-\crefname{lemma}{Lemma}{Lemmas}
-\Crefname{lemma}{Lemma}{Lemmas}
-\crefname{corollary}{Corollary}{Collaries}
-\Crefname{corollary}{Corollary}{Collaries}
-\crefname{definition}{Definition}{Definitions}
-\Crefname{definition}{Definition}{Definitions}
-\crefname{example}{Example}{Examples}
-\Crefname{example}{Example}{Theorems}
-\crefname{remark}{Remark}{Remarks}
-\Crefname{remark}{Remark}{Remarks}
-\crefname{problem}{Problem}{Problems}
-\Crefname{problem}{Problem}{Problems}
-\crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
-\Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
-\crefname{tablefigure}{Table}{Table}
-\Crefname{tablefigure}{Table}{Table}
 
 \newcommand{\probleminput}{\textit{Input:}}
 \newcommand{\problemoutput}{\textit{Output:}}
@@ -1492,8 +1405,6 @@
 }{%
   \end{animatefigure}
 }
-\crefname{animatefigure}{Animation}{Animations}
-\Crefname{animatefigure}{Animation}{Animations}
 
 
 \captionsetup[tablehere]{labelformat=empty}
@@ -1508,8 +1419,6 @@
 }{%
   \end{tablehere}
 }
-\crefname{tablehere}{Table}{Tables}
-\Crefname{tablehere}{Table}{Tables}
 
 % fig  Figure goes here
 % [#1] label
@@ -1529,12 +1438,6 @@
   \caption{\thetheorem~\textsc{Figure:} \figcapt} \label{\figlabel}
   \end{figurehere}
 }
-\crefname{figurehere}{Figure}{Figures}
-\Crefname{figurehere}{Figure}{Figures}
-
-% Cleveref name for extra sections
-\crefname{extrasection}{Extra}{Extra}
-\Crefname{extrasection}{Extra}{Extra}
 
 
 % =================== Margin graphics ===================
@@ -1846,6 +1749,104 @@
 }{%
   \endlist %
 }
+
+
+
+
+%======================== hyperref ===========
+
+% Depreciated?  Doc on CTAN says in next LaTeX release
+\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
+% \usepackage[draft]{hyperref}  % remove the draft option at the end.
+\usepackage[hypertexnames=false]{hyperref}  % remove the draft option at the end.
+  % It is there to prevent errors like
+  % "\pdfendlink ended up in different nesting level than \pdfstartlink";
+  % see https://tex.stackexchange.com/a/154184/121234
+\hypersetup{
+%  warning says it is already set:    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdfpagemode=None,       % None, or UseOutlines, or UseThumbs, or FullScreen
+    pdftitle={Computing},    % title
+    pdfauthor={Jim Hefferon, University of Vermont},     % author
+    pdfsubject={Theory of Computation},   % subject of the document
+    pdfcreator={LaTeX, Asymptote},   % creator of the document; see https://tex.stackexchange.com/a/590921/339
+    % pdfproducer={pdflatex}, % producer of the document; default is current pdflatex version
+    pdfdisplaydoctitle=true, % show document title in window title
+    pdfkeywords={theory of computation} {computation} {turing machines}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black,           % color of external links
+    plainpages=false   % prevent "destination with the same identifier" error
+}
+% \newcommand\href[2]{\relax}
+% \newcommand\hyperref[2][\relax]{#2}
+
+% These prevent annoying log messages like "
+%  Package hyperref Info: bookmark level for unknown animatefigure defaults to 0 on input line 7949.
+\providecommand*{\toclevel@animatefigure}{0}%
+
+% 2022-Jun-05
+\usepackage{breakurl}
+
+
+
+% ======== clever references ===============
+% This must come before cleveref
+\usepackage{framed}
+% \setlength{\fboxsep}{0ex}
+% \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
+% \usepackage{amsthm}
+
+
+\usepackage{cleveref} % after hyperref
+% \def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+%   \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+%   \ifcsname #2refname\endcsname
+%     \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+%   \fi
+% }
+
+
+\crefname{theorem}{Theorem}{Theorems}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{Corollary}{Collaries}
+\Crefname{corollary}{Corollary}{Collaries}
+\crefname{definition}{Definition}{Definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{example}{Example}{Examples}
+\Crefname{example}{Example}{Theorems}
+\crefname{remark}{Remark}{Remarks}
+\Crefname{remark}{Remark}{Remarks}
+\crefname{problem}{Problem}{Problems}
+\Crefname{problem}{Problem}{Problems}
+\crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+\Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+\crefname{tablefigure}{Table}{Table}
+\Crefname{tablefigure}{Table}{Table}
+\crefname{animatefigure}{Animation}{Animations}
+\Crefname{animatefigure}{Animation}{Animations}
+\crefname{tablehere}{Table}{Tables}
+\Crefname{tablehere}{Table}{Tables}
+\crefname{figurehere}{Figure}{Figures}
+\Crefname{figurehere}{Figure}{Figures}
+
+% Cleveref name for extra sections
+\crefname{extrasection}{Extra}{Extra}
+\Crefname{extrasection}{Extra}{Extra}
+
+\crefname{@exercisenumber}{Exercise}{Exercises}
+\Crefname{@exercisenumber}{Exercise}{Exercises}
+\crefname{exerciselisti}{Exercise}{Exercises}
+\Crefname{exerciselisti}{Exercise}{Exercises}
 
 
 

@@ -530,6 +530,10 @@ background/asy/memory/memory00.pdf : background/asy/memory/memory.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
+background/asy/memory/ordering000.pdf : background/asy/ordering/ordering.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
 background/background.tex : | background/asy/3d/3d000.pdf \
   background/asy/aristotle/aristotle1000.pdf \
   background/asy/busybeaver/busybeaver00.pdf \
@@ -539,7 +543,8 @@ background/background.tex : | background/asy/3d/3d000.pdf \
   background/asy/hp/hp00.pdf \
   background/asy/indexsets/indexsets.pdf \
   background/asy/maps/maps00.pdf \
-  background/asy/memory/memory00.pdf
+  background/asy/memory/memory00.pdf \\
+  background/asy/ordering/ordering000.pdf
 
 
 # ============== languages ================

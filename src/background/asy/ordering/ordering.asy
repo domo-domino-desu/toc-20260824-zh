@@ -292,7 +292,7 @@ real label_x = 0.65*UNIVERSE_WD;
 real label_y = K_loc.y;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize c.e. sets}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize C.E. sets}",(label_x,0.5*label_y),E); 
 
 // Label sets
 path labelpath = (0,0){(1,0.2)}..(0.325*UNIVERSE_WD,0.01*UNIVERSE_HT)

@@ -14,11 +14,22 @@
 % Look in the file papercopyflag for about whether this is making paper copies
 \input{\computingClsDir/papercopyflag}
 
+% Detect whether the engine is pdftex or luatex.
+\usepackage{iftex}
+
 % Use UTF-8
-\usepackage[utf8]{inputenc}
+\ifpdftex
+  \usepackage[utf8]{inputenc}
+\else
+\fi
+
 \usepackage[T1]{fontenc}
-\input{glyphtounicode}% Make PDF offer better copy and paste
-  \pdfgentounicode=1
+
+\ifpdftex
+  \input{glyphtounicode}% Make PDF offer better copy and paste
+    \pdfgentounicode=1
+\else
+\fi
 
 \usepackage{mathtools}  
 \usepackage{amsmath}
@@ -65,7 +76,7 @@
                 textheight=\dimexpr9.25in-2\dimexpr60pt\relax, % \paperheight and \topmargin don't work here
                 headsep=12pt,
                 bindingoffset=0.4in,
-                % showframe,  % show lines for the margins
+                showframe,  % show lines for the margins
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}

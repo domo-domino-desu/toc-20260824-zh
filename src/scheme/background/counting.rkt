@@ -283,7 +283,7 @@
                              (apply cantor-unpairing-n tuple))])
          (apply cantor-unpairing newtuple))])))
 
-;; cantor-pairing-omega  Inverse of cantor-unpairing-omega (but with arguments inserted) 
+;; cantor-pairing-omega  Inverse of cantor-unpairing-omega (but arguments inserted) 
 ;;   natural  ->  (natural .. )
 (define (cantor-pairing-omega c)
   (let* ([pr (cantor-pairing c)]

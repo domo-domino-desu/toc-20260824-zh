@@ -1,12 +1,13 @@
 #!/bin/bash
 # LaTeX the Computation book and answers
+LATEX=pdflatex
 
 # Generate the book; run it twice to settle any future references
-pdflatex book
+${LATEX} book
 makeindex -s book.ist -p odd book.idx
 biber book
-pdflatex book
-pdflatex answers
+${LATEX} book
+${LATEX} answers
 biber answers
-pdflatex answers
+${LATEX} answers
 

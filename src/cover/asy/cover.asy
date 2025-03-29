@@ -49,7 +49,7 @@ fill(pic, border, pink_color);
 // draw(pic, border, red);
 layer(pic);
 label(pic,graphic("../computingdivision.jpg","width=7.5in"),
-      (papersize_width/2, papersize_height/2));
+      (papersize_width/2, papersize_height/2.1));
 layer(pic);
 
 srand(1414);  // seed random number generator
@@ -83,9 +83,11 @@ path tcropper=T.deform(cropper);
 draw(pic, tcropper, green_color+linewidth(2pt));
 
 label(pic, "\makebox[0in][c]{Theory of Computation}",
-      (papersize_width/2,8.55inch), fontsize(35)+lightblack_color);
+      (papersize_width/2,8.6inch), fontsize(35)+lightblack_color);
 label(pic, "\makebox[0in][c]{Making Connections}",
-      (papersize_width/2,8.0inch), fontsize(19)+lightblack_color);
-label(pic, "\makebox[0in][r]{\begin{tabular}{r}\Large Jim Hef{}feron \\[0.35ex] \texttt{https://hefferon.net/computation}\end{tabular}}", (papersize_width-0.5inch,0.9inch), fontsize(14)+lightblack_color);
+      (papersize_width/2,8.05inch), fontsize(19)+lightblack_color);
+label(pic, "\makebox[0in][c]{Second edition}",
+      (papersize_width/2,7.7inch), fontsize(14)+lightblack_color);
+label(pic, "\makebox[0in][r]{\begin{tabular}{r}{\Large Jim Hef{}feron} \\[0.35ex] \texttt{https://hefferon.net/computation}\end{tabular}}", (papersize_width-0.5inch,0.75inch), fontsize(14)+lightblack_color);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");

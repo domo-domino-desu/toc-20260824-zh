@@ -76,7 +76,7 @@
                 textheight=\dimexpr9.25in-2\dimexpr60pt\relax, % \paperheight and \topmargin don't work here
                 headsep=12pt,
                 bindingoffset=0.4in,
-                showframe,  % show lines for the margins
+                % showframe,  % show lines for the margins
                 ]{geometry}
 
 \RequirePackage[dvipsnames]{xcolor}

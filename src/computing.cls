@@ -706,7 +706,7 @@
 % see answer.cls.
 \newtoggle{@showverified}  % Set to true to put something on the book.pdf page
 \toggletrue{@showverified}  % comment out one of these two
-% \togglefalse{@showverified} %
+\togglefalse{@showverified} %
 % This handles the logic; don't set by hand
 \newtoggle{@verified}
 \togglefalse{@verified}

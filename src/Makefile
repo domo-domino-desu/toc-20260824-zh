@@ -135,7 +135,7 @@ prologue/asy/life/eater000.pdf : prologue/asy/life/eater_all.asy prologue/asy/li
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)" 
 
-prologue/asy/life/eateranim000.pdf : prologue/asy/life/eateranim_all.asy prologue/asy/life/gameboards/eater000.life
+prologue/asy/life/eateranim000.pdf : prologue/asy/life/eateranim_all.asy prologue/asy/life/gameboards/eateranim000.life
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)" 
 

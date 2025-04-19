@@ -792,6 +792,14 @@
   % \vspace{0.5ex plus 0.15ex minus 0.05ex}% \itemsep + \parsep
   \medskip %
   \parbox{\textwidth}{\it #1}}
+% Refer to prior exercise instructions
+% Without optinal argument it says "See instructions above" but
+% with optional argument, which should be a reference label, it says
+% "See instructions before --label--"
+\NewDocumentCommand\refexerciseinstructions{o}
+    {\IfNoValueTF {#1}%
+        {\textit{See the instructions above.}}%
+        {\textit{See the instructions before \cref{#1}.}}}
 
 
 % New exercises code

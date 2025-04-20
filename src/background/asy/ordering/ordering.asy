@@ -292,7 +292,80 @@ real label_x = 0.65*UNIVERSE_WD;
 real label_y = K_loc.y;
 path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
 draw(pic,p_halfbar,squarebraces_label_pen);
-label(pic,"\makebox[\width][l]{\scriptsize C.E. sets}",(label_x,0.5*label_y),E); 
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{CE}}",(label_x,0.5*label_y),E); 
+
+// Label sets
+path labelpath = (0,0){(1,0.2)}..(0.325*UNIVERSE_WD,0.01*UNIVERSE_HT)
+                    ..(0.375*UNIVERSE_WD,-0.01*UNIVERSE_HT)
+                    ..{(1,0.2)}(.7*UNIVERSE_WD,0*UNIVERSE_HT);
+
+// Label empty set
+real label_x = -0.7*UNIVERSE_WD;
+pair emptyset_loc = point(UNIVERSE, 0)+(0.00,0.01);
+filldraw(pic, make_pt_path(emptyset_loc), highlightcolor, fillpen=white);
+draw(pic, shift(label_x,0)*labelpath, highlightcolor+linewidth(0.10pt)+squarecap, Margin(1.25,1));
+label(pic,"\makebox[\width][r]{\scriptsize $\emptyset$}",(label_x,0), highlightcolor);
+// Label K
+filldraw(pic, make_pt_path(K_loc), highlightcolor, fillpen=white);
+draw(pic, shift(label_x,K_loc.y)*labelpath, highlightcolor+linewidth(0.10pt)+squarecap, Margin(1.25,0.75));
+label(pic,"\makebox[\width][r]{\scriptsize $K$}",(label_x,K_loc.y), highlightcolor); 
+//Label K^K
+// pair KK_loc = (0,K_loc.y+0.20*UNIVERSE_HT);
+// filldraw(pic, make_pt_path(KK_loc), highlightcolor, fillpen=white);
+// draw(pic, shift(label_x,KK_loc.y)*labelpath, highlightcolor+linewidth(0.10pt)+squarecap, Margin(2.25,0.5));
+// label(pic,"\makebox[\width][r]{\scriptsize $K^K$}",(label_x,KK_loc.y), highlightcolor);
+
+// Cover stubs extending into boundary
+draw(pic,UNIVERSE, AXISPEN);
+
+shipout(format(OUTPUT_FN,picnum), pic);
+
+
+
+// --------  CE sets, with K^K -------------------
+picture pic;
+int picnum=1;
+	       
+unitsize(pic,0,1.0cm);
+
+// Draw the universe of all langugaes
+filldraw(pic,UNIVERSE, white, AXISPEN);
+
+filldraw(pic, CE_bnd, fillpen=backgroundcolor, drawpen=AXISPEN);
+
+picture K_sets=new picture;
+filldraw(K_sets, circle(K_loc, 0.15), fillpen=backgroundcolor, drawpen=AXISPEN);
+clip(K_sets, CE_bnd);
+add(pic, K_sets);
+
+picture comp_sets=new picture;
+filldraw(comp_sets, circle(point(UNIVERSE, 0), 0.15), fillpen=backgroundcolor, drawpen=AXISPEN);
+clip(comp_sets, UNIVERSE);
+clip(comp_sets, CE_bnd);
+add(pic, comp_sets);
+
+// Add points in the K and comp regions to pts
+pts.push( K_loc+(0.05,-0.05) );
+// pts.push( K_loc );  // K point
+pts.push( point(UNIVERSE, 0)+(0.05,0.075) );
+// pts.push( point(UNIVERSE, 0)+(0.00,0.01) ); // emptyset point
+// pair KK_loc = (0,K_loc.y+0.20*UNIVERSE_HT);
+// pts.push( KK_loc);
+
+// Draw points
+picture points=new picture;
+for(int i=0; i<pts.length; ++i){
+  filldraw(points, make_pt_path(pts[i]), boldcolor, fillpen=white);
+} 
+clip(points, UNIVERSE);
+add(pic, points);
+
+// Put in the line with bars and label it
+real label_x = 0.65*UNIVERSE_WD;
+real label_y = K_loc.y;
+path p_halfbar = halfbar((label_x,label_y)--(label_x,0),(-0.5*WHISKER_WD,0));
+draw(pic,p_halfbar,squarebraces_label_pen);
+label(pic,"\makebox[\width][l]{\scriptsize \compclass{CE}}",(label_x,0.5*label_y),E); 
 
 // Label sets
 path labelpath = (0,0){(1,0.2)}..(0.325*UNIVERSE_WD,0.01*UNIVERSE_HT)
@@ -319,6 +392,8 @@ label(pic,"\makebox[\width][r]{\scriptsize $K^K$}",(label_x,KK_loc.y), highlight
 draw(pic,UNIVERSE, AXISPEN);
 
 shipout(format(OUTPUT_FN,picnum), pic);
+
+
 
 
 

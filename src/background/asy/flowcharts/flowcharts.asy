@@ -170,7 +170,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $x$");
-node test=nrounddiamond("$\TMfcn^K_{e_0}(x)=0\,$?");
+node test=nrounddiamond("$\TMfcn^S_{e_0}(x)=0\,$?");
 node printout=nbox("Print $42$");
 node loop=nbox("Infinite loop");
 node ending=nroundbox("End");
@@ -1150,7 +1150,7 @@ setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $e$, $x$");
+node read=nbox("Read $\sequence{e,x}$");
 node test=nrounddiamond("$s(e_0,e,x)\in\text{oracle}$?");
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");

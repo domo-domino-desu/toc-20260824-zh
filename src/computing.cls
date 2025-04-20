@@ -1315,8 +1315,8 @@
 \setlength{\cftsubsecindent}{2.5em}
 \setlength{\cftsubsecnumwidth}{1em}
 
-\setlength{\cftbeforetoctitleskip}{2ex plus 0.05ex}
-\setlength{\cftaftertoctitleskip}{2ex plus 0.05ex minus 0.01ex}
+\setlength{\cftbeforetoctitleskip}{0ex plus 0.05ex}
+\setlength{\cftaftertoctitleskip}{1ex plus 0.05ex minus 0.01ex}
 \renewcommand{\cfttoctitlefont}{\Large\bfseries}
 
 % from tocloft.sty; hack to make it print roman chapter number
@@ -1863,6 +1863,8 @@
 \Crefname{tablehere}{Table}{Tables}
 \crefname{figurehere}{Figure}{Figures}
 \Crefname{figurehere}{Figure}{Figures}
+\crefname{fig}{Figure}{Figures}
+\Crefname{fig}{Figure}{Figures}
 
 % Cleveref name for extra sections
 \crefname{extrasection}{Extra}{Extra}

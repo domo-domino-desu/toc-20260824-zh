@@ -3796,7 +3796,7 @@ setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $x$, $y$");
+node read=nbox("Read $y$");
 node run=nbox("Run $\TM_x$ on input $x$");
 node print=nbox("Print $2\cdot y$");
 node ending=nroundbox("End");

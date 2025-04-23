@@ -3706,7 +3706,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $y$");
-node test=nrounddiamond("$y\notin\text{oracle}$?");
+node test=nrounddiamond("$y\in\text{oracle}$?");
 node yes=nbox("Print $1$");
 node no=nbox("Print $0$");
 node ending=nroundbox("End");
@@ -3727,8 +3727,8 @@ vlayout(2*v,test,ending);
 draw(pic,
      (start--read),
      (read--test),
-     (test..HV..yes).l(Label("Y",Relative(0.25))),
-     (test..HV..no).l(Label("N",Relative(0.25))).style("leftside"),
+     (test..HV..yes).l(Label("N",Relative(0.25))),
+     (test..HV..no).l(Label("Y",Relative(0.25))).style("leftside"),
      (yes..VHV..ending),
      (no..VHV..ending)
 );

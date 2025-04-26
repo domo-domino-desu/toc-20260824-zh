@@ -1,7 +1,7 @@
 #lang racket
 ;; Directly from https://bor0.wordpress.com/2020/04/24/deriving-a-quine-in-a-lisp/
 ;; and also from https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf p 74, 75
-(define p (lambda (x) (list 'Boro 'is 'reading x)))
+; (define p (lambda (x) (list 'Boro 'is 'reading x)))
 (define d (lambda (p x) (p (list 'quote (p x)))))
 (define q (lambda (x) (list 'Boro 'is 'reading (d identity x))))
 (define r (lambda (x) (d q x)))

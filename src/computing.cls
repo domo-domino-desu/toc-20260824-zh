@@ -575,39 +575,6 @@
 \newcommand{\extramark}[1]{
   \markright{Extra\ \thesubsection.\ #1}}% for page headers
 
-% Note that the cleveref names are lower down, after loading cleveref
-
-% ............ appendix ..............
-\renewcommand{\appendix}{%
-  \part{Appendices}
-  \addcontentsline{toc}{chapter}{Appendix}
-  \pagestyle{endmatter}
-  \setcounter{section}{0}
-  \renewcommand{\thesection}{\Alph{section}}
-  \ifbool{MakingPaperCopy}{%
-    \titleformat{\section}[hang]
-       {\normalfont\scshape}
-       {\llap{\thesection\hspace*{\margin@numberingspace}}Appendix\hspace*{1em}}
-       {0em}
-       {\Large\bfseries}
-    \titlespacing*{\section}
-      {0pt}  % increase of left margin
-      {3.5ex plus 1.5ex minus 0.3ex}% before sep
-      {1.8ex plus 0.3ex minus 0.05ex}% after sep
-  }{%
-    \titleformat{\section}[hang]
-       {\normalfont\scshape}
-       {\makebox[0em][r]{Appendix \thesection\hspace*{1em}}}
-       {0em}
-       {\Large\bfseries}
-    \titlespacing*{\section}
-      {0pt}  % increase of left margin
-      {3.5ex plus 1.5ex minus 0.3ex}% before sep
-      {1.8ex plus 0.3ex minus 0.05ex}% after sep
-  }
- \def\exercisecounterstart{\relax}
-}
-
 
 
 % ============= Index ================
@@ -1865,6 +1832,8 @@
 \Crefname{figurehere}{Figure}{Figures}
 \crefname{fig}{Figure}{Figures}
 \Crefname{fig}{Figure}{Figures}
+\crefname{appendix}{Appendix}{Appendix}
+\Crefname{appendix}{Appendix}{Appendix}
 
 % Cleveref name for extra sections
 \crefname{extrasection}{Extra}{Extra}
@@ -1875,6 +1844,39 @@
 \crefname{exerciselisti}{Exercise}{Exercises}
 \Crefname{exerciselisti}{Exercise}{Exercises}
 
+
+% This goes after cleveref, which redefines appendix 
+% ............ appendix ..............
+\renewcommand{\appendix}{%
+  \part{Appendices}
+  \addcontentsline{toc}{chapter}{Appendix}
+  \crefalias{section}{appendix}
+  \pagestyle{endmatter}
+  \setcounter{section}{0}
+  \renewcommand{\thesection}{\Alph{section}}
+  \ifbool{MakingPaperCopy}{%
+    \titleformat{\section}[hang]
+       {\normalfont\scshape}
+       {\llap{\thesection\hspace*{\margin@numberingspace}}Appendix\hspace*{1em}}
+       {0em}
+       {\Large\bfseries}
+    \titlespacing*{\section}
+      {0pt}  % increase of left margin
+      {3.5ex plus 1.5ex minus 0.3ex}% before sep
+      {1.8ex plus 0.3ex minus 0.05ex}% after sep
+  }{%
+    \titleformat{\section}[hang]
+       {\normalfont\scshape}
+       {\makebox[0em][r]{Appendix \thesection\hspace*{1em}}}
+       {0em}
+       {\Large\bfseries}
+    \titlespacing*{\section}
+      {0pt}  % increase of left margin
+      {3.5ex plus 1.5ex minus 0.3ex}% before sep
+      {1.8ex plus 0.3ex minus 0.05ex}% after sep
+  }
+ \def\exercisecounterstart{\relax}
+}
 
 
 

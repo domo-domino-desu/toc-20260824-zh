@@ -524,7 +524,7 @@ background/asy/hp/hp00.pdf : background/asy/hp/hp.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-background/asy/indexsets/indexsets.pdf : background/asy/indexsets/indexsets.asy
+background/asy/indexsets/indexsets000.pdf : background/asy/indexsets/indexsets.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
@@ -547,7 +547,7 @@ background/background.tex : | background/asy/3d/3d000.pdf \
   background/asy/flowcharts/flowcharts00.pdf \
   background/asy/galileo/galileo000.pdf \
   background/asy/hp/hp00.pdf \
-  background/asy/indexsets/indexsets.pdf \
+  background/asy/indexsets/indexsets000.pdf \
   background/asy/maps/maps00.pdf \
   background/asy/memory/memory00.pdf \
   background/asy/ordering/ordering000.pdf

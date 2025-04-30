@@ -1640,8 +1640,10 @@
 
 % Depreciated?  Doc on CTAN says in next LaTeX release
 \usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
-% 2025-Apr-29 Breaks index hyperlinks, but makes numberwithin work: \usepackage[hypertexnames=false]{hyperref}  % remove the draft option at the end.
-\usepackage{hyperref}  % remove the draft option at the end.
+% 2025-Apr-29 Breaks index hyperlinks, but makes numberwithin work: 
+\usepackage[hypertexnames=false]{hyperref}  % remove the draft option at the end.
+% 2025-Apr-30 Insert bin/compilation/repage_index.py into flow:
+% \usepackage{hyperref}  % remove the draft option at the end.
   % It is there to prevent errors like
   % "\pdfendlink ended up in different nesting level than \pdfstartlink";
   % see https://tex.stackexchange.com/a/154184/121234

@@ -3,7 +3,7 @@
 """
 Increment index line references in a LaTeX .ind file
 """
-__version__ = "0.9.0"
+__version__ = "1.0.0"
 __author__ = "Jim Hefferon"
 __license__ = "GPL 3.0"
 

@@ -924,115 +924,6 @@
 \usepackage{tcolorbox}
 \tcbset{beforeafter skip=2pt plus 0.2pt minus 0.1pt}
 
-%================================================================
-% THEOREM ENVIRONMENTS
-% Must come before cleveref:
-\usepackage{thmtools}
-
-
-\theoremstyle{coloredstyle}
-\newtheorem{theorem}{Theorem}[section]
-\renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % don't include the chapter
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{churchsthesis}[theorem]{Church's Thesis}
-\newtheorem{problem}[theorem]{Problem}
-
-\theoremstyle{whitestyle}
-\newtheorem{example}[theorem]{Example}
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{remarks}[theorem]{Remarks}
-\newtheorem{discussion}[theorem]{Discussion}
-
-\AtBeginEnvironment{theorem}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
-\AtBeginEnvironment{lemma}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
-\AtBeginEnvironment{corollary}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
-\AtBeginEnvironment{definition}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
-\AtBeginEnvironment{churchsthesis}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
-\AtBeginEnvironment{problem}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
-\AtBeginEnvironment{example}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
-\AtBeginEnvironment{remark}{%
-  \setcounter{mpfootnote}{\value{footnote}}}
-
-\tcolorboxenvironment{theorem}{colback=backgroundcolor, 
-  colframe=backgroundcolor,
-  boxrule=0pt,
-  arc=0pt,
-  width=\textwidth,
-  left=0pt,
-  right=0pt,
-  boxsep=2pt,
-  bottom=0pt,
-  top=0pt,
-  before upper={\parindent15pt},
-  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
-}
-\tcolorboxenvironment{lemma}{colback=backgroundcolor,colframe=backgroundcolor,
-  boxrule=0pt,arc=0pt,
-  width=\textwidth,
-  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  before upper={\parindent15pt},
-  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
-}
-\tcolorboxenvironment{corollary}{colback=backgroundcolor,colframe=backgroundcolor,
-  boxrule=0pt,arc=0pt,
-  width=\textwidth,
-  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  before upper={\parindent15pt},
-  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
-}
-\tcolorboxenvironment{definition}{colback=backgroundcolor,colframe=backgroundcolor,
-  boxrule=0pt,arc=0pt,
-  width=\textwidth,
-  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  before upper={\parindent15pt},
-  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
-}
-\tcolorboxenvironment{churchsthesis}{colback=backgroundcolor,colframe=backgroundcolor,
-  boxrule=0pt,arc=0pt,
-  width=\textwidth,
-  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  before upper={\parindent15pt},
-  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
-}
-\tcolorboxenvironment{problem}{colback=backgroundcolor,colframe=backgroundcolor,
-  boxrule=0pt,arc=0pt,
-  width=\textwidth,
-  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
-  before upper={\parindent15pt},
-  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
-}
-
-
-% Proofs
-% Forget amsthm's proof environment
-\let\proof\relax % 
-\let\endproof\relax %
-% Halmos symbol
-\renewcommand\qedsymbol{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.7pt}%
-  \fcolorbox{boldcolor}{white}{\color{white}\rule{4pt}{8.5pt}}}}
-%  comes before cleveref: \usepackage{thmtools}
-\declaretheoremstyle[%
-  spaceabove=0.5\topsep,%
-  spacebelow=0.5\topsep,%
-  headfont=\normalfont\itshape,%
-  headpunct={}, %
-  postheadspace=0.6em,%
-  qed=\qedsymbol%
-]{proofstyle} 
-\declaretheorem[name={Proof},
-  style=proofstyle,
-  unnumbered,
-  ]{proof}
-
 
 
 \newcommand{\probleminput}{\textit{Input:}}
@@ -1749,8 +1640,8 @@
 
 % Depreciated?  Doc on CTAN says in next LaTeX release
 \usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
-% \usepackage[draft]{hyperref}  % remove the draft option at the end.
-\usepackage[hypertexnames=false]{hyperref}  % remove the draft option at the end.
+% 2025-Apr-29 Breaks index hyperlinks, but makes numberwithin work: \usepackage[hypertexnames=false]{hyperref}  % remove the draft option at the end.
+\usepackage{hyperref}  % remove the draft option at the end.
   % It is there to prevent errors like
   % "\pdfendlink ended up in different nesting level than \pdfstartlink";
   % see https://tex.stackexchange.com/a/154184/121234
@@ -1786,6 +1677,118 @@
 
 % 2022-Jun-05
 \usepackage{breakurl}
+
+
+%================================================================
+% THEOREM ENVIRONMENTS
+% Must come before cleveref:
+% Numbering within must come after hyperref for per-section numbering to work.
+\usepackage{thmtools}
+
+
+\theoremstyle{coloredstyle}
+\newtheorem{theorem}{Theorem}[section]
+\renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % don't include the chapter
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{churchsthesis}[theorem]{Church's Thesis}
+\newtheorem{problem}[theorem]{Problem}
+
+\theoremstyle{whitestyle}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{remarks}[theorem]{Remarks}
+\newtheorem{discussion}[theorem]{Discussion}
+
+\AtBeginEnvironment{theorem}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{lemma}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{corollary}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{definition}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{churchsthesis}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{problem}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{example}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+\AtBeginEnvironment{remark}{%
+  \setcounter{mpfootnote}{\value{footnote}}}
+
+\tcolorboxenvironment{theorem}{colback=backgroundcolor, 
+  colframe=backgroundcolor,
+  boxrule=0pt,
+  arc=0pt,
+  width=\textwidth,
+  left=0pt,
+  right=0pt,
+  boxsep=2pt,
+  bottom=0pt,
+  top=0pt,
+  before upper={\parindent15pt},
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
+}
+\tcolorboxenvironment{lemma}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  before upper={\parindent15pt},
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
+}
+\tcolorboxenvironment{corollary}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  before upper={\parindent15pt},
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
+}
+\tcolorboxenvironment{definition}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  before upper={\parindent15pt},
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
+}
+\tcolorboxenvironment{churchsthesis}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  before upper={\parindent15pt},
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
+}
+\tcolorboxenvironment{problem}{colback=backgroundcolor,colframe=backgroundcolor,
+  boxrule=0pt,arc=0pt,
+  width=\textwidth,
+  left=0pt,right=0pt,boxsep=2pt,bottom=0pt,top=0pt,
+  before upper={\parindent15pt},
+  beforeafter skip=3pt plus 0.5pt minus 0.1pt,
+}
+
+
+% Proofs
+% Forget amsthm's proof environment
+\let\proof\relax % 
+\let\endproof\relax %
+% Halmos symbol
+\renewcommand\qedsymbol{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.7pt}%
+  \fcolorbox{boldcolor}{white}{\color{white}\rule{4pt}{8.5pt}}}}
+%  comes before cleveref: \usepackage{thmtools}
+\declaretheoremstyle[%
+  spaceabove=0.5\topsep,%
+  spacebelow=0.5\topsep,%
+  headfont=\normalfont\itshape,%
+  headpunct={}, %
+  postheadspace=0.6em,%
+  qed=\qedsymbol%
+]{proofstyle} 
+\declaretheorem[name={Proof},
+  style=proofstyle,
+  unnumbered,
+  ]{proof}
+
 
 
 

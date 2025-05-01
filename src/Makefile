@@ -17,10 +17,9 @@ TEXINPUTS := TEXINPUTS=$(SRC_DIR)/:$(TEXINPUTS)
 
 # ASYMPTOTE_DIR
 #  Asymptote uses this to look for config and imported files.
-#  Note that because SRC_DIR ends with a slash, the slash here makes there
-# be two slashes, which causes a search of all subdirs of SRC_DIR.   Note
-# also that here the "$(ASYMPTOTE_DIR)" refers to the environment variable.
-export ASYMPTOTE_DIR := ASYMPTOTE_DIR=$(SRC_DIR)/asy//:$(SRC_DIR)/asy/asy-graphtheory-master/modules//:$(ASYMPTOTE_DIR)
+#  Note that here the "$(ASYMPTOTE_DIR)" refers to the environment variable.
+#  "export" passes the Makefile variable as environment variable to commands and sub-Makefiles.
+export ASYMPTOTE_DIR := $(SRC_DIR)/asy/:$(SRC_DIR)/asy/share/:$(SRC_DIR)/asy/asy-graphtheory-master/modules/:$(ASYMPTOTE_DIR)
 
 # LaTeX compiler
 LATEX := pdflatex
@@ -44,7 +43,7 @@ LATEX_CMD := $(TEXINPUTS) $(LATEX)
 #  If you get errors from Asymptote saying it can't find libglut then you
 # should install freeglut3, and look in INSTALL for the note about a softlink.
 #
-# ASYMPTOTE_CMD := $(TEXINPUTS) $(ASYMPTOTE_DIR) asy -nosafe
+# ASYMPTOTE_CMD := $(TEXINPUTS) asy -nosafe
 # ASYMPTOTE_CMD := asy -nosafe
 ASYMPTOTE_CMD := asy
 

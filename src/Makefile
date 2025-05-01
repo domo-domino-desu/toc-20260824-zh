@@ -85,9 +85,6 @@ cover/cover.tex : | cover/asy/cover00.pdf
 # 	cd $(@D); \
 # 	$(ASYMPTOTE_CMD) "$(<F)"
 
-asy/share/tape1.pdf : asy/share/tape.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
 
 
 # ============== prologue ================
@@ -397,7 +394,6 @@ appendix/appendix.tex : | appendix/asy/functions000.pdf
 # Just make the graphics, perhaps to run tex4ht
 .PHONY: graphics
 graphics:  book.tex \
-  asy/share/tape1.pdf \
   cover/cover.tex \
   preface/preface.tex \
   prologue/prologue.tex \
@@ -411,7 +407,6 @@ graphics:  book.tex \
 # ============== book and answers ================
 
 book.pdf : book.tex \
-  asy/share/tape1.pdf \
   cover/cover.tex \
   preface/preface.tex \
   prologue/prologue.tex \

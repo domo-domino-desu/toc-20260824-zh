@@ -22,6 +22,7 @@ SCRIPT_DIR=../../../../bin/turing_machine
 MAX_STEPS_DEFAULT=100
 define create-pdfs
   @echo "Using ${1}.tm on ${2} to get file family ${3}"
+	@mkdir -p tmp/ pdfs/
   ${TM_DIR}/turing-machine.rkt -f ${MACHINE_DIR}/${1}.tm -c ${4} -r ${5} -s ${6} > tmp/${3}.out
   ${SCRIPT_DIR}/tm_to_asy.py --blanks -f tmp/${3}.out -o pdfs/${3}
   cd pdfs; asy ${3}
@@ -32,6 +33,7 @@ endef
 # so the tapes will have B's in them.
 define create-pdfs-leavebs
   @echo "Using ${1}.tm on ${2} to get file family ${3}"
+	@mkdir -p tmp/ pdfs/
   ${TM_DIR}/turing-machine.rkt -f ${MACHINE_DIR}/${1}.tm -c ${4} -r ${5}  -s ${6} > tmp/${3}.out
   ${SCRIPT_DIR}/tm_to_asy.py -f tmp/${3}.out -o pdfs/${3}
   cd pdfs; asy ${3}

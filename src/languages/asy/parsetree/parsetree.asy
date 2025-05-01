@@ -763,6 +763,119 @@ shipout(format(OUTPUT_FN,picnum),p,format="pdf");
 
 
 
+// .......parse tree of full statement, add if-the-else ................
+int picnum = 12;
+picture p;
+
+// define nodes
+node if0 = nbox("\strut\terminal{if-then-else}"),
+     bool0 = nbox("\strut\terminal{enrolled(s)}"),
+     if1 = nbox("\strut\terminal{if-then-else}"),
+     bool1 = nbox("\strut\terminal{studied(s)}"),
+     stmt0 = nbox("\strut\terminal{grade=\textquotesingle P\textquotesingle}"),
+// else0 = nbox("\strut\terminal{else}"),
+     stmt1 = nbox("\strut\terminal{grade=\textquotesingle F\textquotesingle}");
+
+// layout
+defaultlayoutrel = true;
+defaultlayoutskip = 1inch;
+real u = 0.7inch;  // horizontal
+real v = 0.5*u;                 // vertical
+
+// rank 0
+if0.pos=(0*u,0*v);
+// rank 1
+bool0.pos=(-0.75*u,-1*v);
+if1.pos=(0.5*u,-1*v);
+// rank 2
+bool1.pos=(-0.9*u,-2*v);
+stmt0.pos=(0.1*u,-2*v);
+else0.pos=(0.80*u,-2*v);
+stmt1.pos=(1*u,-2*v);
+
+// draw nodes
+draw(p,
+     if0,
+     bool0,
+     if1,
+     bool1,
+     stmt0,
+     // else0,
+     stmt1
+     );
+
+// draw edges
+draw(p,
+     (if0--bool0),
+     (if0--if1),
+     (if1--bool1),
+     (if1--stmt0),
+     // (if1--else0),
+     (if1--stmt1)
+    );
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+// ...................................
+int picnum = 13;
+picture p;
+
+// define nodes
+node if0 = nbox("\strut\terminal{if-then-else}"),
+     bool0 = nbox("\strut\terminal{enrolled(s)}"),
+     if1 = nbox("\strut\terminal{if-then-else}"),
+// else0 = nbox("\strut\terminal{else}"),
+     stmt0 = nbox("\strut\terminal{grade=\textquotesingle F\textquotesingle}"),
+     bool1 = nbox("\strut\terminal{studied(s)}"),
+     stmt1 = nbox("\strut\terminal{grade=\textquotesingle P\textquotesingle}");
+
+// layout
+defaultlayoutrel = true;
+defaultlayoutskip = 1inch;
+real u = 0.7inch;  // horizontal
+real v = 0.5*u;                 // vertical
+
+// rank 0
+if0.pos=(0*u,0*v);
+// rank 1
+bool0.pos=(-1.2*u,-1*v);
+if1.pos=(0*u,-1*v);
+// else0.pos=(0.2*u,-1*v);
+stmt0.pos=(1.1*u,-1*v);
+// rank 2
+bool1.pos=(-0.6*u,-2*v);
+stmt1.pos=(0.4*u,-2*v);
+
+// draw nodes
+draw(p,
+     if0,
+     bool0,
+     if1,
+     // else0,
+     stmt0,
+     bool1,
+     stmt1
+     );
+
+// draw edges
+draw(p,
+     (if0--bool0),
+     (if0--if1),
+     // (if0--else0),
+     (if0--stmt0),
+     (if1--bool1),
+     (if1--stmt1)
+    );
+
+shipout(format(OUTPUT_FN,picnum),p,format="pdf");
+
+
+
+
+
+
 // ======= Exercises =================
 // =========================================
 string OUTPUT_FN = "parsetree1%03d";

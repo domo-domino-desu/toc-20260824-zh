@@ -409,10 +409,15 @@
 % inside the \begin{exercise} .. \end{exercise}
 \newtoggle{@showverified}  % Set true to put something on the answwers.pdf page
 \toggletrue{@showverified}  % comment out one of these two
-\togglefalse{@showverified} %
-\newcommand{\verified}{\iftoggle{@showverified}{%
-         \llap{\makebox[5.5em][l]{{\color{ForestGreen}V}}}%
-        }{}}
+% \togglefalse{@showverified} %
+% \newcommand{\verified}{\iftoggle{@showverified}{%
+%          \llap{\makebox[5.5em][l]{{\color{ForestGreen}V}}}%
+%         }{}}
+\usepackage{marginnote}
+\newcommand{\verified}{%
+  \iftoggle{@showverified}{%
+      \marginnote[\textcolor{ForestGreen}{V}\hspace*{0.5em}]{}}{}}
+
 
 
 \renewcommand{\chapter}[1]{\clearemptydoublepage\vspace*{0.15in}\begin{center}\Large\textbf{#1}\end{center}\vspace*{0.5in}}

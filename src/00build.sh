@@ -10,7 +10,7 @@ makeindex -s book.ist -p odd book.idx
 cp book_ind.repaged book.ind
 biber book
 ${LATEX} book
-${LATEX} answers
-biber answers
-${LATEX} answers
+# ${LATEX} answers
+# biber answers
+# ${LATEX} answers
 

@@ -1810,14 +1810,14 @@ defaultdrawstyle=drawstyle(p=fontsize(7pt)+fontcommand("\ttfamily")+backgroundco
 			     arrow=Arrow(6,filltype=FillDraw(white,backgroundcolor)));
 
 // define nodes
-node ominus=ncircle("$\text{O}^-$"),
-     oplus=ncircle("$\text{O}^+$"),
-     aminus=ncircle("$\text{A}^-$"),
-     aplus=ncircle("$\text{A}^+$"),
-     bminus=ncircle("$\text{B}^-$"),
-     bplus=ncircle("$\text{B}^+$"),
-     abminus=ncircle("$\text{AB}^-$"),
-     abplus=ncircle("$\text{AB}^+$");
+node ominus=ncircle("$\text{O}-$"),
+     oplus=ncircle("$\text{O}+$"),
+     aminus=ncircle("$\text{A}-$"),
+     aplus=ncircle("$\text{A}+$"),
+     bminus=ncircle("$\text{B}-$"),
+     bplus=ncircle("$\text{B}+$"),
+     abminus=ncircle("$\text{AB}-$"),
+     abplus=ncircle("$\text{AB}+$");
 
 // layout
 // see bloodtype.dot

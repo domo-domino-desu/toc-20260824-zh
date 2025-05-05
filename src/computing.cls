@@ -565,10 +565,14 @@
   \setcounter{section}{\value{extra}}
   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
   \setcounter{subsection}{0}
-  \renewcommand{\thetheorem}{\Alph{section}.\arabic{theorem}} 
+  \renewcommand{\thetheorem}{\thesection.\arabic{theorem}} 
+  \renewcommand{\theexample}{\thesection.\arabic{theorem}} 
+  \renewcommand{\thelemma}{\thesection.\arabic{theorem}} 
+  \renewcommand{\thecorollary}{\thesection.\arabic{theorem}} 
+  \renewcommand{\thedefinition}{\thesection.\arabic{theorem}} 
   \renewcommand{\theproblem}{\Alph{section}.\arabic{theorem}} 
   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
-  \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
+  % \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
   \markright{Extra \thesection{}. #1}%
 \extrasection{#1}}
 

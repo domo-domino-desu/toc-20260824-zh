@@ -128,7 +128,7 @@ prologue/asy/life/eater000.pdf : prologue/asy/life/eater_all.asy prologue/asy/li
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)" 
 
-prologue/asy/life/eateranim000.pdf : prologue/asy/life/_all.asy prologue/asy/life/gameboards/000.life
+prologue/asy/life/eateranim000.pdf : prologue/asy/life/eateranim_all.asy prologue/asy/life/gameboards/eater000.life
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)" 
 
@@ -530,7 +530,7 @@ background/asy/memory/memory00.pdf : background/asy/memory/memory.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-background/asy/memory/ordering000.pdf : background/asy/ordering/ordering.asy
+background/asy/ordering/ordering000.pdf : background/asy/ordering/ordering.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
@@ -543,7 +543,7 @@ background/background.tex : | background/asy/3d/3d000.pdf \
   background/asy/hp/hp00.pdf \
   background/asy/indexsets/indexsets.pdf \
   background/asy/maps/maps00.pdf \
-  background/asy/memory/memory00.pdf \\
+  background/asy/memory/memory00.pdf \
   background/asy/ordering/ordering000.pdf
 
 

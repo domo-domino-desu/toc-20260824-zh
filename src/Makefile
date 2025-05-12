@@ -35,10 +35,15 @@ LATEX_CMD := $(TEXINPUTS) $(LATEX)
 # Options:
 #   -nosafe gets around GhostScript error when using opacity:
 #      https://github.com/vectorgraphics/asymptote/issues/77
+#    In Ubuntu 24 (2025-May) this seems not needed anymore.
 #  -vv makes it talk more
 # Note:
 #  If you get errors from Asymptote saying something about a stack then
-# you need to recompile the executable.  See ../INSTALL
+# you need to recompile the executable.  See ../INSTALL. (2025-May this
+# seems not relevant anymore.)
+#  If you get errors from Asymptote saying it can't find libglut then you
+# should install freeglut3, and look in INSTALL for the note about a softlink.
+#
 # ASYMPTOTE_CMD := $(TEXINPUTS) $(ASYMPTOTE_DIR) asy -nosafe
 # ASYMPTOTE_CMD := asy -nosafe
 ASYMPTOTE_CMD := asy
@@ -53,7 +58,9 @@ ZIP_CMD := zip
 
 
 # ============== all ================
-# You might try ftpmaint@Alonzo:~/Documents/toc/src$ make all 2>&1 | tee makefile.log
+# You might run
+#  ftpmaint@Alonzo:~/Documents/computing/src$ make all 2>&1 | tee makefile.log
+# to keep a record of what happened.
 
 # .PHONY : all
 all : fsm-exercises tm-exercises redo

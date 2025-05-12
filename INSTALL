@@ -1,38 +1,28 @@
 computing/INSTALL
 
 These instructions create and install a copy of Theory of Computing.   Note
-that I ran these on a spare laptop, so these have been tested.
+that I ran these on a spare laptop in 2025-May, so these have been tested.
 
 These are written for Linux because that is what I have.  I expect they
 also work on a Mac.  However, if you have Windows then I'm sorry, I cannot
-help you.  I am not a Windows-knowledgable person, sorry.
+help you.
 
-Preliminary Comment: there has been an issue between Asymptote and Ghostscript.
-  There was a vulnerability in GS and they made some changes, and then the
-ASY version did not work with the GS version.  Consequently, in 2021
-I put a bunch of .pdf's such as src/background/asy/3d/3d000.pdf into the
-repo.  I am trying to return to generating them from source in the
-Makefile but it is a process.
-
-Step 0) Fresh Ubuntu 20 install, from scratch.  Fresh TeX Live, from the apt
-package texlive-full.  Also install git, make, Ghostscript, Python, and Racket.
+Step 0) Fresh Ubuntu 24 install, from scratch.  Fresh full TeX Live, from
+https://tug.org/texlive/quickinstall.html (although I believe that the apt
+package texlive-full will also work).  Also install git, make, Ghostscript,
+Python, and Racket.
 
 1) Clone the book's git repo.  In a terminal do this.
   $ cd ~/Documents
   $ git clone https://gitlab.com/jim.hefferon/toc.git computing
 (You can call the top-level directory either 'computing' or 'toc' or
-'toc-master', but 'computing' is best because it is what I use so it is
+'toc-master'. Best is 'computing' is best because it is what I use so it is
 the most tested.  Thus your tree of files will look like computing/src/... and
-computing/bin/... etc.  Other names will cause my Asymptote files to fail to
-compile, sorry.)
+computing/bin/... etc.  Other names will cause Asymptote files to fail.)
 
-2) Set up Asymptote environment.
-  a) Make sure that imagemagick is installed.  In
-      /etc/ImageMagick-6/policy.xml
-    change lines at the bottom about PS, PDF, etc
-    from rights="none" to rights="read|write".
-  b) Put the following lines at the end of your .profile in your home
-  directory (change "/Documents/computing" to wherever you put the repo).
+2) Set up Asymptote environment.  Put the following lines at the end of your
+.profile in your home directory (change "/Documents/computing" to wherever
+you put the repo).
 
 # Directories for the Asymptote drawing program
 export ASYMPTOTE_DIR=$HOME/Documents/computing/src/asy:$HOME/Documents/computing/src/asy/share:$HOME/Documents/computing/src/asy/asy-graphtheory-master/modules:$ASYMPTOTE_DIR
@@ -40,33 +30,25 @@ export ASYMPTOTE_DIR=$HOME/Documents/computing/src/asy:$HOME/Documents/computing
   Log out and log in again (this runs the profile).  You can check that the
   prior works by running "echo $ASYMPTOTE_DIR" in a terminal.
 
-3) Make sure you have a late enough Asymptote.
-  a) Change to the 3d directory and try to run it.
+3) Check that Asymptote is working.
     $ cd ~/Documents/computing
     $ cd src/background/asy/3d
     $ asy 3d
-  If it compiles into 3d000.pdf without comment then you are all set.
-  If you get an error about a stack then you need to recompile Asymptote;
-  I needed to recompile when I installed on Ubuntu 20 in 2022.
-    $ sudo apt-get build-dep asymptote
-    $ cd ~/Downloads
-    $ git clone https://github.com/vectorgraphics/asymptote asymptote
-    $ cd asymptote
-    $ ./autorun.sh
-    $ ./make
-    $ sudo make install
-  (Then I had to close the terminal and open a new one for the new version
-  to come up.)  By the way, just to be sure, I recompiled Ghostscript
-  from its git repo in the same way.  (I found on Ubuntu 22 that I needed to
-  install the package freeglut3.)
+  If it compiles into 3d000.pdf without comment  and you can view it in a
+  PDF viewer then you are all set.
 
-  (Running on Ubuntu 22 did not require recompiling Asymptote or Ghostscript.)
+  I have found that Asymptote can complain it is missing libglut3.0.  I
+  did this.
+    $ cd /usr/lib/x86_64-linux-gnu
+    $ ls libglut*
+    $ sudo ln -s libglut.3.0.12 libglut.3.0
   
-3) Make the book.
+4) Make the book.
   $ cd ~/Documents/computing/src
   $ make 2>&1 | tee Makefile.log
-Then wait.  It can take a long time, ten minutes or more.  At the end you
-have book.pdf and answers.pdf.
+Then wait.  It can take a long time.  On a reasonable machine it can take
+ten minutes or more.  I have a very old laptop and it took hours.  At the end
+you have book.pdf and answers.pdf.
 
 The command line "2>&1" stuff gives you a .log file to examine
 if there is some trouble.  Sometimes I find that I need more packages from
@@ -82,15 +64,14 @@ or some such.  But then if you go to the relevant directory
   $ cd automata/asy/machines
   $ asy machines
 it will create the machine32.pdf file, and now cd ~/Documents/computing/src
-followed by make all works fine.  I don't understand this bug.
+followed by make all works fine.  I don't understand this Heisenbug.
 
-
-You can get the slides as here.
+5) Optional: You can get the slides as here.
   $ make slides
   If you get told that background05.pdf is not there, run
 "touch slides/background/asy/background.asy" and
 "make slides/background/asy/background00.pdf" amd then "make slides" again.
-I don't understand this bug.
+I don't understand this bug.  (A misconception of mine on timing in make?)
  
 
 
@@ -100,3 +81,5 @@ DOCUMENT HISTORY
   also https://hefferon.net/computation
 2023-Jan-27 JH  Add that the top-level directory must be named from a
   limited set of names.
+2025-May-12 JH Omit stuff about ImageMagic PDF permissions and Ghostscript
+  bug, as those seem to have disappeared.  Add stuff about libglut.

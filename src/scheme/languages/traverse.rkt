@@ -49,7 +49,7 @@
 ;; Default for the deepest a traversal will go
 (define MAXIMUM-RANK 100)
 
-;; Traverse the tree breadth first
+;; Traverse the tree breadth first (uses a list, not as good as a set)
 ;;   node  Root node 
 ;;   fcn  Function to apply to each node
 ;;   #:maxrank  Natural number, the max rank that is traversed
@@ -70,33 +70,28 @@
 ;; Traverse the tree or DAG breadth first
 ;;   node  Starting node
 ;;   fcn  Function to apply to each node
-;;   #:maxrank  Natural number, the max rank that is traversed
-(define (traverse-bfs node fcn #:maxrank [maxrank MAXIMUM-RANK])
-  (traverse-bfs-helper (mutable-set node) 0 fcn #:maxrank maxrank))
+(define (traverse-bfs node fcn)
+  (traverse-bfs-helper (mutable-set node) 0 fcn))
 
-(define (traverse-bfs-helper level rank fcn #:maxrank [maxrank MAXIMUM-RANK])
-  (when (< rank maxrank)
-    (let ([next-level (mutable-set)])
-      (for ([node level])
-        (fcn node rank)
-        (for ([child-node (node-children node)])
-          (set-add! next-level child-node)
-          ))
-      (when (not (set-empty? next-level))
-        (traverse-bfs-helper next-level (+ 1 rank) fcn)))))
+(define (traverse-bfs-helper level rank fcn)
+  (let ([next-level (mutable-set)])
+    (for ([node level])
+      (fcn node rank)
+      (for ([child-node (node-children node)])
+        (set-add! next-level child-node)
+        ))
+    (when (not (set-empty? next-level))
+      (traverse-bfs-helper next-level (+ 1 rank) fcn))))
 
 ;; Traverse the graph depth first
 ;;   node  Root node of tree
 ;;   rank  Natural number  Depth of this node in the tree
 ;;   fcn  Function to apply to each node
-;;   #:maxrank  Natural number, the max rank that is traversed
-(define (traverse-dfs node rank fcn #:maxrank [maximumrank MAXIMUM-RANK])
+(define (traverse-dfs node rank fcn)
   (fcn node rank)
-  (when (< rank maximumrank)
     (let ([children (node-children node)])
       (for ([child children])
-        (traverse-dfs child (+ rank 1) fcn #:maxrank maximumrank))
-      )))
+        (traverse-dfs child (+ rank 1) fcn))))
 
 ;; void --> tree of nodes
 ;; Make a tree to experiment on.

@@ -727,6 +727,8 @@ slides : slides/prologue/prologue.pdf \
   slides/languages/languages.pdf \
   slides/automata/automata.pdf \
   slides/complexity/complexity.pdf
+	cd slides; \
+	sh ./00buildzip.sh
 
 slides/prologue/prologue.pdf : slides/prologue/prologue.tex \
   book.pdf \

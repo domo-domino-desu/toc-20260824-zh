@@ -19,7 +19,7 @@
 \definecolor{alertcolor}{RGB}{203, 0 , 34}
 \setbeamercolor{alerted text}{fg=alertcolor}
 
-\usepackage{../presentation,../presentationfonts}
+\usepackage{../presentation,../presentationfonts,../dash}
 \usepackage{../../grammar}
 
 % load the pdfanim style, should be done after hyperref
@@ -91,8 +91,8 @@
 % ------------------------------------------------------
 \begin{frame}
   \frametitle{Strings}
-Recall that a \definend{symbol}, or \definend{token}, 
-is something that a machine can read and write,
+Recall that a \definend{symbol} or \definend{token} 
+is something that a machine can read and write as a single entity,
 and an \definend{alphabet} is a nonempty and finite set of symbols.
 
 \ExecuteMetaData[\catchfilefn]{def:String}
@@ -144,7 +144,9 @@ $\kleenestar{\B}=\set{\emptystring,\str{0},\str{1},\str{00},\ldots}$.
 \begin{example}
 Let $\Sigma=\set{\str{a},\str{b}}$.
 One language is
-$\lang_0=\set{\sigma\in\kleenestar{\Sigma}\suchthat\text{$\sigma=\str{a}^n\str{b}\str{a}^n$ for some $n\in\N$}}$; some members are 
+$\lang_0=\set{\sigma\in\kleenestar{\Sigma}\suchthat\text{$\sigma=\str{a}^n\str{b}\str{a}^n$ for some $n\in\N$}}$.
+Note that the number of \str{a}'s at the start equals the number at the end;
+some members of $\lang_0$ are 
 \str{b}, \str{aba}, \str{aabaa}, and \str{aaabaaa}.
 Another is the language of \definend{palindromes},
 $\lang_1=\set{\sigma\in\kleenestar{\Sigma}\suchthat \sigma=\reversal{\sigma}}$.
@@ -155,7 +157,7 @@ For the alphabet of parentheses, $\Sigma=\set{\str{)}, \str{(}}$,
 the set of strings of balanced 
 parentheses is a language.
 Three members are the strings \str{(())}, \str{(()())}, and \str{(()(()))}.
-Nonmembers are the strings \str{)(}, \str{(()}, and \str{())(()}. 
+Nonmembers are \str{(()}, and \str{())(()}, and \str{)(}. 
 \end{example}
 
 \ExecuteMetaData[\catchfilefn]{def:LangOps}
@@ -168,20 +170,20 @@ Nonmembers are the strings \str{)(}, \str{(()}, and \str{())(()}.
 \ExecuteMetaData[\catchfilefn]{discussion:DecidingVsRecognizing}
 
 \begin{example}
-A Turing machine can decide the language of perfect squares,
+There is a Turing machine that decides the language of perfect squares,
 $S=\set{\str{1}^{(n^2)}\suchthat n\in\N}$.
-(Technically, it decides the language of strings representing
-squares, but we will not stick to the distinction.)
+% (Technically, it decides the language of strings representing
+% squares, but we will not stick to the distinction.)
 \end{example}
 
 \begin{example}
-Consider the set~$S$ of indices~$e$
+There is a Turing machine that recognizes the set~$S$ of indices~$e$
 such that $\TM_e$ halts on input~$3$.
-A Turing machine can recognize~$S$ just by running the $\TM_e$ on input~$3$
-and waiting for it to halt.
-But no Turing machine decides that set, because
-we have shown that $K$ reduces to~$S$ and so if we had a Turing machine
-to decide membership in~$S$ then we could use it to decide membership in~$K$.)
+Given~$e$, use universality to run $\TM_e$ on input~$3$
+and wait for it to halt.
+However, no Turing machine decides that set because
+we have shown that $K$ reduces to~$S$ (so if we had a Turing machine
+to decide membership in~$S$ then we could use it to decide membership in~$K$).
 \end{example}
 \end{frame}
 
@@ -196,15 +198,15 @@ any subset of $\kleenestar{\Sigma}$ at all.
 But languages in practice usually are constructed according to patterns, 
 to lists of rules.
 
-An example showing that there are rules is that,
-``When nine hundred years old you reach, look as good you will not''
-may fit the rules wherever Yoda was raised, but it does not fit those for
-English.
+To see that there are rules consider the quote,
+``When nine hundred years old you reach, look as good you will not.''
+It no doubt fits the rules of wherever Yoda grew up
+but object-subject-verb does not fit the rules for English.
 Another example is that the C~language consists of programs that follow
-rules decreed by the standardization committee.
+rules decreed by C's standardization committee.
 
 \pause
-This is a subset of the rules for English:
+This is a subset of English's rules:
 \begin{itemize}
 \ExecuteMetaData[\catchfilefn]{ex:RulesForEnglish} 
 \end{itemize}
@@ -212,19 +214,35 @@ This is a subset of the rules for English:
 
 
 \begin{frame}
-We will write the above rules in this form.
+We will write the above rules in this way.
 \ExecuteMetaData[\catchfilefn]{ex:GrammarRulesForEnglish} 
 
 \ExecuteMetaData[\catchfilefn]{discussion:GrammarVocabulary} 
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Grammar}
+
+\ExecuteMetaData[\catchfilefn]{def:Grammar} 
+
+\begin{remark}
+This is not the most general possible definition of a grammar; 
+for one thing, we could allow the head to have more than just a single 
+nonterminal.
+However, this form is all that we shall need
+and for example the grammars of mainstream programming languages fit this
+form.
+\end{remark}
+\end{frame}
+
 
 \begin{frame}
-  \frametitle{Derivation}
+  \frametitle{Derivations}\vspace*{-1.5ex}
 \ExecuteMetaData[\catchfilefn]{discussion:DerivationVocabularyi} 
-\end{frame}
-\begin{frame}
+% \end{frame}
+% \begin{frame}
+
 \ExecuteMetaData[\catchfilefn]{discussion:DerivationVocabularyii} 
 \end{frame}
 
@@ -239,18 +257,6 @@ We will write the above rules in this form.
 
 
 \begin{frame}
-  \frametitle{Grammar}
-
-In this course we will use the definition of \alert{grammar} below.
-It is not the most general definition possible; 
-for instance, we could allow the head to have more than just a single 
-nonterminal.
-Our sticking to this more restrictive form is nonstandard so that 
-you may well see other authors using other definitions, 
-but this is the most general form that we shall need.
-
-\ExecuteMetaData[\catchfilefn]{def:Grammar} 
-
 \begin{example}
 Let the alphabet be $\Sigma=\set{\trm{a},\trm{b}}$,
 let the set of nonterminals be $N=\set{\ntrm{start},\ntrm{left},\ntrm{right}}$.
@@ -325,10 +331,10 @@ involves itself.
 	\syntaxor \ntrm{statement\_list} \ntrm{statement}
 \end{grammar}
 But we don't get stuck in an infinite regress. 
-The question is not whether you could perversely 
+The question is not whether we could perversely 
 keep expanding \ntrm{left} or \ntrm{statement\_list} forever.
-Instead, you are given a string such as \trm{aabb} and the question is 
-whether you can find a terminating derivation.
+Instead, we are given a string such as \trm{aabb} and the question is 
+whether we can find a terminating derivation.
 \end{frame}
 
 
@@ -417,79 +423,79 @@ derivation is a form of computation we will stop.)
 
 
 
-\begin{frame}[fragile]
-  \frametitle{A grammar can be ambiguious}
-% \ExecuteMetaData[\catchfilefn]{rem:AmbiguousGrammar} 
-This bit of C-like code shows nested
-\codeinline{if} statements. 
-\begin{lstlisting}
-  if ... then ... if ... then ... else ...
-\end{lstlisting}
-The \codeinline{else} could be associated
-with either the first \codeinline{if} or the second.
-\begin{center}
-  \begin{minipage}{0.4\linewidth}
-    \begin{lstlisting}
- if ... 
- then ...
-     if ...
-     then ... 
- else ...
-\end{lstlisting}
-  \end{minipage}
-  \quad
-  \begin{minipage}{0.4\linewidth}
-    \begin{lstlisting}
- if ... 
- then ...
-     if ...
-     then ... 
-     else ...
-\end{lstlisting}
-  \end{minipage}
-\end{center}
-This is a \definend{dangling else}.
-An \definend{ambiguous grammar}
-is one where some strings
-have two different leftmost derivations.
-The example below illustrates. 
-\end{frame}
-\begin{frame}
-This grammar
-\begin{grammar}
-\ntrm{expr} \produces{} \ntrm{expr} \trm{+} \ntrm{expr}
-        \othersyntax  \ntrm{expr} \trm{*} \ntrm{expr}
-        \othersyntax  \trm{(} \ntrm{expr} \trm{)} \
-               \syntaxor  \trm{0}  \syntaxor  \trm{1}  \syntaxor \ldots{} 
-               \trm{9}
-\end{grammar}
-is ambiguous because \str{5+2*3} has two
-leftmost derivations.
-\begin{center}
-\hspace{1em}\begin{tabular}{l}
-  \ntrm{expr}\derives\ntrm{expr}\trm{+}\ntrm{expr}
-  \derives\trm{5} \trm{+} \ntrm{expr}                 \\ \quad
-  \derives\trm{5} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}          
-  \derives\trm{5} \trm{+} \trm{2} \trm{*} \ntrm{expr}          
-  \derives\trm{5} \trm{+} \trm{2} \trm{*} \trm{3}          
-\end{tabular}        \\[1ex]
-\hspace{1em}\begin{tabular}{l}
-  \ntrm{expr}\derives\ntrm{expr} \trm{*} \ntrm{expr}
-  \derives\ntrm{expr} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}    \\ \quad 
-  \derives\trm{5} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}  
-  \derives\trm{5} \trm{+} \trm{2} \trm{*} \ntrm{expr}  
-  \derives\trm{5} \trm{+} \trm{2} \trm{*} \trm{3}          
-\end{tabular}
-\end{center}
-Here are the two associated parse trees.
-\begin{center}
-  \vcenteredhbox{\includegraphics{asy/grammar000.pdf}}
-  \hspace{4em}
-  \vcenteredhbox{\includegraphics{asy/grammar001.pdf}}
-\end{center}
-The left one evaluates to $5+6=11$,
-while the right one gives $7\cdot 3=21$.
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{A grammar can be ambiguious}
+% % \ExecuteMetaData[\catchfilefn]{rem:AmbiguousGrammar} 
+% This bit of C-like code shows nested
+% \codeinline{if} statements. 
+% \begin{lstlisting}
+%   if ... then ... if ... then ... else ...
+% \end{lstlisting}
+% The \codeinline{else} could be associated
+% with either the first \codeinline{if} or the second.
+% \begin{center}
+%   \begin{minipage}{0.4\linewidth}
+%     \begin{lstlisting}
+%  if ... 
+%  then ...
+%      if ...
+%      then ... 
+%  else ...
+% \end{lstlisting}
+%   \end{minipage}
+%   \quad
+%   \begin{minipage}{0.4\linewidth}
+%     \begin{lstlisting}
+%  if ... 
+%  then ...
+%      if ...
+%      then ... 
+%      else ...
+% \end{lstlisting}
+%   \end{minipage}
+% \end{center}
+% This is a \definend{dangling else}.
+% An \definend{ambiguous grammar}
+% is one where some strings
+% have two different leftmost derivations.
+% The example below illustrates. 
+% \end{frame}
+% \begin{frame}
+% This grammar
+% \begin{grammar}
+% \ntrm{expr} \produces{} \ntrm{expr} \trm{+} \ntrm{expr}
+%         \othersyntax  \ntrm{expr} \trm{*} \ntrm{expr}
+%         \othersyntax  \trm{(} \ntrm{expr} \trm{)} \
+%                \syntaxor  \trm{0}  \syntaxor  \trm{1}  \syntaxor \ldots{} 
+%                \trm{9}
+% \end{grammar}
+% is ambiguous because \str{5+2*3} has two
+% leftmost derivations.
+% \begin{center}
+% \hspace{1em}\begin{tabular}{l}
+%   \ntrm{expr}\derives\ntrm{expr}\trm{+}\ntrm{expr}
+%   \derives\trm{5} \trm{+} \ntrm{expr}                 \\ \quad
+%   \derives\trm{5} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}          
+%   \derives\trm{5} \trm{+} \trm{2} \trm{*} \ntrm{expr}          
+%   \derives\trm{5} \trm{+} \trm{2} \trm{*} \trm{3}          
+% \end{tabular}        \\[1ex]
+% \hspace{1em}\begin{tabular}{l}
+%   \ntrm{expr}\derives\ntrm{expr} \trm{*} \ntrm{expr}
+%   \derives\ntrm{expr} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}    \\ \quad 
+%   \derives\trm{5} \trm{+} \ntrm{expr} \trm{*} \ntrm{expr}  
+%   \derives\trm{5} \trm{+} \trm{2} \trm{*} \ntrm{expr}  
+%   \derives\trm{5} \trm{+} \trm{2} \trm{*} \trm{3}          
+% \end{tabular}
+% \end{center}
+% Here are the two associated parse trees.
+% \begin{center}
+%   \vcenteredhbox{\includegraphics{asy/grammar000.pdf}}
+%   \hspace{4em}
+%   \vcenteredhbox{\includegraphics{asy/grammar001.pdf}}
+% \end{center}
+% The left one evaluates to $5+6=11$,
+% while the right one gives $7\cdot 3=21$.
+% \end{frame}
 
 
 

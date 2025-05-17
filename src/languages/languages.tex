@@ -320,31 +320,30 @@ if it computes whether or not a given input is a member of that language.
 A machine 
 \definend{recognizes}\index{recognize a language}\index{language!recognize}
 % (or \definend{accepts},\index{accept a language}\index{language!accept} 
-(or \definend{semidecides})\index{semidecide a language}
+or \definend{semidecides}\index{semidecide a language}
 a language when if the input is in the language then it
 it computes that in a finite time,
 and if the input is not in
 the language then the machine will never 
 incorrectly report that it is an element.
 
-For instance, if a language is not computable 
+Thus, if a language~$\lang$ is not computable 
 then there is no machine that decides it.
-But if that language is computably enumerable then
+But if $\lang$ is computably enumerable then
 there is a machine that recognizes it.
-If an input is in the language then this machine can 
-compute that in a finite time.
-But no machine can determine in a finite time non-membership 
-in the language.
-There might be a machine that can correctly report on some non-members
-and fail to halt on others.
-But because this language is not computable,
-no machine can determine on one hundred percent of inputs both
-membership and non-membership.
+If an input is in $\lang$ then this machine can 
+compute that in a finite time,
+but no machine can determine non-membership in a finite time.
+There might be a machine that correctly reports on some non-members,
+but it must fail on others.
+% because this language is not computable,
+% no machine can determine on one hundred percent of inputs both
+% membership and non-membership.
 %</discussion:DecidingVsRecognizing>
 
 In short, `deciding' means that on any input the machine
 correctly computes all yes and no answers,
-while `recognizing' means only that it correctly 
+while `recognizing' is the weaker condition that it correctly 
 computes all yes answers.
 % A language decider is a recognizer but the converse need not hold.  
 
@@ -1217,13 +1216,13 @@ In an aphorism,
 
 
 \subsection{Definition}
-Before the formal definition we'll first see 
+Before the definition we'll first see 
 an example.
 
 \begin{example}  \label{ex:TheYoungManCaughtABall}
-A full set of rules for a natural language such as English would be
+A full set of rules for English would be
 quite large.
-But here is a subset that gives a sense of what a set of rules would
+This subset gives a sense of what a set of rules would
 look like:
 \begin{parenum} 
 %<*ex:RulesForEnglish>
@@ -1262,26 +1261,6 @@ This is a convenient notation for those rules.
 \end{example}
 
 %<*discussion:GrammarVocabulary>
-Each line is a \definend{production}\index{production in a grammar}\index{grammar!production} 
-or \definend{rewrite rule}.\index{rewrite rule}\index{grammar!rewrite rule}
-Each has one arrow, \productionsymbol{}.\footnote{%
-  Read the arrow aloud
-  as ``may produce,'' or ``may expand to,'' or ``may be constructed as.''}
-To the left of the arrow is the rule's 
-\definend{head}\index{head of a production}\index{grammar!head} 
-while to the right is 
-its \definend{body}\index{body of a production}\index{grammar!body of a production} 
-or 
-\definend{expansion}.\index{expansion of a production}\index{grammar!expansion of a production}
-Sometimes two rules have the same head,
-as with 
-\synt{noun phrase}. 
-There are also two rules for \synt{noun} but 
-we have abbreviated by combining 
-the bodies using the 
-\index{pipe symbol@pipe symbol, \syntaxor}`\grammarorsymbol'~pipe symbol.\footnote{%
- Read the vertical bar aloud as ``or.''}
-
 The rules use two different kinds of components.
 The ones written in typewriter type such as
 `\trm{the}'
@@ -1303,17 +1282,99 @@ They are \definend{metacharacters},\index{metacharacter}
 part of the syntax of the rules themselves.
 %</discussion:GrammarVocabulary>
 
+%<*def:Grammar>
+\begin{definition}
+A \definend{context-free grammar}\index{context free!grammar}\index{grammar!context free}\index{grammar}\index{language!grammar}
+is a four-tuple $\mathcal{G}=\sequence{\Sigma,N,S,P}$.
+The set $\Sigma$ is an alphabet, whose elements are the
+\definend{terminal symbols},\index{terminal}
+and the elements of the set $N$ are the 
+\definend{nonterminals}\index{nonterminal} 
+or
+\definend{syntactic categories}.\index{syntactic category}\index{grammar!syntactic category}
+(We take $\Sigma$ and~$N$ to be disjoint, and that
+neither contains metacharacters.)
+The symbol $S\in N$ is the
+\definend{start symbol}.\index{start symbol}\index{grammar!start symbol}
+
+Finally, $P$ is a set of 
+\definend{productions}\index{production}\index{grammar!production}
+or \definend{rewrite rules}.\index{rewrite rule}\index{grammar!rewrite rule}
+Each has one arrow, \productionsymbol{}.\footnotemark[2]
+To the right of the arrow is 
+the rule's \definend{body}\index{body of a production}\index{grammar!body of a production} 
+or 
+\definend{expansion},\index{expansion of a production}\index{grammar!expansion of a production}
+a string of terminals and nonterminals.
+To the left of the arrow is the rule's 
+\definend{head},\index{head of a production}\index{grammar!head} 
+which is a single nonterminal.\footnotemark[3]
+\end{definition}\footnotetext[2]{%
+  Read the arrow aloud
+  as ``may produce,'' or ``may expand to,'' or ``may be constructed as.''
+}\footnotetext[3]{What makes these grammars `context free' is that
+  each head consists of one nonterminal.
+  An example of a grammar that does not follow this format
+  is one that allows heads of the form
+  $\sigma_0$\ntrm{X}$\sigma_1$, where $\sigma_0$ and~$\sigma_1$ are 
+  strings of terminals and nonterminals.
+  (They can be empty strings.)\protect\label{ex:anbncnGrammar}
+  For example, consider
+  \citetext{this grammar}{%
+  Taken from \protect\url{https://en.wikipedia.org/wiki/Formal_grammar}.}:  
+  (i)~\ntrm{S}\produces{} \str{a}\ntrm{B}\ntrm{S}\str{c} | \str{abc},
+  (ii)~\ntrm{S}\produces{}\str{abc},
+  (iii)~\ntrm{B}\str{a}\produces{}\str{a}\ntrm{B},
+  (iv)~\ntrm{B}\str{b}\produces{}\str{bb}.
+  Rule~(iii) says that if we see a string 
+  with some prefix followed by \str{a} then we
+  can replace that string with \str{a} followed by the prefix.
+  Thus, from the string \str{a}\ntrm{B}\str{abcc} we can
+  derive \str{aa}\ntrm{B}\str{bcc} by replacing the \ntrm{B}\str{a}
+  in the middle with \str{a}\ntrm{B}.
+  % S 
+  % \derives\str{a}BS\str{c}
+  % \derives\str{a}B\str{abcc}
+  % \derives\str{aa}B\str{bcc}
+  % \derives\str{aabbcc}
+  % the third step uses~(iii)
+  % and the fourth step uses~(iv).
+  Similarly from \str{aa}\ntrm{B}\str{bcc}, rule~(iv) gives \str{aabbcc}. 
+  Such grammars  % with heads of the form $\sigma_0X\sigma_1$  
+  are \protect\definend{context sensitive}
+  because they only allow
+  substitution for~\ntrm{X} in the context of $\sigma_0$ and~$\sigma_1$.
+  Context sensitive grammars describe more languages than 
+  the context free ones that
+  we are using, and there are grammar classes even more general.
+  But our definition satisfies our needs and is
+  the class of grammars that appear most often in practice. 
+  % because it is a good balance of convenience and power. 
+  }
+%</def:Grammar>
+
+\noindent We will use the convention that the start symbol is  
+the head of the first rule.
+
+Note that sometimes two rules have the same head,
+as with 
+\synt{noun phrase}. 
+There are also two rules for \synt{noun} but for this 
+we have abbreviated by combining 
+the bodies using the 
+\index{pipe symbol@pipe symbol, \syntaxor}`\grammarorsymbol'~pipe symbol.\footnote{%
+ Read the vertical bar aloud as ``or.''}
+
 %<*discussion:DerivationVocabularyi>
 The rewrite rules govern the 
 \definend{derivation}\index{derivation}\index{grammar!derivation} 
 of strings in the language.
-Under the grammar above we shall have that
+Under the grammar above
 every derivation starts with \ntrm{sentence}.
 During a derivation, intermediate strings contain a mix of nonterminals and 
 terminals.
-In our grammars every rule has a head with a single nonterminal. 
-To get the 
-next string,
+In our grammars every rule has a head with a single nonterminal so  
+to get the next string,
 pick a nonterminal in the present string, 
 find a rule where that nonterminal is a head, and 
 then substitute that rule's body.
@@ -1338,7 +1399,9 @@ we use the double line arrow \derivessymbol{} for derivations.\footnote{%
 \end{center}
 %</discussion:DerivationVocabularyi>
 %<*discussion:DerivationVocabularyii>
-This is a 
+In general 
+we could substitute for any nonterminal.
+However, this is a 
 \definend{leftmost derivation}\index{derivation}\index{leftmost derivation}, 
 which always substitutes for the leftmost nonterminal
 in that it first substitutes for the leftmost nonterminal on the right side
@@ -1346,8 +1409,6 @@ of the first
 line, \ntrm{noun phrase},
 then substitutes for the leftmost nonterminal on the second line,
 \ntrm{article}, etc.
-However, in general 
-we could substitute for any nonterminal.
 %</discussion:DerivationVocabularyii>
 
 %<*discussion:DerivationTree>
@@ -1361,65 +1422,6 @@ or \definend{parse tree}.\footnote{%
   \includegraphics{languages/asy/parsetree/parsetree000.pdf}
 \end{center}
 
-%<*def:Grammar>
-\begin{definition}
-A \definend{context-free grammar}\footnotemark[3]\index{context free!grammar}\index{grammar!context free}\index{grammar}\index{language!grammar}
-is a four-tuple $\mathcal{G}=\sequence{\Sigma,N,S,P}$.
-The set $\Sigma$ is an alphabet, whose elements are the
-\definend{terminal symbols},\index{terminal}
-and the elements of the set $N$ are the 
-\definend{nonterminals}\index{nonterminal} 
-or \definend{syntactic categories}.\index{syntactic category}\index{grammar!syntactic category}
-(We take $\Sigma$ and~$N$ to be disjoint, and that
-neither contains metacharacters.)
-The symbol $S\in N$ is the \definend{start symbol}.\index{start symbol}\index{grammar!start symbol} 
-Finally, $P$ is a set of 
-\definend{productions}\index{production}\index{grammar!production}
-or \definend{rewrite rules}.\index{rewrite rule}\index{grammar!rewrite rule}
-\end{definition}\footnotetext[3]{%
-  This definition of rules, grammars, and derivations suffices for us
-  but it is not the most general one.
-  One more general definition allows heads of the form
-  $\sigma_0X\sigma_1$, where $\sigma_0$ and~$\sigma_1$ are 
-  strings of terminals.
-  % In that ruls
-  % that provide a context
-  % for the nonterminal~$S$, and substitutions for $S$ are only allowed in context.
-  (The $\sigma_i$'s can be empty.)
-  \protect\label{ex:anbncnGrammar}
-  For example, consider
-  \citetext{this grammar}{%
-  Taken from \protect\url{https://en.wikipedia.org/wiki/Formal_grammar}.}:  
-  (i)~S\produces{} \str{a}BS\str{c} | \str{abc},
-  (ii)~B\str{a}\produces{}\str{a}B,
-  (iii)~B\str{b}\produces{}\str{bb}.
-  Rule~(ii) says that if you see a string 
-  with something followed by \str{a} then you
-  can replace that string with \str{a} followed by that thing.
-  For instance, in the derivation
-  S 
-  \derives\str{a}BS\str{c}
-  \derives\str{a}B\str{abcc}
-  \derives\str{aa}B\str{bcc}
-  \derives\str{aabbcc}
-  the third step uses~(ii)
-  and the fourth step uses~(iii).
-  Such grammars  % with heads of the form $\sigma_0X\sigma_1$  
-  are \protect\definend{context sensitive}
-  because we can only
-  substitute for~X in the context of $\sigma_0$ and~$\sigma_1$.
-  Context sensitive grammars describe more languages than 
-  the context free ones that
-  we are using, and there are grammar classes even more general.
-  But our definition satisfies our needs and is
-  the class of grammars that appear most often in practice. 
-  % because it is a good balance of convenience and power. 
-  } 
-%</def:Grammar>
-
-\noindent We will use the convention that the start symbol is  
-the head of the first rule.
-
 \begin{example} \label{ex:GrammarOfTerms}
 This grammar describes algebraic expressions that 
 involve only addition, multiplication, and parentheses.
@@ -1429,7 +1431,7 @@ involve only addition, multiplication, and parentheses.
 \ntrm{term} \produces{} \ntrm{term} \trm{*} \ntrm{factor} \syntaxor \ntrm{factor}
 
 \ntrm{factor} \produces \trm{(} \ntrm{expr} \trm{)} \syntaxor 
-  \trm{a} \syntaxor \trm{b} \syntaxor $\ldots${} \syntaxor \trm{z}
+  \trm{a} \syntaxor \trm{b} \syntaxor $\ldots$ \trm{z}
 \end{grammar}
 Here is a derivation of the string \str{x*(y+z)}, along with its tree. 
 \begin{center}
@@ -1452,15 +1454,15 @@ Here is a derivation of the string \str{x*(y+z)}, along with its tree.
 \end{center}
 \end{example}
 
-% \begin{remark}
-In that example 
-the rules for \ntrm{expr} and \ntrm{term} are recursive.
+\begin{remark}
+Those rules for \ntrm{expr} and \ntrm{term} are recursive.
 But we don't get stuck in an infinite regress because 
 the question is not whether we could perversely 
 keep expanding \synt{expr} forever.
-Instead, the question is whether, given a string such as \str{x*(y+z)}, 
+Instead, we will be given a string such as \str{x*(y+z)}
+and the question will be whether 
 we can find a terminating derivation. 
-% \end{remark}
+\end{remark}
 
 In the prior example the nonterminals such as \synt{expr} or \synt{term} 
 describe the role of those components in the language, as did
@@ -1577,9 +1579,9 @@ natural numbers in unary.
 \end{example}
 
 \begin{example}
-Any finite language is derived from a grammar.
-This one gives the language of all length~$2$ bitstrings, using the brute 
+This grammar gives the language of all length~$2$ bitstrings, using the brute 
 force approach of just listing all the member strings.
+Any finite language is derived from a grammar in this way.
 
 \begin{grammar}
   S \produces{} 
@@ -1617,7 +1619,7 @@ generates the language
 $\lang=\set{\str{a}^i\str{b}^j\in\kleenestar{\set{\str{a},\str{b}}} \suchthat\text{$i\neq0$ or $j\neq 0$}}$.
 
 This is the first grammar that we have seen
-where the generated language is not clear.
+where the generated language is not immediately clear.
 So we will verify, first that the generated language is a 
 subset of~$\lang$ and then that it is also a superset.
 
@@ -1647,13 +1649,13 @@ Consider $\sigma\in\lang$ of length~$n+1$.
 By the definition of~$\lang$ it has the form $\sigma =\str{a}^i\str{b}^j$.
 There are three cases: either  or~$i=j=1$, or $i>1$, or $j>1$.
 A derivation for $\sigma=\str{a}^1\str{b}^1$ is easy.
-For the $i>1$ case, $\hat{\sigma} =\str{a}^{i-1}\str{b}^{j}$ is a string of
+If $i>1$ then $\hat{\sigma} =\str{a}^{i-1}\str{b}^{j}$ is a string of
 length~$n$, so by the inductive hypothesis it has a derivation
 S\derives$\cdots$\derives{}~$\hat{\sigma}$.
 Prefixing that derivation with
 a S\derives{}\trm{a}S step will put an
 additional \str{a} on the left.
-The $j>1$~case works the same way.
+Similar reasoning works when $j>1$.
 \end{example}
 
 The description of how rules govern derivations
@@ -3316,6 +3318,9 @@ With the same set of
 vertices, $\hat{\mathcal{N}}=\set{u_0,u_1,u_3}$,
 the induced subgraph is the triangle that adds the outer edge,
 $\mathcal{E}\cup\set{u_0u_3}$.
+
+% For the graph on the right of that example, the induced subgraph on
+% the set of vertices $\set{v_2,v_3,v_4,v_5}$ is the inner square.
 \end{example}
 
 \begin{definition}
@@ -3340,8 +3345,7 @@ There, we will need the next result.
   is adjacent to only finitely many
   other vertices.
   If the graph has infinitely many vertices then
-  it has an infinite path, 
-  one with infinitely many vertices.  % converse as exercise?
+  it has a path with infinitely many vertices.
 \end{lemma}
 
 \begin{proof} 
@@ -3368,6 +3372,8 @@ is with a matrix.
 This example represents \cref{ex:SimpleGraphFiveVert}'s graph:
 it has a~$1$ in the $i,j$~entry if the graph has an edge from $v_i$ to~$v_j$
 and a~$0$ if there is no such edge.
+\begingroup\setlength{\abovedisplayskip}{4pt}
+\setlength{\belowdisplayskip}{4pt}
 \begin{equation*}
   \mathcal{M}(\mathcal{G})=
   \begin{blockarray}{*{6}{c}}
@@ -3382,6 +3388,7 @@ and a~$0$ if there is no such edge.
   \end{blockarray}
   % \tag{$*$}
 \end{equation*}
+\endgroup
 We can tell that this matrix represents  
 a simple graph because it has only $0$ and~$1$ entries,
 because all the diagonal entries are~$0$,
@@ -3593,7 +3600,7 @@ We do not currently know whether there is a quick way.
 % we can quickly determine whether two graphs are isomorphic.
 (There are algorithms that in practice do well for most
 graphs but in the worst cases are quite slow.)
-More on algorithm speed
+More on the speed of algorithms
 is in the final chapter.
 \index{graph!isomorphism|)}
 

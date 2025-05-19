@@ -426,26 +426,26 @@
 
 % \newcommand{\autocite}[1]{\textbf{#1}}
 
-% Code below from https://www.overleaf.com/learn/how-to/Cross_referencing_with_the_xr_package_in_Overleaf
-\usepackage{xr}
-\newcommand*{\addFileDependency}[1]{% argument=file name and extension
-  \typeout{(#1)}
-  \@addtofilelist{#1}
-  \IfFileExists{#1}{}{\typeout{No file #1.}}
-}
-\newcommand*{\myexternaldocument}[1]{%
-    \externaldocument{#1}[file://book.pdf]% opt arg stops pointing to, e.g., background/background.pdf
-    \addFileDependency{#1.tex}%
-    \addFileDependency{#1.aux}%
-}
-\myexternaldocument{preface/preface}
-\myexternaldocument{prologue/prologue}
-\myexternaldocument{background/background}
-\myexternaldocument{languages/languages}
-\myexternaldocument{automata/automata}
-\myexternaldocument{complexity/complexity}
-\myexternaldocument{appendix/appendix}
-% \externaldocument{book,prologue,background,languages,automata,complexity}
+% % Code below from https://www.overleaf.com/learn/how-to/Cross_referencing_with_the_xr_package_in_Overleaf
+% \usepackage{xr}
+% \newcommand*{\addFileDependency}[1]{% argument=file name and extension
+%   \typeout{(#1)}
+%   \@addtofilelist{#1}
+%   \IfFileExists{#1}{}{\typeout{No file #1.}}
+% }
+% \newcommand*{\myexternaldocument}[1]{%
+%     \externaldocument{#1}[file://book.pdf]% opt arg stops pointing to, e.g., background/background.pdf
+%     \addFileDependency{#1.tex}%
+%     \addFileDependency{#1.aux}%
+% }
+% \myexternaldocument{preface/preface}
+% \myexternaldocument{prologue/prologue}
+% \myexternaldocument{background/background}
+% \myexternaldocument{languages/languages}
+% \myexternaldocument{automata/automata}
+% \myexternaldocument{complexity/complexity}
+% \myexternaldocument{appendix/appendix}
+% % \externaldocument{book,prologue,background,languages,automata,complexity}
 
 
 \newcommand{\definend}[1]{#1}  % should get rid of these in answers?
@@ -513,50 +513,169 @@
     plainpages=false   % prevent "destination with the same identifier" error
 }
 
-% === clever ref must come after hyperref ====
-\usepackage[capitalize,nameinlink,noabbrev]{cleveref}
-\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
-  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
-  \ifcsname #2refname\endcsname
-    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
-  \fi
+% ======== references such as "Theorem 3.1" instead of "3.1" ======
+\usepackage{zref-clever}
+\zcRefTypeSetup{theorem}{
+  Name-sg = Theorem ,
+  name-sg = Theorem ,
+  Name-pl = Theorems ,
+  name-pl = Theorems ,
 }
-\crefname{theorem}{Theorem}{Theorems}
-\Crefname{theorem}{Theorem}{Theorems}
-\crefname{lemma}{Lemma}{Lemmas}
-\Crefname{lemma}{Lemma}{Lemmas}
-\crefname{corollary}{Corollary}{Collaries}
-\Crefname{corollary}{Corollary}{Collaries}
-\crefname{definition}{Definition}{Definitions}
-\Crefname{definition}{Definition}{Definitions}
-\crefname{example}{Example}{Examples}
-\Crefname{example}{Example}{Theorems}
-\crefname{remark}{Remark}{Remarks}
-\Crefname{remark}{Remark}{Remarks}
-\crefname{problem}{Problem}{Problems}
-\Crefname{problem}{Problem}{Problems}
-\crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
-\Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
-\crefname{@exercisenumber}{Exercise}{Exercises}
-\Crefname{@exercisenumber}{Exercise}{Exercises}
-\crefname{figure}{Figure}{Figures}
-\Crefname{figure}{Figure}{Figures}
-\crefname{tablefigure}{Table}{Table}
-\Crefname{tablefigure}{Table}{Table}
-\crefname{tablehere}{Table}{Tables}
-\Crefname{tablehere}{Table}{Tables}
-\crefname{Item}{Item}{Items}
-\Crefname{Item}{Item}{Items}
+\zcRefTypeSetup{lemma}{
+  Name-sg = Lemma ,
+  name-sg = Lemma ,
+  Name-pl = Lemmas ,
+  name-pl = Lemmas ,
+}
+\zcRefTypeSetup{corollary}{
+  Name-sg = Corollary ,
+  name-sg = Corollary ,
+  Name-pl = Corollaries ,
+  name-pl = Corollaries ,
+}
+\zcRefTypeSetup{definition}{
+  Name-sg = Definition ,
+  name-sg = Definition ,
+  Name-pl = Definitions ,
+  name-pl = Definitions ,
+}
+\zcRefTypeSetup{example}{
+  Name-sg = Example ,
+  name-sg = Example ,
+  Name-pl = Examples ,
+  name-pl = Examples ,
+}
+\zcRefTypeSetup{remark}{
+  Name-sg = Remark ,
+  name-sg = Remark ,
+  Name-pl = Remarks ,
+  name-pl = Remarks ,
+}
+\zcRefTypeSetup{problem}{
+  Name-sg = Problem ,
+  name-sg = Problem ,
+  Name-pl = Problems ,
+  name-pl = Problems ,
+}
+\zcRefTypeSetup{churchsthesis}{
+  Name-sg = Church's Thesis ,
+  name-sg = Church's Thesis ,
+  Name-pl = Church's Thesis ,
+  name-pl = Church's Thesis ,
+}
+\zcRefTypeSetup{tablefigure}{
+  Name-sg = Table ,
+  name-sg = Table ,
+  Name-pl = Tables ,
+  name-pl = Tables ,
+}
+% Redefine the following if printing to paper?
+\zcRefTypeSetup{animatefigure}{
+  Name-sg = Animation ,
+  name-sg = Animation ,
+  Name-pl = Animations ,
+  name-pl = Animations ,
+}
+\zcRefTypeSetup{tablehere}{
+  Name-sg = Table ,
+  name-sg = Table ,
+  Name-pl = Tables ,
+  name-pl = Tables ,
+}
+\zcRefTypeSetup{figurehere}{
+  Name-sg = Figure ,
+  name-sg = Figure ,
+  Name-pl = Figures ,
+  name-pl = Figures ,
+}
+\zcRefTypeSetup{fig}{
+  Name-sg = Figure ,
+  name-sg = Figure ,
+  Name-pl = Figures ,
+  name-pl = Figures ,
+}
+\zcRefTypeSetup{appendix}{
+  Name-sg = Appendix ,
+  name-sg = Appendix ,
+  Name-pl = Appendices ,
+  name-pl = Appendices ,
+}
+\zcRefTypeSetup{extrasection}{
+  Name-sg = Extra ,
+  name-sg = Extra ,
+  Name-pl = Extra sections ,
+  name-pl = Extra sections ,
+}
+\zcRefTypeSetup{exercise}{
+  Name-sg = Exercise ,
+  name-sg = Exercise ,
+  Name-pl = Exercises ,
+  name-pl = Exercises ,
+}
+\zcRefTypeSetup{exerciselisti}{
+  Name-sg = Exercise ,
+  name-sg = Exercise ,
+  Name-pl = Exercises ,
+  name-pl = Exercises ,
+}
+
+% Take cross references from the .aux file for each chapter
+\usepackage{zref-xr}
+\zexternaldocument{preface/preface}[book.pdf]% opt arg stops pointing to preface/preface.pdf
+\zexternaldocument{prologue/prologue}[book.pdf]
+\zexternaldocument{background/background}[book.pdf]
+\zexternaldocument{languages/languages}[book.pdf]
+\zexternaldocument{automata/automata}[book.pdf]
+\zexternaldocument{complexity/complexity}[book.pdf]
+\zexternaldocument{appendix/appendix}[book.pdf]
+
+
+
+% % === clever ref must come after hyperref ====
+% \usepackage[capitalize,nameinlink,noabbrev]{cleveref}
+% \def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+%   \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+%   \ifcsname #2refname\endcsname
+%     \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+%   \fi
+% }
+% \crefname{theorem}{Theorem}{Theorems}
+% \Crefname{theorem}{Theorem}{Theorems}
+% \crefname{lemma}{Lemma}{Lemmas}
+% \Crefname{lemma}{Lemma}{Lemmas}
+% \crefname{corollary}{Corollary}{Collaries}
+% \Crefname{corollary}{Corollary}{Collaries}
+% \crefname{definition}{Definition}{Definitions}
+% \Crefname{definition}{Definition}{Definitions}
+% \crefname{example}{Example}{Examples}
+% \Crefname{example}{Example}{Theorems}
+% \crefname{remark}{Remark}{Remarks}
+% \Crefname{remark}{Remark}{Remarks}
+% \crefname{problem}{Problem}{Problems}
+% \Crefname{problem}{Problem}{Problems}
+% \crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+% \Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
+% \crefname{@exercisenumber}{Exercise}{Exercises}
+% \Crefname{@exercisenumber}{Exercise}{Exercises}
+% \crefname{figure}{Figure}{Figures}
+% \Crefname{figure}{Figure}{Figures}
+% \crefname{tablefigure}{Table}{Table}
+% \Crefname{tablefigure}{Table}{Table}
+% \crefname{tablehere}{Table}{Tables}
+% \Crefname{tablehere}{Table}{Tables}
+% \crefname{Item}{Item}{Items}
+% \Crefname{Item}{Item}{Items}
 
 % For naming a part of an exercise, as in \item \expartsname{Commutativity}
 \newcommand{\expartsname}[1]{\textsc{(#1)}} 
 
 % \renewcommand{\cref}[1]{REF:~\textit{#1}}
 % \renewcommand{\Cref}[1]{REF:~\textit{#1}}
-\newcommand{\figureref}[1]{\Cref{#1} on page~\pageref{#1}}
-\newcommand{\Figureref}[1]{\Cref{#1} on page~\pageref{#1}}
+\newcommand{\figureref}[1]{\zcref{#1} on page~\pageref{#1}}
+\newcommand{\Figureref}[1]{\zcref[S]{#1} on page~\pageref{#1}}
 
-% Count the number of answers to exercises.
+
+% ========== Count the number of answers to exercises =============
 \newcounter{numberanswers} 
   \setcounter{numberanswers}{0}
 

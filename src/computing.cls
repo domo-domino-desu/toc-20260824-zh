@@ -350,6 +350,11 @@
   \chapterwrapper{#3}\imagecredit{#1}%
   \Writetofile{\answerbodyfilename}{\protect\chapter{Chapter \Roman{chapter}: #3}}%
   \storeNumberstring{chapterasnumberstring}{chapter}% See answers description
+  % Remove hyperref errors "destination with the same identifier"
+  % Matches redefinition inside \extra command
+  % \renewcommand*{\theHtheorem}{\thechapter.\thesection.\thetheorem}
+  % \renewcommand*{\theHlemma}{\thechapter.\thesection.\thelemma}
+  \renewcommand*{\theHexerciselisti}{\thechapter.\thesection.\theexerciselisti}
 }
 
 
@@ -572,6 +577,11 @@
   \renewcommand{\thedefinition}{\thesection.\arabic{theorem}} 
   \renewcommand{\theproblem}{\Alph{section}.\arabic{theorem}} 
   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
+  % Remove hyperref errors "destination with the same identifier"
+  % Matches redefinition inside \chapteropen command
+  \renewcommand*{\theHtheorem}{\thechapter.\thesection.\thetheorem}
+  % \renewcommand*{\theHlemma}{\thechapter.\thesection.\thelemma}
+  \renewcommand*{\theHexerciselisti}{\thechapter.\thesection.\theexerciselisti}
   % \renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
   \markright{Extra \thesection{}. #1}%
 \extrasection{#1}}
@@ -645,245 +655,6 @@
 
 
 
-% ========== Exercises =======================
-
-% Suppress page break between "Exercises" and top of list
-%  see https://tex.stackexchange.com/a/210847/121234
-\newlength{\jh@listtopsep}
-  % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
-  \setlength{\jh@listtopsep}{0.8ex plus 0.2ex minus 0.1ex}
-\newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
-
-% Get the width of a single character; use it for the left margin
-\newlength{\jh@widthofchar}
-\newsavebox{\jh@widthofcharbox}
-\savebox{\jh@widthofcharbox}{\scshape 0}
-\settowidth{\jh@widthofchar}{\hbox{\scshape 0}}  
-
-% ========= Define the exercises environment =======
-
-% Allow exercises to be recommended
-% In the exercise label it checks a toggle and prints the mark if the
-% toggle is true.
-\newtoggle{@recommended}
-\newcommand{\recommended}{\toggletrue{@recommended}}
-\newcommand{\recommendationmark}{\checkmark}
-\newlength{\recommendation@length}  % Put the mark this far into margin
-  \setlength{\recommendation@length}{1.25em}
-
-% Mark an answer as verified by putting \verified in the source,
-% before \begin{exercise}
-% I may just go with marking the answer as verified after \begin{answer};
-% see answer.cls.
-\newtoggle{@showverified}  % Set to true to put something on the book.pdf page
-\toggletrue{@showverified}  % comment out one of these two
-\togglefalse{@showverified} %
-% This handles the logic; don't set by hand
-\newtoggle{@verified}
-\togglefalse{@verified}
-\newcommand{\verified}{\toggletrue{@verified}}
-\newcommand{\verifiedmark}{{\color{green}V}}
-\newlength{\verified@length}  % Put the mark this far into margin
-  \setlength{\verified@length}{2.25em}
-
-% \newcommand{\verified}{\relax}
-
-% Count the total number of exercises
-\newcounter{numberofexercises}
-  \setcounter{numberofexercises}{0}
-
-% Exercises are a list
-\newcounter{@exercisenumber}[section]
-\renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
-\newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
-\newcommand{\@exercisecounterlabel}{%
-  \iftoggle{@recommended}{% put recommended mark in margin
-    \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
-  }{%
-  }\global\togglefalse{@recommended}%
-  \iftoggle{@showverified}{%
-    \iftoggle{@verified}{% put verified mark in margin
-        \llap{\makebox[\verified@length][l]{\verifiedmark}}%
-      }{%
-      }
-    \global\togglefalse{@verified}%
-  }{}
-  \addtocounter{numberofexercises}{1}
-  % \typeout{!!! Exercise target is exercise.\thechapter.\the@exercisenumber}
-  \hyperref{answers.pdf}{exercise}{\thechapter.\the@exercisenumber}{\the@exercisenumber}\hypertarget{exercise.\thechapter.\the@exercisenumber}{}\hspace*{0.6em plus 0.1em minus 0.05em}}
-  %\normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
-\AtEndDocument{\typeout{Number of exercises: \thenumberofexercises.}}
-
-% exercises environment  Contents are
-%      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}
-% The optional argument is for notes.
-\newenvironment{exercises}[1][]{%
-  \vspace{2.5ex plus 0.8ex minus 0.2ex}%
-% \vspace{\jh@listtopsep}\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}\par\nobreak\@afterheading
-  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
-  \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
-  % \nolisttopbreak % causes a \nobreak to appear after the first item
-  \begin{list}{\@exercisecounterlabel}%
-     {\usecounter{@exercisenumber}
-      \setcounter{@exercisenumber}{\value{theorem}}
-      \renewcommand{\makelabel}[1]{{\normalfont\scshape ##1}}% 
-      \setlength{\leftmargin}{\jh@widthofchar}
-      \setlength{\labelwidth}{\leftmargin}
-      \setlength{\labelsep}{0em}
-      \setlength{\itemindent}{0em}
-      \setlength{\listparindent}{0.8\parindent}
-      \setlength{\topsep}{\jh@listtopsep}
-      \setlength{\parsep}{0ex}
-      \setlength{\itemsep}{0.5ex plus 0.15ex minus 0.05ex}
-      \setlength{\rightmargin}{0em}
-      % Encourage a page break betweeen items; LaTeX book.cls has
-      % \@itempenalty     -\@lowpenalty
-      \@itempenalty-\@medpenalty %
-      % Also discourage clubs and widows
-      \clubpenalty600 % % discourage breaking after first line
-      \widowpenalty600 % discourage breaking before last line
-    }
-}{%
-  \end{list}
-}
-
-\newenvironment{exercise}{%
-  \let\item\fakeitem %  Make only the following \item be a \fakeitem so trivlists such as center don't fail
-  \item %
-  \let\item\realitem %
-  \Writetofile{\answerbodyfilename}{\@percentchar}%  Give line number of source, for editing
-  \Writetofile{\answerbodyfilename}{\@percentchar\space\showlineno\space is the exercise source}%
-}{%
-}
-
-% Insert instructions that apply to a number of consecutive exercises into
-% the middle of an exercises environment
-\newcommand{\exerciseinstructions}[1]{%
-  % ? not enough vertical space
-  % \vspace{0.5ex plus 0.15ex minus 0.05ex}% \itemsep + \parsep
-  \medskip %
-  \parbox{\textwidth}{\it #1}}
-% Refer to prior exercise instructions
-% Without optinal argument it says "See instructions above" but
-% with optional argument, which should be a reference label, it says
-% "See instructions before --label--"
-\NewDocumentCommand\refexerciseinstructions{o}
-    {\IfNoValueTF {#1}%
-        {\textit{See the instructions above.}}%
-        {\textit{See the instructions before \zcref{#1}.}}}
-
-
-% New exercises code
-% exercises environment  Contents are
-%      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}
-% Each \begin{exercise} .. \end{exercise} calls \item and writes the line number
-% to the answer file to make it easier to find bugs in answers 
-%
-% That \item comes from a \begin{exerciselist} .. \end{exerciselist}.  Each
-% of those is a modified enumerate environment, modified under enumitem.
-% A key aspect there is that the top of the exerciselist list issues a 
-% penalty so that the prior line (which says "Exercises") is not on a 
-% separate page.
-%
-% That prior line comes from the \begin{exercises} .. \end{exercises} 
-% environment.
-
-\newlist{exerciselist}{enumerate}{1}
-\setlist[exerciselist]{label=\thesection.\arabic*,
-                       beginpenalty=10000, % Keep "Exercises" line with this list
-                       midpenalty=-51,  % Good place for a page break here
-                       endpenalty=-51,  % Also good place for a page break
-                       topsep=\jh@listtopsep,
-                       parsep=0ex,
-                       itemsep=0.6ex plus 0.25ex minus 0.05ex,
-                       leftmargin=0pt,
-                       labelwidth=0pt,
-                       labelsep=0ex, % \fakeitem includes spacing
-                       itemindent=0em,
-                       font=\normalfont\scshape,
-                       before=\setcounter{exerciselisti}{\value{theorem}}\let\realitem\item\let\item\fakeitem,
-                       after=\let\item\realitem,
-}  % counter is exerciselisti
-
-
-\newcommand\fakeitem[1][\relax]{% argument defaults to \relax
-   \refstepcounter{exerciselisti}%  increment label counter
-   \realitem[\iftoggle{@recommended}{% put recommended mark in margin
-       \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
-     }{%
-     }]\global\togglefalse{@recommended}%
-     \addtocounter{numberofexercises}{1}% Count for a whole-book number 
-     \hyperref{answers.pdf}{exercise}{\thechapter.\theexerciselisti}{\theexerciselisti}\hypertarget{exercise.\thechapter.\theexerciselisti}{}\hspace*{0.6em plus 0.1em minus 0.05em}}
-
-\renewenvironment{exercises}[1][]{%      
-  \clubpenalty6000% discourage breaking after first line of a para
-  \widowpenalty6000% discourage breaking before last line of a para
-  \vspace{2.5ex plus 0.8ex minus 0.2ex}% space between text and "Exercises"  
-  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
-  \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
-  \begin{exerciselist}
-}{%
-  \end{exerciselist}
-}
-
-
-\newlist{exparts}{enumerate}{2}
-\setlist[exparts]{beginpenalty=10000, % Keep "Exercises" line with this list
-  midpenalty=-51,  % Good place for a page break here
-  endpenalty=-51,  % Also good place for a page break
-  topsep=0ex,
-  itemsep=0ex,
-  parsep=0ex,
-  leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
-  before=\setcounter{expartsii}{0}\let\item\realitem,
-  label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}
-}  % 
-
-\newlist{exparts*}{enumerate*}{2}
-\setlist[exparts*]{label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
-  itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
-  itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[2]},
-  before=\setcounter{expartsii}{0}\let\item\realitem,
-  beginpenalty=10000, % Keep "Exercises" line with this list
-  midpenalty=-51,  % Good place for a page break here
-  endpenalty=-51,  % Also good place for a page break
-}  % 
-
-
-
-% Exparts
-% Some exercises have multiple parts: (1) .. (2) ..
-% This can be on separate lines.
-% \newenvironment{exparts}{%
-%   \begin{enumerate}[topsep=0ex,
-%                     itemsep=0ex, parsep=0ex,
-%                     leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
-%                     label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
-% }{%
-%   \end{enumerate}
-% }
-
-% % .. or inline
-% \newenvironment{exparts*}{%
-%   \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
-%                      itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
-%                      itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[2]},
-%                      % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
-%                      ]
-% }{%
-%   \end{enumerate*}
-% }
-
-
-% For naming a part of an exercise, as in \item \expartsname{Commutativity}
-\newcommand{\expartsname}[1]{\textsc{(#1)}} 
-
-% For a hint, or caution, for exercises
-\newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
-\newcommand{\caution}{\textit{Caution:}} % no space because want to use a tie: ~
-
-
-
 
 
 % ============ Theorems ========================
@@ -903,7 +674,7 @@
 \newtheoremstyle{whitestyle}
 {2pt plus 0.5pt}               %space above
 {2pt plus 0.5pt}               %space below
-{}                      %bodyfont
+{\normalfont}                      %bodyfont
 {0pt}                   %indent
 {\scshape}              %headfont
 {}                      %punctuation
@@ -919,7 +690,28 @@
 {}                      %punctuation
 {0.4em plus 0.2em}                 %space after head
 {\llap{\thmnumber{#2}\hspace*{\margin@numberingspace}}\thmname{#1} \thmnote{(#3)}}       %theoremheadspec
- 
+
+% Proof environment
+%  Copied and modified from amsthm.sty to fit spacing of other environments.
+% Halmos symbol
+\renewcommand\qedsymbol{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.7pt}%
+  \fcolorbox{boldcolor}{white}{\color{white}\rule{4pt}{8.5pt}}}}
+% was: \providecommand{\qedsymbol}{\openbox}
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep4\p@\@plus2\p@\@minus2\p@\relax % half of \topsep
+  \trivlist
+  \item[\hskip\labelsep
+        \normalfont\itshape
+    #1\@addpunct{.}]\hspace{0.6em}\ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+\providecommand{\proofname}{Proof}
+
+
+
+
 
 % \usepackage{mdframed}
 % \mdfsetup{skipabove=1.5pt plus 0.2pt minus 0.1pt,
@@ -927,8 +719,6 @@
 
 \usepackage{tcolorbox}
 \tcbset{beforeafter skip=2pt plus 0.2pt minus 0.1pt}
-
-
 
 \newcommand{\probleminput}{\textit{Input:}}
 \newcommand{\problemoutput}{\textit{Output:}}
@@ -1640,14 +1430,15 @@
 
 
 
+
 %======================== hyperref ===========
 
 % Depreciated?  Doc on CTAN says in next LaTeX release
-\usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
+% \usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
 % 2025-Apr-29 Breaks index hyperlinks, but makes numberwithin work: 
-\usepackage[hypertexnames=false]{hyperref}  % remove the draft option at the end.
+% \usepackage[hypertexnames=false, plainpages=false]{hyperref}  % remove the draft option at the end.
 % 2025-Apr-30 Insert bin/compilation/repage_index.py into flow:
-% \usepackage{hyperref}  % remove the draft option at the end.
+\usepackage{hyperref}  % 
   % It is there to prevent errors like
   % "\pdfendlink ended up in different nesting level than \pdfstartlink";
   % see https://tex.stackexchange.com/a/154184/121234
@@ -1660,7 +1451,7 @@
     pdfstartview={FitH},    % fits the width of the page to the window
     pdfpagemode=None,       % None, or UseOutlines, or UseThumbs, or FullScreen
     pdftitle={Computing},    % title
-    pdfauthor={Jim Hefferon, University of Vermont},     % author
+    pdfauthor={Jim Hefferon},     % author
     pdfsubject={Theory of Computation},   % subject of the document
     pdfcreator={LaTeX, Asymptote},   % creator of the document; see https://tex.stackexchange.com/a/590921/339
     % pdfproducer={pdflatex}, % producer of the document; default is current pdflatex version
@@ -1672,7 +1463,7 @@
     citecolor=black,        % color of links to bibliography
     filecolor=black,      % color of file links
     urlcolor=black,           % color of external links
-    plainpages=false   % prevent "destination with the same identifier" error
+    % plainpages=false   % prevent "destination with the same identifier" error
 }
 % \newcommand\href[2]{\relax}
 % \newcommand\hyperref[2][\relax]{#2}
@@ -1685,11 +1476,15 @@
 \usepackage{breakurl}
 
 
+
+
+
+
 %================================================================
 % THEOREM ENVIRONMENTS
-% Must come before cleveref:
-% Numbering within must come after hyperref for per-section numbering to work.
-\usepackage{thmtools}
+% Numbering within must come after hyperref for numberwithin to work.
+%  https://tex.stackexchange.com/a/656993/339
+% \usepackage{thmtools}
 
 
 \theoremstyle{coloredstyle}
@@ -1776,24 +1571,271 @@
 
 % Proofs
 % Forget amsthm's proof environment
-\let\proof\relax % 
-\let\endproof\relax %
+% \let\proof\relax % 
+% \let\endproof\relax %
 % Halmos symbol
-\renewcommand\qedsymbol{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.7pt}%
-  \fcolorbox{boldcolor}{white}{\color{white}\rule{4pt}{8.5pt}}}}
+% \renewcommand\qedsymbol{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.7pt}%
+%   \fcolorbox{boldcolor}{white}{\color{white}\rule{4pt}{8.5pt}}}}
 %  comes before cleveref: \usepackage{thmtools}
-\declaretheoremstyle[%
-  spaceabove=0.5\topsep,%
-  spacebelow=0.5\topsep,%
-  headfont=\normalfont\itshape,%
-  headpunct={}, %
-  postheadspace=0.6em,%
-  qed=\qedsymbol%
-]{proofstyle} 
-\declaretheorem[name={Proof},
-  style=proofstyle,
-  unnumbered,
-  ]{proof}
+% \declaretheoremstyle[%
+%   spaceabove=0.5\topsep,%
+%   spacebelow=0.5\topsep,%
+%   headfont=\normalfont\itshape,%
+%   headpunct={}, %
+%   postheadspace=0.6em,%
+%   qed=\qedsymbol%
+% ]{proofstyle} 
+% \declaretheorem[name={Proof},
+%   style=proofstyle,
+%   unnumbered,
+%   ]{proof}
+
+
+
+% ========== Exercises =======================
+
+% Supress page break between "Exercises" and top of list
+%  see https://tex.stackexchange.com/a/210847/121234
+\newlength{\jh@listtopsep}
+  % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
+  \setlength{\jh@listtopsep}{0.8ex plus 0.2ex minus 0.1ex}
+\newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
+
+% Get the width of a single character; use it for the left margin
+\newlength{\jh@widthofchar}
+\newsavebox{\jh@widthofcharbox}
+\savebox{\jh@widthofcharbox}{\scshape 0}
+\settowidth{\jh@widthofchar}{\hbox{\scshape 0}}  
+
+% ========= Define the exercises environment =======
+
+% Allow exercises to be recommended
+% In the exercise label it checks a toggle and prints the mark if the
+% toggle is true.
+\newtoggle{@recommended}
+\newcommand{\recommended}{\toggletrue{@recommended}}
+\newcommand{\recommendationmark}{\checkmark}
+\newlength{\recommendation@length}  % Put the mark this far into margin
+  \setlength{\recommendation@length}{1.25em}
+
+% Mark an answer as verified by putting \verified in the source,
+% before \begin{exercise}
+% I may just go with marking the answer as verified after \begin{answer};
+% see answer.cls.
+\newtoggle{@showverified}  % Set to true to put something on the book.pdf page
+\toggletrue{@showverified}  % comment out one of these two
+\togglefalse{@showverified} %
+% This handles the logic; don't set by hand
+\newtoggle{@verified}
+\togglefalse{@verified}
+\newcommand{\verified}{\toggletrue{@verified}}
+\newcommand{\verifiedmark}{{\color{green}V}}
+\newlength{\verified@length}  % Put the mark this far into margin
+  \setlength{\verified@length}{2.25em}
+
+% \newcommand{\verified}{\relax}
+
+% Count the total number of exercises
+\newcounter{numberofexercises}
+  \setcounter{numberofexercises}{0}
+
+% Exercises are a list
+\newcounter{@exercisenumber}[section]
+\renewcommand{\the@exercisenumber}{\Alph{section}.\arabic{@exercisenumber}}
+\newcommand{\exercisecounterstart}{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
+\newcommand{\@exercisecounterlabel}{%
+  \iftoggle{@recommended}{% put recommended mark in margin
+    \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
+  }{%
+  }\global\togglefalse{@recommended}%
+  \iftoggle{@showverified}{%
+    \iftoggle{@verified}{% put verified mark in margin
+        \llap{\makebox[\verified@length][l]{\verifiedmark}}%
+      }{%
+      }
+    \global\togglefalse{@verified}%
+  }{}
+  \addtocounter{numberofexercises}{1}
+  % \typeout{!!! Exercise target is exercise.\thechapter.\the@exercisenumber}
+  \hyperref{answers.pdf}{exercise}{\thechapter.\the@exercisenumber}{\the@exercisenumber}\hypertarget{exercise.\thechapter.\the@exercisenumber}{}\hspace*{0.6em plus 0.1em minus 0.05em}}
+  %\normalfont\scshape\the@exercisenumber\hspace*{0.6em plus 0.1em minus 0.05em}}
+\AtEndDocument{\typeout{Number of exercises: \thenumberofexercises.}}
+
+% exercises environment  Contents are
+%      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}
+% The optional argument is for notes.
+\newenvironment{exercises}[1][]{%
+  \vspace{2.5ex plus 0.8ex minus 0.2ex}%
+% \vspace{\jh@listtopsep}\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}\par\nobreak\@afterheading
+  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
+  \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
+  % \nolisttopbreak % causes a \nobreak to appear after the first item
+  \begin{list}{\@exercisecounterlabel}%
+     {\usecounter{@exercisenumber}
+      \setcounter{@exercisenumber}{\value{theorem}}
+      \renewcommand{\makelabel}[1]{{\normalfont\scshape ##1}}% 
+      \setlength{\leftmargin}{\jh@widthofchar}
+      \setlength{\labelwidth}{\leftmargin}
+      \setlength{\labelsep}{0em}
+      \setlength{\itemindent}{0em}
+      \setlength{\listparindent}{0.8\parindent}
+      \setlength{\topsep}{\jh@listtopsep}
+      \setlength{\parsep}{0ex}
+      \setlength{\itemsep}{0.5ex plus 0.15ex minus 0.05ex}
+      \setlength{\rightmargin}{0em}
+      % Encourage a page break betweeen items; LaTeX book.cls has
+      % \@itempenalty     -\@lowpenalty
+      \@itempenalty-\@medpenalty %
+      % Also discourage clubs and widows
+      \clubpenalty600 % % discourage breaking after first line
+      \widowpenalty600 % discourage breaking before last line
+    }
+}{%
+  \end{list}
+}
+
+\newenvironment{exercise}{%
+  \let\item\fakeitem %  Make only the following \item be a \fakeitem so trivlists such as center don't fail
+  \item %
+  \let\item\realitem %
+  \Writetofile{\answerbodyfilename}{\@percentchar}%  Give line number of source, for editing
+  \Writetofile{\answerbodyfilename}{\@percentchar\space\showlineno\space is the exercise source}%
+}{%
+}
+
+
+
+% Insert instructions that apply to a number of consecutive exercises into
+% the middle of an exercises environment
+\newcommand{\exerciseinstructions}[1]{%
+  % ? not enough vertical space
+  % \vspace{0.5ex plus 0.15ex minus 0.05ex}% \itemsep + \parsep
+  \medskip %
+  \parbox{\textwidth}{\it #1}}
+% Refer to prior exercise instructions
+% Without optinal argument it says "See instructions above" but
+% with optional argument, which should be a reference label, it says
+% "See instructions before --label--"
+\NewDocumentCommand\refexerciseinstructions{o}
+    {\IfNoValueTF {#1}%
+        {\textit{See the instructions above.}}%
+        {\textit{See the instructions before \zcref{#1}.}}}
+
+
+% New exercises code
+% exercises environment  Contents are
+%      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}
+% Each \begin{exercise} .. \end{exercise} calls \item and writes the line number
+% to the answer file to make it easier to find bugs in answers 
+%
+% That \item comes from a \begin{exerciselist} .. \end{exerciselist}.  Each
+% of those is a modified enumerate environment, modified under enumitem.
+% A key aspect there is that the top of the exerciselist list issues a 
+% penalty so that the prior line (which says "Exercises") is not on a 
+% separate page.
+%
+% That prior line comes from the \begin{exercises} .. \end{exercises} 
+% environment.
+
+\newlist{exerciselist}{enumerate}{1}
+\setlist[exerciselist]{label=\thesection.\arabic*,
+                       beginpenalty=10000, % Keep "Exercises" line with this list
+                       midpenalty=-51,  % Good place for a page break here
+                       endpenalty=-51,  % Also good place for a page break
+                       topsep=\jh@listtopsep,
+                       parsep=0ex,
+                       itemsep=0.6ex plus 0.25ex minus 0.05ex,
+                       leftmargin=0pt,
+                       labelwidth=0pt,
+                       labelsep=0ex, % \fakeitem includes spacing
+                       itemindent=0em,
+                       font=\normalfont\scshape,
+                       before=\setcounter{exerciselisti}{\value{theorem}}\let\realitem\item\let\item\fakeitem,
+                       after=\let\item\realitem,
+}  % counter is exerciselisti
+
+% 2025-May-21 Trying to get rid of errors like
+%  "destination with the same identifier (name{exerciselisti.24}) has been already used, duplicate ignored''
+%  which lead to bad links to exercises.
+\renewcommand*{\theHexerciselisti}{\thechapter.\thesection.\theexerciselisti}
+\renewcommand*{\theHanimatefigure}{\thechapter.\thesection.\theanimatefigure}
+
+
+\newcommand\fakeitem[1][\relax]{% argument defaults to \relax
+   \refstepcounter{exerciselisti}%  increment label counter
+   \realitem[\iftoggle{@recommended}{% put recommended mark in margin
+       \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
+     }{%
+     }]\global\togglefalse{@recommended}%
+     \addtocounter{numberofexercises}{1}% Count for a whole-book number 
+     \hyperref{answers.pdf}{exercise}{\thechapter.\theexerciselisti}{\theexerciselisti}\hypertarget{exercise.\thechapter.\theexerciselisti}{}\hspace*{0.6em plus 0.1em minus 0.05em}}
+
+\renewenvironment{exercises}[1][]{%      
+  \clubpenalty6000% discourage breaking after first line of a para
+  \widowpenalty6000% discourage breaking before last line of a para
+  \vspace{2.5ex plus 0.8ex minus 0.2ex}% space between text and "Exercises"  
+  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
+  \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
+  \begin{exerciselist}
+}{%
+  \end{exerciselist}
+}
+
+
+\newlist{exparts}{enumerate}{2}
+\setlist[exparts]{beginpenalty=10000, % Keep "Exercises" line with this list
+  midpenalty=-51,  % Good place for a page break here
+  endpenalty=-51,  % Also good place for a page break
+  topsep=0ex,
+  itemsep=0ex,
+  parsep=0ex,
+  leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
+  before=\setcounter{expartsii}{0}\let\item\realitem,
+  label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}
+}  % 
+
+\newlist{exparts*}{enumerate*}{2}
+\setlist[exparts*]{label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
+  itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
+  itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[2]},
+  before=\setcounter{expartsii}{0}\let\item\realitem,
+  beginpenalty=10000, % Keep "Exercises" line with this list
+  midpenalty=-51,  % Good place for a page break here
+  endpenalty=-51,  % Also good place for a page break
+}  % 
+
+
+
+% Exparts
+% Some exercises have multiple parts: (1) .. (2) ..
+% This can be on separate lines.
+% \newenvironment{exparts}{%
+%   \begin{enumerate}[topsep=0ex,
+%                     itemsep=0ex, parsep=0ex,
+%                     leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
+%                     label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
+% }{%
+%   \end{enumerate}
+% }
+
+% % .. or inline
+% \newenvironment{exparts*}{%
+%   \begin{enumerate*}[label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
+%                      itemsep=0em,labelsep=0em,labelindent=0em,itemindent=0em,
+%                      itemjoin={\hspace{0.6em plus .1em minus .1em}\linebreak[2]},
+%                      % before={\hspace{0.6em plus .1em minus .1em\linebreak[2]}}
+%                      ]
+% }{%
+%   \end{enumerate*}
+% }
+
+
+% For naming a part of an exercise, as in \item \expartsname{Commutativity}
+\newcommand{\expartsname}[1]{\textsc{(#1)}} 
+
+% For a hint, or caution, for exercises
+\newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
+\newcommand{\caution}{\textit{Caution:}} % no space because want to use a tie: ~
 
 
 
@@ -1807,6 +1849,23 @@
 
 
 \usepackage{zref-clever}
+\AddToHook{env/lemma/begin}{\zcsetup{countertype={theorem=lemma}}}
+\AddToHook{env/corollary/begin}{\zcsetup{countertype={theorem=corollary}}}
+\AddToHook{env/definition/begin}{\zcsetup{countertype={theorem=definition}}}
+\AddToHook{env/example/begin}{\zcsetup{countertype={theorem=example}}}
+\AddToHook{env/remark/begin}{\zcsetup{countertype={theorem=remark}}}
+\AddToHook{env/problem/begin}{\zcsetup{countertype={theorem=problem}}}
+\AddToHook{env/churchsthesis/begin}{\zcsetup{countertype={theorem=churchsthesis}}}
+\AddToHook{env/tablefigure/begin}{\zcsetup{countertype={theorem=tablefigure}}}
+\AddToHook{env/animatefigure/begin}{\zcsetup{countertype={theorem=animatefigure}}}
+\AddToHook{env/tablefigure/begin}{\zcsetup{countertype={theorem=tablefigure}}}
+\AddToHook{env/animatefigure/begin}{\zcsetup{countertype={theorem=animatefigure}}}
+\AddToHook{env/tablehere/begin}{\zcsetup{countertype={theorem=tablehere}}}
+\AddToHook{env/figurehere/begin}{\zcsetup{countertype={theorem=figurehere}}}
+\AddToHook{env/fig/begin}{\zcsetup{countertype={theorem=fig}}}
+\AddToHook{env/exercise/begin}{\zcsetup{countertype={theorem=exercise}}}
+\AddToHook{env/exerciselist/begin}{\zcsetup{countertype={theorem=exerciselist}}}
+
 \zcRefTypeSetup{theorem}{
   Name-sg = Theorem ,
   name-sg = Theorem ,
@@ -1912,55 +1971,8 @@
 }
 
 
-% \usepackage{cleveref} % after hyperref
-% % \def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
-% %   \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
-% %   \ifcsname #2refname\endcsname
-% %     \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
-% %   \fi
-% % }
 
 
-% \crefname{theorem}{Theorem}{Theorems}
-% \Crefname{theorem}{Theorem}{Theorems}
-% \crefname{lemma}{Lemma}{Lemmas}
-% \Crefname{lemma}{Lemma}{Lemmas}
-% \crefname{corollary}{Corollary}{Collaries}
-% \Crefname{corollary}{Corollary}{Collaries}
-% \crefname{definition}{Definition}{Definitions}
-% \Crefname{definition}{Definition}{Definitions}
-% \crefname{example}{Example}{Examples}
-% \Crefname{example}{Example}{Theorems}
-% \crefname{remark}{Remark}{Remarks}
-% \Crefname{remark}{Remark}{Remarks}
-% \crefname{problem}{Problem}{Problems}
-% \Crefname{problem}{Problem}{Problems}
-% \crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
-% \Crefname{churchsthesis}{Church's Thesis}{Church's Thesis}
-% \crefname{tablefigure}{Table}{Table}
-% \Crefname{tablefigure}{Table}{Table}
-% \crefname{animatefigure}{Animation}{Animations}
-% \Crefname{animatefigure}{Animation}{Animations}
-% \crefname{tablehere}{Table}{Tables}
-% \Crefname{tablehere}{Table}{Tables}
-% \crefname{figurehere}{Figure}{Figures}
-% \Crefname{figurehere}{Figure}{Figures}
-% \crefname{fig}{Figure}{Figures}
-% \Crefname{fig}{Figure}{Figures}
-% \crefname{appendix}{Appendix}{Appendix}
-% \Crefname{appendix}{Appendix}{Appendix}
-
-% % Cleveref name for extra sections
-% \crefname{extrasection}{Extra}{Extra}
-% \Crefname{extrasection}{Extra}{Extra}
-
-% \crefname{@exercisenumber}{Exercise}{Exercises}
-% \Crefname{@exercisenumber}{Exercise}{Exercises}
-% \crefname{exerciselisti}{Exercise}{Exercises}
-% \Crefname{exerciselisti}{Exercise}{Exercises}
-
-
-% This goes after cleveref, which redefines appendix 
 % ............ appendix ..............
 \renewcommand{\appendix}{%
   \part{Appendices}

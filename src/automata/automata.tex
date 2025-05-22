@@ -36,8 +36,7 @@ as in the Extra section on Busy Beaver,
 it allows machines whose computation takes more tape
 cells than the number of elementary particles in the universe,
 or that take longer to halt than the time since the Big Bang,
-and there is no algorithm to warn us of these issues in advance
-of starting the machine.
+and there is no algorithm to warn us of these issues in advance.
 A rejoinder is that when we define a `book'
 we don't worry about how cosmological physics limits the number of pages.
 Happily, we don't need to go further into this discussion to justify 
@@ -148,8 +147,8 @@ we think about CPU's on everyday computers.
 While we have later occasionally referred to instructions,
 what has mattered most is that
 they describe the machine's next-state function,~$\Delta$.
-For the definition of Finite State machines we will cut right to giving 
-it in terms of~$\Delta$.
+We will give the definition of Finite State machines directly
+in terms of~$\Delta$.
 
 %<*def:FSM>
 \begin{definition} \label{def:FiniteStateMachine}
@@ -225,10 +224,12 @@ still and move the tape.
   \end{tapesequencetable}
 \end{tapesequence}
 \end{center}
-This way of showing the traces emphasizes that Finite State machines
-consume one character per step.
-They stop once all the 
-characters are gone and so they are sure to halt\Dash  
+This approach to showing the traces emphasizes that Finite State machines
+consume the input string's characters, one per step.
+The machine stops once all the 
+characters are gone\Dash
+a machine with a $k$ character input string halts after $k$ steps.
+In particular,  
 there is no \HP{} for Finite State machines.
 
 \begin{example}  \label{ex:FSATwoAsEvenBs}
@@ -254,25 +255,23 @@ with `\acceptingstatemark').\index{accepting state!in transition tables}\index{f
 \end{example}
 
 \begin{remark} \label{rem:HowToDesignFSM}
-We pause to briefly address designing Finite State machines. 
-Sometimes people new to them 
-put down a $q_0$, think of some input strings and 
-then add states accounting for those inputs.
-This can give haphazard results.
-
-Best is to think of each state in terms the role that it plays in accomplishing
-the machine's job.
-It does this by waiting for the next token so the roles look forward.
-The prior example brings this out:~we can articulate that~$q_1$
-is ``waiting for a \str{0},''
+Sometimes people new to constructing these machines
+put down $q_0$ and then think of some input strings and 
+add states handling those inputs.
+That gives haphazard results.
+Better is to be able to articulate the role that each state
+plays in accomplishing the machine's job.
+% Because states wait for the next token, these roles look forward.
+In the prior example we can articulate that~$q_1$
+is ``waiting for a \str{0}''
 or ``waiting for at least one \str{0}.''
 Similarly $q_5$ is ``waiting for a \str{1}.''
 And $q_4$ is ``looking for at least one \str{0}, followed by a~\str{1}.''
 \end{remark}
 
-Finite State machine descriptions may take that
-the alphabet is clear from the context.
-Thus, \zcref{ex:FSATwoAsEvenBs}'s alphabet is
+Finite State machine descriptions may take
+the alphabet to be clear from the context.
+Thus, \zcref{ex:FSATwoAsEvenBs} doesn't explicitly say so but its alphabet is
 $\B=\set{\str{0},\str{1}}$. 
 For in-practice machines, the alphabet is the
 set of characters that the machine could conceivably receive, so that
@@ -287,7 +286,7 @@ might well accept all of \citetext{Unicode}{%
   The Unicode standard assigns a unique number called a code point to
   every character in every language (to a fair approximation).
   See \autocite{wiki:Unicode}.\index{Unicode}}.\index{Unicode}
-But for the examples and exercises in this book 
+But for the examples and exercises  
 we will use small alphabets.\footnote{%
   We often use the characters 
   \protect\str{a}, \protect\str{b}, \protect\str{c}, etc., 
@@ -321,9 +320,9 @@ $q_1$.
   \end{transitionfunction}
 \end{center}
 Any wrong input character sends the machine to the state~$e$.
-Finite State machines often have an \definend{error state},\index{error state}
-which is a sink in that once the machine enters that state
-then it never leaves.
+Finite State machines often have an \definend{error state}\index{error state}
+that is a sink\index{sink state}\index{state!sink}
+in that once the machine enters that state, it never leaves.
 \end{example}
 
 \begin{example}  \label{ex:FSAGraphicalFileExtensions}
@@ -333,21 +332,20 @@ It is our first example with more than one accepting state.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa09.pdf}}
 \end{center}
-That drawing omits many edges, the ones involving the error state~$e$.
+That drawing omits many edges, the ones involving the error state~$e$,
+because they would make the drawing hard to read.
 For instance, from state~$q_0$ any input character other than \str{j}
 or~\str{p} is an error.
 % The drawing below shows the extra edges for the top branch; putting in all the
 % edges would make a mess.
-We omit all of these edges because they would make the drawing hard to read.
-This illustrates that while pictures are better for simple machines,
-past some point of complexity, 
+This illustrates that past some point of complexity, 
 a transition table is more useful than a picture.
 \end{example}
 
 % \urldef\goldbachurl\url{https://en.wikipedia.org/wiki/Goldbach%27s_conjecture}
-That example brings out that every finite language has a decider\Dash
-\citetext{for any finite language there is a Finite State machine that accepts
-a string if and only if it is a member of that language}{%
+That example brings out that
+\citetext{for any finite language there is a Finite State machine decider that accepts
+a string if and only if it is a member of the language}{%
   In practice the suggestion that for any finite set of strings there is a 
   Finite State machine that accepts it, simply by listing
   all of the cases, may not be reasonable.
@@ -394,53 +392,60 @@ and does not accept non-multiples such as \str{14} and~\str{8012}.
 \begin{example}
 Finite State machines translate easily to programs.
 Here is the Racket code for the next-state function of the prior example's
-multiple of three machine.
-\lstinputlisting[firstline=31,lastline=47]{\schemeautomata mod3-fsm.rkt}
-(In Racket, a character such as `\str{0}' is denoted \str{\#\textbackslash 0}.
-The routine
-\str{memv} decides if the character \codeinline{ch} is in the list,
-that is, it is a boolean function.)
-All that's left is to supply a calling function
+machine.\footnote{%
+  In Racket, a character such as `\protect\str{0}' is denoted
+  \protect\str{\#\textbackslash 0}.
+  The routine
+  \str{memv} decides if the character \codeinline{ch} is in the list,
+  that is, it is a boolean function.}
+\lstinputlisting[firstline=32,lastline=48]{\schemeautomata mod3-fsm.rkt}
+All that's left is to supply a calling function and a helper. 
 \lstinputlisting[firstline=8,lastline=12]{\schemeautomata mod3-fsm.rkt}
-and a helper. 
-\lstinputlisting[firstline=23,lastline=27]{\schemeautomata mod3-fsm.rkt}
+\lstinputlisting[firstline=24,lastline=28]{\schemeautomata mod3-fsm.rkt}
+Here it is in action.
+\begin{lstlisting}
+> (multiple-of-three-fsm "8103")
+accept
+> (multiple-of-three-fsm "8102")
+reject  
+\end{lstlisting}
 \end{example} 
 
 \begin{example}
-In the 1940's, phone call connections were handled by 
+In the 1940's, phone call connections in North America were handled by 
 \citetext{simple devices}{%
   The devices to do the switching were invented in 1889 by an undertaker whose
   competitor's wife was the local telephone operator and routed calls to
   her husband's business.
   \autocite{wiki:Strowger}}
-for local calls but required operator intervention for long distance.
+for local calls, but required operator intervention for long distance.
 That changed with the adoption of the Finite State machine here,
 which 
-\citetext{allowed users to directly dial long distance in North America}{%
+\citetext{allowed users to dial long distance directly}{%
   See the description of the North America Numbering Plan
   \autocite{wiki:NANumbering}.}.
 Consider dialing \str{1-802-555-0101}.
 The initial \str{1} means that 
 the call leaves the local office.
 The \str{802} is an area code; the system can tell that this is not a 
-\citetext{same-area local exchange}{%
-  Initially, large states, those divided into multiple numbering plan areas, 
+same-area local exchange because
+its
+\citetext{second digit is~\str{0} or~\str{1}}{%
+  Initially, states divided into multiple numbering plan areas 
   were assigned area codes with a \str{1} in the second position. 
   Areas that covered entire states or provinces got codes with 
   \str{0} as the middle digit. 
   That was abandoned by the early 1950's.
-  \autocite{wiki:NANumbering}.}
-because
-its second digit is~\str{0} or~\str{1}.
+  \autocite{wiki:NANumbering}.}.
 Next, the \str{555}
-routes the call to a local office.
+routes the call to a local exchange.
 Then that office's device makes the connection to line \str{0101}.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa13.pdf}
 \end{center}
-Today, no longer are area codes required to
-have a middle digit of \str{0} or~\str{1}.
-This additional flexibility is possible because
+(Also shown are other services such as \str{911} for emergencies.)
+Today, area codes are no longer required to
+have a middle digit of \str{0} or~\str{1} because
 switching now happens entirely in software.
 \end{example}
 
@@ -520,7 +525,7 @@ $
   \yields\sequence{q_0,3}
   \yields\sequence{q_0,\emptystring}
 $.
-Since $q_0$ is accepting, the machine accepts \str{5013}.
+Since $q_0$ is accepting, the machine accepts \str{8013}.
 \end{example}
 
 %<*def:FSMLanguage>
@@ -538,9 +543,11 @@ or just simply the
   and so there is no notion like computably enumerable.
   Thus the languages that such a machines can decide is the same as
   the languages that it can recognize
-  (in contrast with the case for Turing machines, as 
-  defined on page~\protect\pageref{df:TMDecidesLanguage}).
-  For these machines, `recognized' is the more common term.}
+  (in contrast with the case for Turing machines as 
+  described on page~\protect\pageref{df:TMDecidesLanguage}).
+  For these machines, \protect\citetext{`recognized' is the more common term}{%
+    Note that `accepts' is not right.
+    Machines accept strings but for languages they recognize or decide.}.}
 %</def:FSMLanguage>
 
 \begin{example} 
@@ -602,11 +609,6 @@ for $k_2,k_3,k_5\in\N^+$ and $n, k_0,k_1,k_4\in\N$.
     \quad
     \extended{\Delta}(\str{bb})=q_0
   \end{equation*}
-Observe that a string $\sigma$ is accepted 
-by the machine if and only if
-$\extended{\Delta}(\sigma)$ is an accepting state.
-For instance, the string \str{aa} is in the language of this machine
-as $\extended{\Delta}(\str{aa})=q_1$, which is accepting.
 \end{example}
 
 We can give a constructive definition of $\extended{\Delta}$.
@@ -618,9 +620,12 @@ $\extended{\Delta}(\tau\concat t)$ to be
 $\Delta(q,t)$,
 where $\extended{\Delta}(\tau)=q$. 
 
-One way in which $\extended{\Delta}$ is handy is that it gives us
-a nice alternative definition of when an input string is accepted 
-by a machine:~$\tau_0$ is accepted if $\extended{\Delta}(\tau_0)\in F$.
+One way in which $\extended{\Delta}$ is handy is that
+a string $\sigma$ is accepted 
+by the machine if and only if
+$\extended{\Delta}(\sigma)$ is an accepting state.
+For instance, in the prior example
+the string \str{aa} is in the language of this machine
 
 This brings us back to determinism
 because $\extended{\Delta}$ would not be well-defined
@@ -628,10 +633,10 @@ without it:~by determinism $\Delta$ has one next state
 for all input configurations and so, by induction,
 $\extended{\Delta}$ has one and only one output state for all input strings.
 
-% Finally, note the similarity between $\extended{\Delta}$
-% and $\phi_e$, the function computed by the Turing machine $\TM_e$.
-% Both take as input the contents of their machine's start tape,
-% and both give as output the result of multiple steps.
+Finally, note the similarity between $\extended{\Delta}$
+and $\phi_e$, the function computed by Turing machine $\TM_e$.
+Both take as input the contents of their machine's start tape,
+and both give as output the result of a multiple steps full computation.
 
 % \begin{TODO}
 %   Add exercise that starts with a TM using only finite scratch memory, and

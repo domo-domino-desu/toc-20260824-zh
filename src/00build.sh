@@ -9,7 +9,7 @@ makeindex -s book.ist -p odd book.idx
 # ../bin/compilation/repage_index.py book.ind > book_ind.repaged 
 # cp book_ind.repaged book.ind
 # biber book
-${LATEX} book
+# ${LATEX} book
 # ${LATEX} answers
 # biber answers
 # ${LATEX} answers

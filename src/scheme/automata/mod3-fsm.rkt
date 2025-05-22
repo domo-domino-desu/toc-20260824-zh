@@ -8,15 +8,16 @@
 (define (multiple-of-three-fsm input-string)
   (let ((state 0))
     (if (= 0 (multiple-of-three-fsm-helper state (string->list input-string)))
-	"accept"
-	"reject")))
+	(displayln "accept")
+	(displayln "reject"))))
 
-(module+ test
-  (check-equal? "accept" (multiple-of-three-fsm "1101"))
-  (check-equal? "reject" (multiple-of-three-fsm "11011"))
-  (check-equal? "accept" (multiple-of-three-fsm "00"))
-  (check-equal? "accept" (multiple-of-three-fsm ""))
-  )
+; To use these, omit the displayln's.
+;(module+ test
+;  (check-equal? "accept" (multiple-of-three-fsm "1101"))
+;  (check-equal? "reject" (multiple-of-three-fsm "11011"))
+;  (check-equal? "accept" (multiple-of-three-fsm "00"))
+;  (check-equal? "accept" (multiple-of-three-fsm ""))
+;  )
 
 ;; natural, list of characters  -->  natural
 ;; Tail-recursive helper fcn

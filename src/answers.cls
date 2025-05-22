@@ -515,6 +515,23 @@
 
 % ======== references such as "Theorem 3.1" instead of "3.1" ======
 \usepackage{zref-clever}
+\AddToHook{env/lemma/begin}{\zcsetup{countertype={theorem=lemma}}}
+\AddToHook{env/corollary/begin}{\zcsetup{countertype={theorem=corollary}}}
+\AddToHook{env/definition/begin}{\zcsetup{countertype={theorem=definition}}}
+\AddToHook{env/example/begin}{\zcsetup{countertype={theorem=example}}}
+\AddToHook{env/remark/begin}{\zcsetup{countertype={theorem=remark}}}
+\AddToHook{env/problem/begin}{\zcsetup{countertype={theorem=problem}}}
+\AddToHook{env/churchsthesis/begin}{\zcsetup{countertype={theorem=churchsthesis}}}
+\AddToHook{env/tablefigure/begin}{\zcsetup{countertype={theorem=tablefigure}}}
+\AddToHook{env/animatefigure/begin}{\zcsetup{countertype={theorem=animatefigure}}}
+\AddToHook{env/tablefigure/begin}{\zcsetup{countertype={theorem=tablefigure}}}
+\AddToHook{env/animatefigure/begin}{\zcsetup{countertype={theorem=animatefigure}}}
+\AddToHook{env/tablehere/begin}{\zcsetup{countertype={theorem=tablehere}}}
+\AddToHook{env/figurehere/begin}{\zcsetup{countertype={theorem=figurehere}}}
+\AddToHook{env/fig/begin}{\zcsetup{countertype={theorem=fig}}}
+\AddToHook{env/exercise/begin}{\zcsetup{countertype={theorem=exercise}}}
+\AddToHook{env/exerciselist/begin}{\zcsetup{countertype={theorem=exerciselist}}}
+
 \zcRefTypeSetup{theorem}{
   Name-sg = Theorem ,
   name-sg = Theorem ,
@@ -618,6 +635,7 @@
   Name-pl = Exercises ,
   name-pl = Exercises ,
 }
+
 
 % Take cross references from the .aux file for each chapter
 \usepackage{zref-xr}

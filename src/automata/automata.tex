@@ -2261,92 +2261,91 @@ or even configurations without any next state at all.
 
 
 \subsection{Motivation}
-Imagine a grammar
-with some rules and a start symbol.
-We get a string and are asked to find a derivation.
-The challenge is that
-we sometimes don't know which rules the derivation should follow.
-For instance, if we have
-\mbox{S\produces{}B\trm{a}S\syntaxor A\trm{b}A} then
-from S we can do two different things:~which will work?
+Imagine that we are given a grammar and
+a string, and are asked to find a derivation.
+It may not be clear which rules to follow.
+For instance with the grammar
+\mbox{S\produces{}B\trm{a}S\syntaxor A\trm{b}A}, 
+from S we can apply two different rules:~which one will work?
 or maybe both will?  or neither?
 
 \margingraphic[l]{0.175\textwidth}{automata/pix/yogi.jpg}{\href{https://en.wikipedia.org/wiki/Yogi_Berra}{Yogi Berra 1925--2015}}\index{Berra, Y!picture}
-In the Grammar section's exercises we relied on a 
-person having the insight to guess the right way.  
+In the Grammar section's exercises we relied on a person's
+intuition to guess a right way.  
 If instead we were writing a program then we might 
-think to try something more brute-force.
+rely on brute force.
 The American philosopher and Hall of Fame baseball catcher Y~Berra
 said, ``When you come to a fork in the road, take it.''
-That's a natural way to attack this problem:~when you come up against
+That's a natural way to attack this problem:~given
 multiple possibilities,
 fork a child for each.
-Thus, the routine might begin with the start state~$S$ and for each rule that
-could apply, it spawns a child process, deriving a
+The program might begin with the start state~$S$ and for each rule that
+could apply it spawns a child process, deriving a
 string one removed from the start.
 After that, each child finds each rule that could apply to its string and
-spawns its own children, each of which now has a string that is two removed from
-the start.
-Continue until the desired string appears, if it ever does.
+spawns its own children, each of which now has a string that is two removed
+from~S.
+It continues in this way until the desired string appears, if it ever does.
 
-Another problem where we could think to apply this strategy is
+This computation is nondeterministic in that while it is happening
+we are simultaneously in many different states.
+
+% \margingraphic{0.20\textwidth}{automata/asy/nfsm/nfsm1059.pdf}{Solution of \probname{Traveling Salesman} problem\label{fig:TSP}} % Graph PD 
+We can apply the same approach to
 the celebrated \definend{\probname{Traveling Salesman}} 
 problem,\index{Traveling Salesman problem@\probname{Traveling Salesman} problem} 
 \citetext{to find the shortest circuit that visits every city in a list}{%
   See 
   \url{https://nbviewer.jupyter.org/url/norvig.com/ipython/TSP.ipynb}.}.
-For instance, suppose that we want to know if there is a trip
+Suppose that we want to know if there is a trip
 of $16\,000$ kilometers or less that visits each
 state capital in the 
 \citetext{US lower forty eight states}{%
    See \url{https://wiki.openstreetmap.org/wiki/TIGER}.}
 and returns back to where it began.
 We could start with Montpelier, the capital of Vermont.
-From there we could fork a process for each potential next capital,
+From there we fork a process for each potential next capital,
 making forty seven new processes.
 Thus the child process that after Montpelier goes next to Concord, New Hampshire 
 would know that the trip so far is $188$~kilometers. 
 In the next round, each child would fork its own children, 
 forty six of them.
-% For instance the process that after Montpelier was assigned Concord
-% would have a child assigned to Augusta, Maine and would know that
-% so far the trip is $452$~kilometers.
-At the end, many processes will have failed to find a short-enough trip
-but if even a single process finds one
+At the end there may be many processes that have failed to find a short enough
+trip but if even a single process finds one
 then we consider the overall search a success.
 
 % \margingraphic{0.16\textwidth}{automata/pix/angel.jpg}{\label{fig:Angel}\href{https://en.wikipedia.org/wiki/Angel}{Persian angel, 1555}} % Kneeling Angel from Bukhara School c. 1555-1560. British Museum https://commons.wikimedia.org/wiki/File:Persian_angel_1555.jpg [Public domain], via Wikimedia Commons
-That computation 
-is nondeterministic in that while it is happening
-the machine is 
-simultaneously in many different states.
-Restated, this computation happens on an unboundedly-parallel machine model, 
-where whenever
-we need an additional computing agent, another CPU plus tape, one is 
-available.\footnote{%
-  This is like our experience with everyday computers, 
-  where we may be writing an email in one window 
-  and watching a video in another.
-  The machine appears to be
-  in multiple states simultaneously, 
-  although it may in fact be time-slicing,
-  dovetailing the processes, each for a few ticks.
-}
 % Conflicts with angelic nondeterminism
 % Such a machine is
 % angelic in that if we just ask for more resources, then we shall receive.
 
-We will use two different mental models to think about
-nondeterminism.\footnote{%
-  While these models are helpful in developing intuition about nondeterminism,
-  they are not part of the formal definitions and proofs.}
-The first is the one introduced above, that when a machine 
+To think about
+nondeterminism we will have two different mental models.
+These models are helpful in developing intuition about nondeterminism
+and we will refer to them often,
+although they are not part of the formal definitions and proofs.
+% \footnote{%
+%   These models are helpful in developing intuition about nondeterminism
+%   and we will refer to them often.
+%   However, they are not part of the formal definitions and proofs.}
+The first is that when a machine 
 is presented with multiple possible next states then
-it forks, so that it is in all of them simultaneously.
-The next example illustrates.
+it forks, so that it goes into all of them simultaneously.
+(We will discuss the second model below.)
+Restated, we are imagining an unboundedly-parallel machine 
+where whenever it calls for an additional computing agent\Dash
+another CPU plus tape\Dash one is provided.\footnote{%
+  This is like our experience with everyday computers, 
+  where in one window we are writing an email, 
+  in another window we are listening to music, etc.
+  To a user the machine appears to be
+  in multiple states simultaneously 
+  (although it may in fact be time-slicing)
+  and never is there a message that no more windows are available.}
+The next example illustrates in detail.
 
 \begin{example}  \label{ex:NFSMInDiscussion}
-The Finite State machine below is nondeterministic because 
+This Finite State machine is nondeterministic because 
 leaving $q_0$ are two arrows labeled~\str{0}.
 It also has states with a deficit of edges such as that
 no arrow for~\str{1} leaves $q_1$ so if it is in that state and reads that
@@ -2409,6 +2408,7 @@ we only care that there is at least one success.
 Consequently, we will define that a nondeterministic machine accepts an input
 if the computation tree has at least one maximal path that accepts.
 
+Next we develop the second mental model of nondeterminism.
 The machine in the above example
 accepts any string that ends in two~\str{0}'s and a~\str{1}.
 As it is consuming the input $\sigma=\str{00001}$, 

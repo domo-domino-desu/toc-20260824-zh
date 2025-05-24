@@ -6294,6 +6294,3 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
-
-
-

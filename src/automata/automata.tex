@@ -2261,10 +2261,10 @@ or even configurations without any next state at all.
 
 
 \subsection{Motivation}
-Imagine that we are given a grammar and
-a string, and are asked to find a derivation.
-It may not be clear which rules to follow.
-For instance with the grammar
+Imagine that we have a grammar and
+a string, and want a derivation.
+Often it is not clear which rules to follow.
+For instance for a grammar with these rules involving the start symbol
 \mbox{S\produces{}B\trm{a}S\syntaxor A\trm{b}A}, 
 from S we can apply two different rules:~which one will work?
 or maybe both will?  or neither?
@@ -2282,16 +2282,16 @@ fork a child for each.
 The program might begin with the start state~$S$ and for each rule that
 could apply it spawns a child process, deriving a
 string one removed from the start.
-After that, each child finds each rule that could apply to its string and
+After that, each child finds the rules that apply to its string and
 spawns its own children, each of which now has a string that is two removed
 from~S.
 It continues in this way until the desired string appears, if it ever does.
 
 This computation is nondeterministic in that while it is happening
-we are simultaneously in many different states.
+the routine is simultaneously in many different states.
 
 % \margingraphic{0.20\textwidth}{automata/asy/nfsm/nfsm1059.pdf}{Solution of \probname{Traveling Salesman} problem\label{fig:TSP}} % Graph PD 
-We can apply the same approach to
+The same approach applies to
 the celebrated \definend{\probname{Traveling Salesman}} 
 problem,\index{Traveling Salesman problem@\probname{Traveling Salesman} problem} 
 \citetext{to find the shortest circuit that visits every city in a list}{%
@@ -2310,7 +2310,7 @@ Thus the child process that after Montpelier goes next to Concord, New Hampshire
 would know that the trip so far is $188$~kilometers. 
 In the next round, each child would fork its own children, 
 forty six of them.
-At the end there may be many processes that have failed to find a short enough
+At the end, there may be many processes that have failed to find a short enough
 trip but if even a single process finds one
 then we consider the overall search a success.
 
@@ -2320,10 +2320,10 @@ then we consider the overall search a success.
 % angelic in that if we just ask for more resources, then we shall receive.
 
 To think about
-nondeterminism we will have two different mental models.
-These models are helpful in developing intuition about nondeterminism
-and we will refer to them often,
-although they are not part of the formal definitions and proofs.
+nondeterminism we will use two different mental models.
+(These are helpful in developing intuition
+and we will refer to them often
+but they are not part of the formal definitions and proofs.)
 % \footnote{%
 %   These models are helpful in developing intuition about nondeterminism
 %   and we will refer to them often.
@@ -2368,23 +2368,15 @@ so the machine is now in two states at once.
     \label{anim:NondeterministicComputationTree}
   \end{animatedfigure}
 }
-% \begin{center}
-%   \includegraphics{automata/asy/nfsm/nfsm08.pdf}
-% \end{center}
 \end{example}
-When we considered the forking approach to string derivations or to
-the Traveling Salesman problem,
-we observed that if a solution exists then there is at least one child process 
-that finds it.
-The same happens here:~there is a
-maximal path\footnote{%
-  It is tempting to call this a `branch' but that term has a technical 
-  meaning of maximal subtree, so that for instance a branch containing
+The computation tree has a maximal path,\footnote{%
+  Some authors call this a `branch' but that term means
+  maximal subtree, so that a branch containing
   the state $q_0$ in the column for Step~$1$ must contain all of the maximal 
-  paths above the bottom one.}\index{maximal path}\index{computation tree!maximal path} 
-of the computation tree that accepts the input string.
+  paths shown except for the bottom one.}\index{maximal path}\index{computation tree!maximal path}
+shown in red, that accepts the input string.
 There are also maximal paths that are not successful.
-The one at the bottom dies after step~$2$
+The one at the bottom dies without consuming the entire input at step~$2$,
 because when the present
 state is~$q_2$ and the input is~\str{0} then this machine passes to 
 \citetext{no-state}{%
@@ -2402,9 +2394,12 @@ state is~$q_2$ and the input is~\str{0} then this machine passes to
   No-state cannot be an accepting state, since it isn't a state at all.
 }
 The maximal path at the top does not die early but it
-also does not accept the input.
-However, we don't care if there are dozens of unsuccessful maximal paths,
-we only care that there is at least one success.
+also does not accept the input, since it ends in $q_0$ and that is not an
+accepting state.
+However, as in the earlier discusson of string derivations
+and the Traveling Salesman problem,
+we don't care if there are dozens of unsuccessful maximal paths,
+we only care that at least one succeeds.
 Consequently, we will define that a nondeterministic machine accepts an input
 if the computation tree has at least one maximal path that accepts.
 
@@ -2419,8 +2414,8 @@ so it has solved this problem\Dash viewed from the outside at least,
 we could say that the
 machine has correctly guessed what to do.
 
-This is our second model for nondeterminism.
-We can imagine programming by calling a function, some 
+This is our second mental model.
+We can imagine programming by calling a function traditionally named
 \citetext{\codeinline{amb(...)}}{%
   This operator takes a list of possibilities and evaluates to an option,
   if one is available, that allows the program as a whole to succeed.
@@ -2466,24 +2461,20 @@ We can imagine programming by calling a function, some
   values are $x$ and~$y$ when both are defined: otherwise, whichever is defined.
   Now we can define $\operatorname{less}(n)$ by
   $\operatorname{less}(n) = \operatorname{amb}(n-1, \operatorname{less}(n-1))$.''
-  },
-that guesses a successful sequence if there is one to 
-guess.\footnote{%
+  }
+that guesses, returning a successful sequence if there is one to 
+return.\footnote{%
   The name \protect\str{amb}\protect\index{amb@amb, ambiguous function}
   abbreviates `ambiguous function'.}\index{guessing!by a machine}
 
 % \margingraphic{0.25\textwidth}{automata/demon.jpg}{\label{fig:Demon}\href{https://en.wikipedia.org/wiki/The_Nightmare}{\textit{The Nightmare} H~Fuseli, 1781}} % https://upload.wikimedia.org/wikipedia/commons/5/56/John_Henry_Fuseli_-_The_Nightmare.JPG  Henry Fuseli [Public domain], via Wikimedia Commons  (https://www.atlasobscura.com/articles/original-nightmare-demon-suffocation-night-terror)
-Saying that a mechanism guesses is jarring.
-Based on programming classes,
-a person's intuition may well be that ``guessing'' is
-not mechanically accomplishable.
-%  since  
-% \citetext{it does not fit our intuition of how computers work}{%
-%   \href{https://www.youtube.com/watch?v=Aq_1l316ow8}{``That's not how this works, that's not how any of this works''}}.
-% But researchers in this area often frame it in this way.
+This is jarring.
+Based on programming experience,
+a person's intuition may be that ``guessing'' is
+not something that a mechanism can do.
 As an alternative, we can imagine that the machine is
 furnished with the answer (``go around twice, then off to the right'') and
-only has to check it.
+only has to verify that answer.
 
 \margingraphic{0.22\textwidth}{automata/pix/flauros.jpg}{\label{fig:Flauros}\href{https://en.wikipedia.org/wiki/List_of_demons_in_the_Ars_Goetia}{Flauros, Duke of Hell}}\index{Flauros, Duke of Hell!picture} %, gives true answers of all things past, present, and future}} % https://commons.wikimedia.org/wiki/File%3AIll_dict_infernal_p0294-278_flauros_demon.jpg Louis Le Breton [Public domain], via Wikimedia Commons
 When we talk about this way of expressing the second mental model   
@@ -2508,10 +2499,10 @@ accepts the input if there exists a maximal path of the computation tree
 that a deterministic machine, if told what path to take, could verify.
 
 Below we shall describe nondeterminism using both paradigms:~as a
-machine being in multiple states at once, and also as a machine guessing
+machine being in multiple states at once and also as a machine guessing
 (or being told and verifying).
 In this chapter we will do that for Finite State
-machines and in the fifth chapter we will return to it for Turing machines. 
+machines and in the final chapter we will return to it for Turing machines. 
 
 
 
@@ -2528,7 +2519,7 @@ A
 \definend{nondeterministic Finite State machine}\index{nondeterministic Finite State machine}\index{NFSM|see {nondeterministic Finite State machine}}\index{Finite State machine!nondeterministic}\index{nondeterminism!for Finite State machines}
 $\FSM=\sequence{Q,q_{0},F,\Sigma,\Delta}$ 
 consists of a finite \definend{set of states}~$Q$,
-one of which is the \definend{start state}~$q_{0}$,
+including the \definend{start state}~$q_{0}$,
 a subset $F\subseteq Q$ of \definend{accepting states}\index{accepting state!nondeterministic Finite State machine}
 or \definend{final states},\index{final state!nondeterministic Finite State machine}
 a finite \definend{input alphabet} set~$\Sigma$,
@@ -2545,7 +2536,7 @@ We will also use them to prove Kleene's Theorem,
 \zcref{th:KleenesTheorem}.
 And, they give us an initial encounter with
 nondeterminism, which is a critical concept
-for our final chapter. 
+in the final chapter. 
 
 \begin{example}  \label{ex:NDFMFromDiscussion}
 This is \zcref{ex:NFSMInDiscussion}'s nondeterministic Finite State machine,
@@ -2565,23 +2556,22 @@ That function does not output states, it outputs sets of states.
 \end{center}
 \end{example}
 
-The imagery in informal terms such as ``guess'' and ``demon''
-helps introduce the ideas
-but may also give an impression that those ideas are fuzzy.
-So when we next step through the description of the action of these
-machines, note that it is precise. 
+We next give a complete description of the action of these machines.
+NOte that whlie informal terms such as ``guess'' and ``demon''
+help with the ideas, then
+may also give an impression that those ideas are fuzzy.
+However, the description is precise. 
 
-\begin{remark}
-When we described the action of deterministic Finite State machines 
-on page~\pageref{page:DefnYieldsFiniteStateMachine}, we laid out how to 
-construct the sequence of configurations by transitioning from each to its
-successor until the tape is empty.
-But for nondeterministic machines there needn't be one and only one sequence.
-So the description is more complex.
-\end{remark}
+% In addition, in describing
+% the action of deterministic machines
+% we constructed the sequence of configurations by transitioning from each to its
+% successor until the tape is empty.
+% But for nondeterministic machines there needn't be one and only one such
+% sequence.
+% Consequently, the description below is more complex.
 
 \label{page:DefnYieldsNondeterministicFSM}
-As with deterministic machines, a 
+A nondeterministic Finite State machine 
 \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
 is a pair $\mathcal{C}=\sequence{q,\tau}$ where
 $q\in Q$ and $\tau\in\kleenestar{\Sigma}\!$.
@@ -2596,25 +2586,28 @@ is a
 \definend{halting configuration}.\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
 
 We next describe when two configurations are related by a 
-\definend{transition}, denoted
-$\,\yields$.\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-In the first configuration $\mathcal{C}_s=\sequence{q,\tau_s}$,
-let the string $\tau_s$ be not empty.
-Then where
+\definend{transition}, so that $\hat{\mathcal{C}}$ succeeds $\mathcal{C}$,
+denoted
+$\mathcal{C}\yields\hat{\mathcal{C}}$.\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
+Where $\mathcal{C}=\sequence{q,\tau}$ and
 $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$,
-we write 
-$\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-or say that $\hat{\mathcal{C}}$ succeeds $\mathcal{C}_s$
-if two conditions hold.
-First, it must be that
-$\hat{\tau}$ comes from removing $\tau_s$'s leading 
+% let the string $\tau$ be not empty.
+% Then
+% where
+% $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$,
+% we write 
+% $\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
+% or say that $\hat{\mathcal{C}}$ succeeds $\mathcal{C}_s$
+this happens if and only if both of two conditions hold.
+First, it must be that $\tau$ is nonempty and 
+$\hat{\tau}$ comes from removing $\tau$'s leading 
 character,
-so that $\tau_s=c\concat\hat{\tau}$ for $c\in\Sigma$.
-Second, using that leading character~$c$,
+so that $\tau=c\concat\hat{\tau}$ for some $c\in\Sigma$.
+Second, using that character~$c$,
 it must also be that~$\hat{q}$ is a member of the 
 set~$\Delta(q,c)$.
 
-So far the definitions apply to any Finite State machine, deterministic or
+So far the description applies to any Finite State machine, deterministic or
 not.
 But for the machines in this section  
 a configuration may have more than one configuration as its $\yields$~child, 
@@ -2622,8 +2615,7 @@ or only one, or none at all.
 Consider all of the sequences of configurations 
 that are related by $\yields$~transitions 
 and that start with $\mathcal{C}_0$.
-Put together, these form a directed graph 
-that is a tree rooted at~$\mathcal{C}_0$.
+Put together, these form a directed tree rooted at~$\mathcal{C}_0$.
 This is the 
 \definend{computation tree}\index{computation tree!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation tree}
 or just
@@ -2632,13 +2624,15 @@ or just
 In that tree a 
 \definend{maximal path}\index{maximal path!of the computation tree}\index{computation tree!maximal path}
 is a sequence of `$\yields$' edges that is not contained in any longer path.
-(In this machine type 
-a halting configuration has no configuration succeeding it, 
-so if a path has one then it comes last in that path.
+A \definend{halting configuration}\index{halting configuration!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!halting configuration}
+has the form
+$\mathcal{C}_h=\sequence{q_h,\emptystring}$, and because of the empty string
+no configuration succeeds it. 
+Thus, if a path contains a halting configuration then it comes last in that path.
 But
 maximal paths can also terminate in a final configuration 
-that is not a halting configuration.)
-If the computation tree contains 
+that is not a halting configuration, or can fail to terminate.
+If $\FSM$'s computation tree contains 
 at least one maximal path ending in a halting configuration,
 $
   \mathcal{C}_0=\sequence{q_0,\tau_0} 

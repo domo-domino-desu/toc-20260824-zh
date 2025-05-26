@@ -1840,135 +1840,136 @@
 
 
 
-% ======== clever references ===============
 % This must come before cleveref
 \usepackage{framed}
 % \setlength{\fboxsep}{0ex}
 % \usepackage[thmmarks,amsmath,framed]{ntheorem} % see https://tex.stackexchange.com/a/50602/121234
 % \usepackage{amsthm}
 
+% ======== clever references ===============
+% Get Theorem "3.1" instead of just "3.1"
+\usepackage{clever-refs-jh}
+% \usepackage{zref-clever}
+% \AddToHook{env/lemma/begin}{\zcsetup{countertype={theorem=lemma}}}
+% \AddToHook{env/corollary/begin}{\zcsetup{countertype={theorem=corollary}}}
+% \AddToHook{env/definition/begin}{\zcsetup{countertype={theorem=definition}}}
+% \AddToHook{env/example/begin}{\zcsetup{countertype={theorem=example}}}
+% \AddToHook{env/remark/begin}{\zcsetup{countertype={theorem=remark}}}
+% \AddToHook{env/problem/begin}{\zcsetup{countertype={theorem=problem}}}
+% \AddToHook{env/churchsthesis/begin}{\zcsetup{countertype={theorem=churchsthesis}}}
+% \AddToHook{env/tablefigure/begin}{\zcsetup{countertype={theorem=tablefigure}}}
+% \AddToHook{env/animatefigure/begin}{\zcsetup{countertype={theorem=animatefigure}}}
+% \AddToHook{env/tablefigure/begin}{\zcsetup{countertype={theorem=tablefigure}}}
+% \AddToHook{env/animatefigure/begin}{\zcsetup{countertype={theorem=animatefigure}}}
+% \AddToHook{env/tablehere/begin}{\zcsetup{countertype={theorem=tablehere}}}
+% \AddToHook{env/figurehere/begin}{\zcsetup{countertype={theorem=figurehere}}}
+% \AddToHook{env/fig/begin}{\zcsetup{countertype={theorem=fig}}}
+% \AddToHook{env/exercise/begin}{\zcsetup{countertype={theorem=exercise}}}
+% \AddToHook{env/exerciselist/begin}{\zcsetup{countertype={theorem=exerciselist}}}
 
-\usepackage{zref-clever}
-\AddToHook{env/lemma/begin}{\zcsetup{countertype={theorem=lemma}}}
-\AddToHook{env/corollary/begin}{\zcsetup{countertype={theorem=corollary}}}
-\AddToHook{env/definition/begin}{\zcsetup{countertype={theorem=definition}}}
-\AddToHook{env/example/begin}{\zcsetup{countertype={theorem=example}}}
-\AddToHook{env/remark/begin}{\zcsetup{countertype={theorem=remark}}}
-\AddToHook{env/problem/begin}{\zcsetup{countertype={theorem=problem}}}
-\AddToHook{env/churchsthesis/begin}{\zcsetup{countertype={theorem=churchsthesis}}}
-\AddToHook{env/tablefigure/begin}{\zcsetup{countertype={theorem=tablefigure}}}
-\AddToHook{env/animatefigure/begin}{\zcsetup{countertype={theorem=animatefigure}}}
-\AddToHook{env/tablefigure/begin}{\zcsetup{countertype={theorem=tablefigure}}}
-\AddToHook{env/animatefigure/begin}{\zcsetup{countertype={theorem=animatefigure}}}
-\AddToHook{env/tablehere/begin}{\zcsetup{countertype={theorem=tablehere}}}
-\AddToHook{env/figurehere/begin}{\zcsetup{countertype={theorem=figurehere}}}
-\AddToHook{env/fig/begin}{\zcsetup{countertype={theorem=fig}}}
-\AddToHook{env/exercise/begin}{\zcsetup{countertype={theorem=exercise}}}
-\AddToHook{env/exerciselist/begin}{\zcsetup{countertype={theorem=exerciselist}}}
-
-\zcRefTypeSetup{theorem}{
-  Name-sg = Theorem ,
-  name-sg = Theorem ,
-  Name-pl = Theorems ,
-  name-pl = Theorems ,
-}
-\zcRefTypeSetup{lemma}{
-  Name-sg = Lemma ,
-  name-sg = Lemma ,
-  Name-pl = Lemmas ,
-  name-pl = Lemmas ,
-}
-\zcRefTypeSetup{corollary}{
-  Name-sg = Corollary ,
-  name-sg = Corollary ,
-  Name-pl = Corollaries ,
-  name-pl = Corollaries ,
-}
-\zcRefTypeSetup{definition}{
-  Name-sg = Definition ,
-  name-sg = Definition ,
-  Name-pl = Definitions ,
-  name-pl = Definitions ,
-}
-\zcRefTypeSetup{example}{
-  Name-sg = Example ,
-  name-sg = Example ,
-  Name-pl = Examples ,
-  name-pl = Examples ,
-}
-\zcRefTypeSetup{remark}{
-  Name-sg = Remark ,
-  name-sg = Remark ,
-  Name-pl = Remarks ,
-  name-pl = Remarks ,
-}
-\zcRefTypeSetup{problem}{
-  Name-sg = Problem ,
-  name-sg = Problem ,
-  Name-pl = Problems ,
-  name-pl = Problems ,
-}
-\zcRefTypeSetup{churchsthesis}{
-  Name-sg = Church's Thesis ,
-  name-sg = Church's Thesis ,
-  Name-pl = Church's Thesis ,
-  name-pl = Church's Thesis ,
-}
-\zcRefTypeSetup{tablefigure}{
-  Name-sg = Table ,
-  name-sg = Table ,
-  Name-pl = Tables ,
-  name-pl = Tables ,
-}
-% Redefine the following if printing to paper?
-\zcRefTypeSetup{animatefigure}{
-  Name-sg = Animation ,
-  name-sg = Animation ,
-  Name-pl = Animations ,
-  name-pl = Animations ,
-}
-\zcRefTypeSetup{tablehere}{
-  Name-sg = Table ,
-  name-sg = Table ,
-  Name-pl = Tables ,
-  name-pl = Tables ,
-}
-\zcRefTypeSetup{figurehere}{
-  Name-sg = Figure ,
-  name-sg = Figure ,
-  Name-pl = Figures ,
-  name-pl = Figures ,
-}
-\zcRefTypeSetup{fig}{
-  Name-sg = Figure ,
-  name-sg = Figure ,
-  Name-pl = Figures ,
-  name-pl = Figures ,
-}
-\zcRefTypeSetup{appendix}{
-  Name-sg = Appendix ,
-  name-sg = Appendix ,
-  Name-pl = Appendices ,
-  name-pl = Appendices ,
-}
-\zcRefTypeSetup{extrasection}{
-  Name-sg = Extra ,
-  name-sg = Extra ,
-  Name-pl = Extra sections ,
-  name-pl = Extra sections ,
-}
-\zcRefTypeSetup{exercise}{
-  Name-sg = Exercise ,
-  name-sg = Exercise ,
-  Name-pl = Exercises ,
-  name-pl = Exercises ,
-}
-\zcRefTypeSetup{exerciselisti}{
-  Name-sg = Exercise ,
-  name-sg = Exercise ,
-  Name-pl = Exercises ,
-  name-pl = Exercises ,
-}
+% \zcRefTypeSetup{theorem}{
+%   Name-sg = Theorem ,
+%   name-sg = Theorem ,
+%   Name-pl = Theorems ,
+%   name-pl = Theorems ,
+% }
+% \zcRefTypeSetup{lemma}{
+%   Name-sg = Lemma ,
+%   name-sg = Lemma ,
+%   Name-pl = Lemmas ,
+%   name-pl = Lemmas ,
+% }
+% \zcRefTypeSetup{corollary}{
+%   Name-sg = Corollary ,
+%   name-sg = Corollary ,
+%   Name-pl = Corollaries ,
+%   name-pl = Corollaries ,
+% }
+% \zcRefTypeSetup{definition}{
+%   Name-sg = Definition ,
+%   name-sg = Definition ,
+%   Name-pl = Definitions ,
+%   name-pl = Definitions ,
+% }
+% \zcRefTypeSetup{example}{
+%   Name-sg = Example ,
+%   name-sg = Example ,
+%   Name-pl = Examples ,
+%   name-pl = Examples ,
+% }
+% \zcRefTypeSetup{remark}{
+%   Name-sg = Remark ,
+%   name-sg = Remark ,
+%   Name-pl = Remarks ,
+%   name-pl = Remarks ,
+% }
+% \zcRefTypeSetup{problem}{
+%   Name-sg = Problem ,
+%   name-sg = Problem ,
+%   Name-pl = Problems ,
+%   name-pl = Problems ,
+% }
+% \zcRefTypeSetup{churchsthesis}{
+%   Name-sg = Church's Thesis ,
+%   name-sg = Church's Thesis ,
+%   Name-pl = Church's Thesis ,
+%   name-pl = Church's Thesis ,
+% }
+% \zcRefTypeSetup{tablefigure}{
+%   Name-sg = Table ,
+%   name-sg = Table ,
+%   Name-pl = Tables ,
+%   name-pl = Tables ,
+% }
+% % Redefine the following if printing to paper?
+% \zcRefTypeSetup{animatefigure}{
+%   Name-sg = Animation ,
+%   name-sg = Animation ,
+%   Name-pl = Animations ,
+%   name-pl = Animations ,
+% }
+% \zcRefTypeSetup{tablehere}{
+%   Name-sg = Table ,
+%   name-sg = Table ,
+%   Name-pl = Tables ,
+%   name-pl = Tables ,
+% }
+% \zcRefTypeSetup{figurehere}{
+%   Name-sg = Figure ,
+%   name-sg = Figure ,
+%   Name-pl = Figures ,
+%   name-pl = Figures ,
+% }
+% \zcRefTypeSetup{fig}{
+%   Name-sg = Figure ,
+%   name-sg = Figure ,
+%   Name-pl = Figures ,
+%   name-pl = Figures ,
+% }
+% \zcRefTypeSetup{appendix}{
+%   Name-sg = Appendix ,
+%   name-sg = Appendix ,
+%   Name-pl = Appendices ,
+%   name-pl = Appendices ,
+% }
+% \zcRefTypeSetup{extrasection}{
+%   Name-sg = Extra ,
+%   name-sg = Extra ,
+%   Name-pl = Extra sections ,
+%   name-pl = Extra sections ,
+% }
+% \zcRefTypeSetup{exercise}{
+%   Name-sg = Exercise ,
+%   name-sg = Exercise ,
+%   Name-pl = Exercises ,
+%   name-pl = Exercises ,
+% }
+% \zcRefTypeSetup{exerciselisti}{
+%   Name-sg = Exercise ,
+%   name-sg = Exercise ,
+%   Name-pl = Exercises ,
+%   name-pl = Exercises ,
+% }
 
 
 

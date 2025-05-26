@@ -986,14 +986,14 @@ setdefaultstatediagramstyles() ;
 
 // define nodes
 // define nodes
-node s0=ncircle("$s_0$"); 
-node s1=ncircle("$s_1$",ns_accepting);  
-node s2=ncircle("$s_2$");  
-node s3=ncircle("$s_3$",ns_accepting);  
-node s4=ncircle("$s_4$",ns_accepting);  
-node s5=ncircle("$s_5$",ns_accepting);  
-node s6=ncircle("$s_6$",ns_accepting);  
-node s7=ncircle("$s_7$",ns_accepting);  
+node s0=ncircle("$r_0$"); 
+node s1=ncircle("$r_1$",ns_accepting);  
+node s2=ncircle("$r_2$");  
+node s3=ncircle("$r_3$",ns_accepting);  
+node s4=ncircle("$r_4$",ns_accepting);  
+node s5=ncircle("$r_5$",ns_accepting);  
+node s6=ncircle("$r_6$",ns_accepting);  
+node s7=ncircle("$r_7$",ns_accepting);  
 
 // calculate nodes position
 real u=1.65cm;  // horiz scale
@@ -5465,11 +5465,11 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes 
-node s0=ncircle("$s_0$"); 
-node s4=ncircle("$s_4$");  
-node s7=ncircle("$s_7$");  
-node s10=ncircle("$s_{10}$");  
-node s12=ncircle("$s_{12}$",ns_accepting);  
+node s0=ncircle("$r_0$"); 
+node s4=ncircle("$r_4$");  
+node s7=ncircle("$r_7$");  
+node s10=ncircle("$r_{10}$");  
+node s12=ncircle("$r_{12}$",ns_accepting);  
 
 // calculate nodes position
 real u=1.25cm;  // horizontal  
@@ -5859,10 +5859,10 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes 
-node s0=ncircle("$s_0$"); 
-node s1=ncircle("$s_1$",ns_accepting);  
-node s4=ncircle("$s_4$",ns_accepting);  
-node s3=ncircle("$s_3$",ns_accepting);  
+node s0=ncircle("$r_0$"); 
+node s1=ncircle("$r_1$",ns_accepting);  
+node s4=ncircle("$r_4$",ns_accepting);  
+node s3=ncircle("$r_3$",ns_accepting);  
 
 // calculate nodes position
 real u=1.25cm;  // horizontal  

@@ -2584,32 +2584,23 @@ $\mathcal{C}_h=\sequence{q_h,\emptystring}$,
 is a
 \definend{halting configuration}.\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
 
-We next describe when two configurations are related by a 
-\definend{transition}, so that $\hat{\mathcal{C}}$ succeeds $\mathcal{C}$,
+Consider two configurations $\mathcal{C}=\sequence{q,\tau}$ and
+$\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
+It may be that $\hat{\mathcal{C}}$ succeeds $\mathcal{C}$,
 denoted
-$\mathcal{C}\yields\hat{\mathcal{C}}$.\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-Where $\mathcal{C}=\sequence{q,\tau}$ and
-$\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$,
-% let the string $\tau$ be not empty.
-% Then
-% where
-% $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$,
-% we write 
-% $\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-% or say that $\hat{\mathcal{C}}$ succeeds $\mathcal{C}_s$
-this happens if and only if both of two conditions hold.
-First, it must be that $\tau$ is nonempty and 
+\definend{$\mathcal{C}\yields\hat{\mathcal{C}}$}.\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
+This happens if and only if 
+$\tau$ is nonempty, and 
 $\hat{\tau}$ comes from removing $\tau$'s leading 
-character,
-so that $\tau=c\concat\hat{\tau}$ for some $c\in\Sigma$.
-Second, using that character~$c$,
-it must also be that~$\hat{q}$ is a member of the 
+character
+so that $\tau=c\concat\hat{\tau}$ for some $c\in\Sigma$,
+and~$\hat{q}$ is a member of the 
 set~$\Delta(q,c)$.
 
 So far the description applies to any Finite State machine, deterministic or
 not.\footnote{%
-  This skates past that for deterministic machines there is a single next state,
-  not a set of them.}
+  With deterministic machines we mean $\hat{q}=\Delta(q,c)$
+  rather than  $\hat{q}\in\Delta(q,c)$.}
 But for the machines in this section  
 a configuration may have more than one configuration as its $\yields$~child, 
 or only one, or none at all.
@@ -2624,7 +2615,8 @@ or just
 
 In that tree a 
 \definend{maximal path}\index{maximal path!of the computation tree}\index{computation tree!maximal path}
-is a sequence of `$\yields$' edges that is not contained in any longer path.
+is a sequence of `$\yields$' edges that is not properly
+contained in any longer path.
 Because a halting configuration
 $\mathcal{C}_h=\sequence{q_h,\emptystring}$ has an empty string,
 no configuration succeeds it. 
@@ -2800,10 +2792,10 @@ the definition of a nondeterministic Finite State machine
 so that instead of $\map{\Delta}{Q\times\Sigma}{\powerset(Q)}$
 the transition function's signature is
 $\map{\Delta}{Q\times(\Sigma\union\set{\emptystring})}{\powerset(Q)}$.\footnote{%
-  For this purpose 
-  the `$\varepsilon$' is a character, not a representation of the
+  Assume that  `$\varepsilon$' is not an element of $\Sigma$.
+  Recall that this character represents the
   empty string.
-  Assume that it is not an element of $\Sigma$.}
+  In this context we will always use the character, never something like `\,'.}
 The associated behavior
 is that the machine can transition spontaneously, 
 without consuming any input.
@@ -2851,17 +2843,17 @@ by following the $\varepsilon$ transition between $q_2$ and~$q_3$.
   \yields \sequence{q_3,\str{c}}
   \yields \sequence{q_4,\emptystring}    
 \end{equation*}
-A machine may also, in a single step,
-follow two or more $\varepsilon$ transitions in succession.
-Here, it accepts~\str{d}
-by transitioning from~$q_0$
+A machine may, in a single step,
+follow two or more $\varepsilon$ transitions.
+Here, it accepts the one-character string~\str{d}
+by going from~$q_0$
 to~$q_5$ without consuming any input.
 \begin{equation*}
   \sequence{q_0,\str{d}}
   \yields \sequence{q_5,\str{d}}
   \yields \sequence{q_6,\emptystring}    
 \end{equation*}
-The language is
+This machine's language is
 $\lang=\set{\str{abc},\str{abd},\str{c}, \str{d}}$.
 \end{example}
 
@@ -2888,7 +2880,7 @@ The $\varepsilon$ moves are inside the white stripes.
 \noindent At each step, the machine is in all of the states that 
 are inside of the step's stripe.
 For instance, at step~$0$ the machine is in both $q_0$ and~$q_1$.
-After exhausting the tape, at step~$3$ it is in both $q_0$ and~$q_2$
+After exhausting the tape, at step~$3$ it is in all three states
 and because $q_0$ is an accepting state, it accepts the input \str{aab}. 
 \end{example}
 
@@ -2906,12 +2898,12 @@ The top machine's language is
 $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma$ ends in \str{ab}}}$
 and the bottom's is
 $\set{\sigma\in\kleenestar{\set{\str{a},\str{c}}}\suchthat \text{$\sigma=(\str{ac})^n$ for some $n\in\N$}}$.
-This is the language for the entire machine.
+This is the language for the entire machine
 \begin{equation*}
   \lang=\set{\sigma\in\kleenestar{\Sigma}\suchthat
    \text{either $\sigma$ ends in \str{ab} or $\sigma=(\str{ac})^n$ for $n\in\N$}}
 \end{equation*}
-We can take the alphabet for the entire machine to be the union,
+where the alphabet is the union,
 $\Sigma=\set{\str{a},\str{b},\str{c}}$.
 \end{example}
 
@@ -2920,7 +2912,7 @@ An $\varepsilon$ transition can also connect machines serially.
 The machine on the left below recognizes 
 $\lang_0=\set{(\str{aab})^i\suchthat i\in\N}$.
 The one on the right recognizes
-$\lang_1=\set{\sigma_0\concat\cdots\,\sigma_{j-1}\suchthat \text{$j\in\N$ and $\sigma_k=\str{a}$ or $\sigma_k=\str{aba}$ for $0\leq k\leq j-1$}}$.
+$\lang_1=\set{\sigma_0\concat\sigma_1\concat\cdots\,\sigma_{j-1}\suchthat \text{$j\in\N$ and $\sigma_k=\str{a}$ or $\sigma_k=\str{aba}$ for $0\leq k\leq j-1$}}$.
 \begin{center} % align graphics on top https://tex.stackexchange.com/a/126919/121234
   % Get width of first graphic
   \newsavebox{\jhtmpboxautomatai}
@@ -2974,15 +2966,15 @@ For that we need a function.
 The \definend{$\varepsilon$~closure} 
 $\map{\hat{E}}{Q}{\powerset (Q)}$\index{epsilon closure@$\varepsilon$ closure} 
 inputs a state~$q$ and returns
-the set of states that are reachable from~$q$ in some number of $\varepsilon$ moves.
+the set of states that are reachable from~$q$ by $\varepsilon$ moves alone.
 %</df:EpsilonClosurei>
 
 %<*disc:EpsilonClosurei>
-We will build it by iteratively,
-by constructing a function
+We will build the $\varepsilon$~closure iteratively,
+by constructing
 $\map{E}{Q\times\N}{\powerset (Q)}$ such that $E(q,m)$ is the set of 
 states reachable from $q$ in at most $m$-many $\varepsilon$ moves.
-To define this function, for $m=0$ take $E(q,m)=\set{q}$. 
+For $m=0$, take $E(q,0)=\set{q}$. 
 For $m>0$, where  
 $E(q,m)=\set{q_{m_0},\ldots\, q_{m_k}}$,
 take $E(q,m+1)=E(q,m)\cup \Delta(q_{m_0},\varepsilon)\cup
@@ -3046,47 +3038,46 @@ This table finds the epsilon closure for each state.
 
 We can now describe the action.
 %<*disc:EpsilonClosureii>
-As earlier, a
-\definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
+A \definend{configuration}\index{configuration}\index{nondeterministic Finite State machine!configuration} 
+for a nondeterministic Finite State machine with $\varepsilon$ moves~$\FSM$
 is a pair $\mathcal{C}=\sequence{q,\tau}\in Q\times\kleenestar{\Sigma}\!$. 
 A machine starts in an
 \definend{initial configuration}\index{initial configuration}\index{nondeterministic Finite State machine!initial configuration}
 $\mathcal{C}_0=\sequence{q_0,\tau_0}$, with
 \definend{input}~$\tau_0$.\index{input string}\index{nondeterministic Finite State machine!input string} 
 
-Fix $\mathcal{C}_s=\sequence{q,\tau_s}$
-to describe under what circumstances 
-$\mathcal{C}_s\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-for $\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
-There are two possibilities.
+There are two circumstances where 
+$\mathcal{C}\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
+for $\mathcal{C}=\sequence{q,\tau}$ and
+$\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
 The first is the same as earlier:~$\tau$ is not the 
-empty string and $\hat{\tau}$ results
-from popping $\tau$'s leading character, $\tau=c\concat\hat{\tau}$,
-and also $\hat{q}$ is a member of the set $\Delta(q,c)$.
-The second possibility is new for these new machines:~$\hat{\tau}=\tau$, so 
+empty string, and $\hat{\tau}$ results
+from popping $\tau$'s leading character so that $\tau=c\concat\hat{\tau}$,
+and for that character~$c$ the state $\hat{q}$
+is a member of $\Delta(q,c)$.
+The second possibility is new:~$\hat{\tau}=\tau$, so 
 the machine doesn't consume any input,
 and also $\hat{q}$ is a member of the $\varepsilon$ closure $\hat{E}(q)$.
 
-Consider all of the sequences of configurations 
+Put together, all of the sequences of configurations 
 that are related by $\yields$~transitions 
-and that start with $\mathcal{C}_0$.
-Put together, these form a directed graph 
-that is a tree rooted at~$\mathcal{C}_0$.
+and that start with $\mathcal{C}_0$
+form a directed tree rooted at~$\mathcal{C}_0$.
 This is the  
 \definend{computation tree}\index{computation tree!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation tree}
-or just
+or
 \definend{computation}.\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
 
 In that tree a 
 \definend{maximal path}\index{maximal path!of the computation tree}\index{computation tree!maximal path}
-is a sequence that is not properly contained in 
+is one that is not properly contained in 
 any other path.
-(In this machine type there can be cycles of $\varepsilon$ moves and 
-so paths can be infinite.)
+% (In this machine type there can be cycles of $\varepsilon$ moves and 
+% so paths can be infinite.)
 If there exists at least one maximal path containing a
-\definend{halting configuration},\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
-$\mathcal{C}_h=\sequence{q_h,\emptystring}$,
-and its state is accepting, $q_h\in F\!$,
+\definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
+$\mathcal{C}_h=\sequence{q_h,\emptystring}$
+whose state is accepting $q_h\in F\!$,
 then $\FSM$ \definend{accepts}\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
 the input~$\tau_0$.
 Otherwise $\FSM$ 
@@ -3100,24 +3091,25 @@ to suit this new machine type.
 Fix $q\in Q$.
 Begin with 
 $\extended{\Delta}(q,\emptystring)=\hat{E}(q)$.
-For the iteration, 
-suppose that $\extended{\Delta}(q,\tau)=\set{q_{i_0},q_{i_1},\ldots\, q_{i_k}}$
-for $\tau\in\kleenestar{\Sigma}\!$.
-Where  $c\in\Sigma$, to define
-$\extended{\Delta}(q,\tau\concat c)$ first
-make the set of all states reachable without $\varepsilon$ moves from
+Then for $\tau\in\kleenestar{\Sigma}\!$,
+suppose that $\extended{\Delta}(q,\tau)$ is defined and equals
+$\set{q_{i_0},q_{i_1},\ldots\, q_{i_k}}$.
+For each character $c\in\Sigma$, we want to define
+$\extended{\Delta}(q,\tau\concat c)$.
+First
+make the set of all states reachable without $\varepsilon$~moves from
 a state in $\extended{\Delta}(q,\tau)$ with
 $S=\Delta(q_{i_0},c)\cup\cdots \,\Delta(q_{i_k},c)$.
-Then include $\varepsilon$ moves:
+Then include $\varepsilon$ moves:~where the $s_i$'s are the elements of~$S$
+take
 $
   \extended{\Delta}(q,\tau\concat c)=
   \extended{E}(s_0)\cup\extended{E}(s_1)\cup\cdots\,\extended{E}(s_n)
-$ for $s_i\in S$.
+$.
 Observe that the machine
 $\FSM$ accepts~$\tau_0$
-if $\extended{\Delta}(q_0,\tau_0)\intersection F$ is not empty and
-otherwise $\FSM$ 
-rejects~$\tau_0$.
+if $\extended{\Delta}(q_0,\tau_0)\intersection F$ is not empty.
+Otherwise $\FSM$ rejects~$\tau_0$.
 %</disc:EpsilonClosureiii>
 
 \index{epsilon transitions@$\varepsilon$ transitions|)}
@@ -3197,64 +3189,64 @@ $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}
 The associated deterministic machine $\FSM_D$
 is below. 
 Each member of this machine is a set of $\FSM_N$'s states.
-The start state of $\FSM_D$ is the one-element set $\set{q_0}=s_1$ containing
+The start state of $\FSM_D$ is the one-element set $\set{q_0}=r_1$ containing
 the start state of $\FSM_N$, and
 a state of $\FSM_D$ is accepting
 if any of its elements are accepting states in $\FSM_N$.
 
 As an illustration of constructing the transition table,
-suppose that we are in $s_5=\set{q_0,q_2}$ and are 
+suppose that we are in $r_5=\set{q_0,q_2}$ and are 
 reading~\str{a}.
 Combine the above machine's next states due to~$q_0$
 with those due to~$q_2$, that is,
-$\Delta_D(s_5,\str{a})=\set{q_0,q_1}\union\set{}=\set{q_0,q_1}$.
-That's~$s_4$.
+$\Delta_D(r_5,\str{a})=\set{q_0,q_1}\union\set{}=\set{q_0,q_1}$.
+That's~$r_4$.
 \begin{center}\small
   \begin{transitionfunction}[\Delta_D]
       &\str{a}   &\str{b}         \\
       \cline{2-3}
-    $s_0=\set{}$                           &$s_0$  &$s_0$  \\
-    \acceptingstate $s_1=\set{q_0}$         &$s_4$  &$s_0$  \\
-    $s_2=\set{q_1}$                         &$s_0$  &$s_3$  \\
-    \acceptingstate $s_3=\set{q_2}$         &$s_0$  &$s_0$  \\
-    \acceptingstate $s_4=\set{q_0,q_1}$     &$s_4$  &$s_3$  \\
-    \acceptingstate $s_5=\set{q_0,q_2}$     &$s_4$  &$s_0$  \\
-    \acceptingstate $s_6=\set{q_1,q_2}$      &$s_0$  &$s_3$  \\
-    \acceptingstate $s_7=\set{q_0,q_1,q_2}$  &$s_4$  &$s_3$  \\
+    $r_0=\set{}$                           &$r_0$  &$r_0$  \\
+    \acceptingstate $r_1=\set{q_0}$         &$r_4$  &$r_0$  \\
+    $r_2=\set{q_1}$                         &$r_0$  &$r_3$  \\
+    \acceptingstate $r_3=\set{q_2}$         &$r_0$  &$r_0$  \\
+    \acceptingstate $r_4=\set{q_0,q_1}$     &$r_4$  &$r_3$  \\
+    \acceptingstate $r_5=\set{q_0,q_2}$     &$r_4$  &$r_0$  \\
+    \acceptingstate $r_6=\set{q_1,q_2}$      &$r_0$  &$r_3$  \\
+    \acceptingstate $r_7=\set{q_0,q_1,q_2}$  &$r_4$  &$r_3$  \\
   \end{transitionfunction}
   \quad
   \vcenteredhbox{\includegraphics{automata/asy/nfsm/nfsm17.pdf}}
 \end{center}
-The machine's table, and its transition graph, make clear that
+The machine's table and its transition graph make clear that
 $\FSM_D$ is deterministic.
-Many of the states are unreachable; for example, $s_6$ 
+Many of the states are unreachable; for example, $r_6$ 
 has only outgoing arrows.
 Below is the machine with those states removed.
-Again, the start state is $s_1$.
+Again, the start state is $r_1$.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm1050.pdf}
 \end{center}
 \end{example}
 
-%<*df:DFSMFromNFSM>
-Now we give the algorithm, the 
+With that example we will state the algorithm, the 
 \definend{powerset construction}.\index{powerset construction}\index{Finite State machine!powerset construction}\index{nondeterministic Finite State machine!convert to a deterministic machine}
 %  for constructing a 
 % deterministic machine~$\FSM_D$ with the same behavior
 % as a nondeterministic machine~$\FSM_N$,
 % whether or not $\FSM_N$ has $\varepsilon$~transitions.
+%<*df:DFSMFromNFSM>
 States in $\FSM_D$ are sets of states from~$\FSM_N$.
-The start state of $\FSM_D$ is the  $\varepsilon$~closure $\hat{E}(q_0)$
+The start state of $\FSM_D$ is the  $\varepsilon$~closure
+of $\FSM_N$'s initial state, $\hat{E}(q_0)$
 (for machines without $\varepsilon$ moves
-this is $\set{q_0}$).
+it is $\set{q_0}$).
 A state of $\FSM_D$ is accepting if it  
 contains any of $\FSM_N$'s accepting states.
 
 The transition function $\Delta_D$ inputs
-a state $s_i\in\FSM_D$, that is, 
-$s_i=\set{q_{k_0},\ldots\, q_{k_i}}$, 
+a state $s_i=\set{q_{k_0},\ldots\, q_{k_i}}\in\FSM_D$
 along with a character~$c\in\Sigma$. 
-First apply $\FSM_N$'s next state function to $s_i$'s elements to get a set
+Apply $\FSM_N$'s next state function to $s_i$'s elements to get a set
 $S_{i,c}=\Delta_{N}(q_{k_0},c)\cup\cdots\, \Delta_{N}(q_{k_i},c)$
 (if $s_i$ is empty then $S_{i,c}$ is also empty).
 Then include $\varepsilon$ moves:~where 
@@ -3272,85 +3264,85 @@ with $\varepsilon$ transitions.
 \end{center}
 The table below computes
 the associated deterministic machine.
-The start state is $\hat{E}(q_0)=\set{q_0,q_3}=s_7$.
+The start state is $\hat{E}(q_0)=\set{q_0,q_3}=r_7$.
 A state is accepting if it contains $q_1$. 
 
-Here is an example walking through the powerset algorithm. 
-First, let the machine be in state $s_7=\set{q_0,q_3}$
+% Here is an example walking through the powerset algorithm. 
+As an example, let the machine be in state $r_7=\set{q_0,q_3}$
 and reading~\str{b}.
 In the terms of the algorithm's description, 
-applying $\Delta_N$ to each element of $s_7$ gives 
+applying $\Delta_N$ to each element of $r_7$ gives 
 $S_{7,\str{b}}
   =\Delta_N(q_0,\str{b})\union\Delta_N(q_3,\str{b})=\set{q_1}\union\set{}
   =\set{q_1}$.
 Taking the $\varepsilon$ closure gives
-$\Delta_D(s_7,\str{b})=\set{q_0,q_1,q_3}=s_{12}$.
+$\Delta_D(r_7,\str{b})=\set{q_0,q_1,q_3}=r_{12}$.
 
 Finding the $\varepsilon$ closures in advance
 is a help in constructing the table.
-We have $\hat{E}(q_0)=\set{q_0,q_3}=s_7$,
-and  $\hat{E}(q_1)=\set{q_0,q_1,q_3}=s_{12}$,
-and  $\hat{E}(q_2)=\set{q_2}=s_3$,
-and  $\hat{E}(q_3)=\set{q_3}=s_4$.
+We have $\hat{E}(q_0)=\set{q_0,q_3}=r_7$,
+and  $\hat{E}(q_1)=\set{q_0,q_1,q_3}=r_{12}$,
+and  $\hat{E}(q_2)=\set{q_2}=r_3$,
+and  $\hat{E}(q_3)=\set{q_3}=r_4$.
 
 %<*ex:DFSMFromNFSMWithEpsilon>
 \begin{center}\small
 \begin{tabular}{r|*{2}{c}|*{2}{c}}
    \multicolumn{1}{r}{\ }
     &$S_{i,\str{a}}$\rule{0pt}{12pt}  
-      &\multicolumn{1}{c}{$\Delta_D(s_i,\str{a})$}   
+      &\multicolumn{1}{c}{$\Delta_D(r_i,\str{a})$}   
     &$S_{i,\str{b}}$ 
-     &\multicolumn{1}{c}{$\Delta_D(s_i,\str{b})$}   
+     &\multicolumn{1}{c}{$\Delta_D(r_i,\str{b})$}   
     \\
     \cline{2-5}
-  $s_0=\set{}$        &$\set{}$   &$s_0$  
-                          &$\set{}$  &$s_0$  \\
-  $s_1=\set{q_0}$     &$\set{q_2}$   &$s_{3}$ 
-                          &$\set{q_1}$  &$s_{12}$  \\
+  $r_0=\set{}$        &$\set{}$   &$r_0$  
+                          &$\set{}$  &$r_0$  \\
+  $r_1=\set{q_0}$     &$\set{q_2}$   &$r_{3}$ 
+                          &$\set{q_1}$  &$r_{12}$  \\
   \acceptingstate 
-  $s_2=\set{q_1}$      &$\set{}$   &$s_0$  
-                          &$\set{}$  &$s_0$  \\
-  $s_3=\set{q_2}$     &$\set{}$       &$s_0$  
-                        &$\set{q_0}$    &$s_7$  \\
-  $s_4=\set{q_3}$    &$\set{q_3}$  &$s_4$  
-                        &$\set{}$     &$s_0$  \\[1ex]
+  $r_2=\set{q_1}$      &$\set{}$   &$r_0$  
+                          &$\set{}$  &$r_0$  \\
+  $r_3=\set{q_2}$     &$\set{}$       &$r_0$  
+                        &$\set{q_0}$    &$r_7$  \\
+  $r_4=\set{q_3}$    &$\set{q_3}$  &$r_4$  
+                        &$\set{}$     &$r_0$  \\[1ex]
   \acceptingstate 
-  $s_5=\set{q_0,q_1}$   &$\set{q_2}$  &$s_{3}$  
-                          &$\set{q_1}$  &$s_{12}$  \\
-  $s_6=\set{q_0,q_2}$   &$\set{q_2}$    &$s_{3}$  
-                          &$\set{q_0,q_1}$  &$s_{12}$  \\
-  $s_7=\set{q_0,q_3}$   &$\set{q_2,q_3}$   &$s_{10}$
-                          &$\set{q_1}$  &$s_{12}$  \\
+  $r_5=\set{q_0,q_1}$   &$\set{q_2}$  &$r_{3}$  
+                          &$\set{q_1}$  &$r_{12}$  \\
+  $r_6=\set{q_0,q_2}$   &$\set{q_2}$    &$r_{3}$  
+                          &$\set{q_0,q_1}$  &$r_{12}$  \\
+  $r_7=\set{q_0,q_3}$   &$\set{q_2,q_3}$   &$r_{10}$
+                          &$\set{q_1}$  &$r_{12}$  \\
   \acceptingstate 
-  $s_8=\set{q_1,q_2}$   &$\set{}$   &$s_{0}$  
-                          &$\set{q_0}$  &$s_{7}$  \\
+  $r_8=\set{q_1,q_2}$   &$\set{}$   &$r_{0}$  
+                          &$\set{q_0}$  &$r_{7}$  \\
   \acceptingstate 
-  $s_9=\set{q_1,q_3}$    &$\set{q_3}$        &$s_{4}$  
-                           &$\set{}$  &$s_{0}$  \\
-  $s_{10}=\set{q_2,q_3}$   &$\set{q_3}$  &$s_4$                                 
-                            &$\set{q_0}$    &$s_7$  \\[1ex]
+  $r_9=\set{q_1,q_3}$    &$\set{q_3}$        &$r_{4}$  
+                           &$\set{}$  &$r_{0}$  \\
+  $r_{10}=\set{q_2,q_3}$   &$\set{q_3}$  &$r_4$                                 
+                            &$\set{q_0}$    &$r_7$  \\[1ex]
   \acceptingstate 
-  $s_{11}=\set{q_0,q_1,q_2}$  &$\set{q_2}$   &$s_{3}$  
-                               &$\set{q_0,q_1}$  &$s_{12}$  \\
+  $r_{11}=\set{q_0,q_1,q_2}$  &$\set{q_2}$   &$r_{3}$  
+                               &$\set{q_0,q_1}$  &$r_{12}$  \\
   \acceptingstate 
-  $s_{12}=\set{q_0,q_1,q_3}$   &$\set{q_2,q_3}$     &$s_{10}$  
-                                &$\set{q_1}$  &$s_{12}$  \\
-  $s_{13}=\set{q_0,q_2,q_3}$   &$\set{q_2,q_3}$  &$s_{10}$  
-                                &$\set{q_0,q_1}$  &$s_{12}$  \\
+  $r_{12}=\set{q_0,q_1,q_3}$   &$\set{q_2,q_3}$     &$r_{10}$  
+                                &$\set{q_1}$  &$r_{12}$  \\
+  $r_{13}=\set{q_0,q_2,q_3}$   &$\set{q_2,q_3}$  &$r_{10}$  
+                                &$\set{q_0,q_1}$  &$r_{12}$  \\
   \acceptingstate 
-  $s_{14}=\set{q_1,q_2,q_3}$   &$\set{q_3}$   &$s_{4}$  
-                                &$\set{q_0}$  &$s_{7}$  \\
+  $r_{14}=\set{q_1,q_2,q_3}$   &$\set{q_3}$   &$r_{4}$  
+                                &$\set{q_0}$  &$r_{7}$  \\
   \acceptingstate 
-  $s_{15}=\set{q_0,q_1,q_2,q_3}$ &$\set{q_2,q_3}$    &$s_{10}$  
-                                 &$\set{q_0,q_1}$  &$s_{12}$  \\
+  $r_{15}=\set{q_0,q_1,q_2,q_3}$ &$\set{q_2,q_3}$    &$r_{10}$  
+                                 &$\set{q_0,q_1}$  &$r_{12}$  \\
   \end{tabular}
 \end{center}
 %</ex:DFSMFromNFSMWithEpsilon>
 The transition diagram is below.
-Many of the machine's table's sixteen states,
-are unreachable from the starting state~$s_7=\hat{E}(q_0)$.
-We can see that by starting at~$s_7$ and tracing through the states.
-The diagram omits unreachable states.
+Many of the machine's table's sixteen states
+are unreachable from the starting state~$r_7=\hat{E}(q_0)$.
+% We can see that by starting at~$s_7$ and tracing through the states.
+This diagram omits those.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm1043.pdf}  
 \end{center}
@@ -4088,27 +4080,27 @@ and this is a deterministic one.
     \begin{transitionfunction}[\Delta_{D_0}]
                                                       &\str{0}  &\str{1}  \\
                       \cline{2-3}
-                      $s_0=\set{}$                    &$s_0$    &$s_0$  \\
-                      $s_1=\set{q_0}$                 &$s_4$    &$s_0$  \\
-                      $s_2=\set{q_1}$                 &$s_3$    &$s_3$  \\
-      \acceptingstate $s_3=\set{q_2}$                 &$s_0$    &$s_1$  \\[1ex]
-                      $s_4=\set{q_0, q_1}$            &$s_7$    &$s_3$  \\
-      \acceptingstate $s_5=\set{q_0,q_2}$             &$s_4$    &$s_{1}$  \\
-      \acceptingstate $s_6=\set{q_1,q_2}$             &$s_3$    &$s_{5}$  \\
-      \acceptingstate $s_7=\set{q_0,q_1,q_2}$         &$s_7$    &$s_{5}$  \\
+                      $r_0=\set{}$                    &$r_0$    &$r_0$  \\
+                      $r_1=\set{q_0}$                 &$r_4$    &$r_0$  \\
+                      $r_2=\set{q_1}$                 &$r_3$    &$r_3$  \\
+      \acceptingstate $r_3=\set{q_2}$                 &$r_0$    &$r_1$  \\[1ex]
+                      $r_4=\set{q_0, q_1}$            &$r_7$    &$r_3$  \\
+      \acceptingstate $r_5=\set{q_0,q_2}$             &$r_4$    &$r_{1}$  \\
+      \acceptingstate $r_6=\set{q_1,q_2}$             &$r_3$    &$r_{5}$  \\
+      \acceptingstate $r_7=\set{q_0,q_1,q_2}$         &$r_7$    &$r_{5}$  \\
     \end{transitionfunction}
     \qquad
     \begin{transitionfunction}[\Delta_{D_1}]
                                                       &\str{0}  &\str{1}  \\
                       \cline{2-3}
-                      $s_0=\set{}$                    &$s_0$    &$s_0$  \\
-                      $s_1=\set{q_0}$                 &$s_7$    &$s_0$  \\
-                      $s_2=\set{q_1}$                 &$s_3$    &$s_3$  \\
-      \acceptingstate $s_3=\set{q_2}$                 &$s_0$    &$s_5$  \\[1ex]
-                      $s_4=\set{q_0, q_1}$            &$s_7$    &$s_3$  \\
-      \acceptingstate $s_5=\set{q_0,q_2}$             &$s_7$    &$s_{5}$  \\
-      \acceptingstate $s_6=\set{q_1,q_2}$             &$s_3$    &$s_{5}$  \\
-      \acceptingstate $s_7=\set{q_0,q_1,q_2}$         &$s_7$    &$s_{5}$  \\
+                      $r_0=\set{}$                    &$r_0$    &$r_0$  \\
+                      $r_1=\set{q_0}$                 &$r_7$    &$r_0$  \\
+                      $r_2=\set{q_1}$                 &$r_3$    &$r_3$  \\
+      \acceptingstate $r_3=\set{q_2}$                 &$r_0$    &$r_5$  \\[1ex]
+                      $r_4=\set{q_0, q_1}$            &$r_7$    &$r_3$  \\
+      \acceptingstate $r_5=\set{q_0,q_2}$             &$r_7$    &$r_{5}$  \\
+      \acceptingstate $r_6=\set{q_1,q_2}$             &$r_3$    &$r_{5}$  \\
+      \acceptingstate $r_7=\set{q_0,q_1,q_2}$         &$r_7$    &$r_{5}$  \\
     \end{transitionfunction}
   \end{display}
 \end{answer}
@@ -4151,22 +4143,22 @@ gives the next-state function for a nondeterministic Finite State machine.
     \begin{transitionfunction}[\Delta_D]
                                                       &\str{a}  &\str{b}  \\
                       \cline{2-3}
-                      $s_0=\set{}$                    &$s_0$    &$s_0$  \\
-                      $s_1=\set{q_0}$                 &$s_1$    &$s_8$  \\
-                      $s_2=\set{q_1}$                 &$s_4$    &$s_4$  \\
-      \acceptingstate $s_3=\set{q_2}$                 &$s_2$    &$s_4$  \\
-                      $s_4=\set{q_3}$                 &$s_4$    &$s_4$  \\[1ex]
-                      $s_5=\set{q_0,q_1}$             &$s_7$    &$s_{14}$  \\
-      \acceptingstate $s_6=\set{q_0,q_2}$             &$s_5$    &$s_{14}$  \\
-                      $s_7=\set{q_0,q_3}$             &$s_7$    &$s_{14}$  \\
-      \acceptingstate $s_8=\set{q_1,q_2}$             &$s_9$    &$s_4$  \\
-                      $s_9=\set{q_1,q_3}$             &$s_4$    &$s_4$  \\
-      \acceptingstate $s_{10}=\set{q_2,q_3}$          &$s_9$     &$s_4$  \\[1ex]
-      \acceptingstate $s_{11}=\set{q_0,q_1,q_2}$      &$s_{12}$  &$s_{14}$  \\
-                      $s_{12}=\set{q_0,q_1,q_3}$      &$s_7$     &$s_{14}$  \\
-      \acceptingstate $s_{13}=\set{q_0,q_2,q_3}$      &$s_{12}$  &$s_{14}$  \\
-      \acceptingstate $s_{14}=\set{q_1,q_2,q_3}$      &$s_9$     &$s_4$  \\
-      \acceptingstate $s_{15}=\set{q_0,q_1,q_2,q_3}$  &$s_{12}$  &$s_{14}$  \\
+                      $r_0=\set{}$                    &$r_0$    &$r_0$  \\
+                      $r_1=\set{q_0}$                 &$r_1$    &$r_8$  \\
+                      $r_2=\set{q_1}$                 &$r_4$    &$r_4$  \\
+      \acceptingstate $r_3=\set{q_2}$                 &$r_2$    &$r_4$  \\
+                      $r_4=\set{q_3}$                 &$r_4$    &$r_4$  \\[1ex]
+                      $r_5=\set{q_0,q_1}$             &$r_7$    &$r_{14}$  \\
+      \acceptingstate $r_6=\set{q_0,q_2}$             &$r_5$    &$r_{14}$  \\
+                      $r_7=\set{q_0,q_3}$             &$r_7$    &$r_{14}$  \\
+      \acceptingstate $r_8=\set{q_1,q_2}$             &$r_9$    &$r_4$  \\
+                      $r_9=\set{q_1,q_3}$             &$r_4$    &$r_4$  \\
+      \acceptingstate $r_{10}=\set{q_2,q_3}$          &$r_9$     &$r_4$  \\[1ex]
+      \acceptingstate $r_{11}=\set{q_0,q_1,q_2}$      &$r_{12}$  &$r_{14}$  \\
+                      $r_{12}=\set{q_0,q_1,q_3}$      &$r_7$     &$r_{14}$  \\
+      \acceptingstate $r_{13}=\set{q_0,q_2,q_3}$      &$r_{12}$  &$r_{14}$  \\
+      \acceptingstate $r_{14}=\set{q_1,q_2,q_3}$      &$r_9$     &$r_4$  \\
+      \acceptingstate $r_{15}=\set{q_0,q_1,q_2,q_3}$  &$r_{12}$  &$r_{14}$  \\
     \end{transitionfunction}
   \end{display}
   \end{exparts}
@@ -4189,14 +4181,14 @@ gives the next-state function for a nondeterministic Finite State machine.
     \begin{transitionfunction}[\Delta_D]
                                                       &\str{0}  &\str{1}  \\
                       \cline{2-3}
-                      $s_0=\set{}$                    &$s_0$    &$s_0$  \\
-                      $s_1=\set{q_0}$                 &$s_0$    &$s_2$  \\
-                      $s_2=\set{q_1}$                 &$s_3$    &$s_0$  \\
-      \acceptingstate $s_3=\set{q_2}$                 &$s_3$    &$s_3$  \\
-                      $s_4=\set{q_0, q_1}$            &$s_3$    &$s_2$  \\
-      \acceptingstate $s_5=\set{q_0,q_2}$             &$s_3$    &$s_{6}$  \\
-      \acceptingstate $s_6=\set{q_1,q_2}$             &$s_3$    &$s_{3}$  \\
-      \acceptingstate $s_7=\set{q_0,q_1,q_2}$         &$s_3$    &$s_{6}$  \\
+                      $r_0=\set{}$                    &$r_0$    &$r_0$  \\
+                      $r_1=\set{q_0}$                 &$r_0$    &$r_2$  \\
+                      $r_2=\set{q_1}$                 &$r_3$    &$r_0$  \\
+      \acceptingstate $r_3=\set{q_2}$                 &$r_3$    &$r_3$  \\
+                      $r_4=\set{q_0, q_1}$            &$r_3$    &$r_2$  \\
+      \acceptingstate $r_5=\set{q_0,q_2}$             &$r_3$    &$r_{6}$  \\
+      \acceptingstate $r_6=\set{q_1,q_2}$             &$r_3$    &$r_{3}$  \\
+      \acceptingstate $r_7=\set{q_0,q_1,q_2}$         &$r_3$    &$r_{6}$  \\
     \end{transitionfunction}
   \end{display}
   \end{answer}

@@ -445,14 +445,14 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes
-node q0=ncircle("$s_0$");
-node q1=ncircle("$s_1$");
-node q2=ncircle("$s_2$");
-node q3=ncircle("$s_3$",ns_accepting);
-node q4=ncircle("$s_4$");
-node q5=ncircle("$s_5$",ns_accepting);
-node q6=ncircle("$s_6$",ns_accepting);
-node q7=ncircle("$s_7$",ns_accepting);
+node q0=ncircle("$r_0$");
+node q1=ncircle("$r_1$");
+node q2=ncircle("$r_2$");
+node q3=ncircle("$r_3$",ns_accepting);
+node q4=ncircle("$r_4$");
+node q5=ncircle("$r_5$",ns_accepting);
+node q6=ncircle("$r_6$",ns_accepting);
+node q7=ncircle("$r_7$",ns_accepting);
 
 // layout
 defaultlayoutrel = false;

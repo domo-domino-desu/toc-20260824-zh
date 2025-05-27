@@ -4747,26 +4747,21 @@ $\lang(\re{aba*})
 \end{example}
 
 \begin{remark}  \label{ex:RegexABOrCStar}
-These rules do not eliminate the need for parentheses.
-Compare the three regular expressions \re{b|c*} and \re{b*|c*} and \re{(b|c)*}.
-By the precedence rules,
-the first means `take a \str{b} or take any number of \str{c}'s'.
-The second means
-`take either any number of \str{b}'s or any number of \str{c}'s'.
-The third means `take any number of repetitions of picking \str{b} or~\str{c}',
-and of the three is typically what we want.
-Thus the language described by \re{(b|c)*} is
+The  precedence conventions do not eliminate the need for parentheses.
+Compare \re{b|c*} and \re{b*|c*} and \re{(b|c)*}.
+For the first, because \re{*} binds more tightly than \re{|},
+the \str{c} is bound to the star and so 
+it means `one \str{b} or any number of \str{c}'s'.
+Similarly the second means
+`any number of \str{b}'s or any number of \str{c}'s'.
+So we need parentheses to express the third,
+`any number of repetitions of picking \str{b} or~\str{c}',
+whose language is
 $\lang=\set{\emptystring, \str{b}, \str{c}, 
              \str{bb}, \str{bc}, \str{cb}, \str{cc}, \ldots}$.
-% To describe the language 
-% whose members consist of any number of \str{b}'s
-% or any number of \str{c}'s,
-% $\hat{\lang}=\set{\emptystring,
-%   \str{b}, \str{bb},\ldots\,,\str{c},\str{cc},\ldots}$,
-% use the regular expression \re{b*|c*}. 
 \end{remark}
 
-We next see some common constructs.
+We next see a few common constructs.
 These examples use $\Sigma=\set{\str{a},\str{b},\str{c}}$.
 
 %<*ex:RegexThree>
@@ -4784,18 +4779,25 @@ the possibility of zero-many repetitions.
 
 \begin{example}
 %<*ex:RegexFive>
-To match any character we can list them all.
-The language over $\Sigma=\set{\str{a},\str{b},\str{c}}$ 
-of three-letter words ending in \str{bc} is
-$\set{\str{abc}, \str{bbc}, \str{cbc}}$.
-The regular expression \re{(a|b|c)bc} describes it.
-(Another is \re{(abc)|(bbc)|(cbc)}.)
+To match any string in a finite set we can list them all.
+The language % over $\Sigma=\set{\str{a},\str{b},\str{c}}$ 
+$\set{\str{abc}, \str{bbc}, \str{cbc}}$
+is described by the regular expression \re{(abc)|(bbc)|(cbc)}.
 %</ex:RegexFive>
+\end{example}
+
+\begin{example}
+%<*ex:RegexSix>
+As well, to match any character we can list them all.
+The language of the prior example consists  
+of three-letter words ending in \str{bc}, which we can describe
+with the regular expression \re{(a|b|c)bc}.
+%</ex:RegexSix>
 \end{example}
 
 %<*ex:RegexFour>
 \begin{example}
-Use~\re{$\emptystring$} to mark things as optional.
+We can use~\re{$\emptystring$} to mark things as optional.
 Thus \re{a*($\emptystring$|b)} describes the language 
 of strings that have any number
 of \str{a}'s and optionally end in one~\str{b},
@@ -4807,20 +4809,18 @@ use \re{aaa(\emptystring|a|aa)}.
 \end{example}
 %</ex:RegexFour>
 
-%<*ex:RegexSix>
-\begin{example}
-The language
-$\set{\str{b},\str{bc},\str{bcc},
-             \str{ab},\str{abc},\str{abcc},
-             \str{aab},\,\ldots}$
-has words starting with any number of $\str{a}$'s
-(including zero-many \str{a}'s),
-followed by a single~$\str{b}$, and then ending in fewer than three
-$\str{c}$'s. 
-To describe it we can use 
-\re{a*b(\emptystring|c|cc)}. 
-\end{example}
-%</ex:RegexSix>
+% \begin{example}
+% The language
+% $\set{\str{b},\str{bc},\str{bcc},
+%              \str{ab},\str{abc},\str{abcc},
+%              \str{aab},\,\ldots}$
+% has words starting with any number of $\str{a}$'s
+% (including zero-many \str{a}'s),
+% followed by a single~$\str{b}$, and then ending in fewer than three
+% $\str{c}$'s. 
+% To describe it we can use 
+% \re{a*b(\emptystring|c|cc)}. 
+% \end{example}
 
 Also see \zcref{extra:Regexs} for extensions that
 are widely used in practice.
@@ -4909,10 +4909,10 @@ those to deterministic machines, the result holds for them also.
   Finally consider Kleene star, 
   $R=\re{($R_0$)*}$.
   % As in \zcref{ex:EpsilonTransMakeKleeneStar},
-  For each accepting state in the machine~$\FSM_0$
-  that is not the start state, make an~$\varepsilon$ transition to
+  For each accepting state in the machine~$\FSM_0$,
+  make an~$\varepsilon$ transition to
   the start state and then
-  make the start state an accepting state.
+  make the start state an accepting state. % even if starting state is start state
 %</pf:KleenesThmRegexToMachineiic>
   See \zcref{ex:EpsilonTransMakeKleeneStar}.
 \end{proof}
@@ -4964,7 +4964,7 @@ than just one character.
 For this proof we will generalize transition graphs to allow
 edge labels that are regular expressions.
 As we eliminate states, we keep the recognized language of the machines the same.
-We will be done when what remains is two states, with one edge
+We will be done when what remains is two states with one edge
 between them. 
 The desired regular expression will be 
 that edge's label.
@@ -4991,7 +4991,7 @@ starting one.
   If it has no accepting states then
   the regular expression is \re{$\emptyset$} and we are done.
   Otherwise, we start by transforming $\FSM$ to a new machine,
-  $\hat{\FSM}$, that has the same language and that is ready for
+  $\hat{\FSM}$, that has the same language and that is set up for
   the state-elimination strategy.
 
   First we arrange that
@@ -5007,7 +5007,7 @@ starting one.
   Next introduce a new start state,~$e$.
   Connect it to~$q_0$ with an $\varepsilon$~transition,
   again leaving the language of the machine unchanged.
-  (Putting~$e$ in $\hat{\FSM}$ allows us to uniformly eliminate 
+  (Including~$e$ in $\hat{\FSM}$ allows us to uniformly eliminate 
   each state in~$\FSM$ when we say below, 
   ``Pick any~$q$ not equal to $e$ or~$f$.'')
 
@@ -5035,7 +5035,7 @@ starting one.
   Along the same lines, 
   if a state node  is unreachable from the start~$e$ then
   drop that node along with its incoming and outgoing edges.
-  (The idea behind useless states has some technical aspects.
+  (Dropping useless states has some technical aspects.
   For instance, omitting a no-outgoing-edges node along with its incoming edges
   can result in another node now having no outgoing edges, which in turn needs 
   the same treatment.
@@ -5047,10 +5047,11 @@ starting one.
   Pick any~$q$ not equal to $e$ or~$f\!$.
   Below are 
   \citetext{before and after diagrams}{%
-    This is derived from \autocite{HopcroftUllman}.}.
-  By the setup work above, $q$ has at least one incoming and at least one 
-  outgoing edge.
-  So there are states $q_{i_0}$, \ldots{} $q_{i_j}$ with an edge leading into~$q$, 
+    This digram is derived from \autocite{HopcroftUllman}.}.
+  By the setup work above, $q$ has at least one incoming edge and at least
+  one outgoing edge.
+  So there are states $q_{i_0}$, \ldots{} $q_{i_j}$ with an edge leading
+  into~$q$, 
   and states $q_{o_0}$, \ldots{} $q_{o_k}$ that receive an edge leading out
   of~$q$. 
   In addition, $q$ may have a loop.
@@ -5068,16 +5069,16 @@ starting one.
   shown on the after diagram.
   (If an edge is not present then don't include any regular expression in
   the replacement.
-  For instance, if there is no $R_{\ell}$ edge then the right's top edge should
+  For instance, if there is no $R_{\ell}$ loop then the right's top edge should
   be \re{$R_{i_0,o_0}$|$R_{i_0}R_{o_0}$}.)
-  By construction for any two states in the after machine,
+  By construction, for any two states in the after machine,
   $q_i$ and~$q_o$, in passing from the before diagram to the after, the set 
   of strings taking the machine from the first to the second is unchanged.
   Thus languages of the before and after machines are equal.
   
-  Repeat this procedure until the only states left are $e$ and~$f\!$. 
-  The desired regular expression is on the 
-  sole remaining edge.
+  Repeat this elimination procedure until the only states left are
+  $e$ and~$f\!$. 
+  The desired regular expression is on the sole remaining edge.
 \end{proof}
 
 \begin{example}
@@ -5110,7 +5111,7 @@ starting one.
   $q_0=q_{i_0}$,
   and two nodes associated with outgoing arrows, $q_0=q_{o_0}$ and~$f=q_{o_1}$.
   (Note that $q_0$ is both an incoming and outgoing node; this is the
-  ``fine point'' mentioned in the proof.)
+  fine point mentioned in the proof.)
   The regular expressions are:
   there is no arrow for $R_{i_0,o_0}$,
   $R_{i_0,o_1}=\re{\emptystring}$, 
@@ -6300,22 +6301,22 @@ For deterministic machines that is not so.
 
 We have seen that
 deterministic Finite State machines, nondeterministic Finite State
-machines, and  regular expressions
+machines, and regular expressions
 all describe the same set of languages.
-\citetext{The fact that we can describe these languages in so many 
+\citetext{The fact that we can describe this set in many 
   different ways}{\autocite{SE:noperm}.} 
-says that there is something natural and important about them.\footnote{%
+argues that there is something natural and important about it.\footnote{%
   This is just like how the fact that Turing machines,
   general recursive functions, and many other models all compute
   the same sets says that these
   computable sets are a natural and important collection.
   This collection 
   is not just a historical artifact of what happened to be first
-  proposed.}
+  studied.}
 
 %...................................
 \subsection{Definition}
-We now study the languages in this collection.
+We will study this collection.
 
 %<*def:RegularLangs>
 \begin{definition}
@@ -6332,17 +6333,17 @@ The set of regular languages over it is countably infinite.
 % The collection of all languages over that alphabet is uncountable, 
 % and consequently 
 There
-are languages that are not regular.
+are languages over that alphabet that are not regular.
 \end{lemma}
 
 \begin{proof}
-Call the alphabet~$\Sigma$.
+Let the alphabet be~$\Sigma$.
 We first show that the set of regular languages over~$\Sigma$ is 
 infinite.
 \zcref{sec:Strings} specifies that 
 any alphabet is nonempty and finite.
 Where $x$ is a character from $\Sigma$, 
-each of these languages is finite and therefore regular:
+each of these infinitely many languages is finite and therefore regular:
 $\lang_0=\set{}$, $\lang_1=\set{x}$, $\lang_2=\set{xx}$
 \ldots\sentencespace
 % Thus there are infinitely many regular languages over that alphabet.

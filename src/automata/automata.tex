@@ -9069,8 +9069,8 @@ The table gives~$\Delta$.
   $1$  &$q_0,\text{\str{[}},\text{\str{g0}}$  &$q_0,\text{`\str{g0\,g0}'}$ \\
   $2$  &$q_0,\text{\str{]}},\text{\str{g0}}$  &$q_0,\text{`\,'}$ \\
   $3$  &$q_0,\text{\str{]}},\bot$             &$q_0,\text{`\,'}$ \\
-  $4$  &$q_0,\text{\str{B}},\bot$             &$q_1,\text{`\str{$\bot$}'}$ \\
-  $5$  &$q_0,\text{\str{B}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}'}$ \\
+  $4$  &$q_0,\text{\inputendchar},\bot$       &$q_1,\text{`\str{$\bot$}'}$ \\
+  $5$  &$q_0,\text{\inputendchar},\text{\str{g0}}$  &$q_0,\text{`\str{g0}'}$ \\
 \end{tabular}
 \end{center}
 %</ex:BalancedParensAcceptedPushdown>
@@ -9148,7 +9148,7 @@ a nonempty
 a nonempty \definend{stack alphabet}~$\Gamma\!$,\index{stack!alphabet}\index{Pushdown machine!stack alphabet}
 and a 
 \definend{transition function}\index{transition function!Pushdown machine}\index{Pushdown machine!transition function}
-\citetext{$\map{\Delta}{Q\times (\Sigma\cup\set{\blank,\varepsilon})\times (\Gamma\cup\set{\bot})}{\powerset\bigl(Q\times\kleenestar{(\Gamma\cup\set{\bot})}\bigr)}$}{%
+\citetext{$\map{\Delta}{Q\times (\Sigma\cup\set{\inputendchar,\varepsilon})\times (\Gamma\cup\set{\bot})}{\powerset\bigl(Q\times\kleenestar{(\Gamma\cup\set{\bot})}\bigr)}$}{%
   Tape outputs consist of sequences of elements of $\Gamma$ that 
   optionally end in a $\bot$.
   So a more precise codomain is 
@@ -9168,56 +9168,50 @@ lists the present state, the present sequence of
 characters remaining on the tape, and present 
 sequence of characters on the stack. 
 
-The transition
-function~$\Delta$ % too much: ~$\map{\Delta}{Q\times\Sigma\Gamma}{\powerset(Q\times\Sigma\times\kleenestar{\Gamma})}$
-specifies how the machine moves from configuration
-to configuration.\index{Pushdown machine!transition function}
-We can represent this specification either as 
-$\Delta(q_i,t,g)=S$ where $S$ is a set of pairs $\sequence{q_k,\gamma}$,
-or else as a set of $5$-tuple $\sequence{q_i,t,g,q_k,\gamma}$
-\definend{instructions},\index{instruction!stack machine}
-where $t\in\Sigma\cup\set{\blank,\varepsilon}$, $g\in\Gamma\cup\set{\bot}$, 
-and $\gamma\in\kleenestar{\Gamma}\!$.
- 
+ % too much: ~$\map{\Delta}{Q\times\Sigma\Gamma}{\powerset(Q\times\Sigma\times\kleenestar{\Gamma})}$
+The transition function~$\Delta$\index{Pushdown machine!transition function}
+inputs a triple
+$\sequence{q_i,t,g}$ and outputs a set of pairs $\sequence{q_k,\sigma}$,
+where $t\in\Sigma\cup\set{\inputendchar,\varepsilon}$
+and $g\in\Gamma\cup\set{\bot}$
+and $\sigma\in\kleenestar{\Gamma}\!$.
+Often we will specify $\Delta$ as a set of $5$-tuple
+\definend{instructions}\index{instruction!stack machine}
+$\sequence{q_i,t,g,q_k,\sigma}$.
+
 The starting configuration $\mathcal{C}_0$ has the machine in state~$q_0$,
-with the read head at the first character of $\tau_0\concat\blank$
+with the read head at the first character of $\tau_0\concat\inputendchar$
 where $\tau_0\in\kleenestar{\Sigma}$ is the \definend{input string},
 and with the stack containing only the~$\bot$ character.
 
 As for actions, 
-let the current configuration
-be $\mathcal{C}=\sequence{q_i,\tau,\gamma}$,
-and let the character under the I/O head be $t$, meaning that
-$\tau=t\concat\hat{\tau}$.
-Start by trying to pop the stack.
-If it contains nothing, not even~$\bot$,
+let the current configuration be
+$\mathcal{C}=\sequence{q_i,\tau,\gamma}$.
+Start by trying to pop the top character off of the stack.
+If the stack contains nothing, not even~$\bot$,
 then the computation dead-ends\Dash there is no
 configuration succeeding the current one
-%$\mathcal{C}$ such that $\mathcal{C}_s\yields\mathcal{C}$
-and this path in the computation tree will not result in the machine accepting
-the input~$\tau_0$.
+and this maximal path in the computation tree will not result
+in the machine accepting the input~$\tau_0$, whether or not the current
+state is accepting.
 
-Otherwise the stack is nonempty.
-Popping, $\gamma=g\concat\gamma_p$, produces the top
-character~$g\in\Gamma\cup\set{\bot}$.
-There may be one configuration~$\hat{\mathcal{C}}$ succeeding~$\mathcal{C}$,
+Otherwise the stack is not empty.
+Popping, $\gamma=g\concat\gamma_r$, produces the top
+character~$g\in\Gamma\cup\set{\bot}$ and the remainder $\gamma_r$ of the stack.
+For each $\sequence{q_k,\sigma}$ in the set $\Delta(q_i,t,g)$ we will get a
+configuration $\hat{\mathcal{C}}=\sequence{q_k,\hat{\tau},\hat{\gamma}}$
+with $\mathcal{C}\yields\hat{\mathcal{C}}$.
+Thus there may be one configuration succeeding~$\mathcal{C}$,
 or more than one, or none.
-We denote the successor relationship by $\mathcal{C}\yields\hat{\mathcal{C}}$.
-Such a $\hat{\mathcal{C}}=\sequence{q_k,\hat{\tau},\hat{\gamma}}$
-exists  if and only if
-the set $\Delta(\sequence{q_i,t,g})$ contains $\sequence{q_k,\sigma}$ 
-and one of these two cases holds. 
-\begin{parenum}
-\item If $t\in\Sigma\cup\set{\blank}$ then
+The components of $\hat{\mathcal{C}}$ depend on~$t$.
+If $t\in\Sigma\cup\set{\inputendchar}$ then
 the machine consumes that tape character,
-goes into state $q_k$,
-and then pushes the characters of the string~$\sigma$
-onto the stack, $\hat{\gamma}=\sigma\concat\gamma_p$.
-\item
+meaning that $\hat{\tau}$ comes from $\tau=t\concat\hat{\tau}$,
+and also pushes the characters of the string~$\sigma$
+onto the stack, meaning that $\hat{\gamma}=\sigma\concat\gamma_r$.
 If $t$ is the single character~`$\varepsilon$'
 then everything is the same except that 
-the read head does not consume its input character so that $\hat{\tau}=\tau$. 
-\end{parenum}
+the machine does not consume the present character, so $\hat{\tau}=\tau$. 
 %</discussion:StackMachineTransitionsii>
 
 %<*discussion:StackMachineTransitionsiii>
@@ -9226,7 +9220,7 @@ relations that start with $\mathcal{C}_0$.
 This forms a directed tree.
 The machine \definend{accepts}~$\tau_0$
 if that tree has a maximal path ending in a configuration where the tape is
-exhausted, including the end-marking \blank, and is in a final state.
+exhausted, including the end-marking \inputendchar, and is in a final state.
 Otherwise the machine \definend{rejects}~$\tau_0$.
 %</discussion:StackMachineTransitionsiii>
 
@@ -9234,20 +9228,16 @@ Otherwise the machine \definend{rejects}~$\tau_0$.
 Recall that a palindrome
 is a string that reads the same forwards and
 backwards, $\sigma=\reversal{\sigma}\!$.
-There are two cases.
-An even-length palindrome such as \str{abba} breaks into halves,
-$\str{abba}=\str{ab}\concat\str{ba}$, where the suffix is  the reverse of the
-prefix.
-%<*ex:PalindromesUsingMiddleMarkeri>
-But odd-length palindromes such as \str{abcba} 
+%<*ex:PalindromesUsingMiddleMarkeri>Odd-length palindromes such as \str{abcba} 
+Odd-length palindromes
 have a character in the middle that acts as a pivot.
 That is, they have the form $\sigma\concat s\concat\reversal{\sigma}$ for
 $s\in\Sigma$.
-The language $\lang_{\text{MM}}$ uses $\sigma\in\kleenestar{\set{\str{a},\str{b}}}$
-along with the character $s=\str{c}$ as a middle marker so that
+Consider the collection of strings using the character $\str{c}$
+as a middle marker,
 $\lang_{\text{MM}}=
-   \set{\sigma\in\kleenestar{\set{\str{a},\str{b},\str{c}}}\suchthat
-   \text{$\sigma=\tau\concat\str{c}\concat\reversal{\tau}$ for some $\tau\in\kleenestar{\set{\str{a},\str{b}}}$}}
+   \set{\sigma=\tau\concat\str{c}\concat\reversal{\tau}\suchthat
+       \tau\in\kleenestar{\set{\str{a},\str{b}}}}
 $.
 
 The machine below accepts this language.
@@ -9377,11 +9367,11 @@ relying on $\varepsilon$~transitions.
 Consider the language of all even-length palindromes\index{palindrome} 
 over $\kleenestar{\B}\!$,
 $\lang_{\text{ELP}}=\set{\sigma\reversal{\sigma}\suchthat\sigma\in\kleenestar{\B}}=\set{\varepsilon,\str{00},\str{11},\str{0000},\str{0110},\str{1001},\str{1111},\ldots}$.
-The Pumping Lemma shows that no Finite State machine
-recognizes this language.
-But this nondeterministic Pushdown machine does.
+No Finite State machine
+recognizes this language,
+but this nondeterministic Pushdown machine does.
 
-This machine has three states,
+It has three states,
 $Q=\set{q_0,q_1,q_2}$ with $F=\set{q_2}$,
 as well as $\Sigma=\B$
 and $\Gamma=\set{\text{\str{g0}},\str{g1}}$.
@@ -9432,6 +9422,22 @@ then the machine proceeds.
 Otherwise there is no matching instruction and the 
 computation path dies.
 This is done while in state~$q_1$.
+
+We will show three example computations.
+For the first,
+we exhibit a successful maximal path of the 
+computation tree.
+% Here the final configuration has both an empty string and an accepting state,
+% so this machine accepts the input~\str{0110}.
+\begin{tapesequence}
+  \begin{tapesequencetable}
+    0 &\tapegraphic{\asydir machine/machine14.pdf} \\
+    1 &\tapegraphic{\asydir machine/machine15.pdf} \\
+    2 &\tapegraphic{\asydir machine/machine16.pdf} \\
+    3 &\tapegraphic{\asydir machine/machine17.pdf} \\
+    4 &\tapegraphic{\asydir machine/machine18.pdf} \\
+  \end{tapesequencetable}
+\end{tapesequence}
 
 % \begin{center}
 % \begin{tabular}[t]{r|ll}
@@ -9484,21 +9490,6 @@ input means that the machine can spontaneously transition from $q_0$ to~$q_1$.
 % the computation path succeeds.
 %</ex:NondeterministicPushDownAcceptsPalindromesii>
 
-We will show three example computations.
-For the first,
-we exhibit a successful maximal path of the 
-computation tree.
-% Here the final configuration has both an empty string and an accepting state,
-% so this machine accepts the input~\str{0110}.
-\begin{tapesequence}
-  \begin{tapesequencetable}
-    0 &\tapegraphic{\asydir machine/machine14.pdf} \\
-    1 &\tapegraphic{\asydir machine/machine15.pdf} \\
-    2 &\tapegraphic{\asydir machine/machine16.pdf} \\
-    3 &\tapegraphic{\asydir machine/machine17.pdf} \\
-    4 &\tapegraphic{\asydir machine/machine18.pdf} \\
-  \end{tapesequencetable}
-\end{tapesequence}
 First note a point about the input.
 Because this machine can guess, it can guess whether the input is 
 finished.
@@ -9507,7 +9498,7 @@ stack has only $\bot$ then the machine can spontaneously transition to~$q_2$,
 which is the only accepting state. 
 If this happens after the input string has run out then
 the computation path succeeds.)
-So we can omit the terminating \blank{} that we used earlier.
+So we can omit the terminating \inputendchar{} that we used earlier.
 % Between these configurations the machine has applied instructions
 % $0$, $5$, $8$, $10$, $9$, and~$11$.
 
@@ -9731,7 +9722,7 @@ So we outlaw the possibility that both are nonempty.
 %</disc:ChomskyHierarchy>
 \zcref{ex:PDSAcceptBalencedParens} and \zcref{ex:PDAPalindromesMithMidMarker}
 are both deterministic.\footnote{%
-  Deterministic Pushdown machines need the end-marker \blank,
+  Deterministic Pushdown machines need the end-marker \inputendchar,
   which is why we used it for those examples.}
 
 With that, the last relevant result is that 
@@ -9830,15 +9821,15 @@ and stack.
 \begin{exparts}
 \item  We have this.
 \begin{equation*}
-  \sequence{q_0,\str{[][]}\blank,\bot}
+  \sequence{q_0,\str{[][]}\inputendchar,\bot}
   \yields    
-  \sequence{q_0,\str{][]}\blank,\str{g0}\,\bot}
+  \sequence{q_0,\str{][]}\inputendchar,\str{g0}\,\bot}
   \yields    
-  \sequence{q_0,\str{[]}\blank,\bot}
+  \sequence{q_0,\str{[]}\inputendchar,\bot}
   \yields    
-  \sequence{q_0,\str{]}\blank,\str{g0}\,\bot}
+  \sequence{q_0,\str{]}\inputendchar,\str{g0}\,\bot}
   \yields    
-  \sequence{q_0,\blank,\bot}
+  \sequence{q_0,\inputendchar,\bot}
   \yields    
   \sequence{q_1,\text{`\,'},\bot}
 \end{equation*}
@@ -9846,9 +9837,9 @@ The last configuration has an empty tape and the state~$q_1$,
 so the machine accepts the initial string. 
 \item  This computation is quite different than the prior one.
 \begin{equation*}
-  \sequence{q_0,\str{][][}\blank,\bot}
+  \sequence{q_0,\str{][][}\inputendchar,\bot}
   \yields    
-  \sequence{q_0,\str{[][}\blank,\text{`\,'}}
+  \sequence{q_0,\str{[][}\inputendchar,\text{`\,'}}
 \end{equation*}
 At this point the machine has an empty stack.
 It can't start the next step because each step starts by popping the top
@@ -9885,7 +9876,7 @@ The only accepting state is~$q_2$.
   $2$  &$q_0,\str{a},\str{g0}$   &$q_0,\text{`\str{g0}\,\str{g0}\,\str{g0}'}$ \\
   $3$  &$q_0,\str{c},\str{g0}$   &$q_1,\text{`\str{g0}'}$ \\
   $4$  &$q_1,\str{b},\str{g0}$   &$q_1,\text{`\,'}$ \\
-  $5$  &$q_1,\blank,\bot$        &$q_2,\bot$ \\
+  $5$  &$q_1,\inputendchar,\bot$        &$q_2,\bot$ \\
 \end{tabular}  
 \end{center}
 \item
@@ -9903,7 +9894,7 @@ The only accepting state is~$q_3$.
   $3$  &$q_1,\str{a},\str{g0}$   &$q_1,\text{`\str{g0}\,\str{g0}\,\str{g0}'}$ \\
   $4$  &$q_1,\str{c},\str{g0}$   &$q_2,\text{`\str{g0}'}$ \\
   $5$  &$q_2,\str{b},\str{g0}$   &$q_2,\text{`\,'}$ \\
-  $6$  &$q_2,\blank,\bot$        &$q_3,\bot$ \\
+  $6$  &$q_2,\inputendchar,\bot$        &$q_3,\bot$ \\
 \end{tabular}  
 \end{center}
 \end{exparts}
@@ -9949,12 +9940,12 @@ The only accepting state is~$q_2$.
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \hline
-  $0$  &$q_0,\blank,\bot$          &$q_2,\text{`$\bot$'}$ \\
+  $0$  &$q_0,\inputendchar,\bot$          &$q_2,\text{`$\bot$'}$ \\
   $1$  &$q_0,\str{a},\bot$         &$q_0,\text{`\str{g0}\,$\bot$'}$ \\
   $2$  &$q_0,\str{a},\str{g0}$     &$q_0,\text{`\str{g0}\,\str{g0}'}$ \\
   $3$  &$q_0,\varepsilon,\str{g0}$ &$q_1,\text{`\str{g0}\,$\bot$'}$ \\
   $2$  &$q_1,\str{a},\str{g0}$     &$q_1,\text{`\,'}$ \\
-  $3$  &$q_1,\blank,\bot$          &$q_2,\text{`$\bot$'}$ \\
+  $3$  &$q_1,\inputendchar,\bot$          &$q_2,\text{`$\bot$'}$ \\
 \end{tabular}    
 \end{center}
 \end{answer}
@@ -9975,13 +9966,13 @@ Its accepting state is~$q_4$.
   &\multicolumn{1}{c}{\tabulartext{Input}}
   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
   \hline
-  $2$  &$q_0,\blank,\bot$        &$q_4,\text{`$\bot$'}$ \\
+  $2$  &$q_0,\inputendchar,\bot$        &$q_4,\text{`$\bot$'}$ \\
   $0$  &$q_0,\str{a},\bot$       &$q_1,\text{`\str{g0}\,$\bot$'}$ \\
   $1$  &$q_1,\str{a},\str{g0}$   &$q_1,\text{`\str{g0}\,\str{g0}'}$ \\
   $3$  &$q_1,\str{b},\str{g0}$   &$q_3,\text{`\,'}$ \\
   $4$  &$q_2,\str{b},\str{g0}$   &$q_3,\text{`\,'}$ \\
   $5$  &$q_3,\str{b},\str{g0}$   &$q_2,\text{`\,'}$ \\
-  $6$  &$q_2,\blank,\bot$        &$q_4,\text{`$\bot$'}$ \\
+  $6$  &$q_2,\inputendchar,\bot$        &$q_4,\text{`$\bot$'}$ \\
 \end{tabular}  
 \end{center}  
 \end{answer}

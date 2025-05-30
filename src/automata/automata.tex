@@ -2843,19 +2843,30 @@ by following the $\varepsilon$ transition between $q_2$ and~$q_3$.
   \yields \sequence{q_3,\str{c}}
   \yields \sequence{q_4,\emptystring}    
 \end{equation*}
-A machine may, in a single step,
-follow two or more $\varepsilon$ transitions.
+A machine may
+follow two or more $\varepsilon$ transitions as part of a single step.
 Here, it accepts the one-character string~\str{d}
 by going from~$q_0$
-to~$q_5$ without consuming any input.
-\begin{equation*}
+to~$q_5$ without consuming any input:
+$ % \begin{equation*}
   \sequence{q_0,\str{d}}
   \yields \sequence{q_5,\str{d}}
   \yields \sequence{q_6,\emptystring}    
-\end{equation*}
-This machine's language is
+$. % \end{equation*}
+The language is
 $\lang=\set{\str{abc},\str{abd},\str{c}, \str{d}}$.
 \end{example}
+
+When we trace through a computation
+each step will have two parts:~first we
+do the transitions not involving $\varepsilon$ and then
+we do the $\varepsilon$~transitions.
+In the $\varepsilon$~transition half, we will keep following them
+until they run out, as in the prior exercise.\footnote{%
+  Making each $\varepsilon$~transition take a full step, so that
+  a step may involve following $\varepsilon$~transitions left over from
+  prior steps, is a bookkeeping annoyance.
+  And, a loop of $\varepsilon$~transitions would go on forever.}
 
 \begin{example} \label{ex:ComputationTreeInclEpsilons}
 Below is a machine that is nondeterministic and with 
@@ -2878,10 +2889,11 @@ The $\varepsilon$ moves are inside the white stripes.
   \end{animatedfigure}
 }
 \noindent At each step, the machine is in all of the states that 
-are inside of the step's stripe.
+are inside of the step's white stripe.
 For instance, at step~$0$ the machine is in both $q_0$ and~$q_1$.
 After exhausting the tape, at step~$3$ it is in all three states
-and because $q_0$ is an accepting state, it accepts the input \str{aab}. 
+and because $q_0$ is an accepting state, the
+machine accepts the input \str{aab}. 
 \end{example}
 
 The $\varepsilon$~transitions simplify building Finite State machines.
@@ -2889,8 +2901,8 @@ The $\varepsilon$~transitions simplify building Finite State machines.
 \begin{example}  \label{ex:NFSMJoinParallel}
 An $\varepsilon$ transition can put two machines together with a
 parallel connection.
-Here is a machine whose states are named with $q$'s combined in parallel with
-one whose states are named with~$r$'s.
+Here we've combined a machine with states named with $q$'s
+in parallel with one whose states are named with~$r$'s.
 \begin{center}
   \includegraphics{automata/asy/nfsm/nfsm14.pdf}
 \end{center}
@@ -2898,6 +2910,14 @@ The top machine's language is
 $\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma$ ends in \str{ab}}}$
 and the bottom's is
 $\set{\sigma\in\kleenestar{\set{\str{a},\str{c}}}\suchthat \text{$\sigma=(\str{ac})^n$ for some $n\in\N$}}$.
+The combined machine accepts \str{ac} by taking the lower
+$\varepsilon$~transition:
+$
+  \sequence{s_0,\str{ac}}
+  \yields \sequence{r_0,\str{ac}}
+  \yields \sequence{r_1,\str{c}}
+  \yields \sequence{r_0,\emptystring}    
+$.
 This is the language for the entire machine
 \begin{equation*}
   \lang=\set{\sigma\in\kleenestar{\Sigma}\suchthat
@@ -2940,7 +2960,7 @@ and de-finalize those states on the left,
   \includegraphics{automata/asy/nfsm/nfsm13.pdf}
 \end{center}
 then the 
-combined machine accepts strings in the concatenation of those languages,
+combined machine accepts strings in the concatenation,
 $\mathcal{L}(\FSM)=\lang_0\concat\lang_1$.
 For example, it accepts \str{aabaababa}, and
 \str{aabaa}, as well as \str{abaa}.
@@ -2970,7 +2990,7 @@ the set of states that are reachable from~$q$ by $\varepsilon$ moves alone.
 %</df:EpsilonClosurei>
 
 %<*disc:EpsilonClosurei>
-We will build the $\varepsilon$~closure iteratively,
+We can build the $\varepsilon$~closure iteratively,
 by constructing
 $\map{E}{Q\times\N}{\powerset (Q)}$ such that $E(q,m)$ is the set of 
 states reachable from $q$ in at most $m$-many $\varepsilon$ moves.
@@ -3046,22 +3066,29 @@ A machine starts in an
 $\mathcal{C}_0=\sequence{q_0,\tau_0}$, with
 \definend{input}~$\tau_0$.\index{input string}\index{nondeterministic Finite State machine!input string} 
 
-There are two circumstances where 
-$\mathcal{C}\yields\hat{\mathcal{C}}$\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
-for $\mathcal{C}=\sequence{q,\tau}$ and
-$\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}$.
-The first is the same as earlier:~$\tau$ is not the 
-empty string, and $\hat{\tau}$ results
-from popping $\tau$'s leading character so that $\tau=c\concat\hat{\tau}$,
-and for that character~$c$ the state $\hat{q}$
-is a member of $\Delta(q,c)$.
-The second possibility is new:~$\hat{\tau}=\tau$, so 
-the machine doesn't consume any input,
-and also $\hat{q}$ is a member of the $\varepsilon$ closure $\hat{E}(q)$.
+A computation step starts with a configuration $\mathcal{C}=\sequence{q,\tau}$.
+If the tape is empty then there is no next step and this is a
+halting configuration.
+Otherwise decompose the tape as $\tau=c\concat\hat{\tau}$, giving the present
+character~$c\in\Sigma$ and the tape contents for the next
+configuration~$\hat{\tau}$.
+Then the step has two parts.
+First perform the transitions that are not $\varepsilon$~moves
+by finding the set of states $r_0,r_1,\ldots\,r_k$ given by $\Delta(q,c)$.
+The second part is to take the $\varepsilon$~closures:~compute
+the set of configurations
+$\set{\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}\suchthat
+     \text{$\hat{q}\in \hat{E}(r_i)$ for $r_i\in\Delta(q,c)$}}$. 
+Any such $\hat{\mathcal{C}}$ succeeds $\mathcal{C}$, that is, 
+$\mathcal{C}\yields\hat{\mathcal{C}}$.\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
+(The sole exceptional step is the initial one.
+There are no transitions leading into $C_0$ so we need only do the second part
+of finding the configurations $\hat{\mathcal{C}}=\sequence{\hat{q},\tau_0}$
+where $\hat{q}\in\hat{E}(q_0)$.)
 
 Put together, all of the sequences of configurations 
-that are related by $\yields$~transitions 
-and that start with $\mathcal{C}_0$
+that are related by $\yields$~transitions
+and start with $\mathcal{C}_0$ 
 form a directed tree rooted at~$\mathcal{C}_0$.
 This is the  
 \definend{computation tree}\index{computation tree!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation tree}
@@ -3120,10 +3147,10 @@ Otherwise $\FSM$ rejects~$\tau_0$.
 % ........................................
 \subsection{Equivalence of the machine types}\label{sec:EquivDFSMAndNFSM}
 
-In this section we have apparently extended the capabilities of
+In this section we seem to have extended the capabilities of
 Finite State machines, including by 
 adding nondeterminism.
-This can be puzzling.
+These new capabilities can be puzzling.
 For instance, if we feed the input $\tau=\str{010101110}$ to the machine
 from \zcref{ex:ListenerMachine} then it accepts,
 but that machine is set up to accept strings that begin with two
@@ -3134,12 +3161,12 @@ How can it guess?
 
 In mathematics
 we can consider whatever we can make precise
-but we have so far stuck to
+but we have so far in this book stuck to
 models of machines that are in principle physically realizable.
 So this may seem to be a shift. 
 
-It is not a shift.
-We finish this section by showing 
+It is not.
+We will show 
 how to convert any nondeterministic Finite State
 machine into a deterministic one that does the same job.
 So we can take nondeterminism
@@ -4558,7 +4585,7 @@ and $\hat{E}(q_2)=\set{q_2}$.
 
 % ==================================================
 \section{Regular expressions}\index{regular expression|(}
-\margingraphic{0.15\textwidth}{automata/pix/kleene.jpg}{\label{fig:kleene}\href{https://en.wikipedia.org/wiki/Stephen_Cole_Kleene}{Stephen Kleene 1909--1994}}\index{Kleene, S!picture}
+\margingraphic{0.15\textwidth}{automata/pix/kleene.jpg}{\label{fig:kleene}\href{https://en.wikipedia.org/wiki/Stephen_Cole_Kleene}{Stephen Kleene 1909--94}}\index{Kleene, S!picture}
 In 1951, S~Kleene\footnote{%
   \citetext{Pronounced KLAY-nee}{His son Ken Kleene, wrote,
   ``As far as I am aware this pronunciation is incorrect in all known languages.
@@ -4569,30 +4596,32 @@ was studying a
 \citetext{mathematical model of neurons}{\autocite{wiki:ArtificialNeuron}}.
 These are like a Finite State machine in that they 
 do not have scratch memory.
-Because of that connection, his work is related to what's here. 
-He noted patterns in the languages that they recognize.
-For instance, the Finite State machine below
+% Because of that connection, his work is related to what's here. 
+He noted patterns in the languages that such machines recognize.
+\begin{center}
+  \includegraphics{automata/asy/fsa/fsa15.pdf}
+\end{center}
+For example, this Finite State machine 
 accepts strings that
-have any number of \str{b}'s (perhaps zero many) 
+have any number of \str{b}'s
 followed by at least one~\str{a},
 optionally then followed by some number of repetitions 
 of a pattern of at least one \str{b} and then
 at least one~\str{a}.
-He introduced a convenient way, called regular expressions, 
-for constructs such as `any number of'.
-\begin{center}
-  \includegraphics{automata/asy/fsa/fsa15.pdf}
-\end{center}
+
+He introduced a way to describe the languages that makes it
+convenient to express 
+constructs such as `any number of'.
 
 
 \subsection{Definition}
-A regular expression is a string that describes a language.
+% A regular expression is a string that describes a language.
 % \footnote{%
 %   We will call the languages `regular' in that they have regularities.
 %   The expressions describe the languages.}
-We will introduce these with 
+We will start with 
 a few examples,
-using the alphabet $\Sigma=\set{\str{a},\ldots \str{z}}$.
+using $\Sigma=\set{\str{a},\ldots \str{z}}$.
 
 %<*ex:RegexOne>
 \begin{example}
@@ -4627,10 +4656,9 @@ which in turn is concatenated with \str{t}.
 \begin{example}
 The regular expression \re{ab*c}
 describes the language
-$\lang=\set{\str{ac}, \str{abc}, \str{abbc},\, \ldots}$
 of words begin with an~$\str{a}$, followed by any number of $\str{b}$'s
 (including possibly zero-many $\str{b}$'s), and ending with  
-a~$\str{c}$.
+a~$\str{c}$, that is, $\lang=\set{\str{ac}, \str{abc}, \str{abbc},\, \ldots}$.
 Thus,~`$*$'  %`$\kleenestar{}$'
 means `repeat any number of times, 
 including possibly zero-many times'.
@@ -9134,7 +9162,9 @@ The computation dies without accepting the input.
   it is in an accepting state,
   but a variant requires that its stack be empty.
   However, all of these variants that extend
-  nondeterministic machines accept the same set of languages.}. 
+  nondeterministic machines accept the same set of languages.}.
+It extends that of a nondeterministic Finite State machine with
+$\varepsilon$~transitions.
 
 %<*def:PushdownMachine>
 \begin{definition}
@@ -9184,10 +9214,8 @@ with the read head at the first character of $\tau_0\concat\inputendchar$
 where $\tau_0\in\kleenestar{\Sigma}$ is the \definend{input string},
 and with the stack containing only the~$\bot$ character.
 
-As for actions, 
-let the current configuration be
-$\mathcal{C}=\sequence{q_i,\tau,\gamma}$.
-Start by trying to pop the top character off of the stack.
+As for actions, the setup for each step is 
+popping the top character off of the stack.
 If the stack contains nothing, not even~$\bot$,
 then the computation dead-ends\Dash there is no
 configuration succeeding the current one
@@ -9198,20 +9226,42 @@ state is accepting.
 Otherwise the stack is not empty.
 Popping, $\gamma=g\concat\gamma_r$, produces the top
 character~$g\in\Gamma\cup\set{\bot}$ and the remainder $\gamma_r$ of the stack.
-For each $\sequence{q_k,\sigma}$ in the set $\Delta(q_i,t,g)$ we will get a
-configuration $\hat{\mathcal{C}}=\sequence{q_k,\hat{\tau},\hat{\gamma}}$
-with $\mathcal{C}\yields\hat{\mathcal{C}}$.
-Thus there may be one configuration succeeding~$\mathcal{C}$,
-or more than one, or none.
-The components of $\hat{\mathcal{C}}$ depend on~$t$.
-If $t\in\Sigma\cup\set{\inputendchar}$ then
-the machine consumes that tape character,
-meaning that $\hat{\tau}$ comes from $\tau=t\concat\hat{\tau}$,
-and also pushes the characters of the string~$\sigma$
-onto the stack, meaning that $\hat{\gamma}=\sigma\concat\gamma_r$.
-If $t$ is the single character~`$\varepsilon$'
-then everything is the same except that 
-the machine does not consume the present character, so $\hat{\tau}=\tau$. 
+
+We begin with a configuration
+$\mathcal{C}=\sequence{q_i,\tau,\gamma}$.
+If the tape is empty then there is no next step and this is a
+halting configuration.
+Otherwise, decompose the tape, $\tau=c\concat\hat{\tau}$, into the present
+character~$c\in\Sigma$ and the tape contents for the next
+configuration~$\hat{\tau}$.
+Then the step calculation has two parts.
+First perform the transitions that are not $\varepsilon$~moves
+by finding the set of states given by $\Delta(q,c)$.
+Second, take the $\varepsilon$~closures:~compute
+the set of configurations
+$\set{\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}\suchthat
+     \text{$\hat{q}\in \hat{E}(r_i)$ for $r_i\in\Delta(q,c)$}}$. 
+Any such $\hat{\mathcal{C}}$ succeeds $\mathcal{C}$, that is, 
+$\mathcal{C}\yields\hat{\mathcal{C}}$.\index{yields@$\yields$, yields!for nondeterministic Finite State machines}
+(The sole exceptional step is the initial one.
+Given $C_0$, we need only do the second part
+of finding the configurations $\hat{\mathcal{C}}=\sequence{\hat{q},\tau_0}$
+where $\hat{q}\in\hat{E}(q_0)$.)
+
+% For each $\sequence{q_k,\sigma}$ in the set $\Delta(q_i,t,g)$ we will get a
+% configuration $\hat{\mathcal{C}}=\sequence{q_k,\hat{\tau},\hat{\gamma}}$
+% with $\mathcal{C}\yields\hat{\mathcal{C}}$.
+% Thus there may be one configuration succeeding~$\mathcal{C}$,
+% or more than one, or none.
+% The components of $\hat{\mathcal{C}}$ depend on~$t$.
+% If $t\in\Sigma\cup\set{\inputendchar}$ then
+% the machine consumes that tape character,
+% meaning that $\hat{\tau}$ comes from $\tau=t\concat\hat{\tau}$,
+% and also pushes the characters of the string~$\sigma$
+% onto the stack, meaning that $\hat{\gamma}=\sigma\concat\gamma_r$.
+% If $t$ is the single character~`$\varepsilon$'
+% then everything is the same except that 
+% the machine does not consume the present character, so $\hat{\tau}=\tau$. 
 %</discussion:StackMachineTransitionsii>
 
 %<*discussion:StackMachineTransitionsiii>
@@ -9407,33 +9457,32 @@ and $\Gamma=\set{\text{\str{g0}},\str{g1}}$.
 
 
 %<*ex:NondeterministicPushDownAcceptsPalindromesii>
-The machine runs in two phases.
-Where the input is $\sigma\reversal{\sigma}\!$, the first phase works 
-with~$\sigma$.
+The machine's first phase is done while in state~$q_0$
+and works with the~$\sigma$ part of $\sigma\reversal{\sigma}\!$.
 If the tape character is~\str{0} 
-then the machine pushes the token \str{g0} onto the stack, 
-and if it is~\str{1} then the machine pushes~\str{g1}. 
-This is done while in state~$q_0$.
-
-The second phase works with~$\reversal{\sigma}\!$.
-If \str{0} is on the tape and \str{g0} tops the stack, 
+then the machine pushes \str{g0} onto the stack, 
+while if it is~\str{1} then the machine pushes~\str{g1}. 
+The second phase is done while in state~$q_1$
+and works with~$\reversal{\sigma}\!$.
+In this phase, if \str{0} is on the tape and \str{g0} tops the stack, 
 or~\str{1} and~\str{g1},
 then the machine proceeds.
 Otherwise there is no matching instruction and the 
 computation path dies.
-This is done while in state~$q_1$.
 
-We will show three example computations.
-For the first,
-we exhibit a successful maximal path of the 
+Without a middle marker how does this machine
+know when to change from phase one to two, from pushing to popping?
+It is nondeterministic\Dash it guesses.
+In the computation below we exhibit a successful maximal path of the 
 computation tree.
-% Here the final configuration has both an empty string and an accepting state,
-% so this machine accepts the input~\str{0110}.
+Guessing happens between steps~$1$ and~$2$,
+by applying instruction~$8$, where it swtiches from state~$q_0$ to~$q_1$.
 \begin{tapesequence}
   \begin{tapesequencetable}
     0 &\tapegraphic{\asydir machine/machine14.pdf} \\
-    1 &\tapegraphic{\asydir machine/machine15.pdf} \\
-    2 &\tapegraphic{\asydir machine/machine16.pdf} \\
+    1 &\tapegraphic{\asydir machine/machine15.pdf}\quad (Inst~$0$) \\
+    2 &\tapegraphic{\asydir machine/machine15.pdf}\quad (Inst~$8$) \\
+    2 &\tapegraphic{\asydir machine/machine16.pdf}\quad (Inst~$5$?) \\
     3 &\tapegraphic{\asydir machine/machine17.pdf} \\
     4 &\tapegraphic{\asydir machine/machine18.pdf} \\
   \end{tapesequencetable}
@@ -9472,13 +9521,6 @@ computation tree.
 %   $17$ &$q_1,\text{\str{B}},\bot$              &$q_3,\bot$ \\
 % \end{tabular}
 % \end{center}
-Without a middle marker how does the machine
-know when to
-change from phase one to two, from pushing to popping?
-It is nondeterministic\Dash it guesses.
-That happens in lines $7$ and~$8$.
-The $\varepsilon$~character in the 
-input means that the machine can spontaneously transition from $q_0$ to~$q_1$.
 
 % There are four more instructions.
 % Numbers $0$--$2$ cover the computation's initial step, when the stack
@@ -9490,7 +9532,7 @@ input means that the machine can spontaneously transition from $q_0$ to~$q_1$.
 % the computation path succeeds.
 %</ex:NondeterministicPushDownAcceptsPalindromesii>
 
-First note a point about the input.
+Before the second example, note a point about the input.
 Because this machine can guess, it can guess whether the input is 
 finished.
 (Instruction~$11$ says that if the machine is in state~$q_1$ and the

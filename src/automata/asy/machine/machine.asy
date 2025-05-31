@@ -364,3 +364,15 @@ int picnum=35;
 pic=pda("B",0,"$q_0$", new string[] {" "},tape_length,stack_length,separator);
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// ------- added later: epsilon transition between 15 and 16 -----
+real tape_length = 80pt;
+real stack_length = 40pt;
+real separator = 20pt;
+
+picture pic;
+int picnum=36;
+pic=pda("10",0,"$q_0$", new string[] {"\str{g1}", "\str{g0}", "$\bot$"},tape_length,stack_length,separator);
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

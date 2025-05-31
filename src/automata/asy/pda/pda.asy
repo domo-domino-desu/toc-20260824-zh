@@ -143,34 +143,34 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-//  label(pic, "\scriptsize 2", (0.60,0.25), background_color);
+//  label(pic, "\scriptsize 2", (0.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-//  label(pic, "\scriptsize 11", (0.60,0.75), background_color);
+//  label(pic, "\scriptsize 11", (0.60,0.75), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.0),p);
 draw(pic, (1,-0.25)--(1,1.70),GRAYSTRIPE);
 
 // // Add action up to second input
 // label(pic, "$\vdash$",(1.00,0),p);
-//   label(pic, "\scriptsize 0", (1.00,-0.15), background_color);
+//   label(pic, "\scriptsize 0", (1.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
-//   label(pic, "\scriptsize 7", (1.60,0.5), background_color);
+//   label(pic, "\scriptsize 7", (1.60,0.5), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{$\str{g0}\bot$}$}",(1.50,1.00),p);
 // draw(pic, (2,-0.25)--(2,1.70),GRAYSTRIPE);
 
 // // Add action after second input
 // label(pic, "$\vdash$",(2.00,0),p);
-//   label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//   label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
-//   label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//   label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.50),p);
 // label(pic, "$\vdash$",(2.00,1.00),p);
-//   label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+//   label(pic, "\scriptsize 9", (2.00,0.85), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(2.50,1.00),p);
 // label(pic, yield_t_north*"$\vdash$",(2.50,1.25),p);
-//   label(pic, "\scriptsize 11", (2.60,1.25), background_color);
+//   label(pic, "\scriptsize 11", (2.60,1.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(2.50,1.50),p);
 
 // Legend at top of graphic
@@ -209,34 +209,34 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-//  label(pic, "\scriptsize 2", (0.60,0.25), background_color);
+//  label(pic, "\scriptsize 2", (0.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-//  label(pic, "\scriptsize 11", (0.60,0.75), background_color);
+//  label(pic, "\scriptsize 11", (0.60,0.75), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.0),p);
 draw(pic, (1,-0.25)--(1,1.70),GRAYSTRIPE);
 
 // Add action up to second input
 label(pic, "$\vdash$",(1.00,0),p);
-//  label(pic, "\scriptsize 0", (1.00,-0.15), background_color);
+//  label(pic, "\scriptsize 0", (1.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
-//  label(pic, "\scriptsize 7", (1.60,0.5), background_color);
+//  label(pic, "\scriptsize 7", (1.60,0.5), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\str{g0}\bot$}$}",(1.50,1.00),p);
 draw(pic, (2,-0.25)--(2,1.70),GRAYSTRIPE);
 
 // // Add action after second input
 // label(pic, "$\vdash$",(2.00,0),p);
-//   label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//   label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
-//   label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//   label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.50),p);
 // label(pic, "$\vdash$",(2.00,1.00),p);
-//   label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+//   label(pic, "\scriptsize 9", (2.00,0.85), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(2.50,1.00),p);
 // label(pic, yield_t_north*"$\vdash$",(2.50,1.25),p);
-//   label(pic, "\scriptsize 11", (2.60,1.25), background_color);
+//   label(pic, "\scriptsize 11", (2.60,1.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(2.50,1.50),p);
 
 // Legend at top of graphic
@@ -275,34 +275,34 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-//  label(pic, "\scriptsize 2", (0.60,0.25), background_color);
+//  label(pic, "\scriptsize 2", (0.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-//  label(pic, "\scriptsize 11", (0.60,0.75), background_color);
+//  label(pic, "\scriptsize 11", (0.60,0.75), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.0),p);
 draw(pic, (1,-0.25)--(1,1.70),GRAYSTRIPE);
 
 // Add action up to second input
 label(pic, "$\vdash$",(1.00,0),p);
-//  label(pic, "\scriptsize 0", (1.00,-0.15), background_color);
+//  label(pic, "\scriptsize 0", (1.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
-//  label(pic, "\scriptsize 7", (1.60,0.5), background_color);
+//  label(pic, "\scriptsize 7", (1.60,0.5), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\str{g0}\bot$}$}",(1.50,1.00),p);
 draw(pic, (2,-0.25)--(2,1.70),GRAYSTRIPE);
 
 // Add action after second input
 label(pic, "$\vdash$",(2.00,0),p);
-//  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
-//  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.50),p);
 label(pic, "$\vdash$",(2.00,1.00),p);
-//  label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+//  label(pic, "\scriptsize 9", (2.00,0.85), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(2.50,1.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,1.25),p);
-//  label(pic, "\scriptsize 11", (2.60,1.25), background_color);
+//  label(pic, "\scriptsize 11", (2.60,1.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(2.50,1.50),p);
 
 // Legend at top of graphic
@@ -341,34 +341,34 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-  label(pic, "\scriptsize 2", (0.60,0.25), background_color);
+  label(pic, "\scriptsize 2", (0.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-  label(pic, "\scriptsize 11", (0.60,0.75), background_color);
+  label(pic, "\scriptsize 11", (0.60,0.75), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.0),p);
 draw(pic, (1,-0.25)--(1,1.70),GRAYSTRIPE);
 
 // Add action up to second input
 label(pic, "$\vdash$",(1.00,0),p);
-  label(pic, "\scriptsize 0", (1.00,-0.15), background_color);
+  label(pic, "\scriptsize 0", (1.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.5),p);
-  label(pic, "\scriptsize 7", (1.60,0.5), background_color);
+  label(pic, "\scriptsize 7", (1.60,0.5), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\str{g0}\bot$}$}",(1.50,1.00),p+highlightcolor);
 draw(pic, (2,-0.25)--(2,1.70),GRAYSTRIPE);
 
 // Add action after second input
 label(pic, "$\vdash$",(2.00,0),p);
-  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
-  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}$\bot$}$}",(2.50,0.50),p);
 label(pic, "$\vdash$",(2.00,1.00),p);
-  label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+  label(pic, "\scriptsize 9", (2.00,0.85), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(2.50,1.00),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(2.50,1.25),p);
-  label(pic, "\scriptsize 11", (2.60,1.25), background_color);
+  label(pic, "\scriptsize 11", (2.60,1.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(2.50,1.50),p+highlightcolor);
 
 // Legend at top of graphic
@@ -411,40 +411,40 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-  // label(pic, "\scriptsize 2", (0.60,0.4), background_color);
+  // label(pic, "\scriptsize 2", (0.60,0.4), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-  // label(pic, "\scriptsize 11", (0.60,1.20), background_color);
+  // label(pic, "\scriptsize 11", (0.60,1.20), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.00),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // // Add action after first input
 // label(pic, "$\vdash$",(1.00,0),p);
-// //  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+// //  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g1}$\bot$}$}",(1.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(1.50,0.25),p);
-// //  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+// //  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(1.50,0.50),p);
 // draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // // Add action after second input
 // label(pic, "$\vdash$",(2.00,0),p);
-// //  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+// //  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(2.50,0.50),p);
-// //  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+// //  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,1.00),p);
 // draw(pic, (2,-0.25)--(2,1.25),GRAYSTRIPE);
 
 // // Add action after third input
 // label(pic, "$\vdash$",(3.00,0),p);
-// //  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+// //  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(3.50,0.25),p);
-// //  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+// //  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.50),p);
 // label(pic, "$\vdash$",(3.00,1.00),p);
-// //  label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+// //  label(pic, "\scriptsize 9", (2.00,0.85), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(3.50,1.00),p);
 // draw(pic, (3,-0.25)--(3,1.25),GRAYSTRIPE);
 
@@ -486,40 +486,40 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-  // label(pic, "\scriptsize 2", (0.60,0.4), background_color);
+  // label(pic, "\scriptsize 2", (0.60,0.4), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-  // label(pic, "\scriptsize 11", (0.60,1.20), background_color);
+  // label(pic, "\scriptsize 11", (0.60,1.20), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.00),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after first input
 label(pic, "$\vdash$",(1.00,0),p);
-//  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g1}$\bot$}$}",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.25),p);
-//  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(1.50,0.50),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // // Add action after second input
 // label(pic, "$\vdash$",(2.00,0),p);
-// //  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+// //  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(2.50,0.50),p);
-// //  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+// //  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,1.00),p);
 // draw(pic, (2,-0.25)--(2,1.25),GRAYSTRIPE);
 
 // // Add action after third input
 // label(pic, "$\vdash$",(3.00,0),p);
-// //  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+// //  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(3.50,0.25),p);
-// //  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+// //  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.50),p);
 // label(pic, "$\vdash$",(3.00,1.00),p);
-// //  label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+// //  label(pic, "\scriptsize 9", (2.00,0.85), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(3.50,1.00),p);
 // draw(pic, (3,-0.25)--(3,1.25),GRAYSTRIPE);
 
@@ -561,40 +561,40 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-  // label(pic, "\scriptsize 2", (0.60,0.4), background_color);
+  // label(pic, "\scriptsize 2", (0.60,0.4), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-  // label(pic, "\scriptsize 11", (0.60,1.20), background_color);
+  // label(pic, "\scriptsize 11", (0.60,1.20), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.00),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after first input
 label(pic, "$\vdash$",(1.00,0),p);
-//  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g1}$\bot$}$}",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.25),p);
-//  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(1.50,0.50),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after second input
 label(pic, "$\vdash$",(2.00,0),p);
-//  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.50),p);
-//  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,1.00),p);
 draw(pic, (2,-0.25)--(2,1.25),GRAYSTRIPE);
 
 // // Add action after third input
 // label(pic, "$\vdash$",(3.00,0),p);
-// //  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+// //  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 // label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.00),p);
 // label(pic, yield_t_north*"$\vdash$",(3.50,0.25),p);
-// //  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+// //  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.50),p);
 // label(pic, "$\vdash$",(3.00,1.00),p);
-// //  label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+// //  label(pic, "\scriptsize 9", (2.00,0.85), bold_color);
 // label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(3.50,1.00),p);
 // draw(pic, (3,-0.25)--(3,1.25),GRAYSTRIPE);
 
@@ -636,40 +636,40 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-  // label(pic, "\scriptsize 2", (0.60,0.4), background_color);
+  // label(pic, "\scriptsize 2", (0.60,0.4), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-  // label(pic, "\scriptsize 11", (0.60,1.20), background_color);
+  // label(pic, "\scriptsize 11", (0.60,1.20), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.00),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after first input
 label(pic, "$\vdash$",(1.00,0),p);
-//  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g1}$\bot$}$}",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.25),p);
-//  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(1.50,0.50),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after second input
 label(pic, "$\vdash$",(2.00,0),p);
-//  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.50),p);
-//  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,1.00),p);
 draw(pic, (2,-0.25)--(2,1.25),GRAYSTRIPE);
 
 // Add action after third input
 label(pic, "$\vdash$",(3.00,0),p);
-//  label(pic, "\scriptsize 3", (2.00,-0.15), background_color);
+//  label(pic, "\scriptsize 3", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(3.50,0.25),p);
-//  label(pic, "\scriptsize 7", (2.60,0.25), background_color);
+//  label(pic, "\scriptsize 7", (2.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.50),p);
 label(pic, "$\vdash$",(3.00,1.00),p);
-//  label(pic, "\scriptsize 9", (2.00,0.85), background_color);
+//  label(pic, "\scriptsize 9", (2.00,0.85), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(3.50,1.00),p);
 draw(pic, (3,-0.25)--(3,1.25),GRAYSTRIPE);
 
@@ -711,40 +711,40 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-  label(pic, "\scriptsize 2", (0.60,0.25), background_color);
+  label(pic, "\scriptsize 2", (0.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-  label(pic, "\scriptsize 11", (0.60,0.75), background_color);
+  label(pic, "\scriptsize 11", (0.60,0.75), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.00),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after first input
 label(pic, "$\vdash$",(1.00,0),p);
-  label(pic, "\scriptsize 1", (1.00,-0.15), background_color);
+  label(pic, "\scriptsize 1", (1.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g1}$\bot$}$}",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.25),p);
-  label(pic, "\scriptsize 8", (1.60,0.25), background_color);
+  label(pic, "\scriptsize 8", (1.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(1.50,0.50),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after second input
 label(pic, "$\vdash$",(2.00,0),p);
-  label(pic, "\scriptsize 4", (2.00,-0.15), background_color);
+  label(pic, "\scriptsize 4", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.50),p);
-  label(pic, "\scriptsize 7", (2.60,0.50), background_color);
+  label(pic, "\scriptsize 7", (2.60,0.50), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g1}$\bot$}$}",(2.50,1.00),p);
 draw(pic, (2,-0.25)--(2,1.25),GRAYSTRIPE);
 
 // Add action after third input
 label(pic, "$\vdash$",(3.00,0),p);
-  label(pic, "\scriptsize 3", (3.00,-0.15), background_color);
+  label(pic, "\scriptsize 3", (3.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(3.50,0.25),p);
-  label(pic, "\scriptsize 7", (3.60,0.25), background_color);
+  label(pic, "\scriptsize 7", (3.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g0}\str{g1}$\bot$}$}",(3.50,0.50),p);
 label(pic, "$\vdash$",(3.00,1.00),p);
-  label(pic, "\scriptsize 9", (3.00,0.85), background_color);
+  label(pic, "\scriptsize 9", (3.00,0.85), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}$\bot$}$}",(3.50,1.00),p);
 draw(pic, (3,-0.25)--(3,1.25),GRAYSTRIPE);
 
@@ -820,52 +820,52 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-  // label(pic, "\scriptsize 2", (0.60,0.25), background_color);
+  // label(pic, "\scriptsize 2", (0.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-  // label(pic, "\scriptsize 11", (0.60,0.75), background_color);
+  // label(pic, "\scriptsize 11", (0.60,0.75), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.00),p);
 draw(pic, (1,-0.25)--(1,1.75),GRAYSTRIPE);
 
 // Add action after first input
 label(pic, "$\vdash$",(1.00,0),p);
-  // label(pic, "\scriptsize 1", (1.00,-0.15), background_color);
+  // label(pic, "\scriptsize 1", (1.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.25),p);
-  // label(pic, "\scriptsize 8", (1.60,0.25), background_color);
+  // label(pic, "\scriptsize 8", (1.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}$\bot$}$}",(1.50,0.50),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after second input
 label(pic, "$\vdash$",(2.00,0),p);
-  // label(pic, "\scriptsize 4", (2.00,-0.15), background_color);
+  // label(pic, "\scriptsize 4", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g1}\str{g0}$\bot$}$}",(2.50,0.00),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.50),p);
-  // label(pic, "\scriptsize 7", (2.60,0.50), background_color);
+  // label(pic, "\scriptsize 7", (2.60,0.50), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}\str{g0}$\bot$}$}",(2.50,1.00),p+highlightcolor);
 draw(pic, (2,-0.25)--(2,1.75),GRAYSTRIPE);
 
 // Add action after third input
 label(pic, "$\vdash$",(3.00,0),p);
-  // label(pic, "\scriptsize 3", (3.00,-0.15), background_color);
+  // label(pic, "\scriptsize 3", (3.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g1}\str{g1}\str{g0}$\bot$}$}",(3.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(3.50,0.25),p);
-  // label(pic, "\scriptsize 7", (3.60,0.25), background_color);
+  // label(pic, "\scriptsize 7", (3.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}\str{g1}\str{g0}$\bot$}$}",(3.50,0.50),p);
 label(pic, "$\vdash$",(3.00,1.00),p);
-  // label(pic, "\scriptsize 9", (3.00,0.85), background_color);
+  // label(pic, "\scriptsize 9", (3.00,0.85), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}$\bot$}$}",(3.50,1.00),p+highlightcolor);
 draw(pic, (3,-0.25)--(3,1.75),GRAYSTRIPE);
 
 // Add action after fourth input
 label(pic, "$\vdash$",(4.00,0),p);
-  // label(pic, "\scriptsize 3", (3.00,-0.15), background_color);
+  // label(pic, "\scriptsize 3", (3.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g1}\str{g1}\str{g0}$\bot$}$}",(4.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(4.50,0.25),p);
-  // label(pic, "\scriptsize 7", (3.60,0.25), background_color);
+  // label(pic, "\scriptsize 7", (3.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g1}\str{g1}\str{g0}$\bot$}$}",(4.50,0.50),p);
 label(pic, "$\vdash$",(4.00,1.00),p);
-  // label(pic, "\scriptsize 9", (3.00,0.85), background_color);
+  // label(pic, "\scriptsize 9", (3.00,0.85), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(4.50,1.00),p+highlightcolor);
 label(pic, yield_t_north*"$\vdash$",(4.50,1.25),p);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(4.50,1.50),p+highlightcolor);
@@ -911,37 +911,37 @@ p=MAINPEN;
 // Action to left of first input
 label(pic, "$q_0,\text{$\bot$}$",(0.5,0),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.25),p);
-  // label(pic, "\scriptsize 2", (0.60,0.25), background_color);
+  // label(pic, "\scriptsize 2", (0.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{$\bot$}$}",(0.5,0.5),p);
 label(pic, yield_t_north*"$\vdash$",(0.5,0.75),p);
-  // label(pic, "\scriptsize 11", (0.60,0.75), background_color);
+  // label(pic, "\scriptsize 11", (0.60,0.75), bold_color);
 label(pic, "\makebox[\width][l]{$q_2,\text{$\bot$}$}",(0.5,1.00),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after first input
 label(pic, "$\vdash$",(1.00,0),p);
-  // label(pic, "\scriptsize 1", (1.00,-0.15), background_color);
+  // label(pic, "\scriptsize 1", (1.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}$\bot$}$}",(1.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(1.50,0.25),p);
-  // label(pic, "\scriptsize 8", (1.60,0.25), background_color);
+  // label(pic, "\scriptsize 8", (1.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}$\bot$}$}",(1.50,0.50),p);
 draw(pic, (1,-0.25)--(1,1.25),GRAYSTRIPE);
 
 // Add action after second input
 label(pic, "$\vdash$",(2.00,0),p);
-  // label(pic, "\scriptsize 4", (2.00,-0.15), background_color);
+  // label(pic, "\scriptsize 4", (2.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g1}\str{g0}$\bot$}$}",(2.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(2.50,0.25),p);
-  // label(pic, "\scriptsize 7", (2.60,0.50), background_color);
+  // label(pic, "\scriptsize 7", (2.60,0.50), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g1}\str{g0}$\bot$}$}",(2.50,0.50),p);
 draw(pic, (2,-0.25)--(2,1.25),GRAYSTRIPE);
 
 // Add action after third input
 label(pic, "$\vdash$",(3.00,0),p);
-  // label(pic, "\scriptsize 3", (3.00,-0.15), background_color);
+  // label(pic, "\scriptsize 3", (3.00,-0.15), bold_color);
 label(pic, "\makebox[\width][l]{$q_0,\text{\str{g0}\str{g1}\str{g0}$\bot$}$}",(3.50,0.00),p);
 label(pic, yield_t_north*"$\vdash$",(3.50,0.25),p);
-  // label(pic, "\scriptsize 7", (3.60,0.25), background_color);
+  // label(pic, "\scriptsize 7", (3.60,0.25), bold_color);
 label(pic, "\makebox[\width][l]{$q_1,\text{\str{g0}\str{g1}\str{g0}$\bot$}$}",(3.50,0.50),p);
 draw(pic, (3,-0.25)--(3,1.25),GRAYSTRIPE);
 

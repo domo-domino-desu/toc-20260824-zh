@@ -9031,11 +9031,14 @@ No Finite State machine can recognize the language of balanced parentheses.
 So that machine model is not powerful enough to, for instance,
 decide whether input strings are valid programs in 
 most programming languages.
-To handle nested parentheses, the natural data structure is a 
-pushdown stack.\index{stack}\index{pushdown stack}
+To handle nested parentheses, we adjoin to a Finite State machine
+a pushdown stack.\index{stack}\index{pushdown stack}
 % We now supplement a Finite State
 % machine by giving it access to a stack.
 %</discussion:StackIntroi>
+\begin{center}
+  \includegraphics{asy/share/machine03.pdf}
+\end{center}
 
 A stack is like the restaurant dish dispenser on the left
 below:~when we push a new dish on, its weight compresses a spring underneath.
@@ -9046,10 +9049,6 @@ remaining dishes rise up and we can reach the next one.\index{stack!pop}
 This stack is 
 \definend{LIFO}:~Last-In, 
 First-Out.\index{LIFO stack}\index{last in, first out (LIFO) stack}\index{stack!LIFO, Last-In, First-Out}
-
-\begin{center}
-  \includegraphics{asy/share/machine03.pdf}
-\end{center}
 
 %<*discussion:StackIntroii>
 Below on the right is a sequence of views of a stack.
@@ -9177,18 +9176,13 @@ the stack.
   \end{tapesequencetable_withinstruction}
 \end{tapesequence}
 %</ex:BalancedParensAcceptedPushdownAccept>
-The number of \str{g0}'s on the stack is how the 
-machine remembers the difference between the number of \str{[}'s
-it has consumed and the number of \str{[}'s.
+(The Instruction column lists the basis for the transition to the
+table's next line.)
+The number of \str{g0}'s on the stack is the number of \str{[}'s
+that the machine has consumed minus the number of \str{]}'s.
 % Next the machine executes line~$2$ twice, popping the two \str{g0}'s.
-At step~$7$ it 
-% Thus, the stack indicates that through step~$4$ the machine has consumed a set of
-% properly nested parentheses. 
-% Next comes line~$1$ and line~$2$, after which the stack 
-% again shows that the parentheses seen so far were nested.
-% Finally, the machine runs instruction~$4$.
-% It now 
-has an empty tape and is in an accepting state, so it
+At step~$7$ the tape is empty
+and the state is accepting, so the machine
 accepts the input.   
 
 %<*ex:BalancedParensAcceptedPushdownReject>
@@ -9217,7 +9211,7 @@ The computation dies without accepting the input.
   nondeterministic machines accept the same set of languages.}. 
 Both it and the description of the action that follows it
 extend those of Finite State machines with $\varepsilon$~moves.\footnote{%
-  Note that the prior example is deterministic, which is a special case.}
+  The prior example is deterministic, which is a special case.}
 
 %<*def:PushdownMachine>
 \begin{definition}
@@ -9324,88 +9318,6 @@ Given $C_0$, we only do the second part
 of finding the configurations $\hat{\mathcal{C}}=\sequence{\hat{q},\tau_0}$
 where $\hat{q}\in\hat{E}(q_0)$.)
 
-% \begin{example}  \label{ex:PDAPalindromesMithMidMarker}
-% Recall that a palindrome
-% is a string that reads the same forwards and
-% backwards, $\sigma=\reversal{\sigma}\!$.
-% % <*ex:PalindromesUsingMiddleMarkeri>
-% Odd-length palindromes such as \str{abcba} 
-% have a character in the middle that acts as a pivot.
-% % That is, they have the form $\sigma\concat s\concat\reversal{\sigma}$ for
-% % $s\in\Sigma$.
-% The machine below recognizes the collection of strings using the
-% character $\str{c}$ as a middle marker,
-% $\lang_{\text{MM}}=
-%    \set{\sigma=\tau\concat\str{c}\concat\reversal{\tau}\suchthat
-%        \tau\in\kleenestar{\set{\str{a},\str{b}}}}
-% $.
-% It has $Q=\set{q_0,q_1,q_2}$, $F=\set{q_2}$,
-% $\Sigma=\set{\str{a},\str{b},\str{c}}$, 
-% and $\Gamma=\set{\str{g0},\str{g1}}$. 
-% \begin{center}\small
-% \begin{tabular}[t]{r|ll}
-%   \multicolumn{1}{r}{\tabulartext{Inst}}
-%   &\multicolumn{1}{c}{\tabulartext{Input}}
-%   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-%   \cline{2-3}
-%   $0$  &$q_0,\text{\str{a}},\bot$             &$q_0,\text{`\str{g0}\,$\bot$'}$ \\
-%   $1$  &$q_0,\text{\str{b}},\bot$             &$q_0,\text{`\str{g1}\,$\bot$'}$ \\
-%   $2$  &$q_0,\text{\str{c}},\bot$             &$q_1,\text{`$\bot$'}$ \\
-%   $3$  &$q_0,\text{\str{B}},\bot$             &$q_3,\text{`$\bot$'}$ \\
-%   $4$  &$q_0,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\,\str{g0}'}$ \\
-%   $5$  &$q_0,\text{\str{a}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\,\str{g1}'}$ \\
-%   $6$  &$q_0,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\,\str{g0}'}$ \\
-%   $7$  &$q_0,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\,\str{g1}'}$ \\
-% \end{tabular}
-% \hspace{2em}
-% \begin{tabular}[t]{r|ll}
-%   \multicolumn{1}{r}{\tabulartext{Inst}}
-%   &\multicolumn{1}{c}{\tabulartext{Input}}
-%   &\multicolumn{1}{c}{\tabulartext{Output}}  \\
-%   \cline{2-3}
-%   $8$  &$q_0,\text{\str{c}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
-%   $9$  &$q_0,\text{\str{c}},\text{\str{g1}}$   &$q_1,\text{`\str{g1}'}$ \\
-%   $10$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\text{`\,'}$ \\
-%   $11$ &$q_1,\text{\str{b}},\text{\str{g1}}$   &$q_1,\text{`\,'}$ \\
-%   $12$ &$q_1,\text{\str{B}},\bot$              &$q_2,\text{`$\bot$'}$ \\
-% \end{tabular}
-% \end{center}
-
-% %<*ex:PalindromesUsingMiddleMarkerii>
-% Here is an example computation accepting the input \str{bacab}.
-% \begin{tapesequence}
-%   \begin{tapesequencetable_withinstruction}
-%     0 &\tapegraphic{\asydir machine/machine25.pdf} &$1$ \\
-%     1 &\tapegraphic{\asydir machine/machine26.pdf} &$5$ \\
-%     2 &\tapegraphic{\asydir machine/machine27.pdf} &$8$ \\
-%     3 &\tapegraphic{\asydir machine/machine28.pdf} &$10$ \\
-%     4 &\tapegraphic{\asydir machine/machine29.pdf} &$11$ \\
-%     5 &\tapegraphic{\asydir machine/machine30.pdf} &$12$ \\
-%     6 &\tapegraphic{\asydir machine/machine31.pdf} &   \\
-%   \end{tapesequencetable_withinstruction}
-% \end{tapesequence}
-% %</ex:PalindromesUsingMiddleMarkerii>
-
-% % </ex:PalindromesUsingMiddleMarkeri>
-% In state $q_0$,
-% when this machine sees~\str{a} on the tape 
-% then it pushes \str{g0} 
-% onto the stack, and for~\str{b} it pushes \str{g1}.
-% Reading the \str{c} switches the machine to state~$q_1$.
-% In this phase,
-% if it is reading~\str{a} and the character 
-% on top of the stack is~\str{g0} then the machine 
-% consumes the \str{a}, pops the~\str{g0},
-% and goes on.
-% The same happens with~\str{b} and~\str{g1}.
-% (But if the tape has~\str{a} while the stack is~\str{g1},
-% or if the tape has~\str{b} while the stack is~\str{g0},
-% then the computation wouild dead-end.)
-% Finally, the machine reaches the end of the input string, including the marker
-% \str{B},  
-% in the accepting state~$q_2$.
-% \end{example}
-
 The next example is nondeterministic
 and makes essential use of guessing.
 
@@ -9480,7 +9392,8 @@ It is nondeterministic\Dash it guesses.
 Below we exhibit an accepting maximal path of the 
 computation tree.
 Guessing happens in the second part of step~2,
-by applying instruction~$8$ to swtich from state~$q_0$ to~$q_1$.
+by applying the $\varepsilon$~transitions
+in instruction~$8$ to switch from state~$q_0$ to~$q_1$.
 \begin{tapesequence}
   \begin{tapesequencetable_withinstruction}
     0 &\tapegraphic{\asydir machine/machine14.pdf} &$0$ \\
@@ -9509,8 +9422,8 @@ the computation path succeeds.
 Next is the computation for input~\str{00}. 
 The picture shows the entire computation tree.
 The $\varepsilon$~transitions are drawn vertically
-(note the difference between this and the
-character~`$\bot$').
+(note the difference between the rotated `$\yields$' character and the
+bottom character~`$\bot$').
 The machine accepts the input because the highlighted maximal path 
 ends with an empty tape and in the accepting state~$q_2$.
 \ifbool{MakingPaperCopy}{%
@@ -9529,7 +9442,7 @@ ends with an empty tape and in the accepting state~$q_2$.
 % consumed.)
 
 The third example computation is a rejection.
-The input is \str{100}, which isn't an even-length palindrome, and none
+Its input is \str{100}, which isn't an even-length palindrome, and none
 of the maximal paths end both with an empty string and in an accepting state.
 \ifbool{MakingPaperCopy}{%
   \begin{fig}{Computation tree rejecting the input \str{100}.} 
@@ -9572,21 +9485,16 @@ of the maximal paths end both with an empty string and in an accepting state.
 % The net effect is that
 % the stack is unchanged.
 
-Our intuition is that Pushdown machines have more power than
-Finite State machines, in that
-they have a kind of unbounded read/write memory.
-The prior examples support that, by showing 
-Pushdown machines 
-that recognize languages that
-cannot be recognized by any Finite State machine.
+% This shows that Pushdown machines have more power than
+% Finite State machines, in that
+% they recognize languages that
+% cannot be recognized by any Finite State machine.
 
 
 \begin{remark}
 Stack machines models are often used in practice for
 running hardware.
-% The familiar printer file format PDF is based on the PostScript language,
-% which is based on a pushdown stack.
-Here is a `Hello World' program in the PostScript printer language.
+Here is a program in the PostScript language for printers.
 \begin{lstlisting}
 /Courier               % name the font
 20 selectfont          % font size in points, 1/72 of an inch 
@@ -9601,128 +9509,16 @@ It then executes \str{selectfont}, which pops two things off the stack
 to set the font name and size.
 After that it moves the current point and places the text on the page.
 Finally, it draws that page to paper.
-%
-% This language is quite efficient.
-% But it is more suited to
-% situations where the code is written by a program, such as with 
-% a word processor or \LaTeX{}, than to situations where a person is writing it.
 \end{remark}
 
-
-We close this section with
-a number of related results that together make a bigger picture,
-that the machine models form a linear hierarchy. 
-Full coverage is outside our scope so we will only discuss some of these
-results,
-\citetext{without giving proofs}{%
-  An excellent source for more is \autocite{HopcroftUllman}.}.
-
-The first result we have already seen, that 
-deterministic Finite State machines do
-the same jobs as nondeterministic ones.
-For Turing machines also, nondeterministic machines do the same jobs as
-deterministic ones, although we will not consider 
-the nondeterministic machines in depth until the final chapter.
-
-Another relevant result, which we won't prove, is that we can prove that there 
-are things that Turing machines can do but that no
-Pushdown machine can do.
-One is to decide membership in the language
-$\set{\sigma\concat\sigma\suchthat \sigma\in\kleenestar{\B}}$,
-which contains strings such
-as \str{1010} and \str{011011}.
-A Pushdown machine can remember the characters by pushing them onto the stack,
-and if that machine is nondeterministic then it can guess 
-when the first half of the input ends. 
-But then to check that the second half of the string matches the first
-requires that the machine take the characters off of the stack and then
-reverse them,  Pushdown machines prove to not ba able to do that.
-
-We know that Finite State machines accept Regular languages,
-and Turing machines accept computable languages.
-As to nondeterministic Pushdown machines,
-recall that in the section on Grammars we restricted our attention
-to production rules where the head consists of a single nonterminal, such
-as \mbox{S \produces{} \trm{a}S\trm{b}}.\footnote{%
-  An example of a rule where the head is not of that form is
-  \mbox{\protect\trm{c}S\protect\trm{b} \protect\produces{} \protect\trm{a}S}.
-  With this rule we can substitute for~S only if it is
-  preceded by~\str{c} and followed by~\str{b}.
-  A grammar with rules of this type is called 
-  \definend{context sensitive}\index{context sensitive grammar}\index{grammar!context sensitive}
-  because substitutions can only be done in a context.}
-If a language has a grammar in which all the rules are 
-of this type then it is a 
-\definend{context free}\index{context free!language}\index{language!context free} 
-language.
-Most familiar programming languages are context free,
-\citetext{including C, Java, Python, and Racket}{%
-  This is a good first approximation but the full story is more complicated.
-  Usually the set of programs accepted by the parser is a subset of
-  a context free language, conditioned on some additional rules 
-  that the parser enforces.
-  For example,
-  % in~$C$ every variable must be appear in 
-  % a declaration inside an enclosing scope, which is clearly a context-sensitive
-  % constraint.
-  % Another example is that
-  in Python all the whitespace prefixes inside of a 
-  block must be the same length, which again is a context-sensitive
-  constraint.
-  % \autocite{SE:rici}
-}.
-In contrast,
-\citetext{a language is accepted by some nondeterministic Pushdown machine}{%
-    Deterministic Pushdown machines are not as easily characterized.
-  }
-if and only if it has a context free grammar (we will not prove this).
-
-The last result needs  
-deterministic Pushdown machines so we first outline how to
-define them.
-%<*disc:ChomskyHierarchy>
-In contradistinction to a nondeterministic machine,
-in a deterministic machine at any step there is exactly one applicable rule.
-So to adjust the definition we have for nondeterministic
-Pushdown machines to one for deterministic ones
-we eliminate situations where the machine has choices.
-There are two situations.
-One is that  
-$\Delta(q_i,t,g)$ is a set and so we will require that 
-in a deterministic machine that set must 
-have exactly one element.
-The other is evident in the tree diagrams above:~nondeterministic 
-machines can have that $\Delta(q_i,\varepsilon,g)$ is a nonempty set 
-and also that $\Delta(q_i,t,g)$
-is nonempty for $t\neq\varepsilon$
-(see for instance the the prior example's machine
-in lines $0$--$2$).
-So we outlaw the possibility that both are nonempty.
-%</disc:ChomskyHierarchy>
-\zcref{ex:PDSAcceptBalencedParens} and \zcref{ex:PDAPalindromesMithMidMarker}
-are both deterministic.\footnote{%
-  Deterministic Pushdown machines need the end-marker \inputendchar,
-  which is why we used it for those examples.}
-
-With that, the last relevant result is that 
-the collection of languages accepted by deterministic Pushdown machines 
-is a proper subset of the collection accepted 
-by nondeterministic Pushdown machines.
-While we won't prove that, we can give a good idea of why it is true.
-We have shown that there is a nondeterministic Pushdown machine that accepts
-the language of even-length palindromes.
-It uses $\varepsilon$~moves to guess when to change from pushing to popping.
-But a deterministic Pushdown machine has recourse to no such tactic.
-Nor is there a middle marker to rely on.
-In short, no deterministic Pushdown machine accepts~$\lang_{\text{ELP}}$.
-So Pushdown machines are different than Finite State machines and Turing 
-machines\Dash for Pushdown machines, nondeterminism changes what can be done.
-
-The diagram below summarizes our bigger picture.
-The universal box encloses all languages of bitstrings, all subsets of
-$\kleenestar{\B}\!$.
-The nested sets enclose those languages recognized by some Finite State
-machine, etc.
+We close this section by discussing
+a number of related results that together make a point, that
+the machine models form a linear hierarchy.
+The diagram below summarizes.
+The box encloses all languages of bitstrings.
+%, all subsets of $\kleenestar{\B}\!$.
+The nested sets enclose the languages recognized by Finite State
+machines, etc.
 \begin{center} \small
   % \mbox{Languages over $\B$:\ }
   \vcenteredhbox{\includegraphics{automata/asy/pda/pda00.pdf}}
@@ -9733,9 +9529,84 @@ machine, etc.
     $A$ &Finite State, including nondeterministic\rule{0em}{2.15ex} \\
     $B$ &Deterministic Pushdown \\
     $C$ &Nondeterministic Pushdown \\
-    $D$ &Turing \\
+    $D$ &Turing, including nondeterministic \\
   \end{tabular}
 \end{center}
+Full coverage of these results is too long of a detour for us, so
+some of them we will only briefly discuss
+\citetext{without giving proofs}{%
+  An excellent source for more is \autocite{HopcroftUllman}.}.
+
+We have already seen the first result, that 
+deterministic Finite State machines do
+the same jobs as nondeterministic ones.
+The final chapter will show that
+for Turing machines also, adding nondeterminism adds no more power.
+
+The next result, which we will not prove,
+is that there are jobs that Turing machines can do but that no
+Pushdown machine can do.
+One is to decide membership in the language of repeated strings
+$\set{\sigma\concat\sigma\suchthat \sigma\in\kleenestar{\B}}$,
+which contains strings such as \str{1010} and \str{011011}.
+The intuition is that a Pushdown machine can remember
+unboundedly many characters by pushing them onto the stack,
+and can use nondeterminism to guess 
+when the first half of the input ends.
+But to check that the second half of the string matches the first
+the machine must take the characters off of the stack and
+reverse them.
+Pushdown machines cannot do that for arbitrary length strings.
+
+Next, we have seen that Finite State machines accept regular languages
+and Turing machines accept computable languages.
+Nondeterministic Pushdown machines also have a natural matching class
+of languages.
+Recall that in the section on Grammars we restricted our attention
+to production rules where the head consists of a single nonterminal, such
+as \mbox{S \produces{} \trm{a}S\trm{b}}.\footnote{%
+  An example of a rule not of that form is
+  \mbox{\protect\trm{c}S\protect\trm{d} \protect\produces{} \protect\trm{e}S}.
+  Here we can substitute for~S only if it is
+  preceded by~\str{c} and followed by~\str{d}.
+  This is
+  \definend{context sensitive}\index{context sensitive grammar}\index{grammar!context sensitive}
+  because substitutions can only be done in a context.}
+Languages that have a grammar where all the rules are of this type are 
+\definend{context free}.\index{context free!language}\index{language!context free}
+Most familiar programming languages are context free,
+including C, Python, and Racket\footnote{%
+  \protect\citetext{This is a good first approximation}{%
+      \autocite{SE:rici}}
+  but the full story is more complicated.
+  For in-practice languages,
+  the set of programs accepted by the parser is a subset of
+  a context free language, but with some additional rules 
+  that the parser enforces.
+  An example is that
+  in Python all of the whitespace prefixes inside of a 
+  block must be the same length, which is a context-sensitive
+  constraint.
+}.
+A language is accepted by some nondeterministic Pushdown machine
+if and only if it is context free.
+
+The final result is that the class of languages accepted by
+deterministic Pushdown machines 
+is a proper subset of the class accepted by nondeterministic Pushdown machines.
+%% <*disc:ChomskyHierarchy>
+(A Pushdown machine is deterministic if at any step there is
+\citetext{exactly one applicable rule and there are no $\varepsilon$~moves}{%
+   Deterministic Pushdown machines need the input end marker \inputendchar.}.
+\zcref{ex:PDSAcceptBalencedParens}'s machine that accepts the language
+of balanced parentheses is deterministic.)
+%% </disc:ChomskyHierarchy> 
+While we won't prove that, we can as above produce the canonical example.
+\zcref{ex:PDAForPalindromes} gives a nondeterministic Pushdown machine that
+accepts the language of even-length palindromes.
+It uses $\varepsilon$~moves to guess when to change from pushing to popping
+but a deterministic Pushdown machine cannot do that.
+So with Pushdown machines, nondeterminism changes what can be done.
 \index{nondeterministic Pushdown machine|)}\index{Pushdown machine!nondeterministic|)}
 
 
@@ -9826,6 +9697,83 @@ character off the stack, but there is no such character.
 The computation stops, with the input rejected.
 \end{exparts}
 \end{answer}
+\end{exercise}
+
+\recommended
+\begin{exercise}
+Odd-length palindromes such as \str{abcba} 
+have a character in the middle that acts as a pivot.
+The machine below recognizes the collection of strings using the
+character $\str{c}$ as a middle marker,
+$\lang_{\text{MM}}=
+   \set{\sigma=\tau\concat\str{c}\concat\reversal{\tau}\suchthat
+       \tau\in\kleenestar{\set{\str{a},\str{b}}}}
+$.
+It has $Q=\set{q_0,q_1,q_2}$, $F=\set{q_2}$,
+$\Sigma=\set{\str{a},\str{b},\str{c}}$, 
+and $\Gamma=\set{\str{g0},\str{g1}}$. 
+\begin{center}\small
+\begin{tabular}[t]{r|ll}
+  \multicolumn{1}{r}{\tabulartext{Inst}}
+  &\multicolumn{1}{c}{\tabulartext{Input}}
+  &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+  \cline{2-3}
+  $0$  &$q_0,\text{\str{a}},\bot$             &$q_0,\text{`\str{g0}\,$\bot$'}$ \\
+  $1$  &$q_0,\text{\str{b}},\bot$             &$q_0,\text{`\str{g1}\,$\bot$'}$ \\
+  $2$  &$q_0,\text{\str{c}},\bot$             &$q_1,\text{`$\bot$'}$ \\
+  $3$  &$q_0,\text{\str{B}},\bot$             &$q_3,\text{`$\bot$'}$ \\
+  $4$  &$q_0,\text{\str{a}},\text{\str{g0}}$  &$q_0,\text{`\str{g0}\,\str{g0}'}$ \\
+  $5$  &$q_0,\text{\str{a}},\text{\str{g1}}$  &$q_0,\text{`\str{g0}\,\str{g1}'}$ \\
+  $6$  &$q_0,\text{\str{b}},\text{\str{g0}}$  &$q_0,\text{`\str{g1}\,\str{g0}'}$ \\
+  $7$  &$q_0,\text{\str{b}},\text{\str{g1}}$  &$q_0,\text{`\str{g1}\,\str{g1}'}$ \\
+\end{tabular}
+\hspace{2em}
+\begin{tabular}[t]{r|ll}
+  \multicolumn{1}{r}{\tabulartext{Inst}}
+  &\multicolumn{1}{c}{\tabulartext{Input}}
+  &\multicolumn{1}{c}{\tabulartext{Output}}  \\
+  \cline{2-3}
+  $8$  &$q_0,\text{\str{c}},\text{\str{g0}}$   &$q_1,\text{`\str{g0}'}$ \\
+  $9$  &$q_0,\text{\str{c}},\text{\str{g1}}$   &$q_1,\text{`\str{g1}'}$ \\
+  $10$  &$q_1,\text{\str{a}},\text{\str{g0}}$  &$q_1,\text{`\,'}$ \\
+  $11$ &$q_1,\text{\str{b}},\text{\str{g1}}$   &$q_1,\text{`\,'}$ \\
+  $12$ &$q_1,\text{\str{B}},\bot$              &$q_2,\text{`$\bot$'}$ \\
+\end{tabular}
+\end{center}
+Trace the executation of this machine to show that
+it accepts the input \str{bacab}.
+\begin{answer}
+Here is a maximal path through the comptuation tree
+accepting the input \str{bacab}.
+\begin{tapesequence}
+  \begin{tapesequencetable_withinstruction}
+    0 &\tapegraphic{\asydir machine/machine25.pdf} &$1$ \\
+    1 &\tapegraphic{\asydir machine/machine26.pdf} &$5$ \\
+    2 &\tapegraphic{\asydir machine/machine27.pdf} &$8$ \\
+    3 &\tapegraphic{\asydir machine/machine28.pdf} &$10$ \\
+    4 &\tapegraphic{\asydir machine/machine29.pdf} &$11$ \\
+    5 &\tapegraphic{\asydir machine/machine30.pdf} &$12$ \\
+    6 &\tapegraphic{\asydir machine/machine31.pdf} &   \\
+  \end{tapesequencetable_withinstruction}
+\end{tapesequence}
+In state $q_0$,
+when this machine sees~\str{a} on the tape 
+then it pushes \str{g0} 
+onto the stack, and for~\str{b} it pushes \str{g1}.
+Reading the \str{c} switches the machine to state~$q_1$.
+In this phase,
+if it is reading~\str{a} and the character 
+on top of the stack is~\str{g0} then the machine 
+consumes the \str{a}, pops the~\str{g0},
+and goes on.
+The same happens with~\str{b} and~\str{g1}.
+(But if the tape has~\str{a} while the stack is~\str{g1},
+or if the tape has~\str{b} while the stack is~\str{g0},
+then the computation wouild dead-end.)
+Finally, the machine reaches the end of the input string, including the marker
+\str{B},  
+in the accepting state~$q_2$.
+\end{answer}  
 \end{exercise}
 
 \recommended

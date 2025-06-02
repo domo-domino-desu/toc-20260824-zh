@@ -49,6 +49,7 @@
   (check-false (regexp-match? nondigits-sq "9"))
   (check-true (regexp-match? nondigits-sq "b"))
   (check-false (regexp-match? nondigits-sq "01"))
+  (check-true (regexp-match? nondigits-sq (make-string 1 (integer->char 192)))) ; Outside ASCII sitll a match? Latin Capital A with grave
   )
 
 

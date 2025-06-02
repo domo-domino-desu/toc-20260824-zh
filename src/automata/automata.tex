@@ -9789,7 +9789,7 @@ $\set{\str{a}^n\str{c}\str{b}^{n-1}\suchthat n>0}$
 \begin{answer}
 \begin{exparts}
 \item
-When this machine consumes \str{a} it pushes two \str{g0}'s onto the stack.
+When this machine consumes an \str{a} it pushes two \str{g0}'s onto the stack.
 When it sees the middle marker \str{c} it switches to popping.
 The only accepting state is~$q_2$.    
 \begin{center}
@@ -9974,11 +9974,11 @@ is not recognized by any Finite State machine.
 
   For contradiction, assume that $\lang_{\text{ELP}}$ is regular.
   Then the Pumping Lemma says that it has a pumping length, which we can
-  denote as~$p$.
+  denote~$p$.
   Consider the string $\sigma=\str{0}^p\str{11}\str{0}^p\!$.
 
   It is an element of~$\lang$ of 
-  length greater than or equal to~$p$. 
+  length greater than~$p$. 
   Therefore it
   decomposes into three substrings $\sigma=\alpha\concat\beta\concat\gamma$
   that satisfy the conditions.
@@ -10017,7 +10017,7 @@ Fix an alphabet $\Sigma$.
 A Pushdown machine is a finite set of five tuples.
 Each of the five components comes from a countable set.
 So in total the number of Pushdown machines is countable.  
-\item Every machine accepts a language.
+\item Every machine accepts one language.
 So the number of languages is at most as large as the number of machines.
 \item There are uncountably many languages.
 \end{exparts}
@@ -10091,26 +10091,26 @@ We can simulate a Pushdown machine with a Turing machine.
 
 % ========================================
 \extra{Regular expressions in the wild}\index{regular expression!in practice|(}\label{extra:Regexs}
-Regular expressions are an important tool in practice.
+The principles of regular expressions are important in practice.
 Modern programming languages such as Racket and Python include
-capabilities for
-extensions to regular expressions,\index{regular expression!extended}\index{extended regular expression} 
-which we will call 
-\definend{regexes}.\index{regular expression!regex}\index{regex}
-These go beyond the
+extensions\index{regular expression!extended}\index{extended regular expression} 
+that we will call 
+\definend{regexes} or \definend{regexp}'s.\footnote{%
+  \protect\citetext{The first term is more common}{See \protect\url{https://stackoverflow.com/a/3058254}} but Racket documentation prefers the second.}\index{regular expression!regex}\index{regex}\index{regexp|see regex}
+Their capabilities go far beyond those of the
 small-scale theory examples that we saw earlier.
 
 As an example, a system administrator
 searching a web server log for
-the PDF's downloaded from a directory.
-They might give this command.
+the PDF's downloaded from a directory
+might give this command.
 \begin{lstlisting}
 $ grep "/linearalgebra/.*\textbackslash .pdf" /var/log/apache2/access.log
 \end{lstlisting} % $
 % \codeinline{grep "/linearalgebra/.*\textbackslash .pdf" /var/log/apache2/access.log}
 The \str{grep} utility program looks through the log file line by line.
 If a line has a substring
-matching the regex then \str{grep} prints that line.
+matching the regex then the program prints that line.
 
 We will illustrate with Racket regexes.
 As a prototype, 
@@ -10118,89 +10118,88 @@ As a prototype,
 > (regexp-match? #px"^[A-Z][A-Z][0-9][A-Z][A-Z]\$" "KE1AZ")
 \end{lstlisting}
 % \codeinline{(regexp-match? #px"^[A-Z][A-Z][0-9][A-Z][A-Z]\$" "KE1AZ")} 
-returns \codeinline{#t}.
+returns \codeinline{#t}.\footnote{%
+  The square brackets match any character in the range.
+  We will say more below.}
 Note the caret \codeinline{^} at the start of the string and the 
 dollar sign at the end.
 These are anchors, making Racket match the entire string from start to finish.
-They are needed because the most common use case is for
+They are needed because, as with \str{grep}, the most common use case is for
 programmers to want to find the expression anywhere in the string.
 Thus for instance,
 \codeinline{(regexp-match? #px"[0-9]" "KE1AZ")} 
-also returns \codeinline{#t}, 
-although its expression doesn't account for the letters, because it asks for at
+returns \codeinline{#t}, 
+although its regex doesn't account for the letters because it asks for at
 least one digit somewhere in \str{KE1AZ}.
-However, here we will use the caret and dollar sign because
-for the purpose of this explication, 
-they better describe the matching.
+Here we will use the caret and dollar sign because 
+they better fit the connection with the regular expressions
+that we saw earlier.
  
 \ifbool{MakingPaperCopy}{%
   \relax
 }{%
 \margingraphic[r]{0.42\textwidth}{automata/pix/xkcdregexes.png}{\label{xkcd:knowbackregexes}\href{https://xkcd.com/208}{Courtesy \url{xkcd.com}}}
 }
-The extensions that languages make 
-in going from the theoretical regular expressions
-that we have seen earlier to in-practice regexes
-fall into two categories.
-First come
+There are two categories of extensions that languages make 
+in going from the theoretical regular expressions to in-practice regexes.
+First are
 convenience constructs that ease doing something
 that otherwise would be possible but awkward.
-Second comes extensions that give capabilities that are just not
+Second are extensions providing capabilities that are just not
 possible with regular expressions.
 
 Many of the convenience extensions
-are about the problem of sheer scale:~in the theory discussion our
+are about sheer scale:~in the theory discussion our
 alphabets had two or three characters
 but in practice an alphabet must include at least ASCII's
 printable characters:~\str{a}\dash \str{z}, \str{A}\dash \str{Z},
 \str{0}\dash \str{9},
 space, tab, period, dash, exclamation point, percent sign, dollar sign, 
 open and closed parenthesis, open and closed curly braces, etc.\sentencespace
-These days it may even contain all of Unicode's
+These days it may well contain all of Unicode's
 more than one hundred thousand characters. 
 We need manageable ways to describe such large sets.
 
-Consider matching a digit.
-The regular expression \re{(0|1|2|3|4|5|6|7|8|9)} works, but 
-is too verbose for an often-needed list.
-One abbreviation that modern languages allow is \re{[0123456789]},
-omitting the pipe characters and using square brackets, which in
-regexes are metacharacters.
-Or, because the digit characters are contiguous in the character
-set,\footnote{%
-  The digits \str{0} through \str{9} are contiguous in both ASCII 
-  and Unicode.
-}
-we can shorten it further to~\re{[0-9]}.
-Along the same lines,
-\re{[A-Za-z]} matches a singleton English letter.
-
-To invert the set of matched characters, put a
-caret~`\re{\textasciicircum}' as
-the first thing inside the bracket (and note that it is a metacharacter).
-Thus, \re{[\textasciicircum 0-9]} matches a non-digit
-and \re{[\textasciicircum A-Za-z]} matches a character that is not
-an ASCII letter.
-
-The most common lists have short abbreviations.
-Another abbreviation for the digits is
-\citetext{\re{\textbackslash d}}{%
-  We shall ignore cases of non-ASCII digits, that is, cases outside $0$--$9$.
+\citetext{Consider matching a digit}{%
+  We shall ignore non-ASCII digits, that is, characters outside of $0$--$9$.
   Unicode includes many different sets of graphemes for the decimal digits,
   along with non-decimal numerals such as Roman numerals. 
   There are also a number of typographical variations of the ASCII 
   numerals provided for specialized mathematical use and for 
   compatibility with earlier character sets, such as circled digits sometimes
   used for itemization.}.
+The string \re{(0|1|2|3|4|5|6|7|8|9)} works but 
+is too verbose for an often-needed list.
+One abbreviation that modern languages allow is \re{[0123456789]},
+omitting the pipe characters and using square brackets, which in
+regexes are metacharacters.
+Or, because the digit characters are contiguous,\footnote{%
+  The characters \str{0} through \str{9} are contiguous and in
+  ascending order in ASCII and Unicode.
+}
+we can shorten it further to~\re{[0-9]}.
+Along the same lines,
+\re{[A-Za-z]} matches an ASCII letter.
+
+To match everything but the characters in a set, put a
+caret~`\re{\textasciicircum}' as
+the first thing inside the bracket (and note that it is a metacharacter).
+Thus, \re{[\textasciicircum 0-9]} matches any character except those ten,
+and \re{[\textasciicircum A-Za-z]} matches any character that is not
+an ASCII letter.
+
+The most common lists have short abbreviations.
+One example is that
+we can also write the list of digits as \re{\textbackslash d}.
 Use
-\re{\textbackslash D} for the ASCII non-digits,
+\re{\textbackslash D} for the non-digits,
 \re{\textbackslash s} for the whitespace characters
 (space, tab, newline, formfeed, and line return)
-and \re{\textbackslash S} for ASCII characters that are non-whitespace.
+and \re{\textbackslash S} for characters that are not in that set.
 Cover
 the alphanumeric characters (upper and lower case ASCII letters, digits,
 and underscore) with \re{\textbackslash w} 
-and cover the ASCII non-alphanumeric characters with \re{\textbackslash W}.
+and cover the non-alphanumeric characters with \re{\textbackslash W}.
 And\Dash the big kahuna\Dash the dot~`\re{.}' is a metacharacter that
 matches any member of the alphabet at all.\footnote{%
   Programming languages in practice by default have the dot
@@ -10431,7 +10430,7 @@ recognized by Finite State machines.
 
 \begin{example}
 The language HTML uses tags such as
-\str{<b>boldface text</b>} and \str{<i>italicized text</i>}.
+\str{<b>boldface</b>} and \str{<i>italic</i>}.
 Matching any one tag is straightforward, for instance
 \re{<b>[\textasciicircum<]*</b>}.
 But for a single expression that matches them all,

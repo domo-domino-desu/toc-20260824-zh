@@ -10174,7 +10174,7 @@ One abbreviation that modern languages allow is \re{[0123456789]},
 omitting the pipe characters and using square brackets, which in
 regexes are metacharacters.
 Or, because the digit characters are contiguous,\footnote{%
-  The characters \str{0} through \str{9} are contiguous and in
+  ASCII digit characters are contiguous and in
   ascending order in ASCII and Unicode.
 }
 we can shorten it further to~\re{[0-9]}.
@@ -10202,9 +10202,9 @@ and underscore) with \re{\textbackslash w}
 and cover the non-alphanumeric characters with \re{\textbackslash W}.
 And\Dash the big kahuna\Dash the dot~`\re{.}' is a metacharacter that
 matches any member of the alphabet at all.\footnote{%
-  Programming languages in practice by default have the dot
+  Programming languages by default have the dot
   match any character except newline.
-  In addition, these languages have a way to make it also match newline.}
+  These languages have a way to make it also match newline.}
   
 \begin{example}  \label{ex:CanadianPostCodes}
 Canadian postal codes have seven characters:~the fourth is a space,
@@ -10216,27 +10216,19 @@ describes them.
 \end{example}
 
 \begin{example}
-Dates are often given in the `dd/mm/yy' format.
-This matches:
+Dates are often given in the `dd/mm/yyyy' format.
+The regex that suits is 
 \re{\textbackslash d\textbackslash d/\textbackslash d\textbackslash d/\textbackslash d\textbackslash d}.
 \end{example}
 
 \begin{example} \label{ex:AmerTime}
 In the twelve hour time format some typical times
 strings are `8:05~am' or `10:15~pm'.
-You could use this (note the empty string at the start).
+We could use this (note the empty string at the start).
 \begin{center}
 \re{(|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
 \end{center}
 \end{example}
-
-% Recall that in the regular expression \re{a(b|c)d} the parentheses and the pipe
-% are not there to be matched.
-% They are metacharacters, part of the
-% syntax of the regular expression.
-% Once we expand the alphabet~$\Sigma$ to include all characters, we
-% run into the problem that we are already using some of the additional
-% characters as metacharacters.
 
 \ifbool{MakingPaperCopy}{%
   \relax
@@ -10257,8 +10249,8 @@ extension of escaping.
 
 % Reference: https://swtch.com/~rsc/regexp/regexp1.html
 Operator precedence is:~repetition binds
-most strongly, then concatenation, and then alternation
-(force different meanings with parentheses).
+most strongly, then concatenation, and then alternation.
+(Use parentheses to force different meanings.)
 Thus, \re{ab*} is equivalent to \re{a(b*)}, and 
 \re{ab|cd} is equivalent to \re{(ab)|(cd)}.
 
@@ -10272,7 +10264,7 @@ Modern languages make question mark a metacharacter and allow you to write
 \re{a?} for `at most one \str{a}'.
 
 For `at least one \str{a}'
-modern languages use \re{a+}, so the plus sign is another
+modern regexes use \re{a+}, so the plus sign is another
 metacharacter.
 More generally, we often want to specify quantities.
 For instance, to match five \str{a}'s regexes use
@@ -10282,16 +10274,15 @@ Match between two and five of them with
 and match at least two with \re{a\{2,\}}.
 Thus, \re{a+} is shorthand for \re{a\{1,\}}.
 
-As earlier, to match any of these metacharacters you must escape them.
+As earlier, to match any of these metacharacters we must escape them.
 For instance, \re{To be or not to be\textbackslash ?} matches
 the famous question. 
 
 
 \subsection*{Cookbook}
 All of the extensions to regular expressions
-that we are seeing are driven by the desires of working programmers.
-Here is a pile of examples showing them accomplishing practical work,
-matching things you'd want to match.
+that we are seeing are driven by the needs of working programmers.
+Here are examples showing them accomplishing everyday work.
 
 \begin{example}
 US postal codes, called \citetext{ZIP codes}{%
@@ -10314,7 +10305,7 @@ North American phone numbers match
 The regex \re{(-|\textbackslash +)?\textbackslash d+} matches
 an integer, positive or negative.
 The question mark makes the sign optional.
-The plus sign makes sure there is at least one digit.
+The plus sign at the end makes sure that there is at least one digit.
 \end{example}
 
 \begin{example}
@@ -10348,7 +10339,7 @@ Match a password that is at least eight characters long with \re{.\{8,\}}.
 
 \begin{example}
 The International Standards Organization date format calls for dates 
-like `yyyy-mm-dd HH:MM:SS' (along with many other variants). 
+like `yyyy-mm-dd HH:MM:SS' (there are other variants). 
 The regex
 \re{\textbackslash d\{4\}-\textbackslash d\{2\}-\textbackslash d\{2\} (\textbackslash d\{2\}:\textbackslash d\{2\}(:\textbackslash d\{2\})?)?} 
 will match them.
@@ -10369,19 +10360,20 @@ scheme such as `\str{http}' along with
   The inventor of the World Wide Web, T~Berners Lee, has admitted that the
   two slashes don't have a purpose \autocite{Firth}.},
 a host such as \str{hefferon.net} and a slash, and then
-a path such as \str{computing}
-(the standard also allows a trailing query string 
-but this regex does not handle that).
+a path such as \str{computation}.
+(The standard also allows a trailing query string 
+but this regex does not handle that.
+It also lists only a subset of the domains allowed.
+In addition, it does not handle internationalizatoin.)
 \begin{center}% 
 % \re{(https?|ftp)://([textasciicircumflex\textbackslash s/?\textbackslash .#]+\textbackslash .?)\{1,4\}(/[^\textbackslash s]*)?}
-\re{(https?|ftp)://([\textasciicircum\textbackslash s/?\textbackslash .\#]+\textbackslash .?)\{0,3\}[\textasciicircum\textbackslash s/?\textbackslash .\#]+(/[\textasciicircum\textbackslash s]*/?)?}
+  \re{(https?)://[a-z0-9.\textbackslash -]+[.](com|net|org|edu|gov|mil)(/[\textasciicircum \textbackslash s]*)*/?}
+    % ([\textasciicircum\textbackslash s/?\textbackslash .\#]+\textbackslash .?)\{0,3\}[\textasciicircum\textbackslash s/?\textbackslash .\#]+(/[\textasciicircum\textbackslash s]*/?)?}
 \end{center}
 Notice the question mark in \re{https?}, so that
 the scheme can be \str{http} or \str{https}.
 Notice also that the host part,
-consists of between one and four fields separated by periods.
-We allow almost any character in those fields, except for a space,
-a question mark, a period or a hash.
+separated from the domain by a period.
 At the end comes the path.
 \end{example}
 
@@ -10396,8 +10388,8 @@ At the end comes the path.
 \subsection*{But wait!  there's more!}
 We have already noted that you can 
 match the start of a line and end of line with the metacharacters
-caret~`\str{\textasciicircum}' and
-dollar sign~`\str{\textdollar}'.
+caret~\str{\textasciicircum} and
+dollar sign.
 
 \begin{example}
 Match lines starting with `\,Theorem' using
@@ -10429,13 +10421,13 @@ have capabilities beyond matching only those languages that are
 recognized by Finite State machines. 
 
 \begin{example}
-The language HTML uses tags such as
+HTML uses tags such as
 \str{<b>boldface</b>} and \str{<i>italic</i>}.
-Matching any one tag is straightforward, for instance
-\re{<b>[\textasciicircum<]*</b>}.
+Matching any single tag is easy, for instance
+with \re{<b>[\textasciicircum<]*</b>}.
 But for a single expression that matches them all,
 you would seem to have to do each as a separate
-case and then combine cases with n alternation operator.
+case and then combine cases with alternation.
 However, instead we can have the system remember what it finds
 at the start and look for that again at the end.
 Thus, the regex

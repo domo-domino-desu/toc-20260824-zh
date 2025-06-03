@@ -457,6 +457,12 @@
   (check-false (regexp-match? url "tel:+1234567890"))
   )
 
+;; SSN's  Check rules
+(define ssn #px"^\\d{3}(|-| )\\d{2}(|-| )\\d{4}$")
+(module+ test
+  (check-true (regexp-match? ssn "012-34-5678"))
+  (check-true (regexp-match? ssn "012345678"))
+  )
 
 ;; =========== Case insensitive =============
 

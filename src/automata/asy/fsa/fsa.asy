@@ -3858,3 +3858,39 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+// ============ Myhill-Nerode: strings that end in b ==============
+picture pic;
+int picnum = 76;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$\eclass_{\lang,0}$",ns_accepting); 
+node q1=ncircle("$\eclass_{\lang,1}$"); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 2.25cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(1*u, q0, q1);
+
+// draw edges
+draw(pic,
+     (q0..bend(-15)..q1).l("\str{a}").style("leftside"),
+     (q1..bend(-15)..q0).l("\str{b}").style("leftside"),
+     (q0..loop(N)).l("\str{b}"),
+     (q1..loop(N)).l("\str{a}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+

@@ -10392,12 +10392,13 @@ escape the backslash.)
 
 \subsection*{Beyond convenience}
 The regular expression engines that come with recent programming languages
-have capabilities beyond matching only those languages that are
-recognized by Finite State machines. 
+go beyond adding shortcuts. 
+They recognize more languages than the regular expressions that are
+associated with Finite State machines. 
 
 \begin{example}
 HTML uses tags such as
-\str{<b>boldface</b>} and \str{<i>italic</i>}.
+\str{<b>boldface</b>} and \str{<i>italic</i>} as text markup.
 Matching any single tag is easy, for instance
 with \re{<b>[\textasciicircum<]*</b>}.
 But for a single expression that matches them all,
@@ -10436,18 +10437,18 @@ over $\Sigma=\set{\str{a},\str{b}}$.
          \suchthat \text{$\sigma=\tau\concat\tau$ for some $\tau\in\kleenestar{\Sigma}$}}
 \end{equation*}
 Some members are \str{aabaab}, \str{baaabaaa}, and~\str{aa}.
-The Pumping Lemma shows that the language of squares is not regular;
+The Pumping Lemma shows that this language is not regular;
 see \zcref{exer:LangSquares}.
 The regex \re{(.+)\textbackslash 1} describes this language. 
 \end{example}
 
 \begin{example}
-Another language that the Pumping Lemma shows cannot be represented 
-using regular expressions, but that can be described with regexes is 
+Another language that cannot be represented 
+using regular expressions but that can be described with regexes is 
 the language of numbers that are nonprime, represented in unary,
 $\lang=\set{\str{1}^n\suchthat\text{$n$ is not prime}}$
 \citetext{It is described by the regex}{%
-  It is credited to the Perl hacker Abigail, from \url{http://abigail.be/}.}
+  Credit to the Perl hacker Abigail, from \url{http://abigail.be/}.}
 \re{\textasciicircum{}1?\$|\textasciicircum{}(11+?)\textbackslash 1+\$}.
 A brief explanation: the \re{\textasciicircum{}1?\$} matches a string that
 is either zero-many or one-many \str{1}'s.
@@ -10457,17 +10458,58 @@ Being able to divide the number of \str{1}'s into some number of subgroups
 is what characterizes a unary number as not prime.  
 \end{example}
 
+Using these capabilities it is possible to write a Turing machine simulator.
+So anything that can be computed can, in principle, be computed using
+back references.
 
 
 
-\subsection*{Sanity check}
-The examples shown so far are useful as quick solutions.
-Often as a tool regexes are at their best when they act as
-a first approximation.
-Below we show useful regexes
-covering the great majority of cases, but the world is
-complicated and refining that regex
-to encompass all of the things that can happen would be unwieldy.
+\subsection*{Tradeoffs}
+Regexes are powerful tools.
+But they come with downsides.
+
+\ifbool{MakingPaperCopy}{%
+  \relax
+}{%
+\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
+}
+For instance, \zcref{ex:AmerTime}'s
+regex 
+\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
+for twelve hour time does indeed match `8:05~am' and `10:15~pm'
+but it falls short in some respects.
+One is that it requires \str{am} or \str{pm} at the end, but times are often 
+are given without them.
+We could change the ending to include the empty string
+\re{(|(\textbackslash s(am|pm)))}.
+
+Another issue is that it also matches some strings that we don't want, such as
+\str{13:00 am} or \str{9:61 pm}.
+We can solve this by listing the cases.\footnote{%
+  Some substrings are elided so it fits in the margins.}
+\begin{center}
+  \re{(01|02|...|11|12):(01|02|...|59|60)(|(\textbackslash s(am|pm)))}
+\end{center}
+This fixes the issue but at a cost of complexity.
+Regexes have a tendency to grow, to accrete subcases like this.
+
+The Canadian postal expression in \zcref{ex:CanadianPostCodes} is similar.
+Not every matching string
+has a corresponding physical post office\Dash
+for one thing, no valid code begins with \str{Z}.
+The US ZIP codes also exhibit this:~there
+are fewer than $50\,000$ assigned ZIP codes so
+\citetext{only about half of the five digit strings are in use}{%
+  The only two individual ZIP codes belong to
+  Smoky the Bear with 20252
+  and Santa Claus, whose official address in the US is
+  Santa, 123 Elf Road, North Pole, 88888.
+  As to the longer ZIP+4 addresses, which basically put the mail into
+  an individual carrier's mailbag, many individuals have them.
+  For instance, the US President has 20500-0001.}.
+Changing the regex to cover only codes actually in use
+would make it mostly just a list of strings,
+which would change frequently.
 
 \begin{example}
 The United States uses a Social Security Number for some identification
@@ -10517,6 +10559,11 @@ and finally
 \re{219(\textbackslash -| |09(\textbackslash -| |)9999}.
 \end{example}
 
+In that example the regex~(*) is a useful first approximation,
+covering the great majority of cases.
+But the world is complicated and refining a first-try regex
+to encompass all of the things that can happen can be unwieldy.
+
 \begin{example}
 Web addresses are strings such as
 \url{https://hefferon.net/computation}.
@@ -10550,50 +10597,8 @@ It returns two occurrence lines:~the one earlier in this example
 and the one in this listing.
 \end{example}
 
-
-
-\subsection*{Tradeoffs}
-Regexes are powerful tools.
-But they come with downsides.
-
-\ifbool{MakingPaperCopy}{%
-  \relax
-}{%
-\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
-}
-For instance, 
-the regular expression for twelve hour time from \zcref{ex:AmerTime}
-\re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
-does indeed match `8:05~am' and `10:15~pm'
-but it falls short in some respects.
-One is that it requires \str{am} or \str{pm} at the end, but times are often 
-are given without them.
-We could change the ending to include the empty string
-\re{(|\textbackslash s am|\textbackslash s pm)}.
-
-Another issue is that it also matches some strings that we don't want, such as
-\str{13:00 am} or \str{9:61 pm}.
-We can solve this by listing the cases.\footnote{%
-  Some substrings are elided so it fits in the margins.}
-  \re{(01|02|...|11|12):(01|02|...|59|60)(\textbackslash s am|\textbackslash s  pm)}.
-This fixes the issue but 
-at a cost of complexity, since it amounts to a list of
-allowed substrings.
-Regexes have a tendency to grow, to accrete subcases like this.
-
-Another example is the Canadian postal expression in 
-\zcref{ex:CanadianPostCodes}.
-Not every matching string
-has a corresponding physical post office\Dash
-for one thing, no valid codes begin with \str{Z}.
-And US ZIP codes work the same way;
-there are fewer than $50\,000$ assigned ZIP codes, so 
-many five digits strings are not in use.
-Changing the regexes to cover only those codes actually in use
-would make them just lists of strings,
-which would change frequently.
-
-The canonical example of this is the regex describing the official standard for
+The canonical example of an exhaustive regex
+that is unwieldy describes the official standard for
 \citetext{valid email addresses}{%
   This expression follows the RFC~822 standard.
   The full listing is at
@@ -10700,16 +10705,17 @@ make the point about its complexity.
 \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\0
 \end{lstlisting} % }{%
 
-\noindent And, even if you do have an address that fits
-the standard, you don't know if there is an email server listening at
-that address.
-In practice, people often use the regex
-\re{\textbackslash S+@\textbackslash S+} as
-a sanity check, for instance on a web form that expects users to input
+Even if we do have a string that fits
+the standard and we send it off into the Internet,
+we don't know that there is an email server listening at that address that
+can handle every legal string.
+In practice, people often use a first approximation regex such as
+\re{\textbackslash S+@\textbackslash S+}, 
+for instance as a sanity check on a web form that expects users to input
 an email address.
 
 At this point regexes may be starting to seem
-a less like a fast and neat problem-solver
+a little less like a fast and neat problem-solver
 and a little more like a potential development and maintenance problem.
 The full story is that sometimes a regex is just what you need
 for a quick job,
@@ -11023,7 +11029,7 @@ We can do the six as alternatives.
 \recommended
 \begin{exercise}
 You are stuck on a crossword puzzle.
-You know that the first letter (of eight) is an \str{g},
+The first letter (of eight) is an \str{g},
 the third is an \str{n}
 and the seventh is an \str{i}.
 You have access to a file that contains all English words, each on its own
@@ -11035,16 +11041,17 @@ A suitable regex is \re{textasciicircum g.n.\{3\}i.\textdollar} and a match is
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
-In the Tradeoffs discussion, we change the ending to
-\re{(\emptystring|\textbackslash s am|\textbackslash s pm)}.
-Why not \re{\textbackslash s(\emptystring|am|pm)}, which
-factors out the whitespace?
-\begin{answer}
-Factoring out the whitespace would mean that times without \str{am} or \str{pm}
-must have a trailing whitespace.
-\end{answer}
-\end{exercise}
+% Comment out for space
+% \begin{exercise}
+% In the Tradeoffs discussion, we change the ending to
+% \re{(\emptystring|\textbackslash s am|\textbackslash s pm)}.
+% Why not \re{\textbackslash s(\emptystring|am|pm)}, which
+% factors out the whitespace?
+% \begin{answer}
+% Factoring out the whitespace would mean that times without \str{am} or \str{pm}
+% must have a trailing whitespace.
+% \end{answer}
+% \end{exercise}
 
 \begin{exercise}
 Imagine that you decide to avoid regexes but still want to do 
@@ -11054,15 +11061,16 @@ followed by \str{@}, followed by a nonempty string of characters.
 Implement that as a routine in your favorite language.
 \end{exercise}
 
-\begin{exercise} % https://stackoverflow.com/a/1723225
-Give a regex that matches no string.
-\begin{answer}
-This tries to match a character after the end of the string: \re{\$.}
-(In practice, in a regular expression multiline mode the dollar sign matches a 
-newline character and so this can match. 
-But that lies outside our scope.)
-\end{answer}
-\end{exercise}
+% Comment out for space
+% \begin{exercise} % https://stackoverflow.com/a/1723225
+% Give a regex that matches no string.
+% \begin{answer}
+% This tries to match a character after the end of the string: \re{\$.}
+% (In practice, in a regular expression multiline mode the dollar sign matches a 
+% newline character and so this can match. 
+% But that lies outside our scope.)
+% \end{answer}
+% \end{exercise}
 
 \recommended
 \begin{exercise}
@@ -11313,8 +11321,7 @@ Then  $\tau=\str{bb}$ is a distinguishing extension
 because $\sigma_0\concat\tau=\str{aabb}\notin\lang$ while
 $\sigma_1\concat\tau=\str{abb}\in\lang$.
 
-The prior paragraph brings out that
-for this language two strings are $\lang$-distinguishable if and only
+Two strings are $\lang$-distinguishable if and only
 if they they have different lengths.
 So the equivalence classes, the collections of indistinguishable strings, are  
 the length zero strings, $\eclass_{\lang,0}=\set{\emptystring}$,
@@ -11339,10 +11346,10 @@ a member of one and only one class.
   Consider
   $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat
     \text{$\sigma$ has even length}}$.
-  Notice that if a string $\sigma$ has even length then
+  If a string $\sigma$ has even length then
   $\sigma\concat\tau\in\lang$ for an extension $\tau$ 
   if and only if $\tau$ has even length. 
-  So there is no extension that distinguishes between even length strings.
+  So there is no extension that distinguishes between two even-length strings.
   Similar reasoning holds for
   two odd-length strings.
   Thus the $\sim_{\lang}$ relation breaks 
@@ -11358,10 +11365,11 @@ a member of one and only one class.
   \end{center}
 \end{example}
 
-\begin{example}
 The above examples have finitely many  $\sim_{\lang}$ classes.
 Some languages have infinitely many.
-One is
+
+\begin{example}
+Consider
 $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}}\suchthat \text{$\sigma=\str{a}^n\str{b}^n$ for some $n\in\N$}}$,
 from \zcref{ex:BalancedParensIsNotRegularLang}.
 To show that the number of classes is infinite 
@@ -11380,21 +11388,22 @@ produce infinitely many unequal classes
   \ldots
 \end{equation*}
 To verify that these singleton sets are equivalence classes, 
-consider $\sigma=\str{a}^n\!$.
-Since $\sigma\concat\str{b}^n\in\lang$,
-the only candidates for strings that are $\lang$-indistinguishable from $\sigma$
-but unequal to it
-have the form $\alpha=\str{a}^{n+j}\str{b}^{j}$ with $j>0$.
-If $n=0$ then $\sigma=\emptystring$ and  $\alpha=\str{b}^j$, 
-and an extension distinguishing
-$\sigma$ from $\alpha$ is $\str{ab}$.
-If $n>0$ then an extension 
+let $\sigma=\str{a}^n\!$.
+Because $\sigma\concat\str{b}^n\in\lang$,
+the only candidates~$\alpha$
+for strings that are $\lang$-indistinguishable from $\sigma$
+but unequal to it are ones where $\alpha\concat\str{b}^n\in\lang$.
+So they have the form $\alpha=\str{a}^{n+j}\str{b}^{j}$ with $j>0$.
+However, an extension 
 distinguishing $\sigma=\str{a}^n$ from $\alpha=\str{a}^{n+j}\str{b}^j$
-is $\str{a}\str{b}^{n+1}$\!.
+is $\tau=\str{a}\str{b}^{n+1}$ because
+$\sigma\concat\tau=\str{a}^{n+1}\str{b}^{n+1}\in\lang$ but
+$\alpha\concat\tau=\str{a}^{n+j}\str{b}^j\str{a}\str{b}^{n+1}\notin\lang$.
 \end{example}
 
 We next make a connection between the Finite State machines that recognize 
-a language~$\lang$ and the relationship of $\lang$-indistinguishability.
+a language~$\lang$ and the relationship between strings
+of $\lang$-indistinguishability.
 
 \begin{example} \label{ex:MNMachineComparePartitions}
 This machine recognizes 
@@ -11404,7 +11413,10 @@ the language of \zcref{ex:LangOfMNMachineComparePartitions}.
 \begin{center}
   \includegraphics{automata/asy/fsa/fsa19.pdf}
 \end{center}
-Consider other string inputs,
+In contrast to that example's partition of all strings
+that arose from the language, we will now get a partition
+of the strings by starting with the machine.
+Consider all string inputs,
 not just the accepted ones,
 and see where they bring the machine.
 \begin{center}  \small\setlength{\tabcolsep}{0.85\tabcolsep}
@@ -11420,12 +11432,12 @@ and see where they bring the machine.
       &$q_1$ &$q_1$ &$q_1$ &$q_1$ &$\ldots$                \\
   \end{tabular}
 \end{center}
-The collection of input strings breaks into five sets,
+The set of input strings breaks into five parts,
 those that bring the machine to~$q_0$,
 those that bring it to~$q_1$, etc.
-This is another kind of partition, which
-will prove to be related to but different than the partition above.
-Denote the classes of this $\FSM$-related partition with 
+% This is another kind of partition, which
+% will prove to be related to but different than the partition above.
+Denote the classes of this partition with 
 $\eclass_{\FSM,i}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \extended{\Delta}(\sigma)=q_i}$.
 \begin{center}
   \begin{tabular}{l}
@@ -11442,7 +11454,8 @@ $\eclass_{\FSM,i}=\set{\sigma\in\kleenestar{\Sigma}\suchthat \extended{\Delta}(\
   \qquad
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa62.pdf}}
 \end{center}
-Below we lay the language-related partition, with two parts, on top of
+Below we have overlain the language-related partition,
+with two parts, on
 the machine-related one with five.
 \begin{equation*}
     \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa20.pdf}}
@@ -11465,8 +11478,8 @@ $\lang$-related partition.\footnote{%
 \end{definition}
 
 \begin{lemma}  \label{lem:SimSubFSMIsEquivalence}
-  The binary relation of $\FSM$-related is an equivalence
-  and so partitions the collection of all strings $\kleenestar{\Sigma}$
+  The relation between two strings of being
+  $\FSM$-related is an equivalence and so partitions $\kleenestar{\Sigma}$
   into equivalence classes.
 \end{lemma}
 
@@ -11482,60 +11495,93 @@ See \zcref{exer:VerifyEquivRels}'s item~\ref{exer:SimSubFSMIsEquivalence}.
 \begin{proof}
 Assume that $\sigma_0$ and $\sigma_1$ are  $\FSM$-related, so that  
 starting $\FSM$ with input $\sigma_0$
-causes it to end in the same state as starting it with input~$\sigma_1$.
-It follows that for any suffix~$\tau$, 
+causes it to end in the same state as does starting it with input~$\sigma_1$.
+The machine is deterministic so this implies that for any suffix~$\tau$, 
 starting $\FSM$ with the input $\sigma_0\concat\tau$
 causes it to end in the same state as does starting it with
-the input $\sigma_1\concat\tau$ (because the machine is deterministic).
-In particular, $\sigma_0\concat\tau$ takes $\FSM$
+the input $\sigma_1\concat\tau$.
+In particular, for all~$\tau$ the string $\sigma_0\concat\tau$ takes $\FSM$
 to an accepting state if and only if $\sigma_1\concat\tau$ does.
-So the two strings are $\lang$-related.  
+Hence the two strings are $\lang$-related.  
 \end{proof}
 
-The $\eclass_{\FSM,i}$ classes reflect $\FSM$'s states, in the following sense.
-Consider $q_1$'s class
-$\eclass_{\FSM,1}=\set{\str{a}, \str{aaa},\,\ldots}$
-and $q_3$'s class
-$\eclass_{\FSM,3}=\set{\str{aa}, \str{ab},\,\ldots}$.
-Just as when the machine is in~$q_1$ and reads an~\str{a} 
-then it transitions to~$q_3$,
-so also if we choose any string $\sigma\in\eclass_{\FSM,1}$ and append an~\str{a}
-to it then $\sigma\concat\str{a}$ is an element of~$\eclass_{\FSM,3}$.
-An example is that choosing $\sigma=\str{a}\in\eclass_{\FSM,1}$ 
+The $\eclass_{\FSM,i}$ classes reflect the machine $\FSM$ in the following sense.
+In $\FSM$, if the machine is in~$q_1$ and sees an~\str{a} then it transitions
+to~$q_3$
+% Consider $q_1$'s class
+% $\eclass_{\FSM,1}=\set{\str{a}, \str{aaa},\,\ldots}$
+% and $q_3$'s class
+% $\eclass_{\FSM,3}=\set{\str{aa}, \str{ab},\,\ldots}$.
+% Just as when the machine is in~$q_1$ and reads an~\str{a} 
+% then it transitions to~$q_3$,
+So also if we choose any string in $q_1$'s class $\sigma\in\eclass_{\FSM,1}$,
+and append an~\str{a} to it,
+then $\sigma\concat\str{a}$ is an element of~$\eclass_{\FSM,3}$.
+For example, choosing $\sigma=\str{a}\in\eclass_{\FSM,1}$ 
 and appending \str{a} to it gives $\str{aa}\in\eclass_{\FSM,3}$.
 
 This way of thinking of the $\FSM$~classes has them acting as a machine,
-in that there are transitions among them just as a machine has.
-It suggests extending to also think of 
+in that there are transitions among them, just as with a machine.
+We  can extend to also think of 
 the $\lang$~classes as constituting their own machine.
-In particular, the prior paragraph's
-workings of the transitions on the $\eclass_{\FSM,i}$ classes suggest 
+The prior paragraph suggests 
 how to define the transitions in this new machine.
 
 \begin{definition}  \label{def:LMachine}
 Let $\lang$ be a language over $\Sigma$ and let the collection of
 $\sim_{\lang}$ equivalence classes $\eclass_{\lang,i}$ be $E$.
 The \definend{$\lang$-machine}
-has states that are the classes, 
-where the start state is the one containing~\emptystring.
-Its accepting states are the ones containing strings from~$\lang$.
-The transition operation, 
-$\map{\Delta}{E\times\Sigma}{E}$,
-is:~given input $\eclass_{\lang,i}$ and $x\in\Sigma$,
-choose a $\sigma$ in the class and  
+has states that are the classes. 
+Its start state is the class containing~\emptystring.
+A state is accepting if it contains any string from~$\lang$.
+The transition operation
+$\map{\Delta}{E\times\Sigma}{E}$
+inputs $\eclass_{\lang,i}$ and $x\in\Sigma$.
+To find the output, choose a $\sigma$ in the class and  
 then $\sigma\concat x$ is an element of some $\eclass_{\lang,j}$.
 Set $\Delta(\eclass_{\lang,i},x)=\eclass_{\lang,j}$.
 \end{definition}
 
-For instance, the machine for \zcref{ex:MNMachineComparePartitions}'s 
+\begin{example}
+Let $\lang=\set{\sigma\in\kleenestar{\set{\str{a},\str{b}}} \suchthat
+  \text{$\sigma$ ends in \str{b}}}$.
+These are the $\sim_{\lang}$ equivalence classes.
+\begin{equation*}
+  \eclass_{\lang,0}=\lang
+  \qquad
+  \eclass_{\lang,0}=\set{\sigma\suchthat\text{$\sigma$ ends in \str{a}}}
+\end{equation*}
+For any string $\sigma\in\eclass_{\lang,0}$, if we concatenate it with
+the one-character string~\str{a}
+then the result is a member of the class $\sigma\in\eclass_{\lang,0}$.
+Similarly, for any string $\sigma\in\eclass_{\lang,0}$, if we concatenate with
+the one-character string~\str{b}
+then the result is in  $\sigma\in\eclass_{\lang,1}$.
+Here is the full table and the arrow diagram.
+\begin{equation*}
+  \begin{array}{r|rr}
+    \multicolumn{1}{r}{\Delta}
+      &\multicolumn{1}{c}{\str{a}}       &\multicolumn{1}{c}{\str{b}}  \\ 
+    \cline{2-3}
+    \acceptingstate\,\eclass_{\lang,0}
+       &\eclass_{\lang,1}  &\eclass_{\lang,0}  \\
+    \eclass_{\lang,1}
+       &\eclass_{\lang,1}  &\eclass_{\lang,0}  \\
+  \end{array}
+  \hspace*{4em}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa76.pdf}}
+\end{equation*}
+\end{example}
+
+Another example is that the machine for \zcref{ex:MNMachineComparePartitions}'s 
 two-class language is the two-state machine in  
 (\ref{fig:MMachineCollapsesToLMachine}) below.
 
-As stated, the definition allows us to choose any string~$\sigma$ 
-at all from $\eclass_{\lang,i}$. 
+The definition computes $\Delta(\eclass_{\lang,i},x)$ by 
+starting with any string~$\sigma\in\eclass_{\lang,i}$ at all. 
 We must establish that   
-choosing two different string representatives of the input class
-does not give two different outputs.
+choosing different string representatives of the input class
+does not result in different outputs.
 
 \begin{lemma} \label{lem:MNPriorThm}
   Fix a language $\lang$.
@@ -11574,8 +11620,8 @@ does not give two different outputs.
 \end{proof}
 
 \begin{corollary}
-The $\lang$-machine, if it has finitely many states,
-is a Finite State machine that recognizes $\lang$.  
+If the $\lang$-machine has finitely many states then it 
+is a Finite State machine, and it recognizes $\lang$.  
 \end{corollary}
 
 \begin{proof}

@@ -459,8 +459,10 @@
 
 ;; SSN's  Check rules
 (define ssn #px"^\\d{3}(|-| )\\d{2}(|-| )\\d{4}$")
+
 (module+ test
   (check-true (regexp-match? ssn "012-34-5678"))
+  (check-false (regexp-match? ssn "abc-de-fghi"))
   (check-true (regexp-match? ssn "012345678"))
   )
 

@@ -10359,8 +10359,7 @@ Match the text inside a single set of parentheses with
 % \end{center}
 
 
-\subsection*{But wait!  there's more!}
-We have already noted that you can 
+We have already noted that we can 
 match the start of a line and end of line with the metacharacters
 caret~\str{\textasciicircum} and
 dollar sign.
@@ -10384,87 +10383,8 @@ Those strings can be in upper case or lower case, or any mix.
 Racket uses a `\str{?i:}' syntax to mark part of the
 regex as insensitive:
 \re{\textbackslash \textbackslash s+(?i:(img|src))=}.
-(Note also the double backslash, which is how Racket escapes the backslash.)
-\end{example}
-
-\begin{example}
-The United States uses a Social Security Number for some identification
-purposes.
-It has nine digits, broken into three parts.
-The Area number has three digits, the Group number has two, and the
-Serial number has four.
-It is sometimes written with dashes between the groups and
-so a simple regex is
-\re{\textbackslash d\{3\}-\textbackslash d\{2\}-\textbackslash d\{4\}}.
-But it is sometimes written with space or with no separator at all 
-so this is a more comprehensive version.
-\begin{equation*}
-  \re{(\textbackslash d\{3\}-\textbackslash d\{2\}-\textbackslash d\{4\})|\textbackslash d\{9\}}
-  \tag{$*$}
-\end{equation*}
-The three parts used to have administrative significance (e.g., the Area
-group was the number of the office that issued the identifier).
-But since 2011 
-the three groups are essentially issued at random, subject to these rules:
-\begin{parenum}
-\item the number for any of the three groups cannot be zero,
-\item the Area group cannot be $666$ or in the range $900-999$,
-\item \citetext{the total identifier cannot be \str{078-05-1120}
-    or \str{219-09-9999}}{%
-  See \url{https://www.snopes.com/fact-check/the-woolworth-card/}.}.
-\end{parenum}
-We can make a single regex to meet these,
-for instance to ensure that the Group is not \str{00} we can use
-\re{[1-9]0|0[1-9]|[1-9][1-9]}, but it is awkward.
-The simplest thing is to check first that the given string matches ($*$),
-and then to check that it does not match
-the alternation of
-\re{000(|-| )\textbackslash d\{2\}(|-| )\textbackslash d\{4\}},
-and
-\re{\textbackslash d\{3\}(|-| )00(|-| )\textbackslash d\{4\}},
-and
-\re{\textbackslash d\{3\}(|-| )\textbackslash d\{2\}(|-| )0000},
-and
-\re{666(|-| )\textbackslash d\{2\}(|-| )\textbackslash d\{4\}},
-and
-\re{9\textbackslash d\{2\}(|-| )\textbackslash d\{2\}(|-| )\textbackslash d\{4\}},
-and
-\re{078(|-| )05(|-| )1120},
-and finally
-\re{219(|-| )09(|-| )9999}.
-\end{example}
-
-That example makes a point.
-The regex~($*$) covers the great majority of cases, but the world is
-complicated and refining to cover all of the things that can happen can
-give an unwieldy result.
-Often regexes are at their best when they act as a sanity check, or as
-a first cut.
-
-\begin{example}
-Web addresses are strings such as
-\url{https://hefferon.net/computation}.
-We might want to search documents for strings like these, but we are willing to
-miss a few that, while they fit the technical standard, are unlikely.
-The regex below is based on breaking the string into three parts:~a
-scheme such as `\str{http}' along with
-\citetext{a colon and two forward slashes}{%
-  The inventor of the World Wide Web, T~Berners Lee, has admitted that the
-  two slashes don't have a purpose \autocite{Firth}.},
-a host such as \str{hefferon.net} and a slash, and then
-a path such as the \str{computation}.
-(Two examples of what this regex does not cover:~the standard
-allows a trailing query string that begins with a question mark, and this
-regex only lists some of the allowed domains.)
-\begin{center}% 
-% \re{(https?|ftp)://([textasciicircumflex\textbackslash s/?\textbackslash .#]+\textbackslash .?)\{1,4\}(/[^\textbackslash s]*)?}
-  \re{(https?)://[a-z0-9.\textbackslash -]+\textbackslash .(com|net|org|edu|gov|mil)(/[\textasciicircum \textbackslash s]*)*/?}
-    % ([\textasciicircum\textbackslash s/?\textbackslash .\#]+\textbackslash .?)\{0,3\}[\textasciicircum\textbackslash s/?\textbackslash .\#]+(/[\textasciicircum\textbackslash s]*/?)?}
-\end{center}
-Notice the question mark in \re{https?}, so that
-the scheme can be \str{http} or \str{https}.
-Notice also that some metacharacters must be escaped,
-such at the period before the domain.
+(Note also the double backslash, which is how Racket strings
+escape the backslash.)
 \end{example}
 
 
@@ -10539,10 +10459,108 @@ is what characterizes a unary number as not prime.
 
 
 
+
+\subsection*{Sanity check}
+The examples shown so far are useful as quick solutions.
+Often as a tool regexes are at their best when they act as
+a first approximation.
+Below we show useful regexes
+covering the great majority of cases, but the world is
+complicated and refining that regex
+to encompass all of the things that can happen would be unwieldy.
+
+\begin{example}
+The United States uses a Social Security Number for some identification
+purposes.
+It has nine digits, broken into three parts.
+The Area number has three digits, the Group number has two, and the
+Serial number has four.
+It is often written with dashes between the groups and
+so a simple regex is
+\re{\textbackslash d\{3\}-\textbackslash d\{2\}-\textbackslash d\{4\}}.
+But it is also sometimes written with space or with no separator at all 
+so this is a more comprehensive version, including
+the space character and empty string.
+\begin{equation*}
+  \re{\textbackslash d\{3\}(\textbackslash -| |)\textbackslash d\{2\}(\textbackslash -| |)\textbackslash d\{4\}}
+  \tag{$*$}
+\end{equation*}
+The three parts used to have administrative significance (e.g., the Area
+group was the number of the office that issued the identifier).
+However, since 2011 
+the three groups are essentially issued at random, subject to:
+\begin{parenum}
+\item the number for any of the three groups cannot be zero,
+\item the Area group cannot be $666$ or in the range $900-999$,
+\item \citetext{the total identifier cannot be \str{078-05-1120}
+    or \str{219-09-9999}}{%
+  See \url{https://www.snopes.com/fact-check/the-woolworth-card/}.}.
+\end{parenum}
+We can make a single regex to meet these,
+for instance to ensure that the Group is not \str{00} we can use
+\re{[1-9]0|0[1-9]|[1-9][1-9]}, but it is awkward.
+The simplest thing is to check first that the given string matches ($*$),
+and then to check that it does not match
+the alternation of
+\re{000(\textbackslash -| |)\textbackslash d\{2\}(\textbackslash -| |)\textbackslash d\{4\}},
+and
+\re{\textbackslash d\{3\}(\textbackslash -| |)00(\textbackslash -| |)\textbackslash d\{4\}},
+and
+\re{\textbackslash d\{3\}(\textbackslash -| |)\textbackslash d\{2\}(\textbackslash -| |)0000},
+and
+\re{666(\textbackslash -| |)\textbackslash d\{2\}(\textbackslash -| |)\textbackslash d\{4\}},
+and
+\re{9\textbackslash d\{2\}(\textbackslash -| |)\textbackslash d\{2\}(\textbackslash -| |)\textbackslash d\{4\}},
+and
+\re{078(\textbackslash -| |)05(\textbackslash -| |)1120},
+and finally
+\re{219(\textbackslash -| |09(\textbackslash -| |)9999}.
+\end{example}
+
+\begin{example}
+Web addresses are strings such as
+\url{https://hefferon.net/computation}.
+We might want to search a document for such strings, but 
+are willing to risk missing a few that,
+while they fit the technical standard, are unlikely.
+The regex below is based on breaking the string into three parts:~a
+scheme such as `\str{https}' along with
+\citetext{a colon and two slashes}{%
+  The inventor of the World Wide Web, T~Berners Lee, has admitted that the
+  two slashes don't have a purpose \autocite{Firth}.},
+a host such as \str{hefferon.net} and a slash, and then
+a path such as \str{computation}.
+That will find the great majority of cases. 
+\begin{center}% 
+% \re{(https?|ftp)://([textasciicircumflex\textbackslash s/?\textbackslash .#]+\textbackslash .?)\{1,4\}(/[^\textbackslash s]*)?}
+  \re{(https?)://[0-9A-Za-z\textbackslash .\textbackslash -]+\textbackslash .(com|net|org|edu|gov|mil)[/\textbackslash W]*}
+    % ([\textasciicircum\textbackslash s/?\textbackslash .\#]+\textbackslash .?)\{0,3\}[\textasciicircum\textbackslash s/?\textbackslash .\#]+(/[\textasciicircum\textbackslash s]*/?)?}
+\end{center}
+Below is a listing looking for a match in the source file for this chapter.
+(The list of domains shown is shorter, to make the regex fit on a single line.
+The \codeinline{grep -P} searches the file's lines using regexes that
+have the more modern capabilities that we are discussing.
+The host begins with `h' to make it match only this example's sample address.)
+\begin{lstlisting}
+jim@alonzo$ grep -P "https?://h[0-9A-Za-z\.\-]+\.(com|net)[/\W]*" automata.tex
+\url{https://hefferon.net/computation}. 
+\url{https://hefferon.net/computation}. 
+\end{lstlisting} %$
+It returns two occurrence lines:~the one earlier in this example
+and the one in this listing.
+\end{example}
+
+
+
 \subsection*{Tradeoffs}
 Regexes are powerful tools.
 But they come with downsides.
 
+\ifbool{MakingPaperCopy}{%
+  \relax
+}{%
+\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
+}
 For instance, 
 the regular expression for twelve hour time from \zcref{ex:AmerTime}
 \re{(\emptystring|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
@@ -10550,24 +10568,19 @@ does indeed match `8:05~am' and `10:15~pm'
 but it falls short in some respects.
 One is that it requires \str{am} or \str{pm} at the end, but times are often 
 are given without them.
-We could change the ending to 
-\re{(\emptystring|\textbackslash s am|\textbackslash s pm)}.
+We could change the ending to include the empty string
+\re{(|\textbackslash s am|\textbackslash s pm)}.
 
-Another issue is that it also matches some strings that you don't want, such as
+Another issue is that it also matches some strings that we don't want, such as
 \str{13:00 am} or \str{9:61 pm}.
-We can solve this as with the prior paragraph, by listing the cases.\footnote{%
+We can solve this by listing the cases.\footnote{%
   Some substrings are elided so it fits in the margins.}
   \re{(01|02|...|11|12):(01|02|...|59|60)(\textbackslash s am|\textbackslash s  pm)}.
-This is like the prior patch in that it fixes the issue but 
+This fixes the issue but 
 at a cost of complexity, since it amounts to a list of
 allowed substrings.
 Regexes have a tendency to grow, to accrete subcases like this.
 
-\ifbool{MakingPaperCopy}{%
-  \relax
-}{%
-\margingraphic{0.55\textwidth}{automata/pix/xkcdregexgolf.png}{\label{xkcd:regexgolf}\href{https://xkcd.com/1313}{Courtesy \url{xkcd.com}}}
-}
 Another example is the Canadian postal expression in 
 \zcref{ex:CanadianPostCodes}.
 Not every matching string

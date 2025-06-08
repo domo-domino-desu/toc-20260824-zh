@@ -25,7 +25,8 @@ unitsize(1inch);
 // import settexpreamble;
 // cd("");
 // settexpreamble();
-texpreamble("\usepackage{fontspec}\setmainfont{FreeSans}");
+//texpreamble("\usepackage{fontspec}\setmainfont{FreeSans}");
+texpreamble("\usepackage{fontspec}\setmainfont{FreeSans.otf}");
 
 cd("../../asy/");
 import jh;

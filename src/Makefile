@@ -597,10 +597,9 @@ automata/asy/fsm_exercises/pdfs/modfour000.pdf : automata/asy/fsm_exercises/pdfs
 
 # .... FSM_EXERCISES end
 
-# Omitted because of ASY changed to Physics-based; use PDF's in repo.
-# automata/asy/machine/machine02.pdf : automata/asy/machine/machine.asy
-# 	cd $(@D); \
-# 	$(ASYMPTOTE_CMD) "$(<F)"
+automata/asy/machine/machine02.pdf : automata/asy/machine/machine.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 automata/asy/min/min00.pdf : automata/asy/min/min.asy
 	cd $(@D); \
@@ -739,7 +738,7 @@ slides/prologue/prologue.pdf : slides/prologue/prologue.tex \
 
 slides/background/asy/background00.pdf : slides/background/asy/background.asy
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "background"
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 slides/background/background.pdf : slides/background/background.tex \
   book.pdf \

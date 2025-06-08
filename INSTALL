@@ -1,11 +1,11 @@
 computing/INSTALL
 
-These instructions create and install a copy of Theory of Computing.   Note
-that I ran these on a spare laptop in 2025-May, so these have been tested.
+These instructions create and install a copy of Theory of Computing.   I ran
+these on a clean Linux install on a new laptop in 2025-June, so they have
+been tested.
 
 These are written for Linux because that is what I have.  I expect they
-also work on a Mac.  However, if you have Windows then I'm sorry, I cannot
-help you.
+also work on a Mac.  If you have Windows then I'm sorry, I cannot help you.
 
 Step 0) Fresh Ubuntu 24 install, from scratch.  Fresh full TeX Live, from
 https://tug.org/texlive/quickinstall.html (although I believe that the apt
@@ -20,9 +20,9 @@ Python, and Racket.
 the most tested.  Thus your tree of files will look like computing/src/... and
 computing/bin/... etc.  Other names will cause Asymptote files to fail.)
 
-2) Set up Asymptote environment.  Put the following lines at the end of your
-.profile in your home directory (change "/Documents/computing" to wherever
-you put the repo).
+2) Set up Asymptote environment.  Put the following two lines at the end of your
+.profile in your home directory or your /etc/profile file (change
+"/Documents/computing" to whatever is the name of the top-level directory).
 
 # Directories for the Asymptote drawing program
 export ASYMPTOTE_DIR=$HOME/Documents/computing/src/asy:$HOME/Documents/computing/src/asy/share:$HOME/Documents/computing/src/asy/asy-graphtheory-master/modules:$ASYMPTOTE_DIR
@@ -34,44 +34,36 @@ export ASYMPTOTE_DIR=$HOME/Documents/computing/src/asy:$HOME/Documents/computing
     $ cd ~/Documents/computing/src
     $ cd background/asy/3d
     $ asy 3d
-  If it compiles into 3d000.pdf without comment  and you can view it in a
+  If it compiles into 3d000.pdf without comment and you can view it in a
   PDF viewer then you are all set.
 
-  Asymptote can complain it is missing libglut3.0.  I did this.
+  Otherwise, Asymptote can complain that it is missing libglut3.0.  I did this,
+making libglut.so.3 be a soft link to the actual library.
     $ cd /usr/lib/x86_64-linux-gnu
-    $ ls libglut*
+    $ ls libglut*    # find the version number, use on the next line
     $ sudo ln -s libglut.so.3.12.0 libglut.so.3
   
 4) Make the book.
   $ cd ~/Documents/computing/src
   $ make 2>&1 | tee Makefile.log
-Then wait.  It can take a long time.  On a reasonable machine it can take
-ten minutes or more.  I have a very old laptop and it took hours.  At the end
+Then wait.  It can take a long time.  On a recent machine it can take
+a half hour or more.  I have a very old laptop and it took hours.  At the end
 you have book.pdf and answers.pdf.
 
-The command line "2>&1" stuff gives you a .log file to examine
-if there is some trouble.  Sometimes I find that I need more packages from
-TeX Live.  The other thing that can happen is that sometimes you get a
-footnote "counter too large" message and a question mark prompt.  In this case
-type x and hit Enter, and then "pdflatex book" should work; what has happened
-is that on the first run LaTeX does not know that footnotes are per-page
-and it can run out of footnotes in the counter but on the second run it is OK.
-
-I find that sometimes Asymptote does not compile all of a source.  When make
-runs LaTeX on book.tex it may say "automata/asy/machine/machine32.pdf not found"
-or some such.  But then if you go to the relevant directory
-  $ cd automata/asy/machines
-  $ asy machines
-it will create the machine32.pdf file, and now cd ~/Documents/computing/src
-followed by make all works fine.  I don't understand this Heisenbug.
+The command line "2>&1" stuff gives you a Makefile.log file to examine
+if there is some snag.
 
 5) Optional: You can get the slides as here.
-  $ make slides
+  $ make slides 2>&1 | tee Makefile.log
   If you get told that background05.pdf is not there, run
 "touch slides/background/asy/background.asy" and
 "make slides/background/asy/background00.pdf" amd then "make slides" again.
 I don't understand this bug.  (A misconception of mine on timing in make?)
- 
+
+6) Comment: during development, to make fresh versions of the book and answers
+run this.
+  $ cd ~/Documents/computing/src
+  $ ./00build.sh 2>&1 00build.log
 
 
 DOCUMENT HISTORY
@@ -82,3 +74,4 @@ DOCUMENT HISTORY
   limited set of names.
 2025-May-12 JH Omit stuff about ImageMagic PDF permissions and Ghostscript
   bug, as those seem to have disappeared.  Add stuff about libglut.
+2025-Jun-08 JH Omit stuff about a bug I just fixed with automata/asy/machine.

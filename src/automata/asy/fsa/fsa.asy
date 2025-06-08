@@ -3188,7 +3188,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 // ============== partition for myhill-nerode, even length language-related ====
-// See also picnum 20
+// See also picnum 77
 picture pic;
 int picnum = 61;
 unitsize(pic,1cm);
@@ -3890,6 +3890,43 @@ draw(pic,
 draw(pic,
      q0, q1);
 
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
+// ============== partition for myhill-nerode, no highlight color ====
+// See also picnum 61
+picture pic;
+int picnum = 77;
+unitsize(pic,1cm);
+
+real wth=4, hgt=2; 
+
+pair ll=(0,0), lr=(wth,0), ur=(wth,hgt), ul=(0,hgt);
+
+real Mborderpenwidth = 1pt, Lborderpenwidth = 0.5*Mborderpenwidth;
+pen Lborderpen = squarecap+linejoin(0)+linewidth(Lborderpenwidth)+lightcolor;
+pen Mborderpen = squarecap+linejoin(0)+linewidth(Mborderpenwidth)+lightcolor;
+pen outsideborderpen = squarecap+linejoin(0)+linewidth(0.4)+black;
+
+// declare the vert middle boundary (drawn later)
+path mid_bound = interp(ul,ur,0.5)
+  ..(interp(ul.x,ur.x,0.5)+0.1,interp(ul.y,ll.y,0.5))
+  ..interp(ll,lr,0.5);
+
+// draw the vert middle boundary
+draw(pic,mid_bound,Lborderpen);
+
+// Draw the outside border
+path Mborder = ll--lr--ur--ul--cycle;
+draw(pic,Mborder,outsideborderpen);
+
+// Labels
+label(pic,"$\eclass_{\lang,0}$",(0.25wth,0.5hgt));
+label(pic,"$\eclass_{\lang,1}$",(0.75wth,0.5hgt));
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 

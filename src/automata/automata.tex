@@ -12784,7 +12784,7 @@ and $\sigma_0\sim_{\FSM}\sigma_2$.
 % \end{exercise}
 
 \begin{exercise}
-Show that the equivalence classes for the language~$\lang$ are the same as for
+Prove that the equivalence classes for the language~$\lang$ are the same as for
 the language that is its complement, $\setcomp{\lang}\!$.  
 \begin{answer}\verified
 Two strings $\sigma_0,\sigma_1\kleenestar{\Sigma}$ 
@@ -12822,16 +12822,21 @@ a deterministic machine that is \definend{minimal},
 that from among all of the machines recognizing the same
 language has the fewest states.\footnote{%
   Moore's algorithm is easy to understand and is suitable for
-  small calculations but when writing code 
-  be aware that another,
+  small calculations but it is worth noting 
+  that another,
     \protect\citetext{Hopcroft's algorithm}{See \protect\autocite{Knuutila}}, 
-  is more efficient.}
+    is more efficient.}
+  (The prior section, \protect\zcref{extra:MyhillNerode}, gives an algorithm
+  that starts with a language and returns the minimal machine recognizing
+  that language.
+  Here we start with a machine and needn't work through the language.)
 
-It collapses together redundant states
+The algorithm works by collapsing together redundant states
 so we begin with an example of those.
-This recognizes
-$\lang=\set{\sigma\in\kleenestar{\B}\suchthat
-  \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
+This machine recognizes the language of bitstrings that contain
+at least one~\str{0} and at least one~\str{1}.
+% $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
+%   \text{$\sigma$ has at least one \str{0} and at least one \str{1}}}$.
 \begin{equation*} 
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa17.pdf}}
   \tag{$*$} \label{fig:MachinesWithRedundantStates}
@@ -12839,14 +12844,14 @@ $\lang=\set{\sigma\in\kleenestar{\B}\suchthat
 In this chapter's first section, \zcref{rem:HowToDesignFSM} recommended
 designing Finite State machines by thinking about each
 state's future, anticipating inputs to come. 
-In this machine the future of $q_2$,
+The future for $q_2$,
 ``waiting for a~\str{0},''
-is the same as that of $q_4$.
-Those states are redundant.
-Likewise, the future of $q_5$ matches that of~$q_3$.
+is the same as the future for~$q_4$\Dash
+those states are redundant.
+Likewise, $q_5$'s future matches~$q_3$'s.
 
 To be concrete,
-this table lists what happens if the machine 
+this table shows the future of each state by listing what happens if the machine 
 is started in the given state and the
 given string is on the tape.
 Entries contain `+' 
@@ -12855,7 +12860,7 @@ and otherwise are blank.
 The states $q_2$ and~$q_4$ have the same rows, at least for the strings
 listed, as do the states $q_3$ and~$q_5$. 
 \begin{equation*}\small
-  \begin{tabular}{r|*{7}{c}c}
+  \begin{tabular}{r|*{8}{c}c}
     \multicolumn{1}{r}{\ } 
       &\multicolumn{1}{c}{$\varepsilon$} 
       &\multicolumn{1}{c}{\str{0}}
@@ -12864,14 +12869,15 @@ listed, as do the states $q_3$ and~$q_5$.
       &\multicolumn{1}{c}{\str{01}}
       &\multicolumn{1}{c}{\str{10}}
       &\multicolumn{1}{c}{\str{11}}
+      &\multicolumn{1}{c}{\str{000}}
       &\multicolumn{1}{c}{\ldots}  
-    \\ \cline{2-9}
-    $q_0$ &  &  &  &  &+ &+ &  &\ldots \\
-    $q_1$ &  &  &+ &  &+ &+ &+ &\ldots \\
-    $q_2$ &  &+ &  &+ &+ &+ &  &\ldots \\
-    $q_3$ &+ &+ &+ &+ &+ &+ &+ &\ldots \\
-    $q_4$ &  &+ &  &+ &+ &+ &  &\ldots \\
-    $q_5$ &+ &+ &+ &+ &+ &+ &+ &\ldots \\
+    \\ \cline{2-10}
+    $q_0$ &  &  &  &  &+ &+ &  &  &\ldots \\
+    $q_1$ &  &  &+ &  &+ &+ &+ &  &\ldots \\
+    $q_2$ &  &+ &  &+ &+ &+ &  &+ &\ldots \\
+    $q_3$ &+ &+ &+ &+ &+ &+ &+ &+ &\ldots \\
+    $q_4$ &  &+ &  &+ &+ &+ &  &+ &\ldots \\
+    $q_5$ &+ &+ &+ &+ &+ &+ &+ &+ &\ldots \\
   \end{tabular}
   \tag{$**$} \label{ex:MinimizationInitial}
   % \begin{tabular}{r|*{10}{c}c}
@@ -12905,14 +12911,16 @@ For two states $q$ and~$\hat{q}$, a $\sigma\in\kleenestar{\Sigma}$
 is a \definend{distinguishing string}
 if starting the machine in $q$ with $\sigma$ on the tape
 and starting it in $\hat{q}$ with $\sigma$ on the tape results
-in two different outcomes:~in one case the machine ends in an
-accepting state while in the other it rejects. 
+in two different outcomes:~for one the machine ends in an
+accepting state while for the other it rejects. 
 Two states for which there is a distinguishing string are 
-\definend{distinguishable},\index{distinguishable states}\index{states!distinguishable}
-otherwise they are
+\definend{distinguishable}.\index{distinguishable states}\index{states!distinguishable}
+Otherwise they are
 \definend{indistinguishable},\index{indistinguishable states}\index{states!indistinguishable} 
-written \definend{$q\sim\hat{q}$}.
-\end{definition}
+written \definend{$q\sim\hat{q}$}.\footnotemark
+\end{definition}\footnotetext{%
+  The prior Extra section has distinguishable and indistinguishable strings.
+  These are  distinguishable and indistinguishable states.}
 
 \begin{example} \label{ex:MachinesWithMinNoStates}
 This is a minimal version of the machine in 
@@ -12921,12 +12929,13 @@ This is a minimal version of the machine in
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
   % \tag{$**$}
 \end{equation*}
-Starting in $r_0$
-and processing the string~$\sigma=\str{1}$ ends in a rejecting state, while
-starting in $r_1$ and processing $\sigma$ ends in an accepting state.
+Starting in state~$r_0$
+and processing the one character string~$\sigma=\str{1}$
+ends in a rejecting state, while
+starting in $r_1$ and processing the same string ends in an accepting state.
 So the two are distinguished by~$\sigma$.
 The states $r_0$ and~$r_2$,
-are distinguished by the length one string $\sigma=\str{0}$,
+are distinguished by the string $\sigma=\str{0}$,
 and $r_0$ is distinguished from~$r_3$ by the empty string.
 Similarly, the pairs $r_1,r_2$ and $r_1,r_3$, and $r_2,r_3$ are all
 distinguishable.
@@ -12934,14 +12943,22 @@ This minimal machine has no indistinguishable states.
 \end{example}
 
 States that are indistinguishable are redundant.
-We will compute whether states are indistinguishable by checking whether they 
+The algorithm that we will use to find the minimal machine collapses them
+together into collections of distinguishable.
+These collections are the states of the minimal machine.
+
+To compute whether states are indistinguishable,
+we first check whether they 
 are distinguished by strings of length~$0$, 
-or by strings of length~$1$, etc.
+then by strings of length~$1$, etc.
+
+\begin{definition}
 Two states $q$ and~$\hat{q}$
 are \definend{$n$-distinguishable}\index{n distinguishable states@$n$-distinguishable states}\index{states!n distinguishable@$n$-distinguishable}
 if there is a distinguishing string of length at most~$n$,
-otherwise the are \definend{$n$-indistinguishable}, 
+otherwise they are \definend{$n$-indistinguishable}, 
 denoted \definend{$q\sim_{n}\hat{q}$}.\index{n indistinguishable states@$n$-indistinguishable states}\index{states!n indistinguishable@$n$-indistinguishable}
+\end{definition}
 
 Observe that two states $q$ and~$\hat{q}$
 are $0$-indistinguishable if and only if both are accepting states or
@@ -12949,13 +12966,16 @@ both are rejecting states.
 
 \begin{lemma} \label{lemma:StateEquivIsEquivRel}
   The relations $\sim_0$, $\sim_1$, \ldots{}
-  are equivalences, as is $\sim$, and so
+  are equivalence relations and so
   partition the states into
   equivalences classes,
-  the \definend{$0$-distinguishable classes},\index{n-distinguishable classes@$n$-distinguishable classes}
-  the \definend{$1$-distinguishable classes},
-  \ldots{}
-  along with the \definend{distinguishable classes}.\index{distinguishable classes}
+  the \definend{$0$-distinguishable states},\index{n-distinguishable states@$n$-distinguishable states}
+  the \definend{$1$-distinguishable states},
+  etc.
+  The relation of being indistinguishable, $\sim$, is also
+  an equivalence, and also partitions the set of states into
+  equivalence classes, the 
+  \definend{distinguishable states},\index{distinguishable states@distinguishable states}\index{states!distinguishable}
 \end{lemma}
 
 \begin{proof}
@@ -12968,7 +12988,7 @@ machine~(\ref{fig:MachinesWithRedundantStates}), using the information in the
 table~(\ref{ex:MinimizationInitial}).
 \begin{equation*}
   \begin{array}{r|l}
-  \multicolumn{1}{c}{n}
+  \multicolumn{1}{c}{\tabulartext{Step $n$}}
   &\multicolumn{1}{c}{\tabulartext{$\sim_{n}$ classes}}
   \\ \hline
   0
@@ -13002,7 +13022,7 @@ The $1$-distinguishable classes subdivide those,
 based on the length one strings.
 Specifically, starting with $\eclass_{0,0}=\set{q_0,q_1,q_2,q_4}$,
 we can next distinguish $q_0$ from~$q_1$ because they
-differ on the string~\str{1}.
+differ on the one-character string~\str{1}.
 Similarly, $q_0$ differs from $q_2$ and~$q_4$ on~\str{0}.
 And, $q_1$ differs from $q_2$ and~$q_4$ on the string~\str{0}.
 So where there was one  $\sim_0$ class~$\eclass_{0,0}$ 
@@ -13011,53 +13031,56 @@ $\eclass_{1,0}=\set{q_0}$,
 $\eclass_{1,1}=\set{q_1}$, 
 and $\eclass_{1,2}=\set{q_2,q_4}$. 
 
-At the next stage, using the length two strings to find the
+At the next step, using the length two strings to find the
 the $2$-distinguishability classes does not result in
 any further subdivisions.
-% Obviously the singleton sets cannot split. 
-% We have earlier spotted that $q_2$ and~$q_4$ are redundant, and their two
-% rows are equal. 
-% The same holds for the pair $q_3$ and~$q_5$.
+So the $\sim$ equivalence classes are
+$\eclass_0=\set{q_0}$,
+$\eclass_{1}=\set{q_1}$,
+$\eclass_{2}=\set{q_2,q_4}$,
+and $\eclass_{3}=\set{q_3,q_5}$.
 \end{example}
 
-So the algorithm first 
+Thus, the algorithm that we will use to find the minimal machine first 
 finds the $\sim_0$ classes, 
-then finds the $\sim_1$ classes, etc.,
+then the $\sim_1$ classes, etc.,
 until the classes stop splitting.
-What remains are the $\sim$~classes,
-and they serve as states of a minimal machine.
+What's left are the $\sim$~classes, which 
+are the states of the desired machine.
 
-There is one difficulty.
-In the prior example, 
-to get the $\sim_0$ classes we checked all length~$0$ string inputs,
-stage~$1$ checked all length~$1$ strings,
-and stage~$2$ checked all length~$2$ strings.
-If at stage~$n$ the algorithm were to check all length~$n$
-strings then it would take exponentially long, because there are $2^n$ of them.
+This algorithm gives the right answer but it has one difficulty.
+To get the $\sim_0$ classes it checks all length~$0$ string inputs,
+to get the $\sim_1$ classes it checks all length~$1$ strings,
+then it checks all length~$2$ strings, etc.
+An algorithm that at stage~$n$ checks all length~$n$
+strings takes exponentially long, because there are $2^n$ such strings.
 
-To fix that, consider states $q$ and~$\hat{q}$ that are not
+To address that, consider states $q$ and~$\hat{q}$ that are not
 $n$-distinguishable but are $n+1$-distinguishable.
 Write a distinguishing string 
-$\tau=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$, 
-as $\tau=\alpha\concat s_n$.
+$\sigma=\sequence{s_0,s_1,\,\ldots s_{n-1},s_n}$, 
+as $\sigma=\alpha\concat s_n$.
 Because $q$ and~$\hat{q}$ are not $n$-distinguishable,
-where $\alpha$ brings the machine from $q$ to some state~$r$
-and also brings the machine from $\hat{q}$ to some~$\hat{r}$,
+where the length~$n$ string $\alpha$ brings the machine from
+$q$ to some state~$r$
+and also brings the machine from $\hat{q}$ to some state~$\hat{r}$,
 then $r$ and~$\hat{r}$ are equivalent, $r,\hat{r}\in\eclass_{n,i}$.
 Therefore, distinguishing between $q$ and $\hat{q}$
 must happen with the final character,~$s_n$.
-It must take the machine from state~$r$ to a state in one 
+That character input must take the machine from state~$r$ to a state in one 
 class, % ~$\eclass_{n+1,j}$, 
-and also take the machine from~$\hat{r}$ to 
+and also take the machine from state~$\hat{r}$ to 
 a state in a different class. %,~$\eclass_{n+1,\hat{j}}$.
 In short, in looking for a split in passing from the 
 $n$-distinguishability classes
 to the $n+1$-distinguishability classes, 
-we need only look at single characters.
+we need only look at single character inputs.
+That number of characters does not grow exponentially from step to step but
+instead stays fixed.
 
 In summary, Moore's algorithm is that
 nodes $q$ and~$\hat{q}$ are $n+1$-indistinguishable
-if and only if they are $n$-indistinguishable and also
+if and only if they are $n$-indistinguishable, and also
 $\Delta(q,x)$ is $n$-indistinguishable from $\Delta(\hat{q},x)$
 for all characters $x\in\Sigma$.
 The next two examples illustrate, 

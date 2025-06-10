@@ -12845,16 +12845,15 @@ In this chapter's first section, \zcref{rem:HowToDesignFSM} recommended
 designing Finite State machines by thinking about each
 state's future, anticipating inputs to come. 
 The future for $q_2$,
-``waiting for a~\str{0},''
+``waiting for at least one~\str{0},''
 is the same as the future for~$q_4$\Dash
 those states are redundant.
 Likewise, $q_5$'s future matches~$q_3$'s.
 
-To be concrete,
-this table shows the future of each state by listing what happens if the machine 
+This table shows the future of each state by listing what happens if the machine 
 is started in the given state and the
 given string is on the tape.
-Entries contain `+' 
+Entries are `+' 
 if the machine then ends in an accepting state,
 and otherwise are blank. 
 The states $q_2$ and~$q_4$ have the same rows, at least for the strings
@@ -12943,9 +12942,10 @@ This minimal machine has no indistinguishable states.
 \end{example}
 
 States that are indistinguishable are redundant.
-The algorithm that we will use to find the minimal machine collapses them
-together into collections of distinguishable.
-These collections are the states of the minimal machine.
+As illustrated in the example below,
+the algorithm that we will use to find the minimal machine collapses
+together indistinguishable states into classes.
+These classes are the states of the machine.
 
 To compute whether states are indistinguishable,
 we first check whether they 
@@ -12983,9 +12983,9 @@ both are rejecting states.
 \end{proof}
 
 \begin{example}
-Here are some $n$-equivalence classes for the 
-machine~(\ref{fig:MachinesWithRedundantStates}), using the information in the
-table~(\ref{ex:MinimizationInitial}).
+For the machine~(\ref{fig:MachinesWithRedundantStates}),
+here are some $n$-equivalence classes.
+The computation uses the table~(\ref{ex:MinimizationInitial})
 \begin{equation*}
   \begin{array}{r|l}
   \multicolumn{1}{c}{\tabulartext{Step $n$}}
@@ -13031,7 +13031,7 @@ $\eclass_{1,0}=\set{q_0}$,
 $\eclass_{1,1}=\set{q_1}$, 
 and $\eclass_{1,2}=\set{q_2,q_4}$. 
 
-At the next step, using the length two strings to find the
+Next, using the length two strings to find the
 the $2$-distinguishability classes does not result in
 any further subdivisions.
 So the $\sim$ equivalence classes are
@@ -13039,21 +13039,67 @@ $\eclass_0=\set{q_0}$,
 $\eclass_{1}=\set{q_1}$,
 $\eclass_{2}=\set{q_2,q_4}$,
 and $\eclass_{3}=\set{q_3,q_5}$.
+
+Now we make the minimal machine from these classes.
+Consider the transition table below.
+The accepting classes are the ones containing accepting states.
+As to its first line,  we have $q_0\in\eclass_0$ and
+if the machine~($*$) is in that state and is given the character~\str{0}
+then it goes to $q_1\in\eclass_1$,
+while feeding it~\str{1} in the same state 
+takes it to $q_2\in\eclass_2$.
+(The circle diagram is the one from 
+\zcref{ex:MachinesWithMinNoStates}.
+It reflects the table but with the state names changed from
+$\eclass_i$ to $r_i$.)
+\begin{center}
+  \begin{transitionfunction}[\Delta]
+                &\str{0}     &\str{1}   \\
+    \cline{2-3}
+    $\eclass_0$ &$\eclass_1$ &$\eclass_2$   \\
+    $\eclass_1$ &$\eclass_1$ &$\eclass_3$    \\
+    $\eclass_2$ &$\eclass_3$ &$\eclass_2$  \\
+    \acceptingstate
+    $\eclass_3$ &$\eclass_3$ &$\eclass_3$    \\
+  \end{transitionfunction}
+  \hspace*{3em}
+  \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa16.pdf}}
+\end{center}
+An important thing happens in the final two lines.
+For instance, $\eclass_2$ has two elements, $q_2$ and~$q_4$.
+Going through the calculation shows that
+both $\Delta(q_2,\str{a})$ and $\Delta(q_4,\str{a})$ give~$\eclass_3$.
+Similarly, $\Delta(q_2,\str{b})=\Delta(q_4,\str{b})=\eclass_2$.
+\zcref{le:MooresAlgCorrect} verifies that in
+Moore's algorithm the $\Delta$ is well-defined,
+that is, it returns the same output class no matter which
+state of the machine~($*$) we use to
+represent the input class. 
 \end{example}
 
-Thus, the algorithm that we will use to find the minimal machine first 
-finds the $\sim_0$ classes, 
+In summary, Moore's algorithm proceeds in two phases.
+The first finds the $\sim_0$ classes, 
 then the $\sim_1$ classes, etc.,
-until the classes stop splitting.
-What's left are the $\sim$~classes, which 
-are the states of the desired machine.
+until those classes stop splitting.
+What's left are the $\sim$~classes.
+The second phase uses those as the states of the desired machine.
+Its transition function is:~compute
+$\Delta(\eclass_i,x)$
+by picking any element~$q\in\eclass_i$ as a
+representative,
+finding the state that the machine~$\FSM$ transitions to
+when it is in $q$ and reads the character~$x$,
+and then as output give the class containing this state. 
 
-This algorithm gives the right answer but it has one difficulty.
+This algorithm does indeed return a minimal machine recognizing the
+same language.
+However, as performed in the above example it has one aspect
+that needs refining.
 To get the $\sim_0$ classes it checks all length~$0$ string inputs,
 to get the $\sim_1$ classes it checks all length~$1$ strings,
 then it checks all length~$2$ strings, etc.
 An algorithm that at stage~$n$ checks all length~$n$
-strings takes exponentially long, because there are $2^n$ such strings.
+strings takes exponentially long, because there are $2^n$ many such strings.
 
 To address that, consider states $q$ and~$\hat{q}$ that are not
 $n$-distinguishable but are $n+1$-distinguishable.
@@ -13063,29 +13109,29 @@ as $\sigma=\alpha\concat s_n$.
 Because $q$ and~$\hat{q}$ are not $n$-distinguishable,
 where the length~$n$ string $\alpha$ brings the machine from
 $q$ to some state~$r$
-and also brings the machine from $\hat{q}$ to some state~$\hat{r}$,
-then $r$ and~$\hat{r}$ are equivalent, $r,\hat{r}\in\eclass_{n,i}$.
-Therefore, distinguishing between $q$ and $\hat{q}$
+and also brings the machine from $\hat{q}$ to some~$\hat{r}$,
+then $r$ and~$\hat{r}$ are $n$-equivalent, $r,\hat{r}\in\eclass_{n,i}$.
+Therefore, $n+1$-distinguishing between $q$ and $\hat{q}$
 must happen with the final character,~$s_n$.
-That character input must take the machine from state~$r$ to a state in one 
-class, % ~$\eclass_{n+1,j}$, 
+That character must take the machine from state~$r$ to a state in one 
+class~$\eclass_{n+1,j}$, 
 and also take the machine from state~$\hat{r}$ to 
-a state in a different class. %,~$\eclass_{n+1,\hat{j}}$.
-In short, in looking for a split in passing from the 
+a state in a different class~$\eclass_{n+1,\hat{j}}$ with $j\neq\hat{j}$.
+In short, when looking for a split in passing from the 
 $n$-distinguishability classes
 to the $n+1$-distinguishability classes, 
 we need only look at single character inputs.
-That number of characters does not grow exponentially from step to step but
-instead stays fixed.
+The number of characters does not grow exponentially from step to step but
+instead stays fixed at whatever is the size of~$\Sigma$.
 
-In summary, Moore's algorithm is that
-nodes $q$ and~$\hat{q}$ are $n+1$-indistinguishable
-if and only if they are $n$-indistinguishable, and also
-$\Delta(q,x)$ is $n$-indistinguishable from $\Delta(\hat{q},x)$
-for all characters $x\in\Sigma$.
-The next two examples illustrate, 
-and also show how to use the $\sim$~classes to make 
-minimal machines.
+% In summary, Moore's algorithm is that
+% nodes $q$ and~$\hat{q}$ are $n+1$-indistinguishable
+% if and only if they are $n$-indistinguishable, and also
+% $\Delta(q,x)$ is $n$-indistinguishable from $\Delta(\hat{q},x)$
+% for all characters $x\in\Sigma$.
+% The next two examples illustrate, 
+% and also show how to use the $\sim$~classes to make 
+% minimal machines.
 
 \begin{example}  \label{ex:FirstMinimization}
   We will find a machine that recognizes the same language as this one but
@@ -13464,7 +13510,7 @@ no more splitting.
 \end{example}
 
 
-\begin{lemma}
+\begin{lemma} \label{le:MooresAlgCorrect}
 Moore's algorithm 
 outputs a machine that recognizes the same language as the input machine
 and that is minimal.

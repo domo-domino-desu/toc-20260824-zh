@@ -3934,7 +3934,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============== Moore's algorith, show machine minimal ================
+// ============== Moore's algorithm exercise, show machine minimal ============
 picture pic;
 int picnum = 78;
 unitsize(pic,1pt);
@@ -3978,6 +3978,61 @@ draw(pic,
 draw(pic,
      q0, q1, q2, q3, q4,
      q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+// ============== Moore's algorithm exercise, minimize ============
+picture pic;
+int picnum = 79;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$",ns_accepting); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$",ns_accepting); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$");  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 2cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2, q3);
+real tail_angle = 20;  // degrees
+q4.pos = new_node_pos_h(q3, tail_angle, u);
+q5.pos = new_node_pos_h(q3, -1*tail_angle, u);
+// layout(v, tail_angle, q3, q4, u);
+// layout(v, -20, q3, q5, u);
+// vlayout(0.8v, q3, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0..bend(-20)..q3).l(Label("\str{b}",Relative(0.4))).style("leftside"),
+     (q1..bend(-15)..q2).l(Label("\str{a}",Relative(0.65))).style("leftside"),
+     (q1..bend(20)..q5).l(Label("\str{b}")).style("leftside"),
+     (q2..bend(-15)..q1).l(Label("\str{a}", Relative(0.65))),
+     (q2--q3).l("\str{b}"),
+     (q3--q5).l("\str{a}"),
+     (q3..bend(10)..q4).l("\str{b}"),
+     (q4..bend(15)..q1).l("\str{a}").style("leftside"),
+     (q4..bend(25)..q3).l(Label("\str{b}",Relative(0.6))),
+     (q5..loop(E)).l("\str{a},\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3,
+     q4, q5);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

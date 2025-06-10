@@ -3931,3 +3931,53 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+
+
+
+// ============== Moore's algorith, show machine minimal ================
+picture pic;
+int picnum = 78;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$q_0$"); 
+node q1=ncircle("$q_1$"); 
+node q2=ncircle("$q_2$"); 
+node q3=ncircle("$q_3$"); 
+node q4=ncircle("$q_4$"); 
+node q5=ncircle("$q_5$",ns_accepting);  
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 2cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q1, q2, q3, q4);
+vlayout(0.8v, q3, q5);
+
+// draw edges
+draw(pic,
+     (q0--q1).l("\str{a}"),
+     (q0..bend(22.5)..q2).l("\str{b}"),
+     (q1..bend(-20)..q3).l("\str{a}").style("leftside"),
+     (q1..bend(-15)..q2).l(Label("\str{b}",Relative(0.65))),
+     (q2..bend(-10)..q1).l(Label("\str{a}", Relative(0.65))).style("leftside"),
+     (q2--q3).l("\str{b}"),
+     (q3--q4).l("\str{a}"),
+     (q3..bend(10)..q5).l("\str{b}"),
+     (q4..bend(-12.5)..q5).l("\str{a}"),
+     (q4..bend(25)..q1).l("\str{b}"),
+     (q5..bend(10)..q3).l("\str{a}"),
+     (q5..bend(-25)..q0).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q0, q1, q2, q3, q4,
+     q5);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

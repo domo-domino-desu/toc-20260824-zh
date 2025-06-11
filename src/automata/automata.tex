@@ -12808,7 +12808,7 @@ That's equivalent to being  $\setcomp{\lang}$-indistinguishable.
 \extra{Machine minimization}\index{minimization of a Finite State machine|(}\index{Finite State machine!minimization|(}\label{sec:Minimization}
 Imagine that a person is tasked with ensuring that input for a password form 
 contains both
-upper and lower case ASCII characters, and produces the machine on the left.
+upper and lower case ASCII characters, and they produce the machine on the left.
 \begin{center}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa74.pdf}}
   \quad    
@@ -13131,17 +13131,20 @@ instead stays fixed at whatever is the size of~$\Sigma$.
   \begin{center}
     \includegraphics{automata/asy/min/min03.pdf}
   \end{center}
-  For bookkeeping in the first phase we will use triangular tables, 
-  with an entry for every pair of different states.
-  We will checkmark state pairs that are distinguishable.
-  From step to step we fill in more marks,
-  first doing $0$-distinguishability,
-  then refining it to $1$-distinguishability, etc.
-  When we reach a step where the table does not change then we are done. 
 
-  Step~$0$ checkmarks the $q_i,q_j$~entries that are 
-  $0$-distinguishable, that is,
-  where one of $q_i$ and $q_j$ is accepting but the other is not.
+  Step~$0$ distinguishes the states that are accepting from those that are not.
+  That gives two $\sim_0$ classes.
+   \begin{equation*}
+     \eclass_{0,0} =\set{q_0,q_3,q_4}
+     \qquad
+     \eclass_{0,1} =\set{q_1,q_2,q_5}        
+   \end{equation*}
+  For bookkeeping we will use a triangular table. 
+  Each pair of states $q_i,q_j$ has a table cell.
+  We start by checkmarking the $q_i,q_j$ cell if
+  those states are $0$-distinguishabile,
+  that is, if $q_i$ and~$q_j$ are in different $\sim_0$ classes.
+  % (In step~$1$ we will refining the table to show $1$-distinguishability, etc.)
   \begin{center} 
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    &    \\
@@ -13157,23 +13160,20 @@ instead stays fixed at whatever is the size of~$\Sigma$.
       \ck &    &    &\ck &\ck &\multicolumn{1}{|c}{$q_5$}    \\ 
       \cline{1-5}      
     \end{minimizetable}
-   \end{center}
-   We can use the blank boxes to read off the $\sim_{0}$-equivalence classes.
-   For instance, there are
-   blanks in table entries $q_0,q_3$ and $q_0,q_4$ and~$q_3,q_4$ 
-   and this cluster forms the first $\sim_0$ equivalence class.
-   Similarly there is a cluster of blanks in $q_1,q_2$ 
-   and $q_1,q_5$ and~$q_2,q_5$. 
-   \begin{equation*}
-     \eclass_{0,0} =\set{q_0,q_3,q_4}
-     \qquad
-     \eclass_{0,1} =\set{q_1,q_2,q_5}        
-   \end{equation*}
+  \end{center}
+  We already know the $\sim_{0}$-equivalence classes but for later steps
+  note that we can also read that information from the blank cells.
+  For instance, there are
+  blanks in table entries $q_0,q_3$ and $q_0,q_4$ and~$q_3,q_4$ 
+  and this cluster forms the first $\sim_0$ equivalence class.
+  Similarly there is a cluster of blanks in $q_1,q_2$ 
+  and $q_1,q_5$ and~$q_2,q_5$. 
 
   Step~$1$ determines whether those $\sim_0$  classes split.
-  For each pair $q_i,q_j$ that are together in a class and
+  We first do a calculation:~for
+  each pair $q_i,q_j$ that are together in a class and
   for each input character, find the classes where that character
-  sends those states.
+  sends the states in that pair.
   \begin{center} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -13194,22 +13194,30 @@ instead stays fixed at whatever is the size of~$\Sigma$.
       $q_2,q_5$  &$q_4\in\eclass_{0,0},\,q_5\in\eclass_{0,1}$     
                 &$q_3\in\eclass_{0,0},\,q_5\in\eclass_{0,1}$   
     \end{tabular}
-  \end{center} 
-  Two states are distinguished when they are sent by a character
-  to members of unequal classes.
-  The first case is in the $q_1,q_5$ line, 
-  where \str{a} takes $q_1$ to $q_3\in\eclass_{0,0}$ and
-  takes $q_5$ to $q_5\in\eclass_{0,1}$.
-  That is, in that table's row labeled $q_1,q_5$ and column labeled~\str{a}
-  are two different classes, $\eclass_{0,0}$ and~$\eclass_{0,1}$.
-  Consequently the $\sim_{0}$~class containing $q_1$ and $q_5$, the class 
-  $\eclass_{0,1}$, will split into multiple $\sim_{1}$ classes.
-  The next line of the computation similarly shows that $q_2$ and $q_5$ 
-  are distinguishable.
+  \end{center}
+  Look for entries with pairs of unequal classes.
+  That's because we have shown that two states are
+  $0$-indistinguishable but $1$-distinguishable if they are
+  sent to unequal classes by a single-character input.
+  The first such case is in the $q_1,q_5$ line, 
+  where \str{a} takes $q_1$ to a state in~$\eclass_{0,0}$ and
+  takes $q_5$ to a state in~$\eclass_{0,1}$.
+  Consequently the $\sim_0$ containing $q_1$ and~$q_5$ 
+  will split into multiple $\sim_{1}$ classes.
+  (The same line also shows that split in the \str{b} column,
+  although it is repeat information.)
+  The next line, for $q_2,q_5$, similarly shows that $q_2$ and $q_5$ 
+  are $1$-distinguishable.
     
-  To record that $q_1$ and~$q_5$ are distinguishable,
-  add a checkmark in the triangular table's cell for~$q_1,q_5$.
-  Also add a $q_2,q_5$ checkmark.
+  To record that, 
+  add a checkmark to the triangular table's cells for~$q_1,q_5$
+  and for $q_2,q_5$.
+  In this example we will highlight the changed cells.\footnote{%
+    A person doing the algorithm can just keep a single table and
+    update it at each step.
+    But for the presentation here,
+    \protect\citetext{at each step we will show the entire revised table}{%
+      This is more direct than an animation}.}
   \begin{center} \small
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    &    \\
@@ -13222,17 +13230,16 @@ instead stays fixed at whatever is the size of~$\Sigma$.
       \cline{4-4}
           &\ck &\ck &    &\multicolumn{1}{|c}{$q_4$}   &    \\
       \cline{5-5}
-      \ck &\ck    &\ck    &\ck &\ck &\multicolumn{1}{|c}{$q_5$}    \\ 
+      \ck &\textcolor{highlightcolor}{\ck}    &\textcolor{highlightcolor}{\ck}    &\ck &\ck &\multicolumn{1}{|c}{$q_5$}    \\ 
       \cline{1-5}      
     \end{minimizetable}
   \end{center}
   
-  Finish this step by getting the  $\sim_{1}$~classes as clusters
-  of blank cells.
-  There is a cluster in entries $q_0,q_3$ and $q_0,q_4$ and $q_3,q_4$.
-  There is also a blank in $q_1,q_2$. 
+  Finish step~$1$ by using that table to get the  $\sim_{1}$~classes.
+  There is a cluster of blank cells in $q_0,q_3$ and $q_0,q_4$ and $q_3,q_4$.
+  There is also a blank cell in $q_1,q_2$. 
   There is no cluster involving $q_5$ but since every state must be in some
-  class, it goes in a class by itself.
+  class, that state goes into a singleton class.
   \begin{equation*}
     \eclass_{1,0}=\set{q_0,q_3,q_4} \quad
     \eclass_{1,1}=\set{q_1,q_2}   \quad
@@ -13241,14 +13248,9 @@ instead stays fixed at whatever is the size of~$\Sigma$.
   The $\sim_0$ class $\eclass_{0,1}=\set{q_1,q_2,q_5}$ has split
   into two $\sim_1$~classes. 
 
-  Now iterate.
-  At stage~$2$
-  the single-element set $\eclass_{1,2}$ can't split 
-  so consider only pairs from the other two classes.
-  Calculation shows that $q_0$ is distinguishable from $q_3$ 
-  and also from~$q_4$. 
-  Add to the triangular table 
-  checkmarks for $q_0,q_3$ and~$q_0,q_4$.
+  Step~$2$ iterates.
+  Again start with a calculation involving pairs of states from the
+  classes.
   \begin{center} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -13265,7 +13267,11 @@ instead stays fixed at whatever is the size of~$\Sigma$.
       $q_1,q_2$  &$q_3\in\eclass_{1,0},\,q_4\in\eclass_{1,0}$  
                 &$q_4\in\eclass_{1,0},\,q_3\in\eclass_{1,0}$  
     \end{tabular}
-    \qquad
+  \end{center}
+  There is a split on the $q_0,q_3$ line and also on the
+  $q_0,q_4$ line.
+  Add those to the triangular table. 
+  \begin{center}
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    &    \\
       \cline{1-1}
@@ -13273,9 +13279,9 @@ instead stays fixed at whatever is the size of~$\Sigma$.
       \cline{2-2}
       \ck &    &\multicolumn{1}{|c}{$q_2$}   &    &    &    \\
       \cline{3-3}
-      \ck    &\ck &\ck &\multicolumn{1}{|c}{$q_3$}   &    &    \\
+      \textcolor{highlightcolor}{\ck}    &\ck &\ck &\multicolumn{1}{|c}{$q_3$}   &    &    \\
       \cline{4-4}
-      \ck    &\ck &\ck &    &\multicolumn{1}{|c}{$q_4$}   &    \\
+      \textcolor{highlightcolor}{\ck}    &\ck &\ck &    &\multicolumn{1}{|c}{$q_4$}   &    \\
       \cline{5-5}
       \ck &\ck    &\ck    &\ck &\ck &\multicolumn{1}{|c}{$q_5$}    \\ 
       \cline{1-5}      
@@ -13289,7 +13295,7 @@ instead stays fixed at whatever is the size of~$\Sigma$.
         \eclass_{2,3}=\set{q_5}   
   \end{equation*}
 
-  One more iteration.
+  Step~$3$ is the final iteration.
   \begin{center} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -13302,24 +13308,10 @@ instead stays fixed at whatever is the size of~$\Sigma$.
       $q_3,q_4$  &$q_5\in\eclass_{2,3},\,q_5\in\eclass_{2,3}$   
                  &$q_5\in\eclass_{2,3},\,q_5\in\eclass_{2,3}$  
     \end{tabular}
-    \qquad
-    \begin{minimizetable}{6}
-      \multicolumn{1}{c}{$q_0$}   &    &    &    &    &    \\
-      \cline{1-1}
-      \ck &\multicolumn{1}{|c}{$q_1$}   &    &    &    &    \\
-      \cline{2-2}
-      \ck &    &\multicolumn{1}{|c}{$q_2$}   &    &    &    \\
-      \cline{3-3}
-      \ck    &\ck &\ck &\multicolumn{1}{|c}{$q_3$}   &    &    \\
-      \cline{4-4}
-      \ck    &\ck &\ck &    &\multicolumn{1}{|c}{$q_4$}   &    \\
-      \cline{5-5}
-      \ck &\ck    &\ck    &\ck &\ck &\multicolumn{1}{|c}{$q_5$}    \\ 
-      \cline{1-5}      
-    \end{minimizetable}
   \end{center}
-  There was no more splitting.
-  The algorithm terminates with these $\sim$ classes.
+  There was no more splitting
+  so the algorithm terminates.
+  These are the $\sim$ classes.
   \begin{equation*}
         \eclass_0=\set{q_0} \quad
         \eclass_1=\set{q_1,q_2}   \quad
@@ -13327,31 +13319,30 @@ instead stays fixed at whatever is the size of~$\Sigma$.
         \eclass_{3}=\set{q_5}   
   \end{equation*}
 
-  To finish, we produce the minimal machine.
+  We finish with second phase of producing the minimal machine.
   Take
   $r_0$ as a name for $\eclass_{0}$, 
   take $r_1$ for $\eclass_{1}$, 
   $r_2$ for $\eclass_{2}$, 
   and $r_3$ for $\eclass_{3}$.
-  The start state is the one containing $q_0$,
-  namely~$r_0$. 
+  The start state is $r_0$ because that is the one containing $q_0$. 
   The final states are the ones containing final states of the
   original machine, $r_1$ and $r_3$.
   \begin{center}
     \includegraphics{automata/asy/min/min04.pdf}
   \end{center}
-  To define the transitions between states, 
-  consider what happens when we feed the character~\str{a} to
-  elements of a class, such as the class
-  $r_1=\eclass_1=\set{q_1,q_2}$. 
-  For instance, if we choose $q_1$ and look in the original machine then
-  under input~\str{a} it goes to~$q_3$.
-  Since $q_3$ is an element of~$\eclass_{2}=r_2$, 
-  in the minimal machine the \str{a}~arrow 
-  out of $r_1$ goes to~$r_2$.
-  Other transitions work the same way.
+  As to the transitions, as discussed earlier,  compute
+  $\Delta(r_i,x)$ for the character $x$
+  by picking any representative~$q\in\eclass_i$,
+  finding the state $\hat{q}$ where the machine~$\FSM$ transitions to
+  when it is in $q$ and reads the character~$x$,
+  and then as output giving~$r_j$ where $\hat{q}\in\eclass_j$. 
+  For instance, $\Delta(r_1,\str{a})=r_2$ because
+  we can choose $q_1\in r_1=\eclass_1$ and  
+  under input~\str{a} the original machine takes that state to~$q_3\in r_2$.
 \end{example}
 
+\begin{remark}
 To explain the terminology that this algorithm `collapses' together 
 the redundant states, 
 consider this picture of the prior example, showing a kind of projection.
@@ -13402,6 +13393,7 @@ We can express the same using $\Delta$ tables.
 % satisfies that 
 % $\Delta_{\FSM_O}(p(q),x)=p(\,\Delta_{\FSM_I}(q,x)\,)$ for all
 % $q\in\FSM_I$ and $x\in\Sigma$.
+\end{remark}
 
 \begin{example}  \label{ex:SecondMinimization}
   We will minimize the machine below.
@@ -13411,8 +13403,12 @@ We can express the same using $\Delta$ tables.
   \begin{center}
     \includegraphics{automata/asy/min/min00.pdf}
   \end{center}
-  That leaves this step~$0$ triangular table and these $\sim_0$ classes.
+  That leaves these $\sim_0$ classes and the initial triangular table.
   \begin{center} 
+    $\eclass_{0,0}=\set{q_0,q_1,q_2} 
+      \quad
+      \eclass_{0,1}=\set{q_3,q_4}$
+    \qquad  
     \begin{minimizetable}{5}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    \\
       \cline{1-1}
@@ -13426,16 +13422,9 @@ We can express the same using $\Delta$ tables.
       \cline{1-4}      
     \end{minimizetable}
     \qquad
-    $\eclass_{0,0}=\set{q_0,q_1,q_2} 
-      \quad
-     \eclass_{0,1}=\set{q_3,q_4}$
   \end{center}
 
-  At step~$1$ check whether those classes split.
-  The calculation shows that   
-  $q_0$ is distinguished from $q_1$ by~\str{1}, and 
-  $q_0$ is distinguished from $q_2$, also by~\str{1}. 
-  The triangular table below reflects those updates.
+  Step~$1$ starts with a calculation.
   \begin{center} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -13452,7 +13441,11 @@ We can express the same using $\Delta$ tables.
       $q_3,q_4$  &$q_3\in\eclass_{0,1},\,q_4\in\eclass_{0,1}$  
                 &$q_3\in\eclass_{0,1},\,q_4\in\eclass_{0,1}$
     \end{tabular}
-    \hspace{3em}
+  \end{center}
+  So $q_0$ is distinguishable from $q_1$, and 
+  $q_0$ is distinguishable from $q_2$. 
+  The triangular table below reflects the updates.
+  \begin{center}
     \begin{minimizetable}{5}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    \\
       \cline{1-1}
@@ -13474,8 +13467,7 @@ We can express the same using $\Delta$ tables.
         \eclass_{1,2}=\set{q_3,q_4}
    \end{equation*}
 
-Step~$2$ shows  
-no more splitting.
+Step~$2$ shows no more splitting and so the first phase of the algorithm stops.
 \begin{center}
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -13490,8 +13482,8 @@ no more splitting.
     \end{tabular}
 \end{center}
 
-  The minimized machine has a states for each~$\sim$
-  equivalence class,
+  The second phase is that the minimized machine has a states for each
+  equivalence class
   $\eclass_{0}=\set{q_0}$,
   $\eclass_{1}=\set{q_1,q_2}$,
   and $\eclass_{2}=\set{q_3,q_4}$.
@@ -14251,6 +14243,9 @@ the original machine is minimal.
 
 \recommended
 \begin{exercise}
+  \begin{credit}
+    From K.\ M.\ George, \url{http://www.cs.okstate.edu/~kmg/class/5313/fall13/notes/four.pdf}
+  \end{credit}
 Perform Moore's minimization algorithm on this machine.
 \begin{center}
     \includegraphics{automata/asy/fsa/fsa79.pdf}

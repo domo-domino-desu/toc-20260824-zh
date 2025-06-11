@@ -4036,3 +4036,45 @@ draw(pic,
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+// ............... answer .................
+picture pic;
+int picnum = 80;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node q0=ncircle("$r_0$"); 
+node q1=ncircle("$r_1$"); 
+node q2=ncircle("$r_2$",ns_accepting); 
+node q3=ncircle("$r_3$",ns_accepting); 
+
+// calculate nodes position
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+hlayout(u, q0, q2);
+vlayout(-0.8v, q0, q3);
+hlayout(u, q3, q1);
+
+// draw edges
+draw(pic,
+     (q0..bend(15)..q2).l("\str{a}"),
+     (q0..bend(15)..q3).l("\str{b}"),
+     (q1..loop(E)).l("\str{a},\str{b}"),
+     (q2..bend(15)..q0).l("\str{a}"),
+     (q2--q1).l("\str{b}"),
+     (q3--q1).l("\str{a}"),
+     (q3..bend(10)..q0).l("\str{b}")
+);
+
+// draw nodes
+draw(pic,
+     q3, q1,
+     q0, q2);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

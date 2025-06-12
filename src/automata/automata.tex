@@ -13519,14 +13519,14 @@ often a nondeterministic machine is easier and more natural.
 An example is an algorithm that inputs a regular expression
 and outputs a machine recognizing that expression.
 But our algorithm for converting a nondeterministic machine 
-to a deterministic machine has the problem
+to a deterministic machine has the difficulty
 that where the nondeterministic machine has $n$~states, 
 the deterministic machine has $2^n$~many.
 This section's result alleviates that exponential blow-up.
-We now have a three-step process:~from 
-a problem, we start with a nondeterministic
-answer, convert that to an equivalent deterministic machine,
-and then minimize, giving a reasonably-sized final answer.
+We now have a three-step process to solve these 
+problems:~start with a nondeterministic
+answer, convert to an equivalent deterministic machine,
+and then minimize to get a reasonably-sized final answer.
 This gives good results in practice.
 
 % ..................................................
@@ -13735,7 +13735,7 @@ Minimize it with Moore's algorithm.
 \begin{answer}\verified
   First, all the states are reachable, by inspection.
 
-  Step~$0$ is to checkmark the $i,j$~entries
+  Step~$0$ is to checkmark the $q_i,q_j$~entries
   where one of $q_i$ and $q_j$ is accepting while the other is not.
   \begin{center} 
     \begin{minimizetable}{3}
@@ -14175,7 +14175,7 @@ Minimize it, using the algorithm of this section.
   By inspection the states $q_6$ and~$q_7$ are unreachable
   so drop them.
 
-  With that, stage~$0$ checkmarks the $i,j$~entries
+  With that, step~$0$ checkmarks the $q_i,q_j$~entries
   where one of $q_i$ and $q_j$ is accepting while the other is not.
   \begin{display} 
      $\eclass_{0,0} =\set{q_0,q_2}$        
@@ -14198,7 +14198,7 @@ Minimize it, using the algorithm of this section.
     \end{minimizetable}
    \end{display}
 
-   Stage~$1$ sees if any of these classes split.
+   Step~$1$ sees if any of these classes split.
    First comes the calculation.
   \begin{display} \small
     \begin{tabular}{r|ll}
@@ -14251,7 +14251,7 @@ Minimize it, using the algorithm of this section.
     \end{tabular}
   \end{display}
 
-  Stage~$2$ determines which states are $2$-distinguishable.
+  Step~$2$ determines which states are $2$-distinguishable.
   \begin{display} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -14323,7 +14323,7 @@ Minimize.
 \end{center}
 \begin{answer}\verified
   By inspection all of the states are reachable.
-  Step~$0$ checkmarks the $i,j$~entries
+  Step~$0$ checkmarks the $q_i,q_j$~entries
   where one of $q_i$ and $q_j$ is accepting while the other is not.
   \begin{display}
     \begin{tabular}{@{}l}
@@ -14447,7 +14447,7 @@ Minimize.
      \quad
      \eclass_{0,1} =\set{q_3, q_4}
    \end{equation*}
-  We also give the initial triangular table by checkmarking the $i,j$~entries
+  We also give the initial triangular table by checkmarking the $q_i,q_j$~entries
   where one of $q_i$ and~$q_j$ is accepting while the other is not.
   \begin{display} 
     \begin{minimizetable}{6}
@@ -14684,8 +14684,16 @@ Minimize this machine.
 \end{center}
 \begin{answer}\verified
   By inspection all of the states are reachable.
-  Stage~$0$ starts by checkmarking the $i,j$~entries
-  where one of $q_i$ and $q_j$ is accepting while the other is not.
+  Step~$0$ splits the states into two classes, those that are accepting
+  and those that are not.
+   \begin{equation*}
+     \eclass_{0,0} =\set{q_0, q_2, q_3, q_5}        
+     \quad
+     \eclass_{0,1} =\set{q_1, q_4}
+   \end{equation*}
+  Here is the initial triangular table,
+  with entry $q_i,q_j$ checkmarked  
+  when one of $q_i$ and $q_j$ is accepting while the other is not.
   \begin{display} 
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{$q_0$}   &    &   &  &  &    \\
@@ -14702,18 +14710,8 @@ Minimize this machine.
       \cline{1-5}
     \end{minimizetable}
    \end{display}
-   There are two $\sim_{0}$-equivalence classes.
-   \begin{equation*}
-     \eclass_{0,0} =\set{q_0, q_2, q_3, q_5}        
-     \quad
-     \eclass_{0,1} =\set{q_1, q_4}
-   \end{equation*}
 
-  Stage~$1$ computes whether any of those classes split.
-  The calculations in the table say that we need to add checkmarks
-  for $q_0,q_2$, and $q_0,q_3$, and $q_0,q_5$,
-  and $q_2,q_3$, and $q_3,q_5$, and $q_1,q_4$.
-  This is all pairs except for $q_2,q_5$.
+  Step~$1$ computes whether any of those classes split.
   \begin{display} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -14736,7 +14734,13 @@ Minimize this machine.
       $q_1,q_4$  &$q_3\in\eclass_{0,0},\,q_3\in\eclass_{0,0}$
                  &$q_0\in\eclass_{0,0},\,q_4\in\eclass_{0,1}$  
     \end{tabular}
-    \hspace{3em}
+  \end{display}
+  In that calculation we find different classes in entries on the lines
+  for $q_0,q_2$, and $q_0,q_3$, and $q_0,q_5$,
+  and $q_2,q_3$, and $q_3,q_5$, and $q_1,q_4$.
+  This is all pairs except for $q_2,q_5$.
+  Update the triangular table and split the classes.
+  \begin{display}
     \begin{minimizetable}{6}
       \multicolumn{1}{c}{$q_0$}   &    &   &  &  &    \\
       \cline{1-1}
@@ -14751,23 +14755,18 @@ Minimize this machine.
       \ck &\ck &     &\ck  &\ck &\multicolumn{1}{|c}{$q_5$}     \\
       \cline{1-5}
     \end{minimizetable}
+    \begin{tabular}{@{}l}
+      $\eclass_{1,0} =\set{q_0}$
+      $\eclass_{1,1} =\set{q_1}$        
+      $\eclass_{1,2} =\set{q_2,q_5}$        
+      $\eclass_{1,3} =\set{q_3}$        
+      $\eclass_{1,4} =\set{q_4}$        
+    \end{tabular}
   \end{display}
   So, $q_2$ and~$q_5$ are not $1$-distinguishable but all the other pairs are
   $1$-distinguishable.
-  These are the $\sim_1$ classes.
-   \begin{equation*}
-     \eclass_{1,0} =\set{q_0}
-     \quad
-     \eclass_{1,1} =\set{q_1}        
-     \quad
-     \eclass_{1,2} =\set{q_2,q_5}        
-     \quad
-     \eclass_{1,3} =\set{q_3}        
-     \quad
-     \eclass_{1,4} =\set{q_4}        
-   \end{equation*}
 
-  Finally, stage~$2$ computes whether the one remaining multi-state
+  Finally, step~$2$ computes whether the one remaining multi-state
   class splits.
   \begin{display} \small
     \begin{tabular}{r|ll}
@@ -14778,23 +14777,24 @@ Minimize this machine.
       $q_2,q_5$  &$q_1\in\eclass_{1,1},\,q_4\in\eclass_{1,4}$
                  &$q_4\in\eclass_{1,4},\,q_1\in\eclass_{1,1}$  
     \end{tabular}
-    \hspace{3em}
-    \begin{minimizetable}{6}
-      \multicolumn{1}{c}{$q_0$}   &    &   &  &  &    \\
-      \cline{1-1}
-      \ck &\multicolumn{1}{|c}{$q_1$}   &  &  &   &   \\
-      \cline{2-2}
-      \ck &\ck  &\multicolumn{1}{|c}{$q_{2}$} &  &   &   \\
-      \cline{3-3}
-      \ck &\ck &\ck  &\multicolumn{1}{|c}{$q_3$} &  &     \\
-      \cline{4-4}
-      \ck &\ck &\ck  &\ck  &\multicolumn{1}{|c}{$q_4$}  &       \\
-      \cline{5-5}
-      \ck &\ck &\ck  &\ck  &\ck &\multicolumn{1}{|c}{$q_5$}     \\
-      \cline{1-5}
-    \end{minimizetable}
   \end{display}
-  Thus all of the states are $2$-distinguishable.
+  There is a split, and so 
+  %   \begin{minimizetable}{6}
+  %     \multicolumn{1}{c}{$q_0$}   &    &   &  &  &    \\
+  %     \cline{1-1}
+  %     \ck &\multicolumn{1}{|c}{$q_1$}   &  &  &   &   \\
+  %     \cline{2-2}
+  %     \ck &\ck  &\multicolumn{1}{|c}{$q_{2}$} &  &   &   \\
+  %     \cline{3-3}
+  %     \ck &\ck &\ck  &\multicolumn{1}{|c}{$q_3$} &  &     \\
+  %     \cline{4-4}
+  %     \ck &\ck &\ck  &\ck  &\multicolumn{1}{|c}{$q_4$}  &       \\
+  %     \cline{5-5}
+  %     \ck &\ck &\ck  &\ck  &\ck &\multicolumn{1}{|c}{$q_5$}     \\
+  %     \cline{1-5}
+  %   \end{minimizetable}
+  % \end{display}
+  all of the states are $2$-distinguishable.
   Every $\sim_2$ class is a singleton.
    \begin{equation*}
      \eclass_{2,0} =\set{q_0}
@@ -14814,9 +14814,9 @@ Minimize this machine.
 \end{exercise}
 
 \begin{exercise}
-  What happens if you perform the minimization procedure on a machine that
+  What happens if we perform the minimization procedure on a machine that
   has an unreachable state, such as 
-  Example~\ref{ex:SecondMinimization},  % cref fails  
+  \zcref{ex:SecondMinimization},  % cref fails  
   without first omitting the unreachable state?
 \begin{answer}\verified
   You will get a machine that recognizes the same language.
@@ -14836,9 +14836,16 @@ Minimize this machine.
   are equal to the number of states in the machine.
 \begin{answer}\verified
   By inspection all of the states are reachable.
-  Stage~$0$ checkmarks the $i,j$~entries
+  Step~$0$ splits the collection of states into two classes,
+  the accepting states and the non-accepting states.
+  The initial triangular table checkmarks the $q_i,q_j$~entries
   where one of $q_i$ and $q_j$ is accepting but the other is not.
   \begin{display} 
+    \begin{tabular}{@{}l}
+      $\eclass_{0,0} =\set{q_0,q_1,q_2,q_3}$   \\
+      $\eclass_{0,1} =\set{q_4}$
+    \end{tabular}
+    \qquad\quad
     \begin{minimizetable}{5}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    \\
       \cline{1-1}
@@ -14854,15 +14861,9 @@ Minimize this machine.
    \end{display}
    There are two $\sim_{0}$-equivalence classes.
    \begin{equation*}
-      \eclass_{0,0} =\set{0,1,2,3} 
-      \quad
-      \eclass_{0,1} =\set{4}
    \end{equation*}
 
-  Stage~$1$ computes whether any of those classes split.
-  The table shows that we must put checkmarks in the cells
-  $0,3$, and $1,3$, and $2,3$.
-  In short, $q_3$ is $1$-distinguishable from all the other states.
+  Step~$1$ computes whether any of those classes split.
   \begin{display} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -14882,7 +14883,11 @@ Minimize this machine.
       $q_2,q_3$  &$q_3\in\eclass_{0,0},\,q_4\in\eclass_{0,1}$
                  &$q_2\in\eclass_{0,0},\,q_3\in\eclass_{0,0}$    \\
     \end{tabular}
-    \hspace{3em}
+  \end{display}
+  We must put checkmarks in the triangular table cells
+  $q_0,q_3$, and $q_1,q_3$, and $q_2,q_3$.
+  In short, $q_3$ is $1$-distinguishable from all of the other states.
+  \begin{display}
     \begin{minimizetable}{5}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    \\
       \cline{1-1}
@@ -14895,21 +14900,14 @@ Minimize this machine.
       \ck &\ck &\ck &\ck    &\multicolumn{1}{|c}{$q_4$}   \\
       \cline{1-4}      
     \end{minimizetable}
+    \begin{tabular}{@{}l}
+      $\eclass_{1,0} =\set{q_0, q_1, q_2}$   \\
+      $\eclass_{1,1} =\set{q_3}$             \\        
+      $\eclass_{1,2} =\set{q_4}$        
+    \end{tabular}
   \end{display}
-  These are the $\sim_1$ classes.
-   \begin{equation*}
-     \eclass_{1,0} =\set{q_0, q_1, q_2}
-     \quad
-     \eclass_{1,1} =\set{q_3}        
-     \quad
-     \eclass_{1,2} =\set{q_4}        
-   \end{equation*}
 
-  Next time through is stage~$2$.
-  Similarly to what happened in the prior stage,
-  calculation gives that we need checkmarks in cells
-  $0,2$ and $1,2$,
-  that is, $q_2$ is distinguishable from $q_0$ and~$q_1$,
+  The next time through is step~$2$.
   \begin{display} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -14923,7 +14921,13 @@ Minimize this machine.
       $q_1,q_2$  &$q_2\in\eclass_{1,0},\,q_3\in\eclass_{1,1}$
                  &$q_1\in\eclass_{1,0},\,q_2\in\eclass_{1,0}$    \\
     \end{tabular}
-    \hspace{3em}
+    \end{display}
+  As with what happened in the prior step,
+  the calculation gives that we need checkmarks in cells
+  $q_0,q_2$ and $q_1,q_2$,
+  so a single state is distinguished, namely,~$q_2$ splits
+  from $q_0$ and~$q_1$.
+  \begin{display}
     \begin{minimizetable}{5}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    \\
       \cline{1-1}
@@ -14936,20 +14940,16 @@ Minimize this machine.
       \ck &\ck &\ck &\ck &\multicolumn{1}{|c}{$q_4$}   \\
       \cline{1-4}      
     \end{minimizetable}
+    \begin{tabular}{@{}l}
+      $\eclass_{2,0} =\set{q_0, q_1}$   \\
+      $\eclass_{2,1} =\set{q_2}$        \\
+      $\eclass_{2,2} =\set{q_3}$        \\        
+      $\eclass_{2,3} =\set{q_4}$        
+    \end{tabular}
   \end{display}
-  These are the $\sim_2$ classes.
-   \begin{equation*}
-     \eclass_{2,0} =\set{q_0, q_1}
-     \quad
-     \eclass_{2,1} =\set{q_2}
-     \quad
-     \eclass_{2,2} =\set{q_3}        
-     \quad
-     \eclass_{2,3} =\set{q_4}        
-   \end{equation*}
 
-  There is only one class that could split, so stage~$3$ will be the
-  last stage.
+  There is only one class that could split, so step~$3$ will be the
+  last one, whether or not there is any splitting.
   \begin{display} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }
@@ -14959,7 +14959,10 @@ Minimize this machine.
       $q_0,q_1$  &$q_1\in\eclass_{2,0},\,q_2\in\eclass_{2,1}$
                  &$q_0\in\eclass_{2,0},\,q_1\in\eclass_{2,0}$    \\
     \end{tabular}
-    \hspace{3em}
+  \end{display}
+  They do split;~$q_1$ is $3$-distinguishable from $q_0$. 
+  These are the $\sim_3$ classes.
+  \begin{display}
     \begin{minimizetable}{5}
       \multicolumn{1}{c}{$q_0$}   &    &    &    &    \\
       \cline{1-1}
@@ -14972,29 +14975,22 @@ Minimize this machine.
       \ck &\ck &\ck &\ck &\multicolumn{1}{|c}{$q_4$}   \\
       \cline{1-4}      
     \end{minimizetable}
+    \begin{tabular}{@{}l}
+      $\eclass_{3,0} =\set{q_0}$   \\
+      $\eclass_{3,1} =\set{q_1}$   \\
+      $\eclass_{3,2} =\set{q_2}$   \\
+      $\eclass_{3,3} =\set{q_3}$   \\        
+      $\eclass_{3,4} =\set{q_4}$              
+    \end{tabular}
   \end{display}
-  So, $q_1$ is $3$-distinguishable from $q_0$. 
-  These are the 
-  giving these $\sim_3$ classes.
-   \begin{equation*}
-     \eclass_{3,0} =\set{q_0}
-     \quad
-     \eclass_{3,1} =\set{q_1}
-     \quad
-     \eclass_{3,2} =\set{q_2}
-     \quad
-     \eclass_{3,3} =\set{q_3}        
-     \quad
-     \eclass_{3,4} =\set{q_4}        
-   \end{equation*}
-   The process stops.
+   The first phase of Moore's algorithm stops.
    The minimized machine has five states; it is the machine 
    that we started with.
 
-   \textit{Comment:} if we started with a similar machine having a sixth
-   state then the algorithm would take one more stage.
-   The number of stages is two less than the number of states, that
-   is, the time taken grows linearly with the number of stages.  
+   Observe that had we started with a similar machine having a one more
+   state then the algorithm would take one more step.
+   The number of steps is two less than the number of states, that
+   is, the time taken grows linearly with the number of states.  
   \end{answer}
 \end{exercise}
   
@@ -15304,7 +15300,7 @@ walk through the algorithm using this Finite State machine, $\FSM$.
 \begin{exparts}
 \item 
   By inspection all of the states are reachable.
-  So stage~$0$ starts by checkmarking the $i,j$~entries
+  So step~$0$ starts by checkmarking the $q_i,q_j$~entries
   where one of $q_i$ and $q_j$ is accepting while the other is not.
   \begin{display} 
     \begin{minimizetable}{3}
@@ -15323,7 +15319,7 @@ walk through the algorithm using this Finite State machine, $\FSM$.
      \eclass_{0,1} =\set{q_1}
    \end{equation*}
 
-  Next, stage~$0$ calculates whether any of those $\sim_0$ classes split.
+  Next, step~$0$ calculates whether any of those $\sim_0$ classes split.
   \begin{display} \small
     \begin{tabular}{r|ll}
       \multicolumn{1}{c}{\ }

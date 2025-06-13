@@ -417,7 +417,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
-// ============== Exercise machine to minimize, (ab|ba)* ================
+// ============== First minimization example machine, (ab|ba)* ================
 picture pic;
 int picnum = 9;
 unitsize(pic,1pt);
@@ -429,9 +429,7 @@ node q0=ncircle("$q_0$",ns_accepting),
   q2=ncircle("$q_2$",ns_accepting),
   q3=ncircle("$q_3$"),
   q4=ncircle("$q_4$"),
-  q5=ncircle("$q_5$"),
-  q6=ncircle("$q_6$"),
-  q7=ncircle("$q_7$");
+  q5=ncircle("$q_5$");
 
 // layout
 defaultlayoutrel = false;
@@ -439,33 +437,32 @@ defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-hlayout(1.0*u, q0, q1, q2, q7);
+hlayout(1.0*u, q0, q1, q2);
 vlayout(1.0*v, q0, q3);
-hlayout(1.0*u, q3, q4, q5, q6);
+hlayout(1.0*u, q3, q4, q5);
 
 // edges
 draw(pic,
-     (q0--q1).l("\str{a}"),
-     (q0..bend..q3).l("\str{b}"),
-     (q1..bend..q2).l("\str{b}"),
-     (q1--q4).l("\str{a}"),
-     (q2..bend..q1).l("\str{a}"),
-     (q2..bend..q5).l("\str{b}"),
-     (q3..bend..q0).l("\str{a}"),
-     (q3--q4).l("\str{b}"),
+     (q0..bend..q3).l("\str{a}"),
+     (q0--q1).l("\str{b}"),
+     (q1..bend(-20)..q2).l("\str{a}").style("leftside"),
+     (q1--q4).l("\str{b}"),
+     (q2..bend..q5).l("\str{a}"),
+     (q2..bend(-20)..q1).l("\str{b}").style("leftside"),
+     (q3--q4).l("\str{a}"),
+     (q3..bend..q0).l("\str{b}"),
      (q4..loop(S)).l("\str{a},\str{b}"),
-     (q5..bend..q2).l("\str{a}"),
-     (q5--q4).l("\str{b}"),
-     (q6--q5).l("\str{a}"),
-     (q6..bend..q7).l("\str{b}"),
-     (q7..bend..q6).l("\str{a}"),
-     (q7--q2).l("\str{b}")
+     (q5--q4).l("\str{a}"),
+     (q5..bend..q2).l("\str{b}")
     );
 
 // draw nodes after edges so arrows are OK
-draw(pic, q0, q1, q2, q3, q4, q5, q6, q7);
+draw(pic, q0, q1, q2,
+          q3, q4, q5);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
 
 // ......... minimized machine ..............
 picture pic;
@@ -485,19 +482,18 @@ defaultlayoutskip = 1.5cm;
 real u = defaultlayoutskip;
 real v = 0.85*u;
 
-hlayout(1.0*u, r0, r1);
-vlayout(1.0*u, r0, r2);
-hlayout(1.0*u, r2, r3);
+hlayout(1.0*u, r2, r0, r1);
+vlayout(0.8*u, r0, r3);
 
 // edges
 draw(pic,
-     (r0..bend..r1).l("\str{a}"),
-     (r0..bend..r2).l("\str{b}"),
-     (r1--r3).l("\str{a}"),
-     (r1..bend..r0).l("\str{b}"),
-     (r2..bend..r0).l("\str{a}"),
-     (r2--r3).l("\str{b}"),
-     (r3..loop(E)).l("\str{a},\str{b}")
+     (r0..bend..r2).l("\str{a}"),
+     (r0..bend..r1).l("\str{b}"),
+     (r1..bend..r0).l("\str{a}"),
+     (r1..bend(-20)..r3).l("\str{b}").style("leftside"),
+     (r2..bend..r3).l("\str{a}"),
+     (r2..bend..r0).l("\str{b}"),
+     (r3..loop(S)).l("\str{a},\str{b}")
     );
 
 // draw nodes after edges so arrows are OK

@@ -1057,3 +1057,43 @@ draw(pic, w0, w1, w2, w3, init);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+// ============ Exercise answer ==================
+picture pic;
+int picnum = 25;
+unitsize(pic,1pt);
+setdefaultstatediagramstyles() ;
+
+// define nodes
+node r0=ncircle("$r_0$"), 
+  r1=ncircle("$r_1$"),
+  r2=ncircle("$r_2$",ns_accepting),
+  r3=ncircle("$r_3$",ns_accepting);
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 1.5cm;
+real u = defaultlayoutskip;
+real v = 0.75*u;
+
+hlayout(1.0*u, r0, r1);
+real tail_angle = 20;
+r2.pos = new_node_pos_h(r1, tail_angle, 1.0*u);
+r3.pos = new_node_pos_h(r1, -1*tail_angle, 1.0*u);
+
+// edges
+draw(pic,
+     (r0--r1).l("\str{0},\str{1}"),
+     (r1..bend(-15)..r2).label("\str{0}").style("leftside"), 
+     (r1--r3).l("\str{1}"),
+     (r2..bend(-15)..r1).l("\str{0}").style("leftside"),
+     (r2--r3).l("\str{1}").style("leftside"),
+     (r3..loop(E)).l("\str{0},\str{1}")
+    );
+
+// draw nodes after edges so arrows are OK
+draw(pic, r0, r1, r2, r3);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

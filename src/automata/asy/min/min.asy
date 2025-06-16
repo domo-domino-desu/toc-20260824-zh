@@ -715,7 +715,7 @@ unitsize(pic,1pt);
 setdefaultstatediagramstyles() ;
 
 // define nodes 
-node q0=ncircle("$q_0$"); 
+node q0=ncircle("$r_0$"); 
 
 // calculate nodes position
 // layout

@@ -24,8 +24,8 @@ their own.
 
 ## Get the book
 
-You can download [the book](https://joshua.smcvt.edu/computation/book.pdf)
-and [the answers](https://joshua.smcvt.edu/computation/answers.pdf).
+You can download [the book](https://gitlab.com/jim.hefferon/toc/-/blob/master/src/00downloads/book.pdf)
+and [the answers](https://gitlab.com/jim.hefferon/toc/-/blob/master/src/00downloads/answers.pdf).
 
 You can also get a paper copy from Amazon.  See the homepage.
 

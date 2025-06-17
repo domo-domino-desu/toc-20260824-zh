@@ -15261,7 +15261,7 @@ This table is so large that it is
     $q_0,r_2$  &$q_1\in\eclass_{0,1},\,r_3\in\eclass_{0,0}$  
                &$q_2\in\eclass_{0,1},\,r_2\in\eclass_{0,1}$    \\
     $q_1,q_2$  &$q_1\in\eclass_{0,1},\,q_4\in\eclass_{0,0}$  
-               &$q_3\in\eclass_{0,0},\,q_4\in\eclass_{0,0}$    \\
+               &$q_3\in\eclass_{0,0},\,q_2\in\eclass_{0,1}$    \\
     $q_1,r_0$  &$q_1\in\eclass_{0,1},\,r_1\in\eclass_{0,1}$  
                &$q_3\in\eclass_{0,0},\,r_2\in\eclass_{0,1}$    \\
     $q_1,r_1$  &$q_1\in\eclass_{0,1},\,r_1\in\eclass_{0,1}$  
@@ -15343,6 +15343,8 @@ and is minimal.
 \begin{exparts}
 \item Prove that the algorithm always halts. 
 \item Prove that the transition function of $\mathcal{N}$ is well-defined.
+\item Show that if a state of $\mathcal{N}$ contains a final state of $\FSM$
+  then every state that it contains is final in~$\FSM$. 
 \item Verify that the two machines recognize the same language.
 \item Show that $\mathcal{N}$ is minimal:~any~$\hat{\FSM}$ 
 that recognize the same language as~$\mathcal{N}$ 
@@ -15363,11 +15365,16 @@ since these machines have only finitely many states.
 character sends two states in that class to different $\sim_n$~classes then
 the algorithm does not terminate at that step. 
 Instead it splits that class and goes to the next step.
-So the algorithm cannot end with an ill-defined transition function. 
+So the algorithm cannot end with an ill-defined transition function.
+\item in Moore's algorithm, step~0 partitions the states into
+  two classes, one with all of $\FSM$'s final states and one with
+  all of $\FSM$'s non-final states.
+  At the end the $\sim$~classes are subclasses of those, and so
+  consist entirely of final states or of non-final states.
 \item Consider a string, $\sigma\in\kleenestar{\Sigma}\!$.
 We will show that it is accepted by the machine~$\FSM$ 
 if and only if it is accepted
-by the other machine~$\mathcal{N}$.  
+by the other machine~$\mathcal{N}\!$.  
 The argument is by induction, although we will present it informally.
 
 The input machine starts in~$q_0$ while the output machine 
@@ -15381,43 +15388,60 @@ and moves~$\FSM[N]$ from a state that contains $q_{i_1}$
 to a state that contains~$q_{i_2}$.
 The machines proceed in this way until the string runs out.
 At the end, $\FSM$ is in a final state if and only if 
-$\FSM[N]$ is in a state that contains that final state, which is itself
+$\FSM[N]$ is in a state containing that final state, which is itself
 a final state of~$\FSM[N]$.
-\item As a preliminary, arrange that $\hat{\FSM}$ and $\FSM[N]$ 
-don't share any states, by 
-renaming so that the states of $\FSM$ are  
-$q_0,q_1,\,\ldots$ and the states of $\mathcal{N}$ are
-$r_0,r_1,\,\ldots$\sentencespace 
-Then perform Moore's algorithm on the union of the two sets of states,
-as in \zcref{ex:SketchOfProofMinimizationWorks}.
+\item To be clear about the notation:~the starting machine is~$\FSM$,
+  the result of running that machine through Moore's algorithm
+  is~$\mathcal{N}$, and $\hat{\FSM}$
+  is a Finite State machine that recognizes the
+  same language as~$\FSM$.
+  As a preliminary, arrange that $\hat{\FSM}$ and $\FSM[N]$ 
+  don't share any states by 
+  renaming so that the states of $\hat{\FSM}$ are  
+  $q_0,q_1,\,\ldots$ and the states of $\mathcal{N}$ are
+  $r_0,r_1,\,\ldots$\sentencespace 
+
+Before we start we make two observations about minimal machines.
+First, in the minimal machine~$\mathcal{N}$
+all states must be reachable,
+or else we could eliminate a non-reachable state
+and get a smaller machine that recognizes the same language.
+Second, running the minimal machine through Moore's algorithm
+ends with each $\sim$~class having one and only one member.
+
+We must show that $\hat{\FSM}$ has at least as many states as $\mathcal{N}$. 
+Begin by performing Moore's algorithm on the union of the two sets of states
+(as in \zcref{exer:SketchOfProofMinimizationWorks}).
     
-The two machines recognize the same language, so starting both with 
-any string $\tau\in\kleenestar{\Sigma}$ on the tape results always in 
+The two machines $\hat{M}$ and~$\mathcal{N}$ recognize the same language,
+so starting both in their start state with 
+a string $\tau\in\kleenestar{\Sigma}$ on the tape results always in 
 the same outcome:~either both machines end in an accepting state or
 both end in a rejecting state.
-Thus there is no distinguishing extension string between $q_0$ and~$r_0$, that
-is, the start states are indistinguishable. 
+Therefore there is no string distinguishing  between $q_0$ and~$r_0$,
+that is, when we run Moore's algorithm on the union of the two sets of
+states then their start states are indistinguishable, $q_0\sim r_0$. 
 
-For an induction argument, suppose that states $q$ and~$r$ are indistinguishable.
+We finish with an induction argument.
+Suppose that states $q$ and~$r$ are indistinguishable.
 We claim that for all $x\in\Sigma$, the state 
-$\Delta_{\mathcal{N}}(q,x)$ is indistinguishable from $\Delta_{\hat{\FSM}}(r,x)$.
-That's because if $\tau$ were a distinguishing string between these
-two then $x\concat\tau$ would distinguish between $q$ and~$r$.
+$\Delta_{\mathcal{N}}(q,x)$ is indistinguishable from
+the state $\Delta_{\hat{\FSM}}(r,x)$.
+That's because if $\tau$ were a string distinguishing between
+$\Delta_{\mathcal{N}}(q,x)$ and $\Delta_{\hat{\FSM}}(r,x)$
+then $x\concat\tau$ would distinguish between $q$ and~$r$.
 
-This implies that every state $r\in\mathcal{N}$ is indistinguishable
-from at least one $q\in\FSM$.
-The reason is that in a minimal machine all states must be reachable,
-or else we could eliminate the state and get a smaller machine that 
-recognizes the same language.
-So there is some string $\sigma\in\kleenestar{\Sigma}$ such that
+The first observation above shows that 
+there is some string $\sigma\in\kleenestar{\Sigma}$ such that
 $\extended{\Delta}_{\mathcal{N}}(\sigma)=r$.
-Then $\sigma$ takes the machine~$\hat{\FSM}$ to some state:
+This $\sigma$ takes the machine~$\hat{\FSM}$ to some state, that is,
 $\extended{\Delta}_{\hat{\FSM}}(\sigma)$ is a state in~$\hat{\FSM}$, 
-and by the prior 
-paragraph it is indistinguishable from~$r$.
+and by the prior paragraph it is indistinguishable from~$r$.
 
-We then have a function where each domain state $r$ of $\FSM[N]$
-is associated with at least one state $q$ of $\hat{\FSM}$.
+By the above observation, every $\sim$~class contains one and only one
+state $r$ of $\mathcal{N}$\!.
+The prior paragraph says that each state $r$ of $\FSM[N]$
+is in the same $\sim$ class as at least one state $q$ of $\hat{\FSM}$.
 Consequently, there are at least as many states in $\FSM$ as there
 are in $\FSM[N]$.
 \end{exparts}
@@ -15461,9 +15485,22 @@ walk through the algorithm using this Finite State machine, $\FSM$.
 \end{exparts}
 \begin{answer}
 \begin{exparts}
-\item 
-  By inspection all of the states are reachable.
-  So step~$0$ starts by checkmarking the $q_i,q_j$~entries
+\item
+  Here is the machine, for reference.
+\begin{display}
+  \includegraphics{automata/asy/min/min19.pdf}
+\end{display}
+By inspection all of the states are reachable.
+
+Step~$0$ separates the states into two classes, one with the accepting
+states and one with the non-accepting states.
+starts by checkmarking the $q_i,q_j$~entries.
+   \begin{equation*}
+     \eclass_{0,0} =\set{q_0, q_2}        
+     \quad
+     \eclass_{0,1} =\set{q_1}
+   \end{equation*}
+  Here is the initial triangular table with checkmarks in entry $q_i,q_j$ 
   where one of $q_i$ and $q_j$ is accepting while the other is not.
   \begin{display} 
     \begin{minimizetable}{3}
@@ -15475,16 +15512,10 @@ walk through the algorithm using this Finite State machine, $\FSM$.
       \cline{1-2}
     \end{minimizetable}
    \end{display}
-   There are two $\sim_{0}$-equivalence classes.
-   \begin{equation*}
-     \eclass_{0,0} =\set{q_0, q_2}        
-     \quad
-     \eclass_{0,1} =\set{q_1}
-   \end{equation*}
 
-  Next, step~$0$ calculates whether any of those $\sim_0$ classes split.
+  Next, step~$1$ calculates whether any of those $\sim_0$ classes split.
   \begin{display} \small
-    \begin{tabular}{r|ll}
+    \begin{tabular}{@{}r|ll@{}}
       \multicolumn{1}{c}{\ }
                   &\multicolumn{1}{c}{\str{a}}
                   &\multicolumn{1}{c}{\str{b}}   \\
@@ -15503,18 +15534,19 @@ walk through the algorithm using this Finite State machine, $\FSM$.
     \end{minimizetable}
   \end{display}
   There is no splitting.
-  The $\sim_0$ classes are the $\sim$ classes.
+  
+  These are the $\sim$ classes.
    \begin{equation*}
-     r_0=\eclass_{0,0} =\set{q_0, q_2}        
+     r_0=\eclass_{0} =\set{q_0, q_2}        
      \quad
-     r_1=\eclass_{0,1} =\set{q_1}
+     r_1=\eclass_{1} =\set{q_1}
    \end{equation*}
   Here is the minimized machine.
   \begin{display}
     \includegraphics{automata/asy/min/min20.pdf}
   \end{display}
 \item
-  Here is the machine with the arrows reversed, the nodes renamed, and
+  Here is the machine with the arrows reversed, the nodes renamed, 
   the start node made final, and the final one made a start.
   \begin{display}
     \includegraphics{automata/asy/min/min21.pdf}

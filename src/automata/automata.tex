@@ -255,6 +255,7 @@ with `\acceptingstatemark').\index{accepting state!in transition tables}\index{f
 \end{example}
 
 \begin{remark} \label{rem:HowToDesignFSM}
+%<*disc:designingFSMs>
 Sometimes people new to constructing these machines
 put down $q_0$ and then think of some input strings and 
 add states handling those inputs.
@@ -263,10 +264,11 @@ Better is to be able to articulate the role that each state
 plays in accomplishing the machine's job.
 % Because states wait for the next token, these roles look forward.
 In the prior example we can articulate that~$q_1$
-is ``waiting for a \str{0}''
-or ``waiting for at least one \str{0}.''
-Similarly $q_5$ is ``waiting for a \str{1}.''
-And $q_4$ is ``looking for at least one \str{0}, followed by a~\str{1}.''
+is ``waiting for at least one \str{0}'' or perhaps
+``waiting for at least one \str{0} and an even number of \str{1}'s.''
+Similarly $q_5$ is ``waiting for an odd number of \str{1}'s.''
+And $q_4$ is ``looking for at least one \str{0} and an odd number of~\str{1}'s.''
+%</disc:designingFSMs>
 \end{remark}
 
 Finite State machine descriptions may take
@@ -2518,13 +2520,15 @@ A
 \definend{nondeterministic Finite State machine}\index{nondeterministic Finite State machine}\index{NFSM|see {nondeterministic Finite State machine}}\index{Finite State machine!nondeterministic}\index{nondeterminism!for Finite State machines}
 $\FSM=\sequence{Q,q_{0},F,\Sigma,\Delta}$ 
 consists of a finite \definend{set of states}~$Q$,
-including the \definend{start state}~$q_{0}$,
+including the \definend{start state}~$q_{0}$,\footnotemark{} %
 a subset $F\subseteq Q$ of \definend{accepting states}\index{accepting state!nondeterministic Finite State machine}
 or \definend{final states},\index{final state!nondeterministic Finite State machine}
 a finite \definend{input alphabet} set~$\Sigma$,
-and a \definend{next-state function}\index{next-state function!nondeterministic Finite State machine}
+and a \definend{transition function}\index{transition function!nondeterministhc Finite State machine}\index{nondeterministic Finite State machine!transition function}
+or \definend{next-state function}\index{next-state function|see{transition function}}
 $\map{\Delta}{Q\times\Sigma}{\powerset (Q)}$.
-\end{definition}
+\end{definition}\footnotetext{%
+  We won't need nondeterministic machines with more than one start state.}
 %</def:NondeterministicFiniteStateMachine>
 
 We will use these machines in three ways.
@@ -2611,15 +2615,15 @@ Put together, these form a directed tree rooted at~$\mathcal{C}_0$.\footnote{%
   That is, the graph nodes are configurations and
   if $\mathcal{C}\yields\smash{\hat{\mathcal{C}}}$
   then there is an edge from the first to the second.
+  While it can happen that the same configuration is derived 
+  via two different paths,
+  we will draw these graphs as trees and call them that
+  because it is easier to understand and won't change any results.
 }
 This is the 
 \definend{computation tree}\index{computation tree!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation tree}
 or just
-\definend{computation}.\footnote{%
-  A nondeterministic machine can derive the same configuration
-  via two different paths.
-  However, we will draw these graphs as trees and call them that
-  because it makes the pictures easier to read.}\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
+\definend{computation}.\index{computation!nondeterministic Finite State machine}\index{nondeterministic Finite State machine!computation}
 
 In that tree a 
 \definend{maximal path}\index{maximal path!of the computation tree}\index{computation tree!maximal path}
@@ -2682,10 +2686,9 @@ by that machine. %\footnotemark[2]
 %</def:NFSMAccepted>
 
 \label{discussion:NFSMStringAcceptance}
-We can also adapt the definition 
-of the 
-extended transition function\index{extended transition function!nondeterministic Finite State machine} 
-so that it outputs sets,
+We can also adapt the definition  of the 
+extended transition function.\index{extended transition function!nondeterministic Finite State machine} 
+In this context it outputs sets,
 $\map{\extended{\Delta}}{\kleenestar{\Sigma}}{\powerset(Q)}$.
 Fix a nondeterministic~$\FSM$ with
 transition function $\map{\Delta}{Q\times \Sigma}{\powerset(Q)}$.
@@ -3082,9 +3085,9 @@ Otherwise decompose the tape as $\tau=c\concat\hat{\tau}$, giving the present
 character~$c\in\Sigma$ and the tape contents for the next
 configuration~$\hat{\tau}$.
 Then the step has two parts.
-First perform the transitions that are not $\varepsilon$~moves
-by finding the set of states $r_0,r_1,\ldots\,r_k$ given by $\Delta(q,c)$.
-The second part is to take the $\varepsilon$~closures:~compute
+First, perform the transitions that are not $\varepsilon$~moves
+by finding the set of states $\Delta(q,c)=\set{r_0,r_1,\ldots\,r_k}$.
+Second, take the $\varepsilon$~closures of those states by computing
 the set of configurations
 $\set{\hat{\mathcal{C}}=\sequence{\hat{q},\hat{\tau}}\suchthat
      \text{$\hat{q}\in \hat{E}(r_i)$ for $r_i\in\Delta(q,c)$}}$. 
@@ -3113,7 +3116,7 @@ any other path.
 If there exists at least one maximal path containing a
 \definend{halting configuration}\index{halting configuration}\index{configuration!halting}\index{nondeterministic Finite State machine!halting configuration} 
 $\mathcal{C}_h=\sequence{q_h,\emptystring}$
-whose state is accepting $q_h\in F\!$,
+whose state is accepting, $q_h\in F\!$,
 then $\FSM$ \definend{accepts}\index{accept an input}\index{nondeterministic Finite State machine!accept string}\index{accepts}\index{string accepted!by nondeterministic Finite State machine} 
 the input~$\tau_0$.
 Otherwise $\FSM$ 
@@ -4813,26 +4816,26 @@ Note that the empty string is a member of that language.
 A common mistake is to forget that star includes 
 the possibility of zero-many repetitions.
 
+%<*ex:RegexFour>
 \begin{example}
-% <*ex:RegexFive>
 Any finite language is described by a regular expression.  
 We can just list all of its strings:~the
 language % over $\Sigma=\set{\str{a},\str{b},\str{c}}$ 
 $\set{\str{abc}, \str{bbc}, \str{cbc}}$
 is described by the regular expression \re{(abc)|(bbc)|(cbc)}.
-%</ex:RegexFive>
 \end{example}
+%</ex:RegexFour>
 
+%<*ex:RegexFive>
 \begin{example}
-%<*ex:RegexSix>
 As well, to match any character we can list them all.
 The language of the prior example consists  
 of three-letter words ending in \str{bc}, which we can describe
 with the regular expression \re{(a|b|c)bc}.
-%</ex:RegexSix>
 \end{example}
+%</ex:RegexFive>
 
-%<*ex:RegexFour>
+%<*ex:RegexSix>
 \begin{example}
 We can use~\re{$\emptystring$} to mark things as optional.
 Thus \re{a*($\emptystring$|b)} describes the language 
@@ -4844,7 +4847,7 @@ between three and five $\str{a}$'s,
 $\lang=\set{\str{aaa}, \str{aaaa}, \str{aaaaa}}$, we can 
 use \re{aaa(\emptystring|a|aa)}.
 \end{example}
-%</ex:RegexFour>
+%</ex:RegexSix>
 
 % \begin{example}
 % The language
@@ -9384,7 +9387,9 @@ or~\str{1} and~\str{g1},
 then the machine proceeds.
 Otherwise there is no matching instruction and the 
 computation path dies.
+%</ex:NondeterministicPushDownAcceptsPalindromesii>
 
+%<*ex:NondeterministicPushDownAcceptsPalindromesiii>
 How does this machine
 know when to change from phase one to two, from pushing to popping?
 It is nondeterministic\Dash it guesses.
@@ -9403,8 +9408,7 @@ in instruction~$8$ to switch from state~$q_0$ to~$q_1$.
     4 &\tapegraphic{\asydir machine/machine18.pdf} & \\
   \end{tapesequencetable_withinstruction}
 \end{tapesequence}
-
-%</ex:NondeterministicPushDownAcceptsPalindromesii>
+%</ex:NondeterministicPushDownAcceptsPalindromesiii>
 
 Before the next computation path example, note a point about the input string.
 A nondeterministic machine does not need an input-end marker because

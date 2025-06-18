@@ -89,49 +89,44 @@
 \begin{frame}
   \frametitle{Motivation}
 
-Turing and other researchers tried to define what is computable in principle.
-Church's Thesis is that their definitions do indeed capture the intuitive 
-idea of effectively computable, of computable by an unbounded mechanism.
+A Turing machine has two parts: a mechanism that is like a modern computer's
+CPU, and a tape that is like a modern computer's memory.
+The interface between the two we have called the I/O head, which can
+read from the tape and also write to it.
 
-A person could object,
-``Although a Turing machine has only finitely many states, it can write to
-the tape.
-Consequently there are Turing machines that write arbitrarily many times
-to the tape, and so have unboundedly many configurations.
-But the physical universe cannot support unboundedly many configurations.''
+In this chapter we will focus on the mechanism\Dash we want to know
+what can be accomplished with states alone.
 
-We will next study machines that are modifications of Turing machines
-to have a bounded number of configurations.
-These have finitely many states and can read,
-but they cannot write.
-Instead, they just consume their input and then indicate either that the 
-input string was accepted or that it was not accepted. 
+These machines take input, so the head can still read from the tape.
+But they have no scratch memory, so the head cannot write to the tape. 
+
+Instead of tape output we will limit the conclusion of a computation
+with these machines to either `yes, the input string is accepted' or
+`no, the input is rejected'.
 \end{frame}
 
 
 
 \begin{frame}
-  \frametitle{Definitions}
-\ExecuteMetaData[\catchfilefn]{def:FSM}
-
-\begin{center}
-  \includegraphics{\generalasydir share/machine02.pdf}
-\end{center}
-
-\pause{\color{blue}\textit{Remark:}}
+  \frametitle{Definition}
 Recall that Turing machines are defined to be
 sets of four-tuple instructions  $q_pT_pT_nq_n$,
 subject to the restriction that the set is
 deterministic, meaning that no two instructions can begin with 
 the same pair $q_pT_p$.
-Consequently, over all $q_pT_pT_nq_n\in\TM$
+So over all $q_pT_pT_nq_n\in\TM$,
 the association of present pair $q_pT_p$ with next pair~$T_nq_n$,
 defines a function, the next-state function
 $\map{\Delta}{Q\times \Sigma}{\Sigma\cup\set{\str{L},\str{R}}\times Q}$.  
 
-Finite State machines work the same way, 
-and in the definition above 
-we skipped four-tuples and went straight to the function.
+Finite State machines work the same way 
+and in the definition 
+we skip the four-tuples and go straight to the function.
+
+\ExecuteMetaData[\catchfilefn]{def:FSM}
+\begin{center}
+  \includegraphics{\generalasydir share/machine02.pdf}
+\end{center}
 \end{frame}
 
 
@@ -145,7 +140,8 @@ a double circle.
 \begin{center}
   \includegraphics{asy/fsm00.pdf}
 \end{center}
-The transition function is a tabular version of the diagram.
+We can show 
+the transition function as a tabular version of the diagram.
 For instance, $\Delta(q_1,\str{1})=q_2$.
 \begin{center}
 \begin{transitionfunction}
@@ -235,21 +231,24 @@ empty string,~$\emptystring$.
 
 
 \begin{frame}
-\begin{example}
-This machine accepts all strings starting with zero or more 
-copies of \str{HEF}.
-\begin{center}
-  \includegraphics{asy/fsm06.pdf}
-\end{center}
-(It is a gotcha question; all strings begin with zero-many copies of \str{HEF}.)
-\end{example}
-\pause
+% \begin{example}
+% This machine accepts all strings starting with zero or more 
+% copies of \str{HEF}.
+% \begin{center}
+%   \includegraphics{asy/fsm06.pdf}
+% \end{center}
+% (It is a gotcha question; all strings begin with zero-many copies of \str{HEF}.)
+% \end{example}
+% \pause
 \begin{example}
 This machine accepts only the strings \str{CAT} or \str{DOG}.
 \begin{center}
   \includegraphics{asy/fsm07.pdf}
 \end{center}
 \end{example}
+
+One pattern in designing these machines is to have an error state,
+which is a sink state in that once the machine enters then it cannot leave.
 \end{frame}
 
 
@@ -269,6 +268,18 @@ accepts strings with at least three \str{a}'s.
   \includegraphics{asy/fsm09.pdf}
 \end{center}
 \end{example}
+\end{frame}
+
+\begin{frame}{Remark: designing machines}
+\begin{example}
+The machine below accepts a string if and only if it
+contains at least two \str{0}'s as well as an even number of \str{1}'s.
+\begin{center}  
+  \vcenteredhbox{\includegraphics{\asydir fsa/fsa11.pdf}}               
+\end{center}
+\end{example}
+
+\ExecuteMetaData[\catchfilefn]{disc:designingFSMs}
 \end{frame}
 
 
@@ -357,6 +368,9 @@ Here is a Racket implementation of the above multiple of three machine.
 \lstinputlisting[firstline=31,lastline=47]{\schemeautomata mod3-fsm.rkt}
 The \codeinline{(memv ch list)} command determines whether
 \codeinline{ch} is a member of the list.
+The notation for a character uses the sharp-slash, in contrast to
+the notation for one-character strings that just use quotes, such as
+\codeinline{"3"}.
 % \begin{lstlisting}
 % def multiple_of_three_fsm(s):
 %     state = 0
@@ -499,13 +513,13 @@ or $\sigma_1=\str{baab}$.
   \end{tabular}
 \end{center}
 Derivation is a computation in that it is pushing symbols by following
-rigid rules.
+rules.
 
 \pause
 This computation is nondeterministic in the sense that while doing 
 a sequence of $\derives$~steps,
-we often find that more than one $\rightarrow$~rule applies.
-So there is more than one next thing to do, not just a unique next string.
+we often find that more than one $\rightarrow$~rule could apply.
+So there is more than one next thing to do, not just a unique next step.
 \end{frame}
 
 
@@ -519,7 +533,7 @@ So there is more than one next thing to do, not just a unique next string.
   % \frametitle{Finding a derivation}
 Suppose that we have a grammar where there is sometimes more than one
 applicable rule.
-Give a target string~$\sigma$, how to derive it?
+Give a target string~$\sigma$, how to find its derivation?
 
 One way is brute force:~perform
 all applicable production rules to the start symbol, 
@@ -541,7 +555,7 @@ here are the first few levels for the grammar on the prior slide.
   \end{picture}
 \end{center}
 \only<4>{The second way, 
-the way that we actually solve these problems such as the ones in the Grammar
+the way that we usually solve these problems such as the ones in the Grammar
 section's homework, is to guess.
 We look at the derivation rules and
 think, ``Well I wonder if it might have to do with \ldots{}''\sentencespace 
@@ -560,7 +574,7 @@ And there is no arrow at all leaving $q_1$ with the label~\str{1}.
 \end{center}
 Suppose that this machine gets the input~\str{00001}.
 Just as with the grammar, we will have two ways to think of what happens.
-First, we can trace out every possible branch.
+First, we can trace out every possible path.
 \end{frame}
 \begin{frame}
 \begin{center}\small
@@ -585,25 +599,26 @@ First, we can trace out every possible branch.
 %   \only<6>{\includegraphics{asy/nfsm07.pdf}}%
 %   \only<7>{\includegraphics{asy/nfsm08.pdf}}% using onslide causes other figs to not be centered
 % \end{center}
-\only<7>{The highlighted branch ends in an accepting state.}
+\only<7>{The highlighted path ends in an accepting state.}
 \end{frame}
 
 \begin{frame}
 As with the grammar,
 we are picturing that when the machine is asked to do two things, 
 it does them both.
-And when there is no next state, the branch dies.
-So the computation history is not straight-line but instead is a tree.
+And when there is no next state, the path dies.
+So the computation history is not straight-line but instead is a
+directed graph.
 
 After the first step, the machine is in multiple states simultaneously, namely 
 $q_0$ and~$q_1$.
 The same also happens at all later steps; in all of those steps
 the machine is in a set of states.
 
-There is a branch that gets to the end and accepts the 
+There is a path that gets to the end and accepts the 
 input string~\str{00001}.
-Branches can fail to accept the string because they die,  
-or because they get to the end and they just are not in an accepting state.
+Paths can fail to accept the string because they die,  
+or because they get to the end and they are not in an accepting state.
 
 \pause
 As with the grammar, 
@@ -624,13 +639,13 @@ We could say that the machine has correctly guessed.
 
 
 \begin{frame}{First mental model for nondeterminism: spawning}
-For the grammar example, we made a branch each time a
+For the grammar example, we branched each time a
 production rule applied to a string.
 For the machine example, we also branched each time there was a
 possible thing to do.
 
-Another example of this branching is 
-the Travelling Salesman problem.
+Another example of this is 
+the Traveling Salesman problem.
 Suppose that we want a cyclic trip 
 that visits every state capitol in the forty eight contiguous US~states
 in less than $16\,000$ kilometers.
@@ -641,17 +656,16 @@ The process assigned Albany,
 for instance, would know that the trip so far is $126$~kilometers. 
 After that, each child would fork its own set of children, forty six of them.
 At the end if there is
-a trip of less than $16\,000$ kilometers then some branch has found it.
+a trip of less than $16\,000$ kilometers then some path has found it.
 Note that we consider
 the overall computation a success if there exists 
-even one process that is a success.
+even one path that is a success.
 
 The first mental model for nondeterminism is that when presented with 
 multiple things to do, the machine does them all.
 Think of it as an unboundedly parallelizable device.
 
-This model 
-is natural.
+This model is familiar.
 In everyday computing, we are all used to having lots of windows open 
 on the screen, doing lots of things.
 Under the hood, the operating system forks child processes to cover each
@@ -693,16 +707,15 @@ Very important: `if there exists' doesn't mean that there must be an algorithm
 for finding it such as backtracking or dynamic programming, etc.
 This is pure existence\Dash it just requires that there 
 is a way for the computation to succeed.
-That's why the demon is here;~it is so powerful that it 
-goes beyond needing ordinary computation to get the
-answer.
+That's why the demon is in this story;~it is a being so powerful that it 
+goes beyond needing ordinary computation to get the answer.
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Definition of a Nondeterministic Finite State machine}
 
-To make the definition of a nondeterministic Finite State machine,
+To make the definition of a nondeterministic Finite State machine
 we change one thing from the definition of Finite State machine,
 namely we change the codomain of $\Delta$ from 
 $Q$ to the power set $\powerset(Q)$.
@@ -716,7 +729,7 @@ in acceptance.
 
 \begin{example}
 This nondeterministic
-listener waits to hear the remote signal
+listener waits to hear the signal
 \str{0101110}.
 That is, it accepts the language
 $\set{\sigma\concat\str{0101110}\suchthat \sigma\in\kleenestar{\B}}$.
@@ -743,7 +756,7 @@ accepts only those strings ending in \str{HEF}.
 \end{center}
 
 \pause
-Contrast that with what we got when we did this job
+Contrast that with what we needed when we did this job
 using a deterministic machine.
 \begin{center}
   \includegraphics{asy/fsm03.pdf}
@@ -844,7 +857,7 @@ The $\varepsilon$ moves are shown vertically, within the white stripes.
 \begin{center}
     \includegraphics{\asydir nfsm/nfsm1049.pdf}
 \end{center}
-There is an accepting branch, highlighted.    
+There is an accepting path, which is highlighted.    
 \end{example}
 \end{frame}
 
@@ -874,10 +887,10 @@ these are the $\varepsilon$~closures.
 \begin{frame}
 \begin{example}
 We can compute a state's $\varepsilon$~closure by proceeding in steps.
-The table below uses this machine.
-\begin{center}
-  \includegraphics{\asydir nfsm/nfsm83.pdf}
-\end{center}
+% The table below uses this machine.
+% \begin{center}
+%   \includegraphics{\asydir nfsm/nfsm83.pdf}
+% \end{center}
 \ExecuteMetaData[\catchfilefn]{df:EpsilonClosureii}
 \end{example}
 \end{frame}
@@ -909,7 +922,7 @@ This may help obviate qualms over `guessing'.
 
 \begin{frame}
 \begin{example}
-Here is a nondeterministic Finite State machine~$\FSM$.
+Here is a nondeterministic Finite State machine~$\FSM$ without $\varepsilon$ moves.
 \begin{center}
   \includegraphics{asy/nfsm20.pdf}
 \end{center}
@@ -943,9 +956,9 @@ nondeterministic machine.
 
 \begin{frame}
 Here is that diagram again, along with the one showing
-only reachable states.
+only states reachable from~$r_1$.
 \begin{center}
-  \vcenteredhbox{\includegraphics{asy/fsm10.pdf}}  \\[2ex]
+  \vcenteredhbox{\includegraphics{asy/fsm10.pdf}}  \\[3ex]
   \vcenteredhbox{\includegraphics{asy/fsm11.pdf}}
 \end{center}
 \end{frame}
@@ -953,14 +966,15 @@ only reachable states.
 
 
 
-\begin{frame}{Algorithm for converting to a deterministic machine}
+\begin{frame}{Algorithm for converting a nondeterministic Finite State machine to a deterministic machine, whether it has $\varepsilon$ moves or not}
 \ExecuteMetaData[\catchfilefn]{df:DFSMFromNFSM}
 
 \pause\medskip
-As an example, the next slide does the conversion for this machine.
-\begin{center}\small
-  $\FSM_N$:\qquad\vcenteredhbox{\includegraphics{\asydir nfsm/nfsm93.pdf}} 
-\end{center}
+The next slide does the conversion for a nondeterministic Finite State machine
+with $\varepsilon$ moves.
+% \begin{center}\small
+%   $\FSM_N$:\qquad\vcenteredhbox{\includegraphics{\asydir nfsm/nfsm93.pdf}} 
+% \end{center}
 \end{frame}
 
 \begin{frame}
@@ -1039,30 +1053,35 @@ The strings that are accepted by this machine match \re{a*ba*}.
 \pause
 \ExecuteMetaData[\catchfilefn]{ex:RegexFour}
 \pause
-\begin{example}
 \ExecuteMetaData[\catchfilefn]{ex:RegexFive}
-\end{example}
 \pause
 \ExecuteMetaData[\catchfilefn]{ex:RegexSix}
 \end{frame}
 
 
-\begin{frame}{More examples}
+\begin{frame}{Practice}
 
 \begin{example}
 Produce a regular expression to match each description.
 For each, take the alphabet to be the set of bits,~$\B=\set{\str{0},\str{1}}$.
 \begin{enumerate}
 \item
-The set of bitstrings that end in three consecutive \str{1}'s. 
+  The set of bitstrings that end in three consecutive \str{1}'s.
 \pause
+  \textit{Answer:}~\re{(0|1)*111}
 \item
 The set of bitstrings with at least one~\str{0}.
 \pause
+  \textit{Answer:}~\re{1*0(0|1)*}
+
 \item The bitstrings containing at least three~\str{1}'s.
 \pause
+  \textit{Answer:}~\re{0*10*10*1(0|1)*}
 \item The set of bitstrings starting with a digit other than the one
-that it ends with.
+  that it ends with.
+\pause
+  \textit{Answer:}~\re{(0(0|1)*1)|(1(0|1)*0)}
+
 \end{enumerate}
 \end{example}
 
@@ -1474,15 +1493,16 @@ and is not a member of~$\lang$.
 That's a contradiction.   
     
 \end{example}
+\end{frame}
 
-\pause
-\begin{example}
+
+\begin{frame}{Practice}
 Show that each language over $\Sigma=\set{\str{a},\str{b}}$ is not regular.
 \begin{enumerate}
 \item $\set{\str{a}^n\str{b}^m\suchthat n=m+1}$
+\pause
 \item the set of palindromes
 \end{enumerate}
-\end{example}
 \end{frame}
 
 
@@ -1545,17 +1565,6 @@ so we put a \blank{} to mark the end of the input
 \end{frame}
 
 
-\begin{frame}
-\begin{example}
-\ExecuteMetaData[\catchfilefn]{ex:PalindromesUsingMiddleMarkeri}
-\end{example}
-\end{frame}
-
-
-\begin{frame}
-\ExecuteMetaData[\catchfilefn]{ex:PalindromesUsingMiddleMarkerii}
-\end{frame}
-
 
 
 \begin{frame}{Pushdown machines with $\varepsilon$ transitions}
@@ -1572,15 +1581,18 @@ Because this machine can guess, we can have it guess whether the input is
 finished.
 So we will omit the terminating \blank{} that we used in the 
 two prior examples.
+
+\pause
+\ExecuteMetaData[\catchfilefn]{ex:NondeterministicPushDownAcceptsPalindromesii}  
 \end{example}
 \end{frame}
 
 \begin{frame}
-\ExecuteMetaData[\catchfilefn]{ex:NondeterministicPushDownAcceptsPalindromesii}  
+\ExecuteMetaData[\catchfilefn]{ex:NondeterministicPushDownAcceptsPalindromesiii}  
 \end{frame}
 
 \begin{frame}
-Here is the branch of the computation tree where the machine
+Here is the maximal path of the computation tree where the machine
 accepts the even-length palindrome string \str{0110}.
 \begin{tapesequence}
   \begin{tapesequencetable}
@@ -1609,7 +1621,7 @@ Here is the machine's full computation tree on input \str{100}.
   \includegraphics{\asydir pda/pda09.pdf}
 \end{center}
 None
-of the branches end both with an empty string and in an accepting state,
+of the maximal paths end both with an empty string and in an accepting state,
 so it rejects the input.
 \end{frame}
 
@@ -1674,9 +1686,9 @@ Regular expressions are so useful that they have escaped the theory and
 are widely used for symbol manipulation in the wild.
 
 Along the way, they acquired a large number of extensions.
-Some of these are conveniences, things that you could do with
+Some of these are conveniences, things that we could do with
 the regular expression tools that we have already seen.
-But some of these are genuine extensions, which allow you to do 
+But some of these are genuine extensions, which allow us to do 
 more than is possible with the regular expressions that we have 
 studied.
 
@@ -1729,7 +1741,7 @@ Earlier,
 to match  `at most one \str{a}' we used \re{\emptystring|a}.
 So we can write something like \re{(|a)}.
 But depicting the empty string by just putting nothing there can be confusing.
-Modern languages allow you to write
+Modern languages allow us to write
 \re{a?} for `at most one \str{a}'.
 
 For `at least one \str{a}'
@@ -1786,11 +1798,11 @@ This matches:
 \begin{example} \label{ex:AmerTime}
 In the twelve hour time format some typical times
 strings are `8:05~am' or `10:15~pm'.
-You could use this (note the empty string at the start).
+We could use this (note the empty string at the start).
 \begin{center}
 \re{(|0|1)\textbackslash d:\textbackslash d\textbackslash d\textbackslash s(am|pm)}
 \end{center}
-Note that it matches some strings that you don't want, 
+Note that it matches some strings that we don't want, 
 such as `18:05 am'. 
 \end{example}
 \end{frame}
@@ -1862,7 +1874,7 @@ but this regex does not handle that).
 
 \begin{frame}
 As to lines,
-you can also match the start of a line and end of line with the metacharacters
+we can also match the start of a line and end of line with the metacharacters
 caret~`\str{\textasciicircum}' and
 dollar sign~`\str{\textdollar}'.
 
@@ -1871,7 +1883,7 @@ They often, by default, match the regex anywhere in the line.
 
 Sometimes, as in Python, there are two modes.
 One matches the give regex anywhere in the line, and one
-specifically requires you to put in the parts such as start of line
+specifically requires us to put in the parts such as start of line
 and end of line.
 \end{frame}
 
@@ -1885,7 +1897,7 @@ Matching any one tag is straightforward, for instance
 \re{<b>[\textasciicircum<]*</b>}.
 
 But for a single expression that matches them all,
-you would seem to have to do each as a separate
+we would seem to have to do each as a separate
 case and then combine cases with a pipe.
 However, instead modern regexes allow the system to remember what it finds
 at the start and look for that again at the end.
@@ -1897,7 +1909,7 @@ Its second character is an open parenthesis, and the
 \str{\textbackslash\textbackslash 1} refers to everything between that
 open parenthesis and the
 matching close parenthesis.
-(As you might guess from the \str{1}, you can also have
+(As suggested by the \str{1}, we can also have
 a second match with \str{\textbackslash\textbackslash 2}, 
 etc.)
 \end{example}

@@ -1126,8 +1126,8 @@ yaxis(pic, XZero,
 // draw the graphs
 draw(pic, graph(f_scaled,xmin,xmax), FCNPEN);
 draw(pic, graph(g_scaled,xmin,xmax), FCNPEN);
-label(pic,"$f$",Scale(pic,(20,500)), 3W);
-label(pic,"$g$",Scale(pic,(17,300)), 3E);
+label(pic,"$f_0$",Scale(pic,(20,500)), 3W);
+label(pic,"$f_1$",Scale(pic,(17,300)), 3E);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -1184,7 +1184,7 @@ yequals(pic, 1,
 
 pen second_pen = FCNPEN_NOCOLOR+highlightcolor+opacity(.5,"Normal");
 draw(pic, graph(ratio,1.0,xmax), FCNPEN);
-label(pic,"$f/g$",(20,2), N);
+label(pic,"$f_0/f_1$",(20,2), N);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -1243,8 +1243,8 @@ yaxis(pic, XZero,
 draw(pic, graph(f_scaled,xmin,xmax), FCNPEN);
 draw(pic, graph(g_scaled,xmin,xmax), FCNPEN);
 
-label(pic,"$g$",Scale(pic,(xmax,0)), 3N);
-label(pic,"$f$",Scale(pic,(xmax,ymax)), 2W+1S);
+label(pic,"$f_0$",Scale(pic,(xmax,0)), 3N);
+label(pic,"$f_2$",Scale(pic,(xmax,ymax)), 2W+1S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -1302,7 +1302,7 @@ yaxis(pic, XZero,
       arrow=Arrow(TeXHead,axis_arrow_size));
 
 draw(pic, graph(ratio_scaled,1,xmax), FCNPEN);
-label(pic,"$f/g$",Scale(pic,(0.90*xmax,0.20*ymax)), 0S);
+label(pic,"$f_2/f_0$",Scale(pic,(0.90*xmax,0.20*ymax)), 0S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -1362,8 +1362,8 @@ yaxis(pic, XZero,
 
 draw(pic, graph(f,xmin,xmax), FCNPEN);
 draw(pic, graph(g,xmin,xmax), FCNPEN);
-label(pic,"$f$",Scale(pic,(xmax,f(xmax))), 2W);
-label(pic,"$g$",Scale(pic,(xmax,g(xmax))), 2S);
+label(pic,"$f_3$",Scale(pic,(xmax,f(xmax))), 2W);
+label(pic,"$f_0$",Scale(pic,(xmax,g(xmax))), 2S);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
@@ -1430,7 +1430,7 @@ yequals(pic, 2,
 // write(format("ratio(20) %f",ratio(20)));
 
 draw(pic, graph(ratio_scaled,xmin,xmax), FCNPEN);
-label(pic,"$f/g$",Scale(pic,(xmax,2)), 2N);
+label(pic,"$f_3/f_0$",Scale(pic,(xmax,2)), 2N);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

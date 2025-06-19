@@ -33,9 +33,8 @@ You can also get a paper copy from Amazon.  See the homepage.
 
 ## Status
 
-This is version 1.10. I have used it in class from 2018 through 2022 and a
-couple of other people have used it in their class.  I have uploaded a
-version to Amazon.
+This is approaching version 2. I have used it in class from 2018 through
+2022 and a couple of other people have used it in their class.
 
 
 

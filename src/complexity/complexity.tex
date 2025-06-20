@@ -1252,7 +1252,8 @@ then on the Turing machine it can be $\bigOh(n^5)$}{%
   on an unboundedly parallel machine model it takes constant time,~$\bigOh(1)$.}.
 Thus, the cost of an algorithm is fixed to a machine model.
 % and then the following definition lets us discuss the Big~$\bigOh$.
-(\citetext{Standards vary from area to area but the most commonly used model is the Turing machine}{%
+(Standards vary from area to area but in general
+\citetext{in the Theory of Computation the most commonly used model is the Turing machine}{%
   This observation is from A~Godson's Turing Award lecture,
   \url{https://www.youtube.com/watch?v=f2NiGO8zC1c}, 
   where he ascribes its commonality to the fact that Turing machines come
@@ -1276,7 +1277,7 @@ if $\hat{t}_{\mathcal{M}}$ is~$\bigOh(f)$.
 
 Our third point about Big~$\bigOh\!$
 \citetext{is that its definition ignores constant factors}{%
-  This discussion originated as \autocite{SE:IgnoreConstants}.}:~does 
+  This discussion originated as \autocite{SE:IgnoreConstants}.};~does 
 that reduce its value for comparing algorithms?
 Suppose that an algorithm takes time
 given by $C n^2$ for inputs~$n>N$.
@@ -1292,7 +1293,7 @@ is \citetext{not complete until we understand what happens to inputs less than t
 
 Part of the reason that often constants are not specified is that 
 finding them is hard.\footnote{%
-  Sometimes authors
+  Sometimes authors state
   \protect\citetext{their order of magnitude}{%
     For a rough idea of what these may be, here are some numbers that
     every programmer should know. % http://highscalability.com/blog/2011/1/26/google-pro-tip-use-back-of-the-envelope-calculations-to-choo.html
@@ -1312,9 +1313,10 @@ finding them is hard.\footnote{%
     A nanosecond is $10^{-9}$~seconds.  
     For more, see
     \protect\url{https://www.youtube.com/watch?v=JEpsKnWZrJ8&app=desktop}.}.}
-For one thing, they are affected by low-level machine details
-such as the memory addressing and paging, cache hits, and whether
-the CPU can do some operations in parallel.
+They are affected by low-level machine details that vary
+from one commercial machine to another,
+such as the memory addressing scheme and page sizes, and whether
+the CPU can operate in parallel.
 % and these details can
 % make a tremendous difference in the constants.
 % Imagine doing the analysis on a commercially available machine
@@ -1322,22 +1324,21 @@ the CPU can do some operations in parallel.
 % That would be discouraging.
 What's more, 
 experience shows that 
-doing the work to find these numbers 
-often does not change the selection of the best algorithm to use.
+doing the work to find the numbers in different contexts 
+often does not change the selection of the best algorithm.
 As \zcref{tab:CompareFcnNumbers} illustrates, knowing at a Big~$\bigOh$ level
 how the algorithm
 grows is, past some point,
 more important than knowing the values of the constants.
 
 \margingraphic[l]{0.17\textwidth}{complexity/pix/knuth.jpg}{\label{fig:Knuth}\href{https://en.wikipedia.org/wiki/Donald_Knuth}{Donald Knuth b~1938}}\index{Knuth, D!picture}
-We could imagine that instead of analyzing particular commercial machines, 
-we all agree on a reference architecture.
+We could instead agree on a reference architecture.
 This is D~Knuth's approach in the monumental
 \textit{Art of Computer Programming} series.
-But as in the commercial case there is a risk that
+But as with commercial machines there is a risk that
 \citetext{the standard gets updated}{%
-  Even Knuth had to update standards, from his machine model MIX to MIX.}.
-Then published results longer apply, and it is all to do again.
+  Even Knuth had to update standards, from his machine model MIX to MMIX.}.
+Then published results no longer apply and it is all to do again.
 Instead, the analysis that we do to find the Big~$\bigOh$ behavior of an
 algorithm usually refers to an abstract computer model such as a 
 Turing machine or a RAM model.
@@ -1383,11 +1384,11 @@ We don't want to say more.
 % in a given range.\footnote{%
 %   For that, use benchmarks.}
 
-This leads to our fourth point.\label{pageref:PseudoPolyTime}
+The fourth point is that\label{pageref:PseudoPolyTime}
 \begin{credit}
   This discussion originated as \autocite{SE:pseudopolynomial}.
 \end{credit}
-Understanding how an algorithm
+describing how an algorithm
 performs as the input size grows
 requires that we define the input size.
 
@@ -1397,7 +1398,12 @@ requires that we define the input size.
 \margingraphic{0.37\textwidth}{complexity/pix/xkcdbigo.png}{\href{https://xkcd.com/342/}{Courtesy \url{xkcd.com}}}
 }
 Consider an algorithm for testing primality that inputs a natural
-number~$n$ and tries each $k\in\set{2,\ldots\,n-1}$ to see if it divides~$n$. 
+number~$n$ and
+\citetext{tries each number in $\set{2,\ldots\,n-1}$ to see if it divides~$n$}{%
+  We could limit ourselves to a largest value of the square root of~$n$.
+  But the contrast between the two analyses in the paragraph
+  would not change much since
+  $\lg(\sqrt{n})=\lg(n^{1/2})=(1/2)\lg(n)\in\bigOh(\lg(n))$.}. 
 The worst case is that it tests all of those numbers,
 about~$n$ of them.
 Take the size of~$n$ to be the number of bits needed
@@ -1408,40 +1414,44 @@ and the number of operations is about~$n$.
 That's exponential growth\Dash passing from $\lg n$ to~$n$ 
 requires exponentiation.
 However, in a programming class this
-algorithm would likely be described as linear %, as $\bigOh(n)$,
+algorithm would likely be described as linear, as $\bigOh(n)$,
 because
 for the input~$n$ there are about $n$-many divisions.
 How to explain the difference?
 
-This is about the relationship between the algorithm
+Like our second point,
+this is about the relationship between the algorithm
 and the underlying computing model.
 The programming class may make  
 the engineering judgment that for every use of the program, the
-input will fit into a $64$~bit word.
-This chooses a computation model like the RAM model,
-where large numbers take the same time to read as small ones.
-For this model the relationship between size of the input and
-the runtime is linear.
+input will fit into the machine's word.
+So it does not define the size of the input to be the number of bits needed
+to represent that input, instead
+like the RAM model it defines the size of the input to be constant,
+namely that reading it takes one tick.
+That explains the two different analyses
+of the relationship
+between the size of the input and the runtime. 
 
 This is in part
 a theory-versus-application thing.
-In a common programming setting
-the input is bounded
+In a common programming setting the input is bounded,
+typically by the machine's word size,
 while in a theoretical setting the algorithm 
 accepts arbitrarily large input. 
 An algorithm whose runtime behavior as a function of the input is polynomial
-but whose behavior as a function of the bit size of the input is
+but whose behavior as a function of the number of bits in the input is
 exponential is 
 \definend{pseudo polynomial}.\index{pseudo polynomial}
 
-One last point about Big~$\bigOh$. 
+One last point. 
 When analyzing an algorithm
 we usually use the behavior that is the worst case 
-for any input of that size. % as in \zcref{def:TMTime}, 
+for any input of that size, as in \zcref{def:TMTime}. 
 We could instead consider 
 the average over all inputs of that size.
-For instance, the quick sort algorithm
-takes quadratic time $\bigOh(n^2)$ at worst
+For instance, the quicksort algorithm at worst
+takes quadratic time $\bigOh(n^2)$ 
 but on average is $\bigOh(n\lg n)$.
 
 Related to that,

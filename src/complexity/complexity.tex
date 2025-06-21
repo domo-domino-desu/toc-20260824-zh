@@ -615,13 +615,14 @@ for most of the functions that we encounter.
   This case is denoted
   \protect\definend{$f$ is $o(g)$}, read aloud as ``Little Oh of $g$.''\ \index{omicron@$o$, omicron}
 }\footnotetext[2]{%
-  We also denote `$g$ is $\bigOh(f)$' by
+  We also denote this by
   \protect\definend{$f$ is $\Omega(g)$},
   read aloud as ``Big Omega of $g$.''\ \index{Omega@$\Omega$, Big Omega}
 }\footnotetext[3]{%
   If $L=1$ then $f$ and~$g$ are 
   \protect\definend{asymptotically equivalent}.}\index{asymptotically equivalent}
 %</lem:LHBigO>
+% reference https://dl.acm.org/doi/pdf/10.1145/1008328.1008329 for big theta?
 
 \begin{proof}
 See \zcref{exer:LHBigO}.
@@ -851,17 +852,16 @@ the most important functions do form a line.
   is $\bigOh(n^{2.373})$, approximately.
   But most often we work with natural number expressions.
 }.
-  when use the prior
-  lemma to give a canonical description of an order of growth.
-They are listed from slower-growing at the table's top to faster-growing near 
-the bottom.
-Many of these rankings come from the L'H\^{o}pital's Rule calculations
-above.
+  % when use the prior
+  % lemma to give a canonical description of an order of growth.
+Slower-growing functions are listed first.
+% Many of these rankings come from the L'H\^{o}pital's Rule calculations
+% above.
 
 % For instance, $f(n)=n^{100}$ is a member of $\bigOh(n^n)$ but
 % not of $\bigOh(1)$.
 
-\begin{tablefigure}{The order of growth hierarchy ($\poly()$ is a polynomial function).}\index{order of growth!hierarchy}
+\begin{tablefigure}{The order of growth hierarchy.\protect\footnotemark}\index{order of growth!hierarchy}
 %<*table:HardyHierarchy>
   \begin{tabular}{@{}lll@{}}
     \multicolumn{1}{l}{\quad\tabulartext{Order}} 
@@ -879,7 +879,8 @@ above.
     $\bigOh(n^2)$  &Quadratic  &$f(n)=5n^2+2n+12$  \\ 
     $\bigOh(n^3)$  &Cubic  &$f(n)=2n^3+12n^2+5$ \\
     \quad\rule{0pt}{11pt}$\smash\vdots$  &   &   \\
-    $\bigOh(2^{\poly(\lg(n))})$   &Quasipolynomial  &$f_0(n)=2^{(\lg(n))^2+3\lg(n)}\!, f_1(n)=n^{\lg(n)}$  \\ 
+    $\bigOh(2^{(\lg(n))^2})$   &Quasipolynomial  &$f(n)=2^{(\lg(n))^2+1}$  \\ 
+    $\bigOh(2^{(\lg(n))^3})$   &Also quasipolynomial  &$f(n)=2^{(\lg(n))^3+2}$  \\ 
     \quad\rule{0pt}{11pt}$\smash\vdots$  &   &   \\
     % $\bigOh(2^{\poly(n)})$   &Exponential  &$f_0(n)=10\cdot 2^{n^2+4}$, $f_1(n)=5\cdot 3^n$  \\ 
     $\bigOh(2^n)$   &Exponential  &$f(n)=10\cdot 2^n$  \\ 
@@ -890,7 +891,12 @@ above.
   \end{tabular}  
   \label{table:HardyHierarchy}
 %</table:HardyHierarchy>
-\end{tablefigure}
+\end{tablefigure}\footnotetext{%
+  Sometimes authors group orders together.
+  For instance, $\bigOh(2^{\poly()})$ means any exponential order of growth,
+  where $\poly()$ means any polynomial.
+  Two separate orders of growth that are together in this group are $2^n$ and
+  $2^{\lg(3)n}=3^n$\!.}
 
 \begin{example}
 We can use this benchmark table to do many
@@ -901,10 +907,10 @@ and another runs in $g(x)=3+7(\lg x)^3\!$.
 while $g$ is $\bigTheta((\lg x)^3)$. 
 % By the table $(\lg x)^3$ is~$\bigOh(x\lg x)$
 % but $x\lg x$ is not $\bigOh((\lg x)^3)$.
-With the table we conclude that $g$ is~$\bigOh(f)$ but 
+By the table  $g$ is~$\bigOh(f)$ but 
 $f$ is not~$\bigOh(g)$.
-The table spares us a separate 
-L'H\^{o}pital's Rule calculation for every function comparison.   
+% This spares us a separate 
+% L'H\^{o}pital's Rule calculation for every function comparison.   
 \end{example}
 
 
@@ -930,9 +936,9 @@ L'H\^{o}pital's Rule calculation for every function comparison.
 The motivation behind the development of Big~$\bigOh$ is to understand
 how algorithms consume resources,
 especially running time.
-Our main worry is that an algorithm will just take too long.
+% Our main worry is that an algorithm will just take too long.
 
-That means that for the above table
+For the above table
 the most important distinction is between the polynomial
 and exponential functions.
 The
@@ -1200,7 +1206,7 @@ Is there more to say?
   Some of the discussion is from \url{https://softwareengineering.stackexchange.com/a/20833}.
 \end{credit}
 Certainly that is the essence.
-But we will nevertheless pause to elaborate on five points
+But we will nevertheless pause to elaborate on some points
 that often cause confusion.
 For the first, contrast these.
 \begin{center}\vspace{-2ex}
@@ -1221,15 +1227,15 @@ makes it
 \citetext{$n-1$ assignments slower than what's on the right}{%
   We won't consider whether the compiler optimizes it out of the loop.}.
 But we have defined them both to have the  
-runtime performance of $\bigOh(n^2)$, so the 
-$n-1$~tick difference is disregarded. 
-Big~$\bigOh$ is a measure that is not 
+runtime performance of $\bigOh(n^2)$, which disregards
+the $n-1$~tick difference. 
+Big~$\bigOh$ is not 
 sensitive to fine details of implementation.
 
-That is related to the second point.
-Algorithms are tied to an underlying computing model.\footnote{%
+The second point is that
+algorithms are tied to an underlying computing model.\footnote{%
   More on this
-  is in \protect\zcref{sec:ProbsAlgosPrograms}.}
+  is in \protect\zcref[S]{sec:ProbsAlgosPrograms}.}
 %<*disc:OtherModelsOfComputationRAM>
 A model that is widely used in algorithm analysis is the 
 \definend{Random Access machine (RAM)}.\index{Random Access machine}\index{RAM|see{Random Access machine}}
@@ -1335,7 +1341,7 @@ more important than knowing the values of the constants.
 We could instead agree on a reference architecture.
 This is D~Knuth's approach in the monumental
 \textit{Art of Computer Programming} series.
-But as with commercial machines there is a risk that
+But as with commercial machines, there is a risk that
 \citetext{the standard gets updated}{%
   Even Knuth had to update standards, from his machine model MIX to MMIX.}.
 Then published results no longer apply and it is all to do again.
@@ -1442,7 +1448,7 @@ accepts arbitrarily large input.
 An algorithm whose runtime behavior as a function of the input is polynomial
 but whose behavior as a function of the number of bits in the input is
 exponential is 
-\definend{pseudo polynomial}.\index{pseudo polynomial}
+\definend{pseudopolynomial}.\index{pseudopolynomial}
 
 One last point. 
 When analyzing an algorithm
@@ -1968,25 +1974,27 @@ Here we did the first two both ways, just to illustrate.
   \item $\floor{\sqrt{5n^7-2n^2}}$
   \end{exparts*}
 \begin{answer}\verified
-\textit{Comment:}~In 
+In 
 doing these we may have the option of using the algebraic properties in 
-\zcref{lem:BigOAlgProps} to simplify, or of using L'H\^{o}pital's Rule.
-The lemma gives more of a sense of using how the expressions are constructed.
+\zcref{lem:BigOAlgProps} to simplify and then refer to
+\zcref{table:HardyHierarchy}, or instead of using \zcref{lem:LHBigO}.
+
+The former gives more of a sense of using how the expressions are constructed.
 For instance, in the first item below we strictly speaking do not need the first
 paragraph because the second paragraph suffices to show $k=4$ is correct. 
-But including only the second paragraph could give a
-sense to a person who had trouble with the question that the $k=4$ was plucked
-out of the air.
+But sticking to only the second paragraph could leave
+someone who had trouble with the question less sense of how they could
+produce $k=4$ for themselves.
 \begin{exparts}
 \item The smallest power is $k=4$.
   By the lemma's \zcref{lem:BigOAlgPropsItemConstMult}
   the function $(1/10\,000\,000)n^4$ is $\bigOh(n^4)$
   and of course the function $n^3$ is $\bigOh(n^3)$.
-  By \zcref{table:HardyHierarchy} $n^3$ is $\bigOh(n^4)$, and thus
-  by \zcref{lem:BigOAlgPropsItemAdd} of the lemma,
+  By \zcref{table:HardyHierarchy}, $n^3$ is $\bigOh(n^4)$.
+  Thus by \zcref{lem:BigOAlgPropsItemAdd} of the lemma,
   the function $n^3+(1/10\,000\,000)n^4$ is~$\bigOh(n^4)$. 
   
-  One way to see that no smaller power $k\in\N$ will do is to consider
+  One way to see that no power $k<4$ will do is to consider
   $\lim_{x\to\infty}x^3/(x^3+(x^4/10\,000\,000))$.
   \begin{multline*}
     \lim_{x\to\infty}\frac{x^4}{x^3+(x^4/10\,000\,000)}

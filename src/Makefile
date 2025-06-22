@@ -62,7 +62,7 @@ ZIP_CMD := zip
 # to keep a record of what happened.
 
 # .PHONY : all
-all : fsm-exercises tm-exercises redo
+all : redo
 
 
 # .PHONY : redo
@@ -201,219 +201,6 @@ prologue/asy/tm_exercises/replicator/replicator000.pdf : prologue/asy/tm_exercis
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
-prologue/asy/tm_exercises/pdfs/add000.pdf : prologue/asy/tm_exercises/pdfs/add.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/addany000.pdf : prologue/asy/tm_exercises/pdfs/addany.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/addonetwo000.pdf : prologue/asy/tm_exercises/pdfs/addonetwo.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/addthree_four000.pdf : prologue/asy/tm_exercises/pdfs/addthree_four.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/addthree_zero000.pdf : prologue/asy/tm_exercises/pdfs/addthree_zero.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/addtwotwo000.pdf : prologue/asy/tm_exercises/pdfs/addtwotwo.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/addzerotwo000.pdf : prologue/asy/tm_exercises/pdfs/addzerotwo.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/addzerozero000.pdf : prologue/asy/tm_exercises/pdfs/addzerozero.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/append01000.pdf : prologue/asy/tm_exercises/pdfs/append01.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/bitwisenot000.pdf : prologue/asy/tm_exercises/pdfs/bitwisenot.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/blankones000.pdf : prologue/asy/tm_exercises/pdfs/blankones.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/constantthree000.pdf : prologue/asy/tm_exercises/pdfs/constantthree.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/doubler000.pdf : prologue/asy/tm_exercises/pdfs/doubler.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/doublerbinary000.pdf : prologue/asy/tm_exercises/pdfs/doublerbinary.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/infloop000.pdf : prologue/asy/tm_exercises/pdfs/infloop.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/leq000.pdf : prologue/asy/tm_exercises/pdfs/leq.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex1five000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex1five.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex1four000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex1four.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex1one000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex1one.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex1three000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex1three.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex1two000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex1two.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex1zero000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex1zero.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex2five000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex2five.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex2four000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex2four.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex2one000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex2one.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex2three000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex2three.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex2two000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex2two.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex2zero000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex2zero.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex3one000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex3one.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex3two000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex3two.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mu_ex3zero000.pdf : prologue/asy/tm_exercises/pdfs/mu_ex3zero.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mystery11000.pdf : prologue/asy/tm_exercises/pdfs/mystery11.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mystery110000.pdf : prologue/asy/tm_exercises/pdfs/mystery110.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mystery1011000.pdf : prologue/asy/tm_exercises/pdfs/mystery1011.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mystery1101000.pdf : prologue/asy/tm_exercises/pdfs/mystery1101.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/mysteryempty000.pdf : prologue/asy/tm_exercises/pdfs/mysteryempty.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/odd_four000.pdf : prologue/asy/tm_exercises/pdfs/odd_four.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/odd_three000.pdf : prologue/asy/tm_exercises/pdfs/odd_three.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/palindromeaba000.pdf : prologue/asy/tm_exercises/pdfs/palindromeaba.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/palindromeabba000.pdf : prologue/asy/tm_exercises/pdfs/palindromeabba.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/pred000.pdf : prologue/asy/tm_exercises/pdfs/pred.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/pred_empty000.pdf : prologue/asy/tm_exercises/pdfs/pred_empty.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/pred_five000.pdf : prologue/asy/tm_exercises/pdfs/pred_five.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/pred_two000.pdf : prologue/asy/tm_exercises/pdfs/pred_two.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/singlebitand000.pdf : prologue/asy/tm_exercises/pdfs/singlebitand.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/singlebitnot000.pdf : prologue/asy/tm_exercises/pdfs/singlebitnot.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/singlebitor000.pdf : prologue/asy/tm_exercises/pdfs/singlebitor.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/startswithzero000.pdf : prologue/asy/tm_exercises/pdfs/startswithzero.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/startswithzeroone000.pdf : prologue/asy/tm_exercises/pdfs/startswithzeroone.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/startswithzerostarone000.pdf : prologue/asy/tm_exercises/pdfs/startswithzerostarone.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/successor000.pdf : prologue/asy/tm_exercises/pdfs/successor.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/twobsaba000.pdf : prologue/asy/tm_exercises/pdfs/twobsaba.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-prologue/asy/tm_exercises/pdfs/twobsabba000.pdf : prologue/asy/tm_exercises/pdfs/twobsabba.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-# .... TM_EXS end
 
 # The | makes these into order-only prereqs, so prologue.tex is not rebuilt 
 prologue/prologue.tex : | prologue/asy/xygraphs/xygraphs00.pdf \
@@ -439,59 +226,7 @@ prologue/prologue.tex : | prologue/asy/xygraphs/xygraphs00.pdf \
   prologue/asy/tm/tm000.pdf \
   prologue/asy/tm_exercises/inverse/inverse000.pdf \
   prologue/asy/tm_exercises/replicator/replicator000.pdf \
-  prologue/asy/tm_exercises/pdfs/add000.pdf \
-  prologue/asy/tm_exercises/pdfs/addany000.pdf \
-  prologue/asy/tm_exercises/pdfs/addonetwo000.pdf \
-  prologue/asy/tm_exercises/pdfs/addthree_four000.pdf \
-  prologue/asy/tm_exercises/pdfs/addthree_zero000.pdf \
-  prologue/asy/tm_exercises/pdfs/addtwotwo000.pdf \
-  prologue/asy/tm_exercises/pdfs/addzerotwo000.pdf \
-  prologue/asy/tm_exercises/pdfs/addzerozero000.pdf \
-  prologue/asy/tm_exercises/pdfs/append01000.pdf \
-  prologue/asy/tm_exercises/pdfs/bitwisenot000.pdf \
-  prologue/asy/tm_exercises/pdfs/blankones000.pdf \
-  prologue/asy/tm_exercises/pdfs/constantthree000.pdf \
-  prologue/asy/tm_exercises/pdfs/doubler000.pdf \
-  prologue/asy/tm_exercises/pdfs/doublerbinary000.pdf \
-  prologue/asy/tm_exercises/pdfs/infloop000.pdf \
-  prologue/asy/tm_exercises/pdfs/leq000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex1five000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex1four000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex1one000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex1three000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex1two000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex1zero000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex2five000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex2four000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex2one000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex2three000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex2two000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex2zero000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex3one000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex3two000.pdf \
-  prologue/asy/tm_exercises/pdfs/mu_ex3zero000.pdf \
-  prologue/asy/tm_exercises/pdfs/mystery1011000.pdf \
-  prologue/asy/tm_exercises/pdfs/mystery110000.pdf \
-  prologue/asy/tm_exercises/pdfs/mystery11000.pdf \
-  prologue/asy/tm_exercises/pdfs/mystery1101000.pdf \
-  prologue/asy/tm_exercises/pdfs/mysteryempty000.pdf \
-  prologue/asy/tm_exercises/pdfs/odd_four000.pdf \
-  prologue/asy/tm_exercises/pdfs/odd_three000.pdf \
-  prologue/asy/tm_exercises/pdfs/palindromeaba000.pdf \
-  prologue/asy/tm_exercises/pdfs/palindromeabba000.pdf \
-  prologue/asy/tm_exercises/pdfs/pred000.pdf \
-  prologue/asy/tm_exercises/pdfs/pred_empty000.pdf \
-  prologue/asy/tm_exercises/pdfs/pred_five000.pdf \
-  prologue/asy/tm_exercises/pdfs/pred_two000.pdf \
-  prologue/asy/tm_exercises/pdfs/singlebitand000.pdf \
-  prologue/asy/tm_exercises/pdfs/singlebitnot000.pdf \
-  prologue/asy/tm_exercises/pdfs/singlebitor000.pdf \
-  prologue/asy/tm_exercises/pdfs/startswithzero000.pdf \
-  prologue/asy/tm_exercises/pdfs/startswithzeroone000.pdf \
-  prologue/asy/tm_exercises/pdfs/startswithzerostarone000.pdf \
-  prologue/asy/tm_exercises/pdfs/successor000.pdf \
-  prologue/asy/tm_exercises/pdfs/twobsaba000.pdf \
-  prologue/asy/tm_exercises/pdfs/twobsabba000.pdf
+  tm-exercises
 
 
 # ============== background ================
@@ -576,26 +311,6 @@ automata/asy/fsa/fsa00.pdf : automata/asy/fsa/fsa.asy
 fsm-exercises:
 	cd automata/asy/fsm_exercises && $(MAKE)
 
-# .... FSM_EXERCISES start
-
-automata/asy/fsm_exercises/pdfs/endsinai000.pdf : automata/asy/fsm_exercises/pdfs/endsinai.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-automata/asy/fsm_exercises/pdfs/endsinaii000.pdf : automata/asy/fsm_exercises/pdfs/endsinaii.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-automata/asy/fsm_exercises/pdfs/endsinaiii000.pdf : automata/asy/fsm_exercises/pdfs/endsinaiii.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-automata/asy/fsm_exercises/pdfs/modfour000.pdf : automata/asy/fsm_exercises/pdfs/modfour.asy
-	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)"
-
-# .... FSM_EXERCISES end
-
 automata/asy/machine/machine02.pdf : automata/asy/machine/machine.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
@@ -617,10 +332,7 @@ automata/asy/regex/regex00.pdf : automata/asy/regex/regex.asy
 	$(ASYMPTOTE_CMD) "$(<F)"
 
 automata/automata.tex : | automata/asy/fsa/fsa00.pdf \
-  automata/asy/fsm_exercises/pdfs/endsinai000.pdf \
-  automata/asy/fsm_exercises/pdfs/endsinaii000.pdf \
-  automata/asy/fsm_exercises/pdfs/endsinaiii000.pdf \
-  automata/asy/fsm_exercises/pdfs/modfour000.pdf \
+  fsm-exercises \
   automata/asy/machine/machine02.pdf \
   automata/asy/min/min00.pdf \
   automata/asy/nfsm/nfsm00.pdf \

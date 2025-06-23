@@ -3604,15 +3604,16 @@ with the largest cut set.
 %</prob:MaxCut>
 
 \begin{example}  \label{ex:MaxCut}
-  This graph cut into differently colored vertices $\set{\set{v_0,v_1,v_4,v_5},\set{v_2,v_3}}$
+  The graph cut $\set{\set{v_0,v_1,v_4,v_5},\set{v_2,v_3}}$, shown with
+  differently-colored vertices, 
   gives the cut set $\set{e_1,e_2,e_3,e_4,e_5,e_6}$ of size six, 
-the largest possible.\footnotemark
+  the largest possible.\footnotemark
 \ifbool{MakingPaperCopy}{%
     \begin{fig}{A partition for the graph with a maximum cut set.}\centering 
       \includegraphics{complexity/asy/problems/problems48}
     \end{fig} 
 }{%
-    \begin{animatedfigure}{A partition for the graph with a maximum cut set.}\centering 
+    \begin{animatedfigure}{A graph partition with a maximum cut set.}\centering 
       \animategraphics[poster=last]{1}{complexity/asy/problems/problems}{46}{48}
     \end{animatedfigure} 
 }
@@ -3695,7 +3696,7 @@ Below is a subset of $X\times Y\times Z$
 %   \end{tabular}
 % \end{tabular}
 % \end{center}
-The set $\hat{M}=\set{\sequence{\str{a},\str{b},\str{a}},
+The matching $\hat{M}=\set{\sequence{\str{a},\str{b},\str{a}},
 \sequence{\str{b},\str{c},\str{d}}}$
 has $2$ elements. 
 They disagree in their first coordinates,
@@ -3750,6 +3751,8 @@ $\set{911,22,821,563,405,986,165,732}$ add to $T=1173$?
 The answer is `yes';~one such collection is $\set{165, 986, 22}$.
 % sage: [randint(1, 999) for i in range(8)]
 % [911, 22, 821, 563, 405, 986, 165, 732]
+% sage: 165+986+22
+% 1173
 % \begin{equation*}
 % 911
 % \quad 22
@@ -3765,18 +3768,41 @@ The answer is `yes';~one such collection is $\set{165, 986, 22}$.
 %\begin{example} 
 In contrast,
 no subset of
-$\set{831,357,63,987,117,81,6785,606}$ adds to $T=2105$.
+$\set{414, 495, 168, 468, 978, 186, 489, 345}$ adds to $T=2105$.
 All of the multiset's 
 numbers are multiples of three while the target is not.
-% sage: [randint(1, 999) for i in range(8)]
-% [835, 367, 63, 987, 117, 81, 678, 506]
+An exhaustive search with a program also shows that no subset adds to $1173$,
+although there doesn't seem to be a simple reason for that.
+% sage: [3*randint(1, 333) for i in range(8)]
+% [414, 495, 168, 468, 978, 186, 489, 345]
+% sage: S = Subsets([414, 495, 168, 468, 978, 186, 489, 345], submultiset=True)
+% sage: S
+% SubMultiset of [414, 495, 168, 468, 978, 186, 489, 345]
+% sage: T = [414, 495, 168, 468, 978, 186, 489, 345]
+% sage: def sum_list(lst):
+% ....:     tot = 0
+% ....:     for i in lst:
+% ....:         tot = tot+i
+% ....:     return(tot)
+% ....: 
+% sage: for k in S.list():
+% ....:     if (sum_list(k) == 1173):
+% ....:         print("found: ",k)
+% ....: 
+% sage: 414+168+186
+% 768
+% sage: for k in S.list():
+% ....:     if (sum_list(k) == 768):
+% ....:         print("found: ",k)
+% ....: 
+% found:  [414, 168, 186]
 \end{example}
 
 %<*prob:Knapsack>
 \begin{problem}[\definend{\probname{Knapsack}}]\index{Knapsack problem@\probname{Knapsack} problem}
 Given a finite multiset $S$ whose elements~$s$
 have a natural number weight~$w(s)$ and value~$v(s)$, and also given a
-weight bound $B$ and a value target~$T\!$, find a subset
+weight bound $B$ and a value target~$T\!$, find a submultiset
 $\hat{S}\subseteq S$ whose elements have a total weight less than or equal
 to the
 bound and total value greater than or equal to the target.
@@ -3798,10 +3824,47 @@ Can we pack items with total worth at least~$T=100$?
   \tabulartext{Value}   &$50$ &$40$ &$10$  &$30$ 
 \end{tabular}
 \end{center}
-The answer is `no'.
-The highest value that we can get without exceeding the bound
+No.
+The highest value that we can get without exceeding the weight $B=10$
 is from taking $i_0$ and~$i_1$,
 which does not meet the target.
+% sage: D = [(3,50), (4,40), (5,10), (6,30)]
+% sage: S = Subsets(D, submultiset=True)
+% sage: S.list()
+% [[],
+%  [(3, 50)],
+%  [(4, 40)],
+%  [(5, 10)],
+%  [(6, 30)],
+%  [(3, 50), (4, 40)],
+%  [(3, 50), (5, 10)],
+%  [(3, 50), (6, 30)],
+%  [(4, 40), (5, 10)],
+%  [(4, 40), (6, 30)],
+%  [(5, 10), (6, 30)],
+%  [(3, 50), (4, 40), (5, 10)],
+%  [(3, 50), (4, 40), (6, 30)],
+%  [(3, 50), (5, 10), (6, 30)],
+%  [(4, 40), (5, 10), (6, 30)],
+%  [(3, 50), (4, 40), (5, 10), (6, 30)]]
+% sage: def check_knapsack_limits(list_of_pairs):
+% ....:     weight_total,value_total = 0,0
+% ....:     for (w,v) in list_of_pairs:
+% ....:         weight_total = weight_total+w
+% ....:         value_total = value_total+v
+% ....:     if (weight_total<=10):
+% ....:         return value_total
+% ....:     else:
+% ....:         return -1
+% sage: max_value = 0
+% ....: for k in S.list():
+% ....:     v = check_knapsack_limits(k)
+% ....:     if v>max_value:
+% ....:         max_value = v
+% ....:         print("max_value=",max_value,"list: ",k)
+% ....: 
+% max_value= 50 list:  [(3, 50)]
+% max_value= 90 list:  [(3, 50), (4, 40)]
 \end{example}
 
 %<*prob:Partition>
@@ -3819,7 +3882,8 @@ The set
 $A=\set{\str{I},\str{a},\str{my},\str{go},\str{rivers},\str{cat},\str{hotel},\str{comb}}$
 has eight words.
 The size of a word is the number of letters.
-Then $\hat{A}=\set{\str{cat},\str{rivers},\str{I},\str{a},\str{go}}$
+Then $\hat{A}=\set{\str{I},\str{go},\str{rivers},\str{cat}}$
+and $A-\hat{A}=\set{\str{a},\str{my},\str{hotel},\str{comb}}$
 gives $\sum_{a\in\hat{A}}s(a)=\sum_{a\notin\hat{A}}s(a)=12$.
 \end{example}
 
@@ -3951,7 +4015,8 @@ vote for the same person (we will
   Both Maine and Nebraska have two districts, and each
   elects their own representative to the Electoral College,
   rather than having two state-wide electors who vote the same way.}).
-The Partition Problem asks if there could be a tie.
+The Partition Problem asks if there could be a tie;~see
+\zcref{exer:ElectoralCollegeQuestion}.
 % See \zcref{exer:ElectoralCollegeQuestion}.
 % \begin{center}\small
 %   \begin{tabular}{r|c|p{0.5\textwidth}}
@@ -4116,7 +4181,7 @@ and of resolving the latter into their prime factors is known to be one
 of the most important and useful in arithmetic.
 It has engaged the industry and wisdom of ancient and modern geometers
 to such an extent that it
-would be superfluous to discuss the problem at length \ldots{}
+would be superfluous to discuss the problem at length \ldots{}\sentencespace
 Further, the dignity of the science itself
 seems to require that every possible means be explored for the solution of a
 problem so elegant and so celebrated.''
@@ -4215,10 +4280,9 @@ This dramatically illustrates
 that even though a problem is high profile
 and many well-respected experts have worked on it without success,
 nonetheless it could have a solution that is fast.
-Although opinions of experts have value, they can be wrong.
+Although opinions of experts have value, they can be proved wrong.
 People producing a result that gainsays established orthodoxy
 has happened before and will happen again.
-One correct proof is all it takes.
 
   
 % ------------------

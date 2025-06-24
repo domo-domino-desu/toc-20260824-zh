@@ -936,9 +936,9 @@ for(int i=0; i<pts.length; ++i){
 
 label(pic,"{\scriptsize All languages:}", (-0.5*UNIVERSE_WD,0.9*UNIVERSE_HT),2*W);
 
-label(pic,"{\scriptsize Langs with fast algorithms}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),2*E);
+label(pic,"{\scriptsize Langs with fast deciders}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),2*E);
 label(pic,"{\scriptsize \hspace*{4em}$\vdots$}", (0.5*UNIVERSE_WD,0.375*UNIVERSE_HT),2*E);
-label(pic,"\makebox[\width][l]{\scriptsize Langs with slow algorithms}", (0.5*UNIVERSE_WD,0.55*UNIVERSE_HT),2*E);
+label(pic,"\makebox[\width][l]{\scriptsize Langs with slow deciders}", (0.5*UNIVERSE_WD,0.55*UNIVERSE_HT),2*E);
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);
@@ -1744,9 +1744,9 @@ for(int i=0; i<pts.length; ++i){
 
 label(pic,"{\scriptsize All languages:}", (-0.5*UNIVERSE_WD,0.9*UNIVERSE_HT),2*W);
 
-label(pic,"{\scriptsize Langs with fast algorithms}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),2*E);
+label(pic,"{\scriptsize Langs with fast deciders}", (0.5*UNIVERSE_WD,0.1*UNIVERSE_HT),2*E);
 label(pic,"{\scriptsize \hspace*{4em}$\vdots$}", (0.5*UNIVERSE_WD,0.375*UNIVERSE_HT),2*E);
-label(pic,"\makebox[\width][l]{\scriptsize Langs with slow algorithms}", (0.5*UNIVERSE_WD,0.55*UNIVERSE_HT),2*E);
+label(pic,"\makebox[\width][l]{\scriptsize Langs with slow deciders}", (0.5*UNIVERSE_WD,0.55*UNIVERSE_HT),2*E);
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);

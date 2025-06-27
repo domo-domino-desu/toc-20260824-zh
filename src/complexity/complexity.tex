@@ -8674,14 +8674,37 @@ for `not' gates.
   \caption{Initial circuit for the \protect{\probname{Circuit Evaluation} problem}.}
   \label{fig:CircuitEvalProblemExerciseCNF}
 \end{figure}
-But this circuit does not perfectly match the problem since
+
+This circuit does not perfectly match the problem since
 some gates do not have two inputs and one output.
-\figureref{fig:CircuitEvalProblemExerciseTwo} modifies the prior diagram to 
-draw the circuit to take advantage of the fact that 
-$x_0\wedge x_1\wedge x_2=(x_0\wedge x_1)\wedge x_2$, and that a similar
+We can parenthesize the propositional logic formula to make every
+operator $2$-ary, taking advantage of the fact that 
+$x_0\wedge x_1\wedge x_2=(x_0\wedge x_1)\wedge x_2$ and that a similar
 relationship holds for `$\vee$'.
-It also includes an acyclic directed graph, by folding the `not' gates
-into the Boolean binary functions.
+\begin{equation*}
+  \bigl((\neg b_2\wedge \neg b_1)\wedge b_0\bigr)
+  \vee \bigl((\neg b_2\wedge b_1)\wedge \neg b_0\bigr)
+  \vee \bigl((b_2\wedge \neg b_1)\wedge \neg b_0\bigr)
+  \vee \bigl((b_2\wedge b_1)\wedge b_0\bigr)
+\end{equation*}
+\figureref{fig:CircuitEvalProblemExerciseTwo} modifies the prior diagram to 
+reflect that.
+
+To give an acyclic directed graph we must take care of all four
+clauses.
+For the $(\neg b_2\wedge \neg b_1)\wedge b_0$ first clause, the inside
+parenthesis needs a gate that
+does $\neg P\wedge\neg Q$, which we call the Boolean function $f_0$.
+Then we combine $f_0(b_2,b_1)$ with $b_0$ using a~$\wedge$.
+For the second clause $(\neg b_2\wedge b_1)\wedge \neg b_0$, the inside
+parenthesis needs a gate that
+does $\neg P\wedge Q$, which we call the Boolean function $f_1$.
+Then we combine $f_1(b_2,b_1)$ with $b_0$ using a gate that implements
+the Boolean function $P\wedge \neg Q$, which we call~$f_2$.
+For the third clause $(b_2\wedge \neg b_1)\wedge \neg b_0$, the inside
+parenthesis needs $f_2$ and then 
+we combine $f_2(b_2,b_1)$ with $b_0$ using the $f_2$ function again.
+The fourth clause uses only $\wedge$'s.
 \begin{figure}
   \centering\small
   \begin{tabular}{c}
@@ -8692,7 +8715,7 @@ into the Boolean binary functions.
   \caption{Revised circuit for the \protect\probname{Circuit Evaluation} problem and the associated DAG.}
   \label{fig:CircuitEvalProblemExerciseTwo}
 \end{figure}
-These are the Boolean functions used there.
+Here are the Boolean functions used there.
 \begin{display}\small
 \begin{tabular}[t]{cc|c}
   \multicolumn{1}{c}{$P$}
@@ -8733,8 +8756,8 @@ These are the Boolean functions used there.
     &\multicolumn{1}{c}{$f_1$}  \\
   \hline
   $0$ &$0$ &$0$  \\
-  $0$ &$1$ &$0$  \\
-  $1$ &$0$ &$1$  \\
+  $0$ &$1$ &$1$  \\
+  $1$ &$0$ &$0$  \\
   $1$ &$1$ &$0$  \\
 \end{tabular}
 \qquad
@@ -8744,14 +8767,11 @@ These are the Boolean functions used there.
     &\multicolumn{1}{c}{$f_2$}  \\
   \hline
   $0$ &$0$ &$0$  \\
-  $0$ &$1$ &$1$  \\
-  $1$ &$0$ &$0$  \\
+  $0$ &$1$ &$0$  \\
+  $1$ &$0$ &$1$  \\
   $1$ &$1$ &$0$  \\
 \end{tabular}
 \end{display}
-So, $f_0$ is equivalent to $\neg P\wedge \neg Q$, 
-and $f_1$ is equivalent to $P\wedge \neg Q$, 
-and $f_2$ is equivalent to $\neg P\wedge Q$.  
 \end{answer}
 \end{exercise}
 
@@ -8774,12 +8794,13 @@ Finish the proof of \zcref{lem:PClosure}.
 \item Suppose that $\lang_0\in\P$ has the characteristic function
 $\TMfcn_{e_0}$ that runs in time $\bigOh(x^{k_0})$,
 and suppose that
-$\lang_1$'s has the characteristic function
-$\TMfcn_{e_1}$ that runs in time $\bigOh(x^{k_1})$.
+$\lang_1$'s characteristic function
+$\TMfcn_{e_1}$ runs in time $\bigOh(x^{k_1})$.
 The canonical algorithm for intersection is to first test the input for
-membership in $\lang_0$ and if it passes go on to test for 
+membership in $\lang_0$ and if it passes then go on to test for 
 membership in $\lang_1$.
-This algorithm is in $\bigOh(x^k)$ where $k=\max(\set{k_0,k_1})$.  
+This algorithm is in $\bigOh(x^k)$ where $k=\max(\set{k_0,k_1})$.
+So this algorithm is polytime.
 \item
 We must prove that if a language~$\lang$ is in~$\P$ then so is its
 set complement~$\setcomp{\lang}\!$.
@@ -8806,7 +8827,7 @@ and such that computing~$f$ is $\bigOh(p)$ for some polynomial~$p$.
 $t(n)$, defined as the maximum runtime of $f(\tau)$ over 
 all~$\tau\in\kleenestar{\B}$ with $n=\sizeof{\tau}$.) 
 
-Then clearly this function is also computable, and also in polytime:
+Then clearly the following function is also computable, and also in polytime:
 $\bar{f}(\sigma)=1-f(\sigma)$.
 Consequently, $\setcomp{\prob}\in\P$.
 \end{exparts}
@@ -8827,22 +8848,22 @@ $\map{f}{\kleenestar{\B}}{\kleenestar{\B}}$ of~$\lang$,
 with runtime $\bigOh(x^n)$ for some power~$n\in\N$.
 To compute the characteristic function of the 
 reversal, $\reversal{\lang}=\set{\reversal{\tau}\suchthat \tau\in\lang}$,
-the algorithm is given an input string~$\sigma$.
-It constructs the reversal, $\reversal{\sigma}$,
-and decides whether $\reversal{\sigma}\in\reversal{\lang}\!$.
-The runtime analysis is:~the algorithm can construct the reversal from the input 
+the algorithm is given an input string~$\tau$.
+It constructs the reversal, $\reversal{\tau}$,
+and decides whether $\reversal{\sigma}\in\lang$.
+The algorithm can construct the reversal from the input 
 in one pass through the input, and deciding whether that
 reversal string is in~$\lang$ is~$\bigOh(x^n)$,
-to in total the runtime is~$\bigOh(x^k)$ where $k=\max(\set{1,n})$.
+so in total the runtime is~$\bigOh(x^k)$ where $k=\max(\set{1,n})$.
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 Show that $\P$ is closed under the concatenation of two languages.
 \begin{answer}\verified
-Fix two languages, $\lang_0,\lang_1\in\powerset(\kleenestar{\B})$,
+Fix two languages $\lang_0,\lang_1\in\powerset(\kleenestar{\B})$
 that are members of~$\P$.
-Then there are powers $n_0,n_1\in\N$ so that~$\lang_0$ is accepted by
+Then there are exponents $n_0,n_1\in\N$ so that~$\lang_0$ is accepted by
 a Turing machine with runtime~$\bigOh(x^{n_0})$, and
 $\lang_1$ is accepted by
 a Turing machine with runtime~$\bigOh(x^{n_1})$.
@@ -8860,8 +8881,8 @@ Checking whether $\alpha\in\lang_0$ takes
 time~$\bigOh(\sizeof{\alpha}^{n_0})$,
 and   
 checking whether $\beta\in\lang_1$ takes time~$\bigOh(\sizeof{\beta}^{n_1})$.
-It simplifies things to overestimate and use $\sizeof{\sigma}$, rather than 
-worry about the length of the substrings.
+(It simplifies things to overestimate and use $\sizeof{\sigma}$, rather than 
+worry about the length of the substrings.)
 Hence each step of the pass can be done 
 in time that is~$\bigOh(\sizeof{\sigma}^k)$ where $k=\max(\set{n_0,n_1})$.
 The pass itself takes $\sizeof{\sigma}+1$~many steps, so overall
@@ -8981,8 +9002,10 @@ That is, prove that if finitely many languages are in~$\P$ then so is their
 union.
 Infinitely many?
 \begin{answer}\verified
-Let two languages $\lang_0,\lang_1\in\powerset(\kleenestar{\B})$
-be elements of~$\P$.
+This calls for an argument by induction.
+  
+The base step is two languages $\lang_0,\lang_1\in\powerset(\kleenestar{\B})$
+that are elements of~$\P$.
 Then there are computable functions to determine membership in the two
 with runtimes $\bigOh(x^{n_0})$ and~$\bigOh(x^{n_1})$.
 The obvious algorithm to compute membership in the union gets as input a 

@@ -339,13 +339,15 @@ filldraw(pic,shift(0*u,8*v)*sourcegate(source_gate_size),drawpen=circuitpen,fill
 // first clause
 filldraw(pic,shift(1*u,7*v+sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
 filldraw(pic,shift(1*u,7*v-sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
-filldraw(pic,shift(1*u,6*v-sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+// filldraw(pic,shift(1*u,6*v-sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
 // second clause
 filldraw(pic,shift(1*u,5*v+sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+filldraw(pic,shift(1*u,4*v-sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
 // third clause
 filldraw(pic,shift(1*u,3*v-sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+filldraw(pic,shift(1*u,2*v-sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
 // fourth clause
-filldraw(pic,shift(1*u,3*v-sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
+// filldraw(pic,shift(1*u,3*v-sep*and_gate_size)*notgate(not_gate_size),drawpen=circuitpen,fillpen=white);
 
 // layer 2
 filldraw(pic,shift(2*u,7*v)*andgate(and_gate_size),drawpen=circuitpen,fillpen=white);
@@ -516,13 +518,13 @@ node b0=ncircle("$b_0$"),
      b1=ncircle("$b_1$"),
      b2=ncircle("$b_2$"),
      clause1_and1=ncircle("$f_0$"),
-     clause1_and2=ncircle("$f_1$"),
-     clause2_and1=ncircle("$f_2$"),
-     clause2_and2=ncircle("$\wedge$"),
-     clause3_and1=ncircle("$f_1$"),
-     clause3_and2=ncircle("$\wedge$"),
+     clause1_and2=ncircle("$\wedge$"),
+     clause2_and1=ncircle("$f_1$"),
+     clause2_and2=ncircle("$f_2$"),
+     clause3_and1=ncircle("$f_2$"),
+     clause3_and2=ncircle("$f_2$"),
      clause4_and1=ncircle("$\wedge$"),
-     clause4_and2=ncircle("$f_1$"),
+     clause4_and2=ncircle("$\wedge$"),
      or1=ncircle("$\vee$"),
      or2=ncircle("$\vee$"),
      or3=ncircle("$\vee$"),

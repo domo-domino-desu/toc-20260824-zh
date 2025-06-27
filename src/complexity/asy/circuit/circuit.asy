@@ -588,7 +588,7 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 // some gates have three inputs
 int picnum = 7;
 picture pic;
-unitsize(pic,1cm);
+unitsize(pic,0.8cm);
 // horiz and vert units
 real u = 1.4;
 real v = 0.6*u;
@@ -598,7 +598,7 @@ real v = 0.6*u;
 real and_gate_size = 1.0;
 real or_gate_size = (4/3)*and_gate_size;  // four wires in, instead of three
 real not_gate_size = 0.35;
-real source_gate_size = 0.55; // circle radius for b_2, b_1, and b_0
+real source_gate_size = 0.6; // circle radius for b_2, b_1, and b_0
 
 // wires
 real sep = 0.3*and_gate_size; // how far apart on the gate to make the wires (this is half)

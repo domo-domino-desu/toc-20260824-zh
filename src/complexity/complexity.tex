@@ -9519,7 +9519,7 @@ exponential time, a nondeterministic machine does the job in polytime.
 The 
 \probname{Traveling Salesman} problem\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
 is similar.
-Trying every graph circuit in turn would be slow.
+Searching through every graph circuit in turn appears to be slow.
 But a nondeterministic machine 
 could do all of the circuits in parallel, or 
 just guess a circuit that meets the bound\Dash
@@ -9552,7 +9552,7 @@ terminate in at most~$p(\lh{\sigma})$ steps.
 %</def:NP>
 
 %<*lem:PSubsetNP>
-The following is immediate because 
+The first result is immediate because 
 a deterministic Turing machine is a special case
 of a nondeterministic one.
 
@@ -9562,10 +9562,10 @@ $\P\subseteq\NP$
 %</lem:PSubsetNP>
 
 Very important:~no one knows whether $\P$ is a strict subset. 
-That is, no one knows 
-whether $\P\neq\NP$ or $\P=\NP$.\index{P versus NP@$\P$ versus $\NP$}
+That is, no one knows whether 
+$\P\neq\NP$ or $\P=\NP$.\index{P versus NP@$\P$ versus $\NP$}
 % This is the biggest open problem in the Theory of Computing and
-We will say much more in the rest of this chapter.
+We will say much more in later sections.
 \begin{fig}[fig:ProblemBeansPNP]{The two possibilities: $\P\subset\NP$
   and $\P=\NP$}
   % \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp01.pdf}}
@@ -9580,22 +9580,24 @@ a definition that is conceptually clear,
 followed by a result that makes the definition easier to apply.
 We now give that second one.
 %<*intro:Verifieri>
-This is where we use the mental model
-of the machine guessing, or of being given a hint.
 
-For motivation consider again \probname{Satisfiability}.
+This is where we use the mental model
+of the machine guessing or of being given a hint.
+Consider again \probname{Satisfiability}.
 Imagine that in \zcref{ex:SatisfiabilityfastOnNDTM} above the demon whispers, 
 ``Psst! Try $\str{TTF}$.'' 
-We can quickly verify that is correct
-using a deterministic machine.
+We can verify this hint's correctness in polytime, even just using
+a deterministic machine.
+Here is the verifier, which takes in the expression as~$\sigma$
+and the hint as~$\omega$.
 % Here is that verifier.
 \begin{equation*}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts000.pdf}}
   \tag{$**$}
 \end{equation*}
-It inputs $\sigma=E$ from~($*$)
-and also the hint $\omega=\str{TTF}$.
-It reaches `\texttt{Accept}' in polytime.
+% It inputs $\sigma=E$ from~($*$)
+% and also the hint $\omega=\str{TTF}$.
+% It reaches `\texttt{Accept}' in polytime.
 %</intro:Verifier>
 
 %<*def:Verifier>
@@ -9647,9 +9649,9 @@ some aspects of both the definition and lemma, and give a few examples.
 
 % \begin{example}
 %<*ex:SATIsNPi>
-First we unwind the wording. 
-Our touchstone is the
-\probname{Satisfiability} problem.\index{Satisfiability problem@\probname{Satisfiability} problem}
+First we walk through the wording 
+using our touchstone problem,
+\probname{Satisfiability}.\index{Satisfiability problem@\probname{Satisfiability} problem}
 Using the lemma to show that it is in $\NP$
 requires that we produce a
 deterministic Turing machine verifier.
@@ -9664,9 +9666,10 @@ there is a suitable witness, a suitable line from the truth table, that~$\TM[V]$
 can check gives a result of~\true\!.
 For the expression in \zcref{ex:SatisfiabilityfastOnNDTM}'s~($*$) from above, 
 $\omega=\str{\true\true\false}$.
-(Clearly the verifier can do this checking in polytime.)
-On the other hand, if a candidate~$\sigma$ is not satisfiable, for example 
-if $\sigma=P\wedge\neg P$, then no $\omega$ will cause $\TM[V]$ to accept.
+(Clearly this check runs in polytime.)
+On the other hand, if a candidate~$\sigma$ is not satisfiable such as  
+if $\sigma=P\wedge\neg P$, then there is no $\omega$
+that will cause $\TM[V]$ to accept.
 %</ex:SATIsNPiii>
 % \end{example}
 
@@ -9679,7 +9682,7 @@ verify answers in polytime.
 %</disc:Vefierv>
 
 %<*disc:Vefieri>
-The second comment is to note
+The second comment is to acknowledge
 the most striking thing about the definition, that 
 it says there exists a witness~$\omega$
 but it does not say where it comes from.
@@ -9698,20 +9701,8 @@ when one is given, to verify in polytime that $\sigma\in\lang$.
 %</disc:Vefieri>
 
 %<*disc:Vefierii>
-Third, if $\sigma\notin\lang$ then the definition
-does not require a witness to that.
-Instead, what's required is that 
-from among all possible strings~$\omega$ 
-there is none
-such that the verifier accepts $\sequence{\sigma,\omega}$.\footnote{%
-  With this in mind, perhaps a better term for $\omega$ is
-  ``potential witness'' or ``proposed witness.'' 
-  But those are not standard.}
-%</disc:Vefierii>
-
-%<*disc:Vefieriii>
-The fourth comment relates to this asymmetry.
-What's the point of the `verify in polytime' requirement:~if 
+Third,
+what's the point of the `verification must run in polytime' requirement:~if 
 we are given a correct answer then isn't it just trivial to verify?
 Imagine for contrast that a demon hands you some papers and claims
 that they contain an unbeatable
@@ -9723,7 +9714,7 @@ that they contain an unbeatable
 Verifying requires stepping through
 the responses to each move, and responses to the
 responses, etc.
-Vrifying seems to
+Verifying seems to
 \citetext{require exponential time}{%
   In the terminology of a later section, chess is known to be 
   $\EXP$ complete.
@@ -9756,22 +9747,37 @@ the demon's papers,
   ``I have discovered a truly marvelous proof of this, 
   which this margin is too narrow to contain.''}.
 So we require that the verification be tractable.
+%</disc:Vefierii>
+
+%<*disc:Vefieriii>
+Fourth, if $\sigma\notin\lang$ then the definition
+does not require a witness to that.
+Instead, what's required is that 
+from among all possible strings~$\omega$ 
+there is none
+such that the verifier accepts $\sequence{\sigma,\omega}$.\footnote{%
+  In light of the necessity of verification,
+  perhaps a better term for $\omega$ is
+  ``potential witness'' or ``proposed witness.'' 
+  But those are not standard.}
 %</disc:Vefieriii>
 
 %<*disc:Vefieriv>
-Another aspect of the asymmetry is that it does not seem that 
-$\prob\in\NP$ implies that its
-complement~$\setcomp{\prob}$ is a member of~$\NP$.
+This is an asymmetry between establishing membership in a language
+and establishing non-membership.
 Consider \probname{Satisfiability}.
 If a propositional logic expression~$\sigma$ is
-satisfiable then a witness to that is a pointer to 
+satisfiable then a witness to that is a strign that points to 
 a line of the truth table.
 But for non-satisfiability 
 there is no natural witness;~instead, the natural thing is to check all 
 lines.
 As far as we know today,
 verifying that a Boolean formula is not satisfiable takes more than polytime. 
-Consequently, where the class 
+Consonant with this, it does not appear that 
+$\prob\in\NP$ implies that its
+complement~$\setcomp{\prob}$ is a member of~$\NP$\Dash 
+where the class 
 \compclass{co$\NP$}\index{coNP@\compclass{co$\NP$}} 
 contains the complements of languages from $\NP$,
 we suspect that $\NP\neq\compclass{coNP}$.
@@ -9779,15 +9785,15 @@ we suspect that $\NP\neq\compclass{coNP}$.
 
 %<*disc:Vefiervi>
 Finally, note that
-the lemma requires that the verifier runs in time polynomial in 
-$\lh{\sigma}$,
+the lemma requires that the verifier runs in time polynomial in the length
+of $\sigma$,
 not polynomial in the length of its input, $\sequence{\sigma,\omega}$.
 If it said the latter then we could check 
-the chess strategy just by using a witness that is exponentially long, 
+the demon's chess strategy just by using a witness that is exponentially long, 
 which would make $\sequence{\sigma,\omega}$ exponentially long.
-Also observe that assuming that $\TM[V]$ runs in time polynomial in 
-$\lh{\sigma}$ implies that there must exist a witness
-whose length is at most polynomial in $\lh{\sigma}$, because
+In addition, observe that assuming that $\TM[V]$ runs in time polynomial in 
+$\lh{\sigma}$ implies that any successful  witness's length
+is at most polynomial in $\lh{\sigma}$, because
 with $\omega$'s that are too long 
 \citetext{the verifier cannot even input them before its runtime bound expires}{%
   Some authors instead define that the 
@@ -9817,7 +9823,7 @@ It is the problem of determining membership in this set.
              \text{some path in~$\mathcal{G}$ between $v$ and~$\hat{v}$ visits every vertex exactly once}}
 \end{equation*}
 To show that this problem is in the class~$\NP$
-we produce a verifier~$\TM[V]$\!.
+we must produce a verifier~$\TM[V]$\!.
 It is sketched below. 
 In its input $\sequence{\sigma,\omega}$, the first item is 
 the candidate for membership in the language, 
@@ -9841,7 +9847,7 @@ thus it will not accept any input pair starting with~$\sigma$.
 
 %<*ex:CompositeIsNP>
 \begin{example}
-The \probname{Composite} problem\index{Composite problem@\probname{Composite} problem}
+The \probname{Primality} problem\index{Primality problem@\probname{Primality} problem}
 asks whether a given number has nontrivial factors.
 \begin{equation*}
   \lang=\set{n\in\N^+\suchthat \text{$n$ has a divisor~$d$ with $1<d<n$}}
@@ -9859,7 +9865,10 @@ If~$\sigma\in\lang$ then there is a suitable
 such witness, while if $\sigma\notin\lang$
 then no $\omega$ will make $\TM[V]$ accept the input.
 Clearly we can write this verifier to run in polytime.
-Therefore $\lang\in\NP$.
+Therefore $\lang\in\NP$.\footnote{%
+  We saw on \zcpageref{prob:Composite} that determining membership in
+  $\lang$ is in~$\P$.
+  Since $\P\subseteq\NP$ this fact is another proof that $\lang\in\NP$.}
 \end{example}
 %</ex:CopositeIsNP>
 
@@ -9869,10 +9878,12 @@ of \zcref{lem:VerifierAndGuesserEquiv}.
 
 \begin{proof} \label{proof:VerifierAndGuesserEquiv}
 %<*pf:VerifierAndGuesserEquivi>
-Suppose first that the language~$\lang$ is decided by a nondeterministic
+  For one direction suppose
+  that the language~$\lang$ is decided by a nondeterministic
 Turing machine~$\TM$ in polytime.
 We will construct a deterministic verifier~$\TM[V]$ that runs in polytime.
-Let $\map{p}{\N}{\N}$ be the polynomial 
+Since $\lang$ is decided by $\TM$ there is a
+polynomial $\map{p}{\N}{\N}$  
 such that for any input~$\sigma\in\kleenestar{\Sigma}\!$, all maximal paths of 
 $\TM$'s computation tree terminate in at most
 $p(|\sigma|)$ steps.
@@ -9915,7 +9926,7 @@ while if $\TM[V]$ does not accept then $\hat{\TM}$ rejects~$\tau$.
 We must check that  $\hat{\TM}$ accepts $\tau$
 if and only if $\tau\in\lang$. 
 A nondeterministic machine accepts a string 
-if and only if some maximal path that accepts the string. 
+if and only if there exists some maximal path that accepts the string. 
 Suppose first that $\tau\in\lang$.
 Because $\hat{\TM[V]}$ is a verifier, in this case 
 there exists a witness~$\hat{\omega}$ 
@@ -9933,7 +9944,7 @@ and thus $\hat{\TM}$ rejects~$\tau$.
 
 \begin{remark}
 A common reaction to the second half of that proof is,
-``Wait, $\hat{\TM}$ pulls $\hat{\omega}$ out of 
+``Wait, in the (1) part $\hat{\TM}$ plucks $\hat{\omega}$ out of 
 the air?
 \citetext{How is that legal?}{%
   This is reminiscent of 
@@ -9948,44 +9959,48 @@ the air?
   Assuming the Many World's Hypothesis, the result is that in any
   surviving universe the list has been sorted in linear time.}''
 This reaction\Dash about whether this is unrealistic\Dash is 
-both common and reasonable so we will respond.
+common and reasonable so we will address it.
 
 The first response is purely formal.
-\zcref{def:Verifier}, as written, states that the candidate $\tau$ is accepted
-if there exists an~$\hat{\omega}$ and does not require us to be able to 
-compute it.
+\zcref{def:Verifier} states that the candidate $\tau$ is accepted
+if there exists an~$\hat{\omega}$, and does not require us to be able to 
+produce it in the allotted time.
 The proof's final paragraph covers the two possibilities:~if $\tau\in\lang$ 
 then there is such an $\hat{\omega}$ and otherwise
 there is not, so the definition is satisfied.
-True, the language ``nondeterministically produces a witness''
+True, the language ``nondeterministically produce[s] a witness''
 is provocative in that it tends to draw the objection that we are
 addressing, but this language is common in the literature. 
 (In terms of the two mental models, we can take 
-`$\hat{\TM}$ nondeterministically produces a witness' to 
-mean either that it uses unbounded parallelism to produce all 
+`nondeterministically produce[s]' to 
+mean either that it uses unbounded parallelism to run through all 
 possible $\hat{\omega}$'s, or that 
 it guesses $\hat{\omega}$ or gets it from a demon.)
+In short, if the job is verifying then we are not surprised to be given
+an answer.
 
-The second response is more broad.
+The second response is a broader discussion of the idea of
+nondeterministic machines.
 We today do not have physical devices 
-bearing the same relationship to nondeterministic Turing machines 
+bearing the same relationship to nondeterministic machines 
 that everyday computers bear to deterministic ones.
 (We can write a program to simulate nondeterministic behavior
 but no device does it natively.)
 When Turing formulated his definition there were no
-physical computers but they were coming;
-will we someday have nondeterministic devices?
+physical computers but they were coming;~will
+we someday have nondeterministic devices?
 We don't know of any candidates.
 (There have been proposals  
 involving such things as time travel through wormholes
-but we put them aside as speculative, albeit very interesting.)\footnote{%
-  A caution about quantum computers: 
-  well-established physical theory says 
-  that subatomic particles can be in a superposition of many states at once.
-  Some popularizations wrongly
-  suggest that quantum computers can therefore try all potential
-  solutions in parallel. 
-  But, that we know of, this is false.
+but we put them aside as very interesting but speculative.)\footnote{%
+  A caution about quantum computers: \index{quantum computing} 
+  subatomic particles can be in a superposition of many states at once.
+  \protect\citetext{Some popularizations wrongly suggest}{%
+    A good first take is in the \protect\href{https://www.youtube.com/watch?v=-UrdExQW0cs}{Veritasium video \textit{Exposing Why Quantum Computers Are Already A Threat}}}
+  that quantum computers can therefore try all potential
+  solutions in parallel.
+  This makes them sound like nondeterministic machines.
+  But, that we know of, these popularizations are false.
   We believe that we cannot get information on individual parts
   out of a quantum system and instead must use interference.} %
 But that doesn't mean that thinking about nondeterministic Turing machines 
@@ -9994,13 +10009,13 @@ exercise.\footnote{%
   Not that there is anything wrong with academic exercises.}
 % The model of nondeterministic Turing machines
 % has proven to be very fruitful.
-
 Nondeterministic machines are practical in that 
 the problems that are associated with
 these machines, the members of $\NP$, are eminently practical. 
 Computer scientists have been trying to 
 find fast solutions to many of them since computers have existed.
-More evidence is that \zcref{lem:VerifierAndGuesserEquiv} rephrases
+More evidence of their practicality
+is that \zcref{lem:VerifierAndGuesserEquiv} rephrases
 questions about nondeterministic machines as
 questions about deterministic ones, the verifiers.
 \end{remark}
@@ -10021,14 +10036,14 @@ witness~$\omega\in\kleenestar{\Sigma}\!$.
 We have also noted that we can take the length of~$\omega$ to be bounded by
 $p(\sizeof{\sigma})$.
 
-So,
-try the computation of $\TM[V]$ on
+So, solve the $\lang$ problem by 
+trying the computation of $\TM[V]$ on
 input $\sequence{\sigma,\omega}$ for all $\omega$'s of length 
 at most $p(\sizeof{\sigma})$.
 Then $\sigma\in\lang$ if and only if at least one of these inputs 
 results in acceptance.
 There are at most $b^{p(\sizeof{\sigma})}$ many such $\omega$'s,
-where $b$ is the number of characters in the alphabet.
+where $b=\sizeof{\Sigma}$.
 \end{proof}
 
 We close by making a connection with the computably enumerable sets.
@@ -10037,12 +10052,10 @@ there is a good way to verify the solution,
 in contrast with the problems in~$\P$
 for which there is a good way to find the solution.
 Just as computably enumerable sets
-seem to be the limit of what can be known in theory,
+seem to be the limit of what can be done in theory,
 polytime verification seems to be the limit of
 what can be done feasibly.
 
-% In the next section we will consider
-% whether the two classes $\P$ and~$\NP$ differ.
 
 
 
@@ -10084,7 +10097,12 @@ That lemma requires that the verifier have the property
 that if $\sigma\in\lang$ then there is a witness leading to acceptance, 
 while if $\sigma\notin\lang$ then there does not exists a witness that would
 cause the verifier to accept.
-The proposed verifier will accept an input $\sigma$ if the bit tells it to,
+The proposed verifier doesn't verify, it relies on whatever $\omega$ is.
+\begin{display}
+  \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts008.pdf}}
+\end{display}
+Because it does not go through the check,
+it will accept an input $\sigma$ if the bit tells it to,
 even if $\sigma$ is not in the language.
 
 For a concrete instance, 
@@ -10128,7 +10146,7 @@ Is it satisfiable?
 The easiest way to check satisfiability is to make a truth table.
 \begin{exparts}
 \item The expression $(P\wedge Q)\vee(\neg Q\wedge R)$ is satisfiable. 
-\begin{center} % \definecolor{rowcolor}{gray}{.93} \rowcolors{3}{rcolor}{}
+\begin{center} 
 \small
 \begin{tabular}{ccc|ccc|c}
   $P$  &$Q$  &$R$  &$P\wedge Q$ &$\neg Q$ &$\neg Q\wedge R$ &$(P\wedge Q)\vee(\neg Q\wedge R)$ \\ \hline    
@@ -10191,12 +10209,12 @@ Uh-oh.
 You find yourself with a nondeterministic Turing machine where
 on input~$\sigma$, one maximal path of the computation tree accepts
 and one rejects.
-Some don't halt at all.
-What is the upshot;~what language does it decide?
+Some maximal paths don't halt at all.
+What is the upshot?
 \begin{answer}\verified
 This machine does not decide any language.
 To be a decider, a nondeterministic Turing machine's computation tree
-must have that all maximal paths are finite.
+must have that on all inputs all maximal paths are finite.
 \end{answer}
 \end{exercise}
 
@@ -10212,7 +10230,7 @@ Your professor sends it back, and says to try again.
 What was wrong?
 \item You hand in an algorithm that, each time it comes to 
 a fork in the maze, chooses at random which way to go.
-Again you get it back with a note to work out another try.
+Again you get it back with a note to do it differently.
 What is wrong with this one?
 \item Give a right answer. 
 \end{exparts}
@@ -10220,36 +10238,37 @@ What is wrong with this one?
 \begin{exparts}
 \item Backtracking will solve the problem.
 But it is a deterministic algorithm.
-(Technically, a deterministic algorithm is a special case of a nondeterministic
+(True, a deterministic algorithm is a special case of a nondeterministic
 one, but when you ask about it, your professor says, ``The point of this
 exercise is to demonstrate understanding of nondeterminism, 
 not to quibble.'')
 \item Your algorithm chooses, but it does so at random.
 If there are paths through the maze, but
-the random choices happens not to fall on such a path then 
+the random choices happens not to lead to such a path then 
 your algorithm will not detect them.
 A nondeterministic algorithm is required to accept the input maze if there
 is a path and to not accept the input if there is not.
-\item We will give two answers, one using the unbounded parallelism
-imagery and one using choosing.
+\item We will give two answers, one using the mental model of
+  unbounded parallelism and one using choosing.
 
-The unbounded parallelism algorithm maintains a computational history that is 
-a tree.
-Whenever the algorithm finds itself at a place in the maze where it 
+For the unbounded parallelism model,
+whenever the algorithm finds itself at a place in the maze where it 
 can do more than one thing, it forks child processes to handle each 
 possibility.
 So it may have lots of branches, and lots of them may go to dead ends,
 but if there is a way through the maze then this algorithm will find it.
-So it accepts the input maze if there is a path and never accepts when
-there is not.
+It accepts the input maze if there is evem a single path through
+and never accepts when there is not.
 
-The choosing algorithm chooses.
+The algorithm for choosing will choose.
 That is, the machine guesses the correct path, and then verifies 
 it against the input maze.
+(Instead of choosing, we can say that it receives the path~$\omega$
+from a demon.)
 By definition, if there is a way for this guess to be right
 then the algorithm accepts.
 (Note again that this algorithm is not guessing at random.
-It is guessing, correctly.)
+It is guessing correctly.)
 \end{exparts}
 \end{answer}
 \end{exercise}

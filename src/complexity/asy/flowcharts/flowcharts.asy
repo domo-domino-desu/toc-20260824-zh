@@ -440,5 +440,54 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============ verifier for just do what the witness says =================
+picture pic;
+int picnum = 8;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node test=nrounddiamond("$\omega=1$?");
+node printyes=nbox("Accept");
+node printno=nbox("Reject");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.35*v,read,test);
+vlayout(1.15*v,test,dummy);
+hlayout(-2.25*u,dummy,printyes);
+hlayout(2.25*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
 
 

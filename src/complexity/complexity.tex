@@ -3658,9 +3658,10 @@ with the largest cut set.
 Let the sets $X,Y,Z$ all have the same number of elements, $n$.
 Given as input a set $M\subseteq X\times Y\times Z$, 
 decide if there is a \definend{matching},\index{matching, three dimensional}
-a set $\hat{M}\subseteq M$ containing~$n$ elements such that no
+a set $\hat{M}\subseteq M$ with~$n$ elements that perfectly covers $X$, $Y$,
+and~$Z$ in that no
 two of the triples in $\hat{M}$ agree on 
-their first coordinates, or their second or third coordinates either.
+their first coordinates, or their second, or their third.
 \end{problem}
 %</prob:ThreeDMatching>
 
@@ -9330,28 +9331,29 @@ The most natural approach here is not to work with
   }
 but instead to use them as language deciders.
 
-
+\label{disc:NondeterminismTMsMentalModels}
 From the Finite State machine discussion we 
 inherit two mental models for how nondeterministic machines act.
 One is that the machine is unboundedly parallel and simultaneously 
 computes all of the paths.
-The other is that the machine guesses which maximal path to 
-follow,
-or is told by a demon, and
-then deterministically verifies that path.
-In both models, the machine accepts an input string if 
-there exists at least one
+It accepts the input if 
+it computes at least one
 maximal path ending in a configuration with an accepting state,
-and otherwise does not accept.
+otherwise it rejects.
+The other model is that the machine guesses which maximal path to choose,
+or is told by a demon.
+The machine accepts the input if there is a maximal
+path ending in an accepting configuration that it could guess,
+otherwise it rejects.
 
 The ``otherwise'' seemingly could mean that 
 in a non-accepting computation the tree contains some sequences of configurations
-that don't terminate (as in the bottom of the picture above).
+that don't terminate, as in the bottom of the picture above.
 However, to use these machines as language deciders 
 we shall want to time them, 
 including how long they take to not accept.
 So we shall require of nondeterministic language deciders that  
-their trees have no infinite paths.
+their computation trees have no infinite paths.
 
 %<*def:NondeterministicDecidersAllBranchesFinite>
 \begin{definition} \label{def:NondeterministicDecides}
@@ -9583,18 +9585,31 @@ We now give that second one.
 
 This is where we use the mental model
 of the machine guessing or of being given a hint.
-Consider again \probname{Satisfiability}.
-Imagine that in \zcref{ex:SatisfiabilityfastOnNDTM} above the demon whispers, 
+Consider again our touchstone problem, \probname{Satisfiability}.
+Imagine that in \zcref{ex:SatisfiabilityfastOnNDTM} above
+we are given the expression and the demon whispers, 
 ``Psst! Try $\str{TTF}$.'' 
-We can verify this hint's correctness in polytime, even just using
-a deterministic machine.
-Here is the verifier, which takes in the expression as~$\sigma$
-and the hint as~$\omega$.
-% Here is that verifier.
+With this we can verify the expression's satisfiability in polytime using
+a deterministic machine (so achieving polytime does not require
+nondeterminism if we are simply verifying).
+The verifier below inputs~$\sigma$, a string representation of a
+Boolean expression,
+and also a hint~$\omega$, representing
+a line of $\sigma$'s truth table, that witnesses
+$\sigma$'s satisfiability.
 \begin{equation*}
   \vcenteredhbox{\includegraphics{complexity/asy/flowcharts/flowcharts000.pdf}}
   \tag{$**$}
 \end{equation*}
+If $\sigma$ is satisfiable then  
+there is a suitable~$\omega$ that~$\TM[V]$
+can check gives a result of~\true\!.
+% For the expression in \zcref{ex:SatisfiabilityfastOnNDTM}'s~($*$) from above, 
+% $\omega=\str{\true\true\false}$.
+(Clearly this check runs in polytime.)
+But if $\sigma$ is not satisfiable, such as  
+if $\sigma=P\wedge\neg P$, then there is no $\omega$
+that will cause $\TM[V]$ to accept.
 % It inputs $\sigma=E$ from~($*$)
 % and also the hint $\omega=\str{TTF}$.
 % It reaches `\texttt{Accept}' in polytime.
@@ -9649,49 +9664,24 @@ some aspects of both the definition and lemma, and give a few examples.
 
 % \begin{example}
 %<*ex:SATIsNPi>
-First we walk through the wording 
-using our touchstone problem,
-\probname{Satisfiability}.\index{Satisfiability problem@\probname{Satisfiability} problem}
-Using the lemma to show that it is in $\NP$
-requires that we produce a
-deterministic Turing machine verifier.
-That's given in the flowchart ($**$) above.
-Its first input, $\sigma$, is the candidate Boolean expression while 
-its second,~$\omega$, 
-represents a line of $\sigma$'s truth table.
-%</ex:SATIsNPi>
-%<*ex:SATIsNPiii>
-If ~$\sigma$ is satisfiable then  
-there is a suitable witness, a suitable line from the truth table, that~$\TM[V]$
-can check gives a result of~\true\!.
-For the expression in \zcref{ex:SatisfiabilityfastOnNDTM}'s~($*$) from above, 
-$\omega=\str{\true\true\false}$.
-(Clearly this check runs in polytime.)
-On the other hand, if a candidate~$\sigma$ is not satisfiable such as  
-if $\sigma=P\wedge\neg P$, then there is no $\omega$
-that will cause $\TM[V]$ to accept.
-%</ex:SATIsNPiii>
-% \end{example}
-
-%<*disc:Vefierv>
-Thus, the lemma elucidates something about
+First, the lemma elucidates something about
 $\NP$\kern+0.5pt:~while $\P$ contains problems 
 where we can deterministically find the answer
 in polytime, $\NP$ contains the problems where we can at least deterministically 
 verify answers in polytime.
-%</disc:Vefierv>
+%</ex:SATIsNPi>
 
 %<*disc:Vefieri>
-The second comment is to acknowledge
-the most striking thing about the definition, that 
+The second comment is to acknowledge that
+the most striking thing about the definition is that 
 it says there exists a witness~$\omega$
-but it does not say where it comes from.
+but it does not say where that witness comes from.
 A person with a computational mindset may well ask, 
 ``but how will we find the~$\omega$'s?'' 
-The point is not how to compute them. 
-The point is whether there exists a deterministic 
-Turing machine $\TM[V]$ that can leverage a hint or guess~$\omega$, 
-when one is given, to verify in polytime that $\sigma\in\lang$.
+The point is not how to compute a witness. 
+The point of a verifier is that it is a deterministic 
+Turing machine $\TM[V]$ that leverages the hint~$\omega$ 
+to certify in polytime that $\sigma\in\lang$.
 \citetext{The verifier $\TM[V]$ doesn't find the $\omega$'s, it just uses them}{%
   This is like a Mechanical Turk
   \url{https://en.wikipedia.org/wiki/Mechanical_Turk}
@@ -9702,8 +9692,8 @@ when one is given, to verify in polytime that $\sigma\in\lang$.
 
 %<*disc:Vefierii>
 Third,
-what's the point of the `verification must run in polytime' requirement:~if 
-we are given a correct answer then isn't it just trivial to verify?
+what's the point of the emphasis that the verification must run in polytime?
+If we are given an~$\omega$ then isn't checking always just trivial?
 Imagine for contrast that a demon hands you some papers and claims
 that they contain an unbeatable
 \citetext{strategy for chess}{% 
@@ -9714,7 +9704,7 @@ that they contain an unbeatable
 Verifying requires stepping through
 the responses to each move, and responses to the
 responses, etc.
-Verifying seems to
+It appears to
 \citetext{require exponential time}{%
   In the terminology of a later section, chess is known to be 
   $\EXP$ complete.
@@ -9765,7 +9755,7 @@ such that the verifier accepts $\sequence{\sigma,\omega}$.\footnote{%
 %<*disc:Vefieriv>
 This is an asymmetry between establishing membership in a language
 and establishing non-membership.
-Consider \probname{Satisfiability}.
+Consider \probname{Satisfiability} again.
 If a propositional logic expression~$\sigma$ is
 satisfiable then a witness to that is a strign that points to 
 a line of the truth table.
@@ -10237,7 +10227,7 @@ What is wrong with this one?
 \begin{answer}\verified
 \begin{exparts}
 \item Backtracking will solve the problem.
-But it is a deterministic algorithm.
+But backtracking is a deterministic algorithm.
 (True, a deterministic algorithm is a special case of a nondeterministic
 one, but when you ask about it, your professor says, ``The point of this
 exercise is to demonstrate understanding of nondeterminism, 
@@ -10278,26 +10268,28 @@ It is guessing correctly.)
   Paul Black, \url{https://xlinux.nist.gov/dads/HTML/nondetermAlgo.html}
 \end{credit}
 Sketch a nondeterministic algorithm to search an array of numbers
-for the number~$k$.
-Describe it both in terms of unbounded parallelism and in terms
-of guessing. 
+for the number~$k\in\N$, returning $1$ of some array entry equals that
+number and $0$ if not.
+Describe the algorithm both in terms of unbounded parallelism and in terms
+of guessing, as discussed on \zcpageref{disc:NondeterminismTMsMentalModels}. 
 \begin{answer}\verified
-The algorithm inputs an array $\sequence{a_0,a_1,\ldots{}\, a_{n-1}}$.
-% It accepts if $k=a_i$ for some index~$i$.
+In both models the input is an array $\sequence{a_0,a_1,\ldots{}\, a_{n-1}}$.
 
-In the unbounded parallelism model, the algorithm forks a child process for
-each index $0\leq i\leq n$.
-Child~$i$ checks whether $a_i=k$, and if so causes the algorithm to 
+In the unbounded parallelism model, the machine forks a child process for
+each index $0\leq i< n$.
+Child~$i$ checks whether $a_i=k$, and if so causes the machine to 
 accept.
 
-The guessing model is much the same.
-It guesses at an index~$i$. 
-If the array entry~$a_i$ equals~$k$ then it causes the algorithm to accept the
-input array.
-This model accepts the same languages as the other because, by definition,
-a guessing algorithm is right if there is a way for the guess to
-correctly result in acceptance, which will happen if and only if there
-is an array entry that equals~$k$.
+The guessing model has the machine guess at an index~$i$,
+and if it finds that $a_i=k$ there then
+it calls for acceptance. 
+Under this model the machine accepts the same arrays as under the other because,
+by definition, the machine accepts an input if at least one guess would
+calls for acceptance.
+If the array has a~$k$ entry then there is a way to guess it
+and the nondeterministic machine accepts that array.
+If the array has no such entry then there is a no way to guess a fitting index
+and the nondeterministic machine rejects the input array.
 \end{answer}
 \end{exercise}
 
@@ -10374,7 +10366,8 @@ If there is no satisfying assignment then there is no way for
 the input to get accepted.
 
 A guessing algorithm guesses an assignment $\sequence{x_0,\ldots{}\,x_n}$
-and then verifies that $F(x_1,\ldots{}\,x_n)\leq B$.
+and then verifies that it satisfies all of the restrictions and that
+$F(x_1,\ldots{}\,x_n)\leq B$.
 If there is a satisfying assignment then there is a way to guess it.
 Thus, by definition, this machine recognizes the language~$\lang_B$.
 \end{answer}
@@ -10388,35 +10381,38 @@ inputs a number $n\in\N$ and decides if its prime
 factorization has exactly two primes, $n=p_0^{e_0}p_1^{e_1}$ where
 $e_0,e_1>0$.
 State it as a language decision problem.
-Sketch a nondeterministic algorithm that runs in polytime.
-Give both an unbounded parallelism formulation and a guessing formulation.
+Sketch a nondeterministic solution algorithm that runs in polytime.
+Give an unbounded parallelism formulation and a guessing formulation.
 \begin{answer}\verified
 The language is 
-$\lang=\set{n\in\N\suchthat \text{$n$'s prime factorization has exactly two primes}}$.
+$\lang=\set{n\in\N\suchthat \text{$n$'s prime factorization is $n=p_0^{e_0}p_1^{e_1}$ for $e_0,e_1>0$}}$.
 
 One unbounded parallelism algorithm tries each
 conceivable prime factorization, simultaneously.
 For instance, given the input~$8$, it could check the 
-products $2^03^05^07^0$, $2^13^05^07^0$, \ldots{}  
+products $2^03^05^07^0$, $2^13^05^07^0$, \ldots{}
 $2^73^75^77^7$, to see whether any of them equals~$8$ and 
-exactly two primes nave nonzero exponents.
+exactly two primes nave nonzero exponents
+(by `conceivable' we mean that it doesn't include any primes greater
+than~$8$).
 Multiplying is fast and checking whether a number is composite or
 prime can also be done in polytime.
 Thus each of these checks happens in polytime.
 
 A guessing algorithm is that the machine inputs the number~$n$
 and guesses 
-a two-prime factorization, or is given one by a demon.
-For instance, given $45$, the machine might guess $3^{2}5^{1}\!$.
-(It might instead guess $3^15^2$, but that one won't check out.) 
+a two-prime factorization, or is given one by a demon, and then verifies that the
+guess is correct.
+For instance, given $45$, the machine might guess $3^{2}5^{1}\!$,
+which does indeed multiply to give~$45$.
 Again, the verification is polytime because
-multiplication is polytime, as is checking whether the two numbers
-are composite or prime.
+multiplication is polytime (as is checking whether the two numbers
+are prime).
 By definition, the machine recognizes the language~$\lang$ if,
-given $n\in\N$, when $n\in\lang$ then there exists some guess that
-verifies, and when $n\notin\lang$ then there is no way for a guess to
+given $n\in\N$, when $n\in\lang$ then there exists some guess that will
+verify, and when $n\notin\lang$ then there is no way for a guess to
 verify.
-So this algorithm recognizes~$\lang$.
+% So this algorithm recognizes~$\lang$.
 \end{answer}
 \end{exercise}
 
@@ -10426,63 +10422,59 @@ Then give a polytime nondeterministic algorithm.
 State it in terms of guessing.
 \begin{exparts}
 \item
-\probname{Three Dimensional Matching}:~where\index{Three Dimensional Matching problem@\probname{Three Dimensional Matching} problem}
-$X,Y,Z$ are sets of integers
-having~$n$ elements, given as input a set of triples 
+\probname{Three Dimensional Matching}:~given\index{Three Dimensional Matching problem@\probname{Three Dimensional Matching} problem}
+three sets $X,Y,Z$ that each
+have~$n$ elements, and also given as input a set of those triples 
 $M\subseteq X\times Y\times Z$,
 decide if there is an $n$-element subset $\hat{M}\subseteq M$ so that
-no two triples agree on their first coordinates, or second, or third.
+no two of its elements agree on their first coordinates, or second, or third.
 \item
 \probname{Partition}:~given\index{Partition problem@\probname{Partition} problem} 
 a finite multiset~$A$ of natural numbers,
-decide if~$A$ splits into multisets
-$\hat{A},A-\hat{A}$ so the elements total to the same number,
+decide if~$A$ splits into multisubsets
+$\hat{A},A-\hat{A}$ whose elements total to the same number,
 $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
 \end{exparts}
 \begin{answer}\verified
 \begin{exparts}
-\item This is the language.
-\begin{equation*}
-  \lang=\set{M\in X\times Y\times Z \suchthat
-              \text{$M$ has an $n$-element subset $\hat{M}$ where no triples agree on any coordinate}}
-\end{equation*}
+\item The language is the collection of sets $M$ that contain triples
+  $M\subseteq X\times Y\times Z$ where
+  $\sizeof{X}=\sizeof{Y}=\sizeof{Z}=n$ for some $n\in\N^+$\!,
+  and $M$ has a subset $\hat{M}$ of size~$n$ such that no
+  two of its triples agree on any if their three coordinates.
 
-A nondeterministic algorithm, framed in terms of guessing, is:~given~$M$, 
-the machine guesses a size~$n$ subset~$\hat{M}$ meeting the conditions.
-Verifying the conditions clearly takes only polytime.
-If there is such an~$\hat{M}$ then there is a way for the machine to 
-guess it, and it will verify.
-If there is no such~$\hat{M}$ then there is no way for the machine to 
-guess one that verifies.
-So by the definition of this model of nondeterminism, 
-the machine recognizes the language in polytime.
+An decision algorithm for $\lang$, framed in terms of guessing, is:~given~$M$, 
+guess a size~$n$ subset~$\hat{M}$
+(or the algorithm may be handed $\hat{M}$ by a demon).
+Veifying that $\hat{M}$ satisfies the conditions can be done in
+polytime, clearly.
+Since $M$ is in the language if and only if there is a way to guess
+(or be given) a suitable subset and then verify in polytime,
+the language decision problem for $\lang$ is in~$\NP$.
 \item Here is the language.
 \begin{equation*}
   \lang=\set{A\suchthat
         \text{$A$ is a multiset of natural numbers 
-              with an $\hat{A}\subseteq A$ so that 
-              $\sum_{a\in\hat{A}}a=\sum_{a\in A-\hat{A}}a$}}
+              with an $\hat{A}\subseteq A$ such that 
+              $\textstyle \sum_{a\in\hat{A}}a=\sum_{a\in A-\hat{A}}a$}}
 \end{equation*}
 
-A nondeterministic algorithm stated in guessing terms is that, 
-when asked to determine if the given~$A$ is a member of~$\lang$, the 
-machine guesses at a~$\hat{A}$.
-(That is, $\hat{A}$ is the witness.)
-Verifying that $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$ is clearly
-polytime.
-If there is such a partition then for this machine there exists a guess 
-that would pass verification.
-If there is no such partition then no guess will verify.
-So by the definition, this machine recognizes the language~$\lang$.
+An algorithm to solve the language decision problem, stated in guessing terms,
+is:~given a set $A$, guess an~$\hat{A}$ (or the algorithm may be given
+$\hat{A}$ by a demon).
+Verifying that $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$ can clearly
+be done in polytime.
+Since $A\in\lang$ if and only if there is a way for the algorithm to guess
+a witness and then check it in polytime, the language is a member of~$\NP$.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-Sketch a nondeterministic algorithm that inputs a planar graph and
-a bound $B\in\N$ and decides whether the graph is $B$-colorable,
-described both in terms of unbounded parallelism and also in terms of
+Sketch nondeterministic algorithms that input a planar graph and
+a bound $B\in\N$ and decides whether the graph is $B$-colorable.
+State one in terms of unbounded parallelism and one in terms of
 guessing.
 \begin{answer}\verified
 For unbounded parallelism, we can try every possible $B$-coloring
@@ -10493,15 +10485,20 @@ So the computation tree has a single node with that many children.
 Each coloring is easy to check for validity, 
 since we just have to check every pair of vertices 
 to see if they are the same color.
+(The number of pairs of vertices rises with the square of the number of
+vertices, since it is the number of vertices choose two, and so
+this takes polytime.)
 If any of the child nodes is OK, then there is a $B$-coloring.
 
-For guessing, the machine does not spawn lots of branches.
-Instead, it nondeterministically selects one coloring
-(that is, it guesses one, or is given one by a demon).
+For guessing, in contrast to the prior paragraph
+the machine does not spawn lots of branches.
+Instead, it nondeterministically selects one coloring,
+that is, it guesses one or is given one by a demon.
 It then verifies the guess by iterating through every vertex pair to see if they
 are the same color.
-If there is a way to correctly nondeterministically guess then by 
-definition this algorithm succeeds.
+Since there is a way to correctly guess and polytime verify
+if and only if the graph is $B$-colorable, 
+according to the definition this algorithm succeeds.
 \end{answer}
 \end{exercise}
 

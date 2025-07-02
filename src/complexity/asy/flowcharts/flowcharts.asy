@@ -488,6 +488,109 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============ verifier for 3DMatching exercise =======================
+picture pic;
+int picnum = 9;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node compute=nbox("Interpret $\sigma$ as $M$ and $\omega$ as $\hat{M}$");
+node test=nrounddiamond("Any triples share an entry?");
+node printyes=nbox("Reject");
+node printno=nbox("Accept");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.15*v,read,compute);
+vlayout(1.40*v,compute,test);
+vlayout(1.15*v,test,dummy);
+hlayout(-4.25*u,dummy,printyes);
+hlayout(4.25*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--compute),
+     (compute--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     compute,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+// ............... verifier for Partition exercise .....
+picture pic;
+int picnum = 10;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node compute=nbox("Interpret $\sigma$ as $A$ and $\omega$ as $\hat{A}$");
+node test=nrounddiamond("$\textstyle \sum_{a\in\hat{A}}a=\sum_{a\in A-\hat{A}}a$?");
+node printyes=nbox("Accept");
+node printno=nbox("Reject");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.15*v,read,compute);
+vlayout(1.40*v,compute,test);
+vlayout(1.15*v,test,dummy);
+hlayout(-4.25*u,dummy,printyes);
+hlayout(4.25*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--compute),
+     (compute--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     compute,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
+
+
 
 
 

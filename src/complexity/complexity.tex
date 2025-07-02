@@ -9340,9 +9340,9 @@ It accepts the input if
 it computes at least one
 maximal path ending in a configuration with an accepting state,
 otherwise it rejects.
-The other model is that the machine guesses which maximal path to choose,
+The other model is that the machine guesses the maximal path to choose,
 or is told by a demon.
-The machine accepts the input if there is a maximal
+The machine accepts its input if there is a maximal
 path ending in an accepting configuration that it could guess,
 otherwise it rejects.
 
@@ -10210,10 +10210,36 @@ must have that on all inputs all maximal paths are finite.
 
 \recommended
 \begin{exercise}
+  Your study partner is working through a point,
+  ``The proof of \zcref{lem:VerifierAndGuesserEquiv}
+  says that the machine `nondeterministically produces' the
+  witness~$\hat{\omega}$.
+  I don't get this machine-guesses model.
+  Suppose that for the input~$\sigma$ the computation tree has ten maximal paths,
+  all are finite, and one ends in an accepting configuration.
+  So the machine has a one out of ten chance of accepting~$\sigma$?''
+  Help them with this.
+  \begin{answer}\verified
+    No.
+    The definition is:~the machine accepts the input
+    if there exists a maximal path that ends in an
+    accepting configuration.
+    Being a little bit informal or possibly evocative, we say that
+    the machine accepts
+    its input if there is a way for it to guess a path that triggers acceptance.
+    
+    That definition means that the two models agree on their conclusions.
+    The unboundedly parallel model is about all paths while the machine
+    guesses model is about there exists a path, but we need them to
+    agree on when a machine accepts its input and when it rejects.
+  \end{answer}
+\end{exercise}
+
+\begin{exercise}
 You get an exercise, \textit{Write a nondeterministic algorithm
 that inputs a maze and outputs~\str{1} if there is a path from
 the start to the end.}
-\begin{exparts}
+\begin{exparts*}
 \item You hand in an algorithm that does backtracking to find
 any possible solution.
 Your professor sends it back, and says to try again.
@@ -10223,7 +10249,7 @@ a fork in the maze, chooses at random which way to go.
 Again you get it back with a note to do it differently.
 What is wrong with this one?
 \item Give a right answer. 
-\end{exparts}
+\end{exparts*}
 \begin{answer}\verified
 \begin{exparts}
 \item Backtracking will solve the problem.
@@ -10237,7 +10263,8 @@ If there are paths through the maze, but
 the random choices happens not to lead to such a path then 
 your algorithm will not detect them.
 A nondeterministic algorithm is required to accept the input maze if there
-is a path and to not accept the input if there is not.
+is a maximal path that ends in an accepting configuration
+and to not accept the input if there is not.
 \item We will give two answers, one using the mental model of
   unbounded parallelism and one using choosing.
 
@@ -10251,45 +10278,53 @@ It accepts the input maze if there is evem a single path through
 and never accepts when there is not.
 
 The algorithm for choosing will choose.
-That is, the machine guesses the correct path, and then verifies 
-it against the input maze.
+That is, the machine guesses the path.
 (Instead of choosing, we can say that it receives the path~$\omega$
 from a demon.)
-By definition, if there is a way for this guess to be right
-then the algorithm accepts.
+By definition of the mental model, if there is a way for the machine to guess
+right then the machine accepts the input.
 (Note again that this algorithm is not guessing at random.
 It is guessing correctly.)
 \end{exparts}
 \end{answer}
 \end{exercise}
 
+\recommended
 \begin{exercise}
 \begin{credit}
   Paul Black, \url{https://xlinux.nist.gov/dads/HTML/nondetermAlgo.html}
 \end{credit}
 Sketch a nondeterministic algorithm to search an array of numbers
-for the number~$k\in\N$, returning $1$ of some array entry equals that
+for the entry~$k\in\N$, returning $1$ of some array entry equals that
 number and $0$ if not.
 Describe the algorithm both in terms of unbounded parallelism and in terms
-of guessing, as discussed on \zcpageref{disc:NondeterminismTMsMentalModels}. 
+of guessing, as discussed on \zcpageref{disc:NondeterminismTMsMentalModels}.
+What is its runtime in Big~$\bigOh$?
 \begin{answer}\verified
 In both models the input is an array $\sequence{a_0,a_1,\ldots{}\, a_{n-1}}$.
 
 In the unbounded parallelism model, the machine forks a child process for
 each index $0\leq i< n$.
-Child~$i$ checks whether $a_i=k$, and if so causes the machine to 
+Child~$i$ checks whether $a_i=k$, and if so signals the machine to 
 accept.
 
 The guessing model has the machine guess at an index~$i$,
 and if it finds that $a_i=k$ there then
-it calls for acceptance. 
+it signals for acceptance. 
 Under this model the machine accepts the same arrays as under the other because,
-by definition, the machine accepts an input if at least one guess would
-calls for acceptance.
+by definition, the machine accepts an input if
+there is a maximal path that ends in an accepting configuration, that is, if
+at least one guess would be correct.
 If the array has a~$k$ entry then there is a way to guess it
 and the nondeterministic machine accepts that array.
-If the array has no such entry then there is a no way to guess a fitting index
+If the array has no such entry then there is a no way to guess an index
+leading to~$k$
 and the nondeterministic machine rejects the input array.
+
+On a deterministic machine the runtime is linear,~$\bigOh(n)$.
+In both nondeterministic models the runtime is constant,~$\bigOh(1)$.
+For instance in the unboundedly parallel model the machine looks in
+every entry but not in succession, instead all at the same time.
 \end{answer}
 \end{exercise}
 
@@ -10351,25 +10386,29 @@ Recast it as a parametrized family of language decision problems.
 Sketch a nondeterministic algorithm,
 giving both an unbounded parallelism formulation and a guessing formulation.
 \begin{answer}\verified
-We recast this as language decision
-problems for a family of languages parametrized by the bound~$B\in\N$.
-\begin{equation*}
-  \lang_B=
-  \set{\sequence{x_0,x_1,\ldots{}\, x_n}\in\Z^{n+1}\suchthat
-       \text{the $x_j$ satisfy all the constraints and $F(x_0,x_1,\ldots{}\,x_n)\leq B$}}
-\end{equation*}
+  To recast,
+  we can denote each language decision problem as a tuple
+  \begin{equation*}
+    \sequence{d_0,\ldots\,d_n,a_{0,0},\ldots\,a_{0,n},b_0,\ldots\, a_{m,0},\ldots\,a_{m,n},b_m}
+    \qquad\text{each number is an integer}
+  \end{equation*}
+  representing that $F(x_0,\ldots\, x_n)=d_0x_0+\cdots+d_nx_n\geq B$
+  and that
+  $a_{i,0}x_0+\cdots+a_{i,n}x_n\leq b_i$ for $0\leq i\leq m$.
+  (Observe that we can represent a `$\geq$' constraint with negative numbers.)
 
-An unboundedly parallel algorithm tries all possible assignments.
-If there is a satisfying assignment then this algorithm will find it
-and accept the input.
-If there is no satisfying assignment then there is no way for
-the input to get accepted.
+  An unboundedly parallel algorithm tries all feasible assignments
+  of integers to the variable $x_j$'s.
+  (An assignment is `feasible' if it satisfies all of the constraints.)
+  If there is a satisfying assignment then this algorithm will find it
+  and accept the input tuple.
+  If there is no satisfying assignment then there is no way for
+  the input to get accepted.
 
-A guessing algorithm guesses an assignment $\sequence{x_0,\ldots{}\,x_n}$
-and then verifies that it satisfies all of the restrictions and that
-$F(x_1,\ldots{}\,x_n)\leq B$.
-If there is a satisfying assignment then there is a way to guess it.
-Thus, by definition, this machine recognizes the language~$\lang_B$.
+  A guessing algorithm guesses an assignment $\sequence{x_0,\ldots\,x_n}$.
+  If there is a satisfying assignment then there is a way to guess it,
+  and so by the definition of machine acceptance under this model, the machine
+  accepts the input tuple as a member of the language~$\lang_B$.
 \end{answer}
 \end{exercise}
 
@@ -10385,41 +10424,36 @@ Sketch a nondeterministic solution algorithm that runs in polytime.
 Give an unbounded parallelism formulation and a guessing formulation.
 \begin{answer}\verified
 The language is 
-$\lang=\set{n\in\N\suchthat \text{$n$'s prime factorization is $n=p_0^{e_0}p_1^{e_1}$ for $e_0,e_1>0$}}$.
+$\lang=\set{n\in\N\suchthat \text{$n$'s prime factorization is $n=p_0^{e_0}p_1^{e_1}$ for $e_0,e_1>0$ and $p_0\neq p_1$ primes}}$.
 
-One unbounded parallelism algorithm tries each
-conceivable prime factorization, simultaneously.
-For instance, given the input~$8$, it could check the 
-products $2^03^05^07^0$, $2^13^05^07^0$, \ldots{}
-$2^73^75^77^7$, to see whether any of them equals~$8$ and 
-exactly two primes nave nonzero exponents
+An unbounded parallelism algorithm tries each
+conceivable prime factorization, simultaneously
 (by `conceivable' we mean that it doesn't include any primes greater
-than~$8$).
+than the input number).
+For instance, given the input~$8$, it could check the 
+products $2^03^05^07^0$\!, $2^13^05^07^0$\!, \ldots{}
+$2^73^75^77^7$\!, to see whether any of them equals~$8$ and 
+exactly two primes have nonzero exponents.
 Multiplying is fast and checking whether a number is composite or
 prime can also be done in polytime.
 Thus each of these checks happens in polytime.
+Since the machine runs them all at the same time, overall this runs in polytime.
 
 A guessing algorithm is that the machine inputs the number~$n$
 and guesses 
-a two-prime factorization, or is given one by a demon, and then verifies that the
-guess is correct.
-For instance, given $45$, the machine might guess $3^{2}5^{1}\!$,
-which does indeed multiply to give~$45$.
-Again, the verification is polytime because
-multiplication is polytime (as is checking whether the two numbers
-are prime).
-By definition, the machine recognizes the language~$\lang$ if,
-given $n\in\N$, when $n\in\lang$ then there exists some guess that will
-verify, and when $n\notin\lang$ then there is no way for a guess to
-verify.
-% So this algorithm recognizes~$\lang$.
+a two-prime factorization, or is given one by a demon.
+For instance, by the definition of this model the machine accepts
+the input $45$, because it could guess $3^{2}5^{1}\!$.
+If the input is not a semiprime then there is no way to guess a
+suitable factorization.
+Clearly this runs in polytime.
 \end{answer}
 \end{exercise}
 
 \begin{exercise}
 For each, give a language so that it is a language decision problem.
-Then give a polytime nondeterministic algorithm.
-State it in terms of guessing.
+Then use \zcref{lem:VerifierAndGuesserEquiv}
+to show that the language is in~$\NP$.
 \begin{exparts}
 \item
 \probname{Three Dimensional Matching}:~given\index{Three Dimensional Matching problem@\probname{Three Dimensional Matching} problem}
@@ -10443,14 +10477,18 @@ $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
   and $M$ has a subset $\hat{M}$ of size~$n$ such that no
   two of its triples agree on any if their three coordinates.
 
-An decision algorithm for $\lang$, framed in terms of guessing, is:~given~$M$, 
-guess a size~$n$ subset~$\hat{M}$
-(or the algorithm may be handed $\hat{M}$ by a demon).
-Veifying that $\hat{M}$ satisfies the conditions can be done in
-polytime, clearly.
-Since $M$ is in the language if and only if there is a way to guess
-(or be given) a suitable subset and then verify in polytime,
-the language decision problem for $\lang$ is in~$\NP$.
+\zcref{lem:VerifierAndGuesserEquiv} calls for a deterministic verifier.
+\begin{display}
+  \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts009.pdf}}  
+\end{display}
+The problem instance, the thing being tested for membership in~$\lang$,
+is~$\sigma$.
+Here that is a string representing the set of triples~$M$.
+The verifier interprets the witness~$\omega$
+(which we may like to think of as a hint from the demon) as $\hat{M}$.
+Checking that no two of the triples in~$\hat{M}$ agree on their
+first coordinate,
+or second coordinate, or third coordinate can clearly be done in polytime.
 \item Here is the language.
 \begin{equation*}
   \lang=\set{A\suchthat
@@ -10459,13 +10497,16 @@ the language decision problem for $\lang$ is in~$\NP$.
               $\textstyle \sum_{a\in\hat{A}}a=\sum_{a\in A-\hat{A}}a$}}
 \end{equation*}
 
-An algorithm to solve the language decision problem, stated in guessing terms,
-is:~given a set $A$, guess an~$\hat{A}$ (or the algorithm may be given
-$\hat{A}$ by a demon).
-Verifying that $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$ can clearly
-be done in polytime.
-Since $A\in\lang$ if and only if there is a way for the algorithm to guess
-a witness and then check it in polytime, the language is a member of~$\NP$.
+To see that this language is a member of~$\NP$, apply 
+\zcref{lem:VerifierAndGuesserEquiv} wth this deterministic verifier.
+\begin{display}
+  \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts010.pdf}}  
+\end{display}
+The string $\sigma$ represents the problem instance~$A$ and
+the string $\omega$ represents the witness (which we can think of as the
+machine's guess).
+Adding the two multisets of numbers takes polytime.
+So the language is a member of~$\NP$.
 \end{exparts}
 \end{answer}
 \end{exercise}

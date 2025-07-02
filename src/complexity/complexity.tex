@@ -10450,7 +10450,7 @@ Clearly this runs in polytime.
 \end{answer}
 \end{exercise}
 
-\begin{exercise}
+\begin{exercise}\label{exer:ThreeDMatchingAndPartitionAreNP}
 For each, give a language so that it is a language decision problem.
 Then use \zcref{lem:VerifierAndGuesserEquiv}
 to show that the language is in~$\NP$.
@@ -10477,69 +10477,78 @@ $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
   and $M$ has a subset $\hat{M}$ of size~$n$ such that no
   two of its triples agree on any if their three coordinates.
 
-\zcref{lem:VerifierAndGuesserEquiv} calls for a deterministic verifier.
-\begin{display}
-  \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts009.pdf}}  
-\end{display}
-The problem instance, the thing being tested for membership in~$\lang$,
-is~$\sigma$.
-Here that is a string representing the set of triples~$M$.
-The verifier interprets the witness~$\omega$
-(which we may like to think of as a hint from the demon) as $\hat{M}$.
-Checking that no two of the triples in~$\hat{M}$ agree on their
-first coordinate,
-or second coordinate, or third coordinate can clearly be done in polytime.
+  \zcref{lem:VerifierAndGuesserEquiv} calls for a deterministic verifier.
+  See the flowchart on the left of \figureref{fig:ThreeDMatchingAndPartitionAreNP}.
+  The string representing the problem instance~$M$
+  is~$\sigma$.
+  The string~$\omega$ represents the witness~$\hat{M}$
+  (which we may think of as a hint from the demon).
+  Checking that no two of the triples in~$\hat{M}$ agree on their
+  first coordinate,
+  or second coordinate, or third coordinate can be done in time polynomial
+  in $\sizeof{\sigma}$.
+  (A rough argument for that:~checking that no two triples have the same first
+  coordinate requires $\sizeof{\hat{M}}$ choose~$2$ comparisons,
+  which is $\bigOh(\sizeof{\hat{M}}^2)$.
+  To check all three coordinates takes three times as many steps, so again
+  $\bigOh(\sizeof{\hat{M}}^2)$
+  Because $\hat{M}\subseteq M$ and $\sigma$ represents $M$, that's
+  $\bigOh(\sizeof{\sigma}^2)$.)
+  \begin{figure}\centering\small
+    \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts009.pdf}}%
+    \hspace{1em}%
+    \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts010.pdf}}%  
+    \caption{Verifiers for \zcref{exer:ThreeDMatchingAndPartitionAreNP}.}
+    \label{fig:ThreeDMatchingAndPartitionAreNP}
+  \end{figure}
 \item Here is the language.
-\begin{equation*}
-  \lang=\set{A\suchthat
-        \text{$A$ is a multiset of natural numbers 
-              with an $\hat{A}\subseteq A$ such that 
-              $\textstyle \sum_{a\in\hat{A}}a=\sum_{a\in A-\hat{A}}a$}}
-\end{equation*}
-
-To see that this language is a member of~$\NP$, apply 
-\zcref{lem:VerifierAndGuesserEquiv} wth this deterministic verifier.
-\begin{display}
-  \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts010.pdf}}  
-\end{display}
-The string $\sigma$ represents the problem instance~$A$ and
-the string $\omega$ represents the witness (which we can think of as the
-machine's guess).
-Adding the two multisets of numbers takes polytime.
-So the language is a member of~$\NP$.
+  \begin{equation*}
+    \lang=\set{A\suchthat
+      \text{$A$ is a multiset of natural numbers 
+        with an $\hat{A}\subseteq A$ such that 
+        $\textstyle \sum_{a\in\hat{A}}a=\sum_{a\in A-\hat{A}}a$}}
+  \end{equation*}
+  To see that it is a member of~$\NP$, apply 
+  \zcref{lem:VerifierAndGuesserEquiv} wth the deterministic verifier
+  on the right of \figureref{fig:ThreeDMatchingAndPartitionAreNP}.
+  The string $\sigma$ represents the problem instance~$A$.
+  The string $\omega$ represents the witness~$\hat{A}$
+  (which we can think of as the machine's guess).
+  Adding the two multisets of numbers takes time polynomial in
+  $\sizeof{\sigma}$.
+  % (addition is linear in $\sizeof{\sigma}$).
+  So the language is a member of~$\NP$.
 \end{exparts}
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-Sketch nondeterministic algorithms that input a planar graph and
-a bound $B\in\N$ and decides whether the graph is $B$-colorable.
-State one in terms of unbounded parallelism and one in terms of
-guessing.
+Consider the problem of inputing a planar graph and
+a bound $B\in\N$, and deciding whether the graph is $B$-colorable.
+State this as a language decision problem and use
+\zcref{lem:VerifierAndGuesserEquiv}
+to show that the language is in~$\NP$
 \begin{answer}\verified
-For unbounded parallelism, we can try every possible $B$-coloring
-of the graph's nodes.
-There are a large but finite number of those
-(where the graph has~$k$ vertices, there are $B^k$-many colorings).
-So the computation tree has a single node with that many children.
-Each coloring is easy to check for validity, 
-since we just have to check every pair of vertices 
-to see if they are the same color.
-(The number of pairs of vertices rises with the square of the number of
-vertices, since it is the number of vertices choose two, and so
-this takes polytime.)
-If any of the child nodes is OK, then there is a $B$-coloring.
-
-For guessing, in contrast to the prior paragraph
-the machine does not spawn lots of branches.
-Instead, it nondeterministically selects one coloring,
-that is, it guesses one or is given one by a demon.
-It then verifies the guess by iterating through every vertex pair to see if they
-are the same color.
-Since there is a way to correctly guess and polytime verify
-if and only if the graph is $B$-colorable, 
-according to the definition this algorithm succeeds.
+  The language
+  $\lang=
+  \set{\sequence{\mathcal{G},B}\suchthat
+        \text{$\mathcal{G}$ is planar and is $B$ colorable}}$
+  is a straightforward translation of the problem.
+  To show that $\lang$ is in $\NP$, 
+  \zcref{lem:VerifierAndGuesserEquiv}
+  needs a deterministic verifier that runs in time polynomial in the size
+  of~$\sigma$, the string representation of the problem instance.
+  \begin{display}
+    \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts011.pdf}}%   
+  \end{display}
+  This verifier can check that no two same-colored vertices are connected by
+  an edge, using time polynomial in $\sizeof{\sigma}$.
+  (The main point of the argument is that where $\mathcal{V}$ is the set
+  of vertices of
+  $\mathcal{G}$, there are at most $\sizeof{\mathcal{V}}$ choose~$2$
+  many edges to check.
+  That's $\bigOh(\sizeof{\mathcal{V}}^2)$.)
 \end{answer}
 \end{exercise}
 
@@ -10552,9 +10561,9 @@ by filling in the blanks in this argument.
     \zcref{lem:VerifierAndGuesserEquiv}
     requires that we produce a deterministic Turing machine verifier, $\TM[V]$.
     It must input pairs of the form $\sequence{\sigma,\omega}$, where 
-    $\sigma$ is \fillinblankLabelled{(1)}.
+    the string $\sigma$ represents \fillinblankLabelled{(1)}.
     It must have the property that if
-    $\sigma\in\prob$ then there is an~$\omega$ such that~$\TM[V]$  
+    $\sigma\in\prob$ then there is a witness string~$\omega$ such that~$\TM[V]$  
     accepts the input, while if $\sigma\notin\prob$ then there is no 
     such witness~$\omega$.
     And it must run in time polynomial in~$\sizeof{\sigma}$.
@@ -10565,10 +10574,10 @@ by filling in the blanks in this argument.
     Clearly that check can be done in polytime.
 
     If 
-    $\sigma\in\prob$ then by definition there is \fillinblankLabelled{(4)}, 
+    $\sigma\in\prob$ then by definition there is \fillinblankLabelled{(4)} 
     and so a witness~$\omega$ exists that will cause~$\TM[V]$ to 
     accept the input pair $\sequence{\sigma,\omega}$.
-    If $\sigma\notin\prob$ then there is no such \fillinblankLabelled{(5)},
+    If $\sigma\notin\prob$ then there is no such \fillinblankLabelled{(5)}
     and therefore no witness~$\omega$ will cause~$\TM[V]$ to accept
     the input pair.
 \end{quotation}
@@ -10581,8 +10590,8 @@ that make it true.
 \item
 The
 \probname{Subset Sum} problem\index{Subset Sum problem@\probname{Subset Sum} problem}
-inputs a set of numbers $S\subset\N$ and a target sum~$T\in\N$,
-and decides whether least one subset of~$S$ adds to~$T$.
+inputs a multiset of numbers $S\subset\N$ and a target sum~$T\in\N$,
+and decides whether least one multisubset of~$S$ adds to~$T$.
 \end{exparts}
 \begin{answer}\verified
 \begin{exparts}
@@ -10596,7 +10605,7 @@ and decides whether least one subset of~$S$ adds to~$T$.
 These are suitable fill-ins:
 \begin{parenum}
 \item a Propositional Logic statement,
-\item a pointer to two lines of the truth table,
+\item a pair of pointers, to two lines of the truth table,
 \item for those two truth table lines, the statement returns \true,
 \item two truth table lines that cause the expression~$\sigma$ 
   to evaluate to \true,
@@ -10611,9 +10620,9 @@ Here is the problem cast as the decision problem for a language.
 \end{equation*}
 These are fill-ins:
 \begin{parenum}
-\item a set and number pair $\sequence{S,T}$,
-\item a set of numbers,
-\item that is a subset of the given~$S$ and that its elements sum to~$T$, 
+\item a pair $\sequence{S,T}$ consisting of a multiset and a number,
+\item a multisubset of $S$,
+\item its elements sum to~$T$, 
 \item a subset of~$S$ whose elements sum to~$T$,
 and
 \item subset of~$S$.

@@ -95,7 +95,7 @@ setdefaultflowchartstyles();
 // define nodes
 node start=nroundbox("Start");
 node read=nbox("Read $\sigma$, $\omega$");
-node compute=nbox("Check that~$\omega$ is a path in $\sigma$'s graph");
+node compute=nbox("Interpret~$\sigma$ as $\sequence{\mathcal{G},v,\hat{v}}$ and $\omega$ as a path in $\mathcal{G}$ from $v$ to $\hat{v}$");
 node test=nrounddiamond("All vertices visited once?");
 node printyes=nbox("Accept");
 node printno=nbox("Reject");

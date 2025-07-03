@@ -10050,24 +10050,14 @@ what can be done feasibly.
 
 
 % ........................
-\begin{exercises}
-% \begin{exercise}  \label{exer:PrimaliltyTesting}
-% Express primality testing in computation tree terms.
-% \end{exercise}
-% \recommended
-% \begin{exercise}
-% Your friend says, ``The definition is that 
-% $\NP$ is the set of problems with deterministic verifiers.''
-% They've not quite got it all;
-% give them a prompt.
-% \begin{answer}\verified
-% The assertion that $\NP$ is the set of problems with deterministic 
-% verifiers is correct, but not complete.
-% In addition, the verifier runs in 
-% time polynomial in the length of the input.
-% \end{answer}
-% \end{exercise}
-
+\begin{exercises}[Some exercises require noting that the verifier
+  runs in time polynomial in the size of the input instance.
+  For that, some handy facts are that addition, subtraction, multiplication,
+  and division run in time polynomial in the number of digits of the two inputs,
+  and that in a simple graph the maximum number of edges is polynomial
+  in the number of vertices.]
+  % See https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations
+  
 \recommended
 \begin{exercise} 
 \begin{credit}
@@ -10465,7 +10455,7 @@ no two of its elements agree on their first coordinates, or second, or third.
 \item
 \probname{Partition}:~given\index{Partition problem@\probname{Partition} problem} 
 a finite multiset~$A$ of natural numbers,
-decide if~$A$ splits into multisubsets
+decide if~$A$ splits into sub-multisets
 $\hat{A},A-\hat{A}$ whose elements total to the same number,
 $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
 \end{exparts}
@@ -10478,20 +10468,25 @@ $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
   two of its triples agree on any if their three coordinates.
 
   \zcref{lem:VerifierAndGuesserEquiv} calls for a deterministic verifier.
-  See the flowchart on the left of \figureref{fig:ThreeDMatchingAndPartitionAreNP}.
-  The string representing the problem instance~$M$
-  is~$\sigma$.
-  The string~$\omega$ represents the witness~$\hat{M}$
-  (which we may think of as a hint from the demon).
+  It inputs the string~$\sigma$ representing a set of triples~$M$
+  whose first coordinates are limited to some size~$n$ set~$X$,
+  whose second coordinates are limited to a size~$n$ set~$Y$,
+  and whose third coordinates are limited to a size~$n$ set~$Z$.
+  It also inputs the witness string~$\omega$ representing the
+  some $\hat{M}\subseteq M$.
+  (we can think of this
+  as the nondeterministic machine's guess or as the demon's hint).
+  See the flowchart on the left of
+  \figureref{fig:ThreeDMatchingAndPartitionAreNP}.
   Checking that no two of the triples in~$\hat{M}$ agree on their
   first coordinate,
   or second coordinate, or third coordinate can be done in time polynomial
   in $\sizeof{\sigma}$.
-  (A rough argument for that:~checking that no two triples have the same first
+  (A rough argument:~checking that no two triples have the same first
   coordinate requires $\sizeof{\hat{M}}$ choose~$2$ comparisons,
   which is $\bigOh(\sizeof{\hat{M}}^2)$.
   To check all three coordinates takes three times as many steps, so again
-  $\bigOh(\sizeof{\hat{M}}^2)$
+  $\bigOh(\sizeof{\hat{M}}^2)$.
   Because $\hat{M}\subseteq M$ and $\sigma$ represents $M$, that's
   $\bigOh(\sizeof{\sigma}^2)$.)
   \begin{figure}\centering\small
@@ -10505,18 +10500,21 @@ $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
   \begin{equation*}
     \lang=\set{A\suchthat
       \text{$A$ is a multiset of natural numbers 
-        with an $\hat{A}\subseteq A$ such that 
+        with a sub-multiset $\hat{A}\subseteq A$ such that 
         $\textstyle \sum_{a\in\hat{A}}a=\sum_{a\in A-\hat{A}}a$}}
   \end{equation*}
-  To see that it is a member of~$\NP$, apply 
-  \zcref{lem:VerifierAndGuesserEquiv} wth the deterministic verifier
-  on the right of \figureref{fig:ThreeDMatchingAndPartitionAreNP}.
-  The string $\sigma$ represents the problem instance~$A$.
-  The string $\omega$ represents the witness~$\hat{A}$
-  (which we can think of as the machine's guess).
+  To show that it is a member of~$\NP$,  
+  \zcref{lem:VerifierAndGuesserEquiv} needs a deterministic verifier.
+  It is illustrated on the right of
+  \figureref{fig:ThreeDMatchingAndPartitionAreNP}.
+  It inputs the string~$\sigma$ representing the problem instance~$M$,
+  and the string~$\omega$ representing the witness~$\hat{A}$
+  (we can think of this
+  as the nondeterministic machine's guess or as the demon's hint).
   Adding the two multisets of numbers takes time polynomial in
   $\sizeof{\sigma}$.
-  % (addition is linear in $\sizeof{\sigma}$).
+  (Briefly, addition of two $n$-digit numbers is $\bigOh(n)$ so the time
+  taken grows linearly with $\sizeof{A}$ and thus with $\sizeof{\sigma}$.)
   So the language is a member of~$\NP$.
 \end{exparts}
 \end{answer}
@@ -10528,27 +10526,34 @@ Consider the problem of inputing a planar graph and
 a bound $B\in\N$, and deciding whether the graph is $B$-colorable.
 State this as a language decision problem and use
 \zcref{lem:VerifierAndGuesserEquiv}
-to show that the language is in~$\NP$
+to show that the language is in~$\NP$.
 \begin{answer}\verified
-  The language
+  The language is a straightforward translation of the problem,
   $\lang=
   \set{\sequence{\mathcal{G},B}\suchthat
-        \text{$\mathcal{G}$ is planar and is $B$ colorable}}$
-  is a straightforward translation of the problem.
+        \text{$\mathcal{G}$ is planar and is $B$ colorable}}$.
   To show that $\lang$ is in $\NP$, 
   \zcref{lem:VerifierAndGuesserEquiv}
-  needs a deterministic verifier that runs in time polynomial in the size
-  of~$\sigma$, the string representation of the problem instance.
+  needs a deterministic verifier.
+  It must input two strings, the string $\sigma$ representing a
+  pair~$\sequence{\mathcal{G},B}$ of a graph and a nonzero natural number,
+  and the string $\omega$ representing the witness coloring
+  (we can think of this as the machine's guess or the demon's hint).
   \begin{display}
     \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts011.pdf}}%   
   \end{display}
   This verifier can check that no two same-colored vertices are connected by
-  an edge, using time polynomial in $\sizeof{\sigma}$.
-  (The main point of the argument is that where $\mathcal{V}$ is the set
-  of vertices of
+  an edge using time polynomial in $\sizeof{\sigma}$.
+  (The crux of showing that it is polytime
+  is that where $\mathcal{V}$ is the set of vertices of
   $\mathcal{G}$, there are at most $\sizeof{\mathcal{V}}$ choose~$2$
   many edges to check.
-  That's $\bigOh(\sizeof{\mathcal{V}}^2)$.)
+  That's $\bigOh(\sizeof{\mathcal{V}}^2)$, which is
+  $\bigOh(\sizeof{\mathcal{G}}^2)$.)
+  
+  If $\sequence{\mathcal{G},B}\in\lang$ then there exists a suitable witness,
+  namely the coloring, while if $\sequence{\mathcal{G},B}\notin\lang$ then
+  no $\omega$ will cause the verifier to accept its input.
 \end{answer}
 \end{exercise}
 
@@ -10562,23 +10567,26 @@ by filling in the blanks in this argument.
     requires that we produce a deterministic Turing machine verifier, $\TM[V]$.
     It must input pairs of the form $\sequence{\sigma,\omega}$, where 
     the string $\sigma$ represents \fillinblankLabelled{(1)}.
-    It must have the property that if
+    This verifier must have the property that if
     $\sigma\in\prob$ then there is a witness string~$\omega$ such that~$\TM[V]$  
     accepts the input, while if $\sigma\notin\prob$ then there is no 
     such witness~$\omega$.
     And it must run in time polynomial in~$\sizeof{\sigma}$.
 
     The verifier interprets
-    the bitstring witness~$\omega$ as \fillinblankLabelled{(2)},
+    the string witness~$\omega$ as \fillinblankLabelled{(2)},
     and checks that \fillinblankLabelled{(3)}.
-    Clearly that check can be done in polytime.
+    Clearly that check can be done in polytime
+    (briefly, that's because \fillinblankLabelled{(4)}).
 
     If 
-    $\sigma\in\prob$ then by definition there is \fillinblankLabelled{(4)} 
+    $\text{\fillinblankLabelled{(1)}}\in\prob$
+    then by definition there is \fillinblankLabelled{(5)} 
     and so a witness~$\omega$ exists that will cause~$\TM[V]$ to 
     accept the input pair $\sequence{\sigma,\omega}$.
-    If $\sigma\notin\prob$ then there is no such \fillinblankLabelled{(5)}
-    and therefore no witness~$\omega$ will cause~$\TM[V]$ to accept
+    If $\text{\fillinblankLabelled{(1)}}\notin\prob$
+    then there is no such \fillinblankLabelled{(6)}
+    and therefore no $\omega$ will cause~$\TM[V]$ to accept
     the input pair.
 \end{quotation}
 \begin{exparts}
@@ -10591,7 +10599,7 @@ that make it true.
 The
 \probname{Subset Sum} problem\index{Subset Sum problem@\probname{Subset Sum} problem}
 inputs a multiset of numbers $S\subset\N$ and a target sum~$T\in\N$,
-and decides whether least one multisubset of~$S$ adds to~$T$.
+and decides whether least one sub-multiset of~$S$ adds to~$T$.
 \end{exparts}
 \begin{answer}\verified
 \begin{exparts}
@@ -10604,9 +10612,10 @@ and decides whether least one multisubset of~$S$ adds to~$T$.
 \end{equation*}
 These are suitable fill-ins:
 \begin{parenum}
-\item a Propositional Logic statement,
-\item a pair of pointers, to two lines of the truth table,
+\item a Propositional Logic statement~$E$,
+\item a pair, pointing to two lines of the truth table,
 \item for those two truth table lines, the statement returns \true,
+\item evaluation of a fixed Propositional Logic statement takes time polynomial in the number of inputs, so polytime in~$\sizeof{\sigma}$,   
 \item two truth table lines that cause the expression~$\sigma$ 
   to evaluate to \true,
 and
@@ -10616,13 +10625,14 @@ and
 Here is the problem cast as the decision problem for a language.
 \begin{equation*}
   \lang=\set{\sequence{S,T}\suchthat
-     \text{a subset of $A\subseteq S$ has $\sum_{a\in A}a=T$}}
+     \text{a subset of $A\subseteq S$ has $\textstyle \sum_{a\in A}a=T$}}
 \end{equation*}
 These are fill-ins:
 \begin{parenum}
 \item a pair $\sequence{S,T}$ consisting of a multiset and a number,
-\item a multisubset of $S$,
-\item its elements sum to~$T$, 
+\item a sub-multiset~$\hat{S}$ of $S$,
+\item its elements sum to~$T$,
+\item addition takes time polynomial in the number of inputs and $\hat{S}\subseteq$ so that is time polynomial in $\sizeof{\sigma}$,
 \item a subset of~$S$ whose elements sum to~$T$,
 and
 \item subset of~$S$.
@@ -10635,54 +10645,59 @@ and
 \begin{exercise}
 In the British game show 
 \citetext{\textit{Countdown}}{%
-  For a brief description see \url{https://en.wikipedia.org/wiki/Countdown_(game_show)}.
-  A version that you may find fun, and worth searching for the videos, is 
+  See \url{https://en.wikipedia.org/wiki/Countdown_(game_show)}.
+  A version that you may find fun\Dash
+  and it is well worth finding the videos\Dash is 
   \url{https://en.wikipedia.org/wiki/8_Out_of_10_Cats_Does_Countdown}.}, 
 players are given a multiset of
 six numbers from
 $S=\set{1,2,\ldots{} 10, 25, 50, 75, 100}$,
 along with a target integer~$T$ from the set
 $I=\set{100.\ldots\,999}$.
-(Recall that a multiset\index{multiset} 
-is like a set but repeats don't collapse.) 
+% (Recall that a multiset\index{multiset} 
+% is like a set but repeats don't collapse.) 
 They must make an arithmetic expression that evaluates to the target.
 They can use addition, subtraction, 
-multiplication, and division without remainder.
+multiplication, and division with a remainder of zero.
 Their expression can fail to use some of the given numbers, but cannot
 use one more than the number of times that it 
 appears in the multiset.
 Show that the \definend{\probname{Countdown}}\index{Countdown problem@\probname{Countdown} problem}
 problem
-$  \lang_{\text{CD}}=
+$  \lang=
   \set{\sequence{s_0,\ldots{} s_5,T}\in S^6\times I
     \suchthat \text{a combination of the $s_i$ gives $T$}}$
 is a member of $\NP$.
 \begin{answer}\verified
-\zcref{lem:VerifierAndGuesserEquiv}
-requires that we produce a deterministic Turing machine verifier, $\TM[V]$.
-It must input pairs of the form $\sequence{\sigma,\omega}$, where 
-$\sigma=\sequence{s_0,\ldots{}\, s_5,T}$.
-It must have the property that if
-$\sigma\in\lang_{\text{CD}}$ then there is a witness~$\omega$ such that~$\TM[V]$  
-accepts the input, while if $\sigma\notin\lang_{\text{CD}}$ then there is no 
-such witness.
-And it must run in time polynomial in~$\sizeof{\sigma}$.
-
-The witness~$\omega$ is an arithmetic expression (more precisely,
-a string representation of an arithmetic expression) that evaluates
-to the target~$T$ and that involves a sub-multiset of the six 
-numbers~$s_0$, \ldots{} $s_5$.
-The verifier checks that the expression does indeed evaluate to the target,
-and does indeed use each of the six numbers at most once.
-Clearly those checks can be done in polytime.
-
-If 
-$\sigma\in\lang_{\text{CD}}$ then by definition there is an
-arithmetic expression, and so a witness~$\omega$ exists
-that will cause~$\TM[V]$ to 
-accept the input, namely that expression.
-If $\sigma\notin\lang_{\text{CD}}$ then there is no such arithmetic expression,
-and therefore no witness~$\omega$ will cause~$\TM[V]$ to accept.
+  \zcref{lem:VerifierAndGuesserEquiv}
+  requires that we produce a deterministic Turing machine verifier, $\TM[V]$.
+  It must input pairs $\sequence{\sigma,\omega}$, where 
+  $\sigma$ represents $\sequence{s_0,\ldots{}\, s_5,T}\in S^6\times\set{100,\ldots\,999}!$.
+  \begin{display}
+    \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts012.pdf}}%   
+  \end{display}
+  The verifier must have the property that if
+  $\sigma\in\lang$ then there is an~$\omega$ such that~$\TM[V]$  
+  accepts the input, while if $\sigma\notin\lang$ then there is no 
+  such witness.
+  And the verifier must run in time polynomial in~$\sizeof{\sigma}$.
+  
+  The witness string~$\omega$ represents an arithmetic expression that evaluates
+  to the target number~$T$ and that involves a sub-multiset of 
+  the numbers, $\set{s_0, \ldots\, s_5}$.
+  The verifier checks that the expression does indeed evaluate to the target,
+  and does indeed use each of the six numbers at most once.
+  Those checks can be done in time polynomial in~$\sizeof{\sigma}$.
+  (Briefly, addition of two $n$-digit numbers is
+  $\bigOh(n)$ and so addition of six $n$-digit numbers is also linear.)
+  
+  If 
+  $\sigma\in\lang$ then by definition there exists an
+  arithmetic expression, and so a witness~$\omega$ exists
+  that will cause~$\TM[V]$ to 
+  accept the input, namely that expression.
+  If $\sigma\notin\lang$ then there is no such arithmetic expression,
+  and therefore no witness~$\omega$ will cause~$\TM[V]$ to accept.
 \end{answer}
 \end{exercise}
 
@@ -10694,39 +10709,43 @@ Show that each such language
 is in $\NP$ by % applying \zcref{lem:VerifierAndGuesserEquiv},
 outlining a verifier. % that works with a suitable witness.
 \begin{answer}\verified
-We recast the \probname{Traveling Salesman} problem from an optimization 
-problem by using bounds~$B\in\N$ to get this 
-parametrized set of bitstrings.
-\begin{equation*}
-  \TS_B=\set{G\in\kleenestar{\B}\suchthat
-    \text{$G$ is a weighted graph with a circuit of length less than~$B$}}
-\end{equation*}
-
-To show that this problem is in~$\NP$,
-\zcref{lem:VerifierAndGuesserEquiv} requires that we produce a 
-deterministic Turing machine verifier, $\TM[V]$.
-It must input pairs of the form $\sequence{\sigma,\omega}$.
-The first item in the pair is a graph~$\mathcal{G}$ 
-(technically, a bitstring representation of a graph)
-that is a candidate for membership in the language, 
-and the second is a witness.
-The verifier must have the property that if
-$\sigma\in\TS_B$ then there is an~$\omega$ such that~$\TM[V]$  
-accepts the input, while if $\sigma\notin\TS_B$ then there is no 
-such~$\omega$.
-This verifier must run in time polynomial in~$\sizeof{\sigma}$.
-
-For the witness we can use a circuit
-$\omega=\sequence{v_{i_0},v_{i_1},\ldots\, v_{i_k}}$ that
-is of total cost less than the bound.
-The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
-that $\omega$ is indeed a Hamiltonian circuit of the graph, and that it 
-costs less than the bound.
-A verifier can do those checks in time polynomial in~$\lh{\sigma}$.
-If $\sigma$ is indeed an element of~$\TS_B$ then there is 
-an~$\omega$ allowing the verifier to accept.
-If $\sigma$ is not an element of~$\TS_B$ then there is no such 
-$\omega$, and so there is not way for the verifier to accept the pair.
+  We recast the \probname{Traveling Salesman} problem from an optimization 
+  problem by using bounds~$B\in\N$ to get this 
+  parametrized set of bitstrings.
+  \begin{equation*}
+    \TS_B=\set{\mathcal{G}\suchthat
+      \text{$\mathcal{G}$ is a weighted graph with
+        a circuit of length less than~$B$}}
+  \end{equation*}
+  
+  To show that this problem is in~$\NP$,
+  \zcref{lem:VerifierAndGuesserEquiv} requires that we produce a 
+  deterministic Turing machine verifier, $\TM[V]$.
+  It must input pairs $\sequence{\sigma,\omega}$.
+  The first item in the pair, $\sigma$, is a string
+  representing a weighted graph~$\mathcal{G}$
+  that is a candidate for membership in the language. 
+  The second item in the pair, $\omega$, is a witness.
+  \begin{display}
+    \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts013.pdf}}%   
+  \end{display}
+  The verifier must have the property that if
+  $\sigma\in\TS_B$ then there is an~$\omega$ such that~$\TM[V]$  
+  accepts the input pair, while if $\sigma\notin\TS_B$ then there is no 
+  such~$\omega$.
+  This verifier must run in time polynomial in~$\sizeof{\sigma}$.
+  
+  For the witness we can use a string that represents a circuit
+  $\sequence{v_{i_0},v_{i_1},\ldots\, v_{i_k}}$ that
+  has total cost less than the bound~$B$.
+  The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
+  that $\omega$ is indeed a Hamiltonian circuit of the graph, and that it 
+  costs less than the bound.
+  A verifier can do those checks in time polynomial in~$\lh{\sigma}$.
+  If $\sigma$ is indeed an element of~$\TS_B$ then there is 
+  an~$\omega$ allowing the verifier to accept.
+  If $\sigma$ is not an element of~$\TS_B$ then there is no such 
+  $\omega$, and so there is not way for the verifier to accept the pair.
 \end{answer}
 \end{exercise}
 
@@ -10735,42 +10754,52 @@ The \probname{Independent Sets}\index{Independent Sets problem@\probname{Indepen
 problem starts with a graph and a natural number~$n$ and
 decides whether in the graph there are $n$-many independent vertices,
 that is, vertices that are not connected by an edge.
-State it as a language decision problem, and 
-use \zcref{lem:VerifierAndGuesserEquiv} to show that this problem is in~$\NP$.
+State it as a language decision problem and 
+use \zcref{lem:VerifierAndGuesserEquiv} to show that it is in~$\NP$.
 \begin{answer}\verified
-The \probname{Independent Sets} problem 
-is the decision problem for this language.
-\begin{equation*}
-  \lang=
-  \set{\sequence{\mathcal{G},n}\suchthat
-       \text{the graph~$\mathcal{G}$ has at least $n$ independent vertices}}
-\end{equation*}
-
-To show that this language decision problem is in~$\NP$,
-\zcref{lem:VerifierAndGuesserEquiv} requires that we produce a 
-deterministic Turing machine verifier, $\TM[V]$.
-This verifier must input pairs of the form $\sequence{\sigma,\omega}$, where 
-$\sigma$ is a graph-natural number pair,~$\sequence{\mathcal{G},n}$. 
-The verifier must satisfy that if
-$\sigma\in\lang$ then there is a~$\omega$ such that~$\TM[V]$  
-accepts the input, while if $\sigma\notin\lang$ then there is no 
-such~$\omega$.
-This verifier must run in time polynomial in~$\sizeof{\sigma}$.
-
-For a witness, take a size-$n$ set of independent vertices from the graph,
-$\omega=\sequence{v_0,\ldots{}\,v_{n-1}}$.
-The verifier gets an input pair~$\sequence{\sigma,\omega}$ where 
-$\sigma$ is a graph, and checks 
-that the vertices are in the graph and that no two of them are connected.
-Those checks take time polynomial in~$\lh{\sigma}$
-(obviously, this depends on the graph being represented with 
-reasonable efficiency, but we always make that assumption).
-If the pair $\sigma$ is indeed an element of~$\lang$ then there is 
-such a witness~$\omega$, so there exists a pair $\sequence{\sigma,\omega}$ 
-that the  verifier can accept.
-If $\sigma$ is not an element of~$\lang$ then there is no such 
-$\omega$, and so there does not exist a pair that the 
-verifier will accept.
+  The \probname{Independent Sets} problem 
+  is the decision problem for this language.
+  \begin{equation*}
+    \lang=
+    \set{\sequence{\mathcal{G},n}\suchthat
+      \text{the graph~$\mathcal{G}$ has at least $n$ independent vertices}}
+  \end{equation*}
+  
+  To show that it is in~$\NP$,
+  \zcref{lem:VerifierAndGuesserEquiv} requires that we produce a 
+  deterministic Turing machine verifier, $\TM[V]$.
+  This verifier must input a pair of strings $\sequence{\sigma,\omega}$, where 
+  $\sigma$ represents $\sequence{\mathcal{G},n}$, with a weighted graph and a
+  natural number. 
+  The verifier must satisfy that if
+  $\sequence{\mathcal{G},n}\in\lang$ then there is a~$\omega$ such
+  that~$\TM[V]$  
+  accepts the input, while if $\sequence{\mathcal{G},n}\notin\lang$
+  then there is no such~$\omega$.
+  Also, this verifier must run in time polynomial in~$\sizeof{\sigma}$.
+  \begin{display}
+    \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts014.pdf}}%   
+  \end{display}
+  
+  For the witness string~$\omega$, take a representation of a
+  size-$n$ set of independent vertices from the graph,
+  $\sequence{v_0,\ldots{}\,v_{n-1}}$.
+  The verifier checks 
+  that the vertices are in the graph and that no two of them are connected.
+  Those checks take time polynomial in~$\lh{\sigma}$.
+  (An outline of the argument for that is that we must check these
+  vertices pairwise against the edges in the graph.
+  The number of graph edges is polynomial in the number of vertices,
+  which makes it polynomial in~$\sizeof{\sigma}$.)
+  
+  If the pair $\sequence{\mathcal{G},n}$ is indeed an element of~$\lang$
+  then there is 
+  such a witness~$\omega$, so there exists a pair $\sequence{\sigma,\omega}$ 
+  that the  verifier accepts.
+  If $\sequence{\mathcal{G},n}$ is not an element of~$\lang$
+  then there is no such 
+  $\omega$ and so there does not exist a pair that the 
+  verifier will accept.
 \end{answer}
 \end{exercise}
 
@@ -10780,43 +10809,52 @@ Use \zcref{lem:VerifierAndGuesserEquiv} to show that the
 \probname{Knapsack} problem\index{Knapsack problem@\probname{Knapsack} problem} 
 is in~$\NP$.
 \begin{answer}\verified
-The \probname{Knapsack} problem 
-is the decision problem for this language, $\lang$.
-\begin{equation*}
-  \set{\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}\suchthat
-       \text{there is $I=\set{i_0,\ldots{} i_k}\subseteq\set{0,\ldots{} n-1}$
-             so $\sum_{i\in I}w_i\leq B$ and $\sum_{i\in I}v_i\geq T$}}
-\end{equation*}
+  The \probname{Knapsack} problem 
+  is the decision problem for this language $\lang$.
+  \begin{equation*}
+    \set{\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}\suchthat
+      \text{there is $I=\set{i_0,\ldots{} i_k}\subseteq\set{0,\ldots{} n-1}$
+        so $\textstyle\sum_{i\in I}w_i\leq B$ and $\textstyle\sum_{i\in I}v_i\geq T$}}
+  \end{equation*}
 
-To show that this language decision problem is in~$\NP$,
-\zcref{lem:VerifierAndGuesserEquiv} requires that we produce a 
-deterministic Turing machine verifier, $\TM[V]$.
-The verifier input pairs $\sequence{\sigma,\omega}$, where 
-$\sigma=\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}$. 
-The verifier must have the property that if
-$\sigma\in\lang$ then there is a~$\omega$ such that~$\TM[V]$  
-accepts the input, while if $\sigma\notin\lang$ then there is no 
-such~$\omega$.
-This verifier must also run in time polynomial in~$\sizeof{\sigma}$.
-
-For a witness, take a set
-$\omega=\set{i_0,\ldots{}i_k}\subseteq\set{0,\ldots{}n-1}$.
-The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
-that the sum of the weights of the indicated pairs, 
-$\sum_{i\in \omega}w_i$,  is less than 
-or equal to the bound~$B$,
-and also that the sum of the values of pairs, $\sum_{i\in \omega}v_i$,  
-is greater than 
-or equal to the target~$T$.
-Those checks clearly take time polynomial in~$\lh{\sigma}$.
-
-If $\sigma$ is indeed an element of~$\lang$ then there is such a
-selection of indices, so there is
-such a witness~$\omega$, so there exists a pair $\sequence{\sigma,\omega}$ 
-that the  verifier can accept.
-If $\sigma$ is not an element of~$\lang$ then there is no such 
-$\omega$, and so there does not exist a pair that the 
-verifier will accept.
+  By \zcref{lem:VerifierAndGuesserEquiv} we must produce a 
+  deterministic Turing machine verifier, $\TM[V]$.
+  It inputs pairs $\sequence{\sigma,\omega}$, where 
+  the string $\sigma$ represents
+  $\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}$. 
+  The verifier must have the property that if
+  $\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}\in\lang$ then there
+  is a string~$\omega$ such that~$\TM[V]$  
+  accepts the input, while if
+  $\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}\notin\lang$
+  then there is no such~$\omega$.
+  This verifier must also run in time polynomial in~$\sizeof{\sigma}$.
+  
+  For a witness, take a set
+  $\omega=\set{i_0,\ldots{}i_k}\subseteq\set{0,\ldots{}n-1}$.
+  The verifier gets an input pair~$\sequence{\sigma,\omega}$ and checks 
+  that the sum of the weights of the indicated pairs, 
+  $\sum_{i\in \omega}w_i$,  is less than 
+  or equal to the bound~$B$,
+  and also that the sum of the values of pairs, $\sum_{i\in \omega}v_i$,  
+  is greater than 
+  or equal to the target~$T$.
+  Those checks take time polynomial in~$\lh{\sigma}$.
+  (For that argument:~addition of two $m$~digit integers is linear
+  in the number of digits, $\bigOh(m)$.
+  When there are more integers to add the representation~$\sigma$ gets
+  bigger, and verification remains linear.)
+  \begin{display}
+    \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts015.pdf}}%   
+  \end{display}
+  
+  If $\sigma$ is indeed an element of~$\lang$ then there is such a
+  selection of indices, so there is
+  such a witness~$\omega$, so there exists a pair $\sequence{\sigma,\omega}$ 
+  that the  verifier can accept.
+  If $\sigma$ is not an element of~$\lang$ then there is no such 
+  $\omega$, and so there does not exist a pair that the 
+  verifier will accept.
 \end{answer}
 \end{exercise}
 

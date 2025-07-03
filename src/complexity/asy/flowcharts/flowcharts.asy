@@ -637,6 +637,206 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+//  =========== verifier for Countdown exercise ==========
+picture pic;
+int picnum = 12;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node compute=nbox("Interpret $\sigma$ as $\sequence{s_0,\ldots\,s_5,T}$ and $\omega$ as an arithmetic expression");
+node test=nrounddiamond("The expression adds to $T$?");
+node printyes=nbox("Accept");
+node printno=nbox("Reject");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.15*v,read,compute);
+vlayout(1.40*v,compute,test);
+vlayout(1.15*v,test,dummy);
+hlayout(-4.25*u,dummy,printyes);
+hlayout(4.25*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--compute),
+     (compute--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     compute,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+//  =========== verifier for Traveling Salesman exercise ==========
+picture pic;
+int picnum = 13;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node compute=nbox("Interpret $\sigma$ as weighted graph $\mathcal{G}$ and $\omega$ as a circuit");
+node test=nrounddiamond("Circuit weight no more than $B$?");
+node printyes=nbox("Accept");
+node printno=nbox("Reject");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.15*v,read,compute);
+vlayout(1.40*v,compute,test);
+vlayout(1.15*v,test,dummy);
+hlayout(-5.25*u,dummy,printyes);
+hlayout(5.25*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--compute),
+     (compute--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     compute,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+//  =========== verifier for Independent Set exercise ==========
+picture pic;
+int picnum = 14;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node compute=nbox("Interpret $\sigma$ as a pair $\mathcal{G},n$ and $\omega$ as $n$ vertices");
+node test=nrounddiamond("Vertices are independent?");
+node printyes=nbox("Accept");
+node printno=nbox("Reject");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.15*v,read,compute);
+vlayout(1.40*v,compute,test);
+vlayout(1.15*v,test,dummy);
+hlayout(-5.25*u,dummy,printyes);
+hlayout(5.25*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--compute),
+     (compute--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     compute,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+//  =========== verifier for Knapsack exercise ==========
+picture pic;
+int picnum = 15;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node compute=nbox("Interpret $\sigma$ as $\sequence{(w_0,v_0),\ldots{} (w_{n-1},v_{n-1}),B,T}$ and $\omega$ as $\set{i_0,\ldots{} i_k}\subseteq\set{0,\ldots{} n-1}$");
+node test=nrounddiamond("Weights and values meet goals?");
+node printyes=nbox("Accept");
+node printno=nbox("Reject");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.15*v,read,compute);
+vlayout(1.40*v,compute,test);
+vlayout(1.15*v,test,dummy);
+hlayout(-5.25*u,dummy,printyes);
+hlayout(5.25*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--compute),
+     (compute--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     compute,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
 
 
 

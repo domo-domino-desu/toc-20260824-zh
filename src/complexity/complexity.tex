@@ -9819,25 +9819,34 @@ The summary with the technical details omitted
 is:~given $\sequence{\mathcal{G},v,\hat{v}}$, take the witness
 to be a path between those vertices that contains every vertex.
 
-As to the details,
-in the input
+As to those details,
+first recall that strictly speaking the language is a set of strings,
+which represent (with reasonable efficiency) the triples
+$\sequence{\mathcal{G},v,\hat{v}}$.
+So in the input,
 the first item is a string~$\sigma$ 
-representing the candidate $\sequence{\mathcal{G},v,\hat{v}}$
+representing a candidate $\sequence{\mathcal{G},v,\hat{v}}$
 for membership in~$\lang$.
-The second item~$\omega$ represents a path, 
-$\sequence{v,v_1,\ldots{}\, \hat{v}}$.
+The second item~$\omega$ is a string representing a path, 
+$\sequence{v,v_1,\ldots{}\, \hat{v}}$.\footnote{
+  In later examples and exercises we will usually
+  downplay the representation aspect, perhaps saying that
+  $\sigma$ is the triple instead of that it is a string
+  representation.}
 \begin{center}
   \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts001.pdf}}
 \end{center}
 %</ex:HamPathIsNPi>
 
 %<*ex:HamPathIsNPii>
-If $\sequence{\mathcal{G},v,\hat{v}}$ has a Hamiltonian path then there is
-a witness~$\omega$ that $\TM[V]$ can verify, and so accept the 
-input~$\sequence{\sigma,\omega}$.
-Accepting takes $\TM[V]$ time that is polynomial
+The point of the choice of witness is that there are two possibilities for an
+input that begins with~$\sigma$.
+If $\sequence{\mathcal{G},v,\hat{v}}$ has a Hamiltonian path then we can take it
+as the witness~$\omega$ and $\TM[V]$ can verify it, and so
+accept~$\sequence{\sigma,\omega}$.
+Verifying takes $\TM[V]$ time that is polynomial
 in~$\sizeof{\sigma}$.
-(Briefly, the argument for that is:~where $\mathcal{G}$ has
+(The crux of the argument for that is:~where $\mathcal{G}$ has
 $n$ vertices, the path has $n-1$ edges.
 So verifying that each vertex appears in the path once and only once requires at
 most $n\cdot(n-1)\in\bigOh(n^2)$ checks.
@@ -9845,41 +9854,40 @@ Because it is polynomial in the number of vertices, it must be polynomial
 in the size of the representation, $\sizeof{\sigma}$, assuming that the
 representation is reasonable.)
 On the other hand, if $\sequence{\mathcal{G},v,\hat{v}}$ has
-no Hamiltonian path then there is no~$\omega$ 
-that~$\TM[V]$ can use to verify, and
-thus it will not accept any input pair starting with~$\sigma$.
+no Hamiltonian path then there is no witness~$\omega$ 
+that will verify, and
+thus ~$\TM[V]$ will not accept any input pair starting with~$\sigma$.
 \end{example}
 %</ex:HamPathIsNPii>
 
 %<*ex:CompositeIsNP>
 \begin{example}
 The \probname{Primality} problem\index{Primality problem@\probname{Primality} problem}
-asks whether a given number has nontrivial factors.
-\begin{equation*}
-  \lang=\set{n\in\N^+\suchthat \text{$n$ has a divisor~$d$ with $1<d<n$}}
-\end{equation*}
+asks whether a given number has nontrivial factors,
+$\lang=\set{n\in\N^+\suchthat \text{$n$ has a divisor~$d$ with $1<d<n$}}$.
 To show that $\lang\in\NP$
 we construct a verifier~$\TM[V]$.
-It inputs~$\sequence{\sigma,\omega}$ where $\sigma$ 
-represents a number~$n\in\N^+\!$.
-For the witness~$\omega$ we can use a string that $\TM[V]$ interprets as
-a number~$d$. 
-Then $\TM[V]$
-checks that $1<d<n$ 
-and $d$ divides~$n$.
-If~$\sigma\in\lang$ then there is a suitable 
-such witness, while if $\sigma\notin\lang$
-then no $\omega$ will make $\TM[V]$ accept the input.
-Clearly we can write this verifier to run in polytime.
-Therefore $\lang\in\NP$.\footnote{%
-  We saw on \zcpageref{prob:Composite} that determining membership in
-  $\lang$ is in~$\P$.
-  Since $\P\subseteq\NP$ this fact is another proof that $\lang\in\NP$.}
+The idea is that its first input  
+represents a number and
+its second is a divisor of that number.
+\begin{center}
+  \vcenteredhbox{\includegraphics{\asydir flowcharts/flowcharts016.pdf}}
+\end{center}
+If~$\sigma\in\lang$ then there is a suitable~$\omega$,
+while if $\sigma\notin\lang$
+then no $\omega$ that will make $\TM[V]$ accept the input.
+The verification can run in polytime.
+(Briefly, that's because integer division is polytime in the
+number of digits in the two integers.)
+% \footnote{%
+%   We saw on \zcpageref{prob:Composite} that determining membership in
+%   $\lang$ is in~$\P$.
+%   Since $\P\subseteq\NP$ this fact is another proof that $\lang\in\NP$.}
 \end{example}
 %</ex:CopositeIsNP>
 
 
-We are ready now for the promised proof
+We are ready for the promised proof
 of \zcref{lem:VerifierAndGuesserEquiv}.
 
 \begin{proof} \label{proof:VerifierAndGuesserEquiv}
@@ -9950,7 +9958,7 @@ and thus $\hat{\TM}$ rejects~$\tau$.
 
 \begin{remark}
 A common reaction to the second half of that proof is,
-``Wait, in the (1) part $\hat{\TM}$ plucks $\hat{\omega}$ out of 
+``Wait, in (1) the machine $\hat{\TM}$ plucks $\hat{\omega}$ out of 
 the air?
 \citetext{How is that legal?}{%
   This is reminiscent of 

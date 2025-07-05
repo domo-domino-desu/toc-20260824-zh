@@ -888,6 +888,57 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+//  =========== verifier for Longest Path exercise ==========
+picture pic;
+int picnum = 17;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$, $\omega$");
+node compute=nbox("Interpret $\sigma$ as $\sequence{\mathcal{G},B}$ and $\omega$ as a simple path");
+node test=nrounddiamond("Is the path long enough?");
+node printyes=nbox("Accept");
+node printno=nbox("Reject");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.15*v,start,read);
+vlayout(1.15*v,read,compute);
+vlayout(1.40*v,compute,test);
+vlayout(1.15*v,test,dummy);
+hlayout(-3.25*u,dummy,printyes);
+hlayout(3.25*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--compute),
+     (compute--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     compute,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 
 

@@ -1506,7 +1506,7 @@ node q5=ncircle("$d_0$");
 node q6=ncircle("$d_1$");
 node q7=ncircle("$d_2$");
 node q8=ncircle("$d_3$");
-node q9=ncircle("$q_9$");
+node q9=ncircle("$q_1$");
 
 // layout
 real u=1.35cm;
@@ -2522,9 +2522,9 @@ picture pic;
 unitsize(pic,5cm);
 
 int secs = seconds();
-write(format("Seed for srand is %d",secs));
-srand(secs);
-//srand(5);
+// write(format("Seed for srand is %d",secs));
+// srand(secs);
+srand(5);
 
 // Return a puzzle piece edge of length 1.
 path make_edge(pair s) {

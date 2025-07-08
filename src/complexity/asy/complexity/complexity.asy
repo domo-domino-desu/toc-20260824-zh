@@ -2564,3 +2564,48 @@ draw(pic, p, red);
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
+
+
+
+// ========= 3SAT leq Independent set with Ind set colored exercise ========
+//  See also picnum=42
+int picnum = 46;
+picture pic;
+setdefaultgraphstyles();
+
+node c00=ncircle("\nodebox{\strut$c_{0,0}$}", ns_light),
+  c01=ncircle("\nodebox{\strut$\bar{c}_{0,1}$}"),
+  c02=ncircle("\nodebox{$\bar{c}_{0,2}$}"),
+  c11=ncircle("\nodebox{$c_{1,1}$}"),
+  c12=ncircle("\nodebox{$c_{1,2}$}"),
+  c13=ncircle("\nodebox{$\bar{c}_{1,3}$}", ns_light);
+
+// calculate nodes position
+real u=1.2cm;
+real v=0.8*u;
+c01.pos = new_node_pos_h(c00, 30, 1*u);
+c02.pos = new_node_pos_h(c00, -30, 1*u);
+hlayout(2.0*u, c01, c11);
+hlayout(2.0*u, c02, c12);
+c13.pos = new_node_pos_h(c11, -30, 1*u);
+
+// draw edges
+draw(pic,
+     (c00--c01),
+     (c00--c02),
+     (c01--c02),
+     (c01--c11),
+     (c02--c12),
+     (c11--c12),
+     (c11--c13),
+     (c12--c13)
+);
+
+// draw nodes, after edges
+draw(pic,
+     c00, c01, c02,
+     c11, c12, c13);
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+

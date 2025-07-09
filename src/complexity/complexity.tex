@@ -13178,11 +13178,13 @@ find an independent set with at least $B=3$ members.
       \hspace{3em}
       \includegraphics{complexity/asy/complexity/complexity46.pdf}
     \end{display}
-    On the right, shown is an indepemdent set.
+    On the right is the same graph with an independent set shown
+    (there are other maximal independent sets, such as
+    $\set{\bar{c}_{0,1},c_{1,2}}$).
     
     Taking $P_0=\true$ and $\neg P_3=\true$ (that is, $P_3=\false$) forces
     the expression~$E$ to evaluate to~\true\!.
-    It doesn't matter what truth value we assign to $P_1$ and~$P_2$.
+    It doesn't matter what truth values we assign to $P_1$ and~$P_2$.
   \item The reduciton function~$f$ inputs an expression~$\sigma=E$
     that is an instance of \ThreeSAT.
     The development in \zcref{ex:SatReducesToClique} points out that a 
@@ -13231,52 +13233,67 @@ find an independent set with at least $B=3$ members.
 \end{credit}
 % See page~\pageref{prob:SAT} for a definition of the 
 % \ThreeSAT{} problem.\index{3-Satisfiability problem@\probname{3-Satisfiability} problem}
-The decision problem 
-\definend{\probname{Integer Linear Programming}}\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem!decision problem}
+The 
+\probname{Integer Linear Programming}\index{Integer Linear Programming problem@\probname{Integer Linear Programming} problem!decision problem}
+decision problem 
 starts with a list of linear inequalities with variables
-$x_0,\ldots x_n$, such as that 
-$a_{i,0}x_0+\cdots+a_{i,n}x_{n}\leq b_i$ or
-that $b_i\leq a_{i,0}x_0+\cdots+a_{i,n}x_{n}$,
+$x_j$, such as that 
+$a_{i,0}x_0+\cdots+a_{i,n}x_{n}\leq b_i$ (or $\geq b_i$)
 where the numbers $a_{i,j}$ and $b_i$ are integers.
-It decides if there is a sequence of integers $\sequence{s_0,\ldots{} s_{n}}$
+It decides if there is a sequence of integers
+$\vec{s}=\sequence{s_0,\ldots{} s_{n-1}}$
 that satisfies all of the constraints.
 \begin{exparts}
+\item State the \probname{Integer Linear Programming} decision problem
+  as a language decision problem.
 \item Consider the propositional logic clause $P_0\vee \neg P_1\vee\neg P_2$.
-Create variables $x_0$, $x_1$, and~$x_2$ and list linear constraints such
-that each must be either~$0$ or~$1$.
-Give a linear inequality that holds if and only
-if the clause is true.
+  Create variables $x_0$, $x_1$, and~$x_2$ and list linear constraints ensuring
+  that each must be either~$0$ or~$1$.
+  Give a linear inequality that holds if and only
+  if the clause is true.
 \item
-Show that $\ThreeSAT\leq_p\probname{Integer Linear Programming}$.\index{3-Satisfiability problem@\probname{3-Satisfiability} problem}
+  Show that $\ThreeSAT\leq_p\probname{Integer Linear Programming}$.\index{3-Satisfiability problem@\probname{3-Satisfiability} problem}
 \end{exparts}
 \begin{answer}\verified
-\begin{exparts}
-\item
-These constraints
-ensure in this integer programming context that each variable is 
-either~$0$ or~$1$.  
-\begin{equation*}
-  0\leq x_0, \quad x_0\leq 1,\quad
-  0\leq x_1, \quad x_1\leq 1, \quad
-  0\leq x_2, \quad x_2\leq 1,
-\end{equation*}
-As to the expression, use $1\leq x_0+(1-x_1)+(1-x_2)$.
-\item
-We must produce a reduction function~$f\!$.
-It inputs a propositional logic expression.
-For each variable $P_i$ in that expression, create an integer variable $x_i$.
-To force each~$x_i$ to be either $0$ or~$1$, include the constraints
-$0\leq x_i$ and $x_i\leq 1$.
-For every clause in the propositional logic expression, add a 
-constraint to the \probname{Integer Linear Programming} 
-instance as in the prior item.
-\begin{equation*}
-  P_i\vee \neg P_j\vee\neg P_k
-  \qquad \Longleftrightarrow \qquad
-  1\leq x_i+(1-x_j)+(1-x_k)
-\end{equation*}
-Clearly we can write $f$ to run in polytime.
-\end{exparts}
+  \begin{exparts}
+  \item This is a suitable language.
+    \begin{equation*}
+      \lang=\set{\sequence{I_0,\ldots \,I_{k-1}}\suchthat
+      \text{there is a $\vec{s}$ of integers that satisfies the inequalities $I_0,\ldots$}}
+    \end{equation*}
+  \item
+    These constraints
+    ensure in this integer programming context that each variable is 
+    either~$0$ or~$1$.  
+    \begin{equation*}
+      0\leq x_0, \quad x_0\leq 1,\quad
+      0\leq x_1, \quad x_1\leq 1, \quad
+      0\leq x_2, \quad x_2\leq 1,
+    \end{equation*}
+    A suitable linear inequality is $x_0+(1-x_1)+(1-x_2)\geq 1$.
+  \item
+    We must produce a reduction function~$f$ that
+    inputs a propositional logic expression and that outputs a member
+    of~$\lang$.
+    For each variable $P_i$ in that expression, create an integer variable~$x_i$.
+    as in the prior item,
+    to force each~$x_i$ to be either $0$ or~$1$, include the linear constraints
+    $0\leq x_i$ and $x_i\leq 1$.
+    Also as in the prior item,
+    for every clause in the propositional logic expression, add a 
+    constraint to the problem
+    instance as in the prior item.
+    \begin{equation*}
+      P_i\vee \neg P_j\vee\neg P_k
+      \qquad \Longleftrightarrow \qquad
+      1\leq x_i+(1-x_j)+(1-x_k)
+    \end{equation*}
+    (It is the sum of terms where if the literal $p_m$ is $P_m$ then the
+    term is $x_m$, while if the literal is $p_m=\neg P_m$ then the
+    term is $(1-x_m)$.)
+    Clearly $\sigma\in\ThreeSAT$ if and only if $f(\sigma)\in\lang$.
+    Aslo clear is that we can write $f$ to run in polytime.
+  \end{exparts}
 \end{answer}
 \end{exercise}
 

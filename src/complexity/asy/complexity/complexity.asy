@@ -1246,7 +1246,7 @@ node t3=ncircle("$t_3$");
 defaultlayoutrel = false;
 defaultlayoutskip = 1.15cm;
 real u = defaultlayoutskip;
-real v = 1*u;
+real v = 0.85*u;
 
 hlayout(1.15*u, w0, w1, w2, w3);
 vlayout(1.25*v, w0, t0);

@@ -62,7 +62,7 @@ path board = (0,0)--(WIDTH,0)--(WIDTH,HEIGHT)--(0,HEIGHT)--(0,0)--cycle;
 
 // Graphic: The Action and Capture of the Spanish Xebeque Frigate El Gamo
 // Clarkson Frederick Stanfield (1793–1867)
-// https://commons.wikimedia.org/wiki/File:Capture_of_the_El_Gamo.jpg
+// https://commons.wikimedia.org/wiki/File:Capture_of_the_El_Gamo.jpg PD
 label(pic,graphic("../../pix/speedy_and_el_game.eps",format("width=%fpt",1.05*WIDTH)),(WIDTH/2,HEIGHT/2));
 clip(pic,board);
 layer(pic);

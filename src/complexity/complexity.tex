@@ -18276,49 +18276,182 @@ $f(\sigma)=\sequence{ s(e_0,\sigma), p(\lh{\sigma}) }\in\lang[B]$, as required.
 
 \extra{The Cook-Levin Theorem} \label{extra:CookLevinTheorem}
 
-The hard half of proving \zcref{th:CookLevin}, the Cook-Levin Theorem,
+The hard half of proving the Cook-Levin Theorem, \zcref{th:CookLevin},
 is showing that if $\prob\in\NP$ then $\prob\leq_p\SAT$.
-\citetext{We will prove that half here}{%
+\citetext{We will prove that here}{%
   This is derived from the proof in \autocite{GareyJohnson}.}.
 We start with $\prob\in\NP$ and must show that $\prob\leq_p\SAT$.
+So we will describe a reduction function that
+inputs the string $\sigma\in\kleenestar{\Sigma}$
+and outputs a Propositional Logic expression,
+such that $\sigma$ is a member of $\lang$ if
+and only if the expression is satisfiable.
 
 The language~$\prob$ is decided
-by a nondeterministic machine~$\TM$, in time given by a polynomial~$p$.
-So we will describe a reduction function~$f_{\TM}$ that
-inputs a string $\sigma\in\kleenestar{\Sigma}$
-and constructs a Propositional Logic expression
-$f_{\TM}(\sigma)$,
-such that $\sigma$ is a member of $\lang$ if
-and only if $f_{\TM}(\sigma)$ is satisfiable.
+by a nondeterministic machine~$\TM$ in time given by a polynomial~$p$.
+It is convenient to take the model of nondeterministic computation to be that,
+given input~$\sigma$,
+the machine guesses a path through the computation tree and then
+verifies that guess in time $p(\sizeof{\sigma})$.
+So the reduction function will in part depend on the machine.
+We will denote the function as~$f_{\TM}$.
 
 The restriction on $\TM$'s computation imposed by the polynomial~$p$ is
 crucial.
-In processing its input $\sigma$,
-no maximal path in the computation tree takes more than
-$p(\sizeof{\sigma})$ steps.
-So the computation is limited to the tape interval from
-cell~$-p(\lh{\sigma})$ (the negative sign indicates that the cell is
-to the left of the start) to cell~$p(\lh{\sigma})$.
-This combination of time and space restrictions means that we can completly
-describe the computation using only a limited number of Boolean variables
-and clauses.
+When $\TM$ processes its input $\sigma$,
+where $n=\sizeof{\sigma}$
+the machine's verification of its guess takes no more than
+$p(n)+1$ steps.  % TODO: p(n)+1?
+Besides restricting the time, this also restricts the space that the computation
+can use:~its action is limited to the tape interval from
+cell~$p(n)$ to~$-p(n)$ (the negative sign
+indicates that the cell is to the left of the start),
+just because the tape head can move at most one cell per step.
 
-There are three types of these variables.
-One is a family $C_{i,j,k}$
-that is \true{} if and only if the machine's tape cell~$i$ contains
-symbol~$j$ at step~$k$.
-The second is a family $H_{i,k}$ that is \true{} if and only if the
-read/write head is at tape cell~$i$ at step~$k$.
-And third is a family $Q_{q,k}$ that is \true{} if and only if
-if the machine is in state~$q$ at step~$k$.
+The output expression includes Boolean variables.
+These come in three families.
+\begin{center}\small
+  \begin{tabular}{rl}
+    \multicolumn{1}{r}{\tabulartext{Variable type}}
+      &\multicolumn{1}{c}{\tabulartext{When is it \true?}}  \\ \hline
+    $C_{i,j,k}$
+      &Tape cell~$i$ contains symbol~$j$ at step~$k$   \\
+    $H_{i,k}$
+      &The read/write head is at tape cell~$i$ at step~$k$    \\
+    $Q_{r,k}$
+      &The machine is in state~$q_r$ at step~$k$
+  \end{tabular}
+\end{center}
+As a consequence of the space and time limitations, with only
+these variables for steps $k\in\closed{0}{p(n)}$ and
+cells~$i\in\closed{-p(n)}{p(n)}$,
+as well as for the states
+$r\in \closed{0}{\sizeof{Q}}$ and symbols $j\in\closed{0}{\sizeof{\Sigma}}$,
+we can completely describe the machine's computation on input~$\sigma$.
 
+We will construct the describing
+Propositional Logic expression $f_{\TM}(\sigma)$
+to conform to $\TM$'s computation rules.
+If the computation is successful and the machine accepts~$\sigma$
+then the expression will be satisfiable,
+otherwise it will not.
 
-The conjunction of this constraint and others like it makes a large
-expression but one that is nontheless polynomial in the size of the
-input~$\tau$. 
+Here is an example of what `conform' means.
+Suppose that $\sigma=\str{11B1}$ and that $p(\sizeof{\sigma})=5$,
+and also that symbol~$0$ is the blank and symbol~$1$ is~\str{1}.
+Then using its input~$\sigma$
+the reduction function ensures that the expression conforms to the
+initial tape in the computation by including these.
+\begin{align*}
+  \MoveEqLeft{(C_{-5,0,0}\wedge \neg C_{-5,1,0})
+  \wedge (C_{-4,0,0}\wedge C_{-4,1,0})}\wedge{}
+  \\
+  &\cdots  {}\wedge (\neg C_{0,0,0}\wedge C_{0,1,0})
+    \wedge (\neg C_{1,0,0} \wedge C_{1,1,0})      
+    \wedge (C_{2,0,0} \wedge \neg  C_{2,1,0})
+  \\
+  &\qquad {}\wedge (\neg C_{3,0,0} \wedge C_{3,1,0)}) 
+    \wedge (C_{4,0,0} \wedge \neg C_{4,1,0)}) 
+    \wedge (C_{5,0,0} \wedge \neg C_{5,1,0)}) 
+\end{align*}
 
+The output expression $f_{\TM}(\sigma)$ falls into
+the six parts described in the table below.\footnote{%
+  Ths is much like the construction in \protect\zcref{extra:SATSolvers}.
+  Propositional Logic can express surprisingly string ideas, but
+  it requires many clauses.
+}
+Besides stating how to construct these parts,
+we will also show that the resulting expression, while big,
+can nontheless be output in polytime.
 
+However, before those details, first
+observe that these six parts suffice to 
+ensure that the output expression can be satisfed if and only if there
+is an accepting computation for the input~$\sigma$.
+\begin{center}\small
+  \begin{tabular}{rp{0.7\textwidth}}
+    \multicolumn{1}{c}{\tabulartext{Clause group}}
+    &\multicolumn{1}{c}{\tabulartext{Restriction on expression}}  \\
+    \hline
+    1
+    &\parbox[t]{0.6\textwidth}{\raggedright
+       At each step~$k$ the machine is in exactly one state.
+      }                            \\
+    2
+    &\parbox[t]{0.6\textwidth}{\raggedright
+      At each step~$k$ the read/write head is pointing to exactly
+      one tape cell.
+      }                            \\
+    3
+    &\parbox[t]{0.6\textwidth}{\raggedright
+      At each step~$k$ each tape cell contains one and only one symbol.
+      }                            \\
+    4
+    &\parbox[t]{0.6\textwidth}{\raggedright
+      At step $k=0$ the tape contains the initial contents. 
+      }                            \\
+    5
+    &\parbox[t]{0.6\textwidth}{\raggedright
+      By step~$k=p(\sizeof{\sigma})$ the machine is in an accepting
+      state.
+      }                            \\
+    6
+    &\parbox[t]{0.6\textwidth}{\raggedright
+      For each step~$k\in\closed{0}{p(\sizeof{\sigma}-1)}$
+      the succeeding configuration of the machine
+      follows from a single application of its transition function.
+      }                           
+  \end{tabular}
+\end{center}
 
+We shall go through them in turn.
+For the first group, again imagine that $p(n)=5$.
+Also imagine that the machine has three states $Q=\set{q_0,q_1,q_2}$.
+This conjunction of clauses asserts that at each step the machine is in
+at least one state.
+\begin{equation*}
+  (Q_{0,0}\vee Q_{1,0}\vee Q_{2,0})
+  \wedge (Q_{0,1}\vee Q_{1,1}\vee Q_{2,1})
+  {}\wedge
+  \cdots 
+  \wedge (Q_{0,5}\vee Q_{1,5}\vee Q_{2,5})
+\end{equation*}
+And this conjunction of clauses asserts that at each step the machine is in
+no more than one state.
+\begin{align*}
+  \MoveEqLeft{(\neg Q_{0,0}\vee \neg Q_{1,0})
+  \wedge (\neg Q_{0,0}\vee \neg Q_{2,0})
+  \wedge (\neg Q_{1,0}\vee \neg Q_{2,0})
+  \wedge{}}                 \\
+  &\cdots \wedge
+  (\neg Q_{0,5}\vee \neg Q_{1,5})
+  \wedge (\neg Q_{0,5}\vee \neg Q_{2,5})
+  \wedge (\neg Q_{1,5}\vee \neg Q_{2,5})
+\end{align*}
+
+The second group is similar.
+Again we use $p(\sizeof{\sigma})=5$.
+This conjunction says that at each step the head is reading 
+at least one cell.
+\begin{equation*}
+  (H_{0,-5}\vee H_{0,-4}\vee\cdots\vee H_{0,5})
+  {}\wedge
+  \cdots 
+  \wedge (H_{5,-5}\vee H_{5,-4}\vee\cdots\vee H_{5,5})
+\end{equation*}
+And this conjunction says that the head points to no more than one cell.
+\begin{align*}
+  \MoveEqLeft{(\neg H_{0,-5}\vee \neg H_{0,-4})
+  \wedge (\neg H_{0,-5}\vee \neg H_{0,-3})
+  \wedge \cdots
+  \wedge (\neg H_{0,4}\vee \neg H_{0,5})}
+  \wedge\\
+  &\cdots \wedge
+    (\neg H_{5,-5}\vee \neg H_{5,-4})
+    \wedge (\neg H_{5,-5}\vee \neg H_{5,-3})
+    \wedge \cdots \wedge (\neg H_{5,4}\vee \neg H_{5,5})
+\end{align*}
 
 
 

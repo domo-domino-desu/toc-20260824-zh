@@ -18289,12 +18289,12 @@ and only if the expression is satisfiable.
 
 The language~$\prob$ is decided
 by a nondeterministic machine~$\TM$ in time given by a polynomial~$p$.
-It is convenient to take the model of nondeterministic computation to be that,
+The reduction function will in part depend on the machine so 
+we will denote the function as~$f_{\TM}$.
+The model of nondeterministic computation that we will use is that,
 given input~$\sigma$,
 the machine guesses a path through the computation tree and then
 verifies that guess in time $p(\sizeof{\sigma})$.
-So the reduction function will in part depend on the machine.
-We will denote the function as~$f_{\TM}$.
 
 The restriction on $\TM$'s computation imposed by the polynomial~$p$ is
 crucial.
@@ -18305,8 +18305,8 @@ $p(n)+1$ steps.  % TODO: p(n)+1?
 Besides restricting the time, this also restricts the space that the computation
 can use:~its action is limited to the tape interval from
 cell~$p(n)$ to~$-p(n)$ (the negative sign
-indicates that the cell is to the left of the start),
-just because the tape head can move at most one cell per step.
+indicates that the cell is to the left of the start)
+because the tape head can move at most one cell per step.
 
 The output expression includes Boolean variables.
 These come in three families.
@@ -18322,12 +18322,17 @@ These come in three families.
       &The machine is in state~$q_r$ at step~$k$
   \end{tabular}
 \end{center}
-As a consequence of the space and time limitations, with only
-these variables for steps $k\in\closed{0}{p(n)}$ and
-cells~$i\in\closed{-p(n)}{p(n)}$,
-as well as for the states
-$r\in \closed{0}{\sizeof{Q}}$ and symbols $j\in\closed{0}{\sizeof{\Sigma}}$,
-we can completely describe the machine's computation on input~$\sigma$.
+As a consequence of the space and time limitations,
+we can completely describe the machine's computation on input~$\sigma$
+using only these Boolean variables.
+In that table the subscripts are restricted to:~steps $k\in\closed{0}{p(n)}$
+and cells~$i\in\closed{-p(n)}{p(n)}$,
+as well as state indices $r\in \closed{0}{\sizeof{Q}-1}$
+and symbol indices $j\in\closed{0}{\sizeof{\Sigma}-1}$.
+As a convenience for this argument
+we will take the blank to be a member of the symbols, with index~$0$.
+% and similarly \str{L} and~\str{R} are symbol number~$\sizeof{\Sigma}+1$
+% and~$\sizeof{\Sigma}+2$.
 
 We will construct the describing
 Propositional Logic expression $f_{\TM}(\sigma)$
@@ -18339,12 +18344,12 @@ otherwise it will not.
 Here is an example of what `conform' means.
 Suppose that $\sigma=\str{11B1}$ and that $p(\sizeof{\sigma})=5$,
 and also that symbol~$0$ is the blank and symbol~$1$ is~\str{1}.
-Then using its input~$\sigma$
+Then using its input~$\sigma$,
 the reduction function ensures that the expression conforms to the
 initial tape in the computation by including these.
 \begin{align*}
   \MoveEqLeft{(C_{-5,0,0}\wedge \neg C_{-5,1,0})
-  \wedge (C_{-4,0,0}\wedge C_{-4,1,0})}\wedge{}
+  \wedge (C_{-4,0,0}\wedge \neg C_{-4,1,0})}\wedge{}
   \\
   &\cdots  {}\wedge (\neg C_{0,0,0}\wedge C_{0,1,0})
     \wedge (\neg C_{1,0,0} \wedge C_{1,1,0})      
@@ -18352,23 +18357,22 @@ initial tape in the computation by including these.
   \\
   &\qquad {}\wedge (\neg C_{3,0,0} \wedge C_{3,1,0)}) 
     \wedge (C_{4,0,0} \wedge \neg C_{4,1,0)}) 
-    \wedge (C_{5,0,0} \wedge \neg C_{5,1,0)}) 
+    \wedge (C_{5,0,0} \wedge \neg C_{5,1,0)})
+    \tag{$*$}
 \end{align*}
+This conjunction ensures that the expression is satisfiable only if the initial
+character in cell~$-5$ is character~$0$ and only character~$0$, etc.
 
 The output expression $f_{\TM}(\sigma)$ falls into
 the six parts described in the table below.\footnote{%
   Ths is much like the construction in \protect\zcref{extra:SATSolvers}.
-  Propositional Logic can express surprisingly string ideas, but
-  it requires many clauses.
+  Propositional Logic is surprisingly expressive, but
+  its expressions can be long.
 }
 Besides stating how to construct these parts,
 we will also show that the resulting expression, while big,
 can nontheless be output in polytime.
 
-However, before those details, first
-observe that these six parts suffice to 
-ensure that the output expression can be satisfed if and only if there
-is an accepting computation for the input~$\sigma$.
 \begin{center}\small
   \begin{tabular}{rp{0.7\textwidth}}
     \multicolumn{1}{c}{\tabulartext{Clause group}}
@@ -18376,12 +18380,12 @@ is an accepting computation for the input~$\sigma$.
     \hline
     1
     &\parbox[t]{0.6\textwidth}{\raggedright
-       At each step~$k$ the machine is in exactly one state.
+       At each step~$k$ the machine is in one and only one state.
       }                            \\
     2
     &\parbox[t]{0.6\textwidth}{\raggedright
       At each step~$k$ the read/write head is pointing to exactly
-      one tape cell.
+      one and only one tape cell.
       }                            \\
     3
     &\parbox[t]{0.6\textwidth}{\raggedright
@@ -18405,55 +18409,170 @@ is an accepting computation for the input~$\sigma$.
   \end{tabular}
 \end{center}
 
-We shall go through them in turn.
-For the first group, again imagine that $p(n)=5$.
-Also imagine that the machine has three states $Q=\set{q_0,q_1,q_2}$.
-This conjunction of clauses asserts that at each step the machine is in
+We shall go through the six in turn.
+But before those details, first
+observe that these six parts suffice to 
+ensure that the output expression can be satisfed if and only if there
+is an accepting computation for the input~$\sigma$.
+
+We start with an illustration of the first group.
+Again imagine that $p(n)=5$ and
+also imagine that the machine has three states, $Q=\set{q_0,q_1,q_2}$.
+There are two parts.
+This conjunction asserts that at each step the machine is in
 at least one state.
 \begin{equation*}
-  (Q_{0,0}\vee Q_{1,0}\vee Q_{2,0})
+  E_{0,0}=(Q_{0,0}\vee Q_{1,0}\vee Q_{2,0})
   \wedge (Q_{0,1}\vee Q_{1,1}\vee Q_{2,1})
   {}\wedge
   \cdots 
   \wedge (Q_{0,5}\vee Q_{1,5}\vee Q_{2,5})
 \end{equation*}
-And this conjunction of clauses asserts that at each step the machine is in
+And this conjunction asserts that at each step the machine is in
 no more than one state.
 \begin{align*}
-  \MoveEqLeft{(\neg Q_{0,0}\vee \neg Q_{1,0})
+  \MoveEqLeft{E_{0,1}=(\neg Q_{0,0}\vee \neg Q_{1,0})
   \wedge (\neg Q_{0,0}\vee \neg Q_{2,0})
   \wedge (\neg Q_{1,0}\vee \neg Q_{2,0})
   \wedge{}}                 \\
-  &\cdots \wedge
+  &\cdots 
   (\neg Q_{0,5}\vee \neg Q_{1,5})
   \wedge (\neg Q_{0,5}\vee \neg Q_{2,5})
   \wedge (\neg Q_{1,5}\vee \neg Q_{2,5})
 \end{align*}
+Then $E_{0,0}\wedge E_{0,1}$ is satisfiable if and only if for each
+step $k\in\closed{0}{5}$ the machine is in one of the states $q_i$ where
+$i\in\closed{0}{2}$.
 
-The second group is similar.
-Again we use $p(\sizeof{\sigma})=5$.
+Generalizing, the formula is $E_0=E_{0,0}\wedge E_{0,1}$ for these.
+\begin{equation*}
+  E_{0,0}
+  =\!\!\!\bigwedge_{k\in\closed{0}{p(\sizeof{\sigma})}}
+   \!\bigl( Q_{0,k}\vee\cdots\,Q_{\sizeof{Q}-1,k} \bigr)
+   \qquad
+  E_{0,1}
+   =\!\!\!\!\!\!\!\!\!\!\bigwedge_{\substack{ k\in\closed{0}{p(\sizeof{\sigma})}  \\
+  \text{$a<b$ for $a,b\in\closed{0}{\sizeof{Q}-1}$}}} 
+  \!\!\!\!\!\!\!\bigl( \neg Q_{a,k} \vee \neg Q_{b,k}  \bigr)  
+\end{equation*}
+Explicitly giving that formula means that we can determine its size, given as
+the number of literals.
+The expression $E_{0,0}$ has $\sizeof{Q}\cdot (p(\sizeof{\sigma})+1)$ of them.
+And because the number of pairs $a,b\in\closed{0}{\sizeof{Q}-1}$ with $a<b$
+is $(\sizeof{Q}-1)\cdot (\sizeof{Q}-2)$, the expression $E_{0,1}$ has
+about $\sizeof{Q}^2\cdot (p(\sizeof{\sigma})+1)$ literals.
+Overall, the number of literals is polynomial in~$\sizeof{\sigma}$.
+
+The second group works the same way.
+Again for an example we use $p(\sizeof{\sigma})=5$.
 This conjunction says that at each step the head is reading 
 at least one cell.
 \begin{equation*}
-  (H_{0,-5}\vee H_{0,-4}\vee\cdots\vee H_{0,5})
+  (H_{0,-5}\vee H_{0,-4}\vee\cdots H_{0,5})
   {}\wedge
   \cdots 
-  \wedge (H_{5,-5}\vee H_{5,-4}\vee\cdots\vee H_{5,5})
+  \wedge (H_{5,-5}\vee H_{5,-4}\vee\cdots H_{5,5})
 \end{equation*}
 And this conjunction says that the head points to no more than one cell.
 \begin{align*}
   \MoveEqLeft{(\neg H_{0,-5}\vee \neg H_{0,-4})
   \wedge (\neg H_{0,-5}\vee \neg H_{0,-3})
-  \wedge \cdots
-  \wedge (\neg H_{0,4}\vee \neg H_{0,5})}
+  \wedge\cdots (\neg H_{0,4}\vee \neg H_{0,5})}
   \wedge\\
-  &\cdots \wedge
+  &\cdots 
     (\neg H_{5,-5}\vee \neg H_{5,-4})
     \wedge (\neg H_{5,-5}\vee \neg H_{5,-3})
-    \wedge \cdots \wedge (\neg H_{5,4}\vee \neg H_{5,5})
+    \wedge \cdots (\neg H_{5,4}\vee \neg H_{5,5})
 \end{align*}
+The general formula is \zcref{exer:CLSecondGroup}.
+
+The third group is very similar to the first two so it is 
+\zcref{exer:CLThirdGroup}.
+
+For the fourth group we have already done much of the work in equation~($*$).
+We just need to add the two one-literal clauses $Q_{0,0}$ and $H_{0,0}$.
+The general formula is \zcref{exer:CLFourthGroup}.
+
+As to the fifth group, we adopt the convention that if the
+machine finishes before step~$p(\sizeof{\sigma})$ then its
+configuration remains unchanged until that state.
+With that, where the machine's accepting states are
+$F=\set{q_{s_0},\ldots\,q_{s_t}}$, this conjunction will do.
+\begin{equation*}
+  Q_{s_0,p(\sizeof{\sigma})}\wedge
+  \cdots{}\, Q_{s_t,p(\sizeof{\sigma})}
+\end{equation*}
+
+The hardest group is the sixth.
+It expresses the transition function of the machine~$\TM$\!. 
+For that it uses two subgroups of clauses.
+
+The first subgroup asserts that if the read/write head is not pointing to a
+cell then that cell does not change.
+A generic clause is below.
+It is satisfied unless at step~$k$
+the read/write head is not pointing to tape cell~$i$
+and in the next transistion,
+cell~$i$ changes from holding symbol $s_j\in\Sigma$ to not holding it.
+\begin{equation*}
+  H_{k,i}\vee \neg C_{k,i,j}\vee C_{k+1,i,j} 
+\end{equation*}
+
+The second subgroup asserts that changes from step~$k$ to step~$k+1$
+conform to $\TM$'s transition function.
+Suppose that $\Delta_{\TM}(q_r,s_y)=\sequence{q_{\hat{r}},s_{\hat{y}}}$.
+In the case where $s_y\in\Sigma$
+the transition function adds the three clauses in~($**$).
+For example the first evaluates to \false{} only when at step~$k$
+the machine is in the state with index~$r$ and the head is at cell~$i$ and
+that cell contains the symbol with index~$y$,
+but at step~$k+1$ the machine is not in the state with index~$\hat{r}$.
+The other two ensure that the head does not move, and that the
+cell now contains the symbol with index~$\hat{y}$.
+\begin{gather*}
+  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee Q_{k+1,\hat{r}}        \\
+  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee H_{k+1,i}       \\
+  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee C_{k+1,i,\hat{y}}
+  \tag{$**$}
+\end{gather*}
+In the case where $s_y=\str{L}$ the transition function adds the clauses below.
+\begin{gather*}
+  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee Q_{k+1,\hat{r}}        \\
+  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee H_{k+1,i-1}       \\
+  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee C_{k+1,i,y}
+  \tag{$**$}
+\end{gather*}
+The case where $s_y=\str{R}$ is very similar.
+
+To finish the proof we need verify that the reduction functino runs in time
+polynomial in the length of~$\sigma$.
+Observe that as with the first clause group
+we can compute the size of the total expression $f_{\TM}(\sigma)$,
+and it is polynomial in $p(\sizeof{\sigma})$, which makes it polynomial
+in~$\sizeof{\sigma}$).
 
 
+\begin{exercises}
+  \begin{exercise} \label{exer:CLSecondGroup}
+    Give the general formula for the second clause group.
+    Include the limits on all variables. 
+  \end{exercise}
+  
+  \begin{exercise} \label{exer:CLThirdGroup}
+    For the third clause group:
+    \begin{exparts*}
+    \item give an example in the style of the prior groups
+      (take $p(\sizeof{\sigma})=5$,
+      and take symbol~$0$ to be the blank while symbol~$1$ is~\str{1}),
+    \item give a formula.
+    \end{exparts*}
+  \end{exercise}
+
+  \begin{exercise} \label{exer:CLFourthGroup}
+    Give the general formula for the fourth group,
+    including the limits on all of the variables.
+  \end{exercise}
+\end{exercises}
 
 
 

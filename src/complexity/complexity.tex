@@ -18418,7 +18418,7 @@ also imagine that the machine has three states, $Q=\set{q_0,q_1,q_2}$.
 There are two parts.
 This conjunction asserts that at each step the machine is in
 at least one state.
-\begin{equation*}
+\begin{equation*} % H_{i,k}: head is at cell i at step k
   E_{0,0}=(Q_{0,0}\vee Q_{1,0}\vee Q_{2,0})
   \wedge (Q_{0,1}\vee Q_{1,1}\vee Q_{2,1})
   {}\wedge
@@ -18427,7 +18427,7 @@ at least one state.
 \end{equation*}
 And this one asserts that at each step the machine is in
 no more than one state.
-\begin{align*}
+\begin{align*}  % H_{i,k}: head is at cell i at step k
   \MoveEqLeft{E_{0,1}=(\neg Q_{0,0}\vee \neg Q_{1,0})
   \wedge (\neg Q_{0,0}\vee \neg Q_{2,0})
   \wedge (\neg Q_{1,0}\vee \neg Q_{2,0})
@@ -18437,12 +18437,15 @@ no more than one state.
   \wedge (\neg Q_{0,5}\vee \neg Q_{2,5})
   \wedge (\neg Q_{1,5}\vee \neg Q_{2,5})
 \end{align*}
-Overall, $E_{0,0}\wedge E_{0,1}$ is satisfiable if and only if at each
-step $k\in\closed{0}{5}$ the machine is in exactly one of the states $q_r$ where
-$r\in\closed{0}{2}$.
+For example, the first clause $\neg Q_{0,0}\vee \neg Q_{1,0}$ is only \false{}
+if both of $Q_{0,0}$ and~$Q_{1,0}$ are \true.
+
+% Overall, $E_{0,0}\wedge E_{0,1}$ is satisfiable if and only if at each
+% step $k\in\closed{0}{5}$ the machine is in exactly one of the states $q_r$ where
+% $r\in\closed{0}{2}$.
 
 Generalizing, the formula is $E_0=E_{0,0}\wedge E_{0,1}$ for these.
-\begin{equation*}
+\begin{equation*}  % H_{i,k}: head is at cell i at step k
   E_{0,0}
   =\!\!\!\bigwedge_{k\in\closed{0}{p(\sizeof{\sigma})}}
    \!\bigl( Q_{0,k}\vee\cdots\,Q_{\sizeof{Q}-1,k} \bigr)
@@ -18452,8 +18455,8 @@ Generalizing, the formula is $E_0=E_{0,0}\wedge E_{0,1}$ for these.
   \text{$a<b$ for $a,b\in\closed{0}{\sizeof{Q}-1}$}}} 
   \!\!\!\!\!\!\!\bigl( \neg Q_{a,k} \vee \neg Q_{b,k}  \bigr)  
 \end{equation*}
-Explicitly stating that formula means that we can determine its size, given as
-the number of literals.
+Explicitly stating that formula means that we can determine how many
+literals it has.
 The expression $E_{0,0}$ has $\sizeof{Q}\cdot (p(\sizeof{\sigma})+1)$ of them.
 And because the number of pairs $a,b\in\closed{0}{\sizeof{Q}-1}$ with $a<b$
 is $(\sizeof{Q}-1)\cdot (\sizeof{Q}-2)$, the expression $E_{0,1}$ has
@@ -18465,19 +18468,19 @@ Again for an example we use $p(\sizeof{\sigma})=5$.
 This conjunction says that at each step the head is reading 
 at least one cell.
 \begin{equation*}
-  (H_{0,-5}\vee H_{0,-4}\vee\cdots\, H_{0,5})
-  {}\wedge\cdots\, (H_{5,-5}\vee H_{5,-4}\vee\cdots\, H_{5,5})
+  (H_{-5,0}\vee H_{-4,0}\vee\cdots\, H_{5,0})
+  {}\wedge\cdots\, (H_{-5,5}\vee H_{-4,5}\vee\cdots\, H_{5,5})
 \end{equation*}
 And this conjunction says that the head points to no more than one cell.
 \begin{align*}
-  \MoveEqLeft{(\neg H_{0,-5}\vee \neg H_{0,-4})
-  \wedge (\neg H_{0,-5}\vee \neg H_{0,-3})
-  \wedge\cdots\, (\neg H_{0,4}\vee \neg H_{0,5})}
+  \MoveEqLeft{(\neg H_{-5,0}\vee \neg H_{-4,0})
+  \wedge (\neg H_{-5,0}\vee \neg H_{-3,0})
+  \wedge\cdots\, (\neg H_{4,0}\vee \neg H_{5,0})}
   \wedge{}                                        \\
   &\cdots\, 
-    (\neg H_{5,-5}\vee \neg H_{5,-4})
-    \wedge (\neg H_{5,-5}\vee \neg H_{5,-3})
-    \wedge \cdots\, (\neg H_{5,4}\vee \neg H_{5,5})
+    (\neg H_{-5,5}\vee \neg H_{-4,5})
+    \wedge (\neg H_{-5,5}\vee \neg H_{-3,5})
+    \wedge \cdots\, (\neg H_{4,5}\vee \neg H_{5,5})
 \end{align*}
 The general formula is \zcref{exer:CLSecondGroup}.
 
@@ -18552,17 +18555,84 @@ in~$\sizeof{\sigma}$).
 \begin{exercises}
   \begin{exercise} \label{exer:CLSecondGroup}
     Give the general formula for the second clause group.
-    Include the limits on all variables. 
-  \end{exercise}
+    Include the limits on all variables.
+    \begin{answer}
+      There are two halves.
+      Here is the first.
+      (We write $n$ for $\sizeof{\sigma}$.)
+      \begin{equation*}
+        E_{1,0}
+        =\bigwedge_{
+            k\in\closed{0}{p(n)}
+          }
+           H_{-p(n),k} \vee\cdots\,H_{p(n),k}
+        =\bigwedge_{
+            k\in\closed{0}{p(n)}
+          }\;
+         \bigvee_{
+            i\in\closed{-p(n)}{p(n)}
+          }
+          H_{i,k}
+        \end{equation*}
+        The second involves pairs of predicates.
+        \begin{align*}
+          E_{1,1}
+          &=\bigwedge_{
+              k\in\closed{0}{p(n)}  
+            }\;
+            (\neg Q_{-p(n),k} \vee \neg Q_{-p(n)+1,k})
+            \wedge \cdots\,
+            (\neg Q_{p(n)-1,k} \vee \neg Q_{p(n),k})
+            \\
+          &=\bigwedge_{
+              k\in\closed{0}{p(n)}  
+            }\;\>
+          \bigwedge_{\text{$a<b$ for $a,b\in\closed{0}{\sizeof{Q}-1}$}}
+          \neg Q_{a,k} \vee \neg Q_{b,k}  
+        \end{align*}
+        Then $E_1=E_{1,0}\wedge E_{1,1}$.
+      \end{answer}
+    \end{exercise}
   
   \begin{exercise} \label{exer:CLThirdGroup}
-    For the third clause group:
+    For the third clause group,
     \begin{exparts*}
     \item give an example in the style of the prior groups
-      (take $p(\sizeof{\sigma})=5$,
-      and take symbol~$0$ to be the blank while symbol~$1$ is~\str{1}),
+      (take $p(\sizeof{\sigma})=5$
+      and take $\sizeof{\Sigma}=3$).
     \item give a formula.
     \end{exparts*}
+    \begin{answer}
+      We write $\sizeof{\sigma}$ as~$n$.
+      \begin{exparts}
+      \item
+        As with the first two clause groups, there are two halves.
+        
+        This describes that at step $k=0$ every
+        cell from number $i=-5$  to $i=5$
+        contains at least one of the three characters.
+        \begin{equation*}
+          (C_{-5,0,0}\vee C_{-5,1,0}\vee C_{-5,2,0})   
+          \wedge (C_{-4,0,0}\vee C_{-4,1,0}\vee C_{-4,2,0})  
+          \wedge\cdots                         
+          \, (C_{5,0,0}\vee C_{5,1,0}\vee C_{5,2,0})  
+        \end{equation*}
+        For the full expression we need one of those for every $k$ from $0$
+        to~$n$.
+
+        This describes that for cell number~$i=-p(n)$
+        and step~$k=0$, the cell does not contain two symbols.
+        \begin{equation*}
+          (\neg C_{-p(n),0,0}\vee \neg C_{-p(n),1,0})
+          \wedge
+          (\neg C_{-p(n),0,0}\vee \neg C_{-p(n),2,0})
+          \wedge
+          (\neg C_{-p(n),1,0}\vee \neg C_{-p(n),2,0})
+        \end{equation*}
+        The full expression needs three such clauses for each cell number
+        $i\in\closed{-p(n)}{p(n)}$ and step $k\in\closed{0}{p(n)}$.
+      \end{exparts}
+    \end{answer}
   \end{exercise}
 
   \begin{exercise} \label{exer:CLFourthGroup}

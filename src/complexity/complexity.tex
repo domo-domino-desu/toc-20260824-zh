@@ -18318,7 +18318,7 @@ These come in three families.
       &Tape cell~$i$ contains symbol~$j$ at step~$k$   \\
     $H_{i,k}$
       &The read/write head is at tape cell~$i$ at step~$k$    \\
-    $Q_{r,k}$
+    $S_{r,k}$
       &The machine is in state~$q_r$ at step~$k$
   \end{tabular}
 \end{center}
@@ -18419,41 +18419,37 @@ There are two parts.
 This conjunction asserts that at each step the machine is in
 at least one state.
 \begin{equation*} % H_{i,k}: head is at cell i at step k
-  E_{0,0}=(Q_{0,0}\vee Q_{1,0}\vee Q_{2,0})
-  \wedge (Q_{0,1}\vee Q_{1,1}\vee Q_{2,1})
+  E_{0,0}=(S_{0,0}\vee S_{1,0}\vee S_{2,0})
+  \wedge (S_{0,1}\vee S_{1,1}\vee S_{2,1})
   {}\wedge
   \cdots 
-  \wedge (Q_{0,5}\vee Q_{1,5}\vee Q_{2,5})
+  \wedge (S_{0,5}\vee S_{1,5}\vee S_{2,5})
 \end{equation*}
 And this one asserts that at each step the machine is in
 no more than one state.
 \begin{align*}  % H_{i,k}: head is at cell i at step k
-  \MoveEqLeft{E_{0,1}=(\neg Q_{0,0}\vee \neg Q_{1,0})
-  \wedge (\neg Q_{0,0}\vee \neg Q_{2,0})
-  \wedge (\neg Q_{1,0}\vee \neg Q_{2,0})
+  \MoveEqLeft{E_{0,1}=(\neg S_{0,0}\vee \neg S_{1,0})
+  \wedge (\neg S_{0,0}\vee \neg S_{2,0})
+  \wedge (\neg S_{1,0}\vee \neg S_{2,0})
   \wedge{}}                 \\
   &\qquad\cdots 
-  (\neg Q_{0,5}\vee \neg Q_{1,5})
-  \wedge (\neg Q_{0,5}\vee \neg Q_{2,5})
-  \wedge (\neg Q_{1,5}\vee \neg Q_{2,5})
+  (\neg S_{0,5}\vee \neg S_{1,5})
+  \wedge (\neg S_{0,5}\vee \neg S_{2,5})
+  \wedge (\neg S_{1,5}\vee \neg S_{2,5})
 \end{align*}
-For example, the first clause $\neg Q_{0,0}\vee \neg Q_{1,0}$ is only \false{}
-if both of $Q_{0,0}$ and~$Q_{1,0}$ are \true.
-
-% Overall, $E_{0,0}\wedge E_{0,1}$ is satisfiable if and only if at each
-% step $k\in\closed{0}{5}$ the machine is in exactly one of the states $q_r$ where
-% $r\in\closed{0}{2}$.
+For example, the first clause $\neg S_{0,0}\vee \neg S_{1,0}$ says that one or
+the other is not \true.
 
 Generalizing, the formula is $E_0=E_{0,0}\wedge E_{0,1}$ for these.
 \begin{equation*}  % H_{i,k}: head is at cell i at step k
   E_{0,0}
   =\!\!\!\bigwedge_{k\in\closed{0}{p(\sizeof{\sigma})}}
-   \!\bigl( Q_{0,k}\vee\cdots\,Q_{\sizeof{Q}-1,k} \bigr)
+   \!\bigl( S_{0,k}\vee\cdots\,S_{\sizeof{Q}-1,k} \bigr)
    \qquad
   E_{0,1}
    =\!\!\!\!\!\!\!\!\!\!\bigwedge_{\substack{ k\in\closed{0}{p(\sizeof{\sigma})}  \\
   \text{$a<b$ for $a,b\in\closed{0}{\sizeof{Q}-1}$}}} 
-  \!\!\!\!\!\!\!\bigl( \neg Q_{a,k} \vee \neg Q_{b,k}  \bigr)  
+  \!\!\!\!\!\!\!\bigl( \neg S_{a,k} \vee \neg S_{b,k}  \bigr)  
 \end{equation*}
 Explicitly stating that formula means that we can determine how many
 literals it has.
@@ -18487,10 +18483,9 @@ The general formula is \zcref{exer:CLSecondGroup}.
 The third group is very similar to the first two so it is 
 \zcref{exer:CLThirdGroup}.
 
-We have already done much of the work for the fourth group above,
+We have already done much of the work for the fourth group above
 in equation~($*$).
-We only need to add two one-literal clauses, $Q_{0,0}$ and $H_{0,0}$.
-The general formula is \zcref{exer:CLFourthGroup}.
+See \zcref{exer:CLFourthGroup}.
 
 As to the fifth group, we adopt the convention that if the
 machine finishes before step~$p(\sizeof{\sigma})$ then its
@@ -18498,8 +18493,8 @@ configuration remains unchanged until that state.
 With that, where the machine's accepting states are
 $F=\set{q_{s_0},\ldots\,q_{s_t}}$, this conjunction will do.
 \begin{equation*}
-  Q_{s_0,p(\sizeof{\sigma})}\wedge
-  \cdots{}\, Q_{s_t,p(\sizeof{\sigma})}
+  S_{s_0,p(\sizeof{\sigma})}\wedge
+  \cdots{}\, S_{s_t,p(\sizeof{\sigma})}
 \end{equation*}
 
 The hardest group is the sixth.
@@ -18531,20 +18526,20 @@ but at step~$k+1$ the machine is not in the state with index~$\hat{r}$.
 The other two ensure that the head does not move, and that the
 cell now contains the symbol with index~$\hat{y}$.
 \begin{gather*}
-  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee Q_{k+1,\hat{r}}        \\
-  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee H_{k+1,i}       \\
-  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee C_{k+1,i,\hat{y}}
+  \neg S_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee S_{k+1,\hat{r}}        \\
+  \neg S_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee H_{k+1,i}       \\
+  \neg S_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee C_{k+1,i,\hat{y}}
   \tag{$**$}
 \end{gather*}
 In the case where $s_y=\str{L}$ the transition function adds these clauses.
 \begin{gather*}
-  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee Q_{k+1,\hat{r}}    \\
-  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee H_{k+1,i-1}       \\
-  \neg Q_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee C_{k+1,i,y}
+  \neg S_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee S_{k+1,\hat{r}}    \\
+  \neg S_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee H_{k+1,i-1}       \\
+  \neg S_{k,r} \vee \neg H_{k,i} \vee \neg C_{k,i,y} \vee C_{k+1,i,y}
 \end{gather*}
 The $s_y=\str{R}$ case is very similar.
 
-To finish the proof we must verify that the reduction functino runs in time
+To finish the proof we must verify that the reduction function runs in time
 polynomial in the length of~$\sigma$.
 Observe that as with the first clause group
 we can compute the size of the total expression $f_{\TM}(\sigma)$,
@@ -18580,15 +18575,15 @@ in~$\sizeof{\sigma}$).
           &=\bigwedge_{
               k\in\closed{0}{p(n)}  
             }\;
-            (\neg Q_{-p(n),k} \vee \neg Q_{-p(n)+1,k})
+            (\neg S_{-p(n),k} \vee \neg S_{-p(n)+1,k})
             \wedge \cdots\,
-            (\neg Q_{p(n)-1,k} \vee \neg Q_{p(n),k})
+            (\neg S_{p(n)-1,k} \vee \neg S_{p(n),k})
             \\
           &=\bigwedge_{
               k\in\closed{0}{p(n)}  
             }\;\>
           \bigwedge_{\text{$a<b$ for $a,b\in\closed{0}{\sizeof{Q}-1}$}}
-          \neg Q_{a,k} \vee \neg Q_{b,k}  
+          \neg S_{a,k} \vee \neg S_{b,k}  
         \end{align*}
         Then $E_1=E_{1,0}\wedge E_{1,1}$.
       \end{answer}
@@ -18606,10 +18601,10 @@ in~$\sizeof{\sigma}$).
       We write $\sizeof{\sigma}$ as~$n$.
       \begin{exparts}
       \item
-        As with the first two clause groups, there are two halves.
+        Here also the overall expression has two halves.
         
         This describes that at step $k=0$ every
-        cell from number $i=-5$  to $i=5$
+        cell from number $i=-5$  to~$5$
         contains at least one of the three characters.
         \begin{equation*}
           (C_{-5,0,0}\vee C_{-5,1,0}\vee C_{-5,2,0})   
@@ -18617,11 +18612,11 @@ in~$\sizeof{\sigma}$).
           \wedge\cdots                         
           \, (C_{5,0,0}\vee C_{5,1,0}\vee C_{5,2,0})  
         \end{equation*}
-        For the full expression we need one of those for every $k$ from $0$
-        to~$n$.
+        For the full expression we must concatenate together one of those lines
+        for every $k\in\closed{0}{p(n)}$.
 
-        This describes that for cell number~$i=-p(n)$
-        and step~$k=0$, the cell does not contain two symbols.
+        A feel for the second half comes from this description
+        that for step~$k=0$, cell number~$i=-p(n)$ does not contain two symbols.
         \begin{equation*}
           (\neg C_{-p(n),0,0}\vee \neg C_{-p(n),1,0})
           \wedge
@@ -18631,6 +18626,44 @@ in~$\sizeof{\sigma}$).
         \end{equation*}
         The full expression needs three such clauses for each cell number
         $i\in\closed{-p(n)}{p(n)}$ and step $k\in\closed{0}{p(n)}$.
+      \item We write it as two halves, so $E_2=E_{2,0}\wedge E_{2,1}$. 
+        The first ensures that each cell contains at least one character.
+        \begin{equation*}
+          E_{2,0}
+          =\!\!
+          \bigwedge_{\substack{
+              i\in\closed{-p(n)}{p(n)} \\
+              k\in\closed{0}{p(n)}
+            }}\!\!
+          C_{i,0,k}\vee\cdots\,C_{i,\sizeof{\Sigma}-1,k} 
+          =
+          \bigwedge_{\substack{
+              i\in\closed{-p(n)}{p(n)} \\
+              k\in\closed{0}{p(n)}     
+            }}\;
+          \bigvee_{j\in\closed{0}{\sizeof{\Sigma}-1}}
+          C_{i,j,k} 
+        \end{equation*}
+        The second ensures that no cell has more than one.
+        \begin{align*}
+          E_{2,1}
+          &=\!\!
+          \bigwedge_{\substack{
+              i\in\closed{-p(n)}{p(n)} \\
+              k\in\closed{0}{p(n)}
+            }}\!\!
+          (\neg C_{i,0,k}\vee\neg C_{i,1,k})
+          \wedge\cdots\, 
+          (\neg C_{i,\sizeof{\Sigma}-2,k}\vee\neg C_{i,\sizeof{\Sigma}-1,k})
+          \\
+          &=
+          \bigwedge_{\substack{
+              i\in\closed{-p(n)}{p(n)} \\
+              k\in\closed{0}{p(n)}     
+            }}\;\>
+          \bigwedge_{\text{$a<b$ for $a,b\in\closed{0}{\sizeof{\Sigma}-1}$}}
+          \neg C_{i,a,k}\vee\neg C_{i,b,k}  
+        \end{align*}
       \end{exparts}
     \end{answer}
   \end{exercise}
@@ -18638,6 +18671,62 @@ in~$\sizeof{\sigma}$).
   \begin{exercise} \label{exer:CLFourthGroup}
     Give the general formula for the fourth group,
     including the limits on all of the variables.
+    \begin{answer}
+      The expression first contains this expression
+      to enforce our convention
+      that the machine's start state is $q_0$.
+      \begin{equation*}
+        S_{0,0}\wedge\neg S_{1,0}\wedge \cdots\, S_{\sizeof{Q}-1,0}
+      \end{equation*}
+      Similarly it contains this expression 
+      \begin{equation*}
+        H_{-p(\sizeof{\sigma}),0}\wedge\cdots\,
+        \neg H_{-1,0}\wedge H_{0,0}\wedge\neg H_{1,0}\wedge
+        \cdots\, H_{p(\sizeof{\sigma}),0}
+      \end{equation*}
+      to enforce that at step $k=0$ the
+      head points to cell $i=0$.
+      
+      For the other clauses, let the input string be
+      $\sigma=\sequence{s_{j_0},\ldots\,s_{j_t}}$
+      for $s_{j_0},\ldots\,s_{j_t}\in\Sigma$.
+      We have observed that with the transition function
+      taking $\sigma$ as input, only the cells numbered from
+      $-p(\sizeof{\sigma})$ to $p(\sizeof{\sigma})$ are in play; all other
+      cells have no role in the computation.
+      (\textit{Remark:}~for this answer it is convenient to take
+      the polynomial $p$ to be such that $p(x)>x$ for all $x\in\N$.
+      That way the initial string is sure to fit in the region from
+      $-p(\sizeof{\sigma})$ to~$p(\sigma)$.)
+      
+      As in equation~($*$) of the section body discussion of `conform',
+      for cells with negative indices
+      we include clauses that ensure the cell contains a blank
+      and only a blank
+      (we take blank to be symbol~$0$).
+      Here is the clause for cell number $i=-p(\sizeof{\sigma})$.
+      \begin{equation*}
+        C_{-p{\sizeof{\sigma}},0,0}\wedge \neg C_{-p{\sizeof{\sigma}},1,0}\wedge
+          \cdots\, C_{-p(\sizeof{\sigma}),\sizeof{\Sigma}-1,0}
+      \end{equation*}
+      For cells with non-negative indices there are two cases.
+      If the index is larger than the length of~$\sigma$
+      then we have a similar clause also ensuring that it contains blank and
+      only blank.
+      Here is the clause for cell number~$p(n)$.
+      \begin{equation*}
+        C_{p{\sizeof{\sigma}},0,0}\wedge \neg C_{p{\sizeof{\sigma}},1,0}\wedge
+        \cdots\, C_{p(\sizeof{\sigma}),\sizeof{\Sigma}-1,0}
+      \end{equation*}
+      The other set of clauses cover cells that are populated with
+      members of~$\sigma$.
+      For $i\in\closed{0}{\sizeof{\sigma}-1}$ we have this.  
+      \begin{equation*}
+        \neg C_{i,0,0}\wedge \cdots\,
+          \neg C_{i,j_i-1,0}\wedge C_{i,j_i,0}\wedge \neg C_{i,j_i+1,0}
+        \cdots\, C_{i,\sizeof{\Sigma}-1,0}
+      \end{equation*}
+    \end{answer}
   \end{exercise}
 \end{exercises}
 

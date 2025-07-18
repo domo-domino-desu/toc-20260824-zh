@@ -2257,7 +2257,7 @@ draw(pic,UNIVERSE, AXISPEN);
 // Location of SAT:
 pair SAT_loc = 0.5*( point(NP_complete_area,0.5)+point(NP_complete_area,1.5) );
 // pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);
-pair np_complete = (-0.25*UNIVERSE_WD,0.35*UNIVERSE_HT)+(-0.45*UNIVERSE_WD,-0.17*UNIVERSE_HT);
+pair np_complete = (-0.70*UNIVERSE_WD,0.18*UNIVERSE_HT);
 // path NP_complete_tag = np_complete{(-1,-0.1)} .. {W}(np_complete+(-0.45*UNIVERSE_WD,-0.175*UNIVERSE_HT));
 path NP_complete_tag = np_complete{E} .. {SE}SAT_loc;
 draw(pic,NP_complete_tag,THINPEN);

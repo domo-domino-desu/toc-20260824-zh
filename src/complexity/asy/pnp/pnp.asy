@@ -2254,10 +2254,14 @@ label(pic,"\makebox[\width][l]{\scriptsize \compclass{NP}}",(label_x,0.5*label_y
 draw(pic,UNIVERSE, AXISPEN);
 
 // Locate NP Complete, make a path to the tag
-pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);
-path NP_complete_tag = np_complete{(-1,-0.1)} .. {W}(np_complete+(-0.45*UNIVERSE_WD,-0.175*UNIVERSE_HT));
+// Location of SAT:
+pair SAT_loc = 0.5*( point(NP_complete_area,0.5)+point(NP_complete_area,1.5) );
+// pair np_complete = (-0.25*UNIVERSE_WD,0.295*UNIVERSE_HT);
+pair np_complete = (-0.25*UNIVERSE_WD,0.35*UNIVERSE_HT)+(-0.45*UNIVERSE_WD,-0.17*UNIVERSE_HT);
+// path NP_complete_tag = np_complete{(-1,-0.1)} .. {W}(np_complete+(-0.45*UNIVERSE_WD,-0.175*UNIVERSE_HT));
+path NP_complete_tag = np_complete{E} .. {SE}SAT_loc;
 draw(pic,NP_complete_tag,THINPEN);
-label(pic,"{\scriptsize $\NP$ complete}",np_complete+(-0.45*UNIVERSE_WD,-0.17*UNIVERSE_HT),W); 
+label(pic,"{\scriptsize $\NP$ complete}",np_complete,W); 
 
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 

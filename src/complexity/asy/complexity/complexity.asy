@@ -2609,3 +2609,74 @@ draw(pic,
 shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
+
+
+// =========== Graph that is not 3-colorable but has no 4-cliques ===========
+picture pic;
+int picnum = 47;
+setdefaultgraphstyles();
+// defaultdrawstyle=directededgestyle;
+
+// define nodes
+node[] q=ncircles("$q_0$",
+       "$q_1$",
+       "$q_2$",
+       "$q_3$",	
+       "$q_4$");
+node q5=ncircle("$q_5$");
+node q6=ncircle("$q_6$");
+node q7=ncircle("$q_7$");
+node q8=ncircle("$q_8$");
+node q9=ncircle("$q_9$");
+node q10=ncircle("$q_{10}$");
+
+// layout
+real u=1cm;
+real v=0.75*u;
+circularlayout(2*u, startangle=90, q);
+q.push(q5);
+q.push(q6);
+q.push(q7);
+q.push(q8);
+q.push(q9);
+q.push(q10);
+q[5].pos = 0.5*( q[0].pos+q[2].pos ); 
+q[6].pos = 0.5*( q[1].pos+q[4].pos ); 
+q[7].pos = 0.5*( q[0].pos+q[3].pos ); 
+q[8].pos = 0.5*( q[2].pos+q[4].pos ); 
+q[9].pos = 0.5*( q[1].pos+q[3].pos ); 
+q[10].pos = (1/5)* ( q[0].pos+q[1].pos+q[2].pos+q[3].pos+q[4].pos );
+
+// draw edges
+draw(pic,
+     (q[0]--q[1]),
+     (q[0]--q[4]),
+     (q[0]--q[5]),
+     (q[0]--q[7]),
+     (q[1]--q[2]),
+     (q[1]--q[6]),
+     (q[1]--q[9]),
+     (q[2]--q[3]),
+     (q[2]--q[5]),
+     (q[2]--q[8]),
+     (q[3]--q[4]),
+     (q[3]--q[7]),
+     (q[3]--q[9]),
+     (q[4]--q[6]),
+     (q[4]--q[8]),
+     (q[5]--q[10]),
+     (q[6]--q[10]),
+     (q[7]--q[10]),
+     (q[8]--q[10]),
+     (q[9]--q[10]) 
+     );
+
+// draw nodes
+draw(pic,
+     q[0], q[1], q[2], q[3], q[4],
+     q[5], q[6], q[7], q[8], q[9],
+     q[10]
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+

@@ -946,8 +946,8 @@ setdefaultflowchartstyles();
 
 // define nodes
 node start=nroundbox("Start");
-node read=nbox("Read $\sigma$");
-node test=nrounddiamond("$\TM_{e_0}$ accepts $\sigma$?");
+node read=nbox("Read $y$");
+node test=nrounddiamond("$\sigma$ is satisfiable?");
 node printyes=nbox("Halt");
 node printno=nbox("Inf loop");
 node dummy=nbox("");  

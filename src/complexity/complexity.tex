@@ -14378,8 +14378,6 @@ We will verify that this gadget is $3$-colorable if and only if
 nodes $a$, $b$, and~$c$ are not all the color of~$F$ 
 (just as the clause $a\vee b\vee c$ is \true{} if and only if
 not all of its literals are \false).
-% Develment of gadget Lalla Mouatadid
-% https://www.cs.toronto.edu/~lalla/373s16/notes/3col.pdf
 \begin{equation*}
   \vcenteredhbox{\includegraphics{complexity/asy/complexity/complexity41.pdf}}
   \tag{$*$}
@@ -14450,13 +14448,13 @@ The next example illustrates.
 Scheduling is a rich source of difficult combinatorial problems.
 One is the problem of scheduling college classes into
 time slots. 
-Usually colleges start the process by assigning classes to
+Usually colleges start by assigning classes to
 slots and
 then students try to find classes that they need
 and that are offered at non-conflicting times.
 However, imagine if instead the process began with each student submitting 
 their list of desired classes and then the college tries to 
-find a non-conflicting schedule of slots and rooms
+find a non-conflicting schedule of times and rooms
 to accommodate the requests.
 
 For instance, consider a college with $t=12$ available time slots, that
@@ -14473,9 +14471,9 @@ That's a lot of constraints.
 % Can the college find a schedule despite all of these constraints?
 
 The \definend{\probname{Class Scheduling}}\index{Class Scheduling problem@\probname{Class Scheduling} problem}
-problem inputs the number of time slots and rooms,
+problem inputs the number of time slots~$t$ and rooms~$r$,
 along with the class requests 
-from each student,
+from each student (the number of classes~$n$ is derivable from this set),
 and decides if there is a way to allocate classes
 so that there is no conflict.
 \begin{equation*}
@@ -14501,31 +14499,31 @@ problem.
 % and where nodes are colored the same if they are in the same time slot.
 % (There is a further restriction about the number of available rooms
 % that we will handle along the way.)
-The prior example \zcref{ex:GraphColoringNPComplete}
+The example before this one % \zcref{ex:GraphColoringNPComplete}
 proves that \probname{Graph Coloring} 
-is $\NP$~complete for $k=3$ colors and an extension of that argument proves 
-the same for any larger~$k$.\footnote{%
-  When $k=1$ or $k=2$, the \protect\probname{Graph Coloring} problem
+is $\NP$~complete for three colors and an extension of that argument proves 
+the same for more colors.\footnote{%
+  The \protect\probname{Graph Coloring} problem with one or two colors
   is solvable in polytime but 
   no doubt the college has more than one or two rooms.}
 So we will show 
 that $\probname{Graph Coloring}\leq_p\probname{Class Scheduling}$
 and will then have that \probname{Class Scheduling} is $\NP$~complete. 
 
-The reduction function~$f$ is given an instance of 
-\probname{Graph Coloring}, a decision problem instance involving
+The reduction function~$f$ inputs an instance of 
+\probname{Graph Coloring},
 a graph $\mathcal{G}=\sequence{\mathcal{N},\mathcal{E}}$ and a
 natural number~$k$.
-Here is the instance of the \probname{Class Scheduling}
-problem that the reduction function associates with~$\mathcal{G}$:~the 
-number of classes is $\sizeof{\mathcal{N}}$, as is the number of rooms,
-and the number of time slots is~$k$.
-For each of $\mathcal{G}$'s edges $e=\set{v,\hat{v}}$ there is a
-student who submits the class request list $S=\set{v,\hat{v}}$.
+It produces the instance of \probname{Class Scheduling}
+where the number of time slots is~$k$,
+the number of rooms is $\sizeof{\mathcal{N}}$,
+and
+for each of $\mathcal{G}$'s edges $e_i=\set{v,\hat{v}}$ there is a
+student who submits the class request list $S_i=\set{v,\hat{v}}$.
 Clearly from the input instance, $f$~can in polytime produce the
 output instance.
 
-The \probname{Graph Coloring} instance has a solution, a $k$-coloring
+The \probname{Graph Coloring} instance has a solution, a $k$-coloring,
 if and only if the associated \probname{Class Scheduling} instance has a 
 nonconflicting schedule with $k$ time slots, one for each color.
 \end{example}
@@ -14539,7 +14537,7 @@ $\hat{\lang}\in \NP$ implies that $\hat{\lang}\leq_p\lang$.
 \end{definition}
 
 Thus, a problem is $\NP$~complete 
-if, in addition to being a member of~$\NP$, it is also 
+if in addition to being a member of~$\NP$, it is also 
 $\NP$~hard.\footnote{%
   In general, for a complexity class~$\compclass{C}$, a problem~$\prob$ is 
   \protect\definend{$\compclass{C}$~hard}\protect\index{hard!for a class} 
@@ -14559,21 +14557,20 @@ $\NP$~hard.\footnote{%
   \vcenteredhbox{\includegraphics{complexity/asy/pnp/pnp2007.pdf}}
 \end{fig}
 
-As the figure illustrates, the collection of $\NP$~hard problems extends 
-upward.
+% As the figure illustrates, the collection of $\NP$~hard problems extends 
+% upward.
 
 \begin{lemma}
 The equivalent of the \HP, the decision problem for
 $\hat{K}=\set{\hat{n}\in\kleenestar{\B}\suchthat 
-   \text{$\hat{n}$ represents $n$ in binary and $\TM_n$ halts on~$n$}}$,
-is $\NP$~hard but not $\NP$.  
-(Here, $\TM_n$ is a deterministic Turing machine.)
+   \text{$\hat{n}$ represents $n$ in binary and the deterministic machine $\TM_n$ halts on~$n$}}$,
+is $\NP$~hard but not $\NP$.
 \end{lemma}
 
 \begin{proof}
 It is not~$\NP$ because it is not decidable.
-For $\NP$~hard fix $\lang\in\NP$.  
-We will produce a reduction 
+For $\NP$~hard, fix $\lang\in\NP$.  
+We will show that $\lang\leq_p \hat{K}$ by producing a reduction 
 function~$f$ that inputs a string $\sigma\in\kleenestar{\Sigma}$ and
 outputs a representation~$\hat{n}$ of an integer,
 such that $\sigma\in\lang$ if and only if $\hat{n}\in\hat{K}$.
@@ -14584,14 +14581,17 @@ in polytime.
 This machine halts on every input, either accepting or rejecting.
 The reduction function outputs the representation~$\hat{n}$ of the index~$n$
 of the following computation.
-It inputs a string~$\sigma$ 
-and uses $e_0$ to deterministically simulate running $\TM_{e_0}$ on that input.
-If the simulation accepts~$\sigma$ then this computation halts, 
-while if the simulation rejects then this computation does not halt.
+\begin{center}
+  \includegraphics{\asydir flowcharts/flowcharts018.pdf}
+\end{center}
+% It inputs a string~$\sigma$ 
+% and uses $e_0$ to deterministically simulate running $\TM_{e_0}$ on that input.
+% If the simulation accepts~$\sigma$ then this computation halts, 
+% while if the simulation rejects then this computation does not halt.
 
-This reduction function runs in polytime.\footnotemark %
+This reduction function runs in polytime.\footnotemark\ %
 (A computation of $\TMfcn_n(n)$ may well take more than
-polytime, because it simulates the nondeterministic machine  $\TM_{e_0}$,
+polytime, % because it simulates the nondeterministic machine  $\TM_{e_0}$,
 or might not halt at all.
 But going from the input~$\sigma$ to the output~$\hat{n}$ index of that 
 computation takes at most polytime.)

@@ -939,6 +939,53 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+//  =========== HP is NP hard, not NP ==========
+picture pic;
+int picnum = 18;
+setdefaultflowchartstyles();
+
+// define nodes
+node start=nroundbox("Start");
+node read=nbox("Read $\sigma$");
+node test=nrounddiamond("$\TM_{e_0}$ accepts $\sigma$?");
+node printyes=nbox("Halt");
+node printno=nbox("Inf loop");
+node dummy=nbox("");  
+
+// layout
+defaultlayoutrel = false;
+defaultlayoutskip = 0.75cm;
+real u = defaultlayoutskip;
+real v = 0.85*u;
+
+vlayout(1.0*v,start,read);
+vlayout(1.35*v,read,test);
+vlayout(0.8*v,test,dummy);
+hlayout(-2.75*u,dummy,printyes);
+hlayout(2.75*u,dummy,printno);
+
+// draw edges
+draw(pic,
+     (start--read),
+     (read--test),
+     (test..HV..printyes).l("Y"),
+     (test..HV..printno).l("N").style("leftside")
+);
+
+// draw nodes
+draw(pic,
+     start,
+     read,
+     test,
+     printyes,
+     printno
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+
 
 
 

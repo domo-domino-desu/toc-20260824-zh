@@ -2446,7 +2446,7 @@ label(pic,"\makebox[\width][l]{\scriptsize \compclass{RE}}",(label_x,0.5*label_y
 pair K_loc = point(re_arc,0.325);
 pair SAT_loc = point(NP_arc,0.275);
 pair L_loc = (0,0.25);  // Dijkstra's algorithm is sub-quadratic
-pair E_loc = point(UNIVERSE,0);
+pair E_loc = point(UNIVERSE,0)+(0,0.08);
 
 real label_x = 0.65*UNIVERSE_WD;
 real label_y = 0.90*UNIVERSE_HT;

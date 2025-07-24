@@ -17144,7 +17144,7 @@ $sa\equiv 1\pmod m$, making
 $s$ the modulo~$m$ inverse of~$a$.
 \end{proof}
 
-Euclid's algorithm is efficient, both in time and space,\footnote{%
+Euclid's algorithm is efficient\footnote{%
   Its runtime is $\bigOh(d^2)$ where $d$ is the number of base~$10$
   digits in the input.}
 so finding an inverse modulo~$m$ is efficient.
@@ -17228,9 +17228,7 @@ For instance, if $n=415\,692$ and $a=2$ then
 $2^{415692}\equiv 58346\pmod{415693}$
 and thus $n$ is not prime.
 
-% So if we are given~$n$ and want to show that it is not prime
-% we could look for an $a<n$ with $a^{n-1}\bmod{n}=1$.
-On the other hand, given $n$, if we try a number of 
+On the other hand, if we try a number of 
 such $a$'s and each time find that the result is~$1$, 
 then we may start to suspect that $n$ is prime.\footnote{%
   There exist coprime numbers~$a$ and $n$ where 
@@ -17254,22 +17252,22 @@ This suggests a
 primality
 pick at random a base~$a$ with $0<a<n$ and calculate whether
 $a^{n-1}\equiv 1\pmod{n}$.
-If this is not true then $n$ is not prime and we stop testing.
+If not, then $n$ is not prime and we stop testing.
 But if it is true then we have evidence that~$n$ is prime.
 Iterate until we reach the desired level of confidence.
 
 As to the relationship between number of iterations and the
 confidence level, 
-researchers have shown that if $n$ is not prime then
-each choice of~$a$ has a less than $1/2$ chance of finding that
+researchers have shown that if~$n$ is not prime then
+each choice of~$a$ has a less than $1/2$ chance that
 $a^{n-1}\equiv 1\pmod{n}$.
-So if $n$ were not prime and we did the test with two different bases
-$a_0,a_1$ then
-there would be a less than $(1/2)^2$ chance of getting both
-$a_0^{n-1}\equiv 1\pmod{n}$ and $a_1^{n-1}\equiv 1\pmod{n}$.
-Restated, there is at least a $1-(1/2)^2$ chance that $n$ is prime. 
-In general, after $k$-many iterations of choosing a base, doing the
-calculation, and never finding that that $n$ is not prime, then
+% So if $n$ is not prime and we use two different bases
+% $a_0,a_1$ then
+% there would be a less than $(1/2)^2$ chance of getting both
+% $a_0^{n-1}\equiv 1\pmod{n}$ and $a_1^{n-1}\equiv 1\pmod{n}$.
+% Restated, there is at least a $1-(1/2)^2$ chance that $n$ is prime. 
+So after $k$-many iterations of choosing a base, doing the
+calculation, and never finding that that $n$ is not prime,
 we have 
 \citetext{a greater than $1-(1/2)^k$ chance that~$n$ is prime}{%
   Here is the probability $1-(1/2)^k$ for the first few $k$'s.
@@ -17291,7 +17289,7 @@ we have
   \end{display}
   We get an extra decimal place of certainty about every $3\,1/3$ iterations
   because $\lg(10)\approx 3.32$.
-  So if you want, say, five decimal places, so that you have at least a 
+  So if we want, say, five decimal places, so that we have at least a 
   probability of $0.999\,99$, then it is safe to iterate $4\cdot 5=20$ times.
 % sage: for k in range(10):
 % ....:     print(1-(0.5)^k)
@@ -17310,11 +17308,9 @@ we have
 % 3.32192809488736 
 }.
 
-In summary,
-if~$n$ passes $k$-many tests for \citetext{any reasonable-sized~$k$}{%
-  Selecting an appropriate $k$ is an engineering choice between the cost
-  of extra iterations and the gain in confidence.}
-  then \citetext{we are quite confident that it is prime}{%
+This test is extremely fast; it runs in time
+$\bigOh (k \cdot (\log n)^2 \cdot \log \log n \cdot \log \log \log n)$.
+So we can run it a lot, \citetext{becoming very confident}{%
   We are confident, but not certain.
   There are numbers, called \definend{Carmichael numbers},
   that are pseudoprime for every base~$a$ relatively prime to~$n$.
@@ -17324,40 +17320,92 @@ if~$n$ passes $k$-many tests for \citetext{any reasonable-sized~$k$}{%
   Among the numbers less than $10^{16}$ there are 
   $279\,238\,341\,033\,922$ primes, about
   $2.7\times 10^{14}$, but only
-  $246\,683 \approx 2.4\times 10^5$-many Carmichael numbers.}.
-Our interest in this
-test is that it is extremely fast; it runs in time
-$\bigOh (k \cdot (\log n)^2 \cdot \log \log n \cdot \log \log \log n)$.
-So we can run it a lot, becoming very confident, in not
+  $246\,683 \approx 2.4\times 10^5$-many Carmichael numbers.
+  
+  Selecting an appropriate $k$ is an engineering choice between the cost
+  of extra iterations and the gain in confidence.},
+in not
 very much time.
 
 \begin{example}
-We could test whether $n=7$ is prime by computing, say,  
-that $3^{6}\equiv 1\pmod{7}$,
-and $5^{6}\equiv 1\pmod{7}$, and $6^{6}\equiv 1\pmod{7}$.
-The fact that $n=7$ does not fail makes us confident it is prime. 
+  Suppose that we want a five-digit prime.
+  We generate some five-digit numbers at random, and after a couple of
+  non-primes we get $n=82\,721$.
+  Generating random $a$'s less than~$n$ gives
+  $23865^{82720}\equiv 1\pmod{82721}$,
+  and $34457^{82720}\equiv 1\pmod{82721}$,
+  and $1699^{82720}\equiv 1\pmod{82721}$, etc.
+  After twenty $a$'s we are $99.999\%$ sure that~$n$ is prime.
+% sage: def check_prime_five_nines(n):
+% ....:     r = []
+% ....:     flag = True
+% ....:     for i in range(20):
+% ....:         a = randint(1, n-1)
+% ....:         x = mod(a^(n-1), n)
+% ....:         if x == 1:
+% ....:             r.append(" a="+str(a)+" a^{n-1} (mod n)="+str(x))
+% ....:         else:
+% ....:             flag = False
+% ....:             break
+% ....:     if flag:
+% ....:         print("\n".join(r))
+% ....:     return flag
+% ....: 
+% sage: i=0
+% sage: while True:
+% ....:     n = randint(10000, 99999)
+% ....:     print("i=",i,"  n=",n)
+% ....:     if check_prime_five_nines(n):
+% ....:         break
+% ....: 
+% i= 0   n= 21235
+% i= 0   n= 36086
+% i= 0   n= 54187
+% i= 0   n= 25879
+% i= 0   n= 16002
+% i= 0   n= 54371
+%  a=37447 a^{n-1} (mod n)=1
+%  a=29369 a^{n-1} (mod n)=1
+%  a=47375 a^{n-1} (mod n)=1
+%  a=51401 a^{n-1} (mod n)=1
+%  a=2653 a^{n-1} (mod n)=1
+%  a=13746 a^{n-1} (mod n)=1
+%  a=48449 a^{n-1} (mod n)=1
+%  a=42537 a^{n-1} (mod n)=1
+%  a=22586 a^{n-1} (mod n)=1
+%  a=17358 a^{n-1} (mod n)=1
+%  a=4735 a^{n-1} (mod n)=1
+%  a=20575 a^{n-1} (mod n)=1
+%  a=36573 a^{n-1} (mod n)=1
+%  a=37098 a^{n-1} (mod n)=1
+%  a=23463 a^{n-1} (mod n)=1
+%  a=21003 a^{n-1} (mod n)=1
+%  a=52525 a^{n-1} (mod n)=1
+%  a=24252 a^{n-1} (mod n)=1
+%  a=40850 a^{n-1} (mod n)=1
+%  a=19354 a^{n-1} (mod n)=1
 \end{example}
 
-The RSA algorithm also uses this offshoot of Fermat's Little Theorem.
+% The RSA algorithm also uses this offshoot of Fermat's Little Theorem.
 
-\begin{corollary}
-Let $p$ and~$q$ be unequal primes and
-suppose that $a$ is not divisible by either.
-Then $a^{(p-1)(q-1)}\equiv 1\pmod{n}$.
-\end{corollary}
+% \begin{corollary}
+% Let $p$ and~$q$ be unequal primes and
+% suppose that $a$ is not divisible by either.
+% Then $a^{(p-1)(q-1)}\equiv 1\pmod{n}$.
+% \end{corollary}
 
-\begin{proof}
-By Fermat, $a^{p-1}\equiv 1\pmod{p}$ and $a^{q-1}\equiv 1\pmod{q}$.
-Raise the first to the $q-1$ power and the second to the $p-1$ power,
-giving
-%\begin{equation*}
-  $a^{(p-1)(q-1)}\equiv 1\pmod{p}$
-  and
-  $a^{(p-1)(q-1)}\equiv 1\pmod{q}$.
-%\end{equation*}
-Since  $a^{(p-1)(q-1)}-1$ is divisible by both $p$ and~$q$,
-it is divisible by their product $pq=n$.
-\end{proof}
+% \begin{proof}
+% By Fermat, $a^{p-1}\equiv 1\pmod{p}$ and $a^{q-1}\equiv 1\pmod{q}$.
+% Raise the first to the $q-1$ power and the second to the $p-1$ power,
+% giving
+% %\begin{equation*}
+%   $a^{(p-1)(q-1)}\equiv 1\pmod{p}$
+%   and
+%   $a^{(p-1)(q-1)}\equiv 1\pmod{q}$.
+% %\end{equation*}
+% Since  $a^{(p-1)(q-1)}-1$ is divisible by both $p$ and~$q$,
+% it is divisible by their product $pq=n$.
+% \end{proof}
 
 % \begin{definition}
 % \definend{Euler's totient function} or \definend{Euler's phi function}
@@ -17372,7 +17420,7 @@ it is divisible by their product $pq=n$.
 % For large key sizes, more than $1024$ bits, we know of no efficient method for
 % this.
 
-Experts think that the most likely attack on RSA encryption is by
+Experts think that the most likely attack on RSA encryption is
 factoring the modulus~$n$.
 Anyone who factors~$n$ can use the same method as the
 RSA key setup process to turn the encrypter~$e$
@@ -17381,12 +17429,11 @@ That's why~$n$ is taken to be the product of two large primes; it makes
 factoring as hard as possible.
 
 There is a factoring algorithm that takes only $\bigOh(b^3)$~time
-(and $\bigOh((b)$~space), called
-Shor's algorithm. 
+(and $\bigOh((b)$~space), called Shor's algorithm. 
 But it runs only on quantum computers.
-At this moment no such computers have been buit that are capable
+At this moment no such computers have been built that are capable
 of cracking these problems, although there has been progress on that.
-So for the moment, RSA seems safe.
+So at least right now, RSA seems safe.
 (If needed, there are schemes that could replace it that are quantum computation
 resistant.)
 
@@ -17436,7 +17483,7 @@ $43$, $47$, $53$, $59$, $61$, $67$, $71$, $73$, $79$, $83$, $89$, and~$97$.
 % 97
 % sage: x
 % 101
-end{exercise}
+\end{exercise}
 
 \recommended
 \begin{exercise}

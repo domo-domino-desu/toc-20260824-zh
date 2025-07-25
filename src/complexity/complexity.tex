@@ -17016,7 +17016,7 @@ long time.
 To illustrate how the calculations can be done quickly,
 we will go through testing for primality. 
 
-We begin by stating a classic, beautiful, result from Number Theory.
+We begin with a classic, beautiful, result from Number Theory.
 
 \begin{theorem}[Prime Number Theorem]
 The number of primes less than $n\in\N$ is approximately
@@ -17077,10 +17077,9 @@ and $52\,567\,004\equiv 2\pmod{3}$ we have this.
 % Putting \pmod inside equation* without the \text{$ ... $} is too much hspace 
 \begin{equation*}
   \textstyle 3\,915\,421\cdot 52\,567\,004 
-  \equiv 1\cdot 2\pmod{3} 
-  % \equiv 2\pmod{3} 
+  \equiv 1\cdot 2
+  \equiv 2\pmod{3}  
 \end{equation*}
-So the answer is~$2$.
 \end{example}
 
 Similarly, exponentiation modulo $m$ is also efficient,
@@ -17330,11 +17329,12 @@ very much time.
 \begin{example}
   Suppose that we want a five-digit prime.
   We generate some five-digit numbers at random, and after a couple of
-  non-primes we get $n=82\,721$.
+  non-primes we get $n=54,371$.
   Generating random $a$'s less than~$n$ gives
-  $23865^{82720}\equiv 1\pmod{82721}$,
-  and $34457^{82720}\equiv 1\pmod{82721}$,
-  and $1699^{82720}\equiv 1\pmod{82721}$, etc.
+  $37447^{54370}\equiv 1\pmod{543711}$,
+  and $29369^{54370}\equiv 1\pmod{543711}$,
+  and $2653^{54370}\equiv 1\pmod{543711}$,
+  etc.
   After twenty $a$'s we are $99.999\%$ sure that~$n$ is prime.
 % sage: def check_prime_five_nines(n):
 % ....:     r = []
@@ -17384,6 +17384,8 @@ very much time.
 %  a=24252 a^{n-1} (mod n)=1
 %  a=40850 a^{n-1} (mod n)=1
 %  a=19354 a^{n-1} (mod n)=1
+% sage: is_prime(54371)
+% True
 \end{example}
 
 % The RSA algorithm also uses this offshoot of Fermat's Little Theorem.
@@ -17411,7 +17413,6 @@ very much time.
 % \definend{Euler's totient function} or \definend{Euler's phi function}
 % is $\phi(n)=\text{the number of natural numbers in $set{1,\ldots,\,n-1}$ that are relatively prime to~$n$}$.
 % \end{definition}
-
 
 % The RSA algorithm raises a message to an exponent, modulo a composite
 % number~$N$ whose factors are not known to an attacker.
@@ -17493,19 +17494,34 @@ We can walk through an RSA calculation.
 For the primes, take $p=11$, $q=13$.
 Find $n=pq$ and~$\varphi(n)=(p-1)\cdot(q-1)$.
 \item
-For the the encoder~$e$ use the smallest prime $1<e<\varphi(n)$
+For the the encoder~$e$ pick a number $e\in\open{0}{\varphi(n)}$
 that is relatively prime with~$\varphi(n)$.
 \item
-Find the decoder~$d$, the multiplicative inverse of $e$ modulo~$n$.
-(You can uses Euclid's algorithm, or just test the candidates.)
+Find the decoder~$d$, the multiplicative inverse of $e$ modulo~$\phi(n)$.
+(Either use Euclid's algorithm or just test the candidates.)
 \item Take the message to be represented as the number~$m=9$.
 Encrypt it and decrypt it.
 \end{exparts*}
 \begin{answer}\verified
 \begin{exparts}
-\item $n=pq=134$, $(p-1)\cdot(q-1)=120$
-\item Use $e=7$ (the prior three $2$, $3$, and~$5$ are not relatively prime).
-\item The multiplicative inverse of $e=7$ modulo~$n=134$ is $d=103$.
+\item We have $n=pq=11\cdot 13=143$ and $(p-1)\cdot(q-1)=10\cdot 12=120$
+\item Many choices are possible.
+  Here we will use $e=7$.
+\item
+  Euclid's algorithm finds that the greatest common divisor is~$1$ in two lines.
+  \begin{align*}
+    120 &=7\cdot 10+1  \\
+    7   &=1\cdot 7+0   
+  \end{align*}
+  Rewrite so that the greatest common divisor is a linear combination
+  of the two.
+  \begin{equation*}
+    1 =120+7(-17)  
+  \end{equation*}
+  Taking both sides modulo~$120$ gives $7\cdot (-17)\equiv 1\bmod{120}$.
+  So, modulo~$120$, the multiplicative inverse of~$7$ is~$120-17=103$.
+  % sage: mod(7*103, 120)
+  % 1
 \item The encryption is $m^e\bmod{n}=9^7\bmod{143}=48$.
   The decryption is $48^{103}\bmod{143}=9$.
 \end{exparts}
@@ -17547,8 +17563,8 @@ $k=\sqrt{n}$.
 The square root of $10^{12}$ is $10^6=1\,000\,000$, a million.
 \item
 The input~$n$ has size about $\lg(n)$~bits.
-Thus $\sqrt{n}\approx\sqrt{2^{\text{number digits of $n$}}}
-  \approx 2^{(1/2)\cdot\text{number digits of $n$}}$.
+Thus $\sqrt{n}\approx (2^{\text{number digits of $n$}})^{1/2}
+  \approx 2^{(1/2)\cdot\text{number digits of $n$}}$\!.
 \end{exparts}
 \end{answer}
 \end{exercise}
@@ -17678,7 +17694,8 @@ It uses a graph that is sure to have a solution, and then we display the
 solution as an adjacency matrix.
 For more, see the documentation.
 
-\noindent\begin{minipage}{\textwidth}
+\begin{center}
+\begin{minipage}{0.6\textwidth}
 \noindent
 \begin{lstlisting}
 sage: g = graphs.HeawoodGraph()
@@ -17698,6 +17715,8 @@ sage: tsp.adjacency_matrix()
 [0 0 0 0 0 0 1 0 0 0 0 0 1 0]
 \end{lstlisting}
 \end{minipage}
+ \qquad\vcenteredhbox{\includegraphics{\asydir problems/problems56.pdf}}%   
+\end{center}
 A wonderful overview talk, 
 \href{https://www.youtube.com/watch?v=q8nQTNvCrjE}{\textit{Information, Computation, Optimization \ldots{}} by W~Cook} is available online; see \autocite{JMMCookTSP}.
 

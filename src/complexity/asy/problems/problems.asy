@@ -3801,3 +3801,68 @@ shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
 
 
 
+// ============== Heawood graph ===========
+int picnum = 56;
+picture pic;
+setdefaultgraphstyles();
+defaultlayoutrel = false;
+
+node n0=ncircle("$0$"),
+    n1=ncircle("$1$"),
+    n2=ncircle("$2$"),
+    n3=ncircle("$3$"),
+    n4=ncircle("$4$"),
+    n5=ncircle("$5$"),
+    n6=ncircle("$6$"),
+    n7=ncircle("$7$"),
+    n8=ncircle("$8$"),
+    n9=ncircle("$9$"),
+    n10=ncircle("$10$"),
+    n11=ncircle("$11$"),
+    n12=ncircle("$12$"),
+    n13=ncircle("$13$");
+
+node[] n={n13, n12, n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n0};
+
+// calculate nodes position
+real u=1.40cm;
+real v=0.5*u;
+defaultlayoutskip=u;
+
+circularlayout(u, startangle=90+(360/13), n);
+
+// draw edges
+draw(pic,
+     (n0--n1),
+     (n1--n2),
+     (n2--n3),
+     (n3--n4),
+     (n4--n5),
+     (n5--n6),
+     (n6--n7),
+     (n7--n8),
+     (n8--n9),
+     (n9--n10),
+     (n10--n11),
+     (n11--n12),
+     (n12--n13),
+     (n13--n0),
+     (n0--n5),
+     (n1--n10),
+     (n2--n7),
+     (n3--n12),
+     (n4--n9),
+     (n6--n11),
+     (n8--n13)
+);
+
+// draw nodes, after edges
+draw(pic,
+     n0, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13
+     );
+
+shipout(format(OUTPUT_FN,picnum),pic,format="pdf");
+
+
+
+

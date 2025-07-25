@@ -17649,8 +17649,11 @@ to solve except for extremely small inputs.
 
 \margingraphic[l]{0.4\textwidth}{complexity/pix/london.png}{\label{fig:london}\href{http://www.math.uwaterloo.ca/tsp/pubs/index.html}{London pubs, via Google Earth}} %
 An $\NP$ complete problem for which there are 
-very capable
-algorithms is the \probname{Traveling Salesman} 
+very
+\citetext{capable algorithms}{%
+  A wonderful overview talk, 
+  \href{https://www.youtube.com/watch?v=q8nQTNvCrjE}{\textit{Information, Computation, Optimization \ldots{}} by W~Cook} is available online; see \autocite{JMMCookTSP}.}
+is the \probname{Traveling Salesman} 
 problem.\index{Traveling Salesman problem@\probname{Traveling Salesman} problem}
 % (The next extra section covers another such problem, $\SAT$.)
 We can in a reasonable time find solutions 
@@ -17716,13 +17719,11 @@ sage: tsp.adjacency_matrix()
 \end{minipage}
  \qquad\vcenteredhbox{\includegraphics{\asydir problems/problems56.pdf}}%   
 \end{center}
-% A wonderful overview talk, 
-% \href{https://www.youtube.com/watch?v=q8nQTNvCrjE}{\textit{Information, Computation, Optimization \ldots{}} by W~Cook} is available online; see \autocite{JMMCookTSP}.
 
 In summary, 
 even though the theory says that a problem is hard does not mean it
 that it cannot be solved for at least some non-toy instances.
-The next Extra section makes the same point, for the \SAT problem.
+The next Extra section makes the same point, for the \SAT{} problem.
 
 \begin{exercises}
 \begin{exercise}
@@ -17733,11 +17734,12 @@ are very slow.
 So for an input of $100$ vertices 
 you may already have to wait hundreds of years.''
 \begin{answer}\verified
-The main point relevant to this section is that for an
-input as small as size $100$ we have very capable solvers,
-which will return the answer quite quickly.
+The main point relevant to this section is that for this problem
+we have very capable solvers,
+which will return the answer to even moderately large problems
+quite quickly on even a modest machine.
 The fact that a problem is $\NP$ hard does not mean that
-most of its instances are slow to solve.
+most of its not-too-large instances are slow to solve.
 \end{answer}
 \end{exercise}
 
@@ -17751,7 +17753,7 @@ There are $n!$ circuits.
 
 \begin{exercise}
 Use the exhaustive search of all possible circuits to 
-find the shortest Traveling Salesman Problem solution for a circuit involving
+find the shortest Traveling Salesman Problem solution for
 the graph below.
 \begin{center}
   \includegraphics{complexity/asy/problems/problems45.pdf}
@@ -17792,7 +17794,7 @@ See \figureref{fig:ExhaustiveSearchTSP}.
   $v_{3}$-$v_{2}$-$v_{0}$-$v_{1}$ &$4$ &$2$ &$3$ &$5$ &$14$   \\
   $v_{3}$-$v_{2}$-$v_{1}$-$v_{0}$ &$4$ &$1$ &$3$ &$7$ &$15$   \\
 \end{tabular}
-\quad
+\hspace*{3em}
   \vcenteredhbox{\includegraphics{complexity/asy/problems/problems45.pdf}}
 
     \caption{An exhaustive search for the \probname{Traveling Salesman} problem.}
@@ -17835,7 +17837,7 @@ Our touchstone hard problem is $\SAT\!$.
 This section 
 demonstrates a 
 \definend{$\SAT$ solver},\index{SAT solver@$\SAT$ solver}
-and uses that as an oracle to solve others.
+and uses that solver as an oracle to solve other problems.
 
 A problem reduction $\prob_1\leq_p\prob_0$ gives a way to transfer problem 
 domains, 
@@ -17860,14 +17862,13 @@ for $\prob_1$ we will use Soduku.
   \hline
 \end{tabular}
 \end{center}
-In case it is unfamiliar,
-the popular Soduku puzzle 
+The Soduku puzzle 
 starts with a 9-by-9 array, with some of the cells 
 already filled in.
 An example is above.
-Players solve it by filling in the blanks while satisfying th3
-restrictions that every row, column, and subsquare must contain 
-each of the numbers $1$--$9$ once and only once. 
+Players solve it by filling in the blanks while satisfying the
+restrictions that each row, column, and each of the nine subsquares
+must contain all of the numbers $1$--$9$ once and only once. 
 
 As to how hard the problem is,
 % if we restrict our attention to the $9\times 9$ puzzle only then there are
@@ -17883,13 +17884,13 @@ we describe how a solution algorithm's use of some resource grows
 with the input size.
 So we reframe the problem to allow instances of
 different input sizes.
-The natural way to generalize the puzzle is:~instead of eighty one
+The natural way is:~instead of eighty one
 variables $x_{1,1}, \ldots{}\, x_{9,9}$ 
 we could use an arbitrary number,  $x_1, \ldots{}\, x_n$. 
 Instead of those variables taking on $1$--$9$, they could take on
 a value in $1$--$k$
 (we can call these `colors'). 
-And, in place of rows, columns, and subsquares that are driven by the 
+And, in place of size-$9$ rows, columns, and subsquares that are driven by the 
 geometry, 
 a problem instance could have arbitrary sets,  
 $S\subseteq \set{x_1,\ldots\, x_n}$ of size~$k$. 
@@ -17904,8 +17905,8 @@ we can show that
 % Thus we can fairly consider this problem to
 % be quite hard.
 
-However, having noted this generalization, here we limit our attention to
-the traditional $9\times 9$ board.
+However, having noted this generalization, in this discussion
+we limit our attention to the traditional $9\times 9$ board.
 
 To solve puzzle instances using the $\SAT$ solver as an oracle we
 need a reduction $\probname{Soduku}\leq_p\SAT\!$.
@@ -17926,12 +17927,27 @@ $(x_1\vee x_2\vee \neg x_3)\wedge x_4\wedge (\neg x_2\vee x_3)$.
 % behavior; 
 More is in \zcref{sec:PropLogic}.
 
-The $\SAT$ solver that we use needs its input file
-formatted to a standard called DIMACS.
+The $\SAT$ solver program that we will use needs its input file
+formatted to a standard called
+% \citetext{DIMACS}{%
+%  This file format is for ASCII input.
+%  (1)~The file may begin with comment lines. The first character of each comment line must be a lower case letter `c'. Comment lines typically occur in one section at the beginning of the file, but are allowed to appear throughout the file.
+%  (2)~The comment lines are followed by the problem line. This begins with a lower case `p' followed by a space, followed by the problem type, which for CNF files is `cnf', followed by the number of variables followed by the number of clauses.
+%  (3)~The remainder of the file contains lines defining the clauses, one by one.
+%  A clause is defined by listing the index of each positive literal, and the negative index of each negative literal. Indices are $1$-based, and for obvious reasons the index~$0$ is not allowed.
+%  (Each clause normally begins on a new line, but may follow, on the same line, the `0' that marks the end of the previous clause.)
+%  (4)~The definition of a clause may extend beyond a single line of text.
+%  (5)~The definition of a clause is terminated by a final value of `0'.
+%  (In some examples the final line does not end in `0'.)
+%  (Description slightly modified from \url{https://people.sc.fsu.edu/~jburkardt/data/cnf/cnf.html}.)
+% }.
+DIMACS.\footnote{%
+  This is the format used at the annual
+  \protect\href{https://satcompetition.github.io/}{International SAT Competition}.}
 This file format starts with comment lines, 
 with the initial character~\str{c}. 
 Next comes a problem line, which starts with a~\str{p},
-followed by a space and the problem type \str{cnf}, 
+followed by a space and a string giving the problem type \str{cnf}, 
 then followed by a space and the number of variables, 
 and then followed by a space and the number of clauses.
 After that line, the rest of the file consists of the clause descriptions.
@@ -17952,8 +17968,8 @@ row~$1$, column~$1$ entry, we will have a Boolean
 variable $x_{1,1,1}$, another variable $x_{1,1,2}$, etc., up to 
 $x_{1,1,9}$. 
 Only one of these nine will be \true\!. 
-The variable $x_{1,1,v}$ is \true{} if in our solution the number in 
-row $1$ and column $1$ is $v$. 
+The variable $x_{1,1,i}$ is \true{} if and only if in our solution the number in 
+row $1$ and column $1$ is~$i$. 
 % Otherwise this variable is \false.
 Thus, if for instance in the first row and first column the solution has the
 value~$5$ then $x_{1,1,5}$ is \true{} while all other $x_{1,1,i}$ are~\false\!.
@@ -18001,7 +18017,10 @@ x_{1,1,2}
 So the DIMACS format requires this corresponding list: 
 \str{( (1 1 2) (1 2 2) (1 3 2) (1 4 2) (1 5 2) (1 6 2) (1 7 2) (1 8 2) (1 9 2) )}. 
 The Racket code below produces expresses 
-all of the row restrictions with one such list for each row and value.
+all of the row restrictions with one such list for each row and
+value.\footnote{%
+  The Racket documentation is excellent and is the best reference for any
+  unfamiliar operators.}
 \begin{center}
   \lstinputlisting[firstline=104,lastline=115]{\satsolverfile soduku-dimacs.rkt}
 \end{center}

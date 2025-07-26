@@ -305,7 +305,7 @@ setdefaultflowchartstyles();
 
 // define nodes
 // node start=nroundbox("Start");
-// node read=nbox("Read $\sigma$");
+// node read=nbox("Read $\tau$");
 // node guess=nbox("Guess $\omega$");
 // node test=nrounddiamond("$V(\sigma,\omega)$ accepts?");
 // node yesbox=nbox("Halt");
@@ -319,7 +319,8 @@ setdefaultflowchartstyles();
 // real v = 0.85*u;
 
 vlayout(1.15*v,start,guess);
-vlayout(1.5*v,guess,test);
+// vlayout(1.15*v,read,guess);
+vlayout(1.5*v,read,test);
 vlayout(0.75*v,test,dummy);
 hlayout(-3.1*u,dummy,yesbox);
 hlayout(3.1*u,dummy,nobox);

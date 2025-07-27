@@ -112,7 +112,7 @@ real v = 0.85*u;
 vlayout(1.15*v,start,read);
 vlayout(1.15*v,read,compute);
 vlayout(1.40*v,compute,test);
-vlayout(1.15*v,test,dummy);
+vlayout(0.80*v,test,dummy);
 hlayout(-4.25*u,dummy,printyes);
 hlayout(4.25*u,dummy,printno);
 

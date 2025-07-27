@@ -348,8 +348,8 @@ setdefaultflowchartstyles();
 node start=nroundbox("Start");
 node read=nbox("Read $\mathcal{G},v_0,v_1$");
 node convert=nbox("Convert to weighted graph $\hat{\mathcal{G}}$");
-node oracle=nbox("Solve Shortest Path on $\hat{\mathcal{G}},v_0,v_1$ with $B=\sizeof{\mathcal{G}}$");
-node test=nrounddiamond("Path exists?");
+node oracle=nbox("Take $B=\sizeof{\mathcal{G}}$");
+node test=nrounddiamond("$\sequence{\hat{\mathcal{G}},v_0,v_1}\in\lang_B$?");
 node printzero=nbox("Print 0");
 node printone=nbox("Print 1");
 node dummy=nbox("");  
@@ -365,8 +365,8 @@ vlayout(1.25*v,read,convert);
 vlayout(1.25*v,convert,oracle);
 vlayout(1.40*v,oracle,test);
 vlayout(1.15*v,test,dummy);
-hlayout(-2.25*u,dummy,printzero);
-hlayout(2.25*u,dummy,printone);
+hlayout(3.25*u,dummy,printzero);
+hlayout(-3.25*u,dummy,printone);
 
 // draw edges
 draw(pic,
@@ -374,8 +374,8 @@ draw(pic,
      (read--convert),
      (convert--oracle),
      (oracle--test),
-     (test..HV..printzero).l("N"),
-     (test..HV..printone).l("Y").style("leftside")
+     (test..HV..printzero).l("N").style("leftside"),
+     (test..HV..printone).l("Y") 
 );
 
 // draw nodes

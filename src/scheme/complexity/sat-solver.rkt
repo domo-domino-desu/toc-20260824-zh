@@ -2,7 +2,7 @@
 ;;;; sat-solver.rkt
 
 ;; (require SAT)
-(require "soduku-dimacs.rkt")
+(require "sudoku-dimacs.rkt")
 
 (define (solution-triples solution)
   (map varnum->triple (hash-keys solution)))
@@ -34,7 +34,7 @@
           [data-line (read-line input-port)])
       (list head-line data-line)))
   
-  (call-with-input-file "soduku.out" get-two-lines))
+  (call-with-input-file "sudoku.out" get-two-lines))
 
 (define (process-minisat-output pr)
   (let* ([data-line (second pr)]

@@ -1,6 +1,6 @@
 #lang racket
-;;;; soduku-dimacs.rkt
-;;;;  Write a DIMACS file for the standard 9x9 Soduku puzzle
+;;;; sudoku-dimacs.rkt
+;;;;  Write a DIMACS file for the standard 9x9 Sudoku puzzle
 (require racket/date)
 (date-display-format 'iso-8601)
 
@@ -146,7 +146,7 @@
 
 ;; ======= write to file =======
 ;; FILENAME  Name of the output file
-(define FILENAME "soduku.cnf")
+(define FILENAME "sudoku.cnf")
 
 ;; CLAUSES  The list of clauses.
 

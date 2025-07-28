@@ -6350,7 +6350,7 @@ the optimization problem in polytime,
 namely time~$\bigOh(n^{k+1})$.
 
 Sometimes it is convenient
-to recast using the bound as a parameter, as in the prior example.
+to recast using the bound as a parameter.
 % such as if we
 % want to know whether there is a Traveling Salesman path through the US lower 48
 % state capitals of total length at most $B=10\,000$.
@@ -6362,43 +6362,6 @@ But sometimes it is convenient to instead consider all of the bounds at once.
   \lang=\set{\sequence{\mathcal{G},B}\suchthat\text{the graph has a circuit of length at most $B$}}
 \end{equation*}
 
-% Our last example is a preview of the work that we will do later in the chapter
-% to relate one problem to another.
-
-% \begin{example}
-% Consider the 
-% \definend{\probname{Satisfying Assignment}}\index{Satisfying Assignment problem@\probname{Satisfying Assignment} problem} 
-% problem 
-% that takes in a Boolean expression $E(P_0,P_1\ldots P_k)$ 
-% and returns an assignment of truth values for $P_0$, $P_1$, \ldots{} $P_k$
-% that makes $E$ evaluate to \true\!, or returns a flag
-% if there is no such assignment.
-% This is a search problem in that there may be many such assignments
-% but we stop if we find even one.
-
-% We will show that this problem is equivalent to the 
-% \probname{Satisfiability} language decision problem\index{Satisfiability problem@\probname{Satisfiability} problem}
-% in this sense:~if we could solve one in polytime
-% then we could also solve the other in polytime.
-% The easy direction is that if we had an algorithm that solves 
-% \probname{Satisfying Assignment} in polytime 
-% then given an expression~$E$
-% we can apply that algorithm to it and know in polytime 
-% whether $E$ is satisfiable.
-
-% For the other direction suppose that we have a polytime algorithm for 
-% $\SAT$.
-% Given an expression~$E$, 
-% apply $\SAT$'s algorithm to determine whether $E$ is satisfiable at all.
-% If so then we need to return an assignment.
-% First fix $P_0$ at \false{} and run $\SAT$'s algorithm.
-% If $E(P_0=\false,P_1,P_2\ldots P_k)$ is not satisfiable then
-% our assignment needs $P_0=\true$, and otherwise $P_0=\false$ suffices.
-% Now with a suitable $P_0$ we iterate, next fixing $P_1=\false$, etc.
-% This builds an assignment by wrapping a loop of length~$k$ around
-% the polytime algorithm for $\SAT$, and therefore the
-% algorithm as a whole is polytime.
-% \end{example}
 
 One more point.
 Some shifts between problem types are not as smooth as the ones
@@ -6420,8 +6383,7 @@ just asks us to
 plug $r$ into~$p$. 
 That
 does not
-capture the essential difficulty, which is to 
-produce the root in the first place.
+capture the starting problem's essential difficulty.
 
 
 
@@ -6434,10 +6396,12 @@ For instance, if we state a problem
 as:~`\citetext{input two numbers and output their average}{% 
   See \protect\url{https://hal.archives-ouvertes.fr/file/index/docid/576641/filename/computing-midpoint.pdf}.}'
 then we have not fully specified what needs to be done.
-% The input or output might use 
-% strings representing decimal numbers, 
-% or might be floating point representations,
-% or even might be integers written in unary.
+
+\ifbool{MakingPaperCopy}{
+The input or output might use 
+strings representing decimal numbers, 
+or might be floating point representations,
+or integers written in unary.
 % \footnote{%
 % % where the number $n$ is represented with $n$-many \str{1}'s.
 %   An experienced programmer may have the reaction that unary is
@@ -6451,11 +6415,11 @@ then we have not fully specified what needs to be done.
 %   suited our purpose when we simply wanted to illustrate
 %   Turing machines.
 %   In any event, it certainly is possible.}
-% % Or we could specify something more exotic
-% % such as putting the sequence numbers as 
-% % powers of primes, so that~$\sequence{2,1,3}$ becomes 
-% % the single number $2^23^15^3=1500$ and then we represent that in a string of
-% % decimal digits.
+Or we could specify something more exotic
+such as putting the sequence numbers as 
+powers of primes, so that~$\sequence{2,1,3}$ becomes 
+the single number $2^23^15^3=1500$ and then we represent that in a string of
+decimal digits.
 
 % Typically in practice the costs of different representations
 % don't change the Big~$\bigOh$ runtime behavior.
@@ -6465,8 +6429,8 @@ then we have not fully specified what needs to be done.
 % such as where inputting takes $\bigOh(n)$ time,
 % that leaves the algorithm analysis conclusion unchanged
 % at~$\bigOh(n\lg n)$.
-
-
+}{%
+}
 \ifbool{MakingPaperCopy}{}{%
   \margingraphic{0.22\textwidth}{complexity/pix/norm.png}{\label{fig:xkcdnorm}\href{https://xkcd.com/2116/}{Courtesy \url{xkcd.com}}} }
 The representation  
@@ -6479,13 +6443,12 @@ if and only if in its
 \citetext{final two bits are \str{00}}{%
   Decimal representation is not much harder since
   a decimal number is divisible by four if and only if the final two digits
-  are in the set $\set{\str{00},\str{04}, \,\ldots\,\str{96}}$.}.\footnote{%
-    On a Turing machine, 
-    if the machine starts with its I/O head under
+  are in the set $\set{\str{00},\str{04}, \,\ldots\,\str{96}}$.}.\footnote{% 
+    If a Turing machine starts with its I/O head under
     the final character then the machine only needs to read the final two 
     characters.
-    This is notable because it is an algorithm for a
-    nontrivial problem that comes to a decision without reading its
+    This is notable because it an algorithm for a
+    nontrivial problem that does not read its
     entire input.
     Its runtime is constant, $\bigOh(1)$.
   }
@@ -6500,20 +6463,41 @@ if we have an algorithm for one representation
 then we can solve the problem for others by translating.
 For example, 
 we could do the divisible-by-four problem with unary input by converting
-to binary and then applying the binary algorithm.\footnote{%
-  That is, the unary case reduces to the binary one.}
+to binary and then applying the binary algorithm.
+That is, the unary case reduces to the binary one.
 
-One thing that changing 
-the representation can significantly change is the run time.
+\ifbool{MakingPaperCopy}{%
+    In practice there one case to be careful of where 
+    the choice of representations can significantly affect runtime.
+    Recall that a numeric algorithm runs in 
+    pseudopolynomial time\index{pseudopolynomial time}
+    if its runtime is a polynomial in the value of the input
+    but not in the length of that input.
+  }{%
+  In practice there is one way to be wary of where changing 
+  the representation can significantly change the run time.
+}
 Suppose that a Turing machine inputs and outputs numbers.
 If the input representation is binary and the output representation is unary
 then the time that the machine takes is exponential in the input size,
 just from the time to write output to the tape.\label{disc:BinaryInputUnaryOutputRunsExp}
-
+\ifbool{MakingPaperCopy}{%
+    \par
+    The canonical example is testing a number~$n$ for primality.
+    If we do the natural algorithm and try dividing~$n$ by every number
+    from $2$ to $\floor{\sqrt{n}}$ then there are two possibilities for
+    the Big-$\bigOh$.
+    If the input is represented in unary then this algorithm is linear in the
+    size of the input.
+    But if the input is in binary then its length is about $\lg(n)$, and the
+    the runtime is exponential in the size of the input.
+  }{%
+  }
+  
 However, if we are circumspect about representations 
 then we usually will not see something like exponential blowup.
-Most notably, our default is to represent integers in binary 
-and rational numbers as pairs of integers.
+% Most notably, our default is to represent integers in binary 
+% and rational numbers as pairs of integers.
 % the representation details do not affect the outcome of the analysis,
 % much.\footnote{%
 %   A caveat:~we have seen that 
@@ -6554,8 +6538,7 @@ Outside of this section, we also will usually do this.
 % \citetext{leaving implementation details to a programmer}{%
 %   \autocite{article:MarsOrbiter}}.
 
-With these reflections in mind we will take the view,
-which we call \definend{Lipton's Thesis},\index{Lipton's Thesis} that 
+We will take the view that 
 \citetext{everything of interest can be represented with reasonable efficiency by bitstrings}{%
   See
   \url{https://rjlipton.wordpress.com/2010/11/07/what-is-a-complexity-class/}.
@@ -6572,8 +6555,10 @@ which we call \definend{Lipton's Thesis},\index{Lipton's Thesis} that
   or regulate pressure in a rocket fuel tank, all in bitstrings,
   even though at first encounter these seem to be the inherently 
   analog.}.\footnote{%
-  `Reasonable' means that it is not so inefficient as to greatly
-  change the big-$\bigOh$ behavior.}\index{representation, of a problem}
+    In this book  we call this
+    \protect\definend{Lipton's Thesis}.\protect\index{Lipton's Thesis}
+    `Reasonable' means that it is not so inefficient as to greatly
+    change the big-$\bigOh$ behavior.}\index{representation, of a problem}
 This applies to 
 all of the mathematical problems stated earlier.
 But it also applies to cases that may seem less natural, such as that we 
@@ -10710,8 +10695,8 @@ by following the instructions before \zcref{exer:GraphColoringisNP}.
 
 \begin{exercise}\label{exer:PartitionisNP}
   The \probname{Partition} problem\index{Partition problem@\probname{Partition} problem} 
-  starts with a finite multiset~$A$ of natural numbers,
-  decide if~$A$ splits into sub-multisets
+  starts with a finite multiset~$A$ of natural numbers and
+  decides whether~$A$ splits into sub-multisets
   $\hat{A},A-\hat{A}$ whose elements total to the same number,
   $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
   Prove that it is in $\NP$
@@ -14328,14 +14313,22 @@ First we note that this problem is in $\NP$.
 As the witness we can use the $k$-bit string~$\omega$ such that $\omega[i]=1$ 
 if $s_i$ is in the knapsack~$K$ and $\omega[i]=0$ if it is not.
 A deterministic machine can verify this witness in polynomial
-time since it only has to total the weights and values
-of the elements of~$K$.
+time since it only has to total the weights and values of the elements of~$K$.
 
-To finish
-consider the special case of the \probname{Knapsack} problem 
+\ifbool{MakingPaperCopy}{%
+  To finish recall the \probname{Partition} problem,
+  which starts with a finite multiset~$A$ of natural numbers and
+  decides whether~$A$ splits into sub-multisets
+  $\hat{A},A-\hat{A}$ whose elements total to the same number,
+  $\sum_{a\in\hat{A}}a=\sum_{a\notin\hat{A}}a$.
+  Consider
+}{%
+  To finish consider
+}
+the special case of the \probname{Knapsack} problem 
 where $w(s_i)=v(s_i)$ for all~$s_i\in S$, and where
 $B=T=0.5\cdot\sum_{0\leq i<k}w(i)$.
-Recognize this as an instance of the 
+This is an instance of the 
 \probname{Partition}\index{Partition problem@\probname{Partition} problem} 
 problem, which is in the above basic list.
 Since any instance of \probname{Partition} can be expressed as a
@@ -14349,7 +14342,7 @@ reduction function~$f$ so that
 the behavior of its input instance's fundamental
 units is simulated by 
 subpart of its output instance.
-Such a construct is 
+Such a construct is called a
 \citetext{a \definend{gadget}}{%
   See \url{https://cs.stackexchange.com/a/1249/50343} from the 
   Computer Science Stack Exchange user JeffE.}.\index{gadget!in complexity arguments}
@@ -14396,10 +14389,10 @@ The gadget is below.\index{gadget!example of}
 It simulates one clause in the input expression,
 $a\vee b\vee c$ 
 (these variables represent literals 
-so each could be a Boolean variable $P_i$ or its negation $\neg P_i$).
+so each could be a Boolean variable~$P_i$ or its negation~$\neg P_i$).
 
 At the top are nodes labeled $T\!$, $F\!$, and~$G$.
-If the graph is to be $3$-colored then 
+For the graph to be $3$-colored,  
 no two nodes in this triangle can have the same color.
 At the gadget's bottom it is connected to nodes labeled $a$, $b$, and~$c$.
 They are connected to~$G$ and consequently each of these three
@@ -14407,7 +14400,7 @@ must have either the color of node~$T$ or the color of node~$F\!$.
 We will verify that this gadget is $3$-colorable if and only if 
 nodes $a$, $b$, and~$c$ are not all the color of~$F$ 
 (just as the clause $a\vee b\vee c$ is \true{} if and only if
-not all of its literals are \false).
+not all of its literals are~\false).
 \begin{equation*}
   \vcenteredhbox{\includegraphics{complexity/asy/complexity/complexity41.pdf}}
   \tag{$*$}
@@ -18527,19 +18520,18 @@ $f(\sigma)=\sequence{ s(e_0,\sigma), p(\lh{\sigma}) }\in\lang_0$, as required.
 %<*disc:CookLevini>
 The hard half of proving the Cook-Levin Theorem, \zcref{th:CookLevin},
 is showing that if $\prob\in\NP$ then $\prob\leq_p\SAT$.
-\citetext{We will prove that here}{%
-  This is derived from the proof in \autocite{GareyJohnson}.}.
-We will describe a reduction function that
-inputs the string $\sigma\in\kleenestar{\Sigma}$
+Here 
+\citetext{we will describe a reduction function}{%
+  This is derived from the proof in \autocite{GareyJohnson}.}
+that inputs a string~$\sigma$
 and outputs a Propositional Logic expression,
-such that $\sigma$ is a member of $\lang$ if
+such that $\sigma\in\lang$ if
 and only if the expression is satisfiable.
 
 The language~$\prob$ is decided
 by a nondeterministic machine~$\TM$ in time given by a polynomial~$p$.
-The reduction function will in part depend on the machine so 
-we will denote the function as~$f_{\TM}$.
-The model of nondeterministic computation that we will use is that,
+We will denote the reduction function as~$f_{\TM}$.
+Our model of nondeterministic computation will be that,
 given input~$\sigma$,
 the machine guesses a path through the computation tree and then
 verifies that guess in time $p(\sizeof{\sigma})$.

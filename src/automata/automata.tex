@@ -12829,13 +12829,13 @@ a deterministic machine that is \definend{minimal},
 that from among all of the machines recognizing the same
 language has the fewest states.\footnote{%
   Moore's algorithm is easy to understand and is suitable for
-  small calculations but there is another,
-  \protect\citetext{Hopcroft's algorithm}{See \protect\autocite{Knuutila}}, 
-  that is more efficient.}
-  (The prior section, \protect\zcref{extra:MyhillNerode}, gives an algorithm
-  that starts with a language and returns the minimal machine recognizing
-  that language.
-  Here we start with a machine and needn't work through the language.)
+  small calculations but is not the most efficient one known.}
+  % \protect\citetext{Hopcroft's algorithm}{See \protect\autocite{Knuutila}}, 
+  % that is more efficient.}
+(The prior section, \protect\zcref{extra:MyhillNerode}, gives an algorithm
+that starts with a language and returns the minimal machine recognizing
+that language.
+Here we start with a machine and needn't work through the language.)
 
 % This algorithm works by collapsing together redundant states
 % so we begin with an example of those.
@@ -13083,12 +13083,10 @@ both are rejecting states.
 % represent the input class. 
 % \end{example}
 
-Moore's algorithm has two phases.
-The first finds the $\sim_0$ classes, 
+The first phase of Moore's algorithm finds the $\sim_0$ classes, 
 then the $\sim_1$ classes, etc.,
-in a sequence of steps.
-This phase ends with the $\sim$~classes.
-The second phase uses those as the states of the desired machine.
+in a sequence of steps, and ends with the $\sim$~classes.
+The second phase uses those as the states of the minimal machine.
 % Its transition function is:~compute
 % $\Delta(\eclass_i,x)$
 % by picking any element~$q\in\eclass_i$ as a
@@ -13097,10 +13095,9 @@ The second phase uses those as the states of the desired machine.
 % when it is in $q$ and reads the character~$x$,
 % and then as output giving the class containing that state. 
 
-From the definition the natural way to perform the first phase is:~to
-get the $\sim_0$ classes it could check all length~$0$ string inputs,
-to get the $\sim_1$ classes it could check all length~$1$ strings,
-then check all length~$2$ strings, etc.
+The natural way to perform the first phase is:~get
+the $\sim_0$ classes by checking all length~$0$ string inputs,
+get the $\sim_1$ classes by checking all length~$1$ strings, etc.
 % This algorithm does indeed return a minimal machine recognizing the
 % same language.
 % However, as performed in the above example it has one aspect
@@ -13857,8 +13854,7 @@ The other columns work the same way.
 Suppose that
 $\eclass_{0,0} =\set{q_0, q_1, q_2, q_5}$        
 and
-$\eclass_{0,1} =\set{q_3, q_4}$, and
-we compute this table.
+$\eclass_{0,1} =\set{q_3, q_4}$.
 \begin{center} \small
   \begin{tabular}{r|ll}
     \multicolumn{1}{c}{\ }
@@ -13897,6 +13893,22 @@ $\eclass_{1,0} =\set{q_0,q_5}$,
 and $\eclass_{1,1} =\set{q_1,q_2}$,         
 and $\eclass_{1,2} =\set{q_3,q_4}$        
 \end{exparts}
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+If a machine's start state is accepting, must the minimized machine's
+start state be accepting?
+If so then prove it, and if not then
+give an example machine where it is false.
+\begin{answer}\verified
+  The answer is ``yes.''
+  The initial state of the minimal machine is the one that 
+  contains~$q_0$.
+  In the minimized machine a state is accepting if and only if it contains any 
+  accepting states in the original machine.
+  So if $q_0$ is accepting then the minimal machine's initial state
+  is also accepting.
 \end{answer}
 \end{exercise}
 
@@ -13980,62 +13992,6 @@ gives this minimized one.
 \end{tabular}
 \hspace*{3em}\vcenteredhbox{\includegraphics{automata/asy/min/min08.pdf}}
 \end{display}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-For many machines we can find the unreachable states by eye,
-but there is an algorithm.
-It inputs a machine~$\FSM$ and initializes the set of reachable states
-to $R_0=\set{q_0}$.
-For $n>0$, step~$n$ of the algorithm is:~for each
-$q\in R_n$ find all states~$\hat{q}$ reachable from~$q$ in one transition
-and add those to make~$R_{n+1}$.
-That is, 
-$R_{n+1}=R_n\cup\set{\hat{q}=\Delta_{\FSM}(q,x)\suchthat\text{$q\in R_n$ and $x\in\Sigma$}}$.
-The algorithm stops when $R_k=R_{k+1}$ and the set of reachable states 
-is $R=R_k$.
-The unreachable states are the others, $Q-R$.
-For each machine, perform this algorithm.\\
-\begin{exparts*}
-\item \vcenteredhbox{\includegraphics{automata/asy/min/min11.pdf}}
-\item \vcenteredhbox{\includegraphics{automata/asy/min/min13.pdf}}
-\end{exparts*}
-\begin{answer}\verified
-  \begin{exparts}
-  \item These are the sets.
-  \begin{display}
-  \begin{tabular}{r|l}
-    \multicolumn{1}{c}{\tabulartext{Step $n$}}
-      &\multicolumn{1}{c}{$R_n$}
-    \\ \hline
-    $0$  &$\set{q_0}$  \\
-    $1$  &$\set{q_0,q_1}$  \\
-    $2$  &$\set{q_0,q_1,q_2}$  \\
-    $3$  &$\set{q_0,q_1,q_2}$  
-  \end{tabular}
-  \end{display}
-  Thus the set of reachable states is $R=\set{q_0,q_1,q_2}$.
-  The set of unreachable states is $Q-R=\set{q_3}$.
-  Here is the machine with only the reachable states.
-  \begin{display}
-    \vcenteredhbox{\includegraphics{automata/asy/min/min12.pdf}}
-  \end{display}
-  \item These are the sets.
-  \begin{display}
-  \begin{tabular}{r|l}
-    \multicolumn{1}{c}{\tabulartext{Step $n$}}
-      &\multicolumn{1}{c}{$R_n$}
-    \\ \hline
-    $0$  &$\set{q_0}$  \\
-    $1$  &$\set{q_0,q_1,q_3}$  \\
-    $2$  &$\set{q_0,q_1,q_3,q_4}$  \\  
-    $3$  &$\set{q_0,q_1,q_3,q_4}$  \\  
-  \end{tabular}
-  \end{display}
-  The set of reachable states is $R=R_2=\set{q_0,q_1,q_3,q_4}$.
-  The set of unreachable states is $Q-R=\set{q_2,q_5}$.
-  \end{exparts}
 \end{answer}
 \end{exercise}
 
@@ -14238,22 +14194,6 @@ Perform Moore's minimization algorithm on this machine.
   \hspace*{3em}
   \vcenteredhbox{\includegraphics{automata/asy/fsa/fsa80.pdf}}
 \end{display}
-\end{answer}
-\end{exercise}
-
-\begin{exercise}
-If a machine's start state is accepting, must the minimized machine's
-start state be accepting?
-If so then prove it, and if not then
-give an example machine where it is false.
-\begin{answer}\verified
-  The answer is ``yes.''
-  The initial state of the minimal machine is the one that 
-  contains~$q_0$.
-  In the minimized machine a state is accepting if and only if it contains any 
-  accepting states in the original machine.
-  So if $q_0$ is accepting then the minimal machine's initial state
-  is also accepting.
 \end{answer}
 \end{exercise}
   
@@ -15139,6 +15079,61 @@ By inspection all of its states are reachable.
    The number of steps is two less than the number of states, that
    is, the time taken grows linearly with the number of states.  
   \end{answer}
+\end{exercise}
+
+\begin{exercise}
+There is an algorithm to find unreachable states.
+It inputs a machine~$\FSM$ and initializes the set of reachable states
+to $R_0=\set{q_0}$.
+For $n>0$, step~$n$ of the algorithm is:~for each
+$q\in R_n$ find all states~$\hat{q}$ reachable from~$q$ in one transition
+and add those to make~$R_{n+1}$.
+That is, 
+$R_{n+1}=R_n\cup\set{\hat{q}=\Delta_{\FSM}(q,x)\suchthat\text{$q\in R_n$ and $x\in\Sigma$}}$.
+The algorithm stops when $R_k=R_{k+1}$ and the set of reachable states 
+is $R=R_k$.
+The unreachable states are the others, $Q-R$.
+For each machine, perform this algorithm.\\
+\begin{exparts*}
+\item \vcenteredhbox{\includegraphics{automata/asy/min/min11.pdf}}
+\item \vcenteredhbox{\includegraphics{automata/asy/min/min13.pdf}}
+\end{exparts*}
+\begin{answer}\verified
+  \begin{exparts}
+  \item These are the sets.
+  \begin{display}
+  \begin{tabular}{r|l}
+    \multicolumn{1}{c}{\tabulartext{Step $n$}}
+      &\multicolumn{1}{c}{$R_n$}
+    \\ \hline
+    $0$  &$\set{q_0}$  \\
+    $1$  &$\set{q_0,q_1}$  \\
+    $2$  &$\set{q_0,q_1,q_2}$  \\
+    $3$  &$\set{q_0,q_1,q_2}$  
+  \end{tabular}
+  \end{display}
+  Thus the set of reachable states is $R=\set{q_0,q_1,q_2}$.
+  The set of unreachable states is $Q-R=\set{q_3}$.
+  Here is the machine with only the reachable states.
+  \begin{display}
+    \vcenteredhbox{\includegraphics{automata/asy/min/min12.pdf}}
+  \end{display}
+  \item These are the sets.
+  \begin{display}
+  \begin{tabular}{r|l}
+    \multicolumn{1}{c}{\tabulartext{Step $n$}}
+      &\multicolumn{1}{c}{$R_n$}
+    \\ \hline
+    $0$  &$\set{q_0}$  \\
+    $1$  &$\set{q_0,q_1,q_3}$  \\
+    $2$  &$\set{q_0,q_1,q_3,q_4}$  \\  
+    $3$  &$\set{q_0,q_1,q_3,q_4}$  \\  
+  \end{tabular}
+  \end{display}
+  The set of reachable states is $R=R_2=\set{q_0,q_1,q_3,q_4}$.
+  The set of unreachable states is $Q-R=\set{q_2,q_5}$.
+  \end{exparts}
+\end{answer}
 \end{exercise}
   
 \begin{exercise} \label{exer:NEquivIsEquivRel}

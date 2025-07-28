@@ -7,6 +7,6 @@ ${LATEX} book
 makeindex -s book.ist -p odd book.idx
 biber book
 ${LATEX} book
-${LATEX} answers
-biber answers
-${LATEX} answers
+# ${LATEX} answers
+# biber answers
+# ${LATEX} answers

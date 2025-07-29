@@ -1,21 +1,21 @@
 This is the source for the textbook *Theory of Computation*
-by Jim Hefferon.
+by Jim Hefferon.    It is suitable for a course's main text,
+for a supplemental text, or for self-study.
 
 This is for an undergraduate computer science theory class.
-It covers models of computation such as Turing machines,
+It covers models of computation starting with Turing machines,
 unsolvability and the Halting problem, Finite State machines
 and regular languages, and ends with computational complexity
 and P vs NP. As to pedagogy, it is a mathematics text so things are
-proved.  But what sets it apart is that the presentation is liberal,
+proved.  What sets it apart is that the presentation is liberal,
 highlighting the ideas in the work and making connections with things
 from the background that students bring to the class.
 
-The presentation is for US undergraduate sophmores.  It
-expects that the reader has some background in programming and in
-Discrete Math, about one course in each.  It is suitable for
-a course's main text, for a supplemental text, or for self-study.
+The presentation is aimed at US undergraduate sophmores.  It
+expects that the reader has some experience in programming and in
+Discrete Math, about one course in each.
 
-There are about eight hundred and fifty exercises, with fully-worked
+There are more than eight hundred and fifty exercises, with fully-worked
 answers.  There are PDF slides for classroom use.  And, there are video
 lectures on YouTube that are particularly useful for those working on
 their own.
@@ -33,7 +33,7 @@ You can also get a paper copy from Amazon.  See the homepage.
 
 ## Status
 
-This is approaching version 2. I have used it in class from 2018 through
+This is at version 2. I have used it in class from 2018 through
 2022 and a couple of other people have used it in their class.
 
 
@@ -72,3 +72,5 @@ supplied PDF; see the home page.
 2022-Jul-19  JH Version 1.0. 
 2023-Jul-24  JH Version 1.10, incorporating feedback from other teachers
   and providing a paper copy.
+2024-July-10 JH Version 2.0.  New Topics, including Cook-Levin.  Many
+  bugs corrected, particlarly in exercises.

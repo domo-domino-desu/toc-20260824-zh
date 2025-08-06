@@ -451,7 +451,7 @@
 % \renewcommand{\chapter}[1]{%
 \newcommand{\jhchapter@nostar}[1]{%
   \stepcounter{chapter}%
-  \addcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}
+  \addcontentsline{toc}{chapter}{\protect\numberline{\makebox[0pt][l]{\Roman{chapter}\protect\hspace{\cftchapnumwidth} #1}}}  % hack to get Chapter number in Roman
   % \jhaddcontentsline{toc}{chapter}{\protect\numberline{\Roman{chapter}} #1}
   % \pdfbookmark[1]{Beginning of Document}{beg}
   \global\togglefalse{insideextrasection}% find this by searching for: EXTRA TOGGLE RESET
@@ -955,12 +955,23 @@
 }
 
 
+% INDEX
+% \usepackage[font=small,
+%             justific=RaggedRight]{idxlayout}  % Get index in \small
+
+
 % ==========================================================
 % TABLE OF CONTENTS
 \usepackage{tocloft}
 \tocloftpagestyle{empty}
 \setlength{\cftchapindent}{0em}
-% \setlength{\cftchapnumwidth}{1.25em}  % see also \printnotes
+% I find that every chapter name issues an Overfull:
+% [4] (./book.toc
+% Overfull \hbox (117.51985pt too wide) detected at line 1
+%\T1/XCharter-TOsF/b/n/10 I  Mechanical Computation 
+% []
+% I cannot figure how to fix that.  In particular, this
+% does not seem to do anything: \setlength{\cftsetrmarg}{10em}  % 2025-Aug-06
 \setlength{\cftchapnumwidth}{0.5em}  % see also \printnotes
 \setlength{\cftsecindent}{1em}
 \setlength{\cftsecnumwidth}{1.25em}

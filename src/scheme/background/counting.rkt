@@ -192,7 +192,7 @@
 ;;   The only ugliness is that the empty tuple is unique, so there is only
 ;; one tupe of that arity.
 
-;; cantor-unpairing-n any-sized tuple  Be cantor-unparing-n where n is the tuple length
+;; cantor-unpairing-n any-sized tuple  Be cantor-unparing-n where n is tuple length
 ;;   (natural ..) of n elets  ->  natural
 (define (cantor-unpairing-n . args)
   (cond

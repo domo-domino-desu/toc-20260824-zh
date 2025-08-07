@@ -1,19 +1,20 @@
 This is the source for the textbook *Theory of Computation*
-by Jim Hefferon.    It is suitable for a course's main text,
-for a supplemental text, or for self-study.
+by Jim Hefferon.    It is suitable to use in a course as a main text,
+or as a supplemental text.  It also fits well with self-study.
 
-This is for an undergraduate computer science theory class.
-It covers models of computation starting with Turing machines,
-unsolvability and the Halting problem, Finite State machines
-and regular languages, and ends with computational complexity
-and P vs NP. As to pedagogy, it is a mathematics text so things are
+It covers the material of an undergraduate Computer Science theory class.
+Subjects are: models of computation starting with Turing machines,
+unsolvability and the Halting problem,
+Finite State machines and regular languages,
+as well as computational complexity and P vs NP.
+As to pedagogy, this is a mathematics text so things are
 proved.  What sets it apart is that the presentation is liberal,
 highlighting the ideas in the work and making connections with things
-from the background that students bring to the class.
+from the background that students bring to the course.
 
-The presentation is aimed at US undergraduate sophmores.  It
-expects that the reader has some experience in programming and in
-Discrete Math, about one course in each.
+The presentation is aimed at US undergraduate second or third year students.
+It expects that the reader has some experience in programming and in
+Discrete Math.
 
 There are more than eight hundred and fifty exercises, with fully-worked
 answers.  There are PDF slides for classroom use.  And, there are video
@@ -46,8 +47,8 @@ More information is at
 
 ## Bug reports
 
-As with any large project, there will be errors.  I greatly appreciate
-bug reports.  Reach me via the contact link on the home page.
+As with any large project, there will be bugs.  I greatly appreciate
+reports.  Reach me via the contact link on the home page.
 
 
 ## Source
@@ -72,5 +73,5 @@ supplied PDF; see the home page.
 2022-Jul-19  JH Version 1.0. 
 2023-Jul-24  JH Version 1.10, incorporating feedback from other teachers
   and providing a paper copy.
-2024-July-10 JH Version 2.0.  New Topics, including Cook-Levin.  Many
+2025-July-10 JH Version 2.0.  New Topics, including Cook-Levin.  Many
   bugs corrected, particlarly in exercises.

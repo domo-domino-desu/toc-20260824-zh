@@ -51,12 +51,11 @@
 
 ;; Return 0 iff input is even and greater than 2, and not the sum of two primes
 (define (gb-g y)
-  (if (or (odd? y)
-           (< y 3))
-      1
-      (if (gb-check y)
-          1
-          0)))
+  (if (and (> y 2)
+           (even? y)
+           (not (gb-check y)))
+      0
+      1))
 
 (provide gb-g)
 

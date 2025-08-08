@@ -297,7 +297,7 @@ path track_sector = arc(disc_center, disc_track_sector_radius, 120, 60, CW);
 draw(pic,disc,lightcolor);
 // asy complains dvips cannot find pstools.pro even though I've installed pst-text
 // labelpath(pic,"\tiny \texttt{1101010 \ldots}",track_sector,highlightcolor);
-label(pic, "\tiny \texttt{1000010 \ldots}", disc_center+(0,disc_track_sector_radius), highlightcolor);
+label(pic, "\tiny \texttt{100101000 \ldots}", disc_center+(0,disc_track_sector_radius), highlightcolor);
 label(pic,"$\Updownarrow$",(disc_center.x,-1));
 shipout(format("background%02d",picnum),pic,format="pdf");
 

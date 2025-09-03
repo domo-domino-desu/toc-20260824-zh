@@ -74,4 +74,5 @@ supplied PDF; see the home page.
 2023-Jul-24  JH Version 1.10, incorporating feedback from other teachers
   and providing a paper copy.
 2025-July-10 JH Version 2.0.  New Topics, including Cook-Levin.  Many
-  bugs corrected, particlarly in exercises.
+  bugs corrected, particularly in exercises.
+2025-Aug-08 JH Version 2.04.  Paper version uploaded to Amazon KDP.

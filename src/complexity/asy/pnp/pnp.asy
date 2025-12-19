@@ -1795,7 +1795,7 @@ label(pic,"\makebox[\width][l]{\scriptsize \compclass{REC}}",(label_x,0.5*label_
 real label_x = -0.65*UNIVERSE_WD;
 real label_y = 0.77*UNIVERSE_HT;
 draw(pic,(label_x+0.5*WHISKER_WD,label_y)--(label_x,label_y)--(label_x,0)--(label_x+0.5*WHISKER_WD,0), squarebraces_label_pen);
-label(pic,"\makebox[\width][r]{\scriptsize \compclass{RE}}",(label_x,0.5*label_y),W); 
+label(pic,"\makebox[\width][r]{\scriptsize \compclass{CE}}",(label_x,0.5*label_y),W); 
 
 // Cover stubs extending into boundary
 draw(pic,UNIVERSE, AXISPEN);

@@ -7032,8 +7032,8 @@ With a solution to the Halting Problem we could settle the question.
 The
 program sketched here searches for an odd perfect number.\footnote{%
   This program takes an
-  input $x$ but ignores it; in this book we like to have the
-  machines that we use take an input and (if ti halts) also give an output.}
+  input $x$ but ignores it; in this book 
+  \protect\citetext{we like to have the machines that we use take an input and (if they halt) also give an output}{This makes machine composition\Dash the chaining of one machine's output to another's input\Dash more natural.}.}
 If it finds one then it halts.
 If not then it does not halt.
 So if we had a $\computablefunction{halt\_decider}$ and we gave it 
@@ -7102,21 +7102,50 @@ in their internal construction.
 
 
 \begin{exercises}
+% \begin{exercise}
+% True or false?    
+% \begin{exparts}
+% \item For each Turing machine, we cannot mechanically decide 
+% whether it halts on all inputs.
+% \item For each Turing machine, we can mechanically decide 
+% whether it halts on all inputs.
+% \end{exparts}
+% \begin{answer}
+% \begin{exparts}
+% \item False.
+% The theorem is that there is no single algorithm that will 
+% work for all input machines.
+% Consider the machine that reads it input, ignores it, and then outputs $42$ and 
+% then halts.
+% There is a decider that, given an index~$e$ of that machine, will correctly
+% halt and output~$1$, namely any mathine that always halts and outputs a~$1$.
+
+% \item True.
+% Fix the given Turing machine~$\TM$.
+% One of these two correctly decides whether it halts on all inputs:~the machine 
+% that ignores its input and outputs~$0$, or the machine that ignores its
+% input and outputs~$1$.  
+% \end{exparts}
+% \end{answer}
+% \end{exercise}
+
+
 \begin{exercise}
-Someone asks the professor, ``I don't get the point of the \HP.
-If you want programs to halt then just watch them and when they exceed a
-set number of cycles, send a kill signal.''
+Someone starts a discussion with the professor, 
+``I don't get the point of the \HP.
+It is not a job that I've ever wanted to do, or even like any such job.''
 How to respond?
 \begin{answer}\verified
-We have shown that there are tasks that no computer can do.
-The \HP{} is a concrete example of such a task.
-(We will see many more.)
+The point is that 
+we have shown that there are tasks that no computer can do, and
+the \HP{} is a concrete example of such a task.
+We will see many more but this one is in fact the benchmark example.
 
-As to why this task is of any interest,
-the point of the Turing machine definition is to give a place on which to
-model running algorithms.
+As to why it is of interest,
+the point of the Turing machine definition is to give a model platform 
+on which to run algorithms.
 Whether the algorithms we are modeling will halt, even when given an unbounded 
-chance to do so, is an important question. 
+chance to do so, is important and interesting. 
 \end{answer}
 \end{exercise}
 
@@ -7128,7 +7157,7 @@ $\phi_e(e)\diverges$?
 \begin{answer}\verified
 Wrong.  
 There is such a function,  
-but that function is not computable.
+its just that the function is not computable.
 That is, there is no 
 Turing machine whose behavior is
 that function.
@@ -7137,7 +7166,7 @@ that function.
 
 \recommended
 \begin{exercise}
-Which of these statements is a correct use of `reduces to'?
+For each of these pairs of statements, which is a correct use of `reduces to'?
 \begin{exparts}
 \item ``The problem of getting bread reduces to the problem of finding the
 store''
@@ -7186,31 +7215,28 @@ correctly determine whether $\TM_e$ does that thing.
 A person in your class asks,
 ``What is wrong with this approach to solving the \HP?
 To not halt the machine must have an infinite loop, right?
-Any Turing machine has a finite number of states
+Any particular Turing machine has a finite number of states
 and the tape alphabet is finite, right?
 So there are only finitely many state-character pairs that can happen.
 As the machine runs, just monitor it for a repeat of some pair.
 A repeat means that the machine is looping, and so it won't halt.''
 What are they missing?
 \begin{answer}\verified
-First, to detect a loop we must look for a repeated configuration, 
-not just a repeated state-character pair.
+First, we must look not just a repeated state-character pair
+but for a repeated configuration, a repeated state, character, 
+tape head location, and tape contents tuple.
 
 But beyond that, 
-failing to halt and repeating a configuration are not the same thing.
-Machines can run forever without repeating a configuration.
-Here is one.
+the \HP{} is not just the problem of detecting whether a
+machine has a repeated configuration.
+There are other ways to fail to halt.
+Here is a machine that
+runs forever without repeating a configuration.
 \begin{equation*}
   \TM=\set{\tminstruction{0}{B}{1}{0},
             \tminstruction{0}{1}{R}{0}}
 \end{equation*}
 It keeps writing a \str{1} and then shifting right.
-
-The \HP{} is not the problem of detecting whether or not a
-machine has an infinite loop.
-Rather, the \HP{} is to detect whether the machine will halt or fail to halt.
-It could fail to halt because there is a loop but there are other, more 
-complicated, ways to fail to halt.
 \end{answer}
 \end{exercise}
 
@@ -7218,30 +7244,40 @@ complicated, ways to fail to halt.
 \begin{credit}
   CS SE user Kyle Strand \url{https://cs.stackexchange.com/q/11645/50343}.
 \end{credit}
-(This is related to the prior exercise.)
-Would it be possible for a computer to detect infinite loops and 
-subsequently stop the associated process, or would implementing such logic 
-be solving the \HP?
-Specifically, 
-could the runtime environment do this:~after each instruction is executed,
-it makes a snapshot of all of the relevant memory, the stack and heap data, 
-the registers, the instruction pointer, etc., and
-before executing a instruction it checks its snapshot against
-all prior ones, and if there is a repeat then it declares that the program is
-in an infinite loop?
-% (Thus, for instance, a program generating an indefinitely long decimal 
-% expansion of pi isn't in an infinite loop because at every iteration, 
-% it has more digits of pi in its memory.
+A student challenges the professor, 
+``My laptop here is finite (putting aside storing data in the Cloud).
+I'll define a configuration of this machine as a 
+tuple consisting of all of the relevant memory, 
+the stack and heap, 
+the registers, and the instruction pointer.
+Because the machine as a whole is finite, it has finitely many
+configurations.
+It's action is to move from configuration to configuration, and
+a computation is non-halting if and only if it repeats a configuration.
+So why can't I solve the \HP{} by
+instrumenting my computer's runtime like this:~while executing
+the computation of program~$e$ with input~$x$, after 
+executing each instruction it stores on an external device 
+a snapshot of the machine's configuration, and then checks that 
+against all prior ones. 
+If there is a repeat then it declares that the computation $\sequence{e,x}$
+will not halt.''
+How to respond?
 \begin{answer}\verified
-Sure, we could get the runtime environment to do that. 
-However, `fails to halt' and `in an infinite loop' are not the same.
-Consider the code below.
+Sure, we could get a runtime environment to do that.
+(Although the monitoring device would have to be larger than the laptop.)
+
+But the \HP{} does not say that we cannot tell whether program~$e$ with input~$x$
+halts on computers like this one.
+It applies to the class of machines with potentially unbounded resources. 
+On such a machine a computation is not limited to 
+only finitely many configurations.
+An example is the code below, which just keeps adding~$1$.
 \begin{display}
   \lstinputlisting[firstline=3]{scheme/background/no-inf-loop.rkt}  
 \end{display}
-The runtime environment described would not flag this routine 
-as being in an infinite loop but 
-it does not halt.
+The runtime environment described would not flag the computation generated
+by this code
 \begin{display} 
 \begin{lstlisting}
 > i=0  
@@ -7250,7 +7286,9 @@ it does not halt.
 > :  
 \end{lstlisting}
 \end{display}
-It only stops when the user forces it to stop.
+(it would not flag it on an unbounded device;~on this student's computer 
+this Racket routine would 
+eventually overflow memory and in that way repeat a configuration).
 \end{answer}
 \end{exercise}
 
@@ -7272,22 +7310,22 @@ The \definend{Collatz conjecture}\index{Collatz conjecture}
 is that $h(n)=1$ for all $n\in\N$, that is, $h(n)$ halts in that it does not
 keep expanding forever.
 No one knows whether the Collatz conjecture is true.
-Is it an unsolvable problem to determine whether $h$ halts on all input?
+Is the problem of determining whether $h$ halts on all input an unsolvable one?
 \begin{answer}\verified
 No, it is not an unsolvable problem.  
 Either $f$ does halt on all inputs or else it doesn't.
 That's two possibilities. 
 So, as in the book's discussion of the \HP, % wrong page? on page~\pageref{disc:HP}, 
 overall the problem is solved by some computer program,
-either the one that prints `yes' or the one that prints `no'.
+either the one that on any input prints `yes' or the one that prints `no'.
 (It is perhaps a unsettling that we don't know which of the
-two is true but nonetheless both are computable.)
+two deciders applies but nonetheless both are computable.)
 \end{answer}
 \end{exercise}
 
 \recommended
 \begin{exercise}
-For each of these, is it true or false?
+True or false?
 \begin{exparts}
 \item
 The problem of determining, given~$e$, whether $\TMfcn_e(3)\converges$ is
@@ -8087,10 +8125,10 @@ the index~$e$.
 \end{exercise}
 
 \begin{exercise}
-\definend{Goldbach's conjecture},\index{Goldbach's conjecture} 
+\definend{Goldbach's conjecture}\index{Goldbach's conjecture} 
 is that every even natural number 
 greater than two is the sum of two primes.
-It is one of the oldest and best-known unsolved problems in mathematics.
+It is one of the best-known unsolved problems in mathematics.
 Show that if we could solve the \HP{} then we could in principle settle 
 Goldbach's conjecture.
 \begin{answer}\verified

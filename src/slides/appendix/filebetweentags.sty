@@ -1,0 +1,34 @@
+% Due to help from Joseph Wright and egreg
+% https://tex.stackexchange.com/a/764319/339
+
+
+\newcommand{\catchfilefn}{\jobname-tags.tex}
+
+\ExplSyntaxOn
+\NewDocumentCommand \FileBetweenTags { O { \jobname } m }
+  { \jh_filebetweentags:nn {#1} {#2} }
+\cs_new_protected:Npe \jh_filebetweentags:nn #1#2
+  {
+    \group_begin:
+      \file_get:nnN {#1}
+        {
+          \ExplSyntaxOff
+          \exp_not:N \makeatletter
+          \char_set_catcode_other:N \exp_not:N \%
+        }
+        \exp_not:N \l_tmpa_tl
+      \cs_set_protected:Npn \exp_not:N \__jh_tmp:w
+        ##1 \c_percent_str < * #2 > ##2 \c_percent_str < / #2 > ##3
+        \exp_not:N \q_stop
+        { \exp_not:N \tl_trim_spaces:n {##2} }
+      \exp_not:N \use:e
+        {
+          \exp_not:N \exp_not:N \exp_not:N \__jh_tmp:w
+          \exp_not:N \exp_not:V \exp_not:N \l_tmpa_tl
+          \c_percent_str < * #2 >
+          \c_percent_str < / #2 >
+          \exp_not:N \exp_not:N \exp_not:N \q_stop
+        }
+    \group_end:
+  }
+\ExplSyntaxOff

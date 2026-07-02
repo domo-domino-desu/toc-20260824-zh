@@ -789,3 +789,17 @@ slides/complexity/complexity.pdf : slides/complexity/complexity.tex \
 	$(LATEX_CMD) "$(<D)/$(<F)"; \
 	$(LATEX_CMD) "$(<D)/$(<F)"
 
+slides/appendix/asy/functions000.pdf : slides/appendix/asy/functions.asy
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
+slides/appendix/appendix.pdf : slides/appendix/appendix.tex \
+  book.pdf \
+  slides/appendix/asy/functions000.pdf \
+  appendix/appendix.tex \
+  appendix/strings.tex \
+  appendix/functions.tex \
+  appendix/proplogic.tex 
+	cd $(@D); \
+	$(LATEX_CMD) "$(<D)/$(<F)"; \
+	$(LATEX_CMD) "$(<D)/$(<F)"

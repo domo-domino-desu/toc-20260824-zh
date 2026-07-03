@@ -9,4 +9,5 @@ zip --junk-paths slides \
     background/background.pdf \
     languages/languages.pdf \
     automata/automata.pdf \
-    complexity/complexity.pdf
+    complexity/complexity.pdf \
+    appendix/appendix.pdf

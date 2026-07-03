@@ -4,6 +4,12 @@
 # 2022-May-20 JH Got a working Asymptote, so need to clear out .pdf's
 #     that can be generated from source 
 
+# HOWTO
+# You might run
+#  ftpmaint@Alonzo:~/Documents/computing/src$ make all 2>&1 | tee makefile.log
+# to keep a record of what happened. 
+
+# ================================
 # SRC_DIR  Full path for src/
 #  From http://timmurphy.org/2015/09/27/how-to-get-a-makefile-directory-path/
 SRC_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -725,7 +731,8 @@ slides : slides/prologue/prologue.pdf \
   slides/background/background.pdf \
   slides/languages/languages.pdf \
   slides/automata/automata.pdf \
-  slides/complexity/complexity.pdf
+  slides/complexity/complexity.pdf \
+  slides/appendix/appendix.pdf
 	cd slides; \
 	sh ./00buildzip.sh
 

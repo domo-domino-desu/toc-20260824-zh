@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: pdf-build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,6 +20,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Restore generated diagrams
+        uses: actions/cache@v5
+        with:
+          path: |
+            src/**/asy/**/*.pdf
+            src/**/asy/**/*.png
+            src/prologue/asy/tm_exercises/pdfs
+            src/prologue/asy/tm_exercises/tmp
+            src/automata/asy/fsm_exercises/pdfs
+            src/automata/asy/fsm_exercises/tmp
+          key: diagrams-v1-${{ runner.os }}-${{ hashFiles('src/**/*.asy', 'src/**/*.py', 'src/**/*.rkt', 'src/**/*.tm', 'src/**/*.fsm', 'src/**/Makefile', 'src/Makefile', 'src/cover/computingdivision.jpg') }}
       - name: Install diagram generators
         run: |
           apt-get update

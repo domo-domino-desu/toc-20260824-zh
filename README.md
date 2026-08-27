@@ -1,9 +1,15 @@
-## 中文版构建
+# 《计算理论》AI 翻译
 
-本书使用 LuaLaTeX、New Computer Modern 与 Fandol 中文字体。在 `src/`
-目录运行 `latexmk book.tex` 和 `latexmk answers.tex`，分别生成
-`book.pdf` 与 `answers.pdf`。推送到 `master` 后，GitHub Actions 会构建、
-上传这两个文件并创建 release。
+本仓库是 Jim Hefferon 的《计算理论》（_Theory of Computation_）的中文翻译版本。
+使用 Deepseek v3.2 + GLM 5.1 进行翻译。
+中文 PDF 可以在 Release 页面找到。
+
+当前进度：
+
+| 流程 | 进度 |
+| --- | --- |
+| 翻译 | 100% |
+| 校对 | 遥遥无期 |
 
 ---
 

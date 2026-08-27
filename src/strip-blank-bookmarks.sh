@@ -8,5 +8,24 @@
 
 # save the old version
 cp book.out book.out.sav
-# If the secodn {}'s field is nonempty then print the line
-awk '$0 !~ /\BOOKMARK [^\{]*\{[^\{]*\{\}/ { print $0 }' book.out.sav > book.out
+# Drop bookmarks whose title is empty.  titlesec also makes chapter bookmarks
+# children of its empty part bookmark; when that part entry is removed, attach
+# those children to our visible Chinese part bookmark instead.
+awk '
+  /\\BOOKMARK [^\{]*\{[^\{]*\{\}/ {
+    if (match($0, /\{part\.[0-9]+\}\{\}/)) {
+      chunk = substr($0, RSTART, RLENGTH)
+      match(chunk, /part\.[0-9]+/)
+      empty_part = substr(chunk, RSTART, RLENGTH)
+      part_number = substr(empty_part, 6)
+      redirect[empty_part] = "partbookmark." part_number ".0"
+    }
+    next
+  }
+  {
+    for (old_parent in redirect) {
+      gsub("\\{" old_parent "\\}", "{" redirect[old_parent] "}")
+    }
+    print
+  }
+' book.out.sav > book.out

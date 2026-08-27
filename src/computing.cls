@@ -297,14 +297,14 @@
 \renewcommand{\part}[1]{\clearemptydoublepage\thispagestyle{bookemptypage}%
   \vspace*{\stretch{1}}%
   \refstepcounter{part}
+  \pdfbookmark[0]{第\thepart 部分：#1}{partbookmark.\arabic{part}}
   \begin{center}
-    \normalfont\Large{\color{boldcolor}Part \thepart} \\[1.25ex]
+    \normalfont\Large{\color{boldcolor}第\thepart 部分} \\[1.25ex]
     \LARGE #1
   \end{center}
   \vspace*{\stretch{1.5}}%
 }
-\usepackage{fmtcount}  % Display the part number as an English word "One"
-\renewcommand{\thepart}{\Numberstring{part}}
+\renewcommand{\thepart}{\arabic{part}}
 
 %%%%%%%%%%%%%%%%%
 % Chapters
@@ -349,7 +349,6 @@
   \clearpage
   \chapterwrapper{#3}\imagecredit{#1}%
   \Writetofile{\answerbodyfilename}{\protect\chapter{Chapter \Roman{chapter}: #3}}%
-  \storeNumberstring{chapterasnumberstring}{chapter}% See answers description
   % Remove hyperref errors "destination with the same identifier"
   % Matches redefinition inside \extra command
   % \renewcommand*{\theHtheorem}{\thechapter.\thesection.\thetheorem}
@@ -439,8 +438,12 @@
   % [] % right sep
 
 % TOC
-  \def\toclevel@jhchapter{0}
-  \def\toclevel@jhchapterstarred{100}
+  \def\toclevel@part{0}
+  \def\toclevel@chapter{1}
+  \def\toclevel@jhchapter{1}
+  \def\toclevel@jhchapterstarred{1}
+  \def\toclevel@section{2}
+  \def\toclevel@subsection{3}
   % l@jhchapter is defined elsewhere to make roman numeral
   % \def\l@jhchapter{\@dottedtocline{0}{0em}{1.5em}}
   % Don't want two TOC entries for Notes and Biblio
@@ -554,7 +557,7 @@
 % \newcommand{\extrasectionautorefname}{extra}
 
 \setcounter{tocdepth}{2}
-  \def\toclevel@extrasection{1}  % Make pdf bookmarks come out at right level
+  \def\toclevel@extrasection{2}  % Make pdf bookmarks come out at right level
   \def\l@extrasection{\@dottedtocline{1}{1.5em}{2.3em}}
 
 \newcounter{extra}[chapter]
@@ -775,6 +778,7 @@
 % biblatex
 % \AtEndPreamble{\let\murray@saved@addtocontents\addtocontents} % see https://tex.stackexchange.com/a/513586/339
 \usepackage[backend=biber,style=authoryear,sorting=nyt,firstinits=true]{biblatex}
+\DefineBibliographyStrings{english}{bibliography={参考文献}}
 % \AtEndPreamble{\let\addtocontents\murray@saved@addtocontents} % see https://tex.stackexchange.com/a/513586/339
   \renewcommand*{\bibfont}{\raggedright\small}  % Use \small font for the body
 \addbibresource{computing.bib}
@@ -876,7 +880,7 @@
 
 \newcommand{\printnotes}{%
   % Table of Contents
-  \addcontentsline{toc}{chapter}{Notes}
+  \addcontentsline{toc}{chapter}{附注}
   % \addtocontents{toc}{\protect\setlength{\protect\cftchapnumwidth}{0em}}
   \newpage
   \begingroup
@@ -1450,20 +1454,30 @@
 % \usepackage[hypertexnames=false, plainpages=false]{hyperref}  % remove the draft option at the end.
 % 2025-Apr-30 Insert bin/compilation/repage_index.py into flow:
 \usepackage{hyperref}  %
+% hyperref installs levels for the standard sectioning commands when loaded,
+% so set the complete custom hierarchy after loading it.
+\def\toclevel@part{0}
+\def\toclevel@chapter{1}
+\def\toclevel@jhchapter{1}
+\def\toclevel@jhchapterstarred{1}
+\def\toclevel@section{2}
+\def\toclevel@subsection{3}
+\def\toclevel@extrasection{2}
   % It is there to prevent errors like
   % "\pdfendlink ended up in different nesting level than \pdfstartlink";
   % see https://tex.stackexchange.com/a/154184/121234
 \hypersetup{
 %  warning says it is already set:    bookmarks=true,         % show bookmarks bar?
-    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    bookmarksdepth=3,       % include subsections in the normalized hierarchy
+    unicode=true,           % preserve Chinese in PDF bookmarks and metadata
     pdftoolbar=true,        % show Acrobat’s toolbar?
     pdfmenubar=true,        % show Acrobat’s menu?
     pdffitwindow=false,     % window fit to page when opened
     pdfstartview={FitH},    % fits the width of the page to the window
     pdfpagemode=None,       % None, or UseOutlines, or UseThumbs, or FullScreen
-    pdftitle={Computing},    % title
+    pdftitle={计算理论},    % title
     pdfauthor={Jim Hefferon},     % author
-    pdfsubject={Theory of Computation},   % subject of the document
+    pdfsubject={计算理论},   % subject of the document
     pdfcreator={LaTeX, Asymptote},   % creator of the document; see https://tex.stackexchange.com/a/590921/339
     % pdfproducer={pdflatex}, % producer of the document; default is current pdflatex version
     pdfdisplaydoctitle=true, % show document title in window title
@@ -1625,7 +1639,7 @@
 % toggle is true.
 \newtoggle{@recommended}
 \newcommand{\recommended}{\toggletrue{@recommended}}
-\newcommand{\recommendationmark}{\ensuremath{\surd}}
+\newcommand{\recommendationmark}{\raisebox{0.2ex}{\ensuremath{\checkmark}}}
 \newlength{\recommendation@length}  % Put the mark this far into margin
   \setlength{\recommendation@length}{1.25em}
 
@@ -1987,16 +2001,17 @@
 
 % ............ appendix ..............
 \renewcommand{\appendix}{%
-  \part{Appendices}
-  \addcontentsline{toc}{chapter}{Appendix}
+  \part{附录}
+  \addcontentsline{toc}{chapter}{附录}
   % \crefalias{section}{appendix}
   \pagestyle{endmatter}
   \setcounter{section}{0}
   \renewcommand{\thesection}{\Alph{section}}
+  \renewcommand{\theHsection}{appendix.\arabic{section}}% unique PDF destinations
   \ifbool{MakingPaperCopy}{%
     \titleformat{\section}[hang]
        {\normalfont\scshape}
-       {\llap{\thesection\hspace*{\margin@numberingspace}}Appendix\hspace*{1em}}
+       {\llap{\thesection\hspace*{\margin@numberingspace}}附录\hspace*{1em}}
        {0em}
        {\Large\bfseries}
     \titlespacing*{\section}
@@ -2006,7 +2021,7 @@
   }{%
     \titleformat{\section}[hang]
        {\normalfont\scshape}
-       {\makebox[0em][r]{Appendix \thesection\hspace*{1em}}}
+       {\makebox[0em][r]{附录 \thesection\hspace*{1em}}}
        {0em}
        {\Large\bfseries}
     \titlespacing*{\section}

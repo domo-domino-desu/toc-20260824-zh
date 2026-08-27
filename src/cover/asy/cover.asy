@@ -3,7 +3,7 @@
 
 import settings;
 settings.outformat="pdf";
-settings.tex = "xelatex";
+settings.tex = "lualatex";
 settings.render=0;
 
 // colors Triadic color theme
@@ -26,7 +26,7 @@ unitsize(1inch);
 // cd("");
 // settexpreamble();
 //texpreamble("\usepackage{fontspec}\setmainfont{FreeSans}");
-texpreamble("\usepackage{fontspec}\setmainfont{FreeSans.otf}");
+texpreamble("\usepackage{ctex}\usepackage{fontspec}\setmainfont{FreeSans.otf}");
 
 cd("../../asy/");
 import jh;
@@ -83,11 +83,11 @@ draw(pic, tcropper, green_color+linewidth(2pt));
 path tcropper=T.deform(cropper);
 draw(pic, tcropper, green_color+linewidth(2pt));
 
-label(pic, "\makebox[0in][c]{Theory of Computation}",
+label(pic, "\makebox[0in][c]{\rmfamily\bfseries 计算理论}",
       (papersize_width/2,8.6inch), fontsize(35)+lightblack_color);
-label(pic, "\makebox[0in][c]{Making Connections}",
+label(pic, "\makebox[0in][c]{\rmfamily\bfseries 在融会贯通中理解计算}",
       (papersize_width/2,8.05inch), fontsize(19)+lightblack_color);
-label(pic, "\makebox[0in][c]{Second edition}",
+label(pic, "\makebox[0in][c]{\sffamily\mdseries 第二版}",
       (papersize_width/2,7.7inch), fontsize(14)+lightblack_color);
 label(pic, "\makebox[0in][r]{\begin{tabular}{r}{\Large Jim Hef{}feron} \\[0.35ex] \texttt{hefferon.net/computation}\end{tabular}}", (papersize_width-0.5inch,0.75inch), fontsize(14)+lightblack_color);
 

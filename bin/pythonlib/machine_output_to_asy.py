@@ -33,21 +33,22 @@ class JHException(Exception):
 # Should match the project's INSTALL instructions.
 TOPDIR_NAMES = {'computing',
                 'toc',
-                'toc-master'}
+                'toc-master',
+                'toc-20260824-zh'}
 
 from pathlib import Path
 def _find_rightmost_dir(p=os.curdir, dirnames=TOPDIR_NAMES):
     """Given a path, return a list of the path components starting
-    from one that is an element of dirnames.  If there is more than one 
-    pathname component that is an element of dirnames, then return 
+    from one that is an element of dirnames.  If there is more than one
+    pathname component that is an element of dirnames, then return
     a list starting at the rightmost such one.
        p=os.curdir  path
-       dirnames=TOPDIR_NAMES  set or list of possible names for the directory 
+       dirnames=TOPDIR_NAMES  set or list of possible names for the directory
     """
     s = list(Path(p).parts)
     # Reverse the sequence, to look for the first element of dirnames
     s.reverse()  # reverses in place
-    found_dirname, found_place = None, -1  
+    found_dirname, found_place = None, -1
     for i, path_part in enumerate(s):
         if path_part in dirnames:
             found_dirname, found_place = path_part, i
@@ -71,7 +72,7 @@ def rel_path_to_asy(from_dir=os.curdir, dirnames=TOPDIR_NAMES):
     # starts it.
     path_part_list = _find_rightmost_dir(from_dir, dirnames)
     if path_part_list is None:
-        critical("Unable to find the top directory of the repo in the path "+from_dir+": repo must be below a directory name from the list "+(", ".join(dirnames)))
+        raise JHException("Unable to find the top directory of the repo in the path "+from_dir+": repo must be below a directory name from the list "+(", ".join(dirnames)))
     s = []
     for i in range(len(path_part_list)):
         s.append("..")

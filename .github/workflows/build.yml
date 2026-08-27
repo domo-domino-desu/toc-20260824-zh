@@ -1,0 +1,44 @@
+name: Build and release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: texlive/texlive:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install diagram generators
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends asymptote make python3 racket
+      - name: Build book and answers
+        working-directory: src
+        run: |
+          make all
+      - name: Package PDFs
+        run: |
+          mkdir -p dist
+          cp src/book.pdf dist/theory-of-computation-zh.pdf
+          cp src/answers.pdf dist/theory-of-computation-answers-zh.pdf
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: theory-of-computation-zh
+          path: dist/*.pdf
+      - name: Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }}
+          files: dist/*.pdf
+          generate_release_notes: true

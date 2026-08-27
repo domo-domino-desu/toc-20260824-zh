@@ -1,20 +1,28 @@
 % computingfonts.sty
 %  Fonts used.  This is a separate file for use also by Asymptote files.
 
-% M Sharpe's XCharter
-\usepackage[scaled=.98,sups,osf]{XCharter}% lining figures in math, osf in text
-\usepackage[scaled=1.04,varqu,varl,noupquote]{zi4}% inconsolata typewriter; noupquote is there because that style uses active chars and syntax doesn't like that
-\usepackage[type1]{cabin}% sans serif 
-% less bold:
-% \usepackage[scaled=0.865]{berasans}% san serif
-% \usepackage{FiraSans}
-\usepackage[libertine,bigdelims,vvarbb,scaled=1.07]{newtxmath}
-% \usepackage[cal=boondoxo]{mathalfa} % I and S are a problem
-\usepackage[cal=cm,calscaled=.95,
-            bb=ams,bbscaled=1.00,
-            scr=dutchcal,scrscaled=1.00]{mathalfa} % mathscr not working
+% 中译本统一使用 LuaLaTeX。ctex 的 Fandol 字体保证本机与 CI 的中文
+% 字形一致；原书使用 XCharter/newtxmath，因此西文和数学字体改用配套的
+% New Computer Modern。
+\RequirePackage[fontset=fandol]{ctex}
+\RequirePackage[default]{fontsetup}
+
+% 中文正文强调使用黑体，而不是给宋体机械加粗。
+\setCJKfamilyfont{zhemph}{FandolSong-Regular}[
+  Extension = .otf,
+  BoldFont = FandolHei-Regular,
+  ItalicFont = FandolKai-Regular,
+  BoldItalicFont = FandolKai-Regular,
+]
+\let\computingoriginaltextbf\textbf
+\renewcommand{\textbf}[1]{%
+  \ifmmode
+    \computingoriginaltextbf{#1}%
+  \else
+    {\CJKfamily{zhemph}\bfseries #1}%
+  \fi}
 \linespread{1.04}
 
 % Give access to double quote inside of syntax environments
-\newcommand{\textsinglequote}{{\fontfamily{zi4}\selectfont'}}
-\newcommand{\textdoublequote}{{\fontfamily{zi4}\selectfont"}}
+\newcommand{\textsinglequote}{{\ttfamily'}}
+\newcommand{\textdoublequote}{{\ttfamily"}}

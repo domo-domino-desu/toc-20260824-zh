@@ -1,13 +1,13 @@
 # Makefile
-# For Theory of Computation by Jim Hefferon hefferon.net 
+# For Theory of Computation by Jim Hefferon hefferon.net
 # 2021-Jun-01 JH GPL 2
 # 2022-May-20 JH Got a working Asymptote, so need to clear out .pdf's
-#     that can be generated from source 
+#     that can be generated from source
 
 # HOWTO
 # You might run
 #  ftpmaint@Alonzo:~/Documents/computing/src$ make all 2>&1 | tee makefile.log
-# to keep a record of what happened. 
+# to keep a record of what happened.
 
 # ================================
 # SRC_DIR  Full path for src/
@@ -26,15 +26,15 @@ TEXINPUTS := TEXINPUTS=$(SRC_DIR)/:$(TEXINPUTS)
 #  Note that because SRC_DIR ends with a slash, the slash here makes there
 # be two slashes, which causes a search of all subdirs of SRC_DIR.   Note
 # also that here the "$(ASYMPTOTE_DIR)" refers to the environment variable.
-export ASYMPTOTE_DIR := ASYMPTOTE_DIR=$(SRC_DIR)/asy//:$(SRC_DIR)/asy/asy-graphtheory-master/modules//:$(ASYMPTOTE_DIR)
+export ASYMPTOTE_DIR := $(SRC_DIR)/asy//:$(SRC_DIR)/asy/asy-graphtheory-master/modules//:$(ASYMPTOTE_DIR)
 
 # LaTeX compiler
-LATEX := pdflatex
+LATEX := lualatex
 
 # LaTeX command line
 #  The command line used to invoke LaTeX.  Set the environment, then call
 # the program.
-LATEX_CMD := $(TEXINPUTS) $(LATEX) 
+LATEX_CMD := $(TEXINPUTS) $(LATEX)
 
 # Asymptote command line.
 # Set the environment and then call the program.
@@ -123,63 +123,63 @@ prologue/asy/gates/gates00.pdf : prologue/asy/gates/gates.asy
 
 prologue/asy/life/beacon000.pdf : prologue/asy/life/beacon_all.asy prologue/asy/life/gameboards/beacon000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/beehive000.pdf : prologue/asy/life/beehive_all.asy prologue/asy/life/gameboards/beehive000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/blinker000.pdf : prologue/asy/life/blinker_all.asy prologue/asy/life/gameboards/blinker000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/block000.pdf : prologue/asy/life/block_all.asy prologue/asy/life/gameboards/block000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/eater000.pdf : prologue/asy/life/eater_all.asy prologue/asy/life/gameboards/eater000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/eateranim000.pdf : prologue/asy/life/eateranim_all.asy prologue/asy/life/gameboards/eater000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/glider000.pdf : prologue/asy/life/glider_all.asy prologue/asy/life/gameboards/glider000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/glideranim000.pdf : prologue/asy/life/glideranim_all.asy prologue/asy/life/gameboards/glideranim000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/glideranimr000.pdf : prologue/asy/life/glideranimr_all.asy prologue/asy/life/gameboards/glideranimr000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/lonely000.pdf : prologue/asy/life/lonely_all.asy prologue/asy/life/gameboards/lonely000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/mwss000.pdf : prologue/asy/life/mwss_all.asy prologue/asy/life/gameboards/mwss000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/mwssanim000.pdf : prologue/asy/life/mwssanim_all.asy prologue/asy/life/gameboards/mwssanim000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/rabbits000.pdf : prologue/asy/life/rabbits_all.asy prologue/asy/life/gameboards/rabbits000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/toad000.pdf : prologue/asy/life/toad_all.asy prologue/asy/life/gameboards/toad000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/life/tub000.pdf : prologue/asy/life/tub_all.asy prologue/asy/life/gameboards/tub000.life
 	cd $(@D); \
-	$(ASYMPTOTE_CMD) "$(<F)" 
+	$(ASYMPTOTE_CMD) "$(<F)"
 
 prologue/asy/tape/tapeadd00.pdf : prologue/asy/tape/tapeadd.asy
 	cd $(@D); \
@@ -422,7 +422,7 @@ prologue/asy/tm_exercises/pdfs/twobsabba000.pdf : prologue/asy/tm_exercises/pdfs
 
 # .... TM_EXS end
 
-# The | makes these into order-only prereqs, so prologue.tex is not rebuilt 
+# The | makes these into order-only prereqs, so prologue.tex is not rebuilt
 prologue/prologue.tex : | prologue/asy/xygraphs/xygraphs00.pdf \
   prologue/asy/circlediagram/circlediagram00.pdf \
   prologue/asy/circlediagram/infloop.pdf \
@@ -649,6 +649,13 @@ complexity/asy/complexity/complexity00.pdf : complexity/asy/complexity/complexit
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
 
+complexity/pix/speedy_and_el_game.pdf : complexity/pix/speedy_and_el_game.eps
+	epstopdf "$<" --outfile="$@"
+
+complexity/asy/complexity/jigsaw000.pdf : complexity/asy/complexity/jigsaw.asy complexity/pix/speedy_and_el_game.pdf
+	cd $(@D); \
+	$(ASYMPTOTE_CMD) "$(<F)"
+
 complexity/asy/flowcharts/flowcharts000.pdf : complexity/asy/flowcharts/flowcharts.asy
 	cd $(@D); \
 	$(ASYMPTOTE_CMD) "$(<F)"
@@ -672,6 +679,7 @@ complexity/asy/xygraphs/xygraphs00.pdf : complexity/asy/xygraphs/xygraphs.asy
 complexity/complexity.tex : | complexity/asy/bigo/bigo00.pdf \
   complexity/asy/circuit/circuit000.pdf \
   complexity/asy/complexity/complexity00.pdf \
+  complexity/asy/complexity/jigsaw000.pdf \
   complexity/asy/flowcharts/flowcharts000.pdf \
   complexity/asy/ndtm/ndtm000.pdf \
   complexity/asy/pnp/pnp00.pdf \
@@ -750,7 +758,7 @@ slides/background/asy/background00.pdf : slides/background/asy/background.asy
 slides/background/background.pdf : slides/background/background.tex \
   book.pdf \
   slides/background/asy/background00.pdf \
-  background/background.tex 
+  background/background.tex
 	cd $(@D); \
 	$(LATEX_CMD) "$(<D)/$(<F)"; \
 	$(LATEX_CMD) "$(<D)/$(<F)"
@@ -779,7 +787,7 @@ slides/automata/automata.pdf : slides/automata/automata.tex \
   book.pdf \
   slides/automata/asy/fsm00.pdf \
   slides/automata/asy/nfsm00.pdf \
-  automata/automata.tex 
+  automata/automata.tex
 	cd $(@D); \
 	$(LATEX_CMD) "$(<D)/$(<F)"; \
 	$(LATEX_CMD) "$(<D)/$(<F)"
@@ -791,7 +799,7 @@ slides/complexity/asy/complexity00.pdf : slides/complexity/asy/complexity.asy
 slides/complexity/complexity.pdf : slides/complexity/complexity.tex \
   book.pdf \
   slides/complexity/asy/complexity00.pdf \
-  complexity/complexity.tex 
+  complexity/complexity.tex
 	cd $(@D); \
 	$(LATEX_CMD) "$(<D)/$(<F)"; \
 	$(LATEX_CMD) "$(<D)/$(<F)"
@@ -806,7 +814,7 @@ slides/appendix/appendix.pdf : slides/appendix/appendix.tex \
   appendix/appendix.tex \
   appendix/strings.tex \
   appendix/functions.tex \
-  appendix/proplogic.tex 
+  appendix/proplogic.tex
 	cd $(@D); \
 	$(LATEX_CMD) "$(<D)/$(<F)"; \
 	$(LATEX_CMD) "$(<D)/$(<F)"

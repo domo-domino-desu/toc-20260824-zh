@@ -23,8 +23,13 @@ string get_repo_path() {
   string repo_path = "";
   // Get the current directory
   string current_dir = cd("");
+  int project_part_of_path_dex_zh = rfind(current_dir, "/toc-20260824-zh/");
+  if (project_part_of_path_dex_zh >= 0) {
+    int zh_path_end = project_part_of_path_dex_zh+length("/toc-20260824-zh/src/");
+    return substr(current_dir, 0, zh_path_end);
+  }
   // Locate the two possible strings in that path.
-  //   If there is not such substring then rfind returns -1 
+  //   If there is not such substring then rfind returns -1
   int project_part_of_path_dex_computing = rfind(current_dir, "/computing/");
   int project_part_of_path_dex_toc = rfind(current_dir, "/toc/");
   int project_part_of_path_dex_toc_master = rfind(current_dir, "/toc-master/");
@@ -107,14 +112,15 @@ string get_repo_path() {
 
 
 string settexpreamble() {
+  settings.tex="lualatex";
   // Run the texpreamble() command with a suitable list of \import{..}'s
   string repo_path = get_repo_path();
   if (length(repo_path) == 0) {
     write(stdout, '!!! src/asy/settexpreamble.asy settexpreamble(): repo_path is the empty string, so the texpreamble() will not work\n');
   }
   string usefiles = "\usepackage{"+repo_path+"contentmacros}\usepackage{"+repo_path+"computingfonts}\usepackage{"+repo_path+"grammar}\usepackage{xcolor}\input{"+repo_path+"colorscheme}";
-  // write(stdout,'info: src/asy/settexpreamble.asy settexpreamble(): usefiles is '+usefiles+'\n');  
-  texpreamble(usefiles); 
+  // write(stdout,'info: src/asy/settexpreamble.asy settexpreamble(): usefiles is '+usefiles+'\n');
+  texpreamble(usefiles);
   return(repo_path);
 }
 
@@ -122,7 +128,7 @@ string settexpreamble() {
 //   // Asymptote requires full paths to find the LaTeX styles.  This function
 //   // searches for the name of the project directory as either computing/ or toc/
 //   // and then constructs the file paths from that.
-  
+
 //   // Get the current directory
 //   string current_dir = cd("");
 //   int project_part_of_path_dex_computing = rfind(current_dir, "/computing/");
@@ -142,8 +148,8 @@ string settexpreamble() {
 //   write(stdout, "src/asy/settexpreamble.asy: Path prefix is "+path_prefix+"<--\n");
 //   // this causes an error (openout_any = p) because TeX wants to be in same dir as included file; must call tex with openany=a: texpreamble("\include{"+path_prefix+"/computing/src/colorscheme}\usepackage{"+path_prefix+"/computing/src/computingfonts}\usepackage{"+path_prefix+"/computing/src/contentmacros}");
 //   string usefiles = "\usepackage{"+path_prefix+"contentmacros}\usepackage{"+path_prefix+"computingfonts}\usepackage{"+path_prefix+"grammar}\usepackage{xcolor}\input{"+path_prefix+"colorscheme}";
-//   // write(stdout, "settexpreamble.tex: \usefiles is:"+usefiles+"<-- ");  
-//   // texpreamble("\usepackage{"+path_prefix+"/computing/src/computingfonts}\usepackage{"+path_prefix+"/computing/src/contentmacros}\usepackage{"+path_prefix+"/computing/src/grammar}\usepackage{xcolor}\input{"+path_prefix+"/computing/src/colorscheme}"); 
-//   texpreamble(usefiles); 
+//   // write(stdout, "settexpreamble.tex: \usefiles is:"+usefiles+"<-- ");
+//   // texpreamble("\usepackage{"+path_prefix+"/computing/src/computingfonts}\usepackage{"+path_prefix+"/computing/src/contentmacros}\usepackage{"+path_prefix+"/computing/src/grammar}\usepackage{xcolor}\input{"+path_prefix+"/computing/src/colorscheme}");
+//   texpreamble(usefiles);
 //   return(path_prefix);
 // }

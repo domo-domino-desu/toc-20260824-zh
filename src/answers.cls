@@ -6,13 +6,16 @@
 \ProcessOptions \relax
 \LoadClass[twoside,fleqn]{book}
 
-% Use UTF-8
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\input{glyphtounicode}% Make PDF offer better copy and paste
+% pdfTeX needs explicit UTF-8/font encoding; LuaLaTeX handles Unicode natively.
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \input{glyphtounicode}% Make PDF offer better copy and paste
   \pdfgentounicode=1
+\fi
 
-\usepackage{mathtools}  
+\usepackage{mathtools}
 \usepackage{amsmath, amssymb, amsthm} % no amsthm; use ntheorem because of margin numbering
 
 % M Sharpe's XCharter
@@ -24,7 +27,7 @@
 \usepackage{calc}
 % Figure a person could print on letterpaper
 \RequirePackage[papersize={8.5in,11in},
-                margin=1in, 
+                margin=1in,
                 % textwidth=345pt, % textheight=550pt,  % LaTeX defaults
                 % inner=.8in,
                 % top=57.07pt, % 72.27-15.2 (lower down head height is 15.2)
@@ -47,7 +50,7 @@
 % \usepackage{trace}  % for debugging
 
 % ========== Bibliography =============
-% biblatex 
+% biblatex
 \usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
 \addbibresource{computing.bib}
 
@@ -67,8 +70,8 @@
 % \lhead[lh-even]{lh-odd} \chead[ch-even]{ch-odd} \rhead[rh-even]{rh-odd}
 % \lfoot[lf-even]{lf-odd} \cfoot[cf-even]{cf-odd} \rfoot[rf-even]{rf-odd}
 % where
-% When LaTeX wants to create a page with an empty style, it will insert the 
-% first argument of fancyplain, in all the other cases it will use the 
+% When LaTeX wants to create a page with an empty style, it will insert the
+% first argument of fancyplain, in all the other cases it will use the
 % second argument
 % and available are
 % \thepage  number of the current page
@@ -92,13 +95,13 @@
   \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
 
 % Main body of book
-\renewcommand{\chaptername}{Chapter}
-\newcommand{\sectionname}{Section}
+\renewcommand{\chaptername}{章}
+\newcommand{\sectionname}{节}
 
 \fancypagestyle{bookbody}{%
   \renewcommand{\headrulewidth}{.4pt}
   \renewcommand{\footrulewidth}{0pt}
-  \fancyhead[LE,RO]{{\color{black}\textsl{Page \thepage}}} % instead of boldcolor
+  \fancyhead[LE,RO]{{\color{black}\textsl{第 \thepage 页}}} % instead of boldcolor
   \fancyhead[RE]{{\color{black}\textsl{\leftmark}}}
   \fancyhead[LO]{{\color{black}\textsl{\rightmark}}}
   \lfoot{}
@@ -172,14 +175,14 @@
 
 
 % ========= Chapters and sections =============
-% How much space to put between numbering and margin 
+% How much space to put between numbering and margin
 \newlength{\margin@numberingspace} % Dist between numbering and margin
 \setlength{\margin@numberingspace}{0.8em}
 \setlength{\marginparsep}{\margin@numberingspace}
 
 % Clear to an odd page with empty pages in between
 \newcommand{\clearemptydoublepage}{% clear to right page
-  \newpage{\pagestyle{empty}% 
+  \newpage{\pagestyle{empty}%
     \cleardoublepage\thispagestyle{bookemptypage}}%
     \pagestyle{bookbody}}
 % Clear to an even-numbered page, with blank pages between
@@ -215,7 +218,7 @@
   \begin{enumerate}[topsep=0ex,
                     itemsep=0ex, parsep=0ex,listparindent=0.68\parindent,
                     leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
-                    label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
+                    label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}]
 }{%
   \end{enumerate}
 }
@@ -236,7 +239,7 @@
   \fcolorbox{boldcolor}{white}{\color{white}\rule{4pt}{8.5pt}}}}
 
 
-  
+
 % ==========================================================
 % TABLE OF CONTENTS
 \usepackage{tocloft}
@@ -265,7 +268,7 @@
   % \stringstyle=\ttfamily,  % use typewriter type
   % numbers=left,                   % where to put the line-numbers
   % numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
-  % stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+  % stepnumber=2,                   % the step between two line-numbers. If it's 1, each line
                                 % will be numbered
   % numbersep=5pt,                  % how far the line-numbers are from the code
   backgroundcolor=\color{listingsbackgroundcolor},  % choose the background color. You must add \usepackage{color}
@@ -306,7 +309,7 @@
 % Note: you can refine the choices with something like:
 % \lstset{language=C,caption={Descriptive Caption Text},label=DescriptiveLabel}
 
-% Make single quotes correct in verbatim 
+% Make single quotes correct in verbatim
 \usepackage{upquote}
 
 
@@ -333,7 +336,7 @@
 
 % == blkarray ====
 %   Extended array features, such as labelled rows and columns
-\usepackage{blkarray} 
+\usepackage{blkarray}
 
 
 
@@ -364,8 +367,8 @@
       \setlength{\topsep}{0.5 ex plus 0.2ex minus 0.1ex}%
       \setlength{\partopsep}{0ex}%
       \setlength{\itemsep}{0ex}%
-      }% 
-  \else% 
+      }%
+  \else%
     \list{}{%
       \setlength{\leftmargin}{0em}%
       \setlength{\itemindent}{0em}%
@@ -385,7 +388,7 @@
 }
 
 
-% ==== Grammars ==== (Asy doesn't like it) 
+% ==== Grammars ==== (Asy doesn't like it)
 \usepackage{grammar}
 
 
@@ -400,7 +403,7 @@
 
 \gdef\currentanswernumber{--No current answer number--}
 \newenvironment{ans}[1]%
-  {\gdef\currentanswernumber{#1}%  Save it 
+  {\gdef\currentanswernumber{#1}%  Save it
    \leftskip1em\par\noindent\hspace{-1em}\textbf{#1}\ }%
   {}
 
@@ -459,7 +462,7 @@
     width=0.95\textwidth,
 ]{caption}
 % Format of captions (1) Name the question to which it pertains and
-%    (2) Put a hrule between figures 
+%    (2) Put a hrule between figures
 \DeclareCaptionLabelFormat{referenceanswerformat}{#1 #2, for question \currentanswernumber}
 \DeclareCaptionFormat{linebetweenformat}{#1#2#3\textcolor{lightgreycolor}{\hrulefill}}
 \captionsetup[figure]{labelformat=referenceanswerformat,
@@ -634,6 +637,15 @@
 
 
 % Take cross references from the .aux file for each chapter
+% zref-xr supplies \zcref targets; xr-hyper supplies ordinary \ref targets.
+\usepackage{xr-hyper}
+\externaldocument{preface/preface}[book.pdf]
+\externaldocument{prologue/prologue}[book.pdf]
+\externaldocument{background/background}[book.pdf]
+\externaldocument{languages/languages}[book.pdf]
+\externaldocument{automata/automata}[book.pdf]
+\externaldocument{complexity/complexity}[book.pdf]
+\externaldocument{appendix/appendix}[book.pdf]
 \usepackage{zref-xr}
 \zexternaldocument{preface/preface}[book.pdf]% opt arg stops pointing to preface/preface.pdf
 \zexternaldocument{prologue/prologue}[book.pdf]
@@ -681,7 +693,7 @@
 % \Crefname{Item}{Item}{Items}
 
 % For naming a part of an exercise, as in \item \expartsname{Commutativity}
-\newcommand{\expartsname}[1]{\textsc{(#1)}} 
+\newcommand{\expartsname}[1]{\textsc{(#1)}}
 
 % \renewcommand{\cref}[1]{REF:~\textit{#1}}
 % \renewcommand{\Cref}[1]{REF:~\textit{#1}}
@@ -690,17 +702,17 @@
 
 
 % ========== Count the number of answers to exercises =============
-\newcounter{numberanswers} 
+\newcounter{numberanswers}
   \setcounter{numberanswers}{0}
 
 % ans environment
 %  how to typset the answer number?
 \newcommand{\answersetting}[1]{\leftskip1em\par\noindent\hspace{-1em}\textbf{#1}\ }
-% in answerbody are the answers, each inside an ans environment. 
+% in answerbody are the answers, each inside an ans environment.
 \renewenvironment{ans}[1]{%
    \addtocounter{numberanswers}{1}
-   \gdef\currentanswernumber{#1}%  Save it 
-   % Make link back to exercise, and make this a target.    
+   \gdef\currentanswernumber{#1}%  Save it
+   % Make link back to exercise, and make this a target.
    \iftoggle{insidetopic}{%
       \answersetting{\hyperref{book.pdf}{exercise}{#1}{#1}}\hypertarget{exercise.#1}{}
     }{%

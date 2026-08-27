@@ -3,7 +3,7 @@
 \ProvidesClass{computing}[2014/08/08 Class for computing book]
 
 % This dir name allows using this .cls file from other dirs,  such as complexity/
-\providecommand{\computingClsDir}{.}  
+\providecommand{\computingClsDir}{.}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions \relax
@@ -31,11 +31,11 @@
 \else
 \fi
 
-\usepackage{mathtools}  
+\usepackage{mathtools}
 \usepackage{amsmath}
 % Fix some font-loading error
 \let\Bbbk\relax
-\usepackage{amssymb, amsthm} 
+\usepackage{amssymb, amsthm}
 
 % M Sharpe's XCharter
 % \usepackage[scaled=.98,sups,osf]{XCharter}% lining figures in math, osf in text
@@ -48,7 +48,7 @@
 
 % This must be early in the class file to avoid an option clash
 \usepackage[hyphens]{url}  % allow splitting at hyphens
-% \g@addto@macro{\UrlBreaks}{\UrlOrds} % allow break at ord chars; https://tex.stackexchange.com/a/10419/339 
+% \g@addto@macro{\UrlBreaks}{\UrlOrds} % allow break at ord chars; https://tex.stackexchange.com/a/10419/339
 % \DeclareUrlCommand\pathname{\urlstyle{tt}}
 \usepackage[hyphens]{xurl}  % 2022-Jun-05; allow break at any char
 
@@ -58,9 +58,9 @@
 
 % Get some file directories in this layout, such as where graphics are
 \input{\computingClsDir/directory.tex}
-% Define where the asy/ directory is, which will change from chapter 
+% Define where the asy/ directory is, which will change from chapter
 % to chapter, for the slides
-\newcommand{\asydir}{} 
+\newcommand{\asydir}{}
 
 
 \usepackage{calc}
@@ -88,7 +88,7 @@
 % \usepackage{trace}  % for debugging
 
 % Get the name of the file into the error message https://tex.stackexchange.com/q/724002/339
-\usepackage{currfile} 
+\usepackage{currfile}
 \def\on@line{ on input line \the\inputlineno\space in \currfilepath}
 
 % ========== lengths on which others are set =============
@@ -127,8 +127,8 @@
 % \lhead[lh-even]{lh-odd} \chead[ch-even]{ch-odd} \rhead[rh-even]{rh-odd}
 % \lfoot[lf-even]{lf-odd} \cfoot[cf-even]{cf-odd} \rfoot[rf-even]{rf-odd}
 % where
-% When LaTeX wants to create a page with an empty style, it will insert the 
-% first argument of fancyplain, in all the other cases it will use the 
+% When LaTeX wants to create a page with an empty style, it will insert the
+% first argument of fancyplain, in all the other cases it will use the
 % second argument
 % and available are
 % \thepage  number of the current page
@@ -150,8 +150,8 @@
   \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
 
 % Main body of book
-\renewcommand{\chaptername}{Chapter}
-\newcommand{\sectionname}{Section}
+\renewcommand{\chaptername}{章}
+\newcommand{\sectionname}{节}
 \fancypagestyle{bookbody}{%
   \renewcommand{\headrulewidth}{.4pt}
   \renewcommand{\footrulewidth}{0pt}
@@ -229,10 +229,10 @@
 % This is the main complication; I want that inside an Extra things
 % are numbered less formally, etc.
 %   You can find this section by searching for "EXTRA SECTION TOGGLE"
-\newtoggle{insideextrasection} % True if inside an extra section, false ow. 
+\newtoggle{insideextrasection} % True if inside an extra section, false ow.
 % Notes
 % 1) This is set to false in a chapter command, and true in an extra command;
-%   search for the string "EXTRA TOGGLE RESET", 
+%   search for the string "EXTRA TOGGLE RESET",
 
 
 
@@ -242,7 +242,7 @@
 
 
 %=========== answers to exercises ===================================
-%  The file answerbody.tex holds the answers, and in input by the file 
+%  The file answerbody.tex holds the answers, and in input by the file
 % answers.tex
 %
 % This needs to be before sections and chapters because they write to
@@ -267,14 +267,14 @@
 
 
 % ========= Chapters and sections =============
-% How much space to put between numbering and margin 
+% How much space to put between numbering and margin
 \newlength{\margin@numberingspace} % Dist between numbering and margin
 \setlength{\margin@numberingspace}{0.8em}
 \setlength{\marginparsep}{\margin@numberingspace}
 
 % Clear to an odd page with empty pages in between
 \newcommand{\clearemptydoublepage}{% clear to right page
-  \newpage{\pagestyle{empty}\thispagestyle{empty}% 
+  \newpage{\pagestyle{empty}\thispagestyle{empty}%
     \cleardoublepage}}
 % Clear to an even-numbered page, with blank pages between
 % https://tex.stackexchange.com/a/365249/121234
@@ -293,7 +293,7 @@
 
 
 %%%%%%%%%%%%%%%%%
-% Parts 
+% Parts
 \renewcommand{\part}[1]{\clearemptydoublepage\thispagestyle{bookemptypage}%
   \vspace*{\stretch{1}}%
   \refstepcounter{part}
@@ -317,10 +317,10 @@
 % imagecredit  Give credit in a footnote-like entry for an image
 %  #1  text of image credit
 \newcommand\imagecredit[1]{%
-  \begingroup% 
+  \begingroup%
   \renewcommand\thefootnote{}\footnote{\hskip-\footmarktotextglue\textsc{Image:} #1}%
   \addtocounter{footnote}{-1}%
-  \endgroup% 
+  \endgroup%
 }
 
 % \chapteropen  Start a chapter
@@ -368,7 +368,7 @@
 % see https://tex.stackexchange.com/a/73117/121234
 \patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
 \patchcmd{\@mn@margintest}{\@tempswafalse}{\@tempswatrue}{}{}
-\reversemarginpar 
+\reversemarginpar
 
 % \sectiontitlecontents
 % endnotes makes the Notes page with a \section*{...} command.  I want
@@ -422,7 +422,7 @@
 }
 
 
-% jhchapter for notes and biblio  
+% jhchapter for notes and biblio
 \newcounter{jhchapterstarred}
   \newcommand{\thejhcounterstarred}{\relax}
 \titleclass{\jhchapterstarred}{straight}[\part]
@@ -444,7 +444,7 @@
   % l@jhchapter is defined elsewhere to make roman numeral
   % \def\l@jhchapter{\@dottedtocline{0}{0em}{1.5em}}
   % Don't want two TOC entries for Notes and Biblio
-  % \def\l@jhchapterstarred{\@dottedtocline{0}{0em}{1.5em}}  Don't want 
+  % \def\l@jhchapterstarred{\@dottedtocline{0}{0em}{1.5em}}  Don't want
   \newcommand{\l@jhchapterstarred}[2]{\relax}
 
 % \let\jhaddcontentsline=\addcontentsline %
@@ -459,14 +459,14 @@
   % \renewcommand{\thesubsection}{\arabic{subsection}}%
   \renewcommand{\thesubsection}{\relax}%
   \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % Extra sections change this so change it back
-  \renewcommand{\theproblem}{\arabic{section}.\arabic{theorem}} % 
+  \renewcommand{\theproblem}{\arabic{section}.\arabic{theorem}} %
   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
-  % 
+  %
   \pagestyle{bookbody}%
   \thispagestyle{bookemptypage}%
   \jhchapter{#1}}
-  
+
 % Starred chapter
 \newcommand{\jhchapter@star}[1]{%
   \stepcounter{chapter}%
@@ -477,7 +477,7 @@
   \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % Extra sections change this so change it back
   \global\def\exercisecounterstart{\Roman{chapter}.\arabic{section}}% put in the margin to count exercises env
   \renewcommand{\the@exercisenumber}{\arabic{section}.\arabic{@exercisenumber}}%
-  % 
+  %
   \pagestyle{bookbody}%
   \thispagestyle{bookemptypage}%
   \jhchapterstarred{#1}}
@@ -524,7 +524,7 @@
   {1.3ex plus 0.5ex minus 0.1ex}% before sep, vertical
   {0.6em plus 0.1em}% after sep, horiz
   % [] % right sep
-  
+
 % Extra
 \titleclass{\extrasection}{straight}[\chapter]
 \newcounter{extrasection}[chapter]
@@ -534,7 +534,7 @@
     {\normalfont\bfseries}% title format
     {}% label
     {0em}% sep
-    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}\Roman{chapter}.\Alph{extra}\\ \ \end{tabular}\hspace*{\margin@numberingspace}}\makebox[0em][l]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \ \end{tabular}\hspace*{\margin@numberingspace}}}% before code  
+    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}\Roman{chapter}.\Alph{extra}\\ \ \end{tabular}\hspace*{\margin@numberingspace}}\makebox[0em][l]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \ \end{tabular}\hspace*{\margin@numberingspace}}}% before code
   \titlespacing*{\extrasection}%
     {0pt}% left margin
     {3.25ex plus 1ex minus 0.2ex}% before sep
@@ -544,7 +544,7 @@
     {\normalfont\bfseries}% title format
     {}% label
     {0em}% sep
-    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\margin@numberingspace}}}% before code  
+    {\makebox[0em][r]{\normalfont\scshape \begin{tabular}[b]{@{}r@{}}Extra\\ \Roman{chapter}.\Alph{extra}\end{tabular}\hspace*{\margin@numberingspace}}}% before code
   \titlespacing*{\extrasection}%
     {0pt}% left margin
     {3.25ex plus 1ex minus 0.2ex}% before sep
@@ -570,12 +570,12 @@
   \setcounter{section}{\value{extra}}
   \renewcommand{\thesection}{\Alph{section}} % Set theorem numbering for inside Extra sections
   \setcounter{subsection}{0}
-  \renewcommand{\thetheorem}{\thesection.\arabic{theorem}} 
-  \renewcommand{\theexample}{\thesection.\arabic{theorem}} 
-  \renewcommand{\thelemma}{\thesection.\arabic{theorem}} 
-  \renewcommand{\thecorollary}{\thesection.\arabic{theorem}} 
-  \renewcommand{\thedefinition}{\thesection.\arabic{theorem}} 
-  \renewcommand{\theproblem}{\Alph{section}.\arabic{theorem}} 
+  \renewcommand{\thetheorem}{\thesection.\arabic{theorem}}
+  \renewcommand{\theexample}{\thesection.\arabic{theorem}}
+  \renewcommand{\thelemma}{\thesection.\arabic{theorem}}
+  \renewcommand{\thecorollary}{\thesection.\arabic{theorem}}
+  \renewcommand{\thedefinition}{\thesection.\arabic{theorem}}
+  \renewcommand{\theproblem}{\Alph{section}.\arabic{theorem}}
   \renewcommand{\exercisecounterstart}{\Roman{chapter}.\Alph{section}} % put in the margin to count exercises env
   % Remove hyperref errors "destination with the same identifier"
   % Matches redefinition inside \chapteropen command
@@ -620,7 +620,7 @@
 % FOOTNOTES
 % Footnotes: Use footnote symbols (not numbers) on a per-page basis.
 % \renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\RequirePackage[perpage,symbol*,para,multiple]{footmisc}
+\RequirePackage[perpage,symbol*,multiple]{footmisc}
 \setlength{\footnotemargin}{-1em}
 \DefineFNsymbolsTM*{hefferon}{%
   \textdagger    \dagger
@@ -631,8 +631,8 @@
   b b
   c c
   d d
-  e e 
-  f f 
+  e e
+  f f
   g g
   h h
   i i
@@ -642,11 +642,11 @@
   1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
   1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
   1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z%
-}%  lots of fn symbols, to avoid getting compilation error that are out of foonotes, because LaTeX doesn't know they are per-page until the second run. 
+}%  lots of fn symbols, to avoid getting compilation error that are out of foonotes, because LaTeX doesn't know they are per-page until the second run.
 \setfnsymbol{hefferon}
 \newlength{\footmarktotextglue}
 \global\footmarktotextglue=.1em plus .05em minus .02em %
-\global\footglue=0.65em plus.2em minus.1em % space between footnotes
+\setlength{\footnotesep}{0.65em} % each footnote starts on its own line
 \long\def\@makefntext#1{\leavevmode % hack footmisc line 391 to change space from footnote mark to footnote
 \smash{\@makefnmark}\nobreak
 \hskip\footmarktotextglue\relax#1% was .5em
@@ -662,7 +662,7 @@
 % These need to be numbered all as one, and the numbering in the margin
 
 % The cleveref package requires that theorems be made with either amsthm
-% or ntheorem.  \newheorem's must come after cleveref is loaded. 
+% or ntheorem.  \newheorem's must come after cleveref is loaded.
 
 \newlength{\lrmarginaroundshadedtheorems}
 \newlength{\tbmarginaroundshadedtheorems}
@@ -720,19 +720,19 @@
 \usepackage{tcolorbox}
 \tcbset{beforeafter skip=2pt plus 0.2pt minus 0.1pt}
 
-\newcommand{\probleminput}{\textit{Input:}}
-\newcommand{\problemoutput}{\textit{Output:}}
+\newcommand{\probleminput}{\textit{输入：}}
+\newcommand{\problemoutput}{\textit{输出：}}
 
 % \definend
 % The thing being defined.
 \newcommand{\definend}[1]{\textcolor{highlightcolor}{#1}}
-                
+
 % thmparts
 % An enumerated list inside the paragraph of the parts of a theorem, or
 % lemma or definition
 \newenvironment{thmparts}{%
   \begin{enumerate}[label={\normalfont\scshape(\alph*)~},
-                    align=left, 
+                    align=left,
                     ref={{\scshape\alph*}},
     topsep={0.25ex plus 0.05ex minus 0.025ex},
     leftmargin=1em,
@@ -755,7 +755,7 @@
 \newenvironment{thmdescription}{%
   \let\descriptionlabel=\thmdescriptionlabel
   \begin{description}[
-                    align=left, 
+                    align=left,
                     ref={{}},
     topsep={0.25ex plus 0.05ex minus 0.025ex},
     leftmargin=0.8em,
@@ -772,7 +772,7 @@
 }
 
 % ========== Bibliography =============
-% biblatex 
+% biblatex
 % \AtEndPreamble{\let\murray@saved@addtocontents\addtocontents} % see https://tex.stackexchange.com/a/513586/339
 \usepackage[backend=biber,style=authoryear,sorting=nyt,firstinits=true]{biblatex}
 % \AtEndPreamble{\let\addtocontents\murray@saved@addtocontents} % see https://tex.stackexchange.com/a/513586/339
@@ -791,13 +791,13 @@
 % #1 text referenced in the citations
 % #2 Citation
 %  Example:
-%   The soldiers could 
+%   The soldiers could
 %    \citetext{see his hairy legs}{OR C Dobson, p 1094.}.
-% produces an end note like 
+% produces an end note like
 %    \textit{see his hairy legs} OR C Dobson, p 1094.
 
 \usepackage{endnotes} %, endheads}
-   
+
 \newlength{\jhendnotesoutdent} \setlength{\jhendnotesoutdent}{1.5em}
 % \newcommand{\citetext}[2]{#1%
 %   \endnote{\protect\hspace*{-\jh@endnotesoutdent}\textit{#1}\protect\hspace{.618em} #2}}
@@ -808,7 +808,7 @@
 \renewcommand{\makeenmark}{\relax} % leave no mark
 \newcommand{\citeadd}[1]{\addtoendnotes{#1}}
 
-\renewcommand{\notesname}{Endnotes}
+\renewcommand{\notesname}{附注}
 % \renewcommand{\notesname}{\relax}
 
 \usepackage{hanging} % make cited text be in hanging indented paragraphs
@@ -867,7 +867,7 @@
   \newcommand{\jhendnoteshook}{%
   These are citations, sources, or discussions that
   supplement the text body.
-  Each refers to a word or phrase from that text body, in italics, and 
+  Each refers to a word or phrase from that text body, in italics, and
   then the note is in plain text.
   Many of the entries include links to more detail.
   % Note that some of these are from general discussions and so are
@@ -875,8 +875,8 @@
   }
 
 \newcommand{\printnotes}{%
-  % Table of Contents 
-  \addcontentsline{toc}{chapter}{Notes}  
+  % Table of Contents
+  \addcontentsline{toc}{chapter}{Notes}
   % \addtocontents{toc}{\protect\setlength{\protect\cftchapnumwidth}{0em}}
   \newpage
   \begingroup
@@ -968,7 +968,7 @@
 % I find that every chapter name issues an Overfull:
 % [4] (./book.toc
 % Overfull \hbox (117.51985pt too wide) detected at line 1
-%\T1/XCharter-TOsF/b/n/10 I  Mechanical Computation 
+%\T1/XCharter-TOsF/b/n/10 I  Mechanical Computation
 % []
 % I cannot figure how to fix that.  In particular, this
 % does not seem to do anything: \setlength{\cftsetrmarg}{10em}  % 2025-Aug-06
@@ -1002,7 +1002,7 @@
   % \stringstyle=\ttfamily,  % use typewriter type
   % numbers=left,                   % where to put the line-numbers
   % numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
-  % stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+  % stepnumber=2,                   % the step between two line-numbers. If it's 1, each line
                                 % will be numbered
   % numbersep=5pt,                  % how far the line-numbers are from the code
   backgroundcolor=\color{listingsbackgroundcolor},  % choose the background color. You must add \usepackage{color}
@@ -1048,7 +1048,7 @@
 % Note: you can refine the choices with something like:
 % \lstset{language=C,caption={Descriptive Caption Text},label=DescriptiveLabel}
 
-% Make single quotes correct in verbatim 
+% Make single quotes correct in verbatim
 \usepackage{upquote}
 
 
@@ -1067,7 +1067,7 @@
 \newfloat{figurehere}{H}{lof}
 
 
-\usepackage{caption} 
+\usepackage{caption}
 \DeclareCaptionLabelSeparator{jhcaptionspace}{\hspace{0.6em}}
 \captionsetup{font=small,
               format=hang,
@@ -1080,7 +1080,7 @@
               justification=RaggedRight
             }
 
-            
+
 \captionsetup[animatefigure]{labelformat=empty}
 \renewcommand{\theanimatefigure}{\arabic{section}.\arabic{animatefigure}}
 \newenvironment{animatedfigure}[1]{%
@@ -1150,7 +1150,7 @@
 %   skip=8pt
 % }
 \captionsetup[figure]{labelformat=empty,
-  format=hang,              
+  format=hang,
   justification=RaggedRight,
   indention=0.8em,
   skip=8pt,
@@ -1165,7 +1165,7 @@
 % #3 graphic filename
 % #4 caption
 \captionsetup[wrapfigure]{labelformat=empty,
-                          format=hang,              
+                          format=hang,
                           justification=RaggedRight,
                           indention=0.8em,
                           skip=8pt,
@@ -1175,7 +1175,7 @@
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
   \begin{wrapfigure}{#1}[3em]{#2}
     \centering
-    \includegraphics[width=#2]{#3}% 
+    \includegraphics[width=#2]{#3}%
     \caption{#4}
   \end{wrapfigure}}
 % For graphic without a caption
@@ -1190,7 +1190,7 @@
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
   \begin{wrapfigure}{#1}[3em]{#2}
     \centering
-    \includegraphics{#3}% 
+    \includegraphics{#3}%
     \caption{#4}
   \end{wrapfigure}}
 % For graphic without a caption
@@ -1213,7 +1213,7 @@
   }}
 
 \newenvironment{explorations}{%
-  \begin{list}{}{% 
+  \begin{list}{}{%
     \let\makelabel\exlabel
     \setlength{\topsep}{2ex plus 0.5ex minus .1ex}
     \setlength{\leftmargin}{1em}
@@ -1227,7 +1227,7 @@
     \item[Explorations] \ \\
 }{%
   \end{list}
-  \vspace{2ex plus .1ex minus 0.1ex}% 
+  \vspace{2ex plus .1ex minus 0.1ex}%
 }
 
 
@@ -1254,7 +1254,7 @@
 
 % Blank line with optional label
 %   \fillinblankLabelled[4em]{(a)}
-% produces a blank line that is 4em long, with (a) halfway along. 
+% produces a blank line that is 4em long, with (a) halfway along.
 \newcommand{\fillinblankLabelled}[2][3.5em]{{% \setlength{\fboxsep}{0pt}%
   \underline{\hbox{}\rule[-1pt]{0pt}{9pt}\makebox[#1][c]{{\small #2}}}}}
 % Just a blank line
@@ -1334,7 +1334,7 @@
   \global\setbox\@labels\hbox{%
     \unhbox\@labels
     \hskip \itemindent
-    \hskip -\labelwidth 
+    \hskip -\labelwidth
     \hskip -\labelsep
     \ifdim \wd\@tempboxa >\labelwidth
       \box\@tempboxa
@@ -1362,7 +1362,7 @@
 
 % == blkarray ====
 %   Extended array features, such as labelled rows and columns
-\usepackage{blkarray} 
+\usepackage{blkarray}
 
 
 
@@ -1380,7 +1380,7 @@
 % \ymd format date in an ISO-like style
 %  #1 year
 %  #2 month as an integer
-%  #3 day  
+%  #3 day
 \newcommand{\ymd}[3]{%
   \number#1-\ifcase#2\or%
   Jan\or Feb\or Mar\or Apr\or May\or Jun\or%
@@ -1417,9 +1417,9 @@
       \setlength{\parsep}{\parskip}
       \setlength{\partopsep}{0ex}
       \setlength{\itemsep}{0ex}
-      } 
+      }
     % \trivlist  \item \relax \hspace*{\mathindent}
-  \else 
+  \else
     \list{\relax}{%
       \setlength{\leftmargin}{0em}
       \setlength{\itemindent}{0em}
@@ -1446,10 +1446,10 @@
 
 % Depreciated?  Doc on CTAN says in next LaTeX release
 % \usepackage{xr-hyper}  % for cleveref; https://tex.stackexchange.com/a/244272/121234
-% 2025-Apr-29 Breaks index hyperlinks, but makes numberwithin work: 
+% 2025-Apr-29 Breaks index hyperlinks, but makes numberwithin work:
 % \usepackage[hypertexnames=false, plainpages=false]{hyperref}  % remove the draft option at the end.
 % 2025-Apr-30 Insert bin/compilation/repage_index.py into flow:
-\usepackage{hyperref}  % 
+\usepackage{hyperref}  %
   % It is there to prevent errors like
   % "\pdfendlink ended up in different nesting level than \pdfstartlink";
   % see https://tex.stackexchange.com/a/154184/121234
@@ -1499,19 +1499,19 @@
 
 
 \theoremstyle{coloredstyle}
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{theorem}{定理}[section]
 \renewcommand{\thetheorem}{\arabic{section}.\arabic{theorem}} % don't include the chapter
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{churchsthesis}[theorem]{Church's Thesis}
-\newtheorem{problem}[theorem]{Problem}
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+\newtheorem{definition}[theorem]{定义}
+\newtheorem{churchsthesis}[theorem]{Church 论题}
+\newtheorem{problem}[theorem]{问题}
 
 \theoremstyle{whitestyle}
-\newtheorem{example}[theorem]{Example}
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{remarks}[theorem]{Remarks}
-\newtheorem{discussion}[theorem]{Discussion}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注}
+\newtheorem{remarks}[theorem]{注}
+\newtheorem{discussion}[theorem]{讨论}
 
 \AtBeginEnvironment{theorem}{%
   \setcounter{mpfootnote}{\value{footnote}}}
@@ -1530,7 +1530,7 @@
 \AtBeginEnvironment{remark}{%
   \setcounter{mpfootnote}{\value{footnote}}}
 
-\tcolorboxenvironment{theorem}{colback=backgroundcolor, 
+\tcolorboxenvironment{theorem}{colback=backgroundcolor,
   colframe=backgroundcolor,
   boxrule=0pt,
   arc=0pt,
@@ -1582,7 +1582,7 @@
 
 % Proofs
 % Forget amsthm's proof environment
-% \let\proof\relax % 
+% \let\proof\relax %
 % \let\endproof\relax %
 % Halmos symbol
 % \renewcommand\qedsymbol{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.7pt}%
@@ -1595,7 +1595,7 @@
 %   headpunct={}, %
 %   postheadspace=0.6em,%
 %   qed=\qedsymbol%
-% ]{proofstyle} 
+% ]{proofstyle}
 % \declaretheorem[name={Proof},
 %   style=proofstyle,
 %   unnumbered,
@@ -1610,13 +1610,13 @@
 \newlength{\jh@listtopsep}
   % \setlength{\jh@listtopsep}{2.3ex plus 0.2ex}
   \setlength{\jh@listtopsep}{0.8ex plus 0.2ex minus 0.1ex}
-\newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading} 
+\newcommand{\nolisttopbreak}{\vspace{\jh@listtopsep}\nobreak\@afterheading}
 
 % Get the width of a single character; use it for the left margin
 \newlength{\jh@widthofchar}
 \newsavebox{\jh@widthofcharbox}
 \savebox{\jh@widthofcharbox}{\scshape 0}
-\settowidth{\jh@widthofchar}{\hbox{\scshape 0}}  
+\settowidth{\jh@widthofchar}{\hbox{\scshape 0}}
 
 % ========= Define the exercises environment =======
 
@@ -1625,7 +1625,7 @@
 % toggle is true.
 \newtoggle{@recommended}
 \newcommand{\recommended}{\toggletrue{@recommended}}
-\newcommand{\recommendationmark}{\checkmark}
+\newcommand{\recommendationmark}{\ensuremath{\surd}}
 \newlength{\recommendation@length}  % Put the mark this far into margin
   \setlength{\recommendation@length}{1.25em}
 
@@ -1678,13 +1678,13 @@
 \newenvironment{exercises}[1][]{%
   \vspace{2.5ex plus 0.8ex minus 0.2ex}%
 % \vspace{\jh@listtopsep}\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}\par\nobreak\@afterheading
-  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
+  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries 习题}%
   \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
   % \nolisttopbreak % causes a \nobreak to appear after the first item
   \begin{list}{\@exercisecounterlabel}%
      {\usecounter{@exercisenumber}
       \setcounter{@exercisenumber}{\value{theorem}}
-      \renewcommand{\makelabel}[1]{{\normalfont\scshape ##1}}% 
+      \renewcommand{\makelabel}[1]{{\normalfont\scshape ##1}}%
       \setlength{\leftmargin}{\jh@widthofchar}
       \setlength{\labelwidth}{\leftmargin}
       \setlength{\labelsep}{0em}
@@ -1737,15 +1737,15 @@
 % exercises environment  Contents are
 %      \begin{exercise} .. \begin{answer}..\end{answer}\end{exercise}
 % Each \begin{exercise} .. \end{exercise} calls \item and writes the line number
-% to the answer file to make it easier to find bugs in answers 
+% to the answer file to make it easier to find bugs in answers
 %
 % That \item comes from a \begin{exerciselist} .. \end{exerciselist}.  Each
 % of those is a modified enumerate environment, modified under enumitem.
-% A key aspect there is that the top of the exerciselist list issues a 
-% penalty so that the prior line (which says "Exercises") is not on a 
+% A key aspect there is that the top of the exerciselist list issues a
+% penalty so that the prior line (which says "Exercises") is not on a
 % separate page.
 %
-% That prior line comes from the \begin{exercises} .. \end{exercises} 
+% That prior line comes from the \begin{exercises} .. \end{exercises}
 % environment.
 
 \newlist{exerciselist}{enumerate}{1}
@@ -1778,14 +1778,14 @@
        \llap{\makebox[\recommendation@length][l]{\recommendationmark}}%
      }{%
      }]\global\togglefalse{@recommended}%
-     \addtocounter{numberofexercises}{1}% Count for a whole-book number 
+     \addtocounter{numberofexercises}{1}% Count for a whole-book number
      \hyperref{answers.pdf}{exercise}{\thechapter.\theexerciselisti}{\theexerciselisti}\hypertarget{exercise.\thechapter.\theexerciselisti}{}\hspace*{0.6em plus 0.1em minus 0.05em}}
 
-\renewenvironment{exercises}[1][]{%      
+\renewenvironment{exercises}[1][]{%
   \clubpenalty6000% discourage breaking after first line of a para
   \widowpenalty6000% discourage breaking before last line of a para
-  \vspace{2.5ex plus 0.8ex minus 0.2ex}% space between text and "Exercises"  
-  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries Exercises}%
+  \vspace{2.5ex plus 0.8ex minus 0.2ex}% space between text and "Exercises"
+  \par\noindent\llap{\normalfont\scshape \exercisecounterstart\hspace*{\margin@numberingspace}}{\normalfont\bfseries 习题}%
   \ifstrempty{#1}{}{\vspace{\jh@listtopsep}\par\noindent\textit{#1}}%
   \begin{exerciselist}
 }{%
@@ -1803,7 +1803,7 @@
   leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
   before=\setcounter{expartsii}{0}\let\item\realitem,
   label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}
-}  % 
+}  %
 
 \newlist{exparts*}{enumerate*}{2}
 \setlist[exparts*]{label={\scshape(\alph*)\nobreak\hspace{.16667em plus .08333em}},
@@ -1813,7 +1813,7 @@
   beginpenalty=10000, % Keep "Exercises" line with this list
   midpenalty=-51,  % Good place for a page break here
   endpenalty=-51,  % Also good place for a page break
-}  % 
+}  %
 
 
 
@@ -1824,7 +1824,7 @@
 %   \begin{enumerate}[topsep=0ex,
 %                     itemsep=0ex, parsep=0ex,
 %                     leftmargin=2em,labelwidth=0.5em,labelsep=.16667em,
-%                     label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}] 
+%                     label={\scshape{\small (}\alph*{\small )}\nobreak\hspace{.16667em plus .08333em}}]
 % }{%
 %   \end{enumerate}
 % }
@@ -1842,11 +1842,11 @@
 
 
 % For naming a part of an exercise, as in \item \expartsname{Commutativity}
-\newcommand{\expartsname}[1]{\textsc{(#1)}} 
+\newcommand{\expartsname}[1]{\textsc{(#1)}}
 
 % For a hint, or caution, for exercises
-\newcommand{\hint}{\textit{Hint:}} % no space because want to use a tie: ~
-\newcommand{\caution}{\textit{Caution:}} % no space because want to use a tie: ~
+\newcommand{\hint}{\textit{提示：}} % no space because want to use a tie: ~
+\newcommand{\caution}{\textit{注意：}} % no space because want to use a tie: ~
 
 
 
@@ -2025,8 +2025,8 @@
 
 % ==== Grammars ====
 % This goes here rather than contentmacros because Asy's settexpreamble
-% doesn't look in the src directory when running contentmacros, so I 
-% handle it as a separate job 
+% doesn't look in the src directory when running contentmacros, so I
+% handle it as a separate job
 \usepackage{\computingClsDir/grammar}
 
 % Env to indent text
@@ -2048,4 +2048,3 @@
 % For xkcd graphics
 \newlength{\xkcdheight}
 \setlength{\xkcdheight}{1.85cm}
-

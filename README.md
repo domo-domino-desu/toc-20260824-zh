@@ -1,3 +1,12 @@
+## 中文版构建
+
+本书使用 LuaLaTeX、New Computer Modern 与 Fandol 中文字体。在 `src/`
+目录运行 `latexmk book.tex` 和 `latexmk answers.tex`，分别生成
+`book.pdf` 与 `answers.pdf`。推送到 `master` 后，GitHub Actions 会构建、
+上传这两个文件并创建 release。
+
+---
+
 This is the source for the textbook *Theory of Computation*
 by Jim Hefferon.    It is suitable to use in a course as a main text,
 or as a supplemental text.  It also fits well with self-study.
@@ -41,7 +50,7 @@ This is at version 2. I have used it in class from 2018 through
 
 ## Home page
 
-More information is at 
+More information is at
 [https://hefferon.net/computation](https://hefferon.net/computation).
 
 
@@ -60,17 +69,17 @@ supplied PDF; see the home page.
 
 ## History
 
-2016-May-31  JH Not yet at version 0.01  
-2018-Jan-17  JH Version 0.40. Using in class.  No Scheme lab.  
-2018-Nov-29  JH Developing for second in-class use.  
-2019-Dec-31  JH Developing for third in-class use.  
+2016-May-31  JH Not yet at version 0.01
+2018-Jan-17  JH Version 0.40. Using in class.  No Scheme lab.
+2018-Nov-29  JH Developing for second in-class use.
+2019-Dec-31  JH Developing for third in-class use.
 2020-Nov-11  JH Major revision in preparation for 1.0.  Added
-  many exercises, provide full answers for each.  
-2021-Nov-15  JH Writing Jupyter notebooks.  
+  many exercises, provide full answers for each.
+2021-Nov-15  JH Writing Jupyter notebooks.
 2022-Jan-21  JH Text is getting a final in-class use before being
-  set to version 1.0.  
-2022-May-20  JH Run-up to 1.0: got asy to work on recent OS install.  
-2022-Jul-19  JH Version 1.0. 
+  set to version 1.0.
+2022-May-20  JH Run-up to 1.0: got asy to work on recent OS install.
+2022-Jul-19  JH Version 1.0.
 2023-Jul-24  JH Version 1.10, incorporating feedback from other teachers
   and providing a paper copy.
 2025-July-10 JH Version 2.0.  New Topics, including Cook-Levin.  Many

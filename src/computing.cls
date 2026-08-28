@@ -1168,10 +1168,13 @@
 % #2 width of graphic
 % #3 graphic filename
 % #4 caption
+\DeclareCaptionJustification{centeringnohyphen}{%
+  \centering\hyphenpenalty=10000\exhyphenpenalty=10000\relax}
 \captionsetup[wrapfigure]{labelformat=empty,
-                          format=hang,
-                          justification=RaggedRight,
-                          indention=0.8em,
+                          format=plain,
+                          justification=centeringnohyphen,
+                          singlelinecheck=true,
+                          indention=0em,
                           skip=8pt,
                           font=small
 }

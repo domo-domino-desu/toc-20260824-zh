@@ -21,6 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Restore generated diagrams
+        id: diagram-cache
         uses: actions/cache@v5
         with:
           path: |
@@ -31,6 +32,16 @@ jobs:
             src/automata/asy/fsm_exercises/pdfs
             src/automata/asy/fsm_exercises/tmp
           key: diagrams-v1-${{ runner.os }}-${{ hashFiles('src/**/*.asy', 'src/**/*.py', 'src/**/*.rkt', 'src/**/*.tm', 'src/**/*.fsm', 'src/**/Makefile', 'src/Makefile', 'src/cover/computingdivision.jpg') }}
+      - name: Refresh restored diagram timestamps
+        if: steps.diagram-cache.outputs.cache-hit == 'true'
+        run: |
+          find src/prologue/asy/tm_exercises/pdfs \
+               src/prologue/asy/tm_exercises/tmp \
+               src/automata/asy/fsm_exercises/pdfs \
+               src/automata/asy/fsm_exercises/tmp \
+               -type f -exec touch {} +
+          find src -type f \( -path '*/asy/*.pdf' -o -path '*/asy/*.png' \) \
+               -exec touch {} +
       - name: Install diagram generators
         run: |
           apt-get update

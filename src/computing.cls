@@ -318,7 +318,7 @@
 %  #1  text of image credit
 \newcommand\imagecredit[1]{%
   \begingroup%
-  \renewcommand\thefootnote{}\footnote{\hskip-\footmarktotextglue\textsc{Image:} #1}%
+  \renewcommand\thefootnote{}\footnote{\hskip-\footmarktotextglue\textbf{图片来源：}#1}%
   \addtocounter{footnote}{-1}%
   \endgroup%
 }
@@ -1000,7 +1000,7 @@
 % from: http://en.wikibooks.org/wiki/LaTeX/Packages/Listings
 \lstset{ %
   % language=Octave,                % the language of the code
-  basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+  basicstyle=\small\ttfamily,       % keep code legible with the current mono font
   columns=fixed, basewidth=0.55em,  % 'fullflexible' makes code copy-and-pasteable
   keepspaces=true,  % don't omit spaces inside a line
   % \stringstyle=\ttfamily,  % use typewriter type
@@ -1025,7 +1025,7 @@
 }
 
 \lstdefinestyle{grammar}{
-  basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+  basicstyle=\small\ttfamily,       % keep grammar listings legible
   columns=fullflexible,  % make code copy-and-pasteable
   backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
   showspaces=false,               % show spaces adding particular underscores
@@ -1091,7 +1091,7 @@
   \begin{animatefigure}[H]
   \setcounter{animatefigure}{\value{theorem}}  % for \cref
   \refstepcounter{theorem}
-  \caption{\textsc{\thetheorem~Animation:} #1}
+  \caption{\textsc{动画~\thetheorem：} #1}
   % \caption{\small \textsc{Click to animate.} #1}
   \centering
 }{%
@@ -1106,7 +1106,7 @@
   \begin{tablehere}[H]
   \setcounter{tablehere}{\value{theorem}}
   \refstepcounter{theorem}
-  \caption{\thetheorem~\textsc{Table:} #1}
+  \caption{\textsc{表~\thetheorem：} #1}
   \centering
 }{%
   \end{tablehere}
@@ -1127,7 +1127,7 @@
   \refstepcounter{theorem}
   \centering
 }{%
-  \caption{\thetheorem~\textsc{Figure:} \figcapt} \label{\figlabel}
+  \caption{\textsc{图~\thetheorem：} \figcapt} \label{\figlabel}
   \end{figurehere}
 }
 
@@ -1136,7 +1136,7 @@
 % put graphics in the pargin
 
 % Wrapping around a figure
-\usepackage{wrapfig}
+\usepackage[WFold]{wrapfig2}
 % Set space around wrapfig figures
 % see http://tex.stackexchange.com/a/111397/339
 \setlength{\intextsep}{6pt plus 1pt minus 0.25 pt}% vertical padding; default: 12.0pt plus 2.0pt minus 2.0pt
@@ -1178,30 +1178,41 @@
                           skip=8pt,
                           font=small
 }
-\newcommand{\margingraphic}[4][r]{%  'r' is right side, no floating
+% wrapfig2 does not apply caption's empty label format in the same way as
+% wrapfig.  Step the counter explicitly so labels keep their old meaning, but
+% typeset the visible caption without a generated "Figure <number>" label.
+\newcommand{\wrapcaption}[1]{%
+  \refstepcounter{figure}%
+  \captionsetup{format=plain,
+                justification=centeringnohyphen,
+                singlelinecheck=true,
+                indention=0em}%
+  \caption*{#1}%
+}
+\newcommand{\margingraphic}[4][R]{%  uppercase 'R' allows floating on the right
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
   \begin{wrapfigure}{#1}[3em]{#2}
     \centering
     \includegraphics[width=#2]{#3}%
-    \caption{#4}
+    \wrapcaption{#4}
   \end{wrapfigure}}
 % For graphic without a caption
-\WithSuffix\newcommand\margingraphic*[3][r]{%  'r' is right side, no floating
+\WithSuffix\newcommand\margingraphic*[3][R]{%  uppercase 'R' allows floating on the right
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
   \begin{wrapfigure}{#1}[3em]{#2}
     \centering
     \includegraphics[width=#2]{#3}
   \end{wrapfigure}}
 % margingraphicnomag Same as margin graphic, but the graphic is not magnified
-\newcommand{\margingraphicnomag}[4][r]{%  'r' is right side, no floating
+\newcommand{\margingraphicnomag}[4][R]{%  uppercase 'R' allows floating on the right
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
   \begin{wrapfigure}{#1}[3em]{#2}
     \centering
     \includegraphics{#3}%
-    \caption{#4}
+    \wrapcaption{#4}
   \end{wrapfigure}}
 % For graphic without a caption
-\WithSuffix\newcommand\margingraphicnomag*[3][r]{%  'r' is right side, no floating
+\WithSuffix\newcommand\margingraphicnomag*[3][R]{%  uppercase 'R' allows floating on the right
   % \setlength{\intextsep}{6pt plus1pt minus 0.5pt} % space at top and bottom
   \begin{wrapfigure}{#1}[3em]{#2}
     \centering
@@ -1746,8 +1757,8 @@
 % "See instructions before --label--"
 \NewDocumentCommand\refexerciseinstructions{o}
     {\IfNoValueTF {#1}%
-        {\textit{See the instructions above.}}%
-        {\textit{See the instructions before \zcref{#1}.}}}
+        {\textit{请参见上方说明。}}%
+        {\textit{请参见 \zcref{#1} 前的说明。}}}
 
 
 % New exercises code

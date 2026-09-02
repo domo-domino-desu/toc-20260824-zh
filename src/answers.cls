@@ -264,7 +264,7 @@
 % from: http://en.wikibooks.org/wiki/LaTeX/Packages/Listings
 \lstset{ %
   % language=Octave,                % the language of the code
-  basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+  basicstyle=\small\ttfamily,       % keep code legible with the current mono font
   % \stringstyle=\ttfamily,  % use typewriter type
   % numbers=left,                   % where to put the line-numbers
   % numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers

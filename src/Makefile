@@ -28,13 +28,9 @@ TEXINPUTS := TEXINPUTS=$(SRC_DIR)/:$(TEXINPUTS)
 # also that here the "$(ASYMPTOTE_DIR)" refers to the environment variable.
 export ASYMPTOTE_DIR := $(SRC_DIR)/asy//:$(SRC_DIR)/asy/asy-graphtheory-master/modules//:$(ASYMPTOTE_DIR)
 
-# LaTeX compiler
-LATEX := lualatex
-
-# LaTeX command line
-#  The command line used to invoke LaTeX.  Set the environment, then call
-# the program.
-LATEX_CMD := $(TEXINPUTS) $(LATEX)
+# latexmk handles LaTeX reruns, the index, and the bibliography.
+LATEXMK_CMD := $(TEXINPUTS) latexmk -r $(SRC_DIR)/latexmkrc
+LATEX_CMD := $(TEXINPUTS) lualatex -synctex=1
 
 # Asymptote command line.
 # Set the environment and then call the program.
@@ -723,14 +719,12 @@ book.pdf : book.tex \
   automata/automata.tex \
   complexity/complexity.tex \
   appendix/appendix.tex
-	$(LATEX_CMD) book
-	makeindex -s book.ist -p odd book.idx
-	biber book
+	$(LATEXMK_CMD) book
 	./strip-blank-bookmarks.sh
 	$(LATEX_CMD) book
 
 answers.pdf : book.pdf answers.tex
-	$(LATEX_CMD) answers
+	$(LATEXMK_CMD) answers
 
 # =============== slides ======================
 
@@ -748,8 +742,7 @@ slides/prologue/prologue.pdf : slides/prologue/prologue.tex \
   book.pdf \
   prologue/prologue.tex
 	cd $(@D); \
-	$(LATEX_CMD) "$(<D)/$(<F)"; \
-	$(LATEX_CMD) "$(<D)/$(<F)"
+	$(LATEXMK_CMD) "$(<F)"
 
 slides/background/asy/background00.pdf : slides/background/asy/background.asy
 	cd $(@D); \
@@ -760,8 +753,7 @@ slides/background/background.pdf : slides/background/background.tex \
   slides/background/asy/background00.pdf \
   background/background.tex
 	cd $(@D); \
-	$(LATEX_CMD) "$(<D)/$(<F)"; \
-	$(LATEX_CMD) "$(<D)/$(<F)"
+	$(LATEXMK_CMD) "$(<F)"
 
 slides/languages/asy/grammar000.pdf : slides/languages/asy/grammar.asy
 	cd $(@D); \
@@ -772,8 +764,7 @@ slides/languages/languages.pdf : slides/languages/languages.tex \
   slides/languages/asy/grammar000.pdf \
   languages/languages.tex
 	cd $(@D); \
-	$(LATEX_CMD) "$(<D)/$(<F)"; \
-	$(LATEX_CMD) "$(<D)/$(<F)"
+	$(LATEXMK_CMD) "$(<F)"
 
 slides/automata/asy/fsm00.pdf : slides/automata/asy/fsm.asy
 	cd $(@D); \
@@ -789,8 +780,7 @@ slides/automata/automata.pdf : slides/automata/automata.tex \
   slides/automata/asy/nfsm00.pdf \
   automata/automata.tex
 	cd $(@D); \
-	$(LATEX_CMD) "$(<D)/$(<F)"; \
-	$(LATEX_CMD) "$(<D)/$(<F)"
+	$(LATEXMK_CMD) "$(<F)"
 
 slides/complexity/asy/complexity00.pdf : slides/complexity/asy/complexity.asy
 	cd $(@D); \
@@ -801,8 +791,7 @@ slides/complexity/complexity.pdf : slides/complexity/complexity.tex \
   slides/complexity/asy/complexity00.pdf \
   complexity/complexity.tex
 	cd $(@D); \
-	$(LATEX_CMD) "$(<D)/$(<F)"; \
-	$(LATEX_CMD) "$(<D)/$(<F)"
+	$(LATEXMK_CMD) "$(<F)"
 
 slides/appendix/asy/functions000.pdf : slides/appendix/asy/functions.asy
 	cd $(@D); \
@@ -816,5 +805,4 @@ slides/appendix/appendix.pdf : slides/appendix/appendix.tex \
   appendix/functions.tex \
   appendix/proplogic.tex
 	cd $(@D); \
-	$(LATEX_CMD) "$(<D)/$(<F)"; \
-	$(LATEX_CMD) "$(<D)/$(<F)"
+	$(LATEXMK_CMD) "$(<F)"

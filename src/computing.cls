@@ -623,7 +623,7 @@
 % FOOTNOTES
 % Footnotes: Use footnote symbols (not numbers) on a per-page basis.
 % \renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\RequirePackage[perpage,symbol*,multiple]{footmisc}
+\RequirePackage[perpage, multiple]{footmisc}
 \setlength{\footnotemargin}{-1em}
 \DefineFNsymbolsTM*{hefferon}{%
   \textdagger    \dagger
@@ -1541,6 +1541,10 @@
 \newtheorem{remarks}[theorem]{注}
 \newtheorem{discussion}[theorem]{讨论}
 
+% Block quotations use kaishu in the Chinese edition.
+\AtBeginEnvironment{quote}{\kaishu}
+\AtBeginEnvironment{quotation}{\kaishu}
+
 \AtBeginEnvironment{theorem}{%
   \setcounter{mpfootnote}{\value{footnote}}}
 \AtBeginEnvironment{lemma}{%
@@ -1758,7 +1762,7 @@
 \NewDocumentCommand\refexerciseinstructions{o}
     {\IfNoValueTF {#1}%
         {\textit{请参见上方说明。}}%
-        {\textit{请参见 \zcref{#1} 前的说明。}}}
+        {\textit{请参见\zcref{#1}前的说明。}}}
 
 
 % New exercises code
